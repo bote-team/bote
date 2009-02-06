@@ -1,0 +1,76 @@
+Urheberrecht
+
+
+§1 - BotE ist eine Software (Freeware), welche für den privaten
+     Gebrauch kostenlos benutzt werden darf. Jede kommerzielle
+     Nutzung ist strengstens verboten. Für den öffentlichen
+     Gebrauch ist die Zustimmung des Urhebers einzuholen.
+
+§2 - Als Urheberrechtsinhaber muß immer meine Person angegeben
+     werden. Urheberrechtlich geschützter Inhalt, an dem Andere
+     die Rechte besitzen, ist davon ausgeschlossen. Hier müssen
+     die Bedingungen der jeweiligen Rechteinhaber beachtet werden.
+
+§3 - Es ist nicht erlaubt, den Quellcode bzw. Teile des Quellcodes
+     für andere Projekte zu verwenden bzw. diesen zu verbreiten.
+     Ausnahmen können nach Absprache mit den Urheberrechteinhabern
+     vereinbart werden.
+
+§4 - Änderungen am Quellcode sind erlaubt, sofern meine Person
+     als Urheber des Projekts mit angegeben wird (siehe §2) und
+     die Änderungen nicht gegen §3 verstoßen.
+
+§5 - Jegliche Modifikationen des Spiels sind erlaubt, außer
+     sie verstoßen gegen §2-3 oder gegen Urheberrrechte von Dritten.
+
+§6 - Es ist nicht erlaubt, BotE für irgendwelche Zwecke zu
+     benutzen, um sich finanziell zu bereichern.
+
+§7 - Es ist nicht erlaubt, BotE für irgendwelche kommerzielle
+     Zwecke einzusetzen.
+     
+§8 - Alle Bilder, Grafiken und Designs, welche BotE benutzt
+     dürfen nicht für kommerzielle Projekte verwendet werden,
+     weiterhin ist es untersagt, diese selbstständig zu
+     verbreiten. Ausnahmen können nach Absprache mit den
+     Urheberrechteinhabern vereinbart werden.
+
+§9 - Die Software darf nur von Dritten (z.B. Freeware/Shareware - Seiten)
+     im Internet eigenständig, d.h. ohne Wissen bzw. Zustimmung des
+     Urhebers angeboten werden, sofern diese die volle Verantwortung
+     für die Bereitstellung des Downloads übernehmen. Der Urheber behält
+     sich das alleinige Recht vor, die Verbreitung auf andere Quellen
+     (z.B. Downloadportale) auszulagern.
+
+BotE nutzt für einige Gebäude, sowie für einige Elemente aus dem Khayrin
+Rassenskin Grafiken aus dem Spiel "Star Trek - Birth of the Federation",
+welches von der Firma Microprose entwickelt und verkauft wurde. Die
+Verwendung dieser Grafiken erfolgt nicht mit der Absicht einer
+Urheberrechtsverletzung. Alle Grafiken und weitere multimediale Dateien
+stehen unter dem Schutz ihres jeweiligen Copyright-Inhaber.
+
+Für die Musik- und Soundwiedergabe wird das FMOD Sound System
+verwendet.
+FMOD Sound System, copyright © Firelight Technologies Pty, Ltd.,
+1994-2007
+
+© 2004-2008 Sir Pustekuchen
+
+
+--------------------------------------------------------------------
+
+Nutzungsbedingungen
+
+Weder die Urheberrechteinhaber, noch irgendjemand anderes,
+kann für etwaige Schäden, welche durch BotE, am System hätten
+verursacht werden können oder wurden verantwortlich gemacht
+werden. Ihnen ist es nur erlaubt, BotE zu benutzen, wenn Sie
+diesen Punkt und alle Punkte unter Urheberrecht akzeptieren.
+
+
+--------------------------------------------------------------------
+
+Kontakt
+
+Autor: Sir Pustekuchen
+Homepage: http://www.birth-of-the-empires.de.vu
