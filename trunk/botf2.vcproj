@@ -50,7 +50,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".;include;include\foundation;include\LZMA;include\network;include\sound;include\TrumEngine"
+				AdditionalIncludeDirectories=".;include;include\foundation;include\LZMA;include\network;include\sound"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -81,7 +81,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="fmodex_vc.lib BotE_LZMA.lib BotE_Network.lib TrumEngine_d.lib"
+				AdditionalDependencies="fmodex_vc.lib BotE_LZMA.lib BotE_Network.lib"
 				OutputFile=".\Debug/BotE.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
@@ -156,7 +156,7 @@
 				InlineFunctionExpansion="1"
 				FavorSizeOrSpeed="1"
 				WholeProgramOptimization="true"
-				AdditionalIncludeDirectories=".;include;include\foundation;include\LZMA;include\network;include\sound;include\TrumEngine"
+				AdditionalIncludeDirectories=".;include;include\foundation;include\LZMA;include\network;include\sound"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS"
 				StringPooling="true"
 				RuntimeLibrary="0"
@@ -185,7 +185,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="fmodex_vc.lib BotE_LZMA.lib BotE_Network.lib TrumEngine.lib"
+				AdditionalDependencies="fmodex_vc.lib BotE_LZMA.lib BotE_Network.lib"
 				ShowProgress="0"
 				OutputFile=".\Release/BotE.exe"
 				LinkIncremental="1"
@@ -1253,10 +1253,6 @@
 			</File>
 			<File
 				RelativePath=".\DiplomacyMenuView.h"
-				>
-			</File>
-			<File
-				RelativePath=".\include\TrumEngine\DxGraphics.h"
 				>
 			</File>
 			<File
