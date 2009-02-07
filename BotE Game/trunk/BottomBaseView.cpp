@@ -1,0 +1,114 @@
+// BottomBaseView.cpp : implementation file
+//
+
+#include "stdafx.h"
+#include "botf2.h"
+#include "BottomBaseView.h"
+
+
+// CBottomBaseView
+
+IMPLEMENT_DYNCREATE(CBottomBaseView, CView)
+
+CBottomBaseView::CBottomBaseView()
+{
+
+}
+
+CBottomBaseView::~CBottomBaseView()
+{
+}
+
+BEGIN_MESSAGE_MAP(CBottomBaseView, CView)
+	ON_WM_ERASEBKGND()
+END_MESSAGE_MAP()
+
+
+// CBottomBaseView drawing
+
+void CBottomBaseView::OnDraw(CDC* pDC)
+{
+	CDocument* pDoc = GetDocument();
+	// TODO: add draw code here
+}
+
+
+// CBottomBaseView diagnostics
+
+#ifdef _DEBUG
+void CBottomBaseView::AssertValid() const
+{
+	CView::AssertValid();
+}
+
+#ifndef _WIN32_WCE
+void CBottomBaseView::Dump(CDumpContext& dc) const
+{
+	CView::Dump(dc);
+}
+#endif
+#endif //_DEBUG
+
+
+// CBottomBaseView message handlers
+void CBottomBaseView::OnInitialUpdate()
+{
+	CView::OnInitialUpdate();
+
+	// TODO: Add your specialized code here and/or call the base class
+	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+
+	// Größe der View in logischen Koordinaten
+	m_TotalSize = CSize(1075, 249);
+}
+
+BOOL CBottomBaseView::OnEraseBkgnd(CDC* pDC)
+{
+	// TODO: Add your message handler code here and/or call default
+	return FALSE;
+}
+
+
+Gdiplus::Color CBottomBaseView::GetFontColorForSmallButton(void)
+{
+	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	
+	if (pDoc->GetPlayersRace() == HUMAN)
+		return Color(0,0,0);		
+	else if (pDoc->GetPlayersRace() == FERENGI)
+		return Color(0,0,0);
+	else if (pDoc->GetPlayersRace() == KLINGON)
+		return Color(180,180,180);
+	else if (pDoc->GetPlayersRace() == ROMULAN)
+		return Color(80,180,230);
+	else if (pDoc->GetPlayersRace() == CARDASSIAN)
+		return Color(0,0,0);
+	else if (pDoc->GetPlayersRace() == DOMINION)
+		return Color(0,0,0);
+	else
+		return Color::Black;
+}
+
+void CBottomBaseView::CalcLogicalPoint(CPoint &point)
+{
+	CRect client;
+	GetClientRect(&client);
+	
+	point.x *= (float)m_TotalSize.cx / (float)client.Width();
+	point.y *= (float)m_TotalSize.cy / (float)client.Height();	
+}
+
+void CBottomBaseView::CalcDeviceRect(CRect &rect)
+{
+	CRect client;
+	GetClientRect(&client);
+
+	CPoint p1 = rect.TopLeft();
+	p1.x *= (float)client.Width() / (float)m_TotalSize.cx;
+	p1.y *= (float)client.Height() / (float)m_TotalSize.cy;
+	
+	CPoint p2 = rect.BottomRight();
+	p2.x *= (float)client.Width() / (float)m_TotalSize.cx;
+	p2.y *= (float)client.Height() / (float)m_TotalSize.cy;
+	rect.SetRect(p1, p2);
+}
