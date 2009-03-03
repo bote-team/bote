@@ -538,7 +538,7 @@ void CSystemMenuView::DrawBuildMenue(CDC* pDC, CRect theClientRect)
 			mdc.SelectObject(oldGraphic);
 			graphic = NULL;
 		}
-		s.Format("%d/%d", pDoc->m_System[p.x][p.y].GetWorker(i), pDoc->m_System[p.x][p.y].GetNumberOfWorkbuildings(i, 0));
+		s.Format("%d/%d", pDoc->m_System[p.x][p.y].GetWorker(i), pDoc->m_System[p.x][p.y].GetNumberOfWorkbuildings(i, 0, NULL));
 		pDC->DrawText(s, CRect(30 + px[i].x,px[i].y,100 + px[i].x,16 + px[i].y), DT_LEFT | DT_VCENTER | DT_SINGLELINE);		
 	}
 	
@@ -906,7 +906,7 @@ void CSystemMenuView::DrawWorkersMenue(CDC* pDC, CRect theClientRect)
 		// Größte Nummer berechnen
 		for (int i = 0; i < 5; i++)
 		{
-			number[i] = pDoc->GetSystem(p.x,p.y).GetNumberOfWorkbuildings(i,0);
+			number[i] = pDoc->GetSystem(p.x,p.y).GetNumberOfWorkbuildings(i,0,NULL);
 			if (number[i] > greatestNumber)
 				greatestNumber = number[i];
 			online[i] = pDoc->GetSystem(p.x,p.y).GetWorker(i);
@@ -961,7 +961,7 @@ void CSystemMenuView::DrawWorkersMenue(CDC* pDC, CRect theClientRect)
 		for (int i = 0; i < 5; i++)
 		{
 			CString name = "";
-			USHORT tmp = pDoc->GetSystem(p.x,p.y).GetNumberOfWorkbuildings(i,1);
+			USHORT tmp = pDoc->GetSystem(p.x,p.y).GetNumberOfWorkbuildings(i,1,&pDoc->BuildingInfo);
 			if (tmp != 0) 
 			{
 				BOOLEAN loadSuccess = FALSE;
@@ -1068,7 +1068,7 @@ void CSystemMenuView::DrawWorkersMenue(CDC* pDC, CRect theClientRect)
 		// Größte Nummer berechnen
 		for (int i = 0; i < 5; i++)
 		{
-			number[i] = pDoc->GetSystem(p.x,p.y).GetNumberOfWorkbuildings(i+5,0);
+			number[i] = pDoc->GetSystem(p.x,p.y).GetNumberOfWorkbuildings(i+5,0,NULL);
 			if (number[i] > greatestNumber)
 				greatestNumber = number[i];
 			online[i] = pDoc->GetSystem(p.x,p.y).GetWorker(i+5);
@@ -1120,7 +1120,7 @@ void CSystemMenuView::DrawWorkersMenue(CDC* pDC, CRect theClientRect)
 		for (int i = 0; i < 5; i++)
 		{
 			CString name = "";
-			USHORT tmp = pDoc->GetSystem(p.x,p.y).GetNumberOfWorkbuildings(i+5,1);
+			USHORT tmp = pDoc->GetSystem(p.x,p.y).GetNumberOfWorkbuildings(i+5,1,&pDoc->BuildingInfo);
 			if (tmp != 0) 
 			{
 				// Bild des jeweiligen Gebäudes zeichnen
@@ -1209,7 +1209,7 @@ void CSystemMenuView::DrawWorkersMenue(CDC* pDC, CRect theClientRect)
 	CRect workertimber[200];
 	unsigned short width = 0;
 	unsigned short size = 0;
-	unsigned short worker = pDoc->GetSystem(p.x,p.y).GetNumberOfWorkbuildings(10,0);
+	unsigned short worker = pDoc->GetSystem(p.x,p.y).GetNumberOfWorkbuildings(10,0,NULL);
 	size = worker;
 	if (size != 0)
 		width = (unsigned short)200/size;
@@ -1425,8 +1425,10 @@ void CSystemMenuView::DrawEnergyMenue(CDC* pDC, CRect theClientRect)
 	short spaceY = 0;	// Platz in y-Richtung
 	for (int i = 0; i < NumberOfBuildings; i++)
 	{
+		const CBuildingInfo *buildingInfo = &pDoc->BuildingInfo.GetAt(pDoc->GetSystem(p.x, p.y).GetAllBuildings()->GetAt(i).GetRunningNumber() - 1);
+
 		// wenn das Gebäude Energie benötigt
-		if (pDoc->GetSystem(p.x, p.y).GetAllBuildings()->GetAt(i).GetNeededEnergy() > 0)
+		if (buildingInfo->GetNeededEnergy() > 0)
 		{
 			ENERGYSTRUCT es;
 			es.index = i;
@@ -1474,10 +1476,13 @@ void CSystemMenuView::DrawEnergyMenue(CDC* pDC, CRect theClientRect)
 			CRect tmpr;
 			tmpr.SetRect(r.left+10,r.top+5,r.right-5,r.bottom);
 			int id = pDoc->GetSystem(p.x, p.y).GetAllBuildings()->GetAt(m_EnergyList.GetAt(i).index).GetRunningNumber();
+			
+			const CBuildingInfo *buildingInfo = &pDoc->BuildingInfo.GetAt(id - 1);
+
 			pDC->DrawText(pDoc->GetBuildingName(id), tmpr, DT_LEFT | DT_SINGLELINE);
 			// nötige Energie über den Status zeichnen
 			tmpr.SetRect(r.right-70,r.bottom-100,r.right-5,r.bottom);
-			s.Format("%d EP", pDoc->GetSystem(p.x, p.y).GetAllBuildings()->GetAt(m_EnergyList.GetAt(i).index).GetNeededEnergy());
+			s.Format("%d EP", buildingInfo->GetNeededEnergy());
 			pDC->DrawText(s, tmpr, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 			// Rechteck machen damit der Status unten rechts steht
 			tmpr.SetRect(r.right-70,r.bottom-50,r.right-5,r.bottom);
@@ -1499,7 +1504,7 @@ void CSystemMenuView::DrawEnergyMenue(CDC* pDC, CRect theClientRect)
 			CBitmap* graphic = NULL;
 			HGDIOBJ oldGraphic;
 			CString fileName;
-			fileName.Format("Buildings\\%s",pDoc->GetBuildingInfo(id).GetGraphikFileName());
+			fileName.Format("Buildings\\%s", buildingInfo->GetGraphikFileName());
 			graphic = pDoc->GetGraphicPool()->GetGraphic(fileName);
 			if (graphic == NULL)
 				graphic = pDoc->GetGraphicPool()->GetGraphic("Buildings\\ImageMissing.jpg");
@@ -2771,7 +2776,7 @@ void CSystemMenuView::DrawBuildingProduction(CDC* pDC, CRect rect)
 			pDC->SetTextColor(oldColor);
 			if (b1->GetFoodProd() > 0)
 			{
-				short number = pDoc->GetSystem(p.x,p.y).GetNumberOfWorkbuildings(0,0);
+				short number = pDoc->GetSystem(p.x,p.y).GetNumberOfWorkbuildings(0,0,NULL);
 				s.Format("%i %s",b2->GetFoodProd()*number-b1->GetFoodProd()*number, CResourceManager::GetString("FOOD"));
 				pDC->DrawText(s,r, DT_TOP | DT_CENTER | DT_SINGLELINE);
 				r.SetRect(r.left,r.bottom+15,r.right,r.bottom+60);
@@ -2780,7 +2785,7 @@ void CSystemMenuView::DrawBuildingProduction(CDC* pDC, CRect rect)
 			}
 			else if (b1->GetIPProd() > 0)
 			{
-				short number = pDoc->GetSystem(p.x,p.y).GetNumberOfWorkbuildings(1,0);
+				short number = pDoc->GetSystem(p.x,p.y).GetNumberOfWorkbuildings(1,0,NULL);
 				s.Format("%i %s",b2->GetIPProd()*number-b1->GetIPProd()*number,CResourceManager::GetString("INDUSTRY"));
 				pDC->DrawText(s,r, DT_TOP | DT_CENTER | DT_SINGLELINE);
 				r.SetRect(r.left,r.bottom+15,r.right,r.bottom+60);
@@ -2789,7 +2794,7 @@ void CSystemMenuView::DrawBuildingProduction(CDC* pDC, CRect rect)
 			}
 			else if (b1->GetEnergyProd() > 0)
 			{
-				short number = pDoc->GetSystem(p.x,p.y).GetNumberOfWorkbuildings(2,0);
+				short number = pDoc->GetSystem(p.x,p.y).GetNumberOfWorkbuildings(2,0,NULL);
 				s.Format("%i %s",b2->GetEnergyProd()*number-b1->GetEnergyProd()*number,CResourceManager::GetString("ENERGY"));
 				pDC->DrawText(s,r, DT_TOP | DT_CENTER | DT_SINGLELINE);
 				r.SetRect(r.left,r.bottom+15,r.right,r.bottom+60);
@@ -2798,7 +2803,7 @@ void CSystemMenuView::DrawBuildingProduction(CDC* pDC, CRect rect)
 			}
 			else if (b1->GetSPProd() > 0)
 			{
-				short number = pDoc->GetSystem(p.x,p.y).GetNumberOfWorkbuildings(3,0);
+				short number = pDoc->GetSystem(p.x,p.y).GetNumberOfWorkbuildings(3,0,NULL);
 				s.Format("%i %s",b2->GetSPProd()*number-b1->GetSPProd()*number,CResourceManager::GetString("SECURITY"));
 				pDC->DrawText(s,r, DT_TOP | DT_CENTER | DT_SINGLELINE);
 				r.SetRect(r.left,r.bottom+15,r.right,r.bottom+60);
@@ -2807,7 +2812,7 @@ void CSystemMenuView::DrawBuildingProduction(CDC* pDC, CRect rect)
 			}
 			else if (b1->GetFPProd() > 0)
 			{
-				short number = pDoc->GetSystem(p.x,p.y).GetNumberOfWorkbuildings(4,0);
+				short number = pDoc->GetSystem(p.x,p.y).GetNumberOfWorkbuildings(4,0,NULL);
 				s.Format("%i %s",b2->GetFPProd()*number-b1->GetFPProd()*number,CResourceManager::GetString("RESEARCH"));
 				pDC->DrawText(s,r, DT_TOP | DT_CENTER | DT_SINGLELINE);
 				r.SetRect(r.left,r.bottom+15,r.right,r.bottom+60);
@@ -2816,7 +2821,7 @@ void CSystemMenuView::DrawBuildingProduction(CDC* pDC, CRect rect)
 			}
 			else if (b1->GetTitanProd() > 0)
 			{
-				short number = pDoc->GetSystem(p.x,p.y).GetNumberOfWorkbuildings(5,0);
+				short number = pDoc->GetSystem(p.x,p.y).GetNumberOfWorkbuildings(5,0,NULL);
 				s.Format("%i %s",b2->GetTitanProd()*number-b1->GetTitanProd()*number,CResourceManager::GetString("TITAN"));
 				pDC->DrawText(s,r, DT_TOP | DT_CENTER | DT_SINGLELINE);
 				r.SetRect(r.left,r.bottom+15,r.right,r.bottom+60);
@@ -2825,7 +2830,7 @@ void CSystemMenuView::DrawBuildingProduction(CDC* pDC, CRect rect)
 			}
 			else if (b1->GetDeuteriumProd() > 0)
 			{
-				short number = pDoc->GetSystem(p.x,p.y).GetNumberOfWorkbuildings(6,0);
+				short number = pDoc->GetSystem(p.x,p.y).GetNumberOfWorkbuildings(6,0,NULL);
 				s.Format("%i %s",b2->GetDeuteriumProd()*number-b1->GetDeuteriumProd()*number,CResourceManager::GetString("DEUTERIUM"));
 				pDC->DrawText(s,r, DT_TOP | DT_CENTER | DT_SINGLELINE);
 				r.SetRect(r.left,r.bottom+15,r.right,r.bottom+60);
@@ -2834,7 +2839,7 @@ void CSystemMenuView::DrawBuildingProduction(CDC* pDC, CRect rect)
 			}
 			else if (b1->GetDuraniumProd() > 0)
 			{
-				short number = pDoc->GetSystem(p.x,p.y).GetNumberOfWorkbuildings(7,0);
+				short number = pDoc->GetSystem(p.x,p.y).GetNumberOfWorkbuildings(7,0,NULL);
 				s.Format("%i %s",b2->GetDuraniumProd()*number-b1->GetDuraniumProd()*number,CResourceManager::GetString("DURANIUM"));
 				pDC->DrawText(s,r, DT_TOP | DT_CENTER | DT_SINGLELINE);
 				r.SetRect(r.left,r.bottom+15,r.right,r.bottom+60);
@@ -2843,7 +2848,7 @@ void CSystemMenuView::DrawBuildingProduction(CDC* pDC, CRect rect)
 			}
 			else if (b1->GetCrystalProd() > 0)
 			{
-				short number = pDoc->GetSystem(p.x,p.y).GetNumberOfWorkbuildings(8,0);
+				short number = pDoc->GetSystem(p.x,p.y).GetNumberOfWorkbuildings(8,0,NULL);
 				s.Format("%i %s",b2->GetCrystalProd()*number-b1->GetCrystalProd()*number,CResourceManager::GetString("CRYSTAL"));
 				pDC->DrawText(s,r, DT_TOP | DT_CENTER | DT_SINGLELINE);
 				r.SetRect(r.left,r.bottom+15,r.right,r.bottom+60);
@@ -2852,7 +2857,7 @@ void CSystemMenuView::DrawBuildingProduction(CDC* pDC, CRect rect)
 			}
 			else if (b1->GetIridiumProd() > 0)
 			{
-				short number = pDoc->GetSystem(p.x,p.y).GetNumberOfWorkbuildings(9,0);
+				short number = pDoc->GetSystem(p.x,p.y).GetNumberOfWorkbuildings(9,0,NULL);
 				s.Format("%i %s",b2->GetIridiumProd()*number-b1->GetIridiumProd()*number,CResourceManager::GetString("IRIDIUM"));
 				pDC->DrawText(s,r, DT_TOP | DT_CENTER | DT_SINGLELINE);
 				r.SetRect(r.left,r.bottom+15,r.right,r.bottom+60);
@@ -3044,7 +3049,7 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			}
 			pDoc->m_System[p.x][p.y].GetAssemblyList()->ClearAssemblyList(p, pDoc->m_System);
 			// Nach ClearAssemblyList müssen wir die Funktion CalculateVariables() aufrufen
-			pDoc->m_System[p.x][p.y].CalculateVariables(pDoc->m_Empire[pDoc->m_System[p.x][p.y].GetOwnerOfSystem()].GetResearch()->GetResearchInfo(),
+			pDoc->m_System[p.x][p.y].CalculateVariables(&pDoc->BuildingInfo, pDoc->m_Empire[pDoc->m_System[p.x][p.y].GetOwnerOfSystem()].GetResearch()->GetResearchInfo(),
 				pDoc->m_Sector[p.x][p.y].GetPlanets(), CTrade::GetMonopolOwner());
 			if (AssemblyList[0].runningNumber < 0)
 				RunningNumber = AssemblyList[0].runningNumber * (-1);
@@ -3110,14 +3115,14 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			if (PlusButton[i].PtInRect(point))
 			{
 				// Wenn wir noch freie Arbeiter haben
-				if (pDoc->GetSystem(p.x,p.y).GetWorker(11) > 0 && pDoc->GetSystem(p.x,p.y).GetNumberOfWorkbuildings(i,0) > pDoc->GetSystem(p.x,p.y).GetWorker(i))
+				if (pDoc->GetSystem(p.x,p.y).GetWorker(11) > 0 && pDoc->GetSystem(p.x,p.y).GetNumberOfWorkbuildings(i,0,NULL) > pDoc->GetSystem(p.x,p.y).GetWorker(i))
 				{
 					pDoc->m_System[p.x][p.y].SetWorker(i,0,0);	// FoodWorker inkrementieren
 					// FP und SP aus dem System von den Gesamten FP des Imnperiums abziehen
 					pDoc->m_Empire[pDoc->GetPlayersRace()].AddFP(-(pDoc->GetSystem(p.x,p.y).GetProduction()->GetResearchProd()));
 					pDoc->m_Empire[pDoc->GetPlayersRace()].AddSP(-(pDoc->GetSystem(p.x,p.y).GetProduction()->GetSecurityProd()));
 					// Variablen berechnen
-					pDoc->m_System[p.x][p.y].CalculateVariables(pDoc->GetEmpire(pDoc->GetPlayersRace())->GetResearch()->GetResearchInfo(),pDoc->m_Sector[p.x][p.y].GetPlanets(), CTrade::GetMonopolOwner());
+					pDoc->m_System[p.x][p.y].CalculateVariables(&pDoc->BuildingInfo, pDoc->GetEmpire(pDoc->GetPlayersRace())->GetResearch()->GetResearchInfo(),pDoc->m_Sector[p.x][p.y].GetPlanets(), CTrade::GetMonopolOwner());
 					// FP´s und SP´s wieder draufrechnen
 					pDoc->m_Empire[pDoc->GetPlayersRace()].AddFP((pDoc->GetSystem(p.x,p.y).GetProduction()->GetResearchProd()));
 					pDoc->m_Empire[pDoc->GetPlayersRace()].AddSP((pDoc->GetSystem(p.x,p.y).GetProduction()->GetSecurityProd()));
@@ -3137,7 +3142,7 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 					pDoc->m_Empire[pDoc->GetPlayersRace()].AddFP(-(pDoc->GetSystem(p.x,p.y).GetProduction()->GetResearchProd()));
 					pDoc->m_Empire[pDoc->GetPlayersRace()].AddSP(-(pDoc->GetSystem(p.x,p.y).GetProduction()->GetSecurityProd()));
 					// Variablen berechnen
-					pDoc->m_System[p.x][p.y].CalculateVariables(pDoc->GetEmpire(pDoc->GetPlayersRace())->GetResearch()->GetResearchInfo(),pDoc->m_Sector[p.x][p.y].GetPlanets(), CTrade::GetMonopolOwner());
+					pDoc->m_System[p.x][p.y].CalculateVariables(&pDoc->BuildingInfo, pDoc->GetEmpire(pDoc->GetPlayersRace())->GetResearch()->GetResearchInfo(),pDoc->m_Sector[p.x][p.y].GetPlanets(), CTrade::GetMonopolOwner());
 					// FP´s und SP´s wieder draufrechnen
 					pDoc->m_Empire[pDoc->GetPlayersRace()].AddFP((pDoc->GetSystem(p.x,p.y).GetProduction()->GetResearchProd()));
 					pDoc->m_Empire[pDoc->GetPlayersRace()].AddSP((pDoc->GetSystem(p.x,p.y).GetProduction()->GetSecurityProd()));
@@ -3167,7 +3172,7 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 					pDoc->m_Empire[pDoc->GetPlayersRace()].AddFP(-(pDoc->GetSystem(p.x,p.y).GetProduction()->GetResearchProd()));
 					pDoc->m_Empire[pDoc->GetPlayersRace()].AddSP(-(pDoc->GetSystem(p.x,p.y).GetProduction()->GetSecurityProd()));
 					// Variablen berechnen
-					pDoc->m_System[p.x][p.y].CalculateVariables(pDoc->GetEmpire(pDoc->GetPlayersRace())->GetResearch()->GetResearchInfo(),pDoc->m_Sector[p.x][p.y].GetPlanets(), CTrade::GetMonopolOwner());
+					pDoc->m_System[p.x][p.y].CalculateVariables(&pDoc->BuildingInfo, pDoc->GetEmpire(pDoc->GetPlayersRace())->GetResearch()->GetResearchInfo(),pDoc->m_Sector[p.x][p.y].GetPlanets(), CTrade::GetMonopolOwner());
 					// FP´s und SP´s wieder draufrechnen
 					pDoc->m_Empire[pDoc->GetPlayersRace()].AddFP((pDoc->GetSystem(p.x,p.y).GetProduction()->GetResearchProd()));
 					pDoc->m_Empire[pDoc->GetPlayersRace()].AddSP((pDoc->GetSystem(p.x,p.y).GetProduction()->GetSecurityProd()));
@@ -3195,10 +3200,10 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 				if (PlusButton[i].PtInRect(point))
 				{
 					// Wenn wir noch freie Arbeiter haben
-					if (pDoc->GetSystem(p.x,p.y).GetWorker(11) > 0 && pDoc->GetSystem(p.x,p.y).GetNumberOfWorkbuildings(i+5,0) > pDoc->GetSystem(p.x,p.y).GetWorker(i+5))
+					if (pDoc->GetSystem(p.x,p.y).GetWorker(11) > 0 && pDoc->GetSystem(p.x,p.y).GetNumberOfWorkbuildings(i+5,0,NULL) > pDoc->GetSystem(p.x,p.y).GetWorker(i+5))
 					{
 						pDoc->m_System[p.x][p.y].SetWorker(i+5,0,0);	// FoodWorker inkrementieren
-						pDoc->m_System[p.x][p.y].CalculateVariables(pDoc->GetEmpire(pDoc->GetPlayersRace())->GetResearch()->GetResearchInfo(),pDoc->m_Sector[p.x][p.y].GetPlanets(), CTrade::GetMonopolOwner());
+						pDoc->m_System[p.x][p.y].CalculateVariables(&pDoc->BuildingInfo, pDoc->GetEmpire(pDoc->GetPlayersRace())->GetResearch()->GetResearchInfo(),pDoc->m_Sector[p.x][p.y].GetPlanets(), CTrade::GetMonopolOwner());
 						//PlaySound(*((CBotf2App*)AfxGetApp())->GetPath() + "Sounds\\ComputerBeep1.wav", NULL, SND_FILENAME | SND_ASYNC);
 						Invalidate();
 						break;
@@ -3211,7 +3216,7 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 					if (pDoc->GetSystem(p.x,p.y).GetWorker(i+5) > 0)
 					{
 						pDoc->m_System[p.x][p.y].SetWorker(i+5,0,1);	// FoodWorker dekrementieren
-						pDoc->m_System[p.x][p.y].CalculateVariables(pDoc->GetEmpire(pDoc->GetPlayersRace())->GetResearch()->GetResearchInfo(),pDoc->m_Sector[p.x][p.y].GetPlanets(), CTrade::GetMonopolOwner());
+						pDoc->m_System[p.x][p.y].CalculateVariables(&pDoc->BuildingInfo, pDoc->GetEmpire(pDoc->GetPlayersRace())->GetResearch()->GetResearchInfo(),pDoc->m_Sector[p.x][p.y].GetPlanets(), CTrade::GetMonopolOwner());
 						//PlaySound(*((CBotf2App*)AfxGetApp())->GetPath() + "Sounds\\ComputerBeep1.wav", NULL, SND_FILENAME | SND_ASYNC);
 						Invalidate();
 						break;
@@ -3234,7 +3239,7 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 						// Wenn wir ziemlich weit ganz links geklickt haben, dann Arbeiter auf null setzen, werden hier nur um eins dekrementiert
 						if (j == 0 && point.x < Timber[i][j].left+3)
 							pDoc->m_System[p.x][p.y].SetWorker(i+5,0,1);
-						pDoc->m_System[p.x][p.y].CalculateVariables(pDoc->GetEmpire(pDoc->GetPlayersRace())->GetResearch()->GetResearchInfo(),pDoc->m_Sector[p.x][p.y].GetPlanets(), CTrade::GetMonopolOwner());
+						pDoc->m_System[p.x][p.y].CalculateVariables(&pDoc->BuildingInfo, pDoc->GetEmpire(pDoc->GetPlayersRace())->GetResearch()->GetResearchInfo(),pDoc->m_Sector[p.x][p.y].GetPlanets(), CTrade::GetMonopolOwner());
 						//PlaySound(*((CBotf2App*)AfxGetApp())->GetPath() + "Sounds\\ComputerBeep1.wav", NULL, SND_FILENAME | SND_ASYNC);
 						Invalidate();
 						break;
@@ -3250,10 +3255,11 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			// Wenn wir auf der richtigen Seite sind
 			if (i < m_iELPage * NOBIEL + NOBIEL)
 				if (m_EnergyList.GetAt(i).rect.PtInRect(point))
-				{										
+				{	
+					const CBuildingInfo *buildingInfo = &pDoc->BuildingInfo.GetAt(pDoc->GetSystem(p.x, p.y).GetAllBuildings()->GetAt(m_EnergyList.GetAt(i).index).GetRunningNumber() - 1);
 					if (m_EnergyList.GetAt(i).status == 0)
 					{
-						if (pDoc->GetSystem(p.x,p.y).GetProduction()->GetEnergyProd() >= pDoc->GetSystem(p.x, p.y).GetAllBuildings()->GetAt(m_EnergyList.GetAt(i).index).GetNeededEnergy())
+						if (pDoc->GetSystem(p.x,p.y).GetProduction()->GetEnergyProd() >= buildingInfo->GetNeededEnergy())
 							pDoc->m_System[p.x][p.y].SetIsBuildingOnline(m_EnergyList.GetAt(i).index, 1);
 					}
 					else
@@ -3262,13 +3268,13 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 					pDoc->m_Empire[pDoc->GetPlayersRace()].AddFP(-(pDoc->GetSystem(p.x,p.y).GetProduction()->GetResearchProd()));
 					pDoc->m_Empire[pDoc->GetPlayersRace()].AddSP(-(pDoc->GetSystem(p.x,p.y).GetProduction()->GetSecurityProd()));
 					// Variablen berechnen
-					pDoc->m_System[p.x][p.y].CalculateVariables(pDoc->GetEmpire(pDoc->GetPlayersRace())->GetResearch()->GetResearchInfo(),pDoc->m_Sector[p.x][p.y].GetPlanets(), CTrade::GetMonopolOwner());
+					pDoc->m_System[p.x][p.y].CalculateVariables(&pDoc->BuildingInfo, pDoc->GetEmpire(pDoc->GetPlayersRace())->GetResearch()->GetResearchInfo(),pDoc->m_Sector[p.x][p.y].GetPlanets(), CTrade::GetMonopolOwner());
 					// FP´s und SP´s wieder draufrechnen
 					pDoc->m_Empire[pDoc->GetPlayersRace()].AddFP((pDoc->GetSystem(p.x,p.y).GetProduction()->GetResearchProd()));
 					pDoc->m_Empire[pDoc->GetPlayersRace()].AddSP((pDoc->GetSystem(p.x,p.y).GetProduction()->GetSecurityProd()));
 					// Wenn es eine Werft war, die wir an bzw. aus geschaltet haben, dann nochmal schauen ob ich auch
 					// noch alle Schiffe bauen kann. Denn wenn die aus ist, dann kann ich keine mehr bauen
-					if (pDoc->GetSystem(p.x, p.y).GetAllBuildings()->GetAt(m_EnergyList.GetAt(i).index).GetShipYard())
+					if (buildingInfo->GetShipYard())
 						pDoc->m_System[p.x][p.y].CalculateBuildableShips(&pDoc->m_ShipInfoArray,
 						pDoc->m_Empire[pDoc->GetPlayersRace()].GetResearch(),pDoc->m_Sector[p.x][p.y].GetName(),pDoc->m_Sector[p.x][p.y].GetMinorRace());
 					//PlaySound(*((CBotf2App*)AfxGetApp())->GetPath() + "Sounds\\ComputerBeep1.wav", NULL, SND_FILENAME | SND_ASYNC);
@@ -3484,7 +3490,7 @@ void CSystemMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 				}
 				
 				// Wenn wir den Baueintrag setzen konnten, also hier in der if-Bedingung sind, dann CalculateVariables() aufrufen
-				pDoc->m_System[p.x][p.y].CalculateVariables(pDoc->m_Empire[pDoc->m_System[p.x][p.y].GetOwnerOfSystem()].GetResearch()->GetResearchInfo(),pDoc->m_Sector[p.x][p.y].GetPlanets(), CTrade::GetMonopolOwner());
+				pDoc->m_System[p.x][p.y].CalculateVariables(&pDoc->BuildingInfo, pDoc->m_Empire[pDoc->m_System[p.x][p.y].GetOwnerOfSystem()].GetResearch()->GetResearchInfo(),pDoc->m_Sector[p.x][p.y].GetPlanets(), CTrade::GetMonopolOwner());
 				m_iClickedOn = i;
 				Invalidate();
 			}
@@ -3546,7 +3552,7 @@ void CSystemMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 				}
 				pDoc->m_System[p.x][p.y].GetAssemblyList()->ClearAssemblyList(p, pDoc->m_System);
 				// Nach ClearAssemblyList müssen wir die Funktion CalculateVariables() aufrufen
-				pDoc->m_System[p.x][p.y].CalculateVariables(pDoc->m_Empire[pDoc->m_System[p.x][p.y].GetOwnerOfSystem()].GetResearch()->GetResearchInfo(),pDoc->m_Sector[p.x][p.y].GetPlanets(), CTrade::GetMonopolOwner());
+				pDoc->m_System[p.x][p.y].CalculateVariables(&pDoc->BuildingInfo, pDoc->m_Empire[pDoc->m_System[p.x][p.y].GetOwnerOfSystem()].GetResearch()->GetResearchInfo(),pDoc->m_Sector[p.x][p.y].GetPlanets(), CTrade::GetMonopolOwner());
 				// Baulistencheck machen, wenn wir kein Schiff reingesetzt haben. 
 				// Den Check nur machen, wenn wir ein Update oder ein Gebäude welches eine Maxanzahl voraussetzt
 				// hinzufügen wollen
@@ -3738,7 +3744,7 @@ void CSystemMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 				}
 				
 				// Wenn wir den Baueintrag setzen konnten, also hier in der if-Bedingung sind, dann CalculateVariables() aufrufen
-				pDoc->m_System[p.x][p.y].CalculateVariables(pDoc->m_Empire[pDoc->m_System[p.x][p.y].GetOwnerOfSystem()].GetResearch()->GetResearchInfo(),pDoc->m_Sector[p.x][p.y].GetPlanets(), CTrade::GetMonopolOwner());
+				pDoc->m_System[p.x][p.y].CalculateVariables(&pDoc->BuildingInfo, pDoc->m_Empire[pDoc->m_System[p.x][p.y].GetOwnerOfSystem()].GetResearch()->GetResearchInfo(),pDoc->m_Sector[p.x][p.y].GetPlanets(), CTrade::GetMonopolOwner());
 				m_iClickedOn = i;
 				Invalidate();
 			}

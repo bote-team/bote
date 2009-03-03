@@ -13,13 +13,7 @@ CAttackSystem::CAttackSystem(void)
 CAttackSystem::~CAttackSystem(void)
 {
 	m_pShips.RemoveAll();
-	m_pTroops.RemoveAll();
-	if (!m_pSystem)
-		delete m_pSystem;
-	if (!m_pSector)
-		delete m_pSector;
-	if (!m_pResearchInfo)
-		delete m_pResearchInfo;
+	m_pTroops.RemoveAll();	
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -28,14 +22,16 @@ CAttackSystem::~CAttackSystem(void)
 /// Diese Funktion initiiert das CAttackSystem Objekt mit den entsprechenden Variablen. Dabei übernimmt sie als
 /// Parameter einen Zeiger auf das System <code>system</code>, welches angegriffen wird, sowie einen Zeiger auf
 /// das komplette Feld aller Schiffe <code>ships</code>, einen Zeiger auf den zum System gehörenden Sektor
-/// <code>sector</code>, einen Zeiger auf die Forschungsinformationen des Imperiums, welchem das System gehört
-/// <code>researchInfo</code>, die Koordinate des Systems <code>ko</code>, die Eigenschaft <code>kind</code> der
-/// Rasse, welche in dem System lebt und das Feld mit den Monopolbesitzern <code>monopolOwner</code>.
-void CAttackSystem::Init(CSystem* system, ShipArray* ships, CSector* sector, CResearchInfo* researchInfo, CPoint ko, BYTE kind, const USHORT* monopolOwner)
+/// <code>sector</code>, einen Zeiger auf die Forschungsinformationen des Imperiums welchem das System gehört
+/// <code>researchInfo</code>, einen Zeiger auf die Gebäudeinformationen <code>buildingInfos</code>, die Koordinate
+/// des Systems <code>ko</code>, die Eigenschaft <code>kind</code> der Rasse, welche in dem System lebt und das Feld
+/// mit den Monopolbesitzern <code>monopolOwner</code>.
+void CAttackSystem::Init(CSystem* system, ShipArray* ships, CSector* sector, CResearchInfo* researchInfo, BuildingInfoArray* buildingInfos, CPoint ko, BYTE kind, const USHORT* monopolOwner)
 {
 	m_pSystem = system;
 	m_pSector = sector;
 	m_pResearchInfo = researchInfo;
+	m_pBuildingInfos = buildingInfos;
 	m_KO = ko;
 	m_byKind = kind;
 	m_iMonopolOwner = monopolOwner;
@@ -284,9 +280,9 @@ void CAttackSystem::CalculateBombAttack()
 		// Wenn der Torpedoangriff Gebäude zerstört hat, dann dies bei dem System beachten. Deshalb werden die Werte des
 		// Systems neu berechnet. Speziel muss man hier die Gebäude beachten, die durch einen Energiemangel hätten ausfallen
 		// können. Diese auch offline schalten und dann die Sache nochmal berechnen.
-		m_pSystem->CalculateVariables(m_pResearchInfo, m_pSector->GetPlanets(), m_iMonopolOwner);
-		m_pSystem->CheckEnergyBuildings();
-		m_pSystem->CalculateVariables(m_pResearchInfo, m_pSector->GetPlanets(), m_iMonopolOwner);
+		m_pSystem->CalculateVariables(m_pBuildingInfos, m_pResearchInfo, m_pSector->GetPlanets(), m_iMonopolOwner);
+		m_pSystem->CheckEnergyBuildings(m_pBuildingInfos);
+		m_pSystem->CalculateVariables(m_pBuildingInfos, m_pResearchInfo, m_pSector->GetPlanets(), m_iMonopolOwner);
 		
 		if (m_iDestroyedBuildings != 0)
 		{
@@ -400,9 +396,9 @@ void CAttackSystem::CalculateTroopAttack()
 	if (fighted)
 	{
 		m_pSystem->SetHabitants(m_pSector->GetCurrentHabitants());
-		m_pSystem->CalculateVariables(m_pResearchInfo, m_pSector->GetPlanets(), m_iMonopolOwner);
-		m_pSystem->CheckEnergyBuildings();
-		m_pSystem->CalculateVariables(m_pResearchInfo, m_pSector->GetPlanets(), m_iMonopolOwner);
+		m_pSystem->CalculateVariables(m_pBuildingInfos, m_pResearchInfo, m_pSector->GetPlanets(), m_iMonopolOwner);
+		m_pSystem->CheckEnergyBuildings(m_pBuildingInfos);
+		m_pSystem->CalculateVariables(m_pBuildingInfos, m_pResearchInfo, m_pSector->GetPlanets(), m_iMonopolOwner);
 	}
 	
 	// Wenn Truppen verschiedener Imperien angegriffen haben, so müssen diese noch gegeneinander antreten. Es kann immer

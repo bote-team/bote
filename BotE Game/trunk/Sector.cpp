@@ -6,6 +6,7 @@
 #include "stdafx.h"
 #include "Sector.h"
 #include "FontLoader.h"
+#include "Botf2.h"
 
 
 #ifdef _DEBUG
@@ -1045,13 +1046,155 @@ void CSector::DrawSectorsName(CDC *pDC, BYTE ownerOfSystem, int playersRace, BOO
 		pDC->SelectObject(oldfont);		
 	}
 	// Schiffssymbole im Sektor zeichnen
-	DrawShipSymbolInSector(pDC, playersRace);
+	//DrawShipSymbolInSector(pDC, playersRace);
+	
+	/*
+	if (GetSunSystem() && this->GetKnown(playersRace) == TRUE)
+	{
+		CString fontName = "";
+		Gdiplus::REAL fontSize = 0.0;
+		StringFormat fontFormat;
+		SolidBrush fontBrush(Color::White);
+
+		// Die Rassenspezifischen Styles laden und zeichnen
+		Color color;
+		CFontLoader::CreateGDIFont(playersRace, 0, fontName, fontSize);
+		if (ownerOfSystem == HUMAN && knowOwner == TRUE)
+			color.SetFromCOLORREF(RGB(0,200,255));			
+		else if (ownerOfSystem == FERENGI && knowOwner == TRUE)
+			color.SetFromCOLORREF(RGB(220,220,0));
+		else if (ownerOfSystem == KLINGON && knowOwner == TRUE)
+			color.SetFromCOLORREF(RGB(225,20,25));
+		else if (ownerOfSystem == ROMULAN && knowOwner == TRUE)
+			color.SetFromCOLORREF(RGB(50,170,0));
+		else if (ownerOfSystem == CARDASSIAN && knowOwner == TRUE)
+			color.SetFromCOLORREF(RGB(180,180,180));
+		else if (ownerOfSystem == DOMINION && knowOwner == TRUE)
+			color.SetFromCOLORREF(RGB(200,225,255));
+
+		fontFormat.SetAlignment(StringAlignmentCenter);
+		fontFormat.SetLineAlignment(StringAlignmentFar);
+		fontFormat.SetFormatFlags(StringFormatFlagsNoWrap);
+		fontBrush.SetColor(color);
+
+		g->DrawString(m_strSectorName.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF((REAL)m_KO.x*STARMAP_SECTOR_WIDTH, (REAL)m_KO.y*STARMAP_SECTOR_HEIGHT, (REAL)STARMAP_SECTOR_WIDTH,(REAL)STARMAP_SECTOR_HEIGHT), &fontFormat, &fontBrush);
+	}
+	*/
 }
 
 /// Diese Funktion zeichnet die entsprechenden Schiffssymbole in den Sektor
-void CSector::DrawShipSymbolInSector(CDC* pDC, int PlayersRace) const
+void CSector::DrawShipSymbolInSector(Graphics *g, int PlayersRace) const
 {
-	// MultiRace == TRUE, wenn Schiffe verschiedener Rassen in dem System sind
+	CString filePath;
+	USHORT count = 0;
+	CPoint pt;
+	pt.x = m_KO.x * STARMAP_SECTOR_WIDTH;
+	pt.y = m_KO.y * STARMAP_SECTOR_HEIGHT;
+	if (m_bWhoIsOwnerOfShip[HUMAN] == TRUE && m_iNeededScanPower[HUMAN] < m_iScanPower[PlayersRace]
+		|| PlayersRace == HUMAN && m_bWhoIsOwnerOfShip[HUMAN] == TRUE)
+	{
+		filePath = *((CBotf2App*)AfxGetApp())->GetPath() + "Graphics\\Symbols\\Race1.png";
+		Bitmap* ship = Bitmap::FromFile(filePath.AllocSysString());
+		g->DrawImage(ship, pt.x + 45 - count * 12, pt.y, 35, 35);
+		delete ship;
+		count++;
+	}
+	if (m_bWhoIsOwnerOfShip[FERENGI] == TRUE && m_iNeededScanPower[FERENGI] < m_iScanPower[PlayersRace]
+		|| PlayersRace == FERENGI && m_bWhoIsOwnerOfShip[FERENGI] == TRUE)
+	{
+		filePath = *((CBotf2App*)AfxGetApp())->GetPath() + "Graphics\\Symbols\\Race2.png";
+		Bitmap* ship = Bitmap::FromFile(filePath.AllocSysString());
+		g->DrawImage(ship, pt.x + 45 - count * 12, pt.y, 35, 35);
+		delete ship;
+		count++;
+	}
+	if (m_bWhoIsOwnerOfShip[KLINGON] == TRUE && m_iNeededScanPower[KLINGON] < m_iScanPower[PlayersRace]
+		|| PlayersRace == KLINGON && m_bWhoIsOwnerOfShip[KLINGON] == TRUE)
+	{
+		filePath = *((CBotf2App*)AfxGetApp())->GetPath() + "Graphics\\Symbols\\Race3.png";
+		Bitmap* ship = Bitmap::FromFile(filePath.AllocSysString());
+		g->DrawImage(ship, pt.x + 45 - count * 12, pt.y, 35, 35);
+		delete ship;
+		count++;
+	}
+	if (m_bWhoIsOwnerOfShip[ROMULAN] == TRUE && m_iNeededScanPower[ROMULAN] < m_iScanPower[PlayersRace]
+		|| PlayersRace == ROMULAN && m_bWhoIsOwnerOfShip[ROMULAN] == TRUE)
+	{
+		filePath = *((CBotf2App*)AfxGetApp())->GetPath() + "Graphics\\Symbols\\Race4.png";
+		Bitmap* ship = Bitmap::FromFile(filePath.AllocSysString());
+		g->DrawImage(ship, pt.x + 45 - count * 12, pt.y, 35, 35);
+		delete ship;
+		count++;
+	}
+	if (m_bWhoIsOwnerOfShip[CARDASSIAN] == TRUE && m_iNeededScanPower[CARDASSIAN] < m_iScanPower[PlayersRace]
+		|| PlayersRace == CARDASSIAN && m_bWhoIsOwnerOfShip[CARDASSIAN] == TRUE)
+	{
+		filePath = *((CBotf2App*)AfxGetApp())->GetPath() + "Graphics\\Symbols\\Race5.png";
+		Bitmap* ship = Bitmap::FromFile(filePath.AllocSysString());
+		g->DrawImage(ship, pt.x + 45 - count * 12, pt.y, 35, 35);
+		delete ship;
+		count++;
+	}
+	if (m_bWhoIsOwnerOfShip[DOMINION] == TRUE && m_iNeededScanPower[DOMINION] < m_iScanPower[PlayersRace]
+		|| PlayersRace == DOMINION && m_bWhoIsOwnerOfShip[DOMINION] == TRUE)
+	{
+		filePath = *((CBotf2App*)AfxGetApp())->GetPath() + "Graphics\\Symbols\\Race6.png";
+		Bitmap* ship = Bitmap::FromFile(filePath.AllocSysString());
+		g->DrawImage(ship, pt.x + 45 - count * 12, pt.y, 35, 35);
+		delete ship;
+		count++;
+	}
+		
+	// Jetzt werden die Stationen wenn möglich gezeichnet
+	if ((m_bIsStationBuild[HUMAN] == TRUE || m_bOutpost[HUMAN] == TRUE || m_bStarbase[HUMAN] == TRUE) &&
+		(PlayersRace == HUMAN || m_iScanPower[PlayersRace] > 0))
+	{
+		filePath = *((CBotf2App*)AfxGetApp())->GetPath() + "Graphics\\Symbols\\Race1.png";
+		Bitmap* ship = Bitmap::FromFile(filePath.AllocSysString());
+		g->DrawImage(ship, pt.x, pt.y, 35, 35);
+		delete ship;
+	}
+	if ((m_bIsStationBuild[FERENGI] == TRUE || m_bOutpost[FERENGI] == TRUE || m_bStarbase[FERENGI] == TRUE) &&
+		(PlayersRace == FERENGI || m_iScanPower[PlayersRace] > 0))
+	{
+		filePath = *((CBotf2App*)AfxGetApp())->GetPath() + "Graphics\\Symbols\\Race1.png";
+		Bitmap* ship = Bitmap::FromFile(filePath.AllocSysString());
+		g->DrawImage(ship, pt.x, pt.y, 35, 35);
+		delete ship;
+	}
+	if ((m_bIsStationBuild[KLINGON] == TRUE || m_bOutpost[KLINGON] == TRUE || m_bStarbase[KLINGON] == TRUE) &&
+		(PlayersRace == KLINGON || m_iScanPower[PlayersRace] > 0))
+	{
+		filePath = *((CBotf2App*)AfxGetApp())->GetPath() + "Graphics\\Symbols\\Race1.png";
+		Bitmap* ship = Bitmap::FromFile(filePath.AllocSysString());
+		g->DrawImage(ship, pt.x, pt.y, 35, 35);
+		delete ship;
+	}
+	if ((m_bIsStationBuild[ROMULAN] == TRUE || m_bOutpost[ROMULAN] == TRUE || m_bStarbase[ROMULAN] == TRUE) &&
+		(PlayersRace == ROMULAN || m_iScanPower[PlayersRace] > 0))
+	{
+		filePath = *((CBotf2App*)AfxGetApp())->GetPath() + "Graphics\\Symbols\\Race1.png";
+		Bitmap* ship = Bitmap::FromFile(filePath.AllocSysString());
+		g->DrawImage(ship, pt.x, pt.y, 35, 35);
+		delete ship;
+	}
+	if ((m_bIsStationBuild[CARDASSIAN] == TRUE || m_bOutpost[CARDASSIAN] == TRUE || m_bStarbase[CARDASSIAN] == TRUE) &&
+		(PlayersRace == CARDASSIAN || m_iScanPower[PlayersRace] > 0))
+	{
+		filePath = *((CBotf2App*)AfxGetApp())->GetPath() + "Graphics\\Symbols\\Race1.png";
+		Bitmap* ship = Bitmap::FromFile(filePath.AllocSysString());
+		g->DrawImage(ship, pt.x, pt.y, 35, 35);
+		delete ship;
+	}
+	if ((m_bIsStationBuild[DOMINION] == TRUE || m_bOutpost[DOMINION] == TRUE || m_bStarbase[DOMINION] == TRUE) &&
+		(PlayersRace == DOMINION || m_iScanPower[PlayersRace] > 0))
+	{
+		filePath = *((CBotf2App*)AfxGetApp())->GetPath() + "Graphics\\Symbols\\Race1.png";
+		Bitmap* ship = Bitmap::FromFile(filePath.AllocSysString());
+		g->DrawImage(ship, pt.x, pt.y, 35, 35);
+		delete ship;
+	}
+/*	// MultiRace == TRUE, wenn Schiffe verschiedener Rassen in dem System sind
 	pDC->SetBkMode(TRANSPARENT);
 	CString s = "";
 	CRect ShipSymbol;
@@ -1234,4 +1377,5 @@ void CSector::DrawShipSymbolInSector(CDC* pDC, int PlayersRace) const
 		pDC->DrawText(s, ShipSymbol, DT_LEFT | DT_BOTTOM | DT_SINGLELINE);
 		pDC->SelectObject(oldfont);
 	}
+	*/
 }

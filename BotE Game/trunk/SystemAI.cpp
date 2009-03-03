@@ -127,7 +127,7 @@ void CSystemAI::CalcPriorities()
 		&& m_pDoc->m_System[ko.x][ko.y].GetProduction()->GetBarrack() == FALSE))
 	{
 		m_pDoc->m_System[ko.x][ko.y].GetAssemblyList()->ClearAssemblyList(ko, m_pDoc->m_System);
-		m_pDoc->m_System[ko.x][ko.y].CalculateVariables(m_pDoc->GetEmpire(m_pDoc->m_System[ko.x][ko.y].GetOwnerOfSystem())->GetResearch()->GetResearchInfo(), m_pDoc->m_Sector[ko.x][ko.y].GetPlanets(), CTrade::GetMonopolOwner());		
+		m_pDoc->m_System[ko.x][ko.y].CalculateVariables(&m_pDoc->BuildingInfo, m_pDoc->GetEmpire(m_pDoc->m_System[ko.x][ko.y].GetOwnerOfSystem())->GetResearch()->GetResearchInfo(), m_pDoc->m_Sector[ko.x][ko.y].GetPlanets(), CTrade::GetMonopolOwner());		
 	}
 
 	// Checken ob schon ein Eintrag in der Bauliste ist, wenn ja dann brauchen wir hier überhaupt nichts zu machen
@@ -168,7 +168,7 @@ void CSystemAI::CalcPriorities()
 		{
 		case FOOD_WORKER:
 			{
-				if (m_pDoc->m_System[ko.x][ko.y].GetWorker(10) < m_pDoc->m_System[ko.x][ko.y].GetNumberOfWorkbuildings(i, 0))
+				if (m_pDoc->m_System[ko.x][ko.y].GetWorker(10) < m_pDoc->m_System[ko.x][ko.y].GetNumberOfWorkbuildings(i, 0, NULL))
 				{
 					m_iPriorities[i] = 0;
 					break;
@@ -203,7 +203,7 @@ void CSystemAI::CalcPriorities()
 		case INDUSTRY_WORKER:
 			{
 				if (m_pDoc->m_System[ko.x][ko.y].GetWorker(10) < 
-					(m_pDoc->m_System[ko.x][ko.y].GetNumberOfWorkbuildings(i, 0) + m_pDoc->m_System[ko.x][ko.y].GetNumberOfWorkbuildings(FOOD_WORKER, 0)))
+					(m_pDoc->m_System[ko.x][ko.y].GetNumberOfWorkbuildings(i, 0, NULL) + m_pDoc->m_System[ko.x][ko.y].GetNumberOfWorkbuildings(FOOD_WORKER, 0, NULL)))
 				{
 					m_iPriorities[i] = 0;
 					break;
@@ -220,10 +220,10 @@ void CSystemAI::CalcPriorities()
 				int IPProd = m_pDoc->m_System[ko.x][ko.y].GetProduction()->GetIndustryProd();
 				// Arbeiter temporär auf maximum stellen
 				USHORT workers   = m_pDoc->m_System[ko.x][ko.y].GetWorker(i);
-				USHORT number	 = m_pDoc->m_System[ko.x][ko.y].GetNumberOfWorkbuildings(i, 0);
+				USHORT number	 = m_pDoc->m_System[ko.x][ko.y].GetNumberOfWorkbuildings(i, 0, NULL);
 				if (workers == NULL)
 				{
-					short id = m_pDoc->m_System[ko.x][ko.y].GetNumberOfWorkbuildings(i, 1);
+					short id = m_pDoc->m_System[ko.x][ko.y].GetNumberOfWorkbuildings(i, 1, &m_pDoc->BuildingInfo);
 					if (id > NULL)
 						IPProd = m_pDoc->GetBuildingInfo(id).GetIPProd() * number;
 				}
@@ -259,7 +259,7 @@ void CSystemAI::CalcPriorities()
 		case ENERGY_WORKER:
 			{
 				if (m_pDoc->m_System[ko.x][ko.y].GetWorker(10) < 
-					(m_pDoc->m_System[ko.x][ko.y].GetNumberOfWorkbuildings(i, 0) + m_pDoc->m_System[ko.x][ko.y].GetNumberOfWorkbuildings(FOOD_WORKER, 0)))
+					(m_pDoc->m_System[ko.x][ko.y].GetNumberOfWorkbuildings(i, 0, NULL) + m_pDoc->m_System[ko.x][ko.y].GetNumberOfWorkbuildings(FOOD_WORKER, 0, NULL)))
 				{
 					m_iPriorities[i] = 0;
 					break;
@@ -274,10 +274,10 @@ void CSystemAI::CalcPriorities()
 				int EnergyProd = m_pDoc->m_System[ko.x][ko.y].GetProduction()->GetMaxEnergyProd();
 				// Arbeiter temporär auf maximum stellen
 				USHORT workers   = m_pDoc->m_System[ko.x][ko.y].GetWorker(i);
-				USHORT number	 = m_pDoc->m_System[ko.x][ko.y].GetNumberOfWorkbuildings(i, 0);
+				USHORT number	 = m_pDoc->m_System[ko.x][ko.y].GetNumberOfWorkbuildings(i, 0, NULL);
 				if (workers == NULL)
 				{
-					short id = m_pDoc->m_System[ko.x][ko.y].GetNumberOfWorkbuildings(i, 1);
+					short id = m_pDoc->m_System[ko.x][ko.y].GetNumberOfWorkbuildings(i, 1, &m_pDoc->BuildingInfo);
 					if (id > NULL)
 						EnergyProd = m_pDoc->GetBuildingInfo(id).GetEnergyProd() * number;
 				}
@@ -285,7 +285,10 @@ void CSystemAI::CalcPriorities()
 					EnergyProd = EnergyProd * number / workers;
 				int neededEnergy = 0;
 				for (int j = 0; j < m_pDoc->m_System[ko.x][ko.y].GetAllBuildings()->GetSize(); j++)
-					neededEnergy += m_pDoc->m_System[ko.x][ko.y].GetAllBuildings()->GetAt(j).GetNeededEnergy();
+				{
+					const CBuildingInfo *buildingInfo = &m_pDoc->BuildingInfo.GetAt(m_pDoc->m_System[ko.x][ko.y].GetAllBuildings()->GetAt(j).GetRunningNumber() - 1);
+					neededEnergy += buildingInfo->GetNeededEnergy();
+				}
 				if (EnergyProd >= neededEnergy)
 					m_iPriorities[i] = 0;
 				else if (EnergyProd > 0)
@@ -299,7 +302,7 @@ void CSystemAI::CalcPriorities()
 		case SECURITY_WORKER:
 			{
 				if (m_pDoc->m_System[ko.x][ko.y].GetWorker(10) < 
-					(m_pDoc->m_System[ko.x][ko.y].GetNumberOfWorkbuildings(i, 0) + m_pDoc->m_System[ko.x][ko.y].GetNumberOfWorkbuildings(FOOD_WORKER, 0)))
+					(m_pDoc->m_System[ko.x][ko.y].GetNumberOfWorkbuildings(i, 0, NULL) + m_pDoc->m_System[ko.x][ko.y].GetNumberOfWorkbuildings(FOOD_WORKER, 0, NULL)))
 				{
 					m_iPriorities[i] = 0;
 					break;
@@ -319,7 +322,7 @@ void CSystemAI::CalcPriorities()
 		case RESEARCH_WORKER:
 			{
 				if (m_pDoc->m_System[ko.x][ko.y].GetWorker(10) < 
-					(m_pDoc->m_System[ko.x][ko.y].GetNumberOfWorkbuildings(i, 0) + m_pDoc->m_System[ko.x][ko.y].GetNumberOfWorkbuildings(FOOD_WORKER, 0)))
+					(m_pDoc->m_System[ko.x][ko.y].GetNumberOfWorkbuildings(i, 0, NULL) + m_pDoc->m_System[ko.x][ko.y].GetNumberOfWorkbuildings(FOOD_WORKER, 0, NULL)))
 				{
 					m_iPriorities[i] = 0;
 					break;
@@ -345,7 +348,7 @@ void CSystemAI::CalcPriorities()
 					continue;
 				}
 				if (m_pDoc->m_System[ko.x][ko.y].GetWorker(10) < 
-					(m_pDoc->m_System[ko.x][ko.y].GetNumberOfWorkbuildings(i, 0) + m_pDoc->m_System[ko.x][ko.y].GetNumberOfWorkbuildings(FOOD_WORKER, 0)))
+					(m_pDoc->m_System[ko.x][ko.y].GetNumberOfWorkbuildings(i, 0, NULL) + m_pDoc->m_System[ko.x][ko.y].GetNumberOfWorkbuildings(FOOD_WORKER, 0, NULL)))
 				{
 					m_iPriorities[i] = 0;
 					break;
@@ -359,10 +362,10 @@ void CSystemAI::CalcPriorities()
 				int resProd = m_pDoc->m_System[ko.x][ko.y].GetProduction()->GetResourceProd(res);
 				// Arbeiter temporär auf maximum stellen
 				USHORT workers   = m_pDoc->m_System[ko.x][ko.y].GetWorker(i);
-				USHORT number	 = m_pDoc->m_System[ko.x][ko.y].GetNumberOfWorkbuildings(i, 0);
+				USHORT number	 = m_pDoc->m_System[ko.x][ko.y].GetNumberOfWorkbuildings(i, 0, NULL);
 				if (workers == NULL)
 				{
-					short id = m_pDoc->m_System[ko.x][ko.y].GetNumberOfWorkbuildings(i, 1);
+					short id = m_pDoc->m_System[ko.x][ko.y].GetNumberOfWorkbuildings(i, 1, &m_pDoc->BuildingInfo);
 					if (id > NULL)
 						resProd = m_pDoc->GetBuildingInfo(id).GetResourceProd(res) * number;
 				}
@@ -804,7 +807,7 @@ void CSystemAI::AssignWorkers()
 	{
 		if (m_pDoc->m_System[ko.x][ko.y].GetWorker(11) > 0)
 		{
-			if (m_pDoc->m_System[ko.x][ko.y].GetWorker(FOOD_WORKER) >= m_pDoc->m_System[ko.x][ko.y].GetNumberOfWorkbuildings(FOOD_WORKER, 0))
+			if (m_pDoc->m_System[ko.x][ko.y].GetWorker(FOOD_WORKER) >= m_pDoc->m_System[ko.x][ko.y].GetNumberOfWorkbuildings(FOOD_WORKER, 0, NULL))
 				break;
 			m_pDoc->m_System[ko.x][ko.y].GetWorker()->InkrementWorker(FOOD_WORKER);
 			CalcProd();
@@ -822,14 +825,15 @@ void CSystemAI::AssignWorkers()
 	int usedEnergy = 0;
 	for (int i = 0; i < m_pDoc->m_System[ko.x][ko.y].GetAllBuildings()->GetSize(); i++)
 	{
-		if (m_pDoc->m_System[ko.x][ko.y].GetAllBuildings()->GetAt(i).GetNeededEnergy() > 0)
+		const CBuildingInfo *buildingInfo = &m_pDoc->BuildingInfo.GetAt(m_pDoc->m_System[ko.x][ko.y].GetAllBuildings()->GetAt(i).GetRunningNumber() - 1);
+		if (buildingInfo->GetNeededEnergy() > 0)
 		{
-			neededEnergy += m_pDoc->m_System[ko.x][ko.y].GetAllBuildings()->GetAt(i).GetNeededEnergy();
+			neededEnergy += buildingInfo->GetNeededEnergy();
 			if (!m_pDoc->m_System[ko.x][ko.y].GetAllBuildings()->GetAt(i).GetIsBuildingOnline())
-				if ((m_pDoc->m_System[ko.x][ko.y].GetProduction()->GetEnergyProd() - usedEnergy) >= m_pDoc->m_System[ko.x][ko.y].GetAllBuildings()->GetAt(i).GetNeededEnergy())
+				if ((m_pDoc->m_System[ko.x][ko.y].GetProduction()->GetEnergyProd() - usedEnergy) >= buildingInfo->GetNeededEnergy())
 				{
 					m_pDoc->m_System[ko.x][ko.y].SetIsBuildingOnline(i, TRUE);
-					usedEnergy += m_pDoc->m_System[ko.x][ko.y].GetAllBuildings()->GetAt(i).GetNeededEnergy();
+					usedEnergy += buildingInfo->GetNeededEnergy();
 				}
 		}
 	}
@@ -844,7 +848,7 @@ void CSystemAI::AssignWorkers()
 	{
 		if (m_pDoc->m_System[ko.x][ko.y].GetWorker(11) > 0)
 		{
-			if (m_pDoc->m_System[ko.x][ko.y].GetWorker(ENERGY_WORKER) >= m_pDoc->m_System[ko.x][ko.y].GetNumberOfWorkbuildings(ENERGY_WORKER, 0))
+			if (m_pDoc->m_System[ko.x][ko.y].GetWorker(ENERGY_WORKER) >= m_pDoc->m_System[ko.x][ko.y].GetNumberOfWorkbuildings(ENERGY_WORKER, 0, NULL))
 				break;
 			m_pDoc->m_System[ko.x][ko.y].GetWorker()->InkrementWorker(ENERGY_WORKER);
 			CalcProd();			
@@ -881,10 +885,10 @@ void CSystemAI::AssignWorkers()
 				USHORT freeWorkers = m_pDoc->m_System[ko.x][ko.y].GetWorker(11);
 				int workers = (freeWorkers * percentage[i]) / 100;
 				for (int j = 0; j < workers; j++)
-					if (m_pDoc->m_System[ko.x][ko.y].GetNumberOfWorkbuildings(i,0) > m_pDoc->m_System[ko.x][ko.y].GetWorker(i))
+					if (m_pDoc->m_System[ko.x][ko.y].GetNumberOfWorkbuildings(i,0,NULL) > m_pDoc->m_System[ko.x][ko.y].GetWorker(i))
 					{
 						m_pDoc->m_System[ko.x][ko.y].GetWorker()->InkrementWorker(i);
-						if (m_pDoc->m_System[ko.x][ko.y].GetWorker(i) == m_pDoc->m_System[ko.x][ko.y].GetNumberOfWorkbuildings(i, 0))
+						if (m_pDoc->m_System[ko.x][ko.y].GetWorker(i) == m_pDoc->m_System[ko.x][ko.y].GetNumberOfWorkbuildings(i, 0, NULL))
 							break;
 					}
 			}
@@ -894,7 +898,7 @@ void CSystemAI::AssignWorkers()
 	if (m_pDoc->m_System[ko.x][ko.y].GetAssemblyList()->GetAssemblyListEntry(0) != 0)
 	{
 		if (m_pDoc->m_System[ko.x][ko.y].GetWorker(11) > 0)
-			while (m_pDoc->m_System[ko.x][ko.y].GetNumberOfWorkbuildings(INDUSTRY_WORKER,0) > m_pDoc->m_System[ko.x][ko.y].GetWorker(INDUSTRY_WORKER))
+			while (m_pDoc->m_System[ko.x][ko.y].GetNumberOfWorkbuildings(INDUSTRY_WORKER,0,NULL) > m_pDoc->m_System[ko.x][ko.y].GetWorker(INDUSTRY_WORKER))
 			{
 				m_pDoc->m_System[ko.x][ko.y].GetWorker()->InkrementWorker(INDUSTRY_WORKER);
 				m_pDoc->m_System[ko.x][ko.y].GetWorker()->CalculateFreeWorkers();
@@ -915,7 +919,7 @@ void CSystemAI::AssignWorkers()
 	int workers = 0;
 	for (int i = SECURITY_WORKER; i <= IRIDIUM_WORKER; i++)
 	{
-		numberOfWorkBuildings += m_pDoc->m_System[ko.x][ko.y].GetNumberOfWorkbuildings(i,0);
+		numberOfWorkBuildings += m_pDoc->m_System[ko.x][ko.y].GetNumberOfWorkbuildings(i,0,NULL);
 		workers += m_pDoc->m_System[ko.x][ko.y].GetWorker(i);
 	}
 	while (m_pDoc->m_System[ko.x][ko.y].GetWorker(11) > 0 && workers < numberOfWorkBuildings)
@@ -923,7 +927,7 @@ void CSystemAI::AssignWorkers()
 		// Zufälligen Arbeiter zwischen Geheimdienst- und Iridiumarbeiter wählen
 		BYTE i = rand()%7+3;
 		// Alle Arbeiter werden mit einer zufälligen Anzahl besetzt
-		if (m_pDoc->m_System[ko.x][ko.y].GetNumberOfWorkbuildings(i,0) > m_pDoc->m_System[ko.x][ko.y].GetWorker(i))
+		if (m_pDoc->m_System[ko.x][ko.y].GetNumberOfWorkbuildings(i,0,NULL) > m_pDoc->m_System[ko.x][ko.y].GetWorker(i))
 		{
 			workers++;
 			m_pDoc->m_System[ko.x][ko.y].GetWorker()->InkrementWorker(i);
@@ -935,7 +939,7 @@ void CSystemAI::AssignWorkers()
 	// Denn dadruch bekommen wir bei Handelswaren mehr Latinum.
 	while (m_pDoc->m_System[ko.x][ko.y].GetWorker(11) > 0)
 	{
-		if (m_pDoc->m_System[ko.x][ko.y].GetNumberOfWorkbuildings(INDUSTRY_WORKER,0) > m_pDoc->m_System[ko.x][ko.y].GetWorker(INDUSTRY_WORKER))
+		if (m_pDoc->m_System[ko.x][ko.y].GetNumberOfWorkbuildings(INDUSTRY_WORKER,0,NULL) > m_pDoc->m_System[ko.x][ko.y].GetWorker(INDUSTRY_WORKER))
 		{
 			m_pDoc->m_System[ko.x][ko.y].GetWorker()->InkrementWorker(INDUSTRY_WORKER);
 			m_pDoc->m_System[ko.x][ko.y].GetWorker()->CalculateFreeWorkers();
@@ -981,8 +985,8 @@ void CSystemAI::ScrapBuildings()
 		}
 		if (currentHab > (maxHab * 0.8))
 		{
-			int n = m_pDoc->m_System[ko.x][ko.y].GetNumberOfWorkbuildings(FOOD_WORKER, 0) - m_pDoc->m_System[ko.x][ko.y].GetWorker()->GetWorker(FOOD_WORKER);
-			int id = m_pDoc->m_System[ko.x][ko.y].GetNumberOfWorkbuildings(FOOD_WORKER, 1);
+			int n = m_pDoc->m_System[ko.x][ko.y].GetNumberOfWorkbuildings(FOOD_WORKER, 0, NULL) - m_pDoc->m_System[ko.x][ko.y].GetWorker()->GetWorker(FOOD_WORKER);
+			int id = m_pDoc->m_System[ko.x][ko.y].GetNumberOfWorkbuildings(FOOD_WORKER, 1, &m_pDoc->BuildingInfo);
 			while (n > 1)
 			{
 				m_pDoc->m_System[ko.x][ko.y].SetBuildingDestroy(id, TRUE);
@@ -993,8 +997,8 @@ void CSystemAI::ScrapBuildings()
 
 	if (m_pDoc->m_System[ko.x][ko.y].GetProduction()->GetEnergyProd() > 0)
 	{
-		int n = m_pDoc->m_System[ko.x][ko.y].GetNumberOfWorkbuildings(ENERGY_WORKER, 0) - m_pDoc->m_System[ko.x][ko.y].GetWorker()->GetWorker(ENERGY_WORKER);
-		int id = m_pDoc->m_System[ko.x][ko.y].GetNumberOfWorkbuildings(ENERGY_WORKER, 1);
+		int n = m_pDoc->m_System[ko.x][ko.y].GetNumberOfWorkbuildings(ENERGY_WORKER, 0, NULL) - m_pDoc->m_System[ko.x][ko.y].GetWorker()->GetWorker(ENERGY_WORKER);
+		int id = m_pDoc->m_System[ko.x][ko.y].GetNumberOfWorkbuildings(ENERGY_WORKER, 1, &m_pDoc->BuildingInfo);
 		while (n > 3)
 		{
 			m_pDoc->m_System[ko.x][ko.y].SetBuildingDestroy(id, TRUE);
@@ -1090,32 +1094,33 @@ void CSystemAI::CalcProd()
 	// Die einzelnen Produktionen berechnen
 	for (int i = 0; i < NumberOfBuildings; i++)
 	{
+		const CBuildingInfo *buildingInfo = &m_pDoc->BuildingInfo.GetAt(m_pDoc->m_System[ko.x][ko.y].GetAllBuildings()->GetAt(i).GetRunningNumber() - 1);
+
 		// Gebäude offline setzen
-		if (m_pDoc->m_System[ko.x][ko.y].GetAllBuildings()->GetAt(i).GetWorker() == TRUE)
+		if (buildingInfo->GetWorker() == TRUE)
+		{
 			m_pDoc->m_System[ko.x][ko.y].GetAllBuildings()->ElementAt(i).SetIsBuildingOnline(FALSE);
-		// Jetzt wieder wenn möglich online setzen
-		if (m_pDoc->m_System[ko.x][ko.y].GetAllBuildings()->GetAt(i).GetFoodProd() > 0
-			&& m_pDoc->m_System[ko.x][ko.y].GetAllBuildings()->GetAt(i).GetWorker() == TRUE && foodWorker > 0)
-		{
-			m_pDoc->m_System[ko.x][ko.y].GetAllBuildings()->ElementAt(i).SetIsBuildingOnline(TRUE);
-			foodWorker--;
-		}
-		else if (m_pDoc->m_System[ko.x][ko.y].GetAllBuildings()->GetAt(i).GetIPProd() > 0
-			&& m_pDoc->m_System[ko.x][ko.y].GetAllBuildings()->GetAt(i).GetWorker() == TRUE && industryWorker > 0)
-		{
-			m_pDoc->m_System[ko.x][ko.y].GetAllBuildings()->ElementAt(i).SetIsBuildingOnline(TRUE);
-			industryWorker--;
-		}
-		else if (m_pDoc->m_System[ko.x][ko.y].GetAllBuildings()->GetAt(i).GetEnergyProd() > 0
-			&& m_pDoc->m_System[ko.x][ko.y].GetAllBuildings()->GetAt(i).GetWorker() == TRUE && energyWorker > 0)
-		{
-			m_pDoc->m_System[ko.x][ko.y].GetAllBuildings()->ElementAt(i).SetIsBuildingOnline(TRUE);
-			energyWorker--;
+			// Jetzt wieder wenn möglich online setzen
+			if (buildingInfo->GetFoodProd() > 0 && foodWorker > 0)
+			{
+				m_pDoc->m_System[ko.x][ko.y].GetAllBuildings()->ElementAt(i).SetIsBuildingOnline(TRUE);
+				foodWorker--;
+			}
+			else if (buildingInfo->GetIPProd() > 0 && industryWorker > 0)
+			{
+				m_pDoc->m_System[ko.x][ko.y].GetAllBuildings()->ElementAt(i).SetIsBuildingOnline(TRUE);
+				industryWorker--;
+			}
+			else if (buildingInfo->GetEnergyProd() > 0 && energyWorker > 0)
+			{
+				m_pDoc->m_System[ko.x][ko.y].GetAllBuildings()->ElementAt(i).SetIsBuildingOnline(TRUE);
+				energyWorker--;
+			}
 		}
 		// Die einzelnen Produktionen berechnen (ohne Boni)
 		// vorher noch schauen, ob diese Gebäude auch online sind
 		if (m_pDoc->m_System[ko.x][ko.y].GetAllBuildings()->GetAt(i).GetIsBuildingOnline() == TRUE)
-			m_pDoc->m_System[ko.x][ko.y].GetProduction()->CalculateProduction(&m_pDoc->m_System[ko.x][ko.y].GetAllBuildings()->GetAt(i));
+			m_pDoc->m_System[ko.x][ko.y].GetProduction()->CalculateProduction(buildingInfo);
 	}
 		
 	// Die Boni auf die einzelnen Produktionen berechnen
@@ -1126,18 +1131,18 @@ void CSystemAI::CalcProd()
 	short neededEnergy = 0;
 	for (int i = 0; i < NumberOfBuildings; i++)
 	{
+		const CBuildingInfo *buildingInfo = &m_pDoc->BuildingInfo.GetAt(m_pDoc->m_System[ko.x][ko.y].GetAllBuildings()->GetAt(i).GetRunningNumber() - 1);
+
 		// Hier die nötige Energie von der produzierten abziehen, geht aber nur hier, wenn wir keine Boni zur Energie reinmachen
-		if (m_pDoc->m_System[ko.x][ko.y].GetAllBuildings()->GetAt(i).GetIsBuildingOnline() == TRUE
-			&& m_pDoc->m_System[ko.x][ko.y].GetAllBuildings()->GetAt(i).GetNeededEnergy() > 0)
-			//m_Production.m_iEnergyProd -= m_Buildings.GetAt(i).GetNeededEnergy();
-			neededEnergy += m_pDoc->m_System[ko.x][ko.y].GetAllBuildings()->GetAt(i).GetNeededEnergy();
+		if (m_pDoc->m_System[ko.x][ko.y].GetAllBuildings()->GetAt(i).GetIsBuildingOnline() == TRUE && buildingInfo->GetNeededEnergy() > 0)
+			neededEnergy += buildingInfo->GetNeededEnergy();
 
 		if (m_pDoc->m_System[ko.x][ko.y].GetAllBuildings()->GetAt(i).GetIsBuildingOnline() == TRUE)
 		{
 			// Es wird IMMER abgerundet, gemacht durch "floor"
-			tmpFoodBoni			+= m_pDoc->m_System[ko.x][ko.y].GetAllBuildings()->GetAt(i).GetFoodBoni();
-			tmpIndustryBoni		+= m_pDoc->m_System[ko.x][ko.y].GetAllBuildings()->GetAt(i).GetIndustryBoni();
-			tmpEnergyBoni		+= m_pDoc->m_System[ko.x][ko.y].GetAllBuildings()->GetAt(i).GetEnergyBoni();			
+			tmpFoodBoni			+= buildingInfo->GetFoodBoni();
+			tmpIndustryBoni		+= buildingInfo->GetIndustryBoni();
+			tmpEnergyBoni		+= buildingInfo->GetEnergyBoni();			
 		}
 	}
 	// Jetzt werden noch eventuelle Boni durch die Planetenklassen dazugerechnet

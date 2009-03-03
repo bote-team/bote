@@ -8,14 +8,32 @@
 // BuildingInfo.h: Schnittstelle für die Klasse CBuildingInfo.
 //
 //////////////////////////////////////////////////////////////////////
-
-#if !defined(AFX_BUILDINGINFO_H__FCC49576_B46F_4F79_BACB_884C904036DC__INCLUDED_)
-#define AFX_BUILDINGINFO_H__FCC49576_B46F_4F79_BACB_884C904036DC__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 #include "Building.h"
+
+enum Planettypes
+{
+	PLANETTYPE_A	= 1,
+	PLANETTYPE_B	= 2,
+	PLANETTYPE_C	= 4,
+	PLANETTYPE_E	= 8,
+	PLANETTYPE_F	= 16,
+	PLANETTYPE_G	= 32,
+	PLANETTYPE_H	= 64,
+	PLANETTYPE_I	= 128,
+	PLANETTYPE_J	= 256,
+	PLANETTYPE_K	= 512,
+	PLANETTYPE_L	= 1024,
+	PLANETTYPE_M	= 2048,
+	PLANETTYPE_N	= 4096,
+	PLANETTYPE_O	= 8192,
+	PLANETTYPE_P	= 16384,
+	PLANETTYPE_Q	= 32768,
+	PLANETTYPE_R	= 65536,
+	PLANETTYPE_S	= 131072,
+	PLANETTYPE_T	= 262144,
+	PLANETTYPE_Y	= 524288	
+};
 
 struct NumberOfID
 {
@@ -24,7 +42,7 @@ public:
 	USHORT Number;
 };
 
-class CBuildingInfo : public CBuilding  
+class CBuildingInfo : public CObject
 {
 public:
 	DECLARE_SERIAL (CBuildingInfo)							// Klasse serialisierbar machen
@@ -32,7 +50,7 @@ public:
 	CBuildingInfo(void);
 	
 	// Destruktor
-	virtual ~CBuildingInfo(void);
+	~CBuildingInfo(void);
 
 	// Kopierkonstruktor
 	CBuildingInfo(const CBuildingInfo & rhs);
@@ -45,6 +63,8 @@ public:
 
 // Zugriffsfunktionen
 	// zum Lesen der Membervariablen
+	USHORT GetRunningNumber() const {return m_iRunningNumber;}
+		
 	BYTE GetOwnerOfBuilding() const {return m_iOwnerOfBuilding;}
 
 	const CString& GetBuildingName() const {return m_strBuildingName;}
@@ -77,7 +97,33 @@ public:
 
 	BOOLEAN GetOnlyRace() const {return m_bOnlyRace;}
 
-	BOOLEAN GetPlanetTypes(USHORT i) const {return m_bPlanetTypes[i];}
+	BOOLEAN GetPlanetTypes(int type) const
+	{
+		switch(type)
+		{
+		case PLANETCLASS_A: return (m_PlanetTypes & PLANETTYPE_A) == PLANETTYPE_A;
+		case PLANETCLASS_B:	return (m_PlanetTypes & PLANETTYPE_B) == PLANETTYPE_B;
+		case PLANETCLASS_C:	return (m_PlanetTypes & PLANETTYPE_C) == PLANETTYPE_C;
+		case PLANETCLASS_E:	return (m_PlanetTypes & PLANETTYPE_E) == PLANETTYPE_E;
+		case PLANETCLASS_F:	return (m_PlanetTypes & PLANETTYPE_F) == PLANETTYPE_F;
+		case PLANETCLASS_G:	return (m_PlanetTypes & PLANETTYPE_G) == PLANETTYPE_G;
+		case PLANETCLASS_H:	return (m_PlanetTypes & PLANETTYPE_H) == PLANETTYPE_H;
+		case PLANETCLASS_I:	return (m_PlanetTypes & PLANETTYPE_I) == PLANETTYPE_I;
+		case PLANETCLASS_J:	return (m_PlanetTypes & PLANETTYPE_J) == PLANETTYPE_J;
+		case PLANETCLASS_K:	return (m_PlanetTypes & PLANETTYPE_K) == PLANETTYPE_K;
+		case PLANETCLASS_L:	return (m_PlanetTypes & PLANETTYPE_L) == PLANETTYPE_L;
+		case PLANETCLASS_M:	return (m_PlanetTypes & PLANETTYPE_M) == PLANETTYPE_M;
+		case PLANETCLASS_N:	return (m_PlanetTypes & PLANETTYPE_N) == PLANETTYPE_N;
+		case PLANETCLASS_O:	return (m_PlanetTypes & PLANETTYPE_O) == PLANETTYPE_O;
+		case PLANETCLASS_P:	return (m_PlanetTypes & PLANETTYPE_P) == PLANETTYPE_P;
+		case PLANETCLASS_Q:	return (m_PlanetTypes & PLANETTYPE_Q) == PLANETTYPE_Q;
+		case PLANETCLASS_R:	return (m_PlanetTypes & PLANETTYPE_R) == PLANETTYPE_R;
+		case PLANETCLASS_S:	return (m_PlanetTypes & PLANETTYPE_S) == PLANETTYPE_S;
+		case PLANETCLASS_T:	return (m_PlanetTypes & PLANETTYPE_T) == PLANETTYPE_T;
+		case PLANETCLASS_Y:	return (m_PlanetTypes & PLANETTYPE_Y) == PLANETTYPE_Y;
+		default: return FALSE;
+		}
+	}
 
 	BYTE GetBioTech() const {return m_iBioTech;}
 	BYTE GetEnergyTech() const {return m_iEnergyTech;}
@@ -99,7 +145,91 @@ public:
 
 	USHORT GetEquivalent(USHORT race) const {return m_iBuildingEquivalent[race];}
 
+	USHORT GetNeededEnergy() const {return m_iNeededEnergy;}
+	
+	short GetFoodProd() const {return m_iFood;}
+	USHORT GetIPProd() const {return m_iIP;}
+	USHORT GetEnergyProd() const {return m_iEnergy;}
+	USHORT GetSPProd() const {return m_iSP;}
+	USHORT GetFPProd() const {return m_iFP;}
+	USHORT GetTitanProd() const {return m_iTitan;}
+	USHORT GetDeuteriumProd() const {return m_iDeuterium;}
+	USHORT GetDuraniumProd() const {return m_iDuranium;}
+	USHORT GetCrystalProd() const {return m_iCrystal;}
+	USHORT GetIridiumProd() const {return m_iIridium;}
+	USHORT GetDilithiumProd() const {return m_iDilithium;}
+	USHORT GetResourceProd(BYTE res) const;
+	short GetLatinum() const {return m_iLatinum;}
+	short GetMoralProd() const {return m_iMoral;}
+	short GetMoralProdEmpire() const {return m_iMoralEmpire;}
+	
+	short GetFoodBoni() const {return m_iFoodBoni;}
+	short GetIndustryBoni() const {return m_iIndustryBoni;}
+	short GetEnergyBoni() const {return m_iEnergyBoni;}
+	short GetSecurityBoni() const {return m_iSecurityBoni;}
+	short GetResearchBoni() const {return m_iResearchBoni;}
+	short GetTitanBoni() const {return m_iTitanBoni;}
+	short GetDeuteriumBoni() const {return m_iDeuteriumBoni;}
+	short GetDuraniumBoni() const {return m_iDuraniumBoni;}
+	short GetCrystalBoni() const {return m_iCrystalBoni;}
+	short GetIridiumBoni() const {return m_iIridiumBoni;}
+	short GetDilithiumBoni() const {return m_iDilithiumBoni;}
+	short GetAllRessourcesBoni() const {return m_iAllRessourceBoni;}
+	short GetLatinumBoni() const {return m_iLatinumBoni;}
+
+	short GetBioTechBoni() const {return m_iBioTechBoni;}
+	short GetEnergyTechBoni() const {return m_iEnergyTechBoni;}
+	short GetCompTechBoni() const {return m_iCompTechBoni;}
+	short GetPropulsionTechBoni() const {return m_iPropulsionTechBoni;}
+	short GetConstructionTechBoni() const {return m_iConstructionTechBoni;}
+	short GetWeaponTechBoni() const {return m_iWeaponTechBoni;}
+	
+	short GetInnerSecurityBoni() const {return m_iInnerSecurityBoni;}
+	short GetEconomySpyBoni() const {return m_iEconomySpyBoni;}
+	short GetEconomySabotageBoni() const {return m_iEconomySabotageBoni;}
+	short GetResearchSpyBoni() const {return m_iResearchSpyBoni;}
+	short GetResearchSabotageBoni() const {return m_iResearchSabotageBoni;}
+	short GetMilitarySpyBoni() const {return m_iMilitarySpyBoni;}
+	short GetMilitarySabotageBoni() const {return m_iMilitarySabotageBoni;}
+	
+	// Hier die restlichen Zugriffsfunktionen
+	BOOLEAN GetShipYard() const {return m_bShipYard;}
+	BYTE GetMaxBuildableShipSize() const {return m_iBuildableShipSizes;}
+	short GetShipYardSpeed() const {return m_iShipYardSpeed;}
+	BOOLEAN GetBarrack() const {return m_bBarrack;}
+	short GetBarrackSpeed() const {return m_iBarrackSpeed;}
+	USHORT GetHitPoints() const {return m_iHitPoints;}
+	USHORT GetShieldPower() const {return m_iShieldPower;}
+	short GetShieldPowerBoni() const {return m_iShieldPowerBoni;}
+	USHORT GetShipDefend() const {return m_iShipDefend;}
+	short GetShipDefendBoni() const {return m_iShipDefendBoni;}
+	USHORT GetGroundDefend() const {return m_iGroundDefend;}
+	short GetGroundDefendBoni() const {return m_iGroundDefendBoni;}
+	USHORT GetScanPower() const {return m_iScanPower;}
+	short GetScanPowerBoni() const {return m_iScanPowerBoni;}
+	BYTE GetScanRange() const {return m_iScanRange;}
+	short GetScanRangeBoni() const {return m_iScanRangeBoni;}
+	short GetShipTraining() const {return m_iShipTraining;}
+	short GetTroopTraining() const {return m_iTroopTraining;}
+	short GetResistance() const {return m_iResistance;}
+	BYTE GetAddedTradeRoutes() const {return m_iAddedTradeRoutes;}
+	short GetIncomeOnTradeRoutes() const {return m_iIncomeOnTradeRoutes;}
+	short GetShipRecycling() const {return m_iShipRecycling;}
+	short GetBuildingBuildSpeed() const {return m_iBuildingBuildSpeed;}
+	short GetUpdateBuildSpeed() const {return m_iUpdateBuildSpeed;}
+	short GetShipBuildSpeed() const {return m_iShipBuildSpeed;}
+	short GetTroopBuildSpeed() const {return m_iTroopBuildSpeed;}
+
+	BOOLEAN GetWorker() const {return m_bWorker;}
+	BOOLEAN GetNeverReady() const {return m_bNeverReady;}
+	BOOLEAN GetAllwaysOnline() const {return m_bAllwaysOnline;}
+
 	// zum Schreiben der Membervariablen
+	
+	
+	// zum Schreiben der Membervariablen
+	void SetRunningNumber(USHORT RunningNumber) {m_iRunningNumber = RunningNumber;}
+	
 	void SetOwnerOfBuilding(BYTE owner) {m_iOwnerOfBuilding = owner;}
 	
 	void SetBuildingName(const CString& BuildingName) {m_strBuildingName = BuildingName;}
@@ -136,7 +266,32 @@ public:
 
 	void SetOnlyRace(BOOLEAN TrueOrFalse) {m_bOnlyRace = TrueOrFalse;}
 
-	void SetPlanetTypes(USHORT i, BOOLEAN TrueOrFalse) {m_bPlanetTypes[i] = TrueOrFalse;}
+	void SetPlanetTypes(int type, BOOLEAN allow)
+	{
+		switch (type)
+		{
+		case PLANETCLASS_A:	SetAttributes(allow, PLANETTYPE_A, m_PlanetTypes);	break;
+		case PLANETCLASS_B:	SetAttributes(allow, PLANETTYPE_B, m_PlanetTypes);	break;
+		case PLANETCLASS_C:	SetAttributes(allow, PLANETTYPE_C, m_PlanetTypes);	break;
+		case PLANETCLASS_E:	SetAttributes(allow, PLANETTYPE_E, m_PlanetTypes);	break;
+		case PLANETCLASS_F:	SetAttributes(allow, PLANETTYPE_F, m_PlanetTypes);	break;
+		case PLANETCLASS_G:	SetAttributes(allow, PLANETTYPE_G, m_PlanetTypes);	break;
+		case PLANETCLASS_H:	SetAttributes(allow, PLANETTYPE_H, m_PlanetTypes);	break;
+		case PLANETCLASS_I:	SetAttributes(allow, PLANETTYPE_I, m_PlanetTypes);	break;
+		case PLANETCLASS_J:	SetAttributes(allow, PLANETTYPE_J, m_PlanetTypes);	break;
+		case PLANETCLASS_K:	SetAttributes(allow, PLANETTYPE_K, m_PlanetTypes);	break;
+		case PLANETCLASS_L:	SetAttributes(allow, PLANETTYPE_L, m_PlanetTypes);	break;
+		case PLANETCLASS_M:	SetAttributes(allow, PLANETTYPE_M, m_PlanetTypes);	break;
+		case PLANETCLASS_N:	SetAttributes(allow, PLANETTYPE_N, m_PlanetTypes);	break;
+		case PLANETCLASS_O:	SetAttributes(allow, PLANETTYPE_O, m_PlanetTypes);	break;
+		case PLANETCLASS_P:	SetAttributes(allow, PLANETTYPE_P, m_PlanetTypes);	break;
+		case PLANETCLASS_Q:	SetAttributes(allow, PLANETTYPE_Q, m_PlanetTypes);	break;
+		case PLANETCLASS_R:	SetAttributes(allow, PLANETTYPE_R, m_PlanetTypes);	break;
+		case PLANETCLASS_S:	SetAttributes(allow, PLANETTYPE_S, m_PlanetTypes);	break;
+		case PLANETCLASS_T:	SetAttributes(allow, PLANETTYPE_T, m_PlanetTypes);	break;
+		case PLANETCLASS_Y:	SetAttributes(allow, PLANETTYPE_Y, m_PlanetTypes);	break;		
+		}
+	}
 
 	void SetBioTech(BYTE BioTech) {m_iBioTech = BioTech;}
 	void SetEnergyTech(BYTE EnergyTech) {m_iEnergyTech = EnergyTech;}
@@ -156,8 +311,95 @@ public:
 	void SetPredecessor(USHORT RunningNumber) {m_iPredecessorID = RunningNumber;}
 
 	void SetEquivalent(BYTE race, USHORT equivalentID) {m_iBuildingEquivalent[race] = equivalentID;}
+
+	void SetNeededEnergy(USHORT NeededEnergy) {m_iNeededEnergy = NeededEnergy;}
+	
+	void SetFoodProd(short Food) {m_iFood = Food;}
+	void SetIPProd(USHORT IP) {m_iIP = IP;}
+	void SetEnergyProd(USHORT Energy) {m_iEnergy = Energy;}
+	void SetSPProd(USHORT SP) {m_iSP = SP;}
+	void SetFPProd(USHORT FP) {m_iFP = FP;}
+	void SetTitanProd(USHORT Titan) {m_iTitan = Titan;}
+	void SetDeuteriumProd(USHORT Deuterium) {m_iDeuterium = Deuterium;}
+	void SetDuraniumProd(USHORT Duranium) {m_iDuranium = Duranium;}
+	void SetCrystalProd(USHORT Crystal) {m_iCrystal = Crystal;}
+	void SetIridiumProd(USHORT Iridium) {m_iIridium = Iridium;}
+	void SetDilithiumProd(USHORT Dilithium) {m_iDilithium = Dilithium;}
+	void SetLatinumProd(short Latinum) {m_iLatinum = Latinum;}
+	void SetMoralProd(short MoralProd) {m_iMoral = MoralProd;}
+	void SetMoralProdEmpire(short MoralProdEmpire) {m_iMoralEmpire = MoralProdEmpire;}
+	
+	void SetFoodBoni(short FoodBoni) {m_iFoodBoni = FoodBoni;}
+	void SetIndustryBoni(short IndustryBoni) {m_iIndustryBoni = IndustryBoni;}
+	void SetEnergyBoni(short EnergyBoni) {m_iEnergyBoni = EnergyBoni;}
+	void SetSecurityBoni(short SecurityBoni) {m_iSecurityBoni = SecurityBoni;}
+	void SetResearchBoni(short ResearchBoni) {m_iResearchBoni = ResearchBoni;}
+	void SetTitanBoni(short TitanBoni) {m_iTitanBoni = TitanBoni;}
+	void SetDeuteriumBoni(short DeuteriumBoni) {m_iDeuteriumBoni = DeuteriumBoni;}
+	void SetDuraniumBoni(short DuraniumBoni) {m_iDuraniumBoni = DuraniumBoni;}
+	void SetCrystalBoni(short CrystalBoni) {m_iCrystalBoni = CrystalBoni;}
+	void SetIridiumBoni(short IridiumBoni) {m_iIridiumBoni = IridiumBoni;}
+	void SetDilithiumBoni(short DilithiumBoni) {m_iDilithiumBoni = DilithiumBoni;}
+	void SetAllRessourceBoni(short AllRessourceBoni) {m_iAllRessourceBoni = AllRessourceBoni;}
+	void SetLatinumBoni(short LatinumBoni) {m_iLatinumBoni = LatinumBoni;}
+	
+	void SetBioTechBoni(short BioTechBoni) {m_iBioTechBoni = BioTechBoni;}
+	void SetEnergyTechBoni(short EnergyTechBoni) {m_iEnergyTechBoni = EnergyTechBoni;}
+	void SetCompTechBoni(short CompTechBoni) {m_iCompTechBoni = CompTechBoni;}
+	void SetPropulsionTechBoni(short PropulsionTechBoni) {m_iPropulsionTechBoni = PropulsionTechBoni;}
+	void SetConstructionTechBoni(short ConstructionTechBoni) {m_iConstructionTechBoni = ConstructionTechBoni;}
+	void SetWeaponTechBoni(short WeaponTechBoni) {m_iWeaponTechBoni = WeaponTechBoni;}
+	
+	void SetInnerSecurityBoni(short InnerSecurityBoni) {m_iInnerSecurityBoni = InnerSecurityBoni;}
+	void SetEconomySpyBoni(short EconomySpyBoni) {m_iEconomySpyBoni = EconomySpyBoni;}
+	void SetEconomySabotageBoni(short EconomySabotageBoni) {m_iEconomySabotageBoni = EconomySabotageBoni;}
+	void SetResearchSpyBoni(short ResearchSpyBoni) {m_iResearchSpyBoni = ResearchSpyBoni;}
+	void SetResearchSabotageBoni(short ResearchSabotageBoni) {m_iResearchSabotageBoni = ResearchSabotageBoni;}
+	void SetMilitarySpyBoni(short MilitarySpyBoni) {m_iMilitarySpyBoni = MilitarySpyBoni;}
+	void SetMilitarySabotageBoni(short MilitarySabotageBoni) {m_iMilitarySabotageBoni = MilitarySabotageBoni;}
+	
+	void SetShipYard(BOOLEAN TrueOrFalse) {m_bShipYard = TrueOrFalse;}
+	void SetBuildableShipTypes(BYTE type) {m_iBuildableShipSizes = type;}
+	void SetShipYardSpeed(short speed) {m_iShipYardSpeed = speed;}
+	void SetBarrack(BOOLEAN TrueOrFalse) {m_bBarrack = TrueOrFalse;}
+	void SetBarrackSpeed(short speed) {m_iBarrackSpeed = speed;}
+	void SetHitpoints(USHORT hitpoints) {m_iHitPoints = hitpoints;}
+	void SetShieldPower(USHORT power) {m_iShieldPower = power;}
+	void SetShieldPowerBoni(short powerboni) {m_iShieldPowerBoni = powerboni;}
+	void SetShipDefend(USHORT defend) {m_iShipDefend = defend;}
+	void SetShipDefendBoni(short defendboni) {m_iShipDefendBoni = defendboni;}
+	void SetGroundDefend(USHORT defend) {m_iGroundDefend = defend;}
+	void SetGroundDefendBoni(short defendboni) {m_iGroundDefendBoni = defendboni;}
+	void SetScanPower(USHORT power) {m_iScanPower = power;}
+	void SetScanPowerBoni(short powerboni) {m_iScanPowerBoni = powerboni;}
+	void SetScanRange(BYTE Range) {m_iScanRange = Range;}
+	void SetScanRangeBoni(short Rangeboni) {m_iScanRangeBoni = Rangeboni;}
+	void SetShipTraining(short training) {m_iShipTraining = training;}
+	void SetTroopTraining(short training) {m_iTroopTraining = training;}
+	void SetResistance(short value) {m_iResistance = value;}
+	void SetAddedTradeRoutes(BYTE addedRoutes) {m_iAddedTradeRoutes = addedRoutes;}
+	void SetIncomeOnTradeRoutes(short income) {m_iIncomeOnTradeRoutes = income;}
+	void SetShipRecycling(short recycling) {m_iShipRecycling = recycling;}
+	void SetBuildingBuildSpeed(short speed) {m_iBuildingBuildSpeed = speed;}
+	void SetUpdateBuildSpeed(short speed) {m_iUpdateBuildSpeed = speed;}
+	void SetShipBuildSpeed(short speed) {m_iShipBuildSpeed = speed;}
+	void SetTroopBuildSpeed(short speed) {m_iTroopBuildSpeed = speed;}
+
+	void SetWorker(BOOLEAN TrueOrFalse) {m_bWorker = TrueOrFalse;}
+	void SetNeverReady(BOOLEAN TrueOrFalse) {m_bNeverReady = TrueOrFalse;}
+	void SetAllwaysOnline(BOOLEAN TrueOrFalse) {m_bAllwaysOnline = TrueOrFalse;}
+
+	// sonstige Funktionen
+	/**
+	 * Diese Funktion erstellt einen String über die komplette Produktion des Gebäudes. Übergeben wird dabei
+	 * die Anzahl dieser Gebäude.
+	 */
+	CString GetProductionAsString(USHORT number = 1) const;
 	
 private:
+	// Die laufende Nummer (ID) des Gebäudes
+	USHORT m_iRunningNumber;
+
 	// Rasse wer Gebäude bauen kann
 	BYTE m_iOwnerOfBuilding;
 	
@@ -209,7 +451,7 @@ private:
 	BOOLEAN m_bOnlyRace;
 
 	// Die Planetentypen auf denen wir das Gebäude bauen können
-	BOOLEAN m_bPlanetTypes[20];
+	int m_PlanetTypes;
 
 	// Die benötigten Forschungsstufen für den Bau des Gebäudes
 	BYTE m_iBioTech;
@@ -233,8 +475,95 @@ private:
 	
 	// Gebäudeäquivalent zu den anderen Rassen. Darin wird die RunningNumber des Gebäudeäquivalents gespeichert.
 	USHORT m_iBuildingEquivalent[7];
+
+	// Die nötige Energie zum Betrieb des Gebäudes
+	USHORT m_iNeededEnergy;	
+
+	// Ist das Gebäude online?
+	BOOLEAN m_bAllwaysOnline;
+
+	// Produktion -> überprüfen ob diese auch USHORT bleiben können?
+	short m_iFood;
+	USHORT m_iIP;
+	USHORT m_iEnergy;
+	USHORT m_iSP;
+	USHORT m_iFP;
+	USHORT m_iTitan;
+	USHORT m_iDeuterium;
+	USHORT m_iDuranium;
+	USHORT m_iCrystal;
+	USHORT m_iIridium;
+	USHORT m_iDilithium;
+	short m_iLatinum;
+	short m_iMoral;
+	short m_iMoralEmpire;
+
+	// Boni / Mali, das sind alles Prozentangaben zu irgendwas
+	// Produktionsboni
+	short m_iFoodBoni;
+	short m_iIndustryBoni;
+	short m_iEnergyBoni;
+	short m_iSecurityBoni;
+	short m_iResearchBoni;
+	short m_iTitanBoni;
+	short m_iDeuteriumBoni;
+	short m_iDuraniumBoni;
+	short m_iCrystalBoni;
+	short m_iIridiumBoni;
+	short m_iDilithiumBoni;
+	short m_iAllRessourceBoni;	
+	short m_iLatinumBoni;
+
+	// Forschungstechboni
+	short m_iBioTechBoni;
+	short m_iEnergyTechBoni;
+	short m_iCompTechBoni;
+	short m_iPropulsionTechBoni;
+	short m_iConstructionTechBoni;
+	short m_iWeaponTechBoni;
+	
+	// Sicherheitsboni
+	short m_iInnerSecurityBoni;
+	short m_iEconomySpyBoni;
+	short m_iEconomySabotageBoni;
+	short m_iResearchSpyBoni;
+	short m_iResearchSabotageBoni;
+	short m_iMilitarySpyBoni;
+	short m_iMilitarySabotageBoni;
+
+	// sonstige Informationen
+	BOOLEAN m_bShipYard;
+	BYTE m_iBuildableShipSizes;
+	short m_iShipYardSpeed;
+	BOOLEAN m_bBarrack;
+	short m_iBarrackSpeed;
+	USHORT m_iHitPoints;
+	USHORT m_iShieldPower;
+	short m_iShieldPowerBoni;
+	USHORT m_iShipDefend;
+	short m_iShipDefendBoni;
+	USHORT m_iGroundDefend;
+	short m_iGroundDefendBoni;
+	USHORT m_iScanPower;
+	short m_iScanPowerBoni;
+	BYTE m_iScanRange;
+	short m_iScanRangeBoni;
+	short m_iShipTraining;
+	short m_iTroopTraining;
+	short m_iResistance;				// Bestechungsresistenz
+	BYTE m_iAddedTradeRoutes;
+	short m_iIncomeOnTradeRoutes;
+	short m_iShipRecycling;
+	short m_iBuildingBuildSpeed;
+	short m_iUpdateBuildSpeed;
+	short m_iShipBuildSpeed;
+	short m_iTroopBuildSpeed;
+
+	// benötigt das Gebäude Arbeiter?
+	BOOLEAN m_bWorker;
+	
+	// ist das Gebäude niemals fertig (z.B. ein Tribunal)
+	BOOLEAN m_bNeverReady;
 };
 
 typedef CArray<CBuildingInfo,CBuildingInfo> BuildingInfoArray;	// Das dynamische Feld, welches alle Gebäude speichern soll
-
-#endif // !defined(AFX_BUILDINGINFO_H__FCC49576_B46F_4F79_BACB_884C904036DC__INCLUDED_)

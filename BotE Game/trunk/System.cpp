@@ -278,7 +278,7 @@ void CSystem::Serialize(CArchive &ar)
 // Funktion gibt die Anzahl oder die RunningNumber (ID) der Gebäude zurück, welche Arbeiter benötigen.
 // Wir übergeben dafür als Parameter den Typ des Gebäudes (FARM, BAUHOF usw.) und einen Modus.
 // Ist der Modus NULL, dann bekommen wir die Anzahl zurück, ist der Modus EINS, dann die RunningNumber.
-USHORT CSystem::GetNumberOfWorkbuildings(int WhatWorkbuilding, int Modus) const
+USHORT CSystem::GetNumberOfWorkbuildings(int WhatWorkbuilding, int Modus, BuildingInfoArray* buildingInfos) const
 {
 	// "Modus" gibt an, ob wir die Anzahl der Gebäude oder die aktuelle RunningNumber
 	// des speziellen Gebäudes zurückgegeben wird
@@ -304,69 +304,73 @@ USHORT CSystem::GetNumberOfWorkbuildings(int WhatWorkbuilding, int Modus) const
 	else if (Modus == 1)
 	{
 		for (int i = 0; i < m_Buildings.GetSize(); i++)
-			if (m_Buildings.GetAt(i).GetWorker() == TRUE)
+		{
+			CBuildingInfo* buildingInfo = &buildingInfos->GetAt(m_Buildings.GetAt(i).GetRunningNumber() - 1);
+			
+			if (buildingInfo->GetWorker() == TRUE)
 			{
 				if (WhatWorkbuilding == 0)
-					if (m_Buildings.GetAt(i).GetFoodProd())
+					if (buildingInfo->GetFoodProd())
 					{
 						runningNumber = m_Buildings.GetAt(i).GetRunningNumber();
 						return runningNumber;
 					}
 				if (WhatWorkbuilding == 1)
-					if (m_Buildings.GetAt(i).GetIPProd())
+					if (buildingInfo->GetIPProd())
 					{
 						runningNumber = m_Buildings.GetAt(i).GetRunningNumber();
 						return runningNumber;
 					}
 				if (WhatWorkbuilding == 2)
-					if (m_Buildings.GetAt(i).GetEnergyProd())
+					if (buildingInfo->GetEnergyProd())
 					{
 						runningNumber = m_Buildings.GetAt(i).GetRunningNumber();
 						return runningNumber;
 					}
 				if (WhatWorkbuilding == 3)
-					if (m_Buildings.GetAt(i).GetSPProd())
+					if (buildingInfo->GetSPProd())
 					{
 						runningNumber = m_Buildings.GetAt(i).GetRunningNumber();
 						return runningNumber;
 					}
 				if (WhatWorkbuilding == 4)
-					if (m_Buildings.GetAt(i).GetFPProd())
+					if (buildingInfo->GetFPProd())
 					{
 						runningNumber = m_Buildings.GetAt(i).GetRunningNumber();
 						return runningNumber;
 					}
 				if (WhatWorkbuilding == 5)
-					if (m_Buildings.GetAt(i).GetTitanProd())
+					if (buildingInfo->GetTitanProd())
 					{
 						runningNumber = m_Buildings.GetAt(i).GetRunningNumber();
 						return runningNumber;
 					}
 				if (WhatWorkbuilding == 6)
-					if (m_Buildings.GetAt(i).GetDeuteriumProd())
+					if (buildingInfo->GetDeuteriumProd())
 					{
 						runningNumber = m_Buildings.GetAt(i).GetRunningNumber();
 						return runningNumber;
 					}
 				if (WhatWorkbuilding == 7)
-					if (m_Buildings.GetAt(i).GetDuraniumProd())
+					if (buildingInfo->GetDuraniumProd())
 					{
 						runningNumber = m_Buildings.GetAt(i).GetRunningNumber();
 						return runningNumber;
 					}
 				if (WhatWorkbuilding == 8)
-					if (m_Buildings.GetAt(i).GetCrystalProd())
+					if (buildingInfo->GetCrystalProd())
 					{
 						runningNumber = m_Buildings.GetAt(i).GetRunningNumber();
 						return runningNumber;
 					}
 				if (WhatWorkbuilding == 9)
-					if (m_Buildings.GetAt(i).GetIridiumProd())
+					if (buildingInfo->GetIridiumProd())
 					{
 						runningNumber = m_Buildings.GetAt(i).GetRunningNumber();
 						return runningNumber;
 					}
-			}	
+			}
+		}
 	}
 	return 0;
 }
@@ -487,13 +491,13 @@ void CSystem::SetWorkersIntoBuildings()
 	int workers = 0;
 	for (int i = FOOD_WORKER; i <= IRIDIUM_WORKER; i++)
 	{
-		numberOfWorkBuildings += GetNumberOfWorkbuildings(i,0);
+		numberOfWorkBuildings += GetNumberOfWorkbuildings(i,0,NULL);
 		workers += m_Workers.GetWorker(i);
 	}
 	while (m_Workers.GetWorker(11) > 0 && workers < numberOfWorkBuildings)
 	{
 		for (int i = FOOD_WORKER; i <= IRIDIUM_WORKER; i++)
-			if (m_Workers.GetWorker(11) > 0 && GetNumberOfWorkbuildings(i,0) > m_Workers.GetWorker(i))
+			if (m_Workers.GetWorker(11) > 0 && GetNumberOfWorkbuildings(i,0,NULL) > m_Workers.GetWorker(i))
 			{
 				workers++;
 				m_Workers.InkrementWorker(i);
@@ -568,7 +572,7 @@ BOOLEAN CSystem::SetHabitants(double habitants)
 // sonstige Funktionen
 //////////////////////////////////////////////////////////////////////
 // Funktion berechnet aus den Eigenschaften der stehenden Gebäude alle Attribute der System-Klasse.
-void CSystem::CalculateVariables(CResearchInfo* ResearchInfo, CArray<CPlanet>* planets, const USHORT *monopolOwner)
+void CSystem::CalculateVariables(BuildingInfoArray* buildingInfos, CResearchInfo* ResearchInfo, CArray<CPlanet>* planets, const USHORT *monopolOwner)
 {
 	int NumberOfBuildings;
 	NumberOfBuildings = m_Buildings.GetSize();
@@ -619,69 +623,73 @@ void CSystem::CalculateVariables(CResearchInfo* ResearchInfo, CArray<CPlanet>* p
 	// Die einzelnen Produktionen berechnen
 	for (int i = 0; i < NumberOfBuildings; i++)
 	{
+		const CBuildingInfo* buildingInfo = &buildingInfos->GetAt(m_Buildings.GetAt(i).GetRunningNumber() - 1);
+
 		// Bei einer Blockade werden auch die Werften offline gesetzt
-		if (m_byBlockade >= 100 && m_Buildings.GetAt(i).GetShipYard() && m_Buildings.GetAt(i).GetNeededEnergy() > 0)
+		if (m_byBlockade >= 100 && buildingInfo->GetShipYard() && buildingInfo->GetNeededEnergy() > 0)
 			m_Buildings.GetAt(i).SetIsBuildingOnline(FALSE);
 
 		// Gebäude offline setzen
-		if (m_Buildings.GetAt(i).GetWorker() == TRUE)
+		if (buildingInfo->GetWorker() == TRUE)
+		{
 			m_Buildings.ElementAt(i).SetIsBuildingOnline(FALSE);
-		// Jetzt wieder wenn möglich online setzen
-		if (m_Buildings.GetAt(i).GetFoodProd() > 0 && m_Buildings.GetAt(i).GetWorker() == TRUE && foodWorker > 0)
-		{
-			m_Buildings.ElementAt(i).SetIsBuildingOnline(TRUE);
-			foodWorker--;
-		}
-		else if (m_Buildings.GetAt(i).GetIPProd() > 0 && m_Buildings.GetAt(i).GetWorker() == TRUE && industryWorker > 0)
-		{
-			m_Buildings.ElementAt(i).SetIsBuildingOnline(TRUE);
-			industryWorker--;
-		}
-		else if (m_Buildings.GetAt(i).GetEnergyProd() > 0 && m_Buildings.GetAt(i).GetWorker() == TRUE && energyWorker > 0)
-		{
-			m_Buildings.ElementAt(i).SetIsBuildingOnline(TRUE);
-			energyWorker--;
-		}
-		else if (m_Buildings.GetAt(i).GetSPProd() > 0 && m_Buildings.GetAt(i).GetWorker() == TRUE && securityWorker > 0)
-		{
-			m_Buildings.ElementAt(i).SetIsBuildingOnline(TRUE);
-			securityWorker--;
-		}
-		else if (m_Buildings.GetAt(i).GetFPProd() > 0 && m_Buildings.GetAt(i).GetWorker() == TRUE && researchWorker > 0)
-		{
-			m_Buildings.ElementAt(i).SetIsBuildingOnline(TRUE);
-			researchWorker--;
-		}
-		else if (m_Buildings.GetAt(i).GetTitanProd() > 0 && m_Buildings.GetAt(i).GetWorker() == TRUE && titanWorker > 0)
-		{
-			m_Buildings.ElementAt(i).SetIsBuildingOnline(TRUE);
-			titanWorker--;
-		}
-		else if (m_Buildings.GetAt(i).GetDeuteriumProd() > 0 && m_Buildings.GetAt(i).GetWorker() == TRUE && deuteriumWorker > 0)
-		{
-			m_Buildings.ElementAt(i).SetIsBuildingOnline(TRUE);
-			deuteriumWorker--;
-		}
-		else if (m_Buildings.GetAt(i).GetDuraniumProd() > 0 && m_Buildings.GetAt(i).GetWorker() == TRUE && duraniumWorker > 0)
-		{
-			m_Buildings.ElementAt(i).SetIsBuildingOnline(TRUE);
-			duraniumWorker--;
-		}
-		else if (m_Buildings.GetAt(i).GetCrystalProd() > 0 && m_Buildings.GetAt(i).GetWorker() == TRUE && crystalWorker > 0)
-		{
-			m_Buildings.ElementAt(i).SetIsBuildingOnline(TRUE);
-			crystalWorker--;
-		}
-		else if (m_Buildings.GetAt(i).GetIridiumProd() > 0 && m_Buildings.GetAt(i).GetWorker() == TRUE && iridiumWorker > 0)
-		{
-			m_Buildings.ElementAt(i).SetIsBuildingOnline(TRUE);
-			iridiumWorker--;
+			// Jetzt wieder wenn möglich online setzen		
+			if (buildingInfo->GetFoodProd() > 0 && foodWorker > 0)
+			{
+				m_Buildings.ElementAt(i).SetIsBuildingOnline(TRUE);
+				foodWorker--;
+			}
+			else if (buildingInfo->GetIPProd() > 0 && industryWorker > 0)
+			{
+				m_Buildings.ElementAt(i).SetIsBuildingOnline(TRUE);
+				industryWorker--;
+			}
+			else if (buildingInfo->GetEnergyProd() > 0 && energyWorker > 0)
+			{
+				m_Buildings.ElementAt(i).SetIsBuildingOnline(TRUE);
+				energyWorker--;
+			}
+			else if (buildingInfo->GetSPProd() > 0 && securityWorker > 0)
+			{
+				m_Buildings.ElementAt(i).SetIsBuildingOnline(TRUE);
+				securityWorker--;
+			}
+			else if (buildingInfo->GetFPProd() > 0 && researchWorker > 0)
+			{
+				m_Buildings.ElementAt(i).SetIsBuildingOnline(TRUE);
+				researchWorker--;
+			}
+			else if (buildingInfo->GetTitanProd() > 0 && titanWorker > 0)
+			{
+				m_Buildings.ElementAt(i).SetIsBuildingOnline(TRUE);
+				titanWorker--;
+			}
+			else if (buildingInfo->GetDeuteriumProd() > 0 && deuteriumWorker > 0)
+			{
+				m_Buildings.ElementAt(i).SetIsBuildingOnline(TRUE);
+				deuteriumWorker--;
+			}
+			else if (buildingInfo->GetDuraniumProd() > 0 && duraniumWorker > 0)
+			{
+				m_Buildings.ElementAt(i).SetIsBuildingOnline(TRUE);
+				duraniumWorker--;
+			}
+			else if (buildingInfo->GetCrystalProd() > 0 && crystalWorker > 0)
+			{
+				m_Buildings.ElementAt(i).SetIsBuildingOnline(TRUE);
+				crystalWorker--;
+			}
+			else if (buildingInfo->GetIridiumProd() > 0 && iridiumWorker > 0)
+			{
+				m_Buildings.ElementAt(i).SetIsBuildingOnline(TRUE);
+				iridiumWorker--;
+			}
 		}
 		
 		// Die einzelnen Produktionen berechnen (ohne Boni)
 		// vorher noch schauen, ob diese Gebäude auch online sind
 		if (m_Buildings.GetAt(i).GetIsBuildingOnline() == TRUE)
-			m_Production.CalculateProduction(&m_Buildings.GetAt(i));
+			m_Production.CalculateProduction(buildingInfo);
 	}
 	// Latinum durch Handelsrouten berechnen
 	m_Production.m_iLatinumProd += LatinumFromTradeRoutes();
@@ -716,27 +724,29 @@ void CSystem::CalculateVariables(CResearchInfo* ResearchInfo, CArray<CPlanet>* p
 	short neededEnergy = 0;
 	for (int i = 0; i < NumberOfBuildings; i++)
 	{
+		const CBuildingInfo* buildingInfo = &buildingInfos->GetAt(m_Buildings.GetAt(i).GetRunningNumber() - 1);
+
 		// Hier die nötige Energie von der produzierten abziehen, geht aber nur hier, wenn wir keine Boni zur Energie reinmachen
-		if (m_Buildings.GetAt(i).GetIsBuildingOnline() == TRUE && m_Buildings.GetAt(i).GetNeededEnergy() > 0)
+		if (m_Buildings.GetAt(i).GetIsBuildingOnline() == TRUE && buildingInfo->GetNeededEnergy() > 0)
 			//m_Production.m_iEnergyProd -= m_Buildings.GetAt(i).GetNeededEnergy();
-			neededEnergy += m_Buildings.GetAt(i).GetNeededEnergy();
+			neededEnergy += buildingInfo->GetNeededEnergy();
 
 		if (m_Buildings.GetAt(i).GetIsBuildingOnline() == TRUE)
 		{
 			// Es wird IMMER abgerundet, gemacht durch "floor"
-			tmpFoodBoni			+= m_Buildings.GetAt(i).GetFoodBoni();
-			tmpIndustryBoni		+= m_Buildings.GetAt(i).GetIndustryBoni();
-			tmpEnergyBoni		+= m_Buildings.GetAt(i).GetEnergyBoni();
-			tmpSecurityBoni		+= m_Buildings.GetAt(i).GetSecurityBoni();
-			tmpResearchBoni		+= m_Buildings.GetAt(i).GetResearchBoni();
-			tmpAllRessourcesBoni = m_Buildings.GetAt(i).GetAllRessourcesBoni();
-			tmpTitanBoni		+= m_Buildings.GetAt(i).GetTitanBoni() + tmpAllRessourcesBoni;
-			tmpDeuteriumBoni	+= m_Buildings.GetAt(i).GetDeuteriumBoni() + tmpAllRessourcesBoni;
-			tmpDuraniumBoni		+= m_Buildings.GetAt(i).GetDuraniumBoni() + tmpAllRessourcesBoni;
-			tmpCrystalBoni		+= m_Buildings.GetAt(i).GetCrystalBoni() + tmpAllRessourcesBoni;
-			tmpIridiumBoni		+= m_Buildings.GetAt(i).GetIridiumBoni() + tmpAllRessourcesBoni;
-			tmpDilithiumBoni	+= m_Buildings.GetAt(i).GetDilithiumBoni(); 
-			tmpLatinumBoni		+= m_Buildings.GetAt(i).GetLatinumBoni();
+			tmpFoodBoni			+= buildingInfo->GetFoodBoni();
+			tmpIndustryBoni		+= buildingInfo->GetIndustryBoni();
+			tmpEnergyBoni		+= buildingInfo->GetEnergyBoni();
+			tmpSecurityBoni		+= buildingInfo->GetSecurityBoni();
+			tmpResearchBoni		+= buildingInfo->GetResearchBoni();
+			tmpAllRessourcesBoni = buildingInfo->GetAllRessourcesBoni();
+			tmpTitanBoni		+= buildingInfo->GetTitanBoni() + tmpAllRessourcesBoni;
+			tmpDeuteriumBoni	+= buildingInfo->GetDeuteriumBoni() + tmpAllRessourcesBoni;
+			tmpDuraniumBoni		+= buildingInfo->GetDuraniumBoni() + tmpAllRessourcesBoni;
+			tmpCrystalBoni		+= buildingInfo->GetCrystalBoni() + tmpAllRessourcesBoni;
+			tmpIridiumBoni		+= buildingInfo->GetIridiumBoni() + tmpAllRessourcesBoni;
+			tmpDilithiumBoni	+= buildingInfo->GetDilithiumBoni(); 
+			tmpLatinumBoni		+= buildingInfo->GetLatinumBoni();
 		}
 	}
 	
@@ -952,9 +962,9 @@ int CSystem::UpdateBuildings(int RunningNumber)
 
 // Funktion reißt alle Gebäude ab, die in der Variable m_BuildingDestroy stehen. Funktion wird in der Doc 
 // bei NextRound() aufgerufen.
-void CSystem::DestroyBuildings(void)
+bool CSystem::DestroyBuildings(void)
 {
-	BOOLEAN destroy = !m_BuildingDestroy.IsEmpty();
+	bool destroy = !m_BuildingDestroy.IsEmpty();
 	for (int i = 0; i < m_BuildingDestroy.GetSize(); i++)
 		// Schleife von hinten durchlaufen, weil Arbeiter die Gebäude von "vorn" besetzten
 		// und ich nicht gerade die online-Gebäude abreißen will, sondern die wahrscheinlich offline
@@ -966,10 +976,8 @@ void CSystem::DestroyBuildings(void)
 				break;
 			}
 	if (destroy)
-	{
-		m_BuildingDestroy.RemoveAll();
-		CalculateNumberOfWorkbuildings();
-	}
+		m_BuildingDestroy.RemoveAll();		
+	return destroy;
 }
 
 // Funktion berechnet die baubaren Gebäude und Gebäudeupdates in dem System.
@@ -1060,7 +1068,9 @@ void CSystem::CalculateBuildableBuildings(CSector* sector, BuildingInfoArray* bu
 					// Ist es ein Gebäude, welches wir manchmal mindst immer bauen können (alle Gebäude, die Arbeiter
 					// benötigen!!!), dann müssen wir noch Punkt (0.) durchführen.
 					BOOLEAN id_in_list = FALSE;
-					if (m_Buildings.GetAt(i).GetWorker())
+					const CBuildingInfo* info = &buildingInfo->GetAt(m_Buildings.GetAt(i).GetRunningNumber() - 1);
+
+					if (info->GetWorker())
 					{
 						for (int j = 0; j < m_AllwaysBuildableBuildings.GetSize(); j++)
 							if (id == m_AllwaysBuildableBuildings.GetAt(j))
@@ -1466,10 +1476,10 @@ void CSystem::CalculateBuildableTroops(const CArray<CTroopInfo>* troopInfos, con
 // Sie muß am Rundenanfang vor CalculateVariables() aufgerufen werden und sortiert gleichzeitig das
 // CArray m_Buildings nach der RunningNumber.
 // In der Doc-Klasse nach der Funktion DestroyBuildings() und zu Beginn aufrufen!
-void CSystem::CalculateNumberOfWorkbuildings()
+void CSystem::CalculateNumberOfWorkbuildings(BuildingInfoArray *buildingInfos)
 {
 	// Sortierung
-	c_arraysort<CArray<CBuilding,CBuilding>,CBuilding>(m_Buildings,sort_asc);
+	c_arraysort<CArray<CBuilding>,CBuilding>(m_Buildings,sort_asc);
 
 	// Berechnung der Gebäude
 	m_iFoodBuildings = 0;
@@ -1483,74 +1493,84 @@ void CSystem::CalculateNumberOfWorkbuildings()
 	m_iIridiumMines = 0;
 	m_iCrystalMines = 0;
 	for (int i = 0; i < m_Buildings.GetSize(); i++)
-		if (m_Buildings.GetAt(i).GetWorker() == TRUE)
+	{
+		const CBuildingInfo* buildingInfo = &buildingInfos->GetAt(m_Buildings.GetAt(i).GetRunningNumber() - 1);
+		
+		if (buildingInfo->GetWorker() == TRUE)
 		{
-			if (m_Buildings.GetAt(i).GetFoodProd() > 0)
+			if (buildingInfo->GetFoodProd() > 0)
 				m_iFoodBuildings++;
-			else if (m_Buildings.GetAt(i).GetIPProd() > 0)
+			else if (buildingInfo->GetIPProd() > 0)
 				m_iIndustryBuildings++;
-			else if (m_Buildings.GetAt(i).GetEnergyProd() > 0)
+			else if (buildingInfo->GetEnergyProd() > 0)
 				m_iEnergyBuildings++;
-			else if (m_Buildings.GetAt(i).GetSPProd() > 0)
+			else if (buildingInfo->GetSPProd() > 0)
 				m_iSecurityBuildings++;
-			else if (m_Buildings.GetAt(i).GetFPProd() > 0)
+			else if (buildingInfo->GetFPProd() > 0)
 				m_iResearchBuildings++;
-			else if (m_Buildings.GetAt(i).GetTitanProd() > 0)
+			else if (buildingInfo->GetTitanProd() > 0)
 				m_iTitanMines++;
-			else if (m_Buildings.GetAt(i).GetDeuteriumProd() > 0)
+			else if (buildingInfo->GetDeuteriumProd() > 0)
 				m_iDeuteriumMines++;
-			else if (m_Buildings.GetAt(i).GetDuraniumProd() > 0)
+			else if (buildingInfo->GetDuraniumProd() > 0)
 				m_iDuraniumMines++;
-			else if (m_Buildings.GetAt(i).GetCrystalProd() > 0)
+			else if (buildingInfo->GetCrystalProd() > 0)
 				m_iCrystalMines++;
-			else if (m_Buildings.GetAt(i).GetIridiumProd() > 0)
+			else if (buildingInfo->GetIridiumProd() > 0)
 				m_iIridiumMines++;
 		}
+	}
 }
 
 // Funktion berechnet die imperiumweite Moralproduktion, welche aus diesem System generiert wird.
-void CSystem::CalculateEmpireWideMoralProd()
+void CSystem::CalculateEmpireWideMoralProd(BuildingInfoArray *buildingInfos)
 {
 	for (int i = 0; i < m_Buildings.GetSize(); i++)
 		if (m_Buildings.GetAt(i).GetIsBuildingOnline())
-			m_Production.m_iMoralProdEmpireWide[m_iOwnerOfSystem] += m_Buildings.GetAt(i).GetMoralProdEmpire();
+		{
+			const CBuildingInfo *buildingInfo = &buildingInfos->GetAt(m_Buildings.GetAt(i).GetRunningNumber() - 1);
+			m_Production.m_iMoralProdEmpireWide[m_iOwnerOfSystem] += buildingInfo->GetMoralProdEmpire();
+		}
 }
 
 // Funktion setzt das letzte Gebäude, welches gebaut wurde online, sofern dies möglich ist.
-int CSystem::SetNewBuildingOnline()
+int CSystem::SetNewBuildingOnline(BuildingInfoArray *buildingInfos)
 {
 	unsigned short CheckValue = 0;
 	unsigned short lastBuilding = m_Buildings.GetUpperBound();
-	if (m_Workers.GetWorker(11) > 0 && m_Buildings.GetAt(lastBuilding).GetWorker() == TRUE)
+
+	const CBuildingInfo *buildingInfo = &buildingInfos->GetAt(m_Buildings.GetAt(lastBuilding).GetRunningNumber() - 1);
+
+	if (m_Workers.GetWorker(11) > 0 && buildingInfo->GetWorker() == TRUE)
 	{
-		if (m_Buildings.GetAt(lastBuilding).GetFoodProd() > 0)
+		if (buildingInfo->GetFoodProd() > 0)
 			m_Workers.InkrementWorker(0);
-		if (m_Buildings.GetAt(lastBuilding).GetIPProd() > 0)
+		if (buildingInfo->GetIPProd() > 0)
 			m_Workers.InkrementWorker(1);
-		if (m_Buildings.GetAt(lastBuilding).GetEnergyProd() > 0)
+		if (buildingInfo->GetEnergyProd() > 0)
 			m_Workers.InkrementWorker(2);
-		if (m_Buildings.GetAt(lastBuilding).GetSPProd() > 0)
+		if (buildingInfo->GetSPProd() > 0)
 			m_Workers.InkrementWorker(3);
-		if (m_Buildings.GetAt(lastBuilding).GetFPProd() > 0)
+		if (buildingInfo->GetFPProd() > 0)
 			m_Workers.InkrementWorker(4);
-		if (m_Buildings.GetAt(lastBuilding).GetTitanProd() > 0)
+		if (buildingInfo->GetTitanProd() > 0)
 			m_Workers.InkrementWorker(5);
-		if (m_Buildings.GetAt(lastBuilding).GetDeuteriumProd() > 0)
+		if (buildingInfo->GetDeuteriumProd() > 0)
 			m_Workers.InkrementWorker(6);
-		if (m_Buildings.GetAt(lastBuilding).GetDuraniumProd() > 0)
+		if (buildingInfo->GetDuraniumProd() > 0)
 			m_Workers.InkrementWorker(7);
-		if (m_Buildings.GetAt(lastBuilding).GetCrystalProd() > 0)
+		if (buildingInfo->GetCrystalProd() > 0)
 			m_Workers.InkrementWorker(8);
-		if (m_Buildings.GetAt(lastBuilding).GetIridiumProd() > 0)
+		if (buildingInfo->GetIridiumProd() > 0)
 			m_Workers.InkrementWorker(9);
 	}
 	else if (m_Buildings.GetAt(lastBuilding).GetIsBuildingOnline())
 		CheckValue = 0;
 	else
 		CheckValue = 1;
-	if (m_Buildings.GetAt(lastBuilding).GetNeededEnergy() > 0)
+	if (buildingInfo->GetNeededEnergy() > 0)
 	{
-		if (m_Buildings.GetAt(lastBuilding).GetNeededEnergy() <= m_Production.m_iEnergyProd)
+		if (buildingInfo->GetNeededEnergy() <= m_Production.m_iEnergyProd)
 		{
 			m_Buildings.ElementAt(lastBuilding).SetIsBuildingOnline(TRUE);
 			CheckValue = 0;
@@ -1567,17 +1587,21 @@ int CSystem::SetNewBuildingOnline()
 // falls zuwenig Energie im System vorhanden ist.
 // Diese Funktion aufrufen, bevor wir CalculateVariables() usw. aufrufen, weil wir ja die bösen Onlinegebäude vorher
 // ausschalten wollen.
-int CSystem::CheckEnergyBuildings(void)
+int CSystem::CheckEnergyBuildings(BuildingInfoArray *buildingInfos)
 {
 	BOOLEAN CheckValue = 0;
 	unsigned short NumberOfBuildings = m_Buildings.GetSize();
 	for (int i = 0; i < NumberOfBuildings; i++)
-		if (m_Production.m_iEnergyProd < 0 && m_Buildings.GetAt(i).GetNeededEnergy() > 0)
+	{
+		const CBuildingInfo *buildingInfo = &buildingInfos->GetAt(m_Buildings.GetAt(i).GetRunningNumber() - 1);
+
+		if (m_Production.m_iEnergyProd < 0 && buildingInfo->GetNeededEnergy() > 0)
 		{
 			m_Buildings.ElementAt(i).SetIsBuildingOnline(FALSE);
-			m_Production.m_iEnergyProd += m_Buildings.GetAt(i).GetNeededEnergy();
+			m_Production.m_iEnergyProd += buildingInfo->GetNeededEnergy();
 			CheckValue = 1;
 		}
+	}
 	// Wenn CheckValue == 0, dann genug Energie vorhanden, ansonsten wurde mindst. ein Gebäude abgeschaltet
 	return CheckValue;
 }
@@ -1860,25 +1884,29 @@ void CSystem::BuildBuildingsForMinorRace(CSector* sector, BuildingInfoArray* bui
 			{
 				if (build == 0)
 					foodBuildings++;
-				m_Buildings.Add((CBuilding)buildingInfo->GetAt(runningNumber[build]-1));
+				CBuilding building(runningNumber[build]);
+				building.SetIsBuildingOnline(buildingInfo->GetAt(runningNumber[build] - 1).GetAllwaysOnline());
+				m_Buildings.Add(building);
 				numberOfBuildings--;
 			}
 		}
 		// wenn zuwenig Nahrungsgebäude vorhanden sind, so werden hier noch ein paar mehr hinzugefügt
 		while (runningNumber[0] != 0 && foodBuildings < m_dHabitants/4)
 		{
-			m_Buildings.Add((CBuilding)buildingInfo->GetAt(runningNumber[0]-1));
+			CBuilding building(runningNumber[0]);
+			building.SetIsBuildingOnline(buildingInfo->GetAt(runningNumber[0] - 1).GetAllwaysOnline());
+			m_Buildings.Add(building);
 			foodBuildings++;
 		}
 
 		// Nun Lager füllen, später vlt. noch ändern nach der Rassenart (bei landwirtschaftl. mehr Nahrung im Lager)
 		// Ressourcen sind abhängig von der Anzahl der jeweiligen Gebäude und dem technologischen Fortschritt der
 		// Minorrace
-		this->CalculateNumberOfWorkbuildings();
-		this->SetFoodStore(this->GetFoodStore() + rand()%(this->GetNumberOfWorkbuildings(0,0) * (minor->GetTechnologicalProgress() + 1) * 100 + 1));
+		this->CalculateNumberOfWorkbuildings(buildingInfo);
+		this->SetFoodStore(this->GetFoodStore() + rand()%(this->GetNumberOfWorkbuildings(0,0,NULL) * (minor->GetTechnologicalProgress() + 1) * 100 + 1));
 		for (int i = TITAN; i <= IRIDIUM; i++)
 		{
-			int resAdd = minor->GetResourceStorage(i) + rand()%(this->GetNumberOfWorkbuildings(i+5,0) * (minor->GetTechnologicalProgress() + 1) * 100 + 1);
+			int resAdd = minor->GetResourceStorage(i) + rand()%(this->GetNumberOfWorkbuildings(i+5,0,NULL) * (minor->GetTechnologicalProgress() + 1) * 100 + 1);
 			this->SetRessourceStore(i, resAdd);			
 		}
 	}
@@ -1962,21 +1990,25 @@ void CSystem::BuildBuildingsAfterColonization(CSector *sector, BuildingInfoArray
 	}
 	// wenn schon Gebäude eines Typs stehen, dann dürfen keine des gleichen Typ zusätzlich gebaut werden. Z.B. wenn
 	// schon Typ 4 Automatikfarmen stehen darf das Kolonieschiff nicht auch noch Primitive Farmen bauen.
-	this->CalculateNumberOfWorkbuildings();
+	this->CalculateNumberOfWorkbuildings(buildingInfo);
 	for (int build = 0; build < 10; build++)
 	{
-		if (this->GetNumberOfWorkbuildings(build, 0) > NULL)
+		if (this->GetNumberOfWorkbuildings(build, 0, NULL) > NULL)
 			runningNumber[build] = 0;
 		if (runningNumber[build] != 0)
 		{
 			// Gebäude anlegen, umso besser das Kolonieschiff ist, desto mehr Gebäude stehen dann auf dem System
 			for (int i = 0; i < colonizationPoints*2; i++)
-				m_Buildings.Add((CBuilding)buildingInfo->GetAt(runningNumber[build]-1));
+			{
+				CBuilding building(runningNumber[build]);
+				building.SetIsBuildingOnline(buildingInfo->GetAt(runningNumber[build]-1).GetAllwaysOnline());				
+				m_Buildings.Add(building);
+			}
 			// Gebäude mit Arbeitern besetzen
 			this->SetWorker(build,colonizationPoints*2,2);
 		}
 	}
-	this->CalculateNumberOfWorkbuildings();
+	this->CalculateNumberOfWorkbuildings(buildingInfo);
 
 	// Wenn das System nach einer Bombardierung komplett ausgelöscht wurde und von uns wieder neu kolonisiert wurde,
 	// so müssen die mindst. immer baubaren Gebäude gelöscht werden. Dies wird hier jedesmal gemacht, wenn man

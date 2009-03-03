@@ -270,7 +270,7 @@ void CSystemProd::Serialize(CArchive &ar)
 // sonstige Funktionen
 //////////////////////////////////////////////////////////////////////
 // Funktion berechnet die neuen Produktionen im System die sich durch das übergebene Gebäude ergeben
-void CSystemProd::CalculateProduction(CBuilding* building)
+void CSystemProd::CalculateProduction(const CBuildingInfo* building)
 {
 	m_iFoodProd			+= building->GetFoodProd();
 	m_iIndustryProd		+= building->GetIPProd();

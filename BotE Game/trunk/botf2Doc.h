@@ -188,7 +188,7 @@ public:
 	void ApplyBuildingsAtStartup();	// Die Gebäude zum Start in den Hauptsystemen anlegen
 	void ReadBuildingInfosFromFile();	// Die Infos zu den Gebäuden aus den Datein einlesen
 	void ReadShipInfosFromFile();		// Die Infos zu den Schiffen aus der Datei einlesen
-	void BuildBuilding(int RunningNumber, CPoint KO); // Das jeweilige Gebäude im Hauptsystem bauen (RunningNumber identifiziert das Gebäude)
+	void BuildBuilding(USHORT id, CPoint KO); // Das jeweilige Gebäude bauen
 	void BuildShip(int ID, CPoint KO, BYTE owner);	// Das jeweilige Schiff im System KO bauen
 	void GenerateStarmap(void);	// Funktion generiert die Starmaps, so wie sie nach Rundenberechnung auch angezeigt werden können.
 	

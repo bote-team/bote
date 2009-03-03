@@ -7,7 +7,7 @@
  */
 #pragma once
 #include "afx.h"
-#include "Building.h"
+#include "BuildingInfo.h"
 
 class CSystemProd :	public CObject
 {
@@ -93,7 +93,7 @@ public:
 
 // sonstige Funktionen
 	// Funktion berechnet die neuen Produktionen im System die sich durch das übergebene Gebäude ergeben
-	void CalculateProduction(CBuilding* );
+	void CalculateProduction(const CBuildingInfo*);
 
 	// Funktion berechnet die mögliche Produktionsänderung durch die Moral im System
 	void IncludeSystemMoral(short moral);

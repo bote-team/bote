@@ -42,10 +42,11 @@ public:
 	 * Parameter einen Zeiger auf das System <code>system</code>, welches angegriffen wird, sowie einen Zeiger auf
 	 * das komplette Feld aller Schiffe <code>ships</code>, einen Zeiger auf den zum System gehörenden Sektor
 	 * <code>sector</code>, einen Zeiger auf die Forschungsinformationen des Imperiums, welchem das System gehört
-	 * <code>researchInfo</code>, die Koordinate des Systems <code>ko</code>, die Eigenschaft <code>kind</code> der
-	 * Rasse, welche in dem System lebt und das Feld mit den Monopolbesitzern <code>monopolOwner</code>.
+	 * <code>researchInfo</code>, einen Zeiger auf die Gebäudeinformationen <code>buildingInfos</code>, die Koordinate
+	 * des Systems <code>ko</code>, die Eigenschaft <code>kind</code> der Rasse, welche in dem System lebt und das Feld
+	 * mit den Monopolbesitzern <code>monopolOwner</code>.
 	 */
-	void Init(CSystem* system, ShipArray* ships, CSector* sector, CResearchInfo* researchInfo, CPoint ko, BYTE kind, const USHORT* monopolOwner);
+	void Init(CSystem* system, ShipArray* ships, CSector* sector, CResearchInfo* researchInfo, BuildingInfoArray* buildingInfos, CPoint ko, BYTE kind, const USHORT* monopolOwner);
 
 	/**
 	 * Diese Funktion führt den Angriff durch. Außerdem werden alle Berechnungen der Auswirkungen des Angriffs 
@@ -78,6 +79,9 @@ private:
 
 	/// Ein Zeiger auf die Forschungsinformationen des Imperiums, welchem das System gehört.
 	CResearchInfo* m_pResearchInfo;
+
+	/// Ein Zeiger auf die Gebäudeinformationen
+	BuildingInfoArray* m_pBuildingInfos;
 
 	/// Die Koordinate des Systems auf der Map
 	CPoint m_KO;

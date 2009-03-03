@@ -19,7 +19,7 @@
 // --- Feste Größen der Starmap ------------------------------------------------
 #define STARMAP_SECTORS_HCOUNT		30		///< Anzahl der Sektoren horizontal
 #define STARMAP_SECTORS_VCOUNT		20		///< Anzahl der Sektoren vertikal
-
+/*
 // Grafik bis Alpha4
 #define STARMAP_SECTOR_WIDTH		60		///< Breite eines Sektors in Pixel bei 100% Zoom
 #define STARMAP_SECTOR_HEIGHT		60		///< Höhe eines Sektors
@@ -30,19 +30,19 @@
 #define STARMAP_ZOOM_MAX			2.		///< maximaler Zoom-Faktor
 #define STARMAP_ZOOM_STEP			.2		///< Änderung des Zoom-Faktors beim Drehen des Scrollrades
 #define STARMAP_ZOOM_INITIAL		1.4		///< Zoom-Faktor zu Beginn
-
+*/
 // Grafik der nächsten Generation -> Alpha5
-/*
+
 #define STARMAP_SECTOR_WIDTH		80		///< Breite eines Sektors in Pixel bei 100% Zoom
 #define STARMAP_SECTOR_HEIGHT		80		///< Höhe eines Sektors
 #define STARMAP_TOTALWIDTH			2400	///< Gesamtbreite der View in Pixel bei 100% (= 40 * 30)
 #define STARMAP_TOTALHEIGHT			1600	///< Gesamthöhe bei 100% (= 20 * 40)
 
-#define STARMAP_ZOOM_MIN			.7		///< minimaler Zoom-Faktor
-#define STARMAP_ZOOM_MAX			2.0		///< maximaler Zoom-Faktor
+#define STARMAP_ZOOM_MIN			.6		///< minimaler Zoom-Faktor
+#define STARMAP_ZOOM_MAX			1.5		///< maximaler Zoom-Faktor
 #define STARMAP_ZOOM_STEP			.05		///< Änderung des Zoom-Faktors beim Drehen des Scrollrades
 #define STARMAP_ZOOM_INITIAL		1.0		///< Zoom-Faktor zu Beginn
-*/
+
 
 // ------------- View-IDs ------------------------------------------------------
 // Mainview
@@ -129,7 +129,9 @@
 #define RESEARCHER			6
 #define PRODUCER			7
 #define PACIFIST			8
-#define SNEAKY              9 // Hinterhältig
+#define SNEAKY              9	// Hinterhältig
+#define SOLO				10	// Alleingeher
+#define	EXTREMHOSTILE		11
 
 // ------------- Planeteneigenschaften -----------------------------------------
 // Zonen
@@ -162,7 +164,7 @@
 #define PLANETCLASS_J		17
 #define PLANETCLASS_S		18
 #define PLANETCLASS_T		19
-#define GRAPHICNUMBER		59 // Anzahl der verschiedenen Grafiken der Planeten
+#define GRAPHICNUMBER		15 // Anzahl der verschiedenen Grafiken der Planeten
 
 // ------------- Forschung -----------------------------------------------------
 #define NOTRESEARCHED		0

@@ -429,19 +429,19 @@ BOOLEAN CIntelCalc::ExecuteEconomySpy(BYTE race, BYTE enemyRace, BYTE responsibl
 				// zufällig ein Gebäude aussuchen
 				for (int i = rand()%number; i < number; i++)
 				{
+					CBuildingInfo buildingInfo = m_pDoc->GetBuildingInfo(m_pDoc->m_System[sectors.GetAt(random).x][sectors.GetAt(random).y].GetAllBuildings()->GetAt(i).GetRunningNumber());
 					// wenn das Gebäude keine Arbeiter benötigt
-					if (m_pDoc->m_System[sectors.GetAt(random).x][sectors.GetAt(random).y].GetAllBuildings()->GetAt(i).GetWorker() == FALSE)
+					if (buildingInfo.GetWorker() == FALSE)
 					{
-						const CBuilding* b = &m_pDoc->m_System[sectors.GetAt(random).x][sectors.GetAt(random).y].GetAllBuildings()->GetAt(i);
 						// sobald das Gebäude eine nicht wirtschaftsbezogene Leistung erbringen kann, kann es nicht spioniert werden
-						if (!b->GetBarrack() && !b->GetFPProd() && !b->GetGroundDefend() && !b->GetGroundDefendBoni()
-							&& !b->GetMilitarySabotageBoni() && !b->GetMilitarySpyBoni() && !b->GetResearchBoni() && !b->GetResearchSabotageBoni()
-							&& !b->GetResearchSpyBoni() && !b->GetResistance() && !b->GetScanPower() && !b->GetScanPowerBoni()
-							&& !b->GetScanRange() && !b->GetScanRangeBoni() && !b->GetSecurityBoni() && !b->GetShieldPower()
-							&& !b->GetShieldPowerBoni() && !b->GetShipDefend() && !b->GetShipDefendBoni() && !b->GetShipTraining()
-							&& !b->GetShipYard() && !b->GetSPProd() && !b->GetTroopTraining())
+						if (!buildingInfo.GetBarrack() && !buildingInfo.GetFPProd() && !buildingInfo.GetGroundDefend() && !buildingInfo.GetGroundDefendBoni()
+							&& !buildingInfo.GetMilitarySabotageBoni() && !buildingInfo.GetMilitarySpyBoni() && !buildingInfo.GetResearchBoni() && !buildingInfo.GetResearchSabotageBoni()
+							&& !buildingInfo.GetResearchSpyBoni() && !buildingInfo.GetResistance() && !buildingInfo.GetScanPower() && !buildingInfo.GetScanPowerBoni()
+							&& !buildingInfo.GetScanRange() && !buildingInfo.GetScanRangeBoni() && !buildingInfo.GetSecurityBoni() && !buildingInfo.GetShieldPower()
+							&& !buildingInfo.GetShieldPowerBoni() && !buildingInfo.GetShipDefend() && !buildingInfo.GetShipDefendBoni() && !buildingInfo.GetShipTraining()
+							&& !buildingInfo.GetShipYard() && !buildingInfo.GetSPProd() && !buildingInfo.GetTroopTraining())
 						{
-							int id = b->GetRunningNumber();
+							int id = buildingInfo.GetRunningNumber();
 							int n = m_pDoc->m_System[sectors.GetAt(random).x][sectors.GetAt(random).y].GetNumberOfBuilding(id);
 							CEcoIntelObj* report = new CEcoIntelObj(race, enemyRace, m_pDoc->GetCurrentRound(), TRUE, CPoint(sectors.GetAt(random)), id, n);
 							// Intelreport dem Akteur hinzufügen
@@ -476,7 +476,7 @@ BOOLEAN CIntelCalc::ExecuteEconomySpy(BYTE race, BYTE enemyRace, BYTE responsibl
 		{
 			if (i != SECURITY_WORKER && i != RESEARCH_WORKER)
 			{
-				buildingTypes[i] = m_pDoc->m_System[sectors.GetAt(random).x][sectors.GetAt(random).y].GetNumberOfWorkbuildings(i, 0);
+				buildingTypes[i] = m_pDoc->m_System[sectors.GetAt(random).x][sectors.GetAt(random).y].GetNumberOfWorkbuildings(i, 0, NULL);
 				if (buildingTypes[i] > NULL)
 				{
 					start = i;
@@ -493,7 +493,7 @@ BOOLEAN CIntelCalc::ExecuteEconomySpy(BYTE race, BYTE enemyRace, BYTE responsibl
 		if (buildingTypes[start] > 0)
 		{
 			CEcoIntelObj* report = new CEcoIntelObj(race, enemyRace, m_pDoc->GetCurrentRound(), TRUE, CPoint(sectors.GetAt(random)),
-				m_pDoc->m_System[sectors.GetAt(random).x][sectors.GetAt(random).y].GetNumberOfWorkbuildings(start, 1), (BYTE)buildingTypes[start]);
+				m_pDoc->m_System[sectors.GetAt(random).x][sectors.GetAt(random).y].GetNumberOfWorkbuildings(start, 1, &m_pDoc->BuildingInfo), (BYTE)buildingTypes[start]);
 			// Intelreport dem Akteur hinzufügen
 			if (report)
 			{
@@ -647,16 +647,17 @@ BOOLEAN CIntelCalc::ExecuteScienceSpy(BYTE race, BYTE enemyRace, BYTE responsibl
 				// zufällig ein Gebäude aussuchen
 				for (int i = rand()%number; i < number; i++)
 				{
+					CBuildingInfo buildingInfo = m_pDoc->GetBuildingInfo(m_pDoc->m_System[sectors.GetAt(random).x][sectors.GetAt(random).y].GetAllBuildings()->GetAt(i).GetRunningNumber());
 					// wenn das Gebäude keine Arbeiter benötigt
-					if (m_pDoc->m_System[sectors.GetAt(random).x][sectors.GetAt(random).y].GetAllBuildings()->GetAt(i).GetWorker() == FALSE)
+					if (buildingInfo.GetWorker() == FALSE)
 					{
 						const CBuilding* b = &m_pDoc->m_System[sectors.GetAt(random).x][sectors.GetAt(random).y].GetAllBuildings()->GetAt(i);
 						// nur wenn das Gebäude einen Forschungshintergrund hat, kann es spioniert werden
-						if (b->GetFPProd() > 0 || b->GetResearchBoni() > 0 || b->GetBioTechBoni() > 0 || b->GetCompTechBoni() > 0 ||
-							b->GetConstructionTechBoni() > 0 || b->GetEnergyTechBoni() > 0 || b->GetPropulsionTechBoni() > 0 || 
-							b->GetWeaponTechBoni() > 0)
+						if (buildingInfo.GetFPProd() > 0 || buildingInfo.GetResearchBoni() > 0 || buildingInfo.GetBioTechBoni() > 0 || buildingInfo.GetCompTechBoni() > 0 ||
+							buildingInfo.GetConstructionTechBoni() > 0 || buildingInfo.GetEnergyTechBoni() > 0 || buildingInfo.GetPropulsionTechBoni() > 0 || 
+							buildingInfo.GetWeaponTechBoni() > 0)
 						{
-							int id = b->GetRunningNumber();
+							int id = buildingInfo.GetRunningNumber();
 							int n = m_pDoc->m_System[sectors.GetAt(random).x][sectors.GetAt(random).y].GetNumberOfBuilding(id);
 							CScienceIntelObj* report = new CScienceIntelObj(race, enemyRace, m_pDoc->GetCurrentRound(), TRUE, CPoint(sectors.GetAt(random)), id, n);
 							// Intelreport dem Akteur hinzufügen
@@ -685,11 +686,11 @@ BOOLEAN CIntelCalc::ExecuteScienceSpy(BYTE race, BYTE enemyRace, BYTE responsibl
 		}
 		
 		// ansonsten werden Gebäude welche Arbeiter benötigen ausspioniert
-		USHORT buildings = m_pDoc->m_System[sectors.GetAt(random).x][sectors.GetAt(random).y].GetNumberOfWorkbuildings(RESEARCH_WORKER, 0);
+		USHORT buildings = m_pDoc->m_System[sectors.GetAt(random).x][sectors.GetAt(random).y].GetNumberOfWorkbuildings(RESEARCH_WORKER, 0, NULL);
 		if (buildings > 0)
 		{
 			CScienceIntelObj* report = new CScienceIntelObj(race, enemyRace, m_pDoc->GetCurrentRound(), TRUE, CPoint(sectors.GetAt(random)),
-				m_pDoc->m_System[sectors.GetAt(random).x][sectors.GetAt(random).y].GetNumberOfWorkbuildings(RESEARCH_WORKER, 1), (BYTE)buildings);
+				m_pDoc->m_System[sectors.GetAt(random).x][sectors.GetAt(random).y].GetNumberOfWorkbuildings(RESEARCH_WORKER, 1, &m_pDoc->BuildingInfo), (BYTE)buildings);
 			// Intelreport dem Akteur hinzufügen
 			if (report)
 			{
@@ -826,11 +827,11 @@ BOOLEAN CIntelCalc::ExecuteMilitarySpy(BYTE race, BYTE enemyRace, BYTE responsib
 		if (rand()%3 == NULL)	// zu 33% wird versucht ein arbeiterbenötigendes Gebäude zu spionieren
 		{
 			// ansonsten werden Gebäude welche Arbeiter benötigen ausspioniert
-			USHORT buildings = m_pDoc->m_System[sectors.GetAt(random).x][sectors.GetAt(random).y].GetNumberOfWorkbuildings(SECURITY_WORKER, 0);
+			USHORT buildings = m_pDoc->m_System[sectors.GetAt(random).x][sectors.GetAt(random).y].GetNumberOfWorkbuildings(SECURITY_WORKER, 0, NULL);
 			if (buildings > 0)
 			{
 				CMilitaryIntelObj* report = new CMilitaryIntelObj(race, enemyRace, m_pDoc->GetCurrentRound(), TRUE, CPoint(sectors.GetAt(random)),
-					m_pDoc->m_System[sectors.GetAt(random).x][sectors.GetAt(random).y].GetNumberOfWorkbuildings(SECURITY_WORKER, 1), (BYTE)buildings, TRUE, FALSE, FALSE);
+					m_pDoc->m_System[sectors.GetAt(random).x][sectors.GetAt(random).y].GetNumberOfWorkbuildings(SECURITY_WORKER, 1, &m_pDoc->BuildingInfo), (BYTE)buildings, TRUE, FALSE, FALSE);
 				// Intelreport dem Akteur hinzufügen
 				if (report)
 				{
@@ -855,20 +856,21 @@ BOOLEAN CIntelCalc::ExecuteMilitarySpy(BYTE race, BYTE enemyRace, BYTE responsib
 			// zufällig ein Gebäude aussuchen
 			for (int i = rand()%number; i < number; i++)
 			{
+				CBuildingInfo buildingInfo = m_pDoc->GetBuildingInfo(m_pDoc->m_System[sectors.GetAt(random).x][sectors.GetAt(random).y].GetAllBuildings()->GetAt(i).GetRunningNumber());
 				// wenn das Gebäude keine Arbeiter benötigt
-				if (m_pDoc->m_System[sectors.GetAt(random).x][sectors.GetAt(random).y].GetAllBuildings()->GetAt(i).GetWorker() == FALSE)
+				if (buildingInfo.GetWorker() == FALSE)
 				{
 					const CBuilding* b = &m_pDoc->m_System[sectors.GetAt(random).x][sectors.GetAt(random).y].GetAllBuildings()->GetAt(i);
 					// nur wenn das Gebäude einen Militär- oder Geheimdiensthintergrund hat, kann es spioniert werden
-					if (b->GetShipYard() || b->GetSPProd() > NULL || b->GetBarrack() || b->GetBarrackSpeed() > NULL ||
-						b->GetEconomySabotageBoni() > NULL || b->GetEconomySpyBoni() > NULL || b->GetGroundDefend() > NULL ||
-						b->GetGroundDefendBoni() > NULL || b->GetMilitarySabotageBoni() > NULL || b->GetMilitarySpyBoni() > NULL ||
-						b->GetResistance() > NULL || b->GetScanPower() > NULL || b->GetScanPowerBoni() > NULL || b->GetScanRange() > NULL ||
-						b->GetScanRangeBoni() > NULL || b->GetSecurityBoni() > NULL || b->GetShieldPower() > NULL ||
-						b->GetShieldPowerBoni() > NULL || b->GetShipBuildSpeed() > NULL || b->GetShipDefend() > NULL || b->GetShipDefendBoni() > NULL ||
-						b->GetShipTraining() > NULL || b->GetTroopBuildSpeed() > NULL || b->GetTroopTraining() > NULL)						
+					if (buildingInfo.GetShipYard() || buildingInfo.GetSPProd() > NULL || buildingInfo.GetBarrack() || buildingInfo.GetBarrackSpeed() > NULL ||
+						buildingInfo.GetEconomySabotageBoni() > NULL || buildingInfo.GetEconomySpyBoni() > NULL || buildingInfo.GetGroundDefend() > NULL ||
+						buildingInfo.GetGroundDefendBoni() > NULL || buildingInfo.GetMilitarySabotageBoni() > NULL || buildingInfo.GetMilitarySpyBoni() > NULL ||
+						buildingInfo.GetResistance() > NULL || buildingInfo.GetScanPower() > NULL || buildingInfo.GetScanPowerBoni() > NULL || buildingInfo.GetScanRange() > NULL ||
+						buildingInfo.GetScanRangeBoni() > NULL || buildingInfo.GetSecurityBoni() > NULL || buildingInfo.GetShieldPower() > NULL ||
+						buildingInfo.GetShieldPowerBoni() > NULL || buildingInfo.GetShipBuildSpeed() > NULL || buildingInfo.GetShipDefend() > NULL || buildingInfo.GetShipDefendBoni() > NULL ||
+						buildingInfo.GetShipTraining() > NULL || buildingInfo.GetTroopBuildSpeed() > NULL || buildingInfo.GetTroopTraining() > NULL)						
 					{
-						int id = b->GetRunningNumber();
+						int id = buildingInfo.GetRunningNumber();
 						int n = m_pDoc->m_System[sectors.GetAt(random).x][sectors.GetAt(random).y].GetNumberOfBuilding(id);
 						CMilitaryIntelObj* report = new CMilitaryIntelObj(race, enemyRace, m_pDoc->GetCurrentRound(), TRUE, CPoint(sectors.GetAt(random)), id, n, TRUE, FALSE, FALSE);
 						// Intelreport dem Akteur hinzufügen

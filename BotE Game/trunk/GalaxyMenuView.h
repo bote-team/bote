@@ -7,7 +7,7 @@
  */
 #pragma once
 #include "Botf2Doc.h"
-#include "DBScrollView.h"
+//#include "DBScrollView.h"
 
 /*
 Wird GDI Plus benutzt, so müssen noch weitere Anpassungen am Code vorgenommen werden,
@@ -16,11 +16,10 @@ Wird GDI Plus benutzt, so müssen noch weitere Anpassungen am Code vorgenommen we
 - OnEraseBackground muss in dieser View FALSE zurückgeben
 - CMemDC darf beim Zeichnen der Galaxieansicht nicht verwendet werden
 */
-//#define GDIPLUS
+#define GDIPLUS
+//#define GDI
 
-#define GDI
-
-class CGalaxyMenuView : public CDBScrollView
+class CGalaxyMenuView : public CScrollView
 {
 protected: // Nur aus Serialisierung erzeugen
 	CGalaxyMenuView();
@@ -41,6 +40,7 @@ protected: // Nur aus Serialisierung erzeugen
 	int m_nRange;
 	Sector oldtarget;
 	Sector m_oldSelection;	
+	bool m_bUpdateOnly;
 	
 	// Hier Variablen, wenn wir eine Handelroute ziehen wollen
 	static BOOLEAN m_bDrawTradeRoute;		///< sollen wir bei MouseMove die Handelroute zeigen

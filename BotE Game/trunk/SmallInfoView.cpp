@@ -83,7 +83,7 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 		{
 			// gibt es eine spezielle Grafik für den Planeten, so wird versucht diese zu laden
 			Bitmap* planet = NULL;
-			planet = pDoc->GetGraphicPool()->GetGDIGraphic("Planets\\" + m_pPlanet->GetPlanetName()+".jpg");
+			planet = pDoc->GetGraphicPool()->GetGDIGraphic("Planets\\" + m_pPlanet->GetPlanetName()+".png");
 			// ansonsten wird die zufällige Planetengrafik geladen
 			if (planet == NULL)
 				planet = pDoc->GetGraphicPool()->GetGDIGraphic(m_pPlanet->GetGraphicFile());
@@ -98,7 +98,8 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 				CalcLogicalPoint(center);
 				CSize size(img.Width() * 0.85, img.Height() * 0.85);
 				RectF drawRect(center.x - size.cx, center.y - size.cy + 20, 2 * size.cx, 2 * size.cy);
-				g->DrawImage(planet, drawRect);				
+				g->DrawImage(planet, drawRect);	
+				img.Destroy();
 				delete planet;
 			}
 

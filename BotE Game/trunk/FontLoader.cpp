@@ -13,7 +13,7 @@ BYTE CFontLoader::m_byFontSizes[DOMINION][6] = {
 //	16,25,25,35,45,55};	// Dominion Opticon
 
 BYTE CFontLoader::m_byGDIPlusFontSizes[DOMINION][6] = {
-	5,14,15,22,32,38,
+	4,14,15,22,32,38,
 	6,9,10,14,19,19,
 	5,10,10,14,21,25,
 	6,11,11,15,22,28,

@@ -48,6 +48,21 @@ enum RaceAttributes
 	RACE_DEFENCEPACTDOMINION	= 8192
 };
 
+enum RaceProberties
+{
+	RACE_FINANCIAL				= 1,
+	RACE_WARLIKE				= 2,
+	RACE_FARMER					= 4,
+	RACE_INDUSTRIAL				= 8,
+	RACE_SECRET					= 16,
+	RACE_RESEARCHER				= 32,
+	RACE_PRODUCER				= 64,
+	RACE_PACIFIST				= 128,
+	RACE_SNEAKY					= 256,
+	RACE_SOLO					= 512,
+	RACE_EXTREMHOSTILE			= 1024
+};
+
 class CMinorRace : public CObject  
 {
 public:

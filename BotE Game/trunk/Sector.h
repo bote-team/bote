@@ -261,10 +261,10 @@ public:
 
 // Zeichenfunktionen für diese Klasse
 	/// Diese Funktion zeichnet den Namen des Sektors.
-	void DrawSectorsName(CDC* pDC, BYTE ownerOfSystem, int playersRace, BOOLEAN knowOwner) const;
+	void DrawSectorsName(CDC *pDC, BYTE ownerOfSystem, int playersRace, BOOLEAN knowOwner) const;
 	
 	/// Diese Funktion zeichnet die entsprechenden Schiffssymbole in den Sektor
-	void DrawShipSymbolInSector(CDC* pDC, int PlayersRace) const;
+	void DrawShipSymbolInSector(Graphics *g, int PlayersRace) const;
 
 // statische Membervariablen
 	/// Die Schrift, mit welcher die Sektornamen gezeichnet werden.

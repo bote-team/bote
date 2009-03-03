@@ -137,8 +137,7 @@ BOOL CBotf2Doc::OnNewDocument()
 	if (mainDlg.DoModal() != ID_WIZFINISH && !m_bDontExit)
 		exit(1);
 	while (!m_bDataReceived)
-		Sleep(50);
-	
+		Sleep(50);	
 	m_iPlayersRace = client.GetClientRace();
 	
 	// Standardwerte setzen
@@ -170,7 +169,7 @@ BOOL CBotf2Doc::OnNewDocument()
 		m_pSoundManager->SetSoundMasterVolume(NULL);
 	else
 		m_pSoundManager->SetSoundMasterVolume(0.5f);
-
+	
 	// Mal Testweise paar Truppen anlegen
 	BYTE techs[6];
 	memset(techs, 0, sizeof(*techs)*6);
@@ -203,7 +202,7 @@ BOOL CBotf2Doc::OnNewDocument()
 	// hier werden auch die Spezialtruppen der Cartarer ins System gesteckt
 	BuildTroop(6, raceKO[CARDASSIAN]);
 	BuildTroop(6, raceKO[CARDASSIAN]);
-
+	
 	return TRUE;
 }
 
@@ -216,7 +215,7 @@ BYTE CBotf2Doc::GetPlayersRace() const
 // CBotf2Doc Serialisierung
 
 void CBotf2Doc::Serialize(CArchive& ar)
-{
+{	
 	if (ar.IsStoring())
 	{		
 		// ZU ERLEDIGEN: Hier Code zum Speichern einfügen
@@ -329,7 +328,7 @@ void CBotf2Doc::Serialize(CArchive& ar)
 	if (ar.IsLoading())
 	{
 		GenerateStarmap();		
-	}
+	}	
 }
 
 /// Serialisiert die Daten, welche am Anfang des Spiels einmal gesendet werden müssen.
@@ -671,14 +670,12 @@ void CBotf2Doc::PrepareData()
 			// Hier die aktuellen Kursdaten in die History schreiben
 			USHORT* resPrices = m_Trade[i].GetRessourcePrice();
 			m_TradeHistory[i].SaveCurrentPrices(resPrices, m_Trade[i].GetTax());
-		}		
-
+		}	
+		
 		// Sektoren generieren
 		GenerateGalaxy();
-		
 		ApplyShipsAtStartup();
-		ApplyBuildingsAtStartup();
-		
+		ApplyBuildingsAtStartup();		
 /*		double habis = 0;
 		CString s;
 		double hab = 0;
@@ -1043,7 +1040,7 @@ void CBotf2Doc::NextRound()
 			m_Sector[x][y].CalculateOwner(m_System[x][y].GetOwnerOfSystem());
 			if (m_Sector[x][y].GetSunSystem() == TRUE && m_System[x][y].GetOwnerOfSystem() != NOBODY && m_System[x][y].GetOwnerOfSystem() != UNKNOWN)
 			{
-				m_System[x][y].CalculateVariables(m_Empire[m_System[x][y].GetOwnerOfSystem()].GetResearch()->GetResearchInfo(),	m_Sector[x][y].GetPlanets(), CTrade::GetMonopolOwner());
+				m_System[x][y].CalculateVariables(&this->BuildingInfo, m_Empire[m_System[x][y].GetOwnerOfSystem()].GetResearch()->GetResearchInfo(),	m_Sector[x][y].GetPlanets(), CTrade::GetMonopolOwner());
 				// alle produzierten FP und SP der Imperien berechnen und zuweisen
 				int currentPoints;
 				currentPoints = m_System[x][y].GetProduction()->GetResearchProd();
@@ -1159,6 +1156,7 @@ void CBotf2Doc::ApplyBuildingsAtStartup()
 					{
 						while (pos < csInput.GetLength())
 						{
+							// ID des Gebäudes holen
 							s = csInput.Tokenize(",", pos);
 							BuildBuilding(atoi(s), CPoint(x,y));
 						}
@@ -1198,9 +1196,9 @@ void CBotf2Doc::ApplyBuildingsAtStartup()
 					if (m_System[x][y].GetOwnerOfSystem() == i)
 					{
 						// Anzahl aller Farmen, Bauhöfe usw. im System berechnen
-						m_System[x][y].CalculateNumberOfWorkbuildings();
+						m_System[x][y].CalculateNumberOfWorkbuildings(&this->BuildingInfo);						
 						m_System[x][y].SetWorkersIntoBuildings();
-						m_System[x][y].CalculateVariables(m_Empire[m_System[x][y].GetOwnerOfSystem()].GetResearch()->GetResearchInfo(), m_Sector[x][y].GetPlanets(), CTrade::GetMonopolOwner());
+						m_System[x][y].CalculateVariables(&this->BuildingInfo, m_Empire[m_System[x][y].GetOwnerOfSystem()].GetResearch()->GetResearchInfo(), m_Sector[x][y].GetPlanets(), CTrade::GetMonopolOwner());
 						// alle produzierten FP und SP der Imperien berechnen und zuweisen
 						int currentPoints;
 						currentPoints = m_System[x][y].GetProduction()->GetResearchProd();
@@ -1369,7 +1367,7 @@ void CBotf2Doc::ReadBuildingInfosFromFile()
 				info.SetShipBuildSpeed(atoi(data[121]));
 				info.SetTroopBuildSpeed(atoi(data[122]));
 				info.SetPredecessor(atoi(data[123]));
-				info.SetIsBuildingOnline(atoi(data[124]));
+				info.SetAllwaysOnline(atoi(data[124]));
 				info.SetWorker(atoi(data[125]));
 				info.SetNeverReady(atoi(data[126]));
 				info.SetEquivalent(NOBODY,0);		// niemand-index immer auf NULL setzen
@@ -1407,6 +1405,7 @@ void CBotf2Doc::ReadBuildingInfosFromFile()
 			BuildingInfo.GetAt(i).GetWorker());
 			AfxMessageBox(test);
 	}*/
+	
 }
 
 // Funktion ließt aus der Datei die Informationen zu allen Schiffen ein und speichert diese im dynamischen Feld
@@ -1528,9 +1527,12 @@ void CBotf2Doc::ReadShipInfosFromFile()
 }
 
 // Später noch hinzufügen, dass auch andere Rassen bauen können
-void CBotf2Doc::BuildBuilding(int z, CPoint KO)
+void CBotf2Doc::BuildBuilding(USHORT id, CPoint KO)
 {
-	m_System[KO.x][KO.y].AddNewBuilding((CBuilding)BuildingInfo[z-1]);
+	CBuilding building(id);
+	BOOLEAN isOnline = this->GetBuildingInfo(id).GetAllwaysOnline();
+	building.SetIsBuildingOnline(isOnline);
+	m_System[KO.x][KO.y].AddNewBuilding(building);	
 }
 
 void CBotf2Doc::BuildShip(int ID, CPoint KO, BYTE owner)
@@ -1908,20 +1910,20 @@ void CBotf2Doc::CalcSystemAttack()
 				// Wenn eine Minorrace in dem System lebt und dieser nicht schon erobert wurde
 				if (defender == UNKNOWN && m_Sector[p.x][p.y].GetTakenSector() == FALSE)
 				{
-					attackSystem->Init(&m_System[p.x][p.y], &m_ShipArray, &m_Sector[p.x][p.y],
-					m_Empire[defender].GetResearch()->GetResearchInfo(), p, this->GetMinorRace(m_Sector[p.x][p.y].GetName())->GetKind(), CTrade::GetMonopolOwner());
+					attackSystem->Init(&m_System[p.x][p.y], &m_ShipArray, &m_Sector[p.x][p.y], m_Empire[defender].GetResearch()->GetResearchInfo(),
+						&this->BuildingInfo, p, this->GetMinorRace(m_Sector[p.x][p.y].GetName())->GetKind(), CTrade::GetMonopolOwner());
 				}
 				// Wenn eine Majorrace in dem System lebt
 				else if (defender != NOBODY && attackSystem->IsDefenderNotAttacker(defender, attackers))
 				{
-					attackSystem->Init(&m_System[p.x][p.y], &m_ShipArray, &m_Sector[p.x][p.y],
-					m_Empire[defender].GetResearch()->GetResearchInfo(), p, m_MajorRace[m_Sector[p.x][p.y].GetOwnerOfSector()].GetKind(), CTrade::GetMonopolOwner());
+					attackSystem->Init(&m_System[p.x][p.y], &m_ShipArray, &m_Sector[p.x][p.y], m_Empire[defender].GetResearch()->GetResearchInfo(),
+						&this->BuildingInfo, p, m_MajorRace[m_Sector[p.x][p.y].GetOwnerOfSector()].GetKind(), CTrade::GetMonopolOwner());
 				}
 				// Wenn niemand mehr in dem System lebt, z.B. durch Rebellion
 				else
 				{
-					attackSystem->Init(&m_System[p.x][p.y], &m_ShipArray, &m_Sector[p.x][p.y],
-					m_Empire[m_Sector[p.x][p.y].GetColonyOwner()].GetResearch()->GetResearchInfo(), p, m_MajorRace[m_Sector[p.x][p.y].GetColonyOwner()].GetKind(), CTrade::GetMonopolOwner());
+					attackSystem->Init(&m_System[p.x][p.y], &m_ShipArray, &m_Sector[p.x][p.y], m_Empire[m_Sector[p.x][p.y].GetColonyOwner()].GetResearch()->GetResearchInfo(),
+						&this->BuildingInfo, p, m_MajorRace[m_Sector[p.x][p.y].GetColonyOwner()].GetKind(), CTrade::GetMonopolOwner());
 				}
 				// Ein Systemangriff verringert die Moral in allen System, die von uns schon erobert wurden und zuvor
 				// der Majorrace gehörten, deren System hier angegriffen wird
@@ -2171,7 +2173,7 @@ void CBotf2Doc::CalcSystemAttack()
 							m_Sector[p.x][p.y].SetOwnerOfSector(attacker);
 						}
 						// Variablen berechnen und Gebäude besetzen
-						m_System[p.x][p.y].CalculateNumberOfWorkbuildings();
+						m_System[p.x][p.y].CalculateNumberOfWorkbuildings(&this->BuildingInfo);
 						m_System[p.x][p.y].SetWorkersIntoBuildings();
 
 						// erfolgreiches Invasionsevent für den Angreifer einfügen
@@ -2760,7 +2762,8 @@ void CBotf2Doc::CalcOldRoundData()
 						m_Empire[m_System[x][y].GetOwnerOfSystem()].SetLatinum(m_System[x][y].GetProduction()->GetLatinumProd());
 				}
 				// Hier die Gebäude abreißen, die angeklickt wurden
-				m_System[x][y].DestroyBuildings();
+				if (m_System[x][y].DestroyBuildings())
+					m_System[x][y].CalculateNumberOfWorkbuildings(&this->BuildingInfo);
 				
 				// Variablen berechnen lassen, bevor der Planet wächst -> diese ins Lager
 				// nur berechnen, wenn das System auch jemandem gehört, ansonsten würde auch die Mind.Prod. ins Lager kommen
@@ -2850,10 +2853,10 @@ void CBotf2Doc::CalcOldRoundData()
 				}
 				if (m_System[x][y].GetOwnerOfSystem() != NOBODY)
 				{
-					m_System[x][y].CalculateVariables(m_Empire[m_System[x][y].GetOwnerOfSystem()].GetResearch()->GetResearchInfo(),
+					m_System[x][y].CalculateVariables(&this->BuildingInfo, m_Empire[m_System[x][y].GetOwnerOfSystem()].GetResearch()->GetResearchInfo(),
 						m_Sector[x][y].GetPlanets(), CTrade::GetMonopolOwner());
 					// Gebäude die Energie benötigen checken
-					if (m_System[x][y].CheckEnergyBuildings() == 1)
+					if (m_System[x][y].CheckEnergyBuildings(&this->BuildingInfo) == 1)
 					{
 						CPoint p; p.x = x; p.y = y;
 						CString news = CResourceManager::GetString("BUILDING_TURN_OFF",FALSE,m_Sector[x][y].GetName());
@@ -2929,7 +2932,7 @@ void CBotf2Doc::CalcOldRoundData()
 									BuildBuilding(list,CPoint(x,y));	// Gebäude bauen
 									// und Gebäude (welches letztes im Feld) ist auch gleich online setzen, wenn 
 									// genügend Arbeiter da sind
-									unsigned short CheckValue = m_System[x][y].SetNewBuildingOnline();
+									unsigned short CheckValue = m_System[x][y].SetNewBuildingOnline(&this->BuildingInfo);
 									// Nachricht generierenm das das Gebäude nicht online genommen werden konnte
 									if (CheckValue == 1)
 									{
@@ -2965,7 +2968,7 @@ void CBotf2Doc::CalcOldRoundData()
 									{
 										BuildBuilding(list,CPoint(x,y));
 										// falls das geupgradete Gebäude Energie benötigt wird versucht es gleich online zu setzen
-										if (GetBuildingInfo(list).GetNeededEnergy() > NULL && m_System[x][y].SetNewBuildingOnline() == 2)
+										if (GetBuildingInfo(list).GetNeededEnergy() > NULL && m_System[x][y].SetNewBuildingOnline(&this->BuildingInfo) == 2)
 										{
 											CString news = CResourceManager::GetString("NOT_ENOUGH_ENERGY",FALSE,m_Sector[x][y].GetName());
 											message.GenerateMessage(news,m_System[x][y].GetOwnerOfSystem(),SOMETHING,"",p,FALSE,2);
@@ -3013,7 +3016,7 @@ void CBotf2Doc::CalcOldRoundData()
 							m_System[x][y].GetAssemblyList()->CalculateNeededRessourcesForUpdate(&BuildingInfo, m_System[x][y].GetAllBuildings(), m_Empire[m_System[x][y].GetOwnerOfSystem()].GetResearch()->GetResearchInfo());
 						}
 						// Anzahl aller Farmen, Bauhöfe usw. im System berechnen
-						m_System[x][y].CalculateNumberOfWorkbuildings();
+						m_System[x][y].CalculateNumberOfWorkbuildings(&this->BuildingInfo);
 						// freie Arbeiter den Gebäuden zuweisen
 						m_System[x][y].SetWorkersIntoBuildings();
 					}
@@ -3048,7 +3051,7 @@ void CBotf2Doc::CalcNewRoundData()
 			if (m_Sector[x][y].GetSunSystem() == TRUE && m_System[x][y].GetOwnerOfSystem() != NOBODY &&	m_System[x][y].GetOwnerOfSystem() != UNKNOWN)
 			{
 				// imperiumsweite Moralproduktion aus diesem System berechnen
-				m_System[x][y].CalculateEmpireWideMoralProd();
+				m_System[x][y].CalculateEmpireWideMoralProd(&this->BuildingInfo);
 				// Blockadewert des Systems zurücksetzen
 				m_System[x][y].SetBlockade(NULL);
 			}
@@ -3128,7 +3131,7 @@ void CBotf2Doc::CalcNewRoundData()
 				}
 				
 				// baubare Gebäude, Schiffe und Truppen berechnen
-				m_System[x][y].CalculateVariables(m_Empire[m_System[x][y].GetOwnerOfSystem()].GetResearch()->GetResearchInfo(),	m_Sector[x][y].GetPlanets(), CTrade::GetMonopolOwner());
+				m_System[x][y].CalculateVariables(&this->BuildingInfo, m_Empire[m_System[x][y].GetOwnerOfSystem()].GetResearch()->GetResearchInfo(),	m_Sector[x][y].GetPlanets(), CTrade::GetMonopolOwner());
 				m_System[x][y].CalculateBuildableBuildings(&m_Sector[x][y],&BuildingInfo,&m_Empire[m_System[x][y].GetOwnerOfSystem()],&m_GlobalBuildings,m_MajorRace);
 				m_System[x][y].CalculateBuildableShips(&m_ShipInfoArray,m_Empire[m_System[x][y].GetOwnerOfSystem()].GetResearch(),m_Sector[x][y].GetName(),m_Sector[x][y].GetMinorRace());
 				m_System[x][y].CalculateBuildableTroops(&m_TroopInfo,m_Empire[m_System[x][y].GetOwnerOfSystem()].GetResearch());
@@ -3572,8 +3575,8 @@ void CBotf2Doc::CalcShipOrders()
 				m_System[ShipKO.x][ShipKO.y].CalculateBuildableBuildings(&m_Sector[ShipKO.x][ShipKO.y],&BuildingInfo,&m_Empire[m_ShipArray[y].GetOwnerOfShip()],&m_GlobalBuildings,m_MajorRace);
 				m_System[ShipKO.x][ShipKO.y].CalculateBuildableShips(&m_ShipInfoArray,m_Empire[m_ShipArray[y].GetOwnerOfShip()].GetResearch(),m_Sector[ShipKO.x][ShipKO.y].GetName(),m_Sector[ShipKO.x][ShipKO.y].GetMinorRace());
 				m_System[ShipKO.x][ShipKO.y].CalculateBuildableTroops(&m_TroopInfo,m_Empire[m_ShipArray[y].GetOwnerOfShip()].GetResearch());
-				m_System[ShipKO.x][ShipKO.y].CalculateNumberOfWorkbuildings();
-				m_System[ShipKO.x][ShipKO.y].CalculateVariables(m_Empire[m_System[ShipKO.x][ShipKO.y].GetOwnerOfSystem()].GetResearch()->GetResearchInfo(), m_Sector[ShipKO.x][ShipKO.y].GetPlanets(), CTrade::GetMonopolOwner());
+				m_System[ShipKO.x][ShipKO.y].CalculateNumberOfWorkbuildings(&this->BuildingInfo);
+				m_System[ShipKO.x][ShipKO.y].CalculateVariables(&this->BuildingInfo, m_Empire[m_System[ShipKO.x][ShipKO.y].GetOwnerOfSystem()].GetResearch()->GetResearchInfo(), m_Sector[ShipKO.x][ShipKO.y].GetPlanets(), CTrade::GetMonopolOwner());
 				// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
 				s.Format("%s %s",CResourceManager::GetString("COLONIZATION"), m_Sector[ShipKO.x][ShipKO.y].GetName());
 				m_ShipHistory[m_ShipArray[y].GetOwnerOfShip()].ModifyShip(&m_ShipArray[y],

@@ -151,13 +151,13 @@ CString CPlanet::GetGraphicFile() const
 	if (m_iGraphicType < 10)	// führende NULL beachten
 	{
 		CString fileName;
-		fileName.Format("Planets\\class%c0%d.jpg", m_cClass, m_iGraphicType);
+		fileName.Format("Planets\\class%c0%d.png", m_cClass, m_iGraphicType);
 		return fileName;
 	}
 	else
 	{
 		CString fileName;
-		fileName.Format("Planets\\class%c%d.jpg", m_cClass, m_iGraphicType);
+		fileName.Format("Planets\\class%c%d.png", m_cClass, m_iGraphicType);
 		return fileName;
 	}
 }
@@ -468,7 +468,7 @@ void CPlanet::DrawPlanet(Graphics &g, CRect planetRect, CGraphicPool* graphicPoo
 	int y_Boni = y-23;
 	
 	Bitmap* planet = NULL;
-	planet = graphicPool->GetGDIGraphic("Planets\\"+m_strName+".jpg");
+	planet = graphicPool->GetGDIGraphic("Planets\\"+m_strName+".png");
 	
 	// Konnte keine spezielle Planetengrafik gefunden werden, so wird eine zufällige Grafik ausgewählt
 	if (planet == NULL)

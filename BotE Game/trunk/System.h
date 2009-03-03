@@ -69,7 +69,7 @@ public:
 	// Funktion gibt die Anzahl oder die RunningNumber (ID) der Gebäude zurück, welche Arbeiter benötigen.
 	// Wir übergeben dafür als Parameter den Typ des Gebäudes (FARM, BAUHOF usw.) und einen Modus.
 	// Ist der Modus NULL, dann bekommen wir die Anzahl zurück, ist der Modus EINS, dann die RunningNumber.
-	USHORT GetNumberOfWorkbuildings(int WhatWorkbuilding, int Modus) const;
+	USHORT GetNumberOfWorkbuildings(int WhatWorkbuilding, int Modus, BuildingInfoArray* buildingInfos) const;
 
 	// Funktion gibt die Anzahl des Gebäudes mit der übergebenen RunningNumber zurück.
 	USHORT GetNumberOfBuilding(USHORT runningNumber) const;
@@ -179,14 +179,14 @@ public:
 	
 // sonstige Funktionen	
 	// Funktion berechnet aus den Eigenschaften der stehenden Gebäude alle Attribute der Systemklasse.
-	void CalculateVariables(CResearchInfo*, CArray<CPlanet>*, const USHORT*);
+	void CalculateVariables(BuildingInfoArray*, CResearchInfo*, CArray<CPlanet>*, const USHORT*);
 
 	// Funktion berechnet die Lagerinhalte des Systems. Aufrufen bei Ende bzw. Beginn einer neuen Runde.
 	// Gibt die Funktion TRUE zurück hat sich das System Aufgrund zu schlechter Moral vom Besitzer losgesagt.
 	BOOLEAN CalculateStorages(CResearchInfo* researchInfo, int diliAdd);
 	
 	// Funktion fügt ein neues Gebäude zum System hinzu.
-	void AddNewBuilding(CBuilding theNewBuilding) {m_Buildings.Add(theNewBuilding);}
+	void AddNewBuilding(CBuilding &building) { m_Buildings.Add(building); }
 
 	// Funktion löscht alle Gebäude, die die übergebene RunningNumber haben und gibt deren Anzahl zurück.
 	// -> Danach muß AddBuilding() mit dem Nachfolger gleich der Anzahl aufgerufen werden.
@@ -195,7 +195,7 @@ public:
 	// Funktion reißt alle Gebäude ab, die in der Variable m_BuildingDestroy stehen. Funktion wird in der Doc 
 	// bei NextRound() aufgerufen.
 // --- wird noch überarbeitet
-	void DestroyBuildings(void);
+	bool DestroyBuildings(void);
 	
 	// Funktion berechnet die baubaren Gebäude und Gebäudeupdates in dem System.
 	void CalculateBuildableBuildings(CSector* sector, BuildingInfoArray* buildingInfo, CEmpire* empire, CGlobalBuildings* globals, CMajorRace* majors);
@@ -210,18 +210,18 @@ public:
 	// Sie muß am Rundenanfang vor CalculateVariables() aufgerufen werden und sortiert gleichzeitig das
 	// CArray m_Buildings nach der RunningNumber. // In der Doc-Klasse nach der Funktion DestroyBuildings()
 	// und zu Beginn aufrufen!
-	void CalculateNumberOfWorkbuildings(void);
+	void CalculateNumberOfWorkbuildings(BuildingInfoArray *buildingInfos);
 
 	// Funktion berechnet die imperiumweite Moralproduktion, welche aus diesem System generiert wird.
-	void CalculateEmpireWideMoralProd();
+	void CalculateEmpireWideMoralProd(BuildingInfoArray *buildingInfos);
 	
 	// Funktion setzt das letzte Gebäude, welches gebaut wurde online, sofern dies möglich ist.
-	int SetNewBuildingOnline();
+	int SetNewBuildingOnline(BuildingInfoArray *buildingInfos);
 	
 	// Funktion überprüft Gebäude die Energie benötigen und schaltet diese gegebenfalls ab,
 	// falls zuwenig Energie im System vorhanden ist. Diese Funktion aufrufen, bevor wir CalculateVariables() usw.
 	// aufrufen, weil wir ja die bösen Onlinegebäude vorher ausschalten wollen.
-	int CheckEnergyBuildings(void);
+	int CheckEnergyBuildings(BuildingInfoArray *buildingInfos);
 
 	// Funktion fügt einen Baulistencheck durch
 	BOOLEAN AssemblyListCheck(BuildingInfoArray* buildingInfo, CGlobalBuildings* globals, int ID = 0);

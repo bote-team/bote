@@ -1,0 +1,54 @@
+<html>
+<body>
+<pre>
+<h1>Erstellungsprotokoll</h1>
+<h3>
+--------------------Konfiguration: MinorRaceEditor - Win32 Debug--------------------
+</h3>
+<h3>Befehlszeilen</h3>
+Creating command line "rc.exe /l 0x407 /fo"Debug/MinorRaceEditor.res" /d "_DEBUG" "F:\C++\Projekte\BotE Projekt\BotE Tools\MinorRaceEditor\MinorRaceEditor\MinorRaceEditor.rc"" 
+Erstellen der temporären Datei  "C:\DOKUME~1\SIRPUS~1\LOKALE~1\Temp\RSP21A.tmp" mit Inhalten
+[
+/nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /Fp"Debug/MinorRaceEditor.pch" /Yu"stdafx.h" /Fo"Debug/" /Fd"Debug/" /FD /GZ /c 
+"F:\C++\Projekte\BotE Projekt\BotE Tools\MinorRaceEditor\MinorRaceEditor\FileReader.cpp"
+"F:\C++\Projekte\BotE Projekt\BotE Tools\MinorRaceEditor\MinorRaceEditor\MinorRace.cpp"
+"F:\C++\Projekte\BotE Projekt\BotE Tools\MinorRaceEditor\MinorRaceEditor\MinorRaceEditor.cpp"
+"F:\C++\Projekte\BotE Projekt\BotE Tools\MinorRaceEditor\MinorRaceEditor\MinorRaceEditorDlg.cpp"
+]
+Creating command line "cl.exe @C:\DOKUME~1\SIRPUS~1\LOKALE~1\Temp\RSP21A.tmp" 
+Erstellen der temporären Datei  "C:\DOKUME~1\SIRPUS~1\LOKALE~1\Temp\RSP21B.tmp" mit Inhalten
+[
+/nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /Fp"Debug/MinorRaceEditor.pch" /Yc"stdafx.h" /Fo"Debug/" /Fd"Debug/" /FD /GZ /c 
+"F:\C++\Projekte\BotE Projekt\BotE Tools\MinorRaceEditor\MinorRaceEditor\StdAfx.cpp"
+]
+Creating command line "cl.exe @C:\DOKUME~1\SIRPUS~1\LOKALE~1\Temp\RSP21B.tmp" 
+Erstellen der temporären Datei  "C:\DOKUME~1\SIRPUS~1\LOKALE~1\Temp\RSP21C.tmp" mit Inhalten
+[
+/nologo /subsystem:windows /incremental:yes /pdb:"Debug/MinorRaceEditor.pdb" /debug /machine:I386 /out:"Debug/MinorRaceEditor.exe" /pdbtype:sept 
+".\Debug\FileReader.obj"
+".\Debug\MinorRace.obj"
+".\Debug\MinorRaceEditor.obj"
+".\Debug\MinorRaceEditorDlg.obj"
+".\Debug\StdAfx.obj"
+".\Debug\MinorRaceEditor.res"
+]
+Erstellen der Befehlzeile "link.exe @C:\DOKUME~1\SIRPUS~1\LOKALE~1\Temp\RSP21C.tmp"
+<h3>Ausgabefenster</h3>
+Ressourcen werden kompiliert...
+Kompilierung läuft...
+StdAfx.cpp
+Kompilierung läuft...
+FileReader.cpp
+MinorRace.cpp
+MinorRaceEditor.cpp
+MinorRaceEditorDlg.cpp
+Generieren von Code...
+Linker-Vorgang läuft...
+
+
+
+<h3>Ergebnisse</h3>
+MinorRaceEditor.exe - 0 Fehler, 0 Warnung(en)
+</pre>
+</body>
+</html>
