@@ -1,0 +1,123 @@
+/*
+ *   Copyright (C)2004-2008 Sir Pustekuchen
+ *
+ *   Author   :  Sir Pustekuchen
+ *   Home     :  http://birth-of-the-empires.de.vu
+ *
+ */
+#pragma once
+#include "afx.h"
+#include "CombatShip.h"
+
+class CCombat :	public CObject
+{
+	friend class CCombatSimulatorView;
+	friend class CCombatSimulatorDoc;
+public:
+	/// Konstruktor
+	CCombat(void);
+	
+	/// Destruktor
+	~CCombat(void);
+
+	// Zugriffsfunktionen
+	BOOLEAN GetInvolvedRace(BYTE race) const {ASSERT(race >= HUMAN && race <= DOMINION); return m_bInvolvedRaces[race];}
+
+	BOOLEAN GetReadyForCombat() const {return m_bReady;}
+
+	/// Schiffskampfberechnungsfunktion
+	/**
+	* Diese Funktion verlangt beim Aufruf einen Zeiger auf ein Feld, welches Zeiger auf Schiffe beinhaltet
+	* <code>ships<code>. Diese Schiffe werden dann am Kampf teilnehmen. Kommt es zu einem Kampf, so muß 
+	* diese Funktion zu allererst aufgerufen werden.
+	*/
+	void SetInvolvedShips(CArray<CShip*,CShip*>* ships/*, CMajorRace* majors*/);
+	
+	/**
+	* Diese Funktion setzt die gewählte Schiffsformation der Rasse <code>race<code> fest.
+	* Sie sollte vor dem Aufruf der Funktion <code>PreCombatCalculation()<code> aufgerufen werden.
+	*/
+	void ApplyShipFormation(int race);
+	
+	/**
+	* Diese Funktion setzt die gewählte Taktik <code>tactic<code> der Rasse <code>race<code> fest.
+	* Sie sollte vor dem Aufruf der Funktion <code>PreCombatCalculation()<code> aufgerufen werden.
+	*/
+	void ApplyShipTactic(int race, BYTE tactic);
+	
+	/**
+	* Diese Funktion muß vor der Funktion <code>CalculateCombat()<code> aufgerufen werden. Sie stellt alle
+	* Berechnungen an, welche für den späteren Kampfverlauf nötig sind. Wird diese Funktion nicht ordnungsgemäß
+	* durchgeführt, kann die Funktion <code>CalculateCombat()<code> nicht durchgeführt werden.
+	*/
+	void PreCombatCalculation();
+	
+	/** 
+	* Diese Funktion ist das Herzstück der CCombat-Klasse. Sie führt die ganzen Kampfberechnungen durch.
+	*/
+	void CalculateCombat(BYTE winner[7]);
+
+	/**
+	* Diese Funktion setzt alle Variablen des Combat-Objektes wieder auf ihre Ausgangswerte
+	*/
+	void Reset();
+
+private:
+	/// Das dynamische Feld in denen alle am Kampf beteiligten Schiffe mit allen
+	/// dazughörigen Informationen abegelegt sind
+	CArray<CCombatShip*, CCombatShip*> m_InvolvedShips;
+
+	/// Das Feld mit den Referenzen auf die Schiffe, welche im Kampf beteiligt sind. Dieses Feld wird zur Iteration
+	/// verwendet und auch manipuliert.
+	CArray<CCombatShip*, CCombatShip*> m_CS;
+
+	/// In diesem Array werdem alle Gegner des jeweiligen Imperiums initialisiert.
+	CArray<CCombatShip*, CCombatShip*> m_Enemies[7];
+
+	/// Das dynamische Feld in denen alle am Kampf abgefeuerten und noch vorhandenen Torpedos
+	/// mit allen dazughörigen Informationen abegelegt sind
+	CombatTorpedos m_CT;
+		
+	/// Die von den beteiligten Rassen gewählten Formationen
+	BYTE m_iFormation[7];
+	
+	/// Die von den beteiligten Rassen gewählten Taktiken
+	BYTE m_iTactic[7];
+
+	/// Sind alle Vorbereitungen für eine Kampfberechnungen abgeschlossen
+	BOOLEAN m_bReady;
+
+	/// Diese Variable beinhaltet die aktuelle Zeit (Runde) im Kampf
+	UINT m_iTime;
+
+	/// Speichert ob in diesem Kampf irgendwer irgendwen attackiert hat.
+	BOOLEAN m_bAttackedSomebody;
+
+	/// Speichert die Nummer der beteiligten Rassen.
+	BOOLEAN m_bInvolvedRaces[7];
+
+	/// Speichert des Feld der Hauptrassen im Spiel.
+	//CMajorRace *m_MajorRaces;
+
+	/**
+	* Diese Funktion versucht dem i-ten Schiff im Feld <code>m_CS<code> ein Ziel zu geben. Wird dem Schiff ein Ziel
+	* zugewiesen gibt die Funktion TRUE zurück, findet sich kein Ziel mehr gibt die Funktion FALSE zurück.
+	*/	
+	BOOLEAN SetTarget(int i);
+
+	/**
+	* Diese private Funktion überprüft, ob das Schiff an der Stelle <code>i<code> im Feld <code>m_CS<code> noch am
+	* Leben ist, also ob es noch eine positive Hülle besitzt. Falls dies nicht der Fall sein sollte, dann
+	* unternimmt diese Funktion alle Arbeiten die anfallen, um dieses Schiff aus dem Feld zu entfernen.
+	* D.h. mögliche Ziele werden verändert, Zeiger neu zugeweisen usw. Wenn das Schiff zerstört ist gibt diese
+	* Funktion FALSE zurück, ansonsten TRUE.
+	*/
+	BOOLEAN CheckShipLife(int i);
+
+	/**
+	* Funktion überprüft, ob die Rassen in einem Kampf sich gegeneinander aus diplomatischen Gründen
+	* überhaupt attackieren. Die Funktion gibt <code>TRUE</code> zurück, wenn sie sich angreifen können,
+	* ansonsten gibt sie <code>FALSE</code> zurück.
+	*/
+	//BOOLEAN CheckDiplomacyStatus(const CMajorRace* raceA, const CMajorRace* raceB);
+};
