@@ -1,5 +1,5 @@
 /*
- *   Copyright (C)2004-2008 Sir Pustekuchen
+ *   Copyright (C)2004-2009 Sir Pustekuchen
  *
  *   Author   :  Sir Pustekuchen
  *   Home     :  http://birth-of-the-empires.de.vu
@@ -7,9 +7,11 @@
  */
 #pragma once
 #include "afx.h"
-#include "MinorRace.h"
 
-class CMajorRace;
+// forward declaration
+class CBotf2Doc;
+class CMajor;
+
 class CTradeRoute :	public CObject
 {
 public:
@@ -54,16 +56,16 @@ public:
 	/// Funktion überprüft, ob die Handelsroute noch Bestand haben darf und setzt das Latinum, welches
 	/// diese Handelsroute fabriziert. Dabei werden noch keinerlei Boni auf die Latinumproduktion angerechnet.
 	/// Die Funktion gibt einen Wahrheitswert zurück, der sagt, ob die Handelsroute noch Bestand haben darf.
-	BOOLEAN CheckTradeRoute(BYTE owner, CSector* dest, CMajorRace* majors, MinorRaceArray* minors);
+	BOOLEAN CheckTradeRoute(const CPoint& pFrom, const CPoint& pDest, CBotf2Doc* pDoc);
 
 	/// Diese Funktion verbessert manchmal die Beziehung zu der Minorrace, die in dem betroffenem Sektor lebt.
-	/// Als Parameter wird hierfür der Besitzer der Handerlsroute, ein Zeiger auf den Sektor <code>dest</code>
-	/// und ein Zeiger auf das Feld mit allen Minorraces <code>minors</code> übergeben.
-	void PerhapsChangeRelationship(BYTE owner, const CSector* dest, MinorRaceArray* minors);
+	/// Als Parameter wird hierfür die Ausgangskoordinate der Handerlsroute, die Zielkoordinate <code>pDest</code>
+	/// und ein Zeiger auf das Dokument <code>pDoc</code> übergeben.
+	void PerhapsChangeRelationship(const CPoint& pFrom, const CPoint& pDest, CBotf2Doc* pDoc);
 
 	/// Funktion zeichnet die Handelsroute auf der Galaxiekarte. Übergeben werden dafür die Koordinate des Systems
-	/// von wo die Handelsroute startet <code>start</code> sowie auch der Besitzer dieses Systems <code>owner</code>.
-	void DrawTradeRoute(CDC* pDC, CPoint start, BYTE owner);
+	/// von wo die Handelsroute startet <code>start</code> sowie auch der Besitzer dieses Systems <code>pMajor</code>.
+	void DrawTradeRoute(CDC* pDC, CPoint start, const CMajor* pMajor);
 	
 private:
 	/// Die Koordinate des Sektors, zu dem die Handelsroute verläuft

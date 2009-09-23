@@ -1,11 +1,13 @@
 #include "stdafx.h"
 #include "EventColonization.h"
 #include "FontLoader.h"
+#include "Botf2Doc.h"
+#include "RaceController.h"
 
 IMPLEMENT_SERIAL (CEventColonization, CObject, 1)
 
-CEventColonization::CEventColonization(BYTE playersRace, const CString &headline, const CString &text)
-	: CEventScreen(playersRace, "Colonization", headline, text)
+CEventColonization::CEventColonization(const CString& sPlayersRaceID, const CString &headline, const CString &text)
+	: CEventScreen(sPlayersRaceID, "Colonization", headline, text)
 {	
 }
 
@@ -47,25 +49,31 @@ void CEventColonization::Draw(Graphics* g, CGraphicPool* graphicPool) const
 	StringFormat fontFormat;
 	SolidBrush fontBrush(Color::White);
 
-	CFontLoader::CreateGDIFont(m_byRace, 5, fontName, fontSize);
+	CBotf2Doc* pDoc = ((CBotf2App*)AfxGetApp())->GetDocument();
+	ASSERT(pDoc);
+
+	CMajor* pMajor = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(m_sRace));
+	ASSERT(pMajor);
+
+	CFontLoader::CreateGDIFont(pMajor, 5, fontName, fontSize);
 	fontFormat.SetAlignment(StringAlignmentCenter);
 	fontFormat.SetLineAlignment(StringAlignmentCenter);
 	fontFormat.SetFormatFlags(StringFormatFlagsNoWrap);
 	Gdiplus::Color color;
-	CFontLoader::GetGDIFontColor(m_byRace, 3, color);
+	CFontLoader::GetGDIFontColor(pMajor, 3, color);
 	fontBrush.SetColor(color);
 
 	g->DrawString(m_strHeadline.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0,0,1280,96), &fontFormat, &fontBrush);
 
-	CFontLoader::CreateGDIFont(m_byRace, 3, fontName, fontSize);
+	CFontLoader::CreateGDIFont(pMajor, 3, fontName, fontSize);
 	fontFormat.SetAlignment(StringAlignmentCenter);
 	fontFormat.SetLineAlignment(StringAlignmentCenter);
 	fontFormat.SetFormatFlags(!StringFormatFlagsNoWrap);
 	g->DrawString(m_strText.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(100,96,1080,128), &fontFormat, &fontBrush);
 
 	// Buttons zeichnen
-	CFontLoader::GetGDIFontColor(m_byRace, 2, color);
+	CFontLoader::GetGDIFontColor(pMajor, 2, color);
 	fontBrush.SetColor(color);
 	for (int i = 0; i < m_Buttons.GetSize(); i++)
-		m_Buttons.GetAt(i)->DrawButton(*g, graphicPool, Gdiplus::Font(fontName.AllocSysString(), fontSize), fontBrush);	
+		m_Buttons.GetAt(i)->DrawButton(*g, graphicPool, Gdiplus::Font(fontName.AllocSysString(), fontSize), fontBrush);		
 }

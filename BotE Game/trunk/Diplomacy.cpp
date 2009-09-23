@@ -247,7 +247,7 @@ void CDiplomacy::MinorMakesOfferToMajor(USHORT minorRace, BYTE majorRace, USHORT
 			s = CResourceManager::GetString("MIN_OFFER_TRADE",FALSE,minors->GetAt(m_MadeOfferArray[i].minorRace).GetRaceName());
 			m_MadeOfferArray[i].offerFromRace = NOT_REACTED;	// NOT_REACTED bedeutet, Angebot der Minor auf nicht beachtet gesetzt
 			CMessage message;
-			message.GenerateMessage(s,m_MadeOfferArray[i].majorRace,DIPLOMACY,"",0,0,2);
+			message.GenerateMessage(s,DIPLOMACY,"",0,0,2);
 			empire->AddMessage(message);
 		}
 		else if (m_MadeOfferArray[i].type == FRIENDSHIP_AGREEMENT)
@@ -255,7 +255,7 @@ void CDiplomacy::MinorMakesOfferToMajor(USHORT minorRace, BYTE majorRace, USHORT
 			s = CResourceManager::GetString("MIN_OFFER_FRIEND",FALSE,minors->GetAt(m_MadeOfferArray[i].minorRace).GetRaceName());
 			m_MadeOfferArray[i].offerFromRace = NOT_REACTED;	// NOT_REACTED bedeutet, Angebot der Minor auf nicht beachtet gesetzt
 			CMessage message;
-			message.GenerateMessage(s,m_MadeOfferArray[i].majorRace,DIPLOMACY,"",0,0,2);
+			message.GenerateMessage(s,DIPLOMACY,"",0,0,2);
 			empire->AddMessage(message);
 		}
 		else if (m_MadeOfferArray[i].type == COOPERATION)
@@ -263,7 +263,7 @@ void CDiplomacy::MinorMakesOfferToMajor(USHORT minorRace, BYTE majorRace, USHORT
 			s = CResourceManager::GetString("MIN_OFFER_COOP",FALSE,minors->GetAt(m_MadeOfferArray[i].minorRace).GetRaceName());
 			m_MadeOfferArray[i].offerFromRace = NOT_REACTED;	// NOT_REACTED bedeutet, Angebot der Minor auf nicht beachtet gesetzt
 			CMessage message;
-			message.GenerateMessage(s,m_MadeOfferArray[i].majorRace,DIPLOMACY,"",0,0,2);
+			message.GenerateMessage(s,DIPLOMACY,"",0,0,2);
 			empire->AddMessage(message);
 		}
 		else if (m_MadeOfferArray[i].type == AFFILIATION)
@@ -271,7 +271,7 @@ void CDiplomacy::MinorMakesOfferToMajor(USHORT minorRace, BYTE majorRace, USHORT
 			s = CResourceManager::GetString("MIN_OFFER_AFFI",FALSE,minors->GetAt(m_MadeOfferArray[i].minorRace).GetRaceName());
 			m_MadeOfferArray[i].offerFromRace = NOT_REACTED;	// NOT_REACTED bedeutet, Angebot der Minor auf nicht beachtet gesetzt
 			CMessage message;
-			message.GenerateMessage(s,m_MadeOfferArray[i].majorRace,DIPLOMACY,"",0,0,2);
+			message.GenerateMessage(s,DIPLOMACY,"",0,0,2);
 			empire->AddMessage(message);
 		}
 		else if (m_MadeOfferArray[i].type == MEMBERSHIP)
@@ -279,14 +279,14 @@ void CDiplomacy::MinorMakesOfferToMajor(USHORT minorRace, BYTE majorRace, USHORT
 			s = CResourceManager::GetString("MIN_OFFER_MEMBER",FALSE,minors->GetAt(m_MadeOfferArray[i].minorRace).GetRaceName());
 			m_MadeOfferArray[i].offerFromRace = NOT_REACTED;	// NOT_REACTED bedeutet, Angebot der Minor auf nicht beachtet gesetzt
 			CMessage message;
-			message.GenerateMessage(s,m_MadeOfferArray[i].majorRace,DIPLOMACY,"",0,0,2);
+			message.GenerateMessage(s,DIPLOMACY,"",0,0,2);
 			empire->AddMessage(message);
 		}
 		else if (m_MadeOfferArray[i].type == WAR)
 		{
 			s = CResourceManager::GetString("MIN_OFFER_WAR",FALSE,minors->GetAt(m_MadeOfferArray[i].minorRace).GetRaceName());
 			CMessage message;
-			message.GenerateMessage(s,m_MadeOfferArray[i].majorRace,DIPLOMACY,"",0,0,2);
+			message.GenerateMessage(s,DIPLOMACY,"",0,0,2);
 			empire->AddMessage(message);
 			
 			// zusätzliche Eventnachricht wegen der Moral an das Imperium
@@ -303,7 +303,7 @@ void CDiplomacy::MinorMakesOfferToMajor(USHORT minorRace, BYTE majorRace, USHORT
 				eventText = majors[m_MadeOfferArray[i].majorRace].GetMoralObserver()->AddEvent(32, m_MadeOfferArray[i].majorRace, param);			
 			if (!eventText.IsEmpty())
 			{
-				message.GenerateMessage(eventText,m_MadeOfferArray[i].majorRace, SOMETHING, "", 0, 0);
+				message.GenerateMessage(eventText, SOMETHING, "", 0, 0);
 				empire->AddMessage(message);
 			}
 			// Bei Krieg sofort berechnen, soll ja noch in der gleichen Runde geschehen und wir müssen nicht auf eine Reaktion warten
@@ -315,7 +315,7 @@ void CDiplomacy::MinorMakesOfferToMajor(USHORT minorRace, BYTE majorRace, USHORT
 ///	Diese Funktion wird bei jeder neuen Rundenberechnung aufgerufen und berechnet wann eine Aktion feuert
 /// und generiert selbst neue diplomatische Nachrichten.
 void CDiplomacy::CalculateDiplomaticFallouts(MinorRaceArray* minors, CMajorRace* majors, CEmpire* empire,
-		USHORT currentRound, CSystem systems[30][20], ULONG* averageRessourceStorages, CGlobalStorage* globalStorages, const UINT* shipPowers)
+		USHORT currentRound, CSystem systems[30][20], UINT* averageRessourceStorages, CGlobalStorage* globalStorages, const UINT* shipPowers)
 {
 	// erstmal alle antworten der letzten Runde löschen
 	m_AnswerArray.RemoveAll();
@@ -359,7 +359,7 @@ void CDiplomacy::CalculateDiplomaticFallouts(MinorRaceArray* minors, CMajorRace*
 						CString number;
 						number.Format("%d",m_MadeOfferArray[i].latinum);
 						s = race+" "+CResourceManager::GetString("LATINUM_PRESENT", FALSE, number, minors->GetAt(m_MadeOfferArray[i].minorRace).GetRaceName());
-						message.GenerateMessage(s,m_MadeOfferArray[i].majorRace,DIPLOMACY,"",0,0);
+						message.GenerateMessage(s,DIPLOMACY,"",0,0);
 						empire[m_MadeOfferArray[i].majorRace].AddMessage(message);
 					}
 					if (m_MadeOfferArray[i].ressource[TITAN] > 0)
@@ -367,7 +367,7 @@ void CDiplomacy::CalculateDiplomaticFallouts(MinorRaceArray* minors, CMajorRace*
 						CString number;
 						number.Format("%d",m_MadeOfferArray[i].ressource[TITAN]);
 						s = race+" "+CResourceManager::GetString("TITAN_PRESENT", FALSE, number, minors->GetAt(m_MadeOfferArray[i].minorRace).GetRaceName());
-						message.GenerateMessage(s,m_MadeOfferArray[i].majorRace,DIPLOMACY,"",0,0);
+						message.GenerateMessage(s,DIPLOMACY,"",0,0);
 						empire[m_MadeOfferArray[i].majorRace].AddMessage(message);
 					}
 					else if (m_MadeOfferArray[i].ressource[DEUTERIUM] > 0)
@@ -375,7 +375,7 @@ void CDiplomacy::CalculateDiplomaticFallouts(MinorRaceArray* minors, CMajorRace*
 						CString number;
 						number.Format("%d",m_MadeOfferArray[i].ressource[DEUTERIUM]);
 						s = race+" "+CResourceManager::GetString("DEUTERIUM_PRESENT", FALSE, number, minors->GetAt(m_MadeOfferArray[i].minorRace).GetRaceName());
-						message.GenerateMessage(s,m_MadeOfferArray[i].majorRace,DIPLOMACY,"",0,0);
+						message.GenerateMessage(s,DIPLOMACY,"",0,0);
 						empire[m_MadeOfferArray[i].majorRace].AddMessage(message);
 					}
 					else if (m_MadeOfferArray[i].ressource[DURANIUM] > 0)
@@ -383,7 +383,7 @@ void CDiplomacy::CalculateDiplomaticFallouts(MinorRaceArray* minors, CMajorRace*
 						CString number;
 						number.Format("%d",m_MadeOfferArray[i].ressource[DURANIUM]);
 						s = race+" "+CResourceManager::GetString("DURANIUM_PRESENT", FALSE, number, minors->GetAt(m_MadeOfferArray[i].minorRace).GetRaceName());
-						message.GenerateMessage(s,m_MadeOfferArray[i].majorRace,DIPLOMACY,"",0,0);
+						message.GenerateMessage(s,DIPLOMACY,"",0,0);
 						empire[m_MadeOfferArray[i].majorRace].AddMessage(message);
 					}
 					else if (m_MadeOfferArray[i].ressource[CRYSTAL] > 0)
@@ -391,7 +391,7 @@ void CDiplomacy::CalculateDiplomaticFallouts(MinorRaceArray* minors, CMajorRace*
 						CString number;
 						number.Format("%d",m_MadeOfferArray[i].ressource[CRYSTAL]);
 						s = race+" "+CResourceManager::GetString("CRYSTAL_PRESENT", FALSE, number, minors->GetAt(m_MadeOfferArray[i].minorRace).GetRaceName());
-						message.GenerateMessage(s,m_MadeOfferArray[i].majorRace,DIPLOMACY,"",0,0);
+						message.GenerateMessage(s,DIPLOMACY,"",0,0);
 						empire[m_MadeOfferArray[i].majorRace].AddMessage(message);
 					}
 					else if (m_MadeOfferArray[i].ressource[IRIDIUM] > 0)
@@ -399,7 +399,7 @@ void CDiplomacy::CalculateDiplomaticFallouts(MinorRaceArray* minors, CMajorRace*
 						CString number;
 						number.Format("%d",m_MadeOfferArray[i].ressource[IRIDIUM]);
 						s = race+" "+CResourceManager::GetString("IRIDIUM_PRESENT", FALSE, number, minors->GetAt(m_MadeOfferArray[i].minorRace).GetRaceName());
-						message.GenerateMessage(s,m_MadeOfferArray[i].majorRace,DIPLOMACY,"",0,0);
+						message.GenerateMessage(s,DIPLOMACY,"",0,0);
 						empire[m_MadeOfferArray[i].majorRace].AddMessage(message);
 					}
 				}
@@ -414,7 +414,7 @@ void CDiplomacy::CalculateDiplomaticFallouts(MinorRaceArray* minors, CMajorRace*
 							minors->GetAt(m_MadeOfferArray[i].minorRace).GetRaceName(),minors->GetAt(m_MadeOfferArray[i].minorRace).GetKind(),FALSE));
 					}
 					CMessage message;
-					message.GenerateMessage(s,m_MadeOfferArray[i].majorRace,DIPLOMACY,"",0,0);
+					message.GenerateMessage(s,DIPLOMACY,"",0,0);
 					empire[m_MadeOfferArray[i].majorRace].AddMessage(message);
 					// zusätzliche Eventnachricht wegen der Moral an das Imperium
 					CString param = CResourceManager::GetString("FEMALE_ARTICLE")+" "+minors->GetAt(m_MadeOfferArray[i].minorRace).GetRaceName();
@@ -436,7 +436,7 @@ void CDiplomacy::CalculateDiplomaticFallouts(MinorRaceArray* minors, CMajorRace*
 						eventText = majors[m_MadeOfferArray[i].majorRace].GetMoralObserver()->AddEvent(30, m_MadeOfferArray[i].majorRace, param);
 					if (!eventText.IsEmpty())
 					{
-						message.GenerateMessage(eventText,m_MadeOfferArray[i].majorRace, SOMETHING, "", 0, 0);
+						message.GenerateMessage(eventText, SOMETHING, "", 0, 0);
 						empire[m_MadeOfferArray[i].majorRace].AddMessage(message);
 					}
 					minors->ElementAt(m_MadeOfferArray[i].minorRace).CalculateDiplomaticOffer(m_MadeOfferArray[i].majorRace,m_MadeOfferArray[i].type,m_MadeOfferArray[i].offerFromRace);
@@ -459,14 +459,14 @@ void CDiplomacy::CalculateDiplomaticFallouts(MinorRaceArray* minors, CMajorRace*
 							}
 							// Nachricht für uns
 							s = CResourceManager::GetString("WE_DECLARE_WAR",FALSE,partner);
-							message.GenerateMessage(s,m_iDiplomacy,DIPLOMACY,"",0,0);
+							message.GenerateMessage(s,DIPLOMACY,"",0,0);
 							empire[m_iDiplomacy].AddMessage(message);
 							// Nachricht und Kriegserklärung an den Bündnispartner
 							s = race+" "+CResourceManager::GetString("WAR_TO_PARTNER", FALSE, minors->GetAt(i).GetRaceName());
-							message.GenerateMessage(s,j,DIPLOMACY,"",0,0);
+							message.GenerateMessage(s,DIPLOMACY,"",0,0);
 							empire[j].AddMessage(message);
 							s = race+" "+CResourceManager::GetString("WAR_TO_US_AS_PARTNER");
-							message.GenerateMessage(s,j,DIPLOMACY,"",0,0);
+							message.GenerateMessage(s,DIPLOMACY,"",0,0);
 							empire[j].AddMessage(message);
 							// Beziehung zu der verbündeten Majorrace verschlechtert sich
 							majors[m_iDiplomacy].SetRelationshipToMajorRace(j,-(rand()%25+25)); // ich zu ihnen
@@ -480,7 +480,7 @@ void CDiplomacy::CalculateDiplomaticFallouts(MinorRaceArray* minors, CMajorRace*
 					if (m_MadeOfferArray[i].offerFromRace == FALSE)
 						s = race+" "+CResourceManager::GetString("TRY_CORRUPTION", FALSE, minors->GetAt(m_MadeOfferArray[i].minorRace).GetRaceName());
 					CMessage message;
-					message.GenerateMessage(s,m_MadeOfferArray[i].majorRace,DIPLOMACY,"",0,0);
+					message.GenerateMessage(s,DIPLOMACY,"",0,0);
 					empire[m_MadeOfferArray[i].majorRace].AddMessage(message);
 				}
 				// Wenn wir sozusagen eine Runde gewartet haben, dann Nachricht machen, das wir Vertrag aufgehoben haben
@@ -490,7 +490,7 @@ void CDiplomacy::CalculateDiplomaticFallouts(MinorRaceArray* minors, CMajorRace*
 					if (m_MadeOfferArray[i].offerFromRace == FALSE)
 						s = race+" "+CResourceManager::GetString("CANCEL_CONTRACT", FALSE, minors->GetAt(m_MadeOfferArray[i].minorRace).GetRaceName());
 					CMessage message;
-					message.GenerateMessage(s,m_MadeOfferArray[i].majorRace,DIPLOMACY,"",0,0);
+					message.GenerateMessage(s,DIPLOMACY,"",0,0);
 					empire[m_MadeOfferArray[i].majorRace].AddMessage(message);
 					minors->ElementAt(m_MadeOfferArray[i].minorRace).CalculateDiplomaticOffer(m_MadeOfferArray[i].majorRace,m_MadeOfferArray[i].type,m_MadeOfferArray[i].offerFromRace);
 				}
@@ -510,7 +510,7 @@ void CDiplomacy::CalculateDiplomaticFallouts(MinorRaceArray* minors, CMajorRace*
 					if (m_MadeOfferArray[i].offerFromRace == FALSE)
 						s = race+" "+CResourceManager::GetString("OUR_MIN_OFFER", FALSE, minors->GetAt(m_MadeOfferArray[i].minorRace).GetRaceName(), agreement);
 					CMessage message;
-					message.GenerateMessage(s,m_MadeOfferArray[i].majorRace,DIPLOMACY,"",0,0);
+					message.GenerateMessage(s,DIPLOMACY,"",0,0);
 					empire[m_MadeOfferArray[i].majorRace].AddMessage(message);
 				}
 			}
@@ -634,12 +634,12 @@ void CDiplomacy::CalculateDiplomaticFallouts(MinorRaceArray* minors, CMajorRace*
 						s = CResourceManager::GetString("WE_DECLINE_MIN_OFFER", FALSE, agreement,minors->GetAt(m_MadeOfferArray[i].minorRace).GetRaceName());
 					}
 					CMessage message;
-					message.GenerateMessage(s,m_MadeOfferArray[i].majorRace,DIPLOMACY,"",0,0);
+					message.GenerateMessage(s,DIPLOMACY,"",0,0);
 					empire[m_MadeOfferArray[i].majorRace].AddMessage(message);
 					// zusätzliche Eventnachricht, wegen der Moral an das Imperium
 					if (!eventText.IsEmpty())
 					{
-						message.GenerateMessage(eventText,m_MadeOfferArray[i].majorRace,SOMETHING,"",0,0);
+						message.GenerateMessage(eventText,SOMETHING,"",0,0);
 						empire[m_MadeOfferArray[i].majorRace].AddMessage(message);
 					}
 				}
@@ -761,47 +761,8 @@ void CDiplomacy::CalculateDiplomaticFallouts(MinorRaceArray* minors, CMajorRace*
 						if (m_MadeOfferArray[i].offerFromRace == NOT_REACTED)	// Nachricht für mich, das wir ein Angebot bekommen haben
 						{
 							s = CResourceManager::GetString("WE_GET_PRESENT", FALSE, race);
-							message.GenerateMessage(s,m_iDiplomacy,DIPLOMACY,"",0,0,2);
+							message.GenerateMessage(s,DIPLOMACY,"",0,0,2);
 							empire[m_iDiplomacy].AddMessage(message);
-						// Das erstmal rausgenommen, jetzt kommt in der Imperiumsübersicht nur noch das wir von
-						// dem und dem ein Geschenk bekommen haben
-						/*	if (m_MadeOfferArray[i].latinum > 0)
-							{
-								s.Format("%s hat an uns %d Latinum uebergeben",race,m_MadeOfferArray[i].latinum);
-								message.GenerateMessage(s,m_iDiplomacy,DIPLOMACY,"",0,0);
-								empire[m_iDiplomacy].AddMessage(message);
-							}
-							if (m_MadeOfferArray[i].ressource[TITAN] > 0)
-							{
-								s.Format("%s hat an uns %d Tonnen Titan uebergeben",race,m_MadeOfferArray[i].ressource[TITAN]);
-								message.GenerateMessage(s,m_iDiplomacy,DIPLOMACY,"",0,0);
-								empire[m_iDiplomacy].AddMessage(message);
-							}
-							else if (m_MadeOfferArray[i].ressource[DEUTERIUM] > 0)
-							{
-								s.Format("%s hat an uns %d Liter Deuterium uebergeben",race,m_MadeOfferArray[i].ressource[DEUTERIUM]);
-								message.GenerateMessage(s,m_iDiplomacy,DIPLOMACY,"",0,0);
-								empire[m_iDiplomacy].AddMessage(message);
-							}
-							else if (m_MadeOfferArray[i].ressource[DURANIUM] > 0)
-							{
-								s.Format("%s hat an uns %d Tonnen Duranium uebergeben",race,m_MadeOfferArray[i].ressource[DURANIUM]);
-								message.GenerateMessage(s,m_iDiplomacy,DIPLOMACY,"",0,0);
-								empire[m_iDiplomacy].AddMessage(message);
-							}
-							else if (m_MadeOfferArray[i].ressource[CRYSTAL] > 0)
-							{
-								s.Format("%s hat an uns %d Tonnen Kristalle uebergeben",race,m_MadeOfferArray[i].ressource[CRYSTAL]);
-								message.GenerateMessage(s,m_iDiplomacy,DIPLOMACY,"",0,0);
-								empire[m_iDiplomacy].AddMessage(message);
-							}
-							else if (m_MadeOfferArray[i].ressource[IRIDIUM] > 0)
-							{
-								s.Format("%s hat an uns %d Tonnen Iridium uebergeben",race,m_MadeOfferArray[i].ressource[IRIDIUM]);
-								message.GenerateMessage(s,m_iDiplomacy,DIPLOMACY,"",0,0);
-								empire[m_iDiplomacy].AddMessage(message);
-							}
-						*/
 							// die Beziehungsverbesserung zur Geberrasse berechnen
 							USHORT LatFromRes = majors[m_iDiplomacy].GiveResourcePresent(m_MadeOfferArray[i].ressource, empire, m_MadeOfferArray[i].majorRace);
 							majors[m_iDiplomacy].GiveLatinumPresent(m_MadeOfferArray[i].latinum + LatFromRes, empire, m_MadeOfferArray[i].majorRace);
@@ -816,7 +777,7 @@ void CDiplomacy::CalculateDiplomaticFallouts(MinorRaceArray* minors, CMajorRace*
 						else if (m_MadeOfferArray[i].offerFromRace == FALSE)	// Nachricht für mich, das wir ein Angebot gemacht haben
 						{
 							s = CResourceManager::GetString("WE_GIVE_PRESENT", FALSE, race2);
-							message.GenerateMessage(s,m_iDiplomacy,DIPLOMACY,"",0,0);
+							message.GenerateMessage(s,DIPLOMACY,"",0,0);
 							empire[m_iDiplomacy].AddMessage(message);
 						}
 					}
@@ -829,13 +790,13 @@ void CDiplomacy::CalculateDiplomaticFallouts(MinorRaceArray* minors, CMajorRace*
 					if (m_MadeOfferArray[i].offerFromRace == NOT_REACTED)	// Nachricht für mich, das wir ein Angebot bekommen haben
 					{
 						s = CResourceManager::GetString("WE_GET_REQUEST", FALSE, race, agreement);
-						message.GenerateMessage(s,m_iDiplomacy,DIPLOMACY,"",0,0,2);
+						message.GenerateMessage(s,DIPLOMACY,"",0,0,2);
 						empire[m_iDiplomacy].AddMessage(message);
 					}
 					else if (m_MadeOfferArray[i].offerFromRace == FALSE)	// Nachricht für mich, das wir ein Angebot gemacht haben
 					{
 						s = CResourceManager::GetString("WE_HAVE_REQUEST", FALSE, race2, agreement);
-						message.GenerateMessage(s,m_iDiplomacy,DIPLOMACY,"",0,0);
+						message.GenerateMessage(s,DIPLOMACY,"",0,0);
 						empire[m_iDiplomacy].AddMessage(message);
 					}
 				}
@@ -847,13 +808,13 @@ void CDiplomacy::CalculateDiplomaticFallouts(MinorRaceArray* minors, CMajorRace*
 					if (m_MadeOfferArray[i].offerFromRace == NOT_REACTED)	// Nachricht für mich, das wir ein Angebot bekommen haben
 					{
 						s = CResourceManager::GetString("WE_GET_MAJ_OFFER", FALSE, race, agreement);
-						message.GenerateMessage(s,m_iDiplomacy,DIPLOMACY,"",0,0,2);
+						message.GenerateMessage(s,DIPLOMACY,"",0,0,2);
 						empire[m_iDiplomacy].AddMessage(message);
 					}
 					else if (m_MadeOfferArray[i].offerFromRace == FALSE)	// Nachricht für mich, das wir ein Angebot gemacht haben
 					{
 						s = CResourceManager::GetString("WE_MAKE_MAJ_OFFER", FALSE, race2, agreement);
-						message.GenerateMessage(s,m_iDiplomacy,DIPLOMACY,"",0,0);
+						message.GenerateMessage(s,DIPLOMACY,"",0,0);
 						empire[m_iDiplomacy].AddMessage(message);
 					}
 				}
@@ -866,7 +827,7 @@ void CDiplomacy::CalculateDiplomaticFallouts(MinorRaceArray* minors, CMajorRace*
 					if (m_MadeOfferArray[i].offerFromRace == NOT_REACTED)
 					{
 						s = CResourceManager::GetString("WE_GET_WAR", FALSE, race);
-						message.GenerateMessage(s,m_iDiplomacy,DIPLOMACY,"",0,0,2);
+						message.GenerateMessage(s,DIPLOMACY,"",0,0,2);
 						empire[m_iDiplomacy].AddMessage(message);
 						empire[m_MadeOfferArray[i].majorRace].AddIncomingMajorAnswer(this->GenerateMajorAnswer(WAR,TRUE,m_iDiplomacy));
 						// Die Beziehung zu der Kriegserklärenden Majorrace verschlechtert sich enorm
@@ -885,7 +846,7 @@ void CDiplomacy::CalculateDiplomaticFallouts(MinorRaceArray* minors, CMajorRace*
 							eventText = majors[m_iDiplomacy].GetMoralObserver()->AddEvent(32, m_iDiplomacy, race5);
 						if (!eventText.IsEmpty())
 						{
-							message.GenerateMessage(eventText,m_iDiplomacy, SOMETHING, "", 0, 0);
+							message.GenerateMessage(eventText, SOMETHING, "", 0, 0);
 							empire[m_iDiplomacy].AddMessage(message);
 						}
 					}
@@ -893,7 +854,7 @@ void CDiplomacy::CalculateDiplomaticFallouts(MinorRaceArray* minors, CMajorRace*
 					if (m_MadeOfferArray[i].offerFromRace == FALSE)
 					{
 						s = CResourceManager::GetString("WE_DECLARE_WAR", FALSE, race2);
-						message.GenerateMessage(s,m_iDiplomacy,DIPLOMACY,"",0,0);
+						message.GenerateMessage(s,DIPLOMACY,"",0,0);
 						empire[m_iDiplomacy].AddMessage(message);
 						// zusätzliche Eventnachricht wegen der Moral an das Imperium
 						CString eventText = "";
@@ -922,7 +883,7 @@ void CDiplomacy::CalculateDiplomaticFallouts(MinorRaceArray* minors, CMajorRace*
 							eventText = majors[m_iDiplomacy].GetMoralObserver()->AddEvent(30, m_iDiplomacy, race5);
 						if (!eventText.IsEmpty())
 						{
-							message.GenerateMessage(eventText,m_iDiplomacy, SOMETHING, "", 0, 0);
+							message.GenerateMessage(eventText, SOMETHING, "", 0, 0);
 							empire[m_iDiplomacy].AddMessage(message);
 						}
 						// Die Beziehung zu der Majorrace, welcher wir den Krieg erklärt haben, verschlechtert sich enorm
@@ -953,15 +914,15 @@ void CDiplomacy::CalculateDiplomaticFallouts(MinorRaceArray* minors, CMajorRace*
 								}
 								// Nachricht für uns
 								s = CResourceManager::GetString("WE_DECLARE_WAR", FALSE, partner);
-								message.GenerateMessage(s,m_iDiplomacy,DIPLOMACY,"",0,0);
+								message.GenerateMessage(s,DIPLOMACY,"",0,0);
 								empire[m_iDiplomacy].AddMessage(message);
 								empire[m_iDiplomacy].AddIncomingMajorAnswer(this->GenerateMajorAnswer(WAR,TRUE,j));
 								// Nachricht und Kriegserklärung an den Bündnispartner
 								s = race3+" "+CResourceManager::GetString("WAR_TO_PARTNER", FALSE, CMajorRace::GetRaceName(m_MadeOfferArray[i].majorRace));
-								message.GenerateMessage(s,j,DIPLOMACY,"",0,0);
+								message.GenerateMessage(s,DIPLOMACY,"",0,0);
 								empire[j].AddMessage(message);
 								s = race3+" "+CResourceManager::GetString("WAR_TO_US_AS_PARTNER");
-								message.GenerateMessage(s,j,DIPLOMACY,"",0,0);
+								message.GenerateMessage(s,DIPLOMACY,"",0,0);
 								empire[j].AddMessage(message);
 								// Beziehung zu der verbündeten Majorrace verschlechtert sich
 								majors[m_iDiplomacy].SetRelationshipToMajorRace(j,-(rand()%25+25)); // ich zu ihnen
@@ -978,7 +939,7 @@ void CDiplomacy::CalculateDiplomaticFallouts(MinorRaceArray* minors, CMajorRace*
 								minors->ElementAt(j).SetRelationshipToMajorRace(m_MadeOfferArray[i].majorRace,rand()%16);
 								// Nachricht für uns
 								s = CResourceManager::GetString("WE_DECLARE_WAR_TO_MIN", FALSE, minors->GetAt(j).GetRaceName());
-								message.GenerateMessage(s,m_iDiplomacy,DIPLOMACY,"",0,0);
+								message.GenerateMessage(s,DIPLOMACY,"",0,0);
 								empire[m_iDiplomacy].AddMessage(message);
 								m_AnswerArray.Add(this->GenerateMinorAnswer(m_iDiplomacy,j,WAR,minors->GetAt(j).GetRaceName(),minors->GetAt(j).GetKind(),TRUE));
 							}
@@ -1044,11 +1005,11 @@ void CDiplomacy::CalculateDiplomaticFallouts(MinorRaceArray* minors, CMajorRace*
 					{
 						s = CResourceManager::GetString("WE_ACCEPT_MAJ_OFFER", FALSE, agreement, race2);
 						majors[m_iDiplomacy].SetDiplomaticStatus(m_MadeOfferArray[i].majorRace,m_MadeOfferArray[i].type);
-						message.GenerateMessage(s,m_iDiplomacy,DIPLOMACY,"",0,0);
+						message.GenerateMessage(s,DIPLOMACY,"",0,0);
 						empire[m_iDiplomacy].AddMessage(message);
 						s = CResourceManager::GetString("MAJ_ACCEPT_OFFER", FALSE, race3, agreement2);
 						majors[m_MadeOfferArray[i].majorRace].SetDiplomaticStatus(m_iDiplomacy,m_MadeOfferArray[i].type);
-						message.GenerateMessage(s,m_MadeOfferArray[i].majorRace,DIPLOMACY,"",0,0,2);
+						message.GenerateMessage(s,DIPLOMACY,"",0,0,2);
 						empire[m_MadeOfferArray[i].majorRace].AddMessage(message);
 						empire[m_MadeOfferArray[i].majorRace].AddIncomingMajorAnswer(this->GenerateMajorAnswer(m_MadeOfferArray[i].type,TRUE,m_iDiplomacy));
 						// Das möglicherweise dazugegebene Latinum und die Ressourcen auch gutschreiben
@@ -1101,9 +1062,9 @@ void CDiplomacy::CalculateDiplomaticFallouts(MinorRaceArray* minors, CMajorRace*
 						if (!eventText1.IsEmpty())
 						{
 							// Bei Annahme an beide Imperien dieses Event versenden
-							message.GenerateMessage(eventText1,m_iDiplomacy, SOMETHING, "", 0, 0);
+							message.GenerateMessage(eventText1, SOMETHING, "", 0, 0);
 							empire[m_iDiplomacy].AddMessage(message);
-							message.GenerateMessage(eventText2,m_MadeOfferArray[i].majorRace, SOMETHING, "", 0, 0);
+							message.GenerateMessage(eventText2, SOMETHING, "", 0, 0);
 							empire[m_MadeOfferArray[i].majorRace].AddMessage(message);
 						}
 
@@ -1126,10 +1087,10 @@ void CDiplomacy::CalculateDiplomaticFallouts(MinorRaceArray* minors, CMajorRace*
 					else if (m_MadeOfferArray[i].offerFromRace == DECLINED)	// Wir haben das Angebot abgelehnt
 					{
 						s = CResourceManager::GetString("WE_DECLINE_MAJ_OFFER", FALSE, agreement2,CMajorRace::GetRaceName(m_MadeOfferArray[i].majorRace));
-						message.GenerateMessage(s,m_iDiplomacy,DIPLOMACY,"",0,0);
+						message.GenerateMessage(s,DIPLOMACY,"",0,0);
 						empire[m_iDiplomacy].AddMessage(message);
 						s = CResourceManager::GetString("MAJ_DECLINE_OFFER", FALSE, race3, agreement2);
-						message.GenerateMessage(s,m_MadeOfferArray[i].majorRace,DIPLOMACY,"",0,0,2);
+						message.GenerateMessage(s,DIPLOMACY,"",0,0,2);
 						empire[m_MadeOfferArray[i].majorRace].AddMessage(message);				
 						empire[m_MadeOfferArray[i].majorRace].AddIncomingMajorAnswer(this->GenerateMajorAnswer(m_MadeOfferArray[i].type,FALSE,m_iDiplomacy));
 						// Wenn wir das Angebot abgelehnt haben, dann bekommt die Majorrace, die es mir gemacht hat
@@ -1149,7 +1110,7 @@ void CDiplomacy::CalculateDiplomaticFallouts(MinorRaceArray* minors, CMajorRace*
 					else // wir haben nicht auf deren Angebot reagiert
 					{
 						s = CResourceManager::GetString("NOT_REACTED", FALSE, race3);
-						message.GenerateMessage(s,m_MadeOfferArray[i].majorRace,DIPLOMACY,"",0,0);
+						message.GenerateMessage(s,DIPLOMACY,"",0,0);
 						empire[m_MadeOfferArray[i].majorRace].AddMessage(message);
 						// Wenn wir nicht auf das Angebot reagiert haben, dann bekommt die Majorrace, die es mir gemacht hat
 						// ihre Ressourcen und ihr Latinum wieder zurück, sofern sie es mir als Anreiz mit zum Vertrags-
@@ -1175,10 +1136,10 @@ void CDiplomacy::CalculateDiplomaticFallouts(MinorRaceArray* minors, CMajorRace*
 					if (m_MadeOfferArray[i].offerFromRace == TRUE) // Wir haben die Forderung angenommen
 					{
 						s = CResourceManager::GetString("WE_ACCEPT_REQUEST", FALSE, race2);
-						message.GenerateMessage(s,m_iDiplomacy,DIPLOMACY,"",0,0);
+						message.GenerateMessage(s,DIPLOMACY,"",0,0);
 						empire[m_iDiplomacy].AddMessage(message);
 						s = CResourceManager::GetString("OUR_REQUEST_ACCEPT", FALSE, race3);
-						message.GenerateMessage(s,m_MadeOfferArray[i].majorRace,DIPLOMACY,"",0,0,2);
+						message.GenerateMessage(s,DIPLOMACY,"",0,0,2);
 						empire[m_MadeOfferArray[i].majorRace].AddMessage(message);
 						empire[m_MadeOfferArray[i].majorRace].AddIncomingMajorAnswer(this->GenerateMajorAnswer(m_MadeOfferArray[i].type,TRUE,m_iDiplomacy));
 						// Die Forderung auch gutschreiben, wenn sie angenommen wurde
@@ -1195,10 +1156,10 @@ void CDiplomacy::CalculateDiplomaticFallouts(MinorRaceArray* minors, CMajorRace*
 					else if (m_MadeOfferArray[i].offerFromRace == DECLINED) // Wir haben die Forderung abgelehnt
 					{
 						s = CResourceManager::GetString("WE_DECLINE_REQUEST", FALSE, race2);
-						message.GenerateMessage(s,m_iDiplomacy,DIPLOMACY,"",0,0);
+						message.GenerateMessage(s,DIPLOMACY,"",0,0);
 						empire[m_iDiplomacy].AddMessage(message);
 						s = CResourceManager::GetString("OUR_REQUEST_DECLINE", FALSE, race3);
-						message.GenerateMessage(s,m_MadeOfferArray[i].majorRace,DIPLOMACY,"",0,0,2);
+						message.GenerateMessage(s,DIPLOMACY,"",0,0,2);
 						empire[m_MadeOfferArray[i].majorRace].AddMessage(message);
 						empire[m_MadeOfferArray[i].majorRace].AddIncomingMajorAnswer(this->GenerateMajorAnswer(m_MadeOfferArray[i].type,FALSE,m_iDiplomacy));
 						// Beziehungsverschlechterung bei Ablehnung, hier wird ein bissl vom Computer gecheated.
@@ -1212,7 +1173,7 @@ void CDiplomacy::CalculateDiplomaticFallouts(MinorRaceArray* minors, CMajorRace*
 					else // wir haben nicht auf deren Angebot reagiert
 					{
 						s = CResourceManager::GetString("NOT_REACTED_REQUEST", FALSE, race3);
-						message.GenerateMessage(s,m_MadeOfferArray[i].majorRace,DIPLOMACY,"",0,0);
+						message.GenerateMessage(s,DIPLOMACY,"",0,0);
 						empire[m_MadeOfferArray[i].majorRace].AddMessage(message);
 						// Beziehungsverschlechterung bei Nichtbeachtung, hier wird ein bissl vom Computer gecheated.
 						// Wenn ein Computer von einem anderen Computer die Forderung nicht beachtet, dann wird die Beziehung
@@ -1264,7 +1225,7 @@ void CDiplomacy::CalculateDiplomaticFallouts(MinorRaceArray* minors, CMajorRace*
 						case DOMINION: {race5 = CResourceManager::GetString("TO_RACE6_EMPIRE"); break;}
 						}
 						s = CResourceManager::GetString("WE_ACCEPT_WARPACT", FALSE, CMajorRace::GetRaceName(m_MadeOfferArray[i].corruptedMajor),race2);
-						message.GenerateMessage(s,m_iDiplomacy,DIPLOMACY,"",0,0);
+						message.GenerateMessage(s,DIPLOMACY,"",0,0);
 						empire[m_iDiplomacy].AddMessage(message);
 
 						BOOLEAN weDeclareWar = false;
@@ -1274,11 +1235,11 @@ void CDiplomacy::CalculateDiplomaticFallouts(MinorRaceArray* minors, CMajorRace*
 						{
 							weDeclareWar = true;
 							s = CResourceManager::GetString("WE_DECLARE_WAR", FALSE, race5);
-							message.GenerateMessage(s,m_iDiplomacy,DIPLOMACY,"",0,0);
+							message.GenerateMessage(s,DIPLOMACY,"",0,0);
 							empire[m_iDiplomacy].AddMessage(message);
 							// Nachrichten an den Gegner, das die beiden Kriegspaktpartner ihm den Krieg erklärt haben
 							s = CResourceManager::GetString("WE_GET_WAR", FALSE, race3);
-							message.GenerateMessage(s, m_MadeOfferArray[i].corruptedMajor,DIPLOMACY,"",0,0,2);
+							message.GenerateMessage(s, DIPLOMACY,"",0,0,2);
 							empire[m_MadeOfferArray[i].corruptedMajor].AddMessage(message);
 							empire[m_MadeOfferArray[i].corruptedMajor].AddIncomingMajorAnswer(this->GenerateMajorAnswer(WAR,TRUE,m_iDiplomacy));
 							// Nachricht vom Gegner
@@ -1291,7 +1252,7 @@ void CDiplomacy::CalculateDiplomaticFallouts(MinorRaceArray* minors, CMajorRace*
 							majors[m_MadeOfferArray[i].corruptedMajor].SetRelationshipToMajorRace(m_iDiplomacy,-100);							
 						}
 						s = CResourceManager::GetString("OUR_WARPACT_ACCEPT", FALSE, race3,CMajorRace::GetRaceName(m_MadeOfferArray[i].corruptedMajor));
-						message.GenerateMessage(s,m_MadeOfferArray[i].majorRace,DIPLOMACY,"",0,0,2);
+						message.GenerateMessage(s,DIPLOMACY,"",0,0,2);
 						empire[m_MadeOfferArray[i].majorRace].AddMessage(message);
 						// Beziehungsverbesserung auf beiden Seiten der Kriegspaktpartner
 						majors[m_iDiplomacy].SetRelationshipToMajorRace(m_MadeOfferArray[i].majorRace,abs(m_MadeOfferArray[i].type));
@@ -1302,10 +1263,10 @@ void CDiplomacy::CalculateDiplomaticFallouts(MinorRaceArray* minors, CMajorRace*
 						{
 							partnerDeclareWar = true;
 							s = CResourceManager::GetString("WE_DECLARE_WAR", FALSE, race5);
-							message.GenerateMessage(s,m_MadeOfferArray[i].majorRace,DIPLOMACY,"",0,0);
+							message.GenerateMessage(s,DIPLOMACY,"",0,0);
 							empire[m_MadeOfferArray[i].majorRace].AddMessage(message);
 							s = CResourceManager::GetString("WE_GET_WAR", FALSE, race);
-							message.GenerateMessage(s,m_MadeOfferArray[i].corruptedMajor,DIPLOMACY,"",0,0,2);
+							message.GenerateMessage(s,DIPLOMACY,"",0,0,2);
 							empire[m_MadeOfferArray[i].corruptedMajor].AddMessage(message);
 							empire[m_MadeOfferArray[i].corruptedMajor].AddIncomingMajorAnswer(this->GenerateMajorAnswer(WAR,TRUE,m_MadeOfferArray[i].majorRace));
 							// Nachricht vom Gegner
@@ -1342,7 +1303,7 @@ void CDiplomacy::CalculateDiplomaticFallouts(MinorRaceArray* minors, CMajorRace*
 							eventText = majors[m_MadeOfferArray[i].corruptedMajor].GetMoralObserver()->AddEvent(32, m_MadeOfferArray[i].corruptedMajor, race);
 						if (!eventText.IsEmpty())
 						{
-							message.GenerateMessage(eventText,m_MadeOfferArray[i].corruptedMajor, SOMETHING, "", 0, 0);
+							message.GenerateMessage(eventText, SOMETHING, "", 0, 0);
 							empire[m_MadeOfferArray[i].corruptedMajor].AddMessage(message);
 						}			*/						
 						
@@ -1374,15 +1335,15 @@ void CDiplomacy::CalculateDiplomaticFallouts(MinorRaceArray* minors, CMajorRace*
 									majors[j].SetDiplomaticStatus(m_iDiplomacy,WAR);	// Bündnispartner hat Krieg mit mir
 									// Nachricht für uns
 									s = CResourceManager::GetString("WE_DECLARE_WAR", FALSE, partner);
-									message.GenerateMessage(s,m_iDiplomacy,DIPLOMACY,"",0,0);
+									message.GenerateMessage(s,DIPLOMACY,"",0,0);
 									empire[m_iDiplomacy].AddMessage(message);
 									empire[m_iDiplomacy].AddIncomingMajorAnswer(this->GenerateMajorAnswer(WAR,TRUE,j));
 									// Nachricht und Kriegserklärung an den Bündnispartner von mir
 									s = race+" "+CResourceManager::GetString("WAR_TO_PARTNER", FALSE, CMajorRace::GetRaceName(m_MadeOfferArray[i].corruptedMajor));
-									message.GenerateMessage(s,j,DIPLOMACY,"",0,0);
+									message.GenerateMessage(s,DIPLOMACY,"",0,0);
 									empire[j].AddMessage(message);
 									s = race+" "+CResourceManager::GetString("WAR_TO_US_AS_PARTNER");
-									message.GenerateMessage(s,j,DIPLOMACY,"",0,0,2);
+									message.GenerateMessage(s,DIPLOMACY,"",0,0,2);
 									empire[j].AddMessage(message);
 									// Beziehung zu der verbündeten Majorrace verschlechtert sich
 									majors[m_iDiplomacy].SetRelationshipToMajorRace(j,-(rand()%25+25)); // ich zu ihnen
@@ -1394,15 +1355,15 @@ void CDiplomacy::CalculateDiplomaticFallouts(MinorRaceArray* minors, CMajorRace*
 									majors[j].SetDiplomaticStatus(m_MadeOfferArray[i].majorRace,WAR);	// Bündnispartner hat Krieg mit meinem Kriegspaktpartner
 									// Nachricht für unseren Kriegspaktpartner
 									s = CResourceManager::GetString("WE_DECLARE_WAR", FALSE, partner);
-									message.GenerateMessage(s,m_MadeOfferArray[i].majorRace,DIPLOMACY,"",0,0);
+									message.GenerateMessage(s,DIPLOMACY,"",0,0);
 									empire[m_MadeOfferArray[i].majorRace].AddMessage(message);
 									empire[m_MadeOfferArray[i].majorRace].AddIncomingMajorAnswer(this->GenerateMajorAnswer(WAR,TRUE,j));
 									// Nachricht und Kriegserklärung an den Bündnispartner von meinem Kriegspaktpartner
 									s = race3+" "+CResourceManager::GetString("WAR_TO_PARTNER", FALSE, CMajorRace::GetRaceName(m_MadeOfferArray[i].corruptedMajor));
-									message.GenerateMessage(s,j,DIPLOMACY,"",0,0);
+									message.GenerateMessage(s,DIPLOMACY,"",0,0);
 									empire[j].AddMessage(message);
 									s = race3+" "+CResourceManager::GetString("WAR_TO_US_AS_PARTNER");
-									message.GenerateMessage(s,j,DIPLOMACY,"",0,0,2);
+									message.GenerateMessage(s,DIPLOMACY,"",0,0,2);
 									empire[j].AddMessage(message);
 									// Beziehung zu der verbündeten Majorrace verschlechtert sich									
 									majors[m_MadeOfferArray[i].majorRace].SetRelationshipToMajorRace(j,-(rand()%25+25)); // mein Kriegspaktpartner zu ihnen
@@ -1421,7 +1382,7 @@ void CDiplomacy::CalculateDiplomaticFallouts(MinorRaceArray* minors, CMajorRace*
 									minors->ElementAt(j).SetRelationshipToMajorRace(m_MadeOfferArray[i].corruptedMajor, rand()%26);
 									// Nachricht für uns
 									s = CResourceManager::GetString("WE_DECLARE_WAR_TO_MIN", FALSE, minors->GetAt(j).GetRaceName());
-									message.GenerateMessage(s,m_iDiplomacy,DIPLOMACY,"",0,0);
+									message.GenerateMessage(s,DIPLOMACY,"",0,0);
 									empire[m_iDiplomacy].AddMessage(message);
 									m_AnswerArray.Add(this->GenerateMinorAnswer(m_iDiplomacy,j,WAR,minors->GetAt(j).GetRaceName(),minors->GetAt(j).GetKind(),TRUE));
 								}
@@ -1433,7 +1394,7 @@ void CDiplomacy::CalculateDiplomaticFallouts(MinorRaceArray* minors, CMajorRace*
 									minors->ElementAt(j).SetRelationshipToMajorRace(m_MadeOfferArray[i].corruptedMajor, rand()%26);
 									// Nachricht für meinen Kriegspaktpartner
 									s = CResourceManager::GetString("WE_DECLARE_WAR_TO_MIN", FALSE, minors->GetAt(j).GetRaceName());
-									message.GenerateMessage(s,m_MadeOfferArray[i].majorRace,DIPLOMACY,"",0,0);
+									message.GenerateMessage(s,DIPLOMACY,"",0,0);
 									empire[m_MadeOfferArray[i].majorRace].AddMessage(message);
 									m_AnswerArray.Add(this->GenerateMinorAnswer(m_MadeOfferArray[i].majorRace,j,WAR,minors->GetAt(j).GetRaceName(),minors->GetAt(j).GetKind(),TRUE));
 								}
@@ -1443,10 +1404,10 @@ void CDiplomacy::CalculateDiplomaticFallouts(MinorRaceArray* minors, CMajorRace*
 					else if (m_MadeOfferArray[i].offerFromRace == DECLINED) // Wir haben den Kriegspakt abgelehnt
 					{
 						s = CResourceManager::GetString("WE_DECLINE_WARPACT", FALSE, race2,CMajorRace::GetRaceName(m_MadeOfferArray[i].corruptedMajor));
-						message.GenerateMessage(s,m_iDiplomacy,DIPLOMACY,"",0,0);
+						message.GenerateMessage(s,DIPLOMACY,"",0,0);
 						empire[m_iDiplomacy].AddMessage(message);
 						s = CResourceManager::GetString("OUR_WARPACT_DECLINE", FALSE, race3,CMajorRace::GetRaceName(m_MadeOfferArray[i].corruptedMajor));
-						message.GenerateMessage(s,m_MadeOfferArray[i].majorRace,DIPLOMACY,"",0,0,2);
+						message.GenerateMessage(s,DIPLOMACY,"",0,0,2);
 						empire[m_MadeOfferArray[i].majorRace].AddMessage(message);
 						empire[m_MadeOfferArray[i].majorRace].AddIncomingMajorAnswer(this->GenerateMajorAnswer(m_MadeOfferArray[i].type,FALSE,m_iDiplomacy));
 						// Beziehungsverschlechterung auf beiden Seiten, wenn unser Angebot abgelehnt wird, so geht die
@@ -1457,7 +1418,7 @@ void CDiplomacy::CalculateDiplomaticFallouts(MinorRaceArray* minors, CMajorRace*
 					else // wir haben nicht auf deren Angebot reagiert
 					{
 						s = CResourceManager::GetString("NOT_REACTED_WARPACT", FALSE, race3,CMajorRace::GetRaceName(m_MadeOfferArray[i].corruptedMajor));
-						message.GenerateMessage(s,m_MadeOfferArray[i].majorRace,DIPLOMACY,"",0,0);
+						message.GenerateMessage(s,DIPLOMACY,"",0,0);
 						empire[m_MadeOfferArray[i].majorRace].AddMessage(message);				
 					}
 				}

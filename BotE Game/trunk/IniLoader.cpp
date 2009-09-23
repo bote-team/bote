@@ -1,6 +1,11 @@
 #include "stdafx.h"
 #include "IniLoader.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif
 //////////////////////////////////////////////////////////////////////
 // Konstruktion/Destruktion
 //////////////////////////////////////////////////////////////////////
@@ -146,9 +151,8 @@ void CIniLoader::CreateIniFile(CString filename)
 			file.WriteString("SOUND=ON\n");
 			file.WriteString("SHOWTRADEROUTES=ON\n");
 			file.WriteString("USERNAME=\n");
-			file.WriteString("DIFFICULTY=NORMAL\n");
-			file.WriteString("SMOOTHGALAXY=OFF\n");
-			file.WriteString("SMOOTHSCALING=ON\n");
+			file.WriteString("DIFFICULTY=EASY\n");
+			file.WriteString("ANIMATEDICON=ON\n");			
 		}
 		file.Close();
 		ReadIniFile(filename);

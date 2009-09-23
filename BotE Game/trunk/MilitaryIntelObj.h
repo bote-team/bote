@@ -1,5 +1,5 @@
 /*
- *   Copyright (C)2004-2008 Sir Pustekuchen
+ *   Copyright (C)2004-2009 Sir Pustekuchen
  *
  *   Author   :  Sir Pustekuchen
  *   Home     :  http://birth-of-the-empires.de.vu
@@ -23,13 +23,13 @@ public:
 	CMilitaryIntelObj(void);
 
 	/// Konstruktor mit Parameterübergabe
-	/// @param owner Auslöser/Eigentümer
-	/// @param enemy Ziel der Geheimdienstaktion
+	/// @param sOwnerID Auslöser/Eigentümer
+	/// @param sEnemyID Ziel der Geheimdienstaktion
 	/// @param round Runde in der die Geheimdienstaktion angelegt wurde
 	/// @param isSpy handelt es sich um Spionage oder Sabotage
 	/// @param ko Koordinaten des System
 	/// @param id ID der betroffenen Gebäude
-	CMilitaryIntelObj(BYTE owner, BYTE enemy, USHORT round, BOOLEAN isSpy, const CPoint &ko, USHORT id, USHORT number,
+	CMilitaryIntelObj(const CString& sOwnerID, const CString& sEnemyID, USHORT round, BOOLEAN isSpy, const CPoint &ko, USHORT id, USHORT number,
 		BOOLEAN building, BOOLEAN ship, BOOLEAN troop);
 
 	/// Destruktor
@@ -67,7 +67,7 @@ public:
 	/// @param pDoc Zeiger auf das Dokument
 	/// @param n Nummer der verschiedenen Textmöglichkeiten, im Normalfall <code>NULL</code>
 	/// @param param Hier kann die Rasse übergeben werden, von der das Opfer denkt angegriffen worden zu sein
-	void CreateText(CBotf2Doc* pDoc, BYTE n, BYTE param);
+	void CreateText(CBotf2Doc* pDoc, BYTE n, const CString& param);
 
 private:
 	// Atribute

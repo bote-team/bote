@@ -1,5 +1,5 @@
 /*
- *   Copyright (C)2004-2008 Sir Pustekuchen
+ *   Copyright (C)2004-2009 Sir Pustekuchen
  *
  *   Author   :  Sir Pustekuchen
  *   Home     :  http://birth-of-the-empires.de.vu
@@ -39,9 +39,8 @@ private:
 	void CreateButtons();
 
 	/// Funktion zum Zeichnen des Schiffsdesignmenüs
-	/// @param pDC Zeiger auf den aktuellen Zeichenkontext
-	/// @param theClientRect die komplette Zeichenfläche
-	void DrawShipDesignMenue(CDC* pDC, CRect theClientRect);
+	/// @param g Zeiger auf GDI+ Grafikobjekt
+	void DrawShipDesignMenue(Graphics* g);
 
 	/// Funktion überprüft ob das in der Designansicht angeklickte Schiff in einem unserer Systeme gerade gebaut wird
 	/// Man benötigt diesen Check da man keine Schiffe ändern kann, welche gerade gebaut werden.
@@ -52,7 +51,7 @@ private:
 	// Attribute
 
 	// Grafiken
-	CBitmap bg_designmenu;			///< Schiffsdesignmenu
+	Bitmap* bg_designmenu;			///< Schiffsdesignmenu
 
 	// Buttons
 

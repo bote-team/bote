@@ -1,5 +1,5 @@
 /*
- *   Copyright (C)2004-2008 Sir Pustekuchen
+ *   Copyright (C)2004-2009 Sir Pustekuchen
  *
  *   Author   :  Sir Pustekuchen
  *   Home     :  http://birth-of-the-empires.de.vu
@@ -21,7 +21,7 @@ public:
 	CEventScreen(void);
 
 	/// Standardkonstruktor mit Parameterübergabe
-	CEventScreen(BYTE playersRace, const CString &imageName, const CString &headline = "", const CString &text = "");
+	CEventScreen(const CString &sPlayersRaceID, const CString &imageName, const CString &headline = "", const CString &text = "");
 
 	/// Standarddestruktor
 	virtual ~CEventScreen(void);
@@ -38,7 +38,7 @@ public:
 
 // Attribute
 protected:
-	BYTE m_byRace;
+	CString m_sRace;
 
 	Gdiplus::Image* m_pBGImage;
 

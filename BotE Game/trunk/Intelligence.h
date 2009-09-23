@@ -1,5 +1,5 @@
 /*
- *   Copyright (C)2004-2008 Sir Pustekuchen
+ *   Copyright (C)2004-2009 Sir Pustekuchen
  *
  *   Author   :  Sir Pustekuchen
  *   Home     :  http://birth-of-the-empires.de.vu
@@ -10,7 +10,9 @@
 #include "IntelAssignment.h"
 #include "IntelReports.h"
 #include "IntelInfo.h"
+#include <map>
 
+using namespace std;
 /**
  * Diese Klasse abstrahiert den Geheimdienst einer Hauptrasse. Sie beinhaltet alle Funktionen zur Manipulation
  * von Geheimdienstwerten.
@@ -34,7 +36,7 @@ public:
 
 	// Zugriffsfunktionen
 	/// Funktion gibt die Nummer der Rasse zurück, welche wir für unsere Geheimdienstaten verantworlich machen wollen.
-	BYTE GetResponsibleRace() const {return m_byResponsibleRace;}
+	const CString& GetResponsibleRace() const {return m_sResponsibleRace;}
 
 	/// Funktion gibt die Anzahl der produzierten Geheimdienstpunkte zurück.
 	UINT GetSecurityPoints() const {return m_iSecurityPoints;}
@@ -45,8 +47,8 @@ public:
 	/// Funktion gibt die angesammelten Punkte bei der Spionage oder der Sabotage bei einer bestimmten Rasse
 	/// zurück.
 	/// @param type Spionage == 0, Sabotage == 1
-	/// @param race Rasse
-	UINT GetSPStorage(BOOLEAN type, BYTE race) const {ASSERT(race); return m_iSPStorage[race-1][type];}
+	/// @param sRace Rasse
+	UINT GetSPStorage(BOOLEAN type, const CString& sRace) {return m_iSPStorage[type][sRace];}
 
 	/// Funktion gibt einen Bonus auf ein Geheimdienstressort zurück.
 	/// @param bonus Wirtschaft == 0, Forschung == 1, Militär == 2, Diplomatie == 3, innere Sicherheit == 4
@@ -70,8 +72,8 @@ public:
 
 	/// Funktion gibt die Aggressivität bei Geheimdienstaktionen zurück.
 	/// @param type Spionage == 0, Sabotage == 1
-	/// @param race Rasse
-	BYTE GetAggressiveness(BOOLEAN type, BYTE race) const {ASSERT(race); return m_byAggressiveness[race-1][type];}
+	/// @param sRace Rasse
+	BYTE GetAggressiveness(BOOLEAN type, const CString& sRace) {return m_byAggressiveness[type][sRace];}
 
 	/// Funktion gibt einen Zeiger auf die Geheimdienstreporte zurück.
 	CIntelReports* GetIntelReports() {return &m_Reports;}
@@ -79,26 +81,26 @@ public:
 	/// Funktion gibt einen Zeiger auf die Geheimdienstinformationen eines Imperiums zurück.
 	CIntelInfo* GetIntelInfo() {return &m_IntelInfo;}
 
-	/// Funktion gibt einen konstanten Zeiger auf die Zuteilung der einzelnen Geheimdienstressorts zurück.
-	const CIntelAssignment* GetAssignment() const {return &m_Assignment;}
+	/// Funktion gibt einen Zeiger auf die Zuteilung der einzelnen Geheimdienstressorts zurück.
+	CIntelAssignment* GetAssignment() {return &m_Assignment;}
 
 	/// Funktion gibt einen Zeiger auf die Zuteilung der einzelnen Geheimdienstressorts zurück.
 	CIntelAssignment* SetAssignment() {return &m_Assignment;}
 
 	/// Funktion legt die Rassennummer fest.
-	/// @param race Nummer der zugehörigen Rasse/Imperium
-	void SetRaceNumber(BYTE race) {ASSERT(race); m_byRace = race; SetResponsibleRace(race);}
+	/// @param sRace Nummer der zugehörigen Rasse/Imperium
+	void SetRaceID(const CString& sRace) {m_sRace = sRace; SetResponsibleRace(sRace);}
 
 	/// Funktion legt die für unsere Geheimdiensttaten verantworlich machbare Rasse fest. Somit läßt sich die Sache
 	/// auf eigentlich unbeteiligte Rassen abwälzen.
 	/// @param responibleRace neue verantworlichmachbare Rasse
-	void SetResponsibleRace(BYTE responsibleRace) {m_byResponsibleRace = responsibleRace;}
+	void SetResponsibleRace(const CString& responsibleRace) {m_sResponsibleRace = responsibleRace;}
 
 	/// Funktion setzt die Aggressivität bei Geheimdienstaktionen fest.
 	/// @param type Spionage == 0, Sabotage == 1
-	/// @param race Rasse
+	/// @param sRace Rasse
 	/// @param value vorsichtig == 0, normal == 1, aggressiv = 2
-	void SetAggressiveness(BOOLEAN type, BYTE race, BYTE value) {ASSERT(race); m_byAggressiveness[race-1][type] = value;}
+	void SetAggressiveness(BOOLEAN type, const CString& sRace, BYTE value) {m_byAggressiveness[type][sRace] = value;}
 
 	/// Funktion addiert einen Wert zum vorhandenen Wert der inneren Sicherheit. Funktion überprüft auch, ob der neue
 	/// Wert im richtigen Bereich liegt.
@@ -108,9 +110,9 @@ public:
 	/// Funktion addiert die übergebenen Punkte zum jeweiligen Lager einer Rasse. Gleichzeitig wird überprüft, dass
 	/// ihr neuer Wert im richtigen Bereich liegt.
 	/// @param type Spionage == 0, Sabotage == 1
-	/// @param race Rasse
+	/// @param sRace Rasse
 	/// @param add der zu addierende Wert
-	void AddSPStoragePoints(BOOLEAN type, BYTE race, int add);
+	void AddSPStoragePoints(BOOLEAN type, const CString& sRace, int add);
 	
 	/// Funktion fügt den im Parameter übergebenen Wert dem Bonus für die innere Sicherheit hinzu.
 	/// @param add hinzuzufügender Bonus
@@ -147,15 +149,15 @@ public:
 
 private:
 	// Attribute
-	BYTE m_byRace;						///< Rassennummer des Imperiums zu welchem dieses Geheimdienstobjekt gehört
+	CString m_sRace;					///< Rassen-ID des Imperiums zu welchem dieses Geheimdienstobjekt gehört
 
-	BYTE m_byResponsibleRace;			///< Rasse welche für unsere Geheimdiensttaten verantwortlich gemacht werden kann
+	CString m_sResponsibleRace;			///< Rasse welche für unsere Geheimdiensttaten verantwortlich gemacht werden kann
 
 	UINT m_iSecurityPoints;				///< globale Anzahl der produzierten Geheimdienstpunkte
 
 	UINT m_iInnerStorage;				///< Lager der angesammelten Geheimdienstpunkte für die innere Sicherheit
 
-	UINT m_iSPStorage[DOMINION][2];		///< Lager der angesammelten Spionage- und Sabotagepunkte bei einer bestimmten Rasse
+	map<CString, UINT> m_iSPStorage[2];	///< Lager der angesammelten Spionage- und Sabotagepunkte bei einer bestimmten Rasse
 
 	short m_nInnerSecurityBoni;			///< Bonus auf die innere Sicherheit
 
@@ -165,7 +167,7 @@ private:
 
 	short m_nMilitaryBoni[2];			///< Militärbonus für Spionage und Sabotage;
 
-	BYTE m_byAggressiveness[DOMINION][2];	///< Aggressivität, mit der bei Spionage und Sabotage vorgegangen wird
+	map<CString, BYTE> m_byAggressiveness[2];	///< Aggressivität, mit der bei Spionage und Sabotage vorgegangen wird
 
 	CIntelAssignment m_Assignment;		///< Zuteilungen auf die einzelnen Geheimdienstressorts
 

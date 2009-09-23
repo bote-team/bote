@@ -1,5 +1,5 @@
 /*
- *   Copyright (C)2004-2008 Sir Pustekuchen
+ *   Copyright (C)2004-2009 Sir Pustekuchen
  *
  *   Author   :  Sir Pustekuchen
  *   Home     :  http://birth-of-the-empires.de.vu
@@ -8,9 +8,12 @@
 #pragma once
 #include "Options.h"
 #include "IntelAI.h"
+#include <map>
 
 class CBotf2Doc;
 class CSectorAI;
+
+using namespace std;
 /**
  * Diese Klasse beinhaltet zusätzliche Prioritäten für den Schiffsbau und Truppenbau, sowie den Geheimdienst.
  * Diese Prioritäten werden dann bei der Ausführung der System-KI mitbeachtet.
@@ -26,13 +29,13 @@ public:
 
 	// Zugriffsfunktionen
 	/// Funtkion gibt die Prioritäten ein Kolonieschiff zu bauen zurück.
-	BYTE GetColoShipPrio(BYTE race) const {ASSERT(race); return m_byColoShipPrio[race-1];}
+	BYTE GetColoShipPrio(const CString& sRaceID) {return m_mColoShipPrio[sRaceID];}
 
 	/// Funtkion gibt die Prioritäten ein Kolonieschiff zu bauen zurück.
-	BYTE GetTransportShipPrio(BYTE race) const {ASSERT(race); return m_byTransportPrio[race-1];}
+	BYTE GetTransportShipPrio(const CString& sRaceID) {return m_mTransportPrio[sRaceID];}
 
 	/// Funtkion gibt die Prioritäten ein Kriegsschiff zu bauen zurück.
-	BYTE GetCombatShipPrio(BYTE race) const {ASSERT(race); return m_byCombatShipPrio[race-1];}
+	BYTE GetCombatShipPrio(const CString& sRaceID) {return m_mCombatShipPrio[sRaceID];}
 
 	/// Funktion gibt einen Zeiger auf das Geheimdienstobjekt für eine bestimmte Rasse zurück.
 	/// @param race Rasse
@@ -41,15 +44,15 @@ public:
 	// sonstige Funktionen
 	/// Funktion sollte aufgerufen werden, wenn diese Priorität gewählt wurde. Denn dann verringert sich
 	/// diese Priorität.
-	void ChoosedColoShipPrio(BYTE race) {ASSERT(race); m_byColoShipPrio[race-1] /= 2;}
+	void ChoosedColoShipPrio(const CString& sRaceID) {m_mColoShipPrio[sRaceID] /= 2;}
 
 	/// Funktion sollte aufgerufen werden, wenn diese Priorität gewählt wurde. Denn dann verringert sich
 	/// diese Priorität.
-	void ChoosedTransportShipPrio(BYTE race) {ASSERT(race); m_byTransportPrio[race-1] /= 2;}
+	void ChoosedTransportShipPrio(const CString& sRaceID) {m_mTransportPrio[sRaceID] /= 2;}
 
 	/// Funktion sollte aufgerufen werden, wenn diese Priorität gewählt wurde. Denn dann verringert sich
 	/// diese Priorität.
-	void ChoosedCombatShipPrio(BYTE race) {ASSERT(race); m_byCombatShipPrio[race-1] /= 2;}
+	void ChoosedCombatShipPrio(const CString& sRaceID) {m_mCombatShipPrio[sRaceID] /= 2;}
 
 	/// Diese Funktion berechnet die Prioritäten der einzelnen Majorrassen, wann sie ein Kolonieschiff in Auftrag
 	/// geben sollen.
@@ -61,13 +64,13 @@ public:
 private:
 	// Attribute
 	/// Beinhaltet die Priorität einer Rasse ein Kolonieschiff zu bauen.
-	BYTE m_byColoShipPrio[DOMINION];
+	map<CString, BYTE> m_mColoShipPrio;
 
 	/// Beinhaltet die Priorität Truppentransporter zu bauen.
-	BYTE m_byTransportPrio[DOMINION];
+	map<CString, BYTE> m_mTransportPrio;
 
 	/// Beinhaltet die Priorität Kriegschiffe zu bauen.
-	BYTE m_byCombatShipPrio[DOMINION];
+	map<CString, BYTE> m_mCombatShipPrio;
 
 	/// Beinhaltet Prioritäten für den Geheimdienst und stellt Funktionen zur Steuerung der KI bereit
 	CIntelAI m_IntelAI;

@@ -1,5 +1,5 @@
 /*
- *   Copyright (C)2004-2008 Sir Pustekuchen
+ *   Copyright (C)2004-2009 Sir Pustekuchen
  *
  *   Author   :  Sir Pustekuchen
  *   Home     :  http://birth-of-the-empires.de.vu
@@ -48,16 +48,16 @@ protected:
 
 private:
 	// Funktionen
-	void DrawEmpireNewsMenue(CDC* pDC, CRect theClientRect);		// Fkt. zum Zeichnen der Nachrichtenansicht an das Imperium
-	void DrawEmpireSystemMenue(CDC* pDC, CRect theClientRect);		// Fkt. zum Zeichnen der Ansicht aller Systeme des Imperiums
-	void DrawEmpireShipMenue(CDC* pDC, CRect theClientRect);		// Fkt. zum Zeichnen der Ansicht aller Schiffe des Imperiums
+	void DrawEmpireNewsMenue(Graphics* g);			// Fkt. zum Zeichnen der Nachrichtenansicht an das Imperium
+	void DrawEmpireSystemMenue(Graphics* g);		// Fkt. zum Zeichnen der Ansicht aller Systeme des Imperiums
+	void DrawEmpireShipMenue(Graphics* g);			// Fkt. zum Zeichnen der Ansicht aller Schiffe des Imperiums
 	void CreateButtons();
 
 	//Attribute
 	// Grafiken
-	CBitmap bg_newsovmenu;			// Nachrichtenübersichtsmenü
-	CBitmap bg_systemovmenu;		// Systemübersichtsmenü
-	CBitmap bg_shipovmenu;			// Schiffsübersichtsmenü
+	Bitmap* bg_newsovmenu;			// Nachrichtenübersichtsmenü
+	Bitmap* bg_systemovmenu;		// Systemübersichtsmenü
+	Bitmap* bg_shipovmenu;			// Schiffsübersichtsmenü
 
 	// Buttons
 	CArray<CMyButton*> m_EmpireNewsFilterButtons;	///< Buttons zum filtern der Nachrichten in der Imperiumsübersicht

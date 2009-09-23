@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "SystemAI.h"
 #include "Botf2Doc.h"
+#include "RaceController.h"
+#include "AIPrios.h"
 
 //////////////////////////////////////////////////////////////////////
 // Konstruktion/Destruktion
@@ -29,6 +31,21 @@ CSystemAI::~CSystemAI(void)
 /// des Systems übergeben.
 void CSystemAI::ExecuteSystemAI(CPoint ko)
 {
+	CString sRace = m_pDoc->m_System[ko.x][ko.y].GetOwnerOfSystem();
+	if (sRace.IsEmpty())
+	{
+		CString s;
+		s.Format("Error in CSystemAI::ExecuteSystemAI(): no race controls system %d,%d!", ko.x, ko.y);
+		AfxMessageBox(s);
+		return;
+	}
+	
+	// Besitzer des Systems holen
+	m_pMajor = dynamic_cast<CMajor*>(m_pDoc->GetRaceCtrl()->GetRace(sRace));
+	ASSERT(m_pMajor);
+	if (!m_pMajor)
+		return;
+
 	m_KO = ko;
 	PerhapsBuy();
 	CalcPriorities();
@@ -44,9 +61,7 @@ void CSystemAI::ExecuteSystemAI(CPoint ko)
 void CSystemAI::PerhapsBuy()
 {
 	CPoint p = m_KO;
-	int race = m_pDoc->m_System[p.x][p.y].GetOwnerOfSystem();
-	if (race < HUMAN || race > DOMINION)
-		return;
+	
 	// Wenn kein Bauauftrag in der Liste steht, so kann die Funktion sofort verlassen werden.
 	int id = m_pDoc->m_System[p.x][p.y].GetAssemblyList()->GetAssemblyListEntry(0);
 	if (id == NULL)
@@ -89,25 +104,25 @@ void CSystemAI::PerhapsBuy()
 	// Sobald eine Rundendauer vorhanden ist, kann über den Kauf des Auftrages nachgedacht werden.
 	if (roundToBuild > 1)
 	{
-		m_pDoc->m_System[p.x][p.y].GetAssemblyList()->CalculateBuildCosts(m_pDoc->m_Trade[race].GetRessourcePriceAtRoundStart());
+		m_pDoc->m_System[p.x][p.y].GetAssemblyList()->CalculateBuildCosts(m_pMajor->GetTrade()->GetRessourcePriceAtRoundStart());
 		int costs = m_pDoc->m_System[p.x][p.y].GetAssemblyList()->GetBuildCosts();
-		int value = (m_pDoc->m_Empire[race].GetLatinum() / costs) * 5;
+		int value = (m_pMajor->GetEmpire()->GetLatinum() / costs) * 5;
 		// Umso mehr Latinum das Imperium besitzt, desto eher wird gekauft. Außerdem wird bei einer niedrigen Moral
 		// eher versucht den Kauf zu tätigen, um nächstes Mal einen Polizeistaat oder ähnliches schneller starten zu können
 		if (rand()%100 < value || (value > 0 && m_pDoc->m_System[p.x][p.y].GetMoral() < (rand()%21 + 60)))
 		{
-			costs = m_pDoc->m_System[p.x][p.y].GetAssemblyList()->BuyBuilding(m_pDoc->m_Empire[race].GetLatinum());
+			costs = m_pDoc->m_System[p.x][p.y].GetAssemblyList()->BuyBuilding(m_pMajor->GetEmpire()->GetLatinum());
 			if (costs != 0)
 			{
 				m_pDoc->m_System[p.x][p.y].GetAssemblyList()->SetWasBuildingBought(TRUE);
-				m_pDoc->m_Empire[race].SetLatinum(-costs);
+				m_pMajor->GetEmpire()->SetLatinum(-costs);
 				// Die Preise an der Börse anpassen, da wir ja bestimmte Mengen Ressourcen gekauft haben
 				// Achtung, hier flag == 1 setzen bei Aufruf der Funktion BuyRessource!!!!
-				m_pDoc->m_Trade[race].BuyRessource(TITAN,	 m_pDoc->m_System[p.x][p.y].GetAssemblyList()->GetNeededTitanInAssemblyList(0),p,m_pDoc->m_Empire[race].GetLatinum(),1);
-				m_pDoc->m_Trade[race].BuyRessource(DEUTERIUM,m_pDoc->m_System[p.x][p.y].GetAssemblyList()->GetNeededDeuteriumInAssemblyList(0),p,m_pDoc->m_Empire[race].GetLatinum(),1);
-				m_pDoc->m_Trade[race].BuyRessource(DURANIUM, m_pDoc->m_System[p.x][p.y].GetAssemblyList()->GetNeededDuraniumInAssemblyList(0),p,m_pDoc->m_Empire[race].GetLatinum(),1);
-				m_pDoc->m_Trade[race].BuyRessource(CRYSTAL,  m_pDoc->m_System[p.x][p.y].GetAssemblyList()->GetNeededCrystalInAssemblyList(0),p,m_pDoc->m_Empire[race].GetLatinum(),1);
-				m_pDoc->m_Trade[race].BuyRessource(IRIDIUM,  m_pDoc->m_System[p.x][p.y].GetAssemblyList()->GetNeededIridiumInAssemblyList(0),p,m_pDoc->m_Empire[race].GetLatinum(),1);
+				m_pMajor->GetTrade()->BuyRessource(TITAN,	 m_pDoc->m_System[p.x][p.y].GetAssemblyList()->GetNeededTitanInAssemblyList(0),p,m_pMajor->GetEmpire()->GetLatinum(),1);
+				m_pMajor->GetTrade()->BuyRessource(DEUTERIUM,m_pDoc->m_System[p.x][p.y].GetAssemblyList()->GetNeededDeuteriumInAssemblyList(0),p,m_pMajor->GetEmpire()->GetLatinum(),1);
+				m_pMajor->GetTrade()->BuyRessource(DURANIUM, m_pDoc->m_System[p.x][p.y].GetAssemblyList()->GetNeededDuraniumInAssemblyList(0),p,m_pMajor->GetEmpire()->GetLatinum(),1);
+				m_pMajor->GetTrade()->BuyRessource(CRYSTAL,  m_pDoc->m_System[p.x][p.y].GetAssemblyList()->GetNeededCrystalInAssemblyList(0),p,m_pMajor->GetEmpire()->GetLatinum(),1);
+				m_pMajor->GetTrade()->BuyRessource(IRIDIUM,  m_pDoc->m_System[p.x][p.y].GetAssemblyList()->GetNeededIridiumInAssemblyList(0),p,m_pMajor->GetEmpire()->GetLatinum(),1);
 			}
 		}
 	}
@@ -117,7 +132,7 @@ void CSystemAI::PerhapsBuy()
 void CSystemAI::CalcPriorities()
 {
 	CPoint ko = m_KO;
-
+	
 	// Cecken ob ein Schiff in der Bauliste ist, aber keine Werft im System online geschaltet ist, dann abbrechen
 	// Ebenfalls wenn eine Truppe in der Bauliste ist und keine Kasernen online ist
 	if ((m_pDoc->m_System[ko.x][ko.y].GetAssemblyList()->GetAssemblyListEntry(0) >= 10000
@@ -126,8 +141,9 @@ void CSystemAI::CalcPriorities()
 		|| (m_pDoc->m_System[ko.x][ko.y].GetAssemblyList()->GetAssemblyListEntry(0) >= 20000
 		&& m_pDoc->m_System[ko.x][ko.y].GetProduction()->GetBarrack() == FALSE))
 	{
+		// Besitzer des Systems holen
 		m_pDoc->m_System[ko.x][ko.y].GetAssemblyList()->ClearAssemblyList(ko, m_pDoc->m_System);
-		m_pDoc->m_System[ko.x][ko.y].CalculateVariables(&m_pDoc->BuildingInfo, m_pDoc->GetEmpire(m_pDoc->m_System[ko.x][ko.y].GetOwnerOfSystem())->GetResearch()->GetResearchInfo(), m_pDoc->m_Sector[ko.x][ko.y].GetPlanets(), CTrade::GetMonopolOwner());		
+		m_pDoc->m_System[ko.x][ko.y].CalculateVariables(&m_pDoc->BuildingInfo, m_pMajor->GetEmpire()->GetResearch()->GetResearchInfo(), m_pDoc->m_Sector[ko.x][ko.y].GetPlanets(), m_pMajor, CTrade::GetMonopolOwner());
 	}
 
 	// Checken ob schon ein Eintrag in der Bauliste ist, wenn ja dann brauchen wir hier überhaupt nichts zu machen
@@ -313,7 +329,7 @@ void CSystemAI::CalcPriorities()
 					m_iPriorities[i] = 0;
 					break;
 				}
-				BYTE race = m_pDoc->m_System[ko.x][ko.y].GetOwnerOfSystem();
+				CString race = m_pDoc->m_System[ko.x][ko.y].GetOwnerOfSystem();
 				m_iPriorities[i] = m_pDoc->m_pAIPrios->GetIntelAI()->GetIntelPrio(race);
 				if (m_iPriorities[i] > 255)
 					m_iPriorities[i] = 255;
@@ -484,7 +500,7 @@ void CSystemAI::CalcPriorities()
 */
 #ifdef TRACE_AI
 	if (id == 0)
-		TRACE("Kein Bauauftrag in System '%s'\n", m_pDoc->m_Sector[ko.x][ko.y].GetName());
+		MYTRACE(MT::LEVEL_INFO, "CSystemAI::CalcPriorities(): Could not create buildcontract in system '%s'\n", m_pDoc->m_Sector[ko.x][ko.y].GetName());
 #endif
 }
 
@@ -494,7 +510,7 @@ void CSystemAI::CalcPriorities()
 int CSystemAI::ChooseBuilding()
 {
 	CPoint ko = m_KO;
-	BYTE race = m_pDoc->m_System[ko.x][ko.y].GetOwnerOfSystem();
+	CString race = m_pDoc->m_System[ko.x][ko.y].GetOwnerOfSystem();
 	BOOLEAN chooseCombatship = FALSE;
 	BOOLEAN chooseColoship   = FALSE;
 	BOOLEAN chooseTransport	 = FALSE;
@@ -505,7 +521,7 @@ int CSystemAI::ChooseBuilding()
 	int min = GetShipBuildPrios(chooseCombatship, chooseColoship, chooseTransport);
 	int shipBuildPrio = min;
 #ifdef TRACE_AI
-	TRACE("min Prio after ships: %d\n", min);
+	MYTRACE(MT::LEVEL_INFO, "CSystemAI::ChooseBuilding(): min priority after ships: %d\n", min);
 #endif
 	// sind Updates baubar, so werden die Prioritäten der anderen womöglich etwas verringert, so dass häufiger
 	// zuerst die Updates gebaut werden. Außer wir haben freie Arbeiter übrig.
@@ -513,7 +529,7 @@ int CSystemAI::ChooseBuilding()
 	//min -= rand()%(m_pDoc->m_System[ko.x][ko.y].GetWorker(11)+1);
 	min -= m_pDoc->m_System[ko.x][ko.y].GetWorker(11);
 #ifdef TRACE_AI
-	TRACE("min Prio after ships, updates and workers: %d\n", min);
+	MYTRACE(MT::LEVEL_INFO, "CSystemAI::ChooseBuilding(): min priority after ships, updates and workers: %d\n", min);
 #endif
 	for (int i = FOOD_WORKER; i <= IRIDIUM_WORKER; i++)
 	{
@@ -528,7 +544,7 @@ int CSystemAI::ChooseBuilding()
 	if (choosenPrio != -1)
 	{
 #ifdef TRACE_AI
-		TRACE("choosen prio: %d\n", choosenPrio);
+		MYTRACE(MT::LEVEL_INFO, "CSystemAI::ChooseBuilding(): choosen prio: %d\n", choosenPrio);
 #endif
 		// Gebäude auswählen
 		for (int i = m_pDoc->m_System[ko.x][ko.y].GetBuildableBuildings()->GetUpperBound(); i >= 0; i--)
@@ -648,24 +664,33 @@ int CSystemAI::ChooseShip(int prio, BOOLEAN chooseCombatship, BOOLEAN chooseColo
 {
 	int min = prio;
 	CPoint ko = m_KO;
-	BYTE race = m_pDoc->m_System[ko.x][ko.y].GetOwnerOfSystem();
+	CString sRace = m_pDoc->m_System[ko.x][ko.y].GetOwnerOfSystem();
+	if (sRace.IsEmpty())
+		return 0;
+
+	CRace* pRace = m_pDoc->GetRaceCtrl()->GetRace(sRace);
+	ASSERT(pRace);
+	if (pRace->GetType() != MAJOR)
+		return 0;
+
 	// Wenn ein Kolonieschiff gebaut werden sollte
 	if (chooseColoship && min > 0)
 	{
 		// ID des Schiffes suchen
 		for (int j = 0; j < m_pDoc->m_ShipInfoArray.GetSize(); j++)
-			if (m_pDoc->m_ShipInfoArray.GetAt(j).GetRace() == race
+			// passt die Schiffsnummer zur Rassennummer
+			if (m_pDoc->m_ShipInfoArray.GetAt(j).GetRace() == pRace->GetRaceShipNumber()
 				&& m_pDoc->m_ShipInfoArray.GetAt(j).GetShipType() == COLONYSHIP
-				&& m_pDoc->m_ShipInfoArray.GetAt(j).IsThisShipBuildableNow(m_pDoc->m_Empire[race].GetResearch()))
+				&& m_pDoc->m_ShipInfoArray.GetAt(j).IsThisShipBuildableNow(((CMajor*)pRace)->GetEmpire()->GetResearch()))
 			{
 				int id = m_pDoc->m_ShipInfoArray.GetAt(j).GetID();
 				for (int i = 0; i < m_pDoc->m_System[ko.x][ko.y].GetBuildableShips()->GetSize(); i++)
 					if (m_pDoc->m_System[ko.x][ko.y].GetBuildableShips()->GetAt(i) == id)
 						if (MakeEntryInAssemblyList(id))
 						{
-							m_pDoc->m_pAIPrios->ChoosedColoShipPrio(race);
+							m_pDoc->m_pAIPrios->ChoosedColoShipPrio(sRace);
 #ifdef TRACE_AI
-							TRACE("Kolonieschiffbau im System: %s\n", m_pDoc->m_Sector[m_KO.x][m_KO.y].GetName());								
+							MYTRACE(MT::LEVEL_INFO, "CSystemAI::ChooseShip(): build colonyship in system: %s\n", m_pDoc->m_Sector[m_KO.x][m_KO.y].GetName());								
 #endif
 							return id;
 						}
@@ -676,18 +701,19 @@ int CSystemAI::ChooseShip(int prio, BOOLEAN chooseCombatship, BOOLEAN chooseColo
 	{
 		// ID des Schiffes suchen
 		for (int j = 0; j < m_pDoc->m_ShipInfoArray.GetSize(); j++)
-			if (m_pDoc->m_ShipInfoArray.GetAt(j).GetRace() == race
+			// passt die Schiffsnummer zur Rassennummer
+			if (m_pDoc->m_ShipInfoArray.GetAt(j).GetRace() == pRace->GetRaceShipNumber()
 				&& m_pDoc->m_ShipInfoArray.GetAt(j).GetShipType() == TRANSPORTER
-				&& m_pDoc->m_ShipInfoArray.GetAt(j).IsThisShipBuildableNow(m_pDoc->m_Empire[race].GetResearch()))
+				&& m_pDoc->m_ShipInfoArray.GetAt(j).IsThisShipBuildableNow(((CMajor*)pRace)->GetEmpire()->GetResearch()))
 			{
 				int id = m_pDoc->m_ShipInfoArray.GetAt(j).GetID();
 				for (int i = 0; i < m_pDoc->m_System[ko.x][ko.y].GetBuildableShips()->GetSize(); i++)
 					if (m_pDoc->m_System[ko.x][ko.y].GetBuildableShips()->GetAt(i) == id)
 						if (MakeEntryInAssemblyList(id))
 						{
-							m_pDoc->m_pAIPrios->ChoosedTransportShipPrio(race);
+							m_pDoc->m_pAIPrios->ChoosedTransportShipPrio(sRace);
 #ifdef TRACE_AI
-						TRACE("Transportschiffbau im System: %s\n", m_pDoc->m_Sector[m_KO.x][m_KO.y].GetName());								
+						MYTRACE(MT::LEVEL_INFO, "CSystemAI::ChooseShip(): build transportship in system: %s\n", m_pDoc->m_Sector[m_KO.x][m_KO.y].GetName());								
 #endif
 							return id;
 						}
@@ -722,9 +748,9 @@ int CSystemAI::ChooseShip(int prio, BOOLEAN chooseCombatship, BOOLEAN chooseColo
 		// Feld nach der Stärke der Schiffe ordnen
 		c_arraysort<CArray<SHIPLIST>, SHIPLIST> (ships, sort_desc);
 #ifdef TRACE_AI
-		TRACE("Militärschiffsbau im System: %s\n", m_pDoc->m_Sector[m_KO.x][m_KO.y].GetName());
+		MYTRACE(MT::LEVEL_INFO, "CSystemAI::ChooseShip(): build combatship in system: %s\n", m_pDoc->m_Sector[m_KO.x][m_KO.y].GetName());
 		for (int i = 0; i < ships.GetSize(); i++)
-			TRACE("mögliche baubare Schiffe: %s - ID: %d - Stärke: %d\n", m_pDoc->m_ShipInfoArray[ships.GetAt(i).id - 10000].GetShipClass(),
+			MYTRACE(MT::LEVEL_INFO, "CSystemAI::ChooseShip(): buildable combatships %s - ID: %d - Power: %d\n", m_pDoc->m_ShipInfoArray[ships.GetAt(i).id - 10000].GetShipClass(),
 				ships.GetAt(i).id-10000, ships.GetAt(i).strenght);
 #endif
 		// zu 75% wird versucht das stärkste Schiff zu bauen
@@ -737,7 +763,7 @@ int CSystemAI::ChooseShip(int prio, BOOLEAN chooseCombatship, BOOLEAN chooseColo
 				if (MakeEntryInAssemblyList(ships.GetAt(i).id))
 				{
 #ifdef TRACE_AI
-					TRACE("gewähltes Schiff zum Bau: %s\n", m_pDoc->m_ShipInfoArray[ships.GetAt(i).id - 10000].GetShipClass());
+					MYTRACE(MT::LEVEL_INFO, "CSystemAI::ChooseShip(): choosen combatship to build: %s\n", m_pDoc->m_ShipInfoArray[ships.GetAt(i).id - 10000].GetShipClass());
 #endif
 					return ships.GetAt(i).id;
 				}
@@ -759,7 +785,7 @@ BOOLEAN CSystemAI::MakeEntryInAssemblyList(short id)
 	float difficulty = m_pDoc->GetDifficultyLevel();
 	// Wenn ein menschlicher Spieler die Autobaufunktion in einem System aktiviert hat, dann bekommt er natürlich keinen
 	// Bonus durch den Schwierigkeitsgrad
-	if (m_pDoc->GetEmpire(m_pDoc->m_System[m_KO.x][m_KO.y].GetOwnerOfSystem())->GetPlayerOfEmpire() != COMPUTER && m_pDoc->m_System[m_KO.x][m_KO.y].GetAutoBuild() == TRUE)
+	if (m_pMajor->IsHumanPlayer() == true && m_pDoc->m_System[m_KO.x][m_KO.y].GetAutoBuild() == TRUE)
 		difficulty = 1.0f;
 	// Wenn gebäude die NeverReady gebaut werden sollen, dann ist der Schwierigkeitsgrad ein. Es bleibt also solange drin
 	// wie es Industrie kostet
@@ -775,14 +801,14 @@ BOOLEAN CSystemAI::MakeEntryInAssemblyList(short id)
 	{
 		m_pDoc->m_System[ko.x][ko.y].GetAssemblyList()->CalculateNeededRessources(
 			0, &m_pDoc->m_ShipInfoArray.GetAt(id-10000) , 0, m_pDoc->m_System[ko.x][ko.y].GetAllBuildings(), id,
-			m_pDoc->m_Empire[m_pDoc->m_System[ko.x][ko.y].GetOwnerOfSystem()].GetResearch()->GetResearchInfo(), difficulty);
+			m_pMajor->GetEmpire()->GetResearch()->GetResearchInfo(), difficulty);
 	}
 	// Sonst die Gebäude
 	else
 	{
 		m_pDoc->m_System[ko.x][ko.y].GetAssemblyList()->CalculateNeededRessources(
 			&m_pDoc->GetBuildingInfo(RunningNumber), 0, 0, m_pDoc->m_System[ko.x][ko.y].GetAllBuildings(), id,
-			m_pDoc->m_Empire[m_pDoc->m_System[ko.x][ko.y].GetOwnerOfSystem()].GetResearch()->GetResearchInfo(), difficulty);
+			m_pMajor->GetEmpire()->GetResearch()->GetResearchInfo(), difficulty);
 	}
 	return m_pDoc->m_System[ko.x][ko.y].GetAssemblyList()->MakeEntry(id, ko, m_pDoc->m_System);
 }
@@ -1015,16 +1041,21 @@ int CSystemAI::GetShipBuildPrios(BOOLEAN &chooseCombatship, BOOLEAN &chooseColos
 	chooseCombatship = chooseColoship = chooseTransport = FALSE;
 	int min = 0;
 	CPoint ko = m_KO;
-	BYTE race = m_pDoc->m_System[ko.x][ko.y].GetOwnerOfSystem();
+	CString sRace = m_pDoc->m_System[ko.x][ko.y].GetOwnerOfSystem();
+	if (sRace.IsEmpty())
+		return min;
+
+	CMajor* pMajor = dynamic_cast<CMajor*>(m_pDoc->GetRaceCtrl()->GetRace(sRace));
+	ASSERT(pMajor);
 
 	// Latinumänderung + Schiffsbevölkerungsunterstützungskosten - Schiffsunterstützungskosten
-	long shipCosts = m_pDoc->GetEmpire(race)->GetLatinumChange() + m_pDoc->GetEmpire(race)->GetPopSupportCosts() - m_pDoc->GetEmpire(race)->GetShipCosts();
+	long shipCosts = pMajor->GetEmpire()->GetLatinumChange() + pMajor->GetEmpire()->GetPopSupportCosts() - pMajor->GetEmpire()->GetShipCosts();
 	// würde man durch die Schiffe negatives Latinum machen und dies wäre höher als 10% des gesamten Latinumbestandes, dann wird kein Schiff
 	// gebaut!
-	if (shipCosts < 0 && abs(shipCosts) > (long)(m_pDoc->GetEmpire(race)->GetLatinum() * 0.1))
+	if (shipCosts < 0 && abs(shipCosts) > (long)(pMajor->GetEmpire()->GetLatinum() * 0.1))
 	{
 		#ifdef TRACE_AI
-		TRACE("Race %d - System: %s - can't build ships because of too high shipcosts!\n",race, m_pDoc->m_Sector[ko.x][ko.y].GetName());
+		MYTRACE(MT::LEVEL_INFO, "CSystemAI::GetShipBuildPrios(): Race %s - System: %s - can't build ships because of too high shipcosts!\n",sRace, m_pDoc->m_Sector[ko.x][ko.y].GetName());
 		#endif		
 		return 0;
 	}
@@ -1032,19 +1063,19 @@ int CSystemAI::GetShipBuildPrios(BOOLEAN &chooseCombatship, BOOLEAN &chooseColos
 	if (m_pDoc->m_System[ko.x][ko.y].GetProduction()->GetShipYard() == TRUE
 		&& m_pDoc->m_System[ko.x][ko.y].GetBuildableShips()->GetSize() > 0)
 	{
-		if (m_pDoc->m_pAIPrios->GetColoShipPrio(race) > 0)
+		if (m_pDoc->m_pAIPrios->GetColoShipPrio(sRace) > 0)
 		{
-			min = rand()%(m_pDoc->m_pAIPrios->GetColoShipPrio(race) + 1);
+			min = rand()%(m_pDoc->m_pAIPrios->GetColoShipPrio(sRace) + 1);
 			#ifdef TRACE_AI
-			TRACE("Race %d - System: %s - ColonyShipPrio: %d (max %d)\n",race,m_pDoc->m_Sector[ko.x][ko.y].GetName(),min,m_pDoc->m_pAIPrios->GetColoShipPrio(race));
+			MYTRACE(MT::LEVEL_INFO, "CSystemAI::GetShipBuildPrios(): Race %s - System: %s - ColonyShipPrio: %d (max %d)\n",sRace,m_pDoc->m_Sector[ko.x][ko.y].GetName(),min,m_pDoc->m_pAIPrios->GetColoShipPrio(sRace));
 			#endif
 			chooseColoship = TRUE;
 		}
-		if (m_pDoc->m_pAIPrios->GetTransportShipPrio(race) > 0)
+		if (m_pDoc->m_pAIPrios->GetTransportShipPrio(sRace) > 0)
 		{
-			int random = rand()%(m_pDoc->m_pAIPrios->GetTransportShipPrio(race) + 1);
+			int random = rand()%(m_pDoc->m_pAIPrios->GetTransportShipPrio(sRace) + 1);
 			#ifdef TRACE_AI
-			TRACE("Race %d - System: %s - TransportShipPrio: %d (max %d)\n",race, m_pDoc->m_Sector[ko.x][ko.y].GetName(),random,m_pDoc->m_pAIPrios->GetTransportShipPrio(race));
+			MYTRACE(MT::LEVEL_INFO, "CSystemAI::GetShipBuildPrios(): Race %s - System: %s - TransportShipPrio: %d (max %d)\n",sRace, m_pDoc->m_Sector[ko.x][ko.y].GetName(),random,m_pDoc->m_pAIPrios->GetTransportShipPrio(sRace));
 			#endif
 			if (random > min)
 			{
@@ -1053,11 +1084,11 @@ int CSystemAI::GetShipBuildPrios(BOOLEAN &chooseCombatship, BOOLEAN &chooseColos
 				chooseTransport  = TRUE;
 			}
 		}
-		if (m_pDoc->m_pAIPrios->GetCombatShipPrio(race) > 0)
+		if (m_pDoc->m_pAIPrios->GetCombatShipPrio(sRace) > 0)
 		{
-			int random = rand()%(m_pDoc->m_pAIPrios->GetCombatShipPrio(race) + 1);
+			int random = rand()%(m_pDoc->m_pAIPrios->GetCombatShipPrio(sRace) + 1);
 			#ifdef TRACE_AI
-			TRACE("Race %d - System: %s - CombatShipPrio: %d (max %d)\n",race,m_pDoc->m_Sector[ko.x][ko.y].GetName(),random,m_pDoc->m_pAIPrios->GetCombatShipPrio(race));
+			MYTRACE(MT::LEVEL_INFO, "CSystemAI::GetShipBuildPrios(): Race %s - System: %s - CombatShipPrio: %d (max %d)\n",sRace,m_pDoc->m_Sector[ko.x][ko.y].GetName(),random,m_pDoc->m_pAIPrios->GetCombatShipPrio(sRace));
 			#endif
 			if (random > min)
 			{
@@ -1069,7 +1100,7 @@ int CSystemAI::GetShipBuildPrios(BOOLEAN &chooseCombatship, BOOLEAN &chooseColos
 		}
 	}
 	#ifdef TRACE_AI
-	TRACE("CSystemAI::GetShipBuildPrios ... ready\n");
+	MYTRACE(MT::LEVEL_INFO, "CSystemAI::GetShipBuildPrios(): ... ready\n");
 	#endif
 	
 	return min;
@@ -1168,20 +1199,19 @@ void CSystemAI::CalcProd()
 		m_pDoc->m_System[ko.x][ko.y].GetProduction()->m_iEnergyProd		-= (int)(m_pDoc->m_System[ko.x][ko.y].GetBlockade() * m_pDoc->m_System[ko.x][ko.y].GetProduction()->m_iEnergyProd/100);		
 	}
 	
-	BYTE race = m_pDoc->m_System[ko.x][ko.y].GetOwnerOfSystem();
 	///// HIER DIE BONI DURCH SPEZIALFORSCHUNG //////
 	// Hier die Boni durch die Uniqueforschung "Wirtschaft" -> 10% mehr Industrie
-	if (m_pDoc->m_Empire[race].GetResearch()->GetResearchInfo()->GetResearchComplex(5)->GetFieldStatus(1) == RESEARCHED)
+	if (m_pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(5)->GetFieldStatus(1) == RESEARCHED)
 		m_pDoc->m_System[ko.x][ko.y].GetProduction()->m_iIndustryProd += 
-		(int)(m_pDoc->m_Empire[race].GetResearch()->GetResearchInfo()->GetResearchComplex(5)->GetBonus(1)*m_pDoc->m_System[ko.x][ko.y].GetProduction()->m_iIndustryProd/100);
+		(int)(m_pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(5)->GetBonus(1)*m_pDoc->m_System[ko.x][ko.y].GetProduction()->m_iIndustryProd/100);
 	// Hier die Boni durch die Uniqueforschung "Produktion"
-	if (m_pDoc->m_Empire[race].GetResearch()->GetResearchInfo()->GetResearchComplex(6)->GetFieldStatus(1) == RESEARCHED)
+	if (m_pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(6)->GetFieldStatus(1) == RESEARCHED)
 		m_pDoc->m_System[ko.x][ko.y].GetProduction()->m_iFoodProd +=
-		(int)(m_pDoc->m_Empire[race].GetResearch()->GetResearchInfo()->GetResearchComplex(6)->GetBonus(1)*m_pDoc->m_System[ko.x][ko.y].GetProduction()->m_iFoodProd/100); 
+		(int)(m_pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(6)->GetBonus(1)*m_pDoc->m_System[ko.x][ko.y].GetProduction()->m_iFoodProd/100); 
 	// Wenn wir die Uniqueforschung "Produktion" gewählt haben, und dort mehr Energie haben wollen -> 20% mehr!
-	else if (m_pDoc->m_Empire[race].GetResearch()->GetResearchInfo()->GetResearchComplex(6)->GetFieldStatus(3) == RESEARCHED)
+	else if (m_pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(6)->GetFieldStatus(3) == RESEARCHED)
 		m_pDoc->m_System[ko.x][ko.y].GetProduction()->m_iEnergyProd +=
-		(int)(m_pDoc->m_Empire[race].GetResearch()->GetResearchInfo()->GetResearchComplex(6)->GetBonus(3)*m_pDoc->m_System[ko.x][ko.y].GetProduction()->m_iEnergyProd/100); 
+		(int)(m_pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(6)->GetBonus(3)*m_pDoc->m_System[ko.x][ko.y].GetProduction()->m_iEnergyProd/100); 
 	
 	// Maximalenergie, also hier noch ohne Abzüge durch energiebedürftige Gebäude
 	m_pDoc->m_System[ko.x][ko.y].GetProduction()->m_iMaxEnergyProd = m_pDoc->m_System[ko.x][ko.y].GetProduction()->m_iEnergyProd;
@@ -1189,7 +1219,7 @@ void CSystemAI::CalcProd()
 	m_pDoc->m_System[ko.x][ko.y].GetProduction()->m_iEnergyProd -= neededEnergy;
 	
 	// imperiumweite Moralprod mit aufrechnen
-	m_pDoc->m_System[ko.x][ko.y].GetProduction()->AddMoralProd(m_pDoc->m_System[ko.x][ko.y].GetProduction()->GetMoralProdEmpireWide(race));
+	m_pDoc->m_System[ko.x][ko.y].GetProduction()->AddMoralProd(m_pDoc->m_System[ko.x][ko.y].GetProduction()->GetMoralProdEmpireWide(m_pMajor->GetRaceID()));
 	// Den Moralboni im System noch auf die einzelnen Produktionen anrechnen
 	m_pDoc->m_System[ko.x][ko.y].GetProduction()->IncludeSystemMoral(m_pDoc->m_System[ko.x][ko.y].GetMoral());
 	// benötigte Nahrung durch Bevölkerung von der Produktion abiehen
@@ -1204,24 +1234,27 @@ void CSystemAI::CalcProd()
 void CSystemAI::ApplyTradeRoutes()
 {
 	CPoint ko = m_KO;
-	BYTE race = m_pDoc->m_System[ko.x][ko.y].GetOwnerOfSystem();
-	if (m_pDoc->m_System[ko.x][ko.y].CanAddTradeRoute(m_pDoc->m_Empire[m_pDoc->m_System[ko.x][ko.y].GetOwnerOfSystem()].GetResearch()->GetResearchInfo()) == TRUE)
+	CString race = m_pDoc->m_System[ko.x][ko.y].GetOwnerOfSystem();
+	if (m_pDoc->m_System[ko.x][ko.y].CanAddTradeRoute(m_pMajor->GetEmpire()->GetResearch()->GetResearchInfo()) == TRUE)
 	{
 		// primär zu Minorraces
-		for (int i = 0; i < m_pDoc->m_MinorRaceArray.GetSize(); i++)
-			if (m_pDoc->m_MinorRaceArray.GetAt(i).GetDiplomacyStatus(race) >= TRADE_AGREEMENT
-				&& m_pDoc->m_MinorRaceArray.GetAt(i).GetDiplomacyStatus(race) < MEMBERSHIP)
-				if (m_pDoc->m_System[ko.x][ko.y].AddTradeRoute(m_pDoc->m_MinorRaceArray.GetAt(i).GetRaceKO(), m_pDoc->m_System, m_pDoc->m_Empire[m_pDoc->m_System[ko.x][ko.y].GetOwnerOfSystem()].GetResearch()->GetResearchInfo()) == FALSE)
+		map<CString, CMinor*>* pmMinors = m_pDoc->GetRaceCtrl()->GetMinors();
+		for (map<CString, CMinor*>::const_iterator it = pmMinors->begin(); it != pmMinors->end(); it++)
+		{
+			CMinor* pMinor = it->second;
+			if (pMinor->GetAgreement(race) >= TRADE_AGREEMENT && pMinor->GetAgreement(race) < MEMBERSHIP)
+				if (m_pDoc->m_System[ko.x][ko.y].AddTradeRoute(pMinor->GetRaceKO(), m_pDoc->m_System, m_pMajor->GetEmpire()->GetResearch()->GetResearchInfo()) == FALSE)
 					break;
+		}
 	}
-	if (m_pDoc->m_System[ko.x][ko.y].CanAddTradeRoute(m_pDoc->m_Empire[m_pDoc->m_System[ko.x][ko.y].GetOwnerOfSystem()].GetResearch()->GetResearchInfo()) == TRUE)
+	if (m_pDoc->m_System[ko.x][ko.y].CanAddTradeRoute(m_pMajor->GetEmpire()->GetResearch()->GetResearchInfo()) == TRUE)
 	{
 		// sekundär zu den anderen Majorraces
 		for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
 			for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-				if (m_pDoc->m_System[x][y].GetOwnerOfSystem() != NOBODY && m_pDoc->m_System[x][y].GetOwnerOfSystem() != UNKNOWN && m_pDoc->m_System[x][y].GetOwnerOfSystem() != race)
-					if (m_pDoc->m_MajorRace[m_pDoc->m_System[x][y].GetOwnerOfSystem()].GetDiplomacyStatus(race) >= TRADE_AGREEMENT)
-						m_pDoc->m_System[ko.x][ko.y].AddTradeRoute(CPoint(x,y), m_pDoc->m_System, m_pDoc->m_Empire[m_pDoc->m_System[ko.x][ko.y].GetOwnerOfSystem()].GetResearch()->GetResearchInfo());							
+				if (m_pDoc->m_System[x][y].GetOwnerOfSystem() != "" && m_pDoc->m_System[x][y].GetOwnerOfSystem() != race)
+					if (m_pMajor->GetAgreement(m_pDoc->m_System[x][y].GetOwnerOfSystem()) >= TRADE_AGREEMENT)
+						m_pDoc->m_System[ko.x][ko.y].AddTradeRoute(CPoint(x,y), m_pDoc->m_System, m_pMajor->GetEmpire()->GetResearch()->GetResearchInfo());							
 	}
 }
 

@@ -1,5 +1,5 @@
 /*
- *   Copyright (C)2004-2008 Sir Pustekuchen
+ *   Copyright (C)2004-2009 Sir Pustekuchen
  *
  *   Author   :  Sir Pustekuchen
  *   Home     :  http://birth-of-the-empires.de.vu
@@ -23,6 +23,11 @@
 #include "TradeRoute.h"
 #include "array_sort.h"
 
+// forward declaration
+class CMajor;
+class CMinor;
+class CBotf2Doc;
+
 class CSystem : public CObject  
 {
 public:
@@ -45,8 +50,8 @@ public:
 // Zugriffsfunktionen
 	// zum Lesen der Membervariablen
 	// Funktion gibt den Besitzer des Systems zurück, sollte eigentlich immer auch der Besitzer des Sektors sein.	
-	BYTE GetOwnerOfSystem() const {return m_iOwnerOfSystem;}
-	
+	const CString& GetOwnerOfSystem() const {return m_sOwnerOfSystem;}
+		
 	// Funktion gibt die aktuelle Bevölkerung des Systems zurück.
 	double GetHabitants() const {return m_dHabitants;}
 	
@@ -120,7 +125,7 @@ public:
 		
 	// zum Schreiben der Membervariabblen
 	// Funktion setzt den neuen Besitzer des Systems. Übergeben wird der Besitzer.
-	void SetOwnerOfSystem(BYTE OwnerOfSystem) {m_iOwnerOfSystem = OwnerOfSystem;}
+	void SetOwnerOfSystem(const CString& sOwnerOfSystem) {m_sOwnerOfSystem = sOwnerOfSystem;}
 	
 	// Funktion setzt die Bevölkerungsanzahl des Systems. Übergeben wird die Bevölkerung aller Planeten des Sektors.
 	// Gleichzeitig überprüft die Funktion auch, ob man eine weitere Handelsroute aufgrund der Bevölkerung bekommt, dann
@@ -179,7 +184,7 @@ public:
 	
 // sonstige Funktionen	
 	// Funktion berechnet aus den Eigenschaften der stehenden Gebäude alle Attribute der Systemklasse.
-	void CalculateVariables(BuildingInfoArray*, CResearchInfo*, CArray<CPlanet>*, const USHORT*);
+	void CalculateVariables(BuildingInfoArray*, CResearchInfo*, CArray<CPlanet>*, CMajor* pOwner, const CString*);
 
 	// Funktion berechnet die Lagerinhalte des Systems. Aufrufen bei Ende bzw. Beginn einer neuen Runde.
 	// Gibt die Funktion TRUE zurück hat sich das System Aufgrund zu schlechter Moral vom Besitzer losgesagt.
@@ -198,10 +203,10 @@ public:
 	bool DestroyBuildings(void);
 	
 	// Funktion berechnet die baubaren Gebäude und Gebäudeupdates in dem System.
-	void CalculateBuildableBuildings(CSector* sector, BuildingInfoArray* buildingInfo, CEmpire* empire, CGlobalBuildings* globals, CMajorRace* majors);
+	void CalculateBuildableBuildings(CSector* sector, BuildingInfoArray* buildingInfo, CMajor* pMajor, CGlobalBuildings* globals);
 	
 	// Funktion berechnet die baubaren Schiffe in dem System.
-	void CalculateBuildableShips(ShipInfoArray* shipInfoArray, const CResearch *research, const CString &sectorName, BOOLEAN minorAlive);
+	void CalculateBuildableShips(CBotf2Doc* pDoc, const CPoint& p);
 
 	// Diese Funktion berechnet die baubaren Truppen in diesem System
 	void CalculateBuildableTroops(const CArray<CTroopInfo>* troopInfos, const CResearch *research);
@@ -227,7 +232,7 @@ public:
 	BOOLEAN AssemblyListCheck(BuildingInfoArray* buildingInfo, CGlobalBuildings* globals, int ID = 0);
 
 	// Funktion baut die Gebäude der Minorrace, wenn wir eine Mitgliedschaft mit dieser erreicht haben.
-	void BuildBuildingsForMinorRace(CSector* sector, BuildingInfoArray* buildingInfo, USHORT averageTechlevel, const CMinorRace* minor);
+	void BuildBuildingsForMinorRace(CSector* sector, BuildingInfoArray* buildingInfo, USHORT averageTechlevel, const CMinor* pMinor);
 	
 	// Funktion berechnet und baut die Startgebäude in einem System, nachdem wir einen Planeten
 	// in diesem kolonisiert haben.
@@ -272,7 +277,7 @@ public:
 
 private:
 	// Der Besitzer des Systems
-	BYTE m_iOwnerOfSystem;
+	CString m_sOwnerOfSystem;
 	
 	// Einwohner in dem System
 	double m_dHabitants;
@@ -355,7 +360,7 @@ private:
 	// private Hilfsfunktionen (mal schauen ob wir die direkt in die cpp-Datei schreiben können)
 	BOOLEAN CheckTech(CBuildingInfo* building, CResearch* research);
 	BOOLEAN CheckPlanet(CBuildingInfo* building, CSector* sector);
-	BOOLEAN CheckGeneralConditions(CBuildingInfo* building, CSector* sector, CGlobalBuildings* globals, CMajorRace* majors);
+	BOOLEAN CheckGeneralConditions(CBuildingInfo* building, CSector* sector, CGlobalBuildings* globals, CMajor* pMajor);
 	BOOLEAN CheckFollower(BuildingInfoArray* buildings, USHORT ID, BOOLEAN flag = 0, BOOLEAN equivalence = 0);
 
 };

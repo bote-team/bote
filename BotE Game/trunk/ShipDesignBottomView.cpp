@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include "botf2.h"
 #include "ShipDesignBottomView.h"
+#include "RaceController.h"
 
 
 // CShipDesignBottomView
@@ -29,6 +30,12 @@ END_MESSAGE_MAP()
 void CShipDesignBottomView::OnDraw(CDC* dc)
 {
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	ASSERT(pDoc);
+
+	CMajor* pMajor = pDoc->GetPlayersRace();
+	ASSERT(pMajor);
+	if (!pMajor)
+		return;
 	// TODO: add draw code here
 
 	// Doublebuffering wird initialisiert
@@ -56,37 +63,12 @@ void CShipDesignBottomView::OnDraw(CDC* dc)
 	rect.SetRect(0,0,m_TotalSize.cx,m_TotalSize.cy);
 	
 	Bitmap* graphic = NULL;
-							
-	if (pDoc->GetPlayersRace() == HUMAN)
-	{
-		fontBrush.SetColor(Color(100,100,250));
-		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + CResourceManager::GetString("RACE1_PREFIX") + "researchV3.jpg");
-	}
-	else if (pDoc->GetPlayersRace() == FERENGI)
-	{
-		fontBrush.SetColor(Color(30,200,30));
-		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + CResourceManager::GetString("RACE2_PREFIX") + "researchV3.jpg");
-	}
-	else if (pDoc->GetPlayersRace() == KLINGON)
-	{
-		fontBrush.SetColor(Color(250,80,30));
-		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + CResourceManager::GetString("RACE3_PREFIX") + "researchV3.jpg");
-	}
-	else if (pDoc->GetPlayersRace() == ROMULAN)
-	{
-		fontBrush.SetColor(Color(140,196,203));
-		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + CResourceManager::GetString("RACE4_PREFIX") + "researchV3.jpg");
-	}
-	else if (pDoc->GetPlayersRace() == CARDASSIAN)
-	{
-		fontBrush.SetColor(Color(74,146,138));
-		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + CResourceManager::GetString("RACE5_PREFIX") + "researchV3.jpg");
-	}
-	else if (pDoc->GetPlayersRace() == DOMINION)
-	{
-		fontBrush.SetColor(Color(74,146,138));
-		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + CResourceManager::GetString("RACE6_PREFIX") + "researchV3.jpg");
-	}
+	CString sPrefix = pMajor->GetPrefix();						
+	Color color;
+	color.SetFromCOLORREF(pMajor->GetDesign()->m_clrGalaxySectorText);
+	fontBrush.SetColor(color);
+	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "researchV3.jpg");
+	
 	// Grafik zeichnen		
 	if (graphic)
 	{
@@ -95,7 +77,7 @@ void CShipDesignBottomView::OnDraw(CDC* dc)
 	}
 	
 	// Klassenname und Beschreibung des Schiffes anzeigen
-	CFontLoader::CreateGDIFont(pDoc->GetPlayersRace(), 4, fontName, fontSize);
+	CFontLoader::CreateGDIFont(pMajor, 4, fontName, fontSize);
 	fontFormat.SetAlignment(StringAlignmentNear);
 	fontFormat.SetLineAlignment(StringAlignmentNear);
 	fontFormat.SetFormatFlags(StringFormatFlagsNoWrap);
@@ -104,7 +86,7 @@ void CShipDesignBottomView::OnDraw(CDC* dc)
 		pDoc->m_ShipInfoArray.GetAt(pDoc->m_iShowWhichShipInfoInView3).GetShipClass(), CResourceManager::GetString("CLASS"));
 	g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(40, 30, rect.right, rect.bottom), &fontFormat, &fontBrush);
 	
-	CFontLoader::CreateGDIFont(pDoc->GetPlayersRace(), 2, fontName, fontSize);
+	CFontLoader::CreateGDIFont(pMajor, 2, fontName, fontSize);
 	fontBrush.SetColor(Color(200,200,250));
 	fontFormat.SetFormatFlags(!StringFormatFlagsNoWrap);
 	s = pDoc->m_ShipInfoArray.GetAt(pDoc->m_iShowWhichShipInfoInView3).GetShipDescription();

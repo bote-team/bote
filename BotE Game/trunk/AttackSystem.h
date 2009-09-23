@@ -1,5 +1,5 @@
 /*
- *   Copyright (C)2004-2008 Sir Pustekuchen
+ *   Copyright (C)2004-2009 Sir Pustekuchen
  *
  *   Author   :  Sir Pustekuchen
  *   Home     :  http://birth-of-the-empires.de.vu
@@ -9,6 +9,10 @@
 #include "afx.h"
 #include "System.h"
 #include "Ship.h"
+#include "RaceController.h"
+#include <map>
+
+using namespace std;
 
 class CAttackSystem : public CObject
 {
@@ -39,14 +43,12 @@ public:
 	// sonstige Funktionen
 	/**
 	 * Diese Funktion initiiert das CAttackSystem Objekt mit den entsprechenden Variablen. Dabei übernimmt sie als
-	 * Parameter einen Zeiger auf das System <code>system</code>, welches angegriffen wird, sowie einen Zeiger auf
-	 * das komplette Feld aller Schiffe <code>ships</code>, einen Zeiger auf den zum System gehörenden Sektor
-	 * <code>sector</code>, einen Zeiger auf die Forschungsinformationen des Imperiums, welchem das System gehört
-	 * <code>researchInfo</code>, einen Zeiger auf die Gebäudeinformationen <code>buildingInfos</code>, die Koordinate
-	 * des Systems <code>ko</code>, die Eigenschaft <code>kind</code> der Rasse, welche in dem System lebt und das Feld
-	 * mit den Monopolbesitzern <code>monopolOwner</code>.
+	 * Parameter einen Zeiger auf die verteidigende Rasse <code>pDefender</code>, einen Zeiger auf das System <code>system</code>,
+	 * welches angegriffen wird, einen Zeiger auf das komplette Feld aller Schiffe <code>ships</code>, einen Zeiger auf den
+	 * zum System gehörenden Sektor <code>sector</code>, einen Zeiger auf die Gebäudeinformationen <code>buildingInfos</code>
+	 * und das Feld mit den Monopolbesitzern <code>monopolOwner</code>.
 	 */
-	void Init(CSystem* system, ShipArray* ships, CSector* sector, CResearchInfo* researchInfo, BuildingInfoArray* buildingInfos, CPoint ko, BYTE kind, const USHORT* monopolOwner);
+	void Init(CRace* pDefender, CSystem* system, ShipArray* ships, CSector* sector, BuildingInfoArray* buildingInfos, const CString* monopolOwner);
 
 	/**
 	 * Diese Funktion führt den Angriff durch. Außerdem werden alle Berechnungen der Auswirkungen des Angriffs 
@@ -59,7 +61,7 @@ public:
 	/// @param defender Verteidiger des Systems
 	/// @param attacker Feld mit allen eingreifern auf das Systems (meist nur einer)
 	/// @return <code>TRUE</code> wenn Verteidiger ungleich allen Angreifern, ansonsten <code>FALSE</code>
-	BOOLEAN IsDefenderNotAttacker(BYTE defender, const CArray<BYTE> &attacker);
+	BOOLEAN IsDefenderNotAttacker(CString sDefender, const map<CString, bool>* attacker);
 
 private:
 	// Attribute
@@ -71,14 +73,14 @@ private:
 	/// mittels Schiffen herbeigebracht wurden sein.
 	CArray<CTroop*> m_pTroops;
 
+	/// Ein Zeiger auf die verteidigende Rasse.
+	CRace* m_pDefender;
+
 	/// Ein Zeiger auf das System, welches angegriffen wird.
 	CSystem* m_pSystem;
 
 	/// Ein Zeiger auf den Sektor, in welchem der Angriff stattfindet.
 	CSector* m_pSector;
-
-	/// Ein Zeiger auf die Forschungsinformationen des Imperiums, welchem das System gehört.
-	CResearchInfo* m_pResearchInfo;
 
 	/// Ein Zeiger auf die Gebäudeinformationen
 	BuildingInfoArray* m_pBuildingInfos;
@@ -86,11 +88,8 @@ private:
 	/// Die Koordinate des Systems auf der Map
 	CPoint m_KO;
 
-	/// Die Eigenschaft der Rasse, welche in dem System beheimatet ist
-	BYTE m_byKind;
-
 	/// Ein Zeiger auf das Feld der Monopolbesitzer
-	const USHORT* m_iMonopolOwner;
+	const CString* m_sMonopolOwner;
 
 	/// StringFeld zur Nachrichtenrückgabe über einen Angriff. Muss nicht serialisiert werden
 	CStringArray m_strNews;

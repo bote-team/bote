@@ -7,7 +7,8 @@
 #include "Sector.h"
 #include "FontLoader.h"
 #include "Botf2.h"
-
+#include "Botf2Doc.h"
+#include "RaceController.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -38,6 +39,8 @@ CSector::~CSector(void)
 ///////////////////////////////////////////////////////////////////////
 CSector::CSector(const CSector & rhs)
 {
+	AfxMessageBox("CSector: implement copy-ctor");
+	/*
 	m_Attributes = rhs.m_Attributes;
 	m_KO = rhs.m_KO;
 	for (int i = 0; i <= DOMINION; i++)
@@ -54,13 +57,14 @@ CSector::CSector(const CSector & rhs)
 		m_iStartStationPoints[i] = rhs.m_iStartStationPoints[i];
 		m_byOwnerPoints[i] = rhs.m_byOwnerPoints[i];
 	}
-	m_byOwnerOfSector = rhs.m_byOwnerOfSector;
+	m_sOwnerOfSector = rhs.m_sOwnerOfSector;
 	m_strSectorName = rhs.m_strSectorName;
 	m_bySunColor = rhs.m_bySunColor;
-	m_byColonyOwner = rhs.m_byColonyOwner;
+	m_sColonyOwner = rhs.m_sColonyOwner;
 	m_iShipPathPoints = rhs.m_iShipPathPoints;	// muss nicht serialisiert werden
 	for (int i = 0; i < rhs.m_Planets.GetSize(); i++)
-		m_Planets.Add(rhs.m_Planets.GetAt(i));	
+		m_Planets.Add(rhs.m_Planets.GetAt(i));
+	*/
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -70,6 +74,8 @@ CSector & CSector::operator=(const CSector & rhs)
 {
 	if (this == &rhs)
 		return *this;
+	AfxMessageBox("CSector: implement =operator");
+	/*
 	m_Attributes = rhs.m_Attributes;
 	m_KO = rhs.m_KO;
 	for (int i = 0; i <= DOMINION; i++)
@@ -86,14 +92,15 @@ CSector & CSector::operator=(const CSector & rhs)
 		m_iStartStationPoints[i] = rhs.m_iStartStationPoints[i];
 		m_byOwnerPoints[i] = rhs.m_byOwnerPoints[i];
 	}
-	m_byOwnerOfSector = rhs.m_byOwnerOfSector;
+	m_sOwnerOfSector = rhs.m_sOwnerOfSector;
 	m_strSectorName = rhs.m_strSectorName;
 	m_bySunColor = rhs.m_bySunColor;
-	m_byColonyOwner = rhs.m_byColonyOwner;
+	m_sColonyOwner = rhs.m_sColonyOwner;
 	m_iShipPathPoints = rhs.m_iShipPathPoints;	// muss nicht serialisiert werden
 	for (int i = 0; i < rhs.m_Planets.GetSize(); i++)
 		m_Planets.Add(rhs.m_Planets.GetAt(i));	
-	return *this;
+	*/
+	return *this;	
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -103,28 +110,52 @@ void CSector::Serialize(CArchive &ar)
 {
 	// Funktion der Basisklasse aufrufen
 	CObject::Serialize(ar);
+	
 	// Wird geschrieben?
 	if (ar.IsStoring())
 	// Alle Variablen in der richtigen Reihenfolge schreiben
 	{
 		ar << m_Attributes;
 		ar << m_KO;
-		for (int i = 0; i <= DOMINION; i++)
-		{
-			ar << m_byStatus[i];
-			ar << m_bShipPort[i];
-			ar << m_bOutpost[i];
-			ar << m_bStarbase[i];
-			ar << m_bIsStationBuild[i];
-			ar << m_bWhoIsOwnerOfShip[i];
-			ar << m_iNeededStationPoints[i];
-			ar << m_iStartStationPoints[i];
-			ar << m_iScanPower[i];
-			ar << m_iNeededScanPower[i];
-			ar << m_byOwnerPoints[i];
-		}
-		ar << m_byColonyOwner;
-		ar << m_byOwnerOfSector;		
+		
+		// alle Maps speichern
+		ar << m_byStatus.size();
+		for (map<CString, BYTE>::const_iterator it = m_byStatus.begin(); it != m_byStatus.end(); it++)
+			ar << it->first << it->second;
+		ar << m_bShipPort.size();
+		for (map<CString, BOOLEAN>::const_iterator it = m_bShipPort.begin(); it != m_bShipPort.end(); it++)
+			ar << it->first << it->second;
+		ar << m_bOutpost.size();
+		for (map<CString, BOOLEAN>::const_iterator it = m_bOutpost.begin(); it != m_bOutpost.end(); it++)
+			ar << it->first << it->second;
+		ar << m_bStarbase.size();
+		for (map<CString, BOOLEAN>::const_iterator it = m_bStarbase.begin(); it != m_bStarbase.end(); it++)
+			ar << it->first << it->second;
+		ar << m_bIsStationBuild.size();
+		for (map<CString, BOOLEAN>::const_iterator it = m_bIsStationBuild.begin(); it != m_bIsStationBuild.end(); it++)
+			ar << it->first << it->second;
+		ar << m_bWhoIsOwnerOfShip.size();
+		for (map<CString, BOOLEAN>::const_iterator it = m_bWhoIsOwnerOfShip.begin(); it != m_bWhoIsOwnerOfShip.end(); it++)
+			ar << it->first << it->second;
+		ar << m_iNeededStationPoints.size();
+		for (map<CString, short>::const_iterator it = m_iNeededStationPoints.begin(); it != m_iNeededStationPoints.end(); it++)
+			ar << it->first << it->second;
+		ar << m_iStartStationPoints.size();
+		for (map<CString, short>::const_iterator it = m_iStartStationPoints.begin(); it != m_iStartStationPoints.end(); it++)
+			ar << it->first << it->second;
+		ar << m_iScanPower.size();
+		for (map<CString, short>::const_iterator it = m_iScanPower.begin(); it != m_iScanPower.end(); it++)
+			ar << it->first << it->second;
+		ar << m_iNeededScanPower.size();
+		for (map<CString, short>::const_iterator it = m_iNeededScanPower.begin(); it != m_iNeededScanPower.end(); it++)
+			ar << it->first << it->second;
+		ar << m_byOwnerPoints.size();
+		for (map<CString, BYTE>::const_iterator it = m_byOwnerPoints.begin(); it != m_byOwnerPoints.end(); it++)
+			ar << it->first << it->second;
+		
+		ar << m_sColonyOwner;
+		ar << m_sOwnerOfSector;		
+		
 		// Nur wenn ein Sonnensystem in dem Sektor ist müssen die folgenden Variablen gespeichert werden
 		if (GetSunSystem())
 		{
@@ -141,22 +172,132 @@ void CSector::Serialize(CArchive &ar)
 		int number = 0;
 		ar >> m_Attributes;
 		ar >> m_KO;
-		for (int i = 0; i <= DOMINION; i++)
+		
+		// Maps laden
+		m_byStatus.clear();
+		size_t mapSize = 0;
+		ar >> mapSize;
+		for (size_t i = 0; i < mapSize; i++)
 		{
-			ar >> m_byStatus[i];
-			ar >> m_bShipPort[i];
-			ar >> m_bOutpost[i];
-			ar >> m_bStarbase[i];
-			ar >> m_bIsStationBuild[i];
-			ar >> m_bWhoIsOwnerOfShip[i];
-			ar >> m_iNeededStationPoints[i];
-			ar >> m_iStartStationPoints[i];
-			ar >> m_iScanPower[i];
-			ar >> m_iNeededScanPower[i];
-			ar >> m_byOwnerPoints[i];
+			CString key;
+			BYTE value;
+			ar >> key;
+			ar >> value;
+			m_byStatus[key] = value;
 		}
-		ar >> m_byColonyOwner;
-		ar >> m_byOwnerOfSector;		
+		m_bShipPort.clear();
+		mapSize = 0;
+		ar >> mapSize;
+		for (size_t i = 0; i < mapSize; i++)
+		{
+			CString key;
+			BOOLEAN value;
+			ar >> key;
+			ar >> value;
+			m_bShipPort[key] = value;
+		}
+		m_bOutpost.clear();
+		mapSize = 0;
+		ar >> mapSize;
+		for (size_t i = 0; i < mapSize; i++)
+		{
+			CString key;
+			BOOLEAN value;
+			ar >> key;
+			ar >> value;
+			m_bOutpost[key] = value;
+		}
+		m_bStarbase.clear();
+		mapSize = 0;
+		ar >> mapSize;
+		for (size_t i = 0; i < mapSize; i++)
+		{
+			CString key;
+			BOOLEAN value;
+			ar >> key;
+			ar >> value;
+			m_bStarbase[key] = value;
+		}
+		m_bIsStationBuild.clear();
+		mapSize = 0;
+		ar >> mapSize;
+		for (size_t i = 0; i < mapSize; i++)
+		{
+			CString key;
+			BOOLEAN value;
+			ar >> key;
+			ar >> value;
+			m_bIsStationBuild[key] = value;
+		}
+		m_bWhoIsOwnerOfShip.clear();
+		mapSize = 0;
+		ar >> mapSize;
+		for (size_t i = 0; i < mapSize; i++)
+		{
+			CString key;
+			BOOLEAN value;
+			ar >> key;
+			ar >> value;
+			m_bWhoIsOwnerOfShip[key] = value;
+		}
+		m_iNeededStationPoints.clear();
+		mapSize = 0;
+		ar >> mapSize;
+		for (size_t i = 0; i < mapSize; i++)
+		{
+			CString key;
+			short value;
+			ar >> key;
+			ar >> value;
+			m_iNeededStationPoints[key] = value;
+		}
+		m_iStartStationPoints.clear();
+		mapSize = 0;
+		ar >> mapSize;
+		for (size_t i = 0; i < mapSize; i++)
+		{
+			CString key;
+			short value;
+			ar >> key;
+			ar >> value;
+			m_iStartStationPoints[key] = value;
+		}
+		m_iScanPower.clear();
+		mapSize = 0;
+		ar >> mapSize;
+		for (size_t i = 0; i < mapSize; i++)
+		{
+			CString key;
+			short value;
+			ar >> key;
+			ar >> value;
+			m_iScanPower[key] = value;
+		}
+		m_iNeededScanPower.clear();
+		mapSize = 0;
+		ar >> mapSize;
+		for (size_t i = 0; i < mapSize; i++)
+		{
+			CString key;
+			short value;
+			ar >> key;
+			ar >> value;
+			m_iNeededScanPower[key] = value;
+		}
+		m_byOwnerPoints.clear();
+		mapSize = 0;
+		ar >> mapSize;
+		for (size_t i = 0; i < mapSize; i++)
+		{
+			CString key;
+			BYTE value;
+			ar >> key;
+			ar >> value;
+			m_byOwnerPoints[key] = value;
+		}
+
+		ar >> m_sColonyOwner;
+		ar >> m_sOwnerOfSector;		
 		// Nur wenn ein Sonnensystem in dem Sektor ist müssen die folgenden Variablen geladen werden
 		if (GetSunSystem())
 		{
@@ -277,7 +418,6 @@ void CSector::GenerateSector(int sunProb, int minorProb)
 			SetMinorRace(TRUE);
 			// Wenn eine kleine Rasse drauf lebt
 			m_strSectorName = CSector::m_NameGenerator->GenerateSectorName(TRUE);
-			m_byOwnerOfSector = UNKNOWN;
 			float currentHabitants = 0.0f;
 			USHORT random = rand()%3+1;
 			// Solange Planeten generieren, bis mind. eine zufällige Anzahl Bevölkerung darauf leben
@@ -309,10 +449,8 @@ void CSector::GenerateSector(int sunProb, int minorProb)
 }
 
 /// Diese Funktion generiert die Planeten in dem Sektor.
-void CSector::CreatePlanets(BYTE majorNumber)
+void CSector::CreatePlanets(const CString& sMajorID)
 {
-	ASSERT(majorNumber <= DOMINION);
-
 	for (int i = 0; i < m_Planets.GetSize(); )
 		m_Planets.RemoveAt(i);
 	m_Planets.RemoveAll();
@@ -322,7 +460,7 @@ void CSector::CreatePlanets(BYTE majorNumber)
 		// Es gibt 7 verschiedene Sonnenfarben
 		m_bySunColor = rand()%7;
 
-		if (majorNumber == HUMAN)
+		if (sMajorID == "MAJOR1")
 		{
 			CPlanet planet;
 			m_bySunColor = 6;
@@ -438,7 +576,7 @@ void CSector::CreatePlanets(BYTE majorNumber)
 			m_Planets.Add(planet);
 			m_Planets.GetAt(m_Planets.GetUpperBound()).SetBoni(1,0,0,0,0,0,0,0);
 		}
-		else if (majorNumber == FERENGI)
+		else if (sMajorID == "MAJOR2")
 		{
 			CPlanet planet;
 			m_bySunColor = 2;
@@ -536,7 +674,7 @@ void CSector::CreatePlanets(BYTE majorNumber)
 			planet.SetGraphicType(rand()%GRAPHICNUMBER);
 			m_Planets.Add(planet);
 		}
-		else if (majorNumber == KLINGON)
+		else if (sMajorID == "MAJOR3")
 		{
 			CPlanet planet;
 			m_bySunColor = 2;
@@ -598,7 +736,7 @@ void CSector::CreatePlanets(BYTE majorNumber)
 			m_Planets.Add(planet);
 			m_Planets.GetAt(m_Planets.GetUpperBound()).SetBoni(0,0,0,0,0,0,0,1);
 		}
-		else if (majorNumber == ROMULAN)
+		else if (sMajorID == "MAJOR4")
 		{
 			CPlanet planet;
 			m_bySunColor = 1;
@@ -660,7 +798,7 @@ void CSector::CreatePlanets(BYTE majorNumber)
 			m_Planets.Add(planet);
 			m_Planets.GetAt(m_Planets.GetUpperBound()).SetBoni(0,0,0,0,0,0,0,1);			
 		}
-		else if (majorNumber == CARDASSIAN)
+		else if (sMajorID == "MAJOR5")
 		{
 			CPlanet planet;
 			m_bySunColor = 4;
@@ -760,7 +898,7 @@ void CSector::CreatePlanets(BYTE majorNumber)
 			m_Planets.Add(planet);
 			m_Planets.GetAt(m_Planets.GetUpperBound()).SetBoni(0,0,0,0,0,0,0,1);
 		}
-		else if (majorNumber == DOMINION)
+		else if (sMajorID == "MAJOR6")
 		{
 			CPlanet planet;
 			m_bySunColor = 5;
@@ -925,85 +1063,106 @@ void CSector::ClearAllPoints()
 	// Falls der Planet gerade geterraformt wird, wird er hier erstmal wieder auf FALSE gesetzt.
 	for (int i = 0; i < m_Planets.GetSize(); i++)
 		m_Planets[i].SetIsTerraforming(FALSE);
-	for (int i = HUMAN; i <= DOMINION; i++)
+	
+	m_byOwnerPoints.clear();
+	for (map<CString, BYTE>::iterator it = m_bIsStationBuild.begin(); it != m_bIsStationBuild.end(); it++)
 	{
-		m_byOwnerPoints[i] = 0;
-		if (m_bIsStationBuild[i] == FALSE)
-			this->SetStartStationPoints(-1,i);
+		if (it->second == FALSE)
+			this->SetStartStationPoints(0, it->first);
 		else
-			m_bIsStationBuild[i] = FALSE;
+			it->second = FALSE;
 	}
+	// nun können alle StartStationPoint die auf 0 stehen in der Map gelöscht werden
+	for (map<CString, short>::iterator it = m_iStartStationPoints.begin(); it != m_iStartStationPoints.end(); )
+	{
+		if (it->second == 0)
+			it = m_iStartStationPoints.erase(it++);
+		else
+			++it;
+	}
+	
 	m_iShipPathPoints = 0;
+
+	m_bWhoIsOwnerOfShip.clear();
+	// Die benötigte Scanpower um Schiffe sehen zu können wieder auf NULL setzen
+	m_iNeededScanPower.clear();
+	m_iScanPower.clear();
+	// Sagen das erstmal kein Außenposten und keine Sternbasis in dem Sektor steht
+	m_bOutpost.clear();
+	m_bStarbase.clear();
+	m_bShipPort.clear();	
 }
 
 /// Diese Funktion berechnet anhand der Besitzerpunkte und anderen Enflüssen, wem dieser Sektor schlussendlich
 /// gehört.
-void CSector::CalculateOwner(BYTE systemOwner)
+void CSector::CalculateOwner(const CString& sSystemOwner)
 {
 	// Wenn in diesem Sektor das System jemanden gehört, oder hier eine Schiffswerft durch Außenposten oder Sternbasis
 	// steht, dann ändert sich nichts am Besitzer
-	if (systemOwner != NOBODY)
+	if (sSystemOwner != "")
 	{
 		SetOwned(TRUE);
-		m_byOwnerOfSector = systemOwner;
+		m_sOwnerOfSector = sSystemOwner;
 		return;		
 	}
 	// Sektor gehört einer Minorrace
-	else if (this->m_byOwnerOfSector == UNKNOWN)
+	else if (m_sOwnerOfSector != "" && sSystemOwner == "" && this->GetMinorRace() == TRUE)
 		return;
-	for (int i = HUMAN; i <= DOMINION; i++)
-		if (m_bShipPort[i] == TRUE)
+	
+	for (map<CString, BOOLEAN>::const_iterator it = m_bShipPort.begin(); it != m_bShipPort.end(); it++)
+		if (it->second == TRUE)
 		{
 			SetOwned(TRUE);
-			m_byOwnerOfSector = i;
+			m_sOwnerOfSector = it->first;
 			return;
 		}
+	
 	// Ist obiges nicht eingetreten, so gehört demjenigen der Sektor, wer die meisten Besitzerpunkte hat. Ist hier
 	// Gleichstand haben wir neutrales Gebiet. Es werden mindst. 2 Punkte benötigt, um als neuer Besitzer des Sektors
 	// zu gelten.
 	BYTE mostPoints = 1;
-	BYTE newOwner = NOBODY;
-	for (int i = HUMAN; i <= DOMINION; i++)
+	CString newOwner = "";
+	for (map<CString, BYTE>::const_iterator it = m_byOwnerPoints.begin(); it != m_byOwnerPoints.end(); it++)
 	{
-		if (m_byOwnerPoints[i] > mostPoints)
+		if (it->second > mostPoints)
 		{
-			mostPoints = m_byOwnerPoints[i];
-			newOwner = i;
+			mostPoints = it->second;
+			newOwner = it->first;
 		}
 		// bei Gleichstand wird der Besitzer wieder gelöscht
-		else if (m_byOwnerPoints[i] == mostPoints)
-			newOwner = NOBODY;
+		else if (it->second == mostPoints)
+			newOwner = "";
 	}
-	if (newOwner != NOBODY)
+	if (newOwner != "")
 	{
 		SetOwned(TRUE);
 		SetScanned(newOwner);
 	}
 	else
 		SetOwned(FALSE);
-	m_byOwnerOfSector = newOwner;
+	m_sOwnerOfSector = newOwner;
 }
 
 /// Resetfunktion für die Klasse CSector
 void CSector::Reset()
-{
+{	
 	m_Attributes = 0;
-	for (int z = 0; z <= DOMINION; z++)
-	{
-		m_byStatus[z] = 0;
-		m_iScanPower[z] = 0;
-		m_iNeededScanPower[z] = MAXSHORT;
-		m_bShipPort[z] = FALSE;
-		m_bWhoIsOwnerOfShip[z] = FALSE;
-		m_bOutpost[z] = FALSE;
-		m_bStarbase[z] = FALSE;
-		m_bIsStationBuild[z] = FALSE;
-		m_iStartStationPoints[z] = -1;
-		m_iNeededStationPoints[z] = 0;
-		m_byOwnerPoints[z] = 0;
-	}
-	m_byOwnerOfSector = NOBODY;
-	m_byColonyOwner = NOBODY;
+	
+	// Maps löschen
+	m_byStatus.clear();
+	m_iScanPower.clear();
+	m_iNeededScanPower.clear();
+	m_bShipPort.clear();
+	m_bWhoIsOwnerOfShip.clear();
+	m_bOutpost.clear();
+	m_bStarbase.clear();
+	m_bIsStationBuild.clear();
+	m_iStartStationPoints.clear();
+	m_iNeededStationPoints.clear();
+	m_byOwnerPoints.clear();
+	
+	m_sOwnerOfSector = "";
+	m_sColonyOwner = "";
 	m_strSectorName = "";
 	m_iShipPathPoints = 0;	
 	m_Planets.RemoveAll();
@@ -1013,369 +1172,100 @@ void CSector::Reset()
 // Zeichenfunktionen
 ////////////////////////////////////////////////////////////////
 /// Diese Funktion zeichnet den Namen des Sektors.
-void CSector::DrawSectorsName(CDC *pDC, BYTE ownerOfSystem, int playersRace, BOOLEAN knowOwner) const
+void CSector::DrawSectorsName(CDC *pDC, CBotf2Doc* pDoc)
 {
-	// Ist Sektor bekannt und es befindet sich ein Sonnensystem darin, zeichne den Systemnamen
-	if (GetSunSystem() && this->GetKnown(playersRace) == TRUE)
+	// befindet sich ein Sonnensystem im Sektor
+	if (!GetSunSystem())
+		return;
+
+	ASSERT(pDC);
+	ASSERT(pDoc);
+
+	CMajor* pPlayer = pDoc->GetPlayersRace();
+	ASSERT(pPlayer);
+
+	// Ist Sektor bekannt dann zeichne den Systemnamen
+	if (this->GetKnown(pPlayer->GetRaceID()) == TRUE)
 	{
 		if (!m_Font)
 		{
 			m_Font = new CFont();
-			m_TextColor = CFontLoader::CreateFont(playersRace, 0, 0, m_Font);
+			m_TextColor = CFontLoader::CreateFont(pPlayer, 0, 0, m_Font);
 		}
 		CFont* oldfont = pDC->SelectObject(m_Font);
 		pDC->SetTextColor(m_TextColor);
 		pDC->SetBkMode(TRANSPARENT);
-		if (ownerOfSystem == HUMAN && knowOwner == TRUE)
-			pDC->SetTextColor(RGB(0,200,255));
-		else if (ownerOfSystem == FERENGI && knowOwner == TRUE)
-			pDC->SetTextColor(RGB(220,220,0));
-		else if (ownerOfSystem == KLINGON && knowOwner == TRUE)
-			pDC->SetTextColor(RGB(225,20,25));
-		else if (ownerOfSystem == ROMULAN && knowOwner == TRUE)
-			pDC->SetTextColor(RGB(50,170,0));
-		else if (ownerOfSystem == CARDASSIAN && knowOwner == TRUE)
-			pDC->SetTextColor(RGB(180,180,180));
-		else if (ownerOfSystem == DOMINION && knowOwner == TRUE)
-			pDC->SetTextColor(RGB(200,225,255));
+		CMajor* pOwner = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(pDoc->GetSystem(m_KO).GetOwnerOfSystem()));
+		if (pOwner)
+		{
+			if (pPlayer->IsRaceContacted(pOwner->GetRaceID()) == true || pPlayer->GetRaceID() == pOwner->GetRaceID())
+				pDC->SetTextColor(pOwner->GetDesign()->m_clrGalaxySectorText);			
+		}
 		// Systemnamen zeichnen
 		pDC->DrawText(m_strSectorName,
 		//	CRect(m_KO.x*STARMAP_SECTOR_WIDTH-50,m_KO.y*STARMAP_SECTOR_HEIGHT,m_KO.x*STARMAP_SECTOR_WIDTH+90,m_KO.y*STARMAP_SECTOR_HEIGHT+40),
 		CRect(m_KO.x*STARMAP_SECTOR_WIDTH, m_KO.y*STARMAP_SECTOR_HEIGHT, m_KO.x*STARMAP_SECTOR_WIDTH+STARMAP_SECTOR_WIDTH,m_KO.y*STARMAP_SECTOR_HEIGHT+STARMAP_SECTOR_HEIGHT),
 			DT_CENTER | DT_BOTTOM | DT_SINGLELINE);
 		pDC->SelectObject(oldfont);		
-	}
-	// Schiffssymbole im Sektor zeichnen
-	//DrawShipSymbolInSector(pDC, playersRace);
-	
-	/*
-	if (GetSunSystem() && this->GetKnown(playersRace) == TRUE)
-	{
-		CString fontName = "";
-		Gdiplus::REAL fontSize = 0.0;
-		StringFormat fontFormat;
-		SolidBrush fontBrush(Color::White);
-
-		// Die Rassenspezifischen Styles laden und zeichnen
-		Color color;
-		CFontLoader::CreateGDIFont(playersRace, 0, fontName, fontSize);
-		if (ownerOfSystem == HUMAN && knowOwner == TRUE)
-			color.SetFromCOLORREF(RGB(0,200,255));			
-		else if (ownerOfSystem == FERENGI && knowOwner == TRUE)
-			color.SetFromCOLORREF(RGB(220,220,0));
-		else if (ownerOfSystem == KLINGON && knowOwner == TRUE)
-			color.SetFromCOLORREF(RGB(225,20,25));
-		else if (ownerOfSystem == ROMULAN && knowOwner == TRUE)
-			color.SetFromCOLORREF(RGB(50,170,0));
-		else if (ownerOfSystem == CARDASSIAN && knowOwner == TRUE)
-			color.SetFromCOLORREF(RGB(180,180,180));
-		else if (ownerOfSystem == DOMINION && knowOwner == TRUE)
-			color.SetFromCOLORREF(RGB(200,225,255));
-
-		fontFormat.SetAlignment(StringAlignmentCenter);
-		fontFormat.SetLineAlignment(StringAlignmentFar);
-		fontFormat.SetFormatFlags(StringFormatFlagsNoWrap);
-		fontBrush.SetColor(color);
-
-		g->DrawString(m_strSectorName.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF((REAL)m_KO.x*STARMAP_SECTOR_WIDTH, (REAL)m_KO.y*STARMAP_SECTOR_HEIGHT, (REAL)STARMAP_SECTOR_WIDTH,(REAL)STARMAP_SECTOR_HEIGHT), &fontFormat, &fontBrush);
-	}
-	*/
+	}	
 }
 
 /// Diese Funktion zeichnet die entsprechenden Schiffssymbole in den Sektor
-void CSector::DrawShipSymbolInSector(Graphics *g, int PlayersRace) const
+void CSector::DrawShipSymbolInSector(Graphics *g, CBotf2Doc* pDoc)
 {
-	CString filePath;
-	USHORT count = 0;
+	ASSERT(g);
+	ASSERT(pDoc);
+
+	// alle Rassen holen
+	map<CString, CRace*>* pmRaces = pDoc->GetRaceCtrl()->GetRaces();
+	ASSERT(pmRaces);
+	// Spielerrasse holen
+	CMajor* pPlayer = pDoc->GetPlayersRace();
+	ASSERT(pPlayer);
+
+	CString sFilePath;
+	short nCount = 0;
+	
 	CPoint pt;
 	pt.x = m_KO.x * STARMAP_SECTOR_WIDTH;
 	pt.y = m_KO.y * STARMAP_SECTOR_HEIGHT;
-	if (m_bWhoIsOwnerOfShip[HUMAN] == TRUE && m_iNeededScanPower[HUMAN] < m_iScanPower[PlayersRace]
-		|| PlayersRace == HUMAN && m_bWhoIsOwnerOfShip[HUMAN] == TRUE)
+
+
+	// ALPHA5 -> Bedingungen an die Scanpower entfernt, so dass man alles sieht
+
+	// durch alle Rassen iterieren und Schiffsymbole zeichnen
+	for (map<CString, CRace*>::const_iterator it = pmRaces->begin(); it != pmRaces->end(); it++)
 	{
-		filePath = *((CBotf2App*)AfxGetApp())->GetPath() + "Graphics\\Symbols\\Race1.png";
-		Bitmap* ship = Bitmap::FromFile(filePath.AllocSysString());
-		g->DrawImage(ship, pt.x + 45 - count * 12, pt.y, 35, 35);
-		delete ship;
-		count++;
-	}
-	if (m_bWhoIsOwnerOfShip[FERENGI] == TRUE && m_iNeededScanPower[FERENGI] < m_iScanPower[PlayersRace]
-		|| PlayersRace == FERENGI && m_bWhoIsOwnerOfShip[FERENGI] == TRUE)
-	{
-		filePath = *((CBotf2App*)AfxGetApp())->GetPath() + "Graphics\\Symbols\\Race2.png";
-		Bitmap* ship = Bitmap::FromFile(filePath.AllocSysString());
-		g->DrawImage(ship, pt.x + 45 - count * 12, pt.y, 35, 35);
-		delete ship;
-		count++;
-	}
-	if (m_bWhoIsOwnerOfShip[KLINGON] == TRUE && m_iNeededScanPower[KLINGON] < m_iScanPower[PlayersRace]
-		|| PlayersRace == KLINGON && m_bWhoIsOwnerOfShip[KLINGON] == TRUE)
-	{
-		filePath = *((CBotf2App*)AfxGetApp())->GetPath() + "Graphics\\Symbols\\Race3.png";
-		Bitmap* ship = Bitmap::FromFile(filePath.AllocSysString());
-		g->DrawImage(ship, pt.x + 45 - count * 12, pt.y, 35, 35);
-		delete ship;
-		count++;
-	}
-	if (m_bWhoIsOwnerOfShip[ROMULAN] == TRUE && m_iNeededScanPower[ROMULAN] < m_iScanPower[PlayersRace]
-		|| PlayersRace == ROMULAN && m_bWhoIsOwnerOfShip[ROMULAN] == TRUE)
-	{
-		filePath = *((CBotf2App*)AfxGetApp())->GetPath() + "Graphics\\Symbols\\Race4.png";
-		Bitmap* ship = Bitmap::FromFile(filePath.AllocSysString());
-		g->DrawImage(ship, pt.x + 45 - count * 12, pt.y, 35, 35);
-		delete ship;
-		count++;
-	}
-	if (m_bWhoIsOwnerOfShip[CARDASSIAN] == TRUE && m_iNeededScanPower[CARDASSIAN] < m_iScanPower[PlayersRace]
-		|| PlayersRace == CARDASSIAN && m_bWhoIsOwnerOfShip[CARDASSIAN] == TRUE)
-	{
-		filePath = *((CBotf2App*)AfxGetApp())->GetPath() + "Graphics\\Symbols\\Race5.png";
-		Bitmap* ship = Bitmap::FromFile(filePath.AllocSysString());
-		g->DrawImage(ship, pt.x + 45 - count * 12, pt.y, 35, 35);
-		delete ship;
-		count++;
-	}
-	if (m_bWhoIsOwnerOfShip[DOMINION] == TRUE && m_iNeededScanPower[DOMINION] < m_iScanPower[PlayersRace]
-		|| PlayersRace == DOMINION && m_bWhoIsOwnerOfShip[DOMINION] == TRUE)
-	{
-		filePath = *((CBotf2App*)AfxGetApp())->GetPath() + "Graphics\\Symbols\\Race6.png";
-		Bitmap* ship = Bitmap::FromFile(filePath.AllocSysString());
-		g->DrawImage(ship, pt.x + 45 - count * 12, pt.y, 35, 35);
-		delete ship;
-		count++;
-	}
+		if (pPlayer->GetRaceID() == it->first && this->GetOwnerOfShip(it->first) == TRUE
+			|| this->GetOwnerOfShip(it->first) == TRUE)// && this->GetNeededScanPower(it->first) < this->GetScanPower(pPlayer->GetRaceID()))		
+		{
+			sFilePath = *((CBotf2App*)AfxGetApp())->GetPath() + "Graphics\\Symbols\\" + it->first + ".png";
+			Bitmap* ship = Bitmap::FromFile(sFilePath.AllocSysString());
+			// konnte die Grafik nicht geladen werden, dann wird ein Standardsymbol geladen
+			if (!ship || ship->GetLastStatus() != Ok)
+			{
+				sFilePath = *((CBotf2App*)AfxGetApp())->GetPath() + "Graphics\\Symbols\\Standard.png";
+				ship = Bitmap::FromFile(sFilePath.AllocSysString());
+			}
+			g->DrawImage(ship, pt.x + 45 - nCount * 12, pt.y, 35, 35);
+			delete ship;
+			nCount++;
+		}
 		
-	// Jetzt werden die Stationen wenn möglich gezeichnet
-	if ((m_bIsStationBuild[HUMAN] == TRUE || m_bOutpost[HUMAN] == TRUE || m_bStarbase[HUMAN] == TRUE) &&
-		(PlayersRace == HUMAN || m_iScanPower[PlayersRace] > 0))
-	{
-		filePath = *((CBotf2App*)AfxGetApp())->GetPath() + "Graphics\\Symbols\\Race1.png";
-		Bitmap* ship = Bitmap::FromFile(filePath.AllocSysString());
-		g->DrawImage(ship, pt.x, pt.y, 35, 35);
-		delete ship;
+		// Jetzt werden die Stationen wenn möglich gezeichnet
+		if //(pPlayer->GetRaceID() == it->first || (this->GetScanPower(pPlayer->GetRaceID()) > 0
+			(this->GetIsStationBuilding(it->first) == TRUE || this->GetOutpost(it->first) == TRUE || this->GetStarbase(it->first) == TRUE)
+		{
+			sFilePath = *((CBotf2App*)AfxGetApp())->GetPath() + "Graphics\\Symbols\\" + it->first + ".png";
+			Bitmap* ship = Bitmap::FromFile(sFilePath.AllocSysString());
+			// konnte die Grafik nicht geladen werden, dann wird ein Standardsymbol geladen
+			if (!ship || ship->GetLastStatus() != Ok)
+			{
+				sFilePath = *((CBotf2App*)AfxGetApp())->GetPath() + "Graphics\\Symbols\\Standard.png";
+				ship = Bitmap::FromFile(sFilePath.AllocSysString());
+			}
+			g->DrawImage(ship, pt.x, pt.y + 45, 35, 35);
+			delete ship;
+		}
 	}
-	if ((m_bIsStationBuild[FERENGI] == TRUE || m_bOutpost[FERENGI] == TRUE || m_bStarbase[FERENGI] == TRUE) &&
-		(PlayersRace == FERENGI || m_iScanPower[PlayersRace] > 0))
-	{
-		filePath = *((CBotf2App*)AfxGetApp())->GetPath() + "Graphics\\Symbols\\Race1.png";
-		Bitmap* ship = Bitmap::FromFile(filePath.AllocSysString());
-		g->DrawImage(ship, pt.x, pt.y, 35, 35);
-		delete ship;
-	}
-	if ((m_bIsStationBuild[KLINGON] == TRUE || m_bOutpost[KLINGON] == TRUE || m_bStarbase[KLINGON] == TRUE) &&
-		(PlayersRace == KLINGON || m_iScanPower[PlayersRace] > 0))
-	{
-		filePath = *((CBotf2App*)AfxGetApp())->GetPath() + "Graphics\\Symbols\\Race1.png";
-		Bitmap* ship = Bitmap::FromFile(filePath.AllocSysString());
-		g->DrawImage(ship, pt.x, pt.y, 35, 35);
-		delete ship;
-	}
-	if ((m_bIsStationBuild[ROMULAN] == TRUE || m_bOutpost[ROMULAN] == TRUE || m_bStarbase[ROMULAN] == TRUE) &&
-		(PlayersRace == ROMULAN || m_iScanPower[PlayersRace] > 0))
-	{
-		filePath = *((CBotf2App*)AfxGetApp())->GetPath() + "Graphics\\Symbols\\Race1.png";
-		Bitmap* ship = Bitmap::FromFile(filePath.AllocSysString());
-		g->DrawImage(ship, pt.x, pt.y, 35, 35);
-		delete ship;
-	}
-	if ((m_bIsStationBuild[CARDASSIAN] == TRUE || m_bOutpost[CARDASSIAN] == TRUE || m_bStarbase[CARDASSIAN] == TRUE) &&
-		(PlayersRace == CARDASSIAN || m_iScanPower[PlayersRace] > 0))
-	{
-		filePath = *((CBotf2App*)AfxGetApp())->GetPath() + "Graphics\\Symbols\\Race1.png";
-		Bitmap* ship = Bitmap::FromFile(filePath.AllocSysString());
-		g->DrawImage(ship, pt.x, pt.y, 35, 35);
-		delete ship;
-	}
-	if ((m_bIsStationBuild[DOMINION] == TRUE || m_bOutpost[DOMINION] == TRUE || m_bStarbase[DOMINION] == TRUE) &&
-		(PlayersRace == DOMINION || m_iScanPower[PlayersRace] > 0))
-	{
-		filePath = *((CBotf2App*)AfxGetApp())->GetPath() + "Graphics\\Symbols\\Race1.png";
-		Bitmap* ship = Bitmap::FromFile(filePath.AllocSysString());
-		g->DrawImage(ship, pt.x, pt.y, 35, 35);
-		delete ship;
-	}
-/*	// MultiRace == TRUE, wenn Schiffe verschiedener Rassen in dem System sind
-	pDC->SetBkMode(TRANSPARENT);
-	CString s = "";
-	CRect ShipSymbol;
-	USHORT count = 0;
-	CPoint KO;
-	KO.x = m_KO.x * STARMAP_SECTOR_WIDTH;
-	KO.y = m_KO.y * STARMAP_SECTOR_HEIGHT;
-	LOGFONT lf;
-	memset(&lf, 0, sizeof(LOGFONT)); 
-	strcpy_s(lf.lfFaceName, "Trekbats");
-	if (m_bWhoIsOwnerOfShip[HUMAN] == TRUE && m_iNeededScanPower[HUMAN] < m_iScanPower[PlayersRace]
-		|| PlayersRace == HUMAN && m_bWhoIsOwnerOfShip[HUMAN] == TRUE)
-	{
-		CFont font;
-		lf.lfHeight = 18;
-		font.CreateFontIndirect(&lf);
-		s.Format("S");
-	//	pDC->SetTextColor(RGB(227,231,255));
-		pDC->SetTextColor(RGB(90,180,255));
-		CFont* oldfont = pDC->SelectObject(&font);
-		ShipSymbol.SetRect(KO.x, KO.y, KO.x+STARMAP_SECTOR_WIDTH, KO.y+STARMAP_SECTOR_HEIGHT);
-		count++;
-		pDC->DrawText(s, ShipSymbol, DT_RIGHT | DT_TOP | DT_SINGLELINE);
-		pDC->SelectObject(oldfont);
-	}
-	if (m_bWhoIsOwnerOfShip[FERENGI] == TRUE && m_iNeededScanPower[FERENGI] < m_iScanPower[PlayersRace]
-		|| PlayersRace == FERENGI && m_bWhoIsOwnerOfShip[FERENGI] == TRUE)
-	{
-		CFont font;
-		lf.lfHeight = 17;
-		font.CreateFontIndirect(&lf);
-		s.Format("A");
-		pDC->SetTextColor(RGB(22,183,32));
-		CFont* oldfont = pDC->SelectObject(&font);
-		ShipSymbol.SetRect(KO.x, KO.y, KO.x+STARMAP_SECTOR_WIDTH-count*7, KO.y+STARMAP_SECTOR_HEIGHT);
-		count++;
-		pDC->DrawText(s, ShipSymbol, DT_RIGHT | DT_TOP | DT_SINGLELINE);
-		pDC->SelectObject(oldfont);
-	}
-	if (m_bWhoIsOwnerOfShip[KLINGON] == TRUE && m_iNeededScanPower[KLINGON] < m_iScanPower[PlayersRace]
-		|| PlayersRace == KLINGON && m_bWhoIsOwnerOfShip[KLINGON] == TRUE)
-	{
-		CFont font;
-		lf.lfHeight = 19;
-		font.CreateFontIndirect(&lf);
-		s.Format("K");
-		pDC->SetTextColor(RGB(216,32,38));
-		CFont* oldfont = pDC->SelectObject(&font);
-		ShipSymbol.SetRect(KO.x, KO.y, KO.x+STARMAP_SECTOR_WIDTH-count*7, KO.y+STARMAP_SECTOR_HEIGHT);
-		count++;
-		pDC->DrawText(s, ShipSymbol, DT_RIGHT | DT_TOP | DT_SINGLELINE);
-		pDC->SelectObject(oldfont);
-	}
-	if (m_bWhoIsOwnerOfShip[ROMULAN] == TRUE && m_iNeededScanPower[ROMULAN] < m_iScanPower[PlayersRace]
-		|| PlayersRace == ROMULAN && m_bWhoIsOwnerOfShip[ROMULAN] == TRUE)
-	{
-		CFont font;
-		lf.lfHeight = 19;
-		font.CreateFontIndirect(&lf);
-		s.Format("R");
-		pDC->SetTextColor(RGB(86,221,188));
-		CFont* oldfont = pDC->SelectObject(&font);
-		ShipSymbol.SetRect(KO.x, KO.y, KO.x+STARMAP_SECTOR_WIDTH-count*7, KO.y+STARMAP_SECTOR_HEIGHT);
-		count++;
-		pDC->DrawText(s, ShipSymbol, DT_RIGHT | DT_TOP | DT_SINGLELINE);
-		pDC->SelectObject(oldfont);
-	}
-	if (m_bWhoIsOwnerOfShip[CARDASSIAN] == TRUE && m_iNeededScanPower[CARDASSIAN] < m_iScanPower[PlayersRace]
-		|| PlayersRace == CARDASSIAN && m_bWhoIsOwnerOfShip[CARDASSIAN] == TRUE)
-	{
-		CFont font;
-		lf.lfHeight = 23;
-		font.CreateFontIndirect(&lf);
-		s.Format("C");
-		pDC->SetTextColor(RGB(224,141,24));
-		CFont* oldfont = pDC->SelectObject(&font);
-		ShipSymbol.SetRect(KO.x, KO.y, KO.x+STARMAP_SECTOR_WIDTH-count*7, KO.y+STARMAP_SECTOR_HEIGHT);
-		count++;
-		pDC->DrawText(s, ShipSymbol, DT_RIGHT | DT_TOP | DT_SINGLELINE);
-		pDC->SelectObject(oldfont);
-	}
-	if (m_bWhoIsOwnerOfShip[DOMINION] == TRUE && m_iNeededScanPower[DOMINION] < m_iScanPower[PlayersRace]
-		|| PlayersRace == DOMINION && m_bWhoIsOwnerOfShip[DOMINION] == TRUE)
-	{
-		CFont font;
-		lf.lfHeight = 23;
-		font.CreateFontIndirect(&lf);
-		s.Format("D");
-		pDC->SetTextColor(RGB(255,255,255));
-		CFont* oldfont = pDC->SelectObject(&font);
-		ShipSymbol.SetRect(KO.x, KO.y, KO.x+STARMAP_SECTOR_WIDTH-count*7, KO.y+STARMAP_SECTOR_HEIGHT);
-		count++;
-		pDC->DrawText(s, ShipSymbol, DT_RIGHT | DT_TOP | DT_SINGLELINE);
-		pDC->SelectObject(oldfont);
-	}
-	count = 0;
-	
-	// Jetzt werden die Stationen wenn möglich gezeichnet
-	if ((m_bIsStationBuild[HUMAN] == TRUE || m_bOutpost[HUMAN] == TRUE || m_bStarbase[HUMAN] == TRUE) &&
-		(PlayersRace == HUMAN || m_iScanPower[PlayersRace] > 0))
-	{
-		CFont font;
-		lf.lfHeight = 18;
-		font.CreateFontIndirect(&lf);
-		s.Format("S");
-		pDC->SetTextColor(RGB(90,180,255));
-		CFont* oldfont = pDC->SelectObject(&font);
-		ShipSymbol.SetRect(KO.x, KO.y, KO.x+STARMAP_SECTOR_WIDTH, KO.y+STARMAP_SECTOR_HEIGHT);
-		count++;
-		pDC->DrawText(s, ShipSymbol, DT_LEFT | DT_BOTTOM | DT_SINGLELINE);
-		pDC->SelectObject(oldfont);
-	}
-	if ((m_bIsStationBuild[FERENGI] == TRUE || m_bOutpost[FERENGI] == TRUE || m_bStarbase[FERENGI] == TRUE) &&
-		(PlayersRace == FERENGI || m_iScanPower[PlayersRace] > 0))
-	{
-		CFont font;
-		lf.lfHeight = 17;
-		font.CreateFontIndirect(&lf);
-		s.Format("A");
-		pDC->SetTextColor(RGB(22,183,32));
-		CFont* oldfont = pDC->SelectObject(&font);
-		ShipSymbol.SetRect(KO.x, KO.y, KO.x+STARMAP_SECTOR_WIDTH-count*7, KO.y+STARMAP_SECTOR_HEIGHT);
-		count++;
-		pDC->DrawText(s, ShipSymbol, DT_LEFT | DT_BOTTOM | DT_SINGLELINE);
-		pDC->SelectObject(oldfont);
-	}
-	if ((m_bIsStationBuild[KLINGON] == TRUE || m_bOutpost[KLINGON] == TRUE || m_bStarbase[KLINGON] == TRUE) &&
-		(PlayersRace == KLINGON || m_iScanPower[PlayersRace] > 0))
-	{
-		CFont font;
-		lf.lfHeight = 19;
-		font.CreateFontIndirect(&lf);
-		s.Format("K");
-		pDC->SetTextColor(RGB(216,32,38));
-		CFont* oldfont = pDC->SelectObject(&font);
-		ShipSymbol.SetRect(KO.x, KO.y, KO.x+STARMAP_SECTOR_WIDTH-count*7, KO.y+STARMAP_SECTOR_HEIGHT);
-		count++;
-		pDC->DrawText(s, ShipSymbol, DT_LEFT | DT_BOTTOM | DT_SINGLELINE);
-		pDC->SelectObject(oldfont);
-	}
-	if ((m_bIsStationBuild[ROMULAN] == TRUE || m_bOutpost[ROMULAN] == TRUE || m_bStarbase[ROMULAN] == TRUE) &&
-		(PlayersRace == ROMULAN || m_iScanPower[PlayersRace] > 0))
-	{
-		CFont font;
-		lf.lfHeight = 19;
-		font.CreateFontIndirect(&lf);
-		s.Format("R");
-		pDC->SetTextColor(RGB(86,221,188));
-		CFont* oldfont = pDC->SelectObject(&font);
-		ShipSymbol.SetRect(KO.x, KO.y, KO.x+STARMAP_SECTOR_WIDTH-count*7, KO.y+STARMAP_SECTOR_HEIGHT);
-		count++;
-		pDC->DrawText(s, ShipSymbol, DT_LEFT | DT_BOTTOM | DT_SINGLELINE);
-		pDC->SelectObject(oldfont);
-	}
-	if ((m_bIsStationBuild[CARDASSIAN] == TRUE || m_bOutpost[CARDASSIAN] == TRUE || m_bStarbase[CARDASSIAN] == TRUE) &&
-		(PlayersRace == CARDASSIAN || m_iScanPower[PlayersRace] > 0))
-	{
-		CFont font;
-		lf.lfHeight = 23;
-		font.CreateFontIndirect(&lf);
-		s.Format("C");
-		pDC->SetTextColor(RGB(224,141,24));
-		CFont* oldfont = pDC->SelectObject(&font);
-		ShipSymbol.SetRect(KO.x, KO.y, KO.x+STARMAP_SECTOR_WIDTH-count*7, KO.y+STARMAP_SECTOR_HEIGHT);
-		count++;
-		pDC->DrawText(s, ShipSymbol, DT_LEFT | DT_BOTTOM | DT_SINGLELINE);
-		pDC->SelectObject(oldfont);
-	}
-	if ((m_bIsStationBuild[DOMINION] == TRUE || m_bOutpost[DOMINION] == TRUE || m_bStarbase[DOMINION] == TRUE) &&
-		(PlayersRace == DOMINION || m_iScanPower[PlayersRace] > 0))
-	{
-		CFont font;
-		lf.lfHeight = 23;
-		font.CreateFontIndirect(&lf);
-		s.Format("D");
-		pDC->SetTextColor(RGB(255,255,255));
-		CFont* oldfont = pDC->SelectObject(&font);
-		ShipSymbol.SetRect(KO.x, KO.y, KO.x+STARMAP_SECTOR_WIDTH-count*7, KO.y+STARMAP_SECTOR_HEIGHT);
-		count++;
-		pDC->DrawText(s, ShipSymbol, DT_LEFT | DT_BOTTOM | DT_SINGLELINE);
-		pDC->SelectObject(oldfont);
-	}
-	*/
 }

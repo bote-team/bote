@@ -7,15 +7,20 @@
 #include "FleetMenuView.h"
 #include "ShipBottomView.h"
 #include "SmallInfoView.h"
-
+#include "Fleet.h"
+#include "RaceController.h"
 
 // CFleetMenuView
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif
 
 IMPLEMENT_DYNCREATE(CFleetMenuView, CMainBaseView)
 
 CFleetMenuView::CFleetMenuView()
 {
-
 }
 
 CFleetMenuView::~CFleetMenuView()
@@ -41,14 +46,23 @@ void CFleetMenuView::OnNewRound()
 
 void CFleetMenuView::OnDraw(CDC* dc)
 {
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	// TODO: add draw code here
-	dc->SetBkMode(TRANSPARENT);
-	CRect r(0, 0, m_TotalSize.cx, m_TotalSize.cy);
-
-	LoadRaceFont(dc);
+	// Doublebuffering wird initialisiert
+	CMemDC pDC(dc);
+	CRect client;
+	GetClientRect(&client);
+		
+	// Graphicsobjekt, in welches gezeichnet wird anlegen
+	Graphics g(pDC->GetSafeHdc());
+	
+	g.Clear(Color::Black);
+	g.SetSmoothingMode(SmoothingModeHighSpeed);
+	g.SetInterpolationMode(InterpolationModeLowQuality);
+	g.SetPixelOffsetMode(PixelOffsetModeHighSpeed);
+	g.SetCompositingQuality(CompositingQualityHighSpeed);
+	g.ScaleTransform((REAL)client.Width() / (REAL)m_TotalSize.cx, (REAL)client.Height() / (REAL)m_TotalSize.cy);
 	// ***************************** DIE FLOTTENBILDUNGSANSICHT ZEICHNEN **********************************
-	DrawFleetMenue(dc, r);
+	DrawFleetMenue(&g);
 	// ************** DIE FLOTTENANSICHT ZEICHNEN ist hier zu Ende **************
 }
 
@@ -78,26 +92,17 @@ void CFleetMenuView::OnInitialUpdate()
 
 	// TODO: Add your specialized code here and/or call the base class
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	ASSERT(pDoc);
+
+	CMajor* pMajor = pDoc->GetPlayersRace();
+	ASSERT(pMajor);
 
 	CreateButtons();
 
 	// alle Hintergrundgrafiken laden
-	bg_fleetmenu.DeleteObject();
-	
-	CString race;
-	switch (pDoc->GetPlayersRace())
-	{
-	case HUMAN:		race = CResourceManager::GetString("RACE1_PREFIX"); break;
-	case FERENGI:	race = CResourceManager::GetString("RACE2_PREFIX"); break;
-	case KLINGON:	race = CResourceManager::GetString("RACE3_PREFIX"); break;
-	case ROMULAN:	race = CResourceManager::GetString("RACE4_PREFIX"); break;
-	case CARDASSIAN:race = CResourceManager::GetString("RACE5_PREFIX"); break;
-	case DOMINION:	race = CResourceManager::GetString("RACE6_PREFIX"); break;
-	}
-	FCObjImage img;
-	img.Load(*((CBotf2App*)AfxGetApp())->GetPath() + "Graphics/Backgrounds/"+race+"fleetmenu.jpg");
-	bg_fleetmenu.Attach(FCWin32::CreateDDBHandle(img));
-	img.Destroy();	
+	CString sPrefix = pMajor->GetPrefix();
+			
+	bg_fleetmenu	= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "fleetmenu.jpg");
 	
 	// Flottenansicht
 	m_iFleetPage = 1;
@@ -124,163 +129,158 @@ BOOL CFleetMenuView::OnEraseBkgnd(CDC* pDC)
 /////////////////////////////////////////////////////////////////////////////////////////
 // Hier die Funktion zum Zeichnen des Flottenmenüs
 /////////////////////////////////////////////////////////////////////////////////////////
-void CFleetMenuView::DrawFleetMenue(CDC* pDC, CRect theClientRect)
+void CFleetMenuView::DrawFleetMenue(Graphics* g)
 {
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	ASSERT(pDoc);
+
+	CMajor* pMajor = pDoc->GetPlayersRace();
+	ASSERT(pMajor);
+	if (!pMajor)
+		return;
+
+	CString fontName = "";
+	Gdiplus::REAL fontSize = 0.0;
 	
-	if (m_bDrawFullFleet == TRUE)
-	{
-		CDC* dc = pDC;
-		CMemDC pDC(dc);
-		LoadRaceFont(pDC);
+	StringFormat fontFormat;
+	fontFormat.SetAlignment(StringAlignmentCenter);
+	fontFormat.SetLineAlignment(StringAlignmentCenter);
+	fontFormat.SetFormatFlags(StringFormatFlagsNoWrap);
+	
+	// Rassenspezifische Schriftart auswählen
+	CFontLoader::CreateGDIFont(pMajor, 2, fontName, fontSize);
+	// Schriftfarbe wählen
+	Gdiplus::Color normalColor;
+	CFontLoader::GetGDIFontColor(pMajor, 3, normalColor);
+	SolidBrush fontBrush(normalColor);
+
+	Gdiplus::Color markColor;
+	markColor.SetFromCOLORREF(pMajor->GetDesign()->m_clrListMarkTextColor);
+	Gdiplus::Color penColor;
+	penColor.SetFromCOLORREF(pMajor->GetDesign()->m_clrListMarkPenColor);
+
+	Gdiplus::Color normalColorCloaked(50, normalColor.GetR(), normalColor.GetG(), normalColor.GetB());
+	Gdiplus::Color markColorCloaked(50, markColor.GetR(), markColor.GetG(), markColor.GetB());
+
+	Gdiplus::Font font(fontName.AllocSysString(), fontSize);
+	
+	if (bg_fleetmenu)
+		g->DrawImage(bg_fleetmenu, 0, 0, 1075, 750);	
+
+	CPoint p = pDoc->GetKO();
 		
-		FCObjImage shipbm;
-		CBrush nb(RGB(0,0,0));
-		pDC->SelectObject(nb);
-		pDC->Rectangle(theClientRect);
-
-		CDC mdc;
-		mdc.CreateCompatibleDC(pDC);
-		mdc.SelectObject(bg_fleetmenu);
-		pDC->BitBlt(0,0,1075,750,&mdc,0,0,SRCCOPY);
-
-		// grobe Linien zeichnen
-		COLORREF oldColor = pDC->GetTextColor();
-/*		CPen mark(PS_SOLID, 1, RGB(125,175,255));
-		pDC->SelectObject(&mark);
-		pDC->MoveTo(theClientRect.left,theClientRect.top+70);
-		pDC->LineTo(theClientRect.right,theClientRect.top+70);
-		pDC->MoveTo(theClientRect.left+250,theClientRect.top+70);
-		pDC->LineTo(theClientRect.left+250,theClientRect.bottom);
-		pDC->MoveTo(theClientRect.right-250,theClientRect.top+70);
-		pDC->LineTo(theClientRect.right-250,theClientRect.bottom);
-*/
-		pDC->SetBkMode(TRANSPARENT);
+	//if (m_bDrawFullFleet == TRUE)
+	{
 		CString s;
 		// Hier die Buttons einzeigen, mit denen wir alle Schiffe im Sektor, Schiffe der gleichen Klasse oder
 		// Schiffe des gleichen Types hinzufügen bzw. entfernen können
+		fontBrush.SetColor(penColor);
+		s = CResourceManager::GetString("WHAT_SHIPS_TO_FLEET");
+		fontFormat.SetFormatFlags(!StringFormatFlagsNoWrap);
+		g->DrawString(s.AllocSysString(), -1, &font, RectF(20,140,210,75), &fontFormat, &fontBrush);
+		fontFormat.SetFormatFlags(StringFormatFlagsNoWrap);		
+		fontBrush.SetColor(normalColor);
+		
 		// der gleichen Klasse hinzufügen
-		if (pDoc->GetPlayersRace() == KLINGON)
-		{
-			pDC->SetTextColor(RGB(200,200,200));
-			pDC->DrawText(CResourceManager::GetString("WHAT_SHIPS_TO_FLEET"),CRect(20,140,230,215),DT_CENTER | DT_WORDBREAK);
-		}
-		else if (pDoc->GetPlayersRace() == ROMULAN)
-			pDC->DrawText(CResourceManager::GetString("WHAT_SHIPS_TO_FLEET"),CRect(20,175,230,250),DT_CENTER | DT_WORDBREAK);
-		else
-		{
-			pDC->SetTextColor(RGB(0,0,0));
-			pDC->DrawText(CResourceManager::GetString("WHAT_SHIPS_TO_FLEET"),CRect(20,140,230,215),DT_CENTER | DT_WORDBREAK);
-		}
-		pDC->SetTextColor(oldColor);
 		s.Format("%s-%s",pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfFleetShip()).GetShipClass(),CResourceManager::GetString("CLASS"));
-		pDC->DrawText(s,CRect(0,220,250,250),DT_CENTER | DT_SINGLELINE |DT_VCENTER);
+		g->DrawString(s.AllocSysString(), -1, &font, RectF(0,220,250,30), &fontFormat, &fontBrush);
 		// des gleichen Types hinzufügen
 		s.Format("%s %s",CResourceManager::GetString("TYPE"),pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfFleetShip()).GetShipTypeAsString());
-		pDC->DrawText(s,CRect(0,270,250,300),DT_CENTER | DT_SINGLELINE |DT_VCENTER);
+		g->DrawString(s.AllocSysString(), -1, &font, RectF(0,270,250,30), &fontFormat, &fontBrush);
 		// alle Schiffe hinzufügen
-		pDC->DrawText(CResourceManager::GetString("ALL_SHIPS"),CRect(0,320,250,350),DT_CENTER | DT_SINGLELINE |DT_VCENTER);
-		if (pDoc->GetPlayersRace() == KLINGON)
-		{
-			pDC->SetTextColor(RGB(200,200,200));
-			pDC->DrawText(CResourceManager::GetString("WHAT_SHIPS_FROM_FLEET"),CRect(20,400,230,475),DT_CENTER | DT_WORDBREAK);
-		}
-		else if (pDoc->GetPlayersRace() == ROMULAN)
-			pDC->DrawText(CResourceManager::GetString("WHAT_SHIPS_FROM_FLEET"),CRect(20,415,230,490),DT_CENTER | DT_WORDBREAK);
-		else
-		{
-			pDC->SetTextColor(RGB(0,0,0));
-			pDC->DrawText(CResourceManager::GetString("WHAT_SHIPS_FROM_FLEET"),CRect(20,400,230,475),DT_CENTER | DT_WORDBREAK);
-		}
-		pDC->SetTextColor(oldColor);
+		s = CResourceManager::GetString("ALL_SHIPS");
+		g->DrawString(s.AllocSysString(), -1, &font, RectF(0,320,250,30), &fontFormat, &fontBrush);
+		
+		fontBrush.SetColor(penColor);
+		s = CResourceManager::GetString("WHAT_SHIPS_FROM_FLEET");
+		fontFormat.SetFormatFlags(!StringFormatFlagsNoWrap);
+		g->DrawString(s.AllocSysString(), -1, &font, RectF(20,400,210,75), &fontFormat, &fontBrush);
+		fontFormat.SetFormatFlags(StringFormatFlagsNoWrap);		
+		fontBrush.SetColor(normalColor);
+
 		// fremder Klassen entfernen
-		s.Format("%s %s-%s",CResourceManager::GetString("NOT"),
-			pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfFleetShip()).GetShipClass(),CResourceManager::GetString("CLASS"));
-		pDC->DrawText(s,CRect(0,480,250,510),DT_CENTER | DT_SINGLELINE |DT_VCENTER);
+		s.Format("%s %s-%s",CResourceManager::GetString("NOT"),	pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfFleetShip()).GetShipClass(),CResourceManager::GetString("CLASS"));
+		g->DrawString(s.AllocSysString(), -1, &font, RectF(0,480,250,30), &fontFormat, &fontBrush);
 		// fremden Types entfernen
-		s.Format("%s %s %s",CResourceManager::GetString("NOT"),CResourceManager::GetString("TYPE"),
-			pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfFleetShip()).GetShipTypeAsString());
-		pDC->DrawText(s,CRect(0,530,250,560),DT_CENTER | DT_SINGLELINE |DT_VCENTER);
+		s.Format("%s %s %s",CResourceManager::GetString("NOT"),CResourceManager::GetString("TYPE"),	pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfFleetShip()).GetShipTypeAsString());
+		g->DrawString(s.AllocSysString(), -1, &font, RectF(0,530,250,30), &fontFormat, &fontBrush);
 		// alle Schiffe entfernen
-		pDC->DrawText(CResourceManager::GetString("ALL_SHIPS"),CRect(0,580,250,610),DT_CENTER | DT_SINGLELINE |DT_VCENTER);
+		s = CResourceManager::GetString("ALL_SHIPS");
+		g->DrawString(s.AllocSysString(), -1, &font, RectF(0,580,250,30), &fontFormat, &fontBrush);
+		
 
 		USHORT counter = 0;
 		USHORT column = 1;
 		USHORT row = 0;
-		shipbm.Destroy();
-		int oldStretchMode = pDC->GetStretchBltMode();
-		pDC->SetStretchBltMode(HALFTONE);
-
+		
 		// Erstmal das Schiff anzeigen, welches die Flotte beinhaltet (nur auf erster Seite!)
 		if (m_iFleetPage == 1)
 		{
-			CBitmap* graphic = NULL;
-			HGDIOBJ oldGraphic;
-			s.Format("Ships\\%s.jpg",pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfFleetShip()).GetShipClass());
-			graphic = pDoc->GetGraphicPool()->GetGraphic(s);
+			s.Format("Ships\\%s.png", pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfFleetShip()).GetShipClass());
+			Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic(s);
 			if (graphic == NULL)
-				graphic = pDoc->GetGraphicPool()->GetGraphic("Ships\\ImageMissing.jpg");
+				graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Ships\\ImageMissing.png");
 			if (graphic)
 			{
-				oldGraphic = mdc.SelectObject(*graphic);
-				pDC->StretchBlt(250*column+37,row*65+90,65,49,&mdc,0,0,200,150,SRCCOPY);
-				mdc.SelectObject(oldGraphic);
+				g->DrawImage(graphic, 250*column+37,row*65+90,65,49);
 			}
+			
 			// Erfahrungsstufen des Schiffes anzeigen
 			int bmHeight = 0;
 			switch (pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfFleetShip()).GetExpLevel())
 			{
-			case 1: graphic = pDoc->GetGraphicPool()->GetGraphic("Other\\xp_beginner.png");	bmHeight = 8;	break;
-			case 2: graphic = pDoc->GetGraphicPool()->GetGraphic("Other\\xp_normal.png");	bmHeight = 16;	break;
-			case 3: graphic = pDoc->GetGraphicPool()->GetGraphic("Other\\xp_profi.png");	bmHeight = 24;	break;
-			case 4: graphic = pDoc->GetGraphicPool()->GetGraphic("Other\\xp_veteran.png");	bmHeight = 32;	break;
-			case 5: graphic = pDoc->GetGraphicPool()->GetGraphic("Other\\xp_elite.png");	bmHeight = 40;	break;
-			case 6: graphic = pDoc->GetGraphicPool()->GetGraphic("Other\\xp_legend.png");	bmHeight = 48;	break;
+			case 1: graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\xp_beginner.png");	bmHeight = 8;	break;
+			case 2: graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\xp_normal.png");	bmHeight = 16;	break;
+			case 3: graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\xp_profi.png");		bmHeight = 24;	break;
+			case 4: graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\xp_veteran.png");	bmHeight = 32;	break;
+			case 5: graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\xp_elite.png");		bmHeight = 40;	break;
+			case 6: graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\xp_legend.png");	bmHeight = 48;	break;
 			default: graphic = NULL;
 			}
 			if (graphic)
 			{
-				oldGraphic = mdc.SelectObject(*graphic);
-				pDC->BitBlt(250 * column + 29, row * 65 + 90 + 49 - bmHeight, 8, bmHeight, &mdc, 0, 0, SRCPAINT);
-				mdc.SelectObject(oldGraphic);
+				g->DrawImage(graphic, 250 * column + 29, row * 65 + 90 + 49 - bmHeight, 8, bmHeight);				
 			}
 
+			
 			// Hier die Striche für Schilde und Hülle neben dem Schiffsbild anzeigen (jeweils max. 20)
 			USHORT hullProz = (UINT)(pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfFleetShip()).GetHull()->GetCurrentHull() * 20 / pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfFleetShip()).GetHull()->GetMaxHull());
-			CPen penColor(PS_SOLID,0,RGB(240-hullProz*12,0+hullProz*12,0));
-			pDC->SelectObject(&penColor);
+			Gdiplus::Pen pen(Color(240-hullProz*12,0+hullProz*12,0));
 			for (USHORT n = 0; n <= hullProz; n++)
-				pDC->Rectangle(250*column+102,row*65+135-n*2,250*column+107,row*65+134-n*2);
+				g->DrawRectangle(&pen, RectF(250*column+102,row*65+135-n*2,5,0.5));				
 			USHORT shieldProz = 0;
 			if (pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfFleetShip()).GetShield()->GetMaxShield() > 0)
 				shieldProz = (UINT)(pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfFleetShip()).GetShield()->GetCurrentShield() * 20 / pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfFleetShip()).GetShield()->GetMaxShield());
-			CPen penColor2(PS_SOLID,0,RGB(240-shieldProz*12,80,0+shieldProz*12));
-			pDC->SelectObject(&penColor2);
+			pen.SetColor(Color(240-shieldProz*12,80,0+shieldProz*12));
 			if (shieldProz > 0)
 				for (USHORT n = 0; n <= shieldProz; n++)
-					pDC->Rectangle(250*column+109,row*65+135-n*2,250*column+114,row*65+134-n*2);
+					g->DrawRectangle(&pen, RectF(250*column+109,row*65+135-n*2,5,0.5));
 
 			// Wenn es das Flagschiff unseres Imperiums ist, dann kleines Zeichen zeichnen
 			if (pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfFleetShip()).GetIsShipFlagShip() == TRUE)
 			{
-				pDC->SetTextColor(RGB(255,255,255));
-				pDC->TextOut(250*column+45,row*65+95,"Flag");
+				fontBrush.SetColor(Color::White);
+				g->DrawString(L"Flag", -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), PointF(250*column + 45, row*65 + 95), &fontFormat, &fontBrush);				
 			}
+			
 			if (pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfFleetShip()).GetCloak())
-				pDC->SetTextColor(RGB(80,80,80));
+				fontBrush.SetColor(normalColorCloaked);
 			else
-				pDC->SetTextColor(RGB(170,170,170));
+				fontBrush.SetColor(normalColor);
 			// Wenn wir ein Schiff markiert haben, dann Markierung zeichnen
 			// also der Mauszeiger ist über dem 1. Schiff in der Liste
 			if (pDoc->GetNumberOfTheShipInFleet() == 0)
 			{
 				if (pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfFleetShip()).GetCloak())
-					pDC->SetTextColor(RGB(150,0,0));
+					fontBrush.SetColor(markColorCloaked);
 				else
-					pDC->SetTextColor(RGB(255,0,0));
+					fontBrush.SetColor(markColor);
 			}
-			pDC->TextOut(250*column+120,row*65+90,pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfFleetShip()).GetShipName());
-			pDC->TextOut(250*column+120,row*65+110,pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfFleetShip()).GetShipClass()+"-"+CResourceManager::GetString("CLASS"));
+			StringFormat textFormat;
+			s = pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfFleetShip()).GetShipName();
+			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), PointF(250*column+120,row*65+95), &textFormat, &fontBrush);
+			s = pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfFleetShip()).GetShipClass() + "-" + CResourceManager::GetString("CLASS");
+			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), PointF(250*column+120,row*65+115), &textFormat, &fontBrush);
 		}
 		counter++;
 		row++;
@@ -300,107 +300,117 @@ void CFleetMenuView::DrawFleetMenue(CDC* pDC, CRect theClientRect)
 					column = 1;
 				if (counter < m_iFleetPage*18 && counter >= (m_iFleetPage-1)*18)
 				{
-					CBitmap* graphic = NULL;
-					HGDIOBJ oldGraphic;
-					s.Format("Ships\\%s.jpg",pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfFleetShip()).GetFleet()->GetShipFromFleet(i).GetShipClass());
-					graphic = pDoc->GetGraphicPool()->GetGraphic(s);
+					s.Format("Ships\\%s.png", pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfFleetShip()).GetFleet()->GetShipFromFleet(i).GetShipClass());
+					Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic(s);
 					if (graphic == NULL)
-						graphic = pDoc->GetGraphicPool()->GetGraphic("Ships\\ImageMissing.jpg");
+						graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Ships\\ImageMissing.png");
 					if (graphic)
 					{
-						oldGraphic = mdc.SelectObject(*graphic);
-						pDC->StretchBlt(250*column+37,row*65+90,65,49,&mdc,0,0,200,150,SRCCOPY);
-						mdc.SelectObject(oldGraphic);
+						g->DrawImage(graphic, 250*column+37,row*65+90,65,49);
 					}
+					
 					// Erfahrungsstufen des Schiffes anzeigen
 					int bmHeight = 0;
 					switch (pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfFleetShip()).GetFleet()->GetShipFromFleet(i).GetExpLevel())
 					{
-					case 1: graphic = pDoc->GetGraphicPool()->GetGraphic("Other\\xp_beginner.png");	bmHeight = 8;	break;
-					case 2: graphic = pDoc->GetGraphicPool()->GetGraphic("Other\\xp_normal.png");	bmHeight = 16;	break;
-					case 3: graphic = pDoc->GetGraphicPool()->GetGraphic("Other\\xp_profi.png");	bmHeight = 24;	break;
-					case 4: graphic = pDoc->GetGraphicPool()->GetGraphic("Other\\xp_veteran.png");	bmHeight = 32;	break;
-					case 5: graphic = pDoc->GetGraphicPool()->GetGraphic("Other\\xp_elite.png");	bmHeight = 40;	break;
-					case 6: graphic = pDoc->GetGraphicPool()->GetGraphic("Other\\xp_legend.png");	bmHeight = 48;	break;
+					case 1: graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\xp_beginner.png");	bmHeight = 8;	break;
+					case 2: graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\xp_normal.png");	bmHeight = 16;	break;
+					case 3: graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\xp_profi.png");		bmHeight = 24;	break;
+					case 4: graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\xp_veteran.png");	bmHeight = 32;	break;
+					case 5: graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\xp_elite.png");		bmHeight = 40;	break;
+					case 6: graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\xp_legend.png");	bmHeight = 48;	break;
 					default: graphic = NULL;
 					}
 					if (graphic)
 					{
-						oldGraphic = mdc.SelectObject(*graphic);
-						pDC->BitBlt(250 * column + 29, row * 65 + 90 + 49 - bmHeight, 8, bmHeight, &mdc, 0, 0, SRCPAINT);
-						mdc.SelectObject(oldGraphic);
+						g->DrawImage(graphic, 250 * column + 29, row * 65 + 90 + 49 - bmHeight, 8, bmHeight);				
 					}
 					
 					// Hier die Striche für Schilde und Hülle neben dem Schiffsbild anzeigen (jeweils max. 20)
 					USHORT hullProz = (UINT)(pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfFleetShip()).GetFleet()->GetShipFromFleet(i).GetHull()->GetCurrentHull() * 20 / pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfFleetShip()).GetFleet()->GetShipFromFleet(i).GetHull()->GetMaxHull());
-					CPen penColor(PS_SOLID,0,RGB(240-hullProz*12,0+hullProz*12,0));
-					pDC->SelectObject(&penColor);
+					Gdiplus::Pen pen(Color(240-hullProz*12,0+hullProz*12,0));
 					for (USHORT n = 0; n <= hullProz; n++)
-						pDC->Rectangle(250*column+102,row*65+135-n*2,250*column+107,row*65+134-n*2);
+						g->DrawRectangle(&pen, RectF(250*column+102,row*65+135-n*2,5,0.5));				
 					USHORT shieldProz = 0;
 					if (pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfFleetShip()).GetFleet()->GetShipFromFleet(i).GetShield()->GetMaxShield() > 0)
 						shieldProz = (UINT)(pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfFleetShip()).GetFleet()->GetShipFromFleet(i).GetShield()->GetCurrentShield() * 20 / pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfFleetShip()).GetFleet()->GetShipFromFleet(i).GetShield()->GetMaxShield());
-					CPen penColor2(PS_SOLID,0,RGB(240-shieldProz*12,80,0+shieldProz*12));
-					pDC->SelectObject(&penColor2);
+					pen.SetColor(Color(240-shieldProz*12,80,0+shieldProz*12));
 					if (shieldProz > 0)
 						for (USHORT n = 0; n <= shieldProz; n++)
-							pDC->Rectangle(250*column+109,row*65+135-n*2,250*column+114,row*65+134-n*2);
-									
+							g->DrawRectangle(&pen, RectF(250*column+109,row*65+135-n*2,5,0.5));
+
 					// Wenn es das Flagschiff unseres Imperiums ist, dann kleines Zeichen zeichnen
 					if (pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfFleetShip()).GetFleet()->GetShipFromFleet(i).GetIsShipFlagShip() == TRUE)
 					{
-						pDC->SetTextColor(RGB(255,255,255));
-						pDC->TextOut(250*column+45,row*65+95,"Flag");
+						fontBrush.SetColor(Color::White);
+						g->DrawString(L"Flag", -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), PointF(250*column + 45, row*65 + 95), &fontFormat, &fontBrush);				
 					}
+					
 					if (pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfFleetShip()).GetFleet()->GetShipFromFleet(i).GetCloak())
-						pDC->SetTextColor(RGB(80,80,80));
+						fontBrush.SetColor(normalColorCloaked);
 					else
-						pDC->SetTextColor(RGB(170,170,170));
+						fontBrush.SetColor(normalColor);
+					
 					// Wenn wir ein Schiff markiert haben, dann Markierung zeichnen
 					if (i+1 == pDoc->GetNumberOfTheShipInFleet())
 					{
 						if (pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfFleetShip()).GetFleet()->GetShipFromFleet(i).GetCloak())
-							pDC->SetTextColor(RGB(150,0,0));
+							fontBrush.SetColor(markColorCloaked);
 						else
-							pDC->SetTextColor(RGB(255,0,0));
-					}						
-					pDC->TextOut(250*column+120,row*65+90,pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfFleetShip()).GetFleet()->GetShipFromFleet(i).GetShipName());
-					pDC->TextOut(250*column+120,row*65+110,pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfFleetShip()).GetFleet()->GetShipFromFleet(i).GetShipClass()+"-"+CResourceManager::GetString("CLASS"));
+							fontBrush.SetColor(markColor);
+					}
+					StringFormat textFormat;
+					s = pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfFleetShip()).GetFleet()->GetShipFromFleet(i).GetShipName();
+					g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), PointF(250*column+120,row*65+95), &textFormat, &fontBrush);
+					s = pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfFleetShip()).GetFleet()->GetShipFromFleet(i).GetShipClass() + "-" + CResourceManager::GetString("CLASS");
+					g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), PointF(250*column+120,row*65+115), &textFormat, &fontBrush);
 				}
 				row++;
 				counter++;
 				if (counter > m_iFleetPage*18)
 					break;
 			}
-			pDC->SetStretchBltMode(oldStretchMode);
+			
+			
 			// Die Buttons für vor und zurück darstellen, wenn wir mehr als 9 Schiffe in dem Sektor sehen
-			this->LoadFontForLittleButton(pDC);
+			Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\" + pMajor->GetPrefix() + "button_small.png");
+			Color btnColor;
+			CFontLoader::GetGDIFontColor(pMajor, 1, btnColor);
+			SolidBrush btnBrush(btnColor);
+			fontFormat.SetAlignment(StringAlignmentCenter);
+			
 			m_bShowNextButton = FALSE;
 			if (counter > 18 && counter > m_iFleetPage*18)
 			{
 				m_bShowNextButton = TRUE;
-				mdc.SelectObject(bm2);
-				pDC->BitBlt(540,theClientRect.bottom-70,120,30,&mdc,0,0,SRCCOPY);
-				pDC->DrawText(CResourceManager::GetString("BTN_NEXT"),CRect(540,theClientRect.bottom-70,660,theClientRect.bottom-40),DT_CENTER | DT_SINGLELINE | DT_VCENTER);
+				if (graphic)
+					g->DrawImage(graphic, 540, 680, 120 ,30);
+				s = CResourceManager::GetString("BTN_NEXT");
+				g->DrawString(s.AllocSysString(), -1, &font, RectF(540, 680, 120, 30), &fontFormat, &btnBrush);
 			}
 			// back-Button
 			m_bShowBackButton = FALSE;
 			if (m_iFleetPage > 1)
 			{
 				m_bShowBackButton = TRUE;
-				mdc.SelectObject(bm2);
-				pDC->BitBlt(286,theClientRect.bottom-70,120,30,&mdc,0,0,SRCCOPY);
-				pDC->DrawText(CResourceManager::GetString("BTN_BACK"),CRect(290,theClientRect.bottom-70,410,theClientRect.bottom-40),DT_CENTER | DT_SINGLELINE | DT_VCENTER);
+				
+				if (graphic)
+					g->DrawImage(graphic, 286, 680, 120 ,30);
+				s = CResourceManager::GetString("BTN_BACK");
+				g->DrawString(s.AllocSysString(), -1, &font, RectF(286, 680, 120, 30), &fontFormat, &btnBrush);
 			}
 			
 			// "Flottenzusammenstellung" in der Mitte zeichnen
-			CFont font;
-			pDC->SetTextColor(CFontLoader::CreateFont(pDoc->GetPlayersRace(), 5, 3, &font));
-			pDC->SelectObject(&font);
-			pDC->DrawText(CResourceManager::GetString("FLEET_MENUE"),CRect(theClientRect.left,theClientRect.top+10,theClientRect.right,theClientRect.top+60),DT_CENTER | DT_SINGLELINE | DT_VCENTER);
+			// Rassenspezifische Schriftart auswählen
+			CFontLoader::CreateGDIFont(pMajor, 5, fontName, fontSize);
+			// Schriftfarbe wählen
+			CFontLoader::GetGDIFontColor(pMajor, 3, normalColor);
+			fontBrush.SetColor(normalColor);
+			s = CResourceManager::GetString("FLEET_MENUE");
+			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0,10,m_TotalSize.cx,60), &fontFormat, &fontBrush);			
 	}
 	// Wenn wir nur ein anderes Schiff markiert haben, dann brauchen wir nur noch die Markierung neu zeichnen
-	else
+	/*else
 	{
 		USHORT row = 0;
 		USHORT column = 1;
@@ -486,12 +496,19 @@ void CFleetMenuView::DrawFleetMenue(CDC* pDC, CRect theClientRect)
 			pDC->TextOut(250*column+120,row*65+110,pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfFleetShip()).GetShipClass()+"-"+CResourceManager::GetString("CLASS"));
 		}
 		m_bDrawFullFleet = TRUE;
-	}
+	}*/
 }
 void CFleetMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	ASSERT(pDoc);
+
+	CMajor* pMajor = pDoc->GetPlayersRace();
+	ASSERT(pMajor);
+	if (!pMajor)
+		return;
+
 	CalcLogicalPoint(point);
 
 	// Wenn wir in der Flottenansicht sind
@@ -518,7 +535,7 @@ void CFleetMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 	}
 
 	// Fremde Flotten können nicht bearbeitet werden
-	if (pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfFleetShip()).GetOwnerOfShip() != pDoc->GetPlayersRace())
+	if (pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfFleetShip()).GetOwnerOfShip() != pMajor->GetRaceID())
 		return;
 
 	// Überprüfen ob wir auf den Button geklickt haben, der alle Schiffe der gleichen Klasse wie das Anführerschiff
@@ -719,11 +736,17 @@ void CFleetMenuView::OnRButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	ASSERT(pDoc);
+	
+	CMajor* pMajor = pDoc->GetPlayersRace();
+	ASSERT(pMajor);
+	if (!pMajor)
+		return;
 
 	// Das hier alles nur machen, wenn wir in der Flotten-Ansicht sind	
 	CGalaxyMenuView::SetMoveShip(FALSE);
 	pDoc->SetNumberOfTheShipInArray(pDoc->GetNumberOfFleetShip());
-	pDoc->GetMainFrame()->SelectMainView(GALAXY_VIEW, pDoc->GetPlayersRace());
+	pDoc->GetMainFrame()->SelectMainView(GALAXY_VIEW, pMajor->GetRaceID());
 	CSmallInfoView::SetShipInfo(true);
 	pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
 
@@ -734,32 +757,5 @@ void CFleetMenuView::OnRButtonDown(UINT nFlags, CPoint point)
 void CFleetMenuView::CreateButtons()
 {
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
-	// alle Buttons in der View anlegen und Grafiken laden
-	switch(pDoc->GetPlayersRace())
-	{
-	case HUMAN:
-		{
-			break;
-		}
-	case FERENGI:
-		{
-			break;
-		}
-	case KLINGON:
-		{
-			break;
-		}
-	case ROMULAN:
-		{
-			break;
-		}
-	case CARDASSIAN:
-		{
-			break;
-		}
-	case DOMINION:
-		{
-			break;
-		}
-	}
+	// alle Buttons in der View anlegen und Grafiken laden	
 }

@@ -34,6 +34,7 @@ void CEmpire::Serialize(CArchive &ar)
 	CObject::Serialize(ar);
 	m_Research.Serialize(ar);
 	m_Intelligence.Serialize(ar);
+	m_GlobalStorage.Serialize(ar);
 		
 	// wenn gespeichert wird
 	if (ar.IsStoring())
@@ -44,26 +45,17 @@ void CEmpire::Serialize(CArchive &ar)
 		ar << m_iShipCosts;
 		ar << m_iPopSupportCosts;
 		ar << m_lFP;
-		for (int i = 0; i < 5; i++)
-			ar << m_lRessourceStorages[i];
-		ar << m_iEmpire;
-		ar << m_iPlayerOfEmpire;
+		for (int i = 0; i <= DILITHIUM; i++)
+			ar << m_lResourceStorages[i];
+		ar << m_sEmpireID;
 		ar << m_Messages.GetSize();
 		for (int i = 0; i < m_Messages.GetSize(); i++)
 			m_Messages.GetAt(i).Serialize(ar);
-		int n = m_EventMessages.GetSize();
-		ar << m_IncomingMajorAnswers.GetSize();
-		for (int i = 0; i < m_IncomingMajorAnswers.GetSize(); i++)
-		{
-			ar << m_IncomingMajorAnswers.GetAt(i).AnswerFromMajorRace;
-			ar << m_IncomingMajorAnswers.GetAt(i).headline;
-			ar << m_IncomingMajorAnswers.GetAt(i).message;
-		}		
 	}
 	// wenn geladen wird
 	if (ar.IsLoading())
 	{
-		ClearMessagesAndAnswers();
+		ClearMessagesAndEvents();
 		int number = 0;
 		ar >> m_byNumberOfSystems;
 		ar >> m_iLatinum;
@@ -71,26 +63,16 @@ void CEmpire::Serialize(CArchive &ar)
 		ar >> m_iShipCosts;
 		ar >> m_iPopSupportCosts;
 		ar >> m_lFP;
-		for (int i = 0; i < 5; i++)
-			ar >> m_lRessourceStorages[i];
-		ar >> m_iEmpire;
-		ar >> m_iPlayerOfEmpire;
+		for (int i = 0; i <= DILITHIUM; i++)
+			ar >> m_lResourceStorages[i];
+		ar >> m_sEmpireID;
 		ar >> number;
 		m_Messages.SetSize(number);
 		for (int i = 0; i < number; i++)
-			m_Messages.GetAt(i).Serialize(ar);
-		ar >> number;
-		DiplomacyMajorAnswersStruct dmas;
-		for (int i = 0; i < number; i++)
-		{
-			ar >> dmas.AnswerFromMajorRace;
-			ar >> dmas.headline;
-			ar >> dmas.message;
-			m_IncomingMajorAnswers.Add(dmas);
-		}		
+			m_Messages.GetAt(i).Serialize(ar);		
 	}
 
-	m_EventMessages.Serialize(ar);
+	m_EventMessages.Serialize(ar);	
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -102,7 +84,7 @@ void CEmpire::GenerateSystemList(const CSystem systems[STARMAP_SECTORS_HCOUNT][S
 	m_SystemList.RemoveAll();
 	for (int y = 0 ; y < STARMAP_SECTORS_VCOUNT; y++)
 		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-			if (systems[x][y].GetOwnerOfSystem() == m_iEmpire)
+			if (systems[x][y].GetOwnerOfSystem() == m_sEmpireID)
 				m_SystemList.Add(SystemViewStruct(sectors[x][y].GetName(), CPoint(x,y)));
 }
 
@@ -119,39 +101,35 @@ void CEmpire::AddFP(int add)
 // die wirklichen Lager in den einzelnen Systemen werden dabei nicht angerührt
 void CEmpire::ClearAllPoints(void)
 {
-	memset(m_lRessourceStorages, 0, sizeof(*m_lRessourceStorages)*(IRIDIUM+1));
+	memset(m_lResourceStorages, 0, sizeof(*m_lResourceStorages)*(DILITHIUM + 1));
 	m_lFP = 0;
 	m_Intelligence.ClearSecurityPoints();
 }
 
 /// Funktion löscht alle Nachrichten und Antworten an das Imperiums.
-void CEmpire::ClearMessagesAndAnswers(void)
+void CEmpire::ClearMessagesAndEvents(void)
 {
 	m_Messages.RemoveAll();
-	m_IncomingMajorAnswers.RemoveAll();
 	for (int i = 0; i < m_EventMessages.GetSize(); i++)
-		delete m_EventMessages[i];
+		delete m_EventMessages.GetAt(i);
 	m_EventMessages.RemoveAll();
 }
 
 void CEmpire::Reset(void)
 {
 	m_byNumberOfSystems = 1;
-	m_iEmpire = 0;
-	m_iPlayerOfEmpire = COMPUTER;
+	m_sEmpireID = "";
 	m_iLatinum = 1000;
 	m_iLatinumChange = 0;
 	m_iShipCosts = 0;
 	m_iPopSupportCosts = 0;
+	
 	m_Research.Reset();
 	m_Intelligence.Reset();
+	m_GlobalStorage.Reset();
+	
 	ClearAllPoints();
-	m_Messages.RemoveAll();
-
-	for (int i = 0; i < m_EventMessages.GetSize(); i++)
-		delete m_EventMessages.GetAt(i);
-	m_EventMessages.RemoveAll();
-
-	m_SystemList.RemoveAll();
-	m_IncomingMajorAnswers.RemoveAll();
+	ClearMessagesAndEvents();
+	
+	m_SystemList.RemoveAll();	
 }

@@ -1,5 +1,5 @@
 /*
- *   Copyright (C)2004-2008 Sir Pustekuchen
+ *   Copyright (C)2004-2009 Sir Pustekuchen
  *
  *   Author   :  Sir Pustekuchen
  *   Home     :  http://birth-of-the-empires.de.vu
@@ -9,16 +9,10 @@
 #include "Message.h"
 #include "Research.h"
 #include "Intelligence.h"
+#include "GlobalStorage.h"
 #include "EventColonization.h"
 #include "EventBlockade.h"
 #include "EventBombardment.h"
-
-struct DiplomacyMajorAnswersStruct
-{
-	USHORT AnswerFromMajorRace;
-	CString headline;
-	CString message;
-};
 
 /**
  * Struktur, die die wichtigsten Informationen eines Systems aufnehmen kann. Dies wird benötigt, wenn wir in einer
@@ -48,13 +42,6 @@ public:
 	
 	/// Destruktor
 	~CEmpire();
-	
-/*	/// Kopierkonstruktor
-	CEmpire(const CEmpire & rhs);
-
-	/// Zuweisungsoperator
-	CEmpire & operator=(const CEmpire &);
-*/
 
 	/// Serialisierungsfunktion
 	void Serialize(CArchive &ar);
@@ -68,10 +55,7 @@ public:
 	CArray<SystemViewStruct>* GetSystemList() {return &m_SystemList;}
 	
 	/// Funktion gibt die Nummer des Imperiums zurück.
-	BYTE GetEmpireName() const {return m_iEmpire;} 
-	
-	/// Funktion gibt zurück, ob das Imperium von einem Menschen oder vom Computer gesteuert wird.
-	BYTE GetPlayerOfEmpire() const {return m_iPlayerOfEmpire;}
+	const CString& GetEmpireID() const {return m_sEmpireID;} 
 	
 	/// Funktion gibt den aktuellen Bestand an Latinum zurück.
 	long GetLatinum() const {return m_iLatinum;}
@@ -92,7 +76,7 @@ public:
 	UINT GetSP() const {return m_Intelligence.GetSecurityPoints();}
 
 	/// Funktion gibt ein Feld mit der Menge aller Ressourcen auf allen Systemen des Imperiums zurück.
-	const UINT* GetStorage() const {return m_lRessourceStorages;}
+	const UINT* GetStorage() const {return m_lResourceStorages;}
 	
 	/// Funktion gibt einen Zeiger auf alle Nachrichten an das Imperium zurück.
 	MessageArray* GetMessages() {return &m_Messages;}
@@ -101,14 +85,14 @@ public:
 	/// @return Pointer auf <code>CObArray</code>
 	CObArray* GetEventMessages() {return &m_EventMessages;}
 
-	/// Funktion gibt einen Zeiger auf Nachrichten von anderen Majorraces an unser Imperium zurück.
-	CArray<DiplomacyMajorAnswersStruct,DiplomacyMajorAnswersStruct>* GetIncomingMajorAnswers() {return &m_IncomingMajorAnswers;}
-	
 	/// Funktion gibt einen Zeiger auf das Forschungsobjekt des Imperiums zurück.
-	CResearch* GetResearch() {return &m_Research;}
+	CResearch* GetResearch(void) {return &m_Research;}
 	
 	/// Funktion gibt einen Zeiger auf das Geheimdienstobjekt des Imperiums zurück.
-	CIntelligence* GetIntelligence() {return &m_Intelligence;}	
+	CIntelligence* GetIntelligence(void) {return &m_Intelligence;}
+
+	/// Funktion liefert einen Zeiger auf das globale Lager eines Imperiums.
+	CGlobalStorage* GetGlobalStorage(void) {return &m_GlobalStorage;}
 	
 	// zum Schreiben der Membervariablen
 	/// Funktion addiert die im Parameter <code>add</code> übergebene Menge zu der Anzahl der Systeme
@@ -118,11 +102,7 @@ public:
 
 	/// Funktion legt die zugehörige Rassennummer des Imperiums fest.
 	/// @param empireNumber Rassennummer
-	void SetEmpireName(BYTE empireNumber) {m_iEmpire = empireNumber; m_Intelligence.SetRaceNumber(empireNumber);}
-
-	/// Funktion legt fest, ob das Imperium von einem menschlichen Spieler oder vom Computer gesteuert wird.
-	/// @param whoIsPlayer Mensch oder Computer
-	void SetPlayerOfEmpire(BYTE whoIsPlayer) {m_iPlayerOfEmpire = whoIsPlayer;}
+	void SetEmpireID(const CString& sRaceID) {m_sEmpireID = sRaceID; m_Intelligence.SetRaceID(sRaceID);}
 
 	/// Funktion addiert die übergebene Menge zum Latinumbestand.
 	/// @param add Anzahl des zu addierenden Latinums
@@ -157,31 +137,27 @@ public:
 	/// Funktion addiert die übergebene Menge an Ressourcen zum zugehörigen Ressourcenlager.
 	/// @param res Ressource
 	/// @param add zu addierende Menge
-	void SetStorageAdd(USHORT res, UINT add) {m_lRessourceStorages[res] += add;}
+	void SetStorageAdd(USHORT res, UINT add) {m_lResourceStorages[res] += add;}
 
 	/// Funktion fügt eine übergebene Nachricht dem Nachrichtenfeld des Imperiums hinzu.
 	/// @param message Nachricht
 	void AddMessage(const CMessage &message) {m_Messages.Add(message);}
 
-	/// Funktion fügt eine Antwort einer anderen Hauptrasse dem Feld der Antworten von anderen Hauptrassen hinzu.
-	/// @param theAnswerToAdd Referenz auf hinzuzufügende Antwort.
-	void AddIncomingMajorAnswer(const DiplomacyMajorAnswersStruct &theAnswerToAdd) {m_IncomingMajorAnswers.Add(theAnswerToAdd);}
-
+	// Sonstige Funktionen
+	/// Resetfunktion für das CEmpire-Objekt.
+	void Reset(void);
+	
 	/// Funktion generiert die Liste der Systeme für das Imperium anhand aller Systeme.
 	/// @param systems Feld aller Systeme
 	void GenerateSystemList(const CSystem systems[STARMAP_SECTORS_HCOUNT][STARMAP_SECTORS_VCOUNT], const CSector sectors[STARMAP_SECTORS_HCOUNT][STARMAP_SECTORS_VCOUNT]);
 
-// Sonstige Funktionen
-	/// Resetfunktion für das CEmpire-Objekt.
-	void Reset(void);
-	
 	/// Funktion setzt die Lager und aktuell prodzuierten Forschungs- und Geheimdienstpunkte wieder auf NULL
 	/// damit man diese später wieder füllen kann. Die wirklichen Lager und Punkte in den einzelnen Systemen
 	/// werden dabei nicht angerührt
 	void ClearAllPoints(void);
 
 	/// Funktion löscht alle Nachrichten und Antworten an das Imperiums.
-	void ClearMessagesAndAnswers(void);
+	void ClearMessagesAndEvents(void);
 
 private:
 	long m_iLatinum;				///< Latinum des Imperiums
@@ -194,11 +170,9 @@ private:
 	
 	UINT m_lFP;						///< aktuelle FP des Imperiums
 
-	UINT m_lRessourceStorages[IRIDIUM+1];	///< die gesamte Menge auf allen Systemen der jeweiligen Ressource
+	UINT m_lResourceStorages[DILITHIUM+1];	///< die gesamte Menge auf allen Systemen der jeweiligen Ressource
 	
-	BYTE m_iEmpire;					///< gibt das Imperium zurück, 1 für Föd, 2 für Fer, also wie immer, siehe enum
-	
-	BYTE m_iPlayerOfEmpire;			///< wird das Imperium vom Computer oder vom Spieler gespielt
+	CString m_sEmpireID;			///< gibt die ID der Rasse des Imperiums zurück
 	
 	BYTE m_byNumberOfSystems;		///< Anzahl Systeme des Imperiums
 	
@@ -210,9 +184,7 @@ private:
 
 	CIntelligence m_Intelligence;	///< der Geheimdienst des Imperiums
 
-	CArray<SystemViewStruct> m_SystemList;	///< Zeiger auf die zum Imperium gehörenden Systeme
+	CGlobalStorage m_GlobalStorage;	///< das globale Lager des Imperiums
 
-	/// Nachrichten von anderen MajorRaces an uns, normalerweise in CDiplomacy, aber Nachrichten von anderen
-	/// Majorraces müssen hier gespeichert werden!
-	CArray<DiplomacyMajorAnswersStruct, DiplomacyMajorAnswersStruct> m_IncomingMajorAnswers;
+	CArray<SystemViewStruct> m_SystemList;	///< Zeiger auf die zum Imperium gehörenden Systeme	
 };

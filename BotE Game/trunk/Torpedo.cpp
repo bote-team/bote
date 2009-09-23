@@ -30,7 +30,7 @@ CTorpedo::CTorpedo(const CTorpedo &rhs)
 	m_iDistance = rhs.m_iDistance;
 	m_iPower = rhs.m_iPower;
 	m_byType = rhs.m_byType;
-	m_iOwner = rhs.m_iOwner;
+	m_sOwner = rhs.m_sOwner;
 	m_iModi = rhs.m_iModi;
 	m_byManeuverability = rhs.m_byManeuverability;
 }
@@ -52,7 +52,7 @@ CTorpedo & CTorpedo::operator=(const CTorpedo & rhs)
 	m_iDistance = rhs.m_iDistance;
 	m_iPower = rhs.m_iPower;
 	m_byType = rhs.m_byType;
-	m_iOwner = rhs.m_iOwner;
+	m_sOwner = rhs.m_sOwner;
 	m_iModi = rhs.m_iModi;
 	m_byManeuverability = rhs.m_byManeuverability;
 	return *this;
@@ -83,7 +83,7 @@ BOOLEAN CTorpedo::Fly(CArray<CCombatShip*,CCombatShip*>* CS)
 	float minDistance = -1.0f;
 	short shipNumber = -1;
 	for (int i = 0; i < CS->GetSize(); i++)
-		if (m_iOwner != CS->GetAt(i)->m_pShip->GetOwnerOfShip() && CS->GetAt(i)->m_pShip->GetHull()->GetCurrentHull() > 0)
+		if (m_sOwner != CS->GetAt(i)->m_pShip->GetOwnerOfShip() && CS->GetAt(i)->m_pShip->GetHull()->GetCurrentHull() > 0)
 		{
 			Position t;
 			if (c.x != 0)

@@ -1,5 +1,5 @@
 /*
- *   Copyright (C)2004-2008 Sir Pustekuchen
+ *   Copyright (C)2004-2009 Sir Pustekuchen
  *
  *   Author   :  Sir Pustekuchen
  *   Home     :  http://birth-of-the-empires.de.vu
@@ -34,14 +34,13 @@ private:
 	void CreateButtons();
 
 	/// Funktion zum Zeichnen des Flottenzusammenstellungsmenüs
-	/// @param pDC Zeiger auf den aktuellen Zeichenkontext
-	/// @param theClientRect die komplette Zeichenfläche
-	void DrawTransportMenue(CDC* pDC, CRect theClientRect);
+	/// @param g Zeiger auf GDI+ Grafikobjekt
+	void DrawTransportMenue(Graphics* g);
 
 	// Attribute
 
 	// Grafiken
-	CBitmap bg_transportmenu;			// Transportsmenü
+	Bitmap* bg_transportmenu;			// Transportsmenü
 
 	// Buttons
 
@@ -60,6 +59,8 @@ public:
 	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
 public:
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
+	afx_msg void OnLButtonDblClk(UINT nFlags, CPoint point);
+	afx_msg void OnRButtonDown(UINT nFlags, CPoint point);
 };
 
 

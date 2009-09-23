@@ -1,5 +1,5 @@
 /*
- *   Copyright (C)2004-2008 Sir Pustekuchen
+ *   Copyright (C)2004-2009 Sir Pustekuchen
  *
  *   Author   :  Sir Pustekuchen
  *   Home     :  http://birth-of-the-empires.de.vu
@@ -100,8 +100,9 @@ public:
 	 * wurde, wird für den Parameter <code>destroyRound<code> die aktuelle Runde der Zerstörung übergeben und
 	 * für den Parameter <code>destroyType<code> die Art der Zerstörung als CString übergeben. Außerdem wird der neue
 	 * Status des Schiffes im Parameter <code>status<code> übergeben, z.B. zerstört, vermisst usw.
+	 * Konnte das Schiff modifiziert werden, so gibt die Funktion <code>true</code> zurück, sonst <code>false</code>
 	 */
-	void ModifyShip(CShip* ship, CString sector, short destroyRound = 0, CString destroyType = "", CString status = "");
+	bool ModifyShip(CShip* ship, CString sector, short destroyRound = 0, CString destroyType = "", CString status = "");
 
 	/// Funktion entfernt ein bestimmtes Schiff aus der Schiffshistory.
 	/// @param ship Zeiger auf das zu entfernende Schiff.

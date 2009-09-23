@@ -49,6 +49,10 @@ void CTorpedoInfo::SetValues(BYTE type)
 	m_bCollapseShields	= FALSE;
 	m_bReduceManeuver	= FALSE;
 	
+	// !!!!!!!!!!!!!
+	// Bei Änderungen in der Reihenfolge der Torpedos auch die Funktion in der CWeaponObserver-Klasse anpassen!
+	// !!!!!!!!!!!!!
+
 	switch (type)
 	{
 // a.) Nuclear Torpedos

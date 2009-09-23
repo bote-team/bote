@@ -23,8 +23,6 @@ CBuildingInfo::~CBuildingInfo()
 //////////////////////////////////////////////////////////////////////
 CBuildingInfo::CBuildingInfo(const CBuildingInfo & rhs)
 {
-	m_iNeededEnergy = rhs.m_iNeededEnergy;
-	
 	m_iFood = rhs.m_iFood;
 	m_iIP = rhs.m_iIP;
 	m_iEnergy = rhs.m_iEnergy;
@@ -128,6 +126,7 @@ CBuildingInfo::CBuildingInfo(const CBuildingInfo & rhs)
 	m_iWeaponTech = rhs.m_iWeaponTech;
 	
 	m_iNeededIndustry = rhs.m_iNeededIndustry;
+	m_iNeededEnergy = rhs.m_iNeededEnergy;
 	m_iNeededTitan = rhs.m_iNeededTitan;
 	m_iNeededDeuterium = rhs.m_iNeededDeuterium;
 	m_iNeededDuranium = rhs.m_iNeededDuranium;
@@ -251,6 +250,7 @@ CBuildingInfo & CBuildingInfo::operator=(const CBuildingInfo & rhs)
 	m_iWeaponTech = rhs.m_iWeaponTech;
 	
 	m_iNeededIndustry = rhs.m_iNeededIndustry;
+	m_iNeededEnergy = rhs.m_iNeededEnergy;
 	m_iNeededTitan = rhs.m_iNeededTitan;
 	m_iNeededDeuterium = rhs.m_iNeededDeuterium;
 	m_iNeededDuranium = rhs.m_iNeededDuranium;
@@ -554,7 +554,7 @@ USHORT CBuildingInfo::GetResourceProd(BYTE res) const
 	case IRIDIUM:	return GetIridiumProd();
 	case DILITHIUM:	return GetDilithiumProd();
 	default: {
-		TRACE("CBuilding::GetResourceProd(BYTE res) -> wrong res");
+		MYTRACE(MT::LEVEL_WARNING, "CBuildingInfo::GetResourceProd(): Resource %d doesn't exists!");
 		return 0;
 			 }
 	}

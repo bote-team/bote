@@ -512,7 +512,7 @@ BOOLEAN CMinorRace::TryCorruption(USHORT race, USHORT latinum, CEmpire* empires,
 				{
 					m_iDiplomacyStatus[corruptedMajor-1] = NO_AGREEMENT;
 					s = CResourceManager::GetString("CANCEL_TRADE_AGREEMENT", FALSE, m_strRaceName);
-					message.GenerateMessage(s,corruptedMajor,DIPLOMACY,"",0,0);
+					message.GenerateMessage(s,DIPLOMACY,"",0,0);
 					empires[corruptedMajor].AddMessage(message);
 					break;
 				}
@@ -520,7 +520,7 @@ BOOLEAN CMinorRace::TryCorruption(USHORT race, USHORT latinum, CEmpire* empires,
 				{
 					m_iDiplomacyStatus[corruptedMajor-1] = NO_AGREEMENT;
 					s = CResourceManager::GetString("CANCEL_FRIENDSHIP", FALSE, m_strRaceName);
-					message.GenerateMessage(s,corruptedMajor,DIPLOMACY,"",0,0);
+					message.GenerateMessage(s,DIPLOMACY,"",0,0);
 					empires[corruptedMajor].AddMessage(message);
 					break;
 				}
@@ -528,7 +528,7 @@ BOOLEAN CMinorRace::TryCorruption(USHORT race, USHORT latinum, CEmpire* empires,
 				{
 					m_iDiplomacyStatus[corruptedMajor-1] = NO_AGREEMENT;
 					s = CResourceManager::GetString("CANCEL_COOPARATION", FALSE, m_strRaceName);
-					message.GenerateMessage(s,corruptedMajor,DIPLOMACY,"",0,0);
+					message.GenerateMessage(s,DIPLOMACY,"",0,0);
 					empires[corruptedMajor].AddMessage(message);
 					break;
 				}
@@ -536,7 +536,7 @@ BOOLEAN CMinorRace::TryCorruption(USHORT race, USHORT latinum, CEmpire* empires,
 				{
 					m_iDiplomacyStatus[corruptedMajor-1] = NO_AGREEMENT;
 					s = CResourceManager::GetString("CANCEL_AFFILIATION", FALSE, m_strRaceName);
-					message.GenerateMessage(s,corruptedMajor,DIPLOMACY,"",0,0);
+					message.GenerateMessage(s,DIPLOMACY,"",0,0);
 					empires[corruptedMajor].AddMessage(message);
 					break;
 				}
@@ -544,13 +544,13 @@ BOOLEAN CMinorRace::TryCorruption(USHORT race, USHORT latinum, CEmpire* empires,
 				{
 					m_iDiplomacyStatus[corruptedMajor-1] = NO_AGREEMENT;
 					s = CResourceManager::GetString("CANCEL_MEMBERSHIP", FALSE, m_strRaceName);
-					message.GenerateMessage(s,corruptedMajor,DIPLOMACY,"",0,0);
+					message.GenerateMessage(s,DIPLOMACY,"",0,0);
 					empires[corruptedMajor].AddMessage(message);
 					break;
 				}
 		}
 		s = CResourceManager::GetString("CORRUPTION_SUCCESS", FALSE, m_strRaceName);
-		message.GenerateMessage(s,race,DIPLOMACY,"",0,0);
+		message.GenerateMessage(s,DIPLOMACY,"",0,0);
 		empires[race].AddMessage(message);
 		return TRUE;
 	}
@@ -572,11 +572,11 @@ BOOLEAN CMinorRace::TryCorruption(USHORT race, USHORT latinum, CEmpire* empires,
 				case 6:	{major = CResourceManager::GetString("ARTICLE_RACE6_EMPIRE", TRUE); break;}
 			}
 			s = CResourceManager::GetString("TRYED_CORRUPTION", FALSE, major, m_strRaceName);
-			message.GenerateMessage(s,corruptedMajor,DIPLOMACY,"",0,0);
+			message.GenerateMessage(s,DIPLOMACY,"",0,0);
 			empires[corruptedMajor].AddMessage(message);
 		}
 		s = CResourceManager::GetString("CORRUPTION_FAILED", FALSE, m_strRaceName);
-		message.GenerateMessage(s,race,DIPLOMACY,"",0,0);
+		message.GenerateMessage(s,DIPLOMACY,"",0,0);
 		empires[race].AddMessage(message);
 		return FALSE;
 	}
@@ -870,7 +870,7 @@ void CMinorRace::CheckDiplomaticConsistence(CEmpire* empires)
 				if (!s.IsEmpty())
 				{
 					CMessage message;
-					message.GenerateMessage(s,i+1,DIPLOMACY,"",0,0);
+					message.GenerateMessage(s,DIPLOMACY,"",0,0);
 					empires[i+1].AddMessage(message);
 				}
 			}
@@ -883,7 +883,7 @@ void CMinorRace::CheckDiplomaticConsistence(CEmpire* empires)
 					m_iDiplomacyStatus[j] = NO_AGREEMENT;
 					CMessage message;
 					CString s = CResourceManager::GetString("CANCEL_TRADE_AGREEMENT", FALSE, m_strRaceName);
-					message.GenerateMessage(s,j+1,DIPLOMACY,"",0,0);
+					message.GenerateMessage(s,DIPLOMACY,"",0,0);
 					empires[j+1].AddMessage(message);
 				}
 				if (m_iDiplomacyStatus[j] == FRIENDSHIP_AGREEMENT)
@@ -891,7 +891,7 @@ void CMinorRace::CheckDiplomaticConsistence(CEmpire* empires)
 					m_iDiplomacyStatus[j] = NO_AGREEMENT;
 					CMessage message;
 					CString s = CResourceManager::GetString("CANCEL_FRIENDSHIP", FALSE, m_strRaceName);
-					message.GenerateMessage(s,j+1,DIPLOMACY,"",0,0);
+					message.GenerateMessage(s,DIPLOMACY,"",0,0);
 					empires[j+1].AddMessage(message);
 				}
 			}
@@ -902,7 +902,7 @@ void CMinorRace::CheckDiplomaticConsistence(CEmpire* empires)
 					m_iDiplomacyStatus[j] = NO_AGREEMENT;
 					CMessage message;
 					CString s = CResourceManager::GetString("CANCEL_FRIENDSHIP", FALSE, m_strRaceName);
-					message.GenerateMessage(s,j+1,DIPLOMACY,"",0,0);
+					message.GenerateMessage(s,DIPLOMACY,"",0,0);
 					empires[j+1].AddMessage(message);
 				}
 	}
@@ -927,7 +927,7 @@ void CMinorRace::PerhapsCancelAgreement(CEmpire* empires)
 					{
 						m_iDiplomacyStatus[i] = NO_AGREEMENT;
 						s = CResourceManager::GetString("CANCEL_TRADE_AGREEMENT", FALSE, m_strRaceName);
-						message.GenerateMessage(s,i+1,DIPLOMACY,"",0,0);
+						message.GenerateMessage(s,DIPLOMACY,"",0,0);
 						empires[i+1].AddMessage(message);
 						break;
 					}
@@ -935,7 +935,7 @@ void CMinorRace::PerhapsCancelAgreement(CEmpire* empires)
 					{
 						m_iDiplomacyStatus[i] = NO_AGREEMENT;
 						s = CResourceManager::GetString("CANCEL_FRIENDSHIP", FALSE, m_strRaceName);
-						message.GenerateMessage(s,i+1,DIPLOMACY,"",0,0);
+						message.GenerateMessage(s,DIPLOMACY,"",0,0);
 						empires[i+1].AddMessage(message);
 						break;
 					}
@@ -943,7 +943,7 @@ void CMinorRace::PerhapsCancelAgreement(CEmpire* empires)
 					{
 						m_iDiplomacyStatus[i] = NO_AGREEMENT;
 						s = CResourceManager::GetString("CANCEL_COOPERATION", FALSE, m_strRaceName);
-						message.GenerateMessage(s,i+1,DIPLOMACY,"",0,0);
+						message.GenerateMessage(s,DIPLOMACY,"",0,0);
 						empires[i+1].AddMessage(message);
 						break;
 					}
@@ -951,7 +951,7 @@ void CMinorRace::PerhapsCancelAgreement(CEmpire* empires)
 					{
 						m_iDiplomacyStatus[i] = NO_AGREEMENT;
 						s = CResourceManager::GetString("CANCEL_AFFILIATION", FALSE, m_strRaceName);
-						message.GenerateMessage(s,i+1,DIPLOMACY,"",0,0);
+						message.GenerateMessage(s,DIPLOMACY,"",0,0);
 						empires[i+1].AddMessage(message);
 						break;
 					}
@@ -959,7 +959,7 @@ void CMinorRace::PerhapsCancelAgreement(CEmpire* empires)
 					{
 						m_iDiplomacyStatus[i] = NO_AGREEMENT;
 						s = CResourceManager::GetString("CANCEL_MEMBERSHIP", FALSE, m_strRaceName);
-						message.GenerateMessage(s,i+1,DIPLOMACY,"",0,0);
+						message.GenerateMessage(s,DIPLOMACY,"",0,0);
 						empires[i+1].AddMessage(message);
 						break;
 					}

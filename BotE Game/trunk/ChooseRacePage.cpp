@@ -96,7 +96,7 @@ BOOL CChooseRacePage::OnSetActive()
 		{
 			DWORD dwAddr;
 			memcpy(&dwAddr, pHost->h_addr_list[i], sizeof(dwAddr));
-			TRACE("server: IP %s\n", network::AddrToString(ntohl(dwAddr)));
+			MYTRACE(MT::LEVEL_INFO, "server: IP %s\n", network::AddrToString(ntohl(dwAddr)));
 		}
 #endif
 		if (pHost->h_addr)

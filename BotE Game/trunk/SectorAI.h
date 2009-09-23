@@ -1,5 +1,5 @@
 /*
- *   Copyright (C)2004-2008 Sir Pustekuchen
+ *   Copyright (C)2004-2009 Sir Pustekuchen
  *
  *   Author   :  Sir Pustekuchen
  *   Home     :  http://birth-of-the-empires.de.vu
@@ -9,12 +9,20 @@
 #include "afx.h"
 #include "Options.h"
 #include "Starmap.h"
+#include <map>
+#include <vector>
+#include <utility>
 
+using namespace std;
+
+// forward declaration
 class CBotf2Doc;
 class CShip;
-class CSectorAI : public CObject
+
+class CSectorAI
 {
 public:
+
 	struct SectorToTerraform {
 		BYTE pop;
 		CPoint p;
@@ -33,50 +41,50 @@ public:
 	~CSectorAI(void);
 
 	/// Diese Funktion gibt das Gefahrenpotenzial in einem Sektor <code>sector</code> durch eine bestimmte
-	/// Rasse <code>race</code> zurück.
-	UINT GetDanger(BYTE race, CPoint sector) const {ASSERT(race); return m_iDangers[race-1][sector.x][sector.y];}
+	/// Rasse <code>sRaceID</code> zurück.
+	UINT GetDanger(const CString& sRaceID, const CPoint& sector) {return m_iDangers[sRaceID][pair<int, int>(sector.x, sector.y)];}
 
 	/// Diese Funktion gibt das Gefahrenpotenzial in einem Sektor <code>sector</code> durch eine bestimmte
-	/// Rasse <code>race</code> zurück. Dabei werden aber nur Kriegsschiffe beachtet.
-	UINT GetDangerOnlyFromCombatShips(BYTE race, CPoint sector) const {ASSERT(race); return m_iCombatShipDangers[race-1][sector.x][sector.y];}
+	/// Rasse <code>sRaceID</code> zurück. Dabei werden aber nur Kriegsschiffe beachtet.
+	UINT GetDangerOnlyFromCombatShips(const CString& sRaceID, const CPoint& sector) {return m_iCombatShipDangers[sRaceID][pair<int, int>(sector.x, sector.y)];}
 
 	/// Diese Funktion gibt das gesamte Gefahrenpotenzial aller Rassen in einem Sektor <code>sector</code> zurück.
-	/// Das Gefahrenpotential der eigenen Rasse <code>ownRace</code> wird dabei aber nicht mit eingerechnet.
-	UINT GetCompleteDanger(BYTE ownRace, CPoint sector) const;
+	/// Das Gefahrenpotential der eigenen Rasse <code>sOwnRaceID</code> wird dabei aber nicht mit eingerechnet.
+	UINT GetCompleteDanger(const CString& sOwnRaceID, const CPoint& sector);
 
-	/// Diese Funktion gibt das gesamte Gefahrenpotenzial durch Kriegsschiffe einer Rasse <code>race</code> aus
+	/// Diese Funktion gibt das gesamte Gefahrenpotenzial durch Kriegsschiffe einer Rasse <code>sRaceID</code> aus
 	/// allen Sektoren zurück.
-	UINT GetCompleteDanger(BYTE race) const {ASSERT(race); return m_iCompleteDanger[race-1];}
+	UINT GetCompleteDanger(const CString& sRaceID) {return m_iCompleteDanger[sRaceID];}
 
-	/// Funktion gibt die Sektorkoordinate zurück, in welchem eine Rasse <code>race</code> die stärkste Ansammlung
+	/// Funktion gibt die Sektorkoordinate zurück, in welchem eine Rasse <code>sRaceID</code> die stärkste Ansammlung
 	/// von Kriegsschiffen hat.
-	CPoint GetHighestShipDanger(BYTE race) const {ASSERT(race); return m_HighestShipDanger[race-1];}
+	CPoint GetHighestShipDanger(const CString& sRaceID) {return m_HighestShipDanger[sRaceID];}
 
-	/// Funktion gibt die Sektorkoordinate zurück, in welchem eine Rasse <code>race</code> einen Außenposten
+	/// Funktion gibt die Sektorkoordinate zurück, in welchem eine Rasse <code>sRaceID</code> einen Außenposten
 	/// bauen sollte.
-	BaseSector GetStationBuildSector(BYTE race) const {ASSERT(race); return m_StationBuild[race-1];}
+	BaseSector GetStationBuildSector(const CString& sRaceID) {return m_mStationBuild[sRaceID];}
 
 	/// Diese Funktion gibt einen Zeiger auf das geordnete Feld der zum Terraforming am geeignetesten Systeme zurück.
-	/// Dafür muss nur die jeweilige Rasse <code>race</code> übergeben werden.
-	CArray<SectorToTerraform>* GetSectorsToTerraform(BYTE race) {ASSERT(race); return &m_SectorsToTerraform[race-1];}
+	/// Dafür muss nur die jeweilige Rasse <code>sRaceID</code> übergeben werden.
+	vector<SectorToTerraform>* GetSectorsToTerraform(const CString& sRaceID) {return &(m_vSectorsToTerraform[sRaceID]);}
 
 	/// Diese Funktion gibt einen Zeiger auf das Feld mit den Sektoren der unbekannten Minors zurück. Übergeben muss
-	/// dafür nur die jeweilige Rasse <code>race</code> werden.
-	CArray<CPoint>* GetMinorraceSectors(BYTE race) {ASSERT(race); return &m_MinorraceSectors[race-1];}
+	/// dafür nur die jeweilige Rasse <code>sRaceID</code> werden.
+	vector<CPoint>* GetMinorraceSectors(const CString& sRaceID) {return &(m_vMinorraceSectors[sRaceID]);}
 
 	/// Diese Funktion gibt einen Zeiger auf das Feld mit den Sektoren für mögliche Offensivziele zurück. Übergeben muss
-	/// dafür nur die jeweilige Rasse <code>race</code> werden.
-	CArray<CPoint>* GetOffensiveTargets(BYTE race) {ASSERT(race); return &m_OffensiveTargets[race-1];}
+	/// dafür nur die jeweilige Rasse <code>sRaceID</code> werden.
+	vector<CPoint>* GetOffensiveTargets(const CString& sRaceID) {return &(m_vOffensiveTargets[sRaceID]);}
 
 	/// Diese Funktion gibt einen Zeiger auf das Feld mit den Sektoren für mögliche Bombardierungsziele zurück.
-	/// Übergeben muss dafür nur die jeweilige Rasse <code>race</code> werden.
-	CArray<CPoint>* GetBombardTargets(BYTE race) {ASSERT(race); return &m_BombardTargets[race-1];}
+	/// Übergeben muss dafür nur die jeweilige Rasse <code>sRaceID</code> werden.
+	vector<CPoint>* GetBombardTargets(const CString& sRaceID) {return &(m_vBombardTargets[sRaceID]);}
 
-	/// Funktion gibt die Anzahl an Kolonieschiffen der Rasse <code>race</code> zurück.
-	short GetNumberOfColoships(BYTE race) const {ASSERT(race); return m_iColoShips[race-1];}
+	/// Funktion gibt die Anzahl an Kolonieschiffen der Rasse <code>sRaceID</code> zurück.
+	short GetNumberOfColoships(const CString& sRaceID) {return m_iColoShips[sRaceID];}
 
-	/// Funktion gibt die Anzahl an Tranportschiffen der Rasse <code>race</code> zurück.
-	short GetNumberOfTransportShips(BYTE race) const {ASSERT(race); return m_iTransportShips[race-1];}
+	/// Funktion gibt die Anzahl an Tranportschiffen der Rasse <code>sRaceID</code> zurück.
+	short GetNumberOfTransportShips(const CString& sRaceID) {return m_iTransportShips[sRaceID];}
 
 	/// Diese Funktion trägt die ganzen Gefahrenpotenziale der Schiffe und Stationen in die Variable
 	/// <code>m_iDangers</code> ein. Außerdem wird hier auch gleich die Anzahl der verschiedenen Schiffe
@@ -87,6 +95,9 @@ public:
 	/// Terraformen, wo lernt man neue Minorraces kennen usw. Vorher sollte die Funktion <code>CalculateDangers()
 	/// </code> aufgerufen werden.
 	void CalcualteSectorPriorities();
+
+	/// Funktion löscht alle vorher berechneten Prioritäten.
+	void Clear(void);
 
 private:
 	/// Diese Funktion addiert die Offensiv- und Defensivstärke eines Schiffes einer Rasse zum jeweiligen
@@ -107,10 +118,10 @@ private:
 
 	/// Diese Funktion berechnet Systeme, welche im Kriegsfall womöglich angegriffen werden können. Das Ergebnis wird
 	/// im Array <code>m_BombardTargets</code> gespeichert.
-	void CalculateBombardTargets(BYTE race, int x, int y);
+	void CalculateBombardTargets(const CString& sRaceID, int x, int y);
 
 	/// Diese Funktion berechnet einen Sektor, welcher sich zum Bau eines Außenpostens eignet.
-	void CalculateStationTargets(BYTE race);
+	void CalculateStationTargets(const CString& sRaceID);
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Variablen
@@ -118,42 +129,44 @@ private:
 	/// Ein Zeiger auf das Document.
 	CBotf2Doc* m_pDoc;
 
-	/// In dieser Variable stehen die addierten Offensiv- und Defensivwerte der einzelnen Rassen. Diese
+	/// In dieser Variable stehen die addierten Offensiv- und Defensivwerte der einzelnen Rassen für jeden Sektor. Diese
 	/// Werte spiegeln im Prinzip die Stärke der Schiffe wieder.
-	UINT m_iDangers[UNKNOWN][STARMAP_SECTORS_HCOUNT][STARMAP_SECTORS_VCOUNT];
+	/// CString -> Rassen-ID; pair<int,int> -> Sektor-KO; UINT -> Stärkewert
+	map<CString, map<pair<int, int>, UINT> > m_iDangers;
 
-	/// In dieser Variable stehen die addierten Offensiv- und Defensivwerte der einzelnen Rassen.
+	/// In dieser Variable stehen die addierten Offensiv- und Defensivwerte der einzelnen Rassen für jeden Sektor.
 	/// Doch befinden sich in dieser Variable nur die Stärken von Kriegsschiffen.
-	UINT m_iCombatShipDangers[UNKNOWN][STARMAP_SECTORS_HCOUNT][STARMAP_SECTORS_VCOUNT];
+	/// CString -> Rassen-ID; pair<int,int> -> Sektor-KO; UINT -> Stärkewert
+	map<CString, map<pair<int, int>, UINT> > m_iCombatShipDangers;
 
 	/// Variable beinhaltet die komplette Stärke aller Kriegsschiffe einer Rasse.
-	UINT m_iCompleteDanger[DOMINION];
+	map<CString, UINT> m_iCompleteDanger;
 
 	/// Variable beinhaltet den Sektor, in dem die jeweilige Rasse die stärkste Schiffsansammlung hat. Stationen
 	/// werden dabei nicht mit beachtet.
-	CPoint m_HighestShipDanger[DOMINION];
+	map<CString, CPoint> m_HighestShipDanger;
 
 	/// Varibale beinhaltet den Sektor, in welchem die jewelige Rasse einen Außenposten bauen sollte.
-	BaseSector m_StationBuild[DOMINION];
+	map<CString, BaseSector> m_mStationBuild;
 
 	/// In diesem Feld werden die Sektoren für die jeweilige Rasse gespeichert, welche sich am meisten zum
 	/// Terraformen lohnen.
-	CArray<SectorToTerraform> m_SectorsToTerraform[DOMINION];
-
+	map<CString, vector<SectorToTerraform> > m_vSectorsToTerraform;
+	
 	/// In diesem Feld werden die Sektoren von Minorraces gespeichert, die die entsprechende Rasse noch nicht
 	/// kennt, zu denen sie aber fliegen kann, um sie kennenzulernen.
-	CArray<CPoint> m_MinorraceSectors[DOMINION];
+	map<CString, vector<CPoint> > m_vMinorraceSectors;
 
 	/// In diesem Feld stehen mögliche Offensivziele einer bestimmten Rasse drin. Dabei kann es sich um eine
 	/// gegnerische Flotte aber auch um einen Aussenposten handeln.
-	CArray<CPoint> m_OffensiveTargets[DOMINION];
+	map<CString, vector<CPoint> > m_vOffensiveTargets;
 
 	/// In diesem Feld stehen mögliche Systeme, welche im Kriegsfall bombardiert werden könnten.
-	CArray<CPoint> m_BombardTargets[DOMINION];
+	map<CString, vector<CPoint> > m_vBombardTargets;
 
 	/// Variable beinhaltet die Anzahl an Kolonieschiffen einer bestimmten Rasse
-	short m_iColoShips[DOMINION];
+	map<CString, short> m_iColoShips;
 
 	/// Variable beinhaltet die Anzahl an Truppentransportern einer bestimmten Rasse
-	short m_iTransportShips[DOMINION];
+	map<CString, short> m_iTransportShips;
 };

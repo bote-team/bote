@@ -110,7 +110,7 @@ public:
 	///	Diese Funktion wird bei jeder neuen Rundenberechnung aufgerufen und berechnet wann eine Aktion feuert
 	/// und generiert selbst neue diplomatische Nachrichten.
 	void CalculateDiplomaticFallouts(MinorRaceArray* minors, CMajorRace* majors, CEmpire* empire,
-		USHORT currentRound, CSystem systems[30][20], ULONG* averageRessourceStorages, CGlobalStorage* globalStorages, const UINT* shipPowers);
+		USHORT currentRound, CSystem systems[30][20], UINT* averageRessourceStorages, CGlobalStorage* globalStorages, const UINT* shipPowers);
 	
 	/// Diese Funktion löscht alle Einträge aus den Variablen in denen auf die Minorrace <code>minor</code> verwiesen wurde.
 	/// @param minor Die Minorrasse, um die es sich handelt

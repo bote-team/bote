@@ -1,5 +1,5 @@
 /*
- *   Copyright (C)2004-2008 Sir Pustekuchen
+ *   Copyright (C)2004-2009 Sir Pustekuchen
  *
  *   Author   :  Sir Pustekuchen
  *   Home     :  http://birth-of-the-empires.de.vu
@@ -11,6 +11,12 @@
 #pragma once
 #include "Planet.h"
 #include "GenSectorName.h"
+#include <map>
+
+using namespace std;
+
+// forward declaration
+class CBotf2Doc;
 
 /// Liefert verschiedene Attributswerte der Sektorklasse.
 enum SectorAttributes
@@ -70,58 +76,154 @@ public:
 	BOOLEAN GetTakenSector(void) const {return (m_Attributes & SECTOR_CONQUERED) == SECTOR_CONQUERED;}
 	
 	/// Diese Funktion gibt zurück, wer im Besitz dieses Sektors ist.
-	BYTE GetOwnerOfSector(void) const {return m_byOwnerOfSector;}
-	
+	CString GetOwnerOfSector(void) const {return m_sOwnerOfSector;}
+		
 	/// Diese Funktion gibt zurück, wem dieser Sektor zuerst gehörte. Aber nur, wenn es sich dabei
 	/// um eine Kolonie oder um das Heimatsystem handelte.
-	BYTE GetColonyOwner(void) const {return m_byColonyOwner;}
-	
+	CString GetColonyOwner(void) const {return m_sColonyOwner;}
+		
 	/// Diese Funktion gibt einen Wahrheitswert zurück, der sagt, ob dieser Sektor von der Majorrace
 	/// <code>Race</code> gescannt wurde.
-	BOOLEAN GetScanned(int Race) const {return (m_byStatus[Race] >= 1);}
+	BOOLEAN GetScanned(const CString& sRace)
+	{
+		// ALPHA5
+		//return true;
+
+		map<CString, BYTE>::const_iterator it = m_byStatus.find(sRace);
+		if (it != m_byStatus.end())
+			return it->second >= 1;
+		else
+			return false;
+	}
 	
 	/// Diese Funktion gibt einen Wahrheitswert zurück, der sagt, ob der Name dieses Sektor der
 	/// Majorrace <code>Race</code> bekannt ist.
-	BOOLEAN GetKnown(int Race) const {return (m_byStatus[Race] >= 2);}
+	BOOLEAN GetKnown(const CString& sRace)
+	{
+		// ALPHA5
+		//return true;
+
+		map<CString, BYTE>::const_iterator it = m_byStatus.find(sRace);
+		if (it != m_byStatus.end())
+			return it->second >= 2;
+		else
+			return false;
+	}
 
 	/// Diese Funktion gibt einen Wahrheitswert zurück, der sagt, ob die Majorrace <code>Race</code>
 	/// den kompletten Sektor (inkl. der Planeten) kennt.
-	BOOLEAN GetFullKnown(int Race) const {return (m_byStatus[Race] >= 3);}
+	BOOLEAN GetFullKnown(const CString& sRace)
+	{
+		// ALPHA5
+		//return true;
+
+		map<CString, BYTE>::const_iterator it = m_byStatus.find(sRace);
+		if (it != m_byStatus.end())
+			return it->second >= 3;
+		else
+			return false;
+	}
 	
 	/// Diese Funktion gibt einen Wahrheitswert zurück, der sagt, ob die Majorrace <code>Race</code>
 	/// eine online Werft (bzw. kann auch eine Station sein) in diesem Sektor besitzt.
-	BOOLEAN GetShipPort(int Race) const {return m_bShipPort[Race];}
+	BOOLEAN GetShipPort(const CString& sRace)
+	{
+		map<CString, BOOLEAN>::const_iterator it = m_bShipPort.find(sRace);
+		if (it != m_bShipPort.end())
+			return it->second;
+		else
+			return false;
+	}
 	
 	/// Diese Funktion gibt einen Wahrheitswert zurück, der sagt, ob die Majorrace <code>Race</code>
 	/// einen Aussenposten in diesem Sektor besitzt.
-	BOOLEAN GetOutpost(int Race) const {return m_bOutpost[Race];}
+	BOOLEAN GetOutpost(const CString& sRace)
+	{
+		map<CString, BOOLEAN>::const_iterator it = m_bOutpost.find(sRace);
+		if (it != m_bOutpost.end())
+			return it->second;
+		else
+			return false;
+	}
 	
 	/// Diese Funktion gibt einen Wahrheitswert zurück, der sagt, ob die Majorrace <code>Race</code>
 	/// eine Sternbasis in diesem Sektor besitzt.
-	BOOLEAN GetStarbase(int Race) const {return m_bStarbase[Race];}
+	BOOLEAN GetStarbase(const CString& sRace)
+	{
+		map<CString, BOOLEAN>::const_iterator it = m_bStarbase.find(sRace);
+		if (it != m_bStarbase.end())
+			return it->second;
+		else
+			return false;
+	}
 	
 	/// Diese Funktion gibt einen Wahrheitswert zurück, der sagt, ob die Rasse <code>Race</code> ein
 	/// bzw. mehrere Schiffe in diesem Sektor hat.
-	BOOLEAN GetOwnerOfShip(int Race) {return m_bWhoIsOwnerOfShip[Race];}
+	BOOLEAN GetOwnerOfShip(const CString& sRace)
+	{
+		map<CString, BOOLEAN>::const_iterator it = m_bWhoIsOwnerOfShip.find(sRace);
+		if (it != m_bWhoIsOwnerOfShip.end())
+			return it->second;
+		else
+			return false;
+	}
 	
 	/// Diese Funktion gibt einen Wahrheitswert zurück, der sagt, ob die Majorrace <code>Race</code>
 	/// gerade eine Station in diesem Sektor baut.
-	BOOLEAN GetIsStationBuilding(int Race) const {return m_bIsStationBuild[Race];}
+	BOOLEAN GetIsStationBuilding(const CString& sRace)
+	{
+		map<CString, BOOLEAN>::const_iterator it = m_bIsStationBuild.find(sRace);
+		if (it != m_bIsStationBuild.end())
+			return it->second;
+		else
+			return false;
+	}
 	
 	/// Diese Funktion gibt die Scanpower zurück, die die Majorrace <code>Race</code> in diesem Sektor hat.
-	short GetScanPower(BYTE Race) const {return m_iScanPower[Race];}
+	short GetScanPower(const CString& sRace)
+	{
+		// ALPHA5
+		return 1000;
+
+		map<CString, short>::const_iterator it = m_iScanPower.find(sRace);
+		if (it != m_iScanPower.end())
+			return it->second;
+		else
+			return false;
+	}
 	
 	/// Diese Funktion gibt die Scanpower zurück, die man benötigt, um das Schiff/die Schiffe der
 	/// Majorrace <code>Race</code> in diesem Sektor zu entdecken.
-	short GetNeededScanPower(BYTE Race) const {return m_iNeededScanPower[Race];}
+	short GetNeededScanPower(const CString& sRace)
+	{
+		map<CString, short>::const_iterator it = m_iNeededScanPower.find(sRace);
+		if (it != m_iNeededScanPower.end())
+			return it->second;
+		else
+			return 0;
+	}
 	
 	/// Diese Funktion gibt die benötigten Punkte zum Stationenbau zurück, die die Majorrace
 	/// <code>Race</code> in diesem Sektor noch zur Fertigstellung einer Station benötigt.
-	short GetNeededStationPoints(int Race) const {return m_iNeededStationPoints[Race];}
+	short GetNeededStationPoints(const CString& sRace)
+	{
+		map<CString, short>::const_iterator it = m_iNeededStationPoints.find(sRace);
+		if (it != m_iNeededStationPoints.end())
+			return it->second;
+		else
+			return false;
+	}
 	
 	/// Diese Funktion gibt die Punkte zum Stationenbau zurück, die die Majorrace
 	/// <code>Race</code> zu Beginn des Stationenbaus benötigt hat.
-	short GetStartStationPoints(int Race) const {return m_iStartStationPoints[Race];}
+	short GetStartStationPoints(const CString& sRace)
+	{
+		map<CString, short>::const_iterator it = m_iStartStationPoints.find(sRace);
+		if (it != m_iStartStationPoints.end())
+			return it->second;
+		else
+			return false;
+	}
 		
 	/// Die Funktion gibt die Farbe der Sonne in diesem System zurück. Der Rückgabewert ist ein BYTE-Wert, also nicht
 	///die Farbe als Adjektiv.
@@ -166,57 +268,120 @@ public:
 	void SetTakenSector(BOOLEAN is) {SetAttributes(is, SECTOR_CONQUERED, m_Attributes);}
 	
 	/// Funktion legt fest, wem der Sektor gehört.
-	void SetOwnerOfSector(BYTE owner) {m_byOwnerOfSector = owner;}
+	void SetOwnerOfSector(const CString& sOwner) {m_sOwnerOfSector = sOwner;}
 	
 	/// Funktion legt fest, welcher Majorrace der Sektor zuerst gehörte. Das gilt aber nur für
 	/// eigene Kolonien und dem Heimatsektor
-	void SetColonyOwner(BYTE owner) {m_byColonyOwner = owner;}
+	void SetColonyOwner(const CString& sOwner) {m_sColonyOwner = sOwner;}
 	
 	/// Diese Funktion legt fest, ob der Sektor von der Majorrace <code>Race</code> gescannt ist.
-	void SetScanned(BYTE Race) {if (this->GetScanned(Race) == FALSE) m_byStatus[Race] = 1;}
+	void SetScanned(const CString& Race) {if (this->GetScanned(Race) == FALSE) m_byStatus[Race] = 1;}
 	
 	/// Diese Funktion legt fest, ob die Majorrace <code>Race</code> den Namen des Sektor kennt.
-	void SetKnown(BYTE Race) {if (this->GetKnown(Race) == FALSE) m_byStatus[Race] = 2;}
+	void SetKnown(const CString& Race) {if (this->GetKnown(Race) == FALSE) m_byStatus[Race] = 2;}
 
 	/// Diese Funktion legt fest, ob die Majorrace <code>Race</code> den Sektor kompletten Sektor
 	/// (inkl. der ganzen Planeten) kennt.
-	void SetFullKnown(BYTE Race) {m_byStatus[Race] = 3;}
+	void SetFullKnown(const CString& Race) {m_byStatus[Race] = 3;}
 	
 	/// Diese Funktion legt fest, ob die Majorrace <code>Race</code> eine online Werft (bzw. auch durch eine
 	/// Station erhalten) in diesem Sektor besitzt.
-	void SetShipPort(BOOLEAN is, BYTE Race) {m_bShipPort[Race] = is;}
+	void SetShipPort(BOOLEAN is, const CString& Race)
+	{
+		if (is)
+			m_bShipPort[Race] = is;
+		else
+			m_bShipPort.erase(Race);
+	}
 	
 	/// Diese Funktion legt fest, ob die Majorrace <code>Race</code> einen Aussenposten in diesem Sektor unterhält.
-	void SetOutpost(BOOLEAN is, BYTE Race) {m_bOutpost[Race] = is;}
+	void SetOutpost(BOOLEAN is, const CString& Race)
+	{
+		if (is)
+			m_bOutpost[Race] = is;
+		else
+			m_bOutpost.erase(Race);
+	}
 	
 	/// Diese Funktion legt fest, ob die Majorrace <code>Race</code> eine Sternbasis in diesem Sektor unterhält.
-	void SetStarbase(BOOLEAN is, BYTE Race) {m_bStarbase[Race] = is;}
+	void SetStarbase(BOOLEAN is, const CString& Race)
+	{
+		if (is)
+			m_bStarbase[Race] = is;
+		else
+			m_bStarbase.erase(Race);
+	}
 	
 	/// Funktion legt fest, ob die Majorrace <code>Race</code> ein oder auch mehrer Schiffe in diesem Sektor hat.
-	void SetOwnerOfShip(BOOLEAN is, BYTE owner) {m_bWhoIsOwnerOfShip[owner] = is;}
+	void SetOwnerOfShip(BOOLEAN is, const CString& sOwner)
+	{
+		if (is)
+			m_bWhoIsOwnerOfShip[sOwner] = is;
+		else
+			m_bWhoIsOwnerOfShip.erase(sOwner);
+	}
 	
 	/// Funktion legt fest, ob die Majorrace <code>Race</code> gerade eine Station in diesem Sektor baut.
-	void SetIsStationBuilding(BOOLEAN is, BYTE Race) {m_bIsStationBuild[Race] = is;}
+	void SetIsStationBuilding(BOOLEAN is, const CString& Race)
+	{
+		if (is)
+			m_bIsStationBuild[Race] = is;
+		else
+			m_bIsStationBuild.erase(Race);
+	}
 	
 	/// Funktion legt die Scanpower <code>scanpower</code>, welche die Majorrace <code>Race</code> 
 	/// in diesem Sektor hat, fest.
-	void SetScanPower(short scanpower, BYTE Race) {m_iScanPower[Race] = scanpower;}
+	void SetScanPower(short scanpower, const CString& Race)
+	{
+		if (scanpower)
+			m_iScanPower[Race] = scanpower;
+		else
+			m_iScanPower.erase(Race);
+	}
 	
 	/// Funktion legt die Scanpower <code>scanpower</code> fest, welche benötigt wird, um ein Schiff der
 	/// Majorrace <code>Race</code> in diesem Sektor zu erkennen.
-	void SetNeededScanPower(short scanpower, BYTE Race) {m_iNeededScanPower[Race] = scanpower;}
+	void SetNeededScanPower(short scanpower, const CString& Race)
+	{
+		if (scanpower != 0)
+			m_iNeededScanPower[Race] = scanpower;
+		else
+			m_iNeededScanPower.erase(Race);
+	}
 	
 	/// Diese Funktion zieht <code>sub</code> Punkte von den noch benötigten Stationbaupunkten der Majorrace
 	/// <code>Race</code> ab.
-	BOOLEAN SetNeededStationPoints(int sub, BYTE Race) {m_iNeededStationPoints[Race] -= sub; if (m_iNeededStationPoints[Race] <= 0) return TRUE; else return FALSE;}
+	BOOLEAN SetNeededStationPoints(int sub, const CString& Race)
+	{
+		m_iNeededStationPoints[Race] -= sub;
+		if (m_iNeededStationPoints[Race] <= 0)
+		{
+			m_iNeededStationPoints.erase(Race);
+			return TRUE;
+		}
+		else return FALSE;
+	}
 	
 	/// Diese Funktion legt die Stationsbaupunkte <code>value</code> der Majorrace <code>Race</code> fest,
 	/// welche zu Beginn des Baus benötigt werden.
-	void SetStartStationPoints(int value, BYTE Race) {m_iStartStationPoints[Race] = value; m_iNeededStationPoints[Race] = value;}
+	void SetStartStationPoints(int value, const CString& Race)
+	{
+		if (value)
+		{
+			m_iStartStationPoints[Race] = value;
+			m_iNeededStationPoints[Race] = value;
+		}
+		else
+		{
+			m_iStartStationPoints.erase(Race);
+			m_iNeededStationPoints.erase(Race);
+		}		
+	}
 
 	/// Diese Funktion addiert Besitzerpunkte <code>ownerPoints</code> zu den Punkten des Besitzers <code>owner</owner>
 	/// dazu.
-	void AddOwnerPoints(BYTE ownerPoints, BYTE owner) {m_byOwnerPoints[owner] += ownerPoints;}
+	void AddOwnerPoints(BYTE ownerPoints, const CString& sOwner) {m_byOwnerPoints[sOwner] += ownerPoints;}
 
 	/// Diese Funktion addiert den übergebenen Wert <code>value</code> zu den Schiffspfadpunkten, anhand derer man
 	/// erkennen kann, ob ein Schiff in dieser Runde durch diesen Sektor fliegt.
@@ -238,7 +403,7 @@ public:
 	/// Diese Funktion generiert die Planeten in dem Sektor.
 	/// @param majorNumber Nummer der Majorrace, wenn deren Planeten im Sektor generiert werden soll. Wird kein Wert
 	/// angegeben, so werden zufällige Planeten erstellt.
-	void CreatePlanets(BYTE majorNumber = NOBODY);
+	void CreatePlanets(const CString& sMajorID = "");
 	
 	/// Diese Funktion führt das Planetenwachstum für diesen Sektor durch.
 	void LetPlanetsGrowth();
@@ -254,17 +419,17 @@ public:
 
 	/// Diese Funktion berechnet anhand der Besitzerpunkte und anderen Enflüssen, wem dieser Sektor schlussendlich
 	/// gehört. Übergeben wird dafür auch der mögliche Besitzer des Systems in diesem Sektor.
-	void CalculateOwner(BYTE systemOwner);
+	void CalculateOwner(const CString& sSystemOwner);
 
 	/// Resetfunktion für die Klasse CSector
 	void Reset();
 
 // Zeichenfunktionen für diese Klasse
 	/// Diese Funktion zeichnet den Namen des Sektors.
-	void DrawSectorsName(CDC *pDC, BYTE ownerOfSystem, int playersRace, BOOLEAN knowOwner) const;
+	void DrawSectorsName(CDC *pDC, CBotf2Doc* pDoc);
 	
 	/// Diese Funktion zeichnet die entsprechenden Schiffssymbole in den Sektor
-	void DrawShipSymbolInSector(Graphics *g, int PlayersRace) const;
+	void DrawShipSymbolInSector(Graphics *g, CBotf2Doc* pDoc);
 
 // statische Membervariablen
 	/// Die Schrift, mit welcher die Sektornamen gezeichnet werden.
@@ -286,48 +451,48 @@ private:
 	int m_Attributes;		
 	
 	/// Wem gehört der Sektor?
-	BYTE m_byOwnerOfSector;
+	CString m_sOwnerOfSector;
 	
 	/// Wem gehört/gehörte der Sektor zuerst? Also eigene Kolonie und Heimatsystem
-	BYTE m_byColonyOwner;
+	CString m_sColonyOwner;
 	
 	/// Variable speichert den Status über diesen Sektor, wobei 0 -> nichts, 1 -> gescannt,
 	/// 2 -> Name bekannt, 3 -> alles inkl. Planeten bekannt, bedeutet
-	BYTE m_byStatus[7];
+	map<CString, BYTE> m_byStatus;
 	
 	/// Gibts in diesem Sektor eine online Werft (bzw. auch Station)
-	BOOLEAN m_bShipPort[7];
+	map<CString, BOOLEAN> m_bShipPort;
 	
 	/// Besitzt die jeweilige Rasse in dem Sektor einen Außenposten?
-	BOOLEAN m_bOutpost[7];
+	map<CString, BOOLEAN> m_bOutpost;
 	
 	/// Besitzt die jeweilige Rasse in dem Sektor eine Sternbasis?
-	BOOLEAN m_bStarbase[7];
+	map<CString, BOOLEAN> m_bStarbase;
 	
 	/// Hat eine Majorrace ein Schiff in diesem Sektor?
-	BOOLEAN m_bWhoIsOwnerOfShip[7];
+	map<CString, BOOLEAN> m_bWhoIsOwnerOfShip;
 
 	/// Baut eine bestimmte Majorrasse gerade eine Station in dem Sektor?
-	BOOLEAN m_bIsStationBuild[7];
+	map<CString, BOOLEAN> m_bIsStationBuild;
 	
 	/// Scanstärke der jeweiligen Majorrace in dem Sektor
-	short m_iScanPower[7];
+	map<CString, short> m_iScanPower;
 	
 	/// benötigte Scanstärke der Majorrace, um ihr Schiff in diesem Sektor erkennen zu können
-	short m_iNeededScanPower[7];
+	map<CString, short> m_iNeededScanPower;
 	
 	/// Die aktuell benötigten Stationsbaupunkte bis zur Fertigstellung
-	short m_iNeededStationPoints[7];
+	map<CString, short> m_iNeededStationPoints;
 	
 	/// Die anfänglich benötigten Stationsbaupunkte (benötigt zur prozentualen Anzeige)
-	short m_iStartStationPoints[7];
+	map<CString, short> m_iStartStationPoints;
 
 	/// Die Farbe der Sonne in diesem Sektor
 	BYTE m_bySunColor;
 
 	/// Punktem welche angeben, wer den größten Einfluss auf diesen Sektor hat. Wer die meisten Punkte hat und kein
 	/// anderer in diesem Sektor einen Außenposten oder eine Kolonie besitzt, dem gehört der Sektor
-	BYTE m_byOwnerPoints[7];
+	map<CString, BYTE> m_byOwnerPoints;
 
 	/// Die Feld mit den einzelnen Planeten in dem Sektor
 	CArray<CPlanet> m_Planets;

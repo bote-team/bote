@@ -20,25 +20,24 @@ CAttackSystem::~CAttackSystem(void)
 // sonstige Funktionen
 //////////////////////////////////////////////////////////////////////
 /// Diese Funktion initiiert das CAttackSystem Objekt mit den entsprechenden Variablen. Dabei übernimmt sie als
-/// Parameter einen Zeiger auf das System <code>system</code>, welches angegriffen wird, sowie einen Zeiger auf
-/// das komplette Feld aller Schiffe <code>ships</code>, einen Zeiger auf den zum System gehörenden Sektor
-/// <code>sector</code>, einen Zeiger auf die Forschungsinformationen des Imperiums welchem das System gehört
-/// <code>researchInfo</code>, einen Zeiger auf die Gebäudeinformationen <code>buildingInfos</code>, die Koordinate
-/// des Systems <code>ko</code>, die Eigenschaft <code>kind</code> der Rasse, welche in dem System lebt und das Feld
-/// mit den Monopolbesitzern <code>monopolOwner</code>.
-void CAttackSystem::Init(CSystem* system, ShipArray* ships, CSector* sector, CResearchInfo* researchInfo, BuildingInfoArray* buildingInfos, CPoint ko, BYTE kind, const USHORT* monopolOwner)
+/// Parameter einen Zeiger auf die verteidigende Rasse <code>pDefender</code>, einen Zeiger auf das System <code>system</code>,
+/// welches angegriffen wird, einen Zeiger auf das komplette Feld aller Schiffe <code>ships</code>, einen Zeiger auf den
+/// zum System gehörenden Sektor <code>sector</code>, einen Zeiger auf die Gebäudeinformationen <code>buildingInfos</code>
+/// und das Feld mit den Monopolbesitzern <code>monopolOwner</code>.
+void CAttackSystem::Init(CRace* pDefender, CSystem* system, ShipArray* ships, CSector* sector, BuildingInfoArray* buildingInfos, const CString* monopolOwner)
 {
+	m_pDefender = pDefender;
 	m_pSystem = system;
 	m_pSector = sector;
-	m_pResearchInfo = researchInfo;
 	m_pBuildingInfos = buildingInfos;
-	m_KO = ko;
-	m_byKind = kind;
-	m_iMonopolOwner = monopolOwner;
+	m_KO = sector->GetKO();;
+	m_sMonopolOwner = monopolOwner;
+	
 	m_bTroopsInvolved = FALSE;
 	m_bAssultShipInvolved = FALSE;
 	m_fKilledPop = 0.0;
 	m_iDestroyedBuildings = 0;
+	
 	for (int i = 0; i < ships->GetSize(); i++)
 		if (ships->GetAt(i).GetKO() == m_KO && ships->GetAt(i).GetCurrentOrder() == ATTACK_SYSTEM)
 		{
@@ -59,7 +58,7 @@ BOOLEAN CAttackSystem::Calculate()
 	USHORT killedTroopsInSystem = m_pSystem->GetTroops()->GetSize();
 
 	int shipDefence = 0;
-	if (m_pSystem->GetOwnerOfSystem() != NOBODY)
+	if (m_pSystem->GetOwnerOfSystem() != "" && m_pDefender != NULL && m_pDefender->GetType() == MAJOR)
 		shipDefence = m_pSystem->GetProduction()->GetShipDefend();
 
 	// Zuerst wird die Schiffsabwehr des Systems beachtet. Dadurch können schon einige Schiffe zerstört werden.
@@ -152,12 +151,12 @@ BOOLEAN CAttackSystem::Calculate()
 }
 
 /// Diese Funktion gibt zurück, ob der Verteidiger ungleich dem/den Angreifer/n ist.
-BOOLEAN CAttackSystem::IsDefenderNotAttacker(BYTE defender, const CArray<BYTE> &attacker)
+BOOLEAN CAttackSystem::IsDefenderNotAttacker(CString sDefender, const map<CString, bool>* attacker)
 {
-	for (int i = 0; i < attacker.GetSize(); i++)
-		if (attacker.GetAt(i) == defender)
-			return FALSE;
-	return TRUE;
+	if (attacker->find(sDefender) == attacker->end())
+		return true;
+	else
+		return false;
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -167,10 +166,10 @@ BOOLEAN CAttackSystem::IsDefenderNotAttacker(BYTE defender, const CArray<BYTE> &
 /// Private Funktion, die allein die Schiffsabwehr berechnet
 void CAttackSystem::CalculateShipDefence()
 {
-	TRACE("CalculateShipDefence\n");
+	MYTRACE(MT::LEVEL_INFO, "CAttackSystem::CalculateShipDefence() begin...\n");
 	int defence = 0;
 	USHORT killedShips = 0;
-	if (m_pSystem->GetOwnerOfSystem() != NOBODY)
+	if (m_pSystem->GetOwnerOfSystem() != "" && m_pDefender != NULL && m_pDefender->GetType() == MAJOR)
 		defence = m_pSystem->GetProduction()->GetShipDefend();
 	// einfacher Algorithmus:
 	//		Der Defencewert wird durch die Anzahl der angreifenden Schiffe geteilt. Dann wird der Anzahl der
@@ -221,7 +220,7 @@ void CAttackSystem::CalculateShipDefence()
 /// Private Funktion, die allein die Systembombardierung beachtet
 void CAttackSystem::CalculateBombAttack()
 {
-	TRACE("CalculateBombAttack\n");
+	MYTRACE(MT::LEVEL_INFO, "CAttackSystem::CalculateBombAttack() begin...\n");
 	// Bei der Bombardierung werden nur die Torpedos der Schiffe beachtet.
 	// Bei der Bombardierung können Gebäude, Truppen und Bevölkerung zerstört werden bzw. sterben. Aktivierte Schilde
 	// in dem System können dies reduzieren bzw. auch komplett verhindern.
@@ -260,10 +259,9 @@ void CAttackSystem::CalculateBombAttack()
 	if (torpedoDamage > 0)
 	{
 		float killedPop = (float)((rand()%torpedoDamage)*0.00075f);
-		
 		m_pSector->LetPlanetsShrink(-killedPop);
 		m_pSystem->SetHabitants(m_pSector->GetCurrentHabitants());
-				
+
 		// Dann werden zufällig Gebäude zerstört. Umso mehr Gebäude vorhanden sind, desto wahrscheinlicher werden diese
 		// zerstört. Auch stationierte Truppen können bei einem Angriff vernichtet werden.
 		for (int i = 0; i < torpedoDamage; i++)
@@ -280,9 +278,13 @@ void CAttackSystem::CalculateBombAttack()
 		// Wenn der Torpedoangriff Gebäude zerstört hat, dann dies bei dem System beachten. Deshalb werden die Werte des
 		// Systems neu berechnet. Speziel muss man hier die Gebäude beachten, die durch einen Energiemangel hätten ausfallen
 		// können. Diese auch offline schalten und dann die Sache nochmal berechnen.
-		m_pSystem->CalculateVariables(m_pBuildingInfos, m_pResearchInfo, m_pSector->GetPlanets(), m_iMonopolOwner);
-		m_pSystem->CheckEnergyBuildings(m_pBuildingInfos);
-		m_pSystem->CalculateVariables(m_pBuildingInfos, m_pResearchInfo, m_pSector->GetPlanets(), m_iMonopolOwner);
+		if (m_pSystem->GetOwnerOfSystem() != "" && m_pDefender != NULL && m_pDefender->GetType() == MAJOR)
+		{
+			CResearchInfo* pInfo = ((CMajor*)m_pDefender)->GetEmpire()->GetResearch()->GetResearchInfo();
+			m_pSystem->CalculateVariables(m_pBuildingInfos, pInfo, m_pSector->GetPlanets(), ((CMajor*)m_pDefender), m_sMonopolOwner);
+			m_pSystem->CheckEnergyBuildings(m_pBuildingInfos);
+			m_pSystem->CalculateVariables(m_pBuildingInfos, pInfo, m_pSector->GetPlanets(), ((CMajor*)m_pDefender), m_sMonopolOwner);
+		}
 		
 		if (m_iDestroyedBuildings != 0)
 		{
@@ -296,7 +298,7 @@ void CAttackSystem::CalculateBombAttack()
 /// Private Funktion, die allein den Angriff durch Truppen berechnet
 void CAttackSystem::CalculateTroopAttack()
 {
-	TRACE("CalculateTroopAttack\n");
+	MYTRACE(MT::LEVEL_INFO, "CAttackSystem::CalculateTroopAttack() begin...\n");
 	// Wenn ein Assaultship am Angriff beteiligt ist, so bekommen die angreifenden Truppen einen 20% Stärkebonus
 	BYTE offenceBoni = 0;
 	if (m_bAssultShipInvolved)
@@ -364,14 +366,31 @@ void CAttackSystem::CalculateTroopAttack()
 	{
 		CTroopInfo* ti = new CTroopInfo();
 		// Hier wird die Rasseneigenschaft der verteidigenden Bevölkerung beachtet.
-		switch (m_byKind)
+		int nPower = 10;
+		if (m_pDefender != NULL)
 		{
-		case WARLIKE:	ti->SetPower(20); break;
-		case SNEAKY:	ti->SetPower(15); break;
-		case FINANCIAL: ti->SetPower(8); break;
-		case PACIFIST:	ti->SetPower(5); break;
-		default: ti->SetPower(10);
+			if (m_pDefender->IsRaceProperty(FINANCIAL))
+				nPower -= 2;
+			if (m_pDefender->IsRaceProperty(WARLIKE))
+				nPower += 10;
+			if (m_pDefender->IsRaceProperty(AGRARIAN))
+				nPower -= 3;
+			if (m_pDefender->IsRaceProperty(PACIFIST))
+				nPower -= 5;
+			if (m_pDefender->IsRaceProperty(SNEAKY))
+				nPower += 5;
+			if (m_pDefender->IsRaceProperty(SOLOING))
+				nPower += 2;
+			if (m_pDefender->IsRaceProperty(HOSTILE))
+				nPower += 7;
+
+			if (nPower > MAXBYTE)
+				nPower = MAXBYTE;
+			else if (nPower < 0)
+				nPower = 0;
 		}
+		ti->SetPower((BYTE)nPower);
+
 		// wie stark sich die Bevölkerung verteidigt hängt vom Moralwert derer ab
 		ti->SetPower(ti->GetPower() * m_pSystem->GetMoral() / 100);
 		int number = rand()%m_pTroops.GetSize();
@@ -396,9 +415,13 @@ void CAttackSystem::CalculateTroopAttack()
 	if (fighted)
 	{
 		m_pSystem->SetHabitants(m_pSector->GetCurrentHabitants());
-		m_pSystem->CalculateVariables(m_pBuildingInfos, m_pResearchInfo, m_pSector->GetPlanets(), m_iMonopolOwner);
-		m_pSystem->CheckEnergyBuildings(m_pBuildingInfos);
-		m_pSystem->CalculateVariables(m_pBuildingInfos, m_pResearchInfo, m_pSector->GetPlanets(), m_iMonopolOwner);
+		if (m_pSystem->GetOwnerOfSystem() != "" && m_pDefender != NULL && m_pDefender->GetType() == MAJOR)
+		{
+			CResearchInfo* pInfo = ((CMajor*)m_pDefender)->GetEmpire()->GetResearch()->GetResearchInfo();
+			m_pSystem->CalculateVariables(m_pBuildingInfos, pInfo, m_pSector->GetPlanets(), ((CMajor*)m_pDefender), m_sMonopolOwner);
+			m_pSystem->CheckEnergyBuildings(m_pBuildingInfos);
+			m_pSystem->CalculateVariables(m_pBuildingInfos, pInfo, m_pSector->GetPlanets(), ((CMajor*)m_pDefender), m_sMonopolOwner);
+		}
 	}
 	
 	// Wenn Truppen verschiedener Imperien angegriffen haben, so müssen diese noch gegeneinander antreten. Es kann immer
@@ -430,6 +453,5 @@ void CAttackSystem::CalculateTroopAttack()
 						m_pTroops.RemoveAt(i);
 					}
 					i = 0;
-				}
-	TRACE("CalculateTroopAttack ... ready\n");
+				}	
 }

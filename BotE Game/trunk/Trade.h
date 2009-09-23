@@ -1,5 +1,5 @@
 /*
- *   Copyright (C)2004-2008 Sir Pustekuchen
+ *   Copyright (C)2004-2009 Sir Pustekuchen
  *
  *   Author   :  Sir Pustekuchen
  *   Home     :  http://birth-of-the-empires.de.vu
@@ -8,7 +8,14 @@
 #pragma once
 #include "afx.h"
 #include "Options.h"
-#include "MajorRace.h"
+#include "System.h"
+#include "Sector.h"
+#include "TradeHistory.h"
+#include <map>
+
+using namespace std;
+// forward declaration
+class CMajor;
 
 typedef struct {USHORT res; int number; CPoint system; int price;} m_TradeStruct;
 
@@ -27,6 +34,11 @@ public:
 
 // Zugriffsfunktionen
 	// zum Lesen der Membervariablen
+
+	/// Funktion gibt die Kursgeschichte zurück.
+	/// @return Zeiger auf ein CTradeHistory Objekt
+	CTradeHistory* GetTradeHistory(void) {return &m_TradeHistory;}
+
 	// Funktion gibt das Feld der aktuellen Preise der Ressourcen zurück
 	USHORT* GetRessourcePrice() {return m_iRessourcePrice;}
 
@@ -45,10 +57,10 @@ public:
 	USHORT GetQuantity() const {return m_iQuantity;}
 
 	// Diese Klassenfunktion gibt den Besitzer eines Monopols für eine bestimmte Ressource zurück
-	static USHORT GetMonopolOwner(USHORT res) {return m_iMonopolOwner[res];}
+	static CString GetMonopolOwner(USHORT res) {return m_sMonopolOwner[res];}
 
 	/// Diese Klassenfunktion gibt das statische Feld mit den Monopolbesitzern zurück.
-	const static USHORT* GetMonopolOwner() {return m_iMonopolOwner;}
+	const static CString* GetMonopolOwner() {return m_sMonopolOwner;}
 
 	// Funktion gibt uns das Feld zurück, in dem steht ob wir ein Monopol gekauft haben
 	double* GetMonopolBuying() {return m_dMonopolBuy;}
@@ -57,9 +69,7 @@ public:
 	CArray<m_TradeStruct,m_TradeStruct>* GetTradeActions() {return &m_TradeActions;}
 
 	// zum Schreiben der Membervariablen
-	// Funktion um die Rasse zu setzen zu der dises CTradeObject gehört
-	void SetRaceNumber(BYTE race) {m_iRace = race;}
-	
+		
 	// Funktion setzt den Preis für eine Ressource fest
 	void SetRessourcePrice(USHORT res, USHORT price) {m_iRessourcePrice[res] = price;}
 
@@ -70,7 +80,7 @@ public:
 	void SetQuantity(USHORT newQuantity) {m_iQuantity = newQuantity;}
 
 	// Diese Klassenfunktion setzt den Besitzer eines Monopols für eine bestimmte Ressource
-	static void SetMonopolOwner(USHORT res, USHORT owner) {m_iMonopolOwner[res] = owner;}
+	static void SetMonopolOwner(USHORT res, const CString& sOwnerID) {m_sMonopolOwner[res] = sOwnerID;}
 
 	// Funktion setzt den veranschlagten Kaufpreis einer Ressource in das Feld m_dMonopolBuy
 	void SetMonopolBuying(USHORT res, double costs) {m_dMonopolBuy[res] = costs;}
@@ -91,11 +101,12 @@ public:
 
 	// Funktion berechnet die ganzen Handelsaktionen, lagert also Ressourcen ein oder gibt das Latinum, welches
 	// wir durch den Verkauf bekommen haben an das jeweilige Imperium
-	void CalculateTradeActions(CEmpire* empires, CSystem systems[][STARMAP_SECTORS_VCOUNT], CSector sectors[][STARMAP_SECTORS_VCOUNT], CMajorRace* majors, USHORT* taxes);
+	void CalculateTradeActions(CMajor* pMajor, CSystem systems[][STARMAP_SECTORS_VCOUNT], CSector sectors[][STARMAP_SECTORS_VCOUNT], USHORT* taxes);
 
-	// Funktion berechnet den Preis der Ressourcen in Zusammenhang zu den anderen Börsen. 
-	// Übergeben wird eine Matrix mit allen Preisen sowie die Hauptrassen.
-	void CalculatePrices(USHORT oldPrices[][5], CMajorRace* majors);
+	/// Funktion berechnet den Preis der Ressourcen in Zusammenhang zu den anderen Börsen. 
+	/// @param pmMajors Zeiger auf Map mit allen Majors des Spiels
+	/// @param pCurMajor aktuelle Rasse, für die die Preise berechnet werden
+	void CalculatePrices(map<CString, CMajor*>* pmMajors, CMajor* pCurMajor);
 
 	// Funktion veranlaßt, dass in der neuen Runde versucht wird ein Monopol zu erlangen.
 	void BuyMonopol(USHORT res, double monopol_costs) {m_dMonopolBuy[res] = monopol_costs;}
@@ -104,12 +115,16 @@ public:
 	void Reset(void);
 	
 private:
+
+	// Das Handelshistoryobjekt, welches alle vergangenen Börsenkurse gespeichert hat
+	CTradeHistory m_TradeHistory;	
+
 	// Der aktuelle Preis der jeweiligen Ressource an der globalen Handelsbörse
-	USHORT m_iRessourcePrice[5];
+	USHORT m_iRessourcePrice[IRIDIUM + 1];
 
 	// Der Preis der Ressource zu Beginn einer Runde (wird genommen, wenn wir Bauaufträge kaufen, sonst könnte man
 	// in der gleichen Runde den Preis drücken, dann billig kaufen und dann den Preis wieder hochtreiben)
-	USHORT m_iRessourcePriceAtRoundStart[5];
+	USHORT m_iRessourcePriceAtRoundStart[IRIDIUM + 1];
 	
 	// Die Anzahl der jeweiligen Ressource die wir kaufen oder verkaufen möchten (negative Werte bedeuten verkaufen)
 	CArray<m_TradeStruct,m_TradeStruct> m_TradeActions;	
@@ -117,21 +132,18 @@ private:
 	// Die Menge die wir bei einem Klick kaufen bzw. Verkaufen
 	USHORT m_iQuantity;
 
-	// Variable die uns sagt zu welcher Hauptrasse dieses Objekt hier gehört
-	BYTE m_iRace;
-
 	// Variable die die aktuelle Steuer auf Handelsaktivitäten festhält (rassenabhängig)
 	float m_fTax;
 
 	// Steuergelder auf Ressourcen nur durch Sofortkauf von Bauaufträgen, nicht die Steuern, die wir durch normalen
 	// Handel machen
-	USHORT m_iTaxes[5];
+	USHORT m_iTaxes[IRIDIUM + 1];
 	
 	// Welche Majorrace besitzt ein Monopol auf die jeweilige Ressource
-	static USHORT m_iMonopolOwner[5];	// später mal schauen wie man das serialisiert
+	static CString m_sMonopolOwner[IRIDIUM + 1];
 
 	// Wollen wir ein Monopol kaufen? Wird bei neuer Runde abgefragt. Ist der Wert darin ungleich NULL, dann wollen wir
 	// eins kaufen. Der Wert gibt auch den Kaufpreis an
-	double m_dMonopolBuy[5];
+	double m_dMonopolBuy[IRIDIUM + 1];
 };
 

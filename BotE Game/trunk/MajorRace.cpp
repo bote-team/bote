@@ -202,7 +202,7 @@ BOOLEAN CMajorRace::DekrementDurationOfAllAgreements(CEmpire* EmpireOfMajor)
 			}
 			CString s = CResourceManager::GetString("CONTRACT_ENDED", FALSE, agreement, race);
 			CMessage message;
-			message.GenerateMessage(s,m_iRaceNumber,DIPLOMACY,"",0,FALSE);
+			message.GenerateMessage(s,DIPLOMACY,"",0,FALSE);
 			EmpireOfMajor->AddMessage(message);
 			m_iDiplomacyStatus[i] = NO_AGREEMENT;
 			m_iDurationOfAgreement[i] = 0;
@@ -225,7 +225,7 @@ BOOLEAN CMajorRace::DekrementDurationOfAllAgreements(CEmpire* EmpireOfMajor)
 			}
 			CString s = CResourceManager::GetString("DEFENCE_PACT_ENDED", FALSE, race);
 			CMessage message;
-			message.GenerateMessage(s,m_iRaceNumber,DIPLOMACY,"",0,FALSE);
+			message.GenerateMessage(s,DIPLOMACY,"",0,FALSE);
 			EmpireOfMajor->AddMessage(message);
 			SetDefencePact(i, FALSE);
 			m_iDurationOfDefencePact[i] = 0;
@@ -438,7 +438,7 @@ USHORT CMajorRace::CalculateDiplomaticOffer(USHORT offerFrom, short type, USHORT
 
 /// Diese Funktion berechnet wie eine computergesteuerte Majorrace auf eine Forderung reagiert.
 /// Rückgabewert ist einfach <code>TRUE</code> für Annahme bzw. <code>FALSE</code> bei Ablehnung.
-USHORT CMajorRace::CalculateDiplomaticRequest(USHORT requestFrom, USHORT requestedLatinum, USHORT* requestedRessource, CEmpire* empire, ULONG* averageRessourceStorages, CSystem systems[30][20], const UINT* shipPowers)
+USHORT CMajorRace::CalculateDiplomaticRequest(USHORT requestFrom, USHORT requestedLatinum, USHORT* requestedRessource, CEmpire* empire, UINT* averageRessourceStorages, CSystem systems[30][20], const UINT* shipPowers)
 {
 	/* Als erstes wird überprüft wie unsere Beziehung zu der Rasse ist und welchen aktuellen Vertrag wir mit ihr 
 	   aufrechterhalten. Umso besser die Beziehung und umso höherwertiger der Vertrag ist, desto eher nehmen wir
@@ -557,7 +557,7 @@ USHORT CMajorRace::CalculateDiplomaticRequest(USHORT requestFrom, USHORT request
 ///	aufgerufen, weil ich ja in einer Runde an mehrere Majorraces Angebote machen kann. Mit <code>race</code> wird immer
 ///	die andere Majorrace übergeben, der vielleicht an Angebot gemacht wird.
 ComputerOfferStruct CMajorRace::PerhapsMakeOfferToMajorRace(USHORT race, USHORT relation, CEmpire* empire, CSystem systems[30][20],
-															USHORT averageTechlevel, ULONG* averageRessourceStorages, const UINT* shipPowers)
+															BYTE averageTechlevel, UINT* averageRessourceStorages, const UINT* shipPowers)
 {
 	ComputerOfferStruct theOffer;
 	theOffer.KO.x = 0;
@@ -779,7 +779,7 @@ ComputerOfferStruct CMajorRace::PerhapsMakeOfferToMajorRace(USHORT race, USHORT 
 			if (a < 2 && b < 8)
 			{
 #ifdef TRACE_DIPLOMATY
-				TRACE("rand: %d - a = %d - b = %d - Modi = %lf (wir %d (%d) - Gegner %d (%d))\n",((int)(100 / (modi+1))), a, b, modi, m_iRaceNumber, shipPowers[m_iRaceNumber], race, shipPowers[race]);
+				MYTRACE(MT::LEVEL_DEBUG, "rand: %d - a = %d - b = %d - Modi = %lf (wir %d (%d) - Gegner %d (%d))\n",((int)(100 / (modi+1))), a, b, modi, m_iRaceNumber, shipPowers[m_iRaceNumber], race, shipPowers[race]);
 #endif
 				this->PerhapsHaveRequest(&theOffer, race, empire, systems, averageTechlevel, averageRessourceStorages, shipPowers);
 			}
@@ -816,7 +816,7 @@ ComputerOfferStruct CMajorRace::PerhapsMakeOfferToMajorRace(USHORT race, USHORT 
 }
 
 /// Funktion berechnet, ob und was für ein Angebot die Majorrace an die Minorrace macht.
-ComputerOfferStruct CMajorRace::PerhapsMakeOfferToMinorRace(CMinorRace* minor, BOOLEAN isFavoritMinor, CEmpire* empire, CSystem systems[30][20], USHORT averageTechlevel, ULONG* averageRessourceStorages)
+ComputerOfferStruct CMajorRace::PerhapsMakeOfferToMinorRace(CMinorRace* minor, BOOLEAN isFavoritMinor, CEmpire* empire, CSystem systems[30][20], BYTE averageTechlevel, UINT* averageRessourceStorages)
 {
 	USHORT relation = minor->GetRelationshipToMajorRace(m_iRaceNumber);
 	short status = minor->GetDiplomacyStatus(m_iRaceNumber);
@@ -1327,7 +1327,7 @@ USHORT CMajorRace::CalculateValueByProberty(short type)
 }
 
 /// Funktion berechnet wieviel und welche Mitgifte die KI bei einem Angebot mitgbt.
-void CMajorRace::PerhapsGiveDowry(ComputerOfferStruct* theOffer, USHORT race, CEmpire* empire, CSystem systems[30][20], USHORT averageTechlevel, ULONG* averageRessourceStorages, BOOLEAN flag)
+void CMajorRace::PerhapsGiveDowry(ComputerOfferStruct* theOffer, USHORT race, CEmpire* empire, CSystem systems[30][20], BYTE averageTechlevel, UINT* averageRessourceStorages, BOOLEAN flag)
 {
 	// flag == FALSE -> nicht für Minorrace gedacht
 	// flag == TRUE  -> für Minorrace gedacht, mit Handelsvertrag
@@ -1420,7 +1420,7 @@ void CMajorRace::PerhapsGiveDowry(ComputerOfferStruct* theOffer, USHORT race, CE
 
 /// Funktion berechnet ob und was für eine Forderung wir stellen.
 void CMajorRace::PerhapsHaveRequest(ComputerOfferStruct* theOffer, USHORT race, CEmpire* empire, CSystem systems[30][20],
-									USHORT averageTechlevel, ULONG* averageRessourceStorages, const UINT* shipPowers)
+									BYTE averageTechlevel, UINT* averageRessourceStorages, const UINT* shipPowers)
 {
 	// Wir stellen nur eine Forderung, wenn wir zuwenig von einer Ressource oder von Latinum haben.
 	// Zuwenig müssen wir anhand des globalen Durchschnitts berechnen

@@ -1,5 +1,5 @@
 /*
- *   Copyright (C)2004-2008 Sir Pustekuchen
+ *   Copyright (C)2004-2009 Sir Pustekuchen
  *
  *   Author   :  Sir Pustekuchen
  *   Home     :  http://birth-of-the-empires.de.vu
@@ -59,17 +59,11 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	virtual void OnInitialUpdate();
-public:
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
-public:
 	afx_msg void OnLButtonDblClk(UINT nFlags, CPoint point);
-public:
 	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
-public:
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
-public:
 	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
-public:
 	afx_msg void OnRButtonDown(UINT nFlags, CPoint point);
 };
 

@@ -347,9 +347,6 @@ const BYTE CPlanet::GeneratePlanet(BYTE KindOfLastPlanet, CString NameOfSunSyste
 		if (WhatPlanet >= 17) m_iRandomType = PLANETCLASS_R;
 	}
 	
-	// mult und randomwert und einwohner können wieder weg, sind nur zum testen da
-	float mult = 0.0f;
-	float randomwert = 0.0f;
 	float Habitants = 0.0f;
 	m_iPosition = NumberOfPlanet+1;
 	m_iRandomSize = rand()%3;					// mod der Anzahl, die im zugehörigen ENUM stehen
@@ -379,8 +376,7 @@ const BYTE CPlanet::GeneratePlanet(BYTE KindOfLastPlanet, CString NameOfSunSyste
 			if (miniRandom == 0) multi = 0.8f;
 			else if (miniRandom == 1) multi = 1.0f;
 			else if (miniRandom == 2) multi = 1.2f;
-			mult = multi;
-	
+				
 			// Zufallszahl ermitteln, abhängig von der max. Einwohnerzahl, die später draufaddiert wird
 			int random = rand()%(((m_iRandomSize+1)*(12-m_iRandomType))/6 + 1);
 			// Max. Einwohner werden berechnet, inkl. "random " Zufallszahl
@@ -440,11 +436,13 @@ const BYTE CPlanet::GeneratePlanet(BYTE KindOfLastPlanet, CString NameOfSunSyste
 	else if (m_iType == 17) {m_cClass = 'J';}
 	else if (m_iType == 18) {m_cClass = 'S';}
 	else if (m_iType == 19) {m_cClass = 'T';}
+	
 	// Wachstumsprozent des Planeten berechnen
 	SetPlanetGrowth();
 	
 	// Namen für den Planeten geben, besteht aus Namen des Sonnensystems und der Nummer
 	m_strName.Format("%s %i",NameOfSunSystem,m_iPosition);
+	
 	//m_strName.Format("%s %i\nmax. Einwohner: %.3lf Mrd.\nTyp: %i\nGröße: %i\nMultiplikator: %.2lf\nRandomwert: %.2lf\nZone: %i",NameOfSunSystem,NumberOfPlanet+1,m_iMaxHabitant,m_iType,m_iSize,mult,randomwert,Zone);
 	//AfxMessageBox(m_strName);
 	//CString s;
@@ -558,8 +556,8 @@ void CPlanet::DrawPlanet(Graphics &g, CRect planetRect, CGraphicPool* graphicPoo
 				case CRYSTAL:	graphic = graphicPool->GetGDIGraphic("Other\\crystalSmall.png"); break;
 				case IRIDIUM:	graphic = graphicPool->GetGDIGraphic("Other\\iridiumSmall.png"); break;
 				case DILITHIUM: graphic = graphicPool->GetGDIGraphic("Other\\Dilithium.png"); break;
-				case 6:			graphic = graphicPool->GetGDIGraphic("Other\\Food.png"); break;
-				case 7:			graphic = graphicPool->GetGDIGraphic("Other\\Energy.png"); break;
+				case 6:			graphic = graphicPool->GetGDIGraphic("Other\\foodSmall.png"); break;
+				case 7:			graphic = graphicPool->GetGDIGraphic("Other\\energySmall.png"); break;
 			}
 			if (graphic)
 			{

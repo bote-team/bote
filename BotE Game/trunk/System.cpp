@@ -4,7 +4,8 @@
 
 #include "stdafx.h"
 #include "System.h"
-#include "MajorRace.h"
+#include "Botf2Doc.h"
+#include "RaceController.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -43,7 +44,7 @@ CSystem::~CSystem()
 //////////////////////////////////////////////////////////////////////
 CSystem::CSystem(const CSystem &rhs)
 {
-	m_iOwnerOfSystem = rhs.m_iOwnerOfSystem;
+	m_sOwnerOfSystem = rhs.m_sOwnerOfSystem;
 	m_dHabitants = rhs.m_dHabitants;
 	m_iMoral = rhs.m_iMoral;
 	m_byBlockade = rhs.m_byBlockade;
@@ -100,7 +101,7 @@ CSystem & CSystem::operator=(const CSystem & rhs)
 {
 	if (this == &rhs)
 		return *this;
-	m_iOwnerOfSystem = rhs.m_iOwnerOfSystem;
+	m_sOwnerOfSystem = rhs.m_sOwnerOfSystem;
 	m_dHabitants = rhs.m_dHabitants;
 	m_iMoral = rhs.m_iMoral;
 	m_byBlockade = rhs.m_byBlockade;
@@ -163,7 +164,7 @@ void CSystem::Serialize(CArchive &ar)
 	// wenn gespeichert wird
 	if (ar.IsStoring())
 	{
-		ar << m_iOwnerOfSystem;
+		ar << m_sOwnerOfSystem;
 		ar << m_dHabitants;
 		ar << m_iMoral;
 		ar << m_byBlockade;
@@ -210,7 +211,7 @@ void CSystem::Serialize(CArchive &ar)
 	if (ar.IsLoading())
 	{
 		int number = 0;
-		ar >> m_iOwnerOfSystem;
+		ar >> m_sOwnerOfSystem;
 		ar >> m_dHabitants;
 		ar >> m_iMoral;
 		ar >> m_byBlockade;
@@ -511,7 +512,7 @@ void CSystem::SetRessourceStore(USHORT res, int resAdd)
 {
 	// Überprüfung das wir bei Lagerverkleinerung keine negativen Lager bekommen können
 	if (resAdd < 0)
-		if (resAdd + this->GetRessourceStore(res) < 0)
+		if ((resAdd + (int)this->GetRessourceStore(res)) < 0)
 			resAdd = this->GetRessourceStore(res) * (-1);
 	// zum Lager hinzufügen/entfernen
 	switch (res)
@@ -559,7 +560,7 @@ BOOLEAN CSystem::SetHabitants(double habitants)
 	if (((USHORT)m_dHabitants / TRADEROUTEHAB) > m_byMaxTradeRoutesFromHab)
 	{
 		m_byMaxTradeRoutesFromHab++;
-		if (m_iOwnerOfSystem != NOBODY)
+		if (m_sOwnerOfSystem != "")
 			return TRUE;
 	}
 	// Wenn die Bevölkerung wieder zu niedrig ist, dann die Varibale wieder runterzählen
@@ -572,7 +573,7 @@ BOOLEAN CSystem::SetHabitants(double habitants)
 // sonstige Funktionen
 //////////////////////////////////////////////////////////////////////
 // Funktion berechnet aus den Eigenschaften der stehenden Gebäude alle Attribute der System-Klasse.
-void CSystem::CalculateVariables(BuildingInfoArray* buildingInfos, CResearchInfo* ResearchInfo, CArray<CPlanet>* planets, const USHORT *monopolOwner)
+void CSystem::CalculateVariables(BuildingInfoArray* buildingInfos, CResearchInfo* ResearchInfo, CArray<CPlanet>* planets, CMajor* pOwner, const CString *sMonopolOwner)
 {
 	int NumberOfBuildings;
 	NumberOfBuildings = m_Buildings.GetSize();
@@ -581,17 +582,25 @@ void CSystem::CalculateVariables(BuildingInfoArray* buildingInfos, CResearchInfo
 	// Die Anzahl der Arbeiter aus der aktuellen Bevölkerung berechnen und auch an die Klasse CWorker übergeben
 	m_Workers.SetWorker(10,(int)(m_dHabitants));
 	m_Workers.CheckWorkers();
-	// Die Latinumprod. aus der Bevölkerung berechnen und modifizieren durch jeweilige Rasse
+	// Die Latinumprod. aus der Bevölkerung berechnen und modifizieren durch jeweilige Rasseneigenschaft
 	m_Production.m_iLatinumProd = (int)(m_dHabitants);
 
-	if (m_iOwnerOfSystem == FERENGI)	// Ferengi
-		m_Production.m_iLatinumProd = (int)(m_Production.m_iLatinumProd*1.3);
-	else if (m_iOwnerOfSystem == KLINGON)	// Klingonen
-		m_Production.m_iLatinumProd = (int)(m_Production.m_iLatinumProd*0.9);
-	else if (m_iOwnerOfSystem == ROMULAN)	// Romulaner
-		m_Production.m_iLatinumProd = (int)(m_Production.m_iLatinumProd*0.75);	
-	else if (m_iOwnerOfSystem == CARDASSIAN)	// Cardassianer
-		m_Production.m_iLatinumProd = (int)(m_Production.m_iLatinumProd*0.8);	// bei föd und dom bleibt der multi bei 1.0
+	float fCreditsMulti = 1.0f;
+	if (pOwner->IsRaceProperty(FINANCIAL))
+		fCreditsMulti += 0.5f;
+	if (pOwner->IsRaceProperty(PRODUCER))
+		fCreditsMulti += 0.25f;
+	if (pOwner->IsRaceProperty(WARLIKE) || pOwner->IsRaceProperty(HOSTILE))
+		fCreditsMulti -= 0.1f;
+	if (pOwner->IsRaceProperty(SNEAKY))
+		fCreditsMulti -= 0.2f;
+	if (pOwner->IsRaceProperty(SECRET))
+		fCreditsMulti -= 0.25f;
+	if (pOwner->IsRaceProperty(SOLOING))
+		fCreditsMulti -= 0.5f;
+
+	fCreditsMulti = max(fCreditsMulti, 0.0f);
+	m_Production.m_iLatinumProd = (int)(m_Production.m_iLatinumProd * fCreditsMulti);
 	// Die Gebäude online setzen, wenn das Objekt der Klasse CWorker das sagt
 	// zuerst die Anzahl der Arbeiter auslesen und schauen ob die Arbeiter vielleicht größer sind als die 
 	// Anzahl der jeweiligen Gebäude (z.B. durch Abriß aus letzter Runde) -> dann Arbeiter auf Gebäudeanzahl verringern
@@ -695,15 +704,15 @@ void CSystem::CalculateVariables(BuildingInfoArray* buildingInfos, CResearchInfo
 	m_Production.m_iLatinumProd += LatinumFromTradeRoutes();
 
 	// Besitzt jemand ein Monopol auf eine Ressource, so verdoppelt sich seine Produktion
-	if (monopolOwner[TITAN] == m_iOwnerOfSystem)
+	if (sMonopolOwner[TITAN] == m_sOwnerOfSystem)
 		m_Production.m_iTitanProd *= 2;
-	if (monopolOwner[DEUTERIUM] == m_iOwnerOfSystem)
+	if (sMonopolOwner[DEUTERIUM] == m_sOwnerOfSystem)
 		m_Production.m_iDeuteriumProd *= 2;
-	if (monopolOwner[DURANIUM] == m_iOwnerOfSystem)
+	if (sMonopolOwner[DURANIUM] == m_sOwnerOfSystem)
 		m_Production.m_iDuraniumProd *= 2;
-	if (monopolOwner[CRYSTAL] == m_iOwnerOfSystem)
+	if (sMonopolOwner[CRYSTAL] == m_sOwnerOfSystem)
 		m_Production.m_iCrystalProd *= 2;
-	if (monopolOwner[IRIDIUM] == m_iOwnerOfSystem)
+	if (sMonopolOwner[IRIDIUM] == m_sOwnerOfSystem)
 		m_Production.m_iIridiumProd *= 2;
 	
 	// Die Boni auf die einzelnen Produktionen berechnen
@@ -854,7 +863,7 @@ void CSystem::CalculateVariables(BuildingInfoArray* buildingInfos, CResearchInfo
 	m_Production.m_iEnergyProd -= neededEnergy;
 	
 	// imperiumweite Moralprod mit aufrechnen
-	m_Production.m_iMoralProd += m_Production.m_iMoralProdEmpireWide[m_iOwnerOfSystem];
+	m_Production.m_iMoralProd += m_Production.m_iMoralProdEmpireWide[m_sOwnerOfSystem];
 	// Den Moralboni im System noch auf die einzelnen Produktionen anrechnen
 	m_Production.IncludeSystemMoral(m_iMoral);
 	// benötigte Nahrung durch Bevölkerung von der Produktion abiehen
@@ -934,7 +943,7 @@ BOOLEAN CSystem::CalculateStorages(CResearchInfo* researchInfo, int diliAdd)
 		USHORT random = rand()%(m_iMoral+1);
 		if (random < 8)
 		{
-			m_iOwnerOfSystem = NOBODY;
+			m_sOwnerOfSystem = "";
 			m_Production.m_iFoodProd = 10;
 			m_Production.m_iIndustryProd = 5;	
 			m_iMoral = 65;
@@ -981,8 +990,11 @@ bool CSystem::DestroyBuildings(void)
 }
 
 // Funktion berechnet die baubaren Gebäude und Gebäudeupdates in dem System.
-void CSystem::CalculateBuildableBuildings(CSector* sector, BuildingInfoArray* buildingInfo, CEmpire* empire, CGlobalBuildings* globals, CMajorRace* majors)
+void CSystem::CalculateBuildableBuildings(CSector* sector, BuildingInfoArray* buildingInfo, CMajor* pMajor, CGlobalBuildings* globals)
 {
+	CEmpire* empire = pMajor->GetEmpire();
+	ASSERT(empire);
+
 	for (int k = 0; k < m_BuildableWithoutAssemblylistCheck.GetSize(); )
 		m_BuildableWithoutAssemblylistCheck.RemoveAt(k);
 	m_BuildableWithoutAssemblylistCheck.RemoveAll();
@@ -1049,7 +1061,7 @@ void CSystem::CalculateBuildableBuildings(CSector* sector, BuildingInfoArray* bu
 		if (id > minID)
 		{
 			// steht hier ein Gebäude einer anderen Rasse?
-			if (buildingInfo->GetAt(id-1).GetOwnerOfBuilding() != m_iOwnerOfSystem)
+			if (buildingInfo->GetAt(id-1).GetOwnerOfBuilding() != m_sOwnerOfSystem)
 				equivalents = TRUE;
 			minID = id;
 			// Checken das das Gebäude nicht schon in der Liste der baubaren Gebäude vorkommt
@@ -1062,7 +1074,7 @@ void CSystem::CalculateBuildableBuildings(CSector* sector, BuildingInfoArray* bu
 			// Checken ob wir es durch die vorhanden Planeten bauen können
 			if (found == FALSE && CheckPlanet(&buildingInfo->GetAt(id-1),sector))
 				// allg. Voraussetzungen des Gebäudes checken
-				if (CheckGeneralConditions(&buildingInfo->GetAt(id-1),sector,globals,majors))
+				if (CheckGeneralConditions(&buildingInfo->GetAt(id-1),sector,globals,pMajor))
 				{
 					// Wenn wir hier angekommen sind, dann könnten wir das Gebäude bauen.
 					// Ist es ein Gebäude, welches wir manchmal mindst immer bauen können (alle Gebäude, die Arbeiter
@@ -1108,7 +1120,7 @@ void CSystem::CalculateBuildableBuildings(CSector* sector, BuildingInfoArray* bu
 	for (int i = 0; i < m_AllwaysBuildableBuildings.GetSize(); i++)
 	{
 		// Gibt es in der Liste der immer baubaren Gebäude ein Gebäude einer anderen Rasse?
-		if (buildingInfo->GetAt(m_AllwaysBuildableBuildings.GetAt(i)-1).GetOwnerOfBuilding() != m_iOwnerOfSystem)
+		if (buildingInfo->GetAt(m_AllwaysBuildableBuildings.GetAt(i)-1).GetOwnerOfBuilding() != m_sOwnerOfSystem)
 			equivalents = TRUE;
 		BOOLEAN found = FALSE;
 		for (int j = 0; j < size; j++)
@@ -1144,7 +1156,7 @@ void CSystem::CalculateBuildableBuildings(CSector* sector, BuildingInfoArray* bu
 			// Checken ob wir es durch die vorhanden Planeten bauen können
 			if (CheckPlanet(&buildingInfo->GetAt(i),sector))
 				// allg. Voraussetzungen des Gebäudes checken
-				if (CheckGeneralConditions(&buildingInfo->GetAt(i),sector,globals,majors))
+				if (CheckGeneralConditions(&buildingInfo->GetAt(i),sector,globals,pMajor))
 				{
 					// Wenn wir hier sind sind wir mittlerweile schon bei Punkt (2.1) angekommen
 					// Überprüfen ob das Gebäude einen Vorgänger besitzt
@@ -1167,7 +1179,7 @@ void CSystem::CalculateBuildableBuildings(CSector* sector, BuildingInfoArray* bu
 						// ansonsten haben wir keinen Vorgänger des Gebäudes im System stehen // Punkt 2.1.1.2						
 					}
 					// Gebäude hat keinen Vorgänger
-					else if (buildingInfo->GetAt(i).GetOwnerOfBuilding() == NOBODY || buildingInfo->GetAt(i).GetOwnerOfBuilding() == m_iOwnerOfSystem)	// Punkt 2.1.2
+					else if (buildingInfo->GetAt(i).GetOwnerOfBuilding() == pMajor->GetRaceBuildingNumber())	// Punkt 2.1.2
 					{
 						// schauen das sich nicht schon ein Äquivalent in der Liste befindet, aber nur wenn das Gebäude eine andere Rasse bauen
 						// kann oder wenn es jeder bauen kann
@@ -1367,66 +1379,83 @@ BOOLEAN CSystem::AssemblyListCheck(BuildingInfoArray* buildingInfo, CGlobalBuild
 }
 
 // Funktion berechnet die baubaren Schiffe in dem System.
-void CSystem::CalculateBuildableShips(ShipInfoArray *shipInfoArray, const CResearch *research, const CString &sectorName, BOOLEAN minorAlive)
+void CSystem::CalculateBuildableShips(CBotf2Doc* pDoc, const CPoint& p)
 {
+	ASSERT(pDoc);
+
 	for (int k = 0; k < m_BuildableShips.GetSize(); )
 		m_BuildableShips.RemoveAt(k);
 	m_BuildableShips.RemoveAll();
 	m_BuildableShips.FreeExtra();
 	// Hier jetzt schauen ob wir eine Werft haben und anhand der größe der Werft können wir bestimmte
 	// Schiffstypen bauen
+	CMajor* pMajor = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(m_sOwnerOfSystem));
+	if (!pMajor)
+		return;
+	// Array mit baubaren Minorraceschiffen füllen
+	int nMinorShipNumber = -1;
+	if (pDoc->GetSector(p).GetMinorRace())
+	{
+		CMinor* pMinor = pDoc->GetRaceCtrl()->GetMinorRace(pDoc->GetSector(p).GetName());
+		if (pMinor)
+			nMinorShipNumber = pMinor->GetRaceShipNumber();
+	}
+
 	if (m_Production.GetShipYard())
 	{
 		CArray<USHORT> obsoleteClasses;
-		for (int i = 0; i < shipInfoArray->GetSize(); i++)
+		for (int i = 0; i < pDoc->GetShipInfos()->GetSize(); i++)
+		{
+			CShipInfo* pShipInfo = &(pDoc->GetShipInfos()->GetAt(i));
 			// Außenposten und Sternenbasen können wir natürlich nicht hier bauen
-			if ((shipInfoArray->GetAt(i).GetRace() == m_iOwnerOfSystem || shipInfoArray->GetAt(i).GetRace() == UNKNOWN)
-				&& shipInfoArray->GetAt(i).GetShipType() != OUTPOST && shipInfoArray->GetAt(i).GetShipType() != STARBASE)
+			if ((pShipInfo->GetRace() == pMajor->GetRaceShipNumber() || pShipInfo->GetRace() == nMinorShipNumber)
+				&& pShipInfo->GetShipType() != OUTPOST && pShipInfo->GetShipType() != STARBASE)
 			{
+				CResearch* pResearch = pMajor->GetEmpire()->GetResearch();
+
 				BOOLEAN buildable = TRUE;
 				// zuerstmal die Forschungsstufen checken
-				if (research->GetBioTech() <  shipInfoArray->GetAt(i).GetBioTech())
+				if (pResearch->GetBioTech() <  pShipInfo->GetBioTech())
 					buildable = FALSE;
-				else if (research->GetEnergyTech() < shipInfoArray->GetAt(i).GetEnergyTech())
+				else if (pResearch->GetEnergyTech() < pShipInfo->GetEnergyTech())
 					buildable = FALSE;
-				else if (research->GetCompTech() < shipInfoArray->GetAt(i).GetComputerTech())
+				else if (pResearch->GetCompTech() < pShipInfo->GetComputerTech())
 					buildable = FALSE;
-				else if (research->GetPropulsionTech() < shipInfoArray->GetAt(i).GetPropulsionTech())
+				else if (pResearch->GetPropulsionTech() < pShipInfo->GetPropulsionTech())
 					buildable = FALSE;
-				else if (research->GetConstructionTech() < shipInfoArray->GetAt(i).GetConstructionTech())
+				else if (pResearch->GetConstructionTech() < pShipInfo->GetConstructionTech())
 					buildable = FALSE;
-				else if (research->GetWeaponTech() < shipInfoArray->GetAt(i).GetWeaponTech())
+				else if (pResearch->GetWeaponTech() < pShipInfo->GetWeaponTech())
 					buildable = FALSE;
 				// Wenn durch dieses Schiff ein anderes Schiff veraltet ist (nur wenn es technologisch baubar ist)
-				if (shipInfoArray->GetAt(i).GetObsoleteShipClass() != "" && buildable == TRUE)
+				if (pShipInfo->GetObsoleteShipClass() != "" && buildable == TRUE)
 				{
-					for (int j = 0; j < shipInfoArray->GetSize(); j++)
-					if (shipInfoArray->GetAt(j).GetShipClass() == shipInfoArray->GetAt(i).GetObsoleteShipClass())
-					{
-						obsoleteClasses.Add(shipInfoArray->GetAt(j).GetID());
-						break;
-					}
+					for (int j = 0; j < pDoc->GetShipInfos()->GetSize(); j++)
+						if (pDoc->GetShipInfos()->GetAt(j).GetShipClass() == pShipInfo->GetObsoleteShipClass())
+						{
+							obsoleteClasses.Add(pDoc->GetShipInfos()->GetAt(j).GetID());
+							break;
+						}
 				}				
 				// Wenn das Schiff nur in einem bestimmten System gebaut werden kann, dann hier checken
-				if (!shipInfoArray->GetAt(i).GetOnlyInSystem().IsEmpty())
+				if (!pShipInfo->GetOnlyInSystem().IsEmpty())
 				{
-					if (shipInfoArray->GetAt(i).GetOnlyInSystem() != sectorName)
-						buildable = FALSE;
-					else if (shipInfoArray->GetAt(i).GetRace() == UNKNOWN && minorAlive == FALSE)
-						buildable = FALSE;
+					if (pShipInfo->GetOnlyInSystem() != pDoc->GetSector(p).GetName())
+						buildable = FALSE;					
 					// der Besitzer der Schiffsklasse wird auf den Besitzer des Schiffes gesetzt. Somit kann
 					// eine Majorrace dann auch die Schiffe der Minorrace bauen
 					else
-						shipInfoArray->GetAt(i).SetRace(m_iOwnerOfSystem);
+						pShipInfo->SetRace(pMajor->GetRaceShipNumber());
 				}
-				else if (shipInfoArray->GetAt(i).GetRace() == UNKNOWN)
+				else if (pShipInfo->GetRace() == nMinorShipNumber)
 					buildable = FALSE;
 
-				if (shipInfoArray->GetAt(i).GetShipSize() > m_Production.GetMaxBuildableShipSize())
+				if (pShipInfo->GetShipSize() > m_Production.GetMaxBuildableShipSize())
 						buildable = FALSE;
 				if (buildable == TRUE)
-					m_BuildableShips.Add(shipInfoArray->GetAt(i).GetID());
+					m_BuildableShips.Add(pShipInfo->GetID());
 			}
+		}
 		// Nochmal die jetzt baubare Schiffsliste durchgehen und schauen, ob manche Schiffe veraltet sind und somit
 		// nicht mehr baubar sind
 		for (int i = 0; i < obsoleteClasses.GetSize(); i++)
@@ -1451,7 +1480,7 @@ void CSystem::CalculateBuildableTroops(const CArray<CTroopInfo>* troopInfos, con
 	// Hier jetzt schauen ob wir eine Kaserne haben
 	if (m_Production.GetBarrack())
 		for (int i = 0; i < troopInfos->GetSize(); i++)
-			if (troopInfos->GetAt(i).GetOwner() == m_iOwnerOfSystem)
+			if (troopInfos->GetAt(i).GetOwner() == m_sOwnerOfSystem)
 			{
 				BOOLEAN buildable = TRUE;
 				// zuerstmal die Forschungsstufen checken
@@ -1529,7 +1558,7 @@ void CSystem::CalculateEmpireWideMoralProd(BuildingInfoArray *buildingInfos)
 		if (m_Buildings.GetAt(i).GetIsBuildingOnline())
 		{
 			const CBuildingInfo *buildingInfo = &buildingInfos->GetAt(m_Buildings.GetAt(i).GetRunningNumber() - 1);
-			m_Production.m_iMoralProdEmpireWide[m_iOwnerOfSystem] += buildingInfo->GetMoralProdEmpire();
+			m_Production.m_iMoralProdEmpireWide[m_sOwnerOfSystem] += buildingInfo->GetMoralProdEmpire();
 		}
 }
 
@@ -1607,7 +1636,7 @@ int CSystem::CheckEnergyBuildings(BuildingInfoArray *buildingInfos)
 }
 
 // Funktion baut die Gebäude der Minorrace, wenn wir eine Mitgliedschaft mit dieser erreicht haben.
-void CSystem::BuildBuildingsForMinorRace(CSector* sector, BuildingInfoArray* buildingInfo, USHORT averageTechlevel, const CMinorRace* minor)
+void CSystem::BuildBuildingsForMinorRace(CSector* sector, BuildingInfoArray* buildingInfo, USHORT averageTechlevel, const CMinor* pMinor)
 {
 	if (m_Buildings.GetSize() < 5)
 	{
@@ -1618,7 +1647,7 @@ void CSystem::BuildBuildingsForMinorRace(CSector* sector, BuildingInfoArray* bui
 		// Schauen, welche Gebäudestufe ungefähr in dem System steht
 		// Jetzt nach der Fortschrittlichkeit der kleinen Rasse gehen
 		short level = 0;
-		switch (minor->GetTechnologicalProgress())
+		switch (pMinor->GetTechnologicalProgress())
 		{
 		case 0:	// sehr rückständig
 			{
@@ -1665,13 +1694,44 @@ void CSystem::BuildBuildingsForMinorRace(CSector* sector, BuildingInfoArray* bui
 		}
 		level++;
 
+		// die gültige Eigenschaft der Minor festlegen
+		vector<int> vProperty;
+		if (pMinor->IsRaceProperty(FINANCIAL))
+			vProperty.push_back(FINANCIAL);
+		if (pMinor->IsRaceProperty(WARLIKE))
+			vProperty.push_back(WARLIKE);
+		if (pMinor->IsRaceProperty(AGRARIAN))
+			vProperty.push_back(AGRARIAN);
+		if (pMinor->IsRaceProperty(INDUSTRIAL))
+			vProperty.push_back(INDUSTRIAL);
+		if (pMinor->IsRaceProperty(SECRET))
+			vProperty.push_back(SECRET);
+		if (pMinor->IsRaceProperty(SCIENTIFIC))
+			vProperty.push_back(SCIENTIFIC);
+		if (pMinor->IsRaceProperty(PRODUCER))
+			vProperty.push_back(PRODUCER);
+		if (pMinor->IsRaceProperty(PACIFIST))
+			vProperty.push_back(PACIFIST);
+		if (pMinor->IsRaceProperty(SNEAKY))
+			vProperty.push_back(SNEAKY);
+		if (pMinor->IsRaceProperty(SOLOING))
+			vProperty.push_back(SOLOING);
+		if (pMinor->IsRaceProperty(HOSTILE))
+			vProperty.push_back(HOSTILE);
+
+		if (vProperty.size() == 0)
+			vProperty.push_back(NOTHING_SPECIAL);
+		
+		int nProperty = vProperty[rand()%vProperty.size()];
 		// Jetzt die Gebäude bauen und auch das System nach der Art der MinorRace angleichen
 		// z.B. bei einer landwirtschaftlichen Rasse viele Farmen
 		// Die Rassenartzuweisung müsste man vielleicht noch dynamisch machen. Bis jetzt wird immer
 		// davon ausgegangen, dass z.B. die Major auf dem Cardassianerplatz bestimmte Eigenschaften vertritt.
 		// Dies kann sich durch Modifikationen aber verändern.
-		BYTE fromRace = HUMAN;
-		switch (minor->GetKind())
+		// ALPHA5 -> fromRace müsste noch fest in der Minorrace stehen, daher ist folgender Block vorerst entfernt
+		BYTE fromRace = rand()%6 + 1; // liegt erstmal zwischen human und dominion
+		/*
+		switch (pMinor->GetKind())
 		{
 		case FINANCIAL: fromRace = FERENGI; break;
 		case WARLIKE: fromRace = KLINGON; break;
@@ -1681,7 +1741,8 @@ void CSystem::BuildBuildingsForMinorRace(CSector* sector, BuildingInfoArray* bui
 		case PACIFIST: fromRace = FERENGI; break;
 		case SNEAKY: fromRace = CARDASSIAN; break;
 		default: fromRace = HUMAN;
-		}		
+		}
+		*/
 		// Die Subtraktion hinter den einzelnen Levels wird gemacht, weil manche Gebäude ja nicht schon auf der
 		// 0.-ten Stufe baubar sind. 
 		short counter[10] = {0};
@@ -1748,13 +1809,13 @@ void CSystem::BuildBuildingsForMinorRace(CSector* sector, BuildingInfoArray* bui
 		int foodBuildings = 0;
 		while (numberOfBuildings > 0)
 		{
-			// Das hier noch ändern, das es abhängig von der Rassenart ist
 			USHORT build = rand()%10;
+			
 			USHORT temp;
-			switch (minor->GetKind())
+			switch (nProperty)
 			{
 			// Wenn die Rasse eine landwirtschaftliche Rasse ist
-			case FARMER:
+			case AGRARIAN:
 				{
 					if (build >= 5)
 					{
@@ -1820,7 +1881,7 @@ void CSystem::BuildBuildingsForMinorRace(CSector* sector, BuildingInfoArray* bui
 					}
 					break;
 				}
-			case RESEARCHER:
+			case SCIENTIFIC:
 				{
 					if (build >= 5)
 					{
@@ -1870,7 +1931,11 @@ void CSystem::BuildBuildingsForMinorRace(CSector* sector, BuildingInfoArray* bui
 				}
 			case SNEAKY:
 				break;
-				// Pazifisten, kriegerische und Finanzrassen bekommen nur weniger Geheimdienst drauf
+			case SOLOING:
+				break;
+			case NOTHING_SPECIAL:
+				break;
+				// Pazifisten, kriegerische Rassen sowie Finanzrassen bekommen nur weniger Geheimdienst drauf
 			default:
 				{
 					if (build == 2 || build == 3)
@@ -1880,6 +1945,7 @@ void CSystem::BuildBuildingsForMinorRace(CSector* sector, BuildingInfoArray* bui
 					}					
 				}
 			}
+			
 			if (runningNumber[build] != 0)
 			{
 				if (build == 0)
@@ -1903,11 +1969,11 @@ void CSystem::BuildBuildingsForMinorRace(CSector* sector, BuildingInfoArray* bui
 		// Ressourcen sind abhängig von der Anzahl der jeweiligen Gebäude und dem technologischen Fortschritt der
 		// Minorrace
 		this->CalculateNumberOfWorkbuildings(buildingInfo);
-		this->SetFoodStore(this->GetFoodStore() + rand()%(this->GetNumberOfWorkbuildings(0,0,NULL) * (minor->GetTechnologicalProgress() + 1) * 100 + 1));
-		for (int i = TITAN; i <= IRIDIUM; i++)
+		this->SetFoodStore(this->GetFoodStore() + rand()%(this->GetNumberOfWorkbuildings(0,0,NULL) * (pMinor->GetTechnologicalProgress() + 1) * 100 + 1));
+		for (int res = TITAN; res <= IRIDIUM; res++)
 		{
-			int resAdd = minor->GetResourceStorage(i) + rand()%(this->GetNumberOfWorkbuildings(i+5,0,NULL) * (minor->GetTechnologicalProgress() + 1) * 100 + 1);
-			this->SetRessourceStore(i, resAdd);			
+			int resAdd = rand()%(this->GetNumberOfWorkbuildings(res + 5, 0, NULL) * (pMinor->GetTechnologicalProgress() + 1) * 100 + 1);
+			this->SetRessourceStore(res, resAdd);			
 		}
 	}
 }
@@ -2270,7 +2336,7 @@ void CSystem::IncludeTroopMoralValue(CArray<CTroopInfo>* troopInfo)
 // Funktion setzt alle Werte wieder zurück auf standard.
 void CSystem::ResetSystem()
 {
-	m_iOwnerOfSystem = 0;			// Der Besitzer des Systems
+	m_sOwnerOfSystem = "";			// Der Besitzer des Systems
 	m_dHabitants = 0.0f;			// Einwohner in dem System
 	m_iMoral = 100;					// Moral im System
 	m_byBlockade = 0;				// Prozentwert der Blockade im System
@@ -2401,7 +2467,7 @@ BOOLEAN CSystem::CheckPlanet(CBuildingInfo* building, CSector* sector)
 		return 1;
 }
 
-BOOLEAN CSystem::CheckGeneralConditions(CBuildingInfo* building, CSector* sector, CGlobalBuildings* globals, CMajorRace* majors)
+BOOLEAN CSystem::CheckGeneralConditions(CBuildingInfo* building, CSector* sector, CGlobalBuildings* globals, CMajor* pMajor)
 {
 /*	Allgemeine Voraussetzungen
 	--------------------------
@@ -2420,24 +2486,12 @@ BOOLEAN CSystem::CheckGeneralConditions(CBuildingInfo* building, CSector* sector
 	// Nur Heimatplanet checken
 	if (building->GetOnlyHomePlanet())
 	{
-		if (m_iOwnerOfSystem >= HUMAN && m_iOwnerOfSystem <= DOMINION && sector->GetName() != majors[m_iOwnerOfSystem].GetHomeSystemName())
+		if (m_sOwnerOfSystem == pMajor->GetRaceID() && sector->GetName() != pMajor->GetHomesystemName())
 			return FALSE;
-/*
-		switch (m_iOwnerOfSystem)
-		{
-			case HUMAN:		if (sector->GetName() != "Sol")			return FALSE;	break;
-			case FERENGI:	if (sector->GetName() != "Ferenginar")	return FALSE;	break;
-			case KLINGON:	if (sector->GetName() != "Qo'nos")		return FALSE;	break;
-			case ROMULAN:	if (sector->GetName() != "Romulus")		return FALSE;	break;
-			case CARDASSIAN:if (sector->GetName() != "Cardassia")	return FALSE;	break;
-			case DOMINION:	if (sector->GetName() != "Omarion")		return FALSE;	break;
-			default: return FALSE;
-		}
-*/
 	}
 	// Nur eigene Kolonie checken (Heimatsystem ist auch eine eigene Kolonie)
 	if (building->GetOnlyOwnColony())
-		if (sector->GetColonyOwner() != m_iOwnerOfSystem)
+		if (sector->GetColonyOwner() != m_sOwnerOfSystem)
 			return FALSE;
 	// Nur Minorraceplanet checken
 	if (building->GetOnlyMinorRace())
@@ -2453,7 +2507,7 @@ BOOLEAN CSystem::CheckGeneralConditions(CBuildingInfo* building, CSector* sector
 			return FALSE;
 	// Nur wirklicher Besitzer des Gebäudes
 	if (building->GetOnlyRace())
-		if (m_iOwnerOfSystem != building->GetOwnerOfBuilding())
+		if (m_sOwnerOfSystem != building->GetOwnerOfBuilding())
 			return FALSE;
 	// Minimale Bevölkerungsanzahl checken
 	if (building->GetMinHabitants() > 0)

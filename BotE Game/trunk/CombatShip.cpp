@@ -496,7 +496,7 @@ CPoint CCombatShip::AttackEnemyWithTorpedo(CombatTorpedos* CT, CPoint torpedoSta
 							torpedo.m_KO = m_KO;
 							torpedo.m_iPower = (m_pShip->GetTorpedoWeapons()->GetAt(i).GetTorpedoPower() * (m_iModifier + boni) / 100);
 							torpedo.m_byType = m_pShip->GetTorpedoWeapons()->GetAt(i).GetTorpedoType();
-							torpedo.m_iOwner = m_pShip->GetOwnerOfShip();
+							torpedo.m_sOwner = m_pShip->GetOwnerOfShip();
 							torpedo.m_byManeuverability = this->m_byManeuverability;
 							torpedo.m_iModi = GetCrewExperienceModi() + m_pShip->GetTorpedoWeapons()->GetAt(i).GetAccuracy() + boni;
 							CT->Add(torpedo);

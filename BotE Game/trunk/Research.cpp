@@ -725,7 +725,7 @@ CString* CResearch::CalculateResearch(ULONG FP)
 	if (rand()%100+1 <= (float)(pow((m_lUniqueFP /
 		((ResearchInfo.GetBio(m_iNumberOfUnique) + ResearchInfo.GetEnergy(m_iNumberOfUnique)
 		 + ResearchInfo.GetComp(m_iNumberOfUnique) + ResearchInfo.GetPropulsion(m_iNumberOfUnique)
-		 + ResearchInfo.GetConstruction(m_iNumberOfUnique) + ResearchInfo.GetWeapon(m_iNumberOfUnique)) / 1.5)), 10) * 100))
+		 + ResearchInfo.GetConstruction(m_iNumberOfUnique) + ResearchInfo.GetWeapon(m_iNumberOfUnique)) / SPECIAL_RESEARCH_DIV)), 10) * 100))
 //	if (m_lUniqueFP >= (ResearchInfo.GetBio(m_iNumberOfUnique)+ResearchInfo.GetEnergy(m_iNumberOfUnique)
 //		+ResearchInfo.GetComp(m_iNumberOfUnique)+ResearchInfo.GetPropulsion(m_iNumberOfUnique)
 //		+ResearchInfo.GetConstruction(m_iNumberOfUnique)+ResearchInfo.GetWeapon(m_iNumberOfUnique)))

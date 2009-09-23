@@ -1,5 +1,5 @@
 /*
- *   Copyright (C)2004-2008 Sir Pustekuchen
+ *   Copyright (C)2004-2009 Sir Pustekuchen
  *
  *   Author   :  Sir Pustekuchen
  *   Home     :  http://birth-of-the-empires.de.vu
@@ -23,33 +23,33 @@ public:
 	CDiplomacyIntelObj(void);
 
 	/// Konstruktor mit Parameterübergabe
-	/// @param owner Auslöser/Eigentümer
-	/// @param enemy Ziel der Geheimdienstaktion
+	/// @param sOwnerID Auslöser/Eigentümer
+	/// @param sEnemyID Ziel der Geheimdienstaktion
 	/// @param round Runde in der die Geheimdienstaktion angelegt wurde
 	/// @param isSpy handelt es sich um Spionage oder Sabotage
 	/// @param minorRaceKO die Koordinaten des Minorraceheimatsystems
 	/// @param agreement Vertrag von <code>enemy</code> mit der Minorrace
 	/// @param relationship Beziehung von <code>enemy</code> mit der Minorrace
-	CDiplomacyIntelObj(BYTE owner, BYTE enemy, USHORT round, BOOLEAN isSpy, const CPoint &minorRaceKO, short agreement, short relationship);
+	CDiplomacyIntelObj(const CString& sOwnerID, const CString& sEnemyID, USHORT round, BOOLEAN isSpy, const CPoint &minorRaceKO, short agreement, short relationship);
 
 	/// Konstruktor mit Parameterübergabe
-	/// @param owner Auslöser/Eigentümer
-	/// @param enemy Ziel der Geheimdienstaktion
+	/// @param sOwnerID Auslöser/Eigentümer
+	/// @param sEnemyID Ziel der Geheimdienstaktion
 	/// @param round Runde in der die Geheimdienstaktion angelegt wurde
 	/// @param isSpy handelt es sich um Spionage oder Sabotage
-	/// @param majorRace betroffene Majorrace mit der <code>enemy</code> in Beziehung steht
+	/// @param sMajorRaceID betroffene Majorrace mit der <code>sEnemyID</code> in Beziehung steht
 	/// @param agreement Vertrag von <code>enemy</code> mit der Majorrace
 	/// @param duration Vertragsdauer
 	/// @param relationship Beziehung von <code>enemy</code> mit der Majorrace
-	CDiplomacyIntelObj(BYTE owner, BYTE enemy, USHORT round, BOOLEAN isSpy, BYTE majorRace, short agreement, short duration, short relationship);
+	CDiplomacyIntelObj(const CString& sOwnerID, const CString& sEnemyID, USHORT round, BOOLEAN isSpy, const CString& sMajorRaceID, short agreement, short duration, short relationship);
 
 	///  Konstruktor mit Parameterübergabe
-	/// @param owner Auslöser/Eigentümer
-	/// @param enemy Ziel der Geheimdienstaktion
+	/// @param sOwnerID Auslöser/Eigentümer
+	/// @param sEnemyID Ziel der Geheimdienstaktion
 	/// @param round Runde in der die Geheimdienstaktion angelegt wurde
 	/// @param isSpy handelt es sich um Spionage oder Sabotage
 	/// @param minorRaceKO die Koordinaten des Minorraceheimatsystems
-	CDiplomacyIntelObj(BYTE owner, BYTE enemy, USHORT round, BOOLEAN isSpy, const CPoint &minorRaceKO);
+	CDiplomacyIntelObj(const CString& sOwnerID, const CString& sEnemyID, USHORT round, BOOLEAN isSpy, const CPoint &minorRaceKO);
 
 	/// Destruktor
 	~CDiplomacyIntelObj(void);
@@ -62,10 +62,10 @@ public:
 
 	// Zugriffsfunktionen
 	/// Funktion gibt die Koordinate des Heimatsystems einer Minorrace zurück.
-	CPoint GetMinorRaceKO() const {return m_MinorRaceKO;}
+	const CPoint& GetMinorRaceKO() const {return m_MinorRaceKO;}
 
-	/// Funktion gibt die Nummer der betroffenen Majorrace zurück.
-	BYTE GetMajorRace() const {return m_byMajor;}
+	/// Funktion gibt die ID der betroffenen Majorrace zurück.
+	const CString& GetMajorRaceID() const {return m_sMajor;}
 
 	/// Funktion gibt einen bestehenden Vertrag zurück
 	short GetAgreement() const {return m_nAgreement;}
@@ -82,13 +82,13 @@ public:
 	/// @param pDoc Zeiger auf das Dokument
 	/// @param n Nummer der verschiedenen Textmöglichkeiten, im Normalfall <code>NULL</code>
 	/// @param param Hier kann die Rasse übergeben werden, von der das Opfer denkt angegriffen worden zu sein
-	void CreateText(CBotf2Doc* pDoc, BYTE n, BYTE param);
+	void CreateText(CBotf2Doc* pDoc, BYTE n, const CString& param);
 
 private:
 	// Attribute
 	CPoint m_MinorRaceKO;		///< Heimatsystemkoordinaten der betroffenen Minorrace
 
-	BYTE m_byMajor;				///< betroffene Majorrace, mit welcher das Geheimdienstopfer einen Vertrag hat (oder auch nicht)
+	CString m_sMajor;			///< betroffene Majorrace, mit welcher das Geheimdienstopfer einen Vertrag hat (oder auch nicht)
 
 	short m_nAgreement;			///< Vertrag zwischen den Rassen
 

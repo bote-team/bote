@@ -7,7 +7,9 @@
 #include "GalaxyMenuView.h"
 #include "Botf2Doc.h"
 #include "Planet.h"
-
+#include "RaceController.h"
+#include "Fleet.h"
+#include "Iniloader.h"
 
 
 #ifdef _DEBUG
@@ -29,6 +31,7 @@ IMPLEMENT_DYNCREATE(CSmallInfoView, CView)
 
 CSmallInfoView::CSmallInfoView()
 {
+	m_nTimer = 0;
 }
 
 CSmallInfoView::~CSmallInfoView()
@@ -40,6 +43,7 @@ BEGIN_MESSAGE_MAP(CSmallInfoView, CView)
 	//{{AFX_MSG_MAP(CSmallInfoView)
 	ON_WM_ERASEBKGND()
 	//}}AFX_MSG_MAP
+	ON_WM_TIMER()
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -47,8 +51,17 @@ END_MESSAGE_MAP()
 
 void CSmallInfoView::OnDraw(CDC* pDC)
 {
-	CMyTimer timer;
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	ASSERT(pDoc);
+
+	CMajor* pMajor = pDoc->GetPlayersRace();
+	if (!pMajor)
+	{
+		this->KillTimer(1);
+		m_nTimer = 0;
+		return;
+	}
+
 	// ZU ERLEDIGEN: Code zum Zeichnen hier einfügen
 	CRect r;
 	r.SetRect(0, 0, m_TotalSize.cx, m_TotalSize.cy);
@@ -78,6 +91,8 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 	////////////// Überprüfen, ob in der CSmallInfoView Planeten angezeigt werden //////////////////////
 	if (pDoc->GetMainFrame()->GetActiveView(1, 1) == PLANET_BOTTOM_VIEW && m_pPlanet != NULL && (m_bShowPlanetStats || m_bShowPlanetInfo))
 	{
+		this->KillTimer(1);
+		m_nTimer = 0;
 		// Überprüfen ob Statistik zu Planet angezeigt werden kann, sprich Maus muß drüber gehalten werden
 		if (m_bShowPlanetStats)
 		{
@@ -87,29 +102,27 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 			// ansonsten wird die zufällige Planetengrafik geladen
 			if (planet == NULL)
 				planet = pDoc->GetGraphicPool()->GetGDIGraphic(m_pPlanet->GetGraphicFile());
+			
 			if (planet)
 			{
-				FCObjImage img;
-				FCWin32::GDIPlus_LoadBitmap(*planet, img);
-				img.ConvertTo32Bit();
-				img.SetAlphaChannelValue(85);
-				planet = FCWin32::GDIPlus_CreateBitmap(img);
 				CPoint center = client.CenterPoint();
 				CalcLogicalPoint(center);
-				CSize size(img.Width() * 0.85, img.Height() * 0.85);
+				CSize size(planet->GetWidth() * 0.85, planet->GetHeight() * 0.85);
 				RectF drawRect(center.x - size.cx, center.y - size.cy + 20, 2 * size.cx, 2 * size.cy);
-				g->DrawImage(planet, drawRect);	
-				img.Destroy();
-				delete planet;
+				g->DrawImage(planet, drawRect);
+				// Planet etwas abdunkeln
+				Gdiplus::SolidBrush brush(Gdiplus::Color(130, 0, 0, 0));
+				g->FillRectangle(&brush, drawRect);
+	
 			}
 
 			// Ab hier werden die ganzen Statistiken gezeichnet
-			CFontLoader::CreateGDIFont(pDoc->GetPlayersRace(), 2, fontName, fontSize);
+			CFontLoader::CreateGDIFont(pMajor, 2, fontName, fontSize);
 			fontFormat.SetAlignment(StringAlignmentCenter);
 			fontFormat.SetLineAlignment(StringAlignmentFar);
 			fontFormat.SetFormatFlags(!StringFormatFlagsNoWrap);
 			Color color;
-			CFontLoader::GetGDIFontColor(pDoc->GetPlayersRace(), 3, color);
+			CFontLoader::GetGDIFontColor(pMajor, 3, color);
 			fontBrush.SetColor(color);
 			
 			CString s;
@@ -185,23 +198,20 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 						
 			// gibt es eine spezielle Grafik für den Planeten, so wird versucht diese zu laden
 			Bitmap* planet = NULL;
-			planet = pDoc->GetGraphicPool()->GetGDIGraphic("Planets\\" + m_pPlanet->GetPlanetName()+".jpg");
+			planet = pDoc->GetGraphicPool()->GetGDIGraphic("Planets\\" + m_pPlanet->GetPlanetName()+".png");
 			// ansonsten wird die zufällige Planetengrafik geladen
 			if (planet == NULL)
 				planet = pDoc->GetGraphicPool()->GetGDIGraphic(m_pPlanet->GetGraphicFile());
 			if (planet)
 			{
-				FCObjImage img;
-				FCWin32::GDIPlus_LoadBitmap(*planet, img);
-				img.ConvertTo32Bit();
-				img.SetAlphaChannelValue(85);
-				planet = FCWin32::GDIPlus_CreateBitmap(img);
 				CPoint center = client.CenterPoint();
 				CalcLogicalPoint(center);
 				CSize size(planet->GetWidth() * 0.85, planet->GetHeight() * 0.85);
 				RectF drawRect(center.x - size.cx, center.y - size.cy + 20, 2 * size.cx, 2 * size.cy);
 				g->DrawImage(planet, drawRect);
-				delete planet;
+				// Planet etwas abdunkeln
+				Gdiplus::SolidBrush brush(Gdiplus::Color(130, 0, 0, 0));
+				g->FillRectangle(&brush, drawRect);
 			}
 
 			// Ab hier werden die ganzen Statistiken gezeichnet
@@ -212,7 +222,7 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 
 			g->DrawString(CheckPlanetClassForInfoHead(PlanetClass).AllocSysString(), -1, &Gdiplus::Font(L"Nina", 10), RectF(0,0,r.right,20), &fontFormat, &fontBrush);
 			Color color;
-			CFontLoader::GetGDIFontColor(pDoc->GetPlayersRace(), 3, color);
+			CFontLoader::GetGDIFontColor(pMajor, 3, color);
 			fontBrush.SetColor(color);
 			fontFormat.SetAlignment(StringAlignmentNear);
 			fontFormat.SetLineAlignment(StringAlignmentNear);
@@ -225,9 +235,12 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 	////////////// Überprüfen, ob in der CSmallInfoView Schiffe angezeigt werden /////////////////////////////////////
 	else if (pDoc->GetMainFrame()->GetActiveView(1, 1) == SHIP_BOTTOM_VIEW && m_bShowShipInfo && m_pShip != NULL)
 	{
-		CFontLoader::CreateGDIFont(pDoc->GetPlayersRace(), 2, fontName, fontSize);
+		this->KillTimer(1);
+		m_nTimer = 0;
+
+		CFontLoader::CreateGDIFont(pMajor, 2, fontName, fontSize);
 		Color color;
-		CFontLoader::GetGDIFontColor(pDoc->GetPlayersRace(), 3, color);
+		CFontLoader::GetGDIFontColor(pMajor, 3, color);
 		fontBrush.SetColor(Color(200,200,200));
 		fontFormat.SetAlignment(StringAlignmentCenter);
 		fontFormat.SetLineAlignment(StringAlignmentFar);
@@ -240,19 +253,16 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 		{
 			// Schiffsgrafik etwas größer anzeigen
 			Bitmap* shipGraphic = NULL;
-			s.Format("Ships\\%s.jpg", m_pShip->GetShipClass());			
+			s.Format("Ships\\%s.png", m_pShip->GetShipClass());			
 			shipGraphic = pDoc->GetGraphicPool()->GetGDIGraphic(s);
 			if (shipGraphic == NULL)
-				shipGraphic = pDoc->GetGraphicPool()->GetGDIGraphic("Ships\\ImageMissing.jpg");
+				shipGraphic = pDoc->GetGraphicPool()->GetGDIGraphic("Ships\\ImageMissing.png");
 			if (shipGraphic)
 			{
-				FCObjImage img;
-				FCWin32::GDIPlus_LoadBitmap(*shipGraphic, img);
-				img.ConvertTo32Bit();
-				img.SetAlphaChannelValue(85);
-				shipGraphic = FCWin32::GDIPlus_CreateBitmap(img);
 				g->DrawImage(shipGraphic, 0, 50, 200, 150);
-				delete shipGraphic;
+				// Schiff etwas abdunkeln
+				Gdiplus::SolidBrush brush(Gdiplus::Color(130, 0, 0, 0));
+				g->FillRectangle(&brush, 0, 50, 200, 150);
 			}
 
 			if (m_pShip->GetRange() == 0)
@@ -315,9 +325,9 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 		}			
 		
 		CPoint TargetKO = m_pShip->GetTargetKO();
-		if (TargetKO.x == -1 && m_pShip->GetOwnerOfShip() != pDoc->GetPlayersRace())
+		if (TargetKO.x == -1 && m_pShip->GetOwnerOfShip() != pMajor->GetRaceID())
 			s = CResourceManager::GetString("UNKNOWN_TARGET");
-		if (TargetKO.x != -1 && m_pShip->GetOwnerOfShip() == pDoc->GetPlayersRace())
+		if (TargetKO.x != -1 && m_pShip->GetOwnerOfShip() == pMajor->GetRaceID())
 		{
 			short n = pDoc->GetNumberOfTheShipInArray();
 			short range = 0;
@@ -336,7 +346,7 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 			CArray<Sector> path;
 			Sector position(pDoc->m_ShipArray[n].GetKO().x, pDoc->m_ShipArray[n].GetKO().y);
 			Sector target(pDoc->m_ShipArray[n].GetTargetKO().x, pDoc->m_ShipArray[n].GetTargetKO().y);
-			pDoc->GetStarmap()->CalcPath(position, target, range, speed, path);
+			pMajor->GetStarmap()->CalcPath(position, target, range, speed, path);
 			short rounds = 0;
 			if (speed > 0)
 				rounds = ceil((float)path.GetSize() / (float)speed);
@@ -345,13 +355,13 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 			else
 				s.Format("%s: %c%i (%d %s)", CResourceManager::GetString("TARGET"), (char)(TargetKO.y+97),TargetKO.x+1, rounds, CResourceManager::GetString("ROUND"));
 		}
-		if (TargetKO.x == -1 && m_pShip->GetOwnerOfShip() == pDoc->GetPlayersRace())
+		if (TargetKO.x == -1 && m_pShip->GetOwnerOfShip() == pMajor->GetRaceID())
 			s = CResourceManager::GetString("NO_TARGET");
-		if (TargetKO.x != -1 && m_pShip->GetOwnerOfShip() != pDoc->GetPlayersRace())
+		if (TargetKO.x != -1 && m_pShip->GetOwnerOfShip() != pMajor->GetRaceID())
 			s = CResourceManager::GetString("UNKNOWN_TARGET");
 		if (TargetKO.x == m_pShip->GetKO().x &&
 			TargetKO.y == m_pShip->GetKO().y &&
-			m_pShip->GetOwnerOfShip() == pDoc->GetPlayersRace())
+			m_pShip->GetOwnerOfShip() == pMajor->GetRaceID())
 			s = CResourceManager::GetString("NO_TARGET");
 		if (CGalaxyMenuView::IsMoveShip() == TRUE)
 		{
@@ -360,13 +370,13 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 		}
 		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0,0,r.right,185), &fontFormat, &fontBrush);
 		// bei eigenem Schiff aktuellen Befehl zeichnen
-		if (m_pShip->GetOwnerOfShip() == pDoc->GetPlayersRace())
+		if (m_pShip->GetOwnerOfShip() == pMajor->GetRaceID())
 		{
 			
-			pDC->SetTextColor(CFontLoader::GetFontColor(pDoc->GetPlayersRace(), 4));
+			pDC->SetTextColor(CFontLoader::GetFontColor(pMajor, 4));
 			s.Format("%s: %s",CResourceManager::GetString("ORDER"), 
 				m_pShip->GetCurrentOrderAsString());
-			CFontLoader::GetGDIFontColor(pDoc->GetPlayersRace(), 4, color);
+			CFontLoader::GetGDIFontColor(pMajor, 4, color);
 			fontBrush.SetColor(color);
 			fontFormat.SetAlignment(StringAlignmentCenter);
 			fontFormat.SetLineAlignment(StringAlignmentNear);
@@ -376,18 +386,29 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 	}	
 	else
 	{
+		if (m_nTimer > 440)
+			m_nTimer = 0;
+		if (m_nTimer == 0 && pDoc->m_pIniLoader->GetValue("ANIMATEDICON") == TRUE)
+			this->SetTimer(1,125,NULL);
+
 		// Wenn keine Informationen zu einem Planeten angezeigt werden sollen, dann das Rassensymbol einblenden
 		CString path;
-		path.Format("RaceLogos\\Race%d.jpg", pDoc->GetPlayersRace());
+		path.Format("Symbols\\%s.png", pMajor->GetRaceID());
 		Bitmap* logo = NULL;
 		logo = pDoc->GetGraphicPool()->GetGDIGraphic(path);
 		if (logo)
+		{
+			int nAlpha = m_nTimer;
+			if (m_nTimer > 220)
+				nAlpha = 440 - m_nTimer;
 			g->DrawImage(logo, 0, 25, 200, 200);
+			SolidBrush brush(Color(nAlpha, 0, 0, 0));
+			g->FillRectangle(&brush, 0, 0, m_TotalSize.cx, m_TotalSize.cy);
+		}
 	}
 
 	doubleBuffer.DrawImage(&bmp, client.left, client.top, client.right, client.bottom);
 	delete g;
-
 }
 
 void CSmallInfoView::OnInitialUpdate()
@@ -449,4 +470,13 @@ void CSmallInfoView::CalcLogicalPoint(CPoint &point)
 	
 	point.x *= (float)m_TotalSize.cx / (float)client.Width();
 	point.y *= (float)m_TotalSize.cy / (float)client.Height();	
+}
+
+void CSmallInfoView::OnTimer(UINT_PTR nIDEvent)
+{
+	// TODO: Add your message handler code here and/or call default
+	m_nTimer += 4;
+	Invalidate(FALSE);
+
+	CView::OnTimer(nIDEvent);
 }

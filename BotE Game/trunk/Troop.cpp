@@ -19,7 +19,7 @@ CTroop::~CTroop(void)
 CTroop::CTroop(const CTroop & rhs)
 {
 	m_byID = rhs.m_byID;
-	m_byOwner = rhs.m_byOwner;
+	m_sOwner = rhs.m_sOwner;
 	m_byPower = rhs.m_byPower;
 	m_iExperiance = rhs.m_iExperiance;
 }
@@ -32,7 +32,7 @@ CTroop & CTroop::operator=(const CTroop & rhs)
 	if (this == &rhs)
 		return *this;
 	m_byID = rhs.m_byID;
-	m_byOwner = rhs.m_byOwner;
+	m_sOwner = rhs.m_sOwner;
 	m_byPower = rhs.m_byPower;
 	m_iExperiance = rhs.m_iExperiance;
 	return *this;
@@ -48,7 +48,7 @@ void CTroop::Serialize(CArchive &ar)
 	if (ar.IsStoring())
 	{
 		ar << m_byID;
-		ar << m_byOwner;
+		ar << m_sOwner;
 		ar << m_byPower;
 		ar << m_iExperiance;
 	}
@@ -56,7 +56,7 @@ void CTroop::Serialize(CArchive &ar)
 	if (ar.IsLoading())
 	{
 		ar >> m_byID;
-		ar >> m_byOwner;
+		ar >> m_sOwner;
 		ar >> m_byPower;
 		ar >> m_iExperiance;
 	}

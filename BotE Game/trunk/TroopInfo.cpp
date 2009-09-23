@@ -13,7 +13,7 @@ CTroopInfo::CTroopInfo(void)
 	memset(m_iNeededResources, 0, 5 * sizeof(*m_iNeededResources));
 	m_iNeededIndustry = 0;
 	m_byID = 0;
-	m_byOwner = 0;
+	m_sOwner = "";
 	m_byPower = 0;
 	m_iExperiance = 0;
 	m_iSize = 0;
@@ -22,7 +22,7 @@ CTroopInfo::CTroopInfo(void)
 
 /// Konstruktor mit kompletter Parameterübergabe
 CTroopInfo::CTroopInfo(CString name, CString desc, BYTE power, BYTE costs, BYTE techs[6], USHORT res[5],
-					   USHORT ip, BYTE ID, BYTE owner, USHORT size, BYTE moralValue)
+					   USHORT ip, BYTE ID, const CString& sOwner, USHORT size, BYTE moralValue)
 {
 	m_strName = name;
 	m_strDescription = desc;
@@ -33,7 +33,7 @@ CTroopInfo::CTroopInfo(CString name, CString desc, BYTE power, BYTE costs, BYTE 
 		m_iNeededResources[i] = res[i];
 	m_iNeededIndustry = ip;
 	m_byID = ID;
-	m_byOwner = owner;
+	m_sOwner = sOwner;
 	m_byPower = power;
 	m_iExperiance = 0;
 	m_iSize = size;

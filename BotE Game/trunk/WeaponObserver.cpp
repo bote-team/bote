@@ -207,7 +207,7 @@ BYTE CWeaponObserver::GetNextTorpedo(BYTE currentTorpedoType, BOOLEAN onlyMicroT
 		{
 			// Wenn der aktuell angebaute Torpedowerfer nur Micro-Torpedos verschießen kann, dann hier überprüfen,
 			// ob es sich auch um einen Micro-Torpedotyp handelt
-			if (onlyMicroTupe == TRUE && (i == 4 || i == 9 || i == 11 || i == 16))
+			if (onlyMicroTupe == TRUE && (i == 4 || i == 9 || i == 16 || i == 25))
 				return i;
 			else if (onlyMicroTupe == FALSE)
 				return i;

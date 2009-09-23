@@ -5,6 +5,7 @@
 #include "botf2.h"
 #include "IntelBottomView.h"
 #include "IntelMenuView.h"
+#include "RaceController.h"
 
 
 // CIntelBottomView
@@ -30,6 +31,12 @@ END_MESSAGE_MAP()
 void CIntelBottomView::OnDraw(CDC* dc)
 {
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	ASSERT(pDoc);
+
+	CMajor* pMajor = pDoc->GetPlayersRace();
+	ASSERT(pMajor);
+	if (!pMajor)
+		return;
 	// TODO: add draw code here
 
 	// Doublebuffering wird initialisiert
@@ -52,37 +59,13 @@ void CIntelBottomView::OnDraw(CDC* dc)
 	StringFormat fontFormat;
 	SolidBrush fontBrush(Color::White);
 	Bitmap* graphic = NULL;
+
+	Color color;
+	color.SetFromCOLORREF(pMajor->GetDesign()->m_clrGalaxySectorText);
 					
-	if (pDoc->GetPlayersRace() == HUMAN)
-	{
-		fontBrush.SetColor(Color(100,100,250));
-		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + CResourceManager::GetString("RACE1_PREFIX") + "diplomacyV3.jpg");
-	}
-	else if (pDoc->GetPlayersRace() == FERENGI)
-	{
-		fontBrush.SetColor(Color(30,200,30));
-		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + CResourceManager::GetString("RACE2_PREFIX") + "diplomacyV3.jpg");
-	}
-	else if (pDoc->GetPlayersRace() == KLINGON)
-	{
-		fontBrush.SetColor(Color(250,80,30));
-		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + CResourceManager::GetString("RACE3_PREFIX") + "diplomacyV3.jpg");
-	}
-	else if (pDoc->GetPlayersRace() == ROMULAN)
-	{
-		fontBrush.SetColor(Color(140,196,203));
-		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + CResourceManager::GetString("RACE4_PREFIX") + "diplomacyV3.jpg");
-	}
-	else if (pDoc->GetPlayersRace() == CARDASSIAN)
-	{
-		fontBrush.SetColor(Color(74,146,138));
-		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + CResourceManager::GetString("RACE5_PREFIX") + "diplomacyV3.jpg");
-	}
-	else if (pDoc->GetPlayersRace() == DOMINION)
-	{
-		fontBrush.SetColor(Color(74,146,138));
-		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + CResourceManager::GetString("RACE6_PREFIX") + "diplomacyV3.jpg");
-	}
+	fontBrush.SetColor(color);
+	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + pMajor->GetPrefix() + "diplomacyV3.jpg");
+	
 	// Grafik zeichnen		
 	if (graphic)
 	{
@@ -96,25 +79,25 @@ void CIntelBottomView::OnDraw(CDC* dc)
 	{
 		CRect r;
 		r.SetRect(0,0,m_TotalSize.cx,m_TotalSize.cy);
-		short n = pDoc->GetEmpire(pDoc->GetPlayersRace())->GetIntelligence()->GetIntelReports()->GetActiveReport();
+		short n = pMajor->GetEmpire()->GetIntelligence()->GetIntelReports()->GetActiveReport();
 		if (n != -1)
 		{
-			CFontLoader::CreateGDIFont(pDoc->GetPlayersRace(), 4, fontName, fontSize);
+			CFontLoader::CreateGDIFont(pMajor, 4, fontName, fontSize);
 			fontFormat.SetAlignment(StringAlignmentNear);
 			fontFormat.SetLineAlignment(StringAlignmentNear);
 			fontFormat.SetFormatFlags(StringFormatFlagsNoWrap);
-			CIntelObject* report = pDoc->GetEmpire(pDoc->GetPlayersRace())->GetIntelligence()->GetIntelReports()->GetReport(n);
+			CIntelObject* report = pMajor->GetEmpire()->GetIntelligence()->GetIntelReports()->GetReport(n);
 			CString s;
 			if (report->GetIsSpy())
 				s = CResourceManager::GetString("SPY");
 			else
 				s = CResourceManager::GetString("SABOTAGE");
-			g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(40, 30, r.right-100, r.bottom-20), &fontFormat, &fontBrush);
+			g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(40, 40, r.right-100, r.bottom-20), &fontFormat, &fontBrush);
 
-			CFontLoader::CreateGDIFont(pDoc->GetPlayersRace(), 2, fontName, fontSize);
+			CFontLoader::CreateGDIFont(pMajor, 2, fontName, fontSize);
 			fontBrush.SetColor(Color(200,200,250));
 			fontFormat.SetFormatFlags(!StringFormatFlagsNoWrap);
-			if (report->GetOwner() == pDoc->GetPlayersRace())
+			if (report->GetOwner() == pMajor->GetRaceID())
 				s = *report->GetOwnerDesc();
 			else
 				s = *report->GetEnemyDesc();

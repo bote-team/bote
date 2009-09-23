@@ -82,7 +82,7 @@ CShip::CShip(const CShip & rhs)
 	m_KO = rhs.m_KO;
 	for (int i=0;i<4;i++)
 		m_TargetKO[i] = rhs.m_TargetKO[i];
-	m_iOwnerOfShip = rhs.m_iOwnerOfShip;
+	m_sOwnerOfShip = rhs.m_sOwnerOfShip;
 	m_iMaintenanceCosts = rhs.m_iMaintenanceCosts;
 	m_iShipType = rhs.m_iShipType;
 	m_byShipSize = rhs.m_byShipSize;
@@ -129,7 +129,7 @@ CShip & CShip::operator=(const CShip & rhs)
 	// Zeiger auf Fleet speziell behandeln
 	if (rhs.m_Fleet)
 	{
-		TRACE("Achtung, wenn im Zuweisungsoperator der CShip-Klasse ein Shiffsobjekt eine Flotte beitzt, dann kommt es manchmal beim Beenden des Programmes aus mir unverständlichen Gründen zu Memory-Leaks!\n");
+		MYTRACE(MT::LEVEL_ERROR, "Achtung, wenn im Zuweisungsoperator der CShip-Klasse ein Shiffsobjekt eine Flotte beitzt, dann kommt es manchmal beim Beenden des Programmes aus mir unverständlichen Gründen zu Memory-Leaks!\n");
 		m_Fleet = new CFleet();
 		*m_Fleet = *(rhs.m_Fleet);
 	}
@@ -140,7 +140,7 @@ CShip & CShip::operator=(const CShip & rhs)
 	m_KO = rhs.m_KO;
 	for (int i=0;i<4;i++)
 		m_TargetKO[i] = rhs.m_TargetKO[i];
-	m_iOwnerOfShip = rhs.m_iOwnerOfShip;
+	m_sOwnerOfShip = rhs.m_sOwnerOfShip;
 	m_iMaintenanceCosts = rhs.m_iMaintenanceCosts;
 	m_iShipType = rhs.m_iShipType;
 	m_byShipSize = rhs.m_byShipSize;
@@ -174,6 +174,7 @@ CShip & CShip::operator=(const CShip & rhs)
 void CShip::Serialize(CArchive &ar)
 {
 	CObject::Serialize(ar);
+	
 	m_Hull.Serialize(ar);
 	m_Shield.Serialize(ar);
 	
@@ -185,7 +186,7 @@ void CShip::Serialize(CArchive &ar)
 		ar << m_KO;
 		for (int i = 0; i < 4; i++)
 			ar << m_TargetKO[i];
-		ar << m_iOwnerOfShip;
+		ar << m_sOwnerOfShip;
 		ar << m_iMaintenanceCosts;
 		ar << m_iShipType;
 		ar << m_byShipSize;
@@ -230,7 +231,7 @@ void CShip::Serialize(CArchive &ar)
 		ar >> m_KO;
 		for (int i = 0; i < 4; i++)
 			ar >> m_TargetKO[i];
-		ar >> m_iOwnerOfShip;
+		ar >> m_sOwnerOfShip;
 		ar >> m_iMaintenanceCosts;
 		ar >> m_iShipType;
 		ar >> m_byShipSize;

@@ -1,5 +1,5 @@
 /*
- *   Copyright (C)2004-2008 Sir Pustekuchen
+ *   Copyright (C)2004-2009 Sir Pustekuchen
  *
  *   Author   :  Sir Pustekuchen
  *   Home     :  http://birth-of-the-empires.de.vu
@@ -15,40 +15,42 @@
 #if _MSC_VER > 1000
 #pragma once
 #endif // _MSC_VER > 1000
-#include "afxtempl.h"
-#include "Options.h"
 
-typedef unsigned short USHORT;					// unsigned short int wird abgekürzt als USHORT geschrieben 
+#include "Options.h"
 
 class CMessage : public CObject  
 {
 public:
-	DECLARE_SERIAL (CMessage)							// Klasse serialisierbar machen
-	// Konstruktor & Destruktor	
-	CMessage();
-	virtual ~CMessage();
-	// Kopierkonstruktor
+	// Klasse serialisierbar machen
+	DECLARE_SERIAL (CMessage)
+	
+	/// Konstruktor
+	CMessage(void);
+	
+	/// Destruktor	
+	virtual ~CMessage(void);
+	
+	/// Kopierkonstruktor
 	CMessage(const CMessage & rhs);
-	// Zuweisungsoperator
+	
+	/// Zuweisungsoperator
 	CMessage & operator=(const CMessage &);
-	// Die Serialisierungsfunktion
+	
+	/// Die Serialisierungsfunktion
 	virtual void Serialize(CArchive &ar);
 	
 	// Zugriffsfunktionen
 	// zum Lesen der Membervariablen
-	USHORT GetMessageType() const {return m_iMessageType;}
-	CPoint GetKO() const {return m_KO;}
-	BYTE GetFlag() const {return m_byFlag;}
-	
-	// zum Schreiben der Membervariablen
-	
+	USHORT GetMessageType(void) const {return m_iMessageType;}
+	const CPoint& GetKO(void) const {return m_KO;}
+	BYTE GetFlag(void) const {return m_byFlag;}
+	const CString& GetMessageString(void) const {return m_strMessage;}
+		
 	// sonstige Funktionen
-	void GenerateMessage(const CString& Message, USHORT OwnerOfMessage, USHORT MessageType, const CString& SystemName, CPoint SystemKO, BOOLEAN Update, BYTE flag = 0);
-	void ShowMessage(CDC* pDC, CRect r);
-
+	void GenerateMessage(const CString& sMessage, USHORT nMessageType, const CString& sSystemName, const CPoint& SystemKO, bool bUpdate, BYTE byFlag = 0);
+	
 private:
 	CString	m_strMessage;
-	USHORT	m_iOwnerOfMessage;
 	USHORT	m_iMessageType;
 	CPoint	m_KO;			// Koordinaten des Systems, worauf sich die Nachricht bezieht
 	BYTE	m_byFlag;		// irgendeine Zusatzinformation, die ich mit übergeben kann

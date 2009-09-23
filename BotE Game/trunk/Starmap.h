@@ -1,5 +1,5 @@
 /*
- *   Copyright (C)2004-2008 Sir Pustekuchen
+ *   Copyright (C)2004-2009 Sir Pustekuchen
  *
  *   Author   :  Sir Pustekuchen
  *   Home     :  http://birth-of-the-empires.de.vu
@@ -18,6 +18,7 @@
 #include "Options.h"
 #include "SortedList.h"
 #include <list>
+#include <map>
 
 #if _MSC_VER > 1000
 #pragma once
@@ -223,7 +224,7 @@ public:
 	 * Sektoren <code>sectors</code> und ein Wahrheitswert <code>races</code> für alle Rassen, ob wir einen
 	 * Nichtangriffspakt mit dieser Rasse haben.
 	 */
-	void SynchronizeWithMap(CSector sectors[][STARMAP_SECTORS_VCOUNT], BOOLEAN races[7]);
+	void SynchronizeWithMap(CSector sectors[][STARMAP_SECTORS_VCOUNT], std::map<CString, bool>* races);
 
 	/**
 	 * Löscht alle Basen und setzt die Einträge in der Rangemap wieder auf Ausgangswert
@@ -266,7 +267,7 @@ public:
 	 * einen Außenposten genutzt werden soll. Übergeben werden dafür ein Zeiger auf alle
 	 * Sektoren <code>sectors</code> und die Rasse, zu welcher das Starmap Objekt gehört <code>race</code>.
 	 */
-	void SetBadAIBaseSectors(CSector sectors[][STARMAP_SECTORS_VCOUNT], BYTE race);
+	void SetBadAIBaseSectors(CSector sectors[][STARMAP_SECTORS_VCOUNT], const CString& race);
 
 	/**
 	 * Ermittelt einen Sektor, in dem günstig ein Außenposten gebaut werden könnte. Liefert <code>Sector(-1, -1)</code> im

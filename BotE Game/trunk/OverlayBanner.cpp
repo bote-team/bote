@@ -61,8 +61,8 @@ void COverlayBanner::Draw(Graphics* g, Gdiplus::Font* font)
 	color.SetFromCOLORREF(m_BorderColor);
 	Gdiplus::Pen pen(color);
 	pen.SetWidth((REAL)m_iBorderWidth);
-	g->DrawRectangle(&pen, m_KO.x, m_KO.y, m_Size.cx, m_Size.cy);
-
+	g->DrawRectangle(&pen, m_KO.x, m_KO.y, m_Size.cx - m_iBorderWidth, m_Size.cy - m_iBorderWidth);
+	
 	// Text zeichnen
 	StringFormat fontFormat;
 	fontFormat.SetAlignment(StringAlignmentCenter);

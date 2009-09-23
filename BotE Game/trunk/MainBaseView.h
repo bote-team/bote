@@ -1,5 +1,5 @@
 /*
- *   Copyright (C)2004-2008 Sir Pustekuchen
+ *   Copyright (C)2004-2009 Sir Pustekuchen
  *
  *   Author   :  Sir Pustekuchen
  *   Home     :  http://birth-of-the-empires.de.vu
@@ -48,6 +48,7 @@ protected:
 	/// @param buttonArray Zeiger auf das Feld mit den Buttons
 	/// @param counter Zählvariable die meinst angibt in welchem aktuellen Menü man sich befindet
 	void DrawButtons(CDC* pDC, CArray<CMyButton*>* buttonArray, int counter);
+	void DrawGDIButtons(Graphics* g, CArray<CMyButton*>* buttonArray, int counter, Gdiplus::Font &font, Gdiplus::SolidBrush &fontBrush);
 
 	/// Funktion läßt einen Button auf ein MouseOver reagieren
 	/// @param point Referenz auf den Punkt, über dem sich die Maus aktuell befindet
@@ -82,18 +83,16 @@ protected:
 	/// Funktion lädt die Schriftart inkl. deren Farbe für die gespielte Rasse.
 	/// @param pDC aktueller Zeichenkontext
 	void LoadRaceFont(CDC* pDC);
-
+	
 	/// Funktion generiert alle Buttons für das Menü. Sollte von der abgeleiteten Klasse überschrieben werden.
 	virtual void CreateButtons() {};	
 
 	// Attribute
 	CSize m_TotalSize;				///< Größe der View in logischen Koordinaten
 	CFont m_Font;					///< aktuelle Font in der View
-
+	
 	CBitmap bm;						// meist für die Buttons genutzt
-	CBitmap bm2;					// meist für die alternativen Buttons genutzt
-	CBitmap bm3,bm4;
-	CBitmap bm_dark;
+	CBitmap bm_dark;	
 
 protected:
 	DECLARE_MESSAGE_MAP()

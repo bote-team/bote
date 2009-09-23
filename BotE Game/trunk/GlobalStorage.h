@@ -1,5 +1,5 @@
 /*
- *   Copyright (C)2004-2008 Sir Pustekuchen
+ *   Copyright (C)2004-2009 Sir Pustekuchen
  *
  *   Author   :  Sir Pustekuchen
  *   Home     :  http://birth-of-the-empires.de.vu
@@ -7,7 +7,10 @@
  */
 #pragma once
 #include "afx.h"
-#include "System.h"
+#include "Options.h"
+
+// forward declaration
+class CSystem;
 
 class CGlobalStorage :	public CObject
 {

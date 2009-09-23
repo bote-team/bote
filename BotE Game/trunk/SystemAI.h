@@ -1,5 +1,5 @@
 /*
- *   Copyright (C)2004-2008 Sir Pustekuchen
+ *   Copyright (C)2004-2009 Sir Pustekuchen
  *
  *   Author   :  Sir Pustekuchen
  *   Home     :  http://birth-of-the-empires.de.vu
@@ -10,6 +10,7 @@
 #include "Options.h"
 
 class CBotf2Doc;
+class CMajor;
 class CSystemAI
 {
 public:
@@ -96,4 +97,7 @@ private:
 	/// Wurden die Prioritäten berechnet, so nimmt diese Variable den Wert <code>TRUE</code> an. Ansonsten ist
 	/// ihr Wert <code>FALSE</code>.
 	BOOLEAN m_bCalcedPrio;
+
+	/// auf diese Variable wird während der Berechnung die Majorrace gespeichert, der das System gehört.
+	CMajor* m_pMajor;
 };

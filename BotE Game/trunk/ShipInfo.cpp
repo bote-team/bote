@@ -18,12 +18,10 @@ IMPLEMENT_SERIAL (CShipInfo, CObject, 1)
 
 CShipInfo::CShipInfo()
 {
-
 }
 
 CShipInfo::~CShipInfo()
 {
-
 }
 /*
 //////////////////////////////////////////////////////////////////////
@@ -44,7 +42,7 @@ CShipInfo::CShipInfo(const CShipInfo & rhs)
 	m_KO = rhs.m_KO;
 	for (i=0;i<4;i++)
 		m_TargetKO[i] = rhs.m_TargetKO[i];
-	m_iOwnerOfShip = rhs.m_iOwnerOfShip;
+	m_sOwnerOfShip = rhs.m_sOwnerOfShip;
 	m_iBuildCosts = rhs.m_iBuildCosts;
 	m_iMaintenanceCosts = rhs.m_iMaintenanceCosts;
 	m_iShipType = rhs.m_iShipType;
@@ -78,7 +76,7 @@ CShipInfo & CShipInfo::operator=(const CShipInfo & rhs)
 	m_KO = rhs.m_KO;
 	for (i=0;i<4;i++)
 		m_TargetKO[i] = rhs.m_TargetKO[i];
-	m_iOwnerOfShip = rhs.m_iOwnerOfShip;
+	m_sOwnerOfShip = rhs.m_sOwnerOfShip;
 	m_iBuildCosts = rhs.m_iBuildCosts;
 	m_iMaintenanceCosts = rhs.m_iMaintenanceCosts;
 	m_iShipType = rhs.m_iShipType;
@@ -175,13 +173,13 @@ void CShipInfo::DeleteWeapons()
 // dem Schiffsobjekt geändert haben.
 void CShipInfo::CalculateFinalCosts()
 {
-	m_iNeededIndustry = 0;
-	m_iNeededTitan = 0;
-	m_iNeededDeuterium = 0;
-	m_iNeededDuranium = 0;
-	m_iNeededCrystal = 0;
-	m_iNeededIridium = 0;
-	m_iNeededDilithium = 0;
+	m_iNeededIndustry	= 0;
+	m_iNeededTitan		= 0;
+	m_iNeededDeuterium	= 0;
+	m_iNeededDuranium	= 0;
+	m_iNeededCrystal	= 0;
+	m_iNeededIridium	= 0;
+	m_iNeededDilithium	= 0;
 	// Industrieleistung, die wir zusätzlich durch bessere Schilde erbringen müssen
 /*	m_iNeededIndustry += m_Shield.GetMaxShield() / 10 * m_Shield.GetShieldType();
 	// Industrieleistung, die wir zusätzlich durch bessere Hülle  erbringen müssen
@@ -205,21 +203,27 @@ void CShipInfo::CalculateFinalCosts()
 								* m_BeamWeapons.GetAt(i).GetBeamType()
 								* 3);
 	if (m_BeamWeapons.GetSize() > 1)
-		beamTypeAdd /= m_BeamWeapons.GetSize();
-	m_iNeededIndustry += beamTypeAdd;
-	m_iNeededIndustry += this->GetCompleteOffensivePower();
-	m_iNeededIndustry += this->GetCompleteDefensivePower() / 2;
-	m_iNeededIndustry += GetShield()->GetMaxShield() / 200 * ((USHORT)pow((float)GetShield()->GetShieldType(), 2.5f));
-	m_iNeededIndustry /= 2;
+		beamTypeAdd		/= m_BeamWeapons.GetSize();
+	m_iNeededIndustry	+= beamTypeAdd;
+	m_iNeededIndustry	+= this->GetCompleteOffensivePower();
+	// Eine Doppelhülle verteuert die Industriekosten nochmals um 25%
+	if (m_Hull.GetDoubleHull())
+		m_iNeededIndustry	+= (UINT)(this->GetCompleteDefensivePower() / 1.5);
+	else
+		m_iNeededIndustry	+= this->GetCompleteDefensivePower() / 2;
+	
+	m_iNeededIndustry	+= GetShield()->GetMaxShield() / 200 * ((USHORT)pow((float)GetShield()->GetShieldType(), 2.5f));
+	m_iNeededIndustry	/= 2;
 
 	// Kosten erstmal wieder auf die Ausgangswerte setzen
-	m_iNeededIndustry += m_iBaseIndustry;
-	m_iNeededTitan += m_iBaseTitan;
-	m_iNeededDeuterium += m_iBaseDeuterium;
-	m_iNeededDuranium += m_iBaseDuranium;
-	m_iNeededCrystal += m_iBaseCrystal;
-	m_iNeededIridium += m_iBaseIridium;
-	m_iNeededDilithium += m_iBaseDilithium;
+	m_iNeededIndustry	+= m_iBaseIndustry;
+	m_iNeededTitan		+= m_iBaseTitan;
+	m_iNeededDeuterium	+= m_iBaseDeuterium;
+	m_iNeededDuranium	+= m_iBaseDuranium;
+	m_iNeededCrystal	+= m_iBaseCrystal;
+	m_iNeededIridium	+= m_iBaseIridium;
+	m_iNeededDilithium	+= m_iBaseDilithium;
+	
 	// zusätzliche Rohstoffe die wir für bessere Anbauten/Umbauten benötigen
 	// wir brauchen für bessere Hüllen auch besseres Material
 	switch (m_Hull.GetHullMaterial())
@@ -233,20 +237,7 @@ void CShipInfo::CalculateFinalCosts()
 	{
 		if (m_TorpedoWeapons.GetAt(i).GetTorpedoPower() >= 500)
 			m_iNeededDeuterium += m_TorpedoWeapons.GetAt(i).GetTorpedoPower() * m_TorpedoWeapons.GetAt(i).GetNumber()
-			* m_TorpedoWeapons.GetAt(i).GetNumberOfTupes();
-
-		/*
-		switch (m_TorpedoWeapons.GetAt(i).GetTorpedoType())
-		{
-		case 4:	m_iNeededDeuterium += m_TorpedoWeapons.GetAt(i).GetTorpedoPower()
-									* m_TorpedoWeapons.GetAt(i).GetNumber(); break;	// Federation-Quantum
-		case 8:	m_iNeededDeuterium += m_TorpedoWeapons.GetAt(i).GetTorpedoPower()
-									* m_TorpedoWeapons.GetAt(i).GetNumber(); break;	// Cardassian-Quantum
-		case 13:m_iNeededDeuterium += m_TorpedoWeapons.GetAt(i).GetTorpedoPower()
-									* m_TorpedoWeapons.GetAt(i).GetNumber(); break;	// Romulan-Plasma
-		case 16:m_iNeededDeuterium += m_TorpedoWeapons.GetAt(i).GetTorpedoPower()
-									* m_TorpedoWeapons.GetAt(i).GetNumber(); break;	// Ferengi-Quantum
-		}*/
+			* m_TorpedoWeapons.GetAt(i).GetNumberOfTupes();	
 	}
 }
 
@@ -276,66 +267,21 @@ void CShipInfo::SetStartOrder()
 
 
 // Funktion zeichnet wichtige Informationen zu dem Schiff
-void CShipInfo::DrawShipInformation(CDC* pDC, CRect rect, CResearch* research)
+void CShipInfo::DrawShipInformation(Graphics* g, CRect rect, Gdiplus::Font* font, Gdiplus::Color clrNormal, Gdiplus::Color clrMark, CResearch* research)
 {
-/*	int m_iFontHeigh;
-	LOGFONT lf;
-	memset(&lf, 0, sizeof(LOGFONT)); 
-	if (m_iRace == HUMAN)
-	{
-		m_iFontHeigh = 18;
-		strcpy_s(lf.lfFaceName, "Nina");
-	}
-	else if (m_iRace == FERENGI)
-	{
-		m_iFontHeigh = 15;	// 16
-		strcpy_s(lf.lfFaceName, "Bajoran Regular");
-	}
-	else if (m_iRace == KLINGON)
-	{
-		m_iFontHeigh = 16;	// 18
-		strcpy_s(lf.lfFaceName, "KlingonDagger");
-	}
-	else if (m_iRace == ROMULAN)
-	{
-		m_iFontHeigh = 17;	// 23
-		strcpy_s(lf.lfFaceName, "RomulanFalcon");
-	}
-	else if (m_iRace == CARDASSIAN)
-	{
-		m_iFontHeigh = 16;	// 19
-		strcpy_s(lf.lfFaceName, "Final Frontier");
-	}
-	else if (m_iRace == DOMINION)
-	{
-		m_iFontHeigh = 16;	// 19
-		strcpy_s(lf.lfFaceName, "Final Frontier");
-	}
-	lf.lfHeight = m_iFontHeigh;                         
-	CFont font;
-	font.CreateFontIndirect(&lf); 
-*/
-	CRect r = rect;
-	CString s;
-	COLORREF oldColor = pDC->GetTextColor();
-	pDC->SetTextColor(RGB(200,200,200));
+	CRect r;
+	CString s;	
 	r.SetRect(rect.left,rect.top,rect.right,rect.top+25);
 	s.Format("%s",this->GetShipTypeAsString());
-	pDC->DrawText(s,r, DT_TOP | DT_CENTER | DT_SINGLELINE);
-	CFont* oldfont = pDC->GetCurrentFont();
-	// Wenn das Rechteck breiter als 500 ist wird nicht die kleinere Schriftgröße genommen
-	if (rect.Width() < 501)
-	{
-		LOGFONT lf;
-		memset(&lf, 0, sizeof(LOGFONT)); 
-		strcpy_s(lf.lfFaceName, "Nina");
-		lf.lfHeight = 18;                         
-		CFont font;
-		font.CreateFontIndirect(&lf);
-		pDC->SelectObject(&font);
-	}	
+	
+	SolidBrush fontBrush(clrMark);
+	StringFormat fontFormat;
+	fontFormat.SetAlignment(StringAlignmentCenter);
+	fontFormat.SetLineAlignment(StringAlignmentNear);
+	fontFormat.SetFormatFlags(StringFormatFlagsNoWrap);
+	g->DrawString(s.AllocSysString(), -1, font, RectF((REAL)r.left, (REAL)r.top, (REAL)r.Width(), (REAL)r.Height()), &fontFormat, &fontBrush);
+	
 	r.SetRect(rect.left,rect.top+30,rect.right,rect.top+52);
-	pDC->SetTextColor(oldColor);
 	CString speed = CResourceManager::GetString("SPEED");
 	CString range = CResourceManager::GetString("RANGE");
 	BYTE tmpRange = m_iRange;
@@ -356,12 +302,13 @@ void CShipInfo::DrawShipInformation(CDC* pDC, CRect rect, CResearch* research)
 	case RANGE_MIDDLE: s.Format("%s: %d  -  %s: %s",speed, tmpSpeed, range, CResourceManager::GetString("MIDDLE")); break;
 	case RANGE_LONG: s.Format("%s: %d  -  %s: %s",speed, tmpSpeed, range, CResourceManager::GetString("LONG")); break;
 	}
-	pDC->DrawText(s,r,DT_TOP | DT_SINGLELINE | DT_CENTER);
-	pDC->SetTextColor(RGB(200,200,200));
+	fontBrush.SetColor(clrNormal);
+	g->DrawString(s.AllocSysString(), -1, font, RectF((REAL)r.left, (REAL)r.top, (REAL)r.Width(), (REAL)r.Height()), &fontFormat, &fontBrush);
+	fontBrush.SetColor(clrMark);
 	r.SetRect(rect.left,rect.top+52,rect.right,rect.top+74);
 	s = CResourceManager::GetString("ARMAMENT");
-	pDC->DrawText(s,r,DT_TOP | DT_SINGLELINE | DT_CENTER);
-	pDC->SetTextColor(oldColor);
+	g->DrawString(s.AllocSysString(), -1, font, RectF((REAL)r.left, (REAL)r.top, (REAL)r.Width(), (REAL)r.Height()), &fontFormat, &fontBrush);
+	
 	CString weapons = "";
 	for (int i = 0; i < m_BeamWeapons.GetSize(); i++)
 	{
@@ -384,10 +331,10 @@ void CShipInfo::DrawShipInformation(CDC* pDC, CRect rect, CResearch* research)
 	if (weapons == "")
 		weapons = CResourceManager::GetString("NONE");
 	r.SetRect(rect.left,rect.top+74,rect.right,rect.top+142);
-	pDC->DrawText(weapons,r,DT_TOP | DT_WORDBREAK | DT_CENTER);
-		
-	pDC->SetTextColor(RGB(200,200,200));
-	
+	fontBrush.SetColor(clrNormal);
+	fontFormat.SetFormatFlags(!StringFormatFlagsNoWrap);
+	g->DrawString(weapons.AllocSysString(), -1, font, RectF((REAL)r.left, (REAL)r.top, (REAL)r.Width(), (REAL)r.Height()), &fontFormat, &fontBrush);
+			
 	// Wenn das Rechteck, welches wir an diese Funktion übergeben haben breiter als 500 ist, dann wird der Abstand
 	// zwischen Bewaffnung und "Schilde und Hülle" um eine Zeile verkürzt
 	USHORT sub = 0;
@@ -395,8 +342,10 @@ void CShipInfo::DrawShipInformation(CDC* pDC, CRect rect, CResearch* research)
 		sub = 20;
 	r.SetRect(rect.left,rect.top+142-sub,rect.right,rect.top+164-sub);
 	s = CResourceManager::GetString("SHIELDS")+" "+CResourceManager::GetString("AND")+" "+CResourceManager::GetString("HULL");
-	pDC->DrawText(s,r,DT_TOP | DT_SINGLELINE | DT_CENTER);
-	pDC->SetTextColor(oldColor);
+	fontFormat.SetFormatFlags(StringFormatFlagsNoWrap);
+	fontBrush.SetColor(clrMark);
+	g->DrawString(s.AllocSysString(), -1, font, RectF((REAL)r.left, (REAL)r.top, (REAL)r.Width(), (REAL)r.Height()), &fontFormat, &fontBrush);
+	
 	r.SetRect(rect.left,rect.top+164-sub,rect.right,rect.top+186-sub);
 	float shieldBoni = 1.0f;
 	if (research->GetResearchInfo()->GetResearchComplex(1)->GetFieldStatus(1) == RESEARCHED)
@@ -404,7 +353,8 @@ void CShipInfo::DrawShipInformation(CDC* pDC, CRect rect, CResearch* research)
 
 	s.Format("%s %d %s: %s %d",CResourceManager::GetString("TYPE"),m_Shield.GetShieldType(),
 		CResourceManager::GetString("SHIELDS"), CResourceManager::GetString("CAPACITY"), (UINT)(m_Shield.GetMaxShield() * shieldBoni));
-	pDC->DrawText(s,r,DT_TOP | DT_SINGLELINE | DT_CENTER);
+	fontBrush.SetColor(clrNormal);
+	g->DrawString(s.AllocSysString(), -1, font, RectF((REAL)r.left, (REAL)r.top, (REAL)r.Width(), (REAL)r.Height()), &fontFormat, &fontBrush);
 	r.SetRect(rect.left,rect.top+186-sub,rect.right,rect.top+230-sub);
 	CString material;
 	switch (m_Hull.GetHullMaterial())
@@ -420,19 +370,41 @@ void CShipInfo::DrawShipInformation(CDC* pDC, CRect rect, CResearch* research)
 	
 	if (m_Hull.GetDoubleHull() == TRUE)
 		s.Format("%s%s: %s %d",material, CResourceManager::GetString("DOUBLE_HULL_ARMOUR"),
-			CResourceManager::GetString("INTEGRITY"), (short)(m_Hull.GetMaxHull()*hullBoni));
+			CResourceManager::GetString("INTEGRITY"), (int)(m_Hull.GetMaxHull()*hullBoni));
 	else
 		s.Format("%s%s: %s %d",material, CResourceManager::GetString("HULL_ARMOR"),
-			CResourceManager::GetString("INTEGRITY"), (short)(m_Hull.GetMaxHull()*hullBoni));
-	pDC->DrawText(s,r,DT_TOP | DT_WORDBREAK | DT_CENTER);
-	
+			CResourceManager::GetString("INTEGRITY"), (int)(m_Hull.GetMaxHull()*hullBoni));
+	fontFormat.SetFormatFlags(StringFormatFlagsNoWrap);
+	g->DrawString(s.AllocSysString(), -1, font, RectF((REAL)r.left, (REAL)r.top, (REAL)r.Width(), (REAL)r.Height()), &fontFormat, &fontBrush);
+		
 	if (rect.Width() >= 501)
 	{
-		pDC->SetTextColor(RGB(200,200,200));
+		// Manövrierbarkeit anzeigen
+		fontBrush.SetColor(clrMark);
 		r.SetRect(rect.left,rect.top+275,rect.right,rect.top+300);
-		pDC->DrawText(CResourceManager::GetString("SPECIAL_ABILITIES"), r, DT_TOP | DT_SINGLELINE | DT_CENTER);
+		g->DrawString(CResourceManager::GetString("MANEUVERABILITY").AllocSysString(), -1, font, RectF((REAL)r.left, (REAL)r.top, (REAL)r.Width(), (REAL)r.Height()), &fontFormat, &fontBrush);
+		switch (m_byManeuverability)
+		{
+		case 8:	s = CResourceManager::GetString("EXCELLENT");	break;
+		case 7:	s = CResourceManager::GetString("VERYGOOD");	break;
+		case 6:	s = CResourceManager::GetString("GOOD");		break;
+		case 5:	s = CResourceManager::GetString("NORMAL");		break;
+		case 4:	s = CResourceManager::GetString("ADEQUATE");	break;
+		case 3:	s = CResourceManager::GetString("BAD");			break;
+		case 2:	s = CResourceManager::GetString("VERYBAD");		break;
+		case 1:	s = CResourceManager::GetString("MISERABLE");	break;
+		default:s = CResourceManager::GetString("NONE");
+		}
+		fontBrush.SetColor(clrNormal);
+		r.SetRect(rect.left,rect.top+300,rect.right,rect.top+325);
+		g->DrawString(s.AllocSysString(), -1, font, RectF((REAL)r.left, (REAL)r.top, (REAL)r.Width(), (REAL)r.Height()), &fontFormat, &fontBrush);
+
+		// Spezialfähigkeiten anzeigen
+		fontBrush.SetColor(clrMark);
+		r.SetRect(rect.left,rect.top+325,rect.right,rect.top+350);
+		g->DrawString(CResourceManager::GetString("SPECIAL_ABILITIES").AllocSysString(), -1, font, RectF((REAL)r.left, (REAL)r.top, (REAL)r.Width(), (REAL)r.Height()), &fontFormat, &fontBrush);
 		s = "";
-		pDC->SetTextColor(oldColor);
+		fontBrush.SetColor(clrNormal);
 		if (m_bySpecial[0] == ASSULTSHIP || m_bySpecial[1] == ASSULTSHIP)
 			s += CResourceManager::GetString("ASSAULTSHIP")+" \n";
 		if (m_bySpecial[0] == BLOCKADESHIP || m_bySpecial[1] == BLOCKADESHIP)
@@ -459,10 +431,11 @@ void CShipInfo::DrawShipInformation(CDC* pDC, CRect rect, CResearch* research)
 			s += CResourceManager::GetString("CAN_CLOAK")+" \n";
 		if (s.IsEmpty())
 			s = CResourceManager::GetString("NONE");
-		r.SetRect(rect.left,rect.top+300,rect.right,rect.top+400);
-		pDC->DrawText(s, r, DT_TOP | DT_WORDBREAK | DT_CENTER);
+		r.SetRect(rect.left,rect.top+350,rect.right,rect.top+450);
+		fontBrush.SetColor(clrNormal);
+		fontFormat.SetFormatFlags(!StringFormatFlagsNoWrap);
+		g->DrawString(s.AllocSysString(), -1, font, RectF((REAL)r.left, (REAL)r.top, (REAL)r.Width(), (REAL)r.Height()), &fontFormat, &fontBrush);		
 	}
-	pDC->SelectObject(oldfont);
 }
 
 // Diese Funktion liefert ein TRUE zurück, wenn das Schiff atm baubar ist. Es wird nur die Forschung verglichen, also

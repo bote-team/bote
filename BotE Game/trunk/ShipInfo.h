@@ -1,5 +1,5 @@
 /*
- *   Copyright (C)2004-2008 Sir Pustekuchen
+ *   Copyright (C)2004-2009 Sir Pustekuchen
  *
  *   Author   :  Sir Pustekuchen
  *   Home     :  http://birth-of-the-empires.de.vu
@@ -33,6 +33,10 @@ public:
 //	CShipInfo & operator=(const CShipInfo &);
 // Die Serialisierungsfunktion
 	virtual void Serialize(CArchive &ar);
+	
+	/// Funktion gibt eine Rassennummer zurück. Jede Rasse besitzt eine Nummer, welche Schiffe und Gebäude diese
+	/// bauen kann.
+	/// @return Rassennummer (nicht Rassen-ID!)
 	BYTE GetRace() const {return m_iRace;}
 	BYTE GetBioTech() const {return m_iBioTech;}
 	BYTE GetEnergyTech() const {return m_iEnergyTech;}
@@ -73,11 +77,11 @@ public:
 	void DeleteWeapons();							// Funktion löscht die Bewaffnung
 	void CalculateFinalCosts();						// Funktion berechnet die finalen Kosten zum Bau des Schiffes
 	void SetStartOrder();							// Funktion bestimmt die 1. Order des Schiffs nach dem Bau anhand dessen Typs
-	void DrawShipInformation(CDC* pDC, CRect rect, CResearch* research);	// Funktion zeichnet wichtige Informationen zu dem Schiff
+	void DrawShipInformation(Graphics* g, CRect rect, Gdiplus::Font* font, Gdiplus::Color clrNormal, Gdiplus::Color clrMark, CResearch* research);	// Funktion zeichnet wichtige Informationen zu dem Schiff
 	BOOLEAN IsThisShipBuildableNow(CResearch* research);// Funktion liefert TRUE zurück, wenn das Schiff atm baubar ist
 
 private:
-	BYTE m_iRace;					// welche Rasse kann das dingens bauen
+	BYTE m_iRace;					// welche Rasse kann das Schiff bauen
 	// nötige Forschung
 	BYTE m_iBioTech;
 	BYTE m_iEnergyTech;

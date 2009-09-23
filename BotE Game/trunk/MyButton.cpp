@@ -1,5 +1,6 @@
 #include "StdAfx.h"
 #include "MyButton.h"
+#include "mytrace.h"
 
 //////////////////////////////////////////////////////////////////////
 // Konstruktion/Destruktion
@@ -33,12 +34,15 @@ void CMyButton::DrawButton(CDC* pDC, CGraphicPool* graphicPool)
 	CBitmap* graphic = NULL;
 	HGDIOBJ oldGraphic;
 	
+	CString sFile = 0;
 	switch (m_byStatus)
 	{
-		case 0:  graphic = graphicPool->GetGraphic(m_strNormal); break;
-		case 1:  graphic = graphicPool->GetGraphic(m_strActive); break;
-		default: graphic = graphicPool->GetGraphic(m_strInactive);
+	case 0:  sFile = m_strNormal; break;
+	case 1:  sFile = m_strActive; break;
+	default: sFile = m_strInactive;
 	}
+
+	graphic = graphicPool->GetGraphic(sFile);
 	if (graphic)
 	{
 		oldGraphic = mdc.SelectObject(*graphic);
@@ -50,7 +54,7 @@ void CMyButton::DrawButton(CDC* pDC, CGraphicPool* graphicPool)
 		pDC->SetStretchBltMode(oldStretchMode);
 		mdc.SelectObject(oldGraphic);	}
 	else
-		TRACE("ERROR: could not load buttongraphic\n");
+		MYTRACE(MT::LEVEL_WARNING, "Could not load buttongraphic " + sFile + "\n");
 }
 
 void CMyButton::DrawButton(Gdiplus::Graphics &g, CGraphicPool* graphicPool, Gdiplus::Font &font, Gdiplus::SolidBrush &brush)
@@ -58,13 +62,15 @@ void CMyButton::DrawButton(Gdiplus::Graphics &g, CGraphicPool* graphicPool, Gdip
 	ASSERT(graphicPool);
 
 	Bitmap* graphic = NULL;
-		
+	CString sFile;		
 	switch (m_byStatus)
 	{
-		case 0:  graphic = graphicPool->GetGDIGraphic(m_strNormal); break;
-		case 1:  graphic = graphicPool->GetGDIGraphic(m_strActive); break;
-		default: graphic = graphicPool->GetGDIGraphic(m_strInactive);
+	case 0:  sFile = m_strNormal; break;
+	case 1:  sFile = m_strActive; break;
+	default: sFile = m_strInactive;
 	}
+
+	graphic = graphicPool->GetGDIGraphic(sFile);
 	if (graphic)
 	{
 		// Buttongrafik zeichnen
@@ -77,7 +83,7 @@ void CMyButton::DrawButton(Gdiplus::Graphics &g, CGraphicPool* graphicPool, Gdip
 		g.DrawString(m_strText.AllocSysString(), -1, &font, RectF((REAL)m_KO.x, (REAL)m_KO.y + 2, (REAL)m_Size.cx, (REAL)m_Size.cy), &fontFormat, &brush);
 	}
 	else
-		TRACE("ERROR: could not load buttongraphic\n");
+		MYTRACE(MT::LEVEL_WARNING, "Could not load buttongraphic" + sFile + "\n");
 }
 
 BOOLEAN CMyButton::Activate()

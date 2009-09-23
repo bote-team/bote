@@ -1,5 +1,5 @@
 /*
- *   Copyright (C)2004-2008 Sir Pustekuchen
+ *   Copyright (C)2004-2009 Sir Pustekuchen
  *
  *   Author   :  Sir Pustekuchen
  *   Home     :  http://birth-of-the-empires.de.vu
@@ -40,14 +40,12 @@ private:
 	void CreateButtons();
 
 	/// Funktio zum Zeichnen des Forschungsmenüs
-	/// @param pDC Zeiger auf den aktuellen Zeichenkontext
-	/// @param theClientRect die komplette Zeichenfläche
-	void DrawResearchMenue(CDC* pDC, CRect theClientRect);
+	/// @param g Zeiger auf GDI+ Grafikobjekt
+	void DrawResearchMenue(Graphics* g);
 
 	/// Funktion zum Zeichnen des Spezialforschungsmenüs
-	/// @param pDC Zeiger auf den aktuellen Zeichenkontext
-	/// @param theClientRect die komplette Zeichenfläche
-	void DrawUniqueResearchMenue(CDC* pDC, CRect theClientRect);
+	/// @param g Zeiger auf GDI+ Grafikobjekt
+	void DrawUniqueResearchMenue(Graphics* g);
 
 	// Attribute
 
@@ -55,9 +53,9 @@ private:
 	CArray<CMyButton*> m_ResearchMainButtons;		///< Buttons an der rechten Seite der Forschungsansichten
 
 	// Grafiken
-	CBitmap bg_researchmenu;				///< normales Forschungsmenü
-	CBitmap bg_urmenu;						///< Spezialforschungsmenü
-	CBitmap bg_emptyur;						///< wenn keine Spezialforschung zur Auswahl steht
+	Bitmap* bg_researchmenu;				///< normales Forschungsmenü
+	Bitmap* bg_urmenu;						///< Spezialforschungsmenü
+	Bitmap* bg_emptyur;						///< wenn keine Spezialforschung zur Auswahl steht
 
 	// Hier die Rechtecke zum Klicken in der Forschungsübersicht
 	CRect LockStatusRect[7];				///< Rechteck zeigt den Lockstatus des jeweiligen Forschungsgebietes an

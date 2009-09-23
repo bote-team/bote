@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "DiplomacyIntelObj.h"
 #include "Botf2Doc.h"
+#include "RaceController.h"
 
 IMPLEMENT_SERIAL (CDiplomacyIntelObj, CObject, 1)
 
@@ -13,23 +14,23 @@ CDiplomacyIntelObj::CDiplomacyIntelObj(void)
 	m_MinorRaceKO = CPoint(-1,-1);
 }
 
-CDiplomacyIntelObj::CDiplomacyIntelObj(BYTE owner, BYTE enemy, USHORT round, BOOLEAN isSpy, const CPoint &minorRaceKO, short agreement, short relationship)
-	: CIntelObject(owner, enemy, round, isSpy, 3), m_MinorRaceKO(minorRaceKO), m_nAgreement(agreement), m_nRelationship(relationship)
+CDiplomacyIntelObj::CDiplomacyIntelObj(const CString& sOwnerID, const CString& sEnemyID, USHORT round, BOOLEAN isSpy, const CPoint &minorRaceKO, short agreement, short relationship)
+	: CIntelObject(sOwnerID, sEnemyID, round, isSpy, 3), m_MinorRaceKO(minorRaceKO), m_nAgreement(agreement), m_nRelationship(relationship)
 {
-	m_byMajor = NULL;
+	m_sMajor = "";
 	m_nDuration = NULL;
 }
 
-CDiplomacyIntelObj::CDiplomacyIntelObj(BYTE owner, BYTE enemy, USHORT round, BOOLEAN isSpy, BYTE majorRace, short agreement, short duration, short relationship)
-	: CIntelObject(owner, enemy, round, isSpy, 3), m_byMajor(majorRace), m_nAgreement(agreement), m_nDuration(duration), m_nRelationship(relationship)
+CDiplomacyIntelObj::CDiplomacyIntelObj(const CString& sOwnerID, const CString& sEnemyID, USHORT round, BOOLEAN isSpy, const CString& sMajorRaceID, short agreement, short duration, short relationship)
+	: CIntelObject(sOwnerID, sEnemyID, round, isSpy, 3), m_sMajor(sMajorRaceID), m_nAgreement(agreement), m_nDuration(duration), m_nRelationship(relationship)
 {
 	m_MinorRaceKO = CPoint(-1,-1);	
 }
 
-CDiplomacyIntelObj::CDiplomacyIntelObj(BYTE owner, BYTE enemy, USHORT round, BOOLEAN isSpy, const CPoint &minorRaceKO)
-	: CIntelObject(owner, enemy, round, isSpy, 3), m_MinorRaceKO(minorRaceKO)
+CDiplomacyIntelObj::CDiplomacyIntelObj(const CString& sOwnerID, const CString& sEnemyID, USHORT round, BOOLEAN isSpy, const CPoint &minorRaceKO)
+	: CIntelObject(sOwnerID, sEnemyID, round, isSpy, 3), m_MinorRaceKO(minorRaceKO)
 {
-	m_byMajor = NULL;
+	m_sMajor = "";
 	m_nAgreement = NULL;
 	m_nDuration = NULL;
 	m_nRelationship = NULL;
@@ -42,15 +43,15 @@ CDiplomacyIntelObj::~CDiplomacyIntelObj(void)
 /// Kopierkonstruktor
 CDiplomacyIntelObj::CDiplomacyIntelObj(const CDiplomacyIntelObj & rhs)
 {
-	m_byOwner = rhs.m_byOwner;
-	m_byEnemy = rhs.m_byEnemy;
+	m_sOwner = rhs.m_sOwner;
+	m_sEnemy = rhs.m_sEnemy;
 	m_nRound = rhs.m_nRound;
 	m_bIsSpy = rhs.m_bIsSpy;
 	m_byType = rhs.m_byType;
 	m_strEnemyDesc = rhs.m_strEnemyDesc;
 	m_strOwnerDesc = rhs.m_strOwnerDesc;
 
-	m_byMajor = rhs.m_byMajor;
+	m_sMajor = rhs.m_sMajor;
 	m_MinorRaceKO = rhs.m_MinorRaceKO;
 	m_nAgreement = rhs.m_nAgreement;
 	m_nDuration = rhs.m_nDuration;
@@ -66,7 +67,7 @@ void CDiplomacyIntelObj::Serialize(CArchive &ar)
 	if (ar.IsStoring())
 	{
 		ar << m_MinorRaceKO;
-		ar << m_byMajor;
+		ar << m_sMajor;
 		ar << m_nAgreement;
 		ar << m_nDuration;
 		ar << m_nRelationship;
@@ -74,7 +75,7 @@ void CDiplomacyIntelObj::Serialize(CArchive &ar)
 	else if (ar.IsLoading())
 	{
 		ar >> m_MinorRaceKO;
-		ar >> m_byMajor;
+		ar >> m_sMajor;
 		ar >> m_nAgreement;
 		ar >> m_nDuration;
 		ar >> m_nRelationship;		
@@ -86,7 +87,7 @@ void CDiplomacyIntelObj::Serialize(CArchive &ar)
 //////////////////////////////////////////////////////////////////////
 /// Funktion generiert einen Text, welcher eine Geheimdiestaktion beschreibt, für den Auslöser bzw. das Opfer
 /// dieser Aktion.
-void CDiplomacyIntelObj::CreateText(CBotf2Doc* pDoc, BYTE n, BYTE param)
+void CDiplomacyIntelObj::CreateText(CBotf2Doc* pDoc, BYTE n, const CString& param)
 {
 	CString csInput;													// auf csInput wird die jeweilige Zeile gespeichert
 	CString fileName;
@@ -102,7 +103,7 @@ void CDiplomacyIntelObj::CreateText(CBotf2Doc* pDoc, BYTE n, BYTE param)
 			int pos = 0;
 			CString s = csInput.Tokenize(":", pos);
 			// Rasse bestimmen
-			if (atoi(s) == m_byOwner)
+			if (s == m_sOwner)
 			{
 				s = csInput.Tokenize(":", pos);
 				// Typ (Wirtschaft, Militär...) bestimmen
@@ -118,34 +119,19 @@ void CDiplomacyIntelObj::CreateText(CBotf2Doc* pDoc, BYTE n, BYTE param)
 						{
 							// in csInput steht nun die Beschreibung für den Aggressor
 							// Jetzt müssen noch die Variablen mit dem richtigen Text gefüllt werden
-							if (this->GetIsSpy())
+							CMajor* pEnemey = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(m_sEnemy));
+							if (pEnemey)
 							{
-								switch (m_byEnemy)
-								{
-								case HUMAN:		{s = CResourceManager::GetString("ARTICLE_RACE1_EMPIRE"); break;}
-								case FERENGI:	{s = CResourceManager::GetString("ARTICLE_RACE2_EMPIRE"); break;}
-								case KLINGON:	{s = CResourceManager::GetString("ARTICLE_RACE3_EMPIRE"); break;}
-								case ROMULAN:	{s = CResourceManager::GetString("ARTICLE_RACE4_EMPIRE"); break;}
-								case CARDASSIAN:{s = CResourceManager::GetString("ARTICLE_RACE5_EMPIRE"); break;}
-								case DOMINION:	{s = CResourceManager::GetString("ARTICLE_RACE6_EMPIRE"); break;}
-								}
+								if (this->GetIsSpy())
+									s = pEnemey->GetEmpireNameWithArticle();
+								else
+									s = pEnemey->GetEmpireNameWithAssignedArticle();
+								csInput.Replace("$race$", s);
 							}
-							else
-							{
-								switch (m_byEnemy)
-								{
-								case HUMAN:		{s = CResourceManager::GetString("TO_RACE1_EMPIRE"); break;}
-								case FERENGI:	{s = CResourceManager::GetString("TO_RACE2_EMPIRE"); break;}
-								case KLINGON:	{s = CResourceManager::GetString("TO_RACE3_EMPIRE"); break;}
-								case ROMULAN:	{s = CResourceManager::GetString("TO_RACE4_EMPIRE"); break;}
-								case CARDASSIAN:{s = CResourceManager::GetString("TO_RACE5_EMPIRE"); break;}
-								case DOMINION:	{s = CResourceManager::GetString("TO_RACE6_EMPIRE"); break;}
-								}
-							}
-							csInput.Replace("$race$", s);
+							
 							if (m_MinorRaceKO != CPoint(-1,-1))
 							{
-								s = pDoc->GetMinorRace(pDoc->m_Sector[m_MinorRaceKO.x][m_MinorRaceKO.y].GetName())->GetRaceName();
+								s = pDoc->GetRaceCtrl()->GetMinorRace(pDoc->m_Sector[m_MinorRaceKO.x][m_MinorRaceKO.y].GetName())->GetRaceName();
 								csInput.Replace("$minor$", s);
 							}
 							switch (m_nAgreement)
@@ -163,18 +149,14 @@ void CDiplomacyIntelObj::CreateText(CBotf2Doc* pDoc, BYTE n, BYTE param)
 							}
 							csInput.Replace("$agreement$", s);
 
-							if (m_byMajor != NOBODY)
+							if (m_sMajor != "")
 							{
-								switch (m_byMajor)
+								CMajor* pMajor = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(m_sMajor));
+								if (pMajor)
 								{
-								case HUMAN:		{s = CResourceManager::GetString("TO_RACE1_EMPIRE"); break;}
-								case FERENGI:	{s = CResourceManager::GetString("TO_RACE2_EMPIRE"); break;}
-								case KLINGON:	{s = CResourceManager::GetString("TO_RACE3_EMPIRE"); break;}
-								case ROMULAN:	{s = CResourceManager::GetString("TO_RACE4_EMPIRE"); break;}
-								case CARDASSIAN:{s = CResourceManager::GetString("TO_RACE5_EMPIRE"); break;}
-								case DOMINION:	{s = CResourceManager::GetString("TO_RACE6_EMPIRE"); break;}
+									s = pMajor->GetEmpireNameWithAssignedArticle();
+									csInput.Replace("$major$", s);
 								}
-								csInput.Replace("$major$", s);
 								
 								if (m_nAgreement == NO_AGREEMENT || m_nAgreement == WAR)
 									csInput.Replace("($duration$) ", "");
@@ -193,31 +175,21 @@ void CDiplomacyIntelObj::CreateText(CBotf2Doc* pDoc, BYTE n, BYTE param)
 						// handelt es sich um die Beziehungstexte
 						else
 						{
-							switch (m_byEnemy)
+							CMajor* pEnemey = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(m_sEnemy));
+							if (pEnemey)
 							{
-							case HUMAN:		{s = CResourceManager::GetString("TO_RACE1_EMPIRE"); break;}
-							case FERENGI:	{s = CResourceManager::GetString("TO_RACE2_EMPIRE"); break;}
-							case KLINGON:	{s = CResourceManager::GetString("TO_RACE3_EMPIRE"); break;}
-							case ROMULAN:	{s = CResourceManager::GetString("TO_RACE4_EMPIRE"); break;}
-							case CARDASSIAN:{s = CResourceManager::GetString("TO_RACE5_EMPIRE"); break;}
-							case DOMINION:	{s = CResourceManager::GetString("TO_RACE6_EMPIRE"); break;}
+								s = pEnemey->GetEmpireNameWithAssignedArticle();
+								csInput.Replace("$race$", s);
 							}
-							csInput.Replace("$race$", s);
 							
-							if (m_byMajor != NOBODY)
+							if (m_sMajor != "")
 							{
-								switch (m_byMajor)
-								{
-								case HUMAN:		{s = CResourceManager::GetString("ARTICLE_RACE1_EMPIRE"); break;}
-								case FERENGI:	{s = CResourceManager::GetString("ARTICLE_RACE2_EMPIRE"); break;}
-								case KLINGON:	{s = CResourceManager::GetString("ARTICLE_RACE3_EMPIRE"); break;}
-								case ROMULAN:	{s = CResourceManager::GetString("ARTICLE_RACE4_EMPIRE"); break;}
-								case CARDASSIAN:{s = CResourceManager::GetString("ARTICLE_RACE5_EMPIRE"); break;}
-								case DOMINION:	{s = CResourceManager::GetString("ARTICLE_RACE6_EMPIRE"); break;}
-								}
+								CMajor* pMajor = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(m_sMajor));
+								if (pMajor)
+									s = pMajor->GetEmpireNameWithArticle();
 							}
 							else if (m_MinorRaceKO != CPoint(-1,-1))
-								s = CResourceManager::GetString("FEMALE_ARTICLE")+" "+pDoc->GetMinorRace(pDoc->m_Sector[m_MinorRaceKO.x][m_MinorRaceKO.y].GetName())->GetRaceName();
+								s = CResourceManager::GetString("FEMALE_ARTICLE")+" " + pDoc->GetRaceCtrl()->GetMinorRace(pDoc->m_Sector[m_MinorRaceKO.x][m_MinorRaceKO.y].GetName())->GetRaceName();
 							csInput.Replace("$major$", s);
 							
 							if (m_nRelationship < 5) s = CResourceManager::GetString("HATEFUL");
@@ -235,7 +207,7 @@ void CDiplomacyIntelObj::CreateText(CBotf2Doc* pDoc, BYTE n, BYTE param)
 
 							if (m_MinorRaceKO != CPoint(-1,-1))
 							{
-								s = pDoc->GetMinorRace(pDoc->m_Sector[m_MinorRaceKO.x][m_MinorRaceKO.y].GetName())->GetRaceName();
+								s = pDoc->GetRaceCtrl()->GetMinorRace(pDoc->m_Sector[m_MinorRaceKO.x][m_MinorRaceKO.y].GetName())->GetRaceName();
 								csInput.Replace("$minor$", s);
 							}
 						}
@@ -268,7 +240,7 @@ void CDiplomacyIntelObj::CreateText(CBotf2Doc* pDoc, BYTE n, BYTE param)
 				int pos = 0;
 				CString s = csInput.Tokenize(":", pos);
 				// Rasse bestimmen
-				if (atoi(s) == m_byEnemy)
+				if (s == m_sEnemy)
 				{
 					s = csInput.Tokenize(":", pos);
 					// Typ (Wirtschaft, Militär...) bestimmen
@@ -281,47 +253,35 @@ void CDiplomacyIntelObj::CreateText(CBotf2Doc* pDoc, BYTE n, BYTE param)
 							csInput.Delete(0, pos);						
 							// in csInput steht nun die Beschreibung für das Opfer
 							// Jetzt müssen noch die Variablen mit dem richtigen Text gefüllt werden
-							switch (m_byOwner)
+							CMajor* pOwner = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(m_sOwner));
+							if (pOwner)
 							{
-							case HUMAN:		{s = CResourceManager::GetString("TO_RACE1_EMPIRE"); break;}
-							case FERENGI:	{s = CResourceManager::GetString("TO_RACE2_EMPIRE"); break;}
-							case KLINGON:	{s = CResourceManager::GetString("TO_RACE3_EMPIRE"); break;}
-							case ROMULAN:	{s = CResourceManager::GetString("TO_RACE4_EMPIRE"); break;}
-							case CARDASSIAN:{s = CResourceManager::GetString("TO_RACE5_EMPIRE"); break;}
-							case DOMINION:	{s = CResourceManager::GetString("TO_RACE6_EMPIRE"); break;}
+								s = pOwner->GetEmpireNameWithAssignedArticle();
+								csInput.Replace("$race$", s);
 							}
-							csInput.Replace("$race$", s);
 							if (m_MinorRaceKO != CPoint(-1,-1))
 							{
-								s = pDoc->GetMinorRace(pDoc->m_Sector[m_MinorRaceKO.x][m_MinorRaceKO.y].GetName())->GetRaceName();
+								s = pDoc->GetRaceCtrl()->GetMinorRace(pDoc->m_Sector[m_MinorRaceKO.x][m_MinorRaceKO.y].GetName())->GetRaceName();
 								csInput.Replace("$minor$", s);
 							}
-							if (m_byMajor != NOBODY)
+							if (m_sMajor != "")
 							{
-								switch (m_byMajor)
+								CMajor* pMajor = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(m_sMajor));
+								if (pMajor)
 								{
-								case HUMAN:		{s = CResourceManager::GetString("TO_RACE1_EMPIRE"); break;}
-								case FERENGI:	{s = CResourceManager::GetString("TO_RACE2_EMPIRE"); break;}
-								case KLINGON:	{s = CResourceManager::GetString("TO_RACE3_EMPIRE"); break;}
-								case ROMULAN:	{s = CResourceManager::GetString("TO_RACE4_EMPIRE"); break;}
-								case CARDASSIAN:{s = CResourceManager::GetString("TO_RACE5_EMPIRE"); break;}
-								case DOMINION:	{s = CResourceManager::GetString("TO_RACE6_EMPIRE"); break;}
+									s = pMajor->GetEmpireNameWithArticle();
+									csInput.Replace("$major$", s);
 								}
-								csInput.Replace("$major$", s);
 							}
 							m_strEnemyDesc = csInput;
-							if (param != NOBODY)
+							if (param != "")
 							{
-								switch (param)
+								CMajor* pParam = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(param));
+								if (pParam)
 								{
-								case HUMAN:		{s = CResourceManager::GetString("ARTICLE_RACE1_EMPIRE"); break;}
-								case FERENGI:	{s = CResourceManager::GetString("ARTICLE_RACE2_EMPIRE"); break;}
-								case KLINGON:	{s = CResourceManager::GetString("ARTICLE_RACE3_EMPIRE"); break;}
-								case ROMULAN:	{s = CResourceManager::GetString("ARTICLE_RACE4_EMPIRE"); break;}
-								case CARDASSIAN:{s = CResourceManager::GetString("ARTICLE_RACE5_EMPIRE"); break;}
-								case DOMINION:	{s = CResourceManager::GetString("ARTICLE_RACE6_EMPIRE"); break;}
+									s = pParam->GetEmpireNameWithArticle();
+									csInput = CResourceManager::GetString("KNOW_RESPONSIBLE_SABOTAGERACE", FALSE, s);
 								}
-								csInput = CResourceManager::GetString("KNOW_RESPONSIBLE_SABOTAGERACE", FALSE, s);
 							}
 							else
 								csInput = CResourceManager::GetString("DO_NOT_KNOW_RESPONSIBLE_RACE");

@@ -63,13 +63,13 @@ CBitmap* CGraphicPool::GetGraphic(const CString &name)
 	// kompletten Pfad inkl. relativen Pfadnamen
 	CString fileName(m_strPath + name);
 #ifdef TRACE_GRAPHICLOAD
-	TRACE("graphic: %s not found in map ... loading\n", fileName); 
+	MYTRACE(MT::LEVEL_DEBUG, "graphic: %s not found in map ... loading\n", fileName); 
 #endif
 	// Grafik laden
 	if (!img->Load(fileName))
 	{
 #ifdef TRACE_GRAPHICLOAD
-		TRACE("ERROR: could not load graphic: %s\n", fileName);
+		MYTRACE(MT::LEVEL_WARNING, "Could not load graphic: %s\n", fileName);
 #endif		
 		delete img;
 		img = NULL;
@@ -107,13 +107,13 @@ Bitmap* CGraphicPool::GetGDIGraphic(const CString &name)
 	img = Bitmap::FromFile(fileName.AllocSysString());
 	
 #ifdef TRACE_GRAPHICLOAD
-	TRACE("graphic: %s not found in map ... loading\n", fileName); 
+	MYTRACE(MT::LEVEL_DEBUG, "graphic: %s not found in map ... loading\n", fileName); 
 #endif
 	// Grafik laden
-	if (img->GetLastStatus() != 0)
+	if (img->GetLastStatus() != Ok)
 	{
 #ifdef TRACE_GRAPHICLOAD
-		TRACE("ERROR: could not load graphic: %s\n", fileName);
+		MYTRACE(MT::LEVEL_WARNING, "Could not load graphic: %s\n", fileName);
 #endif		
 		delete img;
 		img = NULL;

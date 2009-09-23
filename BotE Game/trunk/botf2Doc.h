@@ -3,36 +3,31 @@
 /////////////////////////////////////////////////////////////////////////////
 #pragma once
 
-#include "GenShipName.h"
-#include "Diplomacy.h"
-#include "Trade.h"
-#include "TradeHistory.h"
-#include "ShipHistory.h"
-#include "Statistics.h"
-#include "Fleet.h"
-#include "WeaponObserver.h"
-#include "GlobalBuildings.h"
-#include "Combat.h"
-#include "AttackSystem.h"
-#include "Starmap.h"
-#include "GlobalStorage.h"
-#include "SoundManager.h"
-#include "IniLoader.h"
-#include "GraphicPool.h"
-#include "Network.h"
-#include "PeerData.h"
-#include "LZMA_BotE.h"
-#include "SystemAI.h"
-#include "SectorAI.h"
-#include "ShipAI.h"
-#include "AIPrios.h"
-#include "IntelCalc.h"
-#include "MyTimer.h"
 #include "Botf2.h"
 #include "MainFrm.h"
+#include "GenShipName.h"
+#include "Statistics.h"
+#include "GlobalBuildings.h"
+#include "GlobalStorage.h"
+#include "PeerData.h"
+#include "LZMA_BotE.h"
+#include "SoundManager.h"
+#include "MyTimer.h"
+#include "Sector.h"
+#include "System.h"
+#include <map>
+#include <utility>
 
+// forward declaration
 class CMainDlg;
 class CNetworkHandler;
+class CStarmap;
+class CIniLoader;
+class CGraphicPool;
+class CRaceController;
+class CMajor;
+class CSectorAI;
+class CAIPrios;
 
 class CBotf2Doc : public CDocument, public network::CPeerData
 {
@@ -45,51 +40,44 @@ protected: // Nur aus Serialisierung erzeugen
 	CGraphicPool *m_pGraphicPool;		///< Objekt verwaltet Grafiken für BotE
 	USHORT m_iRound;					///< aktuelle Rundenanzahl
 	float m_fDifficultyLevel;			///< der Schwierigkeitsgrad eines Spiels
-	float m_fStardate;			// Startrek Sternzeit
-	CPoint KO;					// Koordinaten des Sektors
-	CPoint raceKO[7];			// Startkoordinaten des Hauptsystems der Majorraces
+	float m_fStardate;					///< Startrek Sternzeit
+	CPoint m_ptKO;						///< Koordinaten des aktuell angeklickten Sektors
+			
+	BYTE m_iShowWhichTechInView3;		///< Welche Tech soll in View3 angezeigt werden?
+	short m_iShowWhichShipInfoInView3;	///< Welche Schiffsinfo soll in View 3 angezeigt werden
 	
-	BYTE m_iShowWhichTechInView3;// Welche Tech soll in View3 angezeigt werden?
-	short m_iShowWhichShipInfoInView3; // Welche Schiffsinfo soll in View 3 angezeigt werden
+	CPoint m_ptScrollPoint;				///< aktuelle Scrollposition der Galaxieansicht wird auf diesen Point gespeichert
 	
-	USHORT m_iSelectedView[7];	// Welche View soll in der MainView angezeigt werden? z.B. Galaxie oder System
-	CStarmap* m_pStarmap;		// Zeiger auf die Starmap, welche dann auch in den Views abgefragt wird
-	CStarmap* starmap[7];		// Die Starmaps der einzelnen Majors. Wird bei der NextRound Berechnung benötigt.
-	CPoint m_ScrollPoint;		// aktuelle Scrollposition der Galaxieansicht wird auf diesen Point gespeichert
-	CSector m_Sector[30][20];	// Matrix von Sektoren der Klasse CSector anlegen
-	CSystem m_System[30][20];	// auf jeden Sektor ein potentielles System anlegen
-	CEmpire m_Empire[7];		// Die einzelnen Imperien (Föd, Ferengi usw.) 7, weil 0 wäre NOBODOY
-	CDiplomacy m_Diplomacy[7];	// Die einzelnen Diplomatieobjekte (Föd, Ferengi usw.) 7, weil 0 wäre NOBODOY
-	CTrade m_Trade[7];			// Die einzelnen Handelsobjekte (Föd, Ferengi usw.) 7, weil 0 wäre NOBODY
-	CTradeHistory m_TradeHistory[7];	// Die einzelnen Handelshistoryobjekte (beinhalten alle Kurse des Spiels)
-	CMajorRace m_MajorRace[7];  // Die einzelnen Majorraceobjekte (Föd, Ferengi usw.) 7, weil 0 wäre NOBODY
-	CWeaponObserver m_WeaponObserver[7];// beobachtet die baubaren Waffen für Schiffe. Wird benötigt wenn wir Schiffe designen wollen
-	CGlobalStorage m_GlobalStorage[7];	// das globale Lager der einzelnen Imperien
-	UINT m_iCombatShipPower[7];	// die stärken der Kampfschiffe der einzelnen Imperien
-	CGenShipName m_GenShipName;	// Variable, die alle möglichen Schiffsnamen beinhaltet
-	BYTE m_iPlayersRace;		// Varibale auf die die gewählte Majorrace des Spielers gespeichert wird
-	CArray<CTroopInfo> m_TroopInfo;	// In diesem Feld werden alle Informationen zu den Truppen gespeichert
-	ShipInfoArray m_ShipInfoArray;	// dynamisches Feld, in dem die ganzen Informationen zu den Schiffen gespeichert sind
-	ShipArray m_ShipArray;		// dynamisches Feld, in das die ganzen Schiffe gespeichert werden
-	CShipHistory m_ShipHistory[7];	// Objekt für jede einzelne Rasse, in der alle statistischen Daten ihrer Schiffe zu finden sind
-	BuildingInfoArray BuildingInfo;	// alle Gebäudeinfos zu allen Gebäuden im Spiel
+	CSector m_Sector[STARMAP_SECTORS_HCOUNT][STARMAP_SECTORS_VCOUNT];	///< Matrix von Sektoren der Klasse CSector anlegen
+	CSystem m_System[STARMAP_SECTORS_HCOUNT][STARMAP_SECTORS_VCOUNT];	///< auf jeden Sektor ein potentielles System anlegen
+	
+	CGenShipName m_GenShipName;			///< Variable, die alle möglichen Schiffsnamen beinhaltet
+	
+	CArray<CTroopInfo> m_TroopInfo;		// In diesem Feld werden alle Informationen zu den Truppen gespeichert
+	ShipInfoArray m_ShipInfoArray;		// dynamisches Feld, in dem die ganzen Informationen zu den Schiffen gespeichert sind
+	ShipArray m_ShipArray;				// dynamisches Feld, in das die ganzen Schiffe gespeichert werden
+	BuildingInfoArray BuildingInfo;		// alle Gebäudeinfos zu allen Gebäuden im Spiel
 	CGlobalBuildings m_GlobalBuildings;	// alle gebauten Gebäude aller Rassen im Spiel
-	short m_iNumberOfFleetShip;		// Das Schiff welches sozusagen die Flotte anführt
-	short m_iNumberOfTheShipInFleet;// Nummber des Schiffes in der Flotte, wenn wir ein Flotte haben
-	short m_NumberOfTheShipInArray; // Hilfsvariable, mit der auf ein spezielles Schiff im Array zugekriffen werden kann
-	CMessage message;			// eine einzelne Nachricht
-	MinorRaceArray m_MinorRaceArray;// dynamisches Feld, in welches die einzelnen Minorraces geschrieben werden
-	CStatistics m_Statistics;	// Statisticsobjekt, in dem Statistiken des Spiels gespeichert sind
-	CCombat combat;
-	CAIPrios* m_pAIPrios;		// zusätzliche Priotitäten, welche für die SystemKI-Berechnung benötigt werden-
-
+	short m_iNumberOfFleetShip;			// Das Schiff welches sozusagen die Flotte anführt
+	short m_iNumberOfTheShipInFleet;	// Nummber des Schiffes in der Flotte, wenn wir ein Flotte haben
+	short m_NumberOfTheShipInArray;		// Hilfsvariable, mit der auf ein spezielles Schiff im Array zugekriffen werden kann
+	CMessage message;					// eine einzelne Nachricht
+		
+	CStatistics m_Statistics;			///< Statistikobjekt, in dem Statistiken des Spiels gespeichert sind	
+	
 	CNetworkHandler *m_pNetworkHandler;
-	BOOLEAN m_bDataReceived;	// hat der Client die Daten komplett vom Server erhalten
-	BOOLEAN m_bRoundEndPressed;	// Wurde der Rundenendebutton gedrückt
-	BOOLEAN m_bDontExit;		// hartes Exit verhindern, wenn Spiel beginnt
-	BOOLEAN m_bGameLoaded;		// wurde im Dialog ein zu ladendes Spiel ausgewählt
+	bool m_bDataReceived;				///< hat der Client die Daten komplett vom Server erhalten
+	bool m_bRoundEndPressed;			///< Wurde der Rundenendebutton gedrückt
+	bool m_bDontExit;					///< hartes Exit verhindern, wenn Spiel beginnt
+	bool m_bGameLoaded;					///< wurde im Dialog ein zu ladendes Spiel ausgewählt
 	
 	CArray<SNDMGR_MESSAGEENTRY> m_SoundMessages[7];	///< Die einzelnen Sprachmitteilungen zur neuen Runde
+	USHORT m_iSelectedView[7];						///< Welche View soll in der MainView angezeigt werden? z.B. Galaxie oder System
+
+	// new in ALPHA5
+	CRaceController* m_pRaceCtrl;	///< Rassencontroller für alle Rassen des Spiels
+	CSectorAI*		 m_pSectorAI;	///< Informationen zu allen Sektoren, welche die KI benötigt.
+	CAIPrios*		 m_pAIPrios;	///< zusätzliche Priotitäten, welche für die System-KI-Berechnung benötigt werden	
 
 public:
 	// Operationen
@@ -133,43 +121,37 @@ public:
 	virtual BOOL OnSaveDocument(LPCTSTR lpszPathName);
 
 	// Implementierung
-	CBotf2Doc();
-	virtual ~CBotf2Doc();
+	/// Standardkonstruktor
+	CBotf2Doc(void);
+	
+	/// Standarddestruktor
+	virtual ~CBotf2Doc(void);
 
 	/// Funktion liefert einen Zeiger auf den GraphicPool für BotE.
-	CGraphicPool* GetGraphicPool() {return m_pGraphicPool;}
+	CGraphicPool* GetGraphicPool(void) {return m_pGraphicPool;}
 
 	/// Funktion gibt einen Zeiger auf das Rahmenfenster (CMainFrame) zurück.
 	/// @return Rahmenfenster MainFrame
-	CMainFrame* GetMainFrame() const {return (CMainFrame*)AfxGetApp()->GetMainWnd();}
+	CMainFrame* GetMainFrame(void) const {return (CMainFrame*)AfxGetApp()->GetMainWnd();}
 	
 	/// Funktion gibt den Schwierigkeitsgrad des Spiels zurück.
-	float GetDifficultyLevel() const {return m_fDifficultyLevel;}
+	float GetDifficultyLevel(void) const {return m_fDifficultyLevel;}
 	
 	const CShip& GetShip(int number) const {return m_ShipArray.GetAt(number);}
 	
-	const CPoint& GetKO(){return KO;} 
+	const CPoint& GetKO(void) const {return m_ptKO;} 
 	void SetKO(int m, int n);
-	void SetKO(CPoint ko) { SetKO(ko.x, ko.y); }
-	const CPoint& GetRaceKO(int Race) {return raceKO[Race];}
+	void SetKO(const CPoint& ko) { SetKO(ko.x, ko.y); }
 	
-	CStarmap* GetStarmap() const {return m_pStarmap;}
+	/// Funktion gibt die Koordinate des Hauptsystems einer Majorrace zurück.
+	/// @param sMajor Rassen-ID
+	/// @return Koordinate auf der Galaxiemap
+	CPoint GetRaceKO(const CString& sMajorID);
+		
 	CSector& GetSector(int x, int y) {return m_Sector[x][y];}
-	CSector& GetSector(CPoint ko) {return m_Sector[ko.x][ko.y];}
+	CSector& GetSector(const CPoint& ko) {return m_Sector[ko.x][ko.y];}
 	CSystem& GetSystem(int x, int y) {return m_System[x][y];}	
-	CSystem& GetSystem(CPoint ko) {return m_System[ko.x][ko.y];}
-	
-	/// Funktion liefert einen Zeiger auf ein gewünschtes Imperium.
-	/// @param race Nummer des Imperiums
-	CEmpire* GetEmpire(BYTE race) {ASSERT(race); return &m_Empire[race];}
-
-	/// Funktion liefert Zeiger auf eine gewünschte Hauptrasse.
-	/// @param race gewünschte Rasse
-	CMajorRace* GetMajorRace(BYTE race) {ASSERT(race); return &m_MajorRace[race];}
-
-	/// Funktion liefert einen Zeiger auf das gloable Lager eines Imperiums.
-	/// @param race gewünschtes Imperium
-	CGlobalStorage* GetGlobalStorage(BYTE race) {ASSERT(race); return &m_GlobalStorage[race];}
+	CSystem& GetSystem(const CPoint& ko) {return m_System[ko.x][ko.y];}
 	
 	CBuildingInfo& GetBuildingInfo(int id) {ASSERT(id); return BuildingInfo[id-1];}
 	const CString& GetBuildingName(int id) const {ASSERT(id); return BuildingInfo[id-1].GetBuildingName();}
@@ -177,34 +159,55 @@ public:
 	
 	/// Funktion veranlasst die Views zu jeder neuen Runde ihr Aufgaben zu erledigen, welche zu jeder neuen Runde ausgeführt
 	/// werden müssen. Es werden zum Beispiel Variablen wieder zurückgesetzt.
-	void DoViewWorkOnNewRound();
+	void DoViewWorkOnNewRound(void);
 	
-	MinorRaceArray* GetMinorRaceArray() {return &m_MinorRaceArray;}	// Fkt. liefert das komplette MinorRaceArray
-	CMinorRace* GetMinorRace(const CString& homePlanetName);	// Fkt. leifert die Minorrace, welche in dem System "Homeplanetname" lebt
+	void PrepareData(void);						// generiert ein neues Spiel
+	void NextRound(void);						// zur Nächsten Runde voranschreiten
+	void ApplyShipsAtStartup(void);				// Die Schiffe zum Start anlegen, übersichtshalber nicht alles in NewDocument
+	void ApplyBuildingsAtStartup(void);			// Die Gebäude zum Start in den Hauptsystemen anlegen
+	void ReadBuildingInfosFromFile(void);		// Die Infos zu den Gebäuden aus den Datein einlesen
+	void ReadShipInfosFromFile(void);			// Die Infos zu den Schiffen aus der Datei einlesen
+	void BuildBuilding(USHORT id, CPoint KO);	// Das jeweilige Gebäude bauen
 	
-	void PrepareData();			// generiert ein neues Spiel
-	void NextRound();			// zur Nächsten Runde voranschreiten
-	void ApplyShipsAtStartup();	// Die Schiffe zum Start anlegen, übersichtshalber nicht alles in NewDocument
-	void ApplyBuildingsAtStartup();	// Die Gebäude zum Start in den Hauptsystemen anlegen
-	void ReadBuildingInfosFromFile();	// Die Infos zu den Gebäuden aus den Datein einlesen
-	void ReadShipInfosFromFile();		// Die Infos zu den Schiffen aus der Datei einlesen
-	void BuildBuilding(USHORT id, CPoint KO); // Das jeweilige Gebäude bauen
-	void BuildShip(int ID, CPoint KO, BYTE owner);	// Das jeweilige Schiff im System KO bauen
+	void BuildShip(int ID, CPoint KO, const CString& sOwnerID);	// Das jeweilige Schiff im System KO bauen
+	
 	void GenerateStarmap(void);	// Funktion generiert die Starmaps, so wie sie nach Rundenberechnung auch angezeigt werden können.
 	
 	/// Die Truppe mit der ID <code>ID</code> wird im System mit der Koordinate <code>ko</code> gebaut.
 	void BuildTroop(BYTE ID, CPoint ko);
 
 	USHORT GetCurrentRound() const {return m_iRound;}
-	BYTE GetPlayersRace() const;
-	void SetPlayersRace(int PlayersRace) {m_iPlayersRace = PlayersRace;}
 	
-	USHORT GetNumberOfTheShipInArray() const {return m_NumberOfTheShipInArray;}
-	USHORT GetNumberOfFleetShip() const {return m_iNumberOfFleetShip;}
-	USHORT GetNumberOfTheShipInFleet() const {return m_iNumberOfTheShipInFleet;}
+	USHORT GetNumberOfTheShipInArray(void) const {return m_NumberOfTheShipInArray;}
+	USHORT GetNumberOfFleetShip(void) const {return m_iNumberOfFleetShip;}
+	USHORT GetNumberOfTheShipInFleet(void) const {return m_iNumberOfTheShipInFleet;}
 	void SetNumberOfTheShipInArray(int NumberOfTheShipInArray);
 	void SetNumberOfFleetShip(int NumberOfFleetShip);
 	void SetNumberOfTheShipInFleet(int NumberOfTheShipInFleet);
+
+	// new in ALPHA5
+
+	/// Funktion gibt den Controller für die Rassen während eines BotE Spiels zurück.
+	/// @return Zeiger auf Rassencontroller
+	CRaceController* GetRaceCtrl(void) const {return m_pRaceCtrl;}
+
+	/// Funktion gibt Zeiger auf das Statistikobjekt für BotE zurück.
+	/// @return Zeiger auf Statistiken
+	CStatistics* GetStatistics(void) {return &m_Statistics;}
+
+	/// Funktion gibt die Rassen-ID der lokalen Spielerrasse zurück.
+	/// @return Zeiger auf Majorrace-Rassenobjekt
+	CMajor* GetPlayersRace(void) const;
+	
+	/// Funktion gibt einen Zeiger auf die Sektoren-KI zurück.
+	CSectorAI* GetSectorAI(void) const {return m_pSectorAI;}
+
+	/// Startkoordinaten der Hauptsysteme aller Majorraces.
+	map<CString, pair<int, int> > m_mRaceKO;
+
+	/// Funktion gibt das Feld mit den Schiffsinformationen zurück.
+	/// @return Zeiger auf das Schiffsinformationsfeld
+	ShipInfoArray* GetShipInfos(void) {return &m_ShipInfoArray;}
 
 protected:
 	// Private Funktionen die bei der NextRound Berechnung aufgerufen werden. Dadurch wird die NextRound Funktion
@@ -216,9 +219,6 @@ protected:
 	
 	/// Diese Funktion berechnet den kompletten Systemangriff.
 	void CalcSystemAttack();
-	
-	/// Diese Funktion berechnet die Angebote von Majorraces an andere Majorraces.
-	void CalcMajorOffers();
 	
 	/// Diese Funktion berechnet alles im Zusammenhang mit dem Geheimdienst.
 	void CalcIntelligence();

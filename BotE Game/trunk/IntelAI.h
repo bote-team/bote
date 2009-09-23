@@ -1,5 +1,5 @@
 /*
- *   Copyright (C)2004-2008 Sir Pustekuchen
+ *   Copyright (C)2004-2009 Sir Pustekuchen
  *
  *   Author   :  Sir Pustekuchen
  *   Home     :  http://birth-of-the-empires.de.vu
@@ -7,6 +7,7 @@
  */
 #pragma once
 #include "Options.h"
+#include <map>
 
 /**
  * Diese Klasse beinhaltet bestimmte Prioritäten, welche im Zusammenhang des Geheimdienstes stehen. Zusätzlich finden
@@ -25,7 +26,7 @@ public:
 	// Zugriffsfunktionen
 	/// Funktion gibt die Priorität für den Geheimdienst für eine Rasse zurück.
 	/// @param race gewünschte Rasse
-	BYTE GetIntelPrio(BYTE race) {ASSERT(race); return m_byIntelPrio[race-1];}
+	BYTE GetIntelPrio(const CString& sRace) {return m_byIntelPrio[sRace];}
 
 	// sonstige Funktionen
 	/// Funktion berechnet den Umgang mit dem Geheimdienst für die KI. Sie trifft Zuteilungen für die einzelnen Rassen.
@@ -37,7 +38,7 @@ public:
 
 private:
 	// Attribute
-	BYTE m_byIntelPrio[DOMINION];		///< beinhaltet die Priorität zum Bau von Geheimdienstgebäuden
+	std::map<CString, BYTE> m_byIntelPrio;		///< beinhaltet die Priorität zum Bau von Geheimdienstgebäuden
 
 
 };

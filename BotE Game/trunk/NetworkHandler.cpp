@@ -44,10 +44,10 @@ void CNetworkHandler::OnNextRound(network::CNextRound *pMsg)
 	// Oberfläche zum Spielen wieder aktivieren
 	pMsg->DeserializeToDoc(m_pDoc);
 	// ...
-	m_pDoc->m_bDataReceived = TRUE;
+	m_pDoc->m_bDataReceived = true;
 
 	// wurde Rundenende geklickt zurücksetzen
-	m_pDoc->m_bRoundEndPressed = FALSE;
+	m_pDoc->m_bRoundEndPressed = false;
 	AfxGetApp()->PostThreadMessage(WM_INITVIEWS, 0, 0);
 	AfxGetApp()->PostThreadMessage(WM_UPDATEVIEWS, 0, 0);
 	if (m_pDoc->m_iRound > 1)

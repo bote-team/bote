@@ -245,13 +245,14 @@ BOOL CMainFrame::OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext)
 //	return CFrameWnd::OnCreateClient(lpcs, pContext);
 }
 
-void CMainFrame::SelectMainView(USHORT whichView, BYTE race)
+void CMainFrame::SelectMainView(USHORT whichView, const CString& sRace)
 {
-	ASSERT(race >= HUMAN && race <= DOMINION);
+	if (sRace.IsEmpty())
+		return;
 //	if (m_iSelectedView[race] != whichView)
 	{
 //		m_iSelectedView[race] = whichView;
-		if (((CBotf2App*)AfxGetApp())->GetDocument()->GetPlayersRace() == race)
+		if (((CBotf2App*)AfxGetApp())->GetDocument()->GetPlayersRace()->GetRaceID() == sRace)
 		{
 			// konnte in die neue View gewechselt werden
 			if (m_wndSplitter.SwitchView(whichView, 0, 1))

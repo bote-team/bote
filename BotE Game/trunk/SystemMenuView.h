@@ -1,5 +1,5 @@
 /*
- *   Copyright (C)2004-2008 Sir Pustekuchen
+ *   Copyright (C)2004-2009 Sir Pustekuchen
  *
  *   Author   :  Sir Pustekuchen
  *   Home     :  http://birth-of-the-empires.de.vu
@@ -47,57 +47,49 @@ private:
 	void CreateButtons();
 
 	/// Funktion zum Zeichnen der Baumenüansicht
-	/// @param pDC Zeiger auf den aktuellen Zeichenkontext
-	/// @param theClientRect die komplette Zeichenfläche
-	void DrawBuildMenue(CDC* pDC, CRect theClientRect);	
+	/// @param g Zeiger auf GDI+ Grafikobjekt
+	void DrawBuildMenue(Graphics* g);	
 	
 	/// Funktion zum Zeichnen des Arbeiterzuweisungsmenues
-	/// @param pDC Zeiger auf den aktuellen Zeichenkontext
-	/// @param theClientRect die komplette Zeichenfläche
-	void DrawWorkersMenue(CDC* pDC, CRect theClientRect);
+	/// @param g Zeiger auf GDI+ Grafikobjekt
+	void DrawWorkersMenue(Graphics* g);
 	
 	/// Funktion zum Zeichnen des Energiezuweisungsmenues 
-	/// @param pDC Zeiger auf den aktuellen Zeichenkontext
-	/// @param theClientRect die komplette Zeichenfläche
-	void DrawEnergyMenue(CDC* pDC, CRect theClientRect);
+	/// @param g Zeiger auf GDI+ Grafikobjekt
+	void DrawEnergyMenue(Graphics* g);
 	
 	// Funktion zum zeichnen der Bauwerkeansicht
-	/// @param pDC Zeiger auf den aktuellen Zeichenkontext
-	/// @param theClientRect die komplette Zeichenfläche
-	void DrawBuildingsOverviewMenue(CDC* pDC, CRect theClientRect);
+	/// @param g Zeiger auf GDI+ Grafikobjekt
+	void DrawBuildingsOverviewMenue(Graphics* g);
 	
 	/// Funktion zum zeichnen der Systemhandelsansicht
-	/// @param pDC Zeiger auf den aktuellen Zeichenkontext
-	/// @param theClientRect die komplette Zeichenfläche
-	void DrawSystemTradeMenue(CDC* pDC, CRect theClientRect);
+	/// @param g Zeiger auf GDI+ Grafikobjekt
+	void DrawSystemTradeMenue(Graphics* g);
 	
 	/// Funktion zeichnet die großen Buttons (Energy, Arbeiter...) unten in der Systemansicht
-	/// @param pDC Zeiger auf den aktuellen Zeichenkontext
-	void DrawButtonsUnderSystemView(CDC* pDC);
+	/// @param g Zeiger auf GDI+ Grafikobjekt
+	void DrawButtonsUnderSystemView(Graphics* g);
 	
 	/// Funktion zeichnet die Informationen rechts in der Systemansicht (Nahrung, Industrie usw.)
-	/// @param pDC Zeiger auf den aktuellen Zeichenkontext
-	/// @param theClientRect die komplette Zeichenfläche
-	void DrawInfoRightInSystemView(CDC* pDC, CRect theClientRect);
+	/// @param g Zeiger auf GDI+ Grafikobjekt
+	void DrawSystemProduction(Graphics* g);
 
 	/// Fkt. berechnet und zeichnet die Produktion eines Gebäudes (z.B. es macht 50 Nahrung) 
-	/// @param pDC Zeiger auf den aktuellen Zeichenkontext
-	/// @param rect die Zeichenfläche
-	void DrawBuildingProduction(CDC* pDC, CRect rect);
+	/// @param g Zeiger auf GDI+ Grafikobjekt
+	void DrawBuildingProduction(Graphics* g);
 	
 	/// Funktion zeichnet die Bauliste in der Baumenü- und Arbeitermenüansicht
-	/// @param pDC Zeiger auf den aktuellen Zeichenkontext
-	/// @param theClientRect die Zeichenfläche
-	void DrawBuildList(CDC* pDC, CRect rect);
+	/// @param g Zeiger auf GDI+ Grafikobjekt
+	void DrawBuildList(Graphics* g);
 
 	// Attribute
 
 	// Grafiken
-	CBitmap bg_buildmenu;			// Baumenü
-	CBitmap bg_workmenu;			// Arbeitermenü
-	CBitmap bg_energymenu;			// Energiemenü
-	CBitmap bg_overviewmenu;		// Gebäudeübersichtsmenü
-	CBitmap bg_systrademenu;		// Handelsmenü im System
+	Bitmap* bg_buildmenu;			// Baumenü
+	Bitmap* bg_workmenu;			// Arbeitermenü
+	Bitmap* bg_energymenu;			// Energiemenü
+	Bitmap* bg_overviewmenu;		// Gebäudeübersichtsmenü
+	Bitmap* bg_systrademenu;		// Handelsmenü im System
 
 	// Buttons
 	CArray<CMyButton*> m_BuildMenueMainButtons;		///< die unteren Buttons in der Baumenüansicht (also Baumenü, Arbeiter...)

@@ -163,7 +163,7 @@ public:
 	
 	/// Diese Funktion berechnet wie eine computergesteuerte Majorrace auf eine Forderung reagiert.
 	/// Rückgabewert ist einfach <code>TRUE</code> für Annahme bzw. <code>FALSE</code> bei Ablehnung.
-	USHORT CalculateDiplomaticRequest(USHORT requestFrom, USHORT requestedLatinum, USHORT* requestedRessource, CEmpire* empire, ULONG* averageRessourceStorages, CSystem systems[30][20], const UINT* shipPowers);
+	USHORT CalculateDiplomaticRequest(USHORT requestFrom, USHORT requestedLatinum, USHORT* requestedRessource, CEmpire* empire, UINT* averageRessourceStorages, CSystem systems[30][20], const UINT* shipPowers);
 	
 	///	Funktion wird für jede computergesteuerte Majorrace in der <code>NextRound()</code>Funktion der Doc-Klasse aufgerufen.
 	///	Diese Funktion berechnet, ob die MajorRace einer anderen MajorRace ein Angebot aufgrund der 
@@ -171,7 +171,7 @@ public:
 	///	aufgerufen, weil ich ja in einer Runde an mehrere Majorraces Angebote machen kann. Mit <code>race</code> wird immer
 	///	die andere Majorrace übergeben, der vielleicht an Angebot gemacht wird.
 	ComputerOfferStruct PerhapsMakeOfferToMajorRace(USHORT race, USHORT relation, CEmpire* empire, 
-		CSystem systems[30][20], USHORT averageTechlevel, ULONG* averageRessourceStorages, const UINT* shipPowers);
+		CSystem systems[30][20], BYTE averageTechlevel, UINT* averageRessourceStorages, const UINT* shipPowers);
 	
 	/// Funktion berechnet die Beziehungsverbesserungen durch die Übergabe von Latinum. Das Latinum wird hier aber nicht
 	/// gutgeschrieben, sondern "nur" die Beziehung zur Majorrace verbessert. <code>race</code> ist die Rasse, die das
@@ -183,7 +183,7 @@ public:
 	
 	/// Funktion berechnet, ob und was für ein Angebot die Majorrace an die Minorrace macht.
 	ComputerOfferStruct PerhapsMakeOfferToMinorRace(CMinorRace* minor, BOOLEAN isFavoritMinor = FALSE, CEmpire* empire = 0,
-		CSystem systems[30][20] = 0, USHORT averageTechlevel = 0, ULONG* averageRessourceStorages = 0); // Funktion berechnet, ob und was für ein Angebot die Majorrace an die Minorrace macht
+		CSystem systems[30][20] = 0, BYTE averageTechlevel = 0, UINT* averageRessourceStorages = 0); // Funktion berechnet, ob und was für ein Angebot die Majorrace an die Minorrace macht
 	
 	/// Funktion berechnet die Minorrace, der die Majorrace am liebsten Mitgifte geben würde. Also nicht die Minorrace,
 	/// die wir am besten leiden können, sondern die, denen wir ein Geschenk bzw. Mitgifte machen würden.
@@ -202,10 +202,10 @@ private:
 	USHORT CalculateValueByProberty(short type);
 	
 	/// Funktion berechnet wieviel und welche Mitgifte die KI bei einem Angebot mitgbt.
-	void PerhapsGiveDowry(ComputerOfferStruct* theOffer, USHORT race, CEmpire* empire, CSystem systems[30][20], USHORT averageTechlevel, ULONG* averageRessourceStorages, BOOLEAN flag = FALSE);
+	void PerhapsGiveDowry(ComputerOfferStruct* theOffer, USHORT race, CEmpire* empire, CSystem systems[30][20], BYTE averageTechlevel, UINT* averageRessourceStorages, BOOLEAN flag = FALSE);
 	
 	/// Funktion berechnet ob und was für eine Forderung wir stellen.
-	void PerhapsHaveRequest(ComputerOfferStruct* theOffer, USHORT race, CEmpire* empire, CSystem systems[30][20], USHORT averageTechlevel, ULONG* averageRessourceStorages, const UINT* shipPowers);
+	void PerhapsHaveRequest(ComputerOfferStruct* theOffer, USHORT race, CEmpire* empire, CSystem systems[30][20], BYTE averageTechlevel, UINT* averageRessourceStorages, const UINT* shipPowers);
 	
 	// Attribute
 	BYTE m_iRaceNumber;					///< Welche Nummber hat die Rasse z.B. HUMAN == 1 usw.

@@ -7,6 +7,7 @@
 #include "PlanetBottomView.h"
 #include "ShipBottomView.h"
 #include "SmallInfoView.h"
+#include "RaceController.h"
 
 
 // CPlanetBottomView
@@ -39,6 +40,12 @@ END_MESSAGE_MAP()
 void CPlanetBottomView::OnDraw(CDC* dc)
 {
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	ASSERT(pDoc);
+
+	CMajor* pMajor = pDoc->GetPlayersRace();
+	ASSERT(pMajor);
+	if (!pMajor)
+		return;
 	// TODO: add draw code here
 
 	// Doublebuffering wird initialisiert
@@ -69,24 +76,16 @@ void CPlanetBottomView::OnDraw(CDC* dc)
 	}
 		
 	// Galaxie im Hintergrund zeichnen
-	CString race;
-	switch (pDoc->GetPlayersRace())
-	{
-		case HUMAN:		race = CResourceManager::GetString("RACE1_PREFIX"); break;
-		case FERENGI:	race = CResourceManager::GetString("RACE2_PREFIX"); break;
-		case KLINGON:	race = CResourceManager::GetString("RACE3_PREFIX"); break;
-		case ROMULAN:	race = CResourceManager::GetString("RACE4_PREFIX"); break;
-		case CARDASSIAN:race = CResourceManager::GetString("RACE5_PREFIX"); break;
-		case DOMINION:	race = CResourceManager::GetString("RACE6_PREFIX"); break;
-	}
-	Bitmap* background = pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\"+race+"galaxyV3.png");
+	CString sPrefix = pMajor->GetPrefix();
+	
+	Bitmap* background = pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "galaxyV3.png");
 	if (background)
 		g.DrawImage(background, 0, 0, 1075, 249);
 	
 	CPoint KO = pDoc->GetKO();
 	short resizeItX = 0, resizeItY = 0;
 	float maxHabitants = 0.0f;
-	if (pDoc->m_Sector[KO.x][KO.y].GetFullKnown(pDoc->GetPlayersRace()) == TRUE)
+	if (pDoc->m_Sector[KO.x][KO.y].GetFullKnown(pMajor->GetRaceID()) == TRUE)
 	{
 		short SizeOfLastPlanet = 0;
 		m_arroundThePlanets = new CRect[pDoc->m_Sector[KO.x][KO.y].GetNumberOfPlanets()];	
@@ -96,27 +95,27 @@ void CPlanetBottomView::OnDraw(CDC* dc)
 			SizeOfLastPlanet = planet->GetSize();
 			maxHabitants += planet->GetMaxHabitant();
 			if (SizeOfLastPlanet == 0)
-				{resizeItX += 70; resizeItY = 68;}
-			else if (SizeOfLastPlanet == 1)
-				{resizeItX += 85; resizeItY = 60;}
-			m_arroundThePlanets[i].SetRect(900-resizeItX+resizeItX,20,900-resizeItX,0+resizeItY+resizeItY+200);
-			if (SizeOfLastPlanet == 2) 
 			{
-				resizeItX += 100;
-				resizeItY = 50;
-				m_arroundThePlanets[i].SetRect(900-resizeItX+resizeItX,20,900-resizeItX,0+resizeItY+resizeItY+200);
+				resizeItX += 75;
+				resizeItY = 68;
+			}
+			else if (SizeOfLastPlanet == 1)
+			{
+				resizeItX += 90;
+				resizeItY = 60;
+			}			
+			else if (SizeOfLastPlanet == 2) 
+			{
+				resizeItX += 105;
+				resizeItY = 50;				
 			}
 			else if (SizeOfLastPlanet==3)
 			{
-				resizeItX += 140;
-				resizeItY = 28;
-				m_arroundThePlanets[i].SetRect(900-resizeItX+resizeItX,20,900-resizeItX,0+resizeItY+resizeItY+200);
+				resizeItX += 145;
+				resizeItY = 28;				
 			}
-			// bischen größeren Abstand bei den Planeten eingefügt, außer im Sol System
-			if (pDoc->m_Sector[KO.x][KO.y].GetName() != pDoc->GetMajorRace(HUMAN)->GetHomeSystemName())
-				resizeItX += 10;
-			else
-				resizeItX += 5;
+			m_arroundThePlanets[i].SetRect(900-resizeItX+resizeItX,20,900-resizeItX,0+resizeItY+resizeItY+200);
+			
 			// Planeten etwas mehr nach unten gerückt
 			resizeItY += 15;
 			CRect planetRect;
@@ -125,7 +124,7 @@ void CPlanetBottomView::OnDraw(CDC* dc)
 			m_arroundThePlanets[i].NormalizeRect();					
 		}				
 	}
-	if (pDoc->GetSector(KO.x,KO.y).GetSunSystem() && pDoc->GetSector(KO.x,KO.y).GetScanned(pDoc->GetPlayersRace()))
+	if (pDoc->GetSector(KO.x,KO.y).GetSunSystem() && pDoc->GetSector(KO.x,KO.y).GetScanned(pMajor->GetRaceID()))
 	{
 		graphic = NULL;
 		switch(pDoc->GetSector(KO.x,KO.y).GetSunColor())
@@ -150,7 +149,7 @@ void CPlanetBottomView::OnDraw(CDC* dc)
 	}
 	
 	// Rassenspezifische Schriftart auswählen
-	CFontLoader::CreateGDIFont(pDoc->GetPlayersRace(), 2, fontName, fontSize);
+	CFontLoader::CreateGDIFont(pMajor, 2, fontName, fontSize);
 	fontFormat.SetAlignment(StringAlignmentNear);
 	fontFormat.SetLineAlignment(StringAlignmentNear);
 	fontBrush.SetColor(Color(170,170,170));
@@ -160,16 +159,16 @@ void CPlanetBottomView::OnDraw(CDC* dc)
 	float currentHabitants = pDoc->m_Sector[KO.x][KO.y].GetCurrentHabitants();
 	s.Format("%s %c%i",CResourceManager::GetString("SECTOR"),(char)(KO.y+97),KO.x+1);
 	g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), PointF(40,25), &fontFormat, &fontBrush);
-	if (pDoc->m_Sector[KO.x][KO.y].GetScanned(pDoc->GetPlayersRace()) == FALSE)
+	if (pDoc->m_Sector[KO.x][KO.y].GetScanned(pMajor->GetRaceID()) == FALSE)
 	{
 		s = CResourceManager::GetString("UNKNOWN");
 		g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), PointF(40,47), &fontFormat, &fontBrush);
 	}
-	else if (pDoc->m_Sector[KO.x][KO.y].GetSunSystem() == TRUE && pDoc->m_Sector[KO.x][KO.y].GetKnown(pDoc->GetPlayersRace()) == TRUE)
+	else if (pDoc->m_Sector[KO.x][KO.y].GetSunSystem() == TRUE && pDoc->m_Sector[KO.x][KO.y].GetKnown(pMajor->GetRaceID()) == TRUE)
 	{
 		s.Format("%s: %s",CResourceManager::GetString("SYSTEM"), pDoc->m_Sector[KO.x][KO.y].GetName());
 		g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), PointF(40,47), &fontFormat, &fontBrush);
-		if (pDoc->m_Sector[KO.x][KO.y].GetFullKnown(pDoc->GetPlayersRace()))
+		if (pDoc->m_Sector[KO.x][KO.y].GetFullKnown(pMajor->GetRaceID()))
 		{
 			s.Format("%s: %.3lf Mrd.",CResourceManager::GetString("MAX_HABITANTS"), maxHabitants);
 			g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), PointF(40,180), &fontFormat, &fontBrush);
@@ -184,74 +183,50 @@ void CPlanetBottomView::OnDraw(CDC* dc)
 		}
 	}
 	// Scannerstärke zeichnen
-	if (pDoc->m_Sector[KO.x][KO.y].GetScanned(pDoc->GetPlayersRace()) == TRUE)
+	if (pDoc->m_Sector[KO.x][KO.y].GetScanned(pMajor->GetRaceID()) == TRUE)
 	{
 		// Rassenspezifische Schrift auswählen
-		CFontLoader::CreateGDIFont(pDoc->GetPlayersRace(), 1, fontName, fontSize);
-		s.Format("%s: %i%%",CResourceManager::GetString("SCANPOWER"), pDoc->m_Sector[KO.x][KO.y].GetScanPower(pDoc->GetPlayersRace()));
-		if (pDoc->m_Sector[KO.x][KO.y].GetScanPower(pDoc->GetPlayersRace()) <= 0)
+		CFontLoader::CreateGDIFont(pMajor, 1, fontName, fontSize);
+		s.Format("%s: %i%%",CResourceManager::GetString("SCANPOWER"), pDoc->m_Sector[KO.x][KO.y].GetScanPower(pMajor->GetRaceID()));
+		if (pDoc->m_Sector[KO.x][KO.y].GetScanPower(pMajor->GetRaceID()) <= 0)
 			fontBrush.SetColor(Color(245,0,0));
-		if (pDoc->m_Sector[KO.x][KO.y].GetScanPower(pDoc->GetPlayersRace()) > 0)
+		if (pDoc->m_Sector[KO.x][KO.y].GetScanPower(pMajor->GetRaceID()) > 0)
 			fontBrush.SetColor(Color(230,100,0));					
-		if (pDoc->m_Sector[KO.x][KO.y].GetScanPower(pDoc->GetPlayersRace()) >= 25)
+		if (pDoc->m_Sector[KO.x][KO.y].GetScanPower(pMajor->GetRaceID()) >= 25)
 			fontBrush.SetColor(Color(230,230,20));					
-		if (pDoc->m_Sector[KO.x][KO.y].GetScanPower(pDoc->GetPlayersRace()) >= 50)
+		if (pDoc->m_Sector[KO.x][KO.y].GetScanPower(pMajor->GetRaceID()) >= 50)
 			fontBrush.SetColor(Color(50,180,50));					
-		if (pDoc->m_Sector[KO.x][KO.y].GetScanPower(pDoc->GetPlayersRace()) >= 75)
+		if (pDoc->m_Sector[KO.x][KO.y].GetScanPower(pMajor->GetRaceID()) >= 75)
 			fontBrush.SetColor(Color(0,245,0));
-		if (pDoc->GetPlayersRace() == FERENGI)
-			g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), PointF(741,25), &fontFormat, &fontBrush);
-		else
-			g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), PointF(711,0), &fontFormat, &fontBrush);
+		
+		g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), PointF(711,0), &fontFormat, &fontBrush);
 	}
 	// Namen des Besitzers des Sector unten rechts zeichnen
-	if (pDoc->m_Sector[KO.x][KO.y].GetOwned() == TRUE && pDoc->GetSector(KO.x,KO.y).GetScanned(pDoc->GetPlayersRace())
-		&& pDoc->GetMajorRace(pDoc->GetPlayersRace())->GetKnownMajorRace(pDoc->m_Sector[KO.x][KO.y].GetOwnerOfSector()))
+	if (pDoc->GetSector(KO.x,KO.y).GetScanned(pMajor->GetRaceID()) && pMajor->IsRaceContacted(pDoc->m_Sector[KO.x][KO.y].GetOwnerOfSector())
+		|| pDoc->m_Sector[KO.x][KO.y].GetOwnerOfSector() == pMajor->GetRaceID())
 	{
-		CFontLoader::CreateGDIFont(pDoc->GetPlayersRace(), 4, fontName, fontSize);
-		
-		if (pDoc->m_Sector[KO.x][KO.y].GetOwnerOfSector() == HUMAN)
+		CRace* pOwner = pDoc->GetRaceCtrl()->GetRace(pDoc->m_Sector[KO.x][KO.y].GetOwnerOfSector());
+		if (pOwner)
 		{
-			s = CResourceManager::GetString("RACE1");
-			fontBrush.SetColor(Color(70,70,235));
-			g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), PointF(745,190), &fontFormat, &fontBrush);
-		}
-		else if (pDoc->m_Sector[KO.x][KO.y].GetOwnerOfSector() == FERENGI)
-		{
-			s = CResourceManager::GetString("RACE2");
-			fontBrush.SetColor(Color(155,155,0));
-			g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), PointF(755,190), &fontFormat, &fontBrush);					
-		}
-		else if (pDoc->m_Sector[KO.x][KO.y].GetOwnerOfSector() == KLINGON)
-		{
-			s = CResourceManager::GetString("RACE3");
-			fontBrush.SetColor(Color(185,0,0));
-			g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), PointF(745,190), &fontFormat, &fontBrush);					
-		}
-		else if (pDoc->m_Sector[KO.x][KO.y].GetOwnerOfSector() == ROMULAN)
-		{
-			s = CResourceManager::GetString("RACE4");
-			fontBrush.SetColor(Color(0,125,0));
-			g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), PointF(745,190), &fontFormat, &fontBrush);
-		}
-		else if (pDoc->m_Sector[KO.x][KO.y].GetOwnerOfSector() == CARDASSIAN)
-		{
-			s = CResourceManager::GetString("RACE5");
-			fontBrush.SetColor(Color(145,0,145));
+			s = pOwner->GetRaceName();
+			if (pOwner->GetType() == MAJOR)
+			{
+				Color color;
+				color.SetFromCOLORREF(((CMajor*)pOwner)->GetDesign()->m_clrSector);
+				fontBrush.SetColor(color);
+			}
+			else
+				fontBrush.SetColor(Color(255,255,255));			
+
+			CFontLoader::CreateGDIFont(pMajor, 4, fontName, fontSize);
 			g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), PointF(735,190), &fontFormat, &fontBrush);
-		}
-		else if (pDoc->m_Sector[KO.x][KO.y].GetOwnerOfSector() == DOMINION)
-		{
-			s = CResourceManager::GetString("RACE6");
-			fontBrush.SetColor(Color(200,225,255));
-			g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), PointF(755,190), &fontFormat, &fontBrush);
-		}
+		}		
 
 		// Wir selbst und alle uns bekannten Rassen sehen, wenn das System blockiert wird.
 		// Dafür wird ein OverlayBanner über die Ansicht gelegt.
 		if (pDoc->m_System[KO.x][KO.y].GetBlockade() > NULL)
 		{
-			CFontLoader::CreateGDIFont(pDoc->GetPlayersRace(), 3, fontName, fontSize);
+			CFontLoader::CreateGDIFont(pMajor, 3, fontName, fontSize);
 			CSize viewSize(m_TotalSize.cx - 160, m_TotalSize.cy - 120);
 			s.Format("%d", pDoc->m_System[KO.x][KO.y].GetBlockade());
 			COverlayBanner* banner = new COverlayBanner(CPoint(80,60), viewSize, CResourceManager::GetString("SYSTEM_IS_BLOCKED", FALSE, s), RGB(200,0,0));

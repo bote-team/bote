@@ -1,5 +1,5 @@
 /*
- *   Copyright (C)2004-2008 Sir Pustekuchen
+ *   Copyright (C)2004-2009 Sir Pustekuchen
  *
  *   Author   :  Sir Pustekuchen
  *   Home     :  http://birth-of-the-empires.de.vu
@@ -33,6 +33,7 @@ protected:
 	static BOOLEAN m_bShowPlanetStats;	///< sollen Planetenstatistiken angezeigt werden
 	static CPlanet* m_pPlanet;			///< Planet über den Informationen bzw. Statistiken angezeigt werden sollen
 	static CShip* m_pShip;				///< Schiff über das Informationen angezeigt werden sollen
+	int	m_nTimer;						///< Variable welche per Timerbefehl hochgezählt wird
 
 public:
 	/// Funktion führt Aufgaben aus, welche zu jeder neuen Runde von den Views ausgeführt werden müssen.
@@ -96,6 +97,7 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	virtual void OnInitialUpdate();
+	afx_msg void OnTimer(UINT_PTR nIDEvent);
 };
 
 /////////////////////////////////////////////////////////////////////////////

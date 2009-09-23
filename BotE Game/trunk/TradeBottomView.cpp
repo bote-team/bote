@@ -4,7 +4,7 @@
 #include "stdafx.h"
 #include "botf2.h"
 #include "TradeBottomView.h"
-
+#include "Major.h"
 
 // CTradeBottomView
 
@@ -35,7 +35,16 @@ END_MESSAGE_MAP()
 void CTradeBottomView::OnDraw(CDC* dc)
 {
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	ASSERT(pDoc);
 	// TODO: add draw code here
+	CMajor* pMajor = pDoc->GetPlayersRace();
+	ASSERT(pMajor);
+	if (!pMajor)
+		return;
+
+	// Handelhistoryobjekt holen
+	CTradeHistory* pHistory = pMajor->GetTrade()->GetTradeHistory();
+	ASSERT(pHistory);	
 
 	// Doublebuffering wird initialisiert
 	CMemDC pDC(dc);
@@ -64,19 +73,9 @@ void CTradeBottomView::OnDraw(CDC* dc)
 
 	Bitmap* graphic = NULL;
 	
+	CString sPrefix = pMajor->GetPrefix();
 	// rassenspezifische Schriftart und Style wählen
-	if (pDoc->GetPlayersRace() == HUMAN)
-		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + CResourceManager::GetString("RACE1_PREFIX") + "tradeV3.jpg");
-	else if (pDoc->GetPlayersRace() == FERENGI)
-		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + CResourceManager::GetString("RACE2_PREFIX") + "tradeV3.jpg");
-	else if (pDoc->GetPlayersRace() == KLINGON)
-		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + CResourceManager::GetString("RACE3_PREFIX") + "tradeV3.jpg");
-	else if (pDoc->GetPlayersRace() == ROMULAN)
-		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + CResourceManager::GetString("RACE4_PREFIX") + "tradeV3.jpg");
-	else if (pDoc->GetPlayersRace() == CARDASSIAN)
-		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + CResourceManager::GetString("RACE5_PREFIX") + "tradeV3.jpg");
-	else if (pDoc->GetPlayersRace() == DOMINION)
-		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + CResourceManager::GetString("RACE6_PREFIX") + "tradeV3.jpg");
+	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "tradeV3.jpg");
 	
 	// Grafik zeichnen		
 	if (graphic)
@@ -127,14 +126,14 @@ void CTradeBottomView::OnDraw(CDC* dc)
 		start = pDoc->GetCurrentRound() - m_iNumberOfHistoryRounds + 1;
 		end   = pDoc->GetCurrentRound();
 	}
-	UINT max = pDoc->m_TradeHistory[pDoc->GetPlayersRace()].GetMaxPrice(m_iWhichRessource,start-1,end-1);
+	UINT max = pHistory->GetMaxPrice(m_iWhichRessource,start-1,end-1);
 	// Maximalpreis an die Y-Achse schreiben
 	if (max/10 == 0)
 		s.Format("1");
 	else
 		s.Format("%d", max/10);
 	
-	CFontLoader::CreateGDIFont(pDoc->GetPlayersRace(), 2, fontName, fontSize);
+	CFontLoader::CreateGDIFont(pMajor, 2, fontName, fontSize);
 	fontBrush.SetColor(Color(200,200,200));
 	fontFormat.SetAlignment(StringAlignmentFar);
 	fontFormat.SetLineAlignment(StringAlignmentCenter);
@@ -146,11 +145,11 @@ void CTradeBottomView::OnDraw(CDC* dc)
 	// Hier wird das Diagramm gezeichnet
 	for (int i = start; i <= end; i++)
 	{
-		temp1 = (float)(pDoc->m_TradeHistory[pDoc->GetPlayersRace()].GetHistoryPriceFromRes(m_iWhichRessource)->GetAt(i-1)) / max;
+		temp1 = (float)(pHistory->GetHistoryPriceFromRes(m_iWhichRessource)->GetAt(i-1)) / max;
 		// Länge des Diagramms ist 600 Pixel -> bei 20 Runden Abstand 30px, bei 50 Runden Abstand 12px usw.
 		if (count > 0)
 		{
-			float temp2 = (float)(pDoc->m_TradeHistory[pDoc->GetPlayersRace()].GetHistoryPriceFromRes(m_iWhichRessource)->GetAt(i-2)) / max;
+			float temp2 = (float)(pHistory->GetHistoryPriceFromRes(m_iWhichRessource)->GetAt(i-2)) / max;
 			g.DrawLine(&Gdiplus::Pen(resColor), (int)(302+(count-1)*(600/m_iNumberOfHistoryRounds)), (int)(r.bottom-150*temp2+2-60), (int)(302+count*(600/m_iNumberOfHistoryRounds)), (int)(r.bottom-150*temp1+2-60));			
 		}
 		if (m_bDrawLittleRects)
@@ -160,33 +159,33 @@ void CTradeBottomView::OnDraw(CDC* dc)
 	m_iNumberOfHistoryRounds = backupNumberOfHistoryRounds;	
 	
 	Gdiplus::Color fontColor;
-	CFontLoader::GetGDIFontColor(pDoc->GetPlayersRace(), 3, fontColor);
+	CFontLoader::GetGDIFontColor(pMajor, 3, fontColor);
 	fontBrush.SetColor(fontColor);
 	fontFormat.SetAlignment(StringAlignmentNear);
 	fontFormat.SetLineAlignment(StringAlignmentCenter);
 			
 	// Maximal, Minimal und Durchschnittspreis links anzeigen
 	g.DrawString(CResourceManager::GetString("MIN_PRICE").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(40, 60, 180, 25), &fontFormat, &fontBrush);
-	if (pDoc->m_TradeHistory[pDoc->GetPlayersRace()].GetMinPrice(m_iWhichRessource) / 10 == 0)
+	if (pHistory->GetMinPrice(m_iWhichRessource) / 10 == 0)
 		s.Format("1");
 	else
-		s.Format("%d",pDoc->m_TradeHistory[pDoc->GetPlayersRace()].GetMinPrice(m_iWhichRessource) / 10);
+		s.Format("%d", pHistory->GetMinPrice(m_iWhichRessource) / 10);
 	fontFormat.SetAlignment(StringAlignmentFar);
 	g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(40, 60, 200, 25), &fontFormat, &fontBrush);
 	fontFormat.SetAlignment(StringAlignmentNear);
 	g.DrawString(CResourceManager::GetString("MAX_PRICE").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(40, 90, 180, 25), &fontFormat, &fontBrush);
-	if (pDoc->m_TradeHistory[pDoc->GetPlayersRace()].GetMaxPrice(m_iWhichRessource) / 10 == 0)
+	if (pHistory->GetMaxPrice(m_iWhichRessource) / 10 == 0)
 		s.Format("1");
 	else
-		s.Format("%d",pDoc->m_TradeHistory[pDoc->GetPlayersRace()].GetMaxPrice(m_iWhichRessource) / 10);
+		s.Format("%d", pHistory->GetMaxPrice(m_iWhichRessource) / 10);
 	fontFormat.SetAlignment(StringAlignmentFar);
 	g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(40, 90, 200, 25), &fontFormat, &fontBrush);
 	fontFormat.SetAlignment(StringAlignmentNear);
 	g.DrawString(CResourceManager::GetString("AVERAGE_PRICE").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(40, 120, 180, 25), &fontFormat, &fontBrush);		
-	if (pDoc->m_TradeHistory[pDoc->GetPlayersRace()].GetAveragePrice(m_iWhichRessource) / 10 == 0)
+	if (pHistory->GetAveragePrice(m_iWhichRessource) / 10 == 0)
 		s.Format("1");
 	else
-		s.Format("%d",pDoc->m_TradeHistory[pDoc->GetPlayersRace()].GetAveragePrice(m_iWhichRessource) / 10);
+		s.Format("%d", pHistory->GetAveragePrice(m_iWhichRessource) / 10);
 	fontFormat.SetAlignment(StringAlignmentFar);
 	g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(40, 120, 200, 25), &fontFormat, &fontBrush);
 	
@@ -212,7 +211,7 @@ void CTradeBottomView::OnDraw(CDC* dc)
 	// Wenn das System blockiert wird, ein OverlayBanner über die Ansicht gelegt.
 	if (pDoc->m_System[pDoc->GetKO().x][pDoc->GetKO().y].GetBlockade() > NULL)
 	{
-		CFontLoader::CreateGDIFont(pDoc->GetPlayersRace(), 3, fontName, fontSize);
+		CFontLoader::CreateGDIFont(pMajor, 3, fontName, fontSize);
 		CSize viewSize(m_TotalSize.cx - 160, m_TotalSize.cy - 120);
 		s.Format("%d", pDoc->m_System[pDoc->GetKO().x][pDoc->GetKO().y].GetBlockade());
 		COverlayBanner* banner = new COverlayBanner(CPoint(80,60), viewSize, CResourceManager::GetString("SYSTEM_IS_BLOCKED", FALSE, s), RGB(200,0,0));
@@ -248,20 +247,14 @@ void CTradeBottomView::OnInitialUpdate()
 
 	// TODO: Add your specialized code here and/or call the base class
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	ASSERT(pDoc);
 
-	CString s;
-	if (pDoc->GetPlayersRace() == HUMAN)
-		s = *((CBotf2App*)AfxGetApp())->GetPath() + "Graphics\\Other\\" + CResourceManager::GetString("RACE1_PREFIX") + "button_small3.jpg";		
-	else if (pDoc->GetPlayersRace() == FERENGI)
-		s = *((CBotf2App*)AfxGetApp())->GetPath() + "Graphics\\Other\\" + CResourceManager::GetString("RACE2_PREFIX") + "button_small_mid.jpg";
-	else if (pDoc->GetPlayersRace() == KLINGON)
-		s = *((CBotf2App*)AfxGetApp())->GetPath() + "Graphics\\Other\\" + CResourceManager::GetString("RACE3_PREFIX") + "button_small.jpg";
-	else if (pDoc->GetPlayersRace() == ROMULAN)
-		s = *((CBotf2App*)AfxGetApp())->GetPath() + "Graphics\\Other\\" + CResourceManager::GetString("RACE4_PREFIX") + "button_small.jpg";
-	else if (pDoc->GetPlayersRace() == CARDASSIAN)
-		s = *((CBotf2App*)AfxGetApp())->GetPath() + "Graphics\\Other\\" + CResourceManager::GetString("RACE5_PREFIX") + "button2.jpg";
-	else if (pDoc->GetPlayersRace() == DOMINION)
-		s = *((CBotf2App*)AfxGetApp())->GetPath() + "Graphics\\Other\\" + CResourceManager::GetString("RACE5_PREFIX") + "button2.jpg";
+	CMajor* pMajor = pDoc->GetPlayersRace();
+	ASSERT(pMajor);
+
+	CString sPrefix = pMajor->GetPrefix();
+	CString s = *((CBotf2App*)AfxGetApp())->GetPath() + "Graphics\\Other\\" + sPrefix + "button_small.png";		
+	
 	m_pSmallButton = Bitmap::FromFile(s.AllocSysString());
 
 	m_iNumberOfHistoryRounds = 20;

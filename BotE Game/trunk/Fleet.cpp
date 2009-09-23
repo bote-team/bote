@@ -86,7 +86,7 @@ CShip CFleet::RemoveShipFromFleet(int n)
 {
 	if (m_SP.GetSize() <= n)
 	{
-		TRACE("Kann nicht auf Schiffselement zugreifen, da Feldindex nicht exisitiert");
+		MYTRACE(MT::LEVEL_ERROR, "CFleet::RemoveShipFromFleet(): Kann nicht auf Schiffselement zugreifen, da Feldindex nicht exisitiert!");
 		exit(1);
 	}
 	CShip tempShip = m_SP.GetAt(n);

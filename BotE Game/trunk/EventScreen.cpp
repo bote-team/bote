@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "EventScreen.h"
 #include "Botf2.h"
+#include "Botf2Doc.h"
+#include "RaceController.h"
 
 IMPLEMENT_SERIAL (CEventScreen, CObject, 1)
 
@@ -9,11 +11,9 @@ CEventScreen::CEventScreen(void)
 	m_pBGImage = NULL;
 }
 
-CEventScreen::CEventScreen(BYTE playersRace, const CString &imageName, const CString &headline, const CString &text)
+CEventScreen::CEventScreen(const CString &sPlayersRaceID, const CString &imageName, const CString &headline, const CString &text)
 {
-	ASSERT(playersRace >= HUMAN && playersRace <= DOMINION);
-
-	m_byRace	   = playersRace;
+	m_sRace	   = sPlayersRaceID;
 	m_strImagePath = "Graphics\\Events\\" + imageName + ".jpg";
 	m_strHeadline  = headline;
 	m_strText      = text;
@@ -44,18 +44,18 @@ void CEventScreen::Serialize(CArchive &ar)
 	// wenn gespeichert wird
 	if (ar.IsStoring())
 	{
-		ar << m_byRace;
+		ar << m_sRace;
 		ar << m_strImagePath;
 		ar << m_strHeadline;
-		ar << m_strText;
+		ar << m_strText;		
 	}
 	// wenn geladen wird
 	else if (ar.IsLoading())
 	{
-		ar >> m_byRace;
+		ar >> m_sRace;
 		ar >> m_strImagePath;
 		ar >> m_strHeadline;
-		ar >> m_strText;
+		ar >> m_strText;		
 	}
 }
 
@@ -69,63 +69,26 @@ void CEventScreen::Create(void)
 
 	m_pBGImage = Bitmap::FromFile(*((CBotf2App*)AfxGetApp())->GetPath() + "\\" + m_strImagePath.AllocSysString());
 	ASSERT(m_pBGImage);
+	if (m_pBGImage->GetLastStatus() != Ok)
+		return;
+
+	CBotf2Doc* pDoc = ((CBotf2App*)AfxGetApp())->GetDocument();
+	ASSERT(pDoc);
 
 	// alle Buttons in der View anlegen und Grafiken laden
-	switch(m_byRace)
-	{
-	case HUMAN:
-		{
-			CString fileN = "Other\\" + CResourceManager::GetString("RACE1_PREFIX") + "button_big2.png";
-			CString fileI = "Other\\" + CResourceManager::GetString("RACE1_PREFIX") + "button_big2i.png";
-			CString fileA = "Other\\" + CResourceManager::GetString("RACE1_PREFIX") + "button_big2a.png";
-			m_Buttons.Add(new CMyButton(CPoint(560,950), CSize(160,40), CResourceManager::GetString("BTN_OKAY"),  fileN, fileI, fileA));			
-			break;
-		}
-	case FERENGI:
-		{
-			CString fileN = "Other\\" + CResourceManager::GetString("RACE2_PREFIX") + "button.jpg";
-			CString fileI = "Other\\" + CResourceManager::GetString("RACE2_PREFIX") + "buttoni.jpg";
-			CString fileA = "Other\\" + CResourceManager::GetString("RACE2_PREFIX") + "buttona.jpg";
-			m_Buttons.Add(new CMyButton(CPoint(560,950), CSize(160,40), CResourceManager::GetString("BTN_OKAY"),  fileN, fileI, fileA));
-			break;
-		}
-	case KLINGON:
-		{
-			CString fileN = "Other\\" + CResourceManager::GetString("RACE3_PREFIX") + "button2.jpg";
-			CString fileI = "Other\\" + CResourceManager::GetString("RACE3_PREFIX") + "button2i.jpg";
-			CString fileA = "Other\\" + CResourceManager::GetString("RACE3_PREFIX") + "button2a.jpg";
-			m_Buttons.Add(new CMyButton(CPoint(560,950), CSize(160,40), CResourceManager::GetString("BTN_OKAY"),  fileN, fileI, fileA));
-			break;
-		}
-	case ROMULAN:
-		{
-			CString fileN = "Other\\" + CResourceManager::GetString("RACE4_PREFIX") + "button.jpg";
-			CString fileI = "Other\\" + CResourceManager::GetString("RACE4_PREFIX") + "buttoni.jpg";
-			CString fileA = "Other\\" + CResourceManager::GetString("RACE4_PREFIX") + "buttona.jpg";
-			m_Buttons.Add(new CMyButton(CPoint(560,950), CSize(160,40), CResourceManager::GetString("BTN_OKAY"),  fileN, fileI, fileA));
-			break;
-		}
-	case CARDASSIAN:
-		{
-			CString fileN = "Other\\" + CResourceManager::GetString("RACE5_PREFIX") + "button.jpg";
-			CString fileI = "Other\\" + CResourceManager::GetString("RACE5_PREFIX") + "buttoni.jpg";
-			CString fileA = "Other\\" + CResourceManager::GetString("RACE5_PREFIX") + "buttona.jpg";
-			m_Buttons.Add(new CMyButton(CPoint(560,950), CSize(160,40), CResourceManager::GetString("BTN_OKAY"),  fileN, fileI, fileA));
-			break;
-		}
-	case DOMINION:
-		{
-			CString fileN = "Other\\" + CResourceManager::GetString("RACE6_PREFIX") + "button.jpg";
-			CString fileI = "Other\\" + CResourceManager::GetString("RACE6_PREFIX") + "buttoni.jpg";
-			CString fileA = "Other\\" + CResourceManager::GetString("RACE6_PREFIX") + "buttona.jpg";
-			m_Buttons.Add(new CMyButton(CPoint(560,950), CSize(160,40), CResourceManager::GetString("BTN_OKAY"),  fileN, fileI, fileA));
-			break;
-		}
-	}
+	CMajor* pMajor = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(m_sRace));
+	ASSERT(pMajor);
+
+	CString sPrefix = pMajor->GetPrefix();
+	
+	CString fileN = "Other\\" + sPrefix + "button.png";
+	CString fileI = "Other\\" + sPrefix + "buttoni.png";
+	CString fileA = "Other\\" + sPrefix + "buttona.png";
+	m_Buttons.Add(new CMyButton(CPoint(560,950), CSize(160,40), CResourceManager::GetString("BTN_OKAY"),  fileN, fileI, fileA));	
 }
 
 void CEventScreen::Draw(Graphics* g, CGraphicPool* graphicPool) const
-{
+{	
 	if (m_pBGImage)
 		g->DrawImage(m_pBGImage, 0, 0, 1280, 1024);	
 }

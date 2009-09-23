@@ -4,7 +4,7 @@
 #include "stdafx.h"
 #include "botf2.h"
 #include "BottomBaseView.h"
-
+#include "RaceController.h"
 
 // CBottomBaseView
 
@@ -72,21 +72,14 @@ BOOL CBottomBaseView::OnEraseBkgnd(CDC* pDC)
 Gdiplus::Color CBottomBaseView::GetFontColorForSmallButton(void)
 {
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
-	
-	if (pDoc->GetPlayersRace() == HUMAN)
-		return Color(0,0,0);		
-	else if (pDoc->GetPlayersRace() == FERENGI)
-		return Color(0,0,0);
-	else if (pDoc->GetPlayersRace() == KLINGON)
-		return Color(180,180,180);
-	else if (pDoc->GetPlayersRace() == ROMULAN)
-		return Color(80,180,230);
-	else if (pDoc->GetPlayersRace() == CARDASSIAN)
-		return Color(0,0,0);
-	else if (pDoc->GetPlayersRace() == DOMINION)
-		return Color(0,0,0);
-	else
-		return Color::Black;
+	ASSERT(pDoc);
+
+	CMajor* pPlayer = pDoc->GetPlayersRace();
+	ASSERT(pPlayer);
+
+	Color color;
+	color.SetFromCOLORREF(pPlayer->GetDesign()->m_clrSmallBtn);
+	return color;
 }
 
 void CBottomBaseView::CalcLogicalPoint(CPoint &point)

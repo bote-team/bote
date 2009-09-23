@@ -404,27 +404,15 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="Diplomacy.cpp"
+				RelativePath=".\DiplomacyAI.cpp"
 				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\DiplomacyBottomView.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\DiplomacyController.cpp"
 				>
 			</File>
 			<File
@@ -677,24 +665,12 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="MajorRace.cpp"
+				RelativePath=".\Major.cpp"
 				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\MajorAI.cpp"
+				>
 			</File>
 			<File
 				RelativePath=".\MenuChooseView.cpp"
@@ -725,24 +701,12 @@
 				>
 			</File>
 			<File
-				RelativePath="MinorRace.cpp"
+				RelativePath=".\Minor.cpp"
 				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\MinorAI.cpp"
+				>
 			</File>
 			<File
 				RelativePath=".\MoralObserver.cpp"
@@ -814,6 +778,18 @@
 			</File>
 			<File
 				RelativePath=".\PlayGamePage.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Race.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\RaceController.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\RaceDesign.cpp"
 				>
 			</File>
 			<File
@@ -1240,11 +1216,15 @@
 				>
 			</File>
 			<File
-				RelativePath="Diplomacy.h"
+				RelativePath=".\DiplomacyAI.h"
 				>
 			</File>
 			<File
 				RelativePath=".\DiplomacyBottomView.h"
+				>
+			</File>
+			<File
+				RelativePath=".\DiplomacyController.h"
 				>
 			</File>
 			<File
@@ -1384,7 +1364,11 @@
 				>
 			</File>
 			<File
-				RelativePath="MajorRace.h"
+				RelativePath=".\Major.h"
+				>
+			</File>
+			<File
+				RelativePath=".\MajorAI.h"
 				>
 			</File>
 			<File
@@ -1404,7 +1388,11 @@
 				>
 			</File>
 			<File
-				RelativePath="MinorRace.h"
+				RelativePath=".\Minor.h"
+				>
+			</File>
+			<File
+				RelativePath=".\MinorAI.h"
 				>
 			</File>
 			<File
@@ -1425,6 +1413,10 @@
 			</File>
 			<File
 				RelativePath=".\MyTimer.h"
+				>
+			</File>
+			<File
+				RelativePath=".\mytrace.h"
 				>
 			</File>
 			<File
@@ -1453,6 +1445,18 @@
 			</File>
 			<File
 				RelativePath=".\PlayGamePage.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Race.h"
+				>
+			</File>
+			<File
+				RelativePath=".\RaceController.h"
+				>
+			</File>
+			<File
+				RelativePath=".\RaceDesign.h"
 				>
 			</File>
 			<File

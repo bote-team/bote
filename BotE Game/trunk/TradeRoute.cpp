@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "TradeRoute.h"
-#include "MajorRace.h"
+#include "Botf2Doc.h"
+#include "RaceController.h"
 
 IMPLEMENT_SERIAL (CTradeRoute, CObject, 1)
 //////////////////////////////////////////////////////////////////////
@@ -81,13 +82,19 @@ USHORT CTradeRoute::GetLatinum(short boni) const
 /// Funktion überprüft, ob die Handelsroute noch Bestand haben darf und setzt das Latinum, welches
 /// diese Handelsroute fabriziert. Dabei werden noch keinerlei Boni auf die Latinumproduktion angerechnet.
 /// Die Funktion gibt einen Wahrheitswert zurück, der sagt, ob die Handelsroute noch Bestand haben darf.
-BOOLEAN CTradeRoute::CheckTradeRoute(BYTE owner, CSector* dest, CMajorRace* majors, MinorRaceArray* minors)
+BOOLEAN CTradeRoute::CheckTradeRoute(const CPoint& pFrom, const CPoint& pDest, CBotf2Doc* pDoc)
 {
+	ASSERT(pDoc);
+
+	CSector* pDestSector = &(pDoc->GetSector(pDest.x, pDest.y));
+	CSystem* pDestSystem = &(pDoc->GetSystem(pDest.x, pDest.y));
+	CString  sOwner = pDoc->GetSystem(pFrom.x, pFrom.y).GetOwnerOfSystem();
+
 	// wurde der Zielsektor durch uns gescannt
-	if (dest->GetScanned(owner) == FALSE)
+	if (pDestSector->GetScanned(sOwner) == FALSE)
 		return FALSE;	
 	// zu allererst das Latinum berechnen
-	float habitants = dest->GetCurrentHabitants();
+	float habitants = pDestSector->GetCurrentHabitants();
 	// wenn keine Leute in dem System leben, so gibt es auch keine Handelsroute.
 	if (habitants == 0.0f)
 		return FALSE;
@@ -98,69 +105,66 @@ BOOLEAN CTradeRoute::CheckTradeRoute(BYTE owner, CSector* dest, CMajorRace* majo
 
 	m_iLatinum = (USHORT)(habitants * mod);
 	// gehört der Zielsektor einer Majorrace und nicht uns?
-	if (dest->GetOwnerOfSector() != NOBODY && dest->GetOwnerOfSector() != UNKNOWN && dest->GetOwnerOfSector() != owner)
+	if (pDestSystem->GetOwnerOfSystem() != "" && pDestSystem->GetOwnerOfSystem() != sOwner)
 	{
-		if (majors[dest->GetOwnerOfSector()].GetDiplomacyStatus(owner) >= TRADE_AGREEMENT)
-			return TRUE;
+		CMajor* pMajor = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(pDestSystem->GetOwnerOfSystem()));
+		if (pMajor)
+			if (pMajor->GetAgreement(sOwner) >= TRADE_AGREEMENT)
+				return TRUE;		
 	}
 	// gehört der Zielsektor einer Minorrace
-	else if (dest->GetMinorRace() == TRUE)
+	else if (pDestSector->GetOwnerOfSector() != "" && pDestSector->GetMinorRace() == TRUE)
 	{
-		// Minorrace in dem Array suchen
-		int i;
-		for (i = 0; i < minors->GetSize(); i++)
-			if (minors->GetAt(i).GetRaceKO() == dest->GetKO())
-			{
-				if (minors->GetAt(i).GetDiplomacyStatus(owner) >= TRADE_AGREEMENT && minors->GetAt(i).GetDiplomacyStatus(owner) != MEMBERSHIP)
-					return TRUE;
-				else
-					return FALSE;
-			}
+		CMinor* pMinor = dynamic_cast<CMinor*>(pDoc->GetRaceCtrl()->GetRace(pDestSector->GetOwnerOfSector()));
+		if (pMinor)
+		{
+			if (pMinor->GetAgreement(sOwner) >= TRADE_AGREEMENT && pMinor->GetAgreement(sOwner) != MEMBERSHIP)
+				return TRUE;
+			else
+				return FALSE;
+		}
 	}
 	return FALSE;
 }
 
 /// Diese Funktion verbessert manchmal die Beziehung zu der Minorrace, die in dem betroffenem Sektor lebt.
-/// Als Parameter wird hierfür der Besitzer der Handerlsroute, ein Zeiger auf den Sektor <code>dest</code>
-/// und ein Zeiger auf das Feld mit allen Minorraces <code>minors</code> übergeben.
-void CTradeRoute::PerhapsChangeRelationship(BYTE owner, const CSector* dest, MinorRaceArray* minors)
+/// Als Parameter wird hierfür die Ausgangskoordinate der Handerlsroute, die Zielkoordinate <code>pDest</code>
+/// und ein Zeiger auf das Dokument <code>pDoc</code> übergeben.
+void CTradeRoute::PerhapsChangeRelationship(const CPoint& pFrom, const CPoint& pDest, CBotf2Doc* pDoc)
 {
-	if (dest->GetMinorRace() == TRUE)
+	ASSERT(pDoc);
+
+	CSector* pDestSector = &(pDoc->GetSector(pDest.x, pDest.y));
+	ASSERT(pDestSector);
+
+	CString  sOwner = pDoc->GetSystem(pFrom.x, pFrom.y).GetOwnerOfSystem();
+	if (sOwner == "")
+		return;
+
+	if (pDestSector->GetOwnerOfSector() != "" && pDestSector->GetMinorRace() == TRUE)
 	{
-		// Minorrace in dem Array suchen
-		int i;
-		for (i = 0; i < minors->GetSize(); i++)
-			if (minors->GetAt(i).GetRaceKO() == dest->GetKO())
-				break;
-		short relAdd = rand()%(minors->GetAt(i).GetCorruptibility()+1);
-		if (dest->GetOwned())
-			relAdd /= 2;
-	/*	CString s;
-		s.Format("Verbesserung um %d Punkte",relAdd);
-		AfxMessageBox(s);*/
-		minors->GetAt(i).SetRelationshipToMajorRace(owner, relAdd);
+		// Minorrace holen
+		CMinor* pMinor = dynamic_cast<CMinor*>(pDoc->GetRaceCtrl()->GetRace(pDestSector->GetOwnerOfSector()));
+		if (pMinor)
+		{
+			short relAdd = rand()%(pMinor->GetCorruptibility()+1);
+			if (pDestSector->GetOwned())
+				relAdd /= 2;
+			/*CString s;
+			s.Format("Verbesserung um %d Punkte",relAdd);
+			AfxMessageBox(s);*/
+			pMinor->SetRelation(sOwner, relAdd);
+		}		
 	}
 }
 
 /// Funktion zeichnet die Handelsroute auf der Galaxiekarte
-void CTradeRoute::DrawTradeRoute(CDC* pDC, CPoint start, BYTE owner)
+void CTradeRoute::DrawTradeRoute(CDC* pDC, CPoint start, const CMajor* pMajor)
 {
-	COLORREF color;
+	COLORREF color = RGB(255,0,255);
 	if (m_iDuration >= 0)
-	{
-		switch (owner)
-		{
-		case HUMAN:		color = RGB(50,150,255); break;
-		case FERENGI:	color = RGB(155,155,0); break;
-		case KLINGON:	color = RGB(165,0,0);	  break;
-		case ROMULAN:	color = RGB(0,125,0); break;
-		case CARDASSIAN:color = RGB(130,0,130); break;
-		case DOMINION:	color = RGB(80,195,245); break;
-		default: color = RGB(255,255,255);
-		}
-	}
-	else
-		color = RGB(255,0,255);
+		color = pMajor->GetDesign()->m_clrRouteColor;
+	
 	CPen pen(PS_DOT, 0, color);
 	pDC->SelectObject(&pen);
 	pDC->MoveTo(start.x*STARMAP_SECTOR_WIDTH+STARMAP_SECTOR_WIDTH/2,start.y*STARMAP_SECTOR_HEIGHT+STARMAP_SECTOR_HEIGHT/2);

@@ -9,6 +9,7 @@
 #include "PlanetBottomView.h"
 #include "Botf2Doc.h"
 #include "BotEClient.h"
+#include "RaceController.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -55,6 +56,12 @@ void CMenuChooseView::OnDraw(CDC* pDC)
 {
 	// ZU ERLEDIGEN: Code zum Zeichnen hier einfügen
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	ASSERT(pDoc);
+	
+	CMajor* pMajor = pDoc->GetPlayersRace();
+	ASSERT(pMajor);
+	if (!pMajor)
+		return;
 	
 	CRect r;
 	r.SetRect(0, 0, m_TotalSize.cx, m_TotalSize.cy);
@@ -83,8 +90,8 @@ void CMenuChooseView::OnDraw(CDC* pDC)
 
 	// Die Rassenspezifischen Styles laden und zeichnen
 	Color color;
-	CFontLoader::CreateGDIFont(pDoc->GetPlayersRace(), 3, fontName, fontSize);
-	CFontLoader::GetGDIFontColor(pDoc->GetPlayersRace(), 2, color);
+	CFontLoader::CreateGDIFont(pMajor, 3, fontName, fontSize);
+	CFontLoader::GetGDIFontColor(pMajor, 2, color);
 	fontFormat.SetAlignment(StringAlignmentCenter);
 	fontFormat.SetLineAlignment(StringAlignmentNear);
 	fontFormat.SetFormatFlags(StringFormatFlagsNoWrap);
@@ -92,9 +99,7 @@ void CMenuChooseView::OnDraw(CDC* pDC)
 	
 	// Grafiken zeichnen
 	Bitmap* graphic = NULL;
-	CString prefix;
-	prefix.Format("RACE%d_PREFIX", pDoc->GetPlayersRace());
-	prefix = CResourceManager::GetString(prefix);
+	CString prefix = pMajor->GetPrefix();
 	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + prefix + "menuV2.png");
 	if (graphic)
 		g->DrawImage(graphic, 0, 0, 200, 750);
@@ -130,17 +135,17 @@ void CMenuChooseView::OnDraw(CDC* pDC)
 	s.Format("%s %i",CResourceManager::GetString("ROUND"), pDoc->GetCurrentRound());
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(r.left+20, 50, m_TotalSize.cx-40, 30), &fontFormat, &fontBrush);
 	
-	CFontLoader::CreateGDIFont(pDoc->GetPlayersRace(), 2, fontName, fontSize);
-	CFontLoader::GetGDIFontColor(pDoc->GetPlayersRace(), 3, color);
+	CFontLoader::CreateGDIFont(pMajor, 2, fontName, fontSize);
+	CFontLoader::GetGDIFontColor(pMajor, 3, color);
 	fontFormat.SetAlignment(StringAlignmentNear);
 	fontBrush.SetColor(color);
 
-	s.Format("%s: %d",CResourceManager::GetString("NEWS"), pDoc->GetEmpire(pDoc->GetPlayersRace())->GetMessages()->GetSize());
+	s.Format("%s: %d",CResourceManager::GetString("NEWS"), pMajor->GetEmpire()->GetMessages()->GetSize());
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(r.left+30, 140, m_TotalSize.cx-60, 25), &fontFormat, &fontBrush);
 	
-	s.Format("%s:",CResourceManager::GetString("LATINUM"), pDoc->GetEmpire(pDoc->GetPlayersRace())->GetLatinum());
+	s.Format("%s:",CResourceManager::GetString("LATINUM"), pMajor->GetEmpire()->GetLatinum());
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(r.left+30, 90, m_TotalSize.cx-60, 25), &fontFormat, &fontBrush);
-	s.Format("%i",pDoc->GetEmpire(pDoc->GetPlayersRace())->GetLatinum());
+	s.Format("%i",pMajor->GetEmpire()->GetLatinum());
 	fontFormat.SetAlignment(StringAlignmentFar);
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(r.left+30, 90, m_TotalSize.cx-60, 25), &fontFormat, &fontBrush);
 	
@@ -150,16 +155,16 @@ void CMenuChooseView::OnDraw(CDC* pDC)
 	
 	// Latinumänderung zeichnen
 	fontFormat.SetAlignment(StringAlignmentFar);
-	if (pDoc->GetEmpire(pDoc->GetPlayersRace())->GetLatinumChange() >= 0)
+	if (pMajor->GetEmpire()->GetLatinumChange() >= 0)
 	{	
 		fontBrush.SetColor(Color(0,200,0));
-		s.Format("+%i",pDoc->GetEmpire(pDoc->GetPlayersRace())->GetLatinumChange());
+		s.Format("+%i", pMajor->GetEmpire()->GetLatinumChange());
 		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(r.left+30, 115, m_TotalSize.cx-60, 25), &fontFormat, &fontBrush);		
 	}
 	else
 	{
 		fontBrush.SetColor(Color(200,0,0));
-		s.Format("%i",pDoc->GetEmpire(pDoc->GetPlayersRace())->GetLatinumChange());
+		s.Format("%i",pMajor->GetEmpire()->GetLatinumChange());
 		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(r.left+30, 115, m_TotalSize.cx-60, 25), &fontFormat, &fontBrush);
 	}
 	
@@ -182,126 +187,31 @@ void CMenuChooseView::OnInitialUpdate()
 	m_TotalSize.cy = 750;
 	
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	ASSERT(pDoc);
+
+	CMajor* pMajor = pDoc->GetPlayersRace();
+	ASSERT(pMajor);
+
 	m_LastSystem = CPoint(-1,-1);
 	
 	// alle Buttons in der View anlegen (erstmal 7) und Grafiken laden
-	switch(pDoc->GetPlayersRace())
-	{
-	case HUMAN:
-		{
-			CString fileN = "Other\\" + CResourceManager::GetString("RACE1_PREFIX") + "button_big.png";
-			CString fileI = "Other\\" + CResourceManager::GetString("RACE1_PREFIX") + "button_bigi.png";
-			CString fileA = "Other\\" + CResourceManager::GetString("RACE1_PREFIX") + "button_biga.png";
-			m_Buttons.Add(new CMyButton(CPoint(20,360), CSize(160,40), CResourceManager::GetString("BTN_GALAXY")+"   ", fileN, fileI, fileA));
-			m_Buttons.Add(new CMyButton(CPoint(20,405), CSize(160,40), CResourceManager::GetString("BTN_SYSTEM")+"   ", fileN, fileI, fileA));
-			m_Buttons.Add(new CMyButton(CPoint(20,450), CSize(160,40), CResourceManager::GetString("BTN_RESEARCH")+"   ", fileN, fileI, fileA));
-			m_Buttons.Add(new CMyButton(CPoint(20,495), CSize(160,40), CResourceManager::GetString("BTN_SECURITY")+"   ", fileN, fileI, fileA));
-			m_Buttons.Add(new CMyButton(CPoint(20,540), CSize(160,40), CResourceManager::GetString("BTN_DIPLOMACY")+"   ", fileN, fileI, fileA));
-			m_Buttons.Add(new CMyButton(CPoint(20,585), CSize(160,40), CResourceManager::GetString("BTN_TRADE")+"   ", fileN, fileI, fileA));
-			m_Buttons.Add(new CMyButton(CPoint(20,630), CSize(160,40), CResourceManager::GetString("BTN_EMPIRE")+"   ", fileN, fileI, fileA));
-			// Rundenendebutton
-			fileN = "Other\\" + CResourceManager::GetString("RACE1_PREFIX") + "button_roundend.png";
-			fileI = "Other\\" + CResourceManager::GetString("RACE1_PREFIX") + "button_roundendi.png";
-			fileA = "Other\\" + CResourceManager::GetString("RACE1_PREFIX") + "button_roundenda.png";
-			m_RoundEnd = new CMyButton(CPoint(20,5), CSize(160,40), CResourceManager::GetString("BTN_ROUNDEND"), fileN, fileI, fileA);
-			break;
-		}
-	case FERENGI:
-		{
-			CString fileN = "Other\\" + CResourceManager::GetString("RACE2_PREFIX") + "button.jpg";
-			CString fileI = "Other\\" + CResourceManager::GetString("RACE2_PREFIX") + "buttoni.jpg";
-			CString fileA = "Other\\" + CResourceManager::GetString("RACE2_PREFIX") + "buttona.jpg";
-			m_Buttons.Add(new CMyButton(CPoint(20,360), CSize(160,40), CResourceManager::GetString("BTN_GALAXY"), fileN, fileI, fileA));
-			m_Buttons.Add(new CMyButton(CPoint(20,405), CSize(160,40), CResourceManager::GetString("BTN_SYSTEM"), fileN, fileI, fileA));
-			m_Buttons.Add(new CMyButton(CPoint(20,450), CSize(160,40), CResourceManager::GetString("BTN_RESEARCH"), fileN, fileI, fileA));
-			m_Buttons.Add(new CMyButton(CPoint(20,495), CSize(160,40), CResourceManager::GetString("BTN_SECURITY"), fileN, fileI, fileA));
-			m_Buttons.Add(new CMyButton(CPoint(20,540), CSize(160,40), CResourceManager::GetString("BTN_DIPLOMACY"), fileN, fileI, fileA));
-			m_Buttons.Add(new CMyButton(CPoint(20,585), CSize(160,40), CResourceManager::GetString("BTN_TRADE"), fileN, fileI, fileA));
-			m_Buttons.Add(new CMyButton(CPoint(20,630), CSize(160,40), CResourceManager::GetString("BTN_EMPIRE"), fileN, fileI, fileA));
-			// Rundenendebutton
-			fileN = "Other\\" + CResourceManager::GetString("RACE2_PREFIX") + "button.jpg";
-			fileI = "Other\\" + CResourceManager::GetString("RACE2_PREFIX") + "buttoni.jpg";
-			fileA = "Other\\" + CResourceManager::GetString("RACE2_PREFIX") + "buttona.jpg";
-			m_RoundEnd = new CMyButton(CPoint(20,5), CSize(160,40), CResourceManager::GetString("BTN_ROUNDEND"), fileN, fileI, fileA);
-			break;
-		}
-	case KLINGON:
-		{
-			CString fileN = "Other\\" + CResourceManager::GetString("RACE3_PREFIX") + "button.jpg";
-			CString fileI = "Other\\" + CResourceManager::GetString("RACE3_PREFIX") + "buttoni.jpg";
-			CString fileA = "Other\\" + CResourceManager::GetString("RACE3_PREFIX") + "buttona.jpg";
-			m_Buttons.Add(new CMyButton(CPoint(20,360), CSize(160,40), CResourceManager::GetString("BTN_GALAXY"), fileN, fileI, fileA));
-			m_Buttons.Add(new CMyButton(CPoint(20,405), CSize(160,40), CResourceManager::GetString("BTN_SYSTEM"), fileN, fileI, fileA));
-			m_Buttons.Add(new CMyButton(CPoint(20,450), CSize(160,40), CResourceManager::GetString("BTN_RESEARCH"), fileN, fileI, fileA));
-			m_Buttons.Add(new CMyButton(CPoint(20,495), CSize(160,40), CResourceManager::GetString("BTN_SECURITY"), fileN, fileI, fileA));
-			m_Buttons.Add(new CMyButton(CPoint(20,540), CSize(160,40), CResourceManager::GetString("BTN_DIPLOMACY"), fileN, fileI, fileA));
-			m_Buttons.Add(new CMyButton(CPoint(20,585), CSize(160,40), CResourceManager::GetString("BTN_TRADE"), fileN, fileI, fileA));
-			m_Buttons.Add(new CMyButton(CPoint(20,630), CSize(160,40), CResourceManager::GetString("BTN_EMPIRE"), fileN, fileI, fileA));
-			// Rundenendebutton
-			fileN = "Other\\" + CResourceManager::GetString("RACE3_PREFIX") + "button_roundend.jpg";
-			fileI = "Other\\" + CResourceManager::GetString("RACE3_PREFIX") + "button_roundendi.jpg";
-			fileA = "Other\\" + CResourceManager::GetString("RACE3_PREFIX") + "button_roundenda.jpg";
-			m_RoundEnd = new CMyButton(CPoint(20,5), CSize(160,40), CResourceManager::GetString("BTN_ROUNDEND"), fileN, fileI, fileA);
-			break;
-		}
-	case ROMULAN:
-		{
-			CString fileN = "Other\\" + CResourceManager::GetString("RACE4_PREFIX") + "button.jpg";
-			CString fileI = "Other\\" + CResourceManager::GetString("RACE4_PREFIX") + "buttoni.jpg";
-			CString fileA = "Other\\" + CResourceManager::GetString("RACE4_PREFIX") + "buttona.jpg";
-			m_Buttons.Add(new CMyButton(CPoint(20,360), CSize(160,40), CResourceManager::GetString("BTN_GALAXY"), fileN, fileI, fileA));
-			m_Buttons.Add(new CMyButton(CPoint(20,405), CSize(160,40), CResourceManager::GetString("BTN_SYSTEM"), fileN, fileI, fileA));
-			m_Buttons.Add(new CMyButton(CPoint(20,450), CSize(160,40), CResourceManager::GetString("BTN_RESEARCH"), fileN, fileI, fileA));
-			m_Buttons.Add(new CMyButton(CPoint(20,495), CSize(160,40), CResourceManager::GetString("BTN_SECURITY"), fileN, fileI, fileA));
-			m_Buttons.Add(new CMyButton(CPoint(20,540), CSize(160,40), CResourceManager::GetString("BTN_DIPLOMACY"), fileN, fileI, fileA));
-			m_Buttons.Add(new CMyButton(CPoint(20,585), CSize(160,40), CResourceManager::GetString("BTN_TRADE"), fileN, fileI, fileA));
-			m_Buttons.Add(new CMyButton(CPoint(20,630), CSize(160,40), CResourceManager::GetString("BTN_EMPIRE"), fileN, fileI, fileA));
-			// Rundenendebutton
-			fileN = "Other\\" + CResourceManager::GetString("RACE4_PREFIX") + "button.jpg";
-			fileI = "Other\\" + CResourceManager::GetString("RACE4_PREFIX") + "buttoni.jpg";
-			fileA = "Other\\" + CResourceManager::GetString("RACE4_PREFIX") + "buttona.jpg";
-			m_RoundEnd = new CMyButton(CPoint(20,5), CSize(160,40), CResourceManager::GetString("BTN_ROUNDEND"), fileN, fileI, fileA);
-			break;
-		}
-	case CARDASSIAN:
-		{
-			CString fileN = "Other\\" + CResourceManager::GetString("RACE5_PREFIX") + "button.jpg";
-			CString fileI = "Other\\" + CResourceManager::GetString("RACE5_PREFIX") + "buttoni.jpg";
-			CString fileA = "Other\\" + CResourceManager::GetString("RACE5_PREFIX") + "buttona.jpg";
-			m_Buttons.Add(new CMyButton(CPoint(20,360), CSize(160,40), CResourceManager::GetString("BTN_GALAXY"), fileN, fileI, fileA));
-			m_Buttons.Add(new CMyButton(CPoint(20,405), CSize(160,40), CResourceManager::GetString("BTN_SYSTEM"), fileN, fileI, fileA));
-			m_Buttons.Add(new CMyButton(CPoint(20,450), CSize(160,40), CResourceManager::GetString("BTN_RESEARCH"), fileN, fileI, fileA));
-			m_Buttons.Add(new CMyButton(CPoint(20,495), CSize(160,40), CResourceManager::GetString("BTN_SECURITY"), fileN, fileI, fileA));
-			m_Buttons.Add(new CMyButton(CPoint(20,540), CSize(160,40), CResourceManager::GetString("BTN_DIPLOMACY"), fileN, fileI, fileA));
-			m_Buttons.Add(new CMyButton(CPoint(20,585), CSize(160,40), CResourceManager::GetString("BTN_TRADE"), fileN, fileI, fileA));
-			m_Buttons.Add(new CMyButton(CPoint(20,630), CSize(160,40), CResourceManager::GetString("BTN_EMPIRE"), fileN, fileI, fileA));
-			// Rundenendebutton
-			fileN = "Other\\" + CResourceManager::GetString("RACE5_PREFIX") + "button.jpg";
-			fileI = "Other\\" + CResourceManager::GetString("RACE5_PREFIX") + "buttoni.jpg";
-			fileA = "Other\\" + CResourceManager::GetString("RACE5_PREFIX") + "buttona.jpg";
-			m_RoundEnd = new CMyButton(CPoint(20,5), CSize(160,40), CResourceManager::GetString("BTN_ROUNDEND"), fileN, fileI, fileA);
-			break;
-		}
-	case DOMINION:
-		{
-			CString fileN = "Other\\" + CResourceManager::GetString("RACE6_PREFIX") + "button.jpg";
-			CString fileI = "Other\\" + CResourceManager::GetString("RACE6_PREFIX") + "buttoni.jpg";
-			CString fileA = "Other\\" + CResourceManager::GetString("RACE6_PREFIX") + "buttona.jpg";
-			m_Buttons.Add(new CMyButton(CPoint(20,360), CSize(160,40), CResourceManager::GetString("BTN_GALAXY"), fileN, fileI, fileA));
-			m_Buttons.Add(new CMyButton(CPoint(20,405), CSize(160,40), CResourceManager::GetString("BTN_SYSTEM"), fileN, fileI, fileA));
-			m_Buttons.Add(new CMyButton(CPoint(20,450), CSize(160,40), CResourceManager::GetString("BTN_RESEARCH"), fileN, fileI, fileA));
-			m_Buttons.Add(new CMyButton(CPoint(20,495), CSize(160,40), CResourceManager::GetString("BTN_SECURITY"), fileN, fileI, fileA));
-			m_Buttons.Add(new CMyButton(CPoint(20,540), CSize(160,40), CResourceManager::GetString("BTN_DIPLOMACY"), fileN, fileI, fileA));
-			m_Buttons.Add(new CMyButton(CPoint(20,585), CSize(160,40), CResourceManager::GetString("BTN_TRADE"), fileN, fileI, fileA));
-			m_Buttons.Add(new CMyButton(CPoint(20,630), CSize(160,40), CResourceManager::GetString("BTN_EMPIRE"), fileN, fileI, fileA));
-			// Rundenendebutton
-			fileN = "Other\\" + CResourceManager::GetString("RACE6_PREFIX") + "button.jpg";
-			fileI = "Other\\" + CResourceManager::GetString("RACE6_PREFIX") + "buttoni.jpg";
-			fileA = "Other\\" + CResourceManager::GetString("RACE6_PREFIX") + "buttona.jpg";
-			m_RoundEnd = new CMyButton(CPoint(20,5), CSize(160,40), CResourceManager::GetString("BTN_ROUNDEND"), fileN, fileI, fileA);
-			break;
-		}
-	}	
+	CString sPrefix = pMajor->GetPrefix();
+	
+	CString fileN = "Other\\" + sPrefix + "button.png";
+	CString fileI = "Other\\" + sPrefix + "buttoni.png";
+	CString fileA = "Other\\" + sPrefix + "buttona.png";
+	m_Buttons.Add(new CMyButton(CPoint(20,360), CSize(160,40), CResourceManager::GetString("BTN_GALAXY"), fileN, fileI, fileA));
+	m_Buttons.Add(new CMyButton(CPoint(20,405), CSize(160,40), CResourceManager::GetString("BTN_SYSTEM"), fileN, fileI, fileA));
+	m_Buttons.Add(new CMyButton(CPoint(20,450), CSize(160,40), CResourceManager::GetString("BTN_RESEARCH"), fileN, fileI, fileA));
+	m_Buttons.Add(new CMyButton(CPoint(20,495), CSize(160,40), CResourceManager::GetString("BTN_SECURITY"), fileN, fileI, fileA));
+	m_Buttons.Add(new CMyButton(CPoint(20,540), CSize(160,40), CResourceManager::GetString("BTN_DIPLOMACY"), fileN, fileI, fileA));
+	m_Buttons.Add(new CMyButton(CPoint(20,585), CSize(160,40), CResourceManager::GetString("BTN_TRADE"), fileN, fileI, fileA));
+	m_Buttons.Add(new CMyButton(CPoint(20,630), CSize(160,40), CResourceManager::GetString("BTN_EMPIRE"), fileN, fileI, fileA));
+	// Rundenendebutton
+	fileN = "Other\\" + sPrefix + "button_roundend.png";
+	fileI = "Other\\" + sPrefix + "button_roundendi.png";
+	fileA = "Other\\" + sPrefix + "button_roundenda.png";
+	m_RoundEnd = new CMyButton(CPoint(20,5), CSize(160,40), CResourceManager::GetString("BTN_ROUNDEND"), fileN, fileI, fileA);
 }
 
 BOOL CMenuChooseView::OnEraseBkgnd(CDC* pDC) 
@@ -337,17 +247,23 @@ void CMenuChooseView::OnLButtonUp(UINT nFlags, CPoint point)
 {
 	// TODO: Code für die Behandlungsroutine für Nachrichten hier einfügen und/oder Standard aufrufen
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	ASSERT(pDoc);
+	
+	CMajor* pMajor = pDoc->GetPlayersRace();
+	ASSERT(pMajor);
+	if (!pMajor)
+		return;
 		
 	CalcLogicalPoint(point);
 	CGalaxyMenuView::SetMoveShip(FALSE);
 	
 	if (m_RoundEnd->ClickedOnButton(point) && !pDoc->m_bRoundEndPressed)
 	{
-		pDoc->m_bRoundEndPressed = TRUE;
+		pDoc->m_bRoundEndPressed = true;
 		CRect r = m_RoundEnd->GetRect();
 		CalcDeviceRect(r);
 		InvalidateRect(r, FALSE);
-		pDoc->m_bDataReceived = FALSE;
+		pDoc->m_bDataReceived = false;
 		pDoc->m_pSoundManager->StopMessages(TRUE);
 		client.EndOfRound(pDoc);
 	}
@@ -373,12 +289,12 @@ void CMenuChooseView::OnLButtonUp(UINT nFlags, CPoint point)
 		}
 	// Galaxiebutton
 	if (button == 0)
-		pDoc->GetMainFrame()->SelectMainView(GALAXY_VIEW, pDoc->GetPlayersRace());
+		pDoc->GetMainFrame()->SelectMainView(GALAXY_VIEW, pMajor->GetRaceID());
 	// Systembutton
 	else if (button == 1)
 	{
 		// System suchen, welches dem Spieler auch gehört
-		if (pDoc->m_System[pDoc->GetKO().x][pDoc->GetKO().y].GetOwnerOfSystem() != pDoc->GetPlayersRace())
+		if (pDoc->m_System[pDoc->GetKO().x][pDoc->GetKO().y].GetOwnerOfSystem() != pMajor->GetRaceID())
 		{
 			 if (m_LastSystem != CPoint(-1,-1))
 				 pDoc->SetKO(m_LastSystem.x, m_LastSystem.y);
@@ -387,36 +303,36 @@ void CMenuChooseView::OnLButtonUp(UINT nFlags, CPoint point)
 				 for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
 					 for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
 						 if (pDoc->m_Sector[x][y].GetSunSystem() == TRUE
-							 && pDoc->m_System[x][y].GetOwnerOfSystem() == pDoc->GetPlayersRace())
+							 && pDoc->m_System[x][y].GetOwnerOfSystem() == pMajor->GetRaceID())
 							{
 								pDoc->SetKO(x,y);
 								break;
 							}
 			 }
 		}
-		if (pDoc->m_System[pDoc->GetKO().x][pDoc->GetKO().y].GetOwnerOfSystem() == pDoc->GetPlayersRace() &&
+		if (pDoc->m_System[pDoc->GetKO().x][pDoc->GetKO().y].GetOwnerOfSystem() == pMajor->GetRaceID() &&
 			pDoc->m_Sector[pDoc->GetKO().x][pDoc->GetKO().y].GetSunSystem() == TRUE)
 		{			
-			pDoc->GetMainFrame()->SelectMainView(SYSTEM_VIEW, pDoc->GetPlayersRace());
+			pDoc->GetMainFrame()->SelectMainView(SYSTEM_VIEW, pMajor->GetRaceID());
 			pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CPlanetBottomView));
 			m_LastSystem = pDoc->GetKO();
 		}
 	}
 	// Forschungsbutton
 	else if (button == 2)
-		pDoc->GetMainFrame()->SelectMainView(RESEARCH_VIEW, pDoc->GetPlayersRace());
+		pDoc->GetMainFrame()->SelectMainView(RESEARCH_VIEW, pMajor->GetRaceID());
 	// Geheimdienstbutton
 	else if (button == 3)
-		pDoc->GetMainFrame()->SelectMainView(INTEL_VIEW, pDoc->GetPlayersRace());
+		pDoc->GetMainFrame()->SelectMainView(INTEL_VIEW, pMajor->GetRaceID());
 	// Diplomatiebutton
 	else if (button == 4)
-		pDoc->GetMainFrame()->SelectMainView(DIPLOMACY_VIEW, pDoc->GetPlayersRace());
+		pDoc->GetMainFrame()->SelectMainView(DIPLOMACY_VIEW, pMajor->GetRaceID());
 	// Handelsbutton
 	else if (button == 5)
-		pDoc->GetMainFrame()->SelectMainView(TRADE_VIEW, pDoc->GetPlayersRace());		
+		pDoc->GetMainFrame()->SelectMainView(TRADE_VIEW, pMajor->GetRaceID());		
 	// Imperiumsbutton
 	else if (button == 6)
-		pDoc->GetMainFrame()->SelectMainView(EMPIRE_VIEW, pDoc->GetPlayersRace());
+		pDoc->GetMainFrame()->SelectMainView(EMPIRE_VIEW, pMajor->GetRaceID());
 	CView::OnLButtonUp(nFlags, point);
 }
 

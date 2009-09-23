@@ -1,5 +1,5 @@
 /*
- *   Copyright (C)2004-2008 Sir Pustekuchen
+ *   Copyright (C)2004-2009 Sir Pustekuchen
  *
  *   Author   :  Sir Pustekuchen
  *   Home     :  http://birth-of-the-empires.de.vu
@@ -38,7 +38,7 @@ public:
 	/**
 	 * Diese Funktion gibt den Besitzer dieser Truppe zurück.
 	 */
-	BYTE GetOwner() const {return m_byOwner;}
+	const CString& GetOwner(void) const {return m_sOwner;}
 
 	/**
 	 * Diese Funktion gibt die Angriffsstärke der Truppe zurück.
@@ -83,7 +83,7 @@ protected:
 	BYTE m_byID;
 	
 	/// Welcher Rasse gehört die Truppe
-	BYTE m_byOwner;
+	CString m_sOwner;
 
 	/// Diese Variable gibt die Stärke der Truppe an
 	BYTE m_byPower;

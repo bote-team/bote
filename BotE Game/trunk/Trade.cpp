@@ -1,41 +1,21 @@
 #include "stdafx.h"
 #include "Trade.h"
+#include "Major.h"
 
 IMPLEMENT_SERIAL (CTrade, CObject, 1)
 // statische Variable initialisieren
-USHORT CTrade::m_iMonopolOwner[] = {0,0,0,0,0};	// überall NOBODY eintragen
+CString CTrade::m_sMonopolOwner[] = {"","","","",""};	// überall keine ID eintragen
 
 //////////////////////////////////////////////////////////////////////
 // Konstruktion/Destruktion
 //////////////////////////////////////////////////////////////////////
 CTrade::CTrade(void)
 {
-	// Standardpreise/Startpreise für die Ressourcen festlegen (erstmal genauso, wie wieviel auch die Ressourcen kosten
-	// würden, wenn wir einen Bauauftrag kaufen)
-	for (int i = TITAN; i <= IRIDIUM; i++)
-	{
-		switch(i)
-		{
-		case TITAN:		m_iRessourcePrice[i] = 800; break;
-		case DEUTERIUM: m_iRessourcePrice[i] = 500; break;
-		case DURANIUM:	m_iRessourcePrice[i] = 1000;break;
-		case CRYSTAL:	m_iRessourcePrice[i] = 2000;break;
-		case IRIDIUM:	m_iRessourcePrice[i] = 3000;break;
-		}
-		m_iRessourcePriceAtRoundStart[i] = m_iRessourcePrice[i];
-		m_iTaxes[i] = 0;
-		m_dMonopolBuy[i] = 0.0f;
-	}
-	m_iQuantity = 100;
-	m_iRace		= NOBODY;
-	m_fTax		= 1.0f;
+	Reset();	
 }
 
 CTrade::~CTrade(void)
-{
-	for (int i = 0; i < m_TradeActions.GetSize(); )
-		m_TradeActions.RemoveAt(i);
-	m_TradeActions.RemoveAll();
+{	
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -44,13 +24,15 @@ CTrade::~CTrade(void)
 void CTrade::Serialize(CArchive &ar)		
 {
 	CObject::Serialize(ar);
+
+	m_TradeHistory.Serialize(ar);
+
 	// wenn gespeichert wird
 	if (ar.IsStoring())
 	{
 		ar << m_iQuantity;
-		ar << m_iRace;
 		ar << m_fTax;
-		for (int i = 0; i < 5; i++)
+		for (int i = 0; i <= IRIDIUM; i++)
 		{
 			ar << m_iRessourcePrice[i];
 			ar << m_iRessourcePriceAtRoundStart[i];
@@ -71,9 +53,8 @@ void CTrade::Serialize(CArchive &ar)
 	{
 		int number = 0;
 		ar >> m_iQuantity;
-		ar >> m_iRace;
 		ar >> m_fTax;
-		for (int i = 0; i < 5; i++)
+		for (int i = 0; i <= IRIDIUM; i++)
 		{
 			ar >> m_iRessourcePrice[i];
 			ar >> m_iRessourcePriceAtRoundStart[i];
@@ -198,9 +179,11 @@ void CTrade::SellRessource(USHORT res, ULONG number, CPoint system, BOOL flag)
 
 // Funktion berechnet die ganzen Handelsaktionen, lagert also Ressourcen ein oder gibt das Latinum, welches
 // wir durch den Verkauf bekommen haben an das jeweilige Imperium
-void CTrade::CalculateTradeActions(CEmpire* empires, CSystem systems[][STARMAP_SECTORS_VCOUNT], CSector sectors[][STARMAP_SECTORS_VCOUNT], CMajorRace* majors, USHORT* taxes)
+void CTrade::CalculateTradeActions(CMajor* pMajor, CSystem systems[][STARMAP_SECTORS_VCOUNT], CSector sectors[][STARMAP_SECTORS_VCOUNT], USHORT* taxes)
 {
-	int sum[STARMAP_SECTORS_HCOUNT][STARMAP_SECTORS_VCOUNT][5] = {0};
+	ASSERT(pMajor);
+
+	int sum[STARMAP_SECTORS_HCOUNT][STARMAP_SECTORS_VCOUNT][IRIDIUM + 1] = {0};
 	BOOLEAN didSome = FALSE;
 	for (int i = 0; i < m_TradeActions.GetSize(); )
 	{
@@ -215,12 +198,12 @@ void CTrade::CalculateTradeActions(CEmpire* empires, CSystem systems[][STARMAP_S
 		}
 		// Das Latinum was wir bekommen dem Imperium geben
 		else
-			empires[m_iRace].SetLatinum(-m_TradeActions.GetAt(i).price);
+			pMajor->GetEmpire()->SetLatinum(-m_TradeActions.GetAt(i).price);
 		
 		// Hier die Monopole beachten, wenn jemand ein Monopol auf die Ressource hat und dieser jemand mit an unserer
 		// Handelsbörse aktiv ist, dann bekommt dieser die Steuern (auch wir selbst bekommen unsere Steuern zurück!)
-		if (CTrade::m_iMonopolOwner[res] != NOBODY)
-			if (CTrade::m_iMonopolOwner[res] == m_iRace || majors[m_iRace].GetKnownMajorRace((byte)CTrade::m_iMonopolOwner[res]) == TRUE)
+		if (CTrade::m_sMonopolOwner[res].IsEmpty() == false)
+			if (CTrade::m_sMonopolOwner[res] == pMajor->GetRaceID() || pMajor->IsRaceContacted(CTrade::m_sMonopolOwner[res]) == true)
 				taxes[res] += (USHORT)ceil(abs((m_TradeActions.GetAt(i).price * m_fTax - m_TradeActions.GetAt(i).price)));
 		// Auftrag nach Bearbeitung entfernen
 		m_TradeActions.RemoveAt(i);
@@ -244,26 +227,32 @@ void CTrade::CalculateTradeActions(CEmpire* empires, CSystem systems[][STARMAP_S
 						CString s;
 						s.Format("%d %s",sum[x][y][i],resName);
 						CMessage message;
-						message.GenerateMessage(CResourceManager::GetString("GET_RESOURCES",0,s,sectors[x][y].GetName()), m_iRace, ECONOMY, "", sectors[x][y].GetKO(), FALSE);
-						empires[m_iRace].AddMessage(message);
+						message.GenerateMessage(CResourceManager::GetString("GET_RESOURCES",0,s,sectors[x][y].GetName()), ECONOMY, "", sectors[x][y].GetKO(), FALSE);
+						pMajor->GetEmpire()->AddMessage(message);
 					}
 }
 
-// Funktion berechnet den Preis der Ressourcen in Zusammenhang zu den anderen Börsen. 
-// Übergeben wird eine Matrix mit allen Preisen sowie die Hauptrassen.
-void CTrade::CalculatePrices(USHORT oldPrices[][5], CMajorRace* majors)
+/// Funktion berechnet den Preis der Ressourcen in Zusammenhang zu den anderen Börsen. 
+/// @param pmMajors Zeiger auf Map mit allen Majors des Spiels
+/// @param pCurMajor aktuelle Rasse, für die die Preise berechnet werden
+void CTrade::CalculatePrices(map<CString, CMajor*>* pmMajors, CMajor* pCurMajor)
 {
+	USHORT nOldPrices[IRIDIUM + 1] = {0};
+
 	// Der Preis einer anderen Börse kann natürlich nur miteingerechnet werden, wenn wir diese Hauptrasse
-	// kennen. Deswegen haben wir das CMajorRace-Array übergeben.
-	float newPrices[5];
+	// kennen.
+	float newPrices[IRIDIUM + 1];
 	for (int j = TITAN; j <= IRIDIUM; j++)
 	{
-		newPrices[j] = oldPrices[m_iRace][j];	// mit eigenem Preis initialisieren
+		newPrices[j] = pCurMajor->GetTrade()->GetRessourcePrice()[j];	// mit eigenem Preis initialisieren
 		USHORT count = 1;						// Zählvariable
-		for (int i = HUMAN; i <= DOMINION; i++)	
-			if (i != m_iRace && majors[m_iRace].GetKnownMajorRace(i) == TRUE)
+		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+			if (it->first != pCurMajor->GetRaceID() && pCurMajor->IsRaceContacted(it->first))
 			{
-				newPrices[j] += oldPrices[i][j];
+				CMajor* pMajor = it->second;
+				ASSERT(pMajor);
+
+				newPrices[j] += pMajor->GetTrade()->GetRessourcePrice()[j];
 				count++;				
 			}
 		newPrices[j] /= count;
@@ -276,6 +265,9 @@ void CTrade::CalculatePrices(USHORT oldPrices[][5], CMajorRace* majors)
 // Resetfunktion für die Klasse CTrade
 void CTrade::Reset(void)
 {
+	// Alle Werte aus der Kurshistory werden gelöscht
+	m_TradeHistory.Reset();
+
 	// Standardpreise/Startpreise für die Ressourcen festlegen (erstmal genauso, wie wieviel auch die Ressourcen kosten
 	// würden, wenn wir einen Bauauftrag kaufen)
 	for (int i = TITAN; i <= IRIDIUM; i++)
@@ -292,10 +284,9 @@ void CTrade::Reset(void)
 		m_iTaxes[i] = 0;
 		m_dMonopolBuy[i] = 0.0f;
 		// statische Variable reseten
-		CTrade::m_iMonopolOwner[i] = 0;		
+		CTrade::m_sMonopolOwner[i] = "";		
 	}
 	m_iQuantity = 100;
-	m_iRace		= NOBODY;
 	m_fTax		= 1.0f;
 	for (int i = 0; i < m_TradeActions.GetSize(); )
 		m_TradeActions.RemoveAt(i);

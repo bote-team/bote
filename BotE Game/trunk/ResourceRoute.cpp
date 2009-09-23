@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "ResourceRoute.h"
 #include "Sector.h"
+#include "Major.h"
 
 IMPLEMENT_SERIAL (CResourceRoute, CObject, 1)
 //////////////////////////////////////////////////////////////////////
@@ -63,9 +64,9 @@ void CResourceRoute::Serialize(CArchive &ar)
 // sonstige Funktionen
 //////////////////////////////////////////////////////////////////////
 /// Funktion überprüft, ob die Ressourcenroute noch Bestand haben darf.
-BOOLEAN CResourceRoute::CheckResourceRoute(BYTE owner, CSector* dest)
+BOOLEAN CResourceRoute::CheckResourceRoute(const CString& sOwner, CSector* dest)
 {
-	if (owner != dest->GetOwnerOfSector())
+	if (sOwner != dest->GetOwnerOfSector())
 		return FALSE;
 	
 	// wenn keine Leute in dem System leben, so gibt es auch keine Route.
@@ -78,19 +79,10 @@ BOOLEAN CResourceRoute::CheckResourceRoute(BYTE owner, CSector* dest)
 
 // Funktion zeichnet die Ressourcensroute auf der Galaxiekarte. Übergeben werden dafür die Koordinate des
 // Zielsystems <code>dest</code> sowie der Besitzer des Startsystems <code>owner</code>.
-void CResourceRoute::DrawResourceRoute(CDC* pDC, CPoint dest, BYTE owner)
+void CResourceRoute::DrawResourceRoute(CDC* pDC, CPoint dest, const CMajor* pMajor)
 {
-	COLORREF color;
-	switch (owner)
-	{
-	case HUMAN:		color = RGB(50,150,255);	break;
-	case FERENGI:	color = RGB(155,155,0);		break;
-	case KLINGON:	color = RGB(165,0,0);		break;
-	case ROMULAN:	color = RGB(0,125,0);		break;
-	case CARDASSIAN:color = RGB(130,0,130);		break;
-	case DOMINION:	color = RGB(80,195,245);	break;
-	default: color = RGB(255,255,255);
-	}
+	COLORREF color = pMajor->GetDesign()->m_clrRouteColor;
+	
 	CPen pen(PS_SOLID, 0, color);
 	pDC->SelectObject(&pen);
 	// Zeichnung mit Hilfe von Bezierkurve und 4 Punkten:
@@ -109,7 +101,7 @@ void CResourceRoute::DrawResourceRoute(CDC* pDC, CPoint dest, BYTE owner)
 	int y2 = p[3].y;
 	p[1].x = (x1 + x2) / 2;
 	p[1].y = (y1 + y2) / 2;
-	// mittlere Punkte leicht auf ihrer Ebene verschieben, damit eine Kurce entsteht
+	// mittlere Punkte leicht auf ihrer Ebene verschieben, damit eine Kurve entsteht
 	p[1].x += (p[0].y - p[3].y) / 4;
 	p[1].y += (p[0].x - p[3].x) / 4;
 	p[2] = p[1];

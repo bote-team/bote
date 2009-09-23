@@ -4,7 +4,7 @@
 #include "stdafx.h"
 #include "botf2.h"
 #include "MainBaseView.h"
-
+#include "RaceController.h"
 
 // CMainBaseView
 
@@ -12,11 +12,10 @@ IMPLEMENT_DYNCREATE(CMainBaseView, CView)
 
 CMainBaseView::CMainBaseView()
 {
-
 }
 
 CMainBaseView::~CMainBaseView()
-{
+{	
 }
 
 BEGIN_MESSAGE_MAP(CMainBaseView, CView)
@@ -62,7 +61,7 @@ void CMainBaseView::OnInitialUpdate()
 void CMainBaseView::OnPrepareDC(CDC* pDC, CPrintInfo* pInfo)
 {
 	// TODO: Add your specialized code here and/or call the base class
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+/*	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 
 	CRect client;
 	GetClientRect(&client);
@@ -74,7 +73,7 @@ void CMainBaseView::OnPrepareDC(CDC* pDC, CPrintInfo* pInfo)
 		
 	pDC->SetViewportOrg(0, 0);
 	pDC->SetBkColor(RGB(0,0,0));
-	pDC->SetBkMode(TRANSPARENT);
+	pDC->SetBkMode(TRANSPARENT);*/	
 		
 	CView::OnPrepareDC(pDC, pInfo);
 }
@@ -106,6 +105,26 @@ void CMainBaseView::DrawButtons(CDC* pDC, CArray<CMyButton*>* buttonArray, int c
 		buttonArray->GetAt(i)->DrawButton(pDC, pDoc->GetGraphicPool());
 }
 
+void CMainBaseView::DrawGDIButtons(Graphics* g, CArray<CMyButton*>* buttonArray, int counter, Gdiplus::Font &font, Gdiplus::SolidBrush &fontBrush)
+{
+	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	ASSERT(pDoc);
+
+	// Wenn wir im jeweiligen Menü sind, prüfen, ob der dazugehörige Button auch inaktiv ist.
+	for (int j = 0; j < buttonArray->GetSize(); j++)
+		if (counter == j && buttonArray->GetAt(j)->GetState() != 2)
+		{
+			for (int i = 0; i < buttonArray->GetSize(); i++)
+				if (buttonArray->GetAt(i)->GetState() == 2)
+					buttonArray->GetAt(i)->SetState(0);
+			buttonArray->GetAt(j)->SetState(2);
+			break;
+		}
+	// Buttons zeichnen
+	for (int i = 0; i < buttonArray->GetSize(); i++)
+		buttonArray->GetAt(i)->DrawButton(*g, pDoc->GetGraphicPool(), font, fontBrush);
+}
+
 void CMainBaseView::ButtonReactOnMouseOver(const CPoint &point, CArray<CMyButton*>* buttonArray)
 {
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
@@ -121,6 +140,7 @@ void CMainBaseView::ButtonReactOnMouseOver(const CPoint &point, CArray<CMyButton
 				CRect r = buttonArray->GetAt(i)->GetRect();
 				CalcDeviceRect(r);
 				InvalidateRect(r, FALSE);
+				break;
 			}
 		}
 		else if (buttonArray->GetAt(i)->Deactivate())
@@ -175,135 +195,73 @@ BOOLEAN CMainBaseView::ButtonReactOnLeftClick(const CPoint &point, CArray<CMyBut
 void CMainBaseView::LoadRaceFont(CDC* pDC)
 {
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	ASSERT(pDoc);
+	
+	CMajor* pMajor = pDoc->GetPlayersRace();
+	ASSERT(pMajor);
+	if (!pMajor)
+		return;
+
 	m_Font.Detach();
 	m_Font.DeleteObject();
-	pDC->SetTextColor(CFontLoader::CreateFont(pDoc->GetPlayersRace(), 2, 3, &m_Font));
+	pDC->SetTextColor(CFontLoader::CreateFont(pMajor, 2, 3, &m_Font));
 	pDC->SelectObject(&m_Font);
 }
 
 void CMainBaseView::LoadFontForBigButton(CDC* pDC)
 {
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	ASSERT(pDoc);
+	
+	CMajor* pMajor = pDoc->GetPlayersRace();
+	ASSERT(pMajor);
+	if (!pMajor)
+		return;
+
 	HGDIOBJ h =	bm.Detach();
 	DeleteObject(h);	
-	h = bm2.Detach();
-	DeleteObject(h);
 	h = bm_dark.Detach();
 	DeleteObject(h);	
 	
 	bm.DeleteObject();
-	bm2.DeleteObject();
 	bm_dark.DeleteObject();
 	FCObjImage img;
-	if (pDoc->GetPlayersRace() == HUMAN)
-	{
-		img.Load(*((CBotf2App*)AfxGetApp())->GetPath() + "Graphics\\Other\\" + CResourceManager::GetString("RACE1_PREFIX") + "button_big2.jpg");
-		bm.Attach(FCWin32::CreateDDBHandle(img));
-		img.Load(*((CBotf2App*)AfxGetApp())->GetPath() + "Graphics\\Other\\" + CResourceManager::GetString("RACE1_PREFIX") + "button_big2i.jpg");
-		bm_dark.Attach(FCWin32::CreateDDBHandle(img));
-	}
-	else if (pDoc->GetPlayersRace() == FERENGI)
-	{
-		img.Load(*((CBotf2App*)AfxGetApp())->GetPath() + "Graphics\\Other\\" + CResourceManager::GetString("RACE2_PREFIX") + "button.jpg");
-		bm.Attach(FCWin32::CreateDDBHandle(img));
-		img.Load(*((CBotf2App*)AfxGetApp())->GetPath() + "Graphics\\Other\\" + CResourceManager::GetString("RACE2_PREFIX") + "buttoni.jpg");
-		bm_dark.Attach(FCWin32::CreateDDBHandle(img));
-	}
-	else if (pDoc->GetPlayersRace() == KLINGON)
-	{
-		img.Load(*((CBotf2App*)AfxGetApp())->GetPath() + "Graphics\\Other\\" + CResourceManager::GetString("RACE3_PREFIX") + "button.jpg");
-		bm.Attach(FCWin32::CreateDDBHandle(img));
-		img.Load(*((CBotf2App*)AfxGetApp())->GetPath() + "Graphics\\Other\\" + CResourceManager::GetString("RACE3_PREFIX") + "buttoni.jpg");
-		bm_dark.Attach(FCWin32::CreateDDBHandle(img));
-	}
-	else if (pDoc->GetPlayersRace() == ROMULAN)
-	{
-		img.Load(*((CBotf2App*)AfxGetApp())->GetPath() + "Graphics\\Other\\" + CResourceManager::GetString("RACE4_PREFIX") + "button.jpg");
-		bm.Attach(FCWin32::CreateDDBHandle(img));
-		img.Load(*((CBotf2App*)AfxGetApp())->GetPath() + "Graphics\\Other\\" + CResourceManager::GetString("RACE4_PREFIX") + "buttoni.jpg");
-		bm_dark.Attach(FCWin32::CreateDDBHandle(img));
-	}
-	else if (pDoc->GetPlayersRace() == CARDASSIAN)
-	{
-		img.Load(*((CBotf2App*)AfxGetApp())->GetPath() + "Graphics\\Other\\" + CResourceManager::GetString("RACE5_PREFIX") + "button.jpg");
-		bm.Attach(FCWin32::CreateDDBHandle(img));
-		img.Load(*((CBotf2App*)AfxGetApp())->GetPath() + "Graphics\\Other\\" + CResourceManager::GetString("RACE5_PREFIX") + "button_dark.jpg");
-		bm_dark.Attach(FCWin32::CreateDDBHandle(img));
-	}
-	else if (pDoc->GetPlayersRace() == DOMINION)
-	{
-	
-	}
+
+	img.Load(*((CBotf2App*)AfxGetApp())->GetPath() + "Graphics\\Other\\" + pMajor->GetPrefix() + "button.png");
+	bm.Attach(FCWin32::CreateDDBHandle(img));
+	img.Load(*((CBotf2App*)AfxGetApp())->GetPath() + "Graphics\\Other\\" + pMajor->GetPrefix() + "buttoni.png");
+	bm_dark.Attach(FCWin32::CreateDDBHandle(img));
 	img.Destroy();
+	
 	CFont font;
-	pDC->SetTextColor(CFontLoader::CreateFont(pDoc->GetPlayersRace(),3,2,&font));
+	pDC->SetTextColor(CFontLoader::CreateFont(pMajor,3,2,&font));
 	pDC->SelectObject(&font);
 }
 
 void CMainBaseView::LoadFontForLittleButton(CDC* pDC)
 {
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	ASSERT(pDoc);
+	
+	CMajor* pMajor = pDoc->GetPlayersRace();
+	ASSERT(pMajor);
+	if (!pMajor)
+		return;
+
 	HGDIOBJ h =	bm.Detach();
 	DeleteObject(h);	
-	h = bm2.Detach();
-	DeleteObject(h);
-	h = bm3.Detach();
-	DeleteObject(h);
-	h = bm4.Detach();
-	DeleteObject(h);
 	h = bm_dark.Detach();
 	DeleteObject(h);
 
 	bm.DeleteObject();
-	bm2.DeleteObject();
-	bm3.DeleteObject();
-	bm4.DeleteObject();
 	bm_dark.DeleteObject();
 	FCObjImage img;
-	if (pDoc->GetPlayersRace() == HUMAN)
-	{
-		img.Load(*((CBotf2App*)AfxGetApp())->GetPath() + "Graphics\\Other\\" + CResourceManager::GetString("RACE1_PREFIX") + "button_small3.jpg");
-		bm.Attach(FCWin32::CreateDDBHandle(img));
-		img.Load(*((CBotf2App*)AfxGetApp())->GetPath() + "Graphics\\Other\\" + CResourceManager::GetString("RACE1_PREFIX") + "button_small2.jpg");
-		bm2.Attach(FCWin32::CreateDDBHandle(img));
-	}
-	else if (pDoc->GetPlayersRace() == FERENGI)
-	{
-		img.Load(*((CBotf2App*)AfxGetApp())->GetPath() + "Graphics\\Other\\" + CResourceManager::GetString("RACE2_PREFIX") + "button_small_mid.jpg");
-		bm.Attach(FCWin32::CreateDDBHandle(img));
-		img.Load(*((CBotf2App*)AfxGetApp())->GetPath() + "Graphics\\Other\\" + CResourceManager::GetString("RACE2_PREFIX") + "button_small3.jpg");
-		bm2.Attach(FCWin32::CreateDDBHandle(img));
-		img.Load(*((CBotf2App*)AfxGetApp())->GetPath() + "Graphics\\Other\\" + CResourceManager::GetString("RACE2_PREFIX") + "button_small1.jpg");
-		bm3.Attach(FCWin32::CreateDDBHandle(img));
-		img.Load(*((CBotf2App*)AfxGetApp())->GetPath() + "Graphics\\Other\\" + CResourceManager::GetString("RACE2_PREFIX") + "button_small2.jpg");
-		bm4.Attach(FCWin32::CreateDDBHandle(img));
-	}
-	else if (pDoc->GetPlayersRace() == KLINGON)
-	{
-		img.Load(*((CBotf2App*)AfxGetApp())->GetPath() + "Graphics\\Other\\" + CResourceManager::GetString("RACE3_PREFIX") + "button_small.jpg");
-		bm.Attach(FCWin32::CreateDDBHandle(img));
-		img.Load(*((CBotf2App*)AfxGetApp())->GetPath() + "Graphics\\Other\\" + CResourceManager::GetString("RACE3_PREFIX") + "button_small.jpg");
-		bm2.Attach(FCWin32::CreateDDBHandle(img));
-	}
-	else if (pDoc->GetPlayersRace() == ROMULAN)
-	{
-		img.Load(*((CBotf2App*)AfxGetApp())->GetPath() + "Graphics\\Other\\" + CResourceManager::GetString("RACE4_PREFIX") + "button_small.jpg");
-		bm.Attach(FCWin32::CreateDDBHandle(img));
-		img.Load(*((CBotf2App*)AfxGetApp())->GetPath() + "Graphics\\Other\\" + CResourceManager::GetString("RACE4_PREFIX") + "button_small.jpg");
-		bm2.Attach(FCWin32::CreateDDBHandle(img));
-	}
-	else if (pDoc->GetPlayersRace() == CARDASSIAN)
-	{
-		img.Load(*((CBotf2App*)AfxGetApp())->GetPath() + "Graphics\\Other\\" + CResourceManager::GetString("RACE5_PREFIX") + "button2.jpg");
-		bm2.Attach(FCWin32::CreateDDBHandle(img));
-	}
-	else if (pDoc->GetPlayersRace() == DOMINION)
-	{
-		img.Load(*((CBotf2App*)AfxGetApp())->GetPath() + "Graphics\\Other\\" + CResourceManager::GetString("RACE5_PREFIX") + "button2.jpg");
-		bm2.Attach(FCWin32::CreateDDBHandle(img));
-	}
+
+	img.Load(*((CBotf2App*)AfxGetApp())->GetPath() + "Graphics\\Other\\" + pMajor->GetPrefix() + "button_small.png");
+	bm.Attach(FCWin32::CreateDDBHandle(img));
 	img.Destroy();
-	pDC->SetTextColor(CFontLoader::GetFontColor(pDoc->GetPlayersRace(),1));
+	
+	pDC->SetTextColor(CFontLoader::GetFontColor(pMajor,1));
 }
 
 void CMainBaseView::CalcLogicalPoint(CPoint &point)

@@ -1,5 +1,5 @@
 /*
- *   Copyright (C)2004-2008 Sir Pustekuchen
+ *   Copyright (C)2004-2009 Sir Pustekuchen
  *
  *   Author   :  Sir Pustekuchen
  *   Home     :  http://birth-of-the-empires.de.vu
@@ -8,8 +8,12 @@
 #pragma once
 #include "afx.h"
 #include "CombatShip.h"
+#include <map>
+#include <vector>
 
-class CMajorRace;
+// forward declaration
+class CRace;
+
 class CCombat :	public CObject
 {
 public:
@@ -20,8 +24,6 @@ public:
 	~CCombat(void);
 
 	// Zugriffsfunktionen
-	BOOLEAN GetInvolvedRace(BYTE race) const {ASSERT(race >= HUMAN && race <= DOMINION); return m_bInvolvedRaces[race];}
-
 	BOOLEAN GetReadyForCombat() const {return m_bReady;}
 
 	/// Schiffskampfberechnungsfunktion
@@ -30,7 +32,7 @@ public:
 	* <code>ships<code>. Diese Schiffe werden dann am Kampf teilnehmen. Kommt es zu einem Kampf, so muß 
 	* diese Funktion zu allererst aufgerufen werden.
 	*/
-	void SetInvolvedShips(CArray<CShip*,CShip*>* ships, CMajorRace* majors);
+	void SetInvolvedShips(CArray<CShip*,CShip*>* ships, std::map<CString, CRace*>* pmRaces);
 	
 	/**
 	* Diese Funktion setzt die gewählte Schiffsformation der Rasse <code>race<code> fest.
@@ -54,7 +56,7 @@ public:
 	/** 
 	* Diese Funktion ist das Herzstück der CCombat-Klasse. Sie führt die ganzen Kampfberechnungen durch.
 	*/
-	void CalculateCombat(BYTE winner[7]);
+	void CalculateCombat(std::map<CString, BYTE>& winner);
 
 	/**
 	* Diese Funktion setzt alle Variablen des Combat-Objektes wieder auf ihre Ausgangswerte
@@ -72,18 +74,12 @@ private:
 	CArray<CCombatShip*, CCombatShip*> m_CS;
 
 	/// In diesem Array werdem alle Gegner des jeweiligen Imperiums initialisiert.
-	CArray<CCombatShip*, CCombatShip*> m_Enemies[7];
+	std::map<CString, std::vector<CCombatShip*> > m_mEnemies;
 
 	/// Das dynamische Feld in denen alle am Kampf abgefeuerten und noch vorhandenen Torpedos
 	/// mit allen dazughörigen Informationen abegelegt sind
 	CombatTorpedos m_CT;
 	
-	/// Die von den beteiligten Rassen gewählten Formationen
-	BYTE m_iFormation[7];
-	
-	/// Die von den beteiligten Rassen gewählten Taktiken
-	BYTE m_iTactic[7];
-
 	/// Sind alle Vorbereitungen für eine Kampfberechnungen abgeschlossen
 	BOOLEAN m_bReady;
 
@@ -94,10 +90,10 @@ private:
 	BOOLEAN m_bAttackedSomebody;
 
 	/// Speichert die Nummer der beteiligten Rassen.
-	BOOLEAN m_bInvolvedRaces[7];
+	std::map<CString, bool> m_mInvolvedRaces;
 
 	/// Speichert des Feld der Hauptrassen im Spiel.
-	CMajorRace *m_MajorRaces;
+	std::map<CString, CRace*>* m_mRaces;
 
 	/**
 	* Diese Funktion versucht dem i-ten Schiff im Feld <code>m_CS<code> ein Ziel zu geben. Wird dem Schiff ein Ziel
@@ -119,5 +115,5 @@ private:
 	* überhaupt attackieren. Die Funktion gibt <code>TRUE</code> zurück, wenn sie sich angreifen können,
 	* ansonsten gibt sie <code>FALSE</code> zurück.
 	*/
-	BOOLEAN CheckDiplomacyStatus(const CMajorRace* raceA, const CMajorRace* raceB);
+	BOOLEAN CheckDiplomacyStatus(CRace* raceA, CRace* raceB);
 };

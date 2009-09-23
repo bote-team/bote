@@ -120,14 +120,17 @@ void CShipHistory::AddShip(CShip* ship, CString buildsector, short round)
 /// wurde, wird für den Parameter <code>destroyRound<code> die aktuelle Runde der Zerstörung übergeben und
 /// für den Parameter <code>destroyType<code> die Art der Zerstörung als CString übergeben. Außerdem wird der neue
 /// Status des Schiffes im Parameter <code>status<code> übergeben, z.B. zerstört, vermisst usw.
-void CShipHistory::ModifyShip(CShip* ship, CString sector, short destroyRound, CString destroyType, CString status)
+/// Konnte das Schiff modifiziert werden, so gibt die Funktion <code>true</code> zurück, sonst <code>false</code>
+bool CShipHistory::ModifyShip(CShip* ship, CString sector, short destroyRound, CString destroyType, CString status)
 {
 	for (int i = 0; i < m_ShipHistory.GetSize(); i++)
+	{
 		if (m_ShipHistory.GetAt(i).m_strShipName == ship->GetShipName())
 		{
 			m_ShipHistory.ElementAt(i).m_strCurrentSector = sector;
 			m_ShipHistory.ElementAt(i).m_strCurrentTask = ship->GetCurrentOrderAsString();
 			m_ShipHistory.ElementAt(i).m_iExperiance = ship->GetCrewExperience();
+
 			if (destroyRound != 0)
 			{
 				m_ShipHistory.ElementAt(i).m_iDestroyRound = destroyRound;
@@ -135,8 +138,16 @@ void CShipHistory::ModifyShip(CShip* ship, CString sector, short destroyRound, C
 				m_ShipHistory.ElementAt(i).m_strSectorName = sector;
 				m_ShipHistory.ElementAt(i).m_strCurrentTask = status;
 			}
-			break;
+			else
+			{
+				m_ShipHistory.ElementAt(i).m_iDestroyRound = 0;
+				m_ShipHistory.ElementAt(i).m_strKindOfDestroy = "";				
+			}			
+
+			return true;
 		}
+	}
+	return false;
 }
 
 /// Funktion entfernt ein bestimmtes Schiff aus der Schiffshistory.

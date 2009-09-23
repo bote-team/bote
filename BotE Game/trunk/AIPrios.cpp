@@ -2,6 +2,7 @@
 #include "AIPrios.h"
 #include "Botf2Doc.h"
 #include "SectorAI.h"
+#include "RaceController.h"
 
 //////////////////////////////////////////////////////////////////////
 // Konstruktion/Destruktion
@@ -18,6 +19,11 @@ CAIPrios::~CAIPrios(void)
 }
 
 //////////////////////////////////////////////////////////////////////
+// Zugriffsfunktionen
+//////////////////////////////////////////////////////////////////////
+
+
+//////////////////////////////////////////////////////////////////////
 // sonstige Funktionen
 //////////////////////////////////////////////////////////////////////
 
@@ -25,129 +31,129 @@ CAIPrios::~CAIPrios(void)
 /// geben sollen.
 void CAIPrios::CalcShipPrios(CSectorAI* sectorAI)
 {
-	ASSERT(sectorAI);
-	int shipPower[DOMINION] = {0};
+#ifdef TRACE_AI
+	MYTRACE(MT::LEVEL_INFO, "CAIPrios::CalcShipPrios() begin... \n");
+#endif
+
+	ASSERT(sectorAI);	
+	Clear();	
 	int max = 0;
-	for (int i = HUMAN; i <= DOMINION; i++)
+	map<CString, CMajor*>* pmMajors = m_pDoc->GetRaceCtrl()->GetMajors();
+	
+	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
 	{
+		CMajor* pMajor = it->second;
+		ASSERT(pMajor);
+
 		short range = -1;
 		// berechnen welche max. Reichweite das Kolonieschiff der Rasse hat
 		for (int j = 0; j < m_pDoc->m_ShipInfoArray.GetSize(); j++)
-			if (m_pDoc->m_ShipInfoArray.GetAt(j).GetRace() == i)
+			if (m_pDoc->m_ShipInfoArray.GetAt(j).GetRace() == pMajor->GetRaceShipNumber())
 				if (m_pDoc->m_ShipInfoArray.GetAt(j).GetShipType() == COLONYSHIP
 					&& m_pDoc->m_ShipInfoArray.GetAt(j).GetRange() > range
-					&& m_pDoc->m_ShipInfoArray.GetAt(j).IsThisShipBuildableNow(m_pDoc->m_Empire[i].GetResearch()))
+					&& m_pDoc->m_ShipInfoArray.GetAt(j).IsThisShipBuildableNow(pMajor->GetEmpire()->GetResearch()))
 				{
 					range = m_pDoc->m_ShipInfoArray.GetAt(j).GetRange();
 					if (range == RANGE_LONG)
 						break;
 				}
 		// Jetzt die zum Terraformen ausgesuchten Sektoren durchgehen und schauen das diese innerhalb der Reichweite
-		// des Schiffes liegen.
-		for (int j = 0; j < sectorAI->GetSectorsToTerraform(i)->GetSize(); j++)
-			if (m_pDoc->starmap[i]->GetRange(sectorAI->GetSectorsToTerraform(i)->GetAt(j).p) <= range)
-				m_byColoShipPrio[i-1]++;
+		// des Schiffes liegen.		
+		for (UINT j = 0; j < sectorAI->GetSectorsToTerraform(it->first)->size(); j++)
+			if (pMajor->GetStarmap()->GetRange(sectorAI->GetSectorsToTerraform(it->first)->at(j).p) <= range)
+				m_mColoShipPrio[it->first] += 1;
 		// Bei 0 oder einem Kolonieschiff bleibt die Priorität gleich der Anzahl der zu terraformenden Sektoren.
 		// Bei zwei Kolonieschiffen ist die maximale Prioriät noch 7, bei drei 8, bei vier 9 bei fünf 10.
 		// Bei mehr als 5 Kolonieschiffen wird die Priorität halbiert.
 		// Wenn die Priorität + 2 kleiner der Anzahl der Kolonischiffe ist, so ist die Priorität 0
-		if ((m_byColoShipPrio[i-1]+1) < sectorAI->GetNumberOfColoships(i))
-			m_byColoShipPrio[i-1] = 0;
-		else if (sectorAI->GetNumberOfColoships(i) > 1 && sectorAI->GetNumberOfColoships(i) < 6 && m_byColoShipPrio[i-1] > sectorAI->GetNumberOfColoships(i) + 5)
-			m_byColoShipPrio[i-1] = sectorAI->GetNumberOfColoships(i) + 5;
-		else if (sectorAI->GetNumberOfColoships(i) > 12)
-			m_byColoShipPrio[i-1] = rand()%2;
-		else if (sectorAI->GetNumberOfColoships(i) > 5)
-			m_byColoShipPrio[i-1] /= 4;
+		if ((m_mColoShipPrio[it->first] + 1) < sectorAI->GetNumberOfColoships(it->first))
+			m_mColoShipPrio[it->first] = 0;
+		else if (sectorAI->GetNumberOfColoships(it->first) > 1 && sectorAI->GetNumberOfColoships(it->first) < 6 && m_mColoShipPrio[it->first] > sectorAI->GetNumberOfColoships(it->first) + 5)
+			m_mColoShipPrio[it->first] = sectorAI->GetNumberOfColoships(it->first) + 5;
+		else if (sectorAI->GetNumberOfColoships(it->first) > 12)
+			m_mColoShipPrio[it->first] = rand()%2;
+		else if (sectorAI->GetNumberOfColoships(it->first) > 5)
+			m_mColoShipPrio[it->first] /= 4;
 	}
 
 	// Prioritäten für Truppentransporter berechnen
-	for (int i = HUMAN; i <= DOMINION; i++)
+	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
 	{
-		if (sectorAI->GetStationBuildSector(i).points > MINBASEPOINTS)
+		CMajor* pMajor = it->second;
+		ASSERT(pMajor);
+
+		if (sectorAI->GetStationBuildSector(it->first).points > MINBASEPOINTS)
 		{
 			BOOLEAN buildableStation = FALSE;
 			for (int j = 0; j < m_pDoc->m_ShipInfoArray.GetSize(); j++)
-				if (m_pDoc->m_ShipInfoArray.GetAt(j).GetRace() == i)
+				if (m_pDoc->m_ShipInfoArray.GetAt(j).GetRace() == pMajor->GetRaceShipNumber())
 					if (m_pDoc->m_ShipInfoArray.GetAt(j).GetShipType() == OUTPOST || m_pDoc->m_ShipInfoArray.GetAt(j).GetShipType() == STARBASE)
-						if (m_pDoc->m_ShipInfoArray.GetAt(j).IsThisShipBuildableNow(m_pDoc->m_Empire[i].GetResearch()))
+						if (m_pDoc->m_ShipInfoArray.GetAt(j).IsThisShipBuildableNow(pMajor->GetEmpire()->GetResearch()))
 						{
 							buildableStation = TRUE;
 							break;
 						}
 			if (buildableStation)
 			{
-				if (sectorAI->GetNumberOfTransportShips(i) == NULL)
-					m_byTransportPrio[i-1] = (BYTE)(sectorAI->GetStationBuildSector(i).points / (MINBASEPOINTS * 0.05));
+				if (sectorAI->GetNumberOfTransportShips(it->first) == NULL)
+					m_mTransportPrio[it->first] = (BYTE)(sectorAI->GetStationBuildSector(it->first).points / (MINBASEPOINTS * 0.05));
 				else
-					m_byTransportPrio[i-1] = (BYTE)(sectorAI->GetStationBuildSector(i).points / (MINBASEPOINTS * 0.15));
+					m_mTransportPrio[it->first] = (BYTE)(sectorAI->GetStationBuildSector(it->first).points / (MINBASEPOINTS * 0.15));
 
-				if ((m_byTransportPrio[i-1]) < sectorAI->GetNumberOfTransportShips(i) * 4)
-					m_byTransportPrio[i-1] = 0;
+				if ((m_mTransportPrio[it->first]) < sectorAI->GetNumberOfTransportShips(it->first) * 4)
+					m_mTransportPrio[it->first] = 0;
 
 				// bei einer niedrigen Kolonieschiffpriorität (möglich wenn keine gut zu terraformenden Systeme vorhanden
 				// sind) wird die Transportschiffpriorität verdoppelt. Bei einer hohen Kolonieschiffpriorität wird
 				// die Truppentransporterbaupriorität verringert
-				if (m_byColoShipPrio[i-1] == NULL && sectorAI->GetNumberOfTransportShips(i) == NULL)
-					m_byTransportPrio[i-1] *= 7;
-				else if (m_byColoShipPrio[i-1] < 2)
-					m_byTransportPrio[i-1] *= 2;
-				else if (m_byColoShipPrio[i-1] > 5)
-					m_byTransportPrio[i-1] /= 3;
+				if (m_mColoShipPrio[it->first] == NULL && sectorAI->GetNumberOfTransportShips(it->first) == NULL)
+					m_mTransportPrio[it->first] *= 7;
+				else if (m_mColoShipPrio[it->first] < 2)
+					m_mTransportPrio[it->first] *= 2;
+				else if (m_mColoShipPrio[it->first] > 5)
+					m_mTransportPrio[it->first] /= 3;
 			}
 		}
 	}
 
 	// Prioritäten für Kriegsschiffe ermitteln
-/*	for (int i = 0; i < m_pDoc->m_ShipArray.GetSize(); i++)
-		if (m_pDoc->m_ShipArray.GetAt(i).GetShipType() > COLONYSHIP && m_pDoc->m_ShipArray.GetAt(i).GetShipType() < OUTPOST)
-		{
-			BYTE race = m_pDoc->m_ShipArray.GetAt(i).GetOwnerOfShip();
-			if (race != NOBODY && race != UNKNOWN)
-			{
-				shipPower[race-1] += m_pDoc->m_ShipArray.GetAt(i).GetCompleteOffensivePower()
-					+ m_pDoc->m_ShipArray.GetAt(i).GetCompleteDefensivePower();
-				if (max < shipPower[race-1])
-					max = shipPower[race-1];
-			}
-		}
-*/
-	for (int i = HUMAN; i <= DOMINION; i++)
+	map<CString, int> shipPower;
+	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
 	{
-		shipPower[i-1] += sectorAI->GetCompleteDanger(i);
-		if (max < shipPower[i-1])
-			max = shipPower[i-1];
+		shipPower[it->first] += sectorAI->GetCompleteDanger(it->first);
+		if (max < shipPower[it->first])
+			max = shipPower[it->first];
 	}
 	
 
 #ifdef TRACE_AI
-		TRACE("max CombatShipPrio: %d\n",max);
+	MYTRACE(MT::LEVEL_INFO, "CAIPrios::CalcShipPrios(): max Combatship Priority is: %d\n",max);
 #endif
 	// Maximum der Schiffsstärken ermitteln
-	for (int i = 0; i < DOMINION; i++)
-	{
+	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+	{	
 #ifdef TRACE_AI
-		TRACE("Race: %d - ShipPower: %d - complete: %d\n",i+1, shipPower[i], sectorAI->GetCompleteDanger(i+1));
+		MYTRACE(MT::LEVEL_INFO, "Calc Shippowers: Race: %s has a complete shippower of %d - all shippower is %d\n",it->first, shipPower[it->first], sectorAI->GetCompleteDanger(it->first));
 #endif
-		if (shipPower[i] > 0)
-			m_byCombatShipPrio[i] = (BYTE)(ceil)((float)max / (float)shipPower[i] * 1.5);
+		if (shipPower[it->first] > 0)
+			m_mCombatShipPrio[it->first] = (BYTE)(ceil)((float)max / (float)shipPower[it->first] * 1.5);
 		else
-			m_byCombatShipPrio[i] = MAXBYTE;
+			m_mCombatShipPrio[it->first] = MAXBYTE;
 #ifdef TRACE_AI
-		TRACE("Race: %d - CombatShipPrio: %d - ColoshipPrio: %d - TransportPrio: %d\n",i+1, m_byCombatShipPrio[i], m_byColoShipPrio[i], m_byTransportPrio[i]);
-		TRACE("Race: %d - ColonyShipNumber: %d - TransportshipNumber: %d\n",i+1, sectorAI->GetNumberOfColoships(i+1), sectorAI->GetNumberOfTransportShips(i+1));
+		MYTRACE(MT::LEVEL_INFO, "Calc Priorities: Race: %s - CombatShipPrio: %d - ColoshipPrio: %d - TransportPrio: %d\n",it->first, m_mCombatShipPrio[it->first], m_mColoShipPrio[it->first], m_mTransportPrio[it->first]);
+		MYTRACE(MT::LEVEL_INFO, "Number of shiptypes: Race: %s - Colonyships: %d - Transporthips: %d\n",it->first, sectorAI->GetNumberOfColoships(it->first), sectorAI->GetNumberOfTransportShips(it->first));
 #endif
 	}
 #ifdef TRACE_AI
-	TRACE("CAIPrios::CalcShipPrios ... ready\n");
+	MYTRACE(MT::LEVEL_INFO, "CAIPrios::CalcShipPrios() ... ready\n");
 #endif
 }
 
 /// Funktion löscht alle vorher berechneten Prioritäten.
 void CAIPrios::Clear(void)
 {
-	memset(m_byColoShipPrio,   0, sizeof(*m_byColoShipPrio)   * DOMINION);
-	memset(m_byTransportPrio,  0, sizeof(*m_byTransportPrio)  * DOMINION);
-	memset(m_byCombatShipPrio, 0, sizeof(*m_byCombatShipPrio) * DOMINION);
+	m_mColoShipPrio.clear();
+	m_mTransportPrio.clear();
+	m_mCombatShipPrio.clear();
 	m_IntelAI.Reset();
 }

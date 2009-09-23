@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "FontLoader.h"
+#include "Major.h"
 
+/*
 BYTE CFontLoader::m_byFontSizes[DOMINION][6] = {
 	14,24,25,34,50,54,	// ohne GDI+
 	8,13,13,19,27,27,	// Ferengi Bajoran Regular Font
@@ -21,11 +23,11 @@ BYTE CFontLoader::m_byGDIPlusFontSizes[DOMINION][6] = {
 	4,11,11,15,22,28};
 //	10,17,17,22,32,42};	// Dominion Hammerhead
 
-/*	0 -> ganz kleine Schriften
-	1 -> kleiner Button
-	2 -> großer Button
-	3 -> für normale Schirften
-	4 -> Zweitfarbe für normale Schriften*/
+//	0 -> ganz kleine Schriften
+//	1 -> kleiner Button
+//	2 -> großer Button
+//	3 -> für normale Schirften
+//	4 -> Zweitfarbe für normale Schriften
 COLORREF CFontLoader::m_Colors[DOMINION][5] = {
 	RGB(200,150,0), RGB(0,0,0),		 RGB(0,0,0),   RGB(255,185,45),  RGB(175,82,154),	// Föderation
 	RGB(200,150,0), RGB(0,0,0),		 RGB(0,50,0),  RGB(195,195,0),	 RGB(195,195,0),	// Ferengi
@@ -34,6 +36,7 @@ COLORREF CFontLoader::m_Colors[DOMINION][5] = {
 	RGB(200,150,0), RGB(0,0,0),		 RGB(0,0,0),   RGB(180,180,180), RGB(74,146,138),	// Cardassianer
 	RGB(200,150,0), RGB(0,0,0),		 RGB(0,0,0),   RGB(200,255,255), RGB(74,146,138)	// Dominion
 };
+*/
 
 //////////////////////////////////////////////////////////////////////
 // Konstruktion/Destruktion
@@ -54,36 +57,19 @@ CFontLoader::~CFontLoader(void)
 /// </code>, die allgemeine Schriftgröße (0: sehr klein, 1: klein, 2: normal, 3: groß, 4: sehr groß, 5: kolossal)
 /// mittels <code>size</code> und ein Zeiger auf ein Fontobjekt <code>font</code>, in welches die generierte Schrift
 /// gespeichert wird, übergeben.
-void CFontLoader::CreateFont(BYTE playersRace, BYTE size, CFont* font)
+void CFontLoader::CreateFont(const CMajor* pPlayersRace, BYTE size, CFont* font)
 {
 	ASSERT(font != NULL);
 	
 	LOGFONT lf;
 	memset(&lf, 0, sizeof(LOGFONT)); 
-	switch (playersRace)
-	{
-	case HUMAN:
-		strcpy_s(lf.lfFaceName, FEDERATION_RACEFONT);
-		break;
-	case FERENGI:
-		strcpy_s(lf.lfFaceName, FERENGI_RACEFONT);
-		break;
-	case KLINGON:
-		strcpy_s(lf.lfFaceName, KLINGON_RACEFONT);
-		break;
-	case ROMULAN:
-		strcpy_s(lf.lfFaceName, ROMULAN_RACEFONT);
-		break;
-	case CARDASSIAN:
-		strcpy_s(lf.lfFaceName, CARDASSIAN_RACEFONT);
-		break;
-	case DOMINION:
-		strcpy_s(lf.lfFaceName, DOMINION_RACEFONT);
-		break;
-	}
-	lf.lfHeight = m_byFontSizes[playersRace-1][size];
+	
+	strcpy_s(lf.lfFaceName, pPlayersRace->GetDesign()->m_sFontName);
+	
+	lf.lfHeight = pPlayersRace->GetDesign()->m_byGDIFontSize[size];
 	lf.lfQuality = CLEARTYPE_QUALITY;
 	lf.lfPitchAndFamily = FF_SWISS;
+	
 	font->CreateFontIndirect(&lf);
 }
 
@@ -93,39 +79,35 @@ void CFontLoader::CreateFont(BYTE playersRace, BYTE size, CFont* font)
 /// mittels <code>size</code>, die gewünschte Schriftfarbe mittels <code>color</code> und ein Zeiger auf ein
 /// Fontobjekt <code>font</code>, in welches die generierte Schrift gespeichert wird, übergeben. Der Rückgabewert
 /// der Funktion ist die passende Schriftfarbe.
-COLORREF CFontLoader::CreateFont(BYTE playersRace, BYTE size, BYTE color, CFont *font)
+COLORREF CFontLoader::CreateFont(const CMajor* pPlayersRace, BYTE size, BYTE color, CFont *font)
 {
-	CFontLoader::CreateFont(playersRace, size, font);
-	return m_Colors[playersRace-1][color];
+	CFontLoader::CreateFont(pPlayersRace, size, font);
+	return GetFontColor(pPlayersRace, color);
 }
 
-void CFontLoader::CreateGDIFont(BYTE playersRace, BYTE size, CString &family, Gdiplus::REAL &fontSize)
+COLORREF CFontLoader::GetFontColor(const CMajor* pPlayersRace, BYTE colorType)
 {
-	switch (playersRace)
+	COLORREF clrColor;
+	switch (colorType)
 	{
-	case HUMAN:
-		family = FEDERATION_RACEFONT;
-		break;
-	case FERENGI:
-		family = FERENGI_RACEFONT;
-		break;
-	case KLINGON:
-		family = KLINGON_RACEFONT;
-		break;
-	case ROMULAN:
-		family = ROMULAN_RACEFONT;
-		break;
-	case CARDASSIAN:
-		family = CARDASSIAN_RACEFONT;
-		break;
-	case DOMINION:
-		family = DOMINION_RACEFONT;
-		break;
+	case 0:	clrColor = pPlayersRace->GetDesign()->m_clrSmallText; break;
+	case 1:	clrColor = pPlayersRace->GetDesign()->m_clrSmallBtn; break;
+	case 2:	clrColor = pPlayersRace->GetDesign()->m_clrLargeBtn; break;
+	case 3:	clrColor = pPlayersRace->GetDesign()->m_clrNormalText; break;
+	case 4:	clrColor = pPlayersRace->GetDesign()->m_clrSecondText; break;
 	}
-	fontSize = (Gdiplus::REAL)m_byGDIPlusFontSizes[playersRace-1][size];	
+
+	return clrColor;
 }
 
-void CFontLoader::GetGDIFontColor(BYTE playersRace, BYTE colorType, Gdiplus::Color &color)
+void CFontLoader::CreateGDIFont(const CMajor* pPlayersRace, BYTE size, CString &family, Gdiplus::REAL &fontSize)
 {
-	color.SetFromCOLORREF(m_Colors[playersRace-1][colorType]);
+	family = pPlayersRace->GetDesign()->m_sFontName;
+	fontSize = (Gdiplus::REAL)pPlayersRace->GetDesign()->m_byGDIPlusFontSize[size];
+}
+
+void CFontLoader::GetGDIFontColor(const CMajor* pPlayersRace, BYTE colorType, Gdiplus::Color &color)
+{
+	COLORREF clrColor = GetFontColor(pPlayersRace, colorType);
+	color.SetFromCOLORREF(clrColor);
 }

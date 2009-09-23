@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "SystemProd.h"
-short CSystemProd::m_iMoralProdEmpireWide[7] = {0,0,0,0,0,0,0};
+
+// statische Variablen initialisieren
+std::map<CString, short> CSystemProd::m_iMoralProdEmpireWide;
 
 IMPLEMENT_SERIAL (CSystemProd, CObject, 1)
 //////////////////////////////////////////////////////////////////////

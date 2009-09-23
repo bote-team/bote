@@ -1,5 +1,5 @@
 /*
- *   Copyright (C)2004-2008 Sir Pustekuchen
+ *   Copyright (C)2004-2009 Sir Pustekuchen
  *
  *   Author   :  Sir Pustekuchen
  *   Home     :  http://birth-of-the-empires.de.vu
@@ -8,6 +8,7 @@
 #pragma once
 #include "afx.h"
 #include "BuildingInfo.h"
+#include <map>
 
 class CSystemProd :	public CObject
 {
@@ -49,7 +50,8 @@ public:
 	short GetDilithiumProd() const {return m_iDilithiumProd;}
 	short GetLatinumProd() const {return m_iLatinumProd;}
 	short GetMoralProd() const {return m_iMoralProd;}
-	static short GetMoralProdEmpireWide(BYTE race) {return m_iMoralProdEmpireWide[race];}
+	static short GetMoralProdEmpireWide(const CString& sRaceID) {return m_iMoralProdEmpireWide[sRaceID];}
+	static std::map<CString, short>* GetMoralProdEmpireWide(void) {return &m_iMoralProdEmpireWide;}
 	// Forschungstechboni
 	short GetBioTechBoni() const {return m_iBioTechBoni;}
 	short GetEnergyTechBoni() const {return m_iEnergyTechBoni;}
@@ -89,7 +91,7 @@ public:
 	// zum Schreiben der Membervariabeln
 	void AddMoralProd(short moralAdd) {m_iMoralProd += moralAdd;}
 
-	static void SetMoralProdEmpireWide(BYTE race, short value) {m_iMoralProdEmpireWide[race] = value;}
+	static void SetMoralProdEmpireWide(const CString& sRaceID, short value) {m_iMoralProdEmpireWide[sRaceID] = value;}
 
 // sonstige Funktionen
 	// Funktion berechnet die neuen Produktionen im System die sich durch das übergebene Gebäude ergeben
@@ -99,7 +101,7 @@ public:
 	void IncludeSystemMoral(short moral);
 
 	/// Funktion setzt die <code>m_iMoralProdEmpireWide</code> wieder auf NULL.
-	static void ResetMoralEmpireWide() {memset(m_iMoralProdEmpireWide, 0, sizeof(*m_iMoralProdEmpireWide) * 7);}
+	static void ResetMoralEmpireWide(void) {m_iMoralProdEmpireWide.clear();}
 
 	// Resetfunktion für die Klasse CSystemProd
 	void Reset();
@@ -121,7 +123,7 @@ private:
 	short m_iDilithiumProd;			///< Dilithiumproduktion in dem System
 	short m_iLatinumProd;			///< Latinumproduktion in dem System, abhängig von der Bevölkerung
 	short m_iMoralProd;				///< Moralproduktion aller Gebäude (also die +x Moral)
-	static short m_iMoralProdEmpireWide[7];// Moralproduktion Imperiumsweit
+	static std::map<CString, short> m_iMoralProdEmpireWide;	///< Moralproduktion imperiumsweit für alle Imperien
 	// Forschungstechboni
 	short m_iBioTechBoni;
 	short m_iEnergyTechBoni;

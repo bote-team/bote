@@ -1,5 +1,5 @@
 /*
- *   Copyright (C)2004-2008 Sir Pustekuchen
+ *   Copyright (C)2004-2009 Sir Pustekuchen
  *
  *   Author   :  Sir Pustekuchen
  *   Home     :  http://birth-of-the-empires.de.vu
@@ -19,7 +19,7 @@
 
 	x- alle Geheimdienstobjekte noch serialisieren
 	x- CEmpire Class richtig serialisieren
-	x- CIntellignce Class richtig serialisieren (responsibleRace + Aggressiveness)
+	x- CIntellignce Class richtig serialisieren (pResponsibleRace + Aggressiveness)
 	x- CIntelReport Class richtig serialisieren (m_pAttemptObject)
 	x- Dilithium bei Gebäudekosten anzeigen
 	x- ResponsibleRace darf nicht die selbe wie das Opfer einer Geheimdienstaktion sein. Dann immer unbekannt.
@@ -39,7 +39,10 @@
  * @version 0.1
  */
 
+// forward declaration
 class CBotf2Doc;
+class CMajor;
+
 class CIntelCalc
 {
 public:
@@ -54,127 +57,127 @@ public:
 	// sonstige Funktionen
 	/// Funktion berechnet die kompletten Geheimdienstaktionen und nimmt gleichzeitig auch alle Veränderungen vor.
 	/// Die Funktion verschickt auch alle relevanten Nachrichten an die betroffenen Imperien.
-	/// @param race unsere Rasse von welcher die Aktionen ausgehen
-	void StartCalc(BYTE race);
+	/// @param pRace unsere Rasse von welcher die Aktionen ausgehen
+	void StartCalc(CMajor* pRace);
 
 	/// Funktion addiert Innere Sicherheitspunkte sowie die ganzen Depotgeheimdienstpunkte einer Rasse zu den vorhandenen.
-	/// @param race unsere Rasse
-	void AddPoints(BYTE race);
+	/// @param pRace unsere Rasse
+	void AddPoints(CMajor* pRace);
 
 	/// Funktion zieht einen rassenabhängigen Prozentsatz von den einzelnen Depots ab. Funkion sollte nach Ausführung
 	/// aller anderen Geheimdienstfunktionen aufgerufen werden.
-	/// @param race Rasse deren Depots betroffen sind
+	/// @param pRace Rasse deren Depots betroffen sind
 	/// @param perc Prozentsatz um welchen die Depots verringert werden. Standard <code>-1</code>, dann wird der rassenspezifische Prozentsatz verwendet
-	void ReduceDepotPoints(BYTE race, int perc = -1);
+	void ReduceDepotPoints(CMajor* pRace, int perc = -1);
 
 private:
 	// Funktionen
 	/// Funktion berechnet ob eine Geheimdienstaktion gegen eine andere Rasse erfolgreich verläuft.
-	/// @param enemyRace Zielrasse
+	/// @param pEnemyRace Zielrasse
 	/// @param ourSP unsere effektive Geheimdienstpunkte für diese Aktion
 	/// @param isSpy <code>TRUE</code> wenn Spionageaktion, <code>FALSE</code> wenn Sabotageaktion
-	/// @param responsibleRace Rasse von welcher <code>enemyRace</code> denkt sie habe die Geheimdiestaktion gestartet. <code>NOBODY</code> wenn Agressor unbekannt
+	/// @param pResponsibleRace Rasse von welcher <code>pEnemyRace</code> denkt sie habe die Geheimdiestaktion gestartet. <code>NOBODY</code> wenn Agressor unbekannt
 	/// @param type Typ der Aktion -> Wirtschaft == 0, Forschung == 1, Militär == 2, Diplomatie == 3
 	/// @return Anzahl der zu startenden Geheimdienstaktionen (<code>NULL</code> bedeutet keine Aktion möglich)
-	USHORT IsSuccess(BYTE enemyRace, UINT ourSP, BOOLEAN isSpy, BYTE &responsibleRace, BYTE type);
+	USHORT IsSuccess(CMajor* pEnemyRace, UINT ourSP, BOOLEAN isSpy, CMajor* pResponsibleRace, BYTE type);
 
 	/// Funktion entfernt die durch eine Geheimdienstaktion verbrauchten Punkte auf Seiten des Geheimdienstopfers und
 	/// auf Seiten des Geheimdienstagressors.
-	/// @param ourRace unsere Rasse, der Agressor
-	/// @param enemyRace Zielrasse
+	/// @param pOurRace unsere Rasse, der Agressor
+	/// @param pEnemyRace Zielrasse
 	/// @param isSpy <code>TRUE</code> wenn Spionageaktion, <code>FALSE</code> wenn Sabotageaktion
 	/// @param type Typ der Aktion -> Wirtschaft == 0, Forschung == 1, Militär == 2, Diplomatie == 3
 	/// @param isAttempt wenn es sich um einen Anschlag handelt, dann muss der Wert <code>TRUE</code> sein
-	void DeleteConsumedPoints(BYTE ourRace, BYTE enemyRace, BOOLEAN isSpy, BYTE type, BOOLEAN isAttempt);
+	void DeleteConsumedPoints(CMajor* pOurRace, CMajor* pEnemyRace, BOOLEAN isSpy, BYTE type, BOOLEAN isAttempt);
 
 	/// Funktion ruft die jeweilige Unterfunktion auf, welche eine Geheimdienstaktion schlussendlich ausführt.
-	/// @param race unsere Rasse
-	/// @param enemyRace Zielrasse
-	/// @param responsibleRace zu verantworlich machende Rasse
+	/// @param pOurRace unsere Rasse
+	/// @param pEnemyRace Zielrasse
+	/// @param pResponsibleRace zu verantworlich machende Rasse
 	/// @param type Typ der Aktion -> Wirtschaft == 0, Forschung == 1, Militär == 2, Diplomatie == 3
 	/// @param isSpy <code>TRUE</code> wenn Spionageaktion, <code>FALSE</code> wenn Sabotageaktion
 	/// @return <code>TRUE</code> wenn eine Aktion durchgeführt wurde, ansonsten <code>FALSE</code>
-	BOOLEAN ExecuteAction(BYTE race, BYTE enemyRace, BYTE responsibleRace, BYTE type, BOOLEAN isSpy);
+	BOOLEAN ExecuteAction(CMajor* pOurRace, CMajor* pEnemyRace, CMajor* pResponsibleRace, BYTE type, BOOLEAN isSpy);
 
 	/// Funktion führt eine Wirtschatfsspionageaktion aus.
-	/// @param race unsere Rasse
-	/// @param enemyRace Zielrasse
-	/// @param responsibleRace zu verantworlich machende Rasse
+	/// @param pOurRace unsere Rasse
+	/// @param pEnemyRace Zielrasse
+	/// @param pResponsibleRace zu verantworlich machende Rasse
 	/// @param createText soll die Beschreibung zu der Aktion schon miterstellt werden
 	/// @return <code>TRUE</code> wenn eine Aktion durchgeführt wurde, ansonsten <code>FALSE</code>
-	BOOLEAN ExecuteEconomySpy(BYTE race, BYTE enemyRace, BYTE responsibleRace, BOOLEAN createText = TRUE);
+	BOOLEAN ExecuteEconomySpy(CMajor* pOurRace, CMajor* pEnemyRace, CMajor* pResponsibleRace, BOOLEAN createText = TRUE);
 
 	/// Funktion führt eine Forschungsspionageaktion aus.
 	/// @param race unsere Rasse
-	/// @param enemyRace Zielrasse
-	/// @param responsibleRace zu verantworlich machende Rasse
+	/// @param pEnemyRace Zielrasse
+	/// @param pResponsibleRace zu verantworlich machende Rasse
 	/// @param createText soll die Beschreibung zu der Aktion schon miterstellt werden
 	/// @return <code>TRUE</code> wenn eine Aktion durchgeführt wurde, ansonsten <code>FALSE</code>
-	BOOLEAN ExecuteScienceSpy(BYTE race, BYTE enemyRace, BYTE responsibleRace, BOOLEAN createText = TRUE);
+	BOOLEAN ExecuteScienceSpy(CMajor* pOurRace, CMajor* pEnemyRace, CMajor* pResponsibleRace, BOOLEAN createText = TRUE);
 
 	/// Funktion führt eine Militärspionageaktion aus.
-	/// @param race unsere Rasse
-	/// @param enemyRace Zielrasse
-	/// @param responsibleRace zu verantworlich machende Rasse
+	/// @param pOurRace unsere Rasse
+	/// @param pEnemyRace Zielrasse
+	/// @param pResponsibleRace zu verantworlich machende Rasse
 	/// @param createText soll die Beschreibung zu der Aktion schon miterstellt werden
 	/// @return <code>TRUE</code> wenn eine Aktion durchgeführt wurde, ansonsten <code>FALSE</code>
-	BOOLEAN ExecuteMilitarySpy(BYTE race, BYTE enemyRace, BYTE responsibleRace, BOOLEAN createText = TRUE);
+	BOOLEAN ExecuteMilitarySpy(CMajor* pOurRace, CMajor* pEnemyRace, CMajor* pResponsibleRace, BOOLEAN createText = TRUE);
 
 	/// Funktion führt eine Diplomatiespionageaktion aus.
 	/// @param race unsere Rasse
-	/// @param enemyRace Zielrasse
-	/// @param responsibleRace zu verantworlich machende Rasse
+	/// @param pEnemyRace Zielrasse
+	/// @param pResponsibleRace zu verantworlich machende Rasse
 	/// @param createText soll die Beschreibung zu der Aktion schon miterstellt werden
 	/// @return <code>TRUE</code> wenn eine Aktion durchgeführt wurde, ansonsten <code>FALSE</code>
-	BOOLEAN ExecuteDiplomacySpy(BYTE race, BYTE enemyRace, BYTE responsibleRace, BOOLEAN createText = TRUE);
+	BOOLEAN ExecuteDiplomacySpy(CMajor* pOurRace, CMajor* pEnemyRace, CMajor* pResponsibleRace, BOOLEAN createText = TRUE);
 	
 	/// Funktion führt eine Wirtschatfssabotageaktion aus.
-	/// @param race unsere Rasse
-	/// @param enemyRace Zielrasse
-	/// @param responsibleRace zu verantworlich machende Rasse
+	/// @param pOurRace unsere Rasse
+	/// @param pEnemyRace Zielrasse
+	/// @param pResponsibleRace zu verantworlich machende Rasse
 	/// @param reportNumber Nummer eines zugehörigen Spionagereport, auf dessen Daten die Sabotageaktion durchgeführt wird
 	/// @return <code>TRUE</code> wenn eine Aktion durchgeführt wurde, ansonsten <code>FALSE</code>
-	BOOLEAN ExecuteEconomySabotage(BYTE race, BYTE enemyRace, BYTE responsibleRace, int reportNumber = -1);
+	BOOLEAN ExecuteEconomySabotage(CMajor* pOurRace, CMajor* pEnemyRace, CMajor* pResponsibleRace, int reportNumber = -1);
 
 	/// Funktion führt eine Forschungssabotageaktion aus.
-	/// @param race unsere Rasse
-	/// @param enemyRace Zielrasse
-	/// @param responsibleRace zu verantworlich machende Rasse
+	/// @param pOurRace unsere Rasse
+	/// @param pEnemyRace Zielrasse
+	/// @param pResponsibleRace zu verantworlich machende Rasse
 	/// @param reportNumber Nummer eines zugehörigen Spionagereport, auf dessen Daten die Sabotageaktion durchgeführt wird
 	/// @return <code>TRUE</code> wenn eine Aktion durchgeführt wurde, ansonsten <code>FALSE</code>
-	BOOLEAN ExecuteScienceSabotage(BYTE race, BYTE enemyRace, BYTE responsibleRace, int reportNumber = -1);
+	BOOLEAN ExecuteScienceSabotage(CMajor* pOurRace, CMajor* pEnemyRace, CMajor* pResponsibleRace, int reportNumber = -1);
 
 	/// Funktion führt eine Militärsabotageaktion aus.
-	/// @param race unsere Rasse
-	/// @param enemyRace Zielrasse
-	/// @param responsibleRace zu verantworlich machende Rasse
+	/// @param pOurRace unsere Rasse
+	/// @param pEnemyRace Zielrasse
+	/// @param pResponsibleRace zu verantworlich machende Rasse
 	/// @param reportNumber Nummer eines zugehörigen Spionagereport, auf dessen Daten die Sabotageaktion durchgeführt wird
 	/// @return <code>TRUE</code> wenn eine Aktion durchgeführt wurde, ansonsten <code>FALSE</code>
-	BOOLEAN ExecuteMilitarySabotage(BYTE race, BYTE enemyRace, BYTE responsibleRace, int reportNumber = -1);
+	BOOLEAN ExecuteMilitarySabotage(CMajor* pOurRace, CMajor* pEnemyRace, CMajor* pResponsibleRace, int reportNumber = -1);
 
 	/// Funktion führt eine Diplomatiesabotageaktion aus.
-	/// @param race unsere Rasse
-	/// @param enemyRace Zielrasse
-	/// @param responsibleRace zu verantworlich machende Rasse
+	/// @param pOurRace unsere Rasse
+	/// @param pEnemyRace Zielrasse
+	/// @param pResponsibleRace zu verantworlich machende Rasse
 	/// @param reportNumber Nummer eines zugehörigen Spionagereport, auf dessen Daten die Sabotageaktion durchgeführt wird
 	/// @return <code>TRUE</code> wenn eine Aktion durchgeführt wurde, ansonsten <code>FALSE</code>
-	BOOLEAN ExecuteDiplomacySabotage(BYTE race, BYTE enemyRace, BYTE responsibleRace, int reportNumber = -1);
+	BOOLEAN ExecuteDiplomacySabotage(CMajor* pOurRace, CMajor* pEnemyRace, CMajor* pResponsibleRace, int reportNumber = -1);
 
 	/// Funktion erstellt den Report, welcher aussagt, dass versucht wurde eine Rasse auszuspionieren/zu sabotieren.
-	/// @param responsibleRace zu verantworlich machende Rasse
-	/// @param enemyRace Zielrasse, welche Wind von unserer Aktion bekommt
+	/// @param pResponsibleRace zu verantworlich machende Rasse
+	/// @param pEnemyRace Zielrasse, welche Wind von unserer Aktion bekommt
 	/// @param type Typ der Aktion -> Wirtschaft == 0, Forschung == 1, Militär == 2, Diplomatie == 3
-	void CreateMsg(BYTE responsibleRace, BYTE enemyRace, BYTE type);
+	void CreateMsg(CMajor* pResponsibleRace, CMajor* pEnemyRace, BYTE type);
 	
 	/// Funktion führt einen Anschlag durch.
-	/// @param race unsere Rasse
+	/// @param pRace unsere Rasse
 	/// @param ourSP unsere effektive Geheimdienstpunkte für diese Aktion
 	/// @return <code>TRUE</code> wenn der Anschlag erfolgreich war, ansonsten <code>FALSE</code>
-	BOOLEAN ExecuteAttempt(BYTE race, UINT ourSP);
+	BOOLEAN ExecuteAttempt(CMajor* pRace, UINT ourSP);
 
 	/// Funktion gibt die aktuell komplett generierten inneren Sicherheitspunkte eines Imperiums zurück.
-	/// @param enemyRace Rasse von der man die inneren Sicherheitspunkte haben möchte
-	UINT GetCompleteInnerSecPoints(BYTE enemyRace);
+	/// @param pEnemyRace Rasse von der man die inneren Sicherheitspunkte haben möchte
+	UINT GetCompleteInnerSecPoints(CMajor* pEnemyRace);
 
 	// Attribute
 	CBotf2Doc* m_pDoc;			///< Zeiger auf das Dokument	

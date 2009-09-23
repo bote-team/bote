@@ -1,5 +1,5 @@
 /*
- *   Copyright (C)2004-2008 Sir Pustekuchen
+ *   Copyright (C)2004-2009 Sir Pustekuchen
  *
  *   Author   :  Sir Pustekuchen
  *   Home     :  http://birth-of-the-empires.de.vu
@@ -39,26 +39,31 @@ private:
 	void CreateButtons();
 
 	/// Funktion zeichnet das Börsenmenu
-	/// @param pDC Zeiger auf den aktuellen Zeichenkontext
-	/// @param theClientRect die komplette Zeichenfläche
-	void DrawGlobalTradeMenue(CDC* pDC, CRect theClientRect);
+	/// @param g Zeiger auf GDI+ Grafikobjekt
+	void DrawGlobalTradeMenue(Graphics* g);
 
 	/// Funktion zeichnet das Monopolmenü
-	/// @param pDC Zeiger auf den aktuellen Zeichenkontext
-	/// @param theClientRect die komplette Zeichenfläche
-	void DrawMonopolMenue(CDC* pDC, CRect theClientRect);
+	/// @param g Zeiger auf GDI+ Grafikobjekt
+	void DrawMonopolMenue(Graphics* g);
 
 	/// Funktion zeichnet das Transfermenü mit den Aktivitäten an der Handelsbörse
-	/// @param pDC Zeiger auf den aktuellen Zeichenkontext
-	/// @param theClientRect die komplette Zeichenfläche
-	void DrawTradeTransferMenue(CDC* pDC, CRect theClientRect);
+	/// @param g Zeiger auf GDI+ Grafikobjekt
+	void DrawTradeTransferMenue(Graphics* g);
+
+	/// Funktion zeichnet die Buttons unter den Handelsmenüs.
+	/// @param g Zeiger auf GDI+ Grafikobjekt
+	/// @param pMajor Spielerrasse
+	void DrawTradeMainButtons(Graphics* g, CMajor* pMajor);
 	// Attribute
 
 	// Grafiken
-	CBitmap bg_trademenu;			// Handelsmenü (Börse)
-	CBitmap bg_monopolmenu;			// Monopolmenü
-	CBitmap bg_tradetransfermenu;	// Handelstransfermenü
-	CBitmap bg_empty1;				// genereller leerer Bildschirm 
+	Bitmap* bg_trademenu;			// Handelsmenü (Börse)
+	Bitmap* bg_monopolmenu;			// Monopolmenü
+	Bitmap* bg_tradetransfermenu;	// Handelstransfermenü
+	Bitmap* bg_empty1;				// genereller leerer Bildschirm
+
+	// Buttons
+	CArray<CMyButton*> m_TradeMainButtons;		///< die unteren Buttons in den Handelsansichten
 
 	// Hier die Rechtecke und Variablen, die wir benötigen wenn wir in der Handelsansicht sind
 	USHORT m_bySubMenu;				// in welchem Untermenü der Handelsansicht befinden wir uns
@@ -69,12 +74,10 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	virtual void OnInitialUpdate();
-public:
 	virtual void OnPrepareDC(CDC* pDC, CPrintInfo* pInfo = NULL);
-public:
 	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
-public:
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
+	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
 };
 
 

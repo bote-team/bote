@@ -1,5 +1,5 @@
 /*
- *   Copyright (C)2004-2008 Sir Pustekuchen
+ *   Copyright (C)2004-2009 Sir Pustekuchen
  *
  *   Author   :  Sir Pustekuchen
  *   Home     :  http://birth-of-the-empires.de.vu
@@ -11,6 +11,7 @@
 #pragma warning(disable: 4204)
 
 #include "ResourceManager.h"
+#include "mytrace.h"
 
 /// Versionsnummer des Dokuments; es können nur Spielstände geladen werden, die diese Versionsnummer
 /// haben.
@@ -82,6 +83,8 @@
 #define CARDASSIAN			5
 #define DOMINION			6
 #define UNKNOWN				7
+#define MINORNUMBER			MAXBYTE
+
 
 // ------------- Gebäude------ -------------------------------------------------
 #define NOEIBL				12	// Number of Entries in Buildlist you can see
@@ -99,8 +102,9 @@
 #define SOMETHING			6
 
 // ------------- Reaktion auf Nachrichten --------------------------------------
+#define DECLINED			0
+#define ACCEPTED			1
 #define NOT_REACTED			2
-#define DECLINED			3
 
 // ------------- Diplomatische Vereinbarungen-----------------------------------
 // Die verschiedenen Arten, welchen Status eine Minorrace gegenüber ein Majorrace haben kann
@@ -116,10 +120,11 @@
 #define MEMBERSHIP			 6
 #define PRESENT				 10
 #define CORRUPTION			 11
-#define DIP_REQUEST          11
+#define DIP_REQUEST          12
 #define DIPLOMACY_PRESENT_VALUE	200	// Ein konstanter Wert, der mindst. erreicht werden muss um Beziehung zu verbessern
 
 // ------------- Die verschiedenen Arten einer MinorRace -----------------------
+/*
 #define NOTHING_SPECIAL		0
 #define FINANCIAL			1
 #define WARLIKE				2
@@ -132,6 +137,21 @@
 #define SNEAKY              9	// Hinterhältig
 #define SOLO				10	// Alleingeher
 #define	EXTREMHOSTILE		11
+*/
+#define NOTHING_SPECIAL		0
+#define FINANCIAL			1
+#define WARLIKE				2
+#define AGRARIAN			3
+	#define FARMER				3
+#define INDUSTRIAL			4
+#define SECRET				5
+#define SCIENTIFIC			6
+	#define RESEARCHER			6
+#define PRODUCER			7
+#define PACIFIST			8
+#define SNEAKY              9	// Hinterhältig
+#define SOLOING				10	// Alleingeher
+#define	HOSTILE				11
 
 // ------------- Planeteneigenschaften -----------------------------------------
 // Zonen
@@ -164,7 +184,7 @@
 #define PLANETCLASS_J		17
 #define PLANETCLASS_S		18
 #define PLANETCLASS_T		19
-#define GRAPHICNUMBER		15 // Anzahl der verschiedenen Grafiken der Planeten
+#define GRAPHICNUMBER		31 // Anzahl der verschiedenen Grafiken der Planeten
 
 // ------------- Forschung -----------------------------------------------------
 #define NOTRESEARCHED		0
@@ -173,6 +193,8 @@
 
 #define NoUC				12	// Number of Unique Complexes	( nur noch nicht Finanzen implementiert!!!! -> 13)
 #define NoTL				10	// Number of Tech Levels, aktuell 11 da bei Stufe 0 begonnen wird zu zählen)
+
+#define SPECIAL_RESEARCH_DIV	1.67	// Wert, durch den die benötigten Punkte bei der Spezialforschung geteilt werden (umso höher, umso weniger FP sind nötig)
 
 // ------------- Schiffe -------------------------------------------------------
 // Schiffstypen
@@ -237,11 +259,11 @@ enum {NONE, ASSULTSHIP, BLOCKADESHIP, COMMANDSHIP, COMBATTRACTORBEAM, DOGFIGHTER
 #define IRIDIUM_WORKER		9
 
 // ------------- System   ------------------------------------------------------
-#define MAJOR               0  // Handelt sich um eine MajorRace                                                 
-#define MINOR               1  // Handelt sich um eine MinorRace
-//#define PLAYER				1
-//#define COMPUTER			2
-enum {PLAYER = 1, COMPUTER};
+#define	MAJOR				0	// Hauptrasse
+#define	MINOR				1	// kleine Rasse (keine Ausbreitung)
+#define MEDIOR				2	// Mischung aus Major und Minor
+
+enum {PLAYER = 1, COMPUTER = 2};
 
 // ------------- HANDEL ----------------------------------------------------
 #define TRADEROUTEHAB		20	// aller wieviel Bevölkerung gibt es eine Handelsroute
@@ -282,11 +304,11 @@ inline void SetAttributes(BOOLEAN is, int attribute, int &variable)
 #define MINBASEPOINTS 120	///< minimale Punkte für den Außenpostenbau, damit die KI überhaupt beginnt dort einen zu bauen
 
 // Tracebedingungen -> können hier ein und ausgeschaltet werden um bestimmte Traceausgaben zu bekommen
-//#define TRACE_AI
-//#define TRACE_GRAPHICLOAD
-//#define TRACE_SHIPAI
-//#define TRACE_DIPLOMATY
-//#define TRACE_INTEL
-//#define TRACE_INTELAI
+#define TRACE_AI
+#define TRACE_GRAPHICLOAD
+#define TRACE_SHIPAI
+#define TRACE_DIPLOMATY
+#define TRACE_INTEL
+#define TRACE_INTELAI
 //#define DEBUG_AI_BASE_DEMO
 #endif // _OPTIONS_H__20050315_1300_

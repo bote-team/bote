@@ -1,5 +1,5 @@
 /*
- *   Copyright (C)2004-2008 Sir Pustekuchen
+ *   Copyright (C)2004-2009 Sir Pustekuchen
  *
  *   Author   :  Sir Pustekuchen
  *   Home     :  http://birth-of-the-empires.de.vu
@@ -7,6 +7,9 @@
  */
 #pragma once
 #include "Options.h"
+#include <map>
+
+using namespace std;
 
 class CBotf2Doc;
 class CSectorAI;
@@ -74,9 +77,9 @@ private:
 	/// Ein Zeiger auf das SectorAI-Objekt
 	CSectorAI* m_pSectorAI;
 
-	CPoint m_AttackSector[DOMINION];	///< der globale Angriffssektor der einzelnen Rassen
+	map<CString, CPoint> m_AttackSector;	///< der globale Angriffssektor der einzelnen Rassen
 
-	CPoint m_BombardSector[DOMINION];	///< der globale Bombardierungssektor der einzelnen Rassen
+	map<CString, CPoint> m_BombardSector;	///< der globale Bombardierungssektor der einzelnen Rassen
 
-	int m_iAverageMoral[DOMINION];		///< die durchschnittliche Moral in allen Systemen der einzelnen Rassen
+	map<CString, int> m_iAverageMoral;		///< die durchschnittliche Moral in allen Systemen der einzelnen Rassen
 };

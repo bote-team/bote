@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "ScienceIntelObj.h"
 #include "Botf2Doc.h"
+#include "RaceController.h"
 
 IMPLEMENT_SERIAL (CScienceIntelObj, CObject, 1)
 
@@ -13,8 +14,8 @@ CScienceIntelObj::CScienceIntelObj(void)
 	m_KO = CPoint(-1,-1);
 }
 
-CScienceIntelObj::CScienceIntelObj(BYTE owner, BYTE enemy, USHORT round, BOOLEAN isSpy, const CPoint &ko, USHORT id, BYTE number)
-	: CIntelObject(owner, enemy, round, isSpy, 1), m_KO(ko), m_nID(id), m_byNumber(number)
+CScienceIntelObj::CScienceIntelObj(const CString& sOwnerID, const CString& sEnemyID, USHORT round, BOOLEAN isSpy, const CPoint &ko, USHORT id, BYTE number)
+	: CIntelObject(sOwnerID, sEnemyID, round, isSpy, 1), m_KO(ko), m_nID(id), m_byNumber(number)
 {
 	m_iFP = NULL;
 	m_nTechlevel = -1;
@@ -23,8 +24,8 @@ CScienceIntelObj::CScienceIntelObj(BYTE owner, BYTE enemy, USHORT round, BOOLEAN
 	m_nChoosenSpecialTech = -1;
 }
 
-CScienceIntelObj::CScienceIntelObj(BYTE owner, BYTE enemy, USHORT round, BOOLEAN isSpy, UINT FP)
-	: CIntelObject(owner, enemy, round, isSpy, 1), m_iFP(FP)
+CScienceIntelObj::CScienceIntelObj(const CString& sOwnerID, const CString& sEnemyID, USHORT round, BOOLEAN isSpy, UINT FP)
+	: CIntelObject(sOwnerID, sEnemyID, round, isSpy, 1), m_iFP(FP)
 {
 	m_KO = CPoint(-1,-1);
 	m_nID = NULL;
@@ -35,8 +36,8 @@ CScienceIntelObj::CScienceIntelObj(BYTE owner, BYTE enemy, USHORT round, BOOLEAN
 	m_nChoosenSpecialTech = -1;
 }
 
-CScienceIntelObj::CScienceIntelObj(BYTE owner, BYTE enemy, USHORT round, BOOLEAN isSpy, short techLevel, short techType, short specialTechComplex, short choosenSpecialTech)
-: CIntelObject(owner, enemy, round, isSpy, 1), m_nTechlevel(techLevel), m_nTechType(techType), m_nSpecialTechComplex(specialTechComplex), m_nChoosenSpecialTech(choosenSpecialTech)
+CScienceIntelObj::CScienceIntelObj(const CString& sOwnerID, const CString& sEnemyID, USHORT round, BOOLEAN isSpy, short techLevel, short techType, short specialTechComplex, short choosenSpecialTech)
+: CIntelObject(sOwnerID, sEnemyID, round, isSpy, 1), m_nTechlevel(techLevel), m_nTechType(techType), m_nSpecialTechComplex(specialTechComplex), m_nChoosenSpecialTech(choosenSpecialTech)
 {
 	m_iFP = NULL;
 	m_KO = CPoint(-1,-1);
@@ -51,8 +52,8 @@ CScienceIntelObj::~CScienceIntelObj(void)
 /// Kopierkonstruktor
 CScienceIntelObj::CScienceIntelObj(const CScienceIntelObj & rhs)
 {
-	m_byOwner = rhs.m_byOwner;
-	m_byEnemy = rhs.m_byEnemy;
+	m_sOwner = rhs.m_sOwner;
+	m_sEnemy = rhs.m_sEnemy;
 	m_nRound = rhs.m_nRound;
 	m_bIsSpy = rhs.m_bIsSpy;
 	m_byType = rhs.m_byType;
@@ -104,7 +105,7 @@ void CScienceIntelObj::Serialize(CArchive &ar)
 //////////////////////////////////////////////////////////////////////
 /// Funktion generiert einen Text, welcher eine Geheimdiestaktion beschreibt, für den Auslöser bzw. das Opfer
 /// dieser Aktion.
-void CScienceIntelObj::CreateText(CBotf2Doc* pDoc, BYTE n, BYTE param)
+void CScienceIntelObj::CreateText(CBotf2Doc* pDoc, BYTE n, const CString& param)
 {
 	CString csInput;													// auf csInput wird die jeweilige Zeile gespeichert
 	CString fileName;
@@ -120,7 +121,7 @@ void CScienceIntelObj::CreateText(CBotf2Doc* pDoc, BYTE n, BYTE param)
 			int pos = 0;
 			CString s = csInput.Tokenize(":", pos);
 			// Rasse bestimmen
-			if (atoi(s) == m_byOwner)
+			if (s == m_sOwner)
 			{
 				s = csInput.Tokenize(":", pos);
 				// Typ (Wirtschaft, Militär...) bestimmen
@@ -133,16 +134,12 @@ void CScienceIntelObj::CreateText(CBotf2Doc* pDoc, BYTE n, BYTE param)
 						csInput.Delete(0, pos);
 						// in csInput steht nun die Beschreibung für den Aggressor
 						// Jetzt müssen noch die Variablen mit dem richtigen Text gefüllt werden
-						switch (m_byEnemy)
+						CMajor* pEnemy = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(m_sEnemy));
+						if (pEnemy)
 						{
-						case HUMAN:		{s = CResourceManager::GetString("ARTICLE_RACE1_EMPIRE"); break;}
-						case FERENGI:	{s = CResourceManager::GetString("ARTICLE_RACE2_EMPIRE"); break;}
-						case KLINGON:	{s = CResourceManager::GetString("ARTICLE_RACE3_EMPIRE"); break;}
-						case ROMULAN:	{s = CResourceManager::GetString("ARTICLE_RACE4_EMPIRE"); break;}
-						case CARDASSIAN:{s = CResourceManager::GetString("ARTICLE_RACE5_EMPIRE"); break;}
-						case DOMINION:	{s = CResourceManager::GetString("ARTICLE_RACE6_EMPIRE"); break;}
+							s = pEnemy->GetEmpireNameWithArticle();
+							csInput.Replace("$race$", s);
 						}
-						csInput.Replace("$race$", s);
 						if (m_KO != CPoint(-1,-1))
 						{
 							s = pDoc->m_Sector[m_KO.x][m_KO.y].GetName();
@@ -175,9 +172,9 @@ void CScienceIntelObj::CreateText(CBotf2Doc* pDoc, BYTE n, BYTE param)
 						}
 						if (m_nSpecialTechComplex != -1)
 						{
-							s = pDoc->GetEmpire(m_byEnemy)->GetResearch()->GetResearchInfo()->GetResearchComplex((BYTE)m_nSpecialTechComplex)->GetComplexName();
+							s = pEnemy->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex((BYTE)m_nSpecialTechComplex)->GetComplexName();
 							csInput.Replace("$specialtech$", s);
-							s = pDoc->GetEmpire(m_byEnemy)->GetResearch()->GetResearchInfo()->GetResearchComplex((BYTE)m_nSpecialTechComplex)->GetFieldName((BYTE)m_nChoosenSpecialTech);							
+							s = pEnemy->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex((BYTE)m_nSpecialTechComplex)->GetFieldName((BYTE)m_nChoosenSpecialTech);							
 							csInput.Replace("$choosenspecial$", s);
 						}
 						s.Format("%d", m_iFP);
@@ -210,7 +207,7 @@ void CScienceIntelObj::CreateText(CBotf2Doc* pDoc, BYTE n, BYTE param)
 				int pos = 0;
 				CString s = csInput.Tokenize(":", pos);
 				// Rasse bestimmen
-				if (atoi(s) == m_byEnemy)
+				if (s == m_sEnemy)
 				{
 					s = csInput.Tokenize(":", pos);
 					// Typ (Wirtschaft, Militär...) bestimmen
@@ -255,26 +252,26 @@ void CScienceIntelObj::CreateText(CBotf2Doc* pDoc, BYTE n, BYTE param)
 							}
 							if (m_nSpecialTechComplex != -1)
 							{
-								s = pDoc->GetEmpire(m_byEnemy)->GetResearch()->GetResearchInfo()->GetResearchComplex((BYTE)m_nSpecialTechComplex)->GetComplexName();
-								csInput.Replace("$specialtech$", s);
-								s = pDoc->GetEmpire(m_byEnemy)->GetResearch()->GetResearchInfo()->GetResearchComplex((BYTE)m_nSpecialTechComplex)->GetFieldName((BYTE)m_nChoosenSpecialTech);							
-								csInput.Replace("$choosenspecial$", s);
+								CMajor* pEnemy = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(m_sEnemy));
+								if (pEnemy)
+								{
+									s = pEnemy->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex((BYTE)m_nSpecialTechComplex)->GetComplexName();
+									csInput.Replace("$specialtech$", s);
+									s = pEnemy->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex((BYTE)m_nSpecialTechComplex)->GetFieldName((BYTE)m_nChoosenSpecialTech);							
+									csInput.Replace("$choosenspecial$", s);
+								}
 							}
 							s.Format("%d", m_iFP);
 							csInput.Replace("$FP$", s);
 							m_strEnemyDesc = csInput;
-							if (param != NOBODY)
+							if (param != "")
 							{
-								switch (param)
+								CMajor* pParam = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(param));
+								if (pParam)
 								{
-								case HUMAN:		{s = CResourceManager::GetString("ARTICLE_RACE1_EMPIRE"); break;}
-								case FERENGI:	{s = CResourceManager::GetString("ARTICLE_RACE2_EMPIRE"); break;}
-								case KLINGON:	{s = CResourceManager::GetString("ARTICLE_RACE3_EMPIRE"); break;}
-								case ROMULAN:	{s = CResourceManager::GetString("ARTICLE_RACE4_EMPIRE"); break;}
-								case CARDASSIAN:{s = CResourceManager::GetString("ARTICLE_RACE5_EMPIRE"); break;}
-								case DOMINION:	{s = CResourceManager::GetString("ARTICLE_RACE6_EMPIRE"); break;}
+									s = pParam->GetEmpireNameWithArticle();
+									csInput = CResourceManager::GetString("KNOW_RESPONSIBLE_SABOTAGERACE", FALSE, s);
 								}
-								csInput = CResourceManager::GetString("KNOW_RESPONSIBLE_SABOTAGERACE", FALSE, s);
 							}
 							else
 								csInput = CResourceManager::GetString("DO_NOT_KNOW_RESPONSIBLE_RACE");

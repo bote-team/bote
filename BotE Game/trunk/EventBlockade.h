@@ -1,5 +1,5 @@
 /*
- *   Copyright (C)2004-2008 Sir Pustekuchen
+ *   Copyright (C)2004-2009 Sir Pustekuchen
  *
  *   Author   :  Sir Pustekuchen
  *   Home     :  http://birth-of-the-empires.de.vu
@@ -18,13 +18,13 @@ public:
 	CEventBlockade(void) {};
 
 	/// Standardkonstruktor mit Parameterübergabe
-	CEventBlockade(BYTE playersRace, const CString &headline = "", const CString &text = "");
+	CEventBlockade(const CString &sPlayersRaceID, const CString &headline = "", const CString &text = "");
 
 	/// Standarddestruktor
 	~CEventBlockade(void);
 
 	/// Serialisierungsfunktion
-	void Serialize(CArchive &ar);
+	virtual void Serialize(CArchive &ar);
 
 	void Create(void);
 

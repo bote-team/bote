@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "GlobalStorage.h"
+#include "System.h"
 
 IMPLEMENT_SERIAL (CGlobalStorage, CObject, 1)
 //////////////////////////////////////////////////////////////////////

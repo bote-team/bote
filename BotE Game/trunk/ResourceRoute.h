@@ -1,5 +1,5 @@
 /*
- *   Copyright (C)2004-2008 Sir Pustekuchen
+ *   Copyright (C)2004-2009 Sir Pustekuchen
  *
  *   Author   :  Sir Pustekuchen
  *   Home     :  http://birth-of-the-empires.de.vu
@@ -8,7 +8,10 @@
 #pragma once
 #include "afx.h"
 
+// forward eclaration
 class CSector;
+class CMajor;
+
 class CResourceRoute : public CObject
 {
 public:
@@ -51,14 +54,14 @@ public:
 	void GenerateResourceRoute(const CPoint &dest, BYTE res) {m_KO = dest; m_byResource = res; m_byPercent = NULL;}
 
 	/// Funktion überprüft, ob die Ressourcenroute noch Bestand haben darf.
-	/// @param owner Besitzer dieser Ressourcenroute
+	/// @param sOwner Besitzer dieser Ressourcenroute
 	/// @param dest Zeiger auf den Startsektor dieser Ressourcenroute
 	/// @return Wahrheitswert, der sagt, ob die Ressourcenroute noch Bestand haben darf
-	BOOLEAN CheckResourceRoute(BYTE owner, CSector* dest);
+	BOOLEAN CheckResourceRoute(const CString& sOwner, CSector* dest);
 
 	/// Funktion zeichnet die Ressourcensroute auf der Galaxiekarte. Übergeben werden dafür die Koordinate des
-	/// Zielsystems <code>dest</code> sowie der Besitzer des Systems <code>owner</code>.
-	void DrawResourceRoute(CDC* pDC, CPoint dest, BYTE owner);
+	/// Zielsystems <code>dest</code> sowie der Besitzer des Systems <code>pMajor</code>.
+	void DrawResourceRoute(CDC* pDC, CPoint dest, const CMajor* pMajor);
 
 
 // Attribute

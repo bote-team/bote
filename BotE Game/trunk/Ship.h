@@ -1,5 +1,5 @@
 /*
- *   Copyright (C)2004-2008 Sir Pustekuchen
+ *   Copyright (C)2004-2009 Sir Pustekuchen
  *
  *   Author   :  Sir Pustekuchen
  *   Home     :  http://birth-of-the-empires.de.vu
@@ -66,7 +66,7 @@ public:
 	CPoint GetKO() const {return m_KO;}
 	const CPoint GetTargetKO();
 	CArray<Sector>* GetPath() {return &m_Path;}
-	BYTE GetOwnerOfShip() const {return m_iOwnerOfShip;}
+	const CString& GetOwnerOfShip(void) const {return m_sOwnerOfShip;}
 	USHORT GetMaintenanceCosts() const {return m_iMaintenanceCosts;}
 	BYTE GetStealthPower() const {return m_iStealthPower;}
 	BOOLEAN GetCloak() const {return m_bCloakOn;}
@@ -97,7 +97,7 @@ public:
 	void SetID(USHORT ID) {m_iID = ID+10000;}
 	void SetKO(CPoint KO) {m_KO = KO;}
 	void SetTargetKO(CPoint TargetKO, int Index) {m_TargetKO[Index] = TargetKO; if (m_iCurrentOrder > AVOID) m_iCurrentOrder = ATTACK;; m_nTerraformingPlanet = -1;}
-	void SetOwnerOfShip(BYTE OwnerOfShip) {m_iOwnerOfShip = OwnerOfShip;}
+	void SetOwnerOfShip(const CString& sOwnerOfShip) {m_sOwnerOfShip = sOwnerOfShip;}
 	void SetMaintenanceCosts(USHORT MaintenanceCosts) {m_iMaintenanceCosts = MaintenanceCosts;}
 	void SetShipType(BYTE ShipType) {m_iShipType = ShipType;}
 	void SetShipSize(BYTE size) {m_byShipSize = size;}
@@ -145,7 +145,7 @@ protected:
 	CPoint m_TargetKO[4];				// Der Zielkurs des Schiffes
 	CArray<Sector> m_Path;				// Der Kurs des Schiffes zum Ziel
 
-	BYTE m_iOwnerOfShip;				// Besitzer des Schiffes
+	CString m_sOwnerOfShip;				// Besitzer des Schiffes
 	USHORT m_iMaintenanceCosts;			// Unterhaltskosten des Schiffes pro Runde
 	BYTE m_iShipType;					// Schiffstype, siehe Options.h
 	BYTE m_byShipSize;					// Die Größe des Schiffes

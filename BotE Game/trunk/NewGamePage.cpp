@@ -3,6 +3,7 @@
 
 #include "stdafx.h"
 #include "Botf2.h"
+#include "IniLoader.h"
 #include "NewGamePage.h"
 #include "SearchServersDlg.h"
 
@@ -296,7 +297,7 @@ LRESULT CNewGamePage::OnWizardNext()
 		
 		CString fileName;
 		GetDlgItemText(IDC_FILENAME, fileName);
-		m_pParent->GetServerDocument()->m_bGameLoaded = TRUE;
+		m_pParent->GetServerDocument()->m_bGameLoaded = true;
 		if (!m_pParent->GetServerDocument()->OnOpenDocument(fileName))
 		{
 			MessageBox("Der angegebene Spielstand konnte nicht geladen werden.", "Fehler",

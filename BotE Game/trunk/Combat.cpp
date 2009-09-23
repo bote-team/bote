@@ -1,22 +1,22 @@
 #include "stdafx.h"
 #include "Combat.h"
-#include "MajorRace.h"
+#include "RaceController.h"
 
 Position GivePosition(BYTE pos, USHORT posNumber)
 {
 	Position p;
-	//p.x = 0; p.y = 0; p.z = 0;
 	p.x = rand()%30; p.y = rand()%30; p.z = rand()%30;
 
-	switch(pos)
+	// aller 6 Rassen ist die Startposition wieder ähnlich. Doch an einem Kampf werden
+	// eigentlich nie mehr als 6 Rassen teilnehmen
+	switch (pos%6)
 	{
 	case 0: p.x = 200 + posNumber*5;	break;
 	case 1: p.x = -200 - posNumber*5;	break;
 	case 2: p.y = 200 + posNumber*5;	break;
 	case 3: p.y = -200 - posNumber*5;	break;
 	case 4: p.z = 200 + posNumber*5;	break;
-	case 5: p.z = -200 - posNumber*5;	break;
-	case 6: p.x += posNumber*5;			break;
+	case 5: p.z = -200 - posNumber*5;	break;	
 	}
 	return p;
 }
@@ -41,23 +41,24 @@ CCombat::~CCombat(void)
 // Diese Funktion verlangt beim Aufruf einen Zeiger auf ein Feld, welches Zeiger auf Schiffe beinhaltet
 // <code>ships<code>. Diese Schiffe werden dann am Kampf teilnehmen. Kommt es zu einem Kampf, so muß
 // diese Funktion zu allererst aufgerufen werden.
-void CCombat::SetInvolvedShips(CArray<CShip*,CShip*>* ships, CMajorRace* majors)
+void CCombat::SetInvolvedShips(CArray<CShip*,CShip*>* ships, std::map<CString, CRace*>* pmRaces)
 {
-	Reset();	
+	Reset();
+	ASSERT(pmRaces);
+
 	// involvierte Rassen bestimmen
-	m_MajorRaces = majors;
-	memset(m_bInvolvedRaces, FALSE, sizeof(BOOLEAN) * 7);
+	m_mRaces = pmRaces;
+
 	for (int i = 0; i < ships->GetSize(); i++)
-		if (ships->GetAt(i)->GetOwnerOfShip() >= HUMAN && ships->GetAt(i)->GetOwnerOfShip() <= DOMINION)
-			m_bInvolvedRaces[ships->GetAt(i)->GetOwnerOfShip()] = TRUE;
+		m_mInvolvedRaces[ships->GetAt(i)->GetOwnerOfShip()] = true;
 
 	// Check machen, dass die Rassen wegen ihrer diplomatischen Beziehung auch angreifen können
-	for (int i = HUMAN; i <= DOMINION; i++)
+	for (std::map<CString, CRace*>::const_iterator it = pmRaces->begin(); it != pmRaces->end(); it++)
 		if (!m_bReady)
 		{
-			for (int j = HUMAN; j <= DOMINION; j++)
-				if (i != j && m_bInvolvedRaces[i] && m_bInvolvedRaces[j])
-					if (this->CheckDiplomacyStatus(&m_MajorRaces[i], &m_MajorRaces[j]))
+			for (std::map<CString, CRace*>::const_iterator itt = pmRaces->begin(); itt != pmRaces->end(); itt++)
+				if (it->first != itt->first && m_mInvolvedRaces.find(it->first) != m_mInvolvedRaces.end() && m_mInvolvedRaces.find(itt->first) != m_mInvolvedRaces.end())
+					if (this->CheckDiplomacyStatus(it->second, itt->second))
 					{
 						m_bReady = TRUE;
 						break;
@@ -96,124 +97,96 @@ void CCombat::PreCombatCalculation()
 		return;
 	// 1. Position der Schiffe zu Beginn des Kampfes festlegen, also wo befinden sich die einzelnen "Flotten"
 	//	  zu Kampfbeginn im Raum? Die Koordinate in der Mitte hat den Wert (0,0,0). Die einzelnen "Flotten" befinden
-	//    sich zu Beginn jeweils 100 Einheiten davon entfernt.
-	BYTE differentRaces = NULL;
-	
-	// Es gibt 7 verschiedene Positionen für einen Kampfbeginn um den Mittelpunkt. 6 für die Hauptrassen und noch eine
-	// 7. für die Minorraces
-	SBYTE position[7] = {-1,-1,-1,-1,-1,-1,-1};
+	//    sich zu Beginn jeweils ca. 200 Einheiten davon entfernt.
+	//	  Es gibt 7 verschiedene Positionen für einen Kampfbeginn um den Mittelpunkt. 6 für die Hauptrassen und noch eine
 
-	// Das wievielte Schiff dieser Rasse ist auf dieser Position? Wird benötigt, wenn wir an der Position Formationen
-	// machen wollen
-	USHORT posNumber[7] = {0,0,0,0,0,0,0};
-	
-	// Hat eine Rasse ihr Flagschiff im Kampf?
-	BOOLEAN flagship[7] = {0,0,0,0,0,0,0};
-
-	// Hat eine Rasse ein Schiff mit der Kommandoeigenschaft im Kampf?
-	BOOLEAN commandship[7] = {0,0,0,0,0,0,0};
-
-	// Umso mehr verschiedene Schiffstypen am Kampf teilnehmen, desto größer ist auch der Bonus. Für jeden Schifftyp
-	// gibt es einen 5% Bonus.
-	USHORT shipTypes[7][15] = {0};
-
-	// Hier das Feld aller beteiligten Schiffe durchgehen
-	for (int i = 0; i < m_CS.GetSize(); i++)
+	int nRacePos = 0;
+	for (std::map<CString, bool>::const_iterator it = m_mInvolvedRaces.begin(); it != m_mInvolvedRaces.end(); it++)
 	{
-		BOOL check = TRUE;
-		for (int j = 0; j < differentRaces; j++)
-			// Überprüfen ob die Rasse schon eine Position zugewiesen bekommen hat
-			if (position[j] == (SBYTE)m_CS.GetAt(i)->m_pShip->GetOwnerOfShip())
-			{
-				m_CS.GetAt(i)->m_KO = GivePosition(j, posNumber[j]);
-				posNumber[j]++;
-				check = FALSE;
-				break;
-			}
-		
-		// !!! GivePosition ist erstmal eine Testfunktion, welche den Schiffen einfach so grobe Positionen zuweist. Diese
-		// Funktion wird später sehr komplex werden, wenn wir Formationen beachten müssen.	
+		// Das wievielte Schiff dieser Rasse ist auf dieser Position? Wird benötigt, wenn wir an der Position Formationen
+		// machen wollen
+		int nShipPos = 0;
+		// Hat eine Rasse ihr Flagschiff im Kampf?
+		bool bFlagship = false;
+		// Hat eine Rasse ein Schiff mit der Kommandoeigenschaft im Kampf?
+		bool bCommandship = false;
+		// Umso mehr verschiedene Schiffstypen am Kampf teilnehmen, desto größer ist auch der Bonus. Für jeden Schifftyp
+		// gibt es einen 5% Bonus.
+		std::map<BYTE, int> mShipTypes;
 
-		// Wenn wir für diese Rasse noch keine Startposition haben, dann wird ihr eine zugewiesen
-		if (check == TRUE && position[differentRaces] == -1)
+		// Hier das Feld aller beteiligten Schiffe durchgehen
+		for (int i = 0; i < m_CS.GetSize(); i++)
 		{
-			position[differentRaces] = (SBYTE)m_CS.GetAt(i)->m_pShip->GetOwnerOfShip();
-			m_CS.GetAt(i)->m_KO = GivePosition(differentRaces,posNumber[differentRaces]);
-			posNumber[differentRaces]++;
-			differentRaces++;
+			if (m_CS.GetAt(i)->m_pShip->GetOwnerOfShip() != it->first)
+				continue;
+
+			// Schiffsposition zuweisen
+			m_CS.GetAt(i)->m_KO = GivePosition(nRacePos, nShipPos++);			
+			
+			if (m_CS.GetAt(i)->m_pShip->GetIsShipFlagShip())
+				bFlagship = true;
+			if (m_CS.GetAt(i)->m_pShip->HasSpecial(COMMANDSHIP))
+				bCommandship = true;
+			// Kolonieschiffe, Transporter, Sonden, Outposts und Starbases gelten dabei nicht mit!
+			if (m_CS.GetAt(i)->m_pShip->GetShipType() >= SCOUT && m_CS.GetAt(i)->m_pShip->GetShipType() <= FLAGSHIP)
+				mShipTypes[m_CS.GetAt(i)->m_pShip->GetShipType()] += 1;
 		}
-		if (m_CS.GetAt(i)->m_pShip->GetIsShipFlagShip())
-			flagship[m_CS.GetAt(i)->m_pShip->GetOwnerOfShip()] = TRUE;
-		if (m_CS.GetAt(i)->m_pShip->HasSpecial(COMMANDSHIP))
-			commandship[m_CS.GetAt(i)->m_pShip->GetOwnerOfShip()] = TRUE;
-		// Kolonieschiffe, Transporter, Sonden, Outposts und Starbases gelten dabei nicht mit!
-		if (m_CS.GetAt(i)->m_pShip->GetShipType() >= SCOUT && m_CS.GetAt(i)->m_pShip->GetShipType() <= FLAGSHIP)
-			shipTypes[m_CS.GetAt(i)->m_pShip->GetOwnerOfShip()][m_CS.GetAt(i)->m_pShip->GetShipType()]++;
-	}
 
-	// Wir brauchen um den Bonus für viele verschiedene Schiffstypen zu bekommen eine bestimmte Anzahl von jedem
-	// Schiffstyp. Dieser Wert beträgt "Anzahl Schiffstypen" - 1 von jedem Typ. Schaffen wir diesen Wert nicht, dann
-	// bekommen wir den Bonus nur für "minimalen Wert + 1".
-	USHORT mod[7] = {0};
-	for (int i = 0; i <= DOMINION; i++)	// Rassen durchgehen
-	{
-		USHORT smallest = 60000;
-		BYTE differentTypes = 0;
-		for (int j = 0; j < 15; j++)	// Schiffstypen durchgehen
-			if (shipTypes[i][j] > 0)
-			{
-				differentTypes++;
-				if (shipTypes[i][j] < smallest)
-					smallest = shipTypes[i][j];
-			}
+		// Wir brauchen um den Bonus für viele verschiedene Schiffstypen zu bekommen eine bestimmte Anzahl von jedem
+		// Schiffstyp. Dieser Wert beträgt "Anzahl Schiffstypen" - 1 von jedem Typ. Schaffen wir diesen Wert nicht, dann
+		// bekommen wir den Bonus nur für "minimalen Wert + 1".
+		int mod = 0;		
+		int nSmallest = INT_MAX;
+		int nDifferentTypes = mShipTypes.size();
+		// Schiffstypen durchgehen
+		for (std::map<BYTE, int>::const_iterator types = mShipTypes.begin(); types != mShipTypes.end(); types++)
+			nSmallest = min(nSmallest, types->second);
+			
 		// Schaffen wir den Wert nicht
-		if ((differentTypes - 1) > smallest)
+		if ((nDifferentTypes - 1) > nSmallest)
 			// dann ist der maximale Bonus smallest + 1
-			mod[i] = smallest+1;
-		else if (differentTypes > 1 && smallest > 1)
-			mod[i] = differentTypes;
-		else if (differentTypes > 1)
-			mod[i] = 1;
-	}
-	// Jetzt noch die ganzen Boni/Mali den Schiffen zuweisen und die Felder mit den Gegnern für die einzelnen Rassen füllen
-	for (int i = 0; i < m_CS.GetSize(); i++)
-	{
-		// 10% Bonus wenn Flagschiff am Kampf teilnehmen
-		if (flagship[m_CS.GetAt(i)->m_pShip->GetOwnerOfShip()] == TRUE)
-			m_CS.ElementAt(i)->m_iModifier += 10;
-		// 20% Bonus wenn Schiff mit Kommandoeigenschaft am Kampf teilnimmt
-		if (commandship[m_CS.GetAt(i)->m_pShip->GetOwnerOfShip()] == TRUE)
-			m_CS.ElementAt(i)->m_iModifier += 20;
-		// möglichen Bonus durch verschiedene Schiffstypen draufrechnen
-		m_CS.ElementAt(i)->m_iModifier += (mod[m_CS.GetAt(i)->m_pShip->GetOwnerOfShip()] * 5);	// 5% pro Schiffstyp
-		// möglichen Bonus durch Erfahrung der Crew draufrechnen
-		m_CS.ElementAt(i)->m_iModifier += m_CS.GetAt(i)->GetCrewExperienceModi();
-		// Darf nicht 0% sein (normal sind 100 eingestellt)
-		if (m_CS.GetAt(i)->m_iModifier <= 0)
-			m_CS.ElementAt(i)->m_iModifier = 1;
-
-		// Feld mit allen möglichen gegnerischen Schiffen füllen
-		for (int t = HUMAN; t <= DOMINION; t++)
-			if (m_bInvolvedRaces[t])
-				if (m_CS.GetAt(i)->m_pShip->GetOwnerOfShip() != t)				
-				{	
-					if (m_CS.GetAt(i)->m_pShip->GetOwnerOfShip() >= HUMAN && m_CS.GetAt(i)->m_pShip->GetOwnerOfShip() <= DOMINION)
-					{						
-						if (this->CheckDiplomacyStatus(&m_MajorRaces[m_CS.GetAt(i)->m_pShip->GetOwnerOfShip()], &m_MajorRaces[t]))
-							m_Enemies[t].Add(m_CS.GetAt(i));
-						continue;					
-					}
-					m_Enemies[t].Add(m_CS.GetAt(i));
-				}
-		/*CString mod;
-		mod.Format("Modifikator: %d%%", m_CS.ElementAt(i)->m_iModifier);
-		AfxMessageBox(mod);
-		*/
-	}
+			mod = nSmallest + 1;
+		else if (nDifferentTypes > 1 && nSmallest > 1)
+			mod = nDifferentTypes;
+		else if (nDifferentTypes > 1)
+			mod = 1;
+				
+		// Jetzt noch die ganzen Boni/Mali den Schiffen zuweisen und die Felder mit den Gegnern für die einzelnen Rassen füllen
+		for (int i = 0; i < m_CS.GetSize(); i++)
+		{
+			if (m_CS.GetAt(i)->m_pShip->GetOwnerOfShip() == it->first)
+			{
+				// 10% Bonus wenn Flagschiff am Kampf teilnehmen
+				if (bFlagship)
+					m_CS.ElementAt(i)->m_iModifier += 10;
+				// 20% Bonus wenn Schiff mit Kommandoeigenschaft am Kampf teilnimmt
+				if (bCommandship)
+					m_CS.ElementAt(i)->m_iModifier += 20;
+				// möglichen Bonus durch verschiedene Schiffstypen draufrechnen
+				m_CS.ElementAt(i)->m_iModifier += mod * 5;	// 5% pro Schiffstyp
+				// möglichen Bonus durch Erfahrung der Crew draufrechnen
+				m_CS.ElementAt(i)->m_iModifier += m_CS.GetAt(i)->GetCrewExperienceModi();
+				// Darf nicht 0% sein (normal sind 100 eingestellt)
+				if (m_CS.GetAt(i)->m_iModifier <= 0)
+					m_CS.ElementAt(i)->m_iModifier = 1;
+				
+				//CString mod;
+				//mod.Format("Modifikator: %d%%", m_CS.ElementAt(i)->m_iModifier);
+				//AfxMessageBox(mod);
+			}
+			else
+			{
+				// Feld mit allen möglichen gegnerischen Schiffen füllen				
+				if (CheckDiplomacyStatus((*m_mRaces)[it->first], (*m_mRaces)[m_CS.GetAt(i)->m_pShip->GetOwnerOfShip()]))
+					m_mEnemies[it->first].push_back(m_CS.GetAt(i));
+			}			
+		}
+		nRacePos++;
+	}	
 }
 
 // Diese Funktion ist das Herzstück der CCombat-Klasse. Sie führt die ganzen Kampfberechnungen durch.
-void CCombat::CalculateCombat(BYTE winner[7])
+void CCombat::CalculateCombat(std::map<CString, BYTE>& winner)
 {	
 	while (m_bReady)
 	{
@@ -314,22 +287,20 @@ void CCombat::CalculateCombat(BYTE winner[7])
 		// Erstmal wird für alle beteiligten Rassen der Kampf auf verloren gesetzt. Danach wird geschaut, wer noch
 		// Schiffe besitzt. Für diese Rassen wird der Kampf dann auf gewonnen gesetzt. Alle anderen Rassen gelten als
 		// nicht kampfbeteiligt.
-		for (int i = HUMAN; i <= DOMINION; i++)
-			if (m_bInvolvedRaces[i])
-				winner[i] = FALSE;
+		for (std::map<CString, bool>::const_iterator it = m_mInvolvedRaces.begin(); it != m_mInvolvedRaces.end(); it++)
+			winner[it->first] = 2;
 		for (int i = 0; i < m_CS.GetSize(); i++)
-			if (m_CS.GetAt(i)->m_pShip->GetOwnerOfShip() >= HUMAN && m_CS.GetAt(i)->m_pShip->GetOwnerOfShip() <= DOMINION)
-				winner[m_CS.GetAt(i)->m_pShip->GetOwnerOfShip()] = TRUE;
+			winner[m_CS.GetAt(i)->m_pShip->GetOwnerOfShip()] = 1;
 
-		// ein unentschieden wurde erreicht, wenn es mehrere "Gewinner" gibt, diese aber keine diplomatische
+		// ein Unentschieden wurde erreicht, wenn es mehrere "Gewinner" gibt, diese aber keine diplomatische
 		// Beziehung haben, um sich nicht anzugreifen
-		for (int i = HUMAN; i <= DOMINION; i++)
-			for (int j = HUMAN; j <= DOMINION; j++)
-				if (i != j && winner[i] == 1 && winner[j] == 1)
-					if (CheckDiplomacyStatus(&m_MajorRaces[i], &m_MajorRaces[j]))
+		for (std::map<CString, bool>::const_iterator it = m_mInvolvedRaces.begin(); it != m_mInvolvedRaces.end(); it++)
+			for (std::map<CString, bool>::const_iterator itt = m_mInvolvedRaces.begin(); itt != m_mInvolvedRaces.end(); itt++)
+				if (it->first != itt->first && winner[it->first] == 1 && winner[itt->first] == 1)
+					if (CheckDiplomacyStatus((*m_mRaces)[it->first], (*m_mRaces)[itt->first]))
 					{
-						winner[i] = 3;
-						winner[j] = 3;
+						winner[it->first] = 3;
+						winner[itt->first] = 3;
 					}
 /*
 		CString s;
@@ -347,9 +318,8 @@ void CCombat::CalculateCombat(BYTE winner[7])
 	// Dann ist der Kampf unentschieden ausgegangen
 	else 
 	{		
-		for (int i = HUMAN; i <= DOMINION; i++)
-			if (m_bInvolvedRaces[i])
-				winner[i] = 3;		
+		for (std::map<CString, bool>::const_iterator it = m_mInvolvedRaces.begin(); it != m_mInvolvedRaces.end(); it++)
+			winner[it->first] = 3;		
 	}
 }
 
@@ -357,18 +327,18 @@ void CCombat::CalculateCombat(BYTE winner[7])
 // zugewiesen gibt die Funktion TRUE zurück, findet sich kein Ziel mehr gibt die Funktion FALSE zurück.
 BOOLEAN CCombat::SetTarget(int i)
 {
-	BYTE owner = m_CS.GetAt(i)->m_pShip->GetOwnerOfShip();
+	CString sOwner = m_CS.GetAt(i)->m_pShip->GetOwnerOfShip();
 		
 	// Wenn das enemy-Feld leer ist, dann gibt es keine gegnerischen Schiffe mehr in diesem Kampf und wir können
 	// diesen womöglich beenden
-	while (m_Enemies[owner].GetSize() > 0)
+	while (m_mEnemies[sOwner].size() > 0)
 	{
 		// Hier wird erstmal zufällig ein gegnerisches Schiff als Ziel genommen. Es gibt noch keine weiteren Einschränkungen
-		int random = rand()%m_Enemies[owner].GetSize();
-		CCombatShip* targetShip = m_Enemies[owner].GetAt(random);
+		int random = rand()%m_mEnemies[sOwner].size();
+		CCombatShip* targetShip = m_mEnemies[sOwner].at(random);
 		// Das Ziel hat schon keine Hülle mehr (= vernichtet), dann versuchen ein neuen Ziel zu finden
 		if (targetShip->m_pShip->GetHull()->GetCurrentHull() < 1)
-			m_Enemies[owner].RemoveAt(random);
+			m_mEnemies[sOwner].erase(m_mEnemies[sOwner].begin() + random);
 		// ein legitimes Ziel wurde gefunden
 		else
 		{
@@ -425,22 +395,34 @@ BOOLEAN CCombat::CheckShipLife(int i)
 // Funktion überprüft, ob die Rassen in einem Kampf sich gegeneinander aus diplomatischen Gründen
 // überhaupt attackieren. Die Funktion gibt <code>TRUE</code> zurück, wenn sie sich angreifen können,
 // ansonsten gibt sie <code>FALSE</code> zurück.
-BOOLEAN CCombat::CheckDiplomacyStatus(const CMajorRace* raceA, const CMajorRace* raceB)
+BOOLEAN CCombat::CheckDiplomacyStatus(CRace* raceA, CRace* raceB)
 {
 	ASSERT(raceA != raceB);
 	// Wenn wir mit der Rasse, welcher das andere Schiff gehört nicht mindst. einen Freundschaftsvertrag
 	// oder einen Verteidigungspakt oder Kriegspakt oder Nichtangriffspakt haben
-	if ((raceA->GetDiplomacyStatus(raceB->GetRaceNumber()) == NO_AGREEMENT
-		|| raceA->GetDiplomacyStatus(raceB->GetRaceNumber()) == TRADE_AGREEMENT
-		|| raceA->GetDiplomacyStatus(raceB->GetRaceNumber()) == WAR)
-		&& raceA->GetDefencePact(raceB->GetRaceNumber()) == FALSE)
-		return TRUE;
+	if (raceA->GetAgreement(raceB->GetRaceID()) == NO_AGREEMENT
+		|| raceA->GetAgreement(raceB->GetRaceID()) == TRADE_AGREEMENT
+		|| raceA->GetAgreement(raceB->GetRaceID()) == WAR)
+	{
+		if (raceA->GetType() == MAJOR && raceB->GetType() == MAJOR)
+		{
+			if (((CMajor*)raceA)->GetDefencePact(raceB->GetRaceID()) == FALSE)
+				return TRUE;
+			else
+				return FALSE;
+		}
+		else
+			return TRUE;
+	}	
 	else
 		return FALSE;
 }
 
 void CCombat::Reset()
 {
+	m_mInvolvedRaces.clear();
+	m_mEnemies.clear();
+
 	for (int i = 0; i < m_InvolvedShips.GetSize(); )
 	{
 		delete m_InvolvedShips.GetAt(i);
@@ -448,25 +430,14 @@ void CCombat::Reset()
 		m_InvolvedShips.RemoveAt(i);
 	}
 	m_InvolvedShips.RemoveAll();
+
 	for (int i = 0; i < m_CS.GetSize(); )
 		m_CS.RemoveAt(i);
 	m_CS.RemoveAll();
 	for (int i = 0; i < m_CT.GetSize(); )
 		m_CT.RemoveAt(i);
 	m_CT.RemoveAll();
-	for (int i = 0; i <= DOMINION; i++)
-	{
-		for (int j = 0; j < m_Enemies[i].GetSize(); )
-			m_Enemies[i].RemoveAt(j);
-		m_Enemies[i].RemoveAll();
-	}
-
-	for (int i = 0; i < 7; i++)
-	{
-		m_iFormation[i] = 0;
-		m_iTactic[i] = 0;
-		m_bInvolvedRaces[0] = FALSE;
-	}
+	
 	m_bReady = FALSE;
 	m_iTime = 0;
 	m_bAttackedSomebody = FALSE;

@@ -29,6 +29,7 @@ CIntelReports::~CIntelReports(void)
 void CIntelReports::Serialize(CArchive &ar)
 {
 	CObject::Serialize(ar);
+	
 	if (ar.IsStoring())
 	{		
 		BYTE type = MAXBYTE;

@@ -1,5 +1,5 @@
 /*
- *   Copyright (C)2004-2008 Sir Pustekuchen
+ *   Copyright (C)2004-2009 Sir Pustekuchen
  *
  *   Author   :  Sir Pustekuchen
  *   Home     :  http://birth-of-the-empires.de.vu
@@ -43,10 +43,10 @@ public:
 	}
 	/**
 	 * Funktion berechnet die Moralauswirkung auf alle Systeme, abhängig von den vorgekommenen Events und
-	 * der jeweiligen Majorrace. Übergeben werden dafür alle Systeme <code>systems</code> und die jweilige
-	 * Majorrace <code>major</code>, auf die wir uns gerade beziehen.
+	 * der jeweiligen Majorrace. Übergeben werden dafür alle Systeme <code>systems</code>, die RaceID und die
+	 * gemappte Nummer der Majorrace <code>byMappedRaceNumber</code>, auf welche Moralwerte sich bezogen werden soll.
 	 */
-	void CalculateEvents(CSystem systems[][STARMAP_SECTORS_VCOUNT], BYTE major);
+	void CalculateEvents(CSystem systems[][STARMAP_SECTORS_VCOUNT], const CString& sRaceID, BYTE byMappedRaceNumber);
 
 	/**
 	 * Funktion erstellt einen Text, der in der Ereignisansicht angezeigt werden kann, aufgrund eines speziellen

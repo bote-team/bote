@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "EcoIntelObj.h"
 #include "Botf2Doc.h"
+#include "RaceController.h"
 
 IMPLEMENT_SERIAL (CEcoIntelObj, CObject, 1)
 
@@ -13,14 +14,14 @@ CEcoIntelObj::CEcoIntelObj(void)
 	m_KO = CPoint(-1,-1);
 }
 
-CEcoIntelObj::CEcoIntelObj(BYTE owner, BYTE enemy, USHORT round, BOOLEAN isSpy, const CPoint &ko, USHORT id, BYTE number)
-	: CIntelObject(owner, enemy, round, isSpy, 0), m_KO(ko), m_nID(id), m_byNumber(number)
+CEcoIntelObj::CEcoIntelObj(const CString& sOwnerID, const CString& sEnemyID, USHORT round, BOOLEAN isSpy, const CPoint &ko, USHORT id, BYTE number)
+	: CIntelObject(sOwnerID, sEnemyID, round, isSpy, 0), m_KO(ko), m_nID(id), m_byNumber(number)
 {
 	m_iLatinum = NULL;
 }
 
-CEcoIntelObj::CEcoIntelObj(BYTE owner, BYTE enemy, USHORT round, BOOLEAN isSpy, int latinum)
-	: CIntelObject(owner, enemy, round, isSpy, 0), m_iLatinum(latinum)
+CEcoIntelObj::CEcoIntelObj(const CString& sOwnerID, const CString& sEnemyID, USHORT round, BOOLEAN isSpy, int latinum)
+	: CIntelObject(sOwnerID, sEnemyID, round, isSpy, 0), m_iLatinum(latinum)
 {
 	m_KO = CPoint(-1,-1);
 	m_nID = 0;
@@ -34,8 +35,8 @@ CEcoIntelObj::~CEcoIntelObj(void)
 /// Kopierkonstruktor
 CEcoIntelObj::CEcoIntelObj(const CEcoIntelObj & rhs)
 {
-	m_byOwner = rhs.m_byOwner;
-	m_byEnemy = rhs.m_byEnemy;
+	m_sOwner = rhs.m_sOwner;
+	m_sEnemy = rhs.m_sEnemy;
 	m_nRound = rhs.m_nRound;
 	m_bIsSpy = rhs.m_bIsSpy;
 	m_byType = rhs.m_byType;
@@ -76,7 +77,7 @@ void CEcoIntelObj::Serialize(CArchive &ar)
 
 /// Funktion generiert einen Text, welcher eine Geheimdiestaktion beschreibt, für den Auslöser bzw. das Opfer
 /// dieser Aktion.
-void CEcoIntelObj::CreateText(CBotf2Doc* pDoc, BYTE n, BYTE param)
+void CEcoIntelObj::CreateText(CBotf2Doc* pDoc, BYTE n, const CString& param)
 {
 	CString csInput;													// auf csInput wird die jeweilige Zeile gespeichert
 	CString fileName;
@@ -92,7 +93,7 @@ void CEcoIntelObj::CreateText(CBotf2Doc* pDoc, BYTE n, BYTE param)
 			int pos = 0;
 			CString s = csInput.Tokenize(":", pos);
 			// Rasse bestimmen
-			if (atoi(s) == m_byOwner)
+			if (s == m_sOwner)
 			{
 				s = csInput.Tokenize(":", pos);
 				// Typ (Wirtschaft, Militär...) bestimmen
@@ -105,16 +106,13 @@ void CEcoIntelObj::CreateText(CBotf2Doc* pDoc, BYTE n, BYTE param)
 						csInput.Delete(0, pos);
 						// in csInput steht nun die Beschreibung für den Aggressor
 						// Jetzt müssen noch die Variablen mit dem richtigen Text gefüllt werden
-						switch (m_byEnemy)
+						CMajor* pEnemey = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(m_sEnemy));
+						if (pEnemey)
 						{
-						case HUMAN:		{s = CResourceManager::GetString("ARTICLE_RACE1_EMPIRE"); break;}
-						case FERENGI:	{s = CResourceManager::GetString("ARTICLE_RACE2_EMPIRE"); break;}
-						case KLINGON:	{s = CResourceManager::GetString("ARTICLE_RACE3_EMPIRE"); break;}
-						case ROMULAN:	{s = CResourceManager::GetString("ARTICLE_RACE4_EMPIRE"); break;}
-						case CARDASSIAN:{s = CResourceManager::GetString("ARTICLE_RACE5_EMPIRE"); break;}
-						case DOMINION:	{s = CResourceManager::GetString("ARTICLE_RACE6_EMPIRE"); break;}
+							s = pEnemey->GetEmpireNameWithArticle();
+							csInput.Replace("$race$", s);
 						}
-						csInput.Replace("$race$", s);
+						
 						if (m_KO != CPoint(-1,-1))
 						{
 							s = pDoc->m_Sector[m_KO.x][m_KO.y].GetName();
@@ -160,7 +158,7 @@ void CEcoIntelObj::CreateText(CBotf2Doc* pDoc, BYTE n, BYTE param)
 				int pos = 0;
 				CString s = csInput.Tokenize(":", pos);
 				// Rasse bestimmen
-				if (atoi(s) == m_byEnemy)
+				if (s == m_sEnemy)
 				{
 					s = csInput.Tokenize(":", pos);
 					// Typ (Wirtschaft, Militär...) bestimmen
@@ -191,18 +189,14 @@ void CEcoIntelObj::CreateText(CBotf2Doc* pDoc, BYTE n, BYTE param)
 							s.Format("%d", m_iLatinum);
 							csInput.Replace("$latinum$", s);
 							m_strEnemyDesc = csInput;
-							if (param != NOBODY)
+							if (param != "")
 							{
-								switch (param)
+								CMajor* pParam = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(param));
+								if (pParam)
 								{
-								case HUMAN:		{s = CResourceManager::GetString("ARTICLE_RACE1_EMPIRE"); break;}
-								case FERENGI:	{s = CResourceManager::GetString("ARTICLE_RACE2_EMPIRE"); break;}
-								case KLINGON:	{s = CResourceManager::GetString("ARTICLE_RACE3_EMPIRE"); break;}
-								case ROMULAN:	{s = CResourceManager::GetString("ARTICLE_RACE4_EMPIRE"); break;}
-								case CARDASSIAN:{s = CResourceManager::GetString("ARTICLE_RACE5_EMPIRE"); break;}
-								case DOMINION:	{s = CResourceManager::GetString("ARTICLE_RACE6_EMPIRE"); break;}
+									s = pParam->GetEmpireNameWithArticle();
+									csInput = CResourceManager::GetString("KNOW_RESPONSIBLE_SABOTAGERACE", FALSE, s);
 								}
-								csInput = CResourceManager::GetString("KNOW_RESPONSIBLE_SABOTAGERACE", FALSE, s);
 							}
 							else
 								csInput = CResourceManager::GetString("DO_NOT_KNOW_RESPONSIBLE_RACE");

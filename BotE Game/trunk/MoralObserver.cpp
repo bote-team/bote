@@ -68,10 +68,14 @@ void CMoralObserver::SerializeStatics(CArchive &ar)
 //////////////////////////////////////////////////////////////////////
 
 /// Funktion berechnet die Moralauswirkung auf alle Systeme, abhängig von den vorgekommenen Events und
-/// der jeweiligen Majorrace. Übergeben werden dafür alle Systeme <code>systems</code> und die jweilige
-/// Majorrace <code>major</code>, auf die wir uns gerade beziehen.
-void CMoralObserver::CalculateEvents(CSystem systems[][STARMAP_SECTORS_VCOUNT], BYTE major)
+/// der jeweiligen Majorrace. Übergeben werden dafür alle Systeme <code>systems</code>, die RaceID und die
+/// gemappte Nummer der Majorrace <code>byMappedRaceNumber</code>, auf welche Moralwerte sich bezogen werden soll.
+void CMoralObserver::CalculateEvents(CSystem systems[][STARMAP_SECTORS_VCOUNT], const CString& sRaceID, BYTE byMappedRaceNumber)
 {
+	// derzeit nur 6 Moralwertdatensätze vorhanden
+	ASSERT(byMappedRaceNumber >= 1 && byMappedRaceNumber <= 6);
+
+
 /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 													Fed	Fer	Kli	Rom	Car	Dom
 #0	Eliminate an Empire								50	50	50	50	50	50
@@ -214,10 +218,10 @@ void CMoralObserver::CalculateEvents(CSystem systems[][STARMAP_SECTORS_VCOUNT], 
 */
 	for (int i = 0; i < m_iEvents.GetSize(); )
 	{
-		short moral = m_iMoralMatrix[m_iEvents.GetAt(i)][major-1];
+		short moral = m_iMoralMatrix[m_iEvents.GetAt(i)][byMappedRaceNumber - 1];
 		for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
 			for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-				if (systems[x][y].GetOwnerOfSystem() == major)
+				if (systems[x][y].GetOwnerOfSystem() == sRaceID)
 					systems[x][y].SetMoral(moral);
 		m_iEvents.RemoveAt(i);
 	}

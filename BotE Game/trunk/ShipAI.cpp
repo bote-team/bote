@@ -2,6 +2,8 @@
 #include "ShipAI.h"
 #include "Botf2Doc.h"
 #include "SectorAI.h"
+#include "RaceController.h"
+#include "Fleet.h"
 
 //////////////////////////////////////////////////////////////////////
 // Konstruktion/Destruktion
@@ -10,28 +12,31 @@ CShipAI::CShipAI(CBotf2Doc* pDoc)
 {
 	ASSERT(pDoc);
 	m_pDoc = pDoc;
-	for (int i = 0; i < DOMINION; i++)
-	{
-		m_AttackSector[i] = CPoint(-1,-1);
-		m_BombardSector[i] = CPoint(-1,-1);
-	}
 
+	map<CString, CRace*>* mRaces = m_pDoc->GetRaceCtrl()->GetRaces();
+	ASSERT(mRaces);
+	
 	// Durchschnittsmoral berechnen
-	int moralAll[DOMINION] = {0};
-	int systems[DOMINION] = {0};
+	map<CString, int> moralAll;
+	map<CString, int> systems;
 	for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
 		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-			if (m_pDoc->m_System[x][y].GetOwnerOfSystem() != NOBODY && m_pDoc->m_System[x][y].GetOwnerOfSystem() != UNKNOWN)
+			if (m_pDoc->m_System[x][y].GetOwnerOfSystem() != "")
 			{
-				moralAll[m_pDoc->m_System[x][y].GetOwnerOfSystem()-1] += m_pDoc->m_System[x][y].GetMoral();
-				systems[m_pDoc->m_System[x][y].GetOwnerOfSystem()-1]++;
+				moralAll[m_pDoc->m_System[x][y].GetOwnerOfSystem()] += m_pDoc->m_System[x][y].GetMoral();
+				systems[m_pDoc->m_System[x][y].GetOwnerOfSystem()] += 1;
 			}
-	for (int i = 0; i < DOMINION; i++)
+	
+	// alles initial initialisieren
+	for (map<CString, CRace*>::const_iterator it = mRaces->begin(); it != mRaces->end(); it++)
 	{
-		if (systems[i] > NULL)
-			m_iAverageMoral[i] = moralAll[i] / systems[i];
+		m_AttackSector[it->first] = CPoint(-1,-1);
+		m_BombardSector[it->first] = CPoint(-1,-1);
+
+		if (systems[it->first] > NULL)
+			m_iAverageMoral[it->first] = moralAll[it->first] / systems[it->first];
 		else
-			m_iAverageMoral[i] = 0;
+			m_iAverageMoral[it->first] = 0;
 	}
 }
 
@@ -55,10 +60,15 @@ void CShipAI::CalculateShipOrders(CSectorAI* SectorAI)
 
 	for (int i = 0; i < m_pDoc->m_ShipArray.GetSize(); i++)
 	{
-		BYTE race = m_pDoc->m_ShipArray.GetAt(i).GetOwnerOfShip();
-		if (race != NOBODY && race != UNKNOWN)
+		CString sOwner	= m_pDoc->m_ShipArray.GetAt(i).GetOwnerOfShip();
+		CRace* pOwner	= m_pDoc->GetRaceCtrl()->GetRace(sOwner);
+		if (!pOwner)
+			continue;
+		// gilt erstmal nur für Majors
+		if (pOwner->GetType() == MAJOR)
 		{
-			if (m_pDoc->m_Empire[race].GetPlayerOfEmpire() != COMPUTER)
+			// gilt nicht für menschliche Spieler
+			if (((CMajor*)pOwner)->IsHumanPlayer())
 				continue;
 			// Flotte versuchen zu erstellen
 			DoMakeFleet(i);
@@ -74,23 +84,26 @@ void CShipAI::CalculateShipOrders(CSectorAI* SectorAI)
 				// Scouts und Kriegsschiffe fliegen zuerst einmal zu den Minorracesystemen
 				if (m_pDoc->m_ShipArray.GetAt(i).GetShipType() > COLONYSHIP)
 				{
+					// Zeiger auf Vektor mit Minorracessektoren holen
+					vector<CPoint>* vMinorraceSectors = m_pSectorAI->GetMinorraceSectors(sOwner);
+
 					BOOLEAN set = FALSE;
-					int count = m_pSectorAI->GetMinorraceSectors(race)->GetSize()*2;
-					while (m_pSectorAI->GetMinorraceSectors(race)->GetSize() && count--)
+					int count = vMinorraceSectors->size() * 2;
+					while (vMinorraceSectors->size() && count--)
 					{
-						int j = rand()%m_pSectorAI->GetMinorraceSectors(race)->GetSize();
-						CPoint ko = m_pSectorAI->GetMinorraceSectors(race)->GetAt(j);
+						int j = rand()%vMinorraceSectors->size();
+						CPoint ko = vMinorraceSectors->at(j);
 						// Wenn Gefahr der anderen Rassen kleiner als die der meinen ist
-						if (m_pSectorAI->GetCompleteDanger(race, ko) == NULL || 
-							(m_pSectorAI->GetCompleteDanger(race, ko) < m_pSectorAI->GetDangerOnlyFromCombatShips(race, m_pDoc->m_ShipArray.GetAt(i).GetKO())))
-							if (m_pDoc->starmap[race]->GetRange(ko) <= m_pDoc->m_ShipArray.GetAt(i).GetRange())
+						if (m_pSectorAI->GetCompleteDanger(sOwner, ko) == NULL || 
+							(m_pSectorAI->GetCompleteDanger(sOwner, ko) <= m_pSectorAI->GetDangerOnlyFromCombatShips(sOwner, m_pDoc->m_ShipArray.GetAt(i).GetKO())))
+							if (((CMajor*)pOwner)->GetStarmap()->GetRange(ko) <= m_pDoc->m_ShipArray.GetAt(i).GetRange())
 							{
 								// Zielkoordinate für das Schiff setzen
 								m_pDoc->m_ShipArray.GetAt(i).SetTargetKO(ko,0);
 #ifdef TRACE_SHIPAI
-								TRACE("RACE %d: Ship to Minor: %s (%s) - Ziel: %d,%d\n",race, m_pDoc->m_ShipArray.GetAt(i).GetShipName(), m_pDoc->m_ShipArray.GetAt(i).GetShipTypeAsString(), ko.x,ko.y);
-#endif
-								m_pSectorAI->GetMinorraceSectors(race)->RemoveAt(j--);
+								MYTRACE(MT::LEVEL_INFO, "Race %s: Ship to Minor: %s (%s) - Target: %d,%d\n",sOwner, m_pDoc->m_ShipArray.GetAt(i).GetShipName(), m_pDoc->m_ShipArray.GetAt(i).GetShipTypeAsString(), ko.x,ko.y);
+#endif								
+								vMinorraceSectors->erase(vMinorraceSectors->begin() + j--);	
 								set = TRUE;
 								break;
 							}
@@ -105,44 +118,47 @@ void CShipAI::CalculateShipOrders(CSectorAI* SectorAI)
 				// sie gerade keinen anderen Flugauftrag haben.
 				if (m_pDoc->m_ShipArray.GetAt(i).GetShipType() >= COLONYSHIP && m_pDoc->m_ShipArray.GetAt(i).GetCurrentOrder() != TERRAFORM)
 				{
-					for (int j = 0; j < m_pSectorAI->GetSectorsToTerraform(race)->GetSize(); j++)
+					// Zeiger auf Vektor mit Terraformsektoren holen
+					vector<CSectorAI::SectorToTerraform>* vSectorsToTerrform = m_pSectorAI->GetSectorsToTerraform(sOwner);
+
+					for (UINT j = 0; j < vSectorsToTerrform->size(); j++)
 					{
-						CPoint ko = m_pSectorAI->GetSectorsToTerraform(race)->GetAt(j).p;
+						CPoint ko = vSectorsToTerrform->at(j).p;
 						// Wenn das Kolonieschiff schon auf einem Sektor für unser Terraforming steht, so fliegt es nicht
 						// weiter
 						if (m_pDoc->m_ShipArray.GetAt(i).GetShipType() == COLONYSHIP && m_pDoc->m_ShipArray.GetAt(i).GetKO() == ko)
 							break;
 						// Wenn Gefahr der anderen Rassen kleiner als die der meinen ist
-						if (m_pSectorAI->GetCompleteDanger(race, ko) == NULL || (m_pSectorAI->GetCompleteDanger(race, ko) < m_pSectorAI->GetDanger(race, m_pDoc->m_ShipArray.GetAt(i).GetKO())))
-							if (m_pDoc->starmap[race]->GetRange(ko) <= m_pDoc->m_ShipArray.GetAt(i).GetRange())
+						if (m_pSectorAI->GetCompleteDanger(sOwner, ko) == NULL || (m_pSectorAI->GetCompleteDanger(sOwner, ko) < m_pSectorAI->GetDanger(sOwner, m_pDoc->m_ShipArray.GetAt(i).GetKO())))
+							if (((CMajor*)pOwner)->GetStarmap()->GetRange(ko) <= m_pDoc->m_ShipArray.GetAt(i).GetRange())
 							{
 								// Zielkoordinate für das Schiff setzen
 								m_pDoc->m_ShipArray.GetAt(i).SetTargetKO(ko,0);
 #ifdef TRACE_SHIPAI
-								TRACE("RACE %d: Ship %s (%s) hat terraforming Ziel: %d,%d\n",race, m_pDoc->m_ShipArray.GetAt(i).GetShipName(), m_pDoc->m_ShipArray.GetAt(i).GetShipTypeAsString(), ko.x,ko.y);
+								MYTRACE(MT::LEVEL_INFO, "Race %s: Ship %s (%s) has terraforming target: %d,%d\n",sOwner, m_pDoc->m_ShipArray.GetAt(i).GetShipName(), m_pDoc->m_ShipArray.GetAt(i).GetShipTypeAsString(), ko.x,ko.y);
 #endif
 								break;
 							}
 					}
 				}
 				// Truppentransporter zu einem möglichen Sektor fliegen lassen um dort einen Außenposten bauen zu können
-				if (m_pSectorAI->GetStationBuildSector(race).points > MINBASEPOINTS && m_pDoc->m_ShipArray.GetAt(i).GetCurrentOrder() != BUILD_OUTPOST)
+				if (m_pSectorAI->GetStationBuildSector(sOwner).points > MINBASEPOINTS && m_pDoc->m_ShipArray.GetAt(i).GetCurrentOrder() != BUILD_OUTPOST)
 				{
 					// nur Truppentransporter oder andere Schiffe ohne Ziel fliegen zu diesem Punkt, niemals aber
 					// Kolonieschiffe
 					if (m_pDoc->m_ShipArray.GetAt(i).GetShipType() == TRANSPORTER
 						|| (m_pDoc->m_ShipArray.GetAt(i).GetShipType() != COLONYSHIP && m_pDoc->m_ShipArray.GetAt(i).GetTargetKO() == m_pDoc->m_ShipArray.GetAt(i).GetKO()))
 					{
-						CPoint ko(m_pSectorAI->GetStationBuildSector(race).position.x, m_pSectorAI->GetStationBuildSector(race).position.y);
+						CPoint ko(m_pSectorAI->GetStationBuildSector(sOwner).position.x, m_pSectorAI->GetStationBuildSector(sOwner).position.y);
 						// Wenn Gefahr der anderen Rassen kleiner als die der meinen ist
-						if (m_pSectorAI->GetCompleteDanger(race, ko) == NULL || (m_pSectorAI->GetCompleteDanger(race, ko) < m_pSectorAI->GetDanger(race, m_pDoc->m_ShipArray.GetAt(i).GetKO())))
-							if (m_pDoc->starmap[race]->GetRange(ko) <= m_pDoc->m_ShipArray.GetAt(i).GetRange())
+						if (m_pSectorAI->GetCompleteDanger(sOwner, ko) == NULL || (m_pSectorAI->GetCompleteDanger(sOwner, ko) < m_pSectorAI->GetDanger(sOwner, m_pDoc->m_ShipArray.GetAt(i).GetKO())))
+							if (((CMajor*)pOwner)->GetStarmap()->GetRange(ko) <= m_pDoc->m_ShipArray.GetAt(i).GetRange())
 							{
 								// Zielkoordinate für das Schiff setzen
 								m_pDoc->m_ShipArray.GetAt(i).SetTargetKO(ko,0);
 #ifdef TRACE_SHIPAI
-								TRACE("RACE %d: Ship %s (%s) hat Außenpostenbauziel: %d,%d\n",race, m_pDoc->m_ShipArray.GetAt(i).GetShipName(), m_pDoc->m_ShipArray.GetAt(i).GetShipTypeAsString(), ko.x,ko.y);
-#endif								
+								MYTRACE(MT::LEVEL_INFO, "Race %s: Ship %s (%s) has stationbuild target: %d,%d\n",sOwner, m_pDoc->m_ShipArray.GetAt(i).GetShipName(), m_pDoc->m_ShipArray.GetAt(i).GetShipTypeAsString(), ko.x,ko.y);
+#endif
 							}
 					}
 				}				
@@ -253,8 +269,8 @@ BOOLEAN CShipAI::DoColonize(int index)
 	if (m_pDoc->m_ShipArray.GetAt(i).GetShipType() == COLONYSHIP)
 	{
 		CPoint shipKO = m_pDoc->m_ShipArray.GetAt(i).GetKO();
-		// Gehört der Sektor aktuell auch keiner Minorrace
-		if (m_pDoc->m_Sector[shipKO.x][shipKO.y].GetOwnerOfSector() != UNKNOWN)
+		// Gehört der Sektor aktuell auch keiner Minorrace (also niemanden oder uns selbst)
+		if (m_pDoc->m_Sector[shipKO.x][shipKO.y].GetOwnerOfSector() == "" || m_pDoc->m_Sector[shipKO.x][shipKO.y].GetOwnerOfSector() == m_pDoc->m_ShipArray.GetAt(i).GetOwnerOfShip())
 			// Kolonisierungsbefehl geben
 			for (int j = 0; j < m_pDoc->m_Sector[shipKO.x][shipKO.y].GetNumberOfPlanets(); j++)
 				if (m_pDoc->m_Sector[shipKO.x][shipKO.y].GetPlanet(j)->GetTerraformed() == TRUE
@@ -283,16 +299,16 @@ BOOLEAN CShipAI::DoAttackMove(int index)
 	if (DoBombardSystem(index))
 		return TRUE;
 		
-	BYTE race = m_pDoc->m_ShipArray.GetAt(index).GetOwnerOfShip();
+	CString sRace = m_pDoc->m_ShipArray.GetAt(index).GetOwnerOfShip();
 	BYTE min  = MAXBYTE;
 	CPoint targetKO(-1,-1);
 	int z = 0;
 	// Überprüft wird zuerst, ob hier ein mögliches Offensivziel in der Nähe des Schiffes ist. Wenn ja, dann
 	// wird überprüft, ob unsere Schiffsstärke größer als die beim Ziel ist oder wir 75% bis 90% unserer Flotte
 	// auf unserem Sektorfeld schon versammelt haben. Wenn ja wird angegriffen.
-	for (int i = 0; i < m_pSectorAI->GetOffensiveTargets(race)->GetSize(); i++)
+	for (UINT i = 0; i < m_pSectorAI->GetOffensiveTargets(sRace)->size(); i++)
 	{
-		CPoint p = m_pSectorAI->GetOffensiveTargets(race)->GetAt(i);
+		CPoint p = m_pSectorAI->GetOffensiveTargets(sRace)->at(i);
 		// In der Nähe ist das Ziel mit der geringsten Entfernung zu unserem Sektor.
 		if (max(p.x,p.y) < min)
 		{
@@ -305,45 +321,48 @@ BOOLEAN CShipAI::DoAttackMove(int index)
 	if (targetKO != CPoint(-1,-1))
 	{
 #ifdef TRACE_SHIPAI
-		TRACE("RACE %d: Schiff '%s' hat vlt. nahes Ziel %d/%d\n",race, m_pDoc->m_ShipArray.GetAt(index).GetShipName(), targetKO.x, targetKO.y);
+		MYTRACE(MT::LEVEL_INFO, "Race %s: ship '%s' maybe has near offensive target %d/%d\n",sRace, m_pDoc->m_ShipArray.GetAt(index).GetShipName(), targetKO.x, targetKO.y);
 #endif
 		// prüfen ob wir stärker sind oder ob wie 75 bis 90% unserer Flotte hier stationiert haben
-		if (m_pSectorAI->GetDangerOnlyFromCombatShips(race, m_pDoc->m_ShipArray.GetAt(index).GetKO()) > m_pSectorAI->GetCompleteDanger(race, targetKO) * 1.25
-			|| m_pSectorAI->GetDangerOnlyFromCombatShips(race, m_pDoc->m_ShipArray.GetAt(index).GetKO()) > (m_pSectorAI->GetCompleteDanger(race) * (rand()%16+75) / 100))
+		if (m_pSectorAI->GetDangerOnlyFromCombatShips(sRace, m_pDoc->m_ShipArray.GetAt(index).GetKO()) > m_pSectorAI->GetCompleteDanger(sRace, targetKO) * 1.25
+			|| m_pSectorAI->GetDangerOnlyFromCombatShips(sRace, m_pDoc->m_ShipArray.GetAt(index).GetKO()) > (m_pSectorAI->GetCompleteDanger(sRace) * (rand()%16+75) / 100))
 		{
 			// !!!
 			// (besser wäre noch, wir bilden hier vorher eine Flotte, so läßt sich koordinierter Angreifen!!!)
+			CMajor* pMajor = dynamic_cast<CMajor*>(m_pDoc->GetRaceCtrl()->GetRace(sRace));
 
 			// Wenn dies zutrifft werden alle Schiffe aus diesem Sektor zum Zielsektor geschickt.
 			for (int j = 0; j < m_pDoc->m_ShipArray.GetSize(); j++)
-				if (m_pDoc->m_ShipArray.GetAt(j).GetOwnerOfShip() == race)
+				if (m_pDoc->m_ShipArray.GetAt(j).GetOwnerOfShip() == sRace)
 					if (m_pDoc->m_ShipArray.GetAt(j).GetKO() == m_pDoc->m_ShipArray.GetAt(index).GetKO())
 						if (m_pDoc->m_ShipArray.GetAt(j).GetShipType() <= COLONYSHIP
 							|| m_pDoc->m_ShipArray.GetAt(j).GetShipType() >= OUTPOST)
-							if (m_pDoc->starmap[race]->GetRange(targetKO) <= m_pDoc->m_ShipArray.GetAt(j).GetRange())
+							if (pMajor != NULL && pMajor->GetStarmap()->GetRange(targetKO) <= m_pDoc->m_ShipArray.GetAt(j).GetRange())
 							{
 								m_pDoc->m_ShipArray.GetAt(j).SetTargetKO(targetKO, 0);
 								#ifdef TRACE_SHIPAI
-								TRACE("RACE %d: ATTACK auf nahes Ziel: %d/%d\n",targetKO.x,targetKO.y);
+								MYTRACE(MT::LEVEL_INFO, "Race %d: ATTACK at near target: %d/%d\n",targetKO.x,targetKO.y);
 								#endif
-								m_pSectorAI->GetOffensiveTargets(race)->RemoveAt(z);
+								m_pSectorAI->GetOffensiveTargets(sRace)->erase(m_pSectorAI->GetOffensiveTargets(sRace)->begin() + z);
+								AfxMessageBox("CShipAI::SoAttackMove() -> checken das Offensivziel korrekt gelöscht wird");
 								return TRUE;
 							}
 		}
 	}
 	// wenn es kein Ziel in der Nähe gab, dafür aber ein Bombardierungsziel ausgegeben wurde, so wird dieses mit
 	// der höchsten Priorität angeflogen
-	if (m_BombardSector[race-1] != CPoint(-1,-1))
+	if (m_BombardSector[sRace] != CPoint(-1,-1))
 	{
 		// prüfen ob wir im Bombardierungssektor stärker wären
-		if (m_pSectorAI->GetDangerOnlyFromCombatShips(race, m_pDoc->m_ShipArray.GetAt(index).GetKO()) > m_pSectorAI->GetCompleteDanger(race, m_BombardSector[race-1]))
+		if (m_pSectorAI->GetDangerOnlyFromCombatShips(sRace, m_pDoc->m_ShipArray.GetAt(index).GetKO()) > m_pSectorAI->GetCompleteDanger(sRace, m_BombardSector[sRace]))
 		{
+			CMajor* pMajor = dynamic_cast<CMajor*>(m_pDoc->GetRaceCtrl()->GetRace(sRace));
 			// hier überprüfen, ob der Sektor erreicht werden kann
-			if (m_pDoc->starmap[race]->GetRange(m_BombardSector[race-1]) <= m_pDoc->m_ShipArray.GetAt(index).GetRange())
+			if (pMajor != NULL && pMajor->GetStarmap()->GetRange(m_BombardSector[sRace]) <= m_pDoc->m_ShipArray.GetAt(index).GetRange())
 			{
-				m_pDoc->m_ShipArray.GetAt(index).SetTargetKO(m_BombardSector[race-1], 0);
+				m_pDoc->m_ShipArray.GetAt(index).SetTargetKO(m_BombardSector[sRace], 0);
 				#ifdef TRACE_SHIPAI
-				TRACE("RACE %d: BOMBARDIERUNGSZIEL auf Sektor: %d/%d\n",race,m_BombardSector[race-1].x,m_BombardSector[race-1].y);
+				MYTRACE(MT::LEVEL_INFO, "Race %s: BOMBARDTARGET in sector: %d/%d\n",sRace,m_BombardSector[sRace].x,m_BombardSector[sRace].y);
 				#endif
 				return TRUE;
 			}
@@ -352,36 +371,38 @@ BOOLEAN CShipAI::DoAttackMove(int index)
 
 	// wenn es kein Ziel in der Nähe gibt, oder wenn das Ziel in der Nähe nicht für den Angriff geeignet war, dann
 	// wenn möglich die Schiffe zu dem Punkt schicken, welcher als generelles Angriffsziel auserkoren wurde
-	if (m_AttackSector[race-1] != CPoint(-1,-1))
+	if (m_AttackSector[sRace] != CPoint(-1,-1))
 	{
+		CMajor* pMajor = dynamic_cast<CMajor*>(m_pDoc->GetRaceCtrl()->GetRace(sRace));
+
 		// prüfen ob wir stärker sind oder ob wie 75 bis 90% unserer Flotte hier stationiert haben
-		if (m_pSectorAI->GetDangerOnlyFromCombatShips(race, m_pDoc->m_ShipArray.GetAt(index).GetKO()) > m_pSectorAI->GetCompleteDanger(race, m_AttackSector[race-1])
-			|| m_pSectorAI->GetDangerOnlyFromCombatShips(race, m_pDoc->m_ShipArray.GetAt(index).GetKO()) > (m_pSectorAI->GetCompleteDanger(race) * (rand()%16+75) / 100))
+		if (m_pSectorAI->GetDangerOnlyFromCombatShips(sRace, m_pDoc->m_ShipArray.GetAt(index).GetKO()) > m_pSectorAI->GetCompleteDanger(sRace, m_AttackSector[sRace])
+			|| m_pSectorAI->GetDangerOnlyFromCombatShips(sRace, m_pDoc->m_ShipArray.GetAt(index).GetKO()) > (m_pSectorAI->GetCompleteDanger(sRace) * (rand()%16+75) / 100))
 		{
 			// hier noch überprüfen, ob der Sektor erreicht werden kann
-			if (m_pDoc->starmap[race]->GetRange(m_AttackSector[race-1]) <= m_pDoc->m_ShipArray.GetAt(index).GetRange())
+			if (pMajor != NULL && pMajor->GetStarmap()->GetRange(m_AttackSector[sRace]) <= m_pDoc->m_ShipArray.GetAt(index).GetRange())
 			{
-				m_pDoc->m_ShipArray.GetAt(index).SetTargetKO(m_AttackSector[race-1], 0);
+				m_pDoc->m_ShipArray.GetAt(index).SetTargetKO(m_AttackSector[sRace], 0);
 #ifdef TRACE_SHIPAI
-				TRACE("RACE %d: GLOBALE ATTACKE auf Sektor: %d/%d\n",race,m_AttackSector[race-1].x,m_AttackSector[race-1].y);
-				TRACE("Ship: %s\n",m_pDoc->m_ShipArray.GetAt(index).GetShipName());
-				TRACE("OnlyDangerFromShips: %d in Sector: %d/%d\n",m_pSectorAI->GetDangerOnlyFromCombatShips(race, m_pDoc->m_ShipArray.GetAt(index).GetKO()),m_pDoc->m_ShipArray.GetAt(index).GetKO().x,m_pDoc->m_ShipArray.GetAt(index).GetKO().y);
-				TRACE("CompleteDangerInTargetSector: %d\n",m_pSectorAI->GetCompleteDanger(race, m_AttackSector[race-1]));
-				TRACE("Our Complete Danger overall: %d\n",(m_pSectorAI->GetCompleteDanger(race) * 100 / (rand()%16+75)));
+				MYTRACE(MT::LEVEL_INFO, "Race %s: GLOBAL ATTACK in sector: %d/%d\n",sRace,m_AttackSector[sRace-1].x,m_AttackSector[sRace-1].y);
+				MYTRACE(MT::LEVEL_INFO, "Ship: %s\n",m_pDoc->m_ShipArray.GetAt(index).GetShipName());
+				MYTRACE(MT::LEVEL_INFO, "OnlyDangerFromShips: %d in Sector: %d/%d\n",m_pSectorAI->GetDangerOnlyFromCombatShips(sRace, m_pDoc->m_ShipArray.GetAt(index).GetKO()),m_pDoc->m_ShipArray.GetAt(index).GetKO().x,m_pDoc->m_ShipArray.GetAt(index).GetKO().y);
+				MYTRACE(MT::LEVEL_INFO, "CompleteDangerInTargetSector: %d\n",m_pSectorAI->GetCompleteDanger(sRace, m_AttackSector[sRace]));
+				MYTRACE(MT::LEVEL_INFO, "Our Complete Danger overall: %d\n",(m_pSectorAI->GetCompleteDanger(sRace) * 100 / (rand()%16+75)));
 #endif
 				return TRUE;
 			}
 		}
 		// falls wir nicht stärker sind, so fliegen wir zu dem Feld, wo unserer stärkste Schiffsansammlung ist
-		else if (m_pSectorAI->GetHighestShipDanger(race) != CPoint(-1,-1))
+		else if (m_pSectorAI->GetHighestShipDanger(sRace) != CPoint(-1,-1))
 		{
-			CPoint p = m_pSectorAI->GetHighestShipDanger(race);
+			CPoint p = m_pSectorAI->GetHighestShipDanger(sRace);
 			// hier noch überprüfen, ob der Sektor erreicht werden kann
-			if (m_pDoc->starmap[race]->GetRange(p) <= m_pDoc->m_ShipArray.GetAt(index).GetRange())
+			if (pMajor != NULL && pMajor->GetStarmap()->GetRange(p) <= m_pDoc->m_ShipArray.GetAt(index).GetRange())
 			{
 				m_pDoc->m_ShipArray.GetAt(index).SetTargetKO(p, 0);
 #ifdef TRACE_SHIPAI
-				TRACE("RACE %d: ANSAMMLUNG in Sektor: %d/%d\n",race,p.x,p.y);
+				MYTRACE(MT::LEVEL_INFO, "Race %s: COLLECT ships in sector: %d/%d\n", sRace,p.x,p.y);
 #endif
 				return TRUE;
 			}
@@ -396,7 +417,7 @@ BOOLEAN CShipAI::DoAttackMove(int index)
 /// befohlen wurde oder das Schiff auf Verstärkung zur Bombardierung im System wartet.
 BOOLEAN CShipAI::DoBombardSystem(int index)
 {
-	if (m_pDoc->m_ShipArray.GetAt(index).GetKO() == m_BombardSector[m_pDoc->m_ShipArray.GetAt(index).GetOwnerOfShip()-1])
+	if (m_pDoc->m_ShipArray.GetAt(index).GetKO() == m_BombardSector[m_pDoc->m_ShipArray.GetAt(index).GetOwnerOfShip()])
 	{
 		// Hier muss als erstes ein möglicher neuer Kurs gelöscht werden und ein alter Systemangriffsbefehl aufgehoben werden
 		m_pDoc->m_ShipArray.GetAt(index).SetTargetKO(m_pDoc->m_ShipArray.GetAt(index).GetKO(), 0);
@@ -431,7 +452,7 @@ BOOLEAN CShipAI::DoBombardSystem(int index)
 		if (shipValue > shipDefend)
 		{		
 			#ifdef TRACE_SHIPAI
-			TRACE("RACE %d: Ship %s (%s) bombardiert System: %d,%d\n",m_pDoc->m_ShipArray.GetAt(index).GetOwnerOfShip(), m_pDoc->m_ShipArray.GetAt(index).GetShipName(), m_pDoc->m_ShipArray.GetAt(index).GetShipTypeAsString(), m_pDoc->m_ShipArray.GetAt(index).GetKO().x,m_pDoc->m_ShipArray.GetAt(index).GetKO().y);
+			MYTRACE(MT::LEVEL_INFO, "Race %s: Ship %s (%s) is bombarding system: %d,%d\n",m_pDoc->m_ShipArray.GetAt(index).GetOwnerOfShip(), m_pDoc->m_ShipArray.GetAt(index).GetShipName(), m_pDoc->m_ShipArray.GetAt(index).GetShipTypeAsString(), m_pDoc->m_ShipArray.GetAt(index).GetKO().x,m_pDoc->m_ShipArray.GetAt(index).GetKO().y);
 			#endif
 			m_pDoc->m_ShipArray.GetAt(index).SetCurrentOrder(ATTACK_SYSTEM);
 			return TRUE;
@@ -533,14 +554,15 @@ BOOLEAN CShipAI::DoStationBuild(int index)
 	if (m_pDoc->m_ShipArray.GetAt(i).GetStationBuildPoints() == NULL || m_pDoc->m_ShipArray.GetAt(i).GetCurrentOrder() == BUILD_OUTPOST)
 		return FALSE;
 
-	BYTE race = m_pDoc->m_ShipArray.GetAt(i).GetOwnerOfShip();
-	if (m_pSectorAI->GetStationBuildSector(race).points <= MINBASEPOINTS)
+	CString sRace = m_pDoc->m_ShipArray.GetAt(i).GetOwnerOfShip();
+	if (m_pSectorAI->GetStationBuildSector(sRace).points <= MINBASEPOINTS)
 		return FALSE;
 
-	CPoint ko(m_pSectorAI->GetStationBuildSector(race).position.x, m_pSectorAI->GetStationBuildSector(race).position.y);
+	CPoint ko(m_pSectorAI->GetStationBuildSector(sRace).position.x, m_pSectorAI->GetStationBuildSector(sRace).position.y);
 	if (m_pDoc->m_ShipArray.GetAt(i).GetKO() == ko)
 	{
-		if (m_pDoc->m_Sector[ko.x][ko.y].GetOwnerOfSector() == NOBODY || m_pDoc->m_Sector[ko.x][ko.y].GetOwnerOfSector() == race)
+		// Nur wenn der Sektor uns bzw. niemanden gehört
+		if (m_pDoc->m_Sector[ko.x][ko.y].GetOwnerOfSector().IsEmpty() || m_pDoc->m_Sector[ko.x][ko.y].GetOwnerOfSector() == sRace)
 		{
 			m_pDoc->m_ShipArray.GetAt(i).SetTargetKO(ko, 0);
 			m_pDoc->m_ShipArray.GetAt(i).SetCurrentOrder(BUILD_OUTPOST);
@@ -553,30 +575,33 @@ BOOLEAN CShipAI::DoStationBuild(int index)
 /// Funkion berechnet einen möglichen Angriffssektor, welcher später gesammelt angegriffen werden kann.
 void CShipAI::CalcAttackSector(void)
 {
-	for (int i = HUMAN; i <= DOMINION; i++)
+	// für alle Majors den Angriffssektor berechnen
+	map<CString, CMajor*>* pmMajors = m_pDoc->GetRaceCtrl()->GetMajors();
+	
+	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
 	{
 		int nearestSector = MAXSHORT;
 		// beinhaltet die Sektorkoordinate mit unserem Angriffsziel
 		CPoint sector = CPoint(-1,-1);
-		for (int j = 0; j < m_pSectorAI->GetOffensiveTargets(i)->GetSize(); j++)
+		for (UINT j = 0; j < m_pSectorAI->GetOffensiveTargets(it->first)->size(); j++)
 		{
-			int space = max(abs(m_pSectorAI->GetHighestShipDanger(i).x - m_pSectorAI->GetOffensiveTargets(i)->GetAt(j).x),
-				abs(m_pSectorAI->GetHighestShipDanger(i).y - m_pSectorAI->GetOffensiveTargets(i)->GetAt(j).y));
+			int space = max(abs(m_pSectorAI->GetHighestShipDanger(it->first).x - m_pSectorAI->GetOffensiveTargets(it->first)->at(j).x),
+				abs(m_pSectorAI->GetHighestShipDanger(it->first).y - m_pSectorAI->GetOffensiveTargets(it->first)->at(j).y));
 			if (space < nearestSector)
 			{
 				// Wenn dieses Ziel eine kleinere Gefahr darstellt als unsere größte Flottenansammlung oder wir
 				// in schon mindst 50% unserer Flotte hier versammelt haben, so wird es als Ziel aufgenommen
-				if ((m_pSectorAI->GetDangerOnlyFromCombatShips(i, m_pSectorAI->GetHighestShipDanger(i)) > m_pSectorAI->GetCompleteDanger(i, m_pSectorAI->GetOffensiveTargets(i)->GetAt(j)))
-					|| (m_pSectorAI->GetDangerOnlyFromCombatShips(i, m_pSectorAI->GetHighestShipDanger(i)) > (m_pSectorAI->GetCompleteDanger(i) * 50 / 100)))
+				if ((m_pSectorAI->GetDangerOnlyFromCombatShips(it->first, m_pSectorAI->GetHighestShipDanger(it->first)) > m_pSectorAI->GetCompleteDanger(it->first, m_pSectorAI->GetOffensiveTargets(it->first)->at(j)))
+					|| (m_pSectorAI->GetDangerOnlyFromCombatShips(it->first, m_pSectorAI->GetHighestShipDanger(it->first)) > (m_pSectorAI->GetCompleteDanger(it->first) * 50 / 100)))
 				{
 					nearestSector = space;
-					sector = m_pSectorAI->GetOffensiveTargets(i)->GetAt(j);
+					sector = m_pSectorAI->GetOffensiveTargets(it->first)->at(j);
 				}
 			}
 		}
-		m_AttackSector[i-1] = sector;
+		m_AttackSector[it->first] = sector;
 #ifdef TRACE_SHIPAI
-		TRACE("RACE %d: Globaler AttackSector %d/%d\n",i, m_AttackSector[i-1].x, m_AttackSector[i-1].y);
+		MYTRACE(MT::LEVEL_INFO, "Race %s: global attack sector is %d/%d\n",it->first, m_AttackSector[it->first].x, m_AttackSector[it->first].y);
 #endif
 	}
 }
@@ -585,61 +610,60 @@ void CShipAI::CalcAttackSector(void)
 /// die allerhöchste Priorität.
 void CShipAI::CalcBombardSector(void)
 {
-	for (int i = HUMAN; i <= DOMINION; i++)
+	// für alle Majors den Angriffssektor berechnen
+	map<CString, CMajor*>* pmMajors = m_pDoc->GetRaceCtrl()->GetMajors();
+	
+	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
 	{
 		// die Hauptrassen bombardieren nicht alle gleichoft und gleich lang. Die Föderation z.B. kann wegen den
 		// Moralabzuügen nicht so lang bombardieren.
 		BOOLEAN bombard = TRUE;
-		switch (m_pDoc->GetMajorRace(i)->GetKind())
-		{
-			case NOTHING_SPECIAL:	break;
-			case FINANCIAL:			break;
-			case WARLIKE:			break;
-			case FARMER:			if (m_iAverageMoral[i-1] < 90) bombard = FALSE; break;
-			case INDUSTRIAL:		break;
-			case SECRET:			break;
-			case RESEARCHER:		if (m_iAverageMoral[i-1] < 110) bombard = FALSE; break;
-			case PRODUCER:			break;
-			case PACIFIST:			bombard = FALSE; break;
-			case SNEAKY:			break;
-		}
+		if (it->second->IsRaceProperty(AGRARIAN))
+			if (m_iAverageMoral[it->first] < 90)
+				bombard = FALSE;
+		if (it->second->IsRaceProperty(SCIENTIFIC))
+			if (m_iAverageMoral[it->first] < 110)
+				bombard = FALSE;
+		if (it->second->IsRaceProperty(PACIFIST))
+			bombard = FALSE;
+		
 		if (!bombard)
 			continue;
 		// ist der globale Angriffssektor auch bei den Bombardierungzielen vorhanden, so wird dieser benutzt und kein
 		// am nächsten befindlicher Bombardierungssektor
-		for (int j = 0; j < m_pSectorAI->GetBombardTargets(i)->GetSize(); j++)
-			if (m_pSectorAI->GetBombardTargets(i)->GetAt(j) == m_AttackSector[i-1])
+		for (UINT j = 0; j < m_pSectorAI->GetBombardTargets(it->first)->size(); j++)
+			if (m_pSectorAI->GetBombardTargets(it->first)->at(j) == m_AttackSector[it->first])
 			{
-				m_BombardSector[i-1] = m_pSectorAI->GetBombardTargets(i)->GetAt(j);
+				m_BombardSector[it->first] = m_pSectorAI->GetBombardTargets(it->first)->at(j);
 				break;				
 			}
 		// Wurde kein Bombardierungziel mit dem gleichen globalen Attackziel gefunden, so wird versucht ein nächstes
 		// zu unserer größten Flottenansammlung zu finden
-		if (m_BombardSector[i-1] == CPoint(-1,-1))
+		if (m_BombardSector[it->first] == CPoint(-1,-1))
 		{
 			int nearestSector = MAXSHORT;
 			// beinhaltet die Sektorkoordinate mit unserem Bombardierungsziel
 			CPoint sector = CPoint(-1,-1);
-			for (int j = 0; j < m_pSectorAI->GetBombardTargets(i)->GetSize(); j++)
+			for (UINT j = 0; j < m_pSectorAI->GetBombardTargets(it->first)->size(); j++)
 			{
 				// Es wird das Ziel ausgewählt, welches am nächsten von unserer größten Flottensammlung entfernt ist
-				int space = max(abs(m_pSectorAI->GetHighestShipDanger(i).x - m_pSectorAI->GetBombardTargets(i)->GetAt(j).x),
-					abs(m_pSectorAI->GetHighestShipDanger(i).y - m_pSectorAI->GetBombardTargets(i)->GetAt(j).y));
+				int space = max(abs(m_pSectorAI->GetHighestShipDanger(it->first).x - m_pSectorAI->GetBombardTargets(it->first)->at(j).x),
+					abs(m_pSectorAI->GetHighestShipDanger(it->first).y - m_pSectorAI->GetBombardTargets(it->first)->at(j).y));
 				if (space < nearestSector)
 				{
 					// Wenn dieses Ziel eine kleinere Gefahr darstellt als unsere größte Flottenansammlung, so wird
 					// es als Ziel aufgenommen
-					if (m_pSectorAI->GetDangerOnlyFromCombatShips(i, m_pSectorAI->GetHighestShipDanger(i)) > m_pSectorAI->GetCompleteDanger(i, m_pSectorAI->GetBombardTargets(i)->GetAt(j)))
+					if (m_pSectorAI->GetDangerOnlyFromCombatShips(it->first, m_pSectorAI->GetHighestShipDanger(it->first)) > m_pSectorAI->GetCompleteDanger(it->first, m_pSectorAI->GetBombardTargets(it->first)->at(j)))
 					{
 						nearestSector = space;
-						sector = m_pSectorAI->GetBombardTargets(i)->GetAt(j);
+						sector = m_pSectorAI->GetBombardTargets(it->first)->at(j);
 					}
 				}
 			}
-			m_BombardSector[i-1] = sector;
+			m_BombardSector[it->first] = sector;
 		}
 #ifdef TRACE_SHIPAI
-		TRACE("RACE %d: Globaler BombardierungsSector %d/%d\n",i, m_BombardSector[i-1].x, m_BombardSector[i-1].y);
+		MYTRACE(MT::LEVEL_INFO, "Race %s: global bombard sector is %d/%d\n",it->first, m_BombardSector[it->first].x, m_BombardSector[it->first].y);
 #endif
 	}
 }

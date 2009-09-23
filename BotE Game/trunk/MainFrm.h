@@ -1,5 +1,5 @@
 /*
- *   Copyright (C)2004-2008 Sir Pustekuchen
+ *   Copyright (C)2004-2009 Sir Pustekuchen
  *
  *   Author   :  Sir Pustekuchen
  *   Home     :  http://birth-of-the-empires.de.vu
@@ -63,8 +63,8 @@ public:
 
 	/// Funktion legt die View für jede Rasse fest, also in welchem Menü man sich gerade befindet.
 	/// @param whichView Nummer (ID) der View
-	/// @param race auf welche Hauptrasse bezieht sich die Änderung
-	void SelectMainView(USHORT whichView, BYTE race);
+	/// @param sRace auf welche Hauptrasse bezieht sich die Änderung
+	void SelectMainView(USHORT whichView, const CString& sRace);
 
 	/// Funktion wählt eine View für den unteren View-Bereich aus.
 	/// @param viewID View-ID der gewünschten View

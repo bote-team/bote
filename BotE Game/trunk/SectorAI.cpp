@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "SectorAI.h"
 #include "Botf2Doc.h"
+#include "RaceController.h"
+#include "Fleet.h"
 
 //////////////////////////////////////////////////////////////////////
 // Konstruktion/Destruktion
@@ -9,46 +11,28 @@ CSectorAI::CSectorAI(CBotf2Doc* pDoc)
 {
 	ASSERT(pDoc);
 	m_pDoc = pDoc;
-
-	for (int i = 0; i < UNKNOWN; i++)
-	{
-		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-			for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
-			{
-				m_iDangers[i][x][y] = 0;
-				m_iCombatShipDangers[i][x][y] = 0;
-			}
-		if (i != UNKNOWN)
-			m_HighestShipDanger[i] = CPoint(-1,-1);
-	}
-	memset(m_iCompleteDanger, 0, sizeof(*m_iCompleteDanger) * DOMINION);
-	memset(m_iColoShips, 0, sizeof(*m_iColoShips) * DOMINION);
-	memset(m_iTransportShips, 0, sizeof(*m_iTransportShips) * DOMINION);
+	
+	Clear();
 }
 
 CSectorAI::~CSectorAI(void)
 {
-	for (int i = 0; i < DOMINION; i++)
-	{
-		m_SectorsToTerraform[i].RemoveAll();
-		m_MinorraceSectors[i].RemoveAll();
-		m_OffensiveTargets[i].RemoveAll();
-		m_BombardTargets[i].RemoveAll();
-	}
 }
 
 //////////////////////////////////////////////////////////////////////
 // sonstige Funktionen
 //////////////////////////////////////////////////////////////////////
 /// Diese Funktion gibt das gesamte Gefahrenpotenzial aller Rassen in einem Sektor <code>sector</code> zurück.
-/// Das Gefahrenpotential der eigenen Rasse <code>ownRace</code> wird dabei aber nicht mit eingerechnet.
-UINT CSectorAI::GetCompleteDanger(BYTE ownRace, CPoint sector) const
+/// Das Gefahrenpotential der eigenen Rasse <code>sOwnRaceID</code> wird dabei aber nicht mit eingerechnet.
+UINT CSectorAI::GetCompleteDanger(const CString& sOwnRaceID, const CPoint& sector)
 {
-	ASSERT(ownRace);
 	UINT danger = 0;
-	for (int i = 0; i < UNKNOWN; i++)
-		if (i != (ownRace-1))
-			danger += m_iDangers[i][sector.x][sector.y];
+	
+	for (map<CString, map<pair<int, int>, UINT> >::const_iterator it = m_iDangers.begin(); it != m_iDangers.end(); it++)
+		if (it->first != sOwnRaceID)
+			for (map<pair<int, int>, UINT>::const_iterator itt = it->second.begin(); itt != it->second.end(); itt++)
+				if (CPoint(itt->first.first, itt->first.second) == sector)
+					danger += itt->second;
 	return danger;
 }
 
@@ -73,7 +57,9 @@ void CSectorAI::CalculateDangers()
 /// </code> aufgerufen werden.
 void CSectorAI::CalcualteSectorPriorities()
 {
-	UINT highestCombatShipDanger[DOMINION] = {0};
+	map<CString, CRace*>* mRaces = m_pDoc->GetRaceCtrl()->GetRaces();
+	map<CString, UINT> highestCombatShipDanger;
+
 	for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
 		for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
 		{
@@ -85,46 +71,47 @@ void CSectorAI::CalcualteSectorPriorities()
 				
 			}
 			CalculateOffensiveTargets(x,y);
-			for (int i = 0; i < DOMINION; i++)
-				if (m_iCombatShipDangers[i][x][y] > highestCombatShipDanger[i])
+			for (map<CString, CRace*>::const_iterator it = mRaces->begin(); it != mRaces->end(); it++)
+				if (GetDangerOnlyFromCombatShips(it->first, CPoint(x,y)) > highestCombatShipDanger[it->first])
 				{
-					highestCombatShipDanger[i] = m_iCombatShipDangers[i][x][y];
-					m_HighestShipDanger[i] = CPoint(x,y);
+					highestCombatShipDanger[it->first] = GetDangerOnlyFromCombatShips(it->first, CPoint(x,y));
+					m_HighestShipDanger[it->first] = CPoint(x,y);
 				}
 		}
 
-	for (int i = HUMAN; i <= DOMINION; i++)
-	{
-		// Feld der am ehesten zu terraformenden Systeme der Größe nach Sortieren. Der höchste Eintrag steht an erster Stelle.
-		c_arraysort<CArray<SectorToTerraform>,SectorToTerraform>(m_SectorsToTerraform[i-1],sort_desc);
+	for (map<CString, CRace*>::const_iterator it = mRaces->begin(); it != mRaces->end(); it++)
+		if (it->second->GetType() == MAJOR)
+		{
+			// Feld der am ehesten zu terraformenden Systeme der Größe nach Sortieren. Der höchste Eintrag steht an erster Stelle.
+			std::sort(m_vSectorsToTerraform[it->first].begin(), m_vSectorsToTerraform[it->first].end());
+			std::reverse(m_vSectorsToTerraform[it->first].begin(), m_vSectorsToTerraform[it->first].end());			
 
-		// Sektor für den Bau eines Außenpostens berechnen
-		CalculateStationTargets(i);
+			// Sektor für den Bau eines Außenpostens berechnen
+			CalculateStationTargets(it->first);
 #ifdef TRACE_AI
-		if (m_SectorsToTerraform[i-1].GetSize())
-		{
-			TRACE("\n---------- sectors to terraform or colinize -------------\n");
-			TRACE("RACE: %d\n",i);
-			for (int j = 0; j < m_SectorsToTerraform[i-1].GetSize(); j++)
-				TRACE("POP: %d - KO: %d,%d\n",m_SectorsToTerraform[i-1].GetAt(j).pop,m_SectorsToTerraform[i-1].GetAt(j).p.x,m_SectorsToTerraform[i-1].GetAt(j).p.y);
-		}
-		if (m_OffensiveTargets[i-1].GetSize())
-		{
-			TRACE("---------- sectors to attack -------------\n");
-			TRACE("Offensivziel - Rasse %d\n",i);
-			for (int j = 0; j < m_OffensiveTargets[i-1].GetSize(); j++)
-				TRACE("Offensivziel Sektor %d/%d\n",m_OffensiveTargets[i-1].GetAt(j).x,m_OffensiveTargets[i-1].GetAt(j).y);
-		}
-		if (m_BombardTargets[i-1].GetSize())
-		{
-			TRACE("---------- sectors to bombard -------------\n");
-			TRACE("Bombardierungsziel - Rasse %d\n",i);
-			for (int j = 0; j < m_BombardTargets[i-1].GetSize(); j++)
-				TRACE("Bombardierungsziel Sektor %d/%d\n",m_BombardTargets[i-1].GetAt(j).x, m_BombardTargets[i-1].GetAt(j).y);
-		}
+			if (m_vSectorsToTerraform[it->first].size())
+			{
+				MYTRACE(MT::LEVEL_INFO, "\n---------- sectors to terraform or colinize -------------\n");
+				MYTRACE(MT::LEVEL_INFO, "Race-ID: %s\n",it->first);
+				for (UINT j = 0; j < m_vSectorsToTerraform[it->first].size(); j++)
+					MYTRACE(MT::LEVEL_INFO, "POP: %d - KO: %d,%d\n",m_vSectorsToTerraform[it->first][j].pop, m_vSectorsToTerraform[it->first][j].p.x, m_vSectorsToTerraform[it->first][j].p.y);
+			}
+			if (m_vOffensiveTargets[it->first].size())
+			{
+				MYTRACE(MT::LEVEL_INFO, "---------- sectors to attack -------------\n");
+				MYTRACE(MT::LEVEL_INFO, "offensive targets for race %s\n",it->first);
+				for (UINT j = 0; j < m_vOffensiveTargets[it->first].size(); j++)
+					MYTRACE(MT::LEVEL_INFO, "offensive target in sector %d/%d\n", m_vOffensiveTargets[it->first][j].x, m_vOffensiveTargets[it->first][j].y);
+			}
+			if (m_vBombardTargets[it->first].size())
+			{
+				MYTRACE(MT::LEVEL_INFO, "---------- sectors to bombard -------------\n");
+				MYTRACE(MT::LEVEL_INFO, "bombard target for race %s\n",it->first);
+				for (UINT j = 0; j < m_vBombardTargets[it->first].size(); j++)
+					MYTRACE(MT::LEVEL_INFO, "bombard target in sector %d/%d\n",m_vBombardTargets[it->first][j].x, m_vBombardTargets[it->first][j].y);
+			}		
 #endif
-	}
-
+		}
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -134,83 +121,87 @@ void CSectorAI::CalcualteSectorPriorities()
 /// Sektor.
 void CSectorAI::AddDanger(CShip* ship)
 {
-	BYTE race = ship->GetOwnerOfShip();
-	ASSERT(race);
-
+	CString race = ship->GetOwnerOfShip();
+	
 	UINT offensive = ship->GetCompleteOffensivePower();
 	UINT defensive = ship->GetCompleteDefensivePower();
-	m_iDangers[race-1][ship->GetKO().x][ship->GetKO().y] += (offensive + defensive);
+	m_iDangers[race][pair<int, int>(ship->GetKO().x, ship->GetKO().y)] += (offensive + defensive);
 	
 	if (ship->GetShipType() > COLONYSHIP && ship->GetShipType() < OUTPOST)
 	{
-		if (race != UNKNOWN)
-			m_iCompleteDanger[race-1] += (offensive + defensive);
-		m_iCombatShipDangers[race-1][ship->GetKO().x][ship->GetKO().y] += (offensive + defensive);
+		m_iCompleteDanger[race] += (offensive + defensive);
+		m_iCombatShipDangers[race][pair<int, int>(ship->GetKO().x, ship->GetKO().y)] += (offensive + defensive);
 	}
 	
 	// Hier wird die Anzahl an Kolonieschiffen für die Rassen hochgezählt.
-	if (race >= HUMAN && race <= DOMINION)
-	{
-		if (ship->GetShipType() == COLONYSHIP)
-			m_iColoShips[race-1]++;
-		else if (ship->GetShipType() == TRANSPORTER)
-			m_iTransportShips[race-1]++;
-	}
+	if (ship->GetShipType() == COLONYSHIP)
+		m_iColoShips[race] += 1;
+	else if (ship->GetShipType() == TRANSPORTER)
+		m_iTransportShips[race] += 1;	
 }
 
 /// Diese Funktion ermittelt die Sektoren, welche sich am ehesten zum Terraformen für eine bestimmte Rasse eignen.
-/// Die Einträge werden dann im Array <code>m_SectorsToTerraform</code> gemacht.
+/// Die Einträge werden dann im Array <code>m_vSectorsToTerraform</code> gemacht.
 void CSectorAI::CalculateTerraformSectors(int x, int y)
 {
-	// Gehört der Sektor aktuell auch keiner Minorrace
-	if (m_pDoc->m_Sector[x][y].GetOwnerOfSector() != UNKNOWN)
+	BYTE pop = 0;
+	// wieviel Bevölkerung kann man noch ins System bringen
+	for (int j = 0; j < m_pDoc->m_Sector[x][y].GetNumberOfPlanets(); j++)
+		if (m_pDoc->m_Sector[x][y].GetPlanet(j)->GetHabitable() == TRUE
+			&& m_pDoc->m_Sector[x][y].GetPlanet(j)->GetColonized() == FALSE)
+			pop += (BYTE)m_pDoc->m_Sector[x][y].GetPlanet(j)->GetMaxHabitant();
+	
+	if (pop > 5)
 	{
-		BYTE pop = 0;
-		// wieviel Bevölkerung kann man noch ins System bringen
-		for (int j = 0; j < m_pDoc->m_Sector[x][y].GetNumberOfPlanets(); j++)
-			if (m_pDoc->m_Sector[x][y].GetPlanet(j)->GetHabitable() == TRUE
-				&& m_pDoc->m_Sector[x][y].GetPlanet(j)->GetColonized() == FALSE)
-				pop += (BYTE)m_pDoc->m_Sector[x][y].GetPlanet(j)->GetMaxHabitant();
-		if (pop > 5)
-			// Eintrag für die jeweilige Rasse machen.
-			for (int i = HUMAN; i <= DOMINION; i++)
-				if (m_pDoc->starmap[i]->GetRange(CPoint(x,y)) != 3)
-					if (m_pDoc->m_Sector[x][y].GetOwnerOfSector() == NOBODY || m_pDoc->m_Sector[x][y].GetOwnerOfSector() == i)
-					{
-						SectorToTerraform stt(pop,CPoint(x,y));
-						m_SectorsToTerraform[i-1].Add(stt);
-					}
+		// Eintrag für die jeweilige Rasse machen.
+		map<CString, CMajor*>* pmMajors = m_pDoc->GetRaceCtrl()->GetMajors();	
+		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+			if (it->second->GetStarmap()->GetRange(CPoint(x,y)) != 3)
+				if (m_pDoc->m_Sector[x][y].GetOwnerOfSector().IsEmpty() || m_pDoc->m_Sector[x][y].GetOwnerOfSector() == it->first)
+				{
+					SectorToTerraform stt(pop,CPoint(x,y));
+					m_vSectorsToTerraform[it->first].push_back(stt);
+				}
 	}	
 }
 
 /// Funktion berechnet die Sektoren, in denen eine einem Imperium unbekannte Minorrace lebt, zu deren Sektor
-/// aber theoretisch geflogen werden kann. Das Ergebnis wird im Array <code>m_MinorraceSectors</code> gespeichert.
+/// aber theoretisch geflogen werden kann. Das Ergebnis wird im Array <code>m_vMinorraceSectors</code> gespeichert.
 void CSectorAI::CalculateMinorraceSectors(int x, int y)
 {
 	// Gehört der Sektor aktuell auch einer Minorrace
 		// Wenn die Minorrace einem anderen Imperium beigetreten ist, so tritt folgende Bediengnung nicht ein!.
 		// Dann fliegt die KI diesen Sektor nicht bevorzugt an, was so auch realistischer ist.
-	if (m_pDoc->m_Sector[x][y].GetOwnerOfSector() == UNKNOWN)
-	{
-		CMinorRace *minor = m_pDoc->GetMinorRace(m_pDoc->m_Sector[x][y].GetName());
-		ASSERT(minor);
-		// Eintrag für die jeweilige Rasse machen.
-		for (int i = HUMAN; i <= DOMINION; i++)
-			if (m_pDoc->starmap[i]->GetRange(CPoint(x,y)) != 3)
-				if (minor->GetKnownByMajorRace(i) == FALSE)
-					m_MinorraceSectors[i-1].Add(minor->GetRaceKO());					
-	}
+	CString sOwner	= m_pDoc->m_Sector[x][y].GetOwnerOfSector();
+	if (sOwner.IsEmpty())
+		return;
+
+	CRace* pOwner	= m_pDoc->GetRaceCtrl()->GetRace(sOwner);
+	if (!pOwner || pOwner->GetType() != MINOR)
+		return;
+
+	CMinor* pMinor = dynamic_cast<CMinor*>(pOwner);
+	ASSERT(pMinor);
+
+	// Eintrag für die jeweilige Rasse machen.
+	map<CString, CMajor*>* pmMajors = m_pDoc->GetRaceCtrl()->GetMajors();	
+		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+			if (it->second->GetStarmap()->GetRange(CPoint(x,y)) != 3)
+				if (it->second->IsRaceContacted(sOwner) == false)
+					m_vMinorraceSectors[it->first].push_back(pMinor->GetRaceKO());
 }
 
 /// Diese Funktion berechnet alle möglichen offensiven Ziele für eine bestimmte Rasse. Das Ergebnis wird im Array
-/// <code>m_OffensiveTargets</code> gespeichert.
+/// <code>m_vOffensiveTargets</code> gespeichert.
 void CSectorAI::CalculateOffensiveTargets(int x, int y)
 {
-	for (int i = HUMAN; i <= DOMINION; i++)
+	map<CString, CMajor*>* pmMajors = m_pDoc->GetRaceCtrl()->GetMajors();	
+	
+	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
 		// Wenn unsere Rasse dieses Feld überhaupt erreichen kann.
-		if (m_pDoc->starmap[i]->GetRange(CPoint(x,y)) != 3)
+		if (it->second->GetStarmap()->GetRange(CPoint(x,y)) != 3)
 		{
-			int danger = GetCompleteDanger(i, CPoint(x,y));
+			int danger = GetCompleteDanger(it->first, CPoint(x,y));
 			// Die Gefahr wird nur hinzugefügt, wenn diese auf MEINEM Gebiet liegt und wir mit der entsprechenden
 			// Rasse Krieg oder unsere Beziehung zu ihr auf 50% gefallen ist. Die andere Möglichkeit
 			// wäre, wenn diese nicht in unserem Gebiet liegt und wir Krieg haben oder die Beziehung auf
@@ -218,54 +209,89 @@ void CSectorAI::CalculateOffensiveTargets(int x, int y)
 			if (danger > 0)
 			{
 				// den stärksten Gegner in diesem Sektor ermitteln
-				BYTE enemy = 0;
+				CString sEnemy = 0;
 				UINT max = 0;
-				for (int j = HUMAN; j <= DOMINION; j++)
-					if (j != i && GetDanger(j, CPoint(x,y)) > 0)
-						if (max < GetDanger(j, CPoint(x,y)))
+				for (map<CString, CMajor*>::const_iterator itt = pmMajors->begin(); itt != pmMajors->end(); itt++)
+					if (it->first != itt->first && GetDanger(itt->first, CPoint(x,y)) > 0)
+						if (max < GetDanger(itt->first, CPoint(x,y)))
 						{
-							max = GetDanger(j, CPoint(x,y));
-							enemy = j;
+							max = GetDanger(itt->first, CPoint(x,y));
+							sEnemy = itt->first;
 						}
 				// kennen wir den Gegner?
-				if (m_pDoc->m_MajorRace[i].GetKnownMajorRace(enemy))
+				if (it->second->IsRaceContacted(sEnemy))
 				{
 					// prüfen ob es auf unserem eigenen Gebiet ist
-					if (m_pDoc->m_Sector[x][y].GetOwnerOfSector() == i)
+					if (m_pDoc->m_Sector[x][y].GetOwnerOfSector() == it->first)
 					{
 						// jetzt wird überprüft, ob obige Bedingungen gelten
-						if (m_pDoc->m_MajorRace[i].GetRelationshipToMajorRace(enemy) < 50 || m_pDoc->m_MajorRace[i].GetDiplomacyStatus(enemy) == WAR)
+						if (it->second->GetRelation(sEnemy) < 50 || it->second->GetAgreement(sEnemy) == WAR)
 							// Gefahr wird dem Feld hinzugeügt
-							m_OffensiveTargets[i-1].Add(CPoint(x,y));
+							m_vOffensiveTargets[it->first].push_back(CPoint(x,y));
 					}
 					// wenn es nicht auf unserem Gebiet ist
 					else
 					{
 						// jetzt wird überprüft, ob obige Bedingungen gelten
-						if (m_pDoc->m_MajorRace[i].GetRelationshipToMajorRace(enemy) < 30 || m_pDoc->m_MajorRace[i].GetDiplomacyStatus(enemy) == WAR)
+						if (it->second->GetRelation(sEnemy) < 30 || it->second->GetAgreement(sEnemy) == WAR)
 							// Gefahr wird dem Feld hinzugeügt
-							m_OffensiveTargets[i-1].Add(CPoint(x,y));
+							m_vOffensiveTargets[it->first].push_back(CPoint(x,y));
 					}
 				}
 			}
-			CalculateBombardTargets(i,x,y);
+			CalculateBombardTargets(it->first,x,y);
 		}
 }
 
 /// Diese Funktion berechnet Systeme, welche im Kriegsfall womöglich angegriffen werden können. Das Ergebnis wird
-/// im Array <code>m_BombardTargets</code> gespeichert.
-void CSectorAI::CalculateBombardTargets(BYTE race, int x, int y)
+/// im Array <code>m_vBombardTargets</code> gespeichert.
+void CSectorAI::CalculateBombardTargets(const CString& sRaceID, int x, int y)
 {
+	CString sOwner	= m_pDoc->m_System[x][y].GetOwnerOfSystem();
+	if (sOwner.IsEmpty())
+		return;
+	CRace* pOwner	= m_pDoc->GetRaceCtrl()->GetRace(sOwner);
+	// wenn das System nicht einem anderen Major gehört
+	if (!pOwner || pOwner->GetType() != MAJOR)
+		return;
+
 	// gehört das System einer anderen Majorrace, außer uns selbst?
-	if (m_pDoc->m_System[x][y].GetOwnerOfSystem() != race && m_pDoc->m_System[x][y].GetOwnerOfSystem() != UNKNOWN &&  m_pDoc->m_System[x][y].GetOwnerOfSystem() != NOBODY)
+	if (m_pDoc->m_System[x][y].GetOwnerOfSystem() != sRaceID)
+	{
+		CRace* pOurRace = m_pDoc->GetRaceCtrl()->GetRace(sRaceID);
+		if (!pOurRace)
+			return;
 		// haben wir mit dieser anderen Majorrace Krieg?
-		if (m_pDoc->m_MajorRace[race].GetDiplomacyStatus(m_pDoc->m_System[x][y].GetOwnerOfSystem()) == WAR)
+		if (pOurRace->GetAgreement(sOwner) == WAR)
 			// dann wäre dies ein lohnendes Ziel, welches angegriffen werden könnte
-			m_BombardTargets[race-1].Add(CPoint(x,y));
+			m_vBombardTargets[sRaceID].push_back(CPoint(x,y));
+	}
 }
 
 /// Diese Funktion berechnet einen Sektor, welcher sich zum Bau eines Außenpostens eignet.
-void CSectorAI::CalculateStationTargets(BYTE race)
+void CSectorAI::CalculateStationTargets(const CString& sRaceID)
 {
-	m_StationBuild[race-1] = m_pDoc->starmap[race]->CalcAIBaseSector(0.0f);
+	CMajor* pMajor = dynamic_cast<CMajor*>(m_pDoc->GetRaceCtrl()->GetRace(sRaceID));
+	if (pMajor)
+		m_mStationBuild[sRaceID] = pMajor->GetStarmap()->CalcAIBaseSector(0.0f);
+}
+
+/// Funktion löscht alle vorher berechneten Prioritäten.
+void CSectorAI::Clear(void)
+{
+	map<CString, CRace*>* mRaces = m_pDoc->GetRaceCtrl()->GetRaces();
+	
+	for (map<CString, CRace*>::const_iterator it = mRaces->begin(); it != mRaces->end(); it++)
+		m_HighestShipDanger[it->first] = CPoint(-1,-1);
+
+	m_iDangers.clear();
+	m_iCombatShipDangers.clear();
+	m_iCompleteDanger.clear();
+	m_mStationBuild.clear();
+	m_vSectorsToTerraform.clear();
+	m_vMinorraceSectors.clear();
+	m_vOffensiveTargets.clear();
+	m_vBombardTargets.clear();
+	m_iColoShips.clear();
+	m_iTransportShips.clear();		
 }

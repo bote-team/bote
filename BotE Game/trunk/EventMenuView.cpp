@@ -4,7 +4,7 @@
 #include "stdafx.h"
 #include "botf2.h"
 #include "EventMenuView.h"
-
+#include "RaceController.h"
 
 // CEventMenuView
 
@@ -29,39 +29,38 @@ END_MESSAGE_MAP()
 
 // CEventMenuView drawing
 
-void CEventMenuView::OnDraw(CDC* pDC)
+void CEventMenuView::OnDraw(CDC* dc)
 {
 	SetFocus();
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	ASSERT(pDoc);
+
+	CMajor* pMajor = pDoc->GetPlayersRace();
+	ASSERT(pMajor);
+	if (!pMajor)
+		return;
+
 	// TODO: add draw code here
-	CRect r(0, 0, m_TotalSize.cx, m_TotalSize.cy);
-	
-	// Doublebuffering wird initialisiert
+	CMemDC pDC(dc);
 	CRect client;
 	GetClientRect(&client);
-	Graphics doubleBuffer(pDC->GetSafeHdc());
-	doubleBuffer.SetSmoothingMode(SmoothingModeHighQuality);
-	doubleBuffer.SetInterpolationMode(InterpolationModeHighQualityBicubic);
-	doubleBuffer.SetPixelOffsetMode(PixelOffsetModeHighQuality);
-
+		
 	// Graphicsobjekt, in welches gezeichnet wird anlegen
-	Bitmap bmp(client.Width(), client.Height());
-	Graphics* g = Graphics::FromImage(&bmp);
-	g->Clear(Color::Black);
-	g->SetSmoothingMode(SmoothingModeHighQuality);
-	g->SetInterpolationMode(InterpolationModeHighQualityBicubic);
-	g->SetPixelOffsetMode(PixelOffsetModeHighQuality);
-	g->ScaleTransform((REAL)client.Width() / (REAL)m_TotalSize.cx, (REAL)client.Height() / (REAL)m_TotalSize.cy);
+	Graphics g(pDC->GetSafeHdc());
+	
+	g.Clear(Color::Black);
+	g.SetSmoothingMode(SmoothingModeHighSpeed);
+	g.SetInterpolationMode(InterpolationModeLowQuality);
+	g.SetPixelOffsetMode(PixelOffsetModeHighSpeed);
+	g.SetCompositingQuality(CompositingQualityHighSpeed);
+	g.ScaleTransform((REAL)client.Width() / (REAL)m_TotalSize.cx, (REAL)client.Height() / (REAL)m_TotalSize.cy);
 					
-	if (pDoc->GetEmpire(pDoc->GetPlayersRace())->GetEventMessages()->GetSize())
+	if (pMajor->GetEmpire()->GetEventMessages()->GetSize())
 	{
-		CEventScreen* eventScreen = (CEventScreen*)pDoc->GetEmpire(pDoc->GetPlayersRace())->GetEventMessages()->GetAt(0);
+		CEventScreen* eventScreen = (CEventScreen*)pMajor->GetEmpire()->GetEventMessages()->GetAt(0);
 		eventScreen->Create();
-		eventScreen->Draw(g, pDoc->GetGraphicPool());		
-	}
-	doubleBuffer.DrawImage(&bmp, r.left, r.top, r.right, r.bottom);
-	ReleaseDC(pDC);
-	delete g;
+		eventScreen->Draw(&g, pDoc->GetGraphicPool());		
+	}	
 }
 
 // CEventMenuView diagnostics
@@ -90,23 +89,6 @@ void CEventMenuView::OnInitialUpdate()
 	// TODO: Add your specialized code here and/or call the base class
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 
-	//bg_newsovmenu.DeleteObject();
-	
-	CString race = "";
-	switch (pDoc->GetPlayersRace())
-	{
-		case HUMAN:		race = CResourceManager::GetString("RACE1_PREFIX"); break;
-		case FERENGI:	race = CResourceManager::GetString("RACE2_PREFIX"); break;
-		case KLINGON:	race = CResourceManager::GetString("RACE3_PREFIX"); break;
-		case ROMULAN:	race = CResourceManager::GetString("RACE4_PREFIX"); break;
-		case CARDASSIAN:race = CResourceManager::GetString("RACE5_PREFIX"); break;
-		case DOMINION:	race = CResourceManager::GetString("RACE6_PREFIX"); break;
-	}
-
-	//FCObjImage img;
-	//img.Load(*((CBotf2App*)AfxGetApp())->GetPath() + "Graphics/Backgrounds/"+race+"newsovmenu.jpg");
-	//bg_newsovmenu.Attach(FCWin32::CreateDDBHandle(img));
-
 	m_TotalSize = CSize(1280, 1024);
 }
 
@@ -126,10 +108,16 @@ void CEventMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	ASSERT(pDoc);
 
-	if (pDoc->GetEmpire(pDoc->GetPlayersRace())->GetEventMessages()->GetSize())
+	CMajor* pMajor = pDoc->GetPlayersRace();
+	ASSERT(pMajor);
+	if (!pMajor)
+		return;
+
+	if (pMajor->GetEmpire()->GetEventMessages()->GetSize())
 	{
-		CEventScreen* eventScreen = (CEventScreen*)pDoc->GetEmpire(pDoc->GetPlayersRace())->GetEventMessages()->GetAt(0);
+		CEventScreen* eventScreen = (CEventScreen*)pMajor->GetEmpire()->GetEventMessages()->GetAt(0);
 		CalcLogicalPoint(point);
 		int counter = -1;
 		ButtonReactOnLeftClick(point, eventScreen->GetButtons(), counter, true);
@@ -145,9 +133,16 @@ void CEventMenuView::OnMouseMove(UINT nFlags, CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
-	if (pDoc->GetEmpire(pDoc->GetPlayersRace())->GetEventMessages()->GetSize())
+	ASSERT(pDoc);
+	
+	CMajor* pMajor = pDoc->GetPlayersRace();
+	ASSERT(pMajor);
+	if (!pMajor)
+		return;
+
+	if (pMajor->GetEmpire()->GetEventMessages()->GetSize())
 	{
-		CEventScreen* eventScreen = (CEventScreen*)pDoc->GetEmpire(pDoc->GetPlayersRace())->GetEventMessages()->GetAt(0);
+		CEventScreen* eventScreen = (CEventScreen*)pMajor->GetEmpire()->GetEventMessages()->GetAt(0);
 		CalcLogicalPoint(point);
 		ButtonReactOnMouseOver(point, eventScreen->GetButtons());		
 	}
@@ -158,11 +153,17 @@ void CEventMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 {
 	// TODO: Add your message handler code here and/or call default
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	ASSERT(pDoc);
+	
+	CMajor* pMajor = pDoc->GetPlayersRace();
+	ASSERT(pMajor);
+	if (!pMajor)
+		return;
 
 	if (nChar == VK_RETURN || nChar == VK_ESCAPE)
-		if (pDoc->GetEmpire(pDoc->GetPlayersRace())->GetEventMessages()->GetSize())
+		if (pMajor->GetEmpire()->GetEventMessages()->GetSize())
 		{
-			CEventScreen* eventScreen = (CEventScreen*)pDoc->GetEmpire(pDoc->GetPlayersRace())->GetEventMessages()->GetAt(0);
+			CEventScreen* eventScreen = (CEventScreen*)pMajor->GetEmpire()->GetEventMessages()->GetAt(0);
 			CloseScreen(eventScreen);
 		}
 
@@ -173,15 +174,23 @@ void CEventMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 void CEventMenuView::CloseScreen(CEventScreen* eventScreen)
 {
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	ASSERT(pDoc);
+	
+	CMajor* pMajor = pDoc->GetPlayersRace();
+	ASSERT(pMajor);
+	if (!pMajor)
+		return;
 	
 	delete eventScreen;
-	pDoc->GetEmpire(pDoc->GetPlayersRace())->GetEventMessages()->RemoveAt(0);
-	if (pDoc->GetEmpire(pDoc->GetPlayersRace())->GetEventMessages()->GetSize() == 0)
+	pMajor->GetEmpire()->GetEventMessages()->RemoveAt(0);
+	if (pMajor->GetEmpire()->GetEventMessages()->GetSize() == 0)
 	{
+		network::RACE client = pDoc->GetRaceCtrl()->GetMappedClientID(pMajor->GetRaceID());
+
 		pDoc->GetMainFrame()->FullScreenMainView(false);
-		if (pDoc->m_iSelectedView[pDoc->GetPlayersRace()] == 0)
-			pDoc->m_iSelectedView[pDoc->GetPlayersRace()] = EMPIRE_VIEW;
-		pDoc->GetMainFrame()->SelectMainView(pDoc->m_iSelectedView[pDoc->GetPlayersRace()], pDoc->GetPlayersRace());
-		pDoc->m_iSelectedView[pDoc->GetPlayersRace()] = 0;
+		if (pDoc->m_iSelectedView[client] == 0)
+			pDoc->m_iSelectedView[client] = EMPIRE_VIEW;
+		pDoc->GetMainFrame()->SelectMainView(pDoc->m_iSelectedView[client], pMajor->GetRaceID());
+		pDoc->m_iSelectedView[client] = 0;
 	}
 }

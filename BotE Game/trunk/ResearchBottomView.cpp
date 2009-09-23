@@ -4,7 +4,7 @@
 #include "stdafx.h"
 #include "botf2.h"
 #include "ResearchBottomView.h"
-
+#include "RaceController.h"
 
 // CResearchBottomView
 
@@ -29,6 +29,12 @@ END_MESSAGE_MAP()
 void CResearchBottomView::OnDraw(CDC* dc)
 {
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	ASSERT(pDoc);
+	
+	CMajor* pMajor = pDoc->GetPlayersRace();
+	ASSERT(pMajor);
+	if (!pMajor)
+		return;
 	// TODO: add draw code here
 
 	// Doublebuffering wird initialisiert
@@ -55,36 +61,16 @@ void CResearchBottomView::OnDraw(CDC* dc)
 
 	Bitmap* graphic = NULL;
 					
-	if (pDoc->GetPlayersRace() == HUMAN)
-	{
-		fontBrush.SetColor(Color(100,100,250));
-		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + CResourceManager::GetString("RACE1_PREFIX") + "researchV3.jpg");
-	}
-	else if (pDoc->GetPlayersRace() == FERENGI)
-	{
-		fontBrush.SetColor(Color(30,200,30));
-		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + CResourceManager::GetString("RACE2_PREFIX") + "researchV3.jpg");
-	}
-	else if (pDoc->GetPlayersRace() == KLINGON)
-	{
-		fontBrush.SetColor(Color(250,80,30));
-		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + CResourceManager::GetString("RACE3_PREFIX") + "researchV3.jpg");
-	}
-	else if (pDoc->GetPlayersRace() == ROMULAN)
-	{
-		fontBrush.SetColor(Color(140,196,203));
-		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + CResourceManager::GetString("RACE4_PREFIX") + "researchV3.jpg");
-	}
-	else if (pDoc->GetPlayersRace() == CARDASSIAN)
-	{
-		fontBrush.SetColor(Color(74,146,138));
-		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + CResourceManager::GetString("RACE5_PREFIX") + "researchV3.jpg");
-	}
-	else if (pDoc->GetPlayersRace() == DOMINION)
-	{
-		fontBrush.SetColor(Color(74,146,138));
-		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + CResourceManager::GetString("RACE6_PREFIX") + "researchV3.jpg");
-	}
+	CString sPrefix = pMajor->GetPrefix();
+	Color color;
+	color.SetFromCOLORREF(pMajor->GetDesign()->m_clrGalaxySectorText);
+	fontBrush.SetColor(color);
+	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "researchV3.jpg");
+
+	// gibt es keine Spezialforschung zur Auswahl, so wird auf Standardanzeige umgestellt
+	if (pDoc->m_iShowWhichTechInView3 == 6 && pMajor->GetEmpire()->GetResearch()->GetUniqueReady() == TRUE)
+		pDoc->m_iShowWhichTechInView3 = 0;
+	
 	// Grafik zeichnen		
 	if (graphic)
 	{
@@ -93,12 +79,13 @@ void CResearchBottomView::OnDraw(CDC* dc)
 	}
 	switch(pDoc->m_iShowWhichTechInView3)
 	{
-	case 0:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Research\\biotech.jpg"); break;
-	case 1:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Research\\energytech.jpg"); break;
-	case 2:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Research\\computertech.jpg"); break;
-	case 3:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Research\\propulsiontech.jpg"); break;
-	case 4:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Research\\constructiontech.jpg"); break;
-	case 5:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Research\\weapontech.jpg"); break;
+	case 0:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Research\\biotech.png"); break;
+	case 1:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Research\\energytech.png"); break;
+	case 2:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Research\\computertech.png"); break;
+	case 3:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Research\\propulsiontech.png"); break;
+	case 4:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Research\\constructiontech.png"); break;
+	case 5:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Research\\weapontech.png"); break;
+	case 6:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Research\\specialtech.png"); break;
 	}
 	if (graphic)
 	{
@@ -106,19 +93,25 @@ void CResearchBottomView::OnDraw(CDC* dc)
 		graphic = NULL;
 	}
 	// Name und Beschreibung der Forschung anzeigen
-	CFontLoader::CreateGDIFont(pDoc->GetPlayersRace(), 4, fontName, fontSize);
+	CFontLoader::CreateGDIFont(pMajor, 4, fontName, fontSize);
 	fontFormat.SetAlignment(StringAlignmentNear);
 	fontFormat.SetLineAlignment(StringAlignmentNear);
 	fontFormat.SetFormatFlags(StringFormatFlagsNoWrap);
 
 	CString s;
-	s = pDoc->GetEmpire(pDoc->GetPlayersRace())->GetResearch()->GetResearchInfo()->GetTechName(pDoc->m_iShowWhichTechInView3);
+	if (pDoc->m_iShowWhichTechInView3 != 6)
+		s = pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetTechName(pDoc->m_iShowWhichTechInView3);
+	else
+		s = pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetCurrentResearchComplex()->GetComplexName();
 	g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(40, 30, rect.right-325, rect.bottom), &fontFormat, &fontBrush);
 	
-	CFontLoader::CreateGDIFont(pDoc->GetPlayersRace(), 2, fontName, fontSize);
+	CFontLoader::CreateGDIFont(pMajor, 2, fontName, fontSize);
 	fontBrush.SetColor(Color(200,200,250));
 	fontFormat.SetFormatFlags(!StringFormatFlagsNoWrap);
-	s = pDoc->GetEmpire(pDoc->GetPlayersRace())->GetResearch()->GetResearchInfo()->GetTechDescription(pDoc->m_iShowWhichTechInView3);
+	if (pDoc->m_iShowWhichTechInView3 != 6)
+		s = pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetTechDescription(pDoc->m_iShowWhichTechInView3);
+	else
+		s = pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetCurrentResearchComplex()->GetComplexDescription();
 	g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(40, 100, rect.right-325, rect.bottom), &fontFormat, &fontBrush);
 }
 

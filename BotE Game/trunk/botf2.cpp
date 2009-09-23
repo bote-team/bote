@@ -6,6 +6,7 @@
 
 #include "MainFrm.h"
 #include "botf2Doc.h"
+#include "RaceController.h"
 #include "GalaxyMenuView.h"
 
 #ifdef _DEBUG
@@ -121,7 +122,7 @@ BOOL CBotf2App::InitInstance()
 	// Das einzige Fenster ist initialisiert und kann jetzt angezeigt und aktualisiert werden.
 	//m_pMainWnd->ShowWindow(SW_SHOWMAXIMIZED);
 	m_pMainWnd->ModifyStyle(WS_CAPTION|WS_THICKFRAME|WS_SYSMENU,0);
-    //m_pMainWnd->SetMenu(NULL);
+	//m_pMainWnd->SetMenu(NULL);
     m_pMainWnd->ShowWindow(SW_SHOWMAXIMIZED);
 	//m_pMainWnd->UpdateWindow();
 	
@@ -216,19 +217,23 @@ void CAboutDlg::OnBnClickedOk()
 void CBotf2App::UpdateViews(WPARAM, LPARAM)
 {
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	ASSERT(pDoc);
+	CMajor* pMajor = pDoc->GetPlayersRace();
+	ASSERT(pMajor);
 
 	// anzuzeigende View in neuer Runde auswählen
 	// Wenn EventScreens für den Spieler vorhanden sind, so werden diese angezeigt.
-	if (pDoc->GetEmpire(pDoc->GetPlayersRace())->GetEventMessages()->GetSize() > 0)
+	if (pMajor->GetEmpire()->GetEventMessages()->GetSize() > 0)
 	{
 		pDoc->GetMainFrame()->FullScreenMainView(true);
-		pDoc->GetMainFrame()->SelectMainView(EVENT_VIEW, pDoc->GetPlayersRace());
+		pDoc->GetMainFrame()->SelectMainView(EVENT_VIEW, pMajor->GetRaceID());
 	}
 	else
-	{		
+	{
+		network::RACE client = pDoc->GetRaceCtrl()->GetMappedClientID(pMajor->GetRaceID());
 		pDoc->GetMainFrame()->FullScreenMainView(false);
-		pDoc->GetMainFrame()->SelectMainView(pDoc->m_iSelectedView[pDoc->GetPlayersRace()], pDoc->GetPlayersRace());
-		pDoc->m_iSelectedView[pDoc->GetPlayersRace()] = 0;
+		pDoc->GetMainFrame()->SelectMainView(pDoc->m_iSelectedView[client], pMajor->GetRaceID());
+		pDoc->m_iSelectedView[client] = 0;
 	}
 	
 	// alle angezeigten Views neu zeichnen lassen

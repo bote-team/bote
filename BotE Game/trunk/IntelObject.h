@@ -1,5 +1,5 @@
 /*
- *   Copyright (C)2004-2008 Sir Pustekuchen
+ *   Copyright (C)2004-2009 Sir Pustekuchen
  *
  *   Author   :  Sir Pustekuchen
  *   Home     :  http://birth-of-the-empires.de.vu
@@ -23,12 +23,12 @@ public:
 	CIntelObject(void);
 
 	/// Konstruktor mit Paramterübergabe.
-	/// @param owner Auslöser/Eigentümer
-	/// @param enemy Ziel der Geheimdienstaktion
+	/// @param sOwnerID Auslöser/Eigentümer
+	/// @param sEnemyID Ziel der Geheimdienstaktion
 	/// @param round Runde in der die Geheimdienstaktion angelegt wurde
 	/// @param isSpy handelt es sich um Spionage oder Sabotage
 	/// @param type Typ der Aktion -> Wirtschaft == 0, Forschung == 1, Militär == 2, Diplomatie == 3
-	CIntelObject(BYTE owner, BYTE enemy, USHORT round, BOOLEAN isSpy, BYTE type);
+	CIntelObject(const CString& sOwnerID, const CString& sEnemyID, USHORT round, BOOLEAN isSpy, BYTE type);
 
 	/// Destruktor
 	virtual ~CIntelObject(void);
@@ -45,10 +45,10 @@ public:
 
 	// Zugriffsfunktion
 	/// Funktion gibt den Besitzer/Auslöser der Geheimdienstaktion zurück.
-	BYTE GetOwner() const {return m_byOwner;}
+	const CString& GetOwner() const {return m_sOwner;}
 
 	/// Funktion gibt das Ziel der Geheimdienstaktion zurück.
-	BYTE GetEnemy() const {return m_byEnemy;}
+	const CString& GetEnemy() const {return m_sEnemy;}
 
 	/// Funktion gibt den speziellen Untertyp der Geheimdienstaktion zurück.
 	/// @return Wirtschaft == 0, Forschung == 1, Militär == 2, Diplomatie == 3
@@ -79,7 +79,7 @@ public:
 	/// @param pDoc Zeiger auf das Dokument
 	/// @param n Nummer der verschiedenen Textmöglichkeiten, im Normalfall <code>NULL</code>
 	/// @param param Hier kann die Rasse übergeben werden, von der das Opfer denkt angegriffen worden zu sein
-	virtual void CreateText(CBotf2Doc* pDoc, BYTE n, BYTE param) = 0;
+	virtual void CreateText(CBotf2Doc* pDoc, BYTE n, const CString& param) = 0;
 
 	/// Funktion setzt den Text für den Auslöser der Geheimdienstaktion
 	/// @param s neuer Text
@@ -101,15 +101,15 @@ public:
 */
 protected:
 	// Attribute
-	BYTE m_byOwner;		///< Rasse welche die Aktion gestartet hat
+	CString m_sOwner;		///< Rasse welche die Aktion gestartet hat
 
-	BYTE m_byEnemy;		///< Rasse welche die Aktion treffen soll/hat
+	CString m_sEnemy;		///< Rasse welche die Aktion treffen soll/hat
 
-	BYTE m_byType;		///< spezielle Unterart der Geheimdienstaktion (Wirtschaft == 0, Wissenschaft == 1, Militär == 2, Diplomatie == 3)
+	BYTE m_byType;			///< spezielle Unterart der Geheimdienstaktion (Wirtschaft == 0, Wissenschaft == 1, Militär == 2, Diplomatie == 3)
 
-	CString m_strOwnerDesc;		///< Aktionsbeschreibung für den Auslöser der Aktion
+	CString m_strOwnerDesc;	///< Aktionsbeschreibung für den Auslöser der Aktion
 
-	CString m_strEnemyDesc;		///< Aktionsbeschreibung für das Ziel der Aktion
+	CString m_strEnemyDesc;	///< Aktionsbeschreibung für das Ziel der Aktion
 
 	BOOLEAN m_bIsSpy;		///< handelt es sich bei der Aktion um Spionage oder Sabotage
 

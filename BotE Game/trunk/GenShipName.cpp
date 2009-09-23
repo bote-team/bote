@@ -5,12 +5,8 @@
 #include "stdafx.h"
 #include "GenShipName.h"
 #include "Botf2.h"
-
-#ifdef _DEBUG
-#undef THIS_FILE
-static char THIS_FILE[]=__FILE__;
-#define new DEBUG_NEW
-#endif
+#include "Botf2Doc.h"
+#include "RaceController.h"
 
 IMPLEMENT_SERIAL (CGenShipName, CObject, 1)
 //////////////////////////////////////////////////////////////////////
@@ -18,105 +14,11 @@ IMPLEMENT_SERIAL (CGenShipName, CObject, 1)
 //////////////////////////////////////////////////////////////////////
 
 CGenShipName::CGenShipName()
-{
-	// Standardnamen festlegen, alle Namen von Planeten werden aus Datei eingelesen
-	CString csInput;						// auf csInput wird die jeweilige Zeile gespeichert
-	CStdioFile file;						// Varibale vom Typ CStdioFile
-	// Föderationsschiffnamen einlesen
-	CString fileName=*((CBotf2App*)AfxGetApp())->GetPath() + "Data\\Names\\Race1ShipNames.data";	// Name des zu Öffnenden Files 
-	if (file.Open(fileName, CFile::modeRead | CFile::typeText))	// Datei wird geöffnet
-	{
-		while (file.ReadString(csInput))
-			m_ShipNames[HUMAN].Add(csInput);	// Konnte erfolgreich gelesen werden wird die jeweilige
-	}
-	else
-	{	
-		AfxMessageBox("Fehler! Datei \"Race1ShipNames.data\" kann nicht geöffnet werden...");
-		exit(1);
-	}
-	file.Close();
-	
-	// Ferengi Schiffsnamen einlesen
-	fileName=*((CBotf2App*)AfxGetApp())->GetPath() + "Data\\Names\\Race2ShipNames.data";	// Name des zu Öffnenden Files 
-	if (file.Open(fileName, CFile::modeRead | CFile::typeText))	// Datei wird geöffnet
-	{
-		while (file.ReadString(csInput))
-			m_ShipNames[FERENGI].Add(csInput);	// Konnte erfolgreich gelesen werden wird die jeweilige
-	}
-	else
-	{	
-		AfxMessageBox("Fehler! Datei \"Race2ShipNames.data\" kann nicht geöffnet werden...");
-		exit(1);
-	}
-	file.Close();
-
-	// Klingonische Schiffsnamen einlesen
-	fileName=*((CBotf2App*)AfxGetApp())->GetPath() + "Data\\Names\\Race3ShipNames.data";	// Name des zu Öffnenden Files 
-	if (file.Open(fileName, CFile::modeRead | CFile::typeText))	// Datei wird geöffnet
-	{
-		while (file.ReadString(csInput))
-			m_ShipNames[KLINGON].Add(csInput);	// Konnte erfolgreich gelesen werden wird die jeweilige
-	}
-	else
-	{	
-		AfxMessageBox("Fehler! Datei \"Race3ShipNames.data\" kann nicht geöffnet werden...");
-		exit(1);
-	}
-	file.Close();
-
-	// Romulanische Schiffsnamen einlesen
-	fileName=*((CBotf2App*)AfxGetApp())->GetPath() + "Data\\Names\\Race4ShipNames.data";	// Name des zu Öffnenden Files 
-	if (file.Open(fileName, CFile::modeRead | CFile::typeText))	// Datei wird geöffnet
-	{
-		while (file.ReadString(csInput))
-			m_ShipNames[ROMULAN].Add(csInput);	// Konnte erfolgreich gelesen werden wird die jeweilige
-	}
-	else
-	{	
-		AfxMessageBox("Fehler! Datei \"Race4ShipNames.data\" kann nicht geöffnet werden...");
-		exit(1);
-	}
-	file.Close();
-
-	// Cardassianische Schiffsnamen einlesen
-	fileName=*((CBotf2App*)AfxGetApp())->GetPath() + "Data\\Names\\Race5ShipNames.data";	// Name des zu Öffnenden Files 
-	if (file.Open(fileName, CFile::modeRead | CFile::typeText))	// Datei wird geöffnet
-	{
-		while (file.ReadString(csInput))
-			m_ShipNames[CARDASSIAN].Add(csInput);	// Konnte erfolgreich gelesen werden wird die jeweilige
-	}
-	else
-	{	
-		AfxMessageBox("Fehler! Datei \"Race5ShipNames.data\" kann nicht geöffnet werden...");
-		exit(1);
-	}
-	file.Close();
-
-	// Dominion Schiffsnamen einlesen
-	fileName=*((CBotf2App*)AfxGetApp())->GetPath() + "Data\\Names\\Race6ShipNames.data";	// Name des zu Öffnenden Files 
-	if (file.Open(fileName, CFile::modeRead | CFile::typeText))	// Datei wird geöffnet
-	{
-		while (file.ReadString(csInput))
-			m_ShipNames[DOMINION].Add(csInput);	// Konnte erfolgreich gelesen werden wird die jeweilige
-	}
-	else
-	{	
-		AfxMessageBox("Fehler! Datei \"Race6ShipNames.data\" kann nicht geöffnet werden...");
-		exit(1);
-	}
-	file.Close();
-
-	for (int i = NOBODY; i <= DOMINION; i++)
-		m_iCounter[i] = 64;		// 65 == ASCII-Wert für 'A'; hier eins weniger
+{	
 }
 
 CGenShipName::~CGenShipName()
-{
-	for (int i = 0; i <= DOMINION; i++)
-	{
-		m_ShipNames[i].RemoveAll();
-		m_UsedNames[i].RemoveAll();
-	}
+{	
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -125,59 +27,173 @@ CGenShipName::~CGenShipName()
 void CGenShipName::Serialize(CArchive &ar)		
 {
 	CObject::Serialize(ar);
+	
 	// wenn gespeichert wird
 	if (ar.IsStoring())
 	{
-		for (int i = 0; i <= DOMINION; i++)
-			ar << m_iCounter[i];
+		ar << m_mShipNames.size();
+		for (map<CString, vector<CString> >::iterator it = m_mShipNames.begin(); it != m_mShipNames.end(); it++)
+		{
+			ar << it->first;
+			// nun den Vektor speichern
+			ar << it->second.size();
+			for (size_t i = 0; i < it->second.size(); i++)
+				ar << it->second[i];
+		}
+
+		ar << m_mUsedNames.size();
+		for (map<CString, vector<CString> >::iterator it = m_mUsedNames.begin(); it != m_mUsedNames.end(); it++)
+		{
+			ar << it->first;
+			// nun den Vektor speichern
+			ar << it->second.size();
+			for (size_t i = 0; i < it->second.size(); i++)
+				ar << it->second[i];
+		}
+	
+		ar << m_mCounter.size();
+		for (map<CString, USHORT>::const_iterator it = m_mCounter.begin(); it != m_mCounter.end(); it++)
+			ar << it->first << it->second;
 	}
 	// wenn geladen wird
 	else if (ar.IsLoading())
 	{
-		for (int i = 0; i <= DOMINION; i++)
+		m_mShipNames.clear();
+		m_mUsedNames.clear();
+		m_mCounter.clear();
+
+		size_t mapSize = 0;
+		ar >> mapSize;		
+		for (size_t i = 0; i < mapSize; i++)
 		{
-			ar >> m_iCounter[i];
-			m_ShipNames[i].RemoveAll();
-			m_UsedNames[i].RemoveAll();
+			CString key;
+			ar >> key;
+			// Vektor empfangen
+			vector<CString> value;
+			size_t vectorSize = 0;
+			ar >> vectorSize;
+			for (size_t j = 0; j < vectorSize; j++)
+			{
+				CString s;
+				ar >> s;
+				value.push_back(s);
+			}
+			
+			m_mShipNames[key] = value;
 		}
-	}
-	for (int i = 0; i <= DOMINION; i++)
-	{		
-		m_ShipNames[i].Serialize(ar);
-		m_UsedNames[i].Serialize(ar);
+
+		mapSize = 0;
+		ar >> mapSize;
+		for (size_t i = 0; i < mapSize; i++)
+		{
+			CString key;
+			ar >> key;
+			// Vektor empfangen
+			vector<CString> value;
+			size_t vectorSize = 0;
+			ar >> vectorSize;
+			for (size_t j = 0; j < vectorSize; j++)
+			{
+				CString s;
+				ar >> s;
+				value.push_back(s);
+			}
+			
+			m_mUsedNames[key] = value;
+		}
+
+		mapSize = 0;
+		ar >> mapSize;
+		for (size_t i = 0; i < mapSize; i++)
+		{
+			CString key;
+			USHORT value;
+			ar >> key;
+			ar >> value;
+			m_mCounter[key] = value;
+		}		
 	}
 }
 
-/// Diese Funktion generiert einen einmaligen Schiffsnamen. Als Parameter werden dafür die Rasse <code>race</code>
-/// und ein Parameter, welcher angibt ob es sich um eine Station handelt <code>station</code> übergeben.
-CString CGenShipName::GenerateShipName(BYTE race, BOOLEAN station)
+/// Funktion zum einmaligen Einlesen der ganzen Schiffsnamen.
+void CGenShipName::Init(CBotf2Doc* pDoc)
 {
-	if (race == UNKNOWN)
-		return "Minorship";
-	if (m_ShipNames[race].GetSize() == 0)
+	ASSERT(pDoc);
+
+	m_mShipNames.clear();
+	m_mUsedNames.clear();
+	m_mCounter.clear();
+
+	// nun alle Rassen durchgehen
+	map<CString, CRace*>* mRaces = pDoc->GetRaceCtrl()->GetRaces();
+	ASSERT(mRaces);
+
+	for (map<CString, CRace*>::const_iterator it = mRaces->begin(); it != mRaces->end(); it++)
 	{
-		for (int i = 0; i < m_UsedNames[race].GetSize(); i++)
-			m_ShipNames[race].Add(m_UsedNames[race].GetAt(i));
-		m_UsedNames[race].RemoveAll();
-		if (m_ShipNames[race].GetSize() == 0)
-			return "noname";
-		m_iCounter[race]++;
-		// Wenn der ASCII Wert vom Z erreicht wurde, so fängt es automatisch wieder mit A an
-		if (m_iCounter[race] > 90)	// 90 entspricht Z
-			m_iCounter[race] = 65;	// 65 entspricht A
+		CString sID = it->first;
+		// für jede Rasse dem Counter festlegen
+		m_mCounter[sID] = 64;		// 65 == ASCII-Wert für 'A'; hier eins weniger
+
+		// Varibale vom Typ CStdioFile	
+		CStdioFile file;
+		// Name des zu öffnenden Files zusammensetzen (die RaceID ist da mit drin)
+		CString fileName=*((CBotf2App*)AfxGetApp())->GetPath() + "Data\\Names\\" + sID + "ShipNames.data";
+		// Datei öffnen
+		if (file.Open(fileName, CFile::modeRead | CFile::typeText))
+		{
+			// auf sInput wird die jeweilige Zeile eingelesen
+			CString sInput;
+			while (file.ReadString(sInput))
+				m_mShipNames[sID].push_back(sInput);
+			// Datei schließen
+			file.Close();
+		}
 	}
-	int random = rand()%m_ShipNames[race].GetSize();
-	CString name;		
+}
+
+/// Diese Funktion generiert einen einmaligen Schiffsnamen. Als Parameter werden dafür die Rasse <code>sRaceID</code>
+/// und ein Parameter, welcher angibt ob es sich um eine Station handelt <code>station</code> übergeben.
+CString CGenShipName::GenerateShipName(const CString& sRaceID, BOOLEAN station)
+{
+	if (m_mShipNames[sRaceID].size() == 0)
+	{
+		m_mShipNames.clear();
+		for (UINT i = 0; i < m_mUsedNames[sRaceID].size(); i++)
+			m_mShipNames[sRaceID].push_back(m_mUsedNames[sRaceID].at(i));
+		
+		m_mUsedNames[sRaceID].clear();
+				
+		m_mCounter[sRaceID] += 1;
+		// Wenn der ASCII Wert vom Z erreicht wurde, so fängt es automatisch wieder mit A an
+		if (m_mCounter[sRaceID] > 90)	// 90 entspricht Z
+			m_mCounter[sRaceID] = 65;	// 65 entspricht A
+		else if (m_mCounter[sRaceID] < 65)
+			m_mCounter[sRaceID] = 65;
+
+		// wenn keine Namen existieren
+		if (m_mShipNames[sRaceID].size() == 0)
+		{
+			CString sName;
+			sName.Format("%s %c", sRaceID, (char)m_mCounter[sRaceID]);
+			return sName;
+		}
+	}
+	
+	int random = rand()%m_mShipNames[sRaceID].size();
+	CString sName;
+	
 	if (!station)
 	{
-		if (m_iCounter[race] > 64)
-			name.Format("%s %c",m_ShipNames[race].GetAt(random),m_iCounter[race]);
+		if (m_mCounter[sRaceID] > 64)
+			sName.Format("%s %c",m_mShipNames[sRaceID].at(random), (char)m_mCounter[sRaceID]);
 		else
-			name.Format("%s",m_ShipNames[race].GetAt(random));			
+			sName.Format("%s",m_mShipNames[sRaceID].at(random));			
 	}
 	else
-		name.Format("%s Station", m_ShipNames[race].GetAt(random));
-	m_UsedNames[race].Add(m_ShipNames[race].GetAt(random));
-	m_ShipNames[race].RemoveAt(random);
-	return name;
+		sName.Format("%s Station", m_mShipNames[sRaceID].at(random));
+	
+	m_mUsedNames[sRaceID].push_back(m_mShipNames[sRaceID].at(random));
+	m_mShipNames[sRaceID].erase(m_mShipNames[sRaceID].begin() + random);
+	
+	return sName;	
 }

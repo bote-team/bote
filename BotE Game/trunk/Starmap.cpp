@@ -33,7 +33,9 @@ CStarmap::CStarmap(BOOL bAICalculation, char nAIRange) : m_bAICalculation(bAICal
 {
 	ASSERT(nAIRange >= SM_RANGE_FAR && nAIRange <= SM_RANGE_NEAR);
 
+	// KI Berechnung mal auf immer TRUE gestellt. So wird bei einer Spielerrasse auch berechnet, aber nicht angewandt
 	m_bAICalculation = TRUE;
+
 	// m_Range komplett mit RANGE_SPACE füllen
 	memset(m_Range, SM_RANGE_SPACE, STARMAP_SECTORS_HCOUNT * STARMAP_SECTORS_VCOUNT * sizeof(unsigned char));
 
@@ -63,7 +65,7 @@ CStarmap::CStarmap(BOOL bAICalculation, char nAIRange) : m_bAICalculation(bAICal
 
 CStarmap::~CStarmap()
 {
-	if (m_RangeMap.range) delete[] m_RangeMap.range;
+	if (m_RangeMap.range) delete[] m_RangeMap.range;	
 }
 
 void CStarmap::SetRangeMap(unsigned char rangeMap[], char w, char h, char x0, char y0)
@@ -73,7 +75,7 @@ void CStarmap::SetRangeMap(unsigned char rangeMap[], char w, char h, char x0, ch
 	if (m_RangeMap.range) delete[] m_RangeMap.range;
 
 	m_RangeMap.range = new unsigned char [w * h];
-	memcpy(m_RangeMap.range, rangeMap, w*h*sizeof(*rangeMap));
+	memcpy(m_RangeMap.range, rangeMap, w * h * sizeof(unsigned char));
 	m_RangeMap.w = w;
 	m_RangeMap.h = h;
 	m_RangeMap.x0 = x0;
@@ -171,12 +173,12 @@ void CStarmap::AddBase(const Sector &sector, BYTE propTech)
 // Nichtangriffspakt haben, werden von der Rangemap entfernt. Übergeben werden dafür ein Zeiger auf alle
 // Sektoren <code>sectors</code> und ein Wahrheitswert <code>races</code> für alle Rassen, ob wir einen
 // Nichtangriffspakt mit dieser Rasse haben.
-void CStarmap::SynchronizeWithMap(CSector sectors[][STARMAP_SECTORS_VCOUNT], BOOLEAN races[7])
+void CStarmap::SynchronizeWithMap(CSector sectors[][STARMAP_SECTORS_VCOUNT], std::map<CString, bool>* races)
 {
 	for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
 		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-			if (sectors[x][y].GetOwnerOfSector() != NOBODY && sectors[x][y].GetOwnerOfSector() != UNKNOWN)
-				if (m_Range[x][y] > 0 && races[sectors[x][y].GetOwnerOfSector()] == TRUE)
+			if (sectors[x][y].GetOwnerOfSector() != "")
+				if (m_Range[x][y] > 0 && (*races)[sectors[x][y].GetOwnerOfSector()] == TRUE)
 					m_Range[x][y] = 0;
 }
 
@@ -770,7 +772,7 @@ short CStarmap::GetPoints(const Sector &sector)
 //	return m_AITargetPoints[sector.x][sector.y];
 }
 
-void CStarmap::SetBadAIBaseSectors(CSector sectors[][STARMAP_SECTORS_VCOUNT], BYTE race)
+void CStarmap::SetBadAIBaseSectors(CSector sectors[][STARMAP_SECTORS_VCOUNT], const CString& race)
 {
 	memset(m_AIBadPoints, 0, STARMAP_SECTORS_HCOUNT * STARMAP_SECTORS_VCOUNT * sizeof(short));
 
@@ -778,14 +780,14 @@ void CStarmap::SetBadAIBaseSectors(CSector sectors[][STARMAP_SECTORS_VCOUNT], BY
 		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
 			if (m_Range[x][y] >= m_nAIRange)
 			{
-				if (sectors[x][y].GetOwnerOfSector() == race || sectors[x][y].GetOwnerOfSector() == NOBODY)
+				if (sectors[x][y].GetOwnerOfSector() == race || sectors[x][y].GetOwnerOfSector() == "")
 				{
 					int number = 0;
-				// in einem Umkreis von einem Sektor um den Sektor scannen
+					// in einem Umkreis von einem Sektor um den Sektor scannen
 					for (int j = -1; j <= 1; j++)
 						for (int i = -1; i <= 1; i++)
 							if (y + j > -1 && y + j < STARMAP_SECTORS_VCOUNT && x + i > -1 && x + i < STARMAP_SECTORS_HCOUNT)
-								if (sectors[x+i][y+j].GetOwnerOfSector() != race && sectors[x+i][y+j].GetOwnerOfSector() != NOBODY && sectors[x+i][y+j].GetOwnerOfSector() != UNKNOWN)
+								if (sectors[x+i][y+j].GetOwnerOfSector() != race && sectors[x+i][y+j].GetOwnerOfSector() != "")
 									number++;
 					m_AIBadPoints[x][y] += (50 * number);
 				}

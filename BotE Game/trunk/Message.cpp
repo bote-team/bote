@@ -19,7 +19,6 @@ IMPLEMENT_SERIAL (CMessage, CObject, 1)
 CMessage::CMessage()
 {
 	m_strMessage = "";
-	m_iOwnerOfMessage = 0;
 	m_iMessageType = NO_TYPE;
 	m_KO.x = 0;
 	m_KO.y = 0;
@@ -37,7 +36,6 @@ CMessage::~CMessage()
 CMessage::CMessage(const CMessage & rhs)
 {
 	m_strMessage = rhs.m_strMessage;
-	m_iOwnerOfMessage = rhs.m_iOwnerOfMessage;
 	m_iMessageType = rhs.m_iMessageType;
 	m_KO = rhs.m_KO;
 	m_byFlag = rhs.m_byFlag;
@@ -51,7 +49,6 @@ CMessage & CMessage::operator=(const CMessage & rhs)
 	if (this == &rhs)
 		return *this;
 	m_strMessage = rhs.m_strMessage;
-	m_iOwnerOfMessage = rhs.m_iOwnerOfMessage;
 	m_iMessageType = rhs.m_iMessageType;
 	m_KO = rhs.m_KO;
 	m_byFlag = rhs.m_byFlag;
@@ -68,7 +65,6 @@ void CMessage::Serialize(CArchive &ar)
 	if (ar.IsStoring())
 	{
 		ar << m_strMessage;
-		ar << m_iOwnerOfMessage;
 		ar << m_iMessageType;
 		ar << m_KO;
 		ar << m_byFlag;
@@ -77,7 +73,6 @@ void CMessage::Serialize(CArchive &ar)
 	if (ar.IsLoading())
 	{
 		ar >> m_strMessage;
-		ar >> m_iOwnerOfMessage;
 		ar >> m_iMessageType;
 		ar >> m_KO;
 		ar >> m_byFlag;
@@ -87,51 +82,44 @@ void CMessage::Serialize(CArchive &ar)
 //////////////////////////////////////////////////////////////////////
 // sonstige Funktionen
 //////////////////////////////////////////////////////////////////////
-void CMessage::GenerateMessage(const CString& Message, USHORT OwnerOfMessage, USHORT MessageType, 
-							   const CString& SystemName, CPoint SystemKO, BOOLEAN Update, BYTE flag)
+void CMessage::GenerateMessage(const CString& sMessage, USHORT nMessageType, const CString& sSystemName, const CPoint& SystemKO, bool bUpdate, BYTE byFlag)
 {
-	m_iOwnerOfMessage = OwnerOfMessage;
-	m_iMessageType = MessageType;
+	m_iMessageType = nMessageType;
 	m_KO = SystemKO;
-	m_byFlag = flag;	// wird häufig benutzt, um die Message mit einem Menü zu verbinden
-	switch (MessageType)
+	m_byFlag = byFlag;	// wird häufig benutzt, um die Message mit einem Menü zu verbinden
+	switch (nMessageType)
 	{
 	case ECONOMY:
 		{
-			if (!SystemName.IsEmpty())
+			if (!sSystemName.IsEmpty())
 			{
-				if (Update == FALSE)
-					m_strMessage = CResourceManager::GetString("BUILDING_FINISH", FALSE, Message, SystemName);
+				if (!bUpdate)
+					m_strMessage = CResourceManager::GetString("BUILDING_FINISH", FALSE, sMessage, sSystemName);
 				else
-					m_strMessage = CResourceManager::GetString("UPGRADE_FINISH", FALSE, Message, SystemName);
+					m_strMessage = CResourceManager::GetString("UPGRADE_FINISH", FALSE, sMessage, sSystemName);
 			}
 			else
-				m_strMessage.Format(Message);
+				m_strMessage.Format(sMessage);
 			break;
 		}
 	case SOMETHING:
 		{
-			m_strMessage.Format(Message);
+			m_strMessage.Format(sMessage);
 			break;
 		}
 	case RESEARCH:
 		{
-			m_strMessage.Format(Message);
+			m_strMessage.Format(sMessage);
 			break;
 		}
 	case DIPLOMACY:
 		{
-			m_strMessage.Format(Message);
+			m_strMessage.Format(sMessage);
 			break;
 		}
 	default:
 		{
-			m_strMessage.Format(Message);
+			m_strMessage.Format(sMessage);
 		}
 	}
-}
-
-void CMessage::ShowMessage(CDC* pDC, CRect r)
-{
-	pDC->DrawText(m_strMessage,r,DT_CENTER | DT_SINGLELINE | DT_VCENTER);
 }

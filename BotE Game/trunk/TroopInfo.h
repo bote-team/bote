@@ -1,5 +1,5 @@
 /*
- *   Copyright (C)2004-2008 Sir Pustekuchen
+ *   Copyright (C)2004-2009 Sir Pustekuchen
  *
  *   Author   :  Sir Pustekuchen
  *   Home     :  http://birth-of-the-empires.de.vu
@@ -16,7 +16,7 @@ public:
 
 	/// Konstruktor mit kompletter Parameterübergabe
 	CTroopInfo(CString name, CString desc, BYTE power, BYTE costs, BYTE techs[6], USHORT res[5], USHORT ip,
-		BYTE ID, BYTE owner, USHORT size, BYTE moralValue);
+		BYTE ID, const CString& sOwner, USHORT size, BYTE moralValue);
 	
 	/// Destruktor
 	~CTroopInfo(void);

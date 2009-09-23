@@ -158,7 +158,7 @@ void CMainDlg::OnBeginGame(network::CBeginGame *pMsg)
 	pMsg->DeserializeToDoc((network::CPeerData*)GetClientDocument());
 	if (!m_pChooseRace->IsServer())
 	{
-		GetClientDocument()->m_bDontExit = TRUE;
+		GetClientDocument()->m_bDontExit = true;
 		PostMessage(WM_CLOSE);
 	}
 }
