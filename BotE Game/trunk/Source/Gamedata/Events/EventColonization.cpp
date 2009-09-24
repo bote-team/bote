@@ -2,7 +2,7 @@
 #include "EventColonization.h"
 #include "FontLoader.h"
 #include "Botf2Doc.h"
-#include "RaceController.h"
+#include "Races\RaceController.h"
 
 IMPLEMENT_SERIAL (CEventColonization, CObject, 1)
 
