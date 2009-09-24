@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "SystemAI.h"
 #include "Botf2Doc.h"
-#include "RaceController.h"
+#include "Races\RaceController.h"
 #include "AIPrios.h"
 
 //////////////////////////////////////////////////////////////////////

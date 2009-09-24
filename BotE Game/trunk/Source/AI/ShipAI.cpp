@@ -2,8 +2,8 @@
 #include "ShipAI.h"
 #include "Botf2Doc.h"
 #include "SectorAI.h"
-#include "RaceController.h"
-#include "Fleet.h"
+#include "Races\RaceController.h"
+#include "Ships\Fleet.h"
 
 //////////////////////////////////////////////////////////////////////
 // Konstruktion/Destruktion

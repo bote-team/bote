@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "MinorAI.h"
 #include "Botf2Doc.h"
-#include "RaceController.h"
-#include "GenDiploMessage.h"
+#include "Races\RaceController.h"
+#include "Races\GenDiploMessage.h"
 #include <algorithm>
 
 //////////////////////////////////////////////////////////////////////

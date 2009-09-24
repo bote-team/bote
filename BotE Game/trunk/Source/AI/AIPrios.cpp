@@ -2,7 +2,7 @@
 #include "AIPrios.h"
 #include "Botf2Doc.h"
 #include "SectorAI.h"
-#include "RaceController.h"
+#include "Races\RaceController.h"
 
 //////////////////////////////////////////////////////////////////////
 // Konstruktion/Destruktion
