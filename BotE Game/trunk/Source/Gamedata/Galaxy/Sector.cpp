@@ -8,7 +8,7 @@
 #include "FontLoader.h"
 #include "Botf2.h"
 #include "Botf2Doc.h"
-#include "RaceController.h"
+#include "Races\RaceController.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -1230,14 +1230,11 @@ void CSector::DrawShipSymbolInSector(Graphics *g, CBotf2Doc* pDoc)
 	pt.x = m_KO.x * STARMAP_SECTOR_WIDTH;
 	pt.y = m_KO.y * STARMAP_SECTOR_HEIGHT;
 
-
-	// ALPHA5 -> Bedingungen an die Scanpower entfernt, so dass man alles sieht
-
 	// durch alle Rassen iterieren und Schiffsymbole zeichnen
 	for (map<CString, CRace*>::const_iterator it = pmRaces->begin(); it != pmRaces->end(); it++)
 	{
 		if (pPlayer->GetRaceID() == it->first && this->GetOwnerOfShip(it->first) == TRUE
-			|| this->GetOwnerOfShip(it->first) == TRUE)// && this->GetNeededScanPower(it->first) < this->GetScanPower(pPlayer->GetRaceID()))		
+			|| this->GetOwnerOfShip(it->first) == TRUE && this->GetNeededScanPower(it->first) < this->GetScanPower(pPlayer->GetRaceID()))
 		{
 			sFilePath = *((CBotf2App*)AfxGetApp())->GetPath() + "Graphics\\Symbols\\" + it->first + ".png";
 			Bitmap* ship = Bitmap::FromFile(sFilePath.AllocSysString());
@@ -1253,8 +1250,8 @@ void CSector::DrawShipSymbolInSector(Graphics *g, CBotf2Doc* pDoc)
 		}
 		
 		// Jetzt werden die Stationen wenn möglich gezeichnet
-		if //(pPlayer->GetRaceID() == it->first || (this->GetScanPower(pPlayer->GetRaceID()) > 0
-			(this->GetIsStationBuilding(it->first) == TRUE || this->GetOutpost(it->first) == TRUE || this->GetStarbase(it->first) == TRUE)
+		if ((pPlayer->GetRaceID() == it->first || this->GetScanPower(pPlayer->GetRaceID()) > 0) &&
+			(this->GetIsStationBuilding(it->first) == TRUE || this->GetOutpost(it->first) == TRUE || this->GetStarbase(it->first) == TRUE))
 		{
 			sFilePath = *((CBotf2App*)AfxGetApp())->GetPath() + "Graphics\\Symbols\\" + it->first + ".png";
 			Bitmap* ship = Bitmap::FromFile(sFilePath.AllocSysString());

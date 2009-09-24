@@ -2029,11 +2029,15 @@ void CDiplomacyMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 	}
 	else if (nChar == VK_END)
 	{
-		vector<CRace*>::iterator it = m_vRaceList.end() - 1;
+		vector<CRace*>::iterator it = m_vRaceList.end();
 		if (it != m_vRaceList.end())
 		{
-			m_sClickedOnRace = (*it)->GetRaceID();
-			Invalidate();
+			it--;
+			if (it != m_vRaceList.end())
+			{
+				m_sClickedOnRace = (*it)->GetRaceID();
+				Invalidate();
+			}
 		}
 	}
 	else if (nChar == VK_UP || nChar == VK_DOWN)

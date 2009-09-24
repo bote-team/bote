@@ -5,16 +5,16 @@
 
 #include "Botf2.h"
 #include "MainFrm.h"
-#include "GenShipName.h"
-#include "Statistics.h"
-#include "GlobalBuildings.h"
-#include "GlobalStorage.h"
+#include "Ships\GenShipName.h"
+#include "General\Statistics.h"
+#include "System\GlobalBuildings.h"
+#include "System\GlobalStorage.h"
 #include "PeerData.h"
 #include "LZMA_BotE.h"
 #include "SoundManager.h"
 #include "MyTimer.h"
-#include "Sector.h"
-#include "System.h"
+#include "Galaxy\Sector.h"
+#include "System\System.h"
 #include <map>
 #include <utility>
 

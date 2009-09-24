@@ -44,10 +44,8 @@ CGalaxyMenuView::CGalaxyMenuView()
 {
 	// ZU ERLEDIGEN: Hier Code zur Konstruktion einfügen
 	m_pGalaxyBackground = NULL;
-#ifdef GDIPLUS
 	m_pThumbnail = NULL;
 	m_bUpdateOnly = false;
-#endif	
 }
 
 CGalaxyMenuView::~CGalaxyMenuView()
@@ -58,13 +56,11 @@ CGalaxyMenuView::~CGalaxyMenuView()
 		delete m_pGalaxyBackground;
 		m_pGalaxyBackground = NULL;
 	}
-#ifdef GDIPLUS
 	if (m_pThumbnail)
 	{
 		delete m_pThumbnail;
 		m_pThumbnail = NULL;
 	}
-#endif	
 }
 
 BOOL CGalaxyMenuView::PreCreateWindow(CREATESTRUCT& cs)
@@ -124,9 +120,6 @@ void CGalaxyMenuView::OnDraw(CDC* dc)
 	r.SetRect(0, 0, m_TotalSize.cx, m_TotalSize.cy);
 	
 	// **************** DIE GALAXIEMAP ZEICHNEN ****************************************
-// Umstellung auf GDI+ (nur testweise begonnen)
-#ifdef GDIPLUS
-		
 	CRect client;
 	GetClientRect(&client);
 	
@@ -146,6 +139,7 @@ void CGalaxyMenuView::OnDraw(CDC* dc)
 	if (picHeight < client.bottom)
 		posY = (client.bottom - picHeight) / 2;
 
+	g.Clear(Color::Black);
 	g.DrawImage(m_pGalaxyBackground, posX, posY, picWidth, picHeight);	
 		
 	CString s;
@@ -448,395 +442,8 @@ void CGalaxyMenuView::OnDraw(CDC* dc)
 	
 	// aktuelle Scrollposition immer merken
 	pDoc->m_ptScrollPoint = GetScrollPosition();	
-
-//////////////////////////////////////////////////////////////
-
-// normale Zeichnung mittels GDI-Funktionen
-#endif // GDIPLUS
-
-#ifdef GDI
-	// Abbildungsmodus setzen, WindowExt erhält tatsächliche Größe, ViewportExt die gezoomte Größe
-	pDC->SetMapMode(MM_ANISOTROPIC);
-	pDC->SetWindowExt(STARMAP_TOTALWIDTH, STARMAP_TOTALHEIGHT);
-	CSize size(STARMAP_TOTALWIDTH, STARMAP_TOTALHEIGHT);
-	Zoom(&size);
-	pDC->SetViewportExt(size);
-	// die Koordinaten der folgenden Zeichenoperationen werden automatisch gezoomt
-
-	// ------
-
-	// Zeiger auf Starmap holen; da die CStarmapView Freund der CStarmap ist, dürfen wir hier direkt auf
-	// alle Attribute (auch Methoden) der CStarmap zugreifen; das ist weniger Schreibaufwand (in unserem
-	// Modell gehören Starmap und StarmapView untrennbar zusammen, deswegen dürfen wir vom Kapselungs-Paradigma
-	// abweichen :-))
-	CStarmap* pStarmap = pDoc->GetStarmap();
-	// --- Hintergrundbild zeichnen ---
-	if (!m_bUpdateOnly)
-	{
-		// nur falls komplett gezeichnet werden soll und Bild geladen ist
-		// Hintergrundbild in DC (pDC) kopieren
-		CDC bmpDC;
-		if (bmpDC.CreateCompatibleDC(pDC))
-		{
-			bmpDC.SelectObject(*m_pGalaxyBackground);
-			// nur den wirklich sichtbaren Bereich des Bildes in das Fenster kopieren
-			CPoint pt = GetScrollPosition();
-			UnZoom(&pt);
-			CRect client;
-			GetClientRect(&client);
-			CSize size(client.right, client.bottom);
-			UnZoom(&size);
-			int oldStretchMode = pDC->GetStretchBltMode();
-			if (pDoc->m_pIniLoader->GetValue("SMOOTHGALAXY"))
-				pDC->SetStretchBltMode(HALFTONE);
-			pDC->BitBlt(pt.x, pt.y, min(STARMAP_TOTALWIDTH - pt.x, size.cx + 2),
-				min(STARMAP_TOTALHEIGHT - pt.y, size.cy + 2), &bmpDC, pt.x, pt.y, SRCCOPY);
-			pDC->SetStretchBltMode(oldStretchMode);
-		}
-	}
-	// zuletzt angeklickten Sektor wieder mit der Grafik überzeichnen
-	else if (m_oldSelection != Sector(-1,-1))
-	{
-		CDC bmpDC;
-		if (bmpDC.CreateCompatibleDC(pDC))
-		{
-			bmpDC.SelectObject(*m_pGalaxyBackground);
-			CPoint pt(m_oldSelection.x*STARMAP_SECTOR_WIDTH, m_oldSelection.y*STARMAP_SECTOR_HEIGHT);
-			pDC->BitBlt(pt.x, pt.y, STARMAP_SECTOR_WIDTH + 1, STARMAP_SECTOR_HEIGHT + 1, &bmpDC, pt.x, pt.y, SRCCOPY);
-			BOOLEAN knowOwner = pDoc->m_MajorRace[pDoc->GetPlayersRace()].GetKnownMajorRace(pDoc->GetSector(m_oldSelection.x,m_oldSelection.y).GetOwnerOfSector());
-			pDoc->GetSector(m_oldSelection.x,m_oldSelection.y).DrawSectorsName(pDC,
-				pDoc->m_System[m_oldSelection.x][m_oldSelection.y].GetOwnerOfSystem(),pDoc->GetPlayersRace(),knowOwner);
-			// Handelsrouten zeichnen, weil diese sonst auch, genau wie der Sektorname überzeichnet wurden
-			if (pDoc->m_pIniLoader->GetValue("SHOWTRADEROUTES"))
-				for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
-					for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-						if (pDoc->m_System[x][y].GetOwnerOfSystem() == pDoc->GetPlayersRace())
-						{
-							for (int i = 0; i < pDoc->m_System[x][y].GetTradeRoutes()->GetSize(); i++)
-								pDoc->m_System[x][y].GetTradeRoutes()->GetAt(i).DrawTradeRoute(pDC, CPoint(x,y), pDoc->m_Sector[x][y].GetOwnerOfSector());
-							for (int i = 0; i < pDoc->m_System[x][y].GetResourceRoutes()->GetSize(); i++)
-								pDoc->m_System[x][y].GetResourceRoutes()->GetAt(i).DrawResourceRoute(pDC, CPoint(x,y), pDoc->m_Sector[x][y].GetOwnerOfSector());
-						}
-		}			
-	}	
-	// --- Gitternetztlinien zeichnen ---
-
-	BYTE race = pDoc->GetPlayersRace();
-
-	// da nahezu alle Linien sofort richtig gezeichnet werden, tritt auch kein Flimmern auf, wenn nur das Gitter
-	// neu gezeichnet wird (m_bUpdateOnly == TRUE); nur teilweises Zeichnen des Gitters bringt selbst auf meinem
-	// Rechner nichts mehr, deswegen wird immer das ganze Gitter gezeichnet
-	pDC->SetBkMode(TRANSPARENT);
-	CPen	gridPen(PS_SOLID, 0, RGB(0,0,0));			// Gitternetz
-	CPen	scanPen(PS_DOT, 0, RGB(75,75,75));			// gescanntes Gitternetz
-	CPen	nearPen(PS_SOLID, 1, RGB(0, 200, 0)),		// kurze Entfernung
-			middlePen(PS_SOLID, 1, RGB(200, 200, 0)),	// mittlere Entfernung
-			farPen(PS_SOLID, 1, RGB(200, 0, 0));		// große Entfernung
-	CPen	selPen(PS_SOLID, 0, RGB(255,125,0));		// Markierung
-
-	/**/ CPen parentPen(PS_SOLID, 0, RGB(180, 180, 180)); // aufspannender Baum /**/
-
-	// Linie ganz oben und ganz links
-	CPen *pOldPen = pDC->SelectObject(&gridPen);
-	pDC->MoveTo(STARMAP_TOTALWIDTH, 0); pDC->LineTo(0, 0); pDC->LineTo(0, STARMAP_TOTALHEIGHT);
-
-	// wenn sich die Markierung ganz oben oder ganz links befindet, dann zugehörigen Abschnitt
-	// in Linie ganz oben bzw. links in der Farbe der Markierung zeichnen
-	if (pStarmap->m_Selection.x > -1 && pStarmap->m_Selection.y > -1)
-	{
-		pDC->SelectObject(&selPen);
-		CPoint pos = pStarmap->GetSectorCoords(pStarmap->m_Selection);
-		if (pStarmap->m_Selection.y == 0)
-		{
-			pDC->MoveTo(pos.x, pos.y);
-			pDC->LineTo(pos.x + STARMAP_SECTOR_WIDTH, pos.y);
-		}
-		if (pStarmap->m_Selection.x == 0)
-		{
-			pDC->MoveTo(pos.x, pos.y);
-			pDC->LineTo(pos.x, pos.y + STARMAP_SECTOR_HEIGHT);
-		}
-	}
-	// Wenn wir ein Schiff bewegen wollen
-	if (m_bShipMove)
-	{
-		// Wenn das Schiff keine Flotte anführt
-		if (pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfTheShipInArray()).GetFleet() == 0 || (pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfTheShipInArray()).GetFleet() != 0 && pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfTheShipInArray()).GetFleet()->GetFleetSize() == 0))
-			m_nRange = 3-pDoc->GetShip(pDoc->GetNumberOfTheShipInArray()).GetRange();
-		else
-			m_nRange = 3-pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfTheShipInArray()).GetFleet()->GetFleetRange(&pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfTheShipInArray()));	
-	}
-	else
-		m_nRange = SM_RANGE_SPACE;
-	// für jeden Sektor die Linie rechts und unten zeichnen; (j, i) ist der aktuell betrachtete Sektor,
-	// (x, y) sind die Koordinaten dessen linker oberer Ecke
-	
-	
-	for (int i = 0, y = 0; i < STARMAP_SECTORS_VCOUNT; i++, y += STARMAP_SECTOR_HEIGHT)
-		for (int j = 0, x = 0; j < STARMAP_SECTORS_HCOUNT; j++, x += STARMAP_SECTOR_WIDTH)
-		{
-			// Flugweg der Schiffe zeichnen
-			if (pDoc->m_Sector[j][i].GetShipPathPoints() > 0)
-			{
-				COLORREF color = RGB(150,150,230);
-				CBrush brush(color);
-				CPen pen(PS_SOLID, 0, color);
-				pDC->SelectObject(&brush);
-				pDC->SelectObject(&pen);
-				pDC->Ellipse(x+STARMAP_SECTOR_WIDTH/2-3,y+STARMAP_SECTOR_HEIGHT/2-3,x+STARMAP_SECTOR_WIDTH/2+3,y+STARMAP_SECTOR_HEIGHT/2+3);
-			}	
-
-			/* // nur für Debug-Zwecke
-			if (m_nRange)
-			{
-				// aufspannenden Baum zeichnen
-				pDC->SelectObject(&parentPen);
-				struct::Sector *parent = &pMajor->GetStarmap()->pathMap[j][i].parent;
-				if (parent->x > -1 && parent->y > -1)
-				{
-					ASSERT_SECTOR_VALID(*parent);
-					CPoint pt = pMajor->GetStarmap()->GetSectorCoords(*parent);
-					pt += CPoint(STARMAP_SECTOR_WIDTH / 2, STARMAP_SECTOR_WIDTH / 2);
-
-					pDC->MoveTo(x + STARMAP_SECTOR_WIDTH / 2, y + STARMAP_SECTOR_WIDTH / 2); pDC->LineTo(pt);
-				}
-			}
-			/**/
-
-			// rechter Rand
-			if (pStarmap->m_Selection.y == i && (pStarmap->m_Selection.x == j || pStarmap->m_Selection.x == j + 1))
-				// Markierung
-				pDC->SelectObject(&selPen);
-			else if (j < STARMAP_SECTORS_HCOUNT - 1)
-			{
-				// normales Gitternetz laden
-				pDC->SelectObject(&gridPen);
-				// besitzt der aktuelle Sektor oder der Sektor rechts daneben einen Scanpower, so wird
-				// der Scangrid geladen
-				if (pDoc->GetSector(j, i).GetScanPower(race) > 0 && pDoc->GetSector(j + 1, i).GetScanPower(race) > 0)
-					pDC->SelectObject(&scanPen);
-
-				// Grenze der Reichweite;
-				// muss modifiziert werden, wenn sich z.B. neben RANGE_NEAR ein Feld mit RANGE_FAR
-				// statt RANGE_MIDDLE befindet (kann bei entsprechender Rangemap um eine Starbase
-				// auftreten, oder wenn sich das eigene Gebiet mit dem anderer Spieler überlappt)
-				int border = GetRangeBorder(pStarmap->m_Range[j][i], pStarmap->m_Range[j + 1][i], m_nRange);
-				// bei Auswahl eines Ziels nur die jeweilige Grenze zeichnen
-				if (!m_nRange || border == m_nRange)
-				{						
-					switch (border)
-					{
-					case SM_RANGE_FAR:		pDC->SelectObject(&farPen); break;
-					case SM_RANGE_MIDDLE:	pDC->SelectObject(&middlePen); break;
-					case SM_RANGE_NEAR:		pDC->SelectObject(&nearPen); break;
-					}
-				}
-			}
-			else
-				// Linien ganz rechts
-				pDC->SelectObject(&gridPen);
-
-			// zeichnen
-			// es ist auskommentiert, dass das Grid nicht auf unbekannten Sektoren gezeichnet wird
-			if (pDoc->GetSector(j,i).GetScanned(pDoc->GetPlayersRace()) == TRUE || (pDC->GetCurrentPen() != &gridPen && pDC->GetCurrentPen() != &scanPen))
-			{
-				pDC->MoveTo(x + STARMAP_SECTOR_WIDTH, y);
-				pDC->LineTo(x + STARMAP_SECTOR_WIDTH, y + STARMAP_SECTOR_HEIGHT);
-			}
-			else
-				pDC->MoveTo(x + STARMAP_SECTOR_WIDTH, y + STARMAP_SECTOR_HEIGHT);				
-							
-			// unterer Rand
-			if (pStarmap->m_Selection.x == j && (pStarmap->m_Selection.y == i
-			  || pStarmap->m_Selection.y == i + 1))
-				// Markierung
-				pDC->SelectObject(&selPen);
-			else if (i < STARMAP_SECTORS_VCOUNT - 1)
-			{
-				// normales Gitternetz laden
-				pDC->SelectObject(&gridPen);
-				// besitzt der aktuelle Sektor oder der Sektor darunter eine Scanpower, so wird
-				// der Scangrid geladen
-				if (pDoc->GetSector(j, i).GetScanPower(race) > 0 && pDoc->GetSector(j, i + 1).GetScanPower(race) > 0)
-					pDC->SelectObject(&scanPen);
-				// Grenze der Reichweite
-				int border = GetRangeBorder(pStarmap->m_Range[j][i], pStarmap->m_Range[j][i + 1], m_nRange);
-				// bei Auswahl eines Ziels nur die jeweilige Grenze zeichnen
-				if (!m_nRange || border == m_nRange)
-				{
-					switch (border)
-					{
-					case SM_RANGE_FAR:		pDC->SelectObject(&farPen); break;
-					case SM_RANGE_MIDDLE:	pDC->SelectObject(&middlePen); break;
-					case SM_RANGE_NEAR:		pDC->SelectObject(&nearPen); break;
-					}
-				}
-			}
-			else
-				// Linien ganz unten
-				pDC->SelectObject(&gridPen);
-
-			// zeichnen
-			// es ist auskommentiert, dass das Grid nicht auf unbekannten Sektoren gezeichnet wird
-			if (pDoc->GetSector(j, i).GetScanned(pDoc->GetPlayersRace()) == TRUE || (pDC->GetCurrentPen() != &gridPen && pDC->GetCurrentPen() != &scanPen))
-				pDC->LineTo(x, y + STARMAP_SECTOR_HEIGHT);				
-		}
-
-#ifdef DEBUG_AI_BASE_DEMO
-	pDoc->starmap[pDoc->GetPlayersRace()]->RecalcRangePoints();
-	pDoc->starmap[pDoc->GetPlayersRace()]->RecalcConnectionPoints();
-	pDoc->starmap[pDoc->GetPlayersRace()]->RecalcTargetPoints();
-	pDoc->starmap[pDoc->GetPlayersRace()]->SetBadAIBaseSectors(pDoc->m_Sector, pDoc->GetPlayersRace());
-	for (int j = 0; j < STARMAP_SECTORS_VCOUNT; j++)
-		for (int i = 0; i < STARMAP_SECTORS_HCOUNT; i++)
-		{
-			UINT ta = pDC->GetTextAlign();
-			pDC->SetTextAlign(TA_CENTER | TA_BASELINE);
-			Sector sector(i, j);
-			short points = pDoc->starmap[pDoc->GetPlayersRace()]->GetPoints(sector);
-			if (points != 0)
-			{
-				CPoint pt = pDoc->m_pStarmap->GetSectorCoords(sector);
-				CString s;
-				s.Format("%d", points);
-				pDC->TextOut(pt.x + STARMAP_SECTOR_WIDTH / 2, pt.y + STARMAP_SECTOR_HEIGHT / 2 + 6, s);
-			}
-			pDC->SetTextAlign(ta);
-		}
-#endif
-			
-	// ------
-	// wenn gerade ein Ziel gewählt wird, den berechneten Weg zeichnen
-	if (m_nRange && pDoc->m_ShipArray[pDoc->GetNumberOfTheShipInArray()].GetPath()->GetSize())
-	{
-		// Vorlage mit jedem Sektor des Weges verknüpfen
-		for (int i = 0; i < pDoc->m_ShipArray[pDoc->GetNumberOfTheShipInArray()].GetPath()->GetSize(); i++)
-		{
-			COLORREF color;
-			if (pDoc->m_ShipArray[pDoc->GetNumberOfTheShipInArray()].GetOwnerOfShip() == HUMAN)
-				color = RGB(60,60,255);
-			else if (pDoc->m_ShipArray[pDoc->GetNumberOfTheShipInArray()].GetOwnerOfShip() == FERENGI)
-				color = RGB(155,155,0);
-			else if (pDoc->m_ShipArray[pDoc->GetNumberOfTheShipInArray()].GetOwnerOfShip() == KLINGON)
-				color = RGB(165,0,0);
-			else if (pDoc->m_ShipArray[pDoc->GetNumberOfTheShipInArray()].GetOwnerOfShip() == ROMULAN)
-				color = RGB(30,200,30);
-			else if (pDoc->m_ShipArray[pDoc->GetNumberOfTheShipInArray()].GetOwnerOfShip() == CARDASSIAN)
-				color = RGB(130,0,130);
-			else if (pDoc->m_ShipArray[pDoc->GetNumberOfTheShipInArray()].GetOwnerOfShip() == DOMINION)
-				color = RGB(80,195,245);
-			CBrush brush(color);
-			CPen pen(PS_SOLID , 0, color);
-			pDC->SelectObject(&brush);
-			pDC->SelectObject(&pen);
-			ASSERT_SECTOR_VALID(pDoc->m_ShipArray[pDoc->GetNumberOfTheShipInArray()].GetPath()->GetAt(i));
-			CPoint pt = pMajor->GetStarmap()->GetSectorCoords(pDoc->m_ShipArray[pDoc->GetNumberOfTheShipInArray()].GetPath()->GetAt(i));
-			pDC->Ellipse(pt.x+STARMAP_SECTOR_WIDTH/2-3,pt.y+STARMAP_SECTOR_HEIGHT/2-3,pt.x+STARMAP_SECTOR_WIDTH/2+3,pt.y+STARMAP_SECTOR_HEIGHT/2+3);
-		}
-			
-	/*	CDC *pPathDC = new CDC();
-		if (pPathDC->CreateCompatibleDC(pDC))
-		{
-			CBitmap *pPathBmp = new CBitmap();
-			if (pPathBmp->CreateCompatibleBitmap(pDC, STARMAP_SECTOR_WIDTH, STARMAP_SECTOR_WIDTH))
-			{
-				CBitmap *pOldBmp = pPathDC->SelectObject(pPathBmp);
-				COLORREF color;
-				if (pDoc->m_ShipArray[pDoc->GetNumberOfTheShipInArray()].GetOwnerOfShip() == HUMAN)
-					color = RGB(70,70,235);
-				else if (pDoc->m_ShipArray[pDoc->GetNumberOfTheShipInArray()].GetOwnerOfShip() == FERENGI)
-					color = RGB(155,155,0);
-				else if (pDoc->m_ShipArray[pDoc->GetNumberOfTheShipInArray()].GetOwnerOfShip() == KLINGON)
-					color = RGB(165,0,0);
-				else if (pDoc->m_ShipArray[pDoc->GetNumberOfTheShipInArray()].GetOwnerOfShip() == ROMULAN)
-					color = RGB(0,125,0);
-				else if (pDoc->m_ShipArray[pDoc->GetNumberOfTheShipInArray()].GetOwnerOfShip() == CARDASSIAN)
-					color = RGB(130,0,130);
-				else if (pDoc->m_ShipArray[pDoc->GetNumberOfTheShipInArray()].GetOwnerOfShip() == DOMINION)
-					color = RGB(80,195,245);
-				// Vorlage für einen Sektor zeichnen
-				pPathDC->FillSolidRect(0, 0, STARMAP_SECTOR_WIDTH, STARMAP_SECTOR_WIDTH, color);
-				BLENDFUNCTION bf;
-				bf.BlendOp = AC_SRC_OVER; bf.BlendFlags = NULL; bf.SourceConstantAlpha = 40; bf.AlphaFormat = 1-AC_SRC_ALPHA;
-				
-				// Vorlage mit jedem Sektor des Weges verknüpfen
-				for (int i = 0; i < pDoc->m_ShipArray[pDoc->GetNumberOfTheShipInArray()].GetPath()->GetSize(); i++)
-				{
-					ASSERT_SECTOR_VALID(pDoc->m_ShipArray[pDoc->GetNumberOfTheShipInArray()].GetPath()->GetAt(i));
-					CPoint pt = pMajor->GetStarmap()->GetSectorCoords(pDoc->m_ShipArray[pDoc->GetNumberOfTheShipInArray()].GetPath()->GetAt(i));
-					//pDC->BitBlt(pt.x, pt.y, STARMAP_SECTOR_WIDTH, STARMAP_SECTOR_WIDTH, pPathDC, 0, 0, SRCPAINT);
-					pDC->AlphaBlend(pt.x, pt.y, STARMAP_SECTOR_WIDTH, STARMAP_SECTOR_WIDTH, pPathDC, 0, 0,
-						STARMAP_SECTOR_WIDTH, STARMAP_SECTOR_WIDTH, bf);
-				}
-
-				pPathDC->SelectObject(pOldBmp);
-			}
-			delete pPathBmp;
-		}
-		delete pPathDC;*/
-		
-		// Anzahl der benötigten Runden in letztes Feld des Weges zeichnen
-		//CPoint last = pMajor->GetStarmap()->GetSectorCoords(path[path.GetUpperBound()]);
-		int n = pDoc->GetNumberOfTheShipInArray();
-		CPoint last = pMajor->GetStarmap()->GetSectorCoords(pDoc->m_ShipArray[n].GetPath()->GetAt(pDoc->m_ShipArray[n].GetPath()->GetUpperBound()));
-		CString s;
-		// Wenn das Schiff keine Flotte anführt
-		if (pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfTheShipInArray()).GetFleet() == 0 || (pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfTheShipInArray()).GetFleet() != 0 && pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfTheShipInArray()).GetFleet()->GetFleetSize() == 0))
-			s.Format("%.0f",ceil((float)pDoc->m_ShipArray[n].GetPath()->GetSize() / (float)pDoc->m_ShipArray[n].GetSpeed()));
-		else
-			s.Format("%.0f",ceil((float)pDoc->m_ShipArray[n].GetPath()->GetSize() / (float)pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfTheShipInArray()).GetFleet()->GetFleetSpeed(&pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfTheShipInArray()))));	
-		pDC->SetTextColor(RGB(200,200,200));
-		pDC->SetBkMode(TRANSPARENT);
-		pDC->TextOut(last.x+STARMAP_SECTOR_WIDTH/2+5, last.y+STARMAP_SECTOR_HEIGHT/2-2, s);
-
-		/**/ // Debug: Länge des Weges ausgeben
-/*		CString s;
-		s.Format("%d ", path.GetSize());
-		pDC->SetTextColor(RGB(255, 255, 255));
-		pDC->TextOut(10, 10, s);
-		/**/
-	}
-	pDC->SelectObject(pOldPen);
-	// Namen des Systems und Handelsrouten zeichnen, nur wenn komplett neu gezeichnet wurde
-
-	/*
-		if (pDoc->m_pIniLoader->GetValue("SHOWTRADEROUTES"))
-				for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
-					for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-						if (pDoc->m_System[x][y].GetOwnerOfSystem() == pDoc->GetPlayersRace())
-							for (int i = 0; i < pDoc->m_System[x][y].GetTradeRoutes()->GetSize(); i++)
-								pDoc->m_System[x][y].GetTradeRoutes()->GetAt(i).DrawTradeRoute(pDC, CPoint(x,y), m_Sector[x][y].GetOwnerOfSector());
-
-	*/
-	if (!m_bUpdateOnly)
-	{
-		for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
-			for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-			{
-				BOOLEAN knowOwner = pDoc->m_MajorRace[pDoc->GetPlayersRace()].GetKnownMajorRace(pDoc->GetSector(x,y).GetOwnerOfSector());
-				pDoc->GetSector(x,y).DrawSectorsName(pDC,pDoc->m_System[x][y].GetOwnerOfSystem(),pDoc->GetPlayersRace(),knowOwner);
-				// eigene Handelsrouten zeichnen
-				if (pDoc->m_pIniLoader->GetValue("SHOWTRADEROUTES"))
-					if (pDoc->m_System[x][y].GetOwnerOfSystem() == pDoc->GetPlayersRace())
-					{
-						for (int i = 0; i < pDoc->m_System[x][y].GetTradeRoutes()->GetSize(); i++)
-							pDoc->m_System[x][y].GetTradeRoutes()->GetAt(i).DrawTradeRoute(pDC, CPoint(x,y), pDoc->m_Sector[x][y].GetOwnerOfSector());
-						for (int i = 0; i < pDoc->m_System[x][y].GetResourceRoutes()->GetSize(); i++)
-							pDoc->m_System[x][y].GetResourceRoutes()->GetAt(i).DrawResourceRoute(pDC, CPoint(x,y), pDoc->m_Sector[x][y].GetOwnerOfSector());
-					}
-			}
-	}
-	if (pDoc->m_pIniLoader->GetValue("SHOWTRADEROUTES"))
-	{
-		if (m_bDrawTradeRoute && (pDoc->m_System[pDoc->GetKO().x][pDoc->GetKO().y].GetOwnerOfSystem() == pDoc->GetPlayersRace()))
-			m_TradeRoute.DrawTradeRoute(pDC, pDoc->GetKO(), pDoc->m_Sector[pDoc->GetKO().x][pDoc->GetKO().y].GetOwnerOfSector());
-		if (m_bDrawResourceRoute && (pDoc->m_System[pDoc->GetKO().x][pDoc->GetKO().y].GetOwnerOfSystem() == pDoc->GetPlayersRace()))
-			m_ResourceRoute.DrawResourceRoute(pDC, pDoc->GetKO(), pDoc->m_Sector[pDoc->GetKO().x][pDoc->GetKO().y].GetOwnerOfSector());
-	}
-	// aktuelle Scrollposition immer merken
-	pDoc->m_ptScrollPoint = GetScrollPosition();
-#endif // GDI
 }
+
 void CGalaxyMenuView::OnInitialUpdate()
 {
 	// ZU ERLEDIGEN: Gesamte Größe dieser Ansicht berechnen
@@ -876,9 +483,6 @@ void CGalaxyMenuView::OnInitialUpdate()
 BOOL CGalaxyMenuView::OnScroll(UINT nScrollCode, UINT nPos, BOOL bDoScroll)
 {
 	// TODO: Add your specialized code here and/or call the base class
-//	CRect client;
-//	GetClientRect(&client);
-//	InvalidateRect(&client, FALSE);		
 	return CScrollView::OnScroll(nScrollCode, nPos, bDoScroll);
 }
 
@@ -1499,7 +1103,6 @@ void CGalaxyMenuView::GenerateGalaxyMap()
 	CString prefix = pMajor->GetPrefix();
 	CString filePath = *((CBotf2App*)AfxGetApp())->GetPath() + "Graphics\\Galaxies\\" + prefix + "galaxy.jpg";
 
-#ifdef GDIPLUS
 	m_pGalaxyBackground = Bitmap::FromFile(filePath.AllocSysString());
 	
 	if (m_pGalaxyBackground->GetLastStatus() != Ok)
@@ -1630,125 +1233,7 @@ void CGalaxyMenuView::GenerateGalaxyMap()
 		{
 			delete stars[i];
 			stars[i] = NULL;
-		}	
-#endif // GDIPLUS
-
-#ifdef GDI
-	m_pGalaxyBackground = new CBitmap();
-	FCObjImage img;
-	img.Load(filePath); 
-	if (!img.IsValidImage())
-	{
-		AfxMessageBox("Could not load galaxy background");
-		#ifdef TRACE_GRAPHICLOAD
-		TRACE("Could not load galaxy background");
-		#endif
-	}
-	else
-	{
-		int count = 0;
-		while (!m_pGalaxyBackground->Attach(FCWin32::CreateDDBHandle(img)))
-		{
-			m_pGalaxyBackground->DeleteObject();
-			delete m_pGalaxyBackground;
-			m_pGalaxyBackground = NULL;
-			m_pGalaxyBackground = new CBitmap();
-			if (++count >= 5)
-			{
-				AfxMessageBox("Error while generating galaxymap ... exit application");
-				exit(1);
-			}
 		}
-	}
-	img.Destroy();
-	
-	// Mal die Sterne direkt in die Map setzen, neues Bild erzeugen
-	FCObjImage *stars = new FCObjImage[7];
-	filePath = *((CBotf2App*)AfxGetApp())->GetPath() + "Graphics\\MapStars\\star_blue.png";
-	stars[0].Load(filePath);
-	filePath = *((CBotf2App*)AfxGetApp())->GetPath() + "Graphics\\MapStars\\star_green.png";
-	stars[1].Load(filePath);
-	filePath = *((CBotf2App*)AfxGetApp())->GetPath() + "Graphics\\MapStars\\star_orange.png";
-	stars[2].Load(filePath);
-	filePath = *((CBotf2App*)AfxGetApp())->GetPath() + "Graphics\\MapStars\\star_red.png";
-	stars[3].Load(filePath);
-	filePath = *((CBotf2App*)AfxGetApp())->GetPath() + "Graphics\\MapStars\\star_violet.png";
-	stars[4].Load(filePath);
-	filePath = *((CBotf2App*)AfxGetApp())->GetPath() + "Graphics\\MapStars\\star_white.png";
-	stars[5].Load(filePath);
-	filePath = *((CBotf2App*)AfxGetApp())->GetPath() + "Graphics\\MapStars\\star_yellow.png";
-	stars[6].Load(filePath);
-
-	CDC backDC;//, starDC, markDC;
-	backDC.CreateCompatibleDC(NULL);
-	CGdiObject* pOldBack = backDC.SelectObject(CBitmap::FromHandle(*m_pGalaxyBackground));
-
-	FCObjImage mark[UNKNOWN + 1];
-	for (int i = NOBODY; i <= UNKNOWN; i++)
-	{
-		// hier wurde der R Wert mit dem B Wert getauscht, da die Funktion SetPixelData sonst nicht stimmt.
-		COLORREF color;
-		if (i == HUMAN)
-			color = RGB(235,70,70);
-		else if (i == FERENGI)
-			color = RGB(0,155,155);
-		else if (i == KLINGON)
-			color = RGB(0,0,165);
-		else if (i == ROMULAN)
-			color = RGB(0,125,0);
-		else if (i == CARDASSIAN)
-			color = RGB(130,0,130);
-		else if (i == DOMINION)
-			color = RGB(245,195,80);
-		else if (i == UNKNOWN)
-			color = RGB(200,200,200);
-		else
-			color = RGB(0,0,0);
-		// Bitmap generieren
-		if (mark[i].Create(STARMAP_SECTOR_WIDTH, STARMAP_SECTOR_HEIGHT, 32))
-			for (int y = 0; y < STARMAP_SECTOR_HEIGHT; y++)
-				for (int x = 0; x < STARMAP_SECTOR_WIDTH; x++)
-					mark[i].SetPixelData(x, y, color);
-		// Alpha Channel festlegen
-		if (i != NOBODY)
-			mark[i].SetAlphaChannelValue(85);
-		else
-			mark[i].SetAlphaChannelValue(180);
-	}
-
-	for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
-		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-		{	
-			CPoint pt = pMajor->GetStarmap()->GetSectorCoords(struct::Sector(x, y));
-			if (pDoc->GetSector(x,y).GetOwned() && pDoc->GetSector(x,y).GetScanned(pDoc->GetPlayersRace())
-				&& pDoc->m_MajorRace[pDoc->GetPlayersRace()].GetKnownMajorRace(pDoc->GetSector(x,y).GetOwnerOfSector()))
-			{
-				RECT r; r.left = pt.x; r.right = pt.x + STARMAP_SECTOR_WIDTH; r.top = pt.y; r.bottom = pt.y + STARMAP_SECTOR_HEIGHT;
-				FCWin32::AlphaImageOnDC(mark[pDoc->GetSector(x,y).GetOwnerOfSector()], backDC.GetSafeHdc(), r);
-			}
-			// Wurde der Sektor noch nicht gescannt, sprich ist noch Nebel des Krieges da?
-			else if (!pDoc->GetSector(x,y).GetScanned(pDoc->GetPlayersRace()) && !pDoc->GetSector(x,y).GetKnown(pDoc->GetPlayersRace()))
-			{
-				RECT r; r.left = pt.x; r.right = pt.x + STARMAP_SECTOR_WIDTH; r.top = pt.y; r.bottom = pt.y + STARMAP_SECTOR_HEIGHT;
-				FCWin32::AlphaImageOnDC(mark[NOBODY], backDC.GetSafeHdc(), r);
-			}
-			// lebt eine Minorrace darauf und der Sektor ist uns bekannt, gehört aber noch niemanden
-			else if (pDoc->GetSector(x,y).GetMinorRace() && !pDoc->GetSector(x,y).GetOwned() && pDoc->GetSector(x,y).GetKnown(pDoc->GetPlayersRace()))
-			{
-				RECT r; r.left = pt.x; r.right = pt.x + STARMAP_SECTOR_WIDTH; r.top = pt.y; r.bottom = pt.y + STARMAP_SECTOR_HEIGHT;
-				FCWin32::AlphaImageOnDC(mark[UNKNOWN], backDC.GetSafeHdc(), r);
-			}
-			if (pDoc->GetSector(x,y).GetSunSystem() == TRUE && pDoc->GetSector(x,y).GetScanned(pDoc->GetPlayersRace()))
-			{
-				RECT r; r.left = pt.x; r.right = pt.x + STARMAP_SECTOR_WIDTH; r.top = pt.y; r.bottom = pt.y + STARMAP_SECTOR_HEIGHT;
-				FCWin32::AlphaImageOnDC(stars[pDoc->GetSector(x,y).GetSunColor()], backDC.GetSafeHdc(), r);				
-			}
-		}
-	backDC.SelectObject(pOldBack);
-
-	// aufräumen
-	delete[] stars;
-#endif // GDI
 }
 
 /*

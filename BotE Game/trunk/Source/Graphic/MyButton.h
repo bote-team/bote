@@ -55,10 +55,10 @@ public:
 	BOOLEAN ClickedOnButton(const CPoint pt);
 
 	/// Diese Funktion zeichnet den Button in den übergebenen Gerätekontext.
-	/// @param pDC Zeiger auf den aktuellen Gerätekontext
+	/// @param g Referenz auf Graphics Objekt
 	/// @param graphicPool Zeiger auf die Sammlung aller Grafiken
-	void DrawButton(CDC* pDC, CGraphicPool* graphicPool);
-
+	/// @param font Referenz auf zu benutzende Schrift
+	/// @param brush Referenz auf Farbepinsel für Font (Schriftfarbe)
 	void DrawButton(Gdiplus::Graphics &g, CGraphicPool* graphicPool, Gdiplus::Font &font, Gdiplus::SolidBrush &brush);
 
 	/// Funktion aktiviert den Button. Wenn dieser inaktiv ist, kann er nicht aktiviert werden.

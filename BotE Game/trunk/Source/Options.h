@@ -5,34 +5,20 @@
  *   Home     :  http://birth-of-the-empires.de.vu
  *
  */
-#if !defined _OPTIONS_H__20050315_1300_
-#define _OPTIONS_H__20050315_1300_
+#pragma once
 
-#pragma warning(disable: 4204)
+//#pragma warning(disable: 4204)
 
 #include "General\ResourceManager.h"
 #include "General\mytrace.h"
 
 /// Versionsnummer des Dokuments; es können nur Spielstände geladen werden, die diese Versionsnummer
 /// haben.
-#define DOCUMENT_VERSION			6		// Alpha4 Refit Version
+#define DOCUMENT_VERSION			7		// Alpha5 Refit Version
 
 // --- Feste Größen der Starmap ------------------------------------------------
 #define STARMAP_SECTORS_HCOUNT		30		///< Anzahl der Sektoren horizontal
 #define STARMAP_SECTORS_VCOUNT		20		///< Anzahl der Sektoren vertikal
-/*
-// Grafik bis Alpha4
-#define STARMAP_SECTOR_WIDTH		60		///< Breite eines Sektors in Pixel bei 100% Zoom
-#define STARMAP_SECTOR_HEIGHT		60		///< Höhe eines Sektors
-#define STARMAP_TOTALWIDTH			1800	///< Gesamtbreite der View in Pixel bei 100% (= 40 * 30)
-#define STARMAP_TOTALHEIGHT			1200	///< Gesamthöhe bei 100% (= 20 * 40)
-
-#define STARMAP_ZOOM_MIN			1.		///< minimaler Zoom-Faktor
-#define STARMAP_ZOOM_MAX			2.		///< maximaler Zoom-Faktor
-#define STARMAP_ZOOM_STEP			.2		///< Änderung des Zoom-Faktors beim Drehen des Scrollrades
-#define STARMAP_ZOOM_INITIAL		1.4		///< Zoom-Faktor zu Beginn
-*/
-// Grafik der nächsten Generation -> Alpha5
 
 #define STARMAP_SECTOR_WIDTH		80		///< Breite eines Sektors in Pixel bei 100% Zoom
 #define STARMAP_SECTOR_HEIGHT		80		///< Höhe eines Sektors
@@ -124,29 +110,13 @@
 #define DIPLOMACY_PRESENT_VALUE	200	// Ein konstanter Wert, der mindst. erreicht werden muss um Beziehung zu verbessern
 
 // ------------- Die verschiedenen Arten einer MinorRace -----------------------
-/*
 #define NOTHING_SPECIAL		0
 #define FINANCIAL			1
 #define WARLIKE				2
-#define FARMER				3
+#define AGRARIAN			3	
 #define INDUSTRIAL			4
 #define SECRET				5
-#define RESEARCHER			6
-#define PRODUCER			7
-#define PACIFIST			8
-#define SNEAKY              9	// Hinterhältig
-#define SOLO				10	// Alleingeher
-#define	EXTREMHOSTILE		11
-*/
-#define NOTHING_SPECIAL		0
-#define FINANCIAL			1
-#define WARLIKE				2
-#define AGRARIAN			3
-	#define FARMER				3
-#define INDUSTRIAL			4
-#define SECRET				5
-#define SCIENTIFIC			6
-	#define RESEARCHER			6
+#define SCIENTIFIC			6	
 #define PRODUCER			7
 #define PACIFIST			8
 #define SNEAKY              9	// Hinterhältig
@@ -261,9 +231,6 @@ enum {NONE, ASSULTSHIP, BLOCKADESHIP, COMMANDSHIP, COMBATTRACTORBEAM, DOGFIGHTER
 // ------------- System   ------------------------------------------------------
 #define	MAJOR				0	// Hauptrasse
 #define	MINOR				1	// kleine Rasse (keine Ausbreitung)
-#define MEDIOR				2	// Mischung aus Major und Minor
-
-enum {PLAYER = 1, COMPUTER = 2};
 
 // ------------- HANDEL ----------------------------------------------------
 #define TRADEROUTEHAB		20	// aller wieviel Bevölkerung gibt es eine Handelsroute
@@ -280,16 +247,6 @@ enum {PLAYER = 1, COMPUTER = 2};
 // --- Sonstiges ---------------------------------------------------------------
 #define PT_IN_RECT(pt, x1, y1, x2, y2) \
 	((x1) <= (pt).x && (pt).x < (x2) && (y1) <= (pt).y && (pt).y < (y2))
-
-#define FEDERATION_RACEFONT	"LCARS"
-#define FERENGI_RACEFONT	"Bajoran"
-//#define FERENGI_RACEFONT	"Chemical Reaction A -BRK-"
-#define KLINGON_RACEFONT	"KlingonDagger"
-#define ROMULAN_RACEFONT	"Exotic-Demi"
-#define CARDASSIAN_RACEFONT	"Final Frontier"
-#define DOMINION_RACEFONT	"Final Frontier"
-//#define DOMINION_RACEFONT	"Hammerhead  Thin"
-//#define DOMINION_RACEFONT	"Opticon"
 
 inline void SetAttributes(BOOLEAN is, int attribute, int &variable)
 {
@@ -311,4 +268,3 @@ inline void SetAttributes(BOOLEAN is, int attribute, int &variable)
 #define TRACE_INTEL
 #define TRACE_INTELAI
 //#define DEBUG_AI_BASE_DEMO
-#endif // _OPTIONS_H__20050315_1300_

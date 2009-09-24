@@ -1,9 +1,9 @@
 #include "stdafx.h"
-#include "Minor.h"
-#include "MinorAI.h"
-#include "Botf2Doc.h"
 #include "RaceController.h"
 #include "Major.h"
+#include "Minor.h"
+#include "Botf2Doc.h"
+#include "AI\MinorAI.h"
 
 IMPLEMENT_SERIAL (CMinor, CRace, 1)
 

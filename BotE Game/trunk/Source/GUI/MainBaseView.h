@@ -44,10 +44,11 @@ public:
 
 protected:
 	/// Funktion zeichnet die Button und macht alle möglichen Überprüfungen.
-	/// @param pDC aktueller Zeichenkontext
+	/// @param g Referenz auf Graphics Object
 	/// @param buttonArray Zeiger auf das Feld mit den Buttons
 	/// @param counter Zählvariable die meinst angibt in welchem aktuellen Menü man sich befindet
-	void DrawButtons(CDC* pDC, CArray<CMyButton*>* buttonArray, int counter);
+	/// @param font Referenz auf zu benutzende Schrift
+	/// @param fontBrush Referenz auf Farbepinsel für Font (Schriftfarbe)
 	void DrawGDIButtons(Graphics* g, CArray<CMyButton*>* buttonArray, int counter, Gdiplus::Font &font, Gdiplus::SolidBrush &fontBrush);
 
 	/// Funktion läßt einen Button auf ein MouseOver reagieren
@@ -72,35 +73,17 @@ protected:
 	/// @param point Referenz auf umzurechnendes Rechteck
 	void CalcDeviceRect(CRect &rect);
 
-	/// Funktion lädt die richtigen Fonts und Buttonbilder für die großen Buttons
-	/// @param pDC aktueller Zeichenkontext
-	void LoadFontForBigButton(CDC* pDC);
-
-	/// Funktion lädt die richtigen Fonts und Buttonbilder für die kleinen Buttons
-	/// @param pDC aktueller Zeichenkontext
-	void LoadFontForLittleButton(CDC* pDC);
-
-	/// Funktion lädt die Schriftart inkl. deren Farbe für die gespielte Rasse.
-	/// @param pDC aktueller Zeichenkontext
-	void LoadRaceFont(CDC* pDC);
-	
 	/// Funktion generiert alle Buttons für das Menü. Sollte von der abgeleiteten Klasse überschrieben werden.
 	virtual void CreateButtons() {};	
 
 	// Attribute
 	CSize m_TotalSize;				///< Größe der View in logischen Koordinaten
-	CFont m_Font;					///< aktuelle Font in der View
 	
-	CBitmap bm;						// meist für die Buttons genutzt
-	CBitmap bm_dark;	
-
 protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	virtual void OnInitialUpdate();
-public:
 	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
-public:
 	virtual void OnPrepareDC(CDC* pDC, CPrintInfo* pInfo = NULL);
 };
 

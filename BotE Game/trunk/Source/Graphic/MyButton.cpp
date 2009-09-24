@@ -24,39 +24,6 @@ BOOLEAN CMyButton::ClickedOnButton(const CPoint pt)
 	return CRect(m_KO.x, m_KO.y, m_KO.x+m_Size.cx, m_KO.y+m_Size.cy).PtInRect(pt);
 }
 
-void CMyButton::DrawButton(CDC* pDC, CGraphicPool* graphicPool)
-{
-	ASSERT(pDC);
-	ASSERT(graphicPool);
-
-	CDC mdc;
-	mdc.CreateCompatibleDC(pDC);
-	CBitmap* graphic = NULL;
-	HGDIOBJ oldGraphic;
-	
-	CString sFile = 0;
-	switch (m_byStatus)
-	{
-	case 0:  sFile = m_strNormal; break;
-	case 1:  sFile = m_strActive; break;
-	default: sFile = m_strInactive;
-	}
-
-	graphic = graphicPool->GetGraphic(sFile);
-	if (graphic)
-	{
-		oldGraphic = mdc.SelectObject(*graphic);
-	
-		int oldStretchMode = pDC->GetStretchBltMode();
-		pDC->SetStretchBltMode(HALFTONE);
-		pDC->BitBlt(m_KO.x, m_KO.y ,m_Size.cx, m_Size.cy, &mdc, 0, 0, SRCCOPY);
-		pDC->DrawText(m_strText, CRect(m_KO.x, m_KO.y, m_KO.x+m_Size.cx, m_KO.y+m_Size.cy),	DT_CENTER | DT_VCENTER | DT_SINGLELINE);
-		pDC->SetStretchBltMode(oldStretchMode);
-		mdc.SelectObject(oldGraphic);	}
-	else
-		MYTRACE(MT::LEVEL_WARNING, "Could not load buttongraphic " + sFile + "\n");
-}
-
 void CMyButton::DrawButton(Gdiplus::Graphics &g, CGraphicPool* graphicPool, Gdiplus::Font &font, Gdiplus::SolidBrush &brush)
 {
 	ASSERT(graphicPool);

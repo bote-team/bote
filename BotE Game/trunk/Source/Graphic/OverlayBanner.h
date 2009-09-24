@@ -33,10 +33,7 @@ public:
 	void SetBorderWidth(int width) {m_iBorderWidth = width;}
 
 	// sonstige Funktionen
-	/// Funktion zeichnet das Banner auf den übergebenen Zeichenkontext mittels GDI.
-	/// @param pDC Zeiger auf den aktuellen Zeichenkontext
-	void Draw(CDC *pDC);
-
+	
 	/// Funktion zeichnet das Banner auf den übergebenen Zeichenkontext mittels GDI+.
 	/// @param g Zeiger auf das GDI+ Grafikobjekt
 	/// @param font Font zum Zeichnen des Textes

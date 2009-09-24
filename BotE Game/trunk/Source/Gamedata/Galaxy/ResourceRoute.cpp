@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "ResourceRoute.h"
 #include "Sector.h"
-#include "Major.h"
+#include "Races\Major.h"
 
 IMPLEMENT_SERIAL (CResourceRoute, CObject, 1)
 //////////////////////////////////////////////////////////////////////

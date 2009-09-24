@@ -7,7 +7,6 @@
  */
 #pragma once
 #include "Botf2Doc.h"
-//#include "DBScrollView.h"
 
 /*
 Wird GDI Plus benutzt, so müssen noch weitere Anpassungen am Code vorgenommen werden,
@@ -16,8 +15,6 @@ Wird GDI Plus benutzt, so müssen noch weitere Anpassungen am Code vorgenommen we
 - OnEraseBackground muss in dieser View FALSE zurückgeben
 - CMemDC darf beim Zeichnen der Galaxieansicht nicht verwendet werden
 */
-#define GDIPLUS
-//#define GDI
 
 class CGalaxyMenuView : public CScrollView
 {
@@ -28,13 +25,8 @@ protected: // Nur aus Serialisierung erzeugen
 	CSize m_TotalSize;								///< Größe der View in logischen Koordinaten
 	BOOLEAN m_bScrollToHome;						///< soll zum Heimatsektor zu Beginn der Runde gescrollt werden
 		
-#ifdef GDIPLUS
 	Bitmap* m_pGalaxyBackground;	///< Zeiger auf Hintergrundbild-Objekt
 	Bitmap* m_pThumbnail;
-#endif
-#ifdef GDI
-	CBitmap* m_pGalaxyBackground;	///< Zeiger auf Hintergrundbild-Objekt
-#endif
 		
 	double m_fZoom;					///< aktueller Zoom-Faktor
 	int m_nRange;

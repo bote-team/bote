@@ -6,7 +6,7 @@
 
 #include "MainFrm.h"
 #include "botf2Doc.h"
-#include "RaceController.h"
+#include "Races\RaceController.h"
 #include "GalaxyMenuView.h"
 
 #ifdef _DEBUG
@@ -68,8 +68,8 @@ BOOL CBotf2App::InitInstance()
 	// absoluten Pfad ermitteln und in globaler Variablen speichern
 	char fullPath[_MAX_PATH];
 	_fullpath(fullPath, "", _MAX_PATH);
-//	m_strFullPath = fullPath;
-	m_strFullPath = "F:\\C++\\Projekte\\BotE Projekt\\BotE Install\\BotE complete";
+	m_strFullPath = fullPath;
+	//m_strFullPath = "F:\\C++\\Projekte\\BotE Projekt\\BotE Install\\BotE complete";
 	m_strFullPath += "\\";
 
 	// CG: Der folgende Block wurde von der Komponente "Windows-Sockets" hinzugefügt.

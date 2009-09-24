@@ -85,26 +85,6 @@ BOOL CMainBaseView::OnEraseBkgnd(CDC* pDC)
 	//return CView::OnEraseBkgnd(pDC);
 }
 
-void CMainBaseView::DrawButtons(CDC* pDC, CArray<CMyButton*>* buttonArray, int counter)
-{
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
-	ASSERT(pDoc);
-
-	// Wenn wir im jeweiligen Menü sind, prüfen, ob der dazugehörige Button auch inaktiv ist.
-	for (int j = 0; j < buttonArray->GetSize(); j++)
-		if (counter == j && buttonArray->GetAt(j)->GetState() != 2)
-		{
-			for (int i = 0; i < buttonArray->GetSize(); i++)
-				if (buttonArray->GetAt(i)->GetState() == 2)
-					buttonArray->GetAt(i)->SetState(0);
-			buttonArray->GetAt(j)->SetState(2);
-			break;
-		}
-	// Buttons zeichnen
-	for (int i = 0; i < buttonArray->GetSize(); i++)
-		buttonArray->GetAt(i)->DrawButton(pDC, pDoc->GetGraphicPool());
-}
-
 void CMainBaseView::DrawGDIButtons(Graphics* g, CArray<CMyButton*>* buttonArray, int counter, Gdiplus::Font &font, Gdiplus::SolidBrush &fontBrush)
 {
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
@@ -190,78 +170,6 @@ BOOLEAN CMainBaseView::ButtonReactOnLeftClick(const CPoint &point, CArray<CMyBut
 			return TRUE;
 		}
 	return FALSE;
-}
-
-void CMainBaseView::LoadRaceFont(CDC* pDC)
-{
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
-	ASSERT(pDoc);
-	
-	CMajor* pMajor = pDoc->GetPlayersRace();
-	ASSERT(pMajor);
-	if (!pMajor)
-		return;
-
-	m_Font.Detach();
-	m_Font.DeleteObject();
-	pDC->SetTextColor(CFontLoader::CreateFont(pMajor, 2, 3, &m_Font));
-	pDC->SelectObject(&m_Font);
-}
-
-void CMainBaseView::LoadFontForBigButton(CDC* pDC)
-{
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
-	ASSERT(pDoc);
-	
-	CMajor* pMajor = pDoc->GetPlayersRace();
-	ASSERT(pMajor);
-	if (!pMajor)
-		return;
-
-	HGDIOBJ h =	bm.Detach();
-	DeleteObject(h);	
-	h = bm_dark.Detach();
-	DeleteObject(h);	
-	
-	bm.DeleteObject();
-	bm_dark.DeleteObject();
-	FCObjImage img;
-
-	img.Load(*((CBotf2App*)AfxGetApp())->GetPath() + "Graphics\\Other\\" + pMajor->GetPrefix() + "button.png");
-	bm.Attach(FCWin32::CreateDDBHandle(img));
-	img.Load(*((CBotf2App*)AfxGetApp())->GetPath() + "Graphics\\Other\\" + pMajor->GetPrefix() + "buttoni.png");
-	bm_dark.Attach(FCWin32::CreateDDBHandle(img));
-	img.Destroy();
-	
-	CFont font;
-	pDC->SetTextColor(CFontLoader::CreateFont(pMajor,3,2,&font));
-	pDC->SelectObject(&font);
-}
-
-void CMainBaseView::LoadFontForLittleButton(CDC* pDC)
-{
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
-	ASSERT(pDoc);
-	
-	CMajor* pMajor = pDoc->GetPlayersRace();
-	ASSERT(pMajor);
-	if (!pMajor)
-		return;
-
-	HGDIOBJ h =	bm.Detach();
-	DeleteObject(h);	
-	h = bm_dark.Detach();
-	DeleteObject(h);
-
-	bm.DeleteObject();
-	bm_dark.DeleteObject();
-	FCObjImage img;
-
-	img.Load(*((CBotf2App*)AfxGetApp())->GetPath() + "Graphics\\Other\\" + pMajor->GetPrefix() + "button_small.png");
-	bm.Attach(FCWin32::CreateDDBHandle(img));
-	img.Destroy();
-	
-	pDC->SetTextColor(CFontLoader::GetFontColor(pMajor,1));
 }
 
 void CMainBaseView::CalcLogicalPoint(CPoint &point)

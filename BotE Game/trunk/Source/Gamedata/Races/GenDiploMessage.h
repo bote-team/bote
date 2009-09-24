@@ -9,7 +9,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 #pragma once
-#include "DiplomacyAI.h"
+#include "AI\DiplomacyAI.h"
 
 class CGenDiploMessage  
 {

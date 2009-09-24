@@ -50,7 +50,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".;Source;Source\include;Source\Graphic;Source\Gamedata;Source\Dialogs;Source\Framework;Source\GUI;Source\AI;Source\General;Source\include\foundation;Source\include\LZMA;Source\include\network;Source\include\sound"
+				AdditionalIncludeDirectories=".;Source;Source\include;Source\Graphic;Source\Gamedata;Source\Dialogs;Source\Framework;Source\GUI;Source\General;Source\include\foundation;Source\include\LZMA;Source\include\network;Source\include\sound"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -156,7 +156,7 @@
 				InlineFunctionExpansion="1"
 				FavorSizeOrSpeed="1"
 				WholeProgramOptimization="true"
-				AdditionalIncludeDirectories=".;Source;Source\include;Source\Graphic;Source\Gamedata;Source\Dialogs;Source\Framework;Source\GUI;Source\AI;Source\General;Source\include\foundation;Source\include\LZMA;Source\include\network;Source\include\sound"
+				AdditionalIncludeDirectories=".;Source;Source\include;Source\Graphic;Source\Gamedata;Source\Dialogs;Source\Framework;Source\GUI;Source\General;Source\include\foundation;Source\include\LZMA;Source\include\network;Source\include\sound"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS"
 				StringPooling="true"
 				RuntimeLibrary="0"
@@ -292,42 +292,6 @@
 				</File>
 				<File
 					RelativePath=".\Source\Framework\MySplitterWnd.cpp"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="AI"
-				>
-				<File
-					RelativePath=".\Source\AI\AIPrios.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\Source\AI\DiplomacyAI.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\Source\AI\IntelAI.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\Source\AI\MajorAI.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\Source\AI\MinorAI.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\Source\AI\SectorAI.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\Source\AI\ShipAI.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\Source\AI\SystemAI.cpp"
 					>
 				</File>
 			</Filter>
@@ -750,6 +714,42 @@
 						>
 					</File>
 				</Filter>
+				<Filter
+					Name="AI"
+					>
+					<File
+						RelativePath=".\Source\Gamedata\AI\AIPrios.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Source\Gamedata\AI\DiplomacyAI.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Source\Gamedata\AI\IntelAI.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Source\Gamedata\AI\MajorAI.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Source\Gamedata\AI\MinorAI.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Source\Gamedata\AI\SectorAI.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Source\Gamedata\AI\ShipAI.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Source\Gamedata\AI\SystemAI.cpp"
+						>
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="Dialogs"
@@ -796,42 +796,6 @@
 				RelativePath=".\Source\StdAfx.h"
 				>
 			</File>
-			<Filter
-				Name="AI"
-				>
-				<File
-					RelativePath=".\Source\AI\AIPrios.h"
-					>
-				</File>
-				<File
-					RelativePath=".\Source\AI\DiplomacyAI.h"
-					>
-				</File>
-				<File
-					RelativePath=".\Source\AI\IntelAI.h"
-					>
-				</File>
-				<File
-					RelativePath=".\Source\AI\MajorAI.h"
-					>
-				</File>
-				<File
-					RelativePath=".\Source\AI\MinorAI.h"
-					>
-				</File>
-				<File
-					RelativePath=".\Source\AI\sectorai.h"
-					>
-				</File>
-				<File
-					RelativePath=".\Source\AI\ShipAI.h"
-					>
-				</File>
-				<File
-					RelativePath=".\Source\AI\SystemAI.h"
-					>
-				</File>
-			</Filter>
 			<Filter
 				Name="General"
 				>
@@ -1323,6 +1287,42 @@
 						>
 					</File>
 				</Filter>
+				<Filter
+					Name="AI"
+					>
+					<File
+						RelativePath=".\Source\Gamedata\AI\AIPrios.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Source\Gamedata\AI\DiplomacyAI.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Source\Gamedata\AI\IntelAI.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Source\Gamedata\AI\MajorAI.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Source\Gamedata\AI\MinorAI.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Source\Gamedata\AI\SectorAI.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Source\Gamedata\AI\ShipAI.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Source\Gamedata\AI\SystemAI.h"
+						>
+					</File>
+				</Filter>
 			</Filter>
 		</Filter>
 		<Filter
@@ -1355,10 +1355,6 @@
 				>
 			</File>
 		</Filter>
-		<File
-			RelativePath="ReadMe.txt"
-			>
-		</File>
 	</Files>
 	<Globals>
 		<Global

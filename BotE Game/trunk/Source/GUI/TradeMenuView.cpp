@@ -326,14 +326,6 @@ void CTradeMenuView::DrawMonopolMenue(Graphics* g)
 
 	CString s;
 
-	// grobe Linien zeichnen	
-/*	CPen mark(PS_SOLID, 1, RGB(255,125,0));
-	pDC->SelectObject(&mark);
-	pDC->MoveTo(theClientRect.left,theClientRect.top+70);
-	pDC->LineTo(theClientRect.right,theClientRect.top+70);
-	pDC->MoveTo(theClientRect.left,theClientRect.bottom-50);
-	pDC->LineTo(theClientRect.right,theClientRect.bottom-50);
-*/
 	// Wir können erst ein Monopol kaufen, wenn wir mindst. die Hälfte der Hauptrassen kennen
 	m_bCouldBuyMonopols = FALSE;
 	USHORT otherEmpiresInGame = 0;
@@ -491,15 +483,7 @@ void CTradeMenuView::DrawTradeTransferMenue(Graphics* g)
 
 	if (bg_tradetransfermenu)
 		g->DrawImage(bg_tradetransfermenu, 0, 0, 1075, 750);
-	
-	// grobe Linien zeichnen
-/*	CPen mark(PS_SOLID, 1, RGB(255,125,0));
-	pDC->SelectObject(&mark);
-	pDC->MoveTo(theClientRect.left,theClientRect.top+70);
-	pDC->LineTo(theClientRect.right,theClientRect.top+70);
-	pDC->MoveTo(theClientRect.left,theClientRect.bottom-50);
-	pDC->LineTo(theClientRect.right,theClientRect.bottom-50);
-*/
+
 	// hier mal alle Transfers hinschreiben
 	long boughtResPrice[5];
 	long boughtResNumber[5];

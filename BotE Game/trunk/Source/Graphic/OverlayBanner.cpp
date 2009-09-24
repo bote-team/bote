@@ -17,36 +17,6 @@ COverlayBanner::~COverlayBanner(void)
 //////////////////////////////////////////////////////////////////////
 // sonstige Funktionen
 //////////////////////////////////////////////////////////////////////
-// Funktion zeichnet das Banner auf den übergebenen Zeichenkontext mittels GDI.
-void COverlayBanner::Draw(CDC *pDC)
-{
-	FCObjImage mark;
-	// hier wurde der R Wert mit dem B Wert getauscht, da die Funktion SetPixelData sonst nicht stimmt.
-	// Bitmap generieren
-	if (mark.Create(1, 1, 32))
-		mark.SetPixelData(0,0, m_BackgroundColor);
-	
-	// Alpha Channel festlegen
-	mark.SetAlphaChannelValue(m_iAlphaValue);
-	
-	// Hintergrund zeichnen
-	FCWin32::AlphaImageOnDC(mark, pDC->GetSafeHdc(), CRect(m_KO.x, m_KO.y, m_KO.x + m_Size.cx, m_KO.y + m_Size.cy));
-	
-	// Rahmen zeichnen
-	CPen np(PS_SOLID, m_iBorderWidth, m_BorderColor);
-	pDC->SelectObject(&np);
-	pDC->MoveTo(m_KO);
-	pDC->LineTo(m_KO.x + m_Size.cx, m_KO.y);
-	pDC->LineTo(m_KO.x + m_Size.cx, m_KO.y + m_Size.cy);
-	pDC->LineTo(m_KO.x, m_KO.y + m_Size.cy);
-	pDC->LineTo(m_KO);
-	
-	// Text zeichnen
-	COLORREF oldColor = pDC->GetTextColor();
-	pDC->SetTextColor(m_TextColor);
-	pDC->DrawText(m_strText, CRect(m_KO.x, m_KO.y + m_Size.cy / 3, m_KO.x + m_Size.cx, m_KO.y + m_Size.cy), DT_CENTER | DT_WORDBREAK | DT_VCENTER);
-	pDC->SetTextColor(oldColor);
-}
 
 // Funktion zeichnet das Banner auf den übergebenen Zeichenkontext mittels GDI+
 void COverlayBanner::Draw(Graphics* g, Gdiplus::Font* font)

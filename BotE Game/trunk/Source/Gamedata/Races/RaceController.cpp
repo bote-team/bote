@@ -107,7 +107,7 @@ CRace* CRaceController::GetRace(const CString& sID) const
 }
 
 /// Funktion gibt alle Rassen eines bestimmten Types zurück.
-/// @param type Typ der Rasse (MAJOR, MINOR, MEDIOR)
+/// @param type Typ der Rasse (MAJOR, MINOR)
 /// @return Map aller Rassen eines bestimmten Types
 map<CString, CRace*> CRaceController::GetRaces(BYTE type) const
 {
@@ -116,13 +116,6 @@ map<CString, CRace*> CRaceController::GetRaces(BYTE type) const
 		if (it->second->GetType() == type)
 			mMap[it->first] = it->second;
 	return mMap;
-}
-
-/// Funktion gibt alle Mediorrassen des Spiels zurück.
-/// @return Map mit allen Mediorrassen des Spiels
-map<CString, CRace*> CRaceController::GetMediors()
-{
-	return GetRaces(MEDIOR);
 }
 
 /// Funktion liefert die Minorrace, welche in einem bestimmten Sektor beheimatet ist.

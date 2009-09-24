@@ -181,19 +181,6 @@ void CIntelMenuView::DrawIntelAssignmentMenu(Graphics* g)
 	if (bg_intelassignmenu)
 		g->DrawImage(bg_intelassignmenu, 0, 0, 1075, 750);
 	
-/*	CPen mark(PS_SOLID, 1, RGB(125,175,255));
-	pDC->SelectObject(&mark);
-	pDC->MoveTo(theClientRect.left,theClientRect.top+70);
-	pDC->LineTo(theClientRect.right,theClientRect.top+70);
-	pDC->MoveTo(theClientRect.left,theClientRect.top+120);
-	pDC->LineTo(theClientRect.right,theClientRect.top+120);
-	pDC->MoveTo(theClientRect.left+100,theClientRect.top+120);
-	pDC->LineTo(theClientRect.left+100,theClientRect.bottom-60);
-	pDC->MoveTo(theClientRect.right-250,theClientRect.top+120);
-	pDC->LineTo(theClientRect.right-250,theClientRect.bottom-60);
-	pDC->MoveTo(theClientRect.left,theClientRect.bottom-60);
-	pDC->LineTo(theClientRect.right,theClientRect.bottom-60);
-*/
 	// rechtes Informationsmenü zeichnen
 	DrawIntelInformation(g, &Gdiplus::Font(fontName.AllocSysString(), fontSize), normalColor);
 	
@@ -306,20 +293,6 @@ void CIntelMenuView::DrawIntelSpyMenu(Graphics* g)
 			}
 	}
 	
-/*	CPen mark(PS_SOLID, 1, RGB(125,175,255));
-	pDC->SelectObject(&mark);
-	pDC->MoveTo(theClientRect.left,theClientRect.top+70);
-	pDC->LineTo(theClientRect.right,theClientRect.top+70);
-	pDC->MoveTo(theClientRect.left,theClientRect.top+120);
-	pDC->LineTo(theClientRect.right,theClientRect.top+120);
-	pDC->MoveTo(theClientRect.left+100,theClientRect.top+120);
-	pDC->LineTo(theClientRect.left+100,theClientRect.bottom-60);
-	pDC->MoveTo(theClientRect.right-250,theClientRect.top+120);
-	pDC->LineTo(theClientRect.right-250,theClientRect.bottom-60);
-	pDC->MoveTo(theClientRect.left,theClientRect.bottom-60);
-	pDC->LineTo(theClientRect.right,theClientRect.bottom-60);
-*/
-
 	CString fontName = "";
 	Gdiplus::REAL fontSize = 0.0;
 	
@@ -493,20 +466,6 @@ void CIntelMenuView::DrawIntelSabotageMenu(Graphics* g)
 				break;
 			}
 	}
-	
-/*	CPen mark(PS_SOLID, 1, RGB(125,175,255));
-	pDC->SelectObject(&mark);
-	pDC->MoveTo(theClientRect.left,theClientRect.top+70);
-	pDC->LineTo(theClientRect.right,theClientRect.top+70);
-	pDC->MoveTo(theClientRect.left,theClientRect.top+120);
-	pDC->LineTo(theClientRect.right,theClientRect.top+120);
-	pDC->MoveTo(theClientRect.left+100,theClientRect.top+120);
-	pDC->LineTo(theClientRect.left+100,theClientRect.bottom-60);
-	pDC->MoveTo(theClientRect.right-250,theClientRect.top+120);
-	pDC->LineTo(theClientRect.right-250,theClientRect.bottom-60);
-	pDC->MoveTo(theClientRect.left,theClientRect.bottom-60);
-	pDC->LineTo(theClientRect.right,theClientRect.bottom-60);
-*/
 
 	CString fontName = "";
 	Gdiplus::REAL fontSize = 0.0;
@@ -684,13 +643,6 @@ void CIntelMenuView::DrawIntelReportsMenu(Graphics* g)
 	if (bg_intelreportmenu)
 		g->DrawImage(bg_intelreportmenu, 0, 0, 1075, 750);
 
-/*	CPen line(PS_SOLID, 1, RGB(125,175,255));
-	pDC->SelectObject(&line);
-	pDC->MoveTo(theClientRect.left,theClientRect.top+70);
-	pDC->LineTo(theClientRect.right,theClientRect.top+70);
-	pDC->MoveTo(theClientRect.left,theClientRect.bottom-60);
-	pDC->LineTo(theClientRect.right,theClientRect.bottom-60);
-*/
 	// Farbe für die Markierungen auswählen
 	Color markColor;
 	markColor.SetFromCOLORREF(pMajor->GetDesign()->m_clrListMarkPenColor);
@@ -821,15 +773,6 @@ void CIntelMenuView::DrawIntelAttackMenu(Graphics* g)
 	if (bg_intelattackmenu)
 		g->DrawImage(bg_intelattackmenu, 0, 0, 1075, 750);
 
-/*	CPen line(PS_SOLID, 1, RGB(125,175,255));
-	pDC->SelectObject(&line);
-	pDC->MoveTo(theClientRect.left,theClientRect.top+70);
-	pDC->LineTo(theClientRect.right,theClientRect.top+70);
-	pDC->MoveTo(theClientRect.left,theClientRect.bottom-60);
-	pDC->LineTo(theClientRect.right,theClientRect.bottom-60);
-	pDC->MoveTo(theClientRect.left, theClientRect.top+430);
-	pDC->LineTo(theClientRect.right,theClientRect.top+430);
-*/
 	// Farbe der Schrift und Markierung wählen, wenn wir auf eine Rasse geklickt haben
 	Color markColor;
 	markColor.SetFromCOLORREF(pMajor->GetDesign()->m_clrListMarkPenColor);
@@ -1053,19 +996,6 @@ void CIntelMenuView::DrawIntelInfoMenu(Graphics* g)
 	if (bg_intelinfomenu)
 		g->DrawImage(bg_intelinfomenu, 0, 0, 1075, 750);
 
-/*	CPen mark(PS_SOLID, 1, RGB(125,175,255));
-	pDC->SelectObject(&mark);
-//	pDC->MoveTo(theClientRect.left,theClientRect.top+70);
-//	pDC->LineTo(theClientRect.right,theClientRect.top+70);
-	pDC->MoveTo(theClientRect.left,theClientRect.top+120);
-	pDC->LineTo(theClientRect.right,theClientRect.top+120);
-	pDC->MoveTo(theClientRect.left+100,theClientRect.top+120);
-	pDC->LineTo(theClientRect.left+100,theClientRect.bottom-60);
-//	pDC->MoveTo(theClientRect.right-250,theClientRect.top+120);
-//	pDC->LineTo(theClientRect.right-250,theClientRect.bottom-60);
-	pDC->MoveTo(theClientRect.left,theClientRect.bottom-60);
-	pDC->LineTo(theClientRect.right,theClientRect.bottom-60);
-*/
 	// Die einzelnen Spionagezuweisungsbalken zeichnen
 	if (m_sActiveIntelRace != "")
 	{

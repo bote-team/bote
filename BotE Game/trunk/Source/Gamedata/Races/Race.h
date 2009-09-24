@@ -11,7 +11,7 @@
 #include <map>
 #include <vector>
 #include "Options.h"
-#include "DiplomacyAI.h"
+#include "AI\DiplomacyAI.h"
 
 using namespace std;
 
@@ -81,7 +81,7 @@ public:
 	/// @return Rassenname inkl Artikel
 	CString GetRaceNameWithArticle(void) const {return m_sNameArticle + " " + m_sName;}
 
-	/// Funktion gibt den Rassentyp zurück (MAJOR, MINOR, MEDIOR).
+	/// Funktion gibt den Rassentyp zurück (MAJOR, MINOR).
 	/// @return Rassentyp
 	BYTE GetType(void) const {return m_byType;}
 

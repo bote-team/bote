@@ -14,17 +14,17 @@
 #include "MainFrm.h"
 
 #include "IniLoader.h"
-#include "RaceController.h"
-#include "Combat.h"
-#include "Fleet.h"
-#include "AttackSystem.h"
-#include "IntelCalc.h"
-#include "DiplomacyController.h"
+#include "Races\RaceController.h"
+#include "Races\DiplomacyController.h"
+#include "Ships\Combat.h"
+#include "Ships\Fleet.h"
+#include "System\AttackSystem.h"
+#include "Intel\IntelCalc.h"
 
-#include "AIPrios.h"
-#include "SectorAI.h"
-#include "SystemAI.h"
-#include "ShipAI.h"
+#include "AI\AIPrios.h"
+#include "AI\SectorAI.h"
+#include "AI\SystemAI.h"
+#include "AI\ShipAI.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -712,7 +712,8 @@ void CBotf2Doc::PrepareData()
 		}
 
 		
-		// ALPHA5 alle Rassen untereinander bekanntgeben
+		// ALPHA5 DEBUG alle Rassen untereinander bekanntgeben
+		/*
 		map<CString, CRace*>* pmRaces = m_pRaceCtrl->GetRaces();
 		for (map<CString, CRace*>::iterator it = pmRaces->begin(); it != pmRaces->end(); it++)
 			for (map<CString, CRace*>::const_iterator jt = pmRaces->begin(); jt != pmRaces->end(); jt++)
@@ -720,7 +721,7 @@ void CBotf2Doc::PrepareData()
 				{
 					it->second->SetIsRaceContacted(jt->first, true);
 				}
-		
+		*/
 		m_iRound = 1;
 		
 		// Generierungssektornamenklasse wieder neu starten

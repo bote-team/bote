@@ -54,12 +54,8 @@ public:
 	/// @return Map mit allen Minorrassen des Spiels
 	map<CString, CMinor*>* GetMinors(void) {return &m_mMinors;}
 	
-	/// Funktion gibt alle Mediorrassen des Spiels zurück.
-	/// @return Map mit allen Mediorrassen des Spiels
-	map<CString, CRace*> GetMediors(void);
-	
 	/// Funktion gibt alle Rassen eines bestimmten Types zurück.
-	/// @param type Typ der Rasse (MAJOR, MINOR, MEDIOR)
+	/// @param type Typ der Rasse (MAJOR, MINOR)
 	/// @return Map aller Rassen eines bestimmten Types
 	map<CString, CRace*> GetRaces(BYTE type) const;
 

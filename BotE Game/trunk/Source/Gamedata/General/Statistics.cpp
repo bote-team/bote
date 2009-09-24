@@ -2,7 +2,7 @@
 #include "Statistics.h"
 #include "Botf2Doc.h"
 #include "Races\RaceController.h"
-#include "SectorAI.h"
+#include "AI\SectorAI.h"
 
 IMPLEMENT_SERIAL (CStatistics, CObject, 1)
 

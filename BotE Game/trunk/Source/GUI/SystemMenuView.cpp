@@ -670,18 +670,7 @@ void CSystemMenuView::DrawBuildMenue(Graphics* g)
 				}
 					
 				if (graphic)
-				{
-					//if (pDoc->GetPlayersRace() == FERENGI)
-					//	pDC->BitBlt(60,50,200,150,&mdc,0,0,SRCCOPY);
-					//else if (pDoc->GetPlayersRace() == KLINGON)
-					//	pDC->BitBlt(60,58,200,150,&mdc,0,0,SRCCOPY);
-					//else if (pDoc->GetPlayersRace() == ROMULAN)
-					//	pDC->BitBlt(65,165,200,150,&mdc,0,0,SRCCOPY);
-					//else if (pDoc->GetPlayersRace() == CARDASSIAN)
-					//	pDC->BitBlt(68,125,200,150,&mdc,0,0,SRCCOPY);
-					//else
-					//	pDC->BitBlt(70,60,200,150,&mdc,0,0,SRCCOPY);
-					
+				{				
 					g->DrawImage(graphic, 70, 60, 200, 150);					
 				}				
 			}

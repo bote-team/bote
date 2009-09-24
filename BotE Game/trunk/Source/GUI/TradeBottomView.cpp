@@ -84,19 +84,6 @@ void CTradeBottomView::OnDraw(CDC* dc)
 		graphic = NULL;
 	}
 
-	// Linien zur Diagrammbegrenzung zeichnen
-/*	CPen line(PS_SOLID, 1, RGB(255,125,0));
-	pDC->SelectObject(&line);
-	// Y-Achse
-	pDC->MoveTo(300,r.bottom-225);
-	pDC->LineTo(300,r.bottom-55);
-	// X-Achse
-	pDC->LineTo(900,r.bottom-55);
-	// kleine Linie des Maximalpreises
-	pDC->MoveTo(295,r.bottom-208);
-	pDC->LineTo(305,r.bottom-208);*/
-	// Namen der augewählten Ressource und Farbe der Diagrammlinien
-	//COLORREF color;
 	CString resName;
 	Gdiplus::Color resColor;
 	switch(m_iWhichRessource)

@@ -1,9 +1,9 @@
 #include "stdafx.h"
 #include "Race.h"
-#include "DiplomacyAI.h"
-#include "MajorAI.h"
 #include "Botf2Doc.h"
 #include "RaceController.h"
+#include "AI\DiplomacyAI.h"
+#include "AI\MajorAI.h"
 
 IMPLEMENT_SERIAL (CRace, CObject, 1)
 
