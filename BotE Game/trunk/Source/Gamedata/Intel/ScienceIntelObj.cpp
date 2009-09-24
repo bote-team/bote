@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "ScienceIntelObj.h"
 #include "Botf2Doc.h"
-#include "RaceController.h"
+#include "Races\RaceController.h"
 
 IMPLEMENT_SERIAL (CScienceIntelObj, CObject, 1)
 

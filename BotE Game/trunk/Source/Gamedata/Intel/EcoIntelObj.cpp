@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "EcoIntelObj.h"
 #include "Botf2Doc.h"
-#include "RaceController.h"
+#include "Races\RaceController.h"
 
 IMPLEMENT_SERIAL (CEcoIntelObj, CObject, 1)
 

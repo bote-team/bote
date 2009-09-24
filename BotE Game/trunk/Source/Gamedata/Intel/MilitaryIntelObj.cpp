@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "MilitaryIntelObj.h"
 #include "Botf2Doc.h"
-#include "RaceController.h"
+#include "Races\RaceController.h"
 
 IMPLEMENT_SERIAL (CMilitaryIntelObj, CObject, 1)
 

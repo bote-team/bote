@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "IntelAssignment.h"
-#include "RaceController.h"
+#include "Races\RaceController.h"
 
 IMPLEMENT_SERIAL (CIntelAssignment, CObject, 1)
 
