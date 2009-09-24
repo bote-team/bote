@@ -8,9 +8,9 @@
 #pragma once
 #include "afx.h"
 #include "Options.h"
-#include "System.h"
-#include "Sector.h"
-#include "TradeHistory.h"
+#include "System\System.h"
+#include "Galaxy\Sector.h"
+#include "Trade\TradeHistory.h"
 #include <map>
 
 using namespace std;
