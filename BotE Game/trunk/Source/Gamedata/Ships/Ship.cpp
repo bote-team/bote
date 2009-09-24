@@ -5,7 +5,7 @@
 #include "stdafx.h"
 #include "stdafx.h"
 #include "Ship.h"
-#include "Sector.h"
+#include "Galaxy\Sector.h"
 #include "Fleet.h"
 
 #ifdef _DEBUG

@@ -6,7 +6,7 @@
 #include "GenShipName.h"
 #include "Botf2.h"
 #include "Botf2Doc.h"
-#include "RaceController.h"
+#include "Races\RaceController.h"
 
 IMPLEMENT_SERIAL (CGenShipName, CObject, 1)
 //////////////////////////////////////////////////////////////////////

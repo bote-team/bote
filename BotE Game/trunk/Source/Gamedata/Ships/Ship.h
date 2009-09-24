@@ -21,8 +21,8 @@
 #include "BeamWeapons.h"
 #include "Shield.h"
 #include "Hull.h"
-#include "Starmap.h"
-#include "TroopInfo.h"
+#include "..\Races\Starmap.h"
+#include "..\Troops\TroopInfo.h"
 
 class CFleet;
 class CShip : public CObject  

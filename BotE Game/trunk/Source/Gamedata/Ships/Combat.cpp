@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "Combat.h"
-#include "RaceController.h"
+#include "Races\RaceController.h"
 
 Position GivePosition(BYTE pos, USHORT posNumber)
 {

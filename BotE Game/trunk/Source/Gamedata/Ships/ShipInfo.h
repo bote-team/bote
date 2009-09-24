@@ -17,7 +17,7 @@
 #endif // _MSC_VER > 1000
 
 #include "Ship.h"
-#include "Empire.h"
+#include "Races\Empire.h"
 
 class CShipInfo : public CShip  
 {
