@@ -4,9 +4,9 @@
 #include "stdafx.h"
 #include "botf2.h"
 #include "TransportMenuView.h"
-#include "RaceController.h"
+#include "Races\RaceController.h"
 #include "IniLoader.h"
-#include "Fleet.h"
+#include "Ships\Fleet.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

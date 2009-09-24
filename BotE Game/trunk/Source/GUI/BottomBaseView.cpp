@@ -4,7 +4,7 @@
 #include "stdafx.h"
 #include "botf2.h"
 #include "BottomBaseView.h"
-#include "RaceController.h"
+#include "Races\RaceController.h"
 
 // CBottomBaseView
 

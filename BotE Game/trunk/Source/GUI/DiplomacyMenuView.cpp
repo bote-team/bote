@@ -7,7 +7,7 @@
 #include "DiplomacyBottomView.h"
 #include "MenuChooseView.h"
 #include "IniLoader.h"
-#include "GenDiploMessage.h"
+#include "Races\GenDiploMessage.h"
 #include <algorithm>
 
 #ifdef _DEBUG

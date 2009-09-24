@@ -4,7 +4,7 @@
 #include "stdafx.h"
 #include "botf2.h"
 #include "TradeBottomView.h"
-#include "Major.h"
+#include "Races\Major.h"
 
 // CTradeBottomView
 

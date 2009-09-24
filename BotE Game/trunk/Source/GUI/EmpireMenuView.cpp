@@ -12,7 +12,7 @@
 #include "PlanetBottomView.h"
 #include "MenuChooseView.h"
 #include "IniLoader.h"
-#include "RaceController.h"
+#include "Races\RaceController.h"
 
 // CEmpireMenuView
 

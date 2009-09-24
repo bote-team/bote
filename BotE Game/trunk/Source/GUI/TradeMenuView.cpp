@@ -5,7 +5,7 @@
 #include "botf2.h"
 #include "TradeMenuView.h"
 #include "MenuChooseView.h"
-#include "RaceController.h"
+#include "Races\RaceController.h"
 #include "IniLoader.h"
 
 #ifdef _DEBUG

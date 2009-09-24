@@ -5,7 +5,7 @@
 #include "botf2.h"
 #include "IntelMenuView.h"
 #include "IntelBottomView.h"
-#include "RaceController.h"
+#include "Races\RaceController.h"
 #include "IniLoader.h"
 
 // CIntelMenuView

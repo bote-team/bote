@@ -9,7 +9,7 @@
 #include "PlanetBottomView.h"
 #include "Botf2Doc.h"
 #include "BotEClient.h"
-#include "RaceController.h"
+#include "Races\RaceController.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

@@ -8,8 +8,8 @@
 #pragma once
 #include "Botf2Doc.h"
 #include "MainBaseView.h"
-#include "DiplomacyAI.h"
-#include "RaceController.h"
+#include "AI\DiplomacyAI.h"
+#include "Races\RaceController.h"
 
 // CDiplomacyMenuView view
 

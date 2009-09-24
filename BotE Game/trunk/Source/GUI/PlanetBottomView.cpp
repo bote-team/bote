@@ -7,7 +7,7 @@
 #include "PlanetBottomView.h"
 #include "ShipBottomView.h"
 #include "SmallInfoView.h"
-#include "RaceController.h"
+#include "Races\RaceController.h"
 
 
 // CPlanetBottomView

@@ -6,7 +6,7 @@
 #include "GalaxyMenuView.h"
 #include "MenuChooseView.h"
 #include "SystemMenuView.h"
-#include "RaceController.h"
+#include "Races\RaceController.h"
 #include "IniLoader.h"
 
 

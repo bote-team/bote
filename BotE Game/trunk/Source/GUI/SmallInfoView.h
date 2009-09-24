@@ -11,8 +11,8 @@
 #if _MSC_VER > 1000
 #pragma once
 #include "FontLoader.h"
-#include "Planet.h"
-#include "Ship.h"
+#include "Galaxy\Planet.h"
+#include "Ships\Ship.h"
 #endif // _MSC_VER > 1000
 // CSmallInfoView.h : Header-Datei
 //

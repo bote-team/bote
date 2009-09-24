@@ -9,8 +9,8 @@
 #include "ShipBottomView.h"
 #include "PlanetBottomView.h"
 #include "SmallInfoView.h"
-#include "RaceController.h"
-#include "Fleet.h"
+#include "Races\RaceController.h"
+#include "Ships\Fleet.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

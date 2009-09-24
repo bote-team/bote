@@ -7,8 +7,8 @@
 #include "FleetMenuView.h"
 #include "ShipBottomView.h"
 #include "SmallInfoView.h"
-#include "Fleet.h"
-#include "RaceController.h"
+#include "Ships\Fleet.h"
+#include "Races\RaceController.h"
 
 // CFleetMenuView
 #ifdef _DEBUG

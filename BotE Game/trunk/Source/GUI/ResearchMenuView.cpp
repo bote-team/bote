@@ -5,7 +5,7 @@
 #include "botf2.h"
 #include "ResearchMenuView.h"
 #include "ResearchBottomView.h"
-#include "RaceController.h"
+#include "Races\RaceController.h"
 #include "IniLoader.h"
 
 

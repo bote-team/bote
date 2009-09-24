@@ -11,8 +11,8 @@
 #include "PlanetBottomView.h"
 #include "ShipBottomView.h"
 #include "SmallInfoView.h"
-#include "RaceController.h"
-#include "Fleet.h"
+#include "Races\RaceController.h"
+#include "Ships\Fleet.h"
 #include "IniLoader.h"
 
 BOOLEAN CGalaxyMenuView::m_bDrawTradeRoute = FALSE;
