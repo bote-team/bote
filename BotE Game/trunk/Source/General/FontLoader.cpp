@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "FontLoader.h"
-#include "Major.h"
+#include "Races\Major.h"
 
 /*
 BYTE CFontLoader::m_byFontSizes[DOMINION][6] = {
