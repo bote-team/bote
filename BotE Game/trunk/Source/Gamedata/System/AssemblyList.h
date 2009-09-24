@@ -9,9 +9,9 @@
 #include "afx.h"
 #include "Options.h"
 #include "BuildingInfo.h"
-#include "ShipInfo.h"
-#include "TroopInfo.h"
-#include "ResourceRoute.h"
+#include "Ships\ShipInfo.h"
+#include "Troops\TroopInfo.h"
+#include "Galaxy\ResourceRoute.h"
 
 class CSystem;
 class CAssemblyList : public CObject

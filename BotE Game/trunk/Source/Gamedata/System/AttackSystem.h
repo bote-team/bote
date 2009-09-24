@@ -8,8 +8,8 @@
 #pragma once
 #include "afx.h"
 #include "System.h"
-#include "Ship.h"
-#include "RaceController.h"
+#include "Ships\Ship.h"
+#include "Races\RaceController.h"
 #include <map>
 
 using namespace std;

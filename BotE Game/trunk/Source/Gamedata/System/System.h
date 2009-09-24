@@ -15,12 +15,12 @@
 #if _MSC_VER > 1000
 #pragma once
 #endif // _MSC_VER > 1000
-#include "Sector.h"
+#include "..\Galaxy\Sector.h"
 #include "Worker.h"
 #include "AssemblyList.h"
 #include "SystemProd.h"
 #include "GlobalBuildings.h"
-#include "TradeRoute.h"
+#include "Trade\TradeRoute.h"
 #include "array_sort.h"
 
 // forward declaration

@@ -3,8 +3,8 @@
 //////////////////////////////////////////////////////////////////////
 #include "stdafx.h"
 #include "Empire.h"
-#include "System.h"
-#include "Sector.h"
+#include "System\System.h"
+#include "Galaxy\Sector.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE

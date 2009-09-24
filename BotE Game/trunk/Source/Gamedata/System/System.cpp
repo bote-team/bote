@@ -5,7 +5,7 @@
 #include "stdafx.h"
 #include "System.h"
 #include "Botf2Doc.h"
-#include "RaceController.h"
+#include "Races\RaceController.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE

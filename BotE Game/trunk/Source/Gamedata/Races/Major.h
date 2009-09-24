@@ -11,9 +11,9 @@
 #include "RaceDesign.h"
 #include "MoralObserver.h"
 #include "Empire.h"
-#include "Trade.h"
-#include "ShipHistory.h"
-#include "WeaponObserver.h"
+#include "Trade\Trade.h"
+#include "Ships\ShipHistory.h"
+#include "Ships\WeaponObserver.h"
 
 /// Klasse zur Abstraktion einer Hauptrasse
 class CMajor : public CRace

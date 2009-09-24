@@ -3,7 +3,7 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
-#include "ShipInfo.h"
+#include "Ships\ShipInfo.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE

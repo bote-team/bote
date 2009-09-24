@@ -4,7 +4,7 @@
 
 #include "stdafx.h"
 #include "Starmap.h"
-#include "Sector.h"
+#include "Galaxy\Sector.h"
 #include <math.h>
 
 #ifdef _DEBUG

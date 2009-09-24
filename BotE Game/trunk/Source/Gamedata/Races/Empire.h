@@ -6,13 +6,13 @@
  *
  */
 #pragma once
-#include "Message.h"
+#include "General\Message.h"
 #include "Research.h"
-#include "Intelligence.h"
-#include "GlobalStorage.h"
-#include "EventColonization.h"
-#include "EventBlockade.h"
-#include "EventBombardment.h"
+#include "Intel\Intelligence.h"
+#include "System\GlobalStorage.h"
+#include "Events\EventColonization.h"
+#include "Events\EventBlockade.h"
+#include "Events\EventBombardment.h"
 
 /**
  * Struktur, die die wichtigsten Informationen eines Systems aufnehmen kann. Dies wird benötigt, wenn wir in einer
