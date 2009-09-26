@@ -1982,13 +1982,21 @@ void CSystem::BuildBuildingsForMinorRace(CSector* sector, BuildingInfoArray* bui
 // in diesem kolonisiert haben.
 void CSystem::BuildBuildingsAfterColonization(CSector *sector, BuildingInfoArray *buildingInfo, USHORT colonizationPoints)
 {
+	CBotf2Doc* pDoc = ((CBotf2App*)AfxGetApp())->GetDocument();
+	ASSERT(pDoc);
+
+	CMajor* pMajor = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(sector->GetOwnerOfSector()));
+	ASSERT(pMajor);
+
+	BYTE byRaceBuildingID = pMajor->GetRaceBuildingNumber();
+
 	// in exist[.] steht dann, ob wir einen Rohstoff abbauen können, wenn ja, dann können wir auch das Gebäude bauen
 	BOOLEAN exist[5] = {0,0,0,0,0};
 	sector->GetAvailableResources(exist);
 
 	USHORT start = 0;
 	for (int i = 0; i < buildingInfo->GetSize(); i++)
-		if (buildingInfo->GetAt(i).GetOwnerOfBuilding() == sector->GetOwnerOfSector())
+		if (buildingInfo->GetAt(i).GetOwnerOfBuilding() == byRaceBuildingID)
 		{
 			start = i;
 			break;
@@ -2051,7 +2059,7 @@ void CSystem::BuildBuildingsAfterColonization(CSector *sector, BuildingInfoArray
 		}
 		// Abbruchbedingung, wenn das Gebäude eh nicht mehr zu den Gebäuden des Sektorbesitzers gehören.
 		// Dafür muss aber die Gebäudeliste geordnet nach den Besitzern vorliegen (das sie aktuell auch ist)
-		if (buildingInfo->GetAt(i).GetOwnerOfBuilding() != sector->GetOwnerOfSector())
+		if (buildingInfo->GetAt(i).GetOwnerOfBuilding() != byRaceBuildingID)
 			break;
 	}
 	// wenn schon Gebäude eines Typs stehen, dann dürfen keine des gleichen Typ zusätzlich gebaut werden. Z.B. wenn

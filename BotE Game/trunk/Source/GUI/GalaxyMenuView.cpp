@@ -164,7 +164,7 @@ void CGalaxyMenuView::OnDraw(CDC* dc)
 	g.DrawImage(m_pThumbnail, thumbRect);
 	
 	COLORREF clrColor = pMajor->GetDesign()->m_clrSector;
-	Color color(75, GetRValue(clrColor), GetGValue(clrColor), GetBValue(clrColor));
+	Color color(50, GetRValue(clrColor), GetGValue(clrColor), GetBValue(clrColor));
 	
 	RectF thumbSelection((REAL)((m_pThumbnail->GetWidth() * pt.x / STARMAP_TOTALWIDTH / m_fZoom + thumbRect.GetLeft())),
 		(REAL)((m_pThumbnail->GetHeight() * pt.y / STARMAP_TOTALHEIGHT / m_fZoom + thumbRect.GetTop())),

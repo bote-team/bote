@@ -84,7 +84,7 @@ void CShipDesignBottomView::OnDraw(CDC* dc)
 	CString s;
 	s.Format("%s %s %s-%s", pDoc->m_ShipInfoArray.GetAt(pDoc->m_iShowWhichShipInfoInView3).GetShipTypeAsString(), CResourceManager::GetString("MASC_ARTICLE"),
 		pDoc->m_ShipInfoArray.GetAt(pDoc->m_iShowWhichShipInfoInView3).GetShipClass(), CResourceManager::GetString("CLASS"));
-	g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(40, 30, rect.right, rect.bottom), &fontFormat, &fontBrush);
+	g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(40, 30, rect.right - 40, rect.bottom - 30), &fontFormat, &fontBrush);
 	
 	CFontLoader::CreateGDIFont(pMajor, 2, fontName, fontSize);
 	fontBrush.SetColor(Color(200,200,250));

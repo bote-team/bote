@@ -122,6 +122,9 @@ void CTransportMenuView::DrawTransportMenue(Graphics* g)
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
 
+	if (pDoc->GetNumberOfTheShipInArray() == -1)
+		return;
+
 	CMajor* pMajor = pDoc->GetPlayersRace();
 	ASSERT(pMajor);
 	if (!pMajor)
@@ -407,10 +410,21 @@ void CTransportMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
-	CalcLogicalPoint(point);
+	ASSERT(pDoc);
 
+	CMajor* pMajor = pDoc->GetPlayersRace();
+	if (!pMajor)
+		return;
+	
 	// Wenn wir in der Transportansicht sind (brauchen auch nur Klicks überprüfen, wenn das Schiff Lagerraum hat)
-	CShip* ship = &pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfTheShipInArray());
+	CShip* ship = NULL;
+	if (pDoc->GetNumberOfTheShipInArray() != -1)
+		if (pDoc->GetNumberOfTheShipInArray() < pDoc->m_ShipArray.GetSize())
+			ship = &pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfTheShipInArray());
+	if (ship == NULL || ship->GetOwnerOfShip() != pMajor->GetRaceID() || ship->GetStorageRoom() == 0)
+		return;
+
+	CalcLogicalPoint(point);
 			
 	CPoint p = pDoc->GetKO();
 	CString systemOwner = pDoc->m_System[p.x][p.y].GetOwnerOfSystem();

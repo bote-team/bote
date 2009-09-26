@@ -15,8 +15,6 @@
 #define	RACESOURCE_DATAFILE		0		///< Rassendaten werden aus *.data Dateien gelesen
 #define RACESOURCE_CONST		1		///< Rassendaten kommen hart aus dem Quellcode
 
-#define VERSION					0.7		///< benötigte Verion
-
 /// Klasse zum Verwalten aller Rassen im Spiel.
 class CRaceController :	public CObject
 {

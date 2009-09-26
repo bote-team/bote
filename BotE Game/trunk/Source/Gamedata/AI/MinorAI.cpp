@@ -74,11 +74,15 @@ short CMinorAI::ReactOnOffer(const CDiplomacyInfo& info)
 		// Krieg erklären, Geschenke geben und Bestechen
 		short nOthersAgreement	= NO_AGREEMENT;		
 		map<CString, CMajor*>* pmMajors = m_pDoc->GetRaceCtrl()->GetMajors();
+		// nicht wir selbst
 		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
 		{
-			short nTemp = pMinor->GetAgreement(it->first);
-			if (nTemp > nOthersAgreement)
-				nOthersAgreement	= nTemp;			
+			if (it->first != info.m_sFromRace)
+			{
+				short nTemp = pMinor->GetAgreement(it->first);
+				if (nTemp > nOthersAgreement)
+					nOthersAgreement	= nTemp;			
+			}
 		}
 
 		if ((info.m_nType == COOPERATION || info.m_nType == AFFILIATION || info.m_nType == MEMBERSHIP) && nOthersAgreement > FRIENDSHIP_AGREEMENT)

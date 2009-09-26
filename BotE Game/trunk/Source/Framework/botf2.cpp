@@ -69,7 +69,7 @@ BOOL CBotf2App::InitInstance()
 	char fullPath[_MAX_PATH];
 	_fullpath(fullPath, "", _MAX_PATH);
 	m_strFullPath = fullPath;
-	//m_strFullPath = "F:\\C++\\Projekte\\BotE Projekt\\BotE Install\\BotE complete";
+	m_strFullPath = "F:\\C++\\Projekte\\BotE Projekt\\BotE Install\\BotE complete";
 	m_strFullPath += "\\";
 
 	// CG: Der folgende Block wurde von der Komponente "Windows-Sockets" hinzugefügt.

@@ -959,17 +959,24 @@ bool CMajorAI::MakeMajorOffer(CString& sRaceID, CDiplomacyInfo& info)
 			float fModi = 0.0f;
 			if (nTheirShipPower)
 				fModi = (float)nOurShipPower / (float)nTheirShipPower;
-			fModi *= 2.0f;
+			// old style
+			/*fModi *= 2.0f;
 			fModi = max(fModi, 1.0f);
 
-			// hier ist der code so lang, da viele ZERO Überprüfungen dabei sind
 			int temp = (int)(100 / fModi);
 			temp = max(temp, 1);
 
 			int a = rand()%temp;
 			int b = rand()%temp;
-
 			if (a < 2 && b < 7)
+			{
+			*/
+
+			// new
+			fModi *= 4.0f;
+			int a = rand()%100;
+			int b = rand()%100;
+			if (a < 2 + fModi && b < 7 + fModi)
 			{
 				#ifdef TRACE_DIPLOMATY
 				MYTRACE(MT::LEVEL_DEBUG, "rand: %d - a = %d - b = %d - Modi = %lf (wir %s (%d) - Gegner %s (%d))\n",((int)(100 / fModi)), a, b, fModi, pOurRace->GetRaceID(), nOurShipPower, sRaceID, nTheirShipPower);
