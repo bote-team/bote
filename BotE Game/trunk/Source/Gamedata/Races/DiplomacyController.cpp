@@ -532,11 +532,11 @@ void CDiplomacyController::ReceiveToMajor(CBotf2Doc* pDoc, CMajor* pToMajor, CDi
 					// Wir haben die Forderung angenommen
 					if (answer.m_nAnswerStatus == ACCEPTED)
 					{
-						s = CResourceManager::GetString("WE_ACCEPT_REQUEST", FALSE, ((CMajor*)pFromRace)->GetEmpireNameWithAssignedArticle());
+						s = CResourceManager::GetString("WE_ACCEPT_REQUEST", TRUE, ((CMajor*)pFromRace)->GetEmpireNameWithAssignedArticle());
 						message.GenerateMessage(s, DIPLOMACY, "", 0, 0);
 						pToMajor->GetEmpire()->AddMessage(message);
 
-						s = CResourceManager::GetString("OUR_REQUEST_ACCEPT", FALSE, pToMajor->GetEmpireNameWithArticle());
+						s = CResourceManager::GetString("OUR_REQUEST_ACCEPT", TRUE, pToMajor->GetEmpireNameWithArticle());
 						message.GenerateMessage(s, DIPLOMACY, "", 0, 0, 2);
 						((CMajor*)pFromRace)->GetEmpire()->AddMessage(message);
 
@@ -559,11 +559,11 @@ void CDiplomacyController::ReceiveToMajor(CBotf2Doc* pDoc, CMajor* pToMajor, CDi
 					// Wir haben die Forderung abgelehnt
 					else if (answer.m_nAnswerStatus == DECLINED)
 					{
-						s = CResourceManager::GetString("WE_DECLINE_REQUEST", FALSE, ((CMajor*)pFromRace)->GetEmpireNameWithAssignedArticle());
+						s = CResourceManager::GetString("WE_DECLINE_REQUEST", TRUE, ((CMajor*)pFromRace)->GetEmpireNameWithAssignedArticle());
 						message.GenerateMessage(s, DIPLOMACY, "", 0, 0);
 						pToMajor->GetEmpire()->AddMessage(message);
 
-						s = CResourceManager::GetString("OUR_REQUEST_DECLINE", FALSE, pToMajor->GetEmpireNameWithArticle());
+						s = CResourceManager::GetString("OUR_REQUEST_DECLINE", TRUE, pToMajor->GetEmpireNameWithArticle());
 						message.GenerateMessage(s, DIPLOMACY, "", 0, 0, 2);
 						((CMajor*)pFromRace)->GetEmpire()->AddMessage(message);
 						// Beziehungsverschlechterung bei Ablehnung, hier wird ein bissl vom Computer gecheated.

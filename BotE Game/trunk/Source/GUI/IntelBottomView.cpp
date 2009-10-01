@@ -33,7 +33,10 @@ void CIntelBottomView::OnDraw(CDC* dc)
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
 
-	CMajor* pMajor = pDoc->GetPlayersRace();
+	if (!pDoc->m_bDataReceived)
+		return;
+
+	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
 	if (!pMajor)
 		return;

@@ -480,7 +480,7 @@ void CSystemAI::CalcPriorities()
 			// durchführen
 			for (int y = 0 ; y < STARMAP_SECTORS_VCOUNT; y++)
 				for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-					if (m_pDoc->m_System[x][y].GetOwnerOfSystem() == m_pDoc->GetBuildingInfo(id).GetOwnerOfBuilding())
+					if (m_pMajor->GetRaceBuildingNumber() == m_pDoc->GetBuildingInfo(id).GetOwnerOfBuilding())
 						m_pDoc->m_System[x][y].AssemblyListCheck(&m_pDoc->BuildingInfo, &m_pDoc->m_GlobalBuildings);
 		}
 	}

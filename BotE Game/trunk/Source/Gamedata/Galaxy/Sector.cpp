@@ -398,6 +398,8 @@ void CSector::InitNameGenerator()
 		CSector::m_NameGenerator = new CGenSectorName();
 		CSector::m_NameGenerator->ReadSystemNames();
 	}
+	else
+		CSector::m_NameGenerator->ReadSystemNames();
 }
 
 /// Funktion generiert den Sektor. Dabei wird als Parameter die Wahrscheinlichkeit, ob in dem Sektor ein
@@ -1029,7 +1031,7 @@ void CSector::LetPlanetsShrink(float Value)
 {
 	// aktuelle Einwohner auf den einzelnen Planeten
 	float* Habitants = new float[m_Planets.GetSize()];
-	memset(Habitants, 0, m_Planets.GetSize() * sizeof(*Habitants));
+
 	// alle Einwohner im Sector
 	float allHabitants = 0.0f;
 	for (int i = 0; i < m_Planets.GetSize(); i++)
@@ -1040,8 +1042,9 @@ void CSector::LetPlanetsShrink(float Value)
 	for (int i = 0; i < m_Planets.GetSize(); i++)
 		if (Habitants[i] > 0)
 		{
-			float prozAnteil = Habitants[i]/allHabitants;
-			m_Planets[i].SetCurrentHabitant(Habitants[i] += prozAnteil*Value);
+			float prozAnteil = Habitants[i] / allHabitants;
+			Habitants[i] += prozAnteil * Value;
+			m_Planets[i].SetCurrentHabitant(Habitants[i]);
 			if (m_Planets[i].GetCurrentHabitant() <= 0)
 			{
 				m_Planets[i].SetCurrentHabitant(0);
@@ -1172,7 +1175,7 @@ void CSector::Reset()
 // Zeichenfunktionen
 ////////////////////////////////////////////////////////////////
 /// Diese Funktion zeichnet den Namen des Sektors.
-void CSector::DrawSectorsName(CDC *pDC, CBotf2Doc* pDoc)
+void CSector::DrawSectorsName(CDC *pDC, CBotf2Doc* pDoc, CMajor* pPlayer)
 {
 	// befindet sich ein Sonnensystem im Sektor
 	if (!GetSunSystem())
@@ -1180,8 +1183,6 @@ void CSector::DrawSectorsName(CDC *pDC, CBotf2Doc* pDoc)
 
 	ASSERT(pDC);
 	ASSERT(pDoc);
-
-	CMajor* pPlayer = pDoc->GetPlayersRace();
 	ASSERT(pPlayer);
 
 	// Ist Sektor bekannt dann zeichne den Systemnamen
@@ -1211,24 +1212,28 @@ void CSector::DrawSectorsName(CDC *pDC, CBotf2Doc* pDoc)
 }
 
 /// Diese Funktion zeichnet die entsprechenden Schiffssymbole in den Sektor
-void CSector::DrawShipSymbolInSector(Graphics *g, CBotf2Doc* pDoc)
+void CSector::DrawShipSymbolInSector(Graphics *g, CBotf2Doc* pDoc, CMajor* pPlayer)
 {
 	ASSERT(g);
 	ASSERT(pDoc);
+	ASSERT(pPlayer);
 
 	// alle Rassen holen
 	map<CString, CRace*>* pmRaces = pDoc->GetRaceCtrl()->GetRaces();
 	ASSERT(pmRaces);
-	// Spielerrasse holen
-	CMajor* pPlayer = pDoc->GetPlayersRace();
-	ASSERT(pPlayer);
-
+	
 	CString sFilePath;
 	short nCount = 0;
 	
 	CPoint pt;
 	pt.x = m_KO.x * STARMAP_SECTOR_WIDTH;
 	pt.y = m_KO.y * STARMAP_SECTOR_HEIGHT;
+
+	if (this->m_KO == CPoint(17,8))
+	{
+		int xxx;
+		xxx = 5;
+	}
 
 	// durch alle Rassen iterieren und Schiffsymbole zeichnen
 	for (map<CString, CRace*>::const_iterator it = pmRaces->begin(); it != pmRaces->end(); it++)

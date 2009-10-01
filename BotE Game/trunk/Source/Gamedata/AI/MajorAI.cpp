@@ -1304,7 +1304,7 @@ bool CMajorAI::ClaimRequest(CDiplomacyInfo& info)
 			bClaimRequest |= true;
 		}
 	}
-
+	
 	// Nun können wir auch noch Ressourcen fordern, auch zusätzlich zu den Credit und wir benötigen dafür auch keinen
 	// aktuellen Handelsvertrag mit der Rasse ;-)
 	// zuerst random-wert ermitteln, welche Ressource ich fordern würde

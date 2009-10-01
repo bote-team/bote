@@ -18,7 +18,6 @@ IMPLEMENT_DYNCREATE(CSystemMenuView, CMainBaseView)
 
 CSystemMenuView::CSystemMenuView()
 {
-
 }
 
 CSystemMenuView::~CSystemMenuView()
@@ -59,6 +58,9 @@ void CSystemMenuView::OnDraw(CDC* dc)
 {
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
+
+	if (!pDoc->m_bDataReceived)
+		return;
 
 	SetFocus();
 	
@@ -119,7 +121,7 @@ void CSystemMenuView::OnInitialUpdate()
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
 
-	CMajor* pMajor = pDoc->GetPlayersRace();
+	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
 
 	// Alle Buttons in der View erstellen
@@ -190,7 +192,7 @@ void CSystemMenuView::DrawBuildMenue(Graphics* g)
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
 	
-	CMajor* pMajor = pDoc->GetPlayersRace();
+	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
 	if (!pMajor)
 		return;
@@ -847,7 +849,7 @@ void CSystemMenuView::DrawWorkersMenue(Graphics* g)
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
 	
-	CMajor* pMajor = pDoc->GetPlayersRace();
+	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
 	if (!pMajor)
 		return;
@@ -926,14 +928,11 @@ void CSystemMenuView::DrawWorkersMenue(Graphics* g)
 			width = (unsigned short)200/size;
 		if (width > 10)
 			width = 10;
-		short space = 5;
-		if (width < 5)
-		{
-			if (width < 2)
-				width = 2;
-			space = width;
-		}
-
+		else if (width < 3)
+			width = 3;
+		short space = width / 2;
+		space = max(2, space);
+				
 		// Den Balken zeichnen
 		for (int i = 0; i < 5; i++)
 		{
@@ -946,7 +945,7 @@ void CSystemMenuView::DrawWorkersMenue(Graphics* g)
 					Color darkColor(42,46,30);
 					SolidBrush darkBrush(darkColor);
 					Timber[i][j].SetRect(220 + j * width * 2 - space, 115 + i * 95, 220 + width + j * width * 2, 150 + i * 95);
-					g->FillRectangle(&darkBrush, 220 + j * width * 2 - space, 115 + i * 95, width + space, 35);					
+					g->FillRectangle(&darkBrush, 220 + j * width * 2, 115 + i * 95, 2 * width - 4, 35);					
 				}
 				else
 				{
@@ -956,7 +955,7 @@ void CSystemMenuView::DrawWorkersMenue(Graphics* g)
 					Color lightColor(230-color,230-color/2,20);
 					SolidBrush lightBrush(lightColor);
 					Timber[i][j].SetRect(220 + j * width * 2 - space, 115 + i * 95, 220 + width + j * width * 2, 150 + i * 95);
-					g->FillRectangle(&lightBrush, 220 + j * width * 2 - space, 115 + i * 95, width + space, 35);
+					g->FillRectangle(&lightBrush, 220 + j * width * 2, 115 + i * 95, 2 * width - 4, 35);
 				}
 				// Hier werden die Rechtecke von der Größe noch ein klein wenig verändert, damit man besser drauf klicken kann
 				Timber[i][j].SetRect(220+ j*width*2-space,115+i*95,220+width+(j+1)*width*2-space,150+i*95);
@@ -1052,13 +1051,10 @@ void CSystemMenuView::DrawWorkersMenue(Graphics* g)
 			width = (unsigned short)200/size;
 		if (width > 10)
 			width = 10;
-		short space = 5;
-		if (width < 5)
-		{
-			if (width < 2)
-				width = 2;
-			space = width;
-		}
+		else if (width < 3)
+			width = 3;
+		short space = width / 2;
+		space = max(2, space);
 
 		// Den Balken zeichnen
 		for (int i = 0; i < 5; i++)
@@ -1072,7 +1068,7 @@ void CSystemMenuView::DrawWorkersMenue(Graphics* g)
 					Color darkColor(42,46,30);
 					SolidBrush darkBrush(darkColor);
 					Timber[i][j].SetRect(220 + j * width * 2 - space, 115 + i * 95, 220 + width + j * width * 2, 150 + i * 95);
-					g->FillRectangle(&darkBrush, 220 + j * width * 2 - space, 115 + i * 95, width + space, 35);
+					g->FillRectangle(&darkBrush, 220 + j * width * 2 - space, 115 + i * 95, 2 * width - 4, 35);
 				}
 				else
 				{
@@ -1082,7 +1078,7 @@ void CSystemMenuView::DrawWorkersMenue(Graphics* g)
 					Color lightColor(230-color,230-color/2,20);
 					SolidBrush lightBrush(lightColor);
 					Timber[i][j].SetRect(220 + j * width * 2 - space, 115 + i * 95, 220 + width + j * width * 2, 150 + i * 95);
-					g->FillRectangle(&lightBrush, 220 + j * width * 2 - space, 115 + i * 95, width + space, 35);
+					g->FillRectangle(&lightBrush, 220 + j * width * 2 - space, 115 + i * 95, 2 * width - 4, 35);
 				}
 				// Hier werden die Rechtecke von der Größe noch ein klein wenig verändert, damit man besser drauf klicken kann
 				Timber[i][j].SetRect(220+ j*width*2-space, 115+i*95, 220+width+(j+1)*width*2-space, 150+i*95);
@@ -1114,27 +1110,27 @@ void CSystemMenuView::DrawWorkersMenue(Graphics* g)
 				
 				if (i == 0)
 				{
-					name.Format("%s: %d %s",yield, pDoc->GetSystem(p.x,p.y).GetProduction()->GetMaxFoodProd(), CResourceManager::GetString("TITAN"));
+					name.Format("%s: %d %s",yield, pDoc->GetSystem(p.x,p.y).GetProduction()->GetTitanProd(), CResourceManager::GetString("TITAN"));
 					g->DrawString(name.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(220, 150 + i * 95, 480, 25), &fontFormat, &fontBrush);
 				}
 				else if (i == 1)
 				{
-					name.Format("%s: %d %s",yield, pDoc->GetSystem(p.x,p.y).GetProduction()->GetIndustryProd(), CResourceManager::GetString("DEUTERIUM"));
+					name.Format("%s: %d %s",yield, pDoc->GetSystem(p.x,p.y).GetProduction()->GetDeuteriumProd(), CResourceManager::GetString("DEUTERIUM"));
 					g->DrawString(name.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(220, 150 + i * 95, 480, 25), &fontFormat, &fontBrush);
 				}
 				else if (i == 2)
 				{
-					name.Format("%s: %d %s",yield, pDoc->GetSystem(p.x,p.y).GetProduction()->GetMaxEnergyProd(), CResourceManager::GetString("DURANIUM"));
+					name.Format("%s: %d %s",yield, pDoc->GetSystem(p.x,p.y).GetProduction()->GetDuraniumProd(), CResourceManager::GetString("DURANIUM"));
 					g->DrawString(name.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(220, 150 + i * 95, 480, 25), &fontFormat, &fontBrush);
 				}
 				else if (i == 3)
 				{
-					name.Format("%s: %d %s",yield, pDoc->GetSystem(p.x,p.y).GetProduction()->GetSecurityProd(), CResourceManager::GetString("CRYSTAL"));
+					name.Format("%s: %d %s",yield, pDoc->GetSystem(p.x,p.y).GetProduction()->GetCrystalProd(), CResourceManager::GetString("CRYSTAL"));
 					g->DrawString(name.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(220, 150 + i * 95, 480, 25), &fontFormat, &fontBrush);
 				}
 				else if (i == 4)
 				{
-					name.Format("%s: %d %s",yield, pDoc->GetSystem(p.x,p.y).GetProduction()->GetResearchProd(), CResourceManager::GetString("IRIDIUM"));
+					name.Format("%s: %d %s",yield, pDoc->GetSystem(p.x,p.y).GetProduction()->GetIridiumProd(), CResourceManager::GetString("IRIDIUM"));
 					g->DrawString(name.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(220, 150 + i * 95, 480, 25), &fontFormat, &fontBrush);
 				}
 			}
@@ -1153,7 +1149,6 @@ void CSystemMenuView::DrawWorkersMenue(Graphics* g)
 	}
 	
 	// Hier noch die Gesamt- und freien Arbeiter unten in der Mitte zeichnen
-	CRect workertimber[200];
 	unsigned short width = 0;
 	unsigned short size = 0;
 	unsigned short worker = pDoc->GetSystem(p.x,p.y).GetNumberOfWorkbuildings(10,0,NULL);
@@ -1162,13 +1157,9 @@ void CSystemMenuView::DrawWorkersMenue(Graphics* g)
 		width = (unsigned short)200/size;
 	if (width > 10)
 		width = 10;
-	short space = 5;
-	if (width < 5)
-	{
-		if (width < 2)
-			width = 2;
-		space = width;
-	}		
+	if (width < 3)
+		width = 3;
+	
 	// Den Balken zeichnen
 	for (int i = 0; i < worker; i++)
 	{
@@ -1180,16 +1171,14 @@ void CSystemMenuView::DrawWorkersMenue(Graphics* g)
 				color = 200;
 			Color lightColor(230-color,230-color/2,20);
 			SolidBrush lightBrush(lightColor);
-			workertimber[i].SetRect(220+i*width-space,600,220+width+i*width-space,625);
-			g->FillRectangle(&lightBrush, 220 + i * width - space, 600, space, 25);
+			g->FillRectangle(&lightBrush, 220 + i * width, 600, width - 2, 25);
 		}
 		else
 		{
 			// Dunkle Farbe wenn sie Offline sind
 			Color darkColor(42,46,30);
 			SolidBrush darkBrush(darkColor);
-			workertimber[i].SetRect(220+i*width-space,600,220+width+i*width-space,625);
-			g->FillRectangle(&darkBrush, 220 + i * width - space, 600, space, 25);
+			g->FillRectangle(&darkBrush, 220 + i * width, 600, width - 2, 25);
 		}
 	}
 	
@@ -1223,7 +1212,7 @@ void CSystemMenuView::DrawBuildingsOverviewMenue(Graphics* g)
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
 	
-	CMajor* pMajor = pDoc->GetPlayersRace();
+	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
 	if (!pMajor)
 		return;
@@ -1385,7 +1374,7 @@ void CSystemMenuView::DrawEnergyMenue(Gdiplus::Graphics *g)
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
 	
-	CMajor* pMajor = pDoc->GetPlayersRace();
+	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
 	if (!pMajor)
 		return;
@@ -1553,7 +1542,7 @@ void CSystemMenuView::DrawSystemTradeMenue(Graphics* g)
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
 
-	CMajor* pMajor = pDoc->GetPlayersRace();
+	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
 	if (!pMajor)
 		return;
@@ -1794,7 +1783,7 @@ void CSystemMenuView::DrawButtonsUnderSystemView(Graphics* g)
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
 
-	CMajor* pMajor = pDoc->GetPlayersRace();
+	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
 	
 	CString fontName = "";
@@ -1819,7 +1808,7 @@ void CSystemMenuView::DrawBuildList(Graphics* g)
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
 
-	CMajor* pMajor = pDoc->GetPlayersRace();
+	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
 
 	CString fontName = "";
@@ -1966,7 +1955,7 @@ void CSystemMenuView::DrawSystemProduction(Graphics* g)
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
 
-	CMajor* pMajor = pDoc->GetPlayersRace();
+	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
 	if (!pMajor)
 		return;
@@ -2178,7 +2167,7 @@ void CSystemMenuView::DrawBuildingProduction(Graphics* g)
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
 
-	CMajor* pMajor = pDoc->GetPlayersRace();
+	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
 
 	RectF r(BuildingDescription.left, BuildingDescription.top + 5, BuildingDescription.right - BuildingDescription.left, 25);
@@ -2921,7 +2910,10 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
 
-	CMajor* pMajor = pDoc->GetPlayersRace();
+	if (!pDoc->m_bDataReceived)
+		return;
+
+	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
 	if (!pMajor)
 		return;
@@ -3497,9 +3489,14 @@ void CSystemMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	ASSERT(pDoc);
+
+	if (!pDoc->m_bDataReceived)
+		return;
+
 	CalcLogicalPoint(point);
 
-	CMajor* pMajor = pDoc->GetPlayersRace();
+	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
 	if (!pMajor)
 		return;
@@ -3534,8 +3531,9 @@ void CSystemMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 					{
 						for (int y = 0 ; y < STARMAP_SECTORS_VCOUNT; y++)
 							for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-								if (pDoc->m_System[x][y].GetOwnerOfSystem() == pDoc->GetBuildingInfo(RunningNumber).GetOwnerOfBuilding())
-									pDoc->m_System[x][y].AssemblyListCheck(&pDoc->BuildingInfo,&pDoc->m_GlobalBuildings);
+								if (pDoc->m_System[x][y].GetOwnerOfSystem() == m_pPlayersRace->GetRaceID())
+									if (m_pPlayersRace->GetRaceBuildingNumber() ==	pDoc->GetBuildingInfo(RunningNumber).GetOwnerOfBuilding())
+										pDoc->m_System[x][y].AssemblyListCheck(&pDoc->BuildingInfo,&pDoc->m_GlobalBuildings);
 					}
 					// sonst den Baulistencheck nur in dem aktuellen System durchführen
 					else
@@ -3623,8 +3621,9 @@ void CSystemMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 					{
 						for (int y = 0 ; y < STARMAP_SECTORS_VCOUNT; y++)
 							for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-								if (pDoc->m_System[x][y].GetOwnerOfSystem() == pDoc->GetBuildingInfo(RunningNumber).GetOwnerOfBuilding())
-									pDoc->m_System[x][y].AssemblyListCheck(&pDoc->BuildingInfo,&pDoc->m_GlobalBuildings);
+								if (pDoc->m_System[x][y].GetOwnerOfSystem() == m_pPlayersRace->GetRaceID())
+									if (m_pPlayersRace->GetRaceBuildingNumber() ==	pDoc->GetBuildingInfo(RunningNumber).GetOwnerOfBuilding())
+										pDoc->m_System[x][y].AssemblyListCheck(&pDoc->BuildingInfo,&pDoc->m_GlobalBuildings);
 									
 
 					}
@@ -3655,8 +3654,9 @@ void CSystemMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 					{
 						for (int y = 0 ; y < STARMAP_SECTORS_VCOUNT; y++)
 							for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-								if (pDoc->m_System[x][y].GetOwnerOfSystem() == pDoc->GetBuildingInfo(RunningNumber).GetOwnerOfBuilding())
-									pDoc->m_System[x][y].AssemblyListCheck(&pDoc->BuildingInfo,&pDoc->m_GlobalBuildings);
+								if (pDoc->m_System[x][y].GetOwnerOfSystem() == m_pPlayersRace->GetRaceID())
+									if (m_pPlayersRace->GetRaceBuildingNumber() ==	pDoc->GetBuildingInfo(RunningNumber).GetOwnerOfBuilding())
+										pDoc->m_System[x][y].AssemblyListCheck(&pDoc->BuildingInfo,&pDoc->m_GlobalBuildings);
 									
 
 					}
@@ -3676,6 +3676,11 @@ void CSystemMenuView::OnRButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	ASSERT(pDoc);
+
+	if (!pDoc->m_bDataReceived)
+		return;
+
 	CalcLogicalPoint(point);
 
 	// Das hier alles nur machen, wenn wir in der System-Ansicht sind
@@ -3704,6 +3709,12 @@ void CSystemMenuView::OnRButtonDown(UINT nFlags, CPoint point)
 void CSystemMenuView::OnMouseMove(UINT nFlags, CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
+	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	ASSERT(pDoc);
+
+	if (!pDoc->m_bDataReceived)
+		return;
+
 	CalcLogicalPoint(point);
 	ButtonReactOnMouseOver(point, &m_BuildMenueMainButtons);
 	
@@ -3715,8 +3726,11 @@ void CSystemMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 	// TODO: Add your message handler code here and/or call default
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
+
+	if (!pDoc->m_bDataReceived)
+		return;
 	
-	CMajor* pMajor = pDoc->GetPlayersRace();
+	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
 	if (!pMajor)
 		return;
@@ -3795,8 +3809,9 @@ void CSystemMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 					{
 						for (int y = 0 ; y < STARMAP_SECTORS_VCOUNT; y++)
 							for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-								if (pDoc->m_System[x][y].GetOwnerOfSystem() == pDoc->GetBuildingInfo(RunningNumber).GetOwnerOfBuilding())
-									pDoc->m_System[x][y].AssemblyListCheck(&pDoc->BuildingInfo,&pDoc->m_GlobalBuildings);
+								if (pDoc->m_System[x][y].GetOwnerOfSystem() == m_pPlayersRace->GetRaceID())
+									if (m_pPlayersRace->GetRaceBuildingNumber() ==	pDoc->GetBuildingInfo(RunningNumber).GetOwnerOfBuilding())
+										pDoc->m_System[x][y].AssemblyListCheck(&pDoc->BuildingInfo,&pDoc->m_GlobalBuildings);
 					}
 					// sonst den Baulistencheck nur in dem aktuellen System durchführen
 					else
@@ -3819,7 +3834,7 @@ void CSystemMenuView::CreateButtons()
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
 
-	CMajor* pMajor = pDoc->GetPlayersRace();
+	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
 
 	CString sPrefix = pMajor->GetPrefix();

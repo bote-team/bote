@@ -7,6 +7,7 @@
 #include "Races\RaceController.h"
 
 // CMainBaseView
+CMajor* CMainBaseView::m_pPlayersRace = NULL;
 
 IMPLEMENT_DYNCREATE(CMainBaseView, CView)
 
@@ -53,6 +54,13 @@ void CMainBaseView::Dump(CDumpContext& dc) const
 void CMainBaseView::OnInitialUpdate()
 {
 	CView::OnInitialUpdate();
+
+	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	ASSERT(pDoc);
+
+	CString sID = pDoc->GetPlayersRaceID();
+	m_pPlayersRace = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(sID));
+	ASSERT(m_pPlayersRace);
 
 	// TODO: Add your specialized code here and/or call the base class
 	m_TotalSize = CSize(1075, 750);	

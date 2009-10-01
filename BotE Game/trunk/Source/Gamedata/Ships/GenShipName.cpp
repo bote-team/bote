@@ -157,7 +157,7 @@ CString CGenShipName::GenerateShipName(const CString& sRaceID, BOOLEAN station)
 {
 	if (m_mShipNames[sRaceID].size() == 0)
 	{
-		m_mShipNames.clear();
+		m_mShipNames[sRaceID].clear();
 		for (UINT i = 0; i < m_mUsedNames[sRaceID].size(); i++)
 			m_mShipNames[sRaceID].push_back(m_mUsedNames[sRaceID].at(i));
 		

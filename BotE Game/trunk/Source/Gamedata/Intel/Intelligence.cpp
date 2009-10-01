@@ -177,8 +177,7 @@ void CIntelligence::ClearBoni()
 
 /// Resetfunktion für das CIntelligence-Objekt.
 void CIntelligence::Reset()
-{
-	
+{	
 	for (int i = 0; i < 2; i++)
 	{
 		m_iSPStorage[i].clear();

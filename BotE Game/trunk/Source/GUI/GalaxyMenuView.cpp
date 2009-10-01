@@ -76,8 +76,9 @@ void CGalaxyMenuView::OnNewRound()
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT_VALID(pDoc);
 	
-	CMajor* pMajor = pDoc->GetPlayersRace();
-	ASSERT(pMajor);
+	CString sID = pDoc->GetPlayersRaceID();
+	m_pPlayersRace = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(sID));
+	ASSERT(m_pPlayersRace);
 		
 	// Bei jeder neuen Runde die Galaxiekarte neu generieren
 	GenerateGalaxyMap();
@@ -90,7 +91,7 @@ void CGalaxyMenuView::OnNewRound()
 	if (m_bScrollToHome)
 	{
 		// zu Beginn zum Startsektor scrollen, so dass dieser relativ zentral angezeigt wird.
-		CPoint homePos = pDoc->GetRaceKO(pMajor->GetRaceID());
+		CPoint homePos = pDoc->GetRaceKO(m_pPlayersRace->GetRaceID());
 		CPoint scrollPos;
 		scrollPos.x = homePos.x * GetScrollLimit(SB_HORZ) / STARMAP_SECTORS_HCOUNT;
 		scrollPos.y = homePos.y * GetScrollLimit(SB_VERT) / STARMAP_SECTORS_VCOUNT;
@@ -108,9 +109,12 @@ void CGalaxyMenuView::OnDraw(CDC* dc)
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT_VALID(pDoc);
 
-	CMajor* pMajor = pDoc->GetPlayersRace();
+	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
 	if (!pMajor)
+		return;
+
+	if (!pDoc->m_bDataReceived)
 		return;
 		
 	// ZU ERLEDIGEN: Hier Code zum Zeichnen der ursprünglichen Daten hinzufügen
@@ -420,7 +424,7 @@ void CGalaxyMenuView::OnDraw(CDC* dc)
 	for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
 		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
 		{
-			pDoc->GetSector(x,y).DrawSectorsName(pDC ,pDoc);
+			pDoc->GetSector(x,y).DrawSectorsName(pDC ,pDoc, m_pPlayersRace);
 			// eigene Handelsrouten zeichnen
 			if (pDoc->m_pIniLoader->GetValue("SHOWTRADEROUTES"))
 				if (pDoc->m_System[x][y].GetOwnerOfSystem() == pMajor->GetRaceID())
@@ -450,8 +454,9 @@ void CGalaxyMenuView::OnInitialUpdate()
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
 
-	CMajor* pPlayer = pDoc->GetPlayersRace();
-	ASSERT(pPlayer);
+	CString sID = pDoc->GetPlayersRaceID();
+	m_pPlayersRace = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(sID));
+	ASSERT(m_pPlayersRace);
 
 	// Cursor aus Ressource laden
     HCURSOR m_hCur = AfxGetApp()->LoadCursor(IDC_CURSOR);
@@ -475,7 +480,7 @@ void CGalaxyMenuView::OnInitialUpdate()
 	m_bShipMove	= FALSE;
 	m_bScrollToHome = TRUE;
 
-	pDoc->SetKO(pDoc->GetRaceKO(pPlayer->GetRaceID()));
+	pDoc->SetKO(pDoc->GetRaceKO(m_pPlayersRace->GetRaceID()));
 
 	CScrollView::OnInitialUpdate();
 }
@@ -578,12 +583,15 @@ void CGalaxyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 	// TODO: Code für die Behandlungsroutine für Nachrichten hier einfügen und/oder Standard aufrufen
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
+
+	if (!pDoc->m_bDataReceived)
+		return;
 	
-	CMajor* pMajor = pDoc->GetPlayersRace();
+	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
 	if (!pMajor)
 		return;
-
+	
 	// Das hier alles nur machen, wenn wir in der Galaxiemap-Ansicht sind	
 	// Mauskoordinaten in ungezoomte Koordinaten der Starmap umrechnen
 	CPoint pt(point);
@@ -740,8 +748,11 @@ BOOL CGalaxyMenuView::OnMouseWheel(UINT nFlags, short zDelta, CPoint point)
 	// TODO: Code für die Behandlungsroutine für Nachrichten hier einfügen und/oder Standard aufrufen
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
+
+	if (!pDoc->m_bDataReceived)
+		return CScrollView::OnMouseWheel(nFlags, zDelta, point);
 	
-	CMajor* pMajor = pDoc->GetPlayersRace();
+	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
 	if (!pMajor)
 		return CScrollView::OnMouseWheel(nFlags, zDelta, point);
@@ -818,8 +829,11 @@ void CGalaxyMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 	// TODO: Code für die Behandlungsroutine für Nachrichten hier einfügen und/oder Standard aufrufen
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
+
+	if (!pDoc->m_bDataReceived)
+		return;
 	
-	CMajor* pMajor = pDoc->GetPlayersRace();
+	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
 	if (!pMajor)
 		return;
@@ -900,14 +914,21 @@ void CGalaxyMenuView::OnMouseMove(UINT nFlags, CPoint point)
 	// TODO: Code für die Behandlungsroutine für Nachrichten hier einfügen und/oder Standard aufrufen
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
+
+	if (!pDoc->m_bDataReceived)
+		return;
 	
 	// Wenn wir in der Galaxieansicht sind und Schiffe bewegen wollen
 	if (m_bShipMove && m_nRange)
 	{
-		CMajor* pMajor = pDoc->GetPlayersRace();
+		CMajor* pMajor = m_pPlayersRace;
 		ASSERT(pMajor);
 		if (!pMajor)
 			return;
+
+		// ist irgendwas ausgewählt
+		//if (pMajor->GetStarmap()->GetSelection() == Sector(-1,-1))
+		//	return;
 
 		// Mauskoordinaten in ungezoomte Koordinaten der Starmap umrechnen
 		CPoint pt(point);
@@ -938,7 +959,7 @@ void CGalaxyMenuView::OnMouseMove(UINT nFlags, CPoint point)
 	// Wenn wir in der Galaxieansicht sind und eine Handelsroute ziehen wollen
 	else if (m_bDrawTradeRoute == TRUE)
 	{
-		CMajor* pMajor = pDoc->GetPlayersRace();
+		CMajor* pMajor = m_pPlayersRace;
 		ASSERT(pMajor);
 		if (!pMajor)
 			return;
@@ -960,7 +981,7 @@ void CGalaxyMenuView::OnMouseMove(UINT nFlags, CPoint point)
 	// Wenn wir in der Galaxieansicht sind und eine Ressourcenroute ziehen wollen
 	else if (m_bDrawResourceRoute == TRUE)
 	{
-		CMajor* pMajor = pDoc->GetPlayersRace();
+		CMajor* pMajor = m_pPlayersRace;
 		ASSERT(pMajor);
 		if (!pMajor)
 			return;
@@ -987,6 +1008,10 @@ void CGalaxyMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 {
 	// TODO: Code für die Behandlungsroutine für Nachrichten hier einfügen und/oder Standard aufrufen
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	ASSERT(pDoc);
+
+	if (!pDoc->m_bDataReceived)
+		return;
 
 	CPoint position = GetScrollPosition();
 	CPoint oldPosition = position;
@@ -1091,7 +1116,7 @@ void CGalaxyMenuView::GenerateGalaxyMap()
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
 
-	CMajor* pMajor = pDoc->GetPlayersRace();
+	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
 	// Galaxiehintergrundbild laden
 	if (m_pGalaxyBackground)
@@ -1143,7 +1168,7 @@ void CGalaxyMenuView::GenerateGalaxyMap()
 	{
 		Color clr;
 		clr.SetFromCOLORREF(it->second->GetDesign()->m_clrSector);		
-		Color color(85, clr.GetR(), clr.GetG(), clr.GetB());
+		Color color(110, clr.GetR(), clr.GetG(), clr.GetB());
 		
 		// hier wurde der R Wert mit dem B Wert getauscht, da die Funktion SetPixelData sonst nicht stimmt.
 		// color = RGB(GetBValue(color), GetGValue(color), GetRValue(color));
@@ -1162,7 +1187,7 @@ void CGalaxyMenuView::GenerateGalaxyMap()
 	if (ownerMark[sMinorID])
 		for (int y = 0; y < STARMAP_SECTOR_HEIGHT; y++)
 			for (int x = 0; x < STARMAP_SECTOR_WIDTH; x++)
-				ownerMark[sMinorID]->SetPixel(x, y, Color(85,200,200,200));
+				ownerMark[sMinorID]->SetPixel(x, y, Color(110,200,200,200));
 		
 	// Farbe für Nebel des Krieges hinzuzufügen
 	CString sFogOfWarID = "__FOG_OF_WAR__";
@@ -1201,7 +1226,7 @@ void CGalaxyMenuView::GenerateGalaxyMap()
 				g->DrawImage(stars[pDoc->GetSector(x,y).GetSunColor()], pt.x, pt.y, STARMAP_SECTOR_WIDTH, STARMAP_SECTOR_HEIGHT);
 			}
 			
-			pDoc->GetSector(x,y).DrawShipSymbolInSector(g, pDoc);
+			pDoc->GetSector(x,y).DrawShipSymbolInSector(g, pDoc, m_pPlayersRace);
 		}
 	delete g;
 

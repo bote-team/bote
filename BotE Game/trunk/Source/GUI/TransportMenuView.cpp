@@ -39,7 +39,11 @@ END_MESSAGE_MAP()
 void CTransportMenuView::OnDraw(CDC* dc)
 {
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
-	
+	ASSERT(pDoc);
+
+	if (!pDoc->m_bDataReceived)
+		return;
+
 	// TODO: add draw code here
 	CMemDC pDC(dc);
 	CRect client;
@@ -88,7 +92,7 @@ void CTransportMenuView::OnInitialUpdate()
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
 
-	CMajor* pMajor = pDoc->GetPlayersRace();
+	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
 
 	CreateButtons();
@@ -125,7 +129,7 @@ void CTransportMenuView::DrawTransportMenue(Graphics* g)
 	if (pDoc->GetNumberOfTheShipInArray() == -1)
 		return;
 
-	CMajor* pMajor = pDoc->GetPlayersRace();
+	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
 	if (!pMajor)
 		return;
@@ -412,7 +416,10 @@ void CTransportMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
 
-	CMajor* pMajor = pDoc->GetPlayersRace();
+	if (!pDoc->m_bDataReceived)
+		return;
+
+	CMajor* pMajor = m_pPlayersRace;
 	if (!pMajor)
 		return;
 	
@@ -608,7 +615,7 @@ void CTransportMenuView::CreateButtons()
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
 
-	CMajor* pMajor = pDoc->GetPlayersRace();
+	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
 
 	// alle Buttons in der View anlegen und Grafiken laden
@@ -628,7 +635,10 @@ void CTransportMenuView::OnRButtonDown(UINT nFlags, CPoint point)
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
 
-	CMajor* pMajor = pDoc->GetPlayersRace();
+	if (!pDoc->m_bDataReceived)
+		return;
+
+	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
 
 	pDoc->GetMainFrame()->SelectMainView(GALAXY_VIEW, pMajor->GetRaceID());

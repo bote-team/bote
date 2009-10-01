@@ -19,6 +19,7 @@ static char THIS_FILE[] = __FILE__;
 
 /////////////////////////////////////////////////////////////////////////////
 // CMenuChooseView
+CMajor* CMenuChooseView::m_pPlayersRace = NULL;
 
 IMPLEMENT_DYNCREATE(CMenuChooseView, CView)
 
@@ -57,8 +58,11 @@ void CMenuChooseView::OnDraw(CDC* pDC)
 	// ZU ERLEDIGEN: Code zum Zeichnen hier einfügen
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
+
+	if (!pDoc->m_bDataReceived)
+		return;
 	
-	CMajor* pMajor = pDoc->GetPlayersRace();
+	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
 	if (!pMajor)
 		return;
@@ -189,7 +193,8 @@ void CMenuChooseView::OnInitialUpdate()
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
 
-	CMajor* pMajor = pDoc->GetPlayersRace();
+	CString sID = pDoc->GetPlayersRaceID();
+	CMajor* pMajor = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(sID));
 	ASSERT(pMajor);
 
 	m_LastSystem = CPoint(-1,-1);
@@ -248,8 +253,11 @@ void CMenuChooseView::OnLButtonUp(UINT nFlags, CPoint point)
 	// TODO: Code für die Behandlungsroutine für Nachrichten hier einfügen und/oder Standard aufrufen
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
+
+	if (!pDoc->m_bDataReceived)
+		return;
 	
-	CMajor* pMajor = pDoc->GetPlayersRace();
+	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
 	if (!pMajor)
 		return;
@@ -263,7 +271,6 @@ void CMenuChooseView::OnLButtonUp(UINT nFlags, CPoint point)
 		CRect r = m_RoundEnd->GetRect();
 		CalcDeviceRect(r);
 		InvalidateRect(r, FALSE);
-		pDoc->m_bDataReceived = false;
 		pDoc->m_pSoundManager->StopMessages(TRUE);
 		client.EndOfRound(pDoc);
 	}
@@ -340,6 +347,10 @@ void CMenuChooseView::OnMouseMove(UINT nFlags, CPoint point)
 {
 	// TODO: Fügen Sie hier Ihren Meldungsbehandlungscode ein, und/oder benutzen Sie den Standard.
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	ASSERT(pDoc);
+
+	if (!pDoc->m_bDataReceived)
+		return;
 
 	CalcLogicalPoint(point);
 

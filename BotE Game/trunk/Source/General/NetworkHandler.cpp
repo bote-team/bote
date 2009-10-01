@@ -42,14 +42,16 @@ void CNetworkHandler::OnNextRound(network::CNextRound *pMsg)
 
 	// Client: Rundendaten vom Server sind eingetroffen, in Dokument übernehmen,
 	// Oberfläche zum Spielen wieder aktivieren
+	m_pDoc->m_bDataReceived = false;
 	pMsg->DeserializeToDoc(m_pDoc);
 	// ...
-	m_pDoc->m_bDataReceived = true;
+	AfxGetApp()->PostThreadMessage(WM_INITVIEWS, 0, 0);
+	AfxGetApp()->PostThreadMessage(WM_UPDATEVIEWS, 0, 0);
 
 	// wurde Rundenende geklickt zurücksetzen
 	m_pDoc->m_bRoundEndPressed = false;
-	AfxGetApp()->PostThreadMessage(WM_INITVIEWS, 0, 0);
-	AfxGetApp()->PostThreadMessage(WM_UPDATEVIEWS, 0, 0);
+	m_pDoc->m_bDataReceived = true;
+	
 	if (m_pDoc->m_iRound > 1)
 		m_pDoc->m_pSoundManager->PlaySound(SNDMGR_SOUND_ENDOFROUND, SNDMGR_PRIO_HIGH);
 	m_pDoc->m_pSoundManager->PlayMessages(600, 200);	

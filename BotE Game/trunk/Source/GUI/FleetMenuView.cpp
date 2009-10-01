@@ -47,6 +47,12 @@ void CFleetMenuView::OnNewRound()
 void CFleetMenuView::OnDraw(CDC* dc)
 {
 	// TODO: add draw code here
+	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	ASSERT(pDoc);
+
+	if (!pDoc->m_bDataReceived)
+		return;
+	
 	// Doublebuffering wird initialisiert
 	CMemDC pDC(dc);
 	CRect client;
@@ -94,7 +100,7 @@ void CFleetMenuView::OnInitialUpdate()
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
 
-	CMajor* pMajor = pDoc->GetPlayersRace();
+	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
 
 	CreateButtons();
@@ -134,7 +140,7 @@ void CFleetMenuView::DrawFleetMenue(Graphics* g)
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
 
-	CMajor* pMajor = pDoc->GetPlayersRace();
+	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
 	if (!pMajor)
 		return;
@@ -504,7 +510,10 @@ void CFleetMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
 
-	CMajor* pMajor = pDoc->GetPlayersRace();
+	if (!pDoc->m_bDataReceived)
+		return;
+
+	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
 	if (!pMajor)
 		return;
@@ -703,6 +712,11 @@ void CFleetMenuView::OnMouseMove(UINT nFlags, CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	ASSERT(pDoc);
+
+	if (!pDoc->m_bDataReceived)
+		return;
+
 	CalcLogicalPoint(point);
 
 	// Wenn wir in der Flottenansicht sind und mit der Maus über ein Schiff in der Flotte gehen
@@ -738,7 +752,7 @@ void CFleetMenuView::OnRButtonDown(UINT nFlags, CPoint point)
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
 	
-	CMajor* pMajor = pDoc->GetPlayersRace();
+	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
 	if (!pMajor)
 		return;

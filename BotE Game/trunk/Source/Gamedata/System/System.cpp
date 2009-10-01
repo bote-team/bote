@@ -1061,7 +1061,7 @@ void CSystem::CalculateBuildableBuildings(CSector* sector, BuildingInfoArray* bu
 		if (id > minID)
 		{
 			// steht hier ein Gebäude einer anderen Rasse?
-			if (buildingInfo->GetAt(id-1).GetOwnerOfBuilding() != m_sOwnerOfSystem)
+			if (buildingInfo->GetAt(id-1).GetOwnerOfBuilding() != pMajor->GetRaceBuildingNumber())
 				equivalents = TRUE;
 			minID = id;
 			// Checken das das Gebäude nicht schon in der Liste der baubaren Gebäude vorkommt
@@ -1120,7 +1120,7 @@ void CSystem::CalculateBuildableBuildings(CSector* sector, BuildingInfoArray* bu
 	for (int i = 0; i < m_AllwaysBuildableBuildings.GetSize(); i++)
 	{
 		// Gibt es in der Liste der immer baubaren Gebäude ein Gebäude einer anderen Rasse?
-		if (buildingInfo->GetAt(m_AllwaysBuildableBuildings.GetAt(i)-1).GetOwnerOfBuilding() != m_sOwnerOfSystem)
+		if (buildingInfo->GetAt(m_AllwaysBuildableBuildings.GetAt(i)-1).GetOwnerOfBuilding() != pMajor->GetRaceBuildingNumber())
 			equivalents = TRUE;
 		BOOLEAN found = FALSE;
 		for (int j = 0; j < size; j++)
@@ -1136,7 +1136,7 @@ void CSystem::CalculateBuildableBuildings(CSector* sector, BuildingInfoArray* bu
 // ------------------------------------ 2 -------------------------------------------- //
 	// alle anderen Gebäudeinfos durchgehen
 	for (int i = 0; i < buildingInfo->GetSize(); i++)
-	{		
+	{	
 		// Überprüfen, dass dieses Gebäude nicht schon in der Liste der 
 		// baubaren Gebäude und Updates vorhanden ist
 		BOOLEAN found = FALSE;
@@ -1179,7 +1179,8 @@ void CSystem::CalculateBuildableBuildings(CSector* sector, BuildingInfoArray* bu
 						// ansonsten haben wir keinen Vorgänger des Gebäudes im System stehen // Punkt 2.1.1.2						
 					}
 					// Gebäude hat keinen Vorgänger
-					else if (buildingInfo->GetAt(i).GetOwnerOfBuilding() == pMajor->GetRaceBuildingNumber())	// Punkt 2.1.2
+					// es gehört zu einer Rasse oder kann von jeder Rasse gebaut werden -> Sprich 0
+					else if (buildingInfo->GetAt(i).GetOwnerOfBuilding() == 0 || buildingInfo->GetAt(i).GetOwnerOfBuilding() == pMajor->GetRaceBuildingNumber())	// Punkt 2.1.2
 					{
 						// schauen das sich nicht schon ein Äquivalent in der Liste befindet, aber nur wenn das Gebäude eine andere Rasse bauen
 						// kann oder wenn es jeder bauen kann
@@ -2515,7 +2516,7 @@ BOOLEAN CSystem::CheckGeneralConditions(CBuildingInfo* building, CSector* sector
 			return FALSE;
 	// Nur wirklicher Besitzer des Gebäudes
 	if (building->GetOnlyRace())
-		if (m_sOwnerOfSystem != building->GetOwnerOfBuilding())
+		if (pMajor->GetRaceBuildingNumber() != building->GetOwnerOfBuilding())
 			return FALSE;
 	// Minimale Bevölkerungsanzahl checken
 	if (building->GetMinHabitants() > 0)

@@ -7,12 +7,12 @@
 #include "Races\RaceController.h"
 
 // CBottomBaseView
+CMajor* CBottomBaseView::m_pPlayersRace = NULL;
 
 IMPLEMENT_DYNCREATE(CBottomBaseView, CView)
 
 CBottomBaseView::CBottomBaseView()
 {
-
 }
 
 CBottomBaseView::~CBottomBaseView()
@@ -57,6 +57,11 @@ void CBottomBaseView::OnInitialUpdate()
 
 	// TODO: Add your specialized code here and/or call the base class
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	ASSERT(pDoc);
+
+	CString sID = pDoc->GetPlayersRaceID();
+	m_pPlayersRace = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(sID));
+	ASSERT(m_pPlayersRace);
 
 	// Größe der View in logischen Koordinaten
 	m_TotalSize = CSize(1075, 249);
@@ -74,7 +79,7 @@ Gdiplus::Color CBottomBaseView::GetFontColorForSmallButton(void)
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
 
-	CMajor* pPlayer = pDoc->GetPlayersRace();
+	CMajor* pPlayer = m_pPlayersRace;
 	ASSERT(pPlayer);
 
 	Color color;

@@ -138,7 +138,7 @@ void CIntelInfo::CalcIntelInfo(CBotf2Doc* pDoc, CMajor* pOurRace)
 		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
 			for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
 			{
-				if (it->second->IsRaceContacted(pOurRace->GetRaceID()))
+				if (it->second->IsRaceContacted(pOurRace->GetRaceID()) || it->first == pOurRace->GetRaceID())
 					if (pDoc->m_Sector[x][y].GetScanned(pOurRace->GetRaceID()))
 						if (pDoc->m_Sector[x][y].GetOwnerOfSector() == it->first)
 						{

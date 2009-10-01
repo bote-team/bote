@@ -343,8 +343,7 @@ BOOLEAN CShipAI::DoAttackMove(int index)
 								#ifdef TRACE_SHIPAI
 								MYTRACE(MT::LEVEL_INFO, "Race %d: ATTACK at near target: %d/%d\n",targetKO.x,targetKO.y);
 								#endif
-								m_pSectorAI->GetOffensiveTargets(sRace)->erase(m_pSectorAI->GetOffensiveTargets(sRace)->begin() + z);
-								AfxMessageBox("CShipAI::SoAttackMove() -> checken das Offensivziel korrekt gelöscht wird");
+								m_pSectorAI->GetOffensiveTargets(sRace)->erase(m_pSectorAI->GetOffensiveTargets(sRace)->begin() + z);								
 								return TRUE;
 							}
 		}

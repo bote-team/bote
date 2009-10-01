@@ -78,7 +78,7 @@ protected: // Nur aus Serialisierung erzeugen
 	CRaceController* m_pRaceCtrl;	///< Rassencontroller für alle Rassen des Spiels
 	CSectorAI*		 m_pSectorAI;	///< Informationen zu allen Sektoren, welche die KI benötigt.
 	CAIPrios*		 m_pAIPrios;	///< zusätzliche Priotitäten, welche für die System-KI-Berechnung benötigt werden	
-
+	
 public:
 	// Operationen
 public:
@@ -195,10 +195,6 @@ public:
 	/// @return Zeiger auf Statistiken
 	CStatistics* GetStatistics(void) {return &m_Statistics;}
 
-	/// Funktion gibt die Rassen-ID der lokalen Spielerrasse zurück.
-	/// @return Zeiger auf Majorrace-Rassenobjekt
-	CMajor* GetPlayersRace(void) const;
-	
 	/// Funktion gibt einen Zeiger auf die Sektoren-KI zurück.
 	CSectorAI* GetSectorAI(void) const {return m_pSectorAI;}
 
@@ -209,9 +205,17 @@ public:
 	/// @return Zeiger auf das Schiffsinformationsfeld
 	ShipInfoArray* GetShipInfos(void) {return &m_ShipInfoArray;}
 
+	/// Funktion gibt die Rassen-ID der lokalen Spielerrasse zurück.
+	/// @return Zeiger auf Majorrace-Rassenobjekt
+	CString GetPlayersRaceID(void) const;
+
 protected:
 	// Private Funktionen die bei der NextRound Berechnung aufgerufen werden. Dadurch wird die NextRound Funktion
 	// um einiges verkleinert
+	
+	/// Funktion gibt einen Zeiger auf die lokale Spielerrasse zurück.
+	/// @return Zeiger auf Majorrace-Rassenobjekt
+	CMajor* GetPlayersRace(void) const;
 	
 	/// Diese Funktion führt allgemeine Berechnung durch, die immer zu Beginn der NextRound-Calculation stattfinden
 	/// müssen. So werden z.B. alte Nachrichten gelöscht, die Statistiken berechnet usw..

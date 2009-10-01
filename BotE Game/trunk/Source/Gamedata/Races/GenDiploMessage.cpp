@@ -181,7 +181,7 @@ bool CGenDiploMessage::GenerateMajorOffer(CDiplomacyInfo& info)
 			else if (info.m_nResources[DILITHIUM] > 0)
 			{
 				CString s; s.Format("%d",info.m_nResources[DILITHIUM]);
-				res = CResourceManager::GetString("DILITHIUM_REQUEST", FALSE, s);
+				res = CResourceManager::GetString("DERITIUM_REQUEST", FALSE, s);
 			}
 			sOffer.Replace("$ressource$",res);
 			
@@ -241,7 +241,7 @@ bool CGenDiploMessage::GenerateMajorOffer(CDiplomacyInfo& info)
 		else if (info.m_nResources[DILITHIUM] > 0)
 		{
 			CString s; s.Format("%d",info.m_nResources[DILITHIUM]);
-			sOffer = CResourceManager::GetString("EXTRA_DILITHIUM", FALSE, sOffer, s);
+			sOffer = CResourceManager::GetString("EXTRA_DERITIUM", FALSE, sOffer, s);
 		}
 	}
 	if (info.m_nType != CORRUPTION && info.m_nType != PRESENT && info.m_nType != DIP_REQUEST && info.m_nType != WAR && info.m_nType != WAR_PACT)

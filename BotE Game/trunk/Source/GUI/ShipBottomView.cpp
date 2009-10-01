@@ -57,8 +57,11 @@ void CShipBottomView::OnDraw(CDC* dc)
 {
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
+
+	if (!pDoc->m_bDataReceived)
+		return;
 	
-	CMajor* pMajor = pDoc->GetPlayersRace();
+	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
 	if (!pMajor)
 		return;
@@ -688,7 +691,7 @@ void CShipBottomView::OnInitialUpdate()
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
 
-	CMajor* pPlayer = pDoc->GetPlayersRace();
+	CMajor* pPlayer = m_pPlayersRace;
 	ASSERT(pPlayer);
 
 	m_LastKO = pDoc->GetKO();
@@ -716,8 +719,11 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 	// TODO: Add your message handler code here and/or call default
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
+
+	if (!pDoc->m_bDataReceived)
+		return;
 	
-	CMajor* pMajor = pDoc->GetPlayersRace();
+	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
 	if (!pMajor)
 		return;
@@ -932,11 +938,14 @@ void CShipBottomView::OnLButtonDblClk(UINT nFlags, CPoint point)
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
 
+	if (!pDoc->m_bDataReceived)
+		return;
+
 	CalcLogicalPoint(point);
 
 	if (/*CGalaxyMenuView::IsMoveShip() && */m_RectForTheShip.PtInRect(point))
 	{
-		CMajor* pMajor = pDoc->GetPlayersRace();
+		CMajor* pMajor = m_pPlayersRace;
 		ASSERT(pMajor);
 		if (!pMajor)
 			return;
@@ -956,8 +965,11 @@ void CShipBottomView::OnMouseMove(UINT nFlags, CPoint point)
 	// TODO: Add your message handler code here and/or call default
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
+
+	if (!pDoc->m_bDataReceived)
+		return;
 	
-	CMajor* pMajor = pDoc->GetPlayersRace();
+	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
 	if (!pMajor)
 		return;
@@ -1016,6 +1028,10 @@ void CShipBottomView::OnRButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	ASSERT(pDoc);
+
+	if (!pDoc->m_bDataReceived)
+		return;
 
 	CalcLogicalPoint(point);
 

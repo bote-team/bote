@@ -42,6 +42,10 @@ public:
 	/// abgeleiteten Klasse abgeleitet werden.
 	virtual void OnNewRound() {};
 
+	/// Funktion zum Festlegen der Spielerrasse in der View
+	/// @pPlayer Zeiger auf Spielerrasse
+	static void SetPlayersRace(CMajor* pPlayer) {m_pPlayersRace = pPlayer;}
+
 protected:
 	/// Funktion zeichnet die Button und macht alle möglichen Überprüfungen.
 	/// @param g Referenz auf Graphics Object
@@ -78,6 +82,8 @@ protected:
 
 	// Attribute
 	CSize m_TotalSize;				///< Größe der View in logischen Koordinaten
+
+	static CMajor* m_pPlayersRace;	///< Zeiger auf Spielerrasse
 	
 protected:
 	DECLARE_MESSAGE_MAP()

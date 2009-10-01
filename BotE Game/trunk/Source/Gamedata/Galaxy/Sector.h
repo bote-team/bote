@@ -17,6 +17,7 @@ using namespace std;
 
 // forward declaration
 class CBotf2Doc;
+class CMajor;
 
 /// Liefert verschiedene Attributswerte der Sektorklasse.
 enum SectorAttributes
@@ -188,7 +189,7 @@ public:
 		if (it != m_iNeededScanPower.end())
 			return it->second;
 		else
-			return 0;
+			return MAXSHORT;
 	}
 	
 	/// Diese Funktion gibt die benötigten Punkte zum Stationenbau zurück, die die Majorrace
@@ -414,10 +415,10 @@ public:
 
 // Zeichenfunktionen für diese Klasse
 	/// Diese Funktion zeichnet den Namen des Sektors.
-	void DrawSectorsName(CDC *pDC, CBotf2Doc* pDoc);
+	void DrawSectorsName(CDC *pDC, CBotf2Doc* pDoc, CMajor* pPlayer);
 	
 	/// Diese Funktion zeichnet die entsprechenden Schiffssymbole in den Sektor
-	void DrawShipSymbolInSector(Graphics *g, CBotf2Doc* pDoc);
+	void DrawShipSymbolInSector(Graphics *g, CBotf2Doc* pDoc, CMajor* pPlayer);
 
 // statische Membervariablen
 	/// Die Schrift, mit welcher die Sektornamen gezeichnet werden.

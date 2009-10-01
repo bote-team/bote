@@ -142,11 +142,18 @@ void CFleet::AdoptCurrentOrders(CShip* ship)
 {
 	for (int i = 0; i < m_SP.GetSize(); i++)
 	{
-		m_SP.ElementAt(i).SetTerraformingPlanet(ship->GetTerraformingPlanet());
 		if (ship->GetCurrentOrder() != ASSIGN_FLAGSHIP && ship->GetCurrentOrder() != TRANSPORT)
-			m_SP.ElementAt(i).SetCurrentOrder(ship->GetCurrentOrder());
+		{
+			m_SP.ElementAt(i).SetCurrentOrder(ship->GetCurrentOrder());			
+		}		
 		m_SP.ElementAt(i).SetKO(ship->GetKO());
-		m_SP.ElementAt(i).SetTargetKO(ship->GetTargetKO(),0);
+		
+		if (m_SP.ElementAt(i).GetTargetKO() != ship->GetTargetKO())
+			m_SP.ElementAt(i).SetTargetKO(ship->GetTargetKO(),0);
+
+		// wenn geterraformt werden soll den Terraformingplaneten neu setzen
+		if (ship->GetCurrentOrder() == TERRAFORM)
+			m_SP.ElementAt(i).SetTerraformingPlanet(ship->GetTerraformingPlanet());
 	}
 }
 

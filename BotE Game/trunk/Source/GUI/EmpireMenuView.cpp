@@ -65,7 +65,7 @@ void CEmpireMenuView::OnNewRound()
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
 
-	CMajor* pMajor = pDoc->GetPlayersRace();
+	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
 
 	// Sortierung der Systemliste nach dem Namen der Systeme
@@ -86,6 +86,11 @@ void CEmpireMenuView::OnNewRound()
 void CEmpireMenuView::OnDraw(CDC* dc)
 {
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	ASSERT(pDoc);
+
+	if (!pDoc->m_bDataReceived)
+		return;
+
 	// TODO: add draw code here
 	CMemDC pDC(dc);
 	CRect client;
@@ -117,7 +122,7 @@ void CEmpireMenuView::OnInitialUpdate()
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
 
-	CMajor* pMajor = pDoc->GetPlayersRace();
+	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
 
 	CreateButtons();
@@ -159,7 +164,7 @@ void CEmpireMenuView::DrawEmpireNewsMenue(Graphics* g)
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
 
-	CMajor* pMajor = pDoc->GetPlayersRace();
+	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
 	if (!pMajor)
 		return;
@@ -270,7 +275,7 @@ void CEmpireMenuView::DrawEmpireSystemMenue(Graphics* g)
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
 	
-	CMajor* pMajor = pDoc->GetPlayersRace();
+	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
 	if (!pMajor)
 		return;
@@ -567,7 +572,7 @@ void CEmpireMenuView::DrawEmpireShipMenue(Graphics* g)
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
 
-	CMajor* pMajor = pDoc->GetPlayersRace();
+	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
 	if (!pMajor)
 		return;
@@ -690,7 +695,7 @@ void CEmpireMenuView::DrawEmpireShipMenue(Graphics* g)
 				s = pMajor->GetShipHistory()->GetShipHistory(i)->m_strSectorName;
 				g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(560,140+k*25,115,25), &fontFormat, &fontBrush);
 				s = pMajor->GetShipHistory()->GetShipHistory(i)->m_strKindOfDestroy;
-				g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(675,140+k*25,125,25), &fontFormat, &fontBrush);
+				g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(675,140+k*25,175,25), &fontFormat, &fontBrush);
 				s = pMajor->GetShipHistory()->GetShipHistory(i)->m_strCurrentTask;
 				g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(850,140+k*25,175,25), &fontFormat, &fontBrush);
 			}
@@ -778,7 +783,10 @@ void CEmpireMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
 
-	CMajor* pMajor = pDoc->GetPlayersRace();
+	if (!pDoc->m_bDataReceived)
+		return;
+
+	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
 	if (!pMajor)
 		return;
@@ -1018,7 +1026,10 @@ BOOL CEmpireMenuView::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
 
-	CMajor* pMajor = pDoc->GetPlayersRace();
+	if (!pDoc->m_bDataReceived)
+		return CMainBaseView::OnMouseWheel(nFlags, zDelta, pt);
+
+	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
 	if (!pMajor)
 		return CMainBaseView::OnMouseWheel(nFlags, zDelta, pt);
@@ -1112,7 +1123,10 @@ void CEmpireMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
 
-	CMajor* pMajor = pDoc->GetPlayersRace();
+	if (!pDoc->m_bDataReceived)
+		return;
+
+	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
 	if (!pMajor)
 		return;
@@ -1223,6 +1237,11 @@ void CEmpireMenuView::OnMouseMove(UINT nFlags, CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	ASSERT(pDoc);
+
+	if (!pDoc->m_bDataReceived)
+		return;
+
 	CalcLogicalPoint(point);
 	// Wenn wir in der Imperiumsansicht sind
 	// Buttons am unteren Rand überprüfen
@@ -1246,7 +1265,10 @@ void CEmpireMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
 
-	CMajor* pMajor = pDoc->GetPlayersRace();
+	if (!pDoc->m_bDataReceived)
+		return;
+
+	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
 	if (!pMajor)
 		return;
@@ -1362,7 +1384,7 @@ void CEmpireMenuView::CreateButtons()
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
 
-	CMajor* pMajor = pDoc->GetPlayersRace();
+	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
 
 	CString sPrefix = pMajor->GetPrefix();

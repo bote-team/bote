@@ -42,6 +42,10 @@ public:
 	/// abgeleiteten Klasse abgeleitet werden.
 	virtual void OnNewRound() {};
 
+	/// Funktion zum Festlegen der Spielerrasse in der View
+	/// @pPlayer Zeiger auf Spielerrasse
+	static void SetPlayersRace(CMajor* pPlayer) {m_pPlayersRace = pPlayer;}
+
 protected:
 	// Funktionen
 	/// Funktion rechnet einen übergebenen Punkt in logische Koordinaten um.
@@ -57,7 +61,9 @@ protected:
 	Gdiplus::Color GetFontColorForSmallButton(void);
 
 	// Attribute
-	CSize m_TotalSize;			///< Größe der View in logischen Koordinaten
+	CSize m_TotalSize;					///< Größe der View in logischen Koordinaten
+
+	static CMajor* m_pPlayersRace;		///< Zeiger auf Spielerrasse
 
 protected:
 	DECLARE_MESSAGE_MAP()

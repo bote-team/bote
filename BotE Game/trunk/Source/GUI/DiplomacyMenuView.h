@@ -95,8 +95,9 @@ private:
 	BYTE	m_byWhichResourceIsChosen;			///< welche Ressource soll an die Rasse übergeben werden
 	CPoint	m_ptResourceFromSystem;				///< Aus welchem System werden die zu verschenkenden Ressourcen abgeknüpft
 	
-	bool m_bShowSendButton;					// Soll der Abschicken Button in der Angebotssicht angezeigt werden?
-	bool m_bShowDeclineButton;				// Soll der Ablehnen Button in der Eingangsansicht angezeigt werden?
+	bool m_bShowSendButton;					///< Soll der Abschicken Button in der Angebotssicht angezeigt werden?
+	bool m_bShowDeclineButton;				///< Soll der Ablehnen Button in der Eingangsansicht angezeigt werden?
+	bool m_bCanSend;						///< kann das Angebot gesendet werden?
 	
 	CDiplomacyInfo  m_OutgoingInfo;			///< Diplomatieobjekt, welches bei einem Angebot erstellt wird und abgeschickt werden kann
 	CDiplomacyInfo* m_pIncomingInfo;		///< Zeiger auf Diplomatieobjekt, welches sich aktuell im Eingang befindet
@@ -112,6 +113,7 @@ public:
 	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
 	afx_msg BOOL OnMouseWheel(UINT nFlags, short zDelta, CPoint pt);
 	afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
+	afx_msg void OnLButtonDblClk(UINT nFlags, CPoint point);
 };
 
 

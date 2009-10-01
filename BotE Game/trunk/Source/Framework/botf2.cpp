@@ -69,7 +69,7 @@ BOOL CBotf2App::InitInstance()
 	char fullPath[_MAX_PATH];
 	_fullpath(fullPath, "", _MAX_PATH);
 	m_strFullPath = fullPath;
-	m_strFullPath = "F:\\C++\\Projekte\\BotE Projekt\\BotE Install\\BotE complete";
+	//m_strFullPath = "F:\\C++\\Projekte\\BotE Projekt\\BotE Install\\BotE complete";
 	m_strFullPath += "\\";
 
 	// CG: Der folgende Block wurde von der Komponente "Windows-Sockets" hinzugefügt.
@@ -218,7 +218,9 @@ void CBotf2App::UpdateViews(WPARAM, LPARAM)
 {
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
-	CMajor* pMajor = pDoc->GetPlayersRace();
+	
+	CString sID = pDoc->GetPlayersRaceID();
+	CMajor* pMajor = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(sID));
 	ASSERT(pMajor);
 
 	// anzuzeigende View in neuer Runde auswählen

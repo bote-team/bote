@@ -41,6 +41,10 @@ END_MESSAGE_MAP()
 void CResearchMenuView::OnDraw(CDC* dc)
 {
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	ASSERT(pDoc);
+
+	if (!pDoc->m_bDataReceived)
+		return;
 	
 	// TODO: add draw code here
 	// Doublebuffering wird initialisiert
@@ -93,7 +97,7 @@ void CResearchMenuView::OnInitialUpdate()
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
 	
-	CMajor* pMajor = pDoc->GetPlayersRace();
+	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
 
 	// Alle Buttons in der View erstellen
@@ -153,7 +157,7 @@ void CResearchMenuView::DrawResearchMenue(Graphics* g)
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
 
-	CMajor* pMajor = pDoc->GetPlayersRace();
+	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
 	if (!pMajor)
 		return;
@@ -251,7 +255,7 @@ void CResearchMenuView::DrawResearchMenue(Graphics* g)
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(270,655,250,25), &fontFormatCenter, &fontBrush);
 
 	// Computertechnik
-	level = pMajor->GetEmpire()->GetResearch()->GetEnergyTech();
+	level = pMajor->GetEmpire()->GetResearch()->GetCompTech();
 	s.Format("%s - %s %d",CResourceManager::GetString("COMPUTERTECH"),CResourceManager::GetString("LEVEL"),level);
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(530,80,250,25), &fontFormatTop, &fontBrush);
 	s = pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetTechName(2);
@@ -266,7 +270,7 @@ void CResearchMenuView::DrawResearchMenue(Graphics* g)
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(530,315,250,25), &fontFormatCenter, &fontBrush);
 
 	// Waffentechnik
-	level = pMajor->GetEmpire()->GetResearch()->GetPropulsionTech();
+	level = pMajor->GetEmpire()->GetResearch()->GetWeaponTech();
 	s.Format("%s - %s %d",CResourceManager::GetString("WEAPONTECH"),CResourceManager::GetString("LEVEL"),level);
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(530,425,250,25), &fontFormatTop, &fontBrush);
 	s = pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetTechName(5);
@@ -410,7 +414,7 @@ void CResearchMenuView::DrawUniqueResearchMenue(Graphics* g)
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
 
-	CMajor* pMajor = pDoc->GetPlayersRace();
+	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
 	if (!pMajor)
 		return;
@@ -700,8 +704,11 @@ void CResearchMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 	// TODO: Add your message handler code here and/or call default
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
+
+	if (!pDoc->m_bDataReceived)
+		return;
 	
-	CMajor* pMajor = pDoc->GetPlayersRace();
+	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
 	if (!pMajor)
 		return;
@@ -808,6 +815,11 @@ void CResearchMenuView::OnMouseMove(UINT nFlags, CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	ASSERT(pDoc);
+
+	if (!pDoc->m_bDataReceived)
+		return;
+
 	CalcLogicalPoint(point);
 
 	ButtonReactOnMouseOver(point, &m_ResearchMainButtons);
@@ -848,7 +860,7 @@ void CResearchMenuView::OnMouseMove(UINT nFlags, CPoint point)
 	{
 		if (pDoc->m_iShowWhichTechInView3 != 6)
 		{
-			CMajor* pMajor = pDoc->GetPlayersRace();
+			CMajor* pMajor = m_pPlayersRace;
 			ASSERT(pMajor);
 			if (pMajor->GetEmpire()->GetResearch()->GetUniqueReady() == FALSE)
 			{
@@ -867,7 +879,10 @@ void CResearchMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
 
-	CMajor* pMajor = pDoc->GetPlayersRace();
+	if (!pDoc->m_bDataReceived)
+		return;
+
+	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
 	if (!pMajor)
 		return;
@@ -894,7 +909,7 @@ void CResearchMenuView::CreateButtons()
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
 
-	CMajor* pMajor = pDoc->GetPlayersRace();
+	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
 
 	// alle Buttons in der View anlegen und Grafiken laden

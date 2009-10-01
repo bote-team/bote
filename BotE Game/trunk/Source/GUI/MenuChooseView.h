@@ -29,11 +29,16 @@ protected:
 	CArray<CMyButton*> m_Buttons;	///< Feld beinhaltet die ganzen Menübuttons in dieser Ansicht
 	CMyButton *m_RoundEnd;			///< der Rundenende Button
 	CSize m_TotalSize;				///< Größe der View in logischen Koordinaten	
+	static CMajor* m_pPlayersRace;	///< Zeiger auf Spielerrasse
 
 // Operationen
 public:	
 	/// Funktion führt Aufgaben aus, welche zu jeder neuen Runde von den Views ausgeführt werden müssen.
 	void OnNewRound(void) {};
+
+	/// Funktion zum Festlegen der Spielerrasse in der View
+	/// @pPlayer Zeiger auf Spielerrasse
+	static void SetPlayersRace(CMajor* pPlayer) {m_pPlayersRace = pPlayer;}
 
 // Überschreibungen
 	// Vom Klassen-Assistenten generierte virtuelle Funktionsüberschreibungen

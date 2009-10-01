@@ -54,7 +54,7 @@ void CAttackSystem::Init(CRace* pDefender, CSystem* system, ShipArray* ships, CS
 /// ist der Rückgabewert <code>FALSE</code>.
 BOOLEAN CAttackSystem::Calculate()
 {
-	m_fKilledPop = (float)m_pSystem->GetHabitants();
+	m_fKilledPop = (float)m_pSector->GetCurrentHabitants();
 	USHORT killedTroopsInSystem = m_pSystem->GetTroops()->GetSize();
 
 	int shipDefence = 0;
@@ -70,7 +70,7 @@ BOOLEAN CAttackSystem::Calculate()
 	
 	// abschließende Berechnungen für den Systemangriff
 	// Getötete Bevölkerung berechnen
-	m_fKilledPop -= (float)m_pSystem->GetHabitants();
+	m_fKilledPop -= (float)m_pSector->GetCurrentHabitants();
 	VERIFY(m_fKilledPop >= 0);
 
 	if (m_fKilledPop != 0.0f)
@@ -261,7 +261,7 @@ void CAttackSystem::CalculateBombAttack()
 		float killedPop = (float)((rand()%torpedoDamage)*0.00075f);
 		m_pSector->LetPlanetsShrink(-killedPop);
 		m_pSystem->SetHabitants(m_pSector->GetCurrentHabitants());
-
+		
 		// Dann werden zufällig Gebäude zerstört. Umso mehr Gebäude vorhanden sind, desto wahrscheinlicher werden diese
 		// zerstört. Auch stationierte Truppen können bei einem Angriff vernichtet werden.
 		for (int i = 0; i < torpedoDamage; i++)

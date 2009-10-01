@@ -495,8 +495,9 @@ void CMinorAI::CalcOtherMajorsRelationChange(const CDiplomacyInfo& info, short n
 	// Differenz zwischen allen Rassen und bekannten Rassen ausrechnen
 	int nTemp = pmMajors->size() - vKnownMajors.size();
 	// Diesen Wert nochmal halbieren. Beispiel: 6 Majors im Spiel, 1 Major bekannt -> nTemp = 2;
-	nTemp /= 2;
+	nTemp = (int)(nTemp / 1.5f);
 	nTemp = max(1, nTemp);
+	nRelationChange /= nTemp;
 
 	// nun die Prozentpunkte beginnend bei der Majorrace mit der schlechtesten Beziehung in einer Schritten
 	// abziehen. Dies passiert solange, bis alle Prozentpunkte verteilt wurden.

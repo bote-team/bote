@@ -176,7 +176,7 @@ void CIntelCalc::ReduceDepotPoints(CMajor* pRace, int perc)
 	// bei perc == -1 wird der rassenspezifische Prozentsatz verwendet
 	if (perc == -1)
 	{
-		int perc = 20;
+		perc = 20;
 		if (pRace->IsRaceProperty(FINANCIAL))
 			perc += 15;
 		if (pRace->IsRaceProperty(WARLIKE))

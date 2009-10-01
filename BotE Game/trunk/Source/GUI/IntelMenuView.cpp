@@ -49,8 +49,11 @@ void CIntelMenuView::OnDraw(CDC* dc)
 {
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
+
+	if (!pDoc->m_bDataReceived)
+		return;
 	
-	CMajor* pMajor = pDoc->GetPlayersRace();
+	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
 	if (!pMajor)
 		return;
@@ -114,7 +117,7 @@ void CIntelMenuView::OnInitialUpdate()
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
 	
-	CMajor* pMajor = pDoc->GetPlayersRace();
+	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
 
 	CreateButtons();
@@ -155,7 +158,7 @@ void CIntelMenuView::DrawIntelAssignmentMenu(Graphics* g)
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
 	
-	CMajor* pMajor = pDoc->GetPlayersRace();
+	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
 	if (!pMajor)
 		return;
@@ -180,6 +183,20 @@ void CIntelMenuView::DrawIntelAssignmentMenu(Graphics* g)
 
 	if (bg_intelassignmenu)
 		g->DrawImage(bg_intelassignmenu, 0, 0, 1075, 750);
+
+	if (m_sActiveIntelRace == pMajor->GetRaceID())
+		m_sActiveIntelRace = "";
+	// Wenn noch keine Rasse ausgewählt wurde, so wird versucht eine bekannte Rasse auszuwählen
+	if (m_sActiveIntelRace == "")
+	{
+		map<CString, CMajor*>* pmMajors = pDoc->GetRaceCtrl()->GetMajors();
+		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+			if (it->first != pMajor->GetRaceID() && pMajor->IsRaceContacted(it->first) == true)
+			{
+				m_sActiveIntelRace = it->first;
+				break;
+			}
+	}
 	
 	// rechtes Informationsmenü zeichnen
 	DrawIntelInformation(g, &Gdiplus::Font(fontName.AllocSysString(), fontSize), normalColor);
@@ -271,7 +288,7 @@ void CIntelMenuView::DrawIntelSpyMenu(Graphics* g)
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
 	
-	CMajor* pMajor = pDoc->GetPlayersRace();
+	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
 	if (!pMajor)
 		return;
@@ -445,7 +462,7 @@ void CIntelMenuView::DrawIntelSabotageMenu(Graphics* g)
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
 	
-	CMajor* pMajor = pDoc->GetPlayersRace();
+	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
 	if (!pMajor)
 		return;
@@ -619,7 +636,7 @@ void CIntelMenuView::DrawIntelReportsMenu(Graphics* g)
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
 	
-	CMajor* pMajor = pDoc->GetPlayersRace();
+	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
 	if (!pMajor)
 		return;
@@ -749,7 +766,7 @@ void CIntelMenuView::DrawIntelAttackMenu(Graphics* g)
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
 	
-	CMajor* pMajor = pDoc->GetPlayersRace();
+	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
 	if (!pMajor)
 		return;
@@ -954,7 +971,7 @@ void CIntelMenuView::DrawIntelInfoMenu(Graphics* g)
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
 	
-	CMajor* pMajor = pDoc->GetPlayersRace();
+	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
 	if (!pMajor)
 		return;
@@ -977,6 +994,8 @@ void CIntelMenuView::DrawIntelInfoMenu(Graphics* g)
 				break;
 			}
 	}
+	if (m_sActiveIntelRace == "")
+		m_sActiveIntelRace = pMajor->GetRaceID();
 
 	CString fontName = "";
 	Gdiplus::REAL fontSize = 0.0;
@@ -996,7 +1015,7 @@ void CIntelMenuView::DrawIntelInfoMenu(Graphics* g)
 	if (bg_intelinfomenu)
 		g->DrawImage(bg_intelinfomenu, 0, 0, 1075, 750);
 
-	// Die einzelnen Spionagezuweisungsbalken zeichnen
+	// die Geheimdienstinfos der angeklickten Rasse zeichnen
 	if (m_sActiveIntelRace != "")
 	{
 		// Bild der aktiven Rasse im Hintergrund zeichnen
@@ -1041,7 +1060,7 @@ void CIntelMenuView::DrawIntelInfoMenu(Graphics* g)
 	}
 
 	// die einzelnen Rassensymbole zeichnen
-	DrawRaceLogosInIntelView(g);
+	DrawRaceLogosInIntelView(g, true);
 		
 	Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Symbols\\" + pIntel->GetResponsibleRace() + ".png");
 	if (graphic == NULL)
@@ -1087,7 +1106,7 @@ void CIntelMenuView::DrawRaceLogosInIntelView(Graphics* g, BOOLEAN highlightPlay
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
 	
-	CMajor* pMajor = pDoc->GetPlayersRace();
+	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
 	if (!pMajor)
 		return;
@@ -1129,7 +1148,7 @@ void CIntelMenuView::DrawIntelInformation(Graphics* g, Gdiplus::Font* font, Gdip
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
 	
-	CMajor* pMajor = pDoc->GetPlayersRace();
+	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
 	if (!pMajor)
 		return;
@@ -1198,7 +1217,7 @@ void CIntelMenuView::DrawIntelInformation(Graphics* g, Gdiplus::Font* font, Gdip
 	s.Format("%d", pIntel->GetInnerSecurityStorage());
 	g->DrawString(s.AllocSysString(), -1, font, RectF(850,585,190,25), &fontFormatCenter, &fontBrush);	
 	
-	if (m_sActiveIntelRace)
+	if (m_sActiveIntelRace != "" && m_sActiveIntelRace != m_pPlayersRace->GetRaceID())
 	{
 		fontFormatCenter.SetAlignment(StringAlignmentNear);
 		s =CResourceManager::GetString("SPY").MakeUpper()+":";
@@ -1239,8 +1258,11 @@ void CIntelMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 	// TODO: Add your message handler code here and/or call default
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
+
+	if (!pDoc->m_bDataReceived)
+		return;
 	
-	CMajor* pMajor = pDoc->GetPlayersRace();
+	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
 	if (!pMajor)
 		return;
@@ -1556,6 +1578,12 @@ void CIntelMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 void CIntelMenuView::OnMouseMove(UINT nFlags, CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
+	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	ASSERT(pDoc);
+
+	if (!pDoc->m_bDataReceived)
+		return;
+	
 	// Wenn wir uns in der Geheimdienstansicht befinden
 	CalcLogicalPoint(point);
 	ButtonReactOnMouseOver(point, &m_IntelligenceMainButtons);
@@ -1568,7 +1596,10 @@ BOOL CIntelMenuView::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
 
-	CMajor* pMajor = pDoc->GetPlayersRace();
+	if (!pDoc->m_bDataReceived)
+		return CMainBaseView::OnMouseWheel(nFlags, zDelta, pt);
+
+	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
 	if (!pMajor)
 		return CMainBaseView::OnMouseWheel(nFlags, zDelta, pt);
@@ -1643,7 +1674,10 @@ void CIntelMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
 
-	CMajor* pMajor = pDoc->GetPlayersRace();
+	if (!pDoc->m_bDataReceived)
+		return;
+
+	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
 	if (!pMajor)
 		return;
@@ -1720,7 +1754,7 @@ void CIntelMenuView::CreateButtons()
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
 
-	CMajor* pMajor = pDoc->GetPlayersRace();
+	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
 
 	CString sPrefix = pMajor->GetPrefix();

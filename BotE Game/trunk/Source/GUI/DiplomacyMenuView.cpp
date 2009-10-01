@@ -31,6 +31,7 @@ BEGIN_MESSAGE_MAP(CDiplomacyMenuView, CMainBaseView)
 	ON_WM_MOUSEMOVE()
 	ON_WM_MOUSEWHEEL()
 	ON_WM_KEYDOWN()
+	ON_WM_LBUTTONDBLCLK()
 END_MESSAGE_MAP()
 
 CDiplomacyMenuView::CDiplomacyMenuView()
@@ -64,7 +65,7 @@ void CDiplomacyMenuView::OnNewRound()
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
 	
-	CMajor* pPlayer = pDoc->GetPlayersRace();
+	CMajor* pPlayer = m_pPlayersRace;
 	ASSERT(pPlayer);
 
 	m_OutgoingInfo.Reset();
@@ -108,8 +109,11 @@ void CDiplomacyMenuView::OnDraw(CDC* dc)
 {
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
+
+	if (!pDoc->m_bDataReceived)
+		return;
 	
-	CMajor* pMajor = pDoc->GetPlayersRace();
+	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
 	if (!pMajor)
 		return;
@@ -163,7 +167,7 @@ void CDiplomacyMenuView::OnInitialUpdate()
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
 
-	CMajor* pPlayer = pDoc->GetPlayersRace();
+	CMajor* pPlayer = m_pPlayersRace;
 	ASSERT(pPlayer);
 
 	// Alle Buttons in der View erstellen
@@ -201,7 +205,7 @@ void CDiplomacyMenuView::DrawDiplomacyMenue(Graphics* g)
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
 
-	CMajor* pPlayer = pDoc->GetPlayersRace();
+	CMajor* pPlayer = m_pPlayersRace;
 	ASSERT(pPlayer);
 	
 	CString fontName = "";
@@ -476,29 +480,43 @@ void CDiplomacyMenuView::DrawDiplomacyMenue(Graphics* g)
 		}
 
 		// Abschicken- bzw. Abbrechenbutton anzeigen
-		s = "";				
-		// Wenn wir Geld geben wollen, den Abschickenbutton einblenden
-		if (m_OutgoingInfo.m_nType == PRESENT && m_bShowSendButton == true)
-		{
-			if (m_OutgoingInfo.m_nCredits > 0 || m_OutgoingInfo.m_nResources[TITAN] > 0 || m_OutgoingInfo.m_nResources[DEUTERIUM] > 0 || m_OutgoingInfo.m_nResources[DURANIUM] > 0 ||
-				m_OutgoingInfo.m_nResources[CRYSTAL] > 0 || m_OutgoingInfo.m_nResources[IRIDIUM] > 0 || m_OutgoingInfo.m_nResources[DILITHIUM] > 0)
-			{				
-				s = CResourceManager::GetString("BTN_SEND");				
-			}		
-		}
-		// Wenn wir Freundschaft, Handelsvertrag usw. anbieten wollen, den Abschickenbutton anzeigen
-		// Wenn wir eine kleine Rasse bestechen wollen bzw. eine Forderung an die große Rasse stellen Abschickenbutton
-		// einblenden. Bei Forderung muß ein Wert ausgewählt worden sein
-		else if (m_OutgoingInfo.m_nType != NO_AGREEMENT && ((m_OutgoingInfo.m_nType != PRESENT && m_OutgoingInfo.m_nType != CORRUPTION && m_OutgoingInfo.m_nType != DIP_REQUEST && m_OutgoingInfo.m_nType != WAR_PACT)
-			|| ((m_OutgoingInfo.m_nType == PRESENT || m_OutgoingInfo.m_nType == CORRUPTION || m_OutgoingInfo.m_nType == DIP_REQUEST) && (m_OutgoingInfo.m_nCredits > 0 || m_OutgoingInfo.m_nResources[TITAN] > 0
-			|| m_OutgoingInfo.m_nResources[DEUTERIUM] > 0 || m_OutgoingInfo.m_nResources[DURANIUM] > 0 || m_OutgoingInfo.m_nResources[CRYSTAL] > 0 || m_OutgoingInfo.m_nResources[IRIDIUM] > 0 || m_OutgoingInfo.m_nResources[DILITHIUM] > 0))
-			|| (m_OutgoingInfo.m_nType == WAR_PACT && m_OutgoingInfo.m_sWarpactEnemy != "")))
-		{
-			s = CResourceManager::GetString("BTN_SEND");			
-		}
+		m_bCanSend = m_bShowSendButton;
+		s = "";
 		// Wenn wir ein gegebenes Angebot wieder abbrechen wollen
-		if (m_bShowSendButton == false)
-			s = CResourceManager::GetString("BTN_CANCEL");			
+		if (!m_bShowSendButton)
+			s = CResourceManager::GetString("BTN_CANCEL");
+		else
+		{
+			// Wenn wir Geld geben wollen, den Abschickenbutton einblenden
+			if (m_OutgoingInfo.m_nType == PRESENT)
+			{
+				if (m_OutgoingInfo.m_nCredits > 0 || m_OutgoingInfo.m_nResources[TITAN] > 0 || m_OutgoingInfo.m_nResources[DEUTERIUM] > 0 || m_OutgoingInfo.m_nResources[DURANIUM] > 0 || m_OutgoingInfo.m_nResources[CRYSTAL] > 0 || m_OutgoingInfo.m_nResources[IRIDIUM] > 0 || m_OutgoingInfo.m_nResources[DILITHIUM] > 0)
+					s = CResourceManager::GetString("BTN_SEND");
+				else
+					m_bCanSend = false;
+			}
+			// Wenn wir Freundschaft, Handelsvertrag usw. anbieten wollen, den Abschickenbutton anzeigen
+			else if (m_OutgoingInfo.m_nType != NO_AGREEMENT && m_OutgoingInfo.m_nType != PRESENT && m_OutgoingInfo.m_nType != CORRUPTION && m_OutgoingInfo.m_nType != DIP_REQUEST && m_OutgoingInfo.m_nType != WAR_PACT)
+			{
+				s = CResourceManager::GetString("BTN_SEND");
+			}
+			// Wenn wir eine kleine Rasse bestechen wollen bzw. eine Forderung an die große Rasse stellen Abschickenbutton
+			// einblenden. Bei Forderung muß ein Wert ausgewählt worden sein
+			else if (m_OutgoingInfo.m_nType == PRESENT || m_OutgoingInfo.m_nType == CORRUPTION || m_OutgoingInfo.m_nType == DIP_REQUEST)
+			{
+				if (m_OutgoingInfo.m_nCredits > 0 || m_OutgoingInfo.m_nResources[TITAN] > 0 || m_OutgoingInfo.m_nResources[DEUTERIUM] > 0 || m_OutgoingInfo.m_nResources[DURANIUM] > 0 || m_OutgoingInfo.m_nResources[CRYSTAL] > 0 || m_OutgoingInfo.m_nResources[IRIDIUM] > 0 || m_OutgoingInfo.m_nResources[DILITHIUM] > 0)
+					s = CResourceManager::GetString("BTN_SEND");
+				else
+					m_bCanSend = false;
+			}
+			else if (m_OutgoingInfo.m_nType == WAR_PACT)
+			{
+				if (m_OutgoingInfo.m_sWarpactEnemy != "")
+					s = CResourceManager::GetString("BTN_SEND");
+				else
+					m_bCanSend = false;
+			}
+		}					
 		
 		if (s != "")
 		{
@@ -569,7 +587,7 @@ void CDiplomacyMenuView::DrawRaceDiplomacyMenue(Graphics* g)
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
 
-	CMajor* pPlayer = pDoc->GetPlayersRace();
+	CMajor* pPlayer = m_pPlayersRace;
 	ASSERT(pPlayer);
 
 	CString fontName = "";
@@ -654,7 +672,7 @@ void CDiplomacyMenuView::DrawRaceDiplomacyMenue(Graphics* g)
 					for (int t = 0; t < 20; t++)
 					{
 						RectF timber(650,387-t*15,30,13);
-						if (pRace->GetRelation(pPlayer->GetRaceID()) *2 / 10 > t)
+						if (pRace->GetRelation(pPlayer->GetRaceID()) * 2 / 10 > t)
 						{
 							fontBrush.SetColor(Color(250-t*12, 0+t*12, 0));
 							g->FillRectangle(&SolidBrush(Color(200,250-t*12, 0+t*12, 0)), timber);
@@ -662,6 +680,8 @@ void CDiplomacyMenuView::DrawRaceDiplomacyMenue(Graphics* g)
 						else
 							g->FillRectangle(&SolidBrush(Color(100,100,100,100)), timber);						
 					}
+					if (pRace->GetRelation(pPlayer->GetRaceID()) * 2 / 10 == 0)
+						fontBrush.SetColor(Color(255, 0, 0));
 					// den Text zeichnen, der Angibt wie gut uns die Rasse gegenübersteht
 					USHORT relation = pRace->GetRelation(pPlayer->GetRaceID());
 					if (relation < 5) s = CResourceManager::GetString("HATEFUL");
@@ -757,7 +777,7 @@ void CDiplomacyMenuView::DrawRaceDiplomacyMenue(Graphics* g)
 						CDiplomacyBottomView::SetText(m_OutgoingInfo.m_sText);
 						CDiplomacyBottomView::SetHeadLine(m_OutgoingInfo.m_sHeadline);
 
-						// Handelt es sich um eine diplmatisches Angebot (keine Antwort, kein normaler Text)
+						// Handelt es sich um eine diplomatisches Angebot (keine Antwort, kein normaler Text)
 						if (m_OutgoingInfo.m_nFlag == DIPLOMACY_OFFER)
 						{
 							// Haben wir auf einen Button geklickt, so muß dieser gedrückt dargestellt werden
@@ -795,47 +815,61 @@ void CDiplomacyMenuView::DrawRaceDiplomacyMenue(Graphics* g)
 							s = CResourceManager::GetString("PRESENT");
 						else if (m_OutgoingInfo.m_nType == DIP_REQUEST)
 						{
-							// Wenn eine Forderung gestellt wurde, welche Ressourcen beinhaltet, dann Annehmenbutton
-							// nur einblenden, wenn wir diese Forderung auch erfüllen können
-							USHORT *resource = m_OutgoingInfo.m_nResources;
-							if (resource[TITAN] > 0 || resource[DEUTERIUM] > 0 || resource[DURANIUM] > 0 || resource[CRYSTAL] > 0 || resource[IRIDIUM] > 0 || resource[DILITHIUM] > 0)
+							// handelt es sich um das angeklickte Angebot
+							if (m_pIncomingInfo == &(pPlayer->GetIncomingDiplomacyNews()->at(l)))
 							{
-								// Wenn Forderung, dann Systemauswahlbutton einblenden, wovon ich die geforderte Ressource
-								// abzweigen will
-								fontFormat.SetAlignment(StringAlignmentNear);
-								s.Format("%s: ",CResourceManager::GetString("RESOURCE_FROM"));
-								g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(350,100+count*25,150,25), &fontFormat, &fontBrush);
-																
-								Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\" + pPlayer->GetPrefix() + "button_small.png");
-								Color btnColor;
-								CFontLoader::GetGDIFontColor(pPlayer, 1, btnColor);
-								SolidBrush btnBrush(btnColor);
-								if (graphic)
-									g->DrawImage(graphic, 500, 97+count*25, 120, 30);
+								if (m_pIncomingInfo->m_nAnswerStatus == ACCEPTED)
+									m_bShowSendButton = false;
+								else
+								{
+									if (m_pIncomingInfo->m_ptKO != CPoint(-1,-1))
+										m_ptResourceFromSystem = m_pIncomingInfo->m_ptKO;
+									// Wenn eine Forderung gestellt wurde, welche Ressourcen beinhaltet, dann Annehmenbutton
+									// nur einblenden, wenn wir diese Forderung auch erfüllen können
+									USHORT *resource = m_pIncomingInfo->m_nResources;
+									if (resource[TITAN] > 0 || resource[DEUTERIUM] > 0 || resource[DURANIUM] > 0 || resource[CRYSTAL] > 0 || resource[IRIDIUM] > 0 || resource[DILITHIUM] > 0)
+									{
+										// Wenn Forderung, dann Systemauswahlbutton einblenden, wovon ich die geforderte Ressource
+										// abzweigen will
+										fontFormat.SetAlignment(StringAlignmentNear);
+										fontBrush.SetColor(normalColor);
+										s.Format("%s: ",CResourceManager::GetString("RESOURCE_FROM"));
+										g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(350,100+count*25,150,25), &fontFormat, &fontBrush);
+																		
+										Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\" + pPlayer->GetPrefix() + "button_small.png");
+										Color btnColor;
+										CFontLoader::GetGDIFontColor(pPlayer, 1, btnColor);
+										SolidBrush btnBrush(btnColor);
+										if (graphic)
+											g->DrawImage(graphic, 500, 97+count*25, 120, 30);
 
-								m_OutgoingInfo.m_ptKO = m_ptResourceFromSystem;
-								s.Format("%s",pDoc->GetSector(m_ptResourceFromSystem).GetName());
-								// Wenn hier noch kein System eingestellt ist, dann müssen wir uns eins suchen
-								if (s.IsEmpty() || pDoc->GetSystem(m_ptResourceFromSystem).GetOwnerOfSystem() != pPlayer->GetRaceID())
-									for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
-										for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-											if (pDoc->GetSystem(x,y).GetOwnerOfSystem() == pPlayer->GetRaceID() && pDoc->GetSector(x,y).GetSunSystem() == TRUE)
-											{
-												m_ptResourceFromSystem = m_OutgoingInfo.m_ptKO = CPoint(x,y);
-												s.Format("%s",pDoc->GetSector(x,y).GetName());
-												break;
-											}
-											// Überprüfen ob wir auf dem gewählten System die Menge der geforderten
-											// Ressource im Lager haben und ob wir auch die geforderten Credits bezahlen können
-											for (int r = TITAN; r <= DILITHIUM; r++)
-												if (resource[r] > 0 && pDoc->GetSystem(m_ptResourceFromSystem).GetRessourceStore(r) < resource[r] && pDoc->GetSystem(m_ptResourceFromSystem).GetOwnerOfSystem() == pPlayer->GetRaceID())
-													m_bShowSendButton = FALSE;
-											fontFormat.SetAlignment(StringAlignmentCenter);
-											g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(500,97+count*25,120,30), &fontFormat, &btnBrush);											
-							}
-							// Überprüfen ob wir auch die geforderten Credits bezahlen können
-							if (pPlayer->GetEmpire()->GetLatinum() < m_OutgoingInfo.m_nCredits)
-								m_bShowSendButton = FALSE;								
+										s.Format("%s",pDoc->GetSector(m_ptResourceFromSystem).GetName());
+										// Wenn hier noch kein System eingestellt ist, dann müssen wir uns eins suchen
+										if (s.IsEmpty() || pDoc->GetSystem(m_ptResourceFromSystem).GetOwnerOfSystem() != pPlayer->GetRaceID())
+										{
+											for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
+												for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
+													if (pDoc->GetSystem(x,y).GetOwnerOfSystem() == pPlayer->GetRaceID() && pDoc->GetSector(x,y).GetSunSystem() == TRUE)
+													{
+														m_ptResourceFromSystem = CPoint(x,y);
+														m_pIncomingInfo->m_ptKO = m_ptResourceFromSystem;
+														s.Format("%s",pDoc->GetSector(x,y).GetName());
+														break;
+													}
+										}
+										// Überprüfen ob wir auf dem gewählten System die Menge der geforderten
+										// Ressource im Lager haben und ob wir auch die geforderten Credits bezahlen können
+										for (int r = TITAN; r <= DILITHIUM; r++)
+											if (resource[r] > 0 && pDoc->GetSystem(m_ptResourceFromSystem).GetRessourceStore(r) < resource[r] && pDoc->GetSystem(m_ptResourceFromSystem).GetOwnerOfSystem() == pPlayer->GetRaceID())
+												m_bShowSendButton = false;
+										fontFormat.SetAlignment(StringAlignmentCenter);
+										g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(500,97+count*25,120,30), &fontFormat, &btnBrush);											
+									}
+									// Überprüfen ob wir auch die geforderten Credits bezahlen können
+									if (pPlayer->GetEmpire()->GetLatinum() < m_pIncomingInfo->m_nCredits)
+										m_bShowSendButton = false;
+								}
+							}							
 							s = CResourceManager::GetString("REQUEST");
 						}
 						else if (m_OutgoingInfo.m_nType == WAR)
@@ -864,7 +898,7 @@ void CDiplomacyMenuView::DrawDiplomacyInfoMenue(Graphics* g, const CString& sWhi
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
 
-	CMajor* pPlayer = pDoc->GetPlayersRace();
+	CMajor* pPlayer = m_pPlayersRace;
 	ASSERT(pPlayer);
 
 	CRace* pRace = pDoc->GetRaceCtrl()->GetRace(sWhichRace);
@@ -1027,7 +1061,7 @@ void CDiplomacyMenuView::DrawDiplomacyOfferMenue(Graphics* g, const CString& sWh
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
 
-	CMajor* pPlayer = pDoc->GetPlayersRace();
+	CMajor* pPlayer = m_pPlayersRace;
 	ASSERT(pPlayer);
 
 	CRace* pRace = pDoc->GetRaceCtrl()->GetRace(sWhichRace);
@@ -1115,10 +1149,11 @@ void CDiplomacyMenuView::DrawDiplomacyOfferMenue(Graphics* g, const CString& sWh
 					res = CResourceManager::GetString("IRIDIUM");
 				else if (iWhichResource == DILITHIUM)
 					res = CResourceManager::GetString("DILITHIUM");
+				UINT nUnit = iWhichResource == DILITHIUM ? 5 : 1000;
 				for (int t = 0; t < 20; t++)
 				{
 					RectF timber(195+t*12,520,10,25);
-					if ((USHORT)(m_OutgoingInfo.m_nResources[iWhichResource]/1000) > t)
+					if ((USHORT)(m_OutgoingInfo.m_nResources[iWhichResource]/nUnit) > t)
 						g->FillRectangle(&SolidBrush(Color(200-t*10,200,0)), timber);
 					else
 						g->FillRectangle(&SolidBrush(Color(100,100,100,100)), timber);					
@@ -1139,19 +1174,19 @@ void CDiplomacyMenuView::DrawDiplomacyOfferMenue(Graphics* g, const CString& sWh
 					
 					UINT nStorage = pDoc->GetSystem(ko).GetRessourceStore(iWhichResource);
 
-					if (nStorage <= 2000)
+					if (nStorage <= 1 * nUnit)
 						s = CResourceManager::GetString("SCARCELY_EXISTING");
-					else if (nStorage <= 5000)
+					else if (nStorage <= 2 * nUnit)
 						s = CResourceManager::GetString("VERY_LESS_EXISTING");
-					else if (nStorage <= 10000)
+					else if (nStorage <= 4 * nUnit)
 						s = CResourceManager::GetString("LESS_EXISTING");
-					else if (nStorage <= 15000)
+					else if (nStorage <= 8 * nUnit)
 						s = CResourceManager::GetString("MODERATE_EXISTING");
-					else if (nStorage <= 25000)
+					else if (nStorage <= 16 * nUnit)
 						s = CResourceManager::GetString("MUCH_EXISTING");
-					else if (nStorage <= 40000)
+					else if (nStorage <= 32 * nUnit)
 						s = CResourceManager::GetString("VERY_MUCH_EXISTING");
-					else if (nStorage > 40000)
+					else
 						s = CResourceManager::GetString("ABOUNDING_EXISTING");
 					g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(195,545,355,25), &fontFormat, &fontBrush);
 				}
@@ -1377,7 +1412,7 @@ void CDiplomacyMenuView::TakeOrGetbackResLat(bool bTake)
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
 
-	CMajor* pPlayer = pDoc->GetPlayersRace();
+	CMajor* pPlayer = m_pPlayersRace;
 	ASSERT(pPlayer);
 
 	// bei einer Forderung an eine andere Majorrace werden keine Ressourcen aus den Lagern genommen, auch
@@ -1429,13 +1464,25 @@ void CDiplomacyMenuView::TakeOrGetbackResLat(bool bTake)
 	}
 }
 
+void CDiplomacyMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
+{
+	// TODO: Add your message handler code here and/or call default
+	CDiplomacyMenuView::OnLButtonDown(nFlags, point);
+
+	CMainBaseView::OnLButtonDblClk(nFlags, point);
+}
+
+
 void CDiplomacyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
 
-	CMajor* pPlayer = pDoc->GetPlayersRace();
+	if (!pDoc->m_bDataReceived)
+		return;
+
+	CMajor* pPlayer = m_pPlayersRace;
 	ASSERT(pPlayer);
 
 	CalcLogicalPoint(point);
@@ -1503,13 +1550,34 @@ void CDiplomacyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			{
 				if (pPlayer->GetIncomingDiplomacyNews()->at(l).m_sFromRace == pRace->GetRaceID())
 				{
-					rect.SetRect(20,100+count*25,120,125+count*25);
+					rect.SetRect(20,100+count*25,620,125+count*25);
 					if (rect.PtInRect(point))
 					{
-						m_pIncomingInfo = &(pPlayer->GetIncomingDiplomacyNews()->at(l));						
+						m_pIncomingInfo = &(pPlayer->GetIncomingDiplomacyNews()->at(l));
+
+						// Systemauswahlbutton, mit dem wir das System wählen können, woraus wir die Ressourcen abzapfen, wenn wir
+						// eine Forderung einer anderen Majorrasse erfüllen wollen, welche Ressourcen beinhaltet
+						rect.SetRect(500,100+count*25,620,125+count*25);
+						if (rect.PtInRect(point) && m_pIncomingInfo->m_nAnswerStatus != ACCEPTED)
+						{
+							// Nächstes System finden, wenn wir durchklicken
+							if (m_pIncomingInfo->m_ptKO != CPoint(-1,-1))
+								m_ptResourceFromSystem = m_pIncomingInfo->m_ptKO;
+							CPoint curPoint = m_ptResourceFromSystem;
+							int current = -1;
+							for (int i = 0; i < pPlayer->GetEmpire()->GetSystemList()->GetSize(); i++)
+								if (pPlayer->GetEmpire()->GetSystemList()->GetAt(i).ko == curPoint)
+									current = i;
+							if (current != -1)
+								current++;
+							if (current == pPlayer->GetEmpire()->GetSystemList()->GetSize())
+								current = 0;
+							m_ptResourceFromSystem = pPlayer->GetEmpire()->GetSystemList()->GetAt(current).ko;
+							m_pIncomingInfo->m_ptKO = m_ptResourceFromSystem;
+						}
 						Invalidate();
 						return;
-					}			
+					}
 					count++;
 				}				
 			}
@@ -1709,13 +1777,16 @@ void CDiplomacyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 							ASSERT(m_byWhichResourceIsChosen >= TITAN && m_byWhichResourceIsChosen <= DILITHIUM);
 
 							UINT nStorage = pDoc->GetSystem(m_OutgoingInfo.m_ptKO).GetRessourceStore(m_byWhichResourceIsChosen);
-							m_OutgoingInfo.m_nResources[m_byWhichResourceIsChosen] = t * 1000;
+							// bei normalen Ressourcen wird in 1000er Schritten gegeben, bei Deritium in 5er
+							int dUnit = m_byWhichResourceIsChosen == DILITHIUM ? 5 : 1000;
+							m_OutgoingInfo.m_nResources[m_byWhichResourceIsChosen] = t * dUnit;
 							// geben wir selbst die Ressource, dann benötigen wir genügend im Lager.
 							if (m_OutgoingInfo.m_nType != DIP_REQUEST && m_OutgoingInfo.m_nResources[m_byWhichResourceIsChosen] > nStorage)
 							{
-								m_OutgoingInfo.m_nResources[m_byWhichResourceIsChosen] = nStorage / 1000;
-								m_OutgoingInfo.m_nResources[m_byWhichResourceIsChosen] *= 1000;								
-							}													
+								// Runden auf Runde Beträge
+								m_OutgoingInfo.m_nResources[m_byWhichResourceIsChosen] = nStorage / dUnit;
+								m_OutgoingInfo.m_nResources[m_byWhichResourceIsChosen] *= dUnit;
+							}
 							Invalidate();
 							break;
 						}
@@ -1726,10 +1797,10 @@ void CDiplomacyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 				rect.SetRect(510,518,630,548);
 				if (rect.PtInRect(point))
 				{
-					if (m_byWhichResourceIsChosen < IRIDIUM)
+					if (m_byWhichResourceIsChosen < DILITHIUM)
 						m_byWhichResourceIsChosen++;
 					else
-						m_byWhichResourceIsChosen = 0;
+						m_byWhichResourceIsChosen = TITAN;
 					
 					// alle "alten" Ressourcenmengen löschen
 					for (int res = TITAN; res <= DILITHIUM; res++)
@@ -1851,7 +1922,7 @@ void CDiplomacyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			
 			// Wenn wir auf den Abschicken Button geklicked haben
 			rect.SetRect(871,690,1031,730);
-			if (rect.PtInRect(point) && m_bShowSendButton == true)
+			if (rect.PtInRect(point) && m_bShowSendButton == true && m_bCanSend == true)
 			{
 				m_OutgoingInfo.m_nFlag = DIPLOMACY_OFFER;
 				m_OutgoingInfo.m_nSendRound = pDoc->GetCurrentRound();				
@@ -1915,25 +1986,6 @@ void CDiplomacyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			m_pIncomingInfo->m_nAnswerStatus = DECLINED;			
 			Invalidate();			
 		}
-		
-		// Systemauswahlbutton, mit dem wir das System wählen können, woraus wir die Ressourcen abzapfen, wenn wir
-		// eine Forderung einer anderen Majorrasse erfüllen wollen, welche Ressourcen beinhaltet
-		rect.SetRect(500,100+count*25,620,125+count*25);
-		if (rect.PtInRect(point))
-		{
-			// Nächstes System finden, wenn wir durchklicken
-			CPoint curPoint = m_ptResourceFromSystem;
-			int current = -1;
-			for (int i = 0; i < pPlayer->GetEmpire()->GetSystemList()->GetSize(); i++)
-				if (pPlayer->GetEmpire()->GetSystemList()->GetAt(i).ko == curPoint)
-					current = i;
-			if (current != -1)
-				current++;
-			if (current == pPlayer->GetEmpire()->GetSystemList()->GetSize())
-				current = 0;
-			m_ptResourceFromSystem = m_pIncomingInfo->m_ptKO = pPlayer->GetEmpire()->GetSystemList()->GetAt(current).ko;
-			Invalidate();				
-		}
 	}
 
 	CMainBaseView::OnLButtonDown(nFlags, point);
@@ -1944,6 +1996,9 @@ void CDiplomacyMenuView::OnMouseMove(UINT nFlags, CPoint point)
 	// TODO: Add your message handler code here and/or call default
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
+
+	if (!pDoc->m_bDataReceived)
+		return;
 
 	CalcLogicalPoint(point);
 
@@ -1976,6 +2031,9 @@ BOOL CDiplomacyMenuView::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 		{
 			CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 			ASSERT(pDoc);
+
+			if (!pDoc->m_bDataReceived)
+				return CMainBaseView::OnMouseWheel(nFlags, zDelta, pt);
 
 			for (vector<CRace*>::iterator it = m_vRaceList.begin(); it != m_vRaceList.end(); it++)
 			{
@@ -2047,6 +2105,9 @@ void CDiplomacyMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 			CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 			ASSERT(pDoc);
 
+			if (!pDoc->m_bDataReceived)
+				return;
+
 			for (vector<CRace*>::iterator it = m_vRaceList.begin(); it != m_vRaceList.end(); it++)
 			{
 				if ((*it)->GetRaceID() == m_sClickedOnRace)
@@ -2078,7 +2139,7 @@ void CDiplomacyMenuView::CreateButtons()
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
 
-	CMajor* pPlayer = pDoc->GetPlayersRace();
+	CMajor* pPlayer = m_pPlayersRace;
 	ASSERT(pPlayer);
 
 	CString sPrefix = pPlayer->GetPrefix();

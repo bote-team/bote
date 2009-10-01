@@ -22,8 +22,10 @@ protected: // Nur aus Serialisierung erzeugen
 	CGalaxyMenuView();
 	DECLARE_DYNCREATE(CGalaxyMenuView)
 
-	CSize m_TotalSize;								///< Größe der View in logischen Koordinaten
-	BOOLEAN m_bScrollToHome;						///< soll zum Heimatsektor zu Beginn der Runde gescrollt werden
+	CSize m_TotalSize;				///< Größe der View in logischen Koordinaten
+	BOOLEAN m_bScrollToHome;		///< soll zum Heimatsektor zu Beginn der Runde gescrollt werden
+
+	CMajor* m_pPlayersRace;			///< Spielerrasse
 		
 	Bitmap* m_pGalaxyBackground;	///< Zeiger auf Hintergrundbild-Objekt
 	Bitmap* m_pThumbnail;
