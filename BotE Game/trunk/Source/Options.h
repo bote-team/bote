@@ -214,6 +214,7 @@
 #define TORPEDOSPEED		15
 #define MAX_TORPEDO_RANGE	200
 #define DAMAGE_TO_HULL		0.1	// Prozentwert der bei Treffer immer auf Hülle geht
+#define POPSUPPORT_MULTI	1.5	// Multiplikator für Schiffsunterstützungskosten aus Bevölkerung im System
 // Schiffseigenschaften
 enum {NONE, ASSULTSHIP, BLOCKADESHIP, COMMANDSHIP, COMBATTRACTORBEAM, DOGFIGHTER, DOGKILLER, PATROLSHIP, RAIDER, SCIENCEVESSEL};
 

@@ -673,6 +673,17 @@ int CSystemAI::ChooseShip(int prio, BOOLEAN chooseCombatship, BOOLEAN chooseColo
 	if (pRace->GetType() != MAJOR)
 		return 0;
 
+
+	BYTE researchLevels[6] =
+	{
+		((CMajor*)pRace)->GetEmpire()->GetResearch()->GetBioTech(),
+		((CMajor*)pRace)->GetEmpire()->GetResearch()->GetEnergyTech(),
+		((CMajor*)pRace)->GetEmpire()->GetResearch()->GetCompTech(),
+		((CMajor*)pRace)->GetEmpire()->GetResearch()->GetPropulsionTech(),
+		((CMajor*)pRace)->GetEmpire()->GetResearch()->GetConstructionTech(),
+		((CMajor*)pRace)->GetEmpire()->GetResearch()->GetWeaponTech()
+	};
+
 	// Wenn ein Kolonieschiff gebaut werden sollte
 	if (chooseColoship && min > 0)
 	{
@@ -681,7 +692,7 @@ int CSystemAI::ChooseShip(int prio, BOOLEAN chooseCombatship, BOOLEAN chooseColo
 			// passt die Schiffsnummer zur Rassennummer
 			if (m_pDoc->m_ShipInfoArray.GetAt(j).GetRace() == pRace->GetRaceShipNumber()
 				&& m_pDoc->m_ShipInfoArray.GetAt(j).GetShipType() == COLONYSHIP
-				&& m_pDoc->m_ShipInfoArray.GetAt(j).IsThisShipBuildableNow(((CMajor*)pRace)->GetEmpire()->GetResearch()))
+				&& m_pDoc->m_ShipInfoArray.GetAt(j).IsThisShipBuildableNow(researchLevels))
 			{
 				int id = m_pDoc->m_ShipInfoArray.GetAt(j).GetID();
 				for (int i = 0; i < m_pDoc->m_System[ko.x][ko.y].GetBuildableShips()->GetSize(); i++)
@@ -704,7 +715,7 @@ int CSystemAI::ChooseShip(int prio, BOOLEAN chooseCombatship, BOOLEAN chooseColo
 			// passt die Schiffsnummer zur Rassennummer
 			if (m_pDoc->m_ShipInfoArray.GetAt(j).GetRace() == pRace->GetRaceShipNumber()
 				&& m_pDoc->m_ShipInfoArray.GetAt(j).GetShipType() == TRANSPORTER
-				&& m_pDoc->m_ShipInfoArray.GetAt(j).IsThisShipBuildableNow(((CMajor*)pRace)->GetEmpire()->GetResearch()))
+				&& m_pDoc->m_ShipInfoArray.GetAt(j).IsThisShipBuildableNow(researchLevels))
 			{
 				int id = m_pDoc->m_ShipInfoArray.GetAt(j).GetID();
 				for (int i = 0; i < m_pDoc->m_System[ko.x][ko.y].GetBuildableShips()->GetSize(); i++)

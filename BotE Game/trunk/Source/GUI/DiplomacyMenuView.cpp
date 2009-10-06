@@ -1842,21 +1842,19 @@ void CDiplomacyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 							it = pmMajors->begin();
 						while (1)
 						{
-							if (it != pmMajors->end())
-							{
-								it++;
-								if (it->first != pPlayer->GetRaceID() && pClickedRace->GetAgreement(it->first) >= TRADE_AGREEMENT)
-								{
-									m_OutgoingInfo.m_sCorruptedRace = it->first;
-									CalcDeviceRect(rect);
-									InvalidateRect(rect);
-									break;
-								}
-								else if (it->first == m_OutgoingInfo.m_sCorruptedRace)
-									break;					
-							}
-							else
+							it++;
+							if (it == pmMajors->end())
 								it = pmMajors->begin();
+
+							if (it->first != pPlayer->GetRaceID() && pClickedRace->GetAgreement(it->first) >= TRADE_AGREEMENT)
+							{
+								m_OutgoingInfo.m_sCorruptedRace = it->first;
+								CalcDeviceRect(rect);
+								InvalidateRect(rect);
+								break;
+							}
+							else if (it->first == m_OutgoingInfo.m_sCorruptedRace)
+								break;
 						}
 					}
 					// ansonsten können wir nur bestechen, wenn eine andere Rasse mindst. ein Bündnis mit der Minor hat
@@ -2050,6 +2048,12 @@ BOOL CDiplomacyMenuView::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 					if (it != m_vRaceList.end())
 					{
 						m_sClickedOnRace = (*it)->GetRaceID();
+						
+						m_OutgoingInfo.Reset();
+						m_OutgoingInfo.m_sFromRace = m_pPlayersRace->GetRaceID();
+						m_OutgoingInfo.m_ptKO = m_ptResourceFromSystem;
+				
+						m_pIncomingInfo = NULL;
 						Invalidate();
 					}
 					break;
@@ -2064,6 +2068,11 @@ BOOL CDiplomacyMenuView::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 void CDiplomacyMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 {
 	// TODO: Add your message handler code here and/or call default
+	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	ASSERT(pDoc);
+
+	if (!pDoc->m_bDataReceived)
+		return;
 	// wenn wir nicht im Eingangsmenü sind
 	if (m_bySubMenu == 2)
 	{
@@ -2074,6 +2083,12 @@ void CDiplomacyMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 	if (nChar == VK_ESCAPE)
 	{
 		m_sClickedOnRace = "";
+
+		m_OutgoingInfo.Reset();
+		m_OutgoingInfo.m_sFromRace = m_pPlayersRace->GetRaceID();
+		m_OutgoingInfo.m_ptKO = m_ptResourceFromSystem;
+
+		m_pIncomingInfo = NULL;
 		Invalidate();
 	}
 	else if (nChar == VK_HOME)
@@ -2082,18 +2097,29 @@ void CDiplomacyMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 		if (it != m_vRaceList.end())
 		{
 			m_sClickedOnRace = (*it)->GetRaceID();
+			m_OutgoingInfo.Reset();
+			m_OutgoingInfo.m_sFromRace = m_pPlayersRace->GetRaceID();
+			m_OutgoingInfo.m_ptKO = m_ptResourceFromSystem;
+				
+			m_pIncomingInfo = NULL;
 			Invalidate();
 		}
 	}
 	else if (nChar == VK_END)
 	{
 		vector<CRace*>::iterator it = m_vRaceList.end();
-		if (it != m_vRaceList.end())
-		{
+		if (m_vRaceList.size())
 			it--;
+		if (it != m_vRaceList.end())
+		{			
 			if (it != m_vRaceList.end())
 			{
 				m_sClickedOnRace = (*it)->GetRaceID();
+				m_OutgoingInfo.Reset();
+				m_OutgoingInfo.m_sFromRace = m_pPlayersRace->GetRaceID();
+				m_OutgoingInfo.m_ptKO = m_ptResourceFromSystem;
+		
+				m_pIncomingInfo = NULL;
 				Invalidate();
 			}
 		}
@@ -2102,12 +2128,6 @@ void CDiplomacyMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 	{
 		if (m_sClickedOnRace != "")
 		{
-			CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
-			ASSERT(pDoc);
-
-			if (!pDoc->m_bDataReceived)
-				return;
-
 			for (vector<CRace*>::iterator it = m_vRaceList.begin(); it != m_vRaceList.end(); it++)
 			{
 				if ((*it)->GetRaceID() == m_sClickedOnRace)
@@ -2123,6 +2143,11 @@ void CDiplomacyMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 					if (it != m_vRaceList.end())
 					{
 						m_sClickedOnRace = (*it)->GetRaceID();
+						m_OutgoingInfo.Reset();
+						m_OutgoingInfo.m_sFromRace = m_pPlayersRace->GetRaceID();
+						m_OutgoingInfo.m_ptKO = m_ptResourceFromSystem;
+				
+						m_pIncomingInfo = NULL;
 						Invalidate();
 					}
 					break;

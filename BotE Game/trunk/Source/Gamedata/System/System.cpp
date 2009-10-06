@@ -1653,46 +1653,43 @@ void CSystem::BuildBuildingsForMinorRace(CSector* sector, BuildingInfoArray* bui
 		case 0:	// sehr rückständig
 			{
 				USHORT temp = rand()%3+1;
-				level = averageTechlevel-temp;
-				if (level < 0)
-					level = 0;
+				level = averageTechlevel-temp;				
 				break;
 			}
 		case 1:	// rückständig
 			{
 				USHORT temp = rand()%2+1;
-				level = averageTechlevel-temp;
-					if (level < 0)
-					level = 0;
+				level = averageTechlevel-temp;				
 				break;
 			}
 		case 2:	// normal fortschrittlich
 			{
 				USHORT temp = rand()%3;
 				level = averageTechlevel+1-temp;
-					if (level < 0)
-						level = 0;
-					else if (level > NoTL)
-						level = NoTL;
 				break;
 			}
 		case 3:	// fortschrittlich
 			{
 				USHORT temp = rand()%2+1;
 				level = averageTechlevel+temp;
-					if (level > NoTL)
-						level = NoTL;
 				break;
 			}
 		case 4:	// sehr fortschrittlich
 			{
 				USHORT temp = rand()%3+1;
 				level = averageTechlevel+temp;
-					if (level > NoTL)
-						level = NoTL;
 				break;
 			}
 		}
+
+		if (level < 0)
+			level = 0;
+		else if (level > NoTL)
+			level = NoTL;
+		// Researchlevels für Minor zusammenbauen
+		BYTE researchLevels[6] = {level, level, level, level, level, level};
+
+		// für den Algorithmus unten (muss größer 0 sein um einmal in die Schleife zu gehen)
 		level++;
 
 		// die gültige Eigenschaft der Minor festlegen
@@ -1744,61 +1741,52 @@ void CSystem::BuildBuildingsForMinorRace(CSector* sector, BuildingInfoArray* bui
 		default: fromRace = HUMAN;
 		}
 		*/
-		// Die Subtraktion hinter den einzelnen Levels wird gemacht, weil manche Gebäude ja nicht schon auf der
-		// 0.-ten Stufe baubar sind. 
-		short counter[10] = {0};
+		
 		USHORT runningNumber[10] = {0,0,0,0,0,0,0,0,0,0};
 		for (int i = 0; i < buildingInfo->GetSize(); i++)
 			if (fromRace == buildingInfo->GetAt(i).GetOwnerOfBuilding())
 			{
-				if (buildingInfo->GetAt(i).GetFoodProd() > 0 && buildingInfo->GetAt(i).GetWorker() == TRUE && counter[0] < level && level > 0)
-				{
-					counter[0]++;
+				if (!buildingInfo->GetAt(i).IsBuildingBuildableNow(researchLevels))
+					continue;
+				
+				if (buildingInfo->GetAt(i).GetFoodProd() > 0 && buildingInfo->GetAt(i).GetWorker() == TRUE)
+				{				
 					runningNumber[0] = buildingInfo->GetAt(i).GetRunningNumber();
 				}
-				else if (buildingInfo->GetAt(i).GetIPProd() > 0 && buildingInfo->GetAt(i).GetWorker() == TRUE && counter[1] < level && level > 0)
+				else if (buildingInfo->GetAt(i).GetIPProd() > 0 && buildingInfo->GetAt(i).GetWorker() == TRUE)
 				{
-					counter[1]++;
 					runningNumber[1] = buildingInfo->GetAt(i).GetRunningNumber();
 				}
-				else if (buildingInfo->GetAt(i).GetEnergyProd() > 0 && buildingInfo->GetAt(i).GetWorker() == TRUE && counter[2] < level - 1 && level > 1)
+				else if (buildingInfo->GetAt(i).GetEnergyProd() > 0 && buildingInfo->GetAt(i).GetWorker() == TRUE)
 				{
-					counter[2]++;
 					runningNumber[2] = buildingInfo->GetAt(i).GetRunningNumber();
 				}
-				else if (buildingInfo->GetAt(i).GetSPProd() > 0 && buildingInfo->GetAt(i).GetWorker() == TRUE && counter[3] < level - 1 && level > 1)
+				else if (buildingInfo->GetAt(i).GetSPProd() > 0 && buildingInfo->GetAt(i).GetWorker() == TRUE)
 				{
-					counter[3]++;
 					runningNumber[3] = buildingInfo->GetAt(i).GetRunningNumber();
 				}
-				else if (buildingInfo->GetAt(i).GetFPProd() > 0 && buildingInfo->GetAt(i).GetWorker() == TRUE && counter[4] < level - 1 && level > 1)
+				else if (buildingInfo->GetAt(i).GetFPProd() > 0 && buildingInfo->GetAt(i).GetWorker() == TRUE)
 				{
-					counter[4]++;
 					runningNumber[4] = buildingInfo->GetAt(i).GetRunningNumber();
 				}
-				else if (buildingInfo->GetAt(i).GetTitanProd() > 0 && buildingInfo->GetAt(i).GetWorker() == TRUE && counter[5] < level && level > 0 && exist[0] == TRUE)
+				else if (buildingInfo->GetAt(i).GetTitanProd() > 0 && buildingInfo->GetAt(i).GetWorker() == TRUE && exist[0] == TRUE)
 				{
-					counter[5]++;
 					runningNumber[5] = buildingInfo->GetAt(i).GetRunningNumber();
 				}
-				else if (buildingInfo->GetAt(i).GetDeuteriumProd() > 0 && buildingInfo->GetAt(i).GetWorker() == TRUE && counter[6] < level - 1 && level > 1 && exist[1] == TRUE)
+				else if (buildingInfo->GetAt(i).GetDeuteriumProd() > 0 && buildingInfo->GetAt(i).GetWorker() == TRUE && exist[1] == TRUE)
 				{
-					counter[6]++;
 					runningNumber[6] = buildingInfo->GetAt(i).GetRunningNumber();
 				}
-				else if (buildingInfo->GetAt(i).GetDuraniumProd() > 0 && buildingInfo->GetAt(i).GetWorker() == TRUE && counter[7] < level - 3 && level > 3 && exist[2] == TRUE)
+				else if (buildingInfo->GetAt(i).GetDuraniumProd() > 0 && buildingInfo->GetAt(i).GetWorker() == TRUE && exist[2] == TRUE)
 				{
-					counter[7]++;
 					runningNumber[7] = buildingInfo->GetAt(i).GetRunningNumber();
 				}
-				else if (buildingInfo->GetAt(i).GetCrystalProd() > 0 && buildingInfo->GetAt(i).GetWorker() == TRUE && counter[8] < level - 5 && level > 5 && exist[3] == TRUE)
+				else if (buildingInfo->GetAt(i).GetCrystalProd() > 0 && buildingInfo->GetAt(i).GetWorker() == TRUE && exist[3] == TRUE)
 				{
-					counter[8]++;
 					runningNumber[8] = buildingInfo->GetAt(i).GetRunningNumber();
 				}
-				else if (buildingInfo->GetAt(i).GetIridiumProd() > 0 && buildingInfo->GetAt(i).GetWorker() == TRUE && counter[9] < level - 7 && level > 7 && exist[4] == TRUE)
+				else if (buildingInfo->GetAt(i).GetIridiumProd() > 0 && buildingInfo->GetAt(i).GetWorker() == TRUE && exist[4] == TRUE)
 				{
-					counter[9]++;
 					runningNumber[9] = buildingInfo->GetAt(i).GetRunningNumber();
 				}
 			}			
@@ -1991,6 +1979,16 @@ void CSystem::BuildBuildingsAfterColonization(CSector *sector, BuildingInfoArray
 
 	BYTE byRaceBuildingID = pMajor->GetRaceBuildingNumber();
 
+	BYTE researchLevels[6] =
+		{
+			pMajor->GetEmpire()->GetResearch()->GetBioTech(),
+			pMajor->GetEmpire()->GetResearch()->GetEnergyTech(),
+			pMajor->GetEmpire()->GetResearch()->GetCompTech(),
+			pMajor->GetEmpire()->GetResearch()->GetPropulsionTech(),
+			pMajor->GetEmpire()->GetResearch()->GetConstructionTech(),
+			pMajor->GetEmpire()->GetResearch()->GetWeaponTech()
+		};
+
 	// in exist[.] steht dann, ob wir einen Rohstoff abbauen können, wenn ja, dann können wir auch das Gebäude bauen
 	BOOLEAN exist[5] = {0,0,0,0,0};
 	sector->GetAvailableResources(exist);
@@ -2002,66 +2000,70 @@ void CSystem::BuildBuildingsAfterColonization(CSector *sector, BuildingInfoArray
 			start = i;
 			break;
 		}
-	// Die Subtraktion hinter den einzelnen Levels wird gemacht, weil manche Gebäude ja nicht schon auf der
-	// 0.-ten Stufe baubar sind. 
+	
 	short counter[10] = {0};
 	USHORT runningNumber[10] = {0,0,0,0,0,0,0,0,0,0};
 	for (int i = start; i < buildingInfo->GetSize(); i++)
 	{
-		if (buildingInfo->GetAt(i).GetFoodProd() > 0 && buildingInfo->GetAt(i).GetWorker() == TRUE && counter[0] < colonizationPoints && colonizationPoints > 0)
-		{
-			counter[0]++;
-			runningNumber[0] = buildingInfo->GetAt(i).GetRunningNumber();
-		}
-		else if (buildingInfo->GetAt(i).GetIPProd() > 0 && buildingInfo->GetAt(i).GetWorker() == TRUE && counter[1] < colonizationPoints && colonizationPoints > 0)
-		{
-			counter[1]++;
-			runningNumber[1] = buildingInfo->GetAt(i).GetRunningNumber();
-		}
-		else if (buildingInfo->GetAt(i).GetEnergyProd() > 0 && buildingInfo->GetAt(i).GetWorker() == TRUE && counter[2] < colonizationPoints - 1 && colonizationPoints > 1)
-		{
-			counter[2]++;
-			runningNumber[2] = buildingInfo->GetAt(i).GetRunningNumber();
-		}
-		else if (buildingInfo->GetAt(i).GetSPProd() > 0 && buildingInfo->GetAt(i).GetWorker() == TRUE && counter[3] < colonizationPoints - 1 && colonizationPoints > 1)
-		{
-			counter[3]++;
-			runningNumber[3] = buildingInfo->GetAt(i).GetRunningNumber();
-		}
-		else if (buildingInfo->GetAt(i).GetFPProd() > 0 && buildingInfo->GetAt(i).GetWorker() == TRUE && counter[4] < colonizationPoints - 1 && colonizationPoints > 1)
-		{
-			counter[4]++;
-			runningNumber[4] = buildingInfo->GetAt(i).GetRunningNumber();
-		}
-		else if (buildingInfo->GetAt(i).GetTitanProd() > 0 && buildingInfo->GetAt(i).GetWorker() == TRUE && counter[5] < colonizationPoints && colonizationPoints > 0 && exist[0] == TRUE)
-		{
-			counter[5]++;
-			runningNumber[5] = buildingInfo->GetAt(i).GetRunningNumber();
-		}
-		else if (buildingInfo->GetAt(i).GetDeuteriumProd() > 0 && buildingInfo->GetAt(i).GetWorker() == TRUE && counter[6] < colonizationPoints - 1 && colonizationPoints > 1 && exist[1] == TRUE)
-		{
-			counter[6]++;
-			runningNumber[6] = buildingInfo->GetAt(i).GetRunningNumber();
-		}
-		else if (buildingInfo->GetAt(i).GetDuraniumProd() > 0 && buildingInfo->GetAt(i).GetWorker() == TRUE && counter[7] < colonizationPoints - 2 && colonizationPoints > 2 && exist[2] == TRUE)
-		{
-			counter[7]++;
-			runningNumber[7] = buildingInfo->GetAt(i).GetRunningNumber();
-		}
-		else if (buildingInfo->GetAt(i).GetCrystalProd() > 0 && buildingInfo->GetAt(i).GetWorker() == TRUE && counter[8] < colonizationPoints - 3 && colonizationPoints > 3 && exist[3] == TRUE)
-		{
-			counter[8]++;
-			runningNumber[8] = buildingInfo->GetAt(i).GetRunningNumber();
-		}
-		else if (buildingInfo->GetAt(i).GetIridiumProd() > 0 && buildingInfo->GetAt(i).GetWorker() == TRUE && counter[9] < colonizationPoints - 4 && colonizationPoints > 4 && exist[4] == TRUE)
-		{
-			counter[9]++;
-			runningNumber[9] = buildingInfo->GetAt(i).GetRunningNumber();
-		}
 		// Abbruchbedingung, wenn das Gebäude eh nicht mehr zu den Gebäuden des Sektorbesitzers gehören.
 		// Dafür muss aber die Gebäudeliste geordnet nach den Besitzern vorliegen (das sie aktuell auch ist)
 		if (buildingInfo->GetAt(i).GetOwnerOfBuilding() != byRaceBuildingID)
 			break;
+		// wenn das Gebäude nicht gebaut werden kann, dann mit dem nächsten weitermachen
+		if (!buildingInfo->GetAt(i).IsBuildingBuildableNow(researchLevels))
+			continue;
+
+		if (buildingInfo->GetAt(i).GetFoodProd() > 0 && buildingInfo->GetAt(i).GetWorker() == TRUE && counter[0] < colonizationPoints)
+		{
+			counter[0]++;
+			runningNumber[0] = buildingInfo->GetAt(i).GetRunningNumber();
+
+		}
+		else if (buildingInfo->GetAt(i).GetIPProd() > 0 && buildingInfo->GetAt(i).GetWorker() == TRUE && counter[1] < colonizationPoints)
+		{
+			counter[1]++;
+			runningNumber[1] = buildingInfo->GetAt(i).GetRunningNumber();
+		}
+		else if (buildingInfo->GetAt(i).GetEnergyProd() > 0 && buildingInfo->GetAt(i).GetWorker() == TRUE && counter[2] < colonizationPoints)
+		{
+			counter[2]++;
+			runningNumber[2] = buildingInfo->GetAt(i).GetRunningNumber();
+		}
+		else if (buildingInfo->GetAt(i).GetSPProd() > 0 && buildingInfo->GetAt(i).GetWorker() == TRUE && counter[3] < colonizationPoints)
+		{
+			counter[3]++;
+			runningNumber[3] = buildingInfo->GetAt(i).GetRunningNumber();
+		}
+		else if (buildingInfo->GetAt(i).GetFPProd() > 0 && buildingInfo->GetAt(i).GetWorker() == TRUE && counter[4] < colonizationPoints)
+		{
+			counter[4]++;
+			runningNumber[4] = buildingInfo->GetAt(i).GetRunningNumber();
+		}
+		else if (buildingInfo->GetAt(i).GetTitanProd() > 0 && buildingInfo->GetAt(i).GetWorker() == TRUE && counter[5] < colonizationPoints && exist[0] == TRUE)
+		{
+			counter[5]++;
+			runningNumber[5] = buildingInfo->GetAt(i).GetRunningNumber();
+		}
+		else if (buildingInfo->GetAt(i).GetDeuteriumProd() > 0 && buildingInfo->GetAt(i).GetWorker() == TRUE && counter[6] < colonizationPoints && exist[1] == TRUE)
+		{
+			counter[6]++;
+			runningNumber[6] = buildingInfo->GetAt(i).GetRunningNumber();
+		}
+		else if (buildingInfo->GetAt(i).GetDuraniumProd() > 0 && buildingInfo->GetAt(i).GetWorker() == TRUE && counter[7] < colonizationPoints && exist[2] == TRUE)
+		{
+			counter[7]++;
+			runningNumber[7] = buildingInfo->GetAt(i).GetRunningNumber();
+		}
+		else if (buildingInfo->GetAt(i).GetCrystalProd() > 0 && buildingInfo->GetAt(i).GetWorker() == TRUE && counter[8] < colonizationPoints && exist[3] == TRUE)
+		{
+			counter[8]++;
+			runningNumber[8] = buildingInfo->GetAt(i).GetRunningNumber();
+		}
+		else if (buildingInfo->GetAt(i).GetIridiumProd() > 0 && buildingInfo->GetAt(i).GetWorker() == TRUE && counter[9] < colonizationPoints && exist[4] == TRUE)
+		{
+			counter[9]++;
+			runningNumber[9] = buildingInfo->GetAt(i).GetRunningNumber();
+		}		
 	}
 	// wenn schon Gebäude eines Typs stehen, dann dürfen keine des gleichen Typ zusätzlich gebaut werden. Z.B. wenn
 	// schon Typ 4 Automatikfarmen stehen darf das Kolonieschiff nicht auch noch Primitive Farmen bauen.

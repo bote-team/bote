@@ -395,6 +395,11 @@ public:
 	 * die Anzahl dieser Gebäude.
 	 */
 	CString GetProductionAsString(USHORT number = 1) const;
+
+	/// Funktion gibt zurück, ob das Gebäude mit der aktuellen Forschung einer Rasse baubar ist.
+	/// @param pResearch Forschungsobjekt der Rasse
+	/// @return Wahrheitswert
+	bool IsBuildingBuildableNow(const BYTE reserachLevels[6]) const;
 	
 private:
 	// Die laufende Nummer (ID) des Gebäudes

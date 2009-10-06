@@ -84,6 +84,11 @@ public:
 	 */
 	void SetNeededIndustry(USHORT ip) {m_iNeededIndustry = ip;}
 
+	/// Funktion gibt zurück, ob die Truppe mit der aktuellen Forschung einer Rasse baubar ist.
+	/// @param researchLevels Forschungsstufen der Rasse
+	/// @return Wahrheitswert
+	bool IsThisTroopBuildableNow(const BYTE reserachLevels[6]) const;
+
 private:
 	/// Der Name der Einheit
 	CString m_strName;

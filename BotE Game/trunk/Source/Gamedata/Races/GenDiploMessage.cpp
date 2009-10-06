@@ -144,6 +144,7 @@ bool CGenDiploMessage::GenerateMajorOffer(CDiplomacyInfo& info)
 				sOffer = read[10];
 
 			sOffer.Replace("$latinum$",temp);
+			break;
 		}
 		case DIP_REQUEST:
 		{

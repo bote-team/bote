@@ -50,7 +50,7 @@ void CCombat::SetInvolvedShips(CArray<CShip*,CShip*>* ships, std::map<CString, C
 	m_mRaces = pmRaces;
 
 	for (int i = 0; i < ships->GetSize(); i++)
-		m_mInvolvedRaces[ships->GetAt(i)->GetOwnerOfShip()] = true;
+		m_mInvolvedRaces.insert(ships->GetAt(i)->GetOwnerOfShip());
 
 	// Check machen, dass die Rassen wegen ihrer diplomatischen Beziehung auch angreifen können
 	for (std::map<CString, CRace*>::const_iterator it = pmRaces->begin(); it != pmRaces->end(); it++)
@@ -101,7 +101,7 @@ void CCombat::PreCombatCalculation()
 	//	  Es gibt 7 verschiedene Positionen für einen Kampfbeginn um den Mittelpunkt. 6 für die Hauptrassen und noch eine
 
 	int nRacePos = 0;
-	for (std::map<CString, bool>::const_iterator it = m_mInvolvedRaces.begin(); it != m_mInvolvedRaces.end(); it++)
+	for (std::set<CString>::const_iterator it = m_mInvolvedRaces.begin(); it != m_mInvolvedRaces.end(); it++)
 	{
 		// Das wievielte Schiff dieser Rasse ist auf dieser Position? Wird benötigt, wenn wir an der Position Formationen
 		// machen wollen
@@ -117,7 +117,7 @@ void CCombat::PreCombatCalculation()
 		// Hier das Feld aller beteiligten Schiffe durchgehen
 		for (int i = 0; i < m_CS.GetSize(); i++)
 		{
-			if (m_CS.GetAt(i)->m_pShip->GetOwnerOfShip() != it->first)
+			if (m_CS.GetAt(i)->m_pShip->GetOwnerOfShip() != *it)
 				continue;
 
 			// Schiffsposition zuweisen
@@ -154,7 +154,7 @@ void CCombat::PreCombatCalculation()
 		// Jetzt noch die ganzen Boni/Mali den Schiffen zuweisen und die Felder mit den Gegnern für die einzelnen Rassen füllen
 		for (int i = 0; i < m_CS.GetSize(); i++)
 		{
-			if (m_CS.GetAt(i)->m_pShip->GetOwnerOfShip() == it->first)
+			if (m_CS.GetAt(i)->m_pShip->GetOwnerOfShip() == *it)
 			{
 				// 10% Bonus wenn Flagschiff am Kampf teilnehmen
 				if (bFlagship)
@@ -177,8 +177,8 @@ void CCombat::PreCombatCalculation()
 			else
 			{
 				// Feld mit allen möglichen gegnerischen Schiffen füllen				
-				if (CheckDiplomacyStatus((*m_mRaces)[it->first], (*m_mRaces)[m_CS.GetAt(i)->m_pShip->GetOwnerOfShip()]))
-					m_mEnemies[it->first].push_back(m_CS.GetAt(i));
+				if (CheckDiplomacyStatus((*m_mRaces)[*it], (*m_mRaces)[m_CS.GetAt(i)->m_pShip->GetOwnerOfShip()]))
+					m_mEnemies[*it].push_back(m_CS.GetAt(i));
 			}			
 		}
 		nRacePos++;
@@ -287,20 +287,20 @@ void CCombat::CalculateCombat(std::map<CString, BYTE>& winner)
 		// Erstmal wird für alle beteiligten Rassen der Kampf auf verloren gesetzt. Danach wird geschaut, wer noch
 		// Schiffe besitzt. Für diese Rassen wird der Kampf dann auf gewonnen gesetzt. Alle anderen Rassen gelten als
 		// nicht kampfbeteiligt.
-		for (std::map<CString, bool>::const_iterator it = m_mInvolvedRaces.begin(); it != m_mInvolvedRaces.end(); it++)
-			winner[it->first] = 2;
+		for (std::set<CString>::const_iterator it = m_mInvolvedRaces.begin(); it != m_mInvolvedRaces.end(); it++)
+			winner[*it] = 2;
 		for (int i = 0; i < m_CS.GetSize(); i++)
 			winner[m_CS.GetAt(i)->m_pShip->GetOwnerOfShip()] = 1;
 
 		// ein Unentschieden wurde erreicht, wenn es mehrere "Gewinner" gibt, diese aber keine diplomatische
 		// Beziehung haben, um sich nicht anzugreifen
-		for (std::map<CString, bool>::const_iterator it = m_mInvolvedRaces.begin(); it != m_mInvolvedRaces.end(); it++)
-			for (std::map<CString, bool>::const_iterator itt = m_mInvolvedRaces.begin(); itt != m_mInvolvedRaces.end(); itt++)
-				if (it->first != itt->first && winner[it->first] == 1 && winner[itt->first] == 1)
-					if (CheckDiplomacyStatus((*m_mRaces)[it->first], (*m_mRaces)[itt->first]))
+		for (std::set<CString>::const_iterator it = m_mInvolvedRaces.begin(); it != m_mInvolvedRaces.end(); it++)
+			for (std::set<CString>::const_iterator itt = m_mInvolvedRaces.begin(); itt != m_mInvolvedRaces.end(); itt++)
+				if (*it != *itt && winner[*it] == 1 && winner[*itt] == 1)
+					if (CheckDiplomacyStatus((*m_mRaces)[*it], (*m_mRaces)[*itt]))
 					{
-						winner[it->first] = 3;
-						winner[itt->first] = 3;
+						winner[*it]  = 3;
+						winner[*itt] = 3;
 					}
 /*
 		CString s;
@@ -318,8 +318,8 @@ void CCombat::CalculateCombat(std::map<CString, BYTE>& winner)
 	// Dann ist der Kampf unentschieden ausgegangen
 	else 
 	{		
-		for (std::map<CString, bool>::const_iterator it = m_mInvolvedRaces.begin(); it != m_mInvolvedRaces.end(); it++)
-			winner[it->first] = 3;		
+		for (std::set<CString>::const_iterator it = m_mInvolvedRaces.begin(); it != m_mInvolvedRaces.end(); it++)
+			winner[*it] = 3;		
 	}
 }
 

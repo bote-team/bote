@@ -38,7 +38,7 @@ public:
 	BYTE GetPropulsionTech() const {return m_iPropulsionTech;}
 	BYTE GetConstructionTech() const {return m_iConstructionTech;}
 	BYTE GetWeaponTech() const {return m_iWeaponTech;}
-
+	
 	BYTE GetBioPercentage() const {return m_iBioPercentage;}
 	BYTE GetEnergyPercentage() const {return m_iEnergyPercentage;}
 	BYTE GetCompPercentage() const {return m_iComputerPercentage;}

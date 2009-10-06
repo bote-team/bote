@@ -61,7 +61,7 @@ public:
 	/// @param defender Verteidiger des Systems
 	/// @param attacker Feld mit allen eingreifern auf das Systems (meist nur einer)
 	/// @return <code>TRUE</code> wenn Verteidiger ungleich allen Angreifern, ansonsten <code>FALSE</code>
-	BOOLEAN IsDefenderNotAttacker(CString sDefender, const map<CString, bool>* attacker);
+	BOOLEAN IsDefenderNotAttacker(CString sDefender, const set<CString>* attacker);
 
 private:
 	// Attribute

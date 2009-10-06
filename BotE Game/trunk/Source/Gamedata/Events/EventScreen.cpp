@@ -84,7 +84,7 @@ void CEventScreen::Create(void)
 	CString fileN = "Other\\" + sPrefix + "button.png";
 	CString fileI = "Other\\" + sPrefix + "buttoni.png";
 	CString fileA = "Other\\" + sPrefix + "buttona.png";
-	m_Buttons.Add(new CMyButton(CPoint(560,950), CSize(160,40), CResourceManager::GetString("BTN_OKAY"),  fileN, fileI, fileA));	
+	m_Buttons.Add(new CMyButton(CPoint(560,970), CSize(160,40), CResourceManager::GetString("BTN_OKAY"),  fileN, fileI, fileA));	
 }
 
 void CEventScreen::Draw(Graphics* g, CGraphicPool* graphicPool) const

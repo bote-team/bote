@@ -10,6 +10,7 @@
 #include "afx.h"
 #include <map>
 #include <vector>
+#include <set>
 #include "Options.h"
 #include "AI\DiplomacyAI.h"
 
@@ -193,7 +194,7 @@ protected:
 	// Ingame-Attribute (Rassenwechselwirkung)
 	map<CString, BYTE>	m_mRelations;	///< Beziehungsmap (Rassen-ID, Beziehungswert)
 	map<CString, short>	m_mAgreement;	///< Diplomatischer Status gegenüber anderen Rassen (Rassen-ID, Status)
-	vector<CString>		m_vInContact;	///< kennt die Rasse eine andere Rasse (Rassen-ID)
+	set<CString>		m_vInContact;	///< kennt die Rasse eine andere Rasse (Rassen-ID)
 	// diplomatische Nachrichten
 	vector<CDiplomacyInfo>	m_vDiplomacyNewsIn;	///< Vektor mit allen eingehenden diplomatischen Nachrichten
 	vector<CDiplomacyInfo>	m_vDiplomacyNewsOut;///< Vektor mit allen ausgehenden diplomatischen Nachrichten

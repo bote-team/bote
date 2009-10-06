@@ -310,6 +310,16 @@ void CShipBottomView::OnDraw(CDC* dc)
 	if (CGalaxyMenuView::IsMoveShip() == TRUE && 
 		pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfTheShipInArray()).GetOwnerOfShip() == pMajor->GetRaceID())
 	{
+		BYTE researchLevels[6] =
+		{
+			pMajor->GetEmpire()->GetResearch()->GetBioTech(),
+			pMajor->GetEmpire()->GetResearch()->GetEnergyTech(),
+			pMajor->GetEmpire()->GetResearch()->GetCompTech(),
+			pMajor->GetEmpire()->GetResearch()->GetPropulsionTech(),
+			pMajor->GetEmpire()->GetResearch()->GetConstructionTech(),
+			pMajor->GetEmpire()->GetResearch()->GetWeaponTech()
+		};
+
 		fontBrush.SetColor(this->GetFontColorForSmallButton());
 		fontFormat.SetAlignment(StringAlignmentCenter);
 		fontFormat.SetLineAlignment(StringAlignmentCenter);
@@ -566,16 +576,16 @@ void CShipBottomView::OnDraw(CDC* dc)
 					for (int l = 0; l < pDoc->m_ShipInfoArray.GetSize(); l++)
 						if (pDoc->m_ShipInfoArray.GetAt(l).GetRace() == pMajor->GetRaceShipNumber()
 							&& pDoc->m_ShipInfoArray.GetAt(l).GetShipType() == OUTPOST
-							&& pDoc->m_ShipInfoArray.GetAt(l).IsThisShipBuildableNow(pMajor->GetEmpire()->GetResearch()))
-						{
-							// Wenn ja dann Schaltfl‰che zum Auﬂenpostenbau einblenden
-							g.DrawImage(m_pShipOrderButton, r.right-245, r.top+140-counter*35, 120, 30);
-							s = CResourceManager::GetString("BTN_BUILD_OUTPOST");
-							m_ShipOrders[BUILD_OUTPOST].SetRect(r.right-245,r.top+140-counter*35,r.right-125,r.top+170-counter*35);
-							g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(r.right-245,r.top+140-counter*35,120,30), &fontFormat, &fontBrush);
-							counter++;
-							break;
-						}
+							&& pDoc->m_ShipInfoArray.GetAt(l).IsThisShipBuildableNow(researchLevels))
+							{
+								// Wenn ja dann Schaltfl‰che zum Auﬂenpostenbau einblenden
+								g.DrawImage(m_pShipOrderButton, r.right-245, r.top+140-counter*35, 120, 30);
+								s = CResourceManager::GetString("BTN_BUILD_OUTPOST");
+								m_ShipOrders[BUILD_OUTPOST].SetRect(r.right-245,r.top+140-counter*35,r.right-125,r.top+170-counter*35);
+								g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(r.right-245,r.top+140-counter*35,120,30), &fontFormat, &fontBrush);
+								counter++;
+								break;
+							}						
 				}
 				// Wenn hier schon ein Auﬂenposten steht, kˆnnen wir vielleicht auch eine Sternbasis bauen
 				else if (pDoc->GetSector(pDoc->GetKO().x,pDoc->GetKO().y).GetOutpost(pDoc->m_ShipArray.GetAt(n).GetOwnerOfShip()) == TRUE
@@ -586,16 +596,16 @@ void CShipBottomView::OnDraw(CDC* dc)
 					for (int l = 0; l < pDoc->m_ShipInfoArray.GetSize(); l++)
 						if (pDoc->m_ShipInfoArray.GetAt(l).GetRace() == pMajor->GetRaceShipNumber()
 							&& pDoc->m_ShipInfoArray.GetAt(l).GetShipType() == STARBASE
-							&& pDoc->m_ShipInfoArray.GetAt(l).IsThisShipBuildableNow(pMajor->GetEmpire()->GetResearch()))
-						{
-							// Wenn ja dann Schaltfl‰che zum Auﬂenpostenbau einblenden
-							g.DrawImage(m_pShipOrderButton, r.right-245, r.top+140-counter*35, 120, 30);
-							s = CResourceManager::GetString("BTN_BUILD_STARBASE");
-							m_ShipOrders[BUILD_STARBASE].SetRect(r.right-245,r.top+140-counter*35,r.right-125,r.top+170-counter*35);
-							g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(r.right-245,r.top+140-counter*35,120,30), &fontFormat, &fontBrush);
-							counter++;
-							break;
-						}
+							&& pDoc->m_ShipInfoArray.GetAt(l).IsThisShipBuildableNow(researchLevels))
+							{
+								// Wenn ja dann Schaltfl‰che zum Auﬂenpostenbau einblenden
+								g.DrawImage(m_pShipOrderButton, r.right-245, r.top+140-counter*35, 120, 30);
+								s = CResourceManager::GetString("BTN_BUILD_STARBASE");
+								m_ShipOrders[BUILD_STARBASE].SetRect(r.right-245,r.top+140-counter*35,r.right-125,r.top+170-counter*35);
+								g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(r.right-245,r.top+140-counter*35,120,30), &fontFormat, &fontBrush);
+								counter++;
+								break;
+							}						
 				}
 			}
 			// Transport

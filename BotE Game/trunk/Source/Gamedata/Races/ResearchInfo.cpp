@@ -176,6 +176,16 @@ void CResearchInfo::SetTechInfos(BYTE tech, BYTE level)
 {
 	m_strTechName[tech] = "";
 	m_strTechDescription[tech] = "";
+	
+	CResearchInfo::GetTechInfos(tech, level, m_strTechName[tech], m_strTechDescription[tech]);
+}
+
+/// Diese Funktion ermittelt den Namen und die Beschreibung einer bestimmten Technologie
+/// Dies wird in den Parametern <code>m_sTechName</code> und <code>m_sTechDesc</code> gespeichert.
+/// Als Parameter müssen dafür die jeweilige Technologie <code>tech</code> und die Stufe <code>level</code>
+/// übergeben werden.
+void CResearchInfo::GetTechInfos(BYTE tech, BYTE level, CString& sTechName, CString& sTechDesc)
+{
 	if (level > NoTL)
 		return;
 
@@ -189,10 +199,10 @@ void CResearchInfo::SetTechInfos(BYTE tech, BYTE level)
 		while (file.ReadString(csInput))
 		{
 			if (i == j)
-				m_strTechName[tech] = csInput;
+				sTechName = csInput;
 			else if (i-1 == j)
 			{
-				m_strTechDescription[tech] = csInput;
+				sTechDesc = csInput;
 				break;
 			}
 			i++;
@@ -200,8 +210,9 @@ void CResearchInfo::SetTechInfos(BYTE tech, BYTE level)
 	}
 	else
 	{	
+		MYTRACE(MT::LEVEL_ERROR, "Could not open file \"Techs.data\"...\n");
 		AfxMessageBox("ERROR! Could not open file \"Techs.data\"...\n(Maybe check your installation directory...)");
-		exit(1);
 	}
-	file.Close();												// Datei wird geschlossen
+	// Datei wird geschlossen
+	file.Close();
 }

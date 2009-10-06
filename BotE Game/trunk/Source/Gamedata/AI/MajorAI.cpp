@@ -1161,7 +1161,7 @@ bool CMajorAI::GiveDowry(CDiplomacyInfo& info)
 		nCredits = (long)(nCredits / 250) * 250;
 		if (nCredits > 5000)
 			nCredits = 5000;
-		if (nCredits != 0)
+		if (nCredits > 0)
 		{
 			// Jetzt das Latinum in das Angebot schreiben
 			info.m_nCredits = (USHORT)nCredits;

@@ -44,4 +44,15 @@ CTroopInfo::~CTroopInfo(void)
 {
 }
 
+/// Funktion gibt zurück, ob die Truppe mit der aktuellen Forschung einer Rasse baubar ist.
+	/// @param researchLevels Forschungsstufen der Rasse
+	/// @return Wahrheitswert
+bool CTroopInfo::IsThisTroopBuildableNow(const BYTE reserachLevels[6]) const
+{
+	// zuerstmal die Forschungsstufen checken
+	for (int i = 0; i < 6; i++)
+		if (reserachLevels[i] < this->m_byNeededTechs[i])
+		return false;
+	return true;
+}
 

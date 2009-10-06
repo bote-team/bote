@@ -123,20 +123,20 @@ void CSector::Serialize(CArchive &ar)
 		for (map<CString, BYTE>::const_iterator it = m_byStatus.begin(); it != m_byStatus.end(); it++)
 			ar << it->first << it->second;
 		ar << m_bShipPort.size();
-		for (map<CString, BOOLEAN>::const_iterator it = m_bShipPort.begin(); it != m_bShipPort.end(); it++)
-			ar << it->first << it->second;
+		for (set<CString>::const_iterator it = m_bShipPort.begin(); it != m_bShipPort.end(); it++)
+			ar << *it;
 		ar << m_bOutpost.size();
-		for (map<CString, BOOLEAN>::const_iterator it = m_bOutpost.begin(); it != m_bOutpost.end(); it++)
-			ar << it->first << it->second;
+		for (set<CString>::const_iterator it = m_bOutpost.begin(); it != m_bOutpost.end(); it++)
+			ar << *it;
 		ar << m_bStarbase.size();
-		for (map<CString, BOOLEAN>::const_iterator it = m_bStarbase.begin(); it != m_bStarbase.end(); it++)
-			ar << it->first << it->second;
+		for (set<CString>::const_iterator it = m_bStarbase.begin(); it != m_bStarbase.end(); it++)
+			ar << *it;
 		ar << m_bIsStationBuild.size();
-		for (map<CString, BOOLEAN>::const_iterator it = m_bIsStationBuild.begin(); it != m_bIsStationBuild.end(); it++)
-			ar << it->first << it->second;
+		for (set<CString>::const_iterator it = m_bIsStationBuild.begin(); it != m_bIsStationBuild.end(); it++)
+			ar << *it;
 		ar << m_bWhoIsOwnerOfShip.size();
-		for (map<CString, BOOLEAN>::const_iterator it = m_bWhoIsOwnerOfShip.begin(); it != m_bWhoIsOwnerOfShip.end(); it++)
-			ar << it->first << it->second;
+		for (set<CString>::const_iterator it = m_bWhoIsOwnerOfShip.begin(); it != m_bWhoIsOwnerOfShip.end(); it++)
+			ar << *it;
 		ar << m_iNeededStationPoints.size();
 		for (map<CString, short>::const_iterator it = m_iNeededStationPoints.begin(); it != m_iNeededStationPoints.end(); it++)
 			ar << it->first << it->second;
@@ -190,55 +190,45 @@ void CSector::Serialize(CArchive &ar)
 		ar >> mapSize;
 		for (size_t i = 0; i < mapSize; i++)
 		{
-			CString key;
-			BOOLEAN value;
-			ar >> key;
+			CString value;
 			ar >> value;
-			m_bShipPort[key] = value;
+			m_bShipPort.insert(value);
 		}
 		m_bOutpost.clear();
 		mapSize = 0;
 		ar >> mapSize;
 		for (size_t i = 0; i < mapSize; i++)
 		{
-			CString key;
-			BOOLEAN value;
-			ar >> key;
+			CString value;
 			ar >> value;
-			m_bOutpost[key] = value;
+			m_bOutpost.insert(value);
 		}
 		m_bStarbase.clear();
 		mapSize = 0;
 		ar >> mapSize;
 		for (size_t i = 0; i < mapSize; i++)
 		{
-			CString key;
-			BOOLEAN value;
-			ar >> key;
+			CString value;
 			ar >> value;
-			m_bStarbase[key] = value;
+			m_bStarbase.insert(value);
 		}
 		m_bIsStationBuild.clear();
 		mapSize = 0;
 		ar >> mapSize;
 		for (size_t i = 0; i < mapSize; i++)
 		{
-			CString key;
-			BOOLEAN value;
-			ar >> key;
+			CString value;
 			ar >> value;
-			m_bIsStationBuild[key] = value;
+			m_bIsStationBuild.insert(value);
 		}
 		m_bWhoIsOwnerOfShip.clear();
 		mapSize = 0;
 		ar >> mapSize;
 		for (size_t i = 0; i < mapSize; i++)
 		{
-			CString key;
-			BOOLEAN value;
-			ar >> key;
+			CString value;
 			ar >> value;
-			m_bWhoIsOwnerOfShip[key] = value;
+			m_bWhoIsOwnerOfShip.insert(value);
 		}
 		m_iNeededStationPoints.clear();
 		mapSize = 0;
@@ -1068,21 +1058,19 @@ void CSector::ClearAllPoints()
 		m_Planets[i].SetIsTerraforming(FALSE);
 	
 	m_byOwnerPoints.clear();
-	for (map<CString, BYTE>::iterator it = m_bIsStationBuild.begin(); it != m_bIsStationBuild.end(); it++)
-	{
-		if (it->second == FALSE)
-			this->SetStartStationPoints(0, it->first);
-		else
-			it->second = FALSE;
-	}
+	
 	// nun können alle StartStationPoint die auf 0 stehen in der Map gelöscht werden
 	for (map<CString, short>::iterator it = m_iStartStationPoints.begin(); it != m_iStartStationPoints.end(); )
 	{
+		if (m_bIsStationBuild.find(it->first) == m_bIsStationBuild.end())
+			it->second = 0;
+
 		if (it->second == 0)
 			it = m_iStartStationPoints.erase(it++);
 		else
 			++it;
 	}
+	m_bIsStationBuild.clear();
 	
 	m_iShipPathPoints = 0;
 
@@ -1112,13 +1100,12 @@ void CSector::CalculateOwner(const CString& sSystemOwner)
 	else if (m_sOwnerOfSector != "" && sSystemOwner == "" && this->GetMinorRace() == TRUE)
 		return;
 	
-	for (map<CString, BOOLEAN>::const_iterator it = m_bShipPort.begin(); it != m_bShipPort.end(); it++)
-		if (it->second == TRUE)
-		{
-			SetOwned(TRUE);
-			m_sOwnerOfSector = it->first;
-			return;
-		}
+	for (set<CString>::const_iterator it = m_bShipPort.begin(); it != m_bShipPort.end(); it++)
+	{
+		SetOwned(TRUE);
+		m_sOwnerOfSector = *it;
+		return;
+	}
 	
 	// Ist obiges nicht eingetreten, so gehört demjenigen der Sektor, wer die meisten Besitzerpunkte hat. Ist hier
 	// Gleichstand haben wir neutrales Gebiet. Es werden mindst. 2 Punkte benötigt, um als neuer Besitzer des Sektors
@@ -1229,15 +1216,9 @@ void CSector::DrawShipSymbolInSector(Graphics *g, CBotf2Doc* pDoc, CMajor* pPlay
 	pt.x = m_KO.x * STARMAP_SECTOR_WIDTH;
 	pt.y = m_KO.y * STARMAP_SECTOR_HEIGHT;
 
-	if (this->m_KO == CPoint(17,8))
-	{
-		int xxx;
-		xxx = 5;
-	}
-
 	// durch alle Rassen iterieren und Schiffsymbole zeichnen
 	for (map<CString, CRace*>::const_iterator it = pmRaces->begin(); it != pmRaces->end(); it++)
-	{
+	{		
 		if (pPlayer->GetRaceID() == it->first && this->GetOwnerOfShip(it->first) == TRUE
 			|| this->GetOwnerOfShip(it->first) == TRUE && this->GetNeededScanPower(it->first) < this->GetScanPower(pPlayer->GetRaceID()))
 		{

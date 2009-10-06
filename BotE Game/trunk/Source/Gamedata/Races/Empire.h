@@ -13,6 +13,8 @@
 #include "Events\EventColonization.h"
 #include "Events\EventBlockade.h"
 #include "Events\EventBombardment.h"
+#include "Events\EventResearch.h"
+#include "Events\EventFirstContact.h"
 
 /**
  * Struktur, die die wichtigsten Informationen eines Systems aufnehmen kann. Dies wird benötigt, wenn wir in einer

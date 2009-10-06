@@ -100,7 +100,9 @@ void CMenuChooseView::OnDraw(CDC* pDC)
 	fontFormat.SetLineAlignment(StringAlignmentNear);
 	fontFormat.SetFormatFlags(StringFormatFlagsNoWrap);
 	fontBrush.SetColor(color);
-	
+	Color markColor;
+	markColor.SetFromCOLORREF(pMajor->GetDesign()->m_clrListMarkTextColor);
+
 	// Grafiken zeichnen
 	Bitmap* graphic = NULL;
 	CString prefix = pMajor->GetPrefix();
@@ -133,7 +135,7 @@ void CMenuChooseView::OnDraw(CDC* pDC)
 		//********************************************************************************
 	// Hier testweise paar Informationen zum Imperium
 	CString s;
-	fontBrush.SetColor(Color(200,200,200));
+	fontBrush.SetColor(markColor);
 	
 	// Die aktuelle Runde darstellen, schauen ob schon gedrückt oder nicht
 	s.Format("%s %i",CResourceManager::GetString("ROUND"), pDoc->GetCurrentRound());
@@ -144,9 +146,6 @@ void CMenuChooseView::OnDraw(CDC* pDC)
 	fontFormat.SetAlignment(StringAlignmentNear);
 	fontBrush.SetColor(color);
 
-	s.Format("%s: %d",CResourceManager::GetString("NEWS"), pMajor->GetEmpire()->GetMessages()->GetSize());
-	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(r.left+30, 140, m_TotalSize.cx-60, 25), &fontFormat, &fontBrush);
-	
 	s.Format("%s:",CResourceManager::GetString("LATINUM"), pMajor->GetEmpire()->GetLatinum());
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(r.left+30, 90, m_TotalSize.cx-60, 25), &fontFormat, &fontBrush);
 	s.Format("%i",pMajor->GetEmpire()->GetLatinum());
@@ -156,8 +155,6 @@ void CMenuChooseView::OnDraw(CDC* pDC)
 	s.Format("%s:",CResourceManager::GetString("CHANGE"));
 	fontFormat.SetAlignment(StringAlignmentNear);
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(r.left+30, 115, m_TotalSize.cx-60, 25), &fontFormat, &fontBrush);
-	
-	// Latinumänderung zeichnen
 	fontFormat.SetAlignment(StringAlignmentFar);
 	if (pMajor->GetEmpire()->GetLatinumChange() >= 0)
 	{	
@@ -171,6 +168,32 @@ void CMenuChooseView::OnDraw(CDC* pDC)
 		s.Format("%i",pMajor->GetEmpire()->GetLatinumChange());
 		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(r.left+30, 115, m_TotalSize.cx-60, 25), &fontFormat, &fontBrush);
 	}
+	fontBrush.SetColor(markColor);
+	s = CResourceManager::GetString("SHIPS");
+	fontFormat.SetAlignment(StringAlignmentCenter);
+	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(r.left+30, 140, m_TotalSize.cx-60, 25), &fontFormat, &fontBrush);
+
+	fontBrush.SetColor(color);
+	s.Format("%s:",CResourceManager::GetString("SHIPCOSTS"));
+	fontFormat.SetAlignment(StringAlignmentNear);
+	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(r.left+30, 165, m_TotalSize.cx-60, 25), &fontFormat, &fontBrush);
+	fontFormat.SetAlignment(StringAlignmentFar);
+	s.Format("%i",pMajor->GetEmpire()->GetShipCosts());
+	if (pMajor->GetEmpire()->GetShipCosts() > pMajor->GetEmpire()->GetPopSupportCosts())
+		fontBrush.SetColor(Color(200,0,0));
+	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(r.left+30, 165, m_TotalSize.cx-60, 25), &fontFormat, &fontBrush);
+
+	fontBrush.SetColor(color);
+	s.Format("%s:",CResourceManager::GetString("POPSUPPORT"));
+	fontFormat.SetAlignment(StringAlignmentNear);
+	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(r.left+30, 190, m_TotalSize.cx-60, 25), &fontFormat, &fontBrush);
+	fontFormat.SetAlignment(StringAlignmentFar);
+	s.Format("%i",pMajor->GetEmpire()->GetPopSupportCosts());
+	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(r.left+30, 190, m_TotalSize.cx-60, 25), &fontFormat, &fontBrush);
+
+	fontFormat.SetAlignment(StringAlignmentNear);
+	s.Format("%s: %d",CResourceManager::GetString("NEWS"), pMajor->GetEmpire()->GetMessages()->GetSize());
+	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(r.left+30, 240, m_TotalSize.cx-60, 25), &fontFormat, &fontBrush);
 	
 	// Sternzeit anzeigen
 	fontBrush.SetColor(color);

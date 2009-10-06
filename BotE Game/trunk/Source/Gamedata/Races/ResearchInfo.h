@@ -108,6 +108,15 @@ public:
 	 * aktuell erforscht wird übergeben werden.
 	 */
 	void SetTechInfos(BYTE tech, BYTE level);
+
+
+	/**
+	 * Diese Funktion ermittelt den Namen und die Beschreibung einer bestimmten Technologie
+	 * Dies wird in den Parametern <code>m_sTechName</code> und <code>m_sTechDesc</code> gespeichert.
+	 * Als Parameter müssen dafür die jeweilige Technologie <code>tech</code> und die Stufe <code>level</code>
+	 * übergeben werden.
+	 */
+	static void GetTechInfos(BYTE tech, BYTE level, CString& sTechName, CString& sTechDesc);
 	
 private:
 	/// Die derzeit 10 Objekte für die einzelnen Komplexe der Spezialforschung

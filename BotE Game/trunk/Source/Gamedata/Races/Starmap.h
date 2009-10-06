@@ -18,7 +18,7 @@
 #include "Options.h"
 #include "SortedList.h"
 #include <list>
-#include <map>
+#include <set>
 
 #if _MSC_VER > 1000
 #pragma once
@@ -224,7 +224,7 @@ public:
 	 * Sektoren <code>sectors</code> und ein Wahrheitswert <code>races</code> für alle Rassen, ob wir einen
 	 * Nichtangriffspakt mit dieser Rasse haben.
 	 */
-	void SynchronizeWithMap(CSector sectors[][STARMAP_SECTORS_VCOUNT], std::map<CString, bool>* races);
+	void SynchronizeWithMap(CSector sectors[][STARMAP_SECTORS_VCOUNT], std::set<CString>* races);
 
 	/**
 	 * Löscht alle Basen und setzt die Einträge in der Rangemap wieder auf Ausgangswert

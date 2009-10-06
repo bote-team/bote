@@ -45,13 +45,23 @@ void CAIPrios::CalcShipPrios(CSectorAI* sectorAI)
 		CMajor* pMajor = it->second;
 		ASSERT(pMajor);
 
+		BYTE researchLevels[6] =
+		{
+			pMajor->GetEmpire()->GetResearch()->GetBioTech(),
+			pMajor->GetEmpire()->GetResearch()->GetEnergyTech(),
+			pMajor->GetEmpire()->GetResearch()->GetCompTech(),
+			pMajor->GetEmpire()->GetResearch()->GetPropulsionTech(),
+			pMajor->GetEmpire()->GetResearch()->GetConstructionTech(),
+			pMajor->GetEmpire()->GetResearch()->GetWeaponTech()
+		};
+
 		short range = -1;
 		// berechnen welche max. Reichweite das Kolonieschiff der Rasse hat
 		for (int j = 0; j < m_pDoc->m_ShipInfoArray.GetSize(); j++)
 			if (m_pDoc->m_ShipInfoArray.GetAt(j).GetRace() == pMajor->GetRaceShipNumber())
 				if (m_pDoc->m_ShipInfoArray.GetAt(j).GetShipType() == COLONYSHIP
 					&& m_pDoc->m_ShipInfoArray.GetAt(j).GetRange() > range
-					&& m_pDoc->m_ShipInfoArray.GetAt(j).IsThisShipBuildableNow(pMajor->GetEmpire()->GetResearch()))
+					&& m_pDoc->m_ShipInfoArray.GetAt(j).IsThisShipBuildableNow(researchLevels))
 				{
 					range = m_pDoc->m_ShipInfoArray.GetAt(j).GetRange();
 					if (range == RANGE_LONG)
@@ -81,6 +91,15 @@ void CAIPrios::CalcShipPrios(CSectorAI* sectorAI)
 	{
 		CMajor* pMajor = it->second;
 		ASSERT(pMajor);
+		BYTE researchLevels[6] =
+		{
+			pMajor->GetEmpire()->GetResearch()->GetBioTech(),
+			pMajor->GetEmpire()->GetResearch()->GetEnergyTech(),
+			pMajor->GetEmpire()->GetResearch()->GetCompTech(),
+			pMajor->GetEmpire()->GetResearch()->GetPropulsionTech(),
+			pMajor->GetEmpire()->GetResearch()->GetConstructionTech(),
+			pMajor->GetEmpire()->GetResearch()->GetWeaponTech()
+		};
 
 		if (sectorAI->GetStationBuildSector(it->first).points > MINBASEPOINTS)
 		{
@@ -88,7 +107,7 @@ void CAIPrios::CalcShipPrios(CSectorAI* sectorAI)
 			for (int j = 0; j < m_pDoc->m_ShipInfoArray.GetSize(); j++)
 				if (m_pDoc->m_ShipInfoArray.GetAt(j).GetRace() == pMajor->GetRaceShipNumber())
 					if (m_pDoc->m_ShipInfoArray.GetAt(j).GetShipType() == OUTPOST || m_pDoc->m_ShipInfoArray.GetAt(j).GetShipType() == STARBASE)
-						if (m_pDoc->m_ShipInfoArray.GetAt(j).IsThisShipBuildableNow(pMajor->GetEmpire()->GetResearch()))
+						if (m_pDoc->m_ShipInfoArray.GetAt(j).IsThisShipBuildableNow(researchLevels))
 						{
 							buildableStation = TRUE;
 							break;

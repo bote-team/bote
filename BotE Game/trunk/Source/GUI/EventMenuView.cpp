@@ -126,7 +126,7 @@ void CEventMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		CEventScreen* eventScreen = (CEventScreen*)pMajor->GetEmpire()->GetEventMessages()->GetAt(0);
 		CalcLogicalPoint(point);
 		int counter = -1;
-		ButtonReactOnLeftClick(point, eventScreen->GetButtons(), counter, true);
+		ButtonReactOnLeftClick(point, eventScreen->GetButtons(), counter);
 
 		if (counter == 0)
 			CloseScreen(eventScreen);
@@ -208,4 +208,6 @@ void CEventMenuView::CloseScreen(CEventScreen* eventScreen)
 		pDoc->GetMainFrame()->SelectMainView(pDoc->m_iSelectedView[client], pMajor->GetRaceID());
 		pDoc->m_iSelectedView[client] = 0;
 	}
+	else
+		Invalidate(false);
 }

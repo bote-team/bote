@@ -151,7 +151,7 @@ BOOLEAN CAttackSystem::Calculate()
 }
 
 /// Diese Funktion gibt zurück, ob der Verteidiger ungleich dem/den Angreifer/n ist.
-BOOLEAN CAttackSystem::IsDefenderNotAttacker(CString sDefender, const map<CString, bool>* attacker)
+BOOLEAN CAttackSystem::IsDefenderNotAttacker(CString sDefender, const set<CString>* attacker)
 {
 	if (attacker->find(sDefender) == attacker->end())
 		return true;

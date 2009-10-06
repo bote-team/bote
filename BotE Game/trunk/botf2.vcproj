@@ -450,6 +450,14 @@
 						>
 					</File>
 					<File
+						RelativePath=".\Source\Gamedata\Events\EventFirstContact.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Source\Gamedata\Events\EventResearch.cpp"
+						>
+					</File>
+					<File
 						RelativePath=".\Source\Gamedata\Events\EventScreen.cpp"
 						>
 					</File>
@@ -1020,6 +1028,14 @@
 					</File>
 					<File
 						RelativePath=".\Source\Gamedata\Events\EventColonization.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Source\Gamedata\Events\EventFirstContact.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Source\Gamedata\Events\EventResearch.h"
 						>
 					</File>
 					<File

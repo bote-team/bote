@@ -438,28 +438,26 @@ void CShipInfo::DrawShipInformation(Graphics* g, CRect rect, Gdiplus::Font* font
 	}
 }
 
-// Diese Funktion liefert ein TRUE zurück, wenn das Schiff atm baubar ist. Es wird nur die Forschung verglichen, also
-// nicht ob wir genügend RES dafür haben
-BOOLEAN CShipInfo::IsThisShipBuildableNow(CResearch* research)
+/// Funktion gibt zurück, ob das Schiff mit der aktuellen Forschung einer Rasse baubar ist.
+/// @param researchLevels Forschungsstufen der Rasse
+/// @return Wahrheitswert
+bool CShipInfo::IsThisShipBuildableNow(const BYTE reserachLevels[6]) const
 {
-	BOOLEAN buildable = TRUE;
 	// zuerstmal die Forschungsstufen checken
-	if (research->GetBioTech() <  this->GetBioTech())
-		buildable = FALSE;
-	else if (research->GetEnergyTech() < this->GetEnergyTech())
-		buildable = FALSE;
-	else if (research->GetCompTech() < this->GetComputerTech())
-		buildable = FALSE;
-	else if (research->GetPropulsionTech() < this->GetPropulsionTech())
-		buildable = FALSE;
-	else if (research->GetConstructionTech() < this->GetConstructionTech())
-		buildable = FALSE;
-	else if (research->GetWeaponTech() < this->GetWeaponTech())
-		buildable = FALSE;
-	if (buildable == TRUE)
-		return TRUE;
-	else
-		return FALSE;
+	if (reserachLevels[5] < this->GetWeaponTech())
+		return false;
+	if (reserachLevels[4] < this->GetConstructionTech())
+		return false;
+	if (reserachLevels[3] < this->GetPropulsionTech())
+		return false;	
+	if (reserachLevels[2] < this->GetComputerTech())
+		return false;
+	if (reserachLevels[1] < this->GetEnergyTech())
+		return false;
+	if (reserachLevels[0] < this->GetBioTech())
+		return false;
+	
+	return true;
 }
 
 USHORT CShipInfo::GetNeededResource(BYTE res) const

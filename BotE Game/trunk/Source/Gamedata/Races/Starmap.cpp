@@ -173,12 +173,12 @@ void CStarmap::AddBase(const Sector &sector, BYTE propTech)
 // Nichtangriffspakt haben, werden von der Rangemap entfernt. Übergeben werden dafür ein Zeiger auf alle
 // Sektoren <code>sectors</code> und ein Wahrheitswert <code>races</code> für alle Rassen, ob wir einen
 // Nichtangriffspakt mit dieser Rasse haben.
-void CStarmap::SynchronizeWithMap(CSector sectors[][STARMAP_SECTORS_VCOUNT], std::map<CString, bool>* races)
+void CStarmap::SynchronizeWithMap(CSector sectors[][STARMAP_SECTORS_VCOUNT], std::set<CString>* races)
 {
 	for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
 		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
 			if (sectors[x][y].GetOwnerOfSector() != "")
-				if (m_Range[x][y] > 0 && (*races)[sectors[x][y].GetOwnerOfSector()] == TRUE)
+				if (m_Range[x][y] > 0 && races->find(sectors[x][y].GetOwnerOfSector()) != races->end())
 					m_Range[x][y] = 0;
 }
 

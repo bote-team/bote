@@ -5,7 +5,6 @@
 #include "stdafx.h"
 #include "BuildingInfo.h"
 
-
 IMPLEMENT_SERIAL (CBuildingInfo, CObject, 1)
 //////////////////////////////////////////////////////////////////////
 // Konstruktion/Destruktion
@@ -739,4 +738,26 @@ CString CBuildingInfo::GetProductionAsString(USHORT number) const
 	if (this->GetTroopBuildSpeed() != 0)
 		s.AppendFormat("%s: %i%%\n",CResourceManager::GetString("TROOP_BUILDSPEED"), this->GetTroopBuildSpeed() * number);
 	return s;
+}
+
+/// Funktion gibt zurück, ob das Gebäude mit der aktuellen Forschung einer Rasse baubar ist.
+/// @param pResearch Forschungsobjekt der Rasse
+/// @return Wahrheitswert
+bool CBuildingInfo::IsBuildingBuildableNow(const BYTE reserachLevels[6]) const
+{
+	// zuerstmal die Forschungsstufen checken
+	if (reserachLevels[0] < this->GetBioTech())
+		return false;
+	if (reserachLevels[1] < this->GetEnergyTech())
+		return false;
+	if (reserachLevels[2] < this->GetCompTech())
+		return false;
+	if (reserachLevels[3] < this->GetPropulsionTech())
+		return false;
+	if (reserachLevels[4] < this->GetConstructionTech())
+		return false;
+	if (reserachLevels[5] < this->GetWeaponTech())
+		return false;
+	
+	return true;
 }

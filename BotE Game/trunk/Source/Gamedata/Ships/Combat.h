@@ -10,6 +10,7 @@
 #include "CombatShip.h"
 #include <map>
 #include <vector>
+#include <set>
 
 // forward declaration
 class CRace;
@@ -90,7 +91,7 @@ private:
 	BOOLEAN m_bAttackedSomebody;
 
 	/// Speichert die Nummer der beteiligten Rassen.
-	std::map<CString, bool> m_mInvolvedRaces;
+	std::set<CString> m_mInvolvedRaces;
 
 	/// Speichert des Feld der Hauptrassen im Spiel.
 	std::map<CString, CRace*>* m_mRaces;

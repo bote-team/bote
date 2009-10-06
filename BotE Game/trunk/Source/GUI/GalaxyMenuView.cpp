@@ -927,8 +927,8 @@ void CGalaxyMenuView::OnMouseMove(UINT nFlags, CPoint point)
 			return;
 
 		// ist irgendwas ausgewählt
-		//if (pMajor->GetStarmap()->GetSelection() == Sector(-1,-1))
-		//	return;
+		if (pMajor->GetStarmap()->GetSelection() == Sector(-1,-1))
+			return;
 
 		// Mauskoordinaten in ungezoomte Koordinaten der Starmap umrechnen
 		CPoint pt(point);
@@ -1168,7 +1168,7 @@ void CGalaxyMenuView::GenerateGalaxyMap()
 	{
 		Color clr;
 		clr.SetFromCOLORREF(it->second->GetDesign()->m_clrSector);		
-		Color color(110, clr.GetR(), clr.GetG(), clr.GetB());
+		Color color(100, clr.GetR(), clr.GetG(), clr.GetB());
 		
 		// hier wurde der R Wert mit dem B Wert getauscht, da die Funktion SetPixelData sonst nicht stimmt.
 		// color = RGB(GetBValue(color), GetGValue(color), GetRValue(color));
@@ -1187,7 +1187,7 @@ void CGalaxyMenuView::GenerateGalaxyMap()
 	if (ownerMark[sMinorID])
 		for (int y = 0; y < STARMAP_SECTOR_HEIGHT; y++)
 			for (int x = 0; x < STARMAP_SECTOR_WIDTH; x++)
-				ownerMark[sMinorID]->SetPixel(x, y, Color(110,200,200,200));
+				ownerMark[sMinorID]->SetPixel(x, y, Color(100,200,200,200));
 		
 	// Farbe für Nebel des Krieges hinzuzufügen
 	CString sFogOfWarID = "__FOG_OF_WAR__";

@@ -78,7 +78,11 @@ public:
 	void CalculateFinalCosts();						// Funktion berechnet die finalen Kosten zum Bau des Schiffes
 	void SetStartOrder();							// Funktion bestimmt die 1. Order des Schiffs nach dem Bau anhand dessen Typs
 	void DrawShipInformation(Graphics* g, CRect rect, Gdiplus::Font* font, Gdiplus::Color clrNormal, Gdiplus::Color clrMark, CResearch* research);	// Funktion zeichnet wichtige Informationen zu dem Schiff
-	BOOLEAN IsThisShipBuildableNow(CResearch* research);// Funktion liefert TRUE zurück, wenn das Schiff atm baubar ist
+	
+	/// Funktion gibt zurück, ob das Schiff mit der aktuellen Forschung einer Rasse baubar ist.
+	/// @param researchLevels Forschungsstufen der Rasse
+	/// @return Wahrheitswert
+	bool IsThisShipBuildableNow(const BYTE reserachLevels[6]) const;
 
 private:
 	BYTE m_iRace;					// welche Rasse kann das Schiff bauen

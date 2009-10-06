@@ -168,27 +168,36 @@ void CShipDesignMenuView::DrawShipDesignMenue(Graphics* g)
 	short j = 0;
 	short counter = m_iClickedOnShip - 23 + m_iOldClickedOnShip;
 	short oldClickedShip = m_iClickedOnShip;
+
+	BYTE researchLevels[6] =
+	{
+		pMajor->GetEmpire()->GetResearch()->GetBioTech(),
+		pMajor->GetEmpire()->GetResearch()->GetEnergyTech(),
+		pMajor->GetEmpire()->GetResearch()->GetCompTech(),
+		pMajor->GetEmpire()->GetResearch()->GetPropulsionTech(),
+		pMajor->GetEmpire()->GetResearch()->GetConstructionTech(),
+		pMajor->GetEmpire()->GetResearch()->GetWeaponTech()
+	};
 	
 	short ShipNumber = -1;
 	m_nSizeOfShipDesignList = 0;
 	// Es gehen nur 21 Einträge auf die Seite, deshalb muss abgebrochen werden
 	for (int i = 0; i < pDoc->m_ShipInfoArray.GetSize(); i++)
 		if (pDoc->m_ShipInfoArray.GetAt(i).GetRace() == pMajor->GetRaceShipNumber())
-			if (pDoc->m_ShipInfoArray.GetAt(i).IsThisShipBuildableNow(pMajor->GetEmpire()->GetResearch()))
-				if (pDoc->m_ShipInfoArray.GetAt(i).GetShipType() != OUTPOST && pDoc->m_ShipInfoArray.GetAt(i).GetShipType() != STARBASE)
-				{
-					
+			if (pDoc->m_ShipInfoArray.GetAt(i).GetShipType() != OUTPOST && pDoc->m_ShipInfoArray.GetAt(i).GetShipType() != STARBASE)
+				if (pDoc->m_ShipInfoArray.GetAt(i).IsThisShipBuildableNow(researchLevels))
+				{					
 					// wurde dieses Schiff durch kein anderes jetzt baubares Schiff schon obsolet?
 					BOOLEAN foundObsolet = FALSE;
 					for (int m = 0; m < pDoc->m_ShipInfoArray.GetSize(); m++)
 						if (pDoc->m_ShipInfoArray.GetAt(m).GetRace() == pMajor->GetRaceShipNumber())
-							if (pDoc->m_ShipInfoArray.GetAt(m).IsThisShipBuildableNow(pMajor->GetEmpire()->GetResearch()))
-								if (pDoc->m_ShipInfoArray.GetAt(m).GetObsoleteShipClass() == pDoc->m_ShipInfoArray.GetAt(i).GetShipClass())
+							if (pDoc->m_ShipInfoArray.GetAt(m).GetObsoleteShipClass() == pDoc->m_ShipInfoArray.GetAt(i).GetShipClass())
+								if (pDoc->m_ShipInfoArray.GetAt(m).IsThisShipBuildableNow(researchLevels))
 								{
 									foundObsolet = TRUE;
 									break;
 								}
-					
+							
 					if (foundObsolet)
 						continue;
 
@@ -229,7 +238,7 @@ void CShipDesignMenuView::DrawShipDesignMenue(Graphics* g)
 						g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(25, 120 + j * 25, 175, 25), &fontFormat, &fontBrush);
 						j++;
 					}
-				}
+				}			
 	m_iClickedOnShip = oldClickedShip;
 
 	// Hier jetzt Informationen zum angeklickten Schiff anzeigen
@@ -420,18 +429,28 @@ void CShipDesignMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 	short counter = m_iClickedOnShip - 23 + m_iOldClickedOnShip;
 	short add = 0;
 	short n = -1;
+
+	BYTE researchLevels[6] =
+	{
+		pMajor->GetEmpire()->GetResearch()->GetBioTech(),
+		pMajor->GetEmpire()->GetResearch()->GetEnergyTech(),
+		pMajor->GetEmpire()->GetResearch()->GetCompTech(),
+		pMajor->GetEmpire()->GetResearch()->GetPropulsionTech(),
+		pMajor->GetEmpire()->GetResearch()->GetConstructionTech(),
+		pMajor->GetEmpire()->GetResearch()->GetWeaponTech()
+	};
 	
 	for (int i = 0; i < pDoc->m_ShipInfoArray.GetSize(); i++)
 		if (pDoc->m_ShipInfoArray.GetAt(i).GetRace() == pMajor->GetRaceShipNumber())
-			if (pDoc->m_ShipInfoArray.GetAt(i).IsThisShipBuildableNow(pMajor->GetEmpire()->GetResearch()))
-				if (pDoc->m_ShipInfoArray.GetAt(i).GetShipType() != OUTPOST && pDoc->m_ShipInfoArray.GetAt(i).GetShipType() != STARBASE)
+			if (pDoc->m_ShipInfoArray.GetAt(i).GetShipType() != OUTPOST && pDoc->m_ShipInfoArray.GetAt(i).GetShipType() != STARBASE)
+				if (pDoc->m_ShipInfoArray.GetAt(i).IsThisShipBuildableNow(researchLevels))				
 				{
 					// wurde dieses Schiff durch kein anderes jetzt baubares Schiff schon obsolet?
 					BOOLEAN foundObsolet = FALSE;
 					for (int m = 0; m < pDoc->m_ShipInfoArray.GetSize(); m++)
 						if (pDoc->m_ShipInfoArray.GetAt(m).GetRace() == pMajor->GetRaceShipNumber())
-							if (pDoc->m_ShipInfoArray.GetAt(m).IsThisShipBuildableNow(pMajor->GetEmpire()->GetResearch()))
-								if (pDoc->m_ShipInfoArray.GetAt(m).GetObsoleteShipClass() == pDoc->m_ShipInfoArray.GetAt(i).GetShipClass())
+							if (pDoc->m_ShipInfoArray.GetAt(m).GetObsoleteShipClass() == pDoc->m_ShipInfoArray.GetAt(i).GetShipClass())
+								if (pDoc->m_ShipInfoArray.GetAt(m).IsThisShipBuildableNow(researchLevels))							
 								{
 									foundObsolet = TRUE;
 									break;

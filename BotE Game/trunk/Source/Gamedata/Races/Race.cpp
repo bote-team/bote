@@ -51,7 +51,7 @@ void CRace::Serialize(CArchive &ar)
 			ar << it->first << it->second;
 		// kennt die Rasse eine andere Rasse (Rassen-ID, Wahrheitswert)
 		ar << m_vInContact.size();
-		for (vector<CString>::const_iterator it = m_vInContact.begin(); it != m_vInContact.end(); it++)
+		for (set<CString>::const_iterator it = m_vInContact.begin(); it != m_vInContact.end(); it++)
 			ar << *it;
 		// diplomatische Nachrichten
 		ar << m_vDiplomacyNewsIn.size();
@@ -111,7 +111,7 @@ void CRace::Serialize(CArchive &ar)
 		{
 			CString sID;
 			ar >> sID;
-			m_vInContact.push_back(sID);
+			m_vInContact.insert(sID);
 		}
 		// diplomatische Nachrichten
 		m_vDiplomacyNewsIn.clear();
@@ -314,7 +314,7 @@ void CRace::Reset(void)
 /// @return <code>true</code> wenn Kontakt zu der anderen Rasse besteht, ansonsten <code>false</code>
 bool CRace::IsRaceContacted(const CString& sRaceID) const
 {
-	if (std::find(m_vInContact.begin(), m_vInContact.end(), sRaceID) != m_vInContact.end())
+	if (m_vInContact.find(sRaceID) != m_vInContact.end())
 		return true;
 	
 	return false;
@@ -326,8 +326,7 @@ bool CRace::IsRaceContacted(const CString& sRaceID) const
 void CRace::SetIsRaceContacted(const CString& sRace, bool bKnown)
 {
 	// nach der neuen Rasse im Vektor suchen
-	vector<CString>::iterator it = std::find(m_vInContact.begin(), m_vInContact.end(), sRace);
-	if (it != m_vInContact.end())
+	if (m_vInContact.find(sRace) != m_vInContact.end())
 	{
 		// soll sie kennengelernt werden, ist aber schon im Feld, dann aus der Funktion springen
 		if (bKnown)
@@ -335,11 +334,11 @@ void CRace::SetIsRaceContacted(const CString& sRace, bool bKnown)
 		// ansonsten aus dem Vektor löschen
 		else
 		{
-			m_vInContact.erase(it);
+			m_vInContact.erase(sRace);
 			return;
 		}		
 	}
 
 	// soll die Rasse hinzugefügt werden, ist aber noch nicht im Vektor. Dann einfach anhängen
-	m_vInContact.push_back(sRace);
+	m_vInContact.insert(sRace);
 }

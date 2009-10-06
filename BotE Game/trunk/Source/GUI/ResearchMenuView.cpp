@@ -534,7 +534,7 @@ void CResearchMenuView::DrawUniqueResearchMenue(Graphics* g)
 	{
 		RectF TechRect(10,80,250,25);
 		USHORT level = pMajor->GetEmpire()->GetResearch()->GetNumberOfUniqueResearch();
-		// UniqueForschung braucht ja soviele FO wie alle anderen des Level zusammen, deswegen die lange Anweisung
+		// UniqueForschung braucht ja soviele FP wie alle anderen des Level zusammen, deswegen die lange Anweisung
 		ULONG allOthers = pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetBio(level)+
 			pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetEnergy(level)+
 			pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetComp(level)+
@@ -595,7 +595,6 @@ void CResearchMenuView::DrawUniqueResearchMenue(Graphics* g)
 		fontFormatTop.SetFormatFlags(!StringFormatFlagsNoWrap);
 		fontFormatTop.SetTrimming(StringTrimmingEllipsisCharacter);
 		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(385,120,380,260), &fontFormatTop, &fontBrush);
-		fontFormatTop.SetFormatFlags(StringFormatFlagsNoWrap);
 		fontFormatTop.SetTrimming(StringTrimmingNone);
 		
 		// hier die 3 Wahlmöglichkeiten
@@ -624,7 +623,6 @@ void CResearchMenuView::DrawUniqueResearchMenue(Graphics* g)
 
 		// ab hier die Beschreibungen zu den einzelnen Wahlmöglichkeiten
 		fontBrush.SetColor(normalColor);
-		fontFormatTop.SetFormatFlags(!StringFormatFlagsNoWrap);
 		if (pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetChoiceTaken() == FALSE || 
 			pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetCurrentResearchComplex()->GetFieldStatus(1) == RESEARCHING)
 		{
@@ -695,7 +693,41 @@ void CResearchMenuView::DrawUniqueResearchMenue(Graphics* g)
 		fontFormatCenter.SetLineAlignment(StringAlignmentNear);
 		fontFormatCenter.SetFormatFlags(!StringFormatFlagsNoWrap);
 		s = CResourceManager::GetString("NO_SPECIAL_RESEARCH_AVAILABLE");
-		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(190,300,500,360), &fontFormatCenter, &fontBrush);
+		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(190,200,500,100), &fontFormatCenter, &fontBrush);
+
+		// darunter die schon erforschten Spezialforschungen anzeigen
+		CFontLoader::CreateGDIFont(pMajor, 3, fontName, fontSize);
+
+		fontBrush.SetColor(markColor);
+		s = CResourceManager::GetString("RESEARCHED_SPECIALTECHS");
+		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(190,300,500,30), &fontFormatCenter, &fontBrush);
+		fontBrush.SetColor(normalColor);
+
+		int nCount = 0;
+		for (int i = 0; i < NoUC; i++)
+		{
+			// Bereich ermitteln
+			if (pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(i)->GetComplexStatus() == RESEARCHED)
+			{
+				// Unterbereich bestimmen
+				for (int j = 1; j <= 3; j++)
+				{
+					if (pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(i)->GetFieldStatus(j) == RESEARCHED)
+					{
+						s = pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(i)->GetComplexName() + ": " +
+							pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(i)->GetFieldName(j);
+						g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(190,350 + nCount * 30 , 500, 30), &fontFormatCenter, &fontBrush);
+						nCount++;
+						break;
+					}
+				}
+			}
+		}
+		if (nCount == 0)
+		{
+			s = CResourceManager::GetString("NONE");
+			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(190,350,500,30), &fontFormatCenter, &fontBrush);
+		}
 	}	
 }
 
