@@ -6,7 +6,6 @@
 #include "DiplomacyMenuView.h"
 #include "DiplomacyBottomView.h"
 #include "MenuChooseView.h"
-#include "IniLoader.h"
 #include "Races\GenDiploMessage.h"
 #include <algorithm>
 

@@ -4,7 +4,7 @@
 
 #include "stdafx.h"
 #include "ResearchInfo.h"
-#include "Botf2.h"
+#include "IOData.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -192,7 +192,7 @@ void CResearchInfo::GetTechInfos(BYTE tech, BYTE level, CString& sTechName, CStr
 	int i = 0;
 	int j = tech * 22 + level * 2;
 	CString csInput;											// auf csInput wird die jeweilige Zeile gespeichert
-	CString fileName=*((CBotf2App*)AfxGetApp())->GetPath() + "Data\\Names\\Techs.data";		// Name des zu öffnenden Files 
+	CString fileName = CIOData::GetInstance()->GetAppPath() + "Data\\Names\\Techs.data";		// Name des zu öffnenden Files 
 	CStdioFile file;											// Varibale vom Typ CStdioFile
 	if (file.Open(fileName, CFile::shareDenyNone | CFile::modeRead | CFile::typeText))	// Datei wird geöffnet
 	{

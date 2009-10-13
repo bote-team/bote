@@ -89,6 +89,10 @@ public:
 	/// @param sRace Rasse, welche von der Änderung betroffen sein soll
 	void SetSabotagePercentage(BYTE type, BYTE perc, const CString& sRace);
 
+	/// Funktion entfernt eine ausgeschiedene Rasse aus allen Geheimdienstzuweisungen.
+	/// @param sRace Rasse, welche entfernt werden soll
+	void RemoveRaceFromAssignments(const CString& sRace);
+
 	/// Resetfunktion für das CIntelAssignment-Objekt.
 	void Reset();
 

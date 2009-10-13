@@ -5,7 +5,6 @@
 #include "botf2.h"
 #include "ShipDesignMenuView.h"
 #include "ShipDesignBottomView.h"
-#include "IniLoader.h"
 #include "Races\RaceController.h"
 
 IMPLEMENT_DYNCREATE(CShipDesignMenuView, CMainBaseView)

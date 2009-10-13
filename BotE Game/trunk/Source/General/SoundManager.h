@@ -112,8 +112,18 @@ typedef std::list<SNDMGR_MESSAGEENTRY> SNDMGR_MESSAGELIST;
 class CSoundManager
 {
 private:
+
 	static const int PRIORITY_SOUND_HIGH = 127;		///< hohe Priorität der Geräusche, die die Oberfläche erzeugt
 	static const int PRIORITY_SOUND_NORMAL = 128;	///< normale Priorität der Geräusche, die die Oberfläche erzeugt
+
+	/**
+	 * Konstruktor private, damit man sich keine Instanzen holen kann.
+	 * @param nMaxLoadedSound maximale Anzahl gleichzeitig geladener Sounds
+	 */
+	CSoundManager(UINT nMaxLoadedSounds = 10);
+
+	/// Den Kopierkonstruktor schützen um zu vermeiden, dass das Objekt unbeabsichtigt kopiert wird.
+    CSoundManager(const CSoundManager& cc);
 
 	FMOD_RESULT m_nLastResult;						///< letzter Rückgabewert einer FMOD-Funktion
 	FMOD::System *m_pSystem;
@@ -142,14 +152,13 @@ private:
 
 public:
 	/**
-	 * @param nMaxLoadedSound maximale Anzahl gleichzeitig geladener Sounds
-	 */
-	CSoundManager(UINT nMaxLoadedSounds = 10);
-
-	/**
 	 * Hält den Thread an, gibt sämtliche Ressourcen frei.
 	 */
 	virtual ~CSoundManager();
+
+	/// Funktion liefert die einzige Instanz dieser Klasse (Singleton).
+	/// @return Instanz dieser Klasse
+	static CSoundManager* GetInstance(void);
 
 	/**
 	 * Setzt die maximale Anzahl gleichzeitig zu ladender Oberflächen-Sounds. Wird dieser Wert auf einen

@@ -6,7 +6,6 @@
 #include "IntelMenuView.h"
 #include "IntelBottomView.h"
 #include "Races\RaceController.h"
-#include "IniLoader.h"
 
 // CIntelMenuView
 
@@ -714,6 +713,8 @@ void CIntelMenuView::DrawIntelReportsMenu(Graphics* g)
 			CMajor* pEnemy = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(intelObj->GetEnemy()));
 			if (pEnemy)
 				s = pEnemy->GetEmpiresName();
+			else
+				s = CResourceManager::GetString("UNKNWON");
 			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(200,140+j*25,400,25), &fontFormat, &fontBrush);
 			if (intelObj->GetIsSpy())
 				s = CResourceManager::GetString("SPY");

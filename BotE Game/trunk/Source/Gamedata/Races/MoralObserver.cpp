@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "MoralObserver.h"
-#include "Botf2.h"
+#include "IOData.h"
 
 IMPLEMENT_SERIAL (CMoralObserver, CObject, 1)
 // statische Variable initialisieren
@@ -561,7 +561,7 @@ CString CMoralObserver::GenerateText(unsigned short Event, BYTE major, CString p
 void CMoralObserver::InitMoralMatrix()
 {
 	// Moralwerte laden
-	CString fileName = *((CBotf2App*)AfxGetApp())->GetPath() + "Data\\Other\\Moral.data";
+	CString fileName = CIOData::GetInstance()->GetAppPath() + "Data\\Other\\Moral.data";
 	CStdioFile file;
 	if (file.Open(fileName, CFile::modeRead | CFile::typeText))
 	{
@@ -589,7 +589,7 @@ void CMoralObserver::InitMoralMatrix()
 	file.Close();
 
 	// Textnachrichten laden
-	fileName = *((CBotf2App*)AfxGetApp())->GetPath() + "Data\\Other\\MoralEvents.data";
+	fileName = CIOData::GetInstance()->GetAppPath() + "Data\\Other\\MoralEvents.data";
 	if (file.Open(fileName, CFile::modeRead | CFile::typeText))
 	{
 		CString input;

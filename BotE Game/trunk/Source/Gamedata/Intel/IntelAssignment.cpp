@@ -100,18 +100,48 @@ BYTE CIntelAssignment::GetInnerSecurityPercentage() const
 BYTE CIntelAssignment::GetSpyPercentages(const CString& sRace, BYTE type)
 {
 	if (type != 4)
-		return m_bySpyPercentage[type][sRace];
+	{
+		map<CString, BYTE>::const_iterator it = m_bySpyPercentage[type].find(sRace);
+		if (it != m_bySpyPercentage[type].end())
+			return it->second;
+		else
+			return 0;
+	}
 	else
-		return 100 - (m_bySpyPercentage[0][sRace] + m_bySpyPercentage[1][sRace] + m_bySpyPercentage[2][sRace] +	m_bySpyPercentage[3][sRace]);
+	{
+		BYTE byInnerSec = 0;
+		for (int i = 0; i < 4; i++)
+		{
+			map<CString, BYTE>::const_iterator it = m_bySpyPercentage[i].find(sRace);
+			if (it != m_bySpyPercentage[i].end())
+				byInnerSec += it->second;
+		}
+		return 100 - byInnerSec;
+	}
 }
 
 /// Funktion gibt die einzelnen Sabotagezuteilungen für eine bestimmte Rasse zurück.
 BYTE CIntelAssignment::GetSabotagePercentages(const CString& sRace, BYTE type)
 {	
 	if (type != 4)
-		return m_bySabPercentage[type][sRace];
+	{
+		map<CString, BYTE>::const_iterator it = m_bySabPercentage[type].find(sRace);
+		if (it != m_bySabPercentage[type].end())
+			return it->second;
+		else
+			return 0;
+	}
 	else
-		return 100 - (m_bySabPercentage[0][sRace] + m_bySabPercentage[1][sRace] + m_bySabPercentage[2][sRace] +	m_bySabPercentage[3][sRace]);
+	{
+		BYTE byInnerSec = 0;
+		for (int i = 0; i < 4; i++)
+		{
+			map<CString, BYTE>::const_iterator it = m_bySabPercentage[i].find(sRace);
+			if (it != m_bySabPercentage[i].end())
+				byInnerSec += it->second;
+		}
+		return 100 - byInnerSec;
+	}
 }
 
 /// Funktion ändert die globale prozentuale Zuteilung der einzelnen Geheimdienstressorts. Dabei wird wenn
@@ -298,6 +328,21 @@ void CIntelAssignment::SetSabotagePercentage(BYTE type, BYTE perc, const CString
 		m_bySabPercentage[type][sRace] = perc;
 	}
 }
+
+/// Funktion entfernt eine ausgeschiedene Rasse aus allen Geheimdienstzuweisungen.
+/// @param sRace Rasse, welche entfernt werden soll
+void CIntelAssignment::RemoveRaceFromAssignments(const CString& sRace)
+{
+	m_byPercentage[0].erase(sRace);
+	m_byPercentage[1].erase(sRace);
+
+	for (int i = 0; i < 4; i++)
+	{
+		m_bySpyPercentage[i].erase(sRace);
+		m_bySabPercentage[i].erase(sRace);
+	}
+}
+
 
 /// Resetfunktion für das CIntelligence-Objekt.
 void CIntelAssignment::Reset()

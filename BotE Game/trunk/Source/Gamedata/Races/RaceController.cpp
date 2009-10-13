@@ -2,7 +2,7 @@
 #include "RaceController.h"
 #include "Major.h"
 #include "Minor.h"
-#include "Botf2.h"
+#include "IOData.h"
 
 IMPLEMENT_SERIAL (CRaceController, CObject, 1)
 
@@ -238,7 +238,7 @@ bool CRaceController::InitMajors(int nSource/* = RACESOURCE_DATAFILE*/)
 		CString sVersion;
 		
 		// Name des zu öffnenden Files 
-		CString fileName = *((CBotf2App*)AfxGetApp())->GetPath() + "Data\\Races\\MajorRaces.data";		
+		CString fileName = CIOData::GetInstance()->GetAppPath() + "Data\\Races\\MajorRaces.data";		
 		// Varibale vom Typ CStdioFile
 		CStdioFile file;
 		// Array mit allen Rasseninfos
@@ -326,7 +326,7 @@ bool CRaceController::InitMinors(int nSource/* = RACESOURCE_DATAFILE*/)
 		CString sVersion;
 		
 		// Name des zu öffnenden Files 
-		CString fileName = *((CBotf2App*)AfxGetApp())->GetPath() + "Data\\Races\\MinorRaces.data";
+		CString fileName = CIOData::GetInstance()->GetAppPath() + "Data\\Races\\MinorRaces.data";
 		// Varibale vom Typ CStdioFile
 		CStdioFile file;
 		// Array mit allen Rasseninfos

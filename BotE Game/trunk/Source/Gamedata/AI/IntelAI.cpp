@@ -114,10 +114,10 @@ void CIntelAI::CalcIntelligence(CBotf2Doc* pDoc)
 					// zufällig wird hier eine bekannte andere Rasse als ResponsibleRace ausgewählt
 					pIntel->SetResponsibleRace(it->first);	// erstmal uns wieder auf die ResponsibleRace setzen
 					if (jt->second->GetEmpire()->GetNumberOfSystems() > 0 && rand()%3 == NULL)
-						{
-							pIntel->SetResponsibleRace(jt->first);
-							break;
-						}
+					{
+						pIntel->SetResponsibleRace(jt->first);
+						break;
+					}
 
 					// vertragliche Situation und Mindestbeziehung checken
 					if ((it->second->GetAgreement(jt->first) < FRIENDSHIP_AGREEMENT && it->second->GetDefencePact(jt->first) == false)

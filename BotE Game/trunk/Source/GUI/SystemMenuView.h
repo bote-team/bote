@@ -93,6 +93,8 @@ private:
 
 	// Buttons
 	CArray<CMyButton*> m_BuildMenueMainButtons;		///< die unteren Buttons in der Baumenüansicht (also Baumenü, Arbeiter...)
+	CArray<CMyButton*> m_WorkerButtons;				///< die Buttons in der Arbeitermenüansicht zum Ändern der zugewiesenen Arbeiter
+	CArray<CMyButton*> m_SystemTradeButtons;		///< die Buttons in der Systemmenühandelsansicht zum Ändern der Mengen im stellaren Lager
 
 	// sonstige Variablen
 	// Hier die Rechtecke zum Klicken ín der Baumenüansicht
@@ -132,8 +134,6 @@ private:
 	CRect BuildingInfoButton;				// Rechteck für den Gebäudeinfobutton
 	CRect BuildingDescriptionButton;		// Rechteck für den Gebäudebeschreibungsbutton
 	CRect ChangeWorkersButton;				// Rechteck für den Button für Umschaltung zwischen "normalen" und RES-Arbeitern
-	CRect PlusButton[5];					// Die Plus-Buttons um die Arbeiter zu erhöhen
-	CRect MinusButton[5];					// Die Minus-Buttons um die Arbeiter zu verringern
 	CRect Timber[5][200];					// Die Balken die die Arbeiterzuweisung anzeigen 5 Stück a max. 200 Arbeiter
 
 	BYTE m_bySubMenu;						// Welcher Button wurde gedrückt (0 für Baumenü, 1 für Arbeiter usw.)

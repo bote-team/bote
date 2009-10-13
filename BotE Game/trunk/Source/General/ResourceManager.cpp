@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "ResourceManager.h"
-#include "Botf2.h"
+#include "IOData.h"
+
 
 // statische Variable initialisieren
 CMapStringToString CResourceManager::m_StringTable;
@@ -17,7 +18,7 @@ CResourceManager::~CResourceManager(void)
 void CResourceManager::Init(void)
 {
 	// Name des zu öffnenden Files 
-	CString fileName=*((CBotf2App*)AfxGetApp())->GetPath() + "Data\\Strings\\StringTable.txt";
+	CString fileName = CIOData::GetInstance()->GetAppPath() + "Data\\Strings\\StringTable.txt";
 	CStdioFile file;
 	
 	// Datei wird geöffnet

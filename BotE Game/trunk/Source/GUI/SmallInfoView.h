@@ -35,6 +35,7 @@ protected:
 	static CPlanet* m_pPlanet;			///< Planet über den Informationen bzw. Statistiken angezeigt werden sollen
 	static CShip* m_pShip;				///< Schiff über das Informationen angezeigt werden sollen
 	int	m_nTimer;						///< Variable welche per Timerbefehl hochgezählt wird
+	bool m_bAnimatedIcon;				///< soll das Rassensymbol animiert werden
 
 public:
 	/// Funktion führt Aufgaben aus, welche zu jeder neuen Runde von den Views ausgeführt werden müssen.

@@ -6,7 +6,6 @@
 #include "TradeMenuView.h"
 #include "MenuChooseView.h"
 #include "Races\RaceController.h"
-#include "IniLoader.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -635,7 +634,7 @@ void CTradeMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 				if (costs != 0)
 				{
 					pMajor->GetEmpire()->SetLatinum(-costs);
-					pDoc->m_pSoundManager->PlaySound(SNDMGR_SOUND_SHIPTARGET);
+					CSoundManager::GetInstance()->PlaySound(SNDMGR_SOUND_SHIPTARGET);
 					Invalidate(FALSE);
 					pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
 				}
@@ -650,7 +649,7 @@ void CTradeMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 					pMajor->GetTrade()->SellRessource(i, pMajor->GetTrade()->GetQuantity(),pDoc->GetKO());
 					// Ressource aus dem Lager nehmen
 					pDoc->m_System[pDoc->GetKO().x][pDoc->GetKO().y].SetRessourceStore(i,-pMajor->GetTrade()->GetQuantity());
-					pDoc->m_pSoundManager->PlaySound(SNDMGR_SOUND_SHIPTARGET);
+					CSoundManager::GetInstance()->PlaySound(SNDMGR_SOUND_SHIPTARGET);
 					Invalidate(FALSE);
 					return;
 				}

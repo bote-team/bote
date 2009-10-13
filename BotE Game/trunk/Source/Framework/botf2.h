@@ -24,7 +24,6 @@
 class CBotf2App : public CWinApp
 {
 private:
-	BOOLEAN m_bDataReceived;
 	CChatDlg *m_pChatDlg;
 	GdiplusStartupInput gdiplusStartupInput;
 	ULONG_PTR gdiplusToken;
@@ -40,10 +39,7 @@ public:
 	CBotf2Doc* GetDocument() const;
 
 	/// Funktion gibt einen Zeiger auf den ChatDialog zurück.
-	CChatDlg* GetChatDlg() {return m_pChatDlg;}
-
-	/// Funktion gibt den globalen relativen Pfad, in der sich die Anwendung befindet, zurück.
-	const CString* GetPath() {return &m_strFullPath;}
+	CChatDlg* GetChatDlg() {return m_pChatDlg;}	
 
 // Überschreibungen
 public:
@@ -58,7 +54,5 @@ private:
 	afx_msg void UpdateViews(WPARAM, LPARAM);
 	afx_msg void ShowChatDlg(WPARAM, LPARAM);
 	afx_msg void InitViews(WPARAM, LPARAM);
-	afx_msg void OnChat();
-
-	CString m_strFullPath;			///< speichert den globalen relativen Pfad, in der die Anwendung sich befindet
+	afx_msg void OnChat();	
 };

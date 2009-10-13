@@ -43,11 +43,14 @@ void CMyButton::DrawButton(Gdiplus::Graphics &g, CGraphicPool* graphicPool, Gdip
 		// Buttongrafik zeichnen
 		g.DrawImage(graphic, m_KO.x, m_KO.y, m_Size.cx, m_Size.cy);
 		// Text auf dem Button zeichnen
-		Gdiplus::StringFormat fontFormat;
-		fontFormat.SetAlignment(StringAlignmentCenter);
-		fontFormat.SetLineAlignment(StringAlignmentCenter);
-		fontFormat.SetFormatFlags(StringFormatFlagsNoWrap);
-		g.DrawString(m_strText.AllocSysString(), -1, &font, RectF((REAL)m_KO.x, (REAL)m_KO.y + 2, (REAL)m_Size.cx, (REAL)m_Size.cy), &fontFormat, &brush);
+		if (m_strText != "")
+		{
+			Gdiplus::StringFormat fontFormat;
+			fontFormat.SetAlignment(StringAlignmentCenter);
+			fontFormat.SetLineAlignment(StringAlignmentCenter);
+			fontFormat.SetFormatFlags(StringFormatFlagsNoWrap);
+			g.DrawString(m_strText.AllocSysString(), -1, &font, RectF((REAL)m_KO.x, (REAL)m_KO.y + 2, (REAL)m_Size.cx, (REAL)m_Size.cy), &fontFormat, &brush);
+		}
 	}
 	else
 		MYTRACE(MT::LEVEL_WARNING, "Could not load buttongraphic" + sFile + "\n");

@@ -66,10 +66,10 @@ void CMenuChooseView::OnDraw(CDC* pDC)
 	ASSERT(pMajor);
 	if (!pMajor)
 		return;
-	
+
 	CRect r;
 	r.SetRect(0, 0, m_TotalSize.cx, m_TotalSize.cy);
-		
+
 	// Doublebuffering wird initialisiert
 	CRect client;
 	GetClientRect(&client);
@@ -294,7 +294,7 @@ void CMenuChooseView::OnLButtonUp(UINT nFlags, CPoint point)
 		CRect r = m_RoundEnd->GetRect();
 		CalcDeviceRect(r);
 		InvalidateRect(r, FALSE);
-		pDoc->m_pSoundManager->StopMessages(TRUE);
+		CSoundManager::GetInstance()->StopMessages(TRUE);
 		client.EndOfRound(pDoc);
 	}
 	short button = -1;
@@ -382,7 +382,7 @@ void CMenuChooseView::OnMouseMove(UINT nFlags, CPoint point)
 	{
 		if (m_RoundEnd->Activate())
 		{
-			pDoc->m_pSoundManager->PlaySound(SNDMGR_SOUND_MAINMENU);
+			CSoundManager::GetInstance()->PlaySound(SNDMGR_SOUND_MAINMENU);
 			CRect r = m_RoundEnd->GetRect();
 			CalcDeviceRect(r);
 			InvalidateRect(r, FALSE);
@@ -402,7 +402,7 @@ void CMenuChooseView::OnMouseMove(UINT nFlags, CPoint point)
 		{
 			if (m_Buttons.GetAt(i)->Activate())
 			{
-				pDoc->m_pSoundManager->PlaySound(SNDMGR_SOUND_MAINMENU);
+				CSoundManager::GetInstance()->PlaySound(SNDMGR_SOUND_MAINMENU);
 				CRect r = m_Buttons.GetAt(i)->GetRect();
 				CalcDeviceRect(r);
 				InvalidateRect(r, FALSE);

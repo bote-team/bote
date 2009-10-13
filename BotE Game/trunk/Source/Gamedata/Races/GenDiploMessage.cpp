@@ -34,7 +34,7 @@ bool CGenDiploMessage::GenerateMajorOffer(CDiplomacyInfo& info)
 	search.MakeUpper();
 	
 	CString csInput;											// auf csInput wird die jeweilige Zeile gespeichert
-	CString fileName=*((CBotf2App*)AfxGetApp())->GetPath() + "Data\\Races\\MajorsDiploOffers.data";	// Name des zu Öffnenden Files 
+	CString fileName = CIOData::GetInstance()->GetAppPath() + "Data\\Races\\MajorsDiploOffers.data";	// Name des zu Öffnenden Files 
 	CStdioFile file;											// Varibale vom Typ CStdioFile
 	
 	if (file.Open(fileName, CFile::modeRead | CFile::typeText))	// Datei wird geöffnet
@@ -124,7 +124,7 @@ bool CGenDiploMessage::GenerateMajorOffer(CDiplomacyInfo& info)
 
 			CMajor* pMajor = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(info.m_sWarpactEnemy));
 			if (pMajor)
-				sOffer.Replace("$enemy$", pMajor->GetEmpireNameWithAssignedArticle());
+				sOffer.Replace("$enemy$", pMajor->GetEmpireNameWithArticle());
 			break;
 		}
 		case WAR:
@@ -274,7 +274,7 @@ bool CGenDiploMessage::GenerateMajorAnswer(CDiplomacyInfo& info)
 	search.Format("%s:", info.m_sToRace);
 	search.MakeUpper();
 	
-	CString fileName=*((CBotf2App*)AfxGetApp())->GetPath() + "Data\\Races\\MajorsDiploAnswers.data";	// Name des zu Öffnenden Files 
+	CString fileName = CIOData::GetInstance()->GetAppPath() + "Data\\Races\\MajorsDiploAnswers.data";	// Name des zu Öffnenden Files 
 	CStdioFile file;													// Varibale vom Typ CStdioFile
 	
 	if (file.Open(fileName, CFile::modeRead | CFile::typeText))			// Datei wird geöffnet
@@ -490,7 +490,7 @@ bool CGenDiploMessage::GenerateMinorOffer(CDiplomacyInfo& info)
 	// aus den ganzen Rasseneigenschaften eine zufällige aussuchen (falls mehrere vorhanden sind)
 	CString search2 = vSearchText[rand()%vSearchText.size()];
 	
-	CString fileName=*((CBotf2App*)AfxGetApp())->GetPath() + "Data\\Races\\MinorsDiploOffers.data";	// Name des zu Öffnenden Files 
+	CString fileName = CIOData::GetInstance()->GetAppPath() + "Data\\Races\\MinorsDiploOffers.data";	// Name des zu Öffnenden Files 
 	CStdioFile file;													// Varibale vom Typ CStdioFile
 	if (file.Open(fileName, CFile::modeRead | CFile::typeText))			// Datei wird geöffnet
 	{		
@@ -614,7 +614,7 @@ bool CGenDiploMessage::GenerateMinorAnswer(CDiplomacyInfo& info)
 	// aus den ganzen Rasseneigenschaften eine zufällige aussuchen (falls mehrere vorhanden sind)
 	CString search2 = vSearchText[rand()%vSearchText.size()];
 	
-	CString fileName=*((CBotf2App*)AfxGetApp())->GetPath() + "Data\\Races\\MinorsDiploAnswers.data";	// Name des zu Öffnenden Files 
+	CString fileName = CIOData::GetInstance()->GetAppPath() + "Data\\Races\\MinorsDiploAnswers.data";	// Name des zu Öffnenden Files 
 	CStdioFile file;													// Varibale vom Typ CStdioFile
 	if (file.Open(fileName, CFile::modeRead | CFile::typeText))			// Datei wird geöffnet
 	{

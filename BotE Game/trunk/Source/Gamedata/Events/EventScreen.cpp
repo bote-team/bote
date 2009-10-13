@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "EventScreen.h"
-#include "Botf2.h"
+#include "IOData.h"
 #include "Botf2Doc.h"
 #include "Races\RaceController.h"
 
@@ -67,7 +67,7 @@ void CEventScreen::Create(void)
 	if (m_pBGImage != NULL)
 		return;
 
-	m_pBGImage = Bitmap::FromFile(*((CBotf2App*)AfxGetApp())->GetPath() + "\\" + m_strImagePath.AllocSysString());
+	m_pBGImage = Bitmap::FromFile(CIOData::GetInstance()->GetAppPath() + m_strImagePath.AllocSysString());
 	ASSERT(m_pBGImage);
 	if (m_pBGImage->GetLastStatus() != Ok)
 		return;

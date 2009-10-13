@@ -3,7 +3,7 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
-#include "Botf2.h"
+#include "IOData.h"
 #include "GenSectorName.h"
 
 #ifdef _DEBUG
@@ -92,7 +92,7 @@ void CGenSectorName::ReadSystemNames()
 	
 	// Standardnamen festlegen, alle Namen von Systemen werden aus Datei eingelesen
 	CString csInput;						// auf csInput wird die jeweilige Zeile gespeichert
-	CString fileName=*((CBotf2App*)AfxGetApp())->GetPath() + "Data\\Names\\PlanetNames.data";	// Name des zu Öffnenden Files 
+	CString fileName = CIOData::GetInstance()->GetAppPath() + "Data\\Names\\PlanetNames.data";	// Name des zu Öffnenden Files 
 	CStdioFile file;						// Varibale vom Typ CStdioFile
 	if (file.Open(fileName, CFile::modeRead | CFile::typeText) && m_strName.IsEmpty())	// Datei wird geöffnet
 		while (file.ReadString(csInput))
@@ -105,7 +105,7 @@ void CGenSectorName::ReadSystemNames()
 	file.Close();							// Datei wird geschlossen
 
 // Systemnamen der MinorRaces einlesen
-	fileName =*((CBotf2App*)AfxGetApp())->GetPath() + "Data\\Names\\RacePlanetNames.data";
+	fileName = CIOData::GetInstance()->GetAppPath() + "Data\\Names\\RacePlanetNames.data";
 	if (file.Open(fileName, CFile::modeRead | CFile::typeText) && m_strRaceName.IsEmpty())	// Datei wird geöffnet
 		while (file.ReadString(csInput))
 			m_strRaceName.Add(csInput);		// Konnte erfolgreich gelesen werden wird die jeweilige

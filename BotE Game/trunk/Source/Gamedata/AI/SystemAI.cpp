@@ -39,7 +39,7 @@ void CSystemAI::ExecuteSystemAI(CPoint ko)
 		AfxMessageBox(s);
 		return;
 	}
-	
+
 	// Besitzer des Systems holen
 	m_pMajor = dynamic_cast<CMajor*>(m_pDoc->GetRaceCtrl()->GetRace(sRace));
 	ASSERT(m_pMajor);
@@ -131,10 +131,10 @@ void CSystemAI::PerhapsBuy()
 /// Diese Funktion legt die Prioritäten an, mit welcher ein bestimmtes Arbeitergebäude gebaut werden soll.
 void CSystemAI::CalcPriorities()
 {
-	CPoint ko = m_KO;
+	CPoint ko = m_KO;	
 	
 	// Cecken ob ein Schiff in der Bauliste ist, aber keine Werft im System online geschaltet ist, dann abbrechen
-	// Ebenfalls wenn eine Truppe in der Bauliste ist und keine Kasernen online ist
+	// Ebenfalls wenn eine Truppe in der Bauliste ist und keine Kaserne online ist
 	if ((m_pDoc->m_System[ko.x][ko.y].GetAssemblyList()->GetAssemblyListEntry(0) >= 10000
 		&& m_pDoc->m_System[ko.x][ko.y].GetAssemblyList()->GetAssemblyListEntry(0) <= 20000
 		&& m_pDoc->m_System[ko.x][ko.y].GetProduction()->GetShipYard() == FALSE)
@@ -148,9 +148,9 @@ void CSystemAI::CalcPriorities()
 
 	// Checken ob schon ein Eintrag in der Bauliste ist, wenn ja dann brauchen wir hier überhaupt nichts zu machen
 	if (m_pDoc->m_System[ko.x][ko.y].GetAssemblyList()->GetAssemblyListEntry(0) != 0)
-		return;
+		return;	
 	
-	// Wenn die Moral in dem System sehr niedrig ist, dann wird versucht ein Moralgebäude bzw. Polizeistatt oder ähnliches
+	// Wenn die Moral in dem System sehr niedrig ist, dann wird versucht ein Moralgebäude bzw. Polizeistaat oder ähnliches
 	// laufen zu lassen. Dadurch wird versucht zu verhindern, dass sich Systeme lossagen
 	if (m_pDoc->m_System[ko.x][ko.y].GetMoral() < (rand()%16 + 70))
 	{
@@ -1059,18 +1059,6 @@ int CSystemAI::GetShipBuildPrios(BOOLEAN &chooseCombatship, BOOLEAN &chooseColos
 	CMajor* pMajor = dynamic_cast<CMajor*>(m_pDoc->GetRaceCtrl()->GetRace(sRace));
 	ASSERT(pMajor);
 
-	// Latinumänderung + Schiffsbevölkerungsunterstützungskosten - Schiffsunterstützungskosten
-	long shipCosts = pMajor->GetEmpire()->GetLatinumChange() + pMajor->GetEmpire()->GetPopSupportCosts() - pMajor->GetEmpire()->GetShipCosts();
-	// würde man durch die Schiffe negatives Latinum machen und dies wäre höher als 10% des gesamten Latinumbestandes, dann wird kein Schiff
-	// gebaut!
-	if (shipCosts < 0 && abs(shipCosts) > (long)(pMajor->GetEmpire()->GetLatinum() * 0.1))
-	{
-		#ifdef TRACE_AI
-		MYTRACE(MT::LEVEL_INFO, "CSystemAI::GetShipBuildPrios(): Race %s - System: %s - can't build ships because of too high shipcosts!\n",sRace, m_pDoc->m_Sector[ko.x][ko.y].GetName());
-		#endif		
-		return 0;
-	}
-
 	if (m_pDoc->m_System[ko.x][ko.y].GetProduction()->GetShipYard() == TRUE
 		&& m_pDoc->m_System[ko.x][ko.y].GetBuildableShips()->GetSize() > 0)
 	{
@@ -1103,10 +1091,23 @@ int CSystemAI::GetShipBuildPrios(BOOLEAN &chooseCombatship, BOOLEAN &chooseColos
 			#endif
 			if (random > min)
 			{
-				min = random;
-				chooseColoship   = FALSE;
-				chooseTransport  = FALSE;
-				chooseCombatship = TRUE;
+				// Schiffsbevölkerungsunterstützungskosten - Schiffsunterstützungskosten
+				long shipCosts = pMajor->GetEmpire()->GetPopSupportCosts() - pMajor->GetEmpire()->GetShipCosts();
+				// würde man durch die Schiffe negatives Latinum machen und dies wäre höher als 5% des gesamten Latinumbestandes, dann wird kein Schiff gebaut!
+				if (shipCosts < 0 && abs(shipCosts) > (long)(pMajor->GetEmpire()->GetLatinum() * 0.05))
+				{
+					chooseCombatship = FALSE;
+					#ifdef TRACE_AI
+					MYTRACE(MT::LEVEL_INFO, "CSystemAI::GetShipBuildPrios(): Race %s - System: %s - can't build ships because of too high shipcosts!\n",sRace, m_pDoc->m_Sector[ko.x][ko.y].GetName());
+					#endif							
+				}
+				else
+				{
+					min = random;
+					chooseColoship   = FALSE;
+					chooseTransport  = FALSE;
+					chooseCombatship = TRUE;
+				}
 			}
 		}
 	}

@@ -2,7 +2,7 @@
 //
 
 #include "stdafx.h"
-#include "botf2.h"
+#include "IOData.h"
 
 #include "botf2Doc.h"
 #include "GalaxyMenuView.h"
@@ -420,13 +420,15 @@ void CGalaxyMenuView::OnDraw(CDC* dc)
 		/**/
 	}
 	pDC->SelectObject(pOldPen);
+	bool bShowTraderoutes;
+	CIniLoader::GetInstance()->ReadValue("Video", "SHOWTRADEROUTES", bShowTraderoutes);
 	// Namen des Systems und Handelsrouten zeichnen, nur wenn komplett neu gezeichnet wurde
 	for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
 		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
 		{
 			pDoc->GetSector(x,y).DrawSectorsName(pDC ,pDoc, m_pPlayersRace);
 			// eigene Handelsrouten zeichnen
-			if (pDoc->m_pIniLoader->GetValue("SHOWTRADEROUTES"))
+			if (bShowTraderoutes)
 				if (pDoc->m_System[x][y].GetOwnerOfSystem() == pMajor->GetRaceID())
 				{
 					for (int i = 0; i < pDoc->m_System[x][y].GetTradeRoutes()->GetSize(); i++)
@@ -436,7 +438,7 @@ void CGalaxyMenuView::OnDraw(CDC* dc)
 				}
 		}
 	
-	if (pDoc->m_pIniLoader->GetValue("SHOWTRADEROUTES"))
+	if (bShowTraderoutes)
 	{
 		if (m_bDrawTradeRoute && (pDoc->m_System[pDoc->GetKO().x][pDoc->GetKO().y].GetOwnerOfSystem() == pMajor->GetRaceID()))
 			m_TradeRoute.DrawTradeRoute(pDC, pDoc->GetKO(), pMajor);
@@ -715,7 +717,7 @@ void CGalaxyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			SetMoveShip(FALSE);
 			pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
 			m_nRange = 0;
-			pDoc->m_pSoundManager->PlaySound(SNDMGR_SOUND_SHIPTARGET);
+			CSoundManager::GetInstance()->PlaySound(SNDMGR_SOUND_SHIPTARGET);
 			// alte Flugdaten aus den Sektoren löschen
 			for (int i = 0; i < m_oldPath.GetSize(); i++)
 				pDoc->m_Sector[m_oldPath.GetAt(i).x][m_oldPath.GetAt(i).y].AddShipPathPoints(-1);
@@ -1125,8 +1127,9 @@ void CGalaxyMenuView::GenerateGalaxyMap()
 		m_pGalaxyBackground = NULL;
 	}
 	
+	CString sAppPath = CIOData::GetInstance()->GetAppPath();
 	CString prefix = pMajor->GetPrefix();
-	CString filePath = *((CBotf2App*)AfxGetApp())->GetPath() + "Graphics\\Galaxies\\" + prefix + "galaxy.jpg";
+	CString filePath = sAppPath + "Graphics\\Galaxies\\" + prefix + "galaxy.jpg";
 
 	m_pGalaxyBackground = Bitmap::FromFile(filePath.AllocSysString());
 	
@@ -1140,19 +1143,19 @@ void CGalaxyMenuView::GenerateGalaxyMap()
 
 	// Mal die Sterne direkt in die Map setzen, neues Bild erzeugen
 	Bitmap *stars[7] = {NULL, NULL, NULL, NULL, NULL, NULL, NULL};
-	filePath = *((CBotf2App*)AfxGetApp())->GetPath() + "Graphics\\MapStars\\star_blue.png";
+	filePath = sAppPath + "Graphics\\MapStars\\star_blue.png";
 	stars[0] = Bitmap::FromFile(filePath.AllocSysString());
-	filePath = *((CBotf2App*)AfxGetApp())->GetPath() + "Graphics\\MapStars\\star_green.png";
+	filePath = sAppPath + "Graphics\\MapStars\\star_green.png";
 	stars[1] = Bitmap::FromFile(filePath.AllocSysString());
-	filePath = *((CBotf2App*)AfxGetApp())->GetPath() + "Graphics\\MapStars\\star_orange.png";
+	filePath = sAppPath + "Graphics\\MapStars\\star_orange.png";
 	stars[2] = Bitmap::FromFile(filePath.AllocSysString());
-	filePath = *((CBotf2App*)AfxGetApp())->GetPath() + "Graphics\\MapStars\\star_red.png";
+	filePath = sAppPath + "Graphics\\MapStars\\star_red.png";
 	stars[3] = Bitmap::FromFile(filePath.AllocSysString());
-	filePath = *((CBotf2App*)AfxGetApp())->GetPath() + "Graphics\\MapStars\\star_violet.png";
+	filePath = sAppPath + "Graphics\\MapStars\\star_violet.png";
 	stars[4] = Bitmap::FromFile(filePath.AllocSysString());
-	filePath = *((CBotf2App*)AfxGetApp())->GetPath() + "Graphics\\MapStars\\star_white.png";
+	filePath = sAppPath + "Graphics\\MapStars\\star_white.png";
 	stars[5] = Bitmap::FromFile(filePath.AllocSysString());
-	filePath = *((CBotf2App*)AfxGetApp())->GetPath() + "Graphics\\MapStars\\star_yellow.png";
+	filePath = sAppPath + "Graphics\\MapStars\\star_yellow.png";
 	stars[6] = Bitmap::FromFile(filePath.AllocSysString());
 	
 	#ifdef TRACE_GRAPHICLOAD

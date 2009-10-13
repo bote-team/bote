@@ -3,7 +3,7 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
-#include "Botf2.h"
+#include "IOData.h"
 #include "ResearchComplex.h"
 
 #ifdef _DEBUG
@@ -354,7 +354,7 @@ void CResearchComplex::ReadSpecialTech(BYTE complex)
 	BOOLEAN found = FALSE;
 	CString data[8];
 	CString csInput;												// auf csInput wird die jeweilige Zeile gespeichert
-	CString fileName=*((CBotf2App*)AfxGetApp())->GetPath() + "Data\\Names\\Specialtechs.data";	// Name des zu Öffnenden Files 
+	CString fileName = CIOData::GetInstance()->GetAppPath() + "Data\\Names\\Specialtechs.data";	// Name des zu Öffnenden Files 
 	CStdioFile file;												// Varibale vom Typ CStdioFile
 	if (file.Open(fileName, CFile::shareDenyNone | CFile::modeRead | CFile::typeText))	// Datei wird geöffnet
 	{

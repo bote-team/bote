@@ -11,7 +11,6 @@
 #include "GalaxyMenuView.h"
 #include "PlanetBottomView.h"
 #include "MenuChooseView.h"
-#include "IniLoader.h"
 #include "Races\RaceController.h"
 
 // CEmpireMenuView

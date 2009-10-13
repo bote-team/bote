@@ -99,7 +99,8 @@ BOOL CNewGamePage::OnInitDialog()
 	userName.Format(userName + "_%u", r);
 	/**/
 
-	CString userName = m_pParent->GetServerDocument()->m_pIniLoader->GetStringValue("USERNAME");
+	CString userName = "";
+	CIniLoader::GetInstance()->ReadValue("General", "USERNAME", userName);
 	if (!userName.IsEmpty())
 		SetDlgItemText(IDC_USERNAME, userName);
 	else
@@ -110,7 +111,7 @@ BOOL CNewGamePage::OnInitDialog()
 		SetDlgItemText(IDC_USERNAME, userName);
 	}
 	GetDlgItemText(IDC_USERNAME, userName);
-	m_pParent->GetServerDocument()->m_pIniLoader->WriteIniString("USERNAME", userName);
+	CIniLoader::GetInstance()->WriteValue("General", "USERNAME", userName);
 		
 	m_hostIP.SetAddress(INADDR_LOOPBACK);
 	m_hostPort.SetWindowText("6666");
@@ -259,6 +260,8 @@ LRESULT CNewGamePage::OnWizardNext()
 	CString name;
 	GetDlgItemText(IDC_USERNAME, name);
 	name.Trim();
+	// Name in Ini-Datei schreiben
+	CIniLoader::GetInstance()->WriteValue("General", "USERNAME", name);
 
 	switch (m_nMode)
 	{

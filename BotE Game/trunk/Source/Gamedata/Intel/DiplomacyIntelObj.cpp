@@ -92,9 +92,9 @@ void CDiplomacyIntelObj::CreateText(CBotf2Doc* pDoc, BYTE n, const CString& para
 	CString csInput;													// auf csInput wird die jeweilige Zeile gespeichert
 	CString fileName;
 	if (this->GetIsSpy())
-		fileName = *((CBotf2App*)AfxGetApp())->GetPath() + "Data\\Races\\MajorIntelSpyOff.data";			// Name des zu Öffnenden Files 
+		fileName = CIOData::GetInstance()->GetAppPath() + "Data\\Races\\MajorIntelSpyOff.data";			// Name des zu Öffnenden Files 
 	else
-		fileName = *((CBotf2App*)AfxGetApp())->GetPath() + "Data\\Races\\MajorIntelSabOff.data";		// Name des zu Öffnenden Files 
+		fileName = CIOData::GetInstance()->GetAppPath() + "Data\\Races\\MajorIntelSabOff.data";		// Name des zu Öffnenden Files 
 	CStdioFile file;													// Varibale vom Typ CStdioFile
 	if (file.Open(fileName, CFile::modeRead | CFile::typeText))			// Datei wird geöffnet
 	{
@@ -232,7 +232,7 @@ void CDiplomacyIntelObj::CreateText(CBotf2Doc* pDoc, BYTE n, const CString& para
 	// Nachricht für das Opfer erstellen
 	if (this->GetIsSabotage())
 	{
-		fileName = *((CBotf2App*)AfxGetApp())->GetPath() + "Data\\Races\\MajorIntelSabDef.data";			// Name des zu Öffnenden Files 
+		fileName = CIOData::GetInstance()->GetAppPath() + "Data\\Races\\MajorIntelSabDef.data";			// Name des zu Öffnenden Files 
 		if (file.Open(fileName, CFile::modeRead | CFile::typeText))			// Datei wird geöffnet
 		{
 			while (file.ReadString(csInput))

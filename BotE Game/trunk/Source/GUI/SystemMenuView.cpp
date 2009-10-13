@@ -7,7 +7,6 @@
 #include "MenuChooseView.h"
 #include "SystemMenuView.h"
 #include "Races\RaceController.h"
-#include "IniLoader.h"
 
 
 short CSystemMenuView::m_iClickedOn = 1;
@@ -28,6 +27,20 @@ CSystemMenuView::~CSystemMenuView()
 		m_BuildMenueMainButtons[i] = 0;
 	}
 	m_BuildMenueMainButtons.RemoveAll();
+
+	for (int i = 0; i < m_WorkerButtons.GetSize(); i++)
+	{
+		delete m_WorkerButtons[i];
+		m_WorkerButtons[i] = 0;
+	}
+	m_WorkerButtons.RemoveAll();
+
+	for (int i = 0; i < m_SystemTradeButtons.GetSize(); i++)
+	{
+		delete m_SystemTradeButtons[i];
+		m_SystemTradeButtons[i] = 0;
+	}
+	m_SystemTradeButtons.RemoveAll();
 }
 
 BEGIN_MESSAGE_MAP(CSystemMenuView, CMainBaseView)
@@ -164,11 +177,6 @@ void CSystemMenuView::OnInitialUpdate()
 	BuildingDescriptionButton.SetRect(r.left+165,r.top+625,r.left+285,r.top+655);
 	// Kleiner Umschaltbutton in der Arbeitermenüansicht
 	ChangeWorkersButton.SetRect(r.left+542,r.top+645,r.left+662,r.top+675);
-	for (int i = 0; i < 5; i++)
-	{
-		PlusButton[i].SetRect(r.left+630,r.top+115+i*95,r.left+660,r.top+150+i*95);
-		MinusButton[i].SetRect(r.left+170,r.top+115+i*95,r.left+200,r.top+150+i*95);
-	}
 	// Handelsrouten und Globales Lager Ansicht
 	m_iGlobalStoreageQuantity = 1;	
 }
@@ -886,22 +894,10 @@ void CSystemMenuView::DrawWorkersMenue(Graphics* g)
 	DrawBuildList(g);
 	
 	// Die Buttons zum Erhöhen bzw. Verringern der Arbeiteranzahl
-	SolidBrush fillBrush(Color(100,30,30,30));
-	for (int i = 0; i < 5; i++)
-	{
-		RectF rectPlus(PlusButton[i].left, PlusButton[i].top, PlusButton[i].Width(), PlusButton[i].Height());
-		g->FillRectangle(&fillBrush, rectPlus);
-		g->DrawRectangle(&pen, rectPlus);
-		s.Format("+");
-		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), rectPlus, &fontFormat, &fontBrush);
+	// Buttons zeichnen
+	for (int i = 0; i < m_WorkerButtons.GetSize(); i++)
+		m_WorkerButtons[i]->DrawButton(*g, pDoc->GetGraphicPool(), Gdiplus::Font(NULL), fontBrush);
 		
-		RectF rectMinus(MinusButton[i].left, MinusButton[i].top, MinusButton[i].Width(), MinusButton[i].Height());
-		g->FillRectangle(&fillBrush, rectMinus);
-		g->DrawRectangle(&pen, rectMinus);
-		s.Format("-");
-		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), rectMinus, &fontFormat, &fontBrush);
-	}
-	
 	// Ansicht der "normalen Gebäude"
 	if (m_bySubMenu == 1)
 	{
@@ -1685,17 +1681,12 @@ void CSystemMenuView::DrawSystemTradeMenue(Graphics* g)
 		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(538,220+i*60,407,60), &fontFormat, &fontBrush);
 		// in Klammern steht, wieviel dieser Ressource nächste Runde aus dem Lager entfernt wird
 		s.Format("(%d)", pMajor->GetEmpire()->GetGlobalStorage()->GetAllAddedResource(i) - pMajor->GetEmpire()->GetGlobalStorage()->GetAllSubResource(i));
-		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(538,265+i*60,407,25), &fontFormat, &fontBrush);
-		// kleine Pfeilbuttons zeichnen (links)
-		fontFormat.SetAlignment(StringAlignmentCenter);
-		g->FillRectangle(&SolidBrush(Color(100,30,30,30)), RectF(608,235+i*60,30,30));
-		g->DrawRectangle(&Pen(penMark), RectF(608,235+i*60,30,30));		
-		g->DrawString(L"-", -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(608,235+i*60,30,30), &fontFormat, &fontBrush);
-		// kleine Pfeilbuttons zeichnen (rechts)
-		g->FillRectangle(&SolidBrush(Color(100,30,30,30)), RectF(975,235+i*60,30,30));
-		g->DrawRectangle(&Pen(penMark), RectF(975,235+i*60,30,30));		
-		g->DrawString(L"+", -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(975,235+i*60,30,30), &fontFormat, &fontBrush);
+		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(538,265+i*60,407,25), &fontFormat, &fontBrush);		
 	}
+	// Die Buttons zum Verändern der Mengen im stellaren Lager zeichnen
+	// Buttons zeichnen
+	for (int i = 0; i < m_SystemTradeButtons.GetSize(); i++)
+		m_SystemTradeButtons[i]->DrawButton(*g, pDoc->GetGraphicPool(), Gdiplus::Font(NULL), fontBrush);
 
 	fontFormat.SetAlignment(StringAlignmentCenter);
 	fontFormat.SetLineAlignment(StringAlignmentCenter);
@@ -3153,12 +3144,17 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			m_bySubMenu = 12;
 			//PlaySound(*((CBotf2App*)AfxGetApp())->GetPath() + "Sounds\\ComputerBeep2.wav", NULL, SND_FILENAME | SND_ASYNC);
 			Invalidate();
+			return;
 		}
-		// Wenn wir die Arbeiterzahl erhöhen wollen
-		for (int i = 0; i < 5; i++)
+		
+		int i = -1;
+		if (ButtonReactOnLeftClick(point, &m_WorkerButtons, i, FALSE, TRUE))
 		{
-			if (PlusButton[i].PtInRect(point))
+			// Wenn wir die Arbeiterzahl erhöhen wollen
+			if (i >= 5)
 			{
+				// bei den Plusbutton müssen wir 5 abziehen, um auf die korrelierten Arbeiter zu kommen
+				i -= 5;
 				// Wenn wir noch freie Arbeiter haben
 				if (pDoc->GetSystem(p.x,p.y).GetWorker(11) > 0 && pDoc->GetSystem(p.x,p.y).GetNumberOfWorkbuildings(i,0,NULL) > pDoc->GetSystem(p.x,p.y).GetWorker(i))
 				{
@@ -3173,11 +3169,11 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 					pMajor->GetEmpire()->AddSP((pDoc->GetSystem(p.x,p.y).GetProduction()->GetSecurityProd()));
 					//PlaySound(*((CBotf2App*)AfxGetApp())->GetPath() + "Sounds\\ComputerBeep1.wav", NULL, SND_FILENAME | SND_ASYNC);
 					Invalidate();
-					break;
+					return;
 				}
 			}
 			// Wenn wir die Arbeiterzahl verringern möchten
-			if (MinusButton[i].PtInRect(point))
+			else
 			{
 				// Wenn wir noch Arbeiter in dem bestimmten Gebäude haben
 				if (pDoc->GetSystem(p.x,p.y).GetWorker(i) > 0)
@@ -3193,7 +3189,7 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 					pMajor->GetEmpire()->AddSP((pDoc->GetSystem(p.x,p.y).GetProduction()->GetSecurityProd()));
 					//PlaySound(*((CBotf2App*)AfxGetApp())->GetPath() + "Sounds\\ComputerBeep1.wav", NULL, SND_FILENAME | SND_ASYNC);
 					Invalidate();
-					break;
+					return;
 				}
 			}
 		}
@@ -3223,7 +3219,7 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 					pMajor->GetEmpire()->AddSP((pDoc->GetSystem(p.x,p.y).GetProduction()->GetSecurityProd()));
 					//PlaySound(*((CBotf2App*)AfxGetApp())->GetPath() + "Sounds\\ComputerBeep1.wav", NULL, SND_FILENAME | SND_ASYNC);
 					Invalidate();
-					break;
+					return;
 				}
 
 	}
@@ -3239,11 +3235,14 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 				//PlaySound(*((CBotf2App*)AfxGetApp())->GetPath() + "Sounds\\ComputerBeep2.wav", NULL, SND_FILENAME | SND_ASYNC);
 				Invalidate();
 			}
-			// Wenn wir die Arbeiterzahl erhöhen wollen
-			for (int i = 0; i < 5; i++)
+			int i = -1;
+			if (ButtonReactOnLeftClick(point, &m_WorkerButtons, i, FALSE, TRUE))
 			{
-				if (PlusButton[i].PtInRect(point))
+				// Wenn wir die Arbeiterzahl erhöhen wollen
+				if (i >= 5)
 				{
+					// bei den Plusbutton müssen wir 5 abziehen, um auf die korrelierten Arbeiter zu kommen
+					i -= 5;
 					// Wenn wir noch freie Arbeiter haben
 					if (pDoc->GetSystem(p.x,p.y).GetWorker(11) > 0 && pDoc->GetSystem(p.x,p.y).GetNumberOfWorkbuildings(i+5,0,NULL) > pDoc->GetSystem(p.x,p.y).GetWorker(i+5))
 					{
@@ -3251,11 +3250,11 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 						pDoc->m_System[p.x][p.y].CalculateVariables(&pDoc->BuildingInfo, pMajor->GetEmpire()->GetResearch()->GetResearchInfo(),pDoc->m_Sector[p.x][p.y].GetPlanets(), pMajor, CTrade::GetMonopolOwner());
 						//PlaySound(*((CBotf2App*)AfxGetApp())->GetPath() + "Sounds\\ComputerBeep1.wav", NULL, SND_FILENAME | SND_ASYNC);
 						Invalidate();
-						break;
+						return;
 					}
 				}
 				// Wenn wir die Arbeiterzahl verringern möchten
-				if (MinusButton[i].PtInRect(point))
+				else
 				{
 					// Wenn wir noch Arbeiter in dem bestimmten Gebäude haben
 					if (pDoc->GetSystem(p.x,p.y).GetWorker(i+5) > 0)
@@ -3264,7 +3263,7 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 						pDoc->m_System[p.x][p.y].CalculateVariables(&pDoc->BuildingInfo, pMajor->GetEmpire()->GetResearch()->GetResearchInfo(),pDoc->m_Sector[p.x][p.y].GetPlanets(), pMajor, CTrade::GetMonopolOwner());
 						//PlaySound(*((CBotf2App*)AfxGetApp())->GetPath() + "Sounds\\ComputerBeep1.wav", NULL, SND_FILENAME | SND_ASYNC);
 						Invalidate();
-						break;
+						return;
 					}
 				}
 			}
@@ -3287,7 +3286,7 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 						pDoc->m_System[p.x][p.y].CalculateVariables(&pDoc->BuildingInfo, pMajor->GetEmpire()->GetResearch()->GetResearchInfo(),pDoc->m_Sector[p.x][p.y].GetPlanets(), pMajor, CTrade::GetMonopolOwner());
 						//PlaySound(*((CBotf2App*)AfxGetApp())->GetPath() + "Sounds\\ComputerBeep1.wav", NULL, SND_FILENAME | SND_ASYNC);
 						Invalidate();
-						break;
+						return;
 					}
 		}
 	}
@@ -3430,16 +3429,15 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			// nehmen
 			if (pDoc->m_System[p.x][p.y].GetBlockade() > NULL)
 				return;
-			for (int i = TITAN; i <= IRIDIUM; i++)
+
+			int i = -1;
+			if (ButtonReactOnLeftClick(point, &m_SystemTradeButtons, i, FALSE, TRUE))
 			{
 				// kleine Pfeilbuttons um Waren aus dem globalen Lager ins System zu verschieben
-				if (CRect(608,235+i*60,638,265+i*60).PtInRect(point))
+				if (i >= 5)
 				{
-					pDoc->m_System[p.x][p.y].SetRessourceStore(i, pMajor->GetEmpire()->GetGlobalStorage()->SubRessource(m_iGlobalStoreageQuantity,i,p));
-					Invalidate(FALSE);
-				}
-				// kleine Pfeilbuttons um Waren aus dem System ins globale Lager zu verschieben
-				else if (CRect(975,235+i*60,1005,265+i*60).PtInRect(point))
+					i -= 5;
+
 					if (pDoc->m_System[p.x][p.y].GetRessourceStore(i) > 0 || pMajor->GetEmpire()->GetGlobalStorage()->GetSubResource(i,p) > 0)
 					{
 						USHORT tempQuantity = m_iGlobalStoreageQuantity;
@@ -3450,7 +3448,14 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 						pDoc->m_System[p.x][p.y].SetRessourceStore(i, (getBack - m_iGlobalStoreageQuantity));
 						m_iGlobalStoreageQuantity = tempQuantity;
 						Invalidate(FALSE);
-					}
+					}					
+				}
+				// kleine Pfeilbuttons um Waren aus dem System ins globale Lager zu verschieben
+				else 
+				{					
+					pDoc->m_System[p.x][p.y].SetRessourceStore(i, pMajor->GetEmpire()->GetGlobalStorage()->SubRessource(m_iGlobalStoreageQuantity,i,p));
+					Invalidate(FALSE);					
+				}
 			}
 		}
 	}	
@@ -3488,11 +3493,14 @@ BOOL CSystemMenuView::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 void CSystemMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
+	// Doppelklick weiterleiten
+	CSystemMenuView::OnLButtonDown(nFlags, point);
+
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
 
 	if (!pDoc->m_bDataReceived)
-		return;
+		return;	
 
 	CalcLogicalPoint(point);
 
@@ -3544,10 +3552,11 @@ void CSystemMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 				pDoc->m_System[p.x][p.y].CalculateVariables(&pDoc->BuildingInfo, pMajor->GetEmpire()->GetResearch()->GetResearchInfo(),pDoc->m_Sector[p.x][p.y].GetPlanets(), pMajor, CTrade::GetMonopolOwner());
 				m_iClickedOn = i;
 				Invalidate();
+				break;
 			}
 			// Baulisteneintrag konnte aufgrund von Ressourcenmangel nicht gesetzt werden
 			else
-				pDoc->m_pSoundManager->PlaySound(SNDMGR_SOUND_ERROR);
+				CSoundManager::GetInstance()->PlaySound(SNDMGR_SOUND_ERROR);
 		}
 	}
 	// Baulisteneintrag wieder entfernen
@@ -3667,8 +3676,10 @@ void CSystemMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 			}
 			//PlaySound(*((CBotf2App*)AfxGetApp())->GetPath() + "Sounds\\ComputerBeep1.wav", NULL, SND_FILENAME | SND_ASYNC);
 			Invalidate();
+			break;
 		}
 
+	
 	CMainBaseView::OnLButtonDblClk(nFlags, point);
 }
 
@@ -3717,6 +3728,10 @@ void CSystemMenuView::OnMouseMove(UINT nFlags, CPoint point)
 
 	CalcLogicalPoint(point);
 	ButtonReactOnMouseOver(point, &m_BuildMenueMainButtons);
+	if (m_bySubMenu == 1 || m_bySubMenu == 12)
+		ButtonReactOnMouseOver(point, &m_WorkerButtons);
+	else if (m_bySubMenu == 4)
+		ButtonReactOnMouseOver(point, &m_SystemTradeButtons);
 	
 	CMainBaseView::OnMouseMove(nFlags, point);
 }
@@ -3848,5 +3863,25 @@ void CSystemMenuView::CreateButtons()
 	m_BuildMenueMainButtons.Add(new CMyButton(CPoint(350,690), CSize(160,40), CResourceManager::GetString("BTN_ENERGYMENUE"), fileN, fileI, fileA));
 	m_BuildMenueMainButtons.Add(new CMyButton(CPoint(520,690), CSize(160,40), CResourceManager::GetString("BTN_BUILDING_OVERVIEWMENUE"), fileN, fileI, fileA));
 	m_BuildMenueMainButtons.Add(new CMyButton(CPoint(690,690), CSize(160,40), CResourceManager::GetString("BTN_TRADEMENUE"), fileN, fileI, fileA));
+
+	// Zuweisungsbuttons im Arbeitermenü
+	fileN = "Other\\" + sPrefix + "buttonminus.png";
+	fileA = "Other\\" + sPrefix + "buttonminusa.png";
+	for (int i = TITAN; i <= IRIDIUM; i++)
+		m_WorkerButtons.Add(new CMyButton(CPoint(170,115+i*95) , CSize(40,40), "", fileN, fileN, fileA));
+	fileN = "Other\\" + sPrefix + "buttonplus.png";
+	fileA = "Other\\" + sPrefix + "buttonplusa.png";
+	for (int i = TITAN; i <= IRIDIUM; i++)
+		m_WorkerButtons.Add(new CMyButton(CPoint(630,115+i*95) , CSize(40,40), "", fileN, fileN, fileA));
+
+	// Zuweisungsbuttons im Systemhandelsmenü
+	fileN = "Other\\" + sPrefix + "buttonminus.png";
+	fileA = "Other\\" + sPrefix + "buttonminusa.png";
+	for (int i = TITAN; i <= IRIDIUM; i++)
+		m_SystemTradeButtons.Add(new CMyButton(CPoint(608,235+i*60) , CSize(30,30), "", fileN, fileN, fileA));
+	fileN = "Other\\" + sPrefix + "buttonplus.png";
+	fileA = "Other\\" + sPrefix + "buttonplusa.png";
+	for (int i = TITAN; i <= IRIDIUM; i++)
+		m_SystemTradeButtons.Add(new CMyButton(CPoint(975,235+i*60) , CSize(30,30), "", fileN, fileN, fileA));
 }
 

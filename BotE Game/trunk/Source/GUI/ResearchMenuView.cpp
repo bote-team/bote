@@ -6,8 +6,6 @@
 #include "ResearchMenuView.h"
 #include "ResearchBottomView.h"
 #include "Races\RaceController.h"
-#include "IniLoader.h"
-
 
 // CResearchMenuView
 

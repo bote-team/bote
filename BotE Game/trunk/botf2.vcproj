@@ -307,6 +307,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\Source\General\IOData.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\Source\General\NetworkHandler.cpp"
 					>
 				</File>
@@ -801,6 +805,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\resource.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Source\StdAfx.h"
 				>
 			</File>
@@ -817,6 +825,10 @@
 				</File>
 				<File
 					RelativePath=".\Source\General\IniLoader.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Source\General\IOData.h"
 					>
 				</File>
 				<File

@@ -6,7 +6,7 @@
 #include "stdafx.h"
 #include "Sector.h"
 #include "FontLoader.h"
-#include "Botf2.h"
+#include "IOData.h"
 #include "Botf2Doc.h"
 #include "Races\RaceController.h"
 
@@ -1217,17 +1217,18 @@ void CSector::DrawShipSymbolInSector(Graphics *g, CBotf2Doc* pDoc, CMajor* pPlay
 	pt.y = m_KO.y * STARMAP_SECTOR_HEIGHT;
 
 	// durch alle Rassen iterieren und Schiffsymbole zeichnen
+	CString sAppPath = CIOData::GetInstance()->GetAppPath();
 	for (map<CString, CRace*>::const_iterator it = pmRaces->begin(); it != pmRaces->end(); it++)
 	{		
 		if (pPlayer->GetRaceID() == it->first && this->GetOwnerOfShip(it->first) == TRUE
 			|| this->GetOwnerOfShip(it->first) == TRUE && this->GetNeededScanPower(it->first) < this->GetScanPower(pPlayer->GetRaceID()))
 		{
-			sFilePath = *((CBotf2App*)AfxGetApp())->GetPath() + "Graphics\\Symbols\\" + it->first + ".png";
+			sFilePath = sAppPath + "Graphics\\Symbols\\" + it->first + ".png";
 			Bitmap* ship = Bitmap::FromFile(sFilePath.AllocSysString());
 			// konnte die Grafik nicht geladen werden, dann wird ein Standardsymbol geladen
 			if (!ship || ship->GetLastStatus() != Ok)
 			{
-				sFilePath = *((CBotf2App*)AfxGetApp())->GetPath() + "Graphics\\Symbols\\Standard.png";
+				sFilePath = sAppPath + "Graphics\\Symbols\\Standard.png";
 				ship = Bitmap::FromFile(sFilePath.AllocSysString());
 			}
 			g->DrawImage(ship, pt.x + 45 - nCount * 12, pt.y, 35, 35);
@@ -1239,12 +1240,12 @@ void CSector::DrawShipSymbolInSector(Graphics *g, CBotf2Doc* pDoc, CMajor* pPlay
 		if ((pPlayer->GetRaceID() == it->first || this->GetScanPower(pPlayer->GetRaceID()) > 0) &&
 			(this->GetIsStationBuilding(it->first) == TRUE || this->GetOutpost(it->first) == TRUE || this->GetStarbase(it->first) == TRUE))
 		{
-			sFilePath = *((CBotf2App*)AfxGetApp())->GetPath() + "Graphics\\Symbols\\" + it->first + ".png";
+			sFilePath = sAppPath + "Graphics\\Symbols\\" + it->first + ".png";
 			Bitmap* ship = Bitmap::FromFile(sFilePath.AllocSysString());
 			// konnte die Grafik nicht geladen werden, dann wird ein Standardsymbol geladen
 			if (!ship || ship->GetLastStatus() != Ok)
 			{
-				sFilePath = *((CBotf2App*)AfxGetApp())->GetPath() + "Graphics\\Symbols\\Standard.png";
+				sFilePath = sAppPath + "Graphics\\Symbols\\Standard.png";
 				ship = Bitmap::FromFile(sFilePath.AllocSysString());
 			}
 			g->DrawImage(ship, pt.x, pt.y + 45, 35, 35);

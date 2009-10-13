@@ -282,9 +282,7 @@ void CTrade::Reset(void)
 		}
 		m_iRessourcePriceAtRoundStart[i] = m_iRessourcePrice[i];
 		m_iTaxes[i] = 0;
-		m_dMonopolBuy[i] = 0.0f;
-		// statische Variable reseten
-		CTrade::m_sMonopolOwner[i] = "";		
+		m_dMonopolBuy[i] = 0.0f;		
 	}
 	m_iQuantity = 100;
 	m_fTax		= 1.0f;

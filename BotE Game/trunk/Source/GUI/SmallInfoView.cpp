@@ -33,6 +33,7 @@ IMPLEMENT_DYNCREATE(CSmallInfoView, CView)
 CSmallInfoView::CSmallInfoView()
 {
 	m_nTimer = 0;
+	CIniLoader::GetInstance()->ReadValue("Video", "ANIMATEDICON", m_bAnimatedIcon);
 }
 
 CSmallInfoView::~CSmallInfoView()
@@ -394,7 +395,7 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 	{
 		if (m_nTimer > 440)
 			m_nTimer = 0;
-		if (m_nTimer == 0 && pDoc->m_pIniLoader->GetValue("ANIMATEDICON") == TRUE)
+		if (m_nTimer == 0 && m_bAnimatedIcon)
 			this->SetTimer(1,125,NULL);
 
 		// Wenn keine Informationen zu einem Planeten angezeigt werden sollen, dann das Rassensymbol einblenden

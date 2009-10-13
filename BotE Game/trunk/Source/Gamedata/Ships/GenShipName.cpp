@@ -137,7 +137,7 @@ void CGenShipName::Init(CBotf2Doc* pDoc)
 		// Varibale vom Typ CStdioFile	
 		CStdioFile file;
 		// Name des zu öffnenden Files zusammensetzen (die RaceID ist da mit drin)
-		CString fileName=*((CBotf2App*)AfxGetApp())->GetPath() + "Data\\Names\\" + sID + "ShipNames.data";
+		CString fileName = CIOData::GetInstance()->GetAppPath() + "Data\\Names\\" + sID + "ShipNames.data";
 		// Datei öffnen
 		if (file.Open(fileName, CFile::modeRead | CFile::typeText))
 		{

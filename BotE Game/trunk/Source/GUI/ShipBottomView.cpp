@@ -2,7 +2,7 @@
 //
 
 #include "stdafx.h"
-#include "botf2.h"
+#include "IOData.h"
 #include "GalaxyMenuView.h"
 #include "FleetMenuView.h"
 #include "TransportMenuView.h"
@@ -713,7 +713,7 @@ void CShipBottomView::OnInitialUpdate()
 	m_iWhichMainShipOrderButton = -1;
 	
 	CString sPrefix = pPlayer->GetPrefix();
-	CString s = *((CBotf2App*)AfxGetApp())->GetPath() + "Graphics\\Other\\" + sPrefix + "button_small.png";		
+	CString s = CIOData::GetInstance()->GetAppPath() + "Graphics\\Other\\" + sPrefix + "button_small.png";		
 	m_pShipOrderButton = Bitmap::FromFile(s.AllocSysString());
 }
 
@@ -920,16 +920,16 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 				{
 					pDoc->GetMainFrame()->SelectBottomView(PLANET_BOTTOM_VIEW);
 					pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CPlanetBottomView));
-					pDoc->m_pSoundManager->PlaySound(SNDMGR_MSG_TERRAFORM_SELECT, SNDMGR_PRIO_HIGH, 1.0f, client);
+					CSoundManager::GetInstance()->PlaySound(SNDMGR_MSG_TERRAFORM_SELECT, SNDMGR_PRIO_HIGH, 1.0f, client);
 				}
 				else
 				{
 					if (i == COLONIZE)
-						pDoc->m_pSoundManager->PlaySound(SNDMGR_MSG_COLONIZING, SNDMGR_PRIO_HIGH, 1.0f, client);
+						CSoundManager::GetInstance()->PlaySound(SNDMGR_MSG_COLONIZING, SNDMGR_PRIO_HIGH, 1.0f, client);
 					else if (i == BUILD_OUTPOST)
-						pDoc->m_pSoundManager->PlaySound(SNDMGR_MSG_OUTPOST_CONSTRUCT, SNDMGR_PRIO_HIGH, 1.0f, client);
+						CSoundManager::GetInstance()->PlaySound(SNDMGR_MSG_OUTPOST_CONSTRUCT, SNDMGR_PRIO_HIGH, 1.0f, client);
 					else if (i == BUILD_STARBASE)
-						pDoc->m_pSoundManager->PlaySound(SNDMGR_MSG_STARBASE_CONSTRUCT, SNDMGR_PRIO_HIGH, 1.0f, client);
+						CSoundManager::GetInstance()->PlaySound(SNDMGR_MSG_STARBASE_CONSTRUCT, SNDMGR_PRIO_HIGH, 1.0f, client);
 					CGalaxyMenuView::SetMoveShip(FALSE);
 					CSmallInfoView::SetShipInfo(true);
 					pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CSmallInfoView));

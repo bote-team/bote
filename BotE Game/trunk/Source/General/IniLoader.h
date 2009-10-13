@@ -7,52 +7,60 @@
  */
 #pragma once
 
+/// Singletonklasse um Daten aus der Ini-Datei zu lesen bzw. zu schreiben.
 class CIniLoader
 {
+private:	
+	/// Konstruktor private, damit man sich keine Instanzen holen kann.
+    CIniLoader(void);
+    
+	/// Den Kopierkonstruktor schützen um zu vermeiden, dass das Objekt unbeabsichtigt kopiert wird.
+    CIniLoader(const CIniLoader& cc);
+
 public:
-	/// Konstruktor
-	CIniLoader(void);
+	/// Standarddestruktor
+	~CIniLoader(void);
 
-	/// Destruktor
-	virtual ~CIniLoader(void);
-
-	/**
-	 * Diese Funktion gibt den zum <code>key</code> gehörenden Eintrag aus der ini-Datei zurück.
-	 */
-	int GetValue(CString key);
+	/// Funktion liefert die einzige Instanz dieser Klasse (Singleton).
+	/// @return Instanz dieser Klasse
+	static CIniLoader* GetInstance(void);
 
 	/**
 	 * Diese Funktion gibt den zum <code>key</code> gehörenden Eintrag aus der ini-Datei zurück.
 	 */
-	float GetFloatValue(CString key);
+	bool ReadValue(const CString& sSection, const CString& sKey, bool& bValue);
 
 	/**
 	 * Diese Funktion gibt den zum <code>key</code> gehörenden Eintrag aus der ini-Datei zurück.
 	 */
-	CString GetStringValue(CString key);
+	bool ReadValue(const CString& sSection, const CString& sKey, int& nValue);
+
+	/**
+	 * Diese Funktion gibt den zum <code>key</code> gehörenden Eintrag aus der ini-Datei zurück.
+	 */
+	bool ReadValue(const CString& sSection, const CString& sKey, float& fValue);
+
+	/**
+	 * Diese Funktion gibt den zum <code>key</code> gehörenden Eintrag aus der ini-Datei zurück.
+	 */
+	bool ReadValue(const CString& sSection, const CString& sKey, CString& sValue);
 
 	/**
 	 * Diese Funktion schreibt den zum <code>key</code> gehörenden Eintrag <code>value</code> in die ini-Datei.
 	 */
-	BOOL WriteIniString(CString key, CString value, CString filename = "BotE.ini");
-	
-private:
-	/**
-	 * Diese Funktion liest das ini-File ein und speichert die Daten in der CStringToStringMap. Konnte die ini-
-	 * Datei aus irgendeinem Grund nicht geöffnet werden liefert die Funktion <code>FALSE</code> zurück, ansonsten
-	 * wird <code>TRUE</code> zurückgegeben.
-	 */
-	BOOL ReadIniFile(CString filename);
-	
-	/**
-	 * Funktion erstellt die ini-Datei und schreibt einige Standartdaten in die Ini-Datei.
-	 */
-	void CreateIniFile(CString filename = "BotE.ini");
+	bool WriteValue(const CString& sSection, const CString& sKey, const CString& sValue);
 
+private:
 	/**
 	 * Diese Funktion wandelt ein Wort, wie z.B. On oder True in einen Wahrheitswert um.
 	 */
-	int StringToInt(CString string);
+	int StringToInt(CString sValue);	
 
-	CMapStringToString m_Strings;		///< Speichert die eingelesenen Zeilen aus der ini Datei
+	/**
+	 * Diese Funktion gibt den zum <code>key</code> gehörenden Eintrag aus der ini-Datei zurück.
+	 */
+	bool ReadIniValue(const CString& sSection, const CString& sKey, CString& sReturnValue);
+
+	// Attribute
+	CString m_sIniPath;		///< kompletter Pfad zur Ini-Datei
 };

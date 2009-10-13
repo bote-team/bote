@@ -24,8 +24,7 @@ CIntelCalc::~CIntelCalc(void)
 /// Die Funktion verschickt auch alle relevanten Nachrichten an die betroffenen Imperien.
 void CIntelCalc::StartCalc(CMajor* pRace)
 {
-	ASSERT(pRace);
-	srand((unsigned)time(NULL));
+	ASSERT(pRace);	
 	// resultierende Spionagegeheimdienstpunkte bei einer Rasse
 	map<CString, UINT> m_iSpySP;
 	// resultierende Sabotagegeheimdienstpunkte bei einer Rasse
@@ -1754,7 +1753,7 @@ BOOLEAN CIntelCalc::ExecuteDiplomacySabotage(CMajor* pRace, CMajor* pEnemyRace, 
 				// bei unserem gegenüber verschlechtern
 				else
 				{
-					int relationSub = rand()%20 + 1;
+					int relationSub = -rand()%20 + 1;
 					minor->SetRelation(pEnemyRace->GetRaceID(), relationSub);
 					pRace->GetEmpire()->GetIntelligence()->GetIntelReports()->RemoveReport(oldReportNumber);
 					report = new CDiplomacyIntelObj(pRace->GetRaceID(), pEnemyRace->GetRaceID(), m_pDoc->GetCurrentRound(), FALSE, minor->GetRaceKO());
@@ -1784,7 +1783,7 @@ void CIntelCalc::CreateMsg(CMajor* pResponsibleRace, CMajor* pEnemyRace, BYTE ty
 {
 	CString csInput;													// auf csInput wird die jeweilige Zeile gespeichert
 	CString fileName;
-	fileName = *((CBotf2App*)AfxGetApp())->GetPath() + "Data\\Races\\MajorIntel.data";				// Name des zu Öffnenden Files 
+	fileName = CIOData::GetInstance()->GetAppPath() + "Data\\Races\\MajorIntel.data";				// Name des zu Öffnenden Files 
 	CStdioFile file;													// Varibale vom Typ CStdioFile
 	if (file.Open(fileName, CFile::modeRead | CFile::typeText))			// Datei wird geöffnet
 	{

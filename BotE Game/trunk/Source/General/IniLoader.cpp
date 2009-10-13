@@ -1,17 +1,45 @@
 #include "stdafx.h"
 #include "IniLoader.h"
+#include "Options.h"
+#include "IOData.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
 static char THIS_FILE[] = __FILE__;
 #endif
+
 //////////////////////////////////////////////////////////////////////
 // Konstruktion/Destruktion
 //////////////////////////////////////////////////////////////////////
 CIniLoader::CIniLoader(void)
 {
-	CreateIniFile();
+	m_sIniPath = CIOData::GetInstance()->GetIniPath();
+
+	// Prüfen ob die Ini-Datei mit der aktuellen Version übereinstimmt
+	CString sVersion;
+	ReadValue("Special", "VERSION", sVersion);
+	
+	CFileFind fileFind;
+	// wenn es die Datei noch nicht gibt oder die Versionsnummer stimmt nicht überein
+	if (sVersion != VERSION_INFORMATION || !fileFind.FindFile(m_sIniPath))
+	{
+		// Werte schreiben
+		WriteValue("General", "AUTOSAVE", "ON");
+		WriteValue("General", "USERNAME", "");
+		WriteValue("General", "DIFFICULTY", "EASY");
+				
+		WriteValue("Audio", "HARDWARESOUND", "ON");
+		WriteValue("Audio", "SOUND", "ON");
+		WriteValue("Audio", "MUSIC", "ON");
+		WriteValue("Audio", "MUSICVOLUME", "0.3");
+
+		WriteValue("Video", "SHOWTRADEROUTES", "ON");
+		WriteValue("Video", "ANIMATEDICON", "ON");
+
+		WriteValue("Special", "VERSION", VERSION_INFORMATION);
+		WriteValue("Special", "RANDOMSEED", "-1");
+	}
 }
 
 CIniLoader::~CIniLoader(void)
@@ -21,150 +49,94 @@ CIniLoader::~CIniLoader(void)
 //////////////////////////////////////////////////////////////////////
 // sonstige Funktionen
 //////////////////////////////////////////////////////////////////////
-/// Diese Funktion gibt den zum <code>key</code> gehörenden Eintrag aus der ini-Datei zurück.
-int CIniLoader::GetValue(CString key)
+/// Funktion liefert die einzige Instanz dieser Klasse (Singleton).
+/// @return Instanz dieser Klasse
+CIniLoader* CIniLoader::GetInstance(void)
 {
-	if (key.IsEmpty())
-		return 0;
-	key.MakeUpper();
-	CString returnString;
-	if (m_Strings.Lookup(key, returnString))
-		return StringToInt(returnString);
-	else
-		return 0;
+	static CIniLoader instance; 
+    return &instance;
 }
 
-/// Diese Funktion gibt den zum <code>key</code> gehörenden Eintrag aus der ini-Datei zurück.
-float CIniLoader::GetFloatValue(CString key)
+/// Diese Funktion gibt den zum <code>sKey</code> gehörenden Eintrag aus der ini-Datei zurück.
+bool CIniLoader::ReadValue(const CString& sSection, const CString& sKey, bool& bValue)
 {
-	if (key.IsEmpty())
-		return 1.0f;
-	key.MakeUpper();
-	CString returnString;
-	if (m_Strings.Lookup(key, returnString))
-		return (float)(atof(returnString));
-	else
-		return 1.0f;
-}
-
-/// Diese Funktion gibt den zum <code>key</code> gehörenden Eintrag aus der ini-Datei zurück.
-CString CIniLoader::GetStringValue(CString key)
-{
-	if (key.IsEmpty())
-		return "";
-	key.MakeUpper();
-	CString returnString;
-	if (m_Strings.Lookup(key, returnString))
-		return returnString;
-	else
-		return "";
-}
-
-/// Diese Funktion schreibt den zum <code>key</code> gehörenden Eintrag <code>value</code> in die ini-Datei.
-BOOL CIniLoader::WriteIniString(CString key, CString value, CString filename)
-{
-	CStdioFile file;
-	CString csInput;
-	// File lesen
-	if (file.Open(filename, CFile::modeRead | CFile::typeText))
-	{
-		while (file.ReadString(csInput))
-		{
-			int pos = 0;
-			CString tmpKey = csInput.Tokenize("=", pos);
-			if (tmpKey == key)
-			{
-				tmpKey += "=";
-				tmpKey += value;
-				CString returnValue;
-				// Stringmap aktualisieren
-				if (m_Strings.Lookup(key, returnValue))
-					m_Strings.SetAt(key, value);
-				break;
-			}
-		}
-		file.Close();
-	}
-	else
-		return FALSE;
+	CString sValue;
+	if (!ReadIniValue(sSection, sKey, sValue))
+		return false;
 	
-	// jetzt neue Daten in das File schreiben
-	if (file.Open(filename, CFile::modeCreate | CFile::modeWrite | CFile::typeText))
-	{
-		POSITION pos = m_Strings.GetStartPosition();
-		while (pos != NULL)
-		{
-			CString key;
-			CString value;
-			CString s;
-			m_Strings.GetNextAssoc(pos, key, value);
-			s.Format("%s=%s",key,value);
-			file.WriteString(s+"\n");
-		}			
-		file.Close();
-	}
+	if (StringToInt(sValue) == 1)
+		bValue = true;
 	else
-		return FALSE;
-	return TRUE;
+		bValue = false;
+	
+	return true;
+}
+
+/// Diese Funktion gibt den zum <code>sKey</code> gehörenden Eintrag aus der ini-Datei zurück.
+bool CIniLoader::ReadValue(const CString& sSection, const CString& sKey, int& nValue)
+{
+	CString sValue;
+	if (!ReadIniValue(sSection, sKey, sValue))
+		return false;
+	
+	nValue = atoi(sValue);
+	return true;
+}
+
+/// Diese Funktion gibt den zum <code>sKey</code> gehörenden Eintrag aus der ini-Datei zurück.
+bool CIniLoader::ReadValue(const CString& sSection, const CString& sKey, float& fValue)
+{
+	CString sValue;
+	if (!ReadIniValue(sSection, sKey, sValue))
+		return false;
+	
+	fValue = (float)atof(sValue);
+	return true;
+}
+
+/// Diese Funktion gibt den zum <code>sKey</code> gehörenden Eintrag aus der ini-Datei zurück.
+bool CIniLoader::ReadValue(const CString& sSection, const CString& sKey, CString& sValue)
+{
+	if (!ReadIniValue(sSection, sKey, sValue))
+		return false;
+	return true;
+}
+
+/// Diese Funktion schreibt den zum <code>sKey</code> gehörenden Eintrag <code>value</code> in die ini-Datei.
+bool CIniLoader::WriteValue(const CString& sSection, const CString& sKey, const CString& sValue)
+{	
+	if (m_sIniPath.IsEmpty())
+		return false;
+	if (WritePrivateProfileString(sSection, sKey, sValue, m_sIniPath) == 0)
+		return false;
+	return true;
 }
 
 //////////////////////////////////////////////////////////////////////
 // private Funktionen
 //////////////////////////////////////////////////////////////////////
-/// Diese Funktion liest das ini-File ein und speichert die Daten in der CStringToStringMap. Konnte die ini-
-/// Datei aus irgendeinem Grund nicht geöffnet werden liefert die Funktion <code>FALSE</code> zurück, ansonsten
-/// wird <code>TRUE</code> zurückgegeben.
-BOOL CIniLoader::ReadIniFile(CString filename)
-{
-	CStdioFile file;
-	CString csInput;
-	if (file.Open("BotE.ini", CFile::modeRead | CFile::typeText))
-	{
-		while (file.ReadString(csInput))
-		{
-			int pos = 0;
-			CString key = csInput.Tokenize("=", pos);
-			key.MakeUpper();
-			CString value = csInput.Tokenize("=", pos);
-			if (!key.IsEmpty())
-				m_Strings.SetAt(key,value);
-		}
-		file.Close();
-	}
-	else
-		return FALSE;
-	return TRUE;
-}
-
-/// Funktion erstellt die ini-Datei und schreibt einige Standartdaten in die Ini-Datei.
-void CIniLoader::CreateIniFile(CString filename)
-{
-	if (!ReadIniFile(filename))
-	{
-		CStdioFile file;	
-		if (file.Open(filename, CFile::modeCreate | CFile::modeWrite | CFile::typeText))
-		{
-			file.WriteString("AUTOSAVE=ON\n");
-			file.WriteString("HARDWARESOUND=ON\n");
-			file.WriteString("MUSIC=ON\n");
-			file.WriteString("MUSICVOLUME=0.3\n");
-			file.WriteString("SOUND=ON\n");
-			file.WriteString("SHOWTRADEROUTES=ON\n");
-			file.WriteString("USERNAME=\n");
-			file.WriteString("DIFFICULTY=EASY\n");
-			file.WriteString("ANIMATEDICON=ON\n");			
-		}
-		file.Close();
-		ReadIniFile(filename);
-	}
-}
-
 ///Diese Funktion wandelt ein Wort, wie z.B. On oder True in einen Wahrheitswert um.
-int CIniLoader::StringToInt(CString string)
+int CIniLoader::StringToInt(CString sValue)
 {
-	string.MakeUpper();
-	if (string == "ON" || string == "1" || string == "TRUE")
+	sValue.MakeUpper();
+	if (sValue == "ON" || sValue == "1" || sValue == "TRUE")
 		return 1;
 	else
 		return 0;
+}
+
+/**
+ * Diese Funktion gibt den zum <code>sKey</code> gehörenden Eintrag aus der ini-Datei zurück.
+ */
+bool CIniLoader::ReadIniValue(const CString& sSection, const CString& sKey, CString& sReturnValue)
+{
+	if (m_sIniPath.IsEmpty())
+		return false;
+
+	char read[_MAX_PATH];
+	if (GetPrivateProfileString(sSection, sKey, "", read, _MAX_PATH, m_sIniPath) == 0)
+		return false;
+	
+	sReturnValue = read;
+	return true;
 }

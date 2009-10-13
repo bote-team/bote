@@ -2,7 +2,7 @@
 //
 
 #include "stdafx.h"
-#include "botf2.h"
+#include "IOData.h"
 #include "TradeBottomView.h"
 #include "Races\Major.h"
 
@@ -244,7 +244,7 @@ void CTradeBottomView::OnInitialUpdate()
 	ASSERT(pMajor);
 
 	CString sPrefix = pMajor->GetPrefix();
-	CString s = *((CBotf2App*)AfxGetApp())->GetPath() + "Graphics\\Other\\" + sPrefix + "button_small.png";		
+	CString s = CIOData::GetInstance()->GetAppPath() + "Graphics\\Other\\" + sPrefix + "button_small.png";		
 	
 	m_pSmallButton = Bitmap::FromFile(s.AllocSysString());
 

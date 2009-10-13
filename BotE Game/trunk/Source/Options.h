@@ -15,7 +15,8 @@
 /// Versionsnummer des Dokuments; es können nur Spielstände geladen werden, die diese Versionsnummer
 /// haben.
 #define DOCUMENT_VERSION			7		// Alpha5 Refit Version
-#define VERSION						0.7		///< benötigte Verion in Datafiles
+#define VERSION						0.7		///< benötigte Version in Datafiles
+#define VERSION_INFORMATION			"0.7"	///< anzuzeigende Versionsinformation 
 
 // --- Feste Größen der Starmap ------------------------------------------------
 #define STARMAP_SECTORS_HCOUNT		30		///< Anzahl der Sektoren horizontal
@@ -214,7 +215,7 @@
 #define TORPEDOSPEED		15
 #define MAX_TORPEDO_RANGE	200
 #define DAMAGE_TO_HULL		0.1	// Prozentwert der bei Treffer immer auf Hülle geht
-#define POPSUPPORT_MULTI	1.5	// Multiplikator für Schiffsunterstützungskosten aus Bevölkerung im System
+#define POPSUPPORT_MULTI	3.0	// Multiplikator für Schiffsunterstützungskosten aus Bevölkerung im System
 // Schiffseigenschaften
 enum {NONE, ASSULTSHIP, BLOCKADESHIP, COMMANDSHIP, COMBATTRACTORBEAM, DOGFIGHTER, DOGKILLER, PATROLSHIP, RAIDER, SCIENCEVESSEL};
 

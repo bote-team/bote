@@ -13,8 +13,8 @@
 #include "MainDlg.h"
 #include "NetworkHandler.h"
 #include "MainFrm.h"
-
 #include "IniLoader.h"
+
 #include "Races\RaceController.h"
 #include "Races\DiplomacyController.h"
 #include "Ships\Combat.h"
@@ -52,16 +52,17 @@ END_MESSAGE_MAP()
 CBotf2Doc::CBotf2Doc()
 {
 	//Init MT with single log file
-	MYTRACE_INIT("BotE.log");
+	CString sLogPath = CIOData::GetInstance()->GetLogPath();
+	MYTRACE_INIT(sLogPath);
 
 	// ZU ERLEDIGEN: Hier Code für One-Time-Konstruktion einfügen
 	CResourceManager::Init();
-	m_pIniLoader = new CIniLoader();
-	
-	m_pSoundManager = new CSoundManager();
-	m_pSoundManager->Init(!m_pIniLoader->GetValue("HARDWARESOUND"));
 
-	m_pGraphicPool = new CGraphicPool(*((CBotf2App*)AfxGetApp())->GetPath() + "Graphics\\");
+	bool bHardwareSound;
+	CIniLoader::GetInstance()->ReadValue("Audio", "HARDWARESOUND", bHardwareSound);
+	CSoundManager::GetInstance()->Init(!bHardwareSound);
+
+	m_pGraphicPool = new CGraphicPool(CIOData::GetInstance()->GetAppPath() + "Graphics\\");
 
 	m_pRaceCtrl = new CRaceController();
 	
@@ -75,10 +76,6 @@ CBotf2Doc::CBotf2Doc()
 
 CBotf2Doc::~CBotf2Doc()
 {
-	if (m_pIniLoader)
-		delete m_pIniLoader;
-	if (m_pSoundManager)
-		delete m_pSoundManager;
 	if (m_pGraphicPool)
 		delete m_pGraphicPool;
 	if (m_pRaceCtrl)
@@ -88,8 +85,6 @@ CBotf2Doc::~CBotf2Doc()
 	if (m_pSectorAI)
 		delete m_pSectorAI;
 	
-	m_pIniLoader	= NULL;
-	m_pSoundManager = NULL;
 	m_pGraphicPool	= NULL;
 	m_pRaceCtrl		= NULL;
 	m_pAIPrios		= NULL;
@@ -121,7 +116,48 @@ BOOL CBotf2Doc::OnNewDocument()
 		return FALSE;
 	
 	// ZU ERLEDIGEN: Hier Code zur Reinitialisierung einfügen
-	srand((unsigned)time(NULL));
+	CIniLoader* pIni = CIniLoader::GetInstance();
+	ASSERT(pIni);
+	CSoundManager* pSoundManager = CSoundManager::GetInstance();
+	ASSERT(pSoundManager);
+
+	int nSeed = -1;
+	pIni->ReadValue("Special", "RANDOMSEED", nSeed);
+	// festen vorgegeben Seed verwenden
+	if (nSeed >= 0)
+		srand(nSeed);
+	// zufälligen Seed verwenden
+	else	
+		srand((unsigned)time(NULL));
+
+	// Mal Testweise paar Truppen anlegen
+	m_TroopInfo.RemoveAll();
+	BYTE techs[6];
+	memset(techs, 0, sizeof(*techs)*6);
+	USHORT res[5] = {50};	
+	CTroopInfo* troopInfo = new CTroopInfo("Sicherheitskräfte","Dies ist eine relativ schwache Einheit der Terranischen Konföderation. Diese Einheiten kämpfen mit modernen Projektielwaffen, sind nicht besonders stark gepanzert und haben keine militärische Ausbildung genossen.",9,10,techs,res,180,0,"MAJOR1",2500,1);
+	m_TroopInfo.Add(*troopInfo);
+	delete troopInfo;
+	troopInfo = new CTroopInfo("Heckenschützen","Dies ist eine relativ schwache Einheit des Rotharianischen Sternenverbunds. Diese Einheiten bevorzugen eine hinterhältige Taktik, um ihre Gegner auszuschalten. Leider ist ihre militärische Grundausbildung sehr kurz.",8,10,techs,res,160,1,"MAJOR4",2500,0);
+	m_TroopInfo.Add(*troopInfo);
+	delete troopInfo;
+	troopInfo = new CTroopInfo("Khayrin Krieger","Dies ist eine relativ schwache Einheit des Khayrin Imperiums. Diese Einheiten kämpfen mit messerscharfen Nahkampfwaffen. Dies ist aber auch schon der einzige Nachteil in einem Kampf.",12,10,techs,res,240,2,"MAJOR3",2500,2);
+	m_TroopInfo.Add(*troopInfo);
+	delete troopInfo;
+	troopInfo = new CTroopInfo("Hanuhr Raketenmänner","Ein zusammengewürfelter Haufen von Hanuhr, die mit gefährlichen Raketenabschußanlagen ausgerüstet sind. Leider ist ihre militärische Ausbildung mangelhaft.",5,10,techs,res,100,3,"MAJOR2",1500,0);
+	m_TroopInfo.Add(*troopInfo);
+	delete troopInfo;
+	troopInfo = new CTroopInfo("Invasionsstoßtrupp","Dies ist eine relativ schwache Einheit der Cartarer Invasoren. Trotzdem sind sie hervorragend für militärische Systeminvasionen geeignet.",15,10,techs,res,250,4,"MAJOR5",2500,3);
+	m_TroopInfo.Add(*troopInfo);
+	delete troopInfo;
+	troopInfo = new CTroopInfo("Da'unor Sniper","Dies ist eine relativ schwache Einheit der Omega Allianz. Diese Einheiten kämpfen mit Präzisionsgewehren, sind nicht besonders stark gepanzert und haben keine militärische Ausbildung genossen.",10,10,techs,res,200,5,"MAJOR6",2500,0);
+	m_TroopInfo.Add(*troopInfo);
+	delete troopInfo;
+	// Spezialtruppen für den Cartarer anlegen
+	memset(techs, 255, sizeof(*techs)*6);
+	troopInfo = new CTroopInfo("Alpha Invasoren","Diese Einheit ist eine Spezialeinhait der Cartarer Invasoren. Durch ihre perfekte Ausbildung sind sie sofort in der Lage, feindliche Systeme invasieren zu können.",25,0,techs,res,2500,6,"MAJOR5",2500,0);
+	m_TroopInfo.Add(*troopInfo);
+	delete troopInfo;
 	
 	m_bDataReceived				= false;
 	m_bDontExit					= false;
@@ -129,7 +165,8 @@ BOOL CBotf2Doc::OnNewDocument()
 	
 	m_fStardate					= 121000.0f;
 	
-	CString difficulty = m_pIniLoader->GetStringValue("DIFFICULTY");
+	CString difficulty = "EASY";
+	pIni->ReadValue("General", "DIFFICULTY", difficulty);
 	difficulty.MakeUpper();
 	if (difficulty == "BABY")
 		m_fDifficultyLevel			= 1.0f;
@@ -171,14 +208,23 @@ BOOL CBotf2Doc::OnNewDocument()
 	ASSERT(pPlayer);
 	network::RACE client = m_pRaceCtrl->GetMappedClientID(pPlayer->GetRaceID());
 
-	if (m_pIniLoader->GetValue("MUSIC"))
-		m_pSoundManager->StartMusic(client, m_pIniLoader->GetFloatValue("MUSICVOLUME"));
-	if (!m_pIniLoader->GetValue("SOUND"))
-		m_pSoundManager->SetSoundMasterVolume(NULL);
+	bool bUseMusic;
+	pIni->ReadValue("Audio", "MUSIC", bUseMusic);
+	if (bUseMusic)
+	{
+		float fMusicVolume;
+		pIni->ReadValue("Audio", "MUSICVOLUME", fMusicVolume);
+		pSoundManager->StartMusic(client, fMusicVolume);
+	}
+
+	bool bUseSound;
+	pIni->ReadValue("Audio", "SOUND", bUseSound);
+	if (!bUseSound)
+		pSoundManager->SetSoundMasterVolume(NULL);
 	else
-		m_pSoundManager->SetSoundMasterVolume(0.5f);
+		pSoundManager->SetSoundMasterVolume(0.5f);
 	MYTRACE(MT::LEVEL_INFO, "Init sound ready...\n");
-	
+
 	return TRUE;
 }
 
@@ -193,23 +239,12 @@ CString CBotf2Doc::GetPlayersRaceID(void) const
 /// @return Zeiger auf Majorrace-Rassenobjekt
 CMajor* CBotf2Doc::GetPlayersRace(void) const
 {	
-	// so stand es zuvor drin
-	// return client.GetClientRace();
-	
 	// zuerst muss eine Netzwerknummer, also RACE1 bis RACE6 (1-6)
 	// auf eine bestimmte Rassen-ID gemappt werden. Dies ist dann
 	// die Rassen-ID.
 	CString s = m_pRaceCtrl->GetMappedRaceID((network::RACE)client.GetClientRace());
 	CMajor* pPlayersRace = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(s));
-/*	ASSERT(pPlayersRace);
 
-	if (!pPlayersRace)
-	{
-		CString sError;
-		sError.Format("Error in CBotf2Doc::GetPlayersRace(): Could not map to players race.\nClient Nr. is %s", s);
-		//AfxMessageBox(sError);
-		//exit(1);
-	}*/
 	return pPlayersRace;
 }
 
@@ -484,8 +519,15 @@ void CBotf2Doc::SerializeNextRoundData(CArchive &ar)
 		CSmallInfoView::SetPlanet(NULL);
 		GenerateStarmap();
 
+		m_bGameOver = false;
 		CMajor* pPlayer = GetPlayersRace();
-		ASSERT(pPlayer);
+		// bekommt der Client hier keine Spielerrasse zurück, so ist er ausgeschieden
+		if (pPlayer == NULL)
+		{
+			AfxMessageBox("GAME OVER - exit game now...");
+			m_bGameOver = true;
+			return;
+		}
 		network::RACE client = m_pRaceCtrl->GetMappedClientID(pPlayer->GetRaceID());
 		
 		// Ausgehend vom Pfad des Schiffes den Sektoren mitteilen, das durch sie ein Schiff fliegt
@@ -494,11 +536,13 @@ void CBotf2Doc::SerializeNextRoundData(CArchive &ar)
 				for (int i = 0; i < m_ShipArray[y].GetPath()->GetSize(); i++)
 					m_Sector[m_ShipArray[y].GetPath()->GetAt(i).x][m_ShipArray[y].GetPath()->GetAt(i).y].AddShipPathPoints(1);
 		// Sprachmeldungen an den Soundmanager schicken
-		m_pSoundManager->ClearMessages();
+		CSoundManager* pSoundManager = CSoundManager::GetInstance();
+		ASSERT(pSoundManager);
+		pSoundManager->ClearMessages();
 		for (int i = 0; i < m_SoundMessages[client].GetSize(); i++)
 		{
 			SNDMGR_MESSAGEENTRY* entry = &m_SoundMessages[client].GetAt(i);
-			m_pSoundManager->AddMessage(entry->nMessage, entry->nRace, entry->nPriority, entry->fVolume);
+			pSoundManager->AddMessage(entry->nMessage, entry->nRace, entry->nPriority, entry->fVolume);
 		}
 
 		// Systemliste der Imperien erstellen
@@ -672,35 +716,7 @@ void CBotf2Doc::DoViewWorkOnNewRound()
 void CBotf2Doc::PrepareData()
 {
 	MYTRACE(MT::LEVEL_INFO, "Begin preparing game data...\n");
-	// Mal Testweise paar Truppen anlegen
-	m_TroopInfo.RemoveAll();
-	BYTE techs[6];
-	memset(techs, 0, sizeof(*techs)*6);
-	USHORT res[5] = {50};	
-	CTroopInfo* troopInfo = new CTroopInfo("Sicherheitskräfte","Dies ist eine relativ schwache Einheit der Terranischen Konföderation. Diese Einheiten kämpfen mit modernen Projektielwaffen, sind nicht besonders stark gepanzert und haben keine militärische Ausbildung genossen.",9,10,techs,res,180,0,"MAJOR1",2500,1);
-	m_TroopInfo.Add(*troopInfo);
-	delete troopInfo;
-	troopInfo = new CTroopInfo("Heckenschützen","Dies ist eine relativ schwache Einheit des Rotharianischen Sternenverbunds. Diese Einheiten bevorzugen eine hinterhältige Taktik, um ihre Gegner auszuschalten. Leider ist ihre militärische Grundausbildung sehr kurz.",8,10,techs,res,160,1,"MAJOR4",2500,0);
-	m_TroopInfo.Add(*troopInfo);
-	delete troopInfo;
-	troopInfo = new CTroopInfo("Khayrin Krieger","Dies ist eine relativ schwache Einheit des Khayrin Imperiums. Diese Einheiten kämpfen mit messerscharfen Nahkampfwaffen. Dies ist aber auch schon der einzige Nachteil in einem Kampf.",12,10,techs,res,240,2,"MAJOR3",2500,2);
-	m_TroopInfo.Add(*troopInfo);
-	delete troopInfo;
-	troopInfo = new CTroopInfo("Hanuhr Raketenmänner","Ein zusammengewürfelter Haufen von Hanuhr, die mit gefährlichen Raketenabschußanlagen ausgerüstet sind. Leider ist ihre militärische Ausbildung mangelhaft.",5,10,techs,res,100,3,"MAJOR2",1500,0);
-	m_TroopInfo.Add(*troopInfo);
-	delete troopInfo;
-	troopInfo = new CTroopInfo("Invasionsstoßtrupp","Dies ist eine relativ schwache Einheit der Cartarer Invasoren. Trotzdem sind sie hervorragend für militärische Systeminvasionen geeignet.",15,10,techs,res,250,4,"MAJOR5",2500,3);
-	m_TroopInfo.Add(*troopInfo);
-	delete troopInfo;
-	troopInfo = new CTroopInfo("Da'unor Sniper","Dies ist eine relativ schwache Einheit der Omega Allianz. Diese Einheiten kämpfen mit Präzisionsgewehren, sind nicht besonders stark gepanzert und haben keine militärische Ausbildung genossen.",10,10,techs,res,200,5,"MAJOR6",2500,0);
-	m_TroopInfo.Add(*troopInfo);
-	delete troopInfo;
-	// Spezialtruppen für den Cartarer anlegen
-	memset(techs, 255, sizeof(*techs)*6);
-	troopInfo = new CTroopInfo("Alpha Invasoren","Diese Einheit ist eine Spezialeinhait der Cartarer Invasoren. Durch ihre perfekte Ausbildung sind sie sofort in der Lage, feindliche Systeme invasieren zu können.",25,0,techs,res,2500,6,"MAJOR5",2500,0);
-	m_TroopInfo.Add(*troopInfo);
-	delete troopInfo;
-
+	
 	if (CSector::m_NameGenerator)
 	{
 		delete CSector::m_NameGenerator;
@@ -735,7 +751,7 @@ void CBotf2Doc::PrepareData()
 		map<CString, CRace*>* pmRaces = m_pRaceCtrl->GetRaces();
 		for (map<CString, CRace*>::iterator it = pmRaces->begin(); it != pmRaces->end(); it++)
 			for (map<CString, CRace*>::const_iterator jt = pmRaces->begin(); jt != pmRaces->end(); jt++)
-				if (it->first != jt->first)// && it->second->GetType() == MAJOR && jt->second->GetType() == MAJOR)
+				if (it->first != jt->first && it->second->GetType() == MAJOR && jt->second->GetType() == MAJOR)
 				{					
 					it->second->SetIsRaceContacted(jt->first, true);
 				}
@@ -975,7 +991,14 @@ void CBotf2Doc::NextRound()
 {
 	MYTRACE(MT::LEVEL_INFO, "\nSTART NEXT ROUND (round: %d)\n", GetCurrentRound());
 
-	srand((unsigned)time(NULL));
+	int nSeed = -1;
+	CIniLoader::GetInstance()->ReadValue("Special", "RANDOMSEED", nSeed);
+	// festen vorgegeben Seed verwenden
+	if (nSeed >= 0)
+		srand(nSeed);
+	// zufälligen Seed verwenden
+	else	
+		srand((unsigned)time(NULL));
 	/* Für später: In den Objekten der Klasse CEmpire, werden die Messages an das Imperium gespeichert.
 	   Bei diplomatischen Auswirkungen werden diese Messages unter anderem generiert und auch an andere
 	   Imperien versandt. So weit so gut. Nachher werden diese Empireobjekte an die Spieler im Multiplayer
@@ -1148,11 +1171,21 @@ void CBotf2Doc::NextRound()
 				{
 					((CMajor*)pLivingRace)->SetDefencePact(pMajor->GetRaceID(), false);
 					pMajor->SetDefencePact(pLivingRace->GetRaceID(), false);
+
+					// Geheimdienstzuweiseungen anpassen
+					// Spionage auf 0 setzen
+					((CMajor*)pLivingRace)->GetEmpire()->GetIntelligence()->GetAssignment()->SetGlobalPercentage(0, 0, (CMajor*)pLivingRace, pMajor->GetRaceID(), pmMajors);
+					// Sabotage auf 0 setzen
+					((CMajor*)pLivingRace)->GetEmpire()->GetIntelligence()->GetAssignment()->SetGlobalPercentage(0, 0, (CMajor*)pLivingRace, pMajor->GetRaceID(), pmMajors);
+					if (((CMajor*)pLivingRace)->GetEmpire()->GetIntelligence()->GetResponsibleRace() == pMajor->GetRaceID())
+						((CMajor*)pLivingRace)->GetEmpire()->GetIntelligence()->SetResponsibleRace(pLivingRace->GetRaceID());
+					((CMajor*)pLivingRace)->GetEmpire()->GetIntelligence()->GetAssignment()->RemoveRaceFromAssignments(pMajor->GetRaceID());
 				}				
 			}
 			
 			// Alle Schiffe entfernen
 			for (int j = 0; j < m_ShipArray.GetSize(); j++)
+			{
 				if (m_ShipArray.GetAt(j).GetOwnerOfShip() == pMajor->GetRaceID())
 				{
 					// Alle noch "lebenden" Schiffe aus der Schiffshistory ebenfalls als zerstört ansehen
@@ -1161,10 +1194,10 @@ void CBotf2Doc::NextRound()
 								CResourceManager::GetString("UNKNOWN"), CResourceManager::GetString("DESTROYED"));
 					m_ShipArray.RemoveAt(j--);
 				}
+			}
+			// Rasse braucht nicht mehr betrachtet werden
+			continue;
 		}
-		
-		for (UINT i = 0; i < vDelMajors.size(); i++)
-			m_pRaceCtrl->RemoveRace(vDelMajors[i]);
 
 		// Moralveränderungen aufgrund möglicher Ereignisse berechnen. Erst nach der Schiffsbewegung und allem anderen
 		pMajor->GetMoralObserver()->CalculateEvents(m_System, pMajor->GetRaceID(), pMajor->GetRaceMoralNumber());
@@ -1187,19 +1220,22 @@ void CBotf2Doc::NextRound()
 				m_iSelectedView[client] = EMPIRE_VIEW;
 			}
 		}
-		// Latinumänderung berechnen
-		short costs = pMajor->GetEmpire()->GetPopSupportCosts() - pMajor->GetEmpire()->GetShipCosts();
+		
+		// Schiffskosten berechnen
+		int popSupport = pMajor->GetEmpire()->GetPopSupportCosts();
+		int shipCosts  = pMajor->GetEmpire()->GetShipCosts();
+
+		int costs = popSupport - shipCosts;
 		if (costs < 0)
 			pMajor->GetEmpire()->SetLatinum(costs);
+		// Latinumänderung berechnen
 		pMajor->GetEmpire()->SetLatinumChange((int)(pMajor->GetEmpire()->GetLatinum() - mOldCredits[pMajor->GetRaceID()]));
-
-		// Schiffsunterstützungskosten berechnen
-		USHORT shipCosts = 0;
-		for (int t = 0; t < m_ShipArray.GetSize(); t++)
-			if (m_ShipArray.GetAt(t).GetOwnerOfShip() == pMajor->GetRaceID())
-				shipCosts += m_ShipArray.GetAt(t).GetMaintenanceCosts();
-		pMajor->GetEmpire()->SetShipCosts(shipCosts);
 	}
+
+	// ausgeschiedene Rassen entfernen
+	for (UINT i = 0; i < vDelMajors.size(); i++)
+		m_pRaceCtrl->RemoveRace(vDelMajors[i]);		
+	
 
 	// Jetzt die Besitzer berechnen und die Variablen, welche nächste Runde auch angezeigt werden sollen.
 	for (int y = 0 ; y < STARMAP_SECTORS_VCOUNT; y++)
@@ -1222,18 +1258,20 @@ void CBotf2Doc::NextRound()
 			}
 		}
 	
-	if (m_pIniLoader->GetValue("AUTOSAVE"))
-		DoSave(*((CBotf2App*)AfxGetApp())->GetPath() + "auto.sav", FALSE);
+	bool bAutoSave;
+	CIniLoader::GetInstance()->ReadValue("General", "AUTOSAVE", bAutoSave);
+	if (bAutoSave)
+		DoSave(CIOData::GetInstance()->GetAutoSavePath(), FALSE);
 	SetModifiedFlag();
 	
 	delete pShipAI;	
-	MYTRACE(MT::LEVEL_INFO, "\nNEXT ROUND calculation successfull\n", GetCurrentRound());
+	MYTRACE(MT::LEVEL_INFO, "\nNEXT ROUND calculation successfull\n", GetCurrentRound());	
 }
 
 void CBotf2Doc::ApplyShipsAtStartup()
 {
 	// Name des zu öffnenden Files 
-	CString fileName=*((CBotf2App*)AfxGetApp())->GetPath() + "Data\\Ships\\StartShips.data";
+	CString fileName= CIOData::GetInstance()->GetAppPath() + "Data\\Ships\\StartShips.data";
 	CStdioFile file;
 	// Datei wird geöffnet
 	if (file.Open(fileName, CFile::modeRead | CFile::typeText))
@@ -1303,7 +1341,7 @@ void CBotf2Doc::ApplyShipsAtStartup()
 void CBotf2Doc::ApplyBuildingsAtStartup()
 {
 	// Name des zu öffnenden Files 
-	CString fileName=*((CBotf2App*)AfxGetApp())->GetPath() + "Data\\Buildings\\StartBuildings.data";
+	CString fileName = CIOData::GetInstance()->GetAppPath() + "Data\\Buildings\\StartBuildings.data";
 	CStdioFile file;
 	// Datei wird geöffnet
 	if (file.Open(fileName, CFile::modeRead | CFile::typeText))
@@ -1442,7 +1480,7 @@ void CBotf2Doc::ReadBuildingInfosFromFile()
 	USHORT i = 0;
 	CString csInput;
 	CString data[133];
-	CString fileName=*((CBotf2App*)AfxGetApp())->GetPath() + "Data\\Buildings\\Buildings.data";		// Name des zu Öffnenden Files
+	CString fileName = CIOData::GetInstance()->GetAppPath() + "Data\\Buildings\\Buildings.data";		// Name des zu Öffnenden Files
 	CStdioFile file;													// Varibale vom Typ CStdioFile
 	if (file.Open(fileName, CFile::modeRead | CFile::typeBinary))			// Datei wird geöffnet
 	{
@@ -1628,7 +1666,7 @@ void CBotf2Doc::ReadShipInfosFromFile()
 	CString data[40];
 	CString torpedoData[7];
 	CString beamData[10];
-	CString fileName=*((CBotf2App*)AfxGetApp())->GetPath() + "Data\\Ships\\Shiplist.data";				// Name des zu Öffnenden Files 
+	CString fileName = CIOData::GetInstance()->GetAppPath() + "Data\\Ships\\Shiplist.data";				// Name des zu Öffnenden Files 
 	CStdioFile file;														// Varibale vom Typ CStdioFile
 	if (file.Open(fileName, CFile::modeRead | CFile::typeBinary))			// Datei wird geöffnet
 	{
@@ -3112,7 +3150,9 @@ void CBotf2Doc::CalcOldRoundData()
 						if (m_System[x][y].GetFoodStore() < 0)
 						{
 							m_Sector[x][y].LetPlanetsShrink((float)(m_System[x][y].GetFoodStore()) * 0.01f);
-							m_System[x][y].SetMoral((short)(m_System[x][y].GetFoodStore() / (m_System[x][y].GetHabitants() + 1))); // +1, wegen Division durch NULL umgehen
+							// nur wenn die Moral über 50 ist sinkt die Moral durch Hungersnöte
+							if (m_System[x][y].GetMoral() > 50)
+								m_System[x][y].SetMoral((short)(m_System[x][y].GetFoodStore() / (m_System[x][y].GetHabitants() + 1))); // +1, wegen Division durch NULL umgehen
 							m_System[x][y].SetFoodStore(0);
 							
 							CString news = CResourceManager::GetString("FAMINE", FALSE, m_Sector[x][y].GetName());
@@ -3129,7 +3169,7 @@ void CBotf2Doc::CalcOldRoundData()
 				else
 					// Planetenwachstum für andere Sektoren durchführen
 					m_Sector[x][y].LetPlanetsGrowth();
-
+					
 				if (m_System[x][y].GetOwnerOfSystem() != "")
 				{
 					CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(m_System[x][y].GetOwnerOfSystem()));

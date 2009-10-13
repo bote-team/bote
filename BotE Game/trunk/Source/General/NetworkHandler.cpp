@@ -45,6 +45,11 @@ void CNetworkHandler::OnNextRound(network::CNextRound *pMsg)
 	m_pDoc->m_bDataReceived = false;
 	pMsg->DeserializeToDoc(m_pDoc);
 	// ...
+	if (m_pDoc->m_bGameOver)
+	{
+		client.Disconnect();
+		return;
+	}
 	AfxGetApp()->PostThreadMessage(WM_INITVIEWS, 0, 0);
 	AfxGetApp()->PostThreadMessage(WM_UPDATEVIEWS, 0, 0);
 
@@ -52,9 +57,12 @@ void CNetworkHandler::OnNextRound(network::CNextRound *pMsg)
 	m_pDoc->m_bRoundEndPressed = false;
 	m_pDoc->m_bDataReceived = true;
 	
+	CSoundManager* pSoundManager = CSoundManager::GetInstance();
+	ASSERT(pSoundManager);
+
 	if (m_pDoc->m_iRound > 1)
-		m_pDoc->m_pSoundManager->PlaySound(SNDMGR_SOUND_ENDOFROUND, SNDMGR_PRIO_HIGH);
-	m_pDoc->m_pSoundManager->PlayMessages(600, 200);	
+		pSoundManager->PlaySound(SNDMGR_SOUND_ENDOFROUND, SNDMGR_PRIO_HIGH);
+	pSoundManager->PlayMessages(600, 200);	
 }
 
 void CNetworkHandler::OnChatMsg(network::CChatMsg *pMsg)

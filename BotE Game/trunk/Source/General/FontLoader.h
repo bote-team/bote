@@ -47,16 +47,5 @@ private:
 	CFontLoader(void);
 
 	/// Destruktor
-	~CFontLoader(void);
-
-	/*
-	/// Diese statische Variable beinhaltet die verschiedenen Schriftgrößen für die einzelnen Rassen.
-	static BYTE m_byFontSizes[DOMINION][6];
-
-	/// Diese statische Variable beinhaltet die verschiedenen Schriftgrößen für die einzelnen Rassen bei GDIPlus.
-	static BYTE m_byGDIPlusFontSizes[DOMINION][6];
-
-	/// Diese statische Variable beinhaltet die verschiedenen Schriftfarben der einzelnen Rassen.
-	static COLORREF m_Colors[DOMINION][5];
-	*/
+	~CFontLoader(void);	
 };

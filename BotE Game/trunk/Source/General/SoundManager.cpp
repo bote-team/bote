@@ -1,8 +1,7 @@
 #include "stdafx.h"
-#include "Botf2.h"
 #include "SoundManager.h"
 #include "ResourceManager.h"
-
+#include "IOData.h"
 #include <algorithm>
 
 CSoundManager::CSoundManager(UINT nMaxLoadedSounds)
@@ -20,6 +19,17 @@ CSoundManager::~CSoundManager()
 	Release();
 }
 
+//////////////////////////////////////////////////////////////////////
+// sonstige Funktionen
+//////////////////////////////////////////////////////////////////////
+/// Funktion liefert die einzige Instanz dieser Klasse (Singleton).
+/// @return Instanz dieser Klasse
+CSoundManager* CSoundManager::GetInstance(void)
+{
+	static CSoundManager instance; 
+    return &instance;
+}
+
 std::string CSoundManager::GetPathName(SNDMGR_VALUE nSound, network::RACE nRace)
 {
 	using namespace network;
@@ -28,26 +38,26 @@ std::string CSoundManager::GetPathName(SNDMGR_VALUE nSound, network::RACE nRace)
 	switch (nSound)
 	{
 	// Hintergrundmusik
-	case SNDMGR_MUSIC_FED:	msg = (*((CBotf2App*)AfxGetApp())->GetPath()) + "Sounds\\" + CResourceManager::GetString("RACE1_PREFIX") + "music.ogg"; return msg;
-	case SNDMGR_MUSIC_FER:	msg = (*((CBotf2App*)AfxGetApp())->GetPath()) + "Sounds\\" + CResourceManager::GetString("RACE2_PREFIX") + "music.ogg"; return msg;
-	case SNDMGR_MUSIC_KLI:	msg = (*((CBotf2App*)AfxGetApp())->GetPath()) + "Sounds\\" + CResourceManager::GetString("RACE3_PREFIX") + "music.ogg"; return msg;
-	case SNDMGR_MUSIC_ROM:	msg = (*((CBotf2App*)AfxGetApp())->GetPath()) + "Sounds\\" + CResourceManager::GetString("RACE4_PREFIX") + "music.ogg"; return msg;
-	case SNDMGR_MUSIC_CAR:	msg = (*((CBotf2App*)AfxGetApp())->GetPath()) + "Sounds\\" + CResourceManager::GetString("RACE5_PREFIX") + "music.ogg"; return msg;
-	case SNDMGR_MUSIC_DOM:	msg = (*((CBotf2App*)AfxGetApp())->GetPath()) + "Sounds\\" + CResourceManager::GetString("RACE6_PREFIX") + "music.ogg"; return msg;
+	case SNDMGR_MUSIC_FED:	msg = CIOData::GetInstance()->GetAppPath() + "Sounds\\" + CResourceManager::GetString("RACE1_PREFIX") + "music.ogg"; return msg;
+	case SNDMGR_MUSIC_FER:	msg = CIOData::GetInstance()->GetAppPath() + "Sounds\\" + CResourceManager::GetString("RACE2_PREFIX") + "music.ogg"; return msg;
+	case SNDMGR_MUSIC_KLI:	msg = CIOData::GetInstance()->GetAppPath() + "Sounds\\" + CResourceManager::GetString("RACE3_PREFIX") + "music.ogg"; return msg;
+	case SNDMGR_MUSIC_ROM:	msg = CIOData::GetInstance()->GetAppPath() + "Sounds\\" + CResourceManager::GetString("RACE4_PREFIX") + "music.ogg"; return msg;
+	case SNDMGR_MUSIC_CAR:	msg = CIOData::GetInstance()->GetAppPath() + "Sounds\\" + CResourceManager::GetString("RACE5_PREFIX") + "music.ogg"; return msg;
+	case SNDMGR_MUSIC_DOM:	msg = CIOData::GetInstance()->GetAppPath() + "Sounds\\" + CResourceManager::GetString("RACE6_PREFIX") + "music.ogg"; return msg;
 
 	// Rassenauswahl
-	case SNDMGR_VOICE_FED_RACESELECT:	msg = (*((CBotf2App*)AfxGetApp())->GetPath()) + "Sounds\\" + CResourceManager::GetString("RACE1_PREFIX") + "raceSelect.ogg"; return msg;
-	case SNDMGR_VOICE_FER_RACESELECT:	msg = (*((CBotf2App*)AfxGetApp())->GetPath()) + "Sounds\\" + CResourceManager::GetString("RACE2_PREFIX") + "raceSelect.ogg"; return msg;
-	case SNDMGR_VOICE_KLI_RACESELECT:	msg = (*((CBotf2App*)AfxGetApp())->GetPath()) + "Sounds\\" + CResourceManager::GetString("RACE3_PREFIX") + "raceSelect.ogg"; return msg;
-	case SNDMGR_VOICE_ROM_RACESELECT:	msg = (*((CBotf2App*)AfxGetApp())->GetPath()) + "Sounds\\" + CResourceManager::GetString("RACE4_PREFIX") + "raceSelect.ogg"; return msg;
-	case SNDMGR_VOICE_CAR_RACESELECT:	msg = (*((CBotf2App*)AfxGetApp())->GetPath()) + "Sounds\\" + CResourceManager::GetString("RACE5_PREFIX") + "raceSelect.ogg"; return msg;
-	case SNDMGR_VOICE_DOM_RACESELECT:	msg = (*((CBotf2App*)AfxGetApp())->GetPath()) + "Sounds\\" + CResourceManager::GetString("RACE6_PREFIX") + "raceSelect.ogg"; return msg;
+	case SNDMGR_VOICE_FED_RACESELECT:	msg = CIOData::GetInstance()->GetAppPath() + "Sounds\\" + CResourceManager::GetString("RACE1_PREFIX") + "raceSelect.ogg"; return msg;
+	case SNDMGR_VOICE_FER_RACESELECT:	msg = CIOData::GetInstance()->GetAppPath() + "Sounds\\" + CResourceManager::GetString("RACE2_PREFIX") + "raceSelect.ogg"; return msg;
+	case SNDMGR_VOICE_KLI_RACESELECT:	msg = CIOData::GetInstance()->GetAppPath() + "Sounds\\" + CResourceManager::GetString("RACE3_PREFIX") + "raceSelect.ogg"; return msg;
+	case SNDMGR_VOICE_ROM_RACESELECT:	msg = CIOData::GetInstance()->GetAppPath() + "Sounds\\" + CResourceManager::GetString("RACE4_PREFIX") + "raceSelect.ogg"; return msg;
+	case SNDMGR_VOICE_CAR_RACESELECT:	msg = CIOData::GetInstance()->GetAppPath() + "Sounds\\" + CResourceManager::GetString("RACE5_PREFIX") + "raceSelect.ogg"; return msg;
+	case SNDMGR_VOICE_DOM_RACESELECT:	msg = CIOData::GetInstance()->GetAppPath() + "Sounds\\" + CResourceManager::GetString("RACE6_PREFIX") + "raceSelect.ogg"; return msg;
 
 	// Oberflächengeräusche
-	case SNDMGR_SOUND_MAINMENU:			return (std::string)(*((CBotf2App*)AfxGetApp())->GetPath()) + "Sounds\\MouseOver.ogg";
-	case SNDMGR_SOUND_ENDOFROUND:		return (std::string)(*((CBotf2App*)AfxGetApp())->GetPath()) + "Sounds\\RoundEnd.ogg";
-	case SNDMGR_SOUND_SHIPTARGET:		return (std::string)(*((CBotf2App*)AfxGetApp())->GetPath()) + "Sounds\\affirmative.ogg";
-	case SNDMGR_SOUND_ERROR:			return (std::string)(*((CBotf2App*)AfxGetApp())->GetPath()) + "Sounds\\error.ogg";
+	case SNDMGR_SOUND_MAINMENU:			return (std::string)CIOData::GetInstance()->GetAppPath() + "Sounds\\MouseOver.ogg";
+	case SNDMGR_SOUND_ENDOFROUND:		return (std::string)CIOData::GetInstance()->GetAppPath() + "Sounds\\RoundEnd.ogg";
+	case SNDMGR_SOUND_SHIPTARGET:		return (std::string)CIOData::GetInstance()->GetAppPath() + "Sounds\\affirmative.ogg";
+	case SNDMGR_SOUND_ERROR:			return (std::string)CIOData::GetInstance()->GetAppPath() + "Sounds\\error.ogg";
 
 	// Nachrichten
 	case SNDMGR_MSG_BATTLELOST:			msg = "battlelost"; break;
@@ -87,7 +97,7 @@ std::string CSoundManager::GetPathName(SNDMGR_VALUE nSound, network::RACE nRace)
 		prefix = prefixes[nRace-1];
 	}
 
-	return (std::string)(*((CBotf2App*)AfxGetApp())->GetPath()) + "Sounds\\" + prefix + msg;
+	return (std::string)CIOData::GetInstance()->GetAppPath() + "Sounds\\" + prefix + msg;
 }
 
 SNDMGR_VALUE CSoundManager::GetRaceMusic(network::RACE race)

@@ -257,12 +257,12 @@ afx_msg void CChooseRacePage::OnChooseRace(UINT nID)
 				// Soundwiedergabe für die Rasse
 				switch (i + 1)
 				{
-				case HUMAN: m_pParent->GetServerDocument()->m_pSoundManager->PlaySound(SNDMGR_VOICE_FED_RACESELECT); break;
-				case FERENGI: m_pParent->GetServerDocument()->m_pSoundManager->PlaySound(SNDMGR_VOICE_FER_RACESELECT); break;
-				case KLINGON: m_pParent->GetServerDocument()->m_pSoundManager->PlaySound(SNDMGR_VOICE_KLI_RACESELECT); break;
-				case ROMULAN: m_pParent->GetServerDocument()->m_pSoundManager->PlaySound(SNDMGR_VOICE_ROM_RACESELECT); break;
-				case CARDASSIAN: m_pParent->GetServerDocument()->m_pSoundManager->PlaySound(SNDMGR_VOICE_CAR_RACESELECT); break;
-				case DOMINION: m_pParent->GetServerDocument()->m_pSoundManager->PlaySound(SNDMGR_VOICE_DOM_RACESELECT); break;
+				case HUMAN:		CSoundManager::GetInstance()->PlaySound(SNDMGR_VOICE_FED_RACESELECT); break;
+				case FERENGI:	CSoundManager::GetInstance()->PlaySound(SNDMGR_VOICE_FER_RACESELECT); break;
+				case KLINGON:	CSoundManager::GetInstance()->PlaySound(SNDMGR_VOICE_KLI_RACESELECT); break;
+				case ROMULAN:	CSoundManager::GetInstance()->PlaySound(SNDMGR_VOICE_ROM_RACESELECT); break;
+				case CARDASSIAN:CSoundManager::GetInstance()->PlaySound(SNDMGR_VOICE_CAR_RACESELECT); break;
+				case DOMINION:	CSoundManager::GetInstance()->PlaySound(SNDMGR_VOICE_DOM_RACESELECT); break;
 				}
 			}
 		}

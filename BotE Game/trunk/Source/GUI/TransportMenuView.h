@@ -43,6 +43,7 @@ private:
 	Bitmap* bg_transportmenu;			// Transportsmenü
 
 	// Buttons
+	CArray<CMyButton*> m_TransportButtons;	///< die Buttons zum Ändern der Mengen im im Transportmenü
 
 	// Hier die Variablen, wenn wir in der Transportansicht sind
 	BYTE m_byTroopNumberInSystem;		// Nummer der Truppe im Feld der Truppen im System
@@ -61,6 +62,7 @@ public:
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 	afx_msg void OnLButtonDblClk(UINT nFlags, CPoint point);
 	afx_msg void OnRButtonDown(UINT nFlags, CPoint point);
+	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
 };
 
 

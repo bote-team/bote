@@ -17,12 +17,12 @@
 #include "System\System.h"
 #include <map>
 #include <utility>
+#include "IOData.h"
 
 // forward declaration
 class CMainDlg;
 class CNetworkHandler;
 class CStarmap;
-class CIniLoader;
 class CGraphicPool;
 class CRaceController;
 class CMajor;
@@ -35,8 +35,6 @@ protected: // Nur aus Serialisierung erzeugen
 	DECLARE_DYNCREATE(CBotf2Doc)
 
 	// Attribute
-	CSoundManager *m_pSoundManager;		///< der Soundmanager für BotE
-	CIniLoader *m_pIniLoader;			///< Objekt verwaltet die ini Datei
 	CGraphicPool *m_pGraphicPool;		///< Objekt verwaltet Grafiken für BotE
 	USHORT m_iRound;					///< aktuelle Rundenanzahl
 	float m_fDifficultyLevel;			///< der Schwierigkeitsgrad eines Spiels
@@ -208,6 +206,8 @@ public:
 	/// Funktion gibt die Rassen-ID der lokalen Spielerrasse zurück.
 	/// @return Zeiger auf Majorrace-Rassenobjekt
 	CString GetPlayersRaceID(void) const;
+
+	bool m_bGameOver;	///< ist das Spiel
 
 protected:
 	// Private Funktionen die bei der NextRound Berechnung aufgerufen werden. Dadurch wird die NextRound Funktion
