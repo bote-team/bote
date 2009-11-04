@@ -515,26 +515,30 @@ void CShipAI::DoMakeFleet(int index)
 						// das hinzuzufügende Schiff darf kein individuelles Ziel haben
 						if (m_pDoc->m_ShipArray.GetAt(i).GetPath()->GetSize() == NULL)
 						{
-							// wenn sich das Führungsschiff tarnen kann, dann muss das hinzuzufügende Schiff sich auch tarnen können
-							if ((ship->GetStealthPower() > 3 && m_pDoc->m_ShipArray.GetAt(i).GetStealthPower() > 3) || (ship->GetStealthPower() <= 3 && m_pDoc->m_ShipArray.GetAt(i).GetStealthPower() <= 3))
+							// der Tarnstatus muss gleich sein (also keine getarnten und ungetarnte Schiffe in eine Flotte)
+							if (ship->GetCloak() == m_pDoc->m_ShipArray.GetAt(i).GetCloak())
 							{
-								// es muss sich bei beiden Schiffen um Kriegsschiffe handeln oder bei beiden Schiffen um Transporter oder bei beiden
-								// Schiffen um Kolonieschiffe
-								if ((!IS_NONCOMBATSHIP(ship->GetShipType()) && !IS_NONCOMBATSHIP(m_pDoc->m_ShipArray.GetAt(i).GetShipType()))
-									||(ship->GetShipType() == TRANSPORTER && m_pDoc->m_ShipArray.GetAt(i).GetShipType() == TRANSPORTER && m_pDoc->m_ShipArray.GetAt(i).GetCurrentOrder() < BUILD_OUTPOST)
-									||(ship->GetShipType() == COLONYSHIP && m_pDoc->m_ShipArray.GetAt(i).GetShipType() == COLONYSHIP && m_pDoc->m_ShipArray.GetAt(i).GetCurrentOrder() < COLONIZE))
+								// wenn sich das Führungsschiff tarnen kann, dann muss das hinzuzufügende Schiff sich auch tarnen können
+								if ((ship->GetStealthPower() > 3 && m_pDoc->m_ShipArray.GetAt(i).GetStealthPower() > 3) || (ship->GetStealthPower() <= 3 && m_pDoc->m_ShipArray.GetAt(i).GetStealthPower() <= 3))
 								{
-									ship->CreateFleet();
-									// hat das hinzuzufügende Schiff eine eigene Flotte
-									if (m_pDoc->m_ShipArray.GetAt(i).GetFleet() != NULL)
+									// es muss sich bei beiden Schiffen um Kriegsschiffe handeln oder bei beiden Schiffen um Transporter oder bei beiden
+									// Schiffen um Kolonieschiffe
+									if ((!IS_NONCOMBATSHIP(ship->GetShipType()) && !IS_NONCOMBATSHIP(m_pDoc->m_ShipArray.GetAt(i).GetShipType()))
+										||(ship->GetShipType() == TRANSPORTER && m_pDoc->m_ShipArray.GetAt(i).GetShipType() == TRANSPORTER && m_pDoc->m_ShipArray.GetAt(i).GetCurrentOrder() < BUILD_OUTPOST)
+										||(ship->GetShipType() == COLONYSHIP && m_pDoc->m_ShipArray.GetAt(i).GetShipType() == COLONYSHIP && m_pDoc->m_ShipArray.GetAt(i).GetCurrentOrder() < COLONIZE))
 									{
-										// Schiffe aus der Flotte der neuen Flotte hinzufügen
-										for (int n = 0; n < m_pDoc->m_ShipArray.GetAt(i).GetFleet()->GetFleetSize(); )
-											ship->GetFleet()->AddShipToFleet(m_pDoc->m_ShipArray.GetAt(i).GetFleet()->RemoveShipFromFleet(n));
-										m_pDoc->m_ShipArray.GetAt(i).CheckFleet();								
+										ship->CreateFleet();
+										// hat das hinzuzufügende Schiff eine eigene Flotte
+										if (m_pDoc->m_ShipArray.GetAt(i).GetFleet() != NULL)
+										{
+											// Schiffe aus der Flotte der neuen Flotte hinzufügen
+											for (int n = 0; n < m_pDoc->m_ShipArray.GetAt(i).GetFleet()->GetFleetSize(); )
+												ship->GetFleet()->AddShipToFleet(m_pDoc->m_ShipArray.GetAt(i).GetFleet()->RemoveShipFromFleet(n));
+											m_pDoc->m_ShipArray.GetAt(i).CheckFleet();								
+										}
+										ship->GetFleet()->AddShipToFleet(m_pDoc->m_ShipArray.GetAt(i));
+										m_pDoc->m_ShipArray.RemoveAt(i--);							
 									}
-									ship->GetFleet()->AddShipToFleet(m_pDoc->m_ShipArray.GetAt(i));
-									m_pDoc->m_ShipArray.RemoveAt(i--);							
 								}
 							}
 						}

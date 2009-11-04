@@ -111,6 +111,8 @@ void CEmpireMenuView::OnDraw(CDC* dc)
 		DrawEmpireSystemMenue(&g);
 	else if (m_iSubMenu == 2)
 		DrawEmpireShipMenue(&g);
+
+	g.ReleaseHDC(pDC->GetSafeHdc());
 }
 
 void CEmpireMenuView::OnInitialUpdate()

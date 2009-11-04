@@ -88,6 +88,8 @@ void CIntelMenuView::OnDraw(CDC* dc)
 	
 	// Buttons am unteren Bildschirmrand zeichnen
 	DrawIntelMainButtons(&g, pMajor);
+
+	g.ReleaseHDC(pDC->GetSafeHdc());
 }
 
 // CIntelMenuView diagnostics

@@ -97,6 +97,8 @@ void CDiplomacyBottomView::OnDraw(CDC* dc)
 	fontBrush.SetColor(Color(200,200,250));
 	fontFormat.SetFormatFlags(!StringFormatFlagsNoWrap);
 	g.DrawString(m_strText.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(40, 100, rect.right-250, rect.bottom), &fontFormat, &fontBrush);
+
+	g.ReleaseHDC(pDC->GetSafeHdc());
 }
 
 // CDiplomacyBottomView diagnostics

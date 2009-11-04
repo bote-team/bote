@@ -104,6 +104,8 @@ void CSystemMenuView::OnDraw(CDC* dc)
 	else if (m_bySubMenu == 4)
 		DrawSystemTradeMenue(&g);
 	DrawButtonsUnderSystemView(&g);
+
+	g.ReleaseHDC(pDC->GetSafeHdc());
 }
 
 
@@ -2074,7 +2076,8 @@ void CSystemMenuView::DrawSystemProduction(Graphics* g)
 	
 	rect = RectF(950,155,100,25);
 	// Zusätzliche Ressourcen aus den Startsystemen von Ressourcenrouten ermitteln
-	ULONG resFromRoutes[5] = {0};
+	ULONG resFromRoutes[DILITHIUM + 1] = {0};
+	ULONG nResInDistSys[DILITHIUM + 1]	= {0};
 	for (int j = 0; j < pMajor->GetEmpire()->GetSystemList()->GetSize(); j++)
 		if (pMajor->GetEmpire()->GetSystemList()->GetAt(j).ko != p)
 		{
@@ -2091,21 +2094,26 @@ void CSystemMenuView::DrawSystemProduction(Graphics* g)
 					BYTE res = pDoc->m_System[ko.x][ko.y].GetResourceRoutes()->GetAt(i).GetResource();
 					resFromRoutes[res] += pDoc->m_System[ko.x][ko.y].GetRessourceStore(res);
 				}
-		}				
+			// gilt nicht bei blockierten Systemen
+			if (pDoc->GetSystem(p).GetBlockade() == NULL)
+				for (int res = TITAN; res <= DILITHIUM; res++)
+					if (pDoc->GetSystem(ko).GetProduction()->GetResourceDistributor(res))
+						nResInDistSys[res] = pDoc->GetSystem(ko).GetRessourceStore(res);
+		}
 	
-	for (int res = TITAN; res <= IRIDIUM; res++)
+	for (int res = TITAN; res <= DILITHIUM; res++)
 	{
 		rect.Y += 25;
-		if (resFromRoutes[res] > 0)
+		if (nResInDistSys[res] > resFromRoutes[res] + pDoc->GetSystem(p).GetRessourceStore(res))
+			s.Format("[%i]", nResInDistSys[res]);
+		else if (resFromRoutes[res] > 0)
 			s.Format("(%i)",pDoc->GetSystem(p.x,p.y).GetRessourceStore(res) + resFromRoutes[res]);
 		else
 			s.Format("%i",pDoc->GetSystem(p.x,p.y).GetRessourceStore(res));
+
 		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), rect, &fontFormat, &fontBrush);
 	}
-	
-	rect = RectF(950,305,100,25);
-	s.Format("%i",pDoc->GetSystem(p.x,p.y).GetDilithiumStore());
-	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), rect, &fontFormat, &fontBrush);
+
 	rect.Y += 25;
 	s.Format("%i",pDoc->GetSystem(p.x,p.y).GetMoral());
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), rect, &fontFormat, &fontBrush);
@@ -2646,6 +2654,42 @@ void CSystemMenuView::DrawBuildingProduction(Graphics* g)
 			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), r, &fontFormat, &fontBrush);
 			r.Y += 22;
 		}
+		if (b->GetResourceDistributor(TITAN))
+		{
+			s.Format("%s - %s\n", CResourceManager::GetString("RESOURCE_DISTRIBUTOR"), CResourceManager::GetString("TITAN"));
+			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), r, &fontFormat, &fontBrush);
+			r.Y += 22;
+		}
+		if (b->GetResourceDistributor(DEUTERIUM))
+		{
+			s.Format("%s - %s\n", CResourceManager::GetString("RESOURCE_DISTRIBUTOR"), CResourceManager::GetString("DEUTERIUM"));
+			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), r, &fontFormat, &fontBrush);
+			r.Y += 22;
+		}
+		if (b->GetResourceDistributor(DURANIUM))
+		{
+			s.Format("%s - %s\n", CResourceManager::GetString("RESOURCE_DISTRIBUTOR"), CResourceManager::GetString("DURANIUM"));
+			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), r, &fontFormat, &fontBrush);
+			r.Y += 22;
+		}
+		if (b->GetResourceDistributor(CRYSTAL))
+		{
+			s.Format("%s - %s\n", CResourceManager::GetString("RESOURCE_DISTRIBUTOR"), CResourceManager::GetString("CRYSTAL"));
+			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), r, &fontFormat, &fontBrush);
+			r.Y += 22;
+		}
+		if (b->GetResourceDistributor(IRIDIUM))
+		{
+			s.Format("%s - %s\n", CResourceManager::GetString("RESOURCE_DISTRIBUTOR"), CResourceManager::GetString("IRIDIUM"));
+			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), r, &fontFormat, &fontBrush);
+			r.Y += 22;
+		}
+		if (b->GetResourceDistributor(DILITHIUM))
+		{
+			s.Format("%s - %s\n", CResourceManager::GetString("RESOURCE_DISTRIBUTOR"), CResourceManager::GetString("DERITIUM"));
+			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), r, &fontFormat, &fontBrush);
+			r.Y += 22;
+		}
 		
 		// Ab hier die Vorraussetzungen
 		fontBrush.SetColor(markColor);
@@ -2653,6 +2697,13 @@ void CSystemMenuView::DrawBuildingProduction(Graphics* g)
 		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), r, &fontFormat, &fontBrush);
 		r.Y += 22;
 		fontBrush.SetColor(normalColor);
+		// benötigte Systeme
+		if (b->GetNeededSystems() != 0)
+		{
+			s.Format("%s: %i\n", CResourceManager::GetString("NEEDED_SYSTEMS"), b->GetNeededSystems());
+			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), r, &fontFormat, &fontBrush);
+			r.Y += 22;
+		}		
 		// max X mal von ID pro Imperium
 		if (b->GetMaxInEmpire().Number > 0 && b->GetMaxInEmpire().RunningNumber == b->GetRunningNumber())
 		{
@@ -3475,7 +3526,7 @@ BOOL CSystemMenuView::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 				m_byStartList++;
 			if (BuildList[m_iClickedOn+1].runningNumber != 0)
 				m_iClickedOn++;
-			Invalidate();
+			Invalidate(FALSE);
 		}
 		else if (zDelta > 0)
 		{
@@ -3483,7 +3534,7 @@ BOOL CSystemMenuView::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 				m_iClickedOn--;
 			if (m_byStartList > 0)
 				m_byStartList--;
-			Invalidate();
+			Invalidate(FALSE);
 		}
 	}
 
@@ -3512,21 +3563,31 @@ void CSystemMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 	// Wenn wir uns in der Systemansicht befinden
 	CPoint p = pDoc->GetKO();
 	// Baulisteneintrag hinzufügen
-	int RunningNumber;
 	for (int i = 1; i < 50; i++)
 	{
 		if (BuildList[i].rect.PtInRect(point) && m_bySubMenu == 0)
 		{
-			if (BuildList[i].runningNumber < 0)
-				RunningNumber = (BuildList[i].runningNumber)*(-1);
+			short nID = BuildList[i].runningNumber;
+
+			// Die Struktur BuildList löschen, alle werte auf 0
+			for (int j = 0; j < 50; j++)
+			{
+				BuildList[j].rect.SetRect(0,0,0,0);
+				BuildList[j].runningNumber = 0;
+			}
+
+			int RunningNumber;
+			if (nID < 0)
+				RunningNumber = nID * (-1);
 			else
-				RunningNumber = BuildList[i].runningNumber;
-			if (pDoc->m_System[p.x][p.y].GetAssemblyList()->MakeEntry(BuildList[i].runningNumber, p, pDoc->m_System))
+				RunningNumber = nID;
+			
+			if (pDoc->m_System[p.x][p.y].GetAssemblyList()->MakeEntry(nID, p, pDoc->m_System))
 			{
 				// Baulistencheck machen, wenn wir kein Schiff reingesetzt haben. 
 				// Den Check nur machen, wenn wir ein Update oder ein Gebäude welches eine Maxanzahl voraussetzt
 				// hinzufügen wollen
-				if (RunningNumber < 10000 && (BuildList[i].runningNumber < 0
+				if (RunningNumber < 10000 && (nID < 0
 					|| pDoc->GetBuildingInfo(RunningNumber).GetMaxInEmpire().Number > 0
 					||  pDoc->GetBuildingInfo(RunningNumber).GetMaxInSystem().Number > 0))
 				{
@@ -3547,16 +3608,17 @@ void CSystemMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 					else
 						pDoc->m_System[p.x][p.y].AssemblyListCheck(&pDoc->BuildingInfo,&pDoc->m_GlobalBuildings);
 				}
-				
 				// Wenn wir den Baueintrag setzen konnten, also hier in der if-Bedingung sind, dann CalculateVariables() aufrufen
 				pDoc->m_System[p.x][p.y].CalculateVariables(&pDoc->BuildingInfo, pMajor->GetEmpire()->GetResearch()->GetResearchInfo(),pDoc->m_Sector[p.x][p.y].GetPlanets(), pMajor, CTrade::GetMonopolOwner());
-				m_iClickedOn = i;
-				Invalidate();
-				break;
+				m_iClickedOn = i;				
+
+				Invalidate(FALSE);				
 			}
 			// Baulisteneintrag konnte aufgrund von Ressourcenmangel nicht gesetzt werden
 			else
 				CSoundManager::GetInstance()->PlaySound(SNDMGR_SOUND_ERROR);
+			
+			break;
 		}
 	}
 	// Baulisteneintrag wieder entfernen
@@ -3675,10 +3737,9 @@ void CSystemMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 				}
 			}
 			//PlaySound(*((CBotf2App*)AfxGetApp())->GetPath() + "Sounds\\ComputerBeep1.wav", NULL, SND_FILENAME | SND_ASYNC);
-			Invalidate();
+			Invalidate(FALSE);
 			break;
 		}
-
 	
 	CMainBaseView::OnLButtonDblClk(nFlags, point);
 }
@@ -3790,7 +3851,7 @@ void CSystemMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 				m_byStartList++;
 			if (BuildList[m_iClickedOn+1].runningNumber != 0)
 				m_iClickedOn++;
-			Invalidate();
+			Invalidate(FALSE);
 		}
 		else if (nChar == VK_UP)
 		{
@@ -3798,23 +3859,33 @@ void CSystemMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 				m_iClickedOn--;
 			if (m_byStartList > 0)
 				m_byStartList--;
-			Invalidate();
+			Invalidate(FALSE);
 		}
 		// Mit der Entertaste können wir den Auftrag in die Bauliste übernehmen
 		else if (nChar == VK_RETURN && m_iClickedOn != 0 && BuildList[m_iClickedOn].runningNumber != 0)
 		{
 			int i = m_iClickedOn;
+			short nID = BuildList[i].runningNumber;
+			
+			// Die Struktur BuildList löschen, alle Werte auf 0
+			for (int j = 0; j < 50; j++)
+			{
+				BuildList[j].rect.SetRect(0,0,0,0);
+				BuildList[j].runningNumber = 0;
+			}
+
 			int RunningNumber;
-			if (BuildList[i].runningNumber < 0)
-				RunningNumber = (BuildList[i].runningNumber)*(-1);
+			if (nID < 0)
+				RunningNumber = nID * (-1);
 			else
-				RunningNumber = BuildList[i].runningNumber;
-			if (pDoc->m_System[p.x][p.y].GetAssemblyList()->MakeEntry(BuildList[i].runningNumber, p, pDoc->m_System))
+				RunningNumber = nID;
+			
+			if (pDoc->m_System[p.x][p.y].GetAssemblyList()->MakeEntry(nID, p, pDoc->m_System))
 			{
 				// Baulistencheck machen, wenn wir kein Schiff reingesetzt haben. 
 				// Den Check nur machen, wenn wir ein Update oder ein Gebäude welches eine Maxanzahl voraussetzt
 				// hinzufügen wollen
-				if (RunningNumber < 10000 && (BuildList[i].runningNumber < 0
+				if (RunningNumber < 10000 && (nID < 0
 					|| pDoc->GetBuildingInfo(RunningNumber).GetMaxInEmpire().Number > 0
 					||  pDoc->GetBuildingInfo(RunningNumber).GetMaxInSystem().Number > 0))
 				{
@@ -3835,8 +3906,7 @@ void CSystemMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 				
 				// Wenn wir den Baueintrag setzen konnten, also hier in der if-Bedingung sind, dann CalculateVariables() aufrufen
 				pDoc->m_System[p.x][p.y].CalculateVariables(&pDoc->BuildingInfo, pMajor->GetEmpire()->GetResearch()->GetResearchInfo(),pDoc->m_Sector[p.x][p.y].GetPlanets(), pMajor, CTrade::GetMonopolOwner());
-				m_iClickedOn = i;
-				Invalidate();
+				Invalidate(FALSE);
 			}
 		}
 	}

@@ -603,7 +603,7 @@ void CDiplomacyController::ReceiveToMajor(CBotf2Doc* pDoc, CMajor* pToMajor, CDi
 						s = CResourceManager::GetString("WE_ACCEPT_WARPACT", FALSE, pWarpactEnemy->GetRaceName(), ((CMajor*)pFromRace)->GetEmpireNameWithAssignedArticle());
 						message.GenerateMessage(s, DIPLOMACY, "", 0, 0);
 						pToMajor->GetEmpire()->AddMessage(message);
-						s = CResourceManager::GetString("OUR_WARPACT_ACCEPT", FALSE, pToMajor->GetEmpireNameWithArticle(), pWarpactEnemy->GetRaceName());
+						s = CResourceManager::GetString("OUR_WARPACT_ACCEPT", TRUE, pToMajor->GetEmpireNameWithArticle(), pWarpactEnemy->GetRaceName());
 						message.GenerateMessage(s, DIPLOMACY, "", 0, 0, 2);
 						((CMajor*)pFromRace)->GetEmpire()->AddMessage(message);
 							
@@ -681,26 +681,42 @@ void CDiplomacyController::ReceiveToMajor(CBotf2Doc* pDoc, CMajor* pToMajor, CDi
 							}
 						}
 					}
-					// Wir haben den Kriegspakt abgelehnt
-					else if (answer.m_nAnswerStatus == DECLINED)
-					{
-						s = CResourceManager::GetString("WE_DECLINE_WARPACT", FALSE, ((CMajor*)pFromRace)->GetEmpireNameWithAssignedArticle(), pWarpactEnemy->GetRaceName());
-						message.GenerateMessage(s, DIPLOMACY, "", 0, 0);
-						pToMajor->GetEmpire()->AddMessage(message);
-						s = CResourceManager::GetString("OUR_WARPACT_DECLINE", TRUE, pToMajor->GetEmpireNameWithArticle(), pWarpactEnemy->GetRaceName());
-						message.GenerateMessage(s, DIPLOMACY, "", 0, 0, 2);
-						((CMajor*)pFromRace)->GetEmpire()->AddMessage(message);
-						
-						// Beziehungsverschlechterung
-						pToMajor->SetRelation(pFromRace->GetRaceID(), -(USHORT)(rand()%(abs(answer.m_nType)))/2);
-						pFromRace->SetRelation(pToMajor->GetRaceID(), -(USHORT)(rand()%(abs(answer.m_nType))));
-					}
-					// auf unseren Kriegspakt wurde nicht reagiert
+					// das Angebot wurde abgelehnt bzw. ignoriert
 					else
 					{
-						s = CResourceManager::GetString("NOT_REACTED_WARPACT", TRUE, pToMajor->GetEmpireNameWithArticle(), pWarpactEnemy->GetRaceName());
-						message.GenerateMessage(s, DIPLOMACY, "", 0, 0);
-						((CMajor*)pFromRace)->GetEmpire()->AddMessage(message);				
+						// Wir haben den Kriegspakt abgelehnt
+						if (answer.m_nAnswerStatus == DECLINED)
+						{
+							s = CResourceManager::GetString("WE_DECLINE_WARPACT", FALSE, ((CMajor*)pFromRace)->GetEmpireNameWithAssignedArticle(), pWarpactEnemy->GetRaceName());
+							message.GenerateMessage(s, DIPLOMACY, "", 0, 0);
+							pToMajor->GetEmpire()->AddMessage(message);
+							s = CResourceManager::GetString("OUR_WARPACT_DECLINE", TRUE, pToMajor->GetEmpireNameWithArticle(), pWarpactEnemy->GetRaceName());
+							message.GenerateMessage(s, DIPLOMACY, "", 0, 0, 2);
+							((CMajor*)pFromRace)->GetEmpire()->AddMessage(message);
+							
+							// Beziehungsverschlechterung
+							pToMajor->SetRelation(pFromRace->GetRaceID(), -(USHORT)(rand()%(abs(answer.m_nType)))/2);
+							pFromRace->SetRelation(pToMajor->GetRaceID(), -(USHORT)(rand()%(abs(answer.m_nType))));
+						}
+						// auf unseren Kriegspakt wurde nicht reagiert
+						else
+						{
+							s = CResourceManager::GetString("NOT_REACTED_WARPACT", TRUE, pToMajor->GetEmpireNameWithArticle(), pWarpactEnemy->GetRaceName());
+							message.GenerateMessage(s, DIPLOMACY, "", 0, 0);
+							((CMajor*)pFromRace)->GetEmpire()->AddMessage(message);							
+						}
+
+						// Wenn wir das Angebot abgelehnt haben, dann bekommt die Majorrace, die es mir gemacht hat
+						// ihre Ressourcen und ihre Credits wieder zurück, sofern sie es mir als Anreiz mit zum Vertrags-
+						// angebot gemacht haben
+						((CMajor*)pFromRace)->GetEmpire()->SetLatinum(answer.m_nCredits);
+						for (int res = TITAN; res <= DILITHIUM; res++)
+						{
+							CPoint pt = answer.m_ptKO;
+							if (pt != CPoint(-1,-1))
+								if (pDoc->GetSystem(pt).GetOwnerOfSystem() == pFromRace->GetRaceID())
+									pDoc->GetSystem(pt).SetRessourceStore(res, answer.m_nResources[res]);
+						}
 					}
 				}
 			}

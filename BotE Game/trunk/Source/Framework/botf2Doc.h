@@ -158,7 +158,7 @@ public:
 	/// Funktion veranlasst die Views zu jeder neuen Runde ihr Aufgaben zu erledigen, welche zu jeder neuen Runde ausgeführt
 	/// werden müssen. Es werden zum Beispiel Variablen wieder zurückgesetzt.
 	void DoViewWorkOnNewRound(void);
-	
+		
 	void PrepareData(void);						// generiert ein neues Spiel
 	void NextRound(void);						// zur Nächsten Runde voranschreiten
 	void ApplyShipsAtStartup(void);				// Die Schiffe zum Start anlegen, übersichtshalber nicht alles in NewDocument
@@ -216,7 +216,7 @@ protected:
 	/// Funktion gibt einen Zeiger auf die lokale Spielerrasse zurück.
 	/// @return Zeiger auf Majorrace-Rassenobjekt
 	CMajor* GetPlayersRace(void) const;
-	
+			
 	/// Diese Funktion führt allgemeine Berechnung durch, die immer zu Beginn der NextRound-Calculation stattfinden
 	/// müssen. So werden z.B. alte Nachrichten gelöscht, die Statistiken berechnet usw..
 	void CalcPreDataForNextRound();	

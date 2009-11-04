@@ -20,6 +20,7 @@ CTradeRoute CGalaxyMenuView::m_TradeRoute;
 BOOLEAN CGalaxyMenuView::m_bDrawResourceRoute = FALSE;
 CResourceRoute CGalaxyMenuView::m_ResourceRoute;
 BOOLEAN CGalaxyMenuView::m_bShipMove = FALSE;
+CMajor* CGalaxyMenuView::m_pPlayersRace = NULL;
 
 /////////////////////////////////////////////////////////////////////////////
 // CGalaxyMenuView
@@ -76,10 +77,6 @@ void CGalaxyMenuView::OnNewRound()
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT_VALID(pDoc);
 	
-	CString sID = pDoc->GetPlayersRaceID();
-	m_pPlayersRace = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(sID));
-	ASSERT(m_pPlayersRace);
-		
 	// Bei jeder neuen Runde die Galaxiekarte neu generieren
 	GenerateGalaxyMap();
 		
@@ -109,14 +106,14 @@ void CGalaxyMenuView::OnDraw(CDC* dc)
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT_VALID(pDoc);
 
+	if (!pDoc->m_bDataReceived)
+		return;
+
 	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
 	if (!pMajor)
 		return;
 
-	if (!pDoc->m_bDataReceived)
-		return;
-		
 	// ZU ERLEDIGEN: Hier Code zum Zeichnen der ursprünglichen Daten hinzufügen
 	this->SetFocus();
 	
@@ -446,8 +443,11 @@ void CGalaxyMenuView::OnDraw(CDC* dc)
 			m_ResourceRoute.DrawResourceRoute(pDC, pDoc->GetKO(), pMajor);
 	}
 	
+	pOldPen->DeleteObject();
+	
 	// aktuelle Scrollposition immer merken
-	pDoc->m_ptScrollPoint = GetScrollPosition();	
+	pDoc->m_ptScrollPoint = GetScrollPosition();
+	g.ReleaseHDC(pDC.GetSafeHdc());	
 }
 
 void CGalaxyMenuView::OnInitialUpdate()
@@ -490,12 +490,28 @@ void CGalaxyMenuView::OnInitialUpdate()
 BOOL CGalaxyMenuView::OnScroll(UINT nScrollCode, UINT nPos, BOOL bDoScroll)
 {
 	// TODO: Add your specialized code here and/or call the base class
+	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	ASSERT(pDoc);
+
+	if (!pDoc->m_bDataReceived)
+		return FALSE;
+	if (m_pPlayersRace == NULL)
+		return FALSE;
+	
 	return CScrollView::OnScroll(nScrollCode, nPos, bDoScroll);
 }
 
 BOOL CGalaxyMenuView::OnScrollBy(CSize sizeScroll, BOOL bDoScroll)
 {
 	// TODO: Add your specialized code here and/or call the base class
+	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	ASSERT(pDoc);
+
+	if (!pDoc->m_bDataReceived)
+		return FALSE;
+	if (m_pPlayersRace == NULL)
+		return FALSE;
+	
 	CRect client;
 	GetClientRect(&client);
 	InvalidateRect(&client, FALSE);	
@@ -506,6 +522,12 @@ void CGalaxyMenuView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
 {
 	// TODO: Add your specialized code here and/or call the base class
 	// ScrollSizes auf Gesamtgröße inkl. Zoom setzen
+	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	ASSERT(pDoc);
+	
+	if (!pDoc->m_bDataReceived)
+		return;
+	
 	CSize size;
 	size.cx = (LONG)(STARMAP_TOTALWIDTH * m_fZoom);
 	size.cy = (LONG)(STARMAP_TOTALHEIGHT * m_fZoom);
@@ -706,6 +728,8 @@ void CGalaxyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 	}
 	else
 	{
+		if (pMajor->GetStarmap()->GetClickedSector(pt) == struct::Sector(-1,-1))
+			return;
 		CPoint target(pMajor->GetStarmap()->GetClickedSector(pt).x,pMajor->GetStarmap()->GetClickedSector(pt).y);
 		// Wenn wir ein Schiff bewegen wollen und der Kurs größer als eins ist, dann neues Ziel setzen
 		// Oder wir brechen den Kurs ab, indem wir auf den aktuellen Sektor klicken
@@ -1126,7 +1150,7 @@ void CGalaxyMenuView::GenerateGalaxyMap()
 		delete m_pGalaxyBackground;
 		m_pGalaxyBackground = NULL;
 	}
-	
+		
 	CString sAppPath = CIOData::GetInstance()->GetAppPath();
 	CString prefix = pMajor->GetPrefix();
 	CString filePath = sAppPath + "Graphics\\Galaxies\\" + prefix + "galaxy.jpg";
@@ -1230,7 +1254,8 @@ void CGalaxyMenuView::GenerateGalaxyMap()
 			}
 			
 			pDoc->GetSector(x,y).DrawShipSymbolInSector(g, pDoc, m_pPlayersRace);
-		}
+		}	
+
 	delete g;
 
 	// Thumbnail generieren
@@ -1250,7 +1275,7 @@ void CGalaxyMenuView::GenerateGalaxyMap()
 	img.SetAlphaChannelValue(120);
 	m_pThumbnail = FCWin32::GDIPlus_CreateBitmap(img);
 	img.Destroy();
-
+	
 	// aufräumen
 	for (map<CString, Bitmap*>::const_iterator it = ownerMark.begin(); it != ownerMark.end(); it++)
 		delete it->second;

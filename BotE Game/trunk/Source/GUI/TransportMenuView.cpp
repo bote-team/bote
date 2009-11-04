@@ -68,6 +68,8 @@ void CTransportMenuView::OnDraw(CDC* dc)
 	// ***************************** DIE SCHIFFSTRANSPORT ANSICHT ZEICHNEN **********************************
 	DrawTransportMenue(&g);
 	// ************** DIE SCHIFFSDESIGN ANSICHT ZEICHNEN ist hier zu Ende **************
+
+	g.ReleaseHDC(pDC->GetSafeHdc());
 }
 
 

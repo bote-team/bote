@@ -107,6 +107,7 @@ void CIntelBottomView::OnDraw(CDC* dc)
 			g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(40, 100, r.right-250, r.bottom-20), &fontFormat, &fontBrush);
 		}			
 	}
+	g.ReleaseHDC(pDC->GetSafeHdc());
 }
 
 // CIntelBottomView diagnostics

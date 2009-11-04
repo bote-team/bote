@@ -5,8 +5,6 @@
 #include "botf2.h"
 #include "MainFrm.h"
 #include "botf2Doc.h"
-#include "Races\RaceController.h"
-#include "GalaxyMenuView.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -86,8 +84,7 @@ BEGIN_MESSAGE_MAP(CBotf2App, CWinApp)
 	ON_COMMAND(ID_FILE_NEW, CWinApp::OnFileNew)
 	ON_COMMAND(ID_FILE_OPEN, CWinApp::OnFileOpen)
 	ON_THREAD_MESSAGE(WM_UPDATEVIEWS, CBotf2App::UpdateViews)
-	ON_THREAD_MESSAGE(WM_SHOWCHATDLG, CBotf2App::ShowChatDlg)
-	ON_THREAD_MESSAGE(WM_INITVIEWS, CBotf2App::InitViews)
+	ON_THREAD_MESSAGE(WM_SHOWCHATDLG, CBotf2App::ShowChatDlg)	
 	ON_COMMAND(ID_CHAT, &CBotf2App::OnChat)
 END_MESSAGE_MAP()
 
@@ -155,7 +152,8 @@ BOOL CBotf2App::InitInstance()
 		IDR_MAINFRAME,
 		RUNTIME_CLASS(CBotf2Doc),
 		RUNTIME_CLASS(CMainFrame),       // Haupt-SDI-Rahmenfenster
-		RUNTIME_CLASS(CGalaxyMenuView));
+		NULL);
+	
 	AddDocTemplate(pDocTemplate);
 
 	// Befehlszeile parsen, um zu prüfen auf Standard-Umgebungsbefehle DDE, Datei offen
@@ -188,38 +186,10 @@ int CBotf2App::ExitInstance()
 // CBotf2App-Nachrichtenbehandlungsroutinen
 void CBotf2App::UpdateViews(WPARAM, LPARAM)
 {
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = GetDocument();
 	ASSERT(pDoc);
-	
-	CString sID = pDoc->GetPlayersRaceID();
-	CMajor* pMajor = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(sID));
-	ASSERT(pMajor);
 
-	// anzuzeigende View in neuer Runde auswählen
-	// Wenn EventScreens für den Spieler vorhanden sind, so werden diese angezeigt.
-	if (pMajor->GetEmpire()->GetEventMessages()->GetSize() > 0)
-	{
-		pDoc->GetMainFrame()->FullScreenMainView(true);
-		pDoc->GetMainFrame()->SelectMainView(EVENT_VIEW, pMajor->GetRaceID());
-	}
-	else
-	{
-		network::RACE client = pDoc->GetRaceCtrl()->GetMappedClientID(pMajor->GetRaceID());
-		pDoc->GetMainFrame()->FullScreenMainView(false);
-		pDoc->GetMainFrame()->SelectMainView(pDoc->m_iSelectedView[client], pMajor->GetRaceID());
-		pDoc->m_iSelectedView[client] = 0;
-	}
-	
-	// alle angezeigten Views neu zeichnen lassen
-	pDoc->UpdateAllViews(NULL);	
-}
-
-void CBotf2App::InitViews(WPARAM, LPARAM)
-{
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
-
-	// alles was zu jeder neuen Runde von den Views erledigt werden muss
-	pDoc->DoViewWorkOnNewRound();	
+	pDoc->DoViewWorkOnNewRound();
 }
 
 void CBotf2App::ShowChatDlg(WPARAM, LPARAM)

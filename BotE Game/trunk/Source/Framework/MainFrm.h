@@ -24,8 +24,7 @@
 #include "MultiSplitterView.h"
 
 class CMainFrame : public CFrameWnd
-{
-	
+{	
 protected: // Nur aus Serialisierung erzeugen
 	CMainFrame();
 	DECLARE_DYNCREATE(CMainFrame)	
@@ -106,6 +105,7 @@ protected:  // Eingebundene Elemente der Steuerleiste
 protected:
 	//{{AFX_MSG(CMainFrame)
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
+	afx_msg LRESULT UpdateViews(WPARAM, LPARAM);
 		// HINWEIS - An dieser Stelle werden Member-Funktionen vom Klassen-Assistenten eingefügt und entfernt.
 		//    Innerhalb dieser generierten Quelltextabschnitte NICHTS VERÄNDERN!
 	//}}AFX_MSG

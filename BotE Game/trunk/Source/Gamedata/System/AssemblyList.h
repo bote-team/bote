@@ -18,6 +18,7 @@ class CAssemblyList : public CObject
 {
 public:
 	DECLARE_SERIAL (CAssemblyList)
+	
 	// Standardkonstruktor
 	CAssemblyList(void);
 
@@ -125,7 +126,7 @@ private:
 // private Funktionen
 	/// Diese Funktion entfernt die benötigten Ressourcen aus dem lokalen Lager des Systems und falls Ressourcenrouten
 	/// bestehen auch die Ressourcen in den Startsystemen der Route. Aber nur falls dies auch notwendig sein sollte.
-	void RemoveResourcesFromStorages(USHORT entry, const CPoint &ko, CSystem systems[][STARMAP_SECTORS_VCOUNT], CArray<CPoint>* routesFrom);
+	void RemoveResourceFromStorage(BYTE res, const CPoint &ko, CSystem systems[][STARMAP_SECTORS_VCOUNT], CArray<CPoint>* routesFrom);
 
 // Attribute
 	// Der Auftrag in der Bauliste.

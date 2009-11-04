@@ -12,6 +12,8 @@
 #include "General\ResourceManager.h"
 #include "General\mytrace.h"
 
+#define ALPHA5RC					// neues in der Alpha5 RC
+
 /// Versionsnummer des Dokuments; es können nur Spielstände geladen werden, die diese Versionsnummer
 /// haben.
 #define DOCUMENT_VERSION			7		// Alpha5 Refit Version

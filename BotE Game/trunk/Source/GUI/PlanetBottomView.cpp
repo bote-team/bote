@@ -239,6 +239,8 @@ void CPlanetBottomView::OnDraw(CDC* dc)
 			delete banner;
 		}
 	}
+
+	g.ReleaseHDC(pDC->GetSafeHdc());
 }
 
 

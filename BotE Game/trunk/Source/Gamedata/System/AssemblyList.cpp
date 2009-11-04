@@ -384,18 +384,23 @@ void CAssemblyList::CalculateNeededRessourcesForUpdate(BuildingInfoArray* follow
 
 // Diese Funktion entfernt die benötigten Ressourcen aus dem lokalen Lager des Systems und falls Ressourcenrouten
 // bestehen auch die Ressourcen in den Startsystemen der Route. Aber nur falls dies auch notwendig sein sollte.
-void CAssemblyList::RemoveResourcesFromStorages(USHORT entry, const CPoint &ko, CSystem systems[][STARMAP_SECTORS_VCOUNT], CArray<CPoint>* routesFrom)
+void CAssemblyList::RemoveResourceFromStorage(BYTE res, const CPoint &ko, CSystem systems[][STARMAP_SECTORS_VCOUNT], CArray<CPoint>* routesFrom)
 {
+	if (ko == CPoint(-1,-1))
+		return;
+
 	CSystem *system = &systems[ko.x][ko.y];
-	for (int i = TITAN; i <= IRIDIUM; i++)
+	
+	// für Deritium gibt es keine Ressourcenroute
+	if (res != DILITHIUM)
 	{
 		// zuerst wird immer versucht, die Ressourcen aus dem lokalen Lager zu nehmen
-		long remainingRes = GetNeededResourceInAssemblyList(entry, i) - system->GetRessourceStore(i);
+		long remainingRes = GetNeededResourceInAssemblyList(0, res) - system->GetRessourceStore(res);
 		// werden zusätzliche Ressourcen aus anderen Lagern benötigt, so kann das lokale Lager
 		// auf NULL gesetzt werden
 		if (remainingRes > 0)
 		{
-			*system->GetRessourceStorages(i) = NULL;
+			*system->GetRessourceStorages(res) = NULL;
 			// zusätzliche Ressourcen müssen aus den Lagern der Systeme mit den Ressourcenrouten
 			// bezogen werden. Dafür ein Feld anlegen, indem alle Startsysteme mit der zur Ressouce passenden
 			// Ressourcenroute beinhaltet sind.
@@ -411,7 +416,7 @@ void CAssemblyList::RemoveResourcesFromStorages(USHORT entry, const CPoint &ko, 
 			{
 				CPoint p = routesFrom->GetAt(j);
 				for (int k = 0; k < systems[p.x][p.y].GetResourceRoutes()->GetSize(); k++)
-					if (systems[p.x][p.y].GetResourceRoutes()->GetAt(k).GetResource() == i)
+					if (systems[p.x][p.y].GetResourceRoutes()->GetAt(k).GetResource() == res)
 						routes.Add(ROUTELIST(&systems[p.x][p.y].GetResourceRoutes()->ElementAt(k), p));
 			}
 			// in routes sind nun die Zeiger auf die richtigen Ressourcenrouten, also die Routen, welche auch den
@@ -424,21 +429,21 @@ void CAssemblyList::RemoveResourcesFromStorages(USHORT entry, const CPoint &ko, 
 				int percent = NULL;
 				CPoint start = routes.GetAt(random).fromSystem;
 				// sind im jeweiligen Lager des Startsystem genügend Rohstoffe vorhanden
-				if (systems[start.x][start.y].GetRessourceStore(i) >= (ULONG)remainingRes)
+				if (systems[start.x][start.y].GetRessourceStore(res) >= (ULONG)remainingRes)
 				{
-					*systems[start.x][start.y].GetRessourceStorages(i) -= remainingRes;
-					if (GetNeededResourceInAssemblyList(entry, i) > NULL)
-						percent = 100 * remainingRes / GetNeededResourceInAssemblyList(entry, i);
+					*systems[start.x][start.y].GetRessourceStorages(res) -= remainingRes;
+					if (GetNeededResourceInAssemblyList(0, res) > NULL)
+						percent = 100 * remainingRes / GetNeededResourceInAssemblyList(0, res);
 					routes.GetAt(random).route->SetPercent((BYTE)percent);
 					remainingRes = 0;
 				}
 				else
 				{
-					remainingRes -= systems[start.x][start.y].GetRessourceStore(i);
-					if (GetNeededResourceInAssemblyList(entry, i) > NULL)
-						percent = 100 * remainingRes / GetNeededResourceInAssemblyList(entry, i);
+					remainingRes -= systems[start.x][start.y].GetRessourceStore(res);
+					if (GetNeededResourceInAssemblyList(0, res) > NULL)
+						percent = 100 * remainingRes / GetNeededResourceInAssemblyList(0, res);
 					routes.GetAt(random).route->SetPercent((BYTE)percent);
-					*systems[start.x][start.y].GetRessourceStorages(i) = NULL;
+					*systems[start.x][start.y].GetRessourceStorages(res) = NULL;
 				}
 				// ROUTELIST Eintrag entfernen, wenn dieser abgearbeitet wurde
 				routes.RemoveAt(random);				
@@ -447,9 +452,10 @@ void CAssemblyList::RemoveResourcesFromStorages(USHORT entry, const CPoint &ko, 
 		}
 		// anderenfalls werden nur die benötigten Ressourcen aus dem lokalen Lager abgezogen
 		else
-			*system->GetRessourceStorages(i) -= GetNeededResourceInAssemblyList(entry, i);
+			*system->GetRessourceStorages(res) -= GetNeededResourceInAssemblyList(0, res);
 	}
-	*system->GetRessourceStorages(DILITHIUM) -= m_iNeededDilithiumInAssemblyList[entry];
+	else
+		*system->GetRessourceStorages(res) -= m_iNeededDilithiumInAssemblyList[0];
 }
 
 BOOLEAN CAssemblyList::MakeEntry(int runningNumber, const CPoint &ko, CSystem systems[][STARMAP_SECTORS_VCOUNT])
@@ -470,42 +476,85 @@ BOOLEAN CAssemblyList::MakeEntry(int runningNumber, const CPoint &ko, CSystem sy
 	CSystem* system = &systems[ko.x][ko.y];
 	// Ressourcenrouten durchgehen und womöglich die möglichen max. zusätzlichen Ressourcen erfragen
 	CArray<CPoint> routesFrom;
-	ULONG resourcesFromRoutes[5] = {0};
+	ULONG resourcesFromRoutes[DILITHIUM + 1]		= {0};
+	ULONG nResInDistSys[DILITHIUM + 1]				= {0};
+	CPoint ptResourceDistributorKOs[DILITHIUM + 1]	= { CPoint(-1,-1) };	
+	
 	for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
+	{
 		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
+		{
 			if (systems[x][y].GetOwnerOfSystem() == system->GetOwnerOfSystem() && CPoint(x,y) != ko)
+			{
 				for (int i = 0; i < systems[x][y].GetResourceRoutes()->GetSize(); i++)
+				{
 					if (systems[x][y].GetResourceRoutes()->GetAt(i).GetKO() == ko)
+					{
 						if (systems[x][y].GetBlockade() == NULL && systems[ko.x][ko.y].GetBlockade() == NULL)
 						{
 							routesFrom.Add(CPoint(x,y));
 							BYTE res = systems[x][y].GetResourceRoutes()->GetAt(i).GetResource();
 							resourcesFromRoutes[res] += systems[x][y].GetRessourceStore(res);
 						}
-	// Überprüfen, ob wir genügend Rohstoffe in dem Lager haben
-	if (system->GetRessourceStore(TITAN) + resourcesFromRoutes[TITAN] >= m_iNeededTitanForBuild)
-		if (system->GetRessourceStore(DEUTERIUM) + resourcesFromRoutes[DEUTERIUM] >= m_iNeededDeuteriumForBuild)
-			if (system->GetRessourceStore(DURANIUM) + resourcesFromRoutes[DURANIUM] >= m_iNeededDuraniumForBuild)
-				if (system->GetRessourceStore(CRYSTAL) + resourcesFromRoutes[CRYSTAL] >= m_iNeededCrystalForBuild)
-					if (system->GetRessourceStore(IRIDIUM) + resourcesFromRoutes[IRIDIUM] >= m_iNeededIridiumForBuild)
-						if (system->GetRessourceStore(DILITHIUM) >= m_iNeededDilithiumForBuild)
+					}
+				}
+				// gilt nicht bei Blockaden
+				if (systems[x][y].GetBlockade() == NULL && systems[ko.x][ko.y].GetBlockade() == NULL)
+				{
+					for (int res = TITAN; res <= DILITHIUM; res++)
+					{
+						if (systems[x][y].GetProduction()->GetResourceDistributor(res))
 						{
-							m_iEntry[entry] = runningNumber;
-							// Was wir für das notwendige Projekt alles so brauchen speichern
-							m_iNeededIndustryInAssemblyList[entry] = m_iNeededIndustryForBuild;
-							m_iNeededTitanInAssemblyList[entry]	   = m_iNeededTitanForBuild;
-							m_iNeededDeuteriumInAssemblyList[entry]= m_iNeededDeuteriumForBuild;
-							m_iNeededDuraniumInAssemblyList[entry] = m_iNeededDuraniumForBuild;
-							m_iNeededCrystalInAssemblyList[entry]  = m_iNeededCrystalForBuild;
-							m_iNeededIridiumInAssemblyList[entry]  = m_iNeededIridiumForBuild;
-							m_iNeededDilithiumInAssemblyList[entry]= m_iNeededDilithiumForBuild;
-							// Nur wenn es der erste Eintrag im Baumenü ist wird alles abgezogen
-							// ansonsten erst, nachdem das Projekt im ersten Eintrag fertig ist
-							if (entry == 0)
-								RemoveResourcesFromStorages(entry, ko, systems, &routesFrom);
-							return TRUE;	// hat geklappt
+							ptResourceDistributorKOs[res] = CPoint(x,y);
+							nResInDistSys[res] = systems[x][y].GetRessourceStore(res);
 						}
-	return FALSE;
+					}
+				}
+			}			
+		}
+	}
+	// Überprüfen, ob wir genügend Rohstoffe in dem Lager haben
+	for (int res = TITAN; res <= DILITHIUM; res++)
+	{
+		UINT nNeededRes = this->GetNeededResourceForBuild(res);
+		if (*system->GetRessourceStorages(res) + resourcesFromRoutes[res] < nNeededRes && nResInDistSys[res] < nNeededRes)
+			return FALSE;
+	}
+	
+	// Ansonsten gibt es genügend Rohstoffe
+	m_iEntry[entry] = runningNumber;
+	// Was wir für das notwendige Projekt alles so brauchen speichern
+	m_iNeededIndustryInAssemblyList[entry] = m_iNeededIndustryForBuild;
+	m_iNeededTitanInAssemblyList[entry]	   = m_iNeededTitanForBuild;
+	m_iNeededDeuteriumInAssemblyList[entry]= m_iNeededDeuteriumForBuild;
+	m_iNeededDuraniumInAssemblyList[entry] = m_iNeededDuraniumForBuild;
+	m_iNeededCrystalInAssemblyList[entry]  = m_iNeededCrystalForBuild;
+	m_iNeededIridiumInAssemblyList[entry]  = m_iNeededIridiumForBuild;
+	m_iNeededDilithiumInAssemblyList[entry]= m_iNeededDilithiumForBuild;
+	// Nur wenn es der erste Eintrag im Baumenü ist wird alles abgezogen
+	// ansonsten erst, nachdem das Projekt im ersten Eintrag fertig ist
+	if (entry == 0)
+	{
+		for (int res = TITAN; res <= DILITHIUM; res++)
+		{
+			UINT nNeededRes = this->GetNeededResourceForBuild(res);
+			if (nNeededRes > 0)
+			{
+				// Ressource wird aus eigenem System bzw. über Ressourcenroute geholt
+				if (*system->GetRessourceStorages(res) + resourcesFromRoutes[res] >= nNeededRes)
+					RemoveResourceFromStorage(res, ko, systems, &routesFrom);
+				// reicht das nicht, so wird Ressource aus dem Verteier geholt
+				else
+				{
+					CArray<CPoint> vNullRoutes;
+					RemoveResourceFromStorage(res, ptResourceDistributorKOs[res], systems, &vNullRoutes);
+				}
+			}
+		}		
+	}
+
+	// Eintrag konnte gesetzt werden
+	return TRUE;
 }
 
 // Funktion berechnet die Kosten des Bauauftrags, wenn man dieses sofort kaufen will.
@@ -590,28 +639,56 @@ BOOLEAN CAssemblyList::CalculateBuildInAssemblyList(USHORT m_iIndustryProd)
 void CAssemblyList::ClearAssemblyList(const CPoint &ko, CSystem systems[][STARMAP_SECTORS_VCOUNT])
 {
 	// Alle prozentualen Anteile eines womöglich früheren Bauauftrages aus den Ressourcenrouten löschen
-	CSystem* system = &systems[ko.x][ko.y];
-	// Ressourcenrouten durchgehen und womöglich die möglichen max. zusätzlichen Ressourcen erfragen
+	CSystem* system = &systems[ko.x][ko.y];	
+	
 	CArray<CPoint> routesFrom;
-	ULONG resourcesFromRoutes[5] = {0};
+	ULONG resourcesFromRoutes[DILITHIUM + 1]		= {0};
+	ULONG nResInDistSys[DILITHIUM + 1]				= {0};
+	CPoint ptResourceDistributorKOs[DILITHIUM + 1]	= { CPoint(-1,-1) };	
+	
+	// Ressourcenrouten durchgehen und womöglich die möglichen max. zusätzlichen Ressourcen erfragen
 	for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
+	{
 		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
+		{
 			if (systems[x][y].GetOwnerOfSystem() == system->GetOwnerOfSystem() && CPoint(x,y) != ko)
+			{
 				for (int i = 0; i < systems[x][y].GetResourceRoutes()->GetSize(); i++)
+				{
 					if (systems[x][y].GetResourceRoutes()->GetAt(i).GetKO() == ko)
+					{
+						// prozentualen Anteil vom alten Auftrag zurücksetzen
+						systems[x][y].GetResourceRoutes()->ElementAt(i).SetPercent(0);
+						// Ressourcen über Route holen
 						if (systems[x][y].GetBlockade() == NULL && systems[ko.x][ko.y].GetBlockade() == NULL)
 						{
 							routesFrom.Add(CPoint(x,y));
 							BYTE res = systems[x][y].GetResourceRoutes()->GetAt(i).GetResource();
-							resourcesFromRoutes[res] += systems[x][y].GetRessourceStore(res);
-							systems[x][y].GetResourceRoutes()->ElementAt(i).SetPercent(0);
+							resourcesFromRoutes[res] += systems[x][y].GetRessourceStore(res);							
 						}
-
+					}
+				}
+				// gilt nicht bei Blockaden
+				if (systems[x][y].GetBlockade() == NULL && systems[ko.x][ko.y].GetBlockade() == NULL)
+				{
+					for (int res = TITAN; res <= DILITHIUM; res++)
+					{
+						if (systems[x][y].GetProduction()->GetResourceDistributor(res))
+						{
+							ptResourceDistributorKOs[res] = CPoint(x,y);
+							nResInDistSys[res] = systems[x][y].GetRessourceStore(res);
+						}
+					}
+				}
+			}			
+		}
+	}
 
 	// AssemblyList Eintrag des gebauten Gebäudes/Updates/Schiffes löschen, wenn wir noch den
 	// Eintrag an der nächsten Stelle haben (sprich AssemblyList[1] != 0), dann alle 
 	// anderen Einträge um eins nach vorn verschieben -> letzter wird frei
 	m_iEntry[0] = 0;
+	
 	if (m_iEntry[1] != 0)
 	{
 		for (int i = 0; i < ALE-1; i++)
@@ -641,24 +718,34 @@ void CAssemblyList::ClearAssemblyList(const CPoint &ko, CSystem systems[][STARMA
 		// wird, wenn das Gebäude an erster Stelle in der Bauliste rückt, müssen
 		// wird das überprüfen. Haben wir nicht genug RES, wird der Bauauftrag
 		// gecancelt
-		for (int j = 1; j < ALE; j++)
+		
+		// Überprüfen, ob wir genügend Rohstoffe in dem Lager haben
+		for (int res = TITAN; res <= DILITHIUM; res++)
 		{
-			BOOLEAN okay = FALSE;
-			// Überprüfen, ob wir genügend Rohstoffe in dem Lager haben
-			if (system->GetRessourceStore(TITAN) + resourcesFromRoutes[TITAN] >= m_iNeededTitanInAssemblyList[0])
-				if (system->GetRessourceStore(DEUTERIUM) + resourcesFromRoutes[DEUTERIUM] >= m_iNeededDeuteriumInAssemblyList[0])
-					if (system->GetRessourceStore(DURANIUM) + resourcesFromRoutes[DURANIUM] >= m_iNeededDuraniumInAssemblyList[0])
-						if (system->GetRessourceStore(CRYSTAL) + resourcesFromRoutes[CRYSTAL] >= m_iNeededCrystalInAssemblyList[0])
-							if (system->GetRessourceStore(IRIDIUM) + resourcesFromRoutes[IRIDIUM] >= m_iNeededIridiumInAssemblyList[0])
-								if (system->GetRessourceStore(DILITHIUM) >= m_iNeededDilithiumInAssemblyList[0])
-								{
-									// wenn es baubar ist ->
-									RemoveResourcesFromStorages(0, ko, systems, &routesFrom);
-									okay = TRUE;
-									break;
-								}
-			if (okay == FALSE)
+			UINT nNeededRes = this->GetNeededResourceForBuild(res);
+			if (*system->GetRessourceStorages(res) + resourcesFromRoutes[res] < nNeededRes && nResInDistSys[res] < nNeededRes)
+			{
+				// Wenn nicht -> dann Eintrag wieder entfernen
 				ClearAssemblyList(ko, systems);
+				return;
+			}
+		}
+		// Wenn er baubar ist, dann die Ressourcen entfernen	
+		for (int res = TITAN; res <= DILITHIUM; res++)
+		{
+			UINT nNeededRes = this->GetNeededResourceInAssemblyList(0, res);
+			if (nNeededRes > 0)
+			{
+				// Ressource wird aus eigenem System bzw. über Ressourcenroute geholt
+				if (*system->GetRessourceStorages(res) + resourcesFromRoutes[res] >= nNeededRes)
+					RemoveResourceFromStorage(res, ko, systems, &routesFrom);
+				// reicht das nicht, so wird Ressource aus dem Verteiler geholt
+				else
+				{
+					CArray<CPoint> vNullRoutes;
+					RemoveResourceFromStorage(res, ptResourceDistributorKOs[res], systems, &vNullRoutes);
+				}
+			}
 		}
 	}
 }

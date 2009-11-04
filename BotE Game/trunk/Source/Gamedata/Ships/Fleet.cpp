@@ -137,6 +137,35 @@ short CFleet::GetFleetShipType(CShip* ship)
 	return type;
 }
 
+// Funktion berechnet die minimale Stealthpower der Flotte. Der Parameter der hier übergeben werden sollte
+// ist der this-Zeiger bzw. die Adresse des Schiffsobjektes, welches die Flotte besitzt
+BYTE CFleet::GetFleetStealthPower(CShip* ship)
+{
+	BYTE stealthPower = MAXBYTE;
+	if (ship != NULL)
+	{
+		stealthPower = ship->GetStealthPower() * 20;
+		if (ship->GetStealthPower() > 3 && ship->GetCloak() == false)
+			stealthPower = 3 * 20;
+	}
+	if (stealthPower == 0)
+		return 0;
+
+	for (int i = 0; i < m_SP.GetSize(); i++)
+	{
+		if (stealthPower == 0)
+			return 0;
+
+		BYTE fleetStealthPower = m_SP.GetAt(i).GetStealthPower() * 20;
+		if (m_SP.GetAt(i).GetStealthPower() > 3  && m_SP.GetAt(i).GetCloak() == false)
+			fleetStealthPower = 3 * 20;
+		if (fleetStealthPower < stealthPower)
+			stealthPower = fleetStealthPower;
+	}
+
+	return stealthPower;
+}
+
 // Funktion übernimmt die Befehle des hier als Zeiger übergebenen Schiffsobjektes an alle Mitglieder der Flotte
 void CFleet::AdoptCurrentOrders(CShip* ship)
 {

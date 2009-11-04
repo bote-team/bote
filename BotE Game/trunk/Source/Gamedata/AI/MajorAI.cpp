@@ -828,8 +828,8 @@ bool CMajorAI::MakeMajorOffer(CString& sRaceID, CDiplomacyInfo& info)
 				for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
 					// nicht wir selbst und nicht die Rasse an die Krieg erklärt werden soll
 					if (it->first != pOurRace->GetRaceID() && it->first != sRaceID)
-						// Kriegspaktpartner muss bekannt sein
-						if (pOurRace->IsRaceContacted(it->first))
+						// Kriegspaktpartner muss uns und dem Kriegsgegner bekannt sein
+						if (it->second->IsRaceContacted(pOurRace->GetRaceID()) && it->second->IsRaceContacted(sRaceID))
 						{
 							BYTE byRel = pOurRace->GetRelation(it->first);
 							if (byRel > byTemp && byRel > rand()%50)

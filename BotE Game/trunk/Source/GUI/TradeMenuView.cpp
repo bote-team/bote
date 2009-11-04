@@ -86,6 +86,7 @@ void CTradeMenuView::OnDraw(CDC* dc)
 
 	DrawTradeMainButtons(&g, pMajor);
 	// ************** DIE HANDELSANSICHT ZEICHNEN ist hier zu Ende **************
+	g.ReleaseHDC(pDC->GetSafeHdc());
 }
 
 

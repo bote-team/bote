@@ -114,8 +114,8 @@ BOOL CNewGamePage::OnInitDialog()
 	CIniLoader::GetInstance()->WriteValue("General", "USERNAME", userName);
 		
 	m_hostIP.SetAddress(INADDR_LOOPBACK);
-	m_hostPort.SetWindowText("6666");
-	m_serverPort.SetWindowText("6666");
+	m_hostPort.SetWindowText("7777");
+	m_serverPort.SetWindowText("7777");
 	CString strDesc;
 	strDesc.Format("%ss BotE-Server", userName);
 	m_description.SetWindowText(strDesc);
@@ -291,12 +291,15 @@ LRESULT CNewGamePage::OnWizardNext()
 	case MODE_LOAD:
 		{
 		// Datei laden
+		// ALPHA5 raus
+		#ifndef ALPHA5RC
 		if (CSector::m_NameGenerator)
 		{
 			delete CSector::m_NameGenerator;
 			CSector::m_NameGenerator = NULL;
 		}
 		CSector::InitNameGenerator();
+		#endif
 		
 		CString fileName;
 		GetDlgItemText(IDC_FILENAME, fileName);
@@ -343,7 +346,7 @@ LRESULT CNewGamePage::OnWizardNext()
 			m_description.GetWindowText(strDescription);
 			strDescription.Trim();
 
-			if (!serverPublisher.StartPublishing(6666, strDescription, nPort))
+			if (!serverPublisher.StartPublishing(7777, strDescription, nPort))
 			{
 				// Vorgang nicht abbrechen, nur Warnhinweis ausgeben
 				MessageBox("Das Spiel konnte nicht veröffentlicht werden.", "Warnung",

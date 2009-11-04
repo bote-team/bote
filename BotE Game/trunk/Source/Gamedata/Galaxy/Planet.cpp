@@ -474,23 +474,25 @@ void CPlanet::DrawPlanet(Graphics &g, CRect planetRect, CGraphicPool* graphicPoo
 	
 	if (planet)
 	{	
+		RectF r;
 		switch (m_iSize)
 		{
 		case SMALL:
-			g.DrawImage(planet, x, y, 45, 45); break;
+			r = RectF((REAL)x, (REAL)y, 45, 45);	break;
 		case NORMAL:
-			g.DrawImage(planet, x,y, 60, 60); break;
+			r = RectF((REAL)x, (REAL)y, 60, 60);	break;
 		case BIG:
-			g.DrawImage(planet, x,y, 80, 80); break;
+			r = RectF((REAL)x, (REAL)y, 80, 80);	break;
 		case GIANT:
 			{
 				if (m_strName == "Saturn")
-					g.DrawImage(planet, x-10, y+28, 145, 84);
+					r = RectF((REAL)x - 10, (REAL)y + 28, 145, 84);
 				else
-					g.DrawImage(planet, x,y, 125, 125);
+					r = RectF((REAL)x, (REAL)y, 125, 125);					
 				break;
 			}
 		}
+		g.DrawImage(planet, r);
 		planet = NULL;	
 	}	
 			

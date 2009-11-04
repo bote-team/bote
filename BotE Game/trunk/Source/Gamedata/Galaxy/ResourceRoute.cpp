@@ -113,4 +113,6 @@ void CResourceRoute::DrawResourceRoute(CDC* pDC, CPoint dest, const CMajor* pMaj
 //	pDC->Rectangle(p[3].x, p[3].y, p[3].x + 5, p[3].y + 5);
 //	pDC->MoveTo(m_KO.x*STARMAP_SECTOR_WIDTH+STARMAP_SECTOR_WIDTH/2,m_KO.y*STARMAP_SECTOR_HEIGHT+STARMAP_SECTOR_HEIGHT/2);
 //	pDC->LineTo(dest.x*STARMAP_SECTOR_WIDTH+STARMAP_SECTOR_WIDTH/2,dest.y*STARMAP_SECTOR_HEIGHT+STARMAP_SECTOR_HEIGHT/2);
+
+	pen.DeleteObject();
 }

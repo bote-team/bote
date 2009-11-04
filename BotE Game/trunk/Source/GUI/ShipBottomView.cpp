@@ -129,10 +129,17 @@ void CShipBottomView::OnDraw(CDC* dc)
 				|| (pDoc->GetKO() == pDoc->m_ShipArray.GetAt(i).GetKO() && (pDoc->m_ShipArray.GetAt(i).GetShipType() == OUTPOST || pDoc->m_ShipArray.GetAt(i).GetShipType() == STARBASE) && m_bShowStation))
 			{
 				// Schiffe mit zu guter Stealthpower werden hier nicht angezeigt.
-				USHORT stealthPower = pDoc->m_ShipArray[i].GetStealthPower() * 20;
-				if (pDoc->m_ShipArray[i].GetStealthPower() > 3 && pDoc->m_ShipArray[i].GetCloak() == FALSE)
-					stealthPower = 3 * 20;
-				if (pDoc->m_ShipArray[i].GetOwnerOfShip() != pMajor->GetRaceID() && pDoc->m_Sector[pDoc->GetKO().x][pDoc->GetKO().y].GetScanPower(pMajor->GetRaceID()) <= stealthPower)
+				USHORT stealthPower = MAXBYTE;
+				if (pDoc->m_ShipArray[i].GetFleet() == NULL)
+				{					
+					stealthPower = pDoc->m_ShipArray[i].GetStealthPower() * 20;
+					if (pDoc->m_ShipArray[i].GetStealthPower() > 3 && pDoc->m_ShipArray[i].GetCloak() == FALSE)
+						stealthPower = 3 * 20;
+				}
+				else
+					stealthPower = pDoc->m_ShipArray[i].GetFleet()->GetFleetStealthPower(&pDoc->m_ShipArray[i]);
+
+				if (pDoc->m_ShipArray[i].GetOwnerOfShip() != pMajor->GetRaceID() && pDoc->GetSector(pDoc->GetKO()).GetScanPower(pMajor->GetRaceID()) < stealthPower)
 					continue;
 				// mehrere Spalten anlegen, falls mehr als 3 Schiffe in dem System sind
 				if (counter != 0 && counter%3 == 0)
@@ -672,6 +679,8 @@ void CShipBottomView::OnDraw(CDC* dc)
 		KillTimer(1);
 		m_iTimeCounter =0;
 	}
+
+	g.ReleaseHDC(pDC->GetSafeHdc());
 }	
 
 // CShipBottomView diagnostics
@@ -996,9 +1005,17 @@ void CShipBottomView::OnMouseMove(UINT nFlags, CPoint point)
 				|| (pDoc->GetKO() == pDoc->m_ShipArray.GetAt(i).GetKO() && (pDoc->m_ShipArray.GetAt(i).GetShipType() == OUTPOST || pDoc->m_ShipArray.GetAt(i).GetShipType() == STARBASE) && m_bShowStation))
 			{
 				// Schiffe mit zu guter Stealthpower werden hier nicht angezeigt.
-				USHORT stealthPower = pDoc->m_ShipArray[i].GetStealthPower() * 20;
-				if (pDoc->m_ShipArray[i].GetStealthPower() > 3 && pDoc->m_ShipArray[i].GetCloak() == FALSE)
-					stealthPower = 3 * 20;
+				// Schiffe mit zu guter Stealthpower werden hier nicht angezeigt.
+				USHORT stealthPower = MAXBYTE;
+				if (pDoc->m_ShipArray[i].GetFleet() == NULL)
+				{					
+					stealthPower = pDoc->m_ShipArray[i].GetStealthPower() * 20;
+					if (pDoc->m_ShipArray[i].GetStealthPower() > 3 && pDoc->m_ShipArray[i].GetCloak() == FALSE)
+						stealthPower = 3 * 20;
+				}
+				else
+					stealthPower = pDoc->m_ShipArray[i].GetFleet()->GetFleetStealthPower(&pDoc->m_ShipArray[i]);
+
 				if (pDoc->m_ShipArray[i].GetOwnerOfShip() != pMajor->GetRaceID() && pDoc->m_Sector[pDoc->GetKO().x][pDoc->GetKO().y].GetScanPower(pMajor->GetRaceID()) <= stealthPower)
 					continue;
 				if (counter < m_iPage*9 && counter >= (m_iPage-1)*9)

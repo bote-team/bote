@@ -42,8 +42,8 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
 		// HINWEIS - Hier werden Mapping-Makros vom Klassen-Assistenten eingefügt und entfernt.
 		//    Innerhalb dieser generierten Quelltextabschnitte NICHTS VERÄNDERN!
 	ON_WM_CREATE()
+	ON_MESSAGE(WM_UPDATEVIEWS, CMainFrame::UpdateViews)
 	//}}AFX_MSG_MAP
-//	ON_WM_KEYDOWN()
 END_MESSAGE_MAP()
 
 static UINT indicators[] =
@@ -249,33 +249,35 @@ void CMainFrame::SelectMainView(USHORT whichView, const CString& sRace)
 {
 	if (sRace.IsEmpty())
 		return;
-//	if (m_iSelectedView[race] != whichView)
-	{
-//		m_iSelectedView[race] = whichView;
-		if (((CBotf2App*)AfxGetApp())->GetDocument()->GetPlayersRaceID() == sRace)
-		{
-			// konnte in die neue View gewechselt werden
-			if (m_wndSplitter.SwitchView(whichView, 0, 1))
-			{
-				switch (whichView)
-				{
-				case SYSTEM_VIEW:		SelectBottomView(PLANET_BOTTOM_VIEW); break;
-				case RESEARCH_VIEW:		SelectBottomView(RESEARCH_BOTTOM_VIEW); break;
-				case INTEL_VIEW:		SelectBottomView(INTEL_BOTTOM_VIEW); break;
-				case DIPLOMACY_VIEW:	SelectBottomView(DIPLOMACY_BOTTOM_VIEW); break;
-				case TRADE_VIEW:		SelectBottomView(TRADE_BOTTOM_VIEW); break;
-				case SHIPDESIGN_VIEW:	SelectBottomView(SHIPDESIGN_BOTTOM_VIEW); break;
-				case FLEET_VIEW:		SelectBottomView(SHIP_BOTTOM_VIEW); break;
-				default:				SelectBottomView(PLANET_BOTTOM_VIEW); break;
-				}
 
-				// Wenn wir irgendwie in eine andere View, außer der Galaxieansicht gelangen, dann dürfen wir keine Handelsroute
-				// oder Ressourcenroute mehr zeichnen
-				if (whichView != GALAXY_VIEW)
-				{
-					CGalaxyMenuView::IsDrawResourceRoute(false);
-					CGalaxyMenuView::IsDrawTradeRoute(false);
-				}
+	CBotf2Doc* pDoc = ((CBotf2App*)AfxGetApp())->GetDocument();
+	ASSERT(pDoc);
+
+	if (pDoc->GetPlayersRaceID() == sRace)
+	{
+		network::RACE client = pDoc->GetRaceCtrl()->GetMappedClientID(sRace);
+		pDoc->m_iSelectedView[client] = whichView;
+		// konnte in die neue View gewechselt werden
+		if (m_wndSplitter.SwitchView(whichView, 0, 1))
+		{
+			switch (whichView)
+			{
+			case SYSTEM_VIEW:		SelectBottomView(PLANET_BOTTOM_VIEW); break;
+			case RESEARCH_VIEW:		SelectBottomView(RESEARCH_BOTTOM_VIEW); break;
+			case INTEL_VIEW:		SelectBottomView(INTEL_BOTTOM_VIEW); break;
+			case DIPLOMACY_VIEW:	SelectBottomView(DIPLOMACY_BOTTOM_VIEW); break;
+			case TRADE_VIEW:		SelectBottomView(TRADE_BOTTOM_VIEW); break;
+			case SHIPDESIGN_VIEW:	SelectBottomView(SHIPDESIGN_BOTTOM_VIEW); break;
+			case FLEET_VIEW:		SelectBottomView(SHIP_BOTTOM_VIEW); break;
+			default:				SelectBottomView(PLANET_BOTTOM_VIEW); break;
+			}
+
+			// Wenn wir irgendwie in eine andere View, außer der Galaxieansicht gelangen, dann dürfen wir keine Handelsroute
+			// oder Ressourcenroute mehr zeichnen
+			if (whichView != GALAXY_VIEW)
+			{
+				CGalaxyMenuView::IsDrawResourceRoute(false);
+				CGalaxyMenuView::IsDrawTradeRoute(false);
 			}
 		}
 	}
@@ -310,19 +312,6 @@ CView* CMainFrame::GetView(const CRuntimeClass* className) const
 
 void CMainFrame::InvalidateView(const CRuntimeClass* className)
 {
-/*	CView *pView = NULL;
-	
-	POSITION pos = GetFirstViewPosition();
-	do
-	{
-		pView = GetNextView(pos);
-		if (pView->IsKindOf(className))
-		{
-			pView->Invalidate(FALSE);
-			break;
-		}
-	} while (pView != NULL);
-*/
 	// Alle switchable Views durchiterieren
 	std::map<CWnd *, UINT>* views = &m_wndSplitter.views;
 	for (std::map<CWnd *, UINT>::iterator it = views->begin(); it != views->end(); it++)
@@ -414,4 +403,15 @@ void CMainFrame::FullScreenMainView(bool fullScreen)
 		m_wndSplitter.SetColumnInfo(0, 0, 0);		
 	}
 	m_wndSplitter.RecalcLayout();
+}
+
+LRESULT CMainFrame::UpdateViews(WPARAM wParam, LPARAM lParam)
+{
+	CBotf2Doc* pDoc = (CBotf2Doc*)((CBotf2App*)AfxGetApp())->GetDocument();
+	ASSERT(pDoc);
+	
+	// Views ihre Arbeiten zu jeder neuen Runde machen lassen
+	pDoc->DoViewWorkOnNewRound();	
+
+	return TRUE;
 }

@@ -195,8 +195,8 @@ BOOL CBotf2Doc::OnNewDocument()
 	m_NumberOfTheShipInArray	= -1;
 	m_iNumberOfFleetShip		= -1;
 	m_iNumberOfTheShipInFleet	= -1;
-	for (int i = HUMAN; i <= DOMINION; i++)
-		m_iSelectedView[i] = 1;	// 1 steht für GalaxieView
+	for (int i = network::RACE_1; i < network::RACE_ALL; i++)
+		m_iSelectedView[i] = GALAXY_VIEW;
 
 	if (CSector::m_Font)
 	{
@@ -223,7 +223,7 @@ BOOL CBotf2Doc::OnNewDocument()
 		pSoundManager->SetSoundMasterVolume(NULL);
 	else
 		pSoundManager->SetSoundMasterVolume(0.5f);
-	MYTRACE(MT::LEVEL_INFO, "Init sound ready...\n");
+	MYTRACE(MT::LEVEL_INFO, "Init sound ready...\n");	
 
 	return TRUE;
 }
@@ -265,7 +265,7 @@ void CBotf2Doc::Serialize(CArchive& ar)
 		for (map<CString, pair<int, int> >::const_iterator it = m_mRaceKO.begin(); it != m_mRaceKO.end(); it++)
 			ar << it->first << it->second.first << it->second.second;
 		
-		for (int i = 0; i < 7; i++)
+		for (int i = network::RACE_1; i < network::RACE_ALL; i++)
 		{		
 			ar << m_iSelectedView[i];
 		}
@@ -308,7 +308,7 @@ void CBotf2Doc::Serialize(CArchive& ar)
 			m_mRaceKO[key] = value;
 		}
 
-		for (int i = 0; i < 7; i++)
+		for (int i = network::RACE_1; i < network::RACE_ALL; i++)
 		{		
 			ar >> m_iSelectedView[i];
 		}
@@ -361,7 +361,11 @@ void CBotf2Doc::Serialize(CArchive& ar)
 		}
 	
 	CMoralObserver::SerializeStatics(ar);
+	
+	// ALPHA5 nicht mehr serialisieren
+#ifndef ALPHA5RC
 	CSector::m_NameGenerator->Serialize(ar);
+#endif
 	
 	m_GenShipName.Serialize(ar);
 	m_GlobalBuildings.Serialize(ar);
@@ -434,7 +438,7 @@ void CBotf2Doc::SerializeNextRoundData(CArchive &ar)
 		// ZU ERLEDIGEN: Hier Code zum Speichern einfügen
 		ar << m_iRound;
 		ar << m_fStardate;
-		for (int i = 0; i < 7; i++)
+		for (int i = network::RACE_1; i < network::RACE_ALL; i++)
 			ar << m_iSelectedView[i];
 		ar << m_ShipInfoArray.GetSize();
 		for (int i = 0; i < m_ShipInfoArray.GetSize(); i++)
@@ -460,7 +464,7 @@ void CBotf2Doc::SerializeNextRoundData(CArchive &ar)
 		// ZU ERLEDIGEN: Hier Code zum Laden einfügen
 		ar >> m_iRound;
 		ar >> m_fStardate;
-		for (int i = 0; i < 7; i++)
+		for (int i = network::RACE_1; i < network::RACE_ALL; i++)
 			ar >> m_iSelectedView[i];
 		ar >> number;
 		m_ShipInfoArray.RemoveAll();
@@ -601,11 +605,6 @@ void CBotf2Doc::SerializeEndOfRoundData(CArchive &ar, network::RACE race)
 		pPlayer->Serialize(ar);
 		// aktuelle View mit zum Server senden
 		ar << m_iSelectedView[client];
-/*
-		CMainBaseView::SetPlayersRace(NULL);
-		CBottomBaseView::SetPlayersRace(NULL);
-		CMenuChooseView::SetPlayersRace(NULL);
-		CSmallInfoView::SetPlayersRace(NULL);*/
 	}
 	else
 	{
@@ -694,22 +693,49 @@ void CBotf2Doc::SetNumberOfTheShipInFleet(int NumberOfTheShipInFleet)
 void CBotf2Doc::DoViewWorkOnNewRound()
 {
 	// Playersrace in Views festlegen	
-	CMainBaseView::SetPlayersRace(this->GetPlayersRace());
-	CBottomBaseView::SetPlayersRace(this->GetPlayersRace());
-	CMenuChooseView::SetPlayersRace(this->GetPlayersRace());
-	CSmallInfoView::SetPlayersRace(this->GetPlayersRace());
+	CMajor* pPlayersRace = GetPlayersRace();
+	ASSERT(pPlayersRace);
+
+	network::RACE client = m_pRaceCtrl->GetMappedClientID(pPlayersRace->GetRaceID());
+	
+	CGalaxyMenuView::SetPlayersRace(pPlayersRace);
+	CMainBaseView::SetPlayersRace(pPlayersRace);
+	CBottomBaseView::SetPlayersRace(pPlayersRace);
+	CMenuChooseView::SetPlayersRace(pPlayersRace);
+	CSmallInfoView::SetPlayersRace(pPlayersRace);
 
 	// Views ihre Arbeiten zu Beginn einer neuen Runde durchführen lassen
-	std::map<CWnd *, UINT>* views = &GetMainFrame()->GetSplitterWindow()->views;		
+	std::map<CWnd *, UINT>* views = &GetMainFrame()->GetSplitterWindow()->views;
 	for (std::map<CWnd *, UINT>::iterator it = views->begin(); it != views->end(); it++)
-	{		
+	{
 		if (it->second == GALAXY_VIEW)
 			((CGalaxyMenuView*)(it->first))->OnNewRound();
 		else if (IS_MAIN_VIEW(it->second))
 			((CMainBaseView*)(it->first))->OnNewRound();
 		else if (IS_BOTTOM_VIEW(it->second))
 			((CBottomBaseView*)(it->first))->OnNewRound();		
+	}	
+
+	// anzuzeigende View in neuer Runde auswählen
+	// Wenn EventScreens für den Spieler vorhanden sind, so werden diese angezeigt.
+	if (pPlayersRace->GetEmpire()->GetEventMessages()->GetSize() > 0)
+	{
+		GetMainFrame()->FullScreenMainView(true);
+		GetMainFrame()->SelectMainView(EVENT_VIEW, pPlayersRace->GetRaceID());		
 	}
+	else
+	{		
+		GetMainFrame()->FullScreenMainView(false);
+		GetMainFrame()->SelectMainView(m_iSelectedView[client], pPlayersRace->GetRaceID());
+		m_iSelectedView[client] = 0;
+	}
+
+	// wurde Rundenende geklickt zurücksetzen
+	m_bRoundEndPressed = false;
+	m_bDataReceived = true;
+
+	// alle angezeigten Views neu zeichnen lassen
+	UpdateAllViews(NULL);	
 }
 
 // Generiert ein neues Spiel
@@ -744,7 +770,6 @@ void CBotf2Doc::PrepareData()
 			else			
 				it->second->SetHumanPlayer(false);
 		}
-
 		
 		// ALPHA5 DEBUG alle Rassen untereinander bekanntgeben
 		/*
@@ -1051,8 +1076,8 @@ void CBotf2Doc::NextRound()
 	// Hier Schiffsbewegung und alles was dazugehört	
 	CSmallInfoView::SetShipInfo(false);
 	for (int i = network::RACE_1; i < network::RACE_ALL; i++)
-		if (m_iSelectedView[i] == 8)
-			m_iSelectedView[i] = 1;
+		if (m_iSelectedView[i] == FLEET_VIEW)
+			m_iSelectedView[i] = GALAXY_VIEW;
 	
 	m_NumberOfTheShipInArray = -1;
 	m_iNumberOfFleetShip = -1;
@@ -1248,7 +1273,12 @@ void CBotf2Doc::NextRound()
 				if (!pMajor || pMajor->GetType() != MAJOR)
 					continue;
 
+				// baubare Gebäude, Schiffe und Truppen berechnen
+				m_System[x][y].CalculateBuildableBuildings(&m_Sector[x][y], &BuildingInfo, pMajor, &m_GlobalBuildings);
+				m_System[x][y].CalculateBuildableShips(this, CPoint(x,y));
+				m_System[x][y].CalculateBuildableTroops(&m_TroopInfo, pMajor->GetEmpire()->GetResearch());
 				m_System[x][y].CalculateVariables(&this->BuildingInfo, pMajor->GetEmpire()->GetResearch()->GetResearchInfo(), m_Sector[x][y].GetPlanets(), pMajor, CTrade::GetMonopolOwner());
+
 				// alle produzierten FP und SP der Imperien berechnen und zuweisen
 				int currentPoints;
 				currentPoints = m_System[x][y].GetProduction()->GetResearchProd();
@@ -1408,6 +1438,7 @@ void CBotf2Doc::ApplyBuildingsAtStartup()
 						CMajor* pMajor = it->second;
 						ASSERT(pMajor);
 						// Anzahl aller Farmen, Bauhöfe usw. im System berechnen
+						// baubare Gebäude, Schiffe und Truppen berechnen
 						m_System[x][y].CalculateNumberOfWorkbuildings(&this->BuildingInfo);						
 						m_System[x][y].SetWorkersIntoBuildings();
 						m_System[x][y].CalculateVariables(&this->BuildingInfo, pMajor->GetEmpire()->GetResearch()->GetResearchInfo(), m_Sector[x][y].GetPlanets(), pMajor, CTrade::GetMonopolOwner());
@@ -1456,6 +1487,16 @@ void CBotf2Doc::ApplyBuildingsAtStartup()
 					pMajor->GetWeaponObserver()->CheckTorpedoWeapons(&m_ShipInfoArray.GetAt(i));
 				}
 			}
+
+		// Systemliste erstellen und baubare Gebäude, Schiffe und Truppen berechnen
+		pMajor->GetEmpire()->GenerateSystemList(m_System, m_Sector);
+		for (int i = 0; i < pMajor->GetEmpire()->GetSystemList()->GetSize(); i++)
+		{
+			CPoint p = pMajor->GetEmpire()->GetSystemList()->GetAt(i).ko;
+			m_System[p.x][p.y].CalculateBuildableBuildings(&m_Sector[p.x][p.y], &BuildingInfo, pMajor, &m_GlobalBuildings);
+			m_System[p.x][p.y].CalculateBuildableShips(this, p);
+			m_System[p.x][p.y].CalculateBuildableTroops(&m_TroopInfo, pMajor->GetEmpire()->GetResearch());
+		}
 	}
 	///////////////////////////////////////////
 
@@ -1479,7 +1520,7 @@ void CBotf2Doc::ReadBuildingInfosFromFile()
 	CBuildingInfo info;
 	USHORT i = 0;
 	CString csInput;
-	CString data[133];
+	CString data[140];
 	CString fileName = CIOData::GetInstance()->GetAppPath() + "Data\\Buildings\\Buildings.data";		// Name des zu Öffnenden Files
 	CStdioFile file;													// Varibale vom Typ CStdioFile
 	if (file.Open(fileName, CFile::modeRead | CFile::typeBinary))			// Datei wird geöffnet
@@ -1488,7 +1529,7 @@ void CBotf2Doc::ReadBuildingInfosFromFile()
 		{
 			// Daten lesen
 			data[i++] = csInput;
-			if (i == 133)
+			if (i == 140)
 			{
 				i = 0;
 				info.SetRunningNumber(atoi(data[0]));
@@ -1617,6 +1658,10 @@ void CBotf2Doc::ReadBuildingInfosFromFile()
 				info.SetEquivalent(0,0);		// niemand-index immer auf NULL setzen
 				for (int p = HUMAN; p <= DOMINION; p++)
 					info.SetEquivalent(p,atoi(data[126+p]));
+				for (int res = TITAN; res <= DILITHIUM; res++)
+					info.SetResourceDistributor(res, atoi(data[133+res]));
+				info.SetNeededSystems(atoi(data[139]));
+				
 				// Information in das Gebäudeinfofeld schreiben
 				BuildingInfo.Add(info);
 			}
@@ -2502,7 +2547,6 @@ void CBotf2Doc::CalcSystemAttack()
 					m_System[p.x][p.y].CalculateNumberOfWorkbuildings(&this->BuildingInfo);
 					m_System[p.x][p.y].SetWorkersIntoBuildings();
 
-
 					// erfolgreiches Invasionsevent für den Angreifer einfügen (sollte immer ein Major sein)
 					if (!attacker.IsEmpty() && pMajor && pMajor->IsHumanPlayer())
 						pMajor->GetEmpire()->GetEventMessages()->Add(new CEventBombardment(attacker, "InvasionSuccess", CResourceManager::GetString("INVASIONSUCCESSEVENT_HEADLINE", FALSE, m_Sector[p.x][p.y].GetName()), CResourceManager::GetString("INVASIONSUCCESSEVENT_TEXT_RACE1", FALSE, m_Sector[p.x][p.y].GetName())));
@@ -3031,7 +3075,7 @@ void CBotf2Doc::CalcDiplomacy()
 			if (pMinor->GetAgreement(sOwner) != MEMBERSHIP && GetSector(pMinor->GetRaceKO()).GetMinorRace() == TRUE && GetSector(pMinor->GetRaceKO()).GetTakenSector() == FALSE)
 			{
 				GetSector(pMinor->GetRaceKO()).SetOwned(false);
-				GetSector(pMinor->GetRaceKO()).SetOwnerOfSector("");
+				GetSector(pMinor->GetRaceKO()).SetOwnerOfSector(pMinor->GetRaceID());
 				GetSystem(pMinor->GetRaceKO()).SetOwnerOfSystem("");
 				CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(sOwner));
 				if (pMajor)
@@ -3125,19 +3169,23 @@ void CBotf2Doc::CalcOldRoundData()
 							if (pMajor->IsHumanPlayer())
 								m_iSelectedView[client] = EMPIRE_VIEW;
 													
-							if (m_Sector[x][y].GetMinorRace() == TRUE && m_Sector[x][y].GetTakenSector() == FALSE)
+							if (m_Sector[x][y].GetMinorRace() == TRUE)
 							{
 								CMinor* pMinor = m_pRaceCtrl->GetMinorRace(m_Sector[x][y].GetName());
 								if (pMinor)
 								{
-									pMinor->SetAgreement(pMajor->GetRaceID(), NO_AGREEMENT);
-									pMajor->SetAgreement(pMinor->GetRaceID(), NO_AGREEMENT);
-									
-									pMinor->SetRelation(pMajor->GetRaceID(), (-(rand()%50+20)));
-									news = CResourceManager::GetString("MINOR_CANCELS_MEMBERSHIP", FALSE, pMinor->GetRaceName());
-									message.GenerateMessage(news, DIPLOMACY, "", CPoint(x,y), FALSE);
-									pMajor->GetEmpire()->AddMessage(message);
 									m_Sector[x][y].SetOwnerOfSector(pMinor->GetRaceID());
+
+									if (m_Sector[x][y].GetTakenSector() == FALSE)
+									{
+										pMinor->SetAgreement(pMajor->GetRaceID(), NO_AGREEMENT);
+										pMajor->SetAgreement(pMinor->GetRaceID(), NO_AGREEMENT);
+										
+										pMinor->SetRelation(pMajor->GetRaceID(), (-(rand()%50+20)));
+										news = CResourceManager::GetString("MINOR_CANCELS_MEMBERSHIP", FALSE, pMinor->GetRaceName());
+										message.GenerateMessage(news, DIPLOMACY, "", CPoint(x,y), FALSE);
+										pMajor->GetEmpire()->AddMessage(message);
+									}									
 								}
 							}
 							else
@@ -3464,12 +3512,7 @@ void CBotf2Doc::CalcNewRoundData()
 						m_iSelectedView[client] = EMPIRE_VIEW;
 				}
 				
-				// baubare Gebäude, Schiffe und Truppen berechnen
 				m_System[x][y].CalculateVariables(&this->BuildingInfo, pMajor->GetEmpire()->GetResearch()->GetResearchInfo(), m_Sector[x][y].GetPlanets(), pMajor, CTrade::GetMonopolOwner());
-				m_System[x][y].CalculateBuildableBuildings(&m_Sector[x][y], &BuildingInfo, pMajor, &m_GlobalBuildings);
-				m_System[x][y].CalculateBuildableShips(this, CPoint(x,y));
-				m_System[x][y].CalculateBuildableTroops(&m_TroopInfo, pMajor->GetEmpire()->GetResearch());
-			
 				// Haben wir eine online Schiffswerft im System, dann ShipPort in dem Sektor setzen
 				if (m_System[x][y].GetProduction()->GetShipYard() == TRUE)
 				{
@@ -3734,18 +3777,20 @@ void CBotf2Doc::CalcTrade()
 			
 			
 			// Nachrichten an die einzelnen Imperien verschicken, das eine Rasse das Monopol erlangt hat
-			if (sMonopolRace.IsEmpty() == false && sMonopolRace != pMajor->GetRaceID() && pMajor->IsRaceContacted(sMonopolRace))
+			if (sMonopolRace.IsEmpty() == false && sMonopolRace != pMajor->GetRaceID())
 			{
 				CMajor* pMonopolRace = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(sMonopolRace));
 				ASSERT(pMonopolRace);
 
-				CString sRace = pMonopolRace->GetRaceNameWithArticle();
+				CString sRace = CResourceManager::GetString("UNKNOWN");
+				if (pMajor->IsRaceContacted(sMonopolRace))
+					sRace = pMonopolRace->GetRaceNameWithArticle();
 								
 				CString news = CResourceManager::GetString("SOMEBODY_GET_MONOPOLY",TRUE,sRace,resName);
 				message.GenerateMessage(news,SOMETHING,"",0,FALSE);
 				pMajor->GetEmpire()->AddMessage(message);
 				RACE clientID = (RACE)m_pRaceCtrl->GetMappedClientID(pMajor->GetRaceID());
-				if (server.IsPlayedByClient(clientID))
+				if (pMajor->IsHumanPlayer())
 					m_iSelectedView[clientID] = EMPIRE_VIEW;
 			}
 		}
@@ -3938,11 +3983,10 @@ void CBotf2Doc::CalcShipOrders()
 						m_iSelectedView[client] = EMPIRE_VIEW;					
 				}
 				m_System[ShipKO.x][ShipKO.y].SetHabitants(m_Sector[ShipKO.x][ShipKO.y].GetCurrentHabitants());
-				m_System[ShipKO.x][ShipKO.y].CalculateBuildableBuildings(&m_Sector[ShipKO.x][ShipKO.y],&BuildingInfo,pMajor,&m_GlobalBuildings);
-				m_System[ShipKO.x][ShipKO.y].CalculateBuildableShips(this, ShipKO);
-				m_System[ShipKO.x][ShipKO.y].CalculateBuildableTroops(&m_TroopInfo,pMajor->GetEmpire()->GetResearch());
+								
 				m_System[ShipKO.x][ShipKO.y].CalculateNumberOfWorkbuildings(&this->BuildingInfo);
 				m_System[ShipKO.x][ShipKO.y].CalculateVariables(&this->BuildingInfo, pMajor->GetEmpire()->GetResearch()->GetResearchInfo(), m_Sector[ShipKO.x][ShipKO.y].GetPlanets(), pMajor, CTrade::GetMonopolOwner());
+				
 				// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
 				s.Format("%s %s",CResourceManager::GetString("COLONIZATION"), m_Sector[ShipKO.x][ShipKO.y].GetName());
 				pMajor->GetShipHistory()->ModifyShip(&m_ShipArray[y], m_Sector[ShipKO.x][ShipKO.y].GetName(TRUE), m_iRound, s, CResourceManager::GetString("DESTROYED"));

@@ -158,7 +158,7 @@ void CMajor::SetAgreement(const CString& sOtherRace, short nNewAgreement)
 		m_mAgreement.erase(sOtherRace);
 		SetAgreementDuration(sOtherRace, 0);
 	}
-	else
+	else if (nNewAgreement != DEFENCE_PACT)
 		m_mAgreement[sOtherRace] = nNewAgreement;
 	
 	// Bei Krieg erlischt der Verteidigungspakt und bei einem Bündnis bekommen wir den automatisch

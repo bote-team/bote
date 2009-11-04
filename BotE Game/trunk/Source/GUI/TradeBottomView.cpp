@@ -211,6 +211,8 @@ void CTradeBottomView::OnDraw(CDC* dc)
 		banner->Draw(&g, &font);
 		delete banner;
 	}
+
+	g.ReleaseHDC(pDC->GetSafeHdc());
 }
 
 // CTradeBottomView diagnostics

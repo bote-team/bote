@@ -66,6 +66,10 @@ public:
 	// dann liefert und die Funktion ein -1. Der Parameter der hier übergeben werden sollte ist der this-Zeiger
 	// des Schiffsobjektes, welches die Flotte besitzt
 	short GetFleetShipType(CShip* ship);
+
+	// Funktion berechnet die minimale Stealthpower der Flotte. Der Parameter der hier übergeben werden sollte
+	// ist der this-Zeiger bzw. die Adresse des Schiffsobjektes, welches die Flotte besitzt
+	BYTE GetFleetStealthPower(CShip* ship = 0);
 	
 	// Funktion übernimmt die Befehle des hier als Zeiger übergebenen Schiffsobjektes an alle Mitglieder der Flotte
 	void AdoptCurrentOrders(CShip* ship);

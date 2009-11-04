@@ -70,6 +70,7 @@ void CFleetMenuView::OnDraw(CDC* dc)
 	// ***************************** DIE FLOTTENBILDUNGSANSICHT ZEICHNEN **********************************
 	DrawFleetMenue(&g);
 	// ************** DIE FLOTTENANSICHT ZEICHNEN ist hier zu Ende **************
+	g.ReleaseHDC(pDC->GetSafeHdc());
 }
 
 

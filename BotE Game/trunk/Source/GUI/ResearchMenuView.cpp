@@ -66,6 +66,7 @@ void CResearchMenuView::OnDraw(CDC* dc)
 	else if (m_bySubMenu == 1)
 		DrawUniqueResearchMenue(&g);
 	// ************** DIE FORSCHUNGSANSICHT ZEICHNEN ist hier zu Ende **************
+	g.ReleaseHDC(pDC->GetSafeHdc());
 }
 
 // CResearchMenuView diagnostics

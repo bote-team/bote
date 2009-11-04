@@ -78,6 +78,8 @@ CSystemProd::CSystemProd(const CSystemProd &rhs)
 	m_iUpdateBuildSpeed = rhs.m_iUpdateBuildSpeed;
 	m_iShipBuildSpeed = rhs.m_iShipBuildSpeed;
 	m_iTroopBuildSpeed = rhs.m_iTroopBuildSpeed;
+	for (int res = TITAN; res <= DILITHIUM; res++)
+		m_bResourceDistributor[res] = rhs.m_bResourceDistributor[res];
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -143,6 +145,8 @@ CSystemProd & CSystemProd::operator=(const CSystemProd & rhs)
 	m_iUpdateBuildSpeed = rhs.m_iUpdateBuildSpeed;
 	m_iShipBuildSpeed = rhs.m_iShipBuildSpeed;
 	m_iTroopBuildSpeed = rhs.m_iTroopBuildSpeed;
+	for (int res = TITAN; res <= DILITHIUM; res++)
+		m_bResourceDistributor[res] = rhs.m_bResourceDistributor[res];
 	return *this;
 }
 
@@ -208,6 +212,10 @@ void CSystemProd::Serialize(CArchive &ar)
 		ar << m_iUpdateBuildSpeed;
 		ar << m_iShipBuildSpeed;
 		ar << m_iTroopBuildSpeed;
+		#ifdef ALPHA5RC
+		for (int res = TITAN; res <= DILITHIUM; res++)
+			ar << m_bResourceDistributor[res];		
+		#endif
 	}
 	// wenn geladen wird
 	if (ar.IsLoading())
@@ -265,6 +273,10 @@ void CSystemProd::Serialize(CArchive &ar)
 		ar >> m_iUpdateBuildSpeed;
 		ar >> m_iShipBuildSpeed;
 		ar >> m_iTroopBuildSpeed;
+		#ifdef ALPHA5RC
+		for (int res = TITAN; res <= DILITHIUM; res++)
+			ar >> m_bResourceDistributor[res];		
+		#endif
 	}
 }
 
@@ -333,6 +345,9 @@ void CSystemProd::CalculateProduction(const CBuildingInfo* building)
 	m_iUpdateBuildSpeed	+= building->GetUpdateBuildSpeed();
 	m_iShipBuildSpeed	+= building->GetShipBuildSpeed();
 	m_iTroopBuildSpeed	+= building->GetTroopBuildSpeed();
+	// Ressourcenverteiler
+	for (int res = TITAN; res <= DILITHIUM; res++)
+		m_bResourceDistributor[res] |= building->GetResourceDistributor(res);
 }
 
 void CSystemProd::IncludeSystemMoral(short moral)
@@ -431,4 +446,6 @@ void CSystemProd::Reset()
 	m_iUpdateBuildSpeed = 0;
 	m_iShipBuildSpeed = 0;
 	m_iTroopBuildSpeed = 0;
+	for (int res = TITAN; res <= DILITHIUM; res++)
+		m_bResourceDistributor[res] = false;
 }

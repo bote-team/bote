@@ -137,6 +137,10 @@ CBuildingInfo::CBuildingInfo(const CBuildingInfo & rhs)
 
 	for (int i = 0; i < 7; i++)
 		m_iBuildingEquivalent[i] = rhs.m_iBuildingEquivalent[i];
+
+	for (int res = TITAN; res <= DILITHIUM; res++)
+		m_bResourceDistributor[res] = rhs.m_bResourceDistributor[res];
+	m_iNeededSystems = rhs.m_iNeededSystems;
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -261,6 +265,11 @@ CBuildingInfo & CBuildingInfo::operator=(const CBuildingInfo & rhs)
 
 	for (int i = 0; i < 7; i++)
 		m_iBuildingEquivalent[i] = rhs.m_iBuildingEquivalent[i];
+
+	for (int res = TITAN; res <= DILITHIUM; res++)
+		m_bResourceDistributor[res] = rhs.m_bResourceDistributor[res];
+	m_iNeededSystems = rhs.m_iNeededSystems;
+
 	return *this;
 }
 
@@ -391,6 +400,12 @@ void CBuildingInfo::Serialize(CArchive &ar)
 		// ist das Gebäude niemals fertig (z.B. ein Tribunal)
 		ar << m_bNeverReady;
 		ar << m_bAllwaysOnline;
+
+		#ifdef ALPHA5RC
+		for (int res = TITAN; res <= DILITHIUM; res++)
+			ar << m_bResourceDistributor[res];
+		ar << m_iNeededSystems;
+		#endif
 	}
 	// wenn geladen wird
 	if (ar.IsLoading())
@@ -513,6 +528,12 @@ void CBuildingInfo::Serialize(CArchive &ar)
 		// ist das Gebäude niemals fertig (z.B. ein Tribunal)
 		ar >> m_bNeverReady;
 		ar >> m_bAllwaysOnline;
+
+		#ifdef ALPHA5RC
+		for (int res = TITAN; res <= DILITHIUM; res++)
+			ar >> m_bResourceDistributor[res];
+		ar >> m_iNeededSystems;
+		#endif
 	}
 }
 
@@ -737,6 +758,23 @@ CString CBuildingInfo::GetProductionAsString(USHORT number) const
 		s.AppendFormat("%s: %i%%\n",CResourceManager::GetString("SHIP_BUILDSPEED"), this->GetShipBuildSpeed() * number);
 	if (this->GetTroopBuildSpeed() != 0)
 		s.AppendFormat("%s: %i%%\n",CResourceManager::GetString("TROOP_BUILDSPEED"), this->GetTroopBuildSpeed() * number);
+	
+	if (this->GetResourceDistributor(TITAN))
+		s.AppendFormat("%s - %s\n", CResourceManager::GetString("RESOURCE_DISTRIBUTOR"), CResourceManager::GetString("TITAN"));
+	if (this->GetResourceDistributor(DEUTERIUM))
+		s.AppendFormat("%s - %s\n", CResourceManager::GetString("RESOURCE_DISTRIBUTOR"), CResourceManager::GetString("DEUTERIUM"));
+	if (this->GetResourceDistributor(DURANIUM))
+		s.AppendFormat("%s - %s\n", CResourceManager::GetString("RESOURCE_DISTRIBUTOR"), CResourceManager::GetString("DURANIUM"));
+	if (this->GetResourceDistributor(CRYSTAL))
+		s.AppendFormat("%s - %s\n", CResourceManager::GetString("RESOURCE_DISTRIBUTOR"), CResourceManager::GetString("CRYSTAL"));
+	if (this->GetResourceDistributor(IRIDIUM))
+		s.AppendFormat("%s - %s\n", CResourceManager::GetString("RESOURCE_DISTRIBUTOR"), CResourceManager::GetString("IRIDIUM"));
+	if (this->GetResourceDistributor(DILITHIUM))
+		s.AppendFormat("%s - %s\n", CResourceManager::GetString("RESOURCE_DISTRIBUTOR"), CResourceManager::GetString("DERITIUM"));
+
+	if (this->GetNeededSystems() != 0)
+		s.AppendFormat("%s: %i\n", CResourceManager::GetString("NEEDED_SYSTEMS"), this->GetNeededSystems());
+
 	return s;
 }
 

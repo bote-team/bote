@@ -25,7 +25,7 @@ protected: // Nur aus Serialisierung erzeugen
 	CSize m_TotalSize;				///< Größe der View in logischen Koordinaten
 	BOOLEAN m_bScrollToHome;		///< soll zum Heimatsektor zu Beginn der Runde gescrollt werden
 
-	CMajor* m_pPlayersRace;			///< Spielerrasse
+	static CMajor* m_pPlayersRace;	///< Spielerrasse
 		
 	Bitmap* m_pGalaxyBackground;	///< Zeiger auf Hintergrundbild-Objekt
 	Bitmap* m_pThumbnail;
@@ -34,7 +34,7 @@ protected: // Nur aus Serialisierung erzeugen
 	int m_nRange;
 	Sector oldtarget;
 	Sector m_oldSelection;	
-	bool m_bUpdateOnly;
+	bool m_bUpdateOnly;	
 	
 	// Hier Variablen, wenn wir eine Handelroute ziehen wollen
 	static BOOLEAN m_bDrawTradeRoute;		///< sollen wir bei MouseMove die Handelroute zeigen
@@ -45,6 +45,10 @@ protected: // Nur aus Serialisierung erzeugen
 	// Hier Variablen für die Schiffsbewegung
 	static BOOLEAN m_bShipMove;				///< soll ein Schiff auf der Map bewegt werden (Kurs geben)
 	CArray<Sector> m_oldPath;				///< alter Pfad eines Schiffes, welcher auf der Map angezeigt wird
+	
+	/// Funktion zum Festlegen der Spielerrasse in der View
+	/// @pPlayer Zeiger auf Spielerrasse
+	static void SetPlayersRace(CMajor* pPlayer) {m_pPlayersRace = pPlayer;}
 	
 	/**
 	 * Multipliziert die cx und cy-Komponente von pSize mit dem Zoom-Faktor, rundet anschließend auf ganze Werte.

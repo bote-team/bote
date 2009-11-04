@@ -59,7 +59,9 @@ void CShipDesignMenuView::OnDraw(CDC* dc)
 	g.SetCompositingQuality(CompositingQualityHighSpeed);
 	g.ScaleTransform((REAL)client.Width() / (REAL)m_TotalSize.cx, (REAL)client.Height() / (REAL)m_TotalSize.cy);
 	
-	DrawShipDesignMenue(&g);	
+	DrawShipDesignMenue(&g);
+
+	g.ReleaseHDC(pDC->GetSafeHdc());
 }
 
 

@@ -87,7 +87,8 @@ public:
 	short GetUpdateBuildSpeed() const {return m_iUpdateBuildSpeed;}
 	short GetShipBuildSpeed() const {return m_iShipBuildSpeed;}
 	short GetTroopBuildSpeed() const {return m_iTroopBuildSpeed;}
-
+	BOOLEAN GetResourceDistributor(BYTE res) const { return m_bResourceDistributor[res]; }
+	
 	// zum Schreiben der Membervariabeln
 	void AddMoralProd(short moralAdd) {m_iMoralProd += moralAdd;}
 
@@ -165,4 +166,6 @@ private:
 	short m_iUpdateBuildSpeed;
 	short m_iShipBuildSpeed;
 	short m_iTroopBuildSpeed;
+	// new in ALPHA5
+	BOOLEAN m_bResourceDistributor[DILITHIUM + 1];		///< Ressourcenverteiler (Nahrung, Titan, Deuterium, Duranium, Kristalle, Iridium, Deritium)
 };

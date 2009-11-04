@@ -63,7 +63,9 @@ void CEventMenuView::OnDraw(CDC* dc)
 		CEventScreen* eventScreen = (CEventScreen*)pMajor->GetEmpire()->GetEventMessages()->GetAt(0);
 		eventScreen->Create();
 		eventScreen->Draw(&g, pDoc->GetGraphicPool());		
-	}	
+	}
+
+	g.ReleaseHDC(pDC->GetSafeHdc());
 }
 
 // CEventMenuView diagnostics
@@ -203,8 +205,7 @@ void CEventMenuView::CloseScreen(CEventScreen* eventScreen)
 		network::RACE client = pDoc->GetRaceCtrl()->GetMappedClientID(pMajor->GetRaceID());
 
 		pDoc->GetMainFrame()->FullScreenMainView(false);
-		if (pDoc->m_iSelectedView[client] == 0)
-			pDoc->m_iSelectedView[client] = EMPIRE_VIEW;
+		pDoc->m_iSelectedView[client] = EMPIRE_VIEW;
 		pDoc->GetMainFrame()->SelectMainView(pDoc->m_iSelectedView[client], pMajor->GetRaceID());
 		pDoc->m_iSelectedView[client] = 0;
 	}

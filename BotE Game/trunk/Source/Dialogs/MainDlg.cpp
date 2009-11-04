@@ -39,7 +39,7 @@ CMainDlg::CMainDlg(CBotf2Doc *pDoc)
 	server.AddServerListener(this);
 	client.AddClientListener(this);
 
-	clientPublisher.Start(6666);
+	clientPublisher.Start(7777);
 }
 
 CMainDlg::~CMainDlg()

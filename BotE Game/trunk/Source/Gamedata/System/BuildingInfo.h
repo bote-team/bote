@@ -224,6 +224,9 @@ public:
 	BOOLEAN GetNeverReady() const {return m_bNeverReady;}
 	BOOLEAN GetAllwaysOnline() const {return m_bAllwaysOnline;}
 
+	BOOLEAN GetResourceDistributor(BYTE res) const { return m_bResourceDistributor[res]; }
+	short GetNeededSystems() const { return m_iNeededSystems; }
+
 	// zum Schreiben der Membervariablen
 	
 	
@@ -388,6 +391,9 @@ public:
 	void SetWorker(BOOLEAN TrueOrFalse) {m_bWorker = TrueOrFalse;}
 	void SetNeverReady(BOOLEAN TrueOrFalse) {m_bNeverReady = TrueOrFalse;}
 	void SetAllwaysOnline(BOOLEAN TrueOrFalse) {m_bAllwaysOnline = TrueOrFalse;}
+
+	void SetResourceDistributor(BYTE res, BOOLEAN bIs) { m_bResourceDistributor[res] = bIs; }
+	void SetNeededSystems(short nNumber) { m_iNeededSystems = nNumber; }
 
 	// sonstige Funktionen
 	/**
@@ -569,6 +575,10 @@ private:
 	
 	// ist das Gebäude niemals fertig (z.B. ein Tribunal)
 	BOOLEAN m_bNeverReady;
+
+	// new in ALPHA5
+	BOOLEAN m_bResourceDistributor[DILITHIUM + 1];	///< Ressourcenverteiler (Nahrung, Titan, Deuterium, Duranium, Kristalle, Iridium, Deritium)
+	short m_iNeededSystems;							///< Mindestanzahl eigener Systeme um Gebäude bauen zu können
 };
 
 typedef CArray<CBuildingInfo,CBuildingInfo> BuildingInfoArray;	// Das dynamische Feld, welches alle Gebäude speichern soll

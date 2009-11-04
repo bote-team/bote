@@ -16,7 +16,6 @@
 
 #define WM_UPDATEVIEWS	(WM_APP+10)
 #define WM_SHOWCHATDLG	(WM_APP+11)
-#define WM_INITVIEWS	(WM_APP+12)
 
 /////////////////////////////////////////////////////////////////////////////
 // CBotf2App:
@@ -39,20 +38,19 @@ public:
 	CBotf2Doc* GetDocument() const;
 
 	/// Funktion gibt einen Zeiger auf den ChatDialog zurück.
-	CChatDlg* GetChatDlg() {return m_pChatDlg;}	
+	CChatDlg* GetChatDlg() {return m_pChatDlg;}
 
 // Überschreibungen
 public:
 	virtual BOOL InitInstance();
 	virtual int ExitInstance();
-
+	
 // Implementierung
+	DECLARE_MESSAGE_MAP()	
 	afx_msg void OnAppAbout();
-	DECLARE_MESSAGE_MAP()
-
+	
 private:
 	afx_msg void UpdateViews(WPARAM, LPARAM);
-	afx_msg void ShowChatDlg(WPARAM, LPARAM);
-	afx_msg void InitViews(WPARAM, LPARAM);
+	afx_msg void ShowChatDlg(WPARAM, LPARAM);	
 	afx_msg void OnChat();	
 };

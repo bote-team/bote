@@ -43,20 +43,32 @@ void CNetworkHandler::OnNextRound(network::CNextRound *pMsg)
 	// Client: Rundendaten vom Server sind eingetroffen, in Dokument übernehmen,
 	// Oberfläche zum Spielen wieder aktivieren
 	m_pDoc->m_bDataReceived = false;
+	
 	pMsg->DeserializeToDoc(m_pDoc);
 	// ...
 	if (m_pDoc->m_bGameOver)
 	{
 		client.Disconnect();
-		return;
+		Sleep(1000);
+		// Hartes Exit!
+		exit(0);
 	}
-	AfxGetApp()->PostThreadMessage(WM_INITVIEWS, 0, 0);
-	AfxGetApp()->PostThreadMessage(WM_UPDATEVIEWS, 0, 0);
 
-	// wurde Rundenende geklickt zurücksetzen
-	m_pDoc->m_bRoundEndPressed = false;
-	m_pDoc->m_bDataReceived = true;
-	
+	// wurde schon ein Fenster erstellt, so wird die Nachricht der Aktualisierung an das Hauptfenster
+	// geschickt
+	CWnd* pWnd = ((CBotf2App*)AfxGetApp())->GetMainWnd();
+	if (pWnd)
+		pWnd->PostMessage(WM_UPDATEVIEWS, 0, 0);
+	// gibt es noch kein Fenster (direkt beim Spielstart bzw. Laden), so geht die Message
+	// an die Application und wird automatisch geschickt, sobald das Fenster da ist
+	else
+	{
+		AfxGetApp()->PostThreadMessage(WM_UPDATEVIEWS, 0, 0);
+		// hier schon setzen, da die Funktion erst später aufgerufen wird und man sonst nicht
+		// beginnen kann
+		m_pDoc->m_bDataReceived = true;
+	}
+			
 	CSoundManager* pSoundManager = CSoundManager::GetInstance();
 	ASSERT(pSoundManager);
 

@@ -2482,6 +2482,7 @@ BOOLEAN CSystem::CheckGeneralConditions(CBuildingInfo* building, CSector* sector
 {
 /*	Allgemeine Voraussetzungen
 	--------------------------
+	benötigte Anzahl eigener Systeme
 	max X mal pro System
 	max X mal pro Imperium
 	Nur Heimatplanet
@@ -2492,8 +2493,11 @@ BOOLEAN CSystem::CheckGeneralConditions(CBuildingInfo* building, CSector* sector
 	Nur wirklicher Besitzer des Gebäudes
 	minimale Bevölkerung im System
 	mindst. X Gebäude von ID im System
-	mindts. X Gebäude von ID im Imperium
+	mindts. X Gebäude von ID im Imperium	
 */	
+	// benötigte Anzahl eigener Systeme
+	if (building->GetNeededSystems() > pMajor->GetEmpire()->GetNumberOfSystems())
+		return FALSE;
 	// Nur Heimatplanet checken
 	if (building->GetOnlyHomePlanet())
 	{
@@ -2575,7 +2579,8 @@ BOOLEAN CSystem::CheckGeneralConditions(CBuildingInfo* building, CSector* sector
 			if (number >= building->GetMaxInEmpire().Number)
 				return FALSE;
 		}
-	}
+	}	
+
 	return TRUE;
 }
 

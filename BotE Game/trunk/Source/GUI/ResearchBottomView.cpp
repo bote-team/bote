@@ -116,6 +116,8 @@ void CResearchBottomView::OnDraw(CDC* dc)
 	else
 		s = pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetCurrentResearchComplex()->GetComplexDescription();
 	g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(40, 100, rect.right-325, rect.bottom), &fontFormat, &fontBrush);
+
+	g.ReleaseHDC(pDC->GetSafeHdc());
 }
 
 

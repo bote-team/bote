@@ -137,6 +137,8 @@ void CDiplomacyMenuView::OnDraw(CDC* dc)
 	// Buttons am unteren Rand zeichnen und die Buttons in der jeweiligeb Diplomatieansicht zeichnen
 	DrawDiplomacyButtons(&g, pMajor, &m_DiplomacyMainButtons, m_bySubMenu);
 	// ************** DIE DIPLOMATIEANSICHT ZEICHNEN ist hier zu Ende **************
+
+	g.ReleaseHDC(pDC->GetSafeHdc());
 }
 
 // CDiplomacyMenuView diagnostics
