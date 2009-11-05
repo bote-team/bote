@@ -399,13 +399,10 @@ void CBuildingInfo::Serialize(CArchive &ar)
 		ar << m_bWorker;
 		// ist das Gebäude niemals fertig (z.B. ein Tribunal)
 		ar << m_bNeverReady;
-		ar << m_bAllwaysOnline;
-
-		#ifdef ALPHA5RC
+		ar << m_bAllwaysOnline;		
 		for (int res = TITAN; res <= DILITHIUM; res++)
 			ar << m_bResourceDistributor[res];
-		ar << m_iNeededSystems;
-		#endif
+		ar << m_iNeededSystems;		
 	}
 	// wenn geladen wird
 	if (ar.IsLoading())
@@ -527,13 +524,10 @@ void CBuildingInfo::Serialize(CArchive &ar)
 		ar >> m_bWorker;
 		// ist das Gebäude niemals fertig (z.B. ein Tribunal)
 		ar >> m_bNeverReady;
-		ar >> m_bAllwaysOnline;
-
-		#ifdef ALPHA5RC
+		ar >> m_bAllwaysOnline;		
 		for (int res = TITAN; res <= DILITHIUM; res++)
 			ar >> m_bResourceDistributor[res];
-		ar >> m_iNeededSystems;
-		#endif
+		ar >> m_iNeededSystems;		
 	}
 }
 

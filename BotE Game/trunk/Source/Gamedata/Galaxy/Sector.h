@@ -223,7 +223,7 @@ public:
 
 	/// Diese Funktion berechnet die vorhandenen Rohstoffe der Planeten im Sektor. Übergebn wird dafür ein Feld für
 	/// die Ressourcen <code>res</code>.
-	void GetAvailableResources(BOOLEAN res[5]);
+	void GetAvailableResources(BOOLEAN bResources[DILITHIUM + 1], BOOLEAN bOnlyColonized = true);
 
 	/// Diese Funktion gibt die Schiffspfadpunkte zurück.
 	short GetShipPathPoints() const {return m_iShipPathPoints;}

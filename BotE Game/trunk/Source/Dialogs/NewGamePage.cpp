@@ -290,17 +290,7 @@ LRESULT CNewGamePage::OnWizardNext()
 
 	case MODE_LOAD:
 		{
-		// Datei laden
-		// ALPHA5 raus
-		#ifndef ALPHA5RC
-		if (CSector::m_NameGenerator)
-		{
-			delete CSector::m_NameGenerator;
-			CSector::m_NameGenerator = NULL;
-		}
-		CSector::InitNameGenerator();
-		#endif
-		
+		// Datei laden		
 		CString fileName;
 		GetDlgItemText(IDC_FILENAME, fileName);
 		m_pParent->GetServerDocument()->m_bGameLoaded = true;

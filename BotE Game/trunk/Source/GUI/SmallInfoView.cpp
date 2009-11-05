@@ -153,6 +153,46 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 			// Steht so auch in der ConsumeRessources() Funktion der Klasse CMinorRace und in der BuildBuildingsForMinorRace()
 			// Funktion in der CSystem Klasse, also wenn hier was geändert auch dort ändern!!
 			char PlanetClass = m_pPlanet->GetClass();
+			fontFormat.SetAlignment(StringAlignmentCenter);
+			fontFormat.SetLineAlignment(StringAlignmentCenter);
+			if (m_pPlanet->GetHabitable())
+			{
+				s = CResourceManager::GetString("EXISTING_RES") + ":";
+				g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0,165,r.right,25), &fontFormat, &fontBrush);
+			}
+			
+			BOOLEAN res[DILITHIUM + 1] = {FALSE};
+			if (m_pPlanet->GetHabitable())
+				m_pPlanet->GetAvailableResources(res);
+
+			int n = 0;
+			for (int i = TITAN; i <= DILITHIUM; i++)
+				n += res[i];
+
+			int xPos = r.Width() / 2;
+			xPos -= n * 10;
+			int nExist = 0;
+			for (int i = TITAN; i <= DILITHIUM; i++)
+			{
+				if (res[i])
+				{
+					Bitmap* graphic = NULL;
+					switch(i)
+					{
+						case TITAN:		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\titanSmall.png");		break;
+						case DEUTERIUM: graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\deuteriumSmall.png");	break;
+						case DURANIUM:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\duraniumSmall.png");	break;
+						case CRYSTAL:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\crystalSmall.png");		break;
+						case IRIDIUM:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\iridiumSmall.png");		break;
+						case DILITHIUM: graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\Dilithium.png");		break;
+					}
+					if (graphic)
+						g->DrawImage(graphic, xPos + nExist * 20, 195, 20, 16);
+					nExist++;
+				}
+			}
+
+			/*
 			s.Format("");
 			if (PlanetClass == 'C')
 				s = CResourceManager::GetString("EXISTING_RES")+":\n"+
@@ -191,7 +231,7 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 			fontFormat.SetLineAlignment(StringAlignmentCenter);
 			fontFormat.SetFormatFlags(!StringFormatFlagsNoWrap);
 			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0,165,r.right,85), &fontFormat, &fontBrush);
-			
+			*/
 			fontFormat.SetFormatFlags(!StringFormatFlagsNoWrap);
 			fontBrush.SetColor(Color(220,220,220));
 			s.Format("I N F O R M A T I O N");

@@ -212,10 +212,8 @@ void CSystemProd::Serialize(CArchive &ar)
 		ar << m_iUpdateBuildSpeed;
 		ar << m_iShipBuildSpeed;
 		ar << m_iTroopBuildSpeed;
-		#ifdef ALPHA5RC
 		for (int res = TITAN; res <= DILITHIUM; res++)
 			ar << m_bResourceDistributor[res];		
-		#endif
 	}
 	// wenn geladen wird
 	if (ar.IsLoading())
@@ -273,10 +271,8 @@ void CSystemProd::Serialize(CArchive &ar)
 		ar >> m_iUpdateBuildSpeed;
 		ar >> m_iShipBuildSpeed;
 		ar >> m_iTroopBuildSpeed;
-		#ifdef ALPHA5RC
 		for (int res = TITAN; res <= DILITHIUM; res++)
 			ar >> m_bResourceDistributor[res];		
-		#endif
 	}
 }
 

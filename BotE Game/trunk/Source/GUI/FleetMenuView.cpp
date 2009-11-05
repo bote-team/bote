@@ -62,7 +62,7 @@ void CFleetMenuView::OnDraw(CDC* dc)
 	Graphics g(pDC->GetSafeHdc());
 	
 	g.Clear(Color::Black);
-	g.SetSmoothingMode(SmoothingModeHighSpeed);
+	g.SetSmoothingMode(SmoothingModeHighQuality);
 	g.SetInterpolationMode(InterpolationModeLowQuality);
 	g.SetPixelOffsetMode(PixelOffsetModeHighSpeed);
 	g.SetCompositingQuality(CompositingQualityHighSpeed);

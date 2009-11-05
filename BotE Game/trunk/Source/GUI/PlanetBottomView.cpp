@@ -124,7 +124,7 @@ void CPlanetBottomView::OnDraw(CDC* dc)
 			CRect planetRect;
 			planetRect.SetRect(900-resizeItX+resizeItX,0+resizeItY,900-resizeItX,0+resizeItY+resizeItY);
 			planet->DrawPlanet(g, planetRect, pDoc->GetGraphicPool());
-			m_arroundThePlanets[i].NormalizeRect();					
+			m_arroundThePlanets[i].NormalizeRect();
 		}				
 	}
 	if (pDoc->GetSector(KO.x,KO.y).GetSunSystem() && pDoc->GetSector(KO.x,KO.y).GetScanned(pMajor->GetRaceID()))
@@ -169,6 +169,35 @@ void CPlanetBottomView::OnDraw(CDC* dc)
 	}
 	else if (pDoc->m_Sector[KO.x][KO.y].GetSunSystem() == TRUE && pDoc->m_Sector[KO.x][KO.y].GetKnown(pMajor->GetRaceID()) == TRUE)
 	{
+		// vorhandene Rohstoffe auf allen Planeten zeichnen
+		s = CResourceManager::GetString("EXISTING_RES") + ":";
+		g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), PointF(735,228), &fontFormat, &fontBrush);
+		RectF boundingBox;
+		g.MeasureString(s.AllocSysString(), s.GetLength(), &Gdiplus::Font(fontName.AllocSysString(), fontSize), PointF(735, 228), &fontFormat, &boundingBox); 
+		// Symbole der vorhanden Ressourcen im System ermitteln
+		BOOLEAN res[DILITHIUM + 1] = {0};
+		pDoc->GetSector(KO).GetAvailableResources(res, false);
+		int nExist = 0;
+		for (int i = TITAN; i <= DILITHIUM; i++)
+		{
+			if (res[i])
+			{
+				graphic = NULL;
+				switch(i)
+				{
+					case TITAN:		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\titanSmall.png");		break;
+					case DEUTERIUM: graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\deuteriumSmall.png");	break;
+					case DURANIUM:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\duraniumSmall.png");	break;
+					case CRYSTAL:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\crystalSmall.png");		break;
+					case IRIDIUM:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\iridiumSmall.png");		break;
+					case DILITHIUM: graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\Dilithium.png");		break;
+				}
+				if (graphic)
+					g.DrawImage(graphic, (int)boundingBox.GetRight() + 5 + nExist * 20, 228, 20, 16);
+				nExist++;
+			}
+		}
+		
 		s.Format("%s: %s",CResourceManager::GetString("SYSTEM"), pDoc->m_Sector[KO.x][KO.y].GetName());
 		g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), PointF(40,47), &fontFormat, &fontBrush);
 		if (pDoc->m_Sector[KO.x][KO.y].GetFullKnown(pMajor->GetRaceID()))

@@ -1642,8 +1642,8 @@ void CSystem::BuildBuildingsForMinorRace(CSector* sector, BuildingInfoArray* bui
 	if (m_Buildings.GetSize() < 5)
 	{
 		// in exist[.] steht dann, ob wir einen Rohstoff abbauen können, wenn ja, dann können wir auch das Gebäude bauen
-		BOOLEAN exist[5] = {0,0,0,0,0};
-		sector->GetAvailableResources(exist);
+		BOOLEAN exist[DILITHIUM + 1] = {0};
+		sector->GetAvailableResources(exist, true);
 
 		// Schauen, welche Gebäudestufe ungefähr in dem System steht
 		// Jetzt nach der Fortschrittlichkeit der kleinen Rasse gehen
@@ -1769,23 +1769,23 @@ void CSystem::BuildBuildingsForMinorRace(CSector* sector, BuildingInfoArray* bui
 				{
 					runningNumber[4] = buildingInfo->GetAt(i).GetRunningNumber();
 				}
-				else if (buildingInfo->GetAt(i).GetTitanProd() > 0 && buildingInfo->GetAt(i).GetWorker() == TRUE && exist[0] == TRUE)
+				else if (buildingInfo->GetAt(i).GetTitanProd() > 0 && buildingInfo->GetAt(i).GetWorker() == TRUE && exist[TITAN] == TRUE)
 				{
 					runningNumber[5] = buildingInfo->GetAt(i).GetRunningNumber();
 				}
-				else if (buildingInfo->GetAt(i).GetDeuteriumProd() > 0 && buildingInfo->GetAt(i).GetWorker() == TRUE && exist[1] == TRUE)
+				else if (buildingInfo->GetAt(i).GetDeuteriumProd() > 0 && buildingInfo->GetAt(i).GetWorker() == TRUE && exist[DEUTERIUM] == TRUE)
 				{
 					runningNumber[6] = buildingInfo->GetAt(i).GetRunningNumber();
 				}
-				else if (buildingInfo->GetAt(i).GetDuraniumProd() > 0 && buildingInfo->GetAt(i).GetWorker() == TRUE && exist[2] == TRUE)
+				else if (buildingInfo->GetAt(i).GetDuraniumProd() > 0 && buildingInfo->GetAt(i).GetWorker() == TRUE && exist[DURANIUM] == TRUE)
 				{
 					runningNumber[7] = buildingInfo->GetAt(i).GetRunningNumber();
 				}
-				else if (buildingInfo->GetAt(i).GetCrystalProd() > 0 && buildingInfo->GetAt(i).GetWorker() == TRUE && exist[3] == TRUE)
+				else if (buildingInfo->GetAt(i).GetCrystalProd() > 0 && buildingInfo->GetAt(i).GetWorker() == TRUE && exist[CRYSTAL] == TRUE)
 				{
 					runningNumber[8] = buildingInfo->GetAt(i).GetRunningNumber();
 				}
-				else if (buildingInfo->GetAt(i).GetIridiumProd() > 0 && buildingInfo->GetAt(i).GetWorker() == TRUE && exist[4] == TRUE)
+				else if (buildingInfo->GetAt(i).GetIridiumProd() > 0 && buildingInfo->GetAt(i).GetWorker() == TRUE && exist[IRIDIUM] == TRUE)
 				{
 					runningNumber[9] = buildingInfo->GetAt(i).GetRunningNumber();
 				}
@@ -1990,8 +1990,8 @@ void CSystem::BuildBuildingsAfterColonization(CSector *sector, BuildingInfoArray
 		};
 
 	// in exist[.] steht dann, ob wir einen Rohstoff abbauen können, wenn ja, dann können wir auch das Gebäude bauen
-	BOOLEAN exist[5] = {0,0,0,0,0};
-	sector->GetAvailableResources(exist);
+	BOOLEAN exist[DILITHIUM + 1] = {0};
+	sector->GetAvailableResources(exist, true);
 
 	USHORT start = 0;
 	for (int i = 0; i < buildingInfo->GetSize(); i++)

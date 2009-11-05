@@ -344,35 +344,23 @@ float CSector::GetCurrentHabitants() const
 
 /// Diese Funktion berechnet die vorhandenen Rohstoffe der Planeten im Sektor. Übergebn wird dafür ein Feld für
 /// die Ressourcen <code>res</code>.
-void CSector::GetAvailableResources(BOOLEAN res[5])
+void CSector::GetAvailableResources(BOOLEAN bResources[DILITHIUM + 1], BOOLEAN bOnlyColonized/* = true */)
 {
 	for (int i = 0; i < m_Planets.GetSize(); i++)
-	{	// steht so auch in der BuildBuildingsForMinorRace() Funktion in Klasse CSystem, also wenn hier was geändert auch dort ändern!!
-		CPlanet planet = m_Planets.GetAt(i);
-		if (planet.GetClass() == 'C' && planet.GetColonized() == TRUE)
-		{	res[0] |= TRUE;  res[1] |= FALSE; res[2] |= FALSE; res[3] |= FALSE; res[4] |= TRUE;}
-		else if (planet.GetClass() == 'F' && planet.GetColonized() == TRUE)
-		{	res[0] |= TRUE;  res[1] |= FALSE; res[2] |= TRUE;  res[3] |= FALSE; res[4] |= FALSE;}
-		else if (planet.GetClass() == 'G' && planet.GetColonized() == TRUE)
-		{	res[0] |= TRUE;  res[1] |= FALSE; res[2] |= TRUE;  res[3] |= TRUE;  res[4] |= FALSE;}
-		else if (planet.GetClass() == 'H' && planet.GetColonized() == TRUE)
-		{	res[0] |= FALSE; res[1] |= FALSE; res[2] |= FALSE; res[3] |= FALSE; res[4] |= TRUE;}
-		else if (planet.GetClass() == 'K' && planet.GetColonized() == TRUE)
-		{	res[0] |= TRUE;  res[1] |= FALSE; res[2] |= TRUE;  res[3] |= FALSE; res[4] |= FALSE;}
-		else if (planet.GetClass() == 'L' && planet.GetColonized() == TRUE)
-		{	res[0] |= TRUE;  res[1] |= TRUE;  res[2] |= FALSE; res[3] |= FALSE; res[4] |= FALSE;}
-		else if (planet.GetClass() == 'M' && planet.GetColonized() == TRUE)
-		{	res[0] |= TRUE;  res[1] |= TRUE;  res[2] |= TRUE;  res[3] |= TRUE;  res[4] |= TRUE;}
-		else if (planet.GetClass() == 'N' && planet.GetColonized() == TRUE)
-		{	res[0] |= FALSE; res[1] |= TRUE;  res[2] |= FALSE; res[3] |= FALSE; res[4] |= FALSE;}
-		else if (planet.GetClass() == 'O' && planet.GetColonized() == TRUE)
-		{	res[0] |= FALSE; res[1] |= TRUE;  res[2] |= FALSE; res[3] |= FALSE; res[4] |= FALSE;}
-		else if (planet.GetClass() == 'P' && planet.GetColonized() == TRUE)
-		{	res[0] |= TRUE;  res[1] |= FALSE; res[2] |= FALSE; res[3] |= TRUE;  res[4] |= TRUE;}
-		else if (planet.GetClass() == 'Q' && planet.GetColonized() == TRUE)
-		{	res[0] |= FALSE;  res[1] |= FALSE; res[2] |= FALSE; res[3] |= TRUE;  res[4] |= FALSE;}
-		else if (planet.GetClass() == 'R' && planet.GetColonized() == TRUE)
-		{	res[0] |= FALSE; res[1] |= FALSE; res[2] |= TRUE;  res[3] |= FALSE; res[4] |= FALSE;}
+	{
+		CPlanet* pPlanet = &m_Planets[i];
+		if (!pPlanet->GetHabitable())
+			continue;
+		
+		// wenn nur kolonisierte Planeten betrachtet werden sollen und der Planet nicht kolonisiert ist,
+		// dann nächsten Planeten betrachten
+		if (bOnlyColonized && !pPlanet->GetColonized())
+			continue;
+
+		BOOLEAN bExists[DILITHIUM + 1] = {FALSE};
+		pPlanet->GetAvailableResources(bExists);
+		for (int res = TITAN; res <= DILITHIUM; res++)
+			bResources[res] |= bExists[res];
 	}
 }
 
@@ -999,10 +987,9 @@ void CSector::CreatePlanets(const CString& sMajorID)
 			BYTE zone = HOT;
 			for (int i = 0; i < number; i++)
 			{
-				CPlanet* planet = new CPlanet();
-				zone = planet->GeneratePlanet(zone, m_strSectorName, i, GetMinorRace());
-				m_Planets.Add(*planet);
-				delete planet;
+				CPlanet planet;
+				zone = planet.Create(m_strSectorName, zone, i, GetMinorRace());
+				m_Planets.Add(planet);				
 			}
 		}
 	}

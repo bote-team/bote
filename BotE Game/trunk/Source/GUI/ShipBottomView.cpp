@@ -76,7 +76,11 @@ void CShipBottomView::OnDraw(CDC* dc)
 	Graphics g(pDC->GetSafeHdc());
 	
 	g.Clear(Color::Black);
-	g.SetSmoothingMode(SmoothingModeHighSpeed);
+	/*g.SetSmoothingMode(SmoothingModeHighSpeed);
+	g.SetInterpolationMode(InterpolationModeLowQuality);
+	g.SetPixelOffsetMode(PixelOffsetModeHighSpeed);
+	g.SetCompositingQuality(CompositingQualityHighSpeed);*/
+	g.SetSmoothingMode(SmoothingModeHighQuality);
 	g.SetInterpolationMode(InterpolationModeLowQuality);
 	g.SetPixelOffsetMode(PixelOffsetModeHighSpeed);
 	g.SetCompositingQuality(CompositingQualityHighSpeed);

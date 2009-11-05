@@ -174,8 +174,8 @@ void CSystemAI::CalcPriorities()
 
 	// vorhandene Ressourcen durch die Planeten holen. Wenn eine Ressource nicht vorhanden ist, wird die entsprechende
 	// Priorität auf NULL gesetzt. Denn dafür haben wir dann auch keine Gebäude in der Bauliste.
-	BOOLEAN resExist[5] = {0,0,0,0,0};
-	m_pDoc->m_Sector[ko.x][ko.y].GetAvailableResources(resExist);
+	BOOLEAN resExist[DILITHIUM + 1] = {0};
+	m_pDoc->m_Sector[ko.x][ko.y].GetAvailableResources(resExist, true);
 
 	// zuallererst werden erstmal alle Prioritäten berechnet
 	for (int i = FOOD_WORKER; i <= IRIDIUM_WORKER; i++)

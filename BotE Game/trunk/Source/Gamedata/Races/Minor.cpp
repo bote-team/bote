@@ -226,8 +226,8 @@ void CMinor::ConsumeResources(CBotf2Doc* pDoc)
 	ASSERT(pDoc);
 
 	// bewohnbar sind:    C,F,G,H,K,L,M,N,O,P,Q,R
-	BOOLEAN exist[5] = {0,0,0,0,0};
-	pDoc->GetSector(m_ptKO).GetAvailableResources(exist);
+	BOOLEAN exist[DILITHIUM + 1] = {0};
+	pDoc->GetSector(m_ptKO).GetAvailableResources(exist, true);
 	
 	short div;
 	int value;
