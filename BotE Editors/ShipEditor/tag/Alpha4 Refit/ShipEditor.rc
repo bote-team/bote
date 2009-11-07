@@ -1,0 +1,530 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// Deutsch (Deutschland) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_DEU)
+#ifdef _WIN32
+LANGUAGE LANG_GERMAN, SUBLANG_GERMAN
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "#define _AFX_NO_SPLITTER_RESOURCES\r\n"
+    "#define _AFX_NO_OLE_RESOURCES\r\n"
+    "#define _AFX_NO_TRACKER_RESOURCES\r\n"
+    "#define _AFX_NO_PROPERTY_RESOURCES\r\n"
+    "\r\n"
+    "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_DEU)\r\n"
+    "#ifdef _WIN32\r\n"
+    "LANGUAGE 7, 1\r\n"
+    "#pragma code_page(1252)\r\n"
+    "#endif //_WIN32\r\n"
+    "#include ""res\\ShipEditor.rc2""  // Nicht mit Microsoft Visual C++ bearbeitete Ressourcen\r\n"
+    "#include ""l.deu\\afxres.rc""          // Standardkomponenten\r\n"
+    "#endif\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDR_MAINFRAME           ICON                    "res\\ShipEditor.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_ABOUTBOX DIALOG  0, 0, 235, 55
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Info über ShipEditor"
+FONT 8, "MS Sans Serif"
+BEGIN
+    ICON            IDR_MAINFRAME,IDC_STATIC,11,17,20,20
+    LTEXT           "ShipEditor Version 2.0 for Alpha4 Refit",IDC_STATIC,40,10,119,8,SS_NOPREFIX
+    LTEXT           "Copyright by Sir Pustekuchen (C) 2006-2009",IDC_STATIC,40,25,97,23
+    DEFPUSHBUTTON   "OK",IDOK,178,7,50,14,WS_GROUP
+END
+
+IDD_SHIPEDITOR_DIALOG DIALOGEX 0, 0, 569, 290
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_APPWINDOW
+CAPTION "ShipEditor"
+FONT 8, "MS Sans Serif", 0, 0, 0x1
+BEGIN
+    LISTBOX         IDC_LIST1,7,14,92,242,LBS_OWNERDRAWFIXED | LBS_HASSTRINGS | LBS_NOINTEGRALHEIGHT | NOT WS_BORDER | WS_VSCROLL | WS_TABSTOP
+    EDITTEXT        IDC_SHIPCLASS,103,15,94,13,ES_AUTOHSCROLL
+    COMBOBOX        IDC_SHIPTYPE,103,39,94,161,CBS_DROPDOWNLIST | WS_TABSTOP
+    EDITTEXT        IDC_SHIPDESCRIPTION,104,66,93,71,ES_MULTILINE | ES_AUTOVSCROLL | WS_VSCROLL
+    CONTROL         "Major1",IDC_FEDERATION,"Button",BS_AUTORADIOBUTTON | WS_GROUP,211,20,33,10
+    CONTROL         "Major2",IDC_RADIO14,"Button",BS_AUTORADIOBUTTON,261,20,33,10
+    CONTROL         "Major3",IDC_RADIO15,"Button",BS_AUTORADIOBUTTON,311,20,33,10
+    CONTROL         "Major4",IDC_RADIO16,"Button",BS_AUTORADIOBUTTON,361,20,33,10
+    CONTROL         "Major5",IDC_RADIO17,"Button",BS_AUTORADIOBUTTON,411,20,33,10
+    CONTROL         "Major6",IDC_RADIO18,"Button",BS_AUTORADIOBUTTON,461,20,33,10
+    CONTROL         "Minor",IDC_RADIO19,"Button",BS_AUTORADIOBUTTON,511,20,33,10
+    EDITTEXT        IDC_BIOTECH,259,42,16,14,ES_AUTOHSCROLL | ES_NUMBER
+    EDITTEXT        IDC_ENERGYTECH,259,56,16,14,ES_AUTOHSCROLL | ES_NUMBER
+    EDITTEXT        IDC_COMPUTERTECH,259,70,16,14,ES_AUTOHSCROLL | ES_NUMBER
+    EDITTEXT        IDC_PROPULSIONTECH,259,84,16,14,ES_AUTOHSCROLL | ES_NUMBER
+    EDITTEXT        IDC_CONSTRUCTIONTECH,259,98,16,14,ES_AUTOHSCROLL | ES_NUMBER
+    EDITTEXT        IDC_WEAPONTECH,259,112,16,14,ES_AUTOHSCROLL | ES_NUMBER
+    EDITTEXT        IDC_INDUSTRY,321,41,30,14,ES_AUTOHSCROLL | ES_NUMBER
+    EDITTEXT        IDC_TITAN,321,55,30,14,ES_AUTOHSCROLL | ES_NUMBER
+    EDITTEXT        IDC_DEUTERIUM,321,69,30,14,ES_AUTOHSCROLL | ES_NUMBER
+    EDITTEXT        IDC_DURANIUM,321,83,30,14,ES_AUTOHSCROLL | ES_NUMBER
+    EDITTEXT        IDC_CRYSTAL,321,97,30,14,ES_AUTOHSCROLL | ES_NUMBER
+    EDITTEXT        IDC_IRIDIUM,321,111,30,14,ES_AUTOHSCROLL | ES_NUMBER
+    EDITTEXT        IDC_DILITHIUM,321,125,30,14,ES_AUTOHSCROLL | ES_NUMBER
+    EDITTEXT        IDC_ONLYONSYSTEM,176,142,73,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_MAINTENANCECOSTS,321,139,30,14,ES_AUTOHSCROLL | ES_NUMBER
+    CONTROL         "Titan",IDC_MATERIAL,"Button",BS_AUTORADIOBUTTON | WS_GROUP,381,52,32,10
+    CONTROL         "Duranium",IDC_RADIO2,"Button",BS_AUTORADIOBUTTON,433,52,46,10
+    CONTROL         "Iridium",IDC_RADIO3,"Button",BS_AUTORADIOBUTTON,497,52,36,10
+    EDITTEXT        IDC_BASEHULL,414,73,33,14,ES_AUTOHSCROLL | ES_NUMBER
+    CONTROL         "Doublehull:",IDC_DOUBLEHULL,"Button",BS_AUTOCHECKBOX | BS_LEFTTEXT | WS_TABSTOP,372,91,51,10
+    CONTROL         "ablative armor:",IDC_ABLATIVE,"Button",BS_AUTOCHECKBOX | BS_LEFTTEXT | WS_TABSTOP,361,106,62,10
+    EDITTEXT        IDC_MAXSHIELDS,513,73,40,14,ES_AUTOHSCROLL | ES_NUMBER
+    EDITTEXT        IDC_SHIELDTYPE,513,89,17,14,ES_AUTOHSCROLL | ES_NUMBER
+    CONTROL         "regenerative shield:",IDC_REGENERATIVE,"Button",BS_AUTOCHECKBOX | BS_LEFTTEXT | WS_TABSTOP,444,106,77,10
+    CONTROL         "short",IDC_RANGE,"Button",BS_AUTORADIOBUTTON | WS_GROUP,380,146,31,10
+    CONTROL         "medium",IDC_RADIO5,"Button",BS_AUTORADIOBUTTON,435,146,40,10
+    CONTROL         "long",IDC_RADIO6,"Button",BS_AUTORADIOBUTTON,500,146,29,10
+    EDITTEXT        IDC_SPEED,391,170,14,14,ES_AUTOHSCROLL | ES_NUMBER
+    EDITTEXT        IDC_SHIPSIZE,391,189,14,14,ES_AUTOHSCROLL | ES_NUMBER
+    EDITTEXT        IDC_SCANPOWER,465,170,26,14,ES_AUTOHSCROLL | ES_NUMBER
+    EDITTEXT        IDC_MANEUVER,465,190,13,14,ES_AUTOHSCROLL | ES_NUMBER
+    EDITTEXT        IDC_SCANRANGE,537,170,14,14,ES_AUTOHSCROLL | ES_NUMBER
+    EDITTEXT        IDC_CAMOUFLAGEPOWER,537,190,13,14,ES_AUTOHSCROLL | ES_NUMBER
+    EDITTEXT        IDC_STORAGEROOM,391,206,26,14,ES_AUTOHSCROLL | ES_NUMBER
+    EDITTEXT        IDC_COLONIZATIONPOINTS,391,224,13,14,ES_AUTOHSCROLL | ES_NUMBER
+    EDITTEXT        IDC_STATIONBUILDPOINTS,391,240,13,14,ES_AUTOHSCROLL | ES_NUMBER
+    COMBOBOX        IDC_SPECIAL1,468,214,94,109,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_SPECIAL2,468,232,94,107,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    LISTBOX         IDC_BEAMLIST,105,182,101,58,LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
+    LISTBOX         IDC_TORPEDOLIST,217,182,101,58,LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
+    PUSHBUTTON      "Modify Beam",IDC_MODIFYBEAM,106,241,50,14
+    PUSHBUTTON      "Delete Beam",IDC_DELETEBEAM,157,241,50,14
+    PUSHBUTTON      "Add Beam",IDC_ADDBEAM,132,257,50,14
+    PUSHBUTTON      "Modify Tube",IDC_MODIFYTUBE,218,242,50,14
+    PUSHBUTTON      "Delete Tube",IDC_DELETETUBE,269,242,50,14
+    PUSHBUTTON      "Add Tube",IDC_ADDTUBE,244,258,50,14
+    PUSHBUTTON      "New Class",IDC_NEWCLASS,7,257,44,14
+    PUSHBUTTON      "Delete Class",IDC_DELETECLASS,56,257,44,14
+    PUSHBUTTON      "Show Stats",IDC_SHOWSTATS,460,268,50,14
+    PUSHBUTTON      "Load",IDC_LOAD,460,252,50,14
+    PUSHBUTTON      "Save",IDC_SAVE,512,252,50,14
+    DEFPUSHBUTTON   "Close",IDOK,511,268,51,14
+    LTEXT           "Shiplist",IDC_STATIC,7,4,23,8
+    LTEXT           "Shipdescription",IDC_STATIC,104,56,49,8
+    LTEXT           "Shiptype",IDC_STATIC,104,29,28,8
+    LTEXT           "Biotech:",IDC_STATIC,202,44,27,8
+    LTEXT           "Energytech:",IDC_STATIC,202,58,39,8
+    LTEXT           "Computertech:",IDC_STATIC,202,72,47,8
+    LTEXT           "Propulsiontech:",IDC_STATIC,202,86,50,8
+    LTEXT           "Constructiontech:",IDC_STATIC,202,100,56,8
+    LTEXT           "Weaponstech:",IDC_STATIC,202,114,48,8
+    LTEXT           "Industry:",IDC_STATIC,284,44,28,8
+    LTEXT           "Titan:",IDC_STATIC,284,57,19,8
+    LTEXT           "Deuterium:",IDC_STATIC,284,70,35,8
+    LTEXT           "Duranium:",IDC_STATIC,284,84,33,8
+    LTEXT           "Crystal:",IDC_STATIC,284,99,24,8
+    LTEXT           "Iridium:",IDC_STATIC,284,112,23,8
+    LTEXT           "Deritium:",IDC_STATIC,284,126,28,8
+    GROUPBOX        "Hullmaterial",IDC_STATIC,363,41,190,26,WS_GROUP
+    LTEXT           "Basehull:",IDC_STATIC,380,76,30,8
+    LTEXT           "maximum Shields:",IDC_STATIC,453,75,56,8
+    LTEXT           "Shieldtype:",IDC_STATIC,472,91,36,8
+    GROUPBOX        "Flyingrange",IDC_STATIC,363,136,189,26,WS_GROUP
+    LTEXT           "Speed:",IDC_STATIC,364,171,24,8
+    LTEXT           "Scanpower:",IDC_STATIC,425,171,39,8
+    LTEXT           "Scanrange:",IDC_STATIC,498,171,38,8
+    LTEXT           "Camouflagelvl:",IDC_STATIC,488,192,47,8
+    LTEXT           "Storageroom:",IDC_STATIC,345,208,43,8
+    LTEXT           "Colonizationpoints:",IDC_STATIC,328,226,60,8
+    LTEXT           "Stationbuildpoints:",IDC_STATIC,330,242,58,8
+    LTEXT           "Maintenancecosts:",IDC_STATIC,256,142,61,8
+    LTEXT           "Beamweapons",IDC_STATIC,106,171,48,8
+    LTEXT           "Torpedoweapons",IDC_STATIC,216,171,56,8
+    GROUPBOX        "Who can build this ship?",IDC_STATIC,205,4,348,33,WS_GROUP
+    LTEXT           "Please always make a backup of the Shiplist.data file before you´ll change some data!",IDC_STATIC,158,275,282,8
+    LTEXT           "Shipclass",IDC_STATIC,103,4,37,8
+    LTEXT           "only in system:",IDC_STATIC,118,144,50,8
+    LTEXT           "Maneuverability:",IDC_STATIC,412,192,52,8
+    LTEXT           "Shipsize:",IDC_STATIC,359,191,29,8
+    LTEXT           "Assignment 1:",IDC_STATIC,422,217,45,8
+    LTEXT           "Assignment 2:",IDC_STATIC,422,235,45,8
+    LTEXT           "becomes obsolete:",IDC_STATIC,107,156,60,8
+    CONTROL         "Hullpolarisation:",IDC_POLARISATION,"Button",BS_AUTOCHECKBOX | BS_LEFTTEXT | WS_TABSTOP,358,121,65,10
+    COMBOBOX        IDC_OBSOLETE,176,155,73,128,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+END
+
+IDD_MODIFYBEAM_DIALOG DIALOGEX 0, 0, 192, 177
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Modify Beamweapons"
+FONT 8, "MS Sans Serif", 0, 0, 0x0
+BEGIN
+    EDITTEXT        IDC_BEAMTYPE,81,22,40,14,ES_AUTOHSCROLL | ES_NUMBER
+    EDITTEXT        IDC_BEAMNUMBER,81,37,40,14,ES_AUTOHSCROLL | ES_NUMBER
+    EDITTEXT        IDC_SHOOTNUMBER,81,52,40,14,ES_AUTOHSCROLL | ES_NUMBER
+    EDITTEXT        IDC_BEAMTIME,81,67,40,14,ES_AUTOHSCROLL | ES_NUMBER
+    EDITTEXT        IDC_RECHARGETIME,81,82,40,14,ES_AUTOHSCROLL | ES_NUMBER
+    EDITTEXT        IDC_BONUS,81,97,40,14,ES_AUTOHSCROLL | ES_NUMBER
+    EDITTEXT        IDC_BEAMDAMAGE,81,112,40,14,ES_AUTOHSCROLL | ES_NUMBER
+    CONTROL         "Modulating:",IDC_MODULATING,"Button",BS_AUTOCHECKBOX | BS_LEFTTEXT | WS_TABSTOP,23,134,53,10
+    DEFPUSHBUTTON   "OK",IDOK,7,156,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,135,156,50,14
+    LTEXT           "Beamname:",IDC_STATIC,7,9,72,8
+    LTEXT           "Beamtype (MK):",IDC_STATIC,7,25,72,8
+    LTEXT           "Number at Ship:",IDC_STATIC,7,40,72,8
+    LTEXT           "Number on Shoot:",IDC_STATIC,7,55,72,8
+    LTEXT           "Beamtime:",IDC_STATIC,7,70,72,8
+    LTEXT           "Rechargetime:",IDC_STATIC,7,85,72,8
+    LTEXT           "Bonus from System:",IDC_STATIC,7,100,72,8
+    LTEXT           "Damage of one Beam:",IDC_STATIC,7,115,72,8
+    LTEXT           "TerraWatts",IDC_STATIC,124,115,36,8
+    LTEXT           "%",IDC_STATIC,124,100,8,8
+    CONTROL         "Piercing:",IDC_PIERCING,"Button",BS_AUTOCHECKBOX | BS_LEFTTEXT | WS_TABSTOP,114,134,53,10
+    COMBOBOX        IDC_BEAMNAME,81,8,104,148,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+END
+
+IDD_MODIFYTUBE_DIALOG DIALOGEX 0, 0, 203, 332
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Modify Torpedoweapon"
+FONT 8, "MS Sans Serif", 0, 0, 0x0
+BEGIN
+    COMBOBOX        IDC_TUBETYPE,68,7,128,134,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    EDITTEXT        IDC_TUBEFIRERATE,105,48,28,14,ES_AUTOHSCROLL | ES_NUMBER
+    EDITTEXT        IDC_NUMBEROFTUBES,105,27,28,14,ES_AUTOHSCROLL | ES_NUMBER
+    EDITTEXT        IDC_NUMBEROFTORPEDOS,105,69,28,14,ES_AUTOHSCROLL | ES_NUMBER
+    EDITTEXT        IDC_ACCURACY,105,90,28,14,ES_AUTOHSCROLL | ES_NUMBER
+    CONTROL         "Only for Mircotorpedos:",IDC_ONLYMICRO,"Button",BS_AUTOCHECKBOX | BS_LEFTTEXT | WS_TABSTOP,57,112,89,10
+    LISTBOX         IDC_TORPEDOTYPE,68,154,128,79,LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
+    DEFPUSHBUTTON   "OK",IDOK,7,311,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,146,311,50,14
+    LTEXT           "Tubetype:",IDC_STATIC,7,8,33,8
+    LTEXT           "Firerate of the tube:",IDC_STATIC,7,50,62,8
+    LTEXT           "Torpedotype:",IDC_STATIC,7,154,43,8
+    LTEXT           "Number of torpedos per shoot:",IDC_STATIC,7,71,96,8
+    LTEXT           "Number of tubes:",IDC_STATIC,7,30,55,8
+    LTEXT           "every",IDC_STATIC,83,50,18,8
+    LTEXT           "seconds",IDC_STATIC,137,50,28,8
+    CTEXT           "If you choose ""Only for Microtorpedos"" you should choose a Microtorpedo below.",IDC_STATIC,7,128,189,19,0,WS_EX_CLIENTEDGE
+    LTEXT           "Accuracy in %:",IDC_STATIC,7,92,52,8
+    CONTROL         "Penetrating",IDC_PENETRATING,"Button",BS_AUTOCHECKBOX | BS_LEFTTEXT | WS_DISABLED,31,241,52,10
+    CONTROL         "DoubleShieldDmg:",IDC_DOUBLESHIELDDMG,"Button",BS_AUTOCHECKBOX | BS_LEFTTEXT | WS_DISABLED,8,257,75,10
+    CONTROL         "DoubleHullDmg",IDC_DOUBLEHULLDMG,"Button",BS_AUTOCHECKBOX | BS_LEFTTEXT | WS_DISABLED,18,273,65,10
+    CONTROL         "IgnoreAllShields",IDC_IGNOREALLSHIELDS,"Button",BS_AUTOCHECKBOX | BS_LEFTTEXT | WS_DISABLED,111,241,66,10
+    CONTROL         "CanCollapseShields",IDC_COLLAPSESHIELDS,"Button",BS_AUTOCHECKBOX | BS_LEFTTEXT | WS_DISABLED,99,257,78,10
+    CONTROL         "ReduceManeuver",IDC_REDUCEMANEUVER,"Button",BS_AUTOCHECKBOX | BS_LEFTTEXT | WS_DISABLED,104,273,73,10
+    CONTROL         "Micro",IDC_MICROTORP,"Button",BS_AUTOCHECKBOX | BS_LEFTTEXT | WS_DISABLED,50,289,33,10
+END
+
+IDD_NEWCLASS_DIALOG DIALOG  0, 0, 186, 68
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "New Class"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,7,47,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,129,47,50,14
+    LTEXT           "Name of the new Shipclass",IDC_STATIC,47,7,87,8
+    EDITTEXT        IDC_NEWCLASSNAME,49,25,79,14,ES_AUTOHSCROLL
+END
+
+IDD_SHOWSTATS_DIALOG DIALOG  0, 0, 186, 306
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Shipstats"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,7,285,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,129,285,50,14
+    LTEXT           "overall beamdmg in  100 sec:",IDC_STATIC,7,41,75,20
+    LTEXT           "overall torpedodmg in 100 sec:",IDC_STATIC,7,67,68,26
+    LTEXT           "maximum shieldpower:",IDC_STATIC,7,94,71,8
+    LTEXT           "maximum hullintegrity:",IDC_STATIC,7,137,68,8
+    LTEXT           "overall costs",IDC_STATIC,81,157,40,8
+    LTEXT           "Industry:",IDC_STATIC,8,170,28,8
+    LTEXT           "Titan:",IDC_STATIC,8,186,19,8
+    LTEXT           "Deuterium:",IDC_STATIC,8,202,35,8
+    LTEXT           "Duranium:",IDC_STATIC,8,218,33,8
+    LTEXT           "Crystal:",IDC_STATIC,8,233,24,8
+    LTEXT           "Iridium:",IDC_STATIC,8,250,23,8
+    LTEXT           "Derithium:",IDC_STATIC,8,266,32,8
+    EDITTEXT        IDC_OVERALLBEAMDAMAGE,82,41,40,14,ES_AUTOHSCROLL | ES_READONLY
+    LTEXT           "TerraWatts",IDC_STATIC,127,43,36,8
+    EDITTEXT        IDC_AVERAGETORPEDODAMAGE,81,67,40,14,ES_AUTOHSCROLL | ES_READONLY
+    LTEXT           "TerraWatts",IDC_STATIC,127,69,36,8
+    EDITTEXT        IDC_MAXSHIELD,81,93,40,14,ES_AUTOHSCROLL | ES_READONLY
+    LTEXT           "TerraJoules",IDC_STATIC,128,95,38,8
+    EDITTEXT        IDC_MAXHULL,81,135,40,14,ES_AUTOHSCROLL | ES_READONLY
+    EDITTEXT        IDC_INDUSTRY,81,168,40,14,ES_AUTOHSCROLL | ES_READONLY
+    EDITTEXT        IDC_TITAN,81,184,40,14,ES_AUTOHSCROLL | ES_READONLY
+    EDITTEXT        IDC_DEUTERIUM,81,200,40,14,ES_AUTOHSCROLL | ES_READONLY
+    EDITTEXT        IDC_DURANIUM,81,216,40,14,ES_AUTOHSCROLL | ES_READONLY
+    EDITTEXT        IDC_CRYSTAL,81,232,40,14,ES_AUTOHSCROLL | ES_READONLY
+    EDITTEXT        IDC_IRIDIUM,81,248,40,14,ES_AUTOHSCROLL | ES_READONLY
+    EDITTEXT        IDC_DILITHIUM,81,264,40,14,ES_AUTOHSCROLL | ES_READONLY
+    LTEXT           "  I N F O R M A T I O N",IDC_STATIC,49,10,82,16,SS_CENTERIMAGE | SS_SUNKEN | WS_BORDER
+    LTEXT           "shield recharge in 100 sec:",IDC_STATIC,7,112,68,19
+    EDITTEXT        IDC_SHIELDRECHARGE,81,112,40,14,ES_AUTOHSCROLL | ES_READONLY
+    LTEXT           "TerraJoules",IDC_STATIC,128,114,38,8
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 2,0,0,0
+ PRODUCTVERSION 2,0,0,0
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040704B0"
+        BEGIN
+            VALUE "FileDescription", "BotE Alpha4 Refit ShipEditor"
+            VALUE "FileVersion", "2, 0, 0, 0"
+            VALUE "InternalName", "ShipEditor fpr Alpha4 Refit"
+            VALUE "LegalCopyright", "Copyright (C) 2009"
+            VALUE "OriginalFilename", "ShipEditor.EXE"
+            VALUE "ProductName", "ShipEditor"
+            VALUE "ProductVersion", "2, 0, 0, 0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x407, 1200
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO 
+BEGIN
+    IDD_ABOUTBOX, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 228
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 48
+    END
+
+    IDD_SHIPEDITOR_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 562
+        TOPMARGIN, 4
+        BOTTOMMARGIN, 283
+    END
+
+    IDD_MODIFYBEAM_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 185
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 170
+    END
+
+    IDD_MODIFYTUBE_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 196
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 325
+    END
+
+    IDD_NEWCLASS_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 179
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 61
+    END
+
+    IDD_SHOWSTATS_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 179
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 299
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog Info
+//
+
+IDD_SHIPEDITOR_DIALOG DLGINIT
+BEGIN
+    IDC_SHIPTYPE, 0x403, 14, 0
+0x7254, 0x6e61, 0x7073, 0x726f, 0x7374, 0x6968, 0x0070, 
+    IDC_SHIPTYPE, 0x403, 11, 0
+0x6f43, 0x6f6c, 0x796e, 0x6873, 0x7069, "\000" 
+    IDC_SHIPTYPE, 0x403, 6, 0
+0x7250, 0x626f, 0x0065, 
+    IDC_SHIPTYPE, 0x403, 6, 0
+0x6353, 0x756f, 0x0074, 
+    IDC_SHIPTYPE, 0x403, 15, 0
+0x6946, 0x6867, 0x6574, 0x2f72, 0x7548, 0x746e, 0x7265, "\000" 
+    IDC_SHIPTYPE, 0x403, 8, 0
+0x7246, 0x6769, 0x7461, 0x0065, 
+    IDC_SHIPTYPE, 0x403, 10, 0
+0x6544, 0x7473, 0x6f72, 0x6579, 0x0072, 
+    IDC_SHIPTYPE, 0x403, 8, 0
+0x7243, 0x6975, 0x6573, 0x0072, 
+    IDC_SHIPTYPE, 0x403, 16, 0
+0x6548, 0x7661, 0x2079, 0x6544, 0x7473, 0x6f72, 0x6579, 0x0072, 
+    IDC_SHIPTYPE, 0x403, 14, 0
+0x6548, 0x7661, 0x2079, 0x7243, 0x6975, 0x6573, 0x0072, 
+    IDC_SHIPTYPE, 0x403, 11, 0
+0x6142, 0x7474, 0x656c, 0x6873, 0x7069, "\000" 
+    IDC_SHIPTYPE, 0x403, 12, 0
+0x7244, 0x6165, 0x6e64, 0x756f, 0x6867, 0x0074, 
+    IDC_SHIPTYPE, 0x403, 18, 0
+0x754f, 0x7074, 0x736f, 0x2074, 0x5328, 0x6174, 0x6974, 0x6e6f, 0x0029, 
+
+    IDC_SHIPTYPE, 0x403, 19, 0
+0x7453, 0x7261, 0x6162, 0x6573, 0x2820, 0x7453, 0x7461, 0x6f69, 0x296e, 
+"\000" 
+    IDC_SHIPTYPE, 0x403, 14, 0
+0x6c41, 0x6569, 0x2f6e, 0x6e55, 0x6e6b, 0x776f, 0x006e, 
+    IDC_SPECIAL1, 0x403, 5, 0
+0x6f6e, 0x656e, "\000" 
+    IDC_SPECIAL1, 0x403, 12, 0
+0x7341, 0x6173, 0x6c75, 0x7374, 0x6968, 0x0070, 
+    IDC_SPECIAL1, 0x403, 13, 0
+0x6c42, 0x636f, 0x616b, 0x6564, 0x6873, 0x7069, "\000" 
+    IDC_SPECIAL1, 0x403, 12, 0
+0x6f43, 0x6d6d, 0x6e61, 0x7364, 0x6968, 0x0070, 
+    IDC_SPECIAL1, 0x403, 19, 0
+0x6f43, 0x626d, 0x7461, 0x5420, 0x6172, 0x7463, 0x726f, 0x6562, 0x6d61, 
+"\000" 
+    IDC_SPECIAL1, 0x403, 11, 0
+0x6f44, 0x6667, 0x6769, 0x7468, 0x7265, "\000" 
+    IDC_SPECIAL1, 0x403, 10, 0
+0x6f44, 0x6b67, 0x6c69, 0x656c, 0x0072, 
+    IDC_SPECIAL1, 0x403, 11, 0
+0x6150, 0x7274, 0x6c6f, 0x6873, 0x7069, "\000" 
+    IDC_SPECIAL1, 0x403, 7, 0
+0x6152, 0x6469, 0x7265, "\000" 
+    IDC_SPECIAL1, 0x403, 14, 0
+0x6353, 0x6569, 0x636e, 0x7665, 0x7365, 0x6573, 0x006c, 
+    IDC_SPECIAL2, 0x403, 5, 0
+0x6f6e, 0x656e, "\000" 
+    IDC_SPECIAL2, 0x403, 12, 0
+0x7341, 0x6173, 0x6c75, 0x7374, 0x6968, 0x0070, 
+    IDC_SPECIAL2, 0x403, 13, 0
+0x6c42, 0x636f, 0x616b, 0x6564, 0x6873, 0x7069, "\000" 
+    IDC_SPECIAL2, 0x403, 12, 0
+0x6f43, 0x6d6d, 0x6e61, 0x7364, 0x6968, 0x0070, 
+    IDC_SPECIAL2, 0x403, 19, 0
+0x6f43, 0x626d, 0x7461, 0x5420, 0x6172, 0x7463, 0x726f, 0x6562, 0x6d61, 
+"\000" 
+    IDC_SPECIAL2, 0x403, 11, 0
+0x6f44, 0x6667, 0x6769, 0x7468, 0x7265, "\000" 
+    IDC_SPECIAL2, 0x403, 10, 0
+0x6f44, 0x6b67, 0x6c69, 0x656c, 0x0072, 
+    IDC_SPECIAL2, 0x403, 11, 0
+0x6150, 0x7274, 0x6c6f, 0x6873, 0x7069, "\000" 
+    IDC_SPECIAL2, 0x403, 7, 0
+0x6152, 0x6469, 0x7265, "\000" 
+    IDC_SPECIAL2, 0x403, 14, 0
+0x6353, 0x6569, 0x636e, 0x7665, 0x7365, 0x6573, 0x006c, 
+    0
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE 
+BEGIN
+    IDS_ABOUTBOX            "Inf&o über ShipEditor..."
+END
+
+#endif    // Deutsch (Deutschland) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#define _AFX_NO_SPLITTER_RESOURCES
+#define _AFX_NO_OLE_RESOURCES
+#define _AFX_NO_TRACKER_RESOURCES
+#define _AFX_NO_PROPERTY_RESOURCES
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_DEU)
+#ifdef _WIN32
+LANGUAGE 7, 1
+#pragma code_page(1252)
+#endif //_WIN32
+#include "res\ShipEditor.rc2"  // Nicht mit Microsoft Visual C++ bearbeitete Ressourcen
+#include "l.deu\afxres.rc"          // Standardkomponenten
+#endif
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+
