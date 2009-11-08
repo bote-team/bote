@@ -51,10 +51,18 @@ void CFileReader::ReadDataFromFile(CArray<CShipInfo*>* shipInfos)
 	USHORT j = 0;
 	int weapons = 0;	// Zähler um Waffen hinzuzufügen
 	BOOL torpedo = FALSE;
-	CString csInput;													// auf csInput wird die jeweilige Zeile gespeichert
+	// auf csInput wird die jeweilige Zeile gespeichert
+	CString csInput;
 	CString data[40];
-	CString torpedoData[7];
-	CString beamData[10];
+	
+	// ALPHA4 REFIT
+	//CString torpedoData[7];
+	//CString beamData[10];
+	
+	// ALPHA5
+	CString torpedoData[9];
+	CString beamData[12];
+	
 	CString fileName="Shiplist.data";				// Name des zu Öffnenden Files 
 	CStdioFile file;													// Varibale vom Typ CStdioFile
 	if (file.Open(fileName, CFile::modeRead | CFile::typeBinary))			// Datei wird geöffnet
@@ -65,17 +73,17 @@ void CFileReader::ReadDataFromFile(CArray<CShipInfo*>* shipInfos)
 			{
 				if (csInput == "$Torpedo$")
 				{
-					weapons = 7;	// weil wir 7 Informationen für einen Torpedo brauchen
+					weapons = 9;	// weil wir 9 Informationen für einen Torpedo brauchen
 					torpedo = TRUE;
 				}
 				else if (csInput == "$Beam$")
 				{
-					weapons = 10;	// weil wir 10 Informationen für einen Beam brauchen
+					weapons = 12;	// weil wir 12 Informationen für einen Beam brauchen
 					torpedo = FALSE;
 				}
 				else if (torpedo == TRUE && weapons > 0)
 				{
-					torpedoData[7-weapons] = csInput;
+					torpedoData[9-weapons] = csInput;
 					weapons--;
 					if (weapons == 0)
 					{
@@ -83,12 +91,15 @@ void CFileReader::ReadDataFromFile(CArray<CShipInfo*>* shipInfos)
 						CTorpedoWeapons torpedoWeapon;
 						torpedoWeapon.ModifyTorpedoWeapon(atoi(torpedoData[0]),atoi(torpedoData[1]),
 							atoi(torpedoData[2]),atoi(torpedoData[3]),torpedoData[4],atoi(torpedoData[5]),atoi(torpedoData[6]));
+						// folgende Zeile neu in Alpha5
+						torpedoWeapon.GetFirearc()->SetValues(atoi(torpedoData[7]), atoi(torpedoData[8]));
+						
 						ShipInfo->GetTorpedoWeapons()->Add(torpedoWeapon);
 					}
 				}
 				else if (torpedo == FALSE && weapons > 0)
 				{
-					beamData[10-weapons] = csInput;
+					beamData[12-weapons] = csInput;
 					weapons--;
 					if (weapons == 0)
 					{
@@ -96,6 +107,9 @@ void CFileReader::ReadDataFromFile(CArray<CShipInfo*>* shipInfos)
 						CBeamWeapons beamWeapon;
 						beamWeapon.ModifyBeamWeapon(atoi(beamData[0]),atoi(beamData[1]),atoi(beamData[2]),beamData[3],
 							atoi(beamData[4]),atoi(beamData[5]),atoi(beamData[6]),atoi(beamData[7]),atoi(beamData[8]),atoi(beamData[9]));
+						// folgende Zeile neu in Alpha5
+						beamWeapon.GetFirearc()->SetValues(atoi(beamData[10]), atoi(beamData[11]));
+
 						ShipInfo->GetBeamWeapons()->Add(beamWeapon);
 					}
 				}
@@ -187,8 +201,6 @@ void CFileReader::WriteDataToFile(CArray<CShipInfo*>* shipInfos)
 		for (i = 0; i < shipInfos->GetSize(); i++)
 		{
 			s.Format("%d\n",shipInfos->GetAt(i)->GetRace());
-			//USHORT race = shipInfos->GetAt(i)->GetRace();
-			//file.Write(&race, sizeof(race));
 			file.WriteString(s);
 			s.Format("%s\n",shipInfos->GetAt(i)->GetShipClass());
 			file.WriteString(s);
@@ -286,6 +298,10 @@ void CFileReader::WriteDataToFile(CArray<CShipInfo*>* shipInfos)
 				file.WriteString(s);
 				s.Format("%d\n",shipInfos->GetAt(i)->GetTorpedoWeapons()->GetAt(j).GetAccuracy());
 				file.WriteString(s);
+				s.Format("%d\n",shipInfos->GetAt(i)->GetTorpedoWeapons()->GetAt(j).GetFirearc()->GetPosition());
+				file.WriteString(s);
+				s.Format("%d\n",shipInfos->GetAt(i)->GetTorpedoWeapons()->GetAt(j).GetFirearc()->GetAngle());
+				file.WriteString(s);
 			}
 			for (int j = 0; j < shipInfos->GetAt(i)->GetBeamWeapons()->GetSize(); j++)
 			{
@@ -310,6 +326,10 @@ void CFileReader::WriteDataToFile(CArray<CShipInfo*>* shipInfos)
 				s.Format("%d\n",shipInfos->GetAt(i)->GetBeamWeapons()->GetAt(j).GetRechargeTime());
 				file.WriteString(s);
 				s.Format("%d\n",shipInfos->GetAt(i)->GetBeamWeapons()->GetAt(j).GetShootNumber());
+				file.WriteString(s);
+				s.Format("%d\n",shipInfos->GetAt(i)->GetBeamWeapons()->GetAt(j).GetFirearc()->GetPosition());
+				file.WriteString(s);
+				s.Format("%d\n",shipInfos->GetAt(i)->GetBeamWeapons()->GetAt(j).GetFirearc()->GetAngle());
 				file.WriteString(s);
 			}
 			// Beim letzten keine Freizeile machen

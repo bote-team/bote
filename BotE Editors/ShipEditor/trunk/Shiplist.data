@@ -46,6 +46,8 @@ $Torpedo$
 Human Mod 2 Tube
 0
 50
+0
+90
 $Beam$
 5
 5
@@ -57,6 +59,8 @@ Laser Emitter
 3
 7
 1
+0
+90
 $END_OF_SHIPDATA$
 1
 Agamemnon
@@ -106,6 +110,8 @@ $Torpedo$
 TK Pulsefire
 0
 45
+0
+90
 $Beam$
 12
 7
@@ -117,6 +123,8 @@ Laser Array
 8
 15
 1
+0
+90
 $END_OF_SHIPDATA$
 1
 Barracuda
@@ -166,6 +174,8 @@ $Torpedo$
 Standard Tube
 0
 45
+0
+90
 $Beam$
 8
 6
@@ -177,6 +187,8 @@ Laser Bank
 5
 10
 1
+0
+90
 $END_OF_SHIPDATA$
 1
 Belvedere
@@ -226,6 +238,8 @@ $Torpedo$
 Type 1 Burstfire
 0
 40
+0
+90
 $Beam$
 6
 13
@@ -237,6 +251,8 @@ Pulse Laser Cannon
 1
 14
 3
+0
+90
 $Beam$
 8
 7
@@ -248,6 +264,8 @@ Laser Array
 8
 12
 1
+0
+90
 $END_OF_SHIPDATA$
 1
 Benton
@@ -297,6 +315,8 @@ $Torpedo$
 Standard Tube
 0
 45
+0
+90
 $Beam$
 6
 6
@@ -308,6 +328,8 @@ Laser Bank
 5
 10
 1
+0
+90
 $END_OF_SHIPDATA$
 1
 Cherumir
@@ -398,6 +420,8 @@ $Torpedo$
 2nd class Tube
 0
 50
+0
+90
 $Beam$
 6
 5
@@ -409,6 +433,8 @@ Laser Emitter
 3
 7
 1
+0
+90
 $END_OF_SHIPDATA$
 1
 Duluth
@@ -458,6 +484,8 @@ $Torpedo$
 Type 3 Burstfire
 0
 40
+0
+90
 $Beam$
 10
 7
@@ -469,6 +497,8 @@ Laser Array
 8
 15
 1
+0
+90
 $END_OF_SHIPDATA$
 1
 Farscape
@@ -518,6 +548,8 @@ $Torpedo$
 Human Mod 2 Tube
 0
 50
+0
+90
 $Beam$
 5
 5
@@ -529,6 +561,8 @@ Laser Emitter
 3
 7
 1
+0
+90
 $END_OF_SHIPDATA$
 1
 Firefly
@@ -578,6 +612,8 @@ $Torpedo$
 Standard Tube
 0
 45
+0
+90
 $Beam$
 10
 7
@@ -589,6 +625,8 @@ Laser Array
 8
 15
 1
+0
+90
 $END_OF_SHIPDATA$
 1
 Fox
@@ -682,6 +720,8 @@ Laser Emitter
 3
 7
 1
+0
+90
 $END_OF_SHIPDATA$
 1
 Ignition
@@ -731,6 +771,8 @@ $Torpedo$
 TK Microtube
 1
 45
+0
+90
 $Torpedo$
 3
 1
@@ -739,6 +781,8 @@ $Torpedo$
 Standard Tube
 0
 45
+0
+90
 $Beam$
 8
 6
@@ -750,6 +794,8 @@ Laser Bank
 5
 10
 1
+0
+90
 $END_OF_SHIPDATA$
 1
 Lamprey
@@ -840,6 +886,8 @@ $Torpedo$
 Standard Tube
 0
 45
+0
+90
 $Beam$
 8
 6
@@ -851,6 +899,8 @@ Laser Bank
 5
 10
 1
+0
+90
 $END_OF_SHIPDATA$
 1
 Matilda
@@ -900,6 +950,8 @@ $Torpedo$
 Standard Tube
 0
 45
+0
+90
 $Beam$
 8
 6
@@ -911,6 +963,8 @@ Laser Bank
 5
 10
 1
+0
+90
 $END_OF_SHIPDATA$
 1
 Mole
@@ -960,6 +1014,8 @@ $Torpedo$
 Standard Tube
 0
 45
+0
+90
 $Beam$
 7
 6
@@ -971,6 +1027,8 @@ Laser Bank
 5
 10
 1
+0
+90
 $END_OF_SHIPDATA$
 1
 Montgomery
@@ -1020,6 +1078,8 @@ $Torpedo$
 Type 1 Burstfire
 0
 40
+0
+90
 $Beam$
 9
 6
@@ -1031,6 +1091,8 @@ Laser Bank
 5
 10
 1
+0
+90
 $END_OF_SHIPDATA$
 1
 Outpost 378
@@ -1080,6 +1142,8 @@ $Torpedo$
 Standard Tube
 0
 45
+0
+90
 $Beam$
 10
 6
@@ -1091,6 +1155,8 @@ Laser Bank
 5
 10
 1
+0
+90
 $END_OF_SHIPDATA$
 1
 Outpost 489
@@ -1140,6 +1206,8 @@ $Torpedo$
 Type 3 Burstfire
 0
 40
+0
+90
 $Beam$
 12
 7
@@ -1151,6 +1219,8 @@ Laser Array
 8
 15
 1
+0
+90
 $END_OF_SHIPDATA$
 1
 Panslaight
@@ -1200,6 +1270,8 @@ $Torpedo$
 2nd class Tube
 0
 50
+0
+90
 $Beam$
 8
 6
@@ -1211,6 +1283,8 @@ Laser Bank
 5
 10
 1
+0
+90
 $END_OF_SHIPDATA$
 1
 Patton
@@ -1260,6 +1334,8 @@ $Torpedo$
 Standard Tube
 0
 45
+0
+90
 $Beam$
 10
 7
@@ -1271,6 +1347,8 @@ Laser Array
 8
 15
 1
+0
+90
 $END_OF_SHIPDATA$
 1
 Peraine
@@ -1320,6 +1398,8 @@ $Torpedo$
 2nd class Tube
 0
 50
+0
+90
 $Beam$
 6
 5
@@ -1331,6 +1411,8 @@ Laser Emitter
 3
 7
 1
+0
+90
 $END_OF_SHIPDATA$
 1
 Peregrine
@@ -1380,6 +1462,8 @@ $Torpedo$
 Rapidfire Microtube
 1
 40
+0
+90
 $Beam$
 6
 13
@@ -1391,6 +1475,8 @@ Pulse Laser Cannon
 1
 14
 3
+0
+90
 $END_OF_SHIPDATA$
 1
 Pittsburgh
@@ -1522,6 +1608,8 @@ $Torpedo$
 2nd class Tube
 0
 50
+0
+90
 $Beam$
 8
 5
@@ -1533,6 +1621,8 @@ Laser Emitter
 3
 7
 1
+0
+90
 $END_OF_SHIPDATA$
 1
 Sputnik
@@ -1623,6 +1713,8 @@ $Torpedo$
 Type 2 Burstfire
 0
 40
+0
+90
 $Beam$
 12
 7
@@ -1634,6 +1726,8 @@ Laser Array
 8
 15
 1
+0
+90
 $END_OF_SHIPDATA$
 1
 Starbase 40
@@ -1683,6 +1777,8 @@ $Torpedo$
 Type 4 Burstfire
 0
 40
+0
+90
 $Beam$
 12
 7
@@ -1694,6 +1790,8 @@ Laser Array
 8
 15
 1
+0
+90
 $END_OF_SHIPDATA$
 1
 Titan
@@ -1784,6 +1882,8 @@ $Torpedo$
 Type 3 Burstfire
 0
 40
+0
+90
 $Torpedo$
 12
 1
@@ -1792,6 +1892,8 @@ $Torpedo$
 TK Pulsefire
 0
 45
+0
+90
 $Beam$
 12
 7
@@ -1803,6 +1905,8 @@ Laser Array
 8
 15
 1
+0
+90
 $END_OF_SHIPDATA$
 1
 Valkyrie
@@ -1852,6 +1956,8 @@ $Torpedo$
 Standard Tube
 0
 45
+0
+90
 $Beam$
 6
 13
@@ -1863,6 +1969,8 @@ Pulse Laser Cannon
 1
 14
 3
+0
+90
 $END_OF_SHIPDATA$
 1
 Wolf
@@ -1912,6 +2020,8 @@ $Torpedo$
 Standard Tube
 0
 45
+0
+90
 $Beam$
 8
 7
@@ -1923,6 +2033,8 @@ Laser Array
 8
 15
 1
+0
+90
 $END_OF_SHIPDATA$
 1
 Y-9
@@ -1972,6 +2084,8 @@ $Torpedo$
 Human Mod 2 Tube
 0
 50
+0
+90
 $Beam$
 6
 5
@@ -1983,6 +2097,8 @@ Laser Emitter
 3
 7
 1
+0
+90
 $END_OF_SHIPDATA$
 2
 Baran
@@ -2032,6 +2148,8 @@ $Torpedo$
 Hanuhr Basic Tube
 0
 45
+0
+90
 $Beam$
 4
 5
@@ -2043,6 +2161,8 @@ Forced Plasma Emitter
 3
 7
 1
+0
+90
 $END_OF_SHIPDATA$
 2
 Baran II
@@ -2092,6 +2212,8 @@ $Torpedo$
 Hanuhr Improved Tube
 0
 50
+0
+90
 $Beam$
 8
 7
@@ -2103,6 +2225,8 @@ Fast Forced Plasma Emitter
 3
 5
 1
+0
+90
 $END_OF_SHIPDATA$
 2
 Baran III
@@ -2152,6 +2276,8 @@ $Torpedo$
 Hanuhr Advanced Tube
 0
 55
+0
+90
 $Beam$
 10
 13
@@ -2163,6 +2289,8 @@ Pulse Disruptor Cannon
 1
 14
 3
+0
+90
 $END_OF_SHIPDATA$
 2
 G'Qora
@@ -2212,6 +2340,8 @@ $Torpedo$
 Hanuhr Advanced Tube
 0
 55
+0
+90
 $Beam$
 21
 7
@@ -2223,6 +2353,8 @@ Forced Plasma Bank
 5
 10
 1
+0
+90
 $END_OF_SHIPDATA$
 2
 Glantor
@@ -2354,6 +2486,8 @@ $Torpedo$
 Hanuhr Basic Tube
 0
 45
+0
+90
 $Beam$
 7
 7
@@ -2365,6 +2499,8 @@ Forced Plasma Bank
 5
 10
 1
+0
+90
 $END_OF_SHIPDATA$
 2
 Han'Quhr
@@ -2414,6 +2550,8 @@ $Torpedo$
 Hanuhr Advanced Tube
 0
 55
+0
+90
 $Beam$
 12
 7
@@ -2425,6 +2563,8 @@ Forced Plasma Bank
 5
 10
 1
+0
+90
 $Beam$
 16
 85
@@ -2436,6 +2576,8 @@ Heavy Plasma Cannon
 1
 24
 1
+0
+90
 $END_OF_SHIPDATA$
 2
 Mgart
@@ -2485,6 +2627,8 @@ $Torpedo$
 Hanuhr Basic Tube
 0
 45
+0
+90
 $Beam$
 7
 12
@@ -2496,6 +2640,8 @@ Plasma Cannon
 1
 11
 2
+0
+90
 $Beam$
 7
 5
@@ -2507,6 +2653,8 @@ Forced Plasma Emitter
 3
 7
 1
+0
+90
 $END_OF_SHIPDATA$
 2
 Mining base
@@ -2556,6 +2704,8 @@ $Torpedo$
 Hanuhr Basic Tube
 0
 45
+0
+90
 $Beam$
 8
 5
@@ -2567,6 +2717,8 @@ Forced Plasma Emitter
 3
 7
 1
+0
+90
 $END_OF_SHIPDATA$
 2
 Orbital control station
@@ -2616,6 +2768,8 @@ $Torpedo$
 Hanuhr Advanced Tube
 0
 55
+0
+90
 $Beam$
 12
 7
@@ -2627,6 +2781,8 @@ Forced Plasma Bank
 5
 10
 1
+0
+90
 $END_OF_SHIPDATA$
 2
 Orbital trade station
@@ -2676,6 +2832,8 @@ $Torpedo$
 Hanuhr Basic Tube
 0
 45
+0
+90
 $Beam$
 10
 5
@@ -2687,6 +2845,8 @@ Forced Plasma Emitter
 3
 7
 1
+0
+90
 $END_OF_SHIPDATA$
 2
 Tirax
@@ -2859,6 +3019,8 @@ $Torpedo$
 Hanuhr Basic Tube
 0
 45
+0
+90
 $Beam$
 4
 5
@@ -2870,6 +3032,8 @@ Forced Plasma Emitter
 3
 7
 1
+0
+90
 $END_OF_SHIPDATA$
 2
 Tradepost
@@ -2919,6 +3083,8 @@ $Torpedo$
 Hanuhr Improved Tube
 0
 50
+0
+90
 $Beam$
 10
 7
@@ -2930,6 +3096,8 @@ Forced Plasma Bank
 5
 10
 1
+0
+90
 $END_OF_SHIPDATA$
 2
 Union base
@@ -2979,6 +3147,8 @@ $Torpedo$
 Hanuhr Advanced Tube
 0
 55
+0
+90
 $Beam$
 14
 7
@@ -2990,6 +3160,8 @@ Forced Plasma Bank
 5
 10
 1
+0
+90
 $END_OF_SHIPDATA$
 2
 Vantor
@@ -3039,6 +3211,8 @@ $Torpedo$
 Hanuhr Basic Tube
 0
 45
+0
+90
 $Beam$
 5
 12
@@ -3050,6 +3224,8 @@ Plasma Cannon
 1
 11
 2
+0
+90
 $END_OF_SHIPDATA$
 2
 Vooran
@@ -3099,6 +3275,8 @@ $Torpedo$
 Hanuhr Basic Tube
 0
 45
+0
+90
 $Beam$
 8
 5
@@ -3110,6 +3288,8 @@ Forced Plasma Emitter
 3
 7
 1
+0
+90
 $END_OF_SHIPDATA$
 2
 Wokatorn
@@ -3159,6 +3339,8 @@ $Torpedo$
 Hanuhr Improved Tube
 0
 50
+0
+90
 $Beam$
 10
 7
@@ -3170,6 +3352,8 @@ Forced Plasma Bank
 5
 10
 1
+0
+90
 $END_OF_SHIPDATA$
 2
 Yirin
@@ -3219,6 +3403,8 @@ $Torpedo$
 Hanuhr Improved Tube
 0
 50
+0
+90
 $Beam$
 9
 7
@@ -3230,6 +3416,8 @@ Forced Plasma Bank
 5
 10
 1
+0
+90
 $END_OF_SHIPDATA$
 2
 Yirin II
@@ -3279,6 +3467,8 @@ $Torpedo$
 Hanuhr Advanced Tube
 0
 55
+0
+90
 $Beam$
 12
 13
@@ -3290,6 +3480,8 @@ Pulse Disruptor Cannon
 1
 14
 3
+0
+90
 $END_OF_SHIPDATA$
 3
 Annihilation
@@ -3339,6 +3531,8 @@ $Torpedo$
 EMP High Power
 0
 45
+0
+90
 $Beam$
 12
 13
@@ -3350,6 +3544,8 @@ Pulse Disruptor
 1
 14
 3
+0
+90
 $Beam$
 10
 12
@@ -3361,6 +3557,8 @@ Disruptor Cannon
 1
 11
 2
+0
+90
 $Beam$
 12
 85
@@ -3372,6 +3570,8 @@ Heavy Disruptor Cannon
 1
 24
 1
+0
+90
 $END_OF_SHIPDATA$
 3
 Apocalypse
@@ -3421,6 +3621,8 @@ $Torpedo$
 EMP High Power
 0
 45
+0
+90
 $Beam$
 16
 12
@@ -3432,6 +3634,8 @@ Disruptor Cannon
 1
 11
 2
+0
+90
 $END_OF_SHIPDATA$
 3
 Armageddon
@@ -3481,6 +3685,8 @@ $Torpedo$
 EMP Basic
 0
 50
+0
+90
 $Beam$
 12
 12
@@ -3492,6 +3698,8 @@ Disruptor Cannon
 1
 11
 2
+0
+90
 $END_OF_SHIPDATA$
 3
 Battle Axe
@@ -3541,6 +3749,8 @@ $Torpedo$
 EMP Original Tube
 0
 50
+0
+90
 $Beam$
 5
 12
@@ -3552,6 +3762,8 @@ Disruptor Cannon
 1
 11
 2
+0
+90
 $END_OF_SHIPDATA$
 3
 Behemoth
@@ -3601,6 +3813,8 @@ $Torpedo$
 EMP Triplefire
 0
 40
+0
+90
 $Beam$
 18
 85
@@ -3612,6 +3826,8 @@ Heavy Disruptor Cannon
 1
 24
 1
+0
+90
 $Beam$
 12
 7
@@ -3623,6 +3839,8 @@ Disruptor Bank
 5
 10
 1
+0
+90
 $Beam$
 12
 12
@@ -3634,6 +3852,8 @@ Disruptor Cannon
 1
 11
 2
+0
+90
 $END_OF_SHIPDATA$
 3
 Dagger
@@ -3683,6 +3903,8 @@ $Torpedo$
 EMP High Power
 0
 45
+0
+90
 $Beam$
 8
 13
@@ -3694,6 +3916,8 @@ Pulse Disruptor Cannon
 1
 14
 3
+0
+90
 $END_OF_SHIPDATA$
 3
 Damnation
@@ -3743,6 +3967,8 @@ $Torpedo$
 EMP Basic
 0
 50
+0
+90
 $Beam$
 8
 12
@@ -3754,6 +3980,8 @@ Disruptor Cannon
 1
 11
 2
+0
+90
 $END_OF_SHIPDATA$
 3
 Demon
@@ -3803,6 +4031,8 @@ $Torpedo$
 EMP Original Tube
 0
 50
+0
+90
 $Beam$
 7
 13
@@ -3814,6 +4044,8 @@ Pulse Disruptor Cannon
 1
 14
 3
+0
+90
 $END_OF_SHIPDATA$
 3
 Destiny
@@ -3866,6 +4098,8 @@ Disruptor Cannon
 1
 11
 2
+0
+90
 $END_OF_SHIPDATA$
 3
 Diablo
@@ -3915,6 +4149,8 @@ $Torpedo$
 EMP Microtube
 1
 45
+0
+90
 $Torpedo$
 10
 1
@@ -3923,6 +4159,8 @@ $Torpedo$
 EMP High Power
 0
 45
+0
+90
 $Beam$
 9
 13
@@ -3934,6 +4172,8 @@ Pulse Disruptor Cannon
 1
 14
 3
+0
+90
 $END_OF_SHIPDATA$
 3
 Doomsday
@@ -3983,6 +4223,8 @@ $Torpedo$
 EMP Triplefire
 0
 40
+0
+90
 $Beam$
 14
 12
@@ -3994,6 +4236,8 @@ Disruptor Cannon
 1
 11
 2
+0
+90
 $END_OF_SHIPDATA$
 3
 Downfall
@@ -4043,6 +4287,8 @@ $Torpedo$
 EMP Basic
 0
 50
+0
+90
 $Beam$
 10
 7
@@ -4054,6 +4300,8 @@ Disruptor Bank
 5
 10
 1
+0
+90
 $Beam$
 8
 12
@@ -4065,6 +4313,8 @@ Disruptor Cannon
 1
 11
 2
+0
+90
 $END_OF_SHIPDATA$
 3
 Dungeon
@@ -4114,6 +4364,8 @@ $Torpedo$
 EMP Triplefire
 0
 40
+0
+90
 $Beam$
 12
 12
@@ -4125,6 +4377,8 @@ Disruptor Cannon
 1
 11
 2
+0
+90
 $Beam$
 10
 7
@@ -4136,6 +4390,8 @@ Disruptor Bank
 5
 10
 1
+0
+90
 $Beam$
 12
 13
@@ -4147,6 +4403,8 @@ Pulse Disruptor Cannon
 1
 14
 3
+0
+90
 $END_OF_SHIPDATA$
 3
 Fear
@@ -4199,6 +4457,8 @@ Disruptor Cannon
 1
 11
 2
+0
+90
 $END_OF_SHIPDATA$
 3
 Leviathan
@@ -4248,6 +4508,8 @@ $Torpedo$
 EMP Triplefire
 0
 40
+0
+90
 $Torpedo$
 11
 1
@@ -4256,6 +4518,8 @@ $Torpedo$
 EMP High Power
 0
 45
+0
+90
 $Beam$
 18
 85
@@ -4267,6 +4531,8 @@ Heavy Disruptor Cannon
 1
 24
 1
+0
+90
 $Beam$
 12
 13
@@ -4278,6 +4544,8 @@ Pulse Disruptor Cannon
 1
 14
 3
+0
+90
 $Beam$
 12
 14
@@ -4289,6 +4557,8 @@ Disruptor Cannon Turret
 1
 17
 4
+0
+90
 $END_OF_SHIPDATA$
 3
 Nightmare
@@ -4338,6 +4608,8 @@ $Torpedo$
 EMP Microtube
 1
 45
+0
+90
 $Beam$
 10
 13
@@ -4349,6 +4621,8 @@ Pulse Disruptor Cannon
 1
 14
 3
+0
+90
 $END_OF_SHIPDATA$
 3
 Perdition
@@ -4398,6 +4672,8 @@ $Torpedo$
 EMP Basic
 0
 50
+0
+90
 $Beam$
 6
 12
@@ -4409,6 +4685,8 @@ Disruptor Cannon
 1
 11
 2
+0
+90
 $END_OF_SHIPDATA$
 3
 Punishment
@@ -4461,6 +4739,8 @@ Disruptor Cannon
 1
 11
 2
+0
+90
 $END_OF_SHIPDATA$
 3
 Revenge
@@ -4513,6 +4793,8 @@ Disruptor Cannon
 1
 11
 2
+0
+90
 $END_OF_SHIPDATA$
 3
 Rise of Death
@@ -4565,6 +4847,8 @@ Disruptor Cannon
 1
 11
 2
+0
+90
 $END_OF_SHIPDATA$
 3
 Warlord
@@ -4614,6 +4898,8 @@ $Torpedo$
 EMP Basic
 0
 50
+0
+90
 $Beam$
 10
 12
@@ -4625,6 +4911,8 @@ Disruptor Cannon
 1
 11
 2
+0
+90
 $END_OF_SHIPDATA$
 3
 Wrath
@@ -4674,6 +4962,8 @@ $Torpedo$
 EMP Basic
 0
 50
+0
+90
 $Beam$
 12
 12
@@ -4685,6 +4975,8 @@ Disruptor Cannon
 1
 11
 2
+0
+90
 $END_OF_SHIPDATA$
 4
 Asteroid base
@@ -4734,6 +5026,8 @@ $Torpedo$
 S1 Torpedotube
 0
 50
+0
+90
 $Beam$
 8
 6
@@ -4745,6 +5039,8 @@ Disruptor Emitter
 3
 7
 1
+0
+90
 $END_OF_SHIPDATA$
 4
 C'labrum
@@ -4917,6 +5213,8 @@ $Torpedo$
 S3 Torpedotube
 0
 40
+0
+90
 $Beam$
 12
 7
@@ -4928,6 +5226,8 @@ Disruptor Bank
 5
 10
 1
+0
+90
 $Beam$
 16
 85
@@ -4939,6 +5239,8 @@ Heavy Disruptor Cannon
 1
 24
 1
+0
+90
 $END_OF_SHIPDATA$
 4
 D'Ocellus
@@ -4988,6 +5290,8 @@ $Torpedo$
 S3 Torpedotube
 0
 40
+0
+90
 $Beam$
 21
 7
@@ -4999,6 +5303,8 @@ Disruptor Bank
 5
 10
 1
+0
+90
 $END_OF_SHIPDATA$
 4
 M'adomen
@@ -5048,6 +5354,8 @@ $Torpedo$
 S3 Torpedotube
 0
 40
+0
+90
 $Beam$
 8
 13
@@ -5059,6 +5367,8 @@ Pulse Disruptor Cannon
 1
 14
 3
+0
+90
 $END_OF_SHIPDATA$
 4
 M'esothirax
@@ -5108,6 +5418,8 @@ $Torpedo$
 S1 Torpedotube
 0
 50
+0
+90
 $Beam$
 5
 12
@@ -5119,6 +5431,8 @@ Disruptor Cannon
 1
 11
 2
+0
+90
 $END_OF_SHIPDATA$
 4
 M'etathaurax
@@ -5168,6 +5482,8 @@ $Torpedo$
 S2 Torpedotube
 0
 50
+0
+90
 $Beam$
 7
 7
@@ -5179,6 +5495,8 @@ Disruptor Bank
 5
 10
 1
+0
+90
 $END_OF_SHIPDATA$
 4
 Orbital base
@@ -5228,6 +5546,8 @@ $Torpedo$
 S1 Torpedotube
 0
 50
+0
+90
 $Beam$
 10
 6
@@ -5239,6 +5559,8 @@ Disruptor Emitter
 3
 7
 1
+0
+90
 $END_OF_SHIPDATA$
 4
 Orbital station
@@ -5288,6 +5610,8 @@ $Torpedo$
 S2 Torpedotube
 0
 50
+0
+90
 $Beam$
 12
 7
@@ -5299,6 +5623,8 @@ Disruptor Bank
 5
 10
 1
+0
+90
 $END_OF_SHIPDATA$
 4
 P'ratarsus
@@ -5348,6 +5674,8 @@ $Torpedo$
 S1 Torpedotube
 0
 50
+0
+90
 $Beam$
 4
 6
@@ -5359,6 +5687,8 @@ Disruptor Emitter
 3
 7
 1
+0
+90
 $END_OF_SHIPDATA$
 4
 P'rotharax
@@ -5408,6 +5738,8 @@ $Torpedo$
 S2 Torpedotube
 0
 50
+0
+90
 $Beam$
 8
 7
@@ -5419,6 +5751,8 @@ Disruptor Bank
 5
 10
 1
+0
+90
 $END_OF_SHIPDATA$
 4
 P'socodea
@@ -5468,6 +5802,8 @@ $Torpedo$
 S3 Torpedotube
 0
 40
+0
+90
 $Beam$
 10
 13
@@ -5479,6 +5815,8 @@ Pulse Disruptor Cannon
 1
 14
 3
+0
+90
 $END_OF_SHIPDATA$
 4
 R'Acron
@@ -5528,6 +5866,8 @@ $Torpedo$
 S1 Torpedotube
 0
 50
+0
+90
 $Beam$
 8
 6
@@ -5539,6 +5879,8 @@ Disruptor Emitter
 3
 7
 1
+0
+90
 $END_OF_SHIPDATA$
 4
 R'Tibia
@@ -5588,6 +5930,8 @@ $Torpedo$
 S2 Torpedotube
 0
 50
+0
+90
 $Beam$
 10
 7
@@ -5599,6 +5943,8 @@ Disruptor Bank
 5
 10
 1
+0
+90
 $END_OF_SHIPDATA$
 4
 S'altatoria
@@ -5771,6 +6117,8 @@ $Torpedo$
 S2 Torpedotube
 0
 50
+0
+90
 $Beam$
 10
 7
@@ -5782,6 +6130,8 @@ Disruptor Bank
 5
 10
 1
+0
+90
 $END_OF_SHIPDATA$
 4
 Starbase
@@ -5831,6 +6181,8 @@ $Torpedo$
 S3 Torpedotube
 0
 40
+0
+90
 $Beam$
 14
 7
@@ -5842,6 +6194,8 @@ Disruptor Bank
 5
 10
 1
+0
+90
 $END_OF_SHIPDATA$
 4
 V'Tarsomer
@@ -5891,6 +6245,8 @@ $Torpedo$
 S3 Torpedotube
 0
 40
+0
+90
 $Beam$
 12
 13
@@ -5902,6 +6258,8 @@ Pulse Disruptor Cannon
 1
 14
 3
+0
+90
 $END_OF_SHIPDATA$
 4
 V'emur
@@ -5951,6 +6309,8 @@ $Torpedo$
 S1 Torpedotube
 0
 50
+0
+90
 $Beam$
 7
 12
@@ -5962,6 +6322,8 @@ Disruptor Cannon
 1
 11
 2
+0
+90
 $Beam$
 7
 6
@@ -5973,6 +6335,8 @@ Disruptor Emitter
 3
 7
 1
+0
+90
 $END_OF_SHIPDATA$
 4
 V'epipharyn
@@ -6022,6 +6386,8 @@ $Torpedo$
 S2 Torpedotube
 0
 50
+0
+90
 $Beam$
 9
 7
@@ -6033,6 +6399,8 @@ Disruptor Bank
 5
 10
 1
+0
+90
 $END_OF_SHIPDATA$
 4
 V'tarsus
@@ -6082,6 +6450,8 @@ $Torpedo$
 S3 Torpedotube
 0
 40
+0
+90
 $Beam$
 12
 13
@@ -6093,6 +6463,8 @@ Pulse Disruptor Cannon
 1
 14
 3
+0
+90
 $END_OF_SHIPDATA$
 5
 Boris
@@ -6142,6 +6514,8 @@ $Torpedo$
 CARIN Model 2
 0
 45
+0
+90
 $Beam$
 6
 13
@@ -6153,6 +6527,8 @@ Pulse Disruptor Cannon
 1
 14
 3
+0
+90
 $Beam$
 8
 7
@@ -6164,6 +6540,8 @@ Disruptor Array
 8
 12
 1
+0
+90
 $END_OF_SHIPDATA$
 5
 Caranna
@@ -6213,6 +6591,8 @@ $Torpedo$
 CARIN Model 1
 0
 50
+0
+90
 $Beam$
 4
 6
@@ -6224,6 +6604,8 @@ Disruptor Emitter
 3
 7
 1
+0
+90
 $END_OF_SHIPDATA$
 5
 Carjt
@@ -6273,6 +6655,8 @@ $Torpedo$
 CARIN Model 1
 0
 50
+0
+90
 $Beam$
 12
 12
@@ -6284,6 +6668,8 @@ Disruptor Cannon
 1
 11
 2
+0
+90
 $END_OF_SHIPDATA$
 5
 Carjw
@@ -6333,6 +6719,8 @@ $Torpedo$
 CARIN Model 2
 0
 45
+0
+90
 $Beam$
 14
 12
@@ -6344,6 +6732,8 @@ Disruptor Cannon
 1
 11
 2
+0
+90
 $END_OF_SHIPDATA$
 5
 Carjz
@@ -6393,6 +6783,8 @@ $Torpedo$
 CARIN Model 2
 0
 45
+0
+90
 $Beam$
 16
 12
@@ -6404,6 +6796,8 @@ Disruptor Cannon
 1
 11
 2
+0
+90
 $END_OF_SHIPDATA$
 5
 Caroman
@@ -6658,6 +7052,8 @@ $Torpedo$
 CARIN Model 2
 0
 45
+0
+90
 $Beam$
 18
 85
@@ -6669,6 +7065,8 @@ Heavy Disruptor Cannon
 1
 24
 1
+0
+90
 $Beam$
 12
 13
@@ -6680,6 +7078,8 @@ Pulse Disruptor Cannon
 1
 14
 3
+0
+90
 $Beam$
 12
 14
@@ -6691,6 +7091,8 @@ Disruptor Cannon Turret
 1
 17
 4
+0
+90
 $END_OF_SHIPDATA$
 5
 Echolot
@@ -6740,6 +7142,8 @@ $Torpedo$
 CARIN Model 2
 0
 45
+0
+90
 $Beam$
 12
 13
@@ -6751,6 +7155,8 @@ Pulse Disruptor
 1
 14
 3
+0
+90
 $Beam$
 10
 12
@@ -6762,6 +7168,8 @@ Disruptor Cannon
 1
 11
 2
+0
+90
 $Beam$
 12
 85
@@ -6773,6 +7181,8 @@ Heavy Disruptor Cannon
 1
 24
 1
+0
+90
 $END_OF_SHIPDATA$
 5
 Fjodor
@@ -6822,6 +7232,8 @@ $Torpedo$
 CARIN Model 1
 0
 50
+0
+90
 $Beam$
 8
 12
@@ -6833,6 +7245,8 @@ Disruptor Cannon
 1
 11
 2
+0
+90
 $END_OF_SHIPDATA$
 5
 Grigori
@@ -6882,6 +7296,8 @@ $Torpedo$
 CARIN Model 2
 0
 45
+0
+90
 $Beam$
 9
 7
@@ -6893,6 +7309,8 @@ Disruptor Bank
 5
 10
 1
+0
+90
 $END_OF_SHIPDATA$
 5
 Irjat
@@ -6945,6 +7363,8 @@ Disruptor Cannon
 1
 11
 2
+0
+90
 $END_OF_SHIPDATA$
 5
 Isjat
@@ -6994,6 +7414,8 @@ $Torpedo$
 CARIN Model 2
 0
 45
+0
+90
 $Beam$
 12
 12
@@ -7005,6 +7427,8 @@ Disruptor Cannon
 1
 11
 2
+0
+90
 $END_OF_SHIPDATA$
 5
 Jakow
@@ -7054,6 +7478,8 @@ $Torpedo$
 CARIN Model 1
 0
 50
+0
+90
 $Beam$
 10
 13
@@ -7065,6 +7491,8 @@ Pulse Disruptor Cannon
 1
 14
 3
+0
+90
 $END_OF_SHIPDATA$
 5
 Juri
@@ -7114,6 +7542,8 @@ $Torpedo$
 CARIN Model 1
 0
 50
+0
+90
 $Beam$
 7
 13
@@ -7125,6 +7555,8 @@ Pulse Disruptor Cannon
 1
 14
 3
+0
+90
 $END_OF_SHIPDATA$
 5
 Konstantin
@@ -7174,6 +7606,8 @@ $Torpedo$
 CARIN Model 2
 0
 45
+0
+90
 $Beam$
 18
 85
@@ -7185,6 +7619,8 @@ Heavy Disruptor Cannon
 1
 24
 1
+0
+90
 $Beam$
 12
 7
@@ -7196,6 +7632,8 @@ Disruptor Bank
 5
 10
 1
+0
+90
 $Beam$
 12
 12
@@ -7207,6 +7645,8 @@ Disruptor Cannon
 1
 11
 2
+0
+90
 $END_OF_SHIPDATA$
 5
 Leonid
@@ -7256,6 +7696,8 @@ $Torpedo$
 CARIN Model 1
 0
 50
+0
+90
 $Beam$
 8
 7
@@ -7267,6 +7709,8 @@ Disruptor Bank
 5
 10
 1
+0
+90
 $END_OF_SHIPDATA$
 5
 Semjon
@@ -7316,6 +7760,8 @@ $Torpedo$
 CARIN Model 1
 0
 50
+0
+90
 $Beam$
 8
 7
@@ -7327,6 +7773,8 @@ Disruptor Bank
 5
 10
 1
+0
+90
 $END_OF_SHIPDATA$
 5
 Wassili
@@ -7376,6 +7824,8 @@ $Torpedo$
 CARIN Model 1
 0
 50
+0
+90
 $Beam$
 8
 13
@@ -7387,6 +7837,8 @@ Pulse Disruptor Cannon
 1
 14
 3
+0
+90
 $END_OF_SHIPDATA$
 5
 Yelaja
@@ -7436,6 +7888,8 @@ $Torpedo$
 CARIN Model 1
 0
 50
+0
+90
 $Beam$
 8
 6
@@ -7447,6 +7901,8 @@ Disruptor Emitter
 3
 7
 1
+0
+90
 $END_OF_SHIPDATA$
 6
 Aleph
@@ -7496,6 +7952,8 @@ $Torpedo$
 Omega Mark 1
 0
 45
+0
+90
 $Beam$
 6
 6
@@ -7507,6 +7965,8 @@ Phased Polaron Bank
 5
 10
 1
+0
+90
 $END_OF_SHIPDATA$
 6
 Beth
@@ -7720,6 +8180,8 @@ $Torpedo$
 Omega Mark 2
 0
 40
+0
+90
 $Beam$
 10
 7
@@ -7731,6 +8193,8 @@ Phased Polaron Array
 8
 12
 1
+0
+90
 $END_OF_SHIPDATA$
 6
 Daleth
@@ -7780,6 +8244,8 @@ $Torpedo$
 Omega Mark 2
 0
 40
+0
+90
 $Beam$
 6
 13
@@ -7791,6 +8257,8 @@ Pulse Polaron Cannon
 1
 14
 3
+0
+90
 $END_OF_SHIPDATA$
 6
 Home
@@ -7840,6 +8308,8 @@ $Torpedo$
 Omega Mark 1
 0
 45
+0
+90
 $Beam$
 6
 5
@@ -7851,6 +8321,8 @@ Phased Polaron Emitter
 3
 7
 1
+0
+90
 $END_OF_SHIPDATA$
 6
 Kaph
@@ -7903,6 +8375,8 @@ Phased Polaron Emitter
 3
 7
 1
+0
+90
 $END_OF_SHIPDATA$
 6
 Kaph Magnum
@@ -7952,6 +8426,8 @@ $Torpedo$
 Omega Mark 1
 0
 45
+0
+90
 $Beam$
 7
 6
@@ -7963,6 +8439,8 @@ Phased Polaron Bank
 5
 10
 1
+0
+90
 $END_OF_SHIPDATA$
 6
 Omega
@@ -8012,6 +8490,8 @@ $Torpedo$
 Omega Mark 2
 0
 40
+0
+90
 $Beam$
 12
 7
@@ -8023,6 +8503,8 @@ Phased Polaron Array
 8
 12
 1
+0
+90
 $END_OF_SHIPDATA$
 6
 Omega BZ-3
@@ -8072,6 +8554,8 @@ $Torpedo$
 Omega Mark 1
 0
 45
+0
+90
 $Beam$
 6
 5
@@ -8083,6 +8567,8 @@ Phased Polaron Emitter
 3
 7
 1
+0
+90
 $END_OF_SHIPDATA$
 6
 Omega-Spacedock
@@ -8132,6 +8618,8 @@ $Torpedo$
 Omega Mark 1
 0
 45
+0
+90
 $Beam$
 8
 5
@@ -8143,6 +8631,8 @@ Phased Polaron Emitter
 3
 7
 1
+0
+90
 $END_OF_SHIPDATA$
 6
 Outpost 3980
@@ -8192,6 +8682,8 @@ $Torpedo$
 Omega Mark 2
 0
 40
+0
+90
 $Beam$
 12
 7
@@ -8203,6 +8695,8 @@ Phased Polaron Array
 8
 12
 1
+0
+90
 $END_OF_SHIPDATA$
 6
 Outpost 967
@@ -8252,6 +8746,8 @@ $Torpedo$
 Omega Mark 1
 0
 45
+0
+90
 $Beam$
 10
 6
@@ -8263,6 +8759,8 @@ Phased Polaron Bank
 5
 10
 1
+0
+90
 $END_OF_SHIPDATA$
 6
 Resch
@@ -8312,6 +8810,8 @@ $Torpedo$
 Omega Mark 1
 0
 45
+0
+90
 $Beam$
 5
 12
@@ -8323,6 +8823,8 @@ Polaron Cannon
 1
 11
 2
+0
+90
 $END_OF_SHIPDATA$
 6
 Rok'Hanar Fighter
@@ -8375,6 +8877,8 @@ Phased Polaron Emitter
 3
 7
 1
+0
+90
 $END_OF_SHIPDATA$
 6
 Rok'Hanar Fighter Extreme
@@ -8424,6 +8928,8 @@ $Torpedo$
 Omega Mark 2
 0
 40
+0
+90
 $Beam$
 6
 13
@@ -8435,6 +8941,8 @@ Pulse Polaron
 1
 14
 3
+0
+90
 $END_OF_SHIPDATA$
 6
 Rok'Hanar Fighter Supreme
@@ -8484,6 +8992,8 @@ $Torpedo$
 Omega Mark 2
 0
 40
+0
+90
 $Beam$
 8
 13
@@ -8495,6 +9005,8 @@ Pulse Polaron Cannon
 1
 14
 3
+0
+90
 $END_OF_SHIPDATA$
 6
 Rok'Hanar Scout
@@ -8544,6 +9056,8 @@ $Torpedo$
 Omega Mark 1
 0
 45
+0
+90
 $Beam$
 8
 5
@@ -8555,6 +9069,8 @@ Phased Polaron Emitter
 3
 7
 1
+0
+90
 $END_OF_SHIPDATA$
 6
 Rok'Hanar Scout Magnum
@@ -8604,6 +9120,8 @@ $Torpedo$
 Omega Mark 2
 0
 40
+0
+90
 $Beam$
 8
 6
@@ -8615,6 +9133,8 @@ Phased Polaron Bank
 5
 10
 1
+0
+90
 $END_OF_SHIPDATA$
 6
 Rok'hanar Fighter Magnum
@@ -8664,6 +9184,8 @@ $Torpedo$
 Omega Mark 1
 0
 45
+0
+90
 $Beam$
 7
 6
@@ -8675,6 +9197,8 @@ Phased Polaron Bank
 5
 10
 1
+0
+90
 $END_OF_SHIPDATA$
 6
 Sajin
@@ -8724,6 +9248,8 @@ $Torpedo$
 Omega Mark 1
 0
 45
+0
+90
 $Beam$
 6
 5
@@ -8735,6 +9261,8 @@ Phased Polaron Emitter
 3
 7
 1
+0
+90
 $END_OF_SHIPDATA$
 6
 Samech
@@ -8784,6 +9312,8 @@ $Torpedo$
 Omega Mark 1
 0
 45
+0
+90
 $Beam$
 8
 6
@@ -8795,6 +9325,8 @@ Phased Polaron Bank
 5
 10
 1
+0
+90
 $END_OF_SHIPDATA$
 6
 Starbase 607
@@ -8844,6 +9376,8 @@ $Torpedo$
 Omega Mark 1
 0
 45
+0
+90
 $Beam$
 12
 7
@@ -8855,6 +9389,8 @@ Phased Polaron Array
 8
 12
 1
+0
+90
 $END_OF_SHIPDATA$
 6
 Starbase 740
@@ -8904,6 +9440,8 @@ $Torpedo$
 Omega Mark 2
 0
 40
+0
+90
 $Beam$
 12
 7
@@ -8915,6 +9453,8 @@ Phased Polaron Array
 8
 12
 1
+0
+90
 $END_OF_SHIPDATA$
 6
 Tzade
@@ -8964,6 +9504,8 @@ $Torpedo$
 Omega Mark 1
 0
 45
+0
+90
 $Beam$
 10
 7
@@ -8975,6 +9517,8 @@ Phased Polaron Array
 8
 12
 1
+0
+90
 $END_OF_SHIPDATA$
 6
 Vi
@@ -9024,6 +9568,8 @@ $Torpedo$
 Omega Mark 2
 0
 40
+0
+90
 $Beam$
 12
 7
@@ -9035,6 +9581,8 @@ Phased Polaron Array
 8
 12
 1
+0
+90
 $END_OF_SHIPDATA$
 7
 Alathis
@@ -9084,6 +9632,8 @@ $Torpedo$
 Andromeda B Class Tube
 0
 55
+0
+90
 $Torpedo$
 3
 1
@@ -9092,6 +9642,8 @@ $Torpedo$
 Standard Tube
 0
 45
+0
+90
 $Beam$
 4
 12
@@ -9103,6 +9655,8 @@ Disruptor Cannon
 1
 11
 2
+0
+90
 $END_OF_SHIPDATA$
 7
 Bremmeth
@@ -9155,6 +9709,8 @@ Laser Beam Turret
 2
 3
 1
+0
+90
 $END_OF_SHIPDATA$
 7
 Chaw
@@ -9204,6 +9760,8 @@ $Torpedo$
 2nd class Tube
 0
 50
+0
+90
 $Beam$
 6
 5
@@ -9215,6 +9773,8 @@ Laser Emitter
 3
 7
 1
+0
+90
 $END_OF_SHIPDATA$
 7
 Cheraw
@@ -9264,6 +9824,8 @@ $Torpedo$
 Standard Tube
 0
 45
+0
+90
 $Beam$
 9
 6
@@ -9275,6 +9837,8 @@ Laser Bank
 5
 10
 1
+0
+90
 $END_OF_SHIPDATA$
 7
 Coob
@@ -9324,6 +9888,8 @@ $Torpedo$
 Adamar Basic Tube
 0
 55
+0
+90
 $Beam$
 5
 5
@@ -9335,6 +9901,8 @@ Laser Emitter
 3
 7
 1
+0
+90
 $END_OF_SHIPDATA$
 7
 D'kar
@@ -9384,6 +9952,8 @@ $Torpedo$
 Vulmar C Class Tube
 0
 60
+0
+90
 $Beam$
 6
 16
@@ -9395,6 +9965,8 @@ Laser Cannon
 1
 11
 2
+0
+90
 $END_OF_SHIPDATA$
 7
 Exocren
@@ -9444,6 +10016,8 @@ $Torpedo$
 Zhordan Pulsefire
 0
 45
+0
+90
 $Beam$
 8
 400
@@ -9455,6 +10029,8 @@ Antiproton Cannon
 15
 35
 1
+0
+90
 $END_OF_SHIPDATA$
 7
 F'kyte
@@ -9507,6 +10083,8 @@ Laser Emitter
 3
 7
 1
+0
+90
 $END_OF_SHIPDATA$
 7
 Havri
@@ -9556,6 +10134,8 @@ $Torpedo$
 Tarokohe Mark 1
 0
 45
+0
+90
 $Beam$
 9
 6
@@ -9567,6 +10147,8 @@ Laser Bank
 5
 10
 1
+0
+90
 $END_OF_SHIPDATA$
 7
 Hiro'akka
@@ -9616,6 +10198,8 @@ $Torpedo$
 EMP Triplefire
 0
 40
+0
+90
 $Beam$
 16
 85
@@ -9627,6 +10211,8 @@ Heavy Disruptor Cannon
 1
 24
 1
+0
+90
 $Beam$
 10
 14
@@ -9638,6 +10224,8 @@ Disruptor Cannon Turret
 1
 17
 4
+0
+90
 $END_OF_SHIPDATA$
 7
 Hiro'ka
@@ -9690,6 +10278,8 @@ Disruptor Cannon
 1
 11
 2
+0
+90
 $END_OF_SHIPDATA$
 7
 Horath
@@ -9742,6 +10332,8 @@ Heavy Pulse Disruptor Cannon
 1
 15
 3
+0
+90
 $Beam$
 10
 13
@@ -9753,6 +10345,8 @@ Pulse Disruptor Cannon
 1
 14
 3
+0
+90
 $END_OF_SHIPDATA$
 7
 Imp
@@ -9805,6 +10399,8 @@ Plasma Cannon
 1
 11
 2
+0
+90
 $END_OF_SHIPDATA$
 7
 Iopra
@@ -9854,6 +10450,8 @@ $Torpedo$
 2nd class Tube
 0
 50
+0
+90
 $Beam$
 4
 5
@@ -9865,6 +10463,8 @@ Laser Emitter
 3
 7
 1
+0
+90
 $END_OF_SHIPDATA$
 7
 K'tyr
@@ -9914,6 +10514,8 @@ $Torpedo$
 Vulmar C Class Tube
 0
 60
+0
+90
 $Beam$
 5
 16
@@ -9925,6 +10527,8 @@ Laser Cannon
 1
 11
 2
+0
+90
 $END_OF_SHIPDATA$
 7
 Kororr
@@ -9977,6 +10581,8 @@ Disruptor Cannon
 1
 11
 2
+0
+90
 $Beam$
 10
 7
@@ -9988,6 +10594,8 @@ Disruptor Bank
 5
 10
 1
+0
+90
 $END_OF_SHIPDATA$
 7
 Korr
@@ -10040,6 +10648,8 @@ Disruptor Cannon
 1
 11
 2
+0
+90
 $END_OF_SHIPDATA$
 7
 Lemmeth
@@ -10092,6 +10702,8 @@ Laser Cannon Turrets
 1
 17
 4
+0
+90
 $END_OF_SHIPDATA$
 7
 Levar
@@ -10141,6 +10753,8 @@ $Torpedo$
 Levan Microtube
 1
 50
+0
+90
 $Beam$
 5
 5
@@ -10152,6 +10766,8 @@ Laser Emitter
 3
 7
 1
+0
+90
 $END_OF_SHIPDATA$
 7
 Mowroph
@@ -10204,6 +10820,8 @@ Pulse Proton Cannon
 1
 14
 3
+0
+90
 $END_OF_SHIPDATA$
 7
 Mozvra
@@ -10256,6 +10874,8 @@ Disruptor Emitter
 3
 7
 1
+0
+90
 $END_OF_SHIPDATA$
 7
 P'tec
@@ -10305,6 +10925,8 @@ $Torpedo$
 Vulmar B Class Tube
 0
 55
+0
+90
 $Beam$
 3
 16
@@ -10316,6 +10938,8 @@ Laser Cannon
 1
 11
 2
+0
+90
 $END_OF_SHIPDATA$
 7
 Paqlan
@@ -10365,6 +10989,8 @@ $Torpedo$
 S1 Torpedotube
 0
 50
+0
+90
 $Beam$
 3
 6
@@ -10376,6 +11002,8 @@ Disruptor Emitter
 3
 7
 1
+0
+90
 $END_OF_SHIPDATA$
 7
 Prehtawak
@@ -10425,6 +11053,8 @@ $Torpedo$
 Deshant C Class Tube
 0
 60
+0
+90
 $Beam$
 10
 7
@@ -10436,6 +11066,8 @@ Disruptor Bank
 5
 10
 1
+0
+90
 $END_OF_SHIPDATA$
 7
 Psimon
@@ -10485,6 +11117,8 @@ $Torpedo$
 S1 Torpedotube
 0
 50
+0
+90
 $Beam$
 3
 6
@@ -10496,6 +11130,8 @@ Magneton Emitter
 3
 7
 1
+0
+90
 $END_OF_SHIPDATA$
 7
 Relis
@@ -10545,6 +11181,8 @@ $Torpedo$
 Andromeda C Class Tube
 0
 60
+0
+90
 $Torpedo$
 22
 1
@@ -10553,6 +11191,8 @@ $Torpedo$
 Andromeda C Class Tube
 0
 60
+0
+90
 $Beam$
 10
 8
@@ -10564,6 +11204,8 @@ Disruptor Beam Turret
 2
 3
 1
+0
+90
 $Beam$
 11
 14
@@ -10575,6 +11217,8 @@ Disruptor Cannon Turret
 1
 17
 4
+0
+90
 $END_OF_SHIPDATA$
 7
 Rovold
@@ -10624,6 +11268,8 @@ $Torpedo$
 Drizzi Mark 1
 0
 45
+0
+90
 $Beam$
 8
 6
@@ -10635,6 +11281,8 @@ Polaron Bank
 5
 10
 1
+0
+90
 $END_OF_SHIPDATA$
 7
 Sevriak
@@ -10684,6 +11332,8 @@ $Torpedo$
 S1 Torpedotube
 0
 50
+0
+90
 $Beam$
 9
 12
@@ -10695,6 +11345,8 @@ Disruptor Cannon
 1
 11
 2
+0
+90
 $Beam$
 8
 6
@@ -10706,6 +11358,8 @@ Disruptor Emitter
 3
 7
 1
+0
+90
 $END_OF_SHIPDATA$
 7
 Siard
@@ -10755,6 +11409,8 @@ $Torpedo$
 Rapidfire Microtube
 1
 40
+0
+90
 $Torpedo$
 3
 1
@@ -10763,6 +11419,8 @@ $Torpedo$
 Standard Tube
 0
 45
+0
+90
 $Beam$
 4
 9
@@ -10774,6 +11432,8 @@ Pulse Laser
 1
 8
 4
+0
+90
 $END_OF_SHIPDATA$
 7
 Storg
@@ -10823,6 +11483,8 @@ $Torpedo$
 Type 2 Burstfire
 0
 40
+0
+90
 $Beam$
 6
 22
@@ -10834,6 +11496,8 @@ Isolytic Cannon
 1
 11
 3
+0
+90
 $END_OF_SHIPDATA$
 7
 Storgre
@@ -10883,6 +11547,8 @@ $Torpedo$
 Storgor Pulsefire
 0
 45
+0
+90
 $Torpedo$
 21
 4
@@ -10891,6 +11557,8 @@ $Torpedo$
 Type 4 Burstfire
 0
 40
+0
+90
 $Beam$
 15
 39
@@ -10902,6 +11570,8 @@ Isolytic Pulse Cannon
 1
 18
 2
+0
+90
 $END_OF_SHIPDATA$
 7
 Talran
@@ -10951,6 +11621,8 @@ $Torpedo$
 Brane Level 2 Tube
 0
 45
+0
+90
 $Torpedo$
 28
 1
@@ -10959,6 +11631,8 @@ $Torpedo$
 Brane Level 3 Tube
 0
 45
+0
+90
 $Beam$
 9
 9
@@ -10970,6 +11644,8 @@ Polaron Array
 8
 12
 1
+0
+90
 $END_OF_SHIPDATA$
 7
 Tarok'ta
@@ -11019,6 +11695,8 @@ $Torpedo$
 Tarokan High Power
 0
 45
+0
+90
 $Beam$
 10
 8
@@ -11030,6 +11708,8 @@ Disruptor Beam Turret
 2
 3
 1
+0
+90
 $END_OF_SHIPDATA$
 7
 Throglodyt
@@ -11082,6 +11762,8 @@ Laser Bank
 5
 10
 1
+0
+90
 $END_OF_SHIPDATA$
 7
 Tori
@@ -11134,6 +11816,8 @@ Disruptor Bank
 5
 10
 1
+0
+90
 $END_OF_SHIPDATA$
 7
 Vawr're
@@ -11186,6 +11870,8 @@ Particle Cannon
 1
 11
 2
+0
+90
 $END_OF_SHIPDATA$
 7
 Vawri
@@ -11235,6 +11921,8 @@ $Torpedo$
 S3 Torpedotube
 0
 40
+0
+90
 $Beam$
 16
 36
@@ -11246,6 +11934,8 @@ Particle Cannon
 1
 11
 2
+0
+90
 $Beam$
 12
 16
@@ -11257,6 +11947,8 @@ Pulse Particle Cannon
 1
 14
 3
+0
+90
 $END_OF_SHIPDATA$
 7
 Vik
@@ -11306,6 +11998,8 @@ $Torpedo$
 Vikarmo Model 1
 0
 50
+0
+90
 $Torpedo$
 13
 1
@@ -11314,6 +12008,8 @@ $Torpedo$
 Vikarmo Model 2
 0
 45
+0
+90
 $Beam$
 18
 1
@@ -11325,6 +12021,8 @@ Isokinetic Cannon
 1
 1
 10
+0
+90
 $END_OF_SHIPDATA$
 7
 Vlorth
@@ -11377,6 +12075,8 @@ Pulse Disruptor Cannon
 1
 14
 3
+0
+90
 $END_OF_SHIPDATA$
 7
 Vorokin
@@ -11429,6 +12129,8 @@ Isolytic Cannon
 1
 11
 3
+0
+90
 $END_OF_SHIPDATA$
 7
 Xiborag
@@ -11481,6 +12183,8 @@ Plasma Emitter
 3
 5
 1
+0
+90
 $END_OF_SHIPDATA$
 7
 Xiboram
@@ -11533,6 +12237,8 @@ Plasma Emitter
 3
 5
 1
+0
+90
 $END_OF_SHIPDATA$
 7
 Xibram
@@ -11585,6 +12291,8 @@ Disruptor Cannon
 1
 11
 2
+0
+90
 $END_OF_SHIPDATA$
 7
 Yiman
@@ -11637,6 +12345,8 @@ Laser Cannon
 1
 11
 2
+0
+90
 $END_OF_SHIPDATA$
 7
 Zvska
@@ -11686,6 +12396,8 @@ $Torpedo$
 Mozwar Model 1
 0
 50
+0
+90
 $Beam$
 6
 13
@@ -11697,6 +12409,8 @@ Pulse Disruptor Cannon
 1
 14
 3
+0
+90
 $Beam$
 6
 7
@@ -11708,6 +12422,8 @@ Disruptor Bank
 5
 10
 1
+0
+90
 $Beam$
 8
 26
@@ -11719,6 +12435,8 @@ Heavy Pulse Disruptor Cannon
 1
 15
 3
+0
+90
 $Beam$
 10
 8
@@ -11730,4 +12448,6 @@ Disruptor Beam Turret
 2
 3
 1
+0
+90
 $END_OF_SHIPDATA$

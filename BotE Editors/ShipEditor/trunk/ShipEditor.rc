@@ -79,7 +79,7 @@ CAPTION "Info über ShipEditor"
 FONT 8, "MS Sans Serif", 0, 0, 0x0
 BEGIN
     ICON            IDR_MAINFRAME,IDC_STATIC,11,17,20,20
-    LTEXT           "ShipEditor Version 1.6 for Alpha4 Refit",IDC_STATIC,40,10,128,11,SS_NOPREFIX
+    LTEXT           "ShipEditor Version 1.7 for Alpha5",IDC_STATIC,40,10,128,11,SS_NOPREFIX
     LTEXT           "Copyright by Sir Pustekuchen (C) 2006-2009",IDC_STATIC,40,30,97,23
     DEFPUSHBUTTON   "OK",IDOK,178,7,50,14,WS_GROUP
 END
@@ -327,8 +327,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,6,0,0
- PRODUCTVERSION 1,6,0,0
+ FILEVERSION 1,7,0,0
+ PRODUCTVERSION 1,7,0,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -343,13 +343,13 @@ BEGIN
     BEGIN
         BLOCK "040704B0"
         BEGIN
-            VALUE "FileDescription", "BotE Alpha4 Refit ShipEditor"
-            VALUE "FileVersion", "1, 6, 0, 0"
-            VALUE "InternalName", "ShipEditor fpr Alpha4 Refit"
+            VALUE "FileDescription", "BotE Alpha5 ShipEditor"
+            VALUE "FileVersion", "1, 7, 0, 0"
+            VALUE "InternalName", "ShipEditor for Alpha5"
             VALUE "LegalCopyright", "Copyright (C) 2009"
             VALUE "OriginalFilename", "ShipEditor.EXE"
             VALUE "ProductName", "ShipEditor"
-            VALUE "ProductVersion", "1, 6, 0, 0"
+            VALUE "ProductVersion", "1, 7, 0, 0"
         END
     END
     BLOCK "VarFileInfo"

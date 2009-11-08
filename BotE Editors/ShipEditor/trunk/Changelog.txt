@@ -21,3 +21,9 @@ Changelog V1.5 -> V1.6
 - Automatismen beim Speichern, die fehlerhafte Einträge automatisch korrigieren
 - weitere Labeländerungen
 - weitere Kleinigkeiten
+
+Changelog V1.6 -> V1.7
+- Feuerwinkel einstellbar
+- Anzeige des Torpedoschadens bei den Torpedos
+- Rahmen und manche Einstellungen
+- Bug das Änderungen am Schiff verloren gingen, wenn Waffen modifiziert werden ist behoben
