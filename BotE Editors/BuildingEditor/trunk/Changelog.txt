@@ -2,7 +2,7 @@
 
 @author:	Sir Pustekuchen
 @date:		2006-04-06
-@last change:	2007-03-31
+@last change:	2009-11-08
 
 
 -------------------------------------------------------------------------
@@ -35,3 +35,14 @@
 
 - Überprüfung einer korrekten Vorgänger-ID (nicht das Gebäude selbst)
 - Labeländerungen
+
+Änderungen von Version 1.06 zu 1.1
+
+- Tabansicht implementiert
+- Oberfläche erneuert
+
+Änderungen von Version 1.1 zu 1.2
+
+- Oberfläche erneuert
+- Ressourcenverteiler eingebaut
+- Voraussetzung Systemanzahl eingebaut
