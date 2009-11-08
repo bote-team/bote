@@ -176,13 +176,13 @@ void CShipInfo::DeleteWeapons()
 // dem Schiffsobjekt geändert haben.
 void CShipInfo::CalculateFinalCosts()
 {
-	m_iNeededIndustry = 0;
-	m_iNeededTitan = 0;
-	m_iNeededDeuterium = 0;
-	m_iNeededDuranium = 0;
-	m_iNeededCrystal = 0;
-	m_iNeededIridium = 0;
-	m_iNeededDilithium = 0;
+	m_iNeededIndustry	= 0;
+	m_iNeededTitan		= 0;
+	m_iNeededDeuterium	= 0;
+	m_iNeededDuranium	= 0;
+	m_iNeededCrystal	= 0;
+	m_iNeededIridium	= 0;
+	m_iNeededDilithium	= 0;
 	// Industrieleistung, die wir zusätzlich durch bessere Schilde erbringen müssen
 /*	m_iNeededIndustry += m_Shield.GetMaxShield() / 10 * m_Shield.GetShieldType();
 	// Industrieleistung, die wir zusätzlich durch bessere Hülle  erbringen müssen
@@ -206,21 +206,27 @@ void CShipInfo::CalculateFinalCosts()
 								* m_BeamWeapons.GetAt(i).GetBeamType()
 								* 3);
 	if (m_BeamWeapons.GetSize() > 1)
-		beamTypeAdd /= m_BeamWeapons.GetSize();
-	m_iNeededIndustry += beamTypeAdd;
-	m_iNeededIndustry += this->GetCompleteOffensivePower();
-	m_iNeededIndustry += this->GetCompleteDefensivePower() / 2;
-	m_iNeededIndustry += GetShield()->GetMaxShield() / 200 * ((USHORT)pow((float)GetShield()->GetShieldType(), 2.5f));
-	m_iNeededIndustry /= 2;
+		beamTypeAdd		/= m_BeamWeapons.GetSize();
+	m_iNeededIndustry	+= beamTypeAdd;
+	m_iNeededIndustry	+= this->GetCompleteOffensivePower();
+	// Eine Doppelhülle verteuert die Industriekosten nochmals um 25%
+	if (m_Hull.GetDoubleHull())
+		m_iNeededIndustry	+= (UINT)(this->GetCompleteDefensivePower() / 1.5);
+	else
+		m_iNeededIndustry	+= this->GetCompleteDefensivePower() / 2;
+	
+	m_iNeededIndustry	+= GetShield()->GetMaxShield() / 200 * ((USHORT)pow((float)GetShield()->GetShieldType(), 2.5f));
+	m_iNeededIndustry	/= 2;
 
 	// Kosten erstmal wieder auf die Ausgangswerte setzen
-	m_iNeededIndustry += m_iBaseIndustry;
-	m_iNeededTitan += m_iBaseTitan;
-	m_iNeededDeuterium += m_iBaseDeuterium;
-	m_iNeededDuranium += m_iBaseDuranium;
-	m_iNeededCrystal += m_iBaseCrystal;
-	m_iNeededIridium += m_iBaseIridium;
-	m_iNeededDilithium += m_iBaseDilithium;
+	m_iNeededIndustry	+= m_iBaseIndustry;
+	m_iNeededTitan		+= m_iBaseTitan;
+	m_iNeededDeuterium	+= m_iBaseDeuterium;
+	m_iNeededDuranium	+= m_iBaseDuranium;
+	m_iNeededCrystal	+= m_iBaseCrystal;
+	m_iNeededIridium	+= m_iBaseIridium;
+	m_iNeededDilithium	+= m_iBaseDilithium;
+	
 	// zusätzliche Rohstoffe die wir für bessere Anbauten/Umbauten benötigen
 	// wir brauchen für bessere Hüllen auch besseres Material
 	switch (m_Hull.GetHullMaterial())
@@ -234,20 +240,7 @@ void CShipInfo::CalculateFinalCosts()
 	{
 		if (m_TorpedoWeapons.GetAt(i).GetTorpedoPower() >= 500)
 			m_iNeededDeuterium += m_TorpedoWeapons.GetAt(i).GetTorpedoPower() * m_TorpedoWeapons.GetAt(i).GetNumber()
-			* m_TorpedoWeapons.GetAt(i).GetNumberOfTupes();
-
-		/*
-		switch (m_TorpedoWeapons.GetAt(i).GetTorpedoType())
-		{
-		case 4:	m_iNeededDeuterium += m_TorpedoWeapons.GetAt(i).GetTorpedoPower()
-									* m_TorpedoWeapons.GetAt(i).GetNumber(); break;	// Federation-Quantum
-		case 8:	m_iNeededDeuterium += m_TorpedoWeapons.GetAt(i).GetTorpedoPower()
-									* m_TorpedoWeapons.GetAt(i).GetNumber(); break;	// Cardassian-Quantum
-		case 13:m_iNeededDeuterium += m_TorpedoWeapons.GetAt(i).GetTorpedoPower()
-									* m_TorpedoWeapons.GetAt(i).GetNumber(); break;	// Romulan-Plasma
-		case 16:m_iNeededDeuterium += m_TorpedoWeapons.GetAt(i).GetTorpedoPower()
-									* m_TorpedoWeapons.GetAt(i).GetNumber(); break;	// Ferengi-Quantum
-		}*/
+			* m_TorpedoWeapons.GetAt(i).GetNumberOfTupes();	
 	}
 }
 

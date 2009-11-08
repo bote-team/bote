@@ -333,6 +333,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\memdc.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Options.h"
 				>
 			</File>

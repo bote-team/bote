@@ -137,16 +137,52 @@ short CFleet::GetFleetShipType(CShip* ship)
 	return type;
 }
 
+// Funktion berechnet die minimale Stealthpower der Flotte. Der Parameter der hier übergeben werden sollte
+// ist der this-Zeiger bzw. die Adresse des Schiffsobjektes, welches die Flotte besitzt
+BYTE CFleet::GetFleetStealthPower(CShip* ship)
+{
+	BYTE stealthPower = MAXBYTE;
+	if (ship != NULL)
+	{
+		stealthPower = ship->GetStealthPower() * 20;
+		if (ship->GetStealthPower() > 3 && ship->GetCloak() == false)
+			stealthPower = 3 * 20;
+	}
+	if (stealthPower == 0)
+		return 0;
+
+	for (int i = 0; i < m_SP.GetSize(); i++)
+	{
+		if (stealthPower == 0)
+			return 0;
+
+		BYTE fleetStealthPower = m_SP.GetAt(i).GetStealthPower() * 20;
+		if (m_SP.GetAt(i).GetStealthPower() > 3  && m_SP.GetAt(i).GetCloak() == false)
+			fleetStealthPower = 3 * 20;
+		if (fleetStealthPower < stealthPower)
+			stealthPower = fleetStealthPower;
+	}
+
+	return stealthPower;
+}
+
 // Funktion übernimmt die Befehle des hier als Zeiger übergebenen Schiffsobjektes an alle Mitglieder der Flotte
 void CFleet::AdoptCurrentOrders(CShip* ship)
 {
 	for (int i = 0; i < m_SP.GetSize(); i++)
 	{
-		m_SP.ElementAt(i).SetTerraformingPlanet(ship->GetTerraformingPlanet());
 		if (ship->GetCurrentOrder() != ASSIGN_FLAGSHIP && ship->GetCurrentOrder() != TRANSPORT)
-			m_SP.ElementAt(i).SetCurrentOrder(ship->GetCurrentOrder());
+		{
+			m_SP.ElementAt(i).SetCurrentOrder(ship->GetCurrentOrder());			
+		}		
 		m_SP.ElementAt(i).SetKO(ship->GetKO());
-		m_SP.ElementAt(i).SetTargetKO(ship->GetTargetKO(),0);
+		
+		if (m_SP.ElementAt(i).GetTargetKO() != ship->GetTargetKO())
+			m_SP.ElementAt(i).SetTargetKO(ship->GetTargetKO(),0);
+
+		// wenn geterraformt werden soll den Terraformingplaneten neu setzen
+		if (ship->GetCurrentOrder() == TERRAFORM)
+			m_SP.ElementAt(i).SetTerraformingPlanet(ship->GetTerraformingPlanet());
 	}
 }
 

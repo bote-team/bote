@@ -1,5 +1,5 @@
 /*
- *   Copyright (C)2004-2008 Sir Pustekuchen
+ *   Copyright (C)2004-2009 Sir Pustekuchen
  *
  *   Author   :  Sir Pustekuchen
  *   Home     :  http://birth-of-the-empires.de.vu
@@ -62,7 +62,7 @@ public:
 
 	/// Funktion gibt Zeiger auf das Schussfeld der Waffe zurück.
 	/// @return Zeiger auf Schussfeld
-	const CFireArc* GetFirearc(void) const {return &m_Firearc;}
+	CFireArc* GetFirearc(void) {return &m_Firearc;}
 	
 	/// folgende Funktionen geben nur Eigenschaften eines Torpedos zurück
 	BYTE GetTorpedoType() const {return m_iTorpedoType;}

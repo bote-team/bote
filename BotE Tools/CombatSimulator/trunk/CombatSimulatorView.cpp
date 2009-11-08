@@ -7,6 +7,8 @@
 #include "CombatSimulatorDoc.h"
 #include "CombatSimulatorView.h"
 
+#include "memdc.h"
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -17,6 +19,7 @@
 IMPLEMENT_DYNCREATE(CCombatSimulatorView, CView)
 
 BEGIN_MESSAGE_MAP(CCombatSimulatorView, CView)
+	ON_WM_ERASEBKGND()
 END_MESSAGE_MAP()
 
 // CCombatSimulatorView-Erstellung/Zerstörung
@@ -40,14 +43,29 @@ BOOL CCombatSimulatorView::PreCreateWindow(CREATESTRUCT& cs)
 }
 
 // CCombatSimulatorView-Zeichnung
-void CCombatSimulatorView::OnDraw(CDC* pDC)
+void CCombatSimulatorView::OnDraw(CDC* dc)
 {
 	CCombatSimulatorDoc* pDoc = GetDocument();
 	ASSERT_VALID(pDoc);
 	if (!pDoc)
 		return;
 	// TODO: Code zum Zeichnen der systemeigenen Daten hinzufügen
+	CMemDC pDC(dc);
 	
+	CFont font;
+	LOGFONT lf;
+	memset(&lf, 0, sizeof(LOGFONT)); 
+	
+	strcpy_s(lf.lfFaceName, "Arial");
+	
+	lf.lfHeight = 15;
+	
+	lf.lfQuality = CLEARTYPE_QUALITY;
+	lf.lfPitchAndFamily = FF_SWISS;
+		
+	font.CreateFontIndirect(&lf);
+	pDC->SelectObject(&font);
+
 	if (pDoc->repeat == 0)
 	{
 	// ***************************** TEST DES KAMPFMODUSES ZEICHNEN **********************************
@@ -63,12 +81,15 @@ void CCombatSimulatorView::OnDraw(CDC* pDC)
 		if (pDoc->combat.m_bReady)
 		{
 			pDC->FillRect(r,&CBrush(RGB(0,0,0)));
-			//pDC->SelectObject(&bg);
-			//pDC->FillRect(r,&bg);
 			pDoc->combat.CalculateCombat(winner);
 			CString s;
-			s.Format("tick: %d", pDoc->combat.m_iTime);
+			s.Format("TICK: %d", pDoc->combat.m_iTime);
 			pDC->DrawText(s, r, DT_RIGHT);
+			if (xy_ebene)
+				s.Format("current level: XY");
+			else
+				s.Format("current level: XZ");
+			pDC->DrawText(s, r, DT_TOP | DT_CENTER);
 			for (int q = 0; q < pDoc->combat.m_CS.GetSize(); q++)
 			{
 				//CBrush nb = CBrush(RGB(0,0,0));
@@ -76,23 +97,21 @@ void CCombatSimulatorView::OnDraw(CDC* pDC)
 				pDC->SelectObject(&nb);
 				//CPen black(PS_SOLID,0,RGB(0,0,0));
 				CPen black(PS_SOLID,0,color[pDoc->combat.m_CS.GetAt(q)->m_pShip->GetOwnerOfShip()]);
-				if (1)//(xy_ebene == TRUE)
+				if (xy_ebene == TRUE)
 				{
-					pDC->SelectObject(&black);
-					pDC->DrawText("Current level: XY", r, DT_TOP | DT_CENTER);
-					//pDC->Ellipse(pDoc->combat.m_CS.GetAt(q).m_KO.x+538,pDoc->combat.m_CS.GetAt(q).m_KO.y+375,
-					//			pDoc->combat.m_CS.GetAt(q).m_KO.x+6+538,pDoc->combat.m_CS.GetAt(q).m_KO.y+6+375);
+					pDC->SelectObject(&black);					
 					pDC->SetTextColor(color[pDoc->combat.m_CS.GetAt(q)->m_pShip->GetOwnerOfShip()]);
 					s.Format("%s", pDoc->combat.m_CS.GetAt(q)->m_pShip->GetShipClass());
 					if (pDoc->combat.m_CS.GetAt(q)->m_byCloak > 0)
 						s += "(c)";
-					pDC->TextOut(pDoc->combat.m_CS.GetAt(q)->m_KO.x+r.right/2 - 20, pDoc->combat.m_CS.GetAt(q)->m_KO.y+r.bottom/2 - 27, s);
+					CString life;
+					life.Format(" %.0lf%%", pDoc->combat.m_CS.GetAt(q)->LIFE);
+					s += life;
+					pDC->TextOut(pDoc->combat.m_CS.GetAt(q)->m_KO.x+r.right/2 - 20, pDoc->combat.m_CS.GetAt(q)->m_KO.y+r.bottom/2 - 15, s);
 					
-					s.Format("%.0lf", pDoc->combat.m_CS.GetAt(q)->SCAL);
-					pDC->TextOut(pDoc->combat.m_CS.GetAt(q)->m_KO.x+r.right/2 - 5, pDoc->combat.m_CS.GetAt(q)->m_KO.y+r.bottom/2 - 15, s);
-					s.Format("%.2lf", pDoc->combat.m_CS.GetAt(q)->SCAL2);
+					s.Format("%.0lf°", pDoc->combat.m_CS.GetAt(q)->SCAL);
 					pDC->TextOut(pDoc->combat.m_CS.GetAt(q)->m_KO.x+r.right/2 - 5, pDoc->combat.m_CS.GetAt(q)->m_KO.y+r.bottom/2 + 5, s);
-
+					
 					pDC->Ellipse(pDoc->combat.m_CS.GetAt(q)->m_KO.x+r.right/2,pDoc->combat.m_CS.GetAt(q)->m_KO.y+r.bottom/2,
 						pDoc->combat.m_CS.GetAt(q)->m_KO.x+6+r.right/2,pDoc->combat.m_CS.GetAt(q)->m_KO.y+6+r.bottom/2);
 					// Phaserfeuer zeichnen
@@ -104,14 +123,24 @@ void CCombatSimulatorView::OnDraw(CDC* pDC)
 							pDC->SelectObject(&pulse);
 						pDC->MoveTo(pDoc->combat.m_CS.GetAt(q)->m_KO.x+r.right/2+3,pDoc->combat.m_CS.GetAt(q)->m_KO.y+r.bottom/2+3);
 						pDC->LineTo(pDoc->combat.m_CS.GetAt(q)->m_pTarget->m_KO.x+r.right/2+3,pDoc->combat.m_CS.GetAt(q)->m_pTarget->m_KO.y+r.bottom/2+3);
-					}					
+					}
+					black.DeleteObject();
 				}
-				else if (0 == 1)
+				else
 				{
 					pDC->SelectObject(&black);
-					pDC->DrawText("Current level: XZ", r, DT_TOP | DT_CENTER);
 					pDC->SetTextColor(color[pDoc->combat.m_CS.GetAt(q)->m_pShip->GetOwnerOfShip()]);
-					pDC->TextOut(pDoc->combat.m_CS.GetAt(q)->m_KO.x+r.right/2 - 20, pDoc->combat.m_CS.GetAt(q)->m_KO.z+r.bottom/2 - 15, pDoc->combat.m_CS.GetAt(q)->m_pShip->GetShipClass());
+					s.Format("%s", pDoc->combat.m_CS.GetAt(q)->m_pShip->GetShipClass());
+					if (pDoc->combat.m_CS.GetAt(q)->m_byCloak > 0)
+						s += "(c)";
+					CString life;
+					life.Format(" %.0lf%%", pDoc->combat.m_CS.GetAt(q)->LIFE);
+					s += life;
+					pDC->TextOut(pDoc->combat.m_CS.GetAt(q)->m_KO.x+r.right/2 - 20, pDoc->combat.m_CS.GetAt(q)->m_KO.z+r.bottom/2 - 15, s);
+
+					s.Format("%.0lf°", pDoc->combat.m_CS.GetAt(q)->SCAL);
+					pDC->TextOut(pDoc->combat.m_CS.GetAt(q)->m_KO.x+r.right/2 - 5, pDoc->combat.m_CS.GetAt(q)->m_KO.z+r.bottom/2 + 5, s);					
+
 					pDC->Ellipse(pDoc->combat.m_CS.GetAt(q)->m_KO.x+r.right/2,pDoc->combat.m_CS.GetAt(q)->m_KO.z+r.bottom/2,
 								pDoc->combat.m_CS.GetAt(q)->m_KO.x+4+r.right/2,pDoc->combat.m_CS.GetAt(q)->m_KO.z+4+r.bottom/2);
 					// Phaserfeuer zeichnen
@@ -124,19 +153,22 @@ void CCombatSimulatorView::OnDraw(CDC* pDC)
 						pDC->MoveTo(pDoc->combat.m_CS.GetAt(q)->m_KO.x+r.right/2+3,pDoc->combat.m_CS.GetAt(q)->m_KO.z+r.bottom/2+3);
 						pDC->LineTo(pDoc->combat.m_CS.GetAt(q)->m_pTarget->m_KO.x+r.right/2+3,pDoc->combat.m_CS.GetAt(q)->m_pTarget->m_KO.z+r.bottom/2+3);
 					}
+					black.DeleteObject();
 				}
+				nb.DeleteObject();
 			}
 			
 			// Torpedos zeichnen
 			for (int q = 0; q < pDoc->combat.m_CT.GetSize(); q++)
 			{
 				pDC->SelectObject(&phaser);
-				if (1)//xy_ebene == TRUE)
+				if (xy_ebene == TRUE)
 					pDC->Rectangle(pDoc->combat.m_CT.GetAt(q)->m_KO.x+r.right/2,pDoc->combat.m_CT.GetAt(q)->m_KO.y+r.bottom/2,
 								pDoc->combat.m_CT.GetAt(q)->m_KO.x+4+r.right/2,pDoc->combat.m_CT.GetAt(q)->m_KO.y+4+r.bottom/2);
 				else
 					pDC->Rectangle(pDoc->combat.m_CT.GetAt(q)->m_KO.x+r.right/2,pDoc->combat.m_CT.GetAt(q)->m_KO.z+r.bottom/2,
 								pDoc->combat.m_CT.GetAt(q)->m_KO.x+4+r.right/2,pDoc->combat.m_CT.GetAt(q)->m_KO.z+4+r.bottom/2);
+				phaser.DeleteObject();
 			}
 			
 			counter++;
@@ -230,6 +262,8 @@ void CCombatSimulatorView::OnDraw(CDC* pDC)
 		file.Close();							// Datei wird geschlossen
 		AfxMessageBox("Generating statsfile... ready\n\nClose this application or run a new one");
 	}
+
+	font.DeleteObject();
 // CCombatSimulatorView-Diagnose
 }
 
@@ -271,5 +305,12 @@ void CCombatSimulatorView::OnInitialUpdate()
 	color[CARDASSIAN] = RGB(125,0,125);
 	color[DOMINION]	= RGB(73,240,240);
 
-	memset(winner, 2, sizeof(BYTE) * 7);
+	memset(winner, 2, sizeof(BYTE) * 7);	
+}
+
+BOOL CCombatSimulatorView::OnEraseBkgnd(CDC* pDC)
+{
+	// TODO: Add your message handler code here and/or call default
+
+	return FALSE;
 }

@@ -228,8 +228,11 @@ void CCombat::CalculateCombat(BYTE winner[7])
 		// Flugroute aller Schiffe berechnen und einfach mal attackieren (Phaser abfeuern)
 		for (int i = 0; i < m_CS.GetSize(); i++)
 		{
-			m_CS.GetAt(i)->SCAL = -2.f;
-			m_CS.GetAt(i)->SCAL2 = -2.f;
+			m_CS.GetAt(i)->SCAL = -1.f;	
+			m_CS.GetAt(i)->LIFE = 100;
+			float life = (float)(m_CS.GetAt(i)->m_pShip->GetHull()->GetCurrentHull())
+				/ (float)(m_CS.GetAt(i)->m_pShip->GetHull()->GetMaxHull());
+			m_CS.GetAt(i)->LIFE = life * 100;
 			// Wenn ein wieder getarntes Schiff als Ziel aufgeschaltet ist, dieses aber nicht mehr durch
 			// Scanner entdeckt werden kann, dann dieses Ziel nicht mehr als Ziel behandeln. Anderenfalls, wenn
 			// unser Ziel getarnt ist, wir es aber entdecken, dann für alle sichtbar machen
@@ -258,7 +261,6 @@ void CCombat::CalculateCombat(BYTE winner[7])
 			
 			// Flug zur nächsten Position
 			m_CS.ElementAt(i)->CalculateNextPosition();
-			
 			// Wenn wir ein Ziel haben, dann greifen wir dieses auch an
 			if (m_CS.GetAt(i)->m_pTarget != NULL)
 			{
@@ -414,12 +416,14 @@ BOOLEAN CCombat::SetTarget(int i)
 			// jedenfalls wird hier abgebrochen -> Ziel gefunden (auch wenn wegen Tarnung noch keine Aufschlaltung mgl. war)
 			
 			// Wenn möglich wieder Tarnen bevor ein neues Ziel gewählt wird
-			//if (m_CS.GetAt(i)->m_byReCloak > 100)
-			if (m_CS.GetAt(i)->m_pShip->GetCloak() && m_CS.GetAt(i)->m_byCloak == 0)
+			if (m_CS.GetAt(i)->m_byReCloak == 255)
 			{
-				m_CS.GetAt(i)->m_byCloak = rand()%21 + 50;	// Wert zwischen 50 und 70 zuweisen
-				m_CS.GetAt(i)->m_bShootCloaked = FALSE;
-				m_CS.GetAt(i)->m_byReCloak = 0;
+				if (m_CS.GetAt(i)->m_pShip->GetCloak() && m_CS.GetAt(i)->m_byCloak == 0)
+				{
+					m_CS.GetAt(i)->m_byCloak = rand()%21 + 50;	// Wert zwischen 50 und 70 zuweisen
+					m_CS.GetAt(i)->m_bShootCloaked = FALSE;
+					m_CS.GetAt(i)->m_byReCloak = 0;
+				}
 			}
 			return TRUE;
 		}
@@ -483,6 +487,7 @@ void CCombat::Reset()
 		m_InvolvedShips.RemoveAt(i);
 	}
 	m_InvolvedShips.RemoveAll();
+
 	for (int i = 0; i < m_CS.GetSize(); )
 		m_CS.RemoveAt(i);
 	m_CS.RemoveAll();

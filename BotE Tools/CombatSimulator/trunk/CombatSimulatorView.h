@@ -16,7 +16,7 @@ protected: // Nur aus Serialisierung erstellen
 	UINT counter;
 	BOOLEAN xy_ebene;
 	COLORREF color[8];
-	BYTE winner[7];			
+	BYTE winner[7];
 
 public:
 	CCombatSimulatorDoc* GetDocument() const;
@@ -47,6 +47,8 @@ public:
 	virtual void OnInitialUpdate();
 protected:
 //	virtual void OnUpdate(CView* /*pSender*/, LPARAM /*lHint*/, CObject* /*pHint*/);
+public:
+	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
 };
 
 #ifndef _DEBUG  // Debugversion in CombatSimulatorView.cpp

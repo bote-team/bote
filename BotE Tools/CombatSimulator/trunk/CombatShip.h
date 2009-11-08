@@ -1,5 +1,5 @@
 /*
- *   Copyright (C)2004-2008 Sir Pustekuchen
+ *   Copyright (C)2004-2009 Sir Pustekuchen
  *
  *   Author   :  Sir Pustekuchen
  *   Home     :  http://birth-of-the-empires.de.vu
@@ -176,7 +176,8 @@ private:
 	BOOLEAN m_bShootCloaked;
 
 public:
-	float SCAL, SCAL2;
+	float SCAL;
+	float LIFE;
 };
 
 typedef CArray<CCombatShip,CCombatShip> CombatShips;

@@ -164,8 +164,8 @@ void CCombatShip::CalculateNextPosition()
 		
 	// Wenn das Schiff getarnt war und geschossen hat, dann den Tarncounter runterzählen
 	if (m_bShootCloaked == TRUE && m_byCloak > 0)
-		m_byCloak--;	
-	
+		m_byCloak--;
+
 	// Wenn wir noch keine Flugroute berechnet haben
 	if (m_Route.IsEmpty() && this->m_byManeuverability > 0)
 	{
@@ -613,8 +613,7 @@ bool CCombatShip::AllowFire(const CFireArc* arc)
 		else 
 			diffarc_bogenmass = acos((float)diffv_arcdiff.x / (float)diffv_arcdiff.Length());
 		//diffarc=diffarc_bogenmaß*180/Pi
-		diffarc = (int)(diffarc_bogenmass * 180 / (float)PI);
-		SCAL2    = diffv_arcdiff.y;		
+		diffarc = (int)(diffarc_bogenmass * 180 / (float)PI);		
 	}
 	SCAL      = (float)diffarc;	
 
@@ -667,6 +666,9 @@ void CCombatShip::FireBeam(int beamWeapon, int distance, BYTE boni)
 	// Sobald ein getarntes Schiff mit einem Beam getroffen hat wird festgelegt, das es geschossen hat
 	if (beamDamage > 0)
 		m_bShootCloaked = TRUE;
+	// Ansonsten kann aus der Funktion gegangen werden
+	else
+		return;
 	
 	// Wenn das feindliche Schiff keine ablative Hüllenpanzerung hat, dann gehen 10% des Schadens sofort
 	// auf die Hülle

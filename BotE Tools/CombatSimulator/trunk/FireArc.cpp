@@ -6,7 +6,7 @@ IMPLEMENT_SERIAL (CFireArc, CObject, 1)
 //////////////////////////////////////////////////////////////////////
 // Konstruktion/Destruktion
 //////////////////////////////////////////////////////////////////////
-CFireArc::CFireArc(void) : m_nMountPos(270), m_nAngle(90)
+CFireArc::CFireArc(void) : m_nMountPos(0), m_nAngle(90)
 {
 }
 
@@ -59,4 +59,19 @@ void CFireArc::Serialize(CArchive &ar)
 		ar >> m_nMountPos;
 		ar >> m_nAngle;
 	}
+}
+
+///////////////////////////////////////////////////////////////////////
+// sonstige Funktionen
+///////////////////////////////////////////////////////////////////////
+/// Funktion zum Setzen der Feuerwinkelwerte.
+/// @param nMountPos Position am Schiff (0 entspricht Front, 90 entspricht rechts, 180 Heck und 270 links)
+/// @param nAngle Öffnungswinkel in °
+void CFireArc::SetValues(USHORT nMountPos, USHORT nAngle)
+{
+	m_nMountPos	= nMountPos;
+	m_nAngle	= nAngle;
+
+	ASSERT(m_nMountPos >= 0 && m_nMountPos <= 360);
+	ASSERT(m_nAngle >= 0 && m_nAngle <= 360);
 }

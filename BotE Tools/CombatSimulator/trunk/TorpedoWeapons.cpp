@@ -71,6 +71,8 @@ CTorpedoWeapons & CTorpedoWeapons::operator=(const CTorpedoWeapons & rhs)
 void CTorpedoWeapons::Serialize(CArchive &ar)		
 {
 	CObject::Serialize(ar);
+
+	m_Firearc.Serialize(ar);
 	// wenn gespeichert wird
 	if (ar.IsStoring())
 	{

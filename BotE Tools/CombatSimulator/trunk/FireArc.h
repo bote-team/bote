@@ -35,6 +35,11 @@ public:
 	/// Funktion gibt den Öffnungswinkel der Waffe zurück.
 	/// @return Öffnungswinkel in Grad
 	USHORT GetAngle(void) const {return m_nAngle;}
+
+	/// Funktion zum Setzen der Feuerwinkelwerte.
+	/// @param nMountPos Position am Schiff (0 entspricht Front, 90 entspricht rechts, 180 Heck und 270 links)
+	/// @param nAngle Öffnungswinkel in °
+	void SetValues(USHORT nMountPos, USHORT nAngle);
 	
 private:
 	/// Anbringung der Waffe auf dem Schiff <code>FRONT, RIGHT, BACK, LEFT</code>

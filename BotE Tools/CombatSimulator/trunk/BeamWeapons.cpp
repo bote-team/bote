@@ -71,6 +71,8 @@ CBeamWeapons & CBeamWeapons::operator=(const CBeamWeapons & rhs)
 void CBeamWeapons::Serialize(CArchive &ar)		
 {
 	CObject::Serialize(ar);
+
+	m_Firearc.Serialize(ar);
 	// wenn gespeichert wird
 	if (ar.IsStoring())
 	{

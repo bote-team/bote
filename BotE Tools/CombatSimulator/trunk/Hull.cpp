@@ -101,15 +101,15 @@ void CHull::ModifyHull(BOOLEAN DoubleHull, UINT BaseHull, BYTE HullMaterial, BOO
 	m_bPolarisation = Polarisation;
 	m_iBaseHull = BaseHull;
 	m_iHullMaterial = HullMaterial;
-	double multi = 1.0;
+	float fMulti = 1.0f;
 	switch(HullMaterial)
 	{
-	case DURANIUM:	multi = 1.5; break;
-	case IRIDIUM:	multi = 2.0; break;
+	case DURANIUM:	fMulti = 1.5f; break;
+	case IRIDIUM:	fMulti = 2.0f; break;
 	}
-	m_iMaxHull = (UINT)(m_iBaseHull * multi);
+	m_iMaxHull = (UINT)(m_iBaseHull * fMulti);
 	if (m_bDoubleHull == TRUE)
-		m_iMaxHull = (UINT)(m_iMaxHull * 1.5);
+		m_iMaxHull = (UINT)(m_iMaxHull * 1.5f);
 	m_iCurrentHull = m_iMaxHull;
 }
 
@@ -130,7 +130,7 @@ void CHull::SetCurrentHull(int add)
 	else if ((long)(add + m_iCurrentHull) <= 0)
 		m_iCurrentHull = 0;
 	else
-		m_iCurrentHull += add;	
+		m_iCurrentHull += add;
 }
 
 /// Diese Funktion repariert die Hülle
