@@ -1,0 +1,81 @@
+@BuildingEditor for Bote
+
+@author:	Sir Pustekuchen
+@date:		2006-04-06
+@last change:	2008-03-31
+
+
+-------------------------------------------------------------------------
+
+Wichtige allgemeine Informationen:
+
+- Gibt es keinen Wert oder ist dieser Wert für das Gebäude nicht zu beachten oder
+  ist dieser Wert "Falsch/Nein", dann wird eine "0" eingetragen. Bedeutet der Wert
+  "Richtig/Ja", so muß eine "1" eingetragen werden. Wird ein Textstring verlangt, kann
+  man diesen komplett weglassen oder eine "0" angeben, falls dieser Textstring nicht
+  von Relevanz ist.
+
+- Alle Werte die mit Boni bezeichnet werden sind prozentuale Werte. Das
+  sind die Werte im Editor, welchen ein "in %" folgt. Boni können positive
+  Werte sowie auch negative Werte haben. Ein Bonus mit einem negativen Wert
+  ist ein Malus. Mali sind überall möglich.
+
+- Die meisten Produktionswerte dürfen ausschließlich positive Werte annehmen.
+  Eine Aussnahme stellt dabei die Nahrungsproduktion, Moralproduktion im System,
+  Moralproduktion imperienweit und die Latinumproduktion dar. Diese dürfen auch
+  negative Produktionswerte annehmen. Der Editor sollte bei Eingabe von Daten diese
+  auf Richtigkeit überprüfen.
+
+- Bei Spezialproduktionen, Spezialeigenschaften und Spezialboni verhält es sich
+  ein wenig anders. Manchmal sind negative Werte zugelassen, manchmal nicht. Der
+  Editor überprüft automatisch die Richtigkeit der eingegebenen Werte.
+
+- Wird eingestellt, dass ein Gebäude von jeder Rasse gebaut werden kann. So dürfen
+  natürlich keine Werte bei den Voraussetzungen "maximal und minimal pro Imperium"
+  eingetragen werden.
+
+- Wird ein Wert ungleich "0" bei der Anzahl für maximal oder minimal bei pro Imperium
+  oder pro System eingetragen, so darf die zugehörige ID nicht "0" sein. Die ID muß
+  dann auf ein Gebäude in der vorhandenen Gebäudeliste verweisen.
+
+
+-------------------------------------------------------------------------
+
+Wichtige Informationen zur Bedienung:
+
+- Alle Steuerelemente sollten eigentlich selbsterklärend sein. Ein wichtiger Hinweis
+  ist dennoch, dass alle Änderungen, die an einem Gebäude gemacht werden temporär auch
+  gespeichert werden, wenn/obwohl man ein anderes Gebäude aus der Liste auswählt.
+  Geht man auf ein zuvor modifiziertes Gebäude zurück, so sind diese Änderungen
+  immernoch vorhanden. Lädt man aber die Daten erneut, dann sind diese Änderungen 
+  selbstverständlich rückgängig gemacht. Erst ein Speichern schreibt diese Daten
+  konsistent in die Datei.
+
+- Mittels "NEW" wird ein neues Gebäude am Ende der Liste angelegt. Die Gebäudedaten
+  entsprechen dann den häufigsten Daten bzw. sind genullt.
+
+- Mittels "COPY" wird von dem gerade markiertem Gebäude eine Kopie gemacht und ans Ende
+  der Gebäudeliste angehangen. Alle Daten (bis auf die ID) der Kopie sind identisch zum
+  Original.
+
+- Mittels "DELETE" wird das gerade markierte Gebäude aus der Gebäudeliste gelöscht (aber
+  noch nicht aus der Datei. Erst nach einem Klick auf "SAVE" wird das gelöschte Gebäude
+  auch endgültig aus der Datei gelöscht). Alle darauf folgenden Gebäude werden in der
+  Liste um einen Platz nach oben geschoben, wodurch sich auch deren ID verändert. Alle
+  Verknüpfungen der ID (z.B. bei Äquivalenzgebäude_ID´s oder Vorgänger_ID´s) werden
+  automatisch mitkorrigiert. Der Benutzer muß also diese Verknüpfungen nicht manuell
+  ändern. Eine Überprüfung der Verknüpfungen ist dennoch anzuraten.
+
+- Mittel "UP" und "DOWN" wird das markierte Gebäude in der Liste nach oben bzw. unten
+  bewegt. Alle durch diese Änderung betroffenen Verknüpfungen werden gleichzeitig
+  automatisch berichtigt (siehe Beschreibung zum Deletebutton).
+
+-------------------------------------------------------------------------
+
+
+
+
+Bei Fragen zu einzelnen Werten bitte im Internet nachschauen.
+www.birth-of-the-empires.de.vu
+
+Alle gefunden Bugs bitte auch im Bugbereich des Forums von BotE melden.

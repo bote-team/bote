@@ -1,0 +1,600 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// German (Germany) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_DEU)
+#ifdef _WIN32
+LANGUAGE LANG_GERMAN, SUBLANG_GERMAN
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "#define _AFX_NO_SPLITTER_RESOURCES\r\n"
+    "#define _AFX_NO_OLE_RESOURCES\r\n"
+    "#define _AFX_NO_TRACKER_RESOURCES\r\n"
+    "#define _AFX_NO_PROPERTY_RESOURCES\r\n"
+    "\r\n"
+    "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_DEU)\r\n"
+    "#ifdef _WIN32\r\n"
+    "LANGUAGE 7, 1\r\n"
+    "#pragma code_page(1252)\r\n"
+    "#endif //_WIN32\r\n"
+    "#include ""res\\BuildingEditor.rc2""  // Nicht mit Microsoft Visual C++ bearbeitete Ressourcen\r\n"
+    "#include ""l.deu\\afxres.rc""          // Standardkomponenten\r\n"
+    "#endif\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDR_MAINFRAME           ICON                    "res\\BuildingEditor.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_ABOUTBOX DIALOGEX 0, 0, 235, 55
+STYLE DS_SETFONT | WS_CHILD | WS_SYSMENU
+FONT 8, "MS Sans Serif", 0, 0, 0x0
+BEGIN
+    ICON            IDR_MAINFRAME,IDC_STATIC,11,17,21,20
+    LTEXT           "BuildingEditor Version 1.1",IDC_STATIC,40,10,119,8,SS_NOPREFIX
+    LTEXT           "Copyright by Sir Pustekuchen\n(C) 2008",IDC_STATIC,40,25,119,23
+END
+
+IDD_BUILDINGEDITOR_DIALOG DIALOGEX 0, 0, 573, 305
+STYLE DS_SETFONT | DS_MODALFRAME | DS_3DLOOK | DS_FIXEDSYS | WS_POPUP | WS_VISIBLE | WS_CAPTION
+EXSTYLE WS_EX_WINDOWEDGE | WS_EX_APPWINDOW
+CAPTION "BuildingEditor"
+FONT 8, "MS Shell Dlg", 400, 0, 0x0
+BEGIN
+    DEFPUSHBUTTON   "EXIT",IDOK,497,50,69,14
+    LISTBOX         IDC_LIST,7,23,119,258,LBS_OWNERDRAWFIXED | LBS_HASSTRINGS | LBS_NOINTEGRALHEIGHT | NOT WS_BORDER | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "buildings",IDC_STATIC,8,10,28,8
+    EDITTEXT        IDC_RUNNINGNUMBER,79,8,35,12,ES_READONLY
+    LTEXT           "ID:",IDC_STATIC,67,10,10,8
+    PUSHBUTTON      "LOAD",IDC_LOAD,497,22,69,14
+    PUSHBUTTON      "SAVE",IDC_SAVE,497,36,69,14
+    PUSHBUTTON      "NEW",IDC_NEW,143,284,41,14
+    PUSHBUTTON      "DELETE",IDC_DELETE,185,284,42,14
+    PUSHBUTTON      "COPY",IDC_COPY,101,284,42,14
+    PUSHBUTTON      "UP",IDC_MOVEUP,55,284,41,14
+    PUSHBUTTON      "DOWN",IDC_MOVEDOWN,7,284,42,14
+    COMBOBOX        IDC_LANGUAGE,498,7,68,33,CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
+    CONTROL         "",IDC_TAB1,"SysTabControl32",0x0,130,7,366,275
+    LTEXT           "Building Editor for BotE Alpha4 Version",IDC_STATIC,369,290,127,8
+END
+
+IDD_INFODLG DIALOGEX 0, 0, 356, 245
+STYLE DS_SETFONT | WS_CHILD | WS_SYSMENU
+FONT 8, "MS Sans Serif", 0, 0, 0x0
+BEGIN
+    EDITTEXT        IDC_NAME,17,51,141,12,ES_AUTOHSCROLL
+    LTEXT           "Buildingname",IDC_STATIC,18,41,43,8
+    EDITTEXT        IDC_DESCRIPTION,17,77,142,126,ES_MULTILINE | ES_AUTOVSCROLL
+    LTEXT           "Description",IDC_STATIC,18,67,36,8
+    LTEXT           "Name of the graphicfile",IDC_STATIC,18,207,74,8
+    EDITTEXT        IDC_GRAPHICFILE,17,218,141,12,ES_AUTOHSCROLL
+    CONTROL         "allways online:",IDC_ALLWAYS_ONLINE,"Button",BS_AUTOCHECKBOX | BS_LEFTTEXT | WS_TABSTOP,275,25,61,10
+    CONTROL         "needs worker:",IDC_NEEDWORKER,"Button",BS_AUTOCHECKBOX | BS_LEFTTEXT | WS_TABSTOP,275,44,61,10
+    CONTROL         "never ready:",IDC_NEVERREADY,"Button",BS_AUTOCHECKBOX | BS_LEFTTEXT | WS_TABSTOP,281,63,55,10
+    LTEXT           "building equivalent ID:",IDC_STATIC,175,84,71,8
+    LTEXT           "MajorRace1:",IDC_STATIC,176,102,47,8
+    CONTROL         "upgradeable:",IDC_UPGRADEABLE,"Button",BS_AUTOCHECKBOX | BS_LEFTTEXT | WS_TABSTOP,178,26,57,10
+    LTEXT           "MajorRace2:",IDC_STATIC,176,116,48,8
+    GROUPBOX        "technical information",IDC_STATIC,169,9,180,229
+    LTEXT           "MajorRace3:",IDC_STATIC,176,130,48,8
+    LTEXT           "predecessors ID:",IDC_STATIC,177,42,54,8
+    LTEXT           "MajorRace4:",IDC_STATIC,175,143,47,8
+    EDITTEXT        IDC_PREDECESSORID,235,40,25,12,ES_AUTOHSCROLL
+    LTEXT           "MajorRace5:",IDC_STATIC,175,158,49,8
+    LTEXT           "MajorRace6:",IDC_STATIC,175,172,49,8
+    EDITTEXT        IDC_FED_EQU,223,100,23,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_FER_EQU,223,114,23,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_KLI_EQU,223,128,23,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_ROM_EQU,223,142,23,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_CAR_EQU,223,156,23,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_DOM_EQU,223,170,23,12,ES_AUTOHSCROLL
+    COMBOBOX        IDC_RACE,47,22,111,124,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Race:",IDC_STATIC,18,24,20,8
+    GROUPBOX        "general information",IDC_STATIC,7,8,160,230
+    EDITTEXT        IDC_EQUI1NAME,247,100,95,12,ES_READONLY | NOT WS_BORDER | NOT WS_TABSTOP
+    EDITTEXT        IDC_EQUI2NAME2,247,114,95,12,ES_READONLY | NOT WS_BORDER | NOT WS_TABSTOP
+    EDITTEXT        IDC_EQUI3NAME3,247,128,95,12,ES_READONLY | NOT WS_BORDER | NOT WS_TABSTOP
+    EDITTEXT        IDC_EQUI4NAME4,247,142,95,12,ES_READONLY | NOT WS_BORDER | NOT WS_TABSTOP
+    EDITTEXT        IDC_EQUI5NAME5,247,156,95,12,ES_READONLY | NOT WS_BORDER | NOT WS_TABSTOP
+    EDITTEXT        IDC_EQUI6NAME6,247,170,95,12,ES_READONLY | NOT WS_BORDER | NOT WS_TABSTOP
+END
+
+IDD_PREREQUISITESDLG DIALOGEX 0, 0, 358, 260
+STYLE DS_SETFONT | WS_CHILD | WS_SYSMENU
+FONT 8, "MS Sans Serif", 0, 0, 0x0
+BEGIN
+    CONTROL         "Type A:",IDC_TYPE_A,"Button",BS_AUTOCHECKBOX | BS_LEFTTEXT | WS_TABSTOP,12,22,41,10
+    CONTROL         "Type B:",IDC_TYPE_B,"Button",BS_AUTOCHECKBOX | BS_LEFTTEXT | WS_TABSTOP,12,34,41,10
+    CONTROL         "Type C:",IDC_TYPE_C,"Button",BS_AUTOCHECKBOX | BS_LEFTTEXT | WS_TABSTOP,12,44,41,10
+    CONTROL         "Type E:",IDC_TYPE_E,"Button",BS_AUTOCHECKBOX | BS_LEFTTEXT | WS_TABSTOP,12,56,41,10
+    CONTROL         "Type F:",IDC_TYPE_F,"Button",BS_AUTOCHECKBOX | BS_LEFTTEXT | WS_TABSTOP,11,67,42,10
+    CONTROL         "Type G:",IDC_TYPE_G,"Button",BS_AUTOCHECKBOX | BS_LEFTTEXT | WS_TABSTOP,12,78,42,10
+    CONTROL         "Type H:",IDC_TYPE_H,"Button",BS_AUTOCHECKBOX | BS_LEFTTEXT | WS_TABSTOP,12,90,42,10
+    CONTROL         "Type I:",IDC_TYPE_I,"Button",BS_AUTOCHECKBOX | BS_LEFTTEXT | WS_TABSTOP,12,101,42,10
+    CONTROL         "Type J:",IDC_TYPE_J,"Button",BS_AUTOCHECKBOX | BS_LEFTTEXT | WS_TABSTOP,12,112,42,10
+    CONTROL         "Type K:",IDC_TYPE_K,"Button",BS_AUTOCHECKBOX | BS_LEFTTEXT | WS_TABSTOP,12,124,41,10
+    CONTROL         "Type L:",IDC_TYPE_L,"Button",BS_AUTOCHECKBOX | BS_LEFTTEXT | WS_TABSTOP,12,136,41,10
+    CONTROL         "Type M:",IDC_TYPE_M,"Button",BS_AUTOCHECKBOX | BS_LEFTTEXT | WS_TABSTOP,12,147,42,10
+    CONTROL         "Type N:",IDC_TYPE_N,"Button",BS_AUTOCHECKBOX | BS_LEFTTEXT | WS_TABSTOP,12,159,42,10
+    CONTROL         "Type O:",IDC_TYPE_O,"Button",BS_AUTOCHECKBOX | BS_LEFTTEXT | WS_TABSTOP,12,170,42,10
+    CONTROL         "Type P:",IDC_TYPE_P,"Button",BS_AUTOCHECKBOX | BS_LEFTTEXT | WS_TABSTOP,12,182,42,10
+    CONTROL         "Type Q:",IDC_TYPE_Q,"Button",BS_AUTOCHECKBOX | BS_LEFTTEXT | WS_TABSTOP,12,193,42,10
+    CONTROL         "Type R:",IDC_TYPE_R,"Button",BS_AUTOCHECKBOX | BS_LEFTTEXT | WS_TABSTOP,13,205,41,10
+    CONTROL         "Type S:",IDC_TYPE_S,"Button",BS_AUTOCHECKBOX | BS_LEFTTEXT | WS_TABSTOP,13,217,41,10
+    CONTROL         "Type T:",IDC_TYPE_T,"Button",BS_AUTOCHECKBOX | BS_LEFTTEXT | WS_TABSTOP,13,228,41,10
+    CONTROL         "Type Y:",IDC_TYPE_Y,"Button",BS_AUTOCHECKBOX | BS_LEFTTEXT | WS_TABSTOP,13,239,41,10
+    EDITTEXT        IDC_MAXSYSNUMBER,236,135,33,12,ES_AUTOHSCROLL
+    LTEXT           "number:",IDC_STATIC,206,137,26,8
+    LTEXT           "of ID:",IDC_STATIC,273,137,18,8
+    EDITTEXT        IDC_MAXSYSID,293,135,32,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_MAXEMPIRENUMBER,236,167,33,12,ES_AUTOHSCROLL
+    LTEXT           "number:",IDC_STATIC,207,169,26,8
+    LTEXT           "of ID:",IDC_STATIC,273,169,18,8
+    EDITTEXT        IDC_MAXEMPIREID,293,167,32,12,ES_AUTOHSCROLL
+    GROUPBOX        "max per system",IDC_STATIC,198,122,153,33
+    GROUPBOX        "max per empire",IDC_STATIC,197,155,154,33
+    EDITTEXT        IDC_MINSYSNUMBER,238,200,31,12,ES_AUTOHSCROLL
+    LTEXT           "number:",IDC_STATIC,208,202,26,8
+    LTEXT           "of ID:",IDC_STATIC,274,202,18,8
+    EDITTEXT        IDC_MINSYSID,294,200,31,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_MINEMPIRENUMBER,238,232,32,12,ES_AUTOHSCROLL
+    LTEXT           "number:",IDC_STATIC,208,234,26,8
+    LTEXT           "of ID:",IDC_STATIC,273,234,18,8
+    EDITTEXT        IDC_MINEMPIREID,293,232,31,12,ES_AUTOHSCROLL
+    GROUPBOX        "min per system",IDC_STATIC,198,187,153,33
+    GROUPBOX        "min per empire",IDC_STATIC,198,220,153,33
+    CONTROL         "only homesystem:",IDC_ONLYHOMESYSTEM,"Button",BS_AUTOCHECKBOX | BS_LEFTTEXT | WS_TABSTOP,67,108,87,10
+    CONTROL         "only own colony:",IDC_ONLYOWNCOLONY,"Button",BS_AUTOCHECKBOX | BS_LEFTTEXT | WS_TABSTOP,67,121,87,10
+    CONTROL         "only minorracesystem:",IDC_ONLYMINORRACESYS,"Button",BS_AUTOCHECKBOX | BS_LEFTTEXT | WS_TABSTOP,67,134,87,10
+    CONTROL         "only conquered system",IDC_ONLYCONQUEREDSYS,"Button",BS_AUTOCHECKBOX | BS_LEFTTEXT | WS_TABSTOP,67,148,87,10
+    CONTROL         "really only race:",IDC_REALLYONLYRACE,"Button",BS_AUTOCHECKBOX | BS_LEFTTEXT | WS_TABSTOP,67,161,87,10
+    LTEXT           "only buildable in system with name:",IDC_STATIC,68,19,110,8
+    EDITTEXT        IDC_ONLYINSYSWITHNAME,68,29,120,12,ES_AUTOHSCROLL
+    LTEXT           "need min habitants in system for build:",IDC_STATIC,68,48,120,8
+    EDITTEXT        IDC_MINHABITANTS,68,58,35,12,ES_AUTOHSCROLL
+    LTEXT           "(in billions)",IDC_STATIC,108,61,33,8
+    GROUPBOX        "needed techlevels",IDC_STATIC,197,7,76,116
+    LTEXT           "bio:",IDC_STATIC,203,22,12,8
+    LTEXT           "energy:",IDC_STATIC,203,34,24,8
+    LTEXT           "computer:",IDC_STATIC,202,47,32,8
+    LTEXT           "propulsion:",IDC_STATIC,202,60,35,8
+    LTEXT           "construction:",IDC_STATIC,202,71,42,8
+    LTEXT           "weapon:",IDC_STATIC,203,83,28,8
+    EDITTEXT        IDC_BIOTECH,247,20,16,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_ENERGYTECH,247,33,16,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_COMPTECH,247,46,16,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_PROPULSIONTECH,247,58,16,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_CONSTRUCTIONTECH,247,70,16,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_WEAPONTECH,247,82,16,12,ES_AUTOHSCROLL
+    GROUPBOX        "needed resources",IDC_STATIC,275,7,76,117
+    LTEXT           "industry:",IDC_STATIC,281,22,27,8
+    LTEXT           "energy:",IDC_STATIC,281,34,24,8
+    LTEXT           "titan:",IDC_STATIC,281,47,16,8
+    LTEXT           "deuterium:",IDC_STATIC,281,60,34,8
+    LTEXT           "duranium:",IDC_STATIC,281,71,32,8
+    LTEXT           "crytsals:",IDC_STATIC,281,83,26,8
+    EDITTEXT        IDC_NEEDEDIP,325,20,22,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_NEEDEDENERGY,325,33,22,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_NEEDEDTITAN,325,46,22,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_NEEDEDDEUTERIUM,325,58,22,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_NEEDEDDURANIUM,325,70,22,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_NEEDEDCRYSTALS,325,82,22,12,ES_AUTOHSCROLL
+    LTEXT           "iridium:",IDC_STATIC,281,94,22,8
+    LTEXT           "deritium:",IDC_STATIC,281,106,27,8
+    EDITTEXT        IDC_NEEDEDIRIDIUM,325,93,22,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_NEEDEDDILITHIUM,325,105,22,12,ES_AUTOHSCROLL
+    GROUPBOX        "planettypes",IDC_STATIC,7,7,56,246
+    GROUPBOX        "generel prerequisites",IDC_STATIC,63,7,130,170
+    EDITTEXT        IDC_NEEDEDSYSTEMS,68,87,33,12,ES_AUTOHSCROLL
+    LTEXT           "needed systems",IDC_STATIC,68,77,52,8
+    GROUPBOX        "system resourceboni",IDC_STATIC,64,176,130,77
+    LTEXT           "food:",IDC_STATIC,77,186,17,8
+    LTEXT           "energy:",IDC_STATIC,69,200,24,8
+    LTEXT           "titan:",IDC_STATIC,77,229,16,8
+    LTEXT           "deuterium:",IDC_STATIC,132,187,34,8
+    LTEXT           "duranium:",IDC_STATIC,134,201,32,8
+    LTEXT           "crytsals:",IDC_STATIC,140,216,26,8
+    EDITTEXT        IDC_NEEDEDFOODBONI,94,185,22,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_NEEDEDENERGYBONI,94,200,22,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_NEEDEDTITANBONI,94,228,22,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_NEEDEDDEUTERIUMBONI,166,186,22,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_NEEDEDDURANIUMBONI,166,200,22,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_NEEDEDCRYSTALSBONI,166,214,22,12,ES_AUTOHSCROLL
+    LTEXT           "iridium:",IDC_STATIC,144,229,22,8
+    LTEXT           "deritium:",IDC_STATIC,67,216,27,8
+    EDITTEXT        IDC_NEEDEDIRIDIUMBONI,166,228,22,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_NEEDEDDERITIUMBONI,94,214,22,12,ES_AUTOHSCROLL
+END
+
+IDD_PRODUCTIONDLG DIALOGEX 0, 0, 355, 210
+STYLE DS_SETFONT | WS_CHILD | WS_SYSMENU
+FONT 8, "MS Sans Serif", 0, 0, 0x0
+BEGIN
+    LTEXT           "industry:",IDC_STATIC,8,34,27,8
+    LTEXT           "energy:",IDC_STATIC,8,47,24,8
+    LTEXT           "titan:",IDC_STATIC,8,85,16,8
+    LTEXT           "deuterium:",IDC_STATIC,8,97,34,8
+    LTEXT           "duranium:",IDC_STATIC,8,108,32,8
+    LTEXT           "crytsals:",IDC_STATIC,8,120,26,8
+    LTEXT           "iridium:",IDC_STATIC,8,132,22,8
+    LTEXT           "deritium:",IDC_STATIC,8,145,27,8
+    LTEXT           "food:",IDC_STATIC,8,23,17,8
+    LTEXT           "security:",IDC_STATIC,7,59,27,8
+    LTEXT           "research:",IDC_STATIC,8,72,30,8
+    LTEXT           "latinum:",IDC_STATIC,8,157,25,8
+    LTEXT           "moral in system:",IDC_STATIC,269,22,50,8
+    LTEXT           "moral empirewide:",IDC_STATIC,269,52,57,8
+    EDITTEXT        IDC_SPPROD,49,57,49,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_FPPROD,49,70,49,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_TITANPROD,49,83,49,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_DEUTERIUMPROD,49,95,49,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_DURANIUMPROD,49,107,49,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_CRYSTALPROD,49,120,49,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_IRIDIUMPROD,49,131,49,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_DILITHIUMPROD,49,143,49,12,ES_AUTOHSCROLL
+    GROUPBOX        "production",IDC_STATIC,41,7,62,166
+    GROUPBOX        "boni in %",IDC_STATIC,105,7,57,196
+    EDITTEXT        IDC_LATINUMPROD,49,155,49,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_ENERGYPROD,49,45,49,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_IPPROD,49,32,49,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_FOODPROD,49,19,49,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_SPBONI,114,57,42,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_FPBONI,114,70,42,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_TITANBONI,114,83,41,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_DEUTERIUMBONI,114,95,41,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_DURANIUMBONI,114,107,41,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_CRYSTALBONI,114,120,41,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_IRIDIUMBONI,114,131,41,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_DILITHIUMBONI,114,143,41,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_LATINUMBONI,114,155,41,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_ENERGYBONI,114,45,42,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_IPBONI,114,32,42,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_FOODBONI,114,19,42,12,ES_AUTOHSCROLL
+    LTEXT           "boni to all ressources:",IDC_STATIC,36,187,69,8
+    EDITTEXT        IDC_ALLRESBONI,113,186,41,12,ES_AUTOHSCROLL
+    LTEXT           "bio:",IDC_STATIC,172,127,12,8
+    LTEXT           "energy:",IDC_STATIC,172,138,24,8
+    LTEXT           "computer:",IDC_STATIC,171,151,32,8
+    LTEXT           "propulsion:",IDC_STATIC,171,164,35,8
+    LTEXT           "construction:",IDC_STATIC,171,175,42,8
+    LTEXT           "weapon:",IDC_STATIC,172,186,28,8
+    EDITTEXT        IDC_BIOTECHBONI,216,124,19,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_ENERGYTECHBONI,216,135,19,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_COMPTECHBONI,216,148,19,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_PROPULSIONTECHBONI,216,162,19,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_CONSTRUCTIONTECHBONI,216,172,19,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_WEAPONTECHBONI,216,186,19,12,ES_AUTOHSCROLL
+    GROUPBOX        "techs boni in %",IDC_STATIC,167,114,96,89
+    LTEXT           "inner security:",IDC_STATIC,172,20,44,8
+    LTEXT           "economyspy:",IDC_STATIC,172,31,42,8
+    LTEXT           "economysabotage:",IDC_STATIC,172,42,61,8
+    LTEXT           "researchspy:",IDC_STATIC,172,55,41,8
+    LTEXT           "researchsabotage::",IDC_STATIC,172,68,62,8
+    LTEXT           "militaryspy::",IDC_STATIC,172,79,36,8
+    EDITTEXT        IDC_INNERSECURITYBONI,237,17,19,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_ECONOMYSPYBONI,237,30,19,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_ECONOMYSABOTAGEBONI,237,41,19,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_RESEARCHSPYBONI,237,54,19,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_RESEARCHSABOTAGEBONI,237,65,19,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_MILITARYSPYBONI,237,78,19,12,ES_AUTOHSCROLL
+    GROUPBOX        "intelligence boni in %",IDC_STATIC,166,7,98,105
+    LTEXT           "militarysabotage:",IDC_STATIC,172,92,53,8
+    EDITTEXT        IDC_MILITARYSABOTAGEBONI,237,90,19,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_MORALINSYS,283,31,36,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_MORALEMPIREWIDE,284,62,35,12,ES_AUTOHSCROLL
+    GROUPBOX        "moral production",IDC_STATIC,265,7,83,105
+END
+
+IDD_SPECIALDLG DIALOGEX 0, 0, 368, 291
+STYLE DS_SETFONT | WS_CHILD | WS_SYSMENU
+FONT 8, "MS Sans Serif", 0, 0, 0x0
+BEGIN
+    GROUPBOX        "defence",IDC_STATIC,7,92,168,113
+    CONTROL         "shipyard:",IDC_SHIPYARD,"Button",BS_AUTOCHECKBOX | BS_LEFTTEXT | WS_TABSTOP,11,16,46,10
+    CONTROL         "barracks:",IDC_BARRACKS,"Button",BS_AUTOCHECKBOX | BS_LEFTTEXT | WS_TABSTOP,11,61,45,10
+    LTEXT           "shipyard buildspeed:",IDC_STATIC,64,16,65,8
+    LTEXT           "barracks buildspeed:",IDC_STATIC,63,61,66,8
+    EDITTEXT        IDC_SHIPYARDBUILDSPEED,133,14,22,12,ES_AUTOHSCROLL
+    LTEXT           "in %",IDC_STATIC,156,16,14,8
+    EDITTEXT        IDC_BARRACKSBUILDSPEED,133,59,22,12,ES_AUTOHSCROLL
+    LTEXT           "in %",IDC_STATIC,156,61,14,8
+    LTEXT           "buildable shipsize:",IDC_STATIC,11,30,58,8
+    COMBOBOX        IDC_BUILDABLESHIPTYPES,71,28,84,124,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "hitpoints:",IDC_STATIC,52,194,29,8
+    EDITTEXT        IDC_HITPOINTS,82,193,29,12,ES_AUTOHSCROLL
+    LTEXT           "shieldpower:",IDC_STATIC,42,106,40,8
+    LTEXT           "boni to shieldpower:",IDC_STATIC,18,121,64,8
+    EDITTEXT        IDC_SHIELDPOWER,82,105,29,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_SHIELDPOWERBONI,82,119,29,12,ES_AUTOHSCROLL
+    LTEXT           "shipdefence:",IDC_STATIC,40,167,42,8
+    LTEXT           "boni to shipdefence:",IDC_STATIC,16,180,65,8
+    EDITTEXT        IDC_SHIPDEFENCE,82,164,29,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_SHIPDEFENCEBONI,82,178,29,12,ES_AUTOHSCROLL
+    LTEXT           "grounddefence:",IDC_STATIC,31,135,51,8
+    LTEXT           "boni grounddefence:",IDC_STATIC,16,150,66,8
+    EDITTEXT        IDC_GROUNDDEFENCE,82,134,29,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_GROUNDDEFENCEBONI,82,148,29,12,ES_AUTOHSCROLL
+    LTEXT           "shiptraining:",IDC_STATIC,11,45,38,8
+    LTEXT           "trooptraining:",IDC_STATIC,11,77,42,8
+    EDITTEXT        IDC_SHIPTRAINING,51,43,29,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_TROOPTRAINING,51,75,29,12,ES_AUTOHSCROLL
+    LTEXT           "scanpower:",IDC_STATIC,185,15,38,8
+    LTEXT           "boni to scanpower:",IDC_STATIC,257,15,61,8
+    LTEXT           "scanrange:",IDC_STATIC,185,27,36,8
+    LTEXT           "boni to scanrange:",IDC_STATIC,258,28,60,8
+    EDITTEXT        IDC_SCANPOWERBONI,318,13,22,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_SCANRANGEBONI,318,26,22,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_SCANPOWER,225,13,26,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_SCANRANGE,225,26,26,12,ES_AUTOHSCROLL
+    LTEXT           "in %",IDC_STATIC,343,15,14,8
+    LTEXT           "in %",IDC_STATIC,343,28,14,8
+    LTEXT           "resistance against corruption:",IDC_STATIC,225,59,93,8
+    LTEXT           "added traderoutes:",IDC_STATIC,258,73,60,8
+    LTEXT           "shiprecycling:",IDC_STATIC,274,97,44,8
+    LTEXT           "income on traderoutes:",IDC_STATIC,245,85,73,8
+    EDITTEXT        IDC_RESISTANCE,318,57,22,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_ADDEDTRADEROUTES,318,70,22,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_INCOMEONTRADEROUTES,318,83,22,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_SHIPRECYCLING,318,96,22,12,ES_AUTOHSCROLL
+    LTEXT           "boni to building-buildspeed:",IDC_STATIC,184,162,86,8
+    LTEXT           "boni to upgrade-buildspeed:",IDC_STATIC,184,176,88,8
+    LTEXT           "boni to ship-buildspeed:",IDC_STATIC,197,192,75,8
+    LTEXT           "boni to troop-buildspeed:",IDC_STATIC,194,205,78,8
+    EDITTEXT        IDC_BUILDINGSPEEDBONI,272,160,22,12,ES_AUTOHSCROLL
+    LTEXT           "in %",IDC_STATIC,296,162,14,8
+    EDITTEXT        IDC_UPGRADESPEEDBONI,272,174,22,12,ES_AUTOHSCROLL
+    LTEXT           "in %",IDC_STATIC,296,176,14,8
+    EDITTEXT        IDC_SHIPSPEEDBONI,272,189,22,12,ES_AUTOHSCROLL
+    LTEXT           "in %",IDC_STATIC,296,189,14,8
+    EDITTEXT        IDC_TROOPSPEEDBONI,272,202,22,12,ES_AUTOHSCROLL
+    LTEXT           "in %",IDC_STATIC,296,205,14,8
+    LTEXT           "in %",IDC_STATIC,114,180,14,8
+    LTEXT           "in %",IDC_STATIC,114,122,14,8
+    LTEXT           "in %",IDC_STATIC,114,150,14,8
+    LTEXT           "in %",IDC_STATIC,341,85,14,8
+    LTEXT           "in %",IDC_STATIC,341,98,14,8
+    GROUPBOX        "units",IDC_STATIC,7,7,167,87
+    GROUPBOX        "special boni",IDC_STATIC,178,146,183,113
+    GROUPBOX        "specials",IDC_STATIC,178,7,183,140
+    GROUPBOX        "resource distributor",IDC_STATIC,7,204,168,56
+    CONTROL         "food:",IDC_FOODDIST,"Button",BS_AUTOCHECKBOX | BS_LEFTTEXT | WS_TABSTOP,32,214,33,10
+    CONTROL         "titan:",IDC_TITANDIST,"Button",BS_AUTOCHECKBOX | BS_LEFTTEXT | WS_TABSTOP,33,224,32,10
+    CONTROL         "deuterium:",IDC_DEUTERIUMDIST,"Button",BS_AUTOCHECKBOX | BS_LEFTTEXT | WS_TABSTOP,16,234,49,10
+    CONTROL         "duranium:",IDC_DURANIUMDIST,"Button",BS_AUTOCHECKBOX | BS_LEFTTEXT | WS_TABSTOP,18,244,47,10
+    CONTROL         "crystal:",IDC_CRYSTALDIST,"Button",BS_AUTOCHECKBOX | BS_LEFTTEXT | WS_TABSTOP,99,214,38,10
+    CONTROL         "iridium:",IDC_IRIDIUMDIST,"Button",BS_AUTOCHECKBOX | BS_LEFTTEXT | WS_TABSTOP,100,224,37,10
+    CONTROL         "deritium:",IDC_DERITIUMDIST,"Button",BS_AUTOCHECKBOX | BS_LEFTTEXT | WS_TABSTOP,95,234,42,10
+    LTEXT           "scaninterferpower:",IDC_STATIC,258,41,59,8
+    EDITTEXT        IDC_SCANINTERFER,318,39,22,12,ES_AUTOHSCROLL
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,0,1
+ PRODUCTVERSION 1,0,0,1
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040704B0"
+        BEGIN
+            VALUE "FileDescription", "MFC-Anwendung BuildingEditor"
+            VALUE "FileVersion", "1, 0, 0, 1"
+            VALUE "InternalName", "BuildingEditor"
+            VALUE "LegalCopyright", "Copyright (C) 2008"
+            VALUE "OriginalFilename", "BuildingEditor.EXE"
+            VALUE "ProductName", "Anwendung BuildingEditor"
+            VALUE "ProductVersion", "1, 0, 0, 1"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x407, 1200
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO 
+BEGIN
+    IDD_ABOUTBOX, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 228
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 48
+    END
+
+    IDD_BUILDINGEDITOR_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 566
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 298
+    END
+
+    IDD_INFODLG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 349
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 238
+    END
+
+    IDD_PREREQUISITESDLG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 351
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 253
+    END
+
+    IDD_PRODUCTIONDLG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 348
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 203
+    END
+
+    IDD_SPECIALDLG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 361
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 284
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog Info
+//
+
+IDD_BUILDINGEDITOR_DIALOG DLGINIT
+BEGIN
+    IDC_LANGUAGE, 0x403, 17, 0
+0x7270, 0x6d69, 0x7261, 0x2079, 0x616c, 0x676e, 0x6175, 0x6567, "\000" 
+    IDC_LANGUAGE, 0x403, 19, 0
+0x6573, 0x6f63, 0x646e, 0x7261, 0x2079, 0x616c, 0x676e, 0x6175, 0x6567, 
+"\000" 
+    0
+END
+
+IDD_INFODLG DLGINIT
+BEGIN
+    IDC_RACE, 0x403, 10, 0
+0x6c41, 0x206c, 0x6172, 0x6563, 0x0073, 
+    IDC_RACE, 0x403, 11, 0
+0x614d, 0x6f6a, 0x5272, 0x6361, 0x3165, "\000" 
+    IDC_RACE, 0x403, 11, 0
+0x614d, 0x6f6a, 0x5272, 0x6361, 0x3265, "\000" 
+    IDC_RACE, 0x403, 11, 0
+0x614d, 0x6f6a, 0x5272, 0x6361, 0x3365, "\000" 
+    IDC_RACE, 0x403, 11, 0
+0x614d, 0x6f6a, 0x5272, 0x6361, 0x3465, "\000" 
+    IDC_RACE, 0x403, 11, 0
+0x614d, 0x6f6a, 0x5272, 0x6361, 0x3565, "\000" 
+    IDC_RACE, 0x403, 11, 0
+0x614d, 0x6f6a, 0x5272, 0x6361, 0x3665, "\000" 
+    0
+END
+
+IDD_SPECIALDLG DLGINIT
+BEGIN
+    IDC_BUILDABLESHIPTYPES, 0x403, 10, 0
+0x305b, 0x205d, 0x6d73, 0x6c61, 0x006c, 
+    IDC_BUILDABLESHIPTYPES, 0x403, 11, 0
+0x315b, 0x205d, 0x656d, 0x6964, 0x6d75, "\000" 
+    IDC_BUILDABLESHIPTYPES, 0x403, 8, 0
+0x325b, 0x205d, 0x6962, 0x0067, 
+    IDC_BUILDABLESHIPTYPES, 0x403, 9, 0
+0x335b, 0x205d, 0x7568, 0x6567, "\000" 
+    0
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE 
+BEGIN
+    IDS_ABOUTBOX            "Inf&o über BuildingEditor..."
+END
+
+#endif    // German (Germany) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#define _AFX_NO_SPLITTER_RESOURCES
+#define _AFX_NO_OLE_RESOURCES
+#define _AFX_NO_TRACKER_RESOURCES
+#define _AFX_NO_PROPERTY_RESOURCES
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_DEU)
+#ifdef _WIN32
+LANGUAGE 7, 1
+#pragma code_page(1252)
+#endif //_WIN32
+#include "res\BuildingEditor.rc2"  // Nicht mit Microsoft Visual C++ bearbeitete Ressourcen
+#include "l.deu\afxres.rc"          // Standardkomponenten
+#endif
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+
