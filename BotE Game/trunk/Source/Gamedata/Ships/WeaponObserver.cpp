@@ -77,7 +77,8 @@ void CWeaponObserver::Serialize(CArchive &ar)
 			ar << m_TupeWeapons.GetAt(i).fireRate;
 			ar << m_TupeWeapons.GetAt(i).number;
 			ar << m_TupeWeapons.GetAt(i).onlyMicro;
-			ar << m_TupeWeapons.GetAt(i).TupeName;			
+			ar << m_TupeWeapons.GetAt(i).TupeName;
+			ar << m_TupeWeapons.GetAt(i).fireAngle;
 		}
 	}
 	// wenn geladen wird
@@ -104,7 +105,8 @@ void CWeaponObserver::Serialize(CArchive &ar)
 			ar >> twos.fireRate;
 			ar >> twos.number;
 			ar >> twos.onlyMicro;
-			ar >> twos.TupeName;			
+			ar >> twos.TupeName;
+			ar >> twos.fireAngle;
 			m_TupeWeapons.Add(twos);
 		}
 	}
@@ -185,10 +187,11 @@ void CWeaponObserver::CheckTorpedoWeapons(CShipInfo* info)
 		if (foundTupeName == FALSE)
 		{
 			TupeWeaponsObserverStruct twos;
+			twos.fireAngle = info->GetTorpedoWeapons()->GetAt(j).GetFirearc()->GetAngle();
 			twos.fireRate  = info->GetTorpedoWeapons()->GetAt(j).GetTupeFirerate();
 			twos.number	   = info->GetTorpedoWeapons()->GetAt(j).GetNumber();
 			twos.onlyMicro = info->GetTorpedoWeapons()->GetAt(j).GetOnlyMicroPhoton();
-			twos.TupeName  = info->GetTorpedoWeapons()->GetAt(j).GetTupeName();
+			twos.TupeName  = info->GetTorpedoWeapons()->GetAt(j).GetTupeName();			
 			m_TupeWeapons.Add(twos);
 		}
 	}	
@@ -207,7 +210,7 @@ BYTE CWeaponObserver::GetNextTorpedo(BYTE currentTorpedoType, BOOLEAN onlyMicroT
 		{
 			// Wenn der aktuell angebaute Torpedowerfer nur Micro-Torpedos verschießen kann, dann hier überprüfen,
 			// ob es sich auch um einen Micro-Torpedotyp handelt
-			if (onlyMicroTupe == TRUE && (i == 4 || i == 9 || i == 16 || i == 25))
+			if (onlyMicroTupe == TRUE && CTorpedoInfo::GetMicro(i))
 				return i;
 			else if (onlyMicroTupe == FALSE)
 				return i;
@@ -242,8 +245,7 @@ TupeWeaponsObserverStruct CWeaponObserver::GetNextTupe(CString currentTupeName, 
 			i = 0;
 		// Wenn wir mit dem neuen Werfer nur Mirco-Torpedos verschießen können, dann auch schauen, dass ein
 		// Micro-Torpedo eingestellt ist
-		if (m_TupeWeapons.GetAt(i).onlyMicro == TRUE && (
-			currentTorpedoType == 4 || currentTorpedoType == 9 || currentTorpedoType == 11 || currentTorpedoType == 16))
+		if (m_TupeWeapons.GetAt(i).onlyMicro == TRUE && CTorpedoInfo::GetMicro(currentTorpedoType))			
 		{
 			twos = m_TupeWeapons.GetAt(i);
 			return twos;

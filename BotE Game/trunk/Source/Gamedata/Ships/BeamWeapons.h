@@ -16,6 +16,8 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
+#include "FireArc.h"
+
 class CBeamWeapons : public CObject  
 {
 	friend class CShip;
@@ -39,6 +41,10 @@ public:
 	BOOLEAN GetPiercing() const {return m_bPiercing;}
 	BOOLEAN GetModulating() const {return m_bModulating;}
 
+	/// Funktion gibt Zeiger auf das Schussfeld der Waffe zurück.
+	/// @return Zeiger auf Schussfeld
+	CFireArc* GetFirearc(void) {return &m_Firearc;}
+
 	void SetBeamPower(USHORT power) {m_iBeamPower = power;}
 	void SetRechargeTime(BYTE time) {m_byRechargeTime = time;}
 
@@ -56,6 +62,7 @@ private:
 	BYTE m_byRechargeTime;			// Nachladezeit, wenn gefeuert wurde
 	BOOLEAN m_bPiercing;			// schilddurchdringende Beamwaffen, außer bei regenerativen Schilden
 	BOOLEAN m_bModulating;			// modulierende Beams -> immer 50% des Schadens auf die Hülle
+	CFireArc m_Firearc;				// möglicher Feuerwinkel und Anbringung der Waffe
 };
 
 #endif // !defined(AFX_BEAMWEAPONS_H__B441285A_53B4_4C2A_9F9F_0C99ABEB1584__INCLUDED_)

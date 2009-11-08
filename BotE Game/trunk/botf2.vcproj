@@ -614,6 +614,10 @@
 						>
 					</File>
 					<File
+						RelativePath=".\Source\Gamedata\Ships\FireArc.cpp"
+						>
+					</File>
+					<File
 						RelativePath=".\Source\Gamedata\Ships\Fleet.cpp"
 						>
 					</File>
@@ -801,11 +805,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Source\resource.h"
+				RelativePath=".\resource.h"
 				>
 			</File>
 			<File
-				RelativePath=".\resource.h"
+				RelativePath=".\Source\resource.h"
 				>
 			</File>
 			<File
@@ -1203,6 +1207,10 @@
 						>
 					</File>
 					<File
+						RelativePath=".\Source\Gamedata\Ships\FireArc.h"
+						>
+					</File>
+					<File
 						RelativePath=".\Source\Gamedata\Ships\Fleet.h"
 						>
 					</File>
@@ -1240,6 +1248,10 @@
 					</File>
 					<File
 						RelativePath=".\Source\Gamedata\Ships\TorpedoWeapons.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Source\Gamedata\Ships\Vec3.h"
 						>
 					</File>
 					<File

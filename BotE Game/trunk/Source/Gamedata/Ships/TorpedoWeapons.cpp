@@ -44,6 +44,7 @@ CTorpedoWeapons::CTorpedoWeapons(const CTorpedoWeapons & rhs)
 	m_byAccuracy		= rhs.m_byAccuracy;
 	m_strTupeName		= rhs.m_strTupeName;
 	m_bOnlyMicroPhoton  = rhs.m_bOnlyMicroPhoton;
+	m_Firearc		= rhs.m_Firearc;
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -60,6 +61,7 @@ CTorpedoWeapons & CTorpedoWeapons::operator=(const CTorpedoWeapons & rhs)
 	m_byAccuracy		= rhs.m_byAccuracy;
 	m_strTupeName		= rhs.m_strTupeName;
 	m_bOnlyMicroPhoton  = rhs.m_bOnlyMicroPhoton;
+	m_Firearc		= rhs.m_Firearc;
 	return *this;
 }
 
@@ -69,6 +71,8 @@ CTorpedoWeapons & CTorpedoWeapons::operator=(const CTorpedoWeapons & rhs)
 void CTorpedoWeapons::Serialize(CArchive &ar)		
 {
 	CObject::Serialize(ar);
+
+	m_Firearc.Serialize(ar);
 	// wenn gespeichert wird
 	if (ar.IsStoring())
 	{

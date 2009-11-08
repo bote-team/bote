@@ -2,11 +2,11 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-//#include "stdafx.h"
 #include "stdafx.h"
 #include "Sector.h"
-#include "FontLoader.h"
 #include "IOData.h"
+#include "GenSectorName.h"
+#include "FontLoader.h"
 #include "Botf2Doc.h"
 #include "Races\RaceController.h"
 
@@ -20,7 +20,6 @@ IMPLEMENT_SERIAL (CSector, CObject, 1)
 
 // statische Variablen initialisieren
 CFont* CSector::m_Font = NULL;
-CGenSectorName* CSector::m_NameGenerator = NULL;
 COLORREF CSector::m_TextColor = RGB(0,0,0);
 
 //////////////////////////////////////////////////////////////////////
@@ -32,75 +31,6 @@ CSector::CSector(void)
 
 CSector::~CSector(void)
 {	
-}
-
-///////////////////////////////////////////////////////////////////////
-// Kopierkonstruktor
-///////////////////////////////////////////////////////////////////////
-CSector::CSector(const CSector & rhs)
-{
-	AfxMessageBox("CSector: implement copy-ctor");
-	/*
-	m_Attributes = rhs.m_Attributes;
-	m_KO = rhs.m_KO;
-	for (int i = 0; i <= DOMINION; i++)
-	{
-		m_byStatus[i] = rhs.m_byStatus[i];
-		m_iScanPower[i] = rhs.m_iScanPower[i];
-		m_iNeededScanPower[i] = rhs.m_iNeededScanPower[i];
-		m_bShipPort[i] = rhs.m_bShipPort[i];
-		m_bOutpost[i] = rhs.m_bOutpost[i];
-		m_bStarbase[i] = rhs.m_bStarbase[i];
-		m_bIsStationBuild[i] = rhs.m_bIsStationBuild[i];
-		m_bWhoIsOwnerOfShip[i] = rhs.m_bWhoIsOwnerOfShip[i];
-		m_iNeededStationPoints[i] = rhs.m_iNeededStationPoints[i];
-		m_iStartStationPoints[i] = rhs.m_iStartStationPoints[i];
-		m_byOwnerPoints[i] = rhs.m_byOwnerPoints[i];
-	}
-	m_sOwnerOfSector = rhs.m_sOwnerOfSector;
-	m_strSectorName = rhs.m_strSectorName;
-	m_bySunColor = rhs.m_bySunColor;
-	m_sColonyOwner = rhs.m_sColonyOwner;
-	m_iShipPathPoints = rhs.m_iShipPathPoints;	// muss nicht serialisiert werden
-	for (int i = 0; i < rhs.m_Planets.GetSize(); i++)
-		m_Planets.Add(rhs.m_Planets.GetAt(i));
-	*/
-}
-
-///////////////////////////////////////////////////////////////////////
-// Zuweisungsoperator
-///////////////////////////////////////////////////////////////////////
-CSector & CSector::operator=(const CSector & rhs)
-{
-	if (this == &rhs)
-		return *this;
-	AfxMessageBox("CSector: implement =operator");
-	/*
-	m_Attributes = rhs.m_Attributes;
-	m_KO = rhs.m_KO;
-	for (int i = 0; i <= DOMINION; i++)
-	{
-		m_byStatus[i] = rhs.m_byStatus[i];
-		m_iScanPower[i] = rhs.m_iScanPower[i];
-		m_iNeededScanPower[i] = rhs.m_iNeededScanPower[i];
-		m_bShipPort[i] = rhs.m_bShipPort[i];
-		m_bOutpost[i] = rhs.m_bOutpost[i];
-		m_bStarbase[i] = rhs.m_bStarbase[i];
-		m_bIsStationBuild[i] = rhs.m_bIsStationBuild[i];
-		m_bWhoIsOwnerOfShip[i] = rhs.m_bWhoIsOwnerOfShip[i];
-		m_iNeededStationPoints[i] = rhs.m_iNeededStationPoints[i];
-		m_iStartStationPoints[i] = rhs.m_iStartStationPoints[i];
-		m_byOwnerPoints[i] = rhs.m_byOwnerPoints[i];
-	}
-	m_sOwnerOfSector = rhs.m_sOwnerOfSector;
-	m_strSectorName = rhs.m_strSectorName;
-	m_bySunColor = rhs.m_bySunColor;
-	m_sColonyOwner = rhs.m_sColonyOwner;
-	m_iShipPathPoints = rhs.m_iShipPathPoints;	// muss nicht serialisiert werden
-	for (int i = 0; i < rhs.m_Planets.GetSize(); i++)
-		m_Planets.Add(rhs.m_Planets.GetAt(i));	
-	*/
-	return *this;	
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -368,18 +298,6 @@ void CSector::GetAvailableResources(BOOLEAN bResources[DILITHIUM + 1], BOOLEAN b
 // sonstige Funktionen
 //////////////////////////////////////////////////////////////////
 
-/// Funktion initialisiert den Namensgenerator für die CSector Klasse. Muss zu Beginn aufgerufen werden.
-void CSector::InitNameGenerator()
-{
-	if (CSector::m_NameGenerator == NULL)
-	{
-		CSector::m_NameGenerator = new CGenSectorName();
-		CSector::m_NameGenerator->ReadSystemNames();
-	}
-	else
-		CSector::m_NameGenerator->ReadSystemNames();
-}
-
 /// Funktion generiert den Sektor. Dabei wird als Parameter die Wahrscheinlichkeit, ob in dem Sektor ein
 /// Sonnensystem ist, im Paramter <code>sunProb</code> in Prozent übergeben. Im Parameter <code>minorProb</code>
 /// wird die Wahrscheinlichkeit in Prozent übergeben, dass sich in dem Sektor eine Minorrace befindet.
@@ -397,7 +315,7 @@ void CSector::GenerateSector(int sunProb, int minorProb)
 		{
 			SetMinorRace(TRUE);
 			// Wenn eine kleine Rasse drauf lebt
-			m_strSectorName = CSector::m_NameGenerator->GenerateSectorName(TRUE);
+			m_strSectorName = CGenSectorName::GetInstance()->GetNextRandomSectorName(true);
 			float currentHabitants = 0.0f;
 			USHORT random = rand()%3+1;
 			// Solange Planeten generieren, bis mind. eine zufällige Anzahl Bevölkerung darauf leben
@@ -422,7 +340,7 @@ void CSector::GenerateSector(int sunProb, int minorProb)
 		// wenn keine Minorrace drauf lebt
 		else
 		{
-			m_strSectorName = CSector::m_NameGenerator->GenerateSectorName(FALSE);
+			m_strSectorName = CGenSectorName::GetInstance()->GetNextRandomSectorName(false);
 			this->CreatePlanets();
 		}
 	}

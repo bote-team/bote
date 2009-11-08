@@ -41,6 +41,7 @@ CBeamWeapons::CBeamWeapons(const CBeamWeapons & rhs)
 	m_byRechargeTime= rhs.m_byRechargeTime;
 	m_bPiercing	= rhs.m_bPiercing;
 	m_bModulating = rhs.m_bModulating;
+	m_Firearc		= rhs.m_Firearc;
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -60,6 +61,7 @@ CBeamWeapons & CBeamWeapons::operator=(const CBeamWeapons & rhs)
 	m_byRechargeTime= rhs.m_byRechargeTime;
 	m_bPiercing	= rhs.m_bPiercing;
 	m_bModulating = rhs.m_bModulating;
+	m_Firearc		= rhs.m_Firearc;
 	return *this;
 }
 
@@ -69,6 +71,8 @@ CBeamWeapons & CBeamWeapons::operator=(const CBeamWeapons & rhs)
 void CBeamWeapons::Serialize(CArchive &ar)		
 {
 	CObject::Serialize(ar);
+
+	m_Firearc.Serialize(ar);
 	// wenn gespeichert wird
 	if (ar.IsStoring())
 	{

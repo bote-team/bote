@@ -5,6 +5,7 @@
 BYTE	CTorpedoInfo::m_byType				= 255;
 CString CTorpedoInfo::m_strTorpedoName		= "";
 USHORT  CTorpedoInfo::m_iTorpedoPower		= 0;
+BOOLEAN CTorpedoInfo::m_bMicro				= false;
 BOOLEAN CTorpedoInfo::m_bPenetrating		= false;
 BOOLEAN CTorpedoInfo::m_bDoubleShieldDmg	= false;
 BOOLEAN CTorpedoInfo::m_bDoubleHullDmg		= false;
@@ -42,6 +43,7 @@ void CTorpedoInfo::SetValues(BYTE type)
 	m_iTorpedoPower = 0;
 	// Eigenschaften der Torpedos zuerst alle auf FALSE, wird bei der Auswahl eines Torepdos dann eventuell auf
 	// TRUE gestellt
+	m_bMicro			= FALSE;
 	m_bPenetrating		= FALSE;
 	m_bDoubleShieldDmg	= FALSE;
 	m_bDoubleHullDmg	= FALSE;
@@ -61,13 +63,13 @@ void CTorpedoInfo::SetValues(BYTE type)
 // b.) Photon Torpedos
 	case 2: m_strTorpedoName	= "Prototorpedo";		m_iTorpedoPower = 150; break;
 	case 3: m_strTorpedoName	= "Photontorpedo";		m_iTorpedoPower = 250; break;
-	case 4: m_strTorpedoName	= "Microphotontorpedo"; m_iTorpedoPower = 5;   m_bPenetrating = TRUE;		break;
+	case 4: m_strTorpedoName	= "Microphotontorpedo"; m_iTorpedoPower = 5;   m_bMicro = TRUE;	m_bPenetrating = TRUE;		break;
 // c.) Plasma Torpedos
 	case 5: m_strTorpedoName	= "Plasmatorpedo";		m_iTorpedoPower = 300; break;
 	case 6: m_strTorpedoName	= "Plasmatorpedo I";	m_iTorpedoPower = 400; break;
 	case 7: m_strTorpedoName	= "Plasmatorpedo II";	m_iTorpedoPower = 600; break;
 	case 8: m_strTorpedoName	= "Plasmatorpedo III";	m_iTorpedoPower = 800; break;
-	case 9: m_strTorpedoName	= "Microplasmatorpedo";	m_iTorpedoPower = 6;   m_bPenetrating = TRUE;		break;
+	case 9: m_strTorpedoName	= "Microplasmatorpedo";	m_iTorpedoPower = 6;   m_bMicro = TRUE; m_bPenetrating = TRUE;		break;
 // d.) Ion Torpedos
 	case 10: m_strTorpedoName	= "Iontorpedo";			m_iTorpedoPower = 225; break;
 	case 11: m_strTorpedoName	= "Iontorpedo II";		m_iTorpedoPower = 450; break;
@@ -78,7 +80,7 @@ void CTorpedoInfo::SetValues(BYTE type)
 // f.) Mytronic Torpedos
 	case 14: m_strTorpedoName	= "Mytronictorpedo I";	m_iTorpedoPower = 200; break;
 	case 15: m_strTorpedoName	= "Mytronictorpedo II";	m_iTorpedoPower = 500; break;
-	case 16: m_strTorpedoName	= "Micromytrontic";		m_iTorpedoPower = 4;   m_bPenetrating = TRUE;		break;
+	case 16: m_strTorpedoName	= "Micromytrontic";		m_iTorpedoPower = 4;   m_bMicro = TRUE; m_bPenetrating = TRUE;		break;
 // g.) Polaron Torpedos
 	case 17: m_strTorpedoName	= "Polarontorpedo";		m_iTorpedoPower = 288; m_bPenetrating = TRUE;		break;
 // h.)Gravimetric Torpedos
@@ -97,7 +99,7 @@ void CTorpedoInfo::SetValues(BYTE type)
 //	case 24: m_strTorpedoName	= "Transphasictorpedo";	m_iTorpedoPower = 500; m_bIgnoreAllShields = TRUE;	break;
 	case 24: m_strTorpedoName	= "Transquantumtorpedo";m_iTorpedoPower = 500; m_bIgnoreAllShields = TRUE;	break;
 // zusätzlicher d.) Ion Torpedo
-	case 25: m_strTorpedoName	= "Microiontorpedo";	m_iTorpedoPower = 8;   m_bPenetrating = TRUE;		break;
+	case 25: m_strTorpedoName	= "Microiontorpedo";	m_iTorpedoPower = 8;   m_bMicro = TRUE;	 m_bPenetrating = TRUE;		break;
 // o.) Energy Dampening Weapons
 	case 26: m_strTorpedoName	= "Energy Dissipator 1";m_iTorpedoPower = 50;  m_bReduceManeuver = TRUE;	break;
 	case 27: m_strTorpedoName	= "Energy Dissipator 2";m_iTorpedoPower = 100; m_bReduceManeuver = TRUE; m_bPenetrating = TRUE;	break;

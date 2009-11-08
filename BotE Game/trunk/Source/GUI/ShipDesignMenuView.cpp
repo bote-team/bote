@@ -327,10 +327,10 @@ void CShipDesignMenuView::DrawShipDesignMenue(Graphics* g)
 			USHORT currentTorpType = pDoc->m_ShipInfoArray.GetAt(ShipNumber).GetTorpedoWeapons()->GetAt(m_iTorpedoWeaponNumber).GetTorpedoType();
 			// Torpedoname zeichnen
 			fontBrush.SetColor(normalColor);
-			s.Format("%s",pDoc->m_ShipInfoArray.GetAt(ShipNumber).GetTorpedoWeapons()->GetAt(m_iTorpedoWeaponNumber).GetTupeName());
+			s.Format("%s (%d°)",pDoc->m_ShipInfoArray.GetAt(ShipNumber).GetTorpedoWeapons()->GetAt(m_iTorpedoWeaponNumber).GetTupeName(), pDoc->m_ShipInfoArray.GetAt(ShipNumber).GetTorpedoWeapons()->GetAt(m_iTorpedoWeaponNumber).GetFirearc()->GetAngle());
 			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(775,170,300,25), &fontFormat, &fontBrush);
 			
-			s.Format("%s",pDoc->m_ShipInfoArray.GetAt(ShipNumber).GetTorpedoWeapons()->GetAt(m_iTorpedoWeaponNumber).GetTorpedoName());
+			s.Format("%s (%d)", CTorpedoInfo::GetName(currentTorpType), CTorpedoInfo::GetPower(currentTorpType));
 			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(775,195,300,25), &fontFormat, &fontBrush);
 			
 			if (graphic)
@@ -530,9 +530,10 @@ void CShipDesignMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			BYTE oldRechargeTime = pDoc->m_ShipInfoArray.GetAt(n).GetBeamWeapons()->GetAt(m_iBeamWeaponNumber).GetRechargeTime();
 			BOOLEAN piercing = pDoc->m_ShipInfoArray.GetAt(n).GetBeamWeapons()->GetAt(m_iBeamWeaponNumber).GetPiercing();
 			BOOLEAN modulating = pDoc->m_ShipInfoArray.GetAt(n).GetBeamWeapons()->GetAt(m_iBeamWeaponNumber).GetModulating();
-			// hier aktualisieren
+			// hier aktualisieren -> Reichweite erhöhen
 			pDoc->m_ShipInfoArray.GetAt(n).GetBeamWeapons()->GetAt(m_iBeamWeaponNumber).ModifyBeamWeapon(
 				(oldType+1),oldPower,oldNumber,oldName,modulating,piercing,oldBonus,oldLenght,oldRechargeTime,oldShootNumber);
+			// Feuerwinkel bleiben alle beim alten
 			pDoc->m_ShipInfoArray.GetAt(n).CalculateFinalCosts();
 			m_bFoundBetterBeam = FALSE;
 			m_bFoundWorseBeam  = FALSE;
@@ -552,9 +553,10 @@ void CShipDesignMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			BYTE oldRechargeTime = pDoc->m_ShipInfoArray.GetAt(n).GetBeamWeapons()->GetAt(m_iBeamWeaponNumber).GetRechargeTime();
 			BOOLEAN piercing = pDoc->m_ShipInfoArray.GetAt(n).GetBeamWeapons()->GetAt(m_iBeamWeaponNumber).GetPiercing();
 			BOOLEAN modulating = pDoc->m_ShipInfoArray.GetAt(n).GetBeamWeapons()->GetAt(m_iBeamWeaponNumber).GetModulating();
-			// hier aktualisieren
+			// hier aktualisieren -> Reichweite erhöhen
 			pDoc->m_ShipInfoArray.GetAt(n).GetBeamWeapons()->GetAt(m_iBeamWeaponNumber).ModifyBeamWeapon(
 				(oldType-1),oldPower,oldNumber,oldName,modulating,piercing,oldBonus,oldLenght,oldRechargeTime,oldShootNumber);
+			// Feuerwinkel bleiben alle beim alten
 			pDoc->m_ShipInfoArray.GetAt(n).CalculateFinalCosts();
 			m_bFoundBetterBeam = FALSE;
 			m_bFoundWorseBeam  = FALSE;
@@ -594,6 +596,11 @@ void CShipDesignMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			TupeWeaponsObserverStruct twos = pMajor->GetWeaponObserver()->GetNextTupe(oldTupeName,oldTorpType);
 			// hier aktualisieren
 			pDoc->m_ShipInfoArray.GetAt(n).GetTorpedoWeapons()->GetAt(m_iTorpedoWeaponNumber).ModifyTorpedoWeapon(oldTorpType,twos.number,twos.fireRate,oldTupeNumber,twos.TupeName,twos.onlyMicro,oldAcc);
+			// Feuerwinkel anpassen
+			USHORT nMountPos	= pDoc->m_ShipInfoArray.GetAt(n).GetTorpedoWeapons()->GetAt(m_iTorpedoWeaponNumber).GetFirearc()->GetPosition();
+			USHORT nAngle		= twos.fireAngle;
+			pDoc->m_ShipInfoArray.GetAt(n).GetTorpedoWeapons()->GetAt(m_iTorpedoWeaponNumber).GetFirearc()->SetValues(nMountPos, nAngle);
+			
 			pDoc->m_ShipInfoArray.GetAt(n).CalculateFinalCosts();
 			Invalidate();
 		}
@@ -610,6 +617,7 @@ void CShipDesignMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			BYTE newTorpType = pMajor->GetWeaponObserver()->GetNextTorpedo(oldTorpType, oldOnlyMicro);
 			// hier aktualisieren
 			pDoc->m_ShipInfoArray.GetAt(n).GetTorpedoWeapons()->GetAt(m_iTorpedoWeaponNumber).ModifyTorpedoWeapon(newTorpType,oldNumber,oldFirerate,oldTupeNumber,oldTupeName,oldOnlyMicro,oldAcc);
+			// Feuerwinkel bleiben gleich
 			pDoc->m_ShipInfoArray.GetAt(n).CalculateFinalCosts();
 			Invalidate();
 		}

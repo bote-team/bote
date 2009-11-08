@@ -33,6 +33,11 @@ public:
 	/**
 	 * Diese Funktionen gibt zurück, ob es sich um einen schilddurchschlagenden Torpedo handelt.
 	 */
+	static BOOLEAN GetMicro(BYTE type) {SetValues(type); return m_bMicro;}
+
+	/**
+	 * Diese Funktionen gibt zurück, ob es sich um einen schilddurchschlagenden Torpedo handelt.
+	 */
 	static BOOLEAN GetPenetrating(BYTE type) {SetValues(type); return m_bPenetrating;}
 
 	/**
@@ -71,6 +76,7 @@ private:
 	static BYTE	   m_byType;			///> letzter gesuchter Typ des Torpedos
 	static CString m_strTorpedoName;	///> der Name des Torpedos
 	static USHORT  m_iTorpedoPower;		///> die Stärke eines Torpedos
+	static BOOLEAN m_bMicro;			///> sind es Microtorpedos
 	static BOOLEAN m_bPenetrating;		///> sind es schilddurchschlagende Torpedos?
 	static BOOLEAN m_bDoubleShieldDmg;	///> macht dieser Torpedo doppelten Schaden an den Schilden?
 	static BOOLEAN m_bDoubleHullDmg;	///> macht dieser Torpedo doppelten Schaden an der Hülle?

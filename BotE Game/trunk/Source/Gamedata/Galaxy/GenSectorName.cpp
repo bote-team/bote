@@ -12,51 +12,32 @@ static char THIS_FILE[]=__FILE__;
 #define new DEBUG_NEW
 #endif
 
-
-IMPLEMENT_SERIAL (CGenSectorName, CObject, 1)
 //////////////////////////////////////////////////////////////////////
 // Konstruktion/Destruktion
 //////////////////////////////////////////////////////////////////////
-
-CGenSectorName::CGenSectorName()
+CGenSectorName::CGenSectorName(void)
 {
-	
+	ReadSystemNames();
 }
 
-CGenSectorName::~CGenSectorName()
+CGenSectorName::~CGenSectorName(void)
 {
-	for (int i = 0; i < m_strName.GetSize(); )
-		m_strName.RemoveAt(i);
-	for (int i = 0; i < m_strRaceName.GetSize(); )
-		m_strRaceName.RemoveAt(i);
-	m_strName.RemoveAll();
-	m_strRaceName.RemoveAll();
 }
 
-///////////////////////////////////////////////////////////////////////
-// Speichern / Laden
-///////////////////////////////////////////////////////////////////////
-void CGenSectorName::Serialize(CArchive &ar)		
+//////////////////////////////////////////////////////////////////////
+// sonstige Funktionen
+//////////////////////////////////////////////////////////////////////
+
+/// Funktion liefert die einzige Instanz dieser Klasse (Singleton).
+/// @return Instanz dieser Klasse
+CGenSectorName* CGenSectorName::GetInstance(void)
 {
-	CObject::Serialize(ar);
-	// wenn gespeichert wird
-	if (ar.IsStoring())
-	{
-		m_strName.Serialize(ar);
-		m_strRaceName.Serialize(ar);
-	}
-	// wenn geladen wird
-	if (ar.IsLoading())
-	{
-		m_strName.RemoveAll();
-		m_strName.Serialize(ar);
-		m_strRaceName.RemoveAll();
-		m_strRaceName.Serialize(ar);
-	}
+	static CGenSectorName instance; 
+    return &instance;
 }
 
 // Funktion zur Generierung der Sonnensystemnamen
-CString CGenSectorName::GenerateSectorName(BOOLEAN IsMinorRaceInSector)
+CString CGenSectorName::GetNextRandomSectorName(bool bMinor)
 {
 	/*
 	 * Funktion gibt einen Namen für einen normalen Sektor oder einen Sektor mit
@@ -65,7 +46,7 @@ CString CGenSectorName::GenerateSectorName(BOOLEAN IsMinorRaceInSector)
 	 */
 	CString systemName = "No Name";
 
-	if (IsMinorRaceInSector == FALSE && m_strName.GetSize() > 0)
+	if (!bMinor && m_strName.GetSize() > 0)
 	{
 		USHORT random = rand()%m_strName.GetSize();
 		systemName = m_strName.GetAt(random);
@@ -77,11 +58,16 @@ CString CGenSectorName::GenerateSectorName(BOOLEAN IsMinorRaceInSector)
 		systemName = m_strRaceName.GetAt(random);
 		m_strRaceName.RemoveAt(random);
 	}
+
 	return systemName;
 }
 
+//////////////////////////////////////////////////////////////////////
+// private Funktionen
+//////////////////////////////////////////////////////////////////////
+
 // Resetfunktion, setzt alle Werte wieder auf NULL
-void CGenSectorName::ReadSystemNames()
+void CGenSectorName::ReadSystemNames(void)
 {
 	for (int i = 0; i < m_strName.GetSize(); )
 		m_strName.RemoveAt(i);
@@ -104,7 +90,7 @@ void CGenSectorName::ReadSystemNames()
 	}
 	file.Close();							// Datei wird geschlossen
 
-// Systemnamen der MinorRaces einlesen
+	// Systemnamen der MinorRaces einlesen
 	fileName = CIOData::GetInstance()->GetAppPath() + "Data\\Names\\RacePlanetNames.data";
 	if (file.Open(fileName, CFile::modeRead | CFile::typeText) && m_strRaceName.IsEmpty())	// Datei wird geöffnet
 		while (file.ReadString(csInput))

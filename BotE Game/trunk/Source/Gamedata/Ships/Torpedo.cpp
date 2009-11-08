@@ -79,13 +79,13 @@ BOOLEAN CTorpedo::Fly(CArray<CCombatShip*,CCombatShip*>* CS)
 	// Der Vektor ist der Vektor von m_KO zu m_TargetKO
 	// t.x = (D.x - A.x) / C.x mit C = (B-A) wobei A = m_KO und B = m_TargetKO und D = CS->m_KO
 	
-	Position c = m_TargetKO - m_KO;
-	float minDistance = -1.0f;
+	vec3i c = m_TargetKO - m_KO;
+	int	minDistance = -1;
 	short shipNumber = -1;
 	for (int i = 0; i < CS->GetSize(); i++)
 		if (m_sOwner != CS->GetAt(i)->m_pShip->GetOwnerOfShip() && CS->GetAt(i)->m_pShip->GetHull()->GetCurrentHull() > 0)
 		{
-			Position t;
+			vec3i t;
 			if (c.x != 0)
 				t.x = (CS->GetAt(i)->m_KO.x - m_KO.x) / c.x;
 			else
@@ -103,9 +103,9 @@ BOOLEAN CTorpedo::Fly(CArray<CCombatShip*,CCombatShip*>* CS)
 			if (t.x >= 0 && t.y >= 0 && t.z >= 0)	
 				if ((t.x == 0 && t.y == t.z) || (t.y == 0 && t.x == t.z) || (t.z == 0 && t.x == t.y) || (t.x == t.y == t.z))
 					// Dann liegt das Schiff auf unserer Flugbahn, Distanz berechnen
-					if (minDistance == -1.0f || minDistance > m_KO.DistanceToPosition_B(CS->GetAt(i)->m_KO))
+					if (minDistance == -1 || minDistance > m_KO.Distance(CS->GetAt(i)->m_KO))
 					{
-						minDistance = m_KO.DistanceToPosition_B(CS->GetAt(i)->m_KO);
+						minDistance = m_KO.Distance(CS->GetAt(i)->m_KO);
 						shipNumber = i;
 					}
 		}
@@ -143,16 +143,20 @@ void CTorpedo::MakeDamage(CCombatShip* CS)
 {
 	// DAMAGE_TO_HULL (10%) des Schadens gehen immer auf die Hülle.
 	int torpedoDamage = (m_iPower * 100) / CS->m_iModifier;
+
 	int toHull = 0;
+	// Wenn das feindliche Schiff keine ablative Hüllenpanzerung hat, dann gehen 10% des Schadens sofort
+	// auf die Hülle
+	if (CS->m_pShip->GetHull()->GetAblative() == FALSE)
+		toHull = (int)(torpedoDamage * DAMAGE_TO_HULL);
 	// wenn wir schilddurchschlagende Torpedos haben und das feindliche Schiff keine auf unseren Torpedo eingestellten
 	// regenerativen Schilde hat, dann machen wir kompletten Schaden an der Hülle. Wenn wir Torpedos haben, die alle
 	// Schilde durchdringen, dann machen wir hier immer kompletten Schaden an der Hülle.
 	if ((CTorpedoInfo::GetPenetrating(m_byType) == TRUE && CS->GetActRegShields() == FALSE)
 		|| CTorpedoInfo::GetIgnoreAllShields(m_byType) == TRUE)
 		toHull = torpedoDamage;
-	else
-		toHull = (int)(torpedoDamage * DAMAGE_TO_HULL);
 	CS->m_pShip->GetHull()->SetCurrentHull(-toHull);
+	
 	/*
 	CString dam;
 	dam.Format("Schiff: %s\naltes Schild: %d\nHülle: %d\nTorpedoschaden: %d\nTorpedoschaden auf Hülle: %d",
@@ -161,19 +165,25 @@ void CTorpedo::MakeDamage(CCombatShip* CS)
 	AfxMessageBox(dam);
 	*/
 	
-	// Wenn das feindliche Schiff eine ablative Hüllenpanzerung hat, dann werden 10% des Schadens von
-	// der Hülle entfernt
-	int ablative = 0;
-	if (CS->m_pShip->GetHull()->GetAblative())
-	{
-		ablative = (int)(torpedoDamage * 0.1);
-		// Wenn wir zusätzlich eine Hüllenpolarisation haben, so ist dieser Wert um 10% niedriger, da wir sonst nach
-		// dem Angriff mehr Hülle haben als zuvor (wegen den 10% immer auf Hülle)
-		if (CS->m_pShip->GetHull()->GetPolarisation())
-			ablative -= (int)(ablative * 0.1);
-	}
 	// den restlichen Torpedoschaden ermitteln, welcher nicht direkt auf die Hülle ging
 	torpedoDamage -= toHull;
+	// Torpedos verlieren ihre Effizienz, wenn sie auf noch relativ starke Schilde treffen. Umso weniger von den Schilden
+	// noch aktiv ist, umso stärker wirkt der Torpedo. Dies gilt jedoch nicht für Microtorpedos.
+	if (CTorpedoInfo::GetMicro(m_byType) == FALSE)
+	{
+		UINT maxShield = CS->m_pShip->GetShield()->GetMaxShield();
+		UINT curShield = CS->m_pShip->GetShield()->GetCurrentShield();
+		float perc = (float)curShield / (float)maxShield;
+		if (perc > 0.75f)
+			perc = 0.25f;
+		else if (perc > 0.50f)
+			perc = 0.50f;
+		else if (perc > 0.25f)
+			perc = 0.75f;
+		else
+			perc = 1.0f;
+		torpedoDamage = (int)(torpedoDamage * perc);
+	}
 	// Wenn die Torpedoart doppelten Schaden an den Schilden macht, dann einfach diesen hier *2 nehmen
 	if (CTorpedoInfo::GetDoubleShieldDmg(m_byType))
 		torpedoDamage *= 2;
@@ -194,10 +204,7 @@ void CTorpedo::MakeDamage(CCombatShip* CS)
 		CS->m_pShip->GetHull()->SetCurrentHull((int)CS->m_pShip->GetShield()->GetCurrentShield() - torpedoDamage);
 		CS->m_pShip->GetShield()->SetCurrentShield(0);
 	}
-	// eventuell vorhanden Bonus durch ablative Hüllenpanzerung wieder draufrechenen. Nur wenn
-	// die Hülle hier noch größer als NULL ist
-	if (CS->m_pShip->GetHull()->GetCurrentHull() > 0)
-		CS->m_pShip->GetHull()->SetCurrentHull(ablative);
+	
 	// Wenn wir schilddurchschlagende Torpedos haben und das feindliche Schiff regenerative Schilde, so kann es diese
 	// auf unsere Waffen einstellen
 	if (CTorpedoInfo::GetPenetrating(m_byType) == TRUE && CS->m_pShip->GetShield()->GetRegenerative() == TRUE)
@@ -216,17 +223,23 @@ BOOLEAN CTorpedo::FlyToNextPosition()
 {
 	// TORPEDOSPEED vorrücken
 	// unsere aktuelle Position im Raum
-	Position a = m_KO;
+	vec3i a = m_KO;
 	// die Zielposition im Raum
-	Position b = m_TargetKO;
+	vec3i b = m_TargetKO;
 	// der Abstand zwischen diesen beiden Punkten
-	float distance = a.DistanceToPosition_B(b);
+	int distance = a.Distance(b);
 	if (distance == 0)
 		return TRUE;
 	short speed = TORPEDOSPEED;
 	if (speed > distance)
 		speed = (short)distance;
-	m_KO = a + (b-a) * (speed/distance);
+	
+	float multi = (float)speed / (float)distance;
+	vec3i temp = b - a;
+	// Runden durch floor und +0.5
+	temp.x = (int)(floor)(temp.x * multi + 0.5); temp.y = (int)(floor)(temp.y * multi + 0.5); temp.z = (int)(floor)(temp.z * multi + 0.5);
+	m_KO = a + temp;
+	//m_KO = a + (b-a) * (speed/distance);
 	// Wegcounter hochrechnen
 	m_iDistance += TORPEDOSPEED;
 	if (m_iDistance >= MAX_TORPEDO_RANGE)
@@ -261,6 +274,14 @@ BOOLEAN CTorpedo::PerhapsImpact(CCombatShip* CS, USHORT minDistance)
 	// m_iMode - (m_iDistance+minDistance)*0.1 - CS->Manövrierbarkeit*2 - CS->Crewerfahrung???
 	short probability = m_iModi - (short)((m_iDistance + minDistance) * 0.1) - 
 		CCombatShip::GetToHitMali(m_byManeuverability,CS->m_byManeuverability) - CS->GetCrewExperienceModi();
+		
+	if (CS->m_pShip->GetShipSize() == 0)
+		probability = (short)(probability * 0.66);
+	else if (CS->m_pShip->GetShipSize() == 2)
+		probability = (short)(probability * 1.33);
+	else if (CS->m_pShip->GetShipSize() >= 3)
+		probability = (short)(probability * 1.66);
+	
 	short random = rand()%100;	// {0,99}
 /*	CString s;
 	s.Format("m_iDistance: %d\nminDistance: %d\nprobability: %d\nrandom: %d",m_iDistance,minDistance,probability,random);

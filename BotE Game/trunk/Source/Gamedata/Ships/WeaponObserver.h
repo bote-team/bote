@@ -9,9 +9,20 @@
 #include "afx.h"
 #include "ShipInfo.h"
 
-typedef struct {CString WeaponName; BYTE maxLevel;}	BeamWeaponsObserverStruct;
-typedef struct {CString TupeName; BYTE number;
-					BYTE fireRate; BOOLEAN onlyMicro;}	TupeWeaponsObserverStruct;
+struct BeamWeaponsObserverStruct
+{
+	CString WeaponName;
+	BYTE maxLevel;
+};
+
+struct TupeWeaponsObserverStruct
+{
+	CString TupeName;
+	BYTE number;
+	BYTE fireRate;
+	BOOLEAN onlyMicro;
+	USHORT fireAngle;
+};
 
 class CWeaponObserver :	public CObject
 {

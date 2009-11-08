@@ -7,36 +7,8 @@
  */
 #pragma once
 #include "afx.h"
-#include <math.h>
+#include "Vec3.h"
 
-/// Eine Struktur für die Koordinate im dreidimensionalen Raum
-struct Position
-{
-	short x;
-	short y;
-	short z;
-
-	int operator==(const Position &rhs) const {return (x == rhs.x && y == rhs.y && z == rhs.z);}
-	Position operator+(const Position &rhs) {Position pos; pos.x=x+rhs.x; pos.y=y+rhs.y; pos.z=z+rhs.z; return pos;}
-	Position operator-(const Position &rhs) {Position pos; pos.x=x-rhs.x; pos.y=y-rhs.y; pos.z=z-rhs.z; return pos;}
-	Position operator*(float multi) {Position pos;
-			pos.x=(short)floor((x*multi + 0.5));
-			pos.y=(short)floor((y*multi + 0.5));
-			pos.z=(short)floor((z*multi + 0.5)); return pos;}
-	/* 
-		a = 0.01 * floor( 100.0 * a + 0.5 );
-		Damit wird die Fließkommazahl a auf 2 Nachkommastellen gerundet.
-	*/
-	Position operator=(const Position &rhs) {x = rhs.x; y = rhs.y; z = rhs.z; return *this;}
-	int operator!=(const Position &rhs) const {return (x != rhs.x || y != rhs.y || z != rhs.z);}
-	
-	
-	float DistanceToPosition_B(const Position b) {
-		Position c = *this-b;
-		return sqrtf((float)(c.x*c.x + c.y*c.y + c.z*c.z));
-	}
-
-};
 class CCombatShip;
 class CTorpedo : public CObject
 {
@@ -64,12 +36,11 @@ public:
 	BOOLEAN Fly(CArray<CCombatShip*,CCombatShip*>* CS);
 
 private:
-//public:
 	/// aktuelle Koordinate im Raum
-	Position m_KO;
+	vec3i m_KO;
 
 	/// Zielkoordinate im Raum
-	Position m_TargetKO;
+	vec3i m_TargetKO;
 
 	/// Wenn wir mehrere Torpedos auf einmal auf ein und das selbe Ziel verschießen, so setzen wir diese Variable immer
 	/// mit der Anzahl der Torpedos, die sich auf dieser Koordinate befinden. Im Normalfall ist dieser Wert eins, wenn
@@ -121,4 +92,4 @@ private:
 	BOOLEAN PerhapsImpact(CCombatShip* CS, USHORT minDistance);
 };
 
-typedef CArray<CTorpedo,CTorpedo> CombatTorpedos;
+typedef CArray<CTorpedo*, CTorpedo*> CombatTorpedos;

@@ -16,6 +16,7 @@
 #pragma once
 #endif // _MSC_VER > 1000
 #include "TorpedoInfo.h"
+#include "FireArc.h"
 
 class CTorpedoWeapons : public CObject  
 {
@@ -58,6 +59,10 @@ public:
 	 * Diese Funktion gibt zurück, ob der Torpedo nur für Microphoton geeignet ist.
 	 */
 	BOOLEAN GetOnlyMicroPhoton() const {return m_bOnlyMicroPhoton;}
+
+	/// Funktion gibt Zeiger auf das Schussfeld der Waffe zurück.
+	/// @return Zeiger auf Schussfeld
+	CFireArc* GetFirearc(void) {return &m_Firearc;}
 	
 	/// folgende Funktionen geben nur Eigenschaften eines Torpedos zurück
 	BYTE GetTorpedoType() const {return m_iTorpedoType;}
@@ -85,6 +90,7 @@ private:
 	BYTE	m_byAccuracy;				// Die Treffergenauigkeit des Torpedos
 	CString m_strTupeName;				// Name der Torpedoabschußeinrichtung
 	BOOLEAN	m_bOnlyMicroPhoton;			// kann der Werfer nur Microphotonentorpedos schießen?
+	CFireArc m_Firearc;				// möglicher Feuerwinkel und Anbringung der Waffe
 };
 
 #endif // !defined(AFX_TORPEDOWEAPONS_H__53084731_CFE0_4000_873E_6980A76C69CC__INCLUDED_)

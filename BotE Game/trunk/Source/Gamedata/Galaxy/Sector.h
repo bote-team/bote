@@ -45,12 +45,6 @@ public:
 	/// Destruktor
 	virtual ~CSector(void);								
 	
-	/// Kopierkonstruktor
-	CSector(const CSector & rhs);
-	
-	/// Zuweisungsoperator
-	CSector & operator=(const CSector &);
-	
 	/// Serialisierungsfunktion
 	virtual void Serialize(CArchive &ar);
 
@@ -368,11 +362,7 @@ public:
 	void AddShipPathPoints(short value) {m_iShipPathPoints += value;}
 	
 // sonstige Funktionen
-	/**
-	 * Funktion initialisiert den Namensgenerator für die CSector Klasse. Muss zu Beginn aufgerufen werden.
-	 */
-	static void InitNameGenerator();
-	
+		
 	/**
 	 * Funktion generiert den Sektor. Dabei wird als Parameter die Wahrscheinlichkeit, ob in dem Sektor ein
 	 * Sonnensystem ist, im Paramter <code>sunProb</code> in Prozent übergeben. Im Parameter <code>minorProb</code>
@@ -416,10 +406,8 @@ public:
 	static CFont* m_Font;
 	
 	/// Die Schriftfarbe, mit der die Sektornamen gezeichnet werden.
-	static COLORREF m_TextColor;
+	static COLORREF m_TextColor;	
 	
-	/// Statische Variable, die alle möglichen Namen für die Sektoren beinhaltet
-	static CGenSectorName* m_NameGenerator;
 private:
 	/// Die Koordinate des Sektors auf der Map
 	CPoint m_KO;

@@ -94,10 +94,11 @@ CBotf2Doc::~CBotf2Doc()
 	m_ShipInfoArray.RemoveAll();
 
 	if (CSector::m_Font)
+	{
 		delete CSector::m_Font;
-	if (CSector::m_NameGenerator)
-		delete CSector::m_NameGenerator;
-
+		CSector::m_Font = NULL;
+	}
+	
 	if (m_pNetworkHandler)
 	{
 		server.RemoveServerListener(m_pNetworkHandler);
@@ -361,12 +362,7 @@ void CBotf2Doc::Serialize(CArchive& ar)
 		}
 	
 	CMoralObserver::SerializeStatics(ar);
-	
-	// ALPHA5 nicht mehr serialisieren
-#ifndef ALPHA5RC
-	CSector::m_NameGenerator->Serialize(ar);
-#endif
-	
+		
 	m_GenShipName.Serialize(ar);
 	m_GlobalBuildings.Serialize(ar);
 	message.Serialize(ar);
@@ -743,14 +739,6 @@ void CBotf2Doc::PrepareData()
 {
 	MYTRACE(MT::LEVEL_INFO, "Begin preparing game data...\n");
 	
-	if (CSector::m_NameGenerator)
-	{
-		delete CSector::m_NameGenerator;
-		CSector::m_NameGenerator = NULL;
-	}	
-	
-	CSector::InitNameGenerator();
-
 	if (!m_bGameLoaded)
 	{
 		// neue Majors anlegen
@@ -1709,8 +1697,8 @@ void CBotf2Doc::ReadShipInfosFromFile()
 	BOOL torpedo = FALSE;
 	CString csInput;													// auf csInput wird die jeweilige Zeile gespeichert
 	CString data[40];
-	CString torpedoData[7];
-	CString beamData[10];
+	CString torpedoData[9];
+	CString beamData[12];
 	CString fileName = CIOData::GetInstance()->GetAppPath() + "Data\\Ships\\Shiplist.data";				// Name des zu Öffnenden Files 
 	CStdioFile file;														// Varibale vom Typ CStdioFile
 	if (file.Open(fileName, CFile::modeRead | CFile::typeBinary))			// Datei wird geöffnet
@@ -1721,17 +1709,17 @@ void CBotf2Doc::ReadShipInfosFromFile()
 			{
 				if (csInput == "$Torpedo$")
 				{
-					weapons = 7;	// weil wir 7 Informationen für einen Torpedo brauchen
+					weapons = 9;	// weil wir 9 Informationen für einen Torpedo brauchen
 					torpedo = TRUE;
 				}
 				else if (csInput == "$Beam$")
 				{
-					weapons = 10;	// weil wir 10 Informationen für einen Beam brauchen
+					weapons = 12;	// weil wir 12 Informationen für einen Beam brauchen
 					torpedo = FALSE;
 				}
 				else if (torpedo == TRUE && weapons > 0)
 				{
-					torpedoData[7-weapons] = csInput;
+					torpedoData[9-weapons] = csInput;
 					weapons--;
 					if (weapons == 0)
 					{
@@ -1739,12 +1727,16 @@ void CBotf2Doc::ReadShipInfosFromFile()
 						CTorpedoWeapons torpedoWeapon;
 						torpedoWeapon.ModifyTorpedoWeapon(atoi(torpedoData[0]),atoi(torpedoData[1]),
 							atoi(torpedoData[2]),atoi(torpedoData[3]),torpedoData[4],atoi(torpedoData[5]),atoi(torpedoData[6]));
+						
+						// folgende Zeile neu in Alpha5
+						torpedoWeapon.GetFirearc()->SetValues(atoi(torpedoData[7]), atoi(torpedoData[8]));
+						
 						ShipInfo.GetTorpedoWeapons()->Add(torpedoWeapon);
 					}
 				}
 				else if (torpedo == FALSE && weapons > 0)
 				{
-					beamData[10-weapons] = csInput;
+					beamData[12-weapons] = csInput;
 					weapons--;
 					if (weapons == 0)
 					{
@@ -1752,6 +1744,9 @@ void CBotf2Doc::ReadShipInfosFromFile()
 						CBeamWeapons beamWeapon;
 						beamWeapon.ModifyBeamWeapon(atoi(beamData[0]),atoi(beamData[1]),atoi(beamData[2]),
 							beamData[3],atoi(beamData[4]),atoi(beamData[5]),atoi(beamData[6]),atoi(beamData[7]),atoi(beamData[8]),atoi(beamData[9]));
+						// folgende Zeile neu in Alpha5
+						beamWeapon.GetFirearc()->SetValues(atoi(beamData[10]), atoi(beamData[11]));
+						
 						ShipInfo.GetBeamWeapons()->Add(beamWeapon);
 					}
 				}

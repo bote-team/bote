@@ -2,9 +2,9 @@
 #include "Combat.h"
 #include "Races\RaceController.h"
 
-Position GivePosition(BYTE pos, USHORT posNumber)
+vec3i GivePosition(BYTE pos, USHORT posNumber)
 {
-	Position p;
+	vec3i p;
 	p.x = rand()%30; p.y = rand()%30; p.z = rand()%30;
 
 	// aller 6 Rassen ist die Startposition wieder ähnlich. Doch an einem Kampf werden
@@ -76,7 +76,7 @@ void CCombat::SetInvolvedShips(CArray<CShip*,CShip*>* ships, std::map<CString, C
 			cs->m_KO.z = 0;
 			cs->m_Tactic = 0;
 			if (ships->GetAt(i)->GetCloak())
-				cs->m_byCloak = rand()%21 + 30;	// Wert zwischen 30 und 50 zuweisen
+				cs->m_byCloak = rand()%21 + 50;	// Wert zwischen 50 und 70 zuweisen
 			cs->m_Fire.phaser.SetSize(ships->GetAt(i)->GetBeamWeapons()->GetSize());
 			cs->m_Fire.torpedo.SetSize(ships->GetAt(i)->GetTorpedoWeapons()->GetSize());
 			for (int i = 0; i < cs->m_Fire.phaser.GetSize(); i++)
@@ -201,6 +201,22 @@ void CCombat::CalculateCombat(std::map<CString, BYTE>& winner)
 		// Flugroute aller Schiffe berechnen und einfach mal attackieren (Phaser abfeuern)
 		for (int i = 0; i < m_CS.GetSize(); i++)
 		{
+			// Wenn ein wieder getarntes Schiff als Ziel aufgeschaltet ist, dieses aber nicht mehr durch
+			// Scanner entdeckt werden kann, dann dieses Ziel nicht mehr als Ziel behandeln. Anderenfalls, wenn
+			// unser Ziel getarnt ist, wir es aber entdecken, dann für alle sichtbar machen
+			if (m_CS.GetAt(i)->m_pTarget != NULL && m_CS.GetAt(i)->m_pTarget->m_byCloak > 0)
+			{
+				// Ziel für alle sichtbar machen
+				if (m_CS.GetAt(i)->m_pShip->GetScanPower() > m_CS.GetAt(i)->m_pTarget->m_pShip->GetStealthPower() * 20)
+					m_CS.GetAt(i)->m_pTarget->m_bShootCloaked = TRUE;
+				// Ziel wegnehmen
+				else
+				{
+					m_CS.GetAt(i)->m_pTarget = NULL;
+					m_CS.GetAt(i)->m_Fire.phaserIsShooting = FALSE;
+				}
+			}
+			// Ziel aufschalten
 			if (m_CS.GetAt(i)->m_pTarget == NULL || m_CS.GetAt(i)->m_pTarget->m_pShip->GetHull()->GetCurrentHull() < 1)
 			{
 				if (SetTarget(i))
@@ -210,6 +226,8 @@ void CCombat::CalculateCombat(std::map<CString, BYTE>& winner)
 			}
 			else
 				m_bReady = true;
+			
+			// Flug zur nächsten Position
 			m_CS.ElementAt(i)->CalculateNextPosition();
 			// Wenn wir ein Ziel haben, dann greifen wir dieses auch an
 			if (m_CS.GetAt(i)->m_pTarget != NULL)
@@ -229,7 +247,7 @@ void CCombat::CalculateCombat(std::map<CString, BYTE>& winner)
 							break;
 					}
 				} while (value.x != -1);
-
+				
 				// ab hier jetzt ein Angriff mit den Torpedowaffen
 				// wenn wir kein Ziel mehr haben, weil es z.B. durch den letzten Beamstrahl ausgeschaltet wurde,
 				// versuchen ein neues aufzuschalten
@@ -257,8 +275,13 @@ void CCombat::CalculateCombat(std::map<CString, BYTE>& winner)
 		}
 		// Das Torpedofeld durchgehen und deren Flug berechnen
 		for (int i = 0; i < m_CT.GetSize(); i++)
-			if (m_CT.ElementAt(i).Fly(&m_CS) == TRUE)
+		{
+			if (m_CT.ElementAt(i)->Fly(&m_CS) == TRUE)
+			{
+				delete m_CT[i];
 				m_CT.RemoveAt(i--);
+			}
+		}
 		// Wenn noch Torpedos rumschwirren, dann den Kampf noch nicht abbrechen
 		if (!m_CT.IsEmpty())
 			m_bReady = TRUE;
@@ -351,13 +374,24 @@ BOOLEAN CCombat::SetTarget(int i)
 			// Wenn das Ziel getarnt ist, dann müssen wir eine ausreichend hohe Scanpower haben oder können das Ziel nicht aufschalten
 			else if (m_CS.GetAt(i)->m_pShip->GetScanPower() > targetShip->m_pShip->GetStealthPower() * 20)
 			{
-				// Wenn wir es aufschalten könnten, dann setzen sagen wir einfach, dass das gegnereische Schiff schon gefeuert hätte
+				// Wenn wir es aufschalten könnten, dann setzen sagen wir einfach, dass das gegnerische Schiff schon gefeuert hätte
 				// somit verliert es nach einer random-Zeit die Tarnung und alle unsere Schiffe können gleichzeitig angreifen. Dadurch
 				// fliegt der Scout nicht mehr allein vorneweg.
 				targetShip->m_bShootCloaked = TRUE;
 				m_CS.ElementAt(i)->m_Fire.phaserIsShooting = FALSE;
 			}	
 			// jedenfalls wird hier abgebrochen -> Ziel gefunden (auch wenn wegen Tarnung noch keine Aufschlaltung mgl. war)
+			
+			// Wenn möglich wieder Tarnen bevor ein neues Ziel gewählt wird
+			if (m_CS.GetAt(i)->m_byReCloak == 255)
+			{
+				if (m_CS.GetAt(i)->m_pShip->GetCloak() && m_CS.GetAt(i)->m_byCloak == 0)
+				{
+					m_CS.GetAt(i)->m_byCloak = rand()%21 + 50;	// Wert zwischen 50 und 70 zuweisen
+					m_CS.GetAt(i)->m_bShootCloaked = FALSE;
+					m_CS.GetAt(i)->m_byReCloak = 0;
+				}
+			}
 			return TRUE;
 		}
 	};
@@ -435,7 +469,10 @@ void CCombat::Reset()
 		m_CS.RemoveAt(i);
 	m_CS.RemoveAll();
 	for (int i = 0; i < m_CT.GetSize(); )
+	{
+		delete m_CT[i];
 		m_CT.RemoveAt(i);
+	}
 	m_CT.RemoveAll();
 	
 	m_bReady = FALSE;

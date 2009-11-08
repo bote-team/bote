@@ -10,11 +10,11 @@
 #include "Ship.h"
 #include "Torpedo.h"
 
-/**
-* Eine Struktur für die Zeit wann wieder Beam- und Torpedowaffen abgefeuert werden können.
-* Die Zeiten in dieser Struktur entsprechen nicht den wahren Sekunden. Ich habe zur Umrechnung
-* 1sek == 10 Zeiteinheiten angesetzt. Somit bedeutet z.B. 5sek ein Wert von 50.
-*/
+
+/// Eine Struktur für die Zeit wann wieder Beam- und Torpedowaffen abgefeuert werden können.
+/// Da Folgende gilt glaube nicht mehr!
+/// Die Zeiten in dieser Struktur entsprechen nicht den wahren Sekunden. Ich habe zur Umrechnung
+/// 1sek == 10 Zeiteinheiten angesetzt. Somit bedeutet z.B. 5sek ein Wert von 50.
 struct ShootTime
 {
 	CArray<BYTE,BYTE> phaser;		///< Gibt an wann wir wieder die Phaserwaffe abfeuern können
@@ -25,6 +25,7 @@ struct ShootTime
 class CCombatShip :	public CObject
 {
 	friend class CCombat;
+	friend class CTorpedo;
 public:
 	/// Konstruktor
 	CCombatShip(void);
@@ -101,16 +102,44 @@ public:
 	 * Waffe eingestellt haben.
 	 */
 	BOOLEAN GetActRegShields() const {return m_bRegShieldStatus;}
+
+	/// Funktion berechnet, ob ein Feuersystem aufgrund der Position des Schiffes, der Position des Systems auf dem Schiff und
+	/// dessen Feuerwinkel auch feuern kann.
+	/// @param arc Zeiger auf Schussfeld
+	/// @return Wahrheitswert
+	bool AllowFire(const CFireArc* arc);
 	
-public:
+private:
+	// private Funktionen
+	
+	/// Diese Funktion berechnet den Angriffsbonus, den Schiffe auf Grund ihrer Spezialeigenschaften womöglich erhalten.
+	/// @return Angriffsbonus durch Schiffseienschaften
+	BYTE GetAccBoniFromSpecials(void);
+
+	/// Diese Funktion berechnet die Trefferwahrscheinlichkeit des Beams und fügt dem Feindschiff wenn möglich Schaden zu.
+	/// @param beamWeapon Nummer der Beamwaffe
+	/// @param distance Distanz zwischen unserem Schiff und dem Gegner
+	/// @param boni Bonus durch Schiffseigenschaften
+	void FireBeam(int beamWeapon, int distance, BYTE boni);
+
+	/// Diese Funktion berechnet die Trefferwahrscheinlichkeit des Beams und fügt dem Feindschiff wenn möglich Schaden zu.
+	/// @param CT Feld der Torpedos im Kampf
+	/// @param beamWeapon Nummer der Beamwaffe
+	/// @param targetKO Zielkoordinate des Torpedos
+	/// @param boni Bonus durch Schiffseigenschaften
+	/// @return maximal zu erwartender Schaden
+	UINT FireTorpedo(CombatTorpedos* CT, int torpedoWeapon, vec3i targetKO, BYTE boni);
+
+	// Attribute
+	
 	/// Zeiger auf das Schiff, welches hier im Kampf ist
 	CShip*	m_pShip;
 	
 	/// Aktuelle Position (Koordinate im Raum) des Schiffes
-	Position m_KO;					
+	vec3i m_KO;					
 	
 	/// Flugroute des Schiffes, welche die folgenden Koordinaten beinhaltet
-	CArray<Position,Position> m_Route;
+	CArray<vec3i, vec3i> m_Route;
 	
 	/// Zeit bis das Schiff wieder seine Waffen abfeuern kann. Wenn dieser Wert NULL erreicht hat, dann kann es
 	/// die Waffen wieder feuern.
@@ -134,14 +163,15 @@ public:
 	/// Status der regenerativen Schilde, angepaßt oder nicht 
 	BOOLEAN m_bRegShieldStatus;
 
-	/// Ist das Schiff noch getarnt oder nicht. Nach dem Feuern hat das Schiff noch 10 bis 20 Ticks Zeit,
+	/// Ist das Schiff noch getarnt oder nicht. Nach dem Feuern hat das Schiff noch 50 bis 70 Ticks Zeit,
 	/// bis es wirklich angegriffen werden kann. Solange m_byCloak größer als NULL ist, ist das Schiff getarnt.
 	BYTE m_byCloak;
 
+	/// Wenn dieser Counter auf 255 hochgezählt wurde, dann kann sich das Schiff wieder tarnen
+	BYTE m_byReCloak;
+
 	/// Hat das Schiff schonmal getarnt geschossen?
 	BOOLEAN m_bShootCloaked;
-
-
 };
 
 typedef CArray<CCombatShip,CCombatShip> CombatShips;
