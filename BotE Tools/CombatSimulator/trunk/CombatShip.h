@@ -178,6 +178,7 @@ private:
 public:
 	float SCAL;
 	float LIFE;
+	float SHIELDS;
 };
 
 typedef CArray<CCombatShip,CCombatShip> CombatShips;

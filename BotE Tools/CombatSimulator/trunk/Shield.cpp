@@ -97,11 +97,12 @@ void CShield::ModifyShield(UINT MaxShield, BYTE ShieldType, BOOLEAN Regenerative
 }
 
 // Diese Funktion lädt die Schilde entsprechend ihrem Schildtyp wieder auf
-void CShield::RechargeShields(SBYTE multi)
+void CShield::RechargeShields(int nMulti)
 {
 	// Die Schilde werden um multi * Schildtyp / 300 + 2*Schildtyp aufgeladen.
 	int maxRecharge = m_iMaxShield - m_iCurrentShield;
-	int Recharge = multi * m_iMaxShield / 300 + 2 * m_iShieldType;
+	//int Recharge = multi * m_iMaxShield / 300 + 2 * m_iShieldType;
+	int Recharge = nMulti * (int)(max(m_iMaxShield * 0.001f, 1) * m_iShieldType);
 	if (Recharge > maxRecharge)
 		Recharge = maxRecharge;
 	m_iCurrentShield += Recharge;

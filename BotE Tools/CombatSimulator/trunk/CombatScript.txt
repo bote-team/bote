@@ -5,24 +5,31 @@
 §RACE§
 1
 §SHIPS§
-Matilda
-Matilda
+Sternenbasis 40
 §RACE§
-4
+5
 §SHIPS§
-Hathaway
-Hathaway
-Farscape
-Farscape
-Farscape
-Farscape
-Farscape
-Farscape
-Farscape
-Farscape
-Farscape
-Farscape
-Farscape
-Farscape
-Farscape
-Farscape
+Ultima One
+Ultima One
+Ultima One
+Ultima One
+Ultima One
+Ultima One
+Ultima One
+Ultima One
+Ultima One
+Ultima One
+Ultima One
+Ultima One
+Ultima One
+Ultima One
+Ultima One
+Ultima One
+Ultima One
+Ultima One
+Ultima One
+Ultima One
+Ultima One
+Ultima One
+Ultima One
+Ultima One

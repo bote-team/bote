@@ -230,9 +230,14 @@ void CCombat::CalculateCombat(BYTE winner[7])
 		{
 			m_CS.GetAt(i)->SCAL = -1.f;	
 			m_CS.GetAt(i)->LIFE = 100;
+			m_CS.GetAt(i)->SHIELDS = 100;
 			float life = (float)(m_CS.GetAt(i)->m_pShip->GetHull()->GetCurrentHull())
 				/ (float)(m_CS.GetAt(i)->m_pShip->GetHull()->GetMaxHull());
 			m_CS.GetAt(i)->LIFE = life * 100;
+
+			float shields = (float)(m_CS.GetAt(i)->m_pShip->GetShield()->GetCurrentShield())
+				/ (float)(m_CS.GetAt(i)->m_pShip->GetShield()->GetMaxShield());
+			m_CS.GetAt(i)->SHIELDS = shields * 100;
 			// Wenn ein wieder getarntes Schiff als Ziel aufgeschaltet ist, dieses aber nicht mehr durch
 			// Scanner entdeckt werden kann, dann dieses Ziel nicht mehr als Ziel behandeln. Anderenfalls, wenn
 			// unser Ziel getarnt ist, wir es aber entdecken, dann für alle sichtbar machen
@@ -307,11 +312,13 @@ void CCombat::CalculateCombat(BYTE winner[7])
 		}
 		// Das Torpedofeld durchgehen und deren Flug berechnen
 		for (int i = 0; i < m_CT.GetSize(); i++)
+		{
 			if (m_CT.ElementAt(i)->Fly(&m_CS) == TRUE)
 			{
 				delete m_CT[i];
 				m_CT.RemoveAt(i--);
 			}
+		}
 		// Wenn noch Torpedos rumschwirren, dann den Kampf noch nicht abbrechen
 		if (!m_CT.IsEmpty())
 			m_bReady = TRUE;
@@ -326,7 +333,9 @@ void CCombat::CalculateCombat(BYTE winner[7])
 			else
 			{
 				m_CS.ElementAt(i)->GotoNextPosition();
-				m_CS.ElementAt(i)->m_pShip->GetShield()->RechargeShields();
+				// wenn die Schilde noch nicht komplett zusammengebrochen sind
+				if (m_CS.ElementAt(i)->m_pShip->GetShield()->GetCurrentShield() > 0)
+					m_CS.ElementAt(i)->m_pShip->GetShield()->RechargeShields();
 			}
 		}
 		// Wenn keine Schiffe mehr am Kampf teilnehmen, weil vielleicht alle vernichtet wurden, dann können wir abbrechen

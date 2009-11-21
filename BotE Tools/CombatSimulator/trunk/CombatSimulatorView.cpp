@@ -105,7 +105,7 @@ void CCombatSimulatorView::OnDraw(CDC* dc)
 					if (pDoc->combat.m_CS.GetAt(q)->m_byCloak > 0)
 						s += "(c)";
 					CString life;
-					life.Format(" %.0lf%%", pDoc->combat.m_CS.GetAt(q)->LIFE);
+					life.Format(" %.0lf%%/%.0lf%%", pDoc->combat.m_CS.GetAt(q)->SHIELDS, pDoc->combat.m_CS.GetAt(q)->LIFE);
 					s += life;
 					pDC->TextOut(pDoc->combat.m_CS.GetAt(q)->m_KO.x+r.right/2 - 20, pDoc->combat.m_CS.GetAt(q)->m_KO.y+r.bottom/2 - 15, s);
 					
@@ -134,7 +134,7 @@ void CCombatSimulatorView::OnDraw(CDC* dc)
 					if (pDoc->combat.m_CS.GetAt(q)->m_byCloak > 0)
 						s += "(c)";
 					CString life;
-					life.Format(" %.0lf%%", pDoc->combat.m_CS.GetAt(q)->LIFE);
+					life.Format(" %.0lf%%/%.0lf%%", pDoc->combat.m_CS.GetAt(q)->SHIELDS, pDoc->combat.m_CS.GetAt(q)->LIFE);
 					s += life;
 					pDC->TextOut(pDoc->combat.m_CS.GetAt(q)->m_KO.x+r.right/2 - 20, pDoc->combat.m_CS.GetAt(q)->m_KO.z+r.bottom/2 - 15, s);
 

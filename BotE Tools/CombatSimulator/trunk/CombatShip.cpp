@@ -445,6 +445,8 @@ BYTE CCombatShip::GetAccBoniFromSpecials(void)
 // @return Wahrheitswert
 bool CCombatShip::AllowFire(const CFireArc* arc)
 {
+	if (this->m_pShip->GetShipType() == OUTPOST || this->m_pShip->GetShipType() == STARBASE)
+		return true;
 	/*
 	Ich fasse nochmal zusammen was benötigt wird und was mittels Variablen festgehalten werden müsste:
 
@@ -721,7 +723,7 @@ UINT CCombatShip::FireTorpedo(CombatTorpedos* CT, int torpedoWeapon, vec3i targe
 	m_bShootCloaked = TRUE;
 	m_Fire.torpedo[torpedoWeapon] = m_pShip->GetTorpedoWeapons()->GetAt(torpedoWeapon).GetTupeFirerate();
 	// Soviele Torpedos dem Feld zufügen wie wir mit einem Mal mit dem Launcher verschießen
-	CTorpedo *torpedo = new CTorpedo();;
+	CTorpedo* torpedo = new CTorpedo();;
 	torpedo->m_TargetKO = targetKO;
 	torpedo->m_iNumber = m_pShip->GetTorpedoWeapons()->GetAt(torpedoWeapon).GetNumber();					
 	torpedo->m_KO = m_KO;
