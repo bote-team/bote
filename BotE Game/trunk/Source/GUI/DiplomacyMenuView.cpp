@@ -177,9 +177,9 @@ void CDiplomacyMenuView::OnInitialUpdate()
 	// alle Hintergrundgrafiken laden
 	CString sPrefix = pPlayer->GetPrefix();
 	
-	bg_diploinfomenu	= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "diploinfomenu.jpg");
-	bg_diplooutmenu		= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "diplooutmenu.jpg");
-	bg_diploinmenu		= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "diploinmenu.jpg");
+	bg_diploinfomenu	= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "diploinfomenu.boj");
+	bg_diplooutmenu		= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "diplooutmenu.boj");
+	bg_diploinmenu		= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "diploinmenu.boj");
 	
 	// Diplomatieansicht
 	m_bySubMenu = 0;	
@@ -527,7 +527,7 @@ void CDiplomacyMenuView::DrawDiplomacyMenue(Graphics* g)
 			Gdiplus::Color btnColor;
 			CFontLoader::GetGDIFontColor(pPlayer, 2, btnColor);
 			fontBrush.SetColor(btnColor);
-			CString sFile = "Other\\" + pPlayer->GetPrefix() + "button.png";
+			CString sFile = "Other\\" + pPlayer->GetPrefix() + "button.bop";
 			Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic(sFile);
 			if (graphic)
 				g->DrawImage(graphic, 871,690,160,40);
@@ -546,9 +546,9 @@ void CDiplomacyMenuView::DrawDiplomacyMenue(Graphics* g)
 		fontBrush.SetColor(btnColor);
 		CString sFile;
 		if (m_bShowSendButton == TRUE)
-			sFile = "Other\\" + pPlayer->GetPrefix() + "button.png";
+			sFile = "Other\\" + pPlayer->GetPrefix() + "button.bop";
 		else
-			sFile = "Other\\" + pPlayer->GetPrefix() + "buttoni.png";
+			sFile = "Other\\" + pPlayer->GetPrefix() + "buttoni.bop";
 		Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic(sFile);
 		if (graphic)
 			g->DrawImage(graphic, 852,480,160,40);
@@ -556,9 +556,9 @@ void CDiplomacyMenuView::DrawDiplomacyMenue(Graphics* g)
 		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(852,480,160,40), &fontFormat, &fontBrush);
 		
 		if (m_bShowDeclineButton == TRUE)
-			sFile = "Other\\" + pPlayer->GetPrefix() + "button.png";
+			sFile = "Other\\" + pPlayer->GetPrefix() + "button.bop";
 		else
-			sFile = "Other\\" + pPlayer->GetPrefix() + "buttoni.png";
+			sFile = "Other\\" + pPlayer->GetPrefix() + "buttoni.bop";
 		graphic = pDoc->GetGraphicPool()->GetGDIGraphic(sFile);
 		if (graphic)
 			g->DrawImage(graphic, 852,599,160,40);
@@ -663,7 +663,7 @@ void CDiplomacyMenuView::DrawRaceDiplomacyMenue(Graphics* g)
 				CString name = pRace->GetGraphicFileName();
 				Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Races\\" + name);
 				if (graphic == NULL)
-					graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Races\\ImageMissing.jpg");		
+					graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Races\\ImageMissing.boj");		
 				if (graphic)
 					g->DrawImage(graphic, 735, 100, 300, 300);
 				
@@ -720,6 +720,9 @@ void CDiplomacyMenuView::DrawRaceDiplomacyMenue(Graphics* g)
 				if (pPlayer->GetIncomingDiplomacyNews()->at(l).m_sFromRace == pRace->GetRaceID())
 				{
 					m_OutgoingInfo = pPlayer->GetIncomingDiplomacyNews()->at(l);
+					// wenn noch kein Angebot angeklickt wurde, dann das erste Angebot auswählen
+					if (m_pIncomingInfo == NULL)
+						m_pIncomingInfo = &(pPlayer->GetIncomingDiplomacyNews()->at(l));
 					RectF rect(20,100+count*25,130,25);
 					// handelt es sich um das angeklickte Angebot
 					if (m_pIncomingInfo == &(pPlayer->GetIncomingDiplomacyNews()->at(l)))
@@ -737,7 +740,7 @@ void CDiplomacyMenuView::DrawRaceDiplomacyMenue(Graphics* g)
 						CString name = pRace->GetGraphicFileName();
 						Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Races\\" + name);
 						if (graphic == NULL)
-							graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Races\\ImageMissing.jpg");		
+							graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Races\\ImageMissing.boj");		
 						if (graphic)
 							g->DrawImage(graphic, 735, 100, 300, 300);
 						
@@ -825,6 +828,8 @@ void CDiplomacyMenuView::DrawRaceDiplomacyMenue(Graphics* g)
 								{
 									if (m_pIncomingInfo->m_ptKO != CPoint(-1,-1))
 										m_ptResourceFromSystem = m_pIncomingInfo->m_ptKO;
+									else if (m_ptResourceFromSystem != CPoint(-1,-1))
+										m_pIncomingInfo->m_ptKO = m_ptResourceFromSystem;
 									// Wenn eine Forderung gestellt wurde, welche Ressourcen beinhaltet, dann Annehmenbutton
 									// nur einblenden, wenn wir diese Forderung auch erfüllen können
 									USHORT *resource = m_pIncomingInfo->m_nResources;
@@ -837,7 +842,7 @@ void CDiplomacyMenuView::DrawRaceDiplomacyMenue(Graphics* g)
 										s.Format("%s: ",CResourceManager::GetString("RESOURCE_FROM"));
 										g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(350,100+count*25,150,25), &fontFormat, &fontBrush);
 																		
-										Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\" + pPlayer->GetPrefix() + "button_small.png");
+										Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\" + pPlayer->GetPrefix() + "button_small.bop");
 										Color btnColor;
 										CFontLoader::GetGDIFontColor(pPlayer, 1, btnColor);
 										SolidBrush btnBrush(btnColor);
@@ -1043,7 +1048,7 @@ void CDiplomacyMenuView::DrawDiplomacyInfoMenue(Graphics* g, const CString& sWhi
 			else
 				s = CResourceManager::GetString("BTN_CANCEL");
 			
-			Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\" + pPlayer->GetPrefix() + "button_small.png");
+			Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\" + pPlayer->GetPrefix() + "button_small.bop");
 			Color btnColor;
 			CFontLoader::GetGDIFontColor(pPlayer, 1, btnColor);
 			SolidBrush btnBrush(btnColor);
@@ -1125,7 +1130,7 @@ void CDiplomacyMenuView::DrawDiplomacyOfferMenue(Graphics* g, const CString& sWh
 			fontFormat.SetAlignment(StringAlignmentNear);
 			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(195,410,255,30), &fontFormat, &fontBrush);
 
-			Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\" + pPlayer->GetPrefix() + "button_small.png");
+			Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\" + pPlayer->GetPrefix() + "button_small.bop");
 			Color btnColor;
 			CFontLoader::GetGDIFontColor(pPlayer, 1, btnColor);
 			SolidBrush btnBrush(btnColor);
@@ -2172,9 +2177,9 @@ void CDiplomacyMenuView::CreateButtons()
 
 	// alle Buttons in der View anlegen und Grafiken laden	
 	// Buttons in der Systemansicht
-	CString fileN = "Other\\" + sPrefix + "button.png";
-	CString fileI = "Other\\" + sPrefix + "buttoni.png";
-	CString fileA = "Other\\" + sPrefix + "buttona.png";
+	CString fileN = "Other\\" + sPrefix + "button.bop";
+	CString fileI = "Other\\" + sPrefix + "buttoni.bop";
+	CString fileA = "Other\\" + sPrefix + "buttona.bop";
 	// Buttons in den Diplomatieansichten
 	m_DiplomacyMainButtons.Add(new CMyButton(CPoint(10,690) , CSize(160,40), CResourceManager::GetString("BTN_INFORMATION"), fileN, fileI, fileA));
 	m_DiplomacyMainButtons.Add(new CMyButton(CPoint(200,690) , CSize(160,40), CResourceManager::GetString("OFFER"), fileN, fileI, fileA));

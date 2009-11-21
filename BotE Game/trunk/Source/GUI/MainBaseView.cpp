@@ -124,7 +124,7 @@ void CMainBaseView::ButtonReactOnMouseOver(const CPoint &point, CArray<CMyButton
 		{			
 			if (buttonArray->GetAt(i)->Activate())
 			{
-				CSoundManager::GetInstance()->PlaySound(SNDMGR_SOUND_MAINMENU, SNDMGR_PRIO_NORMAL, 0.5f);
+				CSoundManager::GetInstance()->PlaySound(SNDMGR_SOUND_MAINMENU);
 				CRect r = buttonArray->GetAt(i)->GetRect();
 				CalcDeviceRect(r);
 				InvalidateRect(r, FALSE);

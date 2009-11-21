@@ -86,6 +86,9 @@ BEGIN_MESSAGE_MAP(CBotf2App, CWinApp)
 	ON_THREAD_MESSAGE(WM_UPDATEVIEWS, CBotf2App::UpdateViews)
 	ON_THREAD_MESSAGE(WM_SHOWCHATDLG, CBotf2App::ShowChatDlg)	
 	ON_COMMAND(ID_CHAT, &CBotf2App::OnChat)
+	ON_COMMAND(ID_HELP_MANUAL, &CBotf2App::OnOpenManual)
+	ON_COMMAND(ID_HELP_README, &CBotf2App::OnOpenReadme)
+	ON_COMMAND(ID_HELP_CREDITS, &CBotf2App::OnOpenCredits)
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -225,4 +228,67 @@ void CBotf2App::OnAppAbout()
 {
 	CAboutDlg aboutDlg;
 	aboutDlg.DoModal();
+}
+
+void CBotf2App::OnOpenManual()
+{
+	// TODO: Add your command handler code here
+	CString sFile = CIOData::GetInstance()->GetManualPath();
+	
+	HINSTANCE hInst = ShellExecute(0,
+		"open",		// Operation to perform
+		sFile,		// Application name
+        "",			// Additional parameters
+        0,			// Default directory
+        SW_SHOW);
+	
+}
+
+void CBotf2App::OnOpenReadme()
+{
+	// TODO: Add your command handler code here
+	CString sFile = CIOData::GetInstance()->GetAppPath() + "Liesmich.txt";
+	
+	HINSTANCE hInst = ShellExecute(0,
+		"open",		// Operation to perform
+		sFile,		// Application name
+        "",			// Additional parameters
+        0,			// Default directory
+        SW_SHOW);
+}
+
+void CBotf2App::OnOpenCredits()
+{
+	// TODO: Add your command handler code here
+	CString sFile = CIOData::GetInstance()->GetAppPath() + "\\Graphics\\Buildings\\CreditsBuildings.txt";
+	HINSTANCE hInst = ShellExecute(0,
+		"open",		// Operation to perform
+		sFile,		// Application name
+        "",			// Additional parameters
+        0,			// Default directory
+        SW_SHOW);
+
+	sFile = CIOData::GetInstance()->GetAppPath() + "\\Graphics\\Ships\\CreditsShips.txt";
+	hInst = ShellExecute(0,
+		"open",		// Operation to perform
+		sFile,		// Application name
+        "",			// Additional parameters
+        0,			// Default directory
+        SW_SHOW);
+
+	sFile = CIOData::GetInstance()->GetAppPath() + "\\Graphics\\Troops\\CreditsTroops.txt";
+	hInst = ShellExecute(0,
+		"open",		// Operation to perform
+		sFile,		// Application name
+        "",			// Additional parameters
+        0,			// Default directory
+        SW_SHOW);
+
+	sFile = CIOData::GetInstance()->GetAppPath() + "\\Graphics\\Planets\\CreditsPlanets.txt";
+	hInst = ShellExecute(0,
+		"open",		// Operation to perform
+		sFile,		// Application name
+        "",			// Additional parameters
+        0,			// Default directory
+        SW_SHOW);
 }

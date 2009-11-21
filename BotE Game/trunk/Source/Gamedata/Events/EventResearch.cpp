@@ -56,27 +56,27 @@ void CEventResearch::Create(void)
 	switch (m_byTech)
 	{
 	case 0: 
-		_graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Research\\biotech.png");
+		_graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Research\\biotech.bop");
 		m_byTechlevel = pMajor->GetEmpire()->GetResearch()->GetBioTech();
 		break;
 	case 1:
-		_graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Research\\energytech.png");
+		_graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Research\\energytech.bop");
 		m_byTechlevel = pMajor->GetEmpire()->GetResearch()->GetEnergyTech();
 		break;
 	case 2:
-		_graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Research\\computertech.png");
+		_graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Research\\computertech.bop");
 		m_byTechlevel = pMajor->GetEmpire()->GetResearch()->GetCompTech();
 		break;
 	case 3: 
-		_graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Research\\propulsiontech.png");
+		_graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Research\\propulsiontech.bop");
 		m_byTechlevel = pMajor->GetEmpire()->GetResearch()->GetPropulsionTech();
 		break;
 	case 4:
-		_graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Research\\constructiontech.png");
+		_graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Research\\constructiontech.bop");
 		m_byTechlevel = pMajor->GetEmpire()->GetResearch()->GetConstructionTech();
 		break;
 	case 5: 
-		_graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Research\\weapontech.png");
+		_graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Research\\weapontech.bop");
 		m_byTechlevel = pMajor->GetEmpire()->GetResearch()->GetWeaponTech();
 		break;
 	}
@@ -206,7 +206,7 @@ void CEventResearch::Draw(Graphics* g, CGraphicPool* graphicPool) const
 	{
 		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Buildings\\" + (*it)->GetGraphikFileName());
 		if (graphic == NULL)
-			graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Buildings\\ImageMissing.png");
+			graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Buildings\\ImageMissing.bop");
 		if (graphic)
 			g->DrawImage(graphic, 15 + nCount * 165, 435, 150, 113);
 		g->DrawString((*it)->GetBuildingName().AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(nCount * 165, 560, 180, 50), &fontFormat, &fontBrush);
@@ -218,7 +218,7 @@ void CEventResearch::Draw(Graphics* g, CGraphicPool* graphicPool) const
 	{
 		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Buildings\\" + (*it)->GetGraphikFileName());
 		if (graphic == NULL)
-			graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Buildings\\ImageMissing.png");
+			graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Buildings\\ImageMissing.bop");
 		if (graphic)
 			g->DrawImage(graphic, 15 + nCount * 165, 625, 150, 113);
 		g->DrawString((*it)->GetBuildingName().AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(nCount * 165, 750, 180, 50), &fontFormat, &fontBrush);
@@ -229,9 +229,9 @@ void CEventResearch::Draw(Graphics* g, CGraphicPool* graphicPool) const
 	nCount = 0;
 	for (vector<CShipInfo*>::const_iterator it = vNewShips.begin(); it != vNewShips.end(); it++)
 	{
-		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Ships\\" + (*it)->GetShipClass() + ".png");
+		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Ships\\" + (*it)->GetShipClass() + ".bop");
 		if (graphic == NULL)
-			graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Ships\\ImageMissing.png");
+			graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Ships\\ImageMissing.bop");
 		if (graphic)
 			g->DrawImage(graphic, 15 + nCount * 165, 820, 150, 113);
 		s = (*it)->GetShipClass() + "-" + CResourceManager::GetString("CLASS") + " (" + (*it)->GetShipTypeAsString() + ")";
@@ -240,9 +240,9 @@ void CEventResearch::Draw(Graphics* g, CGraphicPool* graphicPool) const
 	}
 	for (vector<CTroopInfo*>::const_iterator it = vNewTroops.begin(); it != vNewTroops.end(); it++)
 	{
-		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Troops\\" + (*it)->GetName() + ".png");
+		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Troops\\" + (*it)->GetName() + ".bop");
 		if (graphic == NULL)
-			graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Troops\\ImageMissing.png");
+			graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Troops\\ImageMissing.bop");
 		if (graphic)
 			g->DrawImage(graphic, 15 + nCount * 165, 820, 150, 113);
 		s = (*it)->GetName();

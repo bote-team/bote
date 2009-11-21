@@ -129,13 +129,13 @@ CString CPlanet::GetGraphicFile() const
 	if (m_iGraphicType < 10)	// führende NULL beachten
 	{
 		CString fileName;
-		fileName.Format("Planets\\class%c0%d.png", m_cClass, m_iGraphicType);
+		fileName.Format("Planets\\class%c0%d.bop", m_cClass, m_iGraphicType);
 		return fileName;
 	}
 	else
 	{
 		CString fileName;
-		fileName.Format("Planets\\class%c%d.png", m_cClass, m_iGraphicType);
+		fileName.Format("Planets\\class%c%d.bop", m_cClass, m_iGraphicType);
 		return fileName;
 	}
 }
@@ -427,7 +427,7 @@ void CPlanet::DrawPlanet(Graphics &g, CRect planetRect, CGraphicPool* graphicPoo
 	int y_Boni = y-23;
 	
 	Bitmap* planet = NULL;
-	planet = graphicPool->GetGDIGraphic("Planets\\"+m_strName+".png");
+	planet = graphicPool->GetGDIGraphic("Planets\\"+m_strName+".bop");
 	
 	// Konnte keine spezielle Planetengrafik gefunden werden, so wird eine zufällige Grafik ausgewählt
 	if (planet == NULL)
@@ -469,7 +469,7 @@ void CPlanet::DrawPlanet(Graphics &g, CRect planetRect, CGraphicPool* graphicPoo
 	planetRect.SetRect(x,y,x+10,y+15);
 	
 	Color c;
-	Gdiplus::Font font(L"Nina", 10);
+	Gdiplus::Font font(L"Arial", 8.5);
 	StringFormat format;
 	format.SetAlignment(StringAlignmentCenter);
 	SolidBrush brush(c);
@@ -513,14 +513,14 @@ void CPlanet::DrawPlanet(Graphics &g, CRect planetRect, CGraphicPool* graphicPoo
 		{
 			switch(i)
 			{
-				case TITAN:		graphic = graphicPool->GetGDIGraphic("Other\\titanSmall.png"); break;
-				case DEUTERIUM: graphic = graphicPool->GetGDIGraphic("Other\\deuteriumSmall.png"); break;
-				case DURANIUM:	graphic = graphicPool->GetGDIGraphic("Other\\duraniumSmall.png"); break;
-				case CRYSTAL:	graphic = graphicPool->GetGDIGraphic("Other\\crystalSmall.png"); break;
-				case IRIDIUM:	graphic = graphicPool->GetGDIGraphic("Other\\iridiumSmall.png"); break;
-				case DILITHIUM: graphic = graphicPool->GetGDIGraphic("Other\\Dilithium.png"); break;
-				case 6:			graphic = graphicPool->GetGDIGraphic("Other\\foodSmall.png"); break;
-				case 7:			graphic = graphicPool->GetGDIGraphic("Other\\energySmall.png"); break;
+				case TITAN:		graphic = graphicPool->GetGDIGraphic("Other\\titanSmall.bop"); break;
+				case DEUTERIUM: graphic = graphicPool->GetGDIGraphic("Other\\deuteriumSmall.bop"); break;
+				case DURANIUM:	graphic = graphicPool->GetGDIGraphic("Other\\duraniumSmall.bop"); break;
+				case CRYSTAL:	graphic = graphicPool->GetGDIGraphic("Other\\crystalSmall.bop"); break;
+				case IRIDIUM:	graphic = graphicPool->GetGDIGraphic("Other\\iridiumSmall.bop"); break;
+				case DILITHIUM: graphic = graphicPool->GetGDIGraphic("Other\\Deritium.bop"); break;
+				case 6:			graphic = graphicPool->GetGDIGraphic("Other\\foodSmall.bop"); break;
+				case 7:			graphic = graphicPool->GetGDIGraphic("Other\\energySmall.bop"); break;
 			}
 			if (graphic)
 			{

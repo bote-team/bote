@@ -44,6 +44,7 @@ BEGIN_MESSAGE_MAP(CBotf2Doc, CDocument)
 		//    Innerhalb dieser generierten Quelltextabschnitte NICHTS VERÄNDERN!
 	//}}AFX_MSG_MAP
 	ON_UPDATE_COMMAND_UI(ID_FILE_NEW, &CBotf2Doc::OnUpdateFileNew)	
+	ON_UPDATE_COMMAND_UI(ID_FILE_OPEN, &CBotf2Doc::OnUpdateFileOpen)	
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1123,34 +1124,7 @@ void CBotf2Doc::NextRound()
 						m_Sector[x][y+2].AddOwnerPoints(ownerPoints, sID);
 				}
 			}
-		}
-		// hier das Schiffinformationsfeld durchgehen und in die WeaponObserver-Klasse des jeweiligen Imperiums
-		// die baubaren Waffen eintragen. Wir brauchen dies um selbst Schiffe designen zu können
-		// Dies gilt nur für Majorsraces.
-		CMajor* pMajor = it->second;
-		BYTE researchLevels[6] =
-		{
-			pMajor->GetEmpire()->GetResearch()->GetBioTech(),
-			pMajor->GetEmpire()->GetResearch()->GetEnergyTech(),
-			pMajor->GetEmpire()->GetResearch()->GetCompTech(),
-			pMajor->GetEmpire()->GetResearch()->GetPropulsionTech(),
-			pMajor->GetEmpire()->GetResearch()->GetConstructionTech(),
-			pMajor->GetEmpire()->GetResearch()->GetWeaponTech()
-		};
-
-		for (int i = 0; i < m_ShipInfoArray.GetSize(); i++)
-		{
-			if (m_ShipInfoArray.GetAt(i).GetRace() == pMajor->GetRaceShipNumber())
-			{
-				// nur aktuell baubare Schiffe dürfen überprüft werden, wenn wir die Beamwaffen checken
-				if (m_ShipInfoArray.GetAt(i).IsThisShipBuildableNow(researchLevels))
-				{
-					// Wenn die jeweilige Rasse dieses technologisch bauen könnte, dann Waffen des Schiffes checken
-					pMajor->GetWeaponObserver()->CheckBeamWeapons(&m_ShipInfoArray.GetAt(i));
-					pMajor->GetWeaponObserver()->CheckTorpedoWeapons(&m_ShipInfoArray.GetAt(i));
-				}
-			}
-		}
+		}		
 	}
 	
 	vector<CString> vDelMajors;
@@ -1275,11 +1249,43 @@ void CBotf2Doc::NextRound()
 				pMajor->GetEmpire()->AddSP(currentPoints);
 			}
 		}
+
+	// Nun das Schiffinformationsfeld durchgehen und in die WeaponObserver-Klasse aller Imperien
+	// die baubaren Waffen eintragen. Wir brauchen dies um selbst Schiffe designen zu können
+	// Dies gilt nur für Majorsraces.
+	pmMajors = m_pRaceCtrl->GetMajors();
+	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+	{		
+		CMajor* pMajor = it->second;
+		BYTE researchLevels[6] =
+		{
+			pMajor->GetEmpire()->GetResearch()->GetBioTech(),
+			pMajor->GetEmpire()->GetResearch()->GetEnergyTech(),
+			pMajor->GetEmpire()->GetResearch()->GetCompTech(),
+			pMajor->GetEmpire()->GetResearch()->GetPropulsionTech(),
+			pMajor->GetEmpire()->GetResearch()->GetConstructionTech(),
+			pMajor->GetEmpire()->GetResearch()->GetWeaponTech()
+		};
+
+		for (int i = 0; i < m_ShipInfoArray.GetSize(); i++)
+		{
+			if (m_ShipInfoArray.GetAt(i).GetRace() == pMajor->GetRaceShipNumber())
+			{
+				// nur aktuell baubare Schiffe dürfen überprüft werden, wenn wir die Beamwaffen checken
+				if (m_ShipInfoArray.GetAt(i).IsThisShipBuildableNow(researchLevels))
+				{
+					// Wenn die jeweilige Rasse dieses technologisch bauen könnte, dann Waffen des Schiffes checken
+					pMajor->GetWeaponObserver()->CheckBeamWeapons(&m_ShipInfoArray.GetAt(i));
+					pMajor->GetWeaponObserver()->CheckTorpedoWeapons(&m_ShipInfoArray.GetAt(i));
+				}
+			}
+		}
+	}
 	
 	bool bAutoSave;
 	CIniLoader::GetInstance()->ReadValue("General", "AUTOSAVE", bAutoSave);
 	if (bAutoSave)
-		DoSave(CIOData::GetInstance()->GetAutoSavePath(), FALSE);
+		DoSave(CIOData::GetInstance()->GetAutoSavePath(m_iRound), FALSE);
 	SetModifiedFlag();
 	
 	delete pShipAI;	
@@ -2565,18 +2571,18 @@ void CBotf2Doc::CalcSystemAttack()
 							defender->SetRelation(pMajor->GetRaceID(), -rand()%10);
 					}
 					// Wenn die Bevölkerung des Systems auf NULL geschrumpft ist, dann ist dieses System verloren
-					if (m_System[p.x][p.y].GetHabitants() == 0.0f)
+					if (m_System[p.x][p.y].GetHabitants() <= 0.000001f)
 					{
 						// Bei einer Minorrace wird es komplizierter. Wenn diese keine Systeme mehr hat, dann ist diese
 						// aus dem Spiel verschwunden. Alle Einträge in der Diplomatie müssen daher gelöscht werden
-						if (m_Sector[p.x][p.y].GetMinorRace() && defender != NULL && defender->GetType() == MINOR)
+						if (m_Sector[p.x][p.y].GetMinorRace())
 						{
-							CMinor* pMinor = dynamic_cast<CMinor*>(defender);
+							CMinor* pMinor = m_pRaceCtrl->GetMinorRace(m_Sector[p.x][p.y].GetName());
 							ASSERT(pMinor);
 							m_Sector[p.x][p.y].SetMinorRace(FALSE);
 														
-							defender->GetIncomingDiplomacyNews()->clear();
-							defender->GetOutgoingDiplomacyNews()->clear();
+							pMinor->GetIncomingDiplomacyNews()->clear();
+							pMinor->GetOutgoingDiplomacyNews()->clear();
 							map<CString, CMajor*>* pmMajors = m_pRaceCtrl->GetMajors();
 							for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
 							{
@@ -2595,7 +2601,7 @@ void CBotf2Doc::CalcSystemAttack()
 								// Eventnachricht: #21	Eliminate a Minor Race Entirely
 								if (attackers.find(it->first) != attackers.end())
 								{
-									CString param = defender->GetRaceName();
+									CString param = pMinor->GetRaceName();
 									CString eventText = it->second->GetMoralObserver()->AddEvent(21, it->second->GetRaceMoralNumber(), param);
 									message.GenerateMessage(eventText, MILITARY, param, p, 0);
 									it->second->GetEmpire()->AddMessage(message);
@@ -2606,9 +2612,9 @@ void CBotf2Doc::CalcSystemAttack()
 									}
 								}
 								// alle anderen Majorrassen, die diese Minor kannten, bekommen eine Nachricht über deren Vernichtung
-								else if (defender->IsRaceContacted(it->first))
+								else if (pMinor->IsRaceContacted(it->first))
 								{
-									CString news = CResourceManager::GetString("ELIMINATE_MINOR", FALSE, defender->GetRaceName());
+									CString news = CResourceManager::GetString("ELIMINATE_MINOR", FALSE, pMinor->GetRaceName());
 									message.GenerateMessage(news, SOMETHING, "", 0, 0);
 									it->second->GetEmpire()->AddMessage(message);
 									if (it->second->IsHumanPlayer())
@@ -2627,7 +2633,7 @@ void CBotf2Doc::CalcSystemAttack()
 								if (m_ShipArray.GetAt(j).GetOwnerOfShip() == pMinor->GetRaceID())
 									m_ShipArray.RemoveAt(j--);						
 							// Rasse nun aus dem Feld löschen
-							m_pRaceCtrl->RemoveRace(defender->GetRaceID());
+							m_pRaceCtrl->RemoveRace(pMinor->GetRaceID());
 						}
 						// Bei einer Majorrace verringert sich nur die Anzahl der Systeme (auch konnte dies das
 						// Minorracesystem von oben gewesen sein, hier verliert es aber die betroffene Majorrace)
@@ -4796,8 +4802,7 @@ void CBotf2Doc::CalcShipMovement()
 
 		// Nach der Bewegung, aber noch vor einem möglichen Kampf werden die Schilde nach ihrem Typ wieder aufgeladen,
 		// wenn wir auf einem Shipport sind, dann wird auch die Hülle teilweise wieder repariert
-		// Die Schilde werden ähnlich wie im Kampf selbst um multi * Schildtyp / 400 aufgeladen.
-		m_ShipArray[y].GetShield()->RechargeShields(20);
+		m_ShipArray[y].GetShield()->RechargeShields(200);
 		// Wenn wir in diesem Sektor einen Shipport haben, dann wird die Hülle repariert
 		if (m_Sector[m_ShipArray[y].GetKO().x][m_ShipArray[y].GetKO().y].GetShipPort(m_ShipArray[y].GetOwnerOfShip()) == TRUE)
 			m_ShipArray[y].GetHull()->RepairHull();
@@ -4807,7 +4812,7 @@ void CBotf2Doc::CalcShipMovement()
 			m_ShipArray[y].GetFleet()->AdoptCurrentOrders(&m_ShipArray[y]);
 			for (int x = 0; x < m_ShipArray[y].GetFleet()->GetFleetSize(); x++)
 			{
-				m_ShipArray[y].GetFleet()->GetPointerOfShipFromFleet(x)->GetShield()->RechargeShields(20);			
+				m_ShipArray[y].GetFleet()->GetPointerOfShipFromFleet(x)->GetShield()->RechargeShields(200);			
 				if (m_Sector[m_ShipArray[y].GetKO().x][m_ShipArray[y].GetKO().y].GetShipPort(m_ShipArray[y].GetOwnerOfShip()) == TRUE)
 					m_ShipArray[y].GetFleet()->GetPointerOfShipFromFleet(x)->GetHull()->RepairHull();
 			}
@@ -5378,6 +5383,12 @@ Für den Erfahrungsgewinn gibt es mehrere Möglichkeiten:
 }
 
 void CBotf2Doc::OnUpdateFileNew(CCmdUI *pCmdUI)
+{
+	// TODO: Fügen Sie hier Ihren Befehlsaktualisierungs-UI-Behandlungscode ein.
+	pCmdUI->Enable(FALSE);
+}
+
+void CBotf2Doc::OnUpdateFileOpen(CCmdUI *pCmdUI)
 {
 	// TODO: Fügen Sie hier Ihren Befehlsaktualisierungs-UI-Behandlungscode ein.
 	pCmdUI->Enable(FALSE);

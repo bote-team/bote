@@ -126,10 +126,10 @@ void CTradeMenuView::OnInitialUpdate()
 	// alle Hintergrundgrafiken laden
 	CString sPrefix = pMajor->GetPrefix();
 	
-	bg_trademenu		= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "trademenu.jpg");
-	bg_monopolmenu		= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "monopolmenu.jpg");
-	bg_empty1			= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "emptyscreen.jpg");
-	bg_tradetransfermenu= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "tradetransfermenu.jpg");
+	bg_trademenu		= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "trademenu.boj");
+	bg_monopolmenu		= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "monopolmenu.boj");
+	bg_empty1			= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "emptyscreen.boj");
+	bg_tradetransfermenu= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "tradetransfermenu.boj");
 
 	// Handelsansicht
 	m_bySubMenu = 0;
@@ -257,7 +257,7 @@ void CTradeMenuView::DrawGlobalTradeMenue(Graphics* g)
 	fontFormat.SetFormatFlags(StringFormatFlagsNoWrap);
 	
 	// Buttons für "Kaufen" und "Verkaufen zeichnen
-	Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\" + pMajor->GetPrefix() + "button_small.png");
+	Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\" + pMajor->GetPrefix() + "button_small.bop");
 	Color btnColor;
 	CFontLoader::GetGDIFontColor(pMajor, 1, btnColor);
 	SolidBrush btnBrush(btnColor);
@@ -410,7 +410,7 @@ void CTradeMenuView::DrawMonopolMenue(Graphics* g)
 			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(500,120+i*110,350,30), &fontFormat, &fontBrush);
 		}
 
-		Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\" + pMajor->GetPrefix() + "button_small.png");
+		Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\" + pMajor->GetPrefix() + "button_small.bop");
 		Color btnColor;
 		CFontLoader::GetGDIFontColor(pMajor, 1, btnColor);
 		SolidBrush btnBrush(btnColor);
@@ -710,9 +710,9 @@ void CTradeMenuView::CreateButtons()
 
 	// alle Buttons in der View anlegen und Grafiken laden	
 	// Buttons in der Systemansicht
-	CString fileN = "Other\\" + sPrefix + "button.png";
-	CString fileI = "Other\\" + sPrefix + "buttoni.png";
-	CString fileA = "Other\\" + sPrefix + "buttona.png";
+	CString fileN = "Other\\" + sPrefix + "button.bop";
+	CString fileI = "Other\\" + sPrefix + "buttoni.bop";
+	CString fileA = "Other\\" + sPrefix + "buttona.bop";
 	// Buttons in den Diplomatieansichten
 	m_TradeMainButtons.Add(new CMyButton(CPoint(288,690) , CSize(160,40), CResourceManager::GetString("BTN_STOCK_EXCHANGE"), fileN, fileI, fileA));
 	m_TradeMainButtons.Add(new CMyButton(CPoint(458,690) , CSize(160,40), CResourceManager::GetString("BTN_MONOPOLY"), fileN, fileI, fileA));

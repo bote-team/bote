@@ -125,12 +125,12 @@ void CIntelMenuView::OnInitialUpdate()
 
 	CString sPrefix = pMajor->GetPrefix();
 	
-	bg_intelassignmenu	= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "intelassignmenu.jpg");
-	bg_intelspymenu		= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "intelspymenu.jpg");
-	bg_intelspymenu		= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "intelsabmenu.jpg");
-	bg_intelreportmenu	= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "intelreportmenu.jpg");
-	bg_intelattackmenu	= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "intelattackmenu.jpg");
-	bg_intelinfomenu	= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "intelinfomenu.jpg");
+	bg_intelassignmenu	= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "intelassignmenu.boj");
+	bg_intelspymenu		= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "intelspymenu.boj");
+	bg_intelspymenu		= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "intelsabmenu.boj");
+	bg_intelreportmenu	= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "intelreportmenu.boj");
+	bg_intelattackmenu	= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "intelattackmenu.boj");
+	bg_intelinfomenu	= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "intelinfomenu.boj");
 
 	// Geheimdienstansicht
 	m_bySubMenu = 0;
@@ -337,7 +337,7 @@ void CIntelMenuView::DrawIntelSpyMenu(Graphics* g)
 		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(200,140,190,30), &fontFormat, &fontBrush);	
 
 		Bitmap* graphic = NULL;
-		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\" + pMajor->GetPrefix() + "button_small.png");
+		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\" + pMajor->GetPrefix() + "button_small.bop");
 		Color btnColor;
 		CFontLoader::GetGDIFontColor(pMajor, 1, btnColor);
 		SolidBrush btnBrush(btnColor);
@@ -367,9 +367,9 @@ void CIntelMenuView::DrawIntelSpyMenu(Graphics* g)
 	if (m_sActiveIntelRace != "")
 	{
 		// Bild der aktiven Rasse im Hintergrund zeichnen
-		Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Symbols\\" + m_sActiveIntelRace + ".png");
+		Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Symbols\\" + m_sActiveIntelRace + ".bop");
 		if (graphic == NULL)
-			graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Symbols\\Standard.png");		
+			graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Symbols\\Standard.bop");		
 		if (graphic)
 			g->DrawImage(graphic, 310, 230, 300, 300);
 		Gdiplus::SolidBrush brush(Gdiplus::Color(160, 0, 0, 0));
@@ -511,7 +511,7 @@ void CIntelMenuView::DrawIntelSabotageMenu(Graphics* g)
 		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(200,140,190,30), &fontFormat, &fontBrush);	
 
 		Bitmap* graphic = NULL;
-		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\" + pMajor->GetPrefix() + "button_small.png");
+		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\" + pMajor->GetPrefix() + "button_small.bop");
 		Color btnColor;
 		CFontLoader::GetGDIFontColor(pMajor, 1, btnColor);
 		SolidBrush btnBrush(btnColor);
@@ -541,9 +541,9 @@ void CIntelMenuView::DrawIntelSabotageMenu(Graphics* g)
 	if (m_sActiveIntelRace != "")
 	{
 		// Bild der aktiven Rasse im Hintergrund zeichnen
-		Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Symbols\\" + m_sActiveIntelRace + ".png");
+		Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Symbols\\" + m_sActiveIntelRace + ".bop");
 		if (graphic == NULL)
-			graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Symbols\\Standard.png");		
+			graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Symbols\\Standard.bop");		
 		if (graphic)
 			g->DrawImage(graphic, 310, 230, 300, 300);
 		Gdiplus::SolidBrush brush(Gdiplus::Color(160, 0, 0, 0));
@@ -927,7 +927,7 @@ void CIntelMenuView::DrawIntelAttackMenu(Graphics* g)
 		
 
 	Bitmap* graphic = NULL;
-	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\" + pMajor->GetPrefix() + "button_small.png");
+	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\" + pMajor->GetPrefix() + "button_small.bop");
 	Color btnColor;
 	CFontLoader::GetGDIFontColor(pMajor, 1, btnColor);
 	SolidBrush btnBrush(btnColor);
@@ -1022,9 +1022,9 @@ void CIntelMenuView::DrawIntelInfoMenu(Graphics* g)
 	if (m_sActiveIntelRace != "")
 	{
 		// Bild der aktiven Rasse im Hintergrund zeichnen
-		Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Symbols\\" + m_sActiveIntelRace + ".png");
+		Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Symbols\\" + m_sActiveIntelRace + ".bop");
 		if (graphic == NULL)
-			graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Symbols\\Standard.png");		
+			graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Symbols\\Standard.bop");		
 		if (graphic)
 			g->DrawImage(graphic, 210, 260, 300, 300);
 		Gdiplus::SolidBrush brush(Gdiplus::Color(160, 0, 0, 0));
@@ -1065,9 +1065,9 @@ void CIntelMenuView::DrawIntelInfoMenu(Graphics* g)
 	// die einzelnen Rassensymbole zeichnen
 	DrawRaceLogosInIntelView(g, true);
 		
-	Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Symbols\\" + pIntel->GetResponsibleRace() + ".png");
+	Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Symbols\\" + pIntel->GetResponsibleRace() + ".bop");
 	if (graphic == NULL)
-		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Symbols\\Standard.png");		
+		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Symbols\\Standard.bop");		
 	if (graphic)
 		g->DrawImage(graphic, 737,435,75,75);
 
@@ -1079,7 +1079,7 @@ void CIntelMenuView::DrawIntelInfoMenu(Graphics* g)
 	fontFormat.SetLineAlignment(StringAlignmentCenter);
 	fontFormat.SetFormatFlags(StringFormatFlagsNoWrap);
 
-	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\" + pMajor->GetPrefix() + "button_small.png");
+	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\" + pMajor->GetPrefix() + "button_small.bop");
 	Color btnColor;
 	CFontLoader::GetGDIFontColor(pMajor, 1, btnColor);
 	SolidBrush btnBrush(btnColor);
@@ -1118,9 +1118,9 @@ void CIntelMenuView::DrawRaceLogosInIntelView(Graphics* g, BOOLEAN highlightPlay
 	map<CString, CMajor*>* pmMajors = pDoc->GetRaceCtrl()->GetMajors();
 	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
 	{
-		Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Symbols\\" + it->first + ".png");
+		Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Symbols\\" + it->first + ".bop");
 		if (graphic == NULL)
-			graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Symbols\\Standard.png");
+			graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Symbols\\Standard.bop");
 		
 		if (graphic)
 		{
@@ -1764,9 +1764,9 @@ void CIntelMenuView::CreateButtons()
 	// alle Buttons in der View anlegen und Grafiken laden
 	
 	// Buttons in der Systemansicht
-	CString fileN = "Other\\" + sPrefix + "button.png";
-	CString fileI = "Other\\" + sPrefix + "buttoni.png";
-	CString fileA = "Other\\" + sPrefix + "buttona.png";
+	CString fileN = "Other\\" + sPrefix + "button.bop";
+	CString fileI = "Other\\" + sPrefix + "buttoni.bop";
+	CString fileA = "Other\\" + sPrefix + "buttona.bop";
 	// Buttons in der Geheimdienstansicht
 	m_IntelligenceMainButtons.Add(new CMyButton(CPoint(35,690), CSize(160,40), CResourceManager::GetString("BTN_ASSIGNMENT"), fileN, fileI, fileA));
 	m_IntelligenceMainButtons.Add(new CMyButton(CPoint(195,690), CSize(160,40), CResourceManager::GetString("BTN_SPY"), fileN, fileI, fileA));

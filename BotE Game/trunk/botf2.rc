@@ -1,6 +1,6 @@
 // Microsoft Visual C++ generated resource script.
 //
-#include "Source/resource.h"
+#include "resource.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
 /////////////////////////////////////////////////////////////////////////////
@@ -86,20 +86,25 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "&Exit",                       ID_APP_EXIT
     END
-    MENUITEM "Information",                 ID_INFORMATION
-    MENUITEM "Galaxy",                      ID_GALAXIE
-    MENUITEM "System",                      65535
-    MENUITEM "Research",                    65535
-    MENUITEM "Intelligence",                65535
-    MENUITEM "Diplomacy",                   65535
-    MENUITEM "Trade",                       65535
-    MENUITEM "Empire",                      ID_IMPERIUM
-    MENUITEM "Database",                    ID_DATENBANK
-    MENUITEM "Statistics",                  ID_STATISTIK
+    MENUITEM "Information",                 ID_INFORMATION, GRAYED
+    MENUITEM "Galaxy",                      ID_GALAXIE, GRAYED
+    MENUITEM "System",                      ID_SYSTEM, GRAYED
+    MENUITEM "Research",                    ID_RESEARCH, GRAYED
+    MENUITEM "Intelligence",                ID_INTELLIGENCE, GRAYED
+    MENUITEM "Diplomacy",                   ID_DIPLOMACY, GRAYED
+    MENUITEM "Trade",                       ID_TRADE, GRAYED
+    MENUITEM "Empire",                      ID_IMPERIUM, GRAYED
+    MENUITEM "Database",                    ID_DATENBANK, GRAYED
+    MENUITEM "Statistics",                  ID_STATISTIK, GRAYED
     MENUITEM "Chat",                        ID_CHAT
     POPUP "Help"
     BEGIN
         MENUITEM "About BotE...",               ID_APP_ABOUT
+        MENUITEM "Manual...",                   ID_HELP_MANUAL
+        MENUITEM SEPARATOR
+        MENUITEM "Readme...",                   ID_HELP_README
+        MENUITEM SEPARATOR
+        MENUITEM "Credits...",                  ID_HELP_CREDITS
     END
 END
 
@@ -142,7 +147,7 @@ BEGIN
     LTEXT           "Birth of the Empires",IDC_STATIC,42,7,126,18,SS_NOPREFIX
     LTEXT           "Copyright by Sir Pustekuchen (C)2004-2009\nContent by Malle et al. 2007-2009",IDC_STATIC,42,31,152,17
     DEFPUSHBUTTON   "OK",IDOK,154,7,54,10,WS_GROUP
-    LTEXT           "Version 0.7 Development Version 2 181009",IDC_STATIC,42,23,151,8
+    LTEXT           "Version 0.7 Alpha5",IDC_STATIC,42,23,151,8
 END
 
 IDR_MAINFRAME DIALOG  0, 0, 330, 16
@@ -175,8 +180,8 @@ BEGIN
     LTEXT           "Description:",1040,28,197,39,8,NOT WS_VISIBLE
     EDITTEXT        1032,69,194,196,14,ES_AUTOHSCROLL | NOT WS_VISIBLE
     GROUPBOX        "Options",IDC_STATIC,7,143,266,98
-    RTEXT           "www.birth-of-the-empires.de.vu",IDC_STATIC,156,78,119,8
-    RTEXT           "V0.7\nDevelopment Version 2 181009",IDC_STATIC,183,54,92,24
+    RTEXT           "www.birth-of-the-empires.de.vu",IDC_STATIC,156,64,119,8
+    RTEXT           "V0.7 Alpha5",IDC_STATIC,183,54,92,10
     CONTROL         188,IDC_STATIC,"Static",SS_BITMAP,7,0,267,52
 END
 
@@ -277,6 +282,7 @@ BEGIN
     BEGIN
         BLOCK "040704b0"
         BEGIN
+            VALUE "CompanyName", "Sir Pustekuchen"
             VALUE "FileDescription", "Birth of the Empires"
             VALUE "FileVersion", "0, 7"
             VALUE "InternalName", "BotE"

@@ -14,7 +14,7 @@ CEventScreen::CEventScreen(void)
 CEventScreen::CEventScreen(const CString &sPlayersRaceID, const CString &imageName, const CString &headline, const CString &text)
 {
 	m_sRace	   = sPlayersRaceID;
-	m_strImagePath = "Graphics\\Events\\" + imageName + ".jpg";
+	m_strImagePath = "Graphics\\Events\\" + imageName + ".boj";
 	m_strHeadline  = headline;
 	m_strText      = text;
 	m_pBGImage	   = NULL;
@@ -81,9 +81,9 @@ void CEventScreen::Create(void)
 
 	CString sPrefix = pMajor->GetPrefix();
 	
-	CString fileN = "Other\\" + sPrefix + "button.png";
-	CString fileI = "Other\\" + sPrefix + "buttoni.png";
-	CString fileA = "Other\\" + sPrefix + "buttona.png";
+	CString fileN = "Other\\" + sPrefix + "button.bop";
+	CString fileI = "Other\\" + sPrefix + "buttoni.bop";
+	CString fileA = "Other\\" + sPrefix + "buttona.bop";
 	m_Buttons.Add(new CMyButton(CPoint(560,970), CSize(160,40), CResourceManager::GetString("BTN_OKAY"),  fileN, fileI, fileA));	
 }
 

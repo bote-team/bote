@@ -79,6 +79,15 @@
 #define ID_STATISTIK                    32777
 #define ID_CHAT                         32778
 #define ID_GALAXIE                      32779
+#define ID_SYSTEM                       32780
+#define ID_RESEARCH                     32781
+#define ID_INTELLIGENCE                 32782
+#define ID_DIPLOMACY                    32783
+#define ID_TRADE                        32784
+#define ID_HELP_MANUAL                  32785
+#define ID_HELP_CREDITS                 32786
+#define ID_HELP_README                  32787
+#define ID_HELP_CREDITS32788            32788
 
 // Next default values for new objects
 // 
@@ -86,7 +95,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_3D_CONTROLS                     1
 #define _APS_NEXT_RESOURCE_VALUE        189
-#define _APS_NEXT_COMMAND_VALUE         32780
+#define _APS_NEXT_COMMAND_VALUE         32789
 #define _APS_NEXT_CONTROL_VALUE         1039
 #define _APS_NEXT_SYMED_VALUE           101
 #endif

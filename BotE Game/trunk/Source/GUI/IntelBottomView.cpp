@@ -67,7 +67,7 @@ void CIntelBottomView::OnDraw(CDC* dc)
 	color.SetFromCOLORREF(pMajor->GetDesign()->m_clrGalaxySectorText);
 					
 	fontBrush.SetColor(color);
-	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + pMajor->GetPrefix() + "diplomacyV3.jpg");
+	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + pMajor->GetPrefix() + "diplomacyV3.boj");
 	
 	// Grafik zeichnen		
 	if (graphic)

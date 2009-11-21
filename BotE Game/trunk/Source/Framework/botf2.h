@@ -53,4 +53,8 @@ private:
 	afx_msg void UpdateViews(WPARAM, LPARAM);
 	afx_msg void ShowChatDlg(WPARAM, LPARAM);	
 	afx_msg void OnChat();	
+public:
+	afx_msg void OnOpenManual();
+	afx_msg void OnOpenReadme();
+	afx_msg void OnOpenCredits();
 };

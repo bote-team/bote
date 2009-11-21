@@ -106,7 +106,7 @@ void CMenuChooseView::OnDraw(CDC* pDC)
 	// Grafiken zeichnen
 	Bitmap* graphic = NULL;
 	CString prefix = pMajor->GetPrefix();
-	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + prefix + "menuV2.png");
+	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + prefix + "menuV2.bop");
 	if (graphic)
 		g->DrawImage(graphic, 0, 0, 200, 750);
 	
@@ -225,9 +225,9 @@ void CMenuChooseView::OnInitialUpdate()
 	// alle Buttons in der View anlegen (erstmal 7) und Grafiken laden
 	CString sPrefix = pMajor->GetPrefix();
 	
-	CString fileN = "Other\\" + sPrefix + "button.png";
-	CString fileI = "Other\\" + sPrefix + "buttoni.png";
-	CString fileA = "Other\\" + sPrefix + "buttona.png";
+	CString fileN = "Other\\" + sPrefix + "button.bop";
+	CString fileI = "Other\\" + sPrefix + "buttoni.bop";
+	CString fileA = "Other\\" + sPrefix + "buttona.bop";
 	m_Buttons.Add(new CMyButton(CPoint(20,360), CSize(160,40), CResourceManager::GetString("BTN_GALAXY"), fileN, fileI, fileA));
 	m_Buttons.Add(new CMyButton(CPoint(20,405), CSize(160,40), CResourceManager::GetString("BTN_SYSTEM"), fileN, fileI, fileA));
 	m_Buttons.Add(new CMyButton(CPoint(20,450), CSize(160,40), CResourceManager::GetString("BTN_RESEARCH"), fileN, fileI, fileA));
@@ -236,9 +236,9 @@ void CMenuChooseView::OnInitialUpdate()
 	m_Buttons.Add(new CMyButton(CPoint(20,585), CSize(160,40), CResourceManager::GetString("BTN_TRADE"), fileN, fileI, fileA));
 	m_Buttons.Add(new CMyButton(CPoint(20,630), CSize(160,40), CResourceManager::GetString("BTN_EMPIRE"), fileN, fileI, fileA));
 	// Rundenendebutton
-	fileN = "Other\\" + sPrefix + "button_roundend.png";
-	fileI = "Other\\" + sPrefix + "button_roundendi.png";
-	fileA = "Other\\" + sPrefix + "button_roundenda.png";
+	fileN = "Other\\" + sPrefix + "button_roundend.bop";
+	fileI = "Other\\" + sPrefix + "button_roundendi.bop";
+	fileA = "Other\\" + sPrefix + "button_roundenda.bop";
 	m_RoundEnd = new CMyButton(CPoint(20,5), CSize(160,40), CResourceManager::GetString("BTN_ROUNDEND"), fileN, fileI, fileA);
 }
 

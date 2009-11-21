@@ -70,7 +70,7 @@ void CShipDesignBottomView::OnDraw(CDC* dc)
 	Color color;
 	color.SetFromCOLORREF(pMajor->GetDesign()->m_clrGalaxySectorText);
 	fontBrush.SetColor(color);
-	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "researchV3.jpg");
+	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "researchV3.boj");
 	
 	// Grafik zeichnen		
 	if (graphic)

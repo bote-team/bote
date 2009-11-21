@@ -91,7 +91,7 @@ void CEventFirstContact::Draw(Graphics* g, CGraphicPool* graphicPool) const
 	// Bild der Rasse zeichnen
 	Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Races\\" + pContactedRace->GetGraphicFileName());
 	if (graphic == NULL)
-		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Races\\ImageMissing.png");
+		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Races\\ImageMissing.bop");
 	if (graphic)
 		g->DrawImage(graphic, 6, 399, 301, 300);
 	// Name der Rasse zeichnen
@@ -171,7 +171,7 @@ void CEventFirstContact::Draw(Graphics* g, CGraphicPool* graphicPool) const
 					{
 						graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Buildings\\" + pDoc->BuildingInfo[i].GetGraphikFileName());
 						if (graphic == NULL)
-							graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Buildings\\ImageMissing.png");
+							graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Buildings\\ImageMissing.bop");
 						if (graphic)
 							g->DrawImage(graphic, 15 + nCount * 165, 810, 150, 113);
 						s = pDoc->BuildingInfo[i].GetBuildingName();
@@ -183,9 +183,9 @@ void CEventFirstContact::Draw(Graphics* g, CGraphicPool* graphicPool) const
 			if (pDoc->m_ShipInfoArray[i].GetRace() == MINORNUMBER)
 				if (pDoc->m_ShipInfoArray[i].GetOnlyInSystem() == pContactedRace->GetHomesystemName())
 				{
-					graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Ships\\" + pDoc->m_ShipInfoArray[i].GetShipClass() + ".png");
+					graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Ships\\" + pDoc->m_ShipInfoArray[i].GetShipClass() + ".bop");
 					if (graphic == NULL)
-						graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Ships\\ImageMissing.png");
+						graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Ships\\ImageMissing.bop");
 					if (graphic)
 						g->DrawImage(graphic, 15 + nCount * 165, 810, 150, 113);
 					s = pDoc->m_ShipInfoArray[i].GetShipClass() + "-" + CResourceManager::GetString("CLASS") + " (" + pDoc->m_ShipInfoArray[i].GetShipTypeAsString() + ")";

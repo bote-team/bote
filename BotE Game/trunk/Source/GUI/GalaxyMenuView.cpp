@@ -149,7 +149,7 @@ void CGalaxyMenuView::OnDraw(CDC* dc)
 	g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(L"Arial", 8, FontStyleBold), PointF((REAL)pt.x, (REAL)pt.y), &SolidBrush(Color::Aquamarine));
 	s.Format("zoomlevel: %.1lf", m_fZoom);
 	g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(L"Arial", 8, FontStyleBold), PointF((REAL)pt.x, (REAL)pt.y + 10), &SolidBrush(Color::Aquamarine));
-	//s.Format("filename: \"test.jpg\"");
+	//s.Format("filename: \"test.boj\"");
 	//g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(L"Arial", 8, FontStyleBold), PointF((REAL)pt.x, (REAL)pt.y + 20), &SolidBrush(Color::Aquamarine));
 	s.Format("resolution: %d * %d", m_pGalaxyBackground->GetWidth(), m_pGalaxyBackground->GetHeight());
 	g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(L"Arial", 8, FontStyleBold), PointF((REAL)pt.x, (REAL)pt.y + 20), &SolidBrush(Color::Aquamarine));
@@ -531,7 +531,7 @@ void CGalaxyMenuView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
 	CSize size;
 	size.cx = (LONG)(STARMAP_TOTALWIDTH * m_fZoom);
 	size.cy = (LONG)(STARMAP_TOTALHEIGHT * m_fZoom);
-	SetScrollSizes(MM_TEXT, size);	
+	SetScrollSizes(MM_TEXT, size);
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1153,7 +1153,7 @@ void CGalaxyMenuView::GenerateGalaxyMap()
 		
 	CString sAppPath = CIOData::GetInstance()->GetAppPath();
 	CString prefix = pMajor->GetPrefix();
-	CString filePath = sAppPath + "Graphics\\Galaxies\\" + prefix + "galaxy.jpg";
+	CString filePath = sAppPath + "Graphics\\Galaxies\\" + prefix + "galaxy.boj";
 
 	m_pGalaxyBackground = Bitmap::FromFile(filePath.AllocSysString());
 	
@@ -1167,19 +1167,19 @@ void CGalaxyMenuView::GenerateGalaxyMap()
 
 	// Mal die Sterne direkt in die Map setzen, neues Bild erzeugen
 	Bitmap *stars[7] = {NULL, NULL, NULL, NULL, NULL, NULL, NULL};
-	filePath = sAppPath + "Graphics\\MapStars\\star_blue.png";
+	filePath = sAppPath + "Graphics\\MapStars\\star_blue.bop";
 	stars[0] = Bitmap::FromFile(filePath.AllocSysString());
-	filePath = sAppPath + "Graphics\\MapStars\\star_green.png";
+	filePath = sAppPath + "Graphics\\MapStars\\star_green.bop";
 	stars[1] = Bitmap::FromFile(filePath.AllocSysString());
-	filePath = sAppPath + "Graphics\\MapStars\\star_orange.png";
+	filePath = sAppPath + "Graphics\\MapStars\\star_orange.bop";
 	stars[2] = Bitmap::FromFile(filePath.AllocSysString());
-	filePath = sAppPath + "Graphics\\MapStars\\star_red.png";
+	filePath = sAppPath + "Graphics\\MapStars\\star_red.bop";
 	stars[3] = Bitmap::FromFile(filePath.AllocSysString());
-	filePath = sAppPath + "Graphics\\MapStars\\star_violet.png";
+	filePath = sAppPath + "Graphics\\MapStars\\star_violet.bop";
 	stars[4] = Bitmap::FromFile(filePath.AllocSysString());
-	filePath = sAppPath + "Graphics\\MapStars\\star_white.png";
+	filePath = sAppPath + "Graphics\\MapStars\\star_white.bop";
 	stars[5] = Bitmap::FromFile(filePath.AllocSysString());
-	filePath = sAppPath + "Graphics\\MapStars\\star_yellow.png";
+	filePath = sAppPath + "Graphics\\MapStars\\star_yellow.bop";
 	stars[6] = Bitmap::FromFile(filePath.AllocSysString());
 	
 	#ifdef TRACE_GRAPHICLOAD

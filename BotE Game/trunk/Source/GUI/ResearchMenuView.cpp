@@ -103,9 +103,9 @@ void CResearchMenuView::OnInitialUpdate()
 	CreateButtons();
 	// alle Hintergrundgrafiken laden
 	CString sPrefix = pMajor->GetPrefix();	
-	bg_researchmenu	= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "researchmenu.jpg");
-	bg_urmenu		= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "urmenu.jpg");
-	bg_emptyur		= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "emptyur.jpg");
+	bg_researchmenu	= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "researchmenu.boj");
+	bg_urmenu		= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "urmenu.boj");
+	bg_emptyur		= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "emptyur.boj");
 
 	// Zuweisungsbalken in der Forschungsübersicht
 	// Die Koodinaten der Rechtecke für die ganzen Buttons
@@ -199,7 +199,7 @@ void CResearchMenuView::DrawResearchMenue(Graphics* g)
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(10,80,250,25), &fontFormatTop, &fontBrush);
 	s = pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetTechName(0);
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(10,110,250,25), &fontFormatCenter, &fontBrush);
-	Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Research\\biotech.png");
+	Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Research\\biotech.bop");
 	if (graphic)
 		g->DrawImage(graphic, 60,140,150,125);		
 	s.Format("%s: %i%%",CResourceManager::GetString("PROGRESS"),(int)((pMajor->GetEmpire()->GetResearch()->GetBioFP()*100)/(pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetBio(level))));
@@ -214,7 +214,7 @@ void CResearchMenuView::DrawResearchMenue(Graphics* g)
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(10,425,250,25), &fontFormatTop, &fontBrush);
 	s = pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetTechName(4);
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(10,455,250,25), &fontFormatCenter, &fontBrush);
-	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Research\\constructiontech.png");
+	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Research\\constructiontech.bop");
 	if (graphic)
 		g->DrawImage(graphic, 60,480,150,125);
 	s.Format("%s: %i%%",CResourceManager::GetString("PROGRESS"),(int)((pMajor->GetEmpire()->GetResearch()->GetConstructionFP()*100)/(pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetConstruction(level))));
@@ -229,7 +229,7 @@ void CResearchMenuView::DrawResearchMenue(Graphics* g)
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(270,80,250,25), &fontFormatTop, &fontBrush);
 	s = pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetTechName(1);
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(270,110,250,25), &fontFormatCenter, &fontBrush);
-	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Research\\energytech.png");
+	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Research\\energytech.bop");
 	if (graphic)
 		g->DrawImage(graphic, 320,140,150,125);		
 	s.Format("%s: %i%%",CResourceManager::GetString("PROGRESS"),(int)((pMajor->GetEmpire()->GetResearch()->GetEnergyFP()*100)/(pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetEnergy(level))));
@@ -244,7 +244,7 @@ void CResearchMenuView::DrawResearchMenue(Graphics* g)
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(270,425,250,25), &fontFormatTop, &fontBrush);
 	s = pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetTechName(3);
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(270,455,250,25), &fontFormatCenter, &fontBrush);
-	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Research\\propulsiontech.png");
+	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Research\\propulsiontech.bop");
 	if (graphic)
 		g->DrawImage(graphic, 320,480,150,125);
 	s.Format("%s: %i%%",CResourceManager::GetString("PROGRESS"),(int)((pMajor->GetEmpire()->GetResearch()->GetPropulsionFP()*100)/(pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetPropulsion(level))));
@@ -259,7 +259,7 @@ void CResearchMenuView::DrawResearchMenue(Graphics* g)
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(530,80,250,25), &fontFormatTop, &fontBrush);
 	s = pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetTechName(2);
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(530,110,250,25), &fontFormatCenter, &fontBrush);
-	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Research\\computertech.png");
+	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Research\\computertech.bop");
 	if (graphic)
 		g->DrawImage(graphic, 580,140,150,125);		
 	s.Format("%s: %i%%",CResourceManager::GetString("PROGRESS"),(int)((pMajor->GetEmpire()->GetResearch()->GetComputerFP()*100)/(pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetComp(level))));
@@ -274,7 +274,7 @@ void CResearchMenuView::DrawResearchMenue(Graphics* g)
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(530,425,250,25), &fontFormatTop, &fontBrush);
 	s = pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetTechName(5);
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(530,455,250,25), &fontFormatCenter, &fontBrush);
-	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Research\\weapontech.png");
+	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Research\\weapontech.bop");
 	if (graphic)
 		g->DrawImage(graphic, 580,480,150,125);
 	s.Format("%s: %i%%",CResourceManager::GetString("PROGRESS"),(int)((pMajor->GetEmpire()->GetResearch()->GetWeaponFP()*100)/(pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetWeapon(level))));
@@ -545,7 +545,7 @@ void CResearchMenuView::DrawUniqueResearchMenue(Graphics* g)
 		s = pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetCurrentResearchComplex()->GetComplexName();
 		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), TechRect, &fontFormatTop, &fontBrush);
 		
-		Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Research\\specialtech.png");
+		Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Research\\specialtech.bop");
 		if (graphic)
 			g->DrawImage(graphic, 45, 100, 180, 150);
 		
@@ -653,7 +653,7 @@ void CResearchMenuView::DrawUniqueResearchMenue(Graphics* g)
 	// Nun die Buttons zur Auswahl einer Uniqueforschung
 	if (pMajor->GetEmpire()->GetResearch()->GetUniqueReady() == FALSE && pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetChoiceTaken() == FALSE)
 	{
-		CString sFile = pMajor->GetPrefix() + "button.png";
+		CString sFile = pMajor->GetPrefix() + "button.bop";
 		Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\" + sFile);
 		if (graphic)
 		{
@@ -946,9 +946,9 @@ void CResearchMenuView::CreateButtons()
 	// alle Buttons in der View anlegen und Grafiken laden
 	CString sPrefix = pMajor->GetPrefix();
 	// Buttons in der Systemansicht
-	CString fileN = "Other\\" + sPrefix + "button.png";
-	CString fileI = "Other\\" + sPrefix + "buttoni.png";
-	CString fileA = "Other\\" + sPrefix + "buttona.png";
+	CString fileN = "Other\\" + sPrefix + "button.bop";
+	CString fileI = "Other\\" + sPrefix + "buttoni.bop";
+	CString fileA = "Other\\" + sPrefix + "buttona.bop";
 	// Buttons in den Forschungsansichten
 	m_ResearchMainButtons.Add(new CMyButton(CPoint(867,450) , CSize(160,40), CResourceManager::GetString("BTN_NORMAL"), fileN, fileI, fileA));
 	m_ResearchMainButtons.Add(new CMyButton(CPoint(867,500) , CSize(160,40), CResourceManager::GetString("BTN_SPECIAL"), fileN, fileI, fileA));

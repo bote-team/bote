@@ -44,7 +44,7 @@ public:
 	* Diese Funktion l‰dt die Schilde entsprechend ihrem Schildtyp wieder auf. Der Multiplikator gibt an, mit
 	* welcher Zahl der Wert der Aufladung multiplitiert werden soll. Standardm‰ﬂig ist hat dieser den Wert EINS.
 	*/
-	void RechargeShields(SBYTE multi = 1);
+	void RechargeShields(int nMulti = 1);
 
 private:
 	BYTE m_iShieldType;					// Typ des Schildes

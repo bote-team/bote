@@ -109,7 +109,7 @@ void CFleetMenuView::OnInitialUpdate()
 	// alle Hintergrundgrafiken laden
 	CString sPrefix = pMajor->GetPrefix();
 			
-	bg_fleetmenu	= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "fleetmenu.jpg");
+	bg_fleetmenu	= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "fleetmenu.boj");
 	
 	// Flottenansicht
 	m_iFleetPage = 1;
@@ -223,10 +223,10 @@ void CFleetMenuView::DrawFleetMenue(Graphics* g)
 		// Erstmal das Schiff anzeigen, welches die Flotte beinhaltet (nur auf erster Seite!)
 		if (m_iFleetPage == 1)
 		{
-			s.Format("Ships\\%s.png", pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfFleetShip()).GetShipClass());
+			s.Format("Ships\\%s.bop", pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfFleetShip()).GetShipClass());
 			Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic(s);
 			if (graphic == NULL)
-				graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Ships\\ImageMissing.png");
+				graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Ships\\ImageMissing.bop");
 			if (graphic)
 			{
 				g->DrawImage(graphic, 250*column+37,row*65+90,65,49);
@@ -236,12 +236,12 @@ void CFleetMenuView::DrawFleetMenue(Graphics* g)
 			int bmHeight = 0;
 			switch (pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfFleetShip()).GetExpLevel())
 			{
-			case 1: graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\xp_beginner.png");	bmHeight = 8;	break;
-			case 2: graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\xp_normal.png");	bmHeight = 16;	break;
-			case 3: graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\xp_profi.png");		bmHeight = 24;	break;
-			case 4: graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\xp_veteran.png");	bmHeight = 32;	break;
-			case 5: graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\xp_elite.png");		bmHeight = 40;	break;
-			case 6: graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\xp_legend.png");	bmHeight = 48;	break;
+			case 1: graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\xp_beginner.bop");	bmHeight = 8;	break;
+			case 2: graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\xp_normal.bop");	bmHeight = 16;	break;
+			case 3: graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\xp_profi.bop");		bmHeight = 24;	break;
+			case 4: graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\xp_veteran.bop");	bmHeight = 32;	break;
+			case 5: graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\xp_elite.bop");		bmHeight = 40;	break;
+			case 6: graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\xp_legend.bop");	bmHeight = 48;	break;
 			default: graphic = NULL;
 			}
 			if (graphic)
@@ -307,10 +307,10 @@ void CFleetMenuView::DrawFleetMenue(Graphics* g)
 					column = 1;
 				if (counter < m_iFleetPage*18 && counter >= (m_iFleetPage-1)*18)
 				{
-					s.Format("Ships\\%s.png", pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfFleetShip()).GetFleet()->GetShipFromFleet(i).GetShipClass());
+					s.Format("Ships\\%s.bop", pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfFleetShip()).GetFleet()->GetShipFromFleet(i).GetShipClass());
 					Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic(s);
 					if (graphic == NULL)
-						graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Ships\\ImageMissing.png");
+						graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Ships\\ImageMissing.bop");
 					if (graphic)
 					{
 						g->DrawImage(graphic, 250*column+37,row*65+90,65,49);
@@ -320,12 +320,12 @@ void CFleetMenuView::DrawFleetMenue(Graphics* g)
 					int bmHeight = 0;
 					switch (pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfFleetShip()).GetFleet()->GetShipFromFleet(i).GetExpLevel())
 					{
-					case 1: graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\xp_beginner.png");	bmHeight = 8;	break;
-					case 2: graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\xp_normal.png");	bmHeight = 16;	break;
-					case 3: graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\xp_profi.png");		bmHeight = 24;	break;
-					case 4: graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\xp_veteran.png");	bmHeight = 32;	break;
-					case 5: graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\xp_elite.png");		bmHeight = 40;	break;
-					case 6: graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\xp_legend.png");	bmHeight = 48;	break;
+					case 1: graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\xp_beginner.bop");	bmHeight = 8;	break;
+					case 2: graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\xp_normal.bop");	bmHeight = 16;	break;
+					case 3: graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\xp_profi.bop");		bmHeight = 24;	break;
+					case 4: graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\xp_veteran.bop");	bmHeight = 32;	break;
+					case 5: graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\xp_elite.bop");		bmHeight = 40;	break;
+					case 6: graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\xp_legend.bop");	bmHeight = 48;	break;
 					default: graphic = NULL;
 					}
 					if (graphic)
@@ -380,7 +380,7 @@ void CFleetMenuView::DrawFleetMenue(Graphics* g)
 			
 			
 			// Die Buttons für vor und zurück darstellen, wenn wir mehr als 9 Schiffe in dem Sektor sehen
-			Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\" + pMajor->GetPrefix() + "button_small.png");
+			Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\" + pMajor->GetPrefix() + "button_small.bop");
 			Color btnColor;
 			CFontLoader::GetGDIFontColor(pMajor, 1, btnColor);
 			SolidBrush btnBrush(btnColor);

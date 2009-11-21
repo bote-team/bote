@@ -144,11 +144,11 @@ void CSystemMenuView::OnInitialUpdate()
 		
 	CString sPrefix = pMajor->GetPrefix();
 		
-	bg_buildmenu	= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "buildmenu.jpg");
-	bg_workmenu		= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "workmenu.jpg");
-	bg_overviewmenu = pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "overviewmenu.jpg");
-	bg_energymenu	= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "energymenu.jpg");
-	bg_systrademenu	= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "systrademenu.jpg");
+	bg_buildmenu	= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "buildmenu.boj");
+	bg_workmenu		= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "workmenu.boj");
+	bg_overviewmenu = pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "overviewmenu.boj");
+	bg_energymenu	= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "energymenu.boj");
+	bg_systrademenu	= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "systrademenu.boj");
 	
 	
 	// Baumenürechtecke
@@ -513,16 +513,16 @@ void CSystemMenuView::DrawBuildMenue(Graphics* g)
 	{
 		switch (i)
 		{
-		case FOOD_WORKER:		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\foodSmall.png"); break;
-		case INDUSTRY_WORKER:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\industrySmall.png"); break;
-		case ENERGY_WORKER:		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\energySmall.png"); break;
-		case SECURITY_WORKER:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\securitySmall.png"); break;
-		case RESEARCH_WORKER:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\researchSmall.png"); break;
-		case TITAN_WORKER:		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\titanSmall.png"); break;
-		case DEUTERIUM_WORKER:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\deuteriumSmall.png"); break;
-		case DURANIUM_WORKER:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\duraniumSmall.png"); break;
-		case CRYSTAL_WORKER:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\crystalSmall.png"); break;
-		case IRIDIUM_WORKER:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\iridiumSmall.png"); break;
+		case FOOD_WORKER:		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\foodSmall.bop"); break;
+		case INDUSTRY_WORKER:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\industrySmall.bop"); break;
+		case ENERGY_WORKER:		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\energySmall.bop"); break;
+		case SECURITY_WORKER:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\securitySmall.bop"); break;
+		case RESEARCH_WORKER:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\researchSmall.bop"); break;
+		case TITAN_WORKER:		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\titanSmall.bop"); break;
+		case DEUTERIUM_WORKER:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\deuteriumSmall.bop"); break;
+		case DURANIUM_WORKER:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\duraniumSmall.bop"); break;
+		case CRYSTAL_WORKER:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\crystalSmall.bop"); break;
+		case IRIDIUM_WORKER:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\iridiumSmall.bop"); break;
 		}
 		if (graphic)
 		{
@@ -666,19 +666,19 @@ void CSystemMenuView::DrawBuildMenue(Graphics* g)
 				if (m_iWhichSubMenu == 0)		// sind im Gebäudeuntermenü
 					file.Format("Buildings\\%s",pDoc->GetBuildingInfo(RunningNumber).GetGraphikFileName());
 				else if (m_iWhichSubMenu == 1 && pDoc->m_System[p.x][p.y].GetBuildableShips()->GetSize() > 0)	// sind im Schiffsuntermenü 
-					file.Format("Ships\\%s.png",pDoc->m_ShipInfoArray.GetAt(RunningNumber-10000).GetShipClass());
+					file.Format("Ships\\%s.bop",pDoc->m_ShipInfoArray.GetAt(RunningNumber-10000).GetShipClass());
 				else if (m_iWhichSubMenu == 2 && pDoc->m_System[p.x][p.y].GetBuildableTroops()->GetSize() > 0)	// sind im Kasernenuntermenü
-					file.Format("Troops\\%s.png",pDoc->m_TroopInfo.GetAt(RunningNumber-20000).GetName());
+					file.Format("Troops\\%s.bop",pDoc->m_TroopInfo.GetAt(RunningNumber-20000).GetName());
 				graphic = NULL;
 				graphic = pDoc->GetGraphicPool()->GetGDIGraphic(file);
 				if (graphic == NULL)
 				{
 					if (m_iWhichSubMenu == 0)		// sind im Gebäudeuntermenü
-						graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Buildings\\ImageMissing.png");
+						graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Buildings\\ImageMissing.bop");
 					else if (m_iWhichSubMenu == 1 && pDoc->m_System[p.x][p.y].GetBuildableShips()->GetSize() > 0)	// sind im Schiffsuntermenü 
-						graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Ships\\ImageMissing.png");
+						graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Ships\\ImageMissing.bop");
 					else if (m_iWhichSubMenu == 2 && pDoc->m_System[p.x][p.y].GetBuildableTroops()->GetSize() > 0)	// sind im Kasernenuntermenü
-						graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Troops\\ImageMissing.png");
+						graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Troops\\ImageMissing.bop");
 				}
 					
 				if (graphic)
@@ -690,7 +690,7 @@ void CSystemMenuView::DrawBuildMenue(Graphics* g)
 	}
 
 	graphic = NULL;
-	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\" + pMajor->GetPrefix() + "button_small.png");
+	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\" + pMajor->GetPrefix() + "button_small.bop");
 	Color btnColor;
 	CFontLoader::GetGDIFontColor(pMajor, 1, btnColor);
 	SolidBrush btnBrush(btnColor);
@@ -971,7 +971,7 @@ void CSystemMenuView::DrawWorkersMenue(Graphics* g)
 				file.Format("Buildings\\%s", pDoc->GetBuildingInfo(tmp).GetGraphikFileName());
 				Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic(file);
 				if (graphic == NULL)
-					graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Buildings\\ImageMissing.png");
+					graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Buildings\\ImageMissing.bop");
 				if (graphic)
 				{
 					g->DrawImage(graphic, 50, i * 95 + 100, 100, 75);
@@ -1012,7 +1012,7 @@ void CSystemMenuView::DrawWorkersMenue(Graphics* g)
 		}
 
 		// Ressourcenbutton zeichnen
-		Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\" + pMajor->GetPrefix() + "button_small.png");
+		Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\" + pMajor->GetPrefix() + "button_small.bop");
 		Color btnColor;
 		CFontLoader::GetGDIFontColor(pMajor, 1, btnColor);
 		SolidBrush btnBrush(btnColor);		
@@ -1094,7 +1094,7 @@ void CSystemMenuView::DrawWorkersMenue(Graphics* g)
 				file.Format("Buildings\\%s", pDoc->GetBuildingInfo(tmp).GetGraphikFileName());
 				Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic(file);
 				if (graphic == NULL)
-					graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Buildings\\ImageMissing.png");
+					graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Buildings\\ImageMissing.bop");
 				if (graphic)
 				{
 					g->DrawImage(graphic, 50, i * 95 + 100, 100, 75);
@@ -1135,7 +1135,7 @@ void CSystemMenuView::DrawWorkersMenue(Graphics* g)
 		}
 
 		// Anzeige des Umschaltbuttons und der Erklärung
-		Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\" + pMajor->GetPrefix() + "button_small.png");
+		Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\" + pMajor->GetPrefix() + "button_small.bop");
 		Color btnColor;
 		CFontLoader::GetGDIFontColor(pMajor, 1, btnColor);
 		SolidBrush btnBrush(btnColor);		
@@ -1308,7 +1308,7 @@ void CSystemMenuView::DrawBuildingsOverviewMenue(Graphics* g)
 			file.Format("Buildings\\%s", pDoc->GetBuildingInfo(m_BuildingOverview.GetAt(i).runningNumber).GetGraphikFileName());
 			Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic(file);
 			if (graphic == NULL)
-					graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Buildings\\ImageMissing.png");
+					graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Buildings\\ImageMissing.bop");
 			if (graphic)
 				g->DrawImage(graphic, r.left+5, r.top+25, 130, 97);
 			
@@ -1495,7 +1495,7 @@ void CSystemMenuView::DrawEnergyMenue(Gdiplus::Graphics *g)
 			fileName.Format("Buildings\\%s", buildingInfo->GetGraphikFileName());
 			Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic(fileName);
 			if (graphic == NULL)
-				graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Buildings\\ImageMissing.png");
+				graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Buildings\\ImageMissing.bop");
 			if (graphic)
 			{
 				g->DrawImage(graphic, r.left + 5, r.top + 32, 150, 113);				
@@ -1704,7 +1704,7 @@ void CSystemMenuView::DrawSystemTradeMenue(Graphics* g)
 	g->DrawString(CResourceManager::GetString("MULTIPLIER").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(538,600,182,30), &fontFormat, &fontBrush);
 
 	// kleine Buttons zeichnen
-	Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\" + pMajor->GetPrefix() + "button_small.png");
+	Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\" + pMajor->GetPrefix() + "button_small.bop");
 	Color btnColor;
 	CFontLoader::GetGDIFontColor(pMajor, 1, btnColor);
 	SolidBrush btnBrush(btnColor);
@@ -1858,13 +1858,13 @@ void CSystemMenuView::DrawBuildList(Graphics* g)
 			else if (pDoc->GetSystem(p.x,p.y).GetAssemblyList()->GetAssemblyListEntry(i) < 20000)
 			{
 				m_strAssemblyListEntry.Format("%s-%s",pDoc->m_ShipInfoArray.GetAt(pDoc->GetSystem(p.x,p.y).GetAssemblyList()->GetAssemblyListEntry(i)-10000).GetShipClass(), CResourceManager::GetString("CLASS"));
-				sFile = "Ships//" + pDoc->m_ShipInfoArray.GetAt(pDoc->GetSystem(p.x,p.y).GetAssemblyList()->GetAssemblyListEntry(i)-10000).GetShipClass() + ".png";
+				sFile = "Ships//" + pDoc->m_ShipInfoArray.GetAt(pDoc->GetSystem(p.x,p.y).GetAssemblyList()->GetAssemblyListEntry(i)-10000).GetShipClass() + ".bop";
 			}
 			// ist es eine Truppe
 			else
 			{
 				m_strAssemblyListEntry = pDoc->m_TroopInfo.GetAt(pDoc->GetSystem(p.x,p.y).GetAssemblyList()->GetAssemblyListEntry(i)-20000).GetName();
-				sFile = "Troops//" + pDoc->m_TroopInfo.GetAt(pDoc->GetSystem(p.x,p.y).GetAssemblyList()->GetAssemblyListEntry(i)-20000).GetName() + ".png";
+				sFile = "Troops//" + pDoc->m_TroopInfo.GetAt(pDoc->GetSystem(p.x,p.y).GetAssemblyList()->GetAssemblyListEntry(i)-20000).GetName() + ".bop";
 			}
 			AssemblyList[i].rect.SetRect(760,y,1000,y+24);
 			AssemblyList[i].runningNumber = pDoc->GetSystem(p.x,p.y).GetAssemblyList()->GetAssemblyListEntry(i);
@@ -2119,43 +2119,43 @@ void CSystemMenuView::DrawSystemProduction(Graphics* g)
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), rect, &fontFormat, &fontBrush);
 	
 	// kleine Bilder von den Rohstoffen zeichnen
-	Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\foodSmall.png");
+	Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\foodSmall.bop");
 	if (graphic)
 		g->DrawImage(graphic, 740, 55, 20, 16);
-	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\industrySmall.png");
+	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\industrySmall.bop");
 	if (graphic)
 		g->DrawImage(graphic, 740, 80, 20, 16);
-	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\energySmall.png");
+	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\energySmall.bop");
 	if (graphic)
 		g->DrawImage(graphic, 740, 105, 20, 16);
-	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\securitySmall.png");
+	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\securitySmall.bop");
 	if (graphic)
 		g->DrawImage(graphic, 740, 130, 20, 16);
-	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\researchSmall.png");
+	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\researchSmall.bop");
 	if (graphic)
 		g->DrawImage(graphic, 740, 155, 20, 16);
-	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\titanSmall.png");
+	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\titanSmall.bop");
 	if (graphic)
 		g->DrawImage(graphic, 740, 180, 20, 16);
-	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\deuteriumSmall.png");
+	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\deuteriumSmall.bop");
 	if (graphic)
 		g->DrawImage(graphic, 740, 205, 20, 16);
-	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\duraniumSmall.png");
+	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\duraniumSmall.bop");
 	if (graphic)
 		g->DrawImage(graphic, 740, 230, 20, 16);
-	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\crystalSmall.png");
+	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\crystalSmall.bop");
 	if (graphic)
 		g->DrawImage(graphic, 740, 255, 20, 16);
-	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\iridiumSmall.png");
+	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\iridiumSmall.bop");
 	if (graphic)
 		g->DrawImage(graphic, 740, 280, 20, 16);
-	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\Dilithium.png");
+	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\Deritium.bop");
 	if (graphic)
 		g->DrawImage(graphic, 740, 305, 20, 16);
-	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\moralSmall.png");
+	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\moralSmall.bop");
 	if (graphic)
 		g->DrawImage(graphic, 740, 330, 20, 16);
-	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\latinumSmall.png");
+	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\latinumSmall.bop");
 	if (graphic)
 		g->DrawImage(graphic, 740, 355, 20, 16);
 }
@@ -3925,9 +3925,9 @@ void CSystemMenuView::CreateButtons()
 	CString sPrefix = pMajor->GetPrefix();
 	// alle Buttons in der View anlegen und Grafiken laden	
 	// Buttons in der Systemansicht
-	CString fileN = "Other\\" + sPrefix + "button.png";
-	CString fileI = "Other\\" + sPrefix + "buttoni.png";
-	CString fileA = "Other\\" + sPrefix + "buttona.png";
+	CString fileN = "Other\\" + sPrefix + "button.bop";
+	CString fileI = "Other\\" + sPrefix + "buttoni.bop";
+	CString fileA = "Other\\" + sPrefix + "buttona.bop";
 	m_BuildMenueMainButtons.Add(new CMyButton(CPoint(10,690) , CSize(160,40), CResourceManager::GetString("BTN_BUILDMENUE"), fileN, fileI, fileA));
 	m_BuildMenueMainButtons.Add(new CMyButton(CPoint(180,690), CSize(160,40), CResourceManager::GetString("BTN_WORKERSMENUE"), fileN, fileI, fileA));
 	m_BuildMenueMainButtons.Add(new CMyButton(CPoint(350,690), CSize(160,40), CResourceManager::GetString("BTN_ENERGYMENUE"), fileN, fileI, fileA));
@@ -3935,22 +3935,22 @@ void CSystemMenuView::CreateButtons()
 	m_BuildMenueMainButtons.Add(new CMyButton(CPoint(690,690), CSize(160,40), CResourceManager::GetString("BTN_TRADEMENUE"), fileN, fileI, fileA));
 
 	// Zuweisungsbuttons im Arbeitermenü
-	fileN = "Other\\" + sPrefix + "buttonminus.png";
-	fileA = "Other\\" + sPrefix + "buttonminusa.png";
+	fileN = "Other\\" + sPrefix + "buttonminus.bop";
+	fileA = "Other\\" + sPrefix + "buttonminusa.bop";
 	for (int i = TITAN; i <= IRIDIUM; i++)
 		m_WorkerButtons.Add(new CMyButton(CPoint(170,115+i*95) , CSize(40,40), "", fileN, fileN, fileA));
-	fileN = "Other\\" + sPrefix + "buttonplus.png";
-	fileA = "Other\\" + sPrefix + "buttonplusa.png";
+	fileN = "Other\\" + sPrefix + "buttonplus.bop";
+	fileA = "Other\\" + sPrefix + "buttonplusa.bop";
 	for (int i = TITAN; i <= IRIDIUM; i++)
 		m_WorkerButtons.Add(new CMyButton(CPoint(630,115+i*95) , CSize(40,40), "", fileN, fileN, fileA));
 
 	// Zuweisungsbuttons im Systemhandelsmenü
-	fileN = "Other\\" + sPrefix + "buttonminus.png";
-	fileA = "Other\\" + sPrefix + "buttonminusa.png";
+	fileN = "Other\\" + sPrefix + "buttonminus.bop";
+	fileA = "Other\\" + sPrefix + "buttonminusa.bop";
 	for (int i = TITAN; i <= IRIDIUM; i++)
 		m_SystemTradeButtons.Add(new CMyButton(CPoint(608,235+i*60) , CSize(30,30), "", fileN, fileN, fileA));
-	fileN = "Other\\" + sPrefix + "buttonplus.png";
-	fileA = "Other\\" + sPrefix + "buttonplusa.png";
+	fileN = "Other\\" + sPrefix + "buttonplus.bop";
+	fileA = "Other\\" + sPrefix + "buttonplusa.bop";
 	for (int i = TITAN; i <= IRIDIUM; i++)
 		m_SystemTradeButtons.Add(new CMyButton(CPoint(975,235+i*60) , CSize(30,30), "", fileN, fileN, fileA));
 }

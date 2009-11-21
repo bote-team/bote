@@ -1128,12 +1128,12 @@ void CSector::DrawShipSymbolInSector(Graphics *g, CBotf2Doc* pDoc, CMajor* pPlay
 		if (pPlayer->GetRaceID() == it->first && this->GetOwnerOfShip(it->first) == TRUE
 			|| this->GetOwnerOfShip(it->first) == TRUE && this->GetNeededScanPower(it->first) < this->GetScanPower(pPlayer->GetRaceID()))
 		{
-			sFilePath = sAppPath + "Graphics\\Symbols\\" + it->first + ".png";
+			sFilePath = sAppPath + "Graphics\\Symbols\\" + it->first + ".bop";
 			Bitmap* ship = Bitmap::FromFile(sFilePath.AllocSysString());
 			// konnte die Grafik nicht geladen werden, dann wird ein Standardsymbol geladen
 			if (!ship || ship->GetLastStatus() != Ok)
 			{
-				sFilePath = sAppPath + "Graphics\\Symbols\\Standard.png";
+				sFilePath = sAppPath + "Graphics\\Symbols\\Standard.bop";
 				ship = Bitmap::FromFile(sFilePath.AllocSysString());
 			}
 			g->DrawImage(ship, pt.x + 45 - nCount * 12, pt.y, 35, 35);
@@ -1145,12 +1145,12 @@ void CSector::DrawShipSymbolInSector(Graphics *g, CBotf2Doc* pDoc, CMajor* pPlay
 		if ((pPlayer->GetRaceID() == it->first || this->GetScanPower(pPlayer->GetRaceID()) > 0) &&
 			(this->GetIsStationBuilding(it->first) == TRUE || this->GetOutpost(it->first) == TRUE || this->GetStarbase(it->first) == TRUE))
 		{
-			sFilePath = sAppPath + "Graphics\\Symbols\\" + it->first + ".png";
+			sFilePath = sAppPath + "Graphics\\Symbols\\" + it->first + ".bop";
 			Bitmap* ship = Bitmap::FromFile(sFilePath.AllocSysString());
 			// konnte die Grafik nicht geladen werden, dann wird ein Standardsymbol geladen
 			if (!ship || ship->GetLastStatus() != Ok)
 			{
-				sFilePath = sAppPath + "Graphics\\Symbols\\Standard.png";
+				sFilePath = sAppPath + "Graphics\\Symbols\\Standard.bop";
 				ship = Bitmap::FromFile(sFilePath.AllocSysString());
 			}
 			g->DrawImage(ship, pt.x, pt.y + 45, 35, 35);

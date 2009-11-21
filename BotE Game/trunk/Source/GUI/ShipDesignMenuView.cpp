@@ -98,7 +98,7 @@ void CShipDesignMenuView::OnInitialUpdate()
 	CreateButtons();
 
 	CString sPrefix = pMajor->GetPrefix();
-	bg_designmenu	= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "designmenu.jpg");
+	bg_designmenu	= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "designmenu.boj");
 		
 	// Schiffsdesignansicht
 	m_iClickedOnShip = -1;
@@ -247,10 +247,10 @@ void CShipDesignMenuView::DrawShipDesignMenue(Graphics* g)
 	{
 		// Bild des Schiffes zeichnen
 		CString s;
-		s.Format("Ships\\%s.png",pDoc->m_ShipInfoArray.GetAt(ShipNumber).GetShipClass());
+		s.Format("Ships\\%s.bop",pDoc->m_ShipInfoArray.GetAt(ShipNumber).GetShipClass());
 		Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic(s);
 		if (graphic == NULL)
-			graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Ships\\ImageMissing.png");
+			graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Ships\\ImageMissing.bop");
 		if (graphic)
 		{
 			g->DrawImage(graphic, 388, 90, 200, 150);			
@@ -281,7 +281,7 @@ void CShipDesignMenuView::DrawShipDesignMenue(Graphics* g)
 		// Schiff des Imperiums finden, welches DIESE Beamwaffe mit einem höheren Typ oder einem niedrigeren Typ besitzt
 		
 		graphic = NULL;
-		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\" + pMajor->GetPrefix() + "button_small.png");
+		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\" + pMajor->GetPrefix() + "button_small.bop");
 		Color btnColor;
 		CFontLoader::GetGDIFontColor(pMajor, 1, btnColor);
 		SolidBrush btnBrush(btnColor);
@@ -324,13 +324,13 @@ void CShipDesignMenuView::DrawShipDesignMenue(Graphics* g)
 		if (pDoc->m_ShipInfoArray.GetAt(ShipNumber).GetTorpedoWeapons()->GetSize() > m_iTorpedoWeaponNumber)
 		{
 			// den aktuellen Torpedotyp holen
-			USHORT currentTorpType = pDoc->m_ShipInfoArray.GetAt(ShipNumber).GetTorpedoWeapons()->GetAt(m_iTorpedoWeaponNumber).GetTorpedoType();
+			BYTE currentTorpType = pDoc->m_ShipInfoArray.GetAt(ShipNumber).GetTorpedoWeapons()->GetAt(m_iTorpedoWeaponNumber).GetTorpedoType();
 			// Torpedoname zeichnen
 			fontBrush.SetColor(normalColor);
 			s.Format("%s (%d°)",pDoc->m_ShipInfoArray.GetAt(ShipNumber).GetTorpedoWeapons()->GetAt(m_iTorpedoWeaponNumber).GetTupeName(), pDoc->m_ShipInfoArray.GetAt(ShipNumber).GetTorpedoWeapons()->GetAt(m_iTorpedoWeaponNumber).GetFirearc()->GetAngle());
 			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(775,170,300,25), &fontFormat, &fontBrush);
 			
-			s.Format("%s (%d)", CTorpedoInfo::GetName(currentTorpType), CTorpedoInfo::GetPower(currentTorpType));
+			s.Format("%s (%d)", CTorpedoInfo::GetName(currentTorpType), CTorpedoInfo::GetPower(currentTorpType));			
 			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(775,195,300,25), &fontFormat, &fontBrush);
 			
 			if (graphic)

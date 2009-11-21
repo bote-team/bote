@@ -130,9 +130,9 @@ void CEmpireMenuView::OnInitialUpdate()
 
 	CString sPrefix = pMajor->GetPrefix();
 	
-	bg_newsovmenu	= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "newsovmenu.jpg");
-	bg_systemovmenu	= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "systemovmenu.jpg");
-	bg_shipovmenu	= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "shipovmenu.jpg");
+	bg_newsovmenu	= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "newsovmenu.boj");
+	bg_systemovmenu	= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "systemovmenu.boj");
+	bg_shipovmenu	= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "shipovmenu.boj");
 
 	m_iSubMenu = 0;
 	m_iWhichNewsButtonIsPressed = NO_TYPE;
@@ -1391,9 +1391,9 @@ void CEmpireMenuView::CreateButtons()
 	CString sPrefix = pMajor->GetPrefix();
 	// alle Buttons in der View anlegen und Grafiken laden
 	// Buttons in der Systemansicht
-	CString fileN = "Other\\" + sPrefix + "button.png";
-	CString fileI = "Other\\" + sPrefix + "buttoni.png";
-	CString fileA = "Other\\" + sPrefix + "buttona.png";
+	CString fileN = "Other\\" + sPrefix + "button.bop";
+	CString fileI = "Other\\" + sPrefix + "buttoni.bop";
+	CString fileA = "Other\\" + sPrefix + "buttona.bop";
 	// Buttons in der Imperiumansicht
 	m_EmpireNewsFilterButtons.Add(new CMyButton(CPoint(57,70), CSize(160,40), CResourceManager::GetString("BTN_ALL"),  fileN, fileI, fileA));
 	m_EmpireNewsFilterButtons.Add(new CMyButton(CPoint(217,70), CSize(160,40), CResourceManager::GetString("BTN_ECONOMY"),  fileN, fileI, fileA));

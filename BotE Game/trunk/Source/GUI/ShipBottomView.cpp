@@ -120,7 +120,7 @@ void CShipBottomView::OnDraw(CDC* dc)
 	// Galaxie im Hintergrund zeichnen
 	CString sPrefix = pMajor->GetPrefix();
 	
-	Bitmap* background = pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "galaxyV3.png");
+	Bitmap* background = pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "galaxyV3.bop");
 	if (background)
 		g.DrawImage(background, 0, 0, 1075, 249);
 
@@ -160,21 +160,21 @@ void CShipBottomView::OnDraw(CDC* dc)
 					if (pDoc->m_ShipArray.GetAt(i).GetFleet() == 0 || (pDoc->m_ShipArray.GetAt(i).GetFleet() != 0 && pDoc->m_ShipArray.GetAt(i).GetFleet()->GetFleetSize() == 0))
 					{
 						graphic = NULL;
-						s.Format("Ships\\%s.png", pDoc->m_ShipArray.GetAt(i).GetShipClass());
+						s.Format("Ships\\%s.bop", pDoc->m_ShipArray.GetAt(i).GetShipClass());
 						graphic = pDoc->GetGraphicPool()->GetGDIGraphic(s);
 						if (graphic == NULL)
-							graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Ships\\ImageMissing.png");
+							graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Ships\\ImageMissing.bop");
 						if (graphic)
 							g.DrawImage(graphic, 250*column+37, row*65+30, 65, 49);							
 						// Erfahrungsstufen des Schiffes anzeigen
 						switch (pDoc->m_ShipArray.GetAt(i).GetExpLevel())
 						{
-						case 1: graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\xp_beginner.png");	break;
-						case 2: graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\xp_normal.png");	break;
-						case 3: graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\xp_profi.png");		break;
-						case 4: graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\xp_veteran.png");	break;
-						case 5: graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\xp_elite.png");		break;
-						case 6: graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\xp_legend.png");	break;
+						case 1: graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\xp_beginner.bop");	break;
+						case 2: graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\xp_normal.bop");	break;
+						case 3: graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\xp_profi.bop");		break;
+						case 4: graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\xp_veteran.bop");	break;
+						case 5: graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\xp_elite.bop");		break;
+						case 6: graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\xp_legend.bop");	break;
 						default: graphic = NULL;
 						}
 						if (graphic)
@@ -223,7 +223,7 @@ void CShipBottomView::OnDraw(CDC* dc)
 							map<CString, CMajor*>* pmMajors = pDoc->GetRaceCtrl()->GetMajors();
 							for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
 								if (pDoc->m_Sector[pDoc->GetKO().x][pDoc->GetKO().y].GetOutpost(it->first) || pDoc->m_Sector[pDoc->GetKO().x][pDoc->GetKO().y].GetStarbase(it->first))
-									s.Format("Other\\" + it->second->GetPrefix() + "Starbase.png");
+									s.Format("Other\\" + it->second->GetPrefix() + "Starbase.bop");
 							graphic = NULL;
 							graphic = pDoc->GetGraphicPool()->GetGDIGraphic(s);
 							if (graphic)
@@ -235,14 +235,14 @@ void CShipBottomView::OnDraw(CDC* dc)
 					else
 					{
 						if (pDoc->m_ShipArray.GetAt(i).GetFleet()->GetFleetShipType(&pDoc->m_ShipArray.GetAt(i)) != -1)
-							s.Format("Ships\\%s.png",pDoc->m_ShipArray.GetAt(i).GetShipClass());
+							s.Format("Ships\\%s.bop",pDoc->m_ShipArray.GetAt(i).GetShipClass());
 						else
 							// Lade leeres Bild
-							s.Format("Ships\\%s.png",pDoc->m_ShipArray.GetAt(i).GetShipClass());
+							s.Format("Ships\\%s.bop",pDoc->m_ShipArray.GetAt(i).GetShipClass());
 						graphic = NULL;
 						graphic = pDoc->GetGraphicPool()->GetGDIGraphic(s);
 						if (graphic == NULL)
-							graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Ships\\ImageMissing.png");
+							graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Ships\\ImageMissing.bop");
 						if (graphic)
 							g.DrawImage(graphic, 250*column+37, row*65+30, 65, 49);
 														
@@ -726,7 +726,7 @@ void CShipBottomView::OnInitialUpdate()
 	m_iWhichMainShipOrderButton = -1;
 	
 	CString sPrefix = pPlayer->GetPrefix();
-	CString s = CIOData::GetInstance()->GetAppPath() + "Graphics\\Other\\" + sPrefix + "button_small.png";		
+	CString s = CIOData::GetInstance()->GetAppPath() + "Graphics\\Other\\" + sPrefix + "button_shiporder.bop";		
 	m_pShipOrderButton = Bitmap::FromFile(s.AllocSysString());
 }
 

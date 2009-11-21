@@ -280,6 +280,7 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	afx_msg void OnUpdateFileNew(CCmdUI *pCmdUI);
+	afx_msg void OnUpdateFileOpen(CCmdUI *pCmdUI);
 };
 
 /////////////////////////////////////////////////////////////////////////////

@@ -107,7 +107,7 @@ void CTransportMenuView::OnInitialUpdate()
 
 	// alle Hintergrundgrafiken laden
 	CString sPrefix = pMajor->GetPrefix();
-	bg_transportmenu = pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "transportmenu.jpg");
+	bg_transportmenu = pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "transportmenu.boj");
 		
 	// Transportansicht
 	m_iTransportStorageQuantity = 1;
@@ -283,10 +283,10 @@ void CTransportMenuView::DrawTransportMenue(Graphics* g)
 		s.Format("#%d: %s", m_byTroopNumberInSystem+1, pDoc->m_TroopInfo.GetAt(id).GetName());
 		// Das Bild für die Truppe zeichnen
 		CString file;
-		file.Format("Troops\\%s.png", pDoc->m_TroopInfo.GetAt(id).GetName());
+		file.Format("Troops\\%s.bop", pDoc->m_TroopInfo.GetAt(id).GetName());
 		Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic(file);
 		if (graphic == NULL)
-				graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Troops\\ImageMissing.png");
+				graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Troops\\ImageMissing.bop");
 		if (graphic)
 			g->DrawImage(graphic, 25, 95, 200, 150);		
 	}
@@ -330,10 +330,10 @@ void CTransportMenuView::DrawTransportMenue(Graphics* g)
 		s.Format("#%d: %s", m_byTroopNumberInSystem+1, pDoc->m_TroopInfo.GetAt(id).GetName());
 		// Das Bild für die Truppe zeichnen
 		CString file;
-		file.Format("Troops\\%s.png", pDoc->m_TroopInfo.GetAt(id).GetName());
+		file.Format("Troops\\%s.bop", pDoc->m_TroopInfo.GetAt(id).GetName());
 		Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic(file);
 		if (graphic == NULL)
-				graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Troops\\ImageMissing.png");
+				graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Troops\\ImageMissing.bop");
 		if (graphic)
 			g->DrawImage(graphic, 850, 95, 200, 150);
 	}
@@ -347,7 +347,7 @@ void CTransportMenuView::DrawTransportMenue(Graphics* g)
 
 	// Button zum Ändern der Menge, wieviel pro Klick vom oder ins Schiff verschoben werden zeichnen, sowie den
 	// Button um die nächste Einheit auf dem System bzw. auf dem Schiff zu wählen
-	Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\" + pMajor->GetPrefix() + "button_small.png");
+	Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\" + pMajor->GetPrefix() + "button_small.bop");
 	Color btnColor;
 	CFontLoader::GetGDIFontColor(pMajor, 1, btnColor);
 	SolidBrush btnBrush(btnColor);
@@ -466,9 +466,9 @@ void CTransportMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 							return;
 						}
 						if (isFleet && j < number-1)
-							ship = (&pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfTheShipInArray()))->GetFleet()->GetPointerOfShipFromFleet(j);
-						return;
+							ship = (&pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfTheShipInArray()))->GetFleet()->GetPointerOfShipFromFleet(j);						
 					}
+					return;
 				}
 				// handelt es sich um Ressourcen
 				else
@@ -635,15 +635,15 @@ void CTransportMenuView::CreateButtons()
 	CString sPrefix = pMajor->GetPrefix();
 	
 	// Zuweisungsbuttons für Ressourcen
-	CString fileN = "Other\\" + sPrefix + "buttonminus.png";
-	CString fileA = "Other\\" + sPrefix + "buttonminusa.png";
+	CString fileN = "Other\\" + sPrefix + "buttonminus.bop";
+	CString fileA = "Other\\" + sPrefix + "buttonminusa.bop";
 	for (int i = TITAN; i <= DILITHIUM; i++)
 		m_TransportButtons.Add(new CMyButton(CPoint(290,134+i*60) , CSize(30,30), "", fileN, fileN, fileA));
 	// plus für Truppen
 	m_TransportButtons.Add(new CMyButton(CPoint(290,573) , CSize(30,30), "", fileN, fileN, fileA));
 
-	fileN = "Other\\" + sPrefix + "buttonplus.png";
-	fileA = "Other\\" + sPrefix + "buttonplusa.png";
+	fileN = "Other\\" + sPrefix + "buttonplus.bop";
+	fileA = "Other\\" + sPrefix + "buttonplusa.bop";
 	for (int i = TITAN; i <= DILITHIUM; i++)		
 		m_TransportButtons.Add(new CMyButton(CPoint(755,134+i*60) , CSize(30,30), "", fileN, fileN, fileA));
 	// plus für Truppen

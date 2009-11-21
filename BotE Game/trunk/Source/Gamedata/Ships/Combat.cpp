@@ -296,7 +296,9 @@ void CCombat::CalculateCombat(std::map<CString, BYTE>& winner)
 			else
 			{
 				m_CS.ElementAt(i)->GotoNextPosition();
-				m_CS.ElementAt(i)->m_pShip->GetShield()->RechargeShields();
+				// wenn die Schilde noch nicht komplett zusammengebrochen sind
+				if (m_CS.ElementAt(i)->m_pShip->GetShield()->GetCurrentShield() > 0)
+					m_CS.ElementAt(i)->m_pShip->GetShield()->RechargeShields();
 			}
 		}
 		// Wenn keine Schiffe mehr am Kampf teilnehmen, weil vielleicht alle vernichtet wurden, dann können wir abbrechen

@@ -79,7 +79,7 @@ void CTradeBottomView::OnDraw(CDC* dc)
 	
 	CString sPrefix = pMajor->GetPrefix();
 	// rassenspezifische Schriftart und Style wählen
-	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "tradeV3.jpg");
+	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "tradeV3.boj");
 	
 	// Grafik zeichnen		
 	if (graphic)
@@ -246,7 +246,7 @@ void CTradeBottomView::OnInitialUpdate()
 	ASSERT(pMajor);
 
 	CString sPrefix = pMajor->GetPrefix();
-	CString s = CIOData::GetInstance()->GetAppPath() + "Graphics\\Other\\" + sPrefix + "button_small.png";		
+	CString s = CIOData::GetInstance()->GetAppPath() + "Graphics\\Other\\" + sPrefix + "button_small.bop";		
 	
 	m_pSmallButton = Bitmap::FromFile(s.AllocSysString());
 

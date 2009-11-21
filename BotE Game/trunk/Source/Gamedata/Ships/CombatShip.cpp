@@ -445,6 +445,8 @@ BYTE CCombatShip::GetAccBoniFromSpecials(void)
 // @return Wahrheitswert
 bool CCombatShip::AllowFire(const CFireArc* arc)
 {
+	if (this->m_pShip->GetShipType() == OUTPOST || this->m_pShip->GetShipType() == STARBASE)
+		return true;
 	/*
 	Ich fasse nochmal zusammen was benötigt wird und was mittels Variablen festgehalten werden müsste:
 

@@ -8,9 +8,11 @@
 
 #pragma once
 
-#define BOTE_INI_FILE	"BotE.ini"
-#define BOTE_LOG_FILE	"BotE.log"
-#define BOTE_SAV_FILE	"auto.sav"
+#define BOTE_INI_FILE		"BotE.ini"
+#define BOTE_LOG_FILE		"BotE.log"
+#define BOTE_MANUAL_FILE	"Manual.pdf"
+#define BOTE_SAV_FILE1		"auto.sav"
+#define BOTE_SAV_FILE2		"auto2.sav"
 
 /// Klasse beinhaltet alle Input und Output Informationen für BotE.
 class CIOData
@@ -44,8 +46,13 @@ public:
 	CString GetLogPath(void) const { return m_sAppPath + BOTE_LOG_FILE; }
 
 	/// Funktion liefert den kompletten Pfad zur Autosave-Datei.
+	/// @param nRound aktuelle Runde
 	/// @return kompletter Pfad zur Autosave-Datei
-	CString GetAutoSavePath(void) const { return m_sAppPath + BOTE_SAV_FILE; }
+	CString GetAutoSavePath(int nRound) const { if (nRound%2) return m_sAppPath + BOTE_SAV_FILE2; else return m_sAppPath + BOTE_SAV_FILE1; }
+
+	/// Funktion liefert den kompletten Pfad zum Handbuch.
+	/// @return kompletter Pfad zur Handbuch-Datei
+	CString GetManualPath(void) const { return m_sAppPath + BOTE_MANUAL_FILE; }
 
 private:
 	// Attribute

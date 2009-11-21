@@ -6,81 +6,87 @@
  *
  */
 #pragma once
-#include "afx.h"
-#include "Options.h"
+#include <vector>
 
-class CTorpedoInfo : public CObject
+/// Enum aller möglichen Torpedospezialeigenschaften
+enum TORPEDO_SPECIALS
+{
+	NO_SPECIAL			= 0,
+	MICROTORPEDO		= 1,	///< Microtorpedo (nur für Microwerfer)
+	PENETRATING			= 2,	///< schilddurchschlagender Torpedo 
+	DOUBLESHIELDDMG		= 4,	///< Torpedo macht doppelten Schaden an den Schilden 
+	DOUBLEHULLDMG		= 8,	///< Torpedo macht doppelten Schaden an der Hülle 
+	IGNOREALLSHIELDS	= 16,	///< Torpedo ignoriert alle Arten von Schilden 
+	COLLAPSESHIELDS		= 32,	///< Torpedotreffer kann Schilde kollabieren lassen 
+	REDUCEMANEUVER		= 64	///< Bei einem Treffer besteht die Chance, die Manövrierbarkeit des Zieles auf NULL zu verringern.
+};
+
+// Eigenschaften eines Torpedos
+struct TORPEDOINFO
+{
+	// Attribute
+	CString		sName;			///< der Name des Torpedos
+	USHORT		nDmg;			///< die Stärke eines Torpedos
+	int			nSpecials;		///< Spezialeigenschaften (bitweise gespeichert)
+	
+	TORPEDOINFO(CString _sName, USHORT _nDmg, int _nSpecials = NO_SPECIAL)
+	{
+		sName		= _sName;
+		nDmg		= _nDmg;
+		nSpecials	= _nSpecials;
+	}
+};
+
+/// Klasse enthält feste Informationen zu bestimmten Torpedotypen
+class CTorpedoInfo
 {
 private:
-	/// Konstruktor
+	/// Standardkonstruktor
 	CTorpedoInfo(void);
 
+	/// Kopierkonstruktor
+	CTorpedoInfo(const CTorpedoInfo& cc) {};
+
+public:
 	/// Destruktor
 	~CTorpedoInfo(void);
 
-public:
 	// Zugriffsfunktionen zum Lesen der Membervariablen
-	/**
-	 * Diese Funktionen gibt den Torepdonamen zurück.
-	 */
-	static const CString& GetName(BYTE type) {SetValues(type); return m_strTorpedoName;}
+	
+	/// Diese Funktionen gibt den Torepdonamen zurück.
+	static const CString& GetName(BYTE type) { return GetInstance()->m_vInfos[type].sName; }
+	
+	/// Diese Funktionen gibt die Torepdostärke zurück.
+	static USHORT GetPower(BYTE type) { return GetInstance()->m_vInfos[type].nDmg; }
+	
+	/// Diese Funktionen gibt zurück, ob es sich um einen schilddurchschlagenden Torpedo handelt.
+	static bool GetMicro(BYTE type) { return (GetInstance()->m_vInfos[type].nSpecials & MICROTORPEDO) == MICROTORPEDO; }
 
-	/**
-	 * Diese Funktionen gibt die Torepdostärke zurück.
-	 */
-	static USHORT GetPower(BYTE type) {SetValues(type); return m_iTorpedoPower;}
+	/// Diese Funktionen gibt zurück, ob es sich um einen schilddurchschlagenden Torpedo handelt.	 
+	static bool GetPenetrating(BYTE type) { return (GetInstance()->m_vInfos[type].nSpecials & PENETRATING) == PENETRATING; }
 
-	/**
-	 * Diese Funktionen gibt zurück, ob es sich um einen schilddurchschlagenden Torpedo handelt.
-	 */
-	static BOOLEAN GetMicro(BYTE type) {SetValues(type); return m_bMicro;}
+	///Diese Funktionen gibt zurück, ob der Torpedo doppelten Schaden an den Schilden macht.
+	static bool GetDoubleShieldDmg(BYTE type) { return (GetInstance()->m_vInfos[type].nSpecials & DOUBLESHIELDDMG) == DOUBLESHIELDDMG; }
+	
+	/// Diese Funktionen gibt zurück, ob der Torpedo doppelten Schaden an der Hülle macht.
+	static bool GetDoubleHullDmg(BYTE type) { return (GetInstance()->m_vInfos[type].nSpecials & DOUBLEHULLDMG) == DOUBLEHULLDMG; }
 
-	/**
-	 * Diese Funktionen gibt zurück, ob es sich um einen schilddurchschlagenden Torpedo handelt.
-	 */
-	static BOOLEAN GetPenetrating(BYTE type) {SetValues(type); return m_bPenetrating;}
+	/// Diese Funktionen gibt zurück, ob der Torpedo jegliche Schildart ignoriert..
+	static bool GetIgnoreAllShields(BYTE type) { return (GetInstance()->m_vInfos[type].nSpecials & IGNOREALLSHIELDS) == IGNOREALLSHIELDS; }
 
-	/**
-	 * Diese Funktionen gibt zurück, ob der Torpedo doppelten Schaden an den Schilden macht.
-	 */
-	static BOOLEAN GetDoubleShieldDmg(BYTE type) {SetValues(type); return m_bDoubleShieldDmg;}
+	/// Diese Funktionen gibt zurück, ob durch einen Torpedotreffer möglicherweise die Schilde zusammenbrechen.
+	static bool GetCollapseShields(BYTE type) { return (GetInstance()->m_vInfos[type].nSpecials & COLLAPSESHIELDS) == COLLAPSESHIELDS; }
 
-	/**
-	 * Diese Funktionen gibt zurück, ob der Torpedo doppelten Schaden an der Hülle macht.
-	 */
-	static BOOLEAN GetDoubleHullDmg(BYTE type) {SetValues(type); return m_bDoubleHullDmg;}
-
-	/**
-	 * Diese Funktionen gibt zurück, ob der Torpedo jegliche Schildart ignoriert..
-	 */
-	static BOOLEAN GetIgnoreAllShields(BYTE type) {SetValues(type); return m_bIgnoreAllShields;}
-
-	/**
-	 * Diese Funktionen gibt zurück, ob durch einen Torpedotreffer möglicherweise die Schilde zusammenbrechen.
-	 */
-	static BOOLEAN GetCollapseShields(BYTE type) {SetValues(type); return m_bCollapseShields;}
-
-	/**
-	 * Diese Funktionen gibt zurück, ob durch einen Torpedotreffer möglicherweise die Manövriebarkeit auf
-	 * NULL verringert wird.
-	 */
-	static BOOLEAN GetReduceManeuver(BYTE type) {SetValues(type); return m_bReduceManeuver;}
+	/// Diese Funktionen gibt zurück, ob durch einen Torpedotreffer möglicherweise die Manövriebarkeit auf
+	/// NULL verringert wird.
+	static bool GetReduceManeuver(BYTE type) { return (GetInstance()->m_vInfos[type].nSpecials & REDUCEMANEUVER) == REDUCEMANEUVER; }
 
 private:
-	/**
-	 * Private Funktion, die die Variablen anhand des übergebenen Torpedotypes setzt.
-	 */
-	static void SetValues(BYTE type);
-
-	// Eigenschaften der Torpedos
-	static BYTE	   m_byType;			///> letzter gesuchter Typ des Torpedos
-	static CString m_strTorpedoName;	///> der Name des Torpedos
-	static USHORT  m_iTorpedoPower;		///> die Stärke eines Torpedos
-	static BOOLEAN m_bMicro;			///> sind es Microtorpedos
-	static BOOLEAN m_bPenetrating;		///> sind es schilddurchschlagende Torpedos?
-	static BOOLEAN m_bDoubleShieldDmg;	///> macht dieser Torpedo doppelten Schaden an den Schilden?
-	static BOOLEAN m_bDoubleHullDmg;	///> macht dieser Torpedo doppelten Schaden an der Hülle?
-	static BOOLEAN m_bIgnoreAllShields;	///> ignoriert der Torpedo alle Arten von Schilden?
-	static BOOLEAN m_bCollapseShields;	///> Torpedotreffer kann Schilde kollabieren lassen
-	static BOOLEAN m_bReduceManeuver;	///> bei einem Treffer besteht die Chance, die Manövriebarkeit auf NULL zu verringern
+	// Funktionen
+	/// Funktion liefert die einzige Instanz dieser Klasse (Singleton).
+	/// @return Instanz dieser Klasse
+	static CTorpedoInfo* GetInstance(void);
+	
+	// Attribute
+	std::vector<TORPEDOINFO> m_vInfos;	///< alle möglichen Torpedotypen
 };

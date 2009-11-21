@@ -105,7 +105,7 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 		{
 			// gibt es eine spezielle Grafik für den Planeten, so wird versucht diese zu laden
 			Bitmap* planet = NULL;
-			planet = pDoc->GetGraphicPool()->GetGDIGraphic("Planets\\" + m_pPlanet->GetPlanetName()+".png");
+			planet = pDoc->GetGraphicPool()->GetGDIGraphic("Planets\\" + m_pPlanet->GetPlanetName()+".bop");
 			// ansonsten wird die zufällige Planetengrafik geladen
 			if (planet == NULL)
 				planet = pDoc->GetGraphicPool()->GetGDIGraphic(m_pPlanet->GetGraphicFile());
@@ -179,12 +179,12 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 					Bitmap* graphic = NULL;
 					switch(i)
 					{
-						case TITAN:		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\titanSmall.png");		break;
-						case DEUTERIUM: graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\deuteriumSmall.png");	break;
-						case DURANIUM:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\duraniumSmall.png");	break;
-						case CRYSTAL:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\crystalSmall.png");		break;
-						case IRIDIUM:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\iridiumSmall.png");		break;
-						case DILITHIUM: graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\Dilithium.png");		break;
+						case TITAN:		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\titanSmall.bop");		break;
+						case DEUTERIUM: graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\deuteriumSmall.bop");	break;
+						case DURANIUM:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\duraniumSmall.bop");	break;
+						case CRYSTAL:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\crystalSmall.bop");		break;
+						case IRIDIUM:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\iridiumSmall.bop");		break;
+						case DILITHIUM: graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\Deritium.bop");		break;
 					}
 					if (graphic)
 						g->DrawImage(graphic, xPos + nExist * 20, 195, 20, 16);
@@ -245,7 +245,7 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 						
 			// gibt es eine spezielle Grafik für den Planeten, so wird versucht diese zu laden
 			Bitmap* planet = NULL;
-			planet = pDoc->GetGraphicPool()->GetGDIGraphic("Planets\\" + m_pPlanet->GetPlanetName()+".png");
+			planet = pDoc->GetGraphicPool()->GetGDIGraphic("Planets\\" + m_pPlanet->GetPlanetName()+".bop");
 			// ansonsten wird die zufällige Planetengrafik geladen
 			if (planet == NULL)
 				planet = pDoc->GetGraphicPool()->GetGDIGraphic(m_pPlanet->GetGraphicFile());
@@ -267,14 +267,14 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 			fontFormat.SetFormatFlags(StringFormatFlagsNoWrap);
 			fontBrush.SetColor(Color(200,200,200));
 
-			g->DrawString(CheckPlanetClassForInfoHead(PlanetClass).AllocSysString(), -1, &Gdiplus::Font(L"Nina", 10), RectF(0,0,r.right,20), &fontFormat, &fontBrush);
+			g->DrawString(CheckPlanetClassForInfoHead(PlanetClass).AllocSysString(), -1, &Gdiplus::Font(L"Arial", 10), RectF(0,0,r.right,20), &fontFormat, &fontBrush);
 			Color color;
 			CFontLoader::GetGDIFontColor(pMajor, 3, color);
 			fontBrush.SetColor(color);
 			fontFormat.SetAlignment(StringAlignmentNear);
 			fontFormat.SetLineAlignment(StringAlignmentNear);
 			fontFormat.SetFormatFlags(!StringFormatFlagsNoWrap);
-			g->DrawString(CheckPlanetClassForInfo(PlanetClass).AllocSysString(), -1, &Gdiplus::Font(L"Nina", 9), RectF(10,25,r.right-10,r.bottom-25), &fontFormat, &fontBrush);
+			g->DrawString(CheckPlanetClassForInfo(PlanetClass).AllocSysString(), -1, &Gdiplus::Font(L"Arial", 8.5), RectF(10,25,r.right-10,r.bottom-25), &fontFormat, &fontBrush);
 		}		
 	}
 	////////////// Überprüfen, ob in der CSmallInfoView Planeten angezeigt werden, hier zu ENDE //////////////////////
@@ -300,10 +300,10 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 		{
 			// Schiffsgrafik etwas größer anzeigen
 			Bitmap* shipGraphic = NULL;
-			s.Format("Ships\\%s.png", m_pShip->GetShipClass());			
+			s.Format("Ships\\%s.bop", m_pShip->GetShipClass());			
 			shipGraphic = pDoc->GetGraphicPool()->GetGDIGraphic(s);
 			if (shipGraphic == NULL)
-				shipGraphic = pDoc->GetGraphicPool()->GetGDIGraphic("Ships\\ImageMissing.png");
+				shipGraphic = pDoc->GetGraphicPool()->GetGDIGraphic("Ships\\ImageMissing.bop");
 			if (shipGraphic)
 			{
 				g->DrawImage(shipGraphic, 0, 50, 200, 150);
@@ -440,7 +440,7 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 
 		// Wenn keine Informationen zu einem Planeten angezeigt werden sollen, dann das Rassensymbol einblenden
 		CString path;
-		path.Format("Symbols\\%s.png", pMajor->GetRaceID());
+		path.Format("Symbols\\%s.bop", pMajor->GetRaceID());
 		Bitmap* logo = NULL;
 		logo = pDoc->GetGraphicPool()->GetGDIGraphic(path);
 		if (logo)

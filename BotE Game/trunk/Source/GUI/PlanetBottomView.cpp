@@ -81,7 +81,7 @@ void CPlanetBottomView::OnDraw(CDC* dc)
 	// Galaxie im Hintergrund zeichnen
 	CString sPrefix = pMajor->GetPrefix();
 	
-	Bitmap* background = pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "galaxyV3.png");
+	Bitmap* background = pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "galaxyV3.bop");
 	if (background)
 		g.DrawImage(background, 0, 0, 1075, 249);
 	
@@ -133,19 +133,19 @@ void CPlanetBottomView::OnDraw(CDC* dc)
 		switch(pDoc->GetSector(KO.x,KO.y).GetSunColor())
 		{
 		case 0:
-			graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Suns\\sun_blue.png"); break;
+			graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Suns\\sun_blue.bop"); break;
 		case 1:
-			graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Suns\\sun_green.png"); break;
+			graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Suns\\sun_green.bop"); break;
 		case 2:
-			graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Suns\\sun_orange.png"); break;
+			graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Suns\\sun_orange.bop"); break;
 		case 3:
-			graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Suns\\sun_red.png"); break;
+			graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Suns\\sun_red.bop"); break;
 		case 4:
-			graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Suns\\sun_violet.png"); break;			
+			graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Suns\\sun_violet.bop"); break;			
 		case 5:
-			graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Suns\\sun_white.png"); break;
+			graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Suns\\sun_white.bop"); break;
 		case 6:
-			graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Suns\\sun_yellow.png"); break;					
+			graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Suns\\sun_yellow.bop"); break;					
 		}				
 		if (graphic)
 			g.DrawImage(graphic, 950, -10, 250, 261);
@@ -185,12 +185,12 @@ void CPlanetBottomView::OnDraw(CDC* dc)
 				graphic = NULL;
 				switch(i)
 				{
-					case TITAN:		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\titanSmall.png");		break;
-					case DEUTERIUM: graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\deuteriumSmall.png");	break;
-					case DURANIUM:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\duraniumSmall.png");	break;
-					case CRYSTAL:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\crystalSmall.png");		break;
-					case IRIDIUM:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\iridiumSmall.png");		break;
-					case DILITHIUM: graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\Dilithium.png");		break;
+					case TITAN:		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\titanSmall.bop");		break;
+					case DEUTERIUM: graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\deuteriumSmall.bop");	break;
+					case DURANIUM:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\duraniumSmall.bop");	break;
+					case CRYSTAL:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\crystalSmall.bop");		break;
+					case IRIDIUM:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\iridiumSmall.bop");		break;
+					case DILITHIUM: graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\Deritium.bop");		break;
 				}
 				if (graphic)
 					g.DrawImage(graphic, (int)boundingBox.GetRight() + 5 + nExist * 20, 228, 20, 16);
@@ -206,10 +206,10 @@ void CPlanetBottomView::OnDraw(CDC* dc)
 			g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), PointF(40,180), &fontFormat, &fontBrush);
 			s.Format("%s: %.3lf Mrd.",CResourceManager::GetString("CURRENT_HABITANTS"), currentHabitants);
 			g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), PointF(40,202), &fontFormat, &fontBrush);
-			graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\popmaxSmall.png");
+			graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\popmaxSmall.bop");
 			if (graphic)
 				g.DrawImage(graphic, 23, 180, 20, 16);
-			graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\populationSmall.png");			
+			graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\populationSmall.bop");			
 			if (graphic)
 				g.DrawImage(graphic, 23, 202, 20, 16);
 		}

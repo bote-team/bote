@@ -476,9 +476,16 @@ BOOLEAN CAssemblyList::MakeEntry(int runningNumber, const CPoint &ko, CSystem sy
 	CSystem* system = &systems[ko.x][ko.y];
 	// Ressourcenrouten durchgehen und womöglich die möglichen max. zusätzlichen Ressourcen erfragen
 	CArray<CPoint> routesFrom;
-	ULONG resourcesFromRoutes[DILITHIUM + 1]		= {0};
-	ULONG nResInDistSys[DILITHIUM + 1]				= {0};
-	CPoint ptResourceDistributorKOs[DILITHIUM + 1]	= { CPoint(-1,-1) };	
+	ULONG resourcesFromRoutes[DILITHIUM + 1];
+	ULONG nResInDistSys[DILITHIUM + 1];
+	CPoint ptResourceDistributorKOs[DILITHIUM + 1];
+
+	for (int i = 0; i <= DILITHIUM; i++)
+	{
+		resourcesFromRoutes[i] = 0;
+		nResInDistSys[i] = 0;
+		ptResourceDistributorKOs[i] = CPoint(-1,-1);		
+	}
 	
 	for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
 	{
@@ -642,9 +649,16 @@ void CAssemblyList::ClearAssemblyList(const CPoint &ko, CSystem systems[][STARMA
 	CSystem* system = &systems[ko.x][ko.y];	
 	
 	CArray<CPoint> routesFrom;
-	ULONG resourcesFromRoutes[DILITHIUM + 1]		= {0};
-	ULONG nResInDistSys[DILITHIUM + 1]				= {0};
-	CPoint ptResourceDistributorKOs[DILITHIUM + 1]	= { CPoint(-1,-1) };	
+	ULONG resourcesFromRoutes[DILITHIUM + 1];
+	ULONG nResInDistSys[DILITHIUM + 1];
+	CPoint ptResourceDistributorKOs[DILITHIUM + 1];
+
+	for (int i = 0; i <= DILITHIUM; i++)
+	{
+		resourcesFromRoutes[i] = 0;
+		nResInDistSys[i] = 0;
+		ptResourceDistributorKOs[i] = CPoint(-1,-1);		
+	}
 	
 	// Ressourcenrouten durchgehen und womöglich die möglichen max. zusätzlichen Ressourcen erfragen
 	for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
@@ -688,63 +702,76 @@ void CAssemblyList::ClearAssemblyList(const CPoint &ko, CSystem systems[][STARMA
 	// Eintrag an der nächsten Stelle haben (sprich AssemblyList[1] != 0), dann alle 
 	// anderen Einträge um eins nach vorn verschieben -> letzter wird frei
 	m_iEntry[0] = 0;
-	
-	if (m_iEntry[1] != 0)
+	m_iNeededIndustryInAssemblyList[0] = 0;
+	m_iNeededTitanInAssemblyList[0]    = 0;
+	m_iNeededDeuteriumInAssemblyList[0]= 0;
+	m_iNeededDuraniumInAssemblyList[0] = 0;
+	m_iNeededCrystalInAssemblyList[0]  = 0;
+	m_iNeededIridiumInAssemblyList[0]  = 0;
+	m_iNeededDilithiumInAssemblyList[0]= 0;
+
+	for (int i = 0; i < ALE - 1; i++)
 	{
-		for (int i = 0; i < ALE-1; i++)
+		// wenn der nächste Eintrag ungleich 0 ist
+		if (m_iEntry[i + 1] != 0)
 		{
-			m_iEntry[i] = m_iEntry[i+1];
-			m_iNeededIndustryInAssemblyList[i] = m_iNeededIndustryInAssemblyList[i+1];
-			m_iNeededTitanInAssemblyList[i]	   = m_iNeededTitanInAssemblyList[i+1];
-			m_iNeededDeuteriumInAssemblyList[i]= m_iNeededDeuteriumInAssemblyList[i+1];
-			m_iNeededDuraniumInAssemblyList[i] = m_iNeededDuraniumInAssemblyList[i+1];
-			m_iNeededCrystalInAssemblyList[i]  = m_iNeededCrystalInAssemblyList[i+1];
-			m_iNeededIridiumInAssemblyList[i]  = m_iNeededIridiumInAssemblyList[i+1];
-			m_iNeededDilithiumInAssemblyList[i]= m_iNeededDilithiumInAssemblyList[i+1];
+			m_iEntry[i] = m_iEntry[i + 1];
+			m_iNeededIndustryInAssemblyList[i] = m_iNeededIndustryInAssemblyList[i + 1];
+			m_iNeededTitanInAssemblyList[i]	   = m_iNeededTitanInAssemblyList[i + 1];
+			m_iNeededDeuteriumInAssemblyList[i]= m_iNeededDeuteriumInAssemblyList[i + 1];
+			m_iNeededDuraniumInAssemblyList[i] = m_iNeededDuraniumInAssemblyList[i + 1];
+			m_iNeededCrystalInAssemblyList[i]  = m_iNeededCrystalInAssemblyList[i + 1];
+			m_iNeededIridiumInAssemblyList[i]  = m_iNeededIridiumInAssemblyList[i + 1];
+			m_iNeededDilithiumInAssemblyList[i]= m_iNeededDilithiumInAssemblyList[i + 1];
+
+			// den Nachfolger überall auf NULL setzen
+			m_iEntry[i + 1] = 0;
+			m_iNeededIndustryInAssemblyList[i + 1] = 0;
+			m_iNeededTitanInAssemblyList[i + 1]    = 0;
+			m_iNeededDeuteriumInAssemblyList[i + 1]= 0;
+			m_iNeededDuraniumInAssemblyList[i + 1] = 0;
+			m_iNeededCrystalInAssemblyList[i + 1]  = 0;
+			m_iNeededIridiumInAssemblyList[i + 1]  = 0;
 		}
-		m_iEntry[ALE-1] = 0;
-		m_iNeededIndustryInAssemblyList[ALE-1] = 0;
-		m_iNeededTitanInAssemblyList[ALE-1]    = 0;
-		m_iNeededDeuteriumInAssemblyList[ALE-1]= 0;
-		m_iNeededDuraniumInAssemblyList[ALE-1] = 0;
-		m_iNeededCrystalInAssemblyList[ALE-1]  = 0;
-		m_iNeededIridiumInAssemblyList[ALE-1]  = 0;
-		m_iNeededDilithiumInAssemblyList[ALE-1]= 0;
-		// Checken, ob der nächste Eintrag auch baubar ist -> genügend RES im Lager
-		// normalerweise kann man in der Bauliste ja nur Einträge vornehmen, wenn
-		// man genügend RES hat. Also sollte er auch baubar sein, wenn die IP
-		// erbracht wurden. Aber durch Zufallsereignisse oder Börsenverkäufe von RES
-		// kann man später ja zu wening davon haben. Und weil die RES erst abgezogen
-		// wird, wenn das Gebäude an erster Stelle in der Bauliste rückt, müssen
-		// wird das überprüfen. Haben wir nicht genug RES, wird der Bauauftrag
-		// gecancelt
-		
-		// Überprüfen, ob wir genügend Rohstoffe in dem Lager haben
-		for (int res = TITAN; res <= DILITHIUM; res++)
+		else
+			break;
+	}
+
+	// Checken, ob der nächste Eintrag auch baubar ist -> genügend RES im Lager
+	// normalerweise kann man in der Bauliste ja nur Einträge vornehmen, wenn
+	// man genügend RES hat. Also sollte er auch baubar sein, wenn die IP
+	// erbracht wurden. Aber durch Zufallsereignisse oder Börsenverkäufe von RES
+	// kann man später ja zu wening davon haben. Und weil die RES erst abgezogen
+	// wird, wenn das Gebäude an erster Stelle in der Bauliste rückt, müssen
+	// wird das überprüfen. Haben wir nicht genug RES, wird der Bauauftrag
+	// gecancelt
+	
+	// Überprüfen, ob wir genügend Rohstoffe in dem Lager haben
+	for (int res = TITAN; res <= DILITHIUM; res++)
+	{
+		UINT nNeededRes = this->GetNeededResourceInAssemblyList(0, res);
+		if (*system->GetRessourceStorages(res) + resourcesFromRoutes[res] < nNeededRes && nResInDistSys[res] < nNeededRes)
 		{
-			UINT nNeededRes = this->GetNeededResourceForBuild(res);
-			if (*system->GetRessourceStorages(res) + resourcesFromRoutes[res] < nNeededRes && nResInDistSys[res] < nNeededRes)
-			{
-				// Wenn nicht -> dann Eintrag wieder entfernen
-				ClearAssemblyList(ko, systems);
-				return;
-			}
+			// Wenn nicht -> dann Eintrag wieder entfernen
+			ClearAssemblyList(ko, systems);
+			return;
 		}
-		// Wenn er baubar ist, dann die Ressourcen entfernen	
-		for (int res = TITAN; res <= DILITHIUM; res++)
+	}
+
+	// Wenn er baubar ist, dann die Ressourcen entfernen	
+	for (int res = TITAN; res <= DILITHIUM; res++)
+	{
+		UINT nNeededRes = this->GetNeededResourceInAssemblyList(0, res);
+		if (nNeededRes > 0)
 		{
-			UINT nNeededRes = this->GetNeededResourceInAssemblyList(0, res);
-			if (nNeededRes > 0)
+			// Ressource wird aus eigenem System bzw. über Ressourcenroute geholt
+			if (*system->GetRessourceStorages(res) + resourcesFromRoutes[res] >= nNeededRes)
+				RemoveResourceFromStorage(res, ko, systems, &routesFrom);
+			// reicht das nicht, so wird Ressource aus dem Verteiler geholt
+			else
 			{
-				// Ressource wird aus eigenem System bzw. über Ressourcenroute geholt
-				if (*system->GetRessourceStorages(res) + resourcesFromRoutes[res] >= nNeededRes)
-					RemoveResourceFromStorage(res, ko, systems, &routesFrom);
-				// reicht das nicht, so wird Ressource aus dem Verteiler geholt
-				else
-				{
-					CArray<CPoint> vNullRoutes;
-					RemoveResourceFromStorage(res, ptResourceDistributorKOs[res], systems, &vNullRoutes);
-				}
+				CArray<CPoint> vNullRoutes;
+				RemoveResourceFromStorage(res, ptResourceDistributorKOs[res], systems, &vNullRoutes);
 			}
 		}
 	}

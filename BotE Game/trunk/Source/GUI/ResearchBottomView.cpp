@@ -68,7 +68,7 @@ void CResearchBottomView::OnDraw(CDC* dc)
 	Color color;
 	color.SetFromCOLORREF(pMajor->GetDesign()->m_clrGalaxySectorText);
 	fontBrush.SetColor(color);
-	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "researchV3.jpg");
+	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "researchV3.boj");
 
 	// gibt es keine Spezialforschung zur Auswahl, so wird auf Standardanzeige umgestellt
 	if (pDoc->m_iShowWhichTechInView3 == 6 && pMajor->GetEmpire()->GetResearch()->GetUniqueReady() == TRUE)
@@ -82,13 +82,13 @@ void CResearchBottomView::OnDraw(CDC* dc)
 	}
 	switch(pDoc->m_iShowWhichTechInView3)
 	{
-	case 0:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Research\\biotech.png"); break;
-	case 1:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Research\\energytech.png"); break;
-	case 2:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Research\\computertech.png"); break;
-	case 3:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Research\\propulsiontech.png"); break;
-	case 4:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Research\\constructiontech.png"); break;
-	case 5:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Research\\weapontech.png"); break;
-	case 6:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Research\\specialtech.png"); break;
+	case 0:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Research\\biotech.bop"); break;
+	case 1:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Research\\energytech.bop"); break;
+	case 2:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Research\\computertech.bop"); break;
+	case 3:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Research\\propulsiontech.bop"); break;
+	case 4:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Research\\constructiontech.bop"); break;
+	case 5:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Research\\weapontech.bop"); break;
+	case 6:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Research\\specialtech.bop"); break;
 	}
 	if (graphic)
 	{
