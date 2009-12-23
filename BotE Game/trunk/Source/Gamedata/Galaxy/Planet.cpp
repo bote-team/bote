@@ -414,7 +414,7 @@ BYTE CPlanet::Create(const CString& sSectorName, BYTE byLastPlanetType, BYTE byP
 	return m_iType;
 }
 
-void CPlanet::DrawPlanet(Graphics &g, CRect planetRect, CGraphicPool* graphicPool)
+void CPlanet::DrawPlanet(Graphics &g, const CRect& rect, CGraphicPool* graphicPool)
 {
 	Gdiplus::PixelOffsetMode oldPixelOffsetMode = g.GetPixelOffsetMode();
 	
@@ -422,10 +422,6 @@ void CPlanet::DrawPlanet(Graphics &g, CRect planetRect, CGraphicPool* graphicPoo
 
 	ASSERT(graphicPool);
 
-	int x = planetRect.right;
-	int y = planetRect.top+15;
-	int y_Boni = y-23;
-	
 	Bitmap* planet = NULL;
 	planet = graphicPool->GetGDIGraphic("Planets\\"+m_strName+".bop");
 	
@@ -434,46 +430,9 @@ void CPlanet::DrawPlanet(Graphics &g, CRect planetRect, CGraphicPool* graphicPoo
 		planet = graphicPool->GetGDIGraphic(GetGraphicFile());
 	
 	if (planet)
-	{	
-		RectF r;
-		switch (m_iSize)
-		{
-		case SMALL:
-			r = RectF((REAL)x, (REAL)y, 45, 45);	break;
-		case NORMAL:
-			r = RectF((REAL)x, (REAL)y, 60, 60);	break;
-		case BIG:
-			r = RectF((REAL)x, (REAL)y, 80, 80);	break;
-		case GIANT:
-			{
-				if (m_strName == "Saturn")
-					r = RectF((REAL)x - 10, (REAL)y + 28, 145, 84);
-				else
-					r = RectF((REAL)x, (REAL)y, 125, 125);					
-				break;
-			}
-		}
-		g.DrawImage(planet, r);
-		planet = NULL;	
-	}	
-			
-	// Namen des Planeten mit anzeigen, später noch in separate Funktion machen
-	if (m_iSize == GIANT)
-		{x+=58;y+=130;}		// Bitmapgröße (x-Richtung/2)-5, y-Richtung +5
-	else if (m_iSize == BIG)
-		{x+=35;y+=85;}
-	else if (m_iSize == NORMAL)
-		{x+=25;y+=65;}
-	else if (m_iSize == SMALL)
-		{x+=18;y+=50;}	
-	planetRect.SetRect(x,y,x+10,y+15);
-	
+		g.DrawImage(planet, rect.left, rect.top, rect.Width(), rect.Height());		
+		
 	Color c;
-	Gdiplus::Font font(L"Arial", 8.5);
-	StringFormat format;
-	format.SetAlignment(StringAlignmentCenter);
-	SolidBrush brush(c);
-	
 	if (m_bHabitable == FALSE)
 		c.SetFromCOLORREF(RGB(0,0,255));
 	else if (m_bTerraformed == TRUE)
@@ -485,22 +444,37 @@ void CPlanet::DrawPlanet(Graphics &g, CRect planetRect, CGraphicPool* graphicPoo
 	}
 	else if (m_bIsTerraforming == TRUE)
 	{
-		c.SetFromCOLORREF(RGB(200,200,0));
-		brush.SetColor(c);
-		// prozentuale Angabe mitmachen
-		CString s;
-		s.Format("%d %%",100 - (short)(this->m_iNeededTerraformPoints * 100 / this->m_iStartTerraformPoints));
-		g.DrawString(s.AllocSysString(), -1, &font, RectF((REAL)planetRect.left-10, (REAL)planetRect.bottom, (REAL)planetRect.Width()+30, (REAL)planetRect.Height()+15), &format, &brush);
+		c.SetFromCOLORREF(RGB(200,200,0));		
 	}
 	else
 		c.SetFromCOLORREF(RGB(255,40,40));
+	SolidBrush brush(c);
+
+	Gdiplus::Font font(L"Arial", 8.5);
+	StringFormat format;
+	format.SetAlignment(StringAlignmentCenter);
+	format.SetLineAlignment(StringAlignmentFar);
+
+	CRect planetRect = rect;
+	// Rechteck ein wenig nach unten schieben
+	planetRect.OffsetRect(0, 20);
 	
 	CString s;
-	s.Format("%c", m_cClass);
-	brush.SetColor(c);
+	// Planetenklasse unter den Planeten zeichnen
+	s.Format("%c", m_cClass);	
 	g.DrawString(s.AllocSysString(), -1, &font, RectF((REAL)planetRect.left, (REAL)planetRect.top, (REAL)planetRect.Width(), (REAL)planetRect.Height()), &format, &brush);
+
+	// prozentuale Angabe des Terraformfortschrittes anzeigen
+	if (m_bIsTerraforming == TRUE)
+	{
+		planetRect.OffsetRect(0, 15);
+		s.Format("%d %%",100 - (short)(this->m_iNeededTerraformPoints * 100 / this->m_iStartTerraformPoints));
+		g.DrawString(s.AllocSysString(), -1, &font, RectF((REAL)planetRect.left, (REAL)planetRect.top, (REAL)planetRect.Width(), (REAL)planetRect.Height()), &format, &brush);
+	}
 		
 	// Symbole für eventuell vohandene Boni zeichnen
+	int x = rect.CenterPoint().x - 5;
+	int y = rect.top - 23;
 	// erstmal schauen, wieviele Boni überhaupt vorhanden sind
 	BYTE n = 0;
 	for (int i = 0; i < 8; i++)
@@ -524,7 +498,7 @@ void CPlanet::DrawPlanet(Graphics &g, CRect planetRect, CGraphicPool* graphicPoo
 			}
 			if (graphic)
 			{
-				g.DrawImage(graphic, x, y_Boni, 20, 16);
+				g.DrawImage(graphic, x, y, 20, 16);
 				x += 18;
 				graphic = NULL;
 			}

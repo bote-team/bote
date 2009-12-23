@@ -100,6 +100,10 @@ public:
 	/// @return Wahrheitswert über die Schiffsbewegung auf der Map
 	static BOOLEAN IsMoveShip() {return m_bShipMove;}
 
+	///	Funktion erstellt zur aktuellen Mouse-Position einen HTML Tooltip
+	/// @return	der erstellte Tooltip-Text
+	virtual CString CreateTooltip(void);
+
 	// Operationen
 public:
 	// Überladungen

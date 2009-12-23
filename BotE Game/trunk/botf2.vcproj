@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8,00"
+	Version="9,00"
 	Name="botf2"
 	ProjectGUID="{5A569755-0BE5-4E97-9318-FA8BA42C4F03}"
 	RootNamespace="botf2"
 	Keyword="MFCProj"
+	TargetFrameworkVersion="131072"
 	>
 	<Platforms>
 		<Platform
@@ -50,7 +51,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".;Source;Source\include;Source\Graphic;Source\Gamedata;Source\Dialogs;Source\Framework;Source\GUI;Source\General;Source\include\foundation;Source\include\LZMA;Source\include\network;Source\include\sound"
+				AdditionalIncludeDirectories=".;Source;Source\include;Source\Graphic;Source\Gamedata;Source\Dialogs;Source\Framework;Source\GUI;Source\General;Source\include\foundation;Source\include\LZMA;Source\include\network;Source\include\sound;Source\include\CPPToolTip"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -90,6 +91,8 @@
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\Debug/botf2.pdb"
 				SubSystem="2"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -110,9 +113,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -156,7 +156,7 @@
 				InlineFunctionExpansion="1"
 				FavorSizeOrSpeed="1"
 				WholeProgramOptimization="true"
-				AdditionalIncludeDirectories=".;Source;Source\include;Source\Graphic;Source\Gamedata;Source\Dialogs;Source\Framework;Source\GUI;Source\General;Source\include\foundation;Source\include\LZMA;Source\include\network;Source\include\sound"
+				AdditionalIncludeDirectories=".;Source;Source\include;Source\Graphic;Source\Gamedata;Source\Dialogs;Source\Framework;Source\GUI;Source\General;Source\include\foundation;Source\include\LZMA;Source\include\network;Source\include\sound;Source\include\CPPToolTip"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS"
 				StringPooling="true"
 				RuntimeLibrary="0"
@@ -194,6 +194,8 @@
 				IgnoreDefaultLibraryNames=""
 				ProgramDatabaseFile=".\Release/botf2.pdb"
 				SubSystem="2"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -215,9 +217,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -795,6 +794,30 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="Include"
+				>
+				<Filter
+					Name="CPPToolTip"
+					>
+					<File
+						RelativePath=".\Source\include\CPPToolTip\CeXDib.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Source\include\CPPToolTip\PPDrawManager.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Source\include\CPPToolTip\PPHtmlDrawer.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Source\include\CPPToolTip\PPTooltip.cpp"
+						>
+					</File>
+				</Filter>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Header-Dateien"
@@ -821,6 +844,10 @@
 				</File>
 				<File
 					RelativePath=".\Source\General\FontLoader.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Source\General\HTMLStringBuilder.h"
 					>
 				</File>
 				<File
@@ -1358,6 +1385,30 @@
 						RelativePath=".\Source\Gamedata\AI\SystemAI.h"
 						>
 					</File>
+				</Filter>
+			</Filter>
+			<Filter
+				Name="Include"
+				>
+				<File
+					RelativePath=".\Source\include\CPPToolTip\CeXDib.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Source\include\CPPToolTip\PPDrawManager.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Source\include\CPPToolTip\PPHtmlDrawer.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Source\include\CPPToolTip\PPTooltip.h"
+					>
+				</File>
+				<Filter
+					Name="CPPToolTip"
+					>
 				</Filter>
 			</Filter>
 		</Filter>

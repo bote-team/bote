@@ -46,6 +46,10 @@ public:
 	/// @pPlayer Zeiger auf Spielerrasse
 	static void SetPlayersRace(CMajor* pPlayer) {m_pPlayersRace = pPlayer;}
 
+	///	Funktion erstellt zur aktuellen Mouse-Position einen HTML Tooltip
+	/// @return	der erstellte Tooltip-Text
+	virtual CString CreateTooltip(void) { return ""; }
+
 protected:
 	// Funktionen
 	/// Funktion rechnet einen übergebenen Punkt in logische Koordinaten um.

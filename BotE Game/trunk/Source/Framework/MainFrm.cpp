@@ -43,6 +43,7 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
 		//    Innerhalb dieser generierten Quelltextabschnitte NICHTS VERÄNDERN!
 	ON_WM_CREATE()
 	ON_MESSAGE(WM_UPDATEVIEWS, CMainFrame::UpdateViews)
+	ON_NOTIFY (UDM_TOOLTIP_DISPLAY, NULL, NotifyCPPTooltip)
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
@@ -103,6 +104,36 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 //	m_wndToolBar.SetBarStyle(m_wndToolBar.GetBarStyle() |
 //		CBRS_TOOLTIPS | CBRS_FLYBY);
 
+	m_CPPToolTip.Create(this);
+
+	///////////////////////////
+	// Behaviour
+	m_CPPToolTip.SetNotify();
+	m_CPPToolTip.SetBehaviour(PPTOOLTIP_MULTIPLE_SHOW);
+
+	// Times (in ms)
+	m_CPPToolTip.SetDelayTime(PPTOOLTIP_TIME_INITIAL, 750);	// nach 1. Sekunde wird es angezeigt
+	m_CPPToolTip.SetDelayTime(PPTOOLTIP_TIME_AUTOPOP, 200000);	// how long it stays
+	
+	//m_CPPToolTip.SetDefaultSizes(FALSE);
+	m_CPPToolTip.SetTransparency(20);
+	m_CPPToolTip.SetColorBk(RGB(20,20,20));
+	m_CPPToolTip.SetBorder(RGB(250,250,250), 1, 1);
+	m_CPPToolTip.SetMaxTipWidth(250);
+	// EFFECT_SOFTBUMP
+	// EFFECT_DIAGSHADE
+	//m_CPPToolTip.SetEffectBk(CPPDrawManager::EFFECT_SOFTBUMP,10);
+
+	m_CPPToolTip.SetSize(CPPToolTip::PPTTSZ_ROUNDED_CX, 1);
+	m_CPPToolTip.SetSize(CPPToolTip::PPTTSZ_ROUNDED_CY, 1);
+	//m_CPPToolTip.SetSize(CPPToolTip::PPTTSZ_MARGIN_CX, 5);
+	//m_CPPToolTip.SetSize(CPPToolTip::PPTTSZ_MARGIN_CY, 5);
+	//m_CPPToolTip.SetSize(CPPToolTip::PPTTSZ_WIDTH_ANCHOR, 0);
+	m_CPPToolTip.SetSize(CPPToolTip::PPTTSZ_HEIGHT_ANCHOR, 0);
+	//m_CPPToolTip.SetSize(CPPToolTip::PPTTSZ_MARGIN_ANCHOR, 0);
+	//m_CPPToolTip.SetSize(CPPToolTip::PPTTSZ_OFFSET_ANCHOR_CX, 0);
+	//m_CPPToolTip.SetSize(CPPToolTip::PPTTSZ_OFFSET_ANCHOR_CY, 0);
+	///////////////////////////	
 	return 0;
 }
 
@@ -410,8 +441,57 @@ LRESULT CMainFrame::UpdateViews(WPARAM wParam, LPARAM lParam)
 	CBotf2Doc* pDoc = (CBotf2Doc*)((CBotf2App*)AfxGetApp())->GetDocument();
 	ASSERT(pDoc);
 	
+	MYTRACE(MT::LEVEL_INFO, "Getting Message to UpdateViews...");
 	// Views ihre Arbeiten zu jeder neuen Runde machen lassen
-	pDoc->DoViewWorkOnNewRound();	
+	pDoc->DoViewWorkOnNewRound();
+	MYTRACE(MT::LEVEL_INFO, "Updating all Views done\n");
 
 	return TRUE;
+}
+
+BOOL CMainFrame::PreTranslateMessage(MSG* pMsg)
+{
+	// TODO: Fügen Sie hier Ihren spezialisierten Code ein, und/oder rufen Sie die Basisklasse auf.
+	m_CPPToolTip.RelayEvent(pMsg);
+
+	return CFrameWnd::PreTranslateMessage(pMsg);
+}
+
+bool CMainFrame::AddToTooltip( CWnd* pWnd, CString sTip )
+{
+	if (!pWnd)
+		return false;
+
+	if (!m_CPPToolTip.GetSafeHwnd())
+	{
+		MYTRACE(MT::LEVEL_WARNING, "AddToTooltip not possible: tooltip hwnd is null\n");
+		return false;
+	}
+
+	m_CPPToolTip.AddTool(pWnd, sTip);
+	return true;
+}
+
+void CMainFrame::NotifyCPPTooltip( NMHDR* pNMHDR, LRESULT* result )
+{
+	*result = 0;
+	NM_PPTOOLTIP_DISPLAY * pNotify = (NM_PPTOOLTIP_DISPLAY*)pNMHDR;
+	
+	CWnd* pWnd = CWnd::FromHandle(pNotify->hwndTool);
+	// Galaxieview
+	if  (pWnd->IsKindOf(RUNTIME_CLASS(CGalaxyMenuView)))
+	{
+		pNotify->ti->sTooltip = ((CGalaxyMenuView*)pWnd)->CreateTooltip();
+		return;
+	}	
+	// untere View
+	else if (pWnd->IsKindOf(RUNTIME_CLASS(CBottomBaseView)))
+	{
+		pNotify->ti->sTooltip = ((CBottomBaseView*)pWnd)->CreateTooltip();
+		return;
+	}
+	
+	// default
+	pNotify->ti->sTooltip = "";
+	return;
 }

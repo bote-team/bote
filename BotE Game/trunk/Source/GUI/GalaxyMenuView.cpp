@@ -14,6 +14,7 @@
 #include "Races\RaceController.h"
 #include "Ships\Fleet.h"
 #include "IniLoader.h"
+#include "HTMLStringBuilder.h"
 
 BOOLEAN CGalaxyMenuView::m_bDrawTradeRoute = FALSE;
 CTradeRoute CGalaxyMenuView::m_TradeRoute;
@@ -483,6 +484,8 @@ void CGalaxyMenuView::OnInitialUpdate()
 	m_bScrollToHome = TRUE;
 
 	pDoc->SetKO(pDoc->GetRaceKO(m_pPlayersRace->GetRaceID()));
+
+	pDoc->GetMainFrame()->AddToTooltip(this);
 
 	CScrollView::OnInitialUpdate();
 }
@@ -1287,6 +1290,45 @@ void CGalaxyMenuView::GenerateGalaxyMap()
 			delete stars[i];
 			stars[i] = NULL;
 		}
+}
+
+///	Funktion erstellt zur aktuellen Mouse-Position einen HTML Tooltip
+/// @return	der erstellte Tooltip-Text
+CString CGalaxyMenuView::CreateTooltip(void)
+{
+	CMajor* pMajor = m_pPlayersRace;
+	ASSERT(pMajor);
+	if (!pMajor)
+		return "";
+	
+	// Wo sind wir
+	CPoint pt;
+	GetCursorPos(&pt);
+	ScreenToClient(&pt);	
+	pt += GetScrollPosition();
+	UnZoom(&pt);
+
+	// Sektor, über dem sich die Maus befindet, ermitteln
+	struct::Sector ko = pMajor->GetStarmap()->GetClickedSector(pt);
+	if (PT_IN_RECT(ko, 0, 0, STARMAP_SECTORS_HCOUNT, STARMAP_SECTORS_VCOUNT))
+	{
+		CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+		CSector* pSector = &(pDoc->GetSector(ko.x, ko.y));
+		CString sTip;
+		if (pSector->GetScanned(pMajor->GetRaceID()) == FALSE)
+			sTip = CResourceManager::GetString("UNKNOWN");
+		else if (pSector->GetKnown(pMajor->GetRaceID()) == FALSE)
+			sTip.Format("%s %c%i", CResourceManager::GetString("SECTOR"),(char)(ko.y+97), ko.x+1);
+		else
+			sTip = pDoc->GetSector(ko.x, ko.y).GetName(true);
+
+		sTip = CHTMLStringBuilder::GetHTMLColor(sTip);
+		sTip = CHTMLStringBuilder::GetHTMLHeader(sTip, _T("h5"));
+		sTip = CHTMLStringBuilder::GetHTMLCenter(sTip);
+		return sTip;
+	}
+	
+	return "";
 }
 
 /*

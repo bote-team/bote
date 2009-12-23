@@ -22,6 +22,7 @@
 #define VERT_PROPORTION	0.732421875
 
 #include "MultiSplitterView.h"
+#include "PPTooltip.h"
 
 class CMainFrame : public CFrameWnd
 {	
@@ -77,6 +78,12 @@ public:
 	/// @return Zeiger auf Splitterwindow
 	CMultiSplitterView* GetSplitterWindow() {return &m_wndSplitter;}
 
+	/// Funktion registriert eine View oder ein Control beim Tooltip. Erst nachdem die View registriert wurde
+	/// kann sie auch ToolTips anzeigen.
+	/// @param pWnd Fenster
+	/// @return <code>true</code> wenn View registriert werden konnte, sonst <code>false</code>
+	bool AddToTooltip(CWnd* pWnd, CString sTip = _T(""));
+
 // Überladungen
 	// Vom Klassenassistenten generierte Überladungen virtueller Funktionen
 	//{{AFX_VIRTUAL(CMainFrame)
@@ -100,17 +107,20 @@ protected:  // Eingebundene Elemente der Steuerleiste
 	CReBar      m_wndReBar;
 	CDialogBar  m_wndDlgBar;
 	CMultiSplitterView m_wndSplitter;
+	CPPToolTip	m_CPPToolTip;
 
 // Generierte Message-Map-Funktionen
 protected:
 	//{{AFX_MSG(CMainFrame)
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
+	afx_msg void NotifyCPPTooltip(NMHDR* pNMHDR, LRESULT* result);
 	afx_msg LRESULT UpdateViews(WPARAM, LPARAM);
 		// HINWEIS - An dieser Stelle werden Member-Funktionen vom Klassen-Assistenten eingefügt und entfernt.
 		//    Innerhalb dieser generierten Quelltextabschnitte NICHTS VERÄNDERN!
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 public:
+	virtual BOOL PreTranslateMessage(MSG* pMsg);
 };
 
 /////////////////////////////////////////////////////////////////////////////

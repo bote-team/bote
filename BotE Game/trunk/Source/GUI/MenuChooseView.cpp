@@ -295,7 +295,7 @@ void CMenuChooseView::OnLButtonUp(UINT nFlags, CPoint point)
 		CalcDeviceRect(r);
 		InvalidateRect(r, FALSE);
 		CSoundManager::GetInstance()->StopMessages(TRUE);
-		client.EndOfRound(pDoc);
+		client.EndOfRound(pDoc);		
 	}
 	short button = -1;
 	for (int i = 0; i < m_Buttons.GetSize(); i++)

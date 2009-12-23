@@ -65,6 +65,8 @@ void CBottomBaseView::OnInitialUpdate()
 
 	// Größe der View in logischen Koordinaten
 	m_TotalSize = CSize(1075, 249);
+
+	pDoc->GetMainFrame()->AddToTooltip(this);
 }
 
 BOOL CBottomBaseView::OnEraseBkgnd(CDC* pDC)

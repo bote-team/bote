@@ -20,6 +20,11 @@ protected:
 
 public:
 	virtual void OnDraw(CDC* pDC);      // overridden to draw this view
+	
+	///	Funktion erstellt zur aktuellen Mouse-Position einen HTML Tooltip
+	/// @return	der erstellte Tooltip-Text
+	virtual CString CreateTooltip(void);
+
 #ifdef _DEBUG
 	virtual void AssertValid() const;
 #ifndef _WIN32_WCE
@@ -31,7 +36,7 @@ private:
 	// Funktionen
 
 	// Attribute
-	CRect* m_arroundThePlanets;
+	CRect* m_arroundThePlanets;	
 
 protected:
 	DECLARE_MESSAGE_MAP()

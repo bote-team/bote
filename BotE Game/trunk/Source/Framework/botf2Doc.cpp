@@ -385,6 +385,7 @@ void CBotf2Doc::Serialize(CArchive& ar)
 /// Serialisiert die Daten, welche am Anfang des Spiels einmal gesendet werden müssen.
 void CBotf2Doc::SerializeBeginGameData(CArchive& ar)
 {
+	m_bDataReceived = false;
 	// senden auf Serverseite
 	if (ar.IsStoring())
 	{
@@ -427,9 +428,10 @@ void CBotf2Doc::SerializeBeginGameData(CArchive& ar)
 
 void CBotf2Doc::SerializeNextRoundData(CArchive &ar)
 {
+	m_bDataReceived = false;
 	// TODO Daten der nächsten Runde serialisieren; auf Server-Seite senden, auf Client-Seite empfangen
 	if (ar.IsStoring())
-	{
+	{		
 		MYTRACE(MT::LEVEL_INFO, "Server is sending NextRoundData to client...\n");
 		// Server-Dokument
 		// ZU ERLEDIGEN: Hier Code zum Speichern einfügen

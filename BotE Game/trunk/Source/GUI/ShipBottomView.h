@@ -40,8 +40,16 @@ public:
 	/// @param is Wahrheitswert: <code>TRUE</code> für Stationen, <code>FALSE</code> für Schiffe
 	static void SetShowStation(BOOLEAN is) {m_bShowStation = is;}
 
+	///	Funktion erstellt zur aktuellen Mouse-Position einen HTML Tooltip
+	/// @return	der erstellte Tooltip-Text
+	virtual CString CreateTooltip(void);
+
 private:
 	// Funktionen
+	/// Funktion ermittelt die Nummer des Schiffes im Array, über welches die Maus bewegt wurde.
+	/// @param pt Mauskoordinate
+	/// @return Nummer des Schiffes im Schiffsarray (<code>-1</code> wenn kein Schiff markiert wurde)
+	int GetMouseOverShip(CPoint& pt);
 	
 	// Attribute
 	CRect m_RectForTheShip;					///< Das Rechteck für das Schiff worüber wir die Maus bewegt haben
