@@ -192,7 +192,11 @@ void CGalaxyMenuView::OnDraw(CDC* dc)
 	CSize size(STARMAP_TOTALWIDTH, STARMAP_TOTALHEIGHT);
 	Zoom(&size);	
 	pDC->SetViewportExt(size);
-	pDC->SetViewportOrg(-GetScrollPosition());
+
+	m_ptViewOrigin = CPoint(posX, posY);
+	CPoint ptOrg(posX - GetScrollPosition().x, posY - GetScrollPosition().y);
+	//pDC->SetViewportOrg(-GetScrollPosition());
+	pDC->SetViewportOrg(ptOrg);
 	// die Koordinaten der folgenden Zeichenoperationen werden automatisch gezoomt
 	
 	// --- Gitternetztlinien zeichnen ---
@@ -622,8 +626,9 @@ void CGalaxyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 	// Das hier alles nur machen, wenn wir in der Galaxiemap-Ansicht sind	
 	// Mauskoordinaten in ungezoomte Koordinaten der Starmap umrechnen
 	CPoint pt(point);
-	pt += GetScrollPosition();
+	pt += GetScrollPosition() - m_ptViewOrigin;
 	UnZoom(&pt);
+	
 
 	if (!m_nRange)
 	{
@@ -690,8 +695,14 @@ void CGalaxyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			// konnten erfolgreich eine hinzufügen aufgrund der Bevölkerung
 			if (pDoc->m_Sector[sector.x][sector.y].GetSunSystem() == TRUE && pDoc->m_System[p.x][p.y].AddTradeRoute(CPoint(sector.x,sector.y), pDoc->m_System, pMajor->GetEmpire()->GetResearch()->GetResearchInfo()))
 			{
+				// wurde keine hinzugefügt, dann fertig
+				if (numberOfRoutes == pDoc->m_System[p.x][p.y].GetTradeRoutes()->GetSize())
+				{
+					m_bDrawTradeRoute = FALSE;
+					Invalidate();
+				}
 				// jetzt diplomatische Beziehung checken
-				if (pDoc->m_System[p.x][p.y].GetTradeRoutes()->GetAt(pDoc->m_System[p.x][p.y].GetTradeRoutes()->GetUpperBound()).CheckTradeRoute(p, CPoint(sector.x, sector.y), pDoc))
+				else if (pDoc->m_System[p.x][p.y].GetTradeRoutes()->GetAt(pDoc->m_System[p.x][p.y].GetTradeRoutes()->GetUpperBound()).CheckTradeRoute(p, CPoint(sector.x, sector.y), pDoc))
 				{
 					// wenn wir noch weitere Handelsrouten hinzufügen können, dann in der Ansicht bleiben
 					if (pDoc->m_System[p.x][p.y].CanAddTradeRoute(pMajor->GetEmpire()->GetResearch()->GetResearchInfo()))
@@ -792,7 +803,7 @@ BOOL CGalaxyMenuView::OnMouseWheel(UINT nFlags, short zDelta, CPoint point)
 
 	// Sektor unter dem Mauscursor ermitteln
 	CPoint pt(point);
-	pt += GetScrollPosition();
+	pt += GetScrollPosition() - m_ptViewOrigin;
 	UnZoom(&pt);
 	struct::Sector sector = pMajor->GetStarmap()->GetClickedSector(pt);
 
@@ -869,7 +880,7 @@ void CGalaxyMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 
 	// Wenn wir uns in der Galaxieansicht befinden
 	CPoint pt(point);
-	pt += GetScrollPosition();
+	pt += GetScrollPosition() - m_ptViewOrigin;
 	UnZoom(&pt);		
 	if (!m_nRange)
 	{
@@ -961,7 +972,7 @@ void CGalaxyMenuView::OnMouseMove(UINT nFlags, CPoint point)
 
 		// Mauskoordinaten in ungezoomte Koordinaten der Starmap umrechnen
 		CPoint pt(point);
-		pt += GetScrollPosition();
+		pt += GetScrollPosition() - m_ptViewOrigin;
 		UnZoom(&pt);
 
 		// Sektor, über dem sich die Maus befindet, ermitteln
@@ -995,7 +1006,7 @@ void CGalaxyMenuView::OnMouseMove(UINT nFlags, CPoint point)
 
 		// Mauskoordinaten in ungezoomte Koordinaten der Starmap umrechnen
 		CPoint pt(point);
-		pt += GetScrollPosition();
+		pt += GetScrollPosition() - m_ptViewOrigin;
 		UnZoom(&pt);
 
 		// Sektor, über dem sich die Maus befindet, ermitteln
@@ -1017,7 +1028,7 @@ void CGalaxyMenuView::OnMouseMove(UINT nFlags, CPoint point)
 
 		// Mauskoordinaten in ungezoomte Koordinaten der Starmap umrechnen
 		CPoint pt(point);
-		pt += GetScrollPosition();
+		pt += GetScrollPosition() - m_ptViewOrigin;
 		UnZoom(&pt);
 
 		// Sektor, über dem sich die Maus befindet, ermitteln
@@ -1305,7 +1316,7 @@ CString CGalaxyMenuView::CreateTooltip(void)
 	CPoint pt;
 	GetCursorPos(&pt);
 	ScreenToClient(&pt);	
-	pt += GetScrollPosition();
+	pt += GetScrollPosition() - m_ptViewOrigin;
 	UnZoom(&pt);
 
 	// Sektor, über dem sich die Maus befindet, ermitteln

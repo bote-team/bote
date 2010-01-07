@@ -1,5 +1,5 @@
 /*
- *   Copyright (C)2004-2009 Sir Pustekuchen
+ *   Copyright (C)2004-2010 Sir Pustekuchen
  *
  *   Author   :  Sir Pustekuchen
  *   Home     :  http://birth-of-the-empires.de.vu
@@ -125,7 +125,7 @@ public:
 		
 	// zum Schreiben der Membervariabblen
 	// Funktion setzt den neuen Besitzer des Systems. Übergeben wird der Besitzer.
-	void SetOwnerOfSystem(const CString& sOwnerOfSystem) {m_sOwnerOfSystem = sOwnerOfSystem;}
+	void SetOwnerOfSystem(const CString& sOwnerOfSystem);
 	
 	// Funktion setzt die Bevölkerungsanzahl des Systems. Übergeben wird die Bevölkerung aller Planeten des Sektors.
 	// Gleichzeitig überprüft die Funktion auch, ob man eine weitere Handelsroute aufgrund der Bevölkerung bekommt, dann

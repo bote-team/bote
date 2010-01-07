@@ -529,6 +529,7 @@ BOOLEAN CPlanet::SetNeededTerraformPoints(BYTE sub)
 	m_iNeededTerraformPoints -= sub;	
 	if (m_iNeededTerraformPoints <= 0)
 	{
+		m_bIsTerraforming = FALSE;
 		m_bTerraformed = TRUE;
 		return TRUE;	
 	}

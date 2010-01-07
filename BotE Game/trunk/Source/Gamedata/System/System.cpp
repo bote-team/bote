@@ -444,6 +444,24 @@ void CSystem::SetBuildableBuildings(int RunningNumber, BOOLEAN TrueOrFalse)
 		m_BuildableBuildings.Add(RunningNumber);
 }
 
+// Funktion setzt den neuen Besitzer des Systems. Übergeben wird der Besitzer.
+void CSystem::SetOwnerOfSystem(const CString& sOwnerOfSystem)
+{
+	// ändert sich nichts, dann aus der Funktion springen
+	if (m_sOwnerOfSystem == sOwnerOfSystem)
+		return;
+
+	// neuen Besitzer festlegen
+	m_sOwnerOfSystem = sOwnerOfSystem;
+
+	// alle alten Ressourcen- und Handelsrouten löschen
+	m_TradeRoutes.RemoveAll();
+	m_ResourceRoutes.RemoveAll();
+
+	// Bauliste hart löschen
+	m_AssemblyList.Reset();
+}
+
 // Funktion sagt ob ein bestimmtes Gebäudeupdate in dem System baubar ist oder nicht. Als Parameter werden dafür
 // die RunningNumber des gewünschten Gebäudes und der Wert übergeben.
 void CSystem::SetBuildableUpdates(int RunningNumber, BOOLEAN TrueOrFalse)
@@ -888,26 +906,26 @@ BOOLEAN CSystem::CalculateStorages(CResearchInfo* researchInfo, int diliAdd)
 	m_iDilithiumStore += m_Production.m_iDilithiumProd + diliAdd;
 	
 	// Lagerobergrenzen
-	if (m_iFoodStore > 25000)
-		m_iFoodStore = 25000;
-	if (m_iTitanStore > 125000)
-		m_iTitanStore = 125000;
-	if (m_iDeuteriumStore > 125000)
-		m_iDeuteriumStore = 125000;
-	if (m_iDuraniumStore > 125000)
-		m_iDuraniumStore = 125000;
-	if (m_iCrystalStore > 125000)
-		m_iCrystalStore = 125000;
-	if (m_iIridiumStore > 125000)
-		m_iIridiumStore = 125000;
+	if (m_iFoodStore > MAX_FOOD_STORE)
+		m_iFoodStore = MAX_FOOD_STORE;
+	if (m_iTitanStore > MAX_RES_STORE)
+		m_iTitanStore = MAX_RES_STORE;
+	if (m_iDeuteriumStore > MAX_RES_STORE)
+		m_iDeuteriumStore = MAX_RES_STORE;
+	if (m_iDuraniumStore > MAX_RES_STORE)
+		m_iDuraniumStore = MAX_RES_STORE;
+	if (m_iCrystalStore > MAX_RES_STORE)
+		m_iCrystalStore = MAX_RES_STORE;
+	if (m_iIridiumStore > MAX_RES_STORE)
+		m_iIridiumStore = MAX_RES_STORE;
 	
 	short multi = 1;
 	///// HIER DIE BONI DURCH SPEZIALFORSCHUNG //////
 	// Hier die Boni durch die Uniqueforschung "Lager und Transport" -> doppeltes Dilithiumlager
 	if (researchInfo->GetResearchComplex(10)->GetFieldStatus(1) == RESEARCHED)
 		multi = researchInfo->GetResearchComplex(10)->GetBonus(1);
-	if ((int)m_iDilithiumStore > 100 * multi)
-		m_iDilithiumStore = 100 * multi;
+	if ((int)m_iDilithiumStore > MAX_DERITIUM_STORE * multi)
+		m_iDilithiumStore = MAX_DERITIUM_STORE * multi;
 
 	m_iMoral += (short)m_Production.m_iMoralProd;
 	
@@ -1002,8 +1020,7 @@ void CSystem::CalculateBuildableBuildings(CSector* sector, BuildingInfoArray* bu
 
 	for (int k = 0; k < m_BuildableBuildings.GetSize(); )
 		m_BuildableBuildings.RemoveAt(k);
-	m_BuildableBuildings.RemoveAll();
-
+	m_BuildableBuildings.RemoveAll();	
 /*
 	Algorithmus:
 
@@ -1136,7 +1153,7 @@ void CSystem::CalculateBuildableBuildings(CSector* sector, BuildingInfoArray* bu
 // ------------------------------------ 2 -------------------------------------------- //
 	// alle anderen Gebäudeinfos durchgehen
 	for (int i = 0; i < buildingInfo->GetSize(); i++)
-	{	
+	{
 		// Überprüfen, dass dieses Gebäude nicht schon in der Liste der 
 		// baubaren Gebäude und Updates vorhanden ist
 		BOOLEAN found = FALSE;

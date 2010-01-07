@@ -385,6 +385,7 @@ void CShipInfo::DrawShipInformation(Graphics* g, CRect rect, Gdiplus::Font* font
 		g->DrawString(CResourceManager::GetString("MANEUVERABILITY").AllocSysString(), -1, font, RectF((REAL)r.left, (REAL)r.top, (REAL)r.Width(), (REAL)r.Height()), &fontFormat, &fontBrush);
 		switch (m_byManeuverability)
 		{
+		case 9: s = CResourceManager::GetString("PHENOMENAL");	break;
 		case 8:	s = CResourceManager::GetString("EXCELLENT");	break;
 		case 7:	s = CResourceManager::GetString("VERYGOOD");	break;
 		case 6:	s = CResourceManager::GetString("GOOD");		break;

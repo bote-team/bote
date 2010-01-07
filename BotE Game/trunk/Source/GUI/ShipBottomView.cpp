@@ -1102,7 +1102,7 @@ CString CShipBottomView::CreateTooltip(void)
 	sType += CHTMLStringBuilder::GetHTMLStringNewLine();
 
 	// Bewegung anzeigen
-	CString sMovementHead = _T("Bewegung");
+	CString sMovementHead = CResourceManager::GetString("MOVEMENT");
 	sMovementHead = CHTMLStringBuilder::GetHTMLColor(sMovementHead, _T("silver"));
 	sMovementHead = CHTMLStringBuilder::GetHTMLHeader(sMovementHead, _T("h4"));
 	sMovementHead = CHTMLStringBuilder::GetHTMLCenter(sMovementHead);
@@ -1140,6 +1140,7 @@ CString CShipBottomView::CreateTooltip(void)
 	sMovement += CResourceManager::GetString("MANEUVERABILITY") + _T(": ");
 	switch (pShip->GetManeuverability())
 	{
+	case 9:	sMovement += CResourceManager::GetString("PHENOMENAL");	break;
 	case 8:	sMovement += CResourceManager::GetString("EXCELLENT");	break;
 	case 7:	sMovement += CResourceManager::GetString("VERYGOOD");	break;
 	case 6:	sMovement += CResourceManager::GetString("GOOD");		break;
@@ -1185,7 +1186,7 @@ CString CShipBottomView::CreateTooltip(void)
 	sBeams += CHTMLStringBuilder::GetHTMLStringNewLine();
 	
 	CString sBeamWeaponHead;
-	sBeamWeaponHead.Format("%s (%s: %d)", _T("Strahlenwaffen"), _T("Schaden"), nOverallDmg);
+	sBeamWeaponHead.Format("%s (%s: %d)", CResourceManager::GetString("BEAMWEAPONS"), CResourceManager::GetString("DAMAGE"), nOverallDmg);
 	sBeamWeaponHead = CHTMLStringBuilder::GetHTMLColor(sBeamWeaponHead, _T("silver"));
 	sBeamWeaponHead = CHTMLStringBuilder::GetHTMLHeader(sBeamWeaponHead, _T("h4"));
 	sBeamWeaponHead = CHTMLStringBuilder::GetHTMLCenter(sBeamWeaponHead);
@@ -1210,7 +1211,7 @@ CString CShipBottomView::CreateTooltip(void)
 	sTorps = CHTMLStringBuilder::GetHTMLCenter(sTorps);
 	sTorps += CHTMLStringBuilder::GetHTMLStringNewLine();
 	CString sTupeWeaponHead;
-	sTupeWeaponHead.Format("%s (%s: %d)", _T("Torpedowerfer"), _T("Schaden"), nOverallDmg);
+	sTupeWeaponHead.Format("%s (%s: %d)", CResourceManager::GetString("TORPEDOWEAPONS"), CResourceManager::GetString("DAMAGE"), nOverallDmg);
 	sTupeWeaponHead = CHTMLStringBuilder::GetHTMLColor(sTupeWeaponHead, _T("silver"));
 	sTupeWeaponHead = CHTMLStringBuilder::GetHTMLHeader(sTupeWeaponHead, _T("h4"));
 	sTupeWeaponHead = CHTMLStringBuilder::GetHTMLCenter(sTupeWeaponHead);
@@ -1267,6 +1268,7 @@ CString CShipBottomView::CreateTooltip(void)
 	CString sManeuver;
 	switch (pShip->GetManeuverability())
 	{
+	case 9:	sManeuver = CResourceManager::GetString("PHENOMENAL");	break;
 	case 8:	sManeuver = CResourceManager::GetString("EXCELLENT");	break;
 	case 7:	sManeuver = CResourceManager::GetString("VERYGOOD");	break;
 	case 6:	sManeuver = CResourceManager::GetString("GOOD");		break;

@@ -31,6 +31,8 @@ BEGIN_MESSAGE_MAP(CDiplomacyMenuView, CMainBaseView)
 	ON_WM_MOUSEWHEEL()
 	ON_WM_KEYDOWN()
 	ON_WM_LBUTTONDBLCLK()
+	ON_WM_XBUTTONDOWN()
+	ON_WM_RBUTTONDOWN()
 END_MESSAGE_MAP()
 
 CDiplomacyMenuView::CDiplomacyMenuView()
@@ -1812,6 +1814,7 @@ void CDiplomacyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 					for (int res = TITAN; res <= DILITHIUM; res++)
 						m_OutgoingInfo.m_nResources[res] = 0;
 					Invalidate();
+					return;
 				}
 				
 				// Wenn wir auf den kleinen Systembutton geklickt haben um ein anderes System zu wählen
@@ -1833,6 +1836,7 @@ void CDiplomacyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 						current = 0;
 					m_OutgoingInfo.m_ptKO = pPlayer->GetEmpire()->GetSystemList()->GetAt(current).ko;
 					Invalidate();
+					return;
 				}
 				
 				// Wenn wir auf den kleinen Button gedrückt haben um bei einer Bestechung den Gegner zu wählen
@@ -1886,6 +1890,7 @@ void CDiplomacyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 						m_OutgoingInfo.m_nDuration = 0;
 					CalcDeviceRect(rect);
 					InvalidateRect(rect);
+					return;
 				}
 				
 				// Wenn wir auf den kleinen Button geklickt haben um bei einem Kriegspakt den Kriegsgegner wählen zu wollen
@@ -1919,7 +1924,8 @@ void CDiplomacyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 								}							
 						}
 						CalcDeviceRect(rect);
-						InvalidateRect(rect);					
+						InvalidateRect(rect);
+						return;
 					}
 				}
 			}
@@ -1936,6 +1942,7 @@ void CDiplomacyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 				this->TakeOrGetbackResLat(true);
 				pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
 				Invalidate();
+				return;
 			}
 			
 			// Wenn wir auf den Abbrechenbutton geklicked haben
@@ -1954,7 +1961,8 @@ void CDiplomacyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 						break;
 					}
 				}
-				Invalidate();				
+				Invalidate();
+				return;
 			}
 		}
 	}
@@ -2204,4 +2212,94 @@ void CDiplomacyMenuView::CreateButtons()
 	m_DiplomacyMinorOfferButtons.Add(new CMyButton(CPoint(400,265) , CSize(160,40), CResourceManager::GetString("BTN_WAR"), fileN, fileI, fileA));
 	m_DiplomacyMinorOfferButtons.Add(new CMyButton(CPoint(200,315) , CSize(160,40), CResourceManager::GetString("BTN_PRESENT"), fileN, fileI, fileA));
 	m_DiplomacyMinorOfferButtons.Add(new CMyButton(CPoint(400,315) , CSize(160,40), CResourceManager::GetString("BTN_CORRUPTION"), fileN, fileI, fileA));	
+}
+void CDiplomacyMenuView::OnXButtonDown(UINT nFlags, UINT nButton, CPoint point)
+{
+	// Dieses Feature erfordert mindestens Windows 2000.
+	// Die Symbole _WIN32_WINNT und WINVER müssen >= 0x0500 sein.
+	// TODO: Fügen Sie hier Ihren Meldungsbehandlungscode ein, und/oder benutzen Sie den Standard.
+	
+	CMainBaseView::OnXButtonDown(nFlags, nButton, point);
+}
+
+void CDiplomacyMenuView::OnRButtonDown(UINT nFlags, CPoint point)
+{
+	// TODO: Fügen Sie hier Ihren Meldungsbehandlungscode ein, und/oder benutzen Sie den Standard.
+	
+	// Wenn wir in der Angebotsansicht sind, überprüfen, auf welchen Angebotsbutton wir gedrückt haben
+	if (m_bySubMenu == 1 && m_sClickedOnRace != "")
+	{
+		CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+		ASSERT(pDoc);
+
+		if (!pDoc->m_bDataReceived)
+			return;
+
+		CMajor* pPlayer = m_pPlayersRace;
+		ASSERT(pPlayer);
+
+		CalcLogicalPoint(point);
+
+		CRace* pClickedRace = pDoc->GetRaceCtrl()->GetRace(m_sClickedOnRace);
+
+		// Sind wir in dem Diplomatiemenue für Geschenke geben, Freundschaft, Kooperation, Angliederung usw. anbieten und handelt es sich nicht um eine Kriegserkärung
+		if (m_OutgoingInfo.m_nType != NO_AGREEMENT)
+		{
+			if (m_bShowSendButton == true && m_OutgoingInfo.m_nType != WAR)
+			{				
+				// Wenn wir auf den kleinen Ressourcenbutton geklickt haben, nächste Ressource anzeigen
+				CRect rect;
+				rect.SetRect(510,518,630,548);
+				if (rect.PtInRect(point))
+				{
+					if (m_byWhichResourceIsChosen > TITAN)
+						m_byWhichResourceIsChosen--;
+					else
+						m_byWhichResourceIsChosen = DILITHIUM;
+					
+					// alle "alten" Ressourcenmengen löschen
+					for (int res = TITAN; res <= DILITHIUM; res++)
+						m_OutgoingInfo.m_nResources[res] = 0;
+					Invalidate();
+					return;
+				}
+				
+				// Wenn wir auf den kleinen Systembutton geklickt haben um ein anderes System zu wählen
+				rect.SetRect(510,605,630,635);
+				if (rect.PtInRect(point) && m_OutgoingInfo.m_nType != DIP_REQUEST)
+				{
+					int current = -1;
+					for (int i = 0; i < pPlayer->GetEmpire()->GetSystemList()->GetSize(); i++)
+						if (pPlayer->GetEmpire()->GetSystemList()->GetAt(i).ko == m_OutgoingInfo.m_ptKO)
+							current = i;
+					if (current != -1)
+					{
+						current--;
+						// Auch wieder alle Mengen auf Null zurücksetzen
+						for (int res = TITAN; res <= DILITHIUM; res++)
+							m_OutgoingInfo.m_nResources[res] = 0;
+					}
+					if (current == 0)
+						current = pPlayer->GetEmpire()->GetSystemList()->GetUpperBound();
+					m_OutgoingInfo.m_ptKO = pPlayer->GetEmpire()->GetSystemList()->GetAt(current).ko;
+					Invalidate();
+					return;
+				}
+				
+				// Wenn wir auf den kleinen Button geklickt haben um die Vertragsdauer zu ändern, geht nur bei Angebot an Majorrace
+				rect.SetRect(510,438,630,468);				
+				if (rect.PtInRect(point) && pClickedRace->GetType() == MAJOR && m_OutgoingInfo.m_nType != PRESENT && m_OutgoingInfo.m_nType != DIP_REQUEST && m_OutgoingInfo.m_nType != WAR_PACT)
+				{
+					m_OutgoingInfo.m_nDuration -= 10;
+					if (m_OutgoingInfo.m_nDuration < 0)
+						m_OutgoingInfo.m_nDuration = 100;
+					CalcDeviceRect(rect);
+					InvalidateRect(rect);
+					return;
+				}
+			}
+		}
+	}
+
+	CMainBaseView::OnRButtonDown(nFlags, point);
 }

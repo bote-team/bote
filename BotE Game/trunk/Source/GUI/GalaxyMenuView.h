@@ -1,5 +1,5 @@
 /*
- *   Copyright (C)2004-2009 Sir Pustekuchen
+ *   Copyright (C)2004-2010 Sir Pustekuchen
  *
  *   Author   :  Sir Pustekuchen
  *   Home     :  http://birth-of-the-empires.de.vu
@@ -34,7 +34,8 @@ protected: // Nur aus Serialisierung erzeugen
 	int m_nRange;
 	Sector oldtarget;
 	Sector m_oldSelection;	
-	bool m_bUpdateOnly;	
+	bool m_bUpdateOnly;
+	CPoint m_ptViewOrigin;			///< oberer linker Punkt der View, wenn Hintergrund zentriert wird (bei sehr weitem Rauszoom)
 	
 	// Hier Variablen, wenn wir eine Handelroute ziehen wollen
 	static BOOLEAN m_bDrawTradeRoute;		///< sollen wir bei MouseMove die Handelroute zeigen

@@ -25,6 +25,7 @@
 #include "TradeBottomView.h"
 #include "ShipDesignBottomView.h"
 #include "SmallInfoView.h"
+#include "IniLoader.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -111,9 +112,13 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	m_CPPToolTip.SetNotify();
 	m_CPPToolTip.SetBehaviour(PPTOOLTIP_MULTIPLE_SHOW);
 
+	CIniLoader* pIni = CIniLoader::GetInstance();
+	ASSERT(pIni);
+	int nDelayTime = 750;
+	pIni->ReadValue("Video", "TOOLTIPDELAY", nDelayTime);
 	// Times (in ms)
-	m_CPPToolTip.SetDelayTime(PPTOOLTIP_TIME_INITIAL, 750);	// nach 1. Sekunde wird es angezeigt
-	m_CPPToolTip.SetDelayTime(PPTOOLTIP_TIME_AUTOPOP, 200000);	// how long it stays
+	m_CPPToolTip.SetDelayTime(PPTOOLTIP_TIME_INITIAL, nDelayTime);	// nach 1. Sekunde wird es angezeigt
+	m_CPPToolTip.SetDelayTime(PPTOOLTIP_TIME_AUTOPOP, 200000);		// how long it stays
 	
 	//m_CPPToolTip.SetDefaultSizes(FALSE);
 	m_CPPToolTip.SetTransparency(20);

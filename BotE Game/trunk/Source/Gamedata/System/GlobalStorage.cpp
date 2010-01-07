@@ -35,38 +35,15 @@ void CGlobalStorage::Serialize(CArchive &ar)
 		ar << m_iTakeFromStorage;
 		for (int i = TITAN; i <= IRIDIUM; i++)
 			ar << m_iRessourceStorages[i];
-/*		ar << m_ResIn.GetSize();
-		for (int i = 0; i < m_ResIn.GetSize(); i++)
-			m_ResIn.GetAt(i).Serialize(ar);
-		ar << m_ResOut.GetSize();
-		for (int i = 0; i < m_ResOut.GetSize(); i++)
-			m_ResOut.GetAt(i).Serialize(ar);*/
 	}
 	// wenn geladen wird
 	if (ar.IsLoading())
 	{
-		int number = 0;
-		StorageStruct ss;
-
 		ar >> m_byPercentLosing;
 		ar >> m_iMaxTakeFromStorage;
 		ar >> m_iTakeFromStorage;
 		for (int i = TITAN; i <= IRIDIUM; i++)
 			ar >> m_iRessourceStorages[i];
-/*		ar >> number;
-		m_ResIn.RemoveAll();
-		for (int i = 0; i < number; i++)
-		{
-			ss.Serialize(ar);
-			m_ResIn.Add(ss);
-		}
-		ar >> number;
-		m_ResOut.RemoveAll();
-		for (int i = 0; i < number; i++)
-		{
-			ss.Serialize(ar);
-			m_ResOut.Add(ss);
-		}*/
 	}
 }
 
@@ -75,9 +52,9 @@ void CGlobalStorage::Serialize(CArchive &ar)
 //////////////////////////////////////////////////////////////////////
 /// Diese Funktion gibt die Menge der Ressource <code>res</code> zurück, die von dem System mit der Koordinate
 /// <code>ko</code> in das globale Lager kommen sollen.
-USHORT CGlobalStorage::GetAddedResource(BYTE res, CPoint ko) const
+UINT CGlobalStorage::GetAddedResource(BYTE res, CPoint ko) const
 {
-	USHORT resIn = 0;
+	UINT resIn = 0;
 	for (int i = 0; i < m_ResIn.GetSize(); i++)
 		if (m_ResIn.GetAt(i).ko == ko && m_ResIn.GetAt(i).res == res)
 		{
@@ -89,9 +66,9 @@ USHORT CGlobalStorage::GetAddedResource(BYTE res, CPoint ko) const
 
 /// Diese Funktion gibt die Menge der Ressource <code>res</code> zurück, die in das System mit der Koordinate
 /// <code>ko</code> aus dem globale Lager kommen sollen.
-USHORT CGlobalStorage::GetSubResource(BYTE res, CPoint ko) const
+UINT CGlobalStorage::GetSubResource(BYTE res, CPoint ko) const
 {
-	USHORT resOut = 0;
+	UINT resOut = 0;
 	for (int i = 0; i < m_ResOut.GetSize(); i++)
 		if (m_ResOut.GetAt(i).ko == ko && m_ResOut.GetAt(i).res == res)
 		{
@@ -102,9 +79,9 @@ USHORT CGlobalStorage::GetSubResource(BYTE res, CPoint ko) const
 }
 
 /// Diese Funktion gibt die gesamte Menge der Ressource <code>res</code> zurück, die in das globale Lager kommen soll.
-USHORT CGlobalStorage::GetAllAddedResource(BYTE res) const
+UINT CGlobalStorage::GetAllAddedResource(BYTE res) const
 {
-	USHORT resIn = 0;
+	UINT resIn = 0;
 	for (int i = 0; i < m_ResIn.GetSize(); i++)
 		if (m_ResIn.GetAt(i).res == res)
 			resIn += m_ResIn.GetAt(i).resTransfer;
@@ -113,9 +90,9 @@ USHORT CGlobalStorage::GetAllAddedResource(BYTE res) const
 
 /// Diese Funktion gibt die gesamte Menge der Ressource <code>res</code> zurück, die aus dem globalen Lager entfernt
 /// werden soll.
-USHORT CGlobalStorage::GetAllSubResource(BYTE res) const
+UINT CGlobalStorage::GetAllSubResource(BYTE res) const
 {
-	USHORT resOut = 0;
+	UINT resOut = 0;
 	for (int i = 0; i < m_ResOut.GetSize(); i++)
 		if (m_ResOut.GetAt(i).res == res)
 			resOut += m_ResOut.GetAt(i).resTransfer;
@@ -135,9 +112,9 @@ BOOLEAN CGlobalStorage::IsFilled() const
 /// <code>res</code> zum Lagerinhalt. Im Parameter <code>ko</code> wird die Systemkoordinate übergeben,
 /// von wo aus man die Transaktion führt. Der Rückgabewert der Funktion ist eine Menge, einer
 /// Ressource, die in der selben Runde schon aus dem globalen Lager in das System kommen soll.
-USHORT CGlobalStorage::AddRessource(USHORT add, BYTE res, CPoint ko)
+UINT CGlobalStorage::AddRessource(USHORT add, BYTE res, CPoint ko)
 {
-	USHORT getBack = 0;
+	UINT getBack = 0;
 	// Zu Beginn in dem Feld suchen, ob man Ressourcen aus dem globalen Lager in der neuen Runde ins System
 	// verschieben will. Diese werden zuerst entfernt.
 	for (int i = 0; i < m_ResOut.GetSize(); i++)
@@ -192,9 +169,9 @@ USHORT CGlobalStorage::AddRessource(USHORT add, BYTE res, CPoint ko)
 /// wurde und das der Lagerinhalt nicht negativ werden kann. Der Rückgabewert der Funktion ist eine Menge, einer
 /// Ressource, die in der selben Runde schon aus dem gleichen System addiert wurde. Somit kann man die Waren
 /// auch sofort wieder herausnehmen.
-USHORT CGlobalStorage::SubRessource(USHORT sub, BYTE res, CPoint ko)
+UINT CGlobalStorage::SubRessource(USHORT sub, BYTE res, CPoint ko)
 {
-	USHORT getBack = 0;
+	UINT getBack = 0;
 	// Wenn man schon aus diesem System Ressourcen ins globale Lager verschieben möchte, so werden erstmal diese
 	// Ressourcen abgezogen. Der Rest wird dann wirklich aus dem globalen Lager genommen.
 	for (int i = 0; i < m_ResIn.GetSize(); i++)

@@ -1,5 +1,5 @@
 /*
- *   Copyright (C)2004-2009 Sir Pustekuchen
+ *   Copyright (C)2004-2010 Sir Pustekuchen
  *
  *   Author   :  Sir Pustekuchen
  *   Home     :  http://birth-of-the-empires.de.vu
@@ -19,6 +19,7 @@ public:
 
 	struct StorageStruct
 	{
+		// das sollte als UINT laufen!
 		USHORT resTransfer;
 		BYTE res;
 		CPoint ko;
@@ -49,24 +50,24 @@ public:
 	 * Diese Funktion gibt die Menge der Ressource <code>res</code> zurück, die von dem System mit der Koordinate
 	 * <code>ko</code> in das globale Lager kommen sollen.
 	 */
-	USHORT GetAddedResource(BYTE res, CPoint ko) const;
+	UINT GetAddedResource(BYTE res, CPoint ko) const;
 
 	/**
 	 * Diese Funktion gibt die Menge der Ressource <code>res</code> zurück, die in das System mit der Koordinate
 	 * <code>ko</code> aus dem globale Lager kommen sollen.
 	 */
-	USHORT GetSubResource(BYTE res, CPoint ko) const;
+	UINT GetSubResource(BYTE res, CPoint ko) const;
 
 	/**
 	 * Diese Funktion gibt die gesamte Menge der Ressource <code>res</code> zurück, die in das globale Lager kommen soll.
 	 */
-	USHORT GetAllAddedResource(BYTE res) const;
+	UINT GetAllAddedResource(BYTE res) const;
 
 	/**
 	 * Diese Funktion gibt die gesamte Menge der Ressource <code>res</code> zurück, die aus dem globalen Lager entfernt
 	 * werden soll.
 	 */
-	USHORT GetAllSubResource(BYTE res) const;
+	UINT GetAllSubResource(BYTE res) const;
 
 	/**
 	 * Diese Funktion gibt den Prozentsatz zurück, mit dem man jede Runde Ressourcen aus dem Lager verliert.
@@ -108,7 +109,7 @@ public:
 	 * von wo aus man die Transaktion führt. Der Rückgabewert der Funktion ist eine Menge, einer
 	 * Ressource, die in der selben Runde schon aus dem globalen Lager in das System kommen soll.
 	 */
-	USHORT AddRessource(USHORT add, BYTE res, CPoint ko);
+	UINT AddRessource(USHORT add, BYTE res, CPoint ko);
 
 	/**
 	 * Diese Funktion subtrahiert die mit dem Parameter <code>sub</code> übergebende Anzahl der Ressource
@@ -118,7 +119,7 @@ public:
 	 * Ressource, die in der selben Runde schon aus dem gleichen System addiert wurde. Somit kann man die Waren
 	 * auch sofort wieder herausnehmen.
 	 */
-	USHORT SubRessource(USHORT sub, BYTE res, CPoint ko);
+	UINT SubRessource(USHORT sub, BYTE res, CPoint ko);
 
 	/**
 	 * Diese Funktion führt am Lagerinhalt alle möglichen Änderungen durch, die bei jeder neuen Runde eintreten

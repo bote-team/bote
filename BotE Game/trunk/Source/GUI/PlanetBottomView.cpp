@@ -388,9 +388,6 @@ void CPlanetBottomView::OnMouseMove(UINT nFlags, CPoint point)
 /// @return	der erstellte Tooltip-Text
 CString CPlanetBottomView::CreateTooltip(void)
 {
-	if (!m_arroundThePlanets)
-		return "";
-	
 	// Wo sind wir
 	CPoint pt;
 	GetCursorPos(&pt);
@@ -406,22 +403,44 @@ CString CPlanetBottomView::CreateTooltip(void)
 		CString sSunColor;
 		switch (pDoc->GetSector(KO).GetSunColor())
 		{
-		case 0: sSunColor = "Blauer Stern";		break;
-		case 1: sSunColor = "Grüner Stern";		break;
-		case 2: sSunColor = "Oranger Stern";	break;
-		case 3: sSunColor = "Roter Riese";		break;
-		case 4: sSunColor = "Violetter Stern";	break;
-		case 5: sSunColor = "Weißer Zwerg";		break;
-		case 6: sSunColor = "Gelber Stern";		break;
+		case 0: sSunColor = CResourceManager::GetString("BLUE_STAR");	break;
+		case 1: sSunColor = CResourceManager::GetString("GREEN_STAR");	break;
+		case 2: sSunColor = CResourceManager::GetString("ORANGE_STAR");	break;
+		case 3: sSunColor = CResourceManager::GetString("RED_STAR");	break;
+		case 4: sSunColor = CResourceManager::GetString("VIOLET_STAR");	break;
+		case 5: sSunColor = CResourceManager::GetString("WHITE_STAR");	break;
+		case 6: sSunColor = CResourceManager::GetString("YELLOW_STAR");	break;
 		}
 		sSunColor = CHTMLStringBuilder::GetHTMLColor(sSunColor);
 		sSunColor = CHTMLStringBuilder::GetHTMLHeader(sSunColor);
 		sSunColor = CHTMLStringBuilder::GetHTMLCenter(sSunColor);
 		sSunColor += CHTMLStringBuilder::GetHTMLStringNewLine();
-		sSunColor += CHTMLStringBuilder::GetHTMLStringHorzLine();
 		sSunColor += CHTMLStringBuilder::GetHTMLStringNewLine();
 		
-		CString sSystemBoni = CHTMLStringBuilder::GetHTMLColor(_T("Boni im System"), _T("silver"));
+		CString sSunDesc;
+		switch (pDoc->GetSector(KO).GetSunColor())
+		{
+		case 0: sSunDesc = CResourceManager::GetString("BLUE_STAR_DESC");	break;
+		case 1: sSunDesc = CResourceManager::GetString("GREEN_STAR_DESC");	break;
+		case 2: sSunDesc = CResourceManager::GetString("ORANGE_STAR_DESC");	break;
+		case 3: sSunDesc = CResourceManager::GetString("RED_STAR_DESC");	break;
+		case 4: sSunDesc = CResourceManager::GetString("VIOLET_STAR_DESC");	break;
+		case 5: sSunDesc = CResourceManager::GetString("WHITE_STAR_DESC");	break;
+		case 6: sSunDesc = CResourceManager::GetString("YELLOW_STAR_DESC");	break;
+		}
+		sSunDesc = CHTMLStringBuilder::GetHTMLColor(sSunDesc);
+		sSunDesc = CHTMLStringBuilder::GetHTMLHeader(sSunDesc, _T("h5"));		
+		sSunDesc += CHTMLStringBuilder::GetHTMLStringNewLine();
+		
+		// wurden keine Planeten angezeigt, das System ist also nicht bekannt, dann hier aufhören
+		if (!m_arroundThePlanets)
+			return sSunColor + sSunDesc;
+		
+		sSunDesc += CHTMLStringBuilder::GetHTMLStringNewLine();
+		sSunDesc += CHTMLStringBuilder::GetHTMLStringHorzLine();
+		sSunDesc += CHTMLStringBuilder::GetHTMLStringNewLine();
+		
+		CString sSystemBoni = CHTMLStringBuilder::GetHTMLColor(CResourceManager::GetString("BONI_IN_SYSTEM"), _T("silver"));
 		sSystemBoni = CHTMLStringBuilder::GetHTMLHeader(sSystemBoni, _T("h4"));
 		sSystemBoni = CHTMLStringBuilder::GetHTMLCenter(sSystemBoni);
 		sSystemBoni += CHTMLStringBuilder::GetHTMLStringNewLine();
@@ -443,23 +462,28 @@ CString CPlanetBottomView::CreateTooltip(void)
 				CString sBoni;
 				switch(j)
 				{
-					case TITAN:		sBoni = CResourceManager::GetString("TITAN"); break;
-					case DEUTERIUM: sBoni = CResourceManager::GetString("DEUTERIUM"); break;
-					case DURANIUM:	sBoni = CResourceManager::GetString("DURANIUM"); break;
-					case CRYSTAL:	sBoni = CResourceManager::GetString("CRYSTAL"); break;
-					case IRIDIUM:	sBoni = CResourceManager::GetString("IRIDIUM"); break;
-					case 6:			sBoni = CResourceManager::GetString("FOOD"); break;
-					case 7:			sBoni = CResourceManager::GetString("ENERGY"); break;
+					case TITAN:		sBoni = CResourceManager::GetString("TITAN_BONUS");		break;
+					case DEUTERIUM: sBoni = CResourceManager::GetString("DEUTERIUM_BONUS"); break;
+					case DURANIUM:	sBoni = CResourceManager::GetString("DURANIUM_BONUS");	break;
+					case CRYSTAL:	sBoni = CResourceManager::GetString("CRYSTAL_BONUS");	break;
+					case IRIDIUM:	sBoni = CResourceManager::GetString("IRIDIUM_BONUS");	break;
+					case 6:			sBoni = CResourceManager::GetString("FOOD_BONUS");		break;
+					case 7:			sBoni = CResourceManager::GetString("ENERGY_BONUS");	break;
 				}
+				
 				CString sBonus;
-				sBonus.Format("%d%% %s Bonus", nBonus, sBoni);
+				sBonus.Format("%d%% %s",nBonus, sBoni);
 				sBonus = CHTMLStringBuilder::GetHTMLColor(sBonus);
 				sBonus = CHTMLStringBuilder::GetHTMLHeader(sBonus, _T("h5"));
 				sSystemBoni += sBonus;				
 			}
 		}
-		return sSunColor + sSystemBoni;
+		return sSunColor + sSunDesc + sSystemBoni;
 	}
+
+	// wurden keine Planeten angezeigt, das System ist also nicht bekannt, dann hier aufhören
+	if (!m_arroundThePlanets)
+		return "";
 
 	// wurde die Maus über einen der Planeten gehalten oder über die Planetenboni?
 	for (int i = 0; i < pDoc->m_Sector[KO.x][KO.y].GetNumberOfPlanets(); i++)
@@ -523,20 +547,20 @@ CString CPlanetBottomView::CreateTooltip(void)
 							CString sBoni;
 							switch(j)
 							{
-								case TITAN:		sBoni = CResourceManager::GetString("TITAN"); break;
-								case DEUTERIUM: sBoni = CResourceManager::GetString("DEUTERIUM"); break;
-								case DURANIUM:	sBoni = CResourceManager::GetString("DURANIUM"); break;
-								case CRYSTAL:	sBoni = CResourceManager::GetString("CRYSTAL"); break;
-								case IRIDIUM:	sBoni = CResourceManager::GetString("IRIDIUM"); break;
+								case TITAN:		sBoni = CResourceManager::GetString("TITAN_BONUS"); break;
+								case DEUTERIUM: sBoni = CResourceManager::GetString("DEUTERIUM_BONUS"); break;
+								case DURANIUM:	sBoni = CResourceManager::GetString("DURANIUM_BONUS"); break;
+								case CRYSTAL:	sBoni = CResourceManager::GetString("CRYSTAL_BONUS"); break;
+								case IRIDIUM:	sBoni = CResourceManager::GetString("IRIDIUM_BONUS"); break;
 								case DILITHIUM:
-									sBoni = CHTMLStringBuilder::GetHTMLColor(CResourceManager::GetString("DILITHIUM") + " vorhanden");
+									sBoni = CHTMLStringBuilder::GetHTMLColor(CResourceManager::GetString("DILITHIUM") + " " + CResourceManager::GetString("EXISTING"));
 									sBoni = CHTMLStringBuilder::GetHTMLHeader(sBoni, _T("h5"));
 									return CHTMLStringBuilder::GetHTMLCenter(sBoni);									
-								case 6:			sBoni = CResourceManager::GetString("FOOD"); break;
-								case 7:			sBoni = CResourceManager::GetString("ENERGY"); break;
+								case 6:			sBoni = CResourceManager::GetString("FOOD_BONUS"); break;
+								case 7:			sBoni = CResourceManager::GetString("ENERGY_BONUS"); break;
 							}
 							CString sTip;
-							sTip.Format("%d%% %s Bonus", (pPlanet->GetSize() + 1) * 25, sBoni);
+							sTip.Format("%d%% %s",(pPlanet->GetSize() + 1) * 25, sBoni);
 							sTip = CHTMLStringBuilder::GetHTMLColor(sTip);
 							sTip = CHTMLStringBuilder::GetHTMLHeader(sTip, _T("h5"));
 							return CHTMLStringBuilder::GetHTMLCenter(sTip);

@@ -1,5 +1,5 @@
 /*
- *   Copyright (C)2004-2009 Sir Pustekuchen
+ *   Copyright (C)2004-2010 Sir Pustekuchen
  *
  *   Author   :  Sir Pustekuchen
  *   Home     :  http://birth-of-the-empires.de.vu
@@ -246,6 +246,10 @@ enum {NONE, ASSULTSHIP, BLOCKADESHIP, COMMANDSHIP, COMBATTRACTORBEAM, DOGFIGHTER
 #define CRYSTAL             3
 #define IRIDIUM             4
 #define DILITHIUM           5
+
+#define MAX_FOOD_STORE		25000
+#define MAX_RES_STORE		125000
+#define MAX_DERITIUM_STORE	100
 
 // --- Sonstiges ---------------------------------------------------------------
 #define PT_IN_RECT(pt, x1, y1, x2, y2) \

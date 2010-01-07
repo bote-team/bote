@@ -87,31 +87,32 @@ CCombatShip & CCombatShip::operator=(const CCombatShip & rhs)
 /// Diese Funktion gibt den möglichen Bonus durch die Manövriebarkeit bei einem Angriff zurück. Übergeben müssen
 /// dafür die Manövrierbarkeit des Angreifers und die Manövrierbarkeit des Verteidigers werden.
 BYTE CCombatShip::GetToHitBoni(BYTE Att, BYTE Def)
-{
+{	
 /*
 	Maneuvrierfähigkeit - Trefferbonus (= to hit bonus) 
-	---0---1---2---3---4---5---6---7---8
-	0 00% 00% 00% 00% 00% 00% 00% 00% 00%
-	1 05% 00% 00% 00% 00% 00% 00% 00% 00%
-	2 10% 05% 00% 00% 00% 00% 00% 00% 00%
-	3 15% 10% 05% 00% 00% 00% 00% 00% 00%
-	4 20% 15% 10% 05% 00% 00% 00% 00% 00%
-	5 25% 20% 15% 10% 05% 00% 00% 00% 00%
-	6 30% 25% 20% 15% 10% 05% 00% 00% 00%
-	7 35% 30% 25% 20% 15% 10% 05% 00% 00%
-	8 40% 35% 30% 25% 20% 15% 10% 05% 00%
+	---0---1---2---3---4---5---6---7---8---9
+	0 00% 00% 00% 00% 00% 00% 00% 00% 00% 00%
+	1 05% 00% 00% 00% 00% 00% 00% 00% 00% 00%
+	2 10% 05% 00% 00% 00% 00% 00% 00% 00% 00%
+	3 15% 10% 05% 00% 00% 00% 00% 00% 00% 00%
+	4 20% 15% 10% 05% 00% 00% 00% 00% 00% 00%
+	5 25% 20% 15% 10% 05% 00% 00% 00% 00% 00%
+	6 30% 25% 20% 15% 10% 05% 00% 00% 00% 00%
+	7 35% 30% 25% 20% 15% 10% 05% 00% 00% 00%
+	8 40% 35% 30% 25% 20% 15% 10% 05% 00% 00%
+	9 45% 40% 35% 30% 25% 20% 15% 10% 05% 00%
 */
-	BYTE boni[9][9] = {
-		0,	0,	0,	0,	0,	0,	0,	0,	0,
-		5,	0,	0,	0,	0,	0,	0,	0,	0,
-		10, 5,	0,	0,	0,	0,	0,	0,	0,
-		15, 10, 5,	0,	0,	0,	0,	0,	0,
-		20, 15, 10, 5,	0,	0,	0,	0,	0,
-		25, 20, 15, 10, 5,	0,	0,	0,	0,
-		30, 25, 20, 15, 10, 5,	0,	0,	0,
-		35, 30, 25, 20, 15, 10,	5,	0,	0,
-		40, 35, 30, 25, 20, 15,	10,	5,	0,
-	
+	BYTE boni[10][10] = {
+		0,	0,	0,	0,	0,	0,	0,	0,	0,	0,
+		5,	0,	0,	0,	0,	0,	0,	0,	0,	0,
+		10, 5,	0,	0,	0,	0,	0,	0,	0,	0,
+		15, 10, 5,	0,	0,	0,	0,	0,	0,	0,
+		20, 15, 10, 5,	0,	0,	0,	0,	0,	0,
+		25, 20, 15, 10, 5,	0,	0,	0,	0,	0,
+		30, 25, 20, 15, 10, 5,	0,	0,	0,	0,
+		35, 30, 25, 20, 15, 10,	5,	0,	0,	0,
+		40, 35, 30, 25, 20, 15,	10,	5,	0,	0,
+		45, 40, 35, 30, 25, 20,	15,	10,	5,	0			
 	};
 
 	return boni[Att][Def];
@@ -120,30 +121,33 @@ BYTE CCombatShip::GetToHitBoni(BYTE Att, BYTE Def)
 /// Diese Funktion gibt den möglichen Malus durch die Manövriebarkeit bei einem Angriff zurück. Übergeben müssen
 /// dafür die Manövrierbarkeit des Angreifers und die Manövrierbarkeit des Verteidigers werden.
 BYTE CCombatShip::GetToHitMali(BYTE Att, BYTE Def)
-{
+{	
 /*
 	Maneuvrierfähigkeit / Verteidigungsbonus in % (= to hit malus für Gegner)
-	---0---1---2---3---4---5---6---7---8
-	0 00% 00% 00% 00% 00% 00% 00% 00% 00% 
-	1 04% 00% 00% 00% 00% 00% 00% 00% 00%
-	2 10% 04% 00% 00% 00% 00% 00% 00% 00%
-	3 18% 10% 04% 00% 00% 00% 00% 00% 00%
-	4 28% 18% 10% 04% 00% 00% 00% 00% 00%
-	5 40% 28% 18% 10% 04% 00% 00% 00% 00%
-	6 54% 40% 28% 18% 10% 04% 00% 00% 00%
-	7 70% 54% 40% 28% 18% 10% 04% 00% 00%
-	8 88% 70% 54% 40% 28% 18% 10% 04% 00%
+	---0---1---2---3---4---5---6---7---8---9
+	0 00% 00% 00% 00% 00% 00% 00% 00% 00% 00% 
+	1 04% 00% 00% 00% 00% 00% 00% 00% 00% 00%
+	2 10% 04% 00% 00% 00% 00% 00% 00% 00% 00%
+	3 18% 10% 04% 00% 00% 00% 00% 00% 00% 00%
+	4 28% 18% 10% 04% 00% 00% 00% 00% 00% 00%
+	5 40% 28% 18% 10% 04% 00% 00% 00% 00% 00%
+	6 54% 40% 28% 18% 10% 04% 00% 00% 00% 00%
+	7 70% 54% 40% 28% 18% 10% 04% 00% 00% 00%
+	8 88% 70% 54% 40% 28% 18% 10% 04% 00% 00%
+	9 96% 88% 70% 54% 40% 28% 18% 10% 04% 00%
 */
-	BYTE mali[9][9] = {
-		0,	0,	0,	0,	0,	0,	0,	0,	0,
-		4,	0,	0,	0,	0,	0,	0,	0,	0,
-		10, 4,	0,	0,	0,	0,	0,	0,	0,
-		18, 10, 4,	0,	0,	0,	0,	0,	0,
-		28, 18, 10, 4,	0,	0,	0,	0,	0,
-		40, 28, 18, 10, 4,	0,	0,	0,	0,
-		54, 40, 28, 18, 10, 4,	0,	0,	0,
-		70, 54, 40, 28, 18, 10,	4,	0,	0,
-		88, 70, 54, 40, 28, 18,	10,	4,	0};
+	BYTE mali[10][10] = {
+		0,	0,	0,	0,	0,	0,	0,	0,	0,	0,
+		4,	0,	0,	0,	0,	0,	0,	0,	0,	0,
+		10, 4,	0,	0,	0,	0,	0,	0,	0,	0,
+		18, 10, 4,	0,	0,	0,	0,	0,	0,	0,
+		28, 18, 10, 4,	0,	0,	0,	0,	0,	0,
+		40, 28, 18, 10, 4,	0,	0,	0,	0,	0,
+		54, 40, 28, 18, 10, 4,	0,	0,	0,	0,
+		70, 54, 40, 28, 18, 10,	4,	0,	0,	0,
+		88, 70, 54, 40, 28, 18,	10,	4,	0,	0,
+		96, 88, 70, 54, 40, 28,	18,	10,	4,	0
+	};
 
 	return mali[Def][Att];
 }
@@ -380,6 +384,11 @@ CPoint CCombatShip::AttackEnemyWithTorpedo(CombatTorpedos* CT, CPoint torpedoSta
 								//	return CPoint(i,n);
 								damage += FireTorpedo(CT, i, targetKO, boni);					
 							}
+
+							//CString s;
+							//s.Format("Feuert Torpedo: %s auf %s", m_pShip->GetShipClass(), m_pTarget->m_pShip->GetShipClass());
+							//MYTRACE(MT::LEVEL_INFO, s);
+
 						}
 					}
 				}
@@ -684,7 +693,7 @@ void CCombatShip::FireBeam(int beamWeapon, int distance, BYTE boni)
 	
 	//CString dam;
 	//dam.Format("Schiff: %s\naltes Schild: %d\nHülle: %d\nBeamschaden: %d\nBeamschaden auf Hülle: %d",	m_pTarget->m_pShip->GetShipClass(), m_pTarget->m_pShip->GetShield()->GetCurrentShield(), m_pTarget->m_pShip->GetHull()->GetCurrentHull(), beamDamage, toHull);
-	//AfxMessageBox(dam);
+	//AfxMessageBox(dam);	
 								
 	// der restliche Beamschaden ermitteln, welcher nicht direkt auf die Hülle ging
 	beamDamage -= toHull;
@@ -704,7 +713,8 @@ void CCombatShip::FireBeam(int beamWeapon, int distance, BYTE boni)
 		m_pTarget->ActRegShield();
 	m_Fire.phaserIsShooting = TRUE;
 	
-	//dam.Format("Schiff: %s\nneues Schild: %d\nHülle: %d\nrestlicher Beamschaden: %d",	m_pTarget->m_pShip->GetShipClass(), m_pTarget->m_pShip->GetShield()->GetCurrentShield(), m_pTarget->m_pShip->GetHull()->GetCurrentHull(), beamDamage);
+	//CString dam;
+	//dam.Format("Beamschaden auf Schiff: %s neues Schild: %d Hülle: %d restlicher Beamschaden: %d",	m_pTarget->m_pShip->GetShipClass(), m_pTarget->m_pShip->GetShield()->GetCurrentShield(), m_pTarget->m_pShip->GetHull()->GetCurrentHull(), beamDamage);
 	//AfxMessageBox(dam);
 }
 
@@ -730,5 +740,6 @@ UINT CCombatShip::FireTorpedo(CombatTorpedos* CT, int torpedoWeapon, vec3i targe
 	torpedo->m_iModi = GetCrewExperienceModi() + m_pShip->GetTorpedoWeapons()->GetAt(torpedoWeapon).GetAccuracy() + boni;
 	// Torpedo dem Torpdofeld hinzufügen
 	CT->Add(torpedo);
+	
 	return torpedo->m_iPower * torpedo->m_iNumber;	
 }

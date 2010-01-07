@@ -621,12 +621,17 @@ void CShipAI::CalcBombardSector(void)
 		// die Hauptrassen bombardieren nicht alle gleichoft und gleich lang. Die Föderation z.B. kann wegen den
 		// Moralabzuügen nicht so lang bombardieren.
 		BOOLEAN bombard = TRUE;
-		if (it->second->IsRaceProperty(AGRARIAN))
-			if (m_iAverageMoral[it->first] < 90)
+
+		// Moralwert für Bombardierungen holen
+		short nMoralValue = CMoralObserver::GetMoralValue(it->second->GetRaceMoralNumber(), 19);
+		if (nMoralValue < 0)
+		{
+			nMoralValue = abs(nMoralValue);
+			if (m_iAverageMoral[it->first] < 80 + nMoralValue * 5)
 				bombard = FALSE;
-		if (it->second->IsRaceProperty(SCIENTIFIC))
-			if (m_iAverageMoral[it->first] < 110)
-				bombard = FALSE;
+		}
+
+		// pazifistische Rassen bombardieren nie
 		if (it->second->IsRaceProperty(PACIFIST))
 			bombard = FALSE;
 		

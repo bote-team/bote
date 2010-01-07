@@ -36,6 +36,7 @@ CIniLoader::CIniLoader(void)
 
 		WriteValue("Video", "SHOWTRADEROUTES", "ON");
 		WriteValue("Video", "ANIMATEDICON", "ON");
+		WriteValue("Video", "TOOLTIPDELAY", "750");
 
 		WriteValue("Special", "VERSION", VERSION_INFORMATION);
 		WriteValue("Special", "RANDOMSEED", "-1");

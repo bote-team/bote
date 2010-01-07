@@ -1,5 +1,5 @@
 /*
- *   Copyright (C)2004-2009 Sir Pustekuchen
+ *   Copyright (C)2004-2010 Sir Pustekuchen
  *
  *   Author   :  Sir Pustekuchen
  *   Home     :  http://birth-of-the-empires.de.vu

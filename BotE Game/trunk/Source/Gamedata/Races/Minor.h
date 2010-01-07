@@ -1,5 +1,5 @@
 /*
- *   Copyright (C)2004-2009 Sir Pustekuchen
+ *   Copyright (C)2004-2010 Sir Pustekuchen
  *
  *   Author   :  Sir Pustekuchen
  *   Home     :  http://birth-of-the-empires.de.vu
@@ -86,6 +86,10 @@ public:
 	/// @param pDoc Zeiger auf das Dokument
 	/// @return <code>true</code> wenn ein neuer Planet kolonisiert wurde, ansonsten <code>false</code>
 	bool PerhapsExtend(CBotf2Doc* pDoc);
+
+	/// Diese Funktion lässt die Minorrace vielleicht ein Schiff bauen
+	/// @param pDoc Zeiger auf das Dokument
+	void PerhapsBuildShip(CBotf2Doc* pDoc);	
 
 	/// Funktion berechnet wieviele Beziehungspunkte eine Majorrace für längere Beziehungsdauer bekommt.
 	/// Umso mehr Punkte sie hat, umso schwerer wird es für andere Majorraces diese Rasse durch Geschenke

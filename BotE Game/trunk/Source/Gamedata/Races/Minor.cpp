@@ -174,6 +174,58 @@ bool CMinor::PerhapsExtend(CBotf2Doc* pDoc)
 	return bColonized;
 }
 
+/// Diese Funktion lässt die Minorrace vielleicht ein Schiff bauen
+/// @param pDoc Zeiger auf das Dokument
+void CMinor::PerhapsBuildShip(CBotf2Doc* pDoc)
+{
+	ASSERT(pDoc);
+
+	// Wenn der dazugehörige Sektor nicht der kleinen Rasse gehört, also eine andere Rasse diese vereinnahmt hat,
+	// dann wächst das System auch nicht mehr automatisch
+	if (pDoc->GetSector(m_ptKO).GetOwnerOfSector() != m_sID)
+		return;
+
+	// wenn keine Spaceflightrasse, dann Abbruch
+	if (!m_bSpaceflight)
+		return;
+
+	// Vielleicht baut die Minorrace ein Schiff in dieser Runde
+	for (int i = 0; i < pDoc->m_ShipInfoArray.GetSize(); i++)
+	{
+		CShipInfo* pShipInfo = &(pDoc->m_ShipInfoArray[i]);
+		if (pShipInfo->GetRace() == MINORNUMBER)
+		{
+			if (pShipInfo->GetOnlyInSystem() == this->GetHomesystemName())
+			{
+				// schauen ob es technologisch baubar ist
+				BYTE byAvgTechLevel = pDoc->GetStatistics()->GetAverageTechLevel();
+				BYTE byTechLevel = byAvgTechLevel + m_iTechnologicalProgress / 2;
+				
+				BYTE researchLevels[6] = {byTechLevel, byTechLevel, byTechLevel, byTechLevel, byTechLevel, byTechLevel};
+				if (pShipInfo->IsThisShipBuildableNow(researchLevels))
+				{
+					// Wahrscheinlichkeit berechnen, ob das Schiff gebaut wird
+					int nNumber = 1;
+					for (int j = 0; j < pDoc->m_ShipArray.GetSize(); j++)
+					{
+						CShip* pShip = &(pDoc->m_ShipArray[j]);
+						if (pShip->GetOwnerOfShip() == this->m_sID && pShip->GetShipClass() == pShipInfo->GetShipClass())
+							nNumber++;
+					}
+					nNumber *= 5;
+					if (rand()%nNumber == 0)
+					{
+						pDoc->BuildShip(pShipInfo->GetID(), this->GetRaceKO(), this->m_sID);
+						// Befehl immer auf Meiden stellen
+						pDoc->m_ShipArray[pDoc->m_ShipArray.GetUpperBound()].SetCurrentOrder(AVOID);
+						return;
+					}
+				}
+			}
+		}
+	}
+}
+
 /// Funktion berechnet wieviele Beziehungspunkte eine Majorrace für längere Beziehungsdauer bekommt.
 /// Umso mehr Punkte sie hat, umso schwerer wird es für andere Majorraces diese Rasse durch Geschenke
 /// zu beeinflussen
@@ -322,6 +374,9 @@ void CMinor::CheckDiplomaticConsistence(CBotf2Doc* pDoc)
 		{
 			for (map<CString, CMajor*>::const_iterator itt = pmMajors->begin(); itt != pmMajors->end(); itt++)
 			{
+				if (it->first == itt->first)
+					continue;
+
 				short nAgreement = GetAgreement(itt->first);
 				CString s = "";
 
@@ -329,6 +384,12 @@ void CMinor::CheckDiplomaticConsistence(CBotf2Doc* pDoc)
 					s = CResourceManager::GetString("CANCEL_TRADE_AGREEMENT", FALSE, m_sName);					
 				else if (nAgreement == FRIENDSHIP_AGREEMENT)
 					s = CResourceManager::GetString("CANCEL_FRIENDSHIP", FALSE, m_sName);
+				else if (nAgreement == COOPERATION)
+					s = CResourceManager::GetString("CANCEL_COOPERATION", FALSE, m_sName);
+				else if (nAgreement == AFFILIATION)
+					s = CResourceManager::GetString("CANCEL_AFFILIATION", FALSE, m_sName);
+				else if (nAgreement == MEMBERSHIP)
+					s = CResourceManager::GetString("CANCEL_MEMBERSHIP", FALSE, m_sName);
 				
 				if (!s.IsEmpty())
 				{
@@ -346,11 +407,43 @@ void CMinor::CheckDiplomaticConsistence(CBotf2Doc* pDoc)
 		{
 			for (map<CString, CMajor*>::const_iterator itt = pmMajors->begin(); itt != pmMajors->end(); itt++)
 			{
+				if (it->first == itt->first)
+					continue;
+
 				short nAgreement = GetAgreement(itt->first);
 				CString s = "";
 
 				if (nAgreement == FRIENDSHIP_AGREEMENT)
 					s = CResourceManager::GetString("CANCEL_FRIENDSHIP", FALSE, m_sName);
+				else if (nAgreement == COOPERATION)
+					s = CResourceManager::GetString("CANCEL_COOPERATION", FALSE, m_sName);
+				else if (nAgreement == AFFILIATION)
+					s = CResourceManager::GetString("CANCEL_AFFILIATION", FALSE, m_sName);				
+				
+				if (!s.IsEmpty())
+				{
+					// Vertrag bei beiden Rassen auflösen
+					SetAgreement(itt->first, NO_AGREEMENT);
+					CMajor* pMajor = itt->second;
+					pMajor->SetAgreement(m_sID, NO_AGREEMENT);
+					CMessage message;					
+					message.GenerateMessage(s, DIPLOMACY, "", 0, 0);
+					pMajor->GetEmpire()->AddMessage(message);
+				}
+			}
+		}
+		else if (nMajorsAgreement == COOPERATION)
+		{
+			for (map<CString, CMajor*>::const_iterator itt = pmMajors->begin(); itt != pmMajors->end(); itt++)
+			{
+				if (it->first == itt->first)
+					continue;
+
+				short nAgreement = GetAgreement(itt->first);
+				CString s = "";
+
+				if (nAgreement == COOPERATION)
+					s = CResourceManager::GetString("CANCEL_COOPERATION", FALSE, m_sName);				
 				
 				if (!s.IsEmpty())
 				{

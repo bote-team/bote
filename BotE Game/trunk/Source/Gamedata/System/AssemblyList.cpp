@@ -8,26 +8,7 @@ IMPLEMENT_SERIAL (CAssemblyList, CObject, 1)
 //////////////////////////////////////////////////////////////////////
 CAssemblyList::CAssemblyList(void)
 {
-	m_iNeededIndustryForBuild = 0;	// benötigte IP zum Bau
-	m_iNeededTitanForBuild = 0;		// benötigtes Titan zum Bau
-	m_iNeededDeuteriumForBuild = 0;	// benötigtes Deuterium zum Bau
-	m_iNeededDuraniumForBuild = 0;	// benötigtes Duranium zum Bau
-	m_iNeededCrystalForBuild = 0;	// benötigtes Crystal zum Bau
-	m_iNeededIridiumForBuild = 0;	// benötigtes Iridium zum Bau
-	m_iNeededDilithiumForBuild = 0;	// benötigtes Dilithium zum Bau
-	m_bWasBuildingBought = 0;		// Wurde ein Gebäude gekauft
-	m_iBuildCosts = 0;				// Die Baukosten eines Bauauftrags
-	for (int i = 0; i < ALE; i++)
-	{
-		m_iEntry[i] = 0;						// Bauauftrag
-		m_iNeededIndustryInAssemblyList[i] = 0; // noch benötigte IP zum fertigstellen des Projektes
-		m_iNeededTitanInAssemblyList[i] = 0;	// noch benötigtes Titan zum fertigstellen des Projektes
-		m_iNeededDeuteriumInAssemblyList[i] = 0;// noch benötigtes Deuterium zum fertigstellen des Projektes
-		m_iNeededDuraniumInAssemblyList[i] = 0;	// noch benötigtes Duranium zum fertigstellen des Projektes
-		m_iNeededCrystalInAssemblyList[i] = 0;	// noch benötigtes Crystal zum fertigstellen des Projektes
-		m_iNeededIridiumInAssemblyList[i] = 0;	// noch benötigtes Iridium zum fertigstellen des Projektes
-		m_iNeededDilithiumInAssemblyList[i] = 0;// noch benötigtes Dilithium zum fertigstellen des Projektes
-	}
+	Reset();
 }
 
 CAssemblyList::~CAssemblyList(void)
@@ -441,7 +422,7 @@ void CAssemblyList::RemoveResourceFromStorage(BYTE res, const CPoint &ko, CSyste
 				{
 					remainingRes -= systems[start.x][start.y].GetRessourceStore(res);
 					if (GetNeededResourceInAssemblyList(0, res) > NULL)
-						percent = 100 * remainingRes / GetNeededResourceInAssemblyList(0, res);
+						percent = 100 * systems[start.x][start.y].GetRessourceStore(res) / GetNeededResourceInAssemblyList(0, res);
 					routes.GetAt(random).route->SetPercent((BYTE)percent);
 					*systems[start.x][start.y].GetRessourceStorages(res) = NULL;
 				}

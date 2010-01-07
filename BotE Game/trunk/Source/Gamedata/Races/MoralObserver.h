@@ -1,5 +1,5 @@
 /*
- *   Copyright (C)2004-2009 Sir Pustekuchen
+ *   Copyright (C)2004-2010 Sir Pustekuchen
  *
  *   Author   :  Sir Pustekuchen
  *   Home     :  http://birth-of-the-empires.de.vu
@@ -60,6 +60,12 @@ public:
 	 * Funktion lädt die zu Beginn die ganzen Moralwerte für alle verschiedenen Ereignisse in eine Moralmatrix.
 	 */
 	static void InitMoralMatrix();
+
+	/// Funktion gibt einen bestimmten Moralwert zurück.
+	/// @param byMappedRaceNumber gemappte Rassennummer
+	/// @param Event Eventnummer
+	/// @return Moralwert
+	static short GetMoralValue(BYTE byMappedRaceNumber, unsigned short Event);
 
 private:
 	/// Das Feld, in dem alle Vertragsannahmen stehen.

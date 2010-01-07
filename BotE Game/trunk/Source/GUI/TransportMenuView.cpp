@@ -473,11 +473,29 @@ void CTransportMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 				// handelt es sich um Ressourcen
 				else
 				{
-					int multi = 1;
-					if (i == DILITHIUM)
-						multi = 250;
-					
 					int oldQuantity = m_iTransportStorageQuantity;
+
+					// Lagergrenzen im System beachten
+					if (i != DILITHIUM)
+					{
+						if (m_iTransportStorageQuantity + pDoc->m_System[p.x][p.y].GetRessourceStore(i) > MAX_RES_STORE)
+							m_iTransportStorageQuantity = MAX_RES_STORE - pDoc->m_System[p.x][p.y].GetRessourceStore(i);
+					}
+					else
+					{
+						UINT nMaxDeritiumStore = MAX_DERITIUM_STORE;
+						if (pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(10)->GetFieldStatus(1) == RESEARCHED)
+							nMaxDeritiumStore *= pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(10)->GetBonus(1);
+						if (m_iTransportStorageQuantity + pDoc->m_System[p.x][p.y].GetRessourceStore(i) > nMaxDeritiumStore)
+							m_iTransportStorageQuantity = nMaxDeritiumStore - pDoc->m_System[p.x][p.y].GetRessourceStore(i);
+					}
+					// gibt es nichts zu verschieben, dann abbrechen
+					if (m_iTransportStorageQuantity == 0)
+					{
+						m_iTransportStorageQuantity = oldQuantity;
+						return;
+					}
+
 					// Schiff und möglicherweise Schiffe in der Flotte durchgehen		
 					for (int j = 0; j < number; j++)
 					{

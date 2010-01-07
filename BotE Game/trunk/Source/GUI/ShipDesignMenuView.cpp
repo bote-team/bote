@@ -647,10 +647,18 @@ void CShipDesignMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 	else if (n != -1 && CRect(r.right-145,180+counter*120,r.right-25,210+counter*120).PtInRect(point))
 	{
 		BOOLEAN oldDoubleHull = pDoc->m_ShipInfoArray.GetAt(n).GetHull()->GetDoubleHull();
+		
+		// wenn eine Doppelhülle draus gemacht werden soll dann darf die Manövrierbarkeit nicht schon "keine" sein
+		if (oldDoubleHull == FALSE && pDoc->m_ShipInfoArray.GetAt(n).GetManeuverability() == 0)
+			return;
+		// wenn eine Einzelhülle draus gemacht werden soll, dann darf die Manövrierbarkeit nicht schon phänomenal sein
+		if (oldDoubleHull == TRUE && pDoc->m_ShipInfoArray.GetAt(n).GetManeuverability() == 9)
+			return;
+
 		// Wenn die alte Hülle eine Einzelhülle war und man eine Doppelhülle anbaut, dann verringert sich die
 		// Manövriebarkeit um -1. Wenn man eine Einzelhülle anbaut, dann kommt zur Manö +1 dazu. Schiffe mit
-		// Manö 1 oder Manö 8 sind von dieser Reglung ausgeschlossen.
-		if (pDoc->m_ShipInfoArray.GetAt(n).GetManeuverability() > 1 && pDoc->m_ShipInfoArray.GetAt(n).GetManeuverability() < 8)
+		// Manö 0 oder Manö 9 sind von dieser Reglung ausgeschlossen.
+		if (pDoc->m_ShipInfoArray.GetAt(n).GetManeuverability() >= 0 && pDoc->m_ShipInfoArray.GetAt(n).GetManeuverability() <= 9)
 		{
 			// wollen Doppelhülle draus machen
 			if (oldDoubleHull == FALSE)

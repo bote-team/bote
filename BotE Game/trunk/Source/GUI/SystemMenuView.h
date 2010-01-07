@@ -1,5 +1,5 @@
 /*
- *   Copyright (C)2004-2009 Sir Pustekuchen
+ *   Copyright (C)2004-2010 Sir Pustekuchen
  *
  *   Author   :  Sir Pustekuchen
  *   Home     :  http://birth-of-the-empires.de.vu
@@ -166,6 +166,7 @@ public:
 	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
 public:
 	afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
+	afx_msg void OnXButtonDown(UINT nFlags, UINT nButton, CPoint point);
 };
 
 

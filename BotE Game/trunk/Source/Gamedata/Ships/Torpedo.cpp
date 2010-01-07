@@ -144,6 +144,12 @@ void CTorpedo::MakeDamage(CCombatShip* CS)
 	// DAMAGE_TO_HULL (10%) des Schadens gehen immer auf die Hülle.
 	int torpedoDamage = (m_iPower * 100) / CS->m_iModifier;
 
+//	CString dam;
+//	dam.Format("Torpedoschaden an Schiff zuvor: %s Schilde: %d Hülle: %d Torpedoschaden: %d",
+//		CS->m_pShip->GetShipClass(), CS->m_pShip->GetShield()->GetCurrentShield(),
+//		CS->m_pShip->GetHull()->GetCurrentHull(), torpedoDamage);
+//	MYTRACE(MT::LEVEL_INFO, dam);	
+
 	int toHull = 0;
 	// Wenn das feindliche Schiff keine ablative Hüllenpanzerung hat, dann gehen 10% des Schadens sofort
 	// auf die Hülle
@@ -156,15 +162,7 @@ void CTorpedo::MakeDamage(CCombatShip* CS)
 		|| CTorpedoInfo::GetIgnoreAllShields(m_byType) == TRUE)
 		toHull = torpedoDamage;
 	CS->m_pShip->GetHull()->SetCurrentHull(-toHull);
-	
-	/*
-	CString dam;
-	dam.Format("Schiff: %s\naltes Schild: %d\nHülle: %d\nTorpedoschaden: %d\nTorpedoschaden auf Hülle: %d",
-		CS->m_pShip->GetShipClass(), CS->m_pShip->GetShield()->GetCurrentShield(),
-		CS->m_pShip->GetHull()->GetCurrentHull(),torpedoDamage, toHull);
-	AfxMessageBox(dam);
-	*/
-	
+		
 	// den restlichen Torpedoschaden ermitteln, welcher nicht direkt auf die Hülle ging
 	torpedoDamage -= toHull;
 	// Torpedos verlieren ihre Effizienz, wenn sie auf noch relativ starke Schilde treffen. Umso weniger von den Schilden
@@ -214,6 +212,11 @@ void CTorpedo::MakeDamage(CCombatShip* CS)
 		if (rand()%100 < 5)	// Nur mit einer 5% Wahrscheinlichkeit tritt dies auch ein
 			CS->SetManeuverability(0);
 
+//	dam.Format("Torpedoschaden an Schiff nachher: %s Schilde: %d Hülle: %d Torpedoschaden: %d",
+//		CS->m_pShip->GetShipClass(), CS->m_pShip->GetShield()->GetCurrentShield(),
+//		CS->m_pShip->GetHull()->GetCurrentHull(), torpedoDamage);
+//	//AfxMessageBox(dam);
+//	MYTRACE(MT::LEVEL_INFO, dam);	
 }
 
 // Diese private Funktion setzt den Torpedo auf den nächsten Punkt seiner Flugbahn. Diese Funktion nur aufrufen,
@@ -273,20 +276,27 @@ BOOLEAN CTorpedo::PerhapsImpact(CCombatShip* CS, USHORT minDistance)
 	// ein Torpedo trifft normalerweise mit einer Wahrscheinlichkeit von XX%.
 	// m_iMode - (m_iDistance+minDistance)*0.1 - CS->Manövrierbarkeit*2 - CS->Crewerfahrung???
 	short probability = m_iModi - (short)((m_iDistance + minDistance) * 0.1) - 
-		CCombatShip::GetToHitMali(m_byManeuverability,CS->m_byManeuverability) - CS->GetCrewExperienceModi();
-		
+		CCombatShip::GetToHitMali(m_byManeuverability, CS->m_byManeuverability) - CS->GetCrewExperienceModi();
+			
 	if (CS->m_pShip->GetShipSize() == 0)
 		probability = (short)(probability * 0.66);
 	else if (CS->m_pShip->GetShipSize() == 2)
 		probability = (short)(probability * 1.33);
 	else if (CS->m_pShip->GetShipSize() >= 3)
 		probability = (short)(probability * 1.66);
+
+	// Die Wahrscheinlichkeit beträgt mindestens 10% für einen Einschlag
+	probability = max(probability, 10);
 	
 	short random = rand()%100;	// {0,99}
-/*	CString s;
-	s.Format("m_iDistance: %d\nminDistance: %d\nprobability: %d\nrandom: %d",m_iDistance,minDistance,probability,random);
-	AfxMessageBox(s);
-*/	
+
+//	CString s;
+//	s.Format("vielleicht Einschlag in Schiff %s Modi: %d Wahrscheinlichkeit: %d Randomwert: %d zurückgelegte Strecke: %d MinDistanz: %d ToHitMali: %d, Crew: %d", CS->m_pShip->GetShipClass(), m_iModi, probability, random, m_iDistance, minDistance, CCombatShip::GetToHitMali(m_byManeuverability, CS->m_byManeuverability), CS->GetCrewExperienceModi());
+//	MYTRACE(MT::LEVEL_INFO, s);
+//	CString s;
+//	s.Format("m_iDistance: %d\nminDistance: %d\nprobability: %d\nrandom: %d",m_iDistance,minDistance,probability,random);
+//	AfxMessageBox(s);
+
 	if (probability > random)
 	{
 		MakeDamage(CS);

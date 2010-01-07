@@ -19,7 +19,7 @@ CIOData::CIOData(void)
 	_fullpath(fullPath, "", _MAX_PATH);
 	
 	m_sAppPath = fullPath;
-	//m_sAppPath = "F:\\C++\\Projekte\\BotE Projekt\\BotE Install\\BotE complete";
+	m_sAppPath = "F:\\C++\\Projekte\\BotE Projekt\\BotE Install\\BotE complete";
 	m_sAppPath += "\\";
 }
 

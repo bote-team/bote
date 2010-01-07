@@ -1333,7 +1333,7 @@ void CBotf2Doc::ApplyShipsAtStartup()
 								if (m_ShipInfoArray.GetAt(j).GetShipClass() == s)
 								{
 									foundShip = TRUE;
-									BuildShip(m_ShipInfoArray.GetAt(j).GetID()-10000, CPoint(x,y), sOwner);
+									BuildShip(m_ShipInfoArray.GetAt(j).GetID(), CPoint(x,y), sOwner);
 								}
 							}
 							// Wurde die Schiffsklasse nicht gefunden, sprich es ist ein Fehler in der Datei
@@ -1862,6 +1862,9 @@ void CBotf2Doc::BuildShip(int ID, CPoint KO, const CString& sOwnerID)
 		AfxMessageBox("Error in CBotf2Doc::BuildShip(): ID doesn't exist!");
 		return;
 	}
+
+	ASSERT(ID >= 10000);
+	ID -= 10000;
 	
 	CString sOwner = sOwnerID;
 	m_ShipArray.Add((CShip)m_ShipInfoArray.GetAt(ID));
@@ -2146,7 +2149,9 @@ void CBotf2Doc::CalcPreDataForNextRound()
 		// Die Punkte für längere gute Beziehungen berechnen
 		pMinor->CalcAcceptancePoints(this);
 		// Den Verbrauch der Rohstoffe der kleinen Rassen in jeder Runde berechnen
-		pMinor->ConsumeResources(this);		
+		pMinor->ConsumeResources(this);
+		// Vielleicht baut die Rasse ein Raumschiff
+		pMinor->PerhapsBuildShip(this);
 	}
 
 	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
@@ -2259,9 +2264,9 @@ void CBotf2Doc::CalcSystemAttack()
 					//* umgestellt. Der Besitzer des Sektors ist aber noch der alte, wird hier dann auf einen
 					//* eventuell neuen Besitzer umgestellt.
 						
-						// Wenn in dem System eine Minorrace beheimatet ist und das System nicht vorher schon von jemand
-						// anderem militärisch erobert wurde oder die Minorace bei einem anderen Imperium schon vermitgliedelt
-						// wurde, dann muss diese zuerst die Gebäude bauen
+					// Wenn in dem System eine Minorrace beheimatet ist und das System nicht vorher schon von jemand
+					// anderem militärisch erobert wurde oder die Minorace bei einem anderen Imperium schon vermitgliedelt
+					// wurde, dann muss diese zuerst die Gebäude bauen
 					if (m_Sector[p.x][p.y].GetMinorRace() == TRUE && m_Sector[p.x][p.y].GetTakenSector() == FALSE && defender != NULL && defender->GetType() == MINOR)
 					{
 						CMinor* pMinor = dynamic_cast<CMinor*>(defender);
@@ -2470,18 +2475,10 @@ void CBotf2Doc::CalcSystemAttack()
 								ASSERT(pMinor);
 								pMinor->SetSubjugated(true);
 								// Beziehung zu dieser Minorrace verschlechtert sich auf 0 Punkte
-								pMinor->SetRelation(attacker, -100);
-								// Sektor gilt ab jetzt als erobert.
-								m_Sector[p.x][p.y].SetTakenSector(TRUE);
-								// Moral in diesem System verschlechtert sich um rand()%25+10 Punkte						
-								m_System[p.x][p.y].SetMoral(-rand()%25-10);
-								// ist die Moral unter 50, so wird sie auf 50 gesetzt
-								if (m_System[p.x][p.y].GetMoral() < 50)
-									m_System[p.x][p.y].SetMoral(50 - m_System[p.x][p.y].GetMoral());
+								pMinor->SetRelation(attacker, -100);								
 								
 								CString param = m_Sector[p.x][p.y].GetName();
-								CString eventText = "";
-								
+																
 								// Alle diplomatischen Nachrichten der Minorrace aus den Feldern löschen und an der Minorrace
 								// bekannte Imperien die Nachricht der Unterwerfung senden
 								pMinor->GetIncomingDiplomacyNews()->clear();
@@ -2512,38 +2509,47 @@ void CBotf2Doc::CalcSystemAttack()
 										}
 									}	
 								}
-								eventText = "";
-								// Eventnachricht an den ehemaligen Besitzer (eigenes System verloren)
-								if (defender != NULL && defender->GetRaceID() != attacker && defender->GetType() == MAJOR)
-									eventText = ((CMajor*)defender)->GetMoralObserver()->AddEvent(16, ((CMajor*)defender)->GetRaceMoralNumber(), param);
-								// Eventnachricht hinzufügen
-								if (!eventText.IsEmpty())
-								{
-									message.GenerateMessage(eventText, MILITARY, param, p, 0);
-									((CMajor*)defender)->GetEmpire()->AddMessage(message);
-									if (((CMajor*)defender)->IsHumanPlayer())
-									{
-										network::RACE client = m_pRaceCtrl->GetMappedClientID(defender->GetRaceID());
-										m_iSelectedView[client] = EMPIRE_VIEW;
-									}
-								}
-								
-								// Eventnachricht an den Eroberer (System erobert)
-								eventText = "";
-								eventText = pMajor->GetMoralObserver()->AddEvent(11, pMajor->GetRaceMoralNumber(), param);
-								// Eventnachricht hinzufügen
-								if (!eventText.IsEmpty())
-								{
-									message.GenerateMessage(eventText, MILITARY, param, p, 0, 1);
-									pMajor->GetEmpire()->AddMessage(message);
-									if (pMajor->IsHumanPlayer())
-									{
-										network::RACE client = m_pRaceCtrl->GetMappedClientID(attacker);
-										m_iSelectedView[client] = EMPIRE_VIEW;
-									}
-								}								
 							}
-						}
+
+							// Sektor gilt ab jetzt als erobert.
+							m_Sector[p.x][p.y].SetTakenSector(TRUE);
+							// Moral in diesem System verschlechtert sich um rand()%25+10 Punkte						
+							m_System[p.x][p.y].SetMoral(-rand()%25-10);
+							// ist die Moral unter 50, so wird sie auf 50 gesetzt
+							if (m_System[p.x][p.y].GetMoral() < 50)
+								m_System[p.x][p.y].SetMoral(50 - m_System[p.x][p.y].GetMoral());
+							
+							CString eventText = "";
+							// Eventnachricht an den ehemaligen Besitzer (eigenes System verloren)
+							if (defender != NULL && defender->GetRaceID() != attacker && defender->GetType() == MAJOR)
+								eventText = ((CMajor*)defender)->GetMoralObserver()->AddEvent(16, ((CMajor*)defender)->GetRaceMoralNumber(), param);
+							// Eventnachricht hinzufügen
+							if (!eventText.IsEmpty())
+							{
+								message.GenerateMessage(eventText, MILITARY, param, p, 0);
+								((CMajor*)defender)->GetEmpire()->AddMessage(message);
+								if (((CMajor*)defender)->IsHumanPlayer())
+								{
+									network::RACE client = m_pRaceCtrl->GetMappedClientID(defender->GetRaceID());
+									m_iSelectedView[client] = EMPIRE_VIEW;
+								}
+							}
+							
+							// Eventnachricht an den Eroberer (System erobert)
+							eventText = "";
+							eventText = pMajor->GetMoralObserver()->AddEvent(11, pMajor->GetRaceMoralNumber(), param);
+							// Eventnachricht hinzufügen
+							if (!eventText.IsEmpty())
+							{
+								message.GenerateMessage(eventText, MILITARY, param, p, 0, 1);
+								pMajor->GetEmpire()->AddMessage(message);
+								if (pMajor->IsHumanPlayer())
+								{
+									network::RACE client = m_pRaceCtrl->GetMappedClientID(attacker);
+									m_iSelectedView[client] = EMPIRE_VIEW;
+								}
+							}								
+						}					
 						m_Sector[p.x][p.y].SetOwnerOfSector(attacker);
 					}
 					// Variablen berechnen und Gebäude besetzen
@@ -3043,7 +3049,18 @@ void CBotf2Doc::CalcDiplomacy()
 				// Nun Gebäude in neuen System bauen
 				m_System[pMinor->GetRaceKO().x][pMinor->GetRaceKO().y].BuildBuildingsForMinorRace(&m_Sector[pMinor->GetRaceKO().x][pMinor->GetRaceKO().y], &BuildingInfo, m_Statistics.GetAverageTechLevel(), pMinor);
 				// Gebäude so weit wie möglich mit Arbeitern besetzen
-				m_System[pMinor->GetRaceKO().x][pMinor->GetRaceKO().y].SetWorkersIntoBuildings();				
+				m_System[pMinor->GetRaceKO().x][pMinor->GetRaceKO().y].SetWorkersIntoBuildings();
+				// alle Schiffe der Minor gehen nun an den Major
+				for (int i = 0; i < m_ShipArray.GetSize(); i++)
+				{
+					CShip* pShip = &(m_ShipArray[i]);
+					if (pShip->GetOwnerOfShip() == pMinor->GetRaceID())
+					{
+						pShip->SetOwnerOfShip(pMajor->GetRaceID());
+						// Schiff in die Shiphistory stecken
+						pMajor->GetShipHistory()->AddShip(pShip, GetSector(pMinor->GetRaceKO()).GetName(true), m_iRound);
+					}
+				}
 			}
 		}
 	}
@@ -3233,11 +3250,18 @@ void CBotf2Doc::CalcOldRoundData()
 						// Funktion gibt TRUE zurück, wenn wir durch die Bevölkerung eine neue Handelsroute anlegen können
 						if (m_System[x][y].SetHabitants(fCurrentHabitants))
 						{
-							CString news = CResourceManager::GetString("ENOUGH_HABITANTS_FOR_NEW_TRADEROUTE", FALSE, m_Sector[x][y].GetName());
-							message.GenerateMessage(news, ECONOMY, "", CPoint(x,y), FALSE, 4);
-							pMajor->GetEmpire()->AddMessage(message);
-							if (pMajor->IsHumanPlayer())
-								m_iSelectedView[client] = EMPIRE_VIEW;							
+							// wenn die Spezialforschung "mindestens 1 Handelsroute erforscht wurde, dann die Meldung erst bei
+							// der 2.ten Handelroute bringen
+							// Hier die Boni durch die Uniqueforschung "Handel" -> mindestens eine Handelsroute
+							bool bMinOneRoute = pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(11)->GetFieldStatus(3) == RESEARCHED;
+							if (bMinOneRoute == false || (bMinOneRoute == true && (int)(m_System[x][y].GetHabitants() / TRADEROUTEHAB) > 1))
+							{
+								CString news = CResourceManager::GetString("ENOUGH_HABITANTS_FOR_NEW_TRADEROUTE", FALSE, m_Sector[x][y].GetName());
+								message.GenerateMessage(news, ECONOMY, "", CPoint(x,y), FALSE, 4);
+								pMajor->GetEmpire()->AddMessage(message);
+								if (pMajor->IsHumanPlayer())
+									m_iSelectedView[client] = EMPIRE_VIEW;
+							}							
 						}					
 						m_System[x][y].CalculateVariables(&this->BuildingInfo, pMajor->GetEmpire()->GetResearch()->GetResearchInfo(), m_Sector[x][y].GetPlanets(), pMajor, CTrade::GetMonopolOwner());
 						
@@ -3360,7 +3384,7 @@ void CBotf2Doc::CalcOldRoundData()
 								}
 								else if (list >= 10000 && list < 20000)	// Es wird ein Schiff gebaut
 								{
-									BuildShip(list-10000, CPoint(x,y), pMajor->GetRaceID());
+									BuildShip(list, CPoint(x,y), pMajor->GetRaceID());
 									CString s = CResourceManager::GetString("SHIP_BUILDING_FINISHED",FALSE,
 										m_ShipInfoArray[list-10000].GetShipTypeAsString(),m_Sector[x][y].GetName());
 									message.GenerateMessage(s,MILITARY,m_Sector[x][y].GetName(),CPoint(x,y),FALSE);
@@ -4196,7 +4220,7 @@ void CBotf2Doc::CalcShipOrders()
 									// Das Schiff, welches die Station fertiggestellt hat aus der Flotte entfernen
 									m_ShipArray[y].GetFleet()->RemoveShipFromFleet(x);
 									m_ShipArray[y].CheckFleet();
-									this->BuildShip(id-10000, ShipKO, m_ShipArray[y].GetOwnerOfShip());
+									this->BuildShip(id, ShipKO, m_ShipArray[y].GetOwnerOfShip());
 									// Wenn hier ein Außenposten gebaut wurde den Befehl für die Flotte auf Meiden stellen
 									m_ShipArray[y].SetCurrentOrder(AVOID);
 									break;
@@ -4233,7 +4257,7 @@ void CBotf2Doc::CalcShipOrders()
 								m_Sector[ShipKO.x][ShipKO.y].SetStartStationPoints(0, it->first);
 							}
 							// Hier den Außenposten bauen
-							this->BuildShip(id-10000, ShipKO, m_ShipArray[y].GetOwnerOfShip());
+							this->BuildShip(id, ShipKO, m_ShipArray[y].GetOwnerOfShip());
 							// Wenn das Schiff, welches hier den Außenposten baut eine Flotte anführt, dann müssen wir die Flotte auf
 							// das nächste Schiff in der Flotte übergeben, weil dieses Schiff hier ja zerstört wird
 							if (m_ShipArray[y].GetFleet() != 0)
@@ -4363,7 +4387,7 @@ void CBotf2Doc::CalcShipOrders()
 									// Das Schiff, welches die Station fertiggestellt hat aus der Flotte entfernen
 									m_ShipArray[y].GetFleet()->RemoveShipFromFleet(x);
 									m_ShipArray[y].CheckFleet();
-									this->BuildShip(id-10000, ShipKO, m_ShipArray[y].GetOwnerOfShip());
+									this->BuildShip(id, ShipKO, m_ShipArray[y].GetOwnerOfShip());
 									// Wenn wir jetzt die Sternbasis gebaut haben, dann müssen wir den alten Außenposten aus der
 									// Schiffsliste nehmen
 									for (int k = 0; k <= m_ShipArray.GetSize(); k++)
@@ -4411,7 +4435,7 @@ void CBotf2Doc::CalcShipOrders()
 								m_Sector[ShipKO.x][ShipKO.y].SetStartStationPoints(0, it->first);
 							}
 							// Sternbasis bauen
-							this->BuildShip(id-10000, ShipKO, m_ShipArray[y].GetOwnerOfShip());
+							this->BuildShip(id, ShipKO, m_ShipArray[y].GetOwnerOfShip());
 							// Wenn das Schiff, welches hier die Sternbasis baut eine Flotte anführt, dann müssen wir die Flotte auf
 							// das nächste Schiff in der Flotte übergeben, weil dieses Schiff hier ja zerstört wird
 							if (m_ShipArray[y].GetFleet() != 0)
@@ -4985,14 +5009,18 @@ void CBotf2Doc::CalcShipCombat()
 						}
 					}
 					
+					map<CString, CRace*>* pmRaces = m_pRaceCtrl->GetRaces();
 					map<CString, CMajor*>* pmMajors = m_pRaceCtrl->GetMajors();
-					for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+					
+					for (map<CString, CRace*>::const_iterator it = pmRaces->begin(); it != pmRaces->end(); it++)
 					{
-						CMajor* pMajor = it->second;
-						network::RACE client = m_pRaceCtrl->GetMappedClientID(pMajor->GetRaceID());
 						// gewonnen
-						if (winner[it->first] == 1)
+						if (winner[it->first] == 1 && it->second->GetType() == MAJOR)
 						{
+							CMajor* pMajor = dynamic_cast<CMajor*>(it->second);
+							ASSERT(pMajor);
+							network::RACE client = m_pRaceCtrl->GetMappedClientID(pMajor->GetRaceID());
+
 							message.GenerateMessage(CResourceManager::GetString("WIN_COMBAT", false, m_Sector[p.x][p.y].GetName(TRUE)),	MILITARY, "", NULL, FALSE);
 							pMajor->GetEmpire()->AddMessage(message);
 							// win a minor battle
@@ -5005,31 +5033,42 @@ void CBotf2Doc::CalcShipCombat()
 						// verloren
 						else if (winner[it->first] == 2)
 						{
-							message.GenerateMessage(CResourceManager::GetString("LOSE_COMBAT", false, m_Sector[p.x][p.y].GetName(TRUE)), MILITARY, "", 0,0);
-							pMajor->GetEmpire()->AddMessage(message);
-							// lose a minorbattle
-							CString eventText = pMajor->GetMoralObserver()->AddEvent(6, pMajor->GetRaceMoralNumber());
-							message.GenerateMessage(eventText, MILITARY, "", 0, 0);
-							pMajor->GetEmpire()->AddMessage(message);
-							if (pMajor->IsHumanPlayer())
-								m_iSelectedView[client] = EMPIRE_VIEW;
+							if (it->second->GetType() == MAJOR)
+							{
+								CMajor* pMajor = dynamic_cast<CMajor*>(it->second);
+								ASSERT(pMajor);
+								network::RACE client = m_pRaceCtrl->GetMappedClientID(pMajor->GetRaceID());
+
+								message.GenerateMessage(CResourceManager::GetString("LOSE_COMBAT", false, m_Sector[p.x][p.y].GetName(TRUE)), MILITARY, "", 0,0);
+								pMajor->GetEmpire()->AddMessage(message);
+								// lose a minorbattle
+								CString eventText = pMajor->GetMoralObserver()->AddEvent(6, pMajor->GetRaceMoralNumber());
+								message.GenerateMessage(eventText, MILITARY, "", 0, 0);
+								pMajor->GetEmpire()->AddMessage(message);
+								if (pMajor->IsHumanPlayer())
+									m_iSelectedView[client] = EMPIRE_VIEW;
+							}
 							// Die Beziehung zum Gewinner verschlechtert sich dabei. Treffen zwei computergesteuerte Rassen
 							// aufeinander, so ist die Beziehungsveringerung geringer
 							for (map<CString, CMajor*>::const_iterator itt = pmMajors->begin(); itt != pmMajors->end(); itt++)
 							{
 								if (it->first != itt->first && winner[itt->first] == 1)
 								{
-									CMajor* pMajorLoose = itt->second;
-									if (pMajor->IsHumanPlayer() == false && pMajorLoose->IsHumanPlayer() == false)
-										pMajor->SetRelation(pMajorLoose->GetRaceID(), -(rand()%4));
+									CMajor* pMajorWin = itt->second;
+									if (pMajorWin->IsHumanPlayer() == false)
+										it->second->SetRelation(pMajorWin->GetRaceID(), -(rand()%4));
 									else
-										pMajor->SetRelation(pMajorLoose->GetRaceID(), -(rand()%6 + 5));
+										it->second->SetRelation(pMajorWin->GetRaceID(), -(rand()%6 + 5));
 								}
 							}
 						}
 						// unentschieden
-						else if (winner[it->first] == 3)
+						else if (winner[it->first] == 3 && it->second->GetType() == MAJOR)
 						{
+							CMajor* pMajor = dynamic_cast<CMajor*>(it->second);
+							ASSERT(pMajor);
+							network::RACE client = m_pRaceCtrl->GetMappedClientID(pMajor->GetRaceID());
+
 							message.GenerateMessage(CResourceManager::GetString("DRAW_COMBAT", false, m_Sector[p.x][p.y].GetName(TRUE)), MILITARY, "", 0,0);
 							pMajor->GetEmpire()->AddMessage(message);
 							if (pMajor->IsHumanPlayer())
@@ -5071,39 +5110,48 @@ void CBotf2Doc::CalcShipEffects()
 	{
 		CString sRace = m_ShipArray[y].GetOwnerOfShip();
 		CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(sRace));
+		CMinor* pMinor = NULL;
+		// handelt es sich um eine Minorrace
+		if (!pMajor)
+			pMinor = dynamic_cast<CMinor*>(m_pRaceCtrl->GetRace(sRace));
 		
 		CPoint p = m_ShipArray[y].GetKO();
-		m_Sector[p.x][p.y].SetScanned(sRace);
-		m_Sector[p.x][p.y].SetFullKnown(sRace);
-
-		USHORT scanPower = m_Sector[p.x][p.y].GetScanPower(sRace);
+		USHORT scanPower = 0;
 		float boni = 1.0f;
-		// Wenn das Schiff die Patrouillieneigenschaft besitzt und sich in einem eigenen Sektor befindet, dann
-		// wird die Scanleistung um 20% erhöht
-		if (sRace == m_Sector[p.x][p.y].GetOwnerOfSector() && m_ShipArray[y].HasSpecial(PATROLSHIP))
-			boni = 1.2f;
-		if ((USHORT)(m_ShipArray[y].GetScanPower() * boni) > scanPower)
-			m_Sector[p.x][p.y].SetScanPower((short)(m_ShipArray[y].GetScanPower() * boni), sRace);
-				
-		// Scanstärke auf die Sektoren abhängig von der Scanrange übertragen
-		for (int j = -m_ShipArray[y].GetScanRange(); j <= m_ShipArray[y].GetScanRange(); j++)
-			for (int i = -m_ShipArray[y].GetScanRange(); i <= m_ShipArray[y].GetScanRange(); i++)
-				if (p.y+j < STARMAP_SECTORS_VCOUNT && p.y+j > -1 && p.x+i < STARMAP_SECTORS_HCOUNT && p.x+i > -1)
-					if (p.x+i != p.x || p.y+j != p.y)
-					{
-						m_Sector[p.x+i][p.y+j].SetScanned(sRace);
-						// Teiler für die Scanstärke berechnen
-						int div = max(abs(j),abs(i));
-						if (div > 0)
-						{
-							scanPower = m_Sector[p.x+i][p.y+j].GetScanPower(sRace);
-							if ((USHORT)(m_ShipArray[y].GetScanPower() * boni) / div > scanPower)
-								m_Sector[p.x+i][p.y+j].SetScanPower((short)(m_ShipArray[y].GetScanPower() * boni / div), sRace);
-						}
-					}
+		// nur wenn das Schiff von einer Majorrace ist
+		if (pMajor != NULL)
+		{			
+			m_Sector[p.x][p.y].SetScanned(sRace);
+			m_Sector[p.x][p.y].SetFullKnown(sRace);
 
-		// Jedes Schiff erhöht auf seinem Sektor zusätzlich die Scanpower um 1
-		m_Sector[p.x][p.y].SetScanPower(m_Sector[p.x][p.y].GetScanPower(sRace) + 1, sRace);
+			scanPower = m_Sector[p.x][p.y].GetScanPower(sRace);			
+			// Wenn das Schiff die Patrouillieneigenschaft besitzt und sich in einem eigenen Sektor befindet, dann
+			// wird die Scanleistung um 20% erhöht
+			if (sRace == m_Sector[p.x][p.y].GetOwnerOfSector() && m_ShipArray[y].HasSpecial(PATROLSHIP))
+				boni = 1.2f;
+			if ((USHORT)(m_ShipArray[y].GetScanPower() * boni) > scanPower)
+				m_Sector[p.x][p.y].SetScanPower((short)(m_ShipArray[y].GetScanPower() * boni), sRace);
+					
+			// Scanstärke auf die Sektoren abhängig von der Scanrange übertragen
+			for (int j = -m_ShipArray[y].GetScanRange(); j <= m_ShipArray[y].GetScanRange(); j++)
+				for (int i = -m_ShipArray[y].GetScanRange(); i <= m_ShipArray[y].GetScanRange(); i++)
+					if (p.y+j < STARMAP_SECTORS_VCOUNT && p.y+j > -1 && p.x+i < STARMAP_SECTORS_HCOUNT && p.x+i > -1)
+						if (p.x+i != p.x || p.y+j != p.y)
+						{
+							m_Sector[p.x+i][p.y+j].SetScanned(sRace);
+							// Teiler für die Scanstärke berechnen
+							int div = max(abs(j),abs(i));
+							if (div > 0)
+							{
+								scanPower = m_Sector[p.x+i][p.y+j].GetScanPower(sRace);
+								if ((USHORT)(m_ShipArray[y].GetScanPower() * boni) / div > scanPower)
+									m_Sector[p.x+i][p.y+j].SetScanPower((short)(m_ShipArray[y].GetScanPower() * boni / div), sRace);
+							}
+						}
+
+			// Jedes Schiff erhöht auf seinem Sektor zusätzlich die Scanpower um 1
+			m_Sector[p.x][p.y].SetScanPower(m_Sector[p.x][p.y].GetScanPower(sRace) + 1, sRace);
+		}
 
 		// Im Sektor die NeededScanPower setzen, die wir brauchen um dort Schiffe zu sehen. Wir sehen ja keine getarneten
 		// Schiffe, wenn wir dort nicht eine ausreichend hohe Scanpower haben. Ab Stealthstufe 4 muss das Schiff getarnt
@@ -5136,32 +5184,36 @@ void CBotf2Doc::CalcShipEffects()
 			{				
 				// Scanstärke auf die Sektoren abhängig von der Scanrange übertragen
 				CShip* ship = m_ShipArray[y].GetFleet()->GetPointerOfShipFromFleet(x);
-				for (int j = -ship->GetScanRange(); j <= ship->GetScanRange(); j++)
+				// nur wenn das Schiff von einer Majorrace ist
+				if (pMajor != NULL)
 				{
-					for (int i = -ship->GetScanRange(); i <= ship->GetScanRange(); i++)
+					for (int j = -ship->GetScanRange(); j <= ship->GetScanRange(); j++)
 					{
-						if (p.y+j < STARMAP_SECTORS_VCOUNT && p.y+j > -1 && p.x+i < STARMAP_SECTORS_HCOUNT && p.x+i > -1)
+						for (int i = -ship->GetScanRange(); i <= ship->GetScanRange(); i++)
 						{
-							m_Sector[p.x+i][p.y+j].SetScanned(sRace);
-							// Teiler für die Scanstärke berechnen
-							int div = max(abs(j),abs(i));
-							if (div == 0)
-								div = 1;
-							scanPower = m_Sector[p.x+i][p.y+j].GetScanPower(sRace);
-							// Wenn das Schiff die Patrouillieneigenschaft besitzt und sich in einem eigenen Sektor
-							// befindet, dann wird die Scanleistung um 20% erhöht
-							if (sRace == m_Sector[p.x][p.y].GetOwnerOfSector() && ship->HasSpecial(PATROLSHIP))
-								boni = 1.2f;
-							else
-								boni = 1.0f;								
-							if ((ship->GetScanPower() * boni / div) > scanPower)
-								m_Sector[p.x+i][p.y+j].SetScanPower((short)(ship->GetScanPower() * boni / div), sRace);
+							if (p.y+j < STARMAP_SECTORS_VCOUNT && p.y+j > -1 && p.x+i < STARMAP_SECTORS_HCOUNT && p.x+i > -1)
+							{
+								m_Sector[p.x+i][p.y+j].SetScanned(sRace);
+								// Teiler für die Scanstärke berechnen
+								int div = max(abs(j),abs(i));
+								if (div == 0)
+									div = 1;
+								scanPower = m_Sector[p.x+i][p.y+j].GetScanPower(sRace);
+								// Wenn das Schiff die Patrouillieneigenschaft besitzt und sich in einem eigenen Sektor
+								// befindet, dann wird die Scanleistung um 20% erhöht
+								if (sRace == m_Sector[p.x][p.y].GetOwnerOfSector() && ship->HasSpecial(PATROLSHIP))
+									boni = 1.2f;
+								else
+									boni = 1.0f;								
+								if ((ship->GetScanPower() * boni / div) > scanPower)
+									m_Sector[p.x+i][p.y+j].SetScanPower((short)(ship->GetScanPower() * boni / div), sRace);
+							}
 						}
 					}
-				}
 
-				// auch jedes Schiff in einer Flotte erhöht die Scankraft um +1
-				m_Sector[p.x][p.y].SetScanPower(m_Sector[p.x][p.y].GetScanPower(sRace) + 1, sRace);
+					// auch jedes Schiff in einer Flotte erhöht die Scankraft um +1
+					m_Sector[p.x][p.y].SetScanPower(m_Sector[p.x][p.y].GetScanPower(sRace) + 1, sRace);
+				}
 
 				// Schiffe, wenn wir dort nicht eine ausreichend hohe Scanpower haben. Ab Stealthstufe 4 muss das Schiff getarnt
 				// sein, ansonsten gilt dort nur Stufe 3.
@@ -5315,40 +5367,112 @@ void CBotf2Doc::CalcShipEffects()
 				}
 			}
 		}
-		// wenn zwei Schiffe einer Rasse in diesem Sektor stationiert sind, so können sich die Besitzer auch kennenlernen
-		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
-			if (pMajor != NULL && pMajor->GetRaceID() != it->first)
+
+		if (pMajor != NULL)
+		{
+			// wenn zwei Schiffe einer Rasse in diesem Sektor stationiert sind, so können sich die Besitzer auch kennenlernen
+			for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+				if (pMajor->GetRaceID() != it->first)
+					if (m_Sector[p.x][p.y].GetOwnerOfShip(it->first) == TRUE)
+						if (pMajor->IsRaceContacted(it->first) == false)
+						{
+							CMajor* pOtherMajor = it->second;
+							
+							pMajor->SetIsRaceContacted(pOtherMajor->GetRaceID(), true);
+							pOtherMajor->SetIsRaceContacted(pMajor->GetRaceID(), true);
+							// Nachricht generieren, dass wir eine Majorrace kennengelernt haben
+							CString s;
+							CString sect; sect.Format("%c%i",(char)(p.y+97),p.x+1);
+							// der Major, der das erste Schiff gehört
+							s = CResourceManager::GetString("GET_CONTACT_TO_MAJOR", FALSE, pMajor->GetRaceName() ,sect);
+							message.GenerateMessage(s, DIPLOMACY, "", 0, FALSE);
+							pOtherMajor->GetEmpire()->AddMessage(message);
+							// der Major, der das zweite Schiff gehört
+							s = CResourceManager::GetString("GET_CONTACT_TO_MAJOR", FALSE, pOtherMajor->GetRaceName(), sect);
+							message.GenerateMessage(s, DIPLOMACY, "", 0, FALSE);
+							pMajor->GetEmpire()->AddMessage(message);
+							if (pMajor->IsHumanPlayer() || pOtherMajor->IsHumanPlayer())
+							{
+								network::RACE clientShip = m_pRaceCtrl->GetMappedClientID(pMajor->GetRaceID());
+								network::RACE clientOther = m_pRaceCtrl->GetMappedClientID(pOtherMajor->GetRaceID());
+								// Audiovorstellung der kennengelernten Majorrace
+								SNDMGR_MESSAGEENTRY entry = {SNDMGR_MSG_FIRSTCONTACT, clientShip, 2, 1.0f};
+								m_SoundMessages[clientOther].Add(entry);
+								SNDMGR_MESSAGEENTRY entry2 = {SNDMGR_MSG_FIRSTCONTACT, clientOther, 2, 1.0f};
+								m_SoundMessages[clientShip].Add(entry2);
+								m_iSelectedView[clientShip] = EMPIRE_VIEW;
+								m_iSelectedView[clientOther] = EMPIRE_VIEW;
+							}
+						}
+		}
+		else if (pMinor != NULL)
+		{
+			
+			// auf einen Sektor einer Majorrace geflogen
+			if (m_Sector[p.x][p.y].GetOwnerOfSector() != "" && m_Sector[p.x][p.y].GetOwnerOfSector() != sRace)
+			{
+				// normale Zugehörigkeit
+				if (pMinor->IsRaceContacted(m_Sector[p.x][p.y].GetOwnerOfSector()) == false)
+				{
+					CMajor* pSectorOwner = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(m_Sector[p.x][p.y].GetOwnerOfSector()));
+					if (pSectorOwner)
+					{
+						pMinor->SetIsRaceContacted(pSectorOwner->GetRaceID(), true);
+						pSectorOwner->SetIsRaceContacted(pMinor->GetRaceID(), true);
+
+						// Nachricht generieren, dass wir eine andere Rasse kennengelernt haben
+						CString s;
+						CString sect;
+						sect.Format("%c%i",(char)(p.y+97),p.x+1);
+						
+						// Dem Sektorbesitzer eine Nachricht über Erstkontakt überbringen
+						s = CResourceManager::GetString("GET_CONTACT_TO_MINOR",FALSE, pMinor->GetRaceName(),sect);
+						message.GenerateMessage(s,DIPLOMACY,"",0,FALSE);
+						pSectorOwner->GetEmpire()->AddMessage(message);						
+						
+						if (pSectorOwner->IsHumanPlayer())
+						{
+							network::RACE clientSystem = m_pRaceCtrl->GetMappedClientID(pSectorOwner->GetRaceID());
+							m_iSelectedView[clientSystem] = EMPIRE_VIEW;
+							
+							SNDMGR_MESSAGEENTRY entry = {SNDMGR_MSG_ALIENCONTACT, clientSystem, 1, 1.0f};
+							m_SoundMessages[clientSystem].Add(entry);
+							pSectorOwner->GetEmpire()->GetEventMessages()->Add(new CEventFirstContact(pSectorOwner->GetRaceID(), pMinor->GetRaceID()));
+						}
+					}
+				}
+			}
+			
+			// treffen mit einem Schiff eines anderen Majors
+			// wenn zwei Schiffe einer Rasse in diesem Sektor stationiert sind, so können sich die Besitzer auch kennenlernen
+			for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
 				if (m_Sector[p.x][p.y].GetOwnerOfShip(it->first) == TRUE)
-					if (pMajor->IsRaceContacted(it->first) == false)
+					if (pMinor->IsRaceContacted(it->first) == false)
 					{
 						CMajor* pOtherMajor = it->second;
 						
-						pMajor->SetIsRaceContacted(pOtherMajor->GetRaceID(), true);
-						pOtherMajor->SetIsRaceContacted(pMajor->GetRaceID(), true);
+						pMinor->SetIsRaceContacted(pOtherMajor->GetRaceID(), true);
+						pOtherMajor->SetIsRaceContacted(pMinor->GetRaceID(), true);
 						// Nachricht generieren, dass wir eine Majorrace kennengelernt haben
 						CString s;
 						CString sect; sect.Format("%c%i",(char)(p.y+97),p.x+1);
 						// der Major, der das erste Schiff gehört
-						s = CResourceManager::GetString("GET_CONTACT_TO_MAJOR", FALSE, pMajor->GetRaceName() ,sect);
+						s = CResourceManager::GetString("GET_CONTACT_TO_MINOR", FALSE, pMinor->GetRaceName() ,sect);
 						message.GenerateMessage(s, DIPLOMACY, "", 0, FALSE);
 						pOtherMajor->GetEmpire()->AddMessage(message);
-						// der Major, der das zweite Schiff gehört
-						s = CResourceManager::GetString("GET_CONTACT_TO_MAJOR", FALSE, pOtherMajor->GetRaceName(), sect);
-						message.GenerateMessage(s, DIPLOMACY, "", 0, FALSE);
-						pMajor->GetEmpire()->AddMessage(message);
-						if (pMajor->IsHumanPlayer() || pOtherMajor->IsHumanPlayer())
+						
+						if (pOtherMajor->IsHumanPlayer())
 						{
-							network::RACE clientShip = m_pRaceCtrl->GetMappedClientID(pMajor->GetRaceID());
 							network::RACE clientOther = m_pRaceCtrl->GetMappedClientID(pOtherMajor->GetRaceID());
-							// Audiovorstellung der kennengelernten Majorrace
-							SNDMGR_MESSAGEENTRY entry = {SNDMGR_MSG_FIRSTCONTACT, clientShip, 2, 1.0f};
-							m_SoundMessages[clientOther].Add(entry);
-							SNDMGR_MESSAGEENTRY entry2 = {SNDMGR_MSG_FIRSTCONTACT, clientOther, 2, 1.0f};
-							m_SoundMessages[clientShip].Add(entry2);
-							m_iSelectedView[clientShip] = EMPIRE_VIEW;
 							m_iSelectedView[clientOther] = EMPIRE_VIEW;
+							// Audiovorstellung der kennengelernten Minorrace
+							SNDMGR_MESSAGEENTRY entry = {SNDMGR_MSG_ALIENCONTACT, clientOther, 2, 1.0f};
+							m_SoundMessages[clientOther].Add(entry);
+							// Eventscreen einfügen
+							pOtherMajor->GetEmpire()->GetEventMessages()->Add(new CEventFirstContact(pOtherMajor->GetRaceID(), pMinor->GetRaceID()));
 						}
-					}
+					}					
+		}
 	}
 }
 

@@ -51,6 +51,7 @@ BEGIN_MESSAGE_MAP(CSystemMenuView, CMainBaseView)
 	ON_WM_RBUTTONDOWN()
 	ON_WM_MOUSEMOVE()
 	ON_WM_KEYDOWN()
+	ON_WM_XBUTTONDOWN()
 END_MESSAGE_MAP()
 
 void CSystemMenuView::OnNewRound()
@@ -190,6 +191,61 @@ void CSystemMenuView::OnPrepareDC(CDC* pDC, CPrintInfo* pInfo)
 	CMainBaseView::OnPrepareDC(pDC, pInfo);
 }
 
+void CSystemMenuView::OnXButtonDown(UINT nFlags, UINT nButton, CPoint point)
+{
+	// Dieses Feature erfordert mindestens Windows 2000.
+	// Die Symbole _WIN32_WINNT und WINVER müssen >= 0x0500 sein.
+	// TODO: Fügen Sie hier Ihren Meldungsbehandlungscode ein, und/oder benutzen Sie den Standard.
+	
+	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	ASSERT(pDoc);
+
+	if (!pDoc->m_bDataReceived)
+		return;
+	
+	CMajor* pMajor = m_pPlayersRace;
+	ASSERT(pMajor);
+	if (!pMajor)
+		return;
+
+	// Wenn wir in irgendeinem System sind, können wir mit dem links rechts Pfeil zu einem anderen System wechseln
+	CPoint p = pDoc->GetKO();
+	
+	// an welcher Stelle in der Liste befindet sich das aktuelle System?
+	short pos = 0;
+	for (int i = 0; i < pMajor->GetEmpire()->GetSystemList()->GetSize(); i++)
+	{
+		if (pMajor->GetEmpire()->GetSystemList()->GetAt(i).ko == p)
+		{
+			pos = i;
+			break;
+		}
+	}
+
+	if (nButton == XBUTTON2)
+	{
+		pos++;
+		if (pos == pMajor->GetEmpire()->GetSystemList()->GetSize())
+			pos = 0;
+	}
+	else
+	{
+		pos--;
+		if (pos < 0)
+			pos = pMajor->GetEmpire()->GetSystemList()->GetUpperBound();
+	}
+
+	if (pMajor->GetEmpire()->GetSystemList()->GetSize() > 1)
+	{
+		m_iClickedOn = 1;
+		m_byStartList = 0;
+		pDoc->SetKO(pMajor->GetEmpire()->GetSystemList()->GetAt(pos).ko.x, pMajor->GetEmpire()->GetSystemList()->GetAt(pos).ko.y);
+		Invalidate(FALSE);
+	}	
+
+	CMainBaseView::OnXButtonDown(nFlags, nButton, point);
+}
+
 BOOL CSystemMenuView::OnEraseBkgnd(CDC* pDC)
 {
 	// TODO: Add your message handler code here and/or call default
@@ -246,7 +302,7 @@ void CSystemMenuView::DrawBuildMenue(Graphics* g)
 	fontFormat.SetAlignment(StringAlignmentNear);
 	g->DrawString(CResourceManager::GetString("JOB").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(370, 106, 335, 25), &fontFormat, &fontBrush);
 	
-	// Die Struktur BuildList erstmal löschen, alle werte auf 0
+	// Die Struktur BuildList erstmal löschen, alle Werte auf 0
 	for (int i = 0; i < 50; i++)
 	{
 		BuildList[i].rect.SetRect(0,0,0,0);
@@ -3016,13 +3072,13 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 					RunningNumber = (BuildList[i].runningNumber)*(-1)+1;
 				else
 					RunningNumber = BuildList[i].runningNumber;
-				// Bei linksclick berechnet er die Ressourcen/Industrie
-				//pDoc->m_System[pDoc->GetKO().x][pDoc->GetKO().y].CalculateNeededRessources(&pDoc->GetBuildingInfo(RunningNumber),BuildList[i].runningNumber);
+				
 				m_iClickedOn = i;
 				m_bClickedOneBuilding = TRUE;
 				m_bClickedOnBuyButton = FALSE;
 				m_bClickedOnDeleteButton = FALSE;
-				Invalidate();
+				Invalidate(FALSE);
+				return;
 			}
 		}
 		CPoint p = pDoc->GetKO();
@@ -3568,7 +3624,7 @@ void CSystemMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 		if (BuildList[i].rect.PtInRect(point) && m_bySubMenu == 0)
 		{
 			short nID = BuildList[i].runningNumber;
-
+			
 			// Die Struktur BuildList löschen, alle werte auf 0
 			for (int j = 0; j < 50; j++)
 			{
@@ -3581,6 +3637,10 @@ void CSystemMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 				RunningNumber = nID * (-1);
 			else
 				RunningNumber = nID;
+
+			// vor einem Doppelklick müssen die benötigten Ressourcen sicherheitshalber nochmal neu berechnet.
+			// Denn bei ganz flinken Fingern kann es passieren, dass dies in der Draw Methode nicht gemacht werden.
+			pDoc->GetSystem(p).GetAssemblyList()->CalculateNeededRessources(&pDoc->GetBuildingInfo(RunningNumber),0,0, pDoc->GetSystem(p).GetAllBuildings(), nID, pMajor->GetEmpire()->GetResearch()->GetResearchInfo());
 			
 			if (pDoc->m_System[p.x][p.y].GetAssemblyList()->MakeEntry(nID, p, pDoc->m_System))
 			{
@@ -3612,13 +3672,13 @@ void CSystemMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 				pDoc->m_System[p.x][p.y].CalculateVariables(&pDoc->BuildingInfo, pMajor->GetEmpire()->GetResearch()->GetResearchInfo(),pDoc->m_Sector[p.x][p.y].GetPlanets(), pMajor, CTrade::GetMonopolOwner());
 				m_iClickedOn = i;				
 
-				Invalidate(FALSE);				
+				Invalidate(FALSE);
+				return;
 			}
 			// Baulisteneintrag konnte aufgrund von Ressourcenmangel nicht gesetzt werden
 			else
 				CSoundManager::GetInstance()->PlaySound(SNDMGR_SOUND_ERROR);
-			
-			break;
+			return;			
 		}
 	}
 	// Baulisteneintrag wieder entfernen
@@ -3646,18 +3706,17 @@ void CSystemMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 							CPoint ko = pMajor->GetEmpire()->GetSystemList()->GetAt(k).ko;
 							for (int l = 0; l < pDoc->m_System[ko.x][ko.y].GetResourceRoutes()->GetSize(); l++)
 								if (pDoc->m_System[ko.x][ko.y].GetResourceRoutes()->GetAt(l).GetKO() == p)
-									if (pDoc->m_System[ko.x][ko.y].GetResourceRoutes()->GetAt(l).GetKO() == p)
-										if (pDoc->m_System[ko.x][ko.y].GetResourceRoutes()->GetAt(l).GetResource() == j)
-											if (pDoc->m_System[ko.x][ko.y].GetResourceRoutes()->GetAt(l).GetPercent() > 0)
-											{
-												// sind wir soweit, dann geht ein prozentualer Anteil zurück in das
-												// Startsystem der Ressourcenroute
-												int back = pDoc->m_System[p.x][p.y].GetAssemblyList()->GetNeededResourceInAssemblyList(0, j)
-													* pDoc->m_System[ko.x][ko.y].GetResourceRoutes()->GetAt(l).GetPercent() / 100;
-												ASSERT(back >= 0);
-												pDoc->m_System[ko.x][ko.y].SetRessourceStore(j, back);
-												getBackRes -= back;
-											}
+									if (pDoc->m_System[ko.x][ko.y].GetResourceRoutes()->GetAt(l).GetResource() == j)
+										if (pDoc->m_System[ko.x][ko.y].GetResourceRoutes()->GetAt(l).GetPercent() > 0)
+										{
+											// sind wir soweit, dann geht ein prozentualer Anteil zurück in das
+											// Startsystem der Ressourcenroute
+											int back = pDoc->m_System[p.x][p.y].GetAssemblyList()->GetNeededResourceInAssemblyList(0, j)
+												* pDoc->m_System[ko.x][ko.y].GetResourceRoutes()->GetAt(l).GetPercent() / 100;
+											ASSERT(back >= 0);
+											pDoc->m_System[ko.x][ko.y].SetRessourceStore(j, back);
+											getBackRes -= back;
+										}
 						}
 					pDoc->m_System[p.x][p.y].SetRessourceStore(j, getBackRes);
 				}
@@ -3838,6 +3897,7 @@ void CSystemMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 		if (pMajor->GetEmpire()->GetSystemList()->GetSize() > 1)
 		{
 			m_iClickedOn = 1;
+			m_byStartList = 0;
 			pDoc->SetKO(pMajor->GetEmpire()->GetSystemList()->GetAt(pos).ko.x, pMajor->GetEmpire()->GetSystemList()->GetAt(pos).ko.y);
 			Invalidate(FALSE);
 		}
@@ -3879,6 +3939,10 @@ void CSystemMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 				RunningNumber = nID * (-1);
 			else
 				RunningNumber = nID;
+
+			// vor einem Doppelklick müssen die benötigten Ressourcen sicherheitshalber nochmal neu berechnet.
+			// Denn bei ganz flinken Fingern kann es passieren, dass dies in der Draw Methode nicht gemacht werden.
+			pDoc->GetSystem(p).GetAssemblyList()->CalculateNeededRessources(&pDoc->GetBuildingInfo(RunningNumber),0,0, pDoc->GetSystem(p).GetAllBuildings(), nID, pMajor->GetEmpire()->GetResearch()->GetResearchInfo());
 			
 			if (pDoc->m_System[p.x][p.y].GetAssemblyList()->MakeEntry(nID, p, pDoc->m_System))
 			{
@@ -3954,4 +4018,3 @@ void CSystemMenuView::CreateButtons()
 	for (int i = TITAN; i <= IRIDIUM; i++)
 		m_SystemTradeButtons.Add(new CMyButton(CPoint(975,235+i*60) , CSize(30,30), "", fileN, fileN, fileA));
 }
-

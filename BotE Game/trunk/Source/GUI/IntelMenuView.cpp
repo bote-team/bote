@@ -716,7 +716,7 @@ void CIntelMenuView::DrawIntelReportsMenu(Graphics* g)
 			if (pEnemy)
 				s = pEnemy->GetEmpiresName();
 			else
-				s = CResourceManager::GetString("UNKNWON");
+				s = CResourceManager::GetString("UNKNOWN");
 			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(200,140+j*25,400,25), &fontFormat, &fontBrush);
 			if (intelObj->GetIsSpy())
 				s = CResourceManager::GetString("SPY");

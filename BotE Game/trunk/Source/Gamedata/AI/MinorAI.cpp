@@ -245,14 +245,17 @@ bool CMinorAI::MakeOffer(CString& sRaceID, CDiplomacyInfo& info)
 
 			// Checken ob wir ein Angebot überhaupt machen können, z.B. wenn eine andere Hauptrasse
 			// z.B. Mitgliedschaft mit der Minorrace hat, dann können wir ihr kein Angebot machen
-			short nOthersAgreement	= NO_AGREEMENT;		
+			short nOthersAgreement = NO_AGREEMENT;		
 			map<CString, CMajor*>* pmMajors = m_pDoc->GetRaceCtrl()->GetMajors();
 			for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
 			{
 				short nTemp = pMinor->GetAgreement(it->first);
 				if (nTemp > nOthersAgreement)
-					nOthersAgreement	= nTemp;			
+					nOthersAgreement = nTemp;			
 			}
+			// wenn die Minor irgendeine Mitgliedschaft mit einer anderen Rasse hat, dann macht sie kein Angebot
+			if (nOthersAgreement == MEMBERSHIP)
+				return false;
 
 			float fMulti = byOurRelationToThem + 100;
 			fMulti /= 100;
