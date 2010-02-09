@@ -1118,7 +1118,14 @@ void CDiplomacyMenuView::DrawDiplomacyOfferMenue(Graphics* g, const CString& sWh
 	{
 		// Balken zeichnen, auf dem ich den Betrag auswählen kann, außer bei Kriegserklärung
 		if (m_OutgoingInfo.m_nType != WAR)
-		{		
+		{	
+			// ist aus irgendeinem Grund die übergebende Menge größer als die aktuellen Credits, so
+			// werden die Credits runtergerechnet
+			if (m_bShowSendButton && m_OutgoingInfo.m_nCredits > pPlayer->GetEmpire()->GetLatinum())
+			{
+				m_OutgoingInfo.m_nCredits = pPlayer->GetEmpire()->GetLatinum() / 250;
+				m_OutgoingInfo.m_nCredits *= 250;
+			}
 			// Balken für Creditgeschenk zeichnen
 			for (int t = 0; t < 20; t++)
 			{
@@ -1158,6 +1165,18 @@ void CDiplomacyMenuView::DrawDiplomacyOfferMenue(Graphics* g, const CString& sWh
 				else if (iWhichResource == DILITHIUM)
 					res = CResourceManager::GetString("DILITHIUM");
 				UINT nUnit = iWhichResource == DILITHIUM ? 5 : 1000;
+				
+				// sind aus irgendeinem Grund die übergebende Menge größer als die aktuellen vorhandenen Ressourcen, so
+				// werden die Ressourcen runtergerechnet
+				if (m_bShowSendButton && m_OutgoingInfo.m_nResources[iWhichResource] > 0 && m_OutgoingInfo.m_ptKO != CPoint(-1,-1))
+				{
+					if (m_OutgoingInfo.m_nResources[iWhichResource] > pDoc->GetSystem(m_OutgoingInfo.m_ptKO).GetRessourceStore(iWhichResource))
+					{
+						m_OutgoingInfo.m_nResources[iWhichResource] = pDoc->GetSystem(m_OutgoingInfo.m_ptKO).GetRessourceStore(iWhichResource) / nUnit;
+						m_OutgoingInfo.m_nResources[iWhichResource] *= nUnit;						
+					}
+				}
+				
 				for (int t = 0; t < 20; t++)
 				{
 					RectF timber(195+t*12,520,10,25);

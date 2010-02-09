@@ -2,7 +2,7 @@
  *   Copyright (C)2004-2010 Sir Pustekuchen
  *
  *   Author   :  Sir Pustekuchen
- *   Home     :  http://birth-of-the-empires.de.vu
+ *   Home     :  http://birth-of-the-empires.de
  *
  */
 #pragma once
@@ -14,8 +14,8 @@
 
 /// Versionsnummer des Dokuments; es können nur Spielstände geladen werden, die diese Versionsnummer
 /// haben.
-#define DOCUMENT_VERSION			7		// Alpha5 Refit Version
-#define VERSION						0.7		///< benötigte Version in Datafiles
+#define DOCUMENT_VERSION			8		///< Alpha 5.1 Version
+#define VERSION						0.71	///< benötigte Version in Datafiles
 #define VERSION_INFORMATION			"0.71"	///< anzuzeigende Versionsinformation 
 
 // --- Feste Größen der Starmap ------------------------------------------------
@@ -163,10 +163,9 @@
 #define RESEARCHED			1
 #define RESEARCHING 		2
 
-#define NoUC				12	// Number of Unique Complexes	( nur noch nicht Finanzen implementiert!!!! -> 13)
-#define NoTL				10	// Number of Tech Levels, aktuell 11 da bei Stufe 0 begonnen wird zu zählen)
-
+#define NoUC					12		// Number of Unique Complexes	( nur noch nicht Finanzen implementiert!!!! -> 13)
 #define SPECIAL_RESEARCH_DIV	1.67	// Wert, durch den die benötigten Punkte bei der Spezialforschung geteilt werden (umso höher, umso weniger FP sind nötig)
+#define TECHPRODBONUS			2.0		// Techbonus auf die Produktion (z.B. 2% pro Stufe auf Energie, Nahrung und Industrie)
 
 // ------------- Schiffe -------------------------------------------------------
 // Schiffstypen

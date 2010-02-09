@@ -392,13 +392,24 @@ void CAssemblyList::RemoveResourceFromStorage(BYTE res, const CPoint &ko, CSyste
 				ROUTELIST() : route(0), fromSystem(0) {}
 				ROUTELIST(CResourceRoute *_route, CPoint _fromSystem) : route(_route), fromSystem(_fromSystem) {}
 			};			
-			CArray<ROUTELIST> routes;
+			CArray<ROUTELIST> routes;			
 			for (int j = 0; j < routesFrom->GetSize(); j++)
 			{
 				CPoint p = routesFrom->GetAt(j);
 				for (int k = 0; k < systems[p.x][p.y].GetResourceRoutes()->GetSize(); k++)
 					if (systems[p.x][p.y].GetResourceRoutes()->GetAt(k).GetResource() == res)
-						routes.Add(ROUTELIST(&systems[p.x][p.y].GetResourceRoutes()->ElementAt(k), p));
+					{
+						// prüfen das die Route nicht schon verwendet wird
+						bool bUsed = false;
+						for (int l = 0; l < routes.GetSize(); l++)
+							if (routes.GetAt(l).fromSystem == p)
+							{
+								bUsed = true;
+								break;
+							}
+						if (!bUsed)
+							routes.Add(ROUTELIST(&systems[p.x][p.y].GetResourceRoutes()->ElementAt(k), p));						
+					}
 			}
 			// in routes sind nun die Zeiger auf die richtigen Ressourcenrouten, also die Routen, welche auch den
 			// passenden Rohstoff liefern könnten.

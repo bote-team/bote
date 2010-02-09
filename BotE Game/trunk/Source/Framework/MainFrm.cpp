@@ -117,7 +117,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	int nDelayTime = 750;
 	pIni->ReadValue("Video", "TOOLTIPDELAY", nDelayTime);
 	// Times (in ms)
-	m_CPPToolTip.SetDelayTime(PPTOOLTIP_TIME_INITIAL, nDelayTime);	// nach 1. Sekunde wird es angezeigt
+	m_CPPToolTip.SetDelayTime(PPTOOLTIP_TIME_INITIAL, nDelayTime);	// nach 750ms wird es angezeigt
 	m_CPPToolTip.SetDelayTime(PPTOOLTIP_TIME_AUTOPOP, 200000);		// how long it stays
 	
 	//m_CPPToolTip.SetDefaultSizes(FALSE);
@@ -148,6 +148,10 @@ BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
 		return FALSE;
 	// ZU ERLEDIGEN: Ändern Sie hier die Fensterklasse oder das Erscheinungsbild, indem Sie
 	//  CREATESTRUCT cs modifizieren.
+
+	// Unterdrücken der Taskbar durch die Applikation 
+	cs.style &= ~0x00010000;	//ich weiss nicht warum - aber es klappt
+
 	return TRUE;
 }
 
@@ -298,14 +302,15 @@ void CMainFrame::SelectMainView(USHORT whichView, const CString& sRace)
 		{
 			switch (whichView)
 			{
-			case SYSTEM_VIEW:		SelectBottomView(PLANET_BOTTOM_VIEW); break;
-			case RESEARCH_VIEW:		SelectBottomView(RESEARCH_BOTTOM_VIEW); break;
-			case INTEL_VIEW:		SelectBottomView(INTEL_BOTTOM_VIEW); break;
-			case DIPLOMACY_VIEW:	SelectBottomView(DIPLOMACY_BOTTOM_VIEW); break;
-			case TRADE_VIEW:		SelectBottomView(TRADE_BOTTOM_VIEW); break;
-			case SHIPDESIGN_VIEW:	SelectBottomView(SHIPDESIGN_BOTTOM_VIEW); break;
-			case FLEET_VIEW:		SelectBottomView(SHIP_BOTTOM_VIEW); break;
-			default:				SelectBottomView(PLANET_BOTTOM_VIEW); break;
+			case SYSTEM_VIEW:		SelectBottomView(PLANET_BOTTOM_VIEW);		break;
+			case RESEARCH_VIEW:		SelectBottomView(RESEARCH_BOTTOM_VIEW);		break;
+			case INTEL_VIEW:		SelectBottomView(INTEL_BOTTOM_VIEW);		break;
+			case DIPLOMACY_VIEW:	SelectBottomView(DIPLOMACY_BOTTOM_VIEW);	break;
+			case TRADE_VIEW:		SelectBottomView(TRADE_BOTTOM_VIEW);		break;
+			case SHIPDESIGN_VIEW:	SelectBottomView(SHIPDESIGN_BOTTOM_VIEW);	break;
+			case FLEET_VIEW:		SelectBottomView(SHIP_BOTTOM_VIEW);			break;
+			case TRANSPORT_VIEW:	SelectBottomView(SHIP_BOTTOM_VIEW);			break;
+			default:				SelectBottomView(PLANET_BOTTOM_VIEW);		break;
 			}
 
 			// Wenn wir irgendwie in eine andere View, außer der Galaxieansicht gelangen, dann dürfen wir keine Handelsroute
@@ -493,6 +498,12 @@ void CMainFrame::NotifyCPPTooltip( NMHDR* pNMHDR, LRESULT* result )
 	else if (pWnd->IsKindOf(RUNTIME_CLASS(CBottomBaseView)))
 	{
 		pNotify->ti->sTooltip = ((CBottomBaseView*)pWnd)->CreateTooltip();
+		return;
+	}
+	// Hauptviews
+	else if (pWnd->IsKindOf(RUNTIME_CLASS(CMainBaseView)))
+	{
+		pNotify->ti->sTooltip = ((CMainBaseView*)pWnd)->CreateTooltip();
 		return;
 	}
 	

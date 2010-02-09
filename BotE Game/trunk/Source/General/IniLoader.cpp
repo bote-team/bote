@@ -37,9 +37,13 @@ CIniLoader::CIniLoader(void)
 		WriteValue("Video", "SHOWTRADEROUTES", "ON");
 		WriteValue("Video", "ANIMATEDICON", "ON");
 		WriteValue("Video", "TOOLTIPDELAY", "750");
+		WriteValue("Video", "SHOWSCROLLBARS", "OFF");
 
 		WriteValue("Special", "VERSION", VERSION_INFORMATION);
 		WriteValue("Special", "RANDOMSEED", "-1");
+		WriteValue("Special", "STARDENSITY", "35");
+		WriteValue("Special", "MINORDENSITY", "32");
+
 	}
 }
 

@@ -37,6 +37,8 @@ BEGIN_MESSAGE_MAP(CGalaxyMenuView, CScrollView)
 	ON_WM_RBUTTONDOWN()
 	ON_WM_KEYDOWN()
 	ON_WM_MOUSEMOVE()	
+	ON_WM_SIZE()
+	ON_WM_LBUTTONUP()
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -88,14 +90,19 @@ void CGalaxyMenuView::OnNewRound()
 
 	if (m_bScrollToHome)
 	{
-		// zu Beginn zum Startsektor scrollen, so dass dieser relativ zentral angezeigt wird.
+		CSize size;
+		size.cx = (LONG)(STARMAP_TOTALWIDTH * m_fZoom);
+		size.cy = (LONG)(STARMAP_TOTALHEIGHT * m_fZoom);
+		SetScrollSizes(MM_TEXT, size);		
 		CPoint homePos = pDoc->GetRaceKO(m_pPlayersRace->GetRaceID());
+		
 		CPoint scrollPos;
 		scrollPos.x = homePos.x * GetScrollLimit(SB_HORZ) / STARMAP_SECTORS_HCOUNT;
 		scrollPos.y = homePos.y * GetScrollLimit(SB_VERT) / STARMAP_SECTORS_VCOUNT;
-		SetScrollPos(SB_HORZ, scrollPos.x);
-		SetScrollPos(SB_VERT, scrollPos.y);	
-		m_bScrollToHome = false;
+		
+		SetScrollPos(SB_HORZ, scrollPos.x, false);
+		SetScrollPos(SB_VERT, scrollPos.y, false);	
+		m_bScrollToHome = false;		
 	}
 	Invalidate();
 }
@@ -113,6 +120,9 @@ void CGalaxyMenuView::OnDraw(CDC* dc)
 	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
 	if (!pMajor)
+		return;
+
+	if (!m_pGalaxyBackground)
 		return;
 
 	// ZU ERLEDIGEN: Hier Code zum Zeichnen der ursprünglichen Daten hinzufügen
@@ -148,20 +158,32 @@ void CGalaxyMenuView::OnDraw(CDC* dc)
 #ifdef _DEBUG
 	s.Format("scrollposition: %.0lf/%.0lf", pt.x / m_fZoom, pt.y / m_fZoom);
 	g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(L"Arial", 8, FontStyleBold), PointF((REAL)pt.x, (REAL)pt.y), &SolidBrush(Color::Aquamarine));
-	s.Format("zoomlevel: %.1lf", m_fZoom);
+	int nMinRange, nMaxRange;
+	GetScrollRange(SB_HORZ, &nMinRange, &nMaxRange);
+	s.Format("scrollrange horz: %d/%d", nMinRange, nMaxRange);
 	g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(L"Arial", 8, FontStyleBold), PointF((REAL)pt.x, (REAL)pt.y + 10), &SolidBrush(Color::Aquamarine));
+	GetScrollRange(SB_VERT, &nMinRange, &nMaxRange);
+	s.Format("scrollrange vert: %d/%d", nMinRange, nMaxRange);
+	g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(L"Arial", 8, FontStyleBold), PointF((REAL)pt.x, (REAL)pt.y + 20), &SolidBrush(Color::Aquamarine));
+	s.Format("zoomlevel: %.1lf", m_fZoom);
+	g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(L"Arial", 8, FontStyleBold), PointF((REAL)pt.x, (REAL)pt.y + 30), &SolidBrush(Color::Aquamarine));
 	//s.Format("filename: \"test.boj\"");
 	//g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(L"Arial", 8, FontStyleBold), PointF((REAL)pt.x, (REAL)pt.y + 20), &SolidBrush(Color::Aquamarine));
 	s.Format("resolution: %d * %d", m_pGalaxyBackground->GetWidth(), m_pGalaxyBackground->GetHeight());
-	g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(L"Arial", 8, FontStyleBold), PointF((REAL)pt.x, (REAL)pt.y + 20), &SolidBrush(Color::Aquamarine));
+	g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(L"Arial", 8, FontStyleBold), PointF((REAL)pt.x, (REAL)pt.y + 40), &SolidBrush(Color::Aquamarine));
 	//s.Format("dpi: %.1lf * %.1lf", m_pGalaxyBackground->GetHorizontalResolution(), m_pGalaxyBackground->GetVerticalResolution());
 	//g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(L"Arial", 8, FontStyleBold), PointF((REAL)pt.x, (REAL)pt.y + 40), &SolidBrush(Color::Orange));	
 #endif
 	// äußere schwarze Umrandung zeichnen
 	//g.DrawRectangle(&Pen(Color::Black, 3.0), posX - 1, posY - 1, picWidth + 2, picHeight + 2);
+	REAL yThumbPos = (REAL)((pt.y + client.bottom - m_pThumbnail->GetHeight() - 15));
+	// wenn das System in der unteren rechten Hälfte ist, dann wird das Thumbnail oben rechts gezeichnet
+	CPoint pRaceKO = pDoc->GetRaceKO(pMajor->GetRaceID());
+	if (pRaceKO.x > STARMAP_SECTORS_HCOUNT * 0.75 && pRaceKO.y > STARMAP_SECTORS_VCOUNT * 0.75)
+		yThumbPos = (REAL)((pt.y + 15));
+	// Position des Thumbnails festlegen
 	RectF thumbRect((REAL)((pt.x + client.right - m_pThumbnail->GetWidth() - 15)),
-		(REAL)((pt.y + client.bottom - m_pThumbnail->GetHeight() - 15)),
-		(REAL)m_pThumbnail->GetWidth(), (REAL)m_pThumbnail->GetHeight());
+		yThumbPos, (REAL)m_pThumbnail->GetWidth(), (REAL)m_pThumbnail->GetHeight());
 
 	g.DrawImage(m_pThumbnail, thumbRect);
 	
@@ -206,11 +228,11 @@ void CGalaxyMenuView::OnDraw(CDC* dc)
 	// Rechner nichts mehr, deswegen wird immer das ganze Gitter gezeichnet
 	pDC->SetBkMode(TRANSPARENT);
 	CPen	gridPen(PS_SOLID, 0, RGB(0,0,0));			// Gitternetz
-	CPen	scanPen(PS_DOT, 0, RGB(75,75,75));			// gescanntes Gitternetz
+	CPen	scanPen(PS_DOT, 0, RGB(100,100,100));		// gescanntes Gitternetz
 	CPen	nearPen(PS_SOLID, 1, RGB(0, 200, 0)),		// kurze Entfernung
 			middlePen(PS_SOLID, 1, RGB(200, 200, 0)),	// mittlere Entfernung
 			farPen(PS_SOLID, 1, RGB(200, 0, 0));		// große Entfernung
-	CPen	selPen(PS_SOLID, 0, RGB(255,125,0));		// Markierung
+	CPen	selPen(PS_SOLID, 0, RGB(255,125,0));		// Markierung	
 
 	/**/ CPen parentPen(PS_SOLID, 0, RGB(180, 180, 180)); // aufspannender Baum /**/
 
@@ -452,7 +474,7 @@ void CGalaxyMenuView::OnDraw(CDC* dc)
 	
 	// aktuelle Scrollposition immer merken
 	pDoc->m_ptScrollPoint = GetScrollPosition();
-	g.ReleaseHDC(pDC.GetSafeHdc());	
+	g.ReleaseHDC(pDC.GetSafeHdc());		
 }
 
 void CGalaxyMenuView::OnInitialUpdate()
@@ -484,14 +506,15 @@ void CGalaxyMenuView::OnInitialUpdate()
 	}
 
 	m_TotalSize = CSize(1075, 750);
+	SetScrollSizes(MM_TEXT, m_TotalSize);
+	
 	m_bShipMove	= FALSE;
 	m_bScrollToHome = TRUE;
 
 	pDoc->SetKO(pDoc->GetRaceKO(m_pPlayersRace->GetRaceID()));
+	pDoc->GetMainFrame()->AddToTooltip(this);	
 
-	pDoc->GetMainFrame()->AddToTooltip(this);
-
-	CScrollView::OnInitialUpdate();
+	CScrollView::OnInitialUpdate();	
 }
 
 BOOL CGalaxyMenuView::OnScroll(UINT nScrollCode, UINT nPos, BOOL bDoScroll)
@@ -517,8 +540,8 @@ BOOL CGalaxyMenuView::OnScrollBy(CSize sizeScroll, BOOL bDoScroll)
 	if (!pDoc->m_bDataReceived)
 		return FALSE;
 	if (m_pPlayersRace == NULL)
-		return FALSE;
-	
+		return FALSE;	
+
 	CRect client;
 	GetClientRect(&client);
 	InvalidateRect(&client, FALSE);	
@@ -533,14 +556,29 @@ void CGalaxyMenuView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
 	ASSERT(pDoc);
 	
 	if (!pDoc->m_bDataReceived)
-		return;
-	
+		return;	
+
 	CSize size;
 	size.cx = (LONG)(STARMAP_TOTALWIDTH * m_fZoom);
 	size.cy = (LONG)(STARMAP_TOTALHEIGHT * m_fZoom);
-	SetScrollSizes(MM_TEXT, size);
+	bool bShowScrollBars = false;
+	CIniLoader::GetInstance()->ReadValue("Video", "SHOWSCROLLBARS", bShowScrollBars);
+	if (bShowScrollBars)
+		SetScrollSizes(MM_TEXT, size);
+	else
+	{
+		SetScrollRange(SB_HORZ, 0, size.cx, false);
+		SetScrollRange(SB_VERT, 0, size.cy, false);
+		ShowScrollBar(SB_BOTH, SW_HIDE);	
+	}
 }
 
+void CGalaxyMenuView::OnSize(UINT nType, int cx, int cy)
+{
+	//CScrollView::OnSize(nType, cx, cy);
+
+	// TODO: Fügen Sie hier Ihren Meldungsbehandlungscode ein.
+}
 /////////////////////////////////////////////////////////////////////////////
 // CGalaxyMenuView Drucken
 
@@ -626,13 +664,14 @@ void CGalaxyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 	// Das hier alles nur machen, wenn wir in der Galaxiemap-Ansicht sind	
 	// Mauskoordinaten in ungezoomte Koordinaten der Starmap umrechnen
 	CPoint pt(point);
+	m_ptOldMousePos = pt;
 	pt += GetScrollPosition() - m_ptViewOrigin;
 	UnZoom(&pt);
 	
 
 	if (!m_nRange)
 	{
-		// angeklickten Sektor ermitteln, anschließend markieren
+		// angeklickten Sektor ermitteln, anschließend markieren		
 		struct::Sector sector = pMajor->GetStarmap()->GetClickedSector(pt);
 		CSmallInfoView::SetShipInfo(false);
 		CSmallInfoView::SetPlanetInfo(false);
@@ -776,6 +815,15 @@ void CGalaxyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 	CScrollView::OnLButtonDown(nFlags, point);
 }
 
+void CGalaxyMenuView::OnLButtonUp(UINT nFlags, CPoint point)
+{
+	// TODO: Fügen Sie hier Ihren Meldungsbehandlungscode ein, und/oder benutzen Sie den Standard.
+	ReleaseCapture();
+
+	CScrollView::OnLButtonUp(nFlags, point);
+}
+
+
 BOOL CGalaxyMenuView::OnEraseBkgnd(CDC* pDC) 
 {
 	// TODO: Code für die Behandlungsroutine für Nachrichten hier einfügen und/oder Standard aufrufen
@@ -812,10 +860,6 @@ BOOL CGalaxyMenuView::OnMouseWheel(UINT nFlags, short zDelta, CPoint point)
 
 	// Zoom-Faktor ändern (funktioniert auch bei hochauflösenden Scroll-Rädern (gibt's die schon?))
 	m_fZoom += (double)zDelta * STARMAP_ZOOM_STEP / WHEEL_DELTA;
-	/*if (zDelta < 0)
-		m_fZoom -= 0.05f * m_fZoom;
-	else if (zDelta > 0)
-		m_fZoom += 0.05f * m_fZoom;*/
 	// wenn außerhalb der vorgegebenen Grenzen, dann auf die jeweilige Grenze setzen
 	if (m_fZoom < STARMAP_ZOOM_MIN)
 		m_fZoom = STARMAP_ZOOM_MIN;
@@ -824,14 +868,17 @@ BOOL CGalaxyMenuView::OnMouseWheel(UINT nFlags, short zDelta, CPoint point)
 
 	// wenn sich der Zoom-Faktor geändert hat
 	if (m_fZoom != oldZoom)
-	{
-		Invalidate(TRUE);
-		OnUpdate(this, 0, NULL); // Anpassen der ScrollSizes
-		
+	{			
 		// ScrollPosition so anpassen, dass sich nach dem Zoomen wieder der Sektor unter dem Mauscursor
 		// befindet, der vor dem Zoomen schon unter der Maus war
 		if (sector.x > -1 && sector.y > -1)
 		{
+			bool bShowScrollBars = false;
+			CIniLoader::GetInstance()->ReadValue("Video", "SHOWSCROLLBARS", bShowScrollBars);
+			if (bShowScrollBars)
+				Invalidate(TRUE);
+			OnUpdate(this, 0, NULL); // Anpassen der ScrollSizes		
+			
 			// (neue) gezoomte Koordinaten des Sektors (Mittelpunkt) ermitteln
 			CPoint pt = pMajor->GetStarmap()->GetSectorCoords(sector);
 			pt += CPoint(STARMAP_SECTOR_WIDTH >> 1, STARMAP_SECTOR_HEIGHT >> 1);
@@ -857,7 +904,15 @@ BOOL CGalaxyMenuView::OnMouseWheel(UINT nFlags, short zDelta, CPoint point)
 			// @TODO END //
 			
 			// ScrollPosition setzen
-			ScrollToPosition(pt);
+			if (bShowScrollBars)
+				ScrollToPosition(pt);
+			else
+			{
+				SetScrollPos(SB_HORZ, pt.x, false);
+				SetScrollPos(SB_VERT, pt.y, false);
+				Invalidate(TRUE);
+			}
+			
 		}			
 	}	
 
@@ -881,12 +936,14 @@ void CGalaxyMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 	// Wenn wir uns in der Galaxieansicht befinden
 	CPoint pt(point);
 	pt += GetScrollPosition() - m_ptViewOrigin;
-	UnZoom(&pt);		
+	UnZoom(&pt);
+
 	if (!m_nRange)
 	{
 		// angeklickten Sektor ermitteln
 		struct::Sector sector = pMajor->GetStarmap()->GetClickedSector(pt);
-		if (pDoc->GetSystem(sector.x, sector.y).GetOwnerOfSystem() == pMajor->GetRaceID() &&
+		if (PT_IN_RECT(sector, 0, 0, STARMAP_SECTORS_HCOUNT, STARMAP_SECTORS_VCOUNT) &&
+			pDoc->GetSystem(sector.x, sector.y).GetOwnerOfSystem() == pMajor->GetRaceID() &&
 			pDoc->GetSector(sector.x, sector.y).GetSunSystem() == TRUE)
 			{
 				// falls ein Schiff markiert war wird dieses abgewählt
@@ -1039,7 +1096,45 @@ void CGalaxyMenuView::OnMouseMove(UINT nFlags, CPoint point)
 			Invalidate();			
 			oldtarget = target;
 		}
-	}	
+	}
+	// wenn die linke Maustaste gedrückt ist und mit der Maus gescrollt werden soll
+	else if (nFlags &= MK_LBUTTON)
+	{
+		CMajor* pMajor = m_pPlayersRace;
+		ASSERT(pMajor);
+		if (!pMajor)
+			return;
+
+		// Mauskoordinaten in ungezoomte Koordinaten der Starmap umrechnen
+		CPoint pt(point);
+		if (abs(m_ptOldMousePos.x - pt.x) > 10 || abs(m_ptOldMousePos.y - pt.y) > 10)
+		{
+			CPoint ptScrollPos = GetScrollPosition();
+			ptScrollPos += CPoint(pt.x - m_ptOldMousePos.x, pt.y - m_ptOldMousePos.y);
+
+			CRect client;
+			GetClientRect(&client);
+			ptScrollPos.x = min(ptScrollPos.x, STARMAP_TOTALWIDTH * m_fZoom - client.Width());
+			ptScrollPos.y = min(ptScrollPos.y, STARMAP_TOTALHEIGHT * m_fZoom - client.Height());
+
+			bool bShowScrollBars = false;
+			CIniLoader::GetInstance()->ReadValue("Video", "SHOWSCROLLBARS", bShowScrollBars);
+			if (bShowScrollBars)
+			{
+				Invalidate(TRUE);
+				ScrollToPosition(ptScrollPos);			
+			}
+			else
+			{
+				SetScrollPos(SB_HORZ, ptScrollPos.x, false);
+				SetScrollPos(SB_VERT, ptScrollPos.y, false);				
+				Invalidate(FALSE);
+			}
+
+			SetCapture();
+			m_ptOldMousePos = pt;
+		}
+	}
 	CScrollView::OnMouseMove(nFlags, point);	
 }
 
@@ -1053,16 +1148,34 @@ void CGalaxyMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 	if (!pDoc->m_bDataReceived)
 		return;
 
+	CRect client;
+	GetClientRect(&client);
 	CPoint position = GetScrollPosition();
 	CPoint oldPosition = position;
-	if (nChar == VK_UP && position.y >= 0)
-		position.y -= 15 * m_fZoom;
-	else if (nChar == VK_DOWN && position.y <= GetScrollLimit(SB_VERT))
-		position.y += 15 * m_fZoom;
-	else if (nChar == VK_LEFT && position.x >= 0)
-		position.x -= 15 * m_fZoom;
-	else if (nChar == VK_RIGHT && position.x <= GetScrollLimit(SB_HORZ))
-		position.x += 15 * m_fZoom;
+	
+	bool bShowScrollBars = false;
+	CIniLoader::GetInstance()->ReadValue("Video", "SHOWSCROLLBARS", bShowScrollBars);
+
+	if (nChar == VK_UP)
+	{
+		position.y -= 25 * m_fZoom;
+		position.y = max(0, position.y);
+	}
+	else if (nChar == VK_DOWN)// && position.y <= GetScrollLimit(SB_VERT))
+	{
+		position.y += 25 * m_fZoom;
+		position.y = min(position.y, STARMAP_TOTALHEIGHT * m_fZoom - client.Height());
+	}
+	else if (nChar == VK_LEFT)// && position.x >= 0)
+	{
+		position.x -= 25 * m_fZoom;
+		position.x = max(0, position.x);
+	}
+	else if (nChar == VK_RIGHT)// && position.x <= GetScrollLimit(SB_HORZ))
+	{
+		position.x += 25 * m_fZoom;
+		position.x = min(position.x, STARMAP_TOTALWIDTH * m_fZoom - client.Width());
+	}
 	else if (nChar == VK_NEXT)
 	{
 		// alten Zoom-Faktor merken
@@ -1078,7 +1191,8 @@ void CGalaxyMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 		// wenn sich der Zoom-Faktor geändert hat
 		if (m_fZoom != oldZoom)
 		{
-			Invalidate();
+			if (bShowScrollBars)
+				Invalidate();
 			OnUpdate(this, 0, NULL); // Anpassen der ScrollSizes				
 		}
 	}
@@ -1097,14 +1211,27 @@ void CGalaxyMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 		// wenn sich der Zoom-Faktor geändert hat
 		if (m_fZoom != oldZoom)
 		{
-			Invalidate();
+			if (bShowScrollBars)
+				Invalidate();
 			OnUpdate(this, 0, NULL); // Anpassen der ScrollSizes				
 		}			
 	}
+	
 	if (oldPosition != position)
 	{
-		Invalidate(TRUE);
-		ScrollToPosition(position);
+		bool bShowScrollBars = false;
+		CIniLoader::GetInstance()->ReadValue("Video", "SHOWSCROLLBARS", bShowScrollBars);
+		if (bShowScrollBars)
+		{
+			Invalidate(TRUE);
+			ScrollToPosition(position);			
+		}
+		else
+		{
+			SetScrollPos(SB_HORZ, position.x, false);
+			SetScrollPos(SB_VERT, position.y, false);
+			Invalidate(TRUE);
+		}		
 	}
 	
 /*	// Cheat zum Forschung erhöhen
@@ -1173,10 +1300,13 @@ void CGalaxyMenuView::GenerateGalaxyMap()
 	
 	if (m_pGalaxyBackground->GetLastStatus() != Ok)
 	{
-		AfxMessageBox("Could not load galaxy background");
+		delete m_pGalaxyBackground;
+		m_pGalaxyBackground = NULL;
 		#ifdef TRACE_GRAPHICLOAD
 		MYTRACE(MT::LEVEL_WARNING, "CGalaxyMenuView::GenerateGalaxy(): Could not load galaxy background");
 		#endif
+		AfxMessageBox("Could not load galaxy background\n\n" + filePath);
+		return;
 	}
 
 	// Mal die Sterne direkt in die Map setzen, neues Bild erzeugen
@@ -1336,6 +1466,46 @@ CString CGalaxyMenuView::CreateTooltip(void)
 		sTip = CHTMLStringBuilder::GetHTMLColor(sTip);
 		sTip = CHTMLStringBuilder::GetHTMLHeader(sTip, _T("h5"));
 		sTip = CHTMLStringBuilder::GetHTMLCenter(sTip);
+
+		// wenn der Sektor irgendwem gehört, dann Verteidigungsgebäude anzeigen
+		if (pSector->GetSunSystem() && pSector->GetOwnerOfSector() != "" &&
+			(pSector->GetScanPower(pMajor->GetRaceID()) > 50 || pSector->GetOwnerOfSector() == pMajor->GetRaceID()))
+		{
+			map<CString, int> mOnlineDefenceBuildings;
+			map<CString, int> mAllDefenceBuildings;
+			
+			for (int l = 0; l < pDoc->GetSystem(ko.x, ko.y).GetAllBuildings()->GetSize(); l++)
+			{
+				int nID = pDoc->GetSystem(ko.x, ko.y).GetAllBuildings()->GetAt(l).GetRunningNumber();
+				CBuildingInfo* pBuildingInfo = &pDoc->GetBuildingInfo(nID);
+				if (pBuildingInfo->GetShipDefend() > 0 || pBuildingInfo->GetShipDefendBoni() > 0 ||
+					pBuildingInfo->GetGroundDefend() > 0 || pBuildingInfo->GetGroundDefendBoni() > 0 ||
+					pBuildingInfo->GetShieldPower() > 0 || pBuildingInfo->GetShieldPowerBoni())
+				{
+					mAllDefenceBuildings[pBuildingInfo->GetBuildingName()] += 1;
+					if (pDoc->GetSystem(ko.x, ko.y).GetAllBuildings()->GetAt(l).GetIsBuildingOnline() || pBuildingInfo->GetNeededEnergy() == 0 || pBuildingInfo->GetAllwaysOnline())
+						mOnlineDefenceBuildings[pBuildingInfo->GetBuildingName()] += 1;
+				}
+			}
+
+			if (mAllDefenceBuildings.size())
+			{
+				sTip += CHTMLStringBuilder::GetHTMLStringNewLine();
+				sTip += CHTMLStringBuilder::GetHTMLStringHorzLine();
+				sTip += CHTMLStringBuilder::GetHTMLStringNewLine();
+				sTip += CHTMLStringBuilder::GetHTMLStringNewLine();
+				
+				for (map<CString, int>::const_iterator it = mAllDefenceBuildings.begin(); it != mAllDefenceBuildings.end(); it++)
+				{
+					CString sDefence;
+					sDefence.Format("%s: %d/%d\n", it->first, mOnlineDefenceBuildings[it->first], it->second);
+					sDefence = CHTMLStringBuilder::GetHTMLColor(sDefence);
+					sDefence = CHTMLStringBuilder::GetHTMLHeader(sDefence, _T("h5"));
+					sTip += sDefence;
+				}
+			}
+		}
+
 		return sTip;
 	}
 	

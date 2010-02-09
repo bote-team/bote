@@ -284,7 +284,7 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 	{
 		this->KillTimer(1);
 		m_nTimer = 0;
-
+				
 		CFontLoader::CreateGDIFont(pMajor, 2, fontName, fontSize);
 		Color color;
 		CFontLoader::GetGDIFontColor(pMajor, 3, color);
@@ -293,10 +293,28 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 		fontFormat.SetLineAlignment(StringAlignmentFar);
 		fontFormat.SetFormatFlags(StringFormatFlagsNoWrap);
 
-		CString s;
 		CString Range;
+		CString s;
+		bool bUnkown = (pMajor->GetRaceID() != m_pShip->GetOwnerOfShip() && pMajor->IsRaceContacted(m_pShip->GetOwnerOfShip()) == false);
+		
+		// ist der Besitzer des Schiffes bekannt
+		if (bUnkown)
+		{
+			Bitmap* shipGraphic = NULL;
+			s = _T("Ships\\Unknown.bop");
+			shipGraphic = pDoc->GetGraphicPool()->GetGDIGraphic(s);
+			if (shipGraphic == NULL)
+				shipGraphic = pDoc->GetGraphicPool()->GetGDIGraphic("Ships\\ImageMissing.bop");
+			if (shipGraphic)
+			{
+				g->DrawImage(shipGraphic, 0, 50, 200, 150);
+				// Schiff etwas abdunkeln
+				Gdiplus::SolidBrush brush(Gdiplus::Color(175, 0, 0, 0));
+				g->FillRectangle(&brush, 0, 50, 200, 150);
+			}			
+		}
 		// Wenn wir ein einzelnes Schiff anzeigen und nicht eine Flotte
-		if (m_pShip->GetFleet() == 0 || (m_pShip->GetFleet() != 0 && m_pShip->GetFleet()->GetFleetSize() == 0))
+		else if (m_pShip->GetFleet() == 0 || (m_pShip->GetFleet() != 0 && m_pShip->GetFleet()->GetFleetSize() == 0))
 		{
 			// Schiffsgrafik etwas größer anzeigen
 			Bitmap* shipGraphic = NULL;
@@ -308,7 +326,7 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 			{
 				g->DrawImage(shipGraphic, 0, 50, 200, 150);
 				// Schiff etwas abdunkeln
-				Gdiplus::SolidBrush brush(Gdiplus::Color(130, 0, 0, 0));
+				Gdiplus::SolidBrush brush(Gdiplus::Color(175, 0, 0, 0));
 				g->FillRectangle(&brush, 0, 50, 200, 150);
 			}
 

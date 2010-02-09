@@ -31,12 +31,12 @@ short CMinorAI::ReactOnOffer(const CDiplomacyInfo& info)
 	if (m_pRace->GetRaceID() != info.m_sToRace)
 	{
 		MYTRACE(MT::LEVEL_INFO, "CMinorAI::ReactOnOffer(): Race-ID %s difference from Info-ID %s", m_pRace->GetRaceID(), info.m_sToRace);
-		return NOT_REACTED;
+		return DECLINED;
 	}
 
 	CRace* pFromRace = m_pDoc->GetRaceCtrl()->GetRace(info.m_sFromRace);
 	if (!pFromRace)
-		return NOT_REACTED;
+		return DECLINED;
 
 	if (pFromRace->GetType() == MAJOR)
 	{
@@ -45,7 +45,7 @@ short CMinorAI::ReactOnOffer(const CDiplomacyInfo& info)
 
 		// wurde die Rasse erobert, so kann die Minorrace nicht auf das Angebot reagieren
 		if (pMinor->GetSubjugated())
-			return NOT_REACTED;
+			return DECLINED;
 
 		// bei bestimmten Sachen kann die KI nicht besonders reagieren und liefert ein festes Ergebnis
 		// wurde Krieg erklärt
@@ -67,7 +67,7 @@ short CMinorAI::ReactOnOffer(const CDiplomacyInfo& info)
 
 		// Nur wenn der aktuelle Vertrag nicht höherwertiger ist als der angebotene, dann wird er akzeptiert
 		if (pMinor->GetAgreement(info.m_sFromRace) >= info.m_nType)
-			return NOT_REACTED;
+			return DECLINED;
 
 		// Checken ob wir ein Angebot überhaupt annehmen können, wenn z.B. eine andere Hauptrasse
 		// eine Mitgliedschaft mit einer Minorrace hat, dann können wir ihr kein Angebot machen, außer
@@ -204,7 +204,7 @@ short CMinorAI::ReactOnOffer(const CDiplomacyInfo& info)
 		throw NotImplemented;
 	}
 
-	return NOT_REACTED;
+	return DECLINED;
 }
 
 /// Funktion zur Erstellung eines diplomatischen Angebots.
@@ -533,6 +533,20 @@ bool CMinorAI::TryCorruption(const CDiplomacyInfo& info)
 		return false;
 
 	int nCredits = info.m_nCredits + CalcResInCredits(info);
+
+	// Bestechungsresitance durch z.B. Kommunikationsnetzwerke holen
+	CSystem* pSystem = &(m_pDoc->GetSystem(pMinor->GetRaceKO()));
+	ASSERT(pSystem);	
+	short nResistance = pSystem->GetProduction()->GetResistance();
+	// Bei einer Bestechnung mit z.B. 5000 Creditübergabe ergibt dies einen Wert von 5000.
+	// Der Wert des Kommunikationsnetzwerkes wird diesen Wert verringern.
+	// Danach läuft der Algorithmus erst los. Wenn man also ein Kommunikationsnetzwerk mit
+	// einem Resistancewert von 3000 besitzt, dann wird der Creditwert um 3000 verringert
+	// und ergibt am Ende nur noch 2000 (5000 - 3000 = 2000).
+	// Dies wäre dann so, als hätte die Rasse nur 2000 Credits bei der Bestechung mitgegeben.
+	// Dies verringert die Akzeptanzpunkte viel weniger und auch die Erfolgwahrscheinlichkeit nimmt ab.
+	nCredits -= nResistance;
+	nCredits = max(nCredits, 0);
 	
 	// Jetzt noch die angesammelten AcceptancePoints der corruptedMajor verringern. 
 	// Somit haben wir hier die Möglichkeit, diese Punkte durch Bestechung zu verringern.

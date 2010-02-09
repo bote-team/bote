@@ -7,7 +7,7 @@
 #include "MenuChooseView.h"
 #include "SystemMenuView.h"
 #include "Races\RaceController.h"
-
+#include "HTMLStringBuilder.h"
 
 short CSystemMenuView::m_iClickedOn = 1;
 BYTE CSystemMenuView::m_byResourceRouteRes = TITAN;
@@ -182,6 +182,9 @@ void CSystemMenuView::OnInitialUpdate()
 	ChangeWorkersButton.SetRect(r.left+542,r.top+645,r.left+662,r.top+675);
 	// Handelsrouten und Globales Lager Ansicht
 	m_iGlobalStoreageQuantity = 1;	
+
+	// View bei den Tooltipps anmelden
+	pDoc->GetMainFrame()->AddToTooltip(this);
 }
 
 void CSystemMenuView::OnPrepareDC(CDC* pDC, CPrintInfo* pInfo)
@@ -3640,7 +3643,15 @@ void CSystemMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 
 			// vor einem Doppelklick müssen die benötigten Ressourcen sicherheitshalber nochmal neu berechnet.
 			// Denn bei ganz flinken Fingern kann es passieren, dass dies in der Draw Methode nicht gemacht werden.
-			pDoc->GetSystem(p).GetAssemblyList()->CalculateNeededRessources(&pDoc->GetBuildingInfo(RunningNumber),0,0, pDoc->GetSystem(p).GetAllBuildings(), nID, pMajor->GetEmpire()->GetResearch()->GetResearchInfo());
+			// also ein Gebäude oder Gebäudeupdate
+			if (nID < 10000)
+				pDoc->GetSystem(p).GetAssemblyList()->CalculateNeededRessources(&pDoc->GetBuildingInfo(RunningNumber),0,0, pDoc->GetSystem(p).GetAllBuildings(), nID, pMajor->GetEmpire()->GetResearch()->GetResearchInfo());
+			// also ein Schiff
+			else if (nID < 20000 && pDoc->GetSystem(p).GetBuildableShips()->GetSize() > 0)
+				pDoc->GetSystem(p).GetAssemblyList()->CalculateNeededRessources(0, &pDoc->m_ShipInfoArray.GetAt(nID - 10000),0, pDoc->GetSystem(p).GetAllBuildings(), nID, pMajor->GetEmpire()->GetResearch()->GetResearchInfo());
+			// also eine Truppe
+			else if (pDoc->GetSystem(p).GetBuildableTroops()->GetSize() > 0)
+				pDoc->GetSystem(p).GetAssemblyList()->CalculateNeededRessources(0,0,&pDoc->m_TroopInfo.GetAt(nID - 20000), pDoc->GetSystem(p).GetAllBuildings(), nID, pMajor->GetEmpire()->GetResearch()->GetResearchInfo());
 			
 			if (pDoc->m_System[p.x][p.y].GetAssemblyList()->MakeEntry(nID, p, pDoc->m_System))
 			{
@@ -3716,7 +3727,7 @@ void CSystemMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 											ASSERT(back >= 0);
 											pDoc->m_System[ko.x][ko.y].SetRessourceStore(j, back);
 											getBackRes -= back;
-										}
+										}									
 						}
 					pDoc->m_System[p.x][p.y].SetRessourceStore(j, getBackRes);
 				}
@@ -3844,7 +3855,7 @@ void CSystemMenuView::OnMouseMove(UINT nFlags, CPoint point)
 	ASSERT(pDoc);
 
 	if (!pDoc->m_bDataReceived)
-		return;
+		return;	
 
 	CalcLogicalPoint(point);
 	ButtonReactOnMouseOver(point, &m_BuildMenueMainButtons);
@@ -3942,7 +3953,15 @@ void CSystemMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 
 			// vor einem Doppelklick müssen die benötigten Ressourcen sicherheitshalber nochmal neu berechnet.
 			// Denn bei ganz flinken Fingern kann es passieren, dass dies in der Draw Methode nicht gemacht werden.
-			pDoc->GetSystem(p).GetAssemblyList()->CalculateNeededRessources(&pDoc->GetBuildingInfo(RunningNumber),0,0, pDoc->GetSystem(p).GetAllBuildings(), nID, pMajor->GetEmpire()->GetResearch()->GetResearchInfo());
+			// also ein Gebäude oder Gebäudeupdate
+			if (nID < 10000)
+				pDoc->GetSystem(p).GetAssemblyList()->CalculateNeededRessources(&pDoc->GetBuildingInfo(RunningNumber),0,0, pDoc->GetSystem(p).GetAllBuildings(), nID, pMajor->GetEmpire()->GetResearch()->GetResearchInfo());
+			// also ein Schiff
+			else if (nID < 20000 && pDoc->GetSystem(p).GetBuildableShips()->GetSize() > 0)
+				pDoc->GetSystem(p).GetAssemblyList()->CalculateNeededRessources(0, &pDoc->m_ShipInfoArray.GetAt(nID - 10000),0, pDoc->GetSystem(p).GetAllBuildings(), nID, pMajor->GetEmpire()->GetResearch()->GetResearchInfo());
+			// also eine Truppe
+			else if (pDoc->GetSystem(p).GetBuildableTroops()->GetSize() > 0)
+				pDoc->GetSystem(p).GetAssemblyList()->CalculateNeededRessources(0,0,&pDoc->m_TroopInfo.GetAt(nID - 20000), pDoc->GetSystem(p).GetAllBuildings(), nID, pMajor->GetEmpire()->GetResearch()->GetResearchInfo());
 			
 			if (pDoc->m_System[p.x][p.y].GetAssemblyList()->MakeEntry(nID, p, pDoc->m_System))
 			{
@@ -4017,4 +4036,76 @@ void CSystemMenuView::CreateButtons()
 	fileA = "Other\\" + sPrefix + "buttonplusa.bop";
 	for (int i = TITAN; i <= IRIDIUM; i++)
 		m_SystemTradeButtons.Add(new CMyButton(CPoint(975,235+i*60) , CSize(30,30), "", fileN, fileN, fileA));
+}
+
+///	Funktion erstellt zur aktuellen Mouse-Position einen HTML Tooltip
+/// @return	der erstellte Tooltip-Text
+CString CSystemMenuView::CreateTooltip(void)
+{
+	// Tooltips erstmal nur in der Energie- und Gebäudeübersicht anzeigen
+	if (m_bySubMenu != 2 && m_bySubMenu != 3)
+		return "";
+
+	// Wo sind wir
+	CPoint pt;
+	GetCursorPos(&pt);
+	ScreenToClient(&pt);
+	CalcLogicalPoint(pt);	
+	
+	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	ASSERT(pDoc);
+
+	int nID = -1;
+	// Pürfen über welches Gebäude die Maus gehalten wurde
+	if (m_bySubMenu == 2)
+	{
+		for (int i = m_iELPage * NOBIEL; i < m_EnergyList.GetSize(); i++)
+		{
+			// Wenn wir auf der richtigen Seite sind
+			if (i < m_iELPage * NOBIEL + NOBIEL)
+				if (m_EnergyList.GetAt(i).rect.PtInRect(pt))
+				{	
+					nID = pDoc->GetSystem(pDoc->GetKO()).GetAllBuildings()->GetAt(m_EnergyList.GetAt(i).index).GetRunningNumber();
+					break;
+				}
+		}
+	}
+	else if (m_bySubMenu == 3)
+	{
+		for (int i = m_iBOPage * NOBIOL; i < m_BuildingOverview.GetSize(); i++)
+		{
+			// Wenn wir auf der richtigen Seite sind
+			if (i < m_iBOPage * NOBIOL + NOBIOL)
+				if (m_BuildingOverview.GetAt(i).rect.PtInRect(pt))
+				{
+					nID = m_BuildingOverview.GetAt(i).runningNumber;
+					break;
+				}
+		}
+	}	
+
+	if (nID != -1)
+	{
+		CString sName = pDoc->GetBuildingInfo(nID).GetBuildingName();
+		sName = CHTMLStringBuilder::GetHTMLColor(sName);
+		sName = CHTMLStringBuilder::GetHTMLHeader(sName, _T("h3"));
+		sName = CHTMLStringBuilder::GetHTMLCenter(sName);
+		sName += CHTMLStringBuilder::GetHTMLStringNewLine();
+		sName += CHTMLStringBuilder::GetHTMLStringNewLine();
+
+		CString sProd = pDoc->GetBuildingInfo(nID).GetProductionAsString();
+		sProd = CHTMLStringBuilder::GetHTMLColor(sProd);
+		sProd = CHTMLStringBuilder::GetHTMLHeader(sProd, _T("h5"));
+		sProd += CHTMLStringBuilder::GetHTMLStringNewLine();
+		sProd += CHTMLStringBuilder::GetHTMLStringHorzLine();
+		sProd += CHTMLStringBuilder::GetHTMLStringNewLine();
+						
+		CString sDesc = pDoc->GetBuildingInfo(nID).GetBuildingDescription();
+		sDesc = CHTMLStringBuilder::GetHTMLColor(sDesc, _T("silver"));
+		sDesc = CHTMLStringBuilder::GetHTMLHeader(sDesc, _T("h5"));
+		
+		return sName + sProd + sDesc;
+	}
+
+	return "";
 }

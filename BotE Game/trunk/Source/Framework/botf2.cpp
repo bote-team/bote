@@ -168,7 +168,7 @@ BOOL CBotf2App::InitInstance()
 		return FALSE;
 
 	// Das einzige Fenster ist initialisiert und kann jetzt angezeigt und aktualisiert werden.
-	m_pMainWnd->ModifyStyle(WS_CAPTION|WS_THICKFRAME|WS_SYSMENU|WS_OVERLAPPED|FWS_ADDTOTITLE ,0);
+	m_pMainWnd->ModifyStyle(WS_CAPTION|WS_THICKFRAME|WS_SYSMENU|WS_OVERLAPPED|FWS_ADDTOTITLE ,0);	
 	m_pMainWnd->ShowWindow(SW_SHOWMAXIMIZED);
 		
 	// Chatdialog erzeugen

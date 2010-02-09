@@ -2,7 +2,7 @@
  *   Copyright (C)2004-2010 Sir Pustekuchen
  *
  *   Author   :  Sir Pustekuchen
- *   Home     :  http://birth-of-the-empires.de.vu
+ *   Home     :  http://birth-of-the-empires.de
  *
  */
 // Ship.h: Schnittstelle für die Klasse CShip.
@@ -130,16 +130,18 @@ public:
 	/// @return <code>TRUE</code> wenn es diese Fähigkeit besitzt, ansonsten <code>FALSE</code>
 	BOOLEAN HasSpecial(BYTE ability) const;
 
-// Zeichenfunktionen
-//	const void DrawShipSymbolInSector(CDC* pDC, int Race, int ScanPower, BOOL MultiRace);
+	/// @param bShowFleet wenn dieser Parameter <code>true</code> dann werden Informationen über die angeführte Flotte angezeigt, sonst nur über das Schiff
+	/// @return	der erstellte Tooltip-Text
+	CString GetTooltip(bool bShowFleet = true);
 	
 protected:
 	CHull	m_Hull;												// die Hülle des Schiffes
 	CShield m_Shield;											// die Schilde des Schiffes
 	CArray<CTorpedoWeapons,CTorpedoWeapons> m_TorpedoWeapons;	// die Torpedobewaffnung des Schiffes
 	CArray<CBeamWeapons,CBeamWeapons>		m_BeamWeapons;		// die Beamfirebewaffnung des Schiffes
-	CFleet*	m_Fleet;					// Wenn wir eine Gruppe bilden und dieses Schiff hier Gruppenleader
-										// ist, dann werden die anderen Schiffe in die Fleet genommen	
+	CFleet*	m_Fleet;											// Wenn wir eine Gruppe bilden und dieses Schiff hier Gruppenleader
+																// ist, dann werden die anderen Schiffe in die Fleet genommen
+
 	USHORT m_iID;						// ID des Schiffes
 	CPoint m_KO;						// Koordinate des Schiffes im Raum (welcher Sector?)
 	CPoint m_TargetKO[4];				// Der Zielkurs des Schiffes

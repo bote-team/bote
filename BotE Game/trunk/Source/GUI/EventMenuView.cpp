@@ -95,6 +95,9 @@ void CEventMenuView::OnInitialUpdate()
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 
 	m_TotalSize = CSize(1280, 1024);
+
+	// View bei den Tooltipps anmelden
+	pDoc->GetMainFrame()->AddToTooltip(this);
 }
 
 void CEventMenuView::OnPrepareDC(CDC* pDC, CPrintInfo* pInfo)
@@ -211,4 +214,35 @@ void CEventMenuView::CloseScreen(CEventScreen* eventScreen)
 	}
 	else
 		Invalidate(false);
+}
+
+///	Funktion erstellt zur aktuellen Mouse-Position einen HTML Tooltip
+/// @return	der erstellte Tooltip-Text
+CString CEventMenuView::CreateTooltip(void)
+{
+	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	ASSERT(pDoc);
+
+	if (!pDoc->m_bDataReceived)
+		return "";
+	
+	CMajor* pMajor = m_pPlayersRace;
+	ASSERT(pMajor);
+	if (!pMajor)
+		return "";
+
+	if (pMajor->GetEmpire()->GetEventMessages()->GetSize())
+	{
+		// Wo sind wir
+		CPoint pt;
+		GetCursorPos(&pt);
+		ScreenToClient(&pt);
+		CalcLogicalPoint(pt);
+		
+		CEventScreen* eventScreen = (CEventScreen*)pMajor->GetEmpire()->GetEventMessages()->GetAt(0);
+		return eventScreen->GetTooltip(pt);
+	}
+	
+	
+	return "";
 }

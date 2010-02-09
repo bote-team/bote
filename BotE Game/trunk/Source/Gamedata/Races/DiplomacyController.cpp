@@ -733,6 +733,12 @@ void CDiplomacyController::ReceiveToMajor(CBotf2Doc* pDoc, CMajor* pToMajor, CDi
 					// wenn es keine Bestechung ist
 					if (pInfo->m_nType != CORRUPTION)
 					{
+						// wenn der aktuelle Vertrag höherwertiger ist als der hier angebotene, z.B.
+						// wenn die Minorrace unser Angebot in der gleichen Runde angenommen hat, dann
+						// wird der Vertrag hier nicht gesetzt
+						if (pFromRace->GetAgreement(pToMajor->GetRaceID()) >= pInfo->m_nType)
+							return;
+
 						// nur Text bei Vertragsformen erstellen
 						if (!sAgreement.IsEmpty())
 						{
@@ -745,7 +751,7 @@ void CDiplomacyController::ReceiveToMajor(CBotf2Doc* pDoc, CMajor* pToMajor, CDi
 					}
 				}
 				// wir haben das Angebot der Minor abgelehnt
-				if (pInfo->m_nAnswerStatus == DECLINED)
+				else if (pInfo->m_nAnswerStatus == DECLINED)
 				{
 					switch (pInfo->m_nType)
 					{
@@ -998,19 +1004,19 @@ void CDiplomacyController::ReceiveToMinor(CBotf2Doc* pDoc, CMinor* pToMinor, CDi
 					CMessage message;
 					message.GenerateMessage(s, DIPLOMACY, "", 0, 0, 2);
 					pFromMajor->GetEmpire()->AddMessage(message);
+				
+					// Wenn das Angebot abgelehnt wurde, dann bekommt die Majorrace, die es gemacht hat
+					// ihre Ressourcen und ihre Credits wieder zurück, sofern sie es als Anreiz mit zum Vertrags-
+					// angebot gemacht haben
+					pFromMajor->GetEmpire()->SetLatinum(pInfo->m_nCredits);
+					for (int res = TITAN; res <= DILITHIUM; res++)
+					{
+						CPoint pt = pInfo->m_ptKO;
+						if (pt != CPoint(-1,-1))
+							if (pDoc->GetSystem(pt).GetOwnerOfSystem() == pFromMajor->GetRaceID())
+								pDoc->GetSystem(pt).SetRessourceStore(res, pInfo->m_nResources[res]);
+					}
 				}
-
-				// Wenn das Angebot abgelehnt wurde, dann bekommt die Majorrace, die es gemacht hat
-				// ihre Ressourcen und ihre Credits wieder zurück, sofern sie es als Anreiz mit zum Vertrags-
-				// angebot gemacht haben
-				pFromMajor->GetEmpire()->SetLatinum(pInfo->m_nCredits);
-				for (int res = TITAN; res <= DILITHIUM; res++)
-				{
-					CPoint pt = pInfo->m_ptKO;
-					if (pt != CPoint(-1,-1))
-						if (pDoc->GetSystem(pt).GetOwnerOfSystem() == pFromMajor->GetRaceID())
-							pDoc->GetSystem(pt).SetRessourceStore(res, pInfo->m_nResources[res]);
-				}				
 			}
 		}
 	}

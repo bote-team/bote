@@ -104,6 +104,9 @@ BOOLEAN CTradeRoute::CheckTradeRoute(const CPoint& pFrom, const CPoint& pDest, C
 	float mod = (float)((float)(rand()%41 + 80) / 100);
 
 	m_iLatinum = (USHORT)(habitants * mod);
+	// minimal wird 1 Credit zurückgegeben
+	m_iLatinum = max(m_iLatinum, 1);
+
 	// gehört der Zielsektor einer Majorrace und nicht uns?
 	if (pDestSystem->GetOwnerOfSystem() != "" && pDestSystem->GetOwnerOfSystem() != sOwner)
 	{

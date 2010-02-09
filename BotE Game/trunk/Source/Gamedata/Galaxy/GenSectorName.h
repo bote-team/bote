@@ -2,7 +2,7 @@
  *   Copyright (C)2004-2010 Sir Pustekuchen
  *
  *   Author   :  Sir Pustekuchen
- *   Home     :  http://birth-of-the-empires.de.vu
+ *   Home     :  http://birth-of-the-empires.de
  *
  */
 
@@ -37,6 +37,6 @@ private:
 	void ReadSystemNames(void);
 
 	// Attribute
-	CArray<CString> m_strName;		///< Feld aller Namen der Planetensysteme ohne Minor- und Majorracesysteme
-	CArray<CString> m_strRaceName;	///< Feld aller Namen der Minorracesysteme
+	CStringArray m_strNames;		///< Feld aller Namen der Planetensysteme ohne Minor- und Majorracesysteme
+	CStringArray m_strRaceNames;	///< Feld aller Namen der Minorracesysteme
 };

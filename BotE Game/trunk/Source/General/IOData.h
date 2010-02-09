@@ -2,11 +2,13 @@
  *   Copyright (C)2004-2010 Sir Pustekuchen
  *
  *   Author   :  Sir Pustekuchen
- *   Home     :  http://birth-of-the-empires.de.vu
+ *   Home     :  http://birth-of-the-empires.de
  *
  */
 
 #pragma once
+
+//#define DEVELOPMENT_VERSION
 
 #define BOTE_INI_FILE		"BotE.ini"
 #define BOTE_LOG_FILE		"BotE.log"

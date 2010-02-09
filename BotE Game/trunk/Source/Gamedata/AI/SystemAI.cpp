@@ -1167,9 +1167,9 @@ void CSystemAI::CalcProd()
 	}
 		
 	// Die Boni auf die einzelnen Produktionen berechnen
-	short tmpFoodBoni = 0;
-	short tmpIndustryBoni = 0;
-	short tmpEnergyBoni = 0;
+	short tmpFoodBoni		= m_pMajor->GetEmpire()->GetResearch()->GetBioTech() * TECHPRODBONUS;
+	short tmpIndustryBoni	= m_pMajor->GetEmpire()->GetResearch()->GetConstructionTech() * TECHPRODBONUS;
+	short tmpEnergyBoni		= m_pMajor->GetEmpire()->GetResearch()->GetEnergyTechBoni() * TECHPRODBONUS;
 	
 	short neededEnergy = 0;
 	for (int i = 0; i < NumberOfBuildings; i++)

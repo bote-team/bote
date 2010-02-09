@@ -3,6 +3,7 @@
 #include "FontLoader.h"
 #include "Botf2Doc.h"
 #include "Races\RaceController.h"
+#include "HTMLStringBuilder.h"
 
 IMPLEMENT_SERIAL (CEventFirstContact, CObject, 1)
 
@@ -200,4 +201,73 @@ void CEventFirstContact::Draw(Graphics* g, CGraphicPool* graphicPool) const
 	fontBrush.SetColor(color);
 	for (int i = 0; i < m_Buttons.GetSize(); i++)
 		m_Buttons.GetAt(i)->DrawButton(*g, graphicPool, Gdiplus::Font(fontName.AllocSysString(), fontSize), fontBrush);
+}
+
+///	Funktion erstellt zur aktuellen Mouse-Position einen HTML Tooltip
+/// @return	der erstellte Tooltip-Text
+CString CEventFirstContact::GetTooltip(const CPoint &pt) const
+{
+	CBotf2Doc* pDoc = ((CBotf2App*)AfxGetApp())->GetDocument();
+	ASSERT(pDoc);
+	CRace* pContactedRace = pDoc->GetRaceCtrl()->GetRace(m_sRaceID);
+	if (!pContactedRace)
+		return "";
+
+	// wurde auf das Rassenbild gehalten, dann Beschreibung der Rasse anzeigen
+	if (CRect(6, 399, 301, 767).PtInRect(pt))
+	{
+		CString sTip = pContactedRace->GetRaceDesc();
+		sTip = CHTMLStringBuilder::GetHTMLColor(sTip);
+		sTip = CHTMLStringBuilder::GetHTMLHeader(sTip, _T("h5"));
+
+		return sTip;
+	}
+
+	if (pContactedRace->GetType() == MINOR)
+	{
+		// Spezialgebäude prüfen
+		int nCount = 0;		
+		for (int i = 0; i < pDoc->BuildingInfo.GetSize(); i++)
+			if (pDoc->BuildingInfo[i].GetOwnerOfBuilding() == NOBODY)
+				if (pDoc->BuildingInfo[i].GetOnlyMinorRace() == TRUE)
+					if (pDoc->BuildingInfo[i].GetOnlyInSystemWithName() == pContactedRace->GetHomesystemName())
+					{
+						if (CRect(15 + nCount * 165, 810, 15 + nCount * 165 + 150, 960).PtInRect(pt))
+						{
+							int nID = pDoc->BuildingInfo[i].GetRunningNumber();
+
+							CString sName = pDoc->GetBuildingInfo(nID).GetBuildingName();
+							sName = CHTMLStringBuilder::GetHTMLColor(sName);
+							sName = CHTMLStringBuilder::GetHTMLHeader(sName, _T("h3"));
+							sName = CHTMLStringBuilder::GetHTMLCenter(sName);
+							sName += CHTMLStringBuilder::GetHTMLStringNewLine();
+							sName += CHTMLStringBuilder::GetHTMLStringNewLine();
+
+							CString sProd = pDoc->GetBuildingInfo(nID).GetProductionAsString();
+							sProd = CHTMLStringBuilder::GetHTMLColor(sProd);
+							sProd = CHTMLStringBuilder::GetHTMLHeader(sProd, _T("h5"));
+							sProd += CHTMLStringBuilder::GetHTMLStringNewLine();
+							sProd += CHTMLStringBuilder::GetHTMLStringHorzLine();
+							sProd += CHTMLStringBuilder::GetHTMLStringNewLine();
+											
+							CString sDesc = pDoc->GetBuildingInfo(nID).GetBuildingDescription();
+							sDesc = CHTMLStringBuilder::GetHTMLColor(sDesc, _T("silver"));
+							sDesc = CHTMLStringBuilder::GetHTMLHeader(sDesc, _T("h5"));
+							
+							return sName + sProd + sDesc;
+						}
+						nCount++;
+					}
+
+		// Schiffe des Minors zeichnen
+		for (int i = 0; i < pDoc->m_ShipInfoArray.GetSize(); i++)
+			if (pDoc->m_ShipInfoArray[i].GetRace() == MINORNUMBER)
+				if (pDoc->m_ShipInfoArray[i].GetOnlyInSystem() == pContactedRace->GetHomesystemName())
+				{
+					if (CRect(15 + nCount * 165, 810, 15 + nCount * 165 + 150, 960).PtInRect(pt))
+						return pDoc->m_ShipInfoArray[i].GetTooltip();
+					nCount++;
+				}		
+	}
+	return "";
 }

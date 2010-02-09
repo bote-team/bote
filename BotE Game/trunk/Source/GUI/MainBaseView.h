@@ -2,7 +2,7 @@
  *   Copyright (C)2004-2010 Sir Pustekuchen
  *
  *   Author   :  Sir Pustekuchen
- *   Home     :  http://birth-of-the-empires.de.vu
+ *   Home     :  http://birth-of-the-empires.de
  *
  */
 #pragma once
@@ -45,6 +45,10 @@ public:
 	/// Funktion zum Festlegen der Spielerrasse in der View
 	/// @pPlayer Zeiger auf Spielerrasse
 	static void SetPlayersRace(CMajor* pPlayer) {m_pPlayersRace = pPlayer;}
+
+	///	Funktion erstellt zur aktuellen Mouse-Position einen HTML Tooltip
+	/// @return	der erstellte Tooltip-Text
+	virtual CString CreateTooltip(void) { return ""; }
 
 protected:
 	/// Funktion zeichnet die Button und macht alle möglichen Überprüfungen.

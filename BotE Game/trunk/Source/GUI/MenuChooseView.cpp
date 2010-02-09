@@ -240,6 +240,8 @@ void CMenuChooseView::OnInitialUpdate()
 	fileI = "Other\\" + sPrefix + "button_roundendi.bop";
 	fileA = "Other\\" + sPrefix + "button_roundenda.bop";
 	m_RoundEnd = new CMyButton(CPoint(20,5), CSize(160,40), CResourceManager::GetString("BTN_ROUNDEND"), fileN, fileI, fileA);
+
+	GetTopLevelFrame()->SetMenuBarState(AFX_MBS_HIDDEN);
 }
 
 BOOL CMenuChooseView::OnEraseBkgnd(CDC* pDC) 
@@ -374,6 +376,23 @@ void CMenuChooseView::OnMouseMove(UINT nFlags, CPoint point)
 
 	if (!pDoc->m_bDataReceived)
 		return;
+
+	if (point.y > 5)
+	{
+		if (GetTopLevelFrame()->SetMenuBarState(AFX_MBS_HIDDEN))
+		{
+			//ReleaseCapture();
+			return;
+		}
+	}
+	else
+	{
+		if (GetTopLevelFrame()->SetMenuBarState(AFX_MBS_VISIBLE))
+		{
+			//SetCapture();
+			return;
+		}
+	}
 
 	CalcLogicalPoint(point);
 

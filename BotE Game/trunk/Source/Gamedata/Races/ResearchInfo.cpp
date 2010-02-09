@@ -174,8 +174,8 @@ void CResearchInfo::SetUniqueResearchChoosePossibility(BYTE possibility)
 /// aktuell erforscht wird übergeben werden.
 void CResearchInfo::SetTechInfos(BYTE tech, BYTE level)
 {
-	m_strTechName[tech] = "";
-	m_strTechDescription[tech] = "";
+	m_strTechName[tech] = "Future Tech";
+	m_strTechDescription[tech] = "-";
 	
 	CResearchInfo::GetTechInfos(tech, level, m_strTechName[tech], m_strTechDescription[tech]);
 }
@@ -186,11 +186,8 @@ void CResearchInfo::SetTechInfos(BYTE tech, BYTE level)
 /// übergeben werden.
 void CResearchInfo::GetTechInfos(BYTE tech, BYTE level, CString& sTechName, CString& sTechDesc)
 {
-	if (level > NoTL)
-		return;
-
 	int i = 0;
-	int j = tech * 22 + level * 2;
+	int j = level * 12 + tech * 2;
 	CString csInput;											// auf csInput wird die jeweilige Zeile gespeichert
 	CString fileName = CIOData::GetInstance()->GetAppPath() + "Data\\Names\\Techs.data";		// Name des zu öffnenden Files 
 	CStdioFile file;											// Varibale vom Typ CStdioFile

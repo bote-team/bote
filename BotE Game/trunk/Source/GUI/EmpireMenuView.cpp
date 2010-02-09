@@ -505,11 +505,36 @@ void CEmpireMenuView::DrawEmpireSystemMenue(Graphics* g)
 			// andernfalls wird hier die Systemressourcenübersicht angezeigt
 			else
 			{
+				// prüfen ob irgendein Verteiler steht
+				bool bDist[DILITHIUM + 1] = {false};
+				int nLastID = -1;
+				for (int l = 0; l < pDoc->GetSystem(KO).GetAllBuildings()->GetSize(); l++)
+				{
+					int nID = pDoc->GetSystem(KO).GetAllBuildings()->GetAt(l).GetRunningNumber();
+					if (nID != nLastID)
+						nLastID = nID;
+					else
+						continue;
+
+					CBuildingInfo* pBuildingInfo = &pDoc->GetBuildingInfo(nID);
+					for (int k = TITAN; k <= DILITHIUM; k++)
+						if (pBuildingInfo->GetResourceDistributor(k))
+							bDist[k] = true;
+				}				
+
 				for (int k = TITAN; k <= DILITHIUM; k++)
 				{
-					fontFormat.SetTrimming(StringTrimmingEllipsisCharacter);
-					s.Format("%d", pDoc->GetSystem(KO.x, KO.y).GetRessourceStore(k));
-					g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(270+k*120,140+j*25,120,25), &fontFormat, &fontBrush);
+					fontFormat.SetTrimming(StringTrimmingEllipsisCharacter);					
+					if (bDist[k])
+					{
+						s.Format("*%d", pDoc->GetSystem(KO).GetRessourceStore(k));
+						g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize + 3), RectF(270+k*120,140+j*25,120,25), &fontFormat, &fontBrush);
+					}
+					else
+					{
+						s.Format("%d", pDoc->GetSystem(KO).GetRessourceStore(k));
+						g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(270+k*120,140+j*25,120,25), &fontFormat, &fontBrush);
+					}
 					fontFormat.SetTrimming(StringTrimmingNone);
 				}
 			}

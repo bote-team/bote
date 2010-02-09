@@ -369,7 +369,7 @@ void CIntelMenuView::DrawIntelSpyMenu(Graphics* g)
 		// Bild der aktiven Rasse im Hintergrund zeichnen
 		Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Symbols\\" + m_sActiveIntelRace + ".bop");
 		if (graphic == NULL)
-			graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Symbols\\Standard.bop");		
+			graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Symbols\\Default.bop");		
 		if (graphic)
 			g->DrawImage(graphic, 310, 230, 300, 300);
 		Gdiplus::SolidBrush brush(Gdiplus::Color(160, 0, 0, 0));
@@ -543,7 +543,7 @@ void CIntelMenuView::DrawIntelSabotageMenu(Graphics* g)
 		// Bild der aktiven Rasse im Hintergrund zeichnen
 		Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Symbols\\" + m_sActiveIntelRace + ".bop");
 		if (graphic == NULL)
-			graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Symbols\\Standard.bop");		
+			graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Symbols\\Default.bop");		
 		if (graphic)
 			g->DrawImage(graphic, 310, 230, 300, 300);
 		Gdiplus::SolidBrush brush(Gdiplus::Color(160, 0, 0, 0));
@@ -1024,7 +1024,7 @@ void CIntelMenuView::DrawIntelInfoMenu(Graphics* g)
 		// Bild der aktiven Rasse im Hintergrund zeichnen
 		Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Symbols\\" + m_sActiveIntelRace + ".bop");
 		if (graphic == NULL)
-			graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Symbols\\Standard.bop");		
+			graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Symbols\\Default.bop");		
 		if (graphic)
 			g->DrawImage(graphic, 210, 260, 300, 300);
 		Gdiplus::SolidBrush brush(Gdiplus::Color(160, 0, 0, 0));
@@ -1067,7 +1067,7 @@ void CIntelMenuView::DrawIntelInfoMenu(Graphics* g)
 		
 	Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Symbols\\" + pIntel->GetResponsibleRace() + ".bop");
 	if (graphic == NULL)
-		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Symbols\\Standard.bop");		
+		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Symbols\\Default.bop");		
 	if (graphic)
 		g->DrawImage(graphic, 737,435,75,75);
 
@@ -1120,7 +1120,7 @@ void CIntelMenuView::DrawRaceLogosInIntelView(Graphics* g, BOOLEAN highlightPlay
 	{
 		Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Symbols\\" + it->first + ".bop");
 		if (graphic == NULL)
-			graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Symbols\\Standard.bop");
+			graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Symbols\\Default.bop");
 		
 		if (graphic)
 		{

@@ -19,7 +19,9 @@ CIOData::CIOData(void)
 	_fullpath(fullPath, "", _MAX_PATH);
 	
 	m_sAppPath = fullPath;
+#ifdef DEVELOPMENT_VERSION
 	m_sAppPath = "F:\\C++\\Projekte\\BotE Projekt\\BotE Install\\BotE complete";
+#endif
 	m_sAppPath += "\\";
 }
 

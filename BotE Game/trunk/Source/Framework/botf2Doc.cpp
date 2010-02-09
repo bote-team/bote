@@ -850,6 +850,7 @@ void CBotf2Doc::GenerateGalaxy()
 			m_Sector[x][y].Reset();
 			m_Sector[x][y].SetKO(x,y);
 		}
+	m_mRaceKO.clear();
 
 	// Die sechs Hauptrassen werden zufällig auf der Karte verteilt. Dabei ist aber zu beachten, dass die Entfernungen
 	// zwischen den Systemen groß genug sind. Außerdem müssen um jedes der Hauptsysteme zwei weitere Systeme liegen.
@@ -936,6 +937,11 @@ void CBotf2Doc::GenerateGalaxy()
 							m_Sector[raceKO.x + x][raceKO.y + y].SetScanned(it->first);
 	}
 
+	int nStarDensity = 35;
+	int nMinorDensity = 32;
+	CIniLoader::GetInstance()->ReadValue("Special", "STARDENSITY", nStarDensity);
+	CIniLoader::GetInstance()->ReadValue("Special", "MINORDENSITY", nMinorDensity);
+
 	// Vektor der verwendeten Minors, diese nehmen aktiv am Spiel teil.
 	vector<CString> vUsedMinors;
 	// nun die Sektoren generieren
@@ -960,8 +966,8 @@ void CBotf2Doc::GenerateGalaxy()
 								if (it->second.first == x + i && it->second.second == y + j)
 									sunSystems += 100;
 						}
-			int sunSystemProb = 35 - sunSystems * 15;
-			int minorRaceProb = 32 - minorRaces * 15;
+			int sunSystemProb = nStarDensity  - sunSystems * 15;
+			int minorRaceProb = nMinorDensity - minorRaces * 15;
 			if (minorRaceProb < 0)
 				minorRaceProb = 0;
 			if (sunSystemProb > 0)
@@ -2558,11 +2564,11 @@ void CBotf2Doc::CalcSystemAttack()
 
 					// erfolgreiches Invasionsevent für den Angreifer einfügen (sollte immer ein Major sein)
 					if (!attacker.IsEmpty() && pMajor && pMajor->IsHumanPlayer())
-						pMajor->GetEmpire()->GetEventMessages()->Add(new CEventBombardment(attacker, "InvasionSuccess", CResourceManager::GetString("INVASIONSUCCESSEVENT_HEADLINE", FALSE, m_Sector[p.x][p.y].GetName()), CResourceManager::GetString("INVASIONSUCCESSEVENT_TEXT_RACE1", FALSE, m_Sector[p.x][p.y].GetName())));
+						pMajor->GetEmpire()->GetEventMessages()->Add(new CEventBombardment(attacker, "InvasionSuccess", CResourceManager::GetString("INVASIONSUCCESSEVENT_HEADLINE", FALSE, m_Sector[p.x][p.y].GetName()), CResourceManager::GetString("INVASIONSUCCESSEVENT_TEXT_" + pMajor->GetRaceID(), FALSE, m_Sector[p.x][p.y].GetName())));
 			
 					// Invasionsevent für den Verteidiger einfügen
 					if (defender != NULL && defender->GetType() == MAJOR && ((CMajor*)defender)->IsHumanPlayer() && attackSystem->IsDefenderNotAttacker(sDefender, &attackers))
-						((CMajor*)defender)->GetEmpire()->GetEventMessages()->Add(new CEventBombardment(sDefender, "InvasionSuccess", CResourceManager::GetString("INVASIONSUCCESSEVENT_HEADLINE", FALSE, m_Sector[p.x][p.y].GetName()), CResourceManager::GetString("INVASIONSUCCESSEVENT_TEXT_RACE1", FALSE, m_Sector[p.x][p.y].GetName())));
+						((CMajor*)defender)->GetEmpire()->GetEventMessages()->Add(new CEventBombardment(sDefender, "InvasionSuccess", CResourceManager::GetString("INVASIONSUCCESSEVENT_HEADLINE", FALSE, m_Sector[p.x][p.y].GetName()), CResourceManager::GetString("INVASIONSUCCESSEVENT_TEXT_" + defender->GetRaceID(), FALSE, m_Sector[p.x][p.y].GetName())));
 				}
 				// Wurde nur bombardiert, nicht erobert
 				else
@@ -2730,10 +2736,10 @@ void CBotf2Doc::CalcSystemAttack()
 						if (pMajor->IsHumanPlayer())
 						{
 							if (!attackSystem->IsTroopsInvolved())
-								pMajor->GetEmpire()->GetEventMessages()->Add(new CEventBombardment(pMajor->GetRaceID(), "Bombardment", CResourceManager::GetString("BOMBARDEVENT_HEADLINE", FALSE, m_Sector[p.x][p.y].GetName()), CResourceManager::GetString("BOMBARDEVENT_TEXT_RACE1", FALSE, m_Sector[p.x][p.y].GetName())));
+								pMajor->GetEmpire()->GetEventMessages()->Add(new CEventBombardment(pMajor->GetRaceID(), "Bombardment", CResourceManager::GetString("BOMBARDEVENT_HEADLINE", FALSE, m_Sector[p.x][p.y].GetName()), CResourceManager::GetString("BOMBARDEVENT_TEXT_" + pMajor->GetRaceID(), FALSE, m_Sector[p.x][p.y].GetName())));
 							// gescheitere Invasion
 							else
-								pMajor->GetEmpire()->GetEventMessages()->Add(new CEventBombardment(pMajor->GetRaceID(), "InvasionFailed", CResourceManager::GetString("INVASIONFAILUREEVENT_HEADLINE", FALSE, m_Sector[p.x][p.y].GetName()), CResourceManager::GetString("INVASIONFAILUREEVENT_TEXT_RACE1", FALSE, m_Sector[p.x][p.y].GetName())));
+								pMajor->GetEmpire()->GetEventMessages()->Add(new CEventBombardment(pMajor->GetRaceID(), "InvasionFailed", CResourceManager::GetString("INVASIONFAILUREEVENT_HEADLINE", FALSE, m_Sector[p.x][p.y].GetName()), CResourceManager::GetString("INVASIONFAILUREEVENT_TEXT_" + pMajor->GetRaceID(), FALSE, m_Sector[p.x][p.y].GetName())));
 						}
 
 					}
@@ -2744,10 +2750,10 @@ void CBotf2Doc::CalcSystemAttack()
 						{
 							// reine Bombardierung
 							if (!attackSystem->IsTroopsInvolved())
-								((CMajor*)defender)->GetEmpire()->GetEventMessages()->Add(new CEventBombardment(defender->GetRaceID(), "Bombardment", CResourceManager::GetString("BOMBARDEVENT_HEADLINE", FALSE, m_Sector[p.x][p.y].GetName()), CResourceManager::GetString("BOMBARDEVENT_TEXT_RACE1", FALSE, m_Sector[p.x][p.y].GetName())));
+								((CMajor*)defender)->GetEmpire()->GetEventMessages()->Add(new CEventBombardment(defender->GetRaceID(), "Bombardment", CResourceManager::GetString("BOMBARDEVENT_HEADLINE", FALSE, m_Sector[p.x][p.y].GetName()), CResourceManager::GetString("BOMBARDEVENT_TEXT_" + defender->GetRaceID(), FALSE, m_Sector[p.x][p.y].GetName())));
 							// gescheitere Invasion
 							else
-								((CMajor*)defender)->GetEmpire()->GetEventMessages()->Add(new CEventBombardment(defender->GetRaceID(), "InvasionFailed", CResourceManager::GetString("INVASIONFAILUREEVENT_HEADLINE", FALSE, m_Sector[p.x][p.y].GetName()), CResourceManager::GetString("INVASIONFAILUREEVENT_TEXT_RACE1", FALSE, m_Sector[p.x][p.y].GetName())));
+								((CMajor*)defender)->GetEmpire()->GetEventMessages()->Add(new CEventBombardment(defender->GetRaceID(), "InvasionFailed", CResourceManager::GetString("INVASIONFAILUREEVENT_HEADLINE", FALSE, m_Sector[p.x][p.y].GetName()), CResourceManager::GetString("INVASIONFAILUREEVENT_TEXT_" + defender->GetRaceID(), FALSE, m_Sector[p.x][p.y].GetName())));
 						}
 					}					
 				}
@@ -3994,7 +4000,7 @@ void CBotf2Doc::CalcShipOrders()
 						m_SoundMessages[client].Add(entry);
 						m_iSelectedView[client] = EMPIRE_VIEW;						
 					
-						CEventColonization* eventScreen = new CEventColonization(pMajor->GetRaceID(), CResourceManager::GetString("COLOEVENT_HEADLINE", FALSE, m_Sector[ShipKO.x][ShipKO.y].GetName()), CResourceManager::GetString("COLOEVENT_TEXT_RACE1", FALSE, m_Sector[ShipKO.x][ShipKO.y].GetName()));
+						CEventColonization* eventScreen = new CEventColonization(pMajor->GetRaceID(), CResourceManager::GetString("COLOEVENT_HEADLINE", FALSE, m_Sector[ShipKO.x][ShipKO.y].GetName()), CResourceManager::GetString("COLOEVENT_TEXT_" + pMajor->GetRaceID(), FALSE, m_Sector[ShipKO.x][ShipKO.y].GetName()));
 						pMajor->GetEmpire()->GetEventMessages()->Add(eventScreen);
 						s.Format("Added Colonization-Eventscreen for Race %s in System %s", pMajor->GetRaceName(), m_Sector[ShipKO.x][ShipKO.y].GetName());
 						MYTRACE(MT::LEVEL_INFO, s);
@@ -4701,7 +4707,7 @@ void CBotf2Doc::CalcShipOrders()
 				CRace* pShipOwner = m_pRaceCtrl->GetRace(m_ShipArray[y].GetOwnerOfShip());
 				if (pShipOwner != NULL && pShipOwner->GetType() == MAJOR && ((CMajor*)pShipOwner)->IsHumanPlayer())
 				{					
-					CEventBlockade* eventScreen = new CEventBlockade(m_ShipArray[y].GetOwnerOfShip(), CResourceManager::GetString("BLOCKADEEVENT_HEADLINE", FALSE, m_Sector[ShipKO.x][ShipKO.y].GetName()), CResourceManager::GetString("BLOCKADEEVENT_TEXT_RACE1", FALSE, m_Sector[ShipKO.x][ShipKO.y].GetName()));
+					CEventBlockade* eventScreen = new CEventBlockade(m_ShipArray[y].GetOwnerOfShip(), CResourceManager::GetString("BLOCKADEEVENT_HEADLINE", FALSE, m_Sector[ShipKO.x][ShipKO.y].GetName()), CResourceManager::GetString("BLOCKADEEVENT_TEXT_" + pShipOwner->GetRaceID(), FALSE, m_Sector[ShipKO.x][ShipKO.y].GetName()));
 					((CMajor*)pShipOwner)->GetEmpire()->GetEventMessages()->Add(eventScreen);
 				}
 				if (m_System[ShipKO.x][ShipKO.y].GetOwnerOfSystem() != "")
@@ -4709,7 +4715,7 @@ void CBotf2Doc::CalcShipOrders()
 					CRace* pSystemOwner = m_pRaceCtrl->GetRace(m_System[ShipKO.x][ShipKO.y].GetOwnerOfSystem());
 					if (pSystemOwner != NULL && pSystemOwner->GetType() == MAJOR && ((CMajor*)pSystemOwner)->IsHumanPlayer())
 					{
-						CEventBlockade* eventScreen = new CEventBlockade(m_System[ShipKO.x][ShipKO.y].GetOwnerOfSystem(), CResourceManager::GetString("BLOCKADEEVENT_HEADLINE", FALSE, m_Sector[ShipKO.x][ShipKO.y].GetName()), CResourceManager::GetString("BLOCKADEEVENT_TEXT_RACE1", FALSE, m_Sector[ShipKO.x][ShipKO.y].GetName()));					
+						CEventBlockade* eventScreen = new CEventBlockade(m_System[ShipKO.x][ShipKO.y].GetOwnerOfSystem(), CResourceManager::GetString("BLOCKADEEVENT_HEADLINE", FALSE, m_Sector[ShipKO.x][ShipKO.y].GetName()), CResourceManager::GetString("BLOCKADEEVENT_TEXT_" + pSystemOwner->GetRaceID(), FALSE, m_Sector[ShipKO.x][ShipKO.y].GetName()));					
 						((CMajor*)pSystemOwner)->GetEmpire()->GetEventMessages()->Add(eventScreen);
 					}
 				}
@@ -5014,6 +5020,13 @@ void CBotf2Doc::CalcShipCombat()
 					
 					for (map<CString, CRace*>::const_iterator it = pmRaces->begin(); it != pmRaces->end(); it++)
 					{
+						CString sSectorName;
+						// ist der Sektor bekannt?
+						if (m_Sector[p.x][p.y].GetKnown(it->first))
+							sSectorName = m_Sector[p.x][p.y].GetName(true);
+						else
+							sSectorName.Format("%s %c%i", CResourceManager::GetString("SECTOR"), (char)(p.y+97), p.x + 1);
+
 						// gewonnen
 						if (winner[it->first] == 1 && it->second->GetType() == MAJOR)
 						{
@@ -5021,7 +5034,7 @@ void CBotf2Doc::CalcShipCombat()
 							ASSERT(pMajor);
 							network::RACE client = m_pRaceCtrl->GetMappedClientID(pMajor->GetRaceID());
 
-							message.GenerateMessage(CResourceManager::GetString("WIN_COMBAT", false, m_Sector[p.x][p.y].GetName(TRUE)),	MILITARY, "", NULL, FALSE);
+							message.GenerateMessage(CResourceManager::GetString("WIN_COMBAT", false, sSectorName), MILITARY, "", NULL, FALSE);
 							pMajor->GetEmpire()->AddMessage(message);
 							// win a minor battle
 							CString eventText = pMajor->GetMoralObserver()->AddEvent(3, pMajor->GetRaceMoralNumber());
@@ -5039,7 +5052,7 @@ void CBotf2Doc::CalcShipCombat()
 								ASSERT(pMajor);
 								network::RACE client = m_pRaceCtrl->GetMappedClientID(pMajor->GetRaceID());
 
-								message.GenerateMessage(CResourceManager::GetString("LOSE_COMBAT", false, m_Sector[p.x][p.y].GetName(TRUE)), MILITARY, "", 0,0);
+								message.GenerateMessage(CResourceManager::GetString("LOSE_COMBAT", false, sSectorName), MILITARY, "", 0,0);
 								pMajor->GetEmpire()->AddMessage(message);
 								// lose a minorbattle
 								CString eventText = pMajor->GetMoralObserver()->AddEvent(6, pMajor->GetRaceMoralNumber());
@@ -5069,7 +5082,7 @@ void CBotf2Doc::CalcShipCombat()
 							ASSERT(pMajor);
 							network::RACE client = m_pRaceCtrl->GetMappedClientID(pMajor->GetRaceID());
 
-							message.GenerateMessage(CResourceManager::GetString("DRAW_COMBAT", false, m_Sector[p.x][p.y].GetName(TRUE)), MILITARY, "", 0,0);
+							message.GenerateMessage(CResourceManager::GetString("DRAW_COMBAT", false, sSectorName), MILITARY, "", 0,0);
 							pMajor->GetEmpire()->AddMessage(message);
 							if (pMajor->IsHumanPlayer())
 								m_iSelectedView[client] = EMPIRE_VIEW;

@@ -734,19 +734,19 @@ void CSystem::CalculateVariables(BuildingInfoArray* buildingInfos, CResearchInfo
 		m_Production.m_iIridiumProd *= 2;
 	
 	// Die Boni auf die einzelnen Produktionen berechnen
-	short tmpFoodBoni = 0;
-	short tmpIndustryBoni = 0;
-	short tmpEnergyBoni = 0;
-	short tmpSecurityBoni = 0;
-	short tmpResearchBoni = 0;
-	short tmpTitanBoni = 0;
-	short tmpDeuteriumBoni = 0;
-	short tmpDuraniumBoni = 0;
-	short tmpCrystalBoni = 0;
-	short tmpIridiumBoni = 0;
-	short tmpDilithiumBoni = 0;
+	short tmpFoodBoni		= pOwner->GetEmpire()->GetResearch()->GetBioTech() * TECHPRODBONUS;
+	short tmpIndustryBoni	= pOwner->GetEmpire()->GetResearch()->GetConstructionTech() * TECHPRODBONUS;
+	short tmpEnergyBoni		= pOwner->GetEmpire()->GetResearch()->GetEnergyTech() * TECHPRODBONUS;
+	short tmpSecurityBoni	= 0;
+	short tmpResearchBoni	= 0;
+	short tmpTitanBoni		= 0;
+	short tmpDeuteriumBoni	= 0;
+	short tmpDuraniumBoni	= 0;
+	short tmpCrystalBoni	= 0;
+	short tmpIridiumBoni	= 0;
+	short tmpDilithiumBoni	= 0;
+	short tmpLatinumBoni	= 0;
 	short tmpAllRessourcesBoni = 0;
-	short tmpLatinumBoni = 0;
 
 	short neededEnergy = 0;
 	for (int i = 0; i < NumberOfBuildings; i++)
@@ -1699,15 +1699,9 @@ void CSystem::BuildBuildingsForMinorRace(CSector* sector, BuildingInfoArray* bui
 			}
 		}
 
-		if (level < 0)
-			level = 0;
-		else if (level > NoTL)
-			level = NoTL;
+		level = max(0, level);		
 		// Researchlevels für Minor zusammenbauen
 		BYTE researchLevels[6] = {level, level, level, level, level, level};
-
-		// für den Algorithmus unten (muss größer 0 sein um einmal in die Schleife zu gehen)
-		level++;
 
 		// die gültige Eigenschaft der Minor festlegen
 		vector<int> vProperty;

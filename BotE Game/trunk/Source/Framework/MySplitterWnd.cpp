@@ -18,13 +18,13 @@ CMySplitterWnd::CMySplitterWnd()
 {
 	// Hier wird die breite der Trennlinien festgesetzt. Diese  Variblen sind Attribute der Klasse
 	// CSplitterWnd
-	m_cxSplitter = 0;     // = 1
+/*	m_cxSplitter = 0;     // = 1
 	m_cySplitter = 0;     // = 1
 	m_cxBorderShare = 0;  // = 0
 	m_cyBorderShare = 0;  // = 0
 	m_cxSplitterGap = 1;  // = 1
 	m_cySplitterGap = 1;  // = 1
-
+*/
 /*	m_cxSplitter = 5;     // = 1
 	m_cySplitter = 5;     // = 1
 	m_cxBorderShare = 2;  // = 0

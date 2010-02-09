@@ -2,7 +2,7 @@
  *   Copyright (C)2004-2010 Sir Pustekuchen
  *
  *   Author   :  Sir Pustekuchen
- *   Home     :  http://birth-of-the-empires.de.vu
+ *   Home     :  http://birth-of-the-empires.de
  *
  */
 #pragma once
@@ -80,6 +80,8 @@ public:
 	int GetScanPower() const {return m_iScanPower;}
 	BYTE GetScanRange() const {return m_iScanRange;}
 	short GetShipTraining() const {return m_iShipTraining;}
+	short GetTroopTraining() const {return m_iTroopTraining;}
+	short GetResistance() const {return m_iResistance;}
 	BYTE GetAddedTradeRoutes() const {return m_iAddedTradeRouts;}
 	short GetIncomeOnTradeRoutes() const {return m_iIncomeOnTradeRoutes;}
 	short GetShipRecycling() const {return m_iShipRecycling;}

@@ -764,10 +764,7 @@ CString CBuildingInfo::GetProductionAsString(USHORT number) const
 	if (this->GetResourceDistributor(IRIDIUM))
 		s.AppendFormat("%s - %s\n", CResourceManager::GetString("RESOURCE_DISTRIBUTOR"), CResourceManager::GetString("IRIDIUM"));
 	if (this->GetResourceDistributor(DILITHIUM))
-		s.AppendFormat("%s - %s\n", CResourceManager::GetString("RESOURCE_DISTRIBUTOR"), CResourceManager::GetString("DILITHIUM"));
-
-	if (this->GetNeededSystems() != 0)
-		s.AppendFormat("%s: %i\n", CResourceManager::GetString("NEEDED_SYSTEMS"), this->GetNeededSystems());
+		s.AppendFormat("%s - %s\n", CResourceManager::GetString("RESOURCE_DISTRIBUTOR"), CResourceManager::GetString("DILITHIUM"));	
 
 	return s;
 }

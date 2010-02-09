@@ -2,7 +2,7 @@
  *   Copyright (C)2004-2010 Sir Pustekuchen
  *
  *   Author   :  Sir Pustekuchen
- *   Home     :  http://birth-of-the-empires.de.vu
+ *   Home     :  http://birth-of-the-empires.de
  *
  */
 #if !defined(AFX_DBSCROLLVIEW_H__5990A9BB_C42A_476B_98CA_7FD49B4C160A__INCLUDED_)

@@ -23,8 +23,8 @@ CMultiSplitterView::CMultiSplitterView()
 	m_cySplitter = 0;     // = 1
 	m_cxBorderShare = 0;  // = 0
 	m_cyBorderShare = 0;  // = 0
-	m_cxSplitterGap = 1;  // = 1
-	m_cySplitterGap = 1;  // = 1
+	m_cxSplitterGap = 2;  // = 1
+	m_cySplitterGap = 2;  // = 1
 }
 
 CMultiSplitterView::~CMultiSplitterView()
@@ -49,14 +49,14 @@ bool CMultiSplitterView::AddSwitchableView(UINT id, CRuntimeClass * pView,
    DWORD style;
 
    pWin  = (CWnd*) pView->CreateObject();
-   style = WS_CHILD ;
+   style = WS_CHILD;
    
    if (isFirstView) 
    {
-	   style |=  WS_VISIBLE ;
+	   style |=  WS_VISIBLE ;	   
    }
-   pWin->Create(NULL, NULL, style, size , this, id, pContext);
-   
+   pWin->Create(NULL, NULL, style, size , this, id, pContext);   
+      
    if (isFirstView) // id provided is usally diff. so use alternate
    {
 	   views[pWin] =altId ;

@@ -157,11 +157,18 @@ void CShipBottomView::OnDraw(CDC* dc)
 					column = 0;
 				if (counter < m_iPage*9 && counter >= (m_iPage-1)*9)
 				{
+					// Kennen wir den Besizter des Schiffes?
+					bool bUnknown = (pMajor->GetRaceID() != pDoc->m_ShipArray.GetAt(i).GetOwnerOfShip() && pMajor->IsRaceContacted(pDoc->m_ShipArray.GetAt(i).GetOwnerOfShip()) == false);
+					
 					// Wenn wir hier ein einzelnes Schiff anzeigen und keine Flotte
 					if (pDoc->m_ShipArray.GetAt(i).GetFleet() == 0 || (pDoc->m_ShipArray.GetAt(i).GetFleet() != 0 && pDoc->m_ShipArray.GetAt(i).GetFleet()->GetFleetSize() == 0))
 					{
 						graphic = NULL;
-						s.Format("Ships\\%s.bop", pDoc->m_ShipArray.GetAt(i).GetShipClass());
+						// ist der Besitzer des Schiffes unbekannt?						
+						if (bUnknown)
+							s = _T("Ships\\Unknown.bop");
+						else
+							s.Format("Ships\\%s.bop", pDoc->m_ShipArray.GetAt(i).GetShipClass());
 						graphic = pDoc->GetGraphicPool()->GetGDIGraphic(s);
 						if (graphic == NULL)
 							graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Ships\\ImageMissing.bop");
@@ -214,32 +221,38 @@ void CShipBottomView::OnDraw(CDC* dc)
 							else
 								fontBrush.SetColor(markColor);
 						}
-						s = pDoc->m_ShipArray.GetAt(i).GetShipName();
-						g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), PointF(250*column+120,row*65+30), &fontFormat, &fontBrush);
-						s = pDoc->m_ShipArray.GetAt(i).GetShipClass() + "-" + CResourceManager::GetString("CLASS");
-						g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), PointF(250*column+120,row*65+50), &fontFormat, &fontBrush);
-						// Wenn wir eine Station zeigen
-						if (m_bShowStation)	
-						{
-							map<CString, CMajor*>* pmMajors = pDoc->GetRaceCtrl()->GetMajors();
-							for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
-								if (pDoc->m_Sector[pDoc->GetKO().x][pDoc->GetKO().y].GetOutpost(it->first) || pDoc->m_Sector[pDoc->GetKO().x][pDoc->GetKO().y].GetStarbase(it->first))
-									s.Format("Other\\" + it->second->GetPrefix() + "Starbase.bop");
-							graphic = NULL;
-							graphic = pDoc->GetGraphicPool()->GetGDIGraphic(s);
-							if (graphic)
-								g.DrawImage(graphic, 550, 20, 235, 200);
-							break;
+
+						if (!bUnknown)
+						{	
+							s = pDoc->m_ShipArray.GetAt(i).GetShipName();
+							g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), PointF(250*column+120,row*65+30), &fontFormat, &fontBrush);
+							s = pDoc->m_ShipArray.GetAt(i).GetShipClass() + "-" + CResourceManager::GetString("CLASS");
+							g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), PointF(250*column+120,row*65+50), &fontFormat, &fontBrush);
+						
+							// Wenn wir eine Station zeigen
+							if (m_bShowStation)	
+							{
+								map<CString, CMajor*>* pmMajors = pDoc->GetRaceCtrl()->GetMajors();
+								for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+									if (pDoc->m_Sector[pDoc->GetKO().x][pDoc->GetKO().y].GetOutpost(it->first) || pDoc->m_Sector[pDoc->GetKO().x][pDoc->GetKO().y].GetStarbase(it->first))
+										s.Format("Other\\" + it->second->GetPrefix() + "Starbase.bop");
+								graphic = NULL;
+								graphic = pDoc->GetGraphicPool()->GetGDIGraphic(s);
+								if (graphic)
+									g.DrawImage(graphic, 550, 20, 235, 200);
+								break;
+							}
 						}
 					}
 					// Wir haben eine Flotte
 					else
 					{
-						if (pDoc->m_ShipArray.GetAt(i).GetFleet()->GetFleetShipType(&pDoc->m_ShipArray.GetAt(i)) != -1)
-							s.Format("Ships\\%s.bop",pDoc->m_ShipArray.GetAt(i).GetShipClass());
+						// ist der Besitzer des Schiffes unbekannt?
+						if (bUnknown)
+							s = _T("Ships\\Unknown.bop");
 						else
-							// Lade leeres Bild
 							s.Format("Ships\\%s.bop",pDoc->m_ShipArray.GetAt(i).GetShipClass());
+
 						graphic = NULL;
 						graphic = pDoc->GetGraphicPool()->GetGDIGraphic(s);
 						if (graphic == NULL)
@@ -250,33 +263,39 @@ void CShipBottomView::OnDraw(CDC* dc)
 						// Anzahl der Schiffe in der Flotte (+1 weil das Führerschiff mitgezählt werden muß)
 						fontBrush.SetColor(Color::White);
 						s.Format("%d",pDoc->m_ShipArray.GetAt(i).GetFleet()->GetFleetSize()+1);
-						g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), PointF(250*column+45,row*65+35), &fontFormat, &fontBrush);
+						g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), PointF(250*column+35,row*65+30), &fontFormat, &fontBrush);
 						// Wenn das Schiff getarnt ist ein die Schrift etwas dunkler darstellen
 						if (pDoc->m_ShipArray.GetAt(i).GetCloak())
 							fontBrush.SetColor(normalColorCloaked);
 						else
 							fontBrush.SetColor(normalColor);									
-						// Schiffsnamen holen und die ersten 4 Zeichen (z.B. USS_) und die lezten 2 Zeichen (z.B. _A) entfernen
-						s.Format("%s",pDoc->m_ShipArray.GetAt(i).GetShipName());
-						if (s.GetLength() > 4)
-							s.Delete(0,4);
-						if (s.GetLength() > 2 && s.ReverseFind(' ') == s.GetLength()-2)
-							s.Delete(s.GetLength()-2,2);
-						s.Append(" "+CResourceManager::GetString("GROUP"));
-						// Wenn wir ein Schiff markiert haben, dann Markierung zeichnen
-						if (i == pDoc->GetNumberOfTheShipInArray())
+						
+						if (!bUnknown)
 						{
-							if (pDoc->m_ShipArray.GetAt(i).GetCloak())
-								fontBrush.SetColor(markColorCloaked);
+							// Schiffsnamen holen und die ersten 4 Zeichen (z.B. USS_) und die lezten 2 Zeichen (z.B. _A) entfernen
+							s.Format("%s",pDoc->m_ShipArray.GetAt(i).GetShipName());
+							if (s.GetLength() > 4)
+								s.Delete(0,4);
+							if (s.GetLength() > 2 && s.ReverseFind(' ') == s.GetLength()-2)
+								s.Delete(s.GetLength()-2,2);
+						
+							s.Append(" "+CResourceManager::GetString("GROUP"));
+							// Wenn wir ein Schiff markiert haben, dann Markierung zeichnen
+							if (i == pDoc->GetNumberOfTheShipInArray())
+							{
+								if (pDoc->m_ShipArray.GetAt(i).GetCloak())
+									fontBrush.SetColor(markColorCloaked);
+								else
+									fontBrush.SetColor(markColor);
+							}
+							// Hier jetzt Namen und Schiffstype zur Flotte
+							g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), PointF(250*column+120,row*65+30), &fontFormat, &fontBrush);
+							
+							if (pDoc->m_ShipArray.GetAt(i).GetFleet()->GetFleetShipType(&pDoc->m_ShipArray.GetAt(i)) == -1)
+								g.DrawString(CResourceManager::GetString("MIXED_FLEET").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), PointF(250*column+120,row*65+50), &fontFormat, &fontBrush);
 							else
-								fontBrush.SetColor(markColor);
+								g.DrawString(pDoc->m_ShipArray.GetAt(i).GetShipTypeAsString(TRUE).AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), PointF(250*column+120,row*65+50), &fontFormat, &fontBrush);
 						}
-						// Hier jetzt Namen und Schiffstype zur Flotte
-						g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), PointF(250*column+120,row*65+30), &fontFormat, &fontBrush);
-						if (pDoc->m_ShipArray.GetAt(i).GetFleet()->GetFleetShipType(&pDoc->m_ShipArray.GetAt(i)) == -1)
-							g.DrawString(CResourceManager::GetString("MIXED_FLEET").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), PointF(250*column+120,row*65+50), &fontFormat, &fontBrush);
-						else
-							g.DrawString(pDoc->m_ShipArray.GetAt(i).GetShipTypeAsString(TRUE).AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), PointF(250*column+120,row*65+50), &fontFormat, &fontBrush);
 					}
 				}
 				row++;
@@ -290,13 +309,17 @@ void CShipBottomView::OnDraw(CDC* dc)
 		if (counter == 1 && !m_bShowStation && pDoc->m_ShipArray[oneShip].GetCurrentOrder() <= ATTACK
 			&& pDoc->m_ShipArray[oneShip].GetOwnerOfShip() == pMajor->GetRaceID())
 		{
-			this->SetTimer(1,100,NULL);
-			pDoc->SetNumberOfTheShipInArray(oneShip);
-			CGalaxyMenuView::SetMoveShip(TRUE);
-			CSmallInfoView::SetShipInfo(true);
-			pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
-			m_iWhichMainShipOrderButton = -1;
-			pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CGalaxyMenuView));
+			// Wenn wenn wir auf der Galaxiekarte sind
+			if (pDoc->GetMainFrame()->GetActiveView(0, 1) == GALAXY_VIEW)
+			{
+				this->SetTimer(1,100,NULL);
+				pDoc->SetNumberOfTheShipInArray(oneShip);
+				CGalaxyMenuView::SetMoveShip(TRUE);
+				CSmallInfoView::SetShipInfo(true);
+				pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
+				m_iWhichMainShipOrderButton = -1;
+				pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CGalaxyMenuView));
+			}
 		}
 
 		// Die Buttons für vor und zurück darstellen, wenn wir mehr als 9 Schiffe in dem Sektor sehen
@@ -668,7 +691,14 @@ void CShipBottomView::OnDraw(CDC* dc)
 				percent.Format("%d",((pDoc->GetSector(pDoc->GetKO().x,pDoc->GetKO().y).GetStartStationPoints(it->first)
 					- pDoc->GetSector(pDoc->GetKO().x,pDoc->GetKO().y).GetNeededStationPoints(it->first)) * 100
 					/ pDoc->GetSector(pDoc->GetKO().x,pDoc->GetKO().y).GetStartStationPoints(it->first)));
-				s = station + CResourceManager::GetString("STATION_BUILDING", FALSE, it->second->GetRaceName(), percent);
+				
+				CString sRaceName;
+				if (pMajor == it->second || pMajor->IsRaceContacted(it->first))
+					sRaceName = it->second->GetRaceName();
+				else
+					sRaceName = CResourceManager::GetString("UNKNOWN");
+						
+				s = station + CResourceManager::GetString("STATION_BUILDING", FALSE, sRaceName, percent);
 				fontFormat.SetAlignment(StringAlignmentCenter);
 				fontFormat.SetLineAlignment(StringAlignmentCenter);
 				g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), PointF(250, 30+count*25), &fontFormat, &fontBrush);
@@ -814,9 +844,12 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 						// um eins zurücknehmen
 						if (pDoc->GetNumberOfTheShipInArray() == pDoc->m_ShipArray.GetSize())
 							pDoc->SetNumberOfTheShipInArray(pDoc->GetNumberOfTheShipInArray()-1);
+						// wenn das angeklickte Schiff aus irgendeinen Grund nicht mehr uns gehören sollte, so wird das Flottenschiff ausegwählt
+						if (pDoc->m_ShipArray[pDoc->GetNumberOfTheShipInArray()].GetOwnerOfShip() != pMajor->GetRaceID())
+							pDoc->SetNumberOfTheShipInArray(pDoc->GetNumberOfFleetShip());
+
 						Invalidate(FALSE);
-						pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CFleetMenuView));
-						//PlaySound(*((CBotf2App*)AfxGetApp())->GetPath() + "Sounds\\ComputerBeep.wav", NULL, SND_FILENAME | SND_ASYNC);
+						pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CFleetMenuView));						
 						return;
 					}
 				}
@@ -1072,262 +1105,24 @@ CString CShipBottomView::CreateTooltip(void)
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
 
+	CMajor* pMajor = m_pPlayersRace;
+	ASSERT(pMajor);
+	if (!pMajor)
+		return "";
+
 	CShip* pShip = &(pDoc->m_ShipArray[nShip]);
-	CString sName = pShip->GetShipName();
-	if (pShip->GetFleet())
-	{
-		// Schiffsnamen holen und die ersten 4 Zeichen (z.B. USS_) und die lezten 2 Zeichen (z.B. _A) entfernen
-		if (sName.GetLength() > 4)
-			sName.Delete(0,4);
-		if (sName.GetLength() > 2 && sName.ReverseFind(' ') == sName.GetLength() - 2)
-			sName.Delete(sName.GetLength() - 2, 2);
-		sName.Append(" " + CResourceManager::GetString("GROUP"));
-	}
-	sName = CHTMLStringBuilder::GetHTMLColor(sName);
-	sName = CHTMLStringBuilder::GetHTMLHeader(sName, _T("h3"));
-	sName = CHTMLStringBuilder::GetHTMLCenter(sName);
-	sName += CHTMLStringBuilder::GetHTMLStringNewLine();
 
-	CString sType;
-	if (pShip->GetFleet() && pShip->GetFleet()->GetFleetShipType(pShip) == -1)
-		sType = _T("(") + CResourceManager::GetString("MIXED_FLEET") + _T(")");
-	else if (pShip->GetFleet())
-		sType = _T("(") + pShip->GetShipTypeAsString(TRUE) + _T(")");
-	else
-		sType = _T("(") + pShip->GetShipTypeAsString() + _T(")");		
-	sType = CHTMLStringBuilder::GetHTMLColor(sType, _T("silver"));
-	sType = CHTMLStringBuilder::GetHTMLHeader(sType, _T("h4"));
-	sType = CHTMLStringBuilder::GetHTMLCenter(sType);
-	sType += CHTMLStringBuilder::GetHTMLStringNewLine();
-	sType += CHTMLStringBuilder::GetHTMLStringNewLine();
-
-	// Bewegung anzeigen
-	CString sMovementHead = CResourceManager::GetString("MOVEMENT");
-	sMovementHead = CHTMLStringBuilder::GetHTMLColor(sMovementHead, _T("silver"));
-	sMovementHead = CHTMLStringBuilder::GetHTMLHeader(sMovementHead, _T("h4"));
-	sMovementHead = CHTMLStringBuilder::GetHTMLCenter(sMovementHead);
-	sMovementHead += CHTMLStringBuilder::GetHTMLStringNewLine();
-	sMovementHead += CHTMLStringBuilder::GetHTMLStringHorzLine();
-	sMovementHead += CHTMLStringBuilder::GetHTMLStringNewLine();
-	
-	CString sMovement = CResourceManager::GetString("RANGE") + _T(": ");
-	BYTE byRange = pShip->GetRange();
-	if (pShip->GetFleet())
-		byRange = pShip->GetFleet()->GetFleetRange();
-	if (byRange == RANGE_SHORT)
-		sMovement += CResourceManager::GetString("SHORT");
-	else if (byRange == RANGE_MIDDLE)
-		sMovement += CResourceManager::GetString("MIDDLE");
-	else if (byRange == RANGE_LONG)
-		sMovement += CResourceManager::GetString("LONG");
-	sMovement += CHTMLStringBuilder::GetHTMLStringNewLine();
-	CString sSpeed;
-	BYTE bySpeed = pShip->GetSpeed();
-	if (pShip->GetFleet())
-		bySpeed = pShip->GetFleet()->GetFleetSpeed();
-	sSpeed.Format("%s: %d\n", CResourceManager::GetString("SPEED"), bySpeed);
-	sMovement += sSpeed;
-		
-	// wenn es eine Flotte ist keine weiteren Infos anzeigen
-	if (pShip->GetFleet())
+	// ist der Besitzer des Schiffes unbekannt?
+	if (pMajor->GetRaceID() != pShip->GetOwnerOfShip() && pMajor->IsRaceContacted(pShip->GetOwnerOfShip()) == false)
 	{
-		sMovement = CHTMLStringBuilder::GetHTMLColor(sMovement);
-		sMovement = CHTMLStringBuilder::GetHTMLHeader(sMovement, _T("h5"));
-		sMovement = CHTMLStringBuilder::GetHTMLCenter(sMovement);
-		return sName + sType + sMovementHead + sMovement;
+		CString s = CResourceManager::GetString("UNKNOWN");
+		s = CHTMLStringBuilder::GetHTMLColor(s);
+		s = CHTMLStringBuilder::GetHTMLHeader(s, _T("h4"));		
+		s = CHTMLStringBuilder::GetHTMLCenter(s);
+		return s;
 	}
 
-	sMovement += CResourceManager::GetString("MANEUVERABILITY") + _T(": ");
-	switch (pShip->GetManeuverability())
-	{
-	case 9:	sMovement += CResourceManager::GetString("PHENOMENAL");	break;
-	case 8:	sMovement += CResourceManager::GetString("EXCELLENT");	break;
-	case 7:	sMovement += CResourceManager::GetString("VERYGOOD");	break;
-	case 6:	sMovement += CResourceManager::GetString("GOOD");		break;
-	case 5:	sMovement += CResourceManager::GetString("NORMAL");		break;
-	case 4:	sMovement += CResourceManager::GetString("ADEQUATE");	break;
-	case 3:	sMovement += CResourceManager::GetString("BAD");		break;
-	case 2:	sMovement += CResourceManager::GetString("VERYBAD");	break;
-	case 1:	sMovement += CResourceManager::GetString("MISERABLE");	break;
-	default:sMovement += CResourceManager::GetString("NONE");
-	}
-	sMovement = CHTMLStringBuilder::GetHTMLColor(sMovement);
-	sMovement = CHTMLStringBuilder::GetHTMLHeader(sMovement, _T("h5"));
-	sMovement = CHTMLStringBuilder::GetHTMLCenter(sMovement);
-	sMovement += CHTMLStringBuilder::GetHTMLStringNewLine();
-	sMovement += CHTMLStringBuilder::GetHTMLStringNewLine();
-
-	// Bewaffnung anzeigen
-	CString sBeams = "";
-	UINT nOverallDmg = 0;
-	for (int i = 0; i < pShip->GetBeamWeapons()->GetSize(); i++)
-	{
-		CBeamWeapons* pBeam = &(pShip->GetBeamWeapons()->GetAt(i));
-		CString s;
-		s.Format("%d x %s %d %s\n", pBeam->GetBeamNumber(), CResourceManager::GetString("TYPE"), pBeam->GetBeamType(), pBeam->GetBeamName());
-		sBeams += s;
-		
-		short counter = 0;
-		for (int j = 0; j < 100; j++)
-		{
-			if (counter == 0)
-				counter = pBeam->GetBeamLenght() + pBeam->GetRechargeTime();
-			if (counter > pBeam->GetRechargeTime())
-				nOverallDmg += (UINT)pBeam->GetBeamPower()	* pBeam->GetBeamNumber() * pBeam->GetShootNumber();				
-			counter--;			
-		}
-	}
-
-	if (sBeams.IsEmpty())
-		sBeams = CResourceManager::GetString("NONE") + "\n";
-	sBeams = CHTMLStringBuilder::GetHTMLColor(sBeams);
-	sBeams = CHTMLStringBuilder::GetHTMLHeader(sBeams, _T("h5"));
-	sBeams = CHTMLStringBuilder::GetHTMLCenter(sBeams);
-	sBeams += CHTMLStringBuilder::GetHTMLStringNewLine();
-	
-	CString sBeamWeaponHead;
-	sBeamWeaponHead.Format("%s (%s: %d)", CResourceManager::GetString("BEAMWEAPONS"), CResourceManager::GetString("DAMAGE"), nOverallDmg);
-	sBeamWeaponHead = CHTMLStringBuilder::GetHTMLColor(sBeamWeaponHead, _T("silver"));
-	sBeamWeaponHead = CHTMLStringBuilder::GetHTMLHeader(sBeamWeaponHead, _T("h4"));
-	sBeamWeaponHead = CHTMLStringBuilder::GetHTMLCenter(sBeamWeaponHead);
-	sBeamWeaponHead += CHTMLStringBuilder::GetHTMLStringNewLine();
-	sBeamWeaponHead += CHTMLStringBuilder::GetHTMLStringHorzLine();
-	sBeamWeaponHead += CHTMLStringBuilder::GetHTMLStringNewLine();
-
-	CString sTorps;
-	nOverallDmg = 0;
-	for (int i = 0; i < pShip->GetTorpedoWeapons()->GetSize(); i++)
-	{
-		CTorpedoWeapons* pTorp = &(pShip->GetTorpedoWeapons()->GetAt(i));
-		CString s;
-		s.Format("%d x %s (%s)\n", pTorp->GetNumberOfTupes(), pTorp->GetTupeName(), pTorp->GetTorpedoName());
-		sTorps += s;		
-		nOverallDmg += (UINT)((pTorp->GetTorpedoPower() * pTorp->GetNumber() * 100 * pTorp->GetNumberOfTupes()) / pTorp->GetTupeFirerate());
-	}
-	if (sTorps.IsEmpty())
-		sTorps = CResourceManager::GetString("NONE") + "\n";
-	sTorps = CHTMLStringBuilder::GetHTMLColor(sTorps);
-	sTorps = CHTMLStringBuilder::GetHTMLHeader(sTorps, _T("h5"));
-	sTorps = CHTMLStringBuilder::GetHTMLCenter(sTorps);
-	sTorps += CHTMLStringBuilder::GetHTMLStringNewLine();
-	CString sTupeWeaponHead;
-	sTupeWeaponHead.Format("%s (%s: %d)", CResourceManager::GetString("TORPEDOWEAPONS"), CResourceManager::GetString("DAMAGE"), nOverallDmg);
-	sTupeWeaponHead = CHTMLStringBuilder::GetHTMLColor(sTupeWeaponHead, _T("silver"));
-	sTupeWeaponHead = CHTMLStringBuilder::GetHTMLHeader(sTupeWeaponHead, _T("h4"));
-	sTupeWeaponHead = CHTMLStringBuilder::GetHTMLCenter(sTupeWeaponHead);
-	sTupeWeaponHead += CHTMLStringBuilder::GetHTMLStringNewLine();
-	sTupeWeaponHead += CHTMLStringBuilder::GetHTMLStringHorzLine();
-	sTupeWeaponHead += CHTMLStringBuilder::GetHTMLStringNewLine();
-
-	CString sDefensiveHead = CResourceManager::GetString("SHIELDS")+" "+CResourceManager::GetString("AND")+" "+CResourceManager::GetString("HULL");
-	sDefensiveHead = CHTMLStringBuilder::GetHTMLColor(sDefensiveHead, _T("silver"));
-	sDefensiveHead = CHTMLStringBuilder::GetHTMLHeader(sDefensiveHead, _T("h4"));
-	sDefensiveHead = CHTMLStringBuilder::GetHTMLCenter(sDefensiveHead);
-	sDefensiveHead += CHTMLStringBuilder::GetHTMLStringNewLine();
-	sDefensiveHead += CHTMLStringBuilder::GetHTMLStringHorzLine();
-	sDefensiveHead += CHTMLStringBuilder::GetHTMLStringNewLine();
-
-	CShield* pShield = pShip->GetShield();
-	CString sShield;
-	sShield.Format("%s %d %s: %s %d/%d", CResourceManager::GetString("TYPE"), pShield->GetShieldType(), CResourceManager::GetString("SHIELDS"), CResourceManager::GetString("CAPACITY"), (UINT)pShield->GetCurrentShield(), (UINT)pShield->GetMaxShield());
-	sShield = CHTMLStringBuilder::GetHTMLColor(sShield);
-	sShield = CHTMLStringBuilder::GetHTMLHeader(sShield, _T("h5"));
-	sShield = CHTMLStringBuilder::GetHTMLCenter(sShield);
-	sShield += CHTMLStringBuilder::GetHTMLStringNewLine();
-	
-	CHull* pHull = pShip->GetHull();
-	CString sMaterial;
-	switch (pHull->GetHullMaterial())
-	{
-	case TITAN:		sMaterial = CResourceManager::GetString("TITAN");	 break;
-	case DURANIUM:	sMaterial = CResourceManager::GetString("DURANIUM"); break;
-	case IRIDIUM:	sMaterial = CResourceManager::GetString("IRIDIUM");	 break;
-	default:		sMaterial = "";
-	}
-	CString sHull;
-	if (pHull->GetDoubleHull() == TRUE)
-		sHull.Format("%s%s: %s %d/%d", sMaterial, CResourceManager::GetString("DOUBLE_HULL_ARMOUR"), CResourceManager::GetString("INTEGRITY"), (int)pHull->GetCurrentHull(), (int)pHull->GetMaxHull());
-	else
-		sHull.Format("%s%s: %s %d/%d", sMaterial, CResourceManager::GetString("HULL_ARMOR"), CResourceManager::GetString("INTEGRITY"), (int)pHull->GetCurrentHull(), (int)pHull->GetMaxHull());		
-	sHull = CHTMLStringBuilder::GetHTMLColor(sHull);
-	sHull = CHTMLStringBuilder::GetHTMLHeader(sHull, _T("h5"));
-	sHull = CHTMLStringBuilder::GetHTMLCenter(sHull);
-	sHull += CHTMLStringBuilder::GetHTMLStringNewLine();
-	sHull += CHTMLStringBuilder::GetHTMLStringNewLine();
-
-	
-	// Manövrierbarkeit anzeigen
-	CString sManeuverHead = CResourceManager::GetString("MANEUVERABILITY");
-	sManeuverHead = CHTMLStringBuilder::GetHTMLColor(sManeuverHead, _T("silver"));
-	sManeuverHead = CHTMLStringBuilder::GetHTMLHeader(sManeuverHead, _T("h4"));
-	sManeuverHead = CHTMLStringBuilder::GetHTMLCenter(sManeuverHead);
-	sManeuverHead += CHTMLStringBuilder::GetHTMLStringNewLine();
-	sManeuverHead += CHTMLStringBuilder::GetHTMLStringHorzLine();
-	sManeuverHead += CHTMLStringBuilder::GetHTMLStringNewLine();
-	
-	CString sManeuver;
-	switch (pShip->GetManeuverability())
-	{
-	case 9:	sManeuver = CResourceManager::GetString("PHENOMENAL");	break;
-	case 8:	sManeuver = CResourceManager::GetString("EXCELLENT");	break;
-	case 7:	sManeuver = CResourceManager::GetString("VERYGOOD");	break;
-	case 6:	sManeuver = CResourceManager::GetString("GOOD");		break;
-	case 5:	sManeuver = CResourceManager::GetString("NORMAL");		break;
-	case 4:	sManeuver = CResourceManager::GetString("ADEQUATE");	break;
-	case 3:	sManeuver = CResourceManager::GetString("BAD");			break;
-	case 2:	sManeuver = CResourceManager::GetString("VERYBAD");		break;
-	case 1:	sManeuver = CResourceManager::GetString("MISERABLE");	break;
-	default:sManeuver = CResourceManager::GetString("NONE");
-	}
-	sManeuver = CHTMLStringBuilder::GetHTMLColor(sManeuver);
-	sManeuver = CHTMLStringBuilder::GetHTMLHeader(sManeuver, _T("h5"));
-	sManeuver = CHTMLStringBuilder::GetHTMLCenter(sManeuver);
-	sManeuver += CHTMLStringBuilder::GetHTMLStringNewLine();
-	sManeuver += CHTMLStringBuilder::GetHTMLStringNewLine();
-	
-
-	// Spezialfähigkeiten anzeigen
-	CString sSpecialsHead = CResourceManager::GetString("SPECIAL_ABILITIES");
-	sSpecialsHead = CHTMLStringBuilder::GetHTMLColor(sSpecialsHead, _T("silver"));
-	sSpecialsHead = CHTMLStringBuilder::GetHTMLHeader(sSpecialsHead, _T("h4"));
-	sSpecialsHead = CHTMLStringBuilder::GetHTMLCenter(sSpecialsHead);
-	sSpecialsHead += CHTMLStringBuilder::GetHTMLStringNewLine();
-	sSpecialsHead += CHTMLStringBuilder::GetHTMLStringHorzLine();
-	sSpecialsHead += CHTMLStringBuilder::GetHTMLStringNewLine();
-	
-	CString sSpecials;
-	if (pShip->HasSpecial(ASSULTSHIP))
-		sSpecials += CResourceManager::GetString("ASSAULTSHIP") + "\n";
-	if (pShip->HasSpecial(BLOCKADESHIP))
-		sSpecials += CResourceManager::GetString("BLOCKADESHIP") + "\n";
-	if (pShip->HasSpecial(COMMANDSHIP))
-		sSpecials += CResourceManager::GetString("COMMANDSHIP") + "\n";
-	if (pShip->HasSpecial(DOGFIGHTER))
-		sSpecials += CResourceManager::GetString("DOGFIGHTER") + "\n";
-	if (pShip->HasSpecial(DOGKILLER))
-		sSpecials += CResourceManager::GetString("DOGKILLER") + "\n";
-	if (pShip->HasSpecial(PATROLSHIP))
-		sSpecials += CResourceManager::GetString("PATROLSHIP") + "\n";
-	if (pShip->HasSpecial(RAIDER))
-		sSpecials += CResourceManager::GetString("RAIDER") + "\n";
-	if (pShip->HasSpecial(SCIENCEVESSEL))
-		sSpecials += CResourceManager::GetString("SCIENCESHIP") + "\n";
-	if (pShield->GetRegenerative())
-		sSpecials += CResourceManager::GetString("REGENERATIVE_SHIELDS") + "\n";
-	if (pHull->GetAblative())
-		sSpecials += CResourceManager::GetString("ABLATIVE_ARMOR") + "\n";
-	if  (pHull->GetPolarisation())
-		sSpecials += CResourceManager::GetString("HULLPOLARISATION") + "\n";
-	if (pShip->GetStealthPower() > 3)
-		sSpecials += CResourceManager::GetString("CAN_CLOAK") + "\n";
-	if (sSpecials.IsEmpty())
-		sSpecials = CResourceManager::GetString("NONE");
-	sSpecials = CHTMLStringBuilder::GetHTMLColor(sSpecials);
-	sSpecials = CHTMLStringBuilder::GetHTMLHeader(sSpecials, _T("h5"));
-	sSpecials = CHTMLStringBuilder::GetHTMLCenter(sSpecials);	
-
-	CString sTip = sName + sType + sMovementHead + sMovement + sBeamWeaponHead + sBeams + sTupeWeaponHead + sTorps + sDefensiveHead + sShield + sHull + sSpecialsHead + sSpecials;
-	return sTip;
+	return pShip->GetTooltip();
 }
 
 /// Funktion ermittelt die Nummer des Schiffes im Array, über welches die Maus bewegt wurde.

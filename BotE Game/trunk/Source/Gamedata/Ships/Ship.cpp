@@ -7,6 +7,7 @@
 #include "Ship.h"
 #include "Galaxy\Sector.h"
 #include "Fleet.h"
+#include "HTMLStringBuilder.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -548,4 +549,276 @@ BYTE CShip::GetExpLevel() const
 	// Legende
 	else
 		return 6;
+}
+
+///	Funktion erstellt zur aktuellen Mouse-Position einen HTML Tooltip
+/// @param bShowFleet wenn dieser Parameter <code>true</code> dann werden Informationen über die angeführte Flotte angezeigt, sonst nur über das Schiff
+/// @return	der erstellte Tooltip-Text
+CString CShip::GetTooltip(bool bShowFleet/*= true*/)
+{
+	CString sName = this->GetShipName();
+	if (sName.IsEmpty() == false)
+	{
+		if (bShowFleet && this->GetFleet())
+		{
+			// Schiffsnamen holen und die ersten 4 Zeichen (z.B. USS_) und die lezten 2 Zeichen (z.B. _A) entfernen
+			if (sName.GetLength() > 4)
+				sName.Delete(0,4);
+			if (sName.GetLength() > 2 && sName.ReverseFind(' ') == sName.GetLength() - 2)
+				sName.Delete(sName.GetLength() - 2, 2);
+			sName.Append(" " + CResourceManager::GetString("GROUP"));
+		}
+		sName = CHTMLStringBuilder::GetHTMLColor(sName);
+		sName = CHTMLStringBuilder::GetHTMLHeader(sName, _T("h3"));
+		sName = CHTMLStringBuilder::GetHTMLCenter(sName);
+		sName += CHTMLStringBuilder::GetHTMLStringNewLine();
+	}
+
+	CString sType;
+	if (bShowFleet && this->GetFleet() && this->GetFleet()->GetFleetShipType(this) == -1)
+		sType = _T("(") + CResourceManager::GetString("MIXED_FLEET") + _T(")");
+	else if (bShowFleet && this->GetFleet())
+		sType = _T("(") + this->GetShipTypeAsString(TRUE) + _T(")");
+	else
+		sType = _T("(") + this->GetShipTypeAsString() + _T(")");		
+	sType = CHTMLStringBuilder::GetHTMLColor(sType, _T("silver"));
+	sType = CHTMLStringBuilder::GetHTMLHeader(sType, _T("h4"));
+	sType = CHTMLStringBuilder::GetHTMLCenter(sType);
+	sType += CHTMLStringBuilder::GetHTMLStringNewLine();
+	sType += CHTMLStringBuilder::GetHTMLStringNewLine();
+
+	// Bewegung anzeigen
+	CString sMovementHead = CResourceManager::GetString("MOVEMENT");
+	sMovementHead = CHTMLStringBuilder::GetHTMLColor(sMovementHead, _T("silver"));
+	sMovementHead = CHTMLStringBuilder::GetHTMLHeader(sMovementHead, _T("h4"));
+	sMovementHead = CHTMLStringBuilder::GetHTMLCenter(sMovementHead);
+	sMovementHead += CHTMLStringBuilder::GetHTMLStringNewLine();
+	sMovementHead += CHTMLStringBuilder::GetHTMLStringHorzLine();
+	sMovementHead += CHTMLStringBuilder::GetHTMLStringNewLine();
+	
+	CString sMovement = CResourceManager::GetString("RANGE") + _T(": ");
+	BYTE byRange = this->GetRange();
+	if (bShowFleet && this->GetFleet())
+		byRange = this->GetFleet()->GetFleetRange();
+	if (byRange == RANGE_SHORT)
+		sMovement += CResourceManager::GetString("SHORT");
+	else if (byRange == RANGE_MIDDLE)
+		sMovement += CResourceManager::GetString("MIDDLE");
+	else if (byRange == RANGE_LONG)
+		sMovement += CResourceManager::GetString("LONG");
+	sMovement += CHTMLStringBuilder::GetHTMLStringNewLine();
+	CString sSpeed;
+	BYTE bySpeed = this->GetSpeed();
+	if (bShowFleet && this->GetFleet())
+		bySpeed = this->GetFleet()->GetFleetSpeed();
+	sSpeed.Format("%s: %d\n", CResourceManager::GetString("SPEED"), bySpeed);
+	sMovement += sSpeed;
+		
+	// wenn es eine Flotte ist keine weiteren Infos anzeigen
+	if (bShowFleet && this->GetFleet())
+	{
+		sMovement = CHTMLStringBuilder::GetHTMLColor(sMovement);
+		sMovement = CHTMLStringBuilder::GetHTMLHeader(sMovement, _T("h5"));
+		sMovement = CHTMLStringBuilder::GetHTMLCenter(sMovement);
+		return sName + sType + sMovementHead + sMovement;
+	}
+
+	sMovement += CResourceManager::GetString("MANEUVERABILITY") + _T(": ");
+	switch (this->GetManeuverability())
+	{
+	case 9:	sMovement += CResourceManager::GetString("PHENOMENAL");	break;
+	case 8:	sMovement += CResourceManager::GetString("EXCELLENT");	break;
+	case 7:	sMovement += CResourceManager::GetString("VERYGOOD");	break;
+	case 6:	sMovement += CResourceManager::GetString("GOOD");		break;
+	case 5:	sMovement += CResourceManager::GetString("NORMAL");		break;
+	case 4:	sMovement += CResourceManager::GetString("ADEQUATE");	break;
+	case 3:	sMovement += CResourceManager::GetString("BAD");		break;
+	case 2:	sMovement += CResourceManager::GetString("VERYBAD");	break;
+	case 1:	sMovement += CResourceManager::GetString("MISERABLE");	break;
+	default:sMovement += CResourceManager::GetString("NONE");
+	}
+	sMovement = CHTMLStringBuilder::GetHTMLColor(sMovement);
+	sMovement = CHTMLStringBuilder::GetHTMLHeader(sMovement, _T("h5"));
+	sMovement = CHTMLStringBuilder::GetHTMLCenter(sMovement);
+	sMovement += CHTMLStringBuilder::GetHTMLStringNewLine();
+	sMovement += CHTMLStringBuilder::GetHTMLStringNewLine();
+
+	// Bewaffnung anzeigen
+	CString sBeams = "";
+	UINT nOverallDmg = 0;
+	for (int i = 0; i < this->GetBeamWeapons()->GetSize(); i++)
+	{
+		CBeamWeapons* pBeam = &(this->GetBeamWeapons()->GetAt(i));
+		CString s;
+		s.Format("%d x %s %d %s\n", pBeam->GetBeamNumber(), CResourceManager::GetString("TYPE"), pBeam->GetBeamType(), pBeam->GetBeamName());
+		sBeams += s;
+		
+		short counter = 0;
+		for (int j = 0; j < 100; j++)
+		{
+			if (counter == 0)
+				counter = pBeam->GetBeamLenght() + pBeam->GetRechargeTime();
+			if (counter > pBeam->GetRechargeTime())
+				nOverallDmg += (UINT)pBeam->GetBeamPower()	* pBeam->GetBeamNumber() * pBeam->GetShootNumber();				
+			counter--;			
+		}
+	}
+
+	if (sBeams.IsEmpty())
+		sBeams = CResourceManager::GetString("NONE") + "\n";
+	sBeams = CHTMLStringBuilder::GetHTMLColor(sBeams);
+	sBeams = CHTMLStringBuilder::GetHTMLHeader(sBeams, _T("h5"));
+	sBeams = CHTMLStringBuilder::GetHTMLCenter(sBeams);
+	sBeams += CHTMLStringBuilder::GetHTMLStringNewLine();
+	
+	CString sBeamWeaponHead;
+	sBeamWeaponHead.Format("%s (%s: %d)", CResourceManager::GetString("BEAMWEAPONS"), CResourceManager::GetString("DAMAGE"), nOverallDmg);
+	sBeamWeaponHead = CHTMLStringBuilder::GetHTMLColor(sBeamWeaponHead, _T("silver"));
+	sBeamWeaponHead = CHTMLStringBuilder::GetHTMLHeader(sBeamWeaponHead, _T("h4"));
+	sBeamWeaponHead = CHTMLStringBuilder::GetHTMLCenter(sBeamWeaponHead);
+	sBeamWeaponHead += CHTMLStringBuilder::GetHTMLStringNewLine();
+	sBeamWeaponHead += CHTMLStringBuilder::GetHTMLStringHorzLine();
+	sBeamWeaponHead += CHTMLStringBuilder::GetHTMLStringNewLine();
+
+	CString sTorps;
+	nOverallDmg = 0;
+	for (int i = 0; i < this->GetTorpedoWeapons()->GetSize(); i++)
+	{
+		CTorpedoWeapons* pTorp = &(this->GetTorpedoWeapons()->GetAt(i));
+		CString s;
+		s.Format("%d x %s (%s)\n", pTorp->GetNumberOfTupes(), pTorp->GetTupeName(), pTorp->GetTorpedoName());
+		sTorps += s;		
+		nOverallDmg += (UINT)((pTorp->GetTorpedoPower() * pTorp->GetNumber() * 100 * pTorp->GetNumberOfTupes()) / pTorp->GetTupeFirerate());
+	}
+	if (sTorps.IsEmpty())
+		sTorps = CResourceManager::GetString("NONE") + "\n";
+	sTorps = CHTMLStringBuilder::GetHTMLColor(sTorps);
+	sTorps = CHTMLStringBuilder::GetHTMLHeader(sTorps, _T("h5"));
+	sTorps = CHTMLStringBuilder::GetHTMLCenter(sTorps);
+	sTorps += CHTMLStringBuilder::GetHTMLStringNewLine();
+	CString sTupeWeaponHead;
+	sTupeWeaponHead.Format("%s (%s: %d)", CResourceManager::GetString("TORPEDOWEAPONS"), CResourceManager::GetString("DAMAGE"), nOverallDmg);
+	sTupeWeaponHead = CHTMLStringBuilder::GetHTMLColor(sTupeWeaponHead, _T("silver"));
+	sTupeWeaponHead = CHTMLStringBuilder::GetHTMLHeader(sTupeWeaponHead, _T("h4"));
+	sTupeWeaponHead = CHTMLStringBuilder::GetHTMLCenter(sTupeWeaponHead);
+	sTupeWeaponHead += CHTMLStringBuilder::GetHTMLStringNewLine();
+	sTupeWeaponHead += CHTMLStringBuilder::GetHTMLStringHorzLine();
+	sTupeWeaponHead += CHTMLStringBuilder::GetHTMLStringNewLine();
+
+	CString sDefensiveHead = CResourceManager::GetString("SHIELDS")+" "+CResourceManager::GetString("AND")+" "+CResourceManager::GetString("HULL");
+	sDefensiveHead = CHTMLStringBuilder::GetHTMLColor(sDefensiveHead, _T("silver"));
+	sDefensiveHead = CHTMLStringBuilder::GetHTMLHeader(sDefensiveHead, _T("h4"));
+	sDefensiveHead = CHTMLStringBuilder::GetHTMLCenter(sDefensiveHead);
+	sDefensiveHead += CHTMLStringBuilder::GetHTMLStringNewLine();
+	sDefensiveHead += CHTMLStringBuilder::GetHTMLStringHorzLine();
+	sDefensiveHead += CHTMLStringBuilder::GetHTMLStringNewLine();
+
+	CShield* pShield = this->GetShield();
+	CString sShield;
+	sShield.Format("%s %d %s: %s %d/%d", CResourceManager::GetString("TYPE"), pShield->GetShieldType(), CResourceManager::GetString("SHIELDS"), CResourceManager::GetString("CAPACITY"), (UINT)pShield->GetCurrentShield(), (UINT)pShield->GetMaxShield());
+	sShield = CHTMLStringBuilder::GetHTMLColor(sShield);
+	sShield = CHTMLStringBuilder::GetHTMLHeader(sShield, _T("h5"));
+	sShield = CHTMLStringBuilder::GetHTMLCenter(sShield);
+	sShield += CHTMLStringBuilder::GetHTMLStringNewLine();
+	
+	CHull* pHull = this->GetHull();
+	CString sMaterial;
+	switch (pHull->GetHullMaterial())
+	{
+	case TITAN:		sMaterial = CResourceManager::GetString("TITAN");	 break;
+	case DURANIUM:	sMaterial = CResourceManager::GetString("DURANIUM"); break;
+	case IRIDIUM:	sMaterial = CResourceManager::GetString("IRIDIUM");	 break;
+	default:		sMaterial = "";
+	}
+	CString sHull;
+	if (pHull->GetDoubleHull() == TRUE)
+		sHull.Format("%s%s: %s %d/%d", sMaterial, CResourceManager::GetString("DOUBLE_HULL_ARMOUR"), CResourceManager::GetString("INTEGRITY"), (int)pHull->GetCurrentHull(), (int)pHull->GetMaxHull());
+	else
+		sHull.Format("%s%s: %s %d/%d", sMaterial, CResourceManager::GetString("HULL_ARMOR"), CResourceManager::GetString("INTEGRITY"), (int)pHull->GetCurrentHull(), (int)pHull->GetMaxHull());		
+	sHull = CHTMLStringBuilder::GetHTMLColor(sHull);
+	sHull = CHTMLStringBuilder::GetHTMLHeader(sHull, _T("h5"));
+	sHull = CHTMLStringBuilder::GetHTMLCenter(sHull);
+	sHull += CHTMLStringBuilder::GetHTMLStringNewLine();
+	sHull += CHTMLStringBuilder::GetHTMLStringNewLine();
+
+	
+	// Manövrierbarkeit anzeigen
+	CString sManeuverHead = CResourceManager::GetString("MANEUVERABILITY");
+	sManeuverHead = CHTMLStringBuilder::GetHTMLColor(sManeuverHead, _T("silver"));
+	sManeuverHead = CHTMLStringBuilder::GetHTMLHeader(sManeuverHead, _T("h4"));
+	sManeuverHead = CHTMLStringBuilder::GetHTMLCenter(sManeuverHead);
+	sManeuverHead += CHTMLStringBuilder::GetHTMLStringNewLine();
+	sManeuverHead += CHTMLStringBuilder::GetHTMLStringHorzLine();
+	sManeuverHead += CHTMLStringBuilder::GetHTMLStringNewLine();
+	
+	CString sManeuver;
+	switch (this->GetManeuverability())
+	{
+	case 9:	sManeuver = CResourceManager::GetString("PHENOMENAL");	break;
+	case 8:	sManeuver = CResourceManager::GetString("EXCELLENT");	break;
+	case 7:	sManeuver = CResourceManager::GetString("VERYGOOD");	break;
+	case 6:	sManeuver = CResourceManager::GetString("GOOD");		break;
+	case 5:	sManeuver = CResourceManager::GetString("NORMAL");		break;
+	case 4:	sManeuver = CResourceManager::GetString("ADEQUATE");	break;
+	case 3:	sManeuver = CResourceManager::GetString("BAD");			break;
+	case 2:	sManeuver = CResourceManager::GetString("VERYBAD");		break;
+	case 1:	sManeuver = CResourceManager::GetString("MISERABLE");	break;
+	default:sManeuver = CResourceManager::GetString("NONE");
+	}
+	sManeuver = CHTMLStringBuilder::GetHTMLColor(sManeuver);
+	sManeuver = CHTMLStringBuilder::GetHTMLHeader(sManeuver, _T("h5"));
+	sManeuver = CHTMLStringBuilder::GetHTMLCenter(sManeuver);
+	sManeuver += CHTMLStringBuilder::GetHTMLStringNewLine();
+	sManeuver += CHTMLStringBuilder::GetHTMLStringNewLine();
+	
+
+	// Spezialfähigkeiten anzeigen
+	CString sSpecialsHead = CResourceManager::GetString("SPECIAL_ABILITIES");
+	sSpecialsHead = CHTMLStringBuilder::GetHTMLColor(sSpecialsHead, _T("silver"));
+	sSpecialsHead = CHTMLStringBuilder::GetHTMLHeader(sSpecialsHead, _T("h4"));
+	sSpecialsHead = CHTMLStringBuilder::GetHTMLCenter(sSpecialsHead);
+	sSpecialsHead += CHTMLStringBuilder::GetHTMLStringNewLine();
+	sSpecialsHead += CHTMLStringBuilder::GetHTMLStringHorzLine();
+	sSpecialsHead += CHTMLStringBuilder::GetHTMLStringNewLine();
+	
+	CString sSpecials;
+	if (this->HasSpecial(ASSULTSHIP))
+		sSpecials += CResourceManager::GetString("ASSAULTSHIP") + "\n";
+	if (this->HasSpecial(BLOCKADESHIP))
+		sSpecials += CResourceManager::GetString("BLOCKADESHIP") + "\n";
+	if (this->HasSpecial(COMMANDSHIP))
+		sSpecials += CResourceManager::GetString("COMMANDSHIP") + "\n";
+	if (this->HasSpecial(DOGFIGHTER))
+		sSpecials += CResourceManager::GetString("DOGFIGHTER") + "\n";
+	if (this->HasSpecial(DOGKILLER))
+		sSpecials += CResourceManager::GetString("DOGKILLER") + "\n";
+	if (this->HasSpecial(PATROLSHIP))
+		sSpecials += CResourceManager::GetString("PATROLSHIP") + "\n";
+	if (this->HasSpecial(RAIDER))
+		sSpecials += CResourceManager::GetString("RAIDER") + "\n";
+	if (this->HasSpecial(SCIENCEVESSEL))
+		sSpecials += CResourceManager::GetString("SCIENCESHIP") + "\n";
+	if (pShield->GetRegenerative())
+		sSpecials += CResourceManager::GetString("REGENERATIVE_SHIELDS") + "\n";
+	if (pHull->GetAblative())
+		sSpecials += CResourceManager::GetString("ABLATIVE_ARMOR") + "\n";
+	if  (pHull->GetPolarisation())
+		sSpecials += CResourceManager::GetString("HULLPOLARISATION") + "\n";
+	if (this->GetStealthPower() > 3)
+		sSpecials += CResourceManager::GetString("CAN_CLOAK") + "\n";
+	if (sSpecials.IsEmpty())
+		sSpecials = CResourceManager::GetString("NONE");
+	sSpecials = CHTMLStringBuilder::GetHTMLColor(sSpecials);
+	sSpecials = CHTMLStringBuilder::GetHTMLHeader(sSpecials, _T("h5"));
+	sSpecials = CHTMLStringBuilder::GetHTMLCenter(sSpecials);
+	sSpecials += CHTMLStringBuilder::GetHTMLStringNewLine();
+	sSpecials += CHTMLStringBuilder::GetHTMLStringHorzLine();
+	sSpecials += CHTMLStringBuilder::GetHTMLStringNewLine();
+
+	CString sDesc = this->GetShipDescription();
+	sDesc = CHTMLStringBuilder::GetHTMLColor(sDesc);
+	sDesc = CHTMLStringBuilder::GetHTMLHeader(sDesc, _T("h5"));
+
+	CString sTip = sName + sType + sMovementHead + sMovement + sBeamWeaponHead + sBeams + sTupeWeaponHead + sTorps + sDefensiveHead + sShield + sHull + sSpecialsHead + sSpecials + sDesc;
+	return sTip;
 }

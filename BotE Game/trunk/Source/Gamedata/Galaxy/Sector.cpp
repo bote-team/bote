@@ -257,7 +257,7 @@ CString CSector::GetName(BOOLEAN longName) const
 		else
 		{
 			CString s;
-			s.Format("Sektor %c%i",(char)(m_KO.y+97),m_KO.x+1);
+			s.Format("%s %c%i", CResourceManager::GetString("SECTOR"), (char)(m_KO.y+97), m_KO.x + 1);
 			return s;
 		}
 	}
@@ -332,10 +332,10 @@ void CSector::GenerateSector(int sunProb, int minorProb)
 					float maxHabitants = 0.0f;
 					for (int i = 0; i < m_Planets.GetSize(); i++)
 						maxHabitants += m_Planets.GetAt(i).GetMaxHabitant();
-					if (maxHabitants > (40.000f + random*7))
-						currentHabitants = 0.0f;
+					if (maxHabitants > (40.000f + random * 7))
+						break;
 				}				
-			} while (currentHabitants <= (15.000f/random));
+			} while (currentHabitants <= (15.000f / random));
 		}
 		// wenn keine Minorrace drauf lebt
 		else
@@ -1128,12 +1128,17 @@ void CSector::DrawShipSymbolInSector(Graphics *g, CBotf2Doc* pDoc, CMajor* pPlay
 		if (pPlayer->GetRaceID() == it->first && this->GetOwnerOfShip(it->first) == TRUE
 			|| this->GetOwnerOfShip(it->first) == TRUE && this->GetNeededScanPower(it->first) < this->GetScanPower(pPlayer->GetRaceID()))
 		{
-			sFilePath = sAppPath + "Graphics\\Symbols\\" + it->first + ".bop";
+			// ist der besitzer des Schiffes unbekannt, dann Fragezeichen zeichnen
+			if (pPlayer != it->second && pPlayer->IsRaceContacted(it->first) == false)
+				sFilePath = sAppPath + "Graphics\\Symbols\\Unknown.bop";
+			else
+				sFilePath = sAppPath + "Graphics\\Symbols\\" + it->first + ".bop";
+			
 			Bitmap* ship = Bitmap::FromFile(sFilePath.AllocSysString());
 			// konnte die Grafik nicht geladen werden, dann wird ein Standardsymbol geladen
 			if (!ship || ship->GetLastStatus() != Ok)
 			{
-				sFilePath = sAppPath + "Graphics\\Symbols\\Standard.bop";
+				sFilePath = sAppPath + "Graphics\\Symbols\\Default.bop";
 				ship = Bitmap::FromFile(sFilePath.AllocSysString());
 			}
 			g->DrawImage(ship, pt.x + 45 - nCount * 12, pt.y, 35, 35);
@@ -1145,12 +1150,17 @@ void CSector::DrawShipSymbolInSector(Graphics *g, CBotf2Doc* pDoc, CMajor* pPlay
 		if ((pPlayer->GetRaceID() == it->first || this->GetScanPower(pPlayer->GetRaceID()) > 0) &&
 			(this->GetIsStationBuilding(it->first) == TRUE || this->GetOutpost(it->first) == TRUE || this->GetStarbase(it->first) == TRUE))
 		{
-			sFilePath = sAppPath + "Graphics\\Symbols\\" + it->first + ".bop";
+			// ist der besitzer des Schiffes unbekannt, dann Fragezeichen zeichnen
+			if (pPlayer != it->second && pPlayer->IsRaceContacted(it->first) == false)
+				sFilePath = sAppPath + "Graphics\\Symbols\\Unknown.bop";
+			else
+				sFilePath = sAppPath + "Graphics\\Symbols\\" + it->first + ".bop";
+			
 			Bitmap* ship = Bitmap::FromFile(sFilePath.AllocSysString());
 			// konnte die Grafik nicht geladen werden, dann wird ein Standardsymbol geladen
 			if (!ship || ship->GetLastStatus() != Ok)
 			{
-				sFilePath = sAppPath + "Graphics\\Symbols\\Standard.bop";
+				sFilePath = sAppPath + "Graphics\\Symbols\\Default.bop";
 				ship = Bitmap::FromFile(sFilePath.AllocSysString());
 			}
 			g->DrawImage(ship, pt.x, pt.y + 45, 35, 35);

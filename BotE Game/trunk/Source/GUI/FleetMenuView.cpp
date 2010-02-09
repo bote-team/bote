@@ -9,6 +9,7 @@
 #include "SmallInfoView.h"
 #include "Ships\Fleet.h"
 #include "Races\RaceController.h"
+#include "HTMLStringBuilder.h"
 
 // CFleetMenuView
 #ifdef _DEBUG
@@ -116,8 +117,10 @@ void CFleetMenuView::OnInitialUpdate()
 	m_iOldShipInFleet = -1;
 	m_bDrawFullFleet = TRUE;
 	m_bShowNextButton = FALSE;
-	m_bShowBackButton = FALSE;		
-		
+	m_bShowBackButton = FALSE;
+
+	// View bei den Tooltipps anmelden
+	pDoc->GetMainFrame()->AddToTooltip(this);		
 }
 
 void CFleetMenuView::OnPrepareDC(CDC* pDC, CPrintInfo* pInfo)
@@ -175,6 +178,9 @@ void CFleetMenuView::DrawFleetMenue(Graphics* g)
 		g->DrawImage(bg_fleetmenu, 0, 0, 1075, 750);	
 
 	CPoint p = pDoc->GetKO();
+
+	CShip* pShip = &(pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfFleetShip()));
+	bool bUnkown = (pMajor->GetRaceID() != pShip->GetOwnerOfShip() && pMajor->IsRaceContacted(pShip->GetOwnerOfShip()) == false);
 		
 	//if (m_bDrawFullFleet == TRUE)
 	{
@@ -188,16 +194,19 @@ void CFleetMenuView::DrawFleetMenue(Graphics* g)
 		fontFormat.SetFormatFlags(StringFormatFlagsNoWrap);		
 		fontBrush.SetColor(normalColor);
 		
-		// der gleichen Klasse hinzufügen
-		s.Format("%s-%s",pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfFleetShip()).GetShipClass(),CResourceManager::GetString("CLASS"));
-		g->DrawString(s.AllocSysString(), -1, &font, RectF(0,220,250,30), &fontFormat, &fontBrush);
-		// des gleichen Types hinzufügen
-		s.Format("%s %s",CResourceManager::GetString("TYPE"),pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfFleetShip()).GetShipTypeAsString());
-		g->DrawString(s.AllocSysString(), -1, &font, RectF(0,270,250,30), &fontFormat, &fontBrush);
-		// alle Schiffe hinzufügen
-		s = CResourceManager::GetString("ALL_SHIPS");
-		g->DrawString(s.AllocSysString(), -1, &font, RectF(0,320,250,30), &fontFormat, &fontBrush);
-		
+		if (!bUnkown)
+		{
+			// der gleichen Klasse hinzufügen
+			s.Format("%s-%s", pShip->GetShipClass(),CResourceManager::GetString("CLASS"));
+			g->DrawString(s.AllocSysString(), -1, &font, RectF(0,220,250,30), &fontFormat, &fontBrush);
+			// des gleichen Types hinzufügen
+			s.Format("%s %s",CResourceManager::GetString("TYPE"), pShip->GetShipTypeAsString());
+			g->DrawString(s.AllocSysString(), -1, &font, RectF(0,270,250,30), &fontFormat, &fontBrush);
+			// alle Schiffe hinzufügen
+			s = CResourceManager::GetString("ALL_SHIPS");
+			g->DrawString(s.AllocSysString(), -1, &font, RectF(0,320,250,30), &fontFormat, &fontBrush);
+		}
+
 		fontBrush.SetColor(penColor);
 		s = CResourceManager::GetString("WHAT_SHIPS_FROM_FLEET");
 		fontFormat.SetFormatFlags(!StringFormatFlagsNoWrap);
@@ -205,16 +214,18 @@ void CFleetMenuView::DrawFleetMenue(Graphics* g)
 		fontFormat.SetFormatFlags(StringFormatFlagsNoWrap);		
 		fontBrush.SetColor(normalColor);
 
-		// fremder Klassen entfernen
-		s.Format("%s %s-%s",CResourceManager::GetString("NOT"),	pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfFleetShip()).GetShipClass(),CResourceManager::GetString("CLASS"));
-		g->DrawString(s.AllocSysString(), -1, &font, RectF(0,480,250,30), &fontFormat, &fontBrush);
-		// fremden Types entfernen
-		s.Format("%s %s %s",CResourceManager::GetString("NOT"),CResourceManager::GetString("TYPE"),	pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfFleetShip()).GetShipTypeAsString());
-		g->DrawString(s.AllocSysString(), -1, &font, RectF(0,530,250,30), &fontFormat, &fontBrush);
-		// alle Schiffe entfernen
-		s = CResourceManager::GetString("ALL_SHIPS");
-		g->DrawString(s.AllocSysString(), -1, &font, RectF(0,580,250,30), &fontFormat, &fontBrush);
-		
+		if (!bUnkown)
+		{
+			// fremder Klassen entfernen
+			s.Format("%s %s-%s",CResourceManager::GetString("NOT"),	pShip->GetShipClass(),CResourceManager::GetString("CLASS"));
+			g->DrawString(s.AllocSysString(), -1, &font, RectF(0,480,250,30), &fontFormat, &fontBrush);
+			// fremden Types entfernen
+			s.Format("%s %s %s",CResourceManager::GetString("NOT"),CResourceManager::GetString("TYPE"),	pShip->GetShipTypeAsString());
+			g->DrawString(s.AllocSysString(), -1, &font, RectF(0,530,250,30), &fontFormat, &fontBrush);
+			// alle Schiffe entfernen
+			s = CResourceManager::GetString("ALL_SHIPS");
+			g->DrawString(s.AllocSysString(), -1, &font, RectF(0,580,250,30), &fontFormat, &fontBrush);
+		}		
 
 		USHORT counter = 0;
 		USHORT column = 1;
@@ -223,7 +234,10 @@ void CFleetMenuView::DrawFleetMenue(Graphics* g)
 		// Erstmal das Schiff anzeigen, welches die Flotte beinhaltet (nur auf erster Seite!)
 		if (m_iFleetPage == 1)
 		{
-			s.Format("Ships\\%s.bop", pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfFleetShip()).GetShipClass());
+			if (bUnkown)
+				s = _T("Ships\\Unknown.bop");
+			else
+				s.Format("Ships\\%s.bop", pShip->GetShipClass());
 			Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic(s);
 			if (graphic == NULL)
 				graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Ships\\ImageMissing.bop");
@@ -234,7 +248,7 @@ void CFleetMenuView::DrawFleetMenue(Graphics* g)
 			
 			// Erfahrungsstufen des Schiffes anzeigen
 			int bmHeight = 0;
-			switch (pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfFleetShip()).GetExpLevel())
+			switch (pShip->GetExpLevel())
 			{
 			case 1: graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\xp_beginner.bop");	bmHeight = 8;	break;
 			case 2: graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\xp_normal.bop");	bmHeight = 16;	break;
@@ -248,29 +262,28 @@ void CFleetMenuView::DrawFleetMenue(Graphics* g)
 			{
 				g->DrawImage(graphic, 250 * column + 29, row * 65 + 90 + 49 - bmHeight, 8, bmHeight);				
 			}
-
 			
 			// Hier die Striche für Schilde und Hülle neben dem Schiffsbild anzeigen (jeweils max. 20)
-			USHORT hullProz = (UINT)(pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfFleetShip()).GetHull()->GetCurrentHull() * 20 / pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfFleetShip()).GetHull()->GetMaxHull());
+			USHORT hullProz = (UINT)(pShip->GetHull()->GetCurrentHull() * 20 / pShip->GetHull()->GetMaxHull());
 			Gdiplus::Pen pen(Color(240-hullProz*12,0+hullProz*12,0));
 			for (USHORT n = 0; n <= hullProz; n++)
 				g->DrawRectangle(&pen, RectF(250*column+102,row*65+135-n*2,5,0.5));				
 			USHORT shieldProz = 0;
-			if (pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfFleetShip()).GetShield()->GetMaxShield() > 0)
-				shieldProz = (UINT)(pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfFleetShip()).GetShield()->GetCurrentShield() * 20 / pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfFleetShip()).GetShield()->GetMaxShield());
+			if (pShip->GetShield()->GetMaxShield() > 0)
+				shieldProz = (UINT)(pShip->GetShield()->GetCurrentShield() * 20 / pShip->GetShield()->GetMaxShield());
 			pen.SetColor(Color(240-shieldProz*12,80,0+shieldProz*12));
 			if (shieldProz > 0)
 				for (USHORT n = 0; n <= shieldProz; n++)
 					g->DrawRectangle(&pen, RectF(250*column+109,row*65+135-n*2,5,0.5));
 
 			// Wenn es das Flagschiff unseres Imperiums ist, dann kleines Zeichen zeichnen
-			if (pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfFleetShip()).GetIsShipFlagShip() == TRUE)
+			if (pShip->GetIsShipFlagShip() == TRUE)
 			{
 				fontBrush.SetColor(Color::White);
 				g->DrawString(L"Flag", -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), PointF(250*column + 45, row*65 + 95), &fontFormat, &fontBrush);				
 			}
 			
-			if (pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfFleetShip()).GetCloak())
+			if (pShip->GetCloak())
 				fontBrush.SetColor(normalColorCloaked);
 			else
 				fontBrush.SetColor(normalColor);
@@ -278,23 +291,26 @@ void CFleetMenuView::DrawFleetMenue(Graphics* g)
 			// also der Mauszeiger ist über dem 1. Schiff in der Liste
 			if (pDoc->GetNumberOfTheShipInFleet() == 0)
 			{
-				if (pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfFleetShip()).GetCloak())
+				if (pShip->GetCloak())
 					fontBrush.SetColor(markColorCloaked);
 				else
 					fontBrush.SetColor(markColor);
 			}
-			StringFormat textFormat;
-			s = pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfFleetShip()).GetShipName();
-			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), PointF(250*column+120,row*65+95), &textFormat, &fontBrush);
-			s = pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfFleetShip()).GetShipClass() + "-" + CResourceManager::GetString("CLASS");
-			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), PointF(250*column+120,row*65+115), &textFormat, &fontBrush);
+			if (!bUnkown)
+			{
+				StringFormat textFormat;
+				s = pShip->GetShipName();
+				g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), PointF(250*column+120,row*65+95), &textFormat, &fontBrush);
+				s = pShip->GetShipClass() + "-" + CResourceManager::GetString("CLASS");
+				g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), PointF(250*column+120,row*65+115), &textFormat, &fontBrush);
+			}
 		}
 		counter++;
 		row++;
 	
 		// Wenn das Schiff eine Flotte anführt, dann Schiffe in dieser Flotte anzeigen
-		if (pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfFleetShip()).GetFleet() != 0)
-			for (USHORT i = 0; i < pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfFleetShip()).GetFleet()->GetFleetSize(); i++)
+		if (pShip->GetFleet() != 0)
+			for (USHORT i = 0; i < pShip->GetFleet()->GetFleetSize(); i++)
 			{
 				// mehrere Spalten anlegen, falls mehr Schiffe in dem System sind
 				if (counter != 0 && counter%9 == 0)
@@ -307,7 +323,10 @@ void CFleetMenuView::DrawFleetMenue(Graphics* g)
 					column = 1;
 				if (counter < m_iFleetPage*18 && counter >= (m_iFleetPage-1)*18)
 				{
-					s.Format("Ships\\%s.bop", pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfFleetShip()).GetFleet()->GetShipFromFleet(i).GetShipClass());
+					if (bUnkown)
+						s = _T("Ships\\Unknown.bop");
+					else
+						s.Format("Ships\\%s.bop", pShip->GetFleet()->GetShipFromFleet(i).GetShipClass());
 					Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic(s);
 					if (graphic == NULL)
 						graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Ships\\ImageMissing.bop");
@@ -318,7 +337,7 @@ void CFleetMenuView::DrawFleetMenue(Graphics* g)
 					
 					// Erfahrungsstufen des Schiffes anzeigen
 					int bmHeight = 0;
-					switch (pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfFleetShip()).GetFleet()->GetShipFromFleet(i).GetExpLevel())
+					switch (pShip->GetFleet()->GetShipFromFleet(i).GetExpLevel())
 					{
 					case 1: graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\xp_beginner.bop");	bmHeight = 8;	break;
 					case 2: graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\xp_normal.bop");	bmHeight = 16;	break;
@@ -334,26 +353,26 @@ void CFleetMenuView::DrawFleetMenue(Graphics* g)
 					}
 					
 					// Hier die Striche für Schilde und Hülle neben dem Schiffsbild anzeigen (jeweils max. 20)
-					USHORT hullProz = (UINT)(pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfFleetShip()).GetFleet()->GetShipFromFleet(i).GetHull()->GetCurrentHull() * 20 / pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfFleetShip()).GetFleet()->GetShipFromFleet(i).GetHull()->GetMaxHull());
+					USHORT hullProz = (UINT)(pShip->GetFleet()->GetShipFromFleet(i).GetHull()->GetCurrentHull() * 20 / pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfFleetShip()).GetFleet()->GetShipFromFleet(i).GetHull()->GetMaxHull());
 					Gdiplus::Pen pen(Color(240-hullProz*12,0+hullProz*12,0));
 					for (USHORT n = 0; n <= hullProz; n++)
 						g->DrawRectangle(&pen, RectF(250*column+102,row*65+135-n*2,5,0.5));				
 					USHORT shieldProz = 0;
-					if (pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfFleetShip()).GetFleet()->GetShipFromFleet(i).GetShield()->GetMaxShield() > 0)
-						shieldProz = (UINT)(pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfFleetShip()).GetFleet()->GetShipFromFleet(i).GetShield()->GetCurrentShield() * 20 / pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfFleetShip()).GetFleet()->GetShipFromFleet(i).GetShield()->GetMaxShield());
+					if (pShip->GetFleet()->GetShipFromFleet(i).GetShield()->GetMaxShield() > 0)
+						shieldProz = (UINT)(pShip->GetFleet()->GetShipFromFleet(i).GetShield()->GetCurrentShield() * 20 / pShip->GetFleet()->GetShipFromFleet(i).GetShield()->GetMaxShield());
 					pen.SetColor(Color(240-shieldProz*12,80,0+shieldProz*12));
 					if (shieldProz > 0)
 						for (USHORT n = 0; n <= shieldProz; n++)
 							g->DrawRectangle(&pen, RectF(250*column+109,row*65+135-n*2,5,0.5));
 
 					// Wenn es das Flagschiff unseres Imperiums ist, dann kleines Zeichen zeichnen
-					if (pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfFleetShip()).GetFleet()->GetShipFromFleet(i).GetIsShipFlagShip() == TRUE)
+					if (pShip->GetFleet()->GetShipFromFleet(i).GetIsShipFlagShip() == TRUE)
 					{
 						fontBrush.SetColor(Color::White);
 						g->DrawString(L"Flag", -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), PointF(250*column + 45, row*65 + 95), &fontFormat, &fontBrush);				
 					}
 					
-					if (pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfFleetShip()).GetFleet()->GetShipFromFleet(i).GetCloak())
+					if (pShip->GetFleet()->GetShipFromFleet(i).GetCloak())
 						fontBrush.SetColor(normalColorCloaked);
 					else
 						fontBrush.SetColor(normalColor);
@@ -361,16 +380,20 @@ void CFleetMenuView::DrawFleetMenue(Graphics* g)
 					// Wenn wir ein Schiff markiert haben, dann Markierung zeichnen
 					if (i+1 == pDoc->GetNumberOfTheShipInFleet())
 					{
-						if (pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfFleetShip()).GetFleet()->GetShipFromFleet(i).GetCloak())
+						if (pShip->GetFleet()->GetShipFromFleet(i).GetCloak())
 							fontBrush.SetColor(markColorCloaked);
 						else
 							fontBrush.SetColor(markColor);
 					}
-					StringFormat textFormat;
-					s = pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfFleetShip()).GetFleet()->GetShipFromFleet(i).GetShipName();
-					g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), PointF(250*column+120,row*65+95), &textFormat, &fontBrush);
-					s = pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfFleetShip()).GetFleet()->GetShipFromFleet(i).GetShipClass() + "-" + CResourceManager::GetString("CLASS");
-					g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), PointF(250*column+120,row*65+115), &textFormat, &fontBrush);
+
+					if (!bUnkown)
+					{
+						StringFormat textFormat;
+						s = pShip->GetFleet()->GetShipFromFleet(i).GetShipName();
+						g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), PointF(250*column+120,row*65+95), &textFormat, &fontBrush);
+						s = pShip->GetFleet()->GetShipFromFleet(i).GetShipClass() + "-" + CResourceManager::GetString("CLASS");
+						g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), PointF(250*column+120,row*65+115), &textFormat, &fontBrush);
+					}
 				}
 				row++;
 				counter++;
@@ -762,6 +785,7 @@ void CFleetMenuView::OnRButtonDown(UINT nFlags, CPoint point)
 	CGalaxyMenuView::SetMoveShip(FALSE);
 	pDoc->SetNumberOfTheShipInArray(pDoc->GetNumberOfFleetShip());
 	pDoc->GetMainFrame()->SelectMainView(GALAXY_VIEW, pMajor->GetRaceID());
+	pDoc->GetMainFrame()->SelectBottomView(SHIP_BOTTOM_VIEW);
 	CSmallInfoView::SetShipInfo(true);
 	pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
 
@@ -773,4 +797,38 @@ void CFleetMenuView::CreateButtons()
 {
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	// alle Buttons in der View anlegen und Grafiken laden	
+}
+
+///	Funktion erstellt zur aktuellen Mouse-Position einen HTML Tooltip
+/// @return	der erstellte Tooltip-Text
+CString CFleetMenuView::CreateTooltip(void)
+{
+	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	ASSERT(pDoc);
+
+	if (!pDoc->m_bDataReceived)
+		return "";
+	
+	CMajor* pMajor = m_pPlayersRace;
+	ASSERT(pMajor);
+	if (!pMajor)
+		return "";
+
+	CShip* pShip = (CShip*)CSmallInfoView::GetShip();
+	if (!pShip)
+		return "";
+
+	bool bUnkown = (pMajor->GetRaceID() != pShip->GetOwnerOfShip() && pMajor->IsRaceContacted(pShip->GetOwnerOfShip()) == false);
+
+	// ist der Besitzer des Schiffes unbekannt?
+	if (bUnkown)
+	{
+		CString s = CResourceManager::GetString("UNKNOWN");
+		s = CHTMLStringBuilder::GetHTMLColor(s);
+		s = CHTMLStringBuilder::GetHTMLHeader(s, _T("h4"));		
+		s = CHTMLStringBuilder::GetHTMLCenter(s);
+		return s;
+	}
+
+	return pShip->GetTooltip(false);	
 }

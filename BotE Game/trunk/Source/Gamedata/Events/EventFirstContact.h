@@ -2,7 +2,7 @@
  *   Copyright (C)2004-2010 Sir Pustekuchen
  *
  *   Author   :  Sir Pustekuchen
- *   Home     :  http://birth-of-the-empires.de.vu
+ *   Home     :  http://birth-of-the-empires.de
  *
  */
 
@@ -30,6 +30,10 @@ public:
 
 	// Zeichenfunktionen
 	void Draw(Graphics* g, CGraphicPool* graphicPool) const;
+
+	///	Funktion erstellt zur aktuellen Mouse-Position einen HTML Tooltip
+	/// @return	der erstellte Tooltip-Text
+	virtual CString GetTooltip(const CPoint &pt) const;
 
 private:
 	// Attribute
