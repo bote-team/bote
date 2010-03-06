@@ -107,7 +107,7 @@ BEGIN
     BEGIN
         MENUITEM "&New\tStrg+N",                ID_FILE_NEW
         MENUITEM SEPARATOR
-        MENUITEM "&Beenden",                    ID_APP_EXIT
+        MENUITEM "&Exit",                       ID_APP_EXIT
     END
     POPUP "&Help"
     BEGIN
@@ -144,14 +144,14 @@ END
 // Dialog
 //
 
-IDD_ABOUTBOX DIALOGEX 0, 0, 235, 55
-STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+IDD_ABOUTBOX DIALOGEX 0, 0, 194, 54
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Info über CombatSimulator"
-FONT 8, "MS Shell Dlg", 0, 0, 0x1
+FONT 9, "Microsoft Sans Serif", 400, 0, 0x0
 BEGIN
-    LTEXT           "CombatSimulator for Alpha4 or later",IDC_STATIC,9,12,119,8,SS_NOPREFIX
-    LTEXT           "Copyright (C) 2008 by\nSir Pustekuchen",IDC_STATIC,9,31,119,23
-    DEFPUSHBUTTON   "OK",IDOK,178,7,50,16,WS_GROUP
+    LTEXT           "BotE Combat Simulator for Alpha 5 (and later)",IDC_STATIC,7,7,180,8,SS_NOPREFIX
+    LTEXT           "Copyright (C) 2008-2010\nby Sir Pustekuchen",IDC_STATIC,7,29,140,18
+    DEFPUSHBUTTON   "OK",IDOK,137,31,50,16,WS_GROUP
 END
 
 
@@ -161,8 +161,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,0,0,1
- PRODUCTVERSION 1,0,0,1
+ FILEVERSION 0,7,1,0
+ PRODUCTVERSION 0,7,1,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -177,14 +177,14 @@ BEGIN
     BEGIN
         BLOCK "040704e4"
         BEGIN
-            VALUE "CompanyName", "Sir Pustekuchen"
+            VALUE "CompanyName", "Birth of the Empires"
             VALUE "FileDescription", "BotE CombatSimulator"
-            VALUE "FileVersion", "0.5"
+            VALUE "FileVersion", "0.71"
             VALUE "InternalName", "CombatSimulator.exe"
-            VALUE "LegalCopyright", "(c)2006 Sir Pustekuchen - Alle Rechte vorbehalten."
+            VALUE "LegalCopyright", "(C) 2006-2010 Sir Pustekuchen - Alle Rechte vorbehalten."
             VALUE "OriginalFilename", "CombatSimulator.exe"
             VALUE "ProductName", "CombatSimulator"
-            VALUE "ProductVersion", "0.5"
+            VALUE "ProductVersion", "0.71"
         END
     END
     BLOCK "VarFileInfo"
@@ -205,9 +205,9 @@ BEGIN
     IDD_ABOUTBOX, DIALOG
     BEGIN
         LEFTMARGIN, 7
-        RIGHTMARGIN, 228
+        RIGHTMARGIN, 187
         TOPMARGIN, 7
-        BOTTOMMARGIN, 48
+        BOTTOMMARGIN, 47
     END
 END
 #endif    // APSTUDIO_INVOKED

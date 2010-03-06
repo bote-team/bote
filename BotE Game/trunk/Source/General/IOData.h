@@ -8,7 +8,9 @@
 
 #pragma once
 
-//#define DEVELOPMENT_VERSION
+// Folgendes Define auskommentieren, wenn es sich um ein fertiges Release handelt!
+// (ändert die Pfadangaben für den ganzen Content)
+#define DEVELOPMENT_VERSION
 
 #define BOTE_INI_FILE		"BotE.ini"
 #define BOTE_LOG_FILE		"BotE.log"

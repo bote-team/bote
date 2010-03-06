@@ -1121,7 +1121,7 @@ void CDiplomacyMenuView::DrawDiplomacyOfferMenue(Graphics* g, const CString& sWh
 		{	
 			// ist aus irgendeinem Grund die übergebende Menge größer als die aktuellen Credits, so
 			// werden die Credits runtergerechnet
-			if (m_bShowSendButton && m_OutgoingInfo.m_nCredits > pPlayer->GetEmpire()->GetLatinum())
+			if (m_OutgoingInfo.m_nType != DIP_REQUEST && m_bShowSendButton && m_OutgoingInfo.m_nCredits > pPlayer->GetEmpire()->GetLatinum())
 			{
 				m_OutgoingInfo.m_nCredits = pPlayer->GetEmpire()->GetLatinum() / 250;
 				m_OutgoingInfo.m_nCredits *= 250;
@@ -1168,7 +1168,7 @@ void CDiplomacyMenuView::DrawDiplomacyOfferMenue(Graphics* g, const CString& sWh
 				
 				// sind aus irgendeinem Grund die übergebende Menge größer als die aktuellen vorhandenen Ressourcen, so
 				// werden die Ressourcen runtergerechnet
-				if (m_bShowSendButton && m_OutgoingInfo.m_nResources[iWhichResource] > 0 && m_OutgoingInfo.m_ptKO != CPoint(-1,-1))
+				if (m_OutgoingInfo.m_nType != DIP_REQUEST && m_bShowSendButton && m_OutgoingInfo.m_nResources[iWhichResource] > 0 && m_OutgoingInfo.m_ptKO != CPoint(-1,-1))
 				{
 					if (m_OutgoingInfo.m_nResources[iWhichResource] > pDoc->GetSystem(m_OutgoingInfo.m_ptKO).GetRessourceStore(iWhichResource))
 					{

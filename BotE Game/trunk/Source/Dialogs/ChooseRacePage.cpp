@@ -213,8 +213,10 @@ void CChooseRacePage::EnableRaceButtons()
 		
 		////////////////////////////////////////////
 		// Alpha5 Bedingung
-		//if (nRace != 0 && nRace != 1 && nRace != 3 && nRace != 4)
-		//	pButton->EnableWindow(FALSE);
+#ifndef DEVELOPMENT_VERSION
+		if (nRace != 0 && nRace != 1 && nRace != 3 && nRace != 4)
+			pButton->EnableWindow(FALSE);
+#endif
 		////////////////////////////////////////////
 
 		if (client.GetUserName(race) != "")

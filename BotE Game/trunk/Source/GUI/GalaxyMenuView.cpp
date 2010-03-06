@@ -1110,7 +1110,12 @@ void CGalaxyMenuView::OnMouseMove(UINT nFlags, CPoint point)
 		if (abs(m_ptOldMousePos.x - pt.x) > 10 || abs(m_ptOldMousePos.y - pt.y) > 10)
 		{
 			CPoint ptScrollPos = GetScrollPosition();
-			ptScrollPos += CPoint(pt.x - m_ptOldMousePos.x, pt.y - m_ptOldMousePos.y);
+			bool bInvertMouse = false;
+			CIniLoader::GetInstance()->ReadValue("Video", "INVERTMOUSE", bInvertMouse);
+			if (!bInvertMouse)
+				ptScrollPos += CPoint(pt.x - m_ptOldMousePos.x, pt.y - m_ptOldMousePos.y);
+			else
+				ptScrollPos -= CPoint(pt.x - m_ptOldMousePos.x, pt.y - m_ptOldMousePos.y);
 
 			CRect client;
 			GetClientRect(&client);

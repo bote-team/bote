@@ -282,6 +282,9 @@ BOOLEAN CTorpedo::PerhapsImpact(CCombatShip* CS, USHORT minDistance)
 	else if (CS->m_pShip->GetShipSize() >= 3)
 		probability = (short)(probability * 1.66);
 	
+	// Die Wahrscheinlichkeit beträgt mindestens 10% für einen Einschlag
+	probability = max(probability, 10);
+
 	short random = rand()%100;	// {0,99}
 /*	CString s;
 	s.Format("m_iDistance: %d\nminDistance: %d\nprobability: %d\nrandom: %d",m_iDistance,minDistance,probability,random);

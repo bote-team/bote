@@ -129,8 +129,12 @@ BOOL CBotf2Doc::OnNewDocument()
 	if (nSeed >= 0)
 		srand(nSeed);
 	// zufälligen Seed verwenden
-	else	
-		srand((unsigned)time(NULL));
+	else
+	{
+		nSeed = (unsigned)time(NULL);
+		srand(nSeed);
+	}
+	MYTRACE(MT::LEVEL_INFO, "Used seed for randomgenerator: %d", nSeed);
 
 	// Mal Testweise paar Truppen anlegen
 	m_TroopInfo.RemoveAll();

@@ -1,35 +1,16 @@
 §REPEAT§
 0
 §SLOWING§
-50
+0
 §RACE§
 1
 §SHIPS§
-Sternenbasis 40
+Matilda
+Matilda
 §RACE§
 5
 §SHIPS§
-Ultima One
-Ultima One
-Ultima One
-Ultima One
-Ultima One
-Ultima One
-Ultima One
-Ultima One
-Ultima One
-Ultima One
-Ultima One
-Ultima One
-Ultima One
-Ultima One
-Ultima One
-Ultima One
-Ultima One
-Ultima One
-Ultima One
-Ultima One
-Ultima One
-Ultima One
-Ultima One
-Ultima One
+Fjodor
+Fjodor
+Juri
+Juri

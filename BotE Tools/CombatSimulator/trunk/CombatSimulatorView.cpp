@@ -65,6 +65,9 @@ void CCombatSimulatorView::OnDraw(CDC* dc)
 		
 	font.CreateFontIndirect(&lf);
 	pDC->SelectObject(&font);
+	pDC->FillRect(r,&CBrush(RGB(0,0,0)));
+
+	bool bExit = true;
 
 	if (pDoc->repeat == 0)
 	{
@@ -77,10 +80,11 @@ void CCombatSimulatorView::OnDraw(CDC* dc)
 		
 		CPen phaser(PS_SOLID,0,RGB(255,0,0));
 		CPen pulse(PS_DOT,0,RGB(255,0,0));
-				
+
 		if (pDoc->combat.m_bReady)
 		{
-			pDC->FillRect(r,&CBrush(RGB(0,0,0)));
+			bExit = false;
+
 			pDoc->combat.CalculateCombat(winner);
 			CString s;
 			s.Format("TICK: %d", pDoc->combat.m_iTime);
@@ -177,9 +181,12 @@ void CCombatSimulatorView::OnDraw(CDC* dc)
 				xy_ebene = !xy_ebene;
 		};
 		// ************** TEST DES KAMPFMODUSES ZEICHNEN ist hier zu Ende **************
+		if (bExit)
+			return;
 
 		if (!pDoc->combat.m_bReady)
 		{
+			bExit = true;
 			CString s;
 			// Nach einem Kampf kann geschaut werden, wer noch Schiffe besitzt. Diese Rassen haben den Kampf danach gewonnen
 			// Erstmal wird für alle beteiligten Rassen der Kampf auf verloren gesetzt. Danach wird geschaut, wer noch
@@ -234,6 +241,7 @@ void CCombatSimulatorView::OnDraw(CDC* dc)
 						}
 			}
 			file.Close();							// Datei wird geschlossen
+			return;
 		}
 		else
 			Invalidate(FALSE);
