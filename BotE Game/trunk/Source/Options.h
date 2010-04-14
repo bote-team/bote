@@ -15,8 +15,8 @@
 /// Versionsnummer des Dokuments; es können nur Spielstände geladen werden, die diese Versionsnummer
 /// haben.
 #define DOCUMENT_VERSION			8		///< Alpha 5.1 Version
-#define VERSION						0.71	///< benötigte Version in Datafiles
-#define VERSION_INFORMATION			"0.71"	///< anzuzeigende Versionsinformation 
+#define VERSION						0.72	///< benötigte Version in Datafiles
+#define VERSION_INFORMATION			"0.72"	///< anzuzeigende Versionsinformation 
 
 // --- Feste Größen der Starmap ------------------------------------------------
 #define STARMAP_SECTORS_HCOUNT		30		///< Anzahl der Sektoren horizontal

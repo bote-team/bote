@@ -453,6 +453,7 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 	{
 		if (m_nTimer > 440)
 			m_nTimer = 0;
+		CIniLoader::GetInstance()->ReadValue("Video", "ANIMATEDICON", m_bAnimatedIcon);
 		if (m_nTimer == 0 && m_bAnimatedIcon)
 			this->SetTimer(1,125,NULL);
 

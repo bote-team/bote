@@ -9,8 +9,16 @@
 #include "Botf2Doc.h"
 #include "MainBaseView.h"
 
-// CEmpireMenuView view
+// Submenüs
+#define EMPIREVIEW_NEWS		0
+#define EMPIREVIEW_SYSTEMS	1
+#define EMPIREVIEW_SHIPS	2
 
+#define EMPIREVIEW_SYSTEMS_NORMAL	0
+#define EMPIREVIEW_SYSTEMS_RESOURCE	1
+#define EMPIREVIEW_SYSTEMS_DEFENCE	2
+
+/// View zur Anzeige des kompletten Imperiumsmenüs
 class CEmpireMenuView : public CMainBaseView
 {
 	DECLARE_DYNCREATE(CEmpireMenuView)
@@ -44,13 +52,15 @@ protected:
 	afx_msg void OnLButtonDblClk(UINT nFlags, CPoint point);
 	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
 	afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
+	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
 	virtual void OnInitialUpdate();
+	virtual void OnPrepareDC(CDC* pDC, CPrintInfo* pInfo = NULL);
 
 private:
 	// Funktionen
-	void DrawEmpireNewsMenue(Graphics* g);			// Fkt. zum Zeichnen der Nachrichtenansicht an das Imperium
-	void DrawEmpireSystemMenue(Graphics* g);		// Fkt. zum Zeichnen der Ansicht aller Systeme des Imperiums
-	void DrawEmpireShipMenue(Graphics* g);			// Fkt. zum Zeichnen der Ansicht aller Schiffe des Imperiums
+	void DrawEmpireNewsMenue(Graphics* g);		///< Funktion zum Zeichnen der Nachrichtenansicht an das Imperium
+	void DrawEmpireSystemMenue(Graphics* g);	///< Funktion zum Zeichnen der Ansicht aller Systeme des Imperiums
+	void DrawEmpireShipMenue(Graphics* g);		///< Funktion zum Zeichnen der Ansicht aller Schiffe des Imperiums
 	void CreateButtons();
 
 	//Attribute
@@ -67,6 +77,7 @@ private:
 
 	// Hier die Rechtecke und Variablen, die wir benötigen wenn wir in der Nachrichten und Informationsansicht sind
 	USHORT m_iSubMenu;						// in welchem Untermenü der Informationsansicht sind wir
+	USHORT m_iSystemSubMenue;				// Untermenü in der Systemansicht (normal, Ressourcen, Verteidigung)
 	USHORT m_iWhichNewsButtonIsPressed;		// wollen wir nur eine bestimme Nachtichtenart anzeigen lassen, z.b. Forschung
 	short  m_iClickedNews;					// auf welche Nachticht oder Information in der Liste wurde geklickt
 	short  m_iOldClickedNews;				// auf welche Nachricht wurde vorher geklickt, braucht man als Modifikator
@@ -76,9 +87,7 @@ private:
 	short  m_iOldClickedShip;				// auf welches Schiffe wurde vorher geklickt, braucht man als Modifikator
 	
 	BOOLEAN m_bShowAliveShips;				// sollen nur die noch vorhandenen Schiffe angezeigt werden, oder die verlorenen
-	BOOLEAN m_bShowResources;				// sollen in der Imperiumssystemübersicht die Ressourcen oder die normale Übersicht gezeichnet werden.		
-	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
-	virtual void OnPrepareDC(CDC* pDC, CPrintInfo* pInfo = NULL);
+	
 };
 
 

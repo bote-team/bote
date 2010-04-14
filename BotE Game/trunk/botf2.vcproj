@@ -790,6 +790,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\Source\Dialogs\PreferencesDlg.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\Source\Dialogs\SearchServersDlg.cpp"
 					>
 				</File>
@@ -1020,6 +1024,10 @@
 				</File>
 				<File
 					RelativePath=".\Source\Dialogs\PlayGamePage.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Source\Dialogs\PreferencesDlg.h"
 					>
 				</File>
 				<File

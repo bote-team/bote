@@ -282,6 +282,14 @@ void CFleetMenuView::DrawFleetMenue(Graphics* g)
 				fontBrush.SetColor(Color::White);
 				g->DrawString(L"Flag", -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), PointF(250*column + 45, row*65 + 95), &fontFormat, &fontBrush);				
 			}
+			// Wenn des Schiff Truppen transportiert, dann kleines Truppensymbol zeichnen
+			// Symbole zu Truppen zeichnen
+			if (pShip->GetTransportedTroops()->GetSize())
+			{
+				graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\troopSmall.bop");
+				if (graphic)					
+					g->DrawImage(graphic, 250*column+80, row*65+115, 20, 20);
+			}
 			
 			if (pShip->GetCloak())
 				fontBrush.SetColor(normalColorCloaked);
@@ -370,6 +378,15 @@ void CFleetMenuView::DrawFleetMenue(Graphics* g)
 					{
 						fontBrush.SetColor(Color::White);
 						g->DrawString(L"Flag", -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), PointF(250*column + 45, row*65 + 95), &fontFormat, &fontBrush);				
+					}
+
+					// Wenn des Schiff Truppen transportiert, dann kleines Truppensymbol zeichnen
+					// Symbole zu Truppen zeichnen
+					if (pShip->GetFleet()->GetShipFromFleet(i).GetTransportedTroops()->GetSize())
+					{
+						graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\troopSmall.bop");
+						if (graphic)					
+							g->DrawImage(graphic, 250*column+80, row*65+115, 20, 20);
 					}
 					
 					if (pShip->GetFleet()->GetShipFromFleet(i).GetCloak())

@@ -10,6 +10,7 @@
 #include "Botf2Doc.h"
 #include "BotEClient.h"
 #include "Races\RaceController.h"
+#include "IniLoader.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -241,7 +242,10 @@ void CMenuChooseView::OnInitialUpdate()
 	fileA = "Other\\" + sPrefix + "button_roundenda.bop";
 	m_RoundEnd = new CMyButton(CPoint(20,5), CSize(160,40), CResourceManager::GetString("BTN_ROUNDEND"), fileN, fileI, fileA);
 
-	GetTopLevelFrame()->SetMenuBarState(AFX_MBS_HIDDEN);
+	bool bHideMenu;
+	CIniLoader::GetInstance()->ReadValue("Control", "HIDEMENUBAR", bHideMenu);
+	if (bHideMenu)
+		GetTopLevelFrame()->SetMenuBarState(AFX_MBS_HIDDEN);
 }
 
 BOOL CMenuChooseView::OnEraseBkgnd(CDC* pDC) 
@@ -377,7 +381,10 @@ void CMenuChooseView::OnMouseMove(UINT nFlags, CPoint point)
 	if (!pDoc->m_bDataReceived)
 		return;
 
-	if (point.y > 5)
+	bool bHideMenu;
+	CIniLoader::GetInstance()->ReadValue("Control", "HIDEMENUBAR", bHideMenu);
+	
+	if (bHideMenu && point.y > 5)
 	{
 		if (GetTopLevelFrame()->SetMenuBarState(AFX_MBS_HIDDEN))
 		{

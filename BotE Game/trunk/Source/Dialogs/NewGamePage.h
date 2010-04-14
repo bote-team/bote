@@ -71,4 +71,6 @@ private:
 	afx_msg void OnEnChangeServerport();
 	CEdit m_hostPort;
 	CEdit m_serverPort;
+public:
+	afx_msg void OnBnClickedShowoptionsdlg();
 };

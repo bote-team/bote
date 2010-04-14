@@ -59,10 +59,6 @@ CBotf2Doc::CBotf2Doc()
 	// ZU ERLEDIGEN: Hier Code für One-Time-Konstruktion einfügen
 	CResourceManager::Init();
 
-	bool bHardwareSound;
-	CIniLoader::GetInstance()->ReadValue("Audio", "HARDWARESOUND", bHardwareSound);
-	CSoundManager::GetInstance()->Init(!bHardwareSound);
-
 	m_pGraphicPool = new CGraphicPool(CIOData::GetInstance()->GetAppPath() + "Graphics\\");
 
 	m_pRaceCtrl = new CRaceController();
@@ -116,25 +112,6 @@ BOOL CBotf2Doc::OnNewDocument()
 {
 	if (!CDocument::OnNewDocument())
 		return FALSE;
-	
-	// ZU ERLEDIGEN: Hier Code zur Reinitialisierung einfügen
-	CIniLoader* pIni = CIniLoader::GetInstance();
-	ASSERT(pIni);
-	CSoundManager* pSoundManager = CSoundManager::GetInstance();
-	ASSERT(pSoundManager);
-
-	int nSeed = -1;
-	pIni->ReadValue("Special", "RANDOMSEED", nSeed);
-	// festen vorgegeben Seed verwenden
-	if (nSeed >= 0)
-		srand(nSeed);
-	// zufälligen Seed verwenden
-	else
-	{
-		nSeed = (unsigned)time(NULL);
-		srand(nSeed);
-	}
-	MYTRACE(MT::LEVEL_INFO, "Used seed for randomgenerator: %d", nSeed);
 
 	// Mal Testweise paar Truppen anlegen
 	m_TroopInfo.RemoveAll();
@@ -165,34 +142,41 @@ BOOL CBotf2Doc::OnNewDocument()
 	m_TroopInfo.Add(*troopInfo);
 	delete troopInfo;
 	
+	// ZU ERLEDIGEN: Hier Code zur Reinitialisierung einfügen
+	CIniLoader* pIni = CIniLoader::GetInstance();
+	ASSERT(pIni);
+
+	bool bHardwareSound;
+	pIni->ReadValue("Audio", "HARDWARESOUND", bHardwareSound);
+	CSoundManager::GetInstance()->Init(!bHardwareSound);
+
+	int nSeed = -1;
+	pIni->ReadValue("Special", "RANDOMSEED", nSeed);
+	// festen vorgegeben Seed verwenden
+	if (nSeed >= 0)
+		srand(nSeed);
+	// zufälligen Seed verwenden
+	else
+	{
+		nSeed = (unsigned)time(NULL);
+		srand(nSeed);
+	}
+	MYTRACE(MT::LEVEL_INFO, "Used seed for randomgenerator: %d", nSeed);
+
 	m_bDataReceived				= false;
 	m_bDontExit					= false;
-	m_bGameLoaded				= false;
-	
+	m_bGameLoaded				= false;	
 	m_fStardate					= 121000.0f;
-	
-	CString difficulty = "EASY";
-	pIni->ReadValue("General", "DIFFICULTY", difficulty);
-	difficulty.MakeUpper();
-	if (difficulty == "BABY")
-		m_fDifficultyLevel			= 1.0f;
-	else if (difficulty == "EASY")
-		m_fDifficultyLevel			= 0.75f;
-	else if (difficulty == "NORMAL")
-		m_fDifficultyLevel			= 0.5f;
-	else if (difficulty == "HARD")
-		m_fDifficultyLevel			= 0.33f;
-	else if (difficulty == "IMPOSSIBLE")
-		m_fDifficultyLevel			= 0.2f;
-	else
-		m_fDifficultyLevel			= 0.5f;
-	
+
 	CMainDlg mainDlg(this);
 	if (mainDlg.DoModal() != ID_WIZFINISH && !m_bDontExit)
 		exit(1);
 	while (!m_bDataReceived)
 		Sleep(50);
-		
+
+	// Ini-Werte lesen und setzen
+	ResetIniSettings();
+
 	// Standardwerte setzen
 	m_ptKO = CPoint(0,0);
 	m_bRoundEndPressed			= false;
@@ -209,27 +193,6 @@ BOOL CBotf2Doc::OnNewDocument()
 		delete CSector::m_Font;
 		CSector::m_Font = NULL;
 	}
-	
-	CMajor* pPlayer = GetPlayersRace();
-	ASSERT(pPlayer);
-	network::RACE client = m_pRaceCtrl->GetMappedClientID(pPlayer->GetRaceID());
-
-	bool bUseMusic;
-	pIni->ReadValue("Audio", "MUSIC", bUseMusic);
-	if (bUseMusic)
-	{
-		float fMusicVolume;
-		pIni->ReadValue("Audio", "MUSICVOLUME", fMusicVolume);
-		pSoundManager->StartMusic(client, fMusicVolume);
-	}
-
-	bool bUseSound;
-	pIni->ReadValue("Audio", "SOUND", bUseSound);
-	if (!bUseSound)
-		pSoundManager->SetSoundMasterVolume(NULL);
-	else
-		pSoundManager->SetSoundMasterVolume(0.5f);
-	MYTRACE(MT::LEVEL_INFO, "Init sound ready...\n");	
 
 	return TRUE;
 }
@@ -649,6 +612,57 @@ void CBotf2Doc::SerializeEndOfRoundData(CArchive &ar, network::RACE race)
 		ar >> m_iSelectedView[race];
 	}
 	MYTRACE(MT::LEVEL_INFO, "... serialization of RoundEndData succesfull\n", race);
+}
+
+/// Funktion liest die Ini-Datei neu ein und legt die Werte neu fest.
+void CBotf2Doc::ResetIniSettings(void)
+{
+	CIniLoader* pIni = CIniLoader::GetInstance();
+	ASSERT(pIni);
+
+	CString difficulty = "EASY";
+	pIni->ReadValue("General", "DIFFICULTY", difficulty);
+	difficulty.MakeUpper();
+	if (difficulty == "BABY")
+		m_fDifficultyLevel			= 1.0f;
+	else if (difficulty == "EASY")
+		m_fDifficultyLevel			= 0.75f;
+	else if (difficulty == "NORMAL")
+		m_fDifficultyLevel			= 0.5f;
+	else if (difficulty == "HARD")
+		m_fDifficultyLevel			= 0.33f;
+	else if (difficulty == "IMPOSSIBLE")
+		m_fDifficultyLevel			= 0.2f;
+	else
+		m_fDifficultyLevel			= 0.5f;
+	
+	CSoundManager* pSoundManager = CSoundManager::GetInstance();
+	ASSERT(pSoundManager);
+
+	bool bHardwareSound;
+	pIni->ReadValue("Audio", "HARDWARESOUND", bHardwareSound);
+	CSoundManager::GetInstance()->Init(!bHardwareSound);
+
+	bool bUseMusic;
+	pIni->ReadValue("Audio", "MUSIC", bUseMusic);
+	if (bUseMusic)
+	{
+		CMajor* pPlayer = GetPlayersRace();
+		ASSERT(pPlayer);
+		network::RACE client = m_pRaceCtrl->GetMappedClientID(pPlayer->GetRaceID());
+
+		float fMusicVolume;
+		pIni->ReadValue("Audio", "MUSICVOLUME", fMusicVolume);
+		pSoundManager->StartMusic(client, fMusicVolume);
+	}
+
+	bool bUseSound;
+	pIni->ReadValue("Audio", "SOUND", bUseSound);
+	if (!bUseSound)
+		pSoundManager->SetSoundMasterVolume(NULL);
+	else
+		pSoundManager->SetSoundMasterVolume(0.5f);
+	MYTRACE(MT::LEVEL_INFO, "Init sound ready...\n");	
 }
 
 /// Funktion gibt die Koordinate des Hauptsystems einer Majorrace zurück.
@@ -1513,7 +1527,7 @@ void CBotf2Doc::ApplyBuildingsAtStartup()
 		{
 			// hier werden auch die Spezialtruppen der Cartarer ins System gesteckt
 			BuildTroop(6, GetRaceKO("MAJOR5"));
-			BuildTroop(6, GetRaceKO("MAJOR5"));
+			BuildTroop(6, GetRaceKO("MAJOR5"));			
 		}
 	}
 }

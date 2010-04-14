@@ -218,6 +218,26 @@ void CPlanetBottomView::OnDraw(CDC* dc)
 				g.DrawImage(graphic, 23, 202, 20, 16);
 		}
 	}
+	// Symbole zu Truppen zeichnen
+	if (pDoc->GetSector(KO).GetSunSystem() && pDoc->GetSector(KO).GetOwnerOfSector() != "" &&
+		(pDoc->GetSector(KO).GetScanPower(pMajor->GetRaceID()) > 50 || pDoc->GetSector(KO).GetOwnerOfSector() == pMajor->GetRaceID()))
+	{
+		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\troopSmall.bop");
+		int nTroopNumber = pDoc->GetSystem(KO).GetTroops()->GetSize();
+		if (graphic && nTroopNumber)
+		{
+			// soviel wie Truppen stationiert sind, so viele Symbole werden gezeichnet
+			s.Format("%d x", nTroopNumber);
+			int nPosX = 0;
+			if (nTroopNumber >= 10)
+				nPosX = 10;
+			if (nTroopNumber >= 100)
+				nPosX = 20;
+			g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), PointF(40,69), &fontFormat, &fontBrush);
+			// Bild zeichnen
+			g.DrawImage(graphic, 62 + nPosX, 64, 24, 24);
+		}
+	}
 	// Scannerstärke zeichnen
 	if (pDoc->m_Sector[KO.x][KO.y].GetScanned(pMajor->GetRaceID()) == TRUE)
 	{

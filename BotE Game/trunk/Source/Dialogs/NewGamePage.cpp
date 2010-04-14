@@ -16,6 +16,7 @@
 
 #include "Lmcons.h"
 #include "Botf2Doc.h"
+#include "PreferencesDlg.h"
 
 // CNewGamePage dialog
 
@@ -54,6 +55,7 @@ BEGIN_MESSAGE_MAP(CNewGamePage, CPropertyPage)
 	ON_BN_CLICKED(IDC_SEARCHSERVERS, &CNewGamePage::OnBnClickedSearchservers)
 	ON_EN_CHANGE(IDC_HOSTPORT, &CNewGamePage::OnEnChangeHostport)
 	ON_EN_CHANGE(IDC_SERVERPORT, &CNewGamePage::OnEnChangeServerport)
+	ON_BN_CLICKED(ID_SHOWOPTIONSDLG, &CNewGamePage::OnBnClickedShowoptionsdlg)
 END_MESSAGE_MAP()
 
 
@@ -406,4 +408,11 @@ void CNewGamePage::OnEnChangeHostport()
 void CNewGamePage::OnEnChangeServerport()
 {
 	EnableWizardButtons();
+}
+
+void CNewGamePage::OnBnClickedShowoptionsdlg()
+{
+	// TODO: Fügen Sie hier Ihren Kontrollbehandlungscode für die Benachrichtigung ein.
+	CPreferencesDlg dlg;
+	dlg.DoModal();		
 }

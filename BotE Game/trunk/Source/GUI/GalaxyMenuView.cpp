@@ -562,7 +562,7 @@ void CGalaxyMenuView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
 	size.cx = (LONG)(STARMAP_TOTALWIDTH * m_fZoom);
 	size.cy = (LONG)(STARMAP_TOTALHEIGHT * m_fZoom);
 	bool bShowScrollBars = false;
-	CIniLoader::GetInstance()->ReadValue("Video", "SHOWSCROLLBARS", bShowScrollBars);
+	CIniLoader::GetInstance()->ReadValue("Control", "SHOWSCROLLBARS", bShowScrollBars);
 	if (bShowScrollBars)
 		SetScrollSizes(MM_TEXT, size);
 	else
@@ -874,7 +874,7 @@ BOOL CGalaxyMenuView::OnMouseWheel(UINT nFlags, short zDelta, CPoint point)
 		if (sector.x > -1 && sector.y > -1)
 		{
 			bool bShowScrollBars = false;
-			CIniLoader::GetInstance()->ReadValue("Video", "SHOWSCROLLBARS", bShowScrollBars);
+			CIniLoader::GetInstance()->ReadValue("Control", "SHOWSCROLLBARS", bShowScrollBars);
 			if (bShowScrollBars)
 				Invalidate(TRUE);
 			OnUpdate(this, 0, NULL); // Anpassen der ScrollSizes		
@@ -1111,7 +1111,7 @@ void CGalaxyMenuView::OnMouseMove(UINT nFlags, CPoint point)
 		{
 			CPoint ptScrollPos = GetScrollPosition();
 			bool bInvertMouse = false;
-			CIniLoader::GetInstance()->ReadValue("Video", "INVERTMOUSE", bInvertMouse);
+			CIniLoader::GetInstance()->ReadValue("Video", "Control", bInvertMouse);
 			if (!bInvertMouse)
 				ptScrollPos += CPoint(pt.x - m_ptOldMousePos.x, pt.y - m_ptOldMousePos.y);
 			else
@@ -1123,7 +1123,7 @@ void CGalaxyMenuView::OnMouseMove(UINT nFlags, CPoint point)
 			ptScrollPos.y = min(ptScrollPos.y, STARMAP_TOTALHEIGHT * m_fZoom - client.Height());
 
 			bool bShowScrollBars = false;
-			CIniLoader::GetInstance()->ReadValue("Video", "SHOWSCROLLBARS", bShowScrollBars);
+			CIniLoader::GetInstance()->ReadValue("Control", "SHOWSCROLLBARS", bShowScrollBars);
 			if (bShowScrollBars)
 			{
 				Invalidate(TRUE);
@@ -1159,7 +1159,7 @@ void CGalaxyMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 	CPoint oldPosition = position;
 	
 	bool bShowScrollBars = false;
-	CIniLoader::GetInstance()->ReadValue("Video", "SHOWSCROLLBARS", bShowScrollBars);
+	CIniLoader::GetInstance()->ReadValue("Control", "SHOWSCROLLBARS", bShowScrollBars);
 
 	if (nChar == VK_UP)
 	{
@@ -1225,7 +1225,7 @@ void CGalaxyMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 	if (oldPosition != position)
 	{
 		bool bShowScrollBars = false;
-		CIniLoader::GetInstance()->ReadValue("Video", "SHOWSCROLLBARS", bShowScrollBars);
+		CIniLoader::GetInstance()->ReadValue("Control", "SHOWSCROLLBARS", bShowScrollBars);
 		if (bShowScrollBars)
 		{
 			Invalidate(TRUE);

@@ -1201,7 +1201,7 @@ void CSystemMenuView::DrawWorkersMenue(Graphics* g)
 		if (graphic)
 			g->DrawImage(graphic, ChangeWorkersButton.left, ChangeWorkersButton.top, 120, 30);
 		fontFormat.SetAlignment(StringAlignmentCenter);
-		s = CResourceManager::GetString("BTN_NORMAL", TRUE);
+		s = CResourceManager::GetString("BTN_PRODUCTION", TRUE);
 		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(ChangeWorkersButton.left, ChangeWorkersButton.top, 120, 30), &fontFormat, &btnBrush);
 	}
 	

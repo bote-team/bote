@@ -173,7 +173,7 @@ void CShipBottomView::OnDraw(CDC* dc)
 						if (graphic == NULL)
 							graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Ships\\ImageMissing.bop");
 						if (graphic)
-							g.DrawImage(graphic, 250*column+37, row*65+30, 65, 49);							
+							g.DrawImage(graphic, 250*column+37, row*65+30, 65, 49);
 						// Erfahrungsstufen des Schiffes anzeigen
 						switch (pDoc->m_ShipArray.GetAt(i).GetExpLevel())
 						{
@@ -208,6 +208,16 @@ void CShipBottomView::OnDraw(CDC* dc)
 							fontBrush.SetColor(Color::White);
 							g.DrawString(L"Flag", -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), PointF(250*column + 41, row*65 + 35), &fontFormat, &fontBrush);
 						}
+
+						// Wenn des Schiff Truppen transportiert, dann kleines Truppensymbol zeichnen
+						// Symbole zu Truppen zeichnen
+						if (pDoc->m_ShipArray.GetAt(i).GetTransportedTroops()->GetSize())
+						{
+							graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\troopSmall.bop");
+							if (graphic)
+								g.DrawImage(graphic, 250*column+80, row*65+55, 20, 20);
+						}
+
 						// Wenn das Schiff getarnt ist ein die Schrift etwas dunkler darstellen
 						if (pDoc->m_ShipArray.GetAt(i).GetCloak())
 							fontBrush.SetColor(normalColorCloaked);

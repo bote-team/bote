@@ -5,6 +5,7 @@
 #include "botf2.h"
 #include "MainFrm.h"
 #include "botf2Doc.h"
+#include "PreferencesDlg.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -38,7 +39,6 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	afx_msg void OnIpnFieldchangedIpaddress1(NMHDR *pNMHDR, LRESULT *pResult);
-public:
 	afx_msg void OnBnClickedOk();
 };
 
@@ -83,12 +83,14 @@ BEGIN_MESSAGE_MAP(CBotf2App, CWinApp)
 	ON_COMMAND(ID_APP_ABOUT, OnAppAbout)
 	ON_COMMAND(ID_FILE_NEW, CWinApp::OnFileNew)
 	ON_COMMAND(ID_FILE_OPEN, CWinApp::OnFileOpen)
-	ON_THREAD_MESSAGE(WM_UPDATEVIEWS, CBotf2App::UpdateViews)
-	ON_THREAD_MESSAGE(WM_SHOWCHATDLG, CBotf2App::ShowChatDlg)	
+	ON_COMMAND(ID_OPTIONEN, &CBotf2App::OnPreferences)
 	ON_COMMAND(ID_CHAT, &CBotf2App::OnChat)
 	ON_COMMAND(ID_HELP_MANUAL, &CBotf2App::OnOpenManual)
 	ON_COMMAND(ID_HELP_README, &CBotf2App::OnOpenReadme)
 	ON_COMMAND(ID_HELP_CREDITS, &CBotf2App::OnOpenCredits)
+	
+	ON_THREAD_MESSAGE(WM_UPDATEVIEWS, CBotf2App::UpdateViews)
+	ON_THREAD_MESSAGE(WM_SHOWCHATDLG, CBotf2App::ShowChatDlg)	
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -228,6 +230,15 @@ void CBotf2App::OnAppAbout()
 {
 	CAboutDlg aboutDlg;
 	aboutDlg.DoModal();
+}
+
+// Funktion zum Anzeigen des Einstellungsdialoges
+void CBotf2App::OnPreferences()
+{
+	// TODO: Fügen Sie hier Ihren Befehlsbehandlungscode ein.
+	CPreferencesDlg dlg;
+	if (dlg.DoModal() == IDOK)
+		this->GetDocument()->ResetIniSettings();
 }
 
 void CBotf2App::OnOpenManual()

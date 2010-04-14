@@ -16,6 +16,7 @@
 #define IDD_DIALOG2                     183
 #define IDD_SEARCHSERVERS               183
 #define IDB_LOGO                        188
+#define IDD_PREFERENCESDLG              189
 #define IDC_CLIENT                      1001
 #define IDC_SERVER                      1002
 #define IDC_HOSTIP                      1003
@@ -67,11 +68,28 @@
 #define IDC_LBL_SERVERPORT              1036
 #define IDC_SERVERS                     1037
 #define IDC_LOGO                        1037
+#define ID_SHOWOPTIONSDLG               1037
 #define IDC_LBL_HOSTIP                  1038
 #define IDC_CUSTOM1                     1038
 #define IDC_LBL_FILENAME                1039
+#define IDC_CHECK_AUTOSAVE              1039
 #define IDC_LBL_DESCRIPTION             1040
+#define IDC_SLIDER_DIFFICULTY           1040
 #define IDC_TAB1                        1041
+#define IDC_STATIC_DIFFICULTY           1041
+#define IDC_CHECK_HARDWARESOUND         1042
+#define IDC_CHECK_SOUND                 1043
+#define IDC_CHECK_MUSIC                 1044
+#define IDC_SLIDER_MUSICVOLUME          1045
+#define IDC_SLIDER_TOOLTIPDELAY         1046
+#define IDC_CHECK_SHOWTRADEROUTES       1047
+#define IDC_CHECK_ANIMATEDICON          1048
+#define IDC_CHECK_SHOWSCROLLBARS        1049
+#define IDC_CHECK_INVERTNOUSE           1050
+#define IDC_EDIT_RANDOMSEED             1051
+#define IDC_SLIDER_STARDENSITY          1052
+#define IDC_SLIDER_MINORDENSITY         1053
+#define IDC_CHECK_HIDEMENUBAR           1054
 #define ID_OPTIONEN                     32773
 #define ID_INFORMATION                  32774
 #define ID_DATENBANK                    32775
@@ -94,9 +112,9 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_3D_CONTROLS                     1
-#define _APS_NEXT_RESOURCE_VALUE        189
+#define _APS_NEXT_RESOURCE_VALUE        190
 #define _APS_NEXT_COMMAND_VALUE         32789
-#define _APS_NEXT_CONTROL_VALUE         1039
+#define _APS_NEXT_CONTROL_VALUE         1052
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

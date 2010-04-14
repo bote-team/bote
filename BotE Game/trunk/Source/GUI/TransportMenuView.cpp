@@ -6,6 +6,7 @@
 #include "TransportMenuView.h"
 #include "Races\RaceController.h"
 #include "Ships\Fleet.h"
+#include "ShipBottomView.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -327,7 +328,7 @@ void CTransportMenuView::DrawTransportMenue(Graphics* g)
 		fontFormat.SetLineAlignment(StringAlignmentCenter);
 		fontFormat.SetFormatFlags(StringFormatFlagsNoWrap);
 		
-		s.Format("#%d: %s", m_byTroopNumberInSystem+1, pDoc->m_TroopInfo.GetAt(id).GetName());
+		s.Format("#%d: %s", m_byTroopNumberInShip+1, pDoc->m_TroopInfo.GetAt(id).GetName());
 		// Das Bild für die Truppe zeichnen
 		CString file;
 		file.Format("Troops\\%s.bop", pDoc->m_TroopInfo.GetAt(id).GetName());
@@ -452,18 +453,25 @@ void CTransportMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 				// handelt es sich um Truppen
 				if (i == 6)
 				{
+					int nQuantity = m_iTransportStorageQuantity;
 					// Schiff und möglicherweise Schiffe in der Flotte durchgehen		
 					for (int j = 0; j < number; j++)
 					{
-						if (ship->GetTransportedTroops()->GetSize() > 0)
+						while (nQuantity > 0)
 						{
-							pDoc->m_System[p.x][p.y].GetTroops()->Add(ship->GetTransportedTroops()->GetAt(m_byTroopNumberInShip));
-							ship->GetTransportedTroops()->RemoveAt(m_byTroopNumberInShip);
-							if (m_byTroopNumberInShip > 0)
-								m_byTroopNumberInShip--;
-							m_byTroopNumberInSystem = pDoc->m_System[p.x][p.y].GetTroops()->GetUpperBound();
-							Invalidate(FALSE);
-							return;
+							if (ship->GetTransportedTroops()->GetSize() > 0)
+							{
+								pDoc->m_System[p.x][p.y].GetTroops()->Add(ship->GetTransportedTroops()->GetAt(m_byTroopNumberInShip));
+								ship->GetTransportedTroops()->RemoveAt(m_byTroopNumberInShip);
+								if (m_byTroopNumberInShip > 0)
+									m_byTroopNumberInShip--;
+								m_byTroopNumberInSystem = pDoc->m_System[p.x][p.y].GetTroops()->GetUpperBound();
+								Invalidate(FALSE);
+								pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CShipBottomView));
+								nQuantity--;
+							}
+							else
+								break;
 						}
 						if (isFleet && j < number-1)
 							ship = (&pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfTheShipInArray()))->GetFleet()->GetPointerOfShipFromFleet(j);						
@@ -531,30 +539,37 @@ void CTransportMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 				// handelt es sich um Truppen
 				if (i == 6)
 				{
+					int nQuantity = m_iTransportStorageQuantity;
 					// checken das noch genügend Lagerraum im Schiff vorhanden ist
 					if (pDoc->m_System[p.x][p.y].GetTroops()->GetSize() > 0)
 					{
 						// Schiff und möglicherweise Schiffe in der Flotte durchgehen		
 						for (int j = 0; j < number; j++)
 						{
-							BYTE id = pDoc->m_System[p.x][p.y].GetTroops()->GetAt(m_byTroopNumberInSystem).GetID();
-							// durch Truppen und Ressourcen auf Schiff
-							usedStorage = ship->GetUsedStorageRoom(&pDoc->m_TroopInfo);
-							// dazu der benötigte Platz durch die Truppe, welche hinzukommen soll
-							usedStorage += pDoc->m_TroopInfo.GetAt(id).GetSize();
-							if (usedStorage <= ship->GetStorageRoom())
+							while (nQuantity > 0)
 							{
-								ship->GetTransportedTroops()->Add(pDoc->m_System[p.x][p.y].GetTroops()->GetAt(m_byTroopNumberInSystem));
-								pDoc->m_System[p.x][p.y].GetTroops()->RemoveAt(m_byTroopNumberInSystem);
-								if (m_byTroopNumberInSystem > 0)
-									m_byTroopNumberInSystem--;
-								m_byTroopNumberInShip = ship->GetTransportedTroops()->GetUpperBound();
-								Invalidate(FALSE);
-								return;
+								BYTE id = pDoc->m_System[p.x][p.y].GetTroops()->GetAt(m_byTroopNumberInSystem).GetID();
+								// durch Truppen und Ressourcen auf Schiff
+								usedStorage = ship->GetUsedStorageRoom(&pDoc->m_TroopInfo);
+								// dazu der benötigte Platz durch die Truppe, welche hinzukommen soll
+								usedStorage += pDoc->m_TroopInfo.GetAt(id).GetSize();
+								if (usedStorage <= ship->GetStorageRoom())
+								{
+									ship->GetTransportedTroops()->Add(pDoc->m_System[p.x][p.y].GetTroops()->GetAt(m_byTroopNumberInSystem));
+									pDoc->m_System[p.x][p.y].GetTroops()->RemoveAt(m_byTroopNumberInSystem);
+									if (m_byTroopNumberInSystem > 0)
+										m_byTroopNumberInSystem--;
+									m_byTroopNumberInShip = ship->GetTransportedTroops()->GetUpperBound();
+									Invalidate(FALSE);
+									pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CShipBottomView));
+									nQuantity--;
+									if (pDoc->m_System[p.x][p.y].GetTroops()->GetSize() == 0)
+										return;
+								}
 							}
 							if (isFleet && j < number-1)
 								ship = (&pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfTheShipInArray()))->GetFleet()->GetPointerOfShipFromFleet(j);
-						}
+						}						
 					}
 					return;
 				}

@@ -19,7 +19,6 @@ IMPLEMENT_DYNCREATE(CEmpireMenuView, CMainBaseView)
 
 CEmpireMenuView::CEmpireMenuView()
 {
-
 }
 
 CEmpireMenuView::~CEmpireMenuView()
@@ -72,13 +71,13 @@ void CEmpireMenuView::OnNewRound()
 	// Sortierung der Schiffshistory nach dem Namen der Schiffe
 	c_arraysort<CArray<CShipHistoryStruct,CShipHistoryStruct>,CShipHistoryStruct>(*(pMajor->GetShipHistory()->GetShipHistoryArray()),CShipHistoryStruct::sort_by_shipname);
 
-	m_iSubMenu = 0;
+	m_iSubMenu = EMPIREVIEW_NEWS;
 	m_iWhichNewsButtonIsPressed = NO_TYPE;
 	m_iClickedNews = -1;
 	m_iClickedSystem = -1;
 	m_iClickedShip = -1;
 	m_bShowAliveShips = TRUE;
-	m_bShowResources = FALSE;
+	m_iSystemSubMenue = EMPIREVIEW_SYSTEMS_NORMAL;
 }
 
 // CEmpireMenuView drawing
@@ -105,12 +104,12 @@ void CEmpireMenuView::OnDraw(CDC* dc)
 	g.SetCompositingQuality(CompositingQualityHighSpeed);
 	g.ScaleTransform((REAL)client.Width() / (REAL)m_TotalSize.cx, (REAL)client.Height() / (REAL)m_TotalSize.cy);
 
-	if (m_iSubMenu == 0)
+	if (m_iSubMenu == EMPIREVIEW_NEWS)
 		DrawEmpireNewsMenue(&g);
-	else if (m_iSubMenu == 1)
+	else if (m_iSubMenu == EMPIREVIEW_SYSTEMS)
 		DrawEmpireSystemMenue(&g);
-	else if (m_iSubMenu == 2)
-		DrawEmpireShipMenue(&g);
+	else if (m_iSubMenu == EMPIREVIEW_SHIPS)
+		DrawEmpireShipMenue(&g);	
 
 	g.ReleaseHDC(pDC->GetSafeHdc());
 }
@@ -134,13 +133,13 @@ void CEmpireMenuView::OnInitialUpdate()
 	bg_systemovmenu	= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "systemovmenu.boj");
 	bg_shipovmenu	= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "shipovmenu.boj");
 
-	m_iSubMenu = 0;
+	m_iSubMenu = EMPIREVIEW_NEWS;
 	m_iWhichNewsButtonIsPressed = NO_TYPE;
 	m_iClickedNews = -1;
 	m_iClickedSystem = -1;
 	m_iClickedShip = -1;
 	m_bShowAliveShips = TRUE;
-	m_bShowResources = FALSE;
+	m_iSystemSubMenue = EMPIREVIEW_SYSTEMS_NORMAL;
 }
 
 void CEmpireMenuView::OnPrepareDC(CDC* pDC, CPrintInfo* pInfo)
@@ -345,7 +344,7 @@ void CEmpireMenuView::DrawEmpireSystemMenue(Graphics* g)
 			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(130,140+j*25,140,25), &fontFormat, &fontBrush);			
 			
 			// soll die normale Systemüberischt angezeigt werden
-			if (!m_bShowResources)
+			if (m_iSystemSubMenue == EMPIREVIEW_SYSTEMS_NORMAL)
 			{
 				// Moral anzeigen
 				/*	Fanatic		175 - 194
@@ -503,7 +502,7 @@ void CEmpireMenuView::DrawEmpireSystemMenue(Graphics* g)
 				fontBrush.SetColor(normalColor);
 			}
 			// andernfalls wird hier die Systemressourcenübersicht angezeigt
-			else
+			else if (m_iSystemSubMenue == EMPIREVIEW_SYSTEMS_RESOURCE)
 			{
 				// prüfen ob irgendein Verteiler steht
 				bool bDist[DILITHIUM + 1] = {false};
@@ -538,6 +537,55 @@ void CEmpireMenuView::DrawEmpireSystemMenue(Graphics* g)
 					fontFormat.SetTrimming(StringTrimmingNone);
 				}
 			}
+			else if (m_iSystemSubMenue == EMPIREVIEW_SYSTEMS_DEFENCE)
+			{
+				// Verteidigungsgebäude ermitteln und anzeigen
+				int nShieldDefenceCount			= 0;
+				int nShieldDefenceOnlineCount	= 0;
+				int nShipDefenceCount			= 0;
+				int nShipDefenceOnlineCount		= 0;
+				int nGroundDefenceCount			= 0;
+				int nGroundDefenceOnlineCount	= 0;
+				for (int l = 0; l < pDoc->GetSystem(KO).GetAllBuildings()->GetSize(); l++)
+				{
+					int nID = pDoc->GetSystem(KO).GetAllBuildings()->GetAt(l).GetRunningNumber();
+					CBuildingInfo* pBuildingInfo = &pDoc->GetBuildingInfo(nID);
+					if (pBuildingInfo->GetShieldPower() > 0 || pBuildingInfo->GetShieldPowerBoni())
+					{
+						nShieldDefenceCount++;
+						if (pDoc->GetSystem(KO).GetAllBuildings()->GetAt(l).GetIsBuildingOnline() || pBuildingInfo->GetNeededEnergy() == 0 || pBuildingInfo->GetAllwaysOnline())
+							nShieldDefenceOnlineCount++;
+					}
+					if (pBuildingInfo->GetShipDefend() > 0 || pBuildingInfo->GetShipDefendBoni() > 0)
+					{
+						nShipDefenceCount++;
+						if (pDoc->GetSystem(KO).GetAllBuildings()->GetAt(l).GetIsBuildingOnline() || pBuildingInfo->GetNeededEnergy() == 0 || pBuildingInfo->GetAllwaysOnline())
+							nShipDefenceOnlineCount++;
+					}
+					if (pBuildingInfo->GetGroundDefend() > 0 || pBuildingInfo->GetGroundDefendBoni() > 0)
+					{
+						nGroundDefenceCount++;
+						if (pDoc->GetSystem(KO).GetAllBuildings()->GetAt(l).GetIsBuildingOnline() || pBuildingInfo->GetNeededEnergy() == 0 || pBuildingInfo->GetAllwaysOnline())
+							nGroundDefenceOnlineCount++;
+					}
+				}
+
+				// Anzahl Truppen anzeigen
+				s.Format("%d", pDoc->GetSystem(KO).GetTroops()->GetSize());
+				g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(270,140+j*25,100,25), &fontFormat, &fontBrush);
+				// Schildstärke anzeigen
+				s.Format("%d (%d/%d)", pDoc->GetSystem(KO).GetProduction()->GetShieldPower(), nShieldDefenceOnlineCount, nShieldDefenceCount);
+				g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(370,140+j*25,150,25), &fontFormat, &fontBrush);
+				// Schiffsabwehr anzeigen
+				s.Format("%d (%d/%d)", pDoc->GetSystem(KO).GetProduction()->GetShipDefend(), nShipDefenceOnlineCount, nShipDefenceCount);
+				g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(520,140+j*25,150,25), &fontFormat, &fontBrush);
+				// Bodenabwehr anzeigen
+				s.Format("%d (%d/%d)", pDoc->GetSystem(KO).GetProduction()->GetGroundDefend(), nGroundDefenceOnlineCount, nGroundDefenceCount);
+				g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(670,140+j*25,150,25), &fontFormat, &fontBrush);
+				// Scanstärke anzeigen
+				s.Format("%d", pDoc->GetSystem(KO).GetProduction()->GetScanPower());
+				g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(820,140+j*25,150,25), &fontFormat, &fontBrush);				
+			}
 			j++;
 		}
 	}
@@ -551,7 +599,7 @@ void CEmpireMenuView::DrawEmpireSystemMenue(Graphics* g)
 	CFontLoader::GetGDIFontColor(pMajor, 2, btnColor);
 	SolidBrush btnBrush(btnColor);
 	// Buttons am oberen Bildrand zeichnen
-	DrawGDIButtons(g, &m_EmpireSystemFilterButtons, m_bShowResources, Gdiplus::Font(fontName.AllocSysString(), fontSize), btnBrush);
+	DrawGDIButtons(g, &m_EmpireSystemFilterButtons, m_iSystemSubMenue, Gdiplus::Font(fontName.AllocSysString(), fontSize), btnBrush);
 	// Buttons am unteren Bildrand zeichnen
 	DrawGDIButtons(g, &m_EmpireNewsButtons, m_iSubMenu, Gdiplus::Font(fontName.AllocSysString(), fontSize), btnBrush);
 		
@@ -561,7 +609,7 @@ void CEmpireMenuView::DrawEmpireSystemMenue(Graphics* g)
 	fontFormat.SetTrimming(StringTrimmingEllipsisCharacter);
 	g->DrawString(CResourceManager::GetString("SECTOR").AllocSysString(), -1, &font, RectF(50,110,80,30), &fontFormat, &fontBrush);
 	g->DrawString(CResourceManager::GetString("NAME").AllocSysString(), -1, &font, RectF(130,110,140,30), &fontFormat, &fontBrush);
-	if (!m_bShowResources)
+	if (m_iSystemSubMenue == EMPIREVIEW_SYSTEMS_NORMAL)
 	{
 		g->DrawString(CResourceManager::GetString("MORAL").AllocSysString(), -1, &font, RectF(270,110,130,30), &fontFormat, &fontBrush);
 		g->DrawString(CResourceManager::GetString("FOOD").AllocSysString(), -1, &font, RectF(400,110,80,30), &fontFormat, &fontBrush);
@@ -569,7 +617,7 @@ void CEmpireMenuView::DrawEmpireSystemMenue(Graphics* g)
 		g->DrawString(CResourceManager::GetString("INDUSTRY").AllocSysString(), -1, &font, RectF(580,110,100,30), &fontFormat, &fontBrush);
 		g->DrawString(CResourceManager::GetString("JOB").AllocSysString(), -1, &font, RectF(680,110,345,30), &fontFormat, &fontBrush);
 	}
-	else
+	else if (m_iSystemSubMenue == EMPIREVIEW_SYSTEMS_RESOURCE)
 	{
 		g->DrawString(CResourceManager::GetString("TITAN").AllocSysString(), -1, &font, RectF(270,110,120,30), &fontFormat, &fontBrush);
 		g->DrawString(CResourceManager::GetString("DEUTERIUM").AllocSysString(), -1, &font, RectF(390,110,120,30), &fontFormat, &fontBrush);
@@ -577,6 +625,14 @@ void CEmpireMenuView::DrawEmpireSystemMenue(Graphics* g)
 		g->DrawString(CResourceManager::GetString("CRYSTAL").AllocSysString(), -1, &font, RectF(630,110,120,30), &fontFormat, &fontBrush);
 		g->DrawString(CResourceManager::GetString("IRIDIUM").AllocSysString(), -1, &font, RectF(750,110,120,30), &fontFormat, &fontBrush);
 		g->DrawString(CResourceManager::GetString("DILITHIUM").AllocSysString(), -1, &font, RectF(870,110,120,30), &fontFormat, &fontBrush);		
+	}
+	else if (m_iSystemSubMenue == EMPIREVIEW_SYSTEMS_DEFENCE)
+	{
+		g->DrawString(CResourceManager::GetString("TROOPS").AllocSysString(), -1, &font, RectF(270,110,100,30), &fontFormat, &fontBrush);
+		g->DrawString(CResourceManager::GetString("SHIELDPOWER").AllocSysString(), -1, &font, RectF(370,110,150,30), &fontFormat, &fontBrush);
+		g->DrawString(CResourceManager::GetString("SHIPDEFEND").AllocSysString(), -1, &font, RectF(520,110,150,30), &fontFormat, &fontBrush);
+		g->DrawString(CResourceManager::GetString("GROUNDDEFEND").AllocSysString(), -1, &font, RectF(670,110,150,30), &fontFormat, &fontBrush);
+		g->DrawString(CResourceManager::GetString("SCANPOWER").AllocSysString(), -1, &font, RectF(820,110,150,30), &fontFormat, &fontBrush);
 	}
 	fontFormat.SetTrimming(StringTrimmingNone);
 	fontFormat.SetAlignment(StringAlignmentCenter);	
@@ -783,7 +839,6 @@ void CEmpireMenuView::DrawEmpireShipMenue(Graphics* g)
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0,10,m_TotalSize.cx, 50), &fontFormat, &fontBrush);	
 }
 
-
 // CEmpireMenuView diagnostics
 
 #ifdef _DEBUG
@@ -828,7 +883,7 @@ void CEmpireMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 	}
 	
 	// Wenn wir in der Nachtichtenasicht sind
-	if (m_iSubMenu == 0)
+	if (m_iSubMenu == EMPIREVIEW_NEWS)
 	{			
 		// Checken auf welchen Newsbutton ich geklickt habe, um nur Kategorien anzuzeigen
 		int temp = m_iWhichNewsButtonIsPressed;
@@ -868,15 +923,15 @@ void CEmpireMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			}
 	}
 	// Wenn wir in der Systemübersicht sind
-	else if (m_iSubMenu == 1)
+	else if (m_iSubMenu == EMPIREVIEW_SYSTEMS)
 	{
 		CRect r;
 		r.SetRect(0,0,m_TotalSize.cx,m_TotalSize.cy);
 		// Haben wir auf einen Button geklickt, um zwischen Ressourcen- und normaler Ansicht zu wechseln
-		int temp = m_bShowResources;
+		int temp = m_iSystemSubMenue;
 		if (ButtonReactOnLeftClick(point, &m_EmpireSystemFilterButtons, temp, FALSE))
 		{
-			m_bShowResources = temp;
+			m_iSystemSubMenue = temp;
 			Invalidate(FALSE);
 			return;
 		}
@@ -907,7 +962,7 @@ void CEmpireMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		}
 	}
 	// Wenn wir in der Schiffsübersicht sind
-	else if (m_iSubMenu == 2)
+	else if (m_iSubMenu == EMPIREVIEW_SHIPS)
 	{
 		CRect r;
 		r.SetRect(0,0,m_TotalSize.cx,m_TotalSize.cy);
@@ -1062,7 +1117,7 @@ BOOL CEmpireMenuView::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 
 	// Wenn wir im Imperiummenü sind
 	// Wenn wir in der Nachrichtenübersicht sind
-	if (m_iSubMenu == 0)
+	if (m_iSubMenu == EMPIREVIEW_NEWS)
 	{
 		int maxNews = 0;
 		// nur Nachrichten anzeigen, dessen Typ wir auch gewählt haben
@@ -1092,7 +1147,7 @@ BOOL CEmpireMenuView::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 		}
 	}
 	// Wenn wir in der Imperiumssystemübersicht sind
-	else if (m_iSubMenu == 1)
+	else if (m_iSubMenu == EMPIREVIEW_SYSTEMS)
 	{
 		if (zDelta < 0)
 		{
@@ -1116,7 +1171,7 @@ BOOL CEmpireMenuView::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 		}
 	}
 	// Wenn wir in der Imperiumsschiffsübersicht sind
-	else if (m_iSubMenu == 2)
+	else if (m_iSubMenu == EMPIREVIEW_SHIPS)
 	{
 		if (zDelta < 0)
 		{
@@ -1160,7 +1215,7 @@ void CEmpireMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 	CalcLogicalPoint(point);
 	// Wenn wir uns in der Imperiumsübersichtansicht befinden	
 	// Wenn wir in der Nachtichtenansicht sind
-	if (m_iSubMenu == 0)
+	if (m_iSubMenu == EMPIREVIEW_NEWS)
 	{
 		CRect r;
 		r.SetRect(0,0,m_TotalSize.cx,m_TotalSize.cy);
@@ -1241,7 +1296,7 @@ void CEmpireMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 			}
 	}
 	// Wenn wir in der Systemübersicht sind
-	else if (m_iSubMenu == 1)
+	else if (m_iSubMenu == EMPIREVIEW_SYSTEMS)
 	{
 		// Haben wir auf ein System in der Liste geklickt
 		if (m_iClickedSystem != -1)
@@ -1273,13 +1328,13 @@ void CEmpireMenuView::OnMouseMove(UINT nFlags, CPoint point)
 	// Buttons am unteren Rand überprüfen
 	ButtonReactOnMouseOver(point, &m_EmpireNewsButtons);
 	// Sind wir in der Nachrichtenansicht
-	if (m_iSubMenu == 0)
+	if (m_iSubMenu == EMPIREVIEW_NEWS)
 		ButtonReactOnMouseOver(point, &m_EmpireNewsFilterButtons);
 	// sind wir in der Systenübersicht
-	else if (m_iSubMenu == 1)
+	else if (m_iSubMenu == EMPIREVIEW_SYSTEMS)
 		ButtonReactOnMouseOver(point, &m_EmpireSystemFilterButtons);	
 	// sind wir in der Schiffsübersicht
-	else if (m_iSubMenu == 2)
+	else if (m_iSubMenu == EMPIREVIEW_SHIPS)
 		ButtonReactOnMouseOver(point, &m_EmpireShipsFilterButtons);	
 
 	CMainBaseView::OnMouseMove(nFlags, point);
@@ -1300,7 +1355,7 @@ void CEmpireMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 		return;
 	// Wenn wir in der Nachrichten und Informationsansicht sind
 	// Wenn wir in der Nachtichtenasicht sind
-	if (m_iSubMenu == 0)
+	if (m_iSubMenu == EMPIREVIEW_NEWS)
 	{
 		// Wenn wir auf eine News ausgewählt haben, können wir diese durch Betätigen der Entf-Taste löschen
 		if (m_iClickedNews != -1 && nChar == VK_DELETE && m_iWhichNewsButtonIsPressed == NO_TYPE)
@@ -1341,7 +1396,7 @@ void CEmpireMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 	}
 	
 	// Wenn wir in der Imperiumssystemübersicht sind
-	if (m_iSubMenu == 1)
+	if (m_iSubMenu == EMPIREVIEW_SYSTEMS)
 	{
 		if (nChar == VK_DOWN)
 		{
@@ -1378,7 +1433,7 @@ void CEmpireMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 		}
 	}
 	// Wenn wir in der Imperiumsschiffsübersicht sind
-	else if (m_iSubMenu == 2)
+	else if (m_iSubMenu == EMPIREVIEW_SHIPS)
 	{
 		if (nChar == VK_DOWN)
 		{
@@ -1429,8 +1484,9 @@ void CEmpireMenuView::CreateButtons()
 	m_EmpireNewsButtons.Add(new CMyButton(CPoint(10,690), CSize(160,40), CResourceManager::GetString("BTN_EVENTS"),  fileN, fileI, fileA));
 	m_EmpireNewsButtons.Add(new CMyButton(CPoint(180,690), CSize(160,40), CResourceManager::GetString("BTN_SYSTEMS"),  fileN, fileI, fileA));
 	m_EmpireNewsButtons.Add(new CMyButton(CPoint(350,690), CSize(160,40), CResourceManager::GetString("BTN_SHIPS"),  fileN, fileI, fileA));
-	m_EmpireSystemFilterButtons.Add(new CMyButton(CPoint(60,70), CSize(160,40), CResourceManager::GetString("BTN_NORMAL"),  fileN, fileI, fileA));
+	m_EmpireSystemFilterButtons.Add(new CMyButton(CPoint(60,70), CSize(160,40), CResourceManager::GetString("BTN_PRODUCTION"),  fileN, fileI, fileA));
 	m_EmpireSystemFilterButtons.Add(new CMyButton(CPoint(220,70), CSize(160,40), CResourceManager::GetString("BTN_RESOURCES"),  fileN, fileI, fileA));
+	m_EmpireSystemFilterButtons.Add(new CMyButton(CPoint(380,70), CSize(160,40), CResourceManager::GetString("BTN_DEFENCE"),  fileN, fileI, fileA));
 	m_EmpireShipsFilterButtons.Add(new CMyButton(CPoint(96,70), CSize(160,40), CResourceManager::GetString("BTN_CURRENTS"),  fileN, fileI, fileA));
 	m_EmpireShipsFilterButtons.Add(new CMyButton(CPoint(495,70), CSize(160,40), CResourceManager::GetString("BTN_LOST"),  fileN, fileI, fileA));
 }

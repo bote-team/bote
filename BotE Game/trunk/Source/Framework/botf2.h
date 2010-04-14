@@ -45,16 +45,15 @@ public:
 	virtual BOOL InitInstance();
 	virtual int ExitInstance();
 	
+private:
 // Implementierung
 	DECLARE_MESSAGE_MAP()	
 	afx_msg void OnAppAbout();
-	
-private:
 	afx_msg void UpdateViews(WPARAM, LPARAM);
 	afx_msg void ShowChatDlg(WPARAM, LPARAM);	
+	afx_msg void OnPreferences();
 	afx_msg void OnChat();	
-public:
 	afx_msg void OnOpenManual();
 	afx_msg void OnOpenReadme();
-	afx_msg void OnOpenCredits();
+	afx_msg void OnOpenCredits();	
 };
