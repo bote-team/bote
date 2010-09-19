@@ -566,6 +566,8 @@ void CTransportMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 									if (pDoc->m_System[p.x][p.y].GetTroops()->GetSize() == 0)
 										return;
 								}
+								else
+									break;
 							}
 							if (isFleet && j < number-1)
 								ship = (&pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfTheShipInArray()))->GetFleet()->GetPointerOfShipFromFleet(j);
