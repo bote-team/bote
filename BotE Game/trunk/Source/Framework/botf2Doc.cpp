@@ -2147,6 +2147,10 @@ void CBotf2Doc::CalcPreDataForNextRound()
 	for (map<CString, CMinor*>::const_iterator it = pmMinors->begin(); it != pmMinors->end(); it++)
 	{
 		CMinor* pMinor = it->second;
+
+		// Die Punkte für längere gute Beziehungen berechnen
+		pMinor->CalcAcceptancePoints(this);
+
 		// wurde die Rasse erobert oder gehört jemanden, dann nicht hier weitermachen
 		if (pMinor->GetSubjugated())
 			continue;
@@ -2170,8 +2174,6 @@ void CBotf2Doc::CalcPreDataForNextRound()
 				// dann sind im System auch weitere Einwohner hinzugekommen
 				m_System[ko.x][ko.y].SetHabitants(this->GetSector(ko).GetCurrentHabitants());
 		
-		// Die Punkte für längere gute Beziehungen berechnen
-		pMinor->CalcAcceptancePoints(this);
 		// Den Verbrauch der Rohstoffe der kleinen Rassen in jeder Runde berechnen
 		pMinor->ConsumeResources(this);
 		// Vielleicht baut die Rasse ein Raumschiff
