@@ -58,6 +58,12 @@ public:
 	// Funktion gibt einen Zeiger auf die Bauliste des Systems zurück.
 	CAssemblyList* GetAssemblyList() {return &m_AssemblyList;}
 
+	/// Funktion berechnet die theoretisch benötigte Anzahl an Runden, bis ein beliebiges Projekt in
+	/// diesem System fertig sein wird.
+	/// @param nID ID des Projektes
+	/// @return Anzahl der benötigten Runden
+	int GetNeededRoundsToCompleteProject(int nID);
+
 	// Funktion gibt einen Zeiger auf alle Produktionswerte und manche Boni des Systems zurück
 	CSystemProd* GetProduction() {return &m_Production;}
 	
@@ -237,6 +243,12 @@ public:
 	// Funktion berechnet und baut die Startgebäude in einem System, nachdem wir einen Planeten
 	// in diesem kolonisiert haben.
 	void BuildBuildingsAfterColonization(CSector* sector, BuildingInfoArray* buildingInfo, USHORT ColonizationPoints);
+
+	/// Diese Funktion entfernt alle speziellen Gebäude aus der Gebäudeliste. Diese Funktion sollte nach Eroberung des Systems
+	/// aufgerufen werden. Danach sind keine Gebäude mehr vorhanden, die nur x mal pro Imperium baubar gewesen oder die nur die Rasse
+	/// selbst bauen darf.
+	/// @param pvBuildingInfos Zeiger auf den Vektor mit allen Gebäudeinformationen
+	void RemoveSpecialRaceBuildings(const BuildingInfoArray* pvBuildingInfos);
 
 	// Funktion überprüft, ob wie aufgrund der Bevölkerung hier im System überhaupt (noch) eine Handelsroute
 	// anlegen können

@@ -9,6 +9,7 @@
 #include "FontLoader.h"
 #include "Botf2Doc.h"
 #include "Races\RaceController.h"
+#include "Anomaly.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -18,19 +19,21 @@ static char THIS_FILE[]=__FILE__;
 
 IMPLEMENT_SERIAL (CSector, CObject, 1)
 
-// statische Variablen initialisieren
-CFont* CSector::m_Font = NULL;
-COLORREF CSector::m_TextColor = RGB(0,0,0);
-
 //////////////////////////////////////////////////////////////////////
 // Konstruktion/Destruktion
 //////////////////////////////////////////////////////////////////////
 CSector::CSector(void)
-{	
+{
+	m_pAnomaly = NULL;
 }
 
 CSector::~CSector(void)
-{	
+{
+	if (m_pAnomaly)
+	{
+		delete m_pAnomaly;
+		m_pAnomaly = NULL;
+	}
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -50,37 +53,37 @@ void CSector::Serialize(CArchive &ar)
 		
 		// alle Maps speichern
 		ar << m_byStatus.size();
-		for (map<CString, BYTE>::const_iterator it = m_byStatus.begin(); it != m_byStatus.end(); it++)
+		for (map<CString, BYTE>::const_iterator it = m_byStatus.begin(); it != m_byStatus.end(); ++it)
 			ar << it->first << it->second;
 		ar << m_bShipPort.size();
-		for (set<CString>::const_iterator it = m_bShipPort.begin(); it != m_bShipPort.end(); it++)
+		for (set<CString>::const_iterator it = m_bShipPort.begin(); it != m_bShipPort.end(); ++it)
 			ar << *it;
 		ar << m_bOutpost.size();
-		for (set<CString>::const_iterator it = m_bOutpost.begin(); it != m_bOutpost.end(); it++)
+		for (set<CString>::const_iterator it = m_bOutpost.begin(); it != m_bOutpost.end(); ++it)
 			ar << *it;
 		ar << m_bStarbase.size();
-		for (set<CString>::const_iterator it = m_bStarbase.begin(); it != m_bStarbase.end(); it++)
+		for (set<CString>::const_iterator it = m_bStarbase.begin(); it != m_bStarbase.end(); ++it)
 			ar << *it;
 		ar << m_bIsStationBuild.size();
-		for (set<CString>::const_iterator it = m_bIsStationBuild.begin(); it != m_bIsStationBuild.end(); it++)
+		for (set<CString>::const_iterator it = m_bIsStationBuild.begin(); it != m_bIsStationBuild.end(); ++it)
 			ar << *it;
 		ar << m_bWhoIsOwnerOfShip.size();
-		for (set<CString>::const_iterator it = m_bWhoIsOwnerOfShip.begin(); it != m_bWhoIsOwnerOfShip.end(); it++)
+		for (set<CString>::const_iterator it = m_bWhoIsOwnerOfShip.begin(); it != m_bWhoIsOwnerOfShip.end(); ++it)
 			ar << *it;
 		ar << m_iNeededStationPoints.size();
-		for (map<CString, short>::const_iterator it = m_iNeededStationPoints.begin(); it != m_iNeededStationPoints.end(); it++)
+		for (map<CString, short>::const_iterator it = m_iNeededStationPoints.begin(); it != m_iNeededStationPoints.end(); ++it)
 			ar << it->first << it->second;
 		ar << m_iStartStationPoints.size();
-		for (map<CString, short>::const_iterator it = m_iStartStationPoints.begin(); it != m_iStartStationPoints.end(); it++)
+		for (map<CString, short>::const_iterator it = m_iStartStationPoints.begin(); it != m_iStartStationPoints.end(); ++it)
 			ar << it->first << it->second;
 		ar << m_iScanPower.size();
-		for (map<CString, short>::const_iterator it = m_iScanPower.begin(); it != m_iScanPower.end(); it++)
+		for (map<CString, short>::const_iterator it = m_iScanPower.begin(); it != m_iScanPower.end(); ++it)
 			ar << it->first << it->second;
 		ar << m_iNeededScanPower.size();
-		for (map<CString, short>::const_iterator it = m_iNeededScanPower.begin(); it != m_iNeededScanPower.end(); it++)
+		for (map<CString, short>::const_iterator it = m_iNeededScanPower.begin(); it != m_iNeededScanPower.end(); ++it)
 			ar << it->first << it->second;
 		ar << m_byOwnerPoints.size();
-		for (map<CString, BYTE>::const_iterator it = m_byOwnerPoints.begin(); it != m_byOwnerPoints.end(); it++)
+		for (map<CString, BYTE>::const_iterator it = m_byOwnerPoints.begin(); it != m_byOwnerPoints.end(); ++it)
 			ar << it->first << it->second;
 		
 		ar << m_sColonyOwner;
@@ -94,7 +97,9 @@ void CSector::Serialize(CArchive &ar)
 			ar << m_Planets.GetSize();
 			for (int i = 0; i < m_Planets.GetSize(); i++)
 				m_Planets.GetAt(i).Serialize(ar);
-		}		
+		}
+
+		ar << m_pAnomaly;
 	}
 	else
 	// Alle Variablen in der richtigen Reihenfolge lesen
@@ -234,8 +239,18 @@ void CSector::Serialize(CArchive &ar)
 			m_strSectorName = "";
 			m_bySunColor = 0;
 			m_Planets.RemoveAll();
-		}		
-		m_Font = NULL;
+		}
+
+		if (VERSION >= 0.72)
+		{
+			if (m_pAnomaly)
+			{
+				delete m_pAnomaly;
+				m_pAnomaly = NULL;
+			}
+			ar >> m_pAnomaly;
+		}
+
 		m_iShipPathPoints = 0;
 	}
 }
@@ -913,6 +928,18 @@ void CSector::CreatePlanets(const CString& sMajorID)
 	}
 }
 
+/// Funktion erzeugt eine zufällige Anomalie im Sektor.
+void CSector::CreateAnomaly(void)
+{
+	if (m_pAnomaly)
+	{
+		delete m_pAnomaly;
+		m_pAnomaly = NULL;
+	}
+	
+	m_pAnomaly = new CAnomaly();
+}
+
 /// Diese Funktion führt das Planetenwachstum für diesen Sektor durch.
 void CSector::LetPlanetsGrowth()
 {
@@ -1005,7 +1032,7 @@ void CSector::CalculateOwner(const CString& sSystemOwner)
 	else if (m_sOwnerOfSector != "" && sSystemOwner == "" && this->GetMinorRace() == TRUE)
 		return;
 	
-	for (set<CString>::const_iterator it = m_bShipPort.begin(); it != m_bShipPort.end(); it++)
+	for (set<CString>::const_iterator it = m_bShipPort.begin(); it != m_bShipPort.end(); ++it)
 	{
 		SetOwned(TRUE);
 		m_sOwnerOfSector = *it;
@@ -1017,7 +1044,7 @@ void CSector::CalculateOwner(const CString& sSystemOwner)
 	// zu gelten.
 	BYTE mostPoints = 1;
 	CString newOwner = "";
-	for (map<CString, BYTE>::const_iterator it = m_byOwnerPoints.begin(); it != m_byOwnerPoints.end(); it++)
+	for (map<CString, BYTE>::const_iterator it = m_byOwnerPoints.begin(); it != m_byOwnerPoints.end(); ++it)
 	{
 		if (it->second > mostPoints)
 		{
@@ -1061,6 +1088,12 @@ void CSector::Reset()
 	m_strSectorName = "";
 	m_iShipPathPoints = 0;	
 	m_Planets.RemoveAll();
+
+	if (m_pAnomaly)
+	{
+		delete m_pAnomaly;
+		m_pAnomaly = NULL;
+	}	
 }
 
 ////////////////////////////////////////////////////////////////
@@ -1069,8 +1102,8 @@ void CSector::Reset()
 /// Diese Funktion zeichnet den Namen des Sektors.
 void CSector::DrawSectorsName(CDC *pDC, CBotf2Doc* pDoc, CMajor* pPlayer)
 {
-	// befindet sich ein Sonnensystem im Sektor
-	if (!GetSunSystem())
+	// befindet sich kein Sonnensystem oder keine Anomalie im Sektor
+	if (!GetSunSystem() && !GetAnomaly())
 		return;
 
 	ASSERT(pDC);
@@ -1080,26 +1113,22 @@ void CSector::DrawSectorsName(CDC *pDC, CBotf2Doc* pDoc, CMajor* pPlayer)
 	// Ist Sektor bekannt dann zeichne den Systemnamen
 	if (this->GetKnown(pPlayer->GetRaceID()) == TRUE)
 	{
-		if (!m_Font)
-		{
-			m_Font = new CFont();
-			m_TextColor = CFontLoader::CreateFont(pPlayer, 0, 0, m_Font);
-		}
-		CFont* oldfont = pDC->SelectObject(m_Font);
-		pDC->SetTextColor(m_TextColor);
-		pDC->SetBkMode(TRANSPARENT);
+		COLORREF clrTextColor = CFontLoader::GetFontColor(pPlayer, 0);
+		pDC->SetTextColor(clrTextColor);
 		CMajor* pOwner = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(pDoc->GetSystem(m_KO).GetOwnerOfSystem()));
 		if (pOwner)
 		{
 			if (pPlayer->IsRaceContacted(pOwner->GetRaceID()) == true || pPlayer->GetRaceID() == pOwner->GetRaceID())
-				pDC->SetTextColor(pOwner->GetDesign()->m_clrGalaxySectorText);			
+				pDC->SetTextColor(pOwner->GetDesign()->m_clrGalaxySectorText);
 		}
 		// Systemnamen zeichnen
-		pDC->DrawText(m_strSectorName,
-		//	CRect(m_KO.x*STARMAP_SECTOR_WIDTH-50,m_KO.y*STARMAP_SECTOR_HEIGHT,m_KO.x*STARMAP_SECTOR_WIDTH+90,m_KO.y*STARMAP_SECTOR_HEIGHT+40),
-		CRect(m_KO.x*STARMAP_SECTOR_WIDTH, m_KO.y*STARMAP_SECTOR_HEIGHT, m_KO.x*STARMAP_SECTOR_WIDTH+STARMAP_SECTOR_WIDTH,m_KO.y*STARMAP_SECTOR_HEIGHT+STARMAP_SECTOR_HEIGHT),
-			DT_CENTER | DT_BOTTOM | DT_SINGLELINE);
-		pDC->SelectObject(oldfont);		
+		if (m_pAnomaly == NULL)
+			pDC->DrawText(m_strSectorName, CRect(m_KO.x*STARMAP_SECTOR_WIDTH, m_KO.y*STARMAP_SECTOR_HEIGHT, m_KO.x*STARMAP_SECTOR_WIDTH+STARMAP_SECTOR_WIDTH,m_KO.y*STARMAP_SECTOR_HEIGHT+STARMAP_SECTOR_HEIGHT), DT_CENTER | DT_BOTTOM | DT_SINGLELINE);
+		else
+		{
+			//CRect(m_KO.x*STARMAP_SECTOR_WIDTH-50,m_KO.y*STARMAP_SECTOR_HEIGHT,m_KO.x*STARMAP_SECTOR_WIDTH+90,m_KO.y*STARMAP_SECTOR_HEIGHT+40)
+			pDC->DrawText(m_pAnomaly->GetMapName(m_KO), CRect(m_KO.x*STARMAP_SECTOR_WIDTH, m_KO.y*STARMAP_SECTOR_HEIGHT,m_KO.x*STARMAP_SECTOR_WIDTH+STARMAP_SECTOR_WIDTH,m_KO.y*STARMAP_SECTOR_HEIGHT+STARMAP_SECTOR_HEIGHT), DT_CENTER | DT_BOTTOM | DT_SINGLELINE | DT_WORD_ELLIPSIS);
+		}		
 	}	
 }
 
@@ -1123,7 +1152,7 @@ void CSector::DrawShipSymbolInSector(Graphics *g, CBotf2Doc* pDoc, CMajor* pPlay
 
 	// durch alle Rassen iterieren und Schiffsymbole zeichnen
 	CString sAppPath = CIOData::GetInstance()->GetAppPath();
-	for (map<CString, CRace*>::const_iterator it = pmRaces->begin(); it != pmRaces->end(); it++)
+	for (map<CString, CRace*>::const_iterator it = pmRaces->begin(); it != pmRaces->end(); ++it)
 	{		
 		if (pPlayer->GetRaceID() == it->first && this->GetOwnerOfShip(it->first) == TRUE
 			|| this->GetOwnerOfShip(it->first) == TRUE && this->GetNeededScanPower(it->first) < this->GetScanPower(pPlayer->GetRaceID()))

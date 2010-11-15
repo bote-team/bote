@@ -91,7 +91,7 @@ void CShipHistory::Serialize(CArchive &ar)
 /// dabei automatisch gemacht. Es wird ebenfalls überprüft, dass dieses Schiff nicht schon hinzugefügt wurde.
 /// Zusätzlich müssen als Parameter noch der Name des Systems übergeben werden, in dem das Schiff gebaut wurde,
 /// sowie die aktuelle Runde.
-void CShipHistory::AddShip(CShip* ship, CString buildsector, short round)
+void CShipHistory::AddShip(CShip* ship, const CString& buildsector, short round)
 {
 	// Überprüfen, das dieses Schiff nicht schon in der Liste der Schiffe vorhanden ist
 	for (int i = 0; i < m_ShipHistory.GetSize(); i++)
@@ -121,7 +121,7 @@ void CShipHistory::AddShip(CShip* ship, CString buildsector, short round)
 /// für den Parameter <code>destroyType<code> die Art der Zerstörung als CString übergeben. Außerdem wird der neue
 /// Status des Schiffes im Parameter <code>status<code> übergeben, z.B. zerstört, vermisst usw.
 /// Konnte das Schiff modifiziert werden, so gibt die Funktion <code>true</code> zurück, sonst <code>false</code>
-bool CShipHistory::ModifyShip(CShip* ship, CString sector, short destroyRound, CString destroyType, CString status)
+bool CShipHistory::ModifyShip(const CShip* ship, const CString& sector, short destroyRound, const CString& destroyType, const CString& status)
 {
 	for (int i = 0; i < m_ShipHistory.GetSize(); i++)
 	{
@@ -164,7 +164,7 @@ void CShipHistory::RemoveShip(const CShip* ship)
 
 /// Funktion gibt die Anzahl der noch lebenden Schiffe zurück, wenn der Parameter <code>shipAlive</code> wahr ist.
 /// Ansonsten gibt die Funktion die Anzahl der zerstörten Schiffe zurück.
-UINT CShipHistory::GetNumberOfShips(BOOLEAN shipAlive)
+UINT CShipHistory::GetNumberOfShips(BOOLEAN shipAlive) const
 {
 	UINT number = 0;
 	for (UINT i = 0; i < GetSizeOfShipHistory(); i++)

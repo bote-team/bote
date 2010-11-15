@@ -3,9 +3,9 @@
 
 #include "stdafx.h"
 #include "botf2.h"
+#include "Botf2Doc.h"
 #include "EventMenuView.h"
 #include "Races\RaceController.h"
-
 // CEventMenuView
 
 IMPLEMENT_DYNCREATE(CEventMenuView, CMainBaseView)
@@ -200,9 +200,11 @@ void CEventMenuView::CloseScreen(CEventScreen* eventScreen)
 	ASSERT(pMajor);
 	if (!pMajor)
 		return;
-	
+
+	eventScreen->Close();
 	delete eventScreen;
 	pMajor->GetEmpire()->GetEventMessages()->RemoveAt(0);
+	
 	if (pMajor->GetEmpire()->GetEventMessages()->GetSize() == 0)
 	{
 		network::RACE client = pDoc->GetRaceCtrl()->GetMappedClientID(pMajor->GetRaceID());

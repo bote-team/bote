@@ -12,7 +12,6 @@ CTorpedo::CTorpedo(void)
 
 CTorpedo::~CTorpedo(void)
 {
-
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -159,12 +158,12 @@ void CTorpedo::MakeDamage(CCombatShip* CS)
 	// regenerativen Schilde hat, dann machen wir kompletten Schaden an der Hülle. Wenn wir Torpedos haben, die alle
 	// Schilde durchdringen, dann machen wir hier immer kompletten Schaden an der Hülle.
 	if ((CTorpedoInfo::GetPenetrating(m_byType) == TRUE && CS->GetActRegShields() == FALSE)
-		|| CTorpedoInfo::GetIgnoreAllShields(m_byType) == TRUE)
+		|| CTorpedoInfo::GetIgnoreAllShields(m_byType) == TRUE || CS->m_bCanUseShields == FALSE)
 		toHull = torpedoDamage;
 	CS->m_pShip->GetHull()->SetCurrentHull(-toHull);
-		
 	// den restlichen Torpedoschaden ermitteln, welcher nicht direkt auf die Hülle ging
 	torpedoDamage -= toHull;
+	
 	// Torpedos verlieren ihre Effizienz, wenn sie auf noch relativ starke Schilde treffen. Umso weniger von den Schilden
 	// noch aktiv ist, umso stärker wirkt der Torpedo. Dies gilt jedoch nicht für Microtorpedos.
 	if (CTorpedoInfo::GetMicro(m_byType) == FALSE)

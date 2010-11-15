@@ -15,7 +15,7 @@ public:
 	CTroopInfo(void);
 
 	/// Konstruktor mit kompletter Parameterübergabe
-	CTroopInfo(CString name, CString desc, BYTE power, BYTE costs, BYTE techs[6], USHORT res[5], USHORT ip,
+	CTroopInfo(const CString& name, const CString& desc, BYTE power, BYTE costs, BYTE techs[6], USHORT res[5], USHORT ip,
 		BYTE ID, const CString& sOwner, USHORT size, BYTE moralValue);
 	
 	/// Destruktor

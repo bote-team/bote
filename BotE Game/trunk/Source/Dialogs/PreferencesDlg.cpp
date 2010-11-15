@@ -11,8 +11,9 @@
 
 IMPLEMENT_DYNAMIC(CPreferencesDlg, CDialog)
 
-CPreferencesDlg::CPreferencesDlg(CWnd* pParent /*=NULL*/)
-	: CDialog(CPreferencesDlg::IDD, pParent)	
+CPreferencesDlg::CPreferencesDlg(bool bDisableNonWorking/* = false*/, CWnd* pParent /*=NULL*/)
+	: CDialog(CPreferencesDlg::IDD, pParent)
+	, m_bDisable(bDisableNonWorking)
 	, m_bAutoave(FALSE)
 	, m_bHardwaresound(FALSE)
 	, m_bSound(FALSE)
@@ -22,6 +23,12 @@ CPreferencesDlg::CPreferencesDlg(CWnd* pParent /*=NULL*/)
 	, m_bShowScrollBars(FALSE)
 	, m_bInvertMouse(FALSE)	
 	, m_bHideMenu(FALSE)
+	, m_bVCElimination(FALSE)
+	, m_bVCDiplomacy(FALSE)
+	, m_bVCConquest(FALSE)
+	, m_bVCResearch(FALSE)
+	, m_bVCCombat(FALSE)
+	, m_bVCSabotage(FALSE)
 {
 }
 
@@ -45,8 +52,15 @@ void CPreferencesDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_CHECK_INVERTNOUSE, m_bInvertMouse);
 	DDX_Control(pDX, IDC_SLIDER_STARDENSITY, m_ctrlStarDensity);
 	DDX_Control(pDX, IDC_SLIDER_MINORDENSITY, m_ctrlMinorDensity);
+	DDX_Control(pDX, IDC_SLIDER_ANOMALYDENSITY, m_ctrlAnomalyDensity);
 	DDX_Control(pDX, IDC_EDIT_RANDOMSEED, m_edtRandomSeed);
 	DDX_Check(pDX, IDC_CHECK_HIDEMENUBAR, m_bHideMenu);
+	DDX_Check(pDX, IDC_CHECK_VC_ELIMINATION, m_bVCElimination);
+	DDX_Check(pDX, IDC_CHECK_VC_DIPLOMACY, m_bVCDiplomacy);
+	DDX_Check(pDX, IDC_CHECK_VC_CONQUEST, m_bVCConquest);
+	DDX_Check(pDX, IDC_CHECK_VC_RESEARCH, m_bVCResearch);
+	DDX_Check(pDX, IDC_CHECK_VC_COMBAT, m_bVCCombat);
+	DDX_Check(pDX, IDC_CHECK_VC_SABOTAGE, m_bVCSabotage);
 }
 
 
@@ -72,6 +86,8 @@ BOOL CPreferencesDlg::OnInitDialog()
 	m_ctrlStarDensity.SetTicFreq(1);
 	m_ctrlMinorDensity.SetRange(0,100);
 	m_ctrlMinorDensity.SetTicFreq(1);
+	m_ctrlAnomalyDensity.SetRange(0,100);
+	m_ctrlAnomalyDensity.SetTicFreq(1);
 	
 	CIniLoader* pIni = CIniLoader::GetInstance();
 	ASSERT(pIni);
@@ -173,6 +189,74 @@ BOOL CPreferencesDlg::OnInitDialog()
 		ASSERT(false);
 	m_ctrlMinorDensity.SetPos(nMinorDensity);
 
+	int nAnomalyDensity;
+	if (!pIni->ReadValue("Special", "ANOMALYDENSITY", nAnomalyDensity))
+		ASSERT(false);
+	m_ctrlAnomalyDensity.SetPos(nAnomalyDensity);
+
+	// Victory Conditions
+	bool bVCElimination;
+	if (!pIni->ReadValue("Victory_Conditions", "Elimination", bVCElimination))
+		ASSERT(false);
+	m_bVCElimination = bVCElimination;
+
+	bool bVCDiplomacy;
+	if (!pIni->ReadValue("Victory_Conditions", "Diplomacy", bVCDiplomacy))
+		ASSERT(false);
+	m_bVCDiplomacy = bVCDiplomacy;
+
+	bool bVCConquest;
+	if (!pIni->ReadValue("Victory_Conditions", "Conquest", bVCConquest))
+		ASSERT(false);
+	m_bVCConquest = bVCConquest;
+
+	bool bVCResearch;
+	if (!pIni->ReadValue("Victory_Conditions", "Research", bVCResearch))
+		ASSERT(false);
+	m_bVCResearch = bVCResearch;
+
+	bool bVCCombat;
+	if (!pIni->ReadValue("Victory_Conditions", "Combat", bVCCombat))
+		ASSERT(false);
+	m_bVCCombat = bVCCombat;
+
+	bool bVCSabotage;
+	if (!pIni->ReadValue("Victory_Conditions", "Sabotage", bVCSabotage))
+		ASSERT(false);
+	m_bVCSabotage = bVCSabotage;
+
+	// alle nicht während des Spiels änderbaren Einstellungen deaktivieren
+	if (m_bDisable)
+	{
+		CWnd* pWnd = GetDlgItem(IDC_SLIDER_STARDENSITY);
+		if (pWnd)
+			pWnd->EnableWindow(FALSE);
+		pWnd = GetDlgItem(IDC_SLIDER_MINORDENSITY);
+		if (pWnd)
+			pWnd->EnableWindow(FALSE);
+		pWnd = GetDlgItem(IDC_SLIDER_ANOMALYDENSITY);
+		if (pWnd)
+			pWnd->EnableWindow(FALSE);
+		pWnd = GetDlgItem(IDC_CHECK_VC_ELIMINATION);
+		if (pWnd)
+			pWnd->EnableWindow(FALSE);
+		pWnd = GetDlgItem(IDC_CHECK_VC_DIPLOMACY);
+		if (pWnd)
+			pWnd->EnableWindow(FALSE);
+		pWnd = GetDlgItem(IDC_CHECK_VC_CONQUEST);
+		if (pWnd)
+			pWnd->EnableWindow(FALSE);
+		pWnd = GetDlgItem(IDC_CHECK_VC_RESEARCH);
+		if (pWnd)
+			pWnd->EnableWindow(FALSE);
+		pWnd = GetDlgItem(IDC_CHECK_VC_COMBAT);
+		if (pWnd)
+			pWnd->EnableWindow(FALSE);
+		pWnd = GetDlgItem(IDC_CHECK_VC_SABOTAGE);
+		if (pWnd)
+			pWnd->EnableWindow(FALSE);
+	}
+
 	UpdateData(false);	
 
 	return TRUE;  // return TRUE unless you set the focus to a control
@@ -227,6 +311,22 @@ void CPreferencesDlg::OnOK()
 	pIni->WriteValue("Special", "STARDENSITY", s);
 	s.Format("%d", m_ctrlMinorDensity.GetPos());
 	pIni->WriteValue("Special", "MINORDENSITY", s);
+	s.Format("%d", m_ctrlAnomalyDensity.GetPos());
+	pIni->WriteValue("Special", "ANOMALYDENSITY", s);
+
+	// Victory Conditions
+	m_bVCElimination == TRUE ? s = "ON" : s = "OFF";
+	pIni->WriteValue("Victory_Conditions", "Elimination", s);
+	m_bVCDiplomacy == TRUE ? s = "ON" : s = "OFF";
+	pIni->WriteValue("Victory_Conditions", "Diplomacy", s);
+	m_bVCConquest == TRUE ? s = "ON" : s = "OFF";
+	pIni->WriteValue("Victory_Conditions", "Conquest", s);
+	m_bVCResearch == TRUE ? s = "ON" : s = "OFF";
+	pIni->WriteValue("Victory_Conditions", "Research", s);
+	m_bVCCombat == TRUE ? s = "ON" : s = "OFF";
+	pIni->WriteValue("Victory_Conditions", "Combat", s);
+	m_bVCSabotage == TRUE ? s = "ON" : s = "OFF";
+	pIni->WriteValue("Victory_Conditions", "Sabotage", s);
 
 	CDialog::OnOK();
 }

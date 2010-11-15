@@ -53,11 +53,13 @@ private:
 	// Buttons
 
 	// Hier die Rechtecke und Variablen, die wir benötigen wenn wir in der Flottenansicht sind
-	USHORT m_iFleetPage;					// die aktuelle Seite für die Flottenansicht
-	short  m_iOldShipInFleet;				// Merkvariable um das vorherige Schiff welches markiert war sich zu merken
-	BOOLEAN m_bDrawFullFleet;				// soll die ganze Flottenansicht neu gezeichnet werden?
-	BOOLEAN m_bShowNextButton;				// soll der next-Button angezeigt werden, falls wir nicht alles auf eine Seite bekommen
-	BOOLEAN m_bShowBackButton;				// wenn wir nicht mehr auf der ersten Seite sind kommt der back-Button
+	USHORT m_iFleetPage;						///< die aktuelle Seite für die Flottenansicht
+	BOOLEAN m_bShowNextButton;					///< soll der next-Button angezeigt werden, falls wir nicht alles auf eine Seite bekommen
+	BOOLEAN m_bShowBackButton;					///< wenn wir nicht mehr auf der ersten Seite sind kommt der back-Button
+	
+	vector<pair<CRect, CShip*> > m_vShipRects;	///< alle angezeigten Schiffe mit ihren Rechtecken zu draufklicken
+	CShip* m_pMarkedShip;						///< aktuell markiertes Schiff
+	CRect m_rLastMarkedRect;					///< zuletzt markiertes Rechteck
 
 protected:
 	DECLARE_MESSAGE_MAP()

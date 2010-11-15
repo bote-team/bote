@@ -29,6 +29,9 @@ public:
 #endif
 
 public:
+	/// Funktion führt Aufgaben aus, welche zu jeder neuen Runde von den Views ausgeführt werden müssen.
+	void OnNewRound(void);
+
 	void SetSubMenu(BYTE menuID) {m_bySubMenu = menuID;}
 
 	BYTE GetSubMenu() const {return m_bySubMenu;}
@@ -94,6 +97,7 @@ private:
 	BYTE m_bySubMenu;						///< welches Untermenü im Geheimdienstmenü wurde aktiviert
 	CString m_sActiveIntelRace;				///< auf welche gegnerische Rasse beziehen sich die Intelaktionen
 	short m_iOldClickedIntelReport;			///< auf welchen Bericht wurde vorher geklickt, braucht man als Modifikator
+	bool m_bSortDesc[4];					///< bei Klick zum Sortieren soll wie sortiert werden?
 	
 protected:
 	DECLARE_MESSAGE_MAP()

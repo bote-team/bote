@@ -3,6 +3,7 @@
 #include "Botf2Doc.h"
 #include "Races\RaceController.h"
 #include "Ships\Fleet.h"
+#include "Galaxy\Anomaly.h"
 
 //////////////////////////////////////////////////////////////////////
 // Konstruktion/Destruktion
@@ -24,7 +25,7 @@ CSectorAI::~CSectorAI(void)
 //////////////////////////////////////////////////////////////////////
 /// Diese Funktion gibt das gesamte Gefahrenpotenzial aller Rassen in einem Sektor <code>sector</code> zurück.
 /// Das Gefahrenpotential der eigenen Rasse <code>sOwnRaceID</code> wird dabei aber nicht mit eingerechnet.
-UINT CSectorAI::GetCompleteDanger(const CString& sOwnRaceID, const CPoint& sector)
+UINT CSectorAI::GetCompleteDanger(const CString& sOwnRaceID, const CPoint& sector) const
 {
 	UINT danger = 0;
 	
@@ -46,9 +47,9 @@ void CSectorAI::CalculateDangers()
 		CShip* ship = &m_pDoc->m_ShipArray.GetAt(i);
 		AddDanger(ship);
 		// Führt das Schiff eine Flotte an, so muss dies alles auch für die Schiffe in der Flotte getan werden
-		if (ship->GetFleet() != 0)
+		if (ship->GetFleet() != NULL)
 			for (int j = 0; j < ship->GetFleet()->GetFleetSize(); j++)
-				AddDanger(ship->GetFleet()->GetPointerOfShipFromFleet(j));
+				AddDanger(ship->GetFleet()->GetShipFromFleet(j));
 	}
 }
 
@@ -70,7 +71,11 @@ void CSectorAI::CalcualteSectorPriorities()
 				CalculateMinorraceSectors(x,y);
 				
 			}
-			CalculateOffensiveTargets(x,y);
+			// Offensivziele in diesem Feld gelten nur, wenn nicht eine gefährliche Anomalie einen
+			// Einflug in den Sektor sinnlos machen würde. Also bei gefährlicher Anomalie wird kein Offensivziel berechnet, sonst immer
+			if (m_pDoc->m_Sector[x][y].GetAnomaly() == false || m_pDoc->m_Sector[x][y].GetAnomaly()->GetWaySearchWeight() < 10.0)
+				CalculateOffensiveTargets(x,y);
+
 			for (map<CString, CRace*>::const_iterator it = mRaces->begin(); it != mRaces->end(); it++)
 				if (GetDangerOnlyFromCombatShips(it->first, CPoint(x,y)) > highestCombatShipDanger[it->first])
 				{
@@ -94,7 +99,7 @@ void CSectorAI::CalcualteSectorPriorities()
 				MYTRACE(MT::LEVEL_INFO, "\n---------- sectors to terraform or colinize -------------\n");
 				MYTRACE(MT::LEVEL_INFO, "Race-ID: %s\n",it->first);
 				for (UINT j = 0; j < m_vSectorsToTerraform[it->first].size(); j++)
-					MYTRACE(MT::LEVEL_INFO, "POP: %d - KO: %d,%d\n",m_vSectorsToTerraform[it->first][j].pop, m_vSectorsToTerraform[it->first][j].p.x, m_vSectorsToTerraform[it->first][j].p.y);
+					MYTRACE(MT::LEVEL_INFO, "POP: %d - KO: %d/%d\n",m_vSectorsToTerraform[it->first][j].pop, m_vSectorsToTerraform[it->first][j].p.x, m_vSectorsToTerraform[it->first][j].p.y);
 			}
 			if (m_vOffensiveTargets[it->first].size())
 			{
@@ -122,9 +127,9 @@ void CSectorAI::CalcualteSectorPriorities()
 void CSectorAI::AddDanger(CShip* ship)
 {
 	CString race = ship->GetOwnerOfShip();
-	
+		
 	UINT offensive = ship->GetCompleteOffensivePower();
-	UINT defensive = ship->GetCompleteDefensivePower();
+	UINT defensive = ship->GetCompleteDefensivePower() / 2;
 	m_iDangers[race][pair<int, int>(ship->GetKO().x, ship->GetKO().y)] += (offensive + defensive);
 	
 	if (ship->GetShipType() > COLONYSHIP && ship->GetShipType() < OUTPOST)
@@ -269,11 +274,27 @@ void CSectorAI::CalculateBombardTargets(const CString& sRaceID, int x, int y)
 }
 
 /// Diese Funktion berechnet einen Sektor, welcher sich zum Bau eines Außenpostens eignet.
+/// Funktion erst nach der Berechnung der Terraformsektoren aufrufen.
 void CSectorAI::CalculateStationTargets(const CString& sRaceID)
 {
 	CMajor* pMajor = dynamic_cast<CMajor*>(m_pDoc->GetRaceCtrl()->GetRace(sRaceID));
 	if (pMajor)
+	{
 		m_mStationBuild[sRaceID] = pMajor->GetStarmap()->CalcAIBaseSector(0.0f);
+		
+		// Umso weniger Terraformsektoren zur Verfügung stehen, umso höher sind die Stationsbauprioiritäten
+		if (GetSectorsToTerraform(sRaceID)->size() == 0)
+			m_mStationBuild[sRaceID].points *= 4.0f;
+		else if (GetSectorsToTerraform(sRaceID)->size() == 1)
+		{
+			if (GetSectorsToTerraform(sRaceID)->front().pop < 10)
+				m_mStationBuild[sRaceID].points *= 3.0f;
+			else
+				m_mStationBuild[sRaceID].points *= 2.0f;
+		}
+		else if (GetSectorsToTerraform(sRaceID)->size() == 2)
+			m_mStationBuild[sRaceID].points *= 1.5f;
+	}
 }
 
 /// Funktion löscht alle vorher berechneten Prioritäten.

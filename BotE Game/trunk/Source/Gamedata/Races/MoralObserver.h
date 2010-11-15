@@ -38,7 +38,7 @@ public:
 	 * angezeigt werden kann. Optional muss auch ein Textstring <code>param</code> übergeben werden,
 	 * der in bestimmte Nachrichten eingebaut wird.
 	 */
-	CString AddEvent(unsigned short Event, BYTE major, CString param = "") {
+	CString AddEvent(unsigned short Event, BYTE major, const CString& param = "") {
 		m_iEvents.Add(Event); return GenerateText(Event, major, param);
 	}
 	/**
@@ -54,7 +54,7 @@ public:
 	 * Funktion das Event <code>event</code> und die Nummer der Majorrace <code>major<code> übergeben. Optional muss
 	 * auch ein Textstring <code>param</code> übergeben werden, der in bestimmte Nachrichten eingebaut wird.
 	 */
-	CString GenerateText(unsigned short Event, BYTE major, CString param = "");
+	CString GenerateText(unsigned short Event, BYTE major, const CString& param = "") const;
 
 	/**
 	 * Funktion lädt die zu Beginn die ganzen Moralwerte für alle verschiedenen Ereignisse in eine Moralmatrix.

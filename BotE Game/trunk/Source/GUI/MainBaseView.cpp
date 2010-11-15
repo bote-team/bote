@@ -63,7 +63,7 @@ void CMainBaseView::OnInitialUpdate()
 	ASSERT(m_pPlayersRace);
 
 	// TODO: Add your specialized code here and/or call the base class
-	m_TotalSize = CSize(1075, 750);	
+	m_TotalSize = CSize(1075, 750);		
 }
 
 void CMainBaseView::OnPrepareDC(CDC* pDC, CPrintInfo* pInfo)

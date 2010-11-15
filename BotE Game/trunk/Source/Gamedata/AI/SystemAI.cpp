@@ -724,7 +724,7 @@ int CSystemAI::ChooseShip(int prio, BOOLEAN chooseCombatship, BOOLEAN chooseColo
 						{
 							m_pDoc->m_pAIPrios->ChoosedTransportShipPrio(sRace);
 #ifdef TRACE_AI
-						MYTRACE(MT::LEVEL_INFO, "CSystemAI::ChooseShip(): build transportship in system: %s\n", m_pDoc->m_Sector[m_KO.x][m_KO.y].GetName());								
+							MYTRACE(MT::LEVEL_INFO, "CSystemAI::ChooseShip(): build transportship in system: %s\n", m_pDoc->m_Sector[m_KO.x][m_KO.y].GetName());								
 #endif
 							return id;
 						}
@@ -752,7 +752,7 @@ int CSystemAI::ChooseShip(int prio, BOOLEAN chooseCombatship, BOOLEAN chooseColo
 			if (m_pDoc->m_ShipInfoArray.GetAt(id-10000).GetShipType() > COLONYSHIP)
 			{
 				UINT strenght = m_pDoc->m_ShipInfoArray.GetAt(id-10000).GetCompleteOffensivePower() +
-					m_pDoc->m_ShipInfoArray.GetAt(id-10000).GetCompleteDefensivePower();
+					m_pDoc->m_ShipInfoArray.GetAt(id-10000).GetCompleteDefensivePower() / 2;
 				ships.Add(SHIPLIST(id, strenght));
 			}
 		}
@@ -1251,7 +1251,7 @@ void CSystemAI::ApplyTradeRoutes()
 	{
 		// primär zu Minorraces
 		map<CString, CMinor*>* pmMinors = m_pDoc->GetRaceCtrl()->GetMinors();
-		for (map<CString, CMinor*>::const_iterator it = pmMinors->begin(); it != pmMinors->end(); it++)
+		for (map<CString, CMinor*>::const_iterator it = pmMinors->begin(); it != pmMinors->end(); ++it)
 		{
 			CMinor* pMinor = it->second;
 			if (pMinor->GetAgreement(race) >= TRADE_AGREEMENT && pMinor->GetAgreement(race) < MEMBERSHIP)

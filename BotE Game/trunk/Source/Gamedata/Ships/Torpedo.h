@@ -6,14 +6,12 @@
  *
  */
 #pragma once
-#include "afx.h"
 #include "Vec3.h"
 
 class CCombatShip;
 class CTorpedo : public CObject
 {
-	friend class CCombatShip;
-	friend class CComabt;
+	friend class CCombatShip;	
 public:
 	/// Konstruktor
 	CTorpedo(void);
@@ -91,5 +89,3 @@ private:
 	*/
 	BOOLEAN PerhapsImpact(CCombatShip* CS, USHORT minDistance);
 };
-
-typedef CArray<CTorpedo*, CTorpedo*> CombatTorpedos;

@@ -92,7 +92,7 @@ public:
 	 * Zusätzlich müssen als Parameter noch der Name des Systems übergeben werden, in dem das Schiff gebaut wurde,
 	 * sowie die aktuelle Runde.
 	 */
-	void AddShip(CShip* ship, CString buildsector, short round);
+	void AddShip(CShip* ship, const CString& buildsector, short round);
 	
 	/**
 	 * Funktion modifiziert den Eintrag in dem Feld <code>m_ShipHistory<code>. Dabei wird das Schiff übergeben, dessen
@@ -102,7 +102,7 @@ public:
 	 * Status des Schiffes im Parameter <code>status<code> übergeben, z.B. zerstört, vermisst usw.
 	 * Konnte das Schiff modifiziert werden, so gibt die Funktion <code>true</code> zurück, sonst <code>false</code>
 	 */
-	bool ModifyShip(CShip* ship, CString sector, short destroyRound = 0, CString destroyType = "", CString status = "");
+	bool ModifyShip(const CShip* ship, const CString& sector, short destroyRound = 0, const CString& destroyType = "", const CString& status = "");
 
 	/// Funktion entfernt ein bestimmtes Schiff aus der Schiffshistory.
 	/// @param ship Zeiger auf das zu entfernende Schiff.
@@ -122,7 +122,7 @@ public:
 	/**
 	 * Funktin gibt die Größe des <code>m_ShipHistory<code> Arrays zurück.
 	 */
-	UINT GetSizeOfShipHistory() {return m_ShipHistory.GetSize();}
+	UINT GetSizeOfShipHistory() const {return m_ShipHistory.GetSize();}
 
 	/**
 	 * Funktion gibt einen Wahrheitswert zurück, ob das Schiff noch im Dienst ist, oder schon zerstört wurde.
@@ -130,13 +130,13 @@ public:
 	 * <code>FALSE<code> zurück. Übergeben wird dabei die Nummer <code>i<code>, an dessen Stelle sich das
 	 * Schiff im Array <code>m_ShipHistory<code> befindet.
 	 */
-	BOOLEAN IsShipAlive(unsigned short i) {return m_ShipHistory.GetAt(i).m_iDestroyRound == 0;}
+	BOOLEAN IsShipAlive(unsigned short i) const {return m_ShipHistory.GetAt(i).m_iDestroyRound == 0;}
 
 	/**
 	 * Funktion gibt die Anzahl der noch lebenden Schiffe zurück, wenn der Parameter <code>shipAlive</code> wahr ist.
 	 * Ansonsten gibt die Funktion die Anzahl der zerstörten Schiffe zurück.
 	 */
-	UINT GetNumberOfShips(BOOLEAN shipAlive);
+	UINT GetNumberOfShips(BOOLEAN shipAlive) const;
 
 	// Resetfunktion für die Klasse CShipHistory
 	void Reset(void);

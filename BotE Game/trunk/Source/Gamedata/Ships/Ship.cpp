@@ -3,11 +3,11 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
-#include "stdafx.h"
 #include "Ship.h"
 #include "Galaxy\Sector.h"
 #include "Fleet.h"
 #include "HTMLStringBuilder.h"
+#include "GraphicPool.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -30,29 +30,18 @@ CShip::CShip()
 	for (int i = TITAN; i <= DILITHIUM; i++)
 		m_iLoadedResources[i] = 0;
 	m_bCloakOn = FALSE;
+	m_nCombatTactic = COMBAT_TACTIC_ATTACK;
 }
 
 CShip::~CShip()
 {
-	for (int i = 0; i < m_TorpedoWeapons.GetSize(); )
-		m_TorpedoWeapons.RemoveAt(i);
-	for (int i = 0; i < m_BeamWeapons.GetSize(); )
-		m_BeamWeapons.RemoveAt(i);
-	for (int i = 0; i < m_Path.GetSize(); )
-		m_Path.RemoveAt(i);
-	for (int i = 0; i < m_Troops.GetSize(); )
-		m_Troops.RemoveAt(i);	
-	m_TorpedoWeapons.RemoveAll();
-	m_BeamWeapons.RemoveAll();
-	m_Path.RemoveAll();
-	m_Troops.RemoveAll();
 	if (m_Fleet)
-	{
-		m_Fleet->DeleteFleet();
+	{		
 		delete m_Fleet;
+		m_Fleet = NULL;
 	}
-	m_Fleet = NULL;
 }
+
 
 //////////////////////////////////////////////////////////////////////
 // Kopierkonstruktor
@@ -61,15 +50,20 @@ CShip::CShip(const CShip & rhs)
 {
 	m_Hull = rhs.m_Hull;
 	m_Shield = rhs.m_Shield;
+	m_TorpedoWeapons.RemoveAll();
 	for (int i = 0; i < rhs.m_TorpedoWeapons.GetSize(); i++)
 		m_TorpedoWeapons.Add(rhs.m_TorpedoWeapons.GetAt(i));
+	m_BeamWeapons.RemoveAll();
 	for (int i = 0; i < rhs.m_BeamWeapons.GetSize(); i++)
 		m_BeamWeapons.Add(rhs.m_BeamWeapons.GetAt(i));
+	m_Path.RemoveAll();
 	for (int i = 0; i < rhs.m_Path.GetSize(); i++)
 		m_Path.Add(rhs.m_Path.GetAt(i));
+	m_Troops.RemoveAll();
 	for (int i = 0; i < rhs.m_Troops.GetSize(); i++)
 		m_Troops.Add(rhs.m_Troops.GetAt(i));
-	// Zeiger auf Fleet speziell behandeln	
+	
+	// Zeiger auf Fleet speziell behandeln
 	if (rhs.m_Fleet)
 	{
 		m_Fleet = new CFleet();
@@ -108,6 +102,7 @@ CShip::CShip(const CShip & rhs)
 	m_bIsFlagShip = rhs.m_bIsFlagShip;
 	m_bySpecial[0] = rhs.m_bySpecial[0];
 	m_bySpecial[1] = rhs.m_bySpecial[1];
+	m_nCombatTactic = rhs.m_nCombatTactic;
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -117,20 +112,25 @@ CShip & CShip::operator=(const CShip & rhs)
 {
 	if (this == &rhs)
 		return *this;
+	
 	m_Hull = rhs.m_Hull;
 	m_Shield = rhs.m_Shield;
+	m_TorpedoWeapons.RemoveAll();
 	for (int i = 0; i < rhs.m_TorpedoWeapons.GetSize(); i++)
 		m_TorpedoWeapons.Add(rhs.m_TorpedoWeapons.GetAt(i));
+	m_BeamWeapons.RemoveAll();
 	for (int i = 0; i < rhs.m_BeamWeapons.GetSize(); i++)
 		m_BeamWeapons.Add(rhs.m_BeamWeapons.GetAt(i));
+	m_Path.RemoveAll();
 	for (int i = 0; i < rhs.m_Path.GetSize(); i++)
 		m_Path.Add(rhs.m_Path.GetAt(i));
+	m_Troops.RemoveAll();
 	for (int i = 0; i < rhs.m_Troops.GetSize(); i++)
 		m_Troops.Add(rhs.m_Troops.GetAt(i));
+	
 	// Zeiger auf Fleet speziell behandeln
 	if (rhs.m_Fleet)
 	{
-		MYTRACE(MT::LEVEL_ERROR, "Achtung, wenn im Zuweisungsoperator der CShip-Klasse ein Shiffsobjekt eine Flotte beitzt, dann kommt es manchmal beim Beenden des Programmes aus mir unverständlichen Gründen zu Memory-Leaks!\n");
 		m_Fleet = new CFleet();
 		*m_Fleet = *(rhs.m_Fleet);
 	}
@@ -166,6 +166,8 @@ CShip & CShip::operator=(const CShip & rhs)
 	m_bIsFlagShip = rhs.m_bIsFlagShip;
 	m_bySpecial[0] = rhs.m_bySpecial[0];
 	m_bySpecial[1] = rhs.m_bySpecial[1];
+	m_nCombatTactic = rhs.m_nCombatTactic;
+
 	return *this;
 }
 
@@ -174,7 +176,7 @@ CShip & CShip::operator=(const CShip & rhs)
 //////////////////////////////////////////////////////////////////////
 void CShip::Serialize(CArchive &ar)
 {
-	CObject::Serialize(ar);
+	__super::Serialize(ar);
 	
 	m_Hull.Serialize(ar);
 	m_Shield.Serialize(ar);
@@ -222,6 +224,8 @@ void CShip::Serialize(CArchive &ar)
 		ar << m_Troops.GetSize();
 		for (int i = 0; i < m_Troops.GetSize(); i++)
 			m_Troops.GetAt(i).Serialize(ar);
+		int nTactic = (int)m_nCombatTactic;
+		ar << nTactic;
 	}
 	// wenn geladen wird
 	if (ar.IsLoading())
@@ -273,36 +277,22 @@ void CShip::Serialize(CArchive &ar)
 		m_Troops.SetSize(number);
 		for (int i = 0; i < number; i++)
 			m_Troops.GetAt(i).Serialize(ar);
+		if (VERSION >= 0.72)
+		{
+			int nTactic;
+			ar >> nTactic;
+			m_nCombatTactic = (COMBAT_TACTICS)nTactic;
+		}
 	}
 }
 
 //////////////////////////////////////////////////////////////////////
 // Zugriffsfunktion
 //////////////////////////////////////////////////////////////////////
-const CPoint CShip::GetTargetKO()
-{
-	return m_TargetKO[0];
-}
 
 // Funktion gibt den Schiffstyp als char* zurück
-CString CShip::GetShipTypeAsString(BOOL plural)
+CString CShip::GetShipTypeAsString(BOOL plural) const
 {
-	/*	#define TRANSPORTER			0
-		#define COLONYSHIP            1
-		#define PROBE				2
-		#define SCOUT				3
-		#define FIGHTER				4	// Jäger
-		#define FRIGATE				5
-		#define DESTROYER			6
-		#define CRUISER				7
-		#define HEAVY_DESTROYER     8
-		#define HEAVY_CRUISER       9
-		#define BATTLESHIP			10
-		#define FLAGSHIP			11
-		#define OUTPOST				12
-		#define STARBASE            13
-		#define ALIEN				14 */
-	// Oben im Beschreibungsrechteck den Namen des Projektes hinschreiben
 	CString shipType;
 	if (plural == FALSE)
 		switch (m_iShipType)
@@ -342,11 +332,12 @@ CString CShip::GetShipTypeAsString(BOOL plural)
 		case STARBASE: shipType = CResourceManager::GetString("STARBASES"); break;
 		case ALIEN: shipType = CResourceManager::GetString("ALIENS"); break;
 		}
+	
 	return shipType;
 }
 
 // Funktion gibt den aktuellen Schiffsauftrag als char* zurück
-CString CShip::GetCurrentOrderAsString()
+CString CShip::GetCurrentOrderAsString() const
 {
 	/*
 	#define AVOID               0
@@ -403,12 +394,14 @@ void CShip::CreateFleet()
 void CShip::CheckFleet()
 {
 	if (m_Fleet)
+	{
 		if (m_Fleet->GetFleetSize() == 0)
 		{
 			m_Fleet->DeleteFleet();
 			delete m_Fleet;
 			m_Fleet = NULL;
 		}
+	}
 }
 
 void CShip::DeleteFleet()
@@ -431,28 +424,28 @@ BOOLEAN CShip::HasSpecial(BYTE ability) const
 
 /// Funktion gibt die gesamte Offensivpower des Schiffes zurück, welches es in 100s anrichten würde.
 /// Dieser Wert hat keinen direkten Kampfeinfluss, er ist nur zum Vergleich heranzuziehen.
-UINT CShip::GetCompleteOffensivePower()
+UINT CShip::GetCompleteOffensivePower() const
 {
 	UINT beamDmg	 = 0;
 	UINT torpedoDmg  = 0;
-	for (int i = 0; i < GetBeamWeapons()->GetSize(); i++)
+	for (int i = 0; i < m_BeamWeapons.GetSize(); i++)
 	{
 		short counter = 0;
 		for (int j = 0; j < 100; j++)
 		{
 			if (counter == 0)
-				counter = GetBeamWeapons()->GetAt(i).GetBeamLenght() 
-							+ GetBeamWeapons()->GetAt(i).GetRechargeTime();
-			if (counter > GetBeamWeapons()->GetAt(i).GetRechargeTime())
+				counter = m_BeamWeapons.GetAt(i).GetBeamLenght() 
+							+ m_BeamWeapons.GetAt(i).GetRechargeTime();
+			if (counter > m_BeamWeapons.GetAt(i).GetRechargeTime())
 			{
-				UINT tempBeamDmg = (UINT)GetBeamWeapons()->GetAt(i).GetBeamPower()
-							* GetBeamWeapons()->GetAt(i).GetBeamNumber()
-							* GetBeamWeapons()->GetAt(i).GetShootNumber();
+				UINT tempBeamDmg = (UINT)m_BeamWeapons.GetAt(i).GetBeamPower()
+							* m_BeamWeapons.GetAt(i).GetBeamNumber()
+							* m_BeamWeapons.GetAt(i).GetShootNumber();
 				// besondere Beamfähigkeiten erhöhen den BeamDmg um einen selbst gewählten Mulitplikator
 				// der dadurch erhaltende Schaden entspricht nicht dem wirklichen Schaden!
-				if (GetBeamWeapons()->GetAt(i).GetPiercing())
+				if (m_BeamWeapons.GetAt(i).GetPiercing())
 					tempBeamDmg = (UINT)(tempBeamDmg * 1.5);
-				if (GetBeamWeapons()->GetAt(i).GetModulating())
+				if (m_BeamWeapons.GetAt(i).GetModulating())
 					tempBeamDmg *= 3;
 				beamDmg += tempBeamDmg;
 			}			
@@ -460,15 +453,15 @@ UINT CShip::GetCompleteOffensivePower()
 		}
 	}
 	beamDmg /= 3;
-	for (int i = 0; i < GetTorpedoWeapons()->GetSize(); i++)
+	for (int i = 0; i < m_TorpedoWeapons.GetSize(); i++)
 	{
-		UINT tempTorpedoDmg = (UINT)(GetTorpedoWeapons()->GetAt(i).GetTorpedoPower() *
-									GetTorpedoWeapons()->GetAt(i).GetNumber() * 100 *
-									GetTorpedoWeapons()->GetAt(i).GetNumberOfTupes() /
-									GetTorpedoWeapons()->GetAt(i).GetTupeFirerate());
+		UINT tempTorpedoDmg = (UINT)(m_TorpedoWeapons.GetAt(i).GetTorpedoPower() *
+									m_TorpedoWeapons.GetAt(i).GetNumber() * 100 *
+									m_TorpedoWeapons.GetAt(i).GetNumberOfTupes() /
+									m_TorpedoWeapons.GetAt(i).GetTupeFirerate());
 		// besondere Torpedofähigkeiten erhöhen den Torpedoschaden um einen selbst gewählten Mulitplikator
 		// der dadurch erhaltende Schaden entspricht nicht dem wirklichen Schaden!
-		BYTE type = GetTorpedoWeapons()->GetAt(i).GetTorpedoType();
+		BYTE type = m_TorpedoWeapons.GetAt(i).GetTorpedoType();
 		if (CTorpedoInfo::GetPenetrating(type))
 			tempTorpedoDmg = (UINT)(tempTorpedoDmg * 1.5);
 		if (CTorpedoInfo::GetIgnoreAllShields(type))
@@ -483,22 +476,29 @@ UINT CShip::GetCompleteOffensivePower()
 			tempTorpedoDmg = (UINT)(tempTorpedoDmg * 1.1);
 		torpedoDmg += tempTorpedoDmg;
 	}
-	return (beamDmg + torpedoDmg);
+
+	// Manövrierfähigkeit geht mit in den Wert ein
+	double dMan = ((int)m_byManeuverability - 4.0) / 10.0 * 1.75 + 1.0;
+		
+	return (UINT)((beamDmg + torpedoDmg) * dMan);
 }
 
 /// Funktion gibt die gesamte Defensivstärke des Schiffes zurück. Dabei wird die maximale Hülle, die maximalen
 /// Schilde und die Schildaufladezeit beachtet. Dieser Wert hat keinen direkten Kampfeinfluss, er ist nur zum
 /// Vergleich heranzuziehen.
-UINT CShip::GetCompleteDefensivePower()
+UINT CShip::GetCompleteDefensivePower() const
 {
-	UINT def = GetHull()->GetMaxHull() + GetShield()->GetMaxShield()
-		+ (GetShield()->GetMaxShield() / 300 + 2 * GetShield()->GetShieldType()) * 100;
-	if (GetHull()->GetAblative())
+	UINT def = m_Hull.GetMaxHull() + m_Shield.GetMaxShield()
+		+ (m_Shield.GetMaxShield() / 300 + 2 * m_Shield.GetShieldType()) * 100;
+	if (m_Hull.GetAblative())
 		def = (UINT)(def * 1.1);
-	if (GetHull()->GetPolarisation())
+	if (m_Hull.GetPolarisation())
 		def = (UINT)(def * 1.1);
 
-	return def;
+	// Manövrierfähigkeit geht mit in den Wert ein
+	double dMan = ((int)m_byManeuverability - 4.0) / 10.0 * 1.75 + 1.0;
+		
+	return (UINT)(def * dMan);
 }
 
 /// Funktion gibt den schon benutzten Lagerraum im Schiff zurück.
@@ -549,6 +549,13 @@ BYTE CShip::GetExpLevel() const
 	// Legende
 	else
 		return 6;
+}
+
+void CShip::SetCrewExperiance(int nAdd)
+{
+	// Sonden sammeln keine Erfahrung
+	if (m_iShipType != PROBE)
+		m_iCrewExperiance = min(64000, m_iCrewExperiance + nAdd);
 }
 
 ///	Funktion erstellt zur aktuellen Mouse-Position einen HTML Tooltip
@@ -821,4 +828,162 @@ CString CShip::GetTooltip(bool bShowFleet/*= true*/)
 
 	CString sTip = sName + sType + sMovementHead + sMovement + sBeamWeaponHead + sBeams + sTupeWeaponHead + sTorps + sDefensiveHead + sShield + sHull + sSpecialsHead + sSpecials + sDesc;
 	return sTip;
+}
+
+void CShip::DrawShip(Gdiplus::Graphics* g, CGraphicPool* pGraphicPool, const CPoint& pt, bool bIsMarked, bool bOwnerUnknown, bool bDrawFleet, const Gdiplus::Color& clrNormal, const Gdiplus::Color& clrMark, const Gdiplus::Font& font) const
+{
+	StringFormat fontFormat;
+	SolidBrush fontBrush(clrNormal);
+	bDrawFleet = bDrawFleet && m_Fleet;
+
+	// transparente Ellipse hinter markiertem Schiff zeichnen
+	if (bIsMarked)
+	{
+		// Create a path that consists of a single ellipse.
+		GraphicsPath path;
+		path.AddEllipse(pt.x + 25, pt.y + 25, 230, 60);
+
+		// Use the path to construct a brush.
+		PathGradientBrush pthGrBrush(&path);
+
+		// Set the color at the center of the path .
+		pthGrBrush.SetCenterColor(Color(100,clrNormal.GetR(),clrNormal.GetG(),clrNormal.GetB()));
+
+		// Set the color along the entire boundary of the path .
+		Color colors[] = {Color(0, 0, 0, 0)};
+		int count = 1;
+		pthGrBrush.SetSurroundColors(colors, &count);
+		g->FillEllipse(&pthGrBrush, pt.x + 25, pt.y + 25, 230, 60);
+	}
+	
+	CString s;
+	// ist der Besitzer des Schiffes unbekannt?						
+	if (bOwnerUnknown)
+		s = _T("Ships\\Unknown.bop");
+	else
+		s.Format("Ships\\%s.bop", m_strShipClass);
+
+	Bitmap* graphic = pGraphicPool->GetGDIGraphic(s);
+	if (graphic == NULL)
+		graphic = pGraphicPool->GetGDIGraphic("Ships\\ImageMissing.bop");
+	if (graphic)
+		g->DrawImage(graphic, pt.x + 37, pt.y + 30, 65, 49);
+	
+	// Erfahrungsstufen des Schiffes anzeigen
+	switch (this->GetExpLevel())
+	{
+		case 1: graphic = pGraphicPool->GetGDIGraphic("Other\\xp_beginner.bop");break;
+		case 2: graphic = pGraphicPool->GetGDIGraphic("Other\\xp_normal.bop");	break;
+		case 3: graphic = pGraphicPool->GetGDIGraphic("Other\\xp_profi.bop");	break;
+		case 4: graphic = pGraphicPool->GetGDIGraphic("Other\\xp_veteran.bop");	break;
+		case 5: graphic = pGraphicPool->GetGDIGraphic("Other\\xp_elite.bop");	break;
+		case 6: graphic = pGraphicPool->GetGDIGraphic("Other\\xp_legend.bop");	break;
+		default: graphic = NULL;
+	}
+	if (graphic)
+		g->DrawImage(graphic, pt.x + 29, pt.y + 79 - graphic->GetHeight(), 8, graphic->GetHeight());
+	
+	// Hier die Striche für Schilde und Hülle neben dem Schiffsbild anzeigen (jeweils max. 20)
+	int nHullPercent = m_Hull.GetCurrentHull() * 20 / m_Hull.GetMaxHull();
+	Gdiplus::Pen pen(Color(240 - nHullPercent * 12, 0 + nHullPercent * 12, 0));
+	RectF* rects = new RectF[nHullPercent + 1];
+	for (int n = 0; n <= nHullPercent; n++)
+		rects[n] = RectF((REAL)pt.x + 102, (REAL)pt.y + 75 - n * 2, 5, 0.5);
+	g->DrawRectangles(&pen, rects, nHullPercent + 1);
+	delete[] rects;
+		
+	int nShieldPercent = 0;
+	if (m_Shield.GetMaxShield() > 0)
+		nShieldPercent = m_Shield.GetCurrentShield() * 20 / m_Shield.GetMaxShield();
+	pen.SetColor(Color(240 - nShieldPercent * 12, 80, 0 + nShieldPercent * 12));
+	if (nShieldPercent > 0)
+	{
+		rects = new RectF[nShieldPercent + 1];
+		for (int n = 0; n <= nShieldPercent; n++)
+			rects[n] = RectF((REAL)pt.x + 109, (REAL)pt.y + 75 - n * 2, 5, 0.5);
+		g->DrawRectangles(&pen, rects, nShieldPercent + 1);
+		delete[] rects;
+	}
+	
+	// Wenn es das Flagschiff unseres Imperiums ist, dann kleines Zeichen zeichnen
+	if (m_bIsFlagShip)
+	{		
+		graphic = pGraphicPool->GetGDIGraphic("Other\\flagshipSmall.png");
+		if (graphic)
+			g->DrawImage(graphic, pt.x + 37, pt.y + 30, graphic->GetWidth(), graphic->GetHeight());
+	}
+
+	// Wenn des Schiff Truppen transportiert, dann kleines Truppensymbol zeichnen
+	// Symbole zu Truppen zeichnen
+	bool bDrawTroopSymbol = false;
+	if (m_Troops.GetSize())
+		bDrawTroopSymbol = true;
+	// prüfen ob ein Schiff in der Flotte Truppen hat
+	else if (bDrawFleet)
+		for (int i = 0; i < m_Fleet->GetFleetSize(); i++)
+			if (m_Fleet->GetShipFromFleet(i)->GetTransportedTroops()->GetSize())
+			{
+				bDrawTroopSymbol = true;
+				break;
+			}
+
+	if (bDrawTroopSymbol)
+	{
+		graphic = pGraphicPool->GetGDIGraphic("Other\\troopSmall.bop");
+		if (graphic)
+			g->DrawImage(graphic, pt.x + 75, pt.y + 50, 25, 25);
+	}
+
+	if (!bOwnerUnknown)
+	{	
+		if (bIsMarked)
+			fontBrush.SetColor(clrMark);
+		// Wenn das Schiff getarnt ist die Schrift etwas dunkler darstellen
+		if (m_bCloakOn)
+		{
+			Color clrCurrent;
+			fontBrush.GetColor(&clrCurrent);
+			Gdiplus::Color clrCloaked(50, clrCurrent.GetR(), clrCurrent.GetG(), clrCurrent.GetB());	
+			fontBrush.SetColor(clrCloaked);
+			// kleines Icon für aktivierte Tarnung zeichnen
+			graphic = pGraphicPool->GetGDIGraphic("Other\\cloakedSmall.png");
+			if (graphic)
+				g->DrawImage(graphic, pt.x + 37, pt.y + 55, graphic->GetWidth(), graphic->GetHeight());
+		}
+
+		// normale Infos zum Schiff sollen angezeigt werden
+		if (!bDrawFleet)
+		{
+			g->DrawString(m_strShipName.AllocSysString(), -1, &font, PointF((REAL)pt.x + 120, (REAL)pt.y + 37), &fontFormat, &fontBrush);
+			s = m_strShipClass + "-" + CResourceManager::GetString("CLASS");
+			g->DrawString(s.AllocSysString(), -1, &font, PointF((REAL)pt.x + 120, (REAL)pt.y + 57), &fontFormat, &fontBrush);
+		}
+		// Schiff und dessen Flotteninfos sollen angezeigt werden
+		else
+		{
+			// Schiffsnamen holen und die ersten 4 Zeichen (z.B. USS_) und die lezten 2 Zeichen (z.B. _A) entfernen
+			s.Format("%s", m_strShipName);
+			if (s.GetLength() > 4)
+				s.Delete(0,4);
+			if (s.GetLength() > 2 && s.ReverseFind(' ') == s.GetLength() - 2)
+				s.Delete(s.GetLength() - 2, 2);
+		
+			s.Append(" " + CResourceManager::GetString("GROUP"));
+			// Hier jetzt Namen und Schiffstype zur Flotte
+			g->DrawString(s.AllocSysString(), -1, &font, PointF((REAL)pt.x + 120, (REAL)pt.y + 37), &fontFormat, &fontBrush);
+			
+			if (m_Fleet->GetFleetShipType(this) == -1)
+				g->DrawString(CResourceManager::GetString("MIXED_FLEET").AllocSysString(), -1, &font, PointF((REAL)pt.x + 120, (REAL)pt.y + 57), &fontFormat, &fontBrush);
+			else
+				g->DrawString(this->GetShipTypeAsString(TRUE).AllocSysString(), -1, &font, PointF((REAL)pt.x + 120, (REAL)pt.y + 57), &fontFormat, &fontBrush);
+		}
+	}
+
+	if (bDrawFleet)
+	{
+		// Anzahl der Schiffe in der Flotte (+1 weil das Führerschiff mitgezählt werden muß)
+		fontBrush.SetColor(Color::White);
+		s.Format("%d", m_Fleet->GetFleetSize() + 1);
+		g->DrawString(s.AllocSysString(), -1, &font, PointF((REAL)pt.x + 35, (REAL)pt.y + 30), &fontFormat, &fontBrush);
+	}	
 }

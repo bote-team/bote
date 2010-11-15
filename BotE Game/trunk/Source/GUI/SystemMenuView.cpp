@@ -8,8 +8,9 @@
 #include "SystemMenuView.h"
 #include "Races\RaceController.h"
 #include "HTMLStringBuilder.h"
+#include "RoundRect.h"
 
-short CSystemMenuView::m_iClickedOn = 1;
+short CSystemMenuView::m_iClickedOn = 0;
 BYTE CSystemMenuView::m_byResourceRouteRes = TITAN;
 
 // CSystemMenuView
@@ -60,10 +61,9 @@ void CSystemMenuView::OnNewRound()
 	m_iBOPage = 0;
 	m_iELPage = 0;
 	m_iSTPage = 0;
-	m_iClickedOn = 1;
+	m_iClickedOn = 0;
 	m_bClickedOnBuyButton = FALSE;
-	m_bClickedOnDeleteButton = FALSE;
-	m_bClickedOneBuilding = TRUE;
+	m_bClickedOnDeleteButton = FALSE;	
 	m_byResourceRouteRes = TITAN;
 }
 // CSystemMenuView drawing
@@ -153,11 +153,10 @@ void CSystemMenuView::OnInitialUpdate()
 	
 	
 	// Baumenürechtecke
-	m_iClickedOn = 1;
+	m_iClickedOn = 0;
 	BuildingDescription.SetRect(30,410,290,620);
 	BuildingInfo.SetRect(340,560,700,650);
 	AssemblyListRect.SetRect(740,400,1030,620);
-	m_bClickedOneBuilding = TRUE;
 	m_bySubMenu = 0;
 	m_bClickedOnBuyButton = FALSE;
 	m_bClickedOnDeleteButton = FALSE;
@@ -240,7 +239,7 @@ void CSystemMenuView::OnXButtonDown(UINT nFlags, UINT nButton, CPoint point)
 
 	if (pMajor->GetEmpire()->GetSystemList()->GetSize() > 1)
 	{
-		m_iClickedOn = 1;
+		m_iClickedOn = 0;
 		m_byStartList = 0;
 		pDoc->SetKO(pMajor->GetEmpire()->GetSystemList()->GetAt(pos).ko.x, pMajor->GetEmpire()->GetSystemList()->GetAt(pos).ko.y);
 		Invalidate(FALSE);
@@ -294,8 +293,7 @@ void CSystemMenuView::DrawBuildMenue(Graphics* g)
 	color.SetFromCOLORREF(pMajor->GetDesign()->m_clrListMarkPenColor);
 	Gdiplus::Pen pen(color);
 	color.SetFromCOLORREF(pMajor->GetDesign()->m_clrListMarkTextColor);
-	fontBrush.SetColor(color);
-	
+	fontBrush.SetColor(color);	
 	
 	// Anzeige der Moral und der Runden über der Bauliste
 	s.Format("%s: %i",CResourceManager::GetString("MORAL"), pDoc->GetSystem(p).GetMoral());
@@ -306,11 +304,7 @@ void CSystemMenuView::DrawBuildMenue(Graphics* g)
 	g->DrawString(CResourceManager::GetString("JOB").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(370, 106, 335, 25), &fontFormat, &fontBrush);
 	
 	// Die Struktur BuildList erstmal löschen, alle Werte auf 0
-	for (int i = 0; i < 50; i++)
-	{
-		BuildList[i].rect.SetRect(0,0,0,0);
-		BuildList[i].runningNumber = 0;
-	}
+	m_vBuildlist.RemoveAll();
 	
 	// Wenn man keine Schiffe zur Auswahl hat oder keine Truppen bauen kann, dann wird wieder auf das normale
 	// Gebäudebaumenü umgeschaltet
@@ -320,214 +314,117 @@ void CSystemMenuView::DrawBuildMenue(Graphics* g)
 		m_iWhichSubMenu = 0;
 		
 	// hier Anzeige der baubaren Gebäude und Upgrades
-	int y = 150;
-	int j;
-	int RoundToBuild = 0;
-	
-	// Variable die mir sagt worauf ich geklickt habe
-	USHORT clickedOn = m_iClickedOn;
-	USHORT counter = 1;	// Einträge in der Liste, akt. auf 25 begrenzt
-	// Ab hier die Projekte, die ausgewählt werden können
-	m_byEndList = m_byStartList + NOEIBL;	// auf maximal Zwölf Einträge in der Bauliste begrenzt
 	if (m_iWhichSubMenu == 0)				// Sind wir im Gebäude/Update Untermenü
 	{
 		// Zuerst werden die Upgrades angezeigt
-		for (int i = 0; i < pDoc->m_System[p.x][p.y].GetBuildableUpdates()->GetSize(); i++)
-		{
-			j = counter;
-			// Wenn wir ein Update machen, so ist die RunningNumber des Gebäudes negativ!!!
-			if (i < pDoc->m_System[p.x][p.y].GetBuildableUpdates()->GetSize())
-			{
-				if (counter > m_byStartList)
-				{
-					fontBrush.SetColor(oldColor);
-					s = CResourceManager::GetString("UPGRADING", FALSE, pDoc->GetBuildingName(pDoc->m_System[p.x][p.y].GetBuildableUpdates()->GetAt(i)));
-					y += 25;
-					// Markierung zeichen
-					if (counter == clickedOn)
-					{
-						// Markierung worauf wir geklickt haben
-						g->FillRectangle(&SolidBrush(Color(50,200,200,200)), RectF(319,y-25,403,25));
-						g->DrawLine(&pen, 319, y-25, 722,y-25);
-						g->DrawLine(&pen, 319, y, 722, y);
-						clickedOn = 0;								// Markierung löschen
-						// Farbe der Schrift wählen, wenn wir den Eintrag markiert haben
-						fontBrush.SetColor(color);
-					}
-					
-					// Eintrag zeichnen
-					BuildList[counter].rect.SetRect(380, y-25, 670, y);
-					fontFormat.SetAlignment(StringAlignmentNear);
-					fontFormat.SetTrimming(StringTrimmingEllipsisCharacter);
-					g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(380, y-25, 290, 25), &fontFormat, &fontBrush);
-					BuildList[counter].runningNumber = pDoc->m_System[p.x][p.y].GetBuildableUpdates()->GetAt(i)*(-1);
-					j++;
-					
-					// Hier Berechnung der noch verbleibenden Runden, bis das Projekt fertig wird
-					int RunningNumber = (BuildList[counter].runningNumber)*(-1);
-					pDoc->m_System[pDoc->GetKO().x][pDoc->GetKO().y].GetAssemblyList()->CalculateNeededRessources(&pDoc->GetBuildingInfo(RunningNumber),0,0, pDoc->m_System[pDoc->GetKO().x][pDoc->GetKO().y].GetAllBuildings(), BuildList[counter].runningNumber,pMajor->GetEmpire()->GetResearch()->GetResearchInfo());
-					// divide by zero check
-					if (pDoc->GetSystem(p.x,p.y).GetProduction()->GetIndustryProd() > 0)
-					{
-						RoundToBuild = (int)ceil((float)(pDoc->GetSystem(p.x,p.y).GetAssemblyList()->GetNeededIndustryForBuild())/((float)pDoc->GetSystem(p.x,p.y).GetProduction()->GetIndustryProd()
-							* (100+pDoc->GetSystem(p.x,p.y).GetProduction()->GetUpdateBuildSpeed())/100));
-						s.Format("%i",RoundToBuild);
-						fontFormat.SetAlignment(StringAlignmentFar);
-						fontFormat.SetTrimming(StringTrimmingNone);
-						g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(580, y-25, 105, 25), &fontFormat, &fontBrush);
-					}
-				}
-				else
-					j++;
-				counter++;
-			}
-			if (counter > m_byEndList)
-				break;
-		}
+		for (int i = 0; i < pDoc->GetSystem(p).GetBuildableUpdates()->GetSize(); i++)
+			m_vBuildlist.Add(pDoc->GetSystem(p).GetBuildableUpdates()->GetAt(i) * (-1));
+
 		// Dann werden die baubaren Gebäude angezeigt
-		for (int i = 0; i < pDoc->m_System[p.x][p.y].GetBuildableBuildings()->GetSize(); i++)
-		{
-			j = counter;
-			if (i < pDoc->m_System[p.x][p.y].GetBuildableBuildings()->GetSize())
-			{
-				if (counter > m_byStartList)
-				{
-					fontBrush.SetColor(oldColor);
-					s.Format(pDoc->GetBuildingName(pDoc->m_System[p.x][p.y].GetBuildableBuildings()->GetAt(i)));
-					y += 25;
-					// Markierung zeichen
-					if (j == clickedOn)
-					{
-						// Markierung worauf wir geklickt haben
-						g->FillRectangle(&SolidBrush(Color(50,200,200,200)), RectF(319,y-25,403,25));
-						g->DrawLine(&pen, 319, y-25, 722,y-25);
-						g->DrawLine(&pen, 319, y, 722,y);
-						clickedOn = 0;								// Markierung löschen
-						// Farbe der Schrift wählen, wenn wir den Eintrag markiert haben
-						fontBrush.SetColor(color);						
-					}
-					// Eintrag zeichnen
-					BuildList[j].rect.SetRect(380, y-25, 670, y);
-					fontFormat.SetAlignment(StringAlignmentNear);
-					fontFormat.SetTrimming(StringTrimmingEllipsisCharacter);
-					g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(380, y-25, 290, 25), &fontFormat, &fontBrush);
-					BuildList[j].runningNumber = pDoc->m_System[p.x][p.y].GetBuildableBuildings()->GetAt(i);
-					// Hier Berechnung der noch verbleibenden Runden, bis das Projekt fertig wird (nicht bei NeverReady-Aufträgen)
-					int RunningNumber = (BuildList[j].runningNumber);
-					if (!pDoc->GetBuildingInfo(RunningNumber).GetNeverReady())
-					{
-						pDoc->m_System[pDoc->GetKO().x][pDoc->GetKO().y].GetAssemblyList()->CalculateNeededRessources(&pDoc->GetBuildingInfo(RunningNumber),0,0, pDoc->m_System[pDoc->GetKO().x][pDoc->GetKO().y].GetAllBuildings(), BuildList[j].runningNumber,pMajor->GetEmpire()->GetResearch()->GetResearchInfo());
-						// divide by zero check
-						if (pDoc->GetSystem(p.x,p.y).GetProduction()->GetIndustryProd() > 0)
-						{
-							RoundToBuild = (int)ceil((float)(pDoc->GetSystem(p.x,p.y).GetAssemblyList()->GetNeededIndustryForBuild())/((float)pDoc->GetSystem(p.x,p.y).GetProduction()->GetIndustryProd()
-								* (100+pDoc->GetSystem(p.x,p.y).GetProduction()->GetBuildingBuildSpeed())/100));
-							s.Format("%i",RoundToBuild);
-							fontFormat.SetAlignment(StringAlignmentFar);
-							fontFormat.SetTrimming(StringTrimmingNone);
-							g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(580, y-25, 105, 25), &fontFormat, &fontBrush);
-						}
-					}
-				}
-				counter++;
-			}
-			if (counter > m_byEndList)
-				break;
-		}
+		for (int i = 0; i < pDoc->GetSystem(p).GetBuildableBuildings()->GetSize(); i++)
+			m_vBuildlist.Add(pDoc->GetSystem(p).GetBuildableBuildings()->GetAt(i));
 	}
 	else if (m_iWhichSubMenu == 1)		// Sind wir im Werftuntermenü?
 	{
-		for (int i = 0; i < pDoc->m_System[p.x][p.y].GetBuildableShips()->GetSize(); i++)
-		{
-			j = counter;
-			if (i < pDoc->m_System[p.x][p.y].GetBuildableShips()->GetSize() && counter > m_byStartList)
-			{
-				fontBrush.SetColor(oldColor);
-				//s.Format("%s der %s-Klasse",pDoc->m_ShipInfoArray.GetAt(pDoc->m_System[p.x][p.y].GetBuildableShips()->GetAt(i)-10000).GetShipTypeAsString()
-				//	,pDoc->m_ShipInfoArray.GetAt(pDoc->m_System[p.x][p.y].GetBuildableShips()->GetAt(i)-10000).GetShipClass());
-				s.Format("%s-%s",pDoc->m_ShipInfoArray.GetAt(pDoc->m_System[p.x][p.y].GetBuildableShips()->GetAt(i)-10000).GetShipClass(),
-					CResourceManager::GetString("CLASS"));
-				y += 25;
-				// Markierung zeichen
-				if (j == clickedOn)
-				{
-					// Markierung worauf wir geklickt haben
-					g->FillRectangle(&SolidBrush(Color(50,200,200,200)), RectF(319,y-25,403,25));
-					g->DrawLine(&pen, 319, y-25, 722,y-25);
-					g->DrawLine(&pen, 319, y, 722,y);
-					clickedOn = 0;								// Markierung löschen
-					// Farbe der Schrift wählen, wenn wir den Eintrag markiert haben
-					fontBrush.SetColor(color);
-				}
-				// Eintrag zeichnen
-				BuildList[j].rect.SetRect(380, y-25, 670, y);
-				fontFormat.SetAlignment(StringAlignmentNear);
-				fontFormat.SetTrimming(StringTrimmingEllipsisCharacter);
-				g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(380, y-25, 290, 25), &fontFormat, &fontBrush);
-				BuildList[j].runningNumber = pDoc->m_System[p.x][p.y].GetBuildableShips()->GetAt(i);
-				// Hier Berechnung der noch verbleibenden Runden, bis das Projekt fertig wird
-				int RunningNumber = (BuildList[j].runningNumber);
-				pDoc->m_System[pDoc->GetKO().x][pDoc->GetKO().y].GetAssemblyList()->CalculateNeededRessources(0,&pDoc->m_ShipInfoArray.GetAt(pDoc->m_System[p.x][p.y].GetBuildableShips()->GetAt(i)-10000),0, pDoc->m_System[pDoc->GetKO().x][pDoc->GetKO().y].GetAllBuildings(), BuildList[j].runningNumber,pMajor->GetEmpire()->GetResearch()->GetResearchInfo());
-				// divide by zero check
-				if ((pDoc->GetSystem(p.x,p.y).GetProduction()->GetIndustryProd() * pDoc->GetSystem(p.x,p.y).GetProduction()->GetShipYardEfficiency()) > 0)
-					{RoundToBuild = (int)ceil((float)(pDoc->GetSystem(p.x,p.y).GetAssemblyList()->GetNeededIndustryForBuild())
-						/((float)pDoc->GetSystem(p.x,p.y).GetProduction()->GetIndustryProd() * pDoc->GetSystem(p.x,p.y).GetProduction()->GetShipYardEfficiency() / 100
-							* (100+pDoc->GetSystem(p.x,p.y).GetProduction()->GetShipBuildSpeed())/100));
-					s.Format("%i",RoundToBuild);
-					fontFormat.SetAlignment(StringAlignmentFar);
-					fontFormat.SetTrimming(StringTrimmingNone);
-					g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(580, y-25, 105, 25), &fontFormat, &fontBrush);
-				}
-			}
-			counter++;
-			if (counter > m_byEndList)
-				break;
-		}
+		for (int i = 0; i < pDoc->GetSystem(p).GetBuildableShips()->GetSize(); i++)
+			m_vBuildlist.Add(pDoc->GetSystem(p).GetBuildableShips()->GetAt(i));
 	}
 	else if (m_iWhichSubMenu == 2)		// Sind wir im Kasernenuntermenü?
 	{
-		for (int i = 0; i < pDoc->m_System[p.x][p.y].GetBuildableTroops()->GetSize(); i++)
+		for (int i = 0; i < pDoc->GetSystem(p).GetBuildableTroops()->GetSize(); i++)
+			m_vBuildlist.Add(pDoc->GetSystem(p).GetBuildableTroops()->GetAt(i) + 20000);
+	}
+
+	if (m_iClickedOn > 0 && m_iClickedOn > m_vBuildlist.GetUpperBound())
+		m_iClickedOn = m_vBuildlist.GetUpperBound();
+	if (m_iClickedOn < m_byStartList || m_iClickedOn > m_byEndList)
+		m_iClickedOn = m_byStartList;
+	
+	// Einträge der Bauliste anzeigen
+	m_byEndList = m_byStartList + NOEIBL;	// auf maximal Zwölf Einträge in der Bauliste begrenzt
+	int y = 150;
+	for (int i = m_byStartList; i < m_vBuildlist.GetSize(); i++)
+	{
+		if (i > m_byEndList)
+			break;
+
+		y += 25;
+		fontBrush.SetColor(oldColor);
+		fontFormat.SetAlignment(StringAlignmentNear);
+		fontFormat.SetTrimming(StringTrimmingEllipsisCharacter);
+		
+		// Markierung zeichen
+		if (i == m_iClickedOn)
 		{
-			j = counter;
-			if (i < pDoc->m_System[p.x][p.y].GetBuildableTroops()->GetSize() && counter > m_byStartList)
+			// Markierung worauf wir geklickt haben
+			g->FillRectangle(&SolidBrush(Color(50,200,200,200)), RectF(319,y-25,403,25));
+			g->DrawLine(&pen, 319, y-25, 722,y-25);
+			g->DrawLine(&pen, 319, y, 722,y);
+			// Farbe der Schrift wählen, wenn wir den Eintrag markiert haben
+			fontBrush.SetColor(color);						
+		}
+
+		// noch verbleibende Runden bis das Projekt fertig wird
+		int nRounds = pDoc->GetSystem(p).GetNeededRoundsToCompleteProject(m_vBuildlist[i]);
+		BOOLEAN bCanAddToAssemblyList = pDoc->GetSystem(p).GetAssemblyList()->MakeEntry(m_vBuildlist[i], p, pDoc->m_System, true);
+		if (!bCanAddToAssemblyList)
+		{
+			// Schrift dunkler darstellen, wenn das Projekt aufgrund nicht ausreichender Rohstoffe nicht gebaut werden kann
+			Gdiplus::Color color2;
+			fontBrush.GetColor(&color2);
+			color2 = Color(100, color2.GetR(), color2.GetG(), color2.GetB());
+			fontBrush.SetColor(color2);
+		}
+		
+		// handelt es sich um ein Update?
+		if (m_vBuildlist[i] < 0)
+		{
+			s = CResourceManager::GetString("UPGRADING", FALSE, pDoc->GetBuildingName(abs(m_vBuildlist[i])));			
+		}
+		// handelt es sich um ein Gebäude?
+		else if (m_vBuildlist[i] < 10000)
+		{	
+			s = pDoc->GetBuildingName(abs(m_vBuildlist[i]));
+			CBuildingInfo* pInfo = &pDoc->GetBuildingInfo(abs(m_vBuildlist[i]));
+			if (pInfo->GetWorker() == false && pInfo->GetNeverReady() == false)
 			{
-				fontBrush.SetColor(oldColor);
-				s.Format("%s",pDoc->m_TroopInfo.GetAt(pDoc->m_System[p.x][p.y].GetBuildableTroops()->GetAt(i)).GetName());
-				y += 25;
-				// Markierung zeichen
-				if (j == clickedOn)
-				{
-					// Markierung worauf wir geklickt haben
-					g->FillRectangle(&SolidBrush(Color(50,200,200,200)), RectF(319,y-25,403,25));
-					g->DrawLine(&pen, 319, y-25, 722,y-25);
-					g->DrawLine(&pen, 319, y, 722,y);
-					clickedOn = 0;								// Markierung löschen
-					// Farbe der Schrift wählen, wenn wir den Eintrag markiert haben
-					fontBrush.SetColor(color);
-				}
-				// Eintrag zeichnen
-				BuildList[j].rect.SetRect(380, y-25, 670, y);
-				fontFormat.SetAlignment(StringAlignmentNear);
-				fontFormat.SetTrimming(StringTrimmingEllipsisCharacter);
-				g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(380, y-25, 290, 25), &fontFormat, &fontBrush);
-				BuildList[j].runningNumber = pDoc->m_System[p.x][p.y].GetBuildableTroops()->GetAt(i) + 20000;
-				// Hier Berechnung der noch verbleibenden Runden, bis das Projekt fertig wird
-				int RunningNumber = (BuildList[j].runningNumber);
-				pDoc->m_System[pDoc->GetKO().x][pDoc->GetKO().y].GetAssemblyList()->CalculateNeededRessources(0,0,&pDoc->m_TroopInfo.GetAt(pDoc->m_System[p.x][p.y].GetBuildableTroops()->GetAt(i)), pDoc->m_System[pDoc->GetKO().x][pDoc->GetKO().y].GetAllBuildings(), BuildList[j].runningNumber,pMajor->GetEmpire()->GetResearch()->GetResearchInfo());
-				// divide by zero check
-				if ((pDoc->GetSystem(p.x,p.y).GetProduction()->GetIndustryProd() * pDoc->GetSystem(p.x,p.y).GetProduction()->GetBarrackEfficiency()) > 0)
-					{RoundToBuild = (int)ceil((float)(pDoc->GetSystem(p.x,p.y).GetAssemblyList()->GetNeededIndustryForBuild())
-						/((float)pDoc->GetSystem(p.x,p.y).GetProduction()->GetIndustryProd() * pDoc->GetSystem(p.x,p.y).GetProduction()->GetBarrackEfficiency() / 100
-							* (100+pDoc->GetSystem(p.x,p.y).GetProduction()->GetTroopBuildSpeed())/100));
-					s.Format("%i",RoundToBuild);
-					fontFormat.SetAlignment(StringAlignmentFar);
-					fontFormat.SetTrimming(StringTrimmingNone);
-					g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(580, y-25, 105, 25), &fontFormat, &fontBrush);
-				}
+				Bitmap* graphic = NULL;
+				if (pInfo->GetFoodProd() > 0 || pInfo->GetFoodBoni() > 0)
+					graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\foodSmall.bop");
+				else if (pInfo->GetIPProd() > 0 || pInfo->GetIndustryBoni() > 0)
+					graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\industrySmall.bop");
+				else if (pInfo->GetEnergyProd() > 0 || pInfo->GetEnergyBoni() > 0)
+					graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\energySmall.bop");
+				else if (pInfo->GetSPProd() > 0 || pInfo->GetSecurityBoni() > 0)
+					graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\securitySmall.bop");
+				else if (pInfo->GetFPProd() > 0 || pInfo->GetResearchBoni() > 0)
+					graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\researchSmall.bop");
+				else if (pInfo->GetLatinum() > 0 || pInfo->GetLatinumBoni() > 0)
+					graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\latinumSmall.bop");
+				if (graphic)
+					g->DrawImage(graphic, 355, y-21, 20, 16);
 			}
-			counter++;
-			if (counter > m_byEndList)
-				break;
+		}
+		// handelt es sich um ein Schiff
+		else if (m_vBuildlist[i] < 20000)
+		{
+			s.Format("%s-%s", pDoc->m_ShipInfoArray.GetAt(m_vBuildlist[i] - 10000).GetShipClass(), CResourceManager::GetString("CLASS"));
+		}
+		// handelt es sich um eine Truppe
+		else
+		{
+			s.Format("%s", pDoc->m_TroopInfo.GetAt(m_vBuildlist[i] - 20000).GetName());
+		}
+
+		// Projekteintrag hinschreiben
+		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(380, y-25, 290, 25), &fontFormat, &fontBrush);
+		// Anzahl der benötigten Runden hinschreiben
+		if (nRounds)
+		{
+			s.Format("%i", nRounds);
+			fontFormat.SetAlignment(StringAlignmentFar);
+			fontFormat.SetTrimming(StringTrimmingNone);
+			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(580, y-25, 105, 25), &fontFormat, &fontBrush);
 		}
 	}
 	
@@ -541,28 +438,6 @@ void CSystemMenuView::DrawBuildMenue(Graphics* g)
 	Bitmap* graphic = NULL;
 	CPoint px[IRIDIUM_WORKER+1] = {CPoint(0,0)};
 	
-	//if (pDoc->GetPlayersRace() == KLINGON)
-	//{
-	//	px[FOOD_WORKER].SetPoint(50,225); px[INDUSTRY_WORKER].SetPoint(125,225); px[ENERGY_WORKER].SetPoint(200,225);
-	//	px[SECURITY_WORKER].SetPoint(50,250); px[RESEARCH_WORKER].SetPoint(125,250); px[TITAN_WORKER].SetPoint(200,250);
-	//	px[DEUTERIUM_WORKER].SetPoint(50,275); px[DURANIUM_WORKER].SetPoint(125,275); px[CRYSTAL_WORKER].SetPoint(200,275);
-	//	px[IRIDIUM_WORKER].SetPoint(125,300); 
-	//}
-	//else if (pDoc->GetPlayersRace() == ROMULAN)
-	//{
-	//	px[FOOD_WORKER].SetPoint(145,15); px[INDUSTRY_WORKER].SetPoint(145,40); px[ENERGY_WORKER].SetPoint(145,65);
-	//	px[SECURITY_WORKER].SetPoint(145,90); px[RESEARCH_WORKER].SetPoint(145,115);
-	//	px[TITAN_WORKER].SetPoint(220,15); px[DEUTERIUM_WORKER].SetPoint(220,40); px[DURANIUM_WORKER].SetPoint(220,65);
-	//	px[CRYSTAL_WORKER].SetPoint(220,90); px[IRIDIUM_WORKER].SetPoint(220,115); 
-	//}
-	//else
-	//{
-	//	px[FOOD_WORKER].SetPoint(80,230); px[INDUSTRY_WORKER].SetPoint(80,255); px[ENERGY_WORKER].SetPoint(80,280);
-	//	px[SECURITY_WORKER].SetPoint(80,305); px[RESEARCH_WORKER].SetPoint(80,330);
-	//	px[TITAN_WORKER].SetPoint(185,230); px[DEUTERIUM_WORKER].SetPoint(185,255); px[DURANIUM_WORKER].SetPoint(185,280);
-	//	px[CRYSTAL_WORKER].SetPoint(185,305); px[IRIDIUM_WORKER].SetPoint(185,330); 
-	//}
-
 	px[FOOD_WORKER].SetPoint(80,230); px[INDUSTRY_WORKER].SetPoint(80,255); px[ENERGY_WORKER].SetPoint(80,280);
 	px[SECURITY_WORKER].SetPoint(80,305); px[RESEARCH_WORKER].SetPoint(80,330);
 	px[TITAN_WORKER].SetPoint(185,230); px[DEUTERIUM_WORKER].SetPoint(185,255); px[DURANIUM_WORKER].SetPoint(185,280);
@@ -596,27 +471,22 @@ void CSystemMenuView::DrawBuildMenue(Graphics* g)
 	
 	// Hier die Anzeige der nötigen Rohstoffe und Industrie zum Bau des Gebäudes und dessen Beschreibung
 	// auch das Bild zum aktuellen Projekt wird angezeigt	
-	if (m_bClickedOneBuilding == TRUE)
-	{
+	if (m_iClickedOn >= 0 && m_iClickedOn < m_vBuildlist.GetSize())
+	{		
+		int RunningNumber = abs(m_vBuildlist[m_iClickedOn]);
+		
 		// Berechnung der nötigen Industrie und Rohstoffe
-		int RunningNumber = 0;
-		int i = m_iClickedOn;
-		if (BuildList[i].runningNumber < 0)
-			RunningNumber = (BuildList[i].runningNumber)*(-1);
-		else 
-			RunningNumber = BuildList[i].runningNumber;
-
-		if (m_bClickedOnBuyButton == FALSE && m_bClickedOnDeleteButton == FALSE && RunningNumber != 0)
+		if (m_bClickedOnBuyButton == FALSE && m_bClickedOnDeleteButton == FALSE)
 		{
 			// also ein Gebäude oder Gebäudeupdate
-			if (BuildList[i].runningNumber < 10000)
-				pDoc->m_System[pDoc->GetKO().x][pDoc->GetKO().y].GetAssemblyList()->CalculateNeededRessources(&pDoc->GetBuildingInfo(RunningNumber),0,0, pDoc->m_System[pDoc->GetKO().x][pDoc->GetKO().y].GetAllBuildings(), BuildList[i].runningNumber,pMajor->GetEmpire()->GetResearch()->GetResearchInfo());
+			if (m_vBuildlist[m_iClickedOn] < 10000)
+				pDoc->m_System[pDoc->GetKO().x][pDoc->GetKO().y].GetAssemblyList()->CalculateNeededRessources(&pDoc->GetBuildingInfo(RunningNumber),0,0, pDoc->m_System[pDoc->GetKO().x][pDoc->GetKO().y].GetAllBuildings(), m_vBuildlist[m_iClickedOn], pMajor->GetEmpire()->GetResearch()->GetResearchInfo());
 			// also ein Schiff
-			else if (BuildList[i].runningNumber < 20000 && pDoc->m_System[p.x][p.y].GetBuildableShips()->GetSize() > 0)
-				pDoc->m_System[pDoc->GetKO().x][pDoc->GetKO().y].GetAssemblyList()->CalculateNeededRessources(0,&pDoc->m_ShipInfoArray.GetAt(BuildList[i].runningNumber-10000),0, pDoc->m_System[pDoc->GetKO().x][pDoc->GetKO().y].GetAllBuildings(), BuildList[j].runningNumber,pMajor->GetEmpire()->GetResearch()->GetResearchInfo());
+			else if (m_vBuildlist[m_iClickedOn] < 20000 && pDoc->m_System[p.x][p.y].GetBuildableShips()->GetSize() > 0)
+				pDoc->m_System[pDoc->GetKO().x][pDoc->GetKO().y].GetAssemblyList()->CalculateNeededRessources(0,&pDoc->m_ShipInfoArray.GetAt(m_vBuildlist[m_iClickedOn] - 10000), 0, pDoc->m_System[pDoc->GetKO().x][pDoc->GetKO().y].GetAllBuildings(), m_vBuildlist[m_iClickedOn], pMajor->GetEmpire()->GetResearch()->GetResearchInfo());
 			// also eine Truppe
 			else if (pDoc->m_System[p.x][p.y].GetBuildableTroops()->GetSize() > 0)
-				pDoc->m_System[p.x][p.y].GetAssemblyList()->CalculateNeededRessources(0,0,&pDoc->m_TroopInfo.GetAt(BuildList[i].runningNumber-20000), pDoc->m_System[pDoc->GetKO().x][pDoc->GetKO().y].GetAllBuildings(), BuildList[j].runningNumber,pMajor->GetEmpire()->GetResearch()->GetResearchInfo());
+				pDoc->m_System[p.x][p.y].GetAssemblyList()->CalculateNeededRessources(0,0,&pDoc->m_TroopInfo.GetAt(m_vBuildlist[m_iClickedOn] - 20000), pDoc->m_System[pDoc->GetKO().x][pDoc->GetKO().y].GetAllBuildings(), m_vBuildlist[m_iClickedOn], pMajor->GetEmpire()->GetResearch()->GetResearchInfo());
 
 			// Anzeige der ganzen Werte				
 			s = CResourceManager::GetString("BUILD_COSTS");
@@ -654,7 +524,7 @@ void CSystemMenuView::DrawBuildMenue(Graphics* g)
 		}
 		
 		// Hier die Beschreibung des Gebäudes bzw. die Informationen
-		if (m_bClickedOnBuildingDescriptionButton == TRUE  && RunningNumber != 0)
+		if (m_bClickedOnBuildingDescriptionButton == TRUE)
 		{
 			if (m_iWhichSubMenu == 0)		// im Gebäudeuntermenü
 				s = pDoc->GetBuildingDescription(RunningNumber);
@@ -672,7 +542,7 @@ void CSystemMenuView::DrawBuildMenue(Graphics* g)
 			fontFormat.SetTrimming(StringTrimmingNone);
 		}
 		// bzw. die Information zu dem, was das Gebäude produziert
-		if (m_bClickedOnBuildingInfoButton == TRUE  && RunningNumber != 0)
+		if (m_bClickedOnBuildingInfoButton == TRUE)
 		{
 			
 			if (m_iWhichSubMenu == 0)
@@ -710,41 +580,30 @@ void CSystemMenuView::DrawBuildMenue(Graphics* g)
 				fontFormat.SetFormatFlags(StringFormatFlagsNoWrap);
 			}
 		}
-		// Hier die Anzeige des Bildes zu dem jeweiligen Projekt
-		if (m_iClickedOn != 0)
+
+		// Hier die Anzeige des Bildes zu dem jeweiligen Projekt		
+		CString file;
+		if (m_iWhichSubMenu == 0)		// sind im Gebäudeuntermenü
+			file.Format("Buildings\\%s",pDoc->GetBuildingInfo(RunningNumber).GetGraphikFileName());
+		else if (m_iWhichSubMenu == 1 && pDoc->m_System[p.x][p.y].GetBuildableShips()->GetSize() > 0)	// sind im Schiffsuntermenü 
+			file.Format("Ships\\%s.bop",pDoc->m_ShipInfoArray.GetAt(RunningNumber-10000).GetShipClass());
+		else if (m_iWhichSubMenu == 2 && pDoc->m_System[p.x][p.y].GetBuildableTroops()->GetSize() > 0)	// sind im Kasernenuntermenü
+			file.Format("Troops\\%s.bop",pDoc->m_TroopInfo.GetAt(RunningNumber-20000).GetName());
+		graphic = NULL;
+		graphic = pDoc->GetGraphicPool()->GetGDIGraphic(file);
+		if (graphic == NULL)
 		{
-			int RunningNumber = 0;
-			i = m_iClickedOn;
-			if (BuildList[i].runningNumber < 0)
-				RunningNumber = (BuildList[i].runningNumber)*(-1);
-			else
-				RunningNumber = BuildList[i].runningNumber;
-			if (RunningNumber != 0)
-			{
-				CString file;
-				if (m_iWhichSubMenu == 0)		// sind im Gebäudeuntermenü
-					file.Format("Buildings\\%s",pDoc->GetBuildingInfo(RunningNumber).GetGraphikFileName());
-				else if (m_iWhichSubMenu == 1 && pDoc->m_System[p.x][p.y].GetBuildableShips()->GetSize() > 0)	// sind im Schiffsuntermenü 
-					file.Format("Ships\\%s.bop",pDoc->m_ShipInfoArray.GetAt(RunningNumber-10000).GetShipClass());
-				else if (m_iWhichSubMenu == 2 && pDoc->m_System[p.x][p.y].GetBuildableTroops()->GetSize() > 0)	// sind im Kasernenuntermenü
-					file.Format("Troops\\%s.bop",pDoc->m_TroopInfo.GetAt(RunningNumber-20000).GetName());
-				graphic = NULL;
-				graphic = pDoc->GetGraphicPool()->GetGDIGraphic(file);
-				if (graphic == NULL)
-				{
-					if (m_iWhichSubMenu == 0)		// sind im Gebäudeuntermenü
-						graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Buildings\\ImageMissing.bop");
-					else if (m_iWhichSubMenu == 1 && pDoc->m_System[p.x][p.y].GetBuildableShips()->GetSize() > 0)	// sind im Schiffsuntermenü 
-						graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Ships\\ImageMissing.bop");
-					else if (m_iWhichSubMenu == 2 && pDoc->m_System[p.x][p.y].GetBuildableTroops()->GetSize() > 0)	// sind im Kasernenuntermenü
-						graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Troops\\ImageMissing.bop");
-				}
-					
-				if (graphic)
-				{				
-					g->DrawImage(graphic, 70, 60, 200, 150);					
-				}				
-			}
+			if (m_iWhichSubMenu == 0)		// sind im Gebäudeuntermenü
+				graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Buildings\\ImageMissing.bop");
+			else if (m_iWhichSubMenu == 1 && pDoc->m_System[p.x][p.y].GetBuildableShips()->GetSize() > 0)	// sind im Schiffsuntermenü 
+				graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Ships\\ImageMissing.bop");
+			else if (m_iWhichSubMenu == 2 && pDoc->m_System[p.x][p.y].GetBuildableTroops()->GetSize() > 0)	// sind im Kasernenuntermenü
+				graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Troops\\ImageMissing.bop");
+		}
+			
+		if (graphic)
+		{				
+			g->DrawImage(graphic, 70, 60, 200, 150);					
 		}
 	}
 
@@ -754,33 +613,34 @@ void CSystemMenuView::DrawBuildMenue(Graphics* g)
 	CFontLoader::GetGDIFontColor(pMajor, 1, btnColor);
 	SolidBrush btnBrush(btnColor);
 	
+	int nFirstAssemblyListEntry = pDoc->GetSystem(p).GetAssemblyList()->GetAssemblyListEntry(0);
 	// Hier die Anzeige der Kaufkosten, wenn wir auf den "kaufen Button" geklickt haben
 	if (m_bClickedOnBuyButton == TRUE)
 	{
 		// Wenn was in der Bauliste steht
-		if (pDoc->GetSystem(p.x,p.y).GetAssemblyList()->GetAssemblyListEntry(0) != 0)
+		if (nFirstAssemblyListEntry != 0)
 		{
 			CRect infoRect;
 			int RunningNumber = 0;
-			if (AssemblyList[0].runningNumber < 0)
+			if (nFirstAssemblyListEntry < 0)
 			{
-				RunningNumber = (AssemblyList[0].runningNumber)*(-1);
+				RunningNumber = abs(nFirstAssemblyListEntry);
 				s = CResourceManager::GetString("BUY_UPGRADE", FALSE, pDoc->GetBuildingName(pDoc->BuildingInfo.GetAt(RunningNumber-1).GetPredecessorID()),pDoc->GetBuildingName(RunningNumber));
 			}
-			else if (AssemblyList[0].runningNumber < 10000)
+			else if (nFirstAssemblyListEntry < 10000)
 			{
-				RunningNumber = AssemblyList[0].runningNumber;
+				RunningNumber = nFirstAssemblyListEntry;
 				s = CResourceManager::GetString("BUY_BUILDING", FALSE, pDoc->GetBuildingName(RunningNumber));
 			}
-			else if (AssemblyList[0].runningNumber < 20000)
+			else if (nFirstAssemblyListEntry < 20000)
 			{
-				RunningNumber = AssemblyList[0].runningNumber;
+				RunningNumber = nFirstAssemblyListEntry;
 				s = CResourceManager::GetString("BUY_SHIP", FALSE, pDoc->m_ShipInfoArray.GetAt(RunningNumber-10000).GetShipTypeAsString()
 					,pDoc->m_ShipInfoArray.GetAt(RunningNumber-10000).GetShipClass());
 			}
 			else
 			{
-				RunningNumber = AssemblyList[0].runningNumber;
+				RunningNumber = nFirstAssemblyListEntry;
 				s = CResourceManager::GetString("BUY_BUILDING", FALSE, pDoc->m_TroopInfo.GetAt(RunningNumber-20000).GetName());
 			}
 						
@@ -870,18 +730,18 @@ void CSystemMenuView::DrawBuildMenue(Graphics* g)
 
 	// plus Anzeige der kleinen Buttons unter der Assemblylist (kaufen und abbrechen)
 	// wenn wir noch nicht in dieser Runde gekauft haben
-	if (pDoc->GetSystem(p.x,p.y).GetAssemblyList()->GetWasBuildingBought() == FALSE && pDoc->GetSystem(p.x,p.y).GetAssemblyList()->GetAssemblyListEntry(0) != 0)
+	if (pDoc->GetSystem(p).GetAssemblyList()->GetWasBuildingBought() == FALSE && nFirstAssemblyListEntry != 0)
 	{
 		// Bei Gebäuden nur wenn es nicht ein Auftrag mit NeverReady (z.B. Kriegsrecht) ist)
-		if ((AssemblyList[0].runningNumber < 0)
+		if ((nFirstAssemblyListEntry < 0)
 			||			
-			(AssemblyList[0].runningNumber > 0 && AssemblyList[0].runningNumber < 10000 && pDoc->GetBuildingInfo(AssemblyList[0].runningNumber).GetNeverReady() == FALSE)
+			(nFirstAssemblyListEntry > 0 && nFirstAssemblyListEntry < 10000 && pDoc->GetBuildingInfo(nFirstAssemblyListEntry).GetNeverReady() == FALSE)
 			||
 			// Bei Schiffen nur, wenn eine Werft noch aktiv ist
-			(AssemblyList[0].runningNumber >= 10000 && AssemblyList[0].runningNumber < 20000 && pDoc->GetSystem(p).GetProduction()->GetShipYard())
+			(nFirstAssemblyListEntry >= 10000 && nFirstAssemblyListEntry < 20000 && pDoc->GetSystem(p).GetProduction()->GetShipYard())
 			||
 			// Bei Truppen nur mit aktiver Kaseren
-			(AssemblyList[0].runningNumber >= 20000 && pDoc->GetSystem(p).GetProduction()->GetBarrack()))
+			(nFirstAssemblyListEntry >= 20000 && pDoc->GetSystem(p).GetProduction()->GetBarrack()))
 		{	
 			if (graphic)
 				g->DrawImage(graphic, 750, 625, 120, 30);
@@ -889,7 +749,7 @@ void CSystemMenuView::DrawBuildMenue(Graphics* g)
 			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(750,625,120,30), &fontFormat, &btnBrush);
 		}
 	}
-	if (pDoc->GetSystem(p.x,p.y).GetAssemblyList()->GetAssemblyListEntry(0) != 0)
+	if (nFirstAssemblyListEntry != 0)
 	{
 		if (graphic)
 			g->DrawImage(graphic, 900, 625, 120, 30);
@@ -955,9 +815,7 @@ void CSystemMenuView::DrawWorkersMenue(Graphics* g)
 	DrawBuildList(g);
 	
 	// Die Buttons zum Erhöhen bzw. Verringern der Arbeiteranzahl
-	// Buttons zeichnen
-	for (int i = 0; i < m_WorkerButtons.GetSize(); i++)
-		m_WorkerButtons[i]->DrawButton(*g, pDoc->GetGraphicPool(), Gdiplus::Font(NULL), fontBrush);
+	DrawGDIButtons(g, &m_WorkerButtons, -1, Gdiplus::Font(NULL), fontBrush);
 		
 	// Ansicht der "normalen Gebäude"
 	if (m_bySubMenu == 1)
@@ -995,25 +853,25 @@ void CSystemMenuView::DrawWorkersMenue(Graphics* g)
 		{
 			for (int j = 0; j < number[i]; j++)
 			{
+				Color timberColor;
 				// Fragen ob die Gebäude noch online sind
 				if (j >= online[i])
 				{
 					// Dunkle Farbe wenn sie Offline sind
-					Color darkColor(42,46,30);
-					SolidBrush darkBrush(darkColor);
-					Timber[i][j].SetRect(220 + j * width * 2 - space, 115 + i * 95, 220 + width + j * width * 2, 150 + i * 95);
-					g->FillRectangle(&darkBrush, 220 + j * width * 2, 115 + i * 95, 2 * width - 4, 35);					
+					timberColor = Color(42,46,30);					
 				}
 				else
 				{
 					// Helle Farbe wenn sie Online sind
-					short color = j*4;
-					if (color > 230) color = 200;
-					Color lightColor(230-color,230-color/2,20);
-					SolidBrush lightBrush(lightColor);
-					Timber[i][j].SetRect(220 + j * width * 2 - space, 115 + i * 95, 220 + width + j * width * 2, 150 + i * 95);
-					g->FillRectangle(&lightBrush, 220 + j * width * 2, 115 + i * 95, 2 * width - 4, 35);
+					short color = j * 4;
+					if (color > 230)
+						color = 200;
+					timberColor = Color(230-color,230-color/2,20);					
 				}
+
+				//g->FillRectangle(&darkBrush, 220 + j * width * 2, 115 + i * 95, 2 * width - 4, 35);
+				CRoundRect::FillRoundRect(g, Rect(220 + j * width * 2, 115 + i * 95, 2 * width - 4, 35), timberColor, 3);
+				
 				// Hier werden die Rechtecke von der Größe noch ein klein wenig verändert, damit man besser drauf klicken kann
 				Timber[i][j].SetRect(220+ j*width*2-space,115+i*95,220+width+(j+1)*width*2-space,150+i*95);
 			}
@@ -1118,25 +976,25 @@ void CSystemMenuView::DrawWorkersMenue(Graphics* g)
 		{
 			for (int j = 0; j < number[i]; j++)
 			{
+				Color timberColor;
 				// Fragen ob die Gebäude noch online sind
 				if (j >= online[i])
 				{
 					// Dunkle Farbe wenn sie Offline sind
-					Color darkColor(42,46,30);
-					SolidBrush darkBrush(darkColor);
-					Timber[i][j].SetRect(220 + j * width * 2 - space, 115 + i * 95, 220 + width + j * width * 2, 150 + i * 95);
-					g->FillRectangle(&darkBrush, 220 + j * width * 2 - space, 115 + i * 95, 2 * width - 4, 35);
+					timberColor = Color(42,46,30);					
 				}
 				else
 				{
 					// Helle Farbe wenn sie Online sind
-					short color = j*4;
-					if (color > 230) color = 200;
-					Color lightColor(230-color,230-color/2,20);
-					SolidBrush lightBrush(lightColor);
-					Timber[i][j].SetRect(220 + j * width * 2 - space, 115 + i * 95, 220 + width + j * width * 2, 150 + i * 95);
-					g->FillRectangle(&lightBrush, 220 + j * width * 2 - space, 115 + i * 95, 2 * width - 4, 35);
+					short color = j * 4;
+					if (color > 230)
+						color = 200;
+					timberColor = Color(230-color,230-color/2,20);					
 				}
+
+				//g->FillRectangle(&darkBrush, 220 + j * width * 2 - space, 115 + i * 95, 2 * width - 4, 35);				
+				CRoundRect::FillRoundRect(g, Rect(220 + j * width * 2, 115 + i * 95, 2 * width - 4, 35), timberColor, 3);
+
 				// Hier werden die Rechtecke von der Größe noch ein klein wenig verändert, damit man besser drauf klicken kann
 				Timber[i][j].SetRect(220+ j*width*2-space, 115+i*95, 220+width+(j+1)*width*2-space, 150+i*95);
 			}
@@ -1220,23 +1078,23 @@ void CSystemMenuView::DrawWorkersMenue(Graphics* g)
 	// Den Balken zeichnen
 	for (int i = 0; i < worker; i++)
 	{
+		Color timberColor;
 		if (i < pDoc->GetSystem(p.x,p.y).GetWorker(11))
 		{
 			// Helle Farbe wenn sie Online sind
 			short color = i*4;
 			if (color > 230)
 				color = 200;
-			Color lightColor(230-color,230-color/2,20);
-			SolidBrush lightBrush(lightColor);
-			g->FillRectangle(&lightBrush, 220 + i * width, 600, width - 2, 25);
+			timberColor = Color(230-color,230-color/2,20);			
 		}
 		else
 		{
 			// Dunkle Farbe wenn sie Offline sind
-			Color darkColor(42,46,30);
-			SolidBrush darkBrush(darkColor);
-			g->FillRectangle(&darkBrush, 220 + i * width, 600, width - 2, 25);
+			timberColor = Color(42,46,30);			
 		}
+
+		// g->FillRectangle(&lightBrush, 220 + i * width, 600, width - 2, 25);
+		CRoundRect::FillRoundRect(g, Rect(220 + i * width, 600, width - 2, 25), timberColor, 2);
 	}
 	
 	// freie Arbeiter über dem Balken zeichnen
@@ -1893,42 +1751,46 @@ void CSystemMenuView::DrawBuildList(Graphics* g)
 	
 	int y = 410;
 	for (int i = 0; i < ALE; i++)
-		if (pDoc->GetSystem(p.x,p.y).GetAssemblyList()->GetAssemblyListEntry(i) != 0)	// noch Platz in der Bauliste
+	{
+		int nAssemblyListEntry = pDoc->GetSystem(p).GetAssemblyList()->GetAssemblyListEntry(i);
+		if (nAssemblyListEntry != 0)
 		{
 			// ersten Eintrag in der Bauliste
 			if (i == 0)
-				// Farbe der Schrift für den ersten Eintrag in der Bauliste wäheln
+			{
+				// Farbe der Schrift für den ersten Eintrag in der Bauliste wählen
 				usedBrush.SetColor(firstColor);
+			}
+			
 			CString sFile;	
 			// ist es ein Update
-			if (pDoc->GetSystem(p.x,p.y).GetAssemblyList()->GetAssemblyListEntry(i) < 0)
+			if (nAssemblyListEntry < 0)
 			{
-				m_strAssemblyListEntry = CResourceManager::GetString("UPGRADING", FALSE, pDoc->GetBuildingName(pDoc->GetSystem(p.x,p.y).GetAssemblyList()->GetAssemblyListEntry(i)*(-1)));
-				AssemblyList[i].runningNumber = pDoc->GetSystem(p.x,p.y).GetAssemblyList()->GetAssemblyListEntry(i);
-				sFile = "Buildings//" + pDoc->GetBuildingInfo(pDoc->GetSystem(p.x,p.y).GetAssemblyList()->GetAssemblyListEntry(i) * (-1)).GetGraphikFileName();
+				m_strAssemblyListEntry = CResourceManager::GetString("UPGRADING", FALSE, pDoc->GetBuildingName(abs(nAssemblyListEntry)));
+				sFile = "Buildings//" + pDoc->GetBuildingInfo(abs(nAssemblyListEntry)).GetGraphikFileName();
 			}
 			// ist es ein Gebäude
 			else if (pDoc->GetSystem(p.x,p.y).GetAssemblyList()->GetAssemblyListEntry(i) < 10000)
 			{
-				m_strAssemblyListEntry = pDoc->GetBuildingName(pDoc->GetSystem(p.x,p.y).GetAssemblyList()->GetAssemblyListEntry(i));
-				sFile = "Buildings//" + pDoc->GetBuildingInfo(pDoc->GetSystem(p.x,p.y).GetAssemblyList()->GetAssemblyListEntry(i)).GetGraphikFileName();
+				m_strAssemblyListEntry = pDoc->GetBuildingName(nAssemblyListEntry);
+				sFile = "Buildings//" + pDoc->GetBuildingInfo(nAssemblyListEntry).GetGraphikFileName();
 			}
 			// ist es ein Schiff
 			else if (pDoc->GetSystem(p.x,p.y).GetAssemblyList()->GetAssemblyListEntry(i) < 20000)
 			{
-				m_strAssemblyListEntry.Format("%s-%s",pDoc->m_ShipInfoArray.GetAt(pDoc->GetSystem(p.x,p.y).GetAssemblyList()->GetAssemblyListEntry(i)-10000).GetShipClass(), CResourceManager::GetString("CLASS"));
-				sFile = "Ships//" + pDoc->m_ShipInfoArray.GetAt(pDoc->GetSystem(p.x,p.y).GetAssemblyList()->GetAssemblyListEntry(i)-10000).GetShipClass() + ".bop";
+				m_strAssemblyListEntry.Format("%s-%s",pDoc->m_ShipInfoArray.GetAt(nAssemblyListEntry - 10000).GetShipClass(), CResourceManager::GetString("CLASS"));
+				sFile = "Ships//" + pDoc->m_ShipInfoArray.GetAt(nAssemblyListEntry - 10000).GetShipClass() + ".bop";
 			}
 			// ist es eine Truppe
 			else
 			{
-				m_strAssemblyListEntry = pDoc->m_TroopInfo.GetAt(pDoc->GetSystem(p.x,p.y).GetAssemblyList()->GetAssemblyListEntry(i)-20000).GetName();
-				sFile = "Troops//" + pDoc->m_TroopInfo.GetAt(pDoc->GetSystem(p.x,p.y).GetAssemblyList()->GetAssemblyListEntry(i)-20000).GetName() + ".bop";
+				m_strAssemblyListEntry = pDoc->m_TroopInfo.GetAt(nAssemblyListEntry - 20000).GetName();
+				sFile = "Troops//" + pDoc->m_TroopInfo.GetAt(nAssemblyListEntry - 20000).GetName() + ".bop";
 			}
-			AssemblyList[i].rect.SetRect(760,y,1000,y+24);
-			AssemblyList[i].runningNumber = pDoc->GetSystem(p.x,p.y).GetAssemblyList()->GetAssemblyListEntry(i);
+			
 			fontFormat.SetAlignment(StringAlignmentNear);
-			g->DrawString(m_strAssemblyListEntry.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(AssemblyList[i].rect.left + 25, AssemblyList[i].rect.top, (AssemblyList[i].rect.right - AssemblyList[i].rect.left) - 25, AssemblyList[i].rect.bottom - AssemblyList[i].rect.top), &fontFormat, &usedBrush);
+			CRect rect(760,y,1000,y+24);
+			g->DrawString(m_strAssemblyListEntry.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(rect.left + 25, rect.top, (rect.right - rect.left) - 25, rect.bottom - rect.top), &fontFormat, &usedBrush);
 			
 			// kleines Symbol in der Bauliste vom Auftrag zeichnen
 			if (sFile != "")
@@ -1938,47 +1800,46 @@ void CSystemMenuView::DrawBuildList(Graphics* g)
 					g->DrawImage(graphic, 750, y, 25, 20);
 			}
 			g->DrawRectangle(&rectPen, 749, y-1, 27, 22);
-			
-						
+									
 			// Hier Berechnung der noch verbleibenden Runden, bis das Projekt fertig wird (nicht bei NeverReady-Aufträgen)
 			// divide by zero check
-			if (pDoc->GetSystem(p.x,p.y).GetProduction()->GetIndustryProd() > 0)
+			if (pDoc->GetSystem(p).GetProduction()->GetIndustryProd() > 0)
 			{
-				if (AssemblyList[i].runningNumber > 0 && AssemblyList[i].runningNumber < 10000 && pDoc->GetBuildingInfo(AssemblyList[i].runningNumber).GetNeverReady())
+				if (nAssemblyListEntry > 0 && nAssemblyListEntry < 10000 && pDoc->GetBuildingInfo(nAssemblyListEntry).GetNeverReady())
 				{
-					RoundToBuild = pDoc->m_System[p.x][p.y].GetAssemblyList()->GetNeededIndustryInAssemblyList(i);
-					m_strAssemblyListEntry.Format("%i",RoundToBuild);
+					RoundToBuild = pDoc->GetSystem(p).GetAssemblyList()->GetNeededIndustryInAssemblyList(i);
+					m_strAssemblyListEntry.Format("%i", RoundToBuild);
 				}
 				// Bei Upgrades
-				else if (AssemblyList[i].runningNumber < 0)
+				else if (nAssemblyListEntry < 0)
 				{
-					RoundToBuild = (int)ceil((float)(pDoc->GetSystem(p.x,p.y).GetAssemblyList()->GetNeededIndustryInAssemblyList(i))
-						/((float)pDoc->GetSystem(p.x,p.y).GetProduction()->GetIndustryProd()
-							* (100+pDoc->GetSystem(p.x,p.y).GetProduction()->GetUpdateBuildSpeed())/100));
+					RoundToBuild = (int)ceil((float)(pDoc->GetSystem(p).GetAssemblyList()->GetNeededIndustryInAssemblyList(i))
+						/((float)pDoc->GetSystem(p).GetProduction()->GetIndustryProd()
+							* (100+pDoc->GetSystem(p).GetProduction()->GetUpdateBuildSpeed())/100));
 					m_strAssemblyListEntry.Format("%i",RoundToBuild);
 				}
 				// Bei Gebäuden
-				else if (AssemblyList[i].runningNumber < 10000)
+				else if (nAssemblyListEntry < 10000)
 				{
-					RoundToBuild = (int)ceil((float)(pDoc->GetSystem(p.x,p.y).GetAssemblyList()->GetNeededIndustryInAssemblyList(i))
-						/((float)pDoc->GetSystem(p.x,p.y).GetProduction()->GetIndustryProd()
-							* (100+pDoc->GetSystem(p.x,p.y).GetProduction()->GetBuildingBuildSpeed())/100));
+					RoundToBuild = (int)ceil((float)(pDoc->GetSystem(p).GetAssemblyList()->GetNeededIndustryInAssemblyList(i))
+						/((float)pDoc->GetSystem(p).GetProduction()->GetIndustryProd()
+							* (100+pDoc->GetSystem(p).GetProduction()->GetBuildingBuildSpeed())/100));
 					m_strAssemblyListEntry.Format("%i",RoundToBuild);
 				}
 				// Bei Schiffen Wertfeffiziens mitbeachten
-				else if (AssemblyList[i].runningNumber < 20000 && pDoc->GetSystem(p.x,p.y).GetProduction()->GetShipYardEfficiency() > 0)
+				else if (nAssemblyListEntry < 20000 && pDoc->GetSystem(p).GetProduction()->GetShipYardEfficiency() > 0)
 				{					
-					RoundToBuild = (int)ceil((float)(pDoc->GetSystem(p.x,p.y).GetAssemblyList()->GetNeededIndustryInAssemblyList(i))
-						/((float)pDoc->GetSystem(p.x,p.y).GetProduction()->GetIndustryProd() * pDoc->GetSystem(p.x,p.y).GetProduction()->GetShipYardEfficiency() / 100
-							* (100+pDoc->GetSystem(p.x,p.y).GetProduction()->GetShipBuildSpeed())/100));
+					RoundToBuild = (int)ceil((float)(pDoc->GetSystem(p).GetAssemblyList()->GetNeededIndustryInAssemblyList(i))
+						/((float)pDoc->GetSystem(p).GetProduction()->GetIndustryProd() * pDoc->GetSystem(p.x,p.y).GetProduction()->GetShipYardEfficiency() / 100
+							* (100+pDoc->GetSystem(p).GetProduction()->GetShipBuildSpeed())/100));
 					m_strAssemblyListEntry.Format("%i",RoundToBuild);
 				}
 				// Bei Truppen die Kaserneneffiziens beachten
-				else if (pDoc->GetSystem(p.x,p.y).GetProduction()->GetBarrackEfficiency() > 0)
+				else if (pDoc->GetSystem(p).GetProduction()->GetBarrackEfficiency() > 0)
 				{
-					RoundToBuild = (int)ceil((float)(pDoc->GetSystem(p.x,p.y).GetAssemblyList()->GetNeededIndustryInAssemblyList(i))
-						/((float)pDoc->GetSystem(p.x,p.y).GetProduction()->GetIndustryProd() * pDoc->GetSystem(p.x,p.y).GetProduction()->GetBarrackEfficiency() / 100
-							* (100+pDoc->GetSystem(p.x,p.y).GetProduction()->GetTroopBuildSpeed())/100));
+					RoundToBuild = (int)ceil((float)(pDoc->GetSystem(p).GetAssemblyList()->GetNeededIndustryInAssemblyList(i))
+						/((float)pDoc->GetSystem(p).GetProduction()->GetIndustryProd() * pDoc->GetSystem(p.x,p.y).GetProduction()->GetBarrackEfficiency() / 100
+							* (100+pDoc->GetSystem(p).GetProduction()->GetTroopBuildSpeed())/100));
 					m_strAssemblyListEntry.Format("%i",RoundToBuild);
 				}
 				else
@@ -1990,9 +1851,10 @@ void CSystemMenuView::DrawBuildList(Graphics* g)
 			y += 25;
 			usedBrush.SetColor(normalColor);
 		}
+	}
 	
 	// Wenn nix in der Bauliste steht, automatisch Handelsgüter reinschreiben
-	if (pDoc->GetSystem(p.x,p.y).GetAssemblyList()->GetAssemblyListEntry(0) == 0)
+	if (pDoc->GetSystem(p).GetAssemblyList()->GetAssemblyListEntry(0) == 0)
 	{		
 		usedBrush.SetColor(firstColor);
 		g->DrawString(CResourceManager::GetString("COMMODITIES").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(760,410,285,25), &fontFormat, &usedBrush);		
@@ -2222,6 +2084,9 @@ void CSystemMenuView::DrawSystemProduction(Graphics* g)
 // Funktion berechnet und zeichnet im "rect" die Produktion eins Gebäudes, also alles was es macht
 void CSystemMenuView::DrawBuildingProduction(Graphics* g)
 {
+	if (m_iClickedOn >= m_vBuildlist.GetSize())
+		return;
+
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
 
@@ -2251,14 +2116,12 @@ void CSystemMenuView::DrawBuildingProduction(Graphics* g)
 	fontFormat.SetLineAlignment(StringAlignmentCenter);
 	fontFormat.SetFormatFlags(StringFormatFlagsNoWrap);
 		
-	int RunningNumber = BuildList[m_iClickedOn].runningNumber;
+	int RunningNumber = abs(m_vBuildlist[m_iClickedOn]);
 	
 	// Oben im Beschreibungsrechteck den Namen des Projektes hinschreiben
 	// Ist es ein Gebäude oder ein Upgrade eines Gebäudes, welches aber keine Arbeiter benötigt
-	if (RunningNumber > 0 || pDoc->GetBuildingInfo(RunningNumber*(-1)).GetWorker() == FALSE)
+	if (m_vBuildlist[m_iClickedOn] > 0 || pDoc->GetBuildingInfo(RunningNumber).GetWorker() == FALSE)
 	{
-		if (RunningNumber < 0)
-			RunningNumber *= -1;
 		CBuildingInfo* b = &pDoc->GetBuildingInfo(RunningNumber);
 		
 		s.Format("%s",pDoc->GetBuildingName(RunningNumber));
@@ -2855,20 +2718,20 @@ void CSystemMenuView::DrawBuildingProduction(Graphics* g)
 	}
 	
 	// Wenn es sich um ein Upgrade handelt:
-	else if (RunningNumber < 0)	
+	else if (m_vBuildlist[m_iClickedOn] < 0)	
 	{
 		CPoint p = pDoc->GetKO();
 		// aktuelles Gebäude, also Gebäude welches geupdated werden soll
-		CBuildingInfo* b1 = &pDoc->GetBuildingInfo(pDoc->BuildingInfo.GetAt(RunningNumber*(-1)-1).GetPredecessorID());
+		CBuildingInfo* b1 = &pDoc->GetBuildingInfo(pDoc->BuildingInfo.GetAt(RunningNumber - 1).GetPredecessorID());
 		if (b1->GetWorker())
 		{
 			// Nachfolger des aktuellen Gebäudes
-			CBuildingInfo* b2 = &pDoc->GetBuildingInfo(RunningNumber*(-1));
+			CBuildingInfo* b2 = &pDoc->GetBuildingInfo(RunningNumber);
 			fontBrush.SetColor(penColor);
 			fontFormat.SetFormatFlags(!StringFormatFlagsNoWrap);
 			fontFormat.SetAlignment(StringAlignmentNear);
 			r.Height = 50;
-			s = CResourceManager::GetString("UPGRADE_FROM_TO",FALSE,pDoc->GetBuildingName(pDoc->BuildingInfo.GetAt(RunningNumber*(-1)-1).GetPredecessorID()),pDoc->GetBuildingName(RunningNumber*(-1)));
+			s = CResourceManager::GetString("UPGRADE_FROM_TO",FALSE,pDoc->GetBuildingName(pDoc->BuildingInfo.GetAt(RunningNumber - 1).GetPredecessorID()),pDoc->GetBuildingName(RunningNumber));
 			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), r, &fontFormat, &fontBrush);
 			r.Y += 75;
 			r.Height = 25;
@@ -3028,7 +2891,6 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		m_bySubMenu = temp;
 		if (m_bySubMenu == 0)
 		{
-			m_bClickedOneBuilding = TRUE;
 			m_bClickedOnBuyButton = FALSE;
 			m_bClickedOnDeleteButton = FALSE;
 		}
@@ -3040,116 +2902,118 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		// haben wir hier auf einen Button geklickt um in ein anderes Untermenü zu gelangen (Gebäude, Schiffe oder Truppen)
 		if (BuildingListButton.PtInRect(point))
 		{
-			m_iClickedOn = 1;
+			m_iClickedOn = 0;
 			m_byStartList = 0;
 			m_iWhichSubMenu = 0;
 			Invalidate(FALSE);
+			return;
 		}
 		else if (ShipyardListButton.PtInRect(point))
 		{
 			// Wenn man keine Schiffe zur Auswahl hat dann wird wieder auf das normale Gebäudebaumenü umgeschaltet
 			if (pDoc->m_System[pDoc->GetKO().x][pDoc->GetKO().y].GetBuildableShips()->GetSize() == 0)
 				return;
-			m_iClickedOn = 1;
+			m_iClickedOn = 0;
 			m_byStartList = 0;
 			m_iWhichSubMenu = 1;
 			Invalidate(FALSE);
+			return;
 		}
 		else if (TroopListButton.PtInRect(point))
 		{
 			// Wenn man keine Schiffe zur Auswahl hat dann wird wieder auf das normale Gebäudebaumenü umgeschaltet
 			if (pDoc->m_System[pDoc->GetKO().x][pDoc->GetKO().y].GetBuildableTroops()->GetSize() == 0)
 				return;
-			m_iClickedOn = 1;
+			m_iClickedOn = 0;
 			m_byStartList = 0;
 			m_iWhichSubMenu = 2;
 			Invalidate(FALSE);
+			return;
 		}
 
-		int RunningNumber;
-		for (int i = 1; i < 50; i++)
+		for (int i = m_byStartList; i < m_vBuildlist.GetSize(); i++)
 		{
-			if (BuildList[i].rect.PtInRect(point))
+			if (i > m_byEndList)
+				break;
+
+			CRect rect(380, 150 + (i - m_byStartList) * 25, 670, 150 + (i - m_byStartList) * 25 + 25);
+
+			if (rect.PtInRect(point))
 			{
-				if (BuildList[i].runningNumber < 0)
-					RunningNumber = (BuildList[i].runningNumber)*(-1)+1;
-				else
-					RunningNumber = BuildList[i].runningNumber;
-				
 				m_iClickedOn = i;
-				m_bClickedOneBuilding = TRUE;
 				m_bClickedOnBuyButton = FALSE;
 				m_bClickedOnDeleteButton = FALSE;
 				Invalidate(FALSE);
 				return;
 			}
 		}
+
 		CPoint p = pDoc->GetKO();
 		// Überprüfen ob wir auf den KaufenButton gedrückt haben und wir noch nix gekauft haben
 		// dies geht nicht bei NeverReady wie z.B. Kriegsrecht Aufträgen
-		if (BuyButton.PtInRect(point) && pDoc->GetSystem(p.x,p.y).GetAssemblyList()->GetWasBuildingBought() == FALSE
-			&& pDoc->GetSystem(p.x,p.y).GetAssemblyList()->GetAssemblyListEntry(0) != 0 && m_bClickedOnDeleteButton == FALSE)
+		int nFirstAssemblyListEntry = pDoc->GetSystem(p).GetAssemblyList()->GetAssemblyListEntry(0);
+		if (BuyButton.PtInRect(point) && pDoc->GetSystem(p).GetAssemblyList()->GetWasBuildingBought() == FALSE
+			&& nFirstAssemblyListEntry != 0 && m_bClickedOnDeleteButton == FALSE)
 		{
 			// Bei Gebäuden nur wenn es nicht ein Auftrag mit NeverReady (z.B. Kriegsrecht) ist)
-			if ((AssemblyList[0].runningNumber < 0)
+			if ((nFirstAssemblyListEntry < 0)
 				||					
-				(AssemblyList[0].runningNumber > 0 && AssemblyList[0].runningNumber < 10000 && pDoc->GetBuildingInfo(AssemblyList[0].runningNumber).GetNeverReady() == FALSE)
+				(nFirstAssemblyListEntry > 0 && nFirstAssemblyListEntry < 10000 && pDoc->GetBuildingInfo(nFirstAssemblyListEntry).GetNeverReady() == FALSE)
 				||
 				// Bei Schiffen nur, wenn eine Werft noch aktiv ist
-				(AssemblyList[0].runningNumber >= 10000 && AssemblyList[0].runningNumber < 20000 && pDoc->GetSystem(p).GetProduction()->GetShipYard())
+				(nFirstAssemblyListEntry >= 10000 && nFirstAssemblyListEntry < 20000 && pDoc->GetSystem(p).GetProduction()->GetShipYard())
 				||
 				// Bei Truppen nur mit aktiver Kaseren
-				(AssemblyList[0].runningNumber >= 20000 && pDoc->GetSystem(p).GetProduction()->GetBarrack()))
+				(nFirstAssemblyListEntry >= 20000 && pDoc->GetSystem(p).GetProduction()->GetBarrack()))
 			{
-				pDoc->m_System[p.x][p.y].GetAssemblyList()->CalculateBuildCosts(pMajor->GetTrade()->GetRessourcePriceAtRoundStart());
-				m_bClickedOnBuyButton = TRUE;
-				//PlaySound(*((CBotf2App*)AfxGetApp())->GetPath() + "Sounds\\ComputerBeep1.wav", NULL, SND_FILENAME | SND_ASYNC);
+				pDoc->GetSystem(p).GetAssemblyList()->CalculateBuildCosts(pMajor->GetTrade()->GetRessourcePriceAtRoundStart());
+				m_bClickedOnBuyButton = TRUE;				
 				Invalidate();
+				return;
 			}
 		}
+
 		// Überprüfen ob wir auf den Okaybutton gedrückt haben um das aktuelle Projekt zu kaufen
 		if (OkayButton.PtInRect(point) && m_bClickedOnBuyButton == TRUE)
 		{
-			int costs = pDoc->m_System[p.x][p.y].GetAssemblyList()->BuyBuilding(pMajor->GetEmpire()->GetLatinum());
+			int costs = pDoc->GetSystem(p).GetAssemblyList()->BuyBuilding(pMajor->GetEmpire()->GetLatinum());
 			if (costs != 0)
 			{
-				//m_bClickedOneBuilding = TRUE;
 				OkayButton.SetRect(0,0,0,0);
 				CancelButton.SetRect(0,0,0,0);
-				pDoc->m_System[p.x][p.y].GetAssemblyList()->SetWasBuildingBought(TRUE);
+				pDoc->GetSystem(p).GetAssemblyList()->SetWasBuildingBought(TRUE);
 				pMajor->GetEmpire()->SetLatinum(-costs);
 				// Die Preise an der Börse anpassen, da wir ja bestimmte Mengen Ressourcen gekauft haben
 				// Achtung, hier flag == 1 setzen bei Aufruf der Funktion BuyRessource!!!!
-				pMajor->GetTrade()->BuyRessource(TITAN,pDoc->m_System[p.x][p.y].GetAssemblyList()->GetNeededTitanInAssemblyList(0),p,pMajor->GetEmpire()->GetLatinum(),1);
-				pMajor->GetTrade()->BuyRessource(DEUTERIUM,pDoc->m_System[p.x][p.y].GetAssemblyList()->GetNeededDeuteriumInAssemblyList(0),p,pMajor->GetEmpire()->GetLatinum(),1);
-				pMajor->GetTrade()->BuyRessource(DURANIUM,pDoc->m_System[p.x][p.y].GetAssemblyList()->GetNeededDuraniumInAssemblyList(0),p,pMajor->GetEmpire()->GetLatinum(),1);
-				pMajor->GetTrade()->BuyRessource(CRYSTAL,pDoc->m_System[p.x][p.y].GetAssemblyList()->GetNeededCrystalInAssemblyList(0),p,pMajor->GetEmpire()->GetLatinum(),1);
-				pMajor->GetTrade()->BuyRessource(IRIDIUM,pDoc->m_System[p.x][p.y].GetAssemblyList()->GetNeededIridiumInAssemblyList(0),p,pMajor->GetEmpire()->GetLatinum(),1);
-			
-				//PlaySound(*((CBotf2App*)AfxGetApp())->GetPath() + "Sounds\\ComputerBeep1.wav", NULL, SND_FILENAME | SND_ASYNC);
+				pMajor->GetTrade()->BuyRessource(TITAN,pDoc->GetSystem(p).GetAssemblyList()->GetNeededTitanInAssemblyList(0),p,pMajor->GetEmpire()->GetLatinum(),1);
+				pMajor->GetTrade()->BuyRessource(DEUTERIUM,pDoc->GetSystem(p).GetAssemblyList()->GetNeededDeuteriumInAssemblyList(0),p,pMajor->GetEmpire()->GetLatinum(),1);
+				pMajor->GetTrade()->BuyRessource(DURANIUM,pDoc->GetSystem(p).GetAssemblyList()->GetNeededDuraniumInAssemblyList(0),p,pMajor->GetEmpire()->GetLatinum(),1);
+				pMajor->GetTrade()->BuyRessource(CRYSTAL,pDoc->GetSystem(p).GetAssemblyList()->GetNeededCrystalInAssemblyList(0),p,pMajor->GetEmpire()->GetLatinum(),1);
+				pMajor->GetTrade()->BuyRessource(IRIDIUM,pDoc->GetSystem(p).GetAssemblyList()->GetNeededIridiumInAssemblyList(0),p,pMajor->GetEmpire()->GetLatinum(),1);
+							
 				pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
 				m_bClickedOnBuyButton = FALSE;
 				Invalidate();
+				return;
 			}
 		}
 		// Überprüfen ob wir auf den Cancelbutton gedrückt haben um den Kauf abzubrechen
 		if (CancelButton.PtInRect(point))
 		{
-			//m_bClickedOneBuilding = TRUE;
 			OkayButton.SetRect(0,0,0,0);
-			CancelButton.SetRect(0,0,0,0);
-			//PlaySound(*((CBotf2App*)AfxGetApp())->GetPath() + "Sounds\\ComputerBeep1.wav", NULL, SND_FILENAME | SND_ASYNC);
+			CancelButton.SetRect(0,0,0,0);			
 			m_bClickedOnBuyButton = FALSE;
 			m_bClickedOnDeleteButton = FALSE;
 			Invalidate();
+			return;
 		}
 
 		// Überprüfen ob wir auf den Bau_abbrechen Button gedrückt haben
 		if (DeleteButton.PtInRect(point) && pDoc->GetSystem(p.x,p.y).GetAssemblyList()->GetAssemblyListEntry(0) != 0 && m_bClickedOnBuyButton == FALSE)
 		{
-			m_bClickedOnDeleteButton = TRUE;
-			//PlaySound(*((CBotf2App*)AfxGetApp())->GetPath() + "Sounds\\ComputerBeep1.wav", NULL, SND_FILENAME | SND_ASYNC);
+			m_bClickedOnDeleteButton = TRUE;			
 			Invalidate();
+			return;
 		}
 		// Überprüfen ob wir auf den Okaybutton gedrückt haben um das aktuelle Projekt abzubrechen
 		if (OkayButton.PtInRect(point) && m_bClickedOnDeleteButton == TRUE)
@@ -3197,29 +3061,26 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			// Nach ClearAssemblyList müssen wir die Funktion CalculateVariables() aufrufen
 			pDoc->m_System[p.x][p.y].CalculateVariables(&pDoc->BuildingInfo, pMajor->GetEmpire()->GetResearch()->GetResearchInfo(),
 				pDoc->m_Sector[p.x][p.y].GetPlanets(), pMajor, CTrade::GetMonopolOwner());
-			if (AssemblyList[0].runningNumber < 0)
-				RunningNumber = AssemblyList[0].runningNumber * (-1);
-			else
-				RunningNumber = AssemblyList[0].runningNumber;
+			
+			int RunningNumber = abs(nFirstAssemblyListEntry);
 			// Baulistencheck machen, wenn wir kein Schiff reingesetzt haben. 
 			// Den Check nur machen, wenn wir ein Update oder ein Gebäude welches eine Maxanzahl voraussetzt
 			// hinzufügen wollen
-			if (RunningNumber < 10000 && (AssemblyList[0].runningNumber < 0
+			if (RunningNumber < 10000 && (nFirstAssemblyListEntry < 0
 				|| pDoc->GetBuildingInfo(RunningNumber).GetMaxInEmpire().Number > 0
 				|| pDoc->GetBuildingInfo(RunningNumber).GetMaxInSystem().Number > 0))
 			{
 				// Wir müssen die GlobalBuilding Variable ändern, weil sich mittlerweile ja solch ein Gebäude
 				// weniger in der Bauliste befindet. Nicht aber wenn es ein Upgrade ist
-				if (AssemblyList[0].runningNumber > 0)
+				if (nFirstAssemblyListEntry > 0)
 					pDoc->m_GlobalBuildings.DeleteGlobalBuilding(RunningNumber);
-				pDoc->m_System[p.x][p.y].AssemblyListCheck(&pDoc->BuildingInfo,&pDoc->m_GlobalBuildings);
+				pDoc->GetSystem(p).AssemblyListCheck(&pDoc->BuildingInfo, &pDoc->m_GlobalBuildings);
 			}
 			m_bClickedOnDeleteButton = FALSE;
-			//m_bClickedOneBuilding = TRUE;
 			OkayButton.SetRect(0,0,0,0);
-			CancelButton.SetRect(0,0,0,0);
-			//PlaySound(*((CBotf2App*)AfxGetApp())->GetPath() + "Sounds\\ComputerBeep1.wav", NULL, SND_FILENAME | SND_ASYNC);
+			CancelButton.SetRect(0,0,0,0);			
 			Invalidate();
+			return;
 		}
 		// Überprüfen ob wir auf den Cancelbutton gedrückt haben um das aktuelle Projekt abbrechen wollen
 		// -> gleiche Cancelfunktion wie oben bei Kaufen
@@ -3232,6 +3093,7 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			CRect r = BuildingDescription;
 			CalcDeviceRect(r);
 			InvalidateRect(r, FALSE);
+			return;
 		}
 		// Überprüfen ob wir auf den Gebäudebeschreibungs Button gedrückt haben um die Beschreibung zum Gebäude anzuzeigen
 		if (BuildingDescriptionButton.PtInRect(point))
@@ -3241,6 +3103,7 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			CRect r = BuildingDescription;
 			CalcDeviceRect(r);
 			InvalidateRect(r, FALSE);
+			return;
 		}
 	}
 
@@ -3581,17 +3444,17 @@ BOOL CSystemMenuView::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 	{
 		if (zDelta < 0)
 		{
-			if (BuildList[m_byStartList+NOEIBL].runningNumber != 0)
+			if (m_byStartList + NOEIBL / 2 <= m_iClickedOn && m_iClickedOn < m_vBuildlist.GetUpperBound())
 				m_byStartList++;
-			if (BuildList[m_iClickedOn+1].runningNumber != 0)
+			if (m_iClickedOn < m_vBuildlist.GetUpperBound())
 				m_iClickedOn++;
 			Invalidate(FALSE);
 		}
 		else if (zDelta > 0)
 		{
-			if (m_iClickedOn > 1)
+			if (m_iClickedOn > 0)
 				m_iClickedOn--;
-			if (m_byStartList > 0)
+			if (m_byStartList > 0)			
 				m_byStartList--;
 			Invalidate(FALSE);
 		}
@@ -3621,96 +3484,98 @@ void CSystemMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 
 	// Wenn wir uns in der Systemansicht befinden
 	CPoint p = pDoc->GetKO();
+	
 	// Baulisteneintrag hinzufügen
-	for (int i = 1; i < 50; i++)
+	if (m_bySubMenu == 0)
 	{
-		if (BuildList[i].rect.PtInRect(point) && m_bySubMenu == 0)
+		for (int i = m_byStartList; i < m_vBuildlist.GetSize(); i++)
 		{
-			short nID = BuildList[i].runningNumber;
-			
-			// Die Struktur BuildList löschen, alle werte auf 0
-			for (int j = 0; j < 50; j++)
-			{
-				BuildList[j].rect.SetRect(0,0,0,0);
-				BuildList[j].runningNumber = 0;
-			}
+			if (i > m_byEndList)
+				break;
 
-			int RunningNumber;
-			if (nID < 0)
-				RunningNumber = nID * (-1);
-			else
-				RunningNumber = nID;
+			CRect rect(380, 150 + (i - m_byStartList) * 25, 670, 150 + (i - m_byStartList) * 25 + 25);
 
-			// vor einem Doppelklick müssen die benötigten Ressourcen sicherheitshalber nochmal neu berechnet.
-			// Denn bei ganz flinken Fingern kann es passieren, dass dies in der Draw Methode nicht gemacht werden.
-			// also ein Gebäude oder Gebäudeupdate
-			if (nID < 10000)
-				pDoc->GetSystem(p).GetAssemblyList()->CalculateNeededRessources(&pDoc->GetBuildingInfo(RunningNumber),0,0, pDoc->GetSystem(p).GetAllBuildings(), nID, pMajor->GetEmpire()->GetResearch()->GetResearchInfo());
-			// also ein Schiff
-			else if (nID < 20000 && pDoc->GetSystem(p).GetBuildableShips()->GetSize() > 0)
-				pDoc->GetSystem(p).GetAssemblyList()->CalculateNeededRessources(0, &pDoc->m_ShipInfoArray.GetAt(nID - 10000),0, pDoc->GetSystem(p).GetAllBuildings(), nID, pMajor->GetEmpire()->GetResearch()->GetResearchInfo());
-			// also eine Truppe
-			else if (pDoc->GetSystem(p).GetBuildableTroops()->GetSize() > 0)
-				pDoc->GetSystem(p).GetAssemblyList()->CalculateNeededRessources(0,0,&pDoc->m_TroopInfo.GetAt(nID - 20000), pDoc->GetSystem(p).GetAllBuildings(), nID, pMajor->GetEmpire()->GetResearch()->GetResearchInfo());
-			
-			if (pDoc->m_System[p.x][p.y].GetAssemblyList()->MakeEntry(nID, p, pDoc->m_System))
-			{
-				// Baulistencheck machen, wenn wir kein Schiff reingesetzt haben. 
-				// Den Check nur machen, wenn wir ein Update oder ein Gebäude welches eine Maxanzahl voraussetzt
-				// hinzufügen wollen
-				if (RunningNumber < 10000 && (nID < 0
-					|| pDoc->GetBuildingInfo(RunningNumber).GetMaxInEmpire().Number > 0
-					||  pDoc->GetBuildingInfo(RunningNumber).GetMaxInSystem().Number > 0))
+			if (rect.PtInRect(point))
+			{			
+				int nID = m_vBuildlist[i];
+				int RunningNumber = abs(nID);
+				// vor einem Doppelklick müssen die benötigten Ressourcen sicherheitshalber nochmal neu berechnet.
+				// Denn bei ganz flinken Fingern kann es passieren, dass dies in der Draw Methode nicht gemacht werden.
+				// also ein Gebäude oder Gebäudeupdate
+				if (nID < 10000)
+					pDoc->GetSystem(p).GetAssemblyList()->CalculateNeededRessources(&pDoc->GetBuildingInfo(RunningNumber),0,0, pDoc->GetSystem(p).GetAllBuildings(), nID, pMajor->GetEmpire()->GetResearch()->GetResearchInfo());
+				// also ein Schiff
+				else if (nID < 20000 && pDoc->GetSystem(p).GetBuildableShips()->GetSize() > 0)
+					pDoc->GetSystem(p).GetAssemblyList()->CalculateNeededRessources(0, &pDoc->m_ShipInfoArray.GetAt(nID - 10000),0, pDoc->GetSystem(p).GetAllBuildings(), nID, pMajor->GetEmpire()->GetResearch()->GetResearchInfo());
+				// also eine Truppe
+				else if (pDoc->GetSystem(p).GetBuildableTroops()->GetSize() > 0)
+					pDoc->GetSystem(p).GetAssemblyList()->CalculateNeededRessources(0,0,&pDoc->m_TroopInfo.GetAt(nID - 20000), pDoc->GetSystem(p).GetAllBuildings(), nID, pMajor->GetEmpire()->GetResearch()->GetResearchInfo());
+				
+				if (pDoc->m_System[p.x][p.y].GetAssemblyList()->MakeEntry(nID, p, pDoc->m_System))
 				{
-					// Wir müssen die GlobalBuilding Variable ändern, weil sich mittlerweile ja solch ein Gebäude
-					// mehr in der Bauliste befindet.
-					pDoc->m_GlobalBuildings.AddGlobalBuilding(RunningNumber);
-					// Wenn es nur einmal pro Imperium baubar war, dann Assemblylistcheck in jedem unserer Systeme
-					// durchführen
-					if (pDoc->GetBuildingInfo(RunningNumber).GetMaxInEmpire().Number > 0)
+					// Baulistencheck machen, wenn wir kein Schiff reingesetzt haben. 
+					// Den Check nur machen, wenn wir ein Update oder ein Gebäude welches eine Maxanzahl voraussetzt
+					// hinzufügen wollen
+					if (RunningNumber < 10000 && (nID < 0
+						|| pDoc->GetBuildingInfo(RunningNumber).GetMaxInEmpire().Number > 0
+						||  pDoc->GetBuildingInfo(RunningNumber).GetMaxInSystem().Number > 0))
 					{
-						for (int y = 0 ; y < STARMAP_SECTORS_VCOUNT; y++)
-							for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-								if (pDoc->m_System[x][y].GetOwnerOfSystem() == m_pPlayersRace->GetRaceID())
-									if (m_pPlayersRace->GetRaceBuildingNumber() ==	pDoc->GetBuildingInfo(RunningNumber).GetOwnerOfBuilding())
-										pDoc->m_System[x][y].AssemblyListCheck(&pDoc->BuildingInfo,&pDoc->m_GlobalBuildings);
+						// Wir müssen die GlobalBuilding Variable ändern, weil sich mittlerweile ja solch ein Gebäude
+						// mehr in der Bauliste befindet.
+						pDoc->m_GlobalBuildings.AddGlobalBuilding(RunningNumber);
+						// Wenn es nur einmal pro Imperium baubar war, dann Assemblylistcheck in jedem unserer Systeme
+						// durchführen
+						if (pDoc->GetBuildingInfo(RunningNumber).GetMaxInEmpire().Number > 0)
+						{
+							for (int y = 0 ; y < STARMAP_SECTORS_VCOUNT; y++)
+								for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
+									if (pDoc->m_System[x][y].GetOwnerOfSystem() == m_pPlayersRace->GetRaceID())
+										if (m_pPlayersRace->GetRaceBuildingNumber() ==	pDoc->GetBuildingInfo(RunningNumber).GetOwnerOfBuilding())
+											pDoc->m_System[x][y].AssemblyListCheck(&pDoc->BuildingInfo,&pDoc->m_GlobalBuildings);
+						}
+						// sonst den Baulistencheck nur in dem aktuellen System durchführen
+						else
+							pDoc->m_System[p.x][p.y].AssemblyListCheck(&pDoc->BuildingInfo,&pDoc->m_GlobalBuildings);
 					}
-					// sonst den Baulistencheck nur in dem aktuellen System durchführen
-					else
-						pDoc->m_System[p.x][p.y].AssemblyListCheck(&pDoc->BuildingInfo,&pDoc->m_GlobalBuildings);
-				}
-				// Wenn wir den Baueintrag setzen konnten, also hier in der if-Bedingung sind, dann CalculateVariables() aufrufen
-				pDoc->m_System[p.x][p.y].CalculateVariables(&pDoc->BuildingInfo, pMajor->GetEmpire()->GetResearch()->GetResearchInfo(),pDoc->m_Sector[p.x][p.y].GetPlanets(), pMajor, CTrade::GetMonopolOwner());
-				m_iClickedOn = i;				
+					// Wenn wir den Baueintrag setzen konnten, also hier in der if-Bedingung sind, dann CalculateVariables() aufrufen
+					pDoc->m_System[p.x][p.y].CalculateVariables(&pDoc->BuildingInfo, pMajor->GetEmpire()->GetResearch()->GetResearchInfo(),pDoc->m_Sector[p.x][p.y].GetPlanets(), pMajor, CTrade::GetMonopolOwner());
+					m_iClickedOn = i;
 
-				Invalidate(FALSE);
+					// Die Struktur Buildlist löschen
+					m_vBuildlist.RemoveAll();
+					Invalidate(FALSE);
+					return;
+				}
+				// Baulisteneintrag konnte aufgrund von Ressourcenmangel nicht gesetzt werden
+				else
+					CSoundManager::GetInstance()->PlaySound(SNDMGR_SOUND_ERROR);
 				return;
 			}
-			// Baulisteneintrag konnte aufgrund von Ressourcenmangel nicht gesetzt werden
-			else
-				CSoundManager::GetInstance()->PlaySound(SNDMGR_SOUND_ERROR);
-			return;			
 		}
 	}
+
 	// Baulisteneintrag wieder entfernen
 	for (int i = 0; i < ALE; i++)
-		if (AssemblyList[i].rect.PtInRect(point))
+	{
+		int nAssemblyListEntry = pDoc->GetSystem(p).GetAssemblyList()->GetAssemblyListEntry(i);
+		if (nAssemblyListEntry == 0)
+			break;
+		
+		CRect rect(760, 410 + i * 25, 1000, 410 + i * 25 + 25);
+		if (rect.PtInRect(point))
 		{
 			m_bClickedOnBuyButton = FALSE;
-			int RunningNumber;
-			if (AssemblyList[i].runningNumber < 0)
-				RunningNumber = AssemblyList[i].runningNumber * (-1);
-			else
-				RunningNumber = AssemblyList[i].runningNumber;
+			int RunningNumber = abs(nAssemblyListEntry);
+			
 			// Nur beim 0-ten Eintrag in der Bauliste, also der, der oben steht
-			if (i == 0 && pDoc->m_System[p.x][p.y].GetAssemblyList()->GetAssemblyListEntry(0) != 0)
+			if (i == 0)
 			{
 				// bekommen bei Abbruch die Ressourcen bzw. Teile der Ressourcen wieder
 				for (int j = TITAN; j <= DILITHIUM; j++)
 				{
 					// bestanden Ressourcenrouten, so kann es sein, dass deren Startsysteme einen Anteil oder auch
 					// alles zurückbekommen
-					long getBackRes = pDoc->m_System[p.x][p.y].GetAssemblyList()->GetNeededResourceInAssemblyList(0, j);
+					long getBackRes = pDoc->GetSystem(p).GetAssemblyList()->GetNeededResourceInAssemblyList(0, j);
 					for (int k = 0; k < pMajor->GetEmpire()->GetSystemList()->GetSize(); k++)
 						if (pMajor->GetEmpire()->GetSystemList()->GetAt(k).ko != p)
 						{
@@ -3722,39 +3587,39 @@ void CSystemMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 										{
 											// sind wir soweit, dann geht ein prozentualer Anteil zurück in das
 											// Startsystem der Ressourcenroute
-											int back = pDoc->m_System[p.x][p.y].GetAssemblyList()->GetNeededResourceInAssemblyList(0, j)
-												* pDoc->m_System[ko.x][ko.y].GetResourceRoutes()->GetAt(l).GetPercent() / 100;
+											int back = pDoc->GetSystem(p).GetAssemblyList()->GetNeededResourceInAssemblyList(0, j)
+												* pDoc->GetSystem(ko).GetResourceRoutes()->GetAt(l).GetPercent() / 100;
 											ASSERT(back >= 0);
-											pDoc->m_System[ko.x][ko.y].SetRessourceStore(j, back);
+											pDoc->GetSystem(ko).SetRessourceStore(j, back);
 											getBackRes -= back;
 										}									
 						}
-					pDoc->m_System[p.x][p.y].SetRessourceStore(j, getBackRes);
+					pDoc->GetSystem(p).SetRessourceStore(j, getBackRes);
 				}
 				// Wenn wir was gekauft hatten, dann bekommen wir die Kaufkosten zurück
-				if (pDoc->GetSystem(p.x,p.y).GetAssemblyList()->GetWasBuildingBought() == TRUE)
+				if (pDoc->GetSystem(p).GetAssemblyList()->GetWasBuildingBought() == TRUE)
 				{
-					pMajor->GetEmpire()->SetLatinum(pDoc->GetSystem(p.x,p.y).GetAssemblyList()->GetBuildCosts());
+					pMajor->GetEmpire()->SetLatinum(pDoc->GetSystem(p).GetAssemblyList()->GetBuildCosts());
 					// Die Preise an der Börse anpassen, da wir ja bestimmte Mengen Ressourcen gekauft haben
 					// Achtung, hier flag == 1 setzen bei Aufruf der Funktion BuyRessource!!!!
 					for (int j = TITAN; j <= IRIDIUM; j++)
-						pMajor->GetTrade()->SellRessource(j, pDoc->m_System[p.x][p.y].GetAssemblyList()->GetNeededResourceInAssemblyList(0, j), p, 1);
-					pDoc->m_System[p.x][p.y].GetAssemblyList()->SetWasBuildingBought(FALSE);
+						pMajor->GetTrade()->SellRessource(j, pDoc->GetSystem(p).GetAssemblyList()->GetNeededResourceInAssemblyList(0, j), p, 1);
+					pDoc->GetSystem(p).GetAssemblyList()->SetWasBuildingBought(FALSE);
 					pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
 				}
-				pDoc->m_System[p.x][p.y].GetAssemblyList()->ClearAssemblyList(p, pDoc->m_System);
+				pDoc->GetSystem(p).GetAssemblyList()->ClearAssemblyList(p, pDoc->m_System);
 				// Nach ClearAssemblyList müssen wir die Funktion CalculateVariables() aufrufen
-				pDoc->m_System[p.x][p.y].CalculateVariables(&pDoc->BuildingInfo, pMajor->GetEmpire()->GetResearch()->GetResearchInfo(),pDoc->m_Sector[p.x][p.y].GetPlanets(), pMajor, CTrade::GetMonopolOwner());
+				pDoc->GetSystem(p).CalculateVariables(&pDoc->BuildingInfo, pMajor->GetEmpire()->GetResearch()->GetResearchInfo(),pDoc->m_Sector[p.x][p.y].GetPlanets(), pMajor, CTrade::GetMonopolOwner());
 				// Baulistencheck machen, wenn wir kein Schiff reingesetzt haben. 
 				// Den Check nur machen, wenn wir ein Update oder ein Gebäude welches eine Maxanzahl voraussetzt
 				// hinzufügen wollen
-				if (RunningNumber < 10000 && (AssemblyList[i].runningNumber < 0
+				if (RunningNumber < 10000 && (nAssemblyListEntry < 0
 					|| pDoc->GetBuildingInfo(RunningNumber).GetMaxInEmpire().Number > 0
 					|| pDoc->GetBuildingInfo(RunningNumber).GetMaxInSystem().Number > 0))
 				{
 					// Wir müssen die GlobalBuilding Variable ändern, weil sich mittlerweile ja solch ein Gebäude
 					// weniger in der Bauliste befindet. Nicht aber wenn es ein Upgrade ist.
-					if (AssemblyList[i].runningNumber > 0)
+					if (nAssemblyListEntry > 0)
 						pDoc->m_GlobalBuildings.DeleteGlobalBuilding(RunningNumber);
 					// Wenn es nur einmal pro Imperium baubar war, dann Assemblylistcheck in jedem unserer Systeme
 					// durchführen
@@ -3762,32 +3627,32 @@ void CSystemMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 					{
 						for (int y = 0 ; y < STARMAP_SECTORS_VCOUNT; y++)
 							for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-								if (pDoc->m_System[x][y].GetOwnerOfSystem() == m_pPlayersRace->GetRaceID())
+								if (pDoc->GetSystem(x,y).GetOwnerOfSystem() == m_pPlayersRace->GetRaceID())
 									if (m_pPlayersRace->GetRaceBuildingNumber() ==	pDoc->GetBuildingInfo(RunningNumber).GetOwnerOfBuilding())
-										pDoc->m_System[x][y].AssemblyListCheck(&pDoc->BuildingInfo,&pDoc->m_GlobalBuildings);
+										pDoc->GetSystem(x,y).AssemblyListCheck(&pDoc->BuildingInfo,&pDoc->m_GlobalBuildings);
 									
 
 					}
 					// sonst den Baulistencheck nur in dem aktuellen System durchführen
 					else
-						pDoc->m_System[p.x][p.y].AssemblyListCheck(&pDoc->BuildingInfo,&pDoc->m_GlobalBuildings);
+						pDoc->GetSystem(p).AssemblyListCheck(&pDoc->BuildingInfo,&pDoc->m_GlobalBuildings);
 				}
 			}
 			// Die restlichen Einträge
 			// seperat, weil wir die Bauliste anders löschen müssen und auch keine RES zurückbekommen müssen
-			else if (pDoc->m_System[p.x][p.y].GetAssemblyList()->GetAssemblyListEntry(0) != 0)
+			else
 			{
-				pDoc->m_System[p.x][p.y].GetAssemblyList()->AdjustAssemblyList(i);
+				pDoc->GetSystem(p).GetAssemblyList()->AdjustAssemblyList(i);
 				// Baulistencheck machen, wenn wir kein Schiff reingesetzt haben. 
 				// Den Check nur machen, wenn wir ein Update oder ein Gebäude welches eine Maxanzahl voraussetzt
 				// hinzufügen wollen
-				if (RunningNumber < 10000 && (AssemblyList[i].runningNumber < 0
+				if (RunningNumber < 10000 && (nAssemblyListEntry < 0
 					|| pDoc->GetBuildingInfo(RunningNumber).GetMaxInEmpire().Number > 0
 					|| pDoc->GetBuildingInfo(RunningNumber).GetMaxInSystem().Number > 0))
 				{
 					// Wir müssen die GlobalBuilding Variable ändern, weil sich mittlerweile ja solch ein Gebäude
 					// weniger in der Bauliste befindet. Nicht aber wenn es ein Upgrade ist.
-					if (AssemblyList[i].runningNumber > 0)
+					if (nAssemblyListEntry > 0)
 						pDoc->m_GlobalBuildings.DeleteGlobalBuilding(RunningNumber);
 					// Wenn es nur einmal pro Imperium baubar war, dann Assemblylistcheck in jedem unserer Systeme
 					// durchführen
@@ -3795,21 +3660,22 @@ void CSystemMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 					{
 						for (int y = 0 ; y < STARMAP_SECTORS_VCOUNT; y++)
 							for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-								if (pDoc->m_System[x][y].GetOwnerOfSystem() == m_pPlayersRace->GetRaceID())
+								if (pDoc->GetSystem(x,y).GetOwnerOfSystem() == m_pPlayersRace->GetRaceID())
 									if (m_pPlayersRace->GetRaceBuildingNumber() ==	pDoc->GetBuildingInfo(RunningNumber).GetOwnerOfBuilding())
-										pDoc->m_System[x][y].AssemblyListCheck(&pDoc->BuildingInfo,&pDoc->m_GlobalBuildings);
+										pDoc->GetSystem(x,y).AssemblyListCheck(&pDoc->BuildingInfo,&pDoc->m_GlobalBuildings);
 									
 
 					}
 					// sonst den Baulistencheck nur in dem aktuellen System durchführen
 					else
-						pDoc->m_System[p.x][p.y].AssemblyListCheck(&pDoc->BuildingInfo,&pDoc->m_GlobalBuildings);
+						pDoc->GetSystem(p).AssemblyListCheck(&pDoc->BuildingInfo,&pDoc->m_GlobalBuildings);
 				}
 			}
-			//PlaySound(*((CBotf2App*)AfxGetApp())->GetPath() + "Sounds\\ComputerBeep1.wav", NULL, SND_FILENAME | SND_ASYNC);
+			
 			Invalidate(FALSE);
-			break;
+			return;
 		}
+	}
 	
 	CMainBaseView::OnLButtonDblClk(nFlags, point);
 }
@@ -3907,7 +3773,7 @@ void CSystemMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 		}
 		if (pMajor->GetEmpire()->GetSystemList()->GetSize() > 1)
 		{
-			m_iClickedOn = 1;
+			m_iClickedOn = 0;
 			m_byStartList = 0;
 			pDoc->SetKO(pMajor->GetEmpire()->GetSystemList()->GetAt(pos).ko.x, pMajor->GetEmpire()->GetSystemList()->GetAt(pos).ko.y);
 			Invalidate(FALSE);
@@ -3918,39 +3784,26 @@ void CSystemMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 	{
 		if (nChar == VK_DOWN)
 		{
-			if (BuildList[m_byStartList+NOEIBL].runningNumber != 0)
+			if (m_byStartList + NOEIBL / 2 <= m_iClickedOn && m_iClickedOn < m_vBuildlist.GetUpperBound())
 				m_byStartList++;
-			if (BuildList[m_iClickedOn+1].runningNumber != 0)
+			if (m_iClickedOn < m_vBuildlist.GetUpperBound())
 				m_iClickedOn++;
 			Invalidate(FALSE);
 		}
 		else if (nChar == VK_UP)
 		{
-			if (m_iClickedOn > 1)
+			if (m_iClickedOn > 0)
 				m_iClickedOn--;
 			if (m_byStartList > 0)
 				m_byStartList--;
 			Invalidate(FALSE);
 		}
 		// Mit der Entertaste können wir den Auftrag in die Bauliste übernehmen
-		else if (nChar == VK_RETURN && m_iClickedOn != 0 && BuildList[m_iClickedOn].runningNumber != 0)
+		else if (nChar == VK_RETURN && m_iClickedOn < m_vBuildlist.GetSize())
 		{
-			int i = m_iClickedOn;
-			short nID = BuildList[i].runningNumber;
+			int nID = m_vBuildlist[m_iClickedOn];			
+			int RunningNumber = abs(nID);
 			
-			// Die Struktur BuildList löschen, alle Werte auf 0
-			for (int j = 0; j < 50; j++)
-			{
-				BuildList[j].rect.SetRect(0,0,0,0);
-				BuildList[j].runningNumber = 0;
-			}
-
-			int RunningNumber;
-			if (nID < 0)
-				RunningNumber = nID * (-1);
-			else
-				RunningNumber = nID;
-
 			// vor einem Doppelklick müssen die benötigten Ressourcen sicherheitshalber nochmal neu berechnet.
 			// Denn bei ganz flinken Fingern kann es passieren, dass dies in der Draw Methode nicht gemacht werden.
 			// also ein Gebäude oder Gebäudeupdate
@@ -3989,6 +3842,10 @@ void CSystemMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 				
 				// Wenn wir den Baueintrag setzen konnten, also hier in der if-Bedingung sind, dann CalculateVariables() aufrufen
 				pDoc->m_System[p.x][p.y].CalculateVariables(&pDoc->BuildingInfo, pMajor->GetEmpire()->GetResearch()->GetResearchInfo(),pDoc->m_Sector[p.x][p.y].GetPlanets(), pMajor, CTrade::GetMonopolOwner());
+
+				// Die Struktur BuildList löschen, alle Werte auf 0
+				m_vBuildlist.RemoveAll();
+
 				Invalidate(FALSE);
 			}
 		}
@@ -4022,11 +3879,13 @@ void CSystemMenuView::CreateButtons()
 	fileA = "Other\\" + sPrefix + "buttonminusa.bop";
 	for (int i = TITAN; i <= IRIDIUM; i++)
 		m_WorkerButtons.Add(new CMyButton(CPoint(170,115+i*95) , CSize(40,40), "", fileN, fileN, fileA));
+	
+	// Zuweisungsbuttons im Arbeitermenü
 	fileN = "Other\\" + sPrefix + "buttonplus.bop";
 	fileA = "Other\\" + sPrefix + "buttonplusa.bop";
 	for (int i = TITAN; i <= IRIDIUM; i++)
 		m_WorkerButtons.Add(new CMyButton(CPoint(630,115+i*95) , CSize(40,40), "", fileN, fileN, fileA));
-
+	
 	// Zuweisungsbuttons im Systemhandelsmenü
 	fileN = "Other\\" + sPrefix + "buttonminus.bop";
 	fileA = "Other\\" + sPrefix + "buttonminusa.bop";
@@ -4042,8 +3901,8 @@ void CSystemMenuView::CreateButtons()
 /// @return	der erstellte Tooltip-Text
 CString CSystemMenuView::CreateTooltip(void)
 {
-	// Tooltips erstmal nur in der Energie- und Gebäudeübersicht anzeigen
-	if (m_bySubMenu != 2 && m_bySubMenu != 3)
+	// Tooltips erstmal nur im Baumenü und in der Energie- und Gebäudeübersicht anzeigen
+	if (m_bySubMenu != 0 && m_bySubMenu != 2 && m_bySubMenu != 3)
 		return "";
 
 	// Wo sind wir
@@ -4056,9 +3915,16 @@ CString CSystemMenuView::CreateTooltip(void)
 	ASSERT(pDoc);
 
 	int nID = -1;
-	// Pürfen über welches Gebäude die Maus gehalten wurde
-	if (m_bySubMenu == 2)
+	if (m_bySubMenu == 0)
 	{
+		// Prüfen ob die Maus über das angezeigte Bild gehalten wurde
+		if (m_iClickedOn >= 0 && m_iClickedOn < m_vBuildlist.GetSize())
+			if (CRect(70, 60, 70 + 200, 60 + 150).PtInRect(pt))
+				nID = abs(m_vBuildlist[m_iClickedOn]);
+	}	
+	else if (m_bySubMenu == 2)
+	{
+		// Prüfen über welches Gebäude die Maus gehalten wurde
 		for (int i = m_iELPage * NOBIEL; i < m_EnergyList.GetSize(); i++)
 		{
 			// Wenn wir auf der richtigen Seite sind
@@ -4072,6 +3938,7 @@ CString CSystemMenuView::CreateTooltip(void)
 	}
 	else if (m_bySubMenu == 3)
 	{
+		// Prüfen über welches Gebäude die Maus gehalten wurde
 		for (int i = m_iBOPage * NOBIOL; i < m_BuildingOverview.GetSize(); i++)
 		{
 			// Wenn wir auf der richtigen Seite sind
@@ -4086,25 +3953,34 @@ CString CSystemMenuView::CreateTooltip(void)
 
 	if (nID != -1)
 	{
-		CString sName = pDoc->GetBuildingInfo(nID).GetBuildingName();
-		sName = CHTMLStringBuilder::GetHTMLColor(sName);
-		sName = CHTMLStringBuilder::GetHTMLHeader(sName, _T("h3"));
-		sName = CHTMLStringBuilder::GetHTMLCenter(sName);
-		sName += CHTMLStringBuilder::GetHTMLStringNewLine();
-		sName += CHTMLStringBuilder::GetHTMLStringNewLine();
+		// Gebäude oder Update
+		if (nID < 10000)
+		{
+			CString sName = pDoc->GetBuildingInfo(nID).GetBuildingName();
+			sName = CHTMLStringBuilder::GetHTMLColor(sName);
+			sName = CHTMLStringBuilder::GetHTMLHeader(sName, _T("h3"));
+			sName = CHTMLStringBuilder::GetHTMLCenter(sName);
+			sName += CHTMLStringBuilder::GetHTMLStringNewLine();
+			sName += CHTMLStringBuilder::GetHTMLStringNewLine();
 
-		CString sProd = pDoc->GetBuildingInfo(nID).GetProductionAsString();
-		sProd = CHTMLStringBuilder::GetHTMLColor(sProd);
-		sProd = CHTMLStringBuilder::GetHTMLHeader(sProd, _T("h5"));
-		sProd += CHTMLStringBuilder::GetHTMLStringNewLine();
-		sProd += CHTMLStringBuilder::GetHTMLStringHorzLine();
-		sProd += CHTMLStringBuilder::GetHTMLStringNewLine();
-						
-		CString sDesc = pDoc->GetBuildingInfo(nID).GetBuildingDescription();
-		sDesc = CHTMLStringBuilder::GetHTMLColor(sDesc, _T("silver"));
-		sDesc = CHTMLStringBuilder::GetHTMLHeader(sDesc, _T("h5"));
-		
-		return sName + sProd + sDesc;
+			CString sProd = pDoc->GetBuildingInfo(nID).GetProductionAsString();
+			sProd = CHTMLStringBuilder::GetHTMLColor(sProd);
+			sProd = CHTMLStringBuilder::GetHTMLHeader(sProd, _T("h5"));
+			sProd += CHTMLStringBuilder::GetHTMLStringNewLine();
+			sProd += CHTMLStringBuilder::GetHTMLStringHorzLine();
+			sProd += CHTMLStringBuilder::GetHTMLStringNewLine();
+							
+			CString sDesc = pDoc->GetBuildingInfo(nID).GetBuildingDescription();
+			sDesc = CHTMLStringBuilder::GetHTMLColor(sDesc, _T("silver"));
+			sDesc = CHTMLStringBuilder::GetHTMLHeader(sDesc, _T("h5"));
+			
+			return sName + sProd + sDesc;
+		}
+		// Schiff
+		else if (nID < 20000)
+		{
+			return pDoc->m_ShipInfoArray[nID - 10000].GetTooltip(false);
+		}
 	}
 
 	return "";

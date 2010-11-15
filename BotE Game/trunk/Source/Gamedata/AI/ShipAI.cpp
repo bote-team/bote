@@ -28,7 +28,7 @@ CShipAI::CShipAI(CBotf2Doc* pDoc)
 			}
 	
 	// alles initial initialisieren
-	for (map<CString, CRace*>::const_iterator it = mRaces->begin(); it != mRaces->end(); it++)
+	for (map<CString, CRace*>::const_iterator it = mRaces->begin(); it != mRaces->end(); ++it)
 	{
 		m_AttackSector[it->first] = CPoint(-1,-1);
 		m_BombardSector[it->first] = CPoint(-1,-1);
@@ -431,8 +431,8 @@ BOOLEAN CShipAI::DoBombardSystem(int index)
 						shipValue += (int)m_pDoc->m_ShipArray.GetAt(i).GetHull()->GetCurrentHull();
 					if (m_pDoc->m_ShipArray.GetAt(i).GetFleet() != NULL)
 						for (int j = 0; j < m_pDoc->m_ShipArray.GetAt(i).GetFleet()->GetFleetSize(); j++)
-							if (m_pDoc->m_ShipArray.GetAt(i).GetFleet()->GetPointerOfShipFromFleet(j)->GetCloak() == FALSE)
-								shipValue += (int)m_pDoc->m_ShipArray.GetAt(i).GetFleet()->GetPointerOfShipFromFleet(j)->GetHull()->GetCurrentHull();
+							if (m_pDoc->m_ShipArray.GetAt(i).GetFleet()->GetShipFromFleet(j)->GetCloak() == FALSE)
+								shipValue += (int)m_pDoc->m_ShipArray.GetAt(i).GetFleet()->GetShipFromFleet(j)->GetHull()->GetCurrentHull();
 					
 				}
 		int shipDefend = m_pDoc->GetSystem(m_pDoc->m_ShipArray.GetAt(index).GetKO().x, m_pDoc->m_ShipArray.GetAt(index).GetKO().y).GetProduction()->GetShipDefend();
@@ -532,11 +532,11 @@ void CShipAI::DoMakeFleet(int index)
 										if (m_pDoc->m_ShipArray.GetAt(i).GetFleet() != NULL)
 										{
 											// Schiffe aus der Flotte der neuen Flotte hinzufügen
-											for (int n = 0; n < m_pDoc->m_ShipArray.GetAt(i).GetFleet()->GetFleetSize(); )
-												ship->GetFleet()->AddShipToFleet(m_pDoc->m_ShipArray.GetAt(i).GetFleet()->RemoveShipFromFleet(n));
-											m_pDoc->m_ShipArray.GetAt(i).CheckFleet();								
+											for (int n = 0; n < m_pDoc->m_ShipArray.GetAt(i).GetFleet()->GetFleetSize(); n++)
+												ship->GetFleet()->AddShipToFleet(m_pDoc->m_ShipArray.GetAt(i).GetFleet()->GetShipFromFleet(n));
+											m_pDoc->m_ShipArray.GetAt(i).DeleteFleet();
 										}
-										ship->GetFleet()->AddShipToFleet(m_pDoc->m_ShipArray.GetAt(i));
+										ship->GetFleet()->AddShipToFleet(&m_pDoc->m_ShipArray.GetAt(i));
 										m_pDoc->m_ShipArray.RemoveAt(i--);							
 									}
 								}
@@ -581,7 +581,7 @@ void CShipAI::CalcAttackSector(void)
 	// für alle Majors den Angriffssektor berechnen
 	map<CString, CMajor*>* pmMajors = m_pDoc->GetRaceCtrl()->GetMajors();
 	
-	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 	{
 		int nearestSector = MAXSHORT;
 		// beinhaltet die Sektorkoordinate mit unserem Angriffsziel
@@ -616,7 +616,7 @@ void CShipAI::CalcBombardSector(void)
 	// für alle Majors den Angriffssektor berechnen
 	map<CString, CMajor*>* pmMajors = m_pDoc->GetRaceCtrl()->GetMajors();
 	
-	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 	{
 		// die Hauptrassen bombardieren nicht alle gleichoft und gleich lang. Die Föderation z.B. kann wegen den
 		// Moralabzuügen nicht so lang bombardieren.

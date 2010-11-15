@@ -82,7 +82,7 @@ public:
 	/// kann sie auch ToolTips anzeigen.
 	/// @param pWnd Fenster
 	/// @return <code>true</code> wenn View registriert werden konnte, sonst <code>false</code>
-	bool AddToTooltip(CWnd* pWnd, CString sTip = _T(""));
+	bool AddToTooltip(CWnd* pWnd, const CString& sTip = _T(""));
 
 // Überladungen
 	// Vom Klassenassistenten generierte Überladungen virtueller Funktionen
@@ -115,6 +115,7 @@ protected:
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 	afx_msg void NotifyCPPTooltip(NMHDR* pNMHDR, LRESULT* result);
 	afx_msg LRESULT UpdateViews(WPARAM, LPARAM);
+	afx_msg LRESULT ShowCombatView(WPARAM, LPARAM);
 		// HINWEIS - An dieser Stelle werden Member-Funktionen vom Klassen-Assistenten eingefügt und entfernt.
 		//    Innerhalb dieser generierten Quelltextabschnitte NICHTS VERÄNDERN!
 	//}}AFX_MSG

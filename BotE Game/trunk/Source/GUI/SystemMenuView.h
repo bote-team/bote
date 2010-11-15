@@ -103,13 +103,11 @@ private:
 	// sonstige Variablen
 	// Hier die Rechtecke zum Klicken ín der Baumenüansicht
 	// Dafür eine Struktur, die das Rechteck und die RunningNumber des Gebäudes/Updates beinhaltet
-	struct BuildListStruct{CRect rect; short runningNumber;} BuildList[50];	// testweise mal auf 50
+	CArray<int> m_vBuildlist;
 	static short m_iClickedOn;			// Hilfsvariable, die mir sagt, auf welches Gebäude ich geklickt habe
 	CRect BuildingDescription;			// Rechteck, wo die Beschreibung des Gebäudes steht
 	CRect BuildingInfo;					// Rechteck, wo Informationen (Kosten) zu dem Gebäude stehen
-	BOOLEAN m_bClickedOneBuilding;
 	CRect AssemblyListRect;				// Rechteck, wo die Bauliste steht
-	struct AssemblyListStruct{CRect rect; short runningNumber;} AssemblyList[ALE];
 	USHORT m_iWhichSubMenu;				// in welcher Liste sind wir 0 = Gebäude 1 = Schiffe 2 = Truppen
 	BYTE m_byStartList;					// ab welchem Eintrag der Bauliste werden die Aufträge angezeigt
 	BYTE m_byEndList;					// bis zu welchem Eintrag in der Bauliste werden die Aufträge angezeigt
@@ -154,21 +152,13 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	virtual void OnInitialUpdate();
-public:
 	virtual void OnPrepareDC(CDC* pDC, CPrintInfo* pInfo = NULL);
-public:
 	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
-public:
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
-public:
 	afx_msg BOOL OnMouseWheel(UINT nFlags, short zDelta, CPoint pt);
-public:
 	afx_msg void OnLButtonDblClk(UINT nFlags, CPoint point);
-public:
 	afx_msg void OnRButtonDown(UINT nFlags, CPoint point);
-public:
 	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
-public:
 	afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
 	afx_msg void OnXButtonDown(UINT nFlags, UINT nButton, CPoint point);
 };

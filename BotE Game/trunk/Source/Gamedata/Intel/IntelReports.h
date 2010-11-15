@@ -80,8 +80,8 @@ public:
 	void RemoveAllReports();
 
 	/// Funktion sortiert die Geheimdienstberichte nach absteigender Rundenanzahl
-	//void SortAllReports() { c_arraysort<CArray<CIntelObject*>, CIntelObject*>(m_IntelObjects, sort_pdesc); }
-	void SortAllReports() { c_arraysort<CObArray, CIntelObject*>(m_IntelObjects, sort_pdesc); }
+	/// @param bDesc <code>true</code> wenn absteigend sortiert werden soll, sonst aufsteigend
+	void SortAllReports(bool bDesc = true);
 
 	/// Funktion löscht ein womöglich zuvor angelegtes Geheimdienstanschlagsobjekt.
 	void RemoveAttemptObject() {if (m_pAttemptObject) {delete m_pAttemptObject; m_pAttemptObject = NULL;}}

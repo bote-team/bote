@@ -14,9 +14,9 @@
 
 /// Versionsnummer des Dokuments; es können nur Spielstände geladen werden, die diese Versionsnummer
 /// haben.
-#define DOCUMENT_VERSION			8		///< Alpha 5.1 Version
-#define VERSION						0.72	///< benötigte Version in Datafiles
-#define VERSION_INFORMATION			"0.72"	///< anzuzeigende Versionsinformation 
+#define DOCUMENT_VERSION			9		///< Alpha 6 Version
+#define VERSION						0.8	///< benötigte Version in Datafiles
+#define VERSION_INFORMATION			"0.8"	///< anzuzeigende Versionsinformation 
 
 // --- Feste Größen der Starmap ------------------------------------------------
 #define STARMAP_SECTORS_HCOUNT		30		///< Anzahl der Sektoren horizontal
@@ -46,9 +46,10 @@
 #define SHIPDESIGN_VIEW			9
 #define TRANSPORT_VIEW			10
 #define EVENT_VIEW				11
+#define COMBAT_VIEW				12
 
 #define IS_MAIN_VIEW(id) \
-	((id) >= GALAXY_VIEW && (id) <= EVENT_VIEW)
+	((id) >= GALAXY_VIEW && (id) <= COMBAT_VIEW)
 
 // Planetenview (unten)
 #define PLANET_BOTTOM_VIEW		101
@@ -234,7 +235,7 @@ enum {NONE, ASSULTSHIP, BLOCKADESHIP, COMMANDSHIP, COMBATTRACTORBEAM, DOGFIGHTER
 #define	MAJOR				0	// Hauptrasse
 #define	MINOR				1	// kleine Rasse (keine Ausbreitung)
 
-// ------------- HANDEL ----------------------------------------------------
+// ------------- Handel ----------------------------------------------------
 #define TRADEROUTEHAB		20	// aller wieviel Bevölkerung gibt es eine Handelsroute
 #define NOTRIL				12	// Number of Trade Routes in List
 
@@ -249,6 +250,13 @@ enum {NONE, ASSULTSHIP, BLOCKADESHIP, COMMANDSHIP, COMBATTRACTORBEAM, DOGFIGHTER
 #define MAX_FOOD_STORE		25000
 #define MAX_RES_STORE		125000
 #define MAX_DERITIUM_STORE	100
+
+// ------------- Schiffskampftaktiken ----------------------------------------------------
+#define COMBAT_NON			-1
+#define COMBAT_USER			0
+#define COMBAT_HAILING		1
+#define COMBAT_RETREAT		2
+#define COMBAT_AUTO			3
 
 // --- Sonstiges ---------------------------------------------------------------
 #define PT_IN_RECT(pt, x1, y1, x2, y2) \

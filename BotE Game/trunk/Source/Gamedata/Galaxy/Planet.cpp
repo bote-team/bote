@@ -423,14 +423,14 @@ void CPlanet::DrawPlanet(Graphics &g, const CRect& rect, CGraphicPool* graphicPo
 	ASSERT(graphicPool);
 
 	Bitmap* planet = NULL;
-	planet = graphicPool->GetGDIGraphic("Planets\\"+m_strName+".bop");
+	planet = graphicPool->GetGDIGraphic("Planets\\" + m_strName + ".bop");
 	
 	// Konnte keine spezielle Planetengrafik gefunden werden, so wird eine zufällige Grafik ausgewählt
 	if (planet == NULL)
 		planet = graphicPool->GetGDIGraphic(GetGraphicFile());
 	
 	if (planet)
-		g.DrawImage(planet, rect.left, rect.top, rect.Width(), rect.Height());		
+		g.DrawImage(planet, rect.left, rect.top, rect.Width(), rect.Height());
 		
 	Color c;
 	if (m_bHabitable == FALSE)
@@ -444,7 +444,17 @@ void CPlanet::DrawPlanet(Graphics &g, const CRect& rect, CGraphicPool* graphicPo
 	}
 	else if (m_bIsTerraforming == TRUE)
 	{
-		c.SetFromCOLORREF(RGB(200,200,0));		
+		c.SetFromCOLORREF(RGB(200,200,0));	
+		// Gitternetz zeichnen
+		if (planet)
+		{
+			UINT nWidth = planet->GetWidth();
+			UINT nHeight = planet->GetHeight();
+			Bitmap* sphere = NULL;
+			sphere = graphicPool->GetGDIGraphic("Planets\\TerraformSphere.bop");
+			if (sphere)
+				g.DrawImage(sphere, rect.left, rect.top, rect.Width(), rect.Height());
+		}
 	}
 	else
 		c.SetFromCOLORREF(RGB(255,40,40));

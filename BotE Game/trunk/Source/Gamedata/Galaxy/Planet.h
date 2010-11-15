@@ -93,11 +93,12 @@ public:
 	void SetTerraformed(BOOLEAN is) {m_bTerraformed = is;}
 	void SetIsTerraforming(BOOLEAN is) {m_bIsTerraforming = is;}
 	void SetColonisized(BOOLEAN is) {m_bColonisized = is;}
-	void SetName(CString Name) {m_strName = Name;}
+	void SetName(const CString& Name) {m_strName = Name;}
 	void SetClass(char Class) {m_cClass = Class;}
 	void SetPlanetGrowth() {m_dGrowing = m_dMaxHabitant/4;} // Wenn hier was geändert, auch in GeneratePlanet was ändern
 	BOOLEAN SetNeededTerraformPoints(BYTE sub);				// Subtrahiert "sub" von den Terraformpoints, bei kleiner 0 wird der Plani auf m_bTerraformed = TRUE gesetzt
 	void SetBoni(BOOLEAN titan, BOOLEAN deuterium, BOOLEAN duranium, BOOLEAN crystal, BOOLEAN iridium, BOOLEAN dilithium, BOOLEAN food, BOOLEAN energy);
+	void SetBoni(BYTE res, BOOLEAN is) {m_bBoni[res] = is;}
 	
 	/// Funktion setzt die Nummer für das Graphikfile des Planeten.
 	/// @param n Nummer der Grafik

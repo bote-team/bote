@@ -20,7 +20,7 @@ class CGraphicPool
 public:
 	/// Konstruktor
 	/// @param path relativer Pfad in dem die Anwendung läuft.
-	CGraphicPool(CString path);
+	CGraphicPool(const CString& path);
 
 	/// Destruktor
 	~CGraphicPool(void);

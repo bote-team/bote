@@ -477,7 +477,7 @@ void CMinorAI::CalcOtherMajorsRelationChange(const CDiplomacyInfo& info, short n
 		bool operator< (const MAJORLIST& elem2) const { return byRelation < elem2.byRelation;}
 		bool operator> (const MAJORLIST& elem2) const { return byRelation > elem2.byRelation;}
 		MAJORLIST() : sID(""), byRelation(0) {}
-		MAJORLIST(CString _sID, BYTE _byRelation) : sID(_sID), byRelation(_byRelation) {}
+		MAJORLIST(const CString& _sID, BYTE _byRelation) : sID(_sID), byRelation(_byRelation) {}
 	};
 	vector<MAJORLIST> vKnownMajors;
 	

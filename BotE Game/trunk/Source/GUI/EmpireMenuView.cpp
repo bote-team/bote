@@ -67,7 +67,7 @@ void CEmpireMenuView::OnNewRound()
 	ASSERT(pMajor);
 
 	// Sortierung der Systemliste nach dem Namen der Systeme
-	c_arraysort<CArray<SystemViewStruct>,SystemViewStruct>(*pMajor->GetEmpire()->GetSystemList() ,sort_asc);
+	c_arraysort<CArray<SystemViewStruct>,SystemViewStruct>(*pMajor->GetEmpire()->GetSystemList(), sort_asc);
 	// Sortierung der Schiffshistory nach dem Namen der Schiffe
 	c_arraysort<CArray<CShipHistoryStruct,CShipHistoryStruct>,CShipHistoryStruct>(*(pMajor->GetShipHistory()->GetShipHistoryArray()),CShipHistoryStruct::sort_by_shipname);
 
@@ -109,7 +109,13 @@ void CEmpireMenuView::OnDraw(CDC* dc)
 	else if (m_iSubMenu == EMPIREVIEW_SYSTEMS)
 		DrawEmpireSystemMenue(&g);
 	else if (m_iSubMenu == EMPIREVIEW_SHIPS)
-		DrawEmpireShipMenue(&g);	
+		DrawEmpireShipMenue(&g);
+	else if (m_iSubMenu == EMPIREVIEW_DEMOGRAPHICS)
+		DrawEmpireDemographicsMenue(&g);
+	else if (m_iSubMenu == EMPIREVIEW_TOP5)
+		DrawEmpireTop5Menue(&g);
+	else if (m_iSubMenu == EMPIREVIEW_VICTORY)
+		DrawEmpireVictoryMenue(&g);
 
 	g.ReleaseHDC(pDC->GetSafeHdc());
 }
@@ -129,9 +135,12 @@ void CEmpireMenuView::OnInitialUpdate()
 
 	CString sPrefix = pMajor->GetPrefix();
 	
-	bg_newsovmenu	= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "newsovmenu.boj");
-	bg_systemovmenu	= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "systemovmenu.boj");
-	bg_shipovmenu	= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "shipovmenu.boj");
+	bg_newsovmenu			= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "newsovmenu.boj");
+	bg_systemovmenu			= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "systemovmenu.boj");
+	bg_shipovmenu			= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "shipovmenu.boj");
+	bg_demographicsmenu		= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "systemovmenu.boj");
+	bg_top5menu				= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "systemovmenu.boj");
+	bg_victorymenu			= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "systemovmenu.boj");
 
 	m_iSubMenu = EMPIREVIEW_NEWS;
 	m_iWhichNewsButtonIsPressed = NO_TYPE;
@@ -839,6 +848,494 @@ void CEmpireMenuView::DrawEmpireShipMenue(Graphics* g)
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0,10,m_TotalSize.cx, 50), &fontFormat, &fontBrush);	
 }
 
+void CEmpireMenuView::DrawEmpireDemographicsMenue(Gdiplus::Graphics *g)
+{
+	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	ASSERT(pDoc);
+
+	CMajor* pMajor = m_pPlayersRace;
+	ASSERT(pMajor);
+	if (!pMajor)
+		return;
+
+	CString fontName = "";
+	Gdiplus::REAL fontSize = 0.0;
+	
+	// Rassenspezifische Schriftart auswählen
+	CFontLoader::CreateGDIFont(pMajor, 2, fontName, fontSize);
+	// Schriftfarbe wählen
+	Gdiplus::Color normalColor;
+	CFontLoader::GetGDIFontColor(pMajor, 3, normalColor);
+	SolidBrush fontBrush(normalColor);
+
+	StringFormat fontFormat;
+	fontFormat.SetAlignment(StringAlignmentNear);
+	fontFormat.SetLineAlignment(StringAlignmentCenter);
+	fontFormat.SetFormatFlags(StringFormatFlagsNoWrap);
+	fontFormat.SetTrimming(StringTrimmingEllipsisCharacter);
+
+	Gdiplus::Color markColor;
+	markColor.SetFromCOLORREF(pMajor->GetDesign()->m_clrListMarkTextColor);
+
+	if (bg_shipovmenu)
+		g->DrawImage(bg_demographicsmenu, 0, 0, 1075, 750);
+	
+	CString s;
+	
+	// berechnete und zusammengefasste Transfers hinschreiben
+	fontFormat.SetAlignment(StringAlignmentNear);
+	g->DrawString(CResourceManager::GetString("DEMO_BSP").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(165,250,165,25), &fontFormat, &fontBrush);
+	g->DrawString(CResourceManager::GetString("DEMO_PRODUCTIVITY").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(165,320,165,25), &fontFormat, &fontBrush);
+	g->DrawString(CResourceManager::GetString("DEMO_MILITARY").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(165,390,165,25), &fontFormat, &fontBrush);	
+	g->DrawString(CResourceManager::GetString("DEMO_SCIENCE").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(165,460,165,25), &fontFormat, &fontBrush);
+	g->DrawString(CResourceManager::GetString("DEMO_HAPPINESS").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(165,530,165,25), &fontFormat, &fontBrush);
+	
+	fontFormat.SetAlignment(StringAlignmentCenter);
+	float fMark = 0.0f;
+	int nPlace = 1;
+	float fValue, fAverage, fFirst, fLast = 0.0;
+	pDoc->GetStatistics()->GetDemographicsBSP(pMajor->GetRaceID(), nPlace, fValue, fAverage, fFirst, fLast);	
+	s.Format("%d", nPlace);
+	fMark += nPlace;
+	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(330,250,70,25), &fontFormat, &fontBrush);
+	s.Format("%.0lf", fValue);
+	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(400,250,125,25), &fontFormat, &fontBrush);
+	s.Format("%.0lf", fFirst);
+	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(525,250,125,25), &fontFormat, &fontBrush);
+	s.Format("%.0lf", fAverage);
+	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(650,250,125,25), &fontFormat, &fontBrush);
+	s.Format("%.0lf", fLast);
+	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(775,250,125,25), &fontFormat, &fontBrush);
+	if (nPlace == 1)
+	{
+		// Pokal zeichnen
+		Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\Trophy.png");
+		if (graphic)
+			g->DrawImage(graphic, 320, 247, 30, 30);
+	}
+	
+	pDoc->GetStatistics()->GetDemographicsProductivity(pMajor->GetRaceID(), nPlace, fValue, fAverage, fFirst, fLast);
+	s.Format("%d", nPlace);
+	fMark += nPlace;
+	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(330,320,70,25), &fontFormat, &fontBrush);
+	s.Format("%.0lf", fValue);
+	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(400,320,125,25), &fontFormat, &fontBrush);
+	s.Format("%.0lf", fFirst);
+	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(525,320,125,25), &fontFormat, &fontBrush);
+	s.Format("%.0lf", fAverage);
+	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(650,320,125,25), &fontFormat, &fontBrush);
+	s.Format("%.0lf", fLast);
+	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(775,320,125,25), &fontFormat, &fontBrush);
+	if (nPlace == 1)
+	{
+		// Pokal zeichnen
+		Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\Trophy.png");
+		if (graphic)
+			g->DrawImage(graphic, 320, 317, 30, 30);
+	}
+	
+	pDoc->GetStatistics()->GetDemographicsMilitary(pMajor->GetRaceID(), nPlace, fValue, fAverage, fFirst, fLast);
+	s.Format("%d", nPlace);
+	fMark += nPlace;
+	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(330,390,70,25), &fontFormat, &fontBrush);
+	s.Format("%.0lf", fValue / 100);
+	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(400,390,125,25), &fontFormat, &fontBrush);
+	s.Format("%.0lf", fFirst / 100);
+	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(525,390,125,25), &fontFormat, &fontBrush);
+	s.Format("%.0lf", fAverage / 100);
+	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(650,390,125,25), &fontFormat, &fontBrush);
+	s.Format("%.0lf", fLast / 100);
+	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(775,390,125,25), &fontFormat, &fontBrush);
+	if (nPlace == 1)
+	{
+		// Pokal zeichnen
+		Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\Trophy.png");
+		if (graphic)
+			g->DrawImage(graphic, 320, 387, 30, 30);
+	}
+	
+	pDoc->GetStatistics()->GetDemographicsResearch(pMajor->GetRaceID(), nPlace, fValue, fAverage, fFirst, fLast);
+	s.Format("%d", nPlace);
+	fMark += nPlace;
+	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(330,460,70,25), &fontFormat, &fontBrush);
+	s.Format("%.0lf", fValue);
+	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(400,460,125,25), &fontFormat, &fontBrush);
+	s.Format("%.0lf", fFirst);
+	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(525,460,125,25), &fontFormat, &fontBrush);
+	s.Format("%.0lf", fAverage);
+	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(650,460,125,25), &fontFormat, &fontBrush);
+	s.Format("%.0lf", fLast);
+	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(775,460,125,25), &fontFormat, &fontBrush);
+	if (nPlace == 1)
+	{
+		// Pokal zeichnen
+		Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\Trophy.png");
+		if (graphic)
+			g->DrawImage(graphic, 320, 457, 30, 30);
+	}
+	
+	pDoc->GetStatistics()->GetDemographicsMoral(pMajor->GetRaceID(), nPlace, fValue, fAverage, fFirst, fLast);
+	s.Format("%d", nPlace);
+	fMark += nPlace;
+	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(330,530,70,25), &fontFormat, &fontBrush);
+	s.Format("%.0lf%%", fValue);
+	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(400,530,125,25), &fontFormat, &fontBrush);
+	s.Format("%.0lf%%", fFirst);
+	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(525,530,125,25), &fontFormat, &fontBrush);
+	s.Format("%.0lf%%", fAverage);
+	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(650,530,125,25), &fontFormat, &fontBrush);
+	s.Format("%.0lf%%", fLast);
+	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(775,530,125,25), &fontFormat, &fontBrush);
+	if (nPlace == 1)
+	{
+		// Pokal zeichnen
+		Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\Trophy.png");
+		if (graphic)
+			g->DrawImage(graphic, 320, 527, 30, 30);
+	}
+	
+	CFontLoader::CreateGDIFont(pMajor, 3, fontName, fontSize);
+	// Schriftfarbe wählen
+	Gdiplus::Color btnColor;
+	CFontLoader::GetGDIFontColor(pMajor, 2, btnColor);
+	SolidBrush btnBrush(btnColor);
+	// Buttons am unteren Bildrand zeichnen
+	DrawGDIButtons(g, &m_EmpireNewsButtons, m_iSubMenu, Gdiplus::Font(fontName.AllocSysString(), fontSize), btnBrush);
+
+	// Tabellenüberschriften zeichnen
+	fontBrush.SetColor(markColor);
+	Gdiplus::Font font(fontName.AllocSysString(), fontSize);
+	fontFormat.SetTrimming(StringTrimmingEllipsisCharacter);
+	fontFormat.SetAlignment(StringAlignmentNear);
+	g->DrawString(CResourceManager::GetString("DEMOGRAPHIC").AllocSysString(), -1, &font, RectF(165,195,165,30), &fontFormat, &fontBrush);
+	fontFormat.SetAlignment(StringAlignmentCenter);
+	g->DrawString(CResourceManager::GetString("RANK").AllocSysString(), -1, &font, RectF(330,195,70,30), &fontFormat, &fontBrush);
+	g->DrawString(CResourceManager::GetString("VALUE").AllocSysString(), -1, &font, RectF(400,195,125,30), &fontFormat, &fontBrush);
+	g->DrawString(CResourceManager::GetString("FIRST_RANK").AllocSysString(), -1, &font, RectF(525,195,125,30), &fontFormat, &fontBrush);
+	g->DrawString(CResourceManager::GetString("AVERAGE").AllocSysString(), -1, &font, RectF(650,195,125,30), &fontFormat, &fontBrush);
+	g->DrawString(CResourceManager::GetString("LAST_RANK").AllocSysString(), -1, &font, RectF(775,195,125,30), &fontFormat, &fontBrush);
+
+	// "Demografie" oben in der Mitte zeichnen
+	// Rassenspezifische Schriftart auswählen
+	CFontLoader::CreateGDIFont(pMajor, 5, fontName, fontSize);
+	// Punktestand/Note oben in der Mitte groß zeichnen
+	fMark /= 5;
+	s.Format("%s: %.1lf", CResourceManager::GetString("RATING"), fMark);
+	g->DrawString(s.AllocSysString(), -1, &font, RectF(0,80,m_TotalSize.cx,50), &fontFormat, &fontBrush);
+	if (fMark < 2.0f)
+	{
+		// Pokale zeichnen
+		Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\Trophy.png");
+		if (graphic)
+		{
+			g->DrawImage(graphic, 395, 80, 50, 45);
+			g->DrawImage(graphic, 625, 80, 50, 45);
+		}
+	}
+	
+	// Schriftfarbe wählen
+	CFontLoader::GetGDIFontColor(pMajor, 3, normalColor);
+	fontBrush.SetColor(normalColor);
+	s = CResourceManager::GetString("DEMOGRAPHY_MENUE");
+	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0,10,m_TotalSize.cx, 50), &fontFormat, &fontBrush);	
+}
+
+void CEmpireMenuView::DrawEmpireTop5Menue(Gdiplus::Graphics *g)
+{
+	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	ASSERT(pDoc);
+
+	CMajor* pMajor = m_pPlayersRace;
+	ASSERT(pMajor);
+	if (!pMajor)
+		return;
+
+	CString fontName = "";
+	Gdiplus::REAL fontSize = 0.0;
+	
+	// Rassenspezifische Schriftart auswählen
+	CFontLoader::CreateGDIFont(pMajor, 2, fontName, fontSize);
+	// Schriftfarbe wählen
+	Gdiplus::Color normalColor;
+	CFontLoader::GetGDIFontColor(pMajor, 3, normalColor);	
+	SolidBrush fontBrush(normalColor);
+
+	StringFormat fontFormat;
+	fontFormat.SetAlignment(StringAlignmentNear);
+	fontFormat.SetLineAlignment(StringAlignmentCenter);
+	fontFormat.SetFormatFlags(StringFormatFlagsNoWrap);
+	fontFormat.SetTrimming(StringTrimmingEllipsisCharacter);
+
+	if (bg_shipovmenu)
+		g->DrawImage(bg_top5menu, 0, 0, 1075, 750);
+
+	CString s;
+	list<CPoint> lSystems;
+	pDoc->GetStatistics()->GetTopSystems(5, lSystems);
+
+	int nCount = 0;
+	for (list<CPoint>::const_iterator it = lSystems.begin(); it != lSystems.end(); ++it)
+	{
+		CSector* pSector = &pDoc->GetSector(*it);
+		if (pSector->GetFullKnown(pMajor->GetRaceID()))
+		{
+			// Planeten zeichnen
+			DrawSunSystem(g, *it, 110 + 110 * nCount);
+
+			s.Format("%s %d: %s", CResourceManager::GetString("PLACE"), nCount + 1, pSector->GetName());
+			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(150, 135 + 110 * nCount, m_TotalSize.cx - 250, 25), &fontFormat, &fontBrush);
+			// Besitzerimperium zeichnen
+			if (pMajor->IsRaceContacted(pSector->GetOwnerOfSector()) || pMajor->GetRaceID() == pSector->GetOwnerOfSector())
+			{
+				CMajor* pOwner = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(pSector->GetOwnerOfSector()));
+				if (pOwner)
+				{
+					s = pOwner->GetEmpiresName();
+					Color color;
+					color.SetFromCOLORREF(pOwner->GetDesign()->m_clrSector);
+					SolidBrush ownerBrush(color);
+					g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(150, 160 + 110 * nCount, m_TotalSize.cx - 250, 25), &fontFormat, &ownerBrush);
+				}
+			}
+		}
+		else
+		{
+			s.Format("%s %d: Unbekannt", CResourceManager::GetString("PLACE"), nCount + 1);			
+			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(150, 135 + 110 * nCount, m_TotalSize.cx - 250, 25), &fontFormat, &fontBrush);			
+		}
+		
+		nCount++;
+	}	
+	
+	// Buttons am unteren Bildrand zeichnen, womit wir die Menüs umschalten können
+	// Schriftart für große Buttons laden
+	CFontLoader::CreateGDIFont(pMajor, 3, fontName, fontSize);
+	// Schriftfarbe wählen
+	Gdiplus::Color btnColor;
+	CFontLoader::GetGDIFontColor(pMajor, 2, btnColor);
+	SolidBrush btnBrush(btnColor);
+	// Buttons am unteren Bildrand zeichnen
+	DrawGDIButtons(g, &m_EmpireNewsButtons, m_iSubMenu, Gdiplus::Font(fontName.AllocSysString(), fontSize), btnBrush);
+		
+	// "Top-5 Systeme" oben in der Mitte zeichnen
+	fontFormat.SetAlignment(StringAlignmentCenter);
+	// Rassenspezifische Schriftart auswählen
+	CFontLoader::CreateGDIFont(pMajor, 5, fontName, fontSize);
+	// Schriftfarbe wählen
+	CFontLoader::GetGDIFontColor(pMajor, 3, normalColor);
+	fontBrush.SetColor(normalColor);
+	s = CResourceManager::GetString("TOP5SYSTEMS_MENUE");
+	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0,10,m_TotalSize.cx, 50), &fontFormat, &fontBrush);	
+}
+
+void CEmpireMenuView::DrawSunSystem(Gdiplus::Graphics *g, const CPoint& ptKO, int nPos)
+{
+	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	ASSERT(pDoc);
+
+	int nPosX = m_TotalSize.cx - 300;
+	int nPosY = nPos + 55;
+
+	// Sonne zeichnen
+	Bitmap* graphic = NULL;
+	switch (pDoc->GetSector(ptKO).GetSunColor())
+	{
+	case 0:
+		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Suns\\sun_blue.bop");		break;
+	case 1:
+		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Suns\\sun_green.bop");		break;
+	case 2:
+		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Suns\\sun_orange.bop");	break;
+	case 3:
+		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Suns\\sun_red.bop");		break;
+	case 4:
+		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Suns\\sun_violet.bop");	break;			
+	case 5:
+		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Suns\\sun_white.bop");		break;
+	case 6:
+		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Suns\\sun_yellow.bop");	break;					
+	}				
+	if (graphic)
+	{
+		UINT nWidth		= graphic->GetWidth() / 2.5;
+		UINT nHeight	= graphic->GetHeight() / 2.5;
+		g->DrawImage(graphic, (REAL)m_TotalSize.cx - 200, (REAL)nPosY - nHeight / 2.0, (REAL)nWidth, (REAL)nHeight);
+	}
+	
+	// Planeten zeichnen
+	for (int i = 0; i < pDoc->GetSector(ptKO).GetNumberOfPlanets(); i++)
+	{
+		CPlanet* pPlanet = pDoc->GetSector(ptKO).GetPlanet(i);
+		graphic = NULL;
+		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Planets\\" + pPlanet->GetPlanetName() + ".bop");
+		if (graphic == NULL)
+			graphic = pDoc->GetGraphicPool()->GetGDIGraphic(pPlanet->GetGraphicFile());
+		if (graphic)
+		{
+			// Planetengrößen leicht anpassen
+			float fSizeMod	= max(1.0, (4 - pPlanet->GetSize()) / 2.0);
+			UINT nWidth		= graphic->GetWidth() / 1.75 / fSizeMod;
+			UINT nHeight	= graphic->GetHeight() / 1.75 / fSizeMod;
+			
+			nPosX -= (nWidth + 3);
+			g->DrawImage(graphic, (REAL)nPosX, (REAL)nPosY - nHeight / 2.0, (REAL)nWidth, (REAL)nHeight);
+		}		
+	}
+}
+
+void CEmpireMenuView::DrawEmpireVictoryMenue(Gdiplus::Graphics *g)
+{
+	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	ASSERT(pDoc);
+
+	CMajor* pMajor = m_pPlayersRace;
+	ASSERT(pMajor);
+	if (!pMajor)
+		return;
+
+	CString fontName = "";
+	Gdiplus::REAL fontSize = 0.0;
+	
+	// Rassenspezifische Schriftart auswählen
+	CFontLoader::CreateGDIFont(pMajor, 2, fontName, fontSize);
+	// Schriftfarbe wählen
+	Gdiplus::Color normalColor;
+	CFontLoader::GetGDIFontColor(pMajor, 3, normalColor);
+	
+	Gdiplus::Color markColor;
+	markColor.SetFromCOLORREF(pMajor->GetDesign()->m_clrListMarkTextColor);
+	SolidBrush fontBrush(markColor);
+
+	StringFormat fontFormat;
+	fontFormat.SetAlignment(StringAlignmentNear);
+	fontFormat.SetLineAlignment(StringAlignmentCenter);
+	fontFormat.SetFormatFlags(StringFormatFlagsNoWrap);
+	fontFormat.SetTrimming(StringTrimmingEllipsisCharacter);
+
+	if (bg_shipovmenu)
+		g->DrawImage(bg_victorymenu, 0, 0, 1075, 750);
+	
+	CString s;
+	fontFormat.SetAlignment(StringAlignmentNear);
+	CFontLoader::CreateGDIFont(pMajor, 3, fontName, fontSize);	
+	// Kategorie "Auslöschung"
+	g->DrawString(CResourceManager::GetString("VC_ELIMINATION").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(165,175,250,25), &fontFormat, &fontBrush);
+	// Kategorie "Diplomatie"
+	g->DrawString(CResourceManager::GetString("VC_DIPLOMACY").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(165,250,250,25), &fontFormat, &fontBrush);
+	// Kategorie "Eroberung"
+	g->DrawString(CResourceManager::GetString("VC_CONQUEST").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(165,325,250,25), &fontFormat, &fontBrush);
+	// Kategorie "Forschung"
+	g->DrawString(CResourceManager::GetString("VC_RESEARCH").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(165,400,250,25), &fontFormat, &fontBrush);
+	// Kategorie "Siege"
+	g->DrawString(CResourceManager::GetString("VC_COMBAT").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(165,475,250,25), &fontFormat, &fontBrush);
+	// Kategorie "Geheimdienst"
+	g->DrawString(CResourceManager::GetString("VC_SECURITY").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(165,550,250,25), &fontFormat, &fontBrush);
+
+	fontBrush.SetColor(normalColor);
+	CFontLoader::CreateGDIFont(pMajor, 2, fontName, fontSize);
+	// Kategorie "Auslöschung"
+	if (pDoc->m_VictoryObserver.IsVictoryCondition(VICTORYTYPE_ELIMINATION))
+	{
+		g->DrawString(CResourceManager::GetString("ELIMINATE_ALL_RIVALS").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(165,200,250,25), &fontFormat, &fontBrush);
+		g->DrawString(CResourceManager::GetString("RIVALS_LEFT").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(465,200,250,25), &fontFormat, &fontBrush);
+		s.Format("%d", pDoc->m_VictoryObserver.GetRivalsLeft());
+		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(625,200,250,25), &fontFormat, &fontBrush);
+	}
+	else
+		g->DrawString(CResourceManager::GetString("DEACTIVATED").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(165,200,250,25), &fontFormat, &fontBrush);
+
+	// Kategorie "Diplomatie"
+	if (pDoc->m_VictoryObserver.IsVictoryCondition(VICTORYTYPE_DIPLOMACY))
+	{
+		s.Format("%d %s", pDoc->m_VictoryObserver.GetNeededVictoryValue(VICTORYTYPE_DIPLOMACY), CResourceManager::GetString("SIGNED_HIGH_AGREEMENTS"));
+		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(165,275,250,25), &fontFormat, &fontBrush);
+		g->DrawString(CResourceManager::GetString("WE:").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(465,275,250,25), &fontFormat, &fontBrush);
+		s.Format("%d", pDoc->m_VictoryObserver.GetVictoryStatus(pMajor->GetRaceID(), VICTORYTYPE_DIPLOMACY));
+		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(625,275,250,25), &fontFormat, &fontBrush);
+		g->DrawString(CResourceManager::GetString("BEST:").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(750,275,250,25), &fontFormat, &fontBrush);
+		s.Format("%d", pDoc->m_VictoryObserver.GetBestVictoryValue(VICTORYTYPE_DIPLOMACY));
+		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(850,275,250,25), &fontFormat, &fontBrush);
+	}
+	else
+		g->DrawString(CResourceManager::GetString("DEACTIVATED").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(165,275,250,25), &fontFormat, &fontBrush);
+	// Kategorie "Eroberung"
+	if (pDoc->m_VictoryObserver.IsVictoryCondition(VICTORYTYPE_CONQUEST))
+	{
+		s.Format("%d %s", pDoc->m_VictoryObserver.GetNeededVictoryValue(VICTORYTYPE_CONQUEST), CResourceManager::GetString("CONQUERED_SYSTEMS"));
+		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(165,350,250,25), &fontFormat, &fontBrush);
+		g->DrawString(CResourceManager::GetString("WE:").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(465,350,250,25), &fontFormat, &fontBrush);
+		s.Format("%d", pDoc->m_VictoryObserver.GetVictoryStatus(pMajor->GetRaceID(), VICTORYTYPE_CONQUEST));
+		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(625,350,250,25), &fontFormat, &fontBrush);
+		g->DrawString(CResourceManager::GetString("BEST:").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(750,350,250,25), &fontFormat, &fontBrush);
+		s.Format("%d", pDoc->m_VictoryObserver.GetBestVictoryValue(VICTORYTYPE_CONQUEST));
+		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(850,350,250,25), &fontFormat, &fontBrush);
+	}
+	else
+		g->DrawString(CResourceManager::GetString("DEACTIVATED").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(165,350,250,25), &fontFormat, &fontBrush);
+	// Kategorie "Forschung"
+	if (pDoc->m_VictoryObserver.IsVictoryCondition(VICTORYTYPE_RESEARCH))
+	{
+		s.Format("%d %s", pDoc->m_VictoryObserver.GetNeededVictoryValue(VICTORYTYPE_RESEARCH), CResourceManager::GetString("RESEARCHED_SPECIALS"));
+		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(165,425,250,25), &fontFormat, &fontBrush);
+		g->DrawString(CResourceManager::GetString("WE:").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(465,425,250,25), &fontFormat, &fontBrush);
+		s.Format("%d", pDoc->m_VictoryObserver.GetVictoryStatus(pMajor->GetRaceID(), VICTORYTYPE_RESEARCH));
+		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(625,425,250,25), &fontFormat, &fontBrush);
+		g->DrawString(CResourceManager::GetString("BEST:").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(750,425,250,25), &fontFormat, &fontBrush);
+		s.Format("%d", pDoc->m_VictoryObserver.GetBestVictoryValue(VICTORYTYPE_RESEARCH));
+		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(850,425,250,25), &fontFormat, &fontBrush);
+	}
+	else
+		g->DrawString(CResourceManager::GetString("DEACTIVATED").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(165,425,250,25), &fontFormat, &fontBrush);
+	// Kategorie "Siege"
+	if (pDoc->m_VictoryObserver.IsVictoryCondition(VICTORYTYPE_COMBATWINS))
+	{
+		s.Format("%d %s", pDoc->m_VictoryObserver.GetNeededVictoryValue(VICTORYTYPE_COMBATWINS), CResourceManager::GetString("REACHED_COMBAT_WINNINGS"));
+		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(165,500,250,25), &fontFormat, &fontBrush);
+		g->DrawString(CResourceManager::GetString("WE:").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(465,500,250,25), &fontFormat, &fontBrush);
+		s.Format("%d", pDoc->m_VictoryObserver.GetVictoryStatus(pMajor->GetRaceID(), VICTORYTYPE_COMBATWINS));
+		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(625,500,250,25), &fontFormat, &fontBrush);
+		g->DrawString(CResourceManager::GetString("BEST:").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(750,500,250,25), &fontFormat, &fontBrush);
+		s.Format("%d", pDoc->m_VictoryObserver.GetBestVictoryValue(VICTORYTYPE_COMBATWINS));
+		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(850,500,250,25), &fontFormat, &fontBrush);
+	}
+	else
+		g->DrawString(CResourceManager::GetString("DEACTIVATED").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(165,500,250,25), &fontFormat, &fontBrush);
+	// Kategorie "Geheimdienst"
+	if (pDoc->m_VictoryObserver.IsVictoryCondition(VICTORYTYPE_SABOTAGE))
+	{
+		s.Format("%d %s", pDoc->m_VictoryObserver.GetNeededVictoryValue(VICTORYTYPE_SABOTAGE), CResourceManager::GetString("SUCCESSFULL_SABOTAGE_ACTIONS"));
+		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(165,575,250,25), &fontFormat, &fontBrush);
+		g->DrawString(CResourceManager::GetString("WE:").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(465,575,250,25), &fontFormat, &fontBrush);
+		s.Format("%d", pDoc->m_VictoryObserver.GetVictoryStatus(pMajor->GetRaceID(), VICTORYTYPE_SABOTAGE));
+		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(625,575,250,25), &fontFormat, &fontBrush);
+		g->DrawString(CResourceManager::GetString("BEST:").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(750,575,250,25), &fontFormat, &fontBrush);
+		s.Format("%d", pDoc->m_VictoryObserver.GetBestVictoryValue(VICTORYTYPE_SABOTAGE));
+		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(850,575,250,25), &fontFormat, &fontBrush);
+	}
+	else
+		g->DrawString(CResourceManager::GetString("DEACTIVATED").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(165,575,250,25), &fontFormat, &fontBrush);
+
+	// Buttons am unteren Bildrand zeichnen, womit wir die Menüs umschalten können
+	// Schriftart für große Buttons laden
+	CFontLoader::CreateGDIFont(pMajor, 3, fontName, fontSize);
+	// Schriftfarbe wählen
+	Gdiplus::Color btnColor;
+	CFontLoader::GetGDIFontColor(pMajor, 2, btnColor);
+	SolidBrush btnBrush(btnColor);
+	// Buttons am unteren Bildrand zeichnen
+	DrawGDIButtons(g, &m_EmpireNewsButtons, m_iSubMenu, Gdiplus::Font(fontName.AllocSysString(), fontSize), btnBrush);
+		
+	// "Siegbedingunen" oben in der Mitte zeichnen
+	fontFormat.SetAlignment(StringAlignmentCenter);
+	// Rassenspezifische Schriftart auswählen
+	CFontLoader::CreateGDIFont(pMajor, 5, fontName, fontSize);
+	// Schriftfarbe wählen
+	CFontLoader::GetGDIFontColor(pMajor, 3, normalColor);
+	fontBrush.SetColor(normalColor);
+	s = CResourceManager::GetString("VICTORY_CONDITIONS_MENUE");
+	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0,10,m_TotalSize.cx, 50), &fontFormat, &fontBrush);	
+}
+
 // CEmpireMenuView diagnostics
 
 #ifdef _DEBUG
@@ -1304,7 +1801,7 @@ void CEmpireMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 			CPoint ko = pMajor->GetEmpire()->GetSystemList()->GetAt(m_iClickedSystem).ko;
 			pDoc->SetKO(ko.x, ko.y);
 			pDoc->GetMainFrame()->SelectMainView(2, pMajor->GetRaceID());
-			CSystemMenuView::SetMarkedBuildListEntry(1);
+			CSystemMenuView::SetMarkedBuildListEntry(0);
 			Invalidate(FALSE);
 			pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
 			return;
@@ -1484,6 +1981,9 @@ void CEmpireMenuView::CreateButtons()
 	m_EmpireNewsButtons.Add(new CMyButton(CPoint(10,690), CSize(160,40), CResourceManager::GetString("BTN_EVENTS"),  fileN, fileI, fileA));
 	m_EmpireNewsButtons.Add(new CMyButton(CPoint(180,690), CSize(160,40), CResourceManager::GetString("BTN_SYSTEMS"),  fileN, fileI, fileA));
 	m_EmpireNewsButtons.Add(new CMyButton(CPoint(350,690), CSize(160,40), CResourceManager::GetString("BTN_SHIPS"),  fileN, fileI, fileA));
+	m_EmpireNewsButtons.Add(new CMyButton(CPoint(520,690), CSize(160,40), CResourceManager::GetString("BTN_DEMOGRAPHY"),  fileN, fileI, fileA));
+	m_EmpireNewsButtons.Add(new CMyButton(CPoint(690,690), CSize(160,40), CResourceManager::GetString("BTN_TOP5SYSTEMS"),  fileN, fileI, fileA));
+	m_EmpireNewsButtons.Add(new CMyButton(CPoint(860,690), CSize(160,40), CResourceManager::GetString("BTN_VICTORIES"),  fileN, fileI, fileA));
 	m_EmpireSystemFilterButtons.Add(new CMyButton(CPoint(60,70), CSize(160,40), CResourceManager::GetString("BTN_PRODUCTION"),  fileN, fileI, fileA));
 	m_EmpireSystemFilterButtons.Add(new CMyButton(CPoint(220,70), CSize(160,40), CResourceManager::GetString("BTN_RESOURCES"),  fileN, fileI, fileA));
 	m_EmpireSystemFilterButtons.Add(new CMyButton(CPoint(380,70), CSize(160,40), CResourceManager::GetString("BTN_DEFENCE"),  fileN, fileI, fileA));

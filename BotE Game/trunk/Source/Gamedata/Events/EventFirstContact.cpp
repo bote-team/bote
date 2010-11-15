@@ -8,7 +8,7 @@
 IMPLEMENT_SERIAL (CEventFirstContact, CObject, 1)
 
 CEventFirstContact::CEventFirstContact(const CString &sPlayersRaceID, const CString &sRaceID) : m_sRaceID(sRaceID),
-	CEventScreen(sPlayersRaceID, "FirstContact", "", "")
+	CEventScreen(sPlayersRaceID, "FirstContact")
 {	
 }
 
@@ -92,7 +92,7 @@ void CEventFirstContact::Draw(Graphics* g, CGraphicPool* graphicPool) const
 	// Bild der Rasse zeichnen
 	Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Races\\" + pContactedRace->GetGraphicFileName());
 	if (graphic == NULL)
-		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Races\\ImageMissing.bop");
+		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Races\\ImageMissing.boj");
 	if (graphic)
 		g->DrawImage(graphic, 6, 399, 301, 300);
 	// Name der Rasse zeichnen
@@ -218,7 +218,7 @@ CString CEventFirstContact::GetTooltip(const CPoint &pt) const
 	{
 		CString sTip = pContactedRace->GetRaceDesc();
 		sTip = CHTMLStringBuilder::GetHTMLColor(sTip);
-		sTip = CHTMLStringBuilder::GetHTMLHeader(sTip, _T("h5"));
+		sTip = CHTMLStringBuilder::GetHTMLHeader(sTip, _T("h4"));
 
 		return sTip;
 	}

@@ -53,15 +53,12 @@ void CResourceManager::Init(void)
 }
 
 /// Funktion gibt einen String zurück, der in einer StringTable steht.
-CString CResourceManager::GetString(CString key, BOOLEAN forceBigStarting, CString subString1, CString subString2)
+CString CResourceManager::GetString(const CString& key, BOOLEAN forceBigStarting, const CString& subString1, const CString& subString2)
 {
 	CString returnString;
 	if (!m_StringTable.Lookup(key, returnString))
-	{
-		key += " is missing";
-		return key;
-	}
-
+		return key + " is missing";
+	
 	// Haben wir subStrings übergeben, so müssen wir die § Zeichen ersetzen
 	if (subString1 != "")
 	{

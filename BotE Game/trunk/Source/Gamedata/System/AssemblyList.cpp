@@ -450,20 +450,27 @@ void CAssemblyList::RemoveResourceFromStorage(BYTE res, const CPoint &ko, CSyste
 		*system->GetRessourceStorages(res) -= m_iNeededDilithiumInAssemblyList[0];
 }
 
-BOOLEAN CAssemblyList::MakeEntry(int runningNumber, const CPoint &ko, CSystem systems[][STARMAP_SECTORS_VCOUNT])
+BOOLEAN CAssemblyList::MakeEntry(int runningNumber, const CPoint &ko, CSystem systems[][STARMAP_SECTORS_VCOUNT], bool bOnlyTest)
 {
 	// Die Assemblylist durchgehen, ob wir einen Eintrag finden, der noch 0 ist
 	// dort können wir den nächsten speichern, gibt es keinen, dann ist die
 	// Bauliste voll
-	int entry = ALE + 1;		// Wert der in for-Schleife nicht angenommen werden kann
-	for (int i = 0; i < ALE; i++)
-		if (m_iEntry[i] == 0)
-		{	
-			entry = i;
-			break;
+	int entry = -1;
+	if (!bOnlyTest)
+	{
+		for (int i = 0; i < ALE; i++)
+		{
+			if (m_iEntry[i] == 0)
+			{	
+				entry = i;
+				break;
+			}
 		}
-	if (entry == ALE+1)
-		return FALSE;	// Bauliste ist schon voll!
+			
+		// prüfen ob Bauliste schon voll!
+		if (entry == -1)
+			return FALSE;
+	}
 	
 	CSystem* system = &systems[ko.x][ko.y];
 	// Ressourcenrouten durchgehen und womöglich die möglichen max. zusätzlichen Ressourcen erfragen
@@ -519,6 +526,8 @@ BOOLEAN CAssemblyList::MakeEntry(int runningNumber, const CPoint &ko, CSystem sy
 		if (*system->GetRessourceStorages(res) + resourcesFromRoutes[res] < nNeededRes && nResInDistSys[res] < nNeededRes)
 			return FALSE;
 	}
+	if (bOnlyTest)
+		return TRUE;
 	
 	// Ansonsten gibt es genügend Rohstoffe
 	m_iEntry[entry] = runningNumber;

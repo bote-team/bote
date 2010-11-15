@@ -53,15 +53,19 @@ private:
 	
 	// Attribute
 	CRect m_RectForTheShip;					///< Das Rechteck für das Schiff worüber wir die Maus bewegt haben
-	USHORT m_iPage;							///< bei mehr als 9 Schiffen können wir auf die nächste Seite wechseln
-	CPoint m_LastKO;						///< Hilfsvariable, die den zuletzt angeklickten Sektor sich merkt
+	USHORT m_iPage;								///< bei mehr als 9 Schiffen können wir auf die nächste Seite wechseln
+	CPoint m_LastKO;							///< Hilfsvariable, die den zuletzt angeklickten Sektor sich merkt
 	BOOLEAN m_bShowNextButton;
-	Bitmap* m_pShipOrderButton;				///< kleiner Button für die Schiffbefehle
-	CRect m_ShipOrders[TRAIN_SHIP + 1];		///< die ganzen Rechtecke für die Schiffsbefehlsbuttons
-	CRect m_MainShipOrders[3];				///< die 3 Hauptbuttons für die Schiffsbefehle
+	Bitmap* m_pShipOrderButton;					///< kleiner Button für die Schiffbefehle
+	CRect m_ShipOrders[TRAIN_SHIP + 1];			///< die ganzen Rechtecke für die Schiffsbefehlsbuttons
+	CRect m_MainShipOrders[3];					///< die 3 Hauptbuttons für die Schiffsbefehle
 	short m_iTimeCounter;
-	short m_iWhichMainShipOrderButton;		///< welchen Hauptschiffsbefehlsbutton haben wir gedrückt
+	short m_iWhichMainShipOrderButton;			///< welchen Hauptschiffsbefehlsbutton haben wir gedrückt
 	static BOOLEAN m_bShowStation;
+
+	vector<pair<CRect, CShip*> > m_vShipRects;	///< alle angezeigten Schiffe mit ihren Rechtecken zu draufklicken
+	CShip* m_pMarkedShip;						///< aktuell markiertes Schiff
+	CRect m_rLastMarkedRect;					///< zuletzt markiertes Rechteck
 
 protected:
 	DECLARE_MESSAGE_MAP()

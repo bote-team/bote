@@ -15,7 +15,8 @@
 #include "ChatDlg.h"
 
 #define WM_UPDATEVIEWS	(WM_APP+10)
-#define WM_SHOWCHATDLG	(WM_APP+11)
+#define WM_COMBATVIEW	(WM_APP+11)
+#define WM_SHOWCHATDLG	(WM_APP+12)
 
 /////////////////////////////////////////////////////////////////////////////
 // CBotf2App:

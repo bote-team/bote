@@ -45,8 +45,15 @@ CIniLoader::CIniLoader(void)
 		WriteValue("Special", "VERSION", VERSION_INFORMATION);
 		WriteValue("Special", "RANDOMSEED", "-1");
 		WriteValue("Special", "STARDENSITY", "35");
-		WriteValue("Special", "MINORDENSITY", "32");
-
+		WriteValue("Special", "MINORDENSITY", "30");
+		WriteValue("Special", "ANOMALYDENSITY", "9");
+		
+		WriteValue("Victory_Conditions", "Elimination", "ON");
+		WriteValue("Victory_Conditions", "Diplomacy", "ON");
+		WriteValue("Victory_Conditions", "Conquest", "ON");
+		WriteValue("Victory_Conditions", "Research", "ON");
+		WriteValue("Victory_Conditions", "Combat", "ON");
+		WriteValue("Victory_Conditions", "Sabotage", "ON");
 	}
 }
 
@@ -66,7 +73,7 @@ CIniLoader* CIniLoader::GetInstance(void)
 }
 
 /// Diese Funktion gibt den zum <code>sKey</code> gehörenden Eintrag aus der ini-Datei zurück.
-bool CIniLoader::ReadValue(const CString& sSection, const CString& sKey, bool& bValue)
+bool CIniLoader::ReadValue(const CString& sSection, const CString& sKey, bool& bValue) const
 {
 	CString sValue;
 	if (!ReadIniValue(sSection, sKey, sValue))
@@ -81,7 +88,7 @@ bool CIniLoader::ReadValue(const CString& sSection, const CString& sKey, bool& b
 }
 
 /// Diese Funktion gibt den zum <code>sKey</code> gehörenden Eintrag aus der ini-Datei zurück.
-bool CIniLoader::ReadValue(const CString& sSection, const CString& sKey, int& nValue)
+bool CIniLoader::ReadValue(const CString& sSection, const CString& sKey, int& nValue) const
 {
 	CString sValue;
 	if (!ReadIniValue(sSection, sKey, sValue))
@@ -92,7 +99,7 @@ bool CIniLoader::ReadValue(const CString& sSection, const CString& sKey, int& nV
 }
 
 /// Diese Funktion gibt den zum <code>sKey</code> gehörenden Eintrag aus der ini-Datei zurück.
-bool CIniLoader::ReadValue(const CString& sSection, const CString& sKey, float& fValue)
+bool CIniLoader::ReadValue(const CString& sSection, const CString& sKey, float& fValue) const
 {
 	CString sValue;
 	if (!ReadIniValue(sSection, sKey, sValue))
@@ -103,7 +110,7 @@ bool CIniLoader::ReadValue(const CString& sSection, const CString& sKey, float& 
 }
 
 /// Diese Funktion gibt den zum <code>sKey</code> gehörenden Eintrag aus der ini-Datei zurück.
-bool CIniLoader::ReadValue(const CString& sSection, const CString& sKey, CString& sValue)
+bool CIniLoader::ReadValue(const CString& sSection, const CString& sKey, CString& sValue) const
 {
 	if (!ReadIniValue(sSection, sKey, sValue))
 		return false;
@@ -124,10 +131,11 @@ bool CIniLoader::WriteValue(const CString& sSection, const CString& sKey, const 
 // private Funktionen
 //////////////////////////////////////////////////////////////////////
 ///Diese Funktion wandelt ein Wort, wie z.B. On oder True in einen Wahrheitswert um.
-int CIniLoader::StringToInt(CString sValue)
+int CIniLoader::StringToInt(const CString& sValue) const
 {
-	sValue.MakeUpper();
-	if (sValue == "ON" || sValue == "1" || sValue == "TRUE")
+	CString sTemp = sValue;
+	sTemp.MakeUpper();
+	if (sTemp == "ON" || sTemp == "1" || sTemp == "TRUE")
 		return 1;
 	else
 		return 0;
@@ -136,7 +144,7 @@ int CIniLoader::StringToInt(CString sValue)
 /**
  * Diese Funktion gibt den zum <code>sKey</code> gehörenden Eintrag aus der ini-Datei zurück.
  */
-bool CIniLoader::ReadIniValue(const CString& sSection, const CString& sKey, CString& sReturnValue)
+bool CIniLoader::ReadIniValue(const CString& sSection, const CString& sKey, CString& sReturnValue) const
 {
 	if (m_sIniPath.IsEmpty())
 		return false;

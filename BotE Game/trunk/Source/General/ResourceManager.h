@@ -21,7 +21,7 @@ public:
 	static void Init(void);
 
 	/// Funktion gibt einen String zurück, der in einer StringTable steht.
-	static CString GetString(CString key, BOOLEAN forceBigStarting = FALSE, CString subString1 = "", CString subString2 = "");
+	static CString GetString(const CString& key, BOOLEAN forceBigStarting = FALSE, const CString& subString1 = "", const CString& subString2 = "");
 
 	/*
 	/// Funktion gibt einen String aus der StrinTable zurück. Dieser String kann ähnlich der printf Funktion

@@ -50,7 +50,7 @@ public:
 
 	/// Diese Funktion gibt das gesamte Gefahrenpotenzial aller Rassen in einem Sektor <code>sector</code> zurück.
 	/// Das Gefahrenpotential der eigenen Rasse <code>sOwnRaceID</code> wird dabei aber nicht mit eingerechnet.
-	UINT GetCompleteDanger(const CString& sOwnRaceID, const CPoint& sector);
+	UINT GetCompleteDanger(const CString& sOwnRaceID, const CPoint& sector) const;
 
 	/// Diese Funktion gibt das gesamte Gefahrenpotenzial durch Kriegsschiffe einer Rasse <code>sRaceID</code> aus
 	/// allen Sektoren zurück.
@@ -121,6 +121,7 @@ private:
 	void CalculateBombardTargets(const CString& sRaceID, int x, int y);
 
 	/// Diese Funktion berechnet einen Sektor, welcher sich zum Bau eines Außenpostens eignet.
+	/// Funktion erst nach der Berechnung der Terraformsektoren aufrufen.
 	void CalculateStationTargets(const CString& sRaceID);
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

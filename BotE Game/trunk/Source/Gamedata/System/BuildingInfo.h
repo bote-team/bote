@@ -257,7 +257,7 @@ public:
 
 	void SetOnlyTakenSystem(BOOLEAN TrueOrFalse) {m_bOnlyTakenSystem = TrueOrFalse;}
 
-	void SetOnlyInSystemWithName(CString Name) {m_strOnlyInSystemWithName = Name;}
+	void SetOnlyInSystemWithName(const CString& Name) {m_strOnlyInSystemWithName = Name;}
 
 	void SetMinHabitants(USHORT min) {m_iMinHabitants = min;}
 

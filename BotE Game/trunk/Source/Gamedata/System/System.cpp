@@ -276,6 +276,70 @@ void CSystem::Serialize(CArchive &ar)
 // Zugriffsfunktionen
 //////////////////////////////////////////////////////////////////////
 
+int CSystem::GetNeededRoundsToCompleteProject(int nID)
+{
+	CBotf2Doc* pDoc = ((CBotf2App*)AfxGetApp())->GetDocument();
+	ASSERT(pDoc);
+
+	int nRounds = 0;
+
+	if (GetProduction()->GetIndustryProd() <= 0)
+		return nRounds;
+
+	CMajor* pMajor = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(m_sOwnerOfSystem));
+	if (!pMajor)
+		return nRounds;
+
+	// handelt es sich um ein Update von Gebäuden?
+	if (nID < 0)
+	{
+		// Hier Berechnung der noch verbleibenden Runden, bis das Update fertig wird
+		m_AssemblyList.CalculateNeededRessources(&pDoc->GetBuildingInfo(abs(nID)), NULL, NULL, &m_Buildings, nID, pMajor->GetEmpire()->GetResearch()->GetResearchInfo());
+		
+		nRounds = (int)ceil((float)(m_AssemblyList.GetNeededIndustryForBuild())
+			/ ((float)GetProduction()->GetIndustryProd() 
+			* (100 + GetProduction()->GetUpdateBuildSpeed()) / 100));		
+	}
+	// handelt es sich um ein Gebäude
+	else if (nID < 10000)
+	{
+		m_AssemblyList.CalculateNeededRessources(&pDoc->GetBuildingInfo(nID), NULL, NULL, &m_Buildings, nID, pMajor->GetEmpire()->GetResearch()->GetResearchInfo());
+		
+		if (pDoc->GetBuildingInfo(nID).GetNeverReady())
+			return nRounds;
+
+		nRounds = (int)ceil((float)(m_AssemblyList.GetNeededIndustryForBuild())
+			/ ((float)GetProduction()->GetIndustryProd()
+			* (100 + GetProduction()->GetBuildingBuildSpeed()) / 100));
+	}
+	// handelt es sich um ein Schiff
+	else if (nID < 20000)
+	{
+		// Hier Berechnung der noch verbleibenden Runden, bis das Projekt fertig wird
+		m_AssemblyList.CalculateNeededRessources(NULL, &pDoc->m_ShipInfoArray.GetAt(nID - 10000), NULL, &m_Buildings, nID, pMajor->GetEmpire()->GetResearch()->GetResearchInfo());
+		if (GetProduction()->GetShipYardEfficiency() == 0)
+			return nRounds;
+
+		nRounds = (int)ceil((float)(m_AssemblyList.GetNeededIndustryForBuild())
+			/ ((float)GetProduction()->GetIndustryProd() * GetProduction()->GetShipYardEfficiency() / 100
+			* (100 + GetProduction()->GetShipBuildSpeed()) / 100));
+	}
+	// handelt es sich um eine Truppe
+	else
+	{
+		// Hier Berechnung der noch verbleibenden Runden, bis das Projekt fertig wird
+		m_AssemblyList.CalculateNeededRessources(NULL, NULL, &pDoc->m_TroopInfo.GetAt(nID - 20000), &m_Buildings, nID, pMajor->GetEmpire()->GetResearch()->GetResearchInfo());
+		if (GetProduction()->GetBarrackEfficiency() == 0)
+			return nRounds;
+
+		nRounds = (int)ceil((float)(m_AssemblyList.GetNeededIndustryForBuild())
+			/ ((float)GetProduction()->GetIndustryProd() * GetProduction()->GetBarrackEfficiency() / 100
+			* (100 + GetProduction()->GetTroopBuildSpeed()) / 100));
+	}
+	
+	return nRounds;
+}
+
 // Funktion gibt die Anzahl oder die RunningNumber (ID) der Gebäude zurück, welche Arbeiter benötigen.
 // Wir übergeben dafür als Parameter den Typ des Gebäudes (FARM, BAUHOF usw.) und einen Modus.
 // Ist der Modus NULL, dann bekommen wir die Anzahl zurück, ist der Modus EINS, dann die RunningNumber.
@@ -1013,13 +1077,8 @@ void CSystem::CalculateBuildableBuildings(CSector* sector, BuildingInfoArray* bu
 	CEmpire* empire = pMajor->GetEmpire();
 	ASSERT(empire);
 
-	for (int k = 0; k < m_BuildableWithoutAssemblylistCheck.GetSize(); )
-		m_BuildableWithoutAssemblylistCheck.RemoveAt(k);
 	m_BuildableWithoutAssemblylistCheck.RemoveAll();
 	m_BuildableWithoutAssemblylistCheck.FreeExtra();
-
-	for (int k = 0; k < m_BuildableBuildings.GetSize(); )
-		m_BuildableBuildings.RemoveAt(k);
 	m_BuildableBuildings.RemoveAll();	
 /*
 	Algorithmus:
@@ -1067,6 +1126,7 @@ void CSystem::CalculateBuildableBuildings(CSector* sector, BuildingInfoArray* bu
 	// schon stehende Gebäude checken
 	USHORT minID = 0;
 	BOOLEAN equivalents = FALSE;	// steht in dem System ein Gebäude einer anderen Rasse (eins was wir nicht hätten bauen können)
+
 	for (int i = 0; i < m_Buildings.GetSize(); i++)
 	{
 		// Wenn wir auf das Gebäude in der Infoliste zugreifen wollen, dann steht dieses dort immer
@@ -1131,6 +1191,7 @@ void CSystem::CalculateBuildableBuildings(CSector* sector, BuildingInfoArray* bu
 				}
 		}
 	}
+
 	// Hier noch die Gebäude aus der immer baubaren Gebäudeliste in die Liste der baubaren Gebäude hinzufügen,
 	// wenn sie nicht schon drin stehen
 	USHORT size = m_BuildableWithoutAssemblylistCheck.GetSize();
@@ -1166,6 +1227,12 @@ void CSystem::CalculateBuildableBuildings(CSector* sector, BuildingInfoArray* bu
 				break;
 			}
 		}
+
+		// Gebäude ist ein Never-Ready-Gebäude und produziert Moral, dann kann es erst gebaut werden, wenn
+		// die Moral 2.5 x unter der Produktion des Gebäudes liegt
+		if (buildingInfo->GetAt(i).GetNeverReady() && buildingInfo->GetAt(i).GetMoralProd() > 0)
+			if (m_iMoral > 100 - buildingInfo->GetAt(i).GetMoralProd() * 2.5)
+				continue;
 		
 		// Haben wir noch nicht dieses Gebäude in der Liste gefunden, so könnten wir es vielleicht bauen, deswegen
 		// jetzt die ganzen Voraussetzungen prüfen
@@ -1261,10 +1328,6 @@ BOOLEAN CSystem::AssemblyListCheck(BuildingInfoArray* buildingInfo, CGlobalBuild
 {
 	// zu allererst die Liste der baubaren Gebäude und Updates mit der Liste der in dieser Runde baubaren Gebäude
 	// vor dem AssemblyListCheck füllen
-	for (int k = 0; k < m_BuildableBuildings.GetSize(); )
-		m_BuildableBuildings.RemoveAt(k);
-	for (int k = 0; k < m_BuildableUpdates.GetSize(); )
-		m_BuildableUpdates.RemoveAt(k);
 	m_BuildableBuildings.RemoveAll();
 	m_BuildableUpdates.RemoveAll();
 	m_BuildableBuildings.FreeExtra();
@@ -1399,10 +1462,7 @@ BOOLEAN CSystem::AssemblyListCheck(BuildingInfoArray* buildingInfo, CGlobalBuild
 // Funktion berechnet die baubaren Schiffe in dem System.
 void CSystem::CalculateBuildableShips(CBotf2Doc* pDoc, const CPoint& p)
 {
-	ASSERT(pDoc);
-
-	for (int k = 0; k < m_BuildableShips.GetSize(); )
-		m_BuildableShips.RemoveAt(k);
+	ASSERT(pDoc);	
 	m_BuildableShips.RemoveAll();
 	m_BuildableShips.FreeExtra();
 	// Hier jetzt schauen ob wir eine Werft haben und anhand der größe der Werft können wir bestimmte
@@ -1410,18 +1470,22 @@ void CSystem::CalculateBuildableShips(CBotf2Doc* pDoc, const CPoint& p)
 	CMajor* pMajor = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(m_sOwnerOfSystem));
 	if (!pMajor)
 		return;
-	// Array mit baubaren Minorraceschiffen füllen
-	int nMinorShipNumber = -1;
-	if (pDoc->GetSector(p).GetMinorRace())
-	{
-		CMinor* pMinor = pDoc->GetRaceCtrl()->GetMinorRace(pDoc->GetSector(p).GetName());
-		if (pMinor)
-			nMinorShipNumber = pMinor->GetRaceShipNumber();
-	}
-
+	
+	// exisitiert eine Werft?
 	if (m_Production.GetShipYard())
 	{
+		// Array mit baubaren Minorraceschiffen füllen
+		int nMinorShipNumber = -1;
+		if (pDoc->GetSector(p).GetMinorRace())
+		{
+			CMinor* pMinor = pDoc->GetRaceCtrl()->GetMinorRace(pDoc->GetSector(p).GetName());
+			if (pMinor)
+				nMinorShipNumber = pMinor->GetRaceShipNumber();
+		}
+
+		CResearch* pResearch = pMajor->GetEmpire()->GetResearch();
 		CArray<USHORT> obsoleteClasses;
+
 		for (int i = 0; i < pDoc->GetShipInfos()->GetSize(); i++)
 		{
 			CShipInfo* pShipInfo = &(pDoc->GetShipInfos()->GetAt(i));
@@ -1429,24 +1493,22 @@ void CSystem::CalculateBuildableShips(CBotf2Doc* pDoc, const CPoint& p)
 			if ((pShipInfo->GetRace() == pMajor->GetRaceShipNumber() || pShipInfo->GetRace() == nMinorShipNumber)
 				&& pShipInfo->GetShipType() != OUTPOST && pShipInfo->GetShipType() != STARBASE)
 			{
-				CResearch* pResearch = pMajor->GetEmpire()->GetResearch();
-
-				BOOLEAN buildable = TRUE;
-				// zuerstmal die Forschungsstufen checken
+				// Forschungsstufen checken
 				if (pResearch->GetBioTech() <  pShipInfo->GetBioTech())
-					buildable = FALSE;
-				else if (pResearch->GetEnergyTech() < pShipInfo->GetEnergyTech())
-					buildable = FALSE;
-				else if (pResearch->GetCompTech() < pShipInfo->GetComputerTech())
-					buildable = FALSE;
-				else if (pResearch->GetPropulsionTech() < pShipInfo->GetPropulsionTech())
-					buildable = FALSE;
-				else if (pResearch->GetConstructionTech() < pShipInfo->GetConstructionTech())
-					buildable = FALSE;
-				else if (pResearch->GetWeaponTech() < pShipInfo->GetWeaponTech())
-					buildable = FALSE;
+					continue;
+				if (pResearch->GetEnergyTech() < pShipInfo->GetEnergyTech())
+					continue;
+				if (pResearch->GetCompTech() < pShipInfo->GetComputerTech())
+					continue;
+				if (pResearch->GetPropulsionTech() < pShipInfo->GetPropulsionTech())
+					continue;
+				if (pResearch->GetConstructionTech() < pShipInfo->GetConstructionTech())
+					continue;
+				if (pResearch->GetWeaponTech() < pShipInfo->GetWeaponTech())
+					continue;
+
 				// Wenn durch dieses Schiff ein anderes Schiff veraltet ist (nur wenn es technologisch baubar ist)
-				if (pShipInfo->GetObsoleteShipClass() != "" && buildable == TRUE)
+				if (pShipInfo->GetObsoleteShipClass() != "")
 				{
 					for (int j = 0; j < pDoc->GetShipInfos()->GetSize(); j++)
 						if (pDoc->GetShipInfos()->GetAt(j).GetShipClass() == pShipInfo->GetObsoleteShipClass())
@@ -1454,24 +1516,31 @@ void CSystem::CalculateBuildableShips(CBotf2Doc* pDoc, const CPoint& p)
 							obsoleteClasses.Add(pDoc->GetShipInfos()->GetAt(j).GetID());
 							break;
 						}
-				}				
+				}
+
 				// Wenn das Schiff nur in einem bestimmten System gebaut werden kann, dann hier checken
 				if (!pShipInfo->GetOnlyInSystem().IsEmpty())
 				{
 					if (pShipInfo->GetOnlyInSystem() != pDoc->GetSector(p).GetName())
-						buildable = FALSE;					
+						continue;
 					// der Besitzer der Schiffsklasse wird auf den Besitzer des Schiffes gesetzt. Somit kann
 					// eine Majorrace dann auch die Schiffe der Minorrace bauen
 					else
 						pShipInfo->SetRace(pMajor->GetRaceShipNumber());
 				}
 				else if (pShipInfo->GetRace() == nMinorShipNumber)
-					buildable = FALSE;
+					continue;
 
+				// gibt es eine Werft welche diese Schiffsgröße bauen kann?
 				if (pShipInfo->GetShipSize() > m_Production.GetMaxBuildableShipSize())
-						buildable = FALSE;
-				if (buildable == TRUE)
-					m_BuildableShips.Add(pShipInfo->GetID());
+					continue;
+
+				// wenn die Credits unter -1000 gefallen sind können keine Kampfschiffe mehr gebaut werden
+				if (IS_NONCOMBATSHIP(pShipInfo->GetShipType()) == false && pMajor->GetEmpire()->GetLatinum() < 0)
+					continue;
+
+				// Schiff in die Liste der baubaren Schiffe aufnehmen
+				m_BuildableShips.Add(pShipInfo->GetID());
 			}
 		}
 		// Nochmal die jetzt baubare Schiffsliste durchgehen und schauen, ob manche Schiffe veraltet sind und somit
@@ -1491,8 +1560,6 @@ void CSystem::CalculateBuildableShips(CBotf2Doc* pDoc, const CPoint& p)
 // Diese Funktion berechnet die baubaren Truppen in diesem System
 void CSystem::CalculateBuildableTroops(const CArray<CTroopInfo>* troopInfos, const CResearch *research)
 {
-	for (int k = 0; k < m_BuildableTroops.GetSize(); )
-		m_BuildableTroops.RemoveAt(k);
 	m_BuildableTroops.RemoveAll();
 	m_BuildableTroops.FreeExtra();
 	// Hier jetzt schauen ob wir eine Kaserne haben
@@ -1656,6 +1723,9 @@ int CSystem::CheckEnergyBuildings(BuildingInfoArray *buildingInfos)
 // Funktion baut die Gebäude der Minorrace, wenn wir eine Mitgliedschaft mit dieser erreicht haben.
 void CSystem::BuildBuildingsForMinorRace(CSector* sector, BuildingInfoArray* buildingInfo, USHORT averageTechlevel, const CMinor* pMinor)
 {
+	// alle Gebäude die wir nach Systemeroberung nicht haben dürfen werden aus der Liste der aktuellen Gebäude entfernt
+	RemoveSpecialRaceBuildings(buildingInfo);
+
 	if (m_Buildings.GetSize() < 5)
 	{
 		// in exist[.] steht dann, ob wir einen Rohstoff abbauen können, wenn ja, dann können wir auch das Gebäude bauen
@@ -1739,26 +1809,23 @@ void CSystem::BuildBuildingsForMinorRace(CSector* sector, BuildingInfoArray* bui
 		// Dies kann sich durch Modifikationen aber verändern.
 		// ALPHA5 -> fromRace müsste noch fest in der Minorrace stehen, daher ist folgender Block vorerst entfernt
 		BYTE fromRace = rand()%6 + 1; // liegt erstmal zwischen human und dominion
-		/*
-		switch (pMinor->GetKind())
-		{
-		case FINANCIAL: fromRace = FERENGI; break;
-		case WARLIKE: fromRace = KLINGON; break;
-		case INDUSTRIAL: fromRace = CARDASSIAN; break;
-		case SECRET: fromRace = ROMULAN; break;
-		case PRODUCER: fromRace = KLINGON; break;
-		case PACIFIST: fromRace = FERENGI; break;
-		case SNEAKY: fromRace = CARDASSIAN; break;
-		default: fromRace = HUMAN;
-		}
-		*/
-		
+				
 		USHORT runningNumber[10] = {0,0,0,0,0,0,0,0,0,0};
+		USHORT nShipYard = 0;
 		for (int i = 0; i < buildingInfo->GetSize(); i++)
+		{
 			if (fromRace == buildingInfo->GetAt(i).GetOwnerOfBuilding())
 			{
 				if (!buildingInfo->GetAt(i).IsBuildingBuildableNow(researchLevels))
 					continue;
+
+				// wenn noch gar keine Gebäude standen, also die Rasse frisch vermitgliedert wurde und Raumschiffe bauen
+				// kann, so bekommt sie die erste baubare Werft
+				if (nShipYard == 0 && m_Buildings.GetSize() == 0 && pMinor->GetSpaceflightNation())
+				{
+					if (buildingInfo->GetAt(i).GetShipYard() && buildingInfo->GetAt(i).GetPredecessorID() == 0 && buildingInfo->GetAt(i).GetMaxInEmpire().Number == 0)
+						nShipYard = buildingInfo->GetAt(i).GetRunningNumber();		
+				}
 				
 				if (buildingInfo->GetAt(i).GetFoodProd() > 0 && buildingInfo->GetAt(i).GetWorker() == TRUE)
 				{				
@@ -1800,7 +1867,8 @@ void CSystem::BuildBuildingsForMinorRace(CSector* sector, BuildingInfoArray* bui
 				{
 					runningNumber[9] = buildingInfo->GetAt(i).GetRunningNumber();
 				}
-			}			
+			}
+		}
 		
 		// Jetzt haben wir die ganzen RunningNumbers der baubaren Gebäude, nun gucken welche Art von Rasse wir haben
 		// und danach zufällig die Gebäude bauen
@@ -1975,6 +2043,28 @@ void CSystem::BuildBuildingsForMinorRace(CSector* sector, BuildingInfoArray* bui
 			int resAdd = rand()%(this->GetNumberOfWorkbuildings(res + 5, 0, NULL) * (pMinor->GetTechnologicalProgress() + 1) * 100 + 1);
 			this->SetRessourceStore(res, resAdd);			
 		}
+
+		// wenn möglich Werft bauen
+		if (nShipYard != 0)
+		{
+			CBuilding building(nShipYard);
+			m_Buildings.Add(building);
+			SetNewBuildingOnline(buildingInfo);
+		}
+	}
+}
+
+// Diese Funktion entfernt alle speziellen Gebäude aus der Gebäudeliste. Diese Funktion sollte nach Eroberung des Systems
+// aufgerufen werden. Danach sind keine Gebäude mehr vorhanden, die nur x mal pro Imperium baubar gewesen oder die nur die Rasse
+// selbst bauen darf.
+// @param pvBuildingInfos Zeiger auf den Vektor mit allen Gebäudeinformationen
+void CSystem::RemoveSpecialRaceBuildings(const BuildingInfoArray* pvBuildingInfos)
+{
+	for (int i = 0; i < m_Buildings.GetSize(); i++)
+	{
+		const CBuildingInfo *pInfo = &pvBuildingInfos->GetAt(m_Buildings[i].GetRunningNumber() - 1);
+		if (pInfo->GetMaxInEmpire().Number > 0 || pInfo->GetOnlyRace() || pInfo->GetShipYard() || pInfo->GetBarrack())
+			m_Buildings.RemoveAt(i--);
 	}
 }
 

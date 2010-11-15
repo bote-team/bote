@@ -45,18 +45,18 @@ public:
 
 	// Funktion gibt uns den maximal baubaren Typ einer Beamwaffe zurück. Dafür übergeben wir der Funktion
 	// den Namen der Beamwaffe. Ist der Rückgabewert NULL, so können wir den Typ nicht bauen
-	BYTE GetMaxBeamType(CString NameOfBeamWeapon);
+	BYTE GetMaxBeamType(const CString& NameOfBeamWeapon) const;
 
 	// Funktion sucht einen weiteren baubaren Torpedo und übernimmt dafür den aktuell angebauten Torpedotyp und
 	// den aktuell angebauten Torpedowerfeer
-	BYTE GetNextTorpedo(BYTE currentTorpedoType, BOOLEAN onlyMircoTupe);
+	BYTE GetNextTorpedo(BYTE currentTorpedoType, BOOLEAN onlyMircoTupe) const;
 	
 	// Funktion sucht einen weiteren Torpedowerfer, denn wir an das Schiff montieren können und übernimmt dafür
 	// den Namen des aktuell angebauten Werfers und den aktuell angebauten Torpedotyp
-	TupeWeaponsObserverStruct GetNextTupe(CString currentTupeName, BYTE currentTorpedoType);
+	TupeWeaponsObserverStruct GetNextTupe(const CString& currentTupeName, BYTE currentTorpedoType) const;
 
 	// Funktion gibt den maximal baubaren Schildtyp des Imperiums zurück
-	BYTE GetMaxShieldType() {return m_MaxShieldLevel;}
+	BYTE GetMaxShieldType() const {return m_MaxShieldLevel;}
 
 	// Funktion checkt alle baubaren Beamwaffen und setzt alle Variablen auf den richtigen Wert.
 	// Der Parameter <code>info</code> muß ein derzeit baubares Schiff des Imperium sein. Die Funktion

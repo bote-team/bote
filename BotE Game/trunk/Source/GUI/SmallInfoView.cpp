@@ -359,7 +359,7 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 		// Wenn wir Infomationen zur Flotte anzeigen
 		else
 		{
-			short range = m_pShip->GetFleet()->GetFleetRange(&pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfTheShipInArray()));
+			short range = m_pShip->GetFleet()->GetFleetRange(&pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()));
 			if (range == 0)
 				Range = CResourceManager::GetString("SHORT");
 			else if (range == 1)
@@ -374,7 +374,7 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 
 			fontBrush.SetColor(color);
 			
-			if (m_pShip->GetFleet()->GetFleetShipType(&pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfTheShipInArray())) != -1)
+			if (m_pShip->GetFleet()->GetFleetShipType(&pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex())) != -1)
 				s.Format("%s: %s",CResourceManager::GetString("TYPE"),
 				m_pShip->GetShipTypeAsString(TRUE));
 			else
@@ -385,7 +385,7 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0,0,r.right,105), &fontFormat, &fontBrush);
 			
 			s.Format("%s: %d",CResourceManager::GetString("SPEED"), 
-				m_pShip->GetFleet()->GetFleetSpeed(&pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfTheShipInArray())));
+				m_pShip->GetFleet()->GetFleetSpeed(&pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex())));
 			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0,0,r.right,125), &fontFormat, &fontBrush);
 		}			
 		
@@ -394,7 +394,7 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 			s = CResourceManager::GetString("UNKNOWN_TARGET");
 		if (TargetKO.x != -1 && m_pShip->GetOwnerOfShip() == pMajor->GetRaceID())
 		{
-			short n = pDoc->GetNumberOfTheShipInArray();
+			short n = pDoc->GetCurrentShipIndex();
 			short range = 0;
 			short speed = 0;
 			// Wenn das Schiff keine Flotte anführt

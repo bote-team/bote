@@ -6,7 +6,6 @@
  *
  */
 #pragma once
-#include "Botf2Doc.h"
 #include "MainBaseView.h"
 
 // CEventMenuView view

@@ -10,9 +10,12 @@
 #include "MainBaseView.h"
 
 // Submenüs
-#define EMPIREVIEW_NEWS		0
-#define EMPIREVIEW_SYSTEMS	1
-#define EMPIREVIEW_SHIPS	2
+#define EMPIREVIEW_NEWS			0
+#define EMPIREVIEW_SYSTEMS		1
+#define EMPIREVIEW_SHIPS		2
+#define EMPIREVIEW_DEMOGRAPHICS 3
+#define EMPIREVIEW_TOP5			4
+#define EMPIREVIEW_VICTORY		5
 
 #define EMPIREVIEW_SYSTEMS_NORMAL	0
 #define EMPIREVIEW_SYSTEMS_RESOURCE	1
@@ -58,9 +61,13 @@ protected:
 
 private:
 	// Funktionen
-	void DrawEmpireNewsMenue(Graphics* g);		///< Funktion zum Zeichnen der Nachrichtenansicht an das Imperium
-	void DrawEmpireSystemMenue(Graphics* g);	///< Funktion zum Zeichnen der Ansicht aller Systeme des Imperiums
-	void DrawEmpireShipMenue(Graphics* g);		///< Funktion zum Zeichnen der Ansicht aller Schiffe des Imperiums
+	void DrawEmpireNewsMenue(Graphics* g);			///< Funktion zum Zeichnen der Nachrichtenansicht an das Imperium
+	void DrawEmpireSystemMenue(Graphics* g);		///< Funktion zum Zeichnen der Ansicht aller Systeme des Imperiums
+	void DrawEmpireShipMenue(Graphics* g);			///< Funktion zum Zeichnen der Ansicht aller Schiffe des Imperiums
+	void DrawEmpireDemographicsMenue(Graphics* g);	///< Funktion zum Zeichnen der Demographieansicht
+	void DrawEmpireTop5Menue(Graphics* g);			///< Funktion zum Zeichnen der Top-5 Systemeansicht
+	void DrawEmpireVictoryMenue(Graphics* g);		///< Funktion zum Zeichnen der Ansicht der Siegbedingungen
+	void DrawSunSystem(Gdiplus::Graphics *g, const CPoint& ptKO, int nPos);	///< Funktion zeichnet das Sonnensystem in der Top-5 Systemansicht
 	void CreateButtons();
 
 	//Attribute
@@ -68,6 +75,9 @@ private:
 	Bitmap* bg_newsovmenu;			// Nachrichtenübersichtsmenü
 	Bitmap* bg_systemovmenu;		// Systemübersichtsmenü
 	Bitmap* bg_shipovmenu;			// Schiffsübersichtsmenü
+	Bitmap* bg_demographicsmenu;	// Demographiemenü
+	Bitmap* bg_top5menu;			// Top-5 Systememenü
+	Bitmap* bg_victorymenu;			// Siegbedingunsmenü
 
 	// Buttons
 	CArray<CMyButton*> m_EmpireNewsFilterButtons;	///< Buttons zum filtern der Nachrichten in der Imperiumsübersicht

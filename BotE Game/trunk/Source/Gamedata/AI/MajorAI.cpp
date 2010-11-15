@@ -96,7 +96,7 @@ void CMajorAI::CalcFavoriteMinors(void)
 		bool operator< (const MINORLIST& elem2) const { return byRelation < elem2.byRelation;}
 		bool operator> (const MINORLIST& elem2) const { return byRelation > elem2.byRelation;}
 		MINORLIST() : sID(""), byRelation(0) {}
-		MINORLIST(CString _sID, BYTE _byRelation) : sID(_sID), byRelation(_byRelation) {}
+		MINORLIST(const CString& _sID, BYTE _byRelation) : sID(_sID), byRelation(_byRelation) {}
 	};
 
 	vector<MINORLIST> vFavoriteMinors;		
@@ -1351,7 +1351,7 @@ bool CMajorAI::ClaimRequest(CDiplomacyInfo& info)
 			bClaimRequest |= true;
 		}
 	}
-
+	
 	return bClaimRequest;
 }
 

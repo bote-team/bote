@@ -19,6 +19,7 @@
 #include "SortedList.h"
 #include <list>
 #include <set>
+#include <map>
 
 #if _MSC_VER > 1000
 #pragma once
@@ -135,6 +136,9 @@ protected:
 	/// zu verwendende lokale RangeMap, für nachfolgend hinzugefügte Außenposten
 	RangeMap m_RangeMap;
 
+	/// bestimmte Sektoren sind gefährlich und sollten daher nicht primär angeflogen werden
+	static double m_BadMapModifiers[STARMAP_SECTORS_HCOUNT][STARMAP_SECTORS_VCOUNT];
+
 	/// Array, das Informationen zur Berechnung der kürzesten Wege aufnimmt
 	PathSector pathMap[STARMAP_SECTORS_HCOUNT][STARMAP_SECTORS_VCOUNT];
 	/// Liste der Nachbarn, die von den aktuellen Blättern aus erreichbar sind
@@ -225,6 +229,12 @@ public:
 	 * Nichtangriffspakt mit dieser Rasse haben.
 	 */
 	void SynchronizeWithMap(CSector sectors[][STARMAP_SECTORS_VCOUNT], std::set<CString>* races);
+
+	/**
+	 * Führt für gefährliche Anomalien mathematische Gewichte hinzu, so dass dieser Sektor bei der automatischen
+	 * Wegsuche nicht überflogen wird.
+	 */
+	static void SynchronizeWithAnomalies(CSector sectors[][STARMAP_SECTORS_VCOUNT]);
 
 	/**
 	 * Löscht alle Basen und setzt die Einträge in der Rangemap wieder auf Ausgangswert

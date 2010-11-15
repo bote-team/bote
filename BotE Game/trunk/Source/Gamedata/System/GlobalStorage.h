@@ -100,7 +100,7 @@ public:
 	 * Diese Funktion setzt den maximalen Wert, den man pro Runde aus den Lagern entfernen kann. Die Obergrenze
 	 * liegt dabei bei 20k.
 	 */
-	void SetMaxTakenRessources(USHORT max) {if (max > 20000) max = 20000; m_iMaxTakeFromStorage = max;}
+	void SetMaxTakenRessources(int nMax) {m_iMaxTakeFromStorage = min(20000, nMax);}
 		
 	// sonstige Funktionen
 	/**

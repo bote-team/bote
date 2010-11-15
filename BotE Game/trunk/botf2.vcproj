@@ -346,6 +346,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\Source\GUI\CombatMenuView.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\Source\GUI\DBScrollView.cpp"
 					>
 				</File>
@@ -453,7 +457,19 @@
 						>
 					</File>
 					<File
+						RelativePath=".\Source\Gamedata\Events\EventCombat.cpp"
+						>
+					</File>
+					<File
 						RelativePath=".\Source\Gamedata\Events\EventFirstContact.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Source\Gamedata\Events\EventGameOver.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Source\Gamedata\Events\EventRaceKilled.cpp"
 						>
 					</File>
 					<File
@@ -464,10 +480,18 @@
 						RelativePath=".\Source\Gamedata\Events\EventScreen.cpp"
 						>
 					</File>
+					<File
+						RelativePath=".\Source\Gamedata\Events\EventVictory.cpp"
+						>
+					</File>
 				</Filter>
 				<Filter
 					Name="Galaxy"
 					>
+					<File
+						RelativePath=".\Source\Gamedata\Galaxy\Anomaly.cpp"
+						>
+					</File>
 					<File
 						RelativePath=".\Source\Gamedata\Galaxy\GenSectorName.cpp"
 						>
@@ -594,6 +618,10 @@
 					</File>
 					<File
 						RelativePath=".\Source\Gamedata\Races\Starmap.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Source\Gamedata\Races\VictoryObserver.cpp"
 						>
 					</File>
 				</Filter>
@@ -734,6 +762,10 @@
 					>
 					<File
 						RelativePath=".\Source\Gamedata\AI\AIPrios.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Source\Gamedata\AI\CombatAI.cpp"
 						>
 					</File>
 					<File
@@ -906,12 +938,20 @@
 					RelativePath=".\Source\Graphic\OverlayBanner.h"
 					>
 				</File>
+				<File
+					RelativePath=".\Source\Graphic\RoundRect.h"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="GUI"
 				>
 				<File
 					RelativePath=".\Source\GUI\BottomBaseView.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Source\GUI\CombatMenuView.h"
 					>
 				</File>
 				<File
@@ -1078,7 +1118,19 @@
 						>
 					</File>
 					<File
+						RelativePath=".\Source\Gamedata\Events\EventCombat.h"
+						>
+					</File>
+					<File
 						RelativePath=".\Source\Gamedata\Events\EventFirstContact.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Source\Gamedata\Events\EventGameOver.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Source\Gamedata\Events\EventRaceKilled.h"
 						>
 					</File>
 					<File
@@ -1089,10 +1141,18 @@
 						RelativePath=".\Source\Gamedata\Events\EventScreen.h"
 						>
 					</File>
+					<File
+						RelativePath=".\Source\Gamedata\Events\EventVictory.h"
+						>
+					</File>
 				</Filter>
 				<Filter
 					Name="Galaxy"
 					>
+					<File
+						RelativePath=".\Source\Gamedata\Galaxy\Anomaly.h"
+						>
+					</File>
 					<File
 						RelativePath=".\Source\Gamedata\Galaxy\GenSectorName.h"
 						>
@@ -1219,6 +1279,10 @@
 					</File>
 					<File
 						RelativePath=".\Source\Gamedata\Races\Starmap.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Source\Gamedata\Races\VictoryObserver.h"
 						>
 					</File>
 				</Filter>
@@ -1363,6 +1427,10 @@
 					>
 					<File
 						RelativePath=".\Source\Gamedata\AI\AIPrios.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Source\Gamedata\AI\CombatAI.h"
 						>
 					</File>
 					<File

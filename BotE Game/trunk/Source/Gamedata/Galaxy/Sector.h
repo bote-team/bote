@@ -19,6 +19,7 @@ using namespace std;
 // forward declaration
 class CBotf2Doc;
 class CMajor;
+class CAnomaly;
 
 /// Liefert verschiedene Attributswerte der Sektorklasse.
 enum SectorAttributes
@@ -106,7 +107,7 @@ public:
 	{
 		map<CString, BYTE>::const_iterator it = m_byStatus.find(sRace);
 		if (it != m_byStatus.end())
-			return it->second >= 3;
+			return it->second >= 3;			
 		else
 			return false;
 	}
@@ -146,6 +147,14 @@ public:
 			return true;
 		return false;
 	}
+
+	/// Diese Funktion gibt einen Wahrheitswert zurück, der sagt, ob von irgendwem ein Schiff in diesem
+	/// Sektor ist
+	BOOLEAN GetIsShipInSector(void) const {return m_bWhoIsOwnerOfShip.size() > 0;}
+	
+	/// Diese Funktion gibt einen Wahrheitswert zurück, der sagt, ob von irgendwem eine Station in diesem
+	/// Sektor ist
+	BOOLEAN GetIsStationInSector(void) const {return m_bOutpost.size() > 0 || m_bStarbase.size() > 0;}
 	
 	/// Diese Funktion gibt einen Wahrheitswert zurück, der sagt, ob die Majorrace <code>Race</code>
 	/// gerade eine Station in diesem Sektor baut.
@@ -209,6 +218,9 @@ public:
 	/// Diese Funktion gibt einen Zeiger auf einen Planeten in diesem System zurück.
 	CPlanet* GetPlanet(short NumberOfPlanet) {return &m_Planets[NumberOfPlanet];}
 
+	/// Diese Funktion gibt einen Zeiger auf eine eventuell vorhandene Anomalie zurück (<code>NULL</code> wenn kein vorhanden)
+	CAnomaly* GetAnomaly(void) const {return m_pAnomaly;}
+
 	/// Diese Funktion gibt einen Zeiger auf das Feld mit den Planeten in diesem System zurück.
 	CArray<CPlanet>* GetPlanets() {return &m_Planets;}
 
@@ -227,7 +239,7 @@ public:
 	void SetKO(int x, int y) {m_KO = CPoint(x,y);}
 
 	/// Funktion legt den Namen des Sektors fest.
-	void SetSectorsName(CString nameOfSunSystem) {m_strSectorName = nameOfSunSystem;}
+	void SetSectorsName(const CString& nameOfSunSystem) {m_strSectorName = nameOfSunSystem;}
 	
 	/// Diese Funktion legt fest, ob sich ein Sonnensystem in diesem Sektor befindet.
 	void SetSunSystem(BOOLEAN is) {SetAttributes(is, SECTOR_SUNSYSTEM, m_Attributes);}
@@ -369,11 +381,14 @@ public:
 	 * wird die Wahrscheinlichkeit in Prozent übergeben, dass sich in dem Sektor eine Minorrace befindet.
 	 */
 	void GenerateSector(int sunProb, int minorProb);
-	
+
 	/// Diese Funktion generiert die Planeten in dem Sektor.
 	/// @param majorNumber Nummer der Majorrace, wenn deren Planeten im Sektor generiert werden soll. Wird kein Wert
 	/// angegeben, so werden zufällige Planeten erstellt.
 	void CreatePlanets(const CString& sMajorID = "");
+
+	/// Funktion erzeugt eine zufällige Anomalie im Sektor.
+	void CreateAnomaly(void);
 	
 	/// Diese Funktion führt das Planetenwachstum für diesen Sektor durch.
 	void LetPlanetsGrowth();
@@ -400,14 +415,7 @@ public:
 	
 	/// Diese Funktion zeichnet die entsprechenden Schiffssymbole in den Sektor
 	void DrawShipSymbolInSector(Graphics *g, CBotf2Doc* pDoc, CMajor* pPlayer);
-
-// statische Membervariablen
-	/// Die Schrift, mit welcher die Sektornamen gezeichnet werden.
-	static CFont* m_Font;
-	
-	/// Die Schriftfarbe, mit der die Sektornamen gezeichnet werden.
-	static COLORREF m_TextColor;	
-	
+		
 private:
 	/// Die Koordinate des Sektors auf der Map
 	CPoint m_KO;
@@ -466,5 +474,8 @@ private:
 	CArray<CPlanet> m_Planets;
 
 	/// Diese Variable wird hochgezählt, wenn ein Schiffspfad durch diesen Sektor geht. Muss nicht serialisiert werden.
-	short m_iShipPathPoints;	
+	short m_iShipPathPoints;
+
+	/// Mögliche Anomalie in dem Sektor (NULL wenn keine vorhanden)
+	CAnomaly* m_pAnomaly;
 };

@@ -113,16 +113,19 @@ void CHull::ModifyHull(BOOLEAN DoubleHull, UINT BaseHull, BYTE HullMaterial, BOO
 	m_iCurrentHull = m_iMaxHull;
 }
 
-void CHull::SetCurrentHull(int add)
+void CHull::SetCurrentHull(int add, bool bIgnoreHullSpecials/* = false*/)
 {
 	double multi = 0.0f;
 	// wenn die Hülle die Polarisationseigenschaft hat, dann werden 10% des Schadens abgezogen
 	
-	if (GetPolarisation() && add < 0)
-		multi += 0.1;
-	if (GetAblative() && add < 0)
-		multi += 0.25;
-	add -= int(add * multi);
+	if (bIgnoreHullSpecials == false)
+	{
+		if (GetPolarisation() && add < 0)
+			multi += 0.1;
+		if (GetAblative() && add < 0)
+			multi += 0.25;
+		add -= int(add * multi);
+	}
 
 	// Überprüfen, das die Werte auch im Rahmen bleiben
 	if ((long)(add + m_iCurrentHull) >= (long)m_iMaxHull)

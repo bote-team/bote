@@ -24,6 +24,7 @@
 #include "DiplomacyBottomView.h"
 #include "TradeBottomView.h"
 #include "ShipDesignBottomView.h"
+#include "CombatMenuView.h"
 #include "SmallInfoView.h"
 #include "IniLoader.h"
 
@@ -44,6 +45,7 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
 		//    Innerhalb dieser generierten Quelltextabschnitte NICHTS VERÄNDERN!
 	ON_WM_CREATE()
 	ON_MESSAGE(WM_UPDATEVIEWS, CMainFrame::UpdateViews)
+	ON_MESSAGE(WM_COMBATVIEW, CMainFrame::ShowCombatView)
 	ON_NOTIFY (UDM_TOOLTIP_DISPLAY, NULL, NotifyCPPTooltip)
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
@@ -124,7 +126,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	m_CPPToolTip.SetTransparency(20);
 	m_CPPToolTip.SetColorBk(RGB(20,20,20));
 	m_CPPToolTip.SetBorder(RGB(250,250,250), 1, 1);
-	m_CPPToolTip.SetMaxTipWidth(250);
+	m_CPPToolTip.SetMaxTipWidth(300);
 	// EFFECT_SOFTBUMP
 	// EFFECT_DIAGSHADE
 	//m_CPPToolTip.SetEffectBk(CPPDrawManager::EFFECT_SOFTBUMP,10);
@@ -138,7 +140,8 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	//m_CPPToolTip.SetSize(CPPToolTip::PPTTSZ_MARGIN_ANCHOR, 0);
 	//m_CPPToolTip.SetSize(CPPToolTip::PPTTSZ_OFFSET_ANCHOR_CX, 0);
 	//m_CPPToolTip.SetSize(CPPToolTip::PPTTSZ_OFFSET_ANCHOR_CY, 0);
-	///////////////////////////	
+	///////////////////////////
+
 	return 0;
 }
 
@@ -254,6 +257,8 @@ BOOL CMainFrame::OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext)
 		pContext, CRect(r.right * HORZ_PROPORTION, 0, r.Width(), r.bottom * VERT_PROPORTION) , false , TRANSPORT_VIEW);
 	m_wndSplitter.AddSwitchableView(EVENT_VIEW, RUNTIME_CLASS(CEventMenuView),
 		pContext, CRect(r.right, 0, r.Width(), r.bottom) , false , EVENT_VIEW);
+	m_wndSplitter.AddSwitchableView(COMBAT_VIEW, RUNTIME_CLASS(CCombatMenuView),
+		pContext, CRect(r.right, 0, r.Width(), r.bottom) , false , COMBAT_VIEW);
 
 	// kleine View unten/links
 	m_wndSplitter.AddSwitchableView(m_wndSplitter.IdFromRowCol(1, 0), RUNTIME_CLASS(CSmallInfoView),
@@ -335,7 +340,7 @@ short CMainFrame::GetActiveView(int paneRow, int paneCol) const
 	CView* curView = (CView*)((CMainFrame*)AfxGetMainWnd())->m_wndSplitter.GetPane(paneRow, paneCol); // get current view
 	ASSERT(curView);
 
-	for (std::map<CWnd *, UINT>::const_iterator it = views->begin(); it != views->end(); it++)
+	for (std::map<CWnd *, UINT>::const_iterator it = views->begin(); it != views->end(); ++it)
 		if (it->first == curView)
 			return it->second;
 	return -1;
@@ -344,7 +349,7 @@ short CMainFrame::GetActiveView(int paneRow, int paneCol) const
 CView* CMainFrame::GetView(const CRuntimeClass* className) const
 {
 	const std::map<CWnd *, UINT>* views = &m_wndSplitter.views;
-	for (std::map<CWnd *, UINT>::const_iterator it = views->begin(); it != views->end(); it++)
+	for (std::map<CWnd *, UINT>::const_iterator it = views->begin(); it != views->end(); ++it)
 		// finden sich darunter eine View der übergebenen Klasse
 		if (it->first->IsKindOf(className))
 			return (CView*)(it->first);
@@ -355,7 +360,7 @@ void CMainFrame::InvalidateView(const CRuntimeClass* className)
 {
 	// Alle switchable Views durchiterieren
 	std::map<CWnd *, UINT>* views = &m_wndSplitter.views;
-	for (std::map<CWnd *, UINT>::iterator it = views->begin(); it != views->end(); it++)
+	for (std::map<CWnd *, UINT>::iterator it = views->begin(); it != views->end(); ++it)
 	{
 		// finden sich darunter eine View der übergebenen Klasse
 		if (it->first->IsKindOf(className))
@@ -370,7 +375,7 @@ void CMainFrame::InvalidateView(USHORT viewID)
 {
 	// Alle switchable Views durchiterieren
 	std::map<CWnd *, UINT>* views = &m_wndSplitter.views;
-	for (std::map<CWnd *, UINT>::iterator it = views->begin(); it != views->end(); it++)
+	for (std::map<CWnd *, UINT>::iterator it = views->begin(); it != views->end(); ++it)
 	{
 		// finden sich darunter eine View der übergebenen Klasse
 		if (it->second == viewID)
@@ -385,7 +390,7 @@ void CMainFrame::SetSubMenu(const CRuntimeClass* viewClassName, BYTE menuID)
 {
 	// Alle switchable Views durchiterieren
 	std::map<CWnd *, UINT>* views = &m_wndSplitter.views;
-	for (std::map<CWnd *, UINT>::iterator it = views->begin(); it != views->end(); it++)
+	for (std::map<CWnd *, UINT>::iterator it = views->begin(); it != views->end(); ++it)
 	{
 		// finden sich darunter eine View der übergebenen Klasse
 		if (it->first->IsKindOf(viewClassName))
@@ -411,7 +416,7 @@ BYTE CMainFrame::GetSubMenu(const CRuntimeClass* viewClassName) const
 {
 	// Alle switchable Views durchiterieren
 	const std::map<CWnd *, UINT>* views = &m_wndSplitter.views;
-	for (std::map<CWnd *, UINT>::const_iterator it = views->begin(); it != views->end(); it++)
+	for (std::map<CWnd *, UINT>::const_iterator it = views->begin(); it != views->end(); ++it)
 	{
 		// finden sich darunter eine View der übergebenen Klasse
 		if (it->first->IsKindOf(viewClassName))
@@ -459,6 +464,34 @@ LRESULT CMainFrame::UpdateViews(WPARAM wParam, LPARAM lParam)
 	return TRUE;
 }
 
+LRESULT CMainFrame::ShowCombatView(WPARAM wParam, LPARAM lParam)
+{
+	CBotf2Doc* pDoc = (CBotf2Doc*)((CBotf2App*)AfxGetApp())->GetDocument();
+	ASSERT(pDoc);
+	
+	MYTRACE(MT::LEVEL_INFO, "Getting Message to Show CombatView...");
+	
+	// Combat View anzeigen
+	FullScreenMainView(true);
+	SelectMainView(COMBAT_VIEW, pDoc->GetPlayersRaceID());
+	// wurde Rundenende geklickt zurücksetzen
+	network::RACE client = pDoc->GetRaceCtrl()->GetMappedClientID(pDoc->GetPlayersRaceID());
+	pDoc->m_iSelectedView[client] = EMPIRE_VIEW;
+	pDoc->m_bRoundEndPressed = false;
+	pDoc->m_bDataReceived = true;
+
+	// Zuletzt gedrückten Button zurücksetzen
+	CCombatMenuView* pView = ((CCombatMenuView*)GetView(RUNTIME_CLASS(CCombatMenuView)));
+	pView->OnNewRound();
+
+	pDoc->UpdateAllViews(NULL);
+
+	MYTRACE(MT::LEVEL_INFO, "Showing CombatView\n");
+
+	
+	return TRUE;
+}
+
 BOOL CMainFrame::PreTranslateMessage(MSG* pMsg)
 {
 	// TODO: Fügen Sie hier Ihren spezialisierten Code ein, und/oder rufen Sie die Basisklasse auf.
@@ -467,7 +500,7 @@ BOOL CMainFrame::PreTranslateMessage(MSG* pMsg)
 	return CFrameWnd::PreTranslateMessage(pMsg);
 }
 
-bool CMainFrame::AddToTooltip( CWnd* pWnd, CString sTip )
+bool CMainFrame::AddToTooltip( CWnd* pWnd, const CString& sTip )
 {
 	if (!pWnd)
 		return false;

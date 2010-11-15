@@ -90,15 +90,32 @@ public:
 	void SetEnemyDesc(const CString &s) {m_strEnemyDesc = s;}
 
 	// Sortierfunktionen
-/*	static int _cdecl sort_by_enemy(const CIntelObject* elem1, const CIntelObject* elem2)
-	{ return (*elem1).GetEnemy() < (*elem2).GetEnemy() ? -1 : 1; }
-	static int _cdecl sort_by_type(const CIntelObject* elem1, const CIntelObject* elem2)
-	{ return (elem1)->GetType() < (elem2)->GetType() ? -1 : 1; }
-	static int _cdecl sort_by_round(const CIntelObject** elem1, const CIntelObject** elem2)
-	{ return (*elem1)->GetRound() < (**elem2).GetRound() ? -1 : 1; }
-	static int _cdecl sort_by_kind(const CIntelObject* elem1, const CIntelObject* elem2)
-	{ return (elem1)->GetIsSpy() < (elem2)->GetIsSpy() ? -1 : 1; }	
-*/
+	template <class ELEM>
+	static int sort_by_enemy_desc(const ELEM* elem1, const ELEM* elem2)
+	{ return (*(CIntelObject**)elem1)->GetEnemy() < (*(CIntelObject**)elem2)->GetEnemy() ? -1 : 1; }	
+	template <class ELEM>
+	static int sort_by_round_desc(const ELEM* elem1, const ELEM* elem2)
+	{ return (*(CIntelObject**)elem1)->GetRound() < (*(CIntelObject**)elem2)->GetRound() ? -1 : 1; }	
+	template <class ELEM>
+	static int sort_by_type_desc(const ELEM* elem1, const ELEM* elem2)
+	{ return (*(CIntelObject**)elem1)->GetType() < (*(CIntelObject**)elem2)->GetType() ? -1 : 1; }
+	template <class ELEM>
+	static int sort_by_kind_desc(const ELEM* elem1, const ELEM* elem2)
+	{ return (*(CIntelObject**)elem1)->GetIsSpy() < (*(CIntelObject**)elem2)->GetIsSpy() ? -1 : 1; }
+
+	template <class ELEM>
+	static int sort_by_enemy_asc(const ELEM* elem1, const ELEM* elem2)
+	{ return (*(CIntelObject**)elem1)->GetEnemy() > (*(CIntelObject**)elem2)->GetEnemy() ? -1 : 1; }	
+	template <class ELEM>
+	static int sort_by_round_asc(const ELEM* elem1, const ELEM* elem2)
+	{ return (*(CIntelObject**)elem1)->GetRound() > (*(CIntelObject**)elem2)->GetRound() ? -1 : 1; }	
+	template <class ELEM>
+	static int sort_by_type_asc(const ELEM* elem1, const ELEM* elem2)
+	{ return (*(CIntelObject**)elem1)->GetType() > (*(CIntelObject**)elem2)->GetType() ? -1 : 1; }
+	template <class ELEM>
+	static int sort_by_kind_asc(const ELEM* elem1, const ELEM* elem2)
+	{ return (*(CIntelObject**)elem1)->GetIsSpy() > (*(CIntelObject**)elem2)->GetIsSpy() ? -1 : 1; }
+
 protected:
 	// Attribute
 	CString m_sOwner;		///< Rasse welche die Aktion gestartet hat

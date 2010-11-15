@@ -28,10 +28,10 @@ public:
 	virtual ~CShipInfo();
 
 	// Kopierkonstruktor
-//	CShipInfo(const CShipInfo & rhs);
+	CShipInfo(const CShipInfo & rhs);
 	// Zuweisungsoperatur
-//	CShipInfo & operator=(const CShipInfo &);
-// Die Serialisierungsfunktion
+	CShipInfo & operator=(const CShipInfo &);
+	// Serialisierungsfunktion
 	virtual void Serialize(CArchive &ar);
 	
 	/// Funktion gibt eine Rassennummer zurück. Jede Rasse besitzt eine Nummer, welche Schiffe und Gebäude diese
@@ -71,8 +71,8 @@ public:
 	void SetNeededCrystal(int NeededCrystal) {m_iNeededCrystal = NeededCrystal; m_iBaseCrystal = NeededCrystal;}
 	void SetNeededIridium(int NeededIridium) {m_iNeededIridium = NeededIridium; m_iBaseIridium = NeededIridium;}
 	void SetNeededDilithium(int NeededDilithium) {m_iNeededDilithium = NeededDilithium; m_iBaseDilithium = NeededDilithium;}
-	void SetOnlyInSystem(CString name) {m_strOnlyInSystem = name;}
-	void SetObsoleteShipClass(CString className) {m_strObsoletesClass = className;}
+	void SetOnlyInSystem(const CString& name) {m_strOnlyInSystem = name;}
+	void SetObsoleteShipClass(const CString& className) {m_strObsoletesClass = className;}
 
 	void DeleteWeapons();							// Funktion löscht die Bewaffnung
 	void CalculateFinalCosts();						// Funktion berechnet die finalen Kosten zum Bau des Schiffes

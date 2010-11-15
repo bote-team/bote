@@ -90,6 +90,13 @@
 #define IDC_SLIDER_STARDENSITY          1052
 #define IDC_SLIDER_MINORDENSITY         1053
 #define IDC_CHECK_HIDEMENUBAR           1054
+#define IDC_SLIDER_ANOMALYDENSITY       1055
+#define IDC_CHECK_VC_ELIMINATION        1056
+#define IDC_CHECK_VC_DIPLOMACY          1057
+#define IDC_CHECK_VC_CONQUEST           1058
+#define IDC_CHECK_VC_RESEARCH           1059
+#define IDC_CHECK_VC_COMBAT             1060
+#define IDC_CHECK_VC_SABOTAGE           1061
 #define ID_OPTIONEN                     32773
 #define ID_INFORMATION                  32774
 #define ID_DATENBANK                    32775

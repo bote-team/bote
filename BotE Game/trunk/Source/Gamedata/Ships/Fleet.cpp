@@ -17,17 +17,12 @@ IMPLEMENT_SERIAL (CFleet, CObject, 1)
 //////////////////////////////////////////////////////////////////////
 
 CFleet::CFleet()
-{
-	for (int i = 0; i < m_SP.GetSize(); )
-		m_SP.RemoveAt(i);
-	m_SP.RemoveAll();	
+{	
 }
 
 CFleet::~CFleet()
 {
-	for (int i = 0; i < m_SP.GetSize(); )
-		m_SP.RemoveAt(i);
-	m_SP.RemoveAll();
+	m_vShips.RemoveAll();
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -35,8 +30,9 @@ CFleet::~CFleet()
 //////////////////////////////////////////////////////////////////////
 CFleet::CFleet(const CFleet & rhs)
 {
-	for (int i = 0; i < rhs.m_SP.GetSize(); i++)
-		m_SP.Add(rhs.m_SP.GetAt(i));
+	m_vShips.RemoveAll();
+	for (int i = 0; i < rhs.m_vShips.GetSize(); i++)
+		m_vShips.Add(rhs.m_vShips.GetAt(i));
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -46,8 +42,11 @@ CFleet & CFleet::operator=(const CFleet & rhs)
 {
 	if (this == &rhs)
 		return *this;
-	for (int i = 0; i < rhs.m_SP.GetSize(); i++)
-		m_SP.Add(rhs.m_SP.GetAt(i));
+	
+	m_vShips.RemoveAll();
+	for (int i = 0; i < rhs.m_vShips.GetSize(); i++)
+		m_vShips.Add(rhs.m_vShips.GetAt(i));
+	
 	return *this;
 }
 
@@ -60,19 +59,19 @@ void CFleet::Serialize(CArchive &ar)
 	// wenn gespeichert wird
 	if (ar.IsStoring())
 	{
-		ar << m_SP.GetSize();
-		for (int i = 0; i < m_SP.GetSize(); i++)
-			m_SP.GetAt(i).Serialize(ar);		
+		ar << m_vShips.GetSize();
+		for (int i = 0; i < m_vShips.GetSize(); i++)
+			m_vShips.GetAt(i).Serialize(ar);		
 	}
 	// wenn geladen wird
 	if (ar.IsLoading())
 	{
 		int number = 0;
 		ar >> number;
-		m_SP.RemoveAll();
-		m_SP.SetSize(number);
+		m_vShips.RemoveAll();
+		m_vShips.SetSize(number);
 		for (int i = 0; i < number; i++)
-			m_SP.GetAt(i).Serialize(ar);
+			m_vShips.GetAt(i).Serialize(ar);
 	}
 }
 
@@ -82,28 +81,22 @@ void CFleet::Serialize(CArchive &ar)
 
 // Funktion um ein Schiff aus der Flotte zu entfernen. Das n-te Schiff in der Flotte wird entfernt und
 // von der Funktion zurückgegeben
-CShip CFleet::RemoveShipFromFleet(int n)
+void CFleet::RemoveShipFromFleet(UINT nIndex)
 {
-	if (m_SP.GetSize() <= n)
-	{
-		MYTRACE(MT::LEVEL_ERROR, "CFleet::RemoveShipFromFleet(): Kann nicht auf Schiffselement zugreifen, da Feldindex nicht exisitiert!");
-		exit(1);
-	}
-	CShip tempShip = m_SP.GetAt(n);
-	m_SP.RemoveAt(n);
-	return tempShip;
+	ASSERT(nIndex < (UINT)m_vShips.GetSize());
+	m_vShips.RemoveAt(nIndex);
 }
 
 // Funktion berechnet die Geschwindigkeit der Flotte. Der Parameter der hier übergeben werden sollte
 // ist der this-Zeiger des Schiffsobjektes, welches die Flotte besitzt
-BYTE CFleet::GetFleetSpeed(CShip* ship)
+BYTE CFleet::GetFleetSpeed(const CShip* ship) const
 {
 	BYTE speed = 127;
 	if (ship != 0)
 		speed = ship->GetSpeed();
-	for (int i = 0; i < m_SP.GetSize(); i++)
-		if (m_SP.GetAt(i).GetSpeed() < speed)
-			speed = m_SP.GetAt(i).GetSpeed();
+	for (int i = 0; i < m_vShips.GetSize(); i++)
+		if (m_vShips.GetAt(i).GetSpeed() < speed)
+			speed = m_vShips.GetAt(i).GetSpeed();
 	if (speed == 127)
 		speed = 0;
 	return speed;
@@ -111,14 +104,14 @@ BYTE CFleet::GetFleetSpeed(CShip* ship)
 
 // Funktion berechnet die Reichweite der Flotte. Der Parameter der hier übergeben werden sollte
 // ist der this-Zeiger des Schiffsobjektes, welches die Flotte besitzt
-BYTE CFleet::GetFleetRange(CShip* ship)
+BYTE CFleet::GetFleetRange(const CShip* ship) const
 {
 	BYTE range = 127;
 	if (ship != 0)
 		range = ship->GetRange();
-	for (int i = 0; i < m_SP.GetSize(); i++)
-		if (m_SP.GetAt(i).GetRange() < range)
-			range = m_SP.GetAt(i).GetRange();
+	for (int i = 0; i < m_vShips.GetSize(); i++)
+		if (m_vShips.GetAt(i).GetRange() < range)
+			range = m_vShips.GetAt(i).GetRange();
 	if (range == 127)
 		range = 0;
 	return range;
@@ -128,18 +121,18 @@ BYTE CFleet::GetFleetRange(CShip* ship)
 // dann gibt die Funktion diesen Schiffstyp zurück. Wenn verschiedene Schiffstypen in der Flotte vorkommen,
 // dann liefert und die Funktion ein -1. Der Parameter der hier übergeben werden sollte ist der this-Zeiger
 // des Schiffsobjektes, welches die Flotte besitzt
-short CFleet::GetFleetShipType(CShip* ship)
+short CFleet::GetFleetShipType(const CShip* ship) const
 {
 	short type = ship->GetShipType();	
-	for (int i = 0; i < m_SP.GetSize(); i++)
-		if (m_SP.GetAt(i).GetShipType() != type)
+	for (int i = 0; i < m_vShips.GetSize(); i++)
+		if (m_vShips.GetAt(i).GetShipType() != type)
 			return -1;
 	return type;
 }
 
 // Funktion berechnet die minimale Stealthpower der Flotte. Der Parameter der hier übergeben werden sollte
 // ist der this-Zeiger bzw. die Adresse des Schiffsobjektes, welches die Flotte besitzt
-BYTE CFleet::GetFleetStealthPower(CShip* ship)
+BYTE CFleet::GetFleetStealthPower(const CShip* ship) const
 {
 	BYTE stealthPower = MAXBYTE;
 	if (ship != NULL)
@@ -151,13 +144,13 @@ BYTE CFleet::GetFleetStealthPower(CShip* ship)
 	if (stealthPower == 0)
 		return 0;
 
-	for (int i = 0; i < m_SP.GetSize(); i++)
+	for (int i = 0; i < m_vShips.GetSize(); i++)
 	{
 		if (stealthPower == 0)
 			return 0;
 
-		BYTE fleetStealthPower = m_SP.GetAt(i).GetStealthPower() * 20;
-		if (m_SP.GetAt(i).GetStealthPower() > 3  && m_SP.GetAt(i).GetCloak() == false)
+		BYTE fleetStealthPower = m_vShips.GetAt(i).GetStealthPower() * 20;
+		if (m_vShips.GetAt(i).GetStealthPower() > 3  && m_vShips.GetAt(i).GetCloak() == false)
 			fleetStealthPower = 3 * 20;
 		if (fleetStealthPower < stealthPower)
 			stealthPower = fleetStealthPower;
@@ -167,29 +160,29 @@ BYTE CFleet::GetFleetStealthPower(CShip* ship)
 }
 
 // Funktion übernimmt die Befehle des hier als Zeiger übergebenen Schiffsobjektes an alle Mitglieder der Flotte
-void CFleet::AdoptCurrentOrders(CShip* ship)
+void CFleet::AdoptCurrentOrders(const CShip* ship)
 {
-	for (int i = 0; i < m_SP.GetSize(); i++)
+	for (int i = 0; i < m_vShips.GetSize(); i++)
 	{
 		if (ship->GetCurrentOrder() != ASSIGN_FLAGSHIP && ship->GetCurrentOrder() != TRANSPORT)
 		{
-			m_SP.ElementAt(i).SetCurrentOrder(ship->GetCurrentOrder());			
+			m_vShips.ElementAt(i).SetCurrentOrder(ship->GetCurrentOrder());			
 		}		
-		m_SP.ElementAt(i).SetKO(ship->GetKO());
+		m_vShips.ElementAt(i).SetKO(ship->GetKO());
 		
-		if (m_SP.ElementAt(i).GetTargetKO() != ship->GetTargetKO())
-			m_SP.ElementAt(i).SetTargetKO(ship->GetTargetKO(),0);
+		if (m_vShips.ElementAt(i).GetTargetKO() != ship->GetTargetKO())
+			m_vShips.ElementAt(i).SetTargetKO(ship->GetTargetKO(),0);
 
 		// wenn geterraformt werden soll den Terraformingplaneten neu setzen
 		if (ship->GetCurrentOrder() == TERRAFORM)
-			m_SP.ElementAt(i).SetTerraformingPlanet(ship->GetTerraformingPlanet());
+			m_vShips.ElementAt(i).SetTerraformingPlanet(ship->GetTerraformingPlanet());
 	}
 }
 
 // Diese Funktion liefert TRUE wenn die Flotte den "order" ausführen kann. Als Schiffszeiger muß das Schiff
 // übergeben werden, welches die Flotte beinhaltet. Kann die Flotte den Befehl nicht befolgen liefert die
 // Funktion FALSE zurück
-BOOLEAN CFleet::CheckOrder(CShip* ship, BYTE order)
+BOOLEAN CFleet::CheckOrder(const CShip* ship, BYTE order) const
 {
 /*
 	// Schiffsbefehle
@@ -231,9 +224,9 @@ BOOLEAN CFleet::CheckOrder(CShip* ship, BYTE order)
 		{
 			if (ship->GetStealthPower() < 4)
 				return FALSE;
-			for (int i = 0; i < m_SP.GetSize(); i++)
+			for (int i = 0; i < m_vShips.GetSize(); i++)
 			{
-				if (m_SP.GetAt(i).GetStealthPower() < 4)
+				if (m_vShips.GetAt(i).GetStealthPower() < 4)
 					return FALSE;
 			}
 			// Haben wir bis jetzt kein FALSE zurückgegeben kann sich jedes Schiff in der Flotte tarnen
@@ -246,9 +239,9 @@ BOOLEAN CFleet::CheckOrder(CShip* ship, BYTE order)
 		{
 			if (ship->GetColonizePoints() < 1)
 				return FALSE;
-			for (int i = 0; i < m_SP.GetSize(); i++)
+			for (int i = 0; i < m_vShips.GetSize(); i++)
 			{
-				if (m_SP.GetAt(i).GetColonizePoints() < 1)
+				if (m_vShips.GetAt(i).GetColonizePoints() < 1)
 					return FALSE;
 			}
 			// Haben wir bis jetzt kein FALSE zurückgegeben besitzt jedes Schiff in der Flotte "ColonizePoints"
@@ -261,9 +254,9 @@ BOOLEAN CFleet::CheckOrder(CShip* ship, BYTE order)
 		{
 			if (ship->GetStationBuildPoints() < 1)
 				return FALSE;
-			for (int i = 0; i < m_SP.GetSize(); i++)
+			for (int i = 0; i < m_vShips.GetSize(); i++)
 			{
-				if (m_SP.GetAt(i).GetStationBuildPoints() < 1)
+				if (m_vShips.GetAt(i).GetStationBuildPoints() < 1)
 					return FALSE;
 			}
 			// Haben wir bis jetzt kein FALSE zurückgegeben besitzt jedes Schiff in der Flotte "StationBuildPoints"
@@ -275,9 +268,9 @@ BOOLEAN CFleet::CheckOrder(CShip* ship, BYTE order)
 		{
 			if (ship->HasSpecial(BLOCKADESHIP) == FALSE)
 				return FALSE;
-			for (int i = 0; i < m_SP.GetSize(); i++)
+			for (int i = 0; i < m_vShips.GetSize(); i++)
 			{
-				if (m_SP.GetAt(i).HasSpecial(BLOCKADESHIP) == FALSE)
+				if (m_vShips.GetAt(i).HasSpecial(BLOCKADESHIP) == FALSE)
 					return FALSE;
 			}
 			return TRUE;
@@ -287,21 +280,13 @@ BOOLEAN CFleet::CheckOrder(CShip* ship, BYTE order)
 		{
 			if (ship->GetCloak())
 				return FALSE;
-			for (int i = 0; i < m_SP.GetSize(); i++)
+			for (int i = 0; i < m_vShips.GetSize(); i++)
 			{
-				if (m_SP.GetAt(i).GetCloak())
+				if (m_vShips.GetAt(i).GetCloak())
 					return FALSE;
 			}
 			return TRUE;
 		}
 	}
 	return FALSE;
-}
-
-// Funktion löscht die gesamte Flotte
-void CFleet::DeleteFleet()
-{
-	for (int i = 0; i < m_SP.GetSize(); )
-		m_SP.RemoveAt(i);
-	m_SP.RemoveAll();
 }

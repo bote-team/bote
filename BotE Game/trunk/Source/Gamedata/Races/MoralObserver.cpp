@@ -231,7 +231,7 @@ void CMoralObserver::CalculateEvents(CSystem systems[][STARMAP_SECTORS_VCOUNT], 
 /// Events. Dieser Text ist rassenabhängig und wird von der Funktion zurückgegeben. Als Parameter werden an diese
 /// Funktion das Event <code>event</code> und die Nummer der Majorrace <code>major</code> übergeben. Optional muss
 /// auch ein Textstring <code>param</code> übergeben werden, der in bestimmte Nachrichten eingebaut wird.
-CString CMoralObserver::GenerateText(unsigned short Event, BYTE major, CString param)
+CString CMoralObserver::GenerateText(unsigned short Event, BYTE major, const CString& param) const
 {
 /*	CString textMatrix[][DOMINION] = {
 	// #0	Eliminate an Empire
@@ -524,6 +524,17 @@ CString CMoralObserver::GenerateText(unsigned short Event, BYTE major, CString p
 	*/
 	CString text = m_strTextMatrix[Event][major-1];
 	text.Replace("$param$", param);
+	
+	int nMoralValue = GetMoralValue(major, Event);
+	CString s = "";
+	if (nMoralValue > 0)
+		s.Format(" (+%d)", nMoralValue);
+	else if (nMoralValue < 0)
+		s.Format(" (%d)", nMoralValue);
+	else
+		s = " (+- 0)";
+
+	text += s;
 	return text;
 }
 /*													Fed	Fer	Kli	Rom	Car	Dom

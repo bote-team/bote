@@ -32,7 +32,7 @@ void CGenShipName::Serialize(CArchive &ar)
 	if (ar.IsStoring())
 	{
 		ar << m_mShipNames.size();
-		for (map<CString, vector<CString> >::iterator it = m_mShipNames.begin(); it != m_mShipNames.end(); it++)
+		for (map<CString, vector<CString> >::iterator it = m_mShipNames.begin(); it != m_mShipNames.end(); ++it)
 		{
 			ar << it->first;
 			// nun den Vektor speichern
@@ -42,7 +42,7 @@ void CGenShipName::Serialize(CArchive &ar)
 		}
 
 		ar << m_mUsedNames.size();
-		for (map<CString, vector<CString> >::iterator it = m_mUsedNames.begin(); it != m_mUsedNames.end(); it++)
+		for (map<CString, vector<CString> >::iterator it = m_mUsedNames.begin(); it != m_mUsedNames.end(); ++it)
 		{
 			ar << it->first;
 			// nun den Vektor speichern
@@ -52,7 +52,7 @@ void CGenShipName::Serialize(CArchive &ar)
 		}
 	
 		ar << m_mCounter.size();
-		for (map<CString, USHORT>::const_iterator it = m_mCounter.begin(); it != m_mCounter.end(); it++)
+		for (map<CString, USHORT>::const_iterator it = m_mCounter.begin(); it != m_mCounter.end(); ++it)
 			ar << it->first << it->second;
 	}
 	// wenn geladen wird
@@ -128,7 +128,7 @@ void CGenShipName::Init(CBotf2Doc* pDoc)
 	map<CString, CRace*>* mRaces = pDoc->GetRaceCtrl()->GetRaces();
 	ASSERT(mRaces);
 
-	for (map<CString, CRace*>::const_iterator it = mRaces->begin(); it != mRaces->end(); it++)
+	for (map<CString, CRace*>::const_iterator it = mRaces->begin(); it != mRaces->end(); ++it)
 	{
 		CString sID = it->first;
 		// für jede Rasse dem Counter festlegen

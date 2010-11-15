@@ -83,7 +83,7 @@ namespace network
 
 		RACE m_nClientRace;							///< diesem Client zugeordnetes Volk, zu Beginn <code>RACE_NONE</code>
 		CString m_strClientUserName;				///< Benutzername des Clients
-
+		
 		/// Enthält, nachdem eine <code>CChosenRaces</code>- oder <code>CNextRound</code>-Nachricht
 		/// eingetroffen ist, die Information, welche Völker am Spiel teilnehmen und welche davon von
 		/// einem Client oder vom Server gespielt werden. Der Eintrag mit dem Index <code>i</code> ist dem Volk
@@ -177,7 +177,7 @@ namespace network
 		/// @return Benutzername dieses Clients; <code>""</code>, wenn der Client nicht zu einem Server
 		/// verbunden ist
 		CString GetClientUserName() const {return m_strClientUserName;}
-
+		
 	private:
 		/// Ruft <code>OnClientSocketError()</code> aller Listeners auf.
 		void OnSocketError(int nError);

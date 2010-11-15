@@ -176,7 +176,7 @@ BOOL CBotf2App::InitInstance()
 	// Chatdialog erzeugen
 	m_pChatDlg = new CChatDlg(GetDocument());
 	m_pChatDlg->Create(IDD_CHATDLG);
-	
+
 	return TRUE;
 }
 
@@ -236,7 +236,7 @@ void CBotf2App::OnAppAbout()
 void CBotf2App::OnPreferences()
 {
 	// TODO: Fügen Sie hier Ihren Befehlsbehandlungscode ein.
-	CPreferencesDlg dlg;
+	CPreferencesDlg dlg(true);
 	if (dlg.DoModal() == IDOK)
 		this->GetDocument()->ResetIniSettings();
 }

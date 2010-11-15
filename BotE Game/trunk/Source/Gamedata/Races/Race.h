@@ -118,7 +118,7 @@ public:
 	/// Funktion gibt den diplomatischen Status zu einer anderes Rasse zurück.
 	/// @param sOtherRace andere Rasse
 	/// @return Beziehungswert (0-100)
-	short GetAgreement(const CString& sOtherRace)
+	short GetAgreement(const CString& sOtherRace) const
 	{
 		map<CString, short>::const_iterator it = m_mAgreement.find(sOtherRace);
 		if (it != m_mAgreement.end())

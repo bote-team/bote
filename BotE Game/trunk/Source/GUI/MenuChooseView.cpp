@@ -68,8 +68,7 @@ void CMenuChooseView::OnDraw(CDC* pDC)
 	if (!pMajor)
 		return;
 
-	CRect r;
-	r.SetRect(0, 0, m_TotalSize.cx, m_TotalSize.cy);
+	CRect r(0, 0, m_TotalSize.cx, m_TotalSize.cy);
 
 	// Doublebuffering wird initialisiert
 	CRect client;

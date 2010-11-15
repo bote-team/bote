@@ -1123,7 +1123,7 @@ void CDiplomacyMenuView::DrawDiplomacyOfferMenue(Graphics* g, const CString& sWh
 			// werden die Credits runtergerechnet
 			if (m_OutgoingInfo.m_nType != DIP_REQUEST && m_bShowSendButton && m_OutgoingInfo.m_nCredits > pPlayer->GetEmpire()->GetLatinum())
 			{
-				m_OutgoingInfo.m_nCredits = pPlayer->GetEmpire()->GetLatinum() / 250;
+				m_OutgoingInfo.m_nCredits = max(0, pPlayer->GetEmpire()->GetLatinum() / 250);
 				m_OutgoingInfo.m_nCredits *= 250;
 			}
 			// Balken für Creditgeschenk zeichnen
@@ -1786,7 +1786,7 @@ void CDiplomacyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 						if (m_OutgoingInfo.m_nType != DIP_REQUEST)
 							if (m_OutgoingInfo.m_nCredits > pPlayer->GetEmpire()->GetLatinum())
 							{
-								m_OutgoingInfo.m_nCredits = (USHORT)(pPlayer->GetEmpire()->GetLatinum() / 250);
+								m_OutgoingInfo.m_nCredits = max(0, pPlayer->GetEmpire()->GetLatinum() / 250);
 								m_OutgoingInfo.m_nCredits *= 250;								
 							}
 							Invalidate();

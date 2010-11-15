@@ -232,7 +232,7 @@ void CIntelCalc::ReduceDepotPoints(CMajor* pRace, int perc)
 // private Funktionen
 //////////////////////////////////////////////////////////////////////
 /// Funktion berechnet ob eine Geheimdienstaktion gegen eine andere Rasse erfolgreich verläuft.
-USHORT CIntelCalc::IsSuccess(CMajor* pEnemyRace, UINT ourSP, BOOLEAN isSpy, CMajor* pResponsibleRace, BYTE type)
+USHORT CIntelCalc::IsSuccess(CMajor* pEnemyRace, int ourSP, BOOLEAN isSpy, CMajor* pResponsibleRace, BYTE type)
 {	
 #ifdef TRACE_INTEL
 	MYTRACE(MT::LEVEL_INFO, "CIntelCalc::IsSuccess() begin...\n");
@@ -241,7 +241,7 @@ USHORT CIntelCalc::IsSuccess(CMajor* pEnemyRace, UINT ourSP, BOOLEAN isSpy, CMaj
 	ASSERT(pResponsibleRace);
 	USHORT actions = NULL;
 
-	UINT enemyInnerSec = GetCompleteInnerSecPoints(pEnemyRace);
+	int enemyInnerSec = GetCompleteInnerSecPoints(pEnemyRace);
 		
 #ifdef TRACE_INTEL
 	MYTRACE(MT::LEVEL_INFO, "inner security of %s is %d\n", pEnemyRace, enemyInnerSec);
@@ -1369,7 +1369,7 @@ BOOLEAN CIntelCalc::ExecuteMilitarySabotage(CMajor* pRace, CMajor* pEnemyRace, C
 					if (m_pDoc->m_ShipArray.GetAt(i).GetFleet())
 					{
 						for (int j = 0; j < m_pDoc->m_ShipArray.GetAt(i).GetFleet()->GetFleetSize(); j++)
-							if (m_pDoc->m_ShipArray.GetAt(i).GetFleet()->GetPointerOfShipFromFleet(j)->GetID() == report->GetID())
+							if (m_pDoc->m_ShipArray.GetAt(i).GetFleet()->GetShipFromFleet(j)->GetID() == report->GetID())
 								allShips.Add(CPoint(i,j));
 					}
 					if (m_pDoc->m_ShipArray.GetAt(i).GetID() == report->GetID())
@@ -1385,7 +1385,7 @@ BOOLEAN CIntelCalc::ExecuteMilitarySabotage(CMajor* pRace, CMajor* pEnemyRace, C
 				if (n.y == -1)
 					ship = &m_pDoc->m_ShipArray.GetAt(n.x);
 				else
-					ship = m_pDoc->m_ShipArray.GetAt(n.x).GetFleet()->GetPointerOfShipFromFleet(n.y);
+					ship = m_pDoc->m_ShipArray.GetAt(n.x).GetFleet()->GetShipFromFleet(n.y);
 			}
 			// wurde kein Schiff mehr in diesem Sektor gefunden, sei es da es zerstört wurde oder jetzt in einem anderen
 			// Sektor ist, kann es auch nicht mehr zerstört werden.
@@ -1439,23 +1439,28 @@ BOOLEAN CIntelCalc::ExecuteMilitarySabotage(CMajor* pRace, CMajor* pEnemyRace, C
 					// Wenn das Schiff eine Flotte besaß, so geht die Flotte auf das erste Schiff in der Flotte über
 					if (ship->GetFleet())
 					{
-						CFleet f = *(m_pDoc->m_ShipArray[n.x].GetFleet());
-						// Flotte löschen
-						m_pDoc->m_ShipArray[n.x].GetFleet()->DeleteFleet();
-						m_pDoc->m_ShipArray[n.x].DeleteFleet();
-						// Nun die Flotte auf das nächste Schiff übergeben, dafür das erste Schiff in der Flotte rausnehmen
-						m_pDoc->m_ShipArray.Add(f.RemoveShipFromFleet(0));
+						// Kopie der Flotte holen
+						CFleet* pFleetCopy = ship->GetFleet();
+						// erstes Schiff aus der Flotte holen
+						CShip* pFleetShip = pFleetCopy->GetShipFromFleet(0);
 						// für dieses eine Flotte erstellen
-						m_pDoc->m_ShipArray[m_pDoc->m_ShipArray.GetUpperBound()].CreateFleet();
-						for (USHORT i = 0; i < f.GetFleetSize(); i++)
-							m_pDoc->m_ShipArray[m_pDoc->m_ShipArray.GetUpperBound()].GetFleet()->AddShipToFleet(f.GetShipFromFleet(i));
-						m_pDoc->m_ShipArray[m_pDoc->m_ShipArray.GetUpperBound()].CheckFleet();
+						pFleetShip->CreateFleet();
+						for (USHORT i = 1; i < pFleetCopy->GetFleetSize(); i++)
+							pFleetShip->GetFleet()->AddShipToFleet(pFleetCopy->GetShipFromFleet(i));
+						pFleetShip->CheckFleet();						
+						// neues Flottenschiff dem Array hinzufügen
+						m_pDoc->m_ShipArray.Add(*pFleetShip);
+						// Schiff nochmal neu holen, da der Vektor verändert wurde und so sich auch der Zeiger ändern kann
+						ship = &m_pDoc->m_ShipArray.GetAt(n.x);
+						// Flotte des geklauten Schiffes löschen
+						ship->DeleteFleet();
 					}					
 				}
 				else	// Schiff ist in Flotte
 				{
-					m_pDoc->m_ShipArray.Add(m_pDoc->m_ShipArray.GetAt(n.x).GetFleet()->RemoveShipFromFleet(n.y));
-					m_pDoc->m_ShipArray.GetAt(n.x).CheckFleet();
+					m_pDoc->m_ShipArray.Add(*(ship->GetFleet()->GetShipFromFleet(n.y)));
+					ship->GetFleet()->RemoveShipFromFleet(n.y);
+					ship->CheckFleet();
 				}
 				if (report)
 				{
@@ -1482,28 +1487,7 @@ BOOLEAN CIntelCalc::ExecuteMilitarySabotage(CMajor* pRace, CMajor* pEnemyRace, C
 					m_pDoc->GetCurrentRound(), CResourceManager::GetString("SABOTAGE"), CResourceManager::GetString("DESTROYED"));					
 				if (n.y == -1)		// nicht in Flotte
 				{
-					// das Schiff selbst kann aber eine Flotte anführen
-					// Wenn das Schiff eine Flotte besaß, so geht die Flotte auf das erste Schiff in der Flotte über
-					if (ship->GetFleet())
-					{
-						BYTE oldOrder = m_pDoc->m_ShipArray.GetAt(n.x).GetCurrentOrder();
-						CFleet f = *(m_pDoc->m_ShipArray.GetAt(n.x).GetFleet());
-						// Flotte löschen
-						m_pDoc->m_ShipArray.GetAt(n.x).GetFleet()->DeleteFleet();
-						m_pDoc->m_ShipArray.GetAt(n.x).DeleteFleet();
-						// Nun die Flotte auf das nächste Schiff übergeben, dafür das erste Schiff in der Flotte rausnehmen
-						m_pDoc->m_ShipArray.SetAt(n.x, f.RemoveShipFromFleet(0));
-						// für dieses eine Flotte erstellen
-						m_pDoc->m_ShipArray.GetAt(n.x).CreateFleet();
-						for (USHORT x = 0; x < f.GetFleetSize(); x++)
-							m_pDoc->m_ShipArray.GetAt(n.x).GetFleet()->AddShipToFleet(f.GetShipFromFleet(x));
-						m_pDoc->m_ShipArray.GetAt(n.x).CheckFleet();
-						// Brauchen das alte Schiff hier auch nicht löschen, da es mit einem neuen überschrieben wurde
-						m_pDoc->m_ShipArray.GetAt(n.x).SetCurrentOrder(oldOrder);
-					}
-					// ansonsten kann es einfach gelöscht werden
-					else
-						m_pDoc->m_ShipArray.RemoveAt(n.x);
+					m_pDoc->RemoveShip(n.x);					
 				}
 				else	// Schiff ist in Flotte
 				{
@@ -1883,13 +1867,13 @@ UINT CIntelCalc::GetCompleteInnerSecPoints(CMajor* pEnemyRace)
 	CIntelligence* pIntel = pEnemyRace->GetEmpire()->GetIntelligence();
 
 	// Depot der inneren Sicherheitspunkte + aktuell produzierte Sicherheitspunkte * prozentuale Zuweisung + Bonus auf innere Sicherheit + prozentuale Zuteilung
-	UINT enemyInnerSec = pIntel->GetSecurityPoints() * pIntel->GetAssignment()->GetInnerSecurityPercentage() / 100;
-	// + Bonus auf innere Sicherheit
+	int enemyInnerSec = pIntel->GetSecurityPoints() * pIntel->GetAssignment()->GetInnerSecurityPercentage() / 100;
+	// + Bonus auf innere Sicherheit (Bonus könnte negativ sein, daher nicht unter NULL)
 	enemyInnerSec += enemyInnerSec * pIntel->GetInnerSecurityBoni() / 100;
 	// + prozentuale Zuteilung
 	enemyInnerSec += pIntel->GetAssignment()->GetInnerSecurityPercentage();
 	// + Punkte aus dem Lager (darin ist der Bonus schon vorhanden)
 	enemyInnerSec += pIntel->GetInnerSecurityStorage();
 
-	return enemyInnerSec;
+	return max(0, enemyInnerSec);
 }

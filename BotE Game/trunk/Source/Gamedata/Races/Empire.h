@@ -15,6 +15,10 @@
 #include "Events\EventBombardment.h"
 #include "Events\EventResearch.h"
 #include "Events\EventFirstContact.h"
+#include "Events\EventGameOver.h"
+#include "Events\EventRaceKilled.h"
+#include "Events\EventVictory.h"
+#include "Events\EventCombat.h"
 
 /**
  * Struktur, die die wichtigsten Informationen eines Systems aufnehmen kann. Dies wird benötigt, wenn wir in einer
@@ -25,7 +29,7 @@ struct SystemViewStruct {
 		bool operator> (const SystemViewStruct& elem2) const { return name > elem2.name;}
 
 		SystemViewStruct operator=(const SystemViewStruct &other) {name = other.name; ko = other.ko; return *this;}
-		SystemViewStruct(CString _name, CPoint _ko) : name(_name), ko(_ko) {};
+		SystemViewStruct(const CString& _name, CPoint _ko) : name(_name), ko(_ko) {};
 		SystemViewStruct() : name(""), ko(CPoint(-1,-1)) {};
 
 		CString name;

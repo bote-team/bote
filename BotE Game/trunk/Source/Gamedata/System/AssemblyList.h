@@ -87,12 +87,11 @@ public:
 	void CalculateNeededRessourcesForUpdate(BuildingInfoArray* follower, BuildingArray* m_Buildings, CResearchInfo* ResearchInfo);
 
 	// Funktion	macht einen Eintrag in der Bauliste, dafür wird die RunningNumber des Auftrages übergeben.
-	// z.B. 1 = primitive Farm, -2 = Upgrade primitive Farm zu Typ 1 Automatikfarm. Wenn ein Update gemacht werden
-	// soll muß auch die RunningNumber des Vorgängers übergeben werden.
+	// z.B. 1 = primitive Farm, -2 = Upgrade primitive Farm zu Typ 1 Automatikfarm.
 	// Nachdem wir diese Funktion aufgerufen haben und ein TRUE zurückbekommen haben müssen wir die Funktion 
 	// CalculateVariables() aufgerufen! (Weil wir wenn die Handelsgüter aus der Bauliste verschwinden, sofort das
 	// neue Latinum angezeigt werden soll.)
-	BOOLEAN MakeEntry(int runningNumber, const CPoint &ko, CSystem systems[][STARMAP_SECTORS_VCOUNT]);
+	BOOLEAN MakeEntry(int runningNumber, const CPoint &ko, CSystem systems[][STARMAP_SECTORS_VCOUNT], bool bOnlyTest = false);
 
 	// Funktion berechnet die Kosten des Bauauftrags, wenn man dieses sofort kaufen will. Die Kosten des Sofortkaufes
 	// sind von den Marktpreisen abhängig, daher müssen diese übergeben werden.

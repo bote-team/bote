@@ -14,70 +14,16 @@ CCombatShip::CCombatShip(void)
 	m_byCloak = FALSE;
 	m_byReCloak = FALSE;
 	m_bShootCloaked = FALSE;
+	m_byRetreatCounter = rand()%50 + 100;
+	
+	// Auswirkungen durch Anomalien
+	m_bCanUseShields = TRUE;
+	m_bCanUseTorpedos = TRUE;
+	m_bFasterShieldRecharge = FALSE;	
 }
 
 CCombatShip::~CCombatShip(void)
-{
-	m_pShip = NULL;
-	m_pTarget = NULL;
-	for (int i = 0; i < m_Fire.phaser.GetSize(); )
-		m_Fire.phaser.RemoveAt(i);
-	m_Fire.phaser.RemoveAll();
-	for (int i = 0; i < m_Fire.torpedo.GetSize(); )
-		m_Fire.torpedo.RemoveAt(i);
-	m_Fire.torpedo.RemoveAll();
-	for (int i = 0; i < m_Route.GetSize(); )
-		m_Route.RemoveAt(i);
-	m_Route.RemoveAll();
-}
-
-//////////////////////////////////////////////////////////////////////
-// Kopierkonstruktor
-//////////////////////////////////////////////////////////////////////
-CCombatShip::CCombatShip(const CCombatShip &rhs)
-{
-	m_pShip = rhs.m_pShip;
-	m_KO.x  = rhs.m_KO.x;
-	m_KO.y  = rhs.m_KO.y;
-	m_KO.z  = rhs.m_KO.z;
-	m_iModifier = rhs.m_iModifier;
-	for (int i = 0; i < rhs.m_Fire.phaser.GetSize(); i++)
-		m_Fire.phaser.Add(rhs.m_Fire.phaser.GetAt(i));
-	for (int i = 0; i < rhs.m_Fire.torpedo.GetSize(); i++)
-		m_Fire.torpedo.Add(rhs.m_Fire.torpedo.GetAt(i));
-	m_Fire.phaserIsShooting = rhs.m_Fire.phaserIsShooting;
-	m_byManeuverability = rhs.m_byManeuverability;
-	m_pTarget = rhs.m_pTarget;
-	m_bRegShieldStatus = rhs.m_bRegShieldStatus;
-	m_byCloak = rhs.m_byCloak;
-	m_byReCloak = rhs.m_byReCloak;
-	m_bShootCloaked = rhs.m_bShootCloaked;
-}
-
-//////////////////////////////////////////////////////////////////////
-// Zuweisungsoperator
-//////////////////////////////////////////////////////////////////////
-CCombatShip & CCombatShip::operator=(const CCombatShip & rhs)
-{
-	if (this == &rhs)
-		return *this;
-	m_pShip = rhs.m_pShip;
-	m_KO.x  = rhs.m_KO.x;
-	m_KO.y  = rhs.m_KO.y;
-	m_KO.z  = rhs.m_KO.z;
-	m_iModifier = rhs.m_iModifier;
-	for (int i = 0; i < rhs.m_Fire.phaser.GetSize(); i++)
-		m_Fire.phaser.Add(rhs.m_Fire.phaser.GetAt(i));
-	for (int i = 0; i < rhs.m_Fire.torpedo.GetSize(); i++)
-		m_Fire.torpedo.Add(rhs.m_Fire.torpedo.GetAt(i));
-	m_Fire.phaserIsShooting = rhs.m_Fire.phaserIsShooting;
-	m_byManeuverability = rhs.m_byManeuverability;
-	m_pTarget = rhs.m_pTarget;
-	m_bRegShieldStatus = rhs.m_bRegShieldStatus;
-	m_byCloak = rhs.m_byCloak;
-	m_byReCloak = rhs.m_byReCloak;
-	m_bShootCloaked = rhs.m_bShootCloaked;
-	return *this;
+{	
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -152,7 +98,7 @@ BYTE CCombatShip::GetToHitMali(BYTE Att, BYTE Def)
 	return mali[Def][Att];
 }
 
-//Diese Funktion berechnet den nächsten Punkt auf dem Weg zum Ziel, den das Schiff erreichen wird.
+// Diese Funktion berechnet den nächsten Punkt auf dem Weg zum Ziel, den das Schiff erreichen wird.
 void CCombatShip::CalculateNextPosition()
 {
 	// Firecounter werden hier heruntergezählt. Später sollte wir das erst in der Schadensberechnung machen
@@ -170,68 +116,113 @@ void CCombatShip::CalculateNextPosition()
 	if (m_bShootCloaked == TRUE && m_byCloak > 0)
 		m_byCloak--;
 
-	// Wenn wir noch keine Flugroute berechnet haben
-	if (m_Route.IsEmpty() && this->m_byManeuverability > 0)
+	// Kann das Schiff nicht fliegen, so gibt es keine neue Position
+	if (m_byManeuverability == 0)
+		return;
+
+	// Wenn noch keine Flugroute berechnet wurde
+	if (m_lRoute.size() == 0)
 	{
-		// Wenn wir ein Ziel aufgeschaltet haben
-		if (m_pTarget != NULL)
+		// Angreifen
+		if (m_pShip->GetCombatTactic() == COMBAT_TACTIC_ATTACK)
 		{
-			// unsere aktuelle Position im Raum
-			vec3i a = m_KO;
-			// die Zielposition im Raum
-			vec3i b = m_pTarget->m_KO;
-			// der Abstand zwischen diesen beiden Punkten
-			int distance = a.Distance(b);
-			
-			// Damit die nicht immer auf eine Stelle hängen
-			if (distance <= 10)
+			// Wenn noch kein Ziel aufgeschaltet wurde
+			if (m_pTarget != NULL)
 			{
-				short multi = rand()%2;
-				if (multi == 0)
-					multi = -1;
-				b.x = rand()%200 * multi;
-				b.y = rand()%200 * multi;
-				b.z = rand()%200 * multi;
-				distance = a.Distance(b);
+				// Damit die Schiffe nicht immer auf einer Stelle hängen, wird bei zu kurzer Distanz
+				// ein zufälliges neues Ziel verwendet (minimale Distanz ist 10)
+				CalcRoute(m_pTarget->m_KO, 10);
 			}
 
-			// die Beschleunigung des Schiffes. Bei z.B. einer Manövriebarkeit von 5 wird bei Speed 1 gestartet und dann
-			// immer um 1 erhöht, bis die Speed von 5 erreicht ist. Genauso muss dann auch wieder verlangsamt werden.
-			BYTE speed_up = 0;
-			BYTE speed = this->m_byManeuverability;
-			while (distance >= 1)
-			{
-				// "Bremsweg" berechnen -> speed
-				BYTE speed_up_way = 0;	// Bremsweg, den wir mindst. brauchen um anzuhalten
-				for (int i = speed_up; i > 0; i--)
-					speed_up_way += i;
-				// müssen bremsen
-				if (distance <= speed_up_way && speed_up > 0)
-					speed_up--;
-				// können beschleunigen
-				else if (speed_up < speed)
-					speed_up++;
-				// Wenn unser Schiff weiterfliegen könnte als der Abstand zwischen den Schiffen, dann 
-				// müssen wir die Geschwindigkeit herabsetzen
-				if (speed_up > distance)
-					speed_up = (BYTE)distance;
-								
-				float multi = (float)speed_up / (float)distance;
-				vec3i temp = b - a;
-				// Runden durch floor und +0.5
-				temp.x = (int)(floor)(temp.x * multi + 0.5); temp.y = (int)(floor)(temp.y * multi + 0.5); temp.z = (int)(floor)(temp.z * multi + 0.5);
-				
-				//a = a + (b-a) * (speed_up / distance);
-				a = a + temp;
-				
-				m_Route.Add(a);
-				distance = a.Distance(b);
-				
-				//CString s;
-				//s.Format("Ship: %s\nSpeedUp: %d\nold Pos: %d, %d, %d\nnew Pos: %d, %d, %d\nenemy Pos: %d, %d, %d\nDistance: %d", m_pShip->GetShipClass(), speed_up, m_KO.x, m_KO.y, m_KO.z, a.x, a.y, a.z, b.x, b.y, b.z, distance);
-				//AfxMessageBox(s);
-			}			
+			return;
 		}
+
+		// Meiden
+		if (m_pShip->GetCombatTactic() == COMBAT_TACTIC_AVOID)
+		{
+			// zufällige Zielposition im Raum
+			CalcRoute(m_KO, 100);
+			return;
+		}
+
+		// Rückzug	
+		if (m_pShip->GetCombatTactic() == COMBAT_TACTIC_RETREAT)
+		{
+			// möglichen frühesten Rückzugszeitpunkt runterzählen
+			if (m_byRetreatCounter > 0)
+			{
+				// Zähler runterzählen
+				m_byRetreatCounter--;
+				// Wenn Zähler gleich null ist ein zufälliges Ziel wählen
+				if (m_byRetreatCounter == 0)
+				{
+					// zufällige Zielposition im Raum
+					vec3i b;
+					b.x = rand()%30; b.y = rand()%30; b.z = rand()%30;
+					CalcRoute(b);
+				}
+			}
+			return;
+		}
+	}
+}
+
+// Funktion berechnet die Route zum Ziel
+void CCombatShip::CalcRoute(const vec3i& ptTarget, int nMinDistance/* = 0*/)
+{
+	// unsere aktuelle Position im Raum
+	vec3i a = m_KO;
+	// die Zielposition im Raum
+	vec3i b = ptTarget;
+	// der Abstand zwischen diesen beiden Punkten
+	int distance = a.Distance(b);	
+	
+	if (distance < nMinDistance)
+	{
+		short multi = rand()%2;
+		if (multi == 0)
+			multi = -1;
+		b.x = rand()%200 * multi;
+		b.y = rand()%200 * multi;
+		b.z = rand()%200 * multi;
+		distance = a.Distance(b);
+	}
+
+	// die Beschleunigung des Schiffes. Bei z.B. einer Manövriebarkeit von 5 wird bei Speed 1 gestartet und dann
+	// immer um 1 erhöht, bis die Speed von 5 erreicht ist. Genauso muss dann auch wieder verlangsamt werden.
+	BYTE speed_up = 0;
+	BYTE speed = this->m_byManeuverability;
+	while (distance >= 1)
+	{
+		// "Bremsweg" berechnen -> speed
+		BYTE speed_up_way = 0;	// Bremsweg, den wir mindst. brauchen um anzuhalten
+		for (int i = speed_up; i > 0; i--)
+			speed_up_way += i;
+		// müssen bremsen
+		if (distance <= speed_up_way && speed_up > 0)
+			speed_up--;
+		// können beschleunigen
+		else if (speed_up < speed)
+			speed_up++;
+		// Wenn unser Schiff weiterfliegen könnte als der Abstand zwischen den Schiffen, dann 
+		// müssen wir die Geschwindigkeit herabsetzen
+		if (speed_up > distance)
+			speed_up = (BYTE)distance;
+						
+		float multi = (float)speed_up / (float)distance;
+		vec3i temp = b - a;
+		// Runden durch floor und +0.5
+		temp.x = (int)(floor)(temp.x * multi + 0.5); temp.y = (int)(floor)(temp.y * multi + 0.5); temp.z = (int)(floor)(temp.z * multi + 0.5);
+		
+		//a = a + (b-a) * (speed_up / distance);
+		a = a + temp;
+		
+		m_lRoute.push_back(a);
+		distance = a.Distance(b);
+		
+		//CString s;
+		//s.Format("Ship: %s\nSpeedUp: %d\nold Pos: %d, %d, %d\nnew Pos: %d, %d, %d\nenemy Pos: %d, %d, %d\nDistance: %d", m_pShip->GetShipClass(), speed_up, m_KO.x, m_KO.y, m_KO.z, a.x, a.y, a.z, b.x, b.y, b.z, distance);
+		//AfxMessageBox(s);
 	}
 }
 
@@ -239,17 +230,17 @@ void CCombatShip::CalculateNextPosition()
 void CCombatShip::GotoNextPosition()
 {
 	// Wenn wir schon eine Route berechnet haben, dann nur auf den nächsten Punkt in der Route gehen
-	if (!m_Route.IsEmpty())
+	if (m_lRoute.size())
 	{
-		m_KO = m_Route.GetAt(0);
+		m_KO = m_lRoute.front();
 		// Routeneintrag entfernen
-		m_Route.RemoveAt(0);
+		m_lRoute.pop_front();
 	}
 }
 
 // Diese Funktion führt einen Beamangriff gegen das Ziel durch, welches in der Variablen <code>m_pTarget<code>
 // gespeichert ist
-CPoint CCombatShip::AttackEnemyWithBeam(CPoint beamStart)
+CPoint CCombatShip::AttackEnemyWithBeam(const CPoint& beamStart)
 {
 	// Wenn wir ein Ziel aufgeschaltet haben
 	if (m_pTarget != NULL)
@@ -261,9 +252,17 @@ CPoint CCombatShip::AttackEnemyWithBeam(CPoint beamStart)
 		{
 			// Bonus durch Schiffsspezialeigenschaften besorgen
 			BYTE boni = GetAccBoniFromSpecials();
-			// alle Beamwaffen durchgehen
-			for (int i = beamStart.x; i < m_pShip->GetBeamWeapons()->GetSize(); i++)
-			{				
+			int nBeamWeapon = beamStart.x;
+			int nBeamRay	= beamStart.y;			
+			// alle Beamwaffen durchgehen			
+			for (int i = nBeamWeapon; i < m_pShip->GetBeamWeapons()->GetSize(); i++)
+			{	
+				if (nBeamRay >= m_pShip->GetBeamWeapons()->GetAt(i).GetBeamNumber())
+				{
+					nBeamRay = 0;
+					continue;
+				}
+
 				// Solange der Counter größer als die Rechargetime ist wird geschossen. Dann wird diese runtergezählt.
 				if (m_Fire.phaser[i] > m_pShip->GetBeamWeapons()->GetAt(i).GetRechargeTime() || m_Fire.phaser[i] == NULL)
 				{
@@ -279,8 +278,7 @@ CPoint CCombatShip::AttackEnemyWithBeam(CPoint beamStart)
 								m_Fire.phaser[i] = m_pShip->GetBeamWeapons()->GetAt(i).GetRechargeTime() + m_pShip->GetBeamWeapons()->GetAt(i).GetBeamLenght();
 							// Hier den Schaden für jeden Beamstrahl einzeln berechnen. Also die Schleife gleich der Anzahl der
 							// Beamstrahlen der Beamwaffe durchlaufen
-							int ray = beamStart.y;
-							while (ray++ < m_pShip->GetBeamWeapons()->GetAt(i).GetBeamNumber())
+							while (nBeamRay++ < m_pShip->GetBeamWeapons()->GetAt(i).GetBeamNumber())
 							{
 								m_Fire.phaserIsShooting = FALSE;
 
@@ -292,21 +290,17 @@ CPoint CCombatShip::AttackEnemyWithBeam(CPoint beamStart)
 								// ------------------------------------------
 								// Ende der besonderen Darstellung
 
+								// Angriff und Schadensberechnung
+								FireBeam(i, distance, boni);
+								
 								// Wenn das Ziel keine Hülle mehr hat, dann geben wir die aktuelle Nummer des Beams zurück.
 								// Dies bedeutet, das wir kein Ziel mehr haben und uns ein neues suchen müssen. Bei der aktuellen
 								// Nummer des Beams geht dann die Berechnung weiter
 								if (m_pTarget->m_pShip->GetHull()->GetCurrentHull() == 0)
-								{
-									m_pTarget = NULL;
-									for (int t = 0; t < m_Fire.phaser.GetSize(); t++)
-										if (m_Fire.phaser[t] > m_pShip->GetBeamWeapons()->GetAt(t).GetRechargeTime())
-											m_Fire.phaser[t] = m_pShip->GetBeamWeapons()->GetAt(t).GetRechargeTime();
-									return CPoint(i,ray);
-								}
-								
-								// Angriff und Schadensberechnung
-								FireBeam(i, distance, boni);							
+									return CPoint(i, nBeamRay);								
 							}
+							// bei der nächsten Waffe kann wieder mit dem ersten Strahl geschossen werden
+							nBeamRay = 0;
 						}
 					}
 				}
@@ -318,7 +312,7 @@ CPoint CCombatShip::AttackEnemyWithBeam(CPoint beamStart)
 
 // Diese Funktion führt einen Torpedoangriff gegen das Ziel durch, welches in der Variablen <code>m_pTarget</code>
 // gespeichert ist
-CPoint CCombatShip::AttackEnemyWithTorpedo(CombatTorpedos* CT, CPoint torpedoStart)
+CPoint CCombatShip::AttackEnemyWithTorpedo(std::list<CTorpedo*>* pCT, const CPoint& torpedoStart)
 {
 	// Wenn wir ein Ziel aufgeschaltet haben
 	if (m_pTarget != NULL)
@@ -352,10 +346,10 @@ CPoint CCombatShip::AttackEnemyWithTorpedo(CombatTorpedos* CT, CPoint torpedoSta
 						USHORT route = 0;
 						do {
 							// Hat unser Ziel eine Route gespeichert?
-							if (m_pTarget->m_Route.GetSize() > route)
+							if (m_pTarget->m_lRoute.size() > route)
 							{
-								distance = m_KO.Distance(m_pTarget->m_Route.GetAt(route));
-								targetKO = m_pTarget->m_Route.GetAt(route);
+								distance = m_KO.Distance(m_pTarget->m_lRoute.at(route));
+								targetKO = m_pTarget->m_lRoute.at(route);
 								route++;
 							}
 							else
@@ -382,7 +376,7 @@ CPoint CCombatShip::AttackEnemyWithTorpedo(CombatTorpedos* CT, CPoint torpedoSta
 								//if (damage > ((m_pTarget->m_pShip->GetShield()->GetCurrentShield() 
 								//	+ m_pTarget->m_pShip->GetHull()->GetCurrentHull()) * 1.5))
 								//	return CPoint(i,n);
-								damage += FireTorpedo(CT, i, targetKO, boni);					
+								damage += FireTorpedo(pCT, i, targetKO, boni);					
 							}
 
 							//CString s;
@@ -473,9 +467,9 @@ bool CCombatShip::AllowFire(const CFireArc* arc)
 	vec3<float> v;
 	// Besitzt das Schiff eine Flugroute, so ist dessen Ausrichtung der Vektor zwischen aktueller Position und dem
 	// nächsten Punkt auf der Flugroute
-	if (m_Route.GetSize())
+	if (m_lRoute.size())
 	{
-		vec3i p = m_Route[0] - m_KO;
+		vec3i p = m_lRoute[0] - m_KO;
 		v.Set((float)p.x, (float)p.y, (float)p.z);
 		v /= v.Length();
 	}
@@ -697,8 +691,8 @@ void CCombatShip::FireBeam(int beamWeapon, int distance, BYTE boni)
 								
 	// der restliche Beamschaden ermitteln, welcher nicht direkt auf die Hülle ging
 	beamDamage -= toHull;
-	// Der komplette Schaden geht auf die Schilde
-	if ((int)m_pTarget->m_pShip->GetShield()->GetCurrentShield() - beamDamage >= 0)
+	// Der komplette Schaden geht auf die Schilde (wenn diese verwendet werden können)
+	if ((int)m_pTarget->m_pShip->GetShield()->GetCurrentShield() - beamDamage >= 0 && m_bCanUseShields)
 		m_pTarget->m_pShip->GetShield()->SetCurrentShield((int)m_pTarget->m_pShip->GetShield()->GetCurrentShield()-beamDamage);
 	// Der Schaden geht teilweise auf Schilde und Hülle oder nur auf die Hülle
 	else
@@ -724,7 +718,7 @@ void CCombatShip::FireBeam(int beamWeapon, int distance, BYTE boni)
 // @param targetKO Zielkoordinate des Torpedos
 // @param boni Bonus durch Schiffseigenschaften
 // @return maximal zu erwartender Schaden
-UINT CCombatShip::FireTorpedo(CombatTorpedos* CT, int torpedoWeapon, vec3i targetKO, BYTE boni)
+UINT CCombatShip::FireTorpedo(std::list<CTorpedo*>* pCT, int torpedoWeapon, const vec3i& targetKO, BYTE boni)
 {
 	m_bShootCloaked = TRUE;
 	m_Fire.torpedo[torpedoWeapon] = m_pShip->GetTorpedoWeapons()->GetAt(torpedoWeapon).GetTupeFirerate();
@@ -739,7 +733,7 @@ UINT CCombatShip::FireTorpedo(CombatTorpedos* CT, int torpedoWeapon, vec3i targe
 	torpedo->m_byManeuverability = this->m_byManeuverability;
 	torpedo->m_iModi = GetCrewExperienceModi() + m_pShip->GetTorpedoWeapons()->GetAt(torpedoWeapon).GetAccuracy() + boni;
 	// Torpedo dem Torpdofeld hinzufügen
-	CT->Add(torpedo);
+	pCT->push_back(torpedo);
 	
 	return torpedo->m_iPower * torpedo->m_iNumber;	
 }

@@ -79,7 +79,7 @@ private:
 	/// @param pResponsibleRace Rasse von welcher <code>pEnemyRace</code> denkt sie habe die Geheimdiestaktion gestartet. <code>NOBODY</code> wenn Agressor unbekannt
 	/// @param type Typ der Aktion -> Wirtschaft == 0, Forschung == 1, Militär == 2, Diplomatie == 3
 	/// @return Anzahl der zu startenden Geheimdienstaktionen (<code>NULL</code> bedeutet keine Aktion möglich)
-	USHORT IsSuccess(CMajor* pEnemyRace, UINT ourSP, BOOLEAN isSpy, CMajor* pResponsibleRace, BYTE type);
+	USHORT IsSuccess(CMajor* pEnemyRace, int ourSP, BOOLEAN isSpy, CMajor* pResponsibleRace, BYTE type);
 
 	/// Funktion entfernt die durch eine Geheimdienstaktion verbrauchten Punkte auf Seiten des Geheimdienstopfers und
 	/// auf Seiten des Geheimdienstagressors.

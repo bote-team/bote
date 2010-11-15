@@ -31,11 +31,11 @@ public:
 
 	/// Funktion legt die Überschrift der diplomatischen Nachricht fest
 	/// @param text Text
-	static void SetHeadLine(CString text) {m_strHeadLine = text;}
+	static void SetHeadLine(const CString& text) {m_strHeadLine = text;}
 
 	/// Funktion legt den Nachrichtentext der diplomatischen Nachricht fest
 	/// @param text Text
-	static void SetText(CString text) {m_strText = text;}
+	static void SetText(const CString& text) {m_strText = text;}
 
 	/// Funktion gibt die Nachrichtenüberschrift zurück.
 	/// @return Überschrift

@@ -118,11 +118,12 @@ void CWeaponObserver::Serialize(CArchive &ar)
 
 // Funktion gibt uns den maximal baubaren Typ einer Beamwaffe zurück. Dafür übergeben wir der Funktion
 // den Namen der Beamwaffe. Ist der Rückgabewert NULL, so können wir den Typ nicht bauen
-BYTE CWeaponObserver::GetMaxBeamType(CString NameOfBeamWeapon)
+BYTE CWeaponObserver::GetMaxBeamType(const CString& NameOfBeamWeapon) const
 {
 	for (int i = 0; i < m_BeamWeapons.GetSize(); i++)
 		if (m_BeamWeapons.GetAt(i).WeaponName == NameOfBeamWeapon)
 			return m_BeamWeapons.GetAt(i).maxLevel;
+	
 	return 0;
 }
 
@@ -199,7 +200,7 @@ void CWeaponObserver::CheckTorpedoWeapons(CShipInfo* info)
 
 // Funktion sucht einen weiteren baubaren Torpedo und übernimmt dafür den aktuell angebauten Torpedotyp und
 // ob der aktuelle Werfer nur Micro-Torpedos verschießen kann
-BYTE CWeaponObserver::GetNextTorpedo(BYTE currentTorpedoType, BOOLEAN onlyMicroTupe)
+BYTE CWeaponObserver::GetNextTorpedo(BYTE currentTorpedoType, BOOLEAN onlyMicroTupe) const
 {
 	int i = currentTorpedoType + 1;
 	if (i == DIFFERENT_TORPEDOS)
@@ -226,7 +227,7 @@ BYTE CWeaponObserver::GetNextTorpedo(BYTE currentTorpedoType, BOOLEAN onlyMicroT
 
 // Funktion sucht einen weiteren Torpedowerfer, denn wir an das Schiff montieren können und übernimmt dafür
 // den Namen des aktuell angebauten Werfers und den aktuell angebauten Torpedotyp
-TupeWeaponsObserverStruct CWeaponObserver::GetNextTupe(CString currentTupeName, BYTE currentTorpedoType)
+TupeWeaponsObserverStruct CWeaponObserver::GetNextTupe(const CString& currentTupeName, BYTE currentTorpedoType) const
 {
 	TupeWeaponsObserverStruct twos;
 	USHORT count = 0;

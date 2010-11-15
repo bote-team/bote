@@ -11,9 +11,11 @@
 #include <map>
 #include <vector>
 #include <set>
+#include <list>
 
 // forward declaration
 class CRace;
+class CAnomaly;
 
 class CCombat :	public CObject
 {
@@ -33,7 +35,7 @@ public:
 	* <code>ships<code>. Diese Schiffe werden dann am Kampf teilnehmen. Kommt es zu einem Kampf, so muß 
 	* diese Funktion zu allererst aufgerufen werden.
 	*/
-	void SetInvolvedShips(CArray<CShip*,CShip*>* ships, std::map<CString, CRace*>* pmRaces);
+	void SetInvolvedShips(CArray<CShip*>* pvShips, std::map<CString, CRace*>* pmRaces, const CAnomaly* pAnomaly);
 	
 	/**
 	* Diese Funktion setzt die gewählte Schiffsformation der Rasse <code>race<code> fest.
@@ -60,6 +62,18 @@ public:
 	void CalculateCombat(std::map<CString, BYTE>& winner);
 
 	/**
+	* Funktion zum Berechnen der groben prozentualen Siegchance einer Rasse. Die Siegchance liegt zwischen 0 und 1.
+	*/
+	static double GetWinningChance(const CRace* pOurRace, const CArray<CShip*>& vInvolvedShips, const std::map<CString, CRace*>* pmRaces, std::set<const CRace*>& sFriends, std::set<const CRace*>& sEnemies);
+	
+	/**
+	* Funktion überprüft, ob die Rassen in einem Kampf sich gegeneinander aus diplomatischen Gründen
+	* überhaupt attackieren. Die Funktion gibt <code>TRUE</code> zurück, wenn sie sich angreifen können,
+	* ansonsten gibt sie <code>FALSE</code> zurück.
+	*/
+	static bool CheckDiplomacyStatus(const CRace* raceA, const CRace* raceB);
+
+	/**
 	* Diese Funktion setzt alle Variablen des Combat-Objektes wieder auf ihre Ausgangswerte
 	*/
 	void Reset();
@@ -79,7 +93,7 @@ private:
 
 	/// Das dynamische Feld in denen alle am Kampf abgefeuerten und noch vorhandenen Torpedos
 	/// mit allen dazughörigen Informationen abegelegt sind
-	CombatTorpedos m_CT;
+	std::list<CTorpedo*> m_CT;
 	
 	/// Sind alle Vorbereitungen für eine Kampfberechnungen abgeschlossen
 	BOOLEAN m_bReady;
@@ -100,21 +114,14 @@ private:
 	* Diese Funktion versucht dem i-ten Schiff im Feld <code>m_CS<code> ein Ziel zu geben. Wird dem Schiff ein Ziel
 	* zugewiesen gibt die Funktion TRUE zurück, findet sich kein Ziel mehr gibt die Funktion FALSE zurück.
 	*/	
-	BOOLEAN SetTarget(int i);
+	bool SetTarget(int i);		
 
 	/**
-	* Diese private Funktion überprüft, ob das Schiff an der Stelle <code>i<code> im Feld <code>m_CS<code> noch am
-	* Leben ist, also ob es noch eine positive Hülle besitzt. Falls dies nicht der Fall sein sollte, dann
-	* unternimmt diese Funktion alle Arbeiten die anfallen, um dieses Schiff aus dem Feld zu entfernen.
-	* D.h. mögliche Ziele werden verändert, Zeiger neu zugeweisen usw. Wenn das Schiff zerstört ist gibt diese
-	* Funktion FALSE zurück, ansonsten TRUE.
+	* Diese private Funktion überprüft, ob das Schiff an der Stelle <code>i<code> im Feld <code>m_CS<code> weiterhin
+	* am Kampf teilnehmen kann. Ist das Schiff entweder zerstört oder hat sich erfolgreich Zurückgezogen, so kann es
+	* nicht weiter am Kampf teilnehmen. In diesem Fall unternimmt diese Funktion alle Arbeiten die anfallen,
+	* um dieses Schiff aus dem Feld zu entfernen. D.h. mögliche Ziele werden verändert, Zeiger neu zugeweisen usw.
+	* Wenn das Schiff nicht mehr im Kampf ist gibt die Funktion FALSE zurück, ansonsten TRUE.
 	*/
-	BOOLEAN CheckShipLife(int i);
-
-	/**
-	* Funktion überprüft, ob die Rassen in einem Kampf sich gegeneinander aus diplomatischen Gründen
-	* überhaupt attackieren. Die Funktion gibt <code>TRUE</code> zurück, wenn sie sich angreifen können,
-	* ansonsten gibt sie <code>FALSE</code> zurück.
-	*/
-	BOOLEAN CheckDiplomacyStatus(CRace* raceA, CRace* raceB);
+	bool CheckShipStayInCombat(int i);	
 };

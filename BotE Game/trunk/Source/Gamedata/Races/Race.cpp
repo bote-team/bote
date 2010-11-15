@@ -340,5 +340,6 @@ void CRace::SetIsRaceContacted(const CString& sRace, bool bKnown)
 	}
 
 	// soll die Rasse hinzugefügt werden, ist aber noch nicht im Vektor. Dann einfach anhängen
-	m_vInContact.insert(sRace);
+	if (bKnown)
+		m_vInContact.insert(sRace);
 }

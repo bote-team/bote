@@ -246,7 +246,7 @@ void CTrade::CalculatePrices(map<CString, CMajor*>* pmMajors, CMajor* pCurMajor)
 	{
 		newPrices[j] = pCurMajor->GetTrade()->GetRessourcePrice()[j];	// mit eigenem Preis initialisieren
 		USHORT count = 1;						// Zählvariable
-		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 			if (it->first != pCurMajor->GetRaceID() && pCurMajor->IsRaceContacted(it->first))
 			{
 				CMajor* pMajor = it->second;

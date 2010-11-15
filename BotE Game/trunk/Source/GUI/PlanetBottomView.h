@@ -36,15 +36,13 @@ private:
 	// Funktionen
 
 	// Attribute
-	CRect* m_arroundThePlanets;	
+	vector<CRect> m_vPlanetRects;	///< Rechteck um die Planeten um Mausaktionen prüfen zu können
 
 protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
-public:
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
-public:
 	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
 };
 

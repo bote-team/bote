@@ -29,7 +29,7 @@ struct TORPEDOINFO
 	USHORT		nDmg;			///< die Stärke eines Torpedos
 	int			nSpecials;		///< Spezialeigenschaften (bitweise gespeichert)
 	
-	TORPEDOINFO(CString _sName, USHORT _nDmg, int _nSpecials = NO_SPECIAL)
+	TORPEDOINFO(const CString& _sName, USHORT _nDmg, int _nSpecials = NO_SPECIAL)
 	{
 		sName		= _sName;
 		nDmg		= _nDmg;

@@ -8,7 +8,6 @@
 #include "Races\RaceController.h"
 
 // CIntelMenuView
-
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
@@ -19,7 +18,6 @@ IMPLEMENT_DYNCREATE(CIntelMenuView, CMainBaseView)
 
 CIntelMenuView::CIntelMenuView()
 {
-
 }
 
 CIntelMenuView::~CIntelMenuView()
@@ -41,6 +39,10 @@ BEGIN_MESSAGE_MAP(CIntelMenuView, CMainBaseView)
 	ON_WM_KEYDOWN()
 END_MESSAGE_MAP()
 
+void CIntelMenuView::OnNewRound()
+{
+	memset(m_bSortDesc, true, sizeof(bool) * 4);
+}
 
 // CIntelMenuView drawing
 
@@ -134,7 +136,8 @@ void CIntelMenuView::OnInitialUpdate()
 
 	// Geheimdienstansicht
 	m_bySubMenu = 0;
-	m_sActiveIntelRace = "";	
+	m_sActiveIntelRace = "";
+	memset(m_bSortDesc, true, sizeof(bool) * 4);
 }
 
 BOOL CIntelMenuView::OnEraseBkgnd(CDC* pDC)
@@ -420,7 +423,7 @@ void CIntelMenuView::DrawIntelSpyMenu(Graphics* g)
 			race = pActiveRace->GetEmpireNameWithArticle();
 		sPerc.Format("%d", pIntel->GetSPStorage(0, m_sActiveIntelRace));
 		fontFormat.SetFormatFlags(!StringFormatFlagsNoWrap);
-		s = CResourceManager::GetString("USE_SP_FROM_DEPOT", FALSE, s, race);
+		s = CResourceManager::GetString("USE_SP_FROM_DEPOT", FALSE, sPerc, race);
 		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(150,550,625,100), &fontFormat, &fontBrush);
 		fontFormat.SetFormatFlags(StringFormatFlagsNoWrap);
 	}
@@ -594,7 +597,7 @@ void CIntelMenuView::DrawIntelSabotageMenu(Graphics* g)
 			race = pActiveRace->GetEmpireNameWithArticle();
 		sPerc.Format("%d", pIntel->GetSPStorage(1, m_sActiveIntelRace));
 		fontFormat.SetFormatFlags(!StringFormatFlagsNoWrap);
-		s = CResourceManager::GetString("USE_SP_FROM_DEPOT", FALSE, s, race);
+		s = CResourceManager::GetString("USE_SP_FROM_DEPOT", FALSE, sPerc, race);
 		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(150,550,625,100), &fontFormat, &fontBrush);
 		fontFormat.SetFormatFlags(StringFormatFlagsNoWrap);
 	}
@@ -1467,35 +1470,52 @@ void CIntelMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		CRect r;
 		r.SetRect(0,0,m_TotalSize.cx,m_TotalSize.cy);
 		// Wurde auf eine Tabellenüberschrift geklickt, um die Berichte zu sortieren.
-	/*	if (CRect(r.left+100,r.top+100,r.left+200,r.top+130).PtInRect(point))
+		if (CRect(r.left+100,r.top+100,r.left+200,r.top+130).PtInRect(point))
 		{
 			// Sortierung der Berichte nach der Runde
-			c_arraysort<CArray<CIntelObject*>, CIntelObject*>(*(pMajor->GetEmpire()->GetIntelligence()->GetIntelReports()->GetAllReports()), CIntelObject::sort_by_round);
+			if (m_bSortDesc[0])
+				c_arraysort<CObArray, CIntelObject*>(*(pMajor->GetEmpire()->GetIntelligence()->GetIntelReports()->GetAllReports()), CIntelObject::sort_by_round_desc);
+			else
+				c_arraysort<CObArray, CIntelObject*>(*(pMajor->GetEmpire()->GetIntelligence()->GetIntelReports()->GetAllReports()), CIntelObject::sort_by_round_asc);
+			m_bSortDesc[0] = !m_bSortDesc[0];
 			Invalidate(FALSE);
 			return;
 		}
+		
 		else if (CRect(r.left+200,r.top+100,r.left+600,r.top+130).PtInRect(point))
 		{
 			// Sortierung der Berichte nach dem Gegner
-			c_arraysort<CArray<CIntelObject*>, CIntelObject*>(*(pMajor->GetEmpire()->GetIntelligence()->GetIntelReports()->GetAllReports()), CIntelObject::sort_by_enemy);
+			if (m_bSortDesc[1])
+				c_arraysort<CObArray, CIntelObject*>(*(pMajor->GetEmpire()->GetIntelligence()->GetIntelReports()->GetAllReports()), CIntelObject::sort_by_enemy_desc);
+			else
+				c_arraysort<CObArray, CIntelObject*>(*(pMajor->GetEmpire()->GetIntelligence()->GetIntelReports()->GetAllReports()), CIntelObject::sort_by_enemy_asc);
+			m_bSortDesc[1] = !m_bSortDesc[1];
 			Invalidate(FALSE);
 			return;
 		}
 		else if (CRect(r.left+600,r.top+100,r.left+800,r.top+130).PtInRect(point))
 		{
 			// Sortierung der Berichte nach der Art (Spionage/Sabotage)
-			c_arraysort<CArray<CIntelObject*>, CIntelObject>(*(pMajor->GetEmpire()->GetIntelligence()->GetIntelReports()->GetAllReports()), CIntelObject::sort_by_kind);
+			if (m_bSortDesc[2])
+				c_arraysort<CObArray, CIntelObject*>(*(pMajor->GetEmpire()->GetIntelligence()->GetIntelReports()->GetAllReports()), CIntelObject::sort_by_kind_desc);
+			else
+				c_arraysort<CObArray, CIntelObject*>(*(pMajor->GetEmpire()->GetIntelligence()->GetIntelReports()->GetAllReports()), CIntelObject::sort_by_kind_asc);
+			m_bSortDesc[2] = !m_bSortDesc[2];
 			Invalidate(FALSE);
 			return;
 		}
 		else if (CRect(r.left+800,r.top+100,r.left+1000,r.top+130).PtInRect(point))
 		{
 			// Sortierung der Berichte nach dem Typ (Wirtschaft, Forschung...)
-			c_arraysort<CArray<CIntelObject*>, CIntelObject>(*(pMajor->GetEmpire()->GetIntelligence()->GetIntelReports()->GetAllReports()), CIntelObject::sort_by_type);
+			if (m_bSortDesc[3])
+				c_arraysort<CObArray, CIntelObject*>(*(pMajor->GetEmpire()->GetIntelligence()->GetIntelReports()->GetAllReports()), CIntelObject::sort_by_type_desc);
+			else
+				c_arraysort<CObArray, CIntelObject*>(*(pMajor->GetEmpire()->GetIntelligence()->GetIntelReports()->GetAllReports()), CIntelObject::sort_by_type_asc);
+			m_bSortDesc[3] = !m_bSortDesc[3];
 			Invalidate(FALSE);
 			return;
 		}
-*/
+
 		// Wenn wir auf einen Bericht geklickt haben, diese Markieren
 		unsigned short j = 0;
 		short counter = pMajor->GetEmpire()->GetIntelligence()->GetIntelReports()->GetActiveReport() - 20 + m_iOldClickedIntelReport;

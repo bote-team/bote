@@ -38,7 +38,7 @@ public:
 	UINT GetMaxHull() const {return m_iMaxHull;}
 	BYTE GetHullMaterial() const {return m_iHullMaterial;}
 	
-	void SetCurrentHull(int add);
+	void SetCurrentHull(int add, bool bIgnoreHullSpecials = false);
 
 	void ModifyHull(BOOLEAN DoubleHull, UINT BaseHull, BYTE HullMaterial, BOOLEAN Ablative, BOOLEAN Polarisation);
 

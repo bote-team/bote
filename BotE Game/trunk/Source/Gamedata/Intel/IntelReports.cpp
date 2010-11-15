@@ -113,3 +113,11 @@ void CIntelReports::SetActiveReport(short n)
 	else
 		m_nActiveReport = m_IntelObjects.GetUpperBound();
 }
+
+void CIntelReports::SortAllReports(bool bDesc/* = true*/)
+{
+	if (bDesc)
+		c_arraysort<CObArray, CIntelObject*>(m_IntelObjects, sort_pdesc);
+	else
+		c_arraysort<CObArray, CIntelObject*>(m_IntelObjects, sort_pasc);
+}

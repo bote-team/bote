@@ -5,6 +5,7 @@
 #include "stdafx.h"
 #include "Starmap.h"
 #include "Galaxy\Sector.h"
+#include "Galaxy\Anomaly.h"
 #include <math.h>
 
 #ifdef _DEBUG
@@ -12,6 +13,10 @@
 static char THIS_FILE[]=__FILE__;
 #define new DEBUG_NEW
 #endif
+
+
+// statische Variablen initialisieren
+double CStarmap::m_BadMapModifiers[STARMAP_SECTORS_HCOUNT][STARMAP_SECTORS_VCOUNT];
 
 /**
  * @return <code>-1</code> wenn <code>x &lt; 0</code>, <code>0</code> wenn <code>x == 0</code>, <code>1</code> wenn <code>x &gt; 0</code>
@@ -182,6 +187,16 @@ void CStarmap::SynchronizeWithMap(CSector sectors[][STARMAP_SECTORS_VCOUNT], std
 					m_Range[x][y] = 0;
 }
 
+// Führt für gefährliche Anomalien mathematische Gewichte hinzu, so dass dieser Sektor bei der automatischen
+// Wegsuche nicht überflogen wird. Außerdem wird solch ein Sektor auch nicht für einen Außenpostenbau bestimmt.
+void CStarmap::SynchronizeWithAnomalies(CSector sectors[][STARMAP_SECTORS_VCOUNT])
+{
+	for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
+		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
+			if (sectors[x][y].GetAnomaly())
+				m_BadMapModifiers[x][y] = sectors[x][y].GetAnomaly()->GetWaySearchWeight();		
+}
+
 void CStarmap::ClearAll()
 {
 	// m_Range komplett mit RANGE_SPACE füllen
@@ -293,6 +308,9 @@ Sector CStarmap::CalcPath(const Sector &pos, const Sector &target, unsigned char
 				// kann der Nachbar über next auf einem kürzeren Weg als bisher erreicht werden,
 				// dann die bisherige Info überschreiben
 				double distance = next->distance + ((i % 2) ? WEIGHT_DIR : WEIGHT_DIAG);
+				// Anomalien beachten
+				distance += m_BadMapModifiers[next->position.x][next->position.y];				
+				
 				if (neighb->distance == 0. || distance < neighb->distance)
 				{
 					// (distance ist für alle anderen Sektoren außer dem Start-Sektor > 0.,
@@ -331,7 +349,7 @@ Sector CStarmap::CalcPath(const Sector &pos, const Sector &target, unsigned char
 		path[idx] = next;
 		next = pathMap[next.x][next.y].parent;
 	}
-	ASSERT(idx == -1);
+	ASSERT(idx == -1);	
 
 	// entsprechend speed den nächsten Knoten des Weges zurückgeben; bzw. den Zielknoten,
 	// wenn der Weg kürzer ist
@@ -780,6 +798,7 @@ void CStarmap::SetBadAIBaseSectors(CSector sectors[][STARMAP_SECTORS_VCOUNT], co
 		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
 			if (m_Range[x][y] >= m_nAIRange)
 			{
+				double dValue = 0.0;
 				if (sectors[x][y].GetOwnerOfSector() == race || sectors[x][y].GetOwnerOfSector() == "")
 				{
 					int number = 0;
@@ -789,10 +808,18 @@ void CStarmap::SetBadAIBaseSectors(CSector sectors[][STARMAP_SECTORS_VCOUNT], co
 							if (y + j > -1 && y + j < STARMAP_SECTORS_VCOUNT && x + i > -1 && x + i < STARMAP_SECTORS_HCOUNT)
 								if (sectors[x+i][y+j].GetOwnerOfSector() != race && sectors[x+i][y+j].GetOwnerOfSector() != "")
 									number++;
-					m_AIBadPoints[x][y] += (50 * number);
+					dValue += (50.0 * number);
 				}
 				else
-					m_AIBadPoints[x][y] += 1000;
+					dValue += 1000.0;
+
+				if (sectors[x][y].GetAnomaly())
+					dValue += sectors[x][y].GetAnomaly()->GetWaySearchWeight() * 100.0;
+
+				if ((double)m_AIBadPoints[x][y] + dValue > MAXSHORT)
+					m_AIBadPoints[x][y] = MAXSHORT;
+				else
+					m_AIBadPoints[x][y] += (short)dValue;				
 			}		
 }
 

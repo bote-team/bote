@@ -20,6 +20,7 @@
 
 #include "stdafx.h"
 #include "PPTooltip.h"
+#include "Resource.h"
 
 // allow multi-monitor-aware code on Win95 systems
 // comment out the first line if you already define it in another file
@@ -171,7 +172,7 @@ CPPToolTip::CPPToolTip()
 		wndcls.cbClsExtra		= wndcls.cbWndExtra = 0;
 		wndcls.hInstance		= hInst;
 		wndcls.hIcon			= NULL;
-		wndcls.hCursor			= LoadCursor(hInst, IDC_ARROW);
+		wndcls.hCursor			= LoadCursor(hInst, IDC_ARROW);		
 		wndcls.hbrBackground	= NULL;
 		wndcls.lpszMenuName		= NULL;
 		wndcls.lpszClassName	= PPTOOLTIP_CLASSNAME;
@@ -223,7 +224,7 @@ BOOL CPPToolTip::Create(CWnd* pParentWnd, BOOL bBalloon /* = TRUE */)
 	SetDefaultSizes(bBalloon);
 	m_drawer.SetCallbackRepaint(this->GetSafeHwnd(), UDM_TOOLTIP_REPAINT);
 	SetDelayTime(PPTOOLTIP_TIME_ANIMATION, 100);
-
+	
 	return TRUE;
 } //End of Create
 
@@ -299,8 +300,14 @@ BOOL CPPToolTip::OnSetCursor(CWnd* pWnd, UINT nHitTest, UINT message)
 	if (m_drawer.OnSetCursor(&ptClient))
 		return TRUE; //The cursor over the hyperlink
 	
-	::SetCursor(::LoadCursor(NULL, IDC_ARROW));
-
+	//::SetCursor(::LoadCursor(NULL, IDC_ARROW));
+	
+	// CHANGE: WW
+	// Cursor aus Ressource laden
+    HCURSOR m_hCur = AfxGetApp()->LoadCursor(IDC_CURSOR);
+	// Geladenen Cursor nun setzen
+    ::SetCursor(m_hCur);
+    
 //	return CWnd::OnSetCursor(pWnd, nHitTest, message);
 	return TRUE;
 } //End of the WM_SETCURSOR handler

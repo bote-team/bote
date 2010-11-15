@@ -7,6 +7,7 @@
 #include "MainFrm.h"
 #include "Ships\GenShipName.h"
 #include "General\Statistics.h"
+#include "Races\VictoryObserver.h"
 #include "System\GlobalBuildings.h"
 #include "System\GlobalStorage.h"
 #include "PeerData.h"
@@ -73,9 +74,11 @@ protected: // Nur aus Serialisierung erzeugen
 	USHORT m_iSelectedView[7];						///< Welche View soll in der MainView angezeigt werden? z.B. Galaxie oder System
 
 	// new in ALPHA5
-	CRaceController* m_pRaceCtrl;	///< Rassencontroller für alle Rassen des Spiels
-	CSectorAI*		 m_pSectorAI;	///< Informationen zu allen Sektoren, welche die KI benötigt.
-	CAIPrios*		 m_pAIPrios;	///< zusätzliche Priotitäten, welche für die System-KI-Berechnung benötigt werden	
+	CRaceController* m_pRaceCtrl;		///< Rassencontroller für alle Rassen des Spiels
+	CSectorAI*		 m_pSectorAI;		///< Informationen zu allen Sektoren, welche die KI benötigt.
+	CAIPrios*		 m_pAIPrios;		///< zusätzliche Priotitäten, welche für die System-KI-Berechnung benötigt werden
+
+	CVictoryObserver m_VictoryObserver;	///< Überwachung der Siegbedingungen
 	
 public:
 	// Operationen
@@ -141,7 +144,7 @@ public:
 	const CShip& GetShip(int number) const {return m_ShipArray.GetAt(number);}
 	
 	const CPoint& GetKO(void) const {return m_ptKO;} 
-	void SetKO(int m, int n);
+	void SetKO(int x, int y);
 	void SetKO(const CPoint& ko) { SetKO(ko.x, ko.y); }
 	
 	/// Funktion gibt die Koordinate des Hauptsystems einer Majorrace zurück.
@@ -170,19 +173,34 @@ public:
 	void ReadShipInfosFromFile(void);			// Die Infos zu den Schiffen aus der Datei einlesen
 	void BuildBuilding(USHORT id, CPoint KO);	// Das jeweilige Gebäude bauen
 	
-	void BuildShip(int ID, CPoint KO, const CString& sOwnerID);	// Das jeweilige Schiff im System KO bauen
+	/// Funktion zum bauen des jeweiligen Schiffes in einem System.
+	/// @param ID ID des Schiffes
+	/// @param KO Sektorkoordinate des Schiffes
+	/// @param sOwnerID Besitzer des Schiffes
+	void BuildShip(int nID, const CPoint& KO, const CString& sOwnerID);
+
+	/// Funktion zum Löschen des Schiffes aus dem Schiffsarray.
+	/// @param nIndex Index des Schiffes im Array
+	void RemoveShip(int nIndex);
+
+	/// Funktion fügt ein Schiff zur Liste der verlorenen Schiffe in der Schiffshistory ein.
+	/// @param sEvent Ereignis warum Schiff weg/zerstört/verschwunden ist
+	/// @param sStatus Status des Schiffes (meist zerstört)
+	void AddToLostShipHistory(const CShip* pShip, const CString& sEvent, const CString& sStatus);
 	
-	void GenerateStarmap(void);	// Funktion generiert die Starmaps, so wie sie nach Rundenberechnung auch angezeigt werden können.
+	/// Funktion generiert die Starmaps, so wie sie nach Rundenberechnung auch angezeigt werden können.
+	/// @param sOnlyForRaceID wenn dieser Wert gesetzt, wird die Starmap nur für diese Rasse neu berechnet
+	void GenerateStarmap(const CString& sOnlyForRaceID = "");	
 	
 	/// Die Truppe mit der ID <code>ID</code> wird im System mit der Koordinate <code>ko</code> gebaut.
 	void BuildTroop(BYTE ID, CPoint ko);
 
 	USHORT GetCurrentRound() const {return m_iRound;}
 	
-	USHORT GetNumberOfTheShipInArray(void) const {return m_NumberOfTheShipInArray;}
+	USHORT GetCurrentShipIndex(void) const {return m_NumberOfTheShipInArray;}
 	USHORT GetNumberOfFleetShip(void) const {return m_iNumberOfFleetShip;}
 	USHORT GetNumberOfTheShipInFleet(void) const {return m_iNumberOfTheShipInFleet;}
-	void SetNumberOfTheShipInArray(int NumberOfTheShipInArray);
+	void SetCurrentShipIndex(int NumberOfTheShipInArray);
 	void SetNumberOfFleetShip(int NumberOfFleetShip);
 	void SetNumberOfTheShipInFleet(int NumberOfTheShipInFleet);
 
@@ -211,6 +229,20 @@ public:
 	CString GetPlayersRaceID(void) const;
 
 	bool m_bGameOver;	///< ist das Spiel
+	
+	// neu für Kampf
+	set<CString> m_sCombatSectors;		///< Sektoren in denen diese Runde schon ein Kampf stattgefunden hat
+
+	CPoint m_ptCurrentCombatSector;		///< aktueller Kampfsektor
+	
+	bool m_bCombatCalc;					/// es werden gerade die Kampfrunden berechnet
+
+	int m_nCombatOrder;					/// im Kampfmenü eingestellter Kampfbefehl
+
+private:
+	map<CString, int> m_mCombatOrders;	///< alle Kampfbefehle der Clients (Autokampf, Rückzug, Gruß...)
+	
+	map<CString, map<pair<int, int>, CPoint> >  m_mShipRetreatSectors;	///< Rückzugsesktoren aller Schiffe nach allen Kämpfen
 
 protected:
 	// Private Funktionen die bei der NextRound Berechnung aufgerufen werden. Dadurch wird die NextRound Funktion
@@ -253,13 +285,19 @@ protected:
 	
 	/// Diese Funktion berechnet die Schiffsbewegung und noch weitere kleine Sachen im Zusammenhang mit Schiffen.
 	void CalcShipMovement();
+
+	bool IsShipCombat();
 	
 	/// Diese Funktion berechnet einen möglichen Weltraumkampf und dessen Auswirkungen.
+	/// @return <code>true</code> wenn ein Kampf stattgefunden hat, sonst <code>false</code>
 	void CalcShipCombat();
 	
 	/// Diese Funktion berechnet die Auswirkungen von Schiffen und Stationen auf der Karte. So werden hier z.B. Sektoren
 	/// gescannt, Rassen kennengelernt und die Schiffe den Sektoren bekanntgegeben.
-	void CalcShipEffects();
+	void CalcShipEffects();	
+
+	/// Diese Funktion führt allgemeine Berechnung durch, die immer zum Ende der NextRound-Calculation stattfinden müssen.
+	void CalcEndDataForNextRound();	
 
 	/// Diese Funktion berechnet die Schiffserfahrung in einer neuen Runde. Außer Erfahrung im Kampf, diese werden nach einem
 	/// Kampf direkt verteilt.

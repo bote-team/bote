@@ -28,22 +28,22 @@ public:
 	/**
 	 * Diese Funktion gibt den zum <code>key</code> gehörenden Eintrag aus der ini-Datei zurück.
 	 */
-	bool ReadValue(const CString& sSection, const CString& sKey, bool& bValue);
+	bool ReadValue(const CString& sSection, const CString& sKey, bool& bValue) const;
 
 	/**
 	 * Diese Funktion gibt den zum <code>key</code> gehörenden Eintrag aus der ini-Datei zurück.
 	 */
-	bool ReadValue(const CString& sSection, const CString& sKey, int& nValue);
+	bool ReadValue(const CString& sSection, const CString& sKey, int& nValue) const;
 
 	/**
 	 * Diese Funktion gibt den zum <code>key</code> gehörenden Eintrag aus der ini-Datei zurück.
 	 */
-	bool ReadValue(const CString& sSection, const CString& sKey, float& fValue);
+	bool ReadValue(const CString& sSection, const CString& sKey, float& fValue) const;
 
 	/**
 	 * Diese Funktion gibt den zum <code>key</code> gehörenden Eintrag aus der ini-Datei zurück.
 	 */
-	bool ReadValue(const CString& sSection, const CString& sKey, CString& sValue);
+	bool ReadValue(const CString& sSection, const CString& sKey, CString& sValue) const;
 
 	/**
 	 * Diese Funktion schreibt den zum <code>key</code> gehörenden Eintrag <code>value</code> in die ini-Datei.
@@ -54,12 +54,12 @@ private:
 	/**
 	 * Diese Funktion wandelt ein Wort, wie z.B. On oder True in einen Wahrheitswert um.
 	 */
-	int StringToInt(CString sValue);	
+	int StringToInt(const CString& sValue) const;	
 
 	/**
 	 * Diese Funktion gibt den zum <code>key</code> gehörenden Eintrag aus der ini-Datei zurück.
 	 */
-	bool ReadIniValue(const CString& sSection, const CString& sKey, CString& sReturnValue);
+	bool ReadIniValue(const CString& sSection, const CString& sKey, CString& sReturnValue) const;
 
 	// Attribute
 	CString m_sIniPath;		///< kompletter Pfad zur Ini-Datei

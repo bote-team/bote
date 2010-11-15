@@ -17,7 +17,7 @@ class CPreferencesDlg : public CDialog
 
 public:
 	/// Standardkonstruktor
-	CPreferencesDlg(CWnd* pParent = NULL);
+	CPreferencesDlg(bool bDisableNonWorking = false, CWnd* pParent = NULL);
 
 	/// Standarddestruktor
 	virtual ~CPreferencesDlg();
@@ -32,6 +32,8 @@ protected:
 public:
 	virtual BOOL OnInitDialog();
 private:
+	bool m_bDisable;
+	
 	// General
 	CSliderCtrl m_ctrlDifficultySlider;	///< Schiebregler zum Einstellen des Schwierigkeitsgrades
 	CString m_sDifficulty;				///< Anzeige des aktuell eingestellten Schwierigkeitsgrades
@@ -57,6 +59,15 @@ private:
 	CEdit m_edtRandomSeed;
 	CSliderCtrl m_ctrlStarDensity;
 	CSliderCtrl m_ctrlMinorDensity;
+	CSliderCtrl m_ctrlAnomalyDensity;
+
+	// Victory Conditions
+	BOOL m_bVCElimination;
+	BOOL m_bVCDiplomacy;
+	BOOL m_bVCConquest;
+	BOOL m_bVCResearch;
+	BOOL m_bVCCombat;
+	BOOL m_bVCSabotage;
 
 protected:
 	virtual void OnOK();

@@ -5,8 +5,8 @@
 //////////////////////////////////////////////////////////////////////
 // Konstruktion/Destruktion
 //////////////////////////////////////////////////////////////////////
-CMyButton::CMyButton(CPoint point, CSize size, CString text, CString normGraphicName,
-					 CString inactiveGraphicName, CString activeGraphicName) : m_KO(point), m_Size(size),
+CMyButton::CMyButton(CPoint point, CSize size, const CString& text, const CString& normGraphicName,
+					 const CString& inactiveGraphicName, const CString& activeGraphicName) : m_KO(point), m_Size(size),
 					 m_strText(text), m_strNormal(normGraphicName), m_strInactive(inactiveGraphicName),
 					 m_strActive(activeGraphicName), m_byStatus(0)
 {	
@@ -19,7 +19,7 @@ CMyButton::~CMyButton()
 //////////////////////////////////////////////////////////////////////
 // sonstige Funktionen
 //////////////////////////////////////////////////////////////////////
-BOOLEAN CMyButton::ClickedOnButton(const CPoint pt)
+BOOLEAN CMyButton::ClickedOnButton(const CPoint& pt)
 {
 	return CRect(m_KO.x, m_KO.y, m_KO.x+m_Size.cx, m_KO.y+m_Size.cy).PtInRect(pt);
 }

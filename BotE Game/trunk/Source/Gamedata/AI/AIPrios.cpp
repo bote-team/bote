@@ -40,7 +40,7 @@ void CAIPrios::CalcShipPrios(CSectorAI* sectorAI)
 	int max = 0;
 	map<CString, CMajor*>* pmMajors = m_pDoc->GetRaceCtrl()->GetMajors();
 	
-	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 	{
 		CMajor* pMajor = it->second;
 		ASSERT(pMajor);
@@ -87,7 +87,7 @@ void CAIPrios::CalcShipPrios(CSectorAI* sectorAI)
 	}
 
 	// Prioritäten für Truppentransporter berechnen
-	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 	{
 		CMajor* pMajor = it->second;
 		ASSERT(pMajor);
@@ -137,7 +137,7 @@ void CAIPrios::CalcShipPrios(CSectorAI* sectorAI)
 
 	// Prioritäten für Kriegsschiffe ermitteln
 	map<CString, int> shipPower;
-	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 	{
 		shipPower[it->first] += sectorAI->GetCompleteDanger(it->first);
 		if (max < shipPower[it->first])
@@ -149,7 +149,7 @@ void CAIPrios::CalcShipPrios(CSectorAI* sectorAI)
 	MYTRACE(MT::LEVEL_INFO, "CAIPrios::CalcShipPrios(): max Combatship Priority is: %d\n",max);
 #endif
 	// Maximum der Schiffsstärken ermitteln
-	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 	{	
 #ifdef TRACE_AI
 		MYTRACE(MT::LEVEL_INFO, "Calc Shippowers: Race: %s has a complete shippower of %d - all shippower is %d\n",it->first, shipPower[it->first], sectorAI->GetCompleteDanger(it->first));

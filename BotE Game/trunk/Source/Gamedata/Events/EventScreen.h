@@ -31,7 +31,9 @@ public:
 
 	CArray<CMyButton*>* GetButtons() {return &m_Buttons;}
 
-	virtual void Create();
+	virtual void Create(void);
+
+	virtual void Close(void) {};
 
 	// Zeichenfunktionen
 	virtual void Draw(Graphics* g, CGraphicPool* graphicPool) const;

@@ -45,7 +45,7 @@ void CAttackSystem::Init(CRace* pDefender, CSystem* system, ShipArray* ships, CS
 			// Wenn das Schiff eine Flotte besitzt, diese Schiffe auch dem Feld hinzufügen
 			if (ships->GetAt(i).GetFleet() != 0)
 				for (int j = 0; j < ships->GetAt(i).GetFleet()->GetFleetSize(); j++)
-					m_pShips.Add(ships->GetAt(i).GetFleet()->GetPointerOfShipFromFleet(j));
+					m_pShips.Add(ships->GetAt(i).GetFleet()->GetShipFromFleet(j));
 		}
 }
 
@@ -151,7 +151,7 @@ BOOLEAN CAttackSystem::Calculate()
 }
 
 /// Diese Funktion gibt zurück, ob der Verteidiger ungleich dem/den Angreifer/n ist.
-BOOLEAN CAttackSystem::IsDefenderNotAttacker(CString sDefender, const set<CString>* attacker)
+BOOLEAN CAttackSystem::IsDefenderNotAttacker(const CString& sDefender, const set<CString>* attacker) const
 {
 	if (attacker->find(sDefender) == attacker->end())
 		return true;

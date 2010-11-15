@@ -13,6 +13,7 @@
 #include "SmallInfoView.h"
 #include "Races\RaceController.h"
 #include "Ships\Fleet.h"
+#include "Galaxy\Anomaly.h"
 #include "IniLoader.h"
 #include "HTMLStringBuilder.h"
 
@@ -64,7 +65,7 @@ CGalaxyMenuView::~CGalaxyMenuView()
 	{
 		delete m_pThumbnail;
 		m_pThumbnail = NULL;
-	}
+	}	
 }
 
 BOOL CGalaxyMenuView::PreCreateWindow(CREATESTRUCT& cs)
@@ -79,9 +80,15 @@ void CGalaxyMenuView::OnNewRound()
 {
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT_VALID(pDoc);
-	
+
+	CMajor* pPlayer = m_pPlayersRace;
+	ASSERT(pPlayer);
+
 	// Bei jeder neuen Runde die Galaxiekarte neu generieren
 	GenerateGalaxyMap();
+
+	// und die Starmap mit den Reichweitengrenzen erneuern
+	pDoc->GenerateStarmap(pPlayer->GetRaceID());
 		
 	m_bShipMove	= FALSE;
 	m_bDrawTradeRoute = FALSE;
@@ -152,7 +159,7 @@ void CGalaxyMenuView::OnDraw(CDC* dc)
 		posY = (client.bottom - picHeight) / 2;
 
 	g.Clear(Color::Black);
-	g.DrawImage(m_pGalaxyBackground, posX, posY, picWidth, picHeight);	
+	g.DrawImage(m_pGalaxyBackground, posX, posY, picWidth, picHeight);
 		
 	CString s;
 #ifdef _DEBUG
@@ -232,8 +239,8 @@ void CGalaxyMenuView::OnDraw(CDC* dc)
 	CPen	nearPen(PS_SOLID, 1, RGB(0, 200, 0)),		// kurze Entfernung
 			middlePen(PS_SOLID, 1, RGB(200, 200, 0)),	// mittlere Entfernung
 			farPen(PS_SOLID, 1, RGB(200, 0, 0));		// große Entfernung
-	CPen	selPen(PS_SOLID, 0, RGB(255,125,0));		// Markierung	
-
+	CPen	selPen(PS_SOLID, 1, RGB(255,125,0));		// Markierung
+	
 	/**/ CPen parentPen(PS_SOLID, 0, RGB(180, 180, 180)); // aufspannender Baum /**/
 
 	// Linie ganz oben und ganz links
@@ -262,10 +269,10 @@ void CGalaxyMenuView::OnDraw(CDC* dc)
 	if (m_bShipMove)
 	{
 		// Wenn das Schiff keine Flotte anführt
-		if (pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfTheShipInArray()).GetFleet() == 0 || (pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfTheShipInArray()).GetFleet() != 0 && pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfTheShipInArray()).GetFleet()->GetFleetSize() == 0))
-			m_nRange = 3-pDoc->GetShip(pDoc->GetNumberOfTheShipInArray()).GetRange();
+		if (pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetFleet() == 0 || (pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetFleet() != 0 && pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetFleet()->GetFleetSize() == 0))
+			m_nRange = 3-pDoc->GetShip(pDoc->GetCurrentShipIndex()).GetRange();
 		else
-			m_nRange = 3-pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfTheShipInArray()).GetFleet()->GetFleetRange(&pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfTheShipInArray()));	
+			m_nRange = 3-pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetFleet()->GetFleetRange(&pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()));	
 	}
 	else
 		m_nRange = SM_RANGE_SPACE;
@@ -338,13 +345,13 @@ void CGalaxyMenuView::OnDraw(CDC* dc)
 
 			// zeichnen
 			// es ist auskommentiert, dass das Grid nicht auf unbekannten Sektoren gezeichnet wird
-			if (pDoc->GetSector(j,i).GetScanned(pMajor->GetRaceID()) == TRUE || (pDC->GetCurrentPen() != &gridPen && pDC->GetCurrentPen() != &scanPen))
+			if (pStarmap->GetRange(CPoint(j,i)) != 3 && pDoc->GetSector(j,i).GetScanned(pMajor->GetRaceID()) == TRUE || (pDC->GetCurrentPen() != &gridPen && pDC->GetCurrentPen() != &scanPen))
 			{
 				pDC->MoveTo(x + STARMAP_SECTOR_WIDTH, y);
 				pDC->LineTo(x + STARMAP_SECTOR_WIDTH, y + STARMAP_SECTOR_HEIGHT);
 			}
 			else
-				pDC->MoveTo(x + STARMAP_SECTOR_WIDTH, y + STARMAP_SECTOR_HEIGHT);				
+				pDC->MoveTo(x + STARMAP_SECTOR_WIDTH, y + STARMAP_SECTOR_HEIGHT);
 							
 			// unterer Rand
 			if (pStarmap->m_Selection.x == j && (pStarmap->m_Selection.y == i
@@ -378,7 +385,7 @@ void CGalaxyMenuView::OnDraw(CDC* dc)
 
 			// zeichnen
 			// es ist auskommentiert, dass das Grid nicht auf unbekannten Sektoren gezeichnet wird
-			if (pDoc->GetSector(j, i).GetScanned(pMajor->GetRaceID()) == TRUE || (pDC->GetCurrentPen() != &gridPen && pDC->GetCurrentPen() != &scanPen))
+			if (pStarmap->GetRange(CPoint(j,i)) != 3 && pDoc->GetSector(j, i).GetScanned(pMajor->GetRaceID()) == TRUE || (pDC->GetCurrentPen() != &gridPen && pDC->GetCurrentPen() != &scanPen))
 				pDC->LineTo(x, y + STARMAP_SECTOR_HEIGHT);				
 		}
 
@@ -407,33 +414,32 @@ void CGalaxyMenuView::OnDraw(CDC* dc)
 			
 	// ------
 	// wenn gerade ein Ziel gewählt wird, den berechneten Weg zeichnen
-	if (m_nRange && pDoc->m_ShipArray[pDoc->GetNumberOfTheShipInArray()].GetPath()->GetSize())
+	if (m_nRange && pDoc->m_ShipArray[pDoc->GetCurrentShipIndex()].GetPath()->GetSize())
 	{
 		// Vorlage mit jedem Sektor des Weges verknüpfen
-		for (int i = 0; i < pDoc->m_ShipArray[pDoc->GetNumberOfTheShipInArray()].GetPath()->GetSize(); i++)
+		for (int i = 0; i < pDoc->m_ShipArray[pDoc->GetCurrentShipIndex()].GetPath()->GetSize(); i++)
 		{
 			COLORREF color = pMajor->GetDesign()->m_clrRouteColor;
 			CBrush brush(color);
 			CPen pen(PS_SOLID , 0, color);
 			pDC->SelectObject(&brush);
 			pDC->SelectObject(&pen);
-			ASSERT_SECTOR_VALID(pDoc->m_ShipArray[pDoc->GetNumberOfTheShipInArray()].GetPath()->GetAt(i));
-			CPoint pt = pMajor->GetStarmap()->GetSectorCoords(pDoc->m_ShipArray[pDoc->GetNumberOfTheShipInArray()].GetPath()->GetAt(i));
+			ASSERT_SECTOR_VALID(pDoc->m_ShipArray[pDoc->GetCurrentShipIndex()].GetPath()->GetAt(i));
+			CPoint pt = pMajor->GetStarmap()->GetSectorCoords(pDoc->m_ShipArray[pDoc->GetCurrentShipIndex()].GetPath()->GetAt(i));
 			pDC->Ellipse(pt.x+STARMAP_SECTOR_WIDTH/2-4,pt.y+STARMAP_SECTOR_HEIGHT/2-4,pt.x+STARMAP_SECTOR_WIDTH/2+4,pt.y+STARMAP_SECTOR_HEIGHT/2+4);
 		}
 		
 		// Anzahl der benötigten Runden in letztes Feld des Weges zeichnen
 		//CPoint last = pMajor->GetStarmap()->GetSectorCoords(path[path.GetUpperBound()]);
-		int n = pDoc->GetNumberOfTheShipInArray();
+		int n = pDoc->GetCurrentShipIndex();
 		CPoint last = pMajor->GetStarmap()->GetSectorCoords(pDoc->m_ShipArray[n].GetPath()->GetAt(pDoc->m_ShipArray[n].GetPath()->GetUpperBound()));
 		CString s;
 		// Wenn das Schiff keine Flotte anführt
-		if (pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfTheShipInArray()).GetFleet() == 0 || (pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfTheShipInArray()).GetFleet() != 0 && pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfTheShipInArray()).GetFleet()->GetFleetSize() == 0))
+		if (pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetFleet() == 0 || (pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetFleet() != 0 && pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetFleet()->GetFleetSize() == 0))
 			s.Format("%.0f",ceil((float)pDoc->m_ShipArray[n].GetPath()->GetSize() / (float)pDoc->m_ShipArray[n].GetSpeed()));
 		else
-			s.Format("%.0f",ceil((float)pDoc->m_ShipArray[n].GetPath()->GetSize() / (float)pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfTheShipInArray()).GetFleet()->GetFleetSpeed(&pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfTheShipInArray()))));	
-		pDC->SetTextColor(RGB(255,255,255));
-		pDC->SetBkMode(TRANSPARENT);
+			s.Format("%.0f",ceil((float)pDoc->m_ShipArray[n].GetPath()->GetSize() / (float)pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetFleet()->GetFleetSpeed(&pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()))));	
+		pDC->SetTextColor(RGB(255,255,255));		
 		pDC->TextOut(last.x+STARMAP_SECTOR_WIDTH/2+6, last.y+STARMAP_SECTOR_HEIGHT/2-8, s);
 
 		/**/ // Debug: Länge des Weges ausgeben
@@ -444,6 +450,11 @@ void CGalaxyMenuView::OnDraw(CDC* dc)
 		/**/
 	}
 	pDC->SelectObject(pOldPen);
+		
+	// Font für Sektornamen holen
+	CFont font;
+	CFontLoader::CreateFont(m_pPlayersRace, 0, &font);
+	CFont* oldfont = pDC->SelectObject(&font);
 	bool bShowTraderoutes;
 	CIniLoader::GetInstance()->ReadValue("Video", "SHOWTRADEROUTES", bShowTraderoutes);
 	// Namen des Systems und Handelsrouten zeichnen, nur wenn komplett neu gezeichnet wurde
@@ -461,6 +472,8 @@ void CGalaxyMenuView::OnDraw(CDC* dc)
 						pDoc->m_System[x][y].GetResourceRoutes()->GetAt(i).DrawResourceRoute(pDC, CPoint(x,y), pMajor);
 				}
 		}
+	pDC->SelectObject(oldfont);
+	font.DeleteObject();
 	
 	if (bShowTraderoutes)
 	{
@@ -498,20 +511,17 @@ void CGalaxyMenuView::OnInitialUpdate()
 	m_fZoom = STARMAP_ZOOM_INITIAL;
 	m_nRange = SM_RANGE_SPACE;
 
-	// Fontobjekt löschen
-	if (CSector::m_Font)
-	{
-		delete CSector::m_Font;
-		CSector::m_Font = NULL;
-	}
-
 	m_TotalSize = CSize(1075, 750);
 	SetScrollSizes(MM_TEXT, m_TotalSize);
 	
 	m_bShipMove	= FALSE;
 	m_bScrollToHome = TRUE;
 
-	pDoc->SetKO(pDoc->GetRaceKO(m_pPlayersRace->GetRaceID()));
+	CPoint pt = pDoc->GetRaceKO(m_pPlayersRace->GetRaceID());
+	pDoc->SetKO(pt);
+	if (m_pPlayersRace->GetStarmap())
+		m_pPlayersRace->GetStarmap()->Select(Sector(pt.x, pt.y));
+
 	pDoc->GetMainFrame()->AddToTooltip(this);	
 
 	CScrollView::OnInitialUpdate();	
@@ -690,7 +700,7 @@ void CGalaxyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			if (modulo.x > STARMAP_SECTOR_WIDTH * 0.66 && modulo.y < STARMAP_SECTOR_HEIGHT * 0.33)
 			{
 				map<CString, CRace*>* pmRaces = pDoc->GetRaceCtrl()->GetRaces();
-				for (map<CString, CRace*>::const_iterator it = pmRaces->begin(); it != pmRaces->end(); it++)
+				for (map<CString, CRace*>::const_iterator it = pmRaces->begin(); it != pmRaces->end(); ++it)
 					if ((pDoc->m_Sector[sector.x][sector.y].GetOwnerOfShip(it->first) == TRUE && it->first == pMajor->GetRaceID())
 						|| (pDoc->m_Sector[sector.x][sector.y].GetOwnerOfShip(it->first) == TRUE && pDoc->m_Sector[sector.x][sector.y].GetNeededScanPower(it->first) < pDoc->m_Sector[sector.x][sector.y].GetScanPower(pMajor->GetRaceID())))
 						{
@@ -705,7 +715,7 @@ void CGalaxyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			else if (modulo.x < STARMAP_SECTOR_WIDTH * 0.33 && modulo.y > STARMAP_SECTOR_HEIGHT * 0.66)
 			{
 				map<CString, CRace*>* pmRaces = pDoc->GetRaceCtrl()->GetRaces();
-				for (map<CString, CRace*>::const_iterator it = pmRaces->begin(); it != pmRaces->end(); it++)
+				for (map<CString, CRace*>::const_iterator it = pmRaces->begin(); it != pmRaces->end(); ++it)
 					if (pDoc->m_Sector[sector.x][sector.y].GetScanPower(pMajor->GetRaceID()) > 0 && (pDoc->m_Sector[sector.x][sector.y].GetIsStationBuilding(it->first) == TRUE
 						|| pDoc->m_Sector[sector.x][sector.y].GetOutpost(it->first) == TRUE || pDoc->m_Sector[sector.x][sector.y].GetStarbase(it->first) == TRUE))
 					{
@@ -786,10 +796,10 @@ void CGalaxyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		CPoint target(pMajor->GetStarmap()->GetClickedSector(pt).x,pMajor->GetStarmap()->GetClickedSector(pt).y);
 		// Wenn wir ein Schiff bewegen wollen und der Kurs größer als eins ist, dann neues Ziel setzen
 		// Oder wir brechen den Kurs ab, indem wir auf den aktuellen Sektor klicken
-		if (m_bShipMove && (pDoc->m_ShipArray[pDoc->GetNumberOfTheShipInArray()].GetPath()->GetSize() 
-			|| target == pDoc->m_ShipArray[pDoc->GetNumberOfTheShipInArray()].GetKO()))
+		if (m_bShipMove && (pDoc->m_ShipArray[pDoc->GetCurrentShipIndex()].GetPath()->GetSize() 
+			|| target == pDoc->m_ShipArray[pDoc->GetCurrentShipIndex()].GetKO()))
 		{
-			pDoc->m_ShipArray[pDoc->GetNumberOfTheShipInArray()].SetTargetKO(target,0);
+			pDoc->m_ShipArray[pDoc->GetCurrentShipIndex()].SetTargetKO(target,0);
 			CSmallInfoView::SetShipInfo(true);
 			SetMoveShip(FALSE);
 			pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
@@ -801,8 +811,8 @@ void CGalaxyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			m_oldPath.RemoveAll();
 			// Die Flugkoordinaten des Schiffes den Sektoren mitteilen, damit sie die Flugroute des Schiffes
 			// immer anzeigen können, auch wenn kein Schiff ausgewählt ist
-			for (int i = 0; i < pDoc->m_ShipArray[pDoc->GetNumberOfTheShipInArray()].GetPath()->GetSize(); i++)
-				pDoc->m_Sector[pDoc->m_ShipArray[pDoc->GetNumberOfTheShipInArray()].GetPath()->GetAt(i).x][pDoc->m_ShipArray[pDoc->GetNumberOfTheShipInArray()].GetPath()->GetAt(i).y].AddShipPathPoints(1);
+			for (int i = 0; i < pDoc->m_ShipArray[pDoc->GetCurrentShipIndex()].GetPath()->GetSize(); i++)
+				pDoc->m_Sector[pDoc->m_ShipArray[pDoc->GetCurrentShipIndex()].GetPath()->GetAt(i).x][pDoc->m_ShipArray[pDoc->GetCurrentShipIndex()].GetPath()->GetAt(i).y].AddShipPathPoints(1);
 			Invalidate();
 		}
 		else
@@ -1034,19 +1044,19 @@ void CGalaxyMenuView::OnMouseMove(UINT nFlags, CPoint point)
 
 		// Sektor, über dem sich die Maus befindet, ermitteln
 		struct::Sector target = pMajor->GetStarmap()->GetClickedSector(pt);
-		struct::Sector shipKO(pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfTheShipInArray()).GetKO().x,pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfTheShipInArray()).GetKO().y);
+		struct::Sector shipKO(pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetKO().x,pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetKO().y);
 
 		if (PT_IN_RECT(target, 0, 0, STARMAP_SECTORS_HCOUNT, STARMAP_SECTORS_VCOUNT))
 		{
 			// Weg berechnen, neu zeichnen
 			char speed = 0;
 			// Wenn das Schiff keine Flotte anführt
-			if (pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfTheShipInArray()).GetFleet() == 0 || (pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfTheShipInArray()).GetFleet() != 0 && pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfTheShipInArray()).GetFleet()->GetFleetSize() == 0))
-				speed = (char)(pDoc->m_ShipArray[pDoc->GetNumberOfTheShipInArray()].GetSpeed());	
+			if (pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetFleet() == 0 || (pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetFleet() != 0 && pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetFleet()->GetFleetSize() == 0))
+				speed = (char)(pDoc->m_ShipArray[pDoc->GetCurrentShipIndex()].GetSpeed());	
 			else
-				speed = (char)(pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfTheShipInArray()).GetFleet()->GetFleetSpeed(&pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfTheShipInArray())));	
+				speed = (char)(pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetFleet()->GetFleetSpeed(&pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex())));	
 									
-			struct::Sector result = pMajor->GetStarmap()->CalcPath(pMajor->GetStarmap()->GetSelection(), target, m_nRange, speed, *pDoc->m_ShipArray[pDoc->GetNumberOfTheShipInArray()].GetPath());
+			struct::Sector result = pMajor->GetStarmap()->CalcPath(pMajor->GetStarmap()->GetSelection(), target, m_nRange, speed, *pDoc->m_ShipArray[pDoc->GetCurrentShipIndex()].GetPath());
 			
 			if (target != shipKO && target != oldtarget)
 				Invalidate();
@@ -1280,7 +1290,7 @@ void CGalaxyMenuView::SetNewShipPath()
 {
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	m_oldPath.RemoveAll();
-	m_oldPath.Copy(*pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfTheShipInArray()).GetPath());	
+	m_oldPath.Copy(*pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetPath());	
 }
 
 void CGalaxyMenuView::GenerateGalaxyMap()
@@ -1296,7 +1306,7 @@ void CGalaxyMenuView::GenerateGalaxyMap()
 		delete m_pGalaxyBackground;
 		m_pGalaxyBackground = NULL;
 	}
-		
+	
 	CString sAppPath = CIOData::GetInstance()->GetAppPath();
 	CString prefix = pMajor->GetPrefix();
 	CString filePath = sAppPath + "Graphics\\Galaxies\\" + prefix + "galaxy.boj";
@@ -1340,7 +1350,7 @@ void CGalaxyMenuView::GenerateGalaxyMap()
 	map<CString, Bitmap*> ownerMark;
 	
 	map<CString, CMajor*>* pmMajors = pDoc->GetRaceCtrl()->GetMajors();
-	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 	{
 		Color clr;
 		clr.SetFromCOLORREF(it->second->GetDesign()->m_clrSector);		
@@ -1397,9 +1407,17 @@ void CGalaxyMenuView::GenerateGalaxyMap()
 			{
 				g->DrawImage(ownerMark[sMinorID], pt.x, pt.y, STARMAP_SECTOR_WIDTH, STARMAP_SECTOR_HEIGHT);
 			}
-			if (pDoc->GetSector(x,y).GetSunSystem() == TRUE && pDoc->GetSector(x,y).GetScanned(pMajor->GetRaceID()))
+			// Sonne bzw. Anomalie zeichnen
+			if (pDoc->GetSector(x,y).GetScanned(pMajor->GetRaceID()))
 			{
-				g->DrawImage(stars[pDoc->GetSector(x,y).GetSunColor()], pt.x, pt.y, STARMAP_SECTOR_WIDTH, STARMAP_SECTOR_HEIGHT);
+				if (pDoc->GetSector(x,y).GetSunSystem())
+				{
+					g->DrawImage(stars[pDoc->GetSector(x,y).GetSunColor()], pt.x, pt.y, STARMAP_SECTOR_WIDTH, STARMAP_SECTOR_HEIGHT);
+				}
+				else if (pDoc->GetSector(x,y).GetAnomaly())
+				{
+					pDoc->GetSector(x,y).GetAnomaly()->Draw(g, pt);
+				}
 			}
 			
 			pDoc->GetSector(x,y).DrawShipSymbolInSector(g, pDoc, m_pPlayersRace);
@@ -1426,7 +1444,7 @@ void CGalaxyMenuView::GenerateGalaxyMap()
 	img.Destroy();
 	
 	// aufräumen
-	for (map<CString, Bitmap*>::const_iterator it = ownerMark.begin(); it != ownerMark.end(); it++)
+	for (map<CString, Bitmap*>::const_iterator it = ownerMark.begin(); it != ownerMark.end(); ++it)
 		delete it->second;
 	ownerMark.clear();
 	
@@ -1463,6 +1481,8 @@ CString CGalaxyMenuView::CreateTooltip(void)
 		CString sTip;
 		if (pSector->GetScanned(pMajor->GetRaceID()) == FALSE)
 			sTip = CResourceManager::GetString("UNKNOWN");
+		else if (pSector->GetAnomaly())
+			sTip.Format("%s", pSector->GetAnomaly()->GetMapName(CPoint(ko.x,ko.y)));
 		else if (pSector->GetKnown(pMajor->GetRaceID()) == FALSE)
 			sTip.Format("%s %c%i", CResourceManager::GetString("SECTOR"),(char)(ko.y+97), ko.x+1);
 		else
@@ -1500,7 +1520,7 @@ CString CGalaxyMenuView::CreateTooltip(void)
 				sTip += CHTMLStringBuilder::GetHTMLStringNewLine();
 				sTip += CHTMLStringBuilder::GetHTMLStringNewLine();
 				
-				for (map<CString, int>::const_iterator it = mAllDefenceBuildings.begin(); it != mAllDefenceBuildings.end(); it++)
+				for (map<CString, int>::const_iterator it = mAllDefenceBuildings.begin(); it != mAllDefenceBuildings.end(); ++it)
 				{
 					CString sDefence;
 					sDefence.Format("%s: %d/%d\n", it->first, mOnlineDefenceBuildings[it->first], it->second);
@@ -1509,6 +1529,19 @@ CString CGalaxyMenuView::CreateTooltip(void)
 					sTip += sDefence;
 				}
 			}
+		}
+
+		// Auswirkungen einer Anomalie hinschreiben
+		else if (pSector->GetAnomaly() && pSector->GetScanned(pMajor->GetRaceID()))
+		{
+			CString sGame = CHTMLStringBuilder::GetHTMLStringNewLine();
+			sGame += CHTMLStringBuilder::GetHTMLStringNewLine();
+
+			sGame += pSector->GetAnomaly()->GetGameplayDescription();
+			sGame = CHTMLStringBuilder::GetHTMLColor(sGame, _T("silver"));
+			sGame = CHTMLStringBuilder::GetHTMLHeader(sGame, _T("h5"));
+
+			sTip += sGame;
 		}
 
 		return sTip;

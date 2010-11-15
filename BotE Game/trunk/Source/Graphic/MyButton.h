@@ -25,8 +25,8 @@ public:
 	/// @param normGraphicName Name des Grafikfiles für die normale Darstellung
 	/// @param inactiveGraphicName Name des Grafikfiles für die inaktive Darstellung
 	/// @param activeGraphicName Name des Grafikfiles für die aktive Darstellung
-	CMyButton(CPoint point, CSize size, CString text, 
-		CString normGraphicName, CString inactiveGraphicName, CString activeGraphicName);
+	CMyButton(CPoint point, CSize size, const CString& text, 
+		const CString& normGraphicName, const CString& inactiveGraphicName, const CString& activeGraphicName);
 
 	/// Destruktor
 	~CMyButton(void);
@@ -47,12 +47,12 @@ public:
 
 	/// Funktion ändert den Text auf dem Button.
 	/// @param text Text auf dem Button
-	void SetText(CString text) {m_strText = text;}
+	void SetText(const CString& text) {m_strText = text;}
 
 	// Funktionen
 	/// Funktion überprüft, ob der übergebene Punkt (z.B. Mausklick) in dem Feld des Buttons liegt.
 	/// @param pt der zur überprüfende Punkt
-	BOOLEAN ClickedOnButton(const CPoint pt);
+	BOOLEAN ClickedOnButton(const CPoint& pt);
 
 	/// Diese Funktion zeichnet den Button in den übergebenen Gerätekontext.
 	/// @param g Referenz auf Graphics Objekt

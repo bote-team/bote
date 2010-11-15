@@ -31,7 +31,7 @@ void CRaceController::Serialize(CArchive &ar)
 	{
 		// Rassen speichern
 		ar << m_mRaces.size();
-		for (map<CString, CRace*>::const_iterator it = m_mRaces.begin(); it != m_mRaces.end(); it++)
+		for (map<CString, CRace*>::const_iterator it = m_mRaces.begin(); it != m_mRaces.end(); ++it)
 			ar << it->first << it->second;
 	}
 	// wenn geladen wird
@@ -53,7 +53,7 @@ void CRaceController::Serialize(CArchive &ar)
 		}
 
 		// Array aller Majors und Minors anlegen
-		for (map<CString, CRace*>::const_iterator it = m_mRaces.begin(); it != m_mRaces.end(); it++)
+		for (map<CString, CRace*>::const_iterator it = m_mRaces.begin(); it != m_mRaces.end(); ++it)
 		{
 			if (it->second->GetType() == MAJOR)
 				m_mMajors[it->first] = (CMajor*)it->second;
@@ -79,7 +79,7 @@ bool CRaceController::Init(int nSource/* = RACESOURCE_DATAFILE*/)
 		return false;
 	
 	// Array aller Majors und Minors anlegen
-	for (map<CString, CRace*>::const_iterator it = m_mRaces.begin(); it != m_mRaces.end(); it++)
+	for (map<CString, CRace*>::const_iterator it = m_mRaces.begin(); it != m_mRaces.end(); ++it)
 	{
 		if (it->second->GetType() == MAJOR)
 			m_mMajors[it->first] = (CMajor*)it->second;
@@ -112,7 +112,7 @@ CRace* CRaceController::GetRace(const CString& sID) const
 map<CString, CRace*> CRaceController::GetRaces(BYTE type) const
 {
 	map<CString, CRace*> mMap;
-	for (map<CString, CRace*>::const_iterator it = m_mRaces.begin(); it != m_mRaces.end(); it++)
+	for (map<CString, CRace*>::const_iterator it = m_mRaces.begin(); it != m_mRaces.end(); ++it)
 		if (it->second->GetType() == type)
 			mMap[it->first] = it->second;
 	return mMap;
@@ -123,7 +123,7 @@ map<CString, CRace*> CRaceController::GetRaces(BYTE type) const
 /// @return Zeiger auf Minorrace (<code>NULL</code> wenn die Rasse nicht gefunden werden konnte)
 CMinor* CRaceController::GetMinorRace(const CString& sMinorsHome) const
 {
-	for (map<CString, CRace*>::const_iterator it = m_mRaces.begin(); it != m_mRaces.end(); it++)
+	for (map<CString, CRace*>::const_iterator it = m_mRaces.begin(); it != m_mRaces.end(); ++it)
 		if (it->second->GetType() == MINOR && it->second->GetHomesystemName() == sMinorsHome)
 			return dynamic_cast<CMinor*>(it->second);
 
@@ -134,7 +134,7 @@ CMinor* CRaceController::GetMinorRace(const CString& sMinorsHome) const
 /// @param sRaceID Rassen-ID
 void CRaceController::RemoveRace(const CString& sRaceID)
 {
-	for (map<CString, CRace*>::iterator it = m_mRaces.begin(); it != m_mRaces.end(); it++)
+	for (map<CString, CRace*>::iterator it = m_mRaces.begin(); it != m_mRaces.end(); ++it)
 	{
 		if (it->first == sRaceID)
 		{
@@ -148,7 +148,7 @@ void CRaceController::RemoveRace(const CString& sRaceID)
 	m_mMajors.clear();
 	m_mMinors.clear();
 	// Array aller Majors und Minors neu anlegen
-	for (map<CString, CRace*>::const_iterator it = m_mRaces.begin(); it != m_mRaces.end(); it++)
+	for (map<CString, CRace*>::const_iterator it = m_mRaces.begin(); it != m_mRaces.end(); ++it)
 	{
 		if (it->second->GetType() == MAJOR)
 			m_mMajors[it->first] = (CMajor*)it->second;
@@ -209,7 +209,7 @@ CString CRaceController::GetMappedRaceID(network::RACE clientID) const
 void CRaceController::Reset(void)
 {
 	// Objekte in der Map löschen
-	for (map<CString, CRace*>::iterator it = m_mRaces.begin(); it != m_mRaces.end(); it++)
+	for (map<CString, CRace*>::iterator it = m_mRaces.begin(); it != m_mRaces.end(); ++it)
 		if (it->second)
 		{
 			delete it->second;
@@ -406,8 +406,8 @@ bool CRaceController::InitMinors(int nSource/* = RACESOURCE_DATAFILE*/)
 /// von Minor zu Majors erstellt.
 void CRaceController::InitRelations(void)
 {
-	for (map<CString, CRace*>::const_iterator it = m_mRaces.begin(); it != m_mRaces.end(); it++)
-		for (map<CString, CRace*>::const_iterator jt = m_mRaces.begin(); jt != m_mRaces.end(); jt++)
+	for (map<CString, CRace*>::const_iterator it = m_mRaces.begin(); it != m_mRaces.end(); ++it)
+		for (map<CString, CRace*>::const_iterator jt = m_mRaces.begin(); jt != m_mRaces.end(); ++jt)
 			// handelt es sich nicht um die Rasse selbst und nicht um die Bezeihung Major -> Minor
 			if (it->first != jt->first && jt->second->GetType() == MAJOR)
 			{

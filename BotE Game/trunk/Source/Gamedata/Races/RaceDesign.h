@@ -38,7 +38,7 @@ public:
 	/// @param sRGB RGB-Farbwerte als String
 	/// @param sToken Trennzeichen zwischen den einzelnen Farbwerten im String
 	/// @return Farbe
-	static COLORREF StringToColor(CString sRGB, CString sToken = ",")
+	static COLORREF StringToColor(const CString& sRGB, const CString& sToken = ",")
 	{
 		int iStart = 0;
 		
@@ -46,6 +46,23 @@ public:
 			atoi(sRGB.Tokenize(sToken, iStart)),
 			atoi(sRGB.Tokenize(sToken, iStart)),
 			atoi(sRGB.Tokenize(sToken, iStart)));
+	}
+
+	static COLORREF MakeDarker(const COLORREF& color, int nValue)
+	{
+		int r	= GetRValue(color) - nValue;
+		int g	= GetGValue(color) - nValue;
+		int b	= GetBValue(color) - nValue;
+
+		if (r < 0) r = 0;
+		if (g < 0) g = 0;
+		if (b < 0) b = 0;
+
+		if (r > 255) r = 255;
+		if (g > 255) g = 255;
+		if (b > 255) b = 255;
+
+		return RGB(r,g,b);
 	}
 
 public:
