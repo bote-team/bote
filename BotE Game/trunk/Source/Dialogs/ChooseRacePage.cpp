@@ -214,7 +214,7 @@ void CChooseRacePage::EnableRaceButtons()
 		////////////////////////////////////////////
 		// Alpha5 Bedingung
 #ifndef DEVELOPMENT_VERSION
-		if (nRace != 0 && nRace != 1 && nRace != 3 && nRace != 4)
+		if (nRace != 0 && nRace != 1 && nRace != 2 && nRace != 3 && nRace != 4)
 			pButton->EnableWindow(FALSE);
 #endif
 		////////////////////////////////////////////

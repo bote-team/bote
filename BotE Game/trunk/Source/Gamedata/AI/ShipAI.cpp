@@ -523,7 +523,7 @@ void CShipAI::DoMakeFleet(int index)
 								{
 									// es muss sich bei beiden Schiffen um Kriegsschiffe handeln oder bei beiden Schiffen um Transporter oder bei beiden
 									// Schiffen um Kolonieschiffe
-									if ((!IS_NONCOMBATSHIP(ship->GetShipType()) && !IS_NONCOMBATSHIP(m_pDoc->m_ShipArray.GetAt(i).GetShipType()))
+									if ((!ship->IsNonCombat() && !m_pDoc->m_ShipArray.GetAt(i).IsNonCombat())
 										||(ship->GetShipType() == TRANSPORTER && m_pDoc->m_ShipArray.GetAt(i).GetShipType() == TRANSPORTER && m_pDoc->m_ShipArray.GetAt(i).GetCurrentOrder() < BUILD_OUTPOST)
 										||(ship->GetShipType() == COLONYSHIP && m_pDoc->m_ShipArray.GetAt(i).GetShipType() == COLONYSHIP && m_pDoc->m_ShipArray.GetAt(i).GetCurrentOrder() < COLONIZE))
 									{

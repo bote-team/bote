@@ -37,11 +37,11 @@ void CIntelAI::CalcIntelligence(CBotf2Doc* pDoc)
 	// produzierte Geheimdienstpunkte und Punkte aus allen Geheimdienstlagern einer Rasse zusammenaddieren
 	CArray<INTELLIST> intellist;
 	std::map<CString, CMajor*>* pmMajors = pDoc->GetRaceCtrl()->GetMajors();
-	for (std::map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+	for (std::map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 	{
 		CIntelligence* pIntel = it->second->GetEmpire()->GetIntelligence();
 		UINT points = pIntel->GetSecurityPoints() + pIntel->GetInnerSecurityStorage();
-		for (map<CString, CMajor*>::const_iterator itt = pmMajors->begin(); itt != pmMajors->end(); itt++)
+		for (map<CString, CMajor*>::const_iterator itt = pmMajors->begin(); itt != pmMajors->end(); ++itt)
 			if (itt->first != it->first)
 				points += pIntel->GetSPStorage(0, itt->first) + pIntel->GetSPStorage(1, itt->first);
 		intellist.Add(INTELLIST(it->first, points));
@@ -65,7 +65,7 @@ void CIntelAI::CalcIntelligence(CBotf2Doc* pDoc)
 	// jeder Geheimdienstbericht mit uns als Ziel aus den letzten 5 Runden erhöht die Priorität nochmal um eins, sofern
 	// es sich dabei um eine Sabotageaktion handelte
 	std::map<CString, int> badReports;
-	for (std::map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+	for (std::map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 		if (it->second->IsHumanPlayer() == false)
 		{
 			CIntelligence* pIntel = it->second->GetEmpire()->GetIntelligence();
@@ -79,13 +79,13 @@ void CIntelAI::CalcIntelligence(CBotf2Doc* pDoc)
 		}
 	
 #ifdef TRACE_INTELAI
-	for (std::map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+	for (std::map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 		MYTRACE(MT::LEVEL_INFO, "Intel-AI: Intel Prio of %s is %d\n", it->first, m_byIntelPrio[it->first]);
 #endif
 
 	// nun liegen die Prioritäten und die Listen mit den Punkten vor. Jetzt kann begonnen werde die Rassen zu
 	// vergeheimdiensteln. Ab hier kommt die KI für den Geheimdienst richtig ins Spiel.
-	for (std::map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+	for (std::map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 	{
 		if (it->second->IsHumanPlayer() == false)
 		{
@@ -108,7 +108,7 @@ void CIntelAI::CalcIntelligence(CBotf2Doc* pDoc)
 			// - Beziehung unter 50% oder aktueller Vertrag kleiner Freundschaft und kein Verteidigungsbündnis
 			USHORT worstRel = MAXBYTE;
 			CMajor* pWorstRace = NULL;
-			for (std::map<CString, CMajor*>::const_iterator jt = pmMajors->begin(); jt != pmMajors->end(); jt++)
+			for (std::map<CString, CMajor*>::const_iterator jt = pmMajors->begin(); jt != pmMajors->end(); ++jt)
 				if (jt->first != it->first && it->second->IsRaceContacted(jt->first) == true)
 				{
 					// zufällig wird hier eine bekannte andere Rasse als ResponsibleRace ausgewählt

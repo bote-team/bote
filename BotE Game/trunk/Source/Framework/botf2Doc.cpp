@@ -122,7 +122,7 @@ BOOL CBotf2Doc::OnNewDocument()
 	// Mal Testweise paar Truppen anlegen
 	m_TroopInfo.RemoveAll();
 	BYTE techs[6];
-	memset(techs, 0, sizeof(*techs)*6);
+	memset(techs, 0, sizeof(techs));
 	USHORT res[5] = {50};	
 	CTroopInfo* troopInfo = new CTroopInfo(CResourceManager::GetString("MAJOR1_TROOP1_NAME"), CResourceManager::GetString("MAJOR1_TROOP1_DESC"),9,10,techs,res,180,0,"MAJOR1",2500,1);
 	m_TroopInfo.Add(*troopInfo);
@@ -143,7 +143,7 @@ BOOL CBotf2Doc::OnNewDocument()
 	m_TroopInfo.Add(*troopInfo);
 	delete troopInfo;
 	// Spezialtruppen für den Cartarer anlegen
-	memset(techs, 255, sizeof(*techs)*6);
+	memset(techs, 255, sizeof(techs));
 	troopInfo = new CTroopInfo(CResourceManager::GetString("MAJOR5_TROOP2_NAME"), CResourceManager::GetString("MAJOR5_TROOP2_DESC"),25,0,techs,res,2500,6,"MAJOR5",2500,0);
 	m_TroopInfo.Add(*troopInfo);
 	delete troopInfo;
@@ -233,7 +233,7 @@ void CBotf2Doc::Serialize(CArchive& ar)
 								
 		// Hauptrassen-Koordinaten speichern
 		ar << m_mRaceKO.size();
-		for (map<CString, pair<int, int> >::const_iterator it = m_mRaceKO.begin(); it != m_mRaceKO.end(); it++)
+		for (map<CString, pair<int, int> >::const_iterator it = m_mRaceKO.begin(); it != m_mRaceKO.end(); ++it)
 			ar << it->first << it->second.first << it->second.second;
 		
 		for (int i = network::RACE_1; i < network::RACE_ALL; i++)
@@ -254,7 +254,7 @@ void CBotf2Doc::Serialize(CArchive& ar)
 		
 		map<CString, short>* mMoralMap = CSystemProd::GetMoralProdEmpireWide();
 		ar << mMoralMap->size();
-		for (map<CString, short>::const_iterator it = mMoralMap->begin(); it != mMoralMap->end(); it++)
+		for (map<CString, short>::const_iterator it = mMoralMap->begin(); it != mMoralMap->end(); ++it)
 			ar << it->first << it->second;
 	}
 	else
@@ -344,7 +344,7 @@ void CBotf2Doc::Serialize(CArchive& ar)
 	{
 		// Spieler den Majors zuweisen
 		map<CString, CMajor*>* pmMajors = m_pRaceCtrl->GetMajors();
-		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 			it->second->GetEmpire()->GenerateSystemList(m_System, m_Sector);
 	}
 
@@ -360,7 +360,7 @@ void CBotf2Doc::SerializeBeginGameData(CArchive& ar)
 	{
 		// Hauptrassen-Koordinaten senden
 		ar << m_mRaceKO.size();
-		for (map<CString, pair<int, int> >::const_iterator it = m_mRaceKO.begin(); it != m_mRaceKO.end(); it++)
+		for (map<CString, pair<int, int> >::const_iterator it = m_mRaceKO.begin(); it != m_mRaceKO.end(); ++it)
 			ar << it->first << it->second.first << it->second.second;
 
 		ar << BuildingInfo.GetSize();
@@ -440,7 +440,7 @@ void CBotf2Doc::SerializeNextRoundData(CArchive &ar)
 		
 		map<CString, short>* mMoralMap = CSystemProd::GetMoralProdEmpireWide();
 		ar << mMoralMap->size();
-		for (map<CString, short>::const_iterator it = mMoralMap->begin(); it != mMoralMap->end(); it++)
+		for (map<CString, short>::const_iterator it = mMoralMap->begin(); it != mMoralMap->end(); ++it)
 			ar << it->first << it->second;
 	}
 	else
@@ -562,7 +562,7 @@ void CBotf2Doc::SerializeNextRoundData(CArchive &ar)
 
 		// Systemliste der Imperien erstellen
 		map<CString, CMajor*>* pmMajors = m_pRaceCtrl->GetMajors();
-		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 			it->second->GetEmpire()->GenerateSystemList(m_System, m_Sector);
 	}
 	MYTRACE(MT::LEVEL_INFO, "... serialization of NextRoundData succesfull\n");
@@ -802,7 +802,7 @@ void CBotf2Doc::DoViewWorkOnNewRound()
 
 	// Views ihre Arbeiten zu Beginn einer neuen Runde durchführen lassen
 	std::map<CWnd *, UINT>* views = &GetMainFrame()->GetSplitterWindow()->views;
-	for (std::map<CWnd *, UINT>::iterator it = views->begin(); it != views->end(); it++)
+	for (std::map<CWnd *, UINT>::iterator it = views->begin(); it != views->end(); ++it)
 	{
 		if (it->second == GALAXY_VIEW)
 			((CGalaxyMenuView*)(it->first))->OnNewRound();
@@ -850,7 +850,7 @@ void CBotf2Doc::PrepareData()
 		}
 		// Spieler den Majors zuweisen
 		map<CString, CMajor*>* pmMajors = m_pRaceCtrl->GetMajors();
-		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 		{
 			network::RACE client = m_pRaceCtrl->GetMappedClientID(it->first);
 			// wird das Imperium von einem Menschen oder vom Computer gespielt
@@ -929,7 +929,7 @@ void CBotf2Doc::PrepareData()
 	{
 		// Spieler den Majors zuweisen
 		map<CString, CMajor*>* pmMajors = m_pRaceCtrl->GetMajors();
-		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 		{
 			network::RACE client = m_pRaceCtrl->GetMappedClientID(it->first);
 			// wird das Imperium von einem Menschen oder vom Computer gespielt
@@ -977,7 +977,7 @@ void CBotf2Doc::GenerateGalaxy()
 			m_mRaceKO[it->first].first = rand()%(STARMAP_SECTORS_HCOUNT);
 			m_mRaceKO[it->first].second= rand()%(STARMAP_SECTORS_VCOUNT);
 			
-			for (map<CString, CMajor*>::const_iterator jt = pmMajors->begin(); jt != pmMajors->end(); jt++)
+			for (map<CString, CMajor*>::const_iterator jt = pmMajors->begin(); jt != pmMajors->end(); ++jt)
 			{
 				if (it->first != jt->first && GetRaceKO(jt->first) != CPoint(-1,-1) && abs(GetRaceKO(it->first).x - GetRaceKO(jt->first).x) < nMinDiff && abs(GetRaceKO(it->first).y - GetRaceKO(jt->first).y) < nMinDiff)
 					m_mRaceKO[it->first] = pair<int,int>(-1,-1);
@@ -1000,7 +1000,7 @@ void CBotf2Doc::GenerateGalaxy()
 		}
 	}
 
-	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 	{
 		CMajor* pMajor = it->second;
 		CPoint raceKO = GetRaceKO(it->first);
@@ -1074,7 +1074,7 @@ void CBotf2Doc::GenerateGalaxy()
 						else if (m_Sector[x + i][y + j].GetAnomaly())
 							nAnomalys++;
 
-						for (map<CString, pair<int, int> >::const_iterator it = m_mRaceKO.begin(); it != m_mRaceKO.end(); it++)
+						for (map<CString, pair<int, int> >::const_iterator it = m_mRaceKO.begin(); it != m_mRaceKO.end(); ++it)
 							if (it->second.first == x + i && it->second.second == y + j)
 							{
 								sunSystems	+= 100;
@@ -1128,7 +1128,7 @@ void CBotf2Doc::GenerateGalaxy()
 	// nun können alle nicht verwendeten Minors entfernt werden
 	vector<CString> vDelMinors;
 	map<CString, CMinor*>* pmMinors = m_pRaceCtrl->GetMinors();
-	for (map<CString, CMinor*>::iterator it = pmMinors->begin(); it != pmMinors->end(); it++)
+	for (map<CString, CMinor*>::iterator it = pmMinors->begin(); it != pmMinors->end(); ++it)
 	{
 		if (sUsedMinors.find(it->first) == sUsedMinors.end())
 			vDelMinors.push_back(it->first);
@@ -1368,7 +1368,7 @@ void CBotf2Doc::NextRound()
 	// Minors erst nach einem Kampf berechnen, so dass nicht in der gleichen Runde deren Schiff gegen ein anderes Kämpfen kann
 	// Minors ausbreiten, Akzeptanzpunkte berechnen und Ressourcen verbrauchen
 	map<CString, CMinor*>* pmMinors = m_pRaceCtrl->GetMinors();
-	for (map<CString, CMinor*>::const_iterator it = pmMinors->begin(); it != pmMinors->end(); it++)
+	for (map<CString, CMinor*>::const_iterator it = pmMinors->begin(); it != pmMinors->end(); ++it)
 	{
 		CMinor* pMinor = it->second;
 
@@ -1379,7 +1379,7 @@ void CBotf2Doc::NextRound()
 		if (pMinor->GetSubjugated())
 			continue;
 		bool bMember = false;
-		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 		{
 			if (pMinor->GetAgreement(it->first) == MEMBERSHIP)
 			{
@@ -1411,7 +1411,7 @@ void CBotf2Doc::NextRound()
 	
 	// alten Creditbestand festhalten		
 	map<CString, long> mOldCredits;
-	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 	{
 		CMajor* pMajor = it->second;
 		mOldCredits[it->first] = pMajor->GetEmpire()->GetLatinum();
@@ -1424,7 +1424,7 @@ void CBotf2Doc::NextRound()
 	this->CalcEndDataForNextRound();
 
 	// Creditänderung berechnen
-	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 	{
 		CMajor* pMajor = it->second;
 		pMajor->GetEmpire()->SetLatinumChange((int)(pMajor->GetEmpire()->GetLatinum() - mOldCredits[pMajor->GetRaceID()]));
@@ -1565,7 +1565,7 @@ void CBotf2Doc::ApplyBuildingsAtStartup()
 	// testweise mal in allen Systemen alles berechnen
 	map<CString, CMajor*>* pmMajors = m_pRaceCtrl->GetMajors();
 	// Starmaps berechnen, sofern diese noch nicht existieren
-	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 	{
 		CMajor* pMajor = it->second;
 		pMajor->CreateStarmap();
@@ -1578,7 +1578,7 @@ void CBotf2Doc::ApplyBuildingsAtStartup()
 			if (m_Sector[x][y].GetSunSystem() == TRUE)
 			{
 				m_System[x][y].SetHabitants(m_Sector[x][y].GetCurrentHabitants());
-				for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+				for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 					if (m_System[x][y].GetOwnerOfSystem() == it->first)
 					{
 						CMajor* pMajor = it->second;
@@ -1609,7 +1609,7 @@ void CBotf2Doc::ApplyBuildingsAtStartup()
 	// hier das Schiffinformationsfeld durchgehen und in die WeaponObserver-Klasse des jeweiligen Imperiums
 	// die baubaren Waffen eintragen. Wir brauchen dies um selbst Schiffe designen zu können
 	// Dies gilt nur für Majorsraces.
-	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 	{
 		CMajor* pMajor = it->second;
 		BYTE researchLevels[6] =
@@ -1977,8 +1977,8 @@ void CBotf2Doc::ReadShipInfosFromFile()
 	// nochmals hinzugefügt werden. Dabei wird die Schiffsbaurasse auf die Rasse mit dem doppelten Shipset gesetzt.
 	int nAdd = 1;
 	map<CString, CMajor*>* pmMajors = m_pRaceCtrl->GetMajors();
-	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
-		for (map<CString, CMajor*>::iterator jt = pmMajors->begin(); jt != pmMajors->end(); jt++)
+	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
+		for (map<CString, CMajor*>::iterator jt = pmMajors->begin(); jt != pmMajors->end(); ++jt)
 			if (it->first != jt->first && it->second->GetRaceShipNumber() == jt->second->GetRaceShipNumber())
 			{
 				jt->second->SetRaceShipNumber(pmMajors->size() + nAdd);
@@ -2266,7 +2266,7 @@ void CBotf2Doc::GenerateStarmap(const CString& sOnlyForRaceID)
 			continue;
 
 		set<CString> NAPRaces;
-		for (map<CString, CMajor*>::const_iterator itt = pmMajors->begin(); itt != pmMajors->end(); itt++)
+		for (map<CString, CMajor*>::const_iterator itt = pmMajors->begin(); itt != pmMajors->end(); ++itt)
 			if (it->first != itt->first && it->second->GetAgreement(itt->first) == NON_AGGRESSION_PACT)
 				NAPRaces.insert(itt->first);
 		// interne Starmap für KI syncronisieren
@@ -2318,7 +2318,7 @@ void CBotf2Doc::CalcPreDataForNextRound()
 
 	// Berechnungen der neuen Runde
 	map<CString, CMajor*>* pmMajors = m_pRaceCtrl->GetMajors();
-	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 	{
 		CMajor* pMajor = it->second;
 		// Alle alten Nachrichten  aus letzter Runde löschen
@@ -2457,7 +2457,7 @@ void CBotf2Doc::CalcSystemAttack()
 						pMinor->GetIncomingDiplomacyNews()->clear();
 						pMinor->GetOutgoingDiplomacyNews()->clear();
 						map<CString, CMajor*>* pmMajors = m_pRaceCtrl->GetMajors();
-						for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+						for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 						{
 							// ausgehende Nachrichten löschen
 							for (UINT i = 0; i < it->second->GetOutgoingDiplomacyNews()->size(); i++)
@@ -2648,7 +2648,7 @@ void CBotf2Doc::CalcSystemAttack()
 								pMinor->GetIncomingDiplomacyNews()->clear();
 								pMinor->GetOutgoingDiplomacyNews()->clear();
 								map<CString, CMajor*>* pmMajors = m_pRaceCtrl->GetMajors();
-								for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+								for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 								{
 									// ausgehende Nachrichten löschen
 									for (UINT i = 0; i < it->second->GetOutgoingDiplomacyNews()->size(); i++)
@@ -2760,7 +2760,7 @@ void CBotf2Doc::CalcSystemAttack()
 				{
 					CString param = m_Sector[p.x][p.y].GetName();
 					CString eventText = "";
-					for (set<CString>::const_iterator it = attackers.begin(); it != attackers.end(); it++)
+					for (set<CString>::const_iterator it = attackers.begin(); it != attackers.end(); ++it)
 					{
 						CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(*it));
 						ASSERT(pMajor);
@@ -2783,7 +2783,7 @@ void CBotf2Doc::CalcSystemAttack()
 							pMinor->GetIncomingDiplomacyNews()->clear();
 							pMinor->GetOutgoingDiplomacyNews()->clear();
 							map<CString, CMajor*>* pmMajors = m_pRaceCtrl->GetMajors();
-							for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+							for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 							{
 								// ausgehende Nachrichten löschen
 								for (UINT i = 0; i < it->second->GetOutgoingDiplomacyNews()->size(); i++)
@@ -2903,7 +2903,7 @@ void CBotf2Doc::CalcSystemAttack()
 						// mindst. 3% der Bevölkerung vernichtet wurden
 						if (attackSystem->GetDestroyedBuildings() > 0 || attackSystem->GetKilledPop() >= m_System[p.x][p.y].GetHabitants() * 0.03)
 						{
-							for (set<CString>::const_iterator it = attackers.begin(); it != attackers.end(); it++)
+							for (set<CString>::const_iterator it = attackers.begin(); it != attackers.end(); ++it)
 							{
 								CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(*it));
 								ASSERT(pMajor);
@@ -2940,7 +2940,7 @@ void CBotf2Doc::CalcSystemAttack()
 					}
 					// Eventsgrafiken hinzufügen
 					// für den/die Angreifer
-					for (set<CString>::const_iterator it = attackers.begin(); it != attackers.end(); it++)
+					for (set<CString>::const_iterator it = attackers.begin(); it != attackers.end(); ++it)
 					{
 						CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(*it));
 						ASSERT(pMajor);
@@ -2974,7 +2974,7 @@ void CBotf2Doc::CalcSystemAttack()
 				// Nachrichten hinzufügen
 				for (int i = 0; i < attackSystem->GetNews()->GetSize(); )
 				{
-					for (set<CString>::const_iterator it = attackers.begin(); it != attackers.end(); it++)
+					for (set<CString>::const_iterator it = attackers.begin(); it != attackers.end(); ++it)
 					{
 						CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(*it));
 						ASSERT(pMajor);
@@ -3048,10 +3048,10 @@ void CBotf2Doc::CalcIntelligence()
 	{
 		// zuerst werden die ganzen Berechnungen durchgeführt, ohne das Punkte vorher von irgendeiner Rasse dazugerechnet werden.
 		// Dadurch haben alle Rassen die selbe Chance.
-		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 			intel->StartCalc(it->second);
 		// danach werden die Punkte dazuaddiert und zum Schluss werden die einzelnen Depotpunkte etwas reduziert.
-		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 		{
 			intel->AddPoints(it->second);
 			// die Intelpunkte in den Lagern werden ganz am Ende abgezogen.
@@ -3107,7 +3107,7 @@ void CBotf2Doc::CalcIntelligence()
 		intel = NULL;
 	}
 
-	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 		if (it->second->IsHumanPlayer())
 			if (it->second->GetEmpire()->GetIntelligence()->GetIntelReports()->IsReportAdded())
 			{
@@ -3139,7 +3139,7 @@ void CBotf2Doc::CalcResearch()
 
 	map<CString, CMajor*>* pmMajors = m_pRaceCtrl->GetMajors();
 
-	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 	{
 		CMajor* pMajor = it->second;
 
@@ -3207,7 +3207,7 @@ void CBotf2Doc::CalcDiplomacy()
 	map<CString, CMajor*>* pmMajors = m_pRaceCtrl->GetMajors();
 	map<CString, CMinor*>* pmMinors = m_pRaceCtrl->GetMinors();
 
-	for (map<CString, CMinor*>::const_iterator it = pmMinors->begin(); it != pmMinors->end(); it++)
+	for (map<CString, CMinor*>::const_iterator it = pmMinors->begin(); it != pmMinors->end(); ++it)
 	{
 		CMinor* pMinor = it->second;
 		
@@ -3216,7 +3216,7 @@ void CBotf2Doc::CalcDiplomacy()
 		pMinor->CheckDiplomaticConsistence(this);
 		pMinor->PerhapsCancelAgreement(this);
 
-		for (map<CString, CMajor*>::const_iterator jt = pmMajors->begin(); jt != pmMajors->end(); jt++)
+		for (map<CString, CMajor*>::const_iterator jt = pmMajors->begin(); jt != pmMajors->end(); ++jt)
 		{
 			CMajor* pMajor = jt->second;
 
@@ -3254,7 +3254,7 @@ void CBotf2Doc::CalcDiplomacy()
 		}
 	}
 
-	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 	{
 		CMajor* pMajor = it->second;
 		if (pMajor->GetIncomingDiplomacyNews()->size() > 0)
@@ -3271,7 +3271,7 @@ void CBotf2Doc::CalcDiplomacy()
 
 	// Hat die Rasse die Mitgliedschaft gekündigt, wurde Bestochen oder irgendein anderer Grund ist dafür
 	// verantwortlich, warum eine Major plötzlich nicht mehr Zugriff auf das System der Minor hat.
-	for (map<CString, CMinor*>::const_iterator it = pmMinors->begin(); it != pmMinors->end(); it++)
+	for (map<CString, CMinor*>::const_iterator it = pmMinors->begin(); it != pmMinors->end(); ++it)
 	{
 		CMinor* pMinor = it->second;
 	
@@ -3305,7 +3305,7 @@ void CBotf2Doc::CalcOldRoundData()
 	m_GlobalBuildings.Reset();
 
 	map<CString, CMajor*>* pmMajors = m_pRaceCtrl->GetMajors();
-	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 	{
 		// hier setzen wir wieder die gesamten FP, SP und die gesamten Lager auf 0
 		it->second->GetEmpire()->ClearAllPoints();
@@ -3812,7 +3812,7 @@ void CBotf2Doc::CalcNewRoundData()
 							mShipPort[j->first] = TRUE;
 				}
 
-			for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+			for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 				if (mShipPort[it->first] == true)
 				{
 					m_Sector[x][y].SetShipPort(TRUE, it->first);					
@@ -3820,7 +3820,7 @@ void CBotf2Doc::CalcNewRoundData()
 		}		
 		
 		// Forschungsboni aus Spezialforschungen setzen, nachdem wir diese aus allen Systemen geholt haben
-		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 		{
 			CMajor* pMajor = it->second;
 			CResearchInfo* pInfo = pMajor->GetEmpire()->GetResearch()->GetResearchInfo();
@@ -3844,7 +3844,7 @@ void CBotf2Doc::CalcNewRoundData()
 		}
 		
 		// Geheimdienstboni aus Spezialforschungen holen
-		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 		{
 			CMajor* pMajor = it->second;
 			CResearchInfo* pInfo = pMajor->GetEmpire()->GetResearch()->GetResearchInfo();
@@ -3895,7 +3895,7 @@ void CBotf2Doc::CalcTrade()
 	if (!pmMajors->size())
 		AfxMessageBox("Error in CBotf2Doc::CalcTrade(): Could not get any major from race controller!");
 
-	for (map<CString, CMajor*>::iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 	{
 		CMajor* pMajor = it->second;
 		ASSERT(pMajor);
@@ -3947,7 +3947,7 @@ void CBotf2Doc::CalcTrade()
 		CString sMonopolRace = "";		// Rasse die das Monopol erlangt hat
 		
 
-		for (map<CString, CMajor*>::iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 		{
 			CMajor* pMajor = it->second;
 			ASSERT(pMajor);
@@ -3960,7 +3960,7 @@ void CBotf2Doc::CalcTrade()
 			}
 		}
 
-		for (map<CString, CMajor*>::iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 		{
 			CMajor* pMajor = it->second;
 			ASSERT(pMajor);
@@ -4009,7 +4009,7 @@ void CBotf2Doc::CalcTrade()
 	}
 	// Hier den neuen Kurs der Waren an den Handelsbörsen berechnen, dürfen wir erst machen, wenn wir für alle Tradeobjekte
 	// die einzelnen Kurse berechnet haben
-	for (map<CString, CMajor*>::iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 	{
 		CMajor* pMajor = it->second;
 		ASSERT(pMajor);
@@ -4340,7 +4340,7 @@ void CBotf2Doc::CalcShipOrders()
 			{
 				BOOL buildable = TRUE;
 				map<CString, CMajor*>* pmMajors = m_pRaceCtrl->GetMajors();
-				for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+				for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 				{
 					if (m_Sector[ShipKO.x][ShipKO.y].GetOutpost(it->first) == TRUE || 
 					   (m_Sector[ShipKO.x][ShipKO.y].GetOutpost(it->first) == FALSE && m_Sector[ShipKO.x][ShipKO.y].GetStarbase(it->first) == TRUE))
@@ -4385,7 +4385,7 @@ void CBotf2Doc::CalcShipOrders()
 										m_iSelectedView[client] = EMPIRE_VIEW;
 									}
 									// Wenn eine Station fertig wurde für alle Rassen die Punkte wieder canceln
-									for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+									for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 									{
 										m_Sector[ShipKO.x][ShipKO.y].SetIsStationBuilding(FALSE, it->first);
 										m_Sector[ShipKO.x][ShipKO.y].SetStartStationPoints(0, it->first);
@@ -4424,7 +4424,7 @@ void CBotf2Doc::CalcShipOrders()
 								m_iSelectedView[client] = EMPIRE_VIEW;
 							}
 							// Wenn eine Station fertig wurde für alle Rassen die Punkte wieder canceln
-							for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+							for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 							{
 								m_Sector[ShipKO.x][ShipKO.y].SetIsStationBuilding(FALSE, it->first);
 								m_Sector[ShipKO.x][ShipKO.y].SetStartStationPoints(0, it->first);
@@ -4485,7 +4485,7 @@ void CBotf2Doc::CalcShipOrders()
 			{
 				BOOL buildable = TRUE;
 				map<CString, CMajor*>* pmMajors = m_pRaceCtrl->GetMajors();
-				for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+				for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 				{
 					if (m_Sector[ShipKO.x][ShipKO.y].GetStarbase(it->first) == TRUE
 						|| (m_Sector[ShipKO.x][ShipKO.y].GetOutpost(it->first) == TRUE && it->first != m_ShipArray[y].GetOwnerOfShip()))
@@ -4531,7 +4531,7 @@ void CBotf2Doc::CalcShipOrders()
 										m_iSelectedView[client] = EMPIRE_VIEW;
 									}
 									// Wenn eine Station fertig wurde für alle Rassen die Punkte wieder canceln
-									for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+									for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 									{
 										m_Sector[ShipKO.x][ShipKO.y].SetIsStationBuilding(FALSE, it->first);
 										m_Sector[ShipKO.x][ShipKO.y].SetStartStationPoints(0, it->first);
@@ -4581,7 +4581,7 @@ void CBotf2Doc::CalcShipOrders()
 								m_iSelectedView[client] = EMPIRE_VIEW;
 							}
 							// Wenn eine Station fertig wurde für alle Rassen die Punkte wieder canceln
-							for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+							for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 							{
 								m_Sector[ShipKO.x][ShipKO.y].SetIsStationBuilding(FALSE, it->first);
 								m_Sector[ShipKO.x][ShipKO.y].SetStartStationPoints(0, it->first);
@@ -4867,13 +4867,13 @@ void CBotf2Doc::CalcShipMovement()
 	// Jetzt die Starmap abgleichen, das wir nicht auf Gebiete fliegen können, wenn wir einen NAP mit einer Rasse haben
 	map<CString, CMajor*>* pmMajors = m_pRaceCtrl->GetMajors();
 	bool bAnomaly = false;
-	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 	{
 		CMajor* pMajor = it->second;
 		// Schiffunterstützungskosten auf NULL setzen
 		pMajor->GetEmpire()->SetShipCosts(0);
 		set<CString> races;
-		for (map<CString, CMajor*>::const_iterator itt = pmMajors->begin(); itt != pmMajors->end(); itt++)
+		for (map<CString, CMajor*>::const_iterator itt = pmMajors->begin(); itt != pmMajors->end(); ++itt)
 			if (it->first != itt->first && pMajor->GetAgreement(itt->first) == NON_AGGRESSION_PACT)
 				races.insert(itt->first);
 		pMajor->GetStarmap()->SynchronizeWithMap(m_Sector, &races);
@@ -5161,38 +5161,6 @@ void CBotf2Doc::CalcShipCombat()
 	// Kampf berechnen
 	Combat.CalculateCombat(winner);
 	
-	// Nach einem Kampf muß ich das Feld der Schiffe durchgehen und alle Schiffe aus diesem nehmen, die
-	// keine Hülle mehr besitzen. Aufpassen muß ich dabei, wenn das Schiff eine Flotte anführte
-	CStringArray destroyedShips;
-	for (int i = 0; i < m_ShipArray.GetSize(); i++)
-	{
-		if (m_ShipArray.GetAt(i).GetKO() != m_ptCurrentCombatSector)
-			continue;
-		// Wenn das Schiff eine Flotte hatte, dann erstmal nur die Schiffe in der Flotte beachten
-		// Wenn davon welche zerstört wurden diese aus der Flotte nehmen
-		if (m_ShipArray.GetAt(i).GetFleet())
-		{
-			for (int x = 0; x < m_ShipArray.GetAt(i).GetFleet()->GetFleetSize(); x++)
-				if (m_ShipArray.GetAt(i).GetFleet()->GetShipFromFleet(x)->GetHull()->GetCurrentHull() < 1)
-				{
-					// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
-					AddToLostShipHistory(m_ShipArray[i].GetFleet()->GetShipFromFleet(x), CResourceManager::GetString("COMBAT"), CResourceManager::GetString("DESTROYED"));
-					destroyedShips.Add(m_ShipArray[i].GetFleet()->GetShipFromFleet(x)->GetShipName()+" ("+m_ShipArray[i].GetFleet()->GetShipFromFleet(x)->GetShipTypeAsString()+")");
-					m_ShipArray[i].GetFleet()->RemoveShipFromFleet(x--);
-				}
-			m_ShipArray[i].CheckFleet();
-		}
-		
-		// Wenn das Schiff selbst zerstört wurde
-		if (m_ShipArray.GetAt(i).GetHull()->GetCurrentHull() < 1)
-		{
-			// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
-			AddToLostShipHistory(&m_ShipArray[i], CResourceManager::GetString("COMBAT"), CResourceManager::GetString("DESTROYED"));
-			destroyedShips.Add(m_ShipArray[i].GetShipName()+" ("+m_ShipArray[i].GetShipTypeAsString()+")");							
-			RemoveShip(i--);
-		}
-	}
-
 	// Möglichen Rückzugssektor für Rasse aus diesem Kampf ermitteln
 	// Diese Schiffe werden auf einem zufälligen Feld um den Kampfsektor platziert
 	for (map<CString, int>::const_iterator it = m_mCombatOrders.begin(); it != m_mCombatOrders.end(); ++it)
@@ -5220,7 +5188,7 @@ void CBotf2Doc::CalcShipCombat()
 	map<CString, CRace*>* pmRaces = m_pRaceCtrl->GetRaces();
 	map<CString, CMajor*>* pmMajors = m_pRaceCtrl->GetMajors();
 	
-	for (map<CString, CRace*>::const_iterator it = pmRaces->begin(); it != pmRaces->end(); it++)
+	for (map<CString, CRace*>::const_iterator it = pmRaces->begin(); it != pmRaces->end(); ++it)
 	{
 		CString sSectorName;
 		// ist der Sektor bekannt?
@@ -5268,7 +5236,7 @@ void CBotf2Doc::CalcShipCombat()
 			}
 			// Die Beziehung zum Gewinner verschlechtert sich dabei. Treffen zwei computergesteuerte Rassen
 			// aufeinander, so ist die Beziehungsveringerung geringer
-			for (map<CString, CMajor*>::const_iterator itt = pmMajors->begin(); itt != pmMajors->end(); itt++)
+			for (map<CString, CMajor*>::const_iterator itt = pmMajors->begin(); itt != pmMajors->end(); ++itt)
 			{
 				if (it->first != itt->first && winner[itt->first] == 1)
 				{
@@ -5293,8 +5261,83 @@ void CBotf2Doc::CalcShipCombat()
 				m_iSelectedView[client] = EMPIRE_VIEW;
 		}
 	}
+
+	// Nach einem Kampf muß ich das Feld der Schiffe durchgehen und alle Schiffe aus diesem nehmen, die
+	// keine Hülle mehr besitzen. Aufpassen muß ich dabei, wenn das Schiff eine Flotte anführte
+	CStringArray destroyedShips;
+	for (int i = 0; i < m_ShipArray.GetSize(); i++)
+	{
+		if (m_ShipArray.GetAt(i).GetKO() != m_ptCurrentCombatSector)
+			continue;
+		// Wenn das Schiff eine Flotte hatte, dann erstmal nur die Schiffe in der Flotte beachten
+		// Wenn davon welche zerstört wurden diese aus der Flotte nehmen
+		if (m_ShipArray.GetAt(i).GetFleet())
+		{
+			for (int x = 0; x < m_ShipArray.GetAt(i).GetFleet()->GetFleetSize(); x++)
+				if (m_ShipArray.GetAt(i).GetFleet()->GetShipFromFleet(x)->GetHull()->GetCurrentHull() < 1)
+				{
+					// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
+					AddToLostShipHistory(m_ShipArray[i].GetFleet()->GetShipFromFleet(x), CResourceManager::GetString("COMBAT"), CResourceManager::GetString("DESTROYED"));
+					destroyedShips.Add(m_ShipArray[i].GetFleet()->GetShipFromFleet(x)->GetShipName()+" ("+m_ShipArray[i].GetFleet()->GetShipFromFleet(x)->GetShipTypeAsString()+")");
+					
+					// Wenn es das Flagschiff war, so ein Event über dessen Verlust hinzufügen
+					if (m_ShipArray[i].GetFleet()->GetShipFromFleet(x)->GetIsShipFlagShip())
+					{
+						CRace* pOwner = m_pRaceCtrl->GetRace(m_ShipArray[i].GetFleet()->GetShipFromFleet(x)->GetOwnerOfShip());
+						if (pOwner && pOwner->GetType() == MAJOR)
+						{
+							CMajor* pMajor = dynamic_cast<CMajor*>(pOwner);
+							CString eventText = pMajor->GetMoralObserver()->AddEvent(7, pMajor->GetRaceMoralNumber(), m_ShipArray[i].GetFleet()->GetShipFromFleet(x)->GetShipName());
+							message.GenerateMessage(eventText, MILITARY, "", 0, 0);
+							pMajor->GetEmpire()->AddMessage(message);
+						}
+					}					
+
+					m_ShipArray[i].GetFleet()->RemoveShipFromFleet(x--);
+				}
+			m_ShipArray[i].CheckFleet();
+		}
+		
+		// Wenn das Schiff selbst zerstört wurde
+		if (m_ShipArray.GetAt(i).GetHull()->GetCurrentHull() < 1)
+		{
+			// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
+			AddToLostShipHistory(&m_ShipArray[i], CResourceManager::GetString("COMBAT"), CResourceManager::GetString("DESTROYED"));
+			destroyedShips.Add(m_ShipArray[i].GetShipName()+" ("+m_ShipArray[i].GetShipTypeAsString()+")");
+			// Wenn es das Flagschiff war, so ein Event über dessen Verlust hinzufügen
+			if (m_ShipArray[i].GetIsShipFlagShip())
+			{
+				CRace* pOwner = m_pRaceCtrl->GetRace(m_ShipArray[i].GetOwnerOfShip());
+				if (pOwner && pOwner->GetType() == MAJOR)
+				{
+					CMajor* pMajor = dynamic_cast<CMajor*>(pOwner);
+					CString eventText = pMajor->GetMoralObserver()->AddEvent(7, pMajor->GetRaceMoralNumber(), m_ShipArray[i].GetShipName());
+					message.GenerateMessage(eventText, MILITARY, "", 0, 0);
+					pMajor->GetEmpire()->AddMessage(message);
+				}
+			}
+			// Wenn es ein Außenposten oder Sternbasis war, so ein Event über dessen Verlust hinzufügen
+			if (m_ShipArray[i].GetShipType() == OUTPOST || m_ShipArray[i].GetShipType() == STARBASE)
+			{
+				CRace* pOwner = m_pRaceCtrl->GetRace(m_ShipArray[i].GetOwnerOfShip());
+				if (pOwner && pOwner->GetType() == MAJOR)
+				{
+					CMajor* pMajor = dynamic_cast<CMajor*>(pOwner);					
+					CString eventText;
+					if (m_ShipArray[i].GetShipType() == OUTPOST)
+						eventText = pMajor->GetMoralObserver()->AddEvent(8, pMajor->GetRaceMoralNumber());
+					else
+						eventText = pMajor->GetMoralObserver()->AddEvent(9, pMajor->GetRaceMoralNumber());
+					message.GenerateMessage(eventText, MILITARY, "", 0, 0);
+					pMajor->GetEmpire()->AddMessage(message);
+				}
+			}
+
+			RemoveShip(i--);
+		}
+	}
 	
-	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 	{
 		CMajor* pMajor = it->second;
 		// Hat die Rasse an dem Kampf teilgenommen, also gewonnen oder verloren oder unentschieden
@@ -5306,7 +5349,7 @@ void CBotf2Doc::CalcShipCombat()
 				message.GenerateMessage(s, MILITARY, "", 0, 0);
 				pMajor->GetEmpire()->AddMessage(message);
 			}
-	}	
+	}
 }
 
 /// Diese Funktion berechnet die Auswirkungen von Schiffen und Stationen auf der Karte. So werden hier z.B. Sektoren
@@ -5324,10 +5367,15 @@ void CBotf2Doc::CalcShipEffects()
 		{
 			// Rückzugsbefehl zurücknehmen
 			pShip->SetCombatTactic(COMBAT_TACTIC_ATTACK);
-			// Schiff auf Meiden stellen, wenn es zuvor auf Angreifen stand
-			if (pShip->GetCurrentOrder() == ATTACK)
-				pShip->SetCurrentOrder(AVOID);			
-
+			// Schiff auf Meiden stellen
+			if (pShip->IsNonCombat())
+				pShip->SetCurrentOrder(AVOID);
+			else
+				pShip->SetCurrentOrder(ATTACK);
+			
+			// womögicher Terraformplanet oder Stationsbau zurücknehmen
+			pShip->SetTerraformingPlanet(-1);
+			
 			// Rückzugssektor für dieses Schiff in diesem Sektor holen				
 			if (m_mShipRetreatSectors.find(pShip->GetOwnerOfShip()) == m_mShipRetreatSectors.end())
 				continue;
@@ -5474,8 +5522,13 @@ void CBotf2Doc::CalcShipEffects()
 		else if (m_ShipArray[y].GetCurrentOrder() == TERRAFORM)
 		{
 			short nPlanet = m_ShipArray[y].GetTerraformingPlanet();
-			if (nPlanet != -1)
+			if (nPlanet != -1 && nPlanet < m_Sector[p.x][p.y].GetPlanets()->GetSize())
 				m_Sector[p.x][p.y].GetPlanet(nPlanet)->SetIsTerraforming(TRUE);
+			else
+			{
+				m_ShipArray[y].SetTerraformingPlanet(-1);
+				m_ShipArray[y].SetCurrentOrder(AVOID);
+			}
 		}
 		
 		// Schiffunterstützungkosten dem jeweiligen Imperium hinzufügen.
@@ -5692,7 +5745,7 @@ void CBotf2Doc::CalcShipEffects()
 		if (pMajor != NULL)
 		{
 			// wenn zwei Schiffe einer Rasse in diesem Sektor stationiert sind, so können sich die Besitzer auch kennenlernen
-			for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+			for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 				if (pMajor->GetRaceID() != it->first)
 					if (m_Sector[p.x][p.y].GetOwnerOfShip(it->first) == TRUE)
 						if (pMajor->IsRaceContacted(it->first) == false)
@@ -5770,7 +5823,7 @@ void CBotf2Doc::CalcShipEffects()
 			
 			// treffen mit einem Schiff eines anderen Majors
 			// wenn zwei Schiffe einer Rasse in diesem Sektor stationiert sind, so können sich die Besitzer auch kennenlernen
-			for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+			for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 				if (m_Sector[p.x][p.y].GetOwnerOfShip(it->first) == TRUE)
 					if (pMinor->IsRaceContacted(it->first) == false)
 					{

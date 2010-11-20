@@ -133,7 +133,7 @@ CPoint CStarmap::GetSectorCoords(const Sector& sector) const
 
 BOOL CStarmap::IsBase(const Sector &sector)
 {
-	for (SECTORLIST::iterator it = m_lBases.begin(); it != m_lBases.end(); it++)
+	for (SECTORLIST::const_iterator it = m_lBases.begin(); it != m_lBases.end(); ++it)
 		if (it->x == sector.x && it->y == sector.y)
 			return TRUE;
 	return FALSE;
@@ -564,7 +564,7 @@ void CStarmap::AddTarget(const Sector &target)
 	if (!m_bAICalculation || !PT_IN_RECT(target, 0, 0, STARMAP_SECTORS_HCOUNT, STARMAP_SECTORS_VCOUNT)) return;
 	
 	// prüfen, ob Ziel bereits in Liste vorhanden ist
-	for (SECTORLIST::iterator it = m_lAITargets.begin(); it != m_lAITargets.end(); it++)
+	for (SECTORLIST::const_iterator it = m_lAITargets.begin(); it != m_lAITargets.end(); ++it)
 		if (*it == target)
 			return;
 
@@ -580,7 +580,7 @@ void CStarmap::AddTarget(const Sector &target)
 
 BOOL CStarmap::IsTarget(const Sector &sector)
 {
-	for (SECTORLIST::iterator it = m_lAITargets.begin(); it != m_lAITargets.end(); it++)
+	for (SECTORLIST::const_iterator it = m_lAITargets.begin(); it != m_lAITargets.end(); ++it)
 		if (it->x == sector.x && it->y == sector.y)
 			return TRUE;
 	return FALSE;
@@ -593,7 +593,7 @@ void CStarmap::AddKnownSystem(const Sector &sector)
 	if (!m_bAICalculation || !PT_IN_RECT(sector, 0, 0, STARMAP_SECTORS_HCOUNT, STARMAP_SECTORS_VCOUNT)) return;
 	
 	// prüfen, ob Ziel bereits in Liste vorhanden ist
-	for (SECTORLIST::iterator it = m_lAIKnownSystems.begin(); it != m_lAIKnownSystems.end(); it++)
+	for (SECTORLIST::const_iterator it = m_lAIKnownSystems.begin(); it != m_lAIKnownSystems.end(); ++it)
 		if (*it == sector)
 			return;
 
@@ -609,7 +609,7 @@ void CStarmap::AddKnownSystem(const Sector &sector)
 
 BOOL CStarmap::IsKnownSystem(const Sector &sector)
 {
-	for (SECTORLIST::iterator it = m_lAIKnownSystems.begin(); it != m_lAIKnownSystems.end(); it++)
+	for (SECTORLIST::const_iterator it = m_lAIKnownSystems.begin(); it != m_lAIKnownSystems.end(); ++it)
 		if (it->x == sector.x && it->y == sector.y)
 			return TRUE;
 	return FALSE;
@@ -705,7 +705,7 @@ void CStarmap::RecalcTargetPoints()
 			if (m_Range[x][y] >= m_nAIRange)
 			{
 				// alle Ziele untersuchen
-				for (SECTORLIST::iterator it = m_lAITargets.begin(); it != m_lAITargets.end(); it++)
+				for (SECTORLIST::const_iterator it = m_lAITargets.begin(); it != m_lAITargets.end(); ++it)
 				{
 					// Ziel überspringen, wenn es sich innerhalb der gegebenen Reichweite befindet
 					if (m_Range[it->x][it->y] >= m_nAIRange) continue;
@@ -748,7 +748,7 @@ void CStarmap::RecalcTargetPoints()
 				}
 
 				// die bekannten Systeme untersuchen
-				for (SECTORLIST::iterator it = m_lAIKnownSystems.begin(); it != m_lAIKnownSystems.end(); it++)
+				for (SECTORLIST::const_iterator it = m_lAIKnownSystems.begin(); it != m_lAIKnownSystems.end(); ++it)
 				{
 					// System überspringen, wenn es sich bereits innerhalb der gegebenen Reichweite befindet
 					if (m_Range[it->x][it->y] >= m_nAIRange) continue;
@@ -858,7 +858,7 @@ BaseSector CStarmap::CalcAIBaseSector(double variance)
 	int count = 0;
 	short max_points = -1, old_points = -1;
 
-	for (std::list<BaseSector>::iterator it = lSectors.begin(); it != lSectors.end(); it++)
+	for (std::list<BaseSector>::const_iterator it = lSectors.begin(); it != lSectors.end(); ++it)
 	{
 		if (max_points == -1) max_points = it->points;
 		if ((double)(max_points - it->points) / max_points > variance)
@@ -874,7 +874,7 @@ BaseSector CStarmap::CalcAIBaseSector(double variance)
 	int n = (int)(((double)rand() / RAND_MAX) * count);
 
 	old_points = -1;
-	for (std::list<BaseSector>::iterator it = lSectors.begin(); it != lSectors.end(); it++)
+	for (std::list<BaseSector>::const_iterator it = lSectors.begin(); it != lSectors.end(); ++it)
 	{
 		if (it->points != old_points)
 		{
@@ -890,7 +890,7 @@ BaseSector CStarmap::CalcAIBaseSector(double variance)
 
 	// Einträge der gewählten Stufe zählen
 	count = 0;
-	for (std::list<BaseSector>::iterator it = lSectors.begin(); it != lSectors.end(); it++)
+	for (std::list<BaseSector>::const_iterator it = lSectors.begin(); it != lSectors.end(); ++it)
 	{
 		if (it->points == n)
 			count++;
@@ -900,7 +900,7 @@ BaseSector CStarmap::CalcAIBaseSector(double variance)
 
 	// einen der Einträge gleichwahrscheinlich wählen
 	int m = (int)(((double)rand() / RAND_MAX) * count);
-	for (std::list<BaseSector>::iterator it = lSectors.begin(); it != lSectors.end(); it++)
+	for (std::list<BaseSector>::const_iterator it = lSectors.begin(); it != lSectors.end(); ++it)
 	{
 		if (it->points == n)
 		{

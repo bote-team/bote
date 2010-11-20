@@ -106,7 +106,7 @@ void CMajorAI::CalcFavoriteMinors(void)
 	// Außerdem gebe ich auch keiner Rasse Geld bzw. Mitgifte, wenn ich schon eine Mitgliedschaft mit dieser habe,
 	// deren Akzeptanz bei einer anderen Rasse zu hoch ist oder diese unterworfen wurde.
 	map<CString, CMinor*>* pmMinors = m_pDoc->GetRaceCtrl()->GetMinors();
-	for (map<CString, CMinor*>::const_iterator it = pmMinors->begin(); it != pmMinors->end(); it++)
+	for (map<CString, CMinor*>::const_iterator it = pmMinors->begin(); it != pmMinors->end(); ++it)
 	{
 		CMinor* pMinor = dynamic_cast<CMinor*>(it->second);
 		// kennen wir die Minorrace und wurde diese nicht unterworfen
@@ -117,7 +117,7 @@ void CMajorAI::CalcFavoriteMinors(void)
 				// ist die Akzeptanz bei einer anderen Major noch nicht zu hoch?
 				bool bHighAcceptance = false;
 				map<CString, CMajor*>* pmMajors = m_pDoc->GetRaceCtrl()->GetMajors();
-				for (map<CString, CMajor*>::const_iterator itt = pmMajors->begin(); itt != pmMajors->end(); itt++)
+				for (map<CString, CMajor*>::const_iterator itt = pmMajors->begin(); itt != pmMajors->end(); ++itt)
 					if (itt->first != pOurRace->GetRaceID())
 						if ((pMinor->GetAgreement(itt->first) == MEMBERSHIP && pMinor->GetAcceptancePoints(itt->first) > 3000)
 							|| pMinor->GetAcceptancePoints(itt->first) > 4000)
@@ -366,7 +366,7 @@ short CMajorAI::ReactOnMajorOffer(const CDiplomacyInfo& info)
 		// maximale Schiffsstärke berechnen
 		UINT nMaxShipPower = 0;
 		map<CString, CMajor*>* pmMajors = m_pDoc->GetRaceCtrl()->GetMajors();
-		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 		{
 			UINT nShipPower = m_pDoc->GetStatistics()->GetShipPower(it->first);
 			nMaxShipPower = max(nMaxShipPower, nShipPower);
@@ -443,7 +443,7 @@ short CMajorAI::CalcDiplomacyRequest(const CDiplomacyInfo& info)
 		short nRaces = 0;
 
 		map<CString, CMajor*>* pmMajors = m_pDoc->GetRaceCtrl()->GetMajors();
-		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 		{
 			CMajor* pMajor = it->second;
 			lCredits += pMajor->GetEmpire()->GetLatinum();
@@ -551,7 +551,7 @@ bool CMajorAI::MakeMinorOffer(const CString& sRaceID, CDiplomacyInfo& info)
 		CString sCorruptedMajor = "";
 
 		map<CString, CMajor*>* pmMajors = m_pDoc->GetRaceCtrl()->GetMajors();
-		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 		{
 			short nTemp = pMinor->GetAgreement(it->first);
 			if (pOurRace->GetRaceID() != it->first && nTemp > nOthersAgreement)
@@ -598,7 +598,7 @@ bool CMajorAI::MakeMinorOffer(const CString& sRaceID, CDiplomacyInfo& info)
 			// Nun checken das ich durch irgendeinen Pakt nicht nem Freund den Krieg miterklären würde
 			if (nOffer == WAR)
 			{
-				for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+				for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 					// würden der anderen Rasse sonst auch den Krieg erklären
 					if (it->first != pOurRace->GetRaceID() && pMinor->GetAgreement(it->first) == AFFILIATION)
 						// Wenn wir die andere Majorrasse relativ gut leiden können, dann wird kein Krieg erklärt
@@ -656,7 +656,7 @@ bool CMajorAI::MakeMinorOffer(const CString& sRaceID, CDiplomacyInfo& info)
 				// hier müssen wir noch den Gegner der Bestechung wählen
 				// dieser wird zufällig unter den vorhandenen Majors ausgewählt
 				vector<CString> vCorrupted;
-				for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+				for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 					// wir nicht selbst
 					if (it->first != pOurRace->GetRaceID() && pMinor->GetAgreement(it->first) > NO_AGREEMENT)
 						vCorrupted.push_back(it->first);
@@ -805,12 +805,13 @@ bool CMajorAI::MakeMajorOffer(CString& sRaceID, CDiplomacyInfo& info)
 			float fModi = 0.0f;
 			if (nTheirShipPower)
 				fModi = (float)nOurShipPower / (float)nTheirShipPower;
-			fModi *= 3.0f;
+			if (fModi > 1.0)
+				fModi *= 3.0f;
 			
 			// wir sind stärker als der Gegner
 			if (fCompare < 1.0f)
 				nMinRel += (short)fModi;	// somit wird auch Krieg erklärt, wenn die Beziehung eigentlich noch besser ist.
-			if (nRandom + abs(nAgreement * 2) < nMinRel && byOurRelationToThem + abs(nAgreement * 2) < nMinRel && nAgreement != WAR)
+			if (fModi > 1.0 && nRandom + abs(nAgreement * 2) < nMinRel && byOurRelationToThem + abs(nAgreement * 2) < nMinRel && nAgreement != WAR)
 				nOffer = WAR;
 			
 			// Hier möglicherweise Angebot eines Kriegspaktes
@@ -825,7 +826,7 @@ bool CMajorAI::MakeMajorOffer(CString& sRaceID, CDiplomacyInfo& info)
 				CString sLikeSecond = "";		// zweitbeste Beziehung von uns zu
 				BYTE byTemp = 0;
 				map<CString, CMajor*>* pmMajors = m_pDoc->GetRaceCtrl()->GetMajors();
-				for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+				for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 					// nicht wir selbst und nicht die Rasse an die Krieg erklärt werden soll
 					if (it->first != pOurRace->GetRaceID() && it->first != sRaceID)
 						// Kriegspaktpartner muss uns und dem Kriegsgegner bekannt sein
@@ -888,7 +889,7 @@ bool CMajorAI::MakeMajorOffer(CString& sRaceID, CDiplomacyInfo& info)
 			// maximale Schiffsstärke berechnen
 			UINT nMaxShipPower = 0;
 			map<CString, CMajor*>* pmMajors = m_pDoc->GetRaceCtrl()->GetMajors();
-			for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+			for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 			{
 				UINT nShipPower = m_pDoc->GetStatistics()->GetShipPower(it->first);
 				nMaxShipPower = max(nMaxShipPower, nShipPower);
@@ -1136,7 +1137,7 @@ bool CMajorAI::GiveDowry(CDiplomacyInfo& info)
 	USHORT counter = 0;
 	
 	map<CString, CMajor*>* pmMajors = m_pDoc->GetRaceCtrl()->GetMajors();
-	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 	{
 		CMajor* pMajor = it->second;
 		if (pMajor && pMajor->GetEmpire()->GetNumberOfSystems() > 0)
@@ -1258,7 +1259,7 @@ bool CMajorAI::ClaimRequest(CDiplomacyInfo& info)
 	USHORT counter = 0;
 	
 	map<CString, CMajor*>* pmMajors = m_pDoc->GetRaceCtrl()->GetMajors();
-	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 	{
 		CMajor* pMajor = it->second;
 		if (pMajor && pMajor->GetEmpire()->GetNumberOfSystems() > 0)

@@ -170,9 +170,9 @@ void CIntelligence::AddSecurityPoints(int add)
 void CIntelligence::ClearBoni()
 {
 	m_nInnerSecurityBoni = 0;
-	memset(m_nEconomyBoni, 0, sizeof(*m_nEconomyBoni)*2);
-	memset(m_nScienceBoni, 0, sizeof(*m_nScienceBoni)*2);
-	memset(m_nMilitaryBoni, 0, sizeof(*m_nMilitaryBoni)*2);
+	memset(m_nEconomyBoni, 0, sizeof(m_nEconomyBoni));
+	memset(m_nScienceBoni, 0, sizeof(m_nScienceBoni));
+	memset(m_nMilitaryBoni, 0, sizeof(m_nMilitaryBoni));
 }
 
 /// Resetfunktion für das CIntelligence-Objekt.

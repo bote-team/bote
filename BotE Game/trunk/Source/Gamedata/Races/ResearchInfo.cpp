@@ -138,7 +138,7 @@ void CResearchInfo::ChangeStatusOfComplex(BYTE newstatus)
 			if (m_ResearchComplex[m_iCurrentComplex].m_byFieldStatus[i] == RESEARCHING)
 			{
 				// alle anderen Gebiete auf "nicht erforscht" setzen
-				memset(m_ResearchComplex[m_iCurrentComplex].m_byFieldStatus, NOTRESEARCHED, 3);
+				memset(m_ResearchComplex[m_iCurrentComplex].m_byFieldStatus, NOTRESEARCHED, sizeof(m_ResearchComplex[m_iCurrentComplex].m_byFieldStatus));
 				// gerade erforschtes Gebiet auf "erforscht" setzen
 				m_ResearchComplex[m_iCurrentComplex].m_byFieldStatus[i] = RESEARCHED;
 				break;
@@ -161,7 +161,7 @@ void CResearchInfo::SetUniqueResearchChoosePossibility(BYTE possibility)
 	if (m_iCurrentComplex != -1 && m_bChoiceTaken == FALSE)
 	{
 		// alle Gebiete erstmal auf nicht erforscht setzen
-		memset(m_ResearchComplex[m_iCurrentComplex].m_byFieldStatus, NOTRESEARCHED, 3);
+		memset(m_ResearchComplex[m_iCurrentComplex].m_byFieldStatus, NOTRESEARCHED, sizeof(m_ResearchComplex[m_iCurrentComplex].m_byFieldStatus));
 		// gewähltes Gebiet auf "wird erforscht" setzen
 		m_ResearchComplex[m_iCurrentComplex].m_byFieldStatus[possibility-1] = RESEARCHING;
 		m_bChoiceTaken = TRUE;

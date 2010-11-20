@@ -370,7 +370,7 @@ void CSoundManager::AddMessage(SNDMGR_VALUE nMsg, network::RACE nRace, int nPrio
 	if (m_bMessagesPlaying) return;
 
 	// Befindet sich diese Nachricht schon in der Liste wird sie nicht nochmal hinzugefügt.
-	for (SNDMGR_MESSAGELIST::iterator it = m_lMessages.begin(); it != m_lMessages.end(); it++)
+	for (SNDMGR_MESSAGELIST::const_iterator it = m_lMessages.begin(); it != m_lMessages.end(); ++it)
 		if (it->nMessage == nMsg && it->nRace == nRace)
 			return;
 

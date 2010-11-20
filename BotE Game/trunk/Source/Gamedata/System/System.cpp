@@ -1535,8 +1535,8 @@ void CSystem::CalculateBuildableShips(CBotf2Doc* pDoc, const CPoint& p)
 				if (pShipInfo->GetShipSize() > m_Production.GetMaxBuildableShipSize())
 					continue;
 
-				// wenn die Credits unter -1000 gefallen sind können keine Kampfschiffe mehr gebaut werden
-				if (IS_NONCOMBATSHIP(pShipInfo->GetShipType()) == false && pMajor->GetEmpire()->GetLatinum() < 0)
+				// wenn die Credits unter 0 gefallen sind können keine Kampfschiffe mehr gebaut werden
+				if (pShipInfo->IsNonCombat() == false && pMajor->GetEmpire()->GetLatinum() < 0)
 					continue;
 
 				// Schiff in die Liste der baubaren Schiffe aufnehmen

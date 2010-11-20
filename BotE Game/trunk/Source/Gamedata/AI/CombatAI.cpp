@@ -191,7 +191,7 @@ void CCombatAI::ApplyShipTactics(const CArray<CShip*>& vInvolvedShips, map<CStri
 					// Kampfschiffe bekommen den Angreifen-Befehl
 					pShip->SetCombatTactic(COMBAT_TACTIC_ATTACK);
 					// Non-Combats bekommen den Meiden-Befehl
-					if (IS_NONCOMBATSHIP(pShip->GetShipType()))
+					if (pShip->IsNonCombat())
 					{
 						// Hat das Schiff Offensivpower, so kann es doch angreifen
 						if (pShip->GetCompleteOffensivePower() <= 1)

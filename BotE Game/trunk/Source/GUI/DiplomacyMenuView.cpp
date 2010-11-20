@@ -89,13 +89,13 @@ void CDiplomacyMenuView::OnNewRound()
 	vector<CMinor*> vMinors;
 	// zuerst werden die Majors in alphabetischer Reihenfolge dargestellt, dann die Minors in alphabetischer Reihenfolge
 	map<CString, CMajor*>* pmMajors = pDoc->GetRaceCtrl()->GetMajors();
-	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 		if (pPlayer->IsRaceContacted(it->first) && it->second->GetEmpire()->GetNumberOfSystems() > 0)
 			vMajors.push_back(it->second);
 	std::sort(vMajors.begin(), vMajors.end(), CmpRaces);
 
 	map<CString, CMinor*>* pmMinors = pDoc->GetRaceCtrl()->GetMinors();
-	for (map<CString, CMinor*>::const_iterator it = pmMinors->begin(); it != pmMinors->end(); it++)
+	for (map<CString, CMinor*>::const_iterator it = pmMinors->begin(); it != pmMinors->end(); ++it)
 		if (pPlayer->IsRaceContacted(it->first))
 			vMinors.push_back(it->second);
 	std::sort(vMinors.begin(), vMinors.end(), CmpRaces);

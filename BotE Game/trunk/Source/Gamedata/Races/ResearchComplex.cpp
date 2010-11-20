@@ -20,11 +20,7 @@ IMPLEMENT_SERIAL (CResearchComplex, CObject, 1)
 
 CResearchComplex::CResearchComplex()
 {
-	m_byComplexStatus = NOTRESEARCHED;
-	memset(m_byFieldStatus, NOTRESEARCHED, 3 * sizeof(*m_byFieldStatus));
-	memset(m_iBonus, 0, 3 * sizeof(*m_iBonus));
-	m_strComplexName = "";
-	m_strComplexDescription = "";
+	Reset();
 }
 
 CResearchComplex::~CResearchComplex()
@@ -334,8 +330,8 @@ void CResearchComplex::GenerateComplex(USHORT complex)
 void CResearchComplex::Reset()
 {
 	m_byComplexStatus = NOTRESEARCHED;
-	memset(m_byFieldStatus, NOTRESEARCHED, 3 * sizeof(*m_byFieldStatus));
-	memset(m_iBonus, 0, 3 * sizeof(*m_iBonus));
+	memset(m_byFieldStatus, NOTRESEARCHED, sizeof(m_byFieldStatus));
+	memset(m_iBonus, 0, sizeof(m_iBonus));
 	m_strComplexName = "";
 	m_strComplexDescription = "";
 }

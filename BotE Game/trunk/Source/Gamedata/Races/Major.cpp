@@ -40,15 +40,15 @@ void CMajor::Serialize(CArchive &ar)
 		
 		// noch verbleibende Runden des Vertrags (NULL == unbegrenzt)
 		ar << m_mAgrDuration.size();
-		for (map<CString, short>::const_iterator it = m_mAgrDuration.begin(); it != m_mAgrDuration.end(); it++)
+		for (map<CString, short>::const_iterator it = m_mAgrDuration.begin(); it != m_mAgrDuration.end(); ++it)
 			ar << it->first << it->second;
 		// Dauer des Verteidigungspaktes, einzeln speichern, weil er separat zu anderen Verträgen abgeschlossen werden kann.
 		ar << m_mDefDuration.size();
-		for (map<CString, short>::const_iterator it = m_mDefDuration.begin(); it != m_mDefDuration.end(); it++)
+		for (map<CString, short>::const_iterator it = m_mDefDuration.begin(); it != m_mDefDuration.end(); ++it)
 			ar << it->first << it->second;		
 		// besitzt die Majorrace eines Verteidigungspakt mit einer anderen Majorrace (Rassen-ID, Wahrheitswert)
 		ar << m_vDefencePact.size();
-		for (vector<CString>::const_iterator it = m_vDefencePact.begin(); it != m_vDefencePact.end(); it++)
+		for (vector<CString>::const_iterator it = m_vDefencePact.begin(); it != m_vDefencePact.end(); ++it)
 			ar << *it;		
 	}
 	// wenn geladen wird
@@ -231,7 +231,7 @@ bool CMajor::DecrementAgreementsDuration(map<CString, CMajor*>* pmMajors)
 	// Wenn wir verringern und auf einen Wert von "1" kommen, dann wird der Vertrag aufgelöst
 	// und eine Nachricht an unser Imperium versandt
 	vector<CString> vDelAgrs;
-	for (map<CString, short>::const_iterator it = m_mAgreement.begin(); it != m_mAgreement.end(); it++)
+	for (map<CString, short>::const_iterator it = m_mAgreement.begin(); it != m_mAgreement.end(); ++it)
 	{
 		if (it->first == m_sID)
 			continue;

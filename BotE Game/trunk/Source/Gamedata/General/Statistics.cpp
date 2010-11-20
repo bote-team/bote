@@ -148,7 +148,7 @@ void CStatistics::GetDemographicsMilitary(const CString& sRaceID, int& nPlace, f
 		CShip* pShip = &pDoc->m_ShipArray[i];
 		// Stationen und Alienschiffe werden nicht mit einbezogen
 		if (pShip->GetShipType() != OUTPOST && pShip->GetShipType() != STARBASE && pShip->GetShipType() != ALIEN)
-			mMap[pShip->GetOwnerOfShip()] += pShip->GetCompleteDefensivePower() + pShip->GetCompleteOffensivePower() / 2;
+			mMap[pShip->GetOwnerOfShip()] += pShip->GetCompleteOffensivePower() + pShip->GetCompleteOffensivePower() / 2;
 		// Schiffe in der Flotte beachten
 		if (pShip->GetFleet())
 		{
@@ -156,7 +156,7 @@ void CStatistics::GetDemographicsMilitary(const CString& sRaceID, int& nPlace, f
 			{
 				CShip* pFleetShip = pShip->GetFleet()->GetShipFromFleet(j);
 				if (pFleetShip->GetShipType() != OUTPOST && pFleetShip->GetShipType() != STARBASE && pFleetShip->GetShipType() != ALIEN)
-					mMap[pFleetShip->GetOwnerOfShip()] += pFleetShip->GetCompleteDefensivePower() + pFleetShip->GetCompleteOffensivePower() / 2;
+					mMap[pFleetShip->GetOwnerOfShip()] += pFleetShip->GetCompleteOffensivePower() + pFleetShip->GetCompleteOffensivePower() / 2;
 			}
 		}
 	}
@@ -224,16 +224,16 @@ int CStatistics::GetGamePoints(const CString& sRaceID, int nCurrentRound, float 
 	float fValue, fAverage, fFirst, fLast;
 
 	GetDemographicsBSP(sRaceID, nPlace, fValue, fAverage, fFirst, fLast);
-	nGamePoints += (int)(fValue * 15);
-
-	GetDemographicsProductivity(sRaceID, nPlace, fValue, fAverage, fFirst, fLast);
 	nGamePoints += (int)(fValue * 5);
 
+	GetDemographicsProductivity(sRaceID, nPlace, fValue, fAverage, fFirst, fLast);
+	nGamePoints += (int)(fValue);
+
 	GetDemographicsMilitary(sRaceID, nPlace, fValue, fAverage, fFirst, fLast);
-	nGamePoints += (int)(fValue / 100);
+	nGamePoints += (int)(fValue / 10);
 
 	GetDemographicsResearch(sRaceID, nPlace, fValue, fAverage, fFirst, fLast);
-	nGamePoints += (int)(fValue * 10);
+	nGamePoints += (int)(fValue * 2);
 	
 	// aller 10 Runden verringert sich die Punktzahl um 1%
 	float fTemp = nCurrentRound / 10.0;

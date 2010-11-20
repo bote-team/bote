@@ -101,7 +101,7 @@ void CEmpire::AddFP(int add)
 // die wirklichen Lager in den einzelnen Systemen werden dabei nicht angerührt
 void CEmpire::ClearAllPoints(void)
 {
-	memset(m_lResourceStorages, 0, sizeof(*m_lResourceStorages)*(DILITHIUM + 1));
+	memset(m_lResourceStorages, 0, sizeof(m_lResourceStorages));
 	m_lFP = 0;
 	m_Intelligence.ClearSecurityPoints();
 }

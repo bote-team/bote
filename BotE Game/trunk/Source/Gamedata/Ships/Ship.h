@@ -104,6 +104,7 @@ public:
 	USHORT GetUsedStorageRoom(const CArray<CTroopInfo>* troopInfo);
 	USHORT GetLoadedResources(BYTE res) const {return m_iLoadedResources[res];}
 	COMBAT_TACTICS GetCombatTactic() const {return m_nCombatTactic;}
+	bool IsNonCombat() const {return (m_iShipType == TRANSPORTER || m_iShipType == COLONYSHIP || m_iShipType == PROBE);}
 		
 	// zum Schreiben der Membervariablen
 	void SetID(USHORT ID) {m_iID = ID+10000;}

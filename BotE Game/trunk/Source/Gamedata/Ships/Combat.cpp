@@ -57,7 +57,7 @@ void CCombat::SetInvolvedShips(CArray<CShip*>* pShips, std::map<CString, CRace*>
 	for (std::map<CString, CRace*>::const_iterator it = pmRaces->begin(); it != pmRaces->end(); ++it)
 		if (!m_bReady)
 		{
-			for (std::map<CString, CRace*>::const_iterator itt = pmRaces->begin(); itt != pmRaces->end(); itt++)
+			for (std::map<CString, CRace*>::const_iterator itt = pmRaces->begin(); itt != pmRaces->end(); ++itt)
 				if (it->first != itt->first && m_mInvolvedRaces.find(it->first) != m_mInvolvedRaces.end() && m_mInvolvedRaces.find(itt->first) != m_mInvolvedRaces.end())
 					if (CCombat::CheckDiplomacyStatus(it->second, itt->second))
 					{

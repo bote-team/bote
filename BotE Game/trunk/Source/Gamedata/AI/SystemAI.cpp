@@ -12,7 +12,7 @@ CSystemAI::CSystemAI(CBotf2Doc* pDoc)
 	ASSERT(pDoc);
 	m_pDoc = pDoc;
 	
-	memset(m_iPriorities, 0, 10 * sizeof(*m_iPriorities));
+	memset(m_iPriorities, 0, sizeof(m_iPriorities));
 	m_bBuildWhat = 0;
 	m_bCalcedPrio = FALSE;
 	m_KO = CPoint(0,0);
@@ -141,42 +141,115 @@ void CSystemAI::CalcPriorities()
 		|| (m_pDoc->m_System[ko.x][ko.y].GetAssemblyList()->GetAssemblyListEntry(0) >= 20000
 		&& m_pDoc->m_System[ko.x][ko.y].GetProduction()->GetBarrack() == FALSE))
 	{
-		// Besitzer des Systems holen
+		// Bauauftrag entfernen
+		// CHECK WW: KI sollte hier anteilige Ressourcen zurückbekommen
 		m_pDoc->m_System[ko.x][ko.y].GetAssemblyList()->ClearAssemblyList(ko, m_pDoc->m_System);
 		m_pDoc->m_System[ko.x][ko.y].CalculateVariables(&m_pDoc->BuildingInfo, m_pMajor->GetEmpire()->GetResearch()->GetResearchInfo(), m_pDoc->m_Sector[ko.x][ko.y].GetPlanets(), m_pMajor, CTrade::GetMonopolOwner());
 	}
 
-	// Checken ob schon ein Eintrag in der Bauliste ist, wenn ja dann brauchen wir hier überhaupt nichts zu machen
-	if (m_pDoc->m_System[ko.x][ko.y].GetAssemblyList()->GetAssemblyListEntry(0) != 0)
-		return;	
-	
 	// Wenn die Moral in dem System sehr niedrig ist, dann wird versucht ein Moralgebäude bzw. Polizeistaat oder ähnliches
 	// laufen zu lassen. Dadurch wird versucht zu verhindern, dass sich Systeme lossagen
-	if (m_pDoc->m_System[ko.x][ko.y].GetMoral() < (rand()%16 + 70))
+	if (m_pDoc->GetSystem(ko).GetMoral() < (rand()%16 + 70))
 	{
-		CArray<short> buildings;
-		for (int i = 0; i < m_pDoc->m_System[ko.x][ko.y].GetBuildableBuildings()->GetSize(); i++)
+		// ist Kriegsrecht, Polizeitstaat oder ähnliches nicht in der Bauliste?
+		short nEntry = m_pDoc->GetSystem(ko).GetAssemblyList()->GetAssemblyListEntry(0);
+		if (nEntry > 0 && nEntry < 10000)
+			if (m_pDoc->GetBuildingInfo(nEntry).GetMoralProd() > 0 && m_pDoc->GetBuildingInfo(nEntry).GetNeverReady())
+				// dann ist schon das richige Gebäude in der Liste und es braucht kein neues gesucht zu werden
+				return;
+
+		// wenn das Gebäude nicht mehr lang zum fertigbauen braucht (weniger als 3 - 6 Runden), dann wird es auch nicht entfernt
+		int nIP = m_pDoc->GetSystem(ko).GetProduction()->GetIndustryProd();
+		if (nEntry != 0 && nIP > 0)
 		{
-			int id = m_pDoc->m_System[ko.x][ko.y].GetBuildableBuildings()->GetAt(i);
-			if (m_pDoc->GetBuildingInfo(id).GetMoralProd() > 0)
+			int nRoundToBuild = 0;
+			// Updates
+			if (nEntry < 0)
+			{
+				nRoundToBuild = (int)ceil((float)(m_pDoc->GetSystem(ko).GetAssemblyList()->GetNeededIndustryInAssemblyList(0)) / ((float)nIP * (100+m_pDoc->GetSystem(ko).GetProduction()->GetUpdateBuildSpeed())/100));
+			}
+			// normales Gebäude
+			else if (nEntry < 10000)
+			{
+				if (m_pDoc->GetBuildingInfo(nEntry).GetNeverReady() == false)
+				{
+					nRoundToBuild = (int)ceil((float)(m_pDoc->GetSystem(ko).GetAssemblyList()->GetNeededIndustryInAssemblyList(0)) / ((float)nIP * (100+m_pDoc->GetSystem(ko).GetProduction()->GetBuildingBuildSpeed())/100));
+				}
+			}
+			// Schiffe
+			else if (nEntry < 20000)
+			{
+				if (m_pDoc->GetSystem(ko).GetProduction()->GetShipYardEfficiency() > 0)
+				{
+					nRoundToBuild = (int)ceil((float)(m_pDoc->GetSystem(ko).GetAssemblyList()->GetNeededIndustryInAssemblyList(0)) / ((float)nIP * m_pDoc->GetSystem(ko).GetProduction()->GetShipYardEfficiency() / 100 * (100+m_pDoc->GetSystem(ko).GetProduction()->GetShipBuildSpeed())/100));
+				}
+			}
+			else
+			{
+				if (m_pDoc->GetSystem(ko).GetProduction()->GetBarrackEfficiency() > 0)
+				{
+					nRoundToBuild = (int)ceil((float)(m_pDoc->GetSystem(ko).GetAssemblyList()->GetNeededIndustryInAssemblyList(0)) / ((float)nIP * m_pDoc->GetSystem(ko).GetProduction()->GetBarrackEfficiency() / 100	* (100+m_pDoc->GetSystem(ko).GetProduction()->GetTroopBuildSpeed())/100));
+				}
+			}
+			// braucht der Auftrag noch länger als 3 bis 6 Runden oder die Moral ist auf unter 50 gefallen
+			if (nRoundToBuild > rand()%4 + 3 || m_pDoc->GetSystem(ko).GetMoral() < 50)
+			{
+				// Bau abbrechen
+				// CHECK WW: KI sollte hier anteilige Ressourcen zurückbekommen
+				m_pDoc->m_System[ko.x][ko.y].GetAssemblyList()->ClearAssemblyList(ko, m_pDoc->m_System);
+				m_pDoc->m_System[ko.x][ko.y].CalculateVariables(&m_pDoc->BuildingInfo, m_pMajor->GetEmpire()->GetResearch()->GetResearchInfo(), m_pDoc->m_Sector[ko.x][ko.y].GetPlanets(), m_pMajor, CTrade::GetMonopolOwner());
+#ifdef TRACE_AI
+				MYTRACE(MT::LEVEL_INFO, "CSystemAI::CalcPriorities(): Removed current buildorder because of low moral in System '%s'\n", m_pDoc->m_Sector[ko.x][ko.y].GetName());
+#endif
+			}
+		}
+
+		// Kriegsrecht, Polizeistaat oder ähnliches suchen, welches in die Bauliste gesetzt werden kann um die Moral zu erhöhen
+		CArray<short> buildings;
+		for (int i = 0; i < m_pDoc->GetSystem(ko).GetBuildableBuildings()->GetSize(); i++)
+		{
+			int id = m_pDoc->GetSystem(ko).GetBuildableBuildings()->GetAt(i);
+			if (m_pDoc->GetBuildingInfo(id).GetMoralProd() > 0 && m_pDoc->GetBuildingInfo(id).GetNeverReady())
 				buildings.Add(id);
 		}
-		int random = 0;
+
 		while (buildings.GetSize() > 0)
 		{
-			random = rand()%buildings.GetSize();
-			if (MakeEntryInAssemblyList(buildings.GetAt(random)))
-				return;	// aus Funktion springen
+			int nRandom = rand()%buildings.GetSize();
+			if (MakeEntryInAssemblyList(buildings.GetAt(nRandom)))
+			{
+#ifdef TRACE_AI
+				MYTRACE(MT::LEVEL_INFO, "CSystemAI::CalcPriorities(): Found building to increase moral in System '%s'\n", m_pDoc->m_Sector[ko.x][ko.y].GetName());
+#endif
+				// Moralverbesserungsgebäude gefunden -> aus Funktion springen
+				return;	
+			}
 			else
-				buildings.RemoveAt(random);
+				buildings.RemoveAt(nRandom);
 		}
 	}
+
+	// Checken ob schon ein Eintrag in der Bauliste ist, wenn ja dann brauchen wir hier überhaupt nichts zu machen
+	if (m_pDoc->GetSystem(ko).GetAssemblyList()->GetAssemblyListEntry(0) != 0)
+		return;	
 
 	// vorhandene Ressourcen durch die Planeten holen. Wenn eine Ressource nicht vorhanden ist, wird die entsprechende
 	// Priorität auf NULL gesetzt. Denn dafür haben wir dann auch keine Gebäude in der Bauliste.
 	BOOLEAN resExist[DILITHIUM + 1] = {0};
 	m_pDoc->m_Sector[ko.x][ko.y].GetAvailableResources(resExist, true);
 
+	double dMaxHab = 0.0;
+	for (int i = 0; i < m_pDoc->GetSector(ko).GetPlanets()->GetSize(); i++)
+		if (m_pDoc->GetSector(ko).GetPlanet(i)->GetCurrentHabitant() > 0.0)
+			dMaxHab += m_pDoc->GetSector(ko).GetPlanet(i)->GetMaxHabitant();
+	// wenn die Maximale Anzahl an Einwohnern 1.25 mal größer als die aktuelle Anzahl der Einwoher ist, dann
+	// werden Gebäudebauprioritäten verdoppelt
+	dMaxHab			= max(1.0, dMaxHab);
+	double dCurHab	= max(1.0, m_pDoc->GetSystem(ko).GetHabitants());
+	double dHabMod	= max(1.0, dMaxHab / dCurHab);
+	// Restliche Arbeiter berechnen (diesen Wert aber durch 1.5 teilen, damit er nicht so stark eingeht)
+	int nRestWorkers = floor(dMaxHab - dCurHab) / 1.5;
+	
 	// zuallererst werden erstmal alle Prioritäten berechnet
 	for (int i = FOOD_WORKER; i <= IRIDIUM_WORKER; i++)
 	{
@@ -184,11 +257,12 @@ void CSystemAI::CalcPriorities()
 		{
 		case FOOD_WORKER:
 			{
-				if (m_pDoc->m_System[ko.x][ko.y].GetWorker(10) < m_pDoc->m_System[ko.x][ko.y].GetNumberOfWorkbuildings(i, 0, NULL))
+				if (m_pDoc->m_System[ko.x][ko.y].GetWorker(10) + nRestWorkers < m_pDoc->m_System[ko.x][ko.y].GetNumberOfWorkbuildings(i, 0, NULL))
 				{
 					m_iPriorities[i] = 0;
 					break;
 				}
+
 				/// existieren Gebäude welche die jeweilige Priorität ermöglichen
 				if (!this->CheckBuilding(i))
 				{
@@ -218,7 +292,7 @@ void CSystemAI::CalcPriorities()
 			}
 		case INDUSTRY_WORKER:
 			{
-				if (m_pDoc->m_System[ko.x][ko.y].GetWorker(10) < 
+				if (m_pDoc->m_System[ko.x][ko.y].GetWorker(10) + nRestWorkers < 
 					(m_pDoc->m_System[ko.x][ko.y].GetNumberOfWorkbuildings(i, 0, NULL) + m_pDoc->m_System[ko.x][ko.y].GetNumberOfWorkbuildings(FOOD_WORKER, 0, NULL)))
 				{
 					m_iPriorities[i] = 0;
@@ -268,13 +342,16 @@ void CSystemAI::CalcPriorities()
 					m_iPriorities[i] = midIPCosts / IPProd;
 				else
 					m_iPriorities[i] = midIPCosts;
+				// wenn noch Bevölkerung ins System passen würde, so werden bevorzugt mehr Gebäude gebaut
+				if (dHabMod > 1.0)
+					m_iPriorities[i] = m_iPriorities[i] * dHabMod + nRestWorkers;
 				if (m_iPriorities[i] > 255)
 					m_iPriorities[i] = 255;
 				break;
 			}
 		case ENERGY_WORKER:
 			{
-				if (m_pDoc->m_System[ko.x][ko.y].GetWorker(10) < 
+				if (m_pDoc->m_System[ko.x][ko.y].GetWorker(10) + nRestWorkers < 
 					(m_pDoc->m_System[ko.x][ko.y].GetNumberOfWorkbuildings(i, 0, NULL) + m_pDoc->m_System[ko.x][ko.y].GetNumberOfWorkbuildings(FOOD_WORKER, 0, NULL)))
 				{
 					m_iPriorities[i] = 0;
@@ -317,7 +394,7 @@ void CSystemAI::CalcPriorities()
 			}
 		case SECURITY_WORKER:
 			{
-				if (m_pDoc->m_System[ko.x][ko.y].GetWorker(10) < 
+				if (m_pDoc->m_System[ko.x][ko.y].GetWorker(10) + nRestWorkers < 
 					(m_pDoc->m_System[ko.x][ko.y].GetNumberOfWorkbuildings(i, 0, NULL) + m_pDoc->m_System[ko.x][ko.y].GetNumberOfWorkbuildings(FOOD_WORKER, 0, NULL)))
 				{
 					m_iPriorities[i] = 0;
@@ -337,7 +414,7 @@ void CSystemAI::CalcPriorities()
 			}
 		case RESEARCH_WORKER:
 			{
-				if (m_pDoc->m_System[ko.x][ko.y].GetWorker(10) < 
+				if (m_pDoc->m_System[ko.x][ko.y].GetWorker(10) + nRestWorkers < 
 					(m_pDoc->m_System[ko.x][ko.y].GetNumberOfWorkbuildings(i, 0, NULL) + m_pDoc->m_System[ko.x][ko.y].GetNumberOfWorkbuildings(FOOD_WORKER, 0, NULL)))
 				{
 					m_iPriorities[i] = 0;
@@ -349,7 +426,13 @@ void CSystemAI::CalcPriorities()
 					m_iPriorities[i] = 0;
 					break;
 				}
+				
 				m_iPriorities[i] = rand()%3;
+				
+				// wenn noch Bevölkerung ins System passen würde, so werden bevorzugt mehr Gebäude gebaut
+				if (dHabMod > 1.0)
+					m_iPriorities[i] = m_iPriorities[i] * dHabMod + nRestWorkers;
+
 				if (m_iPriorities[i] > 255)
 					m_iPriorities[i] = 255;
 				break;
@@ -363,7 +446,7 @@ void CSystemAI::CalcPriorities()
 					m_iPriorities[i] = NULL;
 					continue;
 				}
-				if (m_pDoc->m_System[ko.x][ko.y].GetWorker(10) < 
+				if (m_pDoc->m_System[ko.x][ko.y].GetWorker(10) + nRestWorkers < 
 					(m_pDoc->m_System[ko.x][ko.y].GetNumberOfWorkbuildings(i, 0, NULL) + m_pDoc->m_System[ko.x][ko.y].GetNumberOfWorkbuildings(FOOD_WORKER, 0, NULL)))
 				{
 					m_iPriorities[i] = 0;
@@ -417,7 +500,7 @@ void CSystemAI::CalcPriorities()
 						size++;
 					}
 				}
-				size /= 2;
+				size /= 3.0;
 				if (size > 0)
 					midResCosts /= size;
 
@@ -435,14 +518,20 @@ void CSystemAI::CalcPriorities()
 					m_iPriorities[i] = (int)((100 * midResCosts / (m_pDoc->m_System[ko.x][ko.y].GetRessourceStore(res)+1) / resProd));
 				else
 					m_iPriorities[i] = (int)((100 * midResCosts / ((m_pDoc->m_System[ko.x][ko.y].GetRessourceStore(res)+1) * (number+1))));
+
+				// wenn noch Bevölkerung ins System passen würde, so werden bevorzugt mehr Gebäude gebaut
+				if (dHabMod > 1.0)
+					m_iPriorities[i] = m_iPriorities[i] * dHabMod + nRestWorkers;
+
 				if (m_iPriorities[i] > 255)
 					m_iPriorities[i] = 255;
 				break;
 			}
 		}
 	}
-	m_bCalcedPrio = TRUE;
 
+	m_bCalcedPrio = TRUE;
+	
 	CString name;
 	int id = ChooseBuilding();
 	if (id == 0)
@@ -484,10 +573,11 @@ void CSystemAI::CalcPriorities()
 						m_pDoc->m_System[x][y].AssemblyListCheck(&m_pDoc->BuildingInfo, &m_pDoc->m_GlobalBuildings);
 		}
 	}
-/*		
+/*	
 	if (id > 0 && id < 10000)
 		name = m_pDoc->GetBuildingName(id);
-	if (m_pDoc->m_Sector[ko.x][ko.y].GetName() == "Qo'nos")
+
+	if (m_pDoc->m_Sector[ko.x][ko.y].GetName() == "Tinaca")
 	{
 		CString s;
 		s.Format("System: %s\n\nFood: %d\nIndstry: %d\nEnergy: %d\nSecurity: %d\nResearch: %d\nTitan: %d\nDeuterium: %d\nDuranium: %d\nCrystal: %d\nIridium: %d\n\nchoosen Building: %s\nID: %d\nAssemblyListEntry: %d\nneeded IP: %d",
@@ -525,7 +615,7 @@ int CSystemAI::ChooseBuilding()
 #endif
 	// sind Updates baubar, so werden die Prioritäten der anderen womöglich etwas verringert, so dass häufiger
 	// zuerst die Updates gebaut werden. Außer wir haben freie Arbeiter übrig.
-	int updates = rand()%(m_pDoc->m_System[ko.x][ko.y].GetBuildableUpdates()->GetSize()+1);
+	int nUpdates = rand()%(m_pDoc->m_System[ko.x][ko.y].GetBuildableUpdates()->GetSize()+1);
 	//min -= rand()%(m_pDoc->m_System[ko.x][ko.y].GetWorker(11)+1);
 	min -= m_pDoc->m_System[ko.x][ko.y].GetWorker(11);
 #ifdef TRACE_AI
@@ -533,12 +623,14 @@ int CSystemAI::ChooseBuilding()
 #endif
 	for (int i = FOOD_WORKER; i <= IRIDIUM_WORKER; i++)
 	{
-		if (m_iPriorities[i] > min
-			&& (rand()%(m_iPriorities[i]+1) - updates + //rand()%(m_pDoc->m_System[ko.x][ko.y].GetWorker(11)+1)) > 0)
-			m_pDoc->m_System[ko.x][ko.y].GetWorker(11)) > 0)
+		if (m_iPriorities[i] > min)
 		{
-			min = m_iPriorities[i];
-			choosenPrio = i;
+			int nRandom = rand()%(m_iPriorities[i] + 1);
+			if (nRandom - nUpdates + m_pDoc->m_System[ko.x][ko.y].GetWorker(11) > 0)
+			{
+				min = m_iPriorities[i];
+				choosenPrio = i;
+			}
 		}
 	}
 	if (choosenPrio != -1)
@@ -621,7 +713,7 @@ int CSystemAI::ChooseBuilding()
 	else if (rand()%(shipBuildPrio + 1) <= rand()%4)
 	{
 		// Umso mehr Updates baubar sind, desto häufiger wird hier aus der Funktion gesprungen.
-		if (rand()%(updates+1) > 0)
+		if (rand()%(nUpdates + 1) > 0)
 			return 0;
 		// Umso mehr freie Arbeiter vorhanden sind, desto eher wird hier aus der Funktion gesprungen
 		if (rand()%(m_pDoc->m_System[ko.x][ko.y].GetWorker(11)+1)/2 > 0)

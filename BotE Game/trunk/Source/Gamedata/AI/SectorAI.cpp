@@ -29,9 +29,9 @@ UINT CSectorAI::GetCompleteDanger(const CString& sOwnRaceID, const CPoint& secto
 {
 	UINT danger = 0;
 	
-	for (map<CString, map<pair<int, int>, UINT> >::const_iterator it = m_iDangers.begin(); it != m_iDangers.end(); it++)
+	for (map<CString, map<pair<int, int>, UINT> >::const_iterator it = m_iDangers.begin(); it != m_iDangers.end(); ++it)
 		if (it->first != sOwnRaceID)
-			for (map<pair<int, int>, UINT>::const_iterator itt = it->second.begin(); itt != it->second.end(); itt++)
+			for (map<pair<int, int>, UINT>::const_iterator itt = it->second.begin(); itt != it->second.end(); ++itt)
 				if (CPoint(itt->first.first, itt->first.second) == sector)
 					danger += itt->second;
 	return danger;
@@ -76,7 +76,7 @@ void CSectorAI::CalcualteSectorPriorities()
 			if (m_pDoc->m_Sector[x][y].GetAnomaly() == false || m_pDoc->m_Sector[x][y].GetAnomaly()->GetWaySearchWeight() < 10.0)
 				CalculateOffensiveTargets(x,y);
 
-			for (map<CString, CRace*>::const_iterator it = mRaces->begin(); it != mRaces->end(); it++)
+			for (map<CString, CRace*>::const_iterator it = mRaces->begin(); it != mRaces->end(); ++it)
 				if (GetDangerOnlyFromCombatShips(it->first, CPoint(x,y)) > highestCombatShipDanger[it->first])
 				{
 					highestCombatShipDanger[it->first] = GetDangerOnlyFromCombatShips(it->first, CPoint(x,y));
@@ -84,7 +84,7 @@ void CSectorAI::CalcualteSectorPriorities()
 				}
 		}
 
-	for (map<CString, CRace*>::const_iterator it = mRaces->begin(); it != mRaces->end(); it++)
+	for (map<CString, CRace*>::const_iterator it = mRaces->begin(); it != mRaces->end(); ++it)
 		if (it->second->GetType() == MAJOR)
 		{
 			// Feld der am ehesten zu terraformenden Systeme der Größe nach Sortieren. Der höchste Eintrag steht an erster Stelle.
@@ -160,7 +160,7 @@ void CSectorAI::CalculateTerraformSectors(int x, int y)
 	{
 		// Eintrag für die jeweilige Rasse machen.
 		map<CString, CMajor*>* pmMajors = m_pDoc->GetRaceCtrl()->GetMajors();	
-		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 			if (it->second->GetStarmap()->GetRange(CPoint(x,y)) != 3)
 				if (m_pDoc->m_Sector[x][y].GetOwnerOfSector().IsEmpty() || m_pDoc->m_Sector[x][y].GetOwnerOfSector() == it->first)
 				{
@@ -190,7 +190,7 @@ void CSectorAI::CalculateMinorraceSectors(int x, int y)
 
 	// Eintrag für die jeweilige Rasse machen.
 	map<CString, CMajor*>* pmMajors = m_pDoc->GetRaceCtrl()->GetMajors();	
-		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 			if (it->second->GetStarmap()->GetRange(CPoint(x,y)) != 3)
 				if (it->second->IsRaceContacted(sOwner) == false)
 					m_vMinorraceSectors[it->first].push_back(pMinor->GetRaceKO());
@@ -202,7 +202,7 @@ void CSectorAI::CalculateOffensiveTargets(int x, int y)
 {
 	map<CString, CMajor*>* pmMajors = m_pDoc->GetRaceCtrl()->GetMajors();	
 	
-	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 		// Wenn unsere Rasse dieses Feld überhaupt erreichen kann.
 		if (it->second->GetStarmap()->GetRange(CPoint(x,y)) != 3)
 		{
@@ -216,7 +216,7 @@ void CSectorAI::CalculateOffensiveTargets(int x, int y)
 				// den stärksten Gegner in diesem Sektor ermitteln
 				CString sEnemy = 0;
 				UINT max = 0;
-				for (map<CString, CMajor*>::const_iterator itt = pmMajors->begin(); itt != pmMajors->end(); itt++)
+				for (map<CString, CMajor*>::const_iterator itt = pmMajors->begin(); itt != pmMajors->end(); ++itt)
 					if (it->first != itt->first && GetDanger(itt->first, CPoint(x,y)) > 0)
 						if (max < GetDanger(itt->first, CPoint(x,y)))
 						{
@@ -302,7 +302,7 @@ void CSectorAI::Clear(void)
 {
 	map<CString, CRace*>* mRaces = m_pDoc->GetRaceCtrl()->GetRaces();
 	
-	for (map<CString, CRace*>::const_iterator it = mRaces->begin(); it != mRaces->end(); it++)
+	for (map<CString, CRace*>::const_iterator it = mRaces->begin(); it != mRaces->end(); ++it)
 		m_HighestShipDanger[it->first] = CPoint(-1,-1);
 
 	m_iDangers.clear();

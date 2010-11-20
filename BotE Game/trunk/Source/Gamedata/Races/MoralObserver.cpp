@@ -78,18 +78,18 @@ void CMoralObserver::CalculateEvents(CSystem systems[][STARMAP_SECTORS_VCOUNT], 
 
 /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 													Fed	Fer	Kli	Rom	Car	Dom
-#0	Eliminate an Empire								50	50	50	50	50	50
+#0	Eliminate an Empire								50	50	50	50	50	50		-> eingebaut
 #1	Win a Major Battle								5	5	7	6	4	5
 #2	Win a Significant Battle						3	3	5	4	2	2
 #3	Win a Minor Battle								1	1	2	1	1	1		-> eingebaut (vereinfacht, immer Minorbattle)
 #4	Lose a Major Battle								-7	-7	-13	-11	-6	-7
 #5	Lose a Significant Battle						-7	-6	-10	-9	-4	-5
 #6	Lose a Minor Battle								-2	-2	-4	-4	-2	-2		-> eingebaut (vereinfacht)
-#7	Lose a Flagship									-10	-9	-13	-10	-8	-8
-#8	Lose an Outpost									-3	-5	-1	-4	-1	-1
-#9	Lose a Starbase 								-4	-5	-2	-5	-2	-2
+#7	Lose a Flagship									-10	-9	-13	-10	-8	-8		-> eingebaut
+#8	Lose an Outpost									-3	-5	-1	-4	-1	-1		-> eingebaut
+#9	Lose a Starbase 								-4	-5	-2	-5	-2	-2		-> eingebaut
 
-#10	Sign a Membership treaty with Minor				12	6	2	5	4	4		-> eingebaut
+#10	Sign a Membership treaty with Minor				12	6	6	6	4	4		-> eingebaut
 
 #11	Take a System									-8	2	10	4	8	8		-> eingebaut
 #12	Colonize a System								3	3	4	4	2	3		-> eingebaut
@@ -119,7 +119,7 @@ void CMoralObserver::CalculateEvents(CSystem systems[][STARMAP_SECTORS_VCOUNT], 
 
 #34	Sign Trade Treaty								3	5	0	2	1	-3		-> eingebaut
 #35	Sign Friendship/Cooperation Treaty				5	3	1	4	2	-6		-> eingebaut
-#36	Sign an Affiliation Treaty						20	16	16	16	10	4		-> eingebaut
+#36	Sign an Affiliation Treaty						8	5	5	5	4	4		-> eingebaut
 
 #37	Receive Acceptance of Non-Aggression Pact		2	1	-3	0	-1	-4
 #38	Accept a Non-Aggression Pact					2	1	-4	-1	-2	-4

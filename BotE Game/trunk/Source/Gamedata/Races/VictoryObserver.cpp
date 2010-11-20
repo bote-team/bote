@@ -277,7 +277,7 @@ int CVictoryObserver::GetNeededVictoryValue(VICTORYTYPE nType) const
 	
 	case VICTORYTYPE_SABOTAGE:
 		// aktuelle Runde * 2 erfolgreiche Sabotageaktionen (mindestens 500)
-		return max(nCurrentRound * 2, 500);
+		return max(nCurrentRound * 1.5, 250);
 	
 	default: return INT_MAX;
 	}
@@ -458,7 +458,7 @@ void CVictoryObserver::Observe(void)
 
 void CVictoryObserver::Reset(void)
 {
-	memset(m_bConditionStatus, true, sizeof(bool) * VICTORY_CONDITION_NUMBER);
+	memset(m_bConditionStatus, true, sizeof(m_bConditionStatus));
 		
 	m_mDiplomacy.clear();
 	m_mSlavery.clear();

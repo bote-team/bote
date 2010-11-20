@@ -33,7 +33,7 @@ void CDiplomacyController::CalcDiplomaticFallouts(void)
 	Receive();
 
 	// KI Angebote erstellen lassen
-	for (map<CString, CRace*>::iterator it = races->begin(); it != races->end(); it++)
+	for (map<CString, CRace*>::const_iterator it = races->begin(); it != races->end(); ++it)
 	{
 		CRace* pRace = it->second;
 		ASSERT(pRace);
@@ -59,7 +59,7 @@ void CDiplomacyController::Send(void)
 	ASSERT(races);
 
 	// durch alle Rassen iterieren
-	for (map<CString, CRace*>::iterator it = races->begin(); it != races->end(); it++)
+	for (map<CString, CRace*>::const_iterator it = races->begin(); it != races->end(); ++it)
 	{
 		CRace* pRace = it->second;
 		ASSERT(pRace);
@@ -97,7 +97,7 @@ void CDiplomacyController::Receive(void)
 	ASSERT(races);
 
 	// alle alten Antworten können gelöscht werden
-	for (map<CString, CRace*>::iterator it = races->begin(); it != races->end(); it++)
+	for (map<CString, CRace*>::const_iterator it = races->begin(); it != races->end(); ++it)
 	{
 		CRace* pRace = it->second;
 		ASSERT(pRace);
@@ -109,7 +109,7 @@ void CDiplomacyController::Receive(void)
 	}
 
 	// durch alle Rassen iterieren
-	for (map<CString, CRace*>::iterator it = races->begin(); it != races->end(); it++)
+	for (map<CString, CRace*>::const_iterator it = races->begin(); it != races->end(); ++it)
 	{
 		CRace* pRace = it->second;
 		ASSERT(pRace);
@@ -253,7 +253,7 @@ void CDiplomacyController::SendToMajor(CBotf2Doc* pDoc, CMajor* pToMajor, CDiplo
 		else if (pInfo->m_nType == WAR)
 		{
 			// Krieg erklären
-			DeclareWar(pFromRace, pToMajor, pInfo);
+			DeclareWar(pFromRace, pToMajor, pInfo, true);
 			
 			// aufgrund diplomatischer Beziehungen könnte so weiter Krieg erklärt werden
 			std::vector<CString> vEnemies;
@@ -266,10 +266,10 @@ void CDiplomacyController::SendToMajor(CBotf2Doc* pDoc, CMajor* pToMajor, CDiplo
 				if (pEnemy)
 				{
 					CDiplomacyInfo war = *pInfo;
-					// lediglich die Zielrasse und den Krieggrund anpassen
+					// lediglich die Zielrasse und den Kriegsgrund anpassen
 					war.m_sToRace		= pEnemy->GetRaceID();
 					war.m_sWarPartner	= pToMajor->GetRaceID();
-					DeclareWar(pFromRace, pEnemy, &war);
+					DeclareWar(pFromRace, pEnemy, &war, false);
 				}
 			}
 		}		
@@ -635,7 +635,7 @@ void CDiplomacyController::ReceiveToMajor(CBotf2Doc* pDoc, CMajor* pToMajor, CDi
 						warOffer.m_nType		= WAR;
 						CGenDiploMessage::GenerateMajorOffer(warOffer);
 						
-						DeclareWar(pToMajor, pWarpactEnemy, &warOffer);
+						DeclareWar(pToMajor, pWarpactEnemy, &warOffer, true);
 						// aufgrund diplomatischer Beziehungen könnte so weiter Krieg erklärt werden
 						std::vector<CString> vEnemies;
 						vEnemies = GetEnemiesFromContract(pDoc, pToMajor, pWarpactEnemy);
@@ -651,7 +651,7 @@ void CDiplomacyController::ReceiveToMajor(CBotf2Doc* pDoc, CMajor* pToMajor, CDi
 									// lediglich die Zielrasse und den Krieggrund anpassen
 									war.m_sToRace		= pEnemy->GetRaceID();
 									war.m_sWarPartner	= pWarpactEnemy->GetRaceID();
-									DeclareWar(pToMajor, pEnemy, &war);
+									DeclareWar(pToMajor, pEnemy, &war, false);
 								}
 							}
 						}
@@ -660,7 +660,7 @@ void CDiplomacyController::ReceiveToMajor(CBotf2Doc* pDoc, CMajor* pToMajor, CDi
 						warOffer.m_sFromRace = answer.m_sToRace;
 						CGenDiploMessage::GenerateMajorOffer(warOffer);
 
-						DeclareWar(pFromRace, pWarpactEnemy, &warOffer);
+						DeclareWar(pFromRace, pWarpactEnemy, &warOffer, true);
 						// aufgrund diplomatischer Beziehungen könnte so weiter Krieg erklärt werden
 						vEnemies.clear();
 						vEnemies = GetEnemiesFromContract(pDoc, (CMajor*)pFromRace, pWarpactEnemy);
@@ -676,7 +676,7 @@ void CDiplomacyController::ReceiveToMajor(CBotf2Doc* pDoc, CMajor* pToMajor, CDi
 									// lediglich die Zielrasse und den Krieggrund anpassen
 									war.m_sToRace		= pEnemy->GetRaceID();
 									war.m_sWarPartner	= pWarpactEnemy->GetRaceID();
-									DeclareWar(pFromRace, pEnemy, &war);
+									DeclareWar(pFromRace, pEnemy, &war, false);
 								}
 							}
 						}
@@ -744,8 +744,32 @@ void CDiplomacyController::ReceiveToMajor(CBotf2Doc* pDoc, CMajor* pToMajor, CDi
 						{
 							CString	s = CResourceManager::GetString("FEMALE_ARTICLE", TRUE) + " " + pFromRace->GetRaceName() + " " + CResourceManager::GetString("MIN_ACCEPT_OFFER", FALSE, sAgreement, pToMajor->GetEmpireNameWithAssignedArticle());
 							message.GenerateMessage(s, DIPLOMACY, "", 0, 0);
-							pToMajor->GetEmpire()->AddMessage(message);						
+							pToMajor->GetEmpire()->AddMessage(message);					
 						}
+
+						// Moralevent einplanen
+						CString sEventText = "";
+						switch (pInfo->m_nType)
+						{
+						case TRADE_AGREEMENT: sEventText = pToMajor->GetMoralObserver()->AddEvent(34, pToMajor->GetRaceMoralNumber(), pFromRace->GetRaceName());	break;
+						// Sign Friendship/Cooperation Treaty #35
+						case FRIENDSHIP_AGREEMENT: sEventText = pToMajor->GetMoralObserver()->AddEvent(35, pToMajor->GetRaceMoralNumber(), pFromRace->GetRaceName()); break;
+						// Sign Friendship/Cooperation Treaty #35
+						case COOPERATION: sEventText = pToMajor->GetMoralObserver()->AddEvent(35, pToMajor->GetRaceMoralNumber(), pFromRace->GetRaceName());	break;
+						// Sign an Affiliation Treaty #36
+						case AFFILIATION: sEventText = pToMajor->GetMoralObserver()->AddEvent(36, pToMajor->GetRaceMoralNumber(), pFromRace->GetRaceName());	break;
+						// Sign a Membership #10
+						case MEMBERSHIP: sEventText = pToMajor->GetMoralObserver()->AddEvent(10, pToMajor->GetRaceMoralNumber() , pFromRace->GetRaceName());	break;
+						}	
+						
+						if (!sEventText.IsEmpty())
+						{
+							CMessage message;
+							message.GenerateMessage(sEventText, SOMETHING, "", 0, 0);
+							pToMajor->GetEmpire()->AddMessage(message);
+						}
+
+						// Vertrag setzen
 						pFromRace->SetAgreement(pToMajor->GetRaceID(), pInfo->m_nType);
 						pToMajor->SetAgreement(pFromRace->GetRaceID(), pInfo->m_nType);
 					}
@@ -872,7 +896,7 @@ void CDiplomacyController::SendToMinor(CBotf2Doc* pDoc, CMinor* pToMinor, CDiplo
 		else if (pInfo->m_nType == WAR)
 		{
 			// Krieg erklären
-			DeclareWar(pFromMajor, pToMinor, pInfo);
+			DeclareWar(pFromMajor, pToMinor, pInfo, true);
 			
 			// aufgrund diplomatischer Beziehungen könnte so weiter Krieg erklärt werden
 			std::vector<CString> vEnemies;
@@ -887,7 +911,7 @@ void CDiplomacyController::SendToMinor(CBotf2Doc* pDoc, CMinor* pToMinor, CDiplo
 					// lediglich die Zielrasse und den Krieggrund anpassen
 					war.m_sToRace		= pEnemy->GetRaceID();
 					war.m_sWarPartner	= pToMinor->GetRaceID();
-					DeclareWar(pFromMajor, pEnemy, &war);
+					DeclareWar(pFromMajor, pEnemy, &war, false);
 				}
 			}
 		}
@@ -949,10 +973,8 @@ void CDiplomacyController::ReceiveToMinor(CBotf2Doc* pDoc, CMinor* pToMinor, CDi
 			// Minor hat angenommen
 			if (pInfo->m_nAnswerStatus == ACCEPTED)
 			{
-				CString sEventText = "";					
-				if (pInfo->m_nType == MEMBERSHIP)
-					sEventText = pFromMajor->GetMoralObserver()->AddEvent(10, pFromMajor->GetRaceMoralNumber() , pToMinor->GetRaceName());
-				
+				CString sEventText = "";
+
 				// wenn es keine Bestechung ist
 				if (pInfo->m_nType != CORRUPTION)
 				{
@@ -975,6 +997,27 @@ void CDiplomacyController::ReceiveToMinor(CBotf2Doc* pDoc, CMinor* pToMinor, CDi
 					}
 					pToMinor->SetAgreement(pFromMajor->GetRaceID(), pInfo->m_nType);
 					pFromMajor->SetAgreement(pToMinor->GetRaceID(), pInfo->m_nType);
+
+					// Moralevent einplanen
+					switch (pInfo->m_nType)
+					{
+					case TRADE_AGREEMENT: sEventText = pFromMajor->GetMoralObserver()->AddEvent(34, pFromMajor->GetRaceMoralNumber(), pToMinor->GetRaceName());	break;
+					// Sign Friendship/Cooperation Treaty #35
+					case FRIENDSHIP_AGREEMENT: sEventText = pFromMajor->GetMoralObserver()->AddEvent(35, pFromMajor->GetRaceMoralNumber(), pToMinor->GetRaceName()); break;
+					// Sign Friendship/Cooperation Treaty #35
+					case COOPERATION: sEventText = pFromMajor->GetMoralObserver()->AddEvent(35, pFromMajor->GetRaceMoralNumber(), pToMinor->GetRaceName());	break;
+					// Sign an Affiliation Treaty #36
+					case AFFILIATION: sEventText = pFromMajor->GetMoralObserver()->AddEvent(36, pFromMajor->GetRaceMoralNumber(), pToMinor->GetRaceName());	break;
+					// Sign a Membership #10
+					case MEMBERSHIP: sEventText = pFromMajor->GetMoralObserver()->AddEvent(10, pFromMajor->GetRaceMoralNumber() , pToMinor->GetRaceName());	break;
+					}	
+					
+					if (!sEventText.IsEmpty())
+					{
+						CMessage message;
+						message.GenerateMessage(sEventText, SOMETHING, "", 0, 0);
+						pFromMajor->GetEmpire()->AddMessage(message);
+					}
 				}
 
 				// übergebene Ressourcen ins System der Minor einlagern
@@ -1036,7 +1079,7 @@ std::vector<CString> CDiplomacyController::GetEnemiesFromContract(CBotf2Doc* pDo
 	// auch den Krieg. Außerdem erklären wir auch jeder Minorrace den Krieg, mit der der Jemand 
 	// mindst. ein Bündnis hatte.	
 	map<CString, CRace*>* mRaces = pDoc->GetRaceCtrl()->GetRaces();
-	for (map<CString, CRace*>::const_iterator it = mRaces->begin(); it != mRaces->end(); it++)
+	for (map<CString, CRace*>::const_iterator it = mRaces->begin(); it != mRaces->end(); ++it)
 	{
 		// nicht wir selbst
 		if (it->first != pToRace->GetRaceID())
@@ -1061,7 +1104,8 @@ std::vector<CString> CDiplomacyController::GetEnemiesFromContract(CBotf2Doc* pDo
 /// @param pFromRace Zeiger auf die kriegserklärende Rasse
 /// @param pEnemy Zeiger auf die Rasse, welcher Krieg erklärt wird
 /// @param pInfo Diplomatieobjekt
-void CDiplomacyController::DeclareWar(CRace* pFromRace, CRace* pEnemy, CDiplomacyInfo* pInfo)
+/// @param bWithMoralEvent <code>true</code> wenn Moralevent mit eingeplant werden soll
+void CDiplomacyController::DeclareWar(CRace* pFromRace, CRace* pEnemy, CDiplomacyInfo* pInfo, bool bWithMoralEvent)
 {
 	// haben wir schon Krieg, so kann keiner nochmal erklärt werden
 	if (pFromRace->GetAgreement(pEnemy->GetRaceID()) == WAR)
@@ -1080,40 +1124,43 @@ void CDiplomacyController::DeclareWar(CRace* pFromRace, CRace* pEnemy, CDiplomac
 		message.GenerateMessage(s, DIPLOMACY, "", 0, 0);
 		((CMajor*)pFromRace)->GetEmpire()->AddMessage(message);
 
-		// zusätzliche Eventnachricht wegen der Moral an das Imperium (nur wenn es ge
-		CString sEventText = "";
-		short nAgreement = pFromRace->GetAgreement(pEnemy->GetRaceID());
-		CString sParam = CResourceManager::GetString("FEMALE_ARTICLE") + " " + pEnemy->GetRaceName();
-		if (pEnemy->GetType() == MAJOR)
-			sParam = ((CMajor*)pEnemy)->GetEmpireNameWithArticle();
-					
-		// Declare War on an Empire with Defense Pact #28 (nur, wenn wir einen Vertrag kleiner als den der
-		// Kooperation haben und dazu auch noch einen Verteidigungspakt)
-		if (pEnemy->GetType() == MAJOR && nAgreement < COOPERATION && ((CMajor*)pFromRace)->GetDefencePact(pEnemy->GetRaceID()) == true)
-			sEventText = ((CMajor*)pFromRace)->GetMoralObserver()->AddEvent(28, ((CMajor*)pFromRace)->GetRaceMoralNumber(), sParam);
-		// Declare War on an Empire when Neutral #24
-		else if (nAgreement == NO_AGREEMENT)
-			sEventText = ((CMajor*)pFromRace)->GetMoralObserver()->AddEvent(24, ((CMajor*)pFromRace)->GetRaceMoralNumber(), sParam);
-		// Declare War on an Empire when Non-Aggression #25
-		else if (nAgreement == NON_AGGRESSION_PACT)
-			sEventText = ((CMajor*)pFromRace)->GetMoralObserver()->AddEvent(25, ((CMajor*)pFromRace)->GetRaceMoralNumber(), sParam);
-		// Declare War on an Empire with Trade Treaty #26
-		else if (nAgreement == TRADE_AGREEMENT)
-			sEventText = ((CMajor*)pFromRace)->GetMoralObserver()->AddEvent(26, ((CMajor*)pFromRace)->GetRaceMoralNumber(), sParam);
-		// Declare War on an Empire with Friendship Treaty #27
-		else if (nAgreement == FRIENDSHIP_AGREEMENT)
-			sEventText = ((CMajor*)pFromRace)->GetMoralObserver()->AddEvent(27, ((CMajor*)pFromRace)->GetRaceMoralNumber(), sParam);
-		// Declare War on an Empire with CooperationTreaty #29
-		else if (nAgreement == COOPERATION)
-			sEventText = ((CMajor*)pFromRace)->GetMoralObserver()->AddEvent(29, ((CMajor*)pFromRace)->GetRaceMoralNumber(), sParam);
-		// Declare War on an Empire with Affiliation #30
-		else if (nAgreement == AFFILIATION)
-			sEventText = ((CMajor*)pFromRace)->GetMoralObserver()->AddEvent(30, ((CMajor*)pFromRace)->GetRaceMoralNumber(), sParam);
-		
-		if (!sEventText.IsEmpty())
+		if (bWithMoralEvent)
 		{
-			message.GenerateMessage(sEventText, SOMETHING, "", 0, 0);
-			((CMajor*)pFromRace)->GetEmpire()->AddMessage(message);				
+			// zusätzliche Eventnachricht wegen der Moral an das Imperium
+			CString sEventText = "";
+			short nAgreement = pFromRace->GetAgreement(pEnemy->GetRaceID());
+			CString sParam = CResourceManager::GetString("FEMALE_ARTICLE") + " " + pEnemy->GetRaceName();
+			if (pEnemy->GetType() == MAJOR)
+				sParam = ((CMajor*)pEnemy)->GetEmpireNameWithArticle();
+						
+			// Declare War on an Empire with Defense Pact #28 (nur, wenn wir einen Vertrag kleiner als den der
+			// Kooperation haben und dazu auch noch einen Verteidigungspakt)
+			if (pEnemy->GetType() == MAJOR && nAgreement < COOPERATION && ((CMajor*)pFromRace)->GetDefencePact(pEnemy->GetRaceID()) == true)
+				sEventText = ((CMajor*)pFromRace)->GetMoralObserver()->AddEvent(28, ((CMajor*)pFromRace)->GetRaceMoralNumber(), sParam);
+			// Declare War on an Empire when Neutral #24
+			else if (nAgreement == NO_AGREEMENT)
+				sEventText = ((CMajor*)pFromRace)->GetMoralObserver()->AddEvent(24, ((CMajor*)pFromRace)->GetRaceMoralNumber(), sParam);
+			// Declare War on an Empire when Non-Aggression #25
+			else if (nAgreement == NON_AGGRESSION_PACT)
+				sEventText = ((CMajor*)pFromRace)->GetMoralObserver()->AddEvent(25, ((CMajor*)pFromRace)->GetRaceMoralNumber(), sParam);
+			// Declare War on an Empire with Trade Treaty #26
+			else if (nAgreement == TRADE_AGREEMENT)
+				sEventText = ((CMajor*)pFromRace)->GetMoralObserver()->AddEvent(26, ((CMajor*)pFromRace)->GetRaceMoralNumber(), sParam);
+			// Declare War on an Empire with Friendship Treaty #27
+			else if (nAgreement == FRIENDSHIP_AGREEMENT)
+				sEventText = ((CMajor*)pFromRace)->GetMoralObserver()->AddEvent(27, ((CMajor*)pFromRace)->GetRaceMoralNumber(), sParam);
+			// Declare War on an Empire with CooperationTreaty #29
+			else if (nAgreement == COOPERATION)
+				sEventText = ((CMajor*)pFromRace)->GetMoralObserver()->AddEvent(29, ((CMajor*)pFromRace)->GetRaceMoralNumber(), sParam);
+			// Declare War on an Empire with Affiliation #30
+			else if (nAgreement == AFFILIATION)
+				sEventText = ((CMajor*)pFromRace)->GetMoralObserver()->AddEvent(30, ((CMajor*)pFromRace)->GetRaceMoralNumber(), sParam);
+			
+			if (!sEventText.IsEmpty())
+			{
+				message.GenerateMessage(sEventText, SOMETHING, "", 0, 0);
+				((CMajor*)pFromRace)->GetEmpire()->AddMessage(message);				
+			}
 		}
 
 		if (pEnemy->GetType() == MAJOR)

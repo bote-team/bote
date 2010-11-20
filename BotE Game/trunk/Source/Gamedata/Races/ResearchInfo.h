@@ -43,12 +43,12 @@ public:
 	 * berechnet. Der "Startwert" für die einzelnen Gebiete ist der Multiplikator (z.B. 125 oder 150). An die einzelnen
 	 * Funktionen wird das Techlevel <code>techLevel</code> übergeben, für welches man die benötigten FP haben will.
 	 */
-	const ULONG GetBio(USHORT techLevel) {ULONG m_lBio = (ULONG)pow(2.4f,techLevel) * 125; return m_lBio;}
-	const ULONG GetEnergy(USHORT techLevel) {ULONG m_lEnergy = (ULONG)pow(2.4f,techLevel) * 100; return m_lEnergy;}
-	const ULONG GetComp(USHORT techLevel) {ULONG m_lComputer = (ULONG)pow(2.4f,techLevel) * 125; return m_lComputer;}
-	const ULONG GetPropulsion(USHORT techLevel) {ULONG m_lPropulsion = (ULONG)pow(2.4f,techLevel) * 125; return m_lPropulsion;}
-	const ULONG GetConstruction(USHORT techLevel) {ULONG m_lConstruction = (ULONG)pow(2.4f,techLevel) * 150; return m_lConstruction;}
-	const ULONG GetWeapon(USHORT techLevel) {ULONG m_lWeapon = (ULONG)pow(2.4f,techLevel) * 150; return m_lWeapon;}
+	ULONG GetBio(USHORT nTechLevel) const {return (ULONG)(pow(2.25f, nTechLevel) * 150.0);}
+	ULONG GetEnergy(USHORT nTechLevel) const {return (ULONG)(pow(2.25f, nTechLevel) * 125.0);}
+	ULONG GetComp(USHORT nTechLevel) const {return (ULONG)(pow(2.25f, nTechLevel) * 150.0);}
+	ULONG GetPropulsion(USHORT nTechLevel) const {return (ULONG)(pow(2.25f, nTechLevel) * 150.0);}
+	ULONG GetConstruction(USHORT nTechLevel) const {return (ULONG)(pow(2.25f, nTechLevel) * 175.0);}
+	ULONG GetWeapon(USHORT nTechLevel) const {return (ULONG)(pow(2.25f, nTechLevel) * 175.0);}
 	
 	/**
 	 * Diese Funktion gibt einen Wahrheitswert zurück, der angibt, ob der Spieler die Wahl einer der 3 Möglichkeiten

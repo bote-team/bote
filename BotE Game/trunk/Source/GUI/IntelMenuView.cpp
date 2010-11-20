@@ -41,7 +41,7 @@ END_MESSAGE_MAP()
 
 void CIntelMenuView::OnNewRound()
 {
-	memset(m_bSortDesc, true, sizeof(bool) * 4);
+	memset(m_bSortDesc, true, sizeof(m_bSortDesc));
 }
 
 // CIntelMenuView drawing
@@ -137,7 +137,7 @@ void CIntelMenuView::OnInitialUpdate()
 	// Geheimdienstansicht
 	m_bySubMenu = 0;
 	m_sActiveIntelRace = "";
-	memset(m_bSortDesc, true, sizeof(bool) * 4);
+	memset(m_bSortDesc, true, sizeof(m_bSortDesc));
 }
 
 BOOL CIntelMenuView::OnEraseBkgnd(CDC* pDC)

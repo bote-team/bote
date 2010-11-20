@@ -187,15 +187,19 @@ void CShipBottomView::OnDraw(CDC* dc)
 			if (m_bShowStation)
 			{
 				map<CString, CMajor*>* pmMajors = pDoc->GetRaceCtrl()->GetMajors();
-				for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+				for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 				{
 					if (pDoc->GetSector(pDoc->GetKO()).GetOutpost(it->first) || pDoc->GetSector(pDoc->GetKO()).GetStarbase(it->first))
 					{
-						s.Format("Other\\" + it->second->GetPrefix() + "Starbase.bop");
-						graphic = pDoc->GetGraphicPool()->GetGDIGraphic(s);
-						if (graphic)
-							g.DrawImage(graphic, 550, 20, 235, 200);
-						break;
+						// gehört uns die Station oder kennen wir die andere Rasse
+						if (pMajor->GetRaceID() == pShip->GetOwnerOfShip() || pMajor->IsRaceContacted(pShip->GetOwnerOfShip()))
+						{						
+							s.Format("Other\\" + it->second->GetPrefix() + "Starbase.bop");
+							graphic = pDoc->GetGraphicPool()->GetGDIGraphic(s);
+							if (graphic)
+								g.DrawImage(graphic, 550, 20, 235, 200);
+							break;
+						}
 					}
 				}
 				break;
@@ -329,9 +333,9 @@ void CShipBottomView::OnDraw(CDC* dc)
 			if (m_iTimeCounter > (3 + counter) && m_iWhichMainShipOrderButton == 0)
 			{
 				// Wenn in dem System die Möglichkeit des Schiffstrainings besteht
-				if (pDoc->GetSector(pDoc->GetKO().x,pDoc->GetKO().y).GetSunSystem() == TRUE && 
-					pDoc->GetSystem(pDoc->GetKO().x,pDoc->GetKO().y).GetOwnerOfSystem() == pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetOwnerOfShip() &&
-					pDoc->GetSystem(pDoc->GetKO().x,pDoc->GetKO().y).GetProduction()->GetShipTraining() > 0)
+				if (pDoc->GetSector(pDoc->GetKO()).GetSunSystem() == TRUE && 
+					pDoc->GetSystem(pDoc->GetKO()).GetOwnerOfSystem() == pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetOwnerOfShip() &&
+					pDoc->GetSystem(pDoc->GetKO()).GetProduction()->GetShipTraining() > 0)
 				{
 					g.DrawImage(m_pShipOrderButton, r.right-245, r.top+70+counter*35, 120, 30);
 					m_ShipOrders[TRAIN_SHIP].SetRect(r.right-245,r.top+70+counter*35,r.right-125,r.top+100+counter*35);
@@ -361,18 +365,18 @@ void CShipBottomView::OnDraw(CDC* dc)
 			if (m_iTimeCounter > 3 && m_iWhichMainShipOrderButton == 1)
 			{
 				// Wenn im Sektor ein Sonnensystem ist
-				if (pDoc->GetSector(pDoc->GetKO().x,pDoc->GetKO().y).GetSunSystem() == TRUE &&
+				if (pDoc->GetSector(pDoc->GetKO()).GetSunSystem() == TRUE &&
 					// Wenn im System noch Bevölkerung vorhanden ist
-					pDoc->GetSector(pDoc->GetKO().x,pDoc->GetKO().y).GetCurrentHabitants() > 0.0f &&
+					pDoc->GetSector(pDoc->GetKO()).GetCurrentHabitants() > 0.0f &&
 					// Wenn das System nicht der Rasse gehört, der auch das Schiff gehört
-					pDoc->GetSystem(pDoc->GetKO().x, pDoc->GetKO().y).GetOwnerOfSystem() != pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetOwnerOfShip())
+					pDoc->GetSystem(pDoc->GetKO()).GetOwnerOfSystem() != pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetOwnerOfShip())
 				{	
-					CRace* pOwnerOfSector = pDoc->GetRaceCtrl()->GetRace(pDoc->GetSector(pDoc->GetKO().x, pDoc->GetKO().y).GetOwnerOfSector());
+					CRace* pOwnerOfSector = pDoc->GetRaceCtrl()->GetRace(pDoc->GetSector(pDoc->GetKO()).GetOwnerOfSector());
 
 					// Wenn im System eine Rasse lebt und wir mit ihr im Krieg sind
 					if (pOwnerOfSector != NULL && pMajor->GetAgreement(pOwnerOfSector->GetRaceID()) == WAR
 					// Wenn das System niemanden mehr gehört, aber noch Bevölkerung drauf lebt (z.B. durch Rebellion)
-						|| pDoc->GetSystem(pDoc->GetKO().x, pDoc->GetKO().y).GetOwnerOfSystem() == "" && pDoc->GetSector(pDoc->GetKO().x, pDoc->GetKO().y).GetMinorRace() == FALSE)
+						|| pDoc->GetSystem(pDoc->GetKO()).GetOwnerOfSystem() == "" && pDoc->GetSector(pDoc->GetKO()).GetMinorRace() == FALSE)
 					{
 						// nur wenn die Schiffe ungetarnt sind können sie Bombardieren
 						// Ab hier check wegen Flotten, darum wirds lang
@@ -409,7 +413,7 @@ void CShipBottomView::OnDraw(CDC* dc)
 			{
 				// Überprüfen ob man eine Blockade im System überhaupt errichten kann
 				// Wenn das System nicht der Rasse gehört, der auch das Schiff gehört
-				CRace* pOwnerOfSystem = pDoc->GetRaceCtrl()->GetRace(pDoc->GetSystem(pDoc->GetKO().x, pDoc->GetKO().y).GetOwnerOfSystem());
+				CRace* pOwnerOfSystem = pDoc->GetRaceCtrl()->GetRace(pDoc->GetSystem(pDoc->GetKO()).GetOwnerOfSystem());
 				if (pOwnerOfSystem != NULL && pOwnerOfSystem->GetRaceID() != pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetOwnerOfShip()
 					&& pMajor->GetAgreement(pOwnerOfSystem->GetRaceID()) < FRIENDSHIP_AGREEMENT)
 				{
@@ -453,11 +457,11 @@ void CShipBottomView::OnDraw(CDC* dc)
 				&& pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetFleet()->CheckOrder(&pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()),COLONIZE) == TRUE)))
 			{
 				// Wenn das System uns bzw. niemanden gehört können wir nur kolonisieren
-				if (pDoc->GetSector(pDoc->GetKO().x,pDoc->GetKO().y).GetOwnerOfSector() == ""
-					|| pDoc->GetSector(pDoc->GetKO().x,pDoc->GetKO().y).GetOwnerOfSector() == pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetOwnerOfShip())
-					for (int l = 0; l < pDoc->GetSector(pDoc->GetKO().x,pDoc->GetKO().y).GetNumberOfPlanets(); l++)
-						if (pDoc->GetSector(pDoc->GetKO().x,pDoc->GetKO().y).GetPlanet(l)->GetTerraformed() == TRUE
-							&& pDoc->GetSector(pDoc->GetKO().x,pDoc->GetKO().y).GetPlanet(l)->GetCurrentHabitant() == 0.0f)
+				if (pDoc->GetSector(pDoc->GetKO()).GetOwnerOfSector() == ""
+					|| pDoc->GetSector(pDoc->GetKO()).GetOwnerOfSector() == pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetOwnerOfShip())
+					for (int l = 0; l < pDoc->GetSector(pDoc->GetKO()).GetNumberOfPlanets(); l++)
+						if (pDoc->GetSector(pDoc->GetKO()).GetPlanet(l)->GetTerraformed() == TRUE
+							&& pDoc->GetSector(pDoc->GetKO()).GetPlanet(l)->GetCurrentHabitant() == 0.0f)
 						{
 							g.DrawImage(m_pShipOrderButton, r.right-245, r.top+140, 120, 30);
 							s = CResourceManager::GetString("BTN_COLONIZE");
@@ -478,9 +482,9 @@ void CShipBottomView::OnDraw(CDC* dc)
 				&& pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetFleet()->CheckOrder(&pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()),TERRAFORM) == TRUE)))
 
 			{
-				for (int l = 0; l < pDoc->GetSector(pDoc->GetKO().x,pDoc->GetKO().y).GetNumberOfPlanets(); l++)
-					if (pDoc->GetSector(pDoc->GetKO().x,pDoc->GetKO().y).GetPlanet(l)->GetHabitable() == TRUE &&
-						pDoc->GetSector(pDoc->GetKO().x,pDoc->GetKO().y).GetPlanet(l)->GetTerraformed() == FALSE)
+				for (int l = 0; l < pDoc->GetSector(pDoc->GetKO()).GetNumberOfPlanets(); l++)
+					if (pDoc->GetSector(pDoc->GetKO()).GetPlanet(l)->GetHabitable() == TRUE &&
+						pDoc->GetSector(pDoc->GetKO()).GetPlanet(l)->GetTerraformed() == FALSE)
 					{
 						g.DrawImage(m_pShipOrderButton, r.right-245, r.top+140-counter*35, 120, 30);
 						s = CResourceManager::GetString("BTN_TERRAFORM");
@@ -507,10 +511,10 @@ void CShipBottomView::OnDraw(CDC* dc)
 				// hier schauen, ob ich in der Schiffsinfoliste schon einen Außenposten habe den ich bauen kann, wenn in dem
 				// Sector noch kein Außenposten steht und ob ich diesen in dem Sector überhaupt bauen kann. Das geht nur
 				// wenn der Sektor mir oder niemanden gehört
-				if (pDoc->GetSector(pDoc->GetKO().x,pDoc->GetKO().y).GetOutpost(pDoc->m_ShipArray.GetAt(n).GetOwnerOfShip()) == FALSE
-					&& pDoc->GetSector(pDoc->GetKO().x,pDoc->GetKO().y).GetStarbase(pDoc->m_ShipArray.GetAt(n).GetOwnerOfShip()) == FALSE
-					&& (pDoc->GetSector(pDoc->GetKO().x,pDoc->GetKO().y).GetOwnerOfSector() == ""
-					|| pDoc->GetSector(pDoc->GetKO().x,pDoc->GetKO().y).GetOwnerOfSector() == pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetOwnerOfShip()))
+				if (pDoc->GetSector(pDoc->GetKO()).GetOutpost(pDoc->m_ShipArray.GetAt(n).GetOwnerOfShip()) == FALSE
+					&& pDoc->GetSector(pDoc->GetKO()).GetStarbase(pDoc->m_ShipArray.GetAt(n).GetOwnerOfShip()) == FALSE
+					&& (pDoc->GetSector(pDoc->GetKO()).GetOwnerOfSector() == ""
+					|| pDoc->GetSector(pDoc->GetKO()).GetOwnerOfSector() == pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetOwnerOfShip()))
 				{
 					// Hier überprüfen, ob ich einen Außenposten technologisch überhaupt bauen kann
 					for (int l = 0; l < pDoc->m_ShipInfoArray.GetSize(); l++)
@@ -528,9 +532,9 @@ void CShipBottomView::OnDraw(CDC* dc)
 							}						
 				}
 				// Wenn hier schon ein Außenposten steht, können wir vielleicht auch eine Sternbasis bauen
-				else if (pDoc->GetSector(pDoc->GetKO().x,pDoc->GetKO().y).GetOutpost(pDoc->m_ShipArray.GetAt(n).GetOwnerOfShip()) == TRUE
-					&& pDoc->GetSector(pDoc->GetKO().x,pDoc->GetKO().y).GetStarbase(pDoc->m_ShipArray.GetAt(n).GetOwnerOfShip()) == FALSE
-					&& pDoc->GetSector(pDoc->GetKO().x,pDoc->GetKO().y).GetOwnerOfSector() == pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetOwnerOfShip())
+				else if (pDoc->GetSector(pDoc->GetKO()).GetOutpost(pDoc->m_ShipArray.GetAt(n).GetOwnerOfShip()) == TRUE
+					&& pDoc->GetSector(pDoc->GetKO()).GetStarbase(pDoc->m_ShipArray.GetAt(n).GetOwnerOfShip()) == FALSE
+					&& pDoc->GetSector(pDoc->GetKO()).GetOwnerOfSector() == pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetOwnerOfShip())
 				{
 					// Hier überprüfen, ob ich eine Sternbasis technologisch überhaupt bauen kann
 					for (int l = 0; l < pDoc->m_ShipInfoArray.GetSize(); l++)
@@ -583,19 +587,19 @@ void CShipBottomView::OnDraw(CDC* dc)
 	{
 		BYTE count = 0;
 		map<CString, CMajor*>* pmMajors = pDoc->GetRaceCtrl()->GetMajors();
-		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
-			if (pDoc->GetSector(pDoc->GetKO().x,pDoc->GetKO().y).GetIsStationBuilding(it->first) == TRUE)
+		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
+			if (pDoc->GetSector(pDoc->GetKO()).GetIsStationBuilding(it->first) == TRUE)
 			{
 				CString station;
-				if (pDoc->GetSector(pDoc->GetKO().x,pDoc->GetKO().y).GetOutpost(it->first) == FALSE)
+				if (pDoc->GetSector(pDoc->GetKO()).GetOutpost(it->first) == FALSE)
 					station = CResourceManager::GetString("OUTPOST");
 				else
 					station = CResourceManager::GetString("STARBASE");
 				fontBrush.SetColor(Color(170,170,170));
 				CString percent;
-				percent.Format("%d",((pDoc->GetSector(pDoc->GetKO().x,pDoc->GetKO().y).GetStartStationPoints(it->first)
-					- pDoc->GetSector(pDoc->GetKO().x,pDoc->GetKO().y).GetNeededStationPoints(it->first)) * 100
-					/ pDoc->GetSector(pDoc->GetKO().x,pDoc->GetKO().y).GetStartStationPoints(it->first)));
+				percent.Format("%d",((pDoc->GetSector(pDoc->GetKO()).GetStartStationPoints(it->first)
+					- pDoc->GetSector(pDoc->GetKO()).GetNeededStationPoints(it->first)) * 100
+					/ pDoc->GetSector(pDoc->GetKO()).GetStartStationPoints(it->first)));
 				
 				CString sRaceName;
 				if (pMajor == it->second || pMajor->IsRaceContacted(it->first))

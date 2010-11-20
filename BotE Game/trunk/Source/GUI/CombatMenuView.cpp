@@ -207,9 +207,9 @@ void CCombatMenuView::OnInitialUpdate()
 	ASSERT(pMajor);
 	CString sPrefix = pMajor->GetPrefix();
 	
-	bg_combatdecmenu	= pDoc->GetGraphicPool()->GetGDIGraphic("Events\\CombatDec.jpg");
-	bg_combatinfomenu	= pDoc->GetGraphicPool()->GetGDIGraphic("Events\\CombatDec.jpg");
-	bg_combatordermenu	= pDoc->GetGraphicPool()->GetGDIGraphic("Events\\CombatDec.jpg");
+	bg_combatdecmenu	= pDoc->GetGraphicPool()->GetGDIGraphic("Events\\CombatDec.boj");
+	bg_combatinfomenu	= pDoc->GetGraphicPool()->GetGDIGraphic("Events\\CombatDec.boj");
+	bg_combatordermenu	= pDoc->GetGraphicPool()->GetGDIGraphic("Events\\CombatDec.boj");
 	
 	m_bInOrderMenu = false;
 
@@ -328,30 +328,30 @@ void CCombatMenuView::DrawCombatDecisionMenue(Graphics* g)
 	bool bFlipHand = false;
 	if (m_dWinningChance < 0.4)
 	{
-		graphic	= pDoc->GetGraphicPool()->GetGDIGraphic("Symbols\\Win0.png");
+		graphic	= pDoc->GetGraphicPool()->GetGDIGraphic("Other\\win0.bop");
 		fontBrush.SetColor(Color(200,0,0));
 	}
 	else if (m_dWinningChance < 0.6)
 	{
 		fontBrush.SetColor(Color(255,100,0));
-		graphic	= pDoc->GetGraphicPool()->GetGDIGraphic("Symbols\\Win40.png");
+		graphic	= pDoc->GetGraphicPool()->GetGDIGraphic("Other\\win40.bop");
 		bFlipHand = true;
 	}
 	else if (m_dWinningChance < 0.75)
 	{
 		fontBrush.SetColor(Color(255,225,0));
-		graphic	= pDoc->GetGraphicPool()->GetGDIGraphic("Symbols\\Win60.png");
+		graphic	= pDoc->GetGraphicPool()->GetGDIGraphic("Other\\win60.bop");
 		bFlipHand = true;
 	}
 	else if (m_dWinningChance < 0.9)
 	{
 		fontBrush.SetColor(Color(200,225,0));
-		graphic	= pDoc->GetGraphicPool()->GetGDIGraphic("Symbols\\Win75.png");
+		graphic	= pDoc->GetGraphicPool()->GetGDIGraphic("Other\\win75.bop");
 	}
 	else
 	{
 		fontBrush.SetColor(Color(0,200,0));
-		graphic	= pDoc->GetGraphicPool()->GetGDIGraphic("Symbols\\Win90.png");
+		graphic	= pDoc->GetGraphicPool()->GetGDIGraphic("Other\\win90.bop");
 	}
 	if (graphic)
 	{
@@ -512,9 +512,9 @@ void CCombatMenuView::DrawCombatOrderMenue(Graphics* g)
 			Bitmap* graphic = NULL;
 			switch (pShip->GetCombatTactic())
 			{
-			case COMBAT_TACTIC_ATTACK:	graphic	= pDoc->GetGraphicPool()->GetGDIGraphic("Other\\tactic_attack.png"); break;
-			case COMBAT_TACTIC_AVOID:	graphic	= pDoc->GetGraphicPool()->GetGDIGraphic("Other\\tactic_avoid.png"); break;
-			case COMBAT_TACTIC_RETREAT: graphic	= pDoc->GetGraphicPool()->GetGDIGraphic("Other\\tactic_retreat.png"); break;
+			case COMBAT_TACTIC_ATTACK:	graphic	= pDoc->GetGraphicPool()->GetGDIGraphic("Other\\tactic_attack.bop"); break;
+			case COMBAT_TACTIC_AVOID:	graphic	= pDoc->GetGraphicPool()->GetGDIGraphic("Other\\tactic_avoid.bop"); break;
+			case COMBAT_TACTIC_RETREAT: graphic	= pDoc->GetGraphicPool()->GetGDIGraphic("Other\\tactic_retreat.bop"); break;
 			}
 			
 			if (graphic)
@@ -627,13 +627,13 @@ void CCombatMenuView::DrawCombatOrderMenue(Graphics* g)
 	DrawGDIButtons(g, &m_CombatOrderButtons, -1, Gdiplus::Font(fontName.AllocSysString(), fontSize), btnBrush);
 	// Grafik des Taktiksymbols zentriert über den Taktikbuttons zeichnen
 	Bitmap* graphic = NULL;
-	graphic	= pDoc->GetGraphicPool()->GetGDIGraphic("Other\\tactic_attack.png");
+	graphic	= pDoc->GetGraphicPool()->GetGDIGraphic("Other\\tactic_attack.bop");
 	if (graphic)
 		g->DrawImage(graphic, 460, 80, 40, 40);
-	graphic	= pDoc->GetGraphicPool()->GetGDIGraphic("Other\\tactic_avoid.png");
+	graphic	= pDoc->GetGraphicPool()->GetGDIGraphic("Other\\tactic_avoid.bop");
 	if (graphic)
 		g->DrawImage(graphic, 620, 80, 40, 40);
-	graphic	= pDoc->GetGraphicPool()->GetGDIGraphic("Other\\tactic_retreat.png");
+	graphic	= pDoc->GetGraphicPool()->GetGDIGraphic("Other\\tactic_retreat.bop");
 	if (graphic)
 		g->DrawImage(graphic, 780, 80, 40, 40);
 			

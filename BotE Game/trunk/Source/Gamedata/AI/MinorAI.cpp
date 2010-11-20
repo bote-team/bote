@@ -75,7 +75,7 @@ short CMinorAI::ReactOnOffer(const CDiplomacyInfo& info)
 		short nOthersAgreement	= NO_AGREEMENT;		
 		map<CString, CMajor*>* pmMajors = m_pDoc->GetRaceCtrl()->GetMajors();
 		// nicht wir selbst
-		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 		{
 			if (it->first != info.m_sFromRace)
 			{
@@ -247,7 +247,7 @@ bool CMinorAI::MakeOffer(CString& sRaceID, CDiplomacyInfo& info)
 			// z.B. Mitgliedschaft mit der Minorrace hat, dann können wir ihr kein Angebot machen
 			short nOthersAgreement = NO_AGREEMENT;		
 			map<CString, CMajor*>* pmMajors = m_pDoc->GetRaceCtrl()->GetMajors();
-			for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+			for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 			{
 				short nTemp = pMinor->GetAgreement(it->first);
 				if (nTemp > nOthersAgreement)
@@ -358,7 +358,7 @@ void CMinorAI::ReactOnDowry(const CDiplomacyInfo& info)
 	int nAcceptancePoints = 0;
 	// höchsten Wert (außer eigenen) suchen
 	map<CString, CMajor*>* pmMajors = m_pDoc->GetRaceCtrl()->GetMajors();
-	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 		if (info.m_sFromRace != it->first)
 			nAcceptancePoints = max(nAcceptancePoints, pMinor->GetAcceptancePoints(it->first));
 	
@@ -482,7 +482,7 @@ void CMinorAI::CalcOtherMajorsRelationChange(const CDiplomacyInfo& info, short n
 	vector<MAJORLIST> vKnownMajors;
 	
 	map<CString, CMajor*>* pmMajors = m_pDoc->GetRaceCtrl()->GetMajors();
-	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 		if (info.m_sFromRace != it->first)
 			if (m_pRace->IsRaceContacted(it->first))
 				vKnownMajors.push_back(MAJORLIST(it->first, m_pRace->GetRelation(it->first)));

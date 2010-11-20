@@ -9,8 +9,8 @@ CTroopInfo::CTroopInfo(void)
 	m_strName = "";
 	m_strDescription = "";
 	m_byMaintenanceCosts = 0;
-	memset(m_byNeededTechs, 0, 6 * sizeof(*m_byNeededTechs));
-	memset(m_iNeededResources, 0, 5 * sizeof(*m_iNeededResources));
+	memset(m_byNeededTechs, 0, sizeof(m_byNeededTechs));
+	memset(m_iNeededResources, 0, sizeof(m_iNeededResources));
 	m_iNeededIndustry = 0;
 	m_byID = 0;
 	m_sOwner = "";

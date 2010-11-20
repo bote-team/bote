@@ -478,7 +478,9 @@ UINT CShip::GetCompleteOffensivePower() const
 	}
 
 	// Manövrierfähigkeit geht mit in den Wert ein
-	double dMan = ((int)m_byManeuverability - 4.0) / 10.0 * 1.75 + 1.0;
+	double dMan = 1.0;
+	if (m_iShipType != OUTPOST && m_iShipType != STARBASE)
+		dMan = ((int)m_byManeuverability - 4.0) / 10.0 * 1.75 + 1.0;
 		
 	return (UINT)((beamDmg + torpedoDmg) * dMan);
 }
@@ -496,7 +498,9 @@ UINT CShip::GetCompleteDefensivePower() const
 		def = (UINT)(def * 1.1);
 
 	// Manövrierfähigkeit geht mit in den Wert ein
-	double dMan = ((int)m_byManeuverability - 4.0) / 10.0 * 1.75 + 1.0;
+	double dMan = 1.0;
+	if (m_iShipType != OUTPOST && m_iShipType != STARBASE)
+		dMan = ((int)m_byManeuverability - 4.0) / 10.0 * 1.75 + 1.0;
 		
 	return (UINT)(def * dMan);
 }
@@ -569,7 +573,7 @@ CString CShip::GetTooltip(bool bShowFleet/*= true*/)
 		if (bShowFleet && this->GetFleet())
 		{
 			// Schiffsnamen holen und die ersten 4 Zeichen (z.B. USS_) und die lezten 2 Zeichen (z.B. _A) entfernen
-			if (sName.GetLength() > 4)
+			if (sName.GetLength() > 4 && sName.GetAt(3) == ' ')
 				sName.Delete(0,4);
 			if (sName.GetLength() > 2 && sName.ReverseFind(' ') == sName.GetLength() - 2)
 				sName.Delete(sName.GetLength() - 2, 2);
@@ -908,7 +912,7 @@ void CShip::DrawShip(Gdiplus::Graphics* g, CGraphicPool* pGraphicPool, const CPo
 	// Wenn es das Flagschiff unseres Imperiums ist, dann kleines Zeichen zeichnen
 	if (m_bIsFlagShip)
 	{		
-		graphic = pGraphicPool->GetGDIGraphic("Other\\flagshipSmall.png");
+		graphic = pGraphicPool->GetGDIGraphic("Other\\flagshipSmall.bop");
 		if (graphic)
 			g->DrawImage(graphic, pt.x + 37, pt.y + 30, graphic->GetWidth(), graphic->GetHeight());
 	}
@@ -946,7 +950,7 @@ void CShip::DrawShip(Gdiplus::Graphics* g, CGraphicPool* pGraphicPool, const CPo
 			Gdiplus::Color clrCloaked(50, clrCurrent.GetR(), clrCurrent.GetG(), clrCurrent.GetB());	
 			fontBrush.SetColor(clrCloaked);
 			// kleines Icon für aktivierte Tarnung zeichnen
-			graphic = pGraphicPool->GetGDIGraphic("Other\\cloakedSmall.png");
+			graphic = pGraphicPool->GetGDIGraphic("Other\\cloakedSmall.bop");
 			if (graphic)
 				g->DrawImage(graphic, pt.x + 37, pt.y + 55, graphic->GetWidth(), graphic->GetHeight());
 		}
@@ -963,7 +967,7 @@ void CShip::DrawShip(Gdiplus::Graphics* g, CGraphicPool* pGraphicPool, const CPo
 		{
 			// Schiffsnamen holen und die ersten 4 Zeichen (z.B. USS_) und die lezten 2 Zeichen (z.B. _A) entfernen
 			s.Format("%s", m_strShipName);
-			if (s.GetLength() > 4)
+			if (s.GetLength() > 4 && s.GetAt(3) == ' ')
 				s.Delete(0,4);
 			if (s.GetLength() > 2 && s.ReverseFind(' ') == s.GetLength() - 2)
 				s.Delete(s.GetLength() - 2, 2);

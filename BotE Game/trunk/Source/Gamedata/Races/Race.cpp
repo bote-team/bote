@@ -43,22 +43,22 @@ void CRace::Serialize(CArchive &ar)
 		// Ingame-Attribute (Rassenwechselwirkung)
 		// Beziehungsmap (Rassen-ID, Beziehungswert)
 		ar << m_mRelations.size();
-		for (map<CString, BYTE>::const_iterator it = m_mRelations.begin(); it != m_mRelations.end(); it++)
+		for (map<CString, BYTE>::const_iterator it = m_mRelations.begin(); it != m_mRelations.end(); ++it)
 			ar << it->first << it->second;
 		// Diplomatischer Status gegenüber anderen Rassen (Rassen-ID, Status)
 		ar << m_mAgreement.size();
-		for (map<CString, short>::const_iterator it = m_mAgreement.begin(); it != m_mAgreement.end(); it++)
+		for (map<CString, short>::const_iterator it = m_mAgreement.begin(); it != m_mAgreement.end(); ++it)
 			ar << it->first << it->second;
 		// kennt die Rasse eine andere Rasse (Rassen-ID, Wahrheitswert)
 		ar << m_vInContact.size();
-		for (set<CString>::const_iterator it = m_vInContact.begin(); it != m_vInContact.end(); it++)
+		for (set<CString>::const_iterator it = m_vInContact.begin(); it != m_vInContact.end(); ++it)
 			ar << *it;
 		// diplomatische Nachrichten
 		ar << m_vDiplomacyNewsIn.size();
-		for (vector<CDiplomacyInfo>::iterator it = m_vDiplomacyNewsIn.begin(); it != m_vDiplomacyNewsIn.end(); it++)
+		for (vector<CDiplomacyInfo>::iterator it = m_vDiplomacyNewsIn.begin(); it != m_vDiplomacyNewsIn.end(); ++it)
 			it->Serialize(ar);
 		ar << m_vDiplomacyNewsOut.size();
-		for (vector<CDiplomacyInfo>::iterator it = m_vDiplomacyNewsOut.begin(); it != m_vDiplomacyNewsOut.end(); it++)
+		for (vector<CDiplomacyInfo>::iterator it = m_vDiplomacyNewsOut.begin(); it != m_vDiplomacyNewsOut.end(); ++it)
 			it->Serialize(ar);
 
 		// grafische Attribute
@@ -236,7 +236,7 @@ void CRace::MakeOffersAI(void)
 	std::map<CString, CRace*>* races = pDoc->GetRaceCtrl()->GetRaces();
 	ASSERT(races);
 
-	for (map<CString, CRace*>::const_iterator it = races->begin(); it != races->end(); it++)
+	for (map<CString, CRace*>::const_iterator it = races->begin(); it != races->end(); ++it)
 		if (m_sID != it->first)
 		{
 			// Minorangebot zu anderer Minor geht nicht!

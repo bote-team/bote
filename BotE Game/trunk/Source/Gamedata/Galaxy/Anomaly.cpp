@@ -18,38 +18,38 @@ CAnomaly::CAnomaly(void)
 
 	// Nebel
 	if (m_byType == RADIONEBULA)
-		m_sImageFile = "RadioNebula.png";
+		m_sImageFile = "RadioNebula.bop";
 	else if (m_byType == METNEBULA)
-		m_sImageFile = "MetNebula.png";
+		m_sImageFile = "MetNebula.bop";
 	else if (m_byType == DEUTNEBULA)
-		m_sImageFile = "DeutNebula.png";
+		m_sImageFile = "DeutNebula.bop";
 	else if (m_byType == IONSTORM)
-		m_sImageFile = "Ionstorm.png";
+		m_sImageFile = "Ionstorm.bop";
 	else if (m_byType == BINEBULA)
-		m_sImageFile = "BiNebula.png";
+		m_sImageFile = "BiNebula.bop";
 	else if (m_byType == TORIONGASNEBULA)
-		m_sImageFile = "ToriongasNebula.png";
+		m_sImageFile = "ToriongasNebula.bop";
 	// Neutronensterne
 	else if (m_byType == NEUTRONSTAR)
-		m_sImageFile = "NeutronStar.png";
+		m_sImageFile = "NeutronStar.bop";
 	else if (m_byType == RADIOPULSAR)
-		m_sImageFile = "RadioPulsar.png";
+		m_sImageFile = "RadioPulsar.bop";
 	else if (m_byType == XRAYPULSAR)
-		m_sImageFile = "XRayPulsar.png";
+		m_sImageFile = "XRayPulsar.bop";
 	else if (m_byType == MAGNETAR)
-		m_sImageFile = "Magnetar.png";
+		m_sImageFile = "Magnetar.bop";
 	// Verzerrungen
 	else if (m_byType == GRAVDISTORTION)
-		m_sImageFile = "GravDistortion.png";
+		m_sImageFile = "GravDistortion.bop";
 	else if (m_byType == CONTINUUMRIP)
-		m_sImageFile = "ContinuumRip.png";
+		m_sImageFile = "ContinuumRip.bop";
 	else if (m_byType == BLACKHOLE)
-		m_sImageFile = "BlackHole.png";
+		m_sImageFile = "BlackHole.bop";
 	// sonstiges
 	else if (m_byType == QUASAR)
-		m_sImageFile = "Quasar.png";
+		m_sImageFile = "Quasar.bop";
 	else
-		m_sImageFile = "Wormhole.png";
+		m_sImageFile = "Wormhole.bop";
 
 	rand()%2 == 1 ? m_bFlipHorz = true : m_bFlipHorz = false;
 }

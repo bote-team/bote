@@ -82,5 +82,6 @@ private:
 	/// @param pFromRace Zeiger auf die kriegserklärende Rasse
 	/// @param pEnemy Zeiger auf die Rasse, welcher Krieg erklärt wird
 	/// @param pInfo Diplomatieobjekt
-	static void DeclareWar(CRace* pFromRace, CRace* pEnemy, CDiplomacyInfo* pInfo);
+	/// @param bWithMoralEvent <code>true</code> wenn Moralevent mit eingeplant werden soll
+	static void DeclareWar(CRace* pFromRace, CRace* pEnemy, CDiplomacyInfo* pInfo, bool bWithMoralEvent);
 };

@@ -423,16 +423,16 @@ void CEmpireMenuView::DrawEmpireSystemMenue(Graphics* g)
 					fontBrush.SetColor(normalColor);
 				
 				// Nahrungslager anzeigen
-				s.Format("%d",pDoc->GetSystem(KO.x,KO.y).GetFoodStore());
+				s.Format("%d",pDoc->GetSystem(KO).GetFoodStore());
 				g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(480,140+j*25,100,25), &fontFormat, &fontBrush);
 				
 				// Industrieproduktion anzeigen
-				int ip = pDoc->GetSystem(KO.x,KO.y).GetProduction()->GetIndustryProd();
+				int ip = pDoc->GetSystem(KO).GetProduction()->GetIndustryProd();
 				s.Format("%d",ip);
 				g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(580,140+j*25,100,25), &fontFormat, &fontBrush);
 								
 				// Bauauftrag anzeigen inkl. Anzeige der noch nötigen Runden bis Bauauftrag fertig ist
-				short id	= pDoc->GetSystem(KO.x,KO.y).GetAssemblyList()->GetAssemblyListEntry(0);
+				short id = pDoc->GetSystem(KO).GetAssemblyList()->GetAssemblyListEntry(0);
 				int RoundToBuild = 0;
 				if (id == 0)
 					s = "";
@@ -440,8 +440,8 @@ void CEmpireMenuView::DrawEmpireSystemMenue(Graphics* g)
 				{
 					if (ip > 0 && !pDoc->GetBuildingInfo(id).GetNeverReady())
 					{
-						RoundToBuild = (int)ceil((float)(pDoc->GetSystem(KO.x,KO.y).GetAssemblyList()->GetNeededIndustryInAssemblyList(0))/((float)ip
-							* (100+pDoc->GetSystem(KO.x,KO.y).GetProduction()->GetBuildingBuildSpeed())/100));
+						RoundToBuild = (int)ceil((float)(pDoc->GetSystem(KO).GetAssemblyList()->GetNeededIndustryInAssemblyList(0))/((float)ip
+							* (100+pDoc->GetSystem(KO).GetProduction()->GetBuildingBuildSpeed())/100));
 						if (RoundToBuild > 1)
 							s.Format("%s (%d %s)",pDoc->GetBuildingName(id),RoundToBuild,CResourceManager::GetString("ROUNDS"));
 						else
@@ -452,11 +452,11 @@ void CEmpireMenuView::DrawEmpireSystemMenue(Graphics* g)
 				}
 				else if (id >= 10000 && id < 20000)
 				{
-					if (pDoc->GetSystem(KO.x,KO.y).GetProduction()->GetShipYardEfficiency() > 0 && ip > 0)
+					if (pDoc->GetSystem(KO).GetProduction()->GetShipYardEfficiency() > 0 && ip > 0)
 					{
-						RoundToBuild = (int)ceil((float)(pDoc->GetSystem(KO.x,KO.y).GetAssemblyList()->GetNeededIndustryInAssemblyList(0))
-								/((float)ip * pDoc->GetSystem(KO.x,KO.y).GetProduction()->GetShipYardEfficiency() / 100
-									* (100+pDoc->GetSystem(KO.x,KO.y).GetProduction()->GetShipBuildSpeed())/100));
+						RoundToBuild = (int)ceil((float)(pDoc->GetSystem(KO).GetAssemblyList()->GetNeededIndustryInAssemblyList(0))
+								/((float)ip * pDoc->GetSystem(KO).GetProduction()->GetShipYardEfficiency() / 100
+									* (100+pDoc->GetSystem(KO).GetProduction()->GetShipBuildSpeed())/100));
 						if (RoundToBuild > 1)
 							s.Format("%s-%s (%d %s)",pDoc->m_ShipInfoArray.GetAt(id-10000).GetShipClass(),CResourceManager::GetString("CLASS"),
 							RoundToBuild,CResourceManager::GetString("ROUNDS"));
@@ -470,11 +470,11 @@ void CEmpireMenuView::DrawEmpireSystemMenue(Graphics* g)
 				}
 				else if (id >= 20000)
 				{
-					if (pDoc->GetSystem(KO.x,KO.y).GetProduction()->GetBarrackEfficiency() > 0 && ip > 0)
+					if (pDoc->GetSystem(KO).GetProduction()->GetBarrackEfficiency() > 0 && ip > 0)
 					{
-						RoundToBuild = (int)ceil((float)(pDoc->GetSystem(KO.x,KO.y).GetAssemblyList()->GetNeededIndustryInAssemblyList(0))
-								/((float)ip * pDoc->GetSystem(KO.x,KO.y).GetProduction()->GetBarrackEfficiency() / 100
-									* (100+pDoc->GetSystem(KO.x,KO.y).GetProduction()->GetTroopBuildSpeed())/100));
+						RoundToBuild = (int)ceil((float)(pDoc->GetSystem(KO).GetAssemblyList()->GetNeededIndustryInAssemblyList(0))
+								/((float)ip * pDoc->GetSystem(KO).GetProduction()->GetBarrackEfficiency() / 100
+									* (100+pDoc->GetSystem(KO).GetProduction()->GetTroopBuildSpeed())/100));
 						if (RoundToBuild > 1)
 							s.Format("%s (%d %s)",pDoc->m_TroopInfo.GetAt(id-20000).GetName(),RoundToBuild,CResourceManager::GetString("ROUNDS"));
 						else
@@ -487,8 +487,8 @@ void CEmpireMenuView::DrawEmpireSystemMenue(Graphics* g)
 				{
 					if (ip > 0 && !pDoc->GetBuildingInfo(-id).GetNeverReady())
 					{
-						RoundToBuild = (int)ceil((float)(pDoc->GetSystem(KO.x,KO.y).GetAssemblyList()->GetNeededIndustryInAssemblyList(0))/((float)ip
-							* (100+pDoc->GetSystem(KO.x,KO.y).GetProduction()->GetUpdateBuildSpeed())/100));
+						RoundToBuild = (int)ceil((float)(pDoc->GetSystem(KO).GetAssemblyList()->GetNeededIndustryInAssemblyList(0))/((float)ip
+							* (100+pDoc->GetSystem(KO).GetProduction()->GetUpdateBuildSpeed())/100));
 						if (RoundToBuild > 1)
 							s.Format("Upgrade %s (%d %s)",pDoc->GetBuildingName(-id),RoundToBuild,CResourceManager::GetString("ROUNDS"));
 						else
@@ -499,7 +499,7 @@ void CEmpireMenuView::DrawEmpireSystemMenue(Graphics* g)
 				}
 				if (id > 0 && id < 10000 && pDoc->GetBuildingInfo(id).GetNeverReady())
 					s.Format("%s (%s)",pDoc->GetBuildingName(id),CResourceManager::GetString("RUNS"));
-				if (pDoc->GetSystem(KO.x, KO.y).GetAutoBuild())
+				if (pDoc->GetSystem(KO).GetAutoBuild())
 				{
 					s.Insert(0, CResourceManager::GetString("AUTOBUILD") + ": ");
 					fontBrush.SetColor(Color::Red);					
@@ -535,14 +535,23 @@ void CEmpireMenuView::DrawEmpireSystemMenue(Graphics* g)
 					fontFormat.SetTrimming(StringTrimmingEllipsisCharacter);					
 					if (bDist[k])
 					{
-						s.Format("*%d", pDoc->GetSystem(KO).GetRessourceStore(k));
-						g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize + 3), RectF(270+k*120,140+j*25,120,25), &fontFormat, &fontBrush);
+						Bitmap* graphic = NULL;
+						// kleiens Ressourcensymbol vor dem Wert zeichnen
+						switch (k)
+						{
+						case TITAN:		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\titanSmall.bop"); break;
+						case DEUTERIUM: graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\deuteriumSmall.bop"); break;
+						case DURANIUM:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\duraniumSmall.bop"); break;
+						case CRYSTAL:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\crystalSmall.bop"); break;
+						case IRIDIUM:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\iridiumSmall.bop"); break;
+						case DILITHIUM: graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\Deritium.bop"); break;
+						}
+						if (graphic)
+							g->DrawImage(graphic, 245+k*120, 145+j*25, 20 , 16);
 					}
-					else
-					{
-						s.Format("%d", pDoc->GetSystem(KO).GetRessourceStore(k));
-						g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(270+k*120,140+j*25,120,25), &fontFormat, &fontBrush);
-					}
+					
+					s.Format("%d", pDoc->GetSystem(KO).GetRessourceStore(k));
+					g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(270+k*120,140+j*25,120,25), &fontFormat, &fontBrush);
 					fontFormat.SetTrimming(StringTrimmingNone);
 				}
 			}
@@ -898,18 +907,18 @@ void CEmpireMenuView::DrawEmpireDemographicsMenue(Gdiplus::Graphics *g)
 	s.Format("%d", nPlace);
 	fMark += nPlace;
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(330,250,70,25), &fontFormat, &fontBrush);
-	s.Format("%.0lf", fValue);
+	s.Format("%.0lf", fValue * 5.0);
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(400,250,125,25), &fontFormat, &fontBrush);
-	s.Format("%.0lf", fFirst);
+	s.Format("%.0lf", fFirst * 5.0);
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(525,250,125,25), &fontFormat, &fontBrush);
-	s.Format("%.0lf", fAverage);
+	s.Format("%.0lf", fAverage * 5.0);
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(650,250,125,25), &fontFormat, &fontBrush);
-	s.Format("%.0lf", fLast);
+	s.Format("%.0lf", fLast * 5.0);
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(775,250,125,25), &fontFormat, &fontBrush);
 	if (nPlace == 1)
 	{
 		// Pokal zeichnen
-		Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\Trophy.png");
+		Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\trophy.bop");
 		if (graphic)
 			g->DrawImage(graphic, 320, 247, 30, 30);
 	}
@@ -929,7 +938,7 @@ void CEmpireMenuView::DrawEmpireDemographicsMenue(Gdiplus::Graphics *g)
 	if (nPlace == 1)
 	{
 		// Pokal zeichnen
-		Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\Trophy.png");
+		Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\trophy.bop");
 		if (graphic)
 			g->DrawImage(graphic, 320, 317, 30, 30);
 	}
@@ -938,18 +947,18 @@ void CEmpireMenuView::DrawEmpireDemographicsMenue(Gdiplus::Graphics *g)
 	s.Format("%d", nPlace);
 	fMark += nPlace;
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(330,390,70,25), &fontFormat, &fontBrush);
-	s.Format("%.0lf", fValue / 100);
+	s.Format("%.0lf", fValue / 10);
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(400,390,125,25), &fontFormat, &fontBrush);
-	s.Format("%.0lf", fFirst / 100);
+	s.Format("%.0lf", fFirst / 10);
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(525,390,125,25), &fontFormat, &fontBrush);
-	s.Format("%.0lf", fAverage / 100);
+	s.Format("%.0lf", fAverage / 10);
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(650,390,125,25), &fontFormat, &fontBrush);
-	s.Format("%.0lf", fLast / 100);
+	s.Format("%.0lf", fLast / 10);
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(775,390,125,25), &fontFormat, &fontBrush);
 	if (nPlace == 1)
 	{
 		// Pokal zeichnen
-		Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\Trophy.png");
+		Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\trophy.bop");
 		if (graphic)
 			g->DrawImage(graphic, 320, 387, 30, 30);
 	}
@@ -958,18 +967,18 @@ void CEmpireMenuView::DrawEmpireDemographicsMenue(Gdiplus::Graphics *g)
 	s.Format("%d", nPlace);
 	fMark += nPlace;
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(330,460,70,25), &fontFormat, &fontBrush);
-	s.Format("%.0lf", fValue);
+	s.Format("%.0lf", fValue * 2.0);
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(400,460,125,25), &fontFormat, &fontBrush);
-	s.Format("%.0lf", fFirst);
+	s.Format("%.0lf", fFirst * 2.0);
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(525,460,125,25), &fontFormat, &fontBrush);
-	s.Format("%.0lf", fAverage);
+	s.Format("%.0lf", fAverage * 2.0);
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(650,460,125,25), &fontFormat, &fontBrush);
-	s.Format("%.0lf", fLast);
+	s.Format("%.0lf", fLast * 2.0);
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(775,460,125,25), &fontFormat, &fontBrush);
 	if (nPlace == 1)
 	{
 		// Pokal zeichnen
-		Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\Trophy.png");
+		Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\trophy.bop");
 		if (graphic)
 			g->DrawImage(graphic, 320, 457, 30, 30);
 	}
@@ -989,7 +998,7 @@ void CEmpireMenuView::DrawEmpireDemographicsMenue(Gdiplus::Graphics *g)
 	if (nPlace == 1)
 	{
 		// Pokal zeichnen
-		Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\Trophy.png");
+		Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\trophy.bop");
 		if (graphic)
 			g->DrawImage(graphic, 320, 527, 30, 30);
 	}
@@ -1025,7 +1034,7 @@ void CEmpireMenuView::DrawEmpireDemographicsMenue(Gdiplus::Graphics *g)
 	if (fMark < 2.0f)
 	{
 		// Pokale zeichnen
-		Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\Trophy.png");
+		Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\trophy.bop");
 		if (graphic)
 		{
 			g->DrawImage(graphic, 395, 80, 50, 45);

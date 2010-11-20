@@ -20,6 +20,7 @@ BEGIN_MESSAGE_MAP(CTradeMenuView, CMainBaseView)
 	ON_WM_ERASEBKGND()
 	ON_WM_LBUTTONDOWN()
 	ON_WM_MOUSEMOVE()
+	ON_WM_KEYDOWN()
 END_MESSAGE_MAP()
 
 
@@ -696,6 +697,58 @@ void CTradeMenuView::OnMouseMove(UINT nFlags, CPoint point)
 	ButtonReactOnMouseOver(point, &m_TradeMainButtons);
 	
 	CMainBaseView::OnMouseMove(nFlags, point);
+}
+
+void CTradeMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
+{
+	// TODO: Add your message handler code here and/or call default
+	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	ASSERT(pDoc);
+
+	// nur wenn nicht im Monopolmenü
+	if (m_bySubMenu == 1)
+		return;
+
+	if (!pDoc->m_bDataReceived)
+		return;
+	
+	CMajor* pMajor = m_pPlayersRace;
+	ASSERT(pMajor);
+	if (!pMajor)
+		return;
+
+	// Wenn wir in irgendeinem System sind, können wir mit dem links rechts Pfeil zu einem anderen System wechseln
+	CPoint p = pDoc->GetKO();
+	if (nChar == VK_RIGHT || nChar == VK_LEFT)
+	{
+		// an welcher Stelle in der Liste befindet sich das aktuelle System?
+		short pos = 0;
+		for (int i = 0; i < pMajor->GetEmpire()->GetSystemList()->GetSize(); i++)
+			if (pMajor->GetEmpire()->GetSystemList()->GetAt(i).ko == p)
+			{
+				pos = i;
+				break;
+			}
+		if (nChar == VK_RIGHT)
+		{
+			pos++;
+			if (pos == pMajor->GetEmpire()->GetSystemList()->GetSize())
+				pos = 0;
+		}
+		else
+		{
+			pos--;
+			if (pos < 0)
+				pos = pMajor->GetEmpire()->GetSystemList()->GetUpperBound();
+		}
+		if (pMajor->GetEmpire()->GetSystemList()->GetSize() > 1)
+		{
+			pDoc->SetKO(pMajor->GetEmpire()->GetSystemList()->GetAt(pos).ko.x, pMajor->GetEmpire()->GetSystemList()->GetAt(pos).ko.y);
+			Invalidate(FALSE);
+		}
+	}
+
+	CMainBaseView::OnKeyDown(nChar, nRepCnt, nFlags);
 }
 
 void CTradeMenuView::CreateButtons()

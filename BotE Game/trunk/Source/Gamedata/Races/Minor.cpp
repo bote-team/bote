@@ -38,7 +38,7 @@ void CMinor::Serialize(CArchive &ar)
 		ar << m_bSubjugated;				// wurde die Rasse unterworfen
 		// Akzeptanzpunkte (Rassen-ID, Punkte)
 		ar << m_mAcceptance.size();
-		for (map<CString, short>::const_iterator it = m_mAcceptance.begin(); it != m_mAcceptance.end(); it++)
+		for (map<CString, short>::const_iterator it = m_mAcceptance.begin(); it != m_mAcceptance.end(); ++it)
 			ar << it->first << it->second;
 	}
 	// wenn geladen wird
@@ -238,7 +238,7 @@ void CMinor::CalcAcceptancePoints(CBotf2Doc* pDoc)
 	// alle Majors holen
 	map<CString, CMajor*>* pmMajors = pDoc->GetRaceCtrl()->GetMajors();
 	// und durchiterieren
-	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 	{
 		// nur wenn die Rasse bekannt ist weitermachen
 		if (!IsRaceContacted(it->first))
@@ -334,7 +334,7 @@ void CMinor::CheckDiplomaticConsistence(CBotf2Doc* pDoc)
 	// alle Majors holen
 	map<CString, CMajor*>* pmMajors = pDoc->GetRaceCtrl()->GetMajors();
 	// und durchiterieren
-	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 	{
 		// nur wenn die Rasse bekannt ist weitermachen
 		if (!IsRaceContacted(it->first))
@@ -373,7 +373,7 @@ void CMinor::CheckDiplomaticConsistence(CBotf2Doc* pDoc)
 		// hat die andere Rasse eine Mitgliedschaft, dann müssen Handelsvertrag und Freundschaft von allen anderen Rassen gekündigt werden
 		if (nMajorsAgreement == MEMBERSHIP)
 		{
-			for (map<CString, CMajor*>::const_iterator itt = pmMajors->begin(); itt != pmMajors->end(); itt++)
+			for (map<CString, CMajor*>::const_iterator itt = pmMajors->begin(); itt != pmMajors->end(); ++itt)
 			{
 				if (it->first == itt->first)
 					continue;
@@ -406,7 +406,7 @@ void CMinor::CheckDiplomaticConsistence(CBotf2Doc* pDoc)
 		}
 		else if (nMajorsAgreement == AFFILIATION)
 		{
-			for (map<CString, CMajor*>::const_iterator itt = pmMajors->begin(); itt != pmMajors->end(); itt++)
+			for (map<CString, CMajor*>::const_iterator itt = pmMajors->begin(); itt != pmMajors->end(); ++itt)
 			{
 				if (it->first == itt->first)
 					continue;
@@ -435,7 +435,7 @@ void CMinor::CheckDiplomaticConsistence(CBotf2Doc* pDoc)
 		}
 		else if (nMajorsAgreement == COOPERATION)
 		{
-			for (map<CString, CMajor*>::const_iterator itt = pmMajors->begin(); itt != pmMajors->end(); itt++)
+			for (map<CString, CMajor*>::const_iterator itt = pmMajors->begin(); itt != pmMajors->end(); ++itt)
 			{
 				if (it->first == itt->first)
 					continue;
@@ -470,7 +470,7 @@ void CMinor::PerhapsCancelAgreement(CBotf2Doc* pDoc)
 	// alle Majors holen
 	map<CString, CMajor*>* pmMajors = pDoc->GetRaceCtrl()->GetMajors();
 	// und durchiterieren
-	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 	{
 		// nur zu 25% wird in dieser Runde dann auch gekündigt
 		if (rand()%3 != 0)
