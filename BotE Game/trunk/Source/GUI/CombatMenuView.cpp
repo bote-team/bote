@@ -208,8 +208,8 @@ void CCombatMenuView::OnInitialUpdate()
 	CString sPrefix = pMajor->GetPrefix();
 	
 	bg_combatdecmenu	= pDoc->GetGraphicPool()->GetGDIGraphic("Events\\CombatDec.boj");
-	bg_combatinfomenu	= pDoc->GetGraphicPool()->GetGDIGraphic("Events\\CombatDec.boj");
-	bg_combatordermenu	= pDoc->GetGraphicPool()->GetGDIGraphic("Events\\CombatDec.boj");
+	bg_combatinfomenu	= pDoc->GetGraphicPool()->GetGDIGraphic("Events\\CombatInfo.boj");
+	bg_combatordermenu	= pDoc->GetGraphicPool()->GetGDIGraphic("Events\\CombatOrder.boj");
 	
 	m_bInOrderMenu = false;
 
@@ -269,8 +269,8 @@ void CCombatMenuView::DrawCombatDecisionMenue(Graphics* g)
 	CPoint p = pDoc->m_ptCurrentCombatSector;
 
 	// Beteiligte Rassen darstellen...
-	// Zuerst unw selbst und all unsere Verbündeten zeichnen
-	int nPosX = m_TotalSize.cx / 2 - 100 - (m_sFriends.size() - 1) * 220;
+	// Zuerst uns selbst und all unsere Verbündeten zeichnen
+	int nPosX = m_TotalSize.cx / 2 - 100 - ((m_sFriends.size() - 1) * 220) / 2;
 	for (std::set<const CRace*>::const_iterator it = m_sFriends.begin(); it != m_sFriends.end(); ++it)
 	{
 		const CRace* pRace = *it;
@@ -1046,7 +1046,7 @@ void CCombatMenuView::CreateButtons()
 	CString fileI = "Other\\" + sPrefix + "buttoni.bop";
 	CString fileA = "Other\\" + sPrefix + "buttona.bop";
 	// Buttons in der Kampfentscheidungsansicht
-	m_CombatDecisionButtons.Add(new CMyButton(CPoint(320,950), CSize(160,40), CResourceManager::GetString("BTN_ORDER"),  fileN, fileI, fileA));
+	m_CombatDecisionButtons.Add(new CMyButton(CPoint(320,950), CSize(160,40), CResourceManager::GetString("BTN_DETAILS"),  fileN, fileI, fileA));
 	m_CombatDecisionButtons.Add(new CMyButton(CPoint(480,950), CSize(160,40), CResourceManager::GetString("BTN_HAILING"),  fileN, fileI, fileA));
 	m_CombatDecisionButtons.Add(new CMyButton(CPoint(640,950), CSize(160,40), CResourceManager::GetString("BTN_RETREAT"),  fileN, fileI, fileA));
 	m_CombatDecisionButtons.Add(new CMyButton(CPoint(800,950), CSize(160,40), CResourceManager::GetString("BTN_AUTOCOMBAT"),  fileN, fileI, fileA));

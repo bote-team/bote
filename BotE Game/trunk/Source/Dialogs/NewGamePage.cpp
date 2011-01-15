@@ -16,7 +16,7 @@
 
 #include "Lmcons.h"
 #include "Botf2Doc.h"
-#include "PreferencesDlg.h"
+#include "SettingsDlg.h"
 
 // CNewGamePage dialog
 
@@ -413,6 +413,6 @@ void CNewGamePage::OnEnChangeServerport()
 void CNewGamePage::OnBnClickedShowoptionsdlg()
 {
 	// TODO: Fügen Sie hier Ihren Kontrollbehandlungscode für die Benachrichtigung ein.
-	CPreferencesDlg dlg;
+	CSettingsDlg dlg;
 	dlg.DoModal();		
 }

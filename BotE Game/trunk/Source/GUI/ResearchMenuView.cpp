@@ -699,7 +699,7 @@ void CResearchMenuView::DrawUniqueResearchMenue(Graphics* g)
 
 		fontBrush.SetColor(markColor);
 		s = CResourceManager::GetString("RESEARCHED_SPECIALTECHS");
-		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(190,300,500,30), &fontFormatCenter, &fontBrush);
+		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(100,300,680,30), &fontFormatCenter, &fontBrush);
 		fontBrush.SetColor(normalColor);
 
 		int nCount = 0;
@@ -715,7 +715,7 @@ void CResearchMenuView::DrawUniqueResearchMenue(Graphics* g)
 					{
 						s = pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(i)->GetComplexName() + ": " +
 							pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(i)->GetFieldName(j);
-						g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(190,350 + nCount * 30 , 500, 30), &fontFormatCenter, &fontBrush);
+						g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(100,350 + nCount * 30 , 680, 30), &fontFormatCenter, &fontBrush);
 						nCount++;
 						break;
 					}
@@ -725,7 +725,7 @@ void CResearchMenuView::DrawUniqueResearchMenue(Graphics* g)
 		if (nCount == 0)
 		{
 			s = CResourceManager::GetString("NONE");
-			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(190,350,500,30), &fontFormatCenter, &fontBrush);
+			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(100,350,680,30), &fontFormatCenter, &fontBrush);
 		}
 	}	
 }

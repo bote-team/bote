@@ -294,10 +294,13 @@ protected:
 	
 	/// Diese Funktion berechnet die Auswirkungen von Schiffen und Stationen auf der Karte. So werden hier z.B. Sektoren
 	/// gescannt, Rassen kennengelernt und die Schiffe den Sektoren bekanntgegeben.
-	void CalcShipEffects();	
+	void CalcShipEffects();
 
 	/// Diese Funktion führt allgemeine Berechnung durch, die immer zum Ende der NextRound-Calculation stattfinden müssen.
-	void CalcEndDataForNextRound();	
+	void CalcEndDataForNextRound();
+
+	/// Diese Funktion überprüft, ob neue Rassen kennengelernt wurden.
+	void CalcContactNewRaces();
 
 	/// Diese Funktion berechnet die Schiffserfahrung in einer neuen Runde. Außer Erfahrung im Kampf, diese werden nach einem
 	/// Kampf direkt verteilt.

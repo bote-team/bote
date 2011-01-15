@@ -1,5 +1,5 @@
 /*
- *   Copyright (C)2004-2010 Sir Pustekuchen
+ *   Copyright (C)2004-2011 Sir Pustekuchen
  *
  *   Author   :  Sir Pustekuchen
  *   Home     :  http://birth-of-the-empires.de
@@ -204,6 +204,14 @@ public:
 	 * @return <code>TRUE</code> genau bei Erfolg
 	 */
 	BOOL StartMusic(network::RACE race, float fVolume = 1.0f);
+
+	/**
+	 * Startet das Abspielen der angegebenen Datei als Hintergrundmusik. Bisher abgespielte Hintergrundmusik
+	 * wird unterbrochen und freigegeben.
+	 *
+	 * @return <code>TRUE</code> genau bei Erfolg
+	 */
+	BOOL StartMusic(const CString& sFile, float fVolume = 1.0f);
 
 	/**
 	 * Hält die Hintergrundmusik an und gibt sie frei.

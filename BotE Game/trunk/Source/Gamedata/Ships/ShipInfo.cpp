@@ -304,31 +304,46 @@ void CShipInfo::DrawShipInformation(Graphics* g, CRect rect, Gdiplus::Font* font
 	s = CResourceManager::GetString("ARMAMENT");
 	g->DrawString(s.AllocSysString(), -1, font, RectF((REAL)r.left, (REAL)r.top, (REAL)r.Width(), (REAL)r.Height()), &fontFormat, &fontBrush);
 	
-	CString weapons = "";
+	// Waffen typenrein sammeln
+	std::map<CString, int> mBeamWeapons;
 	for (int i = 0; i < m_BeamWeapons.GetSize(); i++)
 	{
-		s.Format("%d x %s %d %s",m_BeamWeapons.GetAt(i).GetBeamNumber(), CResourceManager::GetString("TYPE"),
-			m_BeamWeapons.GetAt(i).GetBeamType(),m_BeamWeapons.GetAt(i).GetBeamName());
-		weapons.Insert(weapons.GetLength(),s);
-		if ((i+1) < m_BeamWeapons.GetSize())
-			weapons += ", ";
+		s.Format("%s %d %s", CResourceManager::GetString("TYPE"), m_BeamWeapons.GetAt(i).GetBeamType(),m_BeamWeapons.GetAt(i).GetBeamName());
+		mBeamWeapons[s] += m_BeamWeapons.GetAt(i).GetBeamNumber();
 	}
+
+	std::map<CString, int> mTorpedoWeapons;
 	for (int i = 0; i < m_TorpedoWeapons.GetSize(); i++)
 	{
-		if (i == 0 && weapons.IsEmpty() != TRUE)
-			weapons += ", ";
-		s.Format("%d x %s (%s)",m_TorpedoWeapons.GetAt(i).GetNumberOfTupes(),m_TorpedoWeapons.GetAt(i).GetTupeName(),
-			m_TorpedoWeapons.GetAt(i).GetTorpedoName());
-		weapons.Insert(weapons.GetLength(),s);
-		if ((i+1) < m_TorpedoWeapons.GetSize())
-			weapons += ", ";
+		s.Format("%s (%s)", m_TorpedoWeapons.GetAt(i).GetTupeName(), m_TorpedoWeapons.GetAt(i).GetTorpedoName());
+		mTorpedoWeapons[s] += m_TorpedoWeapons.GetAt(i).GetNumberOfTupes();				
 	}
-	if (weapons == "")
-		weapons = CResourceManager::GetString("NONE");
+
+	// Waffenbeschreibungstext zusammenbauen
+	CString sWeapons = "";
+	for (map<CString, int>::const_iterator it = mBeamWeapons.begin(); it != mBeamWeapons.end(); ++it)
+	{
+		if (sWeapons != "")
+			sWeapons += ", ";
+
+		s.Format("%d x %s", it->second, it->first);
+		sWeapons += s;
+	}
+	for (map<CString, int>::const_iterator it = mTorpedoWeapons.begin(); it != mTorpedoWeapons.end(); ++it)
+	{
+		if (sWeapons != "")
+			sWeapons += ", ";
+
+		s.Format("%d x %s", it->second, it->first);
+		sWeapons += s;
+	}
+
+	if (sWeapons == "")
+		sWeapons = CResourceManager::GetString("NONE");
 	r.SetRect(rect.left,rect.top+74,rect.right,rect.top+142);
 	fontBrush.SetColor(clrNormal);
 	fontFormat.SetFormatFlags(!StringFormatFlagsNoWrap);
-	g->DrawString(weapons.AllocSysString(), -1, font, RectF((REAL)r.left, (REAL)r.top, (REAL)r.Width(), (REAL)r.Height()), &fontFormat, &fontBrush);
+	g->DrawString(sWeapons.AllocSysString(), -1, font, RectF((REAL)r.left, (REAL)r.top, (REAL)r.Width(), (REAL)r.Height()), &fontFormat, &fontBrush);
 			
 	// Wenn das Rechteck, welches wir an diese Funktion übergeben haben breiter als 500 ist, dann wird der Abstand
 	// zwischen Bewaffnung und "Schilde und Hülle" um eine Zeile verkürzt

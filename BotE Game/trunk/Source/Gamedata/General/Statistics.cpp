@@ -280,7 +280,7 @@ void CStatistics::GetTopSystems(int nLimit, std::list<CPoint>& lSystems) const
 				// Wert berechnen
 				int nValue = 0;
 				
-				// Nahrung / 2
+				// Nahrung
 				nValue += pDoc->GetSystem(x,y).GetProduction()->GetMaxFoodProd() / 4;
 				// Industrie
 				nValue += pDoc->GetSystem(x,y).GetProduction()->GetIndustryProd();

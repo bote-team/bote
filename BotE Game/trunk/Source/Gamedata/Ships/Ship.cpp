@@ -308,7 +308,7 @@ CString CShip::GetShipTypeAsString(BOOL plural) const
 		case HEAVY_DESTROYER: shipType = CResourceManager::GetString("HEAVY_DESTROYER"); break;
 		case HEAVY_CRUISER: shipType = CResourceManager::GetString("HEAVY_CRUISER"); break;
 		case BATTLESHIP: shipType = CResourceManager::GetString("BATTLESHIP"); break;
-		case FLAGSHIP: shipType = CResourceManager::GetString("FLAGSHIP"); break;
+		case DREADNOUGHT: shipType = CResourceManager::GetString("DREADNOUGHT"); break;
 		case OUTPOST: shipType = CResourceManager::GetString("OUTPOST"); break;
 		case STARBASE: shipType = CResourceManager::GetString("STARBASE"); break;
 		case ALIEN: shipType = CResourceManager::GetString("ALIEN"); break;
@@ -327,7 +327,7 @@ CString CShip::GetShipTypeAsString(BOOL plural) const
 		case HEAVY_DESTROYER: shipType = CResourceManager::GetString("HEAVY_DESTROYERS"); break;
 		case HEAVY_CRUISER: shipType = CResourceManager::GetString("HEAVY_CRUISERS"); break;
 		case BATTLESHIP: shipType = CResourceManager::GetString("BATTLESHIPS"); break;
-		case FLAGSHIP: shipType = CResourceManager::GetString("FLAGSHIPS"); break;
+		case DREADNOUGHT: shipType = CResourceManager::GetString("DREADNOUGHTS"); break;
 		case OUTPOST: shipType = CResourceManager::GetString("OUTPOSTS"); break;
 		case STARBASE: shipType = CResourceManager::GetString("STARBASES"); break;
 		case ALIEN: shipType = CResourceManager::GetString("ALIENS"); break;
@@ -481,8 +481,13 @@ UINT CShip::GetCompleteOffensivePower() const
 	double dMan = 1.0;
 	if (m_iShipType != OUTPOST && m_iShipType != STARBASE)
 		dMan = ((int)m_byManeuverability - 4.0) / 10.0 * 1.75 + 1.0;
+
+	// Tarnung geht mit in den Wert ein
+	double dCloak = 1.0;
+	if (m_bCloakOn)
+		dCloak = 1.25;
 		
-	return (UINT)((beamDmg + torpedoDmg) * dMan);
+	return (UINT)((beamDmg + torpedoDmg) * dMan * dCloak);
 }
 
 /// Funktion gibt die gesamte Defensivstärke des Schiffes zurück. Dabei wird die maximale Hülle, die maximalen
@@ -502,7 +507,12 @@ UINT CShip::GetCompleteDefensivePower() const
 	if (m_iShipType != OUTPOST && m_iShipType != STARBASE)
 		dMan = ((int)m_byManeuverability - 4.0) / 10.0 * 1.75 + 1.0;
 		
-	return (UINT)(def * dMan);
+	// Tarnung geht mit in den Wert ein
+	double dCloak = 1.0;
+	if (m_bCloakOn)
+		dCloak = 1.25;
+
+	return (UINT)(def * dMan * dCloak);
 }
 
 /// Funktion gibt den schon benutzten Lagerraum im Schiff zurück.
@@ -596,10 +606,19 @@ CString CShip::GetTooltip(bool bShowFleet/*= true*/)
 	sType = CHTMLStringBuilder::GetHTMLHeader(sType, _T("h4"));
 	sType = CHTMLStringBuilder::GetHTMLCenter(sType);
 	sType += CHTMLStringBuilder::GetHTMLStringNewLine();
-	sType += CHTMLStringBuilder::GetHTMLStringNewLine();
-
+	
+	// Unterhalt anzeigen	
+	CString sCosts = "0";
+	sCosts.Format("%s: %d", CResourceManager::GetString("SHIPCOSTS"), this->GetMaintenanceCosts());
+	sCosts = CHTMLStringBuilder::GetHTMLColor(sCosts);
+	sCosts = CHTMLStringBuilder::GetHTMLHeader(sCosts, _T("h5"));
+	sCosts = CHTMLStringBuilder::GetHTMLCenter(sCosts);
+	sCosts += CHTMLStringBuilder::GetHTMLStringNewLine();
+	
 	// Bewegung anzeigen
-	CString sMovementHead = CResourceManager::GetString("MOVEMENT");
+	CString sMovementHead = "";
+	sMovementHead += CHTMLStringBuilder::GetHTMLStringNewLine();
+	sMovementHead += CResourceManager::GetString("MOVEMENT");
 	sMovementHead = CHTMLStringBuilder::GetHTMLColor(sMovementHead, _T("silver"));
 	sMovementHead = CHTMLStringBuilder::GetHTMLHeader(sMovementHead, _T("h4"));
 	sMovementHead = CHTMLStringBuilder::GetHTMLCenter(sMovementHead);
@@ -654,16 +673,17 @@ CString CShip::GetTooltip(bool bShowFleet/*= true*/)
 	sMovement += CHTMLStringBuilder::GetHTMLStringNewLine();
 	sMovement += CHTMLStringBuilder::GetHTMLStringNewLine();
 
-	// Bewaffnung anzeigen
-	CString sBeams = "";
-	UINT nOverallDmg = 0;
+	// Bewaffnung anzeigen	
+	UINT nOverallDmg = 0;		
+	std::map<CString, int> mBeamWeapons;
 	for (int i = 0; i < this->GetBeamWeapons()->GetSize(); i++)
 	{
 		CBeamWeapons* pBeam = &(this->GetBeamWeapons()->GetAt(i));
 		CString s;
-		s.Format("%d x %s %d %s\n", pBeam->GetBeamNumber(), CResourceManager::GetString("TYPE"), pBeam->GetBeamType(), pBeam->GetBeamName());
-		sBeams += s;
-		
+		s.Format("%s %d %s", CResourceManager::GetString("TYPE"), pBeam->GetBeamType(), pBeam->GetBeamName());
+		// Waffen typenrein sammeln		
+		mBeamWeapons[s] += pBeam->GetBeamNumber();		
+				
 		short counter = 0;
 		for (int j = 0; j < 100; j++)
 		{
@@ -673,6 +693,15 @@ CString CShip::GetTooltip(bool bShowFleet/*= true*/)
 				nOverallDmg += (UINT)pBeam->GetBeamPower()	* pBeam->GetBeamNumber() * pBeam->GetShootNumber();				
 			counter--;			
 		}
+	}
+	
+	// Beamwaffenbeschreibungstext zusammenbauen
+	CString sBeams = "";
+	for (map<CString, int>::const_iterator it = mBeamWeapons.begin(); it != mBeamWeapons.end(); ++it)
+	{
+		CString s;
+		s.Format("%d x %s\n", it->second, it->first);
+		sBeams += s;
 	}
 
 	if (sBeams.IsEmpty())
@@ -691,16 +720,25 @@ CString CShip::GetTooltip(bool bShowFleet/*= true*/)
 	sBeamWeaponHead += CHTMLStringBuilder::GetHTMLStringHorzLine();
 	sBeamWeaponHead += CHTMLStringBuilder::GetHTMLStringNewLine();
 
-	CString sTorps;
 	nOverallDmg = 0;
+	std::map<CString, int> mTorpedoWeapons;
 	for (int i = 0; i < this->GetTorpedoWeapons()->GetSize(); i++)
 	{
 		CTorpedoWeapons* pTorp = &(this->GetTorpedoWeapons()->GetAt(i));
 		CString s;
-		s.Format("%d x %s (%s)\n", pTorp->GetNumberOfTupes(), pTorp->GetTupeName(), pTorp->GetTorpedoName());
-		sTorps += s;		
+		s.Format("%s (%s)", pTorp->GetTupeName(), pTorp->GetTorpedoName());
+		mTorpedoWeapons[s] += m_TorpedoWeapons.GetAt(i).GetNumberOfTupes();
 		nOverallDmg += (UINT)((pTorp->GetTorpedoPower() * pTorp->GetNumber() * 100 * pTorp->GetNumberOfTupes()) / pTorp->GetTupeFirerate());
 	}
+
+	CString sTorps = "";
+	for (map<CString, int>::const_iterator it = mTorpedoWeapons.begin(); it != mTorpedoWeapons.end(); ++it)
+	{
+		CString s;
+		s.Format("%d x %s\n", it->second, it->first);
+		sTorps += s;
+	}
+
 	if (sTorps.IsEmpty())
 		sTorps = CResourceManager::GetString("NONE") + "\n";
 	sTorps = CHTMLStringBuilder::GetHTMLColor(sTorps);
@@ -830,7 +868,7 @@ CString CShip::GetTooltip(bool bShowFleet/*= true*/)
 	sDesc = CHTMLStringBuilder::GetHTMLColor(sDesc);
 	sDesc = CHTMLStringBuilder::GetHTMLHeader(sDesc, _T("h5"));
 
-	CString sTip = sName + sType + sMovementHead + sMovement + sBeamWeaponHead + sBeams + sTupeWeaponHead + sTorps + sDefensiveHead + sShield + sHull + sSpecialsHead + sSpecials + sDesc;
+	CString sTip = sName + sType + sCosts + sMovementHead + sMovement + sBeamWeaponHead + sBeams + sTupeWeaponHead + sTorps + sDefensiveHead + sShield + sHull + sSpecialsHead + sSpecials + sDesc;
 	return sTip;
 }
 
@@ -912,9 +950,9 @@ void CShip::DrawShip(Gdiplus::Graphics* g, CGraphicPool* pGraphicPool, const CPo
 	// Wenn es das Flagschiff unseres Imperiums ist, dann kleines Zeichen zeichnen
 	if (m_bIsFlagShip)
 	{		
-		graphic = pGraphicPool->GetGDIGraphic("Other\\flagshipSmall.bop");
+		graphic = pGraphicPool->GetGDIGraphic("Symbols\\" + m_sOwnerOfShip + ".bop");
 		if (graphic)
-			g->DrawImage(graphic, pt.x + 37, pt.y + 30, graphic->GetWidth(), graphic->GetHeight());
+			g->DrawImage(graphic, pt.x + 37, pt.y + 30, 25, 25);
 	}
 
 	// Wenn des Schiff Truppen transportiert, dann kleines Truppensymbol zeichnen

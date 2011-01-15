@@ -160,6 +160,18 @@ void CSoundManager::Release()
 
 BOOL CSoundManager::StartMusic(network::RACE race, float fVolume)
 {
+	// zugehörigen Dateinamen ermitteln, abbrechen, falls keine Zuordnung vorhanden ist
+	std::string pathName = GetPathName(GetRaceMusic(race));
+	
+	// Musik starten
+	return StartMusic(pathName.c_str(), fVolume);
+}
+
+BOOL CSoundManager::StartMusic(const CString& sFile, float fVolume)
+{
+	if (sFile == "")
+		return TRUE;
+
 	if (!m_pSystem)
 	{
 		m_nLastResult = FMOD_ERR_UNINITIALIZED;
@@ -175,12 +187,8 @@ BOOL CSoundManager::StartMusic(network::RACE race, float fVolume)
 	FMOD_MODE mode = FMOD_DEFAULT | FMOD_LOOP_NORMAL | FMOD_LOWMEM;
 	if (m_bUseSoftwareSound) mode |= FMOD_SOFTWARE;
 
-	// zugehörigen Dateinamen ermitteln, abbrechen, falls keine Zuordnung vorhanden ist
-	std::string pathName = GetPathName(GetRaceMusic(race));
-	if (pathName.empty()) return TRUE;
-
 	// Stream erzeugen
-	m_nLastResult = m_pSystem->createStream(pathName.c_str(), mode, NULL, &m_pMusic);
+	m_nLastResult = m_pSystem->createStream(sFile, mode, NULL, &m_pMusic);
 	if (m_nLastResult != FMOD_OK || !m_pMusic) return FALSE;
 
 	// Abspielen vorbereiten

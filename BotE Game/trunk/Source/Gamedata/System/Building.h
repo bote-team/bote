@@ -1,5 +1,5 @@
 /*
- *   Copyright (C)2004-2010 Sir Pustekuchen
+ *   Copyright (C)2004-2011 Sir Pustekuchen
  *
  *   Author   :  Sir Pustekuchen
  *   Home     :  http://birth-of-the-empires.de
@@ -40,12 +40,12 @@ public:
 
 // Zugriffsfunktionen
 	// zum Lesen der Membervariablen
-	USHORT GetRunningNumber() const {return m_iRunningNumber;}
+	USHORT GetRunningNumber() const { return m_iRunningNumber; }
 	
-	BOOLEAN GetIsBuildingOnline() const {return m_bOnline;}	
+	BOOLEAN GetIsBuildingOnline() const { return m_bOnline; }	
 	
 	// zum Schreiben der Membervariablen
-	void SetIsBuildingOnline(BOOLEAN TrueOrFalse) {m_bOnline = TrueOrFalse;}	
+	void SetIsBuildingOnline(BOOLEAN TrueOrFalse) { m_bOnline = TrueOrFalse; }	
 
 private:
 	// Die laufende Nummer (ID) des Gebäudes

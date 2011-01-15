@@ -138,9 +138,9 @@ void CEmpireMenuView::OnInitialUpdate()
 	bg_newsovmenu			= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "newsovmenu.boj");
 	bg_systemovmenu			= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "systemovmenu.boj");
 	bg_shipovmenu			= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "shipovmenu.boj");
-	bg_demographicsmenu		= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "systemovmenu.boj");
-	bg_top5menu				= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "systemovmenu.boj");
-	bg_victorymenu			= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "systemovmenu.boj");
+	bg_demographicsmenu		= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "demomenu.boj");
+	bg_top5menu				= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "top5menu.boj");
+	bg_victorymenu			= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "victorymenu.boj");
 
 	m_iSubMenu = EMPIREVIEW_NEWS;
 	m_iWhichNewsButtonIsPressed = NO_TYPE;
@@ -890,8 +890,9 @@ void CEmpireMenuView::DrawEmpireDemographicsMenue(Gdiplus::Graphics *g)
 		g->DrawImage(bg_demographicsmenu, 0, 0, 1075, 750);
 	
 	CString s;
-	
-	// berechnete und zusammengefasste Transfers hinschreiben
+
+	// Tabellenüberschriften zeichnen
+	fontBrush.SetColor(markColor);
 	fontFormat.SetAlignment(StringAlignmentNear);
 	g->DrawString(CResourceManager::GetString("DEMO_BSP").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(165,250,165,25), &fontFormat, &fontBrush);
 	g->DrawString(CResourceManager::GetString("DEMO_PRODUCTIVITY").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(165,320,165,25), &fontFormat, &fontBrush);
@@ -899,6 +900,12 @@ void CEmpireMenuView::DrawEmpireDemographicsMenue(Gdiplus::Graphics *g)
 	g->DrawString(CResourceManager::GetString("DEMO_SCIENCE").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(165,460,165,25), &fontFormat, &fontBrush);
 	g->DrawString(CResourceManager::GetString("DEMO_HAPPINESS").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(165,530,165,25), &fontFormat, &fontBrush);
 	
+	// Pokalgrafiken laden
+	Bitmap* trophy1 = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\trophy1.bop");
+	Bitmap* trophy2 = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\trophy2.bop");
+	Bitmap* trophy3 = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\trophy3.bop");
+
+	fontBrush.SetColor(normalColor);
 	fontFormat.SetAlignment(StringAlignmentCenter);
 	float fMark = 0.0f;
 	int nPlace = 1;
@@ -915,13 +922,14 @@ void CEmpireMenuView::DrawEmpireDemographicsMenue(Gdiplus::Graphics *g)
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(650,250,125,25), &fontFormat, &fontBrush);
 	s.Format("%.0lf", fLast * 5.0);
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(775,250,125,25), &fontFormat, &fontBrush);
-	if (nPlace == 1)
-	{
-		// Pokal zeichnen
-		Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\trophy.bop");
-		if (graphic)
-			g->DrawImage(graphic, 320, 247, 30, 30);
-	}
+	
+	// Pokal zeichnen
+	if (nPlace == 1 && trophy1)
+		g->DrawImage(trophy1, 320, 247, 30, 30);
+	else if (nPlace == 2 && trophy2)
+		g->DrawImage(trophy2, 320, 247, 30, 30);
+	else if (nPlace == 3 && trophy3)
+		g->DrawImage(trophy3, 320, 247, 30, 30);
 	
 	pDoc->GetStatistics()->GetDemographicsProductivity(pMajor->GetRaceID(), nPlace, fValue, fAverage, fFirst, fLast);
 	s.Format("%d", nPlace);
@@ -935,14 +943,15 @@ void CEmpireMenuView::DrawEmpireDemographicsMenue(Gdiplus::Graphics *g)
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(650,320,125,25), &fontFormat, &fontBrush);
 	s.Format("%.0lf", fLast);
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(775,320,125,25), &fontFormat, &fontBrush);
-	if (nPlace == 1)
-	{
-		// Pokal zeichnen
-		Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\trophy.bop");
-		if (graphic)
-			g->DrawImage(graphic, 320, 317, 30, 30);
-	}
 	
+	// Pokal zeichnen
+	if (nPlace == 1 && trophy1)
+		g->DrawImage(trophy1, 320, 317, 30, 30);
+	else if (nPlace == 2 && trophy2)
+		g->DrawImage(trophy2, 320, 317, 30, 30);
+	else if (nPlace == 3 && trophy3)
+		g->DrawImage(trophy3, 320, 317, 30, 30);
+		
 	pDoc->GetStatistics()->GetDemographicsMilitary(pMajor->GetRaceID(), nPlace, fValue, fAverage, fFirst, fLast);
 	s.Format("%d", nPlace);
 	fMark += nPlace;
@@ -955,14 +964,15 @@ void CEmpireMenuView::DrawEmpireDemographicsMenue(Gdiplus::Graphics *g)
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(650,390,125,25), &fontFormat, &fontBrush);
 	s.Format("%.0lf", fLast / 10);
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(775,390,125,25), &fontFormat, &fontBrush);
-	if (nPlace == 1)
-	{
-		// Pokal zeichnen
-		Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\trophy.bop");
-		if (graphic)
-			g->DrawImage(graphic, 320, 387, 30, 30);
-	}
 	
+	// Pokal zeichnen
+	if (nPlace == 1 && trophy1)
+		g->DrawImage(trophy1, 320, 387, 30, 30);
+	else if (nPlace == 2 && trophy2)
+		g->DrawImage(trophy2, 320, 387, 30, 30);
+	else if (nPlace == 3 && trophy3)
+		g->DrawImage(trophy3, 320, 387, 30, 30);
+			
 	pDoc->GetStatistics()->GetDemographicsResearch(pMajor->GetRaceID(), nPlace, fValue, fAverage, fFirst, fLast);
 	s.Format("%d", nPlace);
 	fMark += nPlace;
@@ -975,33 +985,35 @@ void CEmpireMenuView::DrawEmpireDemographicsMenue(Gdiplus::Graphics *g)
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(650,460,125,25), &fontFormat, &fontBrush);
 	s.Format("%.0lf", fLast * 2.0);
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(775,460,125,25), &fontFormat, &fontBrush);
-	if (nPlace == 1)
-	{
-		// Pokal zeichnen
-		Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\trophy.bop");
-		if (graphic)
-			g->DrawImage(graphic, 320, 457, 30, 30);
-	}
 	
+	// Pokal zeichnen
+	if (nPlace == 1 && trophy1)
+		g->DrawImage(trophy1, 320, 457, 30, 30);
+	else if (nPlace == 2 && trophy2)
+		g->DrawImage(trophy2, 320, 457, 30, 30);
+	else if (nPlace == 3 && trophy3)
+		g->DrawImage(trophy3, 320, 457, 30, 30);
+
 	pDoc->GetStatistics()->GetDemographicsMoral(pMajor->GetRaceID(), nPlace, fValue, fAverage, fFirst, fLast);
 	s.Format("%d", nPlace);
 	fMark += nPlace;
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(330,530,70,25), &fontFormat, &fontBrush);
-	s.Format("%.0lf%%", fValue);
+	s.Format("%.0lf", fValue);
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(400,530,125,25), &fontFormat, &fontBrush);
-	s.Format("%.0lf%%", fFirst);
+	s.Format("%.0lf", fFirst);
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(525,530,125,25), &fontFormat, &fontBrush);
-	s.Format("%.0lf%%", fAverage);
+	s.Format("%.0lf", fAverage);
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(650,530,125,25), &fontFormat, &fontBrush);
-	s.Format("%.0lf%%", fLast);
+	s.Format("%.0lf", fLast);
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(775,530,125,25), &fontFormat, &fontBrush);
-	if (nPlace == 1)
-	{
-		// Pokal zeichnen
-		Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\trophy.bop");
-		if (graphic)
-			g->DrawImage(graphic, 320, 527, 30, 30);
-	}
+	
+	// Pokal zeichnen
+	if (nPlace == 1 && trophy1)
+		g->DrawImage(trophy1, 320, 527, 30, 30);
+	else if (nPlace == 2 && trophy2)
+		g->DrawImage(trophy2, 320, 527, 30, 30);
+	else if (nPlace == 3 && trophy3)
+		g->DrawImage(trophy3, 320, 527, 30, 30);
 	
 	CFontLoader::CreateGDIFont(pMajor, 3, fontName, fontSize);
 	// Schriftfarbe wählen
@@ -1011,13 +1023,11 @@ void CEmpireMenuView::DrawEmpireDemographicsMenue(Gdiplus::Graphics *g)
 	// Buttons am unteren Bildrand zeichnen
 	DrawGDIButtons(g, &m_EmpireNewsButtons, m_iSubMenu, Gdiplus::Font(fontName.AllocSysString(), fontSize), btnBrush);
 
-	// Tabellenüberschriften zeichnen
+	// Bereiche zeichnen
 	fontBrush.SetColor(markColor);
 	Gdiplus::Font font(fontName.AllocSysString(), fontSize);
-	fontFormat.SetTrimming(StringTrimmingEllipsisCharacter);
-	fontFormat.SetAlignment(StringAlignmentNear);
-	g->DrawString(CResourceManager::GetString("DEMOGRAPHIC").AllocSysString(), -1, &font, RectF(165,195,165,30), &fontFormat, &fontBrush);
-	fontFormat.SetAlignment(StringAlignmentCenter);
+	fontFormat.SetTrimming(StringTrimmingEllipsisCharacter);	
+	fontFormat.SetAlignment(StringAlignmentCenter);	
 	g->DrawString(CResourceManager::GetString("RANK").AllocSysString(), -1, &font, RectF(330,195,70,30), &fontFormat, &fontBrush);
 	g->DrawString(CResourceManager::GetString("VALUE").AllocSysString(), -1, &font, RectF(400,195,125,30), &fontFormat, &fontBrush);
 	g->DrawString(CResourceManager::GetString("FIRST_RANK").AllocSysString(), -1, &font, RectF(525,195,125,30), &fontFormat, &fontBrush);
@@ -1030,16 +1040,23 @@ void CEmpireMenuView::DrawEmpireDemographicsMenue(Gdiplus::Graphics *g)
 	// Punktestand/Note oben in der Mitte groß zeichnen
 	fMark /= 5;
 	s.Format("%s: %.1lf", CResourceManager::GetString("RATING"), fMark);
-	g->DrawString(s.AllocSysString(), -1, &font, RectF(0,80,m_TotalSize.cx,50), &fontFormat, &fontBrush);
-	if (fMark < 2.0f)
+	g->DrawString(s.AllocSysString(), -1, &font, RectF(0,65,m_TotalSize.cx,50), &fontFormat, &fontBrush);
+	
+	// Pokal für Gesamtbewertung zeichnen
+	if (fMark < 1.5f && trophy1)
 	{
-		// Pokale zeichnen
-		Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\trophy.bop");
-		if (graphic)
-		{
-			g->DrawImage(graphic, 395, 80, 50, 45);
-			g->DrawImage(graphic, 625, 80, 50, 45);
-		}
+		g->DrawImage(trophy1, 395, 65, 50, 45);
+		g->DrawImage(trophy1, 625, 65, 50, 45);
+	}
+	else if (fMark < 2.0f && trophy2)
+	{
+		g->DrawImage(trophy2, 395, 65, 50, 45);
+		g->DrawImage(trophy2, 625, 65, 50, 45);
+	}
+	else if (fMark < 2.5f && trophy3)
+	{
+		g->DrawImage(trophy3, 395, 65, 50, 45);
+		g->DrawImage(trophy3, 625, 65, 50, 45);
 	}
 	
 	// Schriftfarbe wählen
@@ -1086,7 +1103,8 @@ void CEmpireMenuView::DrawEmpireTop5Menue(Gdiplus::Graphics *g)
 	for (list<CPoint>::const_iterator it = lSystems.begin(); it != lSystems.end(); ++it)
 	{
 		CSector* pSector = &pDoc->GetSector(*it);
-		if (pSector->GetFullKnown(pMajor->GetRaceID()))
+		// Ist das System komplett bekannt oder ist der Besitzer bekannt und das System gescannt -> dann wird das System angezeigt
+		if (pSector->GetFullKnown(pMajor->GetRaceID()) || pMajor->IsRaceContacted(pSector->GetOwnerOfSector()) && pSector->GetScanned(pMajor->GetRaceID()))
 		{
 			// Planeten zeichnen
 			DrawSunSystem(g, *it, 110 + 110 * nCount);

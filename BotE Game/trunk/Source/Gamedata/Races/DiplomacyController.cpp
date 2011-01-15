@@ -733,12 +733,14 @@ void CDiplomacyController::ReceiveToMajor(CBotf2Doc* pDoc, CMajor* pToMajor, CDi
 					// wenn es keine Bestechung ist
 					if (pInfo->m_nType != CORRUPTION)
 					{
-						// wenn der aktuelle Vertrag höherwertiger ist als der hier angebotene, z.B.
-						// wenn die Minorrace unser Angebot in der gleichen Runde angenommen hat, dann
+						// Prüfen ob der Vertrag aufgrund aktuell bestehender Verträge überhaupt angenommen werden darf
+						// Wenn die Minorrace unser Angebot in der gleichen Runde angenommen hat, dann
 						// wird der Vertrag hier nicht gesetzt
-						if (pFromRace->GetAgreement(pToMajor->GetRaceID()) >= pInfo->m_nType)
+						CMinor* pMinor = dynamic_cast<CMinor*>(pFromRace);
+						ASSERT(pMinor);
+						if (!pMinor->CanAcceptOffer(pDoc, pToMajor->GetRaceID(), pInfo->m_nType))
 							return;
-
+						
 						// nur Text bei Vertragsformen erstellen
 						if (!sAgreement.IsEmpty())
 						{

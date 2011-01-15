@@ -3,6 +3,7 @@
 #include "FontLoader.h"
 #include "Botf2Doc.h"
 #include "Races\RaceController.h"
+#include "IniLoader.h"
 
 IMPLEMENT_SERIAL (CEventVictory, CObject, 1)
 
@@ -41,6 +42,35 @@ void CEventVictory::Serialize(CArchive &ar)
 //////////////////////////////////////////////////////////////////////
 // sonstige Funktionen
 //////////////////////////////////////////////////////////////////////
+void CEventVictory::Create(void)
+{
+	if (m_pBGImage != NULL)
+		return;
+
+	CBotf2Doc* pDoc = ((CBotf2App*)AfxGetApp())->GetDocument();
+	ASSERT(pDoc);
+
+	network::RACE client = pDoc->GetRaceCtrl()->GetMappedClientID(m_sRace);
+
+	CIniLoader* pIni = CIniLoader::GetInstance();
+	ASSERT(pIni);
+
+	float fMusicVolume;
+	pIni->ReadValue("Audio", "MUSICVOLUME", fMusicVolume);
+	
+	CSoundManager* pSoundManager = CSoundManager::GetInstance();
+	ASSERT(pSoundManager);
+
+	CString sTheme = "";
+	if (m_sWinnerRace == m_sRace)
+		sTheme = CIOData::GetInstance()->GetAppPath() + "Sounds\\" + "VictoryTheme.ogg";
+	else
+		sTheme = CIOData::GetInstance()->GetAppPath() + "Sounds\\" + "LosingTheme.ogg";
+	pSoundManager->StartMusic(sTheme, fMusicVolume);
+
+	__super::Create();
+}
+
 void CEventVictory::Close(void)
 {
 	client.Disconnect();
@@ -123,13 +153,15 @@ void CEventVictory::Draw(Graphics* g, CGraphicPool* graphicPool) const
 		fontFormat.SetAlignment(StringAlignmentNear);
 
 		CMajor* pWinner = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(m_sWinnerRace));
-		ASSERT(pMajor);
-
-		CString sRaceName = pWinner->GetEmpireNameWithArticle();
-		// Groß beginnen
-		CString sUpper = (CString)sRaceName.GetAt(0);
-		sRaceName.SetAt(0, sUpper.MakeUpper().GetAt(0));
-
+		CString sRaceName = "?";
+		if (pWinner)
+		{
+			sRaceName = pWinner->GetEmpireNameWithArticle();
+			// Groß beginnen
+			CString sUpper = (CString)sRaceName.GetAt(0);
+			sRaceName.SetAt(0, sUpper.MakeUpper().GetAt(0));
+		}
+		
 		int nGamePoints = pDoc->GetStatistics()->GetGamePoints(m_sRace, pDoc->GetCurrentRound(), pDoc->GetDifficultyLevel());		
 		s.Format("%s\n\n\n%s %d",
 			CResourceManager::GetString("OTHER_REACHED_VICTORY_IN_TYPE", FALSE, sRaceName, sType),

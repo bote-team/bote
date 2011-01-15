@@ -714,16 +714,35 @@ void CGalaxyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			// wenn wir unten rechts hingeklickt haben
 			else if (modulo.x < STARMAP_SECTOR_WIDTH * 0.33 && modulo.y > STARMAP_SECTOR_HEIGHT * 0.66)
 			{
-				map<CString, CRace*>* pmRaces = pDoc->GetRaceCtrl()->GetRaces();
-				for (map<CString, CRace*>::const_iterator it = pmRaces->begin(); it != pmRaces->end(); ++it)
-					if (pDoc->m_Sector[sector.x][sector.y].GetScanPower(pMajor->GetRaceID()) > 0 && (pDoc->m_Sector[sector.x][sector.y].GetIsStationBuilding(it->first) == TRUE
-						|| pDoc->m_Sector[sector.x][sector.y].GetOutpost(it->first) == TRUE || pDoc->m_Sector[sector.x][sector.y].GetStarbase(it->first) == TRUE))
-					{
-						CShipBottomView::SetShowStation(true);
-						pDoc->GetMainFrame()->SelectBottomView(SHIP_BOTTOM_VIEW);						
-						pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CShipBottomView));
-						break;
-					}
+				bool bShowStation = false;
+				// Uns selbst gehört die Station
+				if (pDoc->m_Sector[sector.x][sector.y].GetIsStationBuilding(pMajor->GetRaceID()) == TRUE ||
+					pDoc->m_Sector[sector.x][sector.y].GetOutpost(pMajor->GetRaceID()) == TRUE ||
+					pDoc->m_Sector[sector.x][sector.y].GetStarbase(pMajor->GetRaceID()) == TRUE)
+					bShowStation = true;
+
+				if (!bShowStation)
+				{
+					// wir können den Sektor scannen, so sehen wir automatisch die Station
+					map<CString, CRace*>* pmRaces = pDoc->GetRaceCtrl()->GetRaces();
+					for (map<CString, CRace*>::const_iterator it = pmRaces->begin(); it != pmRaces->end(); ++it)
+						if (pDoc->m_Sector[sector.x][sector.y].GetScanPower(pMajor->GetRaceID()) > 0 &&
+							(pDoc->m_Sector[sector.x][sector.y].GetIsStationBuilding(it->first) == TRUE ||
+							pDoc->m_Sector[sector.x][sector.y].GetOutpost(it->first) == TRUE ||
+							pDoc->m_Sector[sector.x][sector.y].GetStarbase(it->first) == TRUE))						
+						{
+							bShowStation = true;
+							break;
+						}
+				}
+
+				// Station anzeigen?
+				if (bShowStation)
+				{
+					CShipBottomView::SetShowStation(true);
+					pDoc->GetMainFrame()->SelectBottomView(SHIP_BOTTOM_VIEW);						
+					pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CShipBottomView));				
+				}
 			}			
 			else
 			{

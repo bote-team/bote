@@ -3,6 +3,7 @@
 #include "FontLoader.h"
 #include "Botf2Doc.h"
 #include "Races\RaceController.h"
+#include "IniLoader.h"
 
 IMPLEMENT_SERIAL (CEventGameOver, CObject, 1)
 
@@ -18,6 +19,31 @@ CEventGameOver::~CEventGameOver(void)
 //////////////////////////////////////////////////////////////////////
 // sonstige Funktionen
 //////////////////////////////////////////////////////////////////////
+void CEventGameOver::Create(void)
+{
+	if (m_pBGImage != NULL)
+		return;
+
+	CBotf2Doc* pDoc = ((CBotf2App*)AfxGetApp())->GetDocument();
+	ASSERT(pDoc);
+
+	network::RACE client = pDoc->GetRaceCtrl()->GetMappedClientID(m_sRace);
+
+	CIniLoader* pIni = CIniLoader::GetInstance();
+	ASSERT(pIni);
+
+	float fMusicVolume;
+	pIni->ReadValue("Audio", "MUSICVOLUME", fMusicVolume);
+	
+	CSoundManager* pSoundManager = CSoundManager::GetInstance();
+	ASSERT(pSoundManager);
+
+	CString sTheme = CIOData::GetInstance()->GetAppPath() + "Sounds\\" + "LosingTheme.ogg";
+	pSoundManager->StartMusic(sTheme, fMusicVolume);
+
+	__super::Create();
+}
+
 void CEventGameOver::Close(void)
 {
 	client.Disconnect();

@@ -1,5 +1,5 @@
 /*
- *   Copyright (C)2004-2010 Sir Pustekuchen
+ *   Copyright (C)2004-2011 Sir Pustekuchen
  *
  *   Author   :  Sir Pustekuchen
  *   Home     :  http://birth-of-the-empires.de
@@ -18,7 +18,6 @@
 #include "Events\EventGameOver.h"
 #include "Events\EventRaceKilled.h"
 #include "Events\EventVictory.h"
-#include "Events\EventCombat.h"
 
 /**
  * Struktur, die die wichtigsten Informationen eines Systems aufnehmen kann. Dies wird benötigt, wenn wir in einer

@@ -49,7 +49,7 @@ CShipAI::~CShipAI(void)
 //////////////////////////////////////////////////////////////////////
 /// Diese Funktion erteilt allen Schiffen aller computergesteuerten Rassen Befehle.
 void CShipAI::CalculateShipOrders(CSectorAI* SectorAI)
-{
+{	
 	ASSERT(SectorAI);
 	m_pSectorAI = SectorAI;
 

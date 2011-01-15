@@ -127,20 +127,31 @@ BYTE CTroop::Attack(CTroop* enemy, BYTE offenceBoni, short defenceBoni)
 	defencePower += defencePower * defenceBoni / 100;
 	USHORT ExpBonusForAtt = defencePower * 100;
 
+	int nAttackValue = 0;
 	if (attackPower > 0)
-		attackPower = rand()%attackPower;
+	{
+		// Um den Zufall etwas abzuschwächen, wird der Wert zweimal berechnet
+		for (int i = 0; i < 2; i++)
+			nAttackValue += rand()%attackPower;		
+	}
+
+	int nDefenceValue = 0;
 	if (defencePower > 0)
-		defencePower = rand()%defencePower;
+	{
+		// Um den Zufall etwas abzuschwächen, wird der Wert zweimal berechnet
+		for (int i = 0; i < 2; i++)
+			nDefenceValue += rand()%defencePower;
+	}
 	
 /*	CString s;
-	s.Format("ATTACK: %d\nDEFENCE: %d",attackPower,defencePower);
+	s.Format("ATTACK: %d\nDEFENCE: %d",nAttackValue, nDefenceValue);
 	AfxMessageBox(s);*/
-	if (attackPower > defencePower)
+	if (nAttackValue > nDefenceValue)
 	{
 		m_iExperiance += ExpBonusForAtt;
 		return 0;
 	}
-	else if (attackPower < defencePower)
+	else if (nAttackValue < nDefenceValue)
 	{
 		enemy->m_iExperiance += ExpBonusForDef;
 		return 1;

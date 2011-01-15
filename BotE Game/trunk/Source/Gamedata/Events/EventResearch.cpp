@@ -205,51 +205,51 @@ void CEventResearch::Draw(Graphics* g, CGraphicPool* graphicPool) const
 	Bitmap* graphic = NULL;
 	int nCount = 0;
 	// neue Gebäude zeichnen
-	for (vector<CBuildingInfo*>::const_iterator it = m_vNewBuildings.begin(); it != m_vNewBuildings.end(); it++)
+	for (vector<CBuildingInfo*>::const_iterator it = m_vNewBuildings.begin(); it != m_vNewBuildings.end(); ++it)
 	{
 		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Buildings\\" + (*it)->GetGraphikFileName());
 		if (graphic == NULL)
 			graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Buildings\\ImageMissing.bop");
 		if (graphic)
-			g->DrawImage(graphic, 15 + nCount * 165, 435, 150, 113);
-		g->DrawString((*it)->GetBuildingName().AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(nCount * 165, 560, 180, 50), &fontFormat, &fontBrush);
+			g->DrawImage(graphic, 15 + nCount * 165, 430, 150, 113);
+		g->DrawString((*it)->GetBuildingName().AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(nCount * 165, 555, 180, 50), &fontFormat, &fontBrush);
 		nCount++;
 	}
 	nCount = 0;
 	// neue Upgrades
-	for (vector<CBuildingInfo*>::const_iterator it = m_vNewUpgrades.begin(); it != m_vNewUpgrades.end(); it++)
+	for (vector<CBuildingInfo*>::const_iterator it = m_vNewUpgrades.begin(); it != m_vNewUpgrades.end(); ++it)
 	{
 		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Buildings\\" + (*it)->GetGraphikFileName());
 		if (graphic == NULL)
 			graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Buildings\\ImageMissing.bop");
 		if (graphic)
-			g->DrawImage(graphic, 15 + nCount * 165, 625, 150, 113);
-		g->DrawString((*it)->GetBuildingName().AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(nCount * 165, 750, 180, 50), &fontFormat, &fontBrush);
+			g->DrawImage(graphic, 15 + nCount * 165, 620, 150, 113);
+		g->DrawString((*it)->GetBuildingName().AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(nCount * 165, 745, 180, 50), &fontFormat, &fontBrush);
 		nCount++;
 	}
 
 	// neue Schiffe und Truppen anzeigen
 	nCount = 0;
-	for (vector<CShipInfo*>::const_iterator it = m_vNewShips.begin(); it != m_vNewShips.end(); it++)
+	for (vector<CShipInfo*>::const_iterator it = m_vNewShips.begin(); it != m_vNewShips.end(); ++it)
 	{
 		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Ships\\" + (*it)->GetShipClass() + ".bop");
 		if (graphic == NULL)
 			graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Ships\\ImageMissing.bop");
 		if (graphic)
-			g->DrawImage(graphic, 15 + nCount * 165, 820, 150, 113);
+			g->DrawImage(graphic, 15 + nCount * 165, 815, 150, 113);
 		s = (*it)->GetShipClass() + "-" + CResourceManager::GetString("CLASS") + " (" + (*it)->GetShipTypeAsString() + ")";
-		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(nCount * 165, 945, 180, 50), &fontFormat, &fontBrush);
+		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(nCount * 165, 940, 180, 50), &fontFormat, &fontBrush);
 		nCount++;
 	}
-	for (vector<CTroopInfo*>::const_iterator it = m_vNewTroops.begin(); it != m_vNewTroops.end(); it++)
+	for (vector<CTroopInfo*>::const_iterator it = m_vNewTroops.begin(); it != m_vNewTroops.end(); ++it)
 	{
 		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Troops\\" + (*it)->GetName() + ".bop");
 		if (graphic == NULL)
 			graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Troops\\ImageMissing.bop");
 		if (graphic)
-			g->DrawImage(graphic, 15 + nCount * 165, 820, 150, 113);
+			g->DrawImage(graphic, 15 + nCount * 165, 815, 150, 113);
 		s = (*it)->GetName();
-		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(nCount * 165, 945, 180, 50), &fontFormat, &fontBrush);
+		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(nCount * 165, 940, 180, 50), &fontFormat, &fontBrush);
 		nCount++;
 	}
 
@@ -275,7 +275,7 @@ CString CEventResearch::GetTooltip(const CPoint &pt) const
 {
 	int nCount = 0;
 	// neue Gebäude
-	for (vector<CBuildingInfo*>::const_iterator it = m_vNewBuildings.begin(); it != m_vNewBuildings.end(); it++)
+	for (vector<CBuildingInfo*>::const_iterator it = m_vNewBuildings.begin(); it != m_vNewBuildings.end(); ++it)
 	{
 		if (CRect(15 + nCount * 165, 435, 15 + nCount * 165 + 150, 585).PtInRect(pt))
 		{
@@ -304,7 +304,7 @@ CString CEventResearch::GetTooltip(const CPoint &pt) const
 
 	nCount = 0;
 	// neue Upgrades
-	for (vector<CBuildingInfo*>::const_iterator it = m_vNewUpgrades.begin(); it != m_vNewUpgrades.end(); it++)
+	for (vector<CBuildingInfo*>::const_iterator it = m_vNewUpgrades.begin(); it != m_vNewUpgrades.end(); ++it)
 	{
 		if (CRect(15 + nCount * 165, 625, 15 + nCount * 165 + 150, 775).PtInRect(pt))
 		{
@@ -333,7 +333,7 @@ CString CEventResearch::GetTooltip(const CPoint &pt) const
 	
 	// neue Schiffe und Truppen anzeigen
 	nCount = 0;
-	for (vector<CShipInfo*>::const_iterator it = m_vNewShips.begin(); it != m_vNewShips.end(); it++)
+	for (vector<CShipInfo*>::const_iterator it = m_vNewShips.begin(); it != m_vNewShips.end(); ++it)
 	{
 		if (CRect(15 + nCount * 165, 820, 15 + nCount * 165 + 150, 970).PtInRect(pt))
 			return (*it)->GetTooltip();		

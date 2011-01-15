@@ -19,59 +19,11 @@ IMPLEMENT_SERIAL (CResearch, CObject, 1)
 
 CResearch::CResearch()
 {
-	// aktuelle Forschungsstufen
-	m_iBioTech = 0;				// aktuelle Biotechstufe des Imperiums
-	m_iEnergyTech = 0;			// aktuelle Energietechstufe des Imperiums
-	m_iCompTech = 0;			// aktuelle Computertechstufe des Imperiums
-	m_iPropulsionTech = 0;		// aktuelle Antriebstechstufe des Imperiums
-	m_iConstructionTech = 0;	// aktuelle Bautechstufe des Imperiums
-	m_iWeaponTech = 0;			// aktuelle Waffentechstufe des Imperiums
-	m_iUniqueTech = 0;			// aktuelle UniqueTechstufe des Imperiums
-	// Informationen zu den Starttechnologien ermitteln
-	for (int i = 0; i < 6; i++)
-		this->ResearchInfo.SetTechInfos(i,0+1);
-	// prozentuale Anteile auf die einzelnen Forschungen (alle Werte in Prozent)
-	m_iBioPercentage = 16;
-	m_iEnergyPercentage = 16;
-	m_iComputerPercentage = 17;
-	m_iPropulsionPercentage = 17;
-	m_iConstructionPercentage = 17;
-	m_iWeaponPercentage = 17;
-	m_iUniquePercentage = 0;
-	// aktuell erforschte FP´s in den einzelnen Forschungen
-	m_lBioFP = 0;
-	m_lEnergyFP = 0;
-	m_lComputerFP = 0;
-	m_lPropulsionFP = 0;
-	m_lConstructionFP = 0;
-	m_lWeaponFP = 0;
-	m_lUniqueFP = 0;
-	// ist die Forschung gelockt, d.h. wir können den prozentualen Anteil nicht ändern
-	m_bBioLocked = FALSE;
-	m_bEnergyLocked = FALSE;
-	m_bComputerLocked = FALSE;
-	m_bPropulsionLocked = FALSE;
-	m_bConstructionLocked = FALSE;
-	m_bWeaponLocked = FALSE;
-	m_bUniqueLocked = FALSE;
-	// Boni auf die einzelnen Forschungsgebiete
-	m_iBioTechBoni = 0;
-	m_iEnergyTechBoni = 0;
-	m_iCompTechBoni = 0;
-	m_iPropulsionTechBoni = 0;
-	m_iConstructionTechBoni = 0;
-	m_iWeaponTechBoni = 0;
-
-	m_bUniqueReady = TRUE;
-	m_iNumberOfUnique = 1;
-
-	for (int i = 0; i < 8; i++)
-		m_strMessage[i] = "";
+	Reset();
 }
 
 CResearch::~CResearch()
 {
-
 }
 
 //////////////////////////////////////////////////////////////////////

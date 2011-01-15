@@ -53,6 +53,7 @@ void CShipBottomView::OnNewRound()
 	m_vShipRects.clear();
 	m_pMarkedShip = NULL;
 	m_rLastMarkedRect = CRect(0,0,0,0);
+	m_RectForTheShip = CRect(0,0,0,0);
 }
 
 // CShipBottomView drawing
@@ -115,6 +116,9 @@ void CShipBottomView::OnDraw(CDC* dc)
 	{
 		m_iPage = 1;
 		m_LastKO = pDoc->GetKO();
+		m_pMarkedShip = NULL;
+		m_rLastMarkedRect = CRect(0,0,0,0);
+		m_RectForTheShip = CRect(0,0,0,0);
 	}
 	// Galaxie im Hintergrund zeichnen
 	CString sPrefix = pMajor->GetPrefix();	
@@ -946,7 +950,7 @@ void CShipBottomView::OnMouseMove(UINT nFlags, CPoint point)
 	{
 		if (m_vShipRects[i].first.PtInRect(point))
 		{
-			bool bNewMarkedShip = m_vShipRects[i].second != m_pMarkedShip;
+			bool bNewMarkedShip = m_vShipRects[i].second != m_pMarkedShip;			
 			if (bNewMarkedShip)
 			{
 				for (int j = 0; j < pDoc->m_ShipArray.GetSize(); j++)

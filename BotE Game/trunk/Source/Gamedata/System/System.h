@@ -1,5 +1,5 @@
 /*
- *   Copyright (C)2004-2010 Sir Pustekuchen
+ *   Copyright (C)2004-2011 Sir Pustekuchen
  *
  *   Author   :  Sir Pustekuchen
  *   Home     :  http://birth-of-the-empires.de
@@ -232,7 +232,7 @@ public:
 	// Funktion überprüft Gebäude die Energie benötigen und schaltet diese gegebenfalls ab,
 	// falls zuwenig Energie im System vorhanden ist. Diese Funktion aufrufen, bevor wir CalculateVariables() usw.
 	// aufrufen, weil wir ja die bösen Onlinegebäude vorher ausschalten wollen.
-	int CheckEnergyBuildings(BuildingInfoArray *buildingInfos);
+	bool CheckEnergyBuildings(const BuildingInfoArray* pvBuildingInfos);
 
 	// Funktion fügt einen Baulistencheck durch
 	BOOLEAN AssemblyListCheck(BuildingInfoArray* buildingInfo, CGlobalBuildings* globals, int ID = 0);

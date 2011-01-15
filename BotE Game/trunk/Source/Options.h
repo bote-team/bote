@@ -1,5 +1,5 @@
 /*
- *   Copyright (C)2004-2010 Sir Pustekuchen
+ *   Copyright (C)2004-2011 Sir Pustekuchen
  *
  *   Author   :  Sir Pustekuchen
  *   Home     :  http://birth-of-the-empires.de
@@ -181,7 +181,7 @@
 #define HEAVY_DESTROYER     8
 #define HEAVY_CRUISER       9
 #define BATTLESHIP			10
-#define FLAGSHIP			11
+#define DREADNOUGHT			11
 #define OUTPOST				12
 #define STARBASE            13
 #define ALIEN				14

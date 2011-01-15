@@ -1,5 +1,5 @@
 /*
- *   Copyright (C)2004-2010 Sir Pustekuchen
+ *   Copyright (C)2004-2011 Sir Pustekuchen
  *
  *   Author   :  Sir Pustekuchen
  *   Home     :  http://birth-of-the-empires.de
@@ -52,7 +52,7 @@ private:
 	int GetMouseOverShip(CPoint& pt);
 	
 	// Attribute
-	CRect m_RectForTheShip;					///< Das Rechteck für das Schiff worüber wir die Maus bewegt haben
+	CRect m_RectForTheShip;						///< Das Rechteck für das Schiff worüber wir die Maus bewegt haben
 	USHORT m_iPage;								///< bei mehr als 9 Schiffen können wir auf die nächste Seite wechseln
 	CPoint m_LastKO;							///< Hilfsvariable, die den zuletzt angeklickten Sektor sich merkt
 	BOOLEAN m_bShowNextButton;

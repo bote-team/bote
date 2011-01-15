@@ -5,7 +5,7 @@
 #include "botf2.h"
 #include "MainFrm.h"
 #include "botf2Doc.h"
-#include "PreferencesDlg.h"
+#include "SettingsDlg.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -83,7 +83,7 @@ BEGIN_MESSAGE_MAP(CBotf2App, CWinApp)
 	ON_COMMAND(ID_APP_ABOUT, OnAppAbout)
 	ON_COMMAND(ID_FILE_NEW, CWinApp::OnFileNew)
 	ON_COMMAND(ID_FILE_OPEN, CWinApp::OnFileOpen)
-	ON_COMMAND(ID_OPTIONEN, &CBotf2App::OnPreferences)
+	ON_COMMAND(ID_OPTIONEN, &CBotf2App::OnSettings)
 	ON_COMMAND(ID_CHAT, &CBotf2App::OnChat)
 	ON_COMMAND(ID_HELP_MANUAL, &CBotf2App::OnOpenManual)
 	ON_COMMAND(ID_HELP_README, &CBotf2App::OnOpenReadme)
@@ -233,10 +233,10 @@ void CBotf2App::OnAppAbout()
 }
 
 // Funktion zum Anzeigen des Einstellungsdialoges
-void CBotf2App::OnPreferences()
+void CBotf2App::OnSettings()
 {
 	// TODO: Fügen Sie hier Ihren Befehlsbehandlungscode ein.
-	CPreferencesDlg dlg(true);
+	CSettingsDlg dlg(true);
 	if (dlg.DoModal() == IDOK)
 		this->GetDocument()->ResetIniSettings();
 }

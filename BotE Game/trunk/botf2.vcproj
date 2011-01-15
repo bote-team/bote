@@ -457,10 +457,6 @@
 						>
 					</File>
 					<File
-						RelativePath=".\Source\Gamedata\Events\EventCombat.cpp"
-						>
-					</File>
-					<File
 						RelativePath=".\Source\Gamedata\Events\EventFirstContact.cpp"
 						>
 					</File>
@@ -822,11 +818,11 @@
 					>
 				</File>
 				<File
-					RelativePath=".\Source\Dialogs\PreferencesDlg.cpp"
+					RelativePath=".\Source\Dialogs\SearchServersDlg.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\Source\Dialogs\SearchServersDlg.cpp"
+					RelativePath=".\Source\Dialogs\SettingsDlg.cpp"
 					>
 				</File>
 			</Filter>
@@ -1067,11 +1063,11 @@
 					>
 				</File>
 				<File
-					RelativePath=".\Source\Dialogs\PreferencesDlg.h"
+					RelativePath=".\Source\Dialogs\SearchServersDlg.h"
 					>
 				</File>
 				<File
-					RelativePath=".\Source\Dialogs\SearchServersDlg.h"
+					RelativePath=".\Source\Dialogs\SettingsDlg.h"
 					>
 				</File>
 			</Filter>
@@ -1115,10 +1111,6 @@
 					</File>
 					<File
 						RelativePath=".\Source\Gamedata\Events\EventColonization.h"
-						>
-					</File>
-					<File
-						RelativePath=".\Source\Gamedata\Events\EventCombat.h"
 						>
 					</File>
 					<File

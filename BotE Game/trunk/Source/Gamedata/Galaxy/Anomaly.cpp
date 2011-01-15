@@ -273,7 +273,7 @@ void CAnomaly::CalcShipEffects(CShip* pShip) const
 	}
 	else if (m_byType == RADIONEBULA)
 	{
-		// Verlust aller Crewerfahrung bei Röntgenpulsar und Magnetar
+		// Verlust aller Crewerfahrung bei radioaktiven Nebel
 		if (pShip->GetFleet())
 			for (int i = 0; i < pShip->GetFleet()->GetFleetSize(); i++)
 				pShip->GetFleet()->GetShipFromFleet(i)->SetCrewExperiance(pShip->GetFleet()->GetShipFromFleet(i)->GetCrewExperience() * (-1));
@@ -302,7 +302,14 @@ void CAnomaly::CalcShipEffects(CShip* pShip) const
 	}
 	else if (m_byType == IONSTORM)
 	{
-		// maximale Schildkapazität um 2.5% erhöhen
+		// Verlust aller Crewerfahrung bei Ionensturm
+		if (pShip->GetFleet())
+			for (int i = 0; i < pShip->GetFleet()->GetFleetSize(); i++)
+				pShip->GetFleet()->GetShipFromFleet(i)->SetCrewExperiance(pShip->GetFleet()->GetShipFromFleet(i)->GetCrewExperience() * (-1));
+		// Schiff selbst 
+		pShip->SetCrewExperiance(pShip->GetCrewExperience() * (-1));
+
+		// maximale Schildkapazität um 3% erhöhen
 		// hat das Schiff eine Flotte, so jedes Schiff in der Flotte beachten
 		if (pShip->GetFleet())
 			for (int i = 0; i < pShip->GetFleet()->GetFleetSize(); i++)

@@ -127,13 +127,13 @@ BOOL CBotf2Doc::OnNewDocument()
 	CTroopInfo* troopInfo = new CTroopInfo(CResourceManager::GetString("MAJOR1_TROOP1_NAME"), CResourceManager::GetString("MAJOR1_TROOP1_DESC"),9,10,techs,res,180,0,"MAJOR1",2500,1);
 	m_TroopInfo.Add(*troopInfo);
 	delete troopInfo;
-	troopInfo = new CTroopInfo(CResourceManager::GetString("MAJOR2_TROOP1_NAME"), CResourceManager::GetString("MAJOR2_TROOP1_DESC"),5,10,techs,res,100,3,"MAJOR2",1500,0);
+	troopInfo = new CTroopInfo(CResourceManager::GetString("MAJOR2_TROOP1_NAME"), CResourceManager::GetString("MAJOR2_TROOP1_DESC"),50,10,techs,res,100,1,"MAJOR2",1500,0);
 	m_TroopInfo.Add(*troopInfo);
 	delete troopInfo;
 	troopInfo = new CTroopInfo(CResourceManager::GetString("MAJOR3_TROOP1_NAME"), CResourceManager::GetString("MAJOR3_TROOP1_DESC"),12,10,techs,res,240,2,"MAJOR3",2500,2);
 	m_TroopInfo.Add(*troopInfo);
 	delete troopInfo;
-	troopInfo = new CTroopInfo(CResourceManager::GetString("MAJOR4_TROOP1_NAME"), CResourceManager::GetString("MAJOR4_TROOP1_DESC"),8,10,techs,res,160,1,"MAJOR4",2500,0);
+	troopInfo = new CTroopInfo(CResourceManager::GetString("MAJOR4_TROOP1_NAME"), CResourceManager::GetString("MAJOR4_TROOP1_DESC"),8,10,techs,res,160,3,"MAJOR4",2500,0);
 	m_TroopInfo.Add(*troopInfo);
 	delete troopInfo;	
 	troopInfo = new CTroopInfo(CResourceManager::GetString("MAJOR5_TROOP1_NAME"), CResourceManager::GetString("MAJOR5_TROOP1_DESC"),15,10,techs,res,250,4,"MAJOR5",2500,3);
@@ -1298,6 +1298,8 @@ void CBotf2Doc::NextRound()
 		m_Statistics.CalcStats(this);
 
 		this->CalcPreDataForNextRound();
+		// CHECK WW: Diplomatie war zuvor erst nach der Forschung
+		this->CalcDiplomacy();
 		this->CalcShipOrders();
 		this->CalcShipMovement();
 		// prüfen ob ein Kampf stattfindet
@@ -1406,8 +1408,9 @@ void CBotf2Doc::NextRound()
 	
 	this->CalcSystemAttack();
 	this->CalcIntelligence();
-	this->CalcResearch();	
-	this->CalcDiplomacy();
+	this->CalcResearch();
+	// CHECK WW: vor die Schiffsbewegung gepackt
+	//this->CalcDiplomacy();
 	
 	// alten Creditbestand festhalten		
 	map<CString, long> mOldCredits;
@@ -2409,7 +2412,7 @@ void CBotf2Doc::CalcSystemAttack()
 				{
 					attackSystem->Init(NULL, &m_System[p.x][p.y], &m_ShipArray, &m_Sector[p.x][p.y], &this->BuildingInfo, CTrade::GetMonopolOwner());
 				}
-				// Ein Systemangriff verringert die Moral in allen System, die von uns schon erobert wurden und zuvor
+				// Ein Systemangriff verringert die Moral in allen Systemen, die von uns schon erobert wurden und zuvor
 				// der Majorrace gehörten, deren System hier angegriffen wird
 				if (!sDefender.IsEmpty())
 					for (int j = 0 ; j < STARMAP_SECTORS_VCOUNT; j++)
@@ -3320,7 +3323,7 @@ void CBotf2Doc::CalcOldRoundData()
 			// Wenn im Sektor ein Sonnensystem existiert
 			if (m_Sector[x][y].GetSunSystem() == TRUE)
 			{
-				// Jetzt das produzierte Latinum im System dem jeweiligen Imperium geben
+				// Jetzt das produzierte Credits im System dem jeweiligen Imperium geben
 				if (m_System[x][y].GetOwnerOfSystem() != "")
 				{
 					CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(m_System[x][y].GetOwnerOfSystem()));
@@ -3455,7 +3458,7 @@ void CBotf2Doc::CalcOldRoundData()
 						m_System[x][y].CalculateVariables(&this->BuildingInfo, pMajor->GetEmpire()->GetResearch()->GetResearchInfo(), m_Sector[x][y].GetPlanets(), pMajor, CTrade::GetMonopolOwner());
 						
 						// Gebäude die Energie benötigen checken
-						if (m_System[x][y].CheckEnergyBuildings(&this->BuildingInfo) == 1)
+						if (m_System[x][y].CheckEnergyBuildings(&this->BuildingInfo))
 						{
 							CString news = CResourceManager::GetString("BUILDING_TURN_OFF",FALSE,m_Sector[x][y].GetName());
 							message.GenerateMessage(news, SOMETHING, "", CPoint(x,y), FALSE, 2);
@@ -4035,21 +4038,26 @@ void CBotf2Doc::CalcShipOrders()
 		// Hier wird überprüft, ob der Systemattack-Befehl noch gültig ist
 		// Alle Schiffe, welche einen Systemangriffsbefehl haben überprüfen, ob dieser Befehl noch gültig ist
 		CPoint p = m_ShipArray.GetAt(y).GetKO();		
-		if (m_ShipArray[y].GetCurrentOrder() == ATTACK_SYSTEM && m_Sector[p.x][p.y].GetSunSystem())
+		if (m_ShipArray[y].GetCurrentOrder() == ATTACK_SYSTEM)
 		{
-			// Wenn die Bevölkerung komplett vernichtet wurde
-			if (m_System[p.x][p.y].GetHabitants() == 0.0f)
-				m_ShipArray.ElementAt(y).SetCurrentOrder(ATTACK);
-			// Wenn das System der angreifenden Rasse gehört
-			else if (m_System[p.x][p.y].GetOwnerOfSystem() == m_ShipArray.GetAt(y).GetOwnerOfShip())
-				m_ShipArray.ElementAt(y).SetCurrentOrder(ATTACK);
-			// Wenn eine Rasse in dem System lebt
-			else if (m_Sector[p.x][p.y].GetOwnerOfSector() != "" && m_Sector[p.x][p.y].GetOwnerOfSector() != m_ShipArray.GetAt(y).GetOwnerOfShip())
+			if (m_Sector[p.x][p.y].GetSunSystem())
 			{
-				CRace* pRace = m_pRaceCtrl->GetRace(m_Sector[p.x][p.y].GetOwnerOfSector());
-				if (pRace != NULL && pRace->GetAgreement(m_ShipArray.GetAt(y).GetOwnerOfShip()) != WAR)
+				// Wenn die Bevölkerung komplett vernichtet wurde
+				if (m_System[p.x][p.y].GetHabitants() == 0.0f)
 					m_ShipArray.ElementAt(y).SetCurrentOrder(ATTACK);
+				// Wenn das System der angreifenden Rasse gehört
+				else if (m_System[p.x][p.y].GetOwnerOfSystem() == m_ShipArray.GetAt(y).GetOwnerOfShip())
+					m_ShipArray.ElementAt(y).SetCurrentOrder(ATTACK);
+				// Wenn eine Rasse in dem System lebt
+				else if (m_Sector[p.x][p.y].GetOwnerOfSector() != "" && m_Sector[p.x][p.y].GetOwnerOfSector() != m_ShipArray.GetAt(y).GetOwnerOfShip())
+				{
+					CRace* pRace = m_pRaceCtrl->GetRace(m_Sector[p.x][p.y].GetOwnerOfSector());
+					if (pRace != NULL && pRace->GetAgreement(m_ShipArray.GetAt(y).GetOwnerOfShip()) != WAR)
+						m_ShipArray.ElementAt(y).SetCurrentOrder(ATTACK);
+				}
 			}
+			else
+				m_ShipArray.ElementAt(y).SetCurrentOrder(ATTACK);
 		}
 
 		CPoint ShipKO = m_ShipArray[y].GetKO();
@@ -4753,10 +4761,13 @@ void CBotf2Doc::CalcShipOrders()
 			m_ShipArray[y].SetCloak();
 			// Wenn das Schiff eine Flotte anführt, checken ob der Tarnenbefehl noch Gültigkeit hat. Wenn ja, dann
 			// alle Schiffe in der Flotte tarnen
-			if (m_ShipArray[y].GetFleet() != 0)
-				if (m_ShipArray[y].GetFleet()->CheckOrder(&m_ShipArray[y], CLOAK) == TRUE)
-					for (int x = 0; x < m_ShipArray[y].GetFleet()->GetFleetSize(); x++)
-						m_ShipArray[y].GetFleet()->GetShipFromFleet(x)->SetCloak();
+			if (m_ShipArray[y].GetCloak() == TRUE)
+				if (m_ShipArray[y].GetFleet() != 0)
+					if (m_ShipArray[y].GetFleet()->CheckOrder(&m_ShipArray[y], CLOAK) == TRUE)
+						for (int x = 0; x < m_ShipArray[y].GetFleet()->GetFleetSize(); x++)
+							if (m_ShipArray[y].GetFleet()->GetShipFromFleet(x)->GetCloak() == FALSE)
+								m_ShipArray[y].GetFleet()->GetShipFromFleet(x)->SetCloak();
+						
 			// Wenn das Schiff enttarnt wurde, dann alle Schiffe in der Flotte entarnen. Dies sollte nicht häufig vorkommen. Selbst
 			// kann man es so nicht einstellen, aber die KI enttarnt so die Schiffe in der Flotte
 			if (m_ShipArray[y].GetCloak() == FALSE)
@@ -5136,7 +5147,7 @@ void CBotf2Doc::CalcShipCombat()
 		// Haben wir aber in diesem Sektor ein System mit aktiver Werft stehen, dann fügen
 		// wir den ShipPort aber gleich jetzt wieder hinzu
 		if (m_System[p.x][p.y].GetProduction()->GetShipYard() == TRUE && m_System[p.x][p.y].GetOwnerOfSystem() == pShip->GetOwnerOfShip())
-			m_Sector[p.x][p.y].SetShipPort(TRUE, pShip->GetOwnerOfShip());*/
+			m_Sector[p.x][p.y].SetShipPort(TRUE, pShip->GetOwnerOfShip());*/		
 	}
 
 	// es sollten immer Schiffe im Array sein, sonst hätte in diesem Sektor kein Kampf stattfinden dürfen
@@ -5375,8 +5386,8 @@ void CBotf2Doc::CalcShipEffects()
 			
 			// womögicher Terraformplanet oder Stationsbau zurücknehmen
 			pShip->SetTerraformingPlanet(-1);
-			
-			// Rückzugssektor für dieses Schiff in diesem Sektor holen				
+						
+			// Rückzugssektor für dieses Schiff in diesem Sektor holen
 			if (m_mShipRetreatSectors.find(pShip->GetOwnerOfShip()) == m_mShipRetreatSectors.end())
 				continue;
 			
@@ -5384,7 +5395,7 @@ void CBotf2Doc::CalcShipEffects()
 			if (m_mShipRetreatSectors[pShip->GetOwnerOfShip()].find(ptCurrentSector) == m_mShipRetreatSectors[pShip->GetOwnerOfShip()].end())
 				continue;
 
-			CPoint ptRetreatSector = m_mShipRetreatSectors[pShip->GetOwnerOfShip()][ptCurrentSector];							
+			CPoint ptRetreatSector = m_mShipRetreatSectors[pShip->GetOwnerOfShip()][ptCurrentSector];
 
 			// sind alle Schiffe in einer Flotte im Rückzug, so kann die ganze Flotte
 			// in den Rückzugssektor
@@ -5413,7 +5424,19 @@ void CBotf2Doc::CalcShipEffects()
 				// Rückzugsbefehl in Flotte zurücknehmen
 				if (pShip->GetFleet())
 					for (int j = 0; j < pShip->GetFleet()->GetFleetSize(); j++)							
-						pShip->GetFleet()->GetShipFromFleet(j)->SetCombatTactic(COMBAT_TACTIC_AVOID);
+					{
+						CShip* pFleetShip = pShip->GetFleet()->GetShipFromFleet(j);
+						pFleetShip->SetCombatTactic(COMBAT_TACTIC_ATTACK);
+						
+						// Schiff auf Meiden stellen
+						if (pFleetShip->IsNonCombat())
+							pFleetShip->SetCurrentOrder(AVOID);
+						else
+							pFleetShip->SetCurrentOrder(ATTACK);
+						
+						// womögicher Terraformplanet oder Stationsbau zurücknehmen
+						pFleetShip->SetTerraformingPlanet(-1);						
+					}
 			}
 			// Schiffe aus der Flotte nehmen und ans Ende des Schiffsarrays packen. Diese werden
 			// dann auch noch behandelt
@@ -5625,7 +5648,24 @@ void CBotf2Doc::CalcShipEffects()
 		// Dem Sektor bekanntgeben, das in ihm ein Schiff ist
 		if (m_ShipArray[y].GetShipType() != OUTPOST && m_ShipArray[y].GetShipType() != STARBASE) 
 			m_Sector[p.x][p.y].SetOwnerOfShip(TRUE, sRace);
+	}
+}
 
+/// Diese Funktion überprüft, ob neue Rassen kennengelernt wurden.
+void CBotf2Doc::CalcContactNewRaces()
+{
+	map<CString, CMajor*>* pmMajors = m_pRaceCtrl->GetMajors();
+	for (int y = 0; y < m_ShipArray.GetSize(); y++)
+	{
+		CPoint p = m_ShipArray[y].GetKO();
+		CString sRace = m_ShipArray[y].GetOwnerOfShip();
+
+		CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(sRace));
+		CMinor* pMinor = NULL;
+		// handelt es sich um eine Minorrace
+		if (!pMajor)
+			pMinor = dynamic_cast<CMinor*>(m_pRaceCtrl->GetRace(sRace));
+		
 		// Wenn dieser Sektor einer anderen Majorrace gehört, wir die noch nicht kannten, dann bekanntgeben
 		if (pMajor != NULL && m_Sector[p.x][p.y].GetOwnerOfSector() != "" && m_Sector[p.x][p.y].GetOwnerOfSector() != sRace)
 		{
@@ -6066,7 +6106,7 @@ void CBotf2Doc::CalcEndDataForNextRound()
 						m_Sector[x][y+2].AddOwnerPoints(ownerPoints, sID);
 				}
 			}
-		}		
+		}
 	}
 	
 	// Jetzt die Besitzer berechnen und die Variablen, welche nächste Runde auch angezeigt werden sollen.
@@ -6099,12 +6139,16 @@ void CBotf2Doc::CalcEndDataForNextRound()
 				m_Sector[x][y].GetAnomaly()->ReduceScanPower(CPoint(x,y));
 		}
 
+	// Nachdem die Besitzerpunkte der Sektoren berechnet wurden kann versucht werden neue Rassen kennenzuelernen
+	CalcContactNewRaces();
+
 	// Nun das Schiffinformationsfeld durchgehen und in die WeaponObserver-Klasse aller Imperien
 	// die baubaren Waffen eintragen. Wir brauchen dies um selbst Schiffe designen zu können
 	// Dies gilt nur für Majorsraces.
 	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 	{
-		CMajor* pMajor = it->second;
+		CMajor* pMajor = it->second;		
+
 		BYTE researchLevels[6] =
 		{
 			pMajor->GetEmpire()->GetResearch()->GetBioTech(),

@@ -1242,7 +1242,7 @@ void CSystemMenuView::DrawBuildingsOverviewMenue(Graphics* g)
 			s = pDoc->GetBuildingInfo(m_BuildingOverview.GetAt(i).runningNumber).GetProductionAsString
 				(pDoc->m_System[p.x][p.y].GetNumberOfBuilding(m_BuildingOverview.GetAt(i).runningNumber));
 			SolidBrush markBrush(textMark);
-			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(r.left+140,r.top+25,r.Width()-20,r.Height()-5), &fontFormat, &markBrush);
+			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(r.left+140,r.top+25,r.Width()-140,r.Height()-5), &fontFormat, &markBrush);
 			// Anzahl der abzureißenden Gebäude zeichnen
 			unsigned short dn = pDoc->m_System[p.x][p.y].GetBuildingDestroy(m_BuildingOverview.GetAt(i).runningNumber);
 			if (dn > 0)

@@ -16,7 +16,7 @@
 #define IDD_DIALOG2                     183
 #define IDD_SEARCHSERVERS               183
 #define IDB_LOGO                        188
-#define IDD_PREFERENCESDLG              189
+#define IDD_SETTINGSDLG                 189
 #define IDC_CLIENT                      1001
 #define IDC_SERVER                      1002
 #define IDC_HOSTIP                      1003

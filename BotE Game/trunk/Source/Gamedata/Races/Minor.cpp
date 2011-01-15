@@ -324,6 +324,45 @@ void CMinor::ConsumeResources(CBotf2Doc* pDoc)
 	pDoc->GetSystem(m_ptKO).SetRessourceStore(DILITHIUM, -value);
 }
 
+/// Funktion überprüft, ob die Minorrace das Angebot aufgrund anderer Verträge überhaupt annehmen kann.
+/// @param pDoc Zeiger auf das Dokument
+/// @param sMajorID MajorraceID, von welcher das Angebot stammt
+/// @param nType angebotener Vertrag
+/// @return <code>true</code> wenn das Angebot theoretisch angenommen werden könnte, ansonsten <code>false</code>
+bool CMinor::CanAcceptOffer(CBotf2Doc* pDoc, const CString& sMajorID, short nType) const
+{
+	ASSERT(pDoc);
+	
+	// Nur wenn der aktuelle Vertrag nicht höherwertiger ist als der angebotene, dann wird er akzeptiert
+	if (this->GetAgreement(sMajorID) >= nType)
+		return false;	
+
+	// Checken ob wir ein Angebot überhaupt annehmen können, wenn z.B. eine andere Hauptrasse
+	// eine Mitgliedschaft mit einer Minorrace hat, dann können wir ihr kein Angebot machen, außer
+	// Krieg erklären, Geschenke geben und Bestechen
+	short nOthersAgreement	= NO_AGREEMENT;		
+	map<CString, CMajor*>* pmMajors = pDoc->GetRaceCtrl()->GetMajors();
+	// nicht wir selbst
+	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
+	{
+		if (it->first != sMajorID)
+		{
+			short nTemp = this->GetAgreement(it->first);
+			if (nTemp > nOthersAgreement)
+				nOthersAgreement = nTemp;			
+		}
+	}
+
+	if ((nType == COOPERATION || nType == AFFILIATION || nType == MEMBERSHIP) && nOthersAgreement > FRIENDSHIP_AGREEMENT)
+		return false;
+	if (nType == TRADE_AGREEMENT && nOthersAgreement > AFFILIATION)
+		return false;
+	if (nType == FRIENDSHIP_AGREEMENT && nOthersAgreement > COOPERATION)
+		return false;
+
+	return true;
+}
+
 /// Funktion checkt die diplomatische Konsistenz und generiert bei Kündigungen auch die entsprechende Nachricht
 /// für das entsprechende Imperium der Majorrace.
 /// @param pDoc Zeiger auf das Dokument

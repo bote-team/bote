@@ -231,9 +231,9 @@ void CShipDesignMenuView::DrawShipDesignMenue(Graphics* g)
 								pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CShipDesignBottomView));
 							}
 							// Markierung worauf wir geklickt haben
-							g->FillRectangle(&SolidBrush(Color(50,200,200,200)), RectF(15,120+j*25,185,25));
-							g->DrawLine(&Gdiplus::Pen(penColor), 15, 120+j*25, 200, 120+j*25);
-							g->DrawLine(&Gdiplus::Pen(penColor), 15, 145+j*25, 200, 145+j*25);
+							g->FillRectangle(&SolidBrush(Color(50,200,200,200)), RectF(15,120+j*25,183,25));
+							g->DrawLine(&Gdiplus::Pen(penColor), 15, 120+j*25, 198, 120+j*25);
+							g->DrawLine(&Gdiplus::Pen(penColor), 15, 145+j*25, 198, 145+j*25);
 						}
 						CString s = pDoc->m_ShipInfoArray.GetAt(i).GetShipClass();
 						g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(25, 120 + j * 25, 175, 25), &fontFormat, &fontBrush);
@@ -257,7 +257,7 @@ void CShipDesignMenuView::DrawShipDesignMenue(Graphics* g)
 			graphic = NULL;
 		}
 		// allgemeine Schiffsinformationen anzeigen
-		pDoc->m_ShipInfoArray.GetAt(ShipNumber).DrawShipInformation(g, CRect(200,250,780,440), &Gdiplus::Font(fontName.AllocSysString(), fontSize), normalColor, markColor, pMajor->GetEmpire()->GetResearch());
+		pDoc->m_ShipInfoArray.GetAt(ShipNumber).DrawShipInformation(g, CRect(220,250,740,440), &Gdiplus::Font(fontName.AllocSysString(), fontSize), normalColor, markColor, pMajor->GetEmpire()->GetResearch());
 		// Baukosten des Schiffes anzeigen
 		fontBrush.SetColor(markColor);
 		fontFormat.SetAlignment(StringAlignmentCenter);
@@ -349,8 +349,10 @@ void CShipDesignMenuView::DrawShipDesignMenue(Graphics* g)
 			case DURANIUM:	material = CResourceManager::GetString("DURANIUM");; break;
 			case IRIDIUM:	material = CResourceManager::GetString("IRIDIUM");; break;
 			default: material = "";
-		}	
-		if (pDoc->m_ShipInfoArray.GetAt(ShipNumber).GetHull()->GetDoubleHull() == TRUE)
+		}
+
+		BOOLEAN bDoubleHull = pDoc->m_ShipInfoArray.GetAt(ShipNumber).GetHull()->GetDoubleHull();
+		if (bDoubleHull == TRUE)
 			s.Format("%s%s",material, CResourceManager::GetString("DOUBLE_HULL_ARMOUR"));
 		else
 			s.Format("%s%s",material, CResourceManager::GetString("HULL_ARMOR"));
@@ -366,9 +368,15 @@ void CShipDesignMenuView::DrawShipDesignMenue(Graphics* g)
 		if (graphic)
 			g->DrawImage(graphic, 800, 420, 120, 30);
 		g->DrawString(CResourceManager::GetString("BTN_MATERIAL").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(800,420,120,30), &fontFormat, &btnBrush);
-		if (graphic)
-			g->DrawImage(graphic, 930, 420, 120, 30);
-		g->DrawString(CResourceManager::GetString("BTN_HULLTYPE").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(930,420,120,30), &fontFormat, &btnBrush);
+		
+		// wenn eine Doppelhülle draus gemacht werden soll dann darf die Manövrierbarkeit nicht schon "keine" oder nur 1 sein
+		// wenn eine Einzelhülle draus gemacht werden soll, dann darf die Manövrierbarkeit nicht schon phänomenal sein
+		if ((bDoubleHull == FALSE && pDoc->m_ShipInfoArray.GetAt(ShipNumber).GetManeuverability() > 1) || (bDoubleHull == TRUE && pDoc->m_ShipInfoArray.GetAt(ShipNumber).GetManeuverability() < 9))
+		{
+			if (graphic)
+				g->DrawImage(graphic, 930, 420, 120, 30);
+			g->DrawString(CResourceManager::GetString("BTN_HULLTYPE").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(930,420,120,30), &fontFormat, &btnBrush);
+		}
 		
 		// Schildtyp schwächer Button einblenden
 		if (pDoc->m_ShipInfoArray.GetAt(ShipNumber).GetShield()->GetShieldType() > 0)
@@ -648,8 +656,8 @@ void CShipDesignMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 	{
 		BOOLEAN oldDoubleHull = pDoc->m_ShipInfoArray.GetAt(n).GetHull()->GetDoubleHull();
 		
-		// wenn eine Doppelhülle draus gemacht werden soll dann darf die Manövrierbarkeit nicht schon "keine" sein
-		if (oldDoubleHull == FALSE && pDoc->m_ShipInfoArray.GetAt(n).GetManeuverability() == 0)
+		// wenn eine Doppelhülle draus gemacht werden soll dann darf die Manövrierbarkeit nicht schon "keine" oder nur 1 sein
+		if (oldDoubleHull == FALSE && pDoc->m_ShipInfoArray.GetAt(n).GetManeuverability() <= 1)
 			return;
 		// wenn eine Einzelhülle draus gemacht werden soll, dann darf die Manövrierbarkeit nicht schon phänomenal sein
 		if (oldDoubleHull == TRUE && pDoc->m_ShipInfoArray.GetAt(n).GetManeuverability() == 9)

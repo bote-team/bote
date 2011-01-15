@@ -436,17 +436,22 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0,0,r.right,185), &fontFormat, &fontBrush);
 		// bei eigenem Schiff aktuellen Befehl zeichnen
 		if (m_pShip->GetOwnerOfShip() == pMajor->GetRaceID())
-		{
-			
+		{			
 			pDC->SetTextColor(CFontLoader::GetFontColor(pMajor, 4));
-			s.Format("%s: %s",CResourceManager::GetString("ORDER"), 
-				m_pShip->GetCurrentOrderAsString());
+			// Name des Planeten ermitteln, welche gerade geterraformt wird
+			if (m_pShip->GetCurrentOrder() == TERRAFORM && m_pShip->GetTerraformingPlanet() != -1)
+			{
+				if (pDoc->GetSector(m_pShip->GetKO()).GetPlanets()->GetSize() > m_pShip->GetTerraformingPlanet())
+					s.Format("%s: %s\n%s",CResourceManager::GetString("ORDER"), m_pShip->GetCurrentOrderAsString(), pDoc->GetSector(m_pShip->GetKO()).GetPlanet(m_pShip->GetTerraformingPlanet())->GetPlanetName());
+			}
+			else
+				s.Format("%s: %s",CResourceManager::GetString("ORDER"), m_pShip->GetCurrentOrderAsString());
 			CFontLoader::GetGDIFontColor(pMajor, 4, color);
 			fontBrush.SetColor(color);
 			fontFormat.SetAlignment(StringAlignmentCenter);
 			fontFormat.SetLineAlignment(StringAlignmentNear);
 			fontFormat.SetFormatFlags(!StringFormatFlagsNoWrap);
-			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0,190,r.right,30), &fontFormat, &fontBrush);
+			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0,190,r.right,50), &fontFormat, &fontBrush);
 		}
 	}	
 	else

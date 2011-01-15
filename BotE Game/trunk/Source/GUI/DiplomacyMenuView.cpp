@@ -996,6 +996,7 @@ void CDiplomacyMenuView::DrawDiplomacyInfoMenue(Graphics* g, const CString& sWhi
 	fontFormat.SetAlignment(StringAlignmentNear);
 	rect.Y += 50;
 
+	// bei Freundschaft wird der Status zu den anderen Rassen angezeigt
 	if (pPlayer->GetAgreement(sWhichRace) >= FRIENDSHIP_AGREEMENT)
 	{
 		map<CString, CMajor*>* pmMajors = pDoc->GetRaceCtrl()->GetMajors();
@@ -1015,7 +1016,8 @@ void CDiplomacyMenuView::DrawDiplomacyInfoMenue(Graphics* g, const CString& sWhi
 					g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), rect, &fontFormat, &fontBrush);
 					rect.Y += 25;
 				}
-	}
+	}	
+	// sonst keine Angaben
 	else
 	{
 		s = CResourceManager::GetString("NO_SPECS");
@@ -1366,10 +1368,17 @@ CString CDiplomacyMenuView::PrintDiplomacyStatus(const CString& sOurRace, const 
 		return "";
 
 	CString status;
-	short stat;
+	// wurde die Minorrace unterworfen?
+	if (pRace->GetType() == MINOR && ((CMinor*)pRace)->GetSubjugated())
+	{
+		status = CResourceManager::GetString("SUBJUGATED");
+		color.SetFromCOLORREF(RGB(178,0,255));
+		return status;
+	}	
 	
+	// Namen der Vertragsform und Farbe ermitteln
+	short stat;	
 	stat = pOurRace->GetAgreement(sRace);
-
 	switch(stat)
 	{
 	case NO_AGREEMENT:

@@ -1,5 +1,5 @@
 /*
- *   Copyright (C)2004-2010 Sir Pustekuchen
+ *   Copyright (C)2004-2011 Sir Pustekuchen
  *
  *   Author   :  Sir Pustekuchen
  *   Home     :  http://birth-of-the-empires.de
@@ -33,7 +33,7 @@ public:
 	/// @param sRaceID RassenID der Rasse, an die das Angebot gemacht werden soll
 	/// @param info Referenz auf eine Diplomatieinformation (darin wird das Angebot abgelegt)
 	/// @return <code>true</code> wenn ein Angebot erzeugt wurde, ansonsten <code>false</code>
-	virtual bool MakeOffer(CString& sRaceID, CDiplomacyInfo& info);
+	virtual bool MakeOffer(CString& sRaceID, CDiplomacyInfo& info);	
 
 protected:
 	// private Funktionen

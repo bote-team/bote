@@ -1,5 +1,5 @@
 /*
- *   Copyright (C)2004-2010 Sir Pustekuchen
+ *   Copyright (C)2004-2011 Sir Pustekuchen
  *
  *   Author   :  Sir Pustekuchen
  *   Home     :  http://birth-of-the-empires.de
@@ -102,6 +102,13 @@ public:
 	/// selbst abzubauen, damm ist der Verbrauch natürlich geringer.
 	/// @param pDoc Zeiger auf das Dokument
 	void ConsumeResources(CBotf2Doc* pDoc);
+
+	/// Funktion überprüft, ob die Minorrace das Angebot aufgrund anderer Verträge überhaupt annehmen kann.
+	/// @param pDoc Zeiger auf das Dokument
+	/// @param sMajorID MajorraceID, von welcher das Angebot stammt
+	/// @param nType angebotener Vertrag
+	/// @return <code>true</code> wenn das Angebot theoretisch angenommen werden könnte, ansonsten <code>false</code>
+	bool CanAcceptOffer(CBotf2Doc* pDoc, const CString& sMajorID, short nType) const;
 
 	/// Funktion checkt die diplomatische Konsistenz und generiert bei Kündigungen auch die entsprechende Nachricht
 	/// für das entsprechende Imperium der Majorrace.

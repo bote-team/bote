@@ -272,11 +272,11 @@ int CVictoryObserver::GetNeededVictoryValue(VICTORYTYPE nType) const
 		return 10;
 	
 	case VICTORYTYPE_COMBATWINS:
-		// aktuelle Runde / 4 Schiffskampfsiege (mindestens 50)
-		return max(nCurrentRound / 4, 50);		
+		// aktuelle Runde / 4 Schiffskampfsiege (mindestens 100)
+		return max(nCurrentRound / 2.5, 100);		
 	
 	case VICTORYTYPE_SABOTAGE:
-		// aktuelle Runde * 2 erfolgreiche Sabotageaktionen (mindestens 500)
+		// aktuelle Runde * 1.5 erfolgreiche Sabotageaktionen (mindestens 250)
 		return max(nCurrentRound * 1.5, 250);
 	
 	default: return INT_MAX;
@@ -293,7 +293,7 @@ void CVictoryObserver::Observe(void)
 	//////////////////////////////////////////////////////////////////////
 	if (m_bConditionStatus[VICTORYTYPE_ELIMINATION])
 	{
-		// Anzahl Majorraces im noch im Spiel
+		// Anzahl Majorraces noch im Spiel
 		int nMajorsAlive = 0;
 		map<CString, CMajor*>* pmMajors	= pDoc->GetRaceCtrl()->GetMajors();
 		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
@@ -341,7 +341,7 @@ void CVictoryObserver::Observe(void)
 			if (it->second >= nNeededValue)
 			{
 				m_bIsVictory	= true;
-				m_sVictoryRace	= pDoc->GetRaceCtrl()->GetMajors()->begin()->first;
+				m_sVictoryRace	= it->first;
 				m_nVictoryType	= VICTORYTYPE_DIPLOMACY;
 				return;
 			}		

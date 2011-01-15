@@ -59,7 +59,7 @@ void CCombatAI::ApplyCombatOrders(const CArray<CShip*>& vInvolvedShips, const ma
 		// Alle Clients haben ihre Befehle schon eingestellt
 		if (mCombatOrders.find(*it) != mCombatOrders.end())
 			continue;
-		
+
 		// Beziehung zu anderen Rassen beachten, dafür Rassen aus Map holen
 		map<CString, CRace*>::const_iterator iter = pmRaces->find(*it);
 		if (iter == pmRaces->end())
@@ -135,7 +135,7 @@ void CCombatAI::ApplyCombatOrders(const CArray<CShip*>& vInvolvedShips, const ma
 		{
 		case COMBAT_NON:		sTactic = "- (error)"; break;
 		case COMBAT_USER:		sTactic = "User"; break;
-		case COMBAT_HAILING:	sTactic = "Haling Frequencies"; break;
+		case COMBAT_HAILING:	sTactic = "Hailing Frequencies"; break;
 		case COMBAT_RETREAT:	sTactic = "Retreat"; break;
 		case COMBAT_AUTO:		sTactic = "Auto"; break;
 		}
@@ -202,8 +202,10 @@ void CCombatAI::ApplyShipTactics(const CArray<CShip*>& vInvolvedShips, map<CStri
 			else if (nOrder == COMBAT_RETREAT)
 			{
 				// alle Schiffe bekommen den Rückzugsbefehl, außer sie haben Manövrierbarkeit 0
-				if (pShip->GetManeuverability() == 0)
+				if (pShip->GetManeuverability() == 0 && pShip->IsNonCombat())
 					pShip->SetCombatTactic(COMBAT_TACTIC_AVOID);
+				else if (pShip->GetManeuverability() == 0)
+					pShip->SetCombatTactic(COMBAT_TACTIC_ATTACK);
 				else
 					pShip->SetCombatTactic(COMBAT_TACTIC_RETREAT);
 			}

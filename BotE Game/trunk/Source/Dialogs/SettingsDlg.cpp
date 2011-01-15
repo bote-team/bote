@@ -1,18 +1,18 @@
-// PreferencesDlg.cpp: Implementierungsdatei
+// SettingsDlg.cpp: Implementierungsdatei
 //
 
 #include "stdafx.h"
 #include "botf2.h"
-#include "PreferencesDlg.h"
+#include "SettingsDlg.h"
 #include "IniLoader.h"
 
 
-// CPreferencesDlg-Dialogfeld
+// CSettingsDlg-Dialogfeld
 
-IMPLEMENT_DYNAMIC(CPreferencesDlg, CDialog)
+IMPLEMENT_DYNAMIC(CSettingsDlg, CDialog)
 
-CPreferencesDlg::CPreferencesDlg(bool bDisableNonWorking/* = false*/, CWnd* pParent /*=NULL*/)
-	: CDialog(CPreferencesDlg::IDD, pParent)
+CSettingsDlg::CSettingsDlg(bool bDisableNonWorking/* = false*/, CWnd* pParent /*=NULL*/)
+	: CDialog(CSettingsDlg::IDD, pParent)
 	, m_bDisable(bDisableNonWorking)
 	, m_bAutoave(FALSE)
 	, m_bHardwaresound(FALSE)
@@ -32,11 +32,11 @@ CPreferencesDlg::CPreferencesDlg(bool bDisableNonWorking/* = false*/, CWnd* pPar
 {
 }
 
-CPreferencesDlg::~CPreferencesDlg()
+CSettingsDlg::~CSettingsDlg()
 {
 }
 
-void CPreferencesDlg::DoDataExchange(CDataExchange* pDX)
+void CSettingsDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);	
 	DDX_Check(pDX, IDC_CHECK_AUTOSAVE, m_bAutoave);
@@ -64,14 +64,14 @@ void CPreferencesDlg::DoDataExchange(CDataExchange* pDX)
 }
 
 
-BEGIN_MESSAGE_MAP(CPreferencesDlg, CDialog)	
-	ON_NOTIFY(NM_CUSTOMDRAW, IDC_SLIDER_DIFFICULTY, &CPreferencesDlg::OnNMCustomdrawSliderDifficulty)
+BEGIN_MESSAGE_MAP(CSettingsDlg, CDialog)	
+	ON_NOTIFY(NM_CUSTOMDRAW, IDC_SLIDER_DIFFICULTY, &CSettingsDlg::OnNMCustomdrawSliderDifficulty)
 END_MESSAGE_MAP()
 
 
-// CPreferencesDlg-Meldungshandler
+// CSettingsDlg-Meldungshandler
 
-BOOL CPreferencesDlg::OnInitDialog()
+BOOL CSettingsDlg::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 
@@ -167,7 +167,7 @@ BOOL CPreferencesDlg::OnInitDialog()
 	bool bHideMenu;
 	if (!pIni->ReadValue("Control", "HIDEMENUBAR", bHideMenu))
 		ASSERT(false);
-	m_bHideMenu = bInvertMouse;
+	m_bHideMenu = bHideMenu;
 
 	// Special (Ingame)
 	int nRandomSeed;
@@ -263,7 +263,7 @@ BOOL CPreferencesDlg::OnInitDialog()
 	// AUSNAHME: OCX-Eigenschaftenseite muss FALSE zurückgeben.
 }
 
-void CPreferencesDlg::OnOK()
+void CSettingsDlg::OnOK()
 {
 	// TODO: Fügen Sie hier Ihren spezialisierten Code ein, und/oder rufen Sie die Basisklasse auf.
 	// neue Werte in die Ini-Datei schreiben
@@ -331,7 +331,7 @@ void CPreferencesDlg::OnOK()
 	CDialog::OnOK();
 }
 
-void CPreferencesDlg::OnNMCustomdrawSliderDifficulty(NMHDR *pNMHDR, LRESULT *pResult)
+void CSettingsDlg::OnNMCustomdrawSliderDifficulty(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	LPNMCUSTOMDRAW pNMCD = reinterpret_cast<LPNMCUSTOMDRAW>(pNMHDR);
 	// TODO: Fügen Sie hier Ihren Kontrollbehandlungscode für die Benachrichtigung ein.

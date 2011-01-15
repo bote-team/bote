@@ -1701,23 +1701,28 @@ int CSystem::SetNewBuildingOnline(BuildingInfoArray *buildingInfos)
 // falls zuwenig Energie im System vorhanden ist.
 // Diese Funktion aufrufen, bevor wir CalculateVariables() usw. aufrufen, weil wir ja die bösen Onlinegebäude vorher
 // ausschalten wollen.
-int CSystem::CheckEnergyBuildings(BuildingInfoArray *buildingInfos)
-{
-	BOOLEAN CheckValue = 0;
-	unsigned short NumberOfBuildings = m_Buildings.GetSize();
-	for (int i = 0; i < NumberOfBuildings; i++)
+bool CSystem::CheckEnergyBuildings(const BuildingInfoArray* pvBuildingInfos)
+{	
+	bool bRet = false;	
+	for (int i = 0; i < m_Buildings.GetSize(); i++)
 	{
-		const CBuildingInfo *buildingInfo = &buildingInfos->GetAt(m_Buildings.GetAt(i).GetRunningNumber() - 1);
+		// ist genügend Energie vorhanden, so muss nichts überprüft werden
+		if (m_Production.m_iEnergyProd >= 0)
+			return bRet;
 
-		if (m_Production.m_iEnergyProd < 0 && buildingInfo->GetNeededEnergy() > 0)
+		// anderenfalls müssen die Gebäude nacheinander solange abgeschaltet werden, bis wieder genügend Energie vorhanden ist
+		const CBuildingInfo* pBuildingInfo = &pvBuildingInfos->GetAt(m_Buildings.GetAt(i).GetRunningNumber() - 1);
+		if (m_Production.m_iEnergyProd < 0 && pBuildingInfo->GetNeededEnergy() > 0 && m_Buildings[i].GetIsBuildingOnline())
 		{
-			m_Buildings.ElementAt(i).SetIsBuildingOnline(FALSE);
-			m_Production.m_iEnergyProd += buildingInfo->GetNeededEnergy();
-			CheckValue = 1;
+			// Gebäude abschalten
+			m_Buildings[i].SetIsBuildingOnline(FALSE);
+			// vorhande Energie um den Differenzbetrag erhöhen
+			m_Production.m_iEnergyProd += pBuildingInfo->GetNeededEnergy();
+			bRet = true;			
 		}
 	}
-	// Wenn CheckValue == 0, dann genug Energie vorhanden, ansonsten wurde mindst. ein Gebäude abgeschaltet
-	return CheckValue;
+	// Wenn bRet == false, dann ist genug Energie vorhanden, ansonsten wurde mindst. ein Gebäude abgeschaltet
+	return bRet;
 }
 
 // Funktion baut die Gebäude der Minorrace, wenn wir eine Mitgliedschaft mit dieser erreicht haben.
@@ -2048,6 +2053,7 @@ void CSystem::BuildBuildingsForMinorRace(CSector* sector, BuildingInfoArray* bui
 		if (nShipYard != 0)
 		{
 			CBuilding building(nShipYard);
+			building.SetIsBuildingOnline(buildingInfo->GetAt(nShipYard - 1).GetAllwaysOnline());
 			m_Buildings.Add(building);
 			SetNewBuildingOnline(buildingInfo);
 		}

@@ -1,5 +1,5 @@
 /*
- *   Copyright (C)2004-2010 Sir Pustekuchen
+ *   Copyright (C)2004-2011 Sir Pustekuchen
  *
  *   Author   :  Sir Pustekuchen
  *   Home     :  http://birth-of-the-empires.de
@@ -10,20 +10,20 @@
 #include "afxwin.h"
 
 
-/// CPreferencesDlg-Dialogfeld
-class CPreferencesDlg : public CDialog
+/// CSettingsDlg-Dialogfeld
+class CSettingsDlg : public CDialog
 {
-	DECLARE_DYNAMIC(CPreferencesDlg)
+	DECLARE_DYNAMIC(CSettingsDlg)
 
 public:
 	/// Standardkonstruktor
-	CPreferencesDlg(bool bDisableNonWorking = false, CWnd* pParent = NULL);
+	CSettingsDlg(bool bDisableNonWorking = false, CWnd* pParent = NULL);
 
 	/// Standarddestruktor
-	virtual ~CPreferencesDlg();
+	virtual ~CSettingsDlg();
 
 // Dialogfelddaten
-	enum { IDD = IDD_PREFERENCESDLG };
+	enum { IDD = IDD_SETTINGSDLG };
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV-Unterstützung

@@ -40,7 +40,7 @@ short CMinorAI::ReactOnOffer(const CDiplomacyInfo& info)
 
 	if (pFromRace->GetType() == MAJOR)
 	{
-		CMinor* pMinor = dynamic_cast<CMinor*>(m_pRace);		
+		CMinor* pMinor = dynamic_cast<CMinor*>(m_pRace);
 		ASSERT(pMinor);
 
 		// wurde die Rasse erobert, so kann die Minorrace nicht auf das Angebot reagieren
@@ -64,34 +64,10 @@ short CMinorAI::ReactOnOffer(const CDiplomacyInfo& info)
 			return ACCEPTED;
 		}
 		
-
-		// Nur wenn der aktuelle Vertrag nicht höherwertiger ist als der angebotene, dann wird er akzeptiert
-		if (pMinor->GetAgreement(info.m_sFromRace) >= info.m_nType)
+		// Prüfen ob der Vertrag aufgrund aktuell bestehender Verträge überhaupt angenommen werden darf
+		if (!pMinor->CanAcceptOffer(m_pDoc, info.m_sFromRace, info.m_nType))
 			return DECLINED;
-
-		// Checken ob wir ein Angebot überhaupt annehmen können, wenn z.B. eine andere Hauptrasse
-		// eine Mitgliedschaft mit einer Minorrace hat, dann können wir ihr kein Angebot machen, außer
-		// Krieg erklären, Geschenke geben und Bestechen
-		short nOthersAgreement	= NO_AGREEMENT;		
-		map<CString, CMajor*>* pmMajors = m_pDoc->GetRaceCtrl()->GetMajors();
-		// nicht wir selbst
-		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
-		{
-			if (it->first != info.m_sFromRace)
-			{
-				short nTemp = pMinor->GetAgreement(it->first);
-				if (nTemp > nOthersAgreement)
-					nOthersAgreement	= nTemp;			
-			}
-		}
-
-		if ((info.m_nType == COOPERATION || info.m_nType == AFFILIATION || info.m_nType == MEMBERSHIP) && nOthersAgreement > FRIENDSHIP_AGREEMENT)
-			return DECLINED;
-		if (info.m_nType == TRADE_AGREEMENT && nOthersAgreement > AFFILIATION)
-			return DECLINED;
-		if (info.m_nType == FRIENDSHIP_AGREEMENT && nOthersAgreement > COOPERATION)
-			return DECLINED;
-
+		
 		// Wenn wir das Angebot wahrmachen könnten, berechnen ob es klappt
 		short nNeededRelation = 100;
 

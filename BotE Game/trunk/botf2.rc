@@ -82,7 +82,7 @@ BEGIN
         MENUITEM "&New Game",                   ID_FILE_NEW
         MENUITEM "Load Game",                   ID_FILE_OPEN
         MENUITEM "Save Game",                   ID_FILE_SAVE_AS
-        MENUITEM "Preferences",                 ID_OPTIONEN
+        MENUITEM "Game Settings",               ID_OPTIONEN
         MENUITEM SEPARATOR
         MENUITEM "&Exit",                       ID_APP_EXIT
     END
@@ -145,9 +145,9 @@ FONT 10, "Segoe UI", 400, 0, 0x0
 BEGIN
     ICON            IDR_MAINFRAME,IDC_STATIC,7,7,20,20,0,WS_EX_TRANSPARENT
     LTEXT           "Birth of the Empires",IDC_STATIC,42,7,126,18,SS_NOPREFIX
-    LTEXT           "Copyright by Sir Pustekuchen (C)2004-2010\nContent by Malle et al. 2007-2010",IDC_STATIC,42,31,152,17
+    LTEXT           "Copyright by Sir Pustekuchen (C)2004-2011\nContent by Malle et al. 2007-2011",IDC_STATIC,42,31,152,17
     DEFPUSHBUTTON   "OK",IDOK,154,7,54,10,WS_GROUP
-    LTEXT           "Version 0.8 Alpha 6 Development Version #4",IDC_STATIC,42,23,151,8
+    LTEXT           "Version 0.8 Alpha 6 Development Version #5",IDC_STATIC,42,23,151,8
 END
 
 IDR_MAINFRAME DIALOG  0, 0, 330, 16
@@ -179,11 +179,11 @@ BEGIN
     CONTROL         "Publish in local area network",1034,"Button",BS_AUTOCHECKBOX | NOT WS_VISIBLE | WS_TABSTOP,14,180,106,10
     LTEXT           "Description:",1040,28,197,39,8,NOT WS_VISIBLE
     EDITTEXT        1032,69,194,196,14,ES_AUTOHSCROLL | NOT WS_VISIBLE
-    GROUPBOX        "Options",IDC_STATIC,7,143,266,98
-    RTEXT           "www.birth-of-the-empires.de\nDevelopment Version #4",IDC_STATIC,156,63,119,19
+    GROUPBOX        "Network Options",IDC_STATIC,7,143,266,98
+    RTEXT           "www.birth-of-the-empires.de\nDevelopment Version #5",IDC_STATIC,156,63,119,19
     RTEXT           "V0.8 Alpha 6",IDC_STATIC,183,54,92,9
     CONTROL         188,IDC_STATIC,"Static",SS_BITMAP,7,0,267,52
-    DEFPUSHBUTTON   "Preferences...",ID_SHOWOPTIONSDLG,7,244,60,14
+    DEFPUSHBUTTON   "Game Settings...",ID_SHOWOPTIONSDLG,7,244,69,14
 END
 
 IDD_CHOOSERACE DIALOGEX 0, 0, 284, 274
@@ -260,9 +260,9 @@ BEGIN
     PUSHBUTTON      "Abbrechen",IDCANCEL,191,106,50,14
 END
 
-IDD_PREFERENCESDLG DIALOGEX 0, 0, 365, 267
+IDD_SETTINGSDLG DIALOGEX 0, 0, 365, 267
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Preferences"
+CAPTION "Game Settings"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     DEFPUSHBUTTON   "OK",IDOK,131,245,50,14
@@ -333,7 +333,7 @@ BEGIN
             VALUE "FileDescription", "Birth of the Empires"
             VALUE "FileVersion", "0, 8, 0, 0"
             VALUE "InternalName", "BotE"
-            VALUE "LegalCopyright", "Copyright (C) 2004-2010"
+            VALUE "LegalCopyright", "Copyright (C) 2004-2011"
             VALUE "OriginalFilename", "BotE.EXE"
             VALUE "ProductName", "Birth of the Empires"
             VALUE "ProductVersion", "0, 8, 0, 0"
@@ -406,7 +406,7 @@ BEGIN
         BOTTOMMARGIN, 83
     END
 
-    IDD_PREFERENCESDLG, DIALOG
+    IDD_SETTINGSDLG, DIALOG
     BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 358
@@ -438,7 +438,7 @@ IDB_LOGO                BITMAP                  "res\\logo.bmp"
 
 STRINGTABLE 
 BEGIN
-    IDR_MAINFRAME           "Botf2\n\nBotf2\nBotE_Savegame (*.sav)\n.sav\nBotE.Savegame\nBotE Savegame"
+    IDR_MAINFRAME           "BotE\n\nBotE\nBotE_Savegame (*.sav)\n.sav\nBotE.Savegame\nBotE Savegame"
 END
 
 STRINGTABLE 
