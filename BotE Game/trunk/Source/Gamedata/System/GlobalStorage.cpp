@@ -31,19 +31,32 @@ void CGlobalStorage::Serialize(CArchive &ar)
 	if (ar.IsStoring())
 	{
 		ar << m_byPercentLosing;
+#ifdef ALPHA6_SERIALISIERUNG
 		ar << m_iMaxTakeFromStorage;
 		ar << m_iTakeFromStorage;
+#else
+		ar << (USHORT)m_iMaxTakeFromStorage;
+		ar << (USHORT)m_iTakeFromStorage;
+#endif
 		for (int i = TITAN; i <= IRIDIUM; i++)
-			ar << m_iRessourceStorages[i];
+			ar << m_nResourceStorages[i];
 	}
 	// wenn geladen wird
 	if (ar.IsLoading())
 	{
 		ar >> m_byPercentLosing;
+#ifdef ALPHA6_SERIALISIERUNG
 		ar >> m_iMaxTakeFromStorage;
 		ar >> m_iTakeFromStorage;
+#else
+		USHORT n;
+		ar >> n;
+		m_iMaxTakeFromStorage = n;
+		ar >> n;
+		m_iTakeFromStorage = n;
+#endif
 		for (int i = TITAN; i <= IRIDIUM; i++)
-			ar >> m_iRessourceStorages[i];
+			ar >> m_nResourceStorages[i];
 	}
 }
 
@@ -52,13 +65,13 @@ void CGlobalStorage::Serialize(CArchive &ar)
 //////////////////////////////////////////////////////////////////////
 /// Diese Funktion gibt die Menge der Ressource <code>res</code> zurück, die von dem System mit der Koordinate
 /// <code>ko</code> in das globale Lager kommen sollen.
-UINT CGlobalStorage::GetAddedResource(BYTE res, CPoint ko) const
+UINT CGlobalStorage::GetAddedResource(BYTE res, const CPoint& ko) const
 {
 	UINT resIn = 0;
 	for (int i = 0; i < m_ResIn.GetSize(); i++)
-		if (m_ResIn.GetAt(i).ko == ko && m_ResIn.GetAt(i).res == res)
+		if (m_ResIn.GetAt(i).ptKO == ko && m_ResIn.GetAt(i).nRes == res)
 		{
-			resIn += m_ResIn.GetAt(i).resTransfer;
+			resIn += m_ResIn.GetAt(i).nResTransfer;
 			break;
 		}
 	return resIn;
@@ -66,13 +79,13 @@ UINT CGlobalStorage::GetAddedResource(BYTE res, CPoint ko) const
 
 /// Diese Funktion gibt die Menge der Ressource <code>res</code> zurück, die in das System mit der Koordinate
 /// <code>ko</code> aus dem globale Lager kommen sollen.
-UINT CGlobalStorage::GetSubResource(BYTE res, CPoint ko) const
+UINT CGlobalStorage::GetSubResource(BYTE res, const CPoint& ko) const
 {
 	UINT resOut = 0;
 	for (int i = 0; i < m_ResOut.GetSize(); i++)
-		if (m_ResOut.GetAt(i).ko == ko && m_ResOut.GetAt(i).res == res)
+		if (m_ResOut.GetAt(i).ptKO == ko && m_ResOut.GetAt(i).nRes == res)
 		{
-			resOut += m_ResOut.GetAt(i).resTransfer;
+			resOut += m_ResOut.GetAt(i).nResTransfer;
 			break;
 		}
 	return resOut;
@@ -83,8 +96,8 @@ UINT CGlobalStorage::GetAllAddedResource(BYTE res) const
 {
 	UINT resIn = 0;
 	for (int i = 0; i < m_ResIn.GetSize(); i++)
-		if (m_ResIn.GetAt(i).res == res)
-			resIn += m_ResIn.GetAt(i).resTransfer;
+		if (m_ResIn.GetAt(i).nRes == res)
+			resIn += m_ResIn.GetAt(i).nResTransfer;
 	return resIn;
 }
 
@@ -94,8 +107,8 @@ UINT CGlobalStorage::GetAllSubResource(BYTE res) const
 {
 	UINT resOut = 0;
 	for (int i = 0; i < m_ResOut.GetSize(); i++)
-		if (m_ResOut.GetAt(i).res == res)
-			resOut += m_ResOut.GetAt(i).resTransfer;
+		if (m_ResOut.GetAt(i).nRes == res)
+			resOut += m_ResOut.GetAt(i).nResTransfer;
 	return resOut;
 }
 
@@ -103,7 +116,7 @@ UINT CGlobalStorage::GetAllSubResource(BYTE res) const
 BOOLEAN CGlobalStorage::IsFilled() const
 {
 	for (int i = TITAN; i <= IRIDIUM; i++)
-		if (m_iRessourceStorages[i] > NULL)
+		if (m_nResourceStorages[i] > NULL)
 			return TRUE;
 	return FALSE;
 }
@@ -112,23 +125,23 @@ BOOLEAN CGlobalStorage::IsFilled() const
 /// <code>res</code> zum Lagerinhalt. Im Parameter <code>ko</code> wird die Systemkoordinate übergeben,
 /// von wo aus man die Transaktion führt. Der Rückgabewert der Funktion ist eine Menge, einer
 /// Ressource, die in der selben Runde schon aus dem globalen Lager in das System kommen soll.
-UINT CGlobalStorage::AddRessource(USHORT add, BYTE res, CPoint ko)
+UINT CGlobalStorage::AddRessource(UINT add, BYTE res, const CPoint& ko)
 {
 	UINT getBack = 0;
 	// Zu Beginn in dem Feld suchen, ob man Ressourcen aus dem globalen Lager in der neuen Runde ins System
 	// verschieben will. Diese werden zuerst entfernt.
 	for (int i = 0; i < m_ResOut.GetSize(); i++)
-		if (m_ResOut.GetAt(i).ko == ko && m_ResOut.GetAt(i).res == res)
+		if (m_ResOut.GetAt(i).ptKO == ko && m_ResOut.GetAt(i).nRes == res)
 		{
 			// Wenn die Addition kleiner als die Menge der aus dem Lager gehenden Ressourcen ist
-			if (add < m_ResOut.GetAt(i).resTransfer)
+			if (add < m_ResOut.GetAt(i).nResTransfer)
 			{
-				m_ResOut.GetAt(i).resTransfer -= add;
+				m_ResOut.GetAt(i).nResTransfer -= add;
 				m_iTakeFromStorage -= add;
 				return add;
 			}
 			// Wenn die Addition gleich der Menge der aus dem Lager gehenden Ressourcen ist
-			else if (add == m_ResOut.GetAt(i).resTransfer)
+			else if (add == m_ResOut.GetAt(i).nResTransfer)
 			{
 				m_ResOut.RemoveAt(i--);
 				m_iTakeFromStorage -= add;
@@ -142,7 +155,7 @@ UINT CGlobalStorage::AddRessource(USHORT add, BYTE res, CPoint ko)
 				m_iTakeFromStorage -= getBack;
 				m_ResOut.RemoveAt(i--);
 				break;*/
-				m_iTakeFromStorage -= m_ResOut.GetAt(i).resTransfer;
+				m_iTakeFromStorage -= m_ResOut.GetAt(i).nResTransfer;
 				m_ResOut.RemoveAt(i--);
 				return add;
 			}
@@ -151,14 +164,16 @@ UINT CGlobalStorage::AddRessource(USHORT add, BYTE res, CPoint ko)
 	// Zuerst mal schauen, ob dieses System mit der Koordinate ko schon im Feld vorhanden ist. Wenn
 	// dies der Fall ist, dann den Ressourceneintrag in diesem Feld erhöhen
 	for (int i = 0; i < m_ResIn.GetSize(); i++)
-		if (m_ResIn.GetAt(i).ko == ko && m_ResIn.GetAt(i).res == res)
+		if (m_ResIn.GetAt(i).ptKO == ko && m_ResIn.GetAt(i).nRes == res)
 		{
-			m_ResIn.GetAt(i).resTransfer += add;
+			m_ResIn.GetAt(i).nResTransfer += add;
 			return getBack;
 		}
 	// Hat man das System noch nicht in dem Feld, dann neuen Eintrag erstellen
 	StorageStruct ss;
-	ss.ko = ko; ss.res = res; ss.resTransfer = add;
+	ss.ptKO = ko;
+	ss.nRes = res;
+	ss.nResTransfer = add;
 	m_ResIn.Add(ss);
 	return getBack;
 }
@@ -169,22 +184,22 @@ UINT CGlobalStorage::AddRessource(USHORT add, BYTE res, CPoint ko)
 /// wurde und das der Lagerinhalt nicht negativ werden kann. Der Rückgabewert der Funktion ist eine Menge, einer
 /// Ressource, die in der selben Runde schon aus dem gleichen System addiert wurde. Somit kann man die Waren
 /// auch sofort wieder herausnehmen.
-UINT CGlobalStorage::SubRessource(USHORT sub, BYTE res, CPoint ko)
+UINT CGlobalStorage::SubRessource(UINT sub, BYTE res, const CPoint& ko)
 {
 	UINT getBack = 0;
 	// Wenn man schon aus diesem System Ressourcen ins globale Lager verschieben möchte, so werden erstmal diese
 	// Ressourcen abgezogen. Der Rest wird dann wirklich aus dem globalen Lager genommen.
 	for (int i = 0; i < m_ResIn.GetSize(); i++)
-		if (m_ResIn.GetAt(i).ko == ko && m_ResIn.GetAt(i).res == res)
+		if (m_ResIn.GetAt(i).ptKO == ko && m_ResIn.GetAt(i).nRes == res)
 		{
 			// Wenn die Subtraktion kleiner als die Menge der in das Lager gehenden Ressourcen ist
-			if (sub < m_ResIn.GetAt(i).resTransfer)
+			if (sub < m_ResIn.GetAt(i).nResTransfer)
 			{
-				m_ResIn.GetAt(i).resTransfer -= sub;
+				m_ResIn.GetAt(i).nResTransfer -= sub;
 				return sub;
 			}
 			// Wenn die Subtraktion gleich der Menge in das Lager gehenden Ressourcen ist
-			else if (sub == m_ResIn.GetAt(i).resTransfer)
+			else if (sub == m_ResIn.GetAt(i).nResTransfer)
 			{
 				m_ResIn.RemoveAt(i--);
 				return sub;
@@ -192,8 +207,8 @@ UINT CGlobalStorage::SubRessource(USHORT sub, BYTE res, CPoint ko)
 			// Wenn die Subtraktion größer der Menge in das Lager gehenden Ressourcen ist
 			else
 			{
-				sub -= m_ResIn.GetAt(i).resTransfer;
-				getBack = m_ResIn.GetAt(i).resTransfer;
+				sub -= m_ResIn.GetAt(i).nResTransfer;
+				getBack = m_ResIn.GetAt(i).nResTransfer;
 				m_ResIn.RemoveAt(i--);
 				break;
 			}
@@ -202,22 +217,24 @@ UINT CGlobalStorage::SubRessource(USHORT sub, BYTE res, CPoint ko)
 	if ((m_iTakeFromStorage + sub) > m_iMaxTakeFromStorage)
 		sub = m_iMaxTakeFromStorage - m_iTakeFromStorage;
 	// Überprüfen, dass man nicht mehr Ressourcen aus dem Lager nehmen kann, als darin vorhanden sind
-	if ((UINT)(sub + this->GetAllSubResource(res)) > m_iRessourceStorages[res])
-		sub = m_iRessourceStorages[res] - this->GetAllSubResource(res);
+	if ((UINT)(sub + this->GetAllSubResource(res)) > m_nResourceStorages[res])
+		sub = m_nResourceStorages[res] - this->GetAllSubResource(res);
 	if (sub == 0)
 		return getBack;
 	m_iTakeFromStorage += sub;
 	// Zuerst mal schauen, ob dieses System mit der Koordinate ko schon im Feld vorhanden ist. Wenn
 	// dies der Fall ist, dann den Ressourceneintrag in diesem Feld erhöhen
 	for (int i = 0; i < m_ResOut.GetSize(); i++)
-		if (m_ResOut.GetAt(i).ko == ko && m_ResOut.GetAt(i).res == res)
+		if (m_ResOut.GetAt(i).ptKO == ko && m_ResOut.GetAt(i).nRes == res)
 		{
-			m_ResOut.GetAt(i).resTransfer += sub;
+			m_ResOut.GetAt(i).nResTransfer += sub;
 			return getBack;
 		}
 	// Hat man das System noch nicht in dem Feld, dann neuen Eintrag erstellen
 	StorageStruct ss;
-	ss.ko = ko; ss.res = res; ss.resTransfer = sub;
+	ss.ptKO = ko;
+	ss.nRes = res;
+	ss.nResTransfer = sub;
 	m_ResOut.Add(ss);
 	return getBack;
 }
@@ -232,35 +249,35 @@ void CGlobalStorage::Calculate(CSystem systems[STARMAP_SECTORS_HCOUNT][STARMAP_S
 	{
 		// Sicherheitsabfrage, falls man doch durch irgendeinen Zufall mal mehr aus dem Lager nehmen würde als
 		// darin vorhanden ist
-		if (m_iRessourceStorages[m_ResOut.GetAt(i).res] >= m_ResOut.GetAt(i).resTransfer)
+		if (m_nResourceStorages[m_ResOut.GetAt(i).nRes] >= m_ResOut.GetAt(i).nResTransfer)
 		{
-			systems[m_ResOut.GetAt(i).ko.x][m_ResOut.GetAt(i).ko.y].SetRessourceStore(m_ResOut.GetAt(i).res, m_ResOut.GetAt(i).resTransfer);
-			m_iRessourceStorages[m_ResOut.GetAt(i).res] -= m_ResOut.GetAt(i).resTransfer;
+			systems[m_ResOut.GetAt(i).ptKO.x][m_ResOut.GetAt(i).ptKO.y].SetResourceStore(m_ResOut.GetAt(i).nRes, m_ResOut.GetAt(i).nResTransfer);
+			m_nResourceStorages[m_ResOut.GetAt(i).nRes] -= m_ResOut.GetAt(i).nResTransfer;
 		}
 		else
 		{
-			systems[m_ResOut.GetAt(i).ko.x][m_ResOut.GetAt(i).ko.y].SetRessourceStore(m_ResOut.GetAt(i).res, m_iRessourceStorages[m_ResOut.GetAt(i).res]);
-			m_iRessourceStorages[m_ResOut.GetAt(i).res] = 0;
+			systems[m_ResOut.GetAt(i).ptKO.x][m_ResOut.GetAt(i).ptKO.y].SetResourceStore(m_ResOut.GetAt(i).nRes, m_nResourceStorages[m_ResOut.GetAt(i).nRes]);
+			m_nResourceStorages[m_ResOut.GetAt(i).nRes] = 0;
 		}
 		m_ResOut.RemoveAt(i);
 	}
 	// dann wird der Inhalt des globalen Lagers mit den Ressourcen gefüllt, die aus den Systemen kommen
 	for (int i = 0; i < m_ResIn.GetSize(); )
 	{
-		m_iRessourceStorages[m_ResIn.GetAt(i).res] += m_ResIn.GetAt(i).resTransfer;
+		m_nResourceStorages[m_ResIn.GetAt(i).nRes] += m_ResIn.GetAt(i).nResTransfer;
 		m_ResIn.RemoveAt(i);
 	}
 	// zuletzt verschwindet ein gewisser Anteil aus dem globalen Lager. Von jeder Ressource gehen "m_iPercentLosing"
 	// Prozent verloren
 	for (int i = TITAN; i <= IRIDIUM; i++)
-		m_iRessourceStorages[i] -= m_iRessourceStorages[i] * m_byPercentLosing / 100;
+		m_nResourceStorages[i] -= m_nResourceStorages[i] * m_byPercentLosing / 100;
 }
 
 /// Resetfunktion für die Klasse CGlobalStorage, welche alle Werte wieder auf Ausgangswerte setzt.
 void CGlobalStorage::Reset()
 {
 	for (int i = TITAN; i <= IRIDIUM; i++)
-		m_iRessourceStorages[i] = 0;
+		m_nResourceStorages[i] = 0;
 	m_byPercentLosing = 15;
 	m_iTakeFromStorage = 0;
 	m_iMaxTakeFromStorage = 1000;

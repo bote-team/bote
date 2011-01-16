@@ -1,6 +1,7 @@
 #include "StdAfx.h"
 #include "GraphicPool.h"
 #include "Options.h"
+#include "ImageStone/ImageStone.h"
 
 //////////////////////////////////////////////////////////////////////
 // Konstruktion und Destruktion

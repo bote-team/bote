@@ -68,6 +68,25 @@ short CMinorAI::ReactOnOffer(const CDiplomacyInfo& info)
 		if (!pMinor->CanAcceptOffer(m_pDoc, info.m_sFromRace, info.m_nType))
 			return DECLINED;
 		
+		// nun werden die aktuellen Beziehungen der Minorrace zu allen anderen Majorraces gespeichert. Wenn
+		// beim Vertragsangebot eine Mitgift gemacht wurde und die Minor das Angebot nämlich ablehnt, dann
+		// werden die Beziehungen wieder zurückgesetzt. Wenn die Minor den Vertrag akzeptiert, dann
+		// gelten die durch das Geschenk gemachten neuen Beziehungswerte.
+		map<CString, BYTE> mOldRelations = pMinor->m_mRelations;
+		// auf Geschenke reagieren
+		ReactOnDowry(info);
+		BYTE byOurRelationToThem = pMinor->GetRelation(info.m_sFromRace);
+
+		// wurde in den letzten 2 Runden von der Minorrasse selbst ein Angebot an den Major gemacht, dann
+		// wird das Angebot angenommen, sofern der Vertrag eine kleiner oder gleich große Wertigkeit hat
+		if (info.m_nType > NO_AGREEMENT && info.m_nFlag == DIPLOMACY_OFFER)
+		{
+			const CDiplomacyInfo* pLastOffer = m_pRace->GetLastOffer(info.m_sFromRace);
+			if (pLastOffer != NULL)
+				if (info.m_nType <= pLastOffer->m_nType)
+					return ACCEPTED;
+		}
+
 		// Wenn wir das Angebot wahrmachen könnten, berechnen ob es klappt
 		short nNeededRelation = 100;
 
@@ -133,15 +152,6 @@ short CMinorAI::ReactOnOffer(const CDiplomacyInfo& info)
 			if (pMinor->IsRaceProperty(PACIFIST))
 				nNeededRelation -= 10;
 		}
-
-		// nun werden die aktuellen Beziehungen der Minorrace zu allen anderen Majorraces gespeichert. Wenn
-		// beim Vertragsangebot eine Mitgift gemacht wurde und die Minor das Angebot nämlich ablehnt, dann
-		// werden die Beziehungen wieder zurückgesetzt. Wenn die Minor den Vertrag akzeptiert, dann
-		// gelten die durch das Geschenk gemachten neuen Beziehungswerte.
-		map<CString, BYTE> mOldRelations = pMinor->m_mRelations;
-		// auf Geschenke reagieren
-		ReactOnDowry(info);
-		BYTE byOurRelationToThem = pMinor->GetRelation(info.m_sFromRace);
 
 		float fMulti = byOurRelationToThem + 100;
 		fMulti /= 100;
@@ -351,7 +361,7 @@ void CMinorAI::ReactOnDowry(const CDiplomacyInfo& info)
 		nCredits -= nAcceptancePoints;
 	//CString s;
 	//s.Format("Geld: %d\nRelationPoints: %d\nFöd-relationpoints: %d\nFer-relationpoints: %d\nKli-relationpoints: %d\nRom-relationpoints: %d\nCar-relationpoints: %d\nDom-relationpoints: %d\n",
-	//	latinum,relationPoints,m_iRelationPoints[0],m_iRelationPoints[1],m_iRelationPoints[2],m_iRelationPoints[3],m_iRelationPoints[4],m_iRelationPoints[5]);
+	//	credits,relationPoints,m_iRelationPoints[0],m_iRelationPoints[1],m_iRelationPoints[2],m_iRelationPoints[3],m_iRelationPoints[4],m_iRelationPoints[5]);
 	//AfxMessageBox(s);
 
 	// Berechnen welche obere Grenze wir durch die Menge Credits bekommen
@@ -668,7 +678,7 @@ int CMinorAI::CalcResInCredits(const CDiplomacyInfo& info)
 	// Duranium wird getauscht im Verhältnis 4:1
 	// Crystal wird getauscht im Verhältnis 3.25:1
 	// Iridium wird getauscht im Verhältnis 2.5:1
-	// Dilithium wird getauscht im Verhältnis 1:50
+	// Deritium wird getauscht im Verhältnis 1:50
 	
 	float fValue = 0.0f;
 	float fDiv = 0.0f;
@@ -677,32 +687,32 @@ int CMinorAI::CalcResInCredits(const CDiplomacyInfo& info)
 	if (info.m_nResources[TITAN] != 0)			// Titan übergeben?
 	{
 		fValue = info.m_nResources[TITAN] / 5.0f;
-		fDiv = (float)(pSystem->GetRessourceStore(TITAN)) / 2000;
+		fDiv = (float)(pSystem->GetResourceStore(TITAN)) / 2000;
 	}
 	else if (info.m_nResources[DEUTERIUM] != 0)	// Deuterium übergeben?
 	{
 		fValue = info.m_nResources[DEUTERIUM] / 4.5f;
-		fDiv = (float)(pSystem->GetRessourceStore(DEUTERIUM)) / 2000;
+		fDiv = (float)(pSystem->GetResourceStore(DEUTERIUM)) / 2000;
 	}
 	else if (info.m_nResources[DURANIUM] != 0)	// Duranium übergeben?
 	{
 		fValue = info.m_nResources[DURANIUM] / 4.0f;
-		fDiv = (float)(pSystem->GetRessourceStore(DURANIUM)) / 2000;
+		fDiv = (float)(pSystem->GetResourceStore(DURANIUM)) / 2000;
 	}
 	else if (info.m_nResources[CRYSTAL] != 0)	// Kristalle übergeben?
 	{
 		fValue = info.m_nResources[CRYSTAL] / 3.25f;
-		fDiv = (float)(pSystem->GetRessourceStore(CRYSTAL)) / 2000;
+		fDiv = (float)(pSystem->GetResourceStore(CRYSTAL)) / 2000;
 	}
 	else if (info.m_nResources[IRIDIUM] != 0)	// Iridium übergeben?
 	{
 		fValue = info.m_nResources[IRIDIUM] / 2.5f;
-		fDiv = (float)(pSystem->GetRessourceStore(IRIDIUM)) / 2000;
+		fDiv = (float)(pSystem->GetResourceStore(IRIDIUM)) / 2000;
 	}
-	else if (info.m_nResources[DILITHIUM] != 0)	// Deritium übergeben?
+	else if (info.m_nResources[DERITIUM] != 0)	// Deritium übergeben?
 	{
-		fValue = info.m_nResources[DILITHIUM] * 50;
-		fDiv = (float)(pSystem->GetRessourceStore(DILITHIUM)) / 10;
+		fValue = info.m_nResources[DERITIUM] * 50;
+		fDiv = (float)(pSystem->GetResourceStore(DERITIUM)) / 10;
 	}
 
 	//So, nun gibts aber nicht immer diesen Betrag! Dafür fragen wir die

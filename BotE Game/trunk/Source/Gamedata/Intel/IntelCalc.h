@@ -21,7 +21,7 @@
 	x- CEmpire Class richtig serialisieren
 	x- CIntellignce Class richtig serialisieren (pResponsibleRace + Aggressiveness)
 	x- CIntelReport Class richtig serialisieren (m_pAttemptObject)
-	x- Dilithium bei Gebäudekosten anzeigen
+	x- Deritium bei Gebäudekosten anzeigen
 	x- ResponsibleRace darf nicht die selbe wie das Opfer einer Geheimdienstaktion sein. Dann immer unbekannt.
 	x- Schwierigkeitsgrad bei ini-Befehl
 	- Wenn Anordnung der Geheimdienstbuttons geändern werden sollte, dann auch checken zu Beginn der OnLeftButtonDown()

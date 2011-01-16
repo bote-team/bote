@@ -143,7 +143,7 @@ bool CGenDiploMessage::GenerateMajorOffer(CDiplomacyInfo& info)
 			if (info.m_sCorruptedRace != "")
 				sOffer = read[10];
 
-			sOffer.Replace("$latinum$",temp);
+			sOffer.Replace("$credits$",temp);
 			break;
 		}
 		case DIP_REQUEST:
@@ -179,14 +179,14 @@ bool CGenDiploMessage::GenerateMajorOffer(CDiplomacyInfo& info)
 				CString s; s.Format("%d",info.m_nResources[IRIDIUM]);
 				res = CResourceManager::GetString("IRIDIUM_REQUEST", FALSE, s);
 			}
-			else if (info.m_nResources[DILITHIUM] > 0)
+			else if (info.m_nResources[DERITIUM] > 0)
 			{
-				CString s; s.Format("%d",info.m_nResources[DILITHIUM]);
+				CString s; s.Format("%d",info.m_nResources[DERITIUM]);
 				res = CResourceManager::GetString("DERITIUM_REQUEST", FALSE, s);
 			}
 			sOffer.Replace("$ressource$",res);
 			
-			sOffer.Replace("$latinum$",temp);
+			sOffer.Replace("$credits$",temp);
 			break;
 		}
 		case PRESENT:
@@ -195,7 +195,7 @@ bool CGenDiploMessage::GenerateMajorOffer(CDiplomacyInfo& info)
 			sOffer = read[12];
 			CString temp;
 			temp.Format("%d", info.m_nCredits);
-			sOffer.Replace("$latinum$",temp);
+			sOffer.Replace("$credits$",temp);
 			break;
 		}
 		default:
@@ -208,7 +208,7 @@ bool CGenDiploMessage::GenerateMajorOffer(CDiplomacyInfo& info)
 		CString temp = sOffer;
 		CString s;
 		s.Format("%d", info.m_nCredits);
-		sOffer = CResourceManager::GetString("EXTRA_LATINUM", FALSE, temp, s);
+		sOffer = CResourceManager::GetString("EXTRA_CREDITS", FALSE, temp, s);
 	}
 	
 	// Wenn wir eine Ressource mit dazugeben und es sich nicht um eine Forderung handelt
@@ -239,9 +239,9 @@ bool CGenDiploMessage::GenerateMajorOffer(CDiplomacyInfo& info)
 			CString s; s.Format("%d",info.m_nResources[IRIDIUM]);
 			sOffer = CResourceManager::GetString("EXTRA_IRIDIUM", FALSE, sOffer, s);
 		}
-		else if (info.m_nResources[DILITHIUM] > 0)
+		else if (info.m_nResources[DERITIUM] > 0)
 		{
-			CString s; s.Format("%d",info.m_nResources[DILITHIUM]);
+			CString s; s.Format("%d",info.m_nResources[DERITIUM]);
 			sOffer = CResourceManager::GetString("EXTRA_DERITIUM", FALSE, sOffer, s);
 		}
 	}

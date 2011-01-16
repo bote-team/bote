@@ -44,7 +44,7 @@ CShipInfo::CShipInfo(const CShipInfo & rhs) : CShip(rhs)
 	m_iNeededDuranium = rhs.m_iNeededDuranium;
 	m_iNeededCrystal = rhs.m_iNeededCrystal;
 	m_iNeededIridium = rhs.m_iNeededIridium;
-	m_iNeededDilithium = rhs.m_iNeededDilithium;
+	m_iNeededDeritium = rhs.m_iNeededDeritium;
 	// nötige Rohstoffe zum Bau, so wie die Grundkosten sind, denn durch CalculateFinalCosts werden die nötigen Rohstoffe
 	// und Industrieleistung erhöht. Beim nächsten Aufruf brauchen wir aber wieder die ursprünglichen Kosten
 	m_iBaseIndustry = rhs.m_iBaseIndustry;
@@ -53,7 +53,7 @@ CShipInfo::CShipInfo(const CShipInfo & rhs) : CShip(rhs)
 	m_iBaseDuranium = rhs.m_iBaseDuranium;
 	m_iBaseCrystal = rhs.m_iBaseCrystal;
 	m_iBaseIridium = rhs.m_iBaseIridium;
-	m_iBaseDilithium = rhs.m_iBaseDilithium;
+	m_iBaseDeritium = rhs.m_iBaseDeritium;
 	// nötiger Systemname
 	m_strOnlyInSystem = rhs.m_strOnlyInSystem;
 	// Schiffsklasse, welche durch diese Schiffsklasse ersetzt wird
@@ -86,7 +86,7 @@ CShipInfo & CShipInfo::operator=(const CShipInfo & rhs)
 	m_iNeededDuranium = rhs.m_iNeededDuranium;
 	m_iNeededCrystal = rhs.m_iNeededCrystal;
 	m_iNeededIridium = rhs.m_iNeededIridium;
-	m_iNeededDilithium = rhs.m_iNeededDilithium;
+	m_iNeededDeritium = rhs.m_iNeededDeritium;
 	// nötige Rohstoffe zum Bau, so wie die Grundkosten sind, denn durch CalculateFinalCosts werden die nötigen Rohstoffe
 	// und Industrieleistung erhöht. Beim nächsten Aufruf brauchen wir aber wieder die ursprünglichen Kosten
 	m_iBaseIndustry = rhs.m_iBaseIndustry;
@@ -95,7 +95,7 @@ CShipInfo & CShipInfo::operator=(const CShipInfo & rhs)
 	m_iBaseDuranium = rhs.m_iBaseDuranium;
 	m_iBaseCrystal = rhs.m_iBaseCrystal;
 	m_iBaseIridium = rhs.m_iBaseIridium;
-	m_iBaseDilithium = rhs.m_iBaseDilithium;
+	m_iBaseDeritium = rhs.m_iBaseDeritium;
 	// nötiger Systemname
 	m_strOnlyInSystem = rhs.m_strOnlyInSystem;
 	// Schiffsklasse, welche durch diese Schiffsklasse ersetzt wird
@@ -128,14 +128,14 @@ void CShipInfo::Serialize(CArchive &ar)
 		ar << m_iNeededDuranium;
 		ar << m_iNeededCrystal;
 		ar << m_iNeededIridium;
-		ar << m_iNeededDilithium;
+		ar << m_iNeededDeritium;
 		ar << m_iBaseIndustry;
 		ar << m_iBaseTitan;
 		ar << m_iBaseDeuterium;
 		ar << m_iBaseDuranium;
 		ar << m_iBaseCrystal;
 		ar << m_iBaseIridium;
-		ar << m_iBaseDilithium;
+		ar << m_iBaseDeritium;
 		ar << m_strOnlyInSystem;
 		ar << m_strObsoletesClass;
 	}
@@ -155,14 +155,14 @@ void CShipInfo::Serialize(CArchive &ar)
 		ar >> m_iNeededDuranium;
 		ar >> m_iNeededCrystal;
 		ar >> m_iNeededIridium;
-		ar >> m_iNeededDilithium;
+		ar >> m_iNeededDeritium;
 		ar >> m_iBaseIndustry;
 		ar >> m_iBaseTitan;
 		ar >> m_iBaseDeuterium;
 		ar >> m_iBaseDuranium;
 		ar >> m_iBaseCrystal;
 		ar >> m_iBaseIridium;
-		ar >> m_iBaseDilithium;
+		ar >> m_iBaseDeritium;
 		ar >> m_strOnlyInSystem;
 		ar >> m_strObsoletesClass;
 	}
@@ -189,7 +189,7 @@ void CShipInfo::CalculateFinalCosts()
 	m_iNeededDuranium	= 0;
 	m_iNeededCrystal	= 0;
 	m_iNeededIridium	= 0;
-	m_iNeededDilithium	= 0;
+	m_iNeededDeritium	= 0;
 	// Industrieleistung, die wir zusätzlich durch bessere Schilde erbringen müssen
 /*	m_iNeededIndustry += m_Shield.GetMaxShield() / 10 * m_Shield.GetShieldType();
 	// Industrieleistung, die wir zusätzlich durch bessere Hülle  erbringen müssen
@@ -232,7 +232,7 @@ void CShipInfo::CalculateFinalCosts()
 	m_iNeededDuranium	+= m_iBaseDuranium;
 	m_iNeededCrystal	+= m_iBaseCrystal;
 	m_iNeededIridium	+= m_iBaseIridium;
-	m_iNeededDilithium	+= m_iBaseDilithium;
+	m_iNeededDeritium	+= m_iBaseDeritium;
 	
 	// zusätzliche Rohstoffe die wir für bessere Anbauten/Umbauten benötigen
 	// wir brauchen für bessere Hüllen auch besseres Material
@@ -480,7 +480,7 @@ USHORT CShipInfo::GetNeededResource(BYTE res) const
 	case DURANIUM:	return this->GetNeededDuranium();
 	case CRYSTAL:	return this->GetNeededCrystal();
 	case IRIDIUM:	return this->GetNeededIridium();
-	case DILITHIUM:	return this->GetNeededDilithium();
+	case DERITIUM:	return this->GetNeededDeritium();
 	default:		return NULL;
 	}
 }

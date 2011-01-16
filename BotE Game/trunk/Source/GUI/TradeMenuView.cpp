@@ -207,11 +207,11 @@ void CTradeMenuView::DrawGlobalTradeMenue(Graphics* g)
 		// den Kurs auch hinzuschreiben
 		fontBrush.SetColor(normalColor);
 		s.Format("%d %s",(int)ceil((pMajor->GetTrade()->GetRessourcePrice()[i]) * pMajor->GetTrade()->GetTax()) / 10,
-			CResourceManager::GetString("LATINUM"));
+			CResourceManager::GetString("CREDITS"));
 		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(40+i*200,230,190,25), &fontFormat, &fontBrush);
 
 		// Lagermenge im aktuellen System von der Ressource hinschreiben
-		s.Format("%d %s",pDoc->m_System[pDoc->GetKO().x][pDoc->GetKO().y].GetRessourceStore(i),CResourceManager::GetString("UNITS"));
+		s.Format("%d %s",pDoc->m_System[pDoc->GetKO().x][pDoc->GetKO().y].GetResourceStore(i),CResourceManager::GetString("UNITS"));
 		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(40+i*200,385,190,25), &fontFormat, &fontBrush);
 		
 		// den Monopolbesitzer auch hinschreiben
@@ -407,7 +407,7 @@ void CTradeMenuView::DrawMonopolMenue(Graphics* g)
 			
 			fontBrush.SetColor(markColor);
 			fontFormat.SetAlignment(StringAlignmentFar);
-			s.Format("%.0lf %s",m_dMonopolCosts[i], CResourceManager::GetString("LATINUM"));
+			s.Format("%.0lf %s",m_dMonopolCosts[i], CResourceManager::GetString("CREDITS"));
 			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(500,120+i*110,350,30), &fontFormat, &fontBrush);
 		}
 
@@ -532,7 +532,7 @@ void CTradeMenuView::DrawTradeTransferMenue(Graphics* g)
 		if (boughtResPrice[i] > 0)
 		{
 			s.Format("%d %s %d %s",boughtResNumber[i], CResourceManager::GetString("UNITS_FOR"),
-				(int)ceil((boughtResPrice[i]) * pMajor->GetTrade()->GetTax()), CResourceManager::GetString("LATINUM"));
+				(int)ceil((boughtResPrice[i]) * pMajor->GetTrade()->GetTax()), CResourceManager::GetString("CREDITS"));
 			fontFormat.SetAlignment(StringAlignmentNear);			
 			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(210,250+i*70,865,25), &fontFormat, &fontBrush);
 		}
@@ -540,7 +540,7 @@ void CTradeMenuView::DrawTradeTransferMenue(Graphics* g)
 		if (selledResPrice[i] < 0)
 		{
 			s.Format("%d %s %d %s",selledResNumber[i], CResourceManager::GetString("UNITS_FOR"), 
-				-selledResPrice[i], CResourceManager::GetString("LATINUM"));
+				-selledResPrice[i], CResourceManager::GetString("CREDITS"));
 			fontFormat.SetAlignment(StringAlignmentFar);
 			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0,250+i*70,865,25), &fontFormat, &fontBrush);			
 		}
@@ -631,11 +631,11 @@ void CTradeMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			if (CRect(r.left+75+i*200,r.top+275,r.left+195+i*200,r.top+305).PtInRect(point))
 			{
 				int costs = pMajor->GetTrade()->BuyRessource(i, pMajor->GetTrade()->GetQuantity(),
-					pDoc->GetKO(),pMajor->GetEmpire()->GetLatinum());
-				// Wenn wir soviel Latinum haben um etwas zu kaufen -> also costs != NULL)
+					pDoc->GetKO(),pMajor->GetEmpire()->GetCredits());
+				// Wenn wir soviel Credits haben um etwas zu kaufen -> also costs != NULL)
 				if (costs != 0)
 				{
-					pMajor->GetEmpire()->SetLatinum(-costs);
+					pMajor->GetEmpire()->SetCredits(-costs);
 					CSoundManager::GetInstance()->PlaySound(SNDMGR_SOUND_SHIPTARGET);
 					Invalidate(FALSE);
 					pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
@@ -646,11 +646,11 @@ void CTradeMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			else if (CRect(r.left+75+i*200,r.top+310,r.left+195+i*200,r.top+340).PtInRect(point))
 			{
 				// Überprüfen, das wir bei einem Verkauf nicht mehr Ressourcen aus dem System nehmen als im Lager vorhanden sind
-				if (pDoc->m_System[pDoc->GetKO().x][pDoc->GetKO().y].GetRessourceStore(i) >= pMajor->GetTrade()->GetQuantity())
+				if (pDoc->m_System[pDoc->GetKO().x][pDoc->GetKO().y].GetResourceStore(i) >= pMajor->GetTrade()->GetQuantity())
 				{
 					pMajor->GetTrade()->SellRessource(i, pMajor->GetTrade()->GetQuantity(),pDoc->GetKO());
 					// Ressource aus dem Lager nehmen
-					pDoc->m_System[pDoc->GetKO().x][pDoc->GetKO().y].SetRessourceStore(i,-pMajor->GetTrade()->GetQuantity());
+					pDoc->m_System[pDoc->GetKO().x][pDoc->GetKO().y].SetResourceStore(i,-pMajor->GetTrade()->GetQuantity());
 					CSoundManager::GetInstance()->PlaySound(SNDMGR_SOUND_SHIPTARGET);
 					Invalidate(FALSE);
 					return;
@@ -664,10 +664,10 @@ void CTradeMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		for (int i = TITAN; i <= IRIDIUM; i++)
 			if (m_bCouldBuyMonopols == TRUE && m_dMonopolCosts[i] != 0.0f && CRect(r.left+915,r.top+120+i*110,r.left+1035,r.top+150+i*110).PtInRect(point))
 			{
-				if (pMajor->GetEmpire()->GetLatinum() >= m_dMonopolCosts[i])
+				if (pMajor->GetEmpire()->GetCredits() >= m_dMonopolCosts[i])
 				{
 					pMajor->GetTrade()->SetMonopolBuying(i,m_dMonopolCosts[i]);
-					pMajor->GetEmpire()->SetLatinum((long)-m_dMonopolCosts[i]);
+					pMajor->GetEmpire()->SetCredits((long)-m_dMonopolCosts[i]);
 					Invalidate(FALSE);
 					pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
 				}

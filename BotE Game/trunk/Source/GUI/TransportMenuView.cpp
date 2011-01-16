@@ -181,14 +181,14 @@ void CTransportMenuView::DrawTransportMenue(Graphics* g)
 	g->DrawString(CResourceManager::GetString("DURANIUM").AllocSysString(), -1, &font, RectF(0,240,1075,60), &fontFormat, &fontBrush);
 	g->DrawString(CResourceManager::GetString("CRYSTAL").AllocSysString(), -1, &font, RectF(0,300,1075,60), &fontFormat, &fontBrush);
 	g->DrawString(CResourceManager::GetString("IRIDIUM").AllocSysString(), -1, &font, RectF(0,360,1075,60), &fontFormat, &fontBrush);
-	g->DrawString(CResourceManager::GetString("DILITHIUM").AllocSysString(), -1, &font, RectF(0,420,1075,60), &fontFormat, &fontBrush);
+	g->DrawString(CResourceManager::GetString("DERITIUM").AllocSysString(), -1, &font, RectF(0,420,1075,60), &fontFormat, &fontBrush);
 	g->DrawString(CResourceManager::GetString("TROOPS").AllocSysString(), -1, &font, RectF(0,560,1075,60), &fontFormat, &fontBrush);
 	g->DrawString(CResourceManager::GetString("SELECTED").AllocSysString(), -1, &font, RectF(0,620,1075,60), &fontFormat, &fontBrush);
 	fontBrush.SetColor(normalColor);
 	
 	// Inhalte des system- und globalen Lagers zeichnen
 	CShip* ship = &pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex());
-	for (int i = TITAN; i <= DILITHIUM; i++)
+	for (int i = TITAN; i <= DERITIUM; i++)
 	{
 		int res = ship->GetLoadedResources(i);
 		if (ship->GetFleet())
@@ -203,7 +203,7 @@ void CTransportMenuView::DrawTransportMenue(Graphics* g)
 		{
 			// Lagerinhalt im System zeichnen
 			fontFormat.SetAlignment(StringAlignmentNear);
-			s.Format("%d",pDoc->m_System[p.x][p.y].GetRessourceStore(i));
+			s.Format("%d",pDoc->m_System[p.x][p.y].GetResourceStore(i));
 			g->DrawString(s.AllocSysString(), -1, &font, RectF(350,120+i*60,725,60), &fontFormat, &fontBrush);			
 		}
 	}
@@ -484,18 +484,18 @@ void CTransportMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 					int oldQuantity = m_iTransportStorageQuantity;
 
 					// Lagergrenzen im System beachten
-					if (i != DILITHIUM)
+					if (i != DERITIUM)
 					{
-						if (m_iTransportStorageQuantity + pDoc->m_System[p.x][p.y].GetRessourceStore(i) > MAX_RES_STORE)
-							m_iTransportStorageQuantity = MAX_RES_STORE - pDoc->m_System[p.x][p.y].GetRessourceStore(i);
+						if (m_iTransportStorageQuantity + pDoc->m_System[p.x][p.y].GetResourceStore(i) > MAX_RES_STORE)
+							m_iTransportStorageQuantity = MAX_RES_STORE - pDoc->m_System[p.x][p.y].GetResourceStore(i);
 					}
 					else
 					{
 						UINT nMaxDeritiumStore = MAX_DERITIUM_STORE;
 						if (pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(10)->GetFieldStatus(1) == RESEARCHED)
 							nMaxDeritiumStore *= pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(10)->GetBonus(1);
-						if (m_iTransportStorageQuantity + pDoc->m_System[p.x][p.y].GetRessourceStore(i) > nMaxDeritiumStore)
-							m_iTransportStorageQuantity = nMaxDeritiumStore - pDoc->m_System[p.x][p.y].GetRessourceStore(i);
+						if (m_iTransportStorageQuantity + pDoc->m_System[p.x][p.y].GetResourceStore(i) > nMaxDeritiumStore)
+							m_iTransportStorageQuantity = nMaxDeritiumStore - pDoc->m_System[p.x][p.y].GetResourceStore(i);
 					}
 					// gibt es nichts zu verschieben, dann abbrechen
 					if (m_iTransportStorageQuantity == 0)
@@ -510,7 +510,7 @@ void CTransportMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 						// wenn mehr Ressourcen auf dem Schiff vorhanden sind als verschoben werden
 						if (ship->GetLoadedResources(i) >= m_iTransportStorageQuantity)
 						{
-							pDoc->m_System[p.x][p.y].SetRessourceStore(i, m_iTransportStorageQuantity);
+							pDoc->m_System[p.x][p.y].SetResourceStore(i, m_iTransportStorageQuantity);
 							ship->SetLoadedResources(-m_iTransportStorageQuantity, i);
 							m_iTransportStorageQuantity = 0;
 						}
@@ -518,7 +518,7 @@ void CTransportMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 						else
 						{
 							m_iTransportStorageQuantity -= ship->GetLoadedResources(i);
-							pDoc->m_System[p.x][p.y].SetRessourceStore(i, ship->GetLoadedResources(i));
+							pDoc->m_System[p.x][p.y].SetResourceStore(i, ship->GetLoadedResources(i));
 							ship->SetLoadedResources(-ship->GetLoadedResources(i), i);
 						}
 						if (m_iTransportStorageQuantity == NULL)
@@ -579,7 +579,7 @@ void CTransportMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 				else
 				{
 					int multi = 1;
-					if (i == DILITHIUM)
+					if (i == DERITIUM)
 						multi = 250;
 
 					int oldQuantity = m_iTransportStorageQuantity;
@@ -594,18 +594,18 @@ void CTransportMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 						if (m_iTransportStorageQuantity > transportedRes)
 							m_iTransportStorageQuantity = transportedRes;
 						// wenn im System mehr Ressourcen vorhanden sind, als man verschieben möchte
-						if (pDoc->m_System[p.x][p.y].GetRessourceStore(i) >= m_iTransportStorageQuantity)
+						if (pDoc->m_System[p.x][p.y].GetResourceStore(i) >= m_iTransportStorageQuantity)
 						{
 							transportedRes -= m_iTransportStorageQuantity;
-							pDoc->m_System[p.x][p.y].SetRessourceStore(i, -m_iTransportStorageQuantity);
+							pDoc->m_System[p.x][p.y].SetResourceStore(i, -m_iTransportStorageQuantity);
 							ship->SetLoadedResources(m_iTransportStorageQuantity, i);
 						}
 						// wenn im System weniger Ressourcen vorhanden sind, als man aufs Schiff verschieben möchte
 						else
 						{
-							transportedRes -= pDoc->m_System[p.x][p.y].GetRessourceStore(i);
-							ship->SetLoadedResources(pDoc->m_System[p.x][p.y].GetRessourceStore(i), i);
-							pDoc->m_System[p.x][p.y].SetRessourceStore(i, -(int)pDoc->m_System[p.x][p.y].GetRessourceStore(i));
+							transportedRes -= pDoc->m_System[p.x][p.y].GetResourceStore(i);
+							ship->SetLoadedResources(pDoc->m_System[p.x][p.y].GetResourceStore(i), i);
+							pDoc->m_System[p.x][p.y].SetResourceStore(i, -(int)pDoc->m_System[p.x][p.y].GetResourceStore(i));
 						}
 						if (transportedRes == NULL)
 							break;
@@ -672,14 +672,14 @@ void CTransportMenuView::CreateButtons()
 	// Zuweisungsbuttons für Ressourcen
 	CString fileN = "Other\\" + sPrefix + "buttonminus.bop";
 	CString fileA = "Other\\" + sPrefix + "buttonminusa.bop";
-	for (int i = TITAN; i <= DILITHIUM; i++)
+	for (int i = TITAN; i <= DERITIUM; i++)
 		m_TransportButtons.Add(new CMyButton(CPoint(290,134+i*60) , CSize(30,30), "", fileN, fileN, fileA));
 	// plus für Truppen
 	m_TransportButtons.Add(new CMyButton(CPoint(290,573) , CSize(30,30), "", fileN, fileN, fileA));
 
 	fileN = "Other\\" + sPrefix + "buttonplus.bop";
 	fileA = "Other\\" + sPrefix + "buttonplusa.bop";
-	for (int i = TITAN; i <= DILITHIUM; i++)		
+	for (int i = TITAN; i <= DERITIUM; i++)		
 		m_TransportButtons.Add(new CMyButton(CPoint(755,134+i*60) , CSize(30,30), "", fileN, fileN, fileA));
 	// plus für Truppen
 	m_TransportButtons.Add(new CMyButton(CPoint(755,573) , CSize(30,30), "", fileN, fileN, fileA));

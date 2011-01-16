@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Major.h"
 #include "AI\MajorAI.h"
+#include <algorithm>
 
 IMPLEMENT_SERIAL (CMajor, CRace, 1)
 

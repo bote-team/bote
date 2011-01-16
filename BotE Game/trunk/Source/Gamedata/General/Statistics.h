@@ -142,7 +142,7 @@ private:
 	// Attribute
 	BYTE m_byAverageTechLevel;						///< Durchschnittliches Techlevel aller Rassen
 	
-	UINT m_nAverageResourceStorages[DILITHIUM + 1];	///< Durschschnittlicher Inhalt der Ressourcenlager	
+	UINT m_nAverageResourceStorages[DERITIUM + 1];	///< Durschschnittlicher Inhalt der Ressourcenlager	
 	
 	std::map<CString, UINT> m_mShipPowers;			///< Schiffsstärken aller Rassen	
 };

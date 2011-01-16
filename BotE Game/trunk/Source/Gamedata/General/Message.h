@@ -129,13 +129,13 @@ dann Nachricht von Kündigung des Vertrages.
 kennengelernt haben.
 
 5. Ob eine Minorrace einen Vertrag von uns annimmt noch von der Art der kleinen Rasse abhängig machen.
-Bis jetzt wird die Eigenschaft nur bei Latinum-, Ressourcengabe und bei einer möglichen Kriegserklärung
+Bis jetzt wird die Eigenschaft nur bei Credits-, Ressourcengabe und bei einer möglichen Kriegserklärung
 an uns berücksichtigt. Z.B. nehmen geheimnisvolle Minorraces nicht so schnell ne Freundschaft an. (-> funzt)
 
 6. ShipPort mit beachten, wenn wir eine Station einem Sektor bekanntgeben. Genauso auch ShipPort anlegen, wenn wir
 eine Werft in dem System haben.
 
-7. Wenn wir einen Bauauftrag (speziell ein Schiff) kaufen, wird noch nicht das nötige Dilithium mit in den Kaufpreis
+7. Wenn wir einen Bauauftrag (speziell ein Schiff) kaufen, wird noch nicht das nötige Deritium mit in den Kaufpreis
 eingerechnet. Das mal testen ob es notwendig ist.
 
 8. Kopierkonstruktoren und Zuweisungsoperatoren in allen Klassen checken ob diese auch funktionieren.

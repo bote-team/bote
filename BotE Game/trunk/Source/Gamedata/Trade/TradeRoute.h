@@ -37,8 +37,8 @@ public:
 	/// Funktion gibt die Zielkoordinate der Handelsroute zurück
 	CPoint GetDestKO() const {return m_KO;}
 	
-	/// Funktion gibt das Latinum inkl. Boni auf Handelroute, welches man durch die Handelsroute bekommt zurück
-	USHORT GetLatinum(short boni) const;
+	/// Funktion gibt das Credits inkl. Boni auf Handelroute, welches man durch die Handelsroute bekommt zurück
+	USHORT GetCredits(short boni) const;
 
 	/// Funktion gibt die verbleibende Dauer der Handelsroute zurück. Ist die Dauer negativ, so wird sie zum Ende 
 	/// dieser Zeit aufgehoben.
@@ -49,12 +49,12 @@ public:
 	/// dieser Dauer aufgelöst wird.
 	void SetDuration(short duration) {m_iDuration = duration;}
 
-	/// Funktion legt manuell das erzeugte Latinum fest.
-	/// @param latinum erzeugtes Latinum der Handelsroute
-	void SetLatinum(USHORT latinum) {m_iLatinum = latinum;}
+	/// Funktion legt manuell das erzeugte Credits fest.
+	/// @param credits erzeugtes Credits der Handelsroute
+	void SetCredits(USHORT credits) {m_iCredits = credits;}
 
-	/// Funktion überprüft, ob die Handelsroute noch Bestand haben darf und setzt das Latinum, welches
-	/// diese Handelsroute fabriziert. Dabei werden noch keinerlei Boni auf die Latinumproduktion angerechnet.
+	/// Funktion überprüft, ob die Handelsroute noch Bestand haben darf und setzt das Credits, welches
+	/// diese Handelsroute fabriziert. Dabei werden noch keinerlei Boni auf die Creditsproduktion angerechnet.
 	/// Die Funktion gibt einen Wahrheitswert zurück, der sagt, ob die Handelsroute noch Bestand haben darf.
 	BOOLEAN CheckTradeRoute(const CPoint& pFrom, const CPoint& pDest, CBotf2Doc* pDoc);
 
@@ -71,8 +71,8 @@ private:
 	/// Die Koordinate des Sektors, zu dem die Handelsroute verläuft
 	CPoint m_KO;
 
-	/// Das fabrizierte Latinum der Handelsroute ohne irgendwelche Boni
-	USHORT m_iLatinum;
+	/// Das fabrizierte Credits der Handelsroute ohne irgendwelche Boni
+	USHORT m_iCredits;
 
 	/// Wieviele Runden läuft die Handelsroute noch? Beim Anlegen läuft sie 20 Runden lang, wird sie in dieser
 	/// Zeit nicht gekündigt, so verlängert sich diese Zeit wieder um 20 Runden. Eine Kündigung dauert 5 Runden.

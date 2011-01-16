@@ -147,7 +147,7 @@ void CResearchComplex::GenerateComplex(USHORT complex)
 			m_strFieldName[0] = "erhoehte Reichweite";		// nur für Schiffe mit Reichweite kurz
 			m_strFieldName[1] = "erhoehte Geschwindigkeit";	// nur für Schiffe mit Geschwindigkeit 1
 			m_strFieldName[2] = "10% billigere Produktion";
-			m_strFieldDescription[0] = "Durch ein neues Verfahren zur Dilithiumkristallgewinnung, bei dem die Kristalle nach dem Abbau auf molekularer Ebene optimiert werden, wuerde der Reinheitsgrad dieser deutlich verbessert. Dies wiederum haette einen positiven Effekt auf die Reichweite unserer Schiffe, welche eigentlich nur eine kurze Reichweite besitzen würden.";
+			m_strFieldDescription[0] = "Durch ein neues Verfahren zur Deritiumkristallgewinnung, bei dem die Kristalle nach dem Abbau auf molekularer Ebene optimiert werden, wuerde der Reinheitsgrad dieser deutlich verbessert. Dies wiederum haette einen positiven Effekt auf die Reichweite unserer Schiffe, welche eigentlich nur eine kurze Reichweite besitzen würden.";
 			m_strFieldDescription[1] = "Grosse Fortschritte in der Warp-Feld-Theorie ermoeglichen uns eine Neumodelierung der Warp-Blasen. Erste Tests bewiesen die technische Realisierbarkeit. Die gemessene Geschwindigkeit des zuvor sehr langsamenen Experimentalschiffes erhoehte sich, bei gleichbleibender Reichweite, deutlich.";
 			m_strFieldDescription[2] = "Der steigende Bedarf an Schiffen versetzt uns in die Lage die benoetigten Teile in grossen Stueckzahlen zu fertigen, was einen nicht unerheblichen Kostenvorteil von 10% mitsichbringt.";
 		*/	m_iBonus[0] = RANGE_MIDDLE;
@@ -191,7 +191,7 @@ void CResearchComplex::GenerateComplex(USHORT complex)
 			m_strComplexDescription = "Die Fokussierung unserer oekonomischen Kraefte auf bestimmte Bereiche koennte, laut unseren Wirtschaftseliten, bisher ungeahnte Potentiale freisetzen. Hinzu kommen technologischen Fortschritte, die nahezu aller Bereiche der Industrie revolutionieren. Zusammen werden diese beiden Faktoren eine messbare Staerkung unserer Wirstschaft mit sich bringen.";
 			m_strFieldName[0] = "10% erhoehte Industrieleistung";
 			m_strFieldName[1] = "5% billigere Produktion";
-			m_strFieldName[2] = "25% erhoehte Latinumeinnahmen";
+			m_strFieldName[2] = "25% erhoehte Creditseinnahmen";
 			m_strFieldDescription[0] = "Wir sind nun in der Lage die Replikatortechnologie sowie die Ort-zu-Ort-Teleportation industriell einzusaetzen. Wir koennten die Gesamtindustrieleistung unserer Produktionsanlagen, Schaetzungen zu folge, um rund 10% erhoehen.";
 			m_strFieldDescription[1] = "Die Systemweite Vernetzung ganzer Industriezweige wuerde uns umgerechnet auf die Produktion Kostenvorteile von bis zu 5% einbringen. Diese Einsparung haette keinerlei Effekte auf die Qualitaet sowie auf den Fertigungszeitraum.";
 			m_strFieldDescription[2] = "Eine Reform des Finanzwesens und die daraus resultierende Umverteilung aller finanziellen Belastungen auf saemtliche Systeme unseres Einflussbereiches wuerde uns Mehreinnahmen von 25% ermoeglichen.";
@@ -238,7 +238,7 @@ void CResearchComplex::GenerateComplex(USHORT complex)
 			m_strFieldName[1] = "20% erhoehte Computertechnik und Antriebstechnik";
 			m_strFieldName[2] = "20% erhoehte Bautechnik und Waffentechnik";
 			m_strFieldDescription[0] = "Eine engere Kooperation zweier bisher getrennt agierender Forschungsinstitute, der Biogenetik und dem Bereich der Energietechnik, koennte zu einem andauerden Anstieg der Forschungsleistung beider Institute fuehren.";
-			m_strFieldDescription[1] = "Mit der Einfuehrung eines, mit 10000 Barren goldgepresstem Latinum dotierten, jaehrlich vergebenen, Forschungspreises im Bereich Computer -und Antriebstechnologie wuerde die Weiterentwlicklung in diesen Bereichen enorm befluegelt.";
+			m_strFieldDescription[1] = "Mit der Einfuehrung eines, mit 10000 Barren goldgepresstem Credits dotierten, jaehrlich vergebenen, Forschungspreises im Bereich Computer -und Antriebstechnologie wuerde die Weiterentwlicklung in diesen Bereichen enorm befluegelt.";
 			m_strFieldDescription[2] = "Ueberschuesse des Militaerhaushaltes fliessen von nun an geziehlt in die Weiterentwicklung der Waffentechnologie und in Forschungsprojekte aus dem Gebiet des Bauwesens.";
 		*/	m_iBonus[0] = 20;
 			m_iBonus[1] = 20;
@@ -264,10 +264,10 @@ void CResearchComplex::GenerateComplex(USHORT complex)
 		{
 		/*	m_strComplexName = "Lager und Transport";
 			m_strComplexDescription = "Durch eine Neujustierung unserer Lagertechniken und der internen Transportwege, sind wir nun in der Lage, enorme Vorteile daraus zu erhalten.";
-			m_strFieldName[0] = "doppeltes Dilithiumlager";
+			m_strFieldName[0] = "doppeltes Deritiumlager";
 			m_strFieldName[1] = "kein Abzug beim Stellaren Lager";
 			m_strFieldName[2] = "eine Ressourcenroute mehr";
-			m_strFieldDescription[0] = "Neue Eindämmungsfelder erhöhen enorm die Sicherheit bei der Lagerung von Dilithium. Damit sind wir in der Lage doppelt so viel Dilithium einzulagern.";
+			m_strFieldDescription[0] = "Neue Eindämmungsfelder erhöhen enorm die Sicherheit bei der Lagerung von Deritium. Damit sind wir in der Lage doppelt so viel Deritium einzulagern.";
 			m_strFieldDescription[1] = "Eine Optimierung der Transportwege und ein besserer Schutz vor Überfällen lässt die Kosten enorm sinken. Mit diesen Techniken hätten wir keinerlei Verluste mehr zu beklagen.";
 			m_strFieldDescription[2] = "Eine Optimierung in unserem Tranportsystem würde die Vernetzung unserer Lager auf verschiedenen Systemen vereinfachen. Dadurch wären wir in der Lage ein dichteres Handelsnetz aufzubauen.";
 		*/	m_iBonus[0] = 2;

@@ -4,6 +4,7 @@
 #include "Races\RaceController.h"
 #include "Ships\Fleet.h"
 #include "Galaxy\Anomaly.h"
+#include <algorithm>
 
 //////////////////////////////////////////////////////////////////////
 // Konstruktion/Destruktion

@@ -502,7 +502,7 @@ void CPlanet::DrawPlanet(Graphics &g, const CRect& rect, CGraphicPool* graphicPo
 				case DURANIUM:	graphic = graphicPool->GetGDIGraphic("Other\\duraniumSmall.bop"); break;
 				case CRYSTAL:	graphic = graphicPool->GetGDIGraphic("Other\\crystalSmall.bop"); break;
 				case IRIDIUM:	graphic = graphicPool->GetGDIGraphic("Other\\iridiumSmall.bop"); break;
-				case DILITHIUM: graphic = graphicPool->GetGDIGraphic("Other\\Deritium.bop"); break;
+				case DERITIUM:	graphic = graphicPool->GetGDIGraphic("Other\\Deritium.bop"); break;
 				case 6:			graphic = graphicPool->GetGDIGraphic("Other\\foodSmall.bop"); break;
 				case 7:			graphic = graphicPool->GetGDIGraphic("Other\\energySmall.bop"); break;
 			}
@@ -557,8 +557,8 @@ void CPlanet::GenerateBoni()
 	// Matrix aus allen Planetenklassen und aller möglichen Boni
 	BYTE probs[PLANETCLASS_T+1][8] = {
 
-	// Testweise die Dilithiumprozente um 10 erhöht (nur dort wo nicht NULL drin stand)
-	//		TITAN		DEUTERIUM	DURANIUM	KRISTALLE	IRIDIUM		DILITHIUM	FOOD		ENERGY
+	// Testweise die Deritiumprozente um 10 erhöht (nur dort wo nicht NULL drin stand)
+	//		TITAN		DEUTERIUM	DURANIUM	KRISTALLE	IRIDIUM		DERITIUM	FOOD		ENERGY
 	//+-----------------------------------------------------------------------------------------------+
 	/*M*/	0,			10,			0,			0,			0,			11,			50,			0,
 	/*O*/	0,			50,			0,			0,			0,			0,			25,			0,
@@ -591,22 +591,22 @@ void CPlanet::GenerateBoni()
 	}
 }
 
-void CPlanet::SetBoni(BOOLEAN titan, BOOLEAN deuterium, BOOLEAN duranium, BOOLEAN crystal, BOOLEAN iridium, BOOLEAN dilithium,
+void CPlanet::SetBoni(BOOLEAN titan, BOOLEAN deuterium, BOOLEAN duranium, BOOLEAN crystal, BOOLEAN iridium, BOOLEAN deritium,
 		BOOLEAN food, BOOLEAN energy)
 {
-	m_bBoni[TITAN] = titan;
-	m_bBoni[DEUTERIUM] = deuterium;
-	m_bBoni[DURANIUM] = duranium;
-	m_bBoni[CRYSTAL] = crystal;
-	m_bBoni[IRIDIUM] = iridium;
-	m_bBoni[DILITHIUM] = dilithium;
-	m_bBoni[6] = food;
-	m_bBoni[7] = energy;
+	m_bBoni[TITAN]		= titan;
+	m_bBoni[DEUTERIUM]	= deuterium;
+	m_bBoni[DURANIUM]	= duranium;
+	m_bBoni[CRYSTAL]	= crystal;
+	m_bBoni[IRIDIUM]	= iridium;
+	m_bBoni[DERITIUM]	= deritium;
+	m_bBoni[6]			= food;
+	m_bBoni[7]			= energy;
 }
 
 /// Funktion ermittelt die vorhandenen Ressourcen auf dem Planeten
 /// @param res Feld in das geschrieben wird, welche Ressource auf dem Planeten vorhanden ist
-void CPlanet::GetAvailableResources(BOOLEAN res[DILITHIUM + 1]) const
+void CPlanet::GetAvailableResources(BOOLEAN res[DERITIUM + 1]) const
 {
 	if (this->GetClass() == 'C')
 	{	res[TITAN] = TRUE;  res[DEUTERIUM] = FALSE; res[DURANIUM] = FALSE; res[CRYSTAL] = FALSE; res[IRIDIUM] = TRUE;}
@@ -633,9 +633,9 @@ void CPlanet::GetAvailableResources(BOOLEAN res[DILITHIUM + 1]) const
 	else if (this->GetClass() == 'R')
 	{	res[TITAN] = FALSE; res[DEUTERIUM] = FALSE; res[DURANIUM] = TRUE;  res[CRYSTAL] = FALSE; res[IRIDIUM] = FALSE;}
 	
-	// Dilithium ist klassenunabhängig und wird als Boni angegeben
-	if (this->GetBoni()[DILITHIUM])
-		res[DILITHIUM] = TRUE;
+	// Deritium ist klassenunabhängig und wird als Boni angegeben
+	if (this->GetBoni()[DERITIUM])
+		res[DERITIUM] = TRUE;
 }
 
 /// Die Resetfunktion für die CPlanet Klasse, welche alle Werte wieder auf Ausgangswerte setzt.

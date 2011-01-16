@@ -91,7 +91,7 @@ public:
 	// werden hier noch nicht in den Preis mit einbezogen. Der Preis inkl. Steuern wird zurückgegeben.
 	// Falls flag == 1, dann wird nix in das Feld m_TradeActions geschrieben. Nur die Preisauswirkungen des Kaufes
 	// auf die Börse werden beachtet
-	int BuyRessource(USHORT res, ULONG number, CPoint system, long empires_latinum, BOOL flag = 0);
+	int BuyRessource(USHORT res, ULONG number, CPoint system, long empires_credits, BOOL flag = 0);
 
 	// Funktion verkauft die Anzahl der jeweiligen Ressource aus dem System und fügt den Auftrag in das Array
 	// m_TradeActions ein. Danach berechnet sie den Preis der Ressource nach dem Verkauf. Steuern
@@ -99,7 +99,7 @@ public:
 	// geschrieben. Nur die Preisauswirkungen des Verkaufes auf die Börse werden beachtet
 	void SellRessource(USHORT res, ULONG number, CPoint system, BOOL flag = 0);
 
-	// Funktion berechnet die ganzen Handelsaktionen, lagert also Ressourcen ein oder gibt das Latinum, welches
+	// Funktion berechnet die ganzen Handelsaktionen, lagert also Ressourcen ein oder gibt das Credits, welches
 	// wir durch den Verkauf bekommen haben an das jeweilige Imperium
 	void CalculateTradeActions(CMajor* pMajor, CSystem systems[][STARMAP_SECTORS_VCOUNT], CSector sectors[][STARMAP_SECTORS_VCOUNT], USHORT* taxes);
 

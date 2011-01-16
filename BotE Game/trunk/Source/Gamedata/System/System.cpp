@@ -64,7 +64,7 @@ CSystem::CSystem(const CSystem &rhs)
 	m_iDuraniumStore = rhs.m_iDuraniumStore;
 	m_iCrystalStore = rhs.m_iCrystalStore;
 	m_iIridiumStore = rhs.m_iIridiumStore;
-	m_iDilithiumStore = rhs.m_iDilithiumStore;
+	m_iDeritiumStore = rhs.m_iDeritiumStore;
 	for (int i = 0; i < m_BuildingDestroy.GetSize(); i++)
 		m_BuildingDestroy.ElementAt(i) = rhs.m_BuildingDestroy.GetAt(i);
 	m_Workers = rhs.m_Workers;
@@ -121,7 +121,7 @@ CSystem & CSystem::operator=(const CSystem & rhs)
 	m_iDuraniumStore = rhs.m_iDuraniumStore;
 	m_iCrystalStore = rhs.m_iCrystalStore;
 	m_iIridiumStore = rhs.m_iIridiumStore;
-	m_iDilithiumStore = rhs.m_iDilithiumStore;
+	m_iDeritiumStore = rhs.m_iDeritiumStore;
 	for (int i = 0; i < m_BuildingDestroy.GetSize(); i++)
 		m_BuildingDestroy.ElementAt(i) = rhs.m_BuildingDestroy.GetAt(i);
 	m_Workers = rhs.m_Workers;
@@ -174,7 +174,7 @@ void CSystem::Serialize(CArchive &ar)
 		ar << m_iDuraniumStore;
 		ar << m_iCrystalStore;
 		ar << m_iIridiumStore;
-		ar << m_iDilithiumStore;
+		ar << m_iDeritiumStore;
 		ar << m_iFoodBuildings;
 		ar << m_iIndustryBuildings;
 		ar << m_iEnergyBuildings;	
@@ -221,7 +221,7 @@ void CSystem::Serialize(CArchive &ar)
 		ar >> m_iDuraniumStore;
 		ar >> m_iCrystalStore;
 		ar >> m_iIridiumStore;
-		ar >> m_iDilithiumStore;
+		ar >> m_iDeritiumStore;
 		ar >> m_iFoodBuildings;
 		ar >> m_iIndustryBuildings;
 		ar >> m_iEnergyBuildings;	
@@ -451,7 +451,7 @@ USHORT CSystem::GetNumberOfBuilding(USHORT runningNumber) const
 }
 
 // Funktion gibt den Lagerinhalt der Ressource zurück, die an die Funktion übergeben wurde.
-UINT CSystem::GetRessourceStore(USHORT res) const
+UINT CSystem::GetResourceStore(USHORT res) const
 {
 	switch (res)
 	{
@@ -460,13 +460,13 @@ UINT CSystem::GetRessourceStore(USHORT res) const
 	case DURANIUM: {return this->GetDuraniumStore();}
 	case CRYSTAL: {return this->GetCrystalStore();}
 	case IRIDIUM: {return this->GetIridiumStore();}
-	case DILITHIUM: {return this->GetDilithiumStore();}
+	case DERITIUM: {return this->GetDeritiumStore();}
 	}
 	return 0;
 }
 
 // Funktion gibt einen Zeiger auf den Lagerinhalt der Ressource zurück, die an die Funktion übergeben wurde.
-UINT* CSystem::GetRessourceStorages(USHORT res)
+UINT* CSystem::GetResourceStorages(USHORT res)
 {
 	switch (res)
 	{
@@ -475,7 +475,7 @@ UINT* CSystem::GetRessourceStorages(USHORT res)
 	case DURANIUM: {return &m_iDuraniumStore;}
 	case CRYSTAL: {return &m_iCrystalStore;}
 	case IRIDIUM: {return &m_iIridiumStore;}
-	case DILITHIUM: {return &m_iDilithiumStore;}
+	case DERITIUM: {return &m_iDeritiumStore;}
 	}
 	return 0;
 }
@@ -590,12 +590,12 @@ void CSystem::SetWorkersIntoBuildings()
 }
 
 // Funktion addiert resAdd zum Lagerinhalt der jeweiligen Ressource.
-void CSystem::SetRessourceStore(USHORT res, int resAdd)
+void CSystem::SetResourceStore(USHORT res, int resAdd)
 {
 	// Überprüfung das wir bei Lagerverkleinerung keine negativen Lager bekommen können
 	if (resAdd < 0)
-		if ((resAdd + (int)this->GetRessourceStore(res)) < 0)
-			resAdd = this->GetRessourceStore(res) * (-1);
+		if ((resAdd + (int)this->GetResourceStore(res)) < 0)
+			resAdd = this->GetResourceStore(res) * (-1);
 	// zum Lager hinzufügen/entfernen
 	switch (res)
 	{
@@ -604,7 +604,7 @@ void CSystem::SetRessourceStore(USHORT res, int resAdd)
 	case DURANIUM:	{m_iDuraniumStore += resAdd; break;}
 	case CRYSTAL:	{m_iCrystalStore += resAdd; break;}
 	case IRIDIUM:	{m_iIridiumStore += resAdd; break;}
-	case DILITHIUM:	{m_iDilithiumStore += resAdd; break;}
+	case DERITIUM:	{m_iDeritiumStore += resAdd; break;}
 	}
 }
 
@@ -664,8 +664,8 @@ void CSystem::CalculateVariables(BuildingInfoArray* buildingInfos, CResearchInfo
 	// Die Anzahl der Arbeiter aus der aktuellen Bevölkerung berechnen und auch an die Klasse CWorker übergeben
 	m_Workers.SetWorker(10,(int)(m_dHabitants));
 	m_Workers.CheckWorkers();
-	// Die Latinumprod. aus der Bevölkerung berechnen und modifizieren durch jeweilige Rasseneigenschaft
-	m_Production.m_iLatinumProd = (int)(m_dHabitants);
+	// Die Creditsprod. aus der Bevölkerung berechnen und modifizieren durch jeweilige Rasseneigenschaft
+	m_Production.m_iCreditsProd = (int)(m_dHabitants);
 
 	float fCreditsMulti = 1.0f;
 	if (pOwner->IsRaceProperty(FINANCIAL))
@@ -682,7 +682,7 @@ void CSystem::CalculateVariables(BuildingInfoArray* buildingInfos, CResearchInfo
 		fCreditsMulti -= 0.5f;
 
 	fCreditsMulti = max(fCreditsMulti, 0.0f);
-	m_Production.m_iLatinumProd = (int)(m_Production.m_iLatinumProd * fCreditsMulti);
+	m_Production.m_iCreditsProd = (int)(m_Production.m_iCreditsProd * fCreditsMulti);
 	// Die Gebäude online setzen, wenn das Objekt der Klasse CWorker das sagt
 	// zuerst die Anzahl der Arbeiter auslesen und schauen ob die Arbeiter vielleicht größer sind als die 
 	// Anzahl der jeweiligen Gebäude (z.B. durch Abriß aus letzter Runde) -> dann Arbeiter auf Gebäudeanzahl verringern
@@ -707,9 +707,9 @@ void CSystem::CalculateVariables(BuildingInfoArray* buildingInfos, CResearchInfo
 	if (m_Workers.GetWorker(9) > m_iIridiumMines) m_Workers.SetWorker(9,m_iIridiumMines);
 	unsigned short iridiumWorker = m_Workers.GetWorker(9);
 	
-	// Wenn wir Handelsgüter in der Bauliste stehen haben, dann Anzahl der Online-Fabs in Latinum umrechnen
+	// Wenn wir Handelsgüter in der Bauliste stehen haben, dann Anzahl der Online-Fabs in Credits umrechnen
 	if (m_AssemblyList.GetAssemblyListEntry(0) == 0)
-		m_Production.m_iLatinumProd += industryWorker;
+		m_Production.m_iCreditsProd += industryWorker;
 
 	// Die einzelnen Produktionen berechnen
 	for (int i = 0; i < NumberOfBuildings; i++)
@@ -782,8 +782,8 @@ void CSystem::CalculateVariables(BuildingInfoArray* buildingInfos, CResearchInfo
 		if (m_Buildings.GetAt(i).GetIsBuildingOnline() == TRUE)
 			m_Production.CalculateProduction(buildingInfo);
 	}
-	// Latinum durch Handelsrouten berechnen
-	m_Production.m_iLatinumProd += LatinumFromTradeRoutes();
+	// Credits durch Handelsrouten berechnen
+	m_Production.m_iCreditsProd += CreditsFromTradeRoutes();
 
 	// Besitzt jemand ein Monopol auf eine Ressource, so verdoppelt sich seine Produktion
 	if (sMonopolOwner[TITAN] == m_sOwnerOfSystem)
@@ -808,8 +808,8 @@ void CSystem::CalculateVariables(BuildingInfoArray* buildingInfos, CResearchInfo
 	short tmpDuraniumBoni	= 0;
 	short tmpCrystalBoni	= 0;
 	short tmpIridiumBoni	= 0;
-	short tmpDilithiumBoni	= 0;
-	short tmpLatinumBoni	= 0;
+	short tmpDeritiumBoni	= 0;
+	short tmpCreditsBoni	= 0;
 	short tmpAllRessourcesBoni = 0;
 
 	short neededEnergy = 0;
@@ -836,13 +836,13 @@ void CSystem::CalculateVariables(BuildingInfoArray* buildingInfos, CResearchInfo
 			tmpDuraniumBoni		+= buildingInfo->GetDuraniumBoni() + tmpAllRessourcesBoni;
 			tmpCrystalBoni		+= buildingInfo->GetCrystalBoni() + tmpAllRessourcesBoni;
 			tmpIridiumBoni		+= buildingInfo->GetIridiumBoni() + tmpAllRessourcesBoni;
-			tmpDilithiumBoni	+= buildingInfo->GetDilithiumBoni(); 
-			tmpLatinumBoni		+= buildingInfo->GetLatinumBoni();
+			tmpDeritiumBoni	+= buildingInfo->GetDeritiumBoni(); 
+			tmpCreditsBoni		+= buildingInfo->GetCreditsBoni();
 		}
 	}
 	
 	// Jetzt werden noch eventuelle Boni durch die Planetenklassen dazugerechnet
-	BYTE dilithiumProdMulti = 0;
+	BYTE deritiumProdMulti = 0;
 	for (int i = 0; i < planets->GetSize(); i++)
 		if (planets->GetAt(i).GetColonized() == TRUE && planets->GetAt(i).GetCurrentHabitant() > 0.0f)
 		{
@@ -861,12 +861,12 @@ void CSystem::CalculateVariables(BuildingInfoArray* buildingInfos, CResearchInfo
 				tmpFoodBoni		+= (planets->GetAt(i).GetSize()+1) * 25;
 			if (planets->GetAt(i).GetBoni()[7] == TRUE)	// energy
 				tmpEnergyBoni	+= (planets->GetAt(i).GetSize()+1) * 25;
-			// Menge des abgebauten Dilithiums mit der Anzahl der kolonisierten Planeten mit Dilithiumvorkommen
+			// Menge des abgebauten Deritiums mit der Anzahl der kolonisierten Planeten mit Deritiumvorkommen
 			// multiplizieren
-			if (planets->GetAt(i).GetBoni()[DILITHIUM] == TRUE)
-				dilithiumProdMulti += 1;
+			if (planets->GetAt(i).GetBoni()[DERITIUM] == TRUE)
+				deritiumProdMulti += 1;
 		}
-	m_Production.m_iDilithiumProd	*= dilithiumProdMulti;
+	m_Production.m_iDeritiumProd	*= deritiumProdMulti;
 
 	m_Production.m_iFoodProd		+= (int)(tmpFoodBoni*m_Production.m_iFoodProd/100);
 	m_Production.m_iIndustryProd	+= (int)(tmpIndustryBoni*m_Production.m_iIndustryProd/100);
@@ -878,8 +878,8 @@ void CSystem::CalculateVariables(BuildingInfoArray* buildingInfos, CResearchInfo
 	m_Production.m_iDuraniumProd	+= (int)(tmpDuraniumBoni*m_Production.m_iDuraniumProd/100);
 	m_Production.m_iCrystalProd		+= (int)(tmpCrystalBoni*m_Production.m_iCrystalProd/100);
 	m_Production.m_iIridiumProd		+= (int)(tmpIridiumBoni*m_Production.m_iIridiumProd/100);
-	m_Production.m_iDilithiumProd	+= (int)(tmpDilithiumBoni*m_Production.m_iDilithiumProd/100);
-	m_Production.m_iLatinumProd		+= (int)(tmpLatinumBoni*m_Production.m_iLatinumProd/100);
+	m_Production.m_iDeritiumProd	+= (int)(tmpDeritiumBoni*m_Production.m_iDeritiumProd/100);
+	m_Production.m_iCreditsProd		+= (int)(tmpCreditsBoni*m_Production.m_iCreditsProd/100);
 
 	// Wenn das System blockiert wird, dann verringern sich bestimmte Produktionswerte
 	if (m_byBlockade > NULL)
@@ -894,8 +894,8 @@ void CSystem::CalculateVariables(BuildingInfoArray* buildingInfos, CResearchInfo
 		m_Production.m_iDuraniumProd	-= (int)(m_byBlockade * m_Production.m_iDuraniumProd/100);
 		m_Production.m_iCrystalProd		-= (int)(m_byBlockade * m_Production.m_iCrystalProd/100);
 		m_Production.m_iIridiumProd		-= (int)(m_byBlockade * m_Production.m_iIridiumProd/100);
-		m_Production.m_iDilithiumProd	-= (int)(m_byBlockade * m_Production.m_iDilithiumProd/100);
-		m_Production.m_iLatinumProd		-= (int)(m_byBlockade * m_Production.m_iLatinumProd/100);
+		m_Production.m_iDeritiumProd	-= (int)(m_byBlockade * m_Production.m_iDeritiumProd/100);
+		m_Production.m_iCreditsProd		-= (int)(m_byBlockade * m_Production.m_iCreditsProd/100);
 		if (m_byBlockade >= 100)
 			m_Production.m_bShipYard	= false;
 	}
@@ -912,7 +912,7 @@ void CSystem::CalculateVariables(BuildingInfoArray* buildingInfos, CResearchInfo
 	if (ResearchInfo->GetResearchComplex(5)->GetFieldStatus(1) == RESEARCHED)
 		m_Production.m_iIndustryProd += (int)(ResearchInfo->GetResearchComplex(5)->GetBonus(1)*m_Production.m_iIndustryProd/100);
 	else if (ResearchInfo->GetResearchComplex(5)->GetFieldStatus(3) == RESEARCHED)
-		m_Production.m_iLatinumProd += (int)(ResearchInfo->GetResearchComplex(5)->GetBonus(3) * m_Production.m_iLatinumProd / 100);
+		m_Production.m_iCreditsProd += (int)(ResearchInfo->GetResearchComplex(5)->GetBonus(3) * m_Production.m_iCreditsProd / 100);
 	// Hier die Boni durch die Uniqueforschung "Produktion"
 	if (ResearchInfo->GetResearchComplex(6)->GetFieldStatus(1) == RESEARCHED)
 		m_Production.m_iFoodProd += (int)(ResearchInfo->GetResearchComplex(6)->GetBonus(1)*m_Production.m_iFoodProd/100); 
@@ -967,7 +967,7 @@ BOOLEAN CSystem::CalculateStorages(CResearchInfo* researchInfo, int diliAdd)
 	m_iDuraniumStore += m_Production.m_iDuraniumProd;
 	m_iCrystalStore += m_Production.m_iCrystalProd;
 	m_iIridiumStore += m_Production.m_iIridiumProd;
-	m_iDilithiumStore += m_Production.m_iDilithiumProd + diliAdd;
+	m_iDeritiumStore += m_Production.m_iDeritiumProd + diliAdd;
 	
 	// Lagerobergrenzen
 	if (m_iFoodStore > MAX_FOOD_STORE)
@@ -985,11 +985,11 @@ BOOLEAN CSystem::CalculateStorages(CResearchInfo* researchInfo, int diliAdd)
 	
 	short multi = 1;
 	///// HIER DIE BONI DURCH SPEZIALFORSCHUNG //////
-	// Hier die Boni durch die Uniqueforschung "Lager und Transport" -> doppeltes Dilithiumlager
+	// Hier die Boni durch die Uniqueforschung "Lager und Transport" -> doppeltes Deritiumlager
 	if (researchInfo->GetResearchComplex(10)->GetFieldStatus(1) == RESEARCHED)
 		multi = researchInfo->GetResearchComplex(10)->GetBonus(1);
-	if ((int)m_iDilithiumStore > MAX_DERITIUM_STORE * multi)
-		m_iDilithiumStore = MAX_DERITIUM_STORE * multi;
+	if ((int)m_iDeritiumStore > MAX_DERITIUM_STORE * multi)
+		m_iDeritiumStore = MAX_DERITIUM_STORE * multi;
 
 	m_iMoral += (short)m_Production.m_iMoralProd;
 	
@@ -1536,7 +1536,7 @@ void CSystem::CalculateBuildableShips(CBotf2Doc* pDoc, const CPoint& p)
 					continue;
 
 				// wenn die Credits unter 0 gefallen sind können keine Kampfschiffe mehr gebaut werden
-				if (pShipInfo->IsNonCombat() == false && pMajor->GetEmpire()->GetLatinum() < 0)
+				if (pShipInfo->IsNonCombat() == false && pMajor->GetEmpire()->GetCredits() < 0)
 					continue;
 
 				// Schiff in die Liste der baubaren Schiffe aufnehmen
@@ -1734,7 +1734,7 @@ void CSystem::BuildBuildingsForMinorRace(CSector* sector, BuildingInfoArray* bui
 	if (m_Buildings.GetSize() < 5)
 	{
 		// in exist[.] steht dann, ob wir einen Rohstoff abbauen können, wenn ja, dann können wir auch das Gebäude bauen
-		BOOLEAN exist[DILITHIUM + 1] = {0};
+		BOOLEAN exist[DERITIUM + 1] = {0};
 		sector->GetAvailableResources(exist, true);
 
 		// Schauen, welche Gebäudestufe ungefähr in dem System steht
@@ -2046,7 +2046,7 @@ void CSystem::BuildBuildingsForMinorRace(CSector* sector, BuildingInfoArray* bui
 		for (int res = TITAN; res <= IRIDIUM; res++)
 		{
 			int resAdd = rand()%(this->GetNumberOfWorkbuildings(res + 5, 0, NULL) * (pMinor->GetTechnologicalProgress() + 1) * 100 + 1);
-			this->SetRessourceStore(res, resAdd);			
+			this->SetResourceStore(res, resAdd);			
 		}
 
 		// wenn möglich Werft bauen
@@ -2097,7 +2097,7 @@ void CSystem::BuildBuildingsAfterColonization(CSector *sector, BuildingInfoArray
 		};
 
 	// in exist[.] steht dann, ob wir einen Rohstoff abbauen können, wenn ja, dann können wir auch das Gebäude bauen
-	BOOLEAN exist[DILITHIUM + 1] = {0};
+	BOOLEAN exist[DERITIUM + 1] = {0};
 	sector->GetAvailableResources(exist, true);
 
 	USHORT start = 0;
@@ -2277,13 +2277,13 @@ BOOLEAN CSystem::AddTradeRoute(CPoint dest, CSystem systems[][STARMAP_SECTORS_VC
 	return FALSE;
 }
 
-// Funktion gibt das gesamte Latinum zurück, was alle Handelsrouten aus diesem System generiert haben.
-USHORT CSystem::LatinumFromTradeRoutes()
+// Funktion gibt das gesamte Credits zurück, was alle Handelsrouten aus diesem System generiert haben.
+USHORT CSystem::CreditsFromTradeRoutes()
 {
-	USHORT latinum = 0;
+	USHORT credits = 0;
 	for (int i = 0; i < m_TradeRoutes.GetSize(); i++)
-		latinum += m_TradeRoutes.GetAt(i).GetLatinum(this->m_Production.GetIncomeOnTradeRoutes());
-	return latinum;
+		credits += m_TradeRoutes.GetAt(i).GetCredits(this->m_Production.GetIncomeOnTradeRoutes());
+	return credits;
 }
 
 // Funkt überprüft alle Handelsrouten in dem System, ob sie Aufgrund der Bevölkerung oder der Gebäude noch
@@ -2296,9 +2296,9 @@ BYTE CSystem::CheckTradeRoutes(CResearchInfo* researchInfo)
 	// Bei allen anderen Fällen wird um eins dekrementiert.
 	for (int i = 0; i < m_TradeRoutes.GetSize(); i++)
 	{
-		// Wenn das System blockiert wird, dann produziert die Handelsroute kein Latinum
+		// Wenn das System blockiert wird, dann produziert die Handelsroute kein Credits
 		if (GetBlockade() > NULL)
-			m_TradeRoutes.GetAt(i).SetLatinum(0);
+			m_TradeRoutes.GetAt(i).SetCredits(0);
 		if (m_TradeRoutes.GetAt(i).GetDuration() <= -5)
 		{
 			m_TradeRoutes.RemoveAt(i--);
@@ -2476,7 +2476,7 @@ void CSystem::ResetSystem()
 	m_iDuraniumStore = 0;
 	m_iCrystalStore = 0;
 	m_iIridiumStore = 0;
-	m_iDilithiumStore = 0;
+	m_iDeritiumStore = 0;
 	m_BuildingDestroy.RemoveAll();
 	m_Production.Reset();
 	m_AssemblyList.Reset();
@@ -2518,7 +2518,7 @@ BOOLEAN CSystem::CheckTech(CBuildingInfo* building, CResearch* research)
 BOOLEAN CSystem::CheckPlanet(CBuildingInfo* building, CSector* sector)
 {
 	BOOLEAN Ok = FALSE;
-	BOOLEAN dilithium = FALSE;
+	BOOLEAN deritium = FALSE;
 	int number = sector->GetNumberOfPlanets();
 	CPlanet planet;
 	for (int i = 0; i < number && Ok == FALSE; i++)
@@ -2570,13 +2570,13 @@ BOOLEAN CSystem::CheckPlanet(CBuildingInfo* building, CSector* sector)
 		}
 	}
 	
-	// Wenn das Gebäude Dilithium produziert, so muss auf einem kolonisierten Planeten auch Dilithium vorhanden sein
-	if (building->GetDilithiumProd() > 0)
+	// Wenn das Gebäude Deritium produziert, so muss auf einem kolonisierten Planeten auch Deritium vorhanden sein
+	if (building->GetDeritiumProd() > 0)
 	{
 		for (int i = 0; i < sector->GetNumberOfPlanets(); i++)
 			if (sector->GetPlanet(i)->GetColonized())		
-				dilithium |= sector->GetPlanet(i)->GetBoni()[DILITHIUM];
-		if (!dilithium || !Ok)
+				deritium |= sector->GetPlanet(i)->GetBoni()[DERITIUM];
+		if (!deritium || !Ok)
 			return 0;
 	}
 	if (Ok == FALSE)	// Haben also kein Planet im System gefunden, auf dem wir das Gebäude bauen könnten

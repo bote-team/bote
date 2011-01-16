@@ -86,11 +86,12 @@ BEGIN_MESSAGE_MAP(CBotf2App, CWinApp)
 	ON_COMMAND(ID_OPTIONEN, &CBotf2App::OnSettings)
 	ON_COMMAND(ID_CHAT, &CBotf2App::OnChat)
 	ON_COMMAND(ID_HELP_MANUAL, &CBotf2App::OnOpenManual)
+	ON_COMMAND(ID_HELP_WIKI, &CBotf2App::OnHelpWiki)
 	ON_COMMAND(ID_HELP_README, &CBotf2App::OnOpenReadme)
 	ON_COMMAND(ID_HELP_CREDITS, &CBotf2App::OnOpenCredits)
 	
 	ON_THREAD_MESSAGE(WM_UPDATEVIEWS, CBotf2App::UpdateViews)
-	ON_THREAD_MESSAGE(WM_SHOWCHATDLG, CBotf2App::ShowChatDlg)	
+	ON_THREAD_MESSAGE(WM_SHOWCHATDLG, CBotf2App::ShowChatDlg)		
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -253,6 +254,19 @@ void CBotf2App::OnOpenManual()
         0,			// Default directory
         SW_SHOW);
 	
+}
+
+void CBotf2App::OnHelpWiki()
+{
+	// TODO: Fügen Sie hier Ihren Befehlsbehandlungscode ein.
+	CString sFile =  "http://www.wiki.birth-of-the-empires.de";
+
+	HINSTANCE hInst = ShellExecute(0,
+		"open",		// Operation to perform
+		sFile,		// Application name
+        "",			// Additional parameters
+        0,			// Default directory
+        SW_SHOW);
 }
 
 void CBotf2App::OnOpenReadme()

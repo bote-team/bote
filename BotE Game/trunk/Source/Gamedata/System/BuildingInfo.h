@@ -138,7 +138,7 @@ public:
 	USHORT GetNeededDuranium() const {return m_iNeededDuranium;}
 	USHORT GetNeededCrystal() const {return m_iNeededCrystal;}
 	USHORT GetNeededIridium() const {return m_iNeededIridium;}
-	USHORT GetNeededDilithium() const {return m_iNeededDilithium;}
+	USHORT GetNeededDeritium() const {return m_iNeededDeritium;}
 	USHORT GetNeededResource(BYTE res) const;
 	
 	USHORT GetPredecessorID() const {return m_iPredecessorID;}
@@ -157,9 +157,9 @@ public:
 	USHORT GetDuraniumProd() const {return m_iDuranium;}
 	USHORT GetCrystalProd() const {return m_iCrystal;}
 	USHORT GetIridiumProd() const {return m_iIridium;}
-	USHORT GetDilithiumProd() const {return m_iDilithium;}
+	USHORT GetDeritiumProd() const {return m_iDeritium;}
 	USHORT GetResourceProd(BYTE res) const;
-	short GetLatinum() const {return m_iLatinum;}
+	short GetCredits() const {return m_iCredits;}
 	short GetMoralProd() const {return m_iMoral;}
 	short GetMoralProdEmpire() const {return m_iMoralEmpire;}
 	
@@ -173,9 +173,9 @@ public:
 	short GetDuraniumBoni() const {return m_iDuraniumBoni;}
 	short GetCrystalBoni() const {return m_iCrystalBoni;}
 	short GetIridiumBoni() const {return m_iIridiumBoni;}
-	short GetDilithiumBoni() const {return m_iDilithiumBoni;}
+	short GetDeritiumBoni() const {return m_iDeritiumBoni;}
 	short GetAllRessourcesBoni() const {return m_iAllRessourceBoni;}
-	short GetLatinumBoni() const {return m_iLatinumBoni;}
+	short GetCreditsBoni() const {return m_iCreditsBoni;}
 
 	short GetBioTechBoni() const {return m_iBioTechBoni;}
 	short GetEnergyTechBoni() const {return m_iEnergyTechBoni;}
@@ -309,7 +309,7 @@ public:
 	void SetNeededDuranium(USHORT NeededDuranium) {m_iNeededDuranium = NeededDuranium;}
 	void SetNeededCrystal(USHORT NeededCrystal) {m_iNeededCrystal = NeededCrystal;}
 	void SetNeededIridium(USHORT NeededIridium) {m_iNeededIridium = NeededIridium;}
-	void SetNeededDilithium(USHORT NeededDilithium) {m_iNeededDilithium = NeededDilithium;}
+	void SetNeededDeritium(USHORT NeededDeritium) {m_iNeededDeritium = NeededDeritium;}
 
 	void SetPredecessor(USHORT RunningNumber) {m_iPredecessorID = RunningNumber;}
 
@@ -327,8 +327,8 @@ public:
 	void SetDuraniumProd(USHORT Duranium) {m_iDuranium = Duranium;}
 	void SetCrystalProd(USHORT Crystal) {m_iCrystal = Crystal;}
 	void SetIridiumProd(USHORT Iridium) {m_iIridium = Iridium;}
-	void SetDilithiumProd(USHORT Dilithium) {m_iDilithium = Dilithium;}
-	void SetLatinumProd(short Latinum) {m_iLatinum = Latinum;}
+	void SetDeritiumProd(USHORT Deritium) {m_iDeritium = Deritium;}
+	void SetCreditsProd(short Credits) {m_iCredits = Credits;}
 	void SetMoralProd(short MoralProd) {m_iMoral = MoralProd;}
 	void SetMoralProdEmpire(short MoralProdEmpire) {m_iMoralEmpire = MoralProdEmpire;}
 	
@@ -342,9 +342,9 @@ public:
 	void SetDuraniumBoni(short DuraniumBoni) {m_iDuraniumBoni = DuraniumBoni;}
 	void SetCrystalBoni(short CrystalBoni) {m_iCrystalBoni = CrystalBoni;}
 	void SetIridiumBoni(short IridiumBoni) {m_iIridiumBoni = IridiumBoni;}
-	void SetDilithiumBoni(short DilithiumBoni) {m_iDilithiumBoni = DilithiumBoni;}
+	void SetDeritiumBoni(short DeritiumBoni) {m_iDeritiumBoni = DeritiumBoni;}
 	void SetAllRessourceBoni(short AllRessourceBoni) {m_iAllRessourceBoni = AllRessourceBoni;}
-	void SetLatinumBoni(short LatinumBoni) {m_iLatinumBoni = LatinumBoni;}
+	void SetCreditsBoni(short CreditsBoni) {m_iCreditsBoni = CreditsBoni;}
 	
 	void SetBioTechBoni(short BioTechBoni) {m_iBioTechBoni = BioTechBoni;}
 	void SetEnergyTechBoni(short EnergyTechBoni) {m_iEnergyTechBoni = EnergyTechBoni;}
@@ -479,7 +479,7 @@ private:
 	USHORT m_iNeededDuranium;
 	USHORT m_iNeededCrystal;
 	USHORT m_iNeededIridium;
-	USHORT m_iNeededDilithium;
+	USHORT m_iNeededDeritium;
 	
 	// Die RunningNumber (ID) des Vorgängers des Gebäudes. Wird für alle Updates benötigt.
 	USHORT m_iPredecessorID;
@@ -504,8 +504,8 @@ private:
 	USHORT m_iDuranium;
 	USHORT m_iCrystal;
 	USHORT m_iIridium;
-	USHORT m_iDilithium;
-	short m_iLatinum;
+	USHORT m_iDeritium;
+	short m_iCredits;
 	short m_iMoral;
 	short m_iMoralEmpire;
 
@@ -521,9 +521,9 @@ private:
 	short m_iDuraniumBoni;
 	short m_iCrystalBoni;
 	short m_iIridiumBoni;
-	short m_iDilithiumBoni;
+	short m_iDeritiumBoni;
 	short m_iAllRessourceBoni;	
-	short m_iLatinumBoni;
+	short m_iCreditsBoni;
 
 	// Forschungstechboni
 	short m_iBioTechBoni;
@@ -577,7 +577,7 @@ private:
 	BOOLEAN m_bNeverReady;
 
 	// new in ALPHA5
-	BOOLEAN m_bResourceDistributor[DILITHIUM + 1];	///< Ressourcenverteiler (Nahrung, Titan, Deuterium, Duranium, Kristalle, Iridium, Deritium)
+	BOOLEAN m_bResourceDistributor[DERITIUM + 1];	///< Ressourcenverteiler (Nahrung, Titan, Deuterium, Duranium, Kristalle, Iridium, Deritium)
 	short m_iNeededSystems;							///< Mindestanzahl eigener Systeme um Gebäude bauen zu können
 };
 

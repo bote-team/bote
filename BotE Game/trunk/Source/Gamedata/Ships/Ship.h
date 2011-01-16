@@ -199,7 +199,7 @@ private:
 	USHORT m_iCrewExperiance;			// Crewerfahrung des Schiffes
 	// Laderaum
 	CArray<CTroop> m_Troops;				// Die Truppen, welche auf dem Schiff transportiert werden.
-	USHORT m_iLoadedResources[DILITHIUM+1];	// Die geladenen Ressourcen auf dem Schiff
+	USHORT m_iLoadedResources[DERITIUM+1];	// Die geladenen Ressourcen auf dem Schiff
 	// Kampftaktik
 	COMBAT_TACTICS m_nCombatTactic;		///< Taktik des Schiffes im Kampf
 };

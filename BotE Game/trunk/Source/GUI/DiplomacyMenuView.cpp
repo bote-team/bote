@@ -493,7 +493,7 @@ void CDiplomacyMenuView::DrawDiplomacyMenue(Graphics* g)
 			// Wenn wir Geld geben wollen, den Abschickenbutton einblenden
 			if (m_OutgoingInfo.m_nType == PRESENT)
 			{
-				if (m_OutgoingInfo.m_nCredits > 0 || m_OutgoingInfo.m_nResources[TITAN] > 0 || m_OutgoingInfo.m_nResources[DEUTERIUM] > 0 || m_OutgoingInfo.m_nResources[DURANIUM] > 0 || m_OutgoingInfo.m_nResources[CRYSTAL] > 0 || m_OutgoingInfo.m_nResources[IRIDIUM] > 0 || m_OutgoingInfo.m_nResources[DILITHIUM] > 0)
+				if (m_OutgoingInfo.m_nCredits > 0 || m_OutgoingInfo.m_nResources[TITAN] > 0 || m_OutgoingInfo.m_nResources[DEUTERIUM] > 0 || m_OutgoingInfo.m_nResources[DURANIUM] > 0 || m_OutgoingInfo.m_nResources[CRYSTAL] > 0 || m_OutgoingInfo.m_nResources[IRIDIUM] > 0 || m_OutgoingInfo.m_nResources[DERITIUM] > 0)
 					s = CResourceManager::GetString("BTN_SEND");
 				else
 					m_bCanSend = false;
@@ -507,7 +507,7 @@ void CDiplomacyMenuView::DrawDiplomacyMenue(Graphics* g)
 			// einblenden. Bei Forderung muß ein Wert ausgewählt worden sein
 			else if (m_OutgoingInfo.m_nType == PRESENT || m_OutgoingInfo.m_nType == CORRUPTION || m_OutgoingInfo.m_nType == DIP_REQUEST)
 			{
-				if (m_OutgoingInfo.m_nCredits > 0 || m_OutgoingInfo.m_nResources[TITAN] > 0 || m_OutgoingInfo.m_nResources[DEUTERIUM] > 0 || m_OutgoingInfo.m_nResources[DURANIUM] > 0 || m_OutgoingInfo.m_nResources[CRYSTAL] > 0 || m_OutgoingInfo.m_nResources[IRIDIUM] > 0 || m_OutgoingInfo.m_nResources[DILITHIUM] > 0)
+				if (m_OutgoingInfo.m_nCredits > 0 || m_OutgoingInfo.m_nResources[TITAN] > 0 || m_OutgoingInfo.m_nResources[DEUTERIUM] > 0 || m_OutgoingInfo.m_nResources[DURANIUM] > 0 || m_OutgoingInfo.m_nResources[CRYSTAL] > 0 || m_OutgoingInfo.m_nResources[IRIDIUM] > 0 || m_OutgoingInfo.m_nResources[DERITIUM] > 0)
 					s = CResourceManager::GetString("BTN_SEND");
 				else
 					m_bCanSend = false;
@@ -835,7 +835,7 @@ void CDiplomacyMenuView::DrawRaceDiplomacyMenue(Graphics* g)
 									// Wenn eine Forderung gestellt wurde, welche Ressourcen beinhaltet, dann Annehmenbutton
 									// nur einblenden, wenn wir diese Forderung auch erfüllen können
 									USHORT *resource = m_pIncomingInfo->m_nResources;
-									if (resource[TITAN] > 0 || resource[DEUTERIUM] > 0 || resource[DURANIUM] > 0 || resource[CRYSTAL] > 0 || resource[IRIDIUM] > 0 || resource[DILITHIUM] > 0)
+									if (resource[TITAN] > 0 || resource[DEUTERIUM] > 0 || resource[DURANIUM] > 0 || resource[CRYSTAL] > 0 || resource[IRIDIUM] > 0 || resource[DERITIUM] > 0)
 									{
 										// Wenn Forderung, dann Systemauswahlbutton einblenden, wovon ich die geforderte Ressource
 										// abzweigen will
@@ -867,14 +867,14 @@ void CDiplomacyMenuView::DrawRaceDiplomacyMenue(Graphics* g)
 										}
 										// Überprüfen ob wir auf dem gewählten System die Menge der geforderten
 										// Ressource im Lager haben und ob wir auch die geforderten Credits bezahlen können
-										for (int r = TITAN; r <= DILITHIUM; r++)
-											if (resource[r] > 0 && pDoc->GetSystem(m_ptResourceFromSystem).GetRessourceStore(r) < resource[r] && pDoc->GetSystem(m_ptResourceFromSystem).GetOwnerOfSystem() == pPlayer->GetRaceID())
+										for (int r = TITAN; r <= DERITIUM; r++)
+											if (resource[r] > 0 && pDoc->GetSystem(m_ptResourceFromSystem).GetResourceStore(r) < resource[r] && pDoc->GetSystem(m_ptResourceFromSystem).GetOwnerOfSystem() == pPlayer->GetRaceID())
 												m_bShowSendButton = false;
 										fontFormat.SetAlignment(StringAlignmentCenter);
 										g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(500,97+count*25,120,30), &fontFormat, &btnBrush);											
 									}
 									// Überprüfen ob wir auch die geforderten Credits bezahlen können
-									if (pPlayer->GetEmpire()->GetLatinum() < m_pIncomingInfo->m_nCredits)
+									if (pPlayer->GetEmpire()->GetCredits() < m_pIncomingInfo->m_nCredits)
 										m_bShowSendButton = false;
 								}
 							}							
@@ -1123,9 +1123,9 @@ void CDiplomacyMenuView::DrawDiplomacyOfferMenue(Graphics* g, const CString& sWh
 		{	
 			// ist aus irgendeinem Grund die übergebende Menge größer als die aktuellen Credits, so
 			// werden die Credits runtergerechnet
-			if (m_OutgoingInfo.m_nType != DIP_REQUEST && m_bShowSendButton && m_OutgoingInfo.m_nCredits > pPlayer->GetEmpire()->GetLatinum())
+			if (m_OutgoingInfo.m_nType != DIP_REQUEST && m_bShowSendButton && m_OutgoingInfo.m_nCredits > pPlayer->GetEmpire()->GetCredits())
 			{
-				m_OutgoingInfo.m_nCredits = max(0, pPlayer->GetEmpire()->GetLatinum() / 250);
+				m_OutgoingInfo.m_nCredits = max(0, pPlayer->GetEmpire()->GetCredits() / 250);
 				m_OutgoingInfo.m_nCredits *= 250;
 			}
 			// Balken für Creditgeschenk zeichnen
@@ -1137,7 +1137,7 @@ void CDiplomacyMenuView::DrawDiplomacyOfferMenue(Graphics* g, const CString& sWh
 				else
 					g->FillRectangle(&SolidBrush(Color(100,100,100,100)), timber);
 			}
-			s.Format("%s: %d %s", CResourceManager::GetString("PAYMENT"), m_OutgoingInfo.m_nCredits, CResourceManager::GetString("LATINUM"));
+			s.Format("%s: %d %s", CResourceManager::GetString("PAYMENT"), m_OutgoingInfo.m_nCredits, CResourceManager::GetString("CREDITS"));
 			fontFormat.SetAlignment(StringAlignmentNear);
 			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(195,410,255,30), &fontFormat, &fontBrush);
 
@@ -1164,17 +1164,17 @@ void CDiplomacyMenuView::DrawDiplomacyOfferMenue(Graphics* g, const CString& sWh
 					res = CResourceManager::GetString("CRYSTAL");
 				else if (iWhichResource == IRIDIUM)
 					res = CResourceManager::GetString("IRIDIUM");
-				else if (iWhichResource == DILITHIUM)
-					res = CResourceManager::GetString("DILITHIUM");
-				UINT nUnit = iWhichResource == DILITHIUM ? 5 : 1000;
+				else if (iWhichResource == DERITIUM)
+					res = CResourceManager::GetString("DERITIUM");
+				UINT nUnit = iWhichResource == DERITIUM ? 5 : 1000;
 				
 				// sind aus irgendeinem Grund die übergebende Menge größer als die aktuellen vorhandenen Ressourcen, so
 				// werden die Ressourcen runtergerechnet
 				if (m_OutgoingInfo.m_nType != DIP_REQUEST && m_bShowSendButton && m_OutgoingInfo.m_nResources[iWhichResource] > 0 && m_OutgoingInfo.m_ptKO != CPoint(-1,-1))
 				{
-					if (m_OutgoingInfo.m_nResources[iWhichResource] > pDoc->GetSystem(m_OutgoingInfo.m_ptKO).GetRessourceStore(iWhichResource))
+					if (m_OutgoingInfo.m_nResources[iWhichResource] > pDoc->GetSystem(m_OutgoingInfo.m_ptKO).GetResourceStore(iWhichResource))
 					{
-						m_OutgoingInfo.m_nResources[iWhichResource] = pDoc->GetSystem(m_OutgoingInfo.m_ptKO).GetRessourceStore(iWhichResource) / nUnit;
+						m_OutgoingInfo.m_nResources[iWhichResource] = pDoc->GetSystem(m_OutgoingInfo.m_ptKO).GetResourceStore(iWhichResource) / nUnit;
 						m_OutgoingInfo.m_nResources[iWhichResource] *= nUnit;						
 					}
 				}
@@ -1201,7 +1201,7 @@ void CDiplomacyMenuView::DrawDiplomacyOfferMenue(Graphics* g, const CString& sWh
 					if (ko == CPoint(-1,-1))
 						return;
 					
-					UINT nStorage = pDoc->GetSystem(ko).GetRessourceStore(iWhichResource);
+					UINT nStorage = pDoc->GetSystem(ko).GetResourceStore(iWhichResource);
 
 					if (nStorage <= 1 * nUnit)
 						s = CResourceManager::GetString("SCARCELY_EXISTING");
@@ -1459,10 +1459,10 @@ void CDiplomacyMenuView::TakeOrGetbackResLat(bool bTake)
 	if (bTake)
 	{
 		// Credits von Creditbestand abziehen
-		pPlayer->GetEmpire()->SetLatinum(-m_OutgoingInfo.m_nCredits);
+		pPlayer->GetEmpire()->SetCredits(-m_OutgoingInfo.m_nCredits);
 		m_OutgoingInfo.m_nCredits = 0;
 		// Rohstoffe aus dem Lager nehmen
-		for (int res = TITAN; res <= DILITHIUM; res++)
+		for (int res = TITAN; res <= DERITIUM; res++)
 		{
 			if (m_OutgoingInfo.m_nResources[res] > 0)
 			{
@@ -1471,7 +1471,7 @@ void CDiplomacyMenuView::TakeOrGetbackResLat(bool bTake)
 					AfxMessageBox("Error in CDiplomacyView::TakeOrGetbackResLat(): KO has no value!");
 				else
 				{
-					pDoc->GetSystem(ko).SetRessourceStore(res, -m_OutgoingInfo.m_nResources[res]);
+					pDoc->GetSystem(ko).SetResourceStore(res, -m_OutgoingInfo.m_nResources[res]);
 					m_OutgoingInfo.m_nResources[res] = 0;
 				}
 			}
@@ -1480,10 +1480,10 @@ void CDiplomacyMenuView::TakeOrGetbackResLat(bool bTake)
 	else
 	{
 		// Credits wieder zurück zum Imperium geben
-		pPlayer->GetEmpire()->SetLatinum(m_OutgoingInfo.m_nCredits);
+		pPlayer->GetEmpire()->SetCredits(m_OutgoingInfo.m_nCredits);
 		m_OutgoingInfo.m_nCredits = 0;
 		// Die Rohstoffe wieder zurück in das System geben
-		for (int res = TITAN; res <= DILITHIUM; res++)
+		for (int res = TITAN; res <= DERITIUM; res++)
 		{
 			if (m_OutgoingInfo.m_nResources[res] > 0)
 			{
@@ -1492,7 +1492,7 @@ void CDiplomacyMenuView::TakeOrGetbackResLat(bool bTake)
 					AfxMessageBox("Error in CDiplomacyView::TakeOrGetbackResLat(): KO has no value!");
 				else
 				{
-					pDoc->GetSystem(ko).SetRessourceStore(res, m_OutgoingInfo.m_nResources[res]);
+					pDoc->GetSystem(ko).SetResourceStore(res, m_OutgoingInfo.m_nResources[res]);
 					m_OutgoingInfo.m_nResources[res] = 0;
 				}
 			}
@@ -1793,9 +1793,9 @@ void CDiplomacyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 					{
 						m_OutgoingInfo.m_nCredits = t * 250;
 						if (m_OutgoingInfo.m_nType != DIP_REQUEST)
-							if (m_OutgoingInfo.m_nCredits > pPlayer->GetEmpire()->GetLatinum())
+							if (m_OutgoingInfo.m_nCredits > pPlayer->GetEmpire()->GetCredits())
 							{
-								m_OutgoingInfo.m_nCredits = max(0, pPlayer->GetEmpire()->GetLatinum() / 250);
+								m_OutgoingInfo.m_nCredits = max(0, pPlayer->GetEmpire()->GetCredits() / 250);
 								m_OutgoingInfo.m_nCredits *= 250;								
 							}
 							Invalidate();
@@ -1810,11 +1810,11 @@ void CDiplomacyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 						// Haben wir auf den Balken gedrückt, um die Menge der zu verschenkenden bzw. zu fordernden Ressourcen zu ändern
 						if (timber[t].PtInRect(point))
 						{
-							ASSERT(m_byWhichResourceIsChosen >= TITAN && m_byWhichResourceIsChosen <= DILITHIUM);
+							ASSERT(m_byWhichResourceIsChosen >= TITAN && m_byWhichResourceIsChosen <= DERITIUM);
 
-							UINT nStorage = pDoc->GetSystem(m_OutgoingInfo.m_ptKO).GetRessourceStore(m_byWhichResourceIsChosen);
+							UINT nStorage = pDoc->GetSystem(m_OutgoingInfo.m_ptKO).GetResourceStore(m_byWhichResourceIsChosen);
 							// bei normalen Ressourcen wird in 1000er Schritten gegeben, bei Deritium in 5er
-							int dUnit = m_byWhichResourceIsChosen == DILITHIUM ? 5 : 1000;
+							int dUnit = m_byWhichResourceIsChosen == DERITIUM ? 5 : 1000;
 							m_OutgoingInfo.m_nResources[m_byWhichResourceIsChosen] = t * dUnit;
 							// geben wir selbst die Ressource, dann benötigen wir genügend im Lager.
 							if (m_OutgoingInfo.m_nType != DIP_REQUEST && m_OutgoingInfo.m_nResources[m_byWhichResourceIsChosen] > nStorage)
@@ -1833,13 +1833,13 @@ void CDiplomacyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 				rect.SetRect(510,518,630,548);
 				if (rect.PtInRect(point))
 				{
-					if (m_byWhichResourceIsChosen < DILITHIUM)
+					if (m_byWhichResourceIsChosen < DERITIUM)
 						m_byWhichResourceIsChosen++;
 					else
 						m_byWhichResourceIsChosen = TITAN;
 					
 					// alle "alten" Ressourcenmengen löschen
-					for (int res = TITAN; res <= DILITHIUM; res++)
+					for (int res = TITAN; res <= DERITIUM; res++)
 						m_OutgoingInfo.m_nResources[res] = 0;
 					Invalidate();
 					return;
@@ -1857,7 +1857,7 @@ void CDiplomacyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 					{
 						current++;
 						// Auch wieder alle Mengen auf Null zurücksetzen
-						for (int res = TITAN; res <= DILITHIUM; res++)
+						for (int res = TITAN; res <= DERITIUM; res++)
 							m_OutgoingInfo.m_nResources[res] = 0;
 					}
 					if (current == pPlayer->GetEmpire()->GetSystemList()->GetSize())
@@ -1966,7 +1966,7 @@ void CDiplomacyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 				m_OutgoingInfo.m_nSendRound = pDoc->GetCurrentRound();				
 				pPlayer->GetOutgoingDiplomacyNews()->push_back(m_OutgoingInfo);
 				
-				// angebotenes Latinum und Ressourcen aus den Lagern nehmen
+				// angebotenes Credits und Ressourcen aus den Lagern nehmen
 				this->TakeOrGetbackResLat(true);
 				pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
 				Invalidate();
@@ -1976,7 +1976,7 @@ void CDiplomacyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			// Wenn wir auf den Abbrechenbutton geklicked haben
 			else if (rect.PtInRect(point) && m_bShowSendButton == false)
 			{
-				// angebotenes Latinum und Ressourcen wieder zurück ins Lager geben
+				// angebotenes Credits und Ressourcen wieder zurück ins Lager geben
 				this->TakeOrGetbackResLat(false);
 				pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
 				// Angebot aus dem Feld entfernen
@@ -2283,10 +2283,10 @@ void CDiplomacyMenuView::OnRButtonDown(UINT nFlags, CPoint point)
 					if (m_byWhichResourceIsChosen > TITAN)
 						m_byWhichResourceIsChosen--;
 					else
-						m_byWhichResourceIsChosen = DILITHIUM;
+						m_byWhichResourceIsChosen = DERITIUM;
 					
 					// alle "alten" Ressourcenmengen löschen
-					for (int res = TITAN; res <= DILITHIUM; res++)
+					for (int res = TITAN; res <= DERITIUM; res++)
 						m_OutgoingInfo.m_nResources[res] = 0;
 					Invalidate();
 					return;
@@ -2304,7 +2304,7 @@ void CDiplomacyMenuView::OnRButtonDown(UINT nFlags, CPoint point)
 					{
 						current--;
 						// Auch wieder alle Mengen auf Null zurücksetzen
-						for (int res = TITAN; res <= DILITHIUM; res++)
+						for (int res = TITAN; res <= DERITIUM; res++)
 							m_OutgoingInfo.m_nResources[res] = 0;
 					}
 					if (current == 0)

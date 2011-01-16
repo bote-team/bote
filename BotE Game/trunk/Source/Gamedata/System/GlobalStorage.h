@@ -19,10 +19,13 @@ public:
 
 	struct StorageStruct
 	{
-		// das sollte als UINT laufen!
-		USHORT resTransfer;
-		BYTE res;
-		CPoint ko;
+#ifdef ALPHA6_SERIALISIERUNG
+		UINT nResTransfer;
+#else
+		USHORT nResTransfer;
+#endif
+		BYTE nRes;
+		CPoint ptKO;
 	};
 	
 	/// Konstruktor
@@ -39,24 +42,24 @@ public:
 	 * Diese Funktion gibt den Inhalt des globalen Lagers wieder. Der Parameter <code>res</code> der dabei
 	 * übergeben wird, ist die Ressource, von der man den Lagerinhalt wissen will.
 	 */
-	UINT GetRessourceStorage(BYTE res) const {return m_iRessourceStorages[res];}
+	UINT GetResourceStorage(BYTE res) const {return m_nResourceStorages[res];}
 
 	/**
 	 * Diese Funktion gibt einen Zeiger auf das Feld mit dem Lagerinhalt aller Ressourcen zurück.
 	 */
-	UINT* GetRessourceStorages() {return m_iRessourceStorages;}
+	UINT* GetResourceStorages() {return m_nResourceStorages;}
 
 	/**
 	 * Diese Funktion gibt die Menge der Ressource <code>res</code> zurück, die von dem System mit der Koordinate
 	 * <code>ko</code> in das globale Lager kommen sollen.
 	 */
-	UINT GetAddedResource(BYTE res, CPoint ko) const;
+	UINT GetAddedResource(BYTE res, const CPoint& ko) const;
 
 	/**
 	 * Diese Funktion gibt die Menge der Ressource <code>res</code> zurück, die in das System mit der Koordinate
 	 * <code>ko</code> aus dem globale Lager kommen sollen.
 	 */
-	UINT GetSubResource(BYTE res, CPoint ko) const;
+	UINT GetSubResource(BYTE res, const CPoint& ko) const;
 
 	/**
 	 * Diese Funktion gibt die gesamte Menge der Ressource <code>res</code> zurück, die in das globale Lager kommen soll.
@@ -77,12 +80,12 @@ public:
 	/**
 	 * Diese Funktion gibt die Menge an Ressourcen zurück, die man in dieser Runde schon aus dem Lager genommen hat.
 	 */
-	USHORT GetTakenRessources() const {return m_iTakeFromStorage;}
+	UINT GetTakenRessources() const {return m_iTakeFromStorage;}
 
 	/**
 	 * Diese Funktion gibt den Wert zurück, welche Menge wir maximal aus dem Lager nehmen können.
 	 */
-	USHORT GetMaxTakenRessources() const {return m_iMaxTakeFromStorage;}
+	UINT GetMaxTakenRessources() const {return m_iMaxTakeFromStorage;}
 
 	/**
 	 * Diese Funktion gibt <code>TRUE</code> zurück, wenn sich irgendeine Ressource im globalen Lager befindet.
@@ -109,7 +112,7 @@ public:
 	 * von wo aus man die Transaktion führt. Der Rückgabewert der Funktion ist eine Menge, einer
 	 * Ressource, die in der selben Runde schon aus dem globalen Lager in das System kommen soll.
 	 */
-	UINT AddRessource(USHORT add, BYTE res, CPoint ko);
+	UINT AddRessource(UINT add, BYTE res, const CPoint& ko);
 
 	/**
 	 * Diese Funktion subtrahiert die mit dem Parameter <code>sub</code> übergebende Anzahl der Ressource
@@ -119,7 +122,7 @@ public:
 	 * Ressource, die in der selben Runde schon aus dem gleichen System addiert wurde. Somit kann man die Waren
 	 * auch sofort wieder herausnehmen.
 	 */
-	UINT SubRessource(USHORT sub, BYTE res, CPoint ko);
+	UINT SubRessource(UINT sub, BYTE res, const CPoint& ko);
 
 	/**
 	 * Diese Funktion führt am Lagerinhalt alle möglichen Änderungen durch, die bei jeder neuen Runde eintreten
@@ -135,17 +138,25 @@ public:
 
 private:
 	/// In diesem Feld werden die einzelnen Ressourcen gespeichert
-	UINT m_iRessourceStorages[5];
+	UINT m_nResourceStorages[5];
 
 	/// Wieviel Prozent gehen pro Runde aus dem Lager verloren
 	BYTE m_byPercentLosing;
 
 	/// Welche Menge an Ressourcen wurden in dieser Runde aus dem Lager genommen
+#ifdef ALPHA6_SERIALISIERUNG
+	UINT m_iTakeFromStorage;
+#else
 	USHORT m_iTakeFromStorage;
+#endif
 
 	/// Welche Menge darf maximal aus dem Lager genommen werden. Obergrenze wurde
 	/// hier auf 20k festgelegt.
+#ifdef ALPHA6_SERIALISIERUNG
+	UINT m_iMaxTakeFromStorage;
+#else
 	USHORT m_iMaxTakeFromStorage;
+#endif
 
 	/// In diesem Feld werden alle Systeme gespeichert, an die in der neuen Runde
 	/// Ressourcen gehen.

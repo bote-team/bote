@@ -146,9 +146,9 @@ void CMenuChooseView::OnDraw(CDC* pDC)
 	fontFormat.SetAlignment(StringAlignmentNear);
 	fontBrush.SetColor(color);
 
-	s.Format("%s:",CResourceManager::GetString("LATINUM"), pMajor->GetEmpire()->GetLatinum());
+	s.Format("%s:",CResourceManager::GetString("CREDITS"), pMajor->GetEmpire()->GetCredits());
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(r.left+30, 90, m_TotalSize.cx-60, 25), &fontFormat, &fontBrush);
-	s.Format("%i",pMajor->GetEmpire()->GetLatinum());
+	s.Format("%i",pMajor->GetEmpire()->GetCredits());
 	fontFormat.SetAlignment(StringAlignmentFar);
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(r.left+30, 90, m_TotalSize.cx-60, 25), &fontFormat, &fontBrush);
 	
@@ -156,16 +156,16 @@ void CMenuChooseView::OnDraw(CDC* pDC)
 	fontFormat.SetAlignment(StringAlignmentNear);
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(r.left+30, 115, m_TotalSize.cx-60, 25), &fontFormat, &fontBrush);
 	fontFormat.SetAlignment(StringAlignmentFar);
-	if (pMajor->GetEmpire()->GetLatinumChange() >= 0)
+	if (pMajor->GetEmpire()->GetCreditsChange() >= 0)
 	{	
 		fontBrush.SetColor(Color(0,200,0));
-		s.Format("+%i", pMajor->GetEmpire()->GetLatinumChange());
+		s.Format("+%i", pMajor->GetEmpire()->GetCreditsChange());
 		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(r.left+30, 115, m_TotalSize.cx-60, 25), &fontFormat, &fontBrush);		
 	}
 	else
 	{
 		fontBrush.SetColor(Color(200,0,0));
-		s.Format("%i",pMajor->GetEmpire()->GetLatinumChange());
+		s.Format("%i",pMajor->GetEmpire()->GetCreditsChange());
 		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(r.left+30, 115, m_TotalSize.cx-60, 25), &fontFormat, &fontBrush);
 	}
 	fontBrush.SetColor(markColor);

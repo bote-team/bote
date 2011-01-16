@@ -61,6 +61,16 @@ void CRace::Serialize(CArchive &ar)
 		for (vector<CDiplomacyInfo>::iterator it = m_vDiplomacyNewsOut.begin(); it != m_vDiplomacyNewsOut.end(); ++it)
 			it->Serialize(ar);
 
+#ifdef ALPHA6_SERIALISIERUNG
+		// gemachte Angebote der letzten beiden Runden
+		ar << m_mLastOffers.size();
+		for (map<CString, CDiplomacyInfo>::iterator it = m_mLastOffers.begin(); it != m_mLastOffers.end(); ++it)
+		{
+			ar << it->first;
+			it->second.Serialize(ar);
+		}
+#endif
+
 		// grafische Attribute
 		ar << m_sGraphicFile;	// Name der zugehörigen Grafikdatei		
 	}
@@ -133,6 +143,21 @@ void CRace::Serialize(CArchive &ar)
 			info.Serialize(ar);
 			m_vDiplomacyNewsOut.push_back(info);			
 		}
+
+#ifdef ALPHA6_SERIALISIERUNG
+		// gemachte Angebote der letzten beiden Runden
+		m_mLastOffers.clear();
+		mapSize = 0;
+		ar >> mapSize;
+		for (size_t i = 0; i < mapSize; i++)
+		{
+			CString key;
+			ar >> key;
+			CDiplomacyInfo info;
+			info.Serialize(ar);
+			m_mLastOffers[key] = info;
+		}
+#endif
 
 		// grafische Attribute
 		ar >> m_sGraphicFile;	// Name der zugehörigen Grafikdatei
@@ -223,6 +248,14 @@ void CRace::MakeOffersAI(void)
 	CBotf2Doc* pDoc = ((CBotf2App*)AfxGetApp())->GetDocument();
 	ASSERT(pDoc);
 
+	// Alle zuletzt gemachten Angebote die älter als 2 Runden sind löschen
+	set<CString> sRemovingOffers;
+	for (map<CString, CDiplomacyInfo>::const_iterator it = m_mLastOffers.begin(); it != m_mLastOffers.end(); ++it)
+		if (it->second.m_nSendRound + 2 < pDoc->GetCurrentRound())
+			sRemovingOffers.insert(it->first);
+	for (set<CString>::const_iterator it = sRemovingOffers.begin(); it != sRemovingOffers.end(); ++it)
+		m_mLastOffers.erase(*it);
+
 	// wenn es sich um eine Majorrace handelt, dann die Lieblingsminorrace berechnen
 	if (this->GetType() == MAJOR)
 	{
@@ -258,7 +291,13 @@ void CRace::MakeOffersAI(void)
 			CDiplomacyInfo info;
 			CString sID = it->first;
 			if (m_pDiplomacyAI->MakeOffer(sID, info))
-				this->GetOutgoingDiplomacyNews()->push_back(info);			
+			{
+				this->GetOutgoingDiplomacyNews()->push_back(info);
+				// Angebot die nächsten 2 Runden lang merken. Wenn wir von anderen Rassen ein Angebot bekommen
+				// so nehmen wir es an, wenn es kleiner gleich unserem Angebot aus den letzten beiden Runden ist.
+				if (info.m_nFlag == DIPLOMACY_OFFER && info.m_nType > NO_AGREEMENT)
+					m_mLastOffers[sID] = info;
+			}
 		}
 }
 
@@ -297,6 +336,7 @@ void CRace::Reset(void)
 	// diplomatische Nachrichten
 	m_vDiplomacyNewsIn.clear();
 	m_vDiplomacyNewsOut.clear();
+	m_mLastOffers.clear();
 
 	// grafische Attribute
 	m_sGraphicFile	= "";				// Name der zugehörigen Grafikdatei

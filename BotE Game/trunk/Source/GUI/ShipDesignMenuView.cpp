@@ -273,7 +273,7 @@ void CShipDesignMenuView::DrawShipDesignMenue(Graphics* g)
 		s.Format("%s: %d  %s: %d  %s: %d  %s: %d",CResourceManager::GetString("DURANIUM"),pDoc->m_ShipInfoArray.GetAt(ShipNumber).GetNeededDuranium(),
 			CResourceManager::GetString("CRYSTAL"),pDoc->m_ShipInfoArray.GetAt(ShipNumber).GetNeededCrystal(),
 			CResourceManager::GetString("IRIDIUM"),pDoc->m_ShipInfoArray.GetAt(ShipNumber).GetNeededIridium(),
-			CResourceManager::GetString("DILITHIUM"),pDoc->m_ShipInfoArray.GetAt(ShipNumber).GetNeededDilithium());
+			CResourceManager::GetString("DERITIUM"),pDoc->m_ShipInfoArray.GetAt(ShipNumber).GetNeededDeritium());
 			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(200,490,580,25), &fontFormat, &fontBrush);	
 		
 		// Die Buttons zur Eigenschaftsänderung in der Rechten Seite der Ansicht anzeigen

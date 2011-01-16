@@ -51,7 +51,7 @@ public:
 	USHORT GetNeededDuranium() const {return m_iNeededDuranium;}
 	USHORT GetNeededCrystal() const {return m_iNeededCrystal;}
 	USHORT GetNeededIridium() const {return m_iNeededIridium;}
-	USHORT GetNeededDilithium() const {return m_iNeededDilithium;}
+	USHORT GetNeededDeritium() const {return m_iNeededDeritium;}
 	USHORT GetNeededResource(BYTE res) const;
 	const CString& GetOnlyInSystem() const {return m_strOnlyInSystem;}
 	const CString& GetObsoleteShipClass() const {return m_strObsoletesClass;}
@@ -70,7 +70,7 @@ public:
 	void SetNeededDuranium(int NeededDuranium) {m_iNeededDuranium = NeededDuranium; m_iBaseDuranium = NeededDuranium;}
 	void SetNeededCrystal(int NeededCrystal) {m_iNeededCrystal = NeededCrystal; m_iBaseCrystal = NeededCrystal;}
 	void SetNeededIridium(int NeededIridium) {m_iNeededIridium = NeededIridium; m_iBaseIridium = NeededIridium;}
-	void SetNeededDilithium(int NeededDilithium) {m_iNeededDilithium = NeededDilithium; m_iBaseDilithium = NeededDilithium;}
+	void SetNeededDeritium(int NeededDeritium) {m_iNeededDeritium = NeededDeritium; m_iBaseDeritium = NeededDeritium;}
 	void SetOnlyInSystem(const CString& name) {m_strOnlyInSystem = name;}
 	void SetObsoleteShipClass(const CString& className) {m_strObsoletesClass = className;}
 
@@ -100,7 +100,7 @@ private:
 	USHORT m_iNeededDuranium;
 	USHORT m_iNeededCrystal;
 	USHORT m_iNeededIridium;
-	USHORT m_iNeededDilithium;
+	USHORT m_iNeededDeritium;
 	// nötige Rohstoffe zum Bau, so wie die Grundkosten sind, denn durch CalculateFinalCosts werden die nötigen Rohstoffe
 	// und Industrieleistung erhöht. Beim nächsten Aufruf brauchen wir aber wieder die ursprünglichen Kosten
 	UINT m_iBaseIndustry;
@@ -109,7 +109,7 @@ private:
 	USHORT m_iBaseDuranium;
 	USHORT m_iBaseCrystal;
 	USHORT m_iBaseIridium;
-	USHORT m_iBaseDilithium;
+	USHORT m_iBaseDeritium;
 	// nötiger Systemname
 	CString m_strOnlyInSystem;
 	// Schiffsklasse, welche durch diese Schiffsklasse ersetzt wird

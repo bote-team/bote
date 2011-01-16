@@ -17,11 +17,11 @@ CEcoIntelObj::CEcoIntelObj(void)
 CEcoIntelObj::CEcoIntelObj(const CString& sOwnerID, const CString& sEnemyID, USHORT round, BOOLEAN isSpy, const CPoint &ko, USHORT id, BYTE number)
 	: CIntelObject(sOwnerID, sEnemyID, round, isSpy, 0), m_KO(ko), m_nID(id), m_byNumber(number)
 {
-	m_iLatinum = NULL;
+	m_iCredits = NULL;
 }
 
-CEcoIntelObj::CEcoIntelObj(const CString& sOwnerID, const CString& sEnemyID, USHORT round, BOOLEAN isSpy, int latinum)
-	: CIntelObject(sOwnerID, sEnemyID, round, isSpy, 0), m_iLatinum(latinum)
+CEcoIntelObj::CEcoIntelObj(const CString& sOwnerID, const CString& sEnemyID, USHORT round, BOOLEAN isSpy, int credits)
+	: CIntelObject(sOwnerID, sEnemyID, round, isSpy, 0), m_iCredits(credits)
 {
 	m_KO = CPoint(-1,-1);
 	m_nID = 0;
@@ -46,7 +46,7 @@ CEcoIntelObj::CEcoIntelObj(const CEcoIntelObj & rhs)
 	m_KO = rhs.m_KO;
 	m_nID = rhs.m_nID;
 	m_byNumber = rhs.m_byNumber;
-	m_iLatinum = rhs.m_iLatinum;
+	m_iCredits = rhs.m_iCredits;
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -60,14 +60,14 @@ void CEcoIntelObj::Serialize(CArchive &ar)
 		ar << m_KO;
 		ar << m_nID;
 		ar << m_byNumber;
-		ar << m_iLatinum;
+		ar << m_iCredits;
 	}
 	else if (ar.IsLoading())
 	{
 		ar >> m_KO;
 		ar >> m_nID;
 		ar >> m_byNumber;
-		ar >> m_iLatinum;
+		ar >> m_iCredits;
 	}
 }
 
@@ -128,8 +128,8 @@ void CEcoIntelObj::CreateText(CBotf2Doc* pDoc, BYTE n, const CString& param)
 							s.Format("%d", m_byNumber);
 							csInput.Replace("$number$", s);
 						}
-						s.Format("%d", m_iLatinum);
-						csInput.Replace("$latinum$", s);
+						s.Format("%d", m_iCredits);
+						csInput.Replace("$credits$", s);
 						m_strOwnerDesc = csInput;
 						break;
 					}					
@@ -186,8 +186,8 @@ void CEcoIntelObj::CreateText(CBotf2Doc* pDoc, BYTE n, const CString& param)
 								s.Format("%d", m_byNumber);
 								csInput.Replace("$number$", s);
 							}
-							s.Format("%d", m_iLatinum);
-							csInput.Replace("$latinum$", s);
+							s.Format("%d", m_iCredits);
+							csInput.Replace("$credits$", s);
 							m_strEnemyDesc = csInput;
 							if (param != "")
 							{

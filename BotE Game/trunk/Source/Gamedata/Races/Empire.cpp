@@ -40,12 +40,12 @@ void CEmpire::Serialize(CArchive &ar)
 	if (ar.IsStoring())
 	{
 		ar << m_byNumberOfSystems;
-		ar << m_iLatinum;
-		ar << m_iLatinumChange;
+		ar << m_iCredits;
+		ar << m_iCreditsChange;
 		ar << m_iShipCosts;
 		ar << m_iPopSupportCosts;
 		ar << m_lFP;
-		for (int i = 0; i <= DILITHIUM; i++)
+		for (int i = 0; i <= DERITIUM; i++)
 			ar << m_lResourceStorages[i];
 		ar << m_sEmpireID;
 		ar << m_Messages.GetSize();
@@ -58,12 +58,12 @@ void CEmpire::Serialize(CArchive &ar)
 		ClearMessagesAndEvents();
 		int number = 0;
 		ar >> m_byNumberOfSystems;
-		ar >> m_iLatinum;
-		ar >> m_iLatinumChange;
+		ar >> m_iCredits;
+		ar >> m_iCreditsChange;
 		ar >> m_iShipCosts;
 		ar >> m_iPopSupportCosts;
 		ar >> m_lFP;
-		for (int i = 0; i <= DILITHIUM; i++)
+		for (int i = 0; i <= DERITIUM; i++)
 			ar >> m_lResourceStorages[i];
 		ar >> m_sEmpireID;
 		ar >> number;
@@ -119,8 +119,8 @@ void CEmpire::Reset(void)
 {
 	m_byNumberOfSystems = 1;
 	m_sEmpireID = "";
-	m_iLatinum = 1000;
-	m_iLatinumChange = 0;
+	m_iCredits = 1000;
+	m_iCreditsChange = 0;
 	m_iShipCosts = 0;
 	m_iPopSupportCosts = 0;
 	

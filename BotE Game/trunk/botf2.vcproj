@@ -867,6 +867,10 @@
 				RelativePath=".\Source\StdAfx.h"
 				>
 			</File>
+			<File
+				RelativePath=".\Source\targetver.h"
+				>
+			</File>
 			<Filter
 				Name="General"
 				>

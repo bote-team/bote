@@ -27,7 +27,7 @@ CShip::CShip()
 	m_bIsFlagShip = FALSE;
 	m_bySpecial[0] = m_bySpecial[1] = NONE;
 	m_Fleet = NULL;
-	for (int i = TITAN; i <= DILITHIUM; i++)
+	for (int i = TITAN; i <= DERITIUM; i++)
 		m_iLoadedResources[i] = 0;
 	m_bCloakOn = FALSE;
 	m_nCombatTactic = COMBAT_TACTIC_ATTACK;
@@ -90,7 +90,7 @@ CShip::CShip(const CShip & rhs)
 	m_iStealthPower = rhs.m_iStealthPower;
 	m_bCloakOn = rhs.m_bCloakOn;
 	m_iStorageRoom = rhs.m_iStorageRoom;
-	for (int i = TITAN; i <= DILITHIUM; i++)
+	for (int i = TITAN; i <= DERITIUM; i++)
 		m_iLoadedResources[i] = rhs.m_iLoadedResources[i];
 	m_iColonizePoints = rhs.m_iColonizePoints;
 	m_iStationBuildPoints = rhs.m_iStationBuildPoints;
@@ -154,7 +154,7 @@ CShip & CShip::operator=(const CShip & rhs)
 	m_iStealthPower = rhs.m_iStealthPower;
 	m_bCloakOn = rhs.m_bCloakOn;
 	m_iStorageRoom = rhs.m_iStorageRoom;
-	for (int i = TITAN; i <= DILITHIUM; i++)
+	for (int i = TITAN; i <= DERITIUM; i++)
 		m_iLoadedResources[i] = rhs.m_iLoadedResources[i];
 	m_iColonizePoints = rhs.m_iColonizePoints;
 	m_iStationBuildPoints = rhs.m_iStationBuildPoints;
@@ -202,7 +202,7 @@ void CShip::Serialize(CArchive &ar)
 		ar << m_iStealthPower;
 		ar << m_bCloakOn;
 		ar << m_iStorageRoom;
-		for (int i = TITAN; i <= DILITHIUM; i++)
+		for (int i = TITAN; i <= DERITIUM; i++)
 			ar << m_iLoadedResources[i];
 		ar << m_iColonizePoints;
 		ar << m_iStationBuildPoints;
@@ -249,7 +249,7 @@ void CShip::Serialize(CArchive &ar)
 		ar >> m_iStealthPower;
 		ar >> m_bCloakOn;
 		ar >> m_iStorageRoom;
-		for (int i = TITAN; i <= DILITHIUM; i++)
+		for (int i = TITAN; i <= DERITIUM; i++)
 			ar >> m_iLoadedResources[i];
 		ar >> m_iColonizePoints;
 		ar >> m_iStationBuildPoints;
@@ -525,10 +525,10 @@ USHORT CShip::GetUsedStorageRoom(const CArray<CTroopInfo>* troopInfo)
 		BYTE id = this->GetTransportedTroops()->GetAt(i).GetID();
 		usedStorage += troopInfo->GetAt(id).GetSize();
 	}		
-	for (int i = TITAN; i <= DILITHIUM; i++)
+	for (int i = TITAN; i <= DERITIUM; i++)
 	{
-		// Dilithium wird im Verhältnis 1:250 gelagert, die anderen Ressourcen im Verhältnis 1:1
-		if (i == DILITHIUM)
+		// Deritium wird im Verhältnis 1:250 gelagert, die anderen Ressourcen im Verhältnis 1:1
+		if (i == DERITIUM)
 			usedStorage += this->GetLoadedResources(i) * 250;
 		else
 			usedStorage += this->GetLoadedResources(i);

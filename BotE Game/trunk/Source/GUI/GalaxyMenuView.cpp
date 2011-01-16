@@ -16,6 +16,7 @@
 #include "Galaxy\Anomaly.h"
 #include "IniLoader.h"
 #include "HTMLStringBuilder.h"
+#include "ImageStone/ImageStone.h"
 
 BOOLEAN CGalaxyMenuView::m_bDrawTradeRoute = FALSE;
 CTradeRoute CGalaxyMenuView::m_TradeRoute;
@@ -1479,6 +1480,12 @@ void CGalaxyMenuView::GenerateGalaxyMap()
 /// @return	der erstellte Tooltip-Text
 CString CGalaxyMenuView::CreateTooltip(void)
 {
+	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	ASSERT(pDoc);
+	
+	if (!pDoc->m_bDataReceived)
+		return "";	
+
 	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
 	if (!pMajor)
@@ -1494,8 +1501,7 @@ CString CGalaxyMenuView::CreateTooltip(void)
 	// Sektor, über dem sich die Maus befindet, ermitteln
 	struct::Sector ko = pMajor->GetStarmap()->GetClickedSector(pt);
 	if (PT_IN_RECT(ko, 0, 0, STARMAP_SECTORS_HCOUNT, STARMAP_SECTORS_VCOUNT))
-	{
-		CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	{		
 		CSector* pSector = &(pDoc->GetSector(ko.x, ko.y));
 		CString sTip;
 		if (pSector->GetScanned(pMajor->GetRaceID()) == FALSE)

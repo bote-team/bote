@@ -34,8 +34,8 @@ CSystemProd::CSystemProd(const CSystemProd &rhs)
 	m_iDuraniumProd = rhs.m_iDuraniumProd;
 	m_iCrystalProd = rhs.m_iCrystalProd;
 	m_iIridiumProd = rhs.m_iIridiumProd;
-	m_iDilithiumProd = rhs.m_iDilithiumProd;
-	m_iLatinumProd = rhs.m_iLatinumProd;
+	m_iDeritiumProd = rhs.m_iDeritiumProd;
+	m_iCreditsProd = rhs.m_iCreditsProd;
 	m_iMoralProd = rhs.m_iMoralProd;
 	// Forschungstechboni
 	m_iBioTechBoni = rhs.m_iBioTechBoni;
@@ -78,7 +78,7 @@ CSystemProd::CSystemProd(const CSystemProd &rhs)
 	m_iUpdateBuildSpeed = rhs.m_iUpdateBuildSpeed;
 	m_iShipBuildSpeed = rhs.m_iShipBuildSpeed;
 	m_iTroopBuildSpeed = rhs.m_iTroopBuildSpeed;
-	for (int res = TITAN; res <= DILITHIUM; res++)
+	for (int res = TITAN; res <= DERITIUM; res++)
 		m_bResourceDistributor[res] = rhs.m_bResourceDistributor[res];
 }
 
@@ -101,8 +101,8 @@ CSystemProd & CSystemProd::operator=(const CSystemProd & rhs)
 	m_iDuraniumProd = rhs.m_iDuraniumProd;
 	m_iCrystalProd = rhs.m_iCrystalProd;
 	m_iIridiumProd = rhs.m_iIridiumProd;
-	m_iDilithiumProd = rhs.m_iDilithiumProd;
-	m_iLatinumProd = rhs.m_iLatinumProd;
+	m_iDeritiumProd = rhs.m_iDeritiumProd;
+	m_iCreditsProd = rhs.m_iCreditsProd;
 	m_iMoralProd = rhs.m_iMoralProd;
 	// Forschungstechboni
 	m_iBioTechBoni = rhs.m_iBioTechBoni;
@@ -145,7 +145,7 @@ CSystemProd & CSystemProd::operator=(const CSystemProd & rhs)
 	m_iUpdateBuildSpeed = rhs.m_iUpdateBuildSpeed;
 	m_iShipBuildSpeed = rhs.m_iShipBuildSpeed;
 	m_iTroopBuildSpeed = rhs.m_iTroopBuildSpeed;
-	for (int res = TITAN; res <= DILITHIUM; res++)
+	for (int res = TITAN; res <= DERITIUM; res++)
 		m_bResourceDistributor[res] = rhs.m_bResourceDistributor[res];
 	return *this;
 }
@@ -171,8 +171,8 @@ void CSystemProd::Serialize(CArchive &ar)
 		ar << m_iDuraniumProd;
 		ar << m_iCrystalProd;
 		ar << m_iIridiumProd;
-		ar << m_iDilithiumProd;
-		ar << m_iLatinumProd;
+		ar << m_iDeritiumProd;
+		ar << m_iCreditsProd;
 		ar << m_iMoralProd;
 		ar << m_iBioTechBoni;
 		ar << m_iEnergyTechBoni;
@@ -212,7 +212,7 @@ void CSystemProd::Serialize(CArchive &ar)
 		ar << m_iUpdateBuildSpeed;
 		ar << m_iShipBuildSpeed;
 		ar << m_iTroopBuildSpeed;
-		for (int res = TITAN; res <= DILITHIUM; res++)
+		for (int res = TITAN; res <= DERITIUM; res++)
 			ar << m_bResourceDistributor[res];		
 	}
 	// wenn geladen wird
@@ -230,8 +230,8 @@ void CSystemProd::Serialize(CArchive &ar)
 		ar >> m_iDuraniumProd;
 		ar >> m_iCrystalProd;
 		ar >> m_iIridiumProd;
-		ar >> m_iDilithiumProd;
-		ar >> m_iLatinumProd;
+		ar >> m_iDeritiumProd;
+		ar >> m_iCreditsProd;
 		ar >> m_iMoralProd;
 		ar >> m_iBioTechBoni;
 		ar >> m_iEnergyTechBoni;
@@ -271,7 +271,7 @@ void CSystemProd::Serialize(CArchive &ar)
 		ar >> m_iUpdateBuildSpeed;
 		ar >> m_iShipBuildSpeed;
 		ar >> m_iTroopBuildSpeed;
-		for (int res = TITAN; res <= DILITHIUM; res++)
+		for (int res = TITAN; res <= DERITIUM; res++)
 			ar >> m_bResourceDistributor[res];		
 	}
 }
@@ -292,8 +292,8 @@ void CSystemProd::CalculateProduction(const CBuildingInfo* building)
 	m_iDuraniumProd		+= building->GetDuraniumProd();
 	m_iCrystalProd		+= building->GetCrystalProd();
 	m_iIridiumProd		+= building->GetIridiumProd();
-	m_iDilithiumProd	+= building->GetDilithiumProd();
-	m_iLatinumProd		+= building->GetLatinum();
+	m_iDeritiumProd	+= building->GetDeritiumProd();
+	m_iCreditsProd		+= building->GetCredits();
 	m_iMoralProd		+= building->GetMoralProd();
 	// Forschungstechboni
 	m_iBioTechBoni		+= building->GetBioTechBoni();
@@ -342,7 +342,7 @@ void CSystemProd::CalculateProduction(const CBuildingInfo* building)
 	m_iShipBuildSpeed	+= building->GetShipBuildSpeed();
 	m_iTroopBuildSpeed	+= building->GetTroopBuildSpeed();
 	// Ressourcenverteiler
-	for (int res = TITAN; res <= DILITHIUM; res++)
+	for (int res = TITAN; res <= DERITIUM; res++)
 		m_bResourceDistributor[res] |= building->GetResourceDistributor(res);
 }
 
@@ -358,7 +358,7 @@ void CSystemProd::IncludeSystemMoral(short moral)
 	m_iDuraniumProd = (int)(m_iDuraniumProd * moral/100);
 	m_iCrystalProd	= (int)(m_iCrystalProd * moral/100);
 	m_iIridiumProd	= (int)(m_iIridiumProd * moral/100);
-	m_iLatinumProd	= (short)(m_iLatinumProd * moral/100);
+	m_iCreditsProd	= (short)(m_iCreditsProd * moral/100);
 }
 
 int CSystemProd::GetResourceProd(BYTE res) const
@@ -375,8 +375,8 @@ int CSystemProd::GetResourceProd(BYTE res) const
 		return m_iCrystalProd;
 	case IRIDIUM:
 		return m_iIridiumProd;
-	case DILITHIUM:
-		return m_iDilithiumProd;
+	case DERITIUM:
+		return m_iDeritiumProd;
 	default:
 		return 0;
 	}
@@ -398,8 +398,8 @@ void CSystemProd::Reset()
 	m_iDuraniumProd = 0;			// Duraniumproduktion in dem System
 	m_iCrystalProd = 0;				// Crystalproduktion in dem System
 	m_iIridiumProd = 0;				// Iridiumproduktion in dem System
-	m_iDilithiumProd = 0;			// Dilithiumproduktion
-	m_iLatinumProd = 0;				// Latinumproduktion in dem System, abhängig von der Bevölkerung
+	m_iDeritiumProd = 0;			// Deritiumproduktion
+	m_iCreditsProd = 0;				// Creditsproduktion in dem System, abhängig von der Bevölkerung
 	m_iMoralProd = 0;				// Moralproduktion auf dem System
 	// Forschungstechboni
 	m_iBioTechBoni = 0;
@@ -442,6 +442,6 @@ void CSystemProd::Reset()
 	m_iUpdateBuildSpeed = 0;
 	m_iShipBuildSpeed = 0;
 	m_iTroopBuildSpeed = 0;
-	for (int res = TITAN; res <= DILITHIUM; res++)
+	for (int res = TITAN; res <= DERITIUM; res++)
 		m_bResourceDistributor[res] = false;
 }

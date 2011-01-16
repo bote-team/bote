@@ -279,7 +279,7 @@ void CMinor::ConsumeResources(CBotf2Doc* pDoc)
 	ASSERT(pDoc);
 
 	// bewohnbar sind:    C,F,G,H,K,L,M,N,O,P,Q,R
-	BOOLEAN exist[DILITHIUM + 1] = {0};
+	BOOLEAN exist[DERITIUM + 1] = {0};
 	pDoc->GetSector(m_ptKO).GetAvailableResources(exist, true);
 	
 	short div;
@@ -289,7 +289,7 @@ void CMinor::ConsumeResources(CBotf2Doc* pDoc)
 	exist[TITAN] == TRUE ? div = 1000 : div = 4000;
 	value = rand()%div;
 	value = min(3000, value);
-	pDoc->GetSystem(m_ptKO).SetRessourceStore(TITAN, -value);
+	pDoc->GetSystem(m_ptKO).SetResourceStore(TITAN, -value);
 	
 	//CString s;
 	//s.Format("Name der Rasse: %s\nTitanabbau: %d\nVerbrauch: %d\nLager: %d",m_strRaceName,exist[0],value,m_iRessourceStorage[0]);
@@ -299,29 +299,29 @@ void CMinor::ConsumeResources(CBotf2Doc* pDoc)
 	exist[DEUTERIUM] == TRUE ? div = 1500 : div = 4000;
 	value = rand()%div;
 	value = min(3000, value);
-	pDoc->GetSystem(m_ptKO).SetRessourceStore(DEUTERIUM, -value);
+	pDoc->GetSystem(m_ptKO).SetResourceStore(DEUTERIUM, -value);
 
 	// Duranium
 	exist[DURANIUM] == TRUE ? div = 1500 : div = 4000;
 	value = rand()%div;
 	value = min(3000, value);
-	pDoc->GetSystem(m_ptKO).SetRessourceStore(DURANIUM, -value);
+	pDoc->GetSystem(m_ptKO).SetResourceStore(DURANIUM, -value);
 
 	// Kristalle
 	exist[CRYSTAL] == TRUE ? div = 1500 : div = 4000;
 	value = rand()%div;
 	value = min(3000, value);
-	pDoc->GetSystem(m_ptKO).SetRessourceStore(CRYSTAL, -value);
+	pDoc->GetSystem(m_ptKO).SetResourceStore(CRYSTAL, -value);
 
 	// Iridium
 	exist[IRIDIUM] == TRUE ? div = 1500 : div = 4000;
 	value = rand()%div;
 	value = min(3000, value);
-	pDoc->GetSystem(m_ptKO).SetRessourceStore(IRIDIUM, -value);
+	pDoc->GetSystem(m_ptKO).SetResourceStore(IRIDIUM, -value);
 
-	// Dilithium
+	// Deritium
 	value = rand()%2;
-	pDoc->GetSystem(m_ptKO).SetRessourceStore(DILITHIUM, -value);
+	pDoc->GetSystem(m_ptKO).SetResourceStore(DERITIUM, -value);
 }
 
 /// Funktion überprüft, ob die Minorrace das Angebot aufgrund anderer Verträge überhaupt annehmen kann.

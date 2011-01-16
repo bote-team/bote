@@ -55,6 +55,7 @@ private:
 	afx_msg void OnSettings();
 	afx_msg void OnChat();	
 	afx_msg void OnOpenManual();
+	afx_msg void OnHelpWiki();
 	afx_msg void OnOpenReadme();
-	afx_msg void OnOpenCredits();	
+	afx_msg void OnOpenCredits();		
 };

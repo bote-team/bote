@@ -214,18 +214,18 @@ void CDiplomacyController::SendToMajor(CBotf2Doc* pDoc, CMajor* pToMajor, CDiplo
 				message.GenerateMessage(s, DIPLOMACY, "", 0, 0, 2);
 				pToMajor->GetEmpire()->AddMessage(message);
 				// Die Credits des Geschenkes gutschreiben
-				pToMajor->GetEmpire()->SetLatinum(pInfo->m_nCredits);
+				pToMajor->GetEmpire()->SetCredits(pInfo->m_nCredits);
 				// Die Rohstoffe des Geschenkes gutschreiben
 				for (int k = TITAN; k <= IRIDIUM; k++)
 					if (pInfo->m_nResources[k] > 0)
 						pToMajor->GetEmpire()->GetGlobalStorage()->AddRessource(pInfo->m_nResources[k], k, CPoint(-1,-1));
 				// Deritium kommt nicht ins globale Lager sondern ins Heimatsystem
-				if (pInfo->m_nResources[DILITHIUM] > 0)
+				if (pInfo->m_nResources[DERITIUM] > 0)
 				{
 					CPoint p = pDoc->GetRaceKO(pToMajor->GetRaceID());
 					// gehört das System auch noch dem Major
 					if (p != CPoint(-1,-1) && pDoc->GetSystem(p).GetOwnerOfSystem() == pToMajor->GetRaceID())
-						pDoc->GetSystem(p).SetDilithiumStore(pInfo->m_nResources[DILITHIUM]);
+						pDoc->GetSystem(p).SetDeritiumStore(pInfo->m_nResources[DERITIUM]);
 				}
 
 				// Angebot in den Nachrichteneingang legen
@@ -454,16 +454,16 @@ void CDiplomacyController::ReceiveToMajor(CBotf2Doc* pDoc, CMajor* pToMajor, CDi
 						}
 
 						// Die möglicherweise dazugegebenen Credits und die Ressourcen gutschreiben.
-						pToMajor->GetEmpire()->SetLatinum(answer.m_nCredits);
+						pToMajor->GetEmpire()->SetCredits(answer.m_nCredits);
 						for (int res = TITAN; res <= IRIDIUM; res++)
 							pToMajor->GetEmpire()->GetGlobalStorage()->AddRessource(answer.m_nResources[res], res, CPoint(-1,-1));
 						// Deritium kommt nicht ins globale Lager sondern ins Heimatsystem
-						if (pInfo->m_nResources[DILITHIUM] > 0)
+						if (pInfo->m_nResources[DERITIUM] > 0)
 						{
 							CPoint p = pDoc->GetRaceKO(pToMajor->GetRaceID());
 							// gehört das System auch noch dem Major
 							if (p != CPoint(-1,-1) && pDoc->GetSystem(p).GetOwnerOfSystem() == pToMajor->GetRaceID())
-								pDoc->GetSystem(p).SetDilithiumStore(pInfo->m_nResources[DILITHIUM]);
+								pDoc->GetSystem(p).SetDeritiumStore(pInfo->m_nResources[DERITIUM]);
 						}
 
 						// Beziehungsverbesserung
@@ -515,13 +515,13 @@ void CDiplomacyController::ReceiveToMajor(CBotf2Doc* pDoc, CMajor* pToMajor, CDi
 						// Wenn wir das Angebot abgelehnt haben, dann bekommt die Majorrace, die es mir gemacht hat
 						// ihre Ressourcen und ihre Credits wieder zurück, sofern sie es mir als Anreiz mit zum Vertrags-
 						// angebot gemacht haben
-						((CMajor*)pFromRace)->GetEmpire()->SetLatinum(answer.m_nCredits);
-						for (int res = TITAN; res <= DILITHIUM; res++)
+						((CMajor*)pFromRace)->GetEmpire()->SetCredits(answer.m_nCredits);
+						for (int res = TITAN; res <= DERITIUM; res++)
 						{
 							CPoint pt = answer.m_ptKO;
 							if (pt != CPoint(-1,-1))
 								if (pDoc->GetSystem(pt).GetOwnerOfSystem() == pFromRace->GetRaceID())
-									pDoc->GetSystem(pt).SetRessourceStore(res, answer.m_nResources[res]);
+									pDoc->GetSystem(pt).SetResourceStore(res, answer.m_nResources[res]);
 						}
 					}				
 				}
@@ -541,16 +541,16 @@ void CDiplomacyController::ReceiveToMajor(CBotf2Doc* pDoc, CMajor* pToMajor, CDi
 						((CMajor*)pFromRace)->GetEmpire()->AddMessage(message);
 
 						// Die geforderten Credits und die Ressourcen gutschreiben.
-						((CMajor*)pFromRace)->GetEmpire()->SetLatinum(answer.m_nCredits);
+						((CMajor*)pFromRace)->GetEmpire()->SetCredits(answer.m_nCredits);
 						for (int res = TITAN; res <= IRIDIUM; res++)
 							((CMajor*)pFromRace)->GetEmpire()->GetGlobalStorage()->AddRessource(answer.m_nResources[res], res, CPoint(-1,-1));
 						// Deritium kommt nicht ins globale Lager sondern ins Heimatsystem
-						if (pInfo->m_nResources[DILITHIUM] > 0)
+						if (pInfo->m_nResources[DERITIUM] > 0)
 						{
 							CPoint p = pDoc->GetRaceKO(pFromRace->GetRaceID());
 							// gehört das System auch noch dem Major
 							if (p != CPoint(-1,-1) && pDoc->GetSystem(p).GetOwnerOfSystem() == pFromRace->GetRaceID())
-								pDoc->GetSystem(p).SetDilithiumStore(pInfo->m_nResources[DILITHIUM]);
+								pDoc->GetSystem(p).SetDeritiumStore(pInfo->m_nResources[DERITIUM]);
 						}
 
 						// Beziehungsverbesserung bei Annahme auf der fordernden Seite (0 bis 10 Punkte)
@@ -612,16 +612,16 @@ void CDiplomacyController::ReceiveToMajor(CBotf2Doc* pDoc, CMajor* pToMajor, CDi
 						pFromRace->SetRelation(pToMajor->GetRaceID(), abs(answer.m_nType));
 
 						// Die möglicherweise dazugegebenen Credits und die Ressourcen gutschreiben.
-						pToMajor->GetEmpire()->SetLatinum(answer.m_nCredits);
+						pToMajor->GetEmpire()->SetCredits(answer.m_nCredits);
 						for (int res = TITAN; res <= IRIDIUM; res++)
 							pToMajor->GetEmpire()->GetGlobalStorage()->AddRessource(answer.m_nResources[res], res, CPoint(-1,-1));
 						// Deritium kommt nicht ins globale Lager sondern ins Heimatsystem
-						if (pInfo->m_nResources[DILITHIUM] > 0)
+						if (pInfo->m_nResources[DERITIUM] > 0)
 						{
 							CPoint p = pDoc->GetRaceKO(pToMajor->GetRaceID());
 							// gehört das System auch noch dem Major
 							if (p != CPoint(-1,-1) && pDoc->GetSystem(p).GetOwnerOfSystem() == pToMajor->GetRaceID())
-								pDoc->GetSystem(p).SetDilithiumStore(pInfo->m_nResources[DILITHIUM]);
+								pDoc->GetSystem(p).SetDeritiumStore(pInfo->m_nResources[DERITIUM]);
 						}
 
 						// Kriegserklärung erstellen (für den der das Angebot angenommen hat)
@@ -709,13 +709,13 @@ void CDiplomacyController::ReceiveToMajor(CBotf2Doc* pDoc, CMajor* pToMajor, CDi
 						// Wenn wir das Angebot abgelehnt haben, dann bekommt die Majorrace, die es mir gemacht hat
 						// ihre Ressourcen und ihre Credits wieder zurück, sofern sie es mir als Anreiz mit zum Vertrags-
 						// angebot gemacht haben
-						((CMajor*)pFromRace)->GetEmpire()->SetLatinum(answer.m_nCredits);
-						for (int res = TITAN; res <= DILITHIUM; res++)
+						((CMajor*)pFromRace)->GetEmpire()->SetCredits(answer.m_nCredits);
+						for (int res = TITAN; res <= DERITIUM; res++)
 						{
 							CPoint pt = answer.m_ptKO;
 							if (pt != CPoint(-1,-1))
 								if (pDoc->GetSystem(pt).GetOwnerOfSystem() == pFromRace->GetRaceID())
-									pDoc->GetSystem(pt).SetRessourceStore(res, answer.m_nResources[res]);
+									pDoc->GetSystem(pt).SetResourceStore(res, answer.m_nResources[res]);
 						}
 					}
 				}
@@ -839,7 +839,7 @@ void CDiplomacyController::SendToMinor(CBotf2Doc* pDoc, CMinor* pToMinor, CDiplo
 			{
 				CString sCredits;
 				sCredits.Format("%d", pInfo->m_nCredits);
-				s = sEmpireName + " " + CResourceManager::GetString("LATINUM_PRESENT", FALSE, sCredits, pToMinor->GetRaceName());
+				s = sEmpireName + " " + CResourceManager::GetString("CREDITS_PRESENT", FALSE, sCredits, pToMinor->GetRaceName());
 				message.GenerateMessage(s, DIPLOMACY, "", 0, FALSE);
 				pFromMajor->GetEmpire()->AddMessage(message);
 				s = "";
@@ -875,11 +875,11 @@ void CDiplomacyController::SendToMinor(CBotf2Doc* pDoc, CMinor* pToMinor, CDiplo
 				number.Format("%d", pInfo->m_nResources[IRIDIUM]);
 				s = sEmpireName + " " + CResourceManager::GetString("IRIDIUM_PRESENT", FALSE, number, pToMinor->GetRaceName());			
 			}
-			else if (pInfo->m_nResources[DILITHIUM] > 0)
+			else if (pInfo->m_nResources[DERITIUM] > 0)
 			{
 				CString number;
-				number.Format("%d", pInfo->m_nResources[DILITHIUM]);
-				s = sEmpireName + " " + CResourceManager::GetString("DILITHIUM_PRESENT", FALSE, number, pToMinor->GetRaceName());			
+				number.Format("%d", pInfo->m_nResources[DERITIUM]);
+				s = sEmpireName + " " + CResourceManager::GetString("DERITIUM_PRESENT", FALSE, number, pToMinor->GetRaceName());			
 			}		
 		}
 		// Nachricht machen, das wir eine Bestechung versuchen
@@ -1026,8 +1026,8 @@ void CDiplomacyController::ReceiveToMinor(CBotf2Doc* pDoc, CMinor* pToMinor, CDi
 				CPoint pt = pToMinor->GetRaceKO();
 				if (pt != CPoint(-1,-1))
 				{
-					for (int res = TITAN; res <= DILITHIUM; res++)
-						pDoc->GetSystem(pt).SetRessourceStore(res, pInfo->m_nResources[res]);
+					for (int res = TITAN; res <= DERITIUM; res++)
+						pDoc->GetSystem(pt).SetResourceStore(res, pInfo->m_nResources[res]);
 				}
 			}			
 			else if (pInfo->m_nAnswerStatus == DECLINED)
@@ -1053,13 +1053,13 @@ void CDiplomacyController::ReceiveToMinor(CBotf2Doc* pDoc, CMinor* pToMinor, CDi
 					// Wenn das Angebot abgelehnt wurde, dann bekommt die Majorrace, die es gemacht hat
 					// ihre Ressourcen und ihre Credits wieder zurück, sofern sie es als Anreiz mit zum Vertrags-
 					// angebot gemacht haben
-					pFromMajor->GetEmpire()->SetLatinum(pInfo->m_nCredits);
-					for (int res = TITAN; res <= DILITHIUM; res++)
+					pFromMajor->GetEmpire()->SetCredits(pInfo->m_nCredits);
+					for (int res = TITAN; res <= DERITIUM; res++)
 					{
 						CPoint pt = pInfo->m_ptKO;
 						if (pt != CPoint(-1,-1))
 							if (pDoc->GetSystem(pt).GetOwnerOfSystem() == pFromMajor->GetRaceID())
-								pDoc->GetSystem(pt).SetRessourceStore(res, pInfo->m_nResources[res]);
+								pDoc->GetSystem(pt).SetResourceStore(res, pInfo->m_nResources[res]);
 					}
 				}
 			}

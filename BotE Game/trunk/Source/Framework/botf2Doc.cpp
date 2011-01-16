@@ -1000,6 +1000,13 @@ void CBotf2Doc::GenerateGalaxy()
 		}
 	}
 
+	int nStarDensity = 35;
+	int nMinorDensity = 30;
+	int nAnomalyDensity = 9;
+	CIniLoader::GetInstance()->ReadValue("Special", "STARDENSITY", nStarDensity);
+	CIniLoader::GetInstance()->ReadValue("Special", "MINORDENSITY", nMinorDensity);
+	CIniLoader::GetInstance()->ReadValue("Special", "ANOMALYDENSITY", nAnomalyDensity);
+
 	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 	{
 		CMajor* pMajor = it->second;
@@ -1013,8 +1020,8 @@ void CBotf2Doc::GenerateGalaxy()
 		m_Sector[raceKO.x][raceKO.y].SetColonyOwner(it->first);
 		m_Sector[raceKO.x][raceKO.y].CreatePlanets(it->first);
 		m_System[raceKO.x][raceKO.y].SetOwnerOfSystem(it->first);
-		m_System[raceKO.x][raceKO.y].SetRessourceStore(TITAN, 1000);
-		m_System[raceKO.x][raceKO.y].SetRessourceStore(DILITHIUM, 3);
+		m_System[raceKO.x][raceKO.y].SetResourceStore(TITAN, 1000);
+		m_System[raceKO.x][raceKO.y].SetResourceStore(DERITIUM, 3);
 		
 		// Zwei Sonnensysteme in unmittelbarer Umgebung des Heimatsystems anlegen
 		BYTE nextSunSystems = 0;
@@ -1026,7 +1033,7 @@ void CBotf2Doc::GenerateGalaxy()
 				&& raceKO.y + ko.y < STARMAP_SECTORS_VCOUNT && raceKO.y + ko.y > -1)
 				if (!m_Sector[raceKO.x + ko.x][raceKO.y + ko.y].GetSunSystem())
 				{
-					m_Sector[raceKO.x + ko.x][raceKO.y + ko.y].GenerateSector(100,25);
+					m_Sector[raceKO.x + ko.x][raceKO.y + ko.y].GenerateSector(100, nMinorDensity);
 					nextSunSystems++;
 				}
 		};
@@ -1040,13 +1047,6 @@ void CBotf2Doc::GenerateGalaxy()
 							m_Sector[raceKO.x + x][raceKO.y + y].SetScanned(it->first);
 	}
 
-	int nStarDensity = 35;
-	int nMinorDensity = 30;
-	int nAnomalyDensity = 9;
-	CIniLoader::GetInstance()->ReadValue("Special", "STARDENSITY", nStarDensity);
-	CIniLoader::GetInstance()->ReadValue("Special", "MINORDENSITY", nMinorDensity);
-	CIniLoader::GetInstance()->ReadValue("Special", "ANOMALYDENSITY", nAnomalyDensity);
-	
 	// Vektor der verwendeten Minors, diese nehmen aktiv am Spiel teil.
 	set<CString> sUsedMinors;
 	// nun die Sektoren generieren
@@ -1103,15 +1103,15 @@ void CBotf2Doc::GenerateGalaxy()
 					// ein Deritium auf dem ersten kolonisierten Planeten hinzugefügt
 					if (pMinor->GetSpaceflightNation())
 					{
-						BOOLEAN bRes[DILITHIUM + 1] = {FALSE};
+						BOOLEAN bRes[DERITIUM + 1] = {FALSE};
 						m_Sector[x][y].GetAvailableResources(bRes, true);
 						// gibt es kein Deritium=
-						if (!bRes[DILITHIUM])
+						if (!bRes[DERITIUM])
 						{
 							for (int p = 0; p < m_Sector[x][y].GetPlanets()->GetSize(); p++)
 								if (m_Sector[x][y].GetPlanet(p)->GetCurrentHabitant() > 0 && m_Sector[x][y].GetPlanet(p)->GetColonized())
 								{
-									m_Sector[x][y].GetPlanet(p)->SetBoni(DILITHIUM, TRUE);
+									m_Sector[x][y].GetPlanet(p)->SetBoni(DERITIUM, TRUE);
 									break;
 								}
 						}
@@ -1200,7 +1200,7 @@ void CBotf2Doc::NextRound()
 		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
 		{
 			CMajor* pMajor = it->second;
-			mOldCredits[it->first] = pMajor->GetEmpire()->GetLatinum();
+			mOldCredits[it->first] = pMajor->GetEmpire()->GetCredits();
 		}
 		
 		this->CalcOldRoundData();
@@ -1417,7 +1417,7 @@ void CBotf2Doc::NextRound()
 	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 	{
 		CMajor* pMajor = it->second;
-		mOldCredits[it->first] = pMajor->GetEmpire()->GetLatinum();
+		mOldCredits[it->first] = pMajor->GetEmpire()->GetCredits();
 	}
 	this->CalcOldRoundData();	
 	this->CalcNewRoundData();	
@@ -1430,7 +1430,7 @@ void CBotf2Doc::NextRound()
 	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 	{
 		CMajor* pMajor = it->second;
-		pMajor->GetEmpire()->SetLatinumChange((int)(pMajor->GetEmpire()->GetLatinum() - mOldCredits[pMajor->GetRaceID()]));
+		pMajor->GetEmpire()->SetCreditsChange((int)(pMajor->GetEmpire()->GetCredits() - mOldCredits[pMajor->GetRaceID()]));
 	}
 	
 	// In dieser Runde stattgefundene Kämpfe löschen
@@ -1733,7 +1733,7 @@ void CBotf2Doc::ReadBuildingInfosFromFile()
 				info.SetNeededDuranium(atoi(data[53]));
 				info.SetNeededCrystal(atoi(data[54]));
 				info.SetNeededIridium(atoi(data[55]));
-				info.SetNeededDilithium(atoi(data[56]));
+				info.SetNeededDeritium(atoi(data[56]));
 				info.SetFoodProd(atoi(data[57]));
 				info.SetIPProd(atoi(data[58]));
 				info.SetEnergyProd(atoi(data[59]));
@@ -1744,8 +1744,8 @@ void CBotf2Doc::ReadBuildingInfosFromFile()
 				info.SetDuraniumProd(atoi(data[64]));
 				info.SetCrystalProd(atoi(data[65]));
 				info.SetIridiumProd(atoi(data[66]));
-				info.SetDilithiumProd(atoi(data[67]));
-				info.SetLatinumProd(atoi(data[68]));
+				info.SetDeritiumProd(atoi(data[67]));
+				info.SetCreditsProd(atoi(data[68]));
 				info.SetMoralProd(atoi(data[69]));
 				info.SetMoralProdEmpire(atoi(data[70]));
 				info.SetFoodBoni(atoi(data[71]));
@@ -1758,9 +1758,9 @@ void CBotf2Doc::ReadBuildingInfosFromFile()
 				info.SetDuraniumBoni(atoi(data[78]));
 				info.SetCrystalBoni(atoi(data[79]));
 				info.SetIridiumBoni(atoi(data[80]));
-				info.SetDilithiumBoni(atoi(data[81]));
+				info.SetDeritiumBoni(atoi(data[81]));
 				info.SetAllRessourceBoni(atoi(data[82]));
-				info.SetLatinumBoni(atoi(data[83]));
+				info.SetCreditsBoni(atoi(data[83]));
 				info.SetBioTechBoni(atoi(data[84]));
 				info.SetEnergyTechBoni(atoi(data[85]));
 				info.SetCompTechBoni(atoi(data[86]));
@@ -1807,7 +1807,7 @@ void CBotf2Doc::ReadBuildingInfosFromFile()
 				info.SetEquivalent(0,0);		// niemand-index immer auf NULL setzen
 				for (int p = HUMAN; p <= DOMINION; p++)
 					info.SetEquivalent(p,atoi(data[126+p]));
-				for (int res = TITAN; res <= DILITHIUM; res++)
+				for (int res = TITAN; res <= DERITIUM; res++)
 					info.SetResourceDistributor(res, atoi(data[133+res]));
 				info.SetNeededSystems(atoi(data[139]));
 				
@@ -1943,7 +1943,7 @@ void CBotf2Doc::ReadShipInfosFromFile()
 				ShipInfo.SetNeededDuranium(atoi(data[15]));
 				ShipInfo.SetNeededCrystal(atoi(data[16]));
 				ShipInfo.SetNeededIridium(atoi(data[17]));
-				ShipInfo.SetNeededDilithium(atoi(data[18]));
+				ShipInfo.SetNeededDeritium(atoi(data[18]));
 				ShipInfo.SetOnlyInSystem(data[19]);
 				ShipInfo.GetHull()->ModifyHull(atoi(data[22]),atoi(data[20]),atoi(data[21]),atoi(data[23]),atoi(data[24]));
 				ShipInfo.GetShield()->ModifyShield(atoi(data[25]),atoi(data[26]),atoi(data[27]));
@@ -3333,9 +3333,9 @@ void CBotf2Doc::CalcOldRoundData()
 
 						// spielt es der Computer, so bekommt er etwas mehr Credits
 						if (pMajor->IsHumanPlayer() == false)
-							pMajor->GetEmpire()->SetLatinum((int)(m_System[x][y].GetProduction()->GetLatinumProd() / m_fDifficultyLevel));
+							pMajor->GetEmpire()->SetCredits((int)(m_System[x][y].GetProduction()->GetCreditsProd() / m_fDifficultyLevel));
 						else
-							pMajor->GetEmpire()->SetLatinum(m_System[x][y].GetProduction()->GetLatinumProd());
+							pMajor->GetEmpire()->SetCredits(m_System[x][y].GetProduction()->GetCreditsProd());
 					
 						// Hier die Gebäude abreißen, die angeklickt wurden
 						if (m_System[x][y].DestroyBuildings())
@@ -3352,10 +3352,10 @@ void CBotf2Doc::CalcOldRoundData()
 						
 						// KI Anpassungen (KI bekommt zufälig etwas Deritium geschenkt)
 						int diliAdd = 0;
-						if (pMajor->IsHumanPlayer() == false && m_System[x][y].GetProduction()->GetDilithiumProd() == 0)
+						if (pMajor->IsHumanPlayer() == false && m_System[x][y].GetProduction()->GetDeritiumProd() == 0)
 						{
 							// umso höher der Schwierigkeitsgrad, desto höher die Wahrscheinlichkeit, das die KI
-							// Dilithium auf ihrem Systemen geschenkt bekommt
+							// Deritium auf ihrem Systemen geschenkt bekommt
 							int temp = rand()%((int)(m_fDifficultyLevel * 7.5));
 							// TRACE("KI: System: %s - DiliAddProb: %d (NULL for adding Dili) - Difficulty: %.2lf\n",m_Sector[x][y].GetName(), temp, m_fDifficultyLevel);
 							if (temp == NULL)
@@ -3516,7 +3516,7 @@ void CBotf2Doc::CalcOldRoundData()
 									int goods = IPProd;
 									if (goods > m_System[x][y].GetAssemblyList()->GetBuildCosts())
 										goods = m_System[x][y].GetAssemblyList()->GetBuildCosts();
-									pMajor->GetEmpire()->SetLatinum(goods);
+									pMajor->GetEmpire()->SetCredits(goods);
 									m_System[x][y].GetAssemblyList()->SetWasBuildingBought(FALSE);
 								}
 								// Ab jetzt die Abfrage ob Gebäude oder ein Update fertig wurde
@@ -3781,8 +3781,8 @@ void CBotf2Doc::CalcNewRoundData()
 				pMajor->GetEmpire()->GetIntelligence()->AddMilitaryBonus(m_System[x][y].GetProduction()->GetMilitarySabotageBoni(), 1);
 
 				// Anzahl aller Ressourcen in allen eigenen Systemen berechnen
-				for (int res = TITAN; res <= DILITHIUM; res++)
-					pMajor->GetEmpire()->SetStorageAdd(res, m_System[x][y].GetRessourceStore(res));				
+				for (int res = TITAN; res <= DERITIUM; res++)
+					pMajor->GetEmpire()->SetStorageAdd(res, m_System[x][y].GetResourceStore(res));				
 			}
 			
 			// für jede Rasse Sektorsachen berechnen
@@ -3936,17 +3936,17 @@ void CBotf2Doc::CalcTrade()
 		if (CTrade::GetMonopolOwner(i).IsEmpty() == false)
 		{
 			//CString hh;
-			//hh.Format("Steuern auf %d: %d Latinum",i,taxMoney[i]);
+			//hh.Format("Steuern auf %d: %d Credits",i,taxMoney[i]);
 			//AfxMessageBox(hh);
 			CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(CTrade::GetMonopolOwner(i)));
 			ASSERT(pMajor);
 			if (pMajor)
-				pMajor->GetEmpire()->SetLatinum(taxMoney[i]);
+				pMajor->GetEmpire()->SetCredits(taxMoney[i]);
 		}
 		
 		// Hier die gekauften Monopole den Rassen zuschreiben. Wer am meisten bezahlt hat (falls mehrere Rassen
-		// in der selben Runde ein Monopol kaufen möchten) bekommt das Monopol. Die anderen bekommen ihr Latinum zurück
-		double max = 0.0f;				// meiste Latinum was für ein Monopol gegeben wurde
+		// in der selben Runde ein Monopol kaufen möchten) bekommt das Monopol. Die anderen bekommen ihr Credits zurück
+		double max = 0.0f;				// meiste Credits was für ein Monopol gegeben wurde
 		CString sMonopolRace = "";		// Rasse die das Monopol erlangt hat
 		
 
@@ -3972,7 +3972,7 @@ void CBotf2Doc::CalcTrade()
 			// Die anderen Rassen bekommen ihr Geld zurück
 			if (pMajor->GetRaceID() != sMonopolRace && pMajor->GetTrade()->GetMonopolBuying()[i] != 0)
 			{
-				pMajor->GetEmpire()->SetLatinum((long)pMajor->GetTrade()->GetMonopolBuying()[i]);
+				pMajor->GetEmpire()->SetCredits((long)pMajor->GetTrade()->GetMonopolBuying()[i]);
 				// Nachricht generieren, dass wir es nicht geschafft haben ein Monopol zu kaufen
 				sNews = CResourceManager::GetString("WE_DONT_GET_MONOPOLY",FALSE,resName);				
 			}
@@ -4639,7 +4639,7 @@ void CBotf2Doc::CalcShipOrders()
 				m_System[ShipKO.x][ShipKO.y].SetDuraniumStore((int)(m_ShipInfoArray.GetAt(id).GetNeededDuranium() * proz / 100));
 				m_System[ShipKO.x][ShipKO.y].SetCrystalStore((int)(m_ShipInfoArray.GetAt(id).GetNeededCrystal() * proz / 100));
 				m_System[ShipKO.x][ShipKO.y].SetIridiumStore((int)(m_ShipInfoArray.GetAt(id).GetNeededIridium() * proz / 100));
-				pMajor->GetEmpire()->SetLatinum((int)(m_ShipInfoArray.GetAt(id).GetNeededIndustry() * proz / 100));
+				pMajor->GetEmpire()->SetCredits((int)(m_ShipInfoArray.GetAt(id).GetNeededIndustry() * proz / 100));
 			}			
 			// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
 			pMajor->GetShipHistory()->ModifyShip(&m_ShipArray[y], m_Sector[ShipKO.x][ShipKO.y].GetName(TRUE), m_iRound, CResourceManager::GetString("DISASSEMBLY"),	CResourceManager::GetString("DESTROYED"));
@@ -4660,7 +4660,7 @@ void CBotf2Doc::CalcShipOrders()
 						m_System[ShipKO.x][ShipKO.y].SetDuraniumStore((int)(m_ShipInfoArray.GetAt(id).GetNeededDuranium() * proz / 100));
 						m_System[ShipKO.x][ShipKO.y].SetCrystalStore((int)(m_ShipInfoArray.GetAt(id).GetNeededCrystal() * proz / 100));
 						m_System[ShipKO.x][ShipKO.y].SetIridiumStore((int)(m_ShipInfoArray.GetAt(id).GetNeededIridium() * proz / 100));
-						pMajor->GetEmpire()->SetLatinum((int)(m_ShipInfoArray.GetAt(id).GetNeededIndustry() * proz / 100));						
+						pMajor->GetEmpire()->SetCredits((int)(m_ShipInfoArray.GetAt(id).GetNeededIndustry() * proz / 100));						
 					}
 					// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
 					pMajor->GetShipHistory()->ModifyShip(m_ShipArray[y].GetFleet()->GetShipFromFleet(x), m_Sector[ShipKO.x][ShipKO.y].GetName(TRUE), m_iRound, CResourceManager::GetString("DISASSEMBLY"), CResourceManager::GetString("DESTROYED"));
@@ -4827,12 +4827,12 @@ void CBotf2Doc::CalcShipOrders()
 				if (m_ShipArray[y].GetFleet() != 0)
 					m_ShipArray[y].GetFleet()->AdoptCurrentOrders(&m_ShipArray[y]);
 			}
-			// wird das System schlußendlich blockiert, so produzieren die Handelsrouten kein Latinum mehr
+			// wird das System schlußendlich blockiert, so produzieren die Handelsrouten kein Credits mehr
 			if (m_System[ShipKO.x][ShipKO.y].GetBlockade() > NULL)
 			{
-				// Wird das System blockiert, so generiert die Handelsroute kein Latinum
+				// Wird das System blockiert, so generiert die Handelsroute kein Credits
 				for (int i = 0; i < m_System[ShipKO.x][ShipKO.y].GetTradeRoutes()->GetSize(); i++)
-					m_System[ShipKO.x][ShipKO.y].GetTradeRoutes()->GetAt(i).SetLatinum(NULL);
+					m_System[ShipKO.x][ShipKO.y].GetTradeRoutes()->GetAt(i).SetCredits(NULL);
 
 				// Eventscreen für den Angreifer und den Blockierten anlegen
 				CRace* pShipOwner = m_pRaceCtrl->GetRace(m_ShipArray[y].GetOwnerOfShip());
@@ -6068,7 +6068,7 @@ void CBotf2Doc::CalcEndDataForNextRound()
 
 		int costs = popSupport - shipCosts;
 		if (costs < 0)
-			pMajor->GetEmpire()->SetLatinum(costs);
+			pMajor->GetEmpire()->SetCredits(costs);
 	}
 
 	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)

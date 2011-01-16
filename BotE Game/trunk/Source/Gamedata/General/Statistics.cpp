@@ -4,6 +4,7 @@
 #include "Races\RaceController.h"
 #include "AI\SectorAI.h"
 #include "Ships\Fleet.h"
+#include <algorithm>
 
 IMPLEMENT_SERIAL (CStatistics, CObject, 1)
 
@@ -29,7 +30,7 @@ void CStatistics::Serialize(CArchive &ar)
 	if (ar.IsStoring())
 	{
 		ar << m_byAverageTechLevel;
-		for (int i = TITAN; i <= DILITHIUM; i++)
+		for (int i = TITAN; i <= DERITIUM; i++)
 			ar << m_nAverageResourceStorages[i];
 		ar << m_mShipPowers.size();
 		for (map<CString, UINT>::const_iterator it = m_mShipPowers.begin(); it != m_mShipPowers.end(); ++it)
@@ -39,7 +40,7 @@ void CStatistics::Serialize(CArchive &ar)
 	else if (ar.IsLoading())
 	{
 		ar >> m_byAverageTechLevel;
-		for (int i = TITAN; i <= DILITHIUM; i++)
+		for (int i = TITAN; i <= DERITIUM; i++)
 			ar >> m_nAverageResourceStorages[i];
 		
 		m_mShipPowers.clear();
@@ -90,7 +91,7 @@ void CStatistics::GetDemographicsBSP(const CString& sRaceID, int& nPlace, float&
 	for (int y = 0 ; y < STARMAP_SECTORS_VCOUNT; y++)
 		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
 			if (pDoc->GetSystem(x,y).GetOwnerOfSystem() != "")
-				mMap[pDoc->GetSystem(x,y).GetOwnerOfSystem()] += pDoc->GetSystem(x,y).GetProduction()->GetLatinumProd();
+				mMap[pDoc->GetSystem(x,y).GetOwnerOfSystem()] += pDoc->GetSystem(x,y).GetProduction()->GetCreditsProd();
 
 	CalcDemoValues(sRaceID, &mMap, nPlace, fValue, fAverage, fFirst, fLast);
 }
@@ -301,9 +302,9 @@ void CStatistics::GetTopSystems(int nLimit, std::list<CPoint>& lSystems) const
 				// Iridium
 				nValue += pDoc->GetSystem(x,y).GetProduction()->GetIridiumProd() * 2;
 				// Deritium
-				nValue += pDoc->GetSystem(x,y).GetProduction()->GetDilithiumProd() * 100;
+				nValue += pDoc->GetSystem(x,y).GetProduction()->GetDeritiumProd() * 100;
 				// Credits
-				nValue += pDoc->GetSystem(x,y).GetProduction()->GetLatinumProd() * 3;
+				nValue += pDoc->GetSystem(x,y).GetProduction()->GetCreditsProd() * 3;
 
 				lSystemList.push_back(SYSTEMLIST(CPoint(x,y), nValue));
 			}
@@ -372,7 +373,7 @@ void CStatistics::CalcAverageResourceStorages(CBotf2Doc* pDoc)
 	// Wieviel Imperien gibt es noch? Hier anhand der Anzahl der Systeme geschaut
 	USHORT nRaces = 0;
 	map<CString, CMajor*>* pmMajors = pDoc->GetRaceCtrl()->GetMajors();
-	for (int i = TITAN; i <= DILITHIUM; i++)
+	for (int i = TITAN; i <= DERITIUM; i++)
 	{
 		m_nAverageResourceStorages[i] = 0;
 		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
@@ -394,7 +395,7 @@ void CStatistics::Reset(void)
 {
 	m_byAverageTechLevel = 0;
 
-	for (int i = TITAN; i <= DILITHIUM; i++)
+	for (int i = TITAN; i <= DERITIUM; i++)
 		m_nAverageResourceStorages[i] = 0;
 
 	m_mShipPowers.clear();

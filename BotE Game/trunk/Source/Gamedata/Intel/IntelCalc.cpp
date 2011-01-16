@@ -403,14 +403,14 @@ BOOLEAN CIntelCalc::ExecuteAction(CMajor* pRace, CMajor* pEnemyRace, CMajor* pRe
 BOOLEAN CIntelCalc::ExecuteEconomySpy(CMajor* pRace, CMajor* pEnemyRace, CMajor* pResponsibleRace, BOOLEAN createText)
 {
 	/*
-	Es gibt bis jetzt zwei verschiedene Arten der Wirtschaftsspionage. Zuerst kann das besitzte Latinum ausspioniert
+	Es gibt bis jetzt zwei verschiedene Arten der Wirtschaftsspionage. Zuerst kann das besitzte Credits ausspioniert
 	werden. Zweitens werden Gebäude aus irgendeinem System ausspioniert.
 	*/
-	// 1. Versuch: Latinum ausspionieren
+	// 1. Versuch: Credits ausspionieren
 	if (rand()%8 == NULL)
 	{
-		int latinum = (int)pEnemyRace->GetEmpire()->GetLatinum();
-		CEcoIntelObj* report = new CEcoIntelObj(pRace->GetRaceID(), pEnemyRace->GetRaceID(), m_pDoc->GetCurrentRound(), TRUE, latinum);
+		int credits = (int)pEnemyRace->GetEmpire()->GetCredits();
+		CEcoIntelObj* report = new CEcoIntelObj(pRace->GetRaceID(), pEnemyRace->GetRaceID(), m_pDoc->GetCurrentRound(), TRUE, credits);
 		// Intelreport dem Akteur hinzufügen
 		if (report)
 		{
@@ -1087,15 +1087,15 @@ BOOLEAN CIntelCalc::ExecuteEconomySabotage(CMajor* pRace, CMajor* pEnemyRace, CM
 	if (newReportNumber > oldReportNumber)
 	{
 		CEcoIntelObj* report = (CEcoIntelObj*)pRace->GetEmpire()->GetIntelligence()->GetIntelReports()->GetReport(oldReportNumber);
-		int latinum = report->GetLatinum() / 2;
-		// 1. Möglichkeit: Latinum stehlen		
-		if (latinum > NULL)
+		int credits = report->GetCredits() / 2;
+		// 1. Möglichkeit: Credits stehlen		
+		if (credits > NULL)
 		{
-			latinum = rand()%latinum + 1;
-			pRace->GetEmpire()->SetLatinum(latinum);
-			pEnemyRace->GetEmpire()->SetLatinum(-latinum);
+			credits = rand()%credits + 1;
+			pRace->GetEmpire()->SetCredits(credits);
+			pEnemyRace->GetEmpire()->SetCredits(-credits);
 			pRace->GetEmpire()->GetIntelligence()->GetIntelReports()->RemoveReport(oldReportNumber);
-			report = new CEcoIntelObj(pRace->GetRaceID(), pEnemyRace->GetRaceID(), m_pDoc->GetCurrentRound(), FALSE, latinum);
+			report = new CEcoIntelObj(pRace->GetRaceID(), pEnemyRace->GetRaceID(), m_pDoc->GetCurrentRound(), FALSE, credits);
 			if (report)
 			{
 				report->CreateText(m_pDoc, 1, pResponsibleRace->GetRaceID());

@@ -399,8 +399,8 @@ void CSystemMenuView::DrawBuildMenue(Graphics* g)
 					graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\securitySmall.bop");
 				else if (pInfo->GetFPProd() > 0 || pInfo->GetResearchBoni() > 0)
 					graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\researchSmall.bop");
-				else if (pInfo->GetLatinum() > 0 || pInfo->GetLatinumBoni() > 0)
-					graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\latinumSmall.bop");
+				else if (pInfo->GetCredits() > 0 || pInfo->GetCreditsBoni() > 0)
+					graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\creditsSmall.bop");
 				if (graphic)
 					g->DrawImage(graphic, 355, y-21, 20, 16);
 			}
@@ -515,9 +515,9 @@ void CSystemMenuView::DrawBuildMenue(Graphics* g)
 			fontFormat.SetAlignment(StringAlignmentFar);
 			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(360,615,325,25), &fontFormat, &fontBrush);
 			
-			if (pDoc->GetSystem(p.x,p.y).GetAssemblyList()->GetNeededDilithiumForBuild() > NULL)
+			if (pDoc->GetSystem(p.x,p.y).GetAssemblyList()->GetNeededDeritiumForBuild() > NULL)
 			{				
-				s.Format("%s: %i",CResourceManager::GetString("DILITHIUM"), pDoc->GetSystem(p.x,p.y).GetAssemblyList()->GetNeededDilithiumForBuild());
+				s.Format("%s: %i",CResourceManager::GetString("DERITIUM"), pDoc->GetSystem(p.x,p.y).GetAssemblyList()->GetNeededDeritiumForBuild());
 				fontFormat.SetAlignment(StringAlignmentCenter);
 				g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(360,640,325,25), &fontFormat, &fontBrush);				
 			}
@@ -651,7 +651,7 @@ void CSystemMenuView::DrawBuildMenue(Graphics* g)
 			
 			CString costs;
 			costs.Format("%d", pDoc->GetSystem(p.x,p.y).GetAssemblyList()->GetBuildCosts());
-			s = CResourceManager::GetString("LATINUM_COSTS", FALSE, costs);
+			s = CResourceManager::GetString("CREDITS_COSTS", FALSE, costs);
 			
 			fontFormat.SetLineAlignment(StringAlignmentFar);
 			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(340,565,360,75), &fontFormat, &fontBrush);
@@ -1543,9 +1543,9 @@ void CSystemMenuView::DrawSystemTradeMenue(Graphics* g)
 			s.Format("%s %c%i",CResourceManager::GetString("SECTOR"),(char)(dest.y+97),dest.x+1);
 		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(70,260+i*30,125,25), &fontFormat, &fontBrush);
 		
-		// Gewinn inkl. der Boni auf Handelsrouten ohne Boni auf Latinum und Boni durch Moral
-		USHORT lat = pDoc->m_System[p.x][p.y].GetTradeRoutes()->GetAt(i).GetLatinum(pDoc->m_System[p.x][p.y].GetProduction()->GetIncomeOnTradeRoutes());
-		s.Format("%s: %d %s",CResourceManager::GetString("PROFIT"), lat, CResourceManager::GetString("LATINUM"));
+		// Gewinn inkl. der Boni auf Handelsrouten ohne Boni auf Credits und Boni durch Moral
+		USHORT lat = pDoc->m_System[p.x][p.y].GetTradeRoutes()->GetAt(i).GetCredits(pDoc->m_System[p.x][p.y].GetProduction()->GetIncomeOnTradeRoutes());
+		s.Format("%s: %d %s",CResourceManager::GetString("PROFIT"), lat, CResourceManager::GetString("CREDITS"));
 		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(200,260+i*30,170,25), &fontFormat, &fontBrush);
 		
 		// verbleibende Dauer der Handelsroute anzeigen
@@ -1589,14 +1589,14 @@ void CSystemMenuView::DrawSystemTradeMenue(Graphics* g)
 	for (int i = TITAN; i <= IRIDIUM; i++)
 	{
 		fontFormat.SetAlignment(StringAlignmentNear);
-		s.Format("%d",pDoc->m_System[p.x][p.y].GetRessourceStore(i));
+		s.Format("%d",pDoc->m_System[p.x][p.y].GetResourceStore(i));
 		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(668,220+i*60,407,60), &fontFormat, &fontBrush);
 		// in Klammern darunter, wieviel Ressourcen ich nächste Runde aus diesem System ins Globale Lager verschiebe
 		s.Format("(%d)", pMajor->GetEmpire()->GetGlobalStorage()->GetSubResource(i,p) - pMajor->GetEmpire()->GetGlobalStorage()->GetAddedResource(i,p));
 		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(668,265+i*60,407,25), &fontFormat, &fontBrush);
 		// globalen Lagerinhalt zeichnen
 		fontFormat.SetAlignment(StringAlignmentFar);
-		s.Format("%d", pMajor->GetEmpire()->GetGlobalStorage()->GetRessourceStorage(i));
+		s.Format("%d", pMajor->GetEmpire()->GetGlobalStorage()->GetResourceStorage(i));
 		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(538,220+i*60,407,60), &fontFormat, &fontBrush);
 		// in Klammern steht, wieviel dieser Ressource nächste Runde aus dem Lager entfernt wird
 		s.Format("(%d)", pMajor->GetEmpire()->GetGlobalStorage()->GetAllAddedResource(i) - pMajor->GetEmpire()->GetGlobalStorage()->GetAllSubResource(i));
@@ -1912,9 +1912,9 @@ void CSystemMenuView::DrawSystemProduction(Graphics* g)
 	g->DrawString((CResourceManager::GetString("DURANIUM")+":").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), PointF(775,230), &fontFormat, &fontBrush);
 	g->DrawString((CResourceManager::GetString("CRYSTAL")+":").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), PointF(775,255), &fontFormat, &fontBrush);
 	g->DrawString((CResourceManager::GetString("IRIDIUM")+":").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), PointF(775,280), &fontFormat, &fontBrush);
-	g->DrawString((CResourceManager::GetString("DILITHIUM")+":").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), PointF(775,305), &fontFormat, &fontBrush);
+	g->DrawString((CResourceManager::GetString("DERITIUM")+":").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), PointF(775,305), &fontFormat, &fontBrush);
 	g->DrawString((CResourceManager::GetString("MORAL")+":").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), PointF(775,330), &fontFormat, &fontBrush);
-	g->DrawString((CResourceManager::GetString("LATINUM")+":").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), PointF(775,355), &fontFormat, &fontBrush);
+	g->DrawString((CResourceManager::GetString("CREDITS")+":").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), PointF(775,355), &fontFormat, &fontBrush);
 	
 	fontFormat.SetAlignment(StringAlignmentCenter);
 	// Produktion anzeigen
@@ -1965,7 +1965,7 @@ void CSystemMenuView::DrawSystemProduction(Graphics* g)
 	rect.Y += 25;
 	s.Format("%i",pDoc->GetSystem(p.x,p.y).GetProduction()->GetResearchProd());
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), rect, &fontFormat, &fontBrush);
-	for (int res = TITAN; res <= DILITHIUM; res++)
+	for (int res = TITAN; res <= DERITIUM; res++)
 	{
 		rect.Y += 25;
 		s.Format("%i",pDoc->GetSystem(p.x,p.y).GetProduction()->GetResourceProd(res));
@@ -1976,7 +1976,7 @@ void CSystemMenuView::DrawSystemProduction(Graphics* g)
 	s.Format("%i",pDoc->GetSystem(p.x,p.y).GetProduction()->GetMoralProd());
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), rect, &fontFormat, &fontBrush);
 	rect.Y += 25;
-	s.Format("%i",pDoc->GetSystem(p.x,p.y).GetProduction()->GetLatinumProd());
+	s.Format("%i",pDoc->GetSystem(p.x,p.y).GetProduction()->GetCreditsProd());
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), rect, &fontFormat, &fontBrush);
 		
 	// ab hier Lager anzeigen
@@ -1997,8 +1997,8 @@ void CSystemMenuView::DrawSystemProduction(Graphics* g)
 	
 	rect = RectF(950,155,100,25);
 	// Zusätzliche Ressourcen aus den Startsystemen von Ressourcenrouten ermitteln
-	ULONG resFromRoutes[DILITHIUM + 1] = {0};
-	ULONG nResInDistSys[DILITHIUM + 1]	= {0};
+	ULONG resFromRoutes[DERITIUM + 1] = {0};
+	ULONG nResInDistSys[DERITIUM + 1]	= {0};
 	for (int j = 0; j < pMajor->GetEmpire()->GetSystemList()->GetSize(); j++)
 		if (pMajor->GetEmpire()->GetSystemList()->GetAt(j).ko != p)
 		{
@@ -2013,24 +2013,24 @@ void CSystemMenuView::DrawSystemProduction(Graphics* g)
 					if (pDoc->m_System[pDoc->m_System[ko.x][ko.y].GetResourceRoutes()->GetAt(i).GetKO().x][pDoc->m_System[ko.x][ko.y].GetResourceRoutes()->GetAt(i).GetKO().y].GetBlockade() > NULL)
 						continue;
 					BYTE res = pDoc->m_System[ko.x][ko.y].GetResourceRoutes()->GetAt(i).GetResource();
-					resFromRoutes[res] += pDoc->m_System[ko.x][ko.y].GetRessourceStore(res);
+					resFromRoutes[res] += pDoc->m_System[ko.x][ko.y].GetResourceStore(res);
 				}
 			// gilt nicht bei blockierten Systemen
 			if (pDoc->GetSystem(p).GetBlockade() == NULL)
-				for (int res = TITAN; res <= DILITHIUM; res++)
+				for (int res = TITAN; res <= DERITIUM; res++)
 					if (pDoc->GetSystem(ko).GetProduction()->GetResourceDistributor(res))
-						nResInDistSys[res] = pDoc->GetSystem(ko).GetRessourceStore(res);
+						nResInDistSys[res] = pDoc->GetSystem(ko).GetResourceStore(res);
 		}
 	
-	for (int res = TITAN; res <= DILITHIUM; res++)
+	for (int res = TITAN; res <= DERITIUM; res++)
 	{
 		rect.Y += 25;
-		if (nResInDistSys[res] > resFromRoutes[res] + pDoc->GetSystem(p).GetRessourceStore(res))
+		if (nResInDistSys[res] > resFromRoutes[res] + pDoc->GetSystem(p).GetResourceStore(res))
 			s.Format("[%i]", nResInDistSys[res]);
 		else if (resFromRoutes[res] > 0)
-			s.Format("(%i)",pDoc->GetSystem(p.x,p.y).GetRessourceStore(res) + resFromRoutes[res]);
+			s.Format("(%i)",pDoc->GetSystem(p.x,p.y).GetResourceStore(res) + resFromRoutes[res]);
 		else
-			s.Format("%i",pDoc->GetSystem(p.x,p.y).GetRessourceStore(res));
+			s.Format("%i",pDoc->GetSystem(p.x,p.y).GetResourceStore(res));
 
 		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), rect, &fontFormat, &fontBrush);
 	}
@@ -2076,7 +2076,7 @@ void CSystemMenuView::DrawSystemProduction(Graphics* g)
 	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\moralSmall.bop");
 	if (graphic)
 		g->DrawImage(graphic, 740, 330, 20, 16);
-	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\latinumSmall.bop");
+	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\creditsSmall.bop");
 	if (graphic)
 		g->DrawImage(graphic, 740, 355, 20, 16);
 }
@@ -2192,15 +2192,15 @@ void CSystemMenuView::DrawBuildingProduction(Graphics* g)
 			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), r, &fontFormat, &fontBrush);
 			r.Y += 22;
 		}
-		if (b->GetDilithiumProd() > 0)
+		if (b->GetDeritiumProd() > 0)
 		{
-			s.Format("%s: %i",CResourceManager::GetString("DILITHIUM"), b->GetDilithiumProd());
+			s.Format("%s: %i",CResourceManager::GetString("DERITIUM"), b->GetDeritiumProd());
 			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), r, &fontFormat, &fontBrush);
 			r.Y += 22;
 		}
-		if (b->GetLatinum() != 0)
+		if (b->GetCredits() != 0)
 		{
-			s.Format("%s: %i",CResourceManager::GetString("LATINUM"), b->GetLatinum());
+			s.Format("%s: %i",CResourceManager::GetString("CREDITS"), b->GetCredits());
 			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), r, &fontFormat, &fontBrush);
 			r.Y += 22;
 		}
@@ -2278,9 +2278,9 @@ void CSystemMenuView::DrawBuildingProduction(Graphics* g)
 			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), r, &fontFormat, &fontBrush);
 			r.Y += 22;
 		}
-		if (b->GetDilithiumBoni() != 0)
+		if (b->GetDeritiumBoni() != 0)
 		{
-			s.Format("%s: %i%%",CResourceManager::GetString("DILITHIUM_BONUS"), b->GetDilithiumBoni());
+			s.Format("%s: %i%%",CResourceManager::GetString("DERITIUM_BONUS"), b->GetDeritiumBoni());
 			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), r, &fontFormat, &fontBrush);
 			r.Y += 22;
 		}
@@ -2290,9 +2290,9 @@ void CSystemMenuView::DrawBuildingProduction(Graphics* g)
 			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), r, &fontFormat, &fontBrush);
 			r.Y += 22;
 		}
-		if (b->GetLatinumBoni() != 0)
+		if (b->GetCreditsBoni() != 0)
 		{
-			s.Format("%s: %i%%",CResourceManager::GetString("LATINUM_BONUS"), b->GetLatinumBoni());
+			s.Format("%s: %i%%",CResourceManager::GetString("CREDITS_BONUS"), b->GetCreditsBoni());
 			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), r, &fontFormat, &fontBrush);
 			r.Y += 22;
 		}
@@ -2606,7 +2606,7 @@ void CSystemMenuView::DrawBuildingProduction(Graphics* g)
 			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), r, &fontFormat, &fontBrush);
 			r.Y += 22;
 		}
-		if (b->GetResourceDistributor(DILITHIUM))
+		if (b->GetResourceDistributor(DERITIUM))
 		{
 			s.Format("%s - %s\n", CResourceManager::GetString("RESOURCE_DISTRIBUTOR"), CResourceManager::GetString("DERITIUM"));
 			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), r, &fontFormat, &fontBrush);
@@ -2976,20 +2976,20 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		// Überprüfen ob wir auf den Okaybutton gedrückt haben um das aktuelle Projekt zu kaufen
 		if (OkayButton.PtInRect(point) && m_bClickedOnBuyButton == TRUE)
 		{
-			int costs = pDoc->GetSystem(p).GetAssemblyList()->BuyBuilding(pMajor->GetEmpire()->GetLatinum());
+			int costs = pDoc->GetSystem(p).GetAssemblyList()->BuyBuilding(pMajor->GetEmpire()->GetCredits());
 			if (costs != 0)
 			{
 				OkayButton.SetRect(0,0,0,0);
 				CancelButton.SetRect(0,0,0,0);
 				pDoc->GetSystem(p).GetAssemblyList()->SetWasBuildingBought(TRUE);
-				pMajor->GetEmpire()->SetLatinum(-costs);
+				pMajor->GetEmpire()->SetCredits(-costs);
 				// Die Preise an der Börse anpassen, da wir ja bestimmte Mengen Ressourcen gekauft haben
 				// Achtung, hier flag == 1 setzen bei Aufruf der Funktion BuyRessource!!!!
-				pMajor->GetTrade()->BuyRessource(TITAN,pDoc->GetSystem(p).GetAssemblyList()->GetNeededTitanInAssemblyList(0),p,pMajor->GetEmpire()->GetLatinum(),1);
-				pMajor->GetTrade()->BuyRessource(DEUTERIUM,pDoc->GetSystem(p).GetAssemblyList()->GetNeededDeuteriumInAssemblyList(0),p,pMajor->GetEmpire()->GetLatinum(),1);
-				pMajor->GetTrade()->BuyRessource(DURANIUM,pDoc->GetSystem(p).GetAssemblyList()->GetNeededDuraniumInAssemblyList(0),p,pMajor->GetEmpire()->GetLatinum(),1);
-				pMajor->GetTrade()->BuyRessource(CRYSTAL,pDoc->GetSystem(p).GetAssemblyList()->GetNeededCrystalInAssemblyList(0),p,pMajor->GetEmpire()->GetLatinum(),1);
-				pMajor->GetTrade()->BuyRessource(IRIDIUM,pDoc->GetSystem(p).GetAssemblyList()->GetNeededIridiumInAssemblyList(0),p,pMajor->GetEmpire()->GetLatinum(),1);
+				pMajor->GetTrade()->BuyRessource(TITAN,pDoc->GetSystem(p).GetAssemblyList()->GetNeededTitanInAssemblyList(0),p,pMajor->GetEmpire()->GetCredits(),1);
+				pMajor->GetTrade()->BuyRessource(DEUTERIUM,pDoc->GetSystem(p).GetAssemblyList()->GetNeededDeuteriumInAssemblyList(0),p,pMajor->GetEmpire()->GetCredits(),1);
+				pMajor->GetTrade()->BuyRessource(DURANIUM,pDoc->GetSystem(p).GetAssemblyList()->GetNeededDuraniumInAssemblyList(0),p,pMajor->GetEmpire()->GetCredits(),1);
+				pMajor->GetTrade()->BuyRessource(CRYSTAL,pDoc->GetSystem(p).GetAssemblyList()->GetNeededCrystalInAssemblyList(0),p,pMajor->GetEmpire()->GetCredits(),1);
+				pMajor->GetTrade()->BuyRessource(IRIDIUM,pDoc->GetSystem(p).GetAssemblyList()->GetNeededIridiumInAssemblyList(0),p,pMajor->GetEmpire()->GetCredits(),1);
 							
 				pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
 				m_bClickedOnBuyButton = FALSE;
@@ -3019,7 +3019,7 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		if (OkayButton.PtInRect(point) && m_bClickedOnDeleteButton == TRUE)
 		{
 			// bekommen bei Abbruch die Ressourcen bzw. Teile der Ressourcen wieder
-			for (int j = TITAN; j <= DILITHIUM; j++)
+			for (int j = TITAN; j <= DERITIUM; j++)
 			{
 				// bestanden Ressourcenrouten, so kann es sein, dass deren Startsysteme einen Anteil oder auch
 				// alles zurückbekommen
@@ -3039,17 +3039,17 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 											int back = pDoc->m_System[p.x][p.y].GetAssemblyList()->GetNeededResourceInAssemblyList(0, j)
 												* pDoc->m_System[ko.x][ko.y].GetResourceRoutes()->GetAt(l).GetPercent() / 100;
 											ASSERT(back >= 0);
-											pDoc->m_System[ko.x][ko.y].SetRessourceStore(j, back);
+											pDoc->m_System[ko.x][ko.y].SetResourceStore(j, back);
 											getBackRes -= back;
 										}
 					}
-				pDoc->m_System[p.x][p.y].SetRessourceStore(j, getBackRes);
+				pDoc->m_System[p.x][p.y].SetResourceStore(j, getBackRes);
 			}
 			// Wenn wir was gekauft hatten, dann bekommen wir die Kaufkosten zurück und die Preise an der Börse
 			// regulieren sich wieder auf den Kurs, bevor wir gekauft haben
 			if (pDoc->GetSystem(p.x,p.y).GetAssemblyList()->GetWasBuildingBought() == TRUE)
 			{
-				pMajor->GetEmpire()->SetLatinum(pDoc->GetSystem(p.x,p.y).GetAssemblyList()->GetBuildCosts());
+				pMajor->GetEmpire()->SetCredits(pDoc->GetSystem(p.x,p.y).GetAssemblyList()->GetBuildCosts());
 				// Die Preise an der Börse anpassen, da wir ja bestimmte Mengen Ressourcen gekauft haben
 				// Achtung, hier flag == 1 setzen bei Aufruf der Funktion BuyRessource!!!!
 				for (int j = TITAN; j <= IRIDIUM; j++)
@@ -3411,14 +3411,13 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 				{
 					i -= 5;
 
-					if (pDoc->m_System[p.x][p.y].GetRessourceStore(i) > 0 || pMajor->GetEmpire()->GetGlobalStorage()->GetSubResource(i,p) > 0)
+					if (pDoc->m_System[p.x][p.y].GetResourceStore(i) > 0 || pMajor->GetEmpire()->GetGlobalStorage()->GetSubResource(i,p) > 0)
 					{
-						USHORT tempQuantity = m_iGlobalStoreageQuantity;
-						if (pDoc->m_System[p.x][p.y].GetRessourceStore(i) < m_iGlobalStoreageQuantity && 
-							pMajor->GetEmpire()->GetGlobalStorage()->GetSubResource(i,p) == 0)
-							m_iGlobalStoreageQuantity = (USHORT)pDoc->m_System[p.x][p.y].GetRessourceStore(i);
-						USHORT getBack = pMajor->GetEmpire()->GetGlobalStorage()->AddRessource(m_iGlobalStoreageQuantity,i,p);
-						pDoc->m_System[p.x][p.y].SetRessourceStore(i, (getBack - m_iGlobalStoreageQuantity));
+						UINT tempQuantity = m_iGlobalStoreageQuantity;
+						if (pDoc->m_System[p.x][p.y].GetResourceStore(i) < m_iGlobalStoreageQuantity && pMajor->GetEmpire()->GetGlobalStorage()->GetSubResource(i,p) == 0)
+							m_iGlobalStoreageQuantity = pDoc->m_System[p.x][p.y].GetResourceStore(i);
+						UINT getBack = pMajor->GetEmpire()->GetGlobalStorage()->AddRessource(m_iGlobalStoreageQuantity,i,p);
+						pDoc->m_System[p.x][p.y].SetResourceStore(i, (getBack - m_iGlobalStoreageQuantity));
 						m_iGlobalStoreageQuantity = tempQuantity;
 						Invalidate(FALSE);
 					}					
@@ -3426,7 +3425,7 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 				// kleine Pfeilbuttons um Waren aus dem System ins globale Lager zu verschieben
 				else 
 				{					
-					pDoc->m_System[p.x][p.y].SetRessourceStore(i, pMajor->GetEmpire()->GetGlobalStorage()->SubRessource(m_iGlobalStoreageQuantity,i,p));
+					pDoc->m_System[p.x][p.y].SetResourceStore(i, pMajor->GetEmpire()->GetGlobalStorage()->SubRessource(m_iGlobalStoreageQuantity,i,p));
 					Invalidate(FALSE);					
 				}
 			}
@@ -3571,7 +3570,7 @@ void CSystemMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 			if (i == 0)
 			{
 				// bekommen bei Abbruch die Ressourcen bzw. Teile der Ressourcen wieder
-				for (int j = TITAN; j <= DILITHIUM; j++)
+				for (int j = TITAN; j <= DERITIUM; j++)
 				{
 					// bestanden Ressourcenrouten, so kann es sein, dass deren Startsysteme einen Anteil oder auch
 					// alles zurückbekommen
@@ -3590,16 +3589,16 @@ void CSystemMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 											int back = pDoc->GetSystem(p).GetAssemblyList()->GetNeededResourceInAssemblyList(0, j)
 												* pDoc->GetSystem(ko).GetResourceRoutes()->GetAt(l).GetPercent() / 100;
 											ASSERT(back >= 0);
-											pDoc->GetSystem(ko).SetRessourceStore(j, back);
+											pDoc->GetSystem(ko).SetResourceStore(j, back);
 											getBackRes -= back;
 										}									
 						}
-					pDoc->GetSystem(p).SetRessourceStore(j, getBackRes);
+					pDoc->GetSystem(p).SetResourceStore(j, getBackRes);
 				}
 				// Wenn wir was gekauft hatten, dann bekommen wir die Kaufkosten zurück
 				if (pDoc->GetSystem(p).GetAssemblyList()->GetWasBuildingBought() == TRUE)
 				{
-					pMajor->GetEmpire()->SetLatinum(pDoc->GetSystem(p).GetAssemblyList()->GetBuildCosts());
+					pMajor->GetEmpire()->SetCredits(pDoc->GetSystem(p).GetAssemblyList()->GetBuildCosts());
 					// Die Preise an der Börse anpassen, da wir ja bestimmte Mengen Ressourcen gekauft haben
 					// Achtung, hier flag == 1 setzen bei Aufruf der Funktion BuyRessource!!!!
 					for (int j = TITAN; j <= IRIDIUM; j++)

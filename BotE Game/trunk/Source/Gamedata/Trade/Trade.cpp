@@ -82,7 +82,7 @@ void CTrade::Serialize(CArchive &ar)
 // Funktion kauft die Anzahl der jeweiligen Ressource für das System und fügt den Auftrag in das Array
 // m_TradeActions ein. Danach berechnet sie den Preis der Ressource nach dem Kauf. Steuern
 // werden hier noch nicht in den Preis mit einbezogen.
-int CTrade::BuyRessource(USHORT res, ULONG number, CPoint system, long empires_latinum, BOOL flag)
+int CTrade::BuyRessource(USHORT res, ULONG number, CPoint system, long empires_credits, BOOL flag)
 {
 	USHORT oldResPrice = m_iRessourcePrice[res];
 	m_TradeStruct ts;
@@ -118,9 +118,9 @@ int CTrade::BuyRessource(USHORT res, ULONG number, CPoint system, long empires_l
 	// Falls der Preis bei NULL liegt setzten wir den auf 1 (kostenlos gibts hier nix ;-) )
 	if (ts.price == NULL)
 		ts.price = 1;
-	// Jetzt überprüfen ob wir das Latinum auch aufbringen können, wenn wir etwas kaufen, wenn es nicht klappt, dann
+	// Jetzt überprüfen ob wir das Credits auch aufbringen können, wenn wir etwas kaufen, wenn es nicht klappt, dann
 	// geben wir eine NULL zurück und setzen den Preis der Ressource wieder auf den alten
-	if ((int)ceil(ts.price * m_fTax) > empires_latinum)
+	if ((int)ceil(ts.price * m_fTax) > empires_credits)
 	{
 		m_iRessourcePrice[res] = oldResPrice;
 		return 0;
@@ -177,7 +177,7 @@ void CTrade::SellRessource(USHORT res, ULONG number, CPoint system, BOOL flag)
 	m_TradeActions.Add(ts);
 }
 
-// Funktion berechnet die ganzen Handelsaktionen, lagert also Ressourcen ein oder gibt das Latinum, welches
+// Funktion berechnet die ganzen Handelsaktionen, lagert also Ressourcen ein oder gibt das Credits, welches
 // wir durch den Verkauf bekommen haben an das jeweilige Imperium
 void CTrade::CalculateTradeActions(CMajor* pMajor, CSystem systems[][STARMAP_SECTORS_VCOUNT], CSector sectors[][STARMAP_SECTORS_VCOUNT], USHORT* taxes)
 {
@@ -192,13 +192,13 @@ void CTrade::CalculateTradeActions(CMajor* pMajor, CSystem systems[][STARMAP_SEC
 		// Die Ressource in dem System lagern, wenn wir diese gekauft haben
 		if (m_TradeActions.GetAt(i).price > 0)
 		{
-			systems[KO.x][KO.y].SetRessourceStore(res,m_TradeActions.GetAt(i).number);
+			systems[KO.x][KO.y].SetResourceStore(res,m_TradeActions.GetAt(i).number);
 			sum[KO.x][KO.y][res] += m_TradeActions.GetAt(i).number;
 			didSome = TRUE;
 		}
-		// Das Latinum was wir bekommen dem Imperium geben
+		// Das Credits was wir bekommen dem Imperium geben
 		else
-			pMajor->GetEmpire()->SetLatinum(-m_TradeActions.GetAt(i).price);
+			pMajor->GetEmpire()->SetCredits(-m_TradeActions.GetAt(i).price);
 		
 		// Hier die Monopole beachten, wenn jemand ein Monopol auf die Ressource hat und dieser jemand mit an unserer
 		// Handelsbörse aktiv ist, dann bekommt dieser die Steuern (auch wir selbst bekommen unsere Steuern zurück!)

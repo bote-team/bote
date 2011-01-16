@@ -106,23 +106,23 @@ void CSystemAI::PerhapsBuy()
 	{
 		m_pDoc->m_System[p.x][p.y].GetAssemblyList()->CalculateBuildCosts(m_pMajor->GetTrade()->GetRessourcePriceAtRoundStart());
 		int costs = m_pDoc->m_System[p.x][p.y].GetAssemblyList()->GetBuildCosts();
-		int value = (m_pMajor->GetEmpire()->GetLatinum() / costs) * 5;
-		// Umso mehr Latinum das Imperium besitzt, desto eher wird gekauft. Außerdem wird bei einer niedrigen Moral
+		int value = (m_pMajor->GetEmpire()->GetCredits() / costs) * 5;
+		// Umso mehr Credits das Imperium besitzt, desto eher wird gekauft. Außerdem wird bei einer niedrigen Moral
 		// eher versucht den Kauf zu tätigen, um nächstes Mal einen Polizeistaat oder ähnliches schneller starten zu können
 		if (rand()%100 < value || (value > 0 && m_pDoc->m_System[p.x][p.y].GetMoral() < (rand()%21 + 60)))
 		{
-			costs = m_pDoc->m_System[p.x][p.y].GetAssemblyList()->BuyBuilding(m_pMajor->GetEmpire()->GetLatinum());
+			costs = m_pDoc->m_System[p.x][p.y].GetAssemblyList()->BuyBuilding(m_pMajor->GetEmpire()->GetCredits());
 			if (costs != 0)
 			{
 				m_pDoc->m_System[p.x][p.y].GetAssemblyList()->SetWasBuildingBought(TRUE);
-				m_pMajor->GetEmpire()->SetLatinum(-costs);
+				m_pMajor->GetEmpire()->SetCredits(-costs);
 				// Die Preise an der Börse anpassen, da wir ja bestimmte Mengen Ressourcen gekauft haben
 				// Achtung, hier flag == 1 setzen bei Aufruf der Funktion BuyRessource!!!!
-				m_pMajor->GetTrade()->BuyRessource(TITAN,	 m_pDoc->m_System[p.x][p.y].GetAssemblyList()->GetNeededTitanInAssemblyList(0),p,m_pMajor->GetEmpire()->GetLatinum(),1);
-				m_pMajor->GetTrade()->BuyRessource(DEUTERIUM,m_pDoc->m_System[p.x][p.y].GetAssemblyList()->GetNeededDeuteriumInAssemblyList(0),p,m_pMajor->GetEmpire()->GetLatinum(),1);
-				m_pMajor->GetTrade()->BuyRessource(DURANIUM, m_pDoc->m_System[p.x][p.y].GetAssemblyList()->GetNeededDuraniumInAssemblyList(0),p,m_pMajor->GetEmpire()->GetLatinum(),1);
-				m_pMajor->GetTrade()->BuyRessource(CRYSTAL,  m_pDoc->m_System[p.x][p.y].GetAssemblyList()->GetNeededCrystalInAssemblyList(0),p,m_pMajor->GetEmpire()->GetLatinum(),1);
-				m_pMajor->GetTrade()->BuyRessource(IRIDIUM,  m_pDoc->m_System[p.x][p.y].GetAssemblyList()->GetNeededIridiumInAssemblyList(0),p,m_pMajor->GetEmpire()->GetLatinum(),1);
+				m_pMajor->GetTrade()->BuyRessource(TITAN,	 m_pDoc->m_System[p.x][p.y].GetAssemblyList()->GetNeededTitanInAssemblyList(0),p,m_pMajor->GetEmpire()->GetCredits(),1);
+				m_pMajor->GetTrade()->BuyRessource(DEUTERIUM,m_pDoc->m_System[p.x][p.y].GetAssemblyList()->GetNeededDeuteriumInAssemblyList(0),p,m_pMajor->GetEmpire()->GetCredits(),1);
+				m_pMajor->GetTrade()->BuyRessource(DURANIUM, m_pDoc->m_System[p.x][p.y].GetAssemblyList()->GetNeededDuraniumInAssemblyList(0),p,m_pMajor->GetEmpire()->GetCredits(),1);
+				m_pMajor->GetTrade()->BuyRessource(CRYSTAL,  m_pDoc->m_System[p.x][p.y].GetAssemblyList()->GetNeededCrystalInAssemblyList(0),p,m_pMajor->GetEmpire()->GetCredits(),1);
+				m_pMajor->GetTrade()->BuyRessource(IRIDIUM,  m_pDoc->m_System[p.x][p.y].GetAssemblyList()->GetNeededIridiumInAssemblyList(0),p,m_pMajor->GetEmpire()->GetCredits(),1);
 			}
 		}
 	}
@@ -235,7 +235,7 @@ void CSystemAI::CalcPriorities()
 
 	// vorhandene Ressourcen durch die Planeten holen. Wenn eine Ressource nicht vorhanden ist, wird die entsprechende
 	// Priorität auf NULL gesetzt. Denn dafür haben wir dann auch keine Gebäude in der Bauliste.
-	BOOLEAN resExist[DILITHIUM + 1] = {0};
+	BOOLEAN resExist[DERITIUM + 1] = {0};
 	m_pDoc->m_Sector[ko.x][ko.y].GetAvailableResources(resExist, true);
 
 	double dMaxHab = 0.0;
@@ -507,17 +507,17 @@ void CSystemAI::CalcPriorities()
 /*				if (m_pDoc->m_Sector[ko.x][ko.y].GetName() == "Romulus" && res == TITAN)
 				{
 					CString s;
-					s.Format("midResCosts: %d\nTitanProd: %d\nLager: %d",midResCosts,resProd,m_pDoc->m_System[ko.x][ko.y].GetRessourceStore(res)+1);
+					s.Format("midResCosts: %d\nTitanProd: %d\nLager: %d",midResCosts,resProd,m_pDoc->m_System[ko.x][ko.y].GetResourceStore(res)+1);
 					AfxMessageBox(s);
 				}
 				/*if (size > 0)
 					midResCosts /= size;
 				float div = 100 * resProd / (float)(midResCosts*0.5f+1.0f);
-				m_iPriorities[i] = (short)(div*10 / (m_pDoc->m_System[ko.x][ko.y].GetRessourceStore(res)+1));*/
+				m_iPriorities[i] = (short)(div*10 / (m_pDoc->m_System[ko.x][ko.y].GetResourceStore(res)+1));*/
 				if (resProd > 0)
-					m_iPriorities[i] = (int)((100 * midResCosts / (m_pDoc->m_System[ko.x][ko.y].GetRessourceStore(res)+1) / resProd));
+					m_iPriorities[i] = (int)((100 * midResCosts / (m_pDoc->m_System[ko.x][ko.y].GetResourceStore(res)+1) / resProd));
 				else
-					m_iPriorities[i] = (int)((100 * midResCosts / ((m_pDoc->m_System[ko.x][ko.y].GetRessourceStore(res)+1) * (number+1))));
+					m_iPriorities[i] = (int)((100 * midResCosts / ((m_pDoc->m_System[ko.x][ko.y].GetResourceStore(res)+1) * (number+1))));
 
 				// wenn noch Bevölkerung ins System passen würde, so werden bevorzugt mehr Gebäude gebaut
 				if (dHabMod > 1.0)
@@ -1065,7 +1065,7 @@ void CSystemAI::AssignWorkers()
 	}
 	
 	// Sind jetzt immernoch ein paar freie Arbeiter übrig, dann wird versucht diese auf die Industriegebäude zu verteilen.
-	// Denn dadruch bekommen wir bei Handelswaren mehr Latinum.
+	// Denn dadruch bekommen wir bei Handelswaren mehr Credits.
 	while (m_pDoc->m_System[ko.x][ko.y].GetWorker(11) > 0)
 	{
 		if (m_pDoc->m_System[ko.x][ko.y].GetNumberOfWorkbuildings(INDUSTRY_WORKER,0,NULL) > m_pDoc->m_System[ko.x][ko.y].GetWorker(INDUSTRY_WORKER))
@@ -1185,8 +1185,8 @@ int CSystemAI::GetShipBuildPrios(BOOLEAN &chooseCombatship, BOOLEAN &chooseColos
 			{
 				// Schiffsbevölkerungsunterstützungskosten - Schiffsunterstützungskosten
 				long shipCosts = pMajor->GetEmpire()->GetPopSupportCosts() - pMajor->GetEmpire()->GetShipCosts();
-				// würde man durch die Schiffe negatives Latinum machen und dies wäre höher als 5% des gesamten Latinumbestandes, dann wird kein Schiff gebaut!
-				if (shipCosts < 0 && abs(shipCosts) > (long)(pMajor->GetEmpire()->GetLatinum() * 0.05))
+				// würde man durch die Schiffe negatives Credits machen und dies wäre höher als 5% des gesamten Creditsbestandes, dann wird kein Schiff gebaut!
+				if (shipCosts < 0 && abs(shipCosts) > (long)(pMajor->GetEmpire()->GetCredits() * 0.05))
 				{
 					chooseCombatship = FALSE;
 					#ifdef TRACE_AI

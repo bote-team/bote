@@ -73,7 +73,7 @@ private:
 	/// @return Diplomatischer Status als String
 	CString PrintDiplomacyStatus(const CString& sOurRace, const CString& sRace, Gdiplus::Color& color);
 
-	/// Funktion nimmt die Ressourcen und das Latinum, welches für verschenken können aus den Lagern oder gibt es zurück
+	/// Funktion nimmt die Ressourcen und das Credits, welches für verschenken können aus den Lagern oder gibt es zurück
 	/// @param bTake soll etwas genommen oder zurückgegeben werden?
 	void TakeOrGetbackResLat(bool bTake);
 	

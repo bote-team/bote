@@ -10,7 +10,7 @@ IMPLEMENT_SERIAL (CTradeRoute, CObject, 1)
 CTradeRoute::CTradeRoute(void)
 {
 	m_KO = CPoint(0,0);
-	m_iLatinum = 0;
+	m_iCredits = 0;
 	m_iDuration = 0;
 }
 
@@ -24,7 +24,7 @@ CTradeRoute::~CTradeRoute(void)
 CTradeRoute::CTradeRoute(const CTradeRoute &rhs)
 {
 	m_KO = rhs.m_KO;
-	m_iLatinum = rhs.m_iLatinum;
+	m_iCredits = rhs.m_iCredits;
 	m_iDuration = rhs.m_iDuration;
 }
 
@@ -36,7 +36,7 @@ CTradeRoute & CTradeRoute::operator=(const CTradeRoute & rhs)
 	if (this == &rhs)
 		return *this;
 	m_KO = rhs.m_KO;
-	m_iLatinum = rhs.m_iLatinum;
+	m_iCredits = rhs.m_iCredits;
 	m_iDuration = rhs.m_iDuration;
 	return *this;
 }
@@ -51,14 +51,14 @@ void CTradeRoute::Serialize(CArchive &ar)
 	if (ar.IsStoring())
 	{
 		ar << m_KO;
-		ar << m_iLatinum;
+		ar << m_iCredits;
 		ar << m_iDuration;
 	}
 	// wenn geladen wird
 	if (ar.IsLoading())
 	{
 		ar >> m_KO;
-		ar >> m_iLatinum;
+		ar >> m_iCredits;
 		ar >> m_iDuration;
 	}
 }
@@ -73,14 +73,14 @@ void CTradeRoute::GenerateTradeRoute(CPoint ko)
 	m_iDuration = 20;
 }
 
-/// Funktion gibt das Latinum inkl. Boni, welches man durch die Handelsroute bekommt zurück
-USHORT CTradeRoute::GetLatinum(short boni) const
+/// Funktion gibt das Credits inkl. Boni, welches man durch die Handelsroute bekommt zurück
+USHORT CTradeRoute::GetCredits(short boni) const
 {
-	return (USHORT)(m_iLatinum + m_iLatinum * boni/100);
+	return (USHORT)(m_iCredits + m_iCredits * boni/100);
 }
 
-/// Funktion überprüft, ob die Handelsroute noch Bestand haben darf und setzt das Latinum, welches
-/// diese Handelsroute fabriziert. Dabei werden noch keinerlei Boni auf die Latinumproduktion angerechnet.
+/// Funktion überprüft, ob die Handelsroute noch Bestand haben darf und setzt das Credits, welches
+/// diese Handelsroute fabriziert. Dabei werden noch keinerlei Boni auf die Creditsproduktion angerechnet.
 /// Die Funktion gibt einen Wahrheitswert zurück, der sagt, ob die Handelsroute noch Bestand haben darf.
 BOOLEAN CTradeRoute::CheckTradeRoute(const CPoint& pFrom, const CPoint& pDest, CBotf2Doc* pDoc)
 {
@@ -93,19 +93,19 @@ BOOLEAN CTradeRoute::CheckTradeRoute(const CPoint& pFrom, const CPoint& pDest, C
 	// wurde der Zielsektor durch uns gescannt
 	if (pDestSector->GetScanned(sOwner) == FALSE)
 		return FALSE;	
-	// zu allererst das Latinum berechnen
+	// zu allererst das Credits berechnen
 	float habitants = pDestSector->GetCurrentHabitants();
 	// wenn keine Leute in dem System leben, so gibt es auch keine Handelsroute.
 	if (habitants == 0.0f)
 		return FALSE;
 	
-	// zufällig wird das Latinum bei der Handelsroute noch modifiziert (+-)20%
+	// zufällig wird das Credits bei der Handelsroute noch modifiziert (+-)20%
 	// also (rand()%41 + 80) / 100 -> [0,40]+80 = [80,120] / 100 -> [0.8,1.2]
 	float mod = (float)((float)(rand()%41 + 80) / 100);
 
-	m_iLatinum = (USHORT)(habitants * mod);
+	m_iCredits = (USHORT)(habitants * mod);
 	// minimal wird 1 Credit zurückgegeben
-	m_iLatinum = max(m_iLatinum, 1);
+	m_iCredits = max(m_iCredits, 1);
 
 	// gehört der Zielsektor einer Majorrace und nicht uns?
 	if (pDestSystem->GetOwnerOfSystem() != "" && pDestSystem->GetOwnerOfSystem() != sOwner)

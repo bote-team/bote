@@ -9,6 +9,7 @@
 #include "MyButton.h"
 #include "FontLoader.h"
 #include "Botf2Doc.h"
+#include "Graphic\memdc.h"
 
 // CMainBaseView view
 

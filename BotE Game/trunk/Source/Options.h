@@ -15,7 +15,7 @@
 /// Versionsnummer des Dokuments; es können nur Spielstände geladen werden, die diese Versionsnummer
 /// haben.
 #define DOCUMENT_VERSION			9		///< Alpha 6 Version
-#define VERSION						0.8	///< benötigte Version in Datafiles
+#define VERSION						0.8		///< benötigte Version in Datafiles
 #define VERSION_INFORMATION			"0.8"	///< anzuzeigende Versionsinformation 
 
 // --- Feste Größen der Starmap ------------------------------------------------
@@ -245,7 +245,7 @@ enum {NONE, ASSULTSHIP, BLOCKADESHIP, COMMANDSHIP, COMBATTRACTORBEAM, DOGFIGHTER
 #define DURANIUM            2
 #define CRYSTAL             3
 #define IRIDIUM             4
-#define DILITHIUM           5
+#define DERITIUM	        5
 
 #define MAX_FOOD_STORE		25000
 #define MAX_RES_STORE		125000
@@ -282,3 +282,6 @@ inline void SetAttributes(BOOLEAN is, int attribute, int &variable)
 #define TRACE_INTEL
 #define TRACE_INTELAI
 //#define DEBUG_AI_BASE_DEMO
+
+// Projektspezifische Defines
+#define ALPHA6_SERIALISIERUNG	// ALPHA6 Serialisierung

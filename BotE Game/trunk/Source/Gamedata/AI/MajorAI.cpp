@@ -325,6 +325,21 @@ short CMajorAI::ReactOnMajorOffer(const CDiplomacyInfo& info)
 	else if (info.m_nType == DIP_REQUEST)
 		return this->CalcDiplomacyRequest(info);
 
+	// Beziehungsverbesserung durch Mitgifte betachten
+	BYTE byOldRelation = pRace->GetRelation(info.m_sFromRace);
+	ReactOnDowry(info);
+
+	// Wurde in den letzten 2 Runden von der Majorrasse selbst ein Angebot an einen anderen Major gemacht, dann
+	// wird das Angebot angenommen, sofern der Vertrag eine kleiner oder gleich große Wertigkeit hat. Dies betrifft
+	// nur "normale" Vertragsangebote
+	if (info.m_nType > NO_AGREEMENT && info.m_nFlag == DIPLOMACY_OFFER)
+	{
+		const CDiplomacyInfo* pLastOffer = m_pRace->GetLastOffer(info.m_sFromRace);
+		if (pLastOffer != NULL)
+			if (info.m_nType <= pLastOffer->m_nType)
+				return ACCEPTED;
+	}
+
 	// Hier werden zusätzlich noch die Schiffsstärken der anderen Rassen mit der unseren verglichen. Ist die andere Rasse
 	// stärker, so nehmen wir eher an.
 	UINT nOurShipPower		= m_pDoc->GetStatistics()->GetShipPower(info.m_sToRace);
@@ -382,8 +397,14 @@ short CMajorAI::ReactOnMajorOffer(const CDiplomacyInfo& info)
 	// Wenn der Randomwert höher größer gleich dem Wert ist, den wir erreichen mußten, dann wird angenommen
 	if (nRandom >= nNeededRelation)
 		return ACCEPTED;
+	
+	// alte Beziehung wiederherstellen (konnte durch Mitgifte zuvor erhöht werden)
+	BYTE byCurrentRelation = pRace->GetRelation(info.m_sFromRace);
+	if (byCurrentRelation > byOldRelation)
+		pRace->SetRelation(info.m_sFromRace, (short)byOldRelation - (short)byCurrentRelation);
+
 	// sonst wird zu 9/10 abgelehnt
-	else if (rand()%10 > 0)
+	if (rand()%10 > 0)
 		return DECLINED;
 	// oder dann "nicht reagiert" zurückgegeben
 	else
@@ -401,7 +422,7 @@ short CMajorAI::CalcDiplomacyRequest(const CDiplomacyInfo& info)
 	//globale Durchschnitt von der Forderung besitzen. Dieser Prozentsatz ist wie oben beschrieben abhängig von
 	//der Beziehung und der Wertigkeit des Vertrages. Wenn ich diesen Vertrag nun annehmen würde, wird überprüft,
 	//auf welchem Planeten ich das meiste der geforderten Ressource habe. Wenn ich die Forderung damit erfüllen
-	//könnte, wird angenommen. Bei gefordertem Latinum brauche ich nicht die Planeten durchgehen.
+	//könnte, wird angenommen. Bei gefordertem Credits brauche ich nicht die Planeten durchgehen.
 	
 	// zu 10% reagieren wir gar nicht auf die Forderung
 	if (rand()%10 == 0)
@@ -446,7 +467,7 @@ short CMajorAI::CalcDiplomacyRequest(const CDiplomacyInfo& info)
 		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 		{
 			CMajor* pMajor = it->second;
-			lCredits += pMajor->GetEmpire()->GetLatinum();
+			lCredits += pMajor->GetEmpire()->GetCredits();
 			nRaces++;
 		}
 			
@@ -454,7 +475,7 @@ short CMajorAI::CalcDiplomacyRequest(const CDiplomacyInfo& info)
 			lCredits /= nRaces;
 
 		// schauen ob wir den prozentualen Mehrwert der Durchschnittscredits besitzen
-		if (pRace->GetEmpire()->GetLatinum() > (lCredits * dValue))
+		if (pRace->GetEmpire()->GetCredits() > (lCredits * dValue))
 			nAnswer = ACCEPTED;
 		else
 			nAnswer = DECLINED;
@@ -474,8 +495,8 @@ short CMajorAI::CalcDiplomacyRequest(const CDiplomacyInfo& info)
 			nRes = CRYSTAL;
 		else if (info.m_nResources[IRIDIUM])
 			nRes = IRIDIUM;
-		else if (info.m_nResources[DILITHIUM])
-			nRes = DILITHIUM;
+		else if (info.m_nResources[DERITIUM])
+			nRes = DERITIUM;
 	
 		if (nRes != -1)
 		{
@@ -490,7 +511,7 @@ short CMajorAI::CalcDiplomacyRequest(const CDiplomacyInfo& info)
 					for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
 						if (m_pDoc->GetSystem(x,y).GetOwnerOfSystem() == info.m_sToRace)							
 						{
-							nMaxRes = max(nMaxRes, m_pDoc->GetSystem(x,y).GetRessourceStore(nRes));
+							nMaxRes = max(nMaxRes, m_pDoc->GetSystem(x,y).GetResourceStore(nRes));
 							ptSystem.x = x;
 							ptSystem.y = y;
 						}
@@ -499,9 +520,9 @@ short CMajorAI::CalcDiplomacyRequest(const CDiplomacyInfo& info)
 				if (ptSystem != CPoint(-1,-1) && nMaxRes >= info.m_nResources[nRes])
 				{
 					//CString s;
-					//s.Format("Request from: %d an %d\nunsere Beziehung zu denen: %d\nunser Status: %d\nvalue: %lf\ngeforderte Res: %d Menge: %d\naus System: %d/%d\ndavon vorhanden: %d",requestFrom,m_iRaceNumber,m_iRelationshipOtherMajor[requestFrom],m_iDiplomacyStatus[requestFrom],value,res,requestedRessource[res],system.x,system.y,systems[system.x][system.y].GetRessourceStore(res));
+					//s.Format("Request from: %d an %d\nunsere Beziehung zu denen: %d\nunser Status: %d\nvalue: %lf\ngeforderte Res: %d Menge: %d\naus System: %d/%d\ndavon vorhanden: %d",requestFrom,m_iRaceNumber,m_iRelationshipOtherMajor[requestFrom],m_iDiplomacyStatus[requestFrom],value,res,requestedRessource[res],system.x,system.y,systems[system.x][system.y].GetResourceStore(res));
 					//AfxMessageBox(s);
-					m_pDoc->GetSystem(ptSystem).SetRessourceStore(nRes, -info.m_nResources[nRes]);
+					m_pDoc->GetSystem(ptSystem).SetResourceStore(nRes, -info.m_nResources[nRes]);
 				}
 				else nAnswer = DECLINED;
 			}
@@ -510,13 +531,13 @@ short CMajorAI::CalcDiplomacyRequest(const CDiplomacyInfo& info)
 		}
 	}
 	// Wenn ich, falls gefordert, die Ressourcen dazugebe und auch Credits gefordert sind und dieses auch geben
-	// könnte, dann muß ich dieses noch von meinem Latinum abziehen
+	// könnte, dann muß ich dieses noch von meinem Credits abziehen
 	if (nAnswer == ACCEPTED && info.m_nCredits > 0)
 	{
 		//CString s;
-		//s.Format("Request from: %d an %d\nunsere Beziehung zu denen: %d\nunser Status: %d\nvalue: %lf\ngefordertes Latinum: %d\ndavon bei uns vorhanden: %d\nForderer besitzt: %d",requestFrom,m_iRaceNumber,m_iRelationshipOtherMajor[requestFrom],m_iDiplomacyStatus[requestFrom],value,requestedLatinum,empire[m_iRaceNumber].GetLatinum(),empire[requestFrom].GetLatinum());
+		//s.Format("Request from: %d an %d\nunsere Beziehung zu denen: %d\nunser Status: %d\nvalue: %lf\ngefordertes Credits: %d\ndavon bei uns vorhanden: %d\nForderer besitzt: %d",requestFrom,m_iRaceNumber,m_iRelationshipOtherMajor[requestFrom],m_iDiplomacyStatus[requestFrom],value,requestedCredits,empire[m_iRaceNumber].GetCredits(),empire[requestFrom].GetCredits());
 		//AfxMessageBox(s);
-		pRace->GetEmpire()->SetLatinum(-info.m_nCredits);
+		pRace->GetEmpire()->SetCredits(-info.m_nCredits);
 	}
 	
 	return nAnswer;	
@@ -915,7 +936,7 @@ bool CMajorAI::MakeMajorOffer(CString& sRaceID, CDiplomacyInfo& info)
 		info.m_nSendRound = m_pDoc->GetCurrentRound() - 1;
 				
 		// Ab hier kommt noch was großes dazu, nämlich ob und wann eine computergesteuerte Rasse auch Mitgifte macht.
-		// Latinum kann sie ja immer dazugeben, aber Ressourcen geht nur, wenn sie mindst. einen Handelsvertrag hat.
+		// Credits kann sie ja immer dazugeben, aber Ressourcen geht nur, wenn sie mindst. einen Handelsvertrag hat.
 		// Außerdem könnte die Rasse ja auch ein Geschenk geben oder eine Forderung stellen.
 		if (nOffer != NO_AGREEMENT)
 		{
@@ -1130,9 +1151,9 @@ bool CMajorAI::GiveDowry(CDiplomacyInfo& info)
 	// Als erstes gibt die KI-gesteuerte Rasse nur Geld, wenn sie mindst. 10% mehr als von dem globalen
 	// Durchschnittswert hat.
 	// Dies könnte man später vielleicht nochmal ändern, aber erstmal fällt mir da kein besserer Algo ein.
-	// Hier schauen ob ich auch noch Latinum mit dazugebe.
-	// Schauen ob ich 20% mehr als den Durchschnittswert aller erreiche bzw. wenn ich 25000 Latinum habe,
-	// dann gebe ich zu 50% auch Latinum dazu.
+	// Hier schauen ob ich auch noch Credits mit dazugebe.
+	// Schauen ob ich 20% mehr als den Durchschnittswert aller erreiche bzw. wenn ich 25000 Credits habe,
+	// dann gebe ich zu 50% auch Credits dazu.
 	long nCredits = 0;
 	USHORT counter = 0;
 	
@@ -1142,7 +1163,7 @@ bool CMajorAI::GiveDowry(CDiplomacyInfo& info)
 		CMajor* pMajor = it->second;
 		if (pMajor && pMajor->GetEmpire()->GetNumberOfSystems() > 0)
 		{
-			nCredits += pMajor->GetEmpire()->GetLatinum();
+			nCredits += pMajor->GetEmpire()->GetCredits();
 			counter++;
 		}
 	}
@@ -1151,23 +1172,23 @@ bool CMajorAI::GiveDowry(CDiplomacyInfo& info)
 		nCredits /= counter;
 	
 			// geht es an eine Minorrace, dann braucht es nicht so viel Geld übrig zu haben
-	if ((pToRace->GetType() == MINOR && pOurRace->GetEmpire()->GetLatinum() > 3000 && rand()%3 == 0)
+	if ((pToRace->GetType() == MINOR && pOurRace->GetEmpire()->GetCredits() > 3000 && rand()%3 == 0)
 		||	// oder an eine Majorrace, da braucht es viel mehr Geld
-		((pOurRace->GetEmpire()->GetLatinum() >= (long)(nCredits * 1.2f) && pOurRace->GetEmpire()->GetLatinum() > 1000)
+		((pOurRace->GetEmpire()->GetCredits() >= (long)(nCredits * 1.2f) && pOurRace->GetEmpire()->GetCredits() > 1000)
 		||	// bzw. wir haben sehr viel Geld übrig
-		(pOurRace->GetEmpire()->GetLatinum() > 25000 && rand()%2 > 0)))
+		(pOurRace->GetEmpire()->GetCredits() > 25000 && rand()%2 > 0)))
 	{
-		nCredits = rand()%(pOurRace->GetEmpire()->GetLatinum() + 1);
+		nCredits = rand()%(pOurRace->GetEmpire()->GetCredits() + 1);
 		// auf 250er Beträge runden
 		nCredits = (long)(nCredits / 250) * 250;
 		if (nCredits > 5000)
 			nCredits = 5000;
 		if (nCredits > 0)
 		{
-			// Jetzt das Latinum in das Angebot schreiben
+			// Jetzt das Credits in das Angebot schreiben
 			info.m_nCredits = (USHORT)nCredits;
 			// die Credits abziehen
-			pOurRace->GetEmpire()->SetLatinum(-nCredits);
+			pOurRace->GetEmpire()->SetCredits(-nCredits);
 			bGiveDowry |= true;
 		}
 	}
@@ -1180,13 +1201,13 @@ bool CMajorAI::GiveDowry(CDiplomacyInfo& info)
 		// zuerst random-wert ermitteln, welche Ressource ich dazugeben würde
 		// dafür benutze ich den durchschnittlichen Techlevel im Universum. Am Anfang wird deswegen nur Titan angeboten
 		// später kommen dann auch die weiteren Ressourcen hinzu, wenn der Wert zu groß ist machen wir das solange,
-		// bis der Wert max. Dilithium erhält
+		// bis der Wert max. Deritium erhält
 		USHORT whichRes = TITAN;
 		do
 		{
 			whichRes = rand()%(m_pDoc->GetStatistics()->GetAverageTechLevel() + 1);
 		}
-		while (whichRes > DILITHIUM);
+		while (whichRes > DERITIUM);
 		
 		// Schauen ob wir mehr als 20% von der Ressource haben als der Durschnitt ist
 		// nicht gleich in der do_while-Schleife, da ich nicht so oft dies als Mitgift geben möchte
@@ -1204,7 +1225,7 @@ bool CMajorAI::GiveDowry(CDiplomacyInfo& info)
 				for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
 					if (m_pDoc->GetSystem(x,y).GetOwnerOfSystem() == pOurRace->GetRaceID())
 					{
-						nMostRes = max(m_pDoc->GetSystem(x,y).GetRessourceStore(whichRes), nMostRes);
+						nMostRes = max(m_pDoc->GetSystem(x,y).GetResourceStore(whichRes), nMostRes);
 						ptSystem.x = x;
 						ptSystem.y = y;
 					}
@@ -1216,8 +1237,8 @@ bool CMajorAI::GiveDowry(CDiplomacyInfo& info)
 			// Jetzt geben wir eine Menge zwischen 0 und 20000 in 1000er Schritten als Mitgift (max. 20000)
 			// Wert zwischen 0 und dem Lagerinhalt generieren
 			UINT nGiveRes = rand()%(nMostRes + 1);
-			// bei Dilithium wird viel weniger übergeben, bei den restlichen auf 1000er gerundet
-			if (whichRes != DILITHIUM)
+			// bei Deritium wird viel weniger übergeben, bei den restlichen auf 1000er gerundet
+			if (whichRes != DERITIUM)
 				nGiveRes = (UINT)(nGiveRes / 1000) * 1000;
 			
 			if (nGiveRes > 20000)
@@ -1228,7 +1249,7 @@ bool CMajorAI::GiveDowry(CDiplomacyInfo& info)
 				info.m_nResources[whichRes] = (USHORT)nGiveRes;
 				info.m_ptKO = ptSystem;
 				// Die Ressource aus dem Lager des Systems abziehen
-				m_pDoc->GetSystem(ptSystem).SetRessourceStore(whichRes, (int)nGiveRes * (-1));
+				m_pDoc->GetSystem(ptSystem).SetResourceStore(whichRes, (int)nGiveRes * (-1));
 				bGiveDowry |= true;
 			}
 		}
@@ -1264,7 +1285,7 @@ bool CMajorAI::ClaimRequest(CDiplomacyInfo& info)
 		CMajor* pMajor = it->second;
 		if (pMajor && pMajor->GetEmpire()->GetNumberOfSystems() > 0)
 		{
-			nCredits += pMajor->GetEmpire()->GetLatinum();
+			nCredits += pMajor->GetEmpire()->GetCredits();
 			counter++;
 		}
 	}	
@@ -1290,7 +1311,7 @@ bool CMajorAI::ClaimRequest(CDiplomacyInfo& info)
 
 	// Jetzt haben wir den Durchschnittswert der Credits, wenn wir nur rand()%30Prozent von diesem Wert besitzen, dann
 	// stellen wir eine Forderung an die andere Rasse
-	if (bStronger || pOurRace->GetEmpire()->GetLatinum() <= (long)(nCredits * (rand()%30 + 1) / 100))
+	if (bStronger || pOurRace->GetEmpire()->GetCredits() <= (long)(nCredits * (rand()%30 + 1) / 100))
 	{
 		// Dann wollen wir Credits sehen, Menge ist abhängig vom Techlevel, umso höher, desto wahrscheinlicher ist
 		// auch eine höhere Forderung
@@ -1311,15 +1332,15 @@ bool CMajorAI::ClaimRequest(CDiplomacyInfo& info)
 	// zuerst random-wert ermitteln, welche Ressource ich fordern würde
 	// dafür benutze ich den durchschnittlichen Techlevel im Universum. Am Anfang wird deswegen nur Titan angeboten
 	// später kommen dann auch die weiteren Ressourcen hinzu, wenn der Wert zu groß ist machen wir das solange,
-	// bis der Wert max. Dilithium erhält	
+	// bis der Wert max. Deritium erhält	
 	bool bCanGive = false;
 	USHORT whichRes = TITAN;
 	int count = 0;
 	
 	do {
 		whichRes = rand()%(m_pDoc->GetStatistics()->GetAverageTechLevel() / 2 + 1);
-		if (whichRes > DILITHIUM)
-			whichRes = DILITHIUM;
+		if (whichRes > DERITIUM)
+			whichRes = DERITIUM;
 		
 		// Schauen ob wir weniger als rand()%50Prozent von der Ressource haben als der Durchschnitt
 		if (bStronger || (pOurRace->GetEmpire()->GetStorage()[whichRes] <= (ULONG)(m_pDoc->GetStatistics()->GetAverageResourceStorages()[whichRes] * (rand()%50+1) / 100)
@@ -1332,9 +1353,9 @@ bool CMajorAI::ClaimRequest(CDiplomacyInfo& info)
 	if (bCanGive)
 	{
 		// Jetzt müssen wir eine Menge zwischen 0 und 20000 in 1000er Schritten ermitteln (max. 20000)
-		// bei Dilithium wird viel weniger übergeben, bei den restlichen auf 1000er gerundet
+		// bei Deritium wird viel weniger übergeben, bei den restlichen auf 1000er gerundet
 		UINT nClaimRes = 0;
-		if (whichRes != DILITHIUM)
+		if (whichRes != DERITIUM)
 		{
 			nClaimRes = rand()%(1000 + m_pDoc->GetStatistics()->GetAverageTechLevel() * 1250);
 			nClaimRes = (UINT)(nClaimRes / 1000) * 1000;
@@ -1372,7 +1393,7 @@ void CMajorAI::ReactOnDowry(const CDiplomacyInfo& info)
 	// Duranium wird getauscht im Verhältnis 2:1
 	// Crystal wird getauscht im Verhältnis 1.625:1
 	// Iridium wird getauscht im Verhältnis 1.25:1
-	// Dilithium wird getauscht im Verhältnis 1:100
+	// Deritium wird getauscht im Verhältnis 1:100
 	
 	float fValue = 0.0f;
 	float fDiv = 0.0f;
@@ -1402,10 +1423,10 @@ void CMajorAI::ReactOnDowry(const CDiplomacyInfo& info)
 		fValue = info.m_nResources[IRIDIUM] / 1.25;
 		fDiv = (float)info.m_nResources[IRIDIUM] / (float)(pOurRace->GetEmpire()->GetStorage()[IRIDIUM] + .00001);
 	}
-	else if (info.m_nResources[DILITHIUM] != 0)	// Deritium übergeben?
+	else if (info.m_nResources[DERITIUM] != 0)	// Deritium übergeben?
 	{
-		fValue = info.m_nResources[DILITHIUM] * 100;
-		fDiv = (float)info.m_nResources[DILITHIUM] / (float)(pOurRace->GetEmpire()->GetStorage()[DILITHIUM] + .00001);
+		fValue = info.m_nResources[DERITIUM] * 100;
+		fDiv = (float)info.m_nResources[DERITIUM] / (float)(pOurRace->GetEmpire()->GetStorage()[DERITIUM] + .00001);
 	}
 
 	//So, nun gibts aber nicht immer diesen Betrag! Dafür fragen wir die
@@ -1425,18 +1446,21 @@ void CMajorAI::ReactOnDowry(const CDiplomacyInfo& info)
 	fValue *= fDiv;
 	
 	// Wert nochmal modifizieren, aufgrund der Rassenart
-	if (pOurRace->IsRaceProperty(PRODUCER))
-		fValue *= 1.5f;
-	if (pOurRace->IsRaceProperty(INDUSTRIAL))
-		fValue *= 1.35f;
-	if (pOurRace->IsRaceProperty(WARLIKE))
-		fValue *= 1.2f;
-	if (pOurRace->IsRaceProperty(FINANCIAL))
-		fValue *= 1.1f;
-	if (pOurRace->IsRaceProperty(SECRET))
-		fValue *= 0.9f;
-	if (pOurRace->IsRaceProperty(AGRARIAN))
-		fValue *= 0.8f;
+	if (fValue != 0.0f)
+	{
+		if (pOurRace->IsRaceProperty(PRODUCER))
+			fValue *= 1.5f;
+		if (pOurRace->IsRaceProperty(INDUSTRIAL))
+			fValue *= 1.35f;
+		if (pOurRace->IsRaceProperty(WARLIKE))
+			fValue *= 1.2f;
+		if (pOurRace->IsRaceProperty(FINANCIAL))
+			fValue *= 1.1f;
+		if (pOurRace->IsRaceProperty(SECRET))
+			fValue *= 0.9f;
+		if (pOurRace->IsRaceProperty(AGRARIAN))
+			fValue *= 0.8f;
+	}
 
 	fValue = max(0.0f, fValue);
 	USHORT nCreditsFromRes = (USHORT)fValue;
@@ -1490,7 +1514,7 @@ void CMajorAI::ReactOnDowry(const CDiplomacyInfo& info)
 	// Hier wird ein Wert berechnet, nämlich die gegebenen Credits/Creditlager von uns.
 	// Der erhaltene Wert wird mit dem fBonus multipliziert und ergibt die Beziehungsverbesserung.
 	// Der erhaltene Wert darf aber nicht größer als 1 sein!
-	fValue = ((float)info.m_nCredits / (float)(pOurRace->GetEmpire()->GetLatinum() + .001));
+	fValue = ((float)info.m_nCredits / (float)(pOurRace->GetEmpire()->GetCredits() + .001));
 	if (fValue > 1.0f)
 		fValue = 1.0f;
 	else if (fValue < 0.0f)
@@ -1498,7 +1522,7 @@ void CMajorAI::ReactOnDowry(const CDiplomacyInfo& info)
 	
 	fBonus *= fValue;
 	// CString s;
-	// s.Format("Latinum: %d\nWert: %lf\nBeziehungsverbesserung: %lf\nLatinumlager: %i",latinum,value,bonus,empires[m_iRaceNumber].GetLatinum());
+	// s.Format("Credits: %d\nWert: %lf\nBeziehungsverbesserung: %lf\nCreditslager: %i",credits,value,bonus,empires[m_iRaceNumber].GetCredits());
 	// AfxMessageBox(s);*/
 	
 	pOurRace->SetRelation(info.m_sFromRace, (short)fBonus);

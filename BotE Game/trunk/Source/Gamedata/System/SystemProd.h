@@ -47,8 +47,8 @@ public:
 	int GetCrystalProd() const {return m_iCrystalProd;}
 	int GetIridiumProd() const {return m_iIridiumProd;}
 	int GetResourceProd(BYTE res) const;
-	short GetDilithiumProd() const {return m_iDilithiumProd;}
-	short GetLatinumProd() const {return m_iLatinumProd;}
+	short GetDeritiumProd() const {return m_iDeritiumProd;}
+	short GetCreditsProd() const {return m_iCreditsProd;}
 	short GetMoralProd() const {return m_iMoralProd;}
 	static short GetMoralProdEmpireWide(const CString& sRaceID) {return m_iMoralProdEmpireWide[sRaceID];}
 	static std::map<CString, short>* GetMoralProdEmpireWide(void) {return &m_iMoralProdEmpireWide;}
@@ -123,8 +123,8 @@ private:
 	int m_iDuraniumProd;			///< Duraniumproduktion in dem System
 	int m_iCrystalProd;				///< Crystalproduktion in dem System
 	int m_iIridiumProd;				///< Iridiumproduktion in dem System
-	short m_iDilithiumProd;			///< Dilithiumproduktion in dem System
-	short m_iLatinumProd;			///< Latinumproduktion in dem System, abhängig von der Bevölkerung
+	short m_iDeritiumProd;			///< Deritiumproduktion in dem System
+	short m_iCreditsProd;			///< Creditsproduktion in dem System, abhängig von der Bevölkerung
 	short m_iMoralProd;				///< Moralproduktion aller Gebäude (also die +x Moral)
 	static std::map<CString, short> m_iMoralProdEmpireWide;	///< Moralproduktion imperiumsweit für alle Imperien
 	// Forschungstechboni
@@ -169,5 +169,5 @@ private:
 	short m_iShipBuildSpeed;
 	short m_iTroopBuildSpeed;
 	// new in ALPHA5
-	BOOLEAN m_bResourceDistributor[DILITHIUM + 1];		///< Ressourcenverteiler (Nahrung, Titan, Deuterium, Duranium, Kristalle, Iridium, Deritium)
+	BOOLEAN m_bResourceDistributor[DERITIUM + 1];		///< Ressourcenverteiler (Nahrung, Titan, Deuterium, Duranium, Kristalle, Iridium, Deritium)
 };

@@ -32,8 +32,8 @@ CBuildingInfo::CBuildingInfo(const CBuildingInfo & rhs)
 	m_iDuranium = rhs.m_iDuranium;
 	m_iCrystal = rhs.m_iCrystal;
 	m_iIridium = rhs.m_iIridium;
-	m_iDilithium = rhs.m_iDilithium;
-	m_iLatinum = rhs.m_iLatinum;
+	m_iDeritium = rhs.m_iDeritium;
+	m_iCredits = rhs.m_iCredits;
 	m_iMoral = rhs.m_iMoral;
 	m_iMoralEmpire = rhs.m_iMoralEmpire;
 	
@@ -47,9 +47,9 @@ CBuildingInfo::CBuildingInfo(const CBuildingInfo & rhs)
 	m_iDuraniumBoni = rhs.m_iDuraniumBoni;
 	m_iCrystalBoni = rhs.m_iCrystalBoni;
 	m_iIridiumBoni = rhs.m_iIridiumBoni;
-	m_iDilithiumBoni = rhs.m_iDilithiumBoni;
+	m_iDeritiumBoni = rhs.m_iDeritiumBoni;
 	m_iAllRessourceBoni = rhs.m_iAllRessourceBoni;
-	m_iLatinumBoni = rhs.m_iLatinumBoni;
+	m_iCreditsBoni = rhs.m_iCreditsBoni;
 	
 	m_iBioTechBoni = rhs.m_iBioTechBoni;
 	m_iEnergyTechBoni = rhs.m_iEnergyTechBoni;
@@ -131,14 +131,14 @@ CBuildingInfo::CBuildingInfo(const CBuildingInfo & rhs)
 	m_iNeededDuranium = rhs.m_iNeededDuranium;
 	m_iNeededCrystal = rhs.m_iNeededCrystal;
 	m_iNeededIridium = rhs.m_iNeededIridium;
-	m_iNeededDilithium = rhs.m_iNeededDilithium;
+	m_iNeededDeritium = rhs.m_iNeededDeritium;
 
 	m_iPredecessorID = rhs.m_iPredecessorID;
 
 	for (int i = 0; i < 7; i++)
 		m_iBuildingEquivalent[i] = rhs.m_iBuildingEquivalent[i];
 
-	for (int res = TITAN; res <= DILITHIUM; res++)
+	for (int res = TITAN; res <= DERITIUM; res++)
 		m_bResourceDistributor[res] = rhs.m_bResourceDistributor[res];
 	m_iNeededSystems = rhs.m_iNeededSystems;
 }
@@ -160,8 +160,8 @@ CBuildingInfo & CBuildingInfo::operator=(const CBuildingInfo & rhs)
 	m_iDuranium = rhs.m_iDuranium;
 	m_iCrystal = rhs.m_iCrystal;
 	m_iIridium = rhs.m_iIridium;
-	m_iDilithium = rhs.m_iDilithium;
-	m_iLatinum = rhs.m_iLatinum;
+	m_iDeritium = rhs.m_iDeritium;
+	m_iCredits = rhs.m_iCredits;
 	m_iMoral = rhs.m_iMoral;
 	m_iMoralEmpire = rhs.m_iMoralEmpire;
 	
@@ -175,9 +175,9 @@ CBuildingInfo & CBuildingInfo::operator=(const CBuildingInfo & rhs)
 	m_iDuraniumBoni = rhs.m_iDuraniumBoni;
 	m_iCrystalBoni = rhs.m_iCrystalBoni;
 	m_iIridiumBoni = rhs.m_iIridiumBoni;
-	m_iDilithiumBoni = rhs.m_iDilithiumBoni;
+	m_iDeritiumBoni = rhs.m_iDeritiumBoni;
 	m_iAllRessourceBoni = rhs.m_iAllRessourceBoni;
-	m_iLatinumBoni = rhs.m_iLatinumBoni;
+	m_iCreditsBoni = rhs.m_iCreditsBoni;
 	
 	m_iBioTechBoni = rhs.m_iBioTechBoni;
 	m_iEnergyTechBoni = rhs.m_iEnergyTechBoni;
@@ -259,14 +259,14 @@ CBuildingInfo & CBuildingInfo::operator=(const CBuildingInfo & rhs)
 	m_iNeededDuranium = rhs.m_iNeededDuranium;
 	m_iNeededCrystal = rhs.m_iNeededCrystal;
 	m_iNeededIridium = rhs.m_iNeededIridium;
-	m_iNeededDilithium = rhs.m_iNeededDilithium;
+	m_iNeededDeritium = rhs.m_iNeededDeritium;
 
 	m_iPredecessorID = rhs.m_iPredecessorID;
 
 	for (int i = 0; i < 7; i++)
 		m_iBuildingEquivalent[i] = rhs.m_iBuildingEquivalent[i];
 
-	for (int res = TITAN; res <= DILITHIUM; res++)
+	for (int res = TITAN; res <= DERITIUM; res++)
 		m_bResourceDistributor[res] = rhs.m_bResourceDistributor[res];
 	m_iNeededSystems = rhs.m_iNeededSystems;
 
@@ -316,7 +316,7 @@ void CBuildingInfo::Serialize(CArchive &ar)
 		ar << m_iNeededDuranium;
 		ar << m_iNeededCrystal;
 		ar << m_iNeededIridium;
-		ar << m_iNeededDilithium;
+		ar << m_iNeededDeritium;
 		ar << m_iPredecessorID;
 		for (int i = 0; i < 7; i++)
 			ar << m_iBuildingEquivalent[i];
@@ -334,8 +334,8 @@ void CBuildingInfo::Serialize(CArchive &ar)
 		ar << m_iDuranium;
 		ar << m_iCrystal;
 		ar << m_iIridium;
-		ar << m_iDilithium;
-		ar << m_iLatinum;
+		ar << m_iDeritium;
+		ar << m_iCredits;
 		ar << m_iMoral;
 		ar << m_iMoralEmpire;
 		// Boni / Mali, das sind alles Prozentangaben zu irgendwas
@@ -350,9 +350,9 @@ void CBuildingInfo::Serialize(CArchive &ar)
 		ar << m_iDuraniumBoni;
 		ar << m_iCrystalBoni;
 		ar << m_iIridiumBoni;
-		ar << m_iDilithiumBoni;
+		ar << m_iDeritiumBoni;
 		ar << m_iAllRessourceBoni;	
-		ar << m_iLatinumBoni;
+		ar << m_iCreditsBoni;
 		// Forschungstechboni
 		ar << m_iBioTechBoni;
 		ar << m_iEnergyTechBoni;
@@ -400,7 +400,7 @@ void CBuildingInfo::Serialize(CArchive &ar)
 		// ist das Gebäude niemals fertig (z.B. ein Tribunal)
 		ar << m_bNeverReady;
 		ar << m_bAllwaysOnline;		
-		for (int res = TITAN; res <= DILITHIUM; res++)
+		for (int res = TITAN; res <= DERITIUM; res++)
 			ar << m_bResourceDistributor[res];
 		ar << m_iNeededSystems;		
 	}
@@ -441,7 +441,7 @@ void CBuildingInfo::Serialize(CArchive &ar)
 		ar >> m_iNeededDuranium;
 		ar >> m_iNeededCrystal;
 		ar >> m_iNeededIridium;
-		ar >> m_iNeededDilithium;
+		ar >> m_iNeededDeritium;
 		ar >> m_iPredecessorID;
 		for (int i = 0; i < 7; i++)
 			ar >> m_iBuildingEquivalent[i];
@@ -459,8 +459,8 @@ void CBuildingInfo::Serialize(CArchive &ar)
 		ar >> m_iDuranium;
 		ar >> m_iCrystal;
 		ar >> m_iIridium;
-		ar >> m_iDilithium;
-		ar >> m_iLatinum;
+		ar >> m_iDeritium;
+		ar >> m_iCredits;
 		ar >> m_iMoral;
 		ar >> m_iMoralEmpire;
 		// Boni / Mali, das sind alles Prozentangaben zu irgendwas
@@ -475,9 +475,9 @@ void CBuildingInfo::Serialize(CArchive &ar)
 		ar >> m_iDuraniumBoni;
 		ar >> m_iCrystalBoni;
 		ar >> m_iIridiumBoni;
-		ar >> m_iDilithiumBoni;
+		ar >> m_iDeritiumBoni;
 		ar >> m_iAllRessourceBoni;	
-		ar >> m_iLatinumBoni;
+		ar >> m_iCreditsBoni;
 		// Forschungstechboni
 		ar >> m_iBioTechBoni;
 		ar >> m_iEnergyTechBoni;
@@ -525,7 +525,7 @@ void CBuildingInfo::Serialize(CArchive &ar)
 		// ist das Gebäude niemals fertig (z.B. ein Tribunal)
 		ar >> m_bNeverReady;
 		ar >> m_bAllwaysOnline;		
-		for (int res = TITAN; res <= DILITHIUM; res++)
+		for (int res = TITAN; res <= DERITIUM; res++)
 			ar >> m_bResourceDistributor[res];
 		ar >> m_iNeededSystems;		
 	}
@@ -545,8 +545,8 @@ USHORT CBuildingInfo::GetNeededResource(BYTE res) const
 		return m_iNeededCrystal;
 	case IRIDIUM:
 		return m_iNeededIridium;
-	case DILITHIUM:
-		return m_iNeededDilithium;
+	case DERITIUM:
+		return m_iNeededDeritium;
 	default:
 		return 0;
 	}
@@ -566,7 +566,7 @@ USHORT CBuildingInfo::GetResourceProd(BYTE res) const
 	case DURANIUM:	return GetDuraniumProd();
 	case CRYSTAL:	return GetCrystalProd();
 	case IRIDIUM:	return GetIridiumProd();
-	case DILITHIUM:	return GetDilithiumProd();
+	case DERITIUM:	return GetDeritiumProd();
 	default: {
 		MYTRACE(MT::LEVEL_WARNING, "CBuildingInfo::GetResourceProd(): Resource %d doesn't exists!");
 		return 0;
@@ -599,10 +599,10 @@ CString CBuildingInfo::GetProductionAsString(USHORT number) const
 		s.AppendFormat("%s: %i\n",CResourceManager::GetString("CRYSTAL"), this->GetCrystalProd() * number);
 	if (this->GetIridiumProd() > 0)
 		s.AppendFormat("%s: %i\n",CResourceManager::GetString("IRIDIUM"), this->GetIridiumProd() * number);
-	if (this->GetDilithiumProd() > 0)
-		s.AppendFormat("%s: %i\n",CResourceManager::GetString("DILITHIUM"), this->GetDilithiumProd() * number);
-	if (this->GetLatinum() != 0)
-		s.AppendFormat("%s: %i\n",CResourceManager::GetString("LATINUM"), this->GetLatinum() * number);
+	if (this->GetDeritiumProd() > 0)
+		s.AppendFormat("%s: %i\n",CResourceManager::GetString("DERITIUM"), this->GetDeritiumProd() * number);
+	if (this->GetCredits() != 0)
+		s.AppendFormat("%s: %i\n",CResourceManager::GetString("CREDITS"), this->GetCredits() * number);
 	if (this->GetMoralProd() != 0)
 		s.AppendFormat("%s: %i\n",CResourceManager::GetString("MORAL"), this->GetMoralProd() * number);
 	if (this->GetMoralProdEmpire() != 0)
@@ -629,12 +629,12 @@ CString CBuildingInfo::GetProductionAsString(USHORT number) const
 		s.AppendFormat("%s: %i%%\n",CResourceManager::GetString("CRYSTAL_BONUS"), this->GetCrystalBoni() * number);
 	if (this->GetIridiumBoni() != 0)
 		s.AppendFormat("%s: %i%%\n",CResourceManager::GetString("IRIDIUM_BONUS"), this->GetIridiumBoni() * number);
-	if (this->GetDilithiumBoni() != 0)
-		s.AppendFormat("%s: %i%%\n",CResourceManager::GetString("DILITHIUM_BONUS"), this->GetDilithiumBoni() * number);
+	if (this->GetDeritiumBoni() != 0)
+		s.AppendFormat("%s: %i%%\n",CResourceManager::GetString("DERITIUM_BONUS"), this->GetDeritiumBoni() * number);
 	if (this->GetAllRessourcesBoni() != 0)
 		s.AppendFormat("%s: %i%%\n",CResourceManager::GetString("BONUS_TO_ALL_RES"), this->GetAllRessourcesBoni() * number);
-	if (this->GetLatinumBoni() != 0)
-		s.AppendFormat("%s: %i%%\n",CResourceManager::GetString("LATINUM_BONUS"), this->GetLatinumBoni() * number);
+	if (this->GetCreditsBoni() != 0)
+		s.AppendFormat("%s: %i%%\n",CResourceManager::GetString("CREDITS_BONUS"), this->GetCreditsBoni() * number);
 	
 	// Wenn alle Forschungsboni belegt sind, sprich Bonus auf alles
 	if (this->GetBioTechBoni() != 0 && this->GetBioTechBoni() == this->GetEnergyTechBoni() && this->GetBioTechBoni() == this->GetCompTechBoni()
@@ -763,8 +763,8 @@ CString CBuildingInfo::GetProductionAsString(USHORT number) const
 		s.AppendFormat("%s - %s\n", CResourceManager::GetString("RESOURCE_DISTRIBUTOR"), CResourceManager::GetString("CRYSTAL"));
 	if (this->GetResourceDistributor(IRIDIUM))
 		s.AppendFormat("%s - %s\n", CResourceManager::GetString("RESOURCE_DISTRIBUTOR"), CResourceManager::GetString("IRIDIUM"));
-	if (this->GetResourceDistributor(DILITHIUM))
-		s.AppendFormat("%s - %s\n", CResourceManager::GetString("RESOURCE_DISTRIBUTOR"), CResourceManager::GetString("DILITHIUM"));	
+	if (this->GetResourceDistributor(DERITIUM))
+		s.AppendFormat("%s - %s\n", CResourceManager::GetString("RESOURCE_DISTRIBUTOR"), CResourceManager::GetString("DERITIUM"));	
 
 	return s;
 }

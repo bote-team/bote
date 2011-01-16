@@ -197,10 +197,10 @@ void CPlanetBottomView::OnDraw(CDC* dc)
 		RectF boundingBox;
 		g.MeasureString(s.AllocSysString(), s.GetLength(), &Gdiplus::Font(fontName.AllocSysString(), fontSize), PointF(735, 228), &fontFormat, &boundingBox); 
 		// Symbole der vorhanden Ressourcen im System ermitteln
-		BOOLEAN res[DILITHIUM + 1] = {0};
+		BOOLEAN res[DERITIUM + 1] = {0};
 		pDoc->GetSector(KO).GetAvailableResources(res, false);
 		int nExist = 0;
-		for (int i = TITAN; i <= DILITHIUM; i++)
+		for (int i = TITAN; i <= DERITIUM; i++)
 		{
 			if (res[i])
 			{
@@ -212,7 +212,7 @@ void CPlanetBottomView::OnDraw(CDC* dc)
 					case DURANIUM:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\duraniumSmall.bop");	break;
 					case CRYSTAL:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\crystalSmall.bop");		break;
 					case IRIDIUM:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\iridiumSmall.bop");		break;
-					case DILITHIUM: graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\Deritium.bop");		break;
+					case DERITIUM: graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\Deritium.bop");		break;
 				}
 				if (graphic)
 					g.DrawImage(graphic, (int)boundingBox.GetRight() + 5 + nExist * 20, 228, 20, 16);
@@ -540,7 +540,7 @@ CString CPlanetBottomView::CreateTooltip(void)
 					CPlanet* pPlanet = pDoc->m_Sector[KO.x][KO.y].GetPlanet(i);
 					ASSERT(pPlanet);
 					if (pPlanet->GetBoni()[j])
-						if (j != DILITHIUM)
+						if (j != DERITIUM)
 							nBonus += (pPlanet->GetSize() + 1) * 25;
 				}
 				if (nBonus)
@@ -638,8 +638,8 @@ CString CPlanetBottomView::CreateTooltip(void)
 									case DURANIUM:	sBoni = CResourceManager::GetString("DURANIUM_BONUS"); break;
 									case CRYSTAL:	sBoni = CResourceManager::GetString("CRYSTAL_BONUS"); break;
 									case IRIDIUM:	sBoni = CResourceManager::GetString("IRIDIUM_BONUS"); break;
-									case DILITHIUM:
-										sBoni = CHTMLStringBuilder::GetHTMLColor(CResourceManager::GetString("DILITHIUM") + " " + CResourceManager::GetString("EXISTING"));
+									case DERITIUM:
+										sBoni = CHTMLStringBuilder::GetHTMLColor(CResourceManager::GetString("DERITIUM") + " " + CResourceManager::GetString("EXISTING"));
 										sBoni = CHTMLStringBuilder::GetHTMLHeader(sBoni, _T("h5"));
 										return CHTMLStringBuilder::GetHTMLCenter(sBoni);									
 									case 6:			sBoni = CResourceManager::GetString("FOOD_BONUS"); break;

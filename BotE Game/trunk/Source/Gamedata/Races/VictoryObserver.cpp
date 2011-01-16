@@ -3,6 +3,7 @@
 #include "Botf2Doc.h"
 #include "Races/RaceController.h"
 #include "IniLoader.h"
+#include <algorithm>
 
 IMPLEMENT_SERIAL (CVictoryObserver, CObject, 1)
 //////////////////////////////////////////////////////////////////////

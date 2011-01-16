@@ -36,8 +36,8 @@ public:
 	/// @param sEnemyID Ziel der Geheimdienstaktion
 	/// @param round Runde in der die Geheimdienstaktion angelegt wurde
 	/// @param isSpy handelt es sich um Spionage oder Sabotage
-	/// @param latinum Latinum
-	CEcoIntelObj(const CString& sOwnerID, const CString& sEnemyID, USHORT round, BOOLEAN isSpy, int latinum);
+	/// @param credits Credits
+	CEcoIntelObj(const CString& sOwnerID, const CString& sEnemyID, USHORT round, BOOLEAN isSpy, int credits);
 
 	/// Destruktor
 	~CEcoIntelObj(void);
@@ -59,8 +59,8 @@ public:
 	/// Funktion gibt die Anzahl der Gebäude zurück, auf welche sich die Geheimdienstaktion auswirkt.
 	BYTE GetNumber() const {return m_byNumber;}
 
-	/// Funktion gibt die Latinummenge zurück
-	int GetLatinum() const {return m_iLatinum;}
+	/// Funktion gibt die Creditsmenge zurück
+	int GetCredits() const {return m_iCredits;}
 	
 	// sonstige Funktion
 	/// Funktion generiert einen Text, welcher eine Geheimdiestaktion beschreibt, für den Auslöser bzw. das Opfer
@@ -78,5 +78,5 @@ private:
 
 	USHORT m_nID;				///< ID der zu sabotierenden/sabotierten Gebäude
 
-	int m_iLatinum;				///< Latinummenge
+	int m_iCredits;				///< Creditsmenge
 };

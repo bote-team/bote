@@ -144,7 +144,7 @@ private:
 	BOOLEAN m_bClickedOnBuildingInfoButton;	// Wurde auf den "Info" Button für ein Gebäude geklickt
 	BOOLEAN m_bClickedOnBuildingDescriptionButton;	// Wurde auf den "Beschreibung" Button für ein Gebäude geklickt
 	// Hier die Variablen, wenn wir beim Globalen Lager sind
-	USHORT m_iGlobalStoreageQuantity;		// Wieviel Ressourcen werden pro Klick verschoben
+	UINT m_iGlobalStoreageQuantity;			// Wieviel Ressourcen werden pro Klick verschoben
 	// Hier Variablen, wenn wir eine Ressourcenroute ziehen wollen
 	static BYTE m_byResourceRouteRes;		// welche Ressource soll für die Ressourcenroute gelten
 	

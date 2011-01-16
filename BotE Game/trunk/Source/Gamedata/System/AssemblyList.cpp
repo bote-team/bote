@@ -26,7 +26,7 @@ CAssemblyList::CAssemblyList(const CAssemblyList & rhs)
 	m_iNeededDuraniumForBuild = rhs.m_iNeededDuraniumForBuild;
 	m_iNeededCrystalForBuild = rhs.m_iNeededCrystalForBuild;
 	m_iNeededIridiumForBuild = rhs.m_iNeededIridiumForBuild;
-	m_iNeededDilithiumForBuild = rhs.m_iNeededDilithiumForBuild;
+	m_iNeededDeritiumForBuild = rhs.m_iNeededDeritiumForBuild;
 	m_bWasBuildingBought = rhs.m_bWasBuildingBought;
 	m_iBuildCosts = rhs.m_iBuildCosts;
 	for (int i = 0; i < ALE; i++)
@@ -38,7 +38,7 @@ CAssemblyList::CAssemblyList(const CAssemblyList & rhs)
 		m_iNeededDuraniumInAssemblyList[i] = rhs.m_iNeededDuraniumInAssemblyList[i];
 		m_iNeededCrystalInAssemblyList[i] = rhs.m_iNeededCrystalInAssemblyList[i];
 		m_iNeededIridiumInAssemblyList[i] = rhs.m_iNeededIridiumInAssemblyList[i];
-		m_iNeededDilithiumInAssemblyList[i] = rhs.m_iNeededDilithiumInAssemblyList[i];
+		m_iNeededDeritiumInAssemblyList[i] = rhs.m_iNeededDeritiumInAssemblyList[i];
 	}
 }
 
@@ -55,7 +55,7 @@ CAssemblyList & CAssemblyList::operator=(const CAssemblyList & rhs)
 	m_iNeededDuraniumForBuild = rhs.m_iNeededDuraniumForBuild;
 	m_iNeededCrystalForBuild = rhs.m_iNeededCrystalForBuild;
 	m_iNeededIridiumForBuild = rhs.m_iNeededIridiumForBuild;
-	m_iNeededDilithiumForBuild = rhs.m_iNeededDilithiumForBuild;
+	m_iNeededDeritiumForBuild = rhs.m_iNeededDeritiumForBuild;
 	m_bWasBuildingBought = rhs.m_bWasBuildingBought;
 	m_iBuildCosts = rhs.m_iBuildCosts;
 	for (int i = 0; i < ALE; i++)
@@ -67,7 +67,7 @@ CAssemblyList & CAssemblyList::operator=(const CAssemblyList & rhs)
 		m_iNeededDuraniumInAssemblyList[i] = rhs.m_iNeededDuraniumInAssemblyList[i];
 		m_iNeededCrystalInAssemblyList[i] = rhs.m_iNeededCrystalInAssemblyList[i];
 		m_iNeededIridiumInAssemblyList[i] = rhs.m_iNeededIridiumInAssemblyList[i];
-		m_iNeededDilithiumInAssemblyList[i] = rhs.m_iNeededDilithiumInAssemblyList[i];
+		m_iNeededDeritiumInAssemblyList[i] = rhs.m_iNeededDeritiumInAssemblyList[i];
 	}
 	return *this;
 }
@@ -91,7 +91,7 @@ void CAssemblyList::Serialize(CArchive &ar)
 			ar << m_iNeededDuraniumInAssemblyList[i];	
 			ar << m_iNeededCrystalInAssemblyList[i];	
 			ar << m_iNeededIridiumInAssemblyList[i];	
-			ar << m_iNeededDilithiumInAssemblyList[i];
+			ar << m_iNeededDeritiumInAssemblyList[i];
 		}
 		// Variablen, die Angeben, wieviel Industrie und Rohstoffe zum Bau benötigt werden
 		ar << m_iNeededIndustryForBuild;			
@@ -100,7 +100,7 @@ void CAssemblyList::Serialize(CArchive &ar)
 		ar << m_iNeededDuraniumForBuild;			
 		ar << m_iNeededCrystalForBuild;				
 		ar << m_iNeededIridiumForBuild;				
-		ar << m_iNeededDilithiumForBuild;			
+		ar << m_iNeededDeritiumForBuild;			
 		// Wurde das Gebäude gekauft in dieser Runde gekauft
 		ar << m_bWasBuildingBought;			
 		// Die Baukosten eines Auftrages
@@ -119,7 +119,7 @@ void CAssemblyList::Serialize(CArchive &ar)
 			ar >> m_iNeededDuraniumInAssemblyList[i];	
 			ar >> m_iNeededCrystalInAssemblyList[i];	
 			ar >> m_iNeededIridiumInAssemblyList[i];	
-			ar >> m_iNeededDilithiumInAssemblyList[i];
+			ar >> m_iNeededDeritiumInAssemblyList[i];
 		}
 		// Variablen, die Angeben, wieviel Industrie und Rohstoffe zum Bau benötigt werden
 		ar >> m_iNeededIndustryForBuild;			
@@ -128,7 +128,7 @@ void CAssemblyList::Serialize(CArchive &ar)
 		ar >> m_iNeededDuraniumForBuild;			
 		ar >> m_iNeededCrystalForBuild;				
 		ar >> m_iNeededIridiumForBuild;				
-		ar >> m_iNeededDilithiumForBuild;			
+		ar >> m_iNeededDeritiumForBuild;			
 		// Wurde das Gebäude gekauft in dieser Runde gekauft
 		ar >> m_bWasBuildingBought;			
 		// Die Baukosten eines Auftrages
@@ -149,7 +149,7 @@ UINT CAssemblyList::GetNeededResourceInAssemblyList(USHORT entry, BYTE res) cons
 	case DURANIUM:		return this->GetNeededDuraniumInAssemblyList(entry);
 	case CRYSTAL:		return this->GetNeededCrystalInAssemblyList(entry);
 	case IRIDIUM:		return this->GetNeededIridiumInAssemblyList(entry);
-	case DILITHIUM:		return this->GetNeededDilithiumInAssemblyList(entry);
+	case DERITIUM:		return this->GetNeededDeritiumInAssemblyList(entry);
 	default:			return NULL;
 	}
 }
@@ -164,7 +164,7 @@ UINT CAssemblyList::GetNeededResourceForBuild(BYTE res) const
 	case DURANIUM:		return this->GetNeededDuraniumForBuild();
 	case CRYSTAL:		return this->GetNeededCrystalForBuild();
 	case IRIDIUM:		return this->GetNeededIridiumForBuild();
-	case DILITHIUM:		return this->GetNeededDilithiumForBuild();
+	case DERITIUM:		return this->GetNeededDeritiumForBuild();
 	default:			return NULL;
 	}	
 }
@@ -185,7 +185,7 @@ void CAssemblyList::CalculateNeededRessources(CBuildingInfo* buildingInfo, CShip
 		m_iNeededDuraniumForBuild = buildingInfo->GetNeededDuranium();
 		m_iNeededCrystalForBuild = buildingInfo->GetNeededCrystal();
 		m_iNeededIridiumForBuild = buildingInfo->GetNeededIridium();
-		m_iNeededDilithiumForBuild = buildingInfo->GetNeededDilithium();
+		m_iNeededDeritiumForBuild = buildingInfo->GetNeededDeritium();
 	}
 	else if (RunningNumber < 0)	// Wollen also ein Update machen
 	{
@@ -198,7 +198,7 @@ void CAssemblyList::CalculateNeededRessources(CBuildingInfo* buildingInfo, CShip
 		m_iNeededDuraniumForBuild = 0;
 		m_iNeededCrystalForBuild = 0;
 		m_iNeededIridiumForBuild = 0;
-		m_iNeededDilithiumForBuild = 0;
+		m_iNeededDeritiumForBuild = 0;
 		for (int i = 0; i < NumberOfBuildings; i++)
 		{
 			if (m_Buildings->GetAt(i).GetRunningNumber() == buildingInfo->GetPredecessorID())
@@ -210,7 +210,7 @@ void CAssemblyList::CalculateNeededRessources(CBuildingInfo* buildingInfo, CShip
 				m_iNeededDuraniumForBuild += (int)(buildingInfo->GetNeededDuranium()*0.8);
 				m_iNeededCrystalForBuild += (int)(buildingInfo->GetNeededCrystal()*0.8);
 				m_iNeededIridiumForBuild += (int)(buildingInfo->GetNeededIridium()*0.8);
-				m_iNeededDilithiumForBuild += (int)(buildingInfo->GetNeededDilithium()*0.8);
+				m_iNeededDeritiumForBuild += (int)(buildingInfo->GetNeededDeritium()*0.8);
 				m_iNeededIndustryForBuild += (int)(buildingInfo->GetNeededIndustry()*0.6);
 			}
 		}
@@ -223,7 +223,7 @@ void CAssemblyList::CalculateNeededRessources(CBuildingInfo* buildingInfo, CShip
 		m_iNeededDuraniumForBuild = shipInfo->GetNeededDuranium();
 		m_iNeededCrystalForBuild = shipInfo->GetNeededCrystal();
 		m_iNeededIridiumForBuild = shipInfo->GetNeededIridium();
-		m_iNeededDilithiumForBuild = shipInfo->GetNeededDilithium();
+		m_iNeededDeritiumForBuild = shipInfo->GetNeededDeritium();
 		// hier auch noch den eventuellen Bonus durch die Uniqueforschung "Allgemeine Schifftechnik"
 		if (ResearchInfo->GetResearchComplex(2)->GetFieldStatus(3) == RESEARCHED)	// 2 -> Allgemeine Schiffstechnik
 		{
@@ -254,7 +254,7 @@ void CAssemblyList::CalculateNeededRessources(CBuildingInfo* buildingInfo, CShip
 		m_iNeededDuraniumForBuild = troopInfo->GetNeededResources()[DURANIUM];
 		m_iNeededCrystalForBuild = troopInfo->GetNeededResources()[CRYSTAL];
 		m_iNeededIridiumForBuild = troopInfo->GetNeededResources()[IRIDIUM];
-		m_iNeededDilithiumForBuild = NULL;
+		m_iNeededDeritiumForBuild = NULL;
 		// hier auch noch den eventuellen Bonus durch die Uniqueforschung "Truppen"
 		if (ResearchInfo->GetResearchComplex(4)->GetFieldStatus(3) == RESEARCHED)	// 4 -> Truppen
 		{
@@ -283,7 +283,7 @@ void CAssemblyList::CalculateNeededRessources(CBuildingInfo* buildingInfo, CShip
 	m_iNeededDuraniumForBuild	= (UINT)(m_iNeededDuraniumForBuild * modifier);
 	m_iNeededCrystalForBuild	= (UINT)(m_iNeededCrystalForBuild * modifier);
 	m_iNeededIridiumForBuild	= (UINT)(m_iNeededIridiumForBuild * modifier);
-	m_iNeededDilithiumForBuild	= (UINT)(m_iNeededDilithiumForBuild * modifier);
+	m_iNeededDeritiumForBuild	= (UINT)(m_iNeededDeritiumForBuild * modifier);
 }
 
 // Funktion berechnet die Kosten für jedes Update in der Bauliste. Wird in der NextRound() Funktion aufgerufen.
@@ -305,7 +305,7 @@ void CAssemblyList::CalculateNeededRessourcesForUpdate(BuildingInfoArray* follow
 			m_iNeededDuraniumForBuild	= 0;
 			m_iNeededCrystalForBuild	= 0;
 			m_iNeededIridiumForBuild	= 0;
-			m_iNeededDilithiumForBuild	= 0;
+			m_iNeededDeritiumForBuild	= 0;
 			for (int i = 0; i < NumberOfBuildings; i++)
 				if (m_Buildings->GetAt(i).GetRunningNumber() == RunningNumber)
 				{
@@ -373,15 +373,15 @@ void CAssemblyList::RemoveResourceFromStorage(BYTE res, const CPoint &ko, CSyste
 	CSystem *system = &systems[ko.x][ko.y];
 	
 	// für Deritium gibt es keine Ressourcenroute
-	if (res != DILITHIUM)
+	if (res != DERITIUM)
 	{
 		// zuerst wird immer versucht, die Ressourcen aus dem lokalen Lager zu nehmen
-		long remainingRes = GetNeededResourceInAssemblyList(0, res) - system->GetRessourceStore(res);
+		long remainingRes = GetNeededResourceInAssemblyList(0, res) - system->GetResourceStore(res);
 		// werden zusätzliche Ressourcen aus anderen Lagern benötigt, so kann das lokale Lager
 		// auf NULL gesetzt werden
 		if (remainingRes > 0)
 		{
-			*system->GetRessourceStorages(res) = NULL;
+			*system->GetResourceStorages(res) = NULL;
 			// zusätzliche Ressourcen müssen aus den Lagern der Systeme mit den Ressourcenrouten
 			// bezogen werden. Dafür ein Feld anlegen, indem alle Startsysteme mit der zur Ressouce passenden
 			// Ressourcenroute beinhaltet sind.
@@ -421,9 +421,9 @@ void CAssemblyList::RemoveResourceFromStorage(BYTE res, const CPoint &ko, CSyste
 				int percent = NULL;
 				CPoint start = routes.GetAt(random).fromSystem;
 				// sind im jeweiligen Lager des Startsystem genügend Rohstoffe vorhanden
-				if (systems[start.x][start.y].GetRessourceStore(res) >= (ULONG)remainingRes)
+				if (systems[start.x][start.y].GetResourceStore(res) >= (ULONG)remainingRes)
 				{
-					*systems[start.x][start.y].GetRessourceStorages(res) -= remainingRes;
+					*systems[start.x][start.y].GetResourceStorages(res) -= remainingRes;
 					if (GetNeededResourceInAssemblyList(0, res) > NULL)
 						percent = 100 * remainingRes / GetNeededResourceInAssemblyList(0, res);
 					routes.GetAt(random).route->SetPercent((BYTE)percent);
@@ -431,11 +431,11 @@ void CAssemblyList::RemoveResourceFromStorage(BYTE res, const CPoint &ko, CSyste
 				}
 				else
 				{
-					remainingRes -= systems[start.x][start.y].GetRessourceStore(res);
+					remainingRes -= systems[start.x][start.y].GetResourceStore(res);
 					if (GetNeededResourceInAssemblyList(0, res) > NULL)
-						percent = 100 * systems[start.x][start.y].GetRessourceStore(res) / GetNeededResourceInAssemblyList(0, res);
+						percent = 100 * systems[start.x][start.y].GetResourceStore(res) / GetNeededResourceInAssemblyList(0, res);
 					routes.GetAt(random).route->SetPercent((BYTE)percent);
-					*systems[start.x][start.y].GetRessourceStorages(res) = NULL;
+					*systems[start.x][start.y].GetResourceStorages(res) = NULL;
 				}
 				// ROUTELIST Eintrag entfernen, wenn dieser abgearbeitet wurde
 				routes.RemoveAt(random);				
@@ -444,10 +444,10 @@ void CAssemblyList::RemoveResourceFromStorage(BYTE res, const CPoint &ko, CSyste
 		}
 		// anderenfalls werden nur die benötigten Ressourcen aus dem lokalen Lager abgezogen
 		else
-			*system->GetRessourceStorages(res) -= GetNeededResourceInAssemblyList(0, res);
+			*system->GetResourceStorages(res) -= GetNeededResourceInAssemblyList(0, res);
 	}
 	else
-		*system->GetRessourceStorages(res) -= m_iNeededDilithiumInAssemblyList[0];
+		*system->GetResourceStorages(res) -= m_iNeededDeritiumInAssemblyList[0];
 }
 
 BOOLEAN CAssemblyList::MakeEntry(int runningNumber, const CPoint &ko, CSystem systems[][STARMAP_SECTORS_VCOUNT], bool bOnlyTest)
@@ -475,11 +475,11 @@ BOOLEAN CAssemblyList::MakeEntry(int runningNumber, const CPoint &ko, CSystem sy
 	CSystem* system = &systems[ko.x][ko.y];
 	// Ressourcenrouten durchgehen und womöglich die möglichen max. zusätzlichen Ressourcen erfragen
 	CArray<CPoint> routesFrom;
-	ULONG resourcesFromRoutes[DILITHIUM + 1];
-	ULONG nResInDistSys[DILITHIUM + 1];
-	CPoint ptResourceDistributorKOs[DILITHIUM + 1];
+	ULONG resourcesFromRoutes[DERITIUM + 1];
+	ULONG nResInDistSys[DERITIUM + 1];
+	CPoint ptResourceDistributorKOs[DERITIUM + 1];
 
-	for (int i = 0; i <= DILITHIUM; i++)
+	for (int i = 0; i <= DERITIUM; i++)
 	{
 		resourcesFromRoutes[i] = 0;
 		nResInDistSys[i] = 0;
@@ -500,19 +500,19 @@ BOOLEAN CAssemblyList::MakeEntry(int runningNumber, const CPoint &ko, CSystem sy
 						{
 							routesFrom.Add(CPoint(x,y));
 							BYTE res = systems[x][y].GetResourceRoutes()->GetAt(i).GetResource();
-							resourcesFromRoutes[res] += systems[x][y].GetRessourceStore(res);
+							resourcesFromRoutes[res] += systems[x][y].GetResourceStore(res);
 						}
 					}
 				}
 				// gilt nicht bei Blockaden
 				if (systems[x][y].GetBlockade() == NULL && systems[ko.x][ko.y].GetBlockade() == NULL)
 				{
-					for (int res = TITAN; res <= DILITHIUM; res++)
+					for (int res = TITAN; res <= DERITIUM; res++)
 					{
 						if (systems[x][y].GetProduction()->GetResourceDistributor(res))
 						{
 							ptResourceDistributorKOs[res] = CPoint(x,y);
-							nResInDistSys[res] = systems[x][y].GetRessourceStore(res);
+							nResInDistSys[res] = systems[x][y].GetResourceStore(res);
 						}
 					}
 				}
@@ -520,10 +520,10 @@ BOOLEAN CAssemblyList::MakeEntry(int runningNumber, const CPoint &ko, CSystem sy
 		}
 	}
 	// Überprüfen, ob wir genügend Rohstoffe in dem Lager haben
-	for (int res = TITAN; res <= DILITHIUM; res++)
+	for (int res = TITAN; res <= DERITIUM; res++)
 	{
 		UINT nNeededRes = this->GetNeededResourceForBuild(res);
-		if (*system->GetRessourceStorages(res) + resourcesFromRoutes[res] < nNeededRes && nResInDistSys[res] < nNeededRes)
+		if (*system->GetResourceStorages(res) + resourcesFromRoutes[res] < nNeededRes && nResInDistSys[res] < nNeededRes)
 			return FALSE;
 	}
 	if (bOnlyTest)
@@ -538,18 +538,18 @@ BOOLEAN CAssemblyList::MakeEntry(int runningNumber, const CPoint &ko, CSystem sy
 	m_iNeededDuraniumInAssemblyList[entry] = m_iNeededDuraniumForBuild;
 	m_iNeededCrystalInAssemblyList[entry]  = m_iNeededCrystalForBuild;
 	m_iNeededIridiumInAssemblyList[entry]  = m_iNeededIridiumForBuild;
-	m_iNeededDilithiumInAssemblyList[entry]= m_iNeededDilithiumForBuild;
+	m_iNeededDeritiumInAssemblyList[entry]= m_iNeededDeritiumForBuild;
 	// Nur wenn es der erste Eintrag im Baumenü ist wird alles abgezogen
 	// ansonsten erst, nachdem das Projekt im ersten Eintrag fertig ist
 	if (entry == 0)
 	{
-		for (int res = TITAN; res <= DILITHIUM; res++)
+		for (int res = TITAN; res <= DERITIUM; res++)
 		{
 			UINT nNeededRes = this->GetNeededResourceForBuild(res);
 			if (nNeededRes > 0)
 			{
 				// Ressource wird aus eigenem System bzw. über Ressourcenroute geholt
-				if (*system->GetRessourceStorages(res) + resourcesFromRoutes[res] >= nNeededRes)
+				if (*system->GetResourceStorages(res) + resourcesFromRoutes[res] >= nNeededRes)
 					RemoveResourceFromStorage(res, ko, systems, &routesFrom);
 				// reicht das nicht, so wird Ressource aus dem Verteier geholt
 				else
@@ -592,16 +592,16 @@ void CAssemblyList::CalculateBuildCosts(USHORT resPrices[5])
 
 // Funktion setzt die noch restlichen Baukosten auf 1 und sagt, dass wir jetzt was gekauft haben 
 // Wenn wir kaufen können bestimmt die Fkt "CalculateBuildCosts()". Diese Fkt. immer vorher aufrufen.
-// Die Latinumkosten werden zurückgegeben
-int CAssemblyList::BuyBuilding(int EmpiresLatinum)
+// Die Creditskosten werden zurückgegeben
+int CAssemblyList::BuyBuilding(int EmpiresCredits)
 {
-	// EmpiresLatinum ist das aktuelle Latinum des Imperiums    
+	// EmpiresCredits ist das aktuelle Credits des Imperiums    
 	if (m_iNeededIndustryInAssemblyList[0] > 1)
-		if (m_iBuildCosts <= EmpiresLatinum)
+		if (m_iBuildCosts <= EmpiresCredits)
 		{	
 			m_iNeededIndustryInAssemblyList[0] = 1;
 			m_bWasBuildingBought = TRUE;
-			return m_iBuildCosts;	// Gibt die Kosten zurück, wenn diese kleiner/gleich dem Latinumbestand sind
+			return m_iBuildCosts;	// Gibt die Kosten zurück, wenn diese kleiner/gleich dem Creditsbestand sind
 		}
 	return 0;	// ansonsten gibts ne NULL zurück
 }
@@ -624,7 +624,7 @@ BOOLEAN CAssemblyList::CalculateBuildInAssemblyList(USHORT m_iIndustryProd)
 	m_iNeededDuraniumInAssemblyList[0]  = (int)(m_iNeededDuraniumInAssemblyList[0]*0.75);
 	m_iNeededCrystalInAssemblyList[0]   = (int)(m_iNeededCrystalInAssemblyList[0]*0.75);
 	m_iNeededIridiumInAssemblyList[0]	= (int)(m_iNeededIridiumInAssemblyList[0]*0.75);
-	m_iNeededDilithiumInAssemblyList[0] = (int)(m_iNeededDilithiumInAssemblyList[0]*0.75);
+	m_iNeededDeritiumInAssemblyList[0] = (int)(m_iNeededDeritiumInAssemblyList[0]*0.75);
 	if (m_iNeededIndustryInAssemblyList[0] <= 0)
 	{
 		m_iNeededIndustryInAssemblyList[0] = 0;
@@ -633,7 +633,7 @@ BOOLEAN CAssemblyList::CalculateBuildInAssemblyList(USHORT m_iIndustryProd)
 		m_iNeededDuraniumInAssemblyList[0] = 0;
 		m_iNeededCrystalInAssemblyList[0]  = 0;
 		m_iNeededIridiumInAssemblyList[0]  = 0;
-		m_iNeededDilithiumInAssemblyList[0]= 0;
+		m_iNeededDeritiumInAssemblyList[0]= 0;
 		return TRUE;
 		// Wenn wir TRUE zurückbekommen müssen wir direkt danach die
 		// Funktion ClearAssemblyList() aufrufen!
@@ -650,11 +650,11 @@ void CAssemblyList::ClearAssemblyList(const CPoint &ko, CSystem systems[][STARMA
 	CSystem* system = &systems[ko.x][ko.y];	
 	
 	CArray<CPoint> routesFrom;
-	ULONG resourcesFromRoutes[DILITHIUM + 1];
-	ULONG nResInDistSys[DILITHIUM + 1];
-	CPoint ptResourceDistributorKOs[DILITHIUM + 1];
+	ULONG resourcesFromRoutes[DERITIUM + 1];
+	ULONG nResInDistSys[DERITIUM + 1];
+	CPoint ptResourceDistributorKOs[DERITIUM + 1];
 
-	for (int i = 0; i <= DILITHIUM; i++)
+	for (int i = 0; i <= DERITIUM; i++)
 	{
 		resourcesFromRoutes[i] = 0;
 		nResInDistSys[i] = 0;
@@ -679,19 +679,19 @@ void CAssemblyList::ClearAssemblyList(const CPoint &ko, CSystem systems[][STARMA
 						{
 							routesFrom.Add(CPoint(x,y));
 							BYTE res = systems[x][y].GetResourceRoutes()->GetAt(i).GetResource();
-							resourcesFromRoutes[res] += systems[x][y].GetRessourceStore(res);							
+							resourcesFromRoutes[res] += systems[x][y].GetResourceStore(res);							
 						}
 					}
 				}
 				// gilt nicht bei Blockaden
 				if (systems[x][y].GetBlockade() == NULL && systems[ko.x][ko.y].GetBlockade() == NULL)
 				{
-					for (int res = TITAN; res <= DILITHIUM; res++)
+					for (int res = TITAN; res <= DERITIUM; res++)
 					{
 						if (systems[x][y].GetProduction()->GetResourceDistributor(res))
 						{
 							ptResourceDistributorKOs[res] = CPoint(x,y);
-							nResInDistSys[res] = systems[x][y].GetRessourceStore(res);
+							nResInDistSys[res] = systems[x][y].GetResourceStore(res);
 						}
 					}
 				}
@@ -709,7 +709,7 @@ void CAssemblyList::ClearAssemblyList(const CPoint &ko, CSystem systems[][STARMA
 	m_iNeededDuraniumInAssemblyList[0] = 0;
 	m_iNeededCrystalInAssemblyList[0]  = 0;
 	m_iNeededIridiumInAssemblyList[0]  = 0;
-	m_iNeededDilithiumInAssemblyList[0]= 0;
+	m_iNeededDeritiumInAssemblyList[0]= 0;
 
 	for (int i = 0; i < ALE - 1; i++)
 	{
@@ -723,7 +723,7 @@ void CAssemblyList::ClearAssemblyList(const CPoint &ko, CSystem systems[][STARMA
 			m_iNeededDuraniumInAssemblyList[i] = m_iNeededDuraniumInAssemblyList[i + 1];
 			m_iNeededCrystalInAssemblyList[i]  = m_iNeededCrystalInAssemblyList[i + 1];
 			m_iNeededIridiumInAssemblyList[i]  = m_iNeededIridiumInAssemblyList[i + 1];
-			m_iNeededDilithiumInAssemblyList[i]= m_iNeededDilithiumInAssemblyList[i + 1];
+			m_iNeededDeritiumInAssemblyList[i]= m_iNeededDeritiumInAssemblyList[i + 1];
 
 			// den Nachfolger überall auf NULL setzen
 			m_iEntry[i + 1] = 0;
@@ -748,10 +748,10 @@ void CAssemblyList::ClearAssemblyList(const CPoint &ko, CSystem systems[][STARMA
 	// gecancelt
 	
 	// Überprüfen, ob wir genügend Rohstoffe in dem Lager haben
-	for (int res = TITAN; res <= DILITHIUM; res++)
+	for (int res = TITAN; res <= DERITIUM; res++)
 	{
 		UINT nNeededRes = this->GetNeededResourceInAssemblyList(0, res);
-		if (*system->GetRessourceStorages(res) + resourcesFromRoutes[res] < nNeededRes && nResInDistSys[res] < nNeededRes)
+		if (*system->GetResourceStorages(res) + resourcesFromRoutes[res] < nNeededRes && nResInDistSys[res] < nNeededRes)
 		{
 			// Wenn nicht -> dann Eintrag wieder entfernen
 			ClearAssemblyList(ko, systems);
@@ -760,13 +760,13 @@ void CAssemblyList::ClearAssemblyList(const CPoint &ko, CSystem systems[][STARMA
 	}
 
 	// Wenn er baubar ist, dann die Ressourcen entfernen	
-	for (int res = TITAN; res <= DILITHIUM; res++)
+	for (int res = TITAN; res <= DERITIUM; res++)
 	{
 		UINT nNeededRes = this->GetNeededResourceInAssemblyList(0, res);
 		if (nNeededRes > 0)
 		{
 			// Ressource wird aus eigenem System bzw. über Ressourcenroute geholt
-			if (*system->GetRessourceStorages(res) + resourcesFromRoutes[res] >= nNeededRes)
+			if (*system->GetResourceStorages(res) + resourcesFromRoutes[res] >= nNeededRes)
 				RemoveResourceFromStorage(res, ko, systems, &routesFrom);
 			// reicht das nicht, so wird Ressource aus dem Verteiler geholt
 			else
@@ -796,7 +796,7 @@ void CAssemblyList::AdjustAssemblyList(short entry)
 				m_iNeededDuraniumInAssemblyList[i]  = m_iNeededDuraniumInAssemblyList[i+1];
 				m_iNeededCrystalInAssemblyList[i]	= m_iNeededCrystalInAssemblyList[i+1];
 				m_iNeededIridiumInAssemblyList[i]	= m_iNeededIridiumInAssemblyList[i+1];
-				m_iNeededDilithiumInAssemblyList[i] = m_iNeededDilithiumInAssemblyList[i+1];
+				m_iNeededDeritiumInAssemblyList[i] = m_iNeededDeritiumInAssemblyList[i+1];
 				m_iEntry[i+1] = 0;
 			}
 }
@@ -810,7 +810,7 @@ void CAssemblyList::Reset()
 	m_iNeededDuraniumForBuild = 0;	// benötigtes Duranium zum Bau
 	m_iNeededCrystalForBuild = 0;	// benötigtes Crystal zum Bau
 	m_iNeededIridiumForBuild = 0;	// benötigtes Iridium zum Bau
-	m_iNeededDilithiumForBuild = 0;	// benötigtes Dilithium zum Bau
+	m_iNeededDeritiumForBuild = 0;	// benötigtes Deritium zum Bau
 	m_bWasBuildingBought = 0;		// Wurde ein Gebäude gekauft
 	m_iBuildCosts = 0;				// Die Baukosten eines Bauauftrags
 	for (int i = 0; i < ALE; i++)
@@ -822,6 +822,6 @@ void CAssemblyList::Reset()
 		m_iNeededDuraniumInAssemblyList[i] = 0;	// noch benötigtes Duranium zum fertigstellen des Projektes
 		m_iNeededCrystalInAssemblyList[i] = 0;	// noch benötigtes Crystal zum fertigstellen des Projektes
 		m_iNeededIridiumInAssemblyList[i] = 0;	// noch benötigtes Iridium zum fertigstellen des Projektes
-		m_iNeededDilithiumInAssemblyList[i] = 0;// noch benötigtes Dilithium zum fertigstellen des Projektes
+		m_iNeededDeritiumInAssemblyList[i] = 0;// noch benötigtes Deritium zum fertigstellen des Projektes
 	}
 }

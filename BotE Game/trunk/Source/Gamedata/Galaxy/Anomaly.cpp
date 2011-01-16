@@ -89,8 +89,9 @@ void CAnomaly::Serialize(CArchive &ar)
 void CAnomaly::Draw(Graphics* g, const CPoint& ptSector) const
 {	
 	Gdiplus::Image* pBGImage;
-		
-	pBGImage = Bitmap::FromFile(CIOData::GetInstance()->GetAppPath() + "Graphics\\MapStars\\" + m_sImageFile.AllocSysString());
+	
+	CString sFile = CIOData::GetInstance()->GetAppPath() + "Graphics\\MapStars\\" + m_sImageFile;
+	pBGImage = Bitmap::FromFile(sFile.AllocSysString());
 	
 	if (m_bFlipHorz)
 		pBGImage->RotateFlip(Gdiplus::RotateNoneFlipX);

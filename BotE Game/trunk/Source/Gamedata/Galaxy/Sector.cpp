@@ -289,7 +289,7 @@ float CSector::GetCurrentHabitants() const
 
 /// Diese Funktion berechnet die vorhandenen Rohstoffe der Planeten im Sektor. Übergebn wird dafür ein Feld für
 /// die Ressourcen <code>res</code>.
-void CSector::GetAvailableResources(BOOLEAN bResources[DILITHIUM + 1], BOOLEAN bOnlyColonized/* = true */)
+void CSector::GetAvailableResources(BOOLEAN bResources[DERITIUM + 1], BOOLEAN bOnlyColonized/* = true */)
 {
 	for (int i = 0; i < m_Planets.GetSize(); i++)
 	{
@@ -302,9 +302,9 @@ void CSector::GetAvailableResources(BOOLEAN bResources[DILITHIUM + 1], BOOLEAN b
 		if (bOnlyColonized && !pPlanet->GetColonized())
 			continue;
 
-		BOOLEAN bExists[DILITHIUM + 1] = {FALSE};
+		BOOLEAN bExists[DERITIUM + 1] = {FALSE};
 		pPlanet->GetAvailableResources(bExists);
-		for (int res = TITAN; res <= DILITHIUM; res++)
+		for (int res = TITAN; res <= DERITIUM; res++)
 			bResources[res] |= bExists[res];
 	}
 }

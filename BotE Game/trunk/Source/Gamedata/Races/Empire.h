@@ -62,11 +62,11 @@ public:
 	/// Funktion gibt die Nummer des Imperiums zurück.
 	const CString& GetEmpireID() const {return m_sEmpireID;} 
 	
-	/// Funktion gibt den aktuellen Bestand an Latinum zurück.
-	long GetLatinum() const {return m_iLatinum;}
+	/// Funktion gibt den aktuellen Bestand an Credits zurück.
+	long GetCredits() const {return m_iCredits;}
 	
-	/// Funktion gibt die gesamte Latinumänderung seit der letzten Runde zurück.
-	long GetLatinumChange() const {return m_iLatinumChange;}
+	/// Funktion gibt die gesamte Creditsänderung seit der letzten Runde zurück.
+	long GetCreditsChange() const {return m_iCreditsChange;}
 	
 	/// Funktion gibt die Schiffsunterstützungskosten zurück.
 	USHORT GetShipCosts() const {return m_iShipCosts;}
@@ -109,13 +109,13 @@ public:
 	/// @param empireNumber Rassennummer
 	void SetEmpireID(const CString& sRaceID) {m_sEmpireID = sRaceID; m_Intelligence.SetRaceID(sRaceID);}
 
-	/// Funktion addiert die übergebene Menge zum Latinumbestand.
-	/// @param add Anzahl des zu addierenden Latinums
-	void SetLatinum(int add) {m_iLatinum += add;}
+	/// Funktion addiert die übergebene Menge zum Creditsbestand.
+	/// @param add Anzahl des zu addierenden Creditss
+	void SetCredits(int add) {m_iCredits += add;}
 
-	/// Funktion legt die Latinumänderung zur vorherigen Runde fest.
-	/// @param change Änderung des Latinums gegnüber der vorherigen Runde.
-	void SetLatinumChange(int change) {m_iLatinumChange = change;}
+	/// Funktion legt die Creditsänderung zur vorherigen Runde fest.
+	/// @param change Änderung des Creditss gegnüber der vorherigen Runde.
+	void SetCreditsChange(int change) {m_iCreditsChange = change;}
 	
 	/// Funktion setzt die Schiffsunterstützungskosten auf den Wert von <code>costs</code>.
 	void SetShipCosts(USHORT costs) {m_iShipCosts = costs;}
@@ -165,9 +165,9 @@ public:
 	void ClearMessagesAndEvents(void);
 
 private:
-	long m_iLatinum;				///< Latinum des Imperiums
+	long m_iCredits;				///< Credits des Imperiums
 	
-	long m_iLatinumChange;			///< Gewinn bzw Latinumverlust zur letzten Runde
+	long m_iCreditsChange;			///< Gewinn bzw Creditsverlust zur letzten Runde
 	
 	USHORT m_iShipCosts;			///< die Schiffsunterstützungskosten des Imperiums
 	
@@ -175,7 +175,7 @@ private:
 	
 	UINT m_lFP;						///< aktuelle FP des Imperiums
 
-	UINT m_lResourceStorages[DILITHIUM+1];	///< die gesamte Menge auf allen Systemen der jeweiligen Ressource
+	UINT m_lResourceStorages[DERITIUM+1];	///< die gesamte Menge auf allen Systemen der jeweiligen Ressource
 	
 	CString m_sEmpireID;			///< gibt die ID der Rasse des Imperiums zurück
 	

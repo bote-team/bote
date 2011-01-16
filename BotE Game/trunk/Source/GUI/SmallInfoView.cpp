@@ -161,18 +161,18 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 				g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0,165,r.right,25), &fontFormat, &fontBrush);
 			}
 			
-			BOOLEAN res[DILITHIUM + 1] = {FALSE};
+			BOOLEAN res[DERITIUM + 1] = {FALSE};
 			if (m_pPlanet->GetHabitable())
 				m_pPlanet->GetAvailableResources(res);
 
 			int n = 0;
-			for (int i = TITAN; i <= DILITHIUM; i++)
+			for (int i = TITAN; i <= DERITIUM; i++)
 				n += res[i];
 
 			int xPos = r.Width() / 2;
 			xPos -= n * 10;
 			int nExist = 0;
-			for (int i = TITAN; i <= DILITHIUM; i++)
+			for (int i = TITAN; i <= DERITIUM; i++)
 			{
 				if (res[i])
 				{
@@ -184,7 +184,7 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 						case DURANIUM:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\duraniumSmall.bop");	break;
 						case CRYSTAL:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\crystalSmall.bop");		break;
 						case IRIDIUM:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\iridiumSmall.bop");		break;
-						case DILITHIUM: graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\Deritium.bop");		break;
+						case DERITIUM: graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\Deritium.bop");		break;
 					}
 					if (graphic)
 						g->DrawImage(graphic, xPos + nExist * 20, 195, 20, 16);

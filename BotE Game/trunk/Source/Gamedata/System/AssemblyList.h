@@ -46,7 +46,7 @@ public:
 	UINT GetNeededDuraniumInAssemblyList(USHORT entry) const {return m_iNeededDuraniumInAssemblyList[entry];}
 	UINT GetNeededCrystalInAssemblyList(USHORT entry) const {return m_iNeededCrystalInAssemblyList[entry];}
 	UINT GetNeededIridiumInAssemblyList(USHORT entry) const {return m_iNeededIridiumInAssemblyList[entry];}
-	UINT GetNeededDilithiumInAssemblyList(USHORT entry) const {return m_iNeededDilithiumInAssemblyList[entry];}
+	UINT GetNeededDeritiumInAssemblyList(USHORT entry) const {return m_iNeededDeritiumInAssemblyList[entry];}
 
 	/// Funktion gibt die jeweiligen verbleibenden Kosten für einen Bauauftrag zurück.
 	UINT GetNeededResourceInAssemblyList(USHORT entry, BYTE res) const;
@@ -58,7 +58,7 @@ public:
 	UINT GetNeededDuraniumForBuild() const {return m_iNeededDuraniumForBuild;}
 	UINT GetNeededCrystalForBuild() const {return m_iNeededCrystalForBuild;}
 	UINT GetNeededIridiumForBuild() const {return m_iNeededIridiumForBuild;}
-	UINT GetNeededDilithiumForBuild() const {return m_iNeededDilithiumForBuild;}
+	UINT GetNeededDeritiumForBuild() const {return m_iNeededDeritiumForBuild;}
 
 	/// Funktion gibt die jeweiligen Kosten für einen Bauauftrag zurück.
 	UINT GetNeededResourceForBuild(BYTE res) const;
@@ -90,7 +90,7 @@ public:
 	// z.B. 1 = primitive Farm, -2 = Upgrade primitive Farm zu Typ 1 Automatikfarm.
 	// Nachdem wir diese Funktion aufgerufen haben und ein TRUE zurückbekommen haben müssen wir die Funktion 
 	// CalculateVariables() aufgerufen! (Weil wir wenn die Handelsgüter aus der Bauliste verschwinden, sofort das
-	// neue Latinum angezeigt werden soll.)
+	// neue Credits angezeigt werden soll.)
 	BOOLEAN MakeEntry(int runningNumber, const CPoint &ko, CSystem systems[][STARMAP_SECTORS_VCOUNT], bool bOnlyTest = false);
 
 	// Funktion berechnet die Kosten des Bauauftrags, wenn man dieses sofort kaufen will. Die Kosten des Sofortkaufes
@@ -98,9 +98,9 @@ public:
 	void CalculateBuildCosts(USHORT resPrices[5]);
 
 	// Funktion setzt die noch restlichen Baukosten auf 1 und sagt, dass wir jetzt was gekauft haben. Wenn wir kaufen
-	// können bestimmt die Fkt "CalculateBuildCosts()". Diese Fkt. immer vorher aufrufen. Die Latinumkosten werden
-	// zurückgegeben. Übergeben wird das aktuelle Latinum des Imperiums.
-	int BuyBuilding(int EmpiresLatinum);
+	// können bestimmt die Fkt "CalculateBuildCosts()". Diese Fkt. immer vorher aufrufen. Die Creditskosten werden
+	// zurückgegeben. Übergeben wird das aktuelle Credits des Imperiums.
+	int BuyBuilding(int EmpiresCredits);
 
 	// Die Funktion berechnet was nach dem Tick noch an verbleibender Industrieleistung aufzubringen ist.
 	// Ist der Bauauftrag fertig gibt die Funktion ein TRUE zurück. Wenn wir ein TRUE zurückbekommen, müssen
@@ -138,7 +138,7 @@ private:
 	UINT m_iNeededDuraniumInAssemblyList[ALE];	// benötigtes Duranium, das wir benötigen um das Projekt fertig zu stellen
 	UINT m_iNeededCrystalInAssemblyList[ALE];	// benötigtes Crystal, das wir benötigen um das Projekt fertig zu stellen
 	UINT m_iNeededIridiumInAssemblyList[ALE];	// benötigtes Iridium, das wir benötigen um das Projekt fertig zu stellen
-	UINT m_iNeededDilithiumInAssemblyList[ALE];// benötigtes Dilithium, das wir benötigen um das Projekt fertig zu stellen
+	UINT m_iNeededDeritiumInAssemblyList[ALE];// benötigtes Deritium, das wir benötigen um das Projekt fertig zu stellen
 
 	// Variablen, die Angeben, wieviel Industrie und Rohstoffe zum Bau benötigt werden
 	UINT m_iNeededIndustryForBuild;			// benötigte IP zum Bauen des Gebäudes/Updates
@@ -147,7 +147,7 @@ private:
 	UINT m_iNeededDuraniumForBuild;			// benötigtes Duranium zum Bauen des Gebäudes/Updates
 	UINT m_iNeededCrystalForBuild;				// benötigtes Crystal zum Bauen des Gebäudes/Updates
 	UINT m_iNeededIridiumForBuild;				// benötigtes Iridium zum Bauen des Gebäudes/Updates
-	UINT m_iNeededDilithiumForBuild;			// benötigtes Dilithium zum Bauen des Gebäudes/Updates
+	UINT m_iNeededDeritiumForBuild;			// benötigtes Deritium zum Bauen des Gebäudes/Updates
 
 	// Wurde das Gebäude gekauft in dieser Runde gekauft
 	BOOLEAN   m_bWasBuildingBought;			

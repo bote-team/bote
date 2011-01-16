@@ -67,7 +67,8 @@ void CEventScreen::Create(void)
 	if (m_pBGImage != NULL)
 		return;
 
-	m_pBGImage = Bitmap::FromFile(CIOData::GetInstance()->GetAppPath() + m_strImagePath.AllocSysString());
+	CString sFile = CIOData::GetInstance()->GetAppPath() + m_strImagePath;
+	m_pBGImage = Bitmap::FromFile(sFile.AllocSysString());
 	ASSERT(m_pBGImage);
 	if (m_pBGImage->GetLastStatus() != Ok)
 		return;

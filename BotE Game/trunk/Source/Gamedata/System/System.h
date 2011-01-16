@@ -105,13 +105,13 @@ public:
 	UINT GetDuraniumStore() const {return m_iDuraniumStore;}
 	UINT GetCrystalStore() const {return m_iCrystalStore;}
 	UINT GetIridiumStore() const {return m_iIridiumStore;}
-	UINT GetDilithiumStore() const {return m_iDilithiumStore;}
+	UINT GetDeritiumStore() const {return m_iDeritiumStore;}
 	
 	// Funktion gibt den Lagerinhalt der Ressource zurück, die an die Funktion übergeben wurde.
-	UINT GetRessourceStore(USHORT res) const;
+	UINT GetResourceStore(USHORT res) const;
 	
 	// Funktion gibt einen Zeiger auf den Lagerinhalt der Ressource zurück, die an die Funktion übergeben wurde.
-	UINT* GetRessourceStorages(USHORT res);
+	UINT* GetResourceStorages(USHORT res);
 
 	// Funktion gibt die Anzahl der Gebäude mit der übergebenen RunningNumber wieder, welche nächste Runde
 	// abgerissen werden sollen
@@ -175,10 +175,10 @@ public:
 	void SetDuraniumStore(int duraniumAdd) {m_iDuraniumStore += duraniumAdd;}
 	void SetCrystalStore(int crystalAdd) {m_iCrystalStore += crystalAdd;}
 	void SetIridiumStore(int iridiumAdd) {m_iIridiumStore += iridiumAdd;}
-	void SetDilithiumStore(int dilithiumAdd) {m_iDilithiumStore += dilithiumAdd;}
+	void SetDeritiumStore(int deritiumAdd) {m_iDeritiumStore += deritiumAdd;}
 	
 	// Funktion addiert resAdd zur Ressource res.
-	void SetRessourceStore(USHORT res, int resAdd);
+	void SetResourceStore(USHORT res, int resAdd);
 	
 	// Diese Funktion setzt die abzureißenden Gebäude fest. Die zu übergebenden Parameter sind die RunningNumber
 	// des Gebäudes und einen Wert 1 für hinzufügen und 0 für wieder aus der Liste nehmen
@@ -259,8 +259,8 @@ public:
 	/// Zielsektors übergeben sowie ein Zeiger auf alle Systeme <code>systems</code> auf der Map.
 	BOOLEAN AddTradeRoute(CPoint dest, CSystem systems[][STARMAP_SECTORS_VCOUNT], CResearchInfo* researchInfo);
 
-	// Funktion gibt das gesamte Latinum zurück, was alle Handelsrouten aus diesem System generiert haben.
-	USHORT LatinumFromTradeRoutes();
+	// Funktion gibt das gesamte Credits zurück, was alle Handelsrouten aus diesem System generiert haben.
+	USHORT CreditsFromTradeRoutes();
 
 	// Funktion überprüft alle Handelsrouten in dem System, ob sie Aufgrund der Bevölkerung oder der Gebäude noch
 	// da sein dürfen. Wurden Handelsrouten gelöscht, so gibt die Funktion die Anzahl der Löschungen zurück
@@ -339,7 +339,7 @@ private:
 	UINT m_iDuraniumStore;				// Lager für Duranium
 	UINT m_iCrystalStore;				// Lager für Kristalle
 	UINT m_iIridiumStore;				// Lager für Iridium
-	UINT m_iDilithiumStore;				// Lager für Dilithium
+	UINT m_iDeritiumStore;				// Lager für Deritium
 
 	// Variable zum Abreißen von Gebäuden
 	CArray<USHORT,USHORT> m_BuildingDestroy;
