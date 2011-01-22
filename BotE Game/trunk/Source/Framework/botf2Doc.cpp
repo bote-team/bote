@@ -117,7 +117,7 @@ BOOL CBotf2Doc::OnNewDocument()
 	if (!CDocument::OnNewDocument())
 		return FALSE;
 
-	AfxMessageBox("Achtung!\n\nDies ist eine interne Entwicklungsversion von BotE Alpha 6.\nDiese Version ist nicht für die Öffentlichkeit bestimmt!\nEine eigenständige Verbreitung dieser Version ist verboten!\n\nAn alle Betatester:\nBitte ausführlich testen und alle entdeckten Fehler und Ungereimtheiten\nim internen Bereich des Forum posten.\n\nVielen Dank und viel Spass beim Testen\nSir Pustekuchen");
+	//AfxMessageBox("Achtung!\n\nDies ist eine interne Entwicklungsversion von BotE Alpha 6.\nDiese Version ist nicht für die Öffentlichkeit bestimmt!\nEine eigenständige Verbreitung dieser Version ist verboten!\n\nAn alle Betatester:\nBitte ausführlich testen und alle entdeckten Fehler und Ungereimtheiten\nim internen Bereich des Forum posten.\n\nVielen Dank und viel Spass beim Testen\nSir Pustekuchen");
 
 	// Mal Testweise paar Truppen anlegen
 	m_TroopInfo.RemoveAll();
@@ -5386,7 +5386,7 @@ void CBotf2Doc::CalcShipEffects()
 			
 			// womögicher Terraformplanet oder Stationsbau zurücknehmen
 			pShip->SetTerraformingPlanet(-1);
-						
+									
 			// Rückzugssektor für dieses Schiff in diesem Sektor holen
 			if (m_mShipRetreatSectors.find(pShip->GetOwnerOfShip()) == m_mShipRetreatSectors.end())
 				continue;
@@ -5396,6 +5396,13 @@ void CBotf2Doc::CalcShipEffects()
 				continue;
 
 			CPoint ptRetreatSector = m_mShipRetreatSectors[pShip->GetOwnerOfShip()][ptCurrentSector];
+			// Kann das Schiff überhaupt fliegen?
+			if (pShip->GetSpeed() > 0)
+			{
+				pShip->SetKO(ptRetreatSector);
+				// aktuell eingestellten Kurs löschen (nicht das das Schiff wieder in den Gefahrensektor fliegt)
+				pShip->SetTargetKO(ptRetreatSector, 0);
+			}
 
 			// sind alle Schiffe in einer Flotte im Rückzug, so kann die ganze Flotte
 			// in den Rückzugssektor
@@ -5418,9 +5425,6 @@ void CBotf2Doc::CalcShipEffects()
 			// -> Rückzugssektor festlegen
 			if (bCompleteFleetRetreat)
 			{
-				// Kann das Schiff überhaupt fliegen?
-				if (pShip->GetSpeed() > 0)
-					pShip->SetKO(ptRetreatSector);
 				// Rückzugsbefehl in Flotte zurücknehmen
 				if (pShip->GetFleet())
 					for (int j = 0; j < pShip->GetFleet()->GetFleetSize(); j++)							
@@ -5433,6 +5437,13 @@ void CBotf2Doc::CalcShipEffects()
 							pFleetShip->SetCurrentOrder(AVOID);
 						else
 							pFleetShip->SetCurrentOrder(ATTACK);
+
+						if (pFleetShip->GetSpeed() > 0)
+						{
+							pFleetShip->SetKO(ptRetreatSector);
+							// aktuell eingestellten Kurs löschen (nicht das das Schiff wieder in den Gefahrensektor fliegt)
+							pFleetShip->SetTargetKO(ptRetreatSector, 0);
+						}
 						
 						// womögicher Terraformplanet oder Stationsbau zurücknehmen
 						pFleetShip->SetTerraformingPlanet(-1);						
