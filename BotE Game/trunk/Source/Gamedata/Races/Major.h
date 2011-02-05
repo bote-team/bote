@@ -15,6 +15,13 @@
 #include "Ships\ShipHistory.h"
 #include "Ships\WeaponObserver.h"
 
+enum RaceSpecialAbilities
+{
+	SPECIAL_NEED_NO_FOOD		= 1,	
+};
+
+#define RACESPECIALABILITIES	1
+
 /// Klasse zur Abstraktion einer Hauptrasse
 class CMajor : public CRace
 {	
@@ -86,6 +93,16 @@ public:
 	/// Funktion gibt den Diplomatiebonus der Rasse zurück.
 	/// @return Diplomatiebonus
 	short GetDiplomacyBonus(void) {return m_nDiplomacyBonus;}
+
+	/// Funktion zum Erfragen der Rassenspezialeigenschaften
+	/// @param ability Rassenspezialeigenschaft
+	/// @return <code>true</code>, wenn die Rasse die Spezialeigenschaft besitzt, sonst <code>false</code>
+	bool HasSpecialAbility(BYTE ability) const;
+
+	/// Funktion zum Setzen von Spezialeigenschaften der Rasse.
+	/// @param ability Spezialeigenschaft
+	/// @param is <code>true</code> oder <code>false</code>
+	void SetSpecialAbility(BYTE ability, bool is);
 
 	/// Funktion gibt die noch verbleibenden Runden des diplomatischen Vertrages zurück.
 	/// @param sRaceID Rassen-ID der anderen Rasse

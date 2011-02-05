@@ -54,12 +54,12 @@ void CPlanetBottomView::OnDraw(CDC* dc)
 	// Graphicsobjekt, in welches gezeichnet wird anlegen
 	Graphics g(pDC->GetSafeHdc());
 	
-	g.Clear(Color::Black);
 	g.SetSmoothingMode(SmoothingModeHighSpeed);
 	g.SetInterpolationMode(InterpolationModeLowQuality);
 	g.SetPixelOffsetMode(PixelOffsetModeHighSpeed);
 	g.SetCompositingQuality(CompositingQualityHighSpeed);
 	g.ScaleTransform((REAL)client.Width() / (REAL)m_TotalSize.cx, (REAL)client.Height() / (REAL)m_TotalSize.cy);
+	g.Clear(Color::Black);
 				
 	CString fontName = "";
 	Gdiplus::REAL fontSize = 0.0;

@@ -112,7 +112,7 @@
 #define DIP_REQUEST          12
 #define DIPLOMACY_PRESENT_VALUE	200	// Ein konstanter Wert, der mindst. erreicht werden muss um Beziehung zu verbessern
 
-// ------------- Die verschiedenen Arten einer MinorRace -----------------------
+// ------------- Die verschiedenen Arten einer Rasse -----------------------
 #define NOTHING_SPECIAL		0
 #define FINANCIAL			1
 #define WARLIKE				2
@@ -125,6 +125,9 @@
 #define SNEAKY              9	// Hinterhältig
 #define SOLOING				10	// Alleingeher
 #define	HOSTILE				11
+
+// ------------- Die möglichen Spezialeigenschaften einer Rasse ----------------
+#define NO_FOOD_NEEDED		1	// Rasse benötigt keine Nahrung
 
 // ------------- Planeteneigenschaften -----------------------------------------
 // Zonen

@@ -87,12 +87,12 @@ void CSystemMenuView::OnDraw(CDC* dc)
 	// Graphicsobjekt, in welches gezeichnet wird anlegen
 	Graphics g(pDC->GetSafeHdc());
 	
-	g.Clear(Color::Black);
 	g.SetSmoothingMode(SmoothingModeHighSpeed);
 	g.SetInterpolationMode(InterpolationModeLowQuality);
 	g.SetPixelOffsetMode(PixelOffsetModeHighSpeed);
 	g.SetCompositingQuality(CompositingQualityHighSpeed);
 	g.ScaleTransform((REAL)client.Width() / (REAL)m_TotalSize.cx, (REAL)client.Height() / (REAL)m_TotalSize.cy);
+	g.Clear(Color::Black);
 					
 	if (m_bySubMenu == 0)
 		DrawBuildMenue(&g);
@@ -3382,16 +3382,17 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		{
 			CPoint p = pDoc->GetKO();
 			// einzelne Buttons um womöglich eine Ressourcenroute zu kündigen
-			for (int i = 0; i < pDoc->m_System[p.x][p.y].GetResourceRoutes()->GetSize(); i++)
+			for (int i = 0; i < pDoc->GetSystem(p).GetResourceRoutes()->GetSize(); i++)
 			{
-				int j = i + pDoc->m_System[p.x][p.y].GetTradeRoutes()->GetSize();
+				int j = i + pDoc->GetSystem(p).GetTradeRoutes()->GetSize();
 				if (CRect(360,260+j*30,480,290+j*30).PtInRect(point))
 				{
 					// Eine Ressourcenroute kann nur gekündigt werden, wenn sie keine prozentualen Anteile am Bauauftrag
 					// besitzt, sprich, wenn sie keine Ressourcen zum Bauauftrag beigetragen hat.
-					if (pDoc->m_System[p.x][p.y].GetResourceRoutes()->GetAt(i).GetPercent() == 0)
+					CResourceRoute* pResRoute = &pDoc->GetSystem(p).GetResourceRoutes()->GetAt(i);
+					if (pResRoute->GetPercent() == 0)
 					{
-						pDoc->m_System[p.x][p.y].GetResourceRoutes()->RemoveAt(i--);
+						pDoc->GetSystem(p).GetResourceRoutes()->RemoveAt(i--);
 						Invalidate(FALSE);
 					}
 					return;

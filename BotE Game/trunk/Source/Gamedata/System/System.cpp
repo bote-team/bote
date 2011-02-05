@@ -949,8 +949,12 @@ void CSystem::CalculateVariables(BuildingInfoArray* buildingInfos, CResearchInfo
 	// Den Moralboni im System noch auf die einzelnen Produktionen anrechnen
 	m_Production.IncludeSystemMoral(m_iMoral);
 	// benötigte Nahrung durch Bevölkerung von der Produktion abiehen
-	m_Production.m_iFoodProd -= (int)ceil(m_dHabitants*10);	// ceil, wird auf Kommezahl berechnet, z.B brauchen wir für 
-												// 14.5 Mrd. Leute 145 Nahrung und nicht 140 bzw. 150
+	if (!pOwner->HasSpecialAbility(NO_FOOD_NEEDED))
+		// ceil, wird auf Kommezahl berechnet, z.B brauchen wir für 14.5 Mrd. Leute 145 Nahrung und nicht 140 bzw. 150
+		m_Production.m_iFoodProd -= (int)ceil(m_dHabitants*10);
+	else
+		m_Production.m_iFoodProd = m_Production.m_iMaxFoodProd;
+
 	// Jetzt noch die freien Arbeiter berechnen
 	m_Workers.CalculateFreeWorkers();
 }

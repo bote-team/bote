@@ -4,7 +4,7 @@
 
 #include "stdafx.h"
 #include "ShipInfo.h"
-#include <math.h>
+#include "Math.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -19,47 +19,46 @@ IMPLEMENT_SERIAL (CShipInfo, CObject, 1)
 
 CShipInfo::CShipInfo()
 {
-
 }
 
 CShipInfo::~CShipInfo()
 {
-
 }
-/*
+
 //////////////////////////////////////////////////////////////////////
 // Kopierkonstruktor
 //////////////////////////////////////////////////////////////////////
-CShipInfo::CShipInfo(const CShipInfo & rhs)
-{
-	m_Hull = rhs.m_Hull;
-	m_Shield = rhs.m_Shield;
-	for (int i = 0; i < m_TorpedoWeapons.GetSize(); i++)
-	{
-		AfxMessageBox("HALLO");
-		m_TorpedoWeapons.Add(rhs.m_TorpedoWeapons.GetAt(i));
-	}
-	for (i = 0; i < m_BeamWeapons.GetSize(); i++)
-		m_BeamWeapons.Add(rhs.m_BeamWeapons.GetAt(i));
-	
-	m_KO = rhs.m_KO;
-	for (i=0;i<4;i++)
-		m_TargetKO[i] = rhs.m_TargetKO[i];
-	m_iOwnerOfShip = rhs.m_iOwnerOfShip;
-	m_iBuildCosts = rhs.m_iBuildCosts;
-	m_iMaintenanceCosts = rhs.m_iMaintenanceCosts;
-	m_iShipType = rhs.m_iShipType;
-	m_iSpeed = rhs.m_iSpeed;
-	m_iRange = rhs.m_iRange;
-	m_iScanPower = rhs.m_iScanPower;
-	m_iScanRange = rhs.m_iScanRange;
-	m_iCrewExperiance = rhs.m_iCrewExperiance;
-	m_iStealthPower = rhs.m_iStealthPower;
-	m_iStorageRoom = rhs.m_iStorageRoom;
-	m_iCurrentOrder = rhs.m_iCurrentOrder;
-	m_strShipName = rhs.m_strShipName;
-	m_strShipDescription = rhs.m_strShipDescription;
-	m_strShipClass = rhs.m_strShipClass;
+CShipInfo::CShipInfo(const CShipInfo & rhs) : CShip(rhs)
+{	
+	m_iRace = rhs.m_iRace;					
+	// nötige Forschung
+	m_iBioTech = rhs.m_iBioTech;
+	m_iEnergyTech = rhs.m_iEnergyTech;
+	m_iCompTech = rhs.m_iCompTech;
+	m_iPropulsionTech = rhs.m_iPropulsionTech;
+	m_iConstructionTech = rhs.m_iConstructionTech;
+	m_iWeaponTech = rhs.m_iWeaponTech;	
+	// aktuell nötige Rohstoffe zum Bau des Schiffes
+	m_iNeededIndustry = rhs.m_iNeededIndustry;
+	m_iNeededTitan = rhs.m_iNeededTitan;
+	m_iNeededDeuterium = rhs.m_iNeededDeuterium;
+	m_iNeededDuranium = rhs.m_iNeededDuranium;
+	m_iNeededCrystal = rhs.m_iNeededCrystal;
+	m_iNeededIridium = rhs.m_iNeededIridium;
+	m_iNeededDeritium = rhs.m_iNeededDeritium;
+	// nötige Rohstoffe zum Bau, so wie die Grundkosten sind, denn durch CalculateFinalCosts werden die nötigen Rohstoffe
+	// und Industrieleistung erhöht. Beim nächsten Aufruf brauchen wir aber wieder die ursprünglichen Kosten
+	m_iBaseIndustry = rhs.m_iBaseIndustry;
+	m_iBaseTitan = rhs.m_iBaseTitan;
+	m_iBaseDeuterium = rhs.m_iBaseDeuterium;
+	m_iBaseDuranium = rhs.m_iBaseDuranium;
+	m_iBaseCrystal = rhs.m_iBaseCrystal;
+	m_iBaseIridium = rhs.m_iBaseIridium;
+	m_iBaseDeritium = rhs.m_iBaseDeritium;
+	// nötiger Systemname
+	m_strOnlyInSystem = rhs.m_strOnlyInSystem;
+	// Schiffsklasse, welche durch diese Schiffsklasse ersetzt wird
+	m_strObsoletesClass = rhs.m_strObsoletesClass;
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -69,42 +68,51 @@ CShipInfo & CShipInfo::operator=(const CShipInfo & rhs)
 {
 	if (this == &rhs)
 		return *this;
-	m_Hull = rhs.m_Hull;
-	m_Shield = rhs.m_Shield;
-	for (int i = 0; i < m_TorpedoWeapons.GetSize(); i++)
-		m_TorpedoWeapons.Add(rhs.m_TorpedoWeapons.GetAt(i));
-	for (i = 0; i < m_BeamWeapons.GetSize(); i++)
-		m_BeamWeapons.Add(rhs.m_BeamWeapons.GetAt(i));
 	
-	m_KO = rhs.m_KO;
-	for (i=0;i<4;i++)
-		m_TargetKO[i] = rhs.m_TargetKO[i];
-	m_iOwnerOfShip = rhs.m_iOwnerOfShip;
-	m_iBuildCosts = rhs.m_iBuildCosts;
-	m_iMaintenanceCosts = rhs.m_iMaintenanceCosts;
-	m_iShipType = rhs.m_iShipType;
-	m_iSpeed = rhs.m_iSpeed;
-	m_iRange = rhs.m_iRange;
-	m_iScanPower = rhs.m_iScanPower;
-	m_iScanRange = rhs.m_iScanRange;
-	m_iCrewExperiance = rhs.m_iCrewExperiance;
-	m_iStealthPower = rhs.m_iStealthPower;
-	m_iStorageRoom = rhs.m_iStorageRoom;
-	m_iCurrentOrder = rhs.m_iCurrentOrder;
-	m_strShipName = rhs.m_strShipName;
-	m_strShipDescription = rhs.m_strShipDescription;
-	m_strShipClass = rhs.m_strShipClass;
+	// Basisklasse
+	__super::operator=(rhs);
+
+	m_iRace = rhs.m_iRace;					
+	// nötige Forschung
+	m_iBioTech = rhs.m_iBioTech;
+	m_iEnergyTech = rhs.m_iEnergyTech;
+	m_iCompTech = rhs.m_iCompTech;
+	m_iPropulsionTech = rhs.m_iPropulsionTech;
+	m_iConstructionTech = rhs.m_iConstructionTech;
+	m_iWeaponTech = rhs.m_iWeaponTech;	
+	// aktuell nötige Rohstoffe zum Bau des Schiffes
+	m_iNeededIndustry = rhs.m_iNeededIndustry;
+	m_iNeededTitan = rhs.m_iNeededTitan;
+	m_iNeededDeuterium = rhs.m_iNeededDeuterium;
+	m_iNeededDuranium = rhs.m_iNeededDuranium;
+	m_iNeededCrystal = rhs.m_iNeededCrystal;
+	m_iNeededIridium = rhs.m_iNeededIridium;
+	m_iNeededDeritium = rhs.m_iNeededDeritium;
+	// nötige Rohstoffe zum Bau, so wie die Grundkosten sind, denn durch CalculateFinalCosts werden die nötigen Rohstoffe
+	// und Industrieleistung erhöht. Beim nächsten Aufruf brauchen wir aber wieder die ursprünglichen Kosten
+	m_iBaseIndustry = rhs.m_iBaseIndustry;
+	m_iBaseTitan = rhs.m_iBaseTitan;
+	m_iBaseDeuterium = rhs.m_iBaseDeuterium;
+	m_iBaseDuranium = rhs.m_iBaseDuranium;
+	m_iBaseCrystal = rhs.m_iBaseCrystal;
+	m_iBaseIridium = rhs.m_iBaseIridium;
+	m_iBaseDeritium = rhs.m_iBaseDeritium;
+	// nötiger Systemname
+	m_strOnlyInSystem = rhs.m_strOnlyInSystem;
+	// Schiffsklasse, welche durch diese Schiffsklasse ersetzt wird
+	m_strObsoletesClass = rhs.m_strObsoletesClass;
+
 	return *this;
 }
-*/
+
 
 ///////////////////////////////////////////////////////////////////////
 // Speichern / Laden
 ///////////////////////////////////////////////////////////////////////
 void CShipInfo::Serialize(CArchive &ar)		
 {
-	CObject::Serialize(ar);
-	CShip::Serialize(ar);
+	__super::Serialize(ar);
+
 	// wenn gespeichert wird
 	if (ar.IsStoring())
 	{
@@ -121,14 +129,14 @@ void CShipInfo::Serialize(CArchive &ar)
 		ar << m_iNeededDuranium;
 		ar << m_iNeededCrystal;
 		ar << m_iNeededIridium;
-		ar << m_iNeededDilithium;
+		ar << m_iNeededDeritium;
 		ar << m_iBaseIndustry;
 		ar << m_iBaseTitan;
 		ar << m_iBaseDeuterium;
 		ar << m_iBaseDuranium;
 		ar << m_iBaseCrystal;
 		ar << m_iBaseIridium;
-		ar << m_iBaseDilithium;
+		ar << m_iBaseDeritium;
 		ar << m_strOnlyInSystem;
 		ar << m_strObsoletesClass;
 	}
@@ -148,14 +156,14 @@ void CShipInfo::Serialize(CArchive &ar)
 		ar >> m_iNeededDuranium;
 		ar >> m_iNeededCrystal;
 		ar >> m_iNeededIridium;
-		ar >> m_iNeededDilithium;
+		ar >> m_iNeededDeritium;
 		ar >> m_iBaseIndustry;
 		ar >> m_iBaseTitan;
 		ar >> m_iBaseDeuterium;
 		ar >> m_iBaseDuranium;
 		ar >> m_iBaseCrystal;
 		ar >> m_iBaseIridium;
-		ar >> m_iBaseDilithium;
+		ar >> m_iBaseDeritium;
 		ar >> m_strOnlyInSystem;
 		ar >> m_strObsoletesClass;
 	}
@@ -182,7 +190,7 @@ void CShipInfo::CalculateFinalCosts()
 	m_iNeededDuranium	= 0;
 	m_iNeededCrystal	= 0;
 	m_iNeededIridium	= 0;
-	m_iNeededDilithium	= 0;
+	m_iNeededDeritium	= 0;
 	// Industrieleistung, die wir zusätzlich durch bessere Schilde erbringen müssen
 /*	m_iNeededIndustry += m_Shield.GetMaxShield() / 10 * m_Shield.GetShieldType();
 	// Industrieleistung, die wir zusätzlich durch bessere Hülle  erbringen müssen
@@ -225,7 +233,7 @@ void CShipInfo::CalculateFinalCosts()
 	m_iNeededDuranium	+= m_iBaseDuranium;
 	m_iNeededCrystal	+= m_iBaseCrystal;
 	m_iNeededIridium	+= m_iBaseIridium;
-	m_iNeededDilithium	+= m_iBaseDilithium;
+	m_iNeededDeritium	+= m_iBaseDeritium;
 	
 	// zusätzliche Rohstoffe die wir für bessere Anbauten/Umbauten benötigen
 	// wir brauchen für bessere Hüllen auch besseres Material
@@ -247,21 +255,6 @@ void CShipInfo::CalculateFinalCosts()
 // Funktion bestimmt die 1. Order des Schiffs nach dem Bau anhand dessen Typs
 void CShipInfo::SetStartOrder()
 {
-	/*	#define TRANSPORTER			0
-		#define COLONYSHIP            1
-		#define PROBE				2
-		#define SCOUT				3
-		#define FIGHTER				4	// Jäger
-		#define FRIGATE				5
-		#define DESTROYER			6
-		#define CRUISER				7
-		#define HEAVY_DESTROYER     8
-		#define HEAVY_CRUISER       9
-		#define BATTLESHIP			10
-		#define FLAGSHIP			11
-		#define OUTPOST				12
-		#define STARBASE            13
-		#define ALIEN				14 */
 	if (m_iShipType >= SCOUT)
 		m_iCurrentOrder = ATTACK;
 	else
@@ -277,7 +270,7 @@ USHORT CShipInfo::GetNeededResource(BYTE res) const
 	case DURANIUM:	return this->GetNeededDuranium();
 	case CRYSTAL:	return this->GetNeededCrystal();
 	case IRIDIUM:	return this->GetNeededIridium();
-	case DILITHIUM:	return this->GetNeededDilithium();
+	case DERITIUM:	return this->GetNeededDeritium();
 	default:		return NULL;
 	}
 }

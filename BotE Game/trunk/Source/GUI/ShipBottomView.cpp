@@ -80,7 +80,6 @@ void CShipBottomView::OnDraw(CDC* dc)
 	// Graphicsobjekt, in welches gezeichnet wird anlegen
 	Graphics g(pDC->GetSafeHdc());
 	
-	g.Clear(Color::Black);
 	/*g.SetSmoothingMode(SmoothingModeHighSpeed);
 	g.SetInterpolationMode(InterpolationModeLowQuality);
 	g.SetPixelOffsetMode(PixelOffsetModeHighSpeed);
@@ -90,6 +89,7 @@ void CShipBottomView::OnDraw(CDC* dc)
 	g.SetPixelOffsetMode(PixelOffsetModeHighSpeed);
 	g.SetCompositingQuality(CompositingQualityHighSpeed);
 	g.ScaleTransform((REAL)client.Width() / (REAL)m_TotalSize.cx, (REAL)client.Height() / (REAL)m_TotalSize.cy);
+	g.Clear(Color::Black);
 				
 	CString fontName = "";
 	Gdiplus::REAL fontSize = 0.0;
@@ -111,21 +111,27 @@ void CShipBottomView::OnDraw(CDC* dc)
 	USHORT row = 0;
 	USHORT oneShip = 0;
 	
-	CString s;
-	if (m_LastKO != pDoc->GetKO() || m_bShowStation)	// Wir zeigen nen Außenposten
+	if (m_LastKO != pDoc->GetKO())
 	{
-		m_iPage = 1;
 		m_LastKO = pDoc->GetKO();
 		m_pMarkedShip = NULL;
 		m_rLastMarkedRect = CRect(0,0,0,0);
 		m_RectForTheShip = CRect(0,0,0,0);
+		m_iPage = 1;
 	}
+	else if (m_bShowStation)
+	{
+		// Ebenfalls bei der Anzeige einer Station immer auf die erste Seite springen
+		m_iPage = 1;
+	}
+
 	// Galaxie im Hintergrund zeichnen
 	CString sPrefix = pMajor->GetPrefix();	
 	Bitmap* background = pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "galaxyV3.bop");
 	if (background)
 		g.DrawImage(background, 0, 0, 1075, 249);
 
+	CString s;
 	// Bis jetzt nur eine Anzeige bis max. 9 Schiffe
 	if (m_iTimeCounter == 0)
 	{

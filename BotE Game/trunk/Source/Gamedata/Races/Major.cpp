@@ -127,6 +127,30 @@ void CMajor::Serialize(CArchive &ar)
 // sonstige Funktionen
 //////////////////////////////////////////////////////////////////////
 
+/// Funktion zum Erfragen der Rassenspezialeigenschaften
+/// @param ability Rassenspezialeigenschaft
+/// @return <code>true</code>, wenn die Rasse die Spezialeigenschaft besitzt, sonst <code>false</code>
+bool CMajor::HasSpecialAbility(BYTE ability) const
+{
+	switch (ability)
+	{
+		case NO_FOOD_NEEDED:	return (m_nSpecialAbility & SPECIAL_NEED_NO_FOOD)	== SPECIAL_NEED_NO_FOOD;
+		default:				return NOTHING_SPECIAL;
+	}
+}
+
+/// Funktion zum Setzen von Spezialeigenschaften der Rasse.
+/// @param ability Spezialeigenschaft
+/// @param is <code>true</code> oder <code>false</code>
+void CMajor::SetSpecialAbility(BYTE ability, bool is)
+{
+	switch (ability)
+	{
+		case NOTHING_SPECIAL:	if (is) m_nProperty = 0;										break;
+		case NO_FOOD_NEEDED:	SetAttributes(is, SPECIAL_NEED_NO_FOOD, m_nSpecialAbility);		break;		
+	}
+}
+
 /// Funktion setzt die noch verbleibenden Runden des diplomatischen Vertrages.
 /// @param sRaceID Rassen-ID der anderen Rasse
 /// @param nNewValue neue Rundenanzahl
@@ -344,9 +368,24 @@ void CMajor::Create(const CStringArray& saInfo, int& nPos)
 	m_byShipNumber		= atoi(saInfo[nPos++]);			// zugewiesene Nummer, welche Schiffe verwendet werden sollen
 	m_byMoralNumber		= atoi(saInfo[nPos++]);			// zugewiesene Nummer, welche Moralwerte verwendet werden sollen
 	m_byType			= MAJOR;						// Rassentyp (Major, Medior, Minor)
-	//m_nProperty		= 0;
-	SetRaceProperty(atoi(saInfo[nPos++]), true);		// Rasseneigenschaften
-	m_nSpecialAbility	= atoi(saInfo[nPos++]);			// Spezialfähigkeiten der Rasse (derzeit nicht implementiert)
+	// mehrere Rasseneigenschaften sind durch Komma getrennt
+	CString sRaceProperties = saInfo[nPos++];
+	int nStart = 0;
+	while (nStart < sRaceProperties.GetLength())
+	{
+		int nProperty = atoi(sRaceProperties.Tokenize(",", nStart));
+		SetRaceProperty(nProperty, true);				// Rasseneigenschaften
+	}
+
+	// mehrere Spezialfähigkeiten sind durch Komma getrennt
+	CString sRaceAbilities = saInfo[nPos++];
+	nStart = 0;
+	while (nStart < sRaceAbilities.GetLength())
+	{
+		int nAbility = atoi(sRaceAbilities.Tokenize(",", nStart));
+		SetSpecialAbility(nAbility, true);				// Spezialfähigkeiten der Rasse			
+	}
+	
 	m_nDiplomacyBonus	= atoi(saInfo[nPos++]);			// Bonus bei diplomatischen Verhandlungen, NULL == kein Bonus/kein Malus
 	
 	// grafische Attribute

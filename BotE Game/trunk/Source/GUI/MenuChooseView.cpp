@@ -81,11 +81,11 @@ void CMenuChooseView::OnDraw(CDC* pDC)
 	// Graphicsobjekt, in welches gezeichnet wird anlegen
 	Bitmap bmp(client.Width(), client.Height());
 	Graphics* g = Graphics::FromImage(&bmp);
-	g->Clear(Color::Black);
 	g->SetSmoothingMode(SmoothingModeHighQuality);
 	g->SetInterpolationMode(InterpolationModeHighQualityBicubic);
 	g->SetPixelOffsetMode(PixelOffsetModeHighQuality);
 	g->ScaleTransform((REAL)client.Width() / (REAL)m_TotalSize.cx, (REAL)client.Height() / (REAL)m_TotalSize.cy);
+	g->Clear(Color::Black);
 
 	CString fontName = "";
 	Gdiplus::REAL fontSize = 0.0;

@@ -3,7 +3,6 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
-#include "stdafx.h"
 #include "Ship.h"
 #include "Fleet.h"
 
@@ -25,29 +24,21 @@ CShip::CShip()
 	m_bIsFlagShip = FALSE;
 	m_bySpecial[0] = m_bySpecial[1] = NONE;
 	m_Fleet = NULL;
-	for (int i = TITAN; i <= DILITHIUM; i++)
+	for (int i = TITAN; i <= DERITIUM; i++)
 		m_iLoadedResources[i] = 0;
 	m_bCloakOn = FALSE;
+	m_nCombatTactic = COMBAT_TACTIC_ATTACK;
 }
 
 CShip::~CShip()
 {
-	for (int i = 0; i < m_TorpedoWeapons.GetSize(); )
-		m_TorpedoWeapons.RemoveAt(i);
-	for (int i = 0; i < m_BeamWeapons.GetSize(); )
-		m_BeamWeapons.RemoveAt(i);
-	for (int i = 0; i < m_Troops.GetSize(); )
-		m_Troops.RemoveAt(i);	
-	m_TorpedoWeapons.RemoveAll();
-	m_BeamWeapons.RemoveAll();
-	m_Troops.RemoveAll();
 	if (m_Fleet)
-	{
-		m_Fleet->DeleteFleet();
+	{		
 		delete m_Fleet;
+		m_Fleet = NULL;
 	}
-	m_Fleet = NULL;
 }
+
 
 //////////////////////////////////////////////////////////////////////
 // Kopierkonstruktor
@@ -56,13 +47,14 @@ CShip::CShip(const CShip & rhs)
 {
 	m_Hull = rhs.m_Hull;
 	m_Shield = rhs.m_Shield;
+	m_TorpedoWeapons.RemoveAll();
 	for (int i = 0; i < rhs.m_TorpedoWeapons.GetSize(); i++)
 		m_TorpedoWeapons.Add(rhs.m_TorpedoWeapons.GetAt(i));
+	m_BeamWeapons.RemoveAll();
 	for (int i = 0; i < rhs.m_BeamWeapons.GetSize(); i++)
 		m_BeamWeapons.Add(rhs.m_BeamWeapons.GetAt(i));
-	for (int i = 0; i < rhs.m_Troops.GetSize(); i++)
-		m_Troops.Add(rhs.m_Troops.GetAt(i));
-	// Zeiger auf Fleet speziell behandeln	
+	
+	// Zeiger auf Fleet speziell behandeln
 	if (rhs.m_Fleet)
 	{
 		m_Fleet = new CFleet();
@@ -76,7 +68,7 @@ CShip::CShip(const CShip & rhs)
 	m_KO = rhs.m_KO;
 	for (int i=0;i<4;i++)
 		m_TargetKO[i] = rhs.m_TargetKO[i];
-	m_iOwnerOfShip = rhs.m_iOwnerOfShip;
+	m_sOwnerOfShip = rhs.m_sOwnerOfShip;
 	m_iMaintenanceCosts = rhs.m_iMaintenanceCosts;
 	m_iShipType = rhs.m_iShipType;
 	m_byShipSize = rhs.m_byShipSize;
@@ -89,7 +81,7 @@ CShip::CShip(const CShip & rhs)
 	m_iStealthPower = rhs.m_iStealthPower;
 	m_bCloakOn = rhs.m_bCloakOn;
 	m_iStorageRoom = rhs.m_iStorageRoom;
-	for (int i = TITAN; i <= DILITHIUM; i++)
+	for (int i = TITAN; i <= DERITIUM; i++)
 		m_iLoadedResources[i] = rhs.m_iLoadedResources[i];
 	m_iColonizePoints = rhs.m_iColonizePoints;
 	m_iStationBuildPoints = rhs.m_iStationBuildPoints;
@@ -101,6 +93,7 @@ CShip::CShip(const CShip & rhs)
 	m_bIsFlagShip = rhs.m_bIsFlagShip;
 	m_bySpecial[0] = rhs.m_bySpecial[0];
 	m_bySpecial[1] = rhs.m_bySpecial[1];
+	m_nCombatTactic = rhs.m_nCombatTactic;
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -110,18 +103,19 @@ CShip & CShip::operator=(const CShip & rhs)
 {
 	if (this == &rhs)
 		return *this;
+	
 	m_Hull = rhs.m_Hull;
 	m_Shield = rhs.m_Shield;
+	m_TorpedoWeapons.RemoveAll();
 	for (int i = 0; i < rhs.m_TorpedoWeapons.GetSize(); i++)
 		m_TorpedoWeapons.Add(rhs.m_TorpedoWeapons.GetAt(i));
+	m_BeamWeapons.RemoveAll();
 	for (int i = 0; i < rhs.m_BeamWeapons.GetSize(); i++)
 		m_BeamWeapons.Add(rhs.m_BeamWeapons.GetAt(i));
-	for (int i = 0; i < rhs.m_Troops.GetSize(); i++)
-		m_Troops.Add(rhs.m_Troops.GetAt(i));
+		
 	// Zeiger auf Fleet speziell behandeln
 	if (rhs.m_Fleet)
 	{
-		TRACE("Achtung, wenn im Zuweisungsoperator der CShip-Klasse ein Shiffsobjekt eine Flotte beitzt, dann kommt es manchmal beim Beenden des Programmes aus mir unverständlichen Gründen zu Memory-Leaks!\n");
 		m_Fleet = new CFleet();
 		*m_Fleet = *(rhs.m_Fleet);
 	}
@@ -132,7 +126,7 @@ CShip & CShip::operator=(const CShip & rhs)
 	m_KO = rhs.m_KO;
 	for (int i=0;i<4;i++)
 		m_TargetKO[i] = rhs.m_TargetKO[i];
-	m_iOwnerOfShip = rhs.m_iOwnerOfShip;
+	m_sOwnerOfShip = rhs.m_sOwnerOfShip;
 	m_iMaintenanceCosts = rhs.m_iMaintenanceCosts;
 	m_iShipType = rhs.m_iShipType;
 	m_byShipSize = rhs.m_byShipSize;
@@ -145,7 +139,7 @@ CShip & CShip::operator=(const CShip & rhs)
 	m_iStealthPower = rhs.m_iStealthPower;
 	m_bCloakOn = rhs.m_bCloakOn;
 	m_iStorageRoom = rhs.m_iStorageRoom;
-	for (int i = TITAN; i <= DILITHIUM; i++)
+	for (int i = TITAN; i <= DERITIUM; i++)
 		m_iLoadedResources[i] = rhs.m_iLoadedResources[i];
 	m_iColonizePoints = rhs.m_iColonizePoints;
 	m_iStationBuildPoints = rhs.m_iStationBuildPoints;
@@ -157,141 +151,18 @@ CShip & CShip::operator=(const CShip & rhs)
 	m_bIsFlagShip = rhs.m_bIsFlagShip;
 	m_bySpecial[0] = rhs.m_bySpecial[0];
 	m_bySpecial[1] = rhs.m_bySpecial[1];
-	return *this;
-}
+	m_nCombatTactic = rhs.m_nCombatTactic;
 
-//////////////////////////////////////////////////////////////////////
-// Serialisierungsfunktion
-//////////////////////////////////////////////////////////////////////
-void CShip::Serialize(CArchive &ar)
-{
-	CObject::Serialize(ar);
-	m_Hull.Serialize(ar);
-	m_Shield.Serialize(ar);
-	
-	// wenn gespeichert wird
-	if (ar.IsStoring())
-	{
-		ar << m_Fleet;
-		ar << m_iID;
-		ar << m_KO;
-		for (int i = 0; i < 4; i++)
-			ar << m_TargetKO[i];
-		ar << m_iOwnerOfShip;
-		ar << m_iMaintenanceCosts;
-		ar << m_iShipType;
-		ar << m_byShipSize;
-		ar << m_byManeuverability;
-		ar << m_iSpeed;
-		ar << m_iRange;
-		ar << m_iScanPower;
-		ar << m_iScanRange;
-		ar << m_iCrewExperiance;
-		ar << m_iStealthPower;
-		ar << m_bCloakOn;
-		ar << m_iStorageRoom;
-		for (int i = TITAN; i <= DILITHIUM; i++)
-			ar << m_iLoadedResources[i];
-		ar << m_iColonizePoints;
-		ar << m_iStationBuildPoints;
-		ar << m_iCurrentOrder;
-		ar << m_bySpecial[0];
-		ar << m_bySpecial[1];
-		ar << m_nTerraformingPlanet;
-		ar << m_strShipName;
-		ar << m_strShipDescription;
-		ar << m_strShipClass;
-		ar << m_bIsFlagShip;
-		ar << m_TorpedoWeapons.GetSize();
-		for (int i = 0; i < m_TorpedoWeapons.GetSize(); i++)
-			m_TorpedoWeapons.GetAt(i).Serialize(ar);
-		ar << m_BeamWeapons.GetSize();
-		for (int i = 0; i < m_BeamWeapons.GetSize(); i++)
-			m_BeamWeapons.GetAt(i).Serialize(ar);
-		ar << m_Troops.GetSize();
-		for (int i = 0; i < m_Troops.GetSize(); i++)
-			m_Troops.GetAt(i).Serialize(ar);
-	}
-	
-	// wenn geladen wird
-	if (ar.IsLoading())
-	{
-		int number = 0;
-		ar >> m_Fleet;
-		ar >> m_iID;
-		ar >> m_KO;
-		for (int i = 0; i < 4; i++)
-			ar >> m_TargetKO[i];
-		ar >> m_iOwnerOfShip;
-		ar >> m_iMaintenanceCosts;
-		ar >> m_iShipType;
-		ar >> m_byShipSize;
-		ar >> m_byManeuverability;
-		ar >> m_iSpeed;
-		ar >> m_iRange;
-		ar >> m_iScanPower;
-		ar >> m_iScanRange;
-		ar >> m_iCrewExperiance;
-		ar >> m_iStealthPower;
-		ar >> m_bCloakOn;
-		ar >> m_iStorageRoom;
-		for (int i = TITAN; i <= DILITHIUM; i++)
-			ar >> m_iLoadedResources[i];
-		ar >> m_iColonizePoints;
-		ar >> m_iStationBuildPoints;
-		ar >> m_iCurrentOrder;
-		ar >> m_bySpecial[0];
-		ar >> m_bySpecial[1];
-		ar >> m_nTerraformingPlanet;
-		ar >> m_strShipName;
-		ar >> m_strShipDescription;
-		ar >> m_strShipClass;
-		ar >> m_bIsFlagShip;
-		ar >> number;
-		m_TorpedoWeapons.RemoveAll();
-		m_TorpedoWeapons.SetSize(number);
-		for (int i = 0; i < number; i++)
-			m_TorpedoWeapons.GetAt(i).Serialize(ar);
-		ar >> number;
-		m_BeamWeapons.RemoveAll();
-		m_BeamWeapons.SetSize(number);
-		for (int i = 0; i < number; i++)
-			m_BeamWeapons.GetAt(i).Serialize(ar);		
-		ar >> number;
-		m_Troops.RemoveAll();
-		m_Troops.SetSize(number);
-		for (int i = 0; i < number; i++)
-			m_Troops.GetAt(i).Serialize(ar);
-	}
+	return *this;
 }
 
 //////////////////////////////////////////////////////////////////////
 // Zugriffsfunktion
 //////////////////////////////////////////////////////////////////////
-const CPoint CShip::GetTargetKO()
-{
-	return m_TargetKO[0];
-}
 
 // Funktion gibt den Schiffstyp als char* zurück
-CString CShip::GetShipTypeAsString(BOOL plural)
+CString CShip::GetShipTypeAsString(BOOL plural) const
 {
-	/*	#define TRANSPORTER			0
-		#define COLONYSHIP            1
-		#define PROBE				2
-		#define SCOUT				3
-		#define FIGHTER				4	// Jäger
-		#define FRIGATE				5
-		#define DESTROYER			6
-		#define CRUISER				7
-		#define HEAVY_DESTROYER     8
-		#define HEAVY_CRUISER       9
-		#define BATTLESHIP			10
-		#define FLAGSHIP			11
-		#define OUTPOST				12
-		#define STARBASE            13
-		#define ALIEN				14 */
-	// Oben im Beschreibungsrechteck den Namen des Projektes hinschreiben
 	CString shipType;
 	if (plural == FALSE)
 		switch (m_iShipType)
@@ -307,7 +178,7 @@ CString CShip::GetShipTypeAsString(BOOL plural)
 		case HEAVY_DESTROYER: shipType = CResourceManager::GetString("HEAVY_DESTROYER"); break;
 		case HEAVY_CRUISER: shipType = CResourceManager::GetString("HEAVY_CRUISER"); break;
 		case BATTLESHIP: shipType = CResourceManager::GetString("BATTLESHIP"); break;
-		case FLAGSHIP: shipType = CResourceManager::GetString("FLAGSHIP"); break;
+		case DREADNOUGHT: shipType = CResourceManager::GetString("DREADNOUGHT"); break;
 		case OUTPOST: shipType = CResourceManager::GetString("OUTPOST"); break;
 		case STARBASE: shipType = CResourceManager::GetString("STARBASE"); break;
 		case ALIEN: shipType = CResourceManager::GetString("ALIEN"); break;
@@ -326,16 +197,17 @@ CString CShip::GetShipTypeAsString(BOOL plural)
 		case HEAVY_DESTROYER: shipType = CResourceManager::GetString("HEAVY_DESTROYERS"); break;
 		case HEAVY_CRUISER: shipType = CResourceManager::GetString("HEAVY_CRUISERS"); break;
 		case BATTLESHIP: shipType = CResourceManager::GetString("BATTLESHIPS"); break;
-		case FLAGSHIP: shipType = CResourceManager::GetString("FLAGSHIPS"); break;
+		case DREADNOUGHT: shipType = CResourceManager::GetString("DREADNOUGHTS"); break;
 		case OUTPOST: shipType = CResourceManager::GetString("OUTPOSTS"); break;
 		case STARBASE: shipType = CResourceManager::GetString("STARBASES"); break;
 		case ALIEN: shipType = CResourceManager::GetString("ALIENS"); break;
 		}
+	
 	return shipType;
 }
 
 // Funktion gibt den aktuellen Schiffsauftrag als char* zurück
-CString CShip::GetCurrentOrderAsString()
+CString CShip::GetCurrentOrderAsString() const
 {
 	/*
 	#define AVOID               0
@@ -392,12 +264,14 @@ void CShip::CreateFleet()
 void CShip::CheckFleet()
 {
 	if (m_Fleet)
+	{
 		if (m_Fleet->GetFleetSize() == 0)
 		{
 			m_Fleet->DeleteFleet();
 			delete m_Fleet;
 			m_Fleet = NULL;
 		}
+	}
 }
 
 void CShip::DeleteFleet()
@@ -420,28 +294,28 @@ BOOLEAN CShip::HasSpecial(BYTE ability) const
 
 /// Funktion gibt die gesamte Offensivpower des Schiffes zurück, welches es in 100s anrichten würde.
 /// Dieser Wert hat keinen direkten Kampfeinfluss, er ist nur zum Vergleich heranzuziehen.
-UINT CShip::GetCompleteOffensivePower()
+UINT CShip::GetCompleteOffensivePower() const
 {
 	UINT beamDmg	 = 0;
 	UINT torpedoDmg  = 0;
-	for (int i = 0; i < GetBeamWeapons()->GetSize(); i++)
+	for (int i = 0; i < m_BeamWeapons.GetSize(); i++)
 	{
 		short counter = 0;
 		for (int j = 0; j < 100; j++)
 		{
 			if (counter == 0)
-				counter = GetBeamWeapons()->GetAt(i).GetBeamLenght() 
-							+ GetBeamWeapons()->GetAt(i).GetRechargeTime();
-			if (counter > GetBeamWeapons()->GetAt(i).GetRechargeTime())
+				counter = m_BeamWeapons.GetAt(i).GetBeamLenght() 
+							+ m_BeamWeapons.GetAt(i).GetRechargeTime();
+			if (counter > m_BeamWeapons.GetAt(i).GetRechargeTime())
 			{
-				UINT tempBeamDmg = (UINT)GetBeamWeapons()->GetAt(i).GetBeamPower()
-							* GetBeamWeapons()->GetAt(i).GetBeamNumber()
-							* GetBeamWeapons()->GetAt(i).GetShootNumber();
+				UINT tempBeamDmg = (UINT)m_BeamWeapons.GetAt(i).GetBeamPower()
+							* m_BeamWeapons.GetAt(i).GetBeamNumber()
+							* m_BeamWeapons.GetAt(i).GetShootNumber();
 				// besondere Beamfähigkeiten erhöhen den BeamDmg um einen selbst gewählten Mulitplikator
 				// der dadurch erhaltende Schaden entspricht nicht dem wirklichen Schaden!
-				if (GetBeamWeapons()->GetAt(i).GetPiercing())
+				if (m_BeamWeapons.GetAt(i).GetPiercing())
 					tempBeamDmg = (UINT)(tempBeamDmg * 1.5);
-				if (GetBeamWeapons()->GetAt(i).GetModulating())
+				if (m_BeamWeapons.GetAt(i).GetModulating())
 					tempBeamDmg *= 3;
 				beamDmg += tempBeamDmg;
 			}			
@@ -449,15 +323,15 @@ UINT CShip::GetCompleteOffensivePower()
 		}
 	}
 	beamDmg /= 3;
-	for (int i = 0; i < GetTorpedoWeapons()->GetSize(); i++)
+	for (int i = 0; i < m_TorpedoWeapons.GetSize(); i++)
 	{
-		UINT tempTorpedoDmg = (UINT)(GetTorpedoWeapons()->GetAt(i).GetTorpedoPower() *
-									GetTorpedoWeapons()->GetAt(i).GetNumber() * 100 *
-									GetTorpedoWeapons()->GetAt(i).GetNumberOfTupes() /
-									GetTorpedoWeapons()->GetAt(i).GetTupeFirerate());
+		UINT tempTorpedoDmg = (UINT)(m_TorpedoWeapons.GetAt(i).GetTorpedoPower() *
+									m_TorpedoWeapons.GetAt(i).GetNumber() * 100 *
+									m_TorpedoWeapons.GetAt(i).GetNumberOfTupes() /
+									m_TorpedoWeapons.GetAt(i).GetTupeFirerate());
 		// besondere Torpedofähigkeiten erhöhen den Torpedoschaden um einen selbst gewählten Mulitplikator
 		// der dadurch erhaltende Schaden entspricht nicht dem wirklichen Schaden!
-		BYTE type = GetTorpedoWeapons()->GetAt(i).GetTorpedoType();
+		BYTE type = m_TorpedoWeapons.GetAt(i).GetTorpedoType();
 		if (CTorpedoInfo::GetPenetrating(type))
 			tempTorpedoDmg = (UINT)(tempTorpedoDmg * 1.5);
 		if (CTorpedoInfo::GetIgnoreAllShields(type))
@@ -472,43 +346,43 @@ UINT CShip::GetCompleteOffensivePower()
 			tempTorpedoDmg = (UINT)(tempTorpedoDmg * 1.1);
 		torpedoDmg += tempTorpedoDmg;
 	}
-	return (beamDmg + torpedoDmg);
+
+	// Manövrierfähigkeit geht mit in den Wert ein
+	double dMan = 1.0;
+	if (m_iShipType != OUTPOST && m_iShipType != STARBASE)
+		dMan = ((int)m_byManeuverability - 4.0) / 10.0 * 1.75 + 1.0;
+
+	// Tarnung geht mit in den Wert ein
+	double dCloak = 1.0;
+	if (m_bCloakOn)
+		dCloak = 1.25;
+		
+	return (UINT)((beamDmg + torpedoDmg) * dMan * dCloak);
 }
 
 /// Funktion gibt die gesamte Defensivstärke des Schiffes zurück. Dabei wird die maximale Hülle, die maximalen
 /// Schilde und die Schildaufladezeit beachtet. Dieser Wert hat keinen direkten Kampfeinfluss, er ist nur zum
 /// Vergleich heranzuziehen.
-UINT CShip::GetCompleteDefensivePower()
+UINT CShip::GetCompleteDefensivePower() const
 {
-	UINT def = GetHull()->GetMaxHull() + GetShield()->GetMaxShield()
-		+ (GetShield()->GetMaxShield() / 300 + 2 * GetShield()->GetShieldType()) * 100;
-	if (GetHull()->GetAblative())
+	UINT def = m_Hull.GetMaxHull() + m_Shield.GetMaxShield()
+		+ (m_Shield.GetMaxShield() / 300 + 2 * m_Shield.GetShieldType()) * 100;
+	if (m_Hull.GetAblative())
 		def = (UINT)(def * 1.1);
-	if (GetHull()->GetPolarisation())
+	if (m_Hull.GetPolarisation())
 		def = (UINT)(def * 1.1);
 
-	return def;
-}
+	// Manövrierfähigkeit geht mit in den Wert ein
+	double dMan = 1.0;
+	if (m_iShipType != OUTPOST && m_iShipType != STARBASE)
+		dMan = ((int)m_byManeuverability - 4.0) / 10.0 * 1.75 + 1.0;
+		
+	// Tarnung geht mit in den Wert ein
+	double dCloak = 1.0;
+	if (m_bCloakOn)
+		dCloak = 1.25;
 
-/// Funktion gibt den schon benutzten Lagerraum im Schiff zurück.
-USHORT CShip::GetUsedStorageRoom(const CArray<CTroopInfo>* troopInfo)
-{
-	USHORT usedStorage = 0;
-	// benötigten Platz durch Truppen, welche schon im Schiff sind ermitteln
-	for (int i = 0; i < this->GetTransportedTroops()->GetSize(); i++)
-	{
-		BYTE id = this->GetTransportedTroops()->GetAt(i).GetID();
-		usedStorage += troopInfo->GetAt(id).GetSize();
-	}		
-	for (int i = TITAN; i <= DILITHIUM; i++)
-	{
-		// Dilithium wird im Verhältnis 1:250 gelagert, die anderen Ressourcen im Verhältnis 1:1
-		if (i == DILITHIUM)
-			usedStorage += this->GetLoadedResources(i) * 250;
-		else
-			usedStorage += this->GetLoadedResources(i);
-	}
-	return usedStorage;
+	return (UINT)(def * dMan * dCloak);
 }
 
 /// Funktion gibt das Erfahrungslevel des Schiffes zurück. Damit sind nicht die genauen Erfahrungspunkte gemeint, sondern das erreichte
@@ -538,4 +412,11 @@ BYTE CShip::GetExpLevel() const
 	// Legende
 	else
 		return 6;
+}
+
+void CShip::SetCrewExperiance(int nAdd)
+{
+	// Sonden sammeln keine Erfahrung
+	if (m_iShipType != PROBE)
+		m_iCrewExperiance = min(64000, m_iCrewExperiance + nAdd);
 }

@@ -119,7 +119,7 @@ public:
 	static void GetTechInfos(BYTE tech, BYTE level, CString& sTechName, CString& sTechDesc);
 	
 private:
-	/// Die derzeit 10 Objekte für die einzelnen Komplexe der Spezialforschung
+	/// Die derzeit 12 Objekte für die einzelnen Komplexe der Spezialforschung
 	CResearchComplex m_ResearchComplex[NoUC];
 	
 	/// Der aktuell gewählter Komplex

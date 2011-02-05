@@ -175,30 +175,75 @@ void CIntelCalc::ReduceDepotPoints(CMajor* pRace, int perc)
 	// bei perc == -1 wird der rassenspezifische Prozentsatz verwendet
 	if (perc == -1)
 	{
-		perc = 20;
+		int nCount = 0;
+		perc = 0;
 		if (pRace->IsRaceProperty(FINANCIAL))
+		{	
 			perc += 15;
+			nCount++;
+		}
 		if (pRace->IsRaceProperty(WARLIKE))
+		{
 			perc += 5;
+			nCount++;
+		}
 		if (pRace->IsRaceProperty(AGRARIAN))
+		{
 			perc += 10;
+			nCount++;
+		}
 		if (pRace->IsRaceProperty(INDUSTRIAL))
+		{
 			perc += 5;
+			nCount++;
+		}
 		if (pRace->IsRaceProperty(SECRET))
+		{
 			perc -= 10;
+			nCount++;
+		}
 		if (pRace->IsRaceProperty(SCIENTIFIC))
+		{
 			perc += 0;
+			nCount++;
+		}
 		if (pRace->IsRaceProperty(PRODUCER))
+		{
 			perc += 0;
+			nCount++;
+		}
 		if (pRace->IsRaceProperty(PACIFIST))
+		{
 			perc += 35;
+			nCount++;
+		}
 		if (pRace->IsRaceProperty(SNEAKY))
+		{
 			perc -= 5;
+			nCount++;
+		}
 		if (pRace->IsRaceProperty(SOLOING))
+		{
 			perc -= 20;
+			nCount++;
+		}
 		if (pRace->IsRaceProperty(HOSTILE))
+		{
 			perc += 10;
+			nCount++;
+		}
 
+		// traf keine Rasseneigenschaft zu, so den Standardwert von 20% setzen
+		if (nCount == 0)
+			perc = 20;
+		// sonst den Durschnittswert berechnen
+		else
+		{
+			perc /= nCount;
+			perc += 20;
+		}
+		
+		// Bereichsüberprüfungen machen
 		if (perc > 100)
 			perc = 100;
 		else if (perc < 0)

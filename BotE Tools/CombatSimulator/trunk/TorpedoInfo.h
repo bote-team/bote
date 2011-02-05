@@ -1,8 +1,8 @@
 /*
- *   Copyright (C)2004-2009 Sir Pustekuchen
+ *   Copyright (C)2004-2011 Sir Pustekuchen
  *
  *   Author   :  Sir Pustekuchen
- *   Home     :  http://birth-of-the-empires.de.vu
+ *   Home     :  http://birth-of-the-empires.de
  *
  */
 #pragma once
@@ -29,7 +29,7 @@ struct TORPEDOINFO
 	USHORT		nDmg;			///< die Stärke eines Torpedos
 	int			nSpecials;		///< Spezialeigenschaften (bitweise gespeichert)
 	
-	TORPEDOINFO(CString _sName, USHORT _nDmg, int _nSpecials = NO_SPECIAL)
+	TORPEDOINFO(const CString& _sName, USHORT _nDmg, int _nSpecials = NO_SPECIAL)
 	{
 		sName		= _sName;
 		nDmg		= _nDmg;

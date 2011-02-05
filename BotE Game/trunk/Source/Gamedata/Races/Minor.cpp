@@ -599,8 +599,16 @@ void CMinor::Create(const CStringArray& saInfo, int& nPos)
 
 	m_iTechnologicalProgress = atoi(saInfo[nPos++]);
 	m_byType			= MINOR;						// Rassentyp (Major, Medior, Minor)
-	//m_nProperty		= 0;
-	SetRaceProperty(atoi(saInfo[nPos++]), true);		// Rasseneigenschaften
+	
+	// mehrere Rasseneigenschaften sind durch Komma getrennt
+	CString sRaceProperties = saInfo[nPos++];
+	int nStart = 0;
+	while (nStart < sRaceProperties.GetLength())
+	{
+		int nProperty = atoi(sRaceProperties.Tokenize(",", nStart));
+		SetRaceProperty(nProperty, true);				// Rasseneigenschaften
+	}
+	
 	m_bSpaceflight		= atoi(saInfo[nPos++]) == 0 ? false : true;
 	m_iCorruptibility	= atoi(saInfo[nPos++]);
 	

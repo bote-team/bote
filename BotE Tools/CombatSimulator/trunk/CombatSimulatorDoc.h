@@ -17,9 +17,9 @@ public:
 	ShipArray m_ShipArray;
 	ShipInfoArray m_ShipInfoArray;
 	int SlowingSpeed;
-	BYTE race;
+	CString race;
 	short repeat;
-	short wins[7];	
+	map<CString, int> wins;
 // Vorgänge
 public:
 	void ApplyShipsAtStartup();

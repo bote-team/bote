@@ -1218,7 +1218,7 @@ void CSystemAI::CalcProd()
 	CPoint ko = m_KO;
 	int NumberOfBuildings;
 	NumberOfBuildings = m_pDoc->m_System[ko.x][ko.y].GetAllBuildings()->GetSize();
-	// Alle werde wieder auf NULL setzen	
+	// Alle Werte wieder auf NULL setzen	
 	m_pDoc->m_System[ko.x][ko.y].GetProduction()->Reset();
 	
 	m_pDoc->m_System[ko.x][ko.y].GetWorker()->CheckWorkers();
@@ -1298,9 +1298,9 @@ void CSystemAI::CalcProd()
 	// Wenn das System blockiert wird, dann verringern sich bestimmte Produktionswerte
 	if (m_pDoc->m_System[ko.x][ko.y].GetBlockade() > NULL)
 	{
-		m_pDoc->m_System[ko.x][ko.y].GetProduction()->m_iFoodProd		-= (int)(m_pDoc->m_System[ko.x][ko.y].GetBlockade() * m_pDoc->m_System[ko.x][ko.y].GetProduction()->m_iFoodProd/100);
+		//m_pDoc->m_System[ko.x][ko.y].GetProduction()->m_iFoodProd		-= (int)(m_pDoc->m_System[ko.x][ko.y].GetBlockade() * m_pDoc->m_System[ko.x][ko.y].GetProduction()->m_iFoodProd/100);
 		m_pDoc->m_System[ko.x][ko.y].GetProduction()->m_iIndustryProd	-= (int)(m_pDoc->m_System[ko.x][ko.y].GetBlockade() * m_pDoc->m_System[ko.x][ko.y].GetProduction()->m_iIndustryProd/100);
-		m_pDoc->m_System[ko.x][ko.y].GetProduction()->m_iEnergyProd		-= (int)(m_pDoc->m_System[ko.x][ko.y].GetBlockade() * m_pDoc->m_System[ko.x][ko.y].GetProduction()->m_iEnergyProd/100);		
+		//m_pDoc->m_System[ko.x][ko.y].GetProduction()->m_iEnergyProd		-= (int)(m_pDoc->m_System[ko.x][ko.y].GetBlockade() * m_pDoc->m_System[ko.x][ko.y].GetProduction()->m_iEnergyProd/100);		
 	}
 	
 	///// HIER DIE BONI DURCH SPEZIALFORSCHUNG //////
@@ -1327,8 +1327,12 @@ void CSystemAI::CalcProd()
 	// Den Moralboni im System noch auf die einzelnen Produktionen anrechnen
 	m_pDoc->m_System[ko.x][ko.y].GetProduction()->IncludeSystemMoral(m_pDoc->m_System[ko.x][ko.y].GetMoral());
 	// benötigte Nahrung durch Bevölkerung von der Produktion abiehen
-	m_pDoc->m_System[ko.x][ko.y].GetProduction()->m_iFoodProd -= (int)ceil(m_pDoc->m_System[ko.x][ko.y].GetHabitants()*10);	// ceil, wird auf Kommezahl berechnet, z.B brauchen wir für 
-												// 14.5 Mrd. Leute 145 Nahrung und nicht 140 bzw. 150
+	if (!m_pMajor->HasSpecialAbility(NO_FOOD_NEEDED))
+		// ceil, wird auf Kommezahl berechnet, z.B brauchen wir für 14.5 Mrd. Leute 145 Nahrung und nicht 140 bzw. 150
+		m_pDoc->m_System[ko.x][ko.y].GetProduction()->m_iFoodProd -= (int)ceil(m_pDoc->m_System[ko.x][ko.y].GetHabitants()*10);
+	else
+		m_pDoc->m_System[ko.x][ko.y].GetProduction()->m_iFoodProd = m_pDoc->m_System[ko.x][ko.y].GetProduction()->m_iMaxFoodProd;
+	
 	// Jetzt noch die freien Arbeiter berechnen
 	m_pDoc->m_System[ko.x][ko.y].GetWorker()->CalculateFreeWorkers();
 }

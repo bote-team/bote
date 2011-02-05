@@ -49,14 +49,11 @@ BOOL CCombatSimulatorDoc::OnNewDocument()
 	this->ReadShipInfosFromFile();
 	this->ApplyShipsAtStartup();
 	short r = repeat;
-	for (int i = 0; i <= DOMINION; i++)
-		wins[i] = 0;
-	
 	do 
 	{
 		for (int y = 0; y < m_ShipArray.GetSize(); y++)
 		{
-			CArray<CShip*,CShip*> pShipArray;
+			CArray<CShip*> pShipArray;
 			pShipArray.RemoveAll();
 			for (int i = 0; i < m_ShipArray.GetSize(); i++)
 			{
@@ -68,7 +65,7 @@ BOOL CCombatSimulatorDoc::OnNewDocument()
 					// Wenn das Schiff eine Flotte anführt, dann auch die Zeiger auf die Schiffe in der Flotte reingeben
 					if (m_ShipArray.GetAt(i).GetFleet() != 0)
 						for (int j = 0; j < m_ShipArray.GetAt(i).GetFleet()->GetFleetSize(); j++)
-							pShipArray.Add(m_ShipArray.GetAt(i).GetFleet()->GetPointerOfShipFromFleet(j));
+							pShipArray.Add(m_ShipArray.GetAt(i).GetFleet()->GetShipFromFleet(j));
 				}
 			}
 			// Jetzt haben wir das Feld mit den Zeigern auf die Schiffe gefüllt
@@ -82,7 +79,7 @@ BOOL CCombatSimulatorDoc::OnNewDocument()
 						// Wenn unser Schiff eine Flotte anführt, dann auch die Zeiger auf die Schiffe in der Flotte reingeben
 						if (m_ShipArray.GetAt(i).GetFleet() != 0)
 							for (int j = 0; j < m_ShipArray.GetAt(i).GetFleet()->GetFleetSize(); j++)
-								pShipArray.Add(m_ShipArray.GetAt(i).GetFleet()->GetPointerOfShipFromFleet(j));
+								pShipArray.Add(m_ShipArray.GetAt(i).GetFleet()->GetShipFromFleet(j));
 						pShipArray.Add(&m_ShipArray.ElementAt(i));
 					}
 				// Jetzt können wir einen Kampf stattfinden lassen
@@ -93,42 +90,30 @@ BOOL CCombatSimulatorDoc::OnNewDocument()
 		}
 		if (r > 0)
 		{
-			BYTE winner[7];
-			memset(winner, 2, sizeof(BYTE) * 7);
+			std::map<CString, BYTE> winner;
 			do
 			{
 				combat.CalculateCombat(winner);
-			} while (combat.m_bReady);
-			// Nach einem Kampf kann geschaut werden, wer noch Schiffe besitzt. Diese Rassen haben den Kampf danach gewonnen
-			// Erstmal wird für alle beteiligten Rassen der Kampf auf verloren gesetzt. Danach wird geschaut, wer noch
-			// Schiffe besitzt. Für diese Rassen wird der Kampf dann auf gewonnen gesetzt. Alle anderen Rassen gelten als
-			// nicht kampfbeteiligt.
-			/*for (int i = HUMAN; i <= DOMINION; i++)
-				if (combat.m_bInvolvedRaces[i])
-					winner[i] = FALSE;
-			for (int i = 0; i < combat.m_CS.GetSize(); i++)
-				winner[combat.m_CS.GetAt(i)->m_pShip->GetOwnerOfShip()] = TRUE;
-			for (int i = 0; i <= DOMINION; i++)
-				if (winner[i] == 1)
-					wins[i]++;
-			*/
-			//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-			for (int i = HUMAN; i <= DOMINION; i++)
+			}
+			while (combat.m_bReady);
+			
+			for (set<CString>::const_iterator it = combat.m_mInvolvedRaces.begin(); it != combat.m_mInvolvedRaces.end(); ++it)
 			{
 				// gewonnen
-				if (winner[i] == 1)
+				if (winner[*it] == 1)
 				{
-					wins[i]++;
+					wins[*it]++;
 				}
 				// verloren
-				else if (winner[i] == 0)
+				else if (winner[*it] == 0)
 				{
 				}
 				// unentschieden
-				else if (winner[i] == 3)
+				else if (winner[*it] == 3)
 				{
 				}
-			}
+			}		
+
 			//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 			combat.Reset();
 			m_ShipArray.RemoveAll();
@@ -175,7 +160,7 @@ void CCombatSimulatorDoc::Dump(CDumpContext& dc) const
 void CCombatSimulatorDoc::ApplyShipsAtStartup()
 {
 	int what = 0;	// 0 -> Speed, 1 -> Race, 2 -> Ships -> 3 Repeat
-	race = NOBODY;
+	race = "";
 	CString csInput;													// auf csInput wird die jeweilige Zeile gespeichert
 	//CString fileName="C:\\Botf2\\Data\\Ships\\CombatScript.txt";		// Name des zu Öffnenden Files 
 	CString fileName="CombatScript.txt";								// Name des zu Öffnenden Files 
@@ -198,8 +183,8 @@ void CCombatSimulatorDoc::ApplyShipsAtStartup()
 					this->SlowingSpeed = atoi(csInput);
 				else if (what == 1)
 				{
-					race = atoi(csInput);
-					if (race == 0 || race > 6)
+					race = csInput;
+					if (race == "")
 					{
 						AfxMessageBox("Scripting_Error: wrong race data!");
 						exit(1);
@@ -328,7 +313,7 @@ void CCombatSimulatorDoc::ReadShipInfosFromFile()
 				ShipInfo.SetNeededDuranium(atoi(data[15]));
 				ShipInfo.SetNeededCrystal(atoi(data[16]));
 				ShipInfo.SetNeededIridium(atoi(data[17]));
-				ShipInfo.SetNeededDilithium(atoi(data[18]));
+				ShipInfo.SetNeededDeritium(atoi(data[18]));
 				ShipInfo.SetOnlyInSystem(data[19]);
 				ShipInfo.GetHull()->ModifyHull(atoi(data[22]),atoi(data[20]),atoi(data[21]),atoi(data[23]),atoi(data[24]));
 				ShipInfo.GetShield()->ModifyShield(atoi(data[25]),atoi(data[26]),atoi(data[27]));

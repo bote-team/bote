@@ -1,8 +1,8 @@
 /*
- *   Copyright (C)2004-2009 Sir Pustekuchen
+ *   Copyright (C)2004-2011 Sir Pustekuchen
  *
  *   Author   :  Sir Pustekuchen
- *   Home     :  http://birth-of-the-empires.de.vu
+ *   Home     :  http://birth-of-the-empires.de
  *
  */
 // ShipInfo.h: Schnittstelle für die Klasse CShipInfo.
@@ -27,11 +27,15 @@ public:
 	virtual ~CShipInfo();
 
 	// Kopierkonstruktor
-//	CShipInfo(const CShipInfo & rhs);
+	CShipInfo(const CShipInfo & rhs);
 	// Zuweisungsoperatur
-//	CShipInfo & operator=(const CShipInfo &);
-// Die Serialisierungsfunktion
+	CShipInfo & operator=(const CShipInfo &);
+	// Serialisierungsfunktion
 	virtual void Serialize(CArchive &ar);
+	
+	/// Funktion gibt eine Rassennummer zurück. Jede Rasse besitzt eine Nummer, welche Schiffe und Gebäude diese
+	/// bauen kann.
+	/// @return Rassennummer (nicht Rassen-ID!)
 	BYTE GetRace() const {return m_iRace;}
 	BYTE GetBioTech() const {return m_iBioTech;}
 	BYTE GetEnergyTech() const {return m_iEnergyTech;}
@@ -46,7 +50,7 @@ public:
 	USHORT GetNeededDuranium() const {return m_iNeededDuranium;}
 	USHORT GetNeededCrystal() const {return m_iNeededCrystal;}
 	USHORT GetNeededIridium() const {return m_iNeededIridium;}
-	USHORT GetNeededDilithium() const {return m_iNeededDilithium;}
+	USHORT GetNeededDeritium() const {return m_iNeededDeritium;}
 	USHORT GetNeededResource(BYTE res) const;
 	const CString& GetOnlyInSystem() const {return m_strOnlyInSystem;}
 	const CString& GetObsoleteShipClass() const {return m_strObsoletesClass;}
@@ -65,16 +69,16 @@ public:
 	void SetNeededDuranium(int NeededDuranium) {m_iNeededDuranium = NeededDuranium; m_iBaseDuranium = NeededDuranium;}
 	void SetNeededCrystal(int NeededCrystal) {m_iNeededCrystal = NeededCrystal; m_iBaseCrystal = NeededCrystal;}
 	void SetNeededIridium(int NeededIridium) {m_iNeededIridium = NeededIridium; m_iBaseIridium = NeededIridium;}
-	void SetNeededDilithium(int NeededDilithium) {m_iNeededDilithium = NeededDilithium; m_iBaseDilithium = NeededDilithium;}
-	void SetOnlyInSystem(CString name) {m_strOnlyInSystem = name;}
-	void SetObsoleteShipClass(CString className) {m_strObsoletesClass = className;}
+	void SetNeededDeritium(int NeededDeritium) {m_iNeededDeritium = NeededDeritium; m_iBaseDeritium = NeededDeritium;}
+	void SetOnlyInSystem(const CString& name) {m_strOnlyInSystem = name;}
+	void SetObsoleteShipClass(const CString& className) {m_strObsoletesClass = className;}
 
 	void DeleteWeapons();							// Funktion löscht die Bewaffnung
 	void CalculateFinalCosts();						// Funktion berechnet die finalen Kosten zum Bau des Schiffes
 	void SetStartOrder();							// Funktion bestimmt die 1. Order des Schiffs nach dem Bau anhand dessen Typs
-
+	
 private:
-	BYTE m_iRace;					// welche Rasse kann das dingens bauen
+	BYTE m_iRace;					// welche Rasse kann das Schiff bauen
 	// nötige Forschung
 	BYTE m_iBioTech;
 	BYTE m_iEnergyTech;
@@ -89,7 +93,7 @@ private:
 	USHORT m_iNeededDuranium;
 	USHORT m_iNeededCrystal;
 	USHORT m_iNeededIridium;
-	USHORT m_iNeededDilithium;
+	USHORT m_iNeededDeritium;
 	// nötige Rohstoffe zum Bau, so wie die Grundkosten sind, denn durch CalculateFinalCosts werden die nötigen Rohstoffe
 	// und Industrieleistung erhöht. Beim nächsten Aufruf brauchen wir aber wieder die ursprünglichen Kosten
 	UINT m_iBaseIndustry;
@@ -98,7 +102,7 @@ private:
 	USHORT m_iBaseDuranium;
 	USHORT m_iBaseCrystal;
 	USHORT m_iBaseIridium;
-	USHORT m_iBaseDilithium;
+	USHORT m_iBaseDeritium;
 	// nötiger Systemname
 	CString m_strOnlyInSystem;
 	// Schiffsklasse, welche durch diese Schiffsklasse ersetzt wird

@@ -28,6 +28,13 @@ CIntelMenuView::~CIntelMenuView()
 		m_IntelligenceMainButtons[i] = 0;
 	}	
 	m_IntelligenceMainButtons.RemoveAll();
+
+	for (int i = 0; i < m_RaceLogoButtons.GetSize(); i++)
+	{
+		delete m_RaceLogoButtons[i];
+		m_RaceLogoButtons[i] = 0;
+	}
+	m_RaceLogoButtons.RemoveAll();
 	
 }
 
@@ -42,6 +49,8 @@ END_MESSAGE_MAP()
 void CIntelMenuView::OnNewRound()
 {
 	memset(m_bSortDesc, true, sizeof(m_bSortDesc));
+	m_nScrollPos = 0;
+	m_bySubMenu = 0;
 }
 
 // CIntelMenuView drawing
@@ -138,6 +147,7 @@ void CIntelMenuView::OnInitialUpdate()
 	m_bySubMenu = 0;
 	m_sActiveIntelRace = "";
 	memset(m_bSortDesc, true, sizeof(m_bSortDesc));
+	m_nScrollPos = 0;
 }
 
 BOOL CIntelMenuView::OnEraseBkgnd(CDC* pDC)
@@ -193,13 +203,19 @@ void CIntelMenuView::DrawIntelAssignmentMenu(Graphics* g)
 	// Wenn noch keine Rasse ausgewählt wurde, so wird versucht eine bekannte Rasse auszuwählen
 	if (m_sActiveIntelRace == "")
 	{
+		int nCount = 0;
 		map<CString, CMajor*>* pmMajors = pDoc->GetRaceCtrl()->GetMajors();
-		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
+		{
+			nCount++;
 			if (it->first != pMajor->GetRaceID() && pMajor->IsRaceContacted(it->first) == true)
 			{
+				if (nCount > 6)
+					m_nScrollPos = nCount - 6;
 				m_sActiveIntelRace = it->first;
 				break;
 			}
+		}
 	}
 	
 	// rechtes Informationsmenü zeichnen
@@ -210,10 +226,12 @@ void CIntelMenuView::DrawIntelAssignmentMenu(Graphics* g)
 	
 	SolidBrush timberBrush(Color::White);
 	int count = 1;
-	
+	int nPos = 0;
 	map<CString, CMajor*>* pmMajors = pDoc->GetRaceCtrl()->GetMajors();
-	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 	{
+		if (nPos++ < m_nScrollPos)
+			continue;
 		// den Spionage- und Sabotagebalken zeichnen
 		BYTE spyPerc = pMajor->GetEmpire()->GetIntelligence()->GetAssignment()->GetGlobalSpyPercentage(it->first);
 		s.Format("%d%%", spyPerc);
@@ -235,7 +253,7 @@ void CIntelMenuView::DrawIntelAssignmentMenu(Graphics* g)
 			g->FillRectangle(&timberBrush, RectF(timber[j].left, timber[j].top, timber[j].Width(), timber[j].Height()));
 		}
 
-		// den Zuweisungsbalken für Spionage zeichnen
+		// den Zuweisungsbalken für Sabotage zeichnen
 		if (pMajor->IsRaceContacted(it->first) == false || it->first == pMajor->GetRaceID())
 			timberBrush.SetColor(Color(22,26,15));					
 		else
@@ -247,7 +265,9 @@ void CIntelMenuView::DrawIntelAssignmentMenu(Graphics* g)
 			timber[j].SetRect(470+j*3, 80+count*90, 472+j*3, 110+count*90);
 			g->FillRectangle(&timberBrush, RectF(timber[j].left, timber[j].top, timber[j].Width(), timber[j].Height()));
 		}
-		count++;
+		
+		if (count++ == 6)
+			break;
 	}
 	
 	// Spionage und Sabotage oben über die Balken zeichnen
@@ -305,13 +325,19 @@ void CIntelMenuView::DrawIntelSpyMenu(Graphics* g)
 	// Wenn noch keine Rasse ausgewählt wurde, so wird versucht eine bekannte Rasse auszuwählen
 	if (m_sActiveIntelRace == "")
 	{
+		int nCount = 0;
 		map<CString, CMajor*>* pmMajors = pDoc->GetRaceCtrl()->GetMajors();
-		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
+		{
+			nCount++;
 			if (it->first != pMajor->GetRaceID() && pMajor->IsRaceContacted(it->first) == true)
 			{
+				if (nCount > 6)
+					m_nScrollPos = nCount - 6;
 				m_sActiveIntelRace = it->first;
 				break;
 			}
+		}
 	}
 	
 	CString fontName = "";
@@ -479,13 +505,19 @@ void CIntelMenuView::DrawIntelSabotageMenu(Graphics* g)
 	// Wenn noch keine Rasse ausgewählt wurde, so wird versucht eine bekannte Rasse auszuwählen
 	if (m_sActiveIntelRace == "")
 	{
+		int nCount = 0;
 		map<CString, CMajor*>* pmMajors = pDoc->GetRaceCtrl()->GetMajors();
-		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
+		{
+			nCount++;
 			if (it->first != pMajor->GetRaceID() && pMajor->IsRaceContacted(it->first) == true)
 			{
+				if (nCount > 6)
+					m_nScrollPos = nCount - 6;
 				m_sActiveIntelRace = it->first;
 				break;
 			}
+		}
 	}
 
 	CString fontName = "";
@@ -993,7 +1025,7 @@ void CIntelMenuView::DrawIntelInfoMenu(Graphics* g)
 	if (m_sActiveIntelRace == "")
 	{
 		map<CString, CMajor*>* pmMajors = pDoc->GetRaceCtrl()->GetMajors();
-		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 			if (pMajor->IsRaceContacted(it->first) == true)
 			{
 				m_sActiveIntelRace = it->first;
@@ -1118,9 +1150,13 @@ void CIntelMenuView::DrawRaceLogosInIntelView(Graphics* g, BOOLEAN highlightPlay
 		return;
 	
 	int count = 1;
+	int nPos = 0;
 	map<CString, CMajor*>* pmMajors = pDoc->GetRaceCtrl()->GetMajors();
-	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 	{
+		if (nPos++ < m_nScrollPos)
+			continue;
+
 		Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Symbols\\" + it->first + ".bop");
 		if (graphic == NULL)
 			graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Symbols\\Default.bop");
@@ -1145,7 +1181,21 @@ void CIntelMenuView::DrawRaceLogosInIntelView(Graphics* g, BOOLEAN highlightPlay
 				g->FillRectangle(&brush, dest);
 			}
 		}
-		count++;
+		if (count++ == 6)
+			break;
+	}
+
+	if (m_nScrollPos > 0)
+	{
+		CArray<CMyButton*> vButtons;
+		vButtons.Add(m_RaceLogoButtons[0]);
+		DrawGDIButtons(g, &vButtons, -1, Gdiplus::Font(NULL), SolidBrush(Color::Black));
+	}
+	if ((int)pmMajors->size() > m_nScrollPos + 6)
+	{
+		CArray<CMyButton*> vButtons;
+		vButtons.Add(m_RaceLogoButtons[1]);
+		DrawGDIButtons(g, &vButtons, -1, Gdiplus::Font(NULL), SolidBrush(Color::Black));
 	}	
 }
 
@@ -1281,10 +1331,36 @@ void CIntelMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 	{
 		m_bySubMenu = temp;
 		// Wenn wir ins Anschlagsmenü gehen, dann den aktiven Bericht auf keinen setzen
-		if (temp = 5)
+		if (temp == 5)
 			pMajor->GetEmpire()->GetIntelligence()->GetIntelReports()->SetActiveReport(-1);
 		pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CIntelBottomView));
 		return;
+	}
+
+	// Wenn wir uns in einem Menü befinden, in welchem die Rassenlogoliste links angezeigt wird
+	if (m_bySubMenu < 4)
+	{
+		temp = -1;
+		if (ButtonReactOnLeftClick(point, &m_RaceLogoButtons, temp, FALSE, TRUE))
+		{
+			if (temp == 0)
+			{
+				if (m_nScrollPos > 0)
+				{
+					m_nScrollPos--;
+					Invalidate(FALSE);
+				}				
+			}
+			else if (temp == 1)
+			{
+				if ((int)pDoc->GetRaceCtrl()->GetMajors()->size() > m_nScrollPos + 6)
+				{
+					m_nScrollPos++;
+					Invalidate(FALSE);
+				}				
+			}
+			return;
+		}
 	}
 
 	map<CString, CMajor*>* pmMajors = pDoc->GetRaceCtrl()->GetMajors();
@@ -1302,8 +1378,11 @@ void CIntelMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		}
 		
 		int count = 1;
-		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+		int nPos = 0;
+		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 		{
+			if (nPos++ < m_nScrollPos)
+				continue;
 			if (it->first != pMajor->GetRaceID() && pMajor->IsRaceContacted(it->first))
 			{
 				// wurde in den Bereich der Balken zur Spionage geklickt
@@ -1327,7 +1406,8 @@ void CIntelMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 					return;
 				}
 			}
-			count++;
+			if (count++ == 6)
+				break;
 		}
 	}
 	// befinden wir uns im Spionagemenü (IntelSpyMenu)
@@ -1335,8 +1415,11 @@ void CIntelMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 	{
 		// Wurde auf das Rassensymbol geklickt um eine Rasse zu aktivieren
 		int count = 1;
-		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+		int nPos = 0;
+		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 		{
+			if (nPos++ < m_nScrollPos)
+				continue;
 			if (CRect(20,60+count*90,95,135+count*90).PtInRect(point) && it->first != pMajor->GetRaceID() && 
 				pMajor->IsRaceContacted(it->first) == true)
 			{
@@ -1344,7 +1427,8 @@ void CIntelMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 				Invalidate(FALSE);
 				return;
 			}
-			count++;
+			if (count++ == 6)
+				break;
 		}
 
 		if (m_sActiveIntelRace != "" && m_sActiveIntelRace != pMajor->GetRaceID())
@@ -1383,8 +1467,11 @@ void CIntelMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 	{
 		// Wurde auf das Rassensymbol geklickt um eine Rasse zu aktivieren
 		int count = 1;
-		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+		int nPos = 0;
+		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 		{
+			if (nPos++ < m_nScrollPos)
+				continue;
 			if (CRect(20,60+count*90,95,135+count*90).PtInRect(point) && it->first != pMajor->GetRaceID() && 
 				pMajor->IsRaceContacted(it->first) == true)
 			{
@@ -1392,7 +1479,8 @@ void CIntelMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 				Invalidate(FALSE);
 				return;
 			}
-			count++;
+			if (count++ == 6)
+				break;
 		}
 		if (m_sActiveIntelRace != "" && m_sActiveIntelRace != pMajor->GetRaceID())
 		{
@@ -1430,7 +1518,7 @@ void CIntelMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 	{
 		// Wurde auf das Rassensymbol geklickt um eine Rasse zu aktivieren
 		int count = 1;
-		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 		{
 			if (CRect(20,60+count*90,95,135+count*90).PtInRect(point) && ((it->first != pMajor->GetRaceID() && 
 				pMajor->IsRaceContacted(it->first) == true) || it->first == pMajor->GetRaceID()))
@@ -1449,7 +1537,7 @@ void CIntelMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			map<CString, CMajor*>::iterator it = pmMajors->find(respRace);			
 			while (1)
 			{
-				it++;
+				++it;
 				if (it == pmMajors->end())
 					it = pmMajors->begin();
 				respRace = it->first;
@@ -1610,6 +1698,7 @@ void CIntelMenuView::OnMouseMove(UINT nFlags, CPoint point)
 	// Wenn wir uns in der Geheimdienstansicht befinden
 	CalcLogicalPoint(point);
 	ButtonReactOnMouseOver(point, &m_IntelligenceMainButtons);
+	ButtonReactOnMouseOver(point, &m_RaceLogoButtons);
 	CMainBaseView::OnMouseMove(nFlags, point);
 }
 
@@ -1685,6 +1774,26 @@ BOOL CIntelMenuView::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 				pIntel->GetIntelReports()->SetActiveReport(pIntel->GetIntelReports()->GetActiveReport() - 1);
 				Invalidate(FALSE);
 				pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CIntelBottomView));
+			}
+		}
+	}
+	// Wenn wir in einem Menü sind, in welchem die Rassenlogos links angezeigt werden
+	else if (m_bySubMenu < 4)
+	{
+		if (zDelta < 0)
+		{
+			if ((int)pDoc->GetRaceCtrl()->GetMajors()->size() > m_nScrollPos + 6)
+			{
+				m_nScrollPos++;
+				Invalidate(FALSE);
+			}
+		}
+		else if (zDelta > 0)
+		{
+			if (m_nScrollPos > 0)
+			{
+				m_nScrollPos--;
+				Invalidate(FALSE);
 			}
 		}
 	}
@@ -1794,4 +1903,12 @@ void CIntelMenuView::CreateButtons()
 	m_IntelligenceMainButtons.Add(new CMyButton(CPoint(515,690), CSize(160,40), CResourceManager::GetString("INFORMATION"), fileN, fileI, fileA));
 	m_IntelligenceMainButtons.Add(new CMyButton(CPoint(675,690), CSize(160,40), CResourceManager::GetString("BTN_REPORTS"), fileN, fileI, fileA));
 	m_IntelligenceMainButtons.Add(new CMyButton(CPoint(835,690), CSize(160,40), CResourceManager::GetString("BTN_ATTEMPT"), fileN, fileI, fileA));	
+
+	// Buttons um Rassenlogos durchschalten zu können
+	fileN = "Other\\" + sPrefix + "buttonminus.bop";
+	fileA = "Other\\" + sPrefix + "buttonminusa.bop";
+	m_RaceLogoButtons.Add(new CMyButton(CPoint(45,130) , CSize(25,25), "", fileN, fileN, fileA));
+	fileN = "Other\\" + sPrefix + "buttonplus.bop";
+	fileA = "Other\\" + sPrefix + "buttonplusa.bop";
+	m_RaceLogoButtons.Add(new CMyButton(CPoint(45,660) , CSize(25,25), "", fileN, fileN, fileA));	
 }

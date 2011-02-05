@@ -397,19 +397,26 @@ void CAssemblyList::RemoveResourceFromStorage(BYTE res, const CPoint &ko, CSyste
 			{
 				CPoint p = routesFrom->GetAt(j);
 				for (int k = 0; k < systems[p.x][p.y].GetResourceRoutes()->GetSize(); k++)
+				{
+					// Stimmt die Ressource überein=
 					if (systems[p.x][p.y].GetResourceRoutes()->GetAt(k).GetResource() == res)
 					{
-						// prüfen das die Route nicht schon verwendet wird
-						bool bUsed = false;
-						for (int l = 0; l < routes.GetSize(); l++)
-							if (routes.GetAt(l).fromSystem == p)
-							{
-								bUsed = true;
-								break;
-							}
-						if (!bUsed)
-							routes.Add(ROUTELIST(&systems[p.x][p.y].GetResourceRoutes()->ElementAt(k), p));						
+						// Stimmt das Zielsystem mit unserem überein?
+						if (systems[p.x][p.y].GetResourceRoutes()->GetAt(k).GetKO() == ko)
+						{
+							// prüfen das die Route nicht schon verwendet wird
+							bool bUsed = false;
+							for (int l = 0; l < routes.GetSize(); l++)
+								if (routes.GetAt(l).fromSystem == p)
+								{
+									bUsed = true;
+									break;
+								}
+							if (!bUsed)
+								routes.Add(ROUTELIST(&systems[p.x][p.y].GetResourceRoutes()->GetAt(k), p));
+						}
 					}
+				}
 			}
 			// in routes sind nun die Zeiger auf die richtigen Ressourcenrouten, also die Routen, welche auch den
 			// passenden Rohstoff liefern könnten.
@@ -418,7 +425,7 @@ void CAssemblyList::RemoveResourceFromStorage(BYTE res, const CPoint &ko, CSyste
 				// zufällig eine Route aus den möglichen auswählen, damit nicht immer das gleiche System zuerst
 				// die Rohstoffe liefern muss, falls mehrere Routen der selben Art ins System eingehen.
 				int random = rand()%routes.GetSize();
-				int percent = NULL;
+				int percent = 0;
 				CPoint start = routes.GetAt(random).fromSystem;
 				// sind im jeweiligen Lager des Startsystem genügend Rohstoffe vorhanden
 				if (systems[start.x][start.y].GetResourceStore(res) >= (ULONG)remainingRes)
@@ -426,7 +433,8 @@ void CAssemblyList::RemoveResourceFromStorage(BYTE res, const CPoint &ko, CSyste
 					*systems[start.x][start.y].GetResourceStorages(res) -= remainingRes;
 					if (GetNeededResourceInAssemblyList(0, res) > NULL)
 						percent = 100 * remainingRes / GetNeededResourceInAssemblyList(0, res);
-					routes.GetAt(random).route->SetPercent((BYTE)percent);
+					CResourceRoute* pResRoute = routes.GetAt(random).route;
+					pResRoute->SetPercent((BYTE)percent);
 					remainingRes = 0;
 				}
 				else
@@ -434,13 +442,21 @@ void CAssemblyList::RemoveResourceFromStorage(BYTE res, const CPoint &ko, CSyste
 					remainingRes -= systems[start.x][start.y].GetResourceStore(res);
 					if (GetNeededResourceInAssemblyList(0, res) > NULL)
 						percent = 100 * systems[start.x][start.y].GetResourceStore(res) / GetNeededResourceInAssemblyList(0, res);
-					routes.GetAt(random).route->SetPercent((BYTE)percent);
+					CResourceRoute* pResRoute = routes.GetAt(random).route;
+					pResRoute->SetPercent((BYTE)percent);
 					*systems[start.x][start.y].GetResourceStorages(res) = NULL;
 				}
 				// ROUTELIST Eintrag entfernen, wenn dieser abgearbeitet wurde
-				routes.RemoveAt(random);				
+				routes.RemoveAt(random);
+				
+				// werden keine Ressourcen mehr benötigt, so kann abgebrochen werden
+				if (remainingRes == 0)
+				{
+					routes.RemoveAll();
+					break;
+				}
 			}
-			ASSERT(remainingRes == NULL);
+			ASSERT(remainingRes == 0);
 		}
 		// anderenfalls werden nur die benötigten Ressourcen aus dem lokalen Lager abgezogen
 		else
@@ -484,8 +500,8 @@ BOOLEAN CAssemblyList::MakeEntry(int runningNumber, const CPoint &ko, CSystem sy
 		resourcesFromRoutes[i] = 0;
 		nResInDistSys[i] = 0;
 		ptResourceDistributorKOs[i] = CPoint(-1,-1);		
-	}
-	
+	}	
+
 	for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
 	{
 		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)

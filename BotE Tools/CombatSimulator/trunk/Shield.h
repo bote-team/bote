@@ -1,8 +1,8 @@
 /*
- *   Copyright (C)2004-2009 Sir Pustekuchen
+ *   Copyright (C)2004-2011 Sir Pustekuchen
  *
  *   Author   :  Sir Pustekuchen
- *   Home     :  http://birth-of-the-empires.de.vu
+ *   Home     :  http://birth-of-the-empires.de
  *
  */
 // Shield.h: Schnittstelle für die Klasse CShield.

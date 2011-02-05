@@ -1,8 +1,8 @@
 /*
- *   Copyright (C)2004-2009 Sir Pustekuchen
+ *   Copyright (C)2004-2011 Sir Pustekuchen
  *
  *   Author   :  Sir Pustekuchen
- *   Home     :  http://birth-of-the-empires.de.vu
+ *   Home     :  http://birth-of-the-empires.de
  *
  */
 // Hull.h: Schnittstelle für die Klasse CHull.
@@ -38,7 +38,7 @@ public:
 	UINT GetMaxHull() const {return m_iMaxHull;}
 	BYTE GetHullMaterial() const {return m_iHullMaterial;}
 	
-	void SetCurrentHull(int add);
+	void SetCurrentHull(int add, bool bIgnoreHullSpecials = false);
 
 	void ModifyHull(BOOLEAN DoubleHull, UINT BaseHull, BYTE HullMaterial, BOOLEAN Ablative, BOOLEAN Polarisation);
 

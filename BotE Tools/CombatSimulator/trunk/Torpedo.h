@@ -1,20 +1,19 @@
 /*
- *   Copyright (C)2004-2009 Sir Pustekuchen
+ *   Copyright (C)2004-2011 Sir Pustekuchen
  *
  *   Author   :  Sir Pustekuchen
- *   Home     :  http://birth-of-the-empires.de.vu
+ *   Home     :  http://birth-of-the-empires.de
  *
  */
 #pragma once
-#include "afx.h"
 #include "Vec3.h"
 
 class CCombatShip;
 class CTorpedo : public CObject
 {
 	friend class CCombatShip;
-	friend class CComabt;
 	friend class CCombatSimulatorView;
+
 public:
 	/// Konstruktor
 	CTorpedo(void);
@@ -59,7 +58,7 @@ private:
 	BYTE m_byType;
 
 	/// Welche Rasse hat den Torpedo abgefeuert. Also wer ist der Besitzer des Torpedos
-	BYTE m_iOwner;
+	CString m_sOwner;
 
 	/// Die Manövriebarkeit des Schiffes, welches den Torepdo abgefeuert hat
 	BYTE m_byManeuverability;
@@ -92,5 +91,3 @@ private:
 	*/
 	BOOLEAN PerhapsImpact(CCombatShip* CS, USHORT minDistance);
 };
-
-typedef CArray<CTorpedo*, CTorpedo*> CombatTorpedos;

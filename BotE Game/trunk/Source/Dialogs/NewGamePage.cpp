@@ -369,7 +369,7 @@ void CNewGamePage::OnBnClickedLoad()
 void CNewGamePage::OnBnClickedChoosefile()
 {
 	CFileDialog dlg(TRUE, "sav", NULL, OFN_FILEMUSTEXIST | OFN_HIDEREADONLY | OFN_ENABLESIZING,
-		"BotE-Spielstand (*.sav)|*.sav|Alle Dateien (*.*)|*.*||", this, 0);
+		"BotE-Savegame (*.sav)|*.sav|All Files (*.*)|*.*||", this, 0);
 	if (dlg.DoModal() == IDOK)
 		SetDlgItemText(IDC_FILENAME, dlg.GetPathName());
 
@@ -413,6 +413,28 @@ void CNewGamePage::OnEnChangeServerport()
 void CNewGamePage::OnBnClickedShowoptionsdlg()
 {
 	// TODO: Fügen Sie hier Ihren Kontrollbehandlungscode für die Benachrichtigung ein.
+	CIniLoader* pIni = CIniLoader::GetInstance();
+	int nOldSeed = -1;
+	pIni->ReadValue("Special", "RANDOMSEED", nOldSeed);
+	
 	CSettingsDlg dlg;
-	dlg.DoModal();		
+	if (dlg.DoModal() == IDOK)
+	{
+		int nSeed = -1;
+		pIni->ReadValue("Special", "RANDOMSEED", nSeed);
+
+		if (nSeed != nOldSeed)
+		{
+			// festen vorgegeben Seed verwenden
+			if (nSeed >= 0)
+				srand(nSeed);
+			// zufälligen Seed verwenden
+			else
+			{
+				nSeed = (unsigned)time(NULL);
+				srand(nSeed);
+			}
+			MYTRACE(MT::LEVEL_INFO, "Used seed for randomgenerator: %i", nSeed);
+		}
+	}
 }

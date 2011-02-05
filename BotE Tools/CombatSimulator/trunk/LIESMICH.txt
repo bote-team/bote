@@ -5,12 +5,12 @@ Wenn der Kampf wiederholt wird gibt es keine grafische Anzeige. Das Ergebnis des
 
 nach §SLOWING§ folgt eine Zahl, um die der Kampf verlangsamt wird.
 
-nach §RACE§ folgt eine Zahl. und zwar:
-1 - Majorrace1
-2 - Majorrace2
-3 - Majorrace3
-4 - Majorrace4
-5 - Majorrace5
-6 - Majorrace6
+nach §RACE§ folgt die Rassen-ID. und zwar:
+MAJOR1 - Terraner
+MAJOR2 - Hanuhr
+MAJOR3 - Khayrin
+MAJOR4 - Rotharianer
+MAJOR5 - Cartarer
+MAJOR6 - Omega-Allianz
 
 nach §SHIPS§ folgen in jeder neuen Zeile die Namen der Schiffsklassen, welche für diese Rasse im Kampf kämpfen sollen.

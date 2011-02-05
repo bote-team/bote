@@ -729,11 +729,10 @@ CString* CResearch::CalculateResearch(ULONG FP)
 
 	// Checken, ob wir alle Stufen auf das nächste Level gebracht haben
 	// wenn ja, dann eine neue UniqueForschung auswählen
-	if (m_iUniqueTech < m_iBioTech && m_iUniqueTech < m_iEnergyTech && m_iUniqueTech < m_iCompTech &&
-		m_iUniqueTech < m_iPropulsionTech && m_iUniqueTech < m_iConstructionTech && m_iUniqueTech < m_iWeaponTech && m_bUniqueReady == TRUE)
+	if (m_bUniqueReady == TRUE && m_iUniqueTech < m_iBioTech && m_iUniqueTech < m_iEnergyTech && m_iUniqueTech < m_iCompTech &&
+		m_iUniqueTech < m_iPropulsionTech && m_iUniqueTech < m_iConstructionTech && m_iUniqueTech < m_iWeaponTech)
 	{	
-		// Schauen mal ob diese Bedingung richtig ist, oder ob es <= heißen muß
-		if (m_iNumberOfUnique < NoUC)
+		if (m_iNumberOfUnique <= NoUC)
 		{
 			m_bUniqueReady = FALSE;
 			m_iUniqueTech++;

@@ -912,6 +912,66 @@ void CSector::CreatePlanets(const CString& sMajorID)
 			m_Planets.Add(planet);
 			m_Planets.GetAt(m_Planets.GetUpperBound()).SetBoni(0,0,1,0,0,0,0,0);
 		}
+		// System für eine nicht weiter definierte Majorrace erstellen
+		else if (sMajorID != "")
+		{
+			// Solange Planeten generieren, bis mind. eine zufällige Anzahl Bevölkerung darauf leben
+			while (true)
+			{
+				m_Planets.RemoveAll();
+
+				short number = (rand()%8+1 + rand()%8+1 + rand()%8+1 + 1) / 3;
+				BYTE zone = HOT;
+				for (int i = 0; i < number; i++)
+				{
+					CPlanet planet;
+					zone = planet.Create(m_strSectorName, zone, i, true);
+					m_Planets.Add(planet);				
+				}
+				
+				// atuelle Bevölkerung prüfen
+				float fCurrentHabitants = this->GetCurrentHabitants();
+				if (fCurrentHabitants > 25.000f || fCurrentHabitants < 10.000f)
+					continue;
+				
+				// maximale Bevölkerung prüfen
+				float fMaxHabitants = 0.0f;
+				for (int i = 0; i < m_Planets.GetSize(); i++)
+					fMaxHabitants += m_Planets.GetAt(i).GetMaxHabitant();
+				if (fMaxHabitants > 65.000f || fMaxHabitants < 45.000f)
+					continue;
+
+				// prüfen ob alle Rohstoffe vorhanden sind
+				bool bResOkay = true;
+				BOOLEAN bRes[DERITIUM + 1] = {FALSE};
+				this->GetAvailableResources(bRes, true);
+				// gibt es kein Deritium
+				for (int i = TITAN; i <= IRIDIUM; i++)
+				{
+					if (!bRes[i])
+					{
+						bResOkay = false;
+						break;
+					}
+				}
+				if (!bResOkay)
+					continue;
+				
+				// Deritium überprüfen
+				if (!bRes[DERITIUM])
+				{
+					for (int p = 0; p < this->GetPlanets()->GetSize(); p++)
+						if (this->GetPlanet(p)->GetCurrentHabitant() > 0 && this->GetPlanet(p)->GetColonized())
+						{
+							this->GetPlanet(p)->SetBoni(DERITIUM, TRUE);
+							break;
+						}
+				}
+
+				// Sektor für Majorrace konnte erstellt werden
+				break;
+			}
+		}
 		else
 		{
 			// dreimal die Zufallsfunktion aufgerufen, damit die mittlere Planetenanzahl häufiger als ganz wenig oder

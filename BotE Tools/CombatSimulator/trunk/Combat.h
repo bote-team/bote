@@ -1,18 +1,29 @@
 /*
- *   Copyright (C)2004-2009 Sir Pustekuchen
+ *   Copyright (C)2004-2011 Sir Pustekuchen
  *
  *   Author   :  Sir Pustekuchen
- *   Home     :  http://birth-of-the-empires.de.vu
+ *   Home     :  http://birth-of-the-empires.de
  *
  */
 #pragma once
 #include "afx.h"
 #include "CombatShip.h"
+#include <map>
+#include <vector>
+#include <set>
+#include <list>
+
+using namespace std;
+
+// forward declaration
+class CRace;
+class CAnomaly;
 
 class CCombat :	public CObject
 {
-	friend class CCombatSimulatorView;
 	friend class CCombatSimulatorDoc;
+	friend class CCombatSimulatorView;
+
 public:
 	/// Konstruktor
 	CCombat(void);
@@ -21,8 +32,6 @@ public:
 	~CCombat(void);
 
 	// Zugriffsfunktionen
-	BOOLEAN GetInvolvedRace(BYTE race) const {ASSERT(race >= HUMAN && race <= DOMINION); return m_bInvolvedRaces[race];}
-
 	BOOLEAN GetReadyForCombat() const {return m_bReady;}
 
 	/// Schiffskampfberechnungsfunktion
@@ -31,7 +40,7 @@ public:
 	* <code>ships<code>. Diese Schiffe werden dann am Kampf teilnehmen. Kommt es zu einem Kampf, so muß 
 	* diese Funktion zu allererst aufgerufen werden.
 	*/
-	void SetInvolvedShips(CArray<CShip*,CShip*>* ships/*, CMajorRace* majors*/);
+	void SetInvolvedShips(CArray<CShip*>* pvShips);
 	
 	/**
 	* Diese Funktion setzt die gewählte Schiffsformation der Rasse <code>race<code> fest.
@@ -55,13 +64,21 @@ public:
 	/** 
 	* Diese Funktion ist das Herzstück der CCombat-Klasse. Sie führt die ganzen Kampfberechnungen durch.
 	*/
-	void CalculateCombat(BYTE winner[7]);
+	void CalculateCombat(std::map<CString, BYTE>& winner);
+
+	/**
+	* Funktion überprüft, ob die Rassen in einem Kampf sich gegeneinander aus diplomatischen Gründen
+	* überhaupt attackieren. Die Funktion gibt <code>TRUE</code> zurück, wenn sie sich angreifen können,
+	* ansonsten gibt sie <code>FALSE</code> zurück.
+	*/
+	static bool CheckDiplomacyStatus(const CRace* raceA, const CRace* raceB);
 
 	/**
 	* Diese Funktion setzt alle Variablen des Combat-Objektes wieder auf ihre Ausgangswerte
 	*/
 	void Reset();
 
+//public:
 private:
 	/// Das dynamische Feld in denen alle am Kampf beteiligten Schiffe mit allen
 	/// dazughörigen Informationen abegelegt sind
@@ -72,18 +89,12 @@ private:
 	CArray<CCombatShip*, CCombatShip*> m_CS;
 
 	/// In diesem Array werdem alle Gegner des jeweiligen Imperiums initialisiert.
-	CArray<CCombatShip*, CCombatShip*> m_Enemies[7];
+	std::map<CString, std::vector<CCombatShip*> > m_mEnemies;
 
 	/// Das dynamische Feld in denen alle am Kampf abgefeuerten und noch vorhandenen Torpedos
 	/// mit allen dazughörigen Informationen abegelegt sind
-	CombatTorpedos m_CT;
-		
-	/// Die von den beteiligten Rassen gewählten Formationen
-	BYTE m_iFormation[7];
+	std::list<CTorpedo*> m_CT;
 	
-	/// Die von den beteiligten Rassen gewählten Taktiken
-	BYTE m_iTactic[7];
-
 	/// Sind alle Vorbereitungen für eine Kampfberechnungen abgeschlossen
 	BOOLEAN m_bReady;
 
@@ -94,30 +105,20 @@ private:
 	BOOLEAN m_bAttackedSomebody;
 
 	/// Speichert die Nummer der beteiligten Rassen.
-	BOOLEAN m_bInvolvedRaces[7];
-
-	/// Speichert des Feld der Hauptrassen im Spiel.
-	//CMajorRace *m_MajorRaces;
+	std::set<CString> m_mInvolvedRaces;
 
 	/**
 	* Diese Funktion versucht dem i-ten Schiff im Feld <code>m_CS<code> ein Ziel zu geben. Wird dem Schiff ein Ziel
 	* zugewiesen gibt die Funktion TRUE zurück, findet sich kein Ziel mehr gibt die Funktion FALSE zurück.
 	*/	
-	BOOLEAN SetTarget(int i);
+	bool SetTarget(int i);		
 
 	/**
-	* Diese private Funktion überprüft, ob das Schiff an der Stelle <code>i<code> im Feld <code>m_CS<code> noch am
-	* Leben ist, also ob es noch eine positive Hülle besitzt. Falls dies nicht der Fall sein sollte, dann
-	* unternimmt diese Funktion alle Arbeiten die anfallen, um dieses Schiff aus dem Feld zu entfernen.
-	* D.h. mögliche Ziele werden verändert, Zeiger neu zugeweisen usw. Wenn das Schiff zerstört ist gibt diese
-	* Funktion FALSE zurück, ansonsten TRUE.
+	* Diese private Funktion überprüft, ob das Schiff an der Stelle <code>i<code> im Feld <code>m_CS<code> weiterhin
+	* am Kampf teilnehmen kann. Ist das Schiff entweder zerstört oder hat sich erfolgreich Zurückgezogen, so kann es
+	* nicht weiter am Kampf teilnehmen. In diesem Fall unternimmt diese Funktion alle Arbeiten die anfallen,
+	* um dieses Schiff aus dem Feld zu entfernen. D.h. mögliche Ziele werden verändert, Zeiger neu zugeweisen usw.
+	* Wenn das Schiff nicht mehr im Kampf ist gibt die Funktion FALSE zurück, ansonsten TRUE.
 	*/
-	BOOLEAN CheckShipLife(int i);
-
-	/**
-	* Funktion überprüft, ob die Rassen in einem Kampf sich gegeneinander aus diplomatischen Gründen
-	* überhaupt attackieren. Die Funktion gibt <code>TRUE</code> zurück, wenn sie sich angreifen können,
-	* ansonsten gibt sie <code>FALSE</code> zurück.
-	*/
-	//BOOLEAN CheckDiplomacyStatus(const CMajorRace* raceA, const CMajorRace* raceB);
+	bool CheckShipStayInCombat(int i);	
 };

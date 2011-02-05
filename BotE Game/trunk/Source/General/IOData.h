@@ -10,7 +10,7 @@
 
 // Folgendes Define auskommentieren, wenn es sich um ein fertiges Release handelt!
 // (ändert die Pfadangaben für den ganzen Content)
-// #define DEVELOPMENT_VERSION
+//#define DEVELOPMENT_VERSION
 
 #define BOTE_INI_FILE		"BotE.ini"
 #define BOTE_LOG_FILE		"BotE.log"
@@ -43,11 +43,11 @@ public:
 
 	/// Funktion liefert den kompletten Pfad zur Ini-Datei.
 	/// @return kompletter Pfad zur Ini-Datei
-	CString GetIniPath(void) const { return m_sAppPath + BOTE_INI_FILE; }
+	CString GetIniPath(void) const { return m_sUserDataPath + BOTE_INI_FILE; }
 
 	/// Funktion liefert den kompletten Pfad zur Log-Datei.
 	/// @return kompletter Pfad zur Log-Datei
-	CString GetLogPath(void) const { return m_sAppPath + BOTE_LOG_FILE; }
+	CString GetLogPath(void) const { return m_sUserDataPath + BOTE_LOG_FILE; }
 
 	/// Funktion liefert den kompletten Pfad zur Autosave-Datei.
 	/// @param nRound aktuelle Runde
@@ -61,4 +61,15 @@ public:
 private:
 	// Attribute
 	CString m_sAppPath;			///< Application Path
+
+	CString m_sUserDataPath;	///< Pfad zum Ordner "Eigene Dateien"
+
+	// private Funktionen	
+	/// Funktion ermittelt den Pfad zur BotE.exe Datei.
+	/// @return Pfad zur BotE.exe Datei
+	CString GetBotEAppPath(void) const;
+
+	/// Funktion ermittelt den Pfad zum Ordner "Eigene Dateien".
+	/// @return Pfad zum Ordner "Eigene Dateien"
+	CString GetUserDataPath(void) const;
 };

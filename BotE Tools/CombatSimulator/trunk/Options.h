@@ -33,7 +33,7 @@
 #define HEAVY_DESTROYER     8
 #define HEAVY_CRUISER       9
 #define BATTLESHIP			10
-#define FLAGSHIP			11
+#define DREADNOUGHT			11
 #define OUTPOST				12
 #define STARBASE            13
 #define ALIEN				14
@@ -72,7 +72,7 @@ enum {NONE, ASSULTSHIP, BLOCKADESHIP, COMMANDSHIP, COMBATTRACTORBEAM, DOGFIGHTER
 #define DURANIUM            2
 #define CRYSTAL             3
 #define IRIDIUM             4
-#define DILITHIUM           5
+#define DERITIUM            5
 
 inline void SetAttributes(BOOLEAN is, int attribute, int &variable)
 {

@@ -1141,7 +1141,7 @@ void CGalaxyMenuView::OnMouseMove(UINT nFlags, CPoint point)
 		{
 			CPoint ptScrollPos = GetScrollPosition();
 			bool bInvertMouse = false;
-			CIniLoader::GetInstance()->ReadValue("Video", "Control", bInvertMouse);
+			CIniLoader::GetInstance()->ReadValue("Control", "INVERTMOUSE", bInvertMouse);
 			if (!bInvertMouse)
 				ptScrollPos += CPoint(pt.x - m_ptOldMousePos.x, pt.y - m_ptOldMousePos.y);
 			else

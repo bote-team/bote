@@ -52,7 +52,7 @@ public:
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Funktionen
-	/// Funktion zum setzen der Rasseneigenschaften
+	/// Funktion zum Erfragen der Rasseneigenschaften
 	/// @param prop Rasseneigenschaft
 	/// @return <code>true</code>, wenn die Rasse die Eigenschaft besitzt, sonst <code>false</code>
 	bool IsRaceProperty(BYTE prop) const;

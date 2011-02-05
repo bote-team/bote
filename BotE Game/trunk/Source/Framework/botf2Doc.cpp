@@ -117,7 +117,7 @@ BOOL CBotf2Doc::OnNewDocument()
 	if (!CDocument::OnNewDocument())
 		return FALSE;
 
-	//AfxMessageBox("Achtung!\n\nDies ist eine interne Entwicklungsversion von BotE Alpha 6.\nDiese Version ist nicht für die Öffentlichkeit bestimmt!\nEine eigenständige Verbreitung dieser Version ist verboten!\n\nAn alle Betatester:\nBitte ausführlich testen und alle entdeckten Fehler und Ungereimtheiten\nim internen Bereich des Forum posten.\n\nVielen Dank und viel Spass beim Testen\nSir Pustekuchen");
+	AfxMessageBox("Achtung!\n\nDies ist eine interne Entwicklungsversion von BotE Alpha 6.\nDiese Version ist nicht für die Öffentlichkeit bestimmt!\nEine eigenständige Verbreitung dieser Version ist verboten!\n\nAn alle Betatester:\nBitte ausführlich testen und alle entdeckten Fehler und Ungereimtheiten\nim internen Bereich des Forum posten.\n\nVielen Dank und viel Spass beim Testen\nSir Pustekuchen");
 
 	// Mal Testweise paar Truppen anlegen
 	m_TroopInfo.RemoveAll();
@@ -164,7 +164,6 @@ BOOL CBotf2Doc::OnNewDocument()
 
 	int nSeed = -1;
 	pIni->ReadValue("Special", "RANDOMSEED", nSeed);
-
 	// festen vorgegeben Seed verwenden
 	if (nSeed >= 0)
 		srand(nSeed);
@@ -743,7 +742,21 @@ void CBotf2Doc::ResetIniSettings(void)
 		pSoundManager->SetSoundMasterVolume(NULL);
 	else
 		pSoundManager->SetSoundMasterVolume(0.5f);
-	MYTRACE(MT::LEVEL_INFO, "Init sound ready...\n");	
+	MYTRACE(MT::LEVEL_INFO, "Init sound ready...\n");
+
+	int nSeed = -1;
+	pIni->ReadValue("Special", "RANDOMSEED", nSeed);
+
+	// festen vorgegeben Seed verwenden
+	if (nSeed >= 0)
+		srand(nSeed);
+	// zufälligen Seed verwenden
+	else
+	{
+		nSeed = (unsigned)time(NULL);
+		srand(nSeed);
+	}
+	MYTRACE(MT::LEVEL_INFO, "Used seed for randomgenerator: %i", nSeed);
 }
 
 /// Funktion gibt die Koordinate des Hauptsystems einer Majorrace zurück.
@@ -860,7 +873,7 @@ void CBotf2Doc::PrepareData()
 				it->second->SetHumanPlayer(false);
 		}
 		
-		// ALPHA5 DEBUG alle Rassen untereinander bekanntgeben
+		// ALPHA6 DEBUG alle Rassen untereinander bekanntgeben
 		/*
 		map<CString, CRace*>* pmRaces = m_pRaceCtrl->GetRaces();
 		for (map<CString, CRace*>::iterator it = pmRaces->begin(); it != pmRaces->end(); it++)
@@ -989,7 +1002,7 @@ void CBotf2Doc::GenerateGalaxy()
 		while (GetRaceKO(it->first) == CPoint(-1,-1) && bRestart == false);
 		
 		// nächsten Major auswählen
-		it++;		
+		++it;		
 
 		// Es konnte kein Sektor nach 250 Durchläufen gefunden werden, welcher der obigen if Bedingung genügt, so
 		// wird die for Schleife nochmal neu gestartet.
@@ -2356,6 +2369,9 @@ void CBotf2Doc::CalcSystemAttack()
 {
 	using namespace network;
 	// Systemangriff durchführen
+	// Set mit allen Minors, welche während eines Systemangriffs vernichtet wurden. Diese werden am Ende der
+	// Berechnung aus der Liste entfernt
+	set<CString> sKilledMinors;
 	CArray<CPoint> fightInSystem;
 	for (int y = 0; y < m_ShipArray.GetSize(); y++)
 		if (m_ShipArray.GetAt(y).GetCurrentOrder() == ATTACK_SYSTEM)
@@ -2834,8 +2850,9 @@ void CBotf2Doc::CalcSystemAttack()
 							for (int j = 0; j < m_ShipArray.GetSize(); j++)
 								if (m_ShipArray.GetAt(j).GetOwnerOfShip() == pMinor->GetRaceID())
 									m_ShipArray.RemoveAt(j--);						
-							// Rasse nun aus dem Feld löschen
-							m_pRaceCtrl->RemoveRace(pMinor->GetRaceID());
+							
+							// Rasse zum löschen vormerken
+							sKilledMinors.insert(pMinor->GetRaceID());
 						}
 						// Bei einer Majorrace verringert sich nur die Anzahl der Systeme (auch konnte dies das
 						// Minorracesystem von oben gewesen sein, hier verliert es aber die betroffene Majorrace)
@@ -2873,27 +2890,30 @@ void CBotf2Doc::CalcSystemAttack()
 
 						// war der Verteidiger eine Majorrace und wurde sie durch den Verlust des Systems komplett ausgelöscht,
 						// so bekommt der Eroberer einen kräftigen Moralschub
-						for (set<CString>::const_iterator it = attackers.begin(); it != attackers.end(); ++it)
+						if (defender != NULL && defender->GetType() == MAJOR && attackSystem->IsDefenderNotAttacker(defender->GetRaceID(), &attackers))
 						{
-							CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(*it));
-							ASSERT(pMajor);
-						
-							// Anzahl der noch verbleibenden Systeme berechnen
-							((CMajor*)defender)->GetEmpire()->GenerateSystemList(m_System, m_Sector);
-							// hat der Verteidiger keine Systeme mehr, so bekommt der neue Besitzer den Bonus
-							if (((CMajor*)defender)->GetEmpire()->GetSystemList()->GetSize() == 0)
+							for (set<CString>::const_iterator it = attackers.begin(); it != attackers.end(); ++it)
 							{
-								CString sParam		= ((CMajor*)defender)->GetRaceName();
-								CString sEventText	= pMajor->GetMoralObserver()->AddEvent(0, pMajor->GetRaceMoralNumber(), sParam);
-								// Eventnachricht hinzufügen
-								if (!sEventText.IsEmpty())
+								CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(*it));
+								ASSERT(pMajor);
+							
+								// Anzahl der noch verbleibenden Systeme berechnen
+								((CMajor*)defender)->GetEmpire()->GenerateSystemList(m_System, m_Sector);
+								// hat der Verteidiger keine Systeme mehr, so bekommt der neue Besitzer den Bonus
+								if (((CMajor*)defender)->GetEmpire()->GetSystemList()->GetSize() == 0)
 								{
-									message.GenerateMessage(sEventText, MILITARY, sParam, p, 0, 1);
-									pMajor->GetEmpire()->AddMessage(message);
-									if (pMajor->IsHumanPlayer())
+									CString sParam		= ((CMajor*)defender)->GetRaceName();
+									CString sEventText	= pMajor->GetMoralObserver()->AddEvent(0, pMajor->GetRaceMoralNumber(), sParam);
+									// Eventnachricht hinzufügen
+									if (!sEventText.IsEmpty())
 									{
-										network::RACE client = m_pRaceCtrl->GetMappedClientID(pMajor->GetRaceID());
-										m_iSelectedView[client] = EMPIRE_VIEW;
+										message.GenerateMessage(sEventText, MILITARY, sParam, p, 0, 1);
+										pMajor->GetEmpire()->AddMessage(message);
+										if (pMajor->IsHumanPlayer())
+										{
+											network::RACE client = m_pRaceCtrl->GetMappedClientID(pMajor->GetRaceID());
+											m_iSelectedView[client] = EMPIRE_VIEW;
+										}
 									}
 								}
 							}
@@ -3006,6 +3026,10 @@ void CBotf2Doc::CalcSystemAttack()
 				fightInSystem.Add(p);
 			}
 		}
+	
+	// alle vernichteten Minorraces nun aus dem Feld löschen
+	for (set<CString>::const_iterator it = sKilledMinors.begin(); it != sKilledMinors.end(); ++it)
+		m_pRaceCtrl->RemoveRace(*it);
 
 	// Schiffsfeld nochmal durchgehen und alle Schiffe ohne Hülle aus dem Feld entfernen.
 	// Aufpassen muß ich dabei, wenn das Schiff eine Flotte anführte.

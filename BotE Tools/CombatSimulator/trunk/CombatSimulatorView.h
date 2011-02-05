@@ -15,8 +15,8 @@ protected: // Nur aus Serialisierung erstellen
 	CRect r;
 	UINT counter;
 	BOOLEAN xy_ebene;
-	COLORREF color[8];
-	BYTE winner[7];
+	std::map<CString, COLORREF> color;
+	std::map<CString, BYTE> winner;
 
 public:
 	CCombatSimulatorDoc* GetDocument() const;

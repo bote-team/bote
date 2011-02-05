@@ -1,14 +1,18 @@
+//////////////////////////////////
+// EXAMPLE OF AN SCRIPT FILE!!! //
+//////////////////////////////////
+
 §REPEAT§
 0
 §SLOWING§
-0
+50
 §RACE§
-1
+MAJOR1
 §SHIPS§
 Matilda
 Matilda
 §RACE§
-5
+MAJOR5
 §SHIPS§
 Fjodor
 Fjodor

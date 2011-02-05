@@ -163,15 +163,13 @@ void CCombatSimulatorView::OnDraw(CDC* dc)
 			}
 			
 			// Torpedos zeichnen
-			for (int q = 0; q < pDoc->combat.m_CT.GetSize(); q++)
+			for (list<CTorpedo*>::const_iterator it = pDoc->combat.m_CT.begin(); it != pDoc->combat.m_CT.end(); ++it)
 			{
 				pDC->SelectObject(&phaser);
 				if (xy_ebene == TRUE)
-					pDC->Rectangle(pDoc->combat.m_CT.GetAt(q)->m_KO.x+r.right/2,pDoc->combat.m_CT.GetAt(q)->m_KO.y+r.bottom/2,
-								pDoc->combat.m_CT.GetAt(q)->m_KO.x+4+r.right/2,pDoc->combat.m_CT.GetAt(q)->m_KO.y+4+r.bottom/2);
+					pDC->Rectangle((*it)->m_KO.x+r.right/2, (*it)->m_KO.y+r.bottom/2,(*it)->m_KO.x+4+r.right/2,(*it)->m_KO.y+4+r.bottom/2);
 				else
-					pDC->Rectangle(pDoc->combat.m_CT.GetAt(q)->m_KO.x+r.right/2,pDoc->combat.m_CT.GetAt(q)->m_KO.z+r.bottom/2,
-								pDoc->combat.m_CT.GetAt(q)->m_KO.x+4+r.right/2,pDoc->combat.m_CT.GetAt(q)->m_KO.z+4+r.bottom/2);
+					pDC->Rectangle((*it)->m_KO.x+r.right/2,(*it)->m_KO.z+r.bottom/2,(*it)->m_KO.x+4+r.right/2,(*it)->m_KO.z+4+r.bottom/2);
 				phaser.DeleteObject();
 			}
 			
@@ -187,60 +185,28 @@ void CCombatSimulatorView::OnDraw(CDC* dc)
 		if (!pDoc->combat.m_bReady)
 		{
 			bExit = true;
-			CString s;
-			// Nach einem Kampf kann geschaut werden, wer noch Schiffe besitzt. Diese Rassen haben den Kampf danach gewonnen
-			// Erstmal wird für alle beteiligten Rassen der Kampf auf verloren gesetzt. Danach wird geschaut, wer noch
-			// Schiffe besitzt. Für diese Rassen wird der Kampf dann auf gewonnen gesetzt. Alle anderen Rassen gelten als
-			// nicht kampfbeteiligt.
-			for (int i = HUMAN; i <= DOMINION; i++)
-				if (pDoc->combat.m_bInvolvedRaces[i])
-					winner[i] = FALSE;
-			for (int i = 0; i < pDoc->combat.m_CS.GetSize(); i++)
-				if (pDoc->combat.m_CS.GetAt(i)->m_pShip->GetOwnerOfShip() >= HUMAN && pDoc->combat.m_CS.GetAt(i)->m_pShip->GetOwnerOfShip() <= DOMINION)
-					winner[pDoc->combat.m_CS.GetAt(i)->m_pShip->GetOwnerOfShip()] = TRUE;
-			if (!pDoc->combat.m_bReady)
-			{
-				if (pDoc->combat.m_CS.GetSize())
-				{
-					pDC->FillRect(r,&CBrush(RGB(0,0,0)));
-					for (int i = 1; i <= DOMINION; i++)
-					{
-						if (winner[HUMAN] == 1)		s.Format("Race1 wins this combat");
-						if (winner[FERENGI] == 1)	s.Format("Race2 wins this combat");
-						if (winner[KLINGON] == 1)	s.Format("Race3 wins this combat");
-						if (winner[ROMULAN] == 1)	s.Format("Race4 wins this combat");
-						if (winner[CARDASSIAN] == 1)s.Format("Race5 wins this combat");
-						if (winner[DOMINION] == 1)	s.Format("Race6 wins this combat");
-					}
-				}
-				else
-					s.Format("all ships destroyed -> nobody wins");
-			}		
-			AfxMessageBox(s);
+			for (map<CString, BYTE>::const_iterator it = winner.begin(); it != winner.end(); ++it)
+				if (it->second == 1)
+					AfxMessageBox("Race " + it->first + " wins the combat");
 
 			// Das Log-File über die vernichteten Schiffe anlegen
 			CString fileName="Combat.log";														// Name des zu Öffnenden Files 
 			CStdioFile file;																	// Varibale vom Typ CStdioFile
-			BOOLEAN race[7] = {FALSE};
 			if (file.Open(fileName, CFile::modeCreate | CFile::modeWrite | CFile::typeText))	// Datei wird geöffnet
 			{
 				file.WriteString("Birth of the Empires - Combat Log file\n\n");
-				for (int i = 1; i < 7; i++)
+				for (set<CString>::const_iterator it = pDoc->combat.m_mInvolvedRaces.begin(); it != pDoc->combat.m_mInvolvedRaces.end(); ++it)
+				{
+					CString s;
+					s.Format("----------------------------------------\nlost ships of race: %s\n", *it);
+					file.WriteString(s);
 					for (int j = 0; j < pDoc->m_ShipArray.GetSize(); j++)
-						if (pDoc->m_ShipArray.GetAt(j).GetOwnerOfShip() == i)
-						{
-							if (race[i] == FALSE)
-							{
-								CString s;
-								s.Format("----------------------------------------\nlost ships of race: %d\n",i);
-								file.WriteString(s);
-								race[i] = TRUE;
-							}
+						if (pDoc->m_ShipArray.GetAt(j).GetOwnerOfShip() == *it)
 							if (pDoc->m_ShipArray.GetAt(j).GetHull()->GetCurrentHull() == 0)
-								file.WriteString(pDoc->m_ShipArray.GetAt(j).GetShipClass()+"\n");						
-						}
+								file.WriteString(pDoc->m_ShipArray.GetAt(j).GetShipClass()+"\n");
+				}
 			}
-			file.Close();							// Datei wird geschlossen
+			file.Close();
 			return;
 		}
 		else
@@ -259,15 +225,15 @@ void CCombatSimulatorView::OnDraw(CDC* dc)
 			file.WriteString("Birth of the Empires - Stats Log file\n\n");
 			s.Format("overall combats: %d\n",pDoc->repeat);
 			file.WriteString(s);
-			for (int i = 1; i < 7; i++)
+			for (map<CString, int>::const_iterator it = pDoc->wins.begin(); it != pDoc->wins.end(); ++it)
 			{
-				s.Format("----------------------------------------\nrace: %d wins %d combats\n",i, pDoc->wins[i]);
+				s.Format("----------------------------------------\nrace: %s wins %d combats", it->first, it->second);
 				file.WriteString(s);
-				s.Format("-> %d%%\n",short(pDoc->wins[i] * 100 / pDoc->repeat));
+				s.Format(" -> %d%%\n", it->second * 100 / pDoc->repeat);
 				file.WriteString(s);				
 			}
 		}
-		file.Close();							// Datei wird geschlossen
+		file.Close();
 		AfxMessageBox("Generating statsfile... ready\n\nClose this application or run a new one");
 	}
 
@@ -305,15 +271,13 @@ void CCombatSimulatorView::OnInitialUpdate()
 	counter = 0;
 	xy_ebene = TRUE;
 
-	color[NOBODY]   = RGB(123,123,123);
-	color[HUMAN]	= RGB(0,0,255);
-	color[FERENGI]	= RGB(248,211,5);
-	color[KLINGON]	= RGB(255,0,0);
-	color[ROMULAN]	= RGB(0,140,0);
-	color[CARDASSIAN] = RGB(125,0,125);
-	color[DOMINION]	= RGB(73,240,240);
-
-	memset(winner, 2, sizeof(BYTE) * 7);	
+	color[""]		= RGB(123,123,123);
+	color["MAJOR1"]	= RGB(0,0,255);
+	color["MAJOR2"]	= RGB(248,211,5);
+	color["MAJOR3"]	= RGB(255,0,0);
+	color["MAJOR4"]	= RGB(0,140,0);
+	color["MAJOR5"] = RGB(125,0,125);
+	color["MAJOR6"]	= RGB(73,240,240);
 }
 
 BOOL CCombatSimulatorView::OnEraseBkgnd(CDC* pDC)
