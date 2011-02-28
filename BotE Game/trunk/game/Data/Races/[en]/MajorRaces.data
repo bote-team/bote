@@ -1,0 +1,175 @@
+0.8
+MAJOR1
+Terra
+Humans
+the
+Coalition of Planets
+the
+the
+con_
+Humans live in a society based on the values of liberty and fairness. Their key strength lies with their efficient and adaptive approach to research, which grants them swift access to new technologies. They also possess a highly proficient industrial infrastructure and deep knowledge in raw material extraction, production and supply of energy and vital goods. Their high-end products, however, come at the expense of equally high resource costs. Because of their moral convictions espionage is treated like an orphan most of the times, but they compensate for this deficiency with a strong military. Their ships and commanding officers can fight well individually, as well as in groups.
+1
+1
+1
+6
+0
+10
+Race1.bop
+70,70,235
+34,34,60
+34,34,60
+210,220,255
+210,220,255
+255,190,0
+0,200,255
+0,150,200
+0,150,200
+0,150,200
+14,24,25,34,50,54
+6,12,13,17,28,29
+League Gothic
+MAJOR2
+Han
+Heyoun
+the
+Heyoun Trade Union
+the
+the
+han_
+The Heyoun society is based on the principle of profit and plutocracy. In order to achieve this goal, the Heyoun developed a formidable economic strength. Their strength is not to be found in their industrial capacity or in their resource management, but rather in their trade acumen as well as the ability to produce almost anything worth trading at lowest costs and highest profit. Food production and power generation is a key strength, and absolutely needed on their power-hungry society. Their ships are fast and cheap, but all these gains come with a lack in armaments and defences. Their interest in economic movements throughout the galaxy accounts for a slight advantage in espionage, yet not in sabotage. In the latter case they rather resort to trade embargoes representing their own subtle form of economic warfare.
+2
+2
+2
+1
+0
+5
+Race2.bop
+155,155,0
+0,0,0
+0,50,0
+200,150,0
+195,195,0
+195,195,0
+220,220,0
+220,220,220
+195,195,0
+155,155,0
+13,13,13,19,27,27
+7,10,10,15,22,27
+Liberation Serif
+MAJOR3
+Khayrin
+Khaorons
+the
+Khaoron Empire
+the
+the
+kha_
+The Khaorons are among the most feared warriors of the galaxy. Their quest for glory and honour in battle awards them an almost legendary status as masters of war and combat. From battlefields on the grounds to those in deep space, their weapons strike hard. A number of Khaoron battleships have so-called cloaking devices granting them tactical advantages at predatory attacks. Their vigorous industrial forges process a countless hoard of raw materials, keeping their resource-hungry war machine running. Hunters guarantee the population's food supply. However, all things not directly serving the purpose of battle and conquest are of minor importance and often neglected. The Khaorons consider espionage a cowardly and dishonorable pursuit, but they are nonetheless willing to defend themselves against foreign attempts.
+3
+3
+3
+2
+0
+0
+Race3.bop
+165,0,0
+0,0,0
+0,0,0
+200,150,0
+255,60,60
+30,110,15
+225,20,25
+220,220,220
+250,80,30
+165,0,0
+10,13,15,20,31,34
+5,10,10,14,21,25
+KlingonDagger
+MAJOR4
+Rotharius
+Rotharians
+the
+Rotharian Star Network
+the
+the
+rot_
+To foreigners the Rotharians are a difficult and enigmatic race. All Rotharian affairs are veiled by a shadow of stealth and secrecy as is their fleet of powerful cloaked warships. The Rotharian mind is sharp and an effective tool guided by the highest and purest form of pragmatic effectiveness. Their exceptional type of engine technology embodies this imposingly. Their well-organised social strata are held together by a deep resounding pride for their achievements and common objectives. Their industry and mining programs are competitive, without excelling. Energy supply and common goods are sufficient but rigorously regulated to save resources, as is maintenance of their large fighter fleets.
+4
+4
+4
+5
+0
+-10
+Race4.bop
+0,125,0
+80,180,230
+4,35,15
+200,150,0
+140,196,203
+50,185,0
+50,170,0
+220,220,220
+140,196,203
+0,125,0
+12,20,19,28,40,50
+6,10,10,15,22,28
+Mandala
+MAJOR5
+Cartar
+Cartare
+the
+Cartare Invaders
+the
+the
+car_
+The Cartare will resort to any measure to ensure the loyalty of their subjects. Their ruthless state body maintains a strict doctrine and numerous control measures to promote an unconditional belief in their sovereignty. Their goal of justice, order, and galactic domination feeds an almost rampant work ethic to achieve attainable targets, and this results in an exceptional industrial infrastructure. However, government policies are none too discerning over who would do their bidding, nor how. Many peoples that have encountered the Cartare soon find themselves fighting for survival in state mines and prisons, feeding the economy and a hungry war machine. With so many workforces locked in factory work for generations, researching ever-superior technologies is a slow process unfortunately. In Intelligence however they are almost unsurpassed: The fearful Cartare Order is as feared and dangerous as the military. Cartare ships are designed for close-formation-style attacks and often perform poorly when being alone.
+5
+5
+5
+9
+0
+-5
+Race5.bop
+130,0,130
+200,200,200
+0,0,0
+200,150,0
+180,180,180
+74,146,138
+180,180,180
+255,128,0
+74,146,138
+130,0,130
+11,17,17,23,31,45
+4,10,10,14,18,20
+Final Frontier
+MAJOR6
+Omega Alpha
+Omega-Alliance
+the
+Omega-Alliance
+the
+the
+ome_
+The Omega-Alliance is a ruthless and tyrannical organisation coming from the Omega sub-quadrant. Their members are ruled by a quasi-deified race of symbiotes known as the Vi. The Vi believe in their self-appointed rank as galactic emperors destined to bring order and harmony to a chaotic universe. Following this track, the Vi genetically engineered races to perform particular roles within their sphere of power. One successful example are the mighty Rok'Hanar, perfect soldiers controlled and fuelled by psychotropic drugs provided only by the Da'una, the "face and voice" of the Vi, that act as their diplomats and grant the Rok'Hanar access to Tetroin-4c supplies in exchange for their loyalty. The Alliance as a body are experts in subterfuges and the subtle exploitation of less powerful races. Their influential power has allowed the Omegans to achieve astonishing result in many fields, including construction, mining, and energy production. So-called "host-adaptive" capacities of the Vi are also very useful in gathering intelligence and performing acts of sabotage, while the formidable Rok'Hanar ships carry their will to the far reaches of the galaxy.
+6
+6
+6
+0
+0
+0
+Race6.bop
+80,195,245
+0,0,0
+0,0,0
+200,150,0
+200,255,255
+74,146,138
+200,225,225
+220,220,220
+140,196,203
+80,195,245
+11,17,17,23,31,45
+4,11,11,15,22,28
+Marker Felt

@@ -1,0 +1,2257 @@
+// StringTable for Alpha4+ Version
+////////////////////////// BUTTONS BEGIN///////////////////////////////
+// left_View Buttons
+[BTN_ROUNDEND]
+End Turn
+[BTN_GALAXY]
+Galaxy
+[BTN_SYSTEM]
+System
+[BTN_RESEARCH]
+Research
+[BTN_SECURITY]
+Intel
+[BTN_DIPLOMACY]
+Diplomacy
+[BTN_TRADE]
+Trade
+[BTN_EMPIRE]
+Empire
+
+// MainViewButtons
+[BTN_BUILDMENUE]
+Build list
+[BTN_WORKERSMENUE]
+Production
+[BTN_ENERGYMENUE]
+Energy
+[BTN_BUILDING_OVERVIEWMENUE]
+Structures
+[BTN_TRADEMENUE]
+Trade
+[BTN_BAUHOF]
+Structures
+[BTN_DOCKYARD]
+Shipyard
+[BTN_BARRACK]
+Barracks
+[BTN_INFORMATION]
+Benefit
+[BTN_DESCRIPTION]
+Description
+[BTN_RESOURCES]
+Resources
+[BTN_NORMAL]
+Normal
+
+// research view buttons
+[BTN_SPECIAL]
+Special
+[BTN_DATABASE]
+Database
+[BTN_SHIPDESIGN]
+Ship design
+
+// diplomacy buttons
+[BTN_TRADECONTRACT]
+Trade
+[BTN_FRIENDSHIP]
+Friendship
+[BTN_COOPERATION]
+Co-operation
+[BTN_AFFILIATION]
+Affiliation
+[BTN_MEMBERSHIP]
+Membership
+[BTN_NAP]
+Non-aggression
+[BTN_DEFENCE]
+Defence Pact
+[BTN_WAR]
+Declare War
+[BTN_WARPACT]
+War Pact
+[BTN_PRESENT]
+Gift
+[BTN_REQUEST]
+Demand
+[BTN_CORRUPTION]
+Bribe
+
+// trade buttons
+[BTN_STOCK_EXCHANGE]
+Exchange
+[BTN_MONOPOLY]
+Monopoly
+[BTN_TRANSFERS]
+Transfers
+
+// buttons in empire view
+[BTN_ALL]
+All
+[BTN_ECONOMY]
+Economy
+[BTN_MILITARY]
+Military
+[BTN_EVENTS]
+Events
+[BTN_SYSTEMS]
+Systems
+[BTN_SHIPS]
+Ships
+[BTN_CURRENTS]
+Current
+[BTN_LOST]
+Lost
+
+// ship order buttons
+[BTN_TACTIC]
+Tactics
+[BTN_ORDER]
+Orders
+[BTN_ACTION]
+Actions
+[BTN_AVOID]
+Avoid
+[BTN_ATTACK]
+Attack
+[BTN_CLOAK]
+Cloak
+[BTN_ATTACK_SYSTEM]
+Attack sys.
+[BTN_RAID_SYSTEM]
+Raid
+[BTN_BLOCKADE_SYSTEM]
+Blockade
+[BTN_DESTROY_SHIP]
+Scrap
+[BTN_COLONIZE]
+Colonize
+[BTN_TERRAFORM]
+Terraform
+[BTN_BUILD_OUTPOST]
+Outpost
+[BTN_BUILD_STARBASE]
+Starbase
+[BTN_ASSIGN_FLAGSHIP]
+Flagship
+[BTN_CREATE_FLEET]
+Fleet view
+[BTN_TRANSPORT]
+Transport
+[BTN_FOLLOW_SHIP]
+Follow
+[BTN_TRAIN_SHIP]
+Train ship
+
+// decision making buttons
+[BTN_NEXT]
+next
+[BTN_BACK]
+back
+[BTN_OKAY]
+okay
+[BTN_CANCEL]
+cancel
+[BTN_BUY]
+buy
+[BTN_SELL]
+sell
+[BTN_SELECT]
+select
+[BTN_SEND]
+send
+[BTN_ACCEPT]
+accept
+[BTN_DECLINE]
+decline
+[BTN_ANNUL]
+cancel
+////////////////////////// BUTTONS END ////////////////////////////////
+
+////////////////////////// STRINGS BEGIN //////////////////////////////
+// Articles and single words
+[FEMALE_ARTICLE]
+the
+[MASC_ARTICLE]
+the
+[OBJ_ARTICLE]
+the
+[AND]
+and
+[TO]
+to
+[NONE]
+none
+[NOT]
+not
+[NOBODY]
+no one
+[UNKNOWN]
+unknown
+[NAME]
+Name
+[CLASS]
+Class
+[POINTS_SHORT]
+Pkt.
+[ROUND]
+Turn
+[ROUNDS]
+Turns
+[SECTOR]
+Sector
+[SYSTEM]
+System
+[TYPE]
+Type
+[JOB]
+Order
+[PRODUCTION]
+Production
+[STORAGE]
+Storage
+[UNITS]
+Units
+[UNITS_FOR]
+Units for
+[GROWTH]
+Growth
+[EXISTING_RES]
+Resources available
+[RUNS]
+runs
+[DESTROYED]
+destroyed
+[DISASSEMBLY]
+Disassembly
+[COMBAT]
+Combat
+[COMMODITIES]
+Trade goods
+[MAX_HABITANTS]
+max pop.
+[CURRENT_HABITANTS]
+current pop.
+
+// resources- and production names
+[FOOD]
+Food
+[INDUSTRY]
+Industry
+[ENERGY]
+Energy
+[SECURITY]
+Intel
+[RESEARCH]
+Research
+[TITAN]
+Titanium
+[DEUTERIUM]
+Deuterium
+[DURANIUM]
+Duranium
+[CRYSTAL]
+Crystals
+[IRIDIUM]
+Iridium
+[DERITIUM]
+Deritium
+[CREDITS]
+Credits
+[MORAL]
+Morale
+[MORAL_EMPIREWIDE]
+Empire-wide morale
+
+// major race names
+[RACE1]
+Coalition
+[RACE2]
+Heyoun
+[RACE3]
+Khaorons
+[RACE4]
+Rotharians
+[RACE5]
+Cartare
+[RACE6]
+Omega-Alliance
+
+// major race names w/ articles
+[ARTICLE_RACE1]
+the Coalition
+[ARTICLE_RACE2]
+the Heyoun
+[ARTICLE_RACE3]
+the Khaorons
+[ARTICLE_RACE4]
+the Rotharians
+[ARTICLE_RACE5]
+the Cartare
+[ARTICLE_RACE6]
+the Omega-Alliance
+
+// empire names
+[RACE1_EMPIRE]
+Coalition of Planets
+[RACE2_EMPIRE]
+Heyoun Trade Union
+[RACE3_EMPIRE]
+Khaoron Empire
+[RACE4_EMPIRE]
+Rotharian Star Network
+[RACE5_EMPIRE]
+Cartare Union
+[RACE6_EMPIRE]
+Omega-Alliance
+
+// empire names w/ articles
+[ARTICLE_RACE1_EMPIRE]
+the Coalition of Planets
+[ARTICLE_RACE2_EMPIRE]
+the Heyoun Trade Union
+[ARTICLE_RACE3_EMPIRE]
+the Khaoron Empire
+[ARTICLE_RACE4_EMPIRE]
+the Rotharian Star Network
+[ARTICLE_RACE5_EMPIRE]
+the Cartare Union
+[ARTICLE_RACE6_EMPIRE]
+the Omega-Alliance
+
+// empire names w/ articles (language-dependent if used at all)
+[TO_RACE1_EMPIRE]
+the Coalition of Planets
+[TO_RACE2_EMPIRE]
+the Heyoun Trade Union
+[TO_RACE3_EMPIRE]
+the Khaoron Empire
+[TO_RACE4_EMPIRE]
+the Rotharian Star Network
+[TO_RACE5_EMPIRE]
+the Cartare Union
+[TO_RACE6_EMPIRE]
+the Omega-Alliance
+
+[RACE1_PREFIX]
+con_
+[RACE2_PREFIX]
+han_
+[RACE3_PREFIX]
+kha_
+[RACE4_PREFIX]
+rot_
+[RACE5_PREFIX]
+car_
+[RACE6_PREFIX]
+ome_
+
+// news reports
+[STATION_BUILDING]
+ construction of § is §% completed
+[NO_DIPLOMATIC_NEWS]
+No diplomatic news
+[BUILDING_TURN_OFF]
+Buildings in the § system were shut down due to power shortage
+[REBELLION_IN_SYSTEM]
+The § system has broken away from your empire
+[MINOR_CANCELS_MEMBERSHIP]
+The § have terminated their membership with us
+[FAMINE]
+Famine in the § system
+[ENOUGH_HABITANTS_FOR_NEW_TRADEROUTE]
+The § system has enough population for a new trade route
+[LOST_ONE_TRADEROUTE]
+We have lost a trade route in the § system
+[LOST_TRADEROUTES]
+We have lost § trade routes in the § system
+[NOT_ENOUGH_WORKER]
+Worker shortage in the § system
+[NOT_ENOUGH_ENERGY]
+Energy shortage in the § system
+[SHIP_BUILDING_FINISHED]
+A § has left the shipyard in the § system
+[EMPTY_BUILDLIST]
+The construction list in the § system is empty
+[WE_GET_MONOPOLY]
+We have monopolized the § market
+[WE_DONT_GET_MONOPOLY]
+We didn't get hold of the § monopoly
+[SOMEBODY_GET_MONOPOLY]
+The § have monopolized the § market
+[FOUND_COLONY_MESSAGE]
+We have established a new colony in the § system
+[NEW_PLANET_COLONIZED]
+We have colonized new planets in the § system
+[COLONIZATION]
+Colonization
+[TERRAFORMING_FINISHED]
+Terraforming in the § system completed
+[OUTPOST_FINISHED]
+A new outpost has been constructed
+[STARBASE_FINISHED]
+A new starbase has been constructed
+[OUTPOST_CONSTRUCTION]
+Outpost construction
+[STARBASE_CONSTRUCTION]
+Starbase construction
+[ASSIGN_FLAGSHIP_MESSAGE]
+The § (§) has been assigned as flagship
+[GET_CONTACT_TO_MINOR]
+We have established contact with the §
+[GET_CONTACT_TO_MAJOR]
+We found the § in sector §
+
+// build menu
+[UPGRADING]
+Upgrading to §
+[UPGRADE_FROM_TO]
+Upgrading from § to §
+[BUILD_COSTS]
+Industry and resource costs
+[BUY_UPGRADE]
+Buy upgrade from § to §?
+[BUY_BUILDING]
+Buy §?
+[BUY_SHIP]
+Buy this § (§ class)?
+[CREDITS_COSTS]
+Costs: § credits
+[CANCEL_PROJECT]
+Delete current build? All invested raw materials will be lost!
+[BUILDING_FINISH]
+§ is completed in the § system
+[UPGRADE_FINISH]
+Upgrade to § is completed in the § system
+[RELATIVE_PROFIT]
+relative profit
+[NUMBER_OF_UPGRADEABLE_BUILDINGS]
+Number of upgradeable buildings
+
+// worker assignment menu
+[WORKERS_MENUE]
+Labor unit management in
+[YIELD]
+Yield
+[FREE_WORKERS]
+free labor units
+
+// structure overview menu
+[BUILDING_OVERVIEW_MENUE]
+Structures in
+[TALON]
+Scrapped
+
+// energy menu
+[ENERGY_MENUE]
+Energy management in
+[USABLE_ENERGY]
+usable energy
+
+
+// production bonuses and other ones
+[TITAN_BONUS]
+Titanium bonus
+[DEUTERIUM_BONUS]
+Deuterium bonus
+[DURANIUM_BONUS]
+Duranium bonus
+[CRYSTAL_BONUS]
+Crystals bonus
+[IRIDIUM_BONUS]
+Iridium bonus
+[DERITIUM_BONUS]
+Deritium bonus
+[CREDITS_BONUS]
+Credits bonus
+[FOOD_BONUS]
+Food bonus
+[INDUSTRY_BONUS]
+Industry bonus
+[ENERGY_BONUS]
+Energy bonus
+[SECURITY_BONUS]
+Security bonus
+[RESEARCH_BONUS]
+Research bonus
+[MORAL_BONUS]
+Morale bonus
+[BONUS_TO_ALL_RES]
+Resource bonus
+[TECHNIC_BONUS]
+Technic bonus
+[BIOTECH_BONUS]
+Biotech bonus
+[ENERGYTECH_BONUS]
+Energy tech bonus
+[COMPUTERTECH_BONUS]
+Computer tech bonus
+[PROPULSIONTECH_BONUS]
+Propulsion tech bonus
+[CONSTRUCTIONTECH_BONUS]
+Construction tech bonus
+[WEAPONTECH_BONUS]
+Weapontech bonus
+[COMPLETE_SECURITY_BONUS]
+General Intel bonus
+[SPY_BONUS]
+Spy bonus
+[SABOTAGE_BONUS]
+Sabotage bonus
+[INNER_SECURITY_BONUS]
+Internal security Bonus
+[ECONOMY_SPY_BONUS]
+Economic espionage bonus
+[ECONOMY_SABOTAGE_BONUS]
+Ecomomic sabotage bonus
+[RESEARCH_SPY_BONUS]
+Research espionage bonus
+[RESEARCH_SABOTAGE_BONUS]
+Research sabotage bonus
+[MILITARY_SPY_BONUS]
+Military espionage bonus
+[MILITARY_SABOTAGE_BONUS]
+Military sabotage bonus
+[SHIPYARD]
+Shipyard
+[MAX_SHIPSIZE]
+max. ship size
+[SHIPYARD_EFFICIENCY]
+Shipyard efficiency
+[BARRACK]
+Barracks
+[BARRACK_EFFICIENCY]
+Barracks efficiency
+[SHIELDPOWER]
+Shield strenght
+[SHIELDPOWER_BONUS]
+Shield strenght bonus
+[SHIPDEFEND]
+Ship defence
+[SHIPDEFEND_BONUS]
+Ship defence bonus
+[GROUNDDEFEND]
+Ground defence
+[GROUNDDEFEND_BONUS]
+Ground defence bonus
+[SCANPOWER]
+Scan strength
+[SCANPOWER_BONUS]
+Scan strength bonus
+[SCANRANGE]
+Scanner range
+[SCANRANGE_BONUS]
+Scanner range bonus
+[SHIPTRAINING]
+Ship training
+[TROOPTRAINING]
+Troop training
+[RESISTANCE]
+Bribery resistance
+[ADDED_TRADEROUTES]
+added traderoutes
+[INCOME_ON_TRADEROUTES]
+income on traderoutes
+[SHIPRECYCLING]
+Ship recycling
+[BUILDING_BUILDSPEED]
+construction speed
+[UPGRADE_BUILDSPEED]
+Upgrade construction speed
+[SHIP_BUILDSPEED]
+Ship construction speed
+[TROOP_BUILDSPEED]
+Troop construction speed
+
+// prerequisites when upgrading or constructing new buildings
+[PREREQUISITES]
+Prerequisites
+[ONCE_PER_EMPIRE]
+once per empire
+[MAX_PER_EMPIRE]
+max § per empire
+[MAX_ID_PER_EMPIRE]
+max § § per empire
+[ONCE_PER_SYSTEM]
+once per system
+[MAX_PER_SYSTEM]
+max § per system
+[MAX_ID_PER_SYSTEM]
+max § § in system
+[MIN_PER_EMPIRE]
+§ § per empire
+[MIN_PER_SYSTEM]
+§ § per system
+[ONLY_HOMEPLANET]
+homeworld only
+[ONLY_OWN_COLONY]
+our colony only
+[ONLY_TAKEN_SYSTEM]
+conquered system only
+[NEED_MIN_HABITANTS]
+min. § inhabitants
+[NEED_WORKER]
+labor unit needed
+
+// successful research news
+[BIO_FINISHED]
+Our researchers made a breakthrough in Bio-tech
+[ENERGY_FINISHED]
+Our researchers made a breakthrough in Energy-tech
+[COMPUTER_FINISHED]
+Our researchers made a breakthrough in Computer-tech
+[PROPULSION_FINISHED]
+Our researchers made a breakthrough in Propulsion-tech
+[CONSTRUCTION_FINISHED]
+Our researchers made a breakthrough in Construction-tech
+[WEAPON_FINISHED]
+Our researchers made a breakthrough in Weapon-tech
+[SPECIAL_FINISHED]
+We successfully finished a special research assignment
+[SPECIAL_READY]
+New special research assignments available
+
+// displayed in research menu
+[RESEARCH_MENUE]
+Research Overview
+[SPECIAL_RESEARCH]
+Special Research
+[NO_SPECIAL_RESEARCH_AVAILABLE]
+No special research assignment available
+[BIOTECH]
+Bio-tech
+[ENERGYTECH]
+Energy-tech
+[COMPUTERTECH]
+Computer-tech
+[PROPULSIONTECH]
+Propulsion-tech
+[CONSTRUCTIONTECH]
+Construction-tech
+[WEAPONTECH]
+Weapon-tech
+[RESEARCH_BONI]
+Research Bonus
+[BIOTECH_SHORT]
+Biology
+[ENERGYTECH_SHORT]
+Energy
+[COMPUTERTECH_SHORT]
+Computer
+[PROPULSIONTECH_SHORT]
+Propulsion
+[CONSTRUCTIONTECH_SHORT]
+Construction
+[WEAPONTECH_SHORT]
+Weapon
+[LEVEL]
+Level
+[PROGRESS]
+Progress
+[ASSIGNMENT]
+Assignment
+[RESEARCHPOINTS]
+Research Points
+[FP]
+RP
+[TOTAL]
+total
+[LOCKED]
+locked
+[UNLOCKED]
+unlocked
+
+// diplomacy menu
+[DIPLOMACY_MENUE_INFO]
+Diplomatic Menu - Race Information
+[DIPLOMACY_MENUE_OFFERS]
+Diplomatic Menu - Our offers
+[DIPLOMACY_MENUE_RECEIPTS]
+Diplomatic Menu - Offers received
+[INFORMATION]
+Information
+[OFFER]
+Offers
+[RECEIPT]
+Received
+[HOMESYSTEM]
+Home system
+[RELATIONSHIP]
+Relationship
+[ACCEPTANCE]
+Acceptance
+[KNOWN_EMPIRES]
+known empires
+[NO_SPECS]
+no record
+[RESOURCE_FROM]
+Resource from
+[CHOOSE_OFFER]
+Select an offer to make
+[PAYMENT]
+Payment
+[TRANSFER]
+Transfer
+[RESOURCE]
+Resource
+[FROM_SYSTEM]
+from System
+[ENEMY]
+Opponent
+[CONTRACT_DURATION]
+Contract duration
+[UNLIMITED]
+unlimited
+[WARPACT_ENEMY]
+War opponent
+
+// relationship adjectives
+[HATEFUL]
+hateful
+[FURIOUS]
+furious
+[HOSTILE]
+hostile
+[ANGRY]
+angry
+[NOT_COOPERATIVE]
+not co-operative
+[NEUTRAL]
+neutral
+[COOPERATIVE]
+co-operative
+[FRIENDLY]
+friendly
+[OPTIMISTIC]
+optimistic
+[ENTHUSED]
+enthousiastic
+[DEVOTED]
+devoted
+[REBELLIOUS]
+rebellious
+[APATHETIC]
+apathetic
+[SATISFIED]
+satisfied
+[PLEASED]
+pleased
+[LOYAL]
+loyal
+[FANATIC]
+fanatic
+
+// number of resources in planetary system
+[SCARCELY_EXISTING]
+scarcely available there
+[VERY_LESS_EXISTING]
+very few deposits in system
+[LESS_EXISTING]
+low deposits in system
+[MODERATE_EXISTING]
+average deposits in system
+[MUCH_EXISTING]
+rich deposits in system
+[VERY_MUCH_EXISTING]
+very rich deposits in system
+[ABOUNDING_EXISTING]
+abundantly available there
+
+// treaty names
+[TRADE_AGREEMENT]
+Trade Agreement
+[TRADE_AGREEMENT_SHORT]
+Trade
+[FRIENDSHIP]
+Friendship Treaty
+[FRIENDSHIP_SHORT]
+Friendship
+[COOPERATION]
+Co-operation
+[AFFILIATION]
+Affiliation
+[MEMBERSHIP]
+Membership
+[NON_AGGRESSION]
+Non Aggression Pact
+[NON_AGGRESSION_SHORT]
+Non Aggression
+[DEFENCE_PACT]
+Defence Pact
+[WAR]
+War
+[WAR_PACT]
+War Pact
+[REQUEST]
+Demand
+[PRESENT]
+Gift
+[CORRUPTION]
+Bribe
+[SUGGESTION]
+Suggestion
+[ANSWER]
+Answer
+[SUBJUGATED]
+Subjugated
+
+// treaty offers
+[TRADE_AGREEMENT_OFFER]
+Trade offer
+[FRIENDSHIP_OFFER]
+Friendship offer
+[COOPERATION_OFFER]
+Co-operation offer
+[AFFILIATION_OFFER]
+Affiliation offer
+[MEMBERSHIP_OFFER]
+Membership offer
+[NON_AGGRESSION_OFFER]
+Non Aggression offer
+[DEFENCE_PACT_OFFER]
+Defence Pact offer
+[WAR_OFFER]
+Declare War
+[WAR_PACT_OFFER]
+War Pact offer
+
+// treaty names w/ articles
+[TRADE_AGREEMENT_WITH_ARTICLE]
+a trade agreement
+[FRIENDSHIP_WITH_ARTICLE]
+a friendship agreement
+[COOPERATION_WITH_ARTICLE]
+a co-operation
+[AFFILIATION_WITH_ARTICLE]
+an affiliation
+[MEMBERSHIP_WITH_ARTICLE]
+a membership
+[NON_AGGRESSION_WITH_ARTICLE]
+a non aggression treaty
+[DEFENCE_PACT_WITH_ARTICLE]
+a defence pact
+[WAR_PACT_WITH_ARTICLE]
+a war pact against §
+[REQUEST_WITH_ARTICLE]
+a demand
+
+// acceptance or denial of treaties
+[ACCEPT_TRADE_AGREEMENT]
+Trade Agreement accepted
+[DECLINE_TRADE_AGREEMENT]
+Trade Agreement declined
+[ACCEPT_FRIENDSHIP]
+Friendship offer accepted
+[DECLINE_FRIENDSHIP]
+Friendship offer declined
+[ACCEPT_COOPERATION]
+Co-operation treaty accepted
+[DECLINE_COOPERATION]
+Co-operation treaty declined
+[ACCEPT_AFFILIATION]
+Affiliation treaty accepted
+[DECLINE_AFFILIATION]
+Affiliation treaty declined
+[ACCEPT_MEMBERSHIP]
+Membership offer accepted
+[DECLINE_MEMBERSHIP]
+Membership offer declined
+[ACCEPT_NON_AGGRESSION]
+Non Aggression treaty accepted
+[DECLINE_NON_AGGRESSION]
+Non Aggression treaty declined
+[ACCEPT_DEFENCE_PACT]
+Defence Pact accepted
+[DECLINE_DEFENCE_PACT]
+Defence Pact declined
+[ACCEPT_WARPACT]
+War Pact accepted
+[DECLINE_WARPACT]
+War Pact declined
+[ACCEPT_REQUEST]
+Demand accepted
+[DECLINE_REQUEST]
+Demand rejected
+[ACCEPT_CORRUPTION]
+Bribe accepted
+[DECLINE_CORRUPTION]
+Bribe declined
+
+// minor race diplomacy actions
+[MIN_ACCEPT_OFFER]
+agree to § with §
+[MIN_DECLINE_OFFER]
+The § have declined our §
+[WE_DECLINE_MIN_OFFER]
+We have declined § of the §
+[OUR_MIN_OFFER]
+offers the § §
+[OUR_MIN_OFFER_WAR]
+declared war on the §
+[WE_DECLARE_WAR_TO_MIN]
+We declared war on the §
+[TRY_CORRUPTION]
+tried to bribe the §
+[CANCEL_CONTRACT]
+terminated a treaty with the §
+
+// major race diplomacy actions
+[WE_ACCEPT_MAJ_OFFER]
+We accepted § with the §
+[WE_DECLINE_MAJ_OFFER]
+We declined § with the §
+[MAJ_ACCEPT_OFFER]
+§ has accepted our §
+[MAJ_DECLINE_OFFER]
+§ has declined our §
+[NOT_REACTED]
+§ ignored our offer
+[WE_GET_MAJ_OFFER]
+§ offers us §
+[WE_MAKE_MAJ_OFFER]
+We have offered § §
+[WE_GET_PRESENT]
+We received a gift from §
+[WE_GIVE_PRESENT]
+We have presented a gift to §
+[WE_GET_REQUEST]
+§ issues § to us
+[WE_HAVE_REQUEST]
+We issued § §
+[WE_ACCEPT_REQUEST]
+We have accepted a demand from the §
+[OUR_REQUEST_ACCEPT]
+§ has accepted our demand
+[WE_DECLINE_REQUEST]
+We have rejected a demand from the §
+[OUR_REQUEST_DECLINE]
+§ has rejected our demand
+[NOT_REACTED_REQUEST]
+§ ignored our demand
+[WE_GET_WAR]
+§ declared war on us
+[WE_DECLARE_WAR]
+We declared war on §
+[WE_ACCEPT_WARPACT]
+We accepted a war pact against the § with the §
+[OUR_WARPACT_ACCEPT]
+§ has accepted our war pact against the §
+[WE_DECLINE_WARPACT]
+We have declined a war pact on the § by the §
+[OUR_WARPACT_DECLINE]
+§ has declined our war pact against the §
+[NOT_REACTED_WARPACT]
+§ ignored our war pact offer on the §
+
+// other diplomacy actions
+[WAR_TO_PARTNER]
+have declared war on one of our members (§)
+[WAR_TO_US_AS_PARTNER]
+has declared war on us
+[CONTRACT_ENDED]
+§ with the § expired
+[DEFENCE_PACT_ENDED]
+Defence pact with the § expired
+[TRYED_CORRUPTION]
+§ tried to bribe the §
+
+// offers by minors
+[MIN_OFFER_TRADE]
+The § offer us a trade agreement
+[MIN_OFFER_FRIEND]
+The § offer us a friendship treaty
+[MIN_OFFER_COOP]
+The § offer us a co-operation
+[MIN_OFFER_AFFI]
+The § offer us an affiliation
+[MIN_OFFER_MEMBER]
+The § offer us a membership
+[MIN_OFFER_WAR]
+The § declared war on us
+
+// gifts when offering s.th. to minors
+[CREDITS_PRESENT]
+has transferred § credits to the §
+[TITAN_PRESENT]
+has transferred § tons of Titanium to the §
+[DEUTERIUM_PRESENT]
+has transferred § liters of Deuterium to the §
+[DURANIUM_PRESENT]
+has transferred § tons of Duranium to the §
+[CRYSTAL_PRESENT]
+has transferred § tons of Crystals to the §
+[IRIDIUM_PRESENT]
+has transferred § tons of Iridium to the §
+[DERITIUM_PRESENT]
+has transferred § lbs of Deritium to the §
+
+// gifts when offering s.th. to majors
+[UNLIMITED_CONTRACT_DURATION]
+§ Duration of this treaty will be unlimited.
+[LIMITED_CONTRACT_DURATION]
+§ Treaty will last for § turns.
+[TITAN_REQUEST]
+and § tons of Titanium
+[DEUTERIUM_REQUEST]
+and § liters of Deuterium
+[DURANIUM_REQUEST]
+and § tons of Duranium
+[CRYSTAL_REQUEST]
+and § tons of Crystals
+[IRIDIUM_REQUEST]
+and § tons of Iridium
+[EXTRA_CREDITS]
+§ Consider this gift of § credits a small incentive.
+[EXTRA_TITAN]
+§ In addition we share § tons of Titanium with you.
+[EXTRA_DEUTERIUM]
+§ In addition we share § liters of Deuterium with you.
+[EXTRA_DURANIUM]
+§ In addition we share § tons of Duranium with you.
+[EXTRA_CRYSTAL]
+§ In addition we share § tons of Crystals with you.
+[EXTRA_IRIDIUM]
+§ In addition we share § tons of Iridium with you.
+
+// cancellations of minor race treaties by minors
+[CANCEL_TRADE_AGREEMENT]
+The § terminated our trade agreement with them
+[CANCEL_FRIENDSHIP]
+The § terminated our friendship treaty with them
+[CANCEL_COOPERATION]
+The § terminated our co-operation treaty with them
+[CANCEL_AFFILIATION]
+The § terminated our affiliation treaty with them
+[CANCEL_MEMBERSHIP]
+The § terminated their membership treaty with us
+[CORRUPTION_SUCCESS]
+Bribing the § was successful
+[CORRUPTION_FAILED]
+Bribing the § failed
+
+// cancellations of minor race treaties by us
+[CANCEL_AGREEMENT]
+Termination of a treaty
+[CANCEL_AGREEMENT_TEXT]
+The current "§" treaty, which we maintain with the §, is terminated with immediate effect!
+
+// trade menu
+[GLOBAL_TRADE_MENUE]
+Global Stock Exchange
+[TRADE_IN_SYSTEM]
+Trade System
+[ALL_PRICES_INCL_TAX]
+All prices incl. §% trade tax
+[REPEAT_ACTIVITY]
+How often should transactions be repeated?
+[MIN_PRICE]
+Minimum price:
+[AVERAGE_PRICE]
+Average price:
+[MAX_PRICE]
+Maximum price:
+[CURRENT_PRICE]
+Current price for 100 units
+[STORAGE_QUANTUM]
+Quantity in stock
+[MONOPOLIST]
+Monopolist
+[MONOPOLY_MENUE]
+Trade monopoly
+[MONOPOLY_OWNER]
+Monopoly owner
+[MONOPOLY_COSTS]
+Monopoly costs
+[NO_MONOPOLY_BUY]
+A trade monopoly cannot be acquired at our present prices. We need to extend trade activities first.
+[TRADE_TRANSFER_MENUE]
+Resource transfer
+[TRANSFERS_NEXT_ROUND]
+The following transfers will take place in the § system next turn:
+
+// empire menu
+[NEWS_MENUE]
+News and information
+[SYSTEM_OVERVIEW_MENUE]
+System overview
+[SHIP_OVERVIEW_MENUE]
+Ship overview
+[CONSTRUCT]
+Build
+[CURRENT_PLACE]
+curr. pos.
+[EXPERIANCE_SHORT]
+Exp.
+[STATUS]
+Orders
+[LOST]
+lost
+[EVENT]
+Event
+[SHIPS_TOTAL]
+total ships
+[SHIPS_LOST]
+ships lost
+
+// fleet menu
+[FLEET_MENUE]
+Fleet menu
+[WHAT_SHIPS_TO_FLEET]
+Which ships are to be added to the fleet
+[WHAT_SHIPS_FROM_FLEET]
+Which ships will be dismissed from the fleet
+[ALL_SHIPS]
+all ships
+
+////////////////////////// STRINGS END ////////////////////////////////
+
+////////////////////////// SHIPS BEGIN ////////////////////////////////
+// ship orders
+[AVOID_ORDER]
+Avoid
+[ATTACK_ORDER]
+Attack
+[CLOAK_ORDER]
+Cloak
+[ATTACK_SYSTEM_ORDER]
+Attack system
+[RAID_SYSTEM_ORDER]
+Raid system
+[BLOCKADE_SYSTEM_ORDER]
+Blockade
+[DESTROY_SHIP_ORDER]
+Scuttle
+[COLONIZE_ORDER]
+Colonize
+[TERRAFORM_ORDER]
+Terraform
+[BUILD_OUTPOST_ORDER]
+Build outpost
+[BUILD_STARBASE_ORDER]
+Build starbase
+[ASSIGN_FLAGSHIP_ORDER]
+Assign flagship
+[CREATE_FLEET_ORDER]
+Group
+[TRANSPORT_ORDER]
+Transport
+[FOLLOW_SHIP_ORDER]
+Follow
+[TRAIN_SHIP_ORDER]
+Train
+
+// ship types, singular
+[TRANSPORTER]
+Transport ship
+[COLONIZESHIP]
+Colony ship
+[PROBE]
+Probe
+[SCOUT]
+Scout
+[FIGHTER]
+Fighter
+[FRIGATE]
+Frigate
+[DESTROYER]
+Destroyer
+[CRUISER]
+Cruiser
+[HEAVY_DESTROYER]
+Heavy destroyer
+[HEAVY_CRUISER]
+Heavy cruiser
+[BATTLESHIP]
+Battleship
+[DREADNOUGHT]
+Dreadnought
+[OUTPOST]
+Outpost
+[STARBASE]
+Starbase
+[ALIEN]
+Alien
+
+// ship types, plural
+[TRANSPORTERS]
+Transport ships
+[COLONIZESHIPS]
+Colony ships
+[PROBES]
+Probes
+[SCOUTS]
+Scouts
+[FIGHTERS]
+Fighters
+[FRIGATES]
+Frigates
+[DESTROYERS]
+Destroyers
+[CRUISERS]
+Cruisers
+[HEAVY_DESTROYERS]
+Heavy destroyers
+[HEAVY_CRUISERS]
+Heavy cruisers
+[BATTLESHIPS]
+Battleships
+[DREADNOUGHTS]
+Dreadnoughts
+[OUTPOSTS]
+Outposts
+[STARBASES]
+Starbases
+[ALIENS]
+Aliens
+
+// ship properties
+[SPEED]
+Speed
+[RANGE]
+Range
+[SHORT]
+short
+[MIDDLE]
+medium
+[LONG]
+long
+[SHIELDS]
+Shields
+[HULL]
+Hull
+[CAPACITY]
+Capacity
+[INTEGRITY]
+Integrity
+[ARMAMENT]
+Armament
+[DOUBLE_HULL_ARMOUR]
+ double hull armour
+[HULL_ARMOR]
+ hull armor
+
+// ship description in View4
+[SHIP]
+Ship
+[SHIPS]
+Ships
+[GROUP]
+Group
+[MIXED_FLEET]
+mixed fleet
+[TARGET]
+Target
+[NO_TARGET]
+Target: none
+[UNKNOWN_TARGET]
+Target: unknown
+[ORDER]
+Order
+[ACTION]
+Action
+////////////////////////// SHIPS END //////////////////////////////////
+
+
+
+
+////////////////////// NACH ALPHA1 GEÄNDERT /////////////////////////////
+// [MAX_SHIPTYPE] -> [MAX_SHIPSIZE]
+// deleted all Torpedotypes (e.g. [NUCLEAR_TORPEDO])
+// [LAUCNHER] -> [BTN_LAUNCHER]: -> werfer -> Werfer
+////////////////////////////////////////////////////////////////////////
+
+
+
+///////////////// NEWLY ADDED AFTER ALPHA1 ////////////////////
+[TROOP_BUILDING_FINISHED]
+New § stationed in the § system
+
+[ELIMINATE_MINOR]
+The § have been wiped out
+
+[NO_ATTACKING_SHIPS_KILLED]
+No attacking ship destroyed at §
+
+[ATTACKING_SHIPS_KILLED]
+§ attacking ships destroyed assaulting §
+
+[KILLED_POP_BY_SYSTEMATTACK]
+§ billion population killed by bombardment on §
+
+[KILLED_TROOPS_IN_SYSTEM]
+§ defending troops eliminated during attacks on §
+
+[KILLED_TROOPS_IN_TRANSPORTS]
+§ attacking troops eliminated during attacks on §
+
+[DESTROYED_BUILDINGS_BY_SYSTEMATTACK]
+§ structures destroyed by bombardment on §
+
+[SHIELDS_SAVED_LIFE]
+Planetary shields foiled enemy attack on §
+
+[INVASION_SUCCESSFUL]
+Ground forces have occupied the § system
+
+[INVASION_FAILED]
+§ repels invasion
+
+[SYSTEM_BOMBED]
+The § system has been bombarded
+
+[ALL_LIFE_DIED]
+All life on § extinguished
+
+[SYSTEMATTACK]
+System attack
+
+[MINOR_SUBJUGATED]
+§ have been subjugated
+
+// transport menu
+[TRANSPORT_MENUE]
+Transport to
+
+[TROOPS]
+Troops
+
+[AVAILABLE]
+available
+
+[SELECTED]
+selected
+
+[POWER]
+Power
+
+[EXPERIANCE]
+Experience
+
+[PLACE]
+Place
+
+[MORALVALUE]
+Morale value
+
+[MAINTENANCE_COSTS]
+Maintenance costs
+
+[SMALL]
+small
+
+[BIG]
+big
+
+[HUGE]
+huge
+
+[CHANGE]
+Change
+
+[BTN_DECLOAK]
+Decloak
+
+[DECLOAK_ORDER]
+Decloak
+
+[SPECIAL_ABILITIES]
+Special abilities
+
+[ASSAULTSHIP]
+Assault ship
+
+[BLOCKADESHIP]
+Blockade ship
+
+[COMMANDSHIP]
+Commando ship
+
+[DOGFIGHTER]
+Dogfighter
+
+[DOGKILLER]
+Anti-dogfight ship
+
+[PATROLSHIP]
+Patrol ship
+
+[RAIDER]
+Corsair
+
+[SCIENCESHIP]
+Science ship
+
+[ABLATIVE_ARMOR]
+Ablative armor
+
+[HULLPOLARISATION]
+Hull polarisation
+
+[REGENERATIVE_SHIELDS]
+Regenerative shields
+
+[CAN_CLOAK]
+can cloak
+
+// ship design menu
+[BUILDCOSTS]
+Production costs
+
+[BTN_STRONGER]
+stronger
+
+[BTN_WEAKER]
+weaker
+
+[BTN_LAUNCHER]
+Launcher
+
+[BTN_TORPEDO]
+Torpedo
+
+[BTN_MATERIAL]
+Material
+
+[BTN_HULLTYPE]
+Hull type
+
+[NO_CHANGE_POSSIBLE]
+No changes possible since shipclass currently in system § under construction
+
+[DESTROYED_SHIPS_IN_COMBAT]
+The § was destroyed in battle
+
+[WIN_COMBAT]
+We won a battle in §
+
+[LOSE_COMBAT]
+We lost a battle in §
+
+
+///////////////// Newly added after alpha2 ////////////////////
+[GET_RESOURCES]
+§ arrived in § system
+
+[NEWS]
+News
+
+[STARDATE]
+Solar date
+
+[TRADE_AND_RESOURCEROUTES]
+Trade- and resource routes
+
+[STELLAR_STORAGE]
+Interstellar storage
+
+[SYSTEM_STORAGE]
+System storage
+
+[SHIP_STORAGE]
+Ship storage room
+
+[SYSTEM_SUPPORTS_ROUTES]
+The system currently supports § trade route(s) and/or § resource route(s)
+
+[SYSTEM_HAS_ROUTES]
+The system currently maintains § trade route(s) and § resource route(s)
+
+[ROUTES_TO]
+Trade- and resourceroutes to:
+
+[PROFIT]
+Profit
+
+[STILL]
+still
+
+[TAKE_FROM_STORAGE]
+taken from storage: § (max. §)
+
+[LOST_PER_ROUND]
+§% are lost per turn
+
+[MULTIPLIER]
+Multiplier
+
+[APPLY]
+apply
+
+[TRADEOVERVIEW_IN]
+System trade in
+
+[CLASS_A_INFO]
+Small, young worlds with surfaces that are usually molten with possible volcanic activity. Atmospheres, if any, would be very thin. This is similar to the moon Io.
+
+[CLASS_B_INFO]
+Young planets that are larger than Class A. They have partially molten surfaces and active volcanoes. Atmospheres, if any, are very thin. In our real solar system Mercury may be considered a Class B planet.
+
+[CLASS_C_INFO]
+Young planets that are geologically inactive, (hence their name), and may be covered in ice and/or frozen gases. In our real solar system Pluto could be considered a Class C planet.
+
+[CLASS_E_INFO]
+Small, young and volcanically active worlds still in the process of forming. Their surfaces are largely molten.
+
+[CLASS_F_INFO]
+Very young worlds with volcanically active surfaces with heavy metallic cores rich in ores and minerals making them valuable to mining conglomerates. If any life develops it may be silicon-based.
+
+[CLASS_G_INFO]
+Young, but large worlds, with surfaces that are still solidifying. Their atmospheres may contain carbon dioxide and other toxic gases. If there is any life present it would be limited to primitive single-celled organisms.
+
+[CLASS_H_INFO]
+Desert worlds with barren surfaces that are either hot and arid, (if in close orbit of the parent star) or covered with icy tundra if in a more distant orbit. Life forms developing on such a world would have to be resilient to either extreme hot or cold temperatures and if the planet is close to the star, resistant to solar radiation.
+
+[CLASS_I_INFO]
+Gas Supergiants, over 140,000 km in diameter. They are comprised almost entirely hydrogen and helium, but may contain water vapor as well. They may contain a solid metallic mass core and radiate heat. They can have hundreds of moons and also water ice rings. Many extrasolar planets discovered in real life could be classified as Class I Supergiants.
+
+[CLASS_J_INFO]
+Gas Giants less than 140,000 km in diameter. They are mainly comprised of hydrogen and helium gases and could have a solid rocky or metallic core. They can have many moons as well as water ice rings. In real life, Jupiter and Saturn could be Class J planets.
+
+[CLASS_K_INFO]
+Rocky and barren with little, if any, surface water. Their atmospheres are thin, and comprise mostly carbon dioxide. Life forms, if any, are limited to single-celled organisms and algae. They are "adaptable" because through terraforming they are suitable for human colonization. In real life, Mars could be considered a Class K planet.
+
+[CLASS_L_INFO]
+Rocky, barren surfaces with little water. Their atmospheres are mainly oxygen and argon with a high concentrations of carbon dioxide. Life forms, if any, would be limited to simple plant life. Class L planets are suitable for human colonization with some terraforming.
+
+[CLASS_M_INFO]
+Always located in the ecological region of a star where they are provided enough warmth and energy to develop and sustain carbon-based life. Their surfaces comprises a thin tectonic layer floating on a molten rock mantle and they usually have many active volcanoes. Most importantly, they have plenty of liquid water necessary for life to exist. Their atmospheres contain oxygen and nitrogen with other gas traces. Life forms are almost always present, often flourishing as extensive plant and animal life.
+
+[CLASS_N_INFO]
+Barren and rocky with extremely high surface temperatures caused by an intense greenhouse effect. Their atmospheres are extremely dense comprising mainly carbon dioxide and corrosive sulfides. Sometimes water vapor is present. Life would be limited to single-celled organisms living in the upper layers of atmosphere. In our real solar system, Venus could be a Class N planet. Some Class N planets may also fall into Class X, Y, or Z Demon planets, especially if a bizarre form of life exists on them.
+
+[CLASS_O_INFO]
+Similar to Class M worlds but over 80% of their surface is covered in water. Life forms would mainly be aquatic in nature.
+
+[CLASS_P_INFO]
+Similar to Class O water planets with an abundance of surface water, however almost all of it is locked in frozen ice. Liquid water may be present under the ice but at extreme depths. Any life developing on the surface would have to adapt to extremely frigid conditions. In real life, the Jovian moons Europa, Callisto, and Ganymede could be considered Class P planets.
+
+[CLASS_Q_INFO]
+Variable surface conditions because they either orbit a variable output star, (where energy levels fluctuate), or they exist in an extremely elongated orbit passing very close then falling away to an extreme distance from the star. Variable conditions can also be caused by some other effect, either natural or artificial. The result is an extremely harsh world where temperatures rise and fall to extreme levels. Any life existing on such a world would have to be extremely adaptable to rapid climate changes.
+
+[CLASS_R_INFO]
+Class R, or rogue planets, do not orbit stars. Instead, they float in the cold darkness of space. They most likely normally formed within a solar system but have been flung deep into space usually caused by the collision with another planetary body. The surface of a rogue planet would usually be barren, but some might be temperate due to geothermal venting with atmospheres filled with volcanic gases. Life would be rare, but some may have unusual life that gather near volcanic regions.
+
+[CLASS_S_INFO]
+Super Gas Giants or brown dwarfs. Their diameters range in size from 50 to 100 thousand km. They radiate considerable heat and generate enormous amounts of gravity, often harboring hundreds or even thousands of moons. In most cases, these moons would be subject to considerable tidal forces and gravitational effects caused by their parent planet.
+
+[CLASS_T_INFO]
+"Near star" planets are Super Gas Giants or brown dwarfs with diameters from 100 to 200 thousand km. Any larger and they would be classified as stars. They radiate considerable heat and generate enormous amounts of gravity, often harboring hundreds or even thousands of moons. In most cases, these moons would be subject to considerable tidal forces and gravitational effects caused by their parent planet.
+
+[CLASS_Y_INFO]
+Classes Y is reserved for strange planets referred to as "Demon" worlds where surface conditions do not fall into any other recognized category. Such worlds are usually hostile and lethal to humanoid life. If life develops on these worlds they usually take on many bizarre forms, like living crystal or rock, liquid or gaseous physical states, non-corporeal or dimensional states or be energy-based.
+
+[CLASS_A_TYPE]
+Geothermal
+
+[CLASS_B_TYPE]
+Geomorteus
+
+[CLASS_C_TYPE]
+Geoinactive
+
+[CLASS_E_TYPE]
+Geoplastic
+
+[CLASS_F_TYPE]
+Geometallic
+
+[CLASS_G_TYPE]
+Geocrystalline
+
+[CLASS_H_TYPE]
+Desert
+
+[CLASS_I_TYPE]
+Gas Supergiant
+
+[CLASS_J_TYPE]
+Gas Giant
+
+[CLASS_K_TYPE]
+Adaptable
+
+[CLASS_L_TYPE]
+Marginal
+
+[CLASS_M_TYPE]
+Terrestrial
+
+[CLASS_N_TYPE]
+Reducing
+
+[CLASS_O_TYPE]
+Pelagic
+
+[CLASS_P_TYPE]
+Glaciated
+
+[CLASS_Q_TYPE]
+Variable
+
+[CLASS_R_TYPE]
+Rogue
+
+[CLASS_S_TYPE]
+Gas Ultragiant
+
+[CLASS_T_TYPE]
+Near Star
+
+[CLASS_Y_TYPE]
+Demon
+
+
+
+/////////////////// NEWLY ADDED AFTER ALPHA3 //////////////////////////
+
+[SHIPDESIGN]
+Ship design
+
+[BTN_REPORTS]
+Reports
+
+[SP]
+IP
+
+[INNER_SECURITY]
+Internal security
+
+[INNER_SECURITY_SHORT]
+Int. security
+
+[SPY]
+Espionage
+
+[SABOTAGE]
+Sabotage
+
+[SECURITYPOINTS]
+Intel strength
+
+[ECONOMY]
+Economy Dept
+
+[MILITARY]
+Military Dept
+
+[SCIENCE]
+Science Dept
+
+[DIPLOMACY]
+Diplomacy Dept
+
+[SECURITYBONI]
+Intel bonuses
+
+[BTN_ASSIGNMENT]
+Assignment
+
+[BTN_SPY]
+Espionage
+
+[BTN_SABOTAGE]
+Sabotage
+
+[SPY_OF_ALL]
+The percentage of espionage on overall intel activity accounts for §%
+
+[SABOTAGE_OF_ALL]
+The percentage of sabotage on overall intel activity accounts for §%
+
+[SECURITY_HEADQUARTERS]
+Headquarters
+
+[KIND]
+Kind
+[INTEL_RESERVE]
+Intel reserve
+
+[USE_SP_FROM_DEPOT]
+Unused Intel strength is stored in reserve at distinct target- and operation-specific accounts. Currently there are § intelligence points in reserve which we can additionally allocate against §. The same percentage will be taken from both IP reserves and current production.
+
+[REPORTS]
+Reports
+
+[DEPOTS]
+Reserve
+
+[WE_HAVE_NEW_INTELREPORTS]
+New intelligence reports are coming in.
+
+[NO_AGREEMENT]
+No agreement
+
+[WAR_WITH_ARTICLE]
+a war
+
+[MISSED]
+missed
+
+[DO_NOT_KNOW_RESPONSIBLE_RACE]
+We have no idea who is behind this.
+
+[KNOW_RESPONSIBLE_SABOTAGERACE]
+Some hints point at § to be held accountable for this coward attempt.
+
+[AGGRESSIVENESS]
+Aggressiveness
+
+[CAREFUL]
+careful
+
+[NORMAL]
+normal
+
+[AGGRESSIVE]
+aggressive
+
+[RULE]
+Rule
+
+[BTN_ATTEMPT]
+Attempt
+
+[POSSIBLE_ATTEMPTS]
+Possible attempts
+
+[ATTEMPT_DESC]
+To set stages for an aimed attempt, select a former espionage report from the list above. Our agents will then conduct sabotage on that object previously spied-out. Only collected intel points for this particular race will be used in this attempt.
+
+[CHOOSEN_ATTEMPT]
+chosen attempt
+
+[CONTROLLED_SECTORS]
+controlled sectors
+
+[CONTROLLED_SYSTEMS]
+controlled systems
+
+[INHABITED_SYSTEMS]
+inhabited systems
+
+[KNOWN_MINORRACES]
+known minor races
+
+[NUMBER_OF_MINORMEMBERS]
+memberships of minor races
+
+[CHOOSE_RESPONSIBLE_RACE]
+Who should our agents frame for their actions? Our victims will have little choice but to think of the major race below as the main perpetrator.
+
+[AUTOBUILD]
+Auto-build
+
+[LOST_ONE_RESOURCEROUTE]
+We have lost a resource route in the § system
+
+[LOST_RESOURCEROUTES]
+We have lost § resource routes in the § system
+
+[BTN_TRADEROUTE]
+Traderoute
+
+[BTN_RESOURCEROUTE]
+Resourcer.
+
+[SYSTEM_IS_BLOCKED]
+System is §% blocked
+
+[ONLY_PARTIAL_BUILDINGSCRAP]
+Scrapping in parts only
+
+[RESOURCES_IN_GLOBAL_STORAGE]
+There are resources in the global storage
+
+[DRAW_COMBAT]
+We were engaged in an inconclusive battle in §
+
+////////////////////////////////////// Events //////////////////////////////////////////////////////
+[COLOEVENT_HEADLINE]
+Colonization of the § system
+
+[COLOEVENT_TEXT_MAJOR1]
+Citizens celebrate the colonization of the § system. This new system will expand living space for our people. First colonists have built habitats on the surface and pursue their duties. Shortly this system will become a vital and productive part of our Coalition.
+[COLOEVENT_TEXT_MAJOR2]
+Citizens celebrate the colonization of the § system. This new system will expand living space for our people. First colonists have built habitats on the surface and pursue their business. Shortly this system will become a vital and productive part of our empire.
+[COLOEVENT_TEXT_MAJOR3]
+Citizens celebrate the colonization of the § system. This new system will expand living space for our people. First colonists have built habitats on the surface and pursue their clan lives. Shortly this system will become a vital and productive part of our empire.
+[COLOEVENT_TEXT_MAJOR4]
+Citizens celebrate the colonization of the § system. This new system will expand living space for our people. First swarms have built hives on the surface and pursue their orders. Shortly this system will become a vital and productive part of our empire.
+[COLOEVENT_TEXT_MAJOR5]
+Citizens celebrate the colonization of the § system. This new system will expand living space for our people. First work forces have built habitats on the surface and pursue their orders. Shortly this system will become a vital and productive part of our empire.
+[COLOEVENT_TEXT_MAJOR6]
+Citizens celebrate the colonization of the § system. This new system will expand living space for our people. First Rok'hanars and Da'unas have built habitats on the surface and follow the orders of their System-Vi. Shortly this system will become a vital and productive part of our empire.
+
+[BLOCKADEEVENT_HEADLINE]
+Blockade of the § system
+
+[BLOCKADEEVENT_TEXT_MAJOR1]
+§ system is under blockade. Sytem trade and production is therefore possibly limited.
+[BLOCKADEEVENT_TEXT_MAJOR2]
+§ system is under blockade. Sytem trade and production is therefore possibly limited.
+[BLOCKADEEVENT_TEXT_MAJOR3]
+§ system is under blockade. Sytem trade and production is therefore possibly limited.
+[BLOCKADEEVENT_TEXT_MAJOR4]
+§ system is under blockade. Sytem trade and production is therefore possibly limited.
+[BLOCKADEEVENT_TEXT_MAJOR5]
+§ system is under blockade. Sytem trade and production is therefore possibly limited.
+[BLOCKADEEVENT_TEXT_MAJOR6]
+§ system is under blockade. Sytem trade and production is therefore possibly limited.
+
+[BOMBARDEVENT_HEADLINE]
+Bombardment of the § system
+
+[BOMBARDEVENT_TEXT_MAJOR1]
+The civilian population of the § system is shocked by the bombardment and demands a definite end to the violence.
+[BOMBARDEVENT_TEXT_MAJOR2]
+Traders in the § system are disconsolate and shocked by the bombardment demanding immediate peace negotiation to preserve wealth on the planets.
+[BOMBARDEVENT_TEXT_MAJOR3]
+Warriors in the § system are restless due to the coward bombardment and demands war on the ground.
+[BOMBARDEVENT_TEXT_MAJOR4]
+Swarm population in the § system is flushed by the bombardment and demands outside swarm support.
+[BOMBARDEVENT_TEXT_MAJOR5]
+Work force in the § system is crippled by the bombardment and demands free access to their work stations.
+[BOMBARDEVENT_TEXT_MAJOR6]
+The § system Vi is displeased by the bombardment and demands immediate reinforcements.
+
+[INVASIONSUCCESSEVENT_HEADLINE]
+Successful invasion in § system
+
+[INVASIONSUCCESSEVENT_TEXT_MAJOR1]
+Invasion in § system has been successful. This system is now under the control of a Coalition interim government.
+[INVASIONSUCCESSEVENT_TEXT_MAJOR2]
+Invasion in § system has been successful. This system is now under the control of a new king.
+[INVASIONSUCCESSEVENT_TEXT_MAJOR3]
+Invasion in § system has been successful. This system is now under the control of a new emperor.
+[INVASIONSUCCESSEVENT_TEXT_MAJOR4]
+Invasion in § system has been successful. This system is now under the control of a new queen.
+[INVASIONSUCCESSEVENT_TEXT_MAJOR5]
+Invasion in § system has been successful. This system is now under the control of a new emperor.
+[INVASIONSUCCESSEVENT_TEXT_MAJOR6]
+Invasion in § system has been successful. This system is now under the control of a new system Vi.
+
+[INVASIONFAILUREEVENT_HEADLINE]
+Invasion of § system failed
+
+[INVASIONFAILUREEVENT_TEXT_MAJOR1]
+Our invasion troops were bloodily repelled by enemy forces. The § system remains under the control of its old strongman for the time being.
+[INVASIONFAILUREEVENT_TEXT_MAJOR2]
+Our invasion troops were bloodily repelled by enemy forces. The § system remains under the control of its old strongman for the time being.
+[INVASIONFAILUREEVENT_TEXT_MAJOR3]
+Our invasion troops were bloodily repelled by enemy forces. The § system remains under the control of its old strongman for the time being.
+[INVASIONFAILUREEVENT_TEXT_MAJOR4]
+Our invasion troops were bloodily repelled by enemy forces. The § system remains under the control of its old strongman for the time being.
+[INVASIONFAILUREEVENT_TEXT_MAJOR5]
+Our invasion troops were bloodily repelled by enemy forces. The § system remains under the control of its old strongman for the time being.
+[INVASIONFAILUREEVENT_TEXT_MAJOR6]
+Our invasion troops were bloodily repelled by enemy forces. The § system remains under the control of its old strongman for the time being.
+
+[MANEUVERABILITY]
+Maneuvrability
+[PHENOMENAL]
+phenomenal
+[EXCELLENT]
+excellent
+[VERYGOOD]
+very good
+[GOOD]
+good
+[ADEQUATE]
+adequate
+[BAD]
+bad
+[VERYBAD]
+very bad
+[MISERABLE]
+miserable
+
+[DERITIUM_REQUEST]
+and § lbs deritium
+[EXTRA_DERITIUM]
+§ In addition we present a gift of § lbs deritium to you.
+
+[SHIPCOSTS]
+Upkeep
+[POPSUPPORT]
+Public support
+
+[RESEARCHEVENT_HEADLINE]
+New technology achieved
+
+[RESEARCHEVENT_NEWBUILDINGS]
+new buildings
+[RESEARCHEVENT_NEWUPGRADES]
+new building upgrades
+[RESEARCHEVENT_NEWSHIPS_AND_TROOPS]
+new ships and troops
+
+[FIRSTCONTACTEVENT_HEADLINE]
+First contact
+[FIRSTCONTACTEVENT_TEXT]
+We have met the §
+
+[PROPERTIES]
+Properties
+[FINANCIAL]
+financial
+[WARLIKE]
+warlike
+[AGRARIAN]
+agrarian
+[INDUSTRIAL]
+industrial
+[SECRET]
+secretive
+[SCIENTIFIC]
+scientific
+[PRODUCER]
+productive
+[PACIFIST]
+pacifistic
+[SNEAKY]
+sneaky
+[SOLOING]
+maverick
+[HOSTILE]
+hostile
+
+[VERY_UNDERDEVELOPED]
+very underdeveloped
+[UNDERDEVELOPED]
+underdeveloped
+[NORMAL_DEVELOPED]
+regularly developed
+[DEVELOPED]
+advanced
+[VERY_DEVELOPED]
+very advanced
+
+[RESEARCHED_SPECIALTECHS]
+Researched special technologies
+
+[RESOURCE_DISTRIBUTOR]
+Resource allocator
+[NEEDED_SYSTEMS]
+needed systems
+
+// new in Alpha 5.1
+[MOVEMENT]
+Movement
+[BEAMWEAPONS]
+Beam weapons
+[TORPEDOWEAPONS]
+Torpedo weapons
+[DAMAGE]
+damage
+[BONI_IN_SYSTEM]
+Bonuses in system
+[EXISTING]
+existing
+
+[BLUE_STAR]
+Blue star
+[GREEN_STAR]
+Green star
+[ORANGE_STAR]
+Orange star
+[RED_STAR]
+Red star
+[VIOLET_STAR]
+Purple star
+[WHITE_STAR]
+White star
+[YELLOW_STAR]
+Yellow star
+
+[BLUE_STAR_DESC]
+These so-called hypergiants exceed yellow or green stars many times over in size. They are by far the massiest stars and with up to a hundredfold mass and with tausend- to millionfold luminosity of that of yellow stars the brightest stars of the galaxy.
+[GREEN_STAR_DESC]
+Stars of this type are mostly not recognizable as such in the first place since they are "shining" in other colors or leveled white. Only in binary star system their true color is revealed. In terms of size they are quite similar to yellow stars. With modern scanners however accurate display is no longer an issue.
+[ORANGE_STAR_DESC]
+Red dwarves are all red orange color and make up for at least 70% of all stars in the milky star. Thus it is a quite common star in the universe, but certainly completely different to their red giants color-wise counterpart. Red dwarves weigh between one-tenth and a half of the mass of a yellow  star and also possess only a small luminosity on their surface.
+[RED_STAR_DESC]
+Red giants belong to the most voluminous, brightest but also "coolest" stars in the galaxy. They are settled in their last stage of existence bevor they detach their outer particle atmosphere and shrink down to become a white dwarf or a black hole if large enough.
+[VIOLET_STAR_DESC]
+This type was only recently discovered with the development of continuum drives making it possible to detect them on-site with their short-range high-uv radiation, mostly belted by thick layers of datter matter fields. They are pretty variable, but all have a young star age in common.
+[WHITE_STAR_DESC]
+B, A and F stars of stellar classification radiate in white-blue spectrum and count to the largest representatives of their species. On average they are about twice as hot as yellow stars and three times as heavy.
+[YELLOW_STAR_DESC]
+Yellow stars are considered to be favorable for the development of life because they represent stable middle-class stars with rather constant environmental conditions.
+
+[BTN_PRODUCTION]
+Production
+[BTN_DEFENCE]
+Defence
+
+// Anomalien
+[RADIONEBULA]
+Radioactive nebula
+[METNEBULA]
+Meaturean nebula
+[DEUTNEBULA]
+Deuterium nebula
+[IONSTORM]
+Ion storm
+[BINEBULA]
+Biphasic nebula
+[TORIONGASNEBULA]
+Torion gas nebula
+[NEUTRONSTAR]
+Neutron star RX
+[RADIOPULSAR]
+Radiopulsar PSR
+[XRAYPULSAR]
+X-Ray pulsar PSR
+[MAGNETAR]
+Magnetar SGR
+[GRAVDISTORTION]
+Gravimetric Distortion
+[CONTINUUMRIP]
+Continuum rip
+[BLACKHOLE]
+Black hole
+[QUASAR]
+Quasar QSO
+[WORMHOLE]
+Wormhole
+
+[RADIONEBULA_DESC]
+Radioactive nebulae are dense clusters of instable atomic nuclei. They can be ripped out of their metastable state when a ship is entering such a nebula and decay releasing a high amount energy. Organic lifeforms will suffer instant death after shield collapsing.
+[METNEBULA_DESC]
+A Meaturean nebula consists of high amounts of electromagnetic ion particels. Their discharge destabilizes and collapses all shields.
+[DEUTNEBULA_DESC]
+Deuterium nebulae can be found in "near-" star systems. The gaseous deuterium releases a weak radiation harmless to organic life but impairing sensors and shields severely and puts them out of function after a while. These nebulae shine auburn by their high level of deuterium.
+[IONSTORM_DESC]
+Ion storms are a dangerous form of magnetic storms. Ions, i.e. charged atoms, can amplify themselves as planetary as well as deep space originated ion distortions so that navigation and communication is largely disturbed.
+[BINEBULA_DESC]
+Biphasic nebulae consists of biphasic elements, i.e. it contains elements in two aggregate phases as well as two spin formations. Their effect is strongly polarizing on monophasic shields improving their regenerating power.
+[TORIONGASNEBULA_DESC]
+A Torion gas nebula absorbs energy from shield generators and jams target locking systems of all torpedo weapons up to their complete disfunctioning. The exact mechanism of this interfering is not fully understood.
+[NEUTRONSTAR_DESC]
+A neutron star is a type of remnant that can result from the gravitational collapse of a massive star during a Type II, Type Ib or Type Ic supernova event. Such stars are composed almost entirely of neutrons, which are subatomic particles without electrical charge and a slightly larger mass than protons. Neutron stars are very hot and are supported against further collapse because of the Pauli exclusion principle. This principle states that no two neutrons (or any other fermionic particle) can occupy the same place and quantum state simultaneously.
+[RADIOPULSAR_DESC]
+Pulsars are highly magnetized, rotating neutron stars that emit a beam of electromagnetic radiation. The radiation can only be observed when the beam of emission is pointing towards the Earth. This is called the lighthouse effect and gives rise to the pulsed nature that gives pulsars their name. Because neutron stars are very dense objects, the rotation period and thus the interval between observed pulses is very regular. For some pulsars, the regularity of pulsation is as precise as an atomic clock.
+[XRAYPULSAR_DESC]
+X-ray pulsars or accretion-powered pulsars are a class of astronomical objects that are X-ray sources displaying strict periodic variations in X-ray intensity. The X-ray periods range from as little as a fraction of a second to as much as several minutes.
+[MAGNETAR_DESC]
+A magnetar is a type of neutron star with an extremely powerful magnetic field, the decay of which powers the emission of copious amounts of high-energy electromagnetic radiation, particularly X-rays and gamma rays.
+[GRAVDISTORTION_DESC]
+A gravimetric distortion takes place in the local gravitational field. This implies that a strong gravitational force is present and can damage any ship's hull or material flying through it. Damages however are mostly not critical except for hull-weak ships.
+[CONTINUUMRIP_DESC]
+A continuum rip arises when enormous amounts of energy are released at a single point in time space and rips open a gap. Ships entering it are melted and destroyed in total.
+[BLACKHOLE_DESC]
+A black hole is a region of space from which nothing, not even light, can escape, therefore the "black" in its name. It is the result of the deformation of spacetime caused by a very compact mass. Around a black hole there is an undetectable surface which marks the point of no return, called an event horizon. The gravity well caused by the Black Hole makes sensor readings of this sector unreliable. Ships may be destroyed if they drift too close to the event horizon but no captain in his right mind would risk such a maneuver and stays captain afterwards for that matter...
+[QUASAR_DESC]
+A quasi-stellar radio source ("quasar") is a very energetic and distant galaxy with an active galactic nucleus. They are the most luminous objects in the universe. Quasars were first identified as being high redshift sources of electromagnetic energy, including radio waves and visible light, that were point-like, similar to stars, rather than extended sources similar to galaxies.
+[WORMHOLE_DESC]
+Wormholes are spacetime shortcuts. In order for ships to cross great distances in a single move, exotic matter with negative energy density needs to be used for stabilization. Yet no one has successfully developed a working stabilizer. Also the wormhole in question needs to have distinct endpoints, if possible none of them being a black hole.
+
+[RADIONEBULA_GAME]
+Total loss of crew experience
+[METNEBULA_GAME]
+Shields down in battle
+[DEUTNEBULA_GAME]
+Shield and scanner malfunction
+[IONSTORM_GAME]
+Maximum shield power increases by 3% per turn, total loss of crew experience, scanner malfunction
+[BINEBULA_GAME]
+Double shield regeneration
+[TORIONGASNEBULA_GAME]
+Shields and torpedo weapons deactivated in battle
+[NEUTRONSTAR_GAME]
+Shield damages and possible hull breach, disrupts scanners
+[RADIOPULSAR_GAME]
+Shield damages and possible hull breach, disrupts scanners, obscures sensor readings in surrounding sectors
+[XRAYPULSAR_GAME]
+Shield damages and possible hull breach, disrupts scanners, obscures sensor readings in surrounding sectors, total loss of crew experience
+[MAGNETAR_GAME]
+High risk of permanent engine failure, shield damages and imminent hull breach, disrupts scanners, obscures sensor readings in surrounding sectors, total loss of crew experience
+[GRAVDISTORTION_GAME]
+Hull damages
+[CONTINUUMRIP_GAME]
+Destruction of all ships entering
+[BLACKHOLE_GAME]
+Obscures and dampens sensor readings in surrounding sectors
+[QUASAR_GAME]
+Amplification of scan strength and range for all ships present in this sector
+[WORMHOLE_GAME]
+We still lack technology to use this wormhole as a gateway
+
+[ANOMALY_SHIP_LOST]
+§ was destroyed by §
+
+// Demography
+[DEMO_BSP]
+GNP
+[DEMO_PRODUCTIVITY]
+Productivity
+[DEMO_MILITARY]
+Military
+[DEMO_SCIENCE]
+Science
+[DEMO_HAPPINESS]
+Satisfaction
+
+[RANK]
+Rating
+[VALUE]
+Value
+[FIRST_RANK]
+First place
+[LAST_RANK]
+Last place
+[AVERAGE]
+Average
+[RATING]
+Overall rating
+
+[DEMOGRAPHY_MENUE]
+Demographics
+[BTN_DEMOGRAPHY]
+Status
+
+// Top-5 Systeme
+[TOP5SYSTEMS_MENUE]
+Top-5 systems
+[BTN_TOP5SYSTEMS]
+Top-5
+
+// Siegbedingungen (Victory Conditions VC)
+[VC_ELIMINATION]
+Total victory
+[VC_DIPLOMACY]
+Diplomacy
+[VC_CONQUEST]
+Conquest
+[VC_RESEARCH]
+Research
+[VC_COMBAT]
+Ship combat victories
+[VC_SECURITY]
+Intel actions
+
+[DEACTIVATED]
+deactivated
+[WE:]
+We have:
+[BEST:]
+Best one has:
+[ELIMINATE_ALL_RIVALS]
+Eliminate all opponents
+[RIVALS_LEFT]
+Remaining opponents:
+[SIGNED_HIGH_AGREEMENTS]
+signed contracts (min. affiliation)
+[CONQUERED_SYSTEMS]
+conquered systems
+[RESEARCHED_SPECIALS]
+achieved special techs
+[REACHED_COMBAT_WINNINGS]
+combat victories
+[SUCCESSFULL_SABOTAGE_ACTIONS]
+successful sabotage attempts
+
+[VICTORY_CONDITIONS_MENUE]
+Victory conditions
+[BTN_VICTORIES]
+Victories
+
+// Kampfbildschirme
+[COMBAT_IN_SECTOR]
+Combat occuring in sector
+[PLEASE_WAIT]
+please wait
+[COMBATCALCULATION_IS_RUNNING]
+Combat being resolved automatically
+[OTHER_PLAYERS_IN_COMBAT]
+Other human players are in combat
+[WINNING_CHANCE]
+Odds
+[CHOOSE_TACTIC_DESC1]
+Choose tactics by clicking on one of the three buttons above and mark appropriate ships on your side
+[CHOOSE_TACTIC_DESC2]
+Double-click on button shifts all your ships to this tactic
+[CHOOSE_TACTIC_DESC3]
+Double-click on ship copies tactics to all ships of the same class
+[SHOWN_SHIPTYPES]
+ship types visible on screen
+[VS]
+VS
+[AGAINST]
+against
+[FRIENDLY_SHIPS]
+friendly ships
+[ENEMY_SHIPS]
+enemy ships
+
+[BTN_DETAILS]
+Details
+[BTN_HAILING]
+Hail
+[BTN_RETREAT]
+Retreat
+[BTN_AUTOCOMBAT]
+Fight
+[BTN_FURTHER]
+next
+[BTN_READY]
+Fight
+
+// Sieg- & Niederlageevents
+[GAMEOVER]
+Gameover
+[WE_LOST]
+We have lost
+[OUR_EMPIRES_IS_ELIMINATED]
+Our empire has been crushed
+[IMPORTANT_NEWS]
+Priority message
+[RACE_ELIMINATED]
+This will be a day long remembered. The § has fallen
+[VICTORY]
+Victory
+[CONGRATULATIONS]
+Congratulations!
+[DEFEAT]
+Defeat
+[LOGBOOK_ENTRY]
+Logbook entry
+[WE_REACHED_VICTORY_IN_TYPE]
+We have achieved victory type "§"!
+[OTHER_REACHED_VICTORY_IN_TYPE]
+§ has claimed victory type "§"!
+[BIRTH_OF_THE_EMPIRE_END]
+The story of the birth of our empire has come to an end now...
+[REACHED_GAMEPOINTS]
+score achieved:
+
+// Troops
+[MAJOR1_TROOP1_NAME]
+Security forces
+[MAJOR1_TROOP1_DESC]
+This is a relatively weak defence unit of the Coalition of Planets ground forces. Equipped with modern projectile weapons and lightly armored, they need to make up first for their lacking military training.
+[MAJOR2_TROOP1_NAME]
+Heyoun Rocketeers
+[MAJOR2_TROOP1_DESC]
+A ragtag armed rabble equipped with deadly-dangerous rocket launchers. Unfortunately their military training is more than insufficient for their firepower.
+[MAJOR3_TROOP1_NAME]
+Khaoron Warriors
+[MAJOR3_TROOP1_DESC]
+This is a relatively basic unit of the Khaoron Empire. They prefer close-quarters weapons but that's their only disadvantage.
+[MAJOR4_TROOP1_NAME]
+Marksmen
+[MAJOR4_TROOP1_DESC]
+A relatively weak unit of the Rotharian Star Network. These units prefer a treacherous tactic to neutralize their enemies. Unfortunately their training periods could be extended largely.
+[MAJOR5_TROOP1_NAME]
+Stormtroopers
+[MAJOR5_TROOP1_DESC]
+A modest unit in the Cartare Union ground force book. Nevertheless they are highly useful for offensive military operations including planetary invasions and defence tasks.
+[MAJOR5_TROOP2_NAME]
+Alpha Invaders
+[MAJOR5_TROOP2_DESC]
+This is a special force unit of the Cartare Union. By their perfect training they are immediately ready to push through enemy defences and gain territory very quickly during invasions.
+[MAJOR6_TROOP1_NAME]
+Da'unor Sniper
+[MAJOR6_TROOP1_DESC]
+This is a rather infirm unit of the Omega-Alliance. They fight with precision rifles, lightly armored and lack extended training.
