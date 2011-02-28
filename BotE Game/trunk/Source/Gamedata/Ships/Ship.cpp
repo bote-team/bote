@@ -424,57 +424,79 @@ BOOLEAN CShip::HasSpecial(BYTE ability) const
 
 /// Funktion gibt die gesamte Offensivpower des Schiffes zurück, welches es in 100s anrichten würde.
 /// Dieser Wert hat keinen direkten Kampfeinfluss, er ist nur zum Vergleich heranzuziehen.
-UINT CShip::GetCompleteOffensivePower() const
+/// @param bBeams <code>true</code> wenn Beamwaffen beachtet werden sollen
+/// @param bTorpedos <code>true</code> wenn Torpedowaffen beachtet werden sollen
+/// @return Wert welcher die Offensivstärke des Schiffes angibt
+UINT CShip::GetCompleteOffensivePower(bool bBeams/* = true*/, bool bTorpedos/* = true*/) const
 {
-	UINT beamDmg	 = 0;
-	UINT torpedoDmg  = 0;
-	for (int i = 0; i < m_BeamWeapons.GetSize(); i++)
+	UINT beamDmg = 0;
+	if (bBeams)
 	{
-		short counter = 0;
-		for (int j = 0; j < 100; j++)
+		for (int i = 0; i < m_BeamWeapons.GetSize(); i++)
 		{
-			if (counter == 0)
-				counter = m_BeamWeapons.GetAt(i).GetBeamLenght() 
-							+ m_BeamWeapons.GetAt(i).GetRechargeTime();
-			if (counter > m_BeamWeapons.GetAt(i).GetRechargeTime())
+			short counter = 0;
+			double dTypeBonus = m_BeamWeapons.GetAt(i).GetBeamType() / 10.0;
+			dTypeBonus *= (double)(100 + m_BeamWeapons.GetAt(i).GetBonus()) / 100.0;
+			
+			for (int j = 0; j < 100; j++)
 			{
-				UINT tempBeamDmg = (UINT)m_BeamWeapons.GetAt(i).GetBeamPower()
-							* m_BeamWeapons.GetAt(i).GetBeamNumber()
-							* m_BeamWeapons.GetAt(i).GetShootNumber();
-				// besondere Beamfähigkeiten erhöhen den BeamDmg um einen selbst gewählten Mulitplikator
-				// der dadurch erhaltende Schaden entspricht nicht dem wirklichen Schaden!
-				if (m_BeamWeapons.GetAt(i).GetPiercing())
-					tempBeamDmg = (UINT)(tempBeamDmg * 1.5);
-				if (m_BeamWeapons.GetAt(i).GetModulating())
-					tempBeamDmg *= 3;
-				beamDmg += tempBeamDmg;
-			}			
-			counter--;
+				if (counter == 0)
+					counter = m_BeamWeapons.GetAt(i).GetBeamLenght() 
+								+ m_BeamWeapons.GetAt(i).GetRechargeTime();
+				if (counter > m_BeamWeapons.GetAt(i).GetRechargeTime())
+				{
+					UINT tempBeamDmg = (UINT)m_BeamWeapons.GetAt(i).GetBeamPower()
+								* m_BeamWeapons.GetAt(i).GetBeamNumber()
+								* m_BeamWeapons.GetAt(i).GetShootNumber();
+					// besondere Beamfähigkeiten erhöhen den BeamDmg um einen selbst gewählten Mulitplikator
+					// der dadurch erhaltende Schaden entspricht nicht dem wirklichen Schaden!
+					if (m_BeamWeapons.GetAt(i).GetPiercing())
+						tempBeamDmg = (UINT)(tempBeamDmg * 1.5);
+					if (m_BeamWeapons.GetAt(i).GetModulating())
+						tempBeamDmg *= 3;
+					beamDmg += tempBeamDmg;
+				}			
+				counter--;
+			}
+
+			beamDmg = (UINT)((double)beamDmg * dTypeBonus);
 		}
+		beamDmg /= 2;
 	}
-	beamDmg /= 3;
-	for (int i = 0; i < m_TorpedoWeapons.GetSize(); i++)
+	
+	UINT torpedoDmg  = 0;
+	if (bTorpedos)
 	{
-		UINT tempTorpedoDmg = (UINT)(m_TorpedoWeapons.GetAt(i).GetTorpedoPower() *
-									m_TorpedoWeapons.GetAt(i).GetNumber() * 100 *
-									m_TorpedoWeapons.GetAt(i).GetNumberOfTupes() /
-									m_TorpedoWeapons.GetAt(i).GetTupeFirerate());
-		// besondere Torpedofähigkeiten erhöhen den Torpedoschaden um einen selbst gewählten Mulitplikator
-		// der dadurch erhaltende Schaden entspricht nicht dem wirklichen Schaden!
-		BYTE type = m_TorpedoWeapons.GetAt(i).GetTorpedoType();
-		if (CTorpedoInfo::GetPenetrating(type))
-			tempTorpedoDmg = (UINT)(tempTorpedoDmg * 1.5);
-		if (CTorpedoInfo::GetIgnoreAllShields(type))
-			tempTorpedoDmg *= 3;
-		if (CTorpedoInfo::GetCollapseShields(type))
-			tempTorpedoDmg = (UINT)(tempTorpedoDmg * 1.25);
-		if (CTorpedoInfo::GetDoubleShieldDmg(type))
-			tempTorpedoDmg = (UINT)(tempTorpedoDmg * 1.5);
-		if (CTorpedoInfo::GetDoubleHullDmg(type))
-			tempTorpedoDmg = (UINT)(tempTorpedoDmg * 2);
-		if (CTorpedoInfo::GetReduceManeuver(type))
-			tempTorpedoDmg = (UINT)(tempTorpedoDmg * 1.1);
-		torpedoDmg += tempTorpedoDmg;
+		for (int i = 0; i < m_TorpedoWeapons.GetSize(); i++)
+		{
+			UINT tempTorpedoDmg = (UINT)(m_TorpedoWeapons.GetAt(i).GetTorpedoPower() *
+										m_TorpedoWeapons.GetAt(i).GetNumber() * 100 *
+										m_TorpedoWeapons.GetAt(i).GetNumberOfTupes() /
+										m_TorpedoWeapons.GetAt(i).GetTupeFirerate());
+			// besondere Torpedofähigkeiten erhöhen den Torpedoschaden um einen selbst gewählten Mulitplikator
+			// der dadurch erhaltende Schaden entspricht nicht dem wirklichen Schaden!
+			BYTE type = m_TorpedoWeapons.GetAt(i).GetTorpedoType();
+			if (CTorpedoInfo::GetPenetrating(type))
+				tempTorpedoDmg = (UINT)(tempTorpedoDmg * 1.5);
+			if (CTorpedoInfo::GetIgnoreAllShields(type))
+				tempTorpedoDmg *= 3;
+			if (CTorpedoInfo::GetCollapseShields(type))
+				tempTorpedoDmg = (UINT)(tempTorpedoDmg * 1.25);
+			if (CTorpedoInfo::GetDoubleShieldDmg(type))
+				tempTorpedoDmg = (UINT)(tempTorpedoDmg * 1.5);
+			if (CTorpedoInfo::GetDoubleHullDmg(type))
+				tempTorpedoDmg = (UINT)(tempTorpedoDmg * 2);
+			if (CTorpedoInfo::GetReduceManeuver(type))
+				tempTorpedoDmg = (UINT)(tempTorpedoDmg * 1.1);
+			torpedoDmg += tempTorpedoDmg;
+		}		
+	}
+
+	// Stationen bekommen einen Bonus, da sie keine Feuerwinkel beachten
+	if (m_iShipType == OUTPOST || m_iShipType == STARBASE)
+	{
+		beamDmg = (UINT)(beamDmg * 1.5);
+		torpedoDmg = (UINT)(torpedoDmg * 1.5);
 	}
 
 	// Manövrierfähigkeit geht mit in den Wert ein
@@ -493,15 +515,28 @@ UINT CShip::GetCompleteOffensivePower() const
 /// Funktion gibt die gesamte Defensivstärke des Schiffes zurück. Dabei wird die maximale Hülle, die maximalen
 /// Schilde und die Schildaufladezeit beachtet. Dieser Wert hat keinen direkten Kampfeinfluss, er ist nur zum
 /// Vergleich heranzuziehen.
-UINT CShip::GetCompleteDefensivePower() const
+/// @param bShields <code>true</code> wenn Schildstärken beachtet werden sollen
+/// @param bHull <code>true</code> wenn Hüllenstärke beachtet werden sollen
+/// @return Wert welcher die Defensivstärke des Schiffes angibt
+UINT CShip::GetCompleteDefensivePower(bool bShields/* = true*/, bool bHull/* = true*/) const
 {
-	UINT def = m_Hull.GetMaxHull() + m_Shield.GetMaxShield()
-		+ (m_Shield.GetMaxShield() / 300 + 2 * m_Shield.GetShieldType()) * 100;
-	if (m_Hull.GetAblative())
-		def = (UINT)(def * 1.1);
-	if (m_Hull.GetPolarisation())
-		def = (UINT)(def * 1.1);
+	UINT def = 0;
+	if (bHull)
+	{
+		def += m_Hull.GetMaxHull();
+		if (m_Hull.GetAblative())
+			def = (UINT)(def * 1.3);
+		if (m_Hull.GetPolarisation())
+			def = (UINT)(def * 1.3);
+		// Hülle gilt doppelt soviel wie Schilde
+		def *= 2;
+	}
 
+	if (bShields)
+	{
+		def += m_Shield.GetMaxShield() + (m_Shield.GetMaxShield() / 300 + 2 * m_Shield.GetShieldType()) * 100;
+	}
+	
 	// Manövrierfähigkeit geht mit in den Wert ein
 	double dMan = 1.0;
 	if (m_iShipType != OUTPOST && m_iShipType != STARBASE)

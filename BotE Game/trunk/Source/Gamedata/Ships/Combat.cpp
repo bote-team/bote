@@ -554,7 +554,7 @@ bool CCombat::CheckShipStayInCombat(int i)
 }
 
 // Funktion zum Berechnen der groben prozentualen Siegchance einer Rasse. Die Siegchance liegt zwischen 0 und 1.
-double CCombat::GetWinningChance(const CRace* pOurRace, const CArray<CShip*>& vInvolvedShips, const std::map<CString, CRace*>* pmRaces, std::set<const CRace*>& sFriends, std::set<const CRace*>& sEnemies)
+double CCombat::GetWinningChance(const CRace* pOurRace, const CArray<CShip*>& vInvolvedShips, const std::map<CString, CRace*>* pmRaces, std::set<const CRace*>& sFriends, std::set<const CRace*>& sEnemies, const CAnomaly* pAnomaly)
 {
 	ASSERT(pOurRace);
 	ASSERT(pmRaces);
@@ -569,12 +569,23 @@ double CCombat::GetWinningChance(const CRace* pOurRace, const CArray<CShip*>& vI
 	sFriends.clear();
 	sEnemies.clear();
 
+	// Anomalien beachten
+	bool bCanUseShields = true;
+	bool bCanUseTorpedos = true;
+	if (pAnomaly)
+	{
+		if (pAnomaly->GetType() == METNEBULA || pAnomaly->GetType() == TORIONGASNEBULA)
+			bCanUseShields = false;
+		if (pAnomaly->GetType() == TORIONGASNEBULA)
+			bCanUseTorpedos = false;		
+	}
+
 	for (int i = 0; i < vInvolvedShips.GetSize(); i++)
 	{
 		const CShip* pShip = vInvolvedShips[i];
 
-		double dOffensive = pShip->GetCompleteOffensivePower();
-		double dDefensive = pShip->GetCompleteDefensivePower() / 2.0;
+		double dOffensive = pShip->GetCompleteOffensivePower(true, bCanUseTorpedos);
+		double dDefensive = pShip->GetCompleteDefensivePower(bCanUseShields) / 2.0;
 		
 		if (pShip->GetOwnerOfShip() == pOurRace->GetRaceID())
 		{

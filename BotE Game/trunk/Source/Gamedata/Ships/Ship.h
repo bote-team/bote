@@ -62,12 +62,18 @@ public:
 	
 	/// Funktion gibt die gesamte Offensivpower des Schiffes zurück, welches es in 100s anrichten würde. Dieser
 	/// Dieser Wert hat keinen direkten Kampfeinfluss, er ist nur zum Vergleich heranzuziehen.
-	UINT GetCompleteOffensivePower() const;
+	/// @param bBeams <code>true</code> wenn Beamwaffen beachtet werden sollen
+	/// @param bTorpedos <code>true</code> wenn Torpedowaffen beachtet werden sollen
+	/// @return Wert welcher die Offensivstärke des Schiffes angibt
+	UINT GetCompleteOffensivePower(bool bBeams = true, bool bTorpedos = true) const;
 
 	/// Funktion gibt die gesamte Defensivstärke des Schiffes zurück. Dabei wird die maximale Hülle, die maximalen
 	/// Schilde und die Schildaufladezeit beachtet. Dieser Wert hat keinen direkten Kampfeinfluss, er ist nur zum
 	/// Vergleich heranzuziehen.
-	UINT GetCompleteDefensivePower() const;
+	/// @param bShields <code>true</code> wenn Schildstärken beachtet werden sollen
+	/// @param bHull <code>true</code> wenn Hüllenstärke beachtet werden sollen
+	/// @return Wert welcher die Defensivstärke des Schiffes angibt
+	UINT GetCompleteDefensivePower(bool bShields = true, bool bHull = true) const;
 
 	/// Funktion gibt das Erfahrungslevel des Schiffes zurück. Damit sind nicht die genauen Erfahrungspunkte gemeint, sondern das erreichte
 	/// Level aufgrund der Erfahrungspunkte.

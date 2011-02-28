@@ -18,10 +18,10 @@ CCombatAI::~CCombatAI(void)
 //////////////////////////////////////////////////////////////////////
 // sonstige Funktionen
 //////////////////////////////////////////////////////////////////////
-bool CCombatAI::CalcCombatTactics(const CArray<CShip*>& vInvolvedShips, const map<CString, CRace*>* pmRaces, map<CString, int>& mCombatOrders) const
+bool CCombatAI::CalcCombatTactics(const CArray<CShip*>& vInvolvedShips, const map<CString, CRace*>* pmRaces, map<CString, int>& mCombatOrders, const CAnomaly* pAnomaly) const
 {
 	// allgemeinen Kampfbefehl für alle beteiligten KI Rassen einstellen
-	ApplyCombatOrders(vInvolvedShips, pmRaces, mCombatOrders);
+	ApplyCombatOrders(vInvolvedShips, pmRaces, mCombatOrders, pAnomaly);
 
 	// Haben alle beteiligten Rassen Grußfrequenzen geöffnet, so findet kein Kampf statt
 	bool bAllHailingFrequencies = true;
@@ -45,7 +45,7 @@ bool CCombatAI::CalcCombatTactics(const CArray<CShip*>& vInvolvedShips, const ma
 //////////////////////////////////////////////////////////////////////
 // private Funktionen
 //////////////////////////////////////////////////////////////////////
-void CCombatAI::ApplyCombatOrders(const CArray<CShip*>& vInvolvedShips, const map<CString, CRace*>* pmRaces, map<CString, int>& mCombatOrders) const
+void CCombatAI::ApplyCombatOrders(const CArray<CShip*>& vInvolvedShips, const map<CString, CRace*>* pmRaces, map<CString, int>& mCombatOrders, const CAnomaly* pAnomaly) const
 {
 	// beteiligte Rassen
 	set<CString> sInvolvedRaces;
@@ -112,7 +112,7 @@ void CCombatAI::ApplyCombatOrders(const CArray<CShip*>& vInvolvedShips, const ma
 		// Ist die Beziehung nicht ausreichend, dann die Schiffstärken im Sektor beachten und Gewinnchance ermitteln
 		set<const CRace*> sFriends;
 		set<const CRace*> sEnemies;
-		double dWinningChance = CCombat::GetWinningChance(pRace1, vInvolvedShips, pmRaces, sFriends, sEnemies);
+		double dWinningChance = CCombat::GetWinningChance(pRace1, vInvolvedShips, pmRaces, sFriends, sEnemies, pAnomaly);
 	
 		if (dWinningChance > 0.75)
 			mCombatOrders[*it] = COMBAT_AUTO;

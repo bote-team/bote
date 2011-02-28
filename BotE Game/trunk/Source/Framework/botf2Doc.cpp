@@ -5181,7 +5181,7 @@ void CBotf2Doc::CalcShipCombat()
 
 	// Kampf-KI
 	CCombatAI AI;
-	bool bCombat = AI.CalcCombatTactics(vInvolvedShips, m_pRaceCtrl->GetRaces(), m_mCombatOrders);
+	bool bCombat = AI.CalcCombatTactics(vInvolvedShips, m_pRaceCtrl->GetRaces(), m_mCombatOrders, m_Sector[p.x][p.y].GetAnomaly());
 	if (!bCombat)
 		return;
 	

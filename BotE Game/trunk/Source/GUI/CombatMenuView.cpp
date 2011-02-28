@@ -157,7 +157,8 @@ void CCombatMenuView::OnDraw(CDC* dc)
 	}
 	
 	// grobe prozentuale Kampfchance und beteiligte Rassen berechnen
-	m_dWinningChance = CCombat::GetWinningChance(pMajor, m_vInvolvedShips, pDoc->GetRaceCtrl()->GetRaces(), m_sFriends, m_sEnemies);
+	const CAnomaly* pAnomaly = pDoc->GetSector(pDoc->m_ptCurrentCombatSector).GetAnomaly();
+	m_dWinningChance = CCombat::GetWinningChance(pMajor, m_vInvolvedShips, pDoc->GetRaceCtrl()->GetRaces(), m_sFriends, m_sEnemies, pAnomaly);
 
 	m_dWinningChance = min(0.99, m_dWinningChance);
 	m_dWinningChance = max(0.01, m_dWinningChance);
