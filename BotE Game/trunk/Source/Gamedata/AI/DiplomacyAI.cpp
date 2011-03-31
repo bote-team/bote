@@ -148,6 +148,7 @@ void CDiplomacyInfo::Reset(void)
 	m_sToRace = "";
 	m_sWarpactEnemy = "";
 	m_sWarPartner = "";
+	m_nAnswerStatus = NOT_REACTED;
 }
 
 //////////////////////////////////////////////////////////////////////

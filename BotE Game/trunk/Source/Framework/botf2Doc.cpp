@@ -127,7 +127,7 @@ BOOL CBotf2Doc::OnNewDocument()
 	CTroopInfo* troopInfo = new CTroopInfo(CResourceManager::GetString("MAJOR1_TROOP1_NAME"), CResourceManager::GetString("MAJOR1_TROOP1_DESC"),9,10,techs,res,180,0,"MAJOR1",2500,1);
 	m_TroopInfo.Add(*troopInfo);
 	delete troopInfo;
-	troopInfo = new CTroopInfo(CResourceManager::GetString("MAJOR2_TROOP1_NAME"), CResourceManager::GetString("MAJOR2_TROOP1_DESC"),50,10,techs,res,100,1,"MAJOR2",1500,0);
+	troopInfo = new CTroopInfo(CResourceManager::GetString("MAJOR2_TROOP1_NAME"), CResourceManager::GetString("MAJOR2_TROOP1_DESC"),5,10,techs,res,100,1,"MAJOR2",1500,0);
 	m_TroopInfo.Add(*troopInfo);
 	delete troopInfo;
 	troopInfo = new CTroopInfo(CResourceManager::GetString("MAJOR3_TROOP1_NAME"), CResourceManager::GetString("MAJOR3_TROOP1_DESC"),12,10,techs,res,240,2,"MAJOR3",2500,2);
@@ -521,6 +521,8 @@ void CBotf2Doc::SerializeNextRoundData(CArchive &ar)
 	for (int i = HUMAN; i <= DOMINION; i++)
 		m_SoundMessages[i].Serialize(ar);
 	
+
+	m_GenShipName.Serialize(ar);
 	m_GlobalBuildings.Serialize(ar);
 	message.Serialize(ar);
 	m_Statistics.Serialize(ar);
@@ -735,6 +737,9 @@ void CBotf2Doc::ResetIniSettings(void)
 		pIni->ReadValue("Audio", "MUSICVOLUME", fMusicVolume);
 		pSoundManager->StartMusic(client, fMusicVolume);
 	}
+	else
+		pSoundManager->StopMusic();
+
 
 	bool bUseSound;
 	pIni->ReadValue("Audio", "SOUND", bUseSound);
@@ -1480,43 +1485,45 @@ void CBotf2Doc::ApplyShipsAtStartup()
 			// Namen des Systems holen
 			CString systemName = s = csInput.Tokenize(":", pos);
 			// Systemnamen auf der Map suchen
-			BOOLEAN found = FALSE;
+			bool bFoundSector = false;
 			for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
 			{
 				for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
 					// Sektornamen gefunden
 					if (m_Sector[x][y].GetName(TRUE) == s)
 					{
+						bFoundSector = true;
 						// Schiffsklassen durchgehen, die dort stationiert werden sollen
 						while (pos < csInput.GetLength())
 						{
 							s = csInput.Tokenize(",", pos);
-							BOOLEAN foundShip = FALSE;
+							bool bFoundShip = false;
 							for (int j = 0; j < m_ShipInfoArray.GetSize(); j++)
 							{
 								// Wurde eine entsprechende Schiffsklasse gefunden, diese bauen
 								if (m_ShipInfoArray.GetAt(j).GetShipClass() == s)
 								{
-									foundShip = TRUE;
+									bFoundShip = true;
 									BuildShip(m_ShipInfoArray.GetAt(j).GetID(), CPoint(x,y), sOwner);
+									break;
 								}
 							}
 							// Wurde die Schiffsklasse nicht gefunden, sprich es ist ein Fehler in der Datei
-							if (!foundShip)
+							if (!bFoundShip)
 							{
 								CString shipClass;
 								shipClass.Format("Could not find ship class \"%s\"\nPlease check your StartShips.data file!", s);
 								AfxMessageBox(shipClass);
 							}
-						}
-						found = TRUE;
+						}						
 						break;
 					}
-				if (found)
+
+				if (bFoundSector)
 					break;
 			}
 			// Wurde das System nicht gefunden, sprich es ist ein Fehler in der Datei
-			if (!found)
+			if (!bFoundSector)
 			{
 				s.Format("Could not find system with name \"%s\"\nPlease check your StartShips.data file!", systemName);
 				AfxMessageBox(s);

@@ -146,7 +146,7 @@ void CMajor::SetSpecialAbility(BYTE ability, bool is)
 {
 	switch (ability)
 	{
-		case NOTHING_SPECIAL:	if (is) m_nProperty = 0;										break;
+		case NOTHING_SPECIAL:	if (is) m_nSpecialAbility = 0;									break;
 		case NO_FOOD_NEEDED:	SetAttributes(is, SPECIAL_NEED_NO_FOOD, m_nSpecialAbility);		break;		
 	}
 }
