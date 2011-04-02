@@ -5,12 +5,13 @@
 §REPEAT§
 0
 §SLOWING§
-50
+30
 §RACE§
 MAJOR1
 §SHIPS§
 Matilda
 Matilda
+Farscape
 §RACE§
 MAJOR5
 §SHIPS§

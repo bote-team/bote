@@ -645,8 +645,8 @@ void CCombatShip::FireBeam(int beamWeapon, int distance, BYTE boni)
 		// Hier kommt die Formel zur Trefferwahrscheinlichkeit ins Spiel. Jeder Schuss wird dafür einzeln beachtet:
 		// Acc = 60 - Distance*0.1 + CrewExp(Attacker-Target)*0.1 + Manövriebarkeit(Attacker-Target)*0.2 + Bonus_durch_Feuersystem + BeamType(MK)
 		// distance = [0,16]; CrewExp(att-def) = [-12,12]; Manöver(att-def) = [-15,6]; Feuersystembonus = [5,30]; BeamtypeMK = [1,X] X max. ca. 20
-		short Acc = 60 - short(-distance*0.1 + (this->GetCrewExperienceModi()-this->m_pTarget->GetCrewExperienceModi())*0.1
-			+ (GetToHitBoni(m_pShip->GetManeuverability(),m_pTarget->m_pShip->GetManeuverability())-GetToHitMali(m_pShip->GetManeuverability(),m_pTarget->m_pShip->GetManeuverability()))*0.2
+		short Acc = (short)(60 - distance * 0.1 + (GetCrewExperienceModi() - m_pTarget->GetCrewExperienceModi()) * 0.1
+			+ (GetToHitBoni(m_pShip->GetManeuverability(), m_pTarget->m_pShip->GetManeuverability()) - GetToHitMali(m_pShip->GetManeuverability(), m_pTarget->m_pShip->GetManeuverability())) * 0.2
 			+ m_pShip->GetBeamWeapons()->GetAt(beamWeapon).GetBonus() + m_pShip->GetBeamWeapons()->GetAt(beamWeapon).GetBeamType());
 		
 		// Modifikation durch die Schiffsgröße
