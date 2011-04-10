@@ -17,8 +17,7 @@ static char THIS_FILE[]=__FILE__;
 // Konstruktion/Destruktion
 //////////////////////////////////////////////////////////////////////
 CGenSectorName::CGenSectorName(void)
-{
-	ReadSystemNames();	
+{	
 }
 
 CGenSectorName::~CGenSectorName(void)
@@ -35,6 +34,34 @@ CGenSectorName* CGenSectorName::GetInstance(void)
 {
 	static CGenSectorName instance; 
     return &instance;
+}
+
+/// Funktion initialisiert alle möglichen Systemnamen.
+/// @pram vMinorRaceSystemNames Namen aller Minorracesysteme
+void CGenSectorName::Init(const CStringArray& vMinorRaceSystemNames)
+{
+	ReadSectorNames();
+
+	// zum Überprüfen das keine Systemnamen von kleinen Rassen bei den normalen Namen vorkommen
+	std::set<CString> sNames;
+
+	for (int i = 0; i < m_strNames.GetSize(); i++)
+		sNames.insert(m_strNames.GetAt(i));
+
+	for (int i = 0; i < vMinorRaceSystemNames.GetSize(); i++)
+	{
+		CString sMinorRaceSystemName = vMinorRaceSystemNames.GetAt(i);
+		// prüfen ob der Name schon bei den normalen Systemnamen vorkam.
+		if (sNames.find(sMinorRaceSystemName) != sNames.end())
+		{
+			CString sError;
+			sError.Format("Warning\n:The race-systemname %s allready exists in normal systemnames.\nThe minor in system %s is not in this game!\n\nPlease remove one of them to solve that problem!", sMinorRaceSystemName, sMinorRaceSystemName);
+			AfxMessageBox(sError);
+			continue;
+		}
+		
+		m_strRaceNames.Add(sMinorRaceSystemName);
+	}
 }
 
 // Funktion zur Generierung der Sonnensystemnamen
@@ -68,54 +95,25 @@ CString CGenSectorName::GetNextRandomSectorName(bool bMinor)
 //////////////////////////////////////////////////////////////////////
 
 // Resetfunktion, setzt alle Werte wieder auf NULL
-void CGenSectorName::ReadSystemNames(void)
+void CGenSectorName::ReadSectorNames(void)
 {
-	for (int i = 0; i < m_strNames.GetSize(); )
-		m_strNames.RemoveAt(i);
-	for (int i = 0; i < m_strRaceNames.GetSize(); )
-		m_strRaceNames.RemoveAt(i);
 	m_strNames.RemoveAll();
-	m_strRaceNames.RemoveAll();
 
-	// zum Überprüfen das keine Systemnamen von kleinen Rassen bei den normalen Namen vorkommen
-	std::set<CString> sNames;	
-	
 	// Standardnamen festlegen, alle Namen von Systemen werden aus Datei eingelesen
 	CString csInput;						// auf csInput wird die jeweilige Zeile gespeichert
 	CString fileName = CIOData::GetInstance()->GetAppPath() + "Data\\Names\\PlanetNames.data";	// Name des zu Öffnenden Files 
-	CStdioFile file;						// Varibale vom Typ CStdioFile
+	CStdioFile file;
 	if (file.Open(fileName, CFile::modeRead | CFile::typeText) && m_strNames.IsEmpty())	// Datei wird geöffnet
 		while (file.ReadString(csInput))
 		{
-			m_strNames.Add(csInput);			// Konnte erfolgreich gelesen werden wird die jeweilige
-			sNames.insert(csInput);
+			m_strNames.Add(csInput);			// Konnte erfolgreich gelesen werden wird die jeweilige			
 		}
 	else
 	{	
 		AfxMessageBox("Fehler! Datei \"PlanetNames.data\" kann nicht geöffnet werden...");
 		exit(1);
 	}
-	file.Close();							// Datei wird geschlossen
 
-	// Systemnamen der MinorRaces einlesen
-	fileName = CIOData::GetInstance()->GetAppPath() + "Data\\Names\\RacePlanetNames.data";
-	if (file.Open(fileName, CFile::modeRead | CFile::typeText) && m_strRaceNames.IsEmpty())	// Datei wird geöffnet
-		while (file.ReadString(csInput))
-		{
-			// prüfen ob der Name schon bei den normalen Systemnamen vorkam.
-			if (sNames.find(csInput) != sNames.end())
-			{
-				CString sError;
-				sError.Format("Warning\n:The race-systemname %s allready exists in normal systemnames.\nThe minor in system %s is not in this game!\n\nPlease remove one of them to solve that problem!", csInput, csInput);
-				AfxMessageBox(sError);
-				continue;
-			}
-			m_strRaceNames.Add(csInput);		// Konnte erfolgreich gelesen werden wird die jeweilige
-		}
-	else
-	{	
-		AfxMessageBox("Fehler! Datei \"RacePlanetNames.data\" kann nicht geöffnet werden...");
-		exit(1);
-	}
+	// Datei wird geschlossen
 	file.Close();
 }

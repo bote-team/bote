@@ -15,6 +15,7 @@ CAnomaly::CAnomaly(void)
 	// Wurmlöcher sind sehr selten
 	if (m_byType == WORMHOLE)
 		m_byType = (ANOMALYTYP)(rand()%15);
+		
 
 	// Nebel
 	if (m_byType == RADIONEBULA)
@@ -322,7 +323,13 @@ void CAnomaly::CalcShipEffects(CShip* pShip) const
 				pShip->GetFleet()->GetShipFromFleet(i)->GetShield()->ModifyShield(nMaxShield, nShieldType, bRegenerative);
 			}
 		// Schiff selbst 
-		UINT nMaxShield = pShip->GetShield()->GetMaxShield() * 1.03;
+		UINT nMaxShield = pShip->GetShield()->GetMaxShield() * 1.23;
+		CBotf2Doc* pDoc = ((CBotf2App*)AfxGetApp())->GetDocument();
+		ASSERT(pDoc);
+		// maximal die doppelte Anzahl der Schildstärke können erreicht werden
+		UINT nMaxShieldValue = pDoc->GetShipInfos()->GetAt(pShip->GetID() - 10000).GetShield()->GetMaxShield() * 2;
+		nMaxShield = min(nMaxShield, nMaxShieldValue);
+
 		BYTE nShieldType = pShip->GetShield()->GetShieldType();
 		BOOLEAN bRegenerative = pShip->GetShield()->GetRegenerative();
 

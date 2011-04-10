@@ -19,30 +19,28 @@ class CDiplomacyInfo;
 /// Klasse zur Verarbeitung aller diplomatischen Ereignisse.
 class CDiplomacyController
 {
-public:
-
+protected:
 	/// Standardkonstruktor
 	CDiplomacyController(void);
 
+public:
 	/// Standarddestruktor
 	~CDiplomacyController(void);
 
-	// Zugriffsfunktionen
-
-	// sonstige Funktionen
-	
-	///	Diese Funktion wird bei jeder neuen Rundenberechnung aufgerufen und berechnet wann eine Aktion feuert
-	/// und generiert selbst neue diplomatische Nachrichten.
-	static void CalcDiplomaticFallouts(void);
-
-private:
-	// Attribute
-
-	// private Funktionen
-
 	/// Funktion zum Versenden von diplomatischen Angeboten
 	static void Send(void);
-	
+
+	/// Funktion zum Empfangen und Bearbeiten eines diplomatischen Angebots.
+	static void Receive(void);
+
+private:
+	// private Funktionen
+
+	/// Funktion überprüft die diplomatische Konsistenz und berechnet die direkten diplomatischen Auswirkungen.
+	/// Sie sollte nach <func>Receive</func> aufgerufen werden.
+	/// Stellt die Funktion Probleme fest, so werden diese automatisch behoben.
+	static void CalcDiplomacyFallouts(CBotf2Doc* pDoc);
+
 	/// Funktion zum Versenden von diplomatischen Angeboten an eine Majorrace.
 	/// @param pDoc Zeiger auf das Dokument
 	/// @param pToMajor Zeiger auf die Empfängerrasse
@@ -54,9 +52,6 @@ private:
 	/// @param pToMinor Zeiger auf die Empfängerrasse
 	/// @param pInfo Zeiger auf aktuelles Diplomatieobjekt
 	static void SendToMinor(CBotf2Doc* pDoc, CMinor* pToMinor, CDiplomacyInfo* pInfo);
-
-	/// Funktion zum Empfangen und Bearbeiten eines diplomatischen Angebots.
-	static void Receive(void);
 
 	/// Funktion zum Empfangen und Bearbeiten eines diplomatischen Angebots für eine Majorrace.
 	/// @param pDoc Zeiger auf das Dokument

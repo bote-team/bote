@@ -972,7 +972,7 @@ bool CMajorAI::MakeMajorOffer(CString& sRaceID, CDiplomacyInfo& info)
 				info.m_nType = PRESENT;			
 		}
 		// wenn kein Angebot und kein Geschenk gemacht wird, dann wird vielleicht eine Forderung gestellt.
-		else
+		else if (nAgreement != WAR)
 		{
 			// Der Modifikator ausgehend von den Schiffsstärken verändert die Wahrscheinlichkeit für eine Forderung.
 			// Umso stärker unsere Schiffe sind, desto eher wird auch eine Forderung gestellt. Hier werden zwei Zufalls-

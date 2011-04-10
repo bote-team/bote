@@ -888,7 +888,6 @@ void CBotf2Doc::PrepareData()
 					it->second->SetIsRaceContacted(jt->first, true);
 				}
 		*/
-		
 		m_iRound = 1;
 		
 		// Generierungssektornamenklasse wieder neu starten
@@ -977,7 +976,7 @@ void CBotf2Doc::GenerateGalaxy()
 	// zwischen den Systemen groß genug sind. Außerdem müssen um jedes der Hauptsysteme zwei weitere Systeme liegen.
 	// Diese werden wenn nötig auch generiert.
 	map<CString, CMajor*>* pmMajors = m_pRaceCtrl->GetMajors();
-
+	
 	// minimaler Abstand der Majorraceheimatsysteme
 	int nMinDiff = 14 - pmMajors->size();
 	// minimal 4 Felder abstand
@@ -1017,6 +1016,24 @@ void CBotf2Doc::GenerateGalaxy()
 			it = pmMajors->begin();
 		}
 	}
+
+	// alle potentiellen Minorracesystemnamen holen
+	map<CString, CMinor*>* pmMinors = m_pRaceCtrl->GetMinors();
+	CStringArray vMinorRaceSystemNames;
+	for (map<CString, CMinor*>::const_iterator it = pmMinors->begin(); it != pmMinors->end(); ++it)
+	{
+		CMinor* pMinor = it->second;
+		if (!pMinor)
+		{
+			ASSERT(pMinor);
+			continue;
+		}
+		
+		vMinorRaceSystemNames.Add(pMinor->GetHomesystemName());
+	}
+
+	// Namensgenerator initialisieren
+	CGenSectorName::GetInstance()->Init(vMinorRaceSystemNames);
 
 	int nStarDensity = 35;
 	int nMinorDensity = 30;
@@ -1145,7 +1162,6 @@ void CBotf2Doc::GenerateGalaxy()
 
 	// nun können alle nicht verwendeten Minors entfernt werden
 	vector<CString> vDelMinors;
-	map<CString, CMinor*>* pmMinors = m_pRaceCtrl->GetMinors();
 	for (map<CString, CMinor*>::iterator it = pmMinors->begin(); it != pmMinors->end(); ++it)
 	{
 		if (sUsedMinors.find(it->first) == sUsedMinors.end())
@@ -1159,104 +1175,6 @@ void CBotf2Doc::NextRound()
 {
 	// gibt es für diese Runde Sektoren in welchen ein Kampf stattfand
 	bool bCombatInCurrentRound = m_sCombatSectors.size() > 0 ? true : false;
-
-	/*
-	// findet ein Kampf statt
-	if (bCombatInCurrentRound)
-	{
-		MYTRACE(MT::LEVEL_INFO, "COMBAT ROUND\n");
-		// Kampf berechnen
-		CalcShipCombat();
-		// Wenn wieder ein Kampf stattfindet, so aus der Funktion springen
-		if (IsShipCombat())
-			return;
-	}
-	// Es fand noch kein Kampf die Runde statt. Dies tritt ein, wenn entweder wirklich kein Kampf diese Runde war
-	// oder das erste Mal in diese Funktion gesprungen wurde.
-	else
-	{
-		MYTRACE(MT::LEVEL_INFO, "\nSTART NEXT ROUND (round: %d)\n", GetCurrentRound());
-
-		int nSeed = -1;
-		CIniLoader::GetInstance()->ReadValue("Special", "RANDOMSEED", nSeed);
-		// festen vorgegeben Seed verwenden
-		if (nSeed >= 0)
-			srand(nSeed);
-		// zufälligen Seed verwenden
-		else	
-			srand((unsigned)time(NULL));
-		
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////
-		for (int i = network::RACE_1; i < network::RACE_ALL; i++)
-			m_SoundMessages[i].RemoveAll();
-		
-		m_pSectorAI->Clear();
-		m_pSectorAI->CalculateDangers();
-		m_pSectorAI->CalcualteSectorPriorities();
-		
-		CShipAI* pShipAI = new CShipAI(this);
-		pShipAI->CalculateShipOrders(m_pSectorAI);
-		delete pShipAI;	
-		
-		m_pAIPrios->Clear();
-		m_pAIPrios->CalcShipPrios(m_pSectorAI);
-		m_pAIPrios->GetIntelAI()->CalcIntelligence(this);
-
-		// alle Statistiken des Spiels berechnen (erst nachdem die Sector-AI berechnet wurde! Nimmt von dort gleich die Schiffsstärken)
-		m_Statistics.CalcStats(this);
-
-		this->CalcPreDataForNextRound();
-
-		this->CalcSystemAttack();
-		this->CalcIntelligence();
-		this->CalcResearch();	
-		this->CalcDiplomacy();
-		
-		// alten Creditbestand festhalten
-		map<CString, CMajor*>* pmMajors = m_pRaceCtrl->GetMajors();
-		map<CString, long> mOldCredits;
-		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
-		{
-			CMajor* pMajor = it->second;
-			mOldCredits[it->first] = pMajor->GetEmpire()->GetCredits();
-		}
-		
-		this->CalcOldRoundData();
-		this->CalcNewRoundData();	
-		this->CalcTrade();	
-
-		// Hier Schiffsbewegung und alles was dazugehört	
-		CSmallInfoView::SetShipInfo(false);
-		for (int i = network::RACE_1; i < network::RACE_ALL; i++)
-			if (m_iSelectedView[i] == FLEET_VIEW)
-				m_iSelectedView[i] = GALAXY_VIEW;
-		
-		m_NumberOfTheShipInArray = -1;
-		m_iNumberOfFleetShip = -1;
-		m_iNumberOfTheShipInFleet = -1;
-
-		// hier einmal das ganze Feld durchgehen und nach Stationen suchen
-		for (int y = 0; y < m_ShipArray.GetSize(); y++)
-		{
-			// Zuerst abfragen ob in dem System ein Außenposten/Sternbasis steht, die dem Sector bekanntgeben
-			// Die normalen Schiffe werden erst ganz am Ende, nach deren Bewegung dem Sektor bekanntgegeben
-			if (m_ShipArray[y].GetShipType() == OUTPOST)
-				m_Sector[m_ShipArray[y].GetKO().x][m_ShipArray[y].GetKO().y].SetOutpost(TRUE, m_ShipArray[y].GetOwnerOfShip());
-			else if (m_ShipArray[y].GetShipType() == STARBASE)
-				m_Sector[m_ShipArray[y].GetKO().x][m_ShipArray[y].GetKO().y].SetStarbase(TRUE, m_ShipArray[y].GetOwnerOfShip());
-		}	
-		this->CalcShipOrders();
-		this->CalcShipMovement();
-
-		// prüfen ob ein Kampf stattfindet
-		if (IsShipCombat())
-			// findet ein Kampf statt, so sofort aus der Funktion rausgehen und die Kampfberechnungen durchführen
-			return;
-	}
-
-	this->CalcShipEffects();
-	this->CalcEndDataForNextRound();
-	*/
 
 	// Es fand noch kein Kampf die Runde statt. Dies tritt ein, wenn entweder wirklich kein Kampf diese Runde war
 	// oder das erste Mal in diese Funktion gesprungen wurde.
@@ -1316,7 +1234,7 @@ void CBotf2Doc::NextRound()
 		m_Statistics.CalcStats(this);
 
 		this->CalcPreDataForNextRound();
-		// CHECK WW: Diplomatie war zuvor erst nach der Forschung
+		// Diplomatie nach dem Hochzählen der Runde aber noch vor der Schiffsbewegung durchführen
 		this->CalcDiplomacy();
 		this->CalcShipOrders();
 		this->CalcShipMovement();
@@ -1427,9 +1345,7 @@ void CBotf2Doc::NextRound()
 	this->CalcSystemAttack();
 	this->CalcIntelligence();
 	this->CalcResearch();
-	// CHECK WW: vor die Schiffsbewegung gepackt
-	//this->CalcDiplomacy();
-	
+		
 	// alten Creditbestand festhalten		
 	map<CString, long> mOldCredits;
 	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
@@ -3221,112 +3137,28 @@ void CBotf2Doc::CalcResearch()
 }
 
 /// Diese Funktion berechnet die Auswirkungen von diplomatischen Angeboten und ob Minorraces Angebote an
-/// Majorraces abgeben
+/// Majorraces abgeben.
 void CBotf2Doc::CalcDiplomacy()
 {		
 	using namespace network;
-	/*
-		Der Start des Feldes ist immer zufällig, Berechnung geht also nicht immer mit der Föd los.
-		Das ist besser, weil wenn bei der Diplomatie was gleichzeitig eintreffen sollte, aber es nur
-		auf eine Hauptrasse zutreffen kann, dann trifft das auf die zu, die im Feld eher bearbeitet wurde.
-		Da die Föd (normalerweise an erster Stelle) nicht einen Vorteil daraus erhalten soll, gehen wir
-		diese Schleife hier zufällig durch
-	*/
 
-	CDiplomacyController* pDiplomacyController = new CDiplomacyController();
-	pDiplomacyController->CalcDiplomaticFallouts();
-	delete pDiplomacyController;
-	pDiplomacyController = NULL;
+	// zuerst alle Angebote senden
+	CDiplomacyController::Send();
 
+	// danach empfangen und reagieren
+	CDiplomacyController::Receive();
+	
+	// Hinweis das Nachrichten eingegangen sind erstellen
 	map<CString, CMajor*>* pmMajors = m_pRaceCtrl->GetMajors();
-	map<CString, CMinor*>* pmMinors = m_pRaceCtrl->GetMinors();
-
-	for (map<CString, CMinor*>::const_iterator it = pmMinors->begin(); it != pmMinors->end(); ++it)
-	{
-		CMinor* pMinor = it->second;
-		
-		// Die diplomatische Konsistenz überprüfen! z.B kann niemand mehr eine Freundschaft haben, wenn jemand eine
-		// Mitgliedschaft mit dieser Rasse hat. Verträge werden gekündigt, wenn die Minorrace unterworfen wurde
-		pMinor->CheckDiplomaticConsistence(this);
-		pMinor->PerhapsCancelAgreement(this);
-
-		for (map<CString, CMajor*>::const_iterator jt = pmMajors->begin(); jt != pmMajors->end(); ++jt)
-		{
-			CMajor* pMajor = jt->second;
-
-			// Wenn wir mit der Minorrace mindst. einen Handelsvertrag abgeschlossen haben, dann wird deren Sector gescannt/gesehen
-			if (pMinor->GetAgreement(pMajor->GetRaceID()) >= TRADE_AGREEMENT)
-				m_Sector[pMinor->GetRaceKO().x][pMinor->GetRaceKO().y].SetScanned(pMajor->GetRaceID());
-			// Wenn wir mit der Minorrace mindst. einen Freundschaftsvertrag abgeschlossen haben, dann wird deren Sector bekannt
-			if (pMinor->GetAgreement(pMajor->GetRaceID()) >= FRIENDSHIP_AGREEMENT)
-				m_Sector[pMinor->GetRaceKO().x][pMinor->GetRaceKO().y].SetKnown(pMajor->GetRaceID());
-			// Wenn wir eine Mitgliedschaft mit der kleinen Rasse haben und das System noch der kleinen Rasse gehört, dann bekommen wir das
-			if (pMinor->GetAgreement(pMajor->GetRaceID()) == MEMBERSHIP && m_System[pMinor->GetRaceKO().x][pMinor->GetRaceKO().y].GetOwnerOfSystem() == "")
-			{
-				m_Sector[pMinor->GetRaceKO().x][pMinor->GetRaceKO().y].SetFullKnown(pMajor->GetRaceID());
-				m_System[pMinor->GetRaceKO().x][pMinor->GetRaceKO().y].SetOwnerOfSystem(pMajor->GetRaceID());
-				m_Sector[pMinor->GetRaceKO().x][pMinor->GetRaceKO().y].SetOwnerOfSector(pMajor->GetRaceID());
-				m_Sector[pMinor->GetRaceKO().x][pMinor->GetRaceKO().y].SetOwned(TRUE);
-				// Der Sector gilt jetzt als nicht eingenommen
-				m_Sector[pMinor->GetRaceKO().x][pMinor->GetRaceKO().y].SetTakenSector(FALSE);
-				// Nun Gebäude in neuen System bauen
-				m_System[pMinor->GetRaceKO().x][pMinor->GetRaceKO().y].BuildBuildingsForMinorRace(&m_Sector[pMinor->GetRaceKO().x][pMinor->GetRaceKO().y], &BuildingInfo, m_Statistics.GetAverageTechLevel(), pMinor);
-				// Gebäude so weit wie möglich mit Arbeitern besetzen
-				m_System[pMinor->GetRaceKO().x][pMinor->GetRaceKO().y].SetWorkersIntoBuildings();
-				// alle Schiffe der Minor gehen nun an den Major
-				for (int i = 0; i < m_ShipArray.GetSize(); i++)
-				{
-					CShip* pShip = &(m_ShipArray[i]);
-					if (pShip->GetOwnerOfShip() == pMinor->GetRaceID())
-					{
-						pShip->SetOwnerOfShip(pMajor->GetRaceID());
-						// Schiff in die Shiphistory stecken
-						pMajor->GetShipHistory()->AddShip(pShip, GetSector(pMinor->GetRaceKO()).GetName(true), m_iRound);
-					}
-				}
-			}
-		}
-	}
-
 	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 	{
 		CMajor* pMajor = it->second;
-		if (pMajor->GetIncomingDiplomacyNews()->size() > 0)
+		if (pMajor->IsHumanPlayer() && pMajor->GetIncomingDiplomacyNews()->size() > 0)
 		{
 			network::RACE client = m_pRaceCtrl->GetMappedClientID(it->first);
-			if (pMajor->IsHumanPlayer())
-			{
-				SNDMGR_MESSAGEENTRY entry = {SNDMGR_MSG_DIPLOMATICNEWS, client, 0, 1.0f};
-				m_SoundMessages[client].Add(entry);
-				m_iSelectedView[client] = EMPIRE_VIEW;
-			}
-		}
-	}		
-
-	// Hat die Rasse die Mitgliedschaft gekündigt, wurde Bestochen oder irgendein anderer Grund ist dafür
-	// verantwortlich, warum eine Major plötzlich nicht mehr Zugriff auf das System der Minor hat.
-	for (map<CString, CMinor*>::const_iterator it = pmMinors->begin(); it != pmMinors->end(); ++it)
-	{
-		CMinor* pMinor = it->second;
-	
-		CString sOwner = m_System[pMinor->GetRaceKO().x][pMinor->GetRaceKO().y].GetOwnerOfSystem();
-		if (sOwner != "")
-		{
-			// Wenn wir eine Mitgliedschaft bei der kleinen Rasse hatten, sprich uns das System noch gehört, wir aber
-			// der kleinen Rasse den Krieg erklären bzw. den Vertrag aufheben (warum auch immer?!?) und das System nicht
-			// gewaltätig erobert wurde, dann gehört uns das System auch nicht mehr
-			if (pMinor->GetAgreement(sOwner) != MEMBERSHIP && GetSector(pMinor->GetRaceKO()).GetMinorRace() == TRUE && GetSector(pMinor->GetRaceKO()).GetTakenSector() == FALSE)
-			{
-				GetSector(pMinor->GetRaceKO()).SetOwned(false);
-				GetSector(pMinor->GetRaceKO()).SetOwnerOfSector(pMinor->GetRaceID());
-				GetSystem(pMinor->GetRaceKO()).SetOwnerOfSystem("");
-				CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(sOwner));
-				if (pMajor)
-				{
-					int n = pMajor->GetEmpire()->GetNumberOfSystems();
-					pMajor->GetEmpire()->SetNumberOfSystems(n - 1);
-				}
-			}
+			SNDMGR_MESSAGEENTRY entry = {SNDMGR_MSG_DIPLOMATICNEWS, client, 0, 1.0f};
+			m_SoundMessages[client].Add(entry);
+			m_iSelectedView[client] = EMPIRE_VIEW;			
 		}
 	}
 }

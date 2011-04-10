@@ -1107,7 +1107,7 @@ void CDiplomacyMenuView::DrawDiplomacyOfferMenue(Graphics* g, const CString& sWh
 	for (UINT l = 0; l < pPlayer->GetOutgoingDiplomacyNews()->size(); l++)
 	{
 		CDiplomacyInfo* pInfo = &pPlayer->GetOutgoingDiplomacyNews()->at(l);
-		if (pInfo->m_nFlag == DIPLOMACY_OFFER && pInfo->m_sToRace == sWhichRace && pInfo->m_sFromRace == pPlayer->GetRaceID())
+		if (pInfo->m_nSendRound == pDoc->GetCurrentRound() && pInfo->m_nFlag == DIPLOMACY_OFFER && pInfo->m_sToRace == sWhichRace && pInfo->m_sFromRace == pPlayer->GetRaceID())
 		{
 			m_OutgoingInfo = *pInfo;
 			m_bShowSendButton = FALSE;

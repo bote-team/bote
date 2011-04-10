@@ -19,18 +19,14 @@ CDiplomacyController::~CDiplomacyController(void)
 // sonstige Funktionen
 //////////////////////////////////////////////////////////////////////
 
-///	Diese Funktion wird bei jeder neuen Rundenberechnung aufgerufen und berechnet wann eine Aktion feuert
-/// und generiert selbst neue diplomatische Nachrichten.
-void CDiplomacyController::CalcDiplomaticFallouts(void)
+/// Funktion zum Versenden von diplomatischen Angeboten
+void CDiplomacyController::Send(void)
 {
 	CBotf2Doc* pDoc = ((CBotf2App*)AfxGetApp())->GetDocument();
 	ASSERT(pDoc);
 
 	std::map<CString, CRace*>* races = pDoc->GetRaceCtrl()->GetRaces();
 	ASSERT(races);
-
-	// auf Angebote der letzen Runde reagieren
-	Receive();
 
 	// KI Angebote erstellen lassen
 	for (map<CString, CRace*>::const_iterator it = races->begin(); it != races->end(); ++it)
@@ -41,37 +37,29 @@ void CDiplomacyController::CalcDiplomaticFallouts(void)
 		pRace->MakeOffersAI();
 	}
 
-	// Angebote senden
-	Send();
-}
-
-//////////////////////////////////////////////////////////////////////
-// private Funktionen
-//////////////////////////////////////////////////////////////////////
-
-/// Funktion zum Versenden von diplomatischen Angeboten
-void CDiplomacyController::Send(void)
-{
-	CBotf2Doc* pDoc = ((CBotf2App*)AfxGetApp())->GetDocument();
-	ASSERT(pDoc);
-
-	std::map<CString, CRace*>* races = pDoc->GetRaceCtrl()->GetRaces();
-	ASSERT(races);
-
-	// durch alle Rassen iterieren
+	// durch alle Rassen iterieren und Angebote versenden
 	for (map<CString, CRace*>::const_iterator it = races->begin(); it != races->end(); ++it)
 	{
 		CRace* pRace = it->second;
 		ASSERT(pRace);
 
+		// alle eingegangenen Antworten aus der letzten Runde löschen
+		for (UINT i = 0; i < pRace->GetIncomingDiplomacyNews()->size(); i++)
+		{
+			CDiplomacyInfo* pInfo = &(pRace->GetIncomingDiplomacyNews()->at(i));
+			if (pInfo->m_nFlag == DIPLOMACY_ANSWER)
+				pRace->GetIncomingDiplomacyNews()->erase(pRace->GetIncomingDiplomacyNews()->begin() + i--);	
+		}
+
 		// nun durch alle ausgehenden Nachrichten iterieren
-		for (UINT i = 0; i < pRace->GetOutgoingDiplomacyNews()->size(); )
+		for (UINT i = 0; i < pRace->GetOutgoingDiplomacyNews()->size(); i++)
 		{
 			CDiplomacyInfo* pInfo = &(pRace->GetOutgoingDiplomacyNews()->at(i));
 			// exisitiert die Zielrasse?
 			if (races->find(pInfo->m_sToRace) != races->end())
 			{
 				CRace* pToRace = (*races)[pInfo->m_sToRace];
+				// Angebote senden
 				if (pToRace->GetType() == MAJOR)
 				{
 					SendToMajor(pDoc, (CMajor*)pToRace, pInfo);
@@ -80,11 +68,12 @@ void CDiplomacyController::Send(void)
 				{
 					SendToMinor(pDoc, (CMinor*)pToRace, pInfo);
 				}				
-			}
-			// ausgehende Nachrichten löschen
-			pRace->GetOutgoingDiplomacyNews()->erase(pRace->GetOutgoingDiplomacyNews()->begin());
+			}			
 		}
-	}
+
+		// alle ausgehenden Nachrichten werden gelöscht
+		pRace->GetOutgoingDiplomacyNews()->clear();		
+	}	
 }
 
 /// Funktion zum Empfangen und Bearbeiten eines diplomatischen Angebots.
@@ -96,19 +85,7 @@ void CDiplomacyController::Receive(void)
 	std::map<CString, CRace*>* races = pDoc->GetRaceCtrl()->GetRaces();
 	ASSERT(races);
 
-	// alle alten Antworten können gelöscht werden
-	for (map<CString, CRace*>::const_iterator it = races->begin(); it != races->end(); ++it)
-	{
-		CRace* pRace = it->second;
-		ASSERT(pRace);
-
-		// nun durch alle Nachrichten iterieren und alle Antworten löschen
-		for (UINT i = 0; i < pRace->GetIncomingDiplomacyNews()->size(); i++)
-			if (pRace->GetIncomingDiplomacyNews()->at(i).m_nFlag == DIPLOMACY_ANSWER)
-				pRace->GetIncomingDiplomacyNews()->erase(pRace->GetIncomingDiplomacyNews()->begin() + i--);
-	}
-
-	// durch alle Rassen iterieren
+	// durch alle Rassen iterieren und Nachrichten empfangen sowie darauf reagieren
 	for (map<CString, CRace*>::const_iterator it = races->begin(); it != races->end(); ++it)
 	{
 		CRace* pRace = it->second;
@@ -133,16 +110,106 @@ void CDiplomacyController::Receive(void)
 			}			
 		}
 
-		// alle alten Angebote löschen
+		// alle eingegangenen Angebote aus der letzten Runde löschen
 		for (UINT i = 0; i < pRace->GetIncomingDiplomacyNews()->size(); i++)
 		{
 			CDiplomacyInfo* pInfo = &(pRace->GetIncomingDiplomacyNews()->at(i));
-
-			// ist das Angebot älter als 2 Runden, dann kann es gelöscht werden
-			if (pInfo->m_nFlag == DIPLOMACY_OFFER && pInfo->m_nSendRound >= pDoc->GetCurrentRound() - 2)
+			if (pInfo->m_nSendRound < pDoc->GetCurrentRound() - 1)
 				pRace->GetIncomingDiplomacyNews()->erase(pRace->GetIncomingDiplomacyNews()->begin() + i--);
 		}
-	}	
+	}
+
+	// die diplomatische Konsistenz überprüfen und Auswirkungen beachten
+	CalcDiplomacyFallouts(pDoc);
+}
+
+//////////////////////////////////////////////////////////////////////
+// private Funktionen
+//////////////////////////////////////////////////////////////////////
+
+/// Funktion überprüft die diplomatische Konsistenz und berechnet die direkten diplomatischen Auswirkungen.
+/// Sie sollte nach <func>Receive</func> aufgerufen werden.
+/// Stellt die Funktion Probleme fest, so werden diese automatisch behoben.
+/// @param pDoc Zeiger auf das Dokument
+void CDiplomacyController::CalcDiplomacyFallouts(CBotf2Doc* pDoc)
+{
+	map<CString, CMajor*>* pmMajors = pDoc->GetRaceCtrl()->GetMajors();
+	map<CString, CMinor*>* pmMinors = pDoc->GetRaceCtrl()->GetMinors();
+	
+	for (map<CString, CMinor*>::const_iterator it = pmMinors->begin(); it != pmMinors->end(); ++it)
+	{
+		CMinor* pMinor = it->second;
+		
+		// Die diplomatische Konsistenz überprüfen! z.B kann niemand mehr eine Freundschaft haben, wenn jemand eine
+		// Mitgliedschaft mit dieser Rasse hat. Verträge werden gekündigt, wenn die Minorrace unterworfen wurde
+		pMinor->CheckDiplomaticConsistence(pDoc);
+		pMinor->PerhapsCancelAgreement(pDoc);
+
+		for (map<CString, CMajor*>::const_iterator jt = pmMajors->begin(); jt != pmMajors->end(); ++jt)
+		{
+			CMajor* pMajor = jt->second;
+
+			// Wenn wir mit der Minorrace mindst. einen Handelsvertrag abgeschlossen haben, dann wird deren Sector gescannt/gesehen
+			if (pMinor->GetAgreement(pMajor->GetRaceID()) >= TRADE_AGREEMENT)
+				pDoc->GetSector(pMinor->GetRaceKO()).SetScanned(pMajor->GetRaceID());
+			// Wenn wir mit der Minorrace mindst. einen Freundschaftsvertrag abgeschlossen haben, dann wird deren Sector bekannt
+			if (pMinor->GetAgreement(pMajor->GetRaceID()) >= FRIENDSHIP_AGREEMENT)
+				pDoc->GetSector(pMinor->GetRaceKO()).SetKnown(pMajor->GetRaceID());
+			// Wenn wir eine Mitgliedschaft mit der kleinen Rasse haben und das System noch der kleinen Rasse gehört, dann bekommen wir das
+			if (pMinor->GetAgreement(pMajor->GetRaceID()) == MEMBERSHIP && pDoc->GetSystem(pMinor->GetRaceKO()).GetOwnerOfSystem() == "")
+			{
+				pDoc->GetSector(pMinor->GetRaceKO()).SetFullKnown(pMajor->GetRaceID());
+				pDoc->GetSystem(pMinor->GetRaceKO()).SetOwnerOfSystem(pMajor->GetRaceID());
+				pDoc->GetSector(pMinor->GetRaceKO()).SetOwnerOfSector(pMajor->GetRaceID());
+				pDoc->GetSector(pMinor->GetRaceKO()).SetOwned(TRUE);
+				// Der Sector gilt jetzt als nicht eingenommen
+				pDoc->GetSector(pMinor->GetRaceKO()).SetTakenSector(FALSE);
+				// Nun Gebäude in neuen System bauen
+				pDoc->GetSystem(pMinor->GetRaceKO()).BuildBuildingsForMinorRace(&pDoc->GetSector(pMinor->GetRaceKO()), &pDoc->BuildingInfo, pDoc->GetStatistics()->GetAverageTechLevel(), pMinor);
+				// Gebäude so weit wie möglich mit Arbeitern besetzen
+				pDoc->GetSystem(pMinor->GetRaceKO()).SetWorkersIntoBuildings();
+				// alle Schiffe der Minor gehen nun an den Major
+				for (int i = 0; i < pDoc->m_ShipArray.GetSize(); i++)
+				{
+					CShip* pShip = &(pDoc->m_ShipArray[i]);
+					if (pShip->GetOwnerOfShip() == pMinor->GetRaceID())
+					{
+						pShip->SetOwnerOfShip(pMajor->GetRaceID());
+						// Schiff in die Shiphistory stecken
+						pMajor->GetShipHistory()->AddShip(pShip, pDoc->GetSector(pMinor->GetRaceKO()).GetName(true), pDoc->GetCurrentRound());
+					}
+				}
+			}
+		}
+	}
+
+	// Hat die Rasse die Mitgliedschaft gekündigt, wurde Bestochen oder irgendein anderer Grund ist dafür
+	// verantwortlich, warum eine Major plötzlich nicht mehr Zugriff auf das System der Minor hat.
+	for (map<CString, CMinor*>::const_iterator it = pmMinors->begin(); it != pmMinors->end(); ++it)
+	{
+		CMinor* pMinor = it->second;
+	
+		CString sOwner = pDoc->GetSystem(pMinor->GetRaceKO()).GetOwnerOfSystem();
+		if (sOwner != "")
+		{
+			// Wenn wir eine Mitgliedschaft bei der kleinen Rasse hatten, sprich uns das System noch gehört, wir aber
+			// der kleinen Rasse den Krieg erklären bzw. den Vertrag aufheben (warum auch immer?!?) und das System nicht
+			// gewaltätig erobert wurde, dann gehört uns das System auch nicht mehr
+			if (pMinor->GetAgreement(sOwner) != MEMBERSHIP && pDoc->GetSector(pMinor->GetRaceKO()).GetMinorRace() == TRUE &&
+				pDoc->GetSector(pMinor->GetRaceKO()).GetTakenSector() == FALSE)
+			{
+				pDoc->GetSector(pMinor->GetRaceKO()).SetOwned(false);
+				pDoc->GetSector(pMinor->GetRaceKO()).SetOwnerOfSector(pMinor->GetRaceID());
+				pDoc->GetSystem(pMinor->GetRaceKO()).SetOwnerOfSystem("");
+				CMajor* pMajor = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(sOwner));
+				if (pMajor)
+				{
+					int nCount = pMajor->GetEmpire()->GetNumberOfSystems();
+					pMajor->GetEmpire()->SetNumberOfSystems(nCount - 1);
+				}
+			}
+		}
+	}
 }
 
 /// Funktion zum Versenden von diplomatischen Angeboten an eine Majorrace.

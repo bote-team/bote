@@ -25,6 +25,10 @@ public:
 	/// Funktion liefert die einzige Instanz dieser Klasse (Singleton).
 	/// @return Instanz dieser Klasse
 	static CGenSectorName* GetInstance(void);
+
+	/// Funktion initialisiert alle möglichen Systemnamen.
+	/// @pram vMinorRaceSystemNames Namen aller Minorracesysteme
+	void Init(const CStringArray& vMinorRaceSystemNames);
 	
 	/// Diese Funktion gibt uns einen einzigartigen Systemnamen zurück. Dieser Name wurde vorher noch nicht vergeben.
 	/// Als Parameter wird nur ein Wert übergeben, der der Funktion sagt ob es sich um ein Minorracesystem handelt
@@ -34,7 +38,7 @@ public:
 private:
 	// Funtkionen
 	/// Funktion liest die Systemnames aus den externen Datafiles ein
-	void ReadSystemNames(void);
+	void ReadSectorNames(void);
 
 	// Attribute
 	CStringArray m_strNames;		///< Feld aller Namen der Planetensysteme ohne Minor- und Majorracesysteme

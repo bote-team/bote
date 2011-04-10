@@ -364,8 +364,6 @@ void CSector::GenerateSector(int sunProb, int minorProb)
 /// Diese Funktion generiert die Planeten in dem Sektor.
 void CSector::CreatePlanets(const CString& sMajorID)
 {
-	for (int i = 0; i < m_Planets.GetSize(); )
-		m_Planets.RemoveAt(i);
 	m_Planets.RemoveAll();
 	
 	if (GetSunSystem())
