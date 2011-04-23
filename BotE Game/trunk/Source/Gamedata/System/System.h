@@ -164,7 +164,7 @@ public:
 
 	/// Funktion setzt den Prozentwert der Blockade fest. Ist dieser Wert größer als <code>NULL</code>, so besteht
 	/// eine Blockade.
-	void SetBlockade(BYTE blockadeValue) {if (blockadeValue > 100) blockadeValue = 100; m_byBlockade = blockadeValue;}
+	void SetBlockade(BYTE blockadeValue) {m_byBlockade = min(blockadeValue, 100);}
 
 	// Funktion setzt das Nahrungslager des Systems auf den Parameterwert "food".
 	void SetFoodStore(ULONG food) {m_iFoodStore = food;}

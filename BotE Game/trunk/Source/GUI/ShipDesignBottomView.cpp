@@ -5,7 +5,7 @@
 #include "botf2.h"
 #include "ShipDesignBottomView.h"
 #include "Races\RaceController.h"
-
+#include "Graphic\memdc.h"
 
 // CShipDesignBottomView
 
@@ -42,7 +42,7 @@ void CShipDesignBottomView::OnDraw(CDC* dc)
 	// TODO: add draw code here
 
 	// Doublebuffering wird initialisiert
-	CMemDC pDC(dc);
+	CMyMemDC pDC(dc);
 	CRect client;
 	GetClientRect(&client);
 		

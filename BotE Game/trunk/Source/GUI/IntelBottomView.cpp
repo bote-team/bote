@@ -6,7 +6,7 @@
 #include "IntelBottomView.h"
 #include "IntelMenuView.h"
 #include "Races\RaceController.h"
-
+#include "Graphic\memdc.h"
 
 // CIntelBottomView
 
@@ -43,7 +43,7 @@ void CIntelBottomView::OnDraw(CDC* dc)
 	// TODO: add draw code here
 
 	// Doublebuffering wird initialisiert
-	CMemDC pDC(dc);
+	CMyMemDC pDC(dc);
 	CRect client;
 	GetClientRect(&client);
 		

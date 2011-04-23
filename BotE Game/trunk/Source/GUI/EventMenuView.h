@@ -8,8 +8,10 @@
 #pragma once
 #include "MainBaseView.h"
 
-// CEventMenuView view
+// forward declaration
+class CEventScreen;
 
+// CEventMenuView view
 class CEventMenuView : public CMainBaseView
 {
 	DECLARE_DYNCREATE(CEventMenuView)

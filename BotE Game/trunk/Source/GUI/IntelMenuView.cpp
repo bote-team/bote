@@ -6,6 +6,7 @@
 #include "IntelMenuView.h"
 #include "IntelBottomView.h"
 #include "Races\RaceController.h"
+#include "Graphic\memdc.h"
 
 // CIntelMenuView
 #ifdef _DEBUG
@@ -69,7 +70,7 @@ void CIntelMenuView::OnDraw(CDC* dc)
 		return;
 
 	// TODO: add draw code here
-	CMemDC pDC(dc);
+	CMyMemDC pDC(dc);
 	CRect client;
 	GetClientRect(&client);
 		

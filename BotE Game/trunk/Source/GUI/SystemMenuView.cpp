@@ -9,6 +9,7 @@
 #include "Races\RaceController.h"
 #include "HTMLStringBuilder.h"
 #include "RoundRect.h"
+#include "Graphic\memdc.h"
 
 short CSystemMenuView::m_iClickedOn = 0;
 BYTE CSystemMenuView::m_byResourceRouteRes = TITAN;
@@ -80,7 +81,7 @@ void CSystemMenuView::OnDraw(CDC* dc)
 	
 	// ZU ERLEDIGEN: Code zum Zeichnen hier einfügen
 	// Doublebuffering wird initialisiert
-	CMemDC pDC(dc);
+	CMyMemDC pDC(dc);
 	CRect client;
 	GetClientRect(&client);
 		
@@ -3979,7 +3980,10 @@ CString CSystemMenuView::CreateTooltip(void)
 		// Schiff
 		else if (nID < 20000)
 		{
-			return pDoc->m_ShipInfoArray[nID - 10000].GetTooltip(false);
+			// Schiff erzeugen und Spezialforschungen einbeziehen
+			CShip ship = pDoc->m_ShipInfoArray[nID - 10000];
+			pDoc->AddSpecialResearchBoniToShip(&ship, m_pPlayersRace);
+			return ship.GetTooltip(false);
 		}
 	}
 

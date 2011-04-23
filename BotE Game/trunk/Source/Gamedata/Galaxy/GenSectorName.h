@@ -31,9 +31,10 @@ public:
 	void Init(const CStringArray& vMinorRaceSystemNames);
 	
 	/// Diese Funktion gibt uns einen einzigartigen Systemnamen zurück. Dieser Name wurde vorher noch nicht vergeben.
-	/// Als Parameter wird nur ein Wert übergeben, der der Funktion sagt ob es sich um ein Minorracesystem handelt
-	/// oder nicht.	
-	CString GetNextRandomSectorName(bool bMinor = false);
+	/// @param ptKO Sektorkoordinate
+	/// @param [in|out] bMinor handelt sich um ein Minorracesystem, wenn keine Minorracesysteme mehr vorhanden sind, dann wird der Parameter auf <code>false</code> gesetzt
+	/// @return generierter Sektorname
+	CString GetNextRandomSectorName(const CPoint& ptKO, bool& bMinor);
 
 private:
 	// Funtkionen

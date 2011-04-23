@@ -5,7 +5,7 @@
 #include "botf2.h"
 #include "DiplomacyBottomView.h"
 #include "Races\RaceController.h"
-
+#include "Graphic\memdc.h"
 
 // CDiplomacyBottomView
 
@@ -45,7 +45,7 @@ void CDiplomacyBottomView::OnDraw(CDC* dc)
 	// TODO: add draw code here
 
 	// Doublebuffering wird initialisiert
-	CMemDC pDC(dc);
+	CMyMemDC pDC(dc);
 	CRect client;
 	GetClientRect(&client);
 		

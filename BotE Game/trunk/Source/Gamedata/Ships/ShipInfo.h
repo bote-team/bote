@@ -17,7 +17,9 @@
 #endif // _MSC_VER > 1000
 
 #include "Ship.h"
-#include "Races\Empire.h"
+
+// forward declaration
+class CResearch;
 
 class CShipInfo : public CShip  
 {

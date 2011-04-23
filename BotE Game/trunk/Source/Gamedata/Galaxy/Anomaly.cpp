@@ -115,7 +115,7 @@ CString CAnomaly::GetMapName(const CPoint &pt) const
 	{
 	// Nebel
 	case RADIONEBULA:		sName = CResourceManager::GetString("RADIONEBULA");		break;
-	case METNEBULA:		sName = CResourceManager::GetString("METNEBULA");			break;
+	case METNEBULA:			sName = CResourceManager::GetString("METNEBULA");		break;
 	case DEUTNEBULA:		sName = CResourceManager::GetString("DEUTNEBULA");		break;
 	case IONSTORM:			sName = CResourceManager::GetString("IONSTORM");		break;
 	case BINEBULA:			sName = CResourceManager::GetString("BINEBULA");		break;

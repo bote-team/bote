@@ -6,6 +6,7 @@
 #include "ResearchMenuView.h"
 #include "ResearchBottomView.h"
 #include "Races\RaceController.h"
+#include "Graphic\memdc.h"
 
 // CResearchMenuView
 
@@ -46,7 +47,7 @@ void CResearchMenuView::OnDraw(CDC* dc)
 	
 	// TODO: add draw code here
 	// Doublebuffering wird initialisiert
-	CMemDC pDC(dc);
+	CMyMemDC pDC(dc);
 	CRect client;
 	GetClientRect(&client);
 		

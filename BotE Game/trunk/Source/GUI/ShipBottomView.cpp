@@ -12,6 +12,7 @@
 #include "Races\RaceController.h"
 #include "Ships\Fleet.h"
 #include "HTMLStringBuilder.h"
+#include "Graphic\memdc.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -73,7 +74,7 @@ void CShipBottomView::OnDraw(CDC* dc)
 	// TODO: add draw code here
 
 	// Doublebuffering wird initialisiert
-	CMemDC pDC(dc);
+	CMyMemDC pDC(dc);
 	CRect client;
 	GetClientRect(&client);
 		

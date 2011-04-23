@@ -101,7 +101,8 @@ private:
 	
 	CDiplomacyInfo  m_OutgoingInfo;			///< Diplomatieobjekt, welches bei einem Angebot erstellt wird und abgeschickt werden kann
 	CDiplomacyInfo* m_pIncomingInfo;		///< Zeiger auf Diplomatieobjekt, welches sich aktuell im Eingang befindet
-	vector<CRace*> m_vRaceList;				///< sortierte Liste aller bekannten Rassen, welche angezeigt werden sollen
+	vector<CRace*>  m_vRaceList;			///< sortierte Liste aller bekannten Rassen, welche angezeigt werden sollen
+	vector<CDiplomacyInfo*>	m_vIncomeList;	///< Liste aller eingehenden Nachrichten
 
 protected:
 	DECLARE_MESSAGE_MAP()

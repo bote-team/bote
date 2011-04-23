@@ -7,6 +7,7 @@
 #include "DiplomacyBottomView.h"
 #include "MenuChooseView.h"
 #include "Races\GenDiploMessage.h"
+#include "Graphic\memdc.h"
 #include <algorithm>
 
 #ifdef _DEBUG
@@ -103,6 +104,12 @@ void CDiplomacyMenuView::OnNewRound()
 	m_vRaceList.clear();
 	m_vRaceList.insert(m_vRaceList.end(), vMajors.begin(), vMajors.end());
 	m_vRaceList.insert(m_vRaceList.end(), vMinors.begin(), vMinors.end());
+
+	m_vIncomeList.clear();
+	for (vector<CRace*>::const_iterator it = m_vRaceList.begin(); it != m_vRaceList.end(); ++it)
+		for (UINT i = 0; i < pPlayer->GetIncomingDiplomacyNews()->size(); i++)
+			if (pPlayer->GetIncomingDiplomacyNews()->at(i).m_sFromRace == (*it)->GetRaceID())
+				m_vIncomeList.push_back(&pPlayer->GetIncomingDiplomacyNews()->at(i));	
 }
 
 // CDiplomacyMenuView drawing
@@ -120,7 +127,7 @@ void CDiplomacyMenuView::OnDraw(CDC* dc)
 		return;
 
 	// TODO: add draw code here
-	CMemDC pDC(dc);
+	CMyMemDC pDC(dc);
 	CRect client;
 	GetClientRect(&client);
 		
@@ -619,27 +626,41 @@ void CDiplomacyMenuView::DrawRaceDiplomacyMenue(Graphics* g)
 
 	// Position im Vector suchen
 	int nVecPos = 0;
-	if (m_sClickedOnRace != "")
+	if (m_bySubMenu != 2)
 	{
-		for (vector<CRace*>::const_iterator it = m_vRaceList.begin(); it != m_vRaceList.end(); it++)
+		if (m_sClickedOnRace != "")
 		{
-			if ((*it)->GetRaceID() == m_sClickedOnRace)
-				break;
-			nVecPos++;
+			for (vector<CRace*>::const_iterator it = m_vRaceList.begin(); it != m_vRaceList.end(); ++it)
+			{
+				if ((*it)->GetRaceID() == m_sClickedOnRace)
+					break;
+				nVecPos++;
+			}
+		}
+	}
+	else
+	{
+		if (m_pIncomingInfo)
+		{
+			for (vector<CDiplomacyInfo*>::const_iterator it = m_vIncomeList.begin(); it != m_vIncomeList.end(); ++it)
+			{
+				if (*it == m_pIncomingInfo)
+					break;
+				nVecPos++;
+			}
 		}
 	}
 
-	// alle bekannten Rassen anzeigen
-	for (vector<CRace*>::iterator it = m_vRaceList.begin(); it != m_vRaceList.end(); it++)
+	// Wenn wir im Eingangsbildschirm sind
+	if (m_bySubMenu != 2)
 	{
-		CRace* pRace = *it;
-		
-		// Wenn wir die Rasse kennen und nicht im Eingangsbildschirm sind
-		if (m_bySubMenu != 2)
+		// alle bekannten Rassen anzeigen
+		for (vector<CRace*>::iterator it = m_vRaceList.begin(); it != m_vRaceList.end(); ++it)
 		{
 			if (nVecPos-- > 21)
 				continue;
 
+			CRace* pRace = *it;
 			RectF rect(20,100+count*25,130,25);
 			// Haben wir auf die Rasse geklickt haben, dann Farbe ändern und jeweiliges Untermenü aufrufen
 			if (m_sClickedOnRace == pRace->GetRaceID())
@@ -713,191 +734,199 @@ void CDiplomacyMenuView::DrawRaceDiplomacyMenue(Graphics* g)
 			if (count > 21)
 				break;
 		}
-		// Wenn wir die Rasse kennen und im Eingangsbildschirm sind
-		else if (m_bySubMenu == 2)
+	}
+	// Wenn wir im Eingangsbildschirm sind
+	else
+	{
+		// alle Angebote durchgehen
+		for (vector<CDiplomacyInfo*>::const_iterator it = m_vIncomeList.begin(); it != m_vIncomeList.end(); ++it)
 		{
-			// Wenn die Rasse ein Angebot an uns gemacht hat
-			for (UINT l = 0; l < pPlayer->GetIncomingDiplomacyNews()->size(); l++)
+			if (nVecPos-- > 21)
+				continue;
+
+			// wenn noch kein Angebot angeklickt wurde, dann das erste Angebot auswählen
+			if (m_pIncomingInfo == NULL)
+				m_pIncomingInfo = *it;
+
+			m_OutgoingInfo = *(*it);
+
+			CRace* pRace = pDoc->GetRaceCtrl()->GetRace((*it)->m_sFromRace);
+			ASSERT(pRace);
+
+			RectF rect(20,100+count*25,130,25);
+			// handelt es sich um das angeklickte Angebot
+			if (m_pIncomingInfo == *it)
 			{
-				if (pPlayer->GetIncomingDiplomacyNews()->at(l).m_sFromRace == pRace->GetRaceID())
+				// Name der Rasse zeichnen
+				fontBrush.SetColor(markColor);
+				g->DrawString(pRace->GetRaceName().AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), rect, &fontFormat, &fontBrush);
+								
+				// Farbe der Schrift und Markierung wählen, wenn wir auf eine Rasse geklickt haben
+				g->FillRectangle(&SolidBrush(Color(50,200,200,200)), RectF(8,100+count*25,142,25));
+				g->DrawLine(&Gdiplus::Pen(penColor), 8, 100+count*25, 150, 100+count*25);
+				g->DrawLine(&Gdiplus::Pen(penColor), 8, 125+count*25, 150, 125+count*25);				
+				
+				// Bild der Rasse zeichnen
+				CString name = pRace->GetGraphicFileName();
+				Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Races\\" + name);
+				if (graphic == NULL)
+					graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Races\\ImageMissing.boj");		
+				if (graphic)
+					g->DrawImage(graphic, 735, 100, 300, 300);
+				
+				// Balken zeichnen, der angibt, wie gut die Rasse uns gegenübersteht, aber nur wenn der Computer sie spielt
+				if (pRace->GetType() == MINOR || pRace->GetType() == MAJOR && ((CMajor*)pRace)->IsHumanPlayer() == false)
 				{
-					m_OutgoingInfo = pPlayer->GetIncomingDiplomacyNews()->at(l);
-					// wenn noch kein Angebot angeklickt wurde, dann das erste Angebot auswählen
-					if (m_pIncomingInfo == NULL)
-						m_pIncomingInfo = &(pPlayer->GetIncomingDiplomacyNews()->at(l));
-					RectF rect(20,100+count*25,130,25);
-					// handelt es sich um das angeklickte Angebot
-					if (m_pIncomingInfo == &(pPlayer->GetIncomingDiplomacyNews()->at(l)))
+					for (int t = 0; t < 20; t++)
 					{
-						// Name der Rasse zeichnen
-						fontBrush.SetColor(markColor);
-						g->DrawString(pRace->GetRaceName().AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), rect, &fontFormat, &fontBrush);
-										
-						// Farbe der Schrift und Markierung wählen, wenn wir auf eine Rasse geklickt haben
-						g->FillRectangle(&SolidBrush(Color(50,200,200,200)), RectF(8,100+count*25,142,25));
-						g->DrawLine(&Gdiplus::Pen(penColor), 8, 100+count*25, 150, 100+count*25);
-						g->DrawLine(&Gdiplus::Pen(penColor), 8, 125+count*25, 150, 125+count*25);				
-						
-						// Bild der Rasse zeichnen
-						CString name = pRace->GetGraphicFileName();
-						Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Races\\" + name);
-						if (graphic == NULL)
-							graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Races\\ImageMissing.boj");		
-						if (graphic)
-							g->DrawImage(graphic, 735, 100, 300, 300);
-						
-						// Balken zeichnen, der angibt, wie gut die Rasse uns gegenübersteht, aber nur wenn der Computer sie spielt
-						if (pRace->GetType() == MINOR || pRace->GetType() == MAJOR && ((CMajor*)pRace)->IsHumanPlayer() == false)
+						RectF timber(650,387-t*15,30,13);
+						if (pRace->GetRelation(pPlayer->GetRaceID()) *2 / 10 > t)
 						{
-							for (int t = 0; t < 20; t++)
-							{
-								RectF timber(650,387-t*15,30,13);
-								if (pRace->GetRelation(pPlayer->GetRaceID()) *2 / 10 > t)
-								{
-									fontBrush.SetColor(Color(250-t*12, 0+t*12, 0));
-									g->FillRectangle(&SolidBrush(Color(200,250-t*12, 0+t*12, 0)), timber);
-								}
-								else
-									g->FillRectangle(&SolidBrush(Color(100,100,100,100)), timber);						
-							}
-							// den Text zeichnen, der Angibt wie gut uns die Rasse gegenübersteht
-							USHORT relation = pRace->GetRelation(pPlayer->GetRaceID());
-							if (relation < 5) s = CResourceManager::GetString("HATEFUL");
-							else if (relation < 15) s = CResourceManager::GetString("FURIOUS");
-							else if (relation < 25) s = CResourceManager::GetString("HOSTILE");
-							else if (relation < 35) s = CResourceManager::GetString("ANGRY");
-							else if (relation < 45) s = CResourceManager::GetString("NOT_COOPERATIVE");
-							else if (relation < 55) s = CResourceManager::GetString("NEUTRAL");
-							else if (relation < 65) s = CResourceManager::GetString("COOPERATIVE");
-							else if (relation < 75) s = CResourceManager::GetString("FRIENDLY");
-							else if (relation < 85) s = CResourceManager::GetString("OPTIMISTIC");
-							else if (relation < 95) s = CResourceManager::GetString("ENTHUSED");
-							else s = CResourceManager::GetString("DEVOTED");
-							
-							fontFormat.SetAlignment(StringAlignmentCenter);
-							g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(735,403,300,25), &fontFormat, &fontBrush);
-							fontFormat.SetAlignment(StringAlignmentNear);
+							fontBrush.SetColor(Color(250-t*12, 0+t*12, 0));
+							g->FillRectangle(&SolidBrush(Color(200,250-t*12, 0+t*12, 0)), timber);
 						}
-
-						// Text vom Angebot anzeigen
-						CDiplomacyBottomView::SetText(m_OutgoingInfo.m_sText);
-						CDiplomacyBottomView::SetHeadLine(m_OutgoingInfo.m_sHeadline);
-
-						// Handelt es sich um eine diplomatisches Angebot (keine Antwort, kein normaler Text)
-						if (m_OutgoingInfo.m_nFlag == DIPLOMACY_OFFER)
-						{
-							// Haben wir auf einen Button geklickt, so muß dieser gedrückt dargestellt werden
-							if (m_OutgoingInfo.m_nAnswerStatus == ACCEPTED)
-								m_bShowSendButton = FALSE;
-							else if (m_OutgoingInfo.m_nAnswerStatus == DECLINED)
-								m_bShowDeclineButton = FALSE;
-							
-							// Bei Kriegserklärung oder Geschenk haben wir keine Wahlmöglichkeit
-							if (m_OutgoingInfo.m_nType == WAR || m_OutgoingInfo.m_nType == PRESENT)
-							{
-								m_bShowSendButton = FALSE;
-								m_bShowDeclineButton = FALSE;
-							}
-						}
-						else if (m_OutgoingInfo.m_nFlag == DIPLOMACY_ANSWER)
-						{
-							m_bShowSendButton = FALSE;
-							m_bShowDeclineButton = FALSE;
-						}
-					}
-					// handelt es sich nicht um das angeklickte Angebot, so muss trotzdem deren Name angezeigt werden
-					else
-					{						
-						g->DrawString(pRace->GetRaceName().AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), rect, &fontFormat, &fontBrush);
-					}
-											
-					// Handelt es sich um eine diplomatisches Angebot (keine Antwort, kein normaler Text)
-					// Typ zeichnen (Vorschlag, Forderung, Geschenk)
-					rect.X = 200;
-					rect.Width = 150;
-					if (m_OutgoingInfo.m_nFlag == DIPLOMACY_OFFER)
-					{							
-						if (m_OutgoingInfo.m_nType == PRESENT)
-							s = CResourceManager::GetString("PRESENT");
-						else if (m_OutgoingInfo.m_nType == DIP_REQUEST)
-						{
-							// handelt es sich um das angeklickte Angebot
-							if (m_pIncomingInfo == &(pPlayer->GetIncomingDiplomacyNews()->at(l)))
-							{
-								if (m_pIncomingInfo->m_nAnswerStatus == ACCEPTED)
-									m_bShowSendButton = false;
-								else
-								{
-									if (m_pIncomingInfo->m_ptKO != CPoint(-1,-1))
-										m_ptResourceFromSystem = m_pIncomingInfo->m_ptKO;
-									else if (m_ptResourceFromSystem != CPoint(-1,-1))
-										m_pIncomingInfo->m_ptKO = m_ptResourceFromSystem;
-									// Wenn eine Forderung gestellt wurde, welche Ressourcen beinhaltet, dann Annehmenbutton
-									// nur einblenden, wenn wir diese Forderung auch erfüllen können
-									USHORT *resource = m_pIncomingInfo->m_nResources;
-									if (resource[TITAN] > 0 || resource[DEUTERIUM] > 0 || resource[DURANIUM] > 0 || resource[CRYSTAL] > 0 || resource[IRIDIUM] > 0 || resource[DERITIUM] > 0)
-									{
-										// Wenn Forderung, dann Systemauswahlbutton einblenden, wovon ich die geforderte Ressource
-										// abzweigen will
-										fontFormat.SetAlignment(StringAlignmentNear);
-										fontBrush.SetColor(normalColor);
-										s.Format("%s: ",CResourceManager::GetString("RESOURCE_FROM"));
-										g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(350,100+count*25,150,25), &fontFormat, &fontBrush);
-																		
-										Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\" + pPlayer->GetPrefix() + "button_small.bop");
-										Color btnColor;
-										CFontLoader::GetGDIFontColor(pPlayer, 1, btnColor);
-										SolidBrush btnBrush(btnColor);
-										if (graphic)
-											g->DrawImage(graphic, 500, 97+count*25, 120, 30);
-
-										s.Format("%s",pDoc->GetSector(m_ptResourceFromSystem).GetName());
-										// Wenn hier noch kein System eingestellt ist, dann müssen wir uns eins suchen
-										if (s.IsEmpty() || pDoc->GetSystem(m_ptResourceFromSystem).GetOwnerOfSystem() != pPlayer->GetRaceID())
-										{
-											for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
-												for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-													if (pDoc->GetSystem(x,y).GetOwnerOfSystem() == pPlayer->GetRaceID() && pDoc->GetSector(x,y).GetSunSystem() == TRUE)
-													{
-														m_ptResourceFromSystem = CPoint(x,y);
-														m_pIncomingInfo->m_ptKO = m_ptResourceFromSystem;
-														s.Format("%s",pDoc->GetSector(x,y).GetName());
-														break;
-													}
-										}
-										// Überprüfen ob wir auf dem gewählten System die Menge der geforderten
-										// Ressource im Lager haben und ob wir auch die geforderten Credits bezahlen können
-										for (int r = TITAN; r <= DERITIUM; r++)
-											if (resource[r] > 0 && pDoc->GetSystem(m_ptResourceFromSystem).GetResourceStore(r) < resource[r] && pDoc->GetSystem(m_ptResourceFromSystem).GetOwnerOfSystem() == pPlayer->GetRaceID())
-												m_bShowSendButton = false;
-										fontFormat.SetAlignment(StringAlignmentCenter);
-										g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(500,97+count*25,120,30), &fontFormat, &btnBrush);											
-									}
-									// Überprüfen ob wir auch die geforderten Credits bezahlen können
-									if (pPlayer->GetEmpire()->GetCredits() < m_pIncomingInfo->m_nCredits)
-										m_bShowSendButton = false;
-								}
-							}							
-							s = CResourceManager::GetString("REQUEST");
-						}
-						else if (m_OutgoingInfo.m_nType == WAR)
-							s = CResourceManager::GetString("WAR");
 						else
-							s = CResourceManager::GetString("SUGGESTION");
+							g->FillRectangle(&SolidBrush(Color(100,100,100,100)), timber);						
 					}
-					// handelt es sich um eine Antwort (also um kein Angebot und um kein Text)
-					else if (m_OutgoingInfo.m_nFlag == DIPLOMACY_ANSWER)
-						s = CResourceManager::GetString("ANSWER");
-
-					fontBrush.SetColor(normalColor);
+					// den Text zeichnen, der Angibt wie gut uns die Rasse gegenübersteht
+					USHORT relation = pRace->GetRelation(pPlayer->GetRaceID());
+					if (relation < 5) s = CResourceManager::GetString("HATEFUL");
+					else if (relation < 15) s = CResourceManager::GetString("FURIOUS");
+					else if (relation < 25) s = CResourceManager::GetString("HOSTILE");
+					else if (relation < 35) s = CResourceManager::GetString("ANGRY");
+					else if (relation < 45) s = CResourceManager::GetString("NOT_COOPERATIVE");
+					else if (relation < 55) s = CResourceManager::GetString("NEUTRAL");
+					else if (relation < 65) s = CResourceManager::GetString("COOPERATIVE");
+					else if (relation < 75) s = CResourceManager::GetString("FRIENDLY");
+					else if (relation < 85) s = CResourceManager::GetString("OPTIMISTIC");
+					else if (relation < 95) s = CResourceManager::GetString("ENTHUSED");
+					else s = CResourceManager::GetString("DEVOTED");
+					
+					fontFormat.SetAlignment(StringAlignmentCenter);
+					g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(735,403,300,25), &fontFormat, &fontBrush);
 					fontFormat.SetAlignment(StringAlignmentNear);
-					g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), rect, &fontFormat, &fontBrush);
-					count++;
+				}
+
+				// Text vom Angebot anzeigen
+				CDiplomacyBottomView::SetText(m_OutgoingInfo.m_sText);
+				CDiplomacyBottomView::SetHeadLine(m_OutgoingInfo.m_sHeadline);
+
+				// Handelt es sich um eine diplomatisches Angebot (keine Antwort, kein normaler Text)
+				if (m_OutgoingInfo.m_nFlag == DIPLOMACY_OFFER)
+				{
+					// Haben wir auf einen Button geklickt, so muß dieser gedrückt dargestellt werden
+					if (m_OutgoingInfo.m_nAnswerStatus == ACCEPTED)
+						m_bShowSendButton = FALSE;
+					else if (m_OutgoingInfo.m_nAnswerStatus == DECLINED)
+						m_bShowDeclineButton = FALSE;
+					
+					// Bei Kriegserklärung oder Geschenk haben wir keine Wahlmöglichkeit
+					if (m_OutgoingInfo.m_nType == WAR || m_OutgoingInfo.m_nType == PRESENT)
+					{
+						m_bShowSendButton = FALSE;
+						m_bShowDeclineButton = FALSE;
+					}
+				}
+				else if (m_OutgoingInfo.m_nFlag == DIPLOMACY_ANSWER)
+				{
+					m_bShowSendButton = FALSE;
+					m_bShowDeclineButton = FALSE;
 				}
 			}
-			if (m_pIncomingInfo != NULL)
-				m_OutgoingInfo = *m_pIncomingInfo;			
-		}		
+			// handelt es sich nicht um das angeklickte Angebot, so muss trotzdem deren Name angezeigt werden
+			else
+			{						
+				g->DrawString(pRace->GetRaceName().AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), rect, &fontFormat, &fontBrush);
+			}
+									
+			// Handelt es sich um eine diplomatisches Angebot (keine Antwort, kein normaler Text)
+			// Typ zeichnen (Vorschlag, Forderung, Geschenk)
+			rect.X = 200;
+			rect.Width = 150;
+			if (m_OutgoingInfo.m_nFlag == DIPLOMACY_OFFER)
+			{							
+				if (m_OutgoingInfo.m_nType == PRESENT)
+					s = CResourceManager::GetString("PRESENT");
+				else if (m_OutgoingInfo.m_nType == DIP_REQUEST)
+				{
+					// handelt es sich um das angeklickte Angebot
+					if (m_pIncomingInfo == *it)
+					{
+						if (m_pIncomingInfo->m_nAnswerStatus == ACCEPTED)
+							m_bShowSendButton = false;
+						else
+						{
+							if (m_pIncomingInfo->m_ptKO != CPoint(-1,-1))
+								m_ptResourceFromSystem = m_pIncomingInfo->m_ptKO;
+							else if (m_ptResourceFromSystem != CPoint(-1,-1))
+								m_pIncomingInfo->m_ptKO = m_ptResourceFromSystem;
+							// Wenn eine Forderung gestellt wurde, welche Ressourcen beinhaltet, dann Annehmenbutton
+							// nur einblenden, wenn wir diese Forderung auch erfüllen können
+							USHORT *resource = m_pIncomingInfo->m_nResources;
+							if (resource[TITAN] > 0 || resource[DEUTERIUM] > 0 || resource[DURANIUM] > 0 || resource[CRYSTAL] > 0 || resource[IRIDIUM] > 0 || resource[DERITIUM] > 0)
+							{
+								// Wenn Forderung, dann Systemauswahlbutton einblenden, wovon ich die geforderte Ressource
+								// abzweigen will
+								fontFormat.SetAlignment(StringAlignmentNear);
+								fontBrush.SetColor(normalColor);
+								s.Format("%s: ",CResourceManager::GetString("RESOURCE_FROM"));
+								g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(350,100+count*25,150,25), &fontFormat, &fontBrush);
+																
+								Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\" + pPlayer->GetPrefix() + "button_small.bop");
+								Color btnColor;
+								CFontLoader::GetGDIFontColor(pPlayer, 1, btnColor);
+								SolidBrush btnBrush(btnColor);
+								if (graphic)
+									g->DrawImage(graphic, 500, 97+count*25, 120, 30);
+
+								s.Format("%s",pDoc->GetSector(m_ptResourceFromSystem).GetName());
+								// Wenn hier noch kein System eingestellt ist, dann müssen wir uns eins suchen
+								if (s.IsEmpty() || pDoc->GetSystem(m_ptResourceFromSystem).GetOwnerOfSystem() != pPlayer->GetRaceID())
+								{
+									for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
+										for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
+											if (pDoc->GetSystem(x,y).GetOwnerOfSystem() == pPlayer->GetRaceID() && pDoc->GetSector(x,y).GetSunSystem() == TRUE)
+											{
+												m_ptResourceFromSystem = CPoint(x,y);
+												m_pIncomingInfo->m_ptKO = m_ptResourceFromSystem;
+												s.Format("%s",pDoc->GetSector(x,y).GetName());
+												break;
+											}
+								}
+								// Überprüfen ob wir auf dem gewählten System die Menge der geforderten
+								// Ressource im Lager haben und ob wir auch die geforderten Credits bezahlen können
+								for (int r = TITAN; r <= DERITIUM; r++)
+									if (resource[r] > 0 && pDoc->GetSystem(m_ptResourceFromSystem).GetResourceStore(r) < resource[r] && pDoc->GetSystem(m_ptResourceFromSystem).GetOwnerOfSystem() == pPlayer->GetRaceID())
+										m_bShowSendButton = false;
+								fontFormat.SetAlignment(StringAlignmentCenter);
+								g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(500,97+count*25,120,30), &fontFormat, &btnBrush);											
+							}
+							// Überprüfen ob wir auch die geforderten Credits bezahlen können
+							if (pPlayer->GetEmpire()->GetCredits() < m_pIncomingInfo->m_nCredits)
+								m_bShowSendButton = false;
+						}
+					}							
+					s = CResourceManager::GetString("REQUEST");
+				}
+				else if (m_OutgoingInfo.m_nType == WAR)
+					s = CResourceManager::GetString("WAR");
+				else
+					s = CResourceManager::GetString("SUGGESTION");
+			}
+			// handelt es sich um eine Antwort (also um kein Angebot und um kein Text)
+			else if (m_OutgoingInfo.m_nFlag == DIPLOMACY_ANSWER)
+				s = CResourceManager::GetString("ANSWER");
+
+			fontBrush.SetColor(normalColor);
+			fontFormat.SetAlignment(StringAlignmentNear);
+			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), rect, &fontFormat, &fontBrush);
+			count++;
+			if (count > 21)
+				break;
+		}
+
+		if (m_pIncomingInfo != NULL)
+			m_OutgoingInfo = *m_pIncomingInfo;
 	}
 }
 
@@ -1541,84 +1570,105 @@ void CDiplomacyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 	int nVecPos = 0;
 	// nur wenn nicht Eingangsbildschirm sind
 	if (m_bySubMenu != 2)
+	{
 		if (m_sClickedOnRace != "")
 		{
-			for (vector<CRace*>::const_iterator it = m_vRaceList.begin(); it != m_vRaceList.end(); it++)
+			for (vector<CRace*>::const_iterator it = m_vRaceList.begin(); it != m_vRaceList.end(); ++it)
 			{
 				if ((*it)->GetRaceID() == m_sClickedOnRace)
 					break;
 				nVecPos++;
 			}
 		}
+	}
+	else
+	{
+		if (m_pIncomingInfo)
+		{
+			for (vector<CDiplomacyInfo*>::const_iterator it = m_vIncomeList.begin(); it != m_vIncomeList.end(); ++it)
+			{
+				if (*it == m_pIncomingInfo)
+					break;
+				nVecPos++;
+			}
+		}
+	}
 	
 	// Dem Imperium bekannte Rassen durchgehen
 	CRect rect;
 	int count = 0;
-	for (vector<CRace*>::iterator it = m_vRaceList.begin(); it != m_vRaceList.end(); it++)
+	// wenn wir nicht im Angebotseingangsbildschirm sind
+	if (m_bySubMenu != 2)
 	{
-		CRace* pRace = *it;
-		// wenn wir nicht im Angebotseingangsbildschirm sind
-		if (m_bySubMenu != 2)
+		for (vector<CRace*>::iterator it = m_vRaceList.begin(); it != m_vRaceList.end(); it++)
+		{
+			CRace* pRace = *it;
+			// wenn wir nicht im Angebotseingangsbildschirm sind
+			if (m_bySubMenu != 2)
+			{
+				if (nVecPos-- > 21)
+					continue;
+
+				rect.SetRect(20,100+count*25,120,125+count*25);
+				if (rect.PtInRect(point))
+				{
+					m_sClickedOnRace = pRace->GetRaceID();
+					
+					m_OutgoingInfo.Reset();
+					m_OutgoingInfo.m_sFromRace = pPlayer->GetRaceID();
+					m_OutgoingInfo.m_ptKO = m_ptResourceFromSystem;
+					
+					m_pIncomingInfo = NULL;
+					Invalidate();
+					return;
+				}
+				count++;
+				if (count > 21)
+					break;
+			}
+		}
+	}
+	// Wenn wir im Angebotseingangsbildschirm sind
+	else
+	{	
+		for (vector<CDiplomacyInfo*>::const_iterator it = m_vIncomeList.begin(); it != m_vIncomeList.end(); ++it)
 		{
 			if (nVecPos-- > 21)
 				continue;
 
-			rect.SetRect(20,100+count*25,120,125+count*25);
+			rect.SetRect(20,100+count*25,620,125+count*25);
 			if (rect.PtInRect(point))
 			{
-				m_sClickedOnRace = pRace->GetRaceID();
-				
-				m_OutgoingInfo.Reset();
-				m_OutgoingInfo.m_sFromRace = pPlayer->GetRaceID();
-				m_OutgoingInfo.m_ptKO = m_ptResourceFromSystem;
-				
-				m_pIncomingInfo = NULL;
+				m_pIncomingInfo = *it;
+
+				// Systemauswahlbutton, mit dem wir das System wählen können, woraus wir die Ressourcen abzapfen, wenn wir
+				// eine Forderung einer anderen Majorrasse erfüllen wollen, welche Ressourcen beinhaltet
+				rect.SetRect(500,100+count*25,620,125+count*25);
+				if (rect.PtInRect(point) && m_pIncomingInfo->m_nAnswerStatus != ACCEPTED)
+				{
+					// Nächstes System finden, wenn wir durchklicken
+					if (m_pIncomingInfo->m_ptKO != CPoint(-1,-1))
+						m_ptResourceFromSystem = m_pIncomingInfo->m_ptKO;
+					CPoint curPoint = m_ptResourceFromSystem;
+					int current = -1;
+					for (int i = 0; i < pPlayer->GetEmpire()->GetSystemList()->GetSize(); i++)
+						if (pPlayer->GetEmpire()->GetSystemList()->GetAt(i).ko == curPoint)
+							current = i;
+					if (current != -1)
+						current++;
+					if (current == pPlayer->GetEmpire()->GetSystemList()->GetSize())
+						current = 0;
+					m_ptResourceFromSystem = pPlayer->GetEmpire()->GetSystemList()->GetAt(current).ko;
+					m_pIncomingInfo->m_ptKO = m_ptResourceFromSystem;
+				}
 				Invalidate();
 				return;
 			}
 			count++;
-		}
-		// Wenn wir im Angebotseingangsbildschirm sind
-		else if (m_bySubMenu == 2)
-		{
-			// Wenn die Rasse ein Angebot an uns gemacht hat
-			for (UINT l = 0; l < pPlayer->GetIncomingDiplomacyNews()->size(); l++)
-			{
-				if (pPlayer->GetIncomingDiplomacyNews()->at(l).m_sFromRace == pRace->GetRaceID())
-				{
-					rect.SetRect(20,100+count*25,620,125+count*25);
-					if (rect.PtInRect(point))
-					{
-						m_pIncomingInfo = &(pPlayer->GetIncomingDiplomacyNews()->at(l));
-
-						// Systemauswahlbutton, mit dem wir das System wählen können, woraus wir die Ressourcen abzapfen, wenn wir
-						// eine Forderung einer anderen Majorrasse erfüllen wollen, welche Ressourcen beinhaltet
-						rect.SetRect(500,100+count*25,620,125+count*25);
-						if (rect.PtInRect(point) && m_pIncomingInfo->m_nAnswerStatus != ACCEPTED)
-						{
-							// Nächstes System finden, wenn wir durchklicken
-							if (m_pIncomingInfo->m_ptKO != CPoint(-1,-1))
-								m_ptResourceFromSystem = m_pIncomingInfo->m_ptKO;
-							CPoint curPoint = m_ptResourceFromSystem;
-							int current = -1;
-							for (int i = 0; i < pPlayer->GetEmpire()->GetSystemList()->GetSize(); i++)
-								if (pPlayer->GetEmpire()->GetSystemList()->GetAt(i).ko == curPoint)
-									current = i;
-							if (current != -1)
-								current++;
-							if (current == pPlayer->GetEmpire()->GetSystemList()->GetSize())
-								current = 0;
-							m_ptResourceFromSystem = pPlayer->GetEmpire()->GetSystemList()->GetAt(current).ko;
-							m_pIncomingInfo->m_ptKO = m_ptResourceFromSystem;
-						}
-						Invalidate();
-						return;
-					}
-					count++;
-				}				
-			}
-		}
-	}
+			if (count > 21)
+				break;
+		}				
+	}	
 		
 	// Wenn wir in der Informationsansicht sind und eine Rasse angklickt haben
 	if (m_bySubMenu == 0 && m_sClickedOnRace != "")
@@ -2063,19 +2113,19 @@ void CDiplomacyMenuView::OnMouseMove(UINT nFlags, CPoint point)
 BOOL CDiplomacyMenuView::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 {
 	// TODO: Add your message handler code here and/or call default
+
+	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	ASSERT(pDoc);
+
+	if (!pDoc->m_bDataReceived)
+		return CMainBaseView::OnMouseWheel(nFlags, zDelta, pt);
 	
 	// wenn wir nicht im Eingangsmenü sind
 	if (m_bySubMenu != 2)
 	{
 		if (m_sClickedOnRace != "")
 		{
-			CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
-			ASSERT(pDoc);
-
-			if (!pDoc->m_bDataReceived)
-				return CMainBaseView::OnMouseWheel(nFlags, zDelta, pt);
-
-			for (vector<CRace*>::iterator it = m_vRaceList.begin(); it != m_vRaceList.end(); it++)
+			for (vector<CRace*>::iterator it = m_vRaceList.begin(); it != m_vRaceList.end(); ++it)
 			{
 				if ((*it)->GetRaceID() == m_sClickedOnRace)
 				{
@@ -2103,6 +2153,36 @@ BOOL CDiplomacyMenuView::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 			}
 		}
 	}
+	else
+	{
+		if (m_pIncomingInfo)
+		{
+			for (vector<CDiplomacyInfo*>::iterator it = m_vIncomeList.begin(); it != m_vIncomeList.end(); ++it)
+			{
+				if (*it == m_pIncomingInfo)
+				{
+					if (zDelta < 0)
+					{
+						it++;
+					}
+					else if (zDelta > 0 && it != m_vIncomeList.begin())
+					{
+						it--;
+					}
+					if (it != m_vIncomeList.end())
+					{
+						m_pIncomingInfo = *it;
+						
+						m_OutgoingInfo.Reset();
+						m_OutgoingInfo.m_sFromRace = m_pPlayersRace->GetRaceID();
+						m_OutgoingInfo.m_ptKO = m_ptResourceFromSystem;
+						Invalidate();
+					}
+					break;
+				}
+			}
+		}
+	}
 
 	return CMainBaseView::OnMouseWheel(nFlags, zDelta, pt);
 }
@@ -2116,83 +2196,113 @@ void CDiplomacyMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 	if (!pDoc->m_bDataReceived)
 		return;
 	// wenn wir nicht im Eingangsmenü sind
-	if (m_bySubMenu == 2)
-	{
-		CMainBaseView::OnKeyDown(nChar, nRepCnt, nFlags);
-		return;
-	}
-
-	if (nChar == VK_ESCAPE)
-	{
-		m_sClickedOnRace = "";
-
-		m_OutgoingInfo.Reset();
-		m_OutgoingInfo.m_sFromRace = m_pPlayersRace->GetRaceID();
-		m_OutgoingInfo.m_ptKO = m_ptResourceFromSystem;
-
-		m_pIncomingInfo = NULL;
-		Invalidate();
-	}
-	else if (nChar == VK_HOME)
-	{
-		vector<CRace*>::iterator it = m_vRaceList.begin();
-		if (it != m_vRaceList.end())
+	if (m_bySubMenu != 2)
+	{	
+		if (nChar == VK_ESCAPE)
 		{
-			m_sClickedOnRace = (*it)->GetRaceID();
+			m_sClickedOnRace = "";
+
 			m_OutgoingInfo.Reset();
 			m_OutgoingInfo.m_sFromRace = m_pPlayersRace->GetRaceID();
 			m_OutgoingInfo.m_ptKO = m_ptResourceFromSystem;
-				
+
 			m_pIncomingInfo = NULL;
 			Invalidate();
 		}
-	}
-	else if (nChar == VK_END)
-	{
-		vector<CRace*>::iterator it = m_vRaceList.end();
-		if (m_vRaceList.size())
-			it--;
-		if (it != m_vRaceList.end())
-		{			
+		else if (nChar == VK_HOME)
+		{
+			vector<CRace*>::iterator it = m_vRaceList.begin();
 			if (it != m_vRaceList.end())
 			{
 				m_sClickedOnRace = (*it)->GetRaceID();
 				m_OutgoingInfo.Reset();
 				m_OutgoingInfo.m_sFromRace = m_pPlayersRace->GetRaceID();
 				m_OutgoingInfo.m_ptKO = m_ptResourceFromSystem;
-		
+					
 				m_pIncomingInfo = NULL;
 				Invalidate();
 			}
 		}
-	}
-	else if (nChar == VK_UP || nChar == VK_DOWN)
-	{
-		if (m_sClickedOnRace != "")
+		else if (nChar == VK_END)
 		{
-			for (vector<CRace*>::iterator it = m_vRaceList.begin(); it != m_vRaceList.end(); it++)
-			{
-				if ((*it)->GetRaceID() == m_sClickedOnRace)
+			vector<CRace*>::iterator it = m_vRaceList.end();
+			if (m_vRaceList.size())
+				it--;
+			if (it != m_vRaceList.end())
+			{			
+				if (it != m_vRaceList.end())
 				{
-					if (nChar == VK_DOWN)
+					m_sClickedOnRace = (*it)->GetRaceID();
+					m_OutgoingInfo.Reset();
+					m_OutgoingInfo.m_sFromRace = m_pPlayersRace->GetRaceID();
+					m_OutgoingInfo.m_ptKO = m_ptResourceFromSystem;
+			
+					m_pIncomingInfo = NULL;
+					Invalidate();
+				}
+			}
+		}
+		else if (nChar == VK_UP || nChar == VK_DOWN)
+		{
+			if (m_sClickedOnRace != "")
+			{
+				for (vector<CRace*>::iterator it = m_vRaceList.begin(); it != m_vRaceList.end(); ++it)
+				{
+					if ((*it)->GetRaceID() == m_sClickedOnRace)
 					{
-						it++;
+						if (nChar == VK_DOWN)
+						{
+							it++;
+						}
+						else if (nChar == VK_UP && it != m_vRaceList.begin())
+						{
+							it--;
+						}
+						if (it != m_vRaceList.end())
+						{
+							m_sClickedOnRace = (*it)->GetRaceID();
+							m_OutgoingInfo.Reset();
+							m_OutgoingInfo.m_sFromRace = m_pPlayersRace->GetRaceID();
+							m_OutgoingInfo.m_ptKO = m_ptResourceFromSystem;
+					
+							m_pIncomingInfo = NULL;
+							Invalidate();
+						}
+						break;
 					}
-					else if (nChar == VK_UP && it != m_vRaceList.begin())
+				}
+			}
+		}
+	}
+	// wenn im Eingangsbildschirm
+	else
+	{
+		if (nChar == VK_UP || nChar == VK_DOWN)
+		{
+			if (m_pIncomingInfo)
+			{
+				for (vector<CDiplomacyInfo*>::iterator it = m_vIncomeList.begin(); it != m_vIncomeList.end(); ++it)
+				{
+					if (*it == m_pIncomingInfo)
 					{
-						it--;
+						if (nChar == VK_DOWN)
+						{
+							it++;
+						}
+						else if (nChar == VK_UP && it != m_vIncomeList.begin())
+						{
+							it--;
+						}
+						if (it != m_vIncomeList.end())
+						{
+							m_pIncomingInfo = *it;
+							m_OutgoingInfo.Reset();
+							m_OutgoingInfo.m_sFromRace = m_pPlayersRace->GetRaceID();
+							m_OutgoingInfo.m_ptKO = m_ptResourceFromSystem;
+							Invalidate();
+						}
+						break;
 					}
-					if (it != m_vRaceList.end())
-					{
-						m_sClickedOnRace = (*it)->GetRaceID();
-						m_OutgoingInfo.Reset();
-						m_OutgoingInfo.m_sFromRace = m_pPlayersRace->GetRaceID();
-						m_OutgoingInfo.m_ptKO = m_ptResourceFromSystem;
-				
-						m_pIncomingInfo = NULL;
-						Invalidate();
-					}
-					break;
 				}
 			}
 		}

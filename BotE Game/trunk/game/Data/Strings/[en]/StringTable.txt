@@ -36,7 +36,7 @@ Shipyard
 [BTN_BARRACK]
 Barracks
 [BTN_INFORMATION]
-Benefit
+Info
 [BTN_DESCRIPTION]
 Description
 [BTN_RESOURCES]
@@ -2159,7 +2159,7 @@ Victories
 
 // Kampfbildschirme
 [COMBAT_IN_SECTOR]
-Combat occuring in sector
+Combat occuring in
 [PLEASE_WAIT]
 please wait
 [COMBATCALCULATION_IS_RUNNING]
@@ -2192,7 +2192,7 @@ Hail
 [BTN_RETREAT]
 Retreat
 [BTN_AUTOCOMBAT]
-Fight
+Auto-Fight
 [BTN_FURTHER]
 next
 [BTN_READY]
@@ -2255,3 +2255,10 @@ This is a special force unit of the Cartare Union. By their perfect training the
 Da'unor Sniper
 [MAJOR6_TROOP1_DESC]
 This is a rather infirm unit of the Omega-Alliance. They fight with precision rifles, lightly armored and lack extended training.
+
+[MRD]
+bn.
+[SHIPSIZE]
+Size-category
+[SENSORS]
+Sensors

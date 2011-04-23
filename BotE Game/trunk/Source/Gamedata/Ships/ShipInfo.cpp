@@ -4,6 +4,7 @@
 
 #include "stdafx.h"
 #include "ShipInfo.h"
+#include "Races\Empire.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -266,7 +267,7 @@ void CShipInfo::DrawShipInformation(Graphics* g, CRect rect, Gdiplus::Font* font
 {
 	CRect r;
 	CString s;	
-	r.SetRect(rect.left,rect.top,rect.right,rect.top+25);
+	r.SetRect(rect.left,rect.top+8,rect.right,rect.top+33);
 	s.Format("%s",this->GetShipTypeAsString());
 	
 	SolidBrush fontBrush(clrMark);
@@ -276,7 +277,8 @@ void CShipInfo::DrawShipInformation(Graphics* g, CRect rect, Gdiplus::Font* font
 	fontFormat.SetFormatFlags(StringFormatFlagsNoWrap);
 	g->DrawString(s.AllocSysString(), -1, font, RectF((REAL)r.left, (REAL)r.top, (REAL)r.Width(), (REAL)r.Height()), &fontFormat, &fontBrush);
 	
-	r.SetRect(rect.left,rect.top+30,rect.right,rect.top+52);
+	// Größe, Unterhalt und Reichweite anzeigen
+	r.SetRect(rect.left,rect.top+36,rect.right,rect.top+56);
 	CString speed = CResourceManager::GetString("SPEED");
 	CString range = CResourceManager::GetString("RANGE");
 	BYTE tmpRange = m_iRange;
@@ -291,19 +293,35 @@ void CShipInfo::DrawShipInformation(Graphics* g, CRect rect, Gdiplus::Font* font
 		if (m_iSpeed == 1)
 			tmpSpeed = (BYTE)(research->GetResearchInfo()->GetResearchComplex(2)->GetBonus(2));
 	}
-	switch (tmpRange)
+	
+	if (rect.Width() >= 501)
 	{
-	case RANGE_SHORT: s.Format("%s: %d  -  %s: %s",speed, tmpSpeed, range, CResourceManager::GetString("SHORT"));break;
-	case RANGE_MIDDLE: s.Format("%s: %d  -  %s: %s",speed, tmpSpeed, range, CResourceManager::GetString("MIDDLE")); break;
-	case RANGE_LONG: s.Format("%s: %d  -  %s: %s",speed, tmpSpeed, range, CResourceManager::GetString("LONG")); break;
+		CString Size = CResourceManager::GetString("SHIPSIZE");		
+		CString sMaintenance = CResourceManager::GetString("SHIPCOSTS");
+		switch (tmpRange)
+		{
+		case RANGE_SHORT: s.Format("%s: %d  -  %s: %d  -  %s: %d  -  %s: %s",Size, m_byShipSize, sMaintenance, m_iMaintenanceCosts, speed, tmpSpeed, range, CResourceManager::GetString("SHORT"));break;
+		case RANGE_MIDDLE: s.Format("%s: %d  -  %s: %d  -  %s: %d  -  %s: %s",Size, m_byShipSize, sMaintenance, m_iMaintenanceCosts, speed, tmpSpeed, range, CResourceManager::GetString("MIDDLE")); break;
+		case RANGE_LONG: s.Format("%s: %d  -  %s: %d  -  %s: %d  -  %s: %s",Size, m_byShipSize, sMaintenance, m_iMaintenanceCosts, speed, tmpSpeed, range, CResourceManager::GetString("LONG")); break;
+		}
 	}
+	else
+	{
+		switch (tmpRange)
+		{
+		case RANGE_SHORT: s.Format("%s: %d  -  %s: %s",speed, tmpSpeed, range, CResourceManager::GetString("SHORT"));break;
+		case RANGE_MIDDLE: s.Format("%s: %d  -  %s: %s",speed, tmpSpeed, range, CResourceManager::GetString("MIDDLE")); break;
+		case RANGE_LONG: s.Format("%s: %d  -  %s: %s",speed, tmpSpeed, range, CResourceManager::GetString("LONG")); break;
+		}
+	}
+	
 	fontBrush.SetColor(clrNormal);
 	g->DrawString(s.AllocSysString(), -1, font, RectF((REAL)r.left, (REAL)r.top, (REAL)r.Width(), (REAL)r.Height()), &fontFormat, &fontBrush);
 	fontBrush.SetColor(clrMark);
-	r.SetRect(rect.left,rect.top+52,rect.right,rect.top+74);
+	
+	r.SetRect(rect.left,rect.top+62,rect.right,rect.top+84);
 	s = CResourceManager::GetString("ARMAMENT");
 	g->DrawString(s.AllocSysString(), -1, font, RectF((REAL)r.left, (REAL)r.top, (REAL)r.Width(), (REAL)r.Height()), &fontFormat, &fontBrush);
-	
 	// Waffen typenrein sammeln
 	std::map<CString, int> mBeamWeapons;
 	for (int i = 0; i < m_BeamWeapons.GetSize(); i++)
@@ -340,7 +358,7 @@ void CShipInfo::DrawShipInformation(Graphics* g, CRect rect, Gdiplus::Font* font
 
 	if (sWeapons == "")
 		sWeapons = CResourceManager::GetString("NONE");
-	r.SetRect(rect.left,rect.top+74,rect.right,rect.top+142);
+	r.SetRect(rect.left,rect.top+84,rect.right,rect.top+143);
 	fontBrush.SetColor(clrNormal);
 	fontFormat.SetFormatFlags(!StringFormatFlagsNoWrap);
 	g->DrawString(sWeapons.AllocSysString(), -1, font, RectF((REAL)r.left, (REAL)r.top, (REAL)r.Width(), (REAL)r.Height()), &fontFormat, &fontBrush);
@@ -350,13 +368,13 @@ void CShipInfo::DrawShipInformation(Graphics* g, CRect rect, Gdiplus::Font* font
 	USHORT sub = 0;
 	if (rect.Width() > 500)
 		sub = 20;
-	r.SetRect(rect.left,rect.top+142-sub,rect.right,rect.top+164-sub);
+	r.SetRect(rect.left,rect.top+143-sub,rect.right,rect.top+165-sub);
 	s = CResourceManager::GetString("SHIELDS")+" "+CResourceManager::GetString("AND")+" "+CResourceManager::GetString("HULL");
 	fontFormat.SetFormatFlags(StringFormatFlagsNoWrap);
 	fontBrush.SetColor(clrMark);
 	g->DrawString(s.AllocSysString(), -1, font, RectF((REAL)r.left, (REAL)r.top, (REAL)r.Width(), (REAL)r.Height()), &fontFormat, &fontBrush);
 	
-	r.SetRect(rect.left,rect.top+164-sub,rect.right,rect.top+186-sub);
+	r.SetRect(rect.left,rect.top+165-sub,rect.right,rect.top+185-sub);
 	float shieldBoni = 1.0f;
 	if (research->GetResearchInfo()->GetResearchComplex(1)->GetFieldStatus(1) == RESEARCHED)
 		shieldBoni += (float)(research->GetResearchInfo()->GetResearchComplex(1)->GetBonus(1)) / 100;
@@ -365,7 +383,7 @@ void CShipInfo::DrawShipInformation(Graphics* g, CRect rect, Gdiplus::Font* font
 		CResourceManager::GetString("SHIELDS"), CResourceManager::GetString("CAPACITY"), (UINT)(m_Shield.GetMaxShield() * shieldBoni));
 	fontBrush.SetColor(clrNormal);
 	g->DrawString(s.AllocSysString(), -1, font, RectF((REAL)r.left, (REAL)r.top, (REAL)r.Width(), (REAL)r.Height()), &fontFormat, &fontBrush);
-	r.SetRect(rect.left,rect.top+186-sub,rect.right,rect.top+230-sub);
+	r.SetRect(rect.left,rect.top+185-sub,rect.right,rect.top+225-sub);
 	CString material;
 	switch (m_Hull.GetHullMaterial())
 	{
@@ -391,7 +409,7 @@ void CShipInfo::DrawShipInformation(Graphics* g, CRect rect, Gdiplus::Font* font
 	{
 		// Manövrierbarkeit anzeigen
 		fontBrush.SetColor(clrMark);
-		r.SetRect(rect.left,rect.top+275,rect.right,rect.top+300);
+		r.SetRect(rect.left,rect.top+266,rect.right,rect.top+288);
 		g->DrawString(CResourceManager::GetString("MANEUVERABILITY").AllocSysString(), -1, font, RectF((REAL)r.left, (REAL)r.top, (REAL)r.Width(), (REAL)r.Height()), &fontFormat, &fontBrush);
 		switch (m_byManeuverability)
 		{
@@ -407,12 +425,26 @@ void CShipInfo::DrawShipInformation(Graphics* g, CRect rect, Gdiplus::Font* font
 		default:s = CResourceManager::GetString("NONE");
 		}
 		fontBrush.SetColor(clrNormal);
-		r.SetRect(rect.left,rect.top+300,rect.right,rect.top+325);
+		r.SetRect(rect.left,rect.top+288,rect.right,rect.top+308);
 		g->DrawString(s.AllocSysString(), -1, font, RectF((REAL)r.left, (REAL)r.top, (REAL)r.Width(), (REAL)r.Height()), &fontFormat, &fontBrush);
+
+		// Scan anzeigen
+		fontBrush.SetColor(clrMark);
+		r.SetRect(rect.left,rect.top+311,rect.right,rect.top+333);
+		g->DrawString(CResourceManager::GetString("SENSORS").AllocSysString(), -1, font, RectF((REAL)r.left, (REAL)r.top, (REAL)r.Width(), (REAL)r.Height()), &fontFormat, &fontBrush);
+		r.SetRect(rect.left,rect.top+333,rect.right,rect.top+353);
+		CString Scanrange = CResourceManager::GetString("SCANRANGE");
+		CString Scanpower = CResourceManager::GetString("SCANPOWER");
+		BYTE ScanRange = m_iScanRange;
+		USHORT ScanPower = m_iScanPower;
+		s.Format("%s: %d  -  %s: %d",Scanrange, ScanRange, Scanpower, ScanPower);
+		fontBrush.SetColor(clrNormal);
+		g->DrawString(s.AllocSysString(), -1, font, RectF((REAL)r.left, (REAL)r.top, (REAL)r.Width(), (REAL)r.Height()), &fontFormat, &fontBrush);
+		fontBrush.SetColor(clrMark);
 
 		// Spezialfähigkeiten anzeigen
 		fontBrush.SetColor(clrMark);
-		r.SetRect(rect.left,rect.top+325,rect.right,rect.top+350);
+		r.SetRect(rect.left,rect.top+356,rect.right,rect.top+378);
 		g->DrawString(CResourceManager::GetString("SPECIAL_ABILITIES").AllocSysString(), -1, font, RectF((REAL)r.left, (REAL)r.top, (REAL)r.Width(), (REAL)r.Height()), &fontFormat, &fontBrush);
 		s = "";
 		fontBrush.SetColor(clrNormal);
@@ -441,8 +473,8 @@ void CShipInfo::DrawShipInformation(Graphics* g, CRect rect, Gdiplus::Font* font
 		if (m_iStealthPower > 3)
 			s += CResourceManager::GetString("CAN_CLOAK")+" \n";
 		if (s.IsEmpty())
-			s = CResourceManager::GetString("NONE");
-		r.SetRect(rect.left,rect.top+350,rect.right,rect.top+450);
+			s = CResourceManager::GetString("NONE")+" \n";;
+		r.SetRect(rect.left,rect.top+378,rect.right,rect.top+478);
 		fontBrush.SetColor(clrNormal);
 		fontFormat.SetFormatFlags(!StringFormatFlagsNoWrap);
 		g->DrawString(s.AllocSysString(), -1, font, RectF((REAL)r.left, (REAL)r.top, (REAL)r.Width(), (REAL)r.Height()), &fontFormat, &fontBrush);		

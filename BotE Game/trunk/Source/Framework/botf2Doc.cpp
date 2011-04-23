@@ -27,6 +27,7 @@
 #include "AI\SystemAI.h"
 #include "AI\ShipAI.h"
 #include "AI\CombatAI.h"
+#include "AI\ResearchAI.h"
 
 #include "Galaxy\Anomaly.h"
 
@@ -1085,79 +1086,88 @@ void CBotf2Doc::GenerateGalaxy()
 	// Vektor der verwendeten Minors, diese nehmen aktiv am Spiel teil.
 	set<CString> sUsedMinors;
 	// nun die Sektoren generieren
+	vector<CPoint> vSectorsToGenerate;
 	for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
-	{
 		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-		{
-			// den Sektor generieren
-			// die Wahrscheinlichkeiten sind abhängig von den Systemen in der unmittelbaren Nähe. Ist ein Majorrace-
-			// hauptsystem in der Nähe, so wird hier kein System generiert, da diese schon weiter oben angelegt
-			// wurden
-			int sunSystems = 0;
-			int minorRaces = 0;
-			int nAnomalys  = 0;
-			for (int j = -1; j <= 1; j++)
-				for (int i = -1; i <= 1; i++)
-					if (y + j < STARMAP_SECTORS_VCOUNT && y + j > -1 && x + i < STARMAP_SECTORS_HCOUNT && x + i > -1)
-					{
-						if (m_Sector[x + i][y + j].GetSunSystem())
-						{
-							if (m_Sector[x + i][y + j].GetMinorRace())
-								minorRaces++;
-							sunSystems++;							
-						}
-						else if (m_Sector[x + i][y + j].GetAnomaly())
-							nAnomalys++;
+			if (!m_Sector[x][y].GetOwned())
+				vSectorsToGenerate.push_back(CPoint(x,y));
 
-						for (map<CString, pair<int, int> >::const_iterator it = m_mRaceKO.begin(); it != m_mRaceKO.end(); ++it)
-							if (it->second.first == x + i && it->second.second == y + j)
-							{
-								sunSystems	+= 100;
-								nAnomalys	+= 100;
-							}
-					}
-			int sunSystemProb = nStarDensity  - sunSystems * 15;
-			int minorRaceProb = nMinorDensity - minorRaces * 15;
-			if (minorRaceProb < 0)
-				minorRaceProb = 0;
-			if (sunSystemProb > 0)
-				m_Sector[x][y].GenerateSector(sunSystemProb, minorRaceProb);
-			if (m_Sector[x][y].GetMinorRace())
-			{	
-				// Nun die Minorrace parametrisieren
-				CMinor* pMinor = m_pRaceCtrl->GetMinorRace(m_Sector[x][y].GetName());
-				if (!pMinor)
-					AfxMessageBox("Error in function CBotf2Doc::GenerateGalaxy(): Could not create Minorrace");
-				else
+	while (vSectorsToGenerate.size())
+	{
+		int nSector = rand()%vSectorsToGenerate.size();
+		int x = vSectorsToGenerate[nSector].x;
+		int y = vSectorsToGenerate[nSector].y;
+		// behandelten Sektor entfernen
+		vSectorsToGenerate.erase(vSectorsToGenerate.begin() + nSector);	
+		
+		// den Sektor generieren
+		// die Wahrscheinlichkeiten sind abhängig von den Systemen in der unmittelbaren Nähe. Ist ein Majorrace-
+		// hauptsystem in der Nähe, so wird hier kein System generiert, da diese schon weiter oben angelegt
+		// wurden
+		int sunSystems = 0;
+		int minorRaces = 0;
+		int nAnomalys  = 0;
+		for (int j = -1; j <= 1; j++)
+			for (int i = -1; i <= 1; i++)
+				if (y + j < STARMAP_SECTORS_VCOUNT && y + j > -1 && x + i < STARMAP_SECTORS_HCOUNT && x + i > -1)
 				{
-					pMinor->SetRaceKO(CPoint(x,y));
-					m_Sector[x][y].SetOwnerOfSector(pMinor->GetRaceID());
-					m_System[x][y].SetOwnerOfSystem("");
-					sUsedMinors.insert(pMinor->GetRaceID());
-					// wenn die Minorrace Schiffe bauen kann, sie aber kein Deritium im System besitzt, so wird
-					// ein Deritium auf dem ersten kolonisierten Planeten hinzugefügt
-					if (pMinor->GetSpaceflightNation())
+					if (m_Sector[x + i][y + j].GetSunSystem())
 					{
-						BOOLEAN bRes[DERITIUM + 1] = {FALSE};
-						m_Sector[x][y].GetAvailableResources(bRes, true);
-						// gibt es kein Deritium=
-						if (!bRes[DERITIUM])
+						if (m_Sector[x + i][y + j].GetMinorRace())
+							minorRaces++;
+						sunSystems++;							
+					}
+					else if (m_Sector[x + i][y + j].GetAnomaly())
+						nAnomalys++;
+
+					for (map<CString, pair<int, int> >::const_iterator it = m_mRaceKO.begin(); it != m_mRaceKO.end(); ++it)
+						if (it->second.first == x + i && it->second.second == y + j)
 						{
-							for (int p = 0; p < m_Sector[x][y].GetPlanets()->GetSize(); p++)
-								if (m_Sector[x][y].GetPlanet(p)->GetCurrentHabitant() > 0 && m_Sector[x][y].GetPlanet(p)->GetColonized())
-								{
-									m_Sector[x][y].GetPlanet(p)->SetBoni(DERITIUM, TRUE);
-									break;
-								}
+							sunSystems	+= 100;
+							nAnomalys	+= 100;
 						}
+				}
+		int sunSystemProb = nStarDensity  - sunSystems * 15;
+		int minorRaceProb = nMinorDensity - minorRaces * 15;
+		if (minorRaceProb < 0)
+			minorRaceProb = 0;
+		if (sunSystemProb > 0)
+			m_Sector[x][y].GenerateSector(sunSystemProb, minorRaceProb);
+		if (m_Sector[x][y].GetMinorRace())
+		{	
+			// Nun die Minorrace parametrisieren
+			CMinor* pMinor = m_pRaceCtrl->GetMinorRace(m_Sector[x][y].GetName());
+			if (!pMinor)
+				AfxMessageBox("Error in function CBotf2Doc::GenerateGalaxy(): Could not create Minorrace");
+			else
+			{
+				pMinor->SetRaceKO(CPoint(x,y));
+				m_Sector[x][y].SetOwnerOfSector(pMinor->GetRaceID());
+				m_System[x][y].SetOwnerOfSystem("");
+				sUsedMinors.insert(pMinor->GetRaceID());
+				// wenn die Minorrace Schiffe bauen kann, sie aber kein Deritium im System besitzt, so wird
+				// ein Deritium auf dem ersten kolonisierten Planeten hinzugefügt
+				if (pMinor->GetSpaceflightNation())
+				{
+					BOOLEAN bRes[DERITIUM + 1] = {FALSE};
+					m_Sector[x][y].GetAvailableResources(bRes, true);
+					// gibt es kein Deritium=
+					if (!bRes[DERITIUM])
+					{
+						for (int p = 0; p < m_Sector[x][y].GetPlanets()->GetSize(); p++)
+							if (m_Sector[x][y].GetPlanet(p)->GetCurrentHabitant() > 0 && m_Sector[x][y].GetPlanet(p)->GetColonized())
+							{
+								m_Sector[x][y].GetPlanet(p)->SetBoni(DERITIUM, TRUE);
+								break;
+							}
 					}
 				}
 			}
-			// möglicherweise eine Anomalie im Sektor generieren
-			else if (!m_Sector[x][y].GetSunSystem())
-				if (rand()%100 >= (100 - (nAnomalyDensity - nAnomalys * 10)))
-					m_Sector[x][y].CreateAnomaly();
-		}		
+		}
+		// möglicherweise eine Anomalie im Sektor generieren
+		else if (!m_Sector[x][y].GetSunSystem())
+			if (rand()%100 >= (100 - (nAnomalyDensity - nAnomalys * 10)))
+				m_Sector[x][y].CreateAnomaly();
 	}
 
 	// nun können alle nicht verwendeten Minors entfernt werden
@@ -1167,6 +1177,7 @@ void CBotf2Doc::GenerateGalaxy()
 		if (sUsedMinors.find(it->first) == sUsedMinors.end())
 			vDelMinors.push_back(it->first);
 	}
+	
 	for (UINT i = 0; i < vDelMinors.size(); i++)
 		m_pRaceCtrl->RemoveRace(vDelMinors[i]);	
 }
@@ -1354,10 +1365,9 @@ void CBotf2Doc::NextRound()
 		mOldCredits[it->first] = pMajor->GetEmpire()->GetCredits();
 	}
 	this->CalcOldRoundData();	
+	this->CalcShipEffects();
 	this->CalcNewRoundData();	
 	this->CalcTrade();
-	
-	this->CalcShipEffects();
 	this->CalcEndDataForNextRound();
 
 	// Creditänderung berechnen
@@ -1975,108 +1985,8 @@ void CBotf2Doc::BuildShip(int nID, const CPoint& KO, const CString& sOwnerID)
 	CMajor* pMajor = dynamic_cast<CMajor*>(pOwner);
 	ASSERT(pMajor);
 
-	// mögliche Verbesserungen durch die Spezialforschung werden hier beachtet
-	// Spezialforschung #0: "Waffentechnik"
-	if (pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(0)->GetComplexStatus() == RESEARCHED)
-	{
-		// 20% erhoehter Phaserschaden
-		if (pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(0)->GetFieldStatus(1) == RESEARCHED)
-		{
-			for (int i = 0; i < m_ShipArray.GetAt(n).GetBeamWeapons()->GetSize(); i++)
-			{
-				USHORT oldPower = m_ShipArray.GetAt(n).GetBeamWeapons()->GetAt(i).GetBeamPower();
-				m_ShipArray.GetAt(n).GetBeamWeapons()->GetAt(i).SetBeamPower(oldPower 
-					+ (oldPower * pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(0)->GetBonus(1) / 100));
-			}
-		}
-		// 20% erhoehte Torpedogenauigkeit
-		else if (pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(0)->GetFieldStatus(2) == RESEARCHED)
-		{
-			for (int i = 0; i < m_ShipArray.GetAt(n).GetTorpedoWeapons()->GetSize(); i++)
-			{
-				BYTE oldAcc = m_ShipArray.GetAt(n).GetTorpedoWeapons()->GetAt(i).GetAccuracy();
-				m_ShipArray.GetAt(n).GetTorpedoWeapons()->GetAt(i).SetAccuracy(oldAcc
-					+ (oldAcc * pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(0)->GetBonus(2) / 100));
-			}
-		}
-		// 20% erhoehte Schussfreuquenz
-		else if (pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(0)->GetFieldStatus(3) == RESEARCHED)
-		{
-			for (int i = 0; i < m_ShipArray.GetAt(n).GetBeamWeapons()->GetSize(); i++)
-			{
-				BYTE oldRate = m_ShipArray.GetAt(n).GetBeamWeapons()->GetAt(i).GetRechargeTime();
-				m_ShipArray.GetAt(n).GetBeamWeapons()->GetAt(i).SetRechargeTime(oldRate
-					- (oldRate * pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(0)->GetBonus(3) / 100));
-			}
-			for (int i = 0; i < m_ShipArray.GetAt(n).GetTorpedoWeapons()->GetSize(); i++)
-			{
-				BYTE oldRate = m_ShipArray.GetAt(n).GetTorpedoWeapons()->GetAt(i).GetTupeFirerate();
-				m_ShipArray.GetAt(n).GetTorpedoWeapons()->GetAt(i).SetTubeFirerate(oldRate
-					- (oldRate * pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(0)->GetBonus(3) / 100));
-			}
-		}
-	}
-	// Spezialforschung #1: "Konstruktionstechnik"
-	if (pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(1)->GetComplexStatus() == RESEARCHED)
-	{
-		// 20% bessere Schilde
-		if (pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(1)->GetFieldStatus(1) == RESEARCHED)
-		{
-			UINT maxShield = m_ShipArray.GetAt(n).GetShield()->GetMaxShield();
-			BYTE shieldType = m_ShipArray.GetAt(n).GetShield()->GetShieldType();
-			BOOLEAN regenerative = m_ShipArray.GetAt(n).GetShield()->GetRegenerative();
-			m_ShipArray.GetAt(n).GetShield()->ModifyShield((maxShield + (maxShield * pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(1)->GetBonus(1) / 100)), shieldType, regenerative);			
-		}
-		// 20% bessere Hülle
-		else if (pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(1)->GetFieldStatus(2) == RESEARCHED)
-		{
-			BOOLEAN doubleHull = m_ShipArray.GetAt(n).GetHull()->GetDoubleHull();
-			BOOLEAN ablative = m_ShipArray.GetAt(n).GetHull()->GetAblative();
-			BOOLEAN polarisation = m_ShipArray.GetAt(n).GetHull()->GetPolarisation();
-			UINT baseHull = m_ShipArray.GetAt(n).GetHull()->GetBaseHull();
-			BYTE hullMaterial = m_ShipArray.GetAt(n).GetHull()->GetHullMaterial();
-			m_ShipArray.GetAt(n).GetHull()->ModifyHull(doubleHull,
-				(baseHull + (baseHull * pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(1)->GetBonus(2) / 100)), hullMaterial,ablative,polarisation);
-		}
-		// 50% stärkere Scanner
-		else if (pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(1)->GetFieldStatus(3) == RESEARCHED)
-		{
-			USHORT scanPower = m_ShipArray.GetAt(n).GetScanPower();
-			m_ShipArray.GetAt(n).SetScanPower(scanPower + (scanPower * pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(1)->GetBonus(3) / 100));
-		}
-	}
-	// Spezialforschung #2: "allgemeine Schiffstechnik"
-	if (pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(2)->GetComplexStatus() == RESEARCHED)
-	{
-		// erhoehte Reichweite für Schiffe mit zuvor kurzer Reichweite
-		if (pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(2)->GetFieldStatus(1) == RESEARCHED)
-		{
-			if (m_ShipArray.GetAt(n).GetRange() == RANGE_SHORT)
-				m_ShipArray.GetAt(n).SetRange((BYTE)(pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(2)->GetBonus(1)));
-		}
-		// erhoehte Geschwindigkeit für Schiffe mit Geschwindigkeit 1
-		else if (pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(2)->GetFieldStatus(2) == RESEARCHED)
-		{
-			if (m_ShipArray.GetAt(n).GetSpeed() == 1)
-				m_ShipArray.GetAt(n).SetSpeed((BYTE)(pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(2)->GetBonus(2)));
-		}
-	}
-	// Spezialforschung #3: "friedliche Schiffstechnik"
-	if (pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(3)->GetComplexStatus() == RESEARCHED &&
-		m_ShipArray.GetAt(n).GetShipType() <= COLONYSHIP)
-	{
-		// 25% erhoehte Transportkapazitaet
-		if (pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(3)->GetFieldStatus(1) == RESEARCHED)
-		{
-			USHORT storage = m_ShipArray.GetAt(n).GetStorageRoom();
-			m_ShipArray.GetAt(n).SetStorageRoom(storage + (storage * pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(3)->GetBonus(1) / 100));
-		}
-		// keine Unterhaltskosten
-		if (pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(3)->GetFieldStatus(2) == RESEARCHED)
-		{
-			m_ShipArray.GetAt(n).SetMaintenanceCosts(0);
-		}
-	}
+	// Spezialforschungsboni dem Schiff hinzufügen
+	AddSpecialResearchBoniToShip(&m_ShipArray[n], pMajor);
 	
 	for (int i = 0; i < 4; i++)
 		m_ShipArray.ElementAt(n).SetTargetKO(CPoint(-1,-1), i);
@@ -2111,6 +2021,117 @@ void CBotf2Doc::RemoveShip(int nIndex)
 		pShip->DeleteFleet();
 	}	
 	m_ShipArray.RemoveAt(nIndex);	
+}
+
+/// Funktion beachtet die erforschten Spezialforschungen einer Rasse und verbessert die
+/// Eigenschaften der übergebenen Schiffes.
+/// @param pShip Schiff welches durch Spezialforschungen eventuell verbessert wird
+/// @param pShipOwner Zeiger auf den Besitzer des Schiffes
+void CBotf2Doc::AddSpecialResearchBoniToShip(CShip* pShip, CMajor* pShipOwner) const
+{
+	if (!pShip || !pShipOwner)
+		return;
+
+	CResearchInfo* pInfo = pShipOwner->GetEmpire()->GetResearch()->GetResearchInfo();
+	if (!pInfo)
+		return;
+
+	// mögliche Verbesserungen durch die Spezialforschung werden hier beachtet
+	// Spezialforschung #0: "Waffentechnik"
+	if (pInfo->GetResearchComplex(0)->GetComplexStatus() == RESEARCHED)
+	{
+		// 20% erhoehter Phaserschaden
+		if (pInfo->GetResearchComplex(0)->GetFieldStatus(1) == RESEARCHED)
+		{
+			for (int i = 0; i < pShip->GetBeamWeapons()->GetSize(); i++)
+			{
+				USHORT oldPower = pShip->GetBeamWeapons()->GetAt(i).GetBeamPower();
+				pShip->GetBeamWeapons()->GetAt(i).SetBeamPower(oldPower + (oldPower * pInfo->GetResearchComplex(0)->GetBonus(1) / 100));
+			}
+		}
+		// 20% erhoehte Torpedogenauigkeit
+		else if (pInfo->GetResearchComplex(0)->GetFieldStatus(2) == RESEARCHED)
+		{
+			for (int i = 0; i < pShip->GetTorpedoWeapons()->GetSize(); i++)
+			{
+				BYTE oldAcc = pShip->GetTorpedoWeapons()->GetAt(i).GetAccuracy();
+				pShip->GetTorpedoWeapons()->GetAt(i).SetAccuracy(oldAcc + (oldAcc * pInfo->GetResearchComplex(0)->GetBonus(2) / 100));
+			}
+		}
+		// 20% erhoehte Schussfreuquenz
+		else if (pInfo->GetResearchComplex(0)->GetFieldStatus(3) == RESEARCHED)
+		{
+			for (int i = 0; i < pShip->GetBeamWeapons()->GetSize(); i++)
+			{
+				BYTE oldRate = pShip->GetBeamWeapons()->GetAt(i).GetRechargeTime();
+				pShip->GetBeamWeapons()->GetAt(i).SetRechargeTime(oldRate	- (oldRate * pInfo->GetResearchComplex(0)->GetBonus(3) / 100));
+			}
+			for (int i = 0; i < pShip->GetTorpedoWeapons()->GetSize(); i++)
+			{
+				BYTE oldRate = pShip->GetTorpedoWeapons()->GetAt(i).GetTupeFirerate();
+				pShip->GetTorpedoWeapons()->GetAt(i).SetTubeFirerate(oldRate - (oldRate * pInfo->GetResearchComplex(0)->GetBonus(3) / 100));
+			}
+		}
+	}
+	// Spezialforschung #1: "Konstruktionstechnik"
+	if (pInfo->GetResearchComplex(1)->GetComplexStatus() == RESEARCHED)
+	{
+		// 20% bessere Schilde
+		if (pInfo->GetResearchComplex(1)->GetFieldStatus(1) == RESEARCHED)
+		{
+			UINT maxShield = pShip->GetShield()->GetMaxShield();
+			BYTE shieldType = pShip->GetShield()->GetShieldType();
+			BOOLEAN regenerative = pShip->GetShield()->GetRegenerative();
+			pShip->GetShield()->ModifyShield((maxShield + (maxShield * pInfo->GetResearchComplex(1)->GetBonus(1) / 100)), shieldType, regenerative);			
+		}
+		// 20% bessere Hülle
+		else if (pInfo->GetResearchComplex(1)->GetFieldStatus(2) == RESEARCHED)
+		{
+			BOOLEAN doubleHull = pShip->GetHull()->GetDoubleHull();
+			BOOLEAN ablative = pShip->GetHull()->GetAblative();
+			BOOLEAN polarisation = pShip->GetHull()->GetPolarisation();
+			UINT baseHull = pShip->GetHull()->GetBaseHull();
+			BYTE hullMaterial = pShip->GetHull()->GetHullMaterial();
+			pShip->GetHull()->ModifyHull(doubleHull, (baseHull + (baseHull * pInfo->GetResearchComplex(1)->GetBonus(2) / 100)), hullMaterial,ablative,polarisation);
+		}
+		// 50% stärkere Scanner
+		else if (pInfo->GetResearchComplex(1)->GetFieldStatus(3) == RESEARCHED)
+		{
+			USHORT scanPower = pShip->GetScanPower();
+			pShip->SetScanPower(scanPower + (scanPower * pInfo->GetResearchComplex(1)->GetBonus(3) / 100));
+		}
+	}
+	// Spezialforschung #2: "allgemeine Schiffstechnik"
+	if (pInfo->GetResearchComplex(2)->GetComplexStatus() == RESEARCHED)
+	{
+		// erhoehte Reichweite für Schiffe mit zuvor kurzer Reichweite
+		if (pInfo->GetResearchComplex(2)->GetFieldStatus(1) == RESEARCHED)
+		{
+			if (pShip->GetRange() == RANGE_SHORT)
+				pShip->SetRange((BYTE)(pInfo->GetResearchComplex(2)->GetBonus(1)));
+		}
+		// erhoehte Geschwindigkeit für Schiffe mit Geschwindigkeit 1
+		else if (pInfo->GetResearchComplex(2)->GetFieldStatus(2) == RESEARCHED)
+		{
+			if (pShip->GetSpeed() == 1)
+				pShip->SetSpeed((BYTE)(pInfo->GetResearchComplex(2)->GetBonus(2)));
+		}
+	}
+	// Spezialforschung #3: "friedliche Schiffstechnik"
+	if (pInfo->GetResearchComplex(3)->GetComplexStatus() == RESEARCHED && pShip->GetShipType() <= COLONYSHIP)
+	{
+		// 25% erhoehte Transportkapazitaet
+		if (pInfo->GetResearchComplex(3)->GetFieldStatus(1) == RESEARCHED)
+		{
+			USHORT storage = pShip->GetStorageRoom();
+			pShip->SetStorageRoom(storage + (storage * pInfo->GetResearchComplex(3)->GetBonus(1) / 100));
+		}
+		// keine Unterhaltskosten
+		if (pInfo->GetResearchComplex(3)->GetFieldStatus(2) == RESEARCHED)
+		{
+			pShip->SetMaintenanceCosts(0);
+		}
+	}
 }
 
 void CBotf2Doc::AddToLostShipHistory(const CShip* pShip, const CString& sEvent, const CString& sStatus)
@@ -2282,6 +2303,12 @@ void CBotf2Doc::CalcPreDataForNextRound()
 	for (int i = 0; i < m_ShipInfoArray.GetSize(); i++)
 		if (!m_ShipInfoArray.GetAt(i).GetOnlyInSystem().IsEmpty())
 			m_ShipInfoArray.GetAt(i).SetRace(MINORNUMBER);
+
+	// Systeme durchgehen und die Blockadewert des Systems zurücksetzen
+	for (int y = 0 ; y < STARMAP_SECTORS_VCOUNT; y++)
+		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
+			if (m_Sector[x][y].GetSunSystem())
+				m_System[x][y].SetBlockade(0);			
 
 	//f(x):=min(731,max(14,trunc(743-x^3)))
 	m_fStardate += (float)(min(731, max(14, 743-pow((float)m_Statistics.GetAverageTechLevel(),3.0f))));
@@ -3134,6 +3161,10 @@ void CBotf2Doc::CalcResearch()
 			}
 		}		
 	}
+
+	// künstliche Intelligenz für Forschung
+	CResearchAI AI;
+	AI.Calc(this);
 }
 
 /// Diese Funktion berechnet die Auswirkungen von diplomatischen Angeboten und ob Minorraces Angebote an
@@ -3509,9 +3540,7 @@ void CBotf2Doc::CalcNewRoundData()
 			if (m_Sector[x][y].GetSunSystem() == TRUE && m_System[x][y].GetOwnerOfSystem() != "")
 			{
 				// imperiumsweite Moralproduktion aus diesem System berechnen
-				m_System[x][y].CalculateEmpireWideMoralProd(&this->BuildingInfo);
-				// Blockadewert des Systems zurücksetzen
-				m_System[x][y].SetBlockade(NULL);
+				m_System[x][y].CalculateEmpireWideMoralProd(&this->BuildingInfo);				
 			}
 	struct RESEARCHBONI { short nBoni[6]; };
 	map<CString, RESEARCHBONI> researchBonis;
@@ -4552,29 +4581,38 @@ void CBotf2Doc::CalcShipOrders()
 			// Das ganze Schiffsarray und auch die Flotten durchgehen, wenn wir ein altes Flagschiff finden, diesem den
 			// Titel wegnehmen
 			for (USHORT n = 0; n < m_ShipArray.GetSize(); n++)
+			{
 				if (m_ShipArray[n].GetOwnerOfShip() == m_ShipArray[y].GetOwnerOfShip())
 				{
 					if (m_ShipArray[n].GetIsShipFlagShip() == TRUE)
 					{
-						m_ShipArray[n].SetIsShipFlagShip(FALSE);
-						m_ShipArray[n].SetCurrentOrder(ATTACK);
+						m_ShipArray[n].SetIsShipFlagShip(FALSE);						
 						break;
 					}
 					// überprüfen ob ein Flagschiff in einer Flotte ist
 					else if (m_ShipArray[n].GetFleet() != 0)
 					{
+						bool bFoundFlagShip = false;
 						for (USHORT m = 0; m < m_ShipArray[n].GetFleet()->GetFleetSize(); m++)
+						{
 							if (m_ShipArray[n].GetFleet()->GetShipFromFleet(m)->GetIsShipFlagShip() == TRUE)
 							{
 								m_ShipArray[n].GetFleet()->GetShipFromFleet(m)->SetIsShipFlagShip(FALSE);
-								m_ShipArray[n].GetFleet()->GetShipFromFleet(m)->SetCurrentOrder(m_ShipArray[n].GetCurrentOrder());
+								bFoundFlagShip = true;
 								break;
 							}
+						}
+						if (bFoundFlagShip)
+							break;
 					}
 				}
+			}
 			// Jetzt das neue Schiff zum Flagschiff ernennen
 			m_ShipArray[y].SetIsShipFlagShip(TRUE);
-			m_ShipArray[y].SetCurrentOrder(ATTACK);
+			if (m_ShipArray[y].IsNonCombat())
+				m_ShipArray[y].SetCurrentOrder(AVOID);
+			else
+				m_ShipArray[y].SetCurrentOrder(ATTACK);
 			// Nachricht generieren, dass ein neues Schiff zum Flagschiff ernannt wurde
 			CString s = CResourceManager::GetString("ASSIGN_FLAGSHIP_MESSAGE",FALSE,m_ShipArray[y].GetShipName(),m_ShipArray[y].GetShipTypeAsString());
 			message.GenerateMessage(s,MILITARY,"",ShipKO,FALSE);
@@ -5223,6 +5261,24 @@ void CBotf2Doc::CalcShipCombat()
 				message.GenerateMessage(s, MILITARY, "", 0, 0);
 				pMajor->GetEmpire()->AddMessage(message);
 			}
+	}
+
+	// allen Schiffen mit Rückzugsbfehl den aktuellen Befehl zurücknehmen
+	for (int i = 0; i < m_ShipArray.GetSize(); i++)
+	{
+		CShip* pShip = &m_ShipArray[i];
+		// Hat das Schiff den Rückzugsbefehl
+		if (pShip->GetCombatTactic() == COMBAT_TACTIC_RETREAT)
+		{
+			// Schiff auf Meiden stellen
+			if (pShip->IsNonCombat())
+				pShip->SetCurrentOrder(AVOID);
+			else
+				pShip->SetCurrentOrder(ATTACK);
+
+			// womögicher Terraformplanet oder Stationsbau zurücknehmen
+			pShip->SetTerraformingPlanet(-1);
+		}
 	}
 }
 

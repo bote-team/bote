@@ -273,12 +273,12 @@ int CVictoryObserver::GetNeededVictoryValue(VICTORYTYPE nType) const
 		return 10;
 	
 	case VICTORYTYPE_COMBATWINS:
-		// aktuelle Runde / 4 Schiffskampfsiege (mindestens 100)
-		return max(nCurrentRound / 2.5, 100);		
+		// aktuelle Runde / 2.25 Schiffskampfsiege (mindestens 125)
+		return max(nCurrentRound / 2.25, 125);
 	
 	case VICTORYTYPE_SABOTAGE:
-		// aktuelle Runde * 1.5 erfolgreiche Sabotageaktionen (mindestens 250)
-		return max(nCurrentRound * 1.5, 250);
+		// aktuelle Runde * 1.6 erfolgreiche Sabotageaktionen (mindestens 250)
+		return max(nCurrentRound * 1.6, 250);
 	
 	default: return INT_MAX;
 	}

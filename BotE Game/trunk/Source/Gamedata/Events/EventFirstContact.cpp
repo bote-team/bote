@@ -140,9 +140,9 @@ void CEventFirstContact::Draw(Graphics* g, CGraphicPool* graphicPool) const
 		g->DrawString(sProperties[i].AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(730,210 + i*30,540,30), &fontFormat, &fontBrush);
 
 	// Technischen Fortschritt zeichnen
+	CString sProgress;
 	if (pContactedRace->GetType() == MINOR)
-	{
-		CString sProgress;
+	{		
 		switch (((CMinor*)pContactedRace)->GetTechnologicalProgress())
 		{
 		case 0: sProgress = CResourceManager::GetString("VERY_UNDERDEVELOPED");	break;
@@ -150,11 +150,56 @@ void CEventFirstContact::Draw(Graphics* g, CGraphicPool* graphicPool) const
 		case 2: sProgress = CResourceManager::GetString("NORMAL_DEVELOPED");	break;
 		case 3: sProgress = CResourceManager::GetString("DEVELOPED");			break;
 		case 4: sProgress = CResourceManager::GetString("VERY_DEVELOPED");		break;
-		}
-		fontFormat.SetFormatFlags(!StringFormatFlagsNoWrap);
-		g->DrawString(sProgress.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(730,100,540,40), &fontFormat, &fontBrush);
-		fontFormat.SetFormatFlags(StringFormatFlagsNoWrap);
+		}		
 	}
+	else if (pContactedRace->GetType() == MAJOR)
+	{
+		// erforschte Techs vergleichen
+		double dOurLevel =		pMajor->GetEmpire()->GetResearch()->GetBioTech() +
+								pMajor->GetEmpire()->GetResearch()->GetEnergyTech() +
+								pMajor->GetEmpire()->GetResearch()->GetCompTech() +
+								pMajor->GetEmpire()->GetResearch()->GetPropulsionTech() +
+								pMajor->GetEmpire()->GetResearch()->GetConstructionTech() +
+								pMajor->GetEmpire()->GetResearch()->GetWeaponTech();
+		dOurLevel /= 6.0;
+
+		double dTheirLevel =	((CMajor*)pContactedRace)->GetEmpire()->GetResearch()->GetBioTech() +
+								((CMajor*)pContactedRace)->GetEmpire()->GetResearch()->GetEnergyTech() +
+								((CMajor*)pContactedRace)->GetEmpire()->GetResearch()->GetCompTech() +
+								((CMajor*)pContactedRace)->GetEmpire()->GetResearch()->GetPropulsionTech() +
+								((CMajor*)pContactedRace)->GetEmpire()->GetResearch()->GetConstructionTech() +
+								((CMajor*)pContactedRace)->GetEmpire()->GetResearch()->GetWeaponTech();
+		dTheirLevel /= 6.0;
+
+		// ist der Durchschnitt nur um einen halben Techlevel verschieden, so wird ein "normal entwickelt angezeigt
+		double dDiff = dOurLevel - dTheirLevel;
+		if (fabs(dDiff) <= 0.5)
+			sProgress = CResourceManager::GetString("NORMAL_DEVELOPED");
+		// ist die getroffene Rasse technologisch hinter uns?
+		else if (dDiff > 0.0)
+		{
+			// ist der Durchschnitt der getroffenen Rasse zwei Techlevels hinter dem unseren, so gilt sie als sehr rückständig
+			if (dDiff >= 2.0)
+				sProgress = CResourceManager::GetString("VERY_UNDERDEVELOPED");
+			// sonst als rückständig
+			else
+				sProgress = CResourceManager::GetString("UNDERDEVELOPED");
+		}
+		// ist die getroffene Rasse technologisch fortschrittlicher als wir?
+		else
+		{
+			// ist der Durchschnitt der getroffenen Rasse zwei Techlevels vor dem unseren, so gilt sie als sehr fortschrittlich
+			if (dDiff <= -2.0)
+				sProgress = CResourceManager::GetString("VERY_DEVELOPED");
+			// sonst als fortschrittlich
+			else
+				sProgress = CResourceManager::GetString("DEVELOPED");
+		}
+	}
+
+	fontFormat.SetFormatFlags(!StringFormatFlagsNoWrap);
+	g->DrawString(sProgress.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(730,100,540,40), &fontFormat, &fontBrush);
+	fontFormat.SetFormatFlags(StringFormatFlagsNoWrap);
 
 	// Spezialgebäude und -schiffe der Rasse zeichnen, sofern es sich um eine Minorrace handelt
 	if (pContactedRace->GetType() == MINOR)

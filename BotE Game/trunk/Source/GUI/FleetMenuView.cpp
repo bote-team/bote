@@ -10,6 +10,7 @@
 #include "Ships\Fleet.h"
 #include "Races\RaceController.h"
 #include "HTMLStringBuilder.h"
+#include "Graphic\memdc.h"
 
 // CFleetMenuView
 #ifdef _DEBUG
@@ -57,7 +58,7 @@ void CFleetMenuView::OnDraw(CDC* dc)
 		return;
 	
 	// Doublebuffering wird initialisiert
-	CMemDC pDC(dc);
+	CMyMemDC pDC(dc);
 	CRect client;
 	GetClientRect(&client);
 		

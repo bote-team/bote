@@ -36,7 +36,8 @@ CIniLoader::CIniLoader(void)
 
 		WriteValue("Video", "SHOWTRADEROUTES", "ON");
 		WriteValue("Video", "ANIMATEDICON", "ON");
-		WriteValue("Video", "TOOLTIPDELAY", "750");
+		WriteValue("Video", "SHOWMINIMAP", "ON");
+		WriteValue("Video", "TOOLTIPDELAY", "750");		
 
 		WriteValue("Control", "SHOWSCROLLBARS", "OFF");
 		WriteValue("Control", "INVERTMOUSE", "OFF");

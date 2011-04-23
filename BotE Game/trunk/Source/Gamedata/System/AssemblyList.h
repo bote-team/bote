@@ -13,7 +13,10 @@
 #include "Troops\TroopInfo.h"
 #include "Galaxy\ResourceRoute.h"
 
+// forward declaration
 class CSystem;
+class CResearchInfo;
+
 class CAssemblyList : public CObject
 {
 public:

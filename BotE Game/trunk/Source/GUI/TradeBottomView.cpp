@@ -5,6 +5,7 @@
 #include "IOData.h"
 #include "TradeBottomView.h"
 #include "Races\Major.h"
+#include "Graphic\memdc.h"
 
 // CTradeBottomView
 
@@ -51,7 +52,7 @@ void CTradeBottomView::OnDraw(CDC* dc)
 	ASSERT(pHistory);	
 
 	// Doublebuffering wird initialisiert
-	CMemDC pDC(dc);
+	CMyMemDC pDC(dc);
 	CRect client;
 	GetClientRect(&client);
 		

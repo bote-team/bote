@@ -68,6 +68,16 @@ void CMenuChooseView::OnDraw(CDC* pDC)
 	if (!pMajor)
 		return;
 
+	// Das einschalten um automatisch bis zu einer gewissen Runde durchzuklicken
+	/*
+	if (!pDoc->m_bRoundEndPressed && pDoc->GetCurrentRound() < 100)
+	{
+		pDoc->m_bRoundEndPressed = true;
+		CSoundManager::GetInstance()->StopMessages(TRUE);
+		client.EndOfRound(pDoc);		
+	}
+	*/
+
 	CRect r(0, 0, m_TotalSize.cx, m_TotalSize.cy);
 
 	// Doublebuffering wird initialisiert

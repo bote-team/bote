@@ -7,6 +7,7 @@
 #include "MainFrm.h"
 #include "Ships\GenShipName.h"
 #include "General\Statistics.h"
+#include "General\Message.h"
 #include "Races\VictoryObserver.h"
 #include "System\GlobalBuildings.h"
 #include "System\GlobalStorage.h"
@@ -182,6 +183,12 @@ public:
 	/// Funktion zum Löschen des Schiffes aus dem Schiffsarray.
 	/// @param nIndex Index des Schiffes im Array
 	void RemoveShip(int nIndex);
+
+	/// Funktion beachtet die erforschten Spezialforschungen einer Rasse und verbessert die
+	/// Eigenschaften der übergebenen Schiffes.
+	/// @param pShip Schiff welches durch Spezialforschungen eventuell verbessert wird
+	/// @param pShipOwner Zeiger auf den Besitzer des Schiffes
+	void AddSpecialResearchBoniToShip(CShip* pShip, CMajor* pShipOwner) const;
 
 	/// Funktion fügt ein Schiff zur Liste der verlorenen Schiffe in der Schiffshistory ein.
 	/// @param sEvent Ereignis warum Schiff weg/zerstört/verschwunden ist

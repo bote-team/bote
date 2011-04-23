@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "AssemblyList.h"
 #include "System.h"
+#include "Races\ResearchInfo.h"
 
 IMPLEMENT_SERIAL (CAssemblyList, CObject, 1)
 //////////////////////////////////////////////////////////////////////

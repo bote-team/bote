@@ -1,6 +1,6 @@
 1
 AT
-Kurz nach der Gründung  der Terranischen Konföderation wurde beschlossen, eine neue, revolutionäre Schiffsklasse in Auftrag zu geben. Heraus kam eine Plattform, um das eigene Sonnensystem verlassen und das Weltall erforschen zu können. Diese Schiffe sind trotz ihrer relativ starken Bewaffnung eher Forschungsschiffe und als solche verstehen sich ihre Kapitäne auch, weswegen sie eigentlich keine Bedrohung für ein richtiges Kriegsschiff sind.
+Kurz nach ihrer Gründung gab die Terranische Konföderation eine neue, revolutionäre Schiffsklasse in Auftrag, die in der Lage sein sollte das Sonnensystem zu verlassen und den Weltraum zu erforschen. Es entstand die AT-Klasse. Diese Schiffe sind relativ stark bewaffnet, jedoch bestehen ihre Besatzungen haupsächlich aus Wissenschaftlern und Forschern. Deswegen stellen sie keine echte Gefahr für ein richtiges Kriegsschiff dar.
 5
 0
 4
@@ -113,7 +113,7 @@ Laser Emitter
 $END_OF_SHIPDATA$
 1
 Agamemnon
-Die Agamemnon-Klasse ist ein wahres Monster unter den Schiffen der Terranischen Konföderation. Dieses Schiff ist riesig, dazu bewaffnet bis unter die Zähne und mit Hochleistungsschilden ausgestattet. Die Agamemnon wurde als reines Kriegsschiff entwickelt. 
+Die Schiffe der Agamemnon-Klasse sind wahre Riesen unter den Schiffen der Terranischen Konföderation. Als reine Kriegsschiffe entwickelt sind sie bewaffnet bis an die Zähne und mit regenerativen Hochleistungsschilden ausgerüstet. 
 10
 3
 2
@@ -189,8 +189,8 @@ Laser Array
 90
 $END_OF_SHIPDATA$
 1
-Außenposten 378
-Außenposten fungieren für gewöhnlich als Nachschubstation und Umschlagplatz. Sie besitzen auch eine Reihe leichter und schwerer Waffen, die im Kampf gegen kleine Schiffsverbände ihre volle Wirkung entfalten können.
+Außenposten 178
+Außenposten fungieren für gewöhnlich als Nachschubstation und Umschlagplatz. Die neuen Außenposten der 178er-Baureihe verfügen über deutlich mehr Waffen, bessere Schilde und eine stärkere Hülle als ihre Vorgänger. Damit sind sie deutlich besser in der Lage, sich gegen kleinere feindliche Verbände zu verteidigen.
 12
 3
 0
@@ -303,7 +303,7 @@ Laser Bank
 $END_OF_SHIPDATA$
 1
 Außenposten 489
-Außenposten fungieren für gewöhnlich als Nachschubstation und Umschlagplatz. Sie besitzen auch eine Reihe leichter und schwerer Waffen, die im Kampf gegen kleine Schiffsverbände ihre volle Wirkung entfalten können.
+Außenposten fungieren für gewöhnlich als Nachschubstation und Umschlagplatz. Die Außenposten der 489er-Baureihe wurden gegenüber ihrem  Vorgänger nochmals aufgewertet. Waffen, Schilde und Hülle wurden deutlich verbessert, zudem verfügen sie über eine ablative Panzerung sowie hochmoderne regenerative Schilde.
 12
 3
 0
@@ -390,7 +390,7 @@ Laser Array
 $END_OF_SHIPDATA$
 1
 Barracuda
-Nach ihrer Einführung in die Flotte zählt die Barracuda-Klasse definitiv zu den schnellsten Raumschiffen der Konföderation. Sie besitzt bioneurale Computerkomponenten und ein variables geometrisches Kontinuumfeld, dass durch seine speziellen Kontinuumpylonen erzeugt wird. Diese Schiffe sind klein, aber sehr manövrierfähig und ausdauernd.
+Die Fregatten der  Barracuda-Klasse zählen definitiv zu den schnellsten Raumschiffen der Konföderation. Sie besitzen bioneurale Computerkomponenten und ein variables geometrisches Kontinuumfeld, welches durch spezielle Kontinuumpylonen erzeugt wird. Diese Schiffe sind klein, aber sehr manövrierfähig und ausdauernd.
 5
 1
 7
@@ -467,7 +467,7 @@ Laser Bank
 $END_OF_SHIPDATA$
 1
 Belvedere
-Die Belvedere-Klasse ist ein hochmodernes Schiff der Terranischen Konföderation. Sie stellt eine Weiterentwicklung der veralteten Peraine-Klasse dar. Sie ist ein schneller Zerstörer mit hoher frontaler Feuerkraft. Ausserdem besitzt die Belvedere-Klasse hochmoderne regenerative Schilde.
+Die Schiffe der Belvedere-Klasse sind hochmoderne schnelle Zerstörer der Koföderation. Als direkter Nachfolger der Peraine-Klasse besitzen sie eine höhere frontale Feuerkraft sowie höhere Geschwindigkeit. Ausserdem sind sie mit hochmodernen regenerativen Schilden ausgestattet.
 6
 2
 5
@@ -544,7 +544,7 @@ Laser Array
 $END_OF_SHIPDATA$
 1
 Benton
-Die Klassifikation der Benton-Klasse ist unbekannt. Das Schiff ist hauptsächlich eine Neuansammlung von Komponenten der Matilda-Klasse. Es besitzt Ähnlichkeiten mit der Peraine-Klasse, kann sich aber auch gegen Überraschungsangriffe von hinten zur Wehr setzen. Die Schiffe der Benton-Klasse sind schnelle Fregatten, die von der  Konföderationsflotte hauptsächlich zum Schutz der eigenen Grenzen vor Überfällen eingesetzt werden.
+Die Schiffe der Benton-Klasse sind schnelle Fregatten, die von der  Konföderationsflotte hauptsächlich zum Schutz der eigenen Grenzen vor Überfällen eingesetzt werden. Bei der Entwicklung dieser Klasse wurden Komponenten aus der Matilda-Klasse verwendet. Diese Schiffe können sich durch die heckwärtigen Laser-Bänke auch gegen Angriffe von hinten zur Wehr setzen.
 5
 1
 5
@@ -631,7 +631,7 @@ Laser Bank
 $END_OF_SHIPDATA$
 1
 Cherumir
-Diese erweiterte Klasse von Kolonieschiffen kann doppelt so viele Kolonisten an Bord unterbringen wie die Vorgängerversion und besitzt auch besseres Equipment in Sachen Terraforming noch unbesiedelter Planeten.
+Diese erweiterte Klasse von Kolonieschiffen kann doppelt so viele Kolonisten an Bord unterbringen wie die Vorgängerversion. Ihr verbessertes Equipment in Sachen Terraforming noch unbesiedelter Planeten ermöglicht die schnellere Gründung neuer Kolonien.
 1
 1
 1
@@ -672,7 +672,7 @@ Seraphine
 $END_OF_SHIPDATA$
 1
 Chilmark
-Die Chilmark-Klasse ist der erste echte Kreuzer der Konföderation. Sie ist zum Zeitpunkt ihrer Indienststellung der stärkste Schiffstyp der Flotte. Seine enorme Grösse und starke raumumspannende Defensivsysteme stehen auf der Habenseite der Chilmark-Klasse. Dafür leidet die Geschwindigkeit und die Manövrierbarkeit im Kampf.
+Die Chilmark-Kreuzer sind die ersten echten Kreuzer der Konföderation. Sie sind zum Zeitpunkt ihrer Indienststellung der stärkste Schiffstyp der Flotte. Ihre enorme Grösse und starke raumumspannende Defensivsysteme stehen auf der Habenseite der Chilmark-Klasse. Dafür leiden die Geschwindigkeit und die Manövrierbarkeit im Kampf.
 9
 2
 2
@@ -788,7 +788,7 @@ Laser Emitter
 $END_OF_SHIPDATA$
 1
 Duluth
-Die Duluth-Klasse ist das Ergebnis eines ehrgeizigen Entwicklungsprogramms auf den Utopia Planitia-Flottenwerften. Die gewaltige Duluth-Klasse ist hauptsächlich dafür entworfen worden, die betagte Chilmark- und Farscape-Klassen bei wissenschaftlichen Missionen zu ersetzen. Beim Entwurf der Duluth-Klasse haben die besten Ingenieure und Techniker der Konföderation mitgearbeitet und das wohl bis dato fortschrittlichste und stärkste Raumschiff der entwickelt. Neben seiner Rolle bei wissenschaftlichen Einsätzen ist dieser Schiffstyp auch ein ausgezeichnetes Kommandoschiff zur Koordinierung großer Flotteneinsätze und zugleich auch ein kampfstarker Gegner.
+Die schweren Kreuzer der Duluth-Klasse sind das Ergebnis eines ehrgeizigen Entwicklungsprogramms auf den Utopia Planitia-Flottenwerften. Die gewaltige Duluth-Klasse wurde hauptsächlich dafür entworfen, die betagten Chilmark- und Farscape-Klassen bei wissenschaftlichen Missionen zu ersetzen. Am Entwurf der Duluth-Klasse haben die besten Ingenieure und Techniker der Konföderation mitgearbeitet und das  bis dato wohl fortschrittlichste und stärkste Raumschiff der Flotte entwickelt. Neben seiner Rolle bei wissenschaftlichen Einsätzen ist dieser Schiffstyp auch ein ausgezeichnetes Kommandoschiff zur Koordinierung großer Flotteneinsätze und zugleich auch ein kampfstarker Gegner.
 9
 3
 1
@@ -865,7 +865,7 @@ Laser Array
 $END_OF_SHIPDATA$
 1
 Farscape
-Schiffe der Farscape-Klasse dienen als kleines und kostengünstiges Forschungsschiff auf Langstrecken-Forschungsmissionen und sind daher nur spärlich bewaffnet.
+Schiffe der Farscape-Klasse dienen als kleine und kostengünstige Plattform für Langstrecken-Forschungsmissionen und zur militärischen Aufklärung. Sie sind nur spärlich bewaffnet und schwach gepanzert, haben aber eine hohe Reichweite und starke Sensoren.
 3
 0
 6
@@ -942,7 +942,7 @@ Laser Emitter
 $END_OF_SHIPDATA$
 1
 Firefly
-Die Firefly-Klasse ist die kleinere Schwester der Duluth-Klasse. Sie ist erheblich kostengünstiger als ihre große Kollegin und wurde daher in größerer Anzahl beschafft. Nebenbei ist diese Schiffsklasse auch ein exzellenter Angriffskreuzer.
+Die Schiffe der  Firefly-Klasse sind die kleinen Schwestern der Duluth-Klasse. Sie sind erheblich günstiger als ihre große Kollegin und können daher in größerer Anzahl gebaut werden. Aufgrund ihrer starken Torpedobewaffnung sind diese Schiffe exzellente Angriffskreuzer.
 9
 2
 2
@@ -1070,7 +1070,7 @@ Das Standard-Transportschiff der Terranischen Konföderation. Klein, effizient, v
 $END_OF_SHIPDATA$
 1
 Hathaway
-Die Hathaway-Klasse ist das Schwesterschiff der Peraine-Klasse. Dieser Schiffstyp ist für den direkten Kampf Schiff gegen Schiff gebaut wurden. Geschwindigkeit und Manövriebarkeit sind ausgezeichnet, ebenso die Raumabdeckung ihrer Geschütze. Das einzige Manko dieser Schiffsklasse sind die fehlenden Torpedowerfer.
+Die schweren Zerstörer der Hathaway-Klasse sind die Schwesterschiffe der Peraine-Klasse. Dieser Schiffstyp wurde für den direkten Kampf Schiff gegen Schiff entworfen.Geschwindigkeit und Manövriebarkeit sind ausgezeichnet, ebenso die Raumabdeckung ihrer Geschütze. Das einzige Manko dieser Schiffsklasse sind die fehlenden Torpedowerfer.
 8
 1
 5
@@ -1263,7 +1263,7 @@ Laser Bank
 $END_OF_SHIPDATA$
 1
 Lamprey
-Dieses verbesserte Transportschiff kann mehr Truppen transportieren und besitzt auch bessere Schilde und besseren Antrieb wodurch es in der Schlacht um Planeten auch effektiver eingesetzt werden kann.
+Die verbesserten Transportschiffe der Lamprey-Klasse verfügen über einen deutlich größeren Laderaum als ihre Vorgänger. Zudem haben sie bessere Schilde und einen stärkeren  Antrieb, wodurch sie beim  Angriff auf Planeten effektiver eingesetzt werden können. Sie sind jedoch weiterhin unbewaffnet und sollte daher nicht ohne Geleitschutz eingesetzt werden.
 0
 1
 1
@@ -1304,7 +1304,7 @@ Fox
 $END_OF_SHIPDATA$
 1
 Longeye
-Nachdem die Konföderation das Ultima One Projekt forcierte, wurden zur Praxiserprobung der neusten Schiffsklassen neuentwickelte Komponenten in kleinere Modelle integriert. Daraus entstanden die hochmodernen Aufklärer der Longeye-Klasse, welche fortan die Mole-Klasse ersetzen sollten. Longeyes sind zudem wesentlich kompakter und widerstandsfähiger als ihre Vorgänger, was die Durchführung ihrer wissenschaftlichen Aktivitäten auch unter schwierigeren Weltraumbedingungen ermöglicht.
+Nachdem die Konföderation das Ultima One Projekt forcierte, wurden zur Praxiserprobung  neue Komponenten in kleineren Schiffklassen getestet. Daraus entstanden die hochmodernen Aufklärer der Longeye-Klasse, welche fortan die Mole-Klasse ersetzen sollten. Longeyes sind wesentlich kompakter und widerstandsfähiger als ihre Vorgänger. Sie sind zudem mit stärkeren Sensoren, regenerativen Schilden und stärkeren Waffen ausgerüstet.
 3
 1
 6
@@ -1468,7 +1468,7 @@ Laser Bank
 $END_OF_SHIPDATA$
 1
 Mole
-Die Raumschiffe der Mole-Klasse sind die direkten Nachfolger der Farscape Raumschiffe. Ihre Hauptaufgabe ist die Erkundung fremder Welten, weit entfernt vom Heimatgebiet der Konföderation. Zu diesem Zwecke sind sie mit starken Antrieben ausgestattet. Bewaffnung und Defensivsysteme sind dafür eher als schwach anzusehen.
+Die Raumschiffe der Mole-Klasse sind die direkten Nachfolger der Farscape-Klasse. Ihre Hauptaufgabe ist die Erkundung fremder Welten, weit entfernt vom Heimatgebiet der Konföderation, sowie die militärische Aufklärung. Zu diesem Zweck sind sie mit starken Antrieben ausgestattet und erreichen damit eine deutlich höhere Geschwindigkeit.Bewaffnung und Defensivsysteme konnten im Vergleich zur Farscape-Klasse verstärkt werden, unter Beibehaltung der hohen Reichweite.
 3
 2
 6
@@ -1532,7 +1532,7 @@ Laser Bank
 $END_OF_SHIPDATA$
 1
 Montgomery
-Die Montgomery-Klasse ist ein voluminöser Raumschifftyp, der sowohl für wissenschaftliche Missionen als auch für Gefechte ausgestattet ist. Die Klasse ist in Hinsicht auf das Entwicklungsdesign ein Bindeglied zwischen der AT- und der Wolf-Klasse.
+Die Kreuzer der Montgomery-Klasse sind voluminöse Raumschiffe, die sowohl für wissenschaftliche Missionen als auch für Gefechte ausgestattet sind. Gegenüber der Panslaight-Klasse, die von den Montgomerys abgelöst wird, wurden Waffen, Schilde und Hülle aufgewertet. Geschwindigkeit und Manövrierbarkaeit leiden darunter jedoch nicht.
 7
 2
 2
@@ -1635,7 +1635,7 @@ Laser Bank
 $END_OF_SHIPDATA$
 1
 Panslaight
-Die Panslaight-Klasse ist ein moderner Kreuzer der Konföderation. Diese Klasse erfüllt alle Standartaufgaben. Ihre Bewaffnung, Geschwindigkeit und Defensivsysteme sind ausgeglichen. Dieser Kreuzer kann billig produziert werden und stellt das Rückgrad der konföderierten Flotte dar.
+Die Kreuzer der Panslaight-Klasse sind moderne Kreuzer der Konföderation. Diese Schiffe erfüllen alle Standardaufgaben. Ihre Bewaffnung, Geschwindigkeit und Defensivsysteme sind ausgewogen. Diese Kreuzer können schnell und günstig produziert werden und stellen das Rückgrat der konföderierten Flotte dar.
 7
 1
 2
@@ -1738,7 +1738,7 @@ Laser Bank
 $END_OF_SHIPDATA$
 1
 Patton
-Pattons sind schwer bewaffnet und sehr wendig. Auch die Patton-Klasse verdankt Ihre Existenz den verstärkten Bemühungen der Konföderationsflotte, eventuelle Bedrohungen feindlicher Großkampfschiffe abzuwehren. Aus diesem Grund ist die allseitige Torpedobewaffnung dieses Schiffstyps besonders ausgeprägt. Nebenbei wurde die modernsten Defensivsysteme in diesen Schiffstyp integriert. Feindliche Schiffe werden es schwer haben, gegen eine Flotte von Pattons zu bestehen.
+Die schweren Kreuzer der Patton-Klasse sind schwer bewaffnet und trotzdem sehr wendig. Die Patton-Klasse verdankt Ihre Existenz den verstärkten Bemühungen der Konföderationsflotte, Bedrohungen durch feindliche Großkampfschiffe abzuwehren. Aus diesem Grund ist die  Torpedobewaffnung, die alle Winkel abdecken kann, bei diesem Schiffstyps besonders ausgeprägt. Zudem wurden die modernsten Defensivsysteme in diesen Schiffstyp integriert. Feindliche Schiffe werden es schwer haben, gegen eine Flotte von Pattons zu bestehen.
 9
 3
 3
@@ -1812,7 +1812,7 @@ Laser Array
 $END_OF_SHIPDATA$
 1
 Peraine
-Die Peraine-Klasse ist ein zuverlässiger Schiffsentwurf, der seit dem 22., 23. Jahrhundert in modifizierter Form seine Aufgaben als Unterstützungsschiff der Konföderationsflotte wahrnimmt. Ein relativ günstiges, aber effizientes und schnell zu bauendes Design, dass sowohl für Forschungseinsätze als auch Grenzpatrouillen, Eskortdienste, Gefechtsunterstützung und Kurierdienste eingesetzt wird.
+Die Peraine-Klasse ist ein zuverlässiger Schiffsentwurf, der schon seit geraumer Zeit in immer wieder modifizierter Form seine Aufgaben als Unterstützungsschiff der Konföderationsflotte wahrnimmt. Ein relativ günstiges, aber effizientes und schnell zu bauendes Design, dass sowohl für Forschungseinsätze als auch Grenzpatrouillen, Eskortdienste, Gefechtsunterstützung und Kurierdienste eingesetzt wird.
 6
 1
 4
@@ -1950,7 +1950,7 @@ Pulse Laser Cannon
 $END_OF_SHIPDATA$
 1
 Pittsburgh
-Diese erweiterte Klasse von Kolonieschiffen kann doppelt so viele Kolonisten an Bord unterbringen wie die Vorgängerversion und besitzt auch besseres Equipment in Sachen Terraforming noch unbesiedelter Planeten.
+Diese neuen  Kolonieschiffe können  nochmals deutlich mehr Kolonisten an Bord unterbringen wie die Vorgängerversion. Ihr verbessertes Equipment in Sachen Terraforming noch unbesiedelter Planeten ermöglicht die schnellere Gründung neuer Kolonien.
 1
 2
 2
@@ -1990,8 +1990,90 @@ Diese erweiterte Klasse von Kolonieschiffen kann doppelt so viele Kolonisten an 
 Cherumir
 $END_OF_SHIPDATA$
 1
-Raumdock
-Ein Raumdock mit vergleichsweise starken Schilden und hoher Bewaffnung.
+Seraphine
+Die Seraphine ist das Standard-Kolonieschiff der Terranischen Konföderation. Ihre Hauptaufgabe ist die Gründung neuer Kolonien in den Weiten des Universums.
+1
+0
+1
+0
+0
+0
+0
+0
+0
+300
+0
+0
+0
+0
+0
+1
+
+200
+0
+0
+0
+0
+400
+1
+0
+1
+1
+0
+0
+0
+0
+1
+0
+4
+0
+0
+
+$END_OF_SHIPDATA$
+1
+Sputnik
+Diese 2 Raumsonden sind ein Geschenk der russischen Raumfahrtbehörde bevor diese in der Terranischen Konföderation aufging. Sie können extrem weit in den Raum scannen, allerdings ist die Stärke ihre Scansignale nicht mehr auf dem neuesten Stand.
+2
+0
+0
+255
+255
+255
+255
+255
+255
+100
+0
+0
+0
+0
+0
+1
+
+10
+0
+0
+0
+0
+0
+1
+0
+1
+2
+25
+2
+0
+0
+0
+0
+0
+0
+0
+
+$END_OF_SHIPDATA$
+1
+Sternenbasis 232
+Sternenbasen fungieren für gewöhnlich als Nachschubstation und Umschlagplatz. Die Sternenbasis der 232er-Baureihe ist ein frühes Modell der Konföderation, verfügt jedoch bereits über eine gute Bewaffnung, starke Schilde und Hülle. Sie ist in der Lage kleinere feindliche Flotten abzuwehren.
 13
 3
 0
@@ -2103,90 +2185,8 @@ Laser Emitter
 55
 $END_OF_SHIPDATA$
 1
-Seraphine
-Die Seraphine ist das gewöhnliche Standard-Kolonieschiff der Terranischen Konföderation. Ihre Hauptaufgabe ist die Gründung neuer Kolonien in den Weiten des Universums.
-1
-0
-1
-0
-0
-0
-0
-0
-0
-300
-0
-0
-0
-0
-0
-1
-
-200
-0
-0
-0
-0
-400
-1
-0
-1
-1
-0
-0
-0
-0
-1
-0
-4
-0
-0
-
-$END_OF_SHIPDATA$
-1
-Sputnik
-Diese 2 Raumsonden sind ein Geschenk der russischen Raumfahrtbehörde bevor diese in der Terranischen Konföderation aufging. Sie können extrem weit in den Raum scannen, allerdings ist die Stärke ihre Scansignale nicht mehr auf dem neuesten Stand.
-2
-0
-0
-255
-255
-255
-255
-255
-255
-100
-0
-0
-0
-0
-0
-1
-
-10
-0
-0
-0
-0
-0
-1
-0
-1
-2
-25
-2
-0
-0
-0
-0
-0
-0
-0
-
-$END_OF_SHIPDATA$
-1
-Sternenbasis 107
-Sternenbasen fungieren für gewöhnlich als Nachschubstation und Umschlagplatz. Sie besitzen auch eine Reihe leichter und schwerer Waffen, die sie im Kampf zu einem respektablen and herausfordernden Gegner machen.
+Sternenbasis 265
+Sternenbasen fungieren für gewöhnlich als Nachschubstation und Umschlagplatz.Die Sternenbasis der 265er-Baureihe wurde gegenüber dem Vorgängermodell mit mehr und stärkeren Waffen, einem modernen regenerativen Schildsystem und einer verstärkten Hülle ausgestattet. Damit ist sie in der Lage feindliche Flotten effektiver zu bekämpfen. 
 13
 3
 0
@@ -2272,8 +2272,8 @@ Laser Array
 90
 $END_OF_SHIPDATA$
 1
-Sternenbasis 40
-Sternenbasen fungieren für gewöhnlich als Nachschubstation und Umschlagplatz. Sie besitzen auch eine Reihe leichter und schwerer Waffen, die sie im Kampf zu einem respektablen and herausfordernden Gegner machen.
+Sternenbasis 595
+Sternenbasen fungieren für gewöhnlich als Nachschubstation und Umschlagplatz. Die Sternenbasen der 595er-Baureihe sind das Nonplusultra in der Baukunst der Konföderation. Sie besitzen extrem starke Waffen, regenerative Hochleistungsschilde sowie eine ablative Hüllenpanzerung. Dies versetzt sie in die Lage auch stärkere feindliche Flotten zu bekämpfen.
 13
 3
 0
@@ -2360,7 +2360,7 @@ Laser Array
 $END_OF_SHIPDATA$
 1
 Titan
-Dieses verbesserte Transportschiff kann mehr Truppen transportieren und besitzt auch bessere Schilde und besseren Antrieb wodurch es in der Schlacht um Planeten auch effektiver eingesetzt werden kann.
+Die verbesserten Transportschiffe der Titan-Klasse verfügen über einen deutlich größeren Laderaum als ihre Vorgänger. Zudem haben sie bessere Schilde und einen stärkeren Antrieb, wodurch sie beim  Angriff auf Planeten effektiver eingesetzt werden können. Sie sind jedoch weiterhin unbewaffnet und sollte daher nicht ohne Geleitschutz eingesetzt werden.
 0
 2
 1
@@ -2401,7 +2401,7 @@ Lamprey
 $END_OF_SHIPDATA$
 1
 Ultima One
-Nach Abschluss des Ultima One Projektes steht nun endlich diese Schiffsklasse der Konföderationsflotte zur Verfügung. Ein besonderes Doppelrumpfdesign verleiht diesem Schiff mehr Stabilität. Feuerkraft und Ausdauer suchen Ihresgleichen. Nur die besten Kapitäne dürfen diese Schiffe fliegen. Ein Großteil unserer Flotte erhält direkt Befehle von diesen mächtigen Kommandoschiffen.
+Nach Abschluss des Ultima One Projektes steht diese Schiffsklasse der Konföderationsflotte endlich zur Verfügung. Das besonderes Doppelrumpfdesign verleiht diesen Schiffen mehr Stabilität. Feuerkraft und Ausdauer suchen Ihresgleichen. Nur die besten Offiziere erhalten das Kommando auf einem dieser Schiffe. Ein Großteil der Flotte erhält direkt Befehle von diesen mächtigen Kommandoschiffen.
 11
 3
 1
@@ -2498,7 +2498,7 @@ Laser Array
 $END_OF_SHIPDATA$
 1
 Valkyrie
-Im Gegensatz zu anderen Schiffen der Konföderationsflotte, wurde die Valkyrie-Klasse hauptsächlich für den Kampf gegen extrem starke feindliche Grossraumschiffe entwickelt. Neben konventionellen Waffen besitzt das Schiff Impulslaserkanonen und Abschussrampen für Quantentorpedos. Die Manövriebarkeit im Kampf, sowie ausgezeichnete Defensivsysteme suchen ihresgleichen bei Schiffen dieser Grösse.
+Im Gegensatz zu den meisten anderen Schiffen der Konföderationsflotte, wurde die Valkyrie-Klasse, wie auch die Patton-Klasse, für den Kampf gegen extrem starke feindliche Grosskampfschiffe entwickelt. Diese Schiffe besitzen starke  Impulslaserkanonen und Abschussrampen für Quantentorpedos. Die Manövriebarkeit im Kampf, sowie die ausgezeichneten Defensivsysteme suchen ihresgleichen bei Schiffen dieser Grösse.
 8
 1
 4
@@ -2572,7 +2572,7 @@ Pulse Laser Cannon
 $END_OF_SHIPDATA$
 1
 Wolf
-Die Wolf-Klasse ersetzt die noch gar nicht so veraltete Benton-Klasse. Ein Vorteil der Wolf-Klasse sind die relativ geringen Produktionskosten. Dafür bietet das Schiff aber eine ausgezeichnete Geschwindigkeit und Manövriebarkeit im Kampf. Kaum ein anderes Schiff kann mit ihr mithalten. Ein Nachteil sind die relativ schwachen Offensivwaffen.
+Die Fregatten der  Wolf-Klasse ersetzen die noch gar nicht so veralteten Bentons. Ein Vorteil dieser Schiffe sind die relativ geringen Produktionskosten. Dafür bieten sie  ausgezeichnete Geschwindigkeit und Manövriebarkeit im Kampf. Kaum ein anderes Schiff kann mit ihnen mithalten. Die Laserbewaffnung fällt etwas leistungsschwächer aus als beim Vorgänger, dafür wurde die Torpedobewaffnung aufgestockt und moderne regenerative Schilde eingebaut. 
 5
 2
 6
@@ -2659,7 +2659,7 @@ Laser Array
 $END_OF_SHIPDATA$
 1
 Y-9
-Dieser Aussenposten der Konföderation stammt aus dem frühen 22. Jhdt. und ist nur relativ leicht gepanzert und bewaffnet. Er dient primär als Versorgungsstation der Flotte und damit zur Erhöhung der Reichweite der Konföderationsschiffe. 
+Diese frühen Aussenposten der Konföderation sind nur relativ leicht gepanzert und bewaffnet. Sie dienen primär als Versorgungsstationen der Flotte und damit zur Erhöhung der Reichweite der Konföderationsschiffe. 
 12
 3
 0
@@ -2772,7 +2772,7 @@ Laser Emitter
 $END_OF_SHIPDATA$
 2
 Baran
-Die Aufklärer der Baran-Klasse sind kleine, leicht bewaffnete Schiffe, die die Galaxie auf der Suche nach profitablen Gelegenheiten durchstreifen. Gleichzeitig helfen ihre Berichte die Bemühungen von Kolonie- und Kampfschiffen zum Erfolg zu führen. Diese agilen, wendigen und mit bemerkenswert weiträumig schwenkbaren Emittern ausgestatteten Schiffe sind günstig in Bau und Unterhalt und an ihre Aufgaben, die hauptsächlich die Aufklärung betreffen, ausgezeichnet angepasst.
+Die Aufklärer der Baran-Klasse sind kleine, leicht bewaffnete Schiffe, die die Galaxie im Auftrag der Union nach neuen Handelspartnern absuchen.Gleichzeitig helfen ihre Berichte die Bemühungen von Kolonie- und Kampfschiffen zum Erfolg zu führen. Diese agilen, wendigen und mit bemerkenswert weiträumig schwenkbaren Emittern ausgestatteten Schiffe sind günstig in Bau und Unterhalt und an ihre Aufgaben ausgezeichnet angepasst.
 3
 0
 6
@@ -2836,7 +2836,7 @@ Forced Plasma Emitter
 $END_OF_SHIPDATA$
 2
 Baran II
-Die neue Aufklärergeneration wurde gegenüber ihrem Vorgänger in allen Systemen aufgerüstet. Neben verbesserten Sensoren integrierte man auch ein stark verbessertes Schildnetz und mehr über das Schiff verteilte Waffensysteme in das bewährte Chassis, um das Aufgabengebiet zu erweitern. So dient der neue Aufklärer nicht nur zur Spionage, sondern kann auch für kleinere Überfälle und als Eskorte verwendet werden und stellt somit eine billigere Alternative zu größeren Schiffen dar.
+Die neue Aufklärergeneration wurde gegenüber ihrem Vorgänger in allen Systemen aufgerüstet. Neben verbesserten Sensoren integrierte man auch ein stark verbessertes Schildnetz und mehr über das Schiff verteilte Waffensysteme in das bewährte Chassis. So dient der neue Aufklärer nicht nur zur Spionage, sondern kann auch für kleinere Überfälle und als Eskorte verwendet werden und stellt somit eine billigere Alternative zu größeren Schiffen dar.
 3
 0
 7
@@ -3266,7 +3266,7 @@ Forced Plasma Bank
 $END_OF_SHIPDATA$
 2
 Han'Quhr
-Die Spitze des wirtschaftlichen Erfolgs stellt die Han'Quhr-Klasse dar. Als Flaggschiff der Hanuhr-Allianz ist es das modernste und gefährlichste Schiff der Flotte. Die normale Bauphilosophie der Handelsunion sieht kleine, wendige und dadurch billige Konstruktionen vor. Dieser Vorsatz wurde mit der Han'Quhr gebrochen, die vor allem durch ihre Größe die Überlegenheit der Union durch finanziellen Reichtum zur Schau stellen soll. Sämtliche Schiffsysteme, aber besonders die Waffen, befinden sich auf dem neuesten Stand der Technik und trotz der enormen Kosten zahlen sich Bau und der Einsatz während militärischen Konflikten bei weitem aus.
+Die Spitze des wirtschaftlichen Erfolgs stellt die Han'Quhr-Klasse dar. Als Flaggschiff der Hanuhr-Unionsflotte ist es das modernste und gefährlichste Schiff. Die normale Bauphilosophie der Handelsunion sieht kleine, wendige und dadurch billige Konstruktionen vor. Dieser Vorsatz wurde mit der Han'Quhr gebrochen, die vor allem durch ihre Größe die Überlegenheit der Union durch finanziellen Reichtum zur Schau stellen soll. Sämtliche Schiffsysteme, aber besonders die Waffen, befinden sich auf dem neuesten Stand der Technik und trotz der enormen Kosten zahlen sich Bau und Einsatz diese Schiffe in miltärischen Konflikten bei weitem aus.
 11
 3
 1
@@ -5234,7 +5234,7 @@ $Torpedo$
 10
 1
 EMP Microtube
-0
+1
 45
 0
 150
@@ -5254,7 +5254,7 @@ $Torpedo$
 10
 1
 EMP Microtube
-0
+1
 45
 180
 150
@@ -5752,7 +5752,7 @@ $Torpedo$
 10
 4
 EMP Microtube
-0
+1
 45
 0
 150
@@ -5762,7 +5762,7 @@ $Torpedo$
 10
 2
 EMP Microtube
-0
+1
 45
 180
 150
@@ -8001,7 +8001,7 @@ Die cartarianischen Zerstörer der Boris-Klasse sind die Nachfolger der Juri-Klas
 7
 6
 6
-3000
+1000
 400
 0
 0
@@ -9095,9 +9095,9 @@ Diese Jäger-Klasse stellt eine elegante, relativ manövrierfähige Kampfeinheit da
 0
 0
 58
+5
 8
-0
-
+Wassili
 $Torpedo$
 13
 1
@@ -11352,7 +11352,7 @@ Phased Polaron Array
 $END_OF_SHIPDATA$
 7
 Alathis
-Der Alathis Kreuzer ist ein mächtiger Gegner auf dem Schlachtfeld und wird von den erfahrensten und gefährlichsten Kapitänen der Andromedanischen Verteidigungsstreitmacht angeführt. Deren Erfahrung, die in langen Schlachten erworben wurde gegen die mächtigen Deshant, kann sogar ein paar kleinere Designschwächen in Sachen Geschwindigkeit und Schilde wettmachen.
+Die Alathis-Kreuzer sind mächtige Gegner auf dem Schlachtfeld und werden von den fähigsten Kapitänen der Andromedanischen Verteidigungsstreitmacht kommandiert. Erprobt in den langen Kriegen gegen die Deshant kann die Erfahrung dieser Kommandanten kleinere Schwächen dieser Schiffe bei der Geschwindigkeit und Schildstärke wettmachen.
 7
 1
 3
@@ -11722,7 +11722,7 @@ Bosean Phase Shifter
 $END_OF_SHIPDATA$
 7
 Bremmeth
-Dieser Transporterriese besitzt die Größe eines Asteroiden und kann große Mengen an Truppen und Güter laden. Seine vom Vorgänger bereits bekannten Lasertürme wurden noch mehr verbessert so dass dieses Schiff nunmehr fast schon ein Schlachtschiff darstellt.
+Noch grösser und beeindruckender als die Lemmeths sind die neuen Transporter der Bremmeth-Klasse. Der Laderaum hat mehr als die doppelte Kapazität, die Anzahl der Lasertürme wurde verdoppelt. Zusammen mit der extrem starke ablativen Hüllenpanzerung, den modernen regenerativen Schilden und dem verbesserten Antrieb machen sie aus diesem Schiff fast schon ein Schlachtschiff.
 0
 3
 1
@@ -11776,7 +11776,7 @@ Laser Beam Turret
 $END_OF_SHIPDATA$
 7
 Chaw
-Seine einschüchternde Größe und Schlagkraft ist oftmals das letzte, was ein gegnerischer Kapitän bewundern darf bevor er in einem frontalen Angriff sein letztes Gefecht schlägt.
+Von einschüchternder Schlagkraft sind die Dreadnoughts der Chaw-Klasse in der Lage, es mit fast jedem Gegner aufzunehmen. Ihre Bewaffnung und Panzerung stehen der schieren Grösse in nichts nach. Zudem verfügen sie über starke Schilde. Allenfalls die Geschwindigkeit und die Manövrierbarkeit im Kampf können als Nachteile angesehen werden. Diese Schiffe sind als Angriffskreuzer, aber auch als Kommandoschiffe zur Koordinierung von Flottenoperationen einsetzbar.
 11
 3
 1
@@ -11840,7 +11840,7 @@ Laser Emitter
 $END_OF_SHIPDATA$
 7
 Cheraw
-Seine einschüchternde Größe und Schlagkraft ist oftmals das letzte, was ein gegnerischer Kapitän bewundern darf bevor er den Befehl zur Evakuierung des Schiffes geben muss.
+Die Schlachtschiffe der Cheraw-Klasse wurden gegenüber ihren Vorgängern in allen Belangen verbessert. Die  Einsatzmöglichkeiten als Angriffsschiff und Kommandoschiff konnten beibehalten werden. Waffen, Schilde und Antrieb wurden aufgewertet. Somit verfügen diese Schiffe über höhere Feuerkraft, Geschwindigkeit und Manövrierbarkeit. 
 10
 3
 2
@@ -11904,7 +11904,7 @@ Laser Bank
 $END_OF_SHIPDATA$
 7
 Coob
-Das Adamanen Patrouillienschiff is der bekannteste Spielverderber der Galaxis. Lizensiert an nahezu alle Polizei- und Militärstreitkräfte ist dieses Schiff immer zur Stelle, wo gerade ein krummes Ding gedreht wird und natürlich auch zur Prävention als Eskortenschiff.
+Die Zerstörer der Coob-Klasse sind als Patrouillienschiffe an viele Polizei- und Militärdienste im Quadranten lizensiert. Hohe Manövrierbarkeit, eine starke Hülle und gute Schilde kombiniert mit akzeptabler Geschwindigkeit und Bewaffnung zeichnen diese Design aus.
 6
 1
 6
@@ -11978,7 +11978,7 @@ Laser Emitter
 $END_OF_SHIPDATA$
 7
 D'kar
-D'kars sind ehrfurchtgebietende Großkampfschiffe ausgelegt für strategische Kommandooperationen und Raumüberlegenheitsmissionen.
+Die schweren Kreuzer der D'kar-Klasse sind ehrfurchterweckende Kampfschiffe mit guten Waffen und Schilden, einer  starken Hülle und hoher Geschwindigkeit bei Kontinuumflügen. Nur die Reichweite ist gering, dafür sind die Schiffe für ihre Grösse noch recht manövrierfähig. Konzipiert wurde diese Klasse als Blockadeschiff und zur Koordinierung von Flottenoperationen.
 9
 2
 2
@@ -12096,7 +12096,7 @@ Continuum Ripples
 $END_OF_SHIPDATA$
 7
 Exocren
-Das Exocren Schlachtschiff bringt tödlich Antiprotonen und Positronenwaffen mit sich die den Feind sehr schnell manövrierunfähig machen können.
+Die Exocren-Schlachtschiffe sind mit  tödlichen Antiprotonenkanonen und Schnellfeuertorpedowerfern bewaffnet. Die verstärkte ablative Iridiumpanzerung, moderne regenerative Schilde und ein leistungsfähiges Antriebssystem runden die hochwertige Ausrüstung dieser Schlachtschiffe ab. Sie sind sowohl als Angriffsschiffe als auch zur Blockade von Planeten einsetzbar.
 10
 2
 1
@@ -12160,7 +12160,7 @@ Antiproton Cannon
 $END_OF_SHIPDATA$
 7
 Exodan
-Die Exodan ist ein ziemlich leistungsfähiges Design, ausgestattet mit exzellenten Schilden und einer beeindruckenden Feuerkraft, bereit jeden Gegner auszuschalten, der sich zu lange mit ihr beschäftigt.
+Die schweren Zerstörer der Exodan-Klasse sind ein  leistungsfähiges Design mit schnellfeuernden Impulskanonen und einem Hochleistungstorpedowerfer. Panzerung und Schilde sind für ein Schiff dieser Klasse akzeptabel, ebenso Geschwindigkeit und Manövrierbarkeit.
 8
 1
 3
@@ -12224,7 +12224,7 @@ Pulse Plasma Cannon
 $END_OF_SHIPDATA$
 7
 F'kyte
-Das Standard Reiseschiff eines Tarokytengeschäftsmanns. Aufgrund höherer Komfortansprüche sind Defensiv- und Offensivwerte gering, nur die Geschwindigkeit ist ziemlich beeindruckend.
+Die Schiffe der F'kyte-Klasse sind hauptsächlich als Reiseschiffe für tarokytische Geschäftsleute konzipiert. Aufgrund der hohen Ansprüche an den Komfort ist die Bewaffnung minimal, dafür besitzen die Schiffe starke Sensoren sowie hohe Geschwindigkeit und Reichweite.
 3
 1
 5
@@ -12319,7 +12319,7 @@ Das unbewaffnete Seuchenschiff trägt ein multiresistentes vakuumübertragbares Vi
 $END_OF_SHIPDATA$
 7
 Havri
-Die Havri Klasse ist ein unterklassiges Schiff welches nur durch seine relativ hohe Stealth- und Manövriertechnik hervorsticht. Ansosten ist es besser diesen Schiffstyp zu ignorieren und ihn den Eingeborenen zu überlassen, die ihn hauptsächlich zu Anbetungszwecken entworfen haben.
+Die Kreuzer der Havri-Klasse sind trotz ihrer Grösse sehr manövrierfähig und gut getarnt. Ebenso wie die Havron-Klasse zu religiösen Zwecken entworfen, sind diese Schiffe doch ernstzunehmende Gegner. Waffen, Hülle und Schilde sind akzeptabel, lediglich die geringe Reichweite und niedrige Geschwindigkeit bei Kontinuumflügen sind als Schwächen zu werten. 
 7
 1
 3
@@ -12406,7 +12406,7 @@ Laser Bank
 $END_OF_SHIPDATA$
 7
 Havron
-Die Havron Klasse ist ein unterklassiges Schiff welches nur durch seine relativ hohe Stealth- und Manövriertechnik hervorsticht. Ansosten ist es besser diesen Schiffstyp zu ignorieren und ihn den Eingeborenen zu überlassen, die ihn hauptsächlich zu Anbetungszwecken entworfen haben.
+Die Schiffe der Havron-Klasse sind als Zerstörer klassifiziert und wurden von den Tarokohe zu religiösen Zwecken entworfen und gebaut. Trotzdem handelt es sich um ein leistungsfähiges Design mit guten Werten bei Waffen, Hülle und Geschwindigkeit. Nur die etwas schwachen Schilde und spärliche Torpedobewaffnung fallen negativ auf.
 6
 1
 5
@@ -12483,7 +12483,7 @@ Laser Bank
 $END_OF_SHIPDATA$
 7
 Heres
-Die Herakleten wollen gerne ihr Reich erweitern. Bisher hat das allerdings nicht funktioniert, eine geeignete Welt zu finden. Ihrem ursprünglichen Design fehlte schlicht und ergreifend eine Terraformeinheit, die sie nicht in der Lage waren zu entwickeln. Dafür haben sie dem dann umfunktionierten Erkundungsschiff einen Disruptor gegeben.
+Die Kolonieschiffe der Heres-Klasse wurden gebaut, um das Reich der Herakleten zu erweitern. Da es diesen jedoch nicht gelang, in näherer Umgebung zu ihrer Heimatwelt ein geeignetes System zu finden wurden die Schiffe zu Erkundungschiffen umfunktioniert und mit Disruptoren zur Verteidigung ausgerüstet. Schilde und Hülle sind relativ schwach, Reichweite und Geschwindigkeit allerdings ausreichend.
 1
 0
 2
@@ -12537,7 +12537,7 @@ Disruptor Array
 $END_OF_SHIPDATA$
 7
 Herok
-Die Herok ist außerordentlich vielseitig und kann in alle Richtungen feuern. Als Eskortschiff und auch als Feuerdeckungsschiff geradezu ideal.
+Die Zerstörer der Herok-Klasse wurden als Begleitschutz für die Kolonieschiffe der Heres-Klasse gebaut. Mit den frei schwenkbaren Geschütztürmen und der ausgeprägten Torpedobewaffnung sind sie für diese Aufgabe bestens geeignet. Schilde und Panzerung sind für ein Schiff dieser Klasse ausserordentlich gut, ebenso die Geschwindigkeit. Durch die hervorragende Raumabdeckung der Geschütze eignet sich diese Klasse auch bestens zum Blockadeschiff.
 6
 1
 4

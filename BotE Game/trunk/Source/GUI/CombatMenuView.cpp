@@ -8,6 +8,7 @@
 #include "Races\RaceController.h"
 #include "Ships\Combat.h"
 #include "Ships\Fleet.h"
+#include "Graphic\memdc.h"
 // CCombatMenuView
 
 IMPLEMENT_DYNCREATE(CCombatMenuView, CMainBaseView)
@@ -121,7 +122,7 @@ void CCombatMenuView::OnDraw(CDC* dc)
 		return;
 
 	// TODO: add draw code here
-	CMemDC pDC(dc);
+	CMyMemDC pDC(dc);
 	CRect client;
 	GetClientRect(&client);
 		

@@ -5,6 +5,7 @@
 #include "stdafx.h"
 #include "IOData.h"
 #include "GenSectorName.h"
+#include "ResourceManager.h"
 #include <set>
 
 #ifdef _DEBUG
@@ -65,29 +66,31 @@ void CGenSectorName::Init(const CStringArray& vMinorRaceSystemNames)
 }
 
 // Funktion zur Generierung der Sonnensystemnamen
-CString CGenSectorName::GetNextRandomSectorName(bool bMinor)
+CString CGenSectorName::GetNextRandomSectorName(const CPoint& ptKO, bool& bMinor)
 {
-	/*
-	 * Funktion gibt einen Namen für einen normalen Sektor oder einen Sektor mit
-	 * Minorrace zurück. Wenn keine normalen Sektornamen mehr vorhanden sind, dann nimmt
-	 * die Funktion notfalls auch den Namen eines Minorracesektors.
-	 */
-	CString sSystemName = "No Name";
-
-	if (!bMinor && m_strNames.GetSize() > 0)
-	{
-		int nRandom = rand()%m_strNames.GetSize();
-		sSystemName = m_strNames.GetAt(nRandom);
-		m_strNames.RemoveAt(nRandom);
-	}
-	else if (m_strRaceNames.GetSize() > 0)
+	CString sName;
+	
+	if (bMinor && m_strRaceNames.GetSize() > 0)
 	{
 		int nRandom = rand()%m_strRaceNames.GetSize();
-		sSystemName = m_strRaceNames.GetAt(nRandom);
+		sName = m_strRaceNames.GetAt(nRandom);
 		m_strRaceNames.RemoveAt(nRandom);
+		return sName;
 	}
 
-	return sSystemName;
+	bMinor = false;
+	// versuchen einen normalen Systemnamen zu verwenden
+	if (m_strNames.GetSize() > 0)
+	{
+		int nRandom = rand()%m_strNames.GetSize();
+		sName = m_strNames.GetAt(nRandom);
+		m_strNames.RemoveAt(nRandom);
+		return sName;
+	}
+	
+	// Standardname zurückgeben
+	sName.Format("%s %c%i", CResourceManager::GetString("SECTOR"), (char)(ptKO.y+97), ptKO.x + 1);
+	return sName;
 }
 
 //////////////////////////////////////////////////////////////////////

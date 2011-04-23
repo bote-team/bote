@@ -423,21 +423,12 @@ BYTE CCombatShip::GetAccBoniFromSpecials(void)
 		boni += 20;
 	// Wenn wir die Dogfighter/Nahkämpfer Eigenschaft haben, dann bekommen wir einen 20% Bonus, wenn
 	// wir gegen kleine Gegner kämpfen
-	if (m_pTarget->m_pShip->GetShipSize() == SMALL && m_pShip->HasSpecial(DOGFIGHTER))
-		boni += 20;
-	// Wenn wir gegen einen Dogfighter/Nahkämpfer kämpfen und mindst. eine mittlere Größe haben, dann bekommen
-	// wir einen 20% Bonus gegen dieses Schiff
-	if (m_pShip->GetShipSize() >= NORMAL && m_pTarget->m_pShip->HasSpecial(DOGFIGHTER))
-		boni += 20;
-	// Wenn wir die Dogkiller/Antinahkämpfer Eigenschaft haben, dann bekommen wir einen 20% Bonus gegen kleine
-	// Schiffe
-	if (m_pTarget->m_pShip->GetShipSize() == SMALL && m_pShip->HasSpecial(DOGKILLER))
-		boni += 20;
-	// Wenn wir gegen einen Dogkiller/Antinahkämpfer kämpfen und mindst. eine mittlere Größe haben, dann bekommen
-	// wir einen 20% Bonus gegen dieses Schiff
-	if (m_pShip->GetShipSize() >= NORMAL && m_pTarget->m_pShip->HasSpecial(DOGKILLER))
-		boni += 20;
-
+	if (m_pShip->HasSpecial(DOGFIGHTER) && m_pTarget->m_pShip->GetShipSize() == SMALL)
+		boni += 30;
+	// Wenn wir die Dogkiller/Antinahkämpfer Eigenschaft haben, dann bekommen wir einen 20% Bonus gegen Dogfighter/Nahkämpfer
+	if (m_pShip->HasSpecial(DOGKILLER) && m_pTarget->m_pShip->HasSpecial(DOGFIGHTER))
+		boni += 30;
+	
 	ASSERT(boni >= 0 && boni <= 255);
 	return (BYTE)boni;
 }

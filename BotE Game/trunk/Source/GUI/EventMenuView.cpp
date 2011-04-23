@@ -6,6 +6,7 @@
 #include "Botf2Doc.h"
 #include "EventMenuView.h"
 #include "Races\RaceController.h"
+#include "Graphic\memdc.h"
 // CEventMenuView
 
 IMPLEMENT_DYNCREATE(CEventMenuView, CMainBaseView)
@@ -44,7 +45,7 @@ void CEventMenuView::OnDraw(CDC* dc)
 		return;
 
 	// TODO: add draw code here
-	CMemDC pDC(dc);
+	CMyMemDC pDC(dc);
 	CRect client;
 	GetClientRect(&client);
 		

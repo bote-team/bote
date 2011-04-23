@@ -48,6 +48,7 @@ private:
 	// Video
 	BOOL m_bShowTraderoutes;
 	BOOL m_bAnimatedIcon;
+	BOOL m_bShowMiniMap;
 	CSliderCtrl m_ctrlTooltipDelay;
 	
 	// Control

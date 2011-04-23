@@ -12,6 +12,7 @@
 #include "PlanetBottomView.h"
 #include "MenuChooseView.h"
 #include "Races\RaceController.h"
+#include "Graphic\memdc.h"
 
 // CEmpireMenuView
 
@@ -90,7 +91,7 @@ void CEmpireMenuView::OnDraw(CDC* dc)
 		return;
 
 	// TODO: add draw code here
-	CMemDC pDC(dc);
+	CMyMemDC pDC(dc);
 	CRect client;
 	GetClientRect(&client);
 		

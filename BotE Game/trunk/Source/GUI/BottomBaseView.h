@@ -9,7 +9,6 @@
 #include "FontLoader.h"
 #include "OverlayBanner.h"
 #include "Botf2Doc.h"
-#include "Graphic\memdc.h"
 
 // CBottomBaseView view
 

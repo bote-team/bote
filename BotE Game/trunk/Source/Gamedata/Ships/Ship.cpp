@@ -642,9 +642,9 @@ CString CShip::GetTooltip(bool bShowFleet/*= true*/)
 	sType = CHTMLStringBuilder::GetHTMLCenter(sType);
 	sType += CHTMLStringBuilder::GetHTMLStringNewLine();
 	
-	// Unterhalt anzeigen	
+	// Größenklasse und Unterhalt anzeigen	
 	CString sCosts = "0";
-	sCosts.Format("%s: %d", CResourceManager::GetString("SHIPCOSTS"), this->GetMaintenanceCosts());
+	sCosts.Format("%s: %d    %s: %d", CResourceManager::GetString("SHIPSIZE"), this->GetShipSize(), CResourceManager::GetString("SHIPCOSTS"), this->GetMaintenanceCosts());
 	sCosts = CHTMLStringBuilder::GetHTMLColor(sCosts);
 	sCosts = CHTMLStringBuilder::GetHTMLHeader(sCosts, _T("h5"));
 	sCosts = CHTMLStringBuilder::GetHTMLCenter(sCosts);
@@ -855,6 +855,28 @@ CString CShip::GetTooltip(bool bShowFleet/*= true*/)
 	sManeuver += CHTMLStringBuilder::GetHTMLStringNewLine();
 	sManeuver += CHTMLStringBuilder::GetHTMLStringNewLine();
 	
+	// Scan anzeigen
+	CString sScanHead = CResourceManager::GetString("SENSORS");
+	sScanHead = CHTMLStringBuilder::GetHTMLColor(sScanHead, _T("silver"));
+	sScanHead = CHTMLStringBuilder::GetHTMLHeader(sScanHead, _T("h4"));
+	sScanHead = CHTMLStringBuilder::GetHTMLCenter(sScanHead);
+	sScanHead += CHTMLStringBuilder::GetHTMLStringNewLine();
+	sScanHead += CHTMLStringBuilder::GetHTMLStringHorzLine();
+	sScanHead += CHTMLStringBuilder::GetHTMLStringNewLine();
+	
+	CString sScan;
+	sScan.Format("%s: %d", CResourceManager::GetString("SCANRANGE"), this->GetScanRange());
+	sScan = CHTMLStringBuilder::GetHTMLColor(sScan);
+	sScan = CHTMLStringBuilder::GetHTMLHeader(sScan, _T("h5"));
+	sScan = CHTMLStringBuilder::GetHTMLCenter(sScan);
+	sScan += CHTMLStringBuilder::GetHTMLStringNewLine();
+	CString sScanpower;
+	sScanpower.Format("%s: %d", CResourceManager::GetString("SCANPOWER"), this->GetScanPower());
+	sScanpower = CHTMLStringBuilder::GetHTMLColor(sScanpower);
+	sScanpower = CHTMLStringBuilder::GetHTMLHeader(sScanpower, _T("h5"));
+	sScanpower = CHTMLStringBuilder::GetHTMLCenter(sScanpower);
+	sScanpower += CHTMLStringBuilder::GetHTMLStringNewLine();
+	sScanpower += CHTMLStringBuilder::GetHTMLStringNewLine();
 
 	// Spezialfähigkeiten anzeigen
 	CString sSpecialsHead = CResourceManager::GetString("SPECIAL_ABILITIES");
@@ -891,7 +913,7 @@ CString CShip::GetTooltip(bool bShowFleet/*= true*/)
 	if (this->GetStealthPower() > 3)
 		sSpecials += CResourceManager::GetString("CAN_CLOAK") + "\n";
 	if (sSpecials.IsEmpty())
-		sSpecials = CResourceManager::GetString("NONE");
+		sSpecials = CResourceManager::GetString("NONE") + "\n";;
 	sSpecials = CHTMLStringBuilder::GetHTMLColor(sSpecials);
 	sSpecials = CHTMLStringBuilder::GetHTMLHeader(sSpecials, _T("h5"));
 	sSpecials = CHTMLStringBuilder::GetHTMLCenter(sSpecials);
@@ -903,7 +925,7 @@ CString CShip::GetTooltip(bool bShowFleet/*= true*/)
 	sDesc = CHTMLStringBuilder::GetHTMLColor(sDesc);
 	sDesc = CHTMLStringBuilder::GetHTMLHeader(sDesc, _T("h5"));
 
-	CString sTip = sName + sType + sCosts + sMovementHead + sMovement + sBeamWeaponHead + sBeams + sTupeWeaponHead + sTorps + sDefensiveHead + sShield + sHull + sSpecialsHead + sSpecials + sDesc;
+	CString sTip = sName + sType + sCosts + sMovementHead + sMovement + sBeamWeaponHead + sBeams + sTupeWeaponHead + sTorps + sDefensiveHead + sShield + sHull + sScanHead + sScan + sScanpower + sSpecialsHead + sSpecials + sDesc;
 	return sTip;
 }
 

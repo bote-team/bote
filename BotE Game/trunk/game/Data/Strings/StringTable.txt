@@ -2167,7 +2167,7 @@ Kampfberechnung läuft
 [OTHER_PLAYERS_IN_COMBAT]
 Es befinden sich andere Spieler im Kampf
 [WINNING_CHANCE]
-Siegchance
+Kräfteverhältnis
 [CHOOSE_TACTIC_DESC1]
 Taktik wählen und anschließend Schiffe markieren
 [CHOOSE_TACTIC_DESC2]
@@ -2192,7 +2192,7 @@ Gruss
 [BTN_RETREAT]
 Rückzug
 [BTN_AUTOCOMBAT]
-Kampf
+Autokampf
 [BTN_FURTHER]
 weiter
 [BTN_READY]
@@ -2255,3 +2255,10 @@ Diese Einheit ist eine Spezialeinhait der Cartarer Invasoren. Durch ihre perfekt
 Da'unor Sniper
 [MAJOR6_TROOP1_DESC]
 Dies ist eine relativ schwache Einheit der Omega Allianz. Diese Einheiten kämpfen mit Präzisionsgewehren, sind nicht besonders stark gepanzert und haben keine militärische Ausbildung durchlaufen.
+
+[MRD]
+Mrd.
+[SHIPSIZE]
+Größenklasse
+[SENSORS]
+Sensoren

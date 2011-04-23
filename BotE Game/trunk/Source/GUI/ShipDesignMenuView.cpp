@@ -6,6 +6,7 @@
 #include "ShipDesignMenuView.h"
 #include "ShipDesignBottomView.h"
 #include "Races\RaceController.h"
+#include "Graphic\memdc.h"
 
 IMPLEMENT_DYNCREATE(CShipDesignMenuView, CMainBaseView)
 
@@ -45,7 +46,7 @@ void CShipDesignMenuView::OnDraw(CDC* dc)
 	
 	// TODO: add draw code here
 	// Doublebuffering wird initialisiert
-	CMemDC pDC(dc);
+	CMyMemDC pDC(dc);
 	CRect client;
 	GetClientRect(&client);
 		
@@ -262,19 +263,19 @@ void CShipDesignMenuView::DrawShipDesignMenue(Graphics* g)
 		fontBrush.SetColor(markColor);
 		fontFormat.SetAlignment(StringAlignmentCenter);
 		fontFormat.SetLineAlignment(StringAlignmentNear);
-		g->DrawString(CResourceManager::GetString("BUILDCOSTS").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(200,440,580,25), &fontFormat, &fontBrush);
+		g->DrawString(CResourceManager::GetString("BUILDCOSTS").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(190,440,580,25), &fontFormat, &fontBrush);
 		
 		fontBrush.SetColor(normalColor);
 		s.Format("%s: %d  %s: %d  %s: %d",CResourceManager::GetString("INDUSTRY"),pDoc->m_ShipInfoArray.GetAt(ShipNumber).GetNeededIndustry(),
 			CResourceManager::GetString("TITAN"),pDoc->m_ShipInfoArray.GetAt(ShipNumber).GetNeededTitan(),
 			CResourceManager::GetString("DEUTERIUM"),pDoc->m_ShipInfoArray.GetAt(ShipNumber).GetNeededDeuterium());
-		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(200,465,580,25), &fontFormat, &fontBrush);
+		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(190,465,580,25), &fontFormat, &fontBrush);
 		
 		s.Format("%s: %d  %s: %d  %s: %d  %s: %d",CResourceManager::GetString("DURANIUM"),pDoc->m_ShipInfoArray.GetAt(ShipNumber).GetNeededDuranium(),
 			CResourceManager::GetString("CRYSTAL"),pDoc->m_ShipInfoArray.GetAt(ShipNumber).GetNeededCrystal(),
 			CResourceManager::GetString("IRIDIUM"),pDoc->m_ShipInfoArray.GetAt(ShipNumber).GetNeededIridium(),
 			CResourceManager::GetString("DERITIUM"),pDoc->m_ShipInfoArray.GetAt(ShipNumber).GetNeededDeritium());
-			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(200,490,580,25), &fontFormat, &fontBrush);	
+			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(190,490,580,25), &fontFormat, &fontBrush);	
 		
 		// Die Buttons zur Eigenschaftsänderung in der Rechten Seite der Ansicht anzeigen
 		// zuerst überprüfen wir die Beamwaffen, wir können den Typ der Beamwaffe verändern, wenn wir mindst. ein anderes

@@ -7,8 +7,7 @@
  */
 #pragma once
 
-#include "Options.h"
-
+// forward declaration
 class CBotf2Doc;
 class CMajor;
 class CSystemAI
@@ -20,7 +19,7 @@ public:
 	/// Destruktor
 	~CSystemAI(void);
 
-	/// Diese Funktion führt die Berechnungen für die künstliche Intelligent in einem System aus und macht
+	/// Diese Funktion führt die Berechnungen für die künstliche Intelligenz in einem System aus und macht
 	/// alle möglichen Einträge und Veränderungen. Als Paramter wird dafür die Koordinate <code>ko</code>
 	/// des Systems übergeben.
 	void ExecuteSystemAI(CPoint ko);

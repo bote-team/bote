@@ -97,6 +97,8 @@
 #define IDC_CHECK_VC_RESEARCH           1059
 #define IDC_CHECK_VC_COMBAT             1060
 #define IDC_CHECK_VC_SABOTAGE           1061
+#define IDC_CHECK_ANIMATEDICON2         1062
+#define IDC_CHECK_SHOWMINIMAP           1062
 #define ID_OPTIONEN                     32773
 #define ID_INFORMATION                  32774
 #define ID_DATENBANK                    32775

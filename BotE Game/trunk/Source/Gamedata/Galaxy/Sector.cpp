@@ -326,11 +326,14 @@ void CSector::GenerateSector(int sunProb, int minorProb)
 	{
 		SetSunSystem(TRUE);
 		// Zahl[0,99] generieren und vergleichen (Minorrace?)
-		if (rand()%100 >= (100 - minorProb))
-		{
-			SetMinorRace(TRUE);
-			// Wenn eine kleine Rasse drauf lebt
-			m_strSectorName = CGenSectorName::GetInstance()->GetNextRandomSectorName(true);
+		bool bMinor = rand()%100 >= (100 - minorProb);
+		m_strSectorName = CGenSectorName::GetInstance()->GetNextRandomSectorName(m_KO, bMinor);
+		// bMinor wird in der Generierungsfunktion angepasst, falls es keine Minorracesystemnamen mehr gibt
+		SetMinorRace(bMinor);
+
+		// Es konnte ein Sektor für eine Minorrace generiert werden
+		if (bMinor)
+		{	
 			float currentHabitants = 0.0f;
 			USHORT random = rand()%3+1;
 			// Solange Planeten generieren, bis mind. eine zufällige Anzahl Bevölkerung darauf leben
@@ -352,10 +355,9 @@ void CSector::GenerateSector(int sunProb, int minorProb)
 				}				
 			} while (currentHabitants <= (15.000f / random));
 		}
-		// wenn keine Minorrace drauf lebt
 		else
-		{
-			m_strSectorName = CGenSectorName::GetInstance()->GetNextRandomSectorName(false);
+		{		
+			// Wenn keine Minorrace im Sektor lebt
 			this->CreatePlanets();
 		}
 	}

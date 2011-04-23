@@ -20,6 +20,7 @@ CSettingsDlg::CSettingsDlg(bool bDisableNonWorking/* = false*/, CWnd* pParent /*
 	, m_bMusic(FALSE)
 	, m_bShowTraderoutes(FALSE)
 	, m_bAnimatedIcon(FALSE)
+	, m_bShowMiniMap(TRUE)
 	, m_bShowScrollBars(FALSE)
 	, m_bInvertMouse(FALSE)	
 	, m_bHideMenu(FALSE)
@@ -47,6 +48,7 @@ void CSettingsDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_SLIDER_MUSICVOLUME, m_ctrlMusicvolume);
 	DDX_Check(pDX, IDC_CHECK_SHOWTRADEROUTES, m_bShowTraderoutes);
 	DDX_Check(pDX, IDC_CHECK_ANIMATEDICON, m_bAnimatedIcon);
+	DDX_Check(pDX, IDC_CHECK_SHOWMINIMAP, m_bShowMiniMap);
 	DDX_Control(pDX, IDC_SLIDER_TOOLTIPDELAY, m_ctrlTooltipDelay);
 	DDX_Check(pDX, IDC_CHECK_SHOWSCROLLBARS, m_bShowScrollBars);
 	DDX_Check(pDX, IDC_CHECK_INVERTNOUSE, m_bInvertMouse);
@@ -147,6 +149,11 @@ BOOL CSettingsDlg::OnInitDialog()
 	if (!pIni->ReadValue("Video", "ANIMATEDICON", bAnimatedIcon))
 		ASSERT(false);
 	m_bAnimatedIcon = bAnimatedIcon;
+
+	bool bShowMiniMap;
+	if (!pIni->ReadValue("Video", "SHOWMINIMAP", bShowMiniMap))
+		ASSERT(false);
+	m_bShowMiniMap = bShowMiniMap;
 
 	int nTooltipDelay;
 	if (!pIni->ReadValue("Video", "TOOLTIPDELAY", nTooltipDelay))
@@ -293,6 +300,8 @@ void CSettingsDlg::OnOK()
 	pIni->WriteValue("Video", "SHOWTRADEROUTES", s);
 	m_bAnimatedIcon == TRUE ? s = "ON" : s = "OFF";
 	pIni->WriteValue("Video", "ANIMATEDICON", s);
+	m_bShowMiniMap == TRUE ? s = "ON" : s = "OFF";
+	pIni->WriteValue("Video", "SHOWMINIMAP", s);
 	s.Format("%d", m_ctrlTooltipDelay.GetPos());
 	pIni->WriteValue("Video", "TOOLTIPDELAY", s);
 

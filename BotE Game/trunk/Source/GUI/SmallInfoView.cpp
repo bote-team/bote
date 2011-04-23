@@ -137,9 +137,9 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0,0,r.right,55), &fontFormat, &fontBrush);
 			s.Format("%s: %c",CResourceManager::GetString("CLASS"), m_pPlanet->GetClass());
 			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0,0,r.right,75), &fontFormat, &fontBrush);
-			s.Format("%s: %.3lf Mrd.",CResourceManager::GetString("MAX_HABITANTS"), m_pPlanet->GetMaxHabitant());
+			s.Format("%s: %.3lf %s",CResourceManager::GetString("MAX_HABITANTS"), m_pPlanet->GetMaxHabitant(), CResourceManager::GetString("MRD"));
 			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0,0,r.right,95), &fontFormat, &fontBrush);
-			s.Format("%s: %.3lf Mrd.",CResourceManager::GetString("CURRENT_HABITANTS"), m_pPlanet->GetCurrentHabitant());
+			s.Format("%s: %.3lf %s",CResourceManager::GetString("CURRENT_HABITANTS"), m_pPlanet->GetCurrentHabitant(), CResourceManager::GetString("MRD"));
 			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0,0,r.right,115), &fontFormat, &fontBrush);
 			s.Format("%s: %.2lf %% ",CResourceManager::GetString("GROWTH"), m_pPlanet->GetPlanetGrowth());
 			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0,0,r.right,135), &fontFormat, &fontBrush);

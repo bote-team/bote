@@ -10,6 +10,7 @@
 #include "Races\RaceController.h"
 #include "HTMLStringBuilder.h"
 #include "Galaxy\Anomaly.h"
+#include "Graphic\memdc.h"
 
 // CPlanetBottomView
 
@@ -47,7 +48,7 @@ void CPlanetBottomView::OnDraw(CDC* dc)
 	// TODO: add draw code here
 
 	// Doublebuffering wird initialisiert
-	CMemDC pDC(dc);
+	CMyMemDC pDC(dc);
 	CRect client;
 	GetClientRect(&client);
 		
@@ -224,9 +225,9 @@ void CPlanetBottomView::OnDraw(CDC* dc)
 		g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), PointF(40,47), &fontFormat, &fontBrush);
 		if (pDoc->m_Sector[KO.x][KO.y].GetFullKnown(pMajor->GetRaceID()))
 		{
-			s.Format("%s: %.3lf Mrd.",CResourceManager::GetString("MAX_HABITANTS"), maxHabitants);
+			s.Format("%s: %.3lf %s",CResourceManager::GetString("MAX_HABITANTS"), maxHabitants, CResourceManager::GetString("MRD"));
 			g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), PointF(40,180), &fontFormat, &fontBrush);
-			s.Format("%s: %.3lf Mrd.",CResourceManager::GetString("CURRENT_HABITANTS"), currentHabitants);
+			s.Format("%s: %.3lf %s",CResourceManager::GetString("CURRENT_HABITANTS"), currentHabitants, CResourceManager::GetString("MRD"));
 			g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), PointF(40,202), &fontFormat, &fontBrush);
 			graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\popmaxSmall.bop");
 			if (graphic)
@@ -372,17 +373,15 @@ void CPlanetBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 			pDoc->GetSector(pDoc->GetKO()).GetPlanet(nOldTerraformingPlanet)->SetIsTerraforming(FALSE);
 
 		pDoc->m_ShipArray.ElementAt(pDoc->GetCurrentShipIndex()).SetTerraformingPlanet(-1);
+		// Haben wir auf einen Planeten geklickt
 		for (UINT i = 0; i < m_vPlanetRects.size(); i++)
-			if (m_vPlanetRects[i].PtInRect(point))	// Haben wir auf einen Planeten geklickt
+			if (m_vPlanetRects[i].PtInRect(point))
 			{
 				// Lange Abfrage hie notwendig, weil bei Kolonisierung brauchen wir nen geterraformten Planeten und
 				// beim Terraforming nen bewohnbaren noch nicht geterraformten Planeten
-				if (/*(pDoc->GetSector(pDoc->GetKO().x,pDoc->GetKO().y).GetPlanet(i)->GetTerraformed() == TRUE
-					&& pDoc->GetSector(pDoc->GetKO().x,pDoc->GetKO().y).GetPlanet(i)->GetCurrentHabitant() == NULL
-					&& pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetCurrentOrder() == COLONIZE)
-					||*/ (pDoc->GetSector(pDoc->GetKO()).GetPlanet(i)->GetTerraformed() == FALSE
+				if (pDoc->GetSector(pDoc->GetKO()).GetPlanet(i)->GetTerraformed() == FALSE
 					&& pDoc->GetSector(pDoc->GetKO()).GetPlanet(i)->GetHabitable() == TRUE
-					&& pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetCurrentOrder() == TERRAFORM))
+					&& pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetCurrentOrder() == TERRAFORM)
 				{
 					CGalaxyMenuView::SetMoveShip(FALSE);
 					CShipBottomView::SetShowStation(false);
@@ -403,8 +402,6 @@ void CPlanetBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 
 					Invalidate();
 				}
-				else
-					pDoc->m_ShipArray.ElementAt(pDoc->GetCurrentShipIndex()).SetCurrentOrder(AVOID);
 
 				break;
 			}

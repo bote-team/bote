@@ -26,6 +26,7 @@
 // forward declaration
 class CFleet;
 class CGraphicPool;
+class CResearchInfo;
 
 /// Mögliche Taktiken im Kampf
 typedef enum COMBAT_TACTICS

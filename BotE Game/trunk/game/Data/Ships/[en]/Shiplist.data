@@ -1434,7 +1434,7 @@ Laser Bank
 80
 $END_OF_SHIPDATA$
 1
-Outpost 378
+Outpost 178
 Outposts serve as fleet supply and carrier stations. This type is a light version in terms of weaponry and sensors.
 12
 3
@@ -2031,7 +2031,48 @@ The Seraphine is a conventional colony ship of the Coalition. Its main task is t
 
 $END_OF_SHIPDATA$
 1
-Spacedock
+Sputnik
+A satellite equipped with a continuum drive and long-range scanners.
+2
+0
+0
+255
+255
+255
+255
+255
+255
+100
+0
+0
+0
+0
+0
+1
+
+10
+0
+0
+0
+0
+0
+1
+0
+1
+2
+25
+2
+0
+0
+0
+0
+0
+0
+0
+
+$END_OF_SHIPDATA$
+1
+Starbase 232
 A space dock with very powerful shields and large armament.
 13
 3
@@ -2144,48 +2185,7 @@ Laser Emitter
 55
 $END_OF_SHIPDATA$
 1
-Sputnik
-A satellite equipped with a continuum drive and long-range scanners.
-2
-0
-0
-255
-255
-255
-255
-255
-255
-100
-0
-0
-0
-0
-0
-1
-
-10
-0
-0
-0
-0
-0
-1
-0
-1
-2
-25
-2
-0
-0
-0
-0
-0
-0
-0
-
-$END_OF_SHIPDATA$
-1
-Starbase 107
+Starbase 265
 The starbase is heavier armed than the original outpost. It also has better shields and sensor arrays. This type is a heavily-armed version of it.
 13
 3
@@ -2272,7 +2272,7 @@ Laser Array
 90
 $END_OF_SHIPDATA$
 1
-Starbase 40
+Starbase 595
 The starbase is heavier armed than the original outpost. It also has better shields and sensor arrays. This type is the strongest in fleet's asset.
 13
 3
@@ -5234,7 +5234,7 @@ $Torpedo$
 10
 1
 EMP Microtube
-0
+1
 45
 0
 150
@@ -5254,7 +5254,7 @@ $Torpedo$
 10
 1
 EMP Microtube
-0
+1
 45
 180
 150
@@ -5752,7 +5752,7 @@ $Torpedo$
 10
 4
 EMP Microtube
-0
+1
 45
 0
 150
@@ -5762,7 +5762,7 @@ $Torpedo$
 10
 2
 EMP Microtube
-0
+1
 45
 180
 150
@@ -8001,7 +8001,7 @@ Little extra-data is available on the Boris class besides its deadliness to slow
 7
 6
 6
-3000
+1000
 400
 0
 0
@@ -9095,9 +9095,9 @@ The Jakow-class fighter is a swift combat vessel with more weapons than armor. I
 0
 0
 58
+5
 8
-0
-
+Wassili
 $Torpedo$
 13
 1
@@ -14487,7 +14487,7 @@ Magneton Emitter
 $END_OF_SHIPDATA$
 7
 Ramship
-Anaerobe Makrobe mit organischem Kontinuumantrieb, rammt und phagozytiert gern Schiffe und deren Insassen, hat allerdings Angst vor großen Planeten und Sonnen, hält sich daher wenn überhaupt nur in kleinen Sternensystemen mit grünen Sternen auf. Die Schiffe an sich können nur geringen Schaden anrichten - jedoch die Menge macht's.
+The ramship is an anaerobic Macrob with an organic continuum drive. It frequently rams and phagocytoses ships and their occupants, but it is afraid of large planets and stars. Therefore it is, if at all, only in small stellar systems with green stars. One ship can only cause minor damage, but many of them are dangerous.
 14
 1
 6

@@ -17,6 +17,7 @@
 #include "IniLoader.h"
 #include "HTMLStringBuilder.h"
 #include "ImageStone/ImageStone.h"
+#include "Graphic\memdc.h"
 
 BOOLEAN CGalaxyMenuView::m_bDrawTradeRoute = FALSE;
 CTradeRoute CGalaxyMenuView::m_TradeRoute;
@@ -143,7 +144,7 @@ void CGalaxyMenuView::OnDraw(CDC* dc)
 	CRect client;
 	GetClientRect(&client);
 	
-	CMemDC pDC(dc);
+	CMyMemDC pDC(dc);
 
 	// Graphicsobjekt, in welches gezeichnet wird anlegen
 	Graphics g(pDC.GetSafeHdc());
@@ -184,35 +185,40 @@ void CGalaxyMenuView::OnDraw(CDC* dc)
 #endif
 	// ‰uﬂere schwarze Umrandung zeichnen
 	//g.DrawRectangle(&Pen(Color::Black, 3.0), posX - 1, posY - 1, picWidth + 2, picHeight + 2);
-	REAL yThumbPos = (REAL)((pt.y + client.bottom - m_pThumbnail->GetHeight() - 15));
-	// wenn das System in der unteren rechten H‰lfte ist, dann wird das Thumbnail oben rechts gezeichnet
-	CPoint pRaceKO = pDoc->GetRaceKO(pMajor->GetRaceID());
-	if (pRaceKO.x > STARMAP_SECTORS_HCOUNT * 0.75 && pRaceKO.y > STARMAP_SECTORS_VCOUNT * 0.75)
-		yThumbPos = (REAL)((pt.y + 15));
-	// Position des Thumbnails festlegen
-	RectF thumbRect((REAL)((pt.x + client.right - m_pThumbnail->GetWidth() - 15)),
-		yThumbPos, (REAL)m_pThumbnail->GetWidth(), (REAL)m_pThumbnail->GetHeight());
+	bool bShowMiniMap = true;
+	CIniLoader::GetInstance()->ReadValue("VIDEO", "SHOWMINIMAP", bShowMiniMap);
+	if (bShowMiniMap)
+	{
+		REAL yThumbPos = (REAL)((pt.y + client.bottom - m_pThumbnail->GetHeight() - 15));
+		// wenn das System in der unteren rechten H‰lfte ist, dann wird das Thumbnail oben rechts gezeichnet
+		CPoint pRaceKO = pDoc->GetRaceKO(pMajor->GetRaceID());
+		if (pRaceKO.x > STARMAP_SECTORS_HCOUNT * 0.75 && pRaceKO.y > STARMAP_SECTORS_VCOUNT * 0.75)
+			yThumbPos = (REAL)((pt.y + 15));
+		// Position des Thumbnails festlegen
+		RectF thumbRect((REAL)((pt.x + client.right - m_pThumbnail->GetWidth() - 15)),
+			yThumbPos, (REAL)m_pThumbnail->GetWidth(), (REAL)m_pThumbnail->GetHeight());
 
-	g.DrawImage(m_pThumbnail, thumbRect);
-	
-	COLORREF clrColor = pMajor->GetDesign()->m_clrSector;
-	Color color(50, GetRValue(clrColor), GetGValue(clrColor), GetBValue(clrColor));
-	
-	RectF thumbSelection((REAL)((m_pThumbnail->GetWidth() * pt.x / STARMAP_TOTALWIDTH / m_fZoom + thumbRect.GetLeft())),
-		(REAL)((m_pThumbnail->GetHeight() * pt.y / STARMAP_TOTALHEIGHT / m_fZoom + thumbRect.GetTop())),
-		(REAL)m_pThumbnail->GetWidth() * client.Width() / STARMAP_TOTALWIDTH / m_fZoom,
-		(REAL)m_pThumbnail->GetHeight() * client.Height() / STARMAP_TOTALHEIGHT / m_fZoom);
+		g.DrawImage(m_pThumbnail, thumbRect);
+		
+		COLORREF clrColor = pMajor->GetDesign()->m_clrSector;
+		Color color(50, GetRValue(clrColor), GetGValue(clrColor), GetBValue(clrColor));
+		
+		RectF thumbSelection((REAL)((m_pThumbnail->GetWidth() * pt.x / STARMAP_TOTALWIDTH / m_fZoom + thumbRect.GetLeft())),
+			(REAL)((m_pThumbnail->GetHeight() * pt.y / STARMAP_TOTALHEIGHT / m_fZoom + thumbRect.GetTop())),
+			(REAL)m_pThumbnail->GetWidth() * client.Width() / STARMAP_TOTALWIDTH / m_fZoom,
+			(REAL)m_pThumbnail->GetHeight() * client.Height() / STARMAP_TOTALHEIGHT / m_fZoom);
 
-	if (picWidth < client.right)
-		thumbSelection.Width = (REAL)m_pThumbnail->GetWidth();
-	if (picHeight < client.bottom)
-		thumbSelection.Height = (REAL)m_pThumbnail->GetHeight();
-	g.FillRectangle(&SolidBrush(color), thumbSelection);
-	color.SetValue(Color::MakeARGB(200, GetRValue(clrColor), GetGValue(clrColor), GetBValue(clrColor)));
-	g.DrawRectangle(&Pen(color, 1.0), thumbSelection);
-	// weiﬂe Umrandung zeichnen
-	//color.SetFromCOLORREF(clrColor);
-	g.DrawRectangle(&Pen(Color(200,255,255,255), 1.5), thumbRect.X - 1, thumbRect.Y - 1, thumbRect.Width + 2, thumbRect.Height + 2);		
+		if (picWidth < client.right)
+			thumbSelection.Width = (REAL)m_pThumbnail->GetWidth();
+		if (picHeight < client.bottom)
+			thumbSelection.Height = (REAL)m_pThumbnail->GetHeight();
+		g.FillRectangle(&SolidBrush(color), thumbSelection);
+		color.SetValue(Color::MakeARGB(200, GetRValue(clrColor), GetGValue(clrColor), GetBValue(clrColor)));
+		g.DrawRectangle(&Pen(color, 1.0), thumbSelection);
+		// weiﬂe Umrandung zeichnen
+		//color.SetFromCOLORREF(clrColor);
+		g.DrawRectangle(&Pen(Color(200,255,255,255), 1.5), thumbRect.X - 1, thumbRect.Y - 1, thumbRect.Width + 2, thumbRect.Height + 2);
+	}
 	
 //////////////////////////////////////////////////////////////
 
