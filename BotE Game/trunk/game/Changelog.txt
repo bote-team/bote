@@ -1,5 +1,60 @@
 BOTE - Changelog
-Januar 2004 - Januar 2011
+Januar 2004 - April 2011
+
+V0.8 -> V0.81 (Alpha 6.1)
+GUI-Änderungen:
+- in Intelmenüs lassen sich die Rassenlogos auf der linken Seite scrollen, wenn mehr als 6 Majors vorhanden sind
+- technologischer Fortschritt wird im "First-Contact" Event nun auch bei Hauptrassen angezeigt
+- ausführlichere Informationen im Schiffstooltip und im Schiffsdesignmenü (Sensoren, Größe, Unterhalt...)
+- im Diplomatieeingang lassen sich die Nachrichten nun scrollen
+- neue Tooltips im Diplomatiemenü, welche Eigenschaften der Rasse zeigen
+- neue Tooltips im Forschungsmenü, welche die durcg die Forschung neuen Gebäude und Schiffe anzeigen
+- neuer Tooltip in der Planetenansicht wenn Maus über dem Namen des Besitzers gehalten wird
+
+neue Features:
+- BotE kann nun mit mehr als 6 Majors umgehen (Systeme werden für die weiteren Majors richtig erstellt)
+- alle Rassen können nun mehrere Eigenschaften besitzen
+- Spezialrassenfähigkeit "Braucht keine Nahrung" implementiert
+- in den Einstellungen lässt sich nun auch die Minimap ausblenden
+
+Änderungen:
+- BotE.ini und BotE.log werden nun unter Eigene Dateien/Birth of the Empires/ abgelegt
+- bei Berechnung der Siegchance beim Schiffskampf werden nun Anomalien beachtet
+- Ionensturm kann die Schilde nur noch auf das doppelte der maximalen Ausgangsschildstärke verbessern
+- benötigte Schiffskampfsiege und erfolgreiche Sabotageaktionen für Sieg leicht erhöht
+- Schiffsfähigkeit "Nahkämpfer" bringt nun 30% Bonus gegen kleine Schiffe und hat sonst keine Nachteile mehr
+- Schiffsfähigkeit "Anti-Nahkämpfer" bringt nun 30% Bonus gegen Nahkämpfer und hat sonst keine Nachteile mehr
+
+KI:
+- neue KI für Forschung: KI erforscht nun auch Spezialforschungen
+- während eines Krieges macht die KI keine Forderungen mehr
+- KI kann nicht schon Angebote an Minors machen, wenn der Spieler das nicht auch kann
+- KI bricht Terraforming nun ab, wenn der Sektor nicht mehr frei ist bzw. der KI selbst gehört
+
+Bugfixes:
+- Musik ließ sich nur kompliziert im Settingsdialog während des Spiels ausschalten
+- Diplomatische Angebote an menschliche Spieler wurden immer abgelehnt, wenn sie eigentlich ignoriert wurden
+- Stärke der Hanuhr Truppen von 50 auf 5 geändert
+- Liste der freien Schiffsnamen wurden im MP nicht mit übertragen. Wenn ein anderer Server das Spiel wieder eröffnet kamen Fehlermeldungen
+- Alle Rasseneigenschaften von Majors wurden zurückgesetzt, keine Rasse hatte eine Rasseneigenschaft
+- Nutzten mehrere Majors die gleiche Schiffsliste, so bekam jeder dieser Majors zuviele Startschiffe
+- Vorzeichenfehler in der Berechnung der Trefferwahrscheinlichkeit von Strahlenwaffen behoben
+- Galaxiegenerierungsalgorithmus verbessert (speziell bei vielen Systemen und vielen Minors)
+- beim Befehl "Flaggschiff" wird dem alten Flagschiff der aktuelle Befehl nicht mehr zurückgesetzt
+- Bugfixes an verschiedenen Stellen im Code
+- mehrere kleinere Bugfixes in *data Dateien
+- Bestechlichkeit bei Bestechung wurde nicht richtig ausgewertet
+
+Daten:
+- einige wenige Planetengrafiken ausgetauscht
+- verbesserte Schiffsbeschreibungen (dt.)
+- Stationen der Kondöderation und der Omega-Allianz umbenannt
+- RacePlanetNames.data Datei wird nicht mehr benötigt
+- neue Sounds für die Hanuhr
+
+Code-intern:
+- Berechnung der Schiffstärkenberechnung (offensiv und defensiv) angepasst
+- Reihenfolge der Bearbeitung der Nachrichten im Diplomatiesystem komplett umgestellt
 
 V0.72 -> V0.8 (Alpha 6)
 neue Ansichten und Events:

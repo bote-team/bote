@@ -79,7 +79,36 @@ void CShipAI::CalculateShipOrders(CSectorAI* SectorAI)
 				DoCamouflage(i);
 				continue;
 			}
-			if (m_pDoc->m_ShipArray.GetAt(i).GetPath()->GetSize() == NULL)
+
+			// haben Kolonieschiffe einen Sektor zum Terraformen als Ziel, welcher kurz zuvor aber von einer
+			// anderen Rasse weggeschnappt wurde, so wird ihr Kurs gelöscht
+			if (m_pDoc->m_ShipArray.GetAt(i).GetShipType() == COLONYSHIP)
+			{
+				CPoint ptKO = m_pDoc->m_ShipArray.GetAt(i).GetKO();
+				// hat das Kolonieschiff den Befehl zum Terraformen, so wird dieser rückgängig gemacht, wenn der Sektor
+				// schon einer anderen Rasse gehört
+				if (m_pDoc->m_ShipArray.GetAt(i).GetCurrentOrder() == TERRAFORM)
+				{
+					if (m_pDoc->GetSector(ptKO).GetOwnerOfSector() != "" && m_pDoc->GetSector(ptKO).GetOwnerOfSector() != sOwner)
+					{
+						// Terraforming abbrechen
+						m_pDoc->m_ShipArray.GetAt(i).SetTerraformingPlanet(-1);
+						m_pDoc->m_ShipArray.GetAt(i).SetCurrentOrder(AVOID);
+					}
+				}
+
+				CPoint ptTarget = m_pDoc->m_ShipArray.GetAt(i).GetTargetKO();
+				// nur wenn der Sektor noch niemandem gehört bzw. uns selbst ist, sollen Planeten terraformt werden
+				if (ptTarget != CPoint(-1,-1) && m_pDoc->GetSector(ptTarget).GetOwnerOfSector() != "" && m_pDoc->GetSector(ptTarget).GetOwnerOfSector() != sOwner)
+				{
+					// nicht weiter fliegen und Kurs löschen
+					m_pDoc->m_ShipArray.GetAt(i).SetTargetKO(ptKO,0);
+					m_pDoc->m_ShipArray.GetAt(i).GetPath()->RemoveAll();
+				}				
+			}
+			
+			// exisitiert kein aktueller Kurs, so wird dieser hier versucht dem Schiff zu erteilen
+			if (m_pDoc->m_ShipArray.GetAt(i).GetPath()->GetSize() == 0)
 			{
 				// Scouts und Kriegsschiffe fliegen zuerst einmal zu den Minorracesystemen
 				if (m_pDoc->m_ShipArray.GetAt(i).GetShipType() > COLONYSHIP)
@@ -192,9 +221,14 @@ BOOLEAN CShipAI::DoTerraform(int index)
 	   könnte.
     */
 	int i = index;
-	if (m_pDoc->m_ShipArray.GetAt(i).GetColonizePoints() == NULL)
+	if (m_pDoc->m_ShipArray.GetAt(i).GetColonizePoints() == 0)
 		return FALSE;
+	
+	// nur wenn der Sektor noch niemandem gehört bzw. uns selbst ist, sollen Planeten terraformt werden
 	CPoint shipKO = m_pDoc->m_ShipArray.GetAt(i).GetKO();
+	if (m_pDoc->GetSector(shipKO).GetOwnerOfSector() != "" && m_pDoc->GetSector(shipKO).GetOwnerOfSector() != m_pDoc->m_ShipArray.GetAt(i).GetOwnerOfShip())
+		return FALSE;
+
 	BYTE minTerraPoints = MAXBYTE;
 	short planet = -1;
 	BYTE terraPoints = m_pDoc->m_ShipArray.GetAt(i).GetColonizePoints();
@@ -270,7 +304,7 @@ BOOLEAN CShipAI::DoColonize(int index)
 	{
 		CPoint shipKO = m_pDoc->m_ShipArray.GetAt(i).GetKO();
 		// Gehört der Sektor aktuell auch keiner Minorrace (also niemanden oder uns selbst)
-		if (m_pDoc->m_Sector[shipKO.x][shipKO.y].GetOwnerOfSector() == "" || m_pDoc->m_Sector[shipKO.x][shipKO.y].GetOwnerOfSector() == m_pDoc->m_ShipArray.GetAt(i).GetOwnerOfShip())
+		if (m_pDoc->GetSector(shipKO).GetOwnerOfSector() == "" || m_pDoc->GetSector(shipKO).GetOwnerOfSector() == m_pDoc->m_ShipArray.GetAt(i).GetOwnerOfShip())
 			// Kolonisierungsbefehl geben
 			for (int j = 0; j < m_pDoc->m_Sector[shipKO.x][shipKO.y].GetNumberOfPlanets(); j++)
 				if (m_pDoc->m_Sector[shipKO.x][shipKO.y].GetPlanet(j)->GetTerraformed() == TRUE

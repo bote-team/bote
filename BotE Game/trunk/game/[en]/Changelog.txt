@@ -1,0 +1,598 @@
+BOTE - Changelog
+January 2004 - April 2011
+
+V0.8 -> V0.81 (Alpha 6.1)
+GUI-Änderungen:
+- in Intelmenüs lassen sich die Rassenlogos auf der linken Seite scrollen, wenn mehr als 6 Majors vorhanden sind
+- technologischer Fortschritt wird im "First-Contact" Event nun auch bei Hauptrassen angezeigt
+- ausführlichere Informationen im Schiffstooltip und im Schiffsdesignmenü (Sensoren, Größe, Unterhalt...)
+- im Diplomatieeingang lassen sich die Nachrichten nun scrollen
+- neue Tooltips im Diplomatiemenü, welche Eigenschaften der Rasse zeigen
+- neue Tooltips im Forschungsmenü, welche die durcg die Forschung neuen Gebäude und Schiffe anzeigen
+- neuer Tooltip in der Planetenansicht wenn Maus über dem Namen des Besitzers gehalten wird
+
+neue Features:
+- BotE kann nun mit mehr als 6 Majors umgehen (Systeme werden für die weiteren Majors richtig erstellt)
+- alle Rassen können nun mehrere Eigenschaften besitzen
+- Spezialrassenfähigkeit "Braucht keine Nahrung" implementiert
+- in den Einstellungen lässt sich nun auch die Minimap ausblenden
+
+Änderungen:
+- BotE.ini und BotE.log werden nun unter Eigene Dateien/Birth of the Empires/ abgelegt
+- bei Berechnung der Siegchance beim Schiffskampf werden nun Anomalien beachtet
+- Ionensturm kann die Schilde nur noch auf das doppelte der maximalen Ausgangsschildstärke verbessern
+- benötigte Schiffskampfsiege und erfolgreiche Sabotageaktionen für Sieg leicht erhöht
+- Schiffsfähigkeit "Nahkämpfer" bringt nun 30% Bonus gegen kleine Schiffe und hat sonst keine Nachteile mehr
+- Schiffsfähigkeit "Anti-Nahkämpfer" bringt nun 30% Bonus gegen Nahkämpfer und hat sonst keine Nachteile mehr
+
+KI:
+- neue KI für Forschung: KI erforscht nun auch Spezialforschungen
+- während eines Krieges macht die KI keine Forderungen mehr
+- KI kann nicht schon Angebote an Minors machen, wenn der Spieler das nicht auch kann
+- KI bricht Terraforming nun ab, wenn der Sektor nicht mehr frei ist bzw. der KI selbst gehört
+
+Bugfixes:
+- Musik ließ sich nur kompliziert im Settingsdialog während des Spiels ausschalten
+- Diplomatische Angebote an menschliche Spieler wurden immer abgelehnt, wenn sie eigentlich ignoriert wurden
+- Stärke der Hanuhr Truppen von 50 auf 5 geändert
+- Liste der freien Schiffsnamen wurden im MP nicht mit übertragen. Wenn ein anderer Server das Spiel wieder eröffnet kamen Fehlermeldungen
+- Alle Rasseneigenschaften von Majors wurden zurückgesetzt, keine Rasse hatte eine Rasseneigenschaft
+- Nutzten mehrere Majors die gleiche Schiffsliste, so bekam jeder dieser Majors zuviele Startschiffe
+- Vorzeichenfehler in der Berechnung der Trefferwahrscheinlichkeit von Strahlenwaffen behoben
+- Galaxiegenerierungsalgorithmus verbessert (speziell bei vielen Systemen und vielen Minors)
+- beim Befehl "Flaggschiff" wird dem alten Flagschiff der aktuelle Befehl nicht mehr zurückgesetzt
+- Bugfixes an verschiedenen Stellen im Code
+- mehrere kleinere Bugfixes in *data Dateien
+- Bestechlichkeit bei Bestechung wurde nicht richtig ausgewertet
+
+Daten:
+- einige wenige Planetengrafiken ausgetauscht
+- verbesserte Schiffsbeschreibungen (dt.)
+- Stationen der Kondöderation und der Omega-Allianz umbenannt
+- RacePlanetNames.data Datei wird nicht mehr benötigt
+- neue Sounds für die Hanuhr
+
+Code-intern:
+- Berechnung der Schiffstärkenberechnung (offensiv und defensiv) angepasst
+- Reihenfolge der Bearbeitung der Nachrichten im Diplomatiesystem komplett umgestellt
+
+V0.72 -> V0.8 (Alpha 6)
+new views and events: 
+- complete new Khaoron skin
+- reworked some older skins
+- new views for ship combat tactics, ship combat orders and ship combat information  implemented
+- new event for ship combat implemented
+- new event for the end game (Game Over) implemented 
+- Implemented new event for the destruction of a race 
+- new event on extinction of a race 
+- implemented new event for victory 
+- new Demographics view 
+- new Top-5 systems view 
+- new victory conditions view 
+
+new features:
+- Khaoron as new playable race
+- space anomalies implemented 
+- presentation, Tooltips, AI attention implemented for space anomalies 
+- frequency of space anomalies via the options dialog and command set Ini 
+- Implements various victory conditions 
+- For victory in Optionsialog and ini file set 
+- While the game does not disable more changeable options in the Options dialog 
+- Wireframe sphere around graphics on terraforming planets 
+- Display of the exact moral change in the behind the Moral Event Impieriumsnachrichtenübersicht 
+- Implemented event for moral empire extinction of system attack 
+- Not buildable orders are shown darker 
+- Select a resource symbol before construction contract for special buildings (building work without compulsion) 
+- A new flagship for Schiffsicon 
+- New Schiffsicon for stealth ships 
+- Labeled vessels are highlighted with an oval Glow 
+- Observance of avoidance and retreat commands in the fight calculation
+- new moral events (flagship destroyed, outpost destroyed, starbase destroyed)
+- Switching through systems in trade view with arrow keys
+
+Changes: 
+- Renewed sequence of calculations during the new round (of ship movements from ship combat system against attack) 
+- Extension of the statistical calculations to demographics and match points 
+- Sort of Geheimdienstbereichte different parameters now available (in ascending or descending) 
+- But can never gain experience 
+- For negative credits may no longer be built warships 
+- Building the x-can be built only once per empire or only from a certain race to be removed during system acquisition (eg, distributors) 
+- If affiliated with Minor Races in ships and you get a yard from the start in the system 
+- Troops with troops and descriptions come from StringTable.txt (language dependent) 
+- Work assignment bars are now displayed slightly rounded 
+- Destroyed Empire (human and AI controlled) are now properly removed 
+- Event in first contact increased font size for breed description 
+- Increases to maximum Tooltipbreite 300px
+- research at game start a little slower, afterwards a little faster 
+
+AI: 
+- Combat AI implemented 
+- In assessing the dangerousness of sectors go defensive strengths of vessels is an only half 
+- The less Terraform options are available, the higher Außenpostenbauprioritäten 
+- Maneuverability is now relatively strong in the evaluation of offensive and defensive strengths ship
+- System-AI largely improved
+- war is declared only when really militarily stronger 
+
+Bugfixes: 
+- On ship dismantling ships were not in the fleet added to the Shiphistory 
+- Ship orders are correctly reset on completion of terraforming, colonization and Substations for all vessels involved 
+- First contact in event was not for lack of the graphic image displayed in the absence of graphics 
+- Fixed buffer overflow in internal security points and negative bonuses in the calculation Intel 
+- Fixed bug when undoing the racial acquaintance between two races (always made known) 
+- Bug fix in the calculation of the fight beam attack 
+- Fixed error in the copy constructor and assignment operator for ships 
+- Are in stock now negative Credit not grant credit huge gifts by diplomacy offer 
+- Are selected for terraforming planets no longer shown as a straight terra formed when the command changes 
+- Pointer to display a tooltip does not change now
+- Fixed a bug in the display of fleet names of minor race ships
+
+Internal code: 
+- Optimization of struggle calculation (Performance +) 
+- Built-in function to the overall chance of winning calculation 
+- New generic function for drawing a ship (view, view fleet, fight view) 
+- New general function to clear vessels (and thereby also to be noted that Fleet) 
+- General function to add new ships to Shiphistory list 
+- New general function for calculating the required laps for a construction project 
+- Internal Star Maps (range map) can now be created for individual race 
+- Star maps are calculated at a central location once and not at various points during next round () 
+- New virtual Close () function for event screens (what happens when you close a screen event) 
+- Static Font object for sector labels no longer needed 
+- Modified post-frequent increments of iterators in pre-incrememtents (Performance +) 
+- Implemented in some parts missing const correctness 
+- Fleet menu technically revised code 
+- Mouse overs and redraw drastically in all views of the ships
+- pre_increments wherever possible and memset programmed more safely
+
+Data:
+- new backgroundmusic for Hayoun, Khaorons and Rotharians
+- new Building "Omega Homeyard"
+- spelling mistake fixed
+- added alien-ships in shiplist (but ingame not used yet)
+- recolored small duranium- and energyicon
+
+V0.71 -> V0.72
+- Scroll bars are hidden by default in the galaxy view 
+- new initiatives commands (scroll bars show, star and system density Minor) 
+- Implemented scrolling with the left mouse button in galaxy view 
+- tech level in organic, energy and construction technology to give 2% bonus on each production 
+- systems of resources distribution in system overview marked (* before resource) 
+- Implemented more tech level (plus possible future technologies) 
+- bribe resistance implemented 
+- tooltips implemented many other 
+- ships of unknown breeds appear anywhere, anytime with a question mark icon 
+- trade routes always generate a minimal credit (previously also possible NULL) 
+- Minor performance optimizations 
+- Fixed some bugs
+
+V0.70 -> V0.71 (Alpha 5.1)
+- project set to VS2008 standard
+- complete ToolTip-architecture implemented
+- tooltips at various locations in program manifested
+- tooltip delay in ini file modifiable
+- minors build their own ships
+- new symbols for all minors with ships
+- ships of unknown races are labelled with a question mark everywhere they show up
+- multi-button mouse extra buttons for switching systems
+- right click resets system, duration and resource button in diplomacy offer menu
+- scrolling with pressed-down left mouse-button and dragging implemented
+- scrollbars in galaxy view disabled by default
+- new ini commands (turn scrollbar on/off, star and minor system density on galaxy map)
+- maneuvrability now internally up to 9 (phenomenal)
+- some new structure and ship graphics
+- bribe resistance implemented
+- some balancing changes at building and ships stats
+- further tech levels implemented (plus future techs)
+- systems with resource allocators are labelled with a * before the resource in system overview
+- tech level increasings in bio-, energy- and construction tech yields a 2% bonus on corresponding production value
+- (near-)all bugs reported in Alpha5 v0.7 fixed
+- crashes at turn shift by wild mouse clicking should now be fixed (respectively less often occuring)
+- trade routes generate at least 1 credits (before ZERO credits were possible)
+- copyright information updated to the year 2010
+
+V_0.62b -> V0.7 (Alpha5)
+- complete code restructuring and partial reprogramming
+- Use of GDI+ (no longer the simpler GDI)
+- much higher resolution on galaxy map plus mini-map for better overview
+- atmospheric event screens at certain in-game events
+- Cartare Invaders as playable race (but no longer the Khaoron due to race skin copyrights)
+- new graphics in virtually every part of the game (planets, ships, buildings, troops)
+- new atmospheric music and sound
+- new buildings with exciting new abilities
+- new ships especially for minor races with fitting realistic description
+- a few new race images
+- new fonts
+- Maintainance costs for ships
+- completely new race system with unlimited major races (requires modding of course)
+- Firearcs, weapon mounts etc. for a lot more differentiated battles
+- lots of balancing adaptions (diplomacy, research, ships, combat)
+- different starting conditions for each major (especially starting number and type of ships)
+- a lot of bugfixes as usual
+- additional display information in ship design
+- display of available resources on planets in system view
+- plus- and minus-buttons for easier reallocation of workers
+- Deritium demands and gifts now possible within diplomacy menu
+- like a ton of improvements at code framework
+- a lot of improvements on general look&feel
+- complete German manual
+- and lots more!
+
+V_0.62 -> V0.62b
+- War pact offerable when already having a war with the soon-to-be-common enemy
+- AI collects ships now before a system attack
+- Combat without shooting his allied fleet (deliberately) now possible
+- Draw in combat possible (and reported)
+- Performance optimizations
+- Buttons in Diplomacy offer menu are reacting now
+- Time for developing later tech levels slightly reduced
+- small changes to the major race diplomacy AI
+- Bugfixes
+- Skin improvements
+- Special research only needs 66% of research points (all research of the same level added up and then 66% of the RP)
+- Cartare transporters 2 and 3 have now range high
+
+V_0.60 -> V_0.62 (Alpha4 Refit)
+- Start-buildings externally moddable
+- MinorRaces.data contains name of graphic file to avoid translation issues
+- MajorRaces.data contains diplomacy bonus
+- new file: Moral.data -> all morale values of all major races on each possible event having morale effects
+- new file: MoralEvents.data -> text file for describing morale events at empire view
+- Resource routes implemented
+- GUI added for resource routes
+- Deritium dependent on number of deposit-planets in system
+- Maximum storage capacity added
+- two complete new sets of special techs implemented
+- Monopoly advantage of double resource production added
+- Bug at bombardment fixed
+- Diplomacy bug after conquering a minor race fixed
+- Start-ships externally moddable
+- Blockade (Order) implemented
+- Blockade effects implemented
+- dynamic race prefixes (thus easier modding)
+- Minors have structures of their most similar major race
+- conquered or diplomatically won minor systems have some resource right from the start
+- Report about interstellar storage status
+- complete new race UI for the Coalition of Planets
+- COMPLETELY NEW CONTENT!
+
+V_0.52 -> V_0.60 (Alpha4)
+- complete Heyoun style built-in 
+- Heyoun playable as race 
+- complete intelligence system now in-game 
+- BotE is as of now resolution-independent 
+- no more restrictions to installation path choice
+- BotE completely compatible with running under linux 
+- AI further enhanced
+- AI bombards systems
+- AI builds outposts in order to expand 
+- new global resource view
+- new algorithm for galaxy generation 
+- additional new planetary graphics added
+- new ship- and building graphics added 
+- ship and building data modified resp. added 
+- new internal graphic loading system
+- enhanced sound system 
+- voice output at important events added
+- higher resolution of galaxy map therefore more detailed graphics
+- again changes to the bombardment damage
+- new torpedo type added (for details see ship editor) 
+- free minor race systems are displayed in white color
+- new Coalition emblem on galaxy map
+- planet bonusses too small -> fixed 
+- known grammar issues fixed
+- all known bugs fixed
+- new ini-commands, i.e. difficulty level (AI) adjustable
+
+V_0.51 -> V_0.52 
+- AI tears down superfluous buildings
+- bugs from the Khaoron update fixed 
+- invasion of independent/ungoverned systems possible 
+- additional buttons sensitive to mouseovers
+- surplus population at colonization will be redistributed where possible
+- no discrete planet selection possible anymore when colonizing
+- obsolete ship classes are no longer shown inside ship design menu
+- changes to ship cost calculation
+- changes to system attack
+- (hopefully) removal of program termination at the end of turn
+- (hopefully) removal of load and save error
+- RAM-usage at turn end reduced from ca. 80MB to ca. 30MB 
+- (hopefully) graphic (stars) load and display bug fixed 
+- algorithms for system bombardement changed, so that more damage will be done 
+- fleet terraforming crash fixed 
+- non-inhabited, terraformed planets will be painted white
+- further known bugs fixed 
+
+V_0.50 -> V_0.51 
+- complete Khaoron style inbuilt 
+- Khaorons playable as race 
+- all known bugs fixed 
+- new build and ship list 
+- new ship pics 
+- changes to the diplomacy AI (AI demands less frequently)
+- change of relationship to the mininum value on the given level after accepting treaty 
+- fonts are smoothed in their own way 
+- optimization in the graphics load function
+
+V_0.45v -> V_0.50 (Alpha3) 
+- partially AI implementation
+- AI manages systems 
+- AI builds ships and fleets 
+- AI colonizes systems 
+- AI expands on the map 
+- AI reacts on enemy ships 
+- AI sets up traderoutes 
+- military strength has impact on treaty proposals 
+- Minorraces terraform planets in their home system 
+- Terraforming help of planets in 
+minorracesystems improves relationships 
+- Deritium transport via transporter built-in 
+- new sound effects on various locations 
+- setting up either hardware- or software sounddevice via ini-command 
+- miscellaneous background music for the major races 
+- current ship routes made visual 
+- all lists inside the empire view now scrollable 
+- Overhaul of ship costs at the ship design menu
+- Maintainance costs will now be taken into calculations 
+- many, many new planet images added 
+- revisioned Rotharian galaxy map 
+- new buildings including their graphic files added to the data base 
+- new ships added 
+- further ship names added 
+- ship name generating a bit changed 
+- new minor races implemented 
+- all minor race descriptions reviewed 
+- several new minor race special buildings added 
+- new Rotharian font 
+- new Font-Loader class programmed 
+- Descriptions for special research and planetary classes no longer hardcoded 
+- Bug with non-combat-ships-only-battle fixed
+- Bug with list sort fixed
+- Bug with buildings with empire-wide moral effects fixed
+- Bug with setting up trade routes fixed 
+- many smaller optimizations done
+
+V_0.45b -> V0.45c 
+- improved netcode
+- Soundbug filling up RAM fixed 
+- smaller changes on the balancing
+- ini-file now available in botf2 folder 
+- cleaned up smaller bugs
+- a colony ship can now colonize more than one planet simultaneously by splitting up the colonists
+
+V_0.45 -> V0.45b 
+- Bug with visible trade routes fixed 
+- Bug with Deritium mines fixed
+- to load a save game won't lead to crashes any longer
+- Autosave function implemented
+- load game added to game start dialog
+- Clients can save games now
+- increased pop growth
+
+V_0.42 -> V_0.45 (Alpha2) 
+- some smaller bugs fixed 
+- FMOD Sound-engine for audio-playback
+- Cloaking built-in complete 
+- Buildings overview slightly changed
+- ingame ship-design completed
+- further areas of special research implemented
+- Display of status symbols reworked
+- galaxy map slightly reworked
+- some menu-repositionings
+- complete network-functionality implemented 
+- ingame Chat
+- complete new planetary graphics added
+- Rotharian building placed in the code 
+- several minor bugs fixed
+
+V_0.41 -> V_0.42 
+- all known bugs from the alpha1-version fixed
+- always save as.. added 
+- Traderoutes added 
+- Stellar depository (for food and resources) added 
+- Upgrade-costs for building are now calculated different, when somehow related buildings are scapped
+- Troops/Units implemented
+- Troops can be built now
+- System-attack added
+- System-bombardement added 
+- military conquering of enemy systems now added
+- all messages and morale effects related to system attacks are now implemented
+- Optimization of savegame-size
+- Transportation with ships added
+- workers menu slightly changed
+- Planet-boni added 
+- Territories similar to Botf added
+- Deritium deposits added
+- many additional ship properties implemented
+- battle-algorithms adapted to new ship properties and stats
+- Display of latinum change with respect to last turn
+
+V_0.40 -> V_0.41 
+- new graphics added 
+- Bug with fleet movement fixed
+- new empire news overview added 
+- many news for player
+- Display of available resources on planets
+- System overview added
+- Ship overview of available ships added
+- Ship overview of lost ships added
+- partial morale system with people's opinion implemented
+- Bug fixed that AI did not offer defense pact
+- Display of research descriptions added
+- Menu handling in buildings overview and energy menu improved
+- all current Coalition graphics added
+- all diplomatic texts added 
+- some minorraces added
+- some Bugs fixed 
+
+V_0.35 -> V_0.40 
+- 4 smaller bugs fixed 
+- smaller optimizations taken -> 30% lower ram usage
+- first small networking code added
+- 2 new building characteristics added 
+- BotE now compatible to BotE buildings editor 
+- BotE now compatible to BotE minor race editor 
+- Number of system names now variable
+- first prerelease version of battle algorithm
+- optimized galaxy view (i.e. faster, improved controls, better graphics, etc.)
+- range map improved
+- highly optimized pathfinding algorithm for ships on map (Dijkstra algorithm) 
+- multicolored suns in star systems
+- new planet descriptions and view
+- ca. 100 minor races in-game
+- 200 buildings of Coalition, Heyoun and Khaoron
+- Scanning and scan strength implemented 
+- several small bugs fixed and optimizations made
+- build list now scrollable
+- many smaller things added
+
+V_0.32 -> V_0.35 
+- global stock exchange added
+- stock exchange management implemented 
+- Costs of quick-buy of build job now depending on stock exchange prices
+- Quick-buy of build job has effects on stock market price
+- tax income for monopoly owners
+- monopoly acquisition now working
+- monopoly overview menu implemented
+- news of monopoly acquisition implemented
+- Transfer overview menu added
+- Market prices of resources are display in a chart 
+- no fixed number of buildings in database necessary anymore 
+- system class reworked (build list abstracted) 
+- build list is now its own class
+- system class reworked (production abstracted) 
+- system production is now its own class
+- building features reworked and added 
+- Algorithm for buildings and upgrades in build list re-done
+- empire-wide moral effects added
+- buildings scrapping reworked
+- several small bugs fixed
+- saving and loading game possible
+
+V_0.31 -> V_0.32 
+- Fleet view added
+- Fleet management implemented
+- Ship orders now applicable to fleets
+- window graphics no longer changeable
+- scroll bars in menus removed where they were not needed
+- colored bars alongside ship pics that show the "health" of a ship added
+- Flagship declaration now possible
+- Ship designmenu completely added
+- now nigh-infinitely many ships addable to fleets
+- Fleet management control extended (direct adding and removing according to ship type)
+
+V_0.3 -> V_0.31 
+- Bug in building list fixed
+- Ship classes completely reviewed and reworked where necessary
+- Ships are now buildable 
+- Deritium is now storable
+- automatic ship name generation (just Terrans) 
+- Ship display at lower view reworked
+- Ship orders partially implemented
+- Terraforming of planets possible 
+- Colonization of planeten possible 
+- Construction of stations now possible 
+- Scrap-order added 
+
+V_0.27 -> V_0.3 
+- Bug at defense pact offers by AI player solved
+- AI now also offers war pacts
+- AI makes gifts
+- AI makes demands
+- AI not only considers their own relations at trade offer but also the one of their counterpart
+- Bug at accepting demands by player fixed
+- Bug (crash in diplomacy view with little minors in-game) fixed
+- AI reacts on player-made demands 
+- Text at AI-major race offers available 
+- AI also accepts offers from minor races
+- AI makes offers to minor races 
+- AI makes gifts to minor races 
+- AI can bribe minor races 
+- Deterioration of relationships lowered when not directly declaring war
+- Accepting offers of minors depending on their type of minor
+
+V_0.26 -> V_0.27 
+- diplomacy with major races partially implemented except for accrediting given resources
+- diplomatic answers of majors 
+- pics of majors added 
+- automatic treaty cancellation bug with minor races fixed
+- relationship deterioration bug after refusal by minors fixed
+- nearly all texts for the special techs added
+- after refusal, resources and gifts are put back on the original account
+- when accepting offers, sent-along credits are properly added to your number of credits
+- Check for alliances on war declaration 
+- Defense pact added 
+- War pact implemented 
+- Resource-gifts only possible when already having a trade contract
+- some effects of treaties on sectors
+- partly implementation of major race AI
+- Quicksort-Algorithm for sorting used
+- Gifts to major races as well as their effects
+- Gifts on offers to major races are considered
+- AI gives gifts when offering treaties now as well
+- AI determines duration of a treaty at offer
+- Bug in diplomacy input menu fixed 
+- global mean storage resources in statistics 
+
+V_0.25 -> V_0.26 
+- long-term good relationships to minors makes it more difficult for other to "bribe in" 
+- Bribing of minors completely implemented
+- research screen slightly changed
+
+V_0.24 -> V_0.25 
+- Algorithm for building in the build-list reworked
+- Diplo-Offers now dependant on current relationship level to the other race
+- minor races do offers now
+- Diplomacy-Input-Screen added 
+- Reaction to offers from minor races possible 
+- minor races can terminate a contract/deal 
+- latinum gifts implemented 
+- resource gifts implemented 
+- minor races consume ressources
+- diplomatic offer screen changed 
+- news about successfully sent gifts
+- membership leads to adding the system to your control
+- minor race dissociation leads to canceling membership treaty and deterioration of relationship value
+- common shipyard use in alliance and affiliation
+- display of many new diplomatic texts
+- treaties are now manually cancelable
+- graphics for the buildmenu at CoPs and rot added
+- minor race specific buildings available in build list after membership
+- Value of resource gifts depend on type
+- probability of war declaration dep. on type
+
+V_0.23 -> V_0.24 
+- Diplomacyscreen - Offers added 
+- diplomatic offers to smaller races possible
+- News about diplomatic offers
+
+V_0.2 -> V_0.23 
+- added minor races 
+- "Getting to know each other" amongst minor races now possible 
+- Diplomacyscreen - Information added 
+- Relations to minor races implemented
+- Sending gifts 
+- News about transfered gifts
+- Colors implemented at the workers-assignment-bar
+
+V_0.19b -> V_0.2 
+- planetary graphics worked over 
+- now 10 graphics per class available 
+- system-secession at low morale 
+- Researchscreen 
+- normal research completely implemented 
+- special research to a great extend implemented
+- complex: Economics, Production, Research and Security/Intel implemented
+- News about research advancements 
+
+V_0.19 -> V_0.19b 
+- Informationscreen added 
+- industrial news 
+- famines 
+- news about famines 
+- morale-minus when having famine in system 
+
+V_0.00 -> V_0.19a 
+- general Look&Feel 
+- completed generating of the galaxy 
+- Galaxy-, Buildmenu-, Energymenu-, workermenu-, Overviewmenu-screen built-in
+- general functionality of all menus 
+- many small things..

@@ -238,7 +238,7 @@ void CEventResearch::Draw(Graphics* g, CGraphicPool* graphicPool) const
 		if (graphic)
 			g->DrawImage(graphic, 15 + nCount * 165, 815, 150, 113);
 		s = (*it)->GetShipClass() + "-" + CResourceManager::GetString("CLASS") + " (" + (*it)->GetShipTypeAsString() + ")";
-		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(nCount * 165, 940, 180, 50), &fontFormat, &fontBrush);
+		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(nCount * 165, 933, 180, 50), &fontFormat, &fontBrush);
 		nCount++;
 	}
 	for (vector<CTroopInfo*>::const_iterator it = m_vNewTroops.begin(); it != m_vNewTroops.end(); ++it)
@@ -249,7 +249,7 @@ void CEventResearch::Draw(Graphics* g, CGraphicPool* graphicPool) const
 		if (graphic)
 			g->DrawImage(graphic, 15 + nCount * 165, 815, 150, 113);
 		s = (*it)->GetName();
-		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(nCount * 165, 940, 180, 50), &fontFormat, &fontBrush);
+		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(nCount * 165, 933, 180, 50), &fontFormat, &fontBrush);
 		nCount++;
 	}
 

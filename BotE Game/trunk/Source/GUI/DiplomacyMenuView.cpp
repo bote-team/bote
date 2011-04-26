@@ -9,6 +9,7 @@
 #include "Races\GenDiploMessage.h"
 #include "Graphic\memdc.h"
 #include <algorithm>
+#include "HTMLStringBuilder.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -191,7 +192,10 @@ void CDiplomacyMenuView::OnInitialUpdate()
 	bg_diploinmenu		= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "diploinmenu.boj");
 	
 	// Diplomatieansicht
-	m_bySubMenu = 0;	
+	m_bySubMenu = 0;
+
+	// View bei den Tooltipps anmelden
+	pDoc->GetMainFrame()->AddToTooltip(this);
 }
 
 void CDiplomacyMenuView::OnPrepareDC(CDC* pDC, CPrintInfo* pInfo)
@@ -2440,4 +2444,130 @@ void CDiplomacyMenuView::OnRButtonDown(UINT nFlags, CPoint point)
 	}
 
 	CMainBaseView::OnRButtonDown(nFlags, point);
+}
+
+///	Funktion erstellt zur aktuellen Mouse-Position einen HTML Tooltip
+/// @return	der erstellte Tooltip-Text
+CString CDiplomacyMenuView::CreateTooltip(void)
+{
+	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	ASSERT(pDoc);
+
+	if (!pDoc->m_bDataReceived)
+		return "";
+
+	// Wo sind wir
+	CPoint pt;
+	GetCursorPos(&pt);
+	ScreenToClient(&pt);
+	CalcLogicalPoint(pt);
+	
+	// Tooltips in der Angebots und Informationsansicht
+	if (m_bySubMenu != 2)
+	{
+		// wurde auf das Rassenbild gehalten, dann Beschreibung der Rasse anzeigen
+		if (CRect(735, 100, 735 + 300, 100 + 300).PtInRect(pt))
+		{
+			CRace* pRace = pDoc->GetRaceCtrl()->GetRace(m_sClickedOnRace);
+			if (!pRace)
+				return "";
+
+			CString sTip = pRace->GetRaceDesc();
+			sTip = CHTMLStringBuilder::GetHTMLColor(sTip);
+			sTip = CHTMLStringBuilder::GetHTMLHeader(sTip, _T("h4"));
+
+			return sTip;
+		}
+
+		if (pt.x >= 20 && pt.x <= 120)
+		{
+			// Position im Vector der aktuell angeklickten Rasse suchen
+			int nVecPos = 0;
+			if (m_sClickedOnRace != "")
+			{
+				for (vector<CRace*>::const_iterator it = m_vRaceList.begin(); it != m_vRaceList.end(); ++it)
+				{
+					if ((*it)->GetRaceID() == m_sClickedOnRace)
+						break;
+					nVecPos++;
+				}
+			}
+		
+			// Dem Imperium bekannte Rassen durchgehen
+			int nCount = 0;
+			for (vector<CRace*>::iterator it = m_vRaceList.begin(); it != m_vRaceList.end(); ++it)
+			{
+				if (nVecPos-- > 21)
+					continue;
+
+				if (CRect(20, 100 + nCount * 25, 120, 125 + nCount * 25).PtInRect(pt))
+				{
+					CRace* pRace = *it;
+					if (!pRace)
+						return "";
+
+					return pRace->GetTooltip();					
+				}
+
+				nCount++;
+				if (nCount > 21)
+					break;
+			}
+		}
+	}	
+	// Tooltips in der Eingangsansicht
+	else
+	{
+		// wurde auf das Rassenbild gehalten, dann Beschreibung der Rasse anzeigen
+		if (m_pIncomingInfo && CRect(735, 100, 735 + 300, 100 + 300).PtInRect(pt))
+		{
+			CRace* pRace = pDoc->GetRaceCtrl()->GetRace(m_pIncomingInfo->m_sFromRace);
+			if (!pRace)
+				return "";
+
+			CString sTip = pRace->GetRaceDesc();
+			sTip = CHTMLStringBuilder::GetHTMLColor(sTip);
+			sTip = CHTMLStringBuilder::GetHTMLHeader(sTip, _T("h4"));
+
+			return sTip;
+		}
+
+		if (pt.x >= 20 && pt.x <= 120)
+		{
+			// Position im Vector der aktuell angeklickten Rasse suchen
+			int nVecPos = 0;
+			if (m_pIncomingInfo)
+			{
+				for (vector<CDiplomacyInfo*>::const_iterator it = m_vIncomeList.begin(); it != m_vIncomeList.end(); ++it)
+				{
+					if (*it == m_pIncomingInfo)
+						break;
+					nVecPos++;
+				}
+			}
+
+			int nCount = 0;
+			for (vector<CDiplomacyInfo*>::const_iterator it = m_vIncomeList.begin(); it != m_vIncomeList.end(); ++it)
+			{
+				if (nVecPos-- > 21)
+					continue;
+
+				if (CRect(20, 100 + nCount * 25, 620, 125 + nCount * 25).PtInRect(pt))
+				{
+					CString sRaceID = (*it)->m_sFromRace;
+					CRace* pRace = pDoc->GetRaceCtrl()->GetRace(sRaceID);
+					if (!pRace)
+						return "";
+					
+					return pRace->GetTooltip();
+				}
+				
+				nCount++;
+				if (nCount > 21)
+					break;
+			}
+		}
+	}
+
+	return "";
 }

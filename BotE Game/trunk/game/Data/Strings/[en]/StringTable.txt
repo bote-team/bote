@@ -2262,3 +2262,17 @@ bn.
 Size-category
 [SENSORS]
 Sensors
+[CORRUPTIBILITY]
+corruptibility
+[VERY_LOW_CORRUPTIBILITY]
+very low
+[LOW_CORRUPTIBILITY]
+low
+[NORMAL_CORRUPTIBILITY]
+normal
+[HIGH_CORRUPTIBILITY]
+high
+[VERY_HIGH_CORRUPTIBILITY]
+very high
+[TECHNICAL_PROGRESS]
+technical progress

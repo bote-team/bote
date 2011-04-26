@@ -7,6 +7,7 @@
 #include "ResearchBottomView.h"
 #include "Races\RaceController.h"
 #include "Graphic\memdc.h"
+#include "HTMLStringBuilder.h"
 
 // CResearchMenuView
 
@@ -134,6 +135,9 @@ void CResearchMenuView::OnInitialUpdate()
 	for (int i = 3; i < 6; i++)
 		LockStatusRect[i].SetRect(r.left+75+(i-3)*260,r.top+510,r.left+195+(i-3)*260,r.top+633);
 	m_bySubMenu = 0;
+
+	// View bei den Tooltipps anmelden
+	pDoc->GetMainFrame()->AddToTooltip(this);
 }
 
 void CResearchMenuView::OnPrepareDC(CDC* pDC, CPrintInfo* pInfo)
@@ -954,4 +958,172 @@ void CResearchMenuView::CreateButtons()
 	m_ResearchMainButtons.Add(new CMyButton(CPoint(867,450) , CSize(160,40), CResourceManager::GetString("BTN_NORMAL"), fileN, fileI, fileA));
 	m_ResearchMainButtons.Add(new CMyButton(CPoint(867,500) , CSize(160,40), CResourceManager::GetString("BTN_SPECIAL"), fileN, fileI, fileA));
 	m_ResearchMainButtons.Add(new CMyButton(CPoint(867,550) , CSize(160,40), CResourceManager::GetString("BTN_SHIPDESIGN"), fileN, fileI, fileA));	
+}
+
+///	Funktion erstellt zur aktuellen Mouse-Position einen HTML Tooltip
+/// @return	der erstellte Tooltip-Text
+CString CResearchMenuView::CreateTooltip(void)
+{
+	// nur im normalen Forschungsmenü
+	if (m_bySubMenu != 0)
+		return "";
+
+	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	ASSERT(pDoc);
+
+	if (!pDoc->m_bDataReceived)
+		return "";
+
+	CMajor* pMajor = m_pPlayersRace;
+	ASSERT(pMajor);
+	if (!pMajor)
+		return "";
+
+	// Wo sind wir
+	CPoint pt;
+	GetCursorPos(&pt);
+	ScreenToClient(&pt);
+	CalcLogicalPoint(pt);
+
+	// über welches Tech wurde die Maus gehalten?
+	int nTech = -1;
+	if (CRect(10,80,260,380).PtInRect(pt))
+		nTech = 0;
+	else if (CRect(270,80,520,380).PtInRect(pt))
+		nTech = 1;
+	else if (CRect(530,80,780,380).PtInRect(pt))
+		nTech = 2;
+	else if (CRect(270,425,520,725).PtInRect(pt))
+		nTech = 3;
+	else if (CRect(10,425,260,725).PtInRect(pt))
+		nTech = 4;
+	else if (CRect(530,425,780,725).PtInRect(pt))
+		nTech = 5;
+	if (nTech == -1)
+		return "";
+	
+	// mit dieser Forschung nun baubare Gebäude zeichnen
+	BYTE researchLevels[6] =
+		{
+			pMajor->GetEmpire()->GetResearch()->GetBioTech(),
+			pMajor->GetEmpire()->GetResearch()->GetEnergyTech(),
+			pMajor->GetEmpire()->GetResearch()->GetCompTech(),
+			pMajor->GetEmpire()->GetResearch()->GetPropulsionTech(),
+			pMajor->GetEmpire()->GetResearch()->GetConstructionTech(),
+			pMajor->GetEmpire()->GetResearch()->GetWeaponTech()
+		};
+	// aktuelle Forschung so umstellen, als wäre die markierte Tech schon erforscht
+	researchLevels[nTech] += 1;
+
+	// dann erforschbare neue Objekte ermitteln
+	std::vector<CBuildingInfo*> vNewBuildings;
+	std::vector<CShipInfo*>		vNewShips;
+	std::vector<CTroopInfo*>	vNewTroops;		
+	for (int i = 0; i < pDoc->BuildingInfo.GetSize(); i++)
+		if (pDoc->BuildingInfo[i].GetOwnerOfBuilding() == pMajor->GetRaceBuildingNumber())
+			if (pDoc->BuildingInfo[i].IsBuildingBuildableNow(researchLevels))
+			{
+				int nTechLevel = -1;
+				switch (nTech)
+				{
+				case 0: nTechLevel = pDoc->BuildingInfo[i].GetBioTech();			break;
+				case 1: nTechLevel = pDoc->BuildingInfo[i].GetEnergyTech();			break;
+				case 2: nTechLevel = pDoc->BuildingInfo[i].GetCompTech();			break;
+				case 3: nTechLevel = pDoc->BuildingInfo[i].GetPropulsionTech();		break;
+				case 4: nTechLevel = pDoc->BuildingInfo[i].GetConstructionTech();	break;
+				case 5: nTechLevel = pDoc->BuildingInfo[i].GetWeaponTech();			break;
+				}
+				if (nTechLevel != -1 && nTechLevel == researchLevels[nTech])
+					vNewBuildings.push_back(&pDoc->BuildingInfo[i]);				
+			}
+	
+	for (int i = 0; i < pDoc->m_ShipInfoArray.GetSize(); i++)
+		if (pDoc->m_ShipInfoArray[i].GetRace() == pMajor->GetRaceShipNumber())
+			if (pDoc->m_ShipInfoArray[i].IsThisShipBuildableNow(researchLevels))
+			{
+				int nTechLevel = -1;
+				switch (nTech)
+				{
+				case 0: nTechLevel = pDoc->m_ShipInfoArray[i].GetBioTech();				break;
+				case 1: nTechLevel = pDoc->m_ShipInfoArray[i].GetEnergyTech();			break;
+				case 2: nTechLevel = pDoc->m_ShipInfoArray[i].GetComputerTech();		break;
+				case 3: nTechLevel = pDoc->m_ShipInfoArray[i].GetPropulsionTech();		break;
+				case 4: nTechLevel = pDoc->m_ShipInfoArray[i].GetConstructionTech();	break;
+				case 5: nTechLevel = pDoc->m_ShipInfoArray[i].GetWeaponTech();			break;
+				}
+				if (nTechLevel != -1 && nTechLevel == researchLevels[nTech])
+					vNewShips.push_back(&pDoc->m_ShipInfoArray[i]);				
+			}
+
+	for (int i = 0; i < pDoc->m_TroopInfo.GetSize(); i++)
+		if (pDoc->m_TroopInfo[i].GetOwner() == pMajor->GetRaceID())
+			if (pDoc->m_TroopInfo[i].IsThisTroopBuildableNow(researchLevels))
+			{
+				int nTechLevel = pDoc->m_TroopInfo[i].GetNeededTechlevel(nTech);				
+				if (nTechLevel != -1 && nTechLevel == researchLevels[nTech])
+					vNewTroops.push_back(&pDoc->m_TroopInfo[i]);				
+			}
+
+	// neue Gebäude zeichnen
+	CString sBuildings = "";
+	sBuildings = CResourceManager::GetString("RESEARCHEVENT_NEWBUILDINGS");
+	sBuildings = CHTMLStringBuilder::GetHTMLColor(sBuildings, _T("silver"));
+	sBuildings = CHTMLStringBuilder::GetHTMLHeader(sBuildings, _T("h3"));
+	sBuildings += CHTMLStringBuilder::GetHTMLStringNewLine();
+	sBuildings += CHTMLStringBuilder::GetHTMLStringHorzLine();
+	sBuildings += CHTMLStringBuilder::GetHTMLStringNewLine();
+	CString s = "";
+	for (vector<CBuildingInfo*>::const_iterator it = vNewBuildings.begin(); it != vNewBuildings.end(); ++it)
+	{
+		s += (*it)->GetBuildingName();
+		s = CHTMLStringBuilder::GetHTMLColor(s);
+		s = CHTMLStringBuilder::GetHTMLHeader(s, _T("h4"));
+		s += CHTMLStringBuilder::GetHTMLStringNewLine();
+	}
+	// gibt es keine neuen Gebäude
+	if (vNewBuildings.size() == 0)
+	{
+		s = CResourceManager::GetString("NONE");
+		s = CHTMLStringBuilder::GetHTMLColor(s);
+		s = CHTMLStringBuilder::GetHTMLHeader(s, _T("h4"));
+		s += CHTMLStringBuilder::GetHTMLStringNewLine();
+	}
+	sBuildings += s;
+	
+
+	// neue Schiffe und Truppen zeichnen
+	CString sShips = "";
+	sShips += CHTMLStringBuilder::GetHTMLStringNewLine();
+	sShips += CResourceManager::GetString("RESEARCHEVENT_NEWSHIPS_AND_TROOPS");
+	sShips = CHTMLStringBuilder::GetHTMLColor(sShips, _T("silver"));
+	sShips = CHTMLStringBuilder::GetHTMLHeader(sShips, _T("h3"));
+	sShips += CHTMLStringBuilder::GetHTMLStringNewLine();
+	sShips += CHTMLStringBuilder::GetHTMLStringHorzLine();
+	sShips += CHTMLStringBuilder::GetHTMLStringNewLine();
+	s = "";
+	for (vector<CShipInfo*>::const_iterator it = vNewShips.begin(); it != vNewShips.end(); ++it)
+	{
+		s += (*it)->GetShipClass() + "-" + CResourceManager::GetString("CLASS") + " (" + (*it)->GetShipTypeAsString() + ")";
+		s = CHTMLStringBuilder::GetHTMLColor(s);
+		s = CHTMLStringBuilder::GetHTMLHeader(s, _T("h4"));
+		s += CHTMLStringBuilder::GetHTMLStringNewLine();
+	}
+	for (vector<CTroopInfo*>::const_iterator it = vNewTroops.begin(); it != vNewTroops.end(); ++it)
+	{
+		s += (*it)->GetName();
+		s = CHTMLStringBuilder::GetHTMLColor(s);
+		s = CHTMLStringBuilder::GetHTMLHeader(s, _T("h4"));
+		s += CHTMLStringBuilder::GetHTMLStringNewLine();
+	}
+	// gibt es keine neuen Schiffe und Truppen
+	if (vNewShips.size() == 0 && vNewTroops.size() == 0)
+	{
+		s = CResourceManager::GetString("NONE");
+		s = CHTMLStringBuilder::GetHTMLColor(s);
+		s = CHTMLStringBuilder::GetHTMLHeader(s, _T("h4"));
+		s += CHTMLStringBuilder::GetHTMLStringNewLine();
+	}
+	sShips += s;
+	
+	return CHTMLStringBuilder::GetHTMLCenter(sBuildings + sShips);
 }

@@ -4,6 +4,7 @@
 #include "RaceController.h"
 #include "AI\DiplomacyAI.h"
 #include "AI\MajorAI.h"
+#include "HTMLStringBuilder.h"
 
 IMPLEMENT_SERIAL (CRace, CObject, 1)
 
@@ -382,4 +383,61 @@ void CRace::SetIsRaceContacted(const CString& sRace, bool bKnown)
 	// soll die Rasse hinzugefügt werden, ist aber noch nicht im Vektor. Dann einfach anhängen
 	if (bKnown)
 		m_vInContact.insert(sRace);
+}
+
+/// Funktion erstellt eine Tooltipinfo der Rasse.
+/// @return	der erstellte Tooltip-Text
+CString CRace::GetTooltip(void) const
+{
+	CString sName = GetRaceName();
+	sName = CHTMLStringBuilder::GetHTMLColor(sName);
+	sName = CHTMLStringBuilder::GetHTMLHeader(sName, _T("h3"));
+	sName += CHTMLStringBuilder::GetHTMLStringNewLine();
+	sName += CHTMLStringBuilder::GetHTMLStringNewLine();
+
+	// Eigenschaften anzeigen
+	vector<CString> sProperties;
+	if (IsRaceProperty(FINANCIAL))
+		sProperties.push_back(CResourceManager::GetString("FINANCIAL"));
+	if (IsRaceProperty(WARLIKE))
+		sProperties.push_back(CResourceManager::GetString("WARLIKE"));
+	if (IsRaceProperty(AGRARIAN))
+		sProperties.push_back(CResourceManager::GetString("AGRARIAN"));
+	if (IsRaceProperty(INDUSTRIAL))
+		sProperties.push_back(CResourceManager::GetString("INDUSTRIAL"));
+	if (IsRaceProperty(SECRET))
+		sProperties.push_back(CResourceManager::GetString("SECRET"));
+	if (IsRaceProperty(SCIENTIFIC))
+		sProperties.push_back(CResourceManager::GetString("SCIENTIFIC"));
+	if (IsRaceProperty(PRODUCER))
+		sProperties.push_back(CResourceManager::GetString("PRODUCER"));
+	if (IsRaceProperty(PACIFIST))
+		sProperties.push_back(CResourceManager::GetString("PACIFIST"));
+	if (IsRaceProperty(SNEAKY))
+		sProperties.push_back(CResourceManager::GetString("SNEAKY"));
+	if (IsRaceProperty(SOLOING))
+		sProperties.push_back(CResourceManager::GetString("SOLOING"));
+	if (IsRaceProperty(HOSTILE))
+		sProperties.push_back(CResourceManager::GetString("HOSTILE"));
+	if (sProperties.size() == 0)
+		sProperties.push_back(CResourceManager::GetString("NONE"));
+
+	CString sProb = CResourceManager::GetString("PROPERTIES");
+	sProb = CHTMLStringBuilder::GetHTMLColor(sProb, _T("silver"));
+	sProb = CHTMLStringBuilder::GetHTMLHeader(sProb, _T("h4"));
+	sProb += CHTMLStringBuilder::GetHTMLStringNewLine();
+	sProb += CHTMLStringBuilder::GetHTMLStringHorzLine();
+	sProb += CHTMLStringBuilder::GetHTMLStringNewLine();
+	
+	CString s = "";
+	for (UINT i = 0; i < sProperties.size(); i++)
+	{
+		s += sProperties[i];						
+		s += CHTMLStringBuilder::GetHTMLStringNewLine();
+	}
+	s = CHTMLStringBuilder::GetHTMLColor(s);
+	s = CHTMLStringBuilder::GetHTMLHeader(s, _T("h5"));
+	sProb += s;
+
+	return CHTMLStringBuilder::GetHTMLCenter(sName + sProb);	
 }

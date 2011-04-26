@@ -1,5 +1,5 @@
-Willkommen zu BIRTH OF THE EMPIRES [Alpha 6]
-Version: 0.8
+Willkommen zu BIRTH OF THE EMPIRES [Alpha 6.1]
+Version: 0.81
 
 --------------------------------------------------------------------
 +                     BIRTH OF THE EMPIRES                         +
@@ -186,6 +186,7 @@ Text:
   Data
   master130686
   Grammaton Cleric
+  Kyle Katarn73
 
 Daten:
   Sir Pustekuchen
@@ -199,12 +200,19 @@ Balancing:
   Sir Pustekuchen
 
 Musik:
-  Eric Fu-Wah James
-  Terak Rall
+  Eric James
   Sandman
+  reel2
+  George R Powell
+  Edgen
+  MarkySpark
+  Kevin MacLeod
 
 Stimmen:
-  Kenneth_of_Borg et al.
+  Kenneth_of_Borg
+  Kate Flanagan
+  Krista Flanagan
+  Mike Strobel
 
 Englische Übersetzung
   Malle

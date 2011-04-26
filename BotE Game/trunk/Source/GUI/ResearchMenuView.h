@@ -30,6 +30,10 @@ public:
 #endif
 
 public:
+	///	Funktion erstellt zur aktuellen Mouse-Position einen HTML Tooltip
+	/// @return	der erstellte Tooltip-Text
+	virtual CString CreateTooltip(void);
+
 	void SetSubMenu(BYTE menuID) {m_bySubMenu = menuID;}
 
 	BYTE GetSubMenu() const {return m_bySubMenu;}

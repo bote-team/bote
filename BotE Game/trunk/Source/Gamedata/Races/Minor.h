@@ -54,6 +54,10 @@ public:
 	/// @return Akzeptanzpunkte
 	short GetAcceptancePoints(const CString& sRaceID) const;
 
+	/// Funktion erstellt eine Tooltipinfo der Rasse.
+	/// @return	der erstellte Tooltip-Text
+	virtual CString GetTooltip(void) const;
+
 	// zum Schreiben der Membervariablen
 	/// Funktion schreibt die Koordinate des Heimatsystems der Minorrace.
 	/// @param Koordinate des Heimatsystems

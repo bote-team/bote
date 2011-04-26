@@ -151,6 +151,10 @@ public:
 	/// @return Name der Grafikdatei
 	const CString& GetGraphicFileName(void) const {return m_sGraphicFile;}
 
+	/// Funktion erstellt eine Tooltipinfo der Rasse.
+	/// @return	der erstellte Tooltip-Text
+	virtual CString GetTooltip(void) const;
+
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Funktionen zum Schreiben der Membervariablen
 	/// Funktion legt fest, ob die Rasse eine andere Rasse kennt.

@@ -3906,15 +3906,18 @@ CString CSystemMenuView::CreateTooltip(void)
 	if (m_bySubMenu != 0 && m_bySubMenu != 2 && m_bySubMenu != 3)
 		return "";
 
+	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	ASSERT(pDoc);
+
+	if (!pDoc->m_bDataReceived)
+		return "";
+
 	// Wo sind wir
 	CPoint pt;
 	GetCursorPos(&pt);
 	ScreenToClient(&pt);
 	CalcLogicalPoint(pt);	
 	
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
-	ASSERT(pDoc);
-
 	int nID = -1;
 	if (m_bySubMenu == 0)
 	{

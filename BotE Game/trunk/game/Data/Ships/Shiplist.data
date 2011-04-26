@@ -189,8 +189,121 @@ Laser Array
 90
 $END_OF_SHIPDATA$
 1
-Außenposten 178
-Außenposten fungieren für gewöhnlich als Nachschubstation und Umschlagplatz. Die neuen Außenposten der 178er-Baureihe verfügen über deutlich mehr Waffen, bessere Schilde und eine stärkere Hülle als ihre Vorgänger. Damit sind sie deutlich besser in der Lage, sich gegen kleinere feindliche Verbände zu verteidigen.
+Außenposten 1
+Diese frühen Aussenposten der Konföderation sind nur relativ leicht gepanzert und bewaffnet. Sie dienen primär als Versorgungsstationen der Flotte und damit zur Erhöhung der Reichweite der Konföderationsschiffe. 
+12
+3
+0
+0
+0
+0
+0
+0
+0
+10
+0
+0
+0
+0
+0
+1
+
+2900
+0
+1
+0
+1
+5200
+1
+0
+0
+0
+62
+2
+0
+0
+0
+0
+13
+0
+0
+
+$Torpedo$
+0
+1
+50
+9
+Human Mod 2 Tube
+0
+50
+0
+75
+$Torpedo$
+0
+1
+50
+3
+Human Mod 2 Tube
+0
+50
+180
+75
+$Beam$
+6
+5
+4
+Laser Emitter
+0
+0
+10
+3
+7
+1
+0
+55
+$Beam$
+6
+5
+4
+Laser Emitter
+0
+0
+10
+3
+7
+1
+20
+55
+$Beam$
+6
+5
+4
+Laser Emitter
+0
+0
+10
+3
+7
+1
+340
+55
+$Beam$
+6
+5
+4
+Laser Emitter
+0
+0
+10
+3
+7
+1
+180
+55
+$END_OF_SHIPDATA$
+1
+Außenposten 2
+Außenposten fungieren für gewöhnlich als Nachschubstation und Umschlagplatz. Die neuen Außenposten der 2er-Baureihe verfügen über deutlich mehr Waffen, bessere Schilde und eine stärkere Hülle als ihre Vorgänger. Damit sind sie deutlich besser in der Lage, sich gegen kleinere feindliche Verbände zu verteidigen.
 12
 3
 0
@@ -302,8 +415,8 @@ Laser Bank
 80
 $END_OF_SHIPDATA$
 1
-Außenposten 489
-Außenposten fungieren für gewöhnlich als Nachschubstation und Umschlagplatz. Die Außenposten der 489er-Baureihe wurden gegenüber ihrem  Vorgänger nochmals aufgewertet. Waffen, Schilde und Hülle wurden deutlich verbessert, zudem verfügen sie über eine ablative Panzerung sowie hochmoderne regenerative Schilde.
+Außenposten 3
+Außenposten fungieren für gewöhnlich als Nachschubstation und Umschlagplatz. Die Außenposten der 3er-Baureihe wurden gegenüber ihrem  Vorgänger nochmals aufgewertet. Waffen, Schilde und Hülle wurden deutlich verbessert, zudem verfügen sie über eine ablative Panzerung sowie hochmoderne regenerative Schilde.
 12
 3
 0
@@ -2072,8 +2185,8 @@ Diese 2 Raumsonden sind ein Geschenk der russischen Raumfahrtbehörde bevor diese
 
 $END_OF_SHIPDATA$
 1
-Sternenbasis 232
-Sternenbasen fungieren für gewöhnlich als Nachschubstation und Umschlagplatz. Die Sternenbasis der 232er-Baureihe ist ein frühes Modell der Konföderation, verfügt jedoch bereits über eine gute Bewaffnung, starke Schilde und Hülle. Sie ist in der Lage kleinere feindliche Flotten abzuwehren.
+Sternenbasis 1
+Sternenbasen fungieren für gewöhnlich als Nachschubstation und Umschlagplatz. Die Sternenbasis der 1er-Baureihe ist ein frühes Modell der Konföderation, verfügt jedoch bereits über eine gute Bewaffnung, starke Schilde und Hülle. Sie ist in der Lage kleinere feindliche Flotten abzuwehren.
 13
 3
 0
@@ -2185,8 +2298,8 @@ Laser Emitter
 55
 $END_OF_SHIPDATA$
 1
-Sternenbasis 265
-Sternenbasen fungieren für gewöhnlich als Nachschubstation und Umschlagplatz.Die Sternenbasis der 265er-Baureihe wurde gegenüber dem Vorgängermodell mit mehr und stärkeren Waffen, einem modernen regenerativen Schildsystem und einer verstärkten Hülle ausgestattet. Damit ist sie in der Lage feindliche Flotten effektiver zu bekämpfen. 
+Sternenbasis 2
+Sternenbasen fungieren für gewöhnlich als Nachschubstation und Umschlagplatz.Die Sternenbasis der 2er-Baureihe wurde gegenüber dem Vorgängermodell mit mehr und stärkeren Waffen, einem modernen regenerativen Schildsystem und einer verstärkten Hülle ausgestattet. Damit ist sie in der Lage feindliche Flotten effektiver zu bekämpfen. 
 13
 3
 0
@@ -2272,8 +2385,8 @@ Laser Array
 90
 $END_OF_SHIPDATA$
 1
-Sternenbasis 595
-Sternenbasen fungieren für gewöhnlich als Nachschubstation und Umschlagplatz. Die Sternenbasen der 595er-Baureihe sind das Nonplusultra in der Baukunst der Konföderation. Sie besitzen extrem starke Waffen, regenerative Hochleistungsschilde sowie eine ablative Hüllenpanzerung. Dies versetzt sie in die Lage auch stärkere feindliche Flotten zu bekämpfen.
+Sternenbasis 3
+Sternenbasen fungieren für gewöhnlich als Nachschubstation und Umschlagplatz. Die Sternenbasen der 3er-Baureihe sind das Nonplusultra in der Baukunst der Konföderation. Sie besitzen extrem starke Waffen, regenerative Hochleistungsschilde sowie eine ablative Hüllenpanzerung. Dies versetzt sie in die Lage auch stärkere feindliche Flotten zu bekämpfen.
 13
 3
 0
@@ -2656,119 +2769,6 @@ Laser Array
 1
 180
 90
-$END_OF_SHIPDATA$
-1
-Y-9
-Diese frühen Aussenposten der Konföderation sind nur relativ leicht gepanzert und bewaffnet. Sie dienen primär als Versorgungsstationen der Flotte und damit zur Erhöhung der Reichweite der Konföderationsschiffe. 
-12
-3
-0
-0
-0
-0
-0
-0
-0
-10
-0
-0
-0
-0
-0
-1
-
-2900
-0
-1
-0
-1
-5200
-1
-0
-0
-0
-62
-2
-0
-0
-0
-0
-13
-0
-0
-
-$Torpedo$
-0
-1
-50
-9
-Human Mod 2 Tube
-0
-50
-0
-75
-$Torpedo$
-0
-1
-50
-3
-Human Mod 2 Tube
-0
-50
-180
-75
-$Beam$
-6
-5
-4
-Laser Emitter
-0
-0
-10
-3
-7
-1
-0
-55
-$Beam$
-6
-5
-4
-Laser Emitter
-0
-0
-10
-3
-7
-1
-20
-55
-$Beam$
-6
-5
-4
-Laser Emitter
-0
-0
-10
-3
-7
-1
-340
-55
-$Beam$
-6
-5
-4
-Laser Emitter
-0
-0
-10
-3
-7
-1
-180
-55
 $END_OF_SHIPDATA$
 2
 Baran
@@ -9597,18 +9597,18 @@ Phased Polaron Bank
 40
 $END_OF_SHIPDATA$
 6
-Außenposten 3980
-Außenposten fungieren für gewöhnlich als Nachschubstation und Umschlagplatz. Sie besitzen auch eine Reihe leichter und schwerer Waffen, die im Kampf gegen kleine Schiffsverbände ihre volle Wirkung entfalten können.
+Außenposten I
+Dieser Außenposten ist der erste seiner Bauart und benötigte 2 Vorläufer-Modelle, bis die internen Lebenserhaltungssysteme richtig funktionierten. Er dient der Erkundung neuer Gebiete und der Suche nach neuen Wirten für die Vi.
 12
 3
 0
-8
-8
-8
-8
-8
-8
-20
+0
+0
+0
+0
+0
+0
+10
 0
 0
 0
@@ -9616,75 +9616,52 @@ Außenposten fungieren für gewöhnlich als Nachschubstation und Umschlagplatz. Sie
 0
 1
 
-6000
+3000
+0
+1
+0
+0
+3600
+1
+0
+0
+0
+62
 2
-1
-1
-0
-24000
-8
-1
-0
-0
-110
-3
 0
 0
 0
 0
-125
-6
+15
+0
 0
 
 $Torpedo$
-20
+17
 1
-20
-6
-Omega Mark 2
-0
 40
+4
+Omega Mark 1
 0
-65
-$Torpedo$
-20
-1
-20
-2
-Omega Mark 2
-0
-40
-180
-65
-$Beam$
-12
-7
-16
-Phased Polaron Array
-0
-1
-30
-8
-12
-1
+45
 0
 50
 $Beam$
-12
-7
 6
-Phased Polaron Array
+5
+8
+Phased Polaron Emitter
 0
 1
-30
-8
-12
+10
+3
+7
 1
-180
-50
+0
+15
 $END_OF_SHIPDATA$
 6
-Außenposten 967
+Außenposten II
 Außenposten fungieren für gewöhnlich als Nachschubstation und Umschlagplatz. Sie besitzen auch eine Reihe leichter und schwerer Waffen, die im Kampf gegen kleine Schiffsverbände ihre volle Wirkung entfalten können.
 12
 3
@@ -9769,6 +9746,93 @@ Phased Polaron Bank
 1
 180
 40
+$END_OF_SHIPDATA$
+6
+Außenposten III
+Außenposten fungieren für gewöhnlich als Nachschubstation und Umschlagplatz. Sie besitzen auch eine Reihe leichter und schwerer Waffen, die im Kampf gegen kleine Schiffsverbände ihre volle Wirkung entfalten können.
+12
+3
+0
+8
+8
+8
+8
+8
+8
+20
+0
+0
+0
+0
+0
+1
+
+6000
+2
+1
+1
+0
+24000
+8
+1
+0
+0
+110
+3
+0
+0
+0
+0
+125
+6
+0
+
+$Torpedo$
+20
+1
+20
+6
+Omega Mark 2
+0
+40
+0
+65
+$Torpedo$
+20
+1
+20
+2
+Omega Mark 2
+0
+40
+180
+65
+$Beam$
+12
+7
+16
+Phased Polaron Array
+0
+1
+30
+8
+12
+1
+0
+50
+$Beam$
+12
+7
+6
+Phased Polaron Array
+0
+1
+30
+8
+12
+1
+180
+50
 $END_OF_SHIPDATA$
 6
 Beth
@@ -10706,157 +10770,6 @@ Phased Polaron Array
 50
 $END_OF_SHIPDATA$
 6
-Omega BZ-3
-Dieser Außenposten ist der erste seiner Bauart und benötigte 2 Vorläufer-Modelle, bis die internen Lebenserhaltungssysteme richtig funktionierten. Er dient der Erkundung neuer Gebiete und der Suche nach neuen Wirten für die Vi.
-12
-3
-0
-0
-0
-0
-0
-0
-0
-10
-0
-0
-0
-0
-0
-1
-
-3000
-0
-1
-0
-0
-3600
-1
-0
-0
-0
-62
-2
-0
-0
-0
-0
-15
-0
-0
-
-$Torpedo$
-17
-1
-40
-4
-Omega Mark 1
-0
-45
-0
-50
-$Beam$
-6
-5
-8
-Phased Polaron Emitter
-0
-1
-10
-3
-7
-1
-0
-15
-$END_OF_SHIPDATA$
-6
-Omega-Raumdock
-Ein Raumdock mit vergleichsweise starken Schilden und hoher Bewaffnung.
-13
-3
-0
-2
-2
-2
-2
-2
-2
-10
-0
-0
-0
-0
-0
-1
-
-10000
-0
-1
-0
-0
-24000
-3
-0
-0
-0
-70
-2
-0
-0
-0
-0
-94
-3
-0
-
-$Torpedo$
-17
-1
-40
-6
-Omega Mark 1
-0
-45
-0
-50
-$Torpedo$
-17
-1
-40
-2
-Omega Mark 1
-0
-45
-180
-50
-$Beam$
-8
-5
-21
-Phased Polaron Emitter
-0
-1
-10
-3
-7
-1
-0
-15
-$Beam$
-8
-5
-5
-Phased Polaron Emitter
-0
-1
-10
-3
-7
-1
-180
-15
-$END_OF_SHIPDATA$
-6
 Resch
 Der Jäger der Resch-Klasse ist ein verbessertes Schiffsdesign mit Bezügen zum Da'unor Angriffsschiff. Es wird nicht allzu oft verwendet und daher sieht man es selten im Kampf. Dennoch wird es vor allem für die Verteidigung von Außenposten eingesetzt - gemäß der Allianz-Doktrin erfolgt der Einsatz in großen Verbänden.
 4
@@ -11049,7 +10962,94 @@ Phased Polaron Bank
 40
 $END_OF_SHIPDATA$
 6
-Sternenbasis 607
+Sternenbasis I
+Ein Raumdock mit vergleichsweise starken Schilden und hoher Bewaffnung.
+13
+3
+0
+2
+2
+2
+2
+2
+2
+10
+0
+0
+0
+0
+0
+1
+
+10000
+0
+1
+0
+0
+24000
+3
+0
+0
+0
+70
+2
+0
+0
+0
+0
+94
+3
+0
+
+$Torpedo$
+17
+1
+40
+6
+Omega Mark 1
+0
+45
+0
+50
+$Torpedo$
+17
+1
+40
+2
+Omega Mark 1
+0
+45
+180
+50
+$Beam$
+8
+5
+21
+Phased Polaron Emitter
+0
+1
+10
+3
+7
+1
+0
+15
+$Beam$
+8
+5
+5
+Phased Polaron Emitter
+0
+1
+10
+3
+7
+1
+180
+15
+$END_OF_SHIPDATA$
+6
+Sternenbasis II
 Sternenbasen fungieren für gewöhnlich als Nachschubstation und Umschlagplatz. Sie besitzen auch eine Reihe leichter und schwerer Waffen, die sie im Kampf zu einem respektablen and herausfordernden Gegner machen.
 13
 3
@@ -11136,7 +11136,7 @@ Phased Polaron Array
 50
 $END_OF_SHIPDATA$
 6
-Sternenbasis 740
+Sternenbasis III
 Sternenbasen fungieren für gewöhnlich als Nachschubstation und Umschlagplatz. Sie besitzen auch eine Reihe leichter und schwerer Waffen, die sie im Kampf zu einem respektablen and herausfordernden Gegner machen.
 13
 3

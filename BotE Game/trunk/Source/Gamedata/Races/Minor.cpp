@@ -4,6 +4,7 @@
 #include "Minor.h"
 #include "Botf2Doc.h"
 #include "AI\MinorAI.h"
+#include "HTMLStringBuilder.h"
 
 IMPLEMENT_SERIAL (CMinor, CRace, 1)
 
@@ -564,6 +565,64 @@ void CMinor::PerhapsCancelAgreement(CBotf2Doc* pDoc)
 			}
 		}
 	}
+}
+
+/// Funktion erstellt eine Tooltipinfo der Rasse.
+/// @return	der erstellte Tooltip-Text
+CString CMinor::GetTooltip(void) const
+{
+	CString sTip = __super::GetTooltip();
+	sTip += CHTMLStringBuilder::GetHTMLStringNewLine();
+
+	// Technischen Fortschritt anzeigen
+	CString sProgress = "";
+	sProgress = CResourceManager::GetString("TECHNICAL_PROGRESS");
+	sProgress = CHTMLStringBuilder::GetHTMLColor(sProgress, _T("silver"));
+	sProgress = CHTMLStringBuilder::GetHTMLHeader(sProgress, _T("h4"));
+	sProgress += CHTMLStringBuilder::GetHTMLStringNewLine();
+	sProgress += CHTMLStringBuilder::GetHTMLStringHorzLine();
+	sProgress += CHTMLStringBuilder::GetHTMLStringNewLine();
+
+	CString s = "";
+	switch (GetTechnologicalProgress())
+	{
+	case 0: s = CResourceManager::GetString("VERY_UNDERDEVELOPED");	break;
+	case 1: s = CResourceManager::GetString("UNDERDEVELOPED");		break;
+	case 2: s = CResourceManager::GetString("NORMAL_DEVELOPED");	break;
+	case 3: s = CResourceManager::GetString("DEVELOPED");			break;
+	case 4: s = CResourceManager::GetString("VERY_DEVELOPED");		break;
+	}
+
+	s = CHTMLStringBuilder::GetHTMLColor(s);
+	s = CHTMLStringBuilder::GetHTMLHeader(s, _T("h5"));
+	sProgress += s;
+	sProgress += CHTMLStringBuilder::GetHTMLStringNewLine();
+	sProgress += CHTMLStringBuilder::GetHTMLStringNewLine();
+
+	// Bestechlichkeit anzeigen
+	CString sCor = "";
+	sCor = CResourceManager::GetString("CORRUPTIBILITY");
+	sCor = CHTMLStringBuilder::GetHTMLColor(sCor, _T("silver"));
+	sCor = CHTMLStringBuilder::GetHTMLHeader(sCor, _T("h4"));
+	sCor += CHTMLStringBuilder::GetHTMLStringNewLine();
+	sCor += CHTMLStringBuilder::GetHTMLStringHorzLine();
+	sCor += CHTMLStringBuilder::GetHTMLStringNewLine();
+
+	s = "";
+	switch (GetCorruptibility())
+	{
+	case 0: s = CResourceManager::GetString("VERY_LOW_CORRUPTIBILITY");	break;
+	case 1: s = CResourceManager::GetString("LOW_CORRUPTIBILITY");		break;
+	case 2: s = CResourceManager::GetString("NORMAL_CORRUPTIBILITY");	break;
+	case 3: s = CResourceManager::GetString("HIGH_CORRUPTIBILITY");		break;
+	case 4: s = CResourceManager::GetString("VERY_HIGH_CORRUPTIBILITY");break;
+	}
+	s = CHTMLStringBuilder::GetHTMLColor(s);
+	s = CHTMLStringBuilder::GetHTMLHeader(s, _T("h5"));
+	sCor += s;
+	sCor += CHTMLStringBuilder::GetHTMLStringNewLine();
+
+	return CHTMLStringBuilder::GetHTMLCenter(sTip + sProgress + sCor);	
 }
 
 /// Funktion zum erstellen einer Rasse.

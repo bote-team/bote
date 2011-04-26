@@ -2262,3 +2262,17 @@ Mrd.
 Größenklasse
 [SENSORS]
 Sensoren
+[CORRUPTIBILITY]
+Bestechlichkeit
+[VERY_LOW_CORRUPTIBILITY]
+sehr gering
+[LOW_CORRUPTIBILITY]
+gering
+[NORMAL_CORRUPTIBILITY]
+normal
+[HIGH_CORRUPTIBILITY]
+hoch
+[VERY_HIGH_CORRUPTIBILITY]
+sehr hoch
+[TECHNICAL_PROGRESS]
+technischer Fortschritt

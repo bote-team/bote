@@ -1434,7 +1434,120 @@ Laser Bank
 80
 $END_OF_SHIPDATA$
 1
-Outpost 178
+Outpost 1
+This older Coalition outpost was commonly used as supply station in the early 22nd century. It helped increasing the range of the fleet and such the size of the Coalition territory.
+12
+3
+0
+0
+0
+0
+0
+0
+0
+10
+0
+0
+0
+0
+0
+1
+
+2900
+0
+1
+0
+1
+5200
+1
+0
+0
+0
+62
+2
+0
+0
+0
+0
+13
+0
+0
+
+$Torpedo$
+0
+1
+50
+9
+Human Mod 2 Tube
+0
+50
+0
+75
+$Torpedo$
+0
+1
+50
+3
+Human Mod 2 Tube
+0
+50
+180
+75
+$Beam$
+6
+5
+4
+Laser Emitter
+0
+0
+10
+3
+7
+1
+0
+55
+$Beam$
+6
+5
+4
+Laser Emitter
+0
+0
+10
+3
+7
+1
+20
+55
+$Beam$
+6
+5
+4
+Laser Emitter
+0
+0
+10
+3
+7
+1
+340
+55
+$Beam$
+6
+5
+4
+Laser Emitter
+0
+0
+10
+3
+7
+1
+180
+55
+$END_OF_SHIPDATA$
+1
+Outpost 2
 Outposts serve as fleet supply and carrier stations. This type is a light version in terms of weaponry and sensors.
 12
 3
@@ -1547,7 +1660,7 @@ Laser Bank
 80
 $END_OF_SHIPDATA$
 1
-Outpost 489
+Outpost 3
 Outposts serve as fleet supply and carrier stations. This type is a medium version.
 12
 3
@@ -2072,7 +2185,7 @@ A satellite equipped with a continuum drive and long-range scanners.
 
 $END_OF_SHIPDATA$
 1
-Starbase 232
+Starbase 1
 A space dock with very powerful shields and large armament.
 13
 3
@@ -2185,7 +2298,7 @@ Laser Emitter
 55
 $END_OF_SHIPDATA$
 1
-Starbase 265
+Starbase 2
 The starbase is heavier armed than the original outpost. It also has better shields and sensor arrays. This type is a heavily-armed version of it.
 13
 3
@@ -2272,7 +2385,7 @@ Laser Array
 90
 $END_OF_SHIPDATA$
 1
-Starbase 595
+Starbase 3
 The starbase is heavier armed than the original outpost. It also has better shields and sensor arrays. This type is the strongest in fleet's asset.
 13
 3
@@ -2656,119 +2769,6 @@ Laser Array
 1
 180
 90
-$END_OF_SHIPDATA$
-1
-Y-9
-This older Coalition outpost was commonly used as supply station in the early 22nd century. It helped increasing the range of the fleet and such the size of the Coalition territory.
-12
-3
-0
-0
-0
-0
-0
-0
-0
-10
-0
-0
-0
-0
-0
-1
-
-2900
-0
-1
-0
-1
-5200
-1
-0
-0
-0
-62
-2
-0
-0
-0
-0
-13
-0
-0
-
-$Torpedo$
-0
-1
-50
-9
-Human Mod 2 Tube
-0
-50
-0
-75
-$Torpedo$
-0
-1
-50
-3
-Human Mod 2 Tube
-0
-50
-180
-75
-$Beam$
-6
-5
-4
-Laser Emitter
-0
-0
-10
-3
-7
-1
-0
-55
-$Beam$
-6
-5
-4
-Laser Emitter
-0
-0
-10
-3
-7
-1
-20
-55
-$Beam$
-6
-5
-4
-Laser Emitter
-0
-0
-10
-3
-7
-1
-340
-55
-$Beam$
-6
-5
-4
-Laser Emitter
-0
-0
-10
-3
-7
-1
-180
-55
 $END_OF_SHIPDATA$
 2
 Baran
@@ -10158,7 +10158,7 @@ Phased Polaron Array
 50
 $END_OF_SHIPDATA$
 6
-Omega BZ-3
+Outpost I
 An outpost is a waystation for deep-space starships, intended to act as a resupply depot and enhance their effective range. They can also assist in the defense of a system, but are not designed to repel a full-scale invasion unassisted.
 12
 3
@@ -10222,181 +10222,7 @@ Phased Polaron Emitter
 15
 $END_OF_SHIPDATA$
 6
-Omega-Spacedock
-A space dock with very powerful shields and large armament.
-13
-3
-0
-2
-2
-2
-2
-2
-2
-10
-0
-0
-0
-0
-0
-1
-
-10000
-0
-1
-0
-0
-24000
-3
-0
-0
-0
-70
-2
-0
-0
-0
-0
-94
-3
-0
-
-$Torpedo$
-17
-1
-40
-6
-Omega Mark 1
-0
-45
-0
-50
-$Torpedo$
-17
-1
-40
-2
-Omega Mark 1
-0
-45
-180
-50
-$Beam$
-8
-5
-21
-Phased Polaron Emitter
-0
-1
-10
-3
-7
-1
-0
-15
-$Beam$
-8
-5
-5
-Phased Polaron Emitter
-0
-1
-10
-3
-7
-1
-180
-15
-$END_OF_SHIPDATA$
-6
-Outpost 3980
-The latest outposts support a large number of heavy weapons. They are also more durable and equipped with more sophisticated sensor arrays. Work crews on military transports construct these bases using replicators to synthesize most of the material.
-12
-3
-0
-8
-8
-8
-8
-8
-8
-20
-0
-0
-0
-0
-0
-1
-
-6000
-2
-1
-1
-0
-24000
-8
-1
-0
-0
-110
-3
-0
-0
-0
-0
-125
-6
-0
-
-$Torpedo$
-20
-1
-20
-6
-Omega Mark 2
-0
-40
-0
-65
-$Torpedo$
-20
-1
-20
-2
-Omega Mark 2
-0
-40
-180
-65
-$Beam$
-12
-7
-16
-Phased Polaron Array
-0
-1
-30
-8
-12
-1
-0
-50
-$Beam$
-12
-7
-6
-Phased Polaron Array
-0
-1
-30
-8
-12
-1
-180
-50
-$END_OF_SHIPDATA$
-6
-Outpost 967
+Outpost II
 An outpost is a waystation for deep-space starships, intended to act as a resupply depot and enhance their effective range. They can also assist in the defense of a system, but are not designed to repel a full-scale invasion unassisted.
 12
 3
@@ -10481,6 +10307,93 @@ Phased Polaron Bank
 1
 180
 40
+$END_OF_SHIPDATA$
+6
+Outpost III
+The latest outposts support a large number of heavy weapons. They are also more durable and equipped with more sophisticated sensor arrays. Work crews on military transports construct these bases using replicators to synthesize most of the material.
+12
+3
+0
+8
+8
+8
+8
+8
+8
+20
+0
+0
+0
+0
+0
+1
+
+6000
+2
+1
+1
+0
+24000
+8
+1
+0
+0
+110
+3
+0
+0
+0
+0
+125
+6
+0
+
+$Torpedo$
+20
+1
+20
+6
+Omega Mark 2
+0
+40
+0
+65
+$Torpedo$
+20
+1
+20
+2
+Omega Mark 2
+0
+40
+180
+65
+$Beam$
+12
+7
+16
+Phased Polaron Array
+0
+1
+30
+8
+12
+1
+0
+50
+$Beam$
+12
+7
+6
+Phased Polaron Array
+0
+1
+30
+8
+12
+1
+180
+50
 $END_OF_SHIPDATA$
 6
 Resch
@@ -11049,7 +10962,94 @@ Phased Polaron Bank
 40
 $END_OF_SHIPDATA$
 6
-Starbase 607
+Starbase I
+A space dock with very powerful shields and large armament.
+13
+3
+0
+2
+2
+2
+2
+2
+2
+10
+0
+0
+0
+0
+0
+1
+
+10000
+0
+1
+0
+0
+24000
+3
+0
+0
+0
+70
+2
+0
+0
+0
+0
+94
+3
+0
+
+$Torpedo$
+17
+1
+40
+6
+Omega Mark 1
+0
+45
+0
+50
+$Torpedo$
+17
+1
+40
+2
+Omega Mark 1
+0
+45
+180
+50
+$Beam$
+8
+5
+21
+Phased Polaron Emitter
+0
+1
+10
+3
+7
+1
+0
+15
+$Beam$
+8
+5
+5
+Phased Polaron Emitter
+0
+1
+10
+3
+7
+1
+180
+15
+$END_OF_SHIPDATA$
+6
+Starbase II
 The modern starbase supports a much larger battery of weapons than its precursor, and fires them from behind powerful shields. Its structure has been strengthened, it mounts a superior sensor array, and its targeting systems are similarly enhanced.
 13
 3
@@ -11136,7 +11136,7 @@ Phased Polaron Array
 50
 $END_OF_SHIPDATA$
 6
-Starbase 740
+Starbase III
 The new enhanced starbase is a huge space stations which defends key sectors and support fleet operations. It has powerful and numerous weapons, ultra-heavy shields and vast supply reserves. The resources required to construct and support are high.
 13
 3

@@ -70,7 +70,7 @@ void CMenuChooseView::OnDraw(CDC* pDC)
 
 	// Das einschalten um automatisch bis zu einer gewissen Runde durchzuklicken
 	/*
-	if (!pDoc->m_bRoundEndPressed && pDoc->GetCurrentRound() < 100)
+	if (!pDoc->m_bRoundEndPressed && pDoc->GetCurrentRound() < 50)
 	{
 		pDoc->m_bRoundEndPressed = true;
 		CSoundManager::GetInstance()->StopMessages(TRUE);

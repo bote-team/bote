@@ -34,6 +34,10 @@ public:
 	/// Funktion führt Aufgaben aus, welche zu jeder neuen Runde von den Views ausgeführt werden müssen.
 	void OnNewRound(void);
 
+	///	Funktion erstellt zur aktuellen Mouse-Position einen HTML Tooltip
+	/// @return	der erstellte Tooltip-Text
+	virtual CString CreateTooltip(void);
+
 	void SetSubMenu(BYTE menuID) {m_bySubMenu = menuID;}
 
 	BYTE GetSubMenu() const {return m_bySubMenu;}

@@ -16,7 +16,7 @@
 /// haben.
 #define DOCUMENT_VERSION			9		///< Alpha 6 Version
 #define VERSION						0.8		///< benötigte Version in Datafiles
-#define VERSION_INFORMATION			"0.8"	///< anzuzeigende Versionsinformation 
+#define VERSION_INFORMATION			"0.81"	///< anzuzeigende Versionsinformation 
 
 // --- Feste Größen der Starmap ------------------------------------------------
 #define STARMAP_SECTORS_HCOUNT		30		///< Anzahl der Sektoren horizontal

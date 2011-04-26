@@ -277,10 +277,10 @@ void CPlanetBottomView::OnDraw(CDC* dc)
 		g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), PointF(711,0), &fontFormat, &fontBrush);
 	}
 	// Namen des Besitzers des Sector unten rechts zeichnen
-	if (pDoc->GetSector(KO.x,KO.y).GetScanned(pMajor->GetRaceID()) && pMajor->IsRaceContacted(pDoc->m_Sector[KO.x][KO.y].GetOwnerOfSector())
-		|| pDoc->m_Sector[KO.x][KO.y].GetOwnerOfSector() == pMajor->GetRaceID())
+	if (pDoc->GetSector(KO).GetScanned(pMajor->GetRaceID()) && pMajor->IsRaceContacted(pDoc->GetSector(KO).GetOwnerOfSector())
+		|| pDoc->GetSector(KO).GetOwnerOfSector() == pMajor->GetRaceID())
 	{
-		CRace* pOwner = pDoc->GetRaceCtrl()->GetRace(pDoc->m_Sector[KO.x][KO.y].GetOwnerOfSector());
+		CRace* pOwner = pDoc->GetRaceCtrl()->GetRace(pDoc->GetSector(KO).GetOwnerOfSector());
 		if (pOwner)
 		{
 			s = pOwner->GetRaceName();
@@ -442,14 +442,38 @@ void CPlanetBottomView::OnMouseMove(UINT nFlags, CPoint point)
 /// @return	der erstellte Tooltip-Text
 CString CPlanetBottomView::CreateTooltip(void)
 {
+	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CPoint KO = pDoc->GetKO();
+
+	if (!pDoc->m_bDataReceived)
+		return "";
+
 	// Wo sind wir
 	CPoint pt;
 	GetCursorPos(&pt);
 	ScreenToClient(&pt);
 	CalcLogicalPoint(pt);
 
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
-	CPoint KO = pDoc->GetKO();
+	// wurde die Maus über den Namen einer Rasse gehalten
+	if (pDoc->GetSector(KO).GetOwnerOfSector() != "")
+	{
+		if (CRect(735,190,885,220).PtInRect(pt))
+		{
+			CMajor* pMajor = m_pPlayersRace;
+			ASSERT(pMajor);
+			if (!pMajor)
+				return "";
+
+			if (pDoc->GetSector(KO).GetScanned(pMajor->GetRaceID()) && pMajor->IsRaceContacted(pDoc->GetSector(KO).GetOwnerOfSector()) || pDoc->GetSector(KO).GetOwnerOfSector() == pMajor->GetRaceID())
+			{
+				CRace* pOwner = pDoc->GetRaceCtrl()->GetRace(pDoc->GetSector(KO).GetOwnerOfSector());
+				if (!pOwner)
+					return "";
+				
+				return pOwner->GetTooltip();
+			}
+		}
+	}
 
 	if (pDoc->GetSector(KO).GetAnomaly())
 	{
@@ -563,7 +587,7 @@ CString CPlanetBottomView::CreateTooltip(void)
 				}
 			}
 			return sSunColor + sSunDesc + sSystemBoni;
-		}
+		}	
 
 		// wurden keine Planeten angezeigt, das System ist also nicht bekannt, dann hier aufhören
 		if (m_vPlanetRects.size() == 0)
@@ -652,7 +676,7 @@ CString CPlanetBottomView::CreateTooltip(void)
 						}
 				}
 			}	
-		}
+		}		
 	}
 	
 	return "";

@@ -560,15 +560,15 @@ bool CMinorAI::TryCorruption(const CDiplomacyInfo& info)
 	USHORT nCorruptionValue = 90;
 	switch (pMinor->GetCorruptibility())
 	{
-	case 0:	// kaum
-			nCorruptionValue = 80; break;
+	case 0:	// kaum (bestechlich)
+			nCorruptionValue = 100;	break;
 	case 1:	// wenig
-			nCorruptionValue = 85; break;		
+			nCorruptionValue = 95;	break;		
 	// Bei 2 verändert sich ja nichts
 	case 3:	// viel
-			nCorruptionValue = 95; break;
-	case 4: // sehr viel
-			nCorruptionValue = 100;break;
+			nCorruptionValue = 85;	break;
+	case 4: // sehr viel (sehr bestechlich)
+			nCorruptionValue = 80;	break;
 	}
 
 	short nRelationDiff = 0;
