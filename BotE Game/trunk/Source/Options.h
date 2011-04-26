@@ -15,7 +15,7 @@
 /// Versionsnummer des Dokuments; es können nur Spielstände geladen werden, die diese Versionsnummer
 /// haben.
 #define DOCUMENT_VERSION			9		///< Alpha 6 Version
-#define VERSION						0.8		///< benötigte Version in Datafiles
+#define VERSION						0.81	///< benötigte Version in Datafiles
 #define VERSION_INFORMATION			"0.81"	///< anzuzeigende Versionsinformation 
 
 // --- Feste Größen der Starmap ------------------------------------------------

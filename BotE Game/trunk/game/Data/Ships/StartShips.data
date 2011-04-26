@@ -7,10 +7,9 @@
 // 2. System, in dem das Schiff stationiert werden soll
 // 3. Schiffsklassennamen, getrennt durch Komma
 
-MAJOR1:Terra:Hathaway,Hathaway,Hathaway,Matilda,Farscape,Farscape
+MAJOR1:Terra:Sputnik,Sputnik,Seraphine
 MAJOR2:Han:Baran,Tirax
 MAJOR3:Khayrin:Battle Axe,Battle Axe,Battle Axe,Demon,Destiny
-MAJOR3:Terra:Battle Axe,Battle Axe,Battle Axe,Battle Axe,Battle Axe,Demon,Demon,Demon,Downfall
 MAJOR4:Rotharius:C'lypeus,C'lypeus,C'lypeus
 MAJOR5:Cartar:Caranna,Carpawel,Caroman
 MAJOR6:Omega Alpha:Home Defence,Kaph,Chet
