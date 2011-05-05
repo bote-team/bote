@@ -1124,6 +1124,12 @@ CString CResearchMenuView::CreateTooltip(void)
 		s += CHTMLStringBuilder::GetHTMLStringNewLine();
 	}
 	sShips += s;
+
+	CString sHeader = CResourceManager::GetString("NEW_TECHNOLOGY_ALLOWS");
+	sHeader = CHTMLStringBuilder::GetHTMLColor(sHeader);
+	sHeader = CHTMLStringBuilder::GetHTMLHeader(sHeader, _T("h3"));
+	sHeader += CHTMLStringBuilder::GetHTMLStringNewLine();
+	sHeader += CHTMLStringBuilder::GetHTMLStringNewLine();
 	
-	return CHTMLStringBuilder::GetHTMLCenter(sBuildings + sShips);
+	return CHTMLStringBuilder::GetHTMLCenter(sHeader + sBuildings + sShips);
 }

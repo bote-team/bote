@@ -8,7 +8,7 @@ GUI-Änderungen:
 - ausführlichere Informationen im Schiffstooltip und im Schiffsdesignmenü (Sensoren, Größe, Unterhalt...)
 - im Diplomatieeingang lassen sich die Nachrichten nun scrollen
 - neue Tooltips im Diplomatiemenü, welche Eigenschaften der Rasse zeigen
-- neue Tooltips im Forschungsmenü, welche die durcg die Forschung neuen Gebäude und Schiffe anzeigen
+- neue Tooltips im Forschungsmenü, welche die durch die Forschung möglichen neuen Gebäude und Schiffe anzeigen
 - neuer Tooltip in der Planetenansicht wenn Maus über dem Namen des Besitzers gehalten wird
 
 neue Features:
@@ -40,15 +40,15 @@ Bugfixes:
 - Nutzten mehrere Majors die gleiche Schiffsliste, so bekam jeder dieser Majors zuviele Startschiffe
 - Vorzeichenfehler in der Berechnung der Trefferwahrscheinlichkeit von Strahlenwaffen behoben
 - Galaxiegenerierungsalgorithmus verbessert (speziell bei vielen Systemen und vielen Minors)
-- beim Befehl "Flaggschiff" wird dem alten Flagschiff der aktuelle Befehl nicht mehr zurückgesetzt
+- beim Befehl "Flaggschiff" wurde dem alten Flaggschiff der aktuelle Befehl nicht mehr zurückgesetzt
 - Bugfixes an verschiedenen Stellen im Code
 - mehrere kleinere Bugfixes in *data Dateien
-- Bestechlichkeit bei Bestechung wurde nicht richtig ausgewertet
+- bei Bestechung wurde Bestechlichkeit nicht richtig ausgewertet
 
 Daten:
 - einige wenige Planetengrafiken ausgetauscht
-- verbesserte Schiffsbeschreibungen (dt.)
-- Stationen der Kondöderation und der Omega-Allianz umbenannt
+- verbesserte deutsche Schiffsbeschreibungen 
+- Stationen der Konföderation und der Omega-Allianz umbenannt
 - RacePlanetNames.data Datei wird nicht mehr benötigt
 - neue Sounds für die Hanuhr
 

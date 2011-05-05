@@ -2,59 +2,59 @@ BOTE - Changelog
 January 2004 - April 2011
 
 V0.8 -> V0.81 (Alpha 6.1)
-GUI-Änderungen:
-- in Intelmenüs lassen sich die Rassenlogos auf der linken Seite scrollen, wenn mehr als 6 Majors vorhanden sind
-- technologischer Fortschritt wird im "First-Contact" Event nun auch bei Hauptrassen angezeigt
-- ausführlichere Informationen im Schiffstooltip und im Schiffsdesignmenü (Sensoren, Größe, Unterhalt...)
-- im Diplomatieeingang lassen sich die Nachrichten nun scrollen
-- neue Tooltips im Diplomatiemenü, welche Eigenschaften der Rasse zeigen
-- neue Tooltips im Forschungsmenü, welche die durcg die Forschung neuen Gebäude und Schiffe anzeigen
-- neuer Tooltip in der Planetenansicht wenn Maus über dem Namen des Besitzers gehalten wird
+GUI Changes:
+- If more than 6 majors are available, it is possible to scroll through the majorlogos in the intelligence menu
+- Technological progress is now also shown in the major races "first contact" screen
+- More detailed information are shown in the ship-tooltip and ship design menu (sensors, size, maintenance ...)
+- You now can scroll the messages in the Diplomacy inbox
+- New tooltip in the new diplomacy menu, which shows the properties of the race
+- New tooltip in the research menu, which shows new buildings or ships you'll get through this technology
+- New tooltip in the planet view when the mouse is held over the owner's name
 
-neue Features:
-- BotE kann nun mit mehr als 6 Majors umgehen (Systeme werden für die weiteren Majors richtig erstellt)
-- alle Rassen können nun mehrere Eigenschaften besitzen
-- Spezialrassenfähigkeit "Braucht keine Nahrung" implementiert
-- in den Einstellungen lässt sich nun auch die Minimap ausblenden
+New features:
+- BotE can now handle more than 6 majors (systems are created properly for other majors)
+- Every race is now able to have multiple properties
+- Special race ability "needs no food" implemented
+- Added option in the settingsdialog to hide the minimap
 
-Änderungen:
-- BotE.ini und BotE.log werden nun unter Eigene Dateien/Birth of the Empires/ abgelegt
-- bei Berechnung der Siegchance beim Schiffskampf werden nun Anomalien beachtet
-- Ionensturm kann die Schilde nur noch auf das doppelte der maximalen Ausgangsschildstärke verbessern
-- benötigte Schiffskampfsiege und erfolgreiche Sabotageaktionen für Sieg leicht erhöht
-- Schiffsfähigkeit "Nahkämpfer" bringt nun 30% Bonus gegen kleine Schiffe und hat sonst keine Nachteile mehr
-- Schiffsfähigkeit "Anti-Nahkämpfer" bringt nun 30% Bonus gegen Nahkämpfer und hat sonst keine Nachteile mehr
+Changes:
+- BotE.ini and BotE.log are now saved in "My Documents / Birth of the Empires /"
+- Anomalies affect the chance of winning a battle
+- The shield improvement by Ion Storms is limited to the twice of the ship's maximum shieldpower
+- Increased required "ship combat victories" and "successful sabotage actions" for victory
+- Ship ability "fighter" now provides 30% bonus against small ships and has no disadvantages
+- Ship ability "anti-fighter" now provides 30% bonus against fighter and has no disadvantages
 
-KI:
-- neue KI für Forschung: KI erforscht nun auch Spezialforschungen
-- während eines Krieges macht die KI keine Forderungen mehr
-- KI kann nicht schon Angebote an Minors machen, wenn der Spieler das nicht auch kann
-- KI bricht Terraforming nun ab, wenn der Sektor nicht mehr frei ist bzw. der KI selbst gehört
+AI:
+- New research AI: AI now also explores special research
+- During a war the AI no longer sends demands to the player
+- AI can not make offers to Minors, when the player can not
+- The AI cancels terraforming if the sector is owned by someone
 
 Bugfixes:
-- Musik ließ sich nur kompliziert im Settingsdialog während des Spiels ausschalten
-- Diplomatische Angebote an menschliche Spieler wurden immer abgelehnt, wenn sie eigentlich ignoriert wurden
-- Stärke der Hanuhr Truppen von 50 auf 5 geändert
-- Liste der freien Schiffsnamen wurden im MP nicht mit übertragen. Wenn ein anderer Server das Spiel wieder eröffnet kamen Fehlermeldungen
-- Alle Rasseneigenschaften von Majors wurden zurückgesetzt, keine Rasse hatte eine Rasseneigenschaft
-- Nutzten mehrere Majors die gleiche Schiffsliste, so bekam jeder dieser Majors zuviele Startschiffe
-- Vorzeichenfehler in der Berechnung der Trefferwahrscheinlichkeit von Strahlenwaffen behoben
-- Galaxiegenerierungsalgorithmus verbessert (speziell bei vielen Systemen und vielen Minors)
-- beim Befehl "Flaggschiff" wird dem alten Flagschiff der aktuelle Befehl nicht mehr zurückgesetzt
-- Bugfixes an verschiedenen Stellen im Code
-- mehrere kleinere Bugfixes in *data Dateien
-- Bestechlichkeit bei Bestechung wurde nicht richtig ausgewertet
+- Turning of the music in the settingsdialog is now more simple
+- Diplomatic offers to human players were always rejected if they were actually ignored
+- Corrected strength of Heyoun troops from 50 to 5
+- List of free shipnames were not transferred in MP. If another server loaded the savegame errors occured
+- Fixed a Bug which reseted all characteristics of majors , no race had a racial property
+- If multiple majors used the same shiplist, the game gave them too many startships
+- Fixed an error in the calculation of the hit probability of beam weapons
+- Galaxy generation algorithm improved (especially with many systems and many Minors)
+- The command "flagship" no longer resets the commands of the old flagship
+- Many bug fixes in the code
+- Several small bug fixes in the *.data files
+- Corruption was not evaluated correctly
 
-Daten:
-- einige wenige Planetengrafiken ausgetauscht
-- verbesserte Schiffsbeschreibungen (dt.)
-- Stationen der Kondöderation und der Omega-Allianz umbenannt
-- RacePlanetNames.data Datei wird nicht mehr benötigt
-- neue Sounds für die Hanuhr
+Data:
+- changed a few planet graphics
+- Improved Ship Descriptions (german only)
+- Renamed the spacestations of the Coaltition and the Omega-Alliance
+- RacePlanetNames.data file is no longer needed
+- Heyouns have new sounds
 
-Code-intern:
-- Berechnung der Schiffstärkenberechnung (offensiv und defensiv) angepasst
-- Reihenfolge der Bearbeitung der Nachrichten im Diplomatiesystem komplett umgestellt
+Internal Code:
+- Calculation of the shipstrenght (offensive and defensive) optimized
+- Order of processing the diplomacy messages changed completely
 
 V0.72 -> V0.8 (Alpha 6)
 new views and events: 

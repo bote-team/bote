@@ -75,7 +75,8 @@ BOOLEAN CAttackSystem::Calculate()
 
 	if (m_fKilledPop != 0.0f)
 	{
-		CString n; n.Format("%.3lf", m_fKilledPop);
+		CString n;
+		n.Format("%.3lf", m_fKilledPop);
 		m_strNews.Add(CResourceManager::GetString("KILLED_POP_BY_SYSTEMATTACK",0,n,m_pSector->GetName()));
 	}
 	// verlorene Truppen berechnen

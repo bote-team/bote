@@ -519,25 +519,30 @@ void CMainFrame::NotifyCPPTooltip( NMHDR* pNMHDR, LRESULT* result )
 {
 	*result = 0;
 	NM_PPTOOLTIP_DISPLAY * pNotify = (NM_PPTOOLTIP_DISPLAY*)pNMHDR;
-	
-	CWnd* pWnd = CWnd::FromHandle(pNotify->hwndTool);
-	// Galaxieview
-	if  (pWnd->IsKindOf(RUNTIME_CLASS(CGalaxyMenuView)))
-	{
-		pNotify->ti->sTooltip = ((CGalaxyMenuView*)pWnd)->CreateTooltip();
-		return;
-	}	
-	// untere View
-	else if (pWnd->IsKindOf(RUNTIME_CLASS(CBottomBaseView)))
-	{
-		pNotify->ti->sTooltip = ((CBottomBaseView*)pWnd)->CreateTooltip();
-		return;
-	}
-	// Hauptviews
-	else if (pWnd->IsKindOf(RUNTIME_CLASS(CMainBaseView)))
-	{
-		pNotify->ti->sTooltip = ((CMainBaseView*)pWnd)->CreateTooltip();
-		return;
+
+	CBotf2Doc* pDoc = (CBotf2Doc*)((CBotf2App*)AfxGetApp())->GetDocument();
+	ASSERT(pDoc);
+	if (pDoc->m_bDataReceived)
+	{	
+		CWnd* pWnd = CWnd::FromHandle(pNotify->hwndTool);
+		// Galaxieview
+		if  (pWnd->IsKindOf(RUNTIME_CLASS(CGalaxyMenuView)))
+		{
+			pNotify->ti->sTooltip = ((CGalaxyMenuView*)pWnd)->CreateTooltip();
+			return;
+		}	
+		// untere View
+		else if (pWnd->IsKindOf(RUNTIME_CLASS(CBottomBaseView)))
+		{
+			pNotify->ti->sTooltip = ((CBottomBaseView*)pWnd)->CreateTooltip();
+			return;
+		}
+		// Hauptviews
+		else if (pWnd->IsKindOf(RUNTIME_CLASS(CMainBaseView)))
+		{
+			pNotify->ti->sTooltip = ((CMainBaseView*)pWnd)->CreateTooltip();
+			return;
+		}
 	}
 	
 	// default

@@ -2276,3 +2276,5 @@ high
 very high
 [TECHNICAL_PROGRESS]
 technical progress
+[NEW_TECHNOLOGY_ALLOWS]
+new technology allows:

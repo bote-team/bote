@@ -102,16 +102,13 @@ void CGalaxyMenuView::OnNewRound()
 		CSize size;
 		size.cx = (LONG)(STARMAP_TOTALWIDTH * m_fZoom);
 		size.cy = (LONG)(STARMAP_TOTALHEIGHT * m_fZoom);
-		SetScrollSizes(MM_TEXT, size);		
+		SetScrollSizes(MM_TEXT, size);
+
 		CPoint homePos = pDoc->GetRaceKO(m_pPlayersRace->GetRaceID());
 		
-		CPoint scrollPos;
-		scrollPos.x = homePos.x * GetScrollLimit(SB_HORZ) / STARMAP_SECTORS_HCOUNT;
-		scrollPos.y = homePos.y * GetScrollLimit(SB_VERT) / STARMAP_SECTORS_VCOUNT;
+		ScrollToSector(homePos);
 		
-		SetScrollPos(SB_HORZ, scrollPos.x, false);
-		SetScrollPos(SB_VERT, scrollPos.y, false);	
-		m_bScrollToHome = false;		
+		m_bScrollToHome = false;
 	}
 	Invalidate();
 }
@@ -1480,6 +1477,35 @@ void CGalaxyMenuView::GenerateGalaxyMap()
 			delete stars[i];
 			stars[i] = NULL;
 		}
+}
+
+/// Funktion scrollt zur angegebenen Position in der Galaxiemap.
+/// @param pt Koordinate, zu welcher gescrollt werden soll.
+void CGalaxyMenuView::ScrollToSector(const CPoint& pt)
+{
+	double x = (double)pt.x / (double)STARMAP_SECTORS_HCOUNT;
+	double y = (double)pt.y / (double)STARMAP_SECTORS_VCOUNT;
+	
+	/*
+	if (pt.x < STARMAP_SECTORS_HCOUNT / 2)
+		x = min(0, x - (double)pt.x * (double)STARMAP_SECTOR_WIDTH / 2.0 / m_fZoom);
+	else if (pt.x > STARMAP_SECTORS_HCOUNT / 2)
+		x = max(1.0, x + (double)pt.x * (double)STARMAP_SECTOR_WIDTH / 2.0 / m_fZoom);
+
+	if (pt.y < STARMAP_SECTORS_VCOUNT / 2)
+		y = min(0, y - (double)pt.y * (double)STARMAP_SECTOR_HEIGHT / 2.0 / m_fZoom);
+	else if (pt.y > STARMAP_SECTORS_VCOUNT / 2)
+		y = max(1.0, y + (double)pt.y * (double)STARMAP_SECTOR_HEIGHT / 2.0 / m_fZoom);
+	*/
+
+	CPoint scrollPos;
+	scrollPos.x = x * GetScrollLimit(SB_HORZ);
+	scrollPos.y = y * GetScrollLimit(SB_VERT);
+	
+	SetScrollPos(SB_HORZ, scrollPos.x, false);
+	SetScrollPos(SB_VERT, scrollPos.y, false);
+
+	m_pPlayersRace->GetStarmap()->m_Selection = Sector(pt.x, pt.y);
 }
 
 ///	Funktion erstellt zur aktuellen Mouse-Position einen HTML Tooltip

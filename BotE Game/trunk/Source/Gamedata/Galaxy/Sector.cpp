@@ -929,7 +929,7 @@ void CSector::CreatePlanets(const CString& sMajorID)
 					m_Planets.Add(planet);				
 				}
 				
-				// atuelle Bevölkerung prüfen
+				// aktuelle Bevölkerung prüfen
 				float fCurrentHabitants = this->GetCurrentHabitants();
 				if (fCurrentHabitants > 25.000f || fCurrentHabitants < 10.000f)
 					continue;
@@ -1092,13 +1092,20 @@ void CSector::CalculateOwner(const CString& sSystemOwner)
 	else if (m_sOwnerOfSector != "" && sSystemOwner == "" && this->GetMinorRace() == TRUE)
 		return;
 	
-	for (set<CString>::const_iterator it = m_bShipPort.begin(); it != m_bShipPort.end(); ++it)
+	for (set<CString>::const_iterator it = m_bOutpost.begin(); it != m_bOutpost.end(); ++it)
 	{
 		SetOwned(TRUE);
 		m_sOwnerOfSector = *it;
-		return;
+		return;		
 	}
 	
+	for (set<CString>::const_iterator it = m_bStarbase.begin(); it != m_bStarbase.end(); ++it)
+	{
+		SetOwned(TRUE);
+		m_sOwnerOfSector = *it;
+		return;		
+	}
+
 	// Ist obiges nicht eingetreten, so gehört demjenigen der Sektor, wer die meisten Besitzerpunkte hat. Ist hier
 	// Gleichstand haben wir neutrales Gebiet. Es werden mindst. 2 Punkte benötigt, um als neuer Besitzer des Sektors
 	// zu gelten.

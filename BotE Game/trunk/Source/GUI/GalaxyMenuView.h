@@ -106,6 +106,10 @@ public:
 	/// @return	der erstellte Tooltip-Text
 	virtual CString CreateTooltip(void);
 
+	/// Funktion scrollt zur angegebenen Position in der Galaxiemap.
+	/// @param pt Koordinate, zu welcher gescrollt werden soll.
+	void ScrollToSector(const CPoint& pt);
+
 	// Operationen
 public:
 	// Überladungen

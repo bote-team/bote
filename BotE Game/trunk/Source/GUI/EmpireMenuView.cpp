@@ -77,6 +77,7 @@ void CEmpireMenuView::OnNewRound()
 	m_iClickedNews = -1;
 	m_iClickedSystem = -1;
 	m_iClickedShip = -1;
+	m_iClickedShipIndex = -1;
 	m_bShowAliveShips = TRUE;
 	m_iSystemSubMenue = EMPIREVIEW_SYSTEMS_NORMAL;
 }
@@ -148,6 +149,7 @@ void CEmpireMenuView::OnInitialUpdate()
 	m_iClickedNews = -1;
 	m_iClickedSystem = -1;
 	m_iClickedShip = -1;
+	m_iClickedShipIndex = -1;
 	m_bShowAliveShips = TRUE;
 	m_iSystemSubMenue = EMPIREVIEW_SYSTEMS_NORMAL;
 }
@@ -1570,6 +1572,7 @@ void CEmpireMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			m_bShowAliveShips = temp;
 			m_bShowAliveShips = !m_bShowAliveShips;
 			m_iClickedShip = -1;
+			m_iClickedShipIndex = -1;
 			Invalidate(FALSE);
 			return;
 		}
@@ -1594,6 +1597,7 @@ void CEmpireMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 					{
 						m_iClickedShip = j + add;
 						m_iOldClickedShip = 20-(j)%21;
+						m_iClickedShipIndex = i;
 						Invalidate(FALSE);
 						break;
 					}
@@ -1612,6 +1616,7 @@ void CEmpireMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 				{
 					if (CRect(r.left+50,r.top+140+k*25,r.right-50,r.top+165+k*25).PtInRect(point))
 					{
+						m_iClickedShipIndex = i;
 						m_iClickedShip = k + add;
 						m_iOldClickedShip = 20-(k)%21;
 						Invalidate(FALSE);
@@ -1828,13 +1833,45 @@ void CEmpireMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 		{
 			CPoint ko = pMajor->GetEmpire()->GetSystemList()->GetAt(m_iClickedSystem).ko;
 			pDoc->SetKO(ko.x, ko.y);
-			pDoc->GetMainFrame()->SelectMainView(2, pMajor->GetRaceID());
+			pDoc->GetMainFrame()->SelectMainView(SYSTEM_VIEW, pMajor->GetRaceID());
 			CSystemMenuView::SetMarkedBuildListEntry(0);
 			Invalidate(FALSE);
 			pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
 			return;
 		}
-	}	
+	}
+	// Wenn wir in der Schiffsansicht sind
+	else if (m_iSubMenu == EMPIREVIEW_SHIPS)
+	{
+		// Haben wir auf ein Schiff in der Liste geklickt
+		if (m_iClickedShipIndex != -1)
+		{
+			CShipHistoryStruct* pShipHistory = pMajor->GetShipHistory()->GetShipHistory(m_iClickedShipIndex);
+			if (pShipHistory)
+			{
+				// Sektorkoordinate finden
+				CPoint pt = CPoint(-1,-1);
+				for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
+					for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
+						if (pDoc->GetSector(x,y).GetName(true) == pShipHistory->m_strCurrentSector)
+						{
+							pt = CPoint(x,y);
+							break;
+						}
+
+				CGalaxyMenuView* pView = dynamic_cast<CGalaxyMenuView*>(pDoc->GetMainFrame()->GetView(RUNTIME_CLASS(CGalaxyMenuView)));
+				if (pView && pt != CPoint(-1,-1))
+				{				
+					pDoc->SetKO(pt);
+					pView->ScrollToSector(pt);
+					pDoc->GetMainFrame()->SelectMainView(GALAXY_VIEW, pMajor->GetRaceID());
+					Invalidate(FALSE);
+					pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
+					return;
+				}
+			}
+		}
+	}
 
 	CMainBaseView::OnLButtonDblClk(nFlags, point);
 }

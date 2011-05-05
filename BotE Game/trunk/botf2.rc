@@ -148,7 +148,7 @@ BEGIN
     LTEXT           "Birth of the Empires",IDC_STATIC,42,7,126,18,SS_NOPREFIX
     LTEXT           "Copyright by Sir Pustekuchen (C)2004-2011\nContent by Malle et al. 2007-2011",IDC_STATIC,42,31,152,17
     DEFPUSHBUTTON   "OK",IDOK,154,7,54,10,WS_GROUP
-    LTEXT           "Version 0.81 Alpha 6.1 RC1",IDC_STATIC,42,23,151,8
+    LTEXT           "Version 0.81 Alpha 6.1",IDC_STATIC,42,23,151,8
 END
 
 IDR_MAINFRAME DIALOG  0, 0, 330, 16
@@ -182,7 +182,7 @@ BEGIN
     EDITTEXT        1032,69,194,196,14,ES_AUTOHSCROLL | NOT WS_VISIBLE
     GROUPBOX        "Network Options",IDC_STATIC,7,143,266,98
     RTEXT           "www.birth-of-the-empires.de",IDC_STATIC,156,63,119,19
-    RTEXT           "V0.81 Alpha 6.1 RC1",IDC_STATIC,129,54,146,9
+    RTEXT           "V0.81 Alpha 6.1",IDC_STATIC,129,54,146,9
     CONTROL         188,IDC_STATIC,"Static",SS_BITMAP,7,0,267,52
     DEFPUSHBUTTON   "Game Settings...",ID_SHOWOPTIONSDLG,7,244,69,14
 END

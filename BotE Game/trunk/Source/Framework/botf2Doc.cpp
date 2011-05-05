@@ -118,7 +118,7 @@ BOOL CBotf2Doc::OnNewDocument()
 	if (!CDocument::OnNewDocument())
 		return FALSE;
 
-	AfxMessageBox("Achtung!\n\nDies ist eine interne Entwicklungsversion von BotE Alpha 6.1 RC.\nDiese Version ist nicht für die Öffentlichkeit bestimmt!\nEine eigenständige Verbreitung dieser Version ist verboten!\n\nAn alle Betatester:\nBitte ausführlich testen und alle entdeckten Fehler und Ungereimtheiten\nim internen Bereich des Forum posten.\n\nVielen Dank und viel Spass beim Testen\nSir Pustekuchen");
+	//AfxMessageBox("Achtung!\n\nDies ist eine interne Entwicklungsversion von BotE Alpha 6.1 RC.\nDiese Version ist nicht für die Öffentlichkeit bestimmt!\nEine eigenständige Verbreitung dieser Version ist verboten!\n\nAn alle Betatester:\nBitte ausführlich testen und alle entdeckten Fehler und Ungereimtheiten\nim internen Bereich des Forum posten.\n\nVielen Dank und viel Spass beim Testen\nSir Pustekuchen");
 
 	// Mal Testweise paar Truppen anlegen
 	m_TroopInfo.RemoveAll();
@@ -2439,7 +2439,7 @@ void CBotf2Doc::CalcSystemAttack()
 									|| it->second->GetIncomingDiplomacyNews()->at(i).m_sToRace == pMinor->GetRaceID())
 									it->second->GetIncomingDiplomacyNews()->erase(it->second->GetIncomingDiplomacyNews()->begin() + i--);
 							
-							// An alle Majors die die Minor kennen die Nachricht schicken, dass diese unterworden wurde
+							// An alle Majors die die Minor kennen die Nachricht schicken, dass diese unterworfen wurde
 							if (it->second->IsRaceContacted(pMinor->GetRaceID()))
 							{
 								message.GenerateMessage(CResourceManager::GetString("MINOR_SUBJUGATED", FALSE, pMinor->GetRaceName()), MILITARY, param, p, 0);
@@ -2911,7 +2911,7 @@ void CBotf2Doc::CalcSystemAttack()
 							}
 						}
 					}
-					// Eventsgrafiken hinzufügen
+					// Eventgrafiken hinzufügen
 					// für den/die Angreifer
 					for (set<CString>::const_iterator it = attackers.begin(); it != attackers.end(); ++it)
 					{
@@ -2924,7 +2924,7 @@ void CBotf2Doc::CalcSystemAttack()
 							if (!attackSystem->IsTroopsInvolved())
 								pMajor->GetEmpire()->GetEventMessages()->Add(new CEventBombardment(pMajor->GetRaceID(), "Bombardment", CResourceManager::GetString("BOMBARDEVENT_HEADLINE", FALSE, m_Sector[p.x][p.y].GetName()), CResourceManager::GetString("BOMBARDEVENT_TEXT_" + pMajor->GetRaceID(), FALSE, m_Sector[p.x][p.y].GetName())));
 							// gescheitere Invasion
-							else
+							else if (m_System[p.x][p.y].GetHabitants() > 0.000001f)
 								pMajor->GetEmpire()->GetEventMessages()->Add(new CEventBombardment(pMajor->GetRaceID(), "InvasionFailed", CResourceManager::GetString("INVASIONFAILUREEVENT_HEADLINE", FALSE, m_Sector[p.x][p.y].GetName()), CResourceManager::GetString("INVASIONFAILUREEVENT_TEXT_" + pMajor->GetRaceID(), FALSE, m_Sector[p.x][p.y].GetName())));
 						}
 
@@ -2938,7 +2938,7 @@ void CBotf2Doc::CalcSystemAttack()
 							if (!attackSystem->IsTroopsInvolved())
 								((CMajor*)defender)->GetEmpire()->GetEventMessages()->Add(new CEventBombardment(defender->GetRaceID(), "Bombardment", CResourceManager::GetString("BOMBARDEVENT_HEADLINE", FALSE, m_Sector[p.x][p.y].GetName()), CResourceManager::GetString("BOMBARDEVENT_TEXT_" + defender->GetRaceID(), FALSE, m_Sector[p.x][p.y].GetName())));
 							// gescheitere Invasion
-							else
+							else if (m_System[p.x][p.y].GetHabitants() > 0.000001f)
 								((CMajor*)defender)->GetEmpire()->GetEventMessages()->Add(new CEventBombardment(defender->GetRaceID(), "InvasionFailed", CResourceManager::GetString("INVASIONFAILUREEVENT_HEADLINE", FALSE, m_Sector[p.x][p.y].GetName()), CResourceManager::GetString("INVASIONFAILUREEVENT_TEXT_" + defender->GetRaceID(), FALSE, m_Sector[p.x][p.y].GetName())));
 						}
 					}					
@@ -6042,7 +6042,7 @@ void CBotf2Doc::CalcEndDataForNextRound()
 	// Jetzt die Besitzer berechnen und die Variablen, welche nächste Runde auch angezeigt werden sollen.
 	for (int y = 0 ; y < STARMAP_SECTORS_VCOUNT; y++)
 		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-		{
+		{			
 			m_Sector[x][y].CalculateOwner(m_System[x][y].GetOwnerOfSystem());
 			if (m_Sector[x][y].GetSunSystem() == TRUE && m_System[x][y].GetOwnerOfSystem() != "")
 			{
