@@ -373,604 +373,117 @@ void CSector::CreatePlanets(const CString& sMajorID)
 		// Es gibt 7 verschiedene Sonnenfarben
 		m_bySunColor = rand()%7;
 
-		if (sMajorID == "MAJOR1")
+		if (sMajorID != "")
 		{
-			CPlanet planet;
-			m_bySunColor = 6;
-			// Merkur generieren
-			planet.SetType(PLANETCLASS_B);
-			planet.SetColonisized(FALSE);
-			planet.SetMaxHabitant(0);
-			planet.SetCurrentHabitant(0);
-			planet.SetHabitable(FALSE);
-			planet.SetTerraformed(FALSE);
-			planet.SetSize(SMALL);
-			planet.SetName("Merkur");
-			planet.SetClass('B');
-			planet.SetPlanetGrowth();
-			m_Planets.Add(planet);
-			// Venus generieren
-			planet.SetType(PLANETCLASS_N);
-			planet.SetColonisized(TRUE);
-			planet.SetMaxHabitant(10.000);
-			planet.SetCurrentHabitant(4.000);
-			planet.SetHabitable(TRUE);
-			planet.SetTerraformed(TRUE);
-			planet.SetSize(SMALL);
-			planet.SetName("Venus");
-			planet.SetClass('N');
-			planet.SetPlanetGrowth();
-			m_Planets.Add(planet);
-			m_Planets.GetAt(m_Planets.GetUpperBound()).SetBoni(0,0,0,0,0,0,0,1);
-			// Erde generieren
-			planet.SetType(PLANETCLASS_M);
-			planet.SetColonisized(TRUE);
-			planet.SetMaxHabitant(19.000);
-			planet.SetCurrentHabitant(7.000);
-			planet.SetHabitable(TRUE);
-			planet.SetTerraformed(TRUE);
-			planet.SetSize(SMALL);
-			planet.SetName("Erde");
-			planet.SetClass('M');
-			planet.SetPlanetGrowth();
-			m_Planets.Add(planet);
-			m_Planets.GetAt(m_Planets.GetUpperBound()).SetBoni(0,0,0,0,0,1,1,0);
-			// Mars generieren
-			planet.SetType(PLANETCLASS_K);
-			planet.SetColonisized(TRUE);
-			planet.SetMaxHabitant(13.000);
-			planet.SetCurrentHabitant(5.000);
-			planet.SetHabitable(TRUE);
-			planet.SetTerraformed(TRUE);
-			planet.SetSize(SMALL);
-			planet.SetName("Mars");
-			planet.SetClass('K');
-			planet.SetPlanetGrowth();
-			m_Planets.Add(planet);
-			// Jupiter generieren
-			planet.SetType(PLANETCLASS_J);
-			planet.SetColonisized(FALSE);
-			planet.SetMaxHabitant(0);
-			planet.SetCurrentHabitant(0);
-			planet.SetHabitable(FALSE);
-			planet.SetTerraformed(FALSE);
-			planet.SetSize(GIANT);
-			planet.SetName("Jupiter");
-			planet.SetClass('J');
-			planet.SetPlanetGrowth();
-			m_Planets.Add(planet);
-			// Saturn generieren
-			planet.SetType(PLANETCLASS_J);
-			planet.SetColonisized(FALSE);
-			planet.SetMaxHabitant(0);
-			planet.SetCurrentHabitant(0);
-			planet.SetHabitable(FALSE);
-			planet.SetTerraformed(FALSE);
-			planet.SetSize(GIANT);
-			planet.SetName("Saturn");
-			planet.SetClass('J');
-			planet.SetPlanetGrowth();
-			m_Planets.Add(planet);
-			// Uranus generieren
-			planet.SetType(PLANETCLASS_J);
-			planet.SetColonisized(FALSE);
-			planet.SetMaxHabitant(0);
-			planet.SetCurrentHabitant(0);
-			planet.SetHabitable(FALSE);
-			planet.SetTerraformed(FALSE);
-			planet.SetSize(BIG);
-			planet.SetName("Uranus");
-			planet.SetClass('J');
-			planet.SetPlanetGrowth();
-			m_Planets.Add(planet);
-			// Neptune generieren
-			planet.SetType(PLANETCLASS_J);
-			planet.SetColonisized(FALSE);
-			planet.SetMaxHabitant(0);
-			planet.SetCurrentHabitant(0);
-			planet.SetHabitable(FALSE);
-			planet.SetTerraformed(FALSE);
-			planet.SetSize(BIG);
-			planet.SetName("Neptun");
-			planet.SetClass('J');
-			planet.SetPlanetGrowth();
-			m_Planets.Add(planet);
-			// Pluto generieren
-			planet.SetType(PLANETCLASS_C);
-			planet.SetColonisized(TRUE);
-			planet.SetMaxHabitant(8.000);
-			planet.SetCurrentHabitant(2.250);
-			planet.SetHabitable(TRUE);
-			planet.SetTerraformed(TRUE);
-			planet.SetSize(SMALL);
-			planet.SetName("Pluto");
-			planet.SetClass('C');
-			planet.SetPlanetGrowth();
-			m_Planets.Add(planet);
-			m_Planets.GetAt(m_Planets.GetUpperBound()).SetBoni(1,0,0,0,0,0,0,0);
-		}
-		else if (sMajorID == "MAJOR2")
-		{
-			CPlanet planet;
-			m_bySunColor = 2;
-			// Ferenginar 1 generieren
-			planet.SetType(PLANETCLASS_B);
-			planet.SetColonisized(TRUE);
-			planet.SetMaxHabitant(0);
-			planet.SetCurrentHabitant(0);
-			planet.SetHabitable(FALSE);
-			planet.SetTerraformed(FALSE);
-			planet.SetSize(BIG);
-			planet.SetName(m_strSectorName + " 1");
-			planet.SetClass('B');
-			planet.SetPlanetGrowth();
-			planet.SetGraphicType(rand()%GRAPHICNUMBER);
-			m_Planets.Add(planet);
-			// Ferenginar 2 generieren
-			planet.SetType(PLANETCLASS_M);
-			planet.SetColonisized(TRUE);
-			planet.SetMaxHabitant(16.500);
-			planet.SetCurrentHabitant(5.500);
-			planet.SetHabitable(TRUE);
-			planet.SetTerraformed(TRUE);
-			planet.SetSize(BIG);
-			planet.SetName(m_strSectorName + " 2");
-			planet.SetClass('M');
-			planet.SetPlanetGrowth();
-			planet.SetGraphicType(rand()%GRAPHICNUMBER);
-			m_Planets.Add(planet);
-			m_Planets.GetAt(m_Planets.GetUpperBound()).SetBoni(0,0,0,0,0,1,1,0);
-			// Ferenginar 3 generieren
-			planet.SetType(PLANETCLASS_O);
-			planet.SetColonisized(TRUE);
-			planet.SetMaxHabitant(12.000);
-			planet.SetCurrentHabitant(4.000);
-			planet.SetHabitable(TRUE);
-			planet.SetTerraformed(TRUE);
-			planet.SetSize(BIG);
-			planet.SetName(m_strSectorName + " 3");
-			planet.SetClass('O');
-			planet.SetPlanetGrowth();
-			planet.SetGraphicType(rand()%GRAPHICNUMBER);
-			m_Planets.Add(planet);
-			m_Planets.GetAt(m_Planets.GetUpperBound()).SetBoni(0,1,0,0,0,0,1,0);
-			// Ferenginar 4 generieren
-			planet.SetType(PLANETCLASS_L);
-			planet.SetColonisized(TRUE);
-			planet.SetMaxHabitant(8.500);
-			planet.SetCurrentHabitant(3.000);
-			planet.SetHabitable(TRUE);
-			planet.SetTerraformed(TRUE);
-			planet.SetSize(NORMAL);
-			planet.SetName(m_strSectorName + " 4");
-			planet.SetClass('L');
-			planet.SetPlanetGrowth();
-			planet.SetGraphicType(rand()%GRAPHICNUMBER);
-			m_Planets.Add(planet);
-			// Ferenginar 5 generieren
-			planet.SetType(PLANETCLASS_Q);
-			planet.SetColonisized(TRUE);
-			planet.SetMaxHabitant(7.500);
-			planet.SetCurrentHabitant(1.500);
-			planet.SetHabitable(TRUE);
-			planet.SetTerraformed(TRUE);
-			planet.SetSize(NORMAL);
-			planet.SetName(m_strSectorName + " 5");
-			planet.SetClass('Q');
-			planet.SetPlanetGrowth();
-			planet.SetGraphicType(rand()%GRAPHICNUMBER);
-			m_Planets.Add(planet);
-			// Ferenginar 6 generieren
-			planet.SetType(PLANETCLASS_S);
-			planet.SetColonisized(FALSE);
-			planet.SetMaxHabitant(0);
-			planet.SetCurrentHabitant(0);
-			planet.SetHabitable(FALSE);
-			planet.SetTerraformed(FALSE);
-			planet.SetSize(GIANT);
-			planet.SetName(m_strSectorName + " 6");
-			planet.SetClass('S');
-			planet.SetPlanetGrowth();
-			planet.SetGraphicType(rand()%GRAPHICNUMBER);
-			m_Planets.Add(planet);
-			// Ferenginar 7 generieren
-			planet.SetType(PLANETCLASS_C);
-			planet.SetColonisized(TRUE);
-			planet.SetMaxHabitant(2.500);
-			planet.SetCurrentHabitant(0.500);
-			planet.SetHabitable(TRUE);
-			planet.SetTerraformed(TRUE);
-			planet.SetSize(SMALL);
-			planet.SetName(m_strSectorName + " 7");
-			planet.SetClass('C');
-			planet.SetPlanetGrowth();
-			planet.SetGraphicType(rand()%GRAPHICNUMBER);
-			m_Planets.Add(planet);
-		}
-		else if (sMajorID == "MAJOR3")
-		{
-			CPlanet planet;
-			m_bySunColor = 2;
-			// Qo´nos 1 generieren
-			planet.SetType(PLANETCLASS_N);
-			planet.SetColonisized(TRUE);
-			planet.SetMaxHabitant(8.000);
-			planet.SetCurrentHabitant(2.000);
-			planet.SetHabitable(TRUE);
-			planet.SetTerraformed(TRUE);
-			planet.SetSize(BIG);
-			planet.SetName(m_strSectorName + " 1");
-			planet.SetClass('N');
-			planet.SetPlanetGrowth();
-			planet.SetGraphicType(rand()%GRAPHICNUMBER);
-			m_Planets.Add(planet);
-			m_Planets.GetAt(m_Planets.GetUpperBound()).SetBoni(0,0,0,0,0,0,0,1);
-			// Qo´nos 2 generieren
-			planet.SetType(PLANETCLASS_H);
-			planet.SetColonisized(TRUE);
-			planet.SetMaxHabitant(15.000);
-			planet.SetCurrentHabitant(3.000);
-			planet.SetHabitable(TRUE);
-			planet.SetTerraformed(TRUE);
-			planet.SetSize(BIG);
-			planet.SetName(m_strSectorName + " 2");
-			planet.SetClass('H');
-			planet.SetPlanetGrowth();
-			planet.SetGraphicType(rand()%GRAPHICNUMBER);
-			m_Planets.Add(planet);
-			m_Planets.GetAt(m_Planets.GetUpperBound()).SetBoni(0,0,0,0,0,0,0,1);
-			// Kling generieren
-			planet.SetType(PLANETCLASS_M);
-			planet.SetColonisized(TRUE);
-			planet.SetMaxHabitant(25.000);
-			planet.SetCurrentHabitant(5.000);
-			planet.SetHabitable(TRUE);
-			planet.SetTerraformed(TRUE);
-			planet.SetSize(BIG);
-//			planet.SetName("Klinzhai");
-			planet.SetName(m_strSectorName + " 3");
-			planet.SetClass('M');
-			planet.SetPlanetGrowth();
-			planet.SetGraphicType(rand()%GRAPHICNUMBER);
-			m_Planets.Add(planet);
-			m_Planets.GetAt(m_Planets.GetUpperBound()).SetBoni(0,0,0,0,0,1,1,0);
-			// Qo´nos 4 generieren
-			planet.SetType(PLANETCLASS_P);
-			planet.SetColonisized(TRUE);
-			planet.SetMaxHabitant(12.000);
-			planet.SetCurrentHabitant(2.000);
-			planet.SetHabitable(TRUE);
-			planet.SetTerraformed(TRUE);
-			planet.SetSize(BIG);
-			planet.SetName(m_strSectorName + " 4");
-			planet.SetClass('P');
-			planet.SetPlanetGrowth();
-			planet.SetGraphicType(rand()%GRAPHICNUMBER);
-			m_Planets.Add(planet);
-			m_Planets.GetAt(m_Planets.GetUpperBound()).SetBoni(0,0,0,0,0,0,0,1);
-		}
-		else if (sMajorID == "MAJOR4")
-		{
-			CPlanet planet;
-			m_bySunColor = 1;
-			// Romulus 1 generieren
-			planet.SetType(PLANETCLASS_N);
-			planet.SetColonisized(TRUE);
-			planet.SetMaxHabitant(2.000);
-			planet.SetCurrentHabitant(1.000);
-			planet.SetHabitable(TRUE);
-			planet.SetTerraformed(TRUE);
-			planet.SetSize(NORMAL);
-			planet.SetName(m_strSectorName + " 1");
-			planet.SetClass('N');
-			planet.SetPlanetGrowth();
-			planet.SetGraphicType(rand()%GRAPHICNUMBER);
-			m_Planets.Add(planet);
-			m_Planets.GetAt(m_Planets.GetUpperBound()).SetBoni(0,0,0,0,0,0,0,1);
-			// Romulus generieren
-			planet.SetType(PLANETCLASS_M);
-			planet.SetColonisized(TRUE);
-			planet.SetMaxHabitant(28.000);
-			planet.SetCurrentHabitant(7.000);
-			planet.SetHabitable(TRUE);
-			planet.SetTerraformed(TRUE);
-			planet.SetSize(GIANT);
-	//		planet.SetName("Romulus");
-			planet.SetName(m_strSectorName + " 2");
-			planet.SetClass('M');
-			planet.SetPlanetGrowth();
-			planet.SetGraphicType(rand()%GRAPHICNUMBER);
-			m_Planets.Add(planet);
-			m_Planets.GetAt(m_Planets.GetUpperBound()).SetBoni(0,0,0,0,0,1,1,0);
-			// Remus generieren
-			planet.SetType(PLANETCLASS_Q);
-			planet.SetColonisized(TRUE);
-			planet.SetMaxHabitant(8.000);
-			planet.SetCurrentHabitant(2.000);
-			planet.SetHabitable(TRUE);
-			planet.SetTerraformed(TRUE);
-			planet.SetSize(NORMAL);
-	//		planet.SetName("Remus");
-			planet.SetName(m_strSectorName + " 3");
-			planet.SetClass('Q');
-			planet.SetPlanetGrowth();
-			planet.SetGraphicType(rand()%GRAPHICNUMBER);
-			m_Planets.Add(planet);
-			// Romulus 4 generieren
-			planet.SetType(PLANETCLASS_P);
-			planet.SetColonisized(TRUE);
-			planet.SetMaxHabitant(14.000);
-			planet.SetCurrentHabitant(4.000);
-			planet.SetHabitable(TRUE);
-			planet.SetTerraformed(TRUE);
-			planet.SetSize(BIG);
-			planet.SetName(m_strSectorName + " 4");
-			planet.SetClass('P');
-			planet.SetPlanetGrowth();
-			planet.SetGraphicType(rand()%GRAPHICNUMBER);
-			m_Planets.Add(planet);
-			m_Planets.GetAt(m_Planets.GetUpperBound()).SetBoni(0,0,0,0,0,0,0,1);			
-		}
-		else if (sMajorID == "MAJOR5")
-		{
-			CPlanet planet;
-			m_bySunColor = 4;
-			// Cardassia Prime generieren
-			planet.SetType(PLANETCLASS_M);
-			planet.SetColonisized(TRUE);
-			planet.SetMaxHabitant(11.000);
-			planet.SetCurrentHabitant(7.000);
-			planet.SetHabitable(TRUE);
-			planet.SetTerraformed(TRUE);
-			planet.SetSize(NORMAL);
-			planet.SetName(m_strSectorName + " Prime");
-			planet.SetClass('M');
-			planet.SetPlanetGrowth();
-			planet.SetGraphicType(rand()%GRAPHICNUMBER);
-			m_Planets.Add(planet);
-			m_Planets.GetAt(m_Planets.GetUpperBound()).SetBoni(0,0,0,0,0,1,1,0);
-			// Cardassia 2
-			planet.SetType(PLANETCLASS_G);
-			planet.SetColonisized(TRUE);
-			planet.SetMaxHabitant(3.000);
-			planet.SetCurrentHabitant(1.000);
-			planet.SetHabitable(TRUE);
-			planet.SetTerraformed(TRUE);
-			planet.SetSize(GIANT);
-			planet.SetName(m_strSectorName + " 2");
-			planet.SetClass('G');
-			planet.SetPlanetGrowth();
-			planet.SetGraphicType(rand()%GRAPHICNUMBER);
-			m_Planets.Add(planet);
-			// Cardassia 3
-			planet.SetType(PLANETCLASS_M);
-			planet.SetColonisized(TRUE);
-			planet.SetMaxHabitant(17.000);
-			planet.SetCurrentHabitant(4.000);
-			planet.SetHabitable(TRUE);
-			planet.SetTerraformed(TRUE);
-			planet.SetSize(BIG);
-			planet.SetName(m_strSectorName + " 3");
-			planet.SetClass('M');
-			planet.SetPlanetGrowth();
-			planet.SetGraphicType(rand()%GRAPHICNUMBER);
-			m_Planets.Add(planet);
-			// Cardassia 4
-			planet.SetType(PLANETCLASS_M);
-			planet.SetColonisized(TRUE);
-			planet.SetMaxHabitant(19.000);
-			planet.SetCurrentHabitant(4.000);
-			planet.SetHabitable(TRUE);
-			planet.SetTerraformed(TRUE);
-			planet.SetSize(BIG);
-			planet.SetName(m_strSectorName + " 4");
-			planet.SetClass('M');
-			planet.SetPlanetGrowth();
-			planet.SetGraphicType(rand()%GRAPHICNUMBER);
-			m_Planets.Add(planet);
-			// Cardassia 5
-			planet.SetType(PLANETCLASS_M);
-			planet.SetColonisized(TRUE);
-			planet.SetMaxHabitant(8.000);
-			planet.SetCurrentHabitant(2.000);
-			planet.SetHabitable(TRUE);
-			planet.SetTerraformed(TRUE);
-			planet.SetSize(SMALL);
-			planet.SetName(m_strSectorName + " 5");
-			planet.SetClass('M');
-			planet.SetPlanetGrowth();
-			planet.SetGraphicType(rand()%GRAPHICNUMBER);
-			m_Planets.Add(planet);
-			m_Planets.GetAt(m_Planets.GetUpperBound()).SetBoni(0,0,0,0,0,0,1,0);
-			// Cardassia 6
-			planet.SetType(PLANETCLASS_J);
-			planet.SetColonisized(FALSE);
-			planet.SetMaxHabitant(0);
-			planet.SetCurrentHabitant(0);
-			planet.SetHabitable(FALSE);
-			planet.SetTerraformed(FALSE);
-			planet.SetSize(GIANT);
-			planet.SetName(m_strSectorName + " 6");
-			planet.SetClass('J');
-			planet.SetPlanetGrowth();
-			planet.SetGraphicType(rand()%GRAPHICNUMBER);
-			m_Planets.Add(planet);
-			// Cardassia 7
-			planet.SetType(PLANETCLASS_P);
-			planet.SetColonisized(FALSE);
-			planet.SetMaxHabitant(7.000);
-			planet.SetCurrentHabitant(0);
-			planet.SetHabitable(TRUE);
-			planet.SetTerraformed(FALSE);
-			planet.SetSize(NORMAL);
-			planet.SetName(m_strSectorName + " 7");
-			planet.SetClass('P');
-			planet.SetStartTerraformPoints(6);
-			planet.SetPlanetGrowth();
-			planet.SetGraphicType(rand()%GRAPHICNUMBER);
-			m_Planets.Add(planet);
-			m_Planets.GetAt(m_Planets.GetUpperBound()).SetBoni(0,0,0,0,0,0,0,1);
-		}
-		else if (sMajorID == "MAJOR6")
-		{
-			CPlanet planet;
-			m_bySunColor = 5;
-			// Omarion 1 genereriren
-			planet.SetType(PLANETCLASS_B);
-			planet.SetColonisized(FALSE);
-			planet.SetMaxHabitant(0);
-			planet.SetCurrentHabitant(0);
-			planet.SetHabitable(FALSE);
-			planet.SetTerraformed(FALSE);
-			planet.SetSize(SMALL);
-			planet.SetName(m_strSectorName + " 1");
-			planet.SetClass('B');
-			planet.SetPlanetGrowth();
-			planet.SetGraphicType(rand()%GRAPHICNUMBER);
-			m_Planets.Add(planet);
-			// Omarion 2 genereriren
-			planet.SetType(PLANETCLASS_M);
-			planet.SetColonisized(TRUE);
-			planet.SetMaxHabitant(18.000);
-			planet.SetCurrentHabitant(6.500);
-			planet.SetHabitable(TRUE);
-			planet.SetTerraformed(TRUE);
-			planet.SetSize(BIG);
-			planet.SetName(m_strSectorName + " 2");
-			planet.SetClass('M');
-			planet.SetPlanetGrowth();
-			planet.SetGraphicType(rand()%GRAPHICNUMBER);
-			m_Planets.Add(planet);
-			m_Planets.GetAt(m_Planets.GetUpperBound()).SetBoni(0,0,0,0,0,1,1,0);
-			// Omarion 3 (Kurill)
-			planet.SetType(PLANETCLASS_L);
-			planet.SetColonisized(TRUE);
-			planet.SetMaxHabitant(15.000);
-			planet.SetCurrentHabitant(3.000);
-			planet.SetHabitable(TRUE);
-			planet.SetTerraformed(TRUE);
-			planet.SetSize(NORMAL);
-	//		planet.SetName("Kurill");
-			planet.SetName(m_strSectorName + " 3");
-			planet.SetClass('L');
-			planet.SetPlanetGrowth();
-			planet.SetGraphicType(rand()%GRAPHICNUMBER);
-			m_Planets.Add(planet);
-			// Omarion 4
-			planet.SetType(PLANETCLASS_S);
-			planet.SetColonisized(FALSE);
-			planet.SetMaxHabitant(0);
-			planet.SetCurrentHabitant(0);
-			planet.SetHabitable(FALSE);
-			planet.SetTerraformed(FALSE);
-			planet.SetSize(GIANT);
-			planet.SetName(m_strSectorName + " 4");
-			planet.SetClass('S');
-			planet.SetPlanetGrowth();
-			planet.SetGraphicType(rand()%GRAPHICNUMBER);
-			m_Planets.Add(planet);
-			// Omarion 5
-			planet.SetType(PLANETCLASS_T);
-			planet.SetColonisized(FALSE);
-			planet.SetMaxHabitant(0);
-			planet.SetCurrentHabitant(0);
-			planet.SetHabitable(FALSE);
-			planet.SetTerraformed(FALSE);
-			planet.SetSize(GIANT);
-			planet.SetName(m_strSectorName + " 5");
-			planet.SetClass('T');
-			planet.SetPlanetGrowth();
-			planet.SetGraphicType(rand()%GRAPHICNUMBER);
-			m_Planets.Add(planet);
-			// Omarion 6
-			planet.SetType(PLANETCLASS_P);
-			planet.SetColonisized(TRUE);
-			planet.SetMaxHabitant(15.000);
-			planet.SetCurrentHabitant(2.000);
-			planet.SetHabitable(TRUE);
-			planet.SetTerraformed(TRUE);
-			planet.SetSize(BIG);
-			planet.SetName(m_strSectorName + " 6");
-			planet.SetClass('P');
-			planet.SetPlanetGrowth();
-			planet.SetGraphicType(rand()%GRAPHICNUMBER);
-			m_Planets.Add(planet);
-			m_Planets.GetAt(m_Planets.GetUpperBound()).SetBoni(0,0,0,0,0,0,0,1);
-			// Omarion 7 (Gründerwelt)
-			planet.SetType(PLANETCLASS_R);
-			planet.SetColonisized(TRUE);
-			planet.SetMaxHabitant(7.000);
-			planet.SetCurrentHabitant(1.000);
-			planet.SetHabitable(TRUE);
-			planet.SetTerraformed(TRUE);
-			planet.SetSize(BIG);
-//			planet.SetName("Founderhome");
-			planet.SetName(m_strSectorName + " 7");
-			planet.SetClass('R');
-			planet.SetPlanetGrowth();
-			planet.SetGraphicType(rand()%GRAPHICNUMBER);
-			m_Planets.Add(planet);
-			m_Planets.GetAt(m_Planets.GetUpperBound()).SetBoni(0,0,1,0,0,0,0,0);
-		}
-		// System für eine nicht weiter definierte Majorrace erstellen
-		else if (sMajorID != "")
-		{
-			// Solange Planeten generieren, bis mind. eine zufällige Anzahl Bevölkerung darauf leben
-			while (true)
+			CString fileName = CIOData::GetInstance()->GetAppPath() + "Data\\Races\\MajorPlanets.data";
+			CStdioFile file;
+			// Datei wird geöffnet
+			if (file.Open(fileName, CFile::modeRead | CFile::typeText))
 			{
-				m_Planets.RemoveAll();
-
-				short number = (rand()%8+1 + rand()%8+1 + rand()%8+1 + 1) / 3;
-				BYTE zone = HOT;
-				for (int i = 0; i < number; i++)
+				CString csInput;
+				CString data[18];
+				file.ReadString(csInput);
+				bool endoffile=false;
+				while(csInput!=sMajorID&&!endoffile) endoffile=!file.ReadString(csInput);//Zur Daten der gesuchten Majorrace springen
+				if(!endoffile)//Wenn Major daten vorhanden
 				{
+					m_Planets.RemoveAll();
+					file.ReadString(csInput);//Sonnenfarbe
+					m_bySunColor = atoi(csInput);
+					file.ReadString(csInput);//Planetenanzahl
+					int planeten=atoi(csInput);
 					CPlanet planet;
-					zone = planet.Create(m_strSectorName, zone, i, true);
-					m_Planets.Add(planet);				
-				}
-				
-				// aktuelle Bevölkerung prüfen
-				float fCurrentHabitants = this->GetCurrentHabitants();
-				if (fCurrentHabitants > 25.000f || fCurrentHabitants < 10.000f)
-					continue;
-				
-				// maximale Bevölkerung prüfen
-				float fMaxHabitants = 0.0f;
-				for (int i = 0; i < m_Planets.GetSize(); i++)
-					fMaxHabitants += m_Planets.GetAt(i).GetMaxHabitant();
-				if (fMaxHabitants > 65.000f || fMaxHabitants < 45.000f)
-					continue;
-
-				// prüfen ob alle Rohstoffe vorhanden sind
-				bool bResOkay = true;
-				BOOLEAN bRes[DERITIUM + 1] = {FALSE};
-				this->GetAvailableResources(bRes, true);
-				// gibt es kein Deritium
-				for (int i = TITAN; i <= IRIDIUM; i++)
-				{
-					if (!bRes[i])
+					for(int i=0;i<planeten;i++)
 					{
-						bResOkay = false;
-						break;
+						for(int j=0;j<18;j++)
+						{
+							file.ReadString(csInput);
+							data[j]=csInput;
+						}
+						planet.SetName(data[0]);//Planeten Name
+						planet.SetType(atoi(data[1]));  //Planetentyp
+						planet.SetColonisized(atoi(data[2])); //Ist der Planet koloniesiert
+						float maxHabitant=atoi(data[3])/1000;//für Einwohnerzahlen mit Nachkommastellen
+						planet.SetMaxHabitant(maxHabitant); //Maximale Einwohner
+						float curHabitant=atoi(data[4])/1000;
+						planet.SetCurrentHabitant(curHabitant); //aktuelle Einwohner
+						planet.SetHabitable(atoi(data[5]));//bewohnbar
+						planet.SetTerraformed(atoi(data[6]));//terraformed
+						planet.SetSize(atoi(data[7]));//Größe
+						planet.SetClass(data[8][0]);//Planetenklasse Char
+						planet.SetPlanetGrowth();
+						planet.SetGraphicType(rand()%GRAPHICNUMBER);
+						planet.SetBoni(atoi(data[9]),atoi(data[10]),atoi(data[11]),atoi(data[12]),atoi(data[13]),atoi(data[14]),atoi(data[15]),atoi(data[16]));//Boni 8 Zeilen
+						planet.SetStartTerraformPoints(atoi(data[17]));//Terraformpoints
+						m_Planets.Add(planet);
 					}
 				}
-				if (!bResOkay)
-					continue;
-				
-				// Deritium überprüfen
-				if (!bRes[DERITIUM])
+				else
 				{
-					for (int p = 0; p < this->GetPlanets()->GetSize(); p++)
-						if (this->GetPlanet(p)->GetCurrentHabitant() > 0 && this->GetPlanet(p)->GetColonized())
+					while (true)//Falls Major in der Datei nicht definiert ist wird der bisherige Generierungsalgorithmus benutzt
 						{
-							this->GetPlanet(p)->SetBoni(DERITIUM, TRUE);
-							break;
-						}
-				}
+						m_Planets.RemoveAll();
 
-				// Sektor für Majorrace konnte erstellt werden
-				break;
+						short number = (rand()%8+1 + rand()%8+1 + rand()%8+1 + 1) / 3;
+						BYTE zone = HOT;
+						for (int i = 0; i < number; i++)
+						{
+							CPlanet planet;
+							zone = planet.Create(m_strSectorName, zone, i, true);
+							m_Planets.Add(planet);				
+						}
+						
+						// aktuelle Bevölkerung prüfen
+						float fCurrentHabitants = this->GetCurrentHabitants();
+						if (fCurrentHabitants > 25.000f || fCurrentHabitants < 10.000f)
+							continue;
+						
+						// maximale Bevölkerung prüfen
+						float fMaxHabitants = 0.0f;
+						for (int i = 0; i < m_Planets.GetSize(); i++)
+							fMaxHabitants += m_Planets.GetAt(i).GetMaxHabitant();
+						if (fMaxHabitants > 65.000f || fMaxHabitants < 45.000f)
+							continue;
+
+						// prüfen ob alle Rohstoffe vorhanden sind
+						bool bResOkay = true;
+						BOOLEAN bRes[DERITIUM + 1] = {FALSE};
+						this->GetAvailableResources(bRes, true);
+						// gibt es kein Deritium
+						for (int i = TITAN; i <= IRIDIUM; i++)
+						{
+							if (!bRes[i])
+							{
+								bResOkay = false;
+								break;
+							}
+						}
+						if (!bResOkay)
+							continue;
+						
+						// Deritium überprüfen
+						if (!bRes[DERITIUM])
+						{
+							for (int p = 0; p < this->GetPlanets()->GetSize(); p++)
+								if (this->GetPlanet(p)->GetCurrentHabitant() > 0 && this->GetPlanet(p)->GetColonized())
+								{
+									this->GetPlanet(p)->SetBoni(DERITIUM, TRUE);
+									break;
+								}
+						}
+
+						// Sektor für Majorrace konnte erstellt werden
+						break;
+					}
+
+				}
 			}
+			else
+			{	
+				AfxMessageBox("ERROR! Could not open file \"MajorPlanets.data\"...");
+				exit(1);
+			}
+			file.Close();
 		}
 		else
 		{
