@@ -120,7 +120,7 @@ BOOL CBotf2Doc::OnNewDocument()
 
 	//AfxMessageBox("Achtung!\n\nDies ist eine interne Entwicklungsversion von BotE Alpha 6.1 RC.\nDiese Version ist nicht für die Öffentlichkeit bestimmt!\nEine eigenständige Verbreitung dieser Version ist verboten!\n\nAn alle Betatester:\nBitte ausführlich testen und alle entdeckten Fehler und Ungereimtheiten\nim internen Bereich des Forum posten.\n\nVielen Dank und viel Spass beim Testen\nSir Pustekuchen");
 
-	// Mal Testweise paar Truppen anlegen
+	/*// Mal Testweise paar Truppen anlegen
 	m_TroopInfo.RemoveAll();
 	BYTE techs[6];
 	memset(techs, 0, sizeof(techs));
@@ -147,7 +147,7 @@ BOOL CBotf2Doc::OnNewDocument()
 	memset(techs, 255, sizeof(techs));
 	troopInfo = new CTroopInfo(CResourceManager::GetString("MAJOR5_TROOP2_NAME"), CResourceManager::GetString("MAJOR5_TROOP2_DESC"),25,0,techs,res,2500,6,"MAJOR5",2500,0);
 	m_TroopInfo.Add(*troopInfo);
-	delete troopInfo;
+	delete troopInfo;*///Truppen werden jetzt aus Dateien eingelesen, Ich lasse die Definition wegen Vergleichen noch im Code; Revisor
 	
 	// ZU ERLEDIGEN: Hier Code zur Reinitialisierung einfügen
 	m_bDataReceived				= false;
@@ -897,6 +897,7 @@ void CBotf2Doc::PrepareData()
 		
 		ReadBuildingInfosFromFile();	// Gebäude einlesen aus data-Datei
 		ReadShipInfosFromFile();		// Schiffe einlesen aus data-Datei
+		ReadTroopInfosFromFile();		// Truppen einlesen aus data-Datei
 		
 		// Schiffsnamen einlesen
 		m_GenShipName.Init(this);
@@ -1606,6 +1607,46 @@ void CBotf2Doc::ApplyBuildingsAtStartup()
 		}
 	}
 }
+
+void CBotf2Doc::ReadTroopInfosFromFile()
+{
+//Neu: Truppen werden aus Datei gelesen
+	CString fileName = CIOData::GetInstance()->GetAppPath() + "Data\\Races\\Troops.data";
+	CStdioFile file;
+	// Datei wird geöffnet
+	if (file.Open(fileName, CFile::modeRead | CFile::typeText))
+	{
+		CString data[20];
+		CString csInput;
+		int i=0;
+		CTroopInfo* troopInfo;
+		m_TroopInfo.RemoveAll();
+		while (file.ReadString(csInput))
+		{
+			
+			// Daten lesen
+			data[i++] = csInput;
+			if (i == 20)
+			{
+				i = 0;
+				BYTE techs[6]={atoi(data[5]),atoi(data[6]),atoi(data[7]),atoi(data[8]),atoi(data[9]),atoi(data[10])};
+				USHORT res[5] = {atoi(data[11]),atoi(data[12]),atoi(data[13]),atoi(data[14]),atoi(data[15])};
+				troopInfo = new CTroopInfo(CResourceManager::GetString(data[1]), CResourceManager::GetString(data[2]),atoi(data[3]),atoi(data[4]),techs,res,atoi(data[16]),atoi(data[17]),data[0].GetString(),atoi(data[18]),atoi(data[19]));
+				m_TroopInfo.Add(*troopInfo);
+				delete troopInfo;
+			}
+		}
+		
+	}
+	else
+	{
+		AfxMessageBox("ERROR! Could not open file \"Troops.data\"...");
+		exit(1);
+	}
+	file.Close();
+}
+
+
 
 void CBotf2Doc::ReadBuildingInfosFromFile()
 {

@@ -172,6 +172,7 @@ public:
 	void ApplyBuildingsAtStartup(void);			// Die Gebäude zum Start in den Hauptsystemen anlegen
 	void ReadBuildingInfosFromFile(void);		// Die Infos zu den Gebäuden aus den Datein einlesen
 	void ReadShipInfosFromFile(void);			// Die Infos zu den Schiffen aus der Datei einlesen
+	void ReadTroopInfosFromFile(void);			// Die Infos zu den Truppen aus der Datei einlesen
 	void BuildBuilding(USHORT id, CPoint KO);	// Das jeweilige Gebäude bauen
 	
 	/// Funktion zum bauen des jeweiligen Schiffes in einem System.
