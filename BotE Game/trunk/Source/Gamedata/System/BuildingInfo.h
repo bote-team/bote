@@ -77,7 +77,7 @@ public:
 	
 	NumberOfID GetMaxInSystem() const {return m_MaxInSystem;}
 
-	NumberOfID GetMaxInEmpire() const {return m_MaxInEmpire;}
+	USHORT GetMaxInEmpire() const {return m_MaxInEmpire.Number;}
 	
 	BOOLEAN GetOnlyHomePlanet() const {return m_bOnlyHomePlanet;}
 
@@ -92,8 +92,6 @@ public:
 	USHORT GetMinHabitants() const {return m_iMinHabitants;}
 
 	NumberOfID GetMinInSystem() const {return m_MinInSystem;}
-
-	NumberOfID GetMinInEmpire() const {return m_MinInEmpire;}
 
 	BOOLEAN GetOnlyRace() const {return m_bOnlyRace;}
 

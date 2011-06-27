@@ -287,4 +287,4 @@ inline void SetAttributes(BOOLEAN is, int attribute, int &variable)
 //#define DEBUG_AI_BASE_DEMO
 
 // Projektspezifische Defines
-#define ALPHA6_SERIALISIERUNG	// ALPHA6 Serialisierung
+//#define SEE_ALL_OF_MAP		// komplette Map und alle Majorrassen sind sichtbar

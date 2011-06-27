@@ -62,7 +62,6 @@ void CRace::Serialize(CArchive &ar)
 		for (vector<CDiplomacyInfo>::iterator it = m_vDiplomacyNewsOut.begin(); it != m_vDiplomacyNewsOut.end(); ++it)
 			it->Serialize(ar);
 
-#ifdef ALPHA6_SERIALISIERUNG
 		// gemachte Angebote der letzten beiden Runden
 		ar << m_mLastOffers.size();
 		for (map<CString, CDiplomacyInfo>::iterator it = m_mLastOffers.begin(); it != m_mLastOffers.end(); ++it)
@@ -70,7 +69,6 @@ void CRace::Serialize(CArchive &ar)
 			ar << it->first;
 			it->second.Serialize(ar);
 		}
-#endif
 
 		// grafische Attribute
 		ar << m_sGraphicFile;	// Name der zugehörigen Grafikdatei		
@@ -145,7 +143,6 @@ void CRace::Serialize(CArchive &ar)
 			m_vDiplomacyNewsOut.push_back(info);			
 		}
 
-#ifdef ALPHA6_SERIALISIERUNG
 		// gemachte Angebote der letzten beiden Runden
 		m_mLastOffers.clear();
 		mapSize = 0;
@@ -158,7 +155,6 @@ void CRace::Serialize(CArchive &ar)
 			info.Serialize(ar);
 			m_mLastOffers[key] = info;
 		}
-#endif
 
 		// grafische Attribute
 		ar >> m_sGraphicFile;	// Name der zugehörigen Grafikdatei

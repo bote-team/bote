@@ -609,7 +609,7 @@ void CSector::CalculateOwner(const CString& sSystemOwner)
 	{
 		SetOwned(TRUE);
 		m_sOwnerOfSector = *it;
-		return;		
+		return;	
 	}
 	
 	for (set<CString>::const_iterator it = m_bStarbase.begin(); it != m_bStarbase.end(); ++it)

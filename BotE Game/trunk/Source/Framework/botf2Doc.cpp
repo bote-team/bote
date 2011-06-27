@@ -897,15 +897,14 @@ void CBotf2Doc::PrepareData()
 		}
 		
 		// ALPHA6 DEBUG alle Rassen untereinander bekanntgeben
-		/*
+#ifdef SEE_ALL_OF_MAP
 		map<CString, CRace*>* pmRaces = m_pRaceCtrl->GetRaces();
 		for (map<CString, CRace*>::iterator it = pmRaces->begin(); it != pmRaces->end(); it++)
 			for (map<CString, CRace*>::const_iterator jt = pmRaces->begin(); jt != pmRaces->end(); jt++)
 				if (it->first != jt->first && it->second->GetType() == MAJOR && jt->second->GetType() == MAJOR)
-				{					
 					it->second->SetIsRaceContacted(jt->first, true);
-				}
-		*/
+#endif
+		
 		m_iRound = 1;
 		
 		// Generierungssektornamenklasse wieder neu starten
@@ -1597,6 +1596,7 @@ void CBotf2Doc::ApplyBuildingsAtStartup()
 			{
 				m_System[x][y].SetHabitants(m_Sector[x][y].GetCurrentHabitants());
 				for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
+				{
 					if (m_System[x][y].GetOwnerOfSystem() == it->first)
 					{
 						CMajor* pMajor = it->second;
@@ -1616,9 +1616,14 @@ void CBotf2Doc::ApplyBuildingsAtStartup()
 						float fCurrentHabitants = m_Sector[x][y].GetCurrentHabitants();
 						pMajor->GetEmpire()->AddPopSupportCosts((USHORT)fCurrentHabitants * POPSUPPORT_MULTI);
 					}
+				}
 				for (int i = 0; i < m_System[x][y].GetAllBuildings()->GetSize(); i++)
-						m_GlobalBuildings.AddGlobalBuilding(m_System[x][y].GetAllBuildings()->GetAt(i).GetRunningNumber());
-						
+				{
+					USHORT nID = m_System[x][y].GetAllBuildings()->GetAt(i).GetRunningNumber();
+					CString sRaceID = m_System[x][y].GetOwnerOfSystem();
+					if (GetBuildingInfo(nID).GetMaxInEmpire() > 0)
+						m_GlobalBuildings.AddGlobalBuilding(sRaceID, nID);
+				}						
 			}
 
 	this->CalcNewRoundData();
@@ -1739,13 +1744,17 @@ void CBotf2Doc::ReadBuildingInfosFromFile()
 				info.SetRunningNumber(atoi(data[0]));
 				info.SetOwnerOfBuilding(atoi(data[1]));
 				info.SetBuildingName(data[2]);
-				//info.SetBuildingName(data[3],1);
 				info.SetBuildingDescription(data[4]);
-				//info.SetBuildingDescription(data[5],1);
 				info.SetUpgradeable(atoi(data[6]));
 				info.SetGraphikFileName(data[7]);
 				info.SetMaxInSystem(atoi(data[8]),atoi(data[9]));
 				info.SetMaxInEmpire(atoi(data[10]),atoi(data[11]));
+				if (atoi(data[10]) > 0 && atoi(data[11]) != atoi(data[0]))
+				{
+					CString s;
+					s.Format("Error in Buildings.data: Building \"%s\": ID from \"max in empire\" has to be the same as the building id", info.GetBuildingName());
+					AfxMessageBox(s);
+				}
 				info.SetOnlyHomePlanet(atoi(data[12]));
 				info.SetOnlyOwnColony(atoi(data[13]));
 				info.SetOnlyMinorRace(atoi(data[14]));
@@ -1754,6 +1763,12 @@ void CBotf2Doc::ReadBuildingInfosFromFile()
 				info.SetMinHabitants(atoi(data[17]));
 				info.SetMinInSystem(atoi(data[18]),atoi(data[19]));
 				info.SetMinInEmpire(atoi(data[20]),atoi(data[21]));
+				if (atoi(data[20]) > 0)
+				{
+					CString s;
+					s.Format("Error in Buildings.data: Building \"%s\": \"Min in empire\" is not supported in this version!", info.GetBuildingName());
+					AfxMessageBox(s);
+				}
 				info.SetOnlyRace(atoi(data[22]));
 				info.SetPlanetTypes(PLANETCLASS_A,atoi(data[23]));
 				info.SetPlanetTypes(PLANETCLASS_B,atoi(data[24]));
@@ -3622,15 +3637,20 @@ void CBotf2Doc::CalcOldRoundData()
 				// m_GlobalBuildings geschrieben. Damit wissen welche Gebäude in der Galaxie stehen. Benötigt wird
 				// dies z.B. um zu Überprüfen, ob max. X Gebäude einer bestimmten ID in einem Imperium stehen.
 				for (int i = 0; i < m_System[x][y].GetAllBuildings()->GetSize(); i++)
-					m_GlobalBuildings.AddGlobalBuilding(m_System[x][y].GetAllBuildings()->GetAt(i).GetRunningNumber());
+				{
+					USHORT nID = m_System[x][y].GetAllBuildings()->GetAt(i).GetRunningNumber();
+					CString sRaceID = m_System[x][y].GetOwnerOfSystem();
+					if (GetBuildingInfo(nID).GetMaxInEmpire() > 0)
+						m_GlobalBuildings.AddGlobalBuilding(sRaceID, nID);
+				}
 				// Alle Gebäude und Updates, die sich aktuell auch in der Bauliste befinden, werden dem Feld hinzugefügt
 				for (int i = 0; i < ALE; i++)
-					if (m_System[x][y].GetAssemblyList()->GetAssemblyListEntry(i) != 0 && m_System[x][y].GetAssemblyList()->GetAssemblyListEntry(i) < 10000)
+					if (m_System[x][y].GetAssemblyList()->GetAssemblyListEntry(i) > 0 && m_System[x][y].GetAssemblyList()->GetAssemblyListEntry(i) < 10000)
 					{
-						int entry = m_System[x][y].GetAssemblyList()->GetAssemblyListEntry(i);
-						if (entry < 0)
-							entry *= (-1);
-						m_GlobalBuildings.AddGlobalBuilding(BuildingInfo.GetAt(entry - 1).GetRunningNumber());
+						USHORT nID = abs(m_System[x][y].GetAssemblyList()->GetAssemblyListEntry(i));
+						CString sRaceID = m_System[x][y].GetOwnerOfSystem();
+						if (GetBuildingInfo(nID).GetMaxInEmpire() > 0)
+							m_GlobalBuildings.AddGlobalBuilding(sRaceID, nID);						
 					}
 				}
 		}

@@ -2628,9 +2628,9 @@ void CSystemMenuView::DrawBuildingProduction(Graphics* g)
 			r.Y += 22;
 		}		
 		// max X mal von ID pro Imperium
-		if (b->GetMaxInEmpire().Number > 0 && b->GetMaxInEmpire().RunningNumber == b->GetRunningNumber())
+		if (b->GetMaxInEmpire() > 0)
 		{
-			if (b->GetMaxInEmpire().Number == 1)
+			if (b->GetMaxInEmpire() == 1)
 			{
 				s = CResourceManager::GetString("ONCE_PER_EMPIRE");
 				g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), r, &fontFormat, &fontBrush);
@@ -2638,16 +2638,10 @@ void CSystemMenuView::DrawBuildingProduction(Graphics* g)
 			}
 			else
 			{
-				s.Format("%d",b->GetMaxInEmpire().Number);
+				s.Format("%d",b->GetMaxInEmpire());
 				g->DrawString(CResourceManager::GetString("MAX_PER_EMPIRE",FALSE,s).AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), r, &fontFormat, &fontBrush);
 				r.Y += 22;
 			}
-		}
-		else if (b->GetMaxInEmpire().Number > 0 && b->GetMaxInEmpire().RunningNumber != b->GetRunningNumber())
-		{
-			s.Format("%d",b->GetMaxInEmpire().Number);
-			g->DrawString(CResourceManager::GetString("MAX_ID_PER_EMPIRE",FALSE,s,pDoc->GetBuildingName(b->GetMaxInEmpire().RunningNumber)).AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), r, &fontFormat, &fontBrush);
-			r.Y += 22;
 		}
 		// max X mal von ID pro System
 		if (b->GetMaxInSystem().Number > 0 && b->GetMaxInSystem().RunningNumber == b->GetRunningNumber())
@@ -2668,13 +2662,6 @@ void CSystemMenuView::DrawBuildingProduction(Graphics* g)
 		{
 			s.Format("%d",b->GetMaxInSystem().Number);
 			g->DrawString(CResourceManager::GetString("MAX_ID_PER_SYSTEM",FALSE,s,pDoc->GetBuildingName(b->GetMaxInSystem().RunningNumber)).AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), r, &fontFormat, &fontBrush);
-			r.Y += 22;
-		}
-		// min X mal von ID pro Imperium
-		if (b->GetMinInEmpire().Number > 0)
-		{
-			s.Format("%d",b->GetMinInEmpire().Number);
-			g->DrawString(CResourceManager::GetString("MIN_PER_EMPIRE",FALSE,s,pDoc->GetBuildingName(b->GetMinInEmpire().RunningNumber)).AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), r, &fontFormat, &fontBrush);
 			r.Y += 22;
 		}
 		// min X mal von ID pro System
@@ -3067,14 +3054,12 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			// Baulistencheck machen, wenn wir kein Schiff reingesetzt haben. 
 			// Den Check nur machen, wenn wir ein Update oder ein Gebäude welches eine Maxanzahl voraussetzt
 			// hinzufügen wollen
-			if (RunningNumber < 10000 && (nFirstAssemblyListEntry < 0
-				|| pDoc->GetBuildingInfo(RunningNumber).GetMaxInEmpire().Number > 0
-				|| pDoc->GetBuildingInfo(RunningNumber).GetMaxInSystem().Number > 0))
+			if (RunningNumber < 10000 && pDoc->GetBuildingInfo(RunningNumber).GetMaxInEmpire() > 0)
 			{
 				// Wir müssen die GlobalBuilding Variable ändern, weil sich mittlerweile ja solch ein Gebäude
 				// weniger in der Bauliste befindet. Nicht aber wenn es ein Upgrade ist
 				if (nFirstAssemblyListEntry > 0)
-					pDoc->m_GlobalBuildings.DeleteGlobalBuilding(RunningNumber);
+					pDoc->m_GlobalBuildings.DeleteGlobalBuilding(pMajor->GetRaceID(), RunningNumber);
 				pDoc->GetSystem(p).AssemblyListCheck(&pDoc->BuildingInfo, &pDoc->m_GlobalBuildings);
 			}
 			m_bClickedOnDeleteButton = FALSE;
@@ -3517,27 +3502,22 @@ void CSystemMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 					// Baulistencheck machen, wenn wir kein Schiff reingesetzt haben. 
 					// Den Check nur machen, wenn wir ein Update oder ein Gebäude welches eine Maxanzahl voraussetzt
 					// hinzufügen wollen
-					if (RunningNumber < 10000 && (nID < 0
-						|| pDoc->GetBuildingInfo(RunningNumber).GetMaxInEmpire().Number > 0
-						||  pDoc->GetBuildingInfo(RunningNumber).GetMaxInSystem().Number > 0))
+					if (RunningNumber < 10000 && pDoc->GetBuildingInfo(RunningNumber).GetMaxInEmpire() > 0)
 					{
 						// Wir müssen die GlobalBuilding Variable ändern, weil sich mittlerweile ja solch ein Gebäude
 						// mehr in der Bauliste befindet.
-						pDoc->m_GlobalBuildings.AddGlobalBuilding(RunningNumber);
+						pDoc->m_GlobalBuildings.AddGlobalBuilding(pMajor->GetRaceID(), RunningNumber);
 						// Wenn es nur einmal pro Imperium baubar war, dann Assemblylistcheck in jedem unserer Systeme
 						// durchführen
-						if (pDoc->GetBuildingInfo(RunningNumber).GetMaxInEmpire().Number > 0)
-						{
-							for (int y = 0 ; y < STARMAP_SECTORS_VCOUNT; y++)
-								for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-									if (pDoc->m_System[x][y].GetOwnerOfSystem() == m_pPlayersRace->GetRaceID())
-										if (m_pPlayersRace->GetRaceBuildingNumber() ==	pDoc->GetBuildingInfo(RunningNumber).GetOwnerOfBuilding())
-											pDoc->m_System[x][y].AssemblyListCheck(&pDoc->BuildingInfo,&pDoc->m_GlobalBuildings);
-						}
-						// sonst den Baulistencheck nur in dem aktuellen System durchführen
-						else
-							pDoc->m_System[p.x][p.y].AssemblyListCheck(&pDoc->BuildingInfo,&pDoc->m_GlobalBuildings);
+						for (int y = 0 ; y < STARMAP_SECTORS_VCOUNT; y++)
+							for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
+								if (pDoc->m_System[x][y].GetOwnerOfSystem() == pMajor->GetRaceID())
+									pDoc->m_System[x][y].AssemblyListCheck(&pDoc->BuildingInfo,&pDoc->m_GlobalBuildings);						
 					}
+					// sonst den Baulistencheck nur in dem aktuellen System durchführen
+					else if (RunningNumber < 10000 && pDoc->GetBuildingInfo(RunningNumber).GetMaxInSystem().Number > 0)
+						pDoc->m_System[p.x][p.y].AssemblyListCheck(&pDoc->BuildingInfo,&pDoc->m_GlobalBuildings);
+
 					// Wenn wir den Baueintrag setzen konnten, also hier in der if-Bedingung sind, dann CalculateVariables() aufrufen
 					pDoc->m_System[p.x][p.y].CalculateVariables(&pDoc->BuildingInfo, pMajor->GetEmpire()->GetResearch()->GetResearchInfo(),pDoc->m_Sector[p.x][p.y].GetPlanets(), pMajor, CTrade::GetMonopolOwner());
 					m_iClickedOn = i;
@@ -3614,30 +3594,21 @@ void CSystemMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 				// Baulistencheck machen, wenn wir kein Schiff reingesetzt haben. 
 				// Den Check nur machen, wenn wir ein Update oder ein Gebäude welches eine Maxanzahl voraussetzt
 				// hinzufügen wollen
-				if (RunningNumber < 10000 && (nAssemblyListEntry < 0
-					|| pDoc->GetBuildingInfo(RunningNumber).GetMaxInEmpire().Number > 0
-					|| pDoc->GetBuildingInfo(RunningNumber).GetMaxInSystem().Number > 0))
+				if (RunningNumber < 10000 && pDoc->GetBuildingInfo(RunningNumber).GetMaxInEmpire() > 0)
 				{
 					// Wir müssen die GlobalBuilding Variable ändern, weil sich mittlerweile ja solch ein Gebäude
 					// weniger in der Bauliste befindet. Nicht aber wenn es ein Upgrade ist.
-					if (nAssemblyListEntry > 0)
-						pDoc->m_GlobalBuildings.DeleteGlobalBuilding(RunningNumber);
+					pDoc->m_GlobalBuildings.DeleteGlobalBuilding(pMajor->GetRaceID(), RunningNumber);
 					// Wenn es nur einmal pro Imperium baubar war, dann Assemblylistcheck in jedem unserer Systeme
 					// durchführen
-					if (pDoc->GetBuildingInfo(RunningNumber).GetMaxInEmpire().Number > 0)
-					{
-						for (int y = 0 ; y < STARMAP_SECTORS_VCOUNT; y++)
-							for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-								if (pDoc->GetSystem(x,y).GetOwnerOfSystem() == m_pPlayersRace->GetRaceID())
-									if (m_pPlayersRace->GetRaceBuildingNumber() ==	pDoc->GetBuildingInfo(RunningNumber).GetOwnerOfBuilding())
-										pDoc->GetSystem(x,y).AssemblyListCheck(&pDoc->BuildingInfo,&pDoc->m_GlobalBuildings);
-									
-
-					}
-					// sonst den Baulistencheck nur in dem aktuellen System durchführen
-					else
-						pDoc->GetSystem(p).AssemblyListCheck(&pDoc->BuildingInfo,&pDoc->m_GlobalBuildings);
+					for (int y = 0 ; y < STARMAP_SECTORS_VCOUNT; y++)
+						for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
+							if (pDoc->GetSystem(x,y).GetOwnerOfSystem() == pMajor->GetRaceID())
+								pDoc->GetSystem(x,y).AssemblyListCheck(&pDoc->BuildingInfo,&pDoc->m_GlobalBuildings);					
 				}
+				// sonst den Baulistencheck nur in dem aktuellen System durchführen
+				else if (RunningNumber < 10000 && pDoc->GetBuildingInfo(RunningNumber).GetMaxInSystem().Number > 0)
+					pDoc->m_System[p.x][p.y].AssemblyListCheck(&pDoc->BuildingInfo,&pDoc->m_GlobalBuildings);
 			}
 			// Die restlichen Einträge
 			// seperat, weil wir die Bauliste anders löschen müssen und auch keine RES zurückbekommen müssen
@@ -3647,30 +3618,21 @@ void CSystemMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 				// Baulistencheck machen, wenn wir kein Schiff reingesetzt haben. 
 				// Den Check nur machen, wenn wir ein Update oder ein Gebäude welches eine Maxanzahl voraussetzt
 				// hinzufügen wollen
-				if (RunningNumber < 10000 && (nAssemblyListEntry < 0
-					|| pDoc->GetBuildingInfo(RunningNumber).GetMaxInEmpire().Number > 0
-					|| pDoc->GetBuildingInfo(RunningNumber).GetMaxInSystem().Number > 0))
+				if (RunningNumber < 10000 && pDoc->GetBuildingInfo(RunningNumber).GetMaxInEmpire() > 0)
 				{
 					// Wir müssen die GlobalBuilding Variable ändern, weil sich mittlerweile ja solch ein Gebäude
 					// weniger in der Bauliste befindet. Nicht aber wenn es ein Upgrade ist.
-					if (nAssemblyListEntry > 0)
-						pDoc->m_GlobalBuildings.DeleteGlobalBuilding(RunningNumber);
+					pDoc->m_GlobalBuildings.DeleteGlobalBuilding(pMajor->GetRaceID(), RunningNumber);
 					// Wenn es nur einmal pro Imperium baubar war, dann Assemblylistcheck in jedem unserer Systeme
 					// durchführen
-					if (pDoc->GetBuildingInfo(RunningNumber).GetMaxInEmpire().Number > 0)
-					{
-						for (int y = 0 ; y < STARMAP_SECTORS_VCOUNT; y++)
-							for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-								if (pDoc->GetSystem(x,y).GetOwnerOfSystem() == m_pPlayersRace->GetRaceID())
-									if (m_pPlayersRace->GetRaceBuildingNumber() ==	pDoc->GetBuildingInfo(RunningNumber).GetOwnerOfBuilding())
-										pDoc->GetSystem(x,y).AssemblyListCheck(&pDoc->BuildingInfo,&pDoc->m_GlobalBuildings);
-									
-
-					}
-					// sonst den Baulistencheck nur in dem aktuellen System durchführen
-					else
-						pDoc->GetSystem(p).AssemblyListCheck(&pDoc->BuildingInfo,&pDoc->m_GlobalBuildings);
+					for (int y = 0 ; y < STARMAP_SECTORS_VCOUNT; y++)
+						for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
+							if (pDoc->GetSystem(x,y).GetOwnerOfSystem() == pMajor->GetRaceID())
+								pDoc->GetSystem(x,y).AssemblyListCheck(&pDoc->BuildingInfo,&pDoc->m_GlobalBuildings);
 				}
+				// sonst den Baulistencheck nur in dem aktuellen System durchführen
+				else if (RunningNumber < 10000 && pDoc->GetBuildingInfo(RunningNumber).GetMaxInSystem().Number > 0)
+					pDoc->m_System[p.x][p.y].AssemblyListCheck(&pDoc->BuildingInfo,&pDoc->m_GlobalBuildings);
 			}
 			
 			Invalidate(FALSE);
@@ -3823,12 +3785,12 @@ void CSystemMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 				// Den Check nur machen, wenn wir ein Update oder ein Gebäude welches eine Maxanzahl voraussetzt
 				// hinzufügen wollen
 				if (RunningNumber < 10000 && (nID < 0
-					|| pDoc->GetBuildingInfo(RunningNumber).GetMaxInEmpire().Number > 0
+					|| pDoc->GetBuildingInfo(RunningNumber).GetMaxInEmpire() > 0
 					||  pDoc->GetBuildingInfo(RunningNumber).GetMaxInSystem().Number > 0))
 				{
 					// Wenn es nur einmal pro Imperium baubar war, dann Assemblylistcheck in jedem unserer Systeme
 					// durchführen
-					if (pDoc->GetBuildingInfo(RunningNumber).GetMaxInEmpire().Number > 0)
+					if (pDoc->GetBuildingInfo(RunningNumber).GetMaxInEmpire() > 0)
 					{
 						for (int y = 0 ; y < STARMAP_SECTORS_VCOUNT; y++)
 							for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)

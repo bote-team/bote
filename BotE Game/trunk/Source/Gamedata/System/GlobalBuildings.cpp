@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "GlobalBuildings.h"
+#include <list>
 
 IMPLEMENT_SERIAL (CGlobalBuildings, CObject, 1)
 //////////////////////////////////////////////////////////////////////
@@ -13,63 +14,83 @@ CGlobalBuildings::~CGlobalBuildings(void)
 {
 }
 
-//////////////////////////////////////////////////////////////////////
-// Kopierkonstruktor
-//////////////////////////////////////////////////////////////////////
-CGlobalBuildings::CGlobalBuildings(const CGlobalBuildings &rhs)
-{
-	for (int i = 0; i < rhs.m_GlobalBuildings.GetSize(); i++)
-		m_GlobalBuildings.Add(rhs.m_GlobalBuildings.GetAt(i));
-}
-
-//////////////////////////////////////////////////////////////////////
-// Zuweisungsoperator
-//////////////////////////////////////////////////////////////////////
-CGlobalBuildings & CGlobalBuildings::operator=(const CGlobalBuildings & rhs)
-{
-	if (this == &rhs)
-		return *this;
-	for (int i = 0; i < rhs.m_GlobalBuildings.GetSize(); i++)
-		m_GlobalBuildings.Add(rhs.m_GlobalBuildings.GetAt(i));
-	return *this;
-}
-
 ///////////////////////////////////////////////////////////////////////
 // Speichern / Laden
 ///////////////////////////////////////////////////////////////////////
 void CGlobalBuildings::Serialize(CArchive &ar)		
 {
 	CObject::Serialize(ar);
-	m_GlobalBuildings.Serialize(ar);
 	// wenn gespeichert wird
 	if (ar.IsStoring())
 	{
-		
+		ar << m_mGlobalBuildings.size();
+		for (std::map<CString, std::list<USHORT> >::const_iterator it = m_mGlobalBuildings.begin(); it != m_mGlobalBuildings.end(); ++it)
+		{
+			ar << it->first;
+			ar << it->second.size();
+			for (std::list<USHORT>::const_iterator it2 = it->second.begin(); it2 != it->second.end(); ++it2)
+				ar << *it2;
+		}		
 	}
 	// wenn geladen wird
 	if (ar.IsLoading())
 	{
-		
+		m_mGlobalBuildings.clear();
+		size_t mapSize = 0;
+		ar >> mapSize;
+		for (size_t i = 0; i < mapSize; i++)
+		{
+			CString key;
+			size_t listSize = 0;
+			ar >> key;
+			ar >> listSize;
+			for (size_t j = 0; j < listSize; j++)
+			{
+				USHORT value;
+				ar >> value;
+				m_mGlobalBuildings[key].push_back(value);
+			}
+		}		
 	}
 }
 
 //////////////////////////////////////////////////////////////////////
 // sonstige Funktionen
 //////////////////////////////////////////////////////////////////////
-// Funktion löscht ein globales Gebäude aus dem Feld der globalen Gebäude. Diese Funktion sollte aufgerufen
-// werden, wenn wir ein solches Gebäude abreißen oder verlieren.
-void CGlobalBuildings::DeleteGlobalBuilding(USHORT id)
+int CGlobalBuildings::GetCountGlobalBuilding(const CString& sRaceID, USHORT nID) const
 {
-	for (int i = 0; i < m_GlobalBuildings.GetSize(); i++)
-		if (m_GlobalBuildings.GetAt(i) == id)
+	std::map<CString, std::list<USHORT> >::const_iterator it = m_mGlobalBuildings.find(sRaceID);
+	if (it == m_mGlobalBuildings.end())
+		return 0;
+
+	int nCount = 0;
+	std::list<USHORT> lGlobalBuildings = it->second;
+	for (std::list<USHORT>::const_iterator it2 = it->second.begin(); it2 != it->second.end(); ++it2)
+		if (*it2 == nID)
+			nCount++;
+	
+	return nCount;
+}
+
+void CGlobalBuildings::DeleteGlobalBuilding(const CString& sRaceID, USHORT nID)
+{
+	std::map<CString, std::list<USHORT> >::iterator it = m_mGlobalBuildings.find(sRaceID);
+	if (it == m_mGlobalBuildings.end())
+		return;
+
+	std::list<USHORT> lGlobalBuildings = m_mGlobalBuildings[sRaceID];
+	for (std::list<USHORT>::const_iterator it2 = it->second.begin(); it2 != it->second.end(); ++it2)
+	{
+		if (*it2 == nID)
 		{
-			m_GlobalBuildings.RemoveAt(i);
-			break;
+			it->second.erase(it2);
+			return;
 		}
+	}
 }
 
 // Resetfunktion für die Klasse CGlobalBuildings
 void CGlobalBuildings::Reset()
 {
-	m_GlobalBuildings.RemoveAll();
+	m_mGlobalBuildings.clear();
 }

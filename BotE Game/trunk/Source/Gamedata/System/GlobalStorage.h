@@ -19,11 +19,7 @@ public:
 
 	struct StorageStruct
 	{
-#ifdef ALPHA6_SERIALISIERUNG
 		UINT nResTransfer;
-#else
-		USHORT nResTransfer;
-#endif
 		BYTE nRes;
 		CPoint ptKO;
 	};
@@ -144,22 +140,12 @@ private:
 	BYTE m_byPercentLosing;
 
 	/// Welche Menge an Ressourcen wurden in dieser Runde aus dem Lager genommen
-#ifdef ALPHA6_SERIALISIERUNG
 	UINT m_iTakeFromStorage;
-#else
-	USHORT m_iTakeFromStorage;
-#endif
 
-	/// Welche Menge darf maximal aus dem Lager genommen werden. Obergrenze wurde
-	/// hier auf 20k festgelegt.
-#ifdef ALPHA6_SERIALISIERUNG
+	/// Welche Menge darf maximal aus dem Lager genommen werden. Obergrenze wurde hier auf 20k festgelegt.
 	UINT m_iMaxTakeFromStorage;
-#else
-	USHORT m_iMaxTakeFromStorage;
-#endif
 
-	/// In diesem Feld werden alle Systeme gespeichert, an die in der neuen Runde
-	/// Ressourcen gehen.
+	/// In diesem Feld werden alle Systeme gespeichert, an die in der neuen Runde Ressourcen gehen.
 	CArray<StorageStruct> m_ResOut;
 
 	/// In diesem Feld werden alle Systeme gespeichert, aus denen in der neuen

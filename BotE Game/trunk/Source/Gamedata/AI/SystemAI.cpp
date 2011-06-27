@@ -560,11 +560,11 @@ void CSystemAI::CalcPriorities()
 		// bei Updates die ID ins positive nehmen
 		if (id < 0)
 			id *= (-1);
-		if (m_pDoc->GetBuildingInfo(id).GetMaxInEmpire().Number > 0)
+		if (m_pDoc->GetBuildingInfo(id).GetMaxInEmpire() > 0)
 		{
 			// Wir müssen die GlobalBuilding Variable ändern, weil sich mittlerweile ja solch ein Gebäude
 			// mehr in der Bauliste befindet. Nicht aber wenn es ein Upgrade ist.
-			m_pDoc->m_GlobalBuildings.AddGlobalBuilding(id);
+			m_pDoc->m_GlobalBuildings.AddGlobalBuilding(m_pMajor->GetRaceID(), id);
 			// Da es nur einmal pro Imperium baubar war, dann Assemblylistcheck in jedem unserer Systeme
 			// durchführen
 			for (int y = 0 ; y < STARMAP_SECTORS_VCOUNT; y++)

@@ -196,7 +196,7 @@ BOOL CMainFrame::OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext)
 	// |			 0							     	   |
 	// |             0                                     |
 	// |ooooooooooooooooooooooooooooooooooooooooooooooooooo|
-	// | CSmallInfoView       0 CBottomBaseViews                    |
+	// | CSmallInfoView       0 CBottomBaseViews           |
 	// |             0                                     |
 	// |             0                                     |
 	// |             0                                     |

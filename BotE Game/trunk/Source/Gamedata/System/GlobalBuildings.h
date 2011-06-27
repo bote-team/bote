@@ -6,8 +6,8 @@
  *
  */
 #pragma once
-#include "afx.h"
-#include "afxtempl.h"
+#include <map>
+#include <list>
 
 class CGlobalBuildings : public CObject
 {
@@ -19,27 +19,29 @@ public:
 	// Destruktor
 	~CGlobalBuildings(void);
 
-	// Kopierkonstruktor
-	CGlobalBuildings(const CGlobalBuildings & rhs);
-	
-	// Zuweisungsoperatur
-	CGlobalBuildings & operator=(const CGlobalBuildings &);
-
 	// Die Serialisierungsfunktion
 	virtual void Serialize(CArchive &ar);
 
 	// Zugriffsfunktionen
-// zum Lesen der Membervariablen
-	// Funktion gibt einen Zeiger auf das Feld aller globalen Gebäude zurück
-	CArray<USHORT,USHORT>* GetGlobalBuildings() {return &m_GlobalBuildings;}
+	// zum Lesen der Membervariablen
+	/// Funktion gibt die Anzahl eines bestimmtes Gebäudes für eine bestimmte Major-Rasse zurück.
+	/// @param sRaceID Rassen-ID
+	/// @param nID Gebäude-ID
+	/// @return Anzahl der Gebäude
+	int GetCountGlobalBuilding(const CString& sRaceID, USHORT nID) const;
+	
+	// zum Schreiben der Membervariablen
+	/// Funktion fügt ein Gebäude für eine bestimmte Rasse den globalen Gebäuden hinzu.
+	/// @param sRaceID Rassen-ID
+	/// @param nID Gebäude-ID
+	void AddGlobalBuilding(const CString& sRaceID, USHORT nID) {m_mGlobalBuildings[sRaceID].push_back(nID);}
 
-// zum Schreiben der Membervariablen
-	void AddGlobalBuilding(USHORT id) {m_GlobalBuildings.Add(id);}
-
-// sonstige Funktionen
-	// Funktion löscht ein globales Gebäude aus dem Feld der globalen Gebäude. Diese Funktion sollte aufgerufen
-	// werden, wenn wir ein solches Gebäude abreißen oder verlieren.
-	void DeleteGlobalBuilding(USHORT id);
+	// sonstige Funktionen
+	/// Funktion löscht ein globales Gebäude aus dem Feld der globalen Gebäude. Diese Funktion sollte aufgerufen
+	/// werden, wenn ein solches Gebäude abgerissen oder verloren wird.
+	/// @param sRaceID Rassen-ID
+	/// @param nID Gebäude-ID
+	void DeleteGlobalBuilding(const CString& sRaceID, USHORT nID);
 
 	// Resetfunktion für die Klasse CGlobalBuildings
 	void Reset();
@@ -48,5 +50,5 @@ private:
 	// Dieses Feld beinhaltet die Gebäude, welche ein imperienweites Attribut haben und in einer Bauliste stehen, sowei
 	// alle Gebäude die in allen Systemen stehen. Kommen mehrere gleiche Gebäude vor, so ist deren ID auch mehrmals
 	// hier in dem Feld vorhanden.
-	CArray<USHORT,USHORT> m_GlobalBuildings;
+	std::map<CString, std::list<USHORT> > m_mGlobalBuildings;	
 };

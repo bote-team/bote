@@ -31,13 +31,8 @@ void CGlobalStorage::Serialize(CArchive &ar)
 	if (ar.IsStoring())
 	{
 		ar << m_byPercentLosing;
-#ifdef ALPHA6_SERIALISIERUNG
 		ar << m_iMaxTakeFromStorage;
 		ar << m_iTakeFromStorage;
-#else
-		ar << (USHORT)m_iMaxTakeFromStorage;
-		ar << (USHORT)m_iTakeFromStorage;
-#endif
 		for (int i = TITAN; i <= IRIDIUM; i++)
 			ar << m_nResourceStorages[i];
 	}
@@ -45,16 +40,8 @@ void CGlobalStorage::Serialize(CArchive &ar)
 	if (ar.IsLoading())
 	{
 		ar >> m_byPercentLosing;
-#ifdef ALPHA6_SERIALISIERUNG
 		ar >> m_iMaxTakeFromStorage;
 		ar >> m_iTakeFromStorage;
-#else
-		USHORT n;
-		ar >> n;
-		m_iMaxTakeFromStorage = n;
-		ar >> n;
-		m_iTakeFromStorage = n;
-#endif
 		for (int i = TITAN; i <= IRIDIUM; i++)
 			ar >> m_nResourceStorages[i];
 	}

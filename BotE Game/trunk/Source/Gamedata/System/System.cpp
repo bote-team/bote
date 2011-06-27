@@ -1346,24 +1346,16 @@ BOOLEAN CSystem::AssemblyListCheck(BuildingInfoArray* buildingInfo, CGlobalBuild
 
 		// wenn dieses Gebäude nur X mal pro Imperium vorkommen darf, dann darf dieses Gebäude nicht mehr als X mal
 		// als globales Gebäude vorkommen
-		BOOLEAN found = FALSE;
-		if (buildingInfo->GetAt(entry - 1).GetMaxInEmpire().Number > 0)
+		bool bFound = false;
+		if (buildingInfo->GetAt(entry - 1).GetMaxInEmpire() > 0)
 		{
-			short ID = buildingInfo->GetAt(entry - 1).GetMaxInEmpire().RunningNumber;
-			short number = 0;
-			for (int j = 0; j < globals->GetGlobalBuildings()->GetSize(); j++)
-				if (ID == globals->GetGlobalBuildings()->GetAt(j))
-				{
-					number++;
-					if (number >= buildingInfo->GetAt(entry - 1).GetMaxInEmpire().Number)
-					{
-						found = TRUE;
-						break;
-					}
-				}
+			short ID = buildingInfo->GetAt(entry - 1).GetRunningNumber();
+			short nCount = globals->GetCountGlobalBuilding(m_sOwnerOfSystem, ID);
+			if (nCount >= buildingInfo->GetAt(entry - 1).GetMaxInEmpire())
+				bFound = true;
 		}
 		// wir haben das Gebäude nicht in der Liste der globalen Gebäude gefunden
-		if (found == FALSE)
+		if (!bFound)
 		{
 			if (m_BuildableWithoutAssemblylistCheck.GetAt(i) > 0)
 				m_BuildableBuildings.Add(entry);
@@ -1411,21 +1403,15 @@ BOOLEAN CSystem::AssemblyListCheck(BuildingInfoArray* buildingInfo, CGlobalBuild
 			// hier die maximal baubaren Gebäude pro Imperium checken
 			// Die Gebäude befinden sich auch schon in der GlobalBuildings Variable, wenn sie schon in der
 			// Bauliste sind
-			if (buildingInfo->GetAt(m_AssemblyList.GetAssemblyListEntry(i)-1).GetMaxInEmpire().Number > 0)
-			{
-				USHORT n = 0;
-				for (int j = 0; j < globals->GetGlobalBuildings()->GetSize(); j++)
-				{
-					if (globals->GetGlobalBuildings()->GetAt(j) == buildingInfo->GetAt(m_AssemblyList.GetAssemblyListEntry(i)-1).GetMaxInEmpire().RunningNumber)
-						n++;
-					if (n >= buildingInfo->GetAt(m_AssemblyList.GetAssemblyListEntry(i)-1).GetMaxInEmpire().Number)
-						break;
-				}
+			USHORT nID = m_AssemblyList.GetAssemblyListEntry(i);
+			if (buildingInfo->GetAt(nID - 1).GetMaxInEmpire() > 0)
+			{	
+				int nCount = globals->GetCountGlobalBuilding(m_sOwnerOfSystem, nID);
 				// Haben wir dieses Gebäude schon "oft genug" stehen und in der Bauliste der Systeme, dann aus der
 				// Bauliste nehmen
-				if (n >= buildingInfo->GetAt(m_AssemblyList.GetAssemblyListEntry(i)-1).GetMaxInEmpire().Number)
+				if (nCount >= buildingInfo->GetAt(nID - 1).GetMaxInEmpire())
 					for (int t = 0; t < m_BuildableBuildings.GetSize(); t++)
-						if (m_AssemblyList.GetAssemblyListEntry(i) == m_BuildableBuildings.GetAt(t))
+						if (nID == m_BuildableBuildings.GetAt(t))
 						{
 							m_BuildableBuildings.RemoveAt(t--);
 							break;
@@ -1832,7 +1818,7 @@ void CSystem::BuildBuildingsForMinorRace(CSector* sector, BuildingInfoArray* bui
 				// kann, so bekommt sie die erste baubare Werft
 				if (nShipYard == 0 && m_Buildings.GetSize() == 0 && pMinor->GetSpaceflightNation())
 				{
-					if (buildingInfo->GetAt(i).GetShipYard() && buildingInfo->GetAt(i).GetPredecessorID() == 0 && buildingInfo->GetAt(i).GetMaxInEmpire().Number == 0)
+					if (buildingInfo->GetAt(i).GetShipYard() && buildingInfo->GetAt(i).GetPredecessorID() == 0 && buildingInfo->GetAt(i).GetMaxInEmpire() == 0)
 						nShipYard = buildingInfo->GetAt(i).GetRunningNumber();		
 				}
 				
@@ -2073,7 +2059,7 @@ void CSystem::RemoveSpecialRaceBuildings(const BuildingInfoArray* pvBuildingInfo
 	for (int i = 0; i < m_Buildings.GetSize(); i++)
 	{
 		const CBuildingInfo *pInfo = &pvBuildingInfos->GetAt(m_Buildings[i].GetRunningNumber() - 1);
-		if (pInfo->GetMaxInEmpire().Number > 0 || pInfo->GetOnlyRace() || pInfo->GetShipYard() || pInfo->GetBarrack())
+		if (pInfo->GetMaxInEmpire() > 0 || pInfo->GetOnlyRace() || pInfo->GetShipYard() || pInfo->GetBarrack())
 			m_Buildings.RemoveAt(i--);
 	}
 }
@@ -2087,6 +2073,9 @@ void CSystem::BuildBuildingsAfterColonization(CSector *sector, BuildingInfoArray
 
 	CMajor* pMajor = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(sector->GetOwnerOfSector()));
 	ASSERT(pMajor);
+
+	// alle Gebäude die wir nach Systemeroberung nicht haben dürfen werden aus der Liste der aktuellen Gebäude entfernt
+	RemoveSpecialRaceBuildings(buildingInfo);
 
 	BYTE byRaceBuildingID = pMajor->GetRaceBuildingNumber();
 
@@ -2665,31 +2654,12 @@ BOOLEAN CSystem::CheckGeneralConditions(CBuildingInfo* building, CSector* sector
 				return FALSE;
 		}
 	}
-	// mindst. X Gebäude von ID im Imperium
-	if (building->GetMinInEmpire().Number > 0)
-	{
-		USHORT number = 0;
-		for (int i = 0; i < globals->GetGlobalBuildings()->GetSize(); i++)
-		{
-			if (globals->GetGlobalBuildings()->GetAt(i) == building->GetMinInEmpire().RunningNumber)
-				number++;
-			if (number >= building->GetMinInEmpire().Number)
-				break;
-		}
-		if (number < building->GetMinInEmpire().Number)
-			return FALSE;
-	}
 	// max. X Gebäude von ID im Imperium
-	if (building->GetMaxInEmpire().Number > 0)
+	if (building->GetMaxInEmpire() > 0)
 	{
-		USHORT number = 0;
-		for (int i = 0; i < globals->GetGlobalBuildings()->GetSize(); i++)
-		{
-			if (globals->GetGlobalBuildings()->GetAt(i) == building->GetMaxInEmpire().RunningNumber)
-				number++;
-			if (number >= building->GetMaxInEmpire().Number)
-				return FALSE;
-		}
+		int nCount = globals->GetCountGlobalBuilding(m_sOwnerOfSystem, building->GetRunningNumber());
+		if (nCount >= building->GetMaxInEmpire())
+			return FALSE;
 	}	
 
 	return TRUE;
