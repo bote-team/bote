@@ -33,6 +33,9 @@ struct CShipHistoryStruct {
 	
 	/// Art der Zerstörung des Schiffes, z.B. Kampf, Abwracken, Wurmloch usw.
 	CString m_strKindOfDestroy;
+
+	//Momentanes Ziel
+	CString m_strTarget;
 	
 	/// Die Runde in der das Schiff gebaut wurde
 	short m_iBuildRound;

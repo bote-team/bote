@@ -20,6 +20,9 @@ public:
 	
 	/// Destruktor
 	~CTroopInfo(void);
+	
+	// Serialisierungsfunktion; nötig für CBotf2Doc::SerializeBeginGameData
+	virtual void Serialize(CArchive &ar);
 
 	// Zugriffsfunktionen zum Lesen der Membervariablen
 	/**

@@ -52,6 +52,7 @@ void CShipHistory::Serialize(CArchive &ar)
 			ar << m_ShipHistory.GetAt(i).m_iExperiance;
 			ar << m_ShipHistory.GetAt(i).m_strCurrentSector;
 			ar << m_ShipHistory.GetAt(i).m_strCurrentTask;
+			ar << m_ShipHistory.GetAt(i).m_strTarget;
 			ar << m_ShipHistory.GetAt(i).m_strKindOfDestroy;
 			ar << m_ShipHistory.GetAt(i).m_strSectorName;
 			ar << m_ShipHistory.GetAt(i).m_strShipClass;
@@ -73,6 +74,7 @@ void CShipHistory::Serialize(CArchive &ar)
 			ar >> shs.m_iExperiance;
 			ar >> shs.m_strCurrentSector;
 			ar >> shs.m_strCurrentTask;
+			ar >> shs.m_strTarget;
 			ar >> shs.m_strKindOfDestroy;
 			ar >> shs.m_strSectorName;
 			ar >> shs.m_strShipClass;
@@ -107,10 +109,12 @@ void CShipHistory::AddShip(CShip* ship, const CString& buildsector, short round)
 	temp.m_strSectorName = buildsector;
 	temp.m_strCurrentSector = buildsector;
 	temp.m_strCurrentTask = ship->GetCurrentOrderAsString();
+	temp.m_strTarget = ship->GetCurrentTargetAsString();
 	temp.m_strKindOfDestroy = "";
 	temp.m_iBuildRound = round;
 	temp.m_iDestroyRound = 0;
 	temp.m_iExperiance = ship->GetCrewExperience();
+	
 		
 	m_ShipHistory.Add(temp);
 }
@@ -130,6 +134,7 @@ bool CShipHistory::ModifyShip(const CShip* ship, const CString& sector, short de
 			m_ShipHistory.ElementAt(i).m_strCurrentSector = sector;
 			m_ShipHistory.ElementAt(i).m_strCurrentTask = ship->GetCurrentOrderAsString();
 			m_ShipHistory.ElementAt(i).m_iExperiance = ship->GetCrewExperience();
+			m_ShipHistory.ElementAt(i).m_strTarget = ship->GetCurrentTargetAsString();
 
 			if (destroyRound != 0)
 			{

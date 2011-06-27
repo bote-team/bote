@@ -117,15 +117,14 @@ BOOL CBotf2Doc::OnNewDocument()
 {
 	if (!CDocument::OnNewDocument())
 		return FALSE;
+	
 
-	//AfxMessageBox("Achtung!\n\nDies ist eine interne Entwicklungsversion von BotE Alpha 6.1 RC.\nDiese Version ist nicht für die Öffentlichkeit bestimmt!\nEine eigenständige Verbreitung dieser Version ist verboten!\n\nAn alle Betatester:\nBitte ausführlich testen und alle entdeckten Fehler und Ungereimtheiten\nim internen Bereich des Forum posten.\n\nVielen Dank und viel Spass beim Testen\nSir Pustekuchen");
-
-	/*// Mal Testweise paar Truppen anlegen
-	m_TroopInfo.RemoveAll();
+	// Mal Testweise paar Truppen anlegen
+	/*m_TroopInfo.RemoveAll();
 	BYTE techs[6];
 	memset(techs, 0, sizeof(techs));
 	USHORT res[5] = {50};	
-	CTroopInfo* troopInfo = new CTroopInfo(CResourceManager::GetString("MAJOR1_TROOP1_NAME"), CResourceManager::GetString("MAJOR1_TROOP1_DESC"),9,10,techs,res,180,0,"MAJOR1",2500,1);
+	CTroopInfo* troopInfo = new CTroopInfo(CResourceManager::GetString("MAJOR1_TROOP1_NAME"), CResourceManager::GetString("MAJOR1_TROOP1_DESC"),9,100,techs,res,1800,0,"MAJOR1",2500,1);
 	m_TroopInfo.Add(*troopInfo);
 	delete troopInfo;
 	troopInfo = new CTroopInfo(CResourceManager::GetString("MAJOR2_TROOP1_NAME"), CResourceManager::GetString("MAJOR2_TROOP1_DESC"),5,10,techs,res,100,1,"MAJOR2",1500,0);
@@ -147,8 +146,8 @@ BOOL CBotf2Doc::OnNewDocument()
 	memset(techs, 255, sizeof(techs));
 	troopInfo = new CTroopInfo(CResourceManager::GetString("MAJOR5_TROOP2_NAME"), CResourceManager::GetString("MAJOR5_TROOP2_DESC"),25,0,techs,res,2500,6,"MAJOR5",2500,0);
 	m_TroopInfo.Add(*troopInfo);
-	delete troopInfo;*///Truppen werden jetzt aus Dateien eingelesen, Ich lasse die Definition wegen Vergleichen noch im Code; Revisor
-	
+	delete troopInfo;
+	*/
 	// ZU ERLEDIGEN: Hier Code zur Reinitialisierung einfügen
 	m_bDataReceived				= false;
 	m_bDontExit					= false;
@@ -248,6 +247,10 @@ void CBotf2Doc::Serialize(CArchive& ar)
 		for (int i = 0; i < m_ShipArray.GetSize(); i++)
 			m_ShipArray.GetAt(i).Serialize(ar);
 
+		ar<< m_TroopInfo.GetSize();//Truppen in Savegame speichern
+		for (int i = 0; i < m_TroopInfo.GetSize(); i++)
+			m_TroopInfo.GetAt(i).Serialize(ar);
+
 		// statische Variablen serialisieren
 		for (int j = TITAN; j <= IRIDIUM; j++)
 			ar << CTrade::GetMonopolOwner(j);
@@ -294,6 +297,11 @@ void CBotf2Doc::Serialize(CArchive& ar)
 		m_ShipArray.SetSize(number);
 		for (int i = 0; i < number; i++)
 			m_ShipArray.GetAt(i).Serialize(ar);
+		ar >> number;
+		m_TroopInfo.RemoveAll();
+		m_TroopInfo.SetSize(number);
+		for (int i = 0; i<number; i++)
+			m_TroopInfo.GetAt(i).Serialize(ar);
 
 		// Gebäudeinfos werden nun beim Laden neu eingelesen		
 		BuildingInfo.RemoveAll();
@@ -366,6 +374,9 @@ void CBotf2Doc::SerializeBeginGameData(CArchive& ar)
 		ar << BuildingInfo.GetSize();
 		for (int i = 0; i < BuildingInfo.GetSize(); i++)
 			BuildingInfo.GetAt(i).Serialize(ar);
+		ar << m_TroopInfo.GetSize();
+		for (int i = 0; i < m_TroopInfo.GetSize(); i++)
+			m_TroopInfo.GetAt(i).Serialize(ar);
 	}
 	// Empfangen auf Clientseite
 	else
@@ -390,6 +401,12 @@ void CBotf2Doc::SerializeBeginGameData(CArchive& ar)
 		BuildingInfo.SetSize(number);
 		for (int i = 0; i < number; i++)
 			BuildingInfo.GetAt(i).Serialize(ar);
+		
+		ar >> number;
+		m_TroopInfo.RemoveAll();
+		m_TroopInfo.SetSize(number);
+		for (int i = 0; i < number; i++)
+			m_TroopInfo.GetAt(i).Serialize(ar);
 	}
 	
 	CMoralObserver::SerializeStatics(ar);	
@@ -909,6 +926,7 @@ void CBotf2Doc::PrepareData()
 		GenerateGalaxy();
 		ApplyShipsAtStartup();
 		ApplyBuildingsAtStartup();
+		ApplyTroopsAtStartup();
 
 		// Siegbedingungen initialisieren und erstmalig überwachen
 		m_VictoryObserver.Init();
@@ -1463,6 +1481,56 @@ void CBotf2Doc::ApplyShipsAtStartup()
 	file.Close();	
 }
 
+
+void CBotf2Doc::ApplyTroopsAtStartup()
+{
+	CString fileName = CIOData::GetInstance()->GetAppPath() + "Data\\Troops\\StartTroops.data";
+	CStdioFile file;
+	if (file.Open(fileName, CFile::modeRead | CFile::typeText))// Datei StartTroops.data öffnen um Start Truppen zu definieren
+	{
+		CString csInput;
+		while (file.ReadString(csInput))
+		{
+			if (csInput.Left(2) == "//" || csInput.IsEmpty())
+				continue;
+			int pos = 0;
+			CString s = csInput.Tokenize(":", pos);
+			CString systemName = s;
+			// Systemnamen auf der Map suchen
+			BOOLEAN found = FALSE;
+			for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
+			{
+				for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
+					if (m_Sector[x][y].GetName() == s)//Wenn der Name gefunden wurde
+					{
+						while (pos < csInput.GetLength())
+						{
+							// ID des Gebäudes holen
+							s = csInput.Tokenize(",", pos);
+							BuildTroop(atoi(s), CPoint(x,y));
+						}
+						found = TRUE;
+						break;
+					}
+				if (found)
+					break;
+			}
+			// Wurde das System nicht gefunden, sprich es ist ein Fehler in der Datei
+			if (!found)
+			{
+				s.Format("Could not find system with name \"%s\"\nPlease check your StartTroops.data file!", systemName);
+				AfxMessageBox(s);
+			}
+		}
+	}
+	else
+		AfxMessageBox("ERROR! Could not open file \"StartTroops.data\"...");
+	// Datei schließen
+	file.Close();
+}
+
+
+
 void CBotf2Doc::ApplyBuildingsAtStartup()
 {
 	// Name des zu öffnenden Files 
@@ -1611,7 +1679,7 @@ void CBotf2Doc::ApplyBuildingsAtStartup()
 void CBotf2Doc::ReadTroopInfosFromFile()
 {
 //Neu: Truppen werden aus Datei gelesen
-	CString fileName = CIOData::GetInstance()->GetAppPath() + "Data\\Races\\Troops.data";
+	CString fileName = CIOData::GetInstance()->GetAppPath() + "Data\\Troops\\Troops.data";
 	CStdioFile file;
 	// Datei wird geöffnet
 	if (file.Open(fileName, CFile::modeRead | CFile::typeText))
@@ -1623,7 +1691,8 @@ void CBotf2Doc::ReadTroopInfosFromFile()
 		m_TroopInfo.RemoveAll();
 		while (file.ReadString(csInput))
 		{
-			
+			if (csInput.Left(2) == "//" || csInput.IsEmpty())
+				continue;
 			// Daten lesen
 			data[i++] = csInput;
 			if (i == 20)
@@ -1645,7 +1714,6 @@ void CBotf2Doc::ReadTroopInfosFromFile()
 	}
 	file.Close();
 }
-
 
 
 void CBotf2Doc::ReadBuildingInfosFromFile()

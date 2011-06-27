@@ -336,6 +336,19 @@ CString CShip::GetShipTypeAsString(BOOL plural) const
 	return shipType;
 }
 
+//Funktion gibt aktuelles Ziel als char* zurück
+CString CShip::GetCurrentTargetAsString() const
+{
+CString target;
+if (m_TargetKO[0].x == -1) 
+	target = "-";
+else if (m_TargetKO[0].x == GetKO().x && m_TargetKO[0].y == GetKO().y )
+	target = "-";
+else 
+target.Format("%c%i", (char)(m_TargetKO[0].y+97),m_TargetKO[0].x+1);
+return target;
+}
+
 // Funktion gibt den aktuellen Schiffsauftrag als char* zurück
 CString CShip::GetCurrentOrderAsString() const
 {

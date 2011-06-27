@@ -170,6 +170,7 @@ public:
 	void NextRound(void);						// zur Nächsten Runde voranschreiten
 	void ApplyShipsAtStartup(void);				// Die Schiffe zum Start anlegen, übersichtshalber nicht alles in NewDocument
 	void ApplyBuildingsAtStartup(void);			// Die Gebäude zum Start in den Hauptsystemen anlegen
+	void ApplyTroopsAtStartup(void);			// Die Truppen zu Beginn in den Hauptsystemen anlegen
 	void ReadBuildingInfosFromFile(void);		// Die Infos zu den Gebäuden aus den Datein einlesen
 	void ReadShipInfosFromFile(void);			// Die Infos zu den Schiffen aus der Datei einlesen
 	void ReadTroopInfosFromFile(void);			// Die Infos zu den Truppen aus der Datei einlesen

@@ -752,15 +752,17 @@ void CEmpireMenuView::DrawEmpireShipMenue(Graphics* g)
 				s = pMajor->GetShipHistory()->GetShipHistory(i)->m_strShipClass;
 				g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(375,140+j*25,120,25), &fontFormat, &fontBrush);
 				s.Format("%d",pMajor->GetShipHistory()->GetShipHistory(i)->m_iBuildRound);
-				g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(495,140+j*25,65,25), &fontFormat, &fontBrush);
+				g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(500,140+j*25,65,25), &fontFormat, &fontBrush);
 				s = pMajor->GetShipHistory()->GetShipHistory(i)->m_strSectorName;
 				g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(560,140+j*25,115,25), &fontFormat, &fontBrush);
 				s = pMajor->GetShipHistory()->GetShipHistory(i)->m_strCurrentSector;
 				g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(675,140+j*25,125,25), &fontFormat, &fontBrush);
 				s.Format("%d",pMajor->GetShipHistory()->GetShipHistory(i)->m_iExperiance);
-				g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(800,140+j*25,50,25), &fontFormat, &fontBrush);
+				g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(795,140+j*25,50,25), &fontFormat, &fontBrush);
 				s = pMajor->GetShipHistory()->GetShipHistory(i)->m_strCurrentTask;
-				g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(850,140+j*25,175,25), &fontFormat, &fontBrush);
+				g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(835,140+j*25,175,25), &fontFormat, &fontBrush);
+				s = pMajor->GetShipHistory()->GetShipHistory(i)->m_strTarget;
+				g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(920,140+j*25,175,25), &fontFormat, &fontBrush);
 			}
 			j++;
 		}
@@ -801,6 +803,7 @@ void CEmpireMenuView::DrawEmpireShipMenue(Graphics* g)
 				g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(675,140+k*25,175,25), &fontFormat, &fontBrush);
 				s = pMajor->GetShipHistory()->GetShipHistory(i)->m_strCurrentTask;
 				g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(850,140+k*25,175,25), &fontFormat, &fontBrush);
+				
 			}
 			k++;
 		}
@@ -832,7 +835,8 @@ void CEmpireMenuView::DrawEmpireShipMenue(Graphics* g)
 		g->DrawString(CResourceManager::GetString("CONSTRUCT").AllocSysString(), -1, &font, RectF(495,110,65,30), &fontFormat, &fontBrush);
 		g->DrawString(CResourceManager::GetString("CURRENT_PLACE").AllocSysString(), -1, &font, RectF(675,110,115,30), &fontFormat, &fontBrush);
 		g->DrawString(CResourceManager::GetString("EXPERIANCE_SHORT").AllocSysString(), -1, &font, RectF(790,110,60,30), &fontFormat, &fontBrush);
-		g->DrawString(CResourceManager::GetString("STATUS").AllocSysString(), -1, &font, RectF(850,110,175,30), &fontFormat, &fontBrush);
+		g->DrawString(CResourceManager::GetString("STATUS").AllocSysString(), -1, &font, RectF(835,110,175,30), &fontFormat, &fontBrush);
+		g->DrawString(CResourceManager::GetString("TARGET").AllocSysString(), -1, &font, RectF(915,110,175,30), &fontFormat, &fontBrush);
 	}
 	else
 	{

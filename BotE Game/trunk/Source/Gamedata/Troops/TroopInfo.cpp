@@ -44,6 +44,52 @@ CTroopInfo::~CTroopInfo(void)
 {
 }
 
+// Serialisierungsfunktion
+
+void CTroopInfo::Serialize(CArchive &ar)
+{
+	CObject::Serialize(ar);
+	// wenn gespeichert wird
+	if (ar.IsStoring())
+	{
+		ar << m_strName;
+		ar << m_strDescription;
+		ar << m_byMaintenanceCosts;
+		for (int i = 0; i < 6; i++)
+		ar << m_byNeededTechs[i];
+		for (int i = TITAN; i <= IRIDIUM; i++)
+		ar << m_iNeededResources[i];
+		ar << m_iNeededIndustry;
+		ar << m_byID;
+		ar << m_sOwner;
+		ar << m_byPower;
+		ar << m_iExperiance;
+		ar << m_iSize;
+		ar << m_byMoralValue;
+	}
+	// wenn geladen wird
+	if (ar.IsLoading())
+	{
+		ar >> m_strName;
+		ar >> m_strDescription;
+		ar >> m_byMaintenanceCosts;
+		for (int i = 0; i < 6; i++)
+			ar >> m_byNeededTechs[i];
+		for (int i = TITAN; i <= IRIDIUM; i++)
+			ar >> m_iNeededResources[i];
+		ar >> m_iNeededIndustry;
+		ar >> m_byID;
+		ar >> m_sOwner;
+		ar >> m_byPower;
+		ar >> m_iExperiance;
+		ar >> m_iSize;
+		ar >> m_byMoralValue;
+	}
+}
+
+
+
+
 /// Funktion gibt zurück, ob die Truppe mit der aktuellen Forschung einer Rasse baubar ist.
 	/// @param researchLevels Forschungsstufen der Rasse
 	/// @return Wahrheitswert

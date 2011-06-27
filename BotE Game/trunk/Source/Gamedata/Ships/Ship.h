@@ -105,6 +105,7 @@ public:
 	const CString& GetShipDescription() const {return m_strShipDescription;}
 	CString GetShipTypeAsString(BOOL plural = FALSE) const;
 	CString GetCurrentOrderAsString() const;
+	CString GetCurrentTargetAsString() const;
 	BOOLEAN GetIsShipFlagShip() const {return m_bIsFlagShip;}
 	USHORT GetCrewExperience() const {return m_iCrewExperiance;}
 	USHORT GetStorageRoom() const {return m_iStorageRoom;}
