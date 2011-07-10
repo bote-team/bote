@@ -16,6 +16,7 @@
 #define IDC_DESC                        1006
 #define IDC_OWNER                       1007
 #define IDC_POWER                       1008
+#define IDC_OFF                         1008
 #define IDC_MCOSTS                      1009
 #define IDC_TECH1                       1010
 #define IDC_TECH2                       1011
@@ -36,6 +37,9 @@
 #define IDC_STRTABEL                    1026
 #define IDC_DESC2                       1027
 #define IDC_NAME2                       1028
+#define IDC_DEF                         1029
+#define IDC_EDIT1                       1030
+#define IDC_GPHCF                       1030
 
 // Next default values for new objects
 // 
@@ -43,7 +47,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        131
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1029
+#define _APS_NEXT_CONTROL_VALUE         1031
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

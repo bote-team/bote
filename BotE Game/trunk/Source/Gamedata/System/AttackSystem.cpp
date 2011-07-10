@@ -111,7 +111,7 @@ BOOLEAN CAttackSystem::Calculate()
 		for (int i = 0; i < m_pShips.GetSize(); i++)
 			for (int j = 0; j < m_pShips.GetAt(i)->GetTransportedTroops()->GetSize();)
 			{
-				if (m_pShips.GetAt(i)->GetTransportedTroops()->GetAt(j).GetPower() == NULL)
+				if (m_pShips.GetAt(i)->GetTransportedTroops()->GetAt(j).GetOffense() == NULL)
 					killedTroopsInTransport++;
 				m_pShips.GetAt(i)->GetTransportedTroops()->RemoveAt(j);
 			}
@@ -131,7 +131,7 @@ BOOLEAN CAttackSystem::Calculate()
 		// nicht wieder mitgenommen werden können
 		for (int i = 0; i < m_pShips.GetSize(); i++)
 			for (int j = 0; j < m_pShips.GetAt(i)->GetTransportedTroops()->GetSize(); j++)
-				if (m_pShips.GetAt(i)->GetTransportedTroops()->GetAt(j).GetPower() == NULL)
+				if (m_pShips.GetAt(i)->GetTransportedTroops()->GetAt(j).GetOffense() == NULL)
 				{
 					m_pShips.GetAt(i)->GetTransportedTroops()->RemoveAt(j--);
 					killedTroopsInTransport++;
@@ -321,14 +321,14 @@ void CAttackSystem::CalculateTroopAttack()
 		if (m_pTroops.GetSize() == 0)
 			break;
 		CTroopInfo* ti = new CTroopInfo();
-		ti->SetPower(10);
+		ti->SetDefense(10);
 		int number = rand()%m_pTroops.GetSize();
 		BYTE result = m_pTroops.GetAt(number)->Attack((CTroop*)ti, offenceBoni, 0);
 		// Die angreifende Einheit hat verloren
 		if (result > 0)
 		{
 			// Alle Truppen mit Stärke NULL werden am Ende von den Schiffen gelöscht
-			m_pTroops.GetAt(number)->SetPower(0);
+			m_pTroops.GetAt(number)->SetOffense(0);
 			m_pTroops.RemoveAt(number);			
 		}
 		delete ti;
@@ -348,14 +348,14 @@ void CAttackSystem::CalculateTroopAttack()
 		else if (result == 1)
 		{
 			// Alle Truppen mit Stärke NULL werden am Ende von den Schiffen gelöscht
-			m_pTroops.GetAt(numberAtt)->SetPower(0);
+			m_pTroops.GetAt(numberAtt)->SetOffense(0);
 			m_pTroops.RemoveAt(numberAtt);
 		}
 		else
 		{
 			m_pSystem->GetTroops()->RemoveAt(numberDef);
 			// Alle Truppen mit Stärke NULL werden am Ende von den Schiffen gelöscht
-			m_pTroops.GetAt(numberAtt)->SetPower(0);
+			m_pTroops.GetAt(numberAtt)->SetOffense(0);
 			m_pTroops.RemoveAt(numberAtt);
 		}
 	}
@@ -390,10 +390,10 @@ void CAttackSystem::CalculateTroopAttack()
 			else if (nPower < 0)
 				nPower = 0;
 		}
-		ti->SetPower((BYTE)nPower);
+		ti->SetDefense((BYTE)nPower);
 
 		// wie stark sich die Bevölkerung verteidigt hängt vom Moralwert derer ab
-		ti->SetPower(ti->GetPower() * m_pSystem->GetMoral() / 100);
+		ti->SetDefense(ti->GetDefense() * m_pSystem->GetMoral() / 100);
 		int number = rand()%m_pTroops.GetSize();
 		BYTE result = m_pTroops.GetAt(number)->Attack((CTroop*)ti, offenceBoni, m_pSystem->GetProduction()->GetGroundDefendBoni());
 		// Die angreifende Einheit hat verloren
@@ -401,7 +401,7 @@ void CAttackSystem::CalculateTroopAttack()
 		{
 			// Wenn die Angriffstärke dieser Einheit NULL beträgt, ist sie vernichtet. Am Ende des Kampfes können so die
 			// einzelnen Truppen aus den Transportern gelöscht werden
-			m_pTroops.GetAt(number)->SetPower(0);
+			m_pTroops.GetAt(number)->SetOffense(0);
 			m_pTroops.RemoveAt(number);
 		}
 		if (result != 1)
@@ -436,21 +436,21 @@ void CAttackSystem::CalculateTroopAttack()
 					if (result == 0)
 					{
 						// Alle Truppen mit Stärke NULL werden am Ende von den Schiffen gelöscht
-						m_pTroops.GetAt(i+1)->SetPower(0);
+						m_pTroops.GetAt(i+1)->SetOffense(0);
 						m_pTroops.RemoveAt(i+1);
 					}
 					else if (result == 1)
 					{
 						// Alle Truppen mit Stärke NULL werden am Ende von den Schiffen gelöscht
-						m_pTroops.GetAt(i)->SetPower(0);
+						m_pTroops.GetAt(i)->SetOffense(0);
 						m_pTroops.RemoveAt(i);
 					}
 					else
 					{
-						m_pTroops.GetAt(i)->SetPower(0);
+						m_pTroops.GetAt(i)->SetOffense(0);
 						m_pTroops.RemoveAt(i);
 						// hier gleich nochmal an der selben Stelle, da der Nachfolger ja um eins nach vorn gerutscht ist
-						m_pTroops.GetAt(i)->SetPower(0);
+						m_pTroops.GetAt(i)->SetOffense(0);
 						m_pTroops.RemoveAt(i);
 					}
 					i = 0;

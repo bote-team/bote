@@ -57,7 +57,9 @@ CTroopEditorDlg::CTroopEditorDlg(CWnd* pParent /*=NULL*/)
 	m_strName="";
 	m_strDescription="";
 	m_strOwner="";
-	m_byPower=0;
+	m_strGraphicfile="";
+	m_byOffense=0;
+	m_byDefense=0;
 	m_byMaintenanceCosts=0;
 	for(int i=0;i<6;i++)
 	m_byNeededTechs[i]=0;
@@ -78,8 +80,10 @@ void CTroopEditorDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_DESC, m_strDescription);
 	DDX_Text(pDX, IDC_NAME2, m_strName2);
 	DDX_Text(pDX, IDC_DESC2, m_strDescription2);
+	DDX_Text(pDX, IDC_GPHCF, m_strGraphicfile);
 	DDX_Text(pDX, IDC_OWNER, m_strOwner);
-	DDX_Text(pDX, IDC_POWER, m_byPower);
+	DDX_Text(pDX, IDC_OFF, m_byOffense);
+	DDX_Text(pDX, IDC_DEF, m_byDefense);
 	DDX_Text(pDX, IDC_MCOSTS, m_byMaintenanceCosts);
 	DDX_Text(pDX, IDC_TECH1, m_byNeededTechs[0]);
 	DDX_Text(pDX, IDC_TECH2, m_byNeededTechs[1]);
@@ -247,8 +251,10 @@ void CTroopEditorDlg::DialogToData()
 		this->UpdateData(TRUE);
 		m_TroopInfo.ElementAt(m_iClick).SetName(m_strName);
 		m_TroopInfo.ElementAt(m_iClick).SetDescription(m_strDescription);
+		m_TroopInfo.ElementAt(m_iClick).SetGraphicfile(m_strGraphicfile);
 		m_TroopInfo.ElementAt(m_iClick).SetOwner(m_strOwner);
-		m_TroopInfo.ElementAt(m_iClick).SetPower(m_byPower);
+		m_TroopInfo.ElementAt(m_iClick).SetOffense(m_byOffense);
+		m_TroopInfo.ElementAt(m_iClick).SetDefense(m_byDefense);
 		m_TroopInfo.ElementAt(m_iClick).SetMaintenanceCosts(m_byMaintenanceCosts);
 		for(int i=0;i<6;i++) m_TroopInfo.ElementAt(m_iClick).SetNeededTechlevel(i,m_byNeededTechs[i]);
 		for(int i=0;i<5;i++) m_TroopInfo.ElementAt(m_iClick).SetNeededRessource(i,m_iNeededResources[i]);
@@ -270,7 +276,9 @@ void CTroopEditorDlg::DataToDialog()
 		m_strName2 = m_TroopInfo.GetAt(m_ListBox.GetCurSel()).GetName2();
 		m_strDescription2 = m_TroopInfo.GetAt(m_ListBox.GetCurSel()).GetDescription2();
 		m_strOwner = m_TroopInfo.GetAt(m_ListBox.GetCurSel()).GetOwner();
-		m_byPower = m_TroopInfo.GetAt(m_ListBox.GetCurSel()).GetPower();
+		m_strGraphicfile = m_TroopInfo.GetAt(m_ListBox.GetCurSel()).GetGraphicfile();
+		m_byOffense = m_TroopInfo.GetAt(m_ListBox.GetCurSel()).GetOffense();
+		m_byDefense = m_TroopInfo.GetAt(m_ListBox.GetCurSel()).GetDefense();
 		m_byMaintenanceCosts = m_TroopInfo.GetAt(m_ListBox.GetCurSel()).GetMaintenanceCosts();
 		for(int i=0;i<6;i++) m_byNeededTechs[i] = m_TroopInfo.GetAt(m_ListBox.GetCurSel()).GetNeededTechlevel(i);
 		for(int i=0;i<5;i++) m_iNeededResources[i] = m_TroopInfo.GetAt(m_ListBox.GetCurSel()).GetNeededRessource(i);

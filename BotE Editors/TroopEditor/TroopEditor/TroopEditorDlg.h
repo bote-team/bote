@@ -23,7 +23,9 @@ public:
 	CString m_strOwner;
 	CString m_strName2;
 	CString m_strDescription2;
-	BYTE m_byPower;
+	CString m_strGraphicfile;
+	BYTE m_byOffense;
+	BYTE m_byDefense;
 	BYTE m_byMaintenanceCosts;
 	BYTE m_byNeededTechs[6];
 	int m_iNeededResources[5];

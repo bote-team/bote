@@ -266,26 +266,28 @@ void CTransportMenuView::DrawTransportMenue(Graphics* g)
 				
 		fontBrush.SetColor(normalColor);
 		fontFormat.SetAlignment(StringAlignmentNear);
-		s.Format("%s: %d",CResourceManager::GetString("POWER"),pDoc->m_System[p.x][p.y].GetTroops()->GetAt(m_byTroopNumberInSystem).GetPower());
+		s.Format("%s: %d",CResourceManager::GetString("OPOWER"),pDoc->m_System[p.x][p.y].GetTroops()->GetAt(m_byTroopNumberInSystem).GetOffense());
 		g->DrawString(s.AllocSysString(), -1, &font, RectF(40,310,185,30), &fontFormat, &fontBrush);
-		s.Format("%s: %d",CResourceManager::GetString("EXPERIANCE"),pDoc->m_System[p.x][p.y].GetTroops()->GetAt(m_byTroopNumberInSystem).GetExperiance());
+		s.Format("%s: %d",CResourceManager::GetString("DPOWER"),pDoc->m_System[p.x][p.y].GetTroops()->GetAt(m_byTroopNumberInSystem).GetDefense());
 		g->DrawString(s.AllocSysString(), -1, &font, RectF(40,340,185,30), &fontFormat, &fontBrush);
-		s.Format("%s: %d",CResourceManager::GetString("PLACE"),pDoc->m_TroopInfo.GetAt(id).GetSize());
+		s.Format("%s: %d",CResourceManager::GetString("EXPERIANCE"),pDoc->m_System[p.x][p.y].GetTroops()->GetAt(m_byTroopNumberInSystem).GetExperiance());
 		g->DrawString(s.AllocSysString(), -1, &font, RectF(40,370,185,30), &fontFormat, &fontBrush);
-		s.Format("%s: %d",CResourceManager::GetString("MORALVALUE"),pDoc->m_TroopInfo.GetAt(id).GetMoralValue());
+		s.Format("%s: %d",CResourceManager::GetString("PLACE"),pDoc->m_TroopInfo.GetAt(id).GetSize());
 		g->DrawString(s.AllocSysString(), -1, &font, RectF(40,400,185,30), &fontFormat, &fontBrush);
+		s.Format("%s: %d",CResourceManager::GetString("MORALVALUE"),pDoc->m_TroopInfo.GetAt(id).GetMoralValue());
+		g->DrawString(s.AllocSysString(), -1, &font, RectF(40,430,185,30), &fontFormat, &fontBrush);
 		
 		fontFormat.SetLineAlignment(StringAlignmentNear);
 		fontFormat.SetFormatFlags(!StringFormatFlagsNoWrap);
 		s = pDoc->m_TroopInfo.GetAt(id).GetDescription();
-		g->DrawString(s.AllocSysString(), -1, &font, RectF(30,435,190,265), &fontFormat, &fontBrush);
+		g->DrawString(s.AllocSysString(), -1, &font, RectF(30,465,190,265), &fontFormat, &fontBrush);
 		fontFormat.SetLineAlignment(StringAlignmentCenter);
 		fontFormat.SetFormatFlags(StringFormatFlagsNoWrap);
 		
 		s.Format("#%d: %s", m_byTroopNumberInSystem+1, pDoc->m_TroopInfo.GetAt(id).GetName());
 		// Das Bild für die Truppe zeichnen
 		CString file;
-		file.Format("Troops\\%s.bop", pDoc->m_TroopInfo.GetAt(id).GetName());
+		file.Format("Troops\\%s", pDoc->m_TroopInfo.GetAt(id).GetGraphicfile());
 		Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic(file);
 		if (graphic == NULL)
 				graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Troops\\ImageMissing.bop");
@@ -313,26 +315,28 @@ void CTransportMenuView::DrawTransportMenue(Graphics* g)
 				
 		fontBrush.SetColor(normalColor);
 		fontFormat.SetAlignment(StringAlignmentNear);
-		s.Format("%s: %d",CResourceManager::GetString("POWER"), ship->GetTransportedTroops()->GetAt(m_byTroopNumberInShip).GetPower());
+		s.Format("%s: %d",CResourceManager::GetString("OPOWER"), ship->GetTransportedTroops()->GetAt(m_byTroopNumberInShip).GetOffense());
 		g->DrawString(s.AllocSysString(), -1, &font, RectF(865,310,185,30), &fontFormat, &fontBrush);
-		s.Format("%s: %d",CResourceManager::GetString("EXPERIANCE"), ship->GetTransportedTroops()->GetAt(m_byTroopNumberInShip).GetExperiance());
+		s.Format("%s: %d",CResourceManager::GetString("DPOWER"), ship->GetTransportedTroops()->GetAt(m_byTroopNumberInShip).GetDefense());
 		g->DrawString(s.AllocSysString(), -1, &font, RectF(865,340,185,30), &fontFormat, &fontBrush);
-		s.Format("%s: %d",CResourceManager::GetString("PLACE"),pDoc->m_TroopInfo.GetAt(id).GetSize());
+		s.Format("%s: %d",CResourceManager::GetString("EXPERIANCE"), ship->GetTransportedTroops()->GetAt(m_byTroopNumberInShip).GetExperiance());
 		g->DrawString(s.AllocSysString(), -1, &font, RectF(865,370,185,30), &fontFormat, &fontBrush);
-		s.Format("%s: %d",CResourceManager::GetString("MORALVALUE"),pDoc->m_TroopInfo.GetAt(id).GetMoralValue());
+		s.Format("%s: %d",CResourceManager::GetString("PLACE"),pDoc->m_TroopInfo.GetAt(id).GetSize());
 		g->DrawString(s.AllocSysString(), -1, &font, RectF(865,400,185,30), &fontFormat, &fontBrush);
+		s.Format("%s: %d",CResourceManager::GetString("MORALVALUE"),pDoc->m_TroopInfo.GetAt(id).GetMoralValue());
+		g->DrawString(s.AllocSysString(), -1, &font, RectF(865,430,185,30), &fontFormat, &fontBrush);
 		
 		fontFormat.SetLineAlignment(StringAlignmentNear);
 		fontFormat.SetFormatFlags(!StringFormatFlagsNoWrap);
 		s = pDoc->m_TroopInfo.GetAt(id).GetDescription();
-		g->DrawString(s.AllocSysString(), -1, &font, RectF(855,435,190,265), &fontFormat, &fontBrush);
+		g->DrawString(s.AllocSysString(), -1, &font, RectF(855,465,190,265), &fontFormat, &fontBrush);
 		fontFormat.SetLineAlignment(StringAlignmentCenter);
 		fontFormat.SetFormatFlags(StringFormatFlagsNoWrap);
 		
 		s.Format("#%d: %s", m_byTroopNumberInShip+1, pDoc->m_TroopInfo.GetAt(id).GetName());
 		// Das Bild für die Truppe zeichnen
 		CString file;
-		file.Format("Troops\\%s.bop", pDoc->m_TroopInfo.GetAt(id).GetName());
+		file.Format("Troops\\%s", pDoc->m_TroopInfo.GetAt(id).GetGraphicfile());
 		Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic(file);
 		if (graphic == NULL)
 				graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Troops\\ImageMissing.bop");

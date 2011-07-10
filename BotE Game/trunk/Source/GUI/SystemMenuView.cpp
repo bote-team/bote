@@ -563,10 +563,13 @@ void CSystemMenuView::DrawBuildMenue(Graphics* g)
 				g->DrawString(pDoc->m_TroopInfo.GetAt(RunningNumber-20000).GetName().AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(r.left,r.top,r.Width(),r.Height()), &fontFormat, &fontBrush);
 				fontBrush.SetColor(oldColor);
 				r.top += 60;
-				BYTE offPower = pDoc->m_TroopInfo.GetAt(RunningNumber-20000).GetPower();
+				BYTE offPower = pDoc->m_TroopInfo.GetAt(RunningNumber-20000).GetOffense();
 				if (pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(4)->GetFieldStatus(1) == RESEARCHED)
 					offPower += (offPower * pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(4)->GetBonus(1) / 100);
-				s.Format("%s: %d",CResourceManager::GetString("POWER"), offPower);
+				s.Format("%s: %d",CResourceManager::GetString("OPOWER"), offPower);
+				g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(r.left,r.top,r.Width(),r.Height()), &fontFormat, &fontBrush);
+				r.top += 25;
+				s.Format("%s: %d",CResourceManager::GetString("DPOWER"), pDoc->m_TroopInfo.GetAt(RunningNumber-20000).GetDefense());
 				g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(r.left,r.top,r.Width(),r.Height()), &fontFormat, &fontBrush);
 				r.top += 25;
 				s.Format("%s: %d",CResourceManager::GetString("MORALVALUE"), pDoc->m_TroopInfo.GetAt(RunningNumber-20000).GetMoralValue());
@@ -589,7 +592,7 @@ void CSystemMenuView::DrawBuildMenue(Graphics* g)
 		else if (m_iWhichSubMenu == 1 && pDoc->m_System[p.x][p.y].GetBuildableShips()->GetSize() > 0)	// sind im Schiffsuntermenü 
 			file.Format("Ships\\%s.bop",pDoc->m_ShipInfoArray.GetAt(RunningNumber-10000).GetShipClass());
 		else if (m_iWhichSubMenu == 2 && pDoc->m_System[p.x][p.y].GetBuildableTroops()->GetSize() > 0)	// sind im Kasernenuntermenü
-			file.Format("Troops\\%s.bop",pDoc->m_TroopInfo.GetAt(RunningNumber-20000).GetName());
+			file.Format("Troops\\%s",pDoc->m_TroopInfo.GetAt(RunningNumber-20000).GetGraphicfile());
 		graphic = NULL;
 		graphic = pDoc->GetGraphicPool()->GetGDIGraphic(file);
 		if (graphic == NULL)

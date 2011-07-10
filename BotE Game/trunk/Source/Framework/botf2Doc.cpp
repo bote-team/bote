@@ -1689,7 +1689,7 @@ void CBotf2Doc::ReadTroopInfosFromFile()
 	// Datei wird geöffnet
 	if (file.Open(fileName, CFile::modeRead | CFile::typeText))
 	{
-		CString data[20];
+		CString data[22];
 		CString csInput;
 		int i=0;
 		CTroopInfo* troopInfo;
@@ -1700,12 +1700,12 @@ void CBotf2Doc::ReadTroopInfosFromFile()
 				continue;
 			// Daten lesen
 			data[i++] = csInput;
-			if (i == 20)
+			if (i == 22)
 			{
 				i = 0;
-				BYTE techs[6]={atoi(data[5]),atoi(data[6]),atoi(data[7]),atoi(data[8]),atoi(data[9]),atoi(data[10])};
-				USHORT res[5] = {atoi(data[11]),atoi(data[12]),atoi(data[13]),atoi(data[14]),atoi(data[15])};
-				troopInfo = new CTroopInfo(CResourceManager::GetString(data[1]), CResourceManager::GetString(data[2]),atoi(data[3]),atoi(data[4]),techs,res,atoi(data[16]),atoi(data[17]),data[0].GetString(),atoi(data[18]),atoi(data[19]));
+				BYTE techs[6]={atoi(data[7]),atoi(data[8]),atoi(data[9]),atoi(data[10]),atoi(data[11]),atoi(data[12])};
+				USHORT res[5] = {atoi(data[13]),atoi(data[14]),atoi(data[15]),atoi(data[16]),atoi(data[17])};
+				troopInfo = new CTroopInfo(CResourceManager::GetString(data[1]), CResourceManager::GetString(data[2]),data[3],atoi(data[4]),atoi(data[5]),atoi(data[6]),techs,res,atoi(data[18]),atoi(data[19]),data[0].GetString(),atoi(data[20]),atoi(data[21]));
 				m_TroopInfo.Add(*troopInfo);
 				delete troopInfo;
 			}
@@ -2287,8 +2287,8 @@ void CBotf2Doc::BuildTroop(BYTE ID, CPoint ko)
 		// 20% verbesserte Offensive
 		if (pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(4)->GetFieldStatus(1) == RESEARCHED)
 		{
-			BYTE power = m_System[ko.x][ko.y].GetTroops()->GetAt(n).GetPower();
-			m_System[ko.x][ko.y].GetTroops()->GetAt(n).SetPower(
+			BYTE power = m_System[ko.x][ko.y].GetTroops()->GetAt(n).GetOffense();
+			m_System[ko.x][ko.y].GetTroops()->GetAt(n).SetOffense(
 				power + (power * pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(4)->GetBonus(1) / 100));
 		}
 		// 500 Erfahrungspunkte dazu -> erste Stufe

@@ -1322,8 +1322,11 @@ verfügbar
 [SELECTED]
 ausgewählt
 
-[POWER]
-Stärke
+[OPOWER]
+Angriffsstärke
+
+[DPOWER]
+Verteidigungsstärke
 
 [EXPERIANCE]
 Erfahrung

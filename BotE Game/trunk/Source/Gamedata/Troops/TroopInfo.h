@@ -15,7 +15,7 @@ public:
 	CTroopInfo(void);
 
 	/// Konstruktor mit kompletter Parameterübergabe
-	CTroopInfo(const CString& name, const CString& desc, BYTE power, BYTE costs, BYTE techs[6], USHORT res[5], USHORT ip,
+	CTroopInfo(const CString& name, const CString& desc,const CString& file, BYTE offense, BYTE defense, BYTE costs, BYTE techs[6], USHORT res[5], USHORT ip,
 		BYTE ID, const CString& sOwner, USHORT size, BYTE moralValue);
 	
 	/// Destruktor
@@ -34,6 +34,11 @@ public:
 	 * Dieser Funktion gibt die Beschreibung der Truppe zurück.
 	 */
 	const CString& GetDescription() const {return m_strDescription;}
+	
+	/*
+	 *Diese Funktion gibt das Bild der Truppe zurück
+	 */
+	const CString& GetGraphicfile() const {return m_strGraphicfile;}
 
 	/**
 	 * Diese Funktion gibt die Unterhaltskosten der Truppe zurück.
@@ -82,6 +87,12 @@ public:
 	 */
 	void SetDescription(const CString& desc) {m_strDescription = desc;}
 
+
+	/**
+	 *Diese Funktion setzt das Bild der Truppe
+	 */
+	void SetGraphicfile(const CString& name) {m_strGraphicfile = name;}
+
 	/**
 	 * Diese Funktion setzt die zum Bau benötigte Industrie der Truppe.
 	 */
@@ -98,6 +109,9 @@ private:
 
 	/// Die Beschreibung der Einheit
 	CString m_strDescription;
+	
+	/// Das Bild der Einheit
+	CString m_strGraphicfile;
 
 	/// Diese Variable beinhaltet die Unterhaltskosten der Einheit
 	BYTE m_byMaintenanceCosts;

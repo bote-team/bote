@@ -20,7 +20,8 @@ CTroop::CTroop(const CTroop & rhs)
 {
 	m_byID = rhs.m_byID;
 	m_sOwner = rhs.m_sOwner;
-	m_byPower = rhs.m_byPower;
+	m_byOffense = rhs.m_byOffense;
+	m_byDefense = rhs.m_byDefense;
 	m_iExperiance = rhs.m_iExperiance;
 }
 
@@ -33,7 +34,8 @@ CTroop & CTroop::operator=(const CTroop & rhs)
 		return *this;
 	m_byID = rhs.m_byID;
 	m_sOwner = rhs.m_sOwner;
-	m_byPower = rhs.m_byPower;
+	m_byOffense = rhs.m_byOffense;
+	m_byDefense = rhs.m_byDefense;
 	m_iExperiance = rhs.m_iExperiance;
 	return *this;
 }
@@ -49,7 +51,8 @@ void CTroop::Serialize(CArchive &ar)
 	{
 		ar << m_byID;
 		ar << m_sOwner;
-		ar << m_byPower;
+		ar << m_byOffense;
+		ar << m_byDefense;
 		ar << m_iExperiance;
 	}
 	// wenn geladen wird
@@ -57,7 +60,8 @@ void CTroop::Serialize(CArchive &ar)
 	{
 		ar >> m_byID;
 		ar >> m_sOwner;
-		ar >> m_byPower;
+		ar >> m_byOffense;
+		ar >> m_byDefense;
 		ar >> m_iExperiance;
 	}
 }
@@ -98,7 +102,7 @@ BYTE CTroop::Attack(CTroop* enemy, BYTE offenceBoni, short defenceBoni)
 	else if (m_iExperiance >= 500)
 		damageBoni = 10;
 	damageBoni += offenceBoni;
-	BYTE attackPower = m_byPower + m_byPower * damageBoni / 100;
+	BYTE attackPower = m_byOffense + m_byOffense * damageBoni / 100;
 	USHORT ExpBonusForDef = attackPower * 100;
 	
 /*	CString t;
@@ -123,7 +127,7 @@ BYTE CTroop::Attack(CTroop* enemy, BYTE offenceBoni, short defenceBoni)
 		damageBoni = 20;
 	else if (enemy->m_iExperiance >= 500)
 		damageBoni = 10;
-	BYTE defencePower = enemy->m_byPower + enemy->m_byPower * damageBoni / 100;
+	BYTE defencePower = enemy->m_byDefense + enemy->m_byOffense * damageBoni / 100;
 	defencePower += defencePower * defenceBoni / 100;
 	USHORT ExpBonusForAtt = defencePower * 100;
 

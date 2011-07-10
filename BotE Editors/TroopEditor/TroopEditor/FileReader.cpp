@@ -62,7 +62,7 @@ void CFileReader::ReadDataFromFile(CArray<CTroopInfo,CTroopInfo>* m_TroopInfos)
 	if (m_TroopInfos != NULL)
 		m_TroopInfos->RemoveAll();
 	CTroopInfo info;
-	CString data[20];
+	CString data[22];
 	CString csInput;					// auf csInput wird die jeweilige Zeile gespeichert
 	CString fileName="Troops.data";	// Name des zu Öffnenden Files 
 	CStdioFile file;											// Varibale vom Typ CStdioFile
@@ -71,23 +71,25 @@ void CFileReader::ReadDataFromFile(CArray<CTroopInfo,CTroopInfo>* m_TroopInfos)
 		while (file.ReadString(csInput))
 		{
 			data[i++] = csInput;
-			if (i == 20)
+			if (i == 22)
 			{
 				i = 0;
 				// Doppelpunkt bei Namen des Heimatsystems entferneen
 				info.SetOwner(data[0]);
 				info.SetName(data[1]);
 				info.SetDescription(data[2]);
-				info.SetPower(atoi(data[3]));
-				info.SetMaintenanceCosts(atoi(data[4]));
+				info.SetGraphicfile(data[3]);
+				info.SetOffense(atoi(data[4]));
+				info.SetDefense(atoi(data[5]));
+				info.SetMaintenanceCosts(atoi(data[6]));
 				for (int j = 0; j < 6; j++)
-					info.SetNeededTechlevel(j,atoi(data[5+j]));
+					info.SetNeededTechlevel(j,atoi(data[7+j]));
 				for (int j = TITAN; j < DILITHIUM;j++)
-					info.SetNeededRessource(j,atoi(data[11+j]));
-				info.SetNeededIndustry(atoi(data[16]));
-				info.SetID(atoi(data[17]));
-				info.SetSize(atoi(data[18]));
-				info.SetMoralValue(atoi(data[19]));
+					info.SetNeededRessource(j,atoi(data[13+j]));
+				info.SetNeededIndustry(atoi(data[18]));
+				info.SetID(atoi(data[19]));
+				info.SetSize(atoi(data[20]));
+				info.SetMoralValue(atoi(data[21]));
 				m_TroopInfos->Add(info);
 			}
 		}
@@ -121,7 +123,11 @@ void CFileReader::WriteDataToFile(CArray<CTroopInfo,CTroopInfo>* m_TroopInfos)
 			file.WriteString(s);
 			s.Format("%s\n",m_TroopInfos->GetAt(i).GetDescription());
 			file.WriteString(s);
-			s.Format("%d\n",m_TroopInfos->GetAt(i).GetPower());
+			s.Format("%s\n",m_TroopInfos->GetAt(i).GetGraphicfile());
+			file.WriteString(s);
+			s.Format("%d\n",m_TroopInfos->GetAt(i).GetOffense());
+			file.WriteString(s);
+			s.Format("%d\n",m_TroopInfos->GetAt(i).GetDefense());
 			file.WriteString(s);
 			s.Format("%d\n",m_TroopInfos->GetAt(i).GetMaintenanceCosts());
 			file.WriteString(s);

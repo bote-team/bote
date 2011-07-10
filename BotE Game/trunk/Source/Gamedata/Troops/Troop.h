@@ -43,7 +43,14 @@ public:
 	/**
 	 * Diese Funktion gibt die Angriffsstärke der Truppe zurück.
 	 */
-	BYTE GetPower() const {return m_byPower;}
+	BYTE GetOffense() const {return m_byOffense;}
+	
+	/**
+	 * Diese Funktion gibt die Verteidigungsstärke der Truppe zurück.
+	 */
+	BYTE GetDefense() const {return m_byDefense;}
+
+
 
 	/**
 	 * Diese Funktion gibt die derzeitige Erfahrung der Einheit zurück.
@@ -54,7 +61,13 @@ public:
 	/**
 	 * Diese Funktion setzt die Angriffsstärke der Truppe.
 	 */
-	void SetPower(BYTE power) {m_byPower = power;}
+	void SetOffense(BYTE power) {m_byOffense = power;}
+
+
+	/**
+	 * Diese Funktion setzt die Verteidigungsstärke der Truppe.
+	 */
+	void SetDefense(BYTE power) {m_byDefense = power;}
 
 	/**
 	 * Diese Funktion addiert <code>add</code> zur derzeitigen Erfahrung der Truppe.
@@ -85,8 +98,11 @@ protected:
 	/// Welcher Rasse gehört die Truppe
 	CString m_sOwner;
 
-	/// Diese Variable gibt die Stärke der Truppe an
-	BYTE m_byPower;
+	/// Diese Variable gibt die Offensiv-Stärke der Truppe an
+	BYTE m_byOffense;
+
+	/// Diese Variable gibt die Defensiv-Stärke der Truppe an
+	BYTE m_byDefense;
 
 	/// Die Erfahrung der Truppe
 	USHORT m_iExperiance;
