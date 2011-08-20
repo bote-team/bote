@@ -12,23 +12,18 @@
 #define IDC_RACENAME                    1001
 #define IDC_DESCRIPTION                 1002
 #define IDC_RELFED                      1003
-#define IDC_RELAGRARIAN                 1003
 #define IDC_RELFER                      1004
-#define IDC_RELFINANCIAL                1004
 #define IDC_RELKLI                      1005
-#define IDC_RELHOSTILE                  1005
 #define IDC_RELROM                      1006
-#define IDC_RELINDUSTRIAL               1006
 #define IDC_RELCAR                      1007
-#define IDC_RELPACIFIST                 1007
 #define IDC_RELDOM                      1008
-#define IDC_RELPRODUCTIV                1008
 #define IDC_TECHPROGRESS                1009
 #define IDC_KIND                        1010
 #define IDC_SPACEFLIGHT                 1011
 #define IDC_CORRUPTIBILITY              1012
 #define IDC_BASEVALUE                   1013
 #define IDC_RELPSOLOING                 1014
+#define IDC_RELSOLOING                  1014
 #define IDC_RELSCIENTIFIC               1015
 #define IDC_RELSECRET                   1016
 #define IDC_RELSNEAKY                   1017
@@ -53,6 +48,17 @@
 #define IDC_CHECKSECRET                 1033
 #define IDC_CHECKSNEAKY                 1034
 #define IDC_CHECKWARLIKE                1035
+#define IDC_RELCAR2                     1039
+#define IDC_RELTYPE1                    1040
+#define IDC_RELTYPE2                    1041
+#define IDC_EDIT1                       1042
+#define IDC_RELFINANCIAL                1042
+#define IDC_RELAGRARIAN                 1043
+#define IDC_RELINDUSTRIAL               1044
+#define IDC_RELPRODUCER                 1045
+#define IDC_RELPACIFIST                 1046
+#define IDC_RELHOSTILE                  1047
+#define IDC_CALC                        1048
 
 // Next default values for new objects
 // 
@@ -60,7 +66,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        131
 #define _APS_NEXT_COMMAND_VALUE         40001
-#define _APS_NEXT_CONTROL_VALUE         1028
+#define _APS_NEXT_CONTROL_VALUE         1049
 #define _APS_NEXT_SYMED_VALUE           104
 #endif
 #endif

@@ -38,7 +38,8 @@ CMinorRace::CMinorRace(const CMinorRace & rhs)
 	for (int i = 0; i <= DOMINION; i++)
 		m_iRelationship[i] = rhs.m_iRelationship[i];
 	m_iTechnologicalProgress = rhs.m_iTechnologicalProgress;
-	m_iKind = rhs.m_iKind;
+	for (int i = 0; i < 11; i++)
+		m_bProperty[i] = rhs.m_bProperty[i];
 	m_iCorruptibility = rhs.m_iCorruptibility;
 	m_bSpaceflightNation = rhs.m_bSpaceflightNation;
 }
@@ -57,7 +58,8 @@ CMinorRace & CMinorRace::operator=(const CMinorRace & rhs)
 	for (int i = 0; i <= DOMINION; i++)
 		m_iRelationship[i] = rhs.m_iRelationship[i];
 	m_iTechnologicalProgress = rhs.m_iTechnologicalProgress;
-	m_iKind = rhs.m_iKind;
+	for (int i = 0; i < 11; i++)
+		m_bProperty[i] = rhs.m_bProperty[i];
 	m_iCorruptibility = rhs.m_iCorruptibility;
 	m_bSpaceflightNation = rhs.m_bSpaceflightNation;
 	return *this;
@@ -72,7 +74,8 @@ void CMinorRace::Reset()
 	for (int i = 0; i <= DOMINION; i++)
 		m_iRelationship[i] = 50;	// Die Beziehung der Minorrace zu den einzelnen Majorraces
 	m_iTechnologicalProgress = 2;	// wie fortschrittlich ist die Minorrace?
-	m_iKind = 0;					// Art der Minorrace (landwirtschaftlich, kriegerish, industriell usw.)
+	for (int i = 0; i <11;i++)
+		m_bProperty[i]=FALSE;				// Art der Minorrace (landwirtschaftlich, kriegerish, industriell usw.)
 	m_iCorruptibility = 2;			// wie stark ändert sich die Beziehung beim Geschenke geben?
 	m_bSpaceflightNation = FALSE;	// ist die Minorrace eine Raumfahrtnation
 }

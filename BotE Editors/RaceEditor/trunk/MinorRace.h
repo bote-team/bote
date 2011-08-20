@@ -52,7 +52,7 @@ public:
 	CString GetGraphicName() const {return m_strGraphicName;}
 	BYTE GetRelationshipToMajorRace(USHORT race) const {return m_iRelationship[race];}
 	BYTE GetTechnologicalProgress() const {return m_iTechnologicalProgress;}
-	BYTE GetKind() const {return m_iKind;}
+	BOOL GetProperty(BYTE kind) const {return m_bProperty[kind];}
 	BYTE GetCorruptibility() const {return m_iCorruptibility;}
 	BOOLEAN GetSpaceflightNation() const {return m_bSpaceflightNation;}
 	
@@ -63,7 +63,7 @@ public:
 	void SetGraphicName(const CString& name) {m_strGraphicName = name;}
 	void SetRelationship(USHORT race, BYTE relation) {m_iRelationship[race] = relation;}
 	void SetTechnologicalProgress(BYTE progress) {m_iTechnologicalProgress = progress;}
-	void SetKind(BYTE kind) {m_iKind = kind;}
+	void SetProperty(BYTE kind,BOOLEAN is) {m_bProperty[kind] = is;}
 	void SetCorruptibility(BYTE cor) {m_iCorruptibility = cor;}
 	void SetSpaceflightNation(BOOLEAN is) {m_bSpaceflightNation = is;}
 	
@@ -78,7 +78,7 @@ private:
 	CString m_strGraphicName;			///< Name der zugehörigen Grafikdatei
 	BYTE m_iRelationship[7];			///< Die einzelnen Beziehung der Minorrace zu den Majorraces
 	BYTE m_iTechnologicalProgress;		///< wie fortschrittlich ist die Minorrace?
-	BYTE m_iKind;						///< Art der Minorrace (landwirtschaftlich, kriegerish, industriell usw.)
+	BOOL m_bProperty[11];			///< Art der Minorrace (landwirtschaftlich, kriegerisch, industriell usw.)
 	BYTE m_iCorruptibility;				///< wie stark ändert sich die Beziehung beim Geschenke geben?
 	BOOLEAN m_bSpaceflightNation;		///< ist die Minorrace eine Raumfahrtnation?
 };

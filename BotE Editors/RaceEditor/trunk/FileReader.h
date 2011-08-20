@@ -26,6 +26,8 @@ public:
 	  * Funktion schreibt Daten in eine Datei
 	  */
 	void WriteDataToFile(CArray<CMinorRace,CMinorRace>* m_MinorInfos);
+private:
+	CString m_strVersion;
 };
 
 #endif // !defined(AFX_FILEREADER_H__7DB56B9E_FEB0_4471_B811_E0DCCFE1FEC6__INCLUDED_)

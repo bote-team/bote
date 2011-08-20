@@ -35,38 +35,54 @@ void CFileReader::ReadDataFromFile(CArray<CMinorRace,CMinorRace>* m_MinorInfos)
 		m_MinorInfos->RemoveAll();
 	CMinorRace info;
 	CString data[14];
-	CString csInput;					// auf csInput wird die jeweilige Zeile gespeichert
+	CString csInput;// auf csInput wird die jeweilige Zeile gespeichert
+	CString sRaceProperties;
 	CString fileName="MinorRaces.data";	// Name des zu Öffnenden Files 
 	CStdioFile file;											// Varibale vom Typ CStdioFile
 	if (file.Open(fileName, CFile::modeRead | CFile::typeBinary))	// Datei wird geöffnet
 	{
-		while (file.ReadString(csInput))
+		file.ReadString(m_strVersion);
+		if(m_strVersion=="0.81")
 		{
-			data[i++] = csInput;
-			if (i == 14)
+			while (file.ReadString(csInput))
 			{
-				i = 0;
-				// Doppelpunkt bei Namen des Heimatsystems entferneen
-				if (!data[0].IsEmpty())
+				data[i++] = csInput;
+				if (i == 14)
 				{
-					data[0].Delete(data[0].GetLength()-1);
-					// Den ersten Buchstaben merken, den Rest klein schreiben
-					char first = data[0].GetAt(0);
-					data[0].MakeLower();
-					data[0].SetAt(0,first);
+					i = 0;
+					// Doppelpunkt bei Namen des Heimatsystems entferneen
+					if (!data[0].IsEmpty())
+					{
+						data[0].Remove(':');
+						// Den ersten Buchstaben merken, den Rest klein schreiben
+						char first = data[0].GetAt(0);
+						data[0].MakeLower();
+						data[0].SetAt(0,first);
+					}
+					info.SetHomePlanet(data[0]);
+					info.SetRaceName(data[1]);
+					info.SetRaceDescription(data[2]);
+					info.SetGraphicName(data[3]);
+					for (int j = HUMAN; j <= DOMINION; j++)
+						info.SetRelationship(j,atoi(data[j+3]));
+					info.SetTechnologicalProgress(atoi(data[10]));
+					sRaceProperties = data[11];
+					int nStart = 0;
+					while (nStart < sRaceProperties.GetLength())
+					{
+						int nProperty = atoi(sRaceProperties.Tokenize(",", nStart));
+						if(nProperty==0) break;
+						info.SetProperty(nProperty-1, TRUE);				// Rasseneigenschaften
+					}
+					info.SetSpaceflightNation(atoi(data[12]));
+					info.SetCorruptibility(atoi(data[13]));
+					m_MinorInfos->Add(info);
+					info.Reset();
 				}
-				info.SetHomePlanet(data[0]);
-				info.SetRaceName(data[1]);
-				info.SetRaceDescription(data[2]);
-				info.SetGraphicName(data[3]);
-				for (int j = HUMAN; j <= DOMINION; j++)
-					info.SetRelationship(j,atoi(data[j+3]));
-				info.SetTechnologicalProgress(atoi(data[10]));
-				info.SetKind(atoi(data[11]));
-				info.SetSpaceflightNation(atoi(data[12]));
-				info.SetCorruptibility(atoi(data[13]));
-				m_MinorInfos->Add(info);
-			}
+			}	
+		} else {
+			AfxMessageBox("Fehler! Veraltete/Inkompatible Version der \"MinorRaces.data\"");
+			exit(1);
 		}
 	}
 	else
@@ -82,11 +98,13 @@ void CFileReader::WriteDataToFile(CArray<CMinorRace,CMinorRace>* m_MinorInfos)
 	// Sortierung
 	c_arraysort<CArray<CMinorRace,CMinorRace>,CMinorRace>(*m_MinorInfos,sort_asc);
 	int i = 0;
-	CString s;
+	CString s,sold;
 	CString fileName="MinorRaces.data";		// Name des zu Öffnenden Files 
 	CStdioFile file;						// Varibale vom Typ CStdioFile
 	if (file.Open(fileName, CFile::typeBinary | CFile::modeCreate | CFile::modeWrite))		// Datei wird geöffnet
 	{
+		s.Format("%s\n",m_strVersion);
+		file.WriteString(s);
 		for (i = 0; i < m_MinorInfos->GetSize(); i++)
 		{
 			// Systemnamen groß schreiben und Doppelpunkt an das Ende stellen
@@ -106,7 +124,18 @@ void CFileReader::WriteDataToFile(CArray<CMinorRace,CMinorRace>* m_MinorInfos)
 			}
 			s.Format("%d\n",m_MinorInfos->GetAt(i).GetTechnologicalProgress());
 			file.WriteString(s);
-			s.Format("%d\n",m_MinorInfos->GetAt(i).GetKind());
+			sold="";
+			for(int j=0;j<11;j++)
+			{
+				if(m_MinorInfos->GetAt(i).GetProperty(j)==TRUE)
+				{
+					s.Format("%s%d,",sold,j+1);
+					sold=s;//Weil s.Format(s) einen Runtimeerror gibt
+				}
+			}
+			if(sold=="") sold="0," ;//Wenn keine Eigenschaft vorhanden
+			sold=sold.Left(sold.GetLength()-1);
+			s.Format("%s\n",sold);
 			file.WriteString(s);
 			s.Format("%d\n",m_MinorInfos->GetAt(i).GetSpaceflightNation());
 			file.WriteString(s);
@@ -121,8 +150,8 @@ void CFileReader::WriteDataToFile(CArray<CMinorRace,CMinorRace>* m_MinorInfos)
 	}
 	file.Close();							// Datei wird geschlossen
 
-	// Jetzt noch das RacePlanetNames.data schreiben
-	fileName.Format("RacePlanetNames.data");
+	// Jetzt noch das RacePlanetNames.data schreiben (Wird nicht mehr benötigt, oder? -Revisor)
+	/*fileName.Format("RacePlanetNames.data");
 	if (file.Open(fileName, CFile::typeText | CFile::modeCreate | CFile::modeWrite))		// Datei wird geöffnet
 	{
 		for (i = 0; i < m_MinorInfos->GetSize(); i++)
@@ -136,7 +165,7 @@ void CFileReader::WriteDataToFile(CArray<CMinorRace,CMinorRace>* m_MinorInfos)
 		AfxMessageBox("Fehler! Datei \"RacePlanetNames.data\" kann nicht geschrieben werden...");
 		exit(1);
 	}
-	file.Close();							// Datei wird geschlossen
+	file.Close();*/							// Datei wird geschlossen
 
 
 }

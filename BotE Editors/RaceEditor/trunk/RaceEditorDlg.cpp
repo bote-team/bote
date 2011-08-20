@@ -41,7 +41,7 @@ BOOL CRaceEditorDlg::OnInitDialog()
 	CDialog::OnInitDialog();
 
 	// TODO:  hier zusätzliche Initialisierung hinzufügen.
-	m_dynTabCtrl.InsertItem(new CMinorRaceEditorDlg(), "Majorraces", IDD_MINORRACEEDITOR_DIALOG);
+	//m_dynTabCtrl.InsertItem(new CMinorRaceEditorDlg(), "Majorraces", IDD_MINORRACEEDITOR_DIALOG);
 	m_dynTabCtrl.InsertItem(new CMinorRaceEditorDlg(), "Minorraces", IDD_MINORRACEEDITOR_DIALOG);
 
 	return TRUE;  // return TRUE unless you set the focus to a control
@@ -53,6 +53,6 @@ void CRaceEditorDlg::OnDestroy()
 	CDialog::OnDestroy();
 
 	// TODO: Fügen Sie hier Ihren Meldungsbehandlungscode ein.
-	m_dynTabCtrl.DeleteItem(1);
+	//m_dynTabCtrl.DeleteItem(1);
 	m_dynTabCtrl.DeleteItem(0);
 }
