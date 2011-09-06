@@ -22,6 +22,7 @@
 #define IDC_SPACEFLIGHT                 1011
 #define IDC_CORRUPTIBILITY              1012
 #define IDC_BASEVALUE                   1013
+#define IDC_SPACEFLIGHT2                1013
 #define IDC_RELPSOLOING                 1014
 #define IDC_RELSOLOING                  1014
 #define IDC_RELSCIENTIFIC               1015

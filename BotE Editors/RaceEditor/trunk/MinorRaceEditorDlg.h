@@ -26,18 +26,10 @@ public:
 	CListBox	m_ListBox;
 	CString	m_strDescription;
 	CString	m_strRaceName;
-	BYTE	m_iRelCar;
-	BYTE	m_iRelDom;
-	BYTE	m_iRelFed;
-	BYTE	m_iRelFer;
-	BYTE	m_iRelKli;
-	BYTE	m_iRelRom;
 	BOOL	m_bSpaceflightNation;
+	BOOL   m_bProperty[11];
 	CString	m_strHomeSysName;
 	CString	m_strGraphicName;
-	BOOL	m_bProperty[11];
-	BYTE    m_iPropertyRel[11];
-	BYTE    m_iBaseRel;
 	//}}AFX_DATA
 
 	// Vom Klassenassistenten generierte Überladungen virtueller Funktionen
@@ -70,10 +62,7 @@ protected:
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 public:
-	afx_msg void OnBnClickedReltype1();
-	afx_msg void OnBnClickedReltype2();
-	afx_msg void OnBnClickedCalc();
-	afx_msg void OnBnClickedCheckwarlike();
+	
 };
 
 //{{AFX_INSERT_LOCATION}}
