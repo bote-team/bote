@@ -17,10 +17,19 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
+CMajor* pPlayer;//Böser globaler Zeiger der nötig ist um große Verrenkungen wegen sort und Memberfunktionen
+
 /// Funktion zum Vergleichen zweier Rassen
 bool CmpRaces(const CRace* pRace1, const CRace* pRace2)
 {
+	if(pRace1->GetType()==MAJOR&&pRace2->GetType()==MINOR) return true;
+	if(pRace2->GetType()==MAJOR&&pRace1->GetType()==MINOR) return false;
 	return pRace1->GetRaceName() < pRace2->GetRaceName();
+}
+
+bool CmpRaces2(const CRace* pRace1, const CRace* pRace2)
+{
+	return pPlayer->GetAgreement(pRace1->GetRaceID())<pPlayer->GetAgreement(pRace2->GetRaceID());
 }
 
 // CDiplomacyMenuView
@@ -60,7 +69,6 @@ CDiplomacyMenuView::~CDiplomacyMenuView()
 		delete m_DiplomacyMinorOfferButtons[i];
 		m_DiplomacyMinorOfferButtons[i] = 0;
 	}
-	m_DiplomacyMinorOfferButtons.RemoveAll();
 }
 
 void CDiplomacyMenuView::OnNewRound()
@@ -68,13 +76,14 @@ void CDiplomacyMenuView::OnNewRound()
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
 	
-	CMajor* pPlayer = m_pPlayersRace;
+	pPlayer = m_pPlayersRace;
 	ASSERT(pPlayer);
 
 	m_OutgoingInfo.Reset();
 	m_pIncomingInfo = NULL;
 	m_sClickedOnRace = "";
 	m_byWhichResourceIsChosen = TITAN;
+
 	
 	CString race = pPlayer->GetRaceID();
 	
@@ -193,6 +202,7 @@ void CDiplomacyMenuView::OnInitialUpdate()
 	
 	// Diplomatieansicht
 	m_bySubMenu = 0;
+	m_bSortRaceList=false;
 
 	// View bei den Tooltipps anmelden
 	pDoc->GetMainFrame()->AddToTooltip(this);
@@ -606,15 +616,30 @@ void CDiplomacyMenuView::DrawRaceDiplomacyMenue(Graphics* g)
 
 	CString fontName = "";
 	Gdiplus::REAL fontSize = 0.0;
-	
+
 	// Rassenspezifische Schriftart auswählen
 	CFontLoader::CreateGDIFont(pPlayer, 2, fontName, fontSize);
 	// Schriftfarbe wählen
 	Gdiplus::Color normalColor;
-	CFontLoader::GetGDIFontColor(pPlayer, 3, normalColor);
+	CFontLoader::GetGDIFontColor(pPlayer, 1, normalColor);
 	SolidBrush fontBrush(normalColor);
-
+	
 	StringFormat fontFormat;
+	fontFormat.SetAlignment(StringAlignmentCenter);
+	fontFormat.SetLineAlignment(StringAlignmentCenter);
+	fontFormat.SetFormatFlags(StringFormatFlagsNoWrap);
+	CString s;
+	int count = 0;
+
+	Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\" + pPlayer->GetPrefix() + "button_small.bop");//SortButton zeichnen
+	if(graphic) g->DrawImage(graphic, 22, 70, 80, 30);
+	if(!m_bSortRaceList) s.Format("%s","A-Z");
+	else s=CResourceManager::GetString("SORT2");
+	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(22,70,80,30), &fontFormat, &fontBrush);
+
+	CFontLoader::GetGDIFontColor(pPlayer, 3, normalColor);
+	fontBrush.SetColor(normalColor);
+
 	fontFormat.SetAlignment(StringAlignmentNear);
 	fontFormat.SetLineAlignment(StringAlignmentCenter);
 	fontFormat.SetFormatFlags(StringFormatFlagsNoWrap);
@@ -625,8 +650,7 @@ void CDiplomacyMenuView::DrawRaceDiplomacyMenue(Graphics* g)
 	Gdiplus::Color penColor;
 	penColor.SetFromCOLORREF(pPlayer->GetDesign()->m_clrListMarkPenColor);
 
-	CString s;
-	int count = 0;
+	
 
 	// Position im Vector suchen
 	int nVecPos = 0;
@@ -663,8 +687,13 @@ void CDiplomacyMenuView::DrawRaceDiplomacyMenue(Graphics* g)
 		{
 			if (nVecPos-- > 21)
 				continue;
-
 			CRace* pRace = *it;
+			if(m_bSortRaceList==false&&pRace->GetType()==MINOR)//Linie zwischen Minors und Majors sorgt dafür das keine Buttons mehr angezeigt werden
+			{
+				if(it-m_vRaceList.begin()>0&&m_vRaceList.at(it-m_vRaceList.begin()-1)->GetType()==MAJOR) g->DrawLine(&Gdiplus::Pen(penColor), 8, 100+count*25, 150, 100+count*25);
+			}
+			
+			
 			RectF rect(20,100+count*25,130,25);
 			// Haben wir auf die Rasse geklickt haben, dann Farbe ändern und jeweiliges Untermenü aufrufen
 			if (m_sClickedOnRace == pRace->GetRaceID())
@@ -730,7 +759,11 @@ void CDiplomacyMenuView::DrawRaceDiplomacyMenue(Graphics* g)
 				}
 			}
 			else
-			{				
+			{	
+
+				Gdiplus::Color color(normalColor);
+				s = this->PrintDiplomacyStatus(pPlayer->GetRaceID(), pRace->GetRaceID(), color);
+				fontBrush.SetColor(color);
 				g->DrawString(pRace->GetRaceName().AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), rect, &fontFormat, &fontBrush);
 			}
 			fontBrush.SetColor(normalColor);			
@@ -993,6 +1026,13 @@ void CDiplomacyMenuView::DrawDiplomacyInfoMenue(Graphics* g, const CString& sWhi
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), rect, &fontFormat, &fontBrush);
 	rect.Y += 25;
 	s = pRace->GetHomesystemName();
+	for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)//Sector anzeigen
+			for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
+				if(pDoc->GetSector(x,y).GetName()==s)
+				{
+					s.Format("%s (%c%i)", s,(char)y+97,x+1);
+					break;
+				};
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), rect, &fontFormat, &fontBrush);
 	rect.Y += 25;
 	
@@ -1569,7 +1609,7 @@ void CDiplomacyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		Invalidate();
 		return;
 	}
-
+	
 	// Position im Vector der aktuell angeklickten Rasse suchen
 	int nVecPos = 0;
 	// nur wenn nicht Eingangsbildschirm sind
@@ -1673,6 +1713,16 @@ void CDiplomacyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 				break;
 		}				
 	}	
+
+	rect.SetRect(22,70,102,100);
+	if (rect.PtInRect(point))
+	{
+		m_bSortRaceList=!m_bSortRaceList;
+		if(m_bSortRaceList) std::sort(m_vRaceList.begin(), m_vRaceList.end(),CmpRaces2);
+		else std::sort(m_vRaceList.begin(), m_vRaceList.end(),CmpRaces);
+		Invalidate();
+		return;
+	}
 		
 	// Wenn wir in der Informationsansicht sind und eine Rasse angklickt haben
 	if (m_bySubMenu == 0 && m_sClickedOnRace != "")

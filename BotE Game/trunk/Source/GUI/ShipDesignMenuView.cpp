@@ -595,20 +595,21 @@ void CShipDesignMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		else if (CRect(r.right-275,140+counter*90,r.right-145,170+counter*90).PtInRect(point))
 		{
 			BYTE oldTorpType = pDoc->m_ShipInfoArray.GetAt(n).GetTorpedoWeapons()->GetAt(m_iTorpedoWeaponNumber).GetTorpedoType();
-			BYTE oldNumber   = pDoc->m_ShipInfoArray.GetAt(n).GetTorpedoWeapons()->GetAt(m_iTorpedoWeaponNumber).GetNumber();
-			BYTE oldFirerate = pDoc->m_ShipInfoArray.GetAt(n).GetTorpedoWeapons()->GetAt(m_iTorpedoWeaponNumber).GetTupeFirerate();
-			BYTE oldTupeNumber=pDoc->m_ShipInfoArray.GetAt(n).GetTorpedoWeapons()->GetAt(m_iTorpedoWeaponNumber).GetNumberOfTupes();
+			BYTE oldNumber   = pDoc->m_ShipInfoArray.GetAt(n).GetTorpedoWeapons()->GetAt(i).GetNumber();
+			BYTE oldFirerate = pDoc->m_ShipInfoArray.GetAt(n).GetTorpedoWeapons()->GetAt(i).GetTupeFirerate();
+			BYTE oldTupeNumber=pDoc->m_ShipInfoArray.GetAt(n).GetTorpedoWeapons()->GetAt(i).GetNumberOfTupes();
+			BOOLEAN oldOnlyMicro  = pDoc->m_ShipInfoArray.GetAt(n).GetTorpedoWeapons()->GetAt(i).GetOnlyMicroPhoton();
+			BYTE oldAcc		= pDoc->m_ShipInfoArray.GetAt(n).GetTorpedoWeapons()->GetAt(i).GetAccuracy();
 			CString oldTupeName= pDoc->m_ShipInfoArray.GetAt(n).GetTorpedoWeapons()->GetAt(m_iTorpedoWeaponNumber).GetTupeName();
-			BOOLEAN oldOnlyMicro  = pDoc->m_ShipInfoArray.GetAt(n).GetTorpedoWeapons()->GetAt(m_iTorpedoWeaponNumber).GetOnlyMicroPhoton();
-			BYTE oldAcc		= pDoc->m_ShipInfoArray.GetAt(n).GetTorpedoWeapons()->GetAt(m_iTorpedoWeaponNumber).GetAccuracy();
+			
 			//USHORT newTorpType = pDoc->m_WeaponObserver[pDoc->GetPlayersRace()].GetNextTorpedo(oldTorpType, oldOnlyMicro);
 			TupeWeaponsObserverStruct twos = pMajor->GetWeaponObserver()->GetNextTupe(oldTupeName,oldTorpType);
 			// hier aktualisieren
 			pDoc->m_ShipInfoArray.GetAt(n).GetTorpedoWeapons()->GetAt(m_iTorpedoWeaponNumber).ModifyTorpedoWeapon(oldTorpType,twos.number,twos.fireRate,oldTupeNumber,twos.TupeName,twos.onlyMicro,oldAcc);
-			// Feuerwinkel anpassen
-			USHORT nMountPos	= pDoc->m_ShipInfoArray.GetAt(n).GetTorpedoWeapons()->GetAt(m_iTorpedoWeaponNumber).GetFirearc()->GetPosition();
+			USHORT nMountPos	= pDoc->m_ShipInfoArray.GetAt(n).GetTorpedoWeapons()->GetAt(i).GetFirearc()->GetPosition();
 			USHORT nAngle		= twos.fireAngle;
-			pDoc->m_ShipInfoArray.GetAt(n).GetTorpedoWeapons()->GetAt(m_iTorpedoWeaponNumber).GetFirearc()->SetValues(nMountPos, nAngle);
+			pDoc->m_ShipInfoArray.GetAt(n).GetTorpedoWeapons()->GetAt(i).GetFirearc()->SetValues(nMountPos, nAngle);
+			
 			
 			pDoc->m_ShipInfoArray.GetAt(n).CalculateFinalCosts();
 			Invalidate();
@@ -616,13 +617,15 @@ void CShipDesignMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		// Haben wir auf den Button geklicht um den Torpedotyp zu ändern
 		else if (CRect(r.right-145,140+counter*90,r.right-25,170+counter*90).PtInRect(point))
 		{
-			BYTE oldTorpType = pDoc->m_ShipInfoArray.GetAt(n).GetTorpedoWeapons()->GetAt(m_iTorpedoWeaponNumber).GetTorpedoType();
 			BYTE oldNumber   = pDoc->m_ShipInfoArray.GetAt(n).GetTorpedoWeapons()->GetAt(m_iTorpedoWeaponNumber).GetNumber();
 			BYTE oldFirerate = pDoc->m_ShipInfoArray.GetAt(n).GetTorpedoWeapons()->GetAt(m_iTorpedoWeaponNumber).GetTupeFirerate();
 			BYTE oldTupeNumber=pDoc->m_ShipInfoArray.GetAt(n).GetTorpedoWeapons()->GetAt(m_iTorpedoWeaponNumber).GetNumberOfTupes();
-			CString oldTupeName= pDoc->m_ShipInfoArray.GetAt(n).GetTorpedoWeapons()->GetAt(m_iTorpedoWeaponNumber).GetTupeName();
 			BOOLEAN oldOnlyMicro  = pDoc->m_ShipInfoArray.GetAt(n).GetTorpedoWeapons()->GetAt(m_iTorpedoWeaponNumber).GetOnlyMicroPhoton();
 			BYTE oldAcc		= pDoc->m_ShipInfoArray.GetAt(n).GetTorpedoWeapons()->GetAt(m_iTorpedoWeaponNumber).GetAccuracy();
+			BYTE oldTorpType = pDoc->m_ShipInfoArray.GetAt(n).GetTorpedoWeapons()->GetAt(m_iTorpedoWeaponNumber).GetTorpedoType();
+			BOOLEAN oldOnlyMicro  = pDoc->m_ShipInfoArray.GetAt(n).GetTorpedoWeapons()->GetAt(m_iTorpedoWeaponNumber).GetOnlyMicroPhoton();
+			CString oldTupeName= pDoc->m_ShipInfoArray.GetAt(n).GetTorpedoWeapons()->GetAt(m_iTorpedoWeaponNumber).GetTupeName();
+			
 			BYTE newTorpType = pMajor->GetWeaponObserver()->GetNextTorpedo(oldTorpType, oldOnlyMicro);
 			// hier aktualisieren
 			pDoc->m_ShipInfoArray.GetAt(n).GetTorpedoWeapons()->GetAt(m_iTorpedoWeaponNumber).ModifyTorpedoWeapon(newTorpType,oldNumber,oldFirerate,oldTupeNumber,oldTupeName,oldOnlyMicro,oldAcc);

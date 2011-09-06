@@ -215,8 +215,8 @@ BYTE CWeaponObserver::GetNextTorpedo(BYTE currentTorpedoType, BOOLEAN onlyMicroT
 				return i;
 			else if (onlyMicroTupe == FALSE)
 				return i;
-			else
-				return currentTorpedoType;
+			/*else
+				return currentTorpedoType;*/
 		}
 		i++;
 		if (i == DIFFERENT_TORPEDOS)
@@ -246,12 +246,12 @@ TupeWeaponsObserverStruct CWeaponObserver::GetNextTupe(const CString& currentTup
 			i = 0;
 		// Wenn wir mit dem neuen Werfer nur Mirco-Torpedos verschießen können, dann auch schauen, dass ein
 		// Micro-Torpedo eingestellt ist
-		if (m_TupeWeapons.GetAt(i).onlyMicro == TRUE && CTorpedoInfo::GetMicro(currentTorpedoType))			
+		if (CTorpedoInfo::GetMicro(currentTorpedoType) && m_TupeWeapons.GetAt(i).onlyMicro == TRUE)			
 		{
 			twos = m_TupeWeapons.GetAt(i);
 			return twos;
 		}
-		else if (m_TupeWeapons.GetAt(i).onlyMicro == FALSE)
+		else if (!CTorpedoInfo::GetMicro(currentTorpedoType) && m_TupeWeapons.GetAt(i).onlyMicro == FALSE)
 		{
 			twos = m_TupeWeapons.GetAt(i);
 			return twos;

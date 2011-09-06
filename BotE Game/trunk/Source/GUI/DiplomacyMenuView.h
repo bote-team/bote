@@ -92,17 +92,17 @@ private:
 	CArray<CMyButton*> m_DiplomacyMainButtons;		///< die unteren Buttons in den Diplomatieansichten
 	CArray<CMyButton*> m_DiplomacyMajorOfferButtons;///< die einzelnen Angebotsbuttons für die Majorraces
 	CArray<CMyButton*> m_DiplomacyMinorOfferButtons;///< die einzelnen Angebotsbuttons für die Minorraces
-
 	// Hier Variablen für die Diplomatieansicht
 	USHORT	m_bySubMenu;						///< Welcher Button im Diplomatiemenue wurde gedrückt, 0 für Information, 1 für Angebote usw.
 	CString m_sClickedOnRace;					///< Variable, die mir sagt auf welche Rasse ich geklickt habe
 	BYTE	m_byWhichResourceIsChosen;			///< welche Ressource soll an die Rasse übergeben werden
 	CPoint	m_ptResourceFromSystem;				///< Aus welchem System werden die zu verschenkenden Ressourcen abgeknüpft
-	
+
+	bool m_bSortRaceList;					///< Soll die Racelist nach Verträgen sortiert werden?
 	bool m_bShowSendButton;					///< Soll der Abschicken Button in der Angebotssicht angezeigt werden?
 	bool m_bShowDeclineButton;				///< Soll der Ablehnen Button in der Eingangsansicht angezeigt werden?
 	bool m_bCanSend;						///< kann das Angebot gesendet werden?
-	
+
 	CDiplomacyInfo  m_OutgoingInfo;			///< Diplomatieobjekt, welches bei einem Angebot erstellt wird und abgeschickt werden kann
 	CDiplomacyInfo* m_pIncomingInfo;		///< Zeiger auf Diplomatieobjekt, welches sich aktuell im Eingang befindet
 	vector<CRace*>  m_vRaceList;			///< sortierte Liste aller bekannten Rassen, welche angezeigt werden sollen

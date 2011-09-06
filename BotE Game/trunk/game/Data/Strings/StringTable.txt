@@ -78,6 +78,9 @@ Forderung
 [BTN_CORRUPTION]
 Bestechung
 
+[SORT2]
+Vertrag
+
 // Handelbuttons
 [BTN_STOCK_EXCHANGE]
 Börse

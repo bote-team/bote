@@ -55,7 +55,8 @@ CString CIOData::GetBotEAppPath(void) const
 	sPath = fullPath;
 #ifdef DEVELOPMENT_VERSION
 	//sPath = "F:\\C++\\Projekte\\BotE Projekt\\BotE Install\\BotE complete";
-	sPath = "D:\\Birth of the Empires Alpha 6.1";
+	//sPath = "D:\\Birth of the Empires Alpha 6.1";
+	sPath= "C:\\Users\\Maurice\\Projekte\\BotE\\SVN\\BotE Game\\trunk\\game";
 #endif
 	sPath += "\\";
 
