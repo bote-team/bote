@@ -240,6 +240,14 @@ void CTradeBottomView::OnInitialUpdate()
 	CBottomBaseView::OnInitialUpdate();
 
 	// TODO: Add your specialized code here and/or call the base class
+	m_iNumberOfHistoryRounds = 20;
+	m_iWhichRessource = TITAN;
+	m_bDrawLittleRects = FALSE;
+}
+
+/// Funktion lädt die rassenspezifischen Grafiken.
+void CTradeBottomView::LoadRaceGraphics()
+{
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
 
@@ -250,10 +258,6 @@ void CTradeBottomView::OnInitialUpdate()
 	CString s = CIOData::GetInstance()->GetAppPath() + "Graphics\\Other\\" + sPrefix + "button_small.bop";		
 	
 	m_pSmallButton = Bitmap::FromFile(s.AllocSysString());
-
-	m_iNumberOfHistoryRounds = 20;
-	m_iWhichRessource = TITAN;
-	m_bDrawLittleRects = FALSE;
 }
 
 BOOL CTradeBottomView::OnEraseBkgnd(CDC* pDC)

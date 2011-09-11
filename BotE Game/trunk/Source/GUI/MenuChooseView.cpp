@@ -221,8 +221,19 @@ void CMenuChooseView::OnInitialUpdate()
 	CView::OnInitialUpdate();
 	// TODO: Speziellen Code hier einfügen und/oder Basisklasse aufrufen
 	m_TotalSize.cx = 200;
-	m_TotalSize.cy = 750;
-	
+	m_TotalSize.cy = 750;	
+
+	m_LastSystem = CPoint(-1,-1);	
+
+	bool bHideMenu;
+	CIniLoader::GetInstance()->ReadValue("Control", "HIDEMENUBAR", bHideMenu);
+	if (bHideMenu)
+		GetTopLevelFrame()->SetMenuBarState(AFX_MBS_HIDDEN);
+}
+
+/// Funktion lädt die rassenspezifischen Grafiken.
+void  CMenuChooseView::LoadRaceGraphics()
+{
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
 
@@ -230,8 +241,6 @@ void CMenuChooseView::OnInitialUpdate()
 	CMajor* pMajor = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(sID));
 	ASSERT(pMajor);
 
-	m_LastSystem = CPoint(-1,-1);
-	
 	// alle Buttons in der View anlegen (erstmal 7) und Grafiken laden
 	CString sPrefix = pMajor->GetPrefix();
 	
@@ -250,11 +259,6 @@ void CMenuChooseView::OnInitialUpdate()
 	fileI = "Other\\" + sPrefix + "button_roundendi.bop";
 	fileA = "Other\\" + sPrefix + "button_roundenda.bop";
 	m_RoundEnd = new CMyButton(CPoint(20,5), CSize(160,40), CResourceManager::GetString("BTN_ROUNDEND"), fileN, fileI, fileA);
-
-	bool bHideMenu;
-	CIniLoader::GetInstance()->ReadValue("Control", "HIDEMENUBAR", bHideMenu);
-	if (bHideMenu)
-		GetTopLevelFrame()->SetMenuBarState(AFX_MBS_HIDDEN);
 }
 
 BOOL CMenuChooseView::OnEraseBkgnd(CDC* pDC) 

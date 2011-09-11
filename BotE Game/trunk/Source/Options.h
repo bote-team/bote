@@ -51,6 +51,11 @@
 #define IS_MAIN_VIEW(id) \
 	((id) >= GALAXY_VIEW && (id) <= COMBAT_VIEW)
 
+// Startmenü
+#define START_VIEW				50
+#define CHOOSERACE_VIEW			51
+#define NEWGAME_VIEW			52
+
 // Planetenview (unten)
 #define PLANET_BOTTOM_VIEW		101
 #define SHIP_BOTTOM_VIEW		102
@@ -62,6 +67,9 @@
 
 #define IS_BOTTOM_VIEW(id) \
 	((id) >= PLANET_BOTTOM_VIEW && (id) <= SHIPDESIGN_BOTTOM_VIEW)
+
+// Menüauswahlview
+#define MENUCHOOSE_VIEW			200
 
 // ------------- Spielerrassen -------------------------------------------------
 #define NOBODY				0

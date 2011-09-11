@@ -162,6 +162,9 @@ public:
 	const CString& GetBuildingName(int id) const {ASSERT(id); return BuildingInfo[id-1].GetBuildingName();}
 	const CString& GetBuildingDescription(int id) const {ASSERT(id); return BuildingInfo[id-1].GetBuildingDescription();}
 	
+	/// Funktion lädt für die ausgewählte Spielerrasse alle Grafiken für die Views.
+	void LoadViewGraphics(void);
+
 	/// Funktion veranlasst die Views zu jeder neuen Runde ihr Aufgaben zu erledigen, welche zu jeder neuen Runde ausgeführt
 	/// werden müssen. Es werden zum Beispiel Variablen wieder zurückgesetzt.
 	void DoViewWorkOnNewRound(void);
@@ -244,9 +247,11 @@ public:
 
 	CPoint m_ptCurrentCombatSector;		///< aktueller Kampfsektor
 	
-	bool m_bCombatCalc;					/// es werden gerade die Kampfrunden berechnet
+	bool m_bCombatCalc;					///< es werden gerade die Kampfrunden berechnet
 
-	int m_nCombatOrder;					/// im Kampfmenü eingestellter Kampfbefehl
+	int m_nCombatOrder;					///< im Kampfmenü eingestellter Kampfbefehl
+
+	bool m_bNewGame;					///< wird ein neues Spiel gestartet (bzw. geladen)
 
 private:
 	map<CString, int> m_mCombatOrders;	///< alle Kampfbefehle der Clients (Autokampf, Rückzug, Gruß...)

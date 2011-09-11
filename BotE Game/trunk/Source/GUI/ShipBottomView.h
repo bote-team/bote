@@ -29,7 +29,10 @@ public:
 
 public:
 	/// Funktion führt Aufgaben aus, welche zu jeder neuen Runde von den Views ausgeführt werden müssen.
-	void OnNewRound(void);
+	virtual void OnNewRound(void);
+
+	/// Funktion lädt die rassenspezifischen Grafiken.
+	virtual void LoadRaceGraphics();
 
 	/// Funktion gibt zurück, ob in der View die Station gezeigt werden soll.
 	/// Ist dies nicht der Fall, so werden Schiffe gezeigt.

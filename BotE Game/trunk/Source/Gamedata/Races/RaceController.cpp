@@ -166,19 +166,19 @@ void CRaceController::RemoveRace(const CString& sRaceID)
 network::RACE CRaceController::GetMappedClientID(const CString& sRaceID) const
 {
 	if (sRaceID == "MAJOR1")
-		return (network::RACE)1;
+		return network::RACE_1;
 	if (sRaceID == "MAJOR2")
-		return (network::RACE)2;
+		return network::RACE_2;
 	if (sRaceID == "MAJOR3")
-		return (network::RACE)3;
+		return network::RACE_3;
 	if (sRaceID == "MAJOR4")
-		return (network::RACE)4;
+		return network::RACE_4;
 	if (sRaceID == "MAJOR5")
-		return (network::RACE)5;
+		return network::RACE_5;
 	if (sRaceID == "MAJOR6")
-		return (network::RACE)6;
+		return network::RACE_6;
 
-	return (network::RACE)0;
+	return network::RACE_NONE;
 }
 
 /// Funktion gibt die zu einer Client-ID zugehörige Major-ID zurück.

@@ -30,6 +30,9 @@ public:
 #endif
 
 public:
+	/// Funktion lädt die rassenspezifischen Grafiken.
+	virtual void LoadRaceGraphics();
+
 	///	Funktion erstellt zur aktuellen Mouse-Position einen HTML Tooltip
 	/// @return	der erstellte Tooltip-Text
 	virtual CString CreateTooltip(void);

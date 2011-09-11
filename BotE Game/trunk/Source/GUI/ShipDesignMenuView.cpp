@@ -90,6 +90,19 @@ void CShipDesignMenuView::OnInitialUpdate()
 	CMainBaseView::OnInitialUpdate();
 
 	// TODO: Add your specialized code here and/or call the base class
+		
+	// Schiffsdesignansicht
+	m_iClickedOnShip = -1;
+	m_iOldClickedOnShip = -1;
+	m_iBeamWeaponNumber = 0;
+	m_iTorpedoWeaponNumber = 0;
+	m_bFoundBetterBeam = FALSE;
+	m_bFoundWorseBeam = FALSE;
+}
+
+/// Funktion lädt die rassenspezifischen Grafiken.
+void CShipDesignMenuView::LoadRaceGraphics()
+{
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
 
@@ -100,14 +113,6 @@ void CShipDesignMenuView::OnInitialUpdate()
 
 	CString sPrefix = pMajor->GetPrefix();
 	bg_designmenu	= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "designmenu.boj");
-		
-	// Schiffsdesignansicht
-	m_iClickedOnShip = -1;
-	m_iOldClickedOnShip = -1;
-	m_iBeamWeaponNumber = 0;
-	m_iTorpedoWeaponNumber = 0;
-	m_bFoundBetterBeam = FALSE;
-	m_bFoundWorseBeam = FALSE;
 }
 
 void CShipDesignMenuView::OnPrepareDC(CDC* pDC, CPrintInfo* pInfo)
@@ -529,19 +534,20 @@ void CShipDesignMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		else if (m_bFoundBetterBeam == TRUE && CRect(r.right-145,120,r.right-25,150).PtInRect(point))
 		{
 			// Dann wird der Typ bei der aktuellen Beamwaffe um eins erhöht
-			BYTE oldType = pDoc->m_ShipInfoArray.GetAt(n).GetBeamWeapons()->GetAt(m_iBeamWeaponNumber).GetBeamType();
-			USHORT oldPower = pDoc->m_ShipInfoArray.GetAt(n).GetBeamWeapons()->GetAt(m_iBeamWeaponNumber).GetBeamPower();
-			BYTE oldNumber = pDoc->m_ShipInfoArray.GetAt(n).GetBeamWeapons()->GetAt(m_iBeamWeaponNumber).GetBeamNumber();
-			BYTE oldShootNumber = pDoc->m_ShipInfoArray.GetAt(n).GetBeamWeapons()->GetAt(m_iBeamWeaponNumber).GetShootNumber();
-			CString oldName = pDoc->m_ShipInfoArray.GetAt(n).GetBeamWeapons()->GetAt(m_iBeamWeaponNumber).GetBeamName();
-			BYTE oldBonus = pDoc->m_ShipInfoArray.GetAt(n).GetBeamWeapons()->GetAt(m_iBeamWeaponNumber).GetBonus();
-			BYTE oldLenght = pDoc->m_ShipInfoArray.GetAt(n).GetBeamWeapons()->GetAt(m_iBeamWeaponNumber).GetBeamLenght();
-			BYTE oldRechargeTime = pDoc->m_ShipInfoArray.GetAt(n).GetBeamWeapons()->GetAt(m_iBeamWeaponNumber).GetRechargeTime();
-			BOOLEAN piercing = pDoc->m_ShipInfoArray.GetAt(n).GetBeamWeapons()->GetAt(m_iBeamWeaponNumber).GetPiercing();
-			BOOLEAN modulating = pDoc->m_ShipInfoArray.GetAt(n).GetBeamWeapons()->GetAt(m_iBeamWeaponNumber).GetModulating();
+			CBeamWeapons* pWeapon = &pDoc->m_ShipInfoArray.GetAt(n).GetBeamWeapons()->GetAt(m_iBeamWeaponNumber);
+			
+			BYTE oldType		= pWeapon->GetBeamType();
+			USHORT oldPower		= pWeapon->GetBeamPower();
+			BYTE oldNumber		= pWeapon->GetBeamNumber();
+			BYTE oldShootNumber = pWeapon->GetShootNumber();
+			CString oldName		= pWeapon->GetBeamName();
+			BYTE oldBonus		= pWeapon->GetBonus();
+			BYTE oldLenght		= pWeapon->GetBeamLenght();
+			BYTE oldRechargeTime= pWeapon->GetRechargeTime();
+			BOOLEAN piercing	= pWeapon->GetPiercing();
+			BOOLEAN modulating	= pWeapon->GetModulating();
 			// hier aktualisieren -> Reichweite erhöhen
-			pDoc->m_ShipInfoArray.GetAt(n).GetBeamWeapons()->GetAt(m_iBeamWeaponNumber).ModifyBeamWeapon(
-				(oldType+1),oldPower,oldNumber,oldName,modulating,piercing,oldBonus,oldLenght,oldRechargeTime,oldShootNumber);
+			pWeapon->ModifyBeamWeapon((oldType+1),oldPower,oldNumber,oldName,modulating,piercing,oldBonus,oldLenght,oldRechargeTime,oldShootNumber);
 			// Feuerwinkel bleiben alle beim alten
 			pDoc->m_ShipInfoArray.GetAt(n).CalculateFinalCosts();
 			m_bFoundBetterBeam = FALSE;
@@ -552,19 +558,21 @@ void CShipDesignMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		else if (m_bFoundWorseBeam == TRUE && CRect(r.right-275,120,r.right-155,150).PtInRect(point))
 		{
 			// Dann wird der Typ bei der aktuellen Beamwaffe um eins erhöht
-			BYTE oldType = pDoc->m_ShipInfoArray.GetAt(n).GetBeamWeapons()->GetAt(m_iBeamWeaponNumber).GetBeamType();
-			USHORT oldPower = pDoc->m_ShipInfoArray.GetAt(n).GetBeamWeapons()->GetAt(m_iBeamWeaponNumber).GetBeamPower();
-			BYTE oldNumber = pDoc->m_ShipInfoArray.GetAt(n).GetBeamWeapons()->GetAt(m_iBeamWeaponNumber).GetBeamNumber();
-			BYTE oldShootNumber = pDoc->m_ShipInfoArray.GetAt(n).GetBeamWeapons()->GetAt(m_iBeamWeaponNumber).GetShootNumber();
-			CString oldName = pDoc->m_ShipInfoArray.GetAt(n).GetBeamWeapons()->GetAt(m_iBeamWeaponNumber).GetBeamName();
-			BYTE oldBonus = pDoc->m_ShipInfoArray.GetAt(n).GetBeamWeapons()->GetAt(m_iBeamWeaponNumber).GetBonus();
-			BYTE oldLenght = pDoc->m_ShipInfoArray.GetAt(n).GetBeamWeapons()->GetAt(m_iBeamWeaponNumber).GetBeamLenght();
-			BYTE oldRechargeTime = pDoc->m_ShipInfoArray.GetAt(n).GetBeamWeapons()->GetAt(m_iBeamWeaponNumber).GetRechargeTime();
-			BOOLEAN piercing = pDoc->m_ShipInfoArray.GetAt(n).GetBeamWeapons()->GetAt(m_iBeamWeaponNumber).GetPiercing();
-			BOOLEAN modulating = pDoc->m_ShipInfoArray.GetAt(n).GetBeamWeapons()->GetAt(m_iBeamWeaponNumber).GetModulating();
+			CBeamWeapons* pWeapon = &pDoc->m_ShipInfoArray.GetAt(n).GetBeamWeapons()->GetAt(m_iBeamWeaponNumber);
+			
+			BYTE oldType		= pWeapon->GetBeamType();
+			USHORT oldPower		= pWeapon->GetBeamPower();
+			BYTE oldNumber		= pWeapon->GetBeamNumber();
+			BYTE oldShootNumber = pWeapon->GetShootNumber();
+			CString oldName		= pWeapon->GetBeamName();
+			BYTE oldBonus		= pWeapon->GetBonus();
+			BYTE oldLenght		= pWeapon->GetBeamLenght();
+			BYTE oldRechargeTime= pWeapon->GetRechargeTime();
+			BOOLEAN piercing	= pWeapon->GetPiercing();
+			BOOLEAN modulating	= pWeapon->GetModulating();
+			
 			// hier aktualisieren -> Reichweite erhöhen
-			pDoc->m_ShipInfoArray.GetAt(n).GetBeamWeapons()->GetAt(m_iBeamWeaponNumber).ModifyBeamWeapon(
-				(oldType-1),oldPower,oldNumber,oldName,modulating,piercing,oldBonus,oldLenght,oldRechargeTime,oldShootNumber);
+			pWeapon->ModifyBeamWeapon((oldType-1),oldPower,oldNumber,oldName,modulating,piercing,oldBonus,oldLenght,oldRechargeTime,oldShootNumber);
 			// Feuerwinkel bleiben alle beim alten
 			pDoc->m_ShipInfoArray.GetAt(n).CalculateFinalCosts();
 			m_bFoundBetterBeam = FALSE;
@@ -594,62 +602,66 @@ void CShipDesignMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		// Haben wir auf den Button geklickt um den Torpedowerfer zu ändern
 		else if (CRect(r.right-275,140+counter*90,r.right-145,170+counter*90).PtInRect(point))
 		{
-			BYTE oldTorpType = pDoc->m_ShipInfoArray.GetAt(n).GetTorpedoWeapons()->GetAt(m_iTorpedoWeaponNumber).GetTorpedoType();
-			BYTE oldNumber   = pDoc->m_ShipInfoArray.GetAt(n).GetTorpedoWeapons()->GetAt(i).GetNumber();
-			BYTE oldFirerate = pDoc->m_ShipInfoArray.GetAt(n).GetTorpedoWeapons()->GetAt(i).GetTupeFirerate();
-			BYTE oldTupeNumber=pDoc->m_ShipInfoArray.GetAt(n).GetTorpedoWeapons()->GetAt(i).GetNumberOfTupes();
-			BOOLEAN oldOnlyMicro  = pDoc->m_ShipInfoArray.GetAt(n).GetTorpedoWeapons()->GetAt(i).GetOnlyMicroPhoton();
-			BYTE oldAcc		= pDoc->m_ShipInfoArray.GetAt(n).GetTorpedoWeapons()->GetAt(i).GetAccuracy();
-			CString oldTupeName= pDoc->m_ShipInfoArray.GetAt(n).GetTorpedoWeapons()->GetAt(m_iTorpedoWeaponNumber).GetTupeName();
+			CTorpedoWeapons* pWeapon = &pDoc->m_ShipInfoArray.GetAt(n).GetTorpedoWeapons()->GetAt(m_iTorpedoWeaponNumber);
 			
-			//USHORT newTorpType = pDoc->m_WeaponObserver[pDoc->GetPlayersRace()].GetNextTorpedo(oldTorpType, oldOnlyMicro);
+			BYTE oldTorpType	= pWeapon->GetTorpedoType();
+			BYTE oldNumber		= pWeapon->GetNumber();
+			BYTE oldFirerate	= pWeapon->GetTupeFirerate();
+			BYTE oldTupeNumber	= pWeapon->GetNumberOfTupes();
+			BOOLEAN oldOnlyMicro= pWeapon->GetOnlyMicroPhoton();
+			BYTE oldAcc			= pWeapon->GetAccuracy();
+			CString oldTupeName	= pWeapon->GetTupeName();
+						
 			TupeWeaponsObserverStruct twos = pMajor->GetWeaponObserver()->GetNextTupe(oldTupeName,oldTorpType);
 			// hier aktualisieren
-			pDoc->m_ShipInfoArray.GetAt(n).GetTorpedoWeapons()->GetAt(m_iTorpedoWeaponNumber).ModifyTorpedoWeapon(oldTorpType,twos.number,twos.fireRate,oldTupeNumber,twos.TupeName,twos.onlyMicro,oldAcc);
-			USHORT nMountPos	= pDoc->m_ShipInfoArray.GetAt(n).GetTorpedoWeapons()->GetAt(i).GetFirearc()->GetPosition();
+			pWeapon->ModifyTorpedoWeapon(oldTorpType,twos.number,twos.fireRate,oldTupeNumber,twos.TupeName,twos.onlyMicro,oldAcc);
+			USHORT nMountPos	= pWeapon->GetFirearc()->GetPosition();
 			USHORT nAngle		= twos.fireAngle;
-			pDoc->m_ShipInfoArray.GetAt(n).GetTorpedoWeapons()->GetAt(i).GetFirearc()->SetValues(nMountPos, nAngle);
-			
-			
+			pWeapon->GetFirearc()->SetValues(nMountPos, nAngle);
+						
 			pDoc->m_ShipInfoArray.GetAt(n).CalculateFinalCosts();
 			Invalidate();
 		}
 		// Haben wir auf den Button geklicht um den Torpedotyp zu ändern
 		else if (CRect(r.right-145,140+counter*90,r.right-25,170+counter*90).PtInRect(point))
 		{
-			BYTE oldNumber   = pDoc->m_ShipInfoArray.GetAt(n).GetTorpedoWeapons()->GetAt(m_iTorpedoWeaponNumber).GetNumber();
-			BYTE oldFirerate = pDoc->m_ShipInfoArray.GetAt(n).GetTorpedoWeapons()->GetAt(m_iTorpedoWeaponNumber).GetTupeFirerate();
-			BYTE oldTupeNumber=pDoc->m_ShipInfoArray.GetAt(n).GetTorpedoWeapons()->GetAt(m_iTorpedoWeaponNumber).GetNumberOfTupes();
-			BOOLEAN oldOnlyMicro  = pDoc->m_ShipInfoArray.GetAt(n).GetTorpedoWeapons()->GetAt(m_iTorpedoWeaponNumber).GetOnlyMicroPhoton();
-			BYTE oldAcc		= pDoc->m_ShipInfoArray.GetAt(n).GetTorpedoWeapons()->GetAt(m_iTorpedoWeaponNumber).GetAccuracy();
-			BYTE oldTorpType = pDoc->m_ShipInfoArray.GetAt(n).GetTorpedoWeapons()->GetAt(m_iTorpedoWeaponNumber).GetTorpedoType();
-			BOOLEAN oldOnlyMicro  = pDoc->m_ShipInfoArray.GetAt(n).GetTorpedoWeapons()->GetAt(m_iTorpedoWeaponNumber).GetOnlyMicroPhoton();
-			CString oldTupeName= pDoc->m_ShipInfoArray.GetAt(n).GetTorpedoWeapons()->GetAt(m_iTorpedoWeaponNumber).GetTupeName();
+			CTorpedoWeapons* pWeapon = &pDoc->m_ShipInfoArray.GetAt(n).GetTorpedoWeapons()->GetAt(m_iTorpedoWeaponNumber);
+			
+			BYTE oldNumber		= pWeapon->GetNumber();
+			BYTE oldFirerate	= pWeapon->GetTupeFirerate();
+			BYTE oldTupeNumber	= pWeapon->GetNumberOfTupes();
+			BOOLEAN oldOnlyMicro= pWeapon->GetOnlyMicroPhoton();
+			BYTE oldAcc			= pWeapon->GetAccuracy();
+			BYTE oldTorpType	= pWeapon->GetTorpedoType();
+			CString oldTupeName	= pWeapon->GetTupeName();
 			
 			BYTE newTorpType = pMajor->GetWeaponObserver()->GetNextTorpedo(oldTorpType, oldOnlyMicro);
 			// hier aktualisieren
-			pDoc->m_ShipInfoArray.GetAt(n).GetTorpedoWeapons()->GetAt(m_iTorpedoWeaponNumber).ModifyTorpedoWeapon(newTorpType,oldNumber,oldFirerate,oldTupeNumber,oldTupeName,oldOnlyMicro,oldAcc);
+			pWeapon->ModifyTorpedoWeapon(newTorpType,oldNumber,oldFirerate,oldTupeNumber,oldTupeName,oldOnlyMicro,oldAcc);
 			// Feuerwinkel bleiben gleich
 			pDoc->m_ShipInfoArray.GetAt(n).CalculateFinalCosts();
 			Invalidate();
 		}
 	}
 	counter++;
+	
 	// Überprüfen ob wir das Hüllenmaterial ändern möchten, also ob wir auf den Button "Hüllenmaterial ändern" geklickt haben
 	if (n != -1 && CRect(r.right-275,180+counter*120,r.right-155,210+counter*120).PtInRect(point))
 	{
-		BOOLEAN oldDoubleHull = pDoc->m_ShipInfoArray.GetAt(n).GetHull()->GetDoubleHull();
-		ULONG oldBaseHull = pDoc->m_ShipInfoArray.GetAt(n).GetHull()->GetBaseHull();
-		BOOLEAN ablative = pDoc->m_ShipInfoArray.GetAt(n).GetHull()->GetAblative();
-		BOOLEAN polarisation = pDoc->m_ShipInfoArray.GetAt(n).GetHull()->GetPolarisation();
+		CHull* pHull			= pDoc->m_ShipInfoArray.GetAt(n).GetHull();
+		
+		BOOLEAN oldDoubleHull	= pHull->GetDoubleHull();
+		ULONG oldBaseHull		= pHull->GetBaseHull();
+		BOOLEAN ablative		= pHull->GetAblative();
+		BOOLEAN polarisation	 = pHull->GetPolarisation();
 		// Dann bekommt das nächste Schiff ein neues Hüllenmaterial
-		switch (pDoc->m_ShipInfoArray.GetAt(n).GetHull()->GetHullMaterial())
+		switch (pHull->GetHullMaterial())
 		{
-		case TITAN: pDoc->m_ShipInfoArray.GetAt(n).GetHull()->ModifyHull(oldDoubleHull,oldBaseHull,DURANIUM,ablative,polarisation);
+		case TITAN: pHull->ModifyHull(oldDoubleHull,oldBaseHull,DURANIUM,ablative,polarisation);
 			break;
-		case DURANIUM: pDoc->m_ShipInfoArray.GetAt(n).GetHull()->ModifyHull(oldDoubleHull,oldBaseHull,IRIDIUM,ablative,polarisation);
+		case DURANIUM: pHull->ModifyHull(oldDoubleHull,oldBaseHull,IRIDIUM,ablative,polarisation);
 			break;
-		case IRIDIUM: pDoc->m_ShipInfoArray.GetAt(n).GetHull()->ModifyHull(oldDoubleHull,oldBaseHull,TITAN,ablative,polarisation);
+		case IRIDIUM: pHull->ModifyHull(oldDoubleHull,oldBaseHull,TITAN,ablative,polarisation);
 			break;
 		}
 		pDoc->m_ShipInfoArray.GetAt(n).CalculateFinalCosts();
@@ -658,7 +670,9 @@ void CShipDesignMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 	// Überprüfen ob wir geklickt haben um die Hüllenart zu wechseln (also Einzel- oder Doppelhülle)
 	else if (n != -1 && CRect(r.right-145,180+counter*120,r.right-25,210+counter*120).PtInRect(point))
 	{
-		BOOLEAN oldDoubleHull = pDoc->m_ShipInfoArray.GetAt(n).GetHull()->GetDoubleHull();
+		CHull* pHull			= pDoc->m_ShipInfoArray.GetAt(n).GetHull();
+		
+		BOOLEAN oldDoubleHull	= pHull->GetDoubleHull();
 		
 		// wenn eine Doppelhülle draus gemacht werden soll dann darf die Manövrierbarkeit nicht schon "keine" oder nur 1 sein
 		if (oldDoubleHull == FALSE && pDoc->m_ShipInfoArray.GetAt(n).GetManeuverability() <= 1)
@@ -679,11 +693,12 @@ void CShipDesignMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			else
 				pDoc->m_ShipInfoArray.GetAt(n).SetManeuverability(pDoc->m_ShipInfoArray.GetAt(n).GetManeuverability()+1);
 		}
-		BOOLEAN ablative = pDoc->m_ShipInfoArray.GetAt(n).GetHull()->GetAblative();
-		BOOLEAN polarisation = pDoc->m_ShipInfoArray.GetAt(n).GetHull()->GetPolarisation();
-		ULONG oldBaseHull = pDoc->m_ShipInfoArray.GetAt(n).GetHull()->GetBaseHull();
-		BYTE oldHullMaterial = pDoc->m_ShipInfoArray.GetAt(n).GetHull()->GetHullMaterial();
-		pDoc->m_ShipInfoArray.GetAt(n).GetHull()->ModifyHull(!oldDoubleHull,oldBaseHull,oldHullMaterial,ablative,polarisation);
+		BOOLEAN ablative		= pHull->GetAblative();
+		BOOLEAN polarisation	= pHull->GetPolarisation();
+		ULONG oldBaseHull		= pHull->GetBaseHull();
+		BYTE oldHullMaterial	= pHull->GetHullMaterial();
+		
+		pHull->ModifyHull(!oldDoubleHull,oldBaseHull,oldHullMaterial,ablative,polarisation);
 		pDoc->m_ShipInfoArray.GetAt(n).CalculateFinalCosts();
 		Invalidate();
 	}
@@ -692,10 +707,13 @@ void CShipDesignMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 	{
 		if (pDoc->m_ShipInfoArray.GetAt(n).GetShield()->GetShieldType() > 0)
 		{
-			UINT oldMaxShield = pDoc->m_ShipInfoArray.GetAt(n).GetShield()->GetMaxShield();
-			BYTE oldShieldType= pDoc->m_ShipInfoArray.GetAt(n).GetShield()->GetShieldType();
-			BOOLEAN regenerative= pDoc->m_ShipInfoArray.GetAt(n).GetShield()->GetRegenerative();
-			pDoc->m_ShipInfoArray.GetAt(n).GetShield()->ModifyShield(oldMaxShield, (oldShieldType - 1), regenerative);
+			CShield* pShield = pDoc->m_ShipInfoArray.GetAt(n).GetShield();
+
+			UINT oldMaxShield	= pShield->GetMaxShield();
+			BYTE oldShieldType	= pShield->GetShieldType();
+			BOOLEAN regenerative= pShield->GetRegenerative();
+			
+			pShield->ModifyShield(oldMaxShield, (oldShieldType - 1), regenerative);
 			pDoc->m_ShipInfoArray.GetAt(n).CalculateFinalCosts();
 			Invalidate();
 		}
@@ -703,12 +721,15 @@ void CShipDesignMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 	// Überprüfen ob ich geklickt habe um den Schildtyp zu erhöhen
 	else if (n != -1 && CRect(r.right-145,300+counter*120,r.right-25,325+counter*120).PtInRect(point))
 	{
-		USHORT oldShieldType= pDoc->m_ShipInfoArray.GetAt(n).GetShield()->GetShieldType();
+		CShield* pShield = pDoc->m_ShipInfoArray.GetAt(n).GetShield();
+
+		USHORT oldShieldType = pShield->GetShieldType();
 		if (pMajor->GetWeaponObserver()->GetMaxShieldType() > oldShieldType)
 		{
-			UINT oldMaxShield = pDoc->m_ShipInfoArray.GetAt(n).GetShield()->GetMaxShield();
-			BOOLEAN regenerative =pDoc->m_ShipInfoArray.GetAt(n).GetShield()->GetRegenerative();
-			pDoc->m_ShipInfoArray.GetAt(n).GetShield()->ModifyShield(oldMaxShield, (oldShieldType + 1), regenerative);
+			UINT oldMaxShield	= pShield->GetMaxShield();
+			BOOLEAN regenerative= pShield->GetRegenerative();
+			
+			pShield->ModifyShield(oldMaxShield, (oldShieldType + 1), regenerative);
 			pDoc->m_ShipInfoArray.GetAt(n).CalculateFinalCosts();
 			Invalidate();
 		}

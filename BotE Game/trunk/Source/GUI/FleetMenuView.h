@@ -30,7 +30,10 @@ public:
 
 public:
 	/// Funktion führt Aufgaben aus, welche zu jeder neuen Runde von den Views ausgeführt werden müssen.
-	void OnNewRound(void);
+	virtual void OnNewRound(void);
+
+	/// Funktion lädt die rassenspezifischen Grafiken.
+	virtual void LoadRaceGraphics();
 
 private:
 	// Funktionen

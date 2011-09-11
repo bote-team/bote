@@ -36,6 +36,9 @@ public:
 	/// Funktion führt Aufgaben aus, welche zu jeder neuen Runde von den Views ausgeführt werden müssen.
 	void OnNewRound(void) {};
 
+	/// Funktion lädt die rassenspezifischen Grafiken.
+	void LoadRaceGraphics();
+
 	/// Funktion zum Festlegen der Spielerrasse in der View
 	/// @pPlayer Zeiger auf Spielerrasse
 	static void SetPlayersRace(CMajor* pPlayer) {m_pPlayersRace = pPlayer;}

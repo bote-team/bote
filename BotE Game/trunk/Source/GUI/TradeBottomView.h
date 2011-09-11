@@ -27,6 +27,10 @@ public:
 #endif
 #endif
 
+public:
+	/// Funktion lädt die rassenspezifischen Grafiken.
+	virtual void LoadRaceGraphics();
+
 private:
 	// Funktionen
 

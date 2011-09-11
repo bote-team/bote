@@ -127,9 +127,20 @@ void CIntelMenuView::OnInitialUpdate()
 	CMainBaseView::OnInitialUpdate();
 
 	// TODO: Add your specialized code here and/or call the base class
+	
+	// Geheimdienstansicht
+	m_bySubMenu = 0;
+	m_sActiveIntelRace = "";
+	memset(m_bSortDesc, true, sizeof(m_bSortDesc));
+	m_nScrollPos = 0;
+}
+
+/// Funktion lädt die rassenspezifischen Grafiken.
+void CIntelMenuView::LoadRaceGraphics()
+{
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
-	
+
 	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
 
@@ -143,12 +154,6 @@ void CIntelMenuView::OnInitialUpdate()
 	bg_intelreportmenu	= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "intelreportmenu.boj");
 	bg_intelattackmenu	= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "intelattackmenu.boj");
 	bg_intelinfomenu	= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "intelinfomenu.boj");
-
-	// Geheimdienstansicht
-	m_bySubMenu = 0;
-	m_sActiveIntelRace = "";
-	memset(m_bSortDesc, true, sizeof(m_bSortDesc));
-	m_nScrollPos = 0;
 }
 
 BOOL CIntelMenuView::OnEraseBkgnd(CDC* pDC)

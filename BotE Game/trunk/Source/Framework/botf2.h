@@ -14,9 +14,10 @@
 #include "resource.h"       // Hauptsymbole
 #include "ChatDlg.h"
 
-#define WM_UPDATEVIEWS	(WM_APP+10)
-#define WM_COMBATVIEW	(WM_APP+11)
-#define WM_SHOWCHATDLG	(WM_APP+12)
+#define WM_INITVIEWS	(WM_APP+10)
+#define WM_UPDATEVIEWS	(WM_APP+11)
+#define WM_COMBATVIEW	(WM_APP+12)
+#define WM_SHOWCHATDLG	(WM_APP+13)
 
 /////////////////////////////////////////////////////////////////////////////
 // CBotf2App:
@@ -50,6 +51,7 @@ private:
 // Implementierung
 	DECLARE_MESSAGE_MAP()	
 	afx_msg void OnAppAbout();
+	afx_msg void InitViews(WPARAM, LPARAM);
 	afx_msg void UpdateViews(WPARAM, LPARAM);
 	afx_msg void ShowChatDlg(WPARAM, LPARAM);	
 	afx_msg void OnSettings();

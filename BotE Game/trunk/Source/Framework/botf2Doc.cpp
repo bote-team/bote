@@ -118,7 +118,6 @@ BOOL CBotf2Doc::OnNewDocument()
 	if (!CDocument::OnNewDocument())
 		return FALSE;
 	
-
 	// Mal Testweise paar Truppen anlegen
 	/*m_TroopInfo.RemoveAll();
 	BYTE techs[6];
@@ -154,6 +153,7 @@ BOOL CBotf2Doc::OnNewDocument()
 	m_bGameLoaded				= false;	
 	m_fStardate					= 121000.0f;
 	m_bCombatCalc				= false;
+	m_bNewGame					= true;
 
 	CIniLoader* pIni = CIniLoader::GetInstance();
 	ASSERT(pIni);
@@ -175,14 +175,17 @@ BOOL CBotf2Doc::OnNewDocument()
 	}
 	MYTRACE(MT::LEVEL_INFO, "Used seed for randomgenerator: %i", nSeed);
 
+	/*
 	CMainDlg mainDlg(this);
 	if (mainDlg.DoModal() != ID_WIZFINISH && !m_bDontExit)
 		exit(1);
 	while (!m_bDataReceived)
 		Sleep(50);
-
+		
+	AfxGetApp()->PostThreadMessage(WM_INITVIEWS, 0, 0);
 	// Ini-Werte lesen und setzen
 	ResetIniSettings();
+	*/
 
 	// Standardwerte setzen
 	m_ptKO = CPoint(0,0);
@@ -193,7 +196,8 @@ BOOL CBotf2Doc::OnNewDocument()
 	m_iNumberOfFleetShip		= -1;
 	m_iNumberOfTheShipInFleet	= -1;
 	for (int i = network::RACE_1; i < network::RACE_ALL; i++)
-		m_iSelectedView[i] = GALAXY_VIEW;
+		//m_iSelectedView[i] = GALAXY_VIEW;
+		m_iSelectedView[i] = START_VIEW;
 
 	return TRUE;
 }
@@ -824,6 +828,44 @@ void CBotf2Doc::SetNumberOfTheShipInFleet(int NumberOfTheShipInFleet)
 		CSmallInfoView::SetShip(&m_ShipArray.GetAt(m_iNumberOfFleetShip));
 }
 
+/// Funktion lädt für die ausgewählte Spielerrasse alle Grafiken für die Views.
+void CBotf2Doc::LoadViewGraphics(void)
+{
+	CMajor* pPlayersRace = GetPlayersRace();
+	ASSERT(pPlayersRace);
+
+	CGalaxyMenuView::SetPlayersRace(pPlayersRace);
+	CMainBaseView::SetPlayersRace(pPlayersRace);
+	CBottomBaseView::SetPlayersRace(pPlayersRace);
+	CMenuChooseView::SetPlayersRace(pPlayersRace);
+
+	// Views die rassenspezifischen Grafiken laden lassen
+	std::map<CWnd *, UINT>* views = &GetMainFrame()->GetSplitterWindow()->views;
+	for (std::map<CWnd *, UINT>::iterator it = views->begin(); it != views->end(); ++it)
+	{
+		if (it->second == GALAXY_VIEW)
+			continue;
+		else if (it->second == MENUCHOOSE_VIEW)
+			((CMenuChooseView*)(it->first))->LoadRaceGraphics();
+		else if (IS_MAIN_VIEW(it->second))
+			((CMainBaseView*)(it->first))->LoadRaceGraphics();
+		else if (IS_BOTTOM_VIEW(it->second))
+			((CBottomBaseView*)(it->first))->LoadRaceGraphics();
+	}
+	
+	// Ini-Werte lesen und setzen
+	ResetIniSettings();
+	
+	// ab jetzt müssen keine neuen Grafiken mehr geladen werden
+	m_bNewGame = false;
+
+	// Views ihre Arbeit zu Beginn jeder neuen Runde machen lassen
+	DoViewWorkOnNewRound();
+
+	// zum Schluss die Galxieview auswählen (nicht eher, da gibts manchmal Probleme beim Scrollen ganz nach rechts)
+	GetMainFrame()->SelectMainView(GALAXY_VIEW, pPlayersRace->GetRaceID());
+}
+
 void CBotf2Doc::DoViewWorkOnNewRound()
 {
 	// Playersrace in Views festlegen	
@@ -834,7 +876,6 @@ void CBotf2Doc::DoViewWorkOnNewRound()
 	CMainBaseView::SetPlayersRace(pPlayersRace);
 	CBottomBaseView::SetPlayersRace(pPlayersRace);
 	CMenuChooseView::SetPlayersRace(pPlayersRace);
-	CSmallInfoView::SetPlayersRace(pPlayersRace);
 
 	// Views ihre Arbeiten zu Beginn einer neuen Runde durchführen lassen
 	std::map<CWnd *, UINT>* views = &GetMainFrame()->GetSplitterWindow()->views;
@@ -845,9 +886,11 @@ void CBotf2Doc::DoViewWorkOnNewRound()
 		else if (IS_MAIN_VIEW(it->second))
 			((CMainBaseView*)(it->first))->OnNewRound();
 		else if (IS_BOTTOM_VIEW(it->second))
-			((CBottomBaseView*)(it->first))->OnNewRound();		
-	}	
+			((CBottomBaseView*)(it->first))->OnNewRound();
+	}
 
+	network::RACE client = m_pRaceCtrl->GetMappedClientID(pPlayersRace->GetRaceID());
+	
 	// anzuzeigende View in neuer Runde auswählen
 	// Wenn EventScreens für den Spieler vorhanden sind, so werden diese angezeigt.
 	if (pPlayersRace->GetEmpire()->GetEventMessages()->GetSize() > 0)
@@ -857,10 +900,9 @@ void CBotf2Doc::DoViewWorkOnNewRound()
 	}
 	else
 	{	
-		network::RACE client = m_pRaceCtrl->GetMappedClientID(pPlayersRace->GetRaceID());
 		GetMainFrame()->FullScreenMainView(false);
 		GetMainFrame()->SelectMainView(m_iSelectedView[client], pPlayersRace->GetRaceID());
-		m_iSelectedView[client] = 0;
+		m_iSelectedView[client] = 0;		
 	}
 
 	// wurde Rundenende geklickt zurücksetzen
@@ -1665,18 +1707,6 @@ void CBotf2Doc::ApplyBuildingsAtStartup()
 			m_System[p.x][p.y].CalculateBuildableBuildings(&m_Sector[p.x][p.y], &BuildingInfo, pMajor, &m_GlobalBuildings);
 			m_System[p.x][p.y].CalculateBuildableShips(this, p);
 			m_System[p.x][p.y].CalculateBuildableTroops(&m_TroopInfo, pMajor->GetEmpire()->GetResearch());
-		}
-	}
-	///////////////////////////////////////////
-
-	CPoint p = GetRaceKO("MAJOR5");
-	if (p != CPoint(-1,-1))
-	{
-		if (m_Sector[p.x][p.y].GetOwnerOfSector() == "MAJOR5")
-		{
-			// hier werden auch die Spezialtruppen der Cartarer ins System gesteckt
-			BuildTroop(6, GetRaceKO("MAJOR5"));
-			BuildTroop(6, GetRaceKO("MAJOR5"));			
 		}
 	}
 }

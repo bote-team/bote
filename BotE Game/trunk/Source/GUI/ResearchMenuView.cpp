@@ -98,17 +98,6 @@ void CResearchMenuView::OnInitialUpdate()
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
 	
-	CMajor* pMajor = m_pPlayersRace;
-	ASSERT(pMajor);
-
-	// Alle Buttons in der View erstellen
-	CreateButtons();
-	// alle Hintergrundgrafiken laden
-	CString sPrefix = pMajor->GetPrefix();	
-	bg_researchmenu	= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "researchmenu.boj");
-	bg_urmenu		= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "urmenu.boj");
-	bg_emptyur		= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "emptyur.boj");
-
 	// Zuweisungsbalken in der Forschungsübersicht
 	// Die Koodinaten der Rechtecke für die ganzen Buttons
 	CRect r;
@@ -138,6 +127,24 @@ void CResearchMenuView::OnInitialUpdate()
 
 	// View bei den Tooltipps anmelden
 	pDoc->GetMainFrame()->AddToTooltip(this);
+}
+
+/// Funktion lädt die rassenspezifischen Grafiken.
+void CResearchMenuView::LoadRaceGraphics()
+{
+	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	ASSERT(pDoc);
+
+	CMajor* pMajor = m_pPlayersRace;
+	ASSERT(pMajor);
+
+	// Alle Buttons in der View erstellen
+	CreateButtons();
+	// alle Hintergrundgrafiken laden
+	CString sPrefix = pMajor->GetPrefix();	
+	bg_researchmenu	= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "researchmenu.boj");
+	bg_urmenu		= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "urmenu.boj");
+	bg_emptyur		= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "emptyur.boj");
 }
 
 void CResearchMenuView::OnPrepareDC(CDC* pDC, CPrintInfo* pInfo)

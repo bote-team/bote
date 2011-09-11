@@ -99,6 +99,14 @@ void CTransportMenuView::OnInitialUpdate()
 	CMainBaseView::OnInitialUpdate();
 
 	// TODO: Add your specialized code here and/or call the base class
+		
+	// Transportansicht
+	m_iTransportStorageQuantity = 1;
+}
+
+/// Funktion lädt die rassenspezifischen Grafiken.
+void CTransportMenuView::LoadRaceGraphics()
+{
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
 
@@ -110,9 +118,6 @@ void CTransportMenuView::OnInitialUpdate()
 	// alle Hintergrundgrafiken laden
 	CString sPrefix = pMajor->GetPrefix();
 	bg_transportmenu = pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "transportmenu.boj");
-		
-	// Transportansicht
-	m_iTransportStorageQuantity = 1;
 }
 
 void CTransportMenuView::OnPrepareDC(CDC* pDC, CPrintInfo* pInfo)

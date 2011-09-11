@@ -21,7 +21,6 @@ static char THIS_FILE[] = __FILE__;
 /////////////////////////////////////////////////////////////////////////////
 // CSmallInfoView
 
-CMajor* CSmallInfoView::m_pPlayersRace = NULL;
 BOOLEAN CSmallInfoView::m_bShowShipInfo = FALSE;
 BOOLEAN CSmallInfoView::m_bShowPlanetInfo = FALSE;
 BOOLEAN CSmallInfoView::m_bShowPlanetStats = FALSE;
@@ -59,9 +58,11 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 	if (!pDoc->m_bDataReceived)
 		return;
 
-	CMajor* pMajor = m_pPlayersRace;
+	CString sID = pDoc->GetPlayersRaceID();
+	CMajor* pMajor = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(sID));
 	if (!pMajor)
 	{
+		ASSERT(pMajor);
 		this->KillTimer(1);
 		m_nTimer = 0;
 		return;
@@ -487,13 +488,6 @@ void CSmallInfoView::OnInitialUpdate()
 	CView::OnInitialUpdate();
 
 	// TODO: Fügen Sie hier Ihren spezialisierten Code ein, und/oder rufen Sie die Basisklasse auf.
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
-	ASSERT(pDoc);
-
-	CString sID = pDoc->GetPlayersRaceID();
-	m_pPlayersRace = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(sID));
-	ASSERT(m_pPlayersRace);
-
 	m_TotalSize.cx = 200;
 	m_TotalSize.cy = 249;	
 }

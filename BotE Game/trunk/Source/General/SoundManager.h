@@ -20,19 +20,19 @@ typedef enum SNDMGR_VALUE
 {
 	SNDMGR_INVALID,								///< ungültiger Wert
 
-	SNDMGR_MUSIC_FED,							///< Hintergrundmusik Föderation
-	SNDMGR_MUSIC_FER,							///< Hintergrundmusik Ferengi
-	SNDMGR_MUSIC_KLI,							///< Hintergrundmusik Klingonen
-	SNDMGR_MUSIC_ROM,							///< Hintergrundmusik Romulaner
-	SNDMGR_MUSIC_CAR,							///< Hintergrundmusik Cardassianer
-	SNDMGR_MUSIC_DOM,							///< Hintergrundmusik Dominion
+	SNDMGR_MUSIC_FED,							///< Hintergrundmusik Konföderation
+	SNDMGR_MUSIC_FER,							///< Hintergrundmusik Hanuhr
+	SNDMGR_MUSIC_KLI,							///< Hintergrundmusik Khayrin
+	SNDMGR_MUSIC_ROM,							///< Hintergrundmusik Rotharianer
+	SNDMGR_MUSIC_CAR,							///< Hintergrundmusik Cartarer
+	SNDMGR_MUSIC_DOM,							///< Hintergrundmusik Omegas
 
-	SNDMGR_VOICE_FED_RACESELECT,				///< Stimme zur Rassenauswahl für Föderation
-	SNDMGR_VOICE_FER_RACESELECT,				///< Stimme zur Rassenauswahl für Ferengi
-	SNDMGR_VOICE_KLI_RACESELECT,				///< Stimme zur Rassenauswahl für Klingonen
-	SNDMGR_VOICE_ROM_RACESELECT,				///< Stimme zur Rassenauswahl für Romulaner
-	SNDMGR_VOICE_CAR_RACESELECT,				///< Stimme zur Rassenauswahl für Cardassianer
-	SNDMGR_VOICE_DOM_RACESELECT,				///< Stimme zur Rassenauswahl für Dominion
+	SNDMGR_VOICE_FED_RACESELECT,				///< Stimme zur Rassenauswahl für Konföderation
+	SNDMGR_VOICE_FER_RACESELECT,				///< Stimme zur Rassenauswahl für Hanuhr
+	SNDMGR_VOICE_KLI_RACESELECT,				///< Stimme zur Rassenauswahl für Khayrin
+	SNDMGR_VOICE_ROM_RACESELECT,				///< Stimme zur Rassenauswahl für Rotharianer
+	SNDMGR_VOICE_CAR_RACESELECT,				///< Stimme zur Rassenauswahl für Cartarer
+	SNDMGR_VOICE_DOM_RACESELECT,				///< Stimme zur Rassenauswahl für Omegas
 
 	SNDMGR_SOUND_MAINMENU,						///< Button im Hauptmenü
 	SNDMGR_SOUND_ENDOFROUND,					///< Rundenende-Button

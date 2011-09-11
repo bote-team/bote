@@ -127,6 +127,19 @@ void CEmpireMenuView::OnInitialUpdate()
 	CMainBaseView::OnInitialUpdate();
 
 	// TODO: Add your specialized code here and/or call the base class
+	m_iSubMenu = EMPIREVIEW_NEWS;
+	m_iWhichNewsButtonIsPressed = NO_TYPE;
+	m_iClickedNews = -1;
+	m_iClickedSystem = -1;
+	m_iClickedShip = -1;
+	m_iClickedShipIndex = -1;
+	m_bShowAliveShips = TRUE;
+	m_iSystemSubMenue = EMPIREVIEW_SYSTEMS_NORMAL;
+}
+
+/// Funktion lädt die rassenspezifischen Grafiken.
+void CEmpireMenuView::LoadRaceGraphics()
+{
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
 
@@ -143,15 +156,6 @@ void CEmpireMenuView::OnInitialUpdate()
 	bg_demographicsmenu		= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "demomenu.boj");
 	bg_top5menu				= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "top5menu.boj");
 	bg_victorymenu			= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "victorymenu.boj");
-
-	m_iSubMenu = EMPIREVIEW_NEWS;
-	m_iWhichNewsButtonIsPressed = NO_TYPE;
-	m_iClickedNews = -1;
-	m_iClickedSystem = -1;
-	m_iClickedShip = -1;
-	m_iClickedShipIndex = -1;
-	m_bShowAliveShips = TRUE;
-	m_iSystemSubMenue = EMPIREVIEW_SYSTEMS_NORMAL;
 }
 
 void CEmpireMenuView::OnPrepareDC(CDC* pDC, CPrintInfo* pInfo)

@@ -28,7 +28,6 @@ protected:
 
 // Attribute
 	CSize m_TotalSize;					///< Größe der View in logischen Koordinaten
-	static CMajor* m_pPlayersRace;	///< Zeiger auf Spielerrasse
 	static BOOLEAN m_bShowShipInfo;		///< sollen Schiffsinformationen angezeigt werden
 	static BOOLEAN m_bShowPlanetInfo;	///< sollen Planeteninformationen angezeigt werden
 	static BOOLEAN m_bShowPlanetStats;	///< sollen Planetenstatistiken angezeigt werden
@@ -68,11 +67,7 @@ public:
 	/// Funktion liefert einen Zeiger auf das aktuell angezeigte Schiff.
 	/// @return Zeiger auf Planeten
 	static const CShip* GetShip(void) { return m_pShip; }
-
-	/// Funktion zum Festlegen der Spielerrasse in der View
-	/// @pPlayer Zeiger auf Spielerrasse
-	static void SetPlayersRace(CMajor* pPlayer) {m_pPlayersRace = pPlayer;}
-
+	
 // Überschreibungen
 	// Vom Klassen-Assistenten generierte virtuelle Funktionsüberschreibungen
 	//{{AFX_VIRTUAL(CSmallInfoView)

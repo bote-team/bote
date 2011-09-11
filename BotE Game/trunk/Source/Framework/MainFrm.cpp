@@ -5,6 +5,11 @@
 #include "botf2.h"
 
 #include "MainFrm.h"
+
+#include "StartMenuView.h"
+#include "ChooseRaceView.h"
+#include "NewGameView.h"
+
 #include "GalaxyMenuView.h"
 #include "SystemMenuView.h"
 #include "ResearchMenuView.h"
@@ -44,10 +49,12 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
 		// HINWEIS - Hier werden Mapping-Makros vom Klassen-Assistenten eingefügt und entfernt.
 		//    Innerhalb dieser generierten Quelltextabschnitte NICHTS VERÄNDERN!
 	ON_WM_CREATE()
+	ON_MESSAGE(WM_INITVIEWS, CMainFrame::InitViews)
 	ON_MESSAGE(WM_UPDATEVIEWS, CMainFrame::UpdateViews)
 	ON_MESSAGE(WM_COMBATVIEW, CMainFrame::ShowCombatView)
 	ON_NOTIFY (UDM_TOOLTIP_DISPLAY, NULL, NotifyCPPTooltip)
 	//}}AFX_MSG_MAP
+	ON_WM_ERASEBKGND()
 END_MESSAGE_MAP()
 
 static UINT indicators[] =
@@ -235,8 +242,14 @@ BOOL CMainFrame::OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext)
 	// View hinzufügen
 
 	// Hauptmenü
-	m_wndSplitter.AddSwitchableView(m_wndSplitter.IdFromRowCol(0, 1), RUNTIME_CLASS(CGalaxyMenuView),
-		pContext, CRect(r.right * HORZ_PROPORTION, 0, r.Width(), r.bottom * VERT_PROPORTION) , true , GALAXY_VIEW);
+	m_wndSplitter.AddSwitchableView(m_wndSplitter.IdFromRowCol(0, 1), RUNTIME_CLASS(CStartMenuView),
+		pContext, CRect(r.right * HORZ_PROPORTION, 0, r.Width(), r.bottom * VERT_PROPORTION) , true , START_VIEW);
+	m_wndSplitter.AddSwitchableView(NEWGAME_VIEW, RUNTIME_CLASS(CNewGameView),
+		pContext, CRect(r.right * HORZ_PROPORTION, 0, r.Width(), r.bottom * VERT_PROPORTION) , false , NEWGAME_VIEW);
+	m_wndSplitter.AddSwitchableView(CHOOSERACE_VIEW, RUNTIME_CLASS(CChooseRaceView),
+		pContext, CRect(r.right * HORZ_PROPORTION, 0, r.Width(), r.bottom * VERT_PROPORTION) , false , CHOOSERACE_VIEW);
+	m_wndSplitter.AddSwitchableView(GALAXY_VIEW, RUNTIME_CLASS(CGalaxyMenuView),
+		pContext, CRect(r.right * HORZ_PROPORTION, 0, r.Width(), r.bottom * VERT_PROPORTION) , false , GALAXY_VIEW);
 	m_wndSplitter.AddSwitchableView(SYSTEM_VIEW, RUNTIME_CLASS(CSystemMenuView),
 		pContext, CRect(r.right * HORZ_PROPORTION, 0, r.Width(), r.bottom * VERT_PROPORTION) , false , SYSTEM_VIEW);
 	m_wndSplitter.AddSwitchableView(RESEARCH_VIEW, RUNTIME_CLASS(CResearchMenuView),
@@ -282,10 +295,10 @@ BOOL CMainFrame::OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext)
 
 	// linke Menüleiste
 	m_wndSplitter.AddSwitchableView(m_wndSplitter.IdFromRowCol(0, 0), RUNTIME_CLASS(CMenuChooseView),
-		pContext, CRect(0, 0, r.Width(), r.Height()) , true);
+		pContext, CRect(0, 0, r.Width(), r.Height()) , true, MENUCHOOSE_VIEW);
 
-	FullScreenMainView(false);
-
+	//FullScreenMainView(true);
+	
 	return TRUE;
 //	return CFrameWnd::OnCreateClient(lpcs, pContext);
 }
@@ -327,6 +340,11 @@ void CMainFrame::SelectMainView(USHORT whichView, const CString& sRace)
 			}
 		}
 	}
+}
+
+void CMainFrame::SelectMainView(USHORT whichView)
+{
+	m_wndSplitter.SwitchView(whichView, 0, 1);
 }
 
 void CMainFrame::SelectBottomView(USHORT viewID)
@@ -446,17 +464,18 @@ void CMainFrame::FullScreenMainView(bool fullScreen)
 	else
 	{
 		m_wndSplitter.SetRowInfo(0, r.Height(), r.Height());
-		m_wndSplitter.SetColumnInfo(0, 0, 0);		
+		m_wndSplitter.SetColumnInfo(0, 0, 0);
 	}
 	m_wndSplitter.RecalcLayout();
 }
 
 LRESULT CMainFrame::UpdateViews(WPARAM wParam, LPARAM lParam)
 {
+	MYTRACE(MT::LEVEL_INFO, "Getting Message to UpdateViews...");
+
 	CBotf2Doc* pDoc = (CBotf2Doc*)((CBotf2App*)AfxGetApp())->GetDocument();
 	ASSERT(pDoc);
 	
-	MYTRACE(MT::LEVEL_INFO, "Getting Message to UpdateViews...");
 	// Views ihre Arbeiten zu jeder neuen Runde machen lassen
 	pDoc->DoViewWorkOnNewRound();
 	MYTRACE(MT::LEVEL_INFO, "Updating all Views done\n");
@@ -466,10 +485,10 @@ LRESULT CMainFrame::UpdateViews(WPARAM wParam, LPARAM lParam)
 
 LRESULT CMainFrame::ShowCombatView(WPARAM wParam, LPARAM lParam)
 {
+	MYTRACE(MT::LEVEL_INFO, "Getting Message to Show CombatView...");
+	
 	CBotf2Doc* pDoc = (CBotf2Doc*)((CBotf2App*)AfxGetApp())->GetDocument();
 	ASSERT(pDoc);
-	
-	MYTRACE(MT::LEVEL_INFO, "Getting Message to Show CombatView...");
 	
 	// Combat View anzeigen
 	FullScreenMainView(true);
@@ -487,8 +506,21 @@ LRESULT CMainFrame::ShowCombatView(WPARAM wParam, LPARAM lParam)
 	pDoc->UpdateAllViews(NULL);
 
 	MYTRACE(MT::LEVEL_INFO, "Showing CombatView\n");
-
 	
+	return TRUE;
+}
+
+LRESULT CMainFrame::InitViews(WPARAM wParam, LPARAM lParam)
+{
+	MYTRACE(MT::LEVEL_INFO, "Getting Message to InitViews...");
+
+	CBotf2Doc* pDoc = (CBotf2Doc*)((CBotf2App*)AfxGetApp())->GetDocument();
+	ASSERT(pDoc);
+
+	// alle rassenabhängigen Grafiken in jeder View laden
+	pDoc->LoadViewGraphics();
+
+	MYTRACE(MT::LEVEL_INFO, "Init all Views done\n");
 	return TRUE;
 }
 
@@ -543,9 +575,18 @@ void CMainFrame::NotifyCPPTooltip( NMHDR* pNMHDR, LRESULT* result )
 			pNotify->ti->sTooltip = ((CMainBaseView*)pWnd)->CreateTooltip();
 			return;
 		}
-	}
+	}	
+}
+
+BOOL CMainFrame::OnEraseBkgnd(CDC* pDC)
+{
+	// TODO: Fügen Sie hier Ihren Meldungsbehandlungscode ein, und/oder benutzen Sie den Standard.
+	CRect rect;
+	GetClientRect(&rect);
 	
-	// default
-	pNotify->ti->sTooltip = "";
-	return;
+	pDC->FillSolidRect(rect, RGB(0,0,0));
+	pDC->SetTextColor(RGB(200,200,200));
+	pDC->DrawText("§loading game data - please wait...", rect, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+
+	return CFrameWnd::OnEraseBkgnd(pDC);
 }

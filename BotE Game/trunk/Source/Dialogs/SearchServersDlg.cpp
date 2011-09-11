@@ -47,8 +47,8 @@ BOOL CSearchServersDlg::OnInitDialog()
 	m_listServers.GetClientRect(&rect);
 	int cx = (rect.Width() * 7) / 12;
 
-	m_listServers.InsertColumn(0, "Description", LVCFMT_LEFT, cx, -1);
-	m_listServers.InsertColumn(1, "Address", LVCFMT_LEFT, rect.Width() - cx, -1);
+	m_listServers.InsertColumn(0, "§Description", LVCFMT_LEFT, cx, -1);
+	m_listServers.InsertColumn(1, "§Address", LVCFMT_LEFT, rect.Width() - cx, -1);
 
 	// als Handler registrieren und Anfrage broadcasten
 	clientPublisher.AddLANClientListener(this);

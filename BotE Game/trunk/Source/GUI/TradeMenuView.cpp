@@ -116,6 +116,14 @@ void CTradeMenuView::OnInitialUpdate()
 	CMainBaseView::OnInitialUpdate();
 
 	// TODO: Add your specialized code here and/or call the base class
+	
+	// Handelsansicht
+	m_bySubMenu = 0;
+}
+
+/// Funktion lädt die rassenspezifischen Grafiken.
+void CTradeMenuView::LoadRaceGraphics()
+{
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
 
@@ -132,9 +140,6 @@ void CTradeMenuView::OnInitialUpdate()
 	bg_monopolmenu		= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "monopolmenu.boj");
 	bg_empty1			= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "emptyscreen.boj");
 	bg_tradetransfermenu= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "tradetransfermenu.boj");
-
-	// Handelsansicht
-	m_bySubMenu = 0;
 }
 
 void CTradeMenuView::OnPrepareDC(CDC* pDC, CPrintInfo* pInfo)

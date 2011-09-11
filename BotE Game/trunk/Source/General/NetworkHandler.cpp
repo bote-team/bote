@@ -45,19 +45,13 @@ void CNetworkHandler::OnNextRound(network::CNextRound *pMsg)
 	m_pDoc->m_bDataReceived = false;
 	pMsg->DeserializeToDoc(m_pDoc);
 
-	/*
-	if (m_pDoc->m_bGameOver)
-	{
-		//client.Disconnect();
-		//Sleep(1000);
-		// Hartes Exit!
-		//exit(0);		
-	}
-	*/
-
+	int nMsg = WM_UPDATEVIEWS;
 	// findet ein Kampf statt oder wurde die Runde ganz normal beendet
-	int nMsg = m_pDoc->m_bCombatCalc ? WM_COMBATVIEW : WM_UPDATEVIEWS;
-		
+	if (m_pDoc->m_bCombatCalc)
+		nMsg = WM_COMBATVIEW;
+	else if (m_pDoc->m_bNewGame)
+		nMsg = WM_INITVIEWS;
+			
 	// wurde schon ein Fenster erstellt, so wird die Nachricht der Aktualisierung an das Hauptfenster
 	// geschickt
 	CWnd* pWnd = ((CBotf2App*)AfxGetApp())->GetMainWnd();

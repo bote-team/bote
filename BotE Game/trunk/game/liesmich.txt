@@ -240,6 +240,7 @@ Handbuch (dt.)
 Schiffsgrafiken:
   Majorrace-Schiffe:	
 	Atrocities
+	magicmot
   Minorrace-Schiffe:
 	Kevin Williams
 	Dieter Ludmann
@@ -252,6 +253,7 @@ Hintergrundmusik:
   Khayrin Imperium: Edgen "STOGAM - The Battle Begins" http://www.newgrounds.com/audio/listen/163447
   Rotharianischer Sternenverbund: MarkySpark "Blood Throne Battle V" http://www.newgrounds.com/audio/listen/370234
   Cartarer Invasoren: Sandman "Cirrus March" http://botf2.star-trek-games.com/memberlist.php?mode=viewprofile&u=4284
+  Omega-Allianz: Kenneth L. Welch "Starlight Requiem v2r" http://homepage.mac.com/klwelch/music.html
   
 sonstige Musik:
   Verloren: Kevin MacLeod - "For the Fallen"
@@ -263,7 +265,7 @@ Schriftarten:
   Khayrin: Klingon Dagger (John Tackett aka K'mel)
   Rotharianer: Mandala http://www.aimwell.org/Fonts/fonts.html (GPL v3)
   Cartarer: Final Frontier (Allen R. Walden; frei distributierbar)
-  Omega-Allianz: n/a
+  Omega-Allianz: LilyUPC http://www.microsoft.com/typography/fonts/family.aspx?FID=272
 
 
 Major Races (Character artwork):
@@ -485,7 +487,7 @@ User Interface Menüdesign:
   Khayrin Imperium: pd http://www.optisch-edel.de/fo/hbk/back2.jpg (Generelles Design und Stilelementvorlage geliefert), Malle (alle Menüs aus dieser Vorlage erstellt)
   Rotharianischer Sternenverbund: Zunder
   Cartarer Invasoren: nemesis5
-
+  Omega Allianz: magicmot
 
 
 Gebäudegrafiken:

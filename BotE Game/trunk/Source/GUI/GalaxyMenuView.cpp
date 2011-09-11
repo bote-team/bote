@@ -500,10 +500,6 @@ void CGalaxyMenuView::OnInitialUpdate()
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
 
-	CString sID = pDoc->GetPlayersRaceID();
-	m_pPlayersRace = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(sID));
-	ASSERT(m_pPlayersRace);
-
 	// Cursor aus Ressource laden
     HCURSOR m_hCur = AfxGetApp()->LoadCursor(IDC_CURSOR);
 	// Geladenen Cursor nun setzen
@@ -521,10 +517,16 @@ void CGalaxyMenuView::OnInitialUpdate()
 	m_bShipMove	= FALSE;
 	m_bScrollToHome = TRUE;
 
+	/*
+	CString sID = pDoc->GetPlayersRaceID();
+	m_pPlayersRace = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(sID));
+	ASSERT(m_pPlayersRace);
+
 	CPoint pt = pDoc->GetRaceKO(m_pPlayersRace->GetRaceID());
 	pDoc->SetKO(pt);
 	if (m_pPlayersRace->GetStarmap())
 		m_pPlayersRace->GetStarmap()->Select(Sector(pt.x, pt.y));
+	*/
 
 	pDoc->GetMainFrame()->AddToTooltip(this);	
 

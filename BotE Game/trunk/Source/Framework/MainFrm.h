@@ -66,6 +66,10 @@ public:
 	/// @param sRace auf welche Hauptrasse bezieht sich die Änderung
 	void SelectMainView(USHORT whichView, const CString& sRace);
 
+	/// Funktion legt die View fest, also in welchem Menü man sich gerade befindet.
+	/// @param whichView Nummer (ID) der View
+	void SelectMainView(USHORT whichView);
+
 	/// Funktion wählt eine View für den unteren View-Bereich aus.
 	/// @param viewID View-ID der gewünschten View
 	void SelectBottomView(USHORT viewID);
@@ -114,6 +118,8 @@ protected:
 	//{{AFX_MSG(CMainFrame)
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 	afx_msg void NotifyCPPTooltip(NMHDR* pNMHDR, LRESULT* result);
+	/// Funktion veranlasst die Views die rassenspezifischen Grafiken zu laden.
+	afx_msg LRESULT InitViews(WPARAM, LPARAM);
 	afx_msg LRESULT UpdateViews(WPARAM, LPARAM);
 	afx_msg LRESULT ShowCombatView(WPARAM, LPARAM);
 		// HINWEIS - An dieser Stelle werden Member-Funktionen vom Klassen-Assistenten eingefügt und entfernt.
@@ -122,6 +128,7 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
+	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
 };
 
 /////////////////////////////////////////////////////////////////////////////

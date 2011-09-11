@@ -5,9 +5,10 @@ con_music.ogg: Eric Fu-Wah James http://www.myspace.com/ericjames/
 han_music.ogg: reel2 "The Birth of a Legend": http://www.newgrounds.com/audio/listen/264050 and George R Powell "One Last Sunset": http://www.newgrounds.com/audio/listen/317246
 kha_music.ogg: Edgen "STOGAM - The Battle Begins": http://www.newgrounds.com/audio/listen/163447
 rot_music.ogg: MarkySpark "Blood Throne Battle V": http://www.newgrounds.com/audio/listen/370234
-car_music.ogg: Sandman - Cirrus-March http://botf2.star-trek-games.com/memberlist.php?mode=viewprofile&u=4284
+car_music.ogg: Sandman - "Cirrus-March" http://botf2.star-trek-games.com/memberlist.php?mode=viewprofile&u=4284
+ome_music.ogg: Kenneth L. Welch "Starlight Requiem v2r" http://homepage.mac.com/klwelch/music.html
 VictoryTheme.ogg: Eric Fu-Wah James "Finale" http://www.myspace.com/ericjames/
-LosingTheme.ogg: Kevin MacLeod - For the Fallen.mp3 music.incompetech.com
+LosingTheme.ogg: Kevin MacLeod "For the Fallen.mp3" music.incompetech.com
 
 
 Credits Voices

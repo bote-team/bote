@@ -35,6 +35,9 @@ protected:
 	/// Funktion schlieﬂt das derzeit angezeigte Event.
 	void CloseScreen(CEventScreen* eventScreen);
 
+	/// Funktion l‰dt die rassenspezifischen Grafiken.
+	virtual void LoadRaceGraphics() {};
+
 	///	Funktion erstellt zur aktuellen Mouse-Position einen HTML Tooltip
 	/// @return	der erstellte Tooltip-Text
 	virtual CString CreateTooltip(void);

@@ -665,17 +665,24 @@ void CShipBottomView::OnInitialUpdate()
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
 
-	CMajor* pPlayer = m_pPlayersRace;
-	ASSERT(pPlayer);
-
 	m_LastKO = pDoc->GetKO();
 	m_iPage = 1;
 	m_iTimeCounter = 0;
 	m_bShowNextButton = FALSE;
 	for (int i = 0; i <= TRAIN_SHIP; i++)
 		m_ShipOrders[i].SetRect(0,0,0,0);
-	m_iWhichMainShipOrderButton = -1;
-	
+	m_iWhichMainShipOrderButton = -1;	
+}
+
+/// Funktion lädt die rassenspezifischen Grafiken.
+void CShipBottomView::LoadRaceGraphics()
+{
+	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	ASSERT(pDoc);
+
+	CMajor* pPlayer = m_pPlayersRace;
+	ASSERT(pPlayer);
+
 	CString sPrefix = pPlayer->GetPrefix();
 	CString s = CIOData::GetInstance()->GetAppPath() + "Graphics\\Other\\" + sPrefix + "button_shiporder.bop";		
 	m_pShipOrderButton = Bitmap::FromFile(s.AllocSysString());

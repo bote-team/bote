@@ -254,6 +254,7 @@ Manual (german)
 Ship graphics:
   Major race ships:	
 	Atrocities
+	magicmot
   Minor race ships:
 	Kevin Williams
 	Dieter Ludmann
@@ -266,6 +267,7 @@ Background music:
   Khaoron Empire: Edgen "STOGAM - The Battle Begins" http://www.newgrounds.com/audio/listen/163447
   Rotharian Star Network: MarkySpark "Blood Throne Battle V" http://www.newgrounds.com/audio/listen/370234
   Cartare Union: Sandman "Cirrus March" http://botf2.star-trek-games.com/memberlist.php?mode=viewprofile&u=4284
+  Omega-Alliance: Kenneth L. Welch "Starlight Requiem v2r" http://homepage.mac.com/klwelch/music.html
   
 other music:
   Lose game: Kevin MacLeod - "For the Fallen"
@@ -278,7 +280,7 @@ Fonts:
   Khaorons: Klingon Dagger (John Tackett aka K'mel)
   Rotharians: Mandala http://www.aimwell.org/Fonts/fonts.html (GPL v3)
   Cartare: Final Frontier (Allen R. Walden; free to distribute)
-  Omega-Alliance: n/a
+  Omega-Alliance: LilyUPC http://www.microsoft.com/typography/fonts/family.aspx?FID=272
 
 
 Character artwork:
@@ -501,6 +503,7 @@ User Interface menu design:
   Khaoron Empire: pd http://www.optisch-edel.de/fo/hbk/back2.jpg  (general design and main style element), Malle (created all menus using pd's design element)
   Rotharian Star Network: Zunder
   Cartare Union: nemesis5
+  Omega Alliance: magicmot
 
 
 

@@ -5,6 +5,9 @@
 #define IDD_ABOUTBOX                    100
 #define CG_IDS_SOCKETS_INIT_FAILED      102
 #define IDP_SOCKETS_INIT_FAILED         103
+#define IDD_STARTMENUVIEW               104
+#define IDD_CHOOSERACEVIEW              105
+#define IDD_NEWGAMEVIEW                 106
 #define IDR_MAINFRAME                   128
 #define IDR_BOTF2TYPE                   129
 #define IDD_NEWGAME                     129
@@ -89,6 +92,7 @@
 #define IDC_EDIT_RANDOMSEED             1051
 #define IDC_SLIDER_STARDENSITY          1052
 #define IDC_SLIDER_MINORDENSITY         1053
+#define IDC_STATIC_USERNAME             1053
 #define IDC_CHECK_HIDEMENUBAR           1054
 #define IDC_SLIDER_ANOMALYDENSITY       1055
 #define IDC_CHECK_VC_ELIMINATION        1056
@@ -124,7 +128,7 @@
 #define _APS_3D_CONTROLS                     1
 #define _APS_NEXT_RESOURCE_VALUE        190
 #define _APS_NEXT_COMMAND_VALUE         32790
-#define _APS_NEXT_CONTROL_VALUE         1052
-#define _APS_NEXT_SYMED_VALUE           101
+#define _APS_NEXT_CONTROL_VALUE         1054
+#define _APS_NEXT_SYMED_VALUE           107
 #endif
 #endif

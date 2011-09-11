@@ -138,21 +138,6 @@ void CSystemMenuView::OnInitialUpdate()
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
 
-	CMajor* pMajor = m_pPlayersRace;
-	ASSERT(pMajor);
-
-	// Alle Buttons in der View erstellen
-	CreateButtons();
-		
-	CString sPrefix = pMajor->GetPrefix();
-		
-	bg_buildmenu	= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "buildmenu.boj");
-	bg_workmenu		= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "workmenu.boj");
-	bg_overviewmenu = pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "overviewmenu.boj");
-	bg_energymenu	= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "energymenu.boj");
-	bg_systrademenu	= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "systrademenu.boj");
-	
-	
 	// Baumenürechtecke
 	m_iClickedOn = 0;
 	BuildingDescription.SetRect(30,410,290,620);
@@ -187,10 +172,30 @@ void CSystemMenuView::OnInitialUpdate()
 	pDoc->GetMainFrame()->AddToTooltip(this);
 }
 
+/// Funktion lädt die rassenspezifischen Grafiken.
+void CSystemMenuView::LoadRaceGraphics()
+{
+	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	ASSERT(pDoc);
+
+	CMajor* pMajor = m_pPlayersRace;
+	ASSERT(pMajor);
+
+	// Alle Buttons in der View erstellen
+	CreateButtons();
+		
+	CString sPrefix = pMajor->GetPrefix();
+		
+	bg_buildmenu	= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "buildmenu.boj");
+	bg_workmenu		= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "workmenu.boj");
+	bg_overviewmenu = pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "overviewmenu.boj");
+	bg_energymenu	= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "energymenu.boj");
+	bg_systrademenu	= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "systrademenu.boj");
+}
+
 void CSystemMenuView::OnPrepareDC(CDC* pDC, CPrintInfo* pInfo)
 {
 	// TODO: Add your specialized code here and/or call the base class
-
 	CMainBaseView::OnPrepareDC(pDC, pInfo);
 }
 

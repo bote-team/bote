@@ -80,7 +80,8 @@ void CCombatMenuView::OnNewRound()
 	for (int i = 0; i < m_CombatTacticButtons.GetSize(); i++)
 		m_CombatTacticButtons[i]->SetState(0);
 	// ersten Button aktivieren
-	m_CombatTacticButtons[0]->SetState(2);
+	if (m_CombatTacticButtons.GetSize())
+		m_CombatTacticButtons[0]->SetState(2);
 
 	for (int i = 0; i < m_CombatOrderButtons.GetSize(); i++)
 		m_CombatOrderButtons[i]->SetState(0);
@@ -102,7 +103,8 @@ void CCombatMenuView::OnNewRound()
 	m_rLastMarkedRect = CRect(0,0,0,0);
 	m_nShipType = -1;
 
-	m_ShipTypeButton[0]->SetText(CResourceManager::GetString("ALL_SHIPS"));
+	if (m_ShipTypeButton.GetSize())
+		m_ShipTypeButton[0]->SetText(CResourceManager::GetString("ALL_SHIPS"));
 }
 
 // CEventMenuView drawing
@@ -205,6 +207,18 @@ void CCombatMenuView::OnInitialUpdate()
 
 	m_TotalSize = CSize(1280, 1024);
 
+	m_bInOrderMenu = false;
+	
+	// View bei den Tooltipps anmelden
+	pDoc->GetMainFrame()->AddToTooltip(this);	
+}
+
+/// Funktion lädt die rassenspezifischen Grafiken.
+void CCombatMenuView::LoadRaceGraphics()
+{
+	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	ASSERT(pDoc);
+
 	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
 	CString sPrefix = pMajor->GetPrefix();
@@ -213,12 +227,7 @@ void CCombatMenuView::OnInitialUpdate()
 	bg_combatinfomenu	= pDoc->GetGraphicPool()->GetGDIGraphic("Events\\CombatInfo.boj");
 	bg_combatordermenu	= pDoc->GetGraphicPool()->GetGDIGraphic("Events\\CombatOrder.boj");
 	
-	m_bInOrderMenu = false;
-
 	CreateButtons();
-	
-	// View bei den Tooltipps anmelden
-	pDoc->GetMainFrame()->AddToTooltip(this);
 }
 
 void CCombatMenuView::OnPrepareDC(CDC* pDC, CPrintInfo* pInfo)

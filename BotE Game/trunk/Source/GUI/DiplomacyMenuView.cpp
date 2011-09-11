@@ -187,6 +187,20 @@ void CDiplomacyMenuView::OnInitialUpdate()
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
 
+	// Diplomatieansicht
+	m_bySubMenu = 0;
+	m_bSortRaceList = false;
+
+	// View bei den Tooltipps anmelden
+	pDoc->GetMainFrame()->AddToTooltip(this);
+}
+
+/// Funktion lädt die rassenspezifischen Grafiken.
+void CDiplomacyMenuView::LoadRaceGraphics()
+{
+	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	ASSERT(pDoc);
+
 	CMajor* pPlayer = m_pPlayersRace;
 	ASSERT(pPlayer);
 
@@ -199,13 +213,6 @@ void CDiplomacyMenuView::OnInitialUpdate()
 	bg_diploinfomenu	= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "diploinfomenu.boj");
 	bg_diplooutmenu		= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "diplooutmenu.boj");
 	bg_diploinmenu		= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "diploinmenu.boj");
-	
-	// Diplomatieansicht
-	m_bySubMenu = 0;
-	m_bSortRaceList=false;
-
-	// View bei den Tooltipps anmelden
-	pDoc->GetMainFrame()->AddToTooltip(this);
 }
 
 void CDiplomacyMenuView::OnPrepareDC(CDC* pDC, CPrintInfo* pInfo)

@@ -105,6 +105,21 @@ void CFleetMenuView::OnInitialUpdate()
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
 
+	// Flottenansicht
+	m_iFleetPage = 1;
+	m_bShowNextButton = FALSE;
+	m_bShowBackButton = FALSE;
+
+	// View bei den Tooltipps anmelden
+	pDoc->GetMainFrame()->AddToTooltip(this);		
+}
+
+/// Funktion lädt die rassenspezifischen Grafiken.
+void CFleetMenuView::LoadRaceGraphics()
+{
+	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	ASSERT(pDoc);
+
 	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
 
@@ -114,14 +129,6 @@ void CFleetMenuView::OnInitialUpdate()
 	CString sPrefix = pMajor->GetPrefix();
 			
 	bg_fleetmenu	= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "fleetmenu.boj");
-	
-	// Flottenansicht
-	m_iFleetPage = 1;
-	m_bShowNextButton = FALSE;
-	m_bShowBackButton = FALSE;
-
-	// View bei den Tooltipps anmelden
-	pDoc->GetMainFrame()->AddToTooltip(this);		
 }
 
 void CFleetMenuView::OnPrepareDC(CDC* pDC, CPrintInfo* pInfo)

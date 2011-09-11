@@ -90,6 +90,7 @@ BEGIN_MESSAGE_MAP(CBotf2App, CWinApp)
 	ON_COMMAND(ID_HELP_README, &CBotf2App::OnOpenReadme)
 	ON_COMMAND(ID_HELP_CREDITS, &CBotf2App::OnOpenCredits)
 	
+	ON_THREAD_MESSAGE(WM_INITVIEWS, CBotf2App::InitViews)
 	ON_THREAD_MESSAGE(WM_UPDATEVIEWS, CBotf2App::UpdateViews)
 	ON_THREAD_MESSAGE(WM_SHOWCHATDLG, CBotf2App::ShowChatDlg)		
 END_MESSAGE_MAP()
@@ -190,6 +191,14 @@ int CBotf2App::ExitInstance()
 
 /////////////////////////////////////////////////////////////////////////////
 // CBotf2App-Nachrichtenbehandlungsroutinen
+void CBotf2App::InitViews(WPARAM, LPARAM)
+{
+	CBotf2Doc* pDoc = GetDocument();
+	ASSERT(pDoc);
+
+	pDoc->LoadViewGraphics();
+}
+
 void CBotf2App::UpdateViews(WPARAM, LPARAM)
 {
 	CBotf2Doc* pDoc = GetDocument();

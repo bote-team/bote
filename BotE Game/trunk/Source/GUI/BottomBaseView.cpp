@@ -59,9 +59,10 @@ void CBottomBaseView::OnInitialUpdate()
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
 
-	CString sID = pDoc->GetPlayersRaceID();
+/*	CString sID = pDoc->GetPlayersRaceID();
 	m_pPlayersRace = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(sID));
 	ASSERT(m_pPlayersRace);
+	*/
 
 	// Größe der View in logischen Koordinaten
 	m_TotalSize = CSize(1075, 249);

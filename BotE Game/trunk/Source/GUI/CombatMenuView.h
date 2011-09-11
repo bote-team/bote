@@ -31,6 +31,9 @@ protected:
 	
 protected:
 	DECLARE_MESSAGE_MAP()
+
+	/// Funktion lädt die rassenspezifischen Grafiken.
+	virtual void LoadRaceGraphics();
 	
 	///	Funktion erstellt zur aktuellen Mouse-Position einen HTML Tooltip
 	/// @return	der erstellte Tooltip-Text

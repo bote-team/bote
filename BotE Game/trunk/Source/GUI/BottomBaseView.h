@@ -42,6 +42,9 @@ public:
 	/// abgeleiteten Klasse abgeleitet werden.
 	virtual void OnNewRound() {};
 
+	/// Funktion lädt die rassenspezifischen Grafiken.
+	virtual void LoadRaceGraphics() {};
+
 	/// Funktion zum Festlegen der Spielerrasse in der View
 	/// @pPlayer Zeiger auf Spielerrasse
 	static void SetPlayersRace(CMajor* pPlayer) {m_pPlayersRace = pPlayer;}
