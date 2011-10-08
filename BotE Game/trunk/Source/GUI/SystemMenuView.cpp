@@ -718,14 +718,34 @@ void CSystemMenuView::DrawBuildMenue(Graphics* g)
 		g->DrawImage(graphic, 325, 510, 120, 30);
 	s = CResourceManager::GetString("BTN_BAUHOF");
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(325,510,120,30), &fontFormat, &btnBrush);
+
 	if (graphic)
 		g->DrawImage(graphic, 460, 510, 120, 30);
 	s = CResourceManager::GetString("BTN_DOCKYARD");
-	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(460,510,120,30), &fontFormat, &btnBrush);
+	if (pDoc->m_System[pDoc->GetKO().x][pDoc->GetKO().y].GetBuildableShips()->GetSize() != 0)//Schrift ausgrauen wenn keine Schiffe baubar/keine Schiffswerft 
+		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(460,510,120,30), &fontFormat, &btnBrush);
+	else 
+	{
+		Gdiplus::Color color2;
+		btnBrush.GetColor(&color2);
+		btnBrush.SetColor(Color(100, color2.GetR(), color2.GetG(), color2.GetB()));
+		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(460,510,120,30), &fontFormat, &btnBrush);
+		btnBrush.SetColor(color2);
+	}
+
 	if (graphic)
 		g->DrawImage(graphic, 595, 510, 120, 30);
 	s = CResourceManager::GetString("BTN_BARRACK");
-	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(595,510,120,30), &fontFormat, &btnBrush);
+	if (pDoc->m_System[pDoc->GetKO().x][pDoc->GetKO().y].GetBuildableTroops()->GetSize() != 0) //Schrift ausgrauen wenn keine Truppen baubar/keine Kaserne 
+		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(595,510,120,30), &fontFormat, &btnBrush);
+	else 
+	{
+		Gdiplus::Color color2;
+		btnBrush.GetColor(&color2);
+		btnBrush.SetColor(Color(100, color2.GetR(), color2.GetG(), color2.GetB()));
+		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(595,510,120,30), &fontFormat, &btnBrush);
+		btnBrush.SetColor(color2);
+	}
 	
 	// plus Anzeige der kleinen Button (Info & Beschreibung) unter der Gebäudeinfobox
 	if (graphic)
@@ -1983,7 +2003,11 @@ void CSystemMenuView::DrawSystemProduction(Graphics* g)
 	// Moralproduktion
 	rect.Y += 25;
 	s.Format("%i",pDoc->GetSystem(p.x,p.y).GetProduction()->GetMoralProd());
+	if(pDoc->GetSystem(p.x,p.y).GetProduction()->GetMoralProd()<0) fontBrush.SetColor(Color(255,0,0));
+	else if(pDoc->GetSystem(p.x,p.y).GetProduction()->GetMoralProd()>0) fontBrush.SetColor(Color(0,255,0));
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), rect, &fontFormat, &fontBrush);
+	fontBrush.SetColor(normalColor);
+
 	rect.Y += 25;
 	s.Format("%i",pDoc->GetSystem(p.x,p.y).GetProduction()->GetCreditsProd());
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), rect, &fontFormat, &fontBrush);
@@ -2046,6 +2070,15 @@ void CSystemMenuView::DrawSystemProduction(Graphics* g)
 
 	rect.Y += 25;
 	s.Format("%i",pDoc->GetSystem(p.x,p.y).GetMoral());
+	if (pDoc->GetSystem(p.x,p.y).GetMoral() > 174) fontBrush.SetColor(Color(0,250,0)); //Fanatic
+	else if (pDoc->GetSystem(p.x,p.y).GetMoral() > 154) fontBrush.SetColor(Color(20,150,20)); //Loyal
+	else if (pDoc->GetSystem(p.x,p.y).GetMoral() > 130) fontBrush.SetColor(Color(20,150,100)); //Pleased
+	else if (pDoc->GetSystem(p.x,p.y).GetMoral() > 99)  fontBrush.SetColor(Color(150,150,200)); //Satisfied
+	else if (pDoc->GetSystem(p.x,p.y).GetMoral() > 75)  fontBrush.SetColor(Color(160,160,160)); //Apathetic
+	else if (pDoc->GetSystem(p.x,p.y).GetMoral() > 49)  fontBrush.SetColor(Color(200,100,50)); //Angry
+	else if (pDoc->GetSystem(p.x,p.y).GetMoral() > 29)  fontBrush.SetColor(Color(210,80,50)); //Furious
+	else fontBrush.SetColor(Color(255,0,0));//Rebellious
+
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), rect, &fontFormat, &fontBrush);
 	
 	// kleine Bilder von den Rohstoffen zeichnen

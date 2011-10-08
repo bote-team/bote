@@ -1459,11 +1459,19 @@ void CGalaxyMenuView::GenerateGalaxyMap()
 		m_pThumbnail = NULL;
 	}
 	Bitmap* tmp = m_pGalaxyBackground->Clone(0, 0, m_pGalaxyBackground->GetWidth(), m_pGalaxyBackground->GetHeight(), PixelFormat32bppPARGB);
+#ifdef SAVE_GALAXYIMAGE
+	FCObjImage img;
+	FCWin32::GDIPlus_LoadBitmap(*tmp, img);
+	CString name;
+	name.Format("Round%iMajor%s",pDoc->GetCurrentRound(),pDoc->GetPlayersRaceID());
+	img.Save("Screenshots/"+name+".bmp");
+#endif
 	delete m_pGalaxyBackground;
 	m_pGalaxyBackground = tmp;
 		
 	CSize thumbSize(150, STARMAP_TOTALHEIGHT * 150 / STARMAP_TOTALWIDTH);
-	FCObjImage img;
+	img.Destroy();
+	//FCObjImage img;
 	FCWin32::GDIPlus_LoadBitmap(*m_pGalaxyBackground, img);
 	img.Stretch_Smooth(thumbSize.cx, thumbSize.cy);
 	img.SetAlphaChannelValue(120);

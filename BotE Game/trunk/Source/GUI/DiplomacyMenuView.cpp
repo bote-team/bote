@@ -17,7 +17,7 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-CMajor* pPlayer;//Böser globaler Zeiger der nötig ist um große Verrenkungen wegen sort und Memberfunktionen
+CMajor* pPlayer;//Böser globaler Zeiger der nötig ist um große Verrenkungen wegen sort und Memberfunktionen zu Vermeiden
 
 /// Funktion zum Vergleichen zweier Rassen
 bool CmpRaces(const CRace* pRace1, const CRace* pRace2)
@@ -27,6 +27,7 @@ bool CmpRaces(const CRace* pRace1, const CRace* pRace2)
 	return pRace1->GetRaceName() < pRace2->GetRaceName();
 }
 
+//Soriert Rassen nach Vertrag
 bool CmpRaces2(const CRace* pRace1, const CRace* pRace2)
 {
 	return pPlayer->GetAgreement(pRace1->GetRaceID())<pPlayer->GetAgreement(pRace2->GetRaceID());
@@ -1035,11 +1036,15 @@ void CDiplomacyMenuView::DrawDiplomacyInfoMenue(Graphics* g, const CString& sWhi
 	s = pRace->GetHomesystemName();
 	for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)//Sector anzeigen
 			for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-				if(pDoc->GetSector(x,y).GetName()==s)
+				if(pDoc->GetSector(x,y).GetName()==s&&pDoc->GetSector(x,y).GetKnown(pPlayer->GetRaceID()))
 				{
 					s.Format("%s (%c%i)", s,(char)y+97,x+1);
 					break;
-				};
+				}else if(pDoc->GetSector(x,y).GetName()==s&&!pDoc->GetSector(x,y).GetKnown(pPlayer->GetRaceID()))
+				{	
+					s.Format("%s (%s)",s,CResourceManager::GetString("UNKNOWN"));
+					break;
+				}
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), rect, &fontFormat, &fontBrush);
 	rect.Y += 25;
 	
@@ -2478,7 +2483,7 @@ void CDiplomacyMenuView::OnRButtonDown(UINT nFlags, CPoint point)
 						for (int res = TITAN; res <= DERITIUM; res++)
 							m_OutgoingInfo.m_nResources[res] = 0;
 					}
-					if (current == 0)
+					if (current == -1)
 						current = pPlayer->GetEmpire()->GetSystemList()->GetUpperBound();
 					m_OutgoingInfo.m_ptKO = pPlayer->GetEmpire()->GetSystemList()->GetAt(current).ko;
 					Invalidate();
