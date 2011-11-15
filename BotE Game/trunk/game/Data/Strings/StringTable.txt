@@ -1,5 +1,76 @@
 // StringTable für Alpha4+ Version
 ////////////////////////// BUTTONS BEGIN///////////////////////////////
+//Hauptmenü
+[PRESENTEDBY]
+www.birth-of-the-empires.de
+[PRESENTED]
+präsentiert ...
+[NEWGAME]
+Neues Spiel
+[MULTIPLAYER]
+Multiplayer
+[LOADGAME]
+Spiel laden
+[SETTINGS]
+Einstellungen
+[LEAVE]
+Beenden
+[CREATEGAME]
+Spiel erstellen
+[JOINGAME]
+Spiel beitreten
+[NEWGAMETT]
+Neues Einzelspieler-Spiel starten
+[MULTIPLAYERTT]
+Ein Multiplayerspiel erröffnen oder einem Multiplayerspiel beitreten
+[LOADGAMETT]
+Ein gespeichertes Spiel laden
+[SETTINGSTT]
+Spieleinstellungen ändern
+[LEAVETT]
+Das Spiel beenden und Birth of the Empires verlassen
+[CREATEGAMETT]
+Ein neues Multiplayerspiel eröffnen
+[JOINGAMETT]
+Einem bestehenden Multiplayerspiel beitreten
+
+[WARNING]
+Warnung
+[ERROR]
+Fehler
+[SERVERERROR1]
+Verbindung zum Server verloren
+[SERVERERROR2]
+Verbindung zum Server verloren. Das Spiel muss beendet werden.
+[SERVERERROR3]
+Server konnte nicht gestartet werden.
+[SERVERERROR4]
+Es konnte keine Verbindung zum Server hergestellt werden.
+[SERVERERROR5]
+Das Spiel konnte nicht veröffentlicht werden.
+[LOADERROR]
+Der angegebene Spielstand konnte nicht geladen werden.
+
+[PLAYERNAME]
+Spielername:
+[SERVERNAME]
+Servername:
+[PORT]
+Port:
+[PUBLISHLAN]
+Spiel im LAN veröffentlichen
+[SERVERIP]
+IP-Adresse des Servers:
+[SERCHLANSERVER]
+Suche LAN-Server
+
+[STARTGAME]
+Spiel starten
+[CHOOSEEMPIRE]
+Wähle dein Imperium
+[CHAT]
+Chat
+
 // left_View Buttons
 [BTN_ROUNDEND]
 Rundenende

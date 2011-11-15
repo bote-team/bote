@@ -117,35 +117,35 @@ void CNewGameView::OnDraw(CDC* dc)
 
 	// Spielername schreiben
 	m_username.GetWindowRect(rect);
-	CString sUserName = "§Spielername:";
+	CString sUserName = CResourceManager::GetString("PLAYERNAME");
 	g.DrawString(sUserName.AllocSysString(), -1, &font, RectF((rect.left - 400) * dSizeModX, rect.top * dSizeModY, 375 * dSizeModX, rect.Height() * dSizeModY), &format, &SolidBrush(Color::WhiteSmoke));
 
 	if (m_nMode == MODE_SERVER)
 	{
 		// Servername schreiben
-		CString sServerName = "§Servername:";
+		CString sServerName = CResourceManager::GetString("SERVERNAME");
 		m_description.GetWindowRect(rect);
 		g.DrawString(sServerName.AllocSysString(), -1, &font, RectF((rect.left - 400) * dSizeModX, rect.top * dSizeModY, 375 * dSizeModX, rect.Height() * dSizeModY), &format, &SolidBrush(Color::WhiteSmoke));
 
 		// Serverport schreiben
-		CString sServerPort = "§Port:";
+		CString sServerPort = CResourceManager::GetString("PORT");
 		m_serverPort.GetWindowRect(rect);
 		g.DrawString(sServerPort.AllocSysString(), -1, &font, RectF((rect.left - 400) * dSizeModX, rect.top * dSizeModY, 375 * dSizeModX, rect.Height() * dSizeModY), &format, &SolidBrush(Color::WhiteSmoke));
 
 		// publish in local area network schreiben
-		CString sPublishInLAN = "§Spiel im LAN veröffentlichen:";
+		CString sPublishInLAN = CResourceManager::GetString("PUBLISHLAN");
 		m_btPublish.GetWindowRect(rect);
 		g.DrawString(sPublishInLAN.AllocSysString(), -1, &font, RectF((rect.left - 400) * dSizeModX, rect.top * dSizeModY, 375 * dSizeModX, rect.Height() * dSizeModY), &format, &SolidBrush(Color::WhiteSmoke));
 	}
 	else if (m_nMode == MODE_CLIENT)
 	{
 		// IP-Adresse schreiben
-		CString sIPAddr = "§IP-Adresse des Servers:";
+		CString sIPAddr = CResourceManager::GetString("SERVERIP");
 		m_hostIP.GetWindowRect(rect);
 		g.DrawString(sIPAddr.AllocSysString(), -1, &font, RectF((rect.left - 400) * dSizeModX, rect.top * dSizeModY, 375 * dSizeModX, rect.Height() * dSizeModY), &format, &SolidBrush(Color::WhiteSmoke));
 
 		// Hostport schreiben
-		CString sHostPort = "§Port:";
+		CString sHostPort = CResourceManager::GetString("PORT");
 		m_hostPort.GetWindowRect(rect);
 		g.DrawString(sHostPort.AllocSysString(), -1, &font, RectF((rect.left - 400) * dSizeModX, rect.top * dSizeModY, 375 * dSizeModX, rect.Height() * dSizeModY), &format, &SolidBrush(Color::WhiteSmoke));
 	}
@@ -234,17 +234,17 @@ void CNewGameView::OnInitialUpdate()
 
 	m_btSearchServers.SetWindowPos(NULL, clientRect.Width() / 2.0 + 110, nYPos + 35, 175, 25, SWP_FRAMECHANGED);
 	SetButtonStyle(&m_btSearchServers);
-	m_btSearchServers.SetWindowText("§Suche LAN-Server ...");
+	m_btSearchServers.SetWindowText(CResourceManager::GetString("SEARCHLANSERVER"));
 
 	m_hostPort.SetWindowPos(NULL, clientRect.Width() / 2.0 - 100, nYPos + 70, 200, 25, SWP_FRAMECHANGED);
 	m_hostPort.SetFont(&fnt);
 
 	// Create push buttons
-	m_btBack.Create(_T("§zurück"), WS_CHILD|WS_VISIBLE|BS_PUSHBUTTON, CRect(), this, BTN_BACK);
+	m_btBack.Create(_T(CResourceManager::GetString("BTN_BACK")), WS_CHILD|WS_VISIBLE|BS_PUSHBUTTON, CRect(), this, BTN_BACK);
 	m_btBack.SetWindowPos(NULL, clientRect.Width() / 2.0 - 160, nYPos + 175, 150, 30, SWP_FRAMECHANGED);	
 	SetButtonStyle(&m_btBack);
 
-	m_btNext.Create(_T("§weiter"), WS_CHILD|WS_VISIBLE|BS_PUSHBUTTON, CRect(), this, BTN_NEXT);
+	m_btNext.Create(_T(CResourceManager::GetString("BTN_FURTHER")), WS_CHILD|WS_VISIBLE|BS_PUSHBUTTON, CRect(), this, BTN_NEXT);
 	m_btNext.SetWindowPos(NULL, clientRect.Width() / 2.0 + 10, nYPos + 175, 150, 30, SWP_FRAMECHANGED);
 	SetButtonStyle(&m_btNext);
 	
@@ -334,7 +334,7 @@ void CNewGameView::StartServer(bool bPublish)
 	// Server starten
 	if (!server.Start(nPort))
 	{
-		MessageBox("§Server konnte nicht gestartet werden.", "Fehler", MB_ICONEXCLAMATION | MB_OK);
+		MessageBox(CResourceManager::GetString("SERVERERROR3"), CResourceManager::GetString("ERROR"), MB_ICONEXCLAMATION | MB_OK);
 		SetCursor(::LoadCursor(NULL, IDC_ARROW));
 		return;
 	}
@@ -343,7 +343,7 @@ void CNewGameView::StartServer(bool bPublish)
 	if (!client.Connect(INADDR_LOOPBACK, nPort, sName))
 	{
 		server.Stop();
-		MessageBox("§Es konnte keine Verbindung zum Server hergestellt werden.", "Fehler", MB_ICONEXCLAMATION | MB_OK);
+		MessageBox(CResourceManager::GetString("SERVERERROR4"), CResourceManager::GetString("ERROR"), MB_ICONEXCLAMATION | MB_OK);
 		SetCursor(::LoadCursor(NULL, IDC_ARROW));
 		return;
 	}
@@ -358,7 +358,7 @@ void CNewGameView::StartServer(bool bPublish)
 		if (!serverPublisher.StartPublishing(7777, strDescription, nPort))
 		{
 			// Vorgang nicht abbrechen, nur Warnhinweis ausgeben
-			MessageBox("§Das Spiel konnte nicht veröffentlicht werden.", "Warnung", MB_ICONWARNING | MB_OK);
+			MessageBox(CResourceManager::GetString("SERVERERROR5"), CResourceManager::GetString("WARNING"), MB_ICONWARNING | MB_OK);
 		}
 	}
 	else
@@ -381,7 +381,7 @@ void CNewGameView::LoadGame(const CString& sPath)
 
 		if (!pDoc->OnOpenDocument(m_sFileName))
 		{
-			MessageBox("§Der angegebene Spielstand konnte nicht geladen werden.", "Fehler",	MB_ICONEXCLAMATION | MB_OK);
+			MessageBox(CResourceManager::GetString("LOADERROR"), CResourceManager::GetString("ERROR"),	MB_ICONEXCLAMATION | MB_OK);
 			m_sFileName = "";
 			return;
 		}
@@ -543,7 +543,7 @@ void CNewGameView::OnBnClickedNext()
 		// Client zum angegebenen Server verbinden
 		if (!client.Connect(dwAddr, nPort, userName))
 		{
-			MessageBox("§Es konnte keine Verbindung zum Server hergestellt werden.", "Fehler", MB_ICONEXCLAMATION | MB_OK);
+			MessageBox(CResourceManager::GetString("SERVERERROR4"), CResourceManager::GetString("ERROR"), MB_ICONEXCLAMATION | MB_OK);
 			SetCursor(::LoadCursor(NULL, IDC_ARROW));
 			return;
 		}

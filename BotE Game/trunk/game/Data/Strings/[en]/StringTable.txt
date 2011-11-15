@@ -1,5 +1,77 @@
 // StringTable for Alpha4+ Version
 ////////////////////////// BUTTONS BEGIN///////////////////////////////
+//MainMenu
+[PRESENTEDBY]
+www.birth-of-the-empires.de
+[PRESENTED]
+presents...
+[NEWGAME]
+New Game
+[MULTIPLAYER]
+Multiplayer
+[LOADGAME]
+Load savegame
+[SETTINGS]
+Settings
+[LEAVE]
+Exit
+[CREATEGAME]
+Create a Game
+[JOINGAME]
+Join a Game
+[NEWGAMETT]
+Start a new singleplayer match
+[MULTIPLAYERTT]
+Create or join a multiplayer match
+[LOADGAMETT]
+Load a saved game
+[SETTINGSTT]
+Change the gamesettings
+[LEAVETT]
+Exit the Game
+[CREATEGAMETT]
+Create a new multiplayer match
+[JOINGAMETT]
+Join an existing mutiplayer match
+
+
+[WARNING]
+Warning
+[ERROR]
+Error
+[SERVERERROR1]
+Lost connection to server.
+[SERVERERROR2]
+Lost connection to server. The game has to restart
+[SERVERERROR3]
+Unable to start server
+[SERVERERROR4]
+Unable to conntect to server
+[SERVERERROR5]
+Unable to publish match in LAN
+[LOADERROR]
+Unable to load savegame
+
+[PLAYERNAME]
+Playername:
+[SERVERNAME]
+Servername:
+[PORT]
+Port:
+[PUBLISHLAN]
+Publish game in LAN
+[SERVERIP]
+IP-adress of the server:
+[SERCHLANSERVER]
+Search for LAN-server
+[STARTGAME]
+Start match
+[CHOOSEEMPIRE]
+Choose your Empire
+[CHAT]
+Chat
+
+
 // left_View Buttons
 [BTN_ROUNDEND]
 End Turn

@@ -3450,8 +3450,8 @@ void CBotf2Doc::CalcOldRoundData()
 							}
 							else
 								m_Sector[x][y].SetOwnerOfSector("");
-							m_System[x][y].SetOwnerOfSystem("");
-							m_Sector[x][y].SetTakenSector(FALSE);
+								m_System[x][y].SetOwnerOfSystem("");
+								m_Sector[x][y].SetTakenSector(FALSE);
 						}
 								
 						// Hier mit einbeziehen, wenn die Bevölkerung an Nahrungsmangel stirbt						

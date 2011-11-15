@@ -99,7 +99,8 @@ void CShipHistory::AddShip(CShip* ship, const CString& buildsector, short round)
 	for (int i = 0; i < m_ShipHistory.GetSize(); i++)
 		if (ship->GetShipName() == m_ShipHistory.GetAt(i).m_strShipName)
 		{
-			AfxMessageBox("BUG: Ship -" + ship->GetShipName() + "-  allready exists in shiphistory!\nPlease post a bugreport at www.birth-of-the-empires.de");
+			//AfxMessageBox("BUG: Ship -" + ship->GetShipName() + "-  allready exists in shiphistory!\nPlease post a bugreport at www.birth-of-the-empires.de");
+			MYTRACE(MT::LEVEL_INFO, "Ship already exists in shiphistory: %d\n", ship->GetShipName());
 			return;
 		}
 	CShipHistoryStruct temp;
@@ -164,7 +165,9 @@ void CShipHistory::RemoveShip(const CShip* ship)
 			m_ShipHistory.RemoveAt(i);
 			return;
 		}
-	AfxMessageBox("BUG: Ship -" + ship->GetShipName() + "- doesn't exist in shiphistory!\nPlease post a bugreport at www.birth-of-the-empires.de");
+	
+	//AfxMessageBox("BUG: Ship -" + ship->GetShipName() + "- doesn't exist in shiphistory!\nPlease post a bugreport at www.birth-of-the-empires.de");
+	MYTRACE(MT::LEVEL_INFO, "Ship doesn't exist in shiphistory: %d\n", ship->GetShipName());
 }
 
 /// Funktion gibt die Anzahl der noch lebenden Schiffe zurück, wenn der Parameter <code>shipAlive</code> wahr ist.

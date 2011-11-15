@@ -1,164 +1,164 @@
 #0	Eliminate an Empire
-		Die Auslöschung der $param$ wird von unseren Bürgern begeistert gefeiert
-		Die Auslöschung der $param$ hebt unsere Kurse auf Rekordhöhe
-		Krieger feiern die Ausrottung der $param$ mit Wein und Gesang
-		Ein imperialer Feiertag gedenkt ab nun dem Niedergang der $param$
-		Das Volk freut sich über den Kollaps der $param$
-		Der Fall der $param$ hat den Glauben unserer Bürger in die Macht und Weisheit der Vi gestärkt		
+		The fall of $param$ is celebrated enthusiastically by many Coalition citizens
+		The fall of $param$ lifted the Exchange to record highs
+		Warriors celebrated the fall of $param$ with bloodwine and song
+		An Imperial holiday commemorates the fall of $param$
+		All Cartares rejoice at the collapse of $param$
+		The fall of $param$ has increased faith of our citizens in the power and wisdom of the Vi
 #1	Win a Major Battle
-		Unsere Bürger sind sehr glücklich über den Ausgang der Schlacht
-		Händler und Investoren sind über den Ausgang der Schlacht erfreut
-		Krieger feiern ausgelassen unseren Erfolg in der Schlacht
-		Die Bevölkerung feiert unseren Sieg in der Schlacht
-		Das Volk jubelt über unseren militärischen Erfolg in der Schlacht
-		Die Vi sind mit dem Verlauf der Schlacht zufrieden
+		This victory has raised the enthusiasm of Coalition citizens
+		Investors were impressed by the great military success
+		Warriors are deeply inspired by the great victory
+		This great victory was welcome news to all loyal Rotharians
+		Cartare citizens are deeply inspired by the great victory
+		The Vi are delightened with battle progress
 #2	Win a Significant Battle
-		Unsere Bürger sind erfreut über den Ausgang des Kampfes
-		Händler und Investoren sind über den Ausgang des Kampfes erfreut
-		Krieger feiern unseren Erfolg im Kampf
-		Die Bevölkerung freut sich über unseren Sieg im Kampf
-		Das Volk freut sich über unseren militärischen Erfolg im Kampf
-		Die Vi sind mit dem Ausgang des Kampfes zufrieden
+		Victory is the lead story in most civilian news services
+		Brokers are buying stock in our military after victory
+		Victory has renewed our faith in the teachings of Khaj'Avrom
+		Popular support for the military was reinforced by victory
+		The people are clearly excited by our victory
+		The Vi are satisfied with the outcome of the fight
 #3	Win a Minor Battle
-		Unsere Bürger haben den Ausgang des Kampfes positiv aufgenommen
-		Händler und Investoren investieren verstärkt in das Militär
-		Krieger freuen sich über unseren Erfolg im Kampf
-		Die Bevölkerung hat unseren Sieg im Kampf sehr positiv aufgenommen
-		Das Volk hat unseren militärischen Erfolg im Kampf positiv aufgenommen
-		Die Vi wurden mit dem Ausgang des Kampfes zufriedengestellt
+		Spirits on the home front were raised somewhat by victory
+		Victory led to a slight increase in consumer confidence
+		This victory has raised the spirits of our warriors
+		The people are pleased by our military success
+		Cartare citizens were mildly pleased to hear of victory
+		The Vi were pleased with the outcome of this combat
 #4	Lose a Major Battle
-		Unsere Bürger sind sehr traurig über Verluste in der Schlacht
-		Händler und Investoren sind über unserer Niederlage schockiert
-		Krieger sind wegen der Niederlage in der Schlacht extrem schockiert
-		Die Bevölkerung hat unser Versagen in der Schlacht scharf verurteilt
-		Das Volk hat wegen der Niederlage den Glauben an die Invasoren verloren
-		Die Vi sind wegen der Niederlage sehr zornig
+		Anti-war demonstrations are more frequent since the recent defeat
+		Military certificates plunged in value following the defeat in combat
+		The defeat in battle has raised deep concerns among many warriors
+		Citizens have openly condemned our failure in battle
+		The defeat in battle has led citizens to openly criticize our policies
+		The Vi are furious about this defeat
 #5	Lose a Significant Battle
-		Unsere Bürger sind traurig über unsere Verluste im Kampf
-		Händler und Investoren halten Gelder wegen der Niederlage zurück
-		Krieger sind wegen der Niederlage im Kampf schockiert
-		Die Bevölkerung ist wegen unserem Versagen empört
-		Das Volk versteht unsere Niederlage im Kampf nicht
-		Die Vi sind wegen der Niederlage zornig
+		Our military leaders have been ridiculed since the defeat
+		The defeat in sector $param$ has triggered a drop in consumer confidence
+		Warriors are demanding that the deaths in sector $param$ be avenged
+		The disaster in sector $param$ has eroded popular support for the military
+		Cartare laborers are disenchanted by the defeat
+		The Vi are enraged about this defeat
 #6	Lose a Minor Battle
-		Unsere Bürger haben den Ausgang des Kampfes negativ aufgenommen
-		Händler und Investoren investieren weniger in das Militär
-		Krieger sind zornig über unsere Niederlage im Kampf
-		Die Bevölkerung hat unser Versagen im Kampf negativ aufgenommen
-		Das Volk hat unsere militärische Niederlage im Kampf negativ aufgenommen
-		Die Vi wurden mit dem Ausgang des Kampfes nicht zufriedengestellt
+		Coalition citizens are mildly displeased by our defeat
+		The defeat has raised the concerns of many businessmen
+		The defeat in battle has raised concerns among warriors
+		The defeat in sector $param$ has lowered the morale of our people
+		Cartare citizens were disappointed to hear of our defeat
+		The Vi were displeased with the outcome of this combat
 #7	Lose a Flagship
-		Bürger sind über den Verlust unseres Flaggschiffes $param$ schockiert
-		Investoren haben durch den Verlust des Flaggschiffes $param$ Gelder verloren
-		Krieger wollen den Verlust des Flaggschiffes $param$ nicht wahrhaben
-		Die Bevölkerung ist über den Verlust des Flaggschiffes $param$ empört
-		Das Volk ist über den Verlust des Flaggschiffes $param$ schockiert
-		Die Vi haben den Verlust des Flaggschiffes $param$ mit Grollen aufgenommen
+		People are shocked about the loss of our flagship $param$
+		Financiers have lost assets due to the loss of flagship $param$
+		Warriors refuse to believe the loss of the fleet's pride $param$
+		Citizens are indignant about the loss of flagship $param$
+		The people have been shocked with the loss of flagship $param$
+		The Vi have taken the loss of flagship $param$ with anger
 #8	Lose an Outpost
-		Bürger sind über den Verlust eines Aussenpostens traurig
-		Investoren haben durch den Verlust eines Aussenpostens Gelder verloren
-		Krieger wollen den Verlust eines Aussenpostens nicht wahrhaben
-		Die Bevölkerung ist über den Verlust eines Aussenpostens empört
-		Das Volk hat den Verlust eines Aussenpostens negativ aufgenommen
-		Die Vi haben den Verlust eines Aussenpostens bemerkt
+		People are shocked about the loss of this outpost
+		Financiers have lost assets due to the loss of this outpost
+		Warriors refuse to believe the loss of this outpost
+		Citizens are indignant about the loss of this outpost
+		The people have been shocked with the loss of this outpost
+		The Vi have taken the loss of this outpost with displeasure
 #9	Lose a Starbase
-		Bürger sind über den Verlust einer Sternbasis sehr traurig
-		Investoren haben durch den Verlust ihrer Sternbasis viel Geld verloren
-		Krieger wollen den Verlust einer Sternbasis nicht wahrhaben
-		Die Bevölkerung ist über den Verlust einer Sternbasis empört
-		Das Volk hat den Verlust einer Sternbasis negativ aufgenommen
-		Die Vi haben den Verlust einer Sternbasis bemerkt
+		People are shocked about the loss of this starbase
+		Financiers have lost assets due to the loss of this starbase
+		Warriors refuse to believe the loss of this starbase
+		Citizens are indignant about the loss of this starbase
+		The people have been shocked with the loss of this starbase
+		The Vi have taken the loss of this starbase with displeasure
 #10	Sign a Membership treaty with Minor
-		Bürger freuen sich über den Beitritt der $param$ in die Konföderation
-		Händler und Investoren freuen sich auf neue Märkte durch die $param$
-		Krieger sind Stolz auf die $param$ als neue Brüder
-		Die Bevölkerung freut sich über den Beitritt der $param$ zum Sternenverbund
-		Das Volk freut sich über den Beitritt der $param$ zu den Invasoren
-		Die Vi haben die Mitgliedschaft der $param$ positiv bemerkt
+		$param$ have been welcomed into the Coalition with open arms
+		Investors are looking forward to new business opportunities among $param$
+		Warriors are pleased that $param$ will now be considered their brothers
+		The people seem happy to accept $param$ as members of our great Empire
+		$param$ have been received warmly by our citizens
+		The Vi have approved entry of $param$ into the Dominion
 #11	Take a System
-		Die Bürger heissen die Eroberung des $param$-Systems nicht gut
-		Händler und Investoren freuen sich auf neue Märkte im $param$-System
-		Unsere Krieger feiern die ruhmreiche Eroberung des $param$-Systems
-		Das Volk begrüsst die gewaltsame Eroberung des $param$-Systems
-		Die Regierung freut sich auf neue Sklaven aus dem $param$-System
-		Die Vi haben die Eroberung des $param$-System mit Wohlwollen aufgenommen
+		The brutal subjugation of the $param$ system has triggered widespread protests
+		Investors are relieved to hear that the $param$ system is now a stable market
+		Our warriors revel in the glory of our victory in the $param$ system
+		Citizens are relieved that there will be no more trouble in $param$
+		Cartare citizens are glad to hear that the $param$ system is under control
+		The Vi have noticed the conquest of $param$-System with benevolence
 #12	Colonize a System
-		Die Konföderation feiert Kolonisierung des Systems $param$
-		Begeisterung: neuer Handel in der Kolonie auf $param$
-		Das System $param$ gibt unserem Volk Raum zum Atmen
-		Das Volk ist froh, dass $param$ ein Teil des Imperiums ist
-		Invasoren feiern die Kolonialisierung von $param$
-		Die Vi geben ihre Zustimmung zu Kolonisierung des $param$-Systems
+		Citizens throughout the Coalition celebrate the colonization of $param$
+		Investors are enthusiastic about opportunities in the new $param$ colony
+		The $param$ system will give our people some long-overdue breathing room
+		Citizens are glad to hear that the $param$ system is now part of our Empire
+		Citizens raised a glass of kanar to celebrate the colonization of $param$
+		The Vi celebrates the foundation of our new colony in $param$
 #13	Liberate a Minor Race System
-		Paraden werden zu Ehren jener abgehalten, die die $param$ befreiten
-		Die $param$ könnten wieder mit uns handeln
-		Die $param$ wurden befreit: Unsere Krieger sind trotzdem nicht stolz
-		Die $param$ wurden befreit: Das Vertrauen ist wiederhergestellt
-		Die Bevölkerung ist nicht erfreut, dass $param$ befreit wurde
-		Die $param$ wurden befreit: Vi zweifeln an dieser Taktik
+		Celebrations are planned to honor the heroes who liberated $param$
+		Financiers are pleased that $param$ can resume trade
+		Our warriors are not proud of the liberation of $param$
+		The liberation of $param$ has raised the spirits of many concerned citizens
+		Citizens are not pleased that $param$ have been set free
+		$param$ has been liberated: The Vi have doubts towards such tactics
 #14	Liberate a Former Native System
-		Die Befreiung des $param$-Systems sorgt für Unterstützung
-		Der neue $param$-Markt ist gut für Exporteure
-		Die Befreiung von $param$ bringt Krieger zur Clanhalle
-		Die Rettung von $param$ ist willkommener Anlass zum Feiern
-		Die Befreiung von $param$ erfreut die loyalen Cartarer
-		Die Befreiung von $param$ erfreut die Vi
+		The liberation of the $param$ system has generated new support for the war
+		The restoration of the $param$ market is good news to all Heyoun exporters
+		Many warriors will join the Order of the Bat'leth for their actions at $param$
+		The rescue of $param$ has become a popular cause for celebration
+		The liberation of $param$ has raised the spirits of all loyal Cartares
+		Liberation of $param$ pleases the Vi
 #15	Lose Home System to Outside Forces
-		Demonstranten fordern Erklärung: warum wurde das Sol-System verloren?
-		Der Verlust von Hanuhr sorgte für das grösste Börsentief
-		Leben ohne Khayrin verursacht Selbstmord unter den Kriegern
-		Das Volk: Verlust von Rotharia ist eine Inkompetenz der Regierung
-		Verlust von Cartara Prime führt zu Trauer und Selbstmorden
-		Verlust von Omega: Vi sehen in ihrem Dasein keinen Sinn mehr
+		Protesters are demanding an explanation for our failure to protect the Sol system
+		The loss of Heyounnar has pushed the Exchange down to an all-time low
+		Many warriors have chosen honorable suicide over life without the homeworld
+		The people believe that the loss of Rotharius is a clear sign of governmental incompetence
+		The loss of Cardassia Prime has led to widespread disillusionment and several suicides
+		Loss of Vi homeworld: The Vi do not see any perspective in their being here in the alpha quadrant anymore
 #16	Lose a Member System to Outside Forces
-		Die Bevölkerung ist über den Verlust von $param$ erbost
-		Das Anlegervertrauen ist durch den Verlust von $param$ leicht gesunken
-		Krieger sind beschämt über das Versagen bei der Verteidigung von $param$
-		Volk hat Enttäuschung über den Verlust von $param$ ausgedrückt
-		Die Cartarer bedauern den Verlust des Systems $param$
-		Vi können den Verlust von $param$ noch immer nicht glauben
+		Citizens are outraged by our inability to properly defend $param$
+		The loss of $param$ from our consumer base is a disaster for Heyoun exporters
+		Every Khaoron warrior is shamed by our failure to defend the $param$ system
+		Many citizens have expressed disappointment at the loss of the $param$ system
+		Cartare citizens are disheartened by the loss of $param$ to enemy forces
+		The Vi refused to believe the loss of $param$
 #17	Lose a Subjugated System to Outside Forces
-		Das $param$-System konnte nicht rechtmässig verteidigt werden
-		Bürger des $param$-Systems sind keine Kunden mehr. Das ist schlecht für den Export
-		Wir konnten das $param$-System nicht verteidigen und verloren viel Ehre
-		Wir konnten $param$-System nicht beschützen
-		Das cartarianische Volk betrauert, dass $param$-System verloren ist
-		Verlust des $param$-Systems erzörnt die Vi
+		The people is not pleased by our failure to control $param$
+		Consumer confidence dropped slightly on reports that we have lost $param$
+		In failing to defend $param$, we have lost a great deal of honor
+		The people is strongly displeased by our failure to protect $param$
+		Cartare citizens are disheartened by the loss of the $param$ system
+		Loss of $param$ system has enraged the Vi
 #18	Lose a System to Rebellion
-		Bürger in der ganzen Konföderation verurteilen die Rebellion im $param$-System
-		Händler und Investoren sind unglücklich über die Rebellion $param$-System
-		Krieger empfinden Wut wegen der Rebellion im $param$-System
-		Das Volk kann die Rebellion im $param$-System absolut nicht nachvollziehen
-		Bürger der Invasoren haben die Rebellion im $param$-System negativ aufgenommen
-		Rebellion im $param$-System hat die Vi sehr verärgert
+		Citizens of the whole coalition condemn the rebellion in the $param$ system
+		The rebellion in sector $param$ caused a serious drop in the Exchange
+		Warriors feel rage about the rebellion in the $param$ sector
+		People cannot understand the rebellion in $param$ sector
+		Many Cartare citizens appear to sympathize with the rebels of $param$
+		Rebellion in $param$ system has offended the Vi
 #19	Bombard a System
-		Angriff auf $param$ verringerte öffentliche Unterstützung
-		Bombardierung des $param$-Systems verhindert Börsenaufschwung
-		Bombardierung von $param$ zeigt, wir sind  Khayrin
-		Bombardierung des $param$-Systems verstummt Dissidenten
-		Bombardierung des $param$-Systems verstummte Kritiker der Invasoren
-		Bombardierung des $param$-Systems lässt die Vi aufhorchen
+		The bombing of $param$ has eroded popular support for our military
+		The Exchange posted severe losses today in response to the bombing of $param$
+		It is felt that the bombardment of $param$ proves that we are still Khaoron
+		Many vocal dissidents have been silenced by the bombardment of $param$
+		The bombardment of the $param$ system has silenced several dissidents
+		Bombardment of $param$ system gets the attention of the Vi
 #20	Bombard native system that has Rebelled
-		Angriff auf die Rebellen im $param$-System wird vom Volk nicht unterstützt
-		Bombardierung der Rebellen im $param$-System ist schlecht für die Börse
-		Bombardierung unser rebellischen Brüder im $param$-System erfreut die wahren Khayrin
-		Bombardierung der Rebellen im $param$-System kann leicht vertuscht werden
-		Bombardierung der Rebellen im $param$-System erfreut die Invasoren
-		Die Vi rechtfertigen die Bombardierung der Rebellen im $param$-System
+		Attack on rebel system $param$ reduced support for our military policies
+		The Exchange posted several losses today in response to the bombing of $param$
+		Bombardment of our disloyal brothers in $param$ system pleases true Khaorons
+		Bombardment of rebel $param$ system can easily be camouflaged
+		Bombardment of rogue $param$ system rejoices the Union
+		The Vi justify bombing rebels in the $param$ system
 #21	Eliminate a Minor Race Entirely
-		Demonstration: Auslöschung der $param$ kann nicht nachvollzogen werden
-		Auslöschung der $param$: Börse reagiert mit enormen Kursverlusten
-		Khayrin feiern die Auslöschung der $param$,
-		Volk verurteilt die Auslöschung der $param$,
-		Auslöschung der $param$ gerechtfertigt: Sie waren es nicht wert
-		Vernichtung der $param$ erfreut die Vi
+		Protests: Extinction of the $param$ makes people outraged
+		Extinction of $param$: Exchange reacts with a severe drop in all sales activities
+		Khaorons concelebrate the extinction of $param$,
+		People condemns extinction of $param$,
+		Extinction of $param$ justified: They were not worth to live
+		Extermination of $param$ pleases Vi
 #22	Suffer bombardment of System
-		Volk fordert Beendung der Bombardierung von $param$
-		Bombardierung von $param$ zerstört Geschäfte
-		Khayrin fordern: Helft unseren Brüdern auf $param$
-		Volk bittet den Senat endlich gegen die Bombardierung von $param$ einzuschreiten
-		Bürger der Invasoren haben kein Mitleid mit der Bevölkerung auf $param$
-		Vi fordern die sofortige Beendung des Bombardements auf $param$
+		People demands termination of the $param$ bombardment
+		Bombing $param$ consumes markets
+		Khaorons demand: Help our brothers on $param$
+		The people have asked the Senate to intervene against the bombardment of $param$
+		Union citizens have no sympathy with the population on $param$
+		The Vi demand instant termination of $param$ bombardments
 #23	Suffer 50% pop loss in Home Sys. Bombardment
 		""
 		""
@@ -167,110 +167,110 @@
 		""
 		""
 #24	Declare War on an Empire when Neutral
-		Unser Krieg gegen $param$ stösst auf starke Kritik
-		Positive Reaktion auf die Kriegserklärung an $param$
-		Unser Krieg gegen $param$ erfreut die wahren Krieger
-		Das Volk freut sich, dass wir $param$ bekämpfen können
-		Unser Volk begrüsst den Krieg gegen $param$ sehr
-		Die Vi freuen sich auf den Krieg gegen $param$ sehr
+		Several popular editorials have strongly criticized the war against $param$
+		Positive reaction on declaration of war against $param$
+		All warriors look forward to the war against $param$
+		People are pleased that we can fight $param$
+		People receive this war against $param$ with cheers
+		The Vi are looking forward to having war with $param$
 #25	Declare War on an Empire when Non-Aggression
-		Unser Krieg gegen $param$ stösst auf starke Kritik
-		Geteilte Reaktionen auf die Kriegserklärung an $param$
-		Unser Krieg gegen $param$ erfreut die wahren Krieger
-		Das Volk freut sich, dass wir $param$ bekämpfen können
-		Unser Volk begrüsst den Krieg gegen $param$ sehr
-		Die Vi freuen sich auf den Krieg gegen $param$
+		Many citizens feel that in betraying $param$, we have betrayed our own people
+		Split reaction on declaration of war against $param$
+		All true warriors look forward to the war against $param$
+		People are pleased that we can fight $param$
+		People receive this war against $param$ with cheers
+		The Vi are looking forward to having war with $param$
 #26	Declare War on an Empire with Trade Treaty
-		Unser Krieg mit $param$ stösst auf sehr starke Kritik
-		Extrem negative Reaktionen auf die Kriegserklärung an $param$
-		Unser Krieg gegen $param$ erfreut manche Krieger
-		Das Volk freut sich, dass wir $param$ vernichten werden
-		Unser Volk begrüsst den Krieg gegen $param$ sehr
-		Die Vi freuen sich auf den Krieg gegen $param$
+		The majority of citizens feels that in betraying $param$, we have betrayed our own people
+		Our breach of contract with $param$ shocks investors
+		Our war against $param$ pleases some warriors
+		The people are pleased that we will exterminate $param$
+		People receive this war against $param$ with cheers
+		The Vi are looking forward to having war with $param$
 #27	Declare War on an Empire with Friendship Treaty
-		Unser Krieg gegen $param$ stösst auf sehr starke Kritik
-		Negative Reaktionen auf die Kriegserklärung an $param$
-		Unser Krieg gegen $param$ wird von den wahren Kriegern nicht verstanden
-		Das Volk ist gegen einen Krieg gegen $param$
-		Unser Volk begrüsst den Krieg gegen $param$
-		Die Vi freuen sich auf den Krieg gegen $param$
+		The majority of citizens feels that in betraying $param$, we have betrayed our own people
+		Our breach of contract with $param$ will be costly
+		Our breach of honor with $param$ has not been well received
+		Some restless citizens have questioned our breach of treaty with $param$
+		People acclaim this new war against $param$
+		The Vi are looking forward to having war with $param$
 #28	Declare War on an Empire with Defense Pact
-		Unser Krieg gegen $param$ stösst auf extrem starke Kritik
-		Negative Reaktionen auf den Krieg gegen $param$
-		Unser Krieg gegen $param$ wird von den wahren Kriegern nicht verstanden
-		Das Volk ist sehr gegen den Krieg gegen $param$
-		Unser Volk hat über den Krieg gegen $param$ eine geteilte Meinung
-		Die Vi freuen sich auf den Krieg gegen $param$
-#29	Declare War on an Empire with CooperationTreaty
-		Unser Krieg gegen $param$ stösst auf extrem starke Kritik
-		Sehr negative Reaktionen auf den Krieg gegen $param$
-		Unser Krieg gegen $param$ wird von den wahren Kriegern nicht verstanden
-		Das gesamte Volk ist geschlossen gegen den Krieg gegen $param$
-		Unser Volk verabscheut den Krieg gegen $param$
-		Die Vi freuen sich auf den Krieg gegen $param$
+		Nearly all citizens feel that in betraying $param$, we have betrayed our own people
+		Our breach of contract with $param$ will be costly
+		Our breach of honor with $param$ has not been well received
+		Many restless citizens have questioned our breach of treaty with $param$
+		People have mixed feelings about this war against $param$
+		The Vi are looking forward to having war with $param$
+#29	Declare War on an Empire with Cooperation Treaty
+		Nearly all citizens feel that in betraying $param$, we have betrayed our own people
+		Our breach of contract with $param$ will be extremely expensive
+		Our breach of honor with $param$ has not been well received
+		Restless citizens throughout the Empire have questioned our breach of treaty with $param$
+		Citizens despise our war against $param$.
+		The Vi are looking forward to having war with $param$
 #30	Declare War on an Empire with Affiliation
-		Unser Krieg gegen $param$ lässt das Volk auf die Barrikaden gehen
-		Extrem negative Reaktionen auf den Krieg gegen $param$
-		Unser Krieg gegen $param$ wird von allen Kriegern abgelehnt
-		Das gesamte Volk übt starke Kritik wegen dem Krieg gegen $param$
-		Unser Volk verabscheut den Krieg gegen $param$
-		Die Vi freuen sich auf den Krieg gegen $param$
+		Our war against $param$ causes violent protests in all systems
+		Investors are shocked about this war against $param$
+		Our breach of honor with $param$ has been rejected by most warriors
+		The entire population is having severe troubles with the war against $param$
+		Many Cartare citizens were shocked to hear that we have betrayed $param$
+		The Vi are looking forward to having war with $param$
 #31	Other Empire Declares War when Neutral
-		Krieg gegen $param$ hat Unterstützung
-		Krieg gegen $param$ lässt auf ein gutes Quartal hoffen
-		Unser Krieg gegen $param$ erfreut die wahren Krieger
-		Ein Krieg gegen $param$ bedeutet Abrechnung
-		Durch Krieg gegen $param$ ist die Zahl der freiwilligen drastisch gestiegen
-		Die Vi freuen sich auf den Krieg gegen $param$
+		The war against $param$ has increased support for our military policies
+		Analysts believe the war against $param$ will be very profitable
+		All true warriors look forward eagerly to the war against $param$
+		The people are pleased that we will settle accounts with $param$
+		The chance to prove ourselves against $param$ has boosted enlistments
+		The Vi are looking forward to having war with $param$
 #32	Other Empire Declares War with Treaty
-		Krieg gegen $param$ hat grosse Unterstützung
-		Krieg gegen $param$ lässt auf ein sehr gutes Quartal hoffen
-		Unser Krieg gegen $param$ erfreut die wahren Krieger
-		Ein Krieg gegen $param$ bedeutet Abrechnung
-		Durch Krieg gegen $param$ ist die Zahl der freiwilligen drastisch gestiegen
-		Die Vi freuen sich auf den Krieg gegen $param$
+		The war against $param$ has increased support for our military policies
+		Analysts believe the war against $param$ will be very profitable
+		All true warriors look forward eagerly to the war against $param$
+		The people are pleased that we will settle accounts with $param$
+		The chance to prove ourselves against $param$ has boosted enlistments
+		The Vi are looking forward to having war with $param$
 #33	Other Empire Declares War with an Affiliation
-		Krieg gegen $param$ hat sehr grosse Unterstützung
-		Krieg gegen $param$ lässt auf viele sehr gutes Quartale hoffen
-		Unser Krieg gegen $param$ erfreut alle wahren Krieger sehr
-		Ein Krieg gegen $param$ bedeutet Abrechnung: Volk feiert
-		Durch Krieg gegen $param$ ist die Zahl der freiwilligen drastisch gestiegen
-		Die Vi freuen sich sehr auf den Krieg gegen $param$
+		The war against $param$ has increased support for our military policies
+		Analysts believe the war against $param$ will be very profitable
+		All true warriors look forward eagerly to the war against $param$
+		The people are happy that we will now settle accounts with $param$ for good
+		The chance to prove ourselves against $param$ has boosted enlistments
+		The Vi are looking forward to having war with $param$
 #34	Sign Trade Treaty
-		Neuer Handel mit $param$ stimmt Bürger fröhlich
-		Händler und Investoren freuen sich auf den Handel mit $param$
-		Handelsvertrag mit $param$ interessiert die wahren Krieger kaum
-		Das Volk ist über den Handelsvertrag mit $param$ froh
-		Bürger finden den Handelsvertrag mit $param$ gut
-		Vi haben kein Verständnis für den Handelsvertrag mit $param$
+		New trade with $param$ delights people
+		Entrepreneurs are looking forward to trading with $param$
+		Trade with $param$ is of no much interest to true warriors
+		The people seem to approve of our arrangement with $param$
+		News of our peace with $param$ has been well-received by our citizens
+		The Vi got no apprehension for treaty with $param$
 #35	Sign Friendship/Cooperation Treaty
-		Bürger sind glücklich über den neuen Vertrag mit $param$: Breite Zustimmung
+		Our treaty with $param$ has quelled the fears of many concerned citizens
 		Der neue Vertrag mit $param$ ist gut für das Geschäft
-		Krieger verstehen die Unterzeichnung des Vertrages mit $param$
-		Das Volk ist über den Vertrag mit $param$ glücklich
-		Bürger der Invasoren finden den Vertrag mit $param$ gut
-		Vi haben absolut kein Verständnis für den Vertrag mit $param$
+		Warriors understand the need of signing this treaty with $param$
+		The people seem to approve of our arrangement with $param$
+		News of our peace with $param$ has been received warmly by our citizens
+		The Vi have absolutely no apprehension for treaty with $param$
 #36	Sign an Affiliation Treaty
-		Bürger feiern ausgelassen das neue Bündnis mit $param$
-		Händler feiern ausgelassen das neue Bündnis mit $param$
-		Krieger feiern ausgelassen das neue Bündnis mit $param$
-		Das Volk feiert ausgelassen das neue Bündnis mit $param$
-		Bürger sind glücklich über das neue Bündnis mit $param$
-		Vi zeigen positive Reaktionen auf das Bündnis mit $param$
+		Popular support for our alliance with $param$ is truly overwhelming
+		The Exchange hit a record high as brokers celebrated our alliance with $param$
+		The people believe we have found worthy allies in $param$
+		The people believe that our alliance with $param$ will be our salvation
+		The public response to our alliance with $param$ is very favorable
+		Vi' response to our alliance with $param$ is very favorable
 #37	Receive Acceptance of Non-Aggression Pact
-		""
-		""
-		""
-		""
-		""
-		""
+		Our treaty with $param$ has quelled the fears of many concerned citizens
+		Entrepreneurs are looking forward to new opportunities among $param$
+		The people are disappointed that there will be no battles with $param$
+		The people seem to approve of our arrangement with $param$
+		News of our peace with $param$ has been well-received by our citizens
+		The Vi have absolutely no apprehension for treaty with $param$
 #38	Accept a Non-Aggression Pact
-		""
-		""
-		""
-		""
-		""
-		""
+		Our treaty with $param$ has quelled the fears of many concerned citizens
+		Entrepreneurs are looking forward to new opportunities among $param$
+		The people are disappointed that there will be no battles with $param$
+		The people seem to approve of our arrangement with $param$
+		News of our peace with $param$ has been well-received by our citizens
+		The Vi have absolutely no apprehension for treaty with $param$
 #39	Receive Acceptance of Defence Pact
 		""
 		""
@@ -321,12 +321,12 @@
 		""
 		""
 #46	Refuse a Treaty (Non_Aggression, Defence Pact)
-		""
-		""
-		""
-		""
-		""
-		""
+		Activists have strongly condemned our refusal of peace with $param$
+		Investors were disappointed that there will be no peace with $param$
+		Our people are pleased to hear that peace has been averted
+		The people are pleased that our status with $param$ will not change
+		Our citizens are disappointed to hear that there will be no peace with $param$
+		The Vi are pleased to hear that peace with $param$ is not necessary
 #47	Refuse a Treaty (Warpact)
 		""
 		""
@@ -412,16 +412,16 @@
 		""
 		""
 #59	Successful espionage
-		Bürger sind die Spionageaktionen unseres Geheimdienstes egal
-		Händler konzentrieren sich lieber auf Geschäfte als auf Spionage
-		Krieger bezeichnen Spionageaktionen als unehrenhaft
-		Das Volk findet die Spionage der Taq'rhiar gut
-		Bürger der Invasoren finden leichten Gefallen an den Spionageaktionen
-		Vi nehmen die Spionageaktionen mit einem Schmunzeln zur Kenntniss
+		Espionage activies have no impact on people's opinion
+		Our traders rather concentrate on making profits than conducting espionage
+		Warriors call our spy activities dishonorable
+		People approve espionage methods of the Tal'Shiar
+		Union citizens are mildly pleased with espionage activities
+		The Vi are amused about our espionage activities
 #60	Successful sabotage
-		Bürger sind die Sabotageaktionen unseres Geheimdienstes egal
-		Händler konzentrieren sich lieber auf Geschäfte als auf Sabotage
-		Krieger finden feige Saobtageaktionen als unehrenhaft
-		Das Volk begrüsst die Sabotageaktionen der Taq'rhiar
-		Bürger der Invasoren finden Gefallen an den Sabotageaktionen des Geheimbundes
-		Vi nehmen die Sabotageaktionen mit einem Schmunzeln zur Kenntniss
+		Sabotage activies have no impact on people's opinion
+		Our traders rather concentrate on making profits than conducting sabotage missions
+		Warriors call our sabotage activities dishonorable
+		People approve sabotage methods of the Tal'Shiar
+		Union citizens are mildly pleased with sabotage activities
+		The Vi are amused about our espionage sabotage

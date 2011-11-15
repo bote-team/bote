@@ -104,11 +104,11 @@ void CChooseRaceView::OnDraw(CDC* dc)
 	// Rassenauswahl schreiben
 	format.SetAlignment(StringAlignmentCenter);
 	format.SetLineAlignment(StringAlignmentNear);
-	CString sChooseRace = "§Wähle dein Imperium";
+	CString sChooseRace = CResourceManager::GetString("CHOOSEEMPIRE");
 	g.DrawString(sChooseRace.AllocSysString(), -1, &font, RectF(75, 235, 350, 25), &format, &SolidBrush(Color::WhiteSmoke));
 
 	// Chat schreiben
-	CString sChat = "§Chat";
+	CString sChat = CResourceManager::GetString("CHAT");
 	g.DrawString(sChat.AllocSysString(), -1, &font, RectF(75, 675, 350, 25), &format, &SolidBrush(Color::WhiteSmoke));
 
 
@@ -234,8 +234,8 @@ void CChooseRaceView::OnInitialUpdate()
 	m_edtChatMsg.Create(WS_CHILD|WS_VISIBLE|ES_AUTOVSCROLL|ES_AUTOHSCROLL|ES_LEFT|ES_MULTILINE|ES_WANTRETURN|WS_BORDER, CRect(), this, IDC_MSG);
 
 	// Buttons für Spiel starten und Cancel
-	m_btStartGame.Create("§Spiel starten", WS_CHILD|WS_VISIBLE|BS_PUSHLIKE, CRect(), this, BTN_STARTGEAME);
-	m_btCancel.Create("§zurück", WS_CHILD|WS_VISIBLE|BS_PUSHLIKE, CRect(), this, BTN_CANCEL);
+	m_btStartGame.Create(CResourceManager::GetString("STARTGAME"), WS_CHILD|WS_VISIBLE|BS_PUSHLIKE, CRect(), this, BTN_STARTGEAME);
+	m_btCancel.Create(CResourceManager::GetString("BTN_BACK"), WS_CHILD|WS_VISIBLE|BS_PUSHLIKE, CRect(), this, BTN_CANCEL);
 
 	EnableRaceButtons();
 }

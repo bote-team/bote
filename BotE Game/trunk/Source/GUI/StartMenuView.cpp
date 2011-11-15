@@ -121,7 +121,8 @@ void CStartMenuView::OnDraw(CDC* dc)
 		format.SetAlignment(StringAlignmentCenter);
 		format.SetLineAlignment(StringAlignmentCenter);
 
-		CString s = "§www.birth-of-the-empires.de\n\npräsentiert ...";
+		CString s= CResourceManager::GetString("PRESENTEDBY")+"\n\n"+CResourceManager::GetString("PRESENTED");
+		//CString s = "§www.birth-of-the-empires.de\n\npräsentiert ...";
 		g.DrawString(s.AllocSysString(), -1, &font, RectF(0, 0, m_TotalSize.cx, m_TotalSize.cy), &format, &SolidBrush(Color::WhiteSmoke));
 
 		g.ReleaseHDC(pDC->GetSafeHdc());
@@ -154,7 +155,7 @@ void CStartMenuView::OnDraw(CDC* dc)
 		format.SetLineAlignment(StringAlignmentCenter);
 
 		Color clr2(max(0, 255 - m_nTimeCounter * 1.2), 245,245,245);
-		CString s = "§www.birth-of-the-empires.de\n\npräsentiert ...";
+		CString s= CResourceManager::GetString("PRESENTEDBY")+"\n\n"+CResourceManager::GetString("PRESENTED");
 		g.DrawString(s.AllocSysString(), -1, &font, RectF(0, 0, m_TotalSize.cx, m_TotalSize.cy), &format, &SolidBrush(clr2));
 	}	
 	
@@ -220,14 +221,14 @@ void CStartMenuView::OnInitialUpdate()
 	m_tButtonStyle.SetButtonStyle(&tStyle);
 
 	// Create a push button.
-	m_btNewGame.Create(_T("§Neues Spiel"), WS_CHILD|BS_PUSHBUTTON|WS_DISABLED, CRect(nXPos, nYPos, nXPos + nButtonSizeX, nYPos + nButtonSizeY), this, NEWGAME);
-	m_btMultiplayer.Create(_T("§Mehrspieler"), WS_CHILD|BS_PUSHBUTTON|WS_DISABLED, CRect(nXPos, nYPos + nGab + nButtonSizeY, nXPos + nButtonSizeX, nYPos + nGab + nButtonSizeY + nButtonSizeY), this, MULTIPLAYER);
-	m_btLoadGame.Create(_T("§Spiel Laden"), WS_CHILD|BS_PUSHBUTTON|WS_DISABLED, CRect(nXPos, nYPos + (nGab + nButtonSizeY) * 2, nXPos + nButtonSizeX, nYPos + (nGab + nButtonSizeY) * 2 + nButtonSizeY), this, LOADGAME);
-	m_btOptions.Create(_T("§Einstellungen"), WS_CHILD|BS_PUSHBUTTON|WS_DISABLED, CRect(nXPos, nYPos + (nGab + nButtonSizeY) * 3, nXPos + nButtonSizeX, nYPos + (nGab + nButtonSizeY) * 3 + nButtonSizeY), this, OPTIONS);
-	m_btExit.Create(_T("§Beenden"), WS_CHILD|BS_PUSHBUTTON|WS_DISABLED, CRect(nXPos, nYPos + (nGab + nButtonSizeY) * 4, nXPos + nButtonSizeX, nYPos + (nGab + nButtonSizeY) * 4 + nButtonSizeY), this, EXITGAME);
+	m_btNewGame.Create(_T(CResourceManager::GetString("NEWGAME")), WS_CHILD|BS_PUSHBUTTON|WS_DISABLED, CRect(nXPos, nYPos, nXPos + nButtonSizeX, nYPos + nButtonSizeY), this, NEWGAME);
+	m_btMultiplayer.Create(_T(CResourceManager::GetString("MULTIPLAYER")), WS_CHILD|BS_PUSHBUTTON|WS_DISABLED, CRect(nXPos, nYPos + nGab + nButtonSizeY, nXPos + nButtonSizeX, nYPos + nGab + nButtonSizeY + nButtonSizeY), this, MULTIPLAYER);
+	m_btLoadGame.Create(_T(CResourceManager::GetString("LOADGAME")), WS_CHILD|BS_PUSHBUTTON|WS_DISABLED, CRect(nXPos, nYPos + (nGab + nButtonSizeY) * 2, nXPos + nButtonSizeX, nYPos + (nGab + nButtonSizeY) * 2 + nButtonSizeY), this, LOADGAME);
+	m_btOptions.Create(_T(CResourceManager::GetString("SETTINGS")), WS_CHILD|BS_PUSHBUTTON|WS_DISABLED, CRect(nXPos, nYPos + (nGab + nButtonSizeY) * 3, nXPos + nButtonSizeX, nYPos + (nGab + nButtonSizeY) * 3 + nButtonSizeY), this, OPTIONS);
+	m_btExit.Create(_T(CResourceManager::GetString("LEAVE")), WS_CHILD|BS_PUSHBUTTON|WS_DISABLED, CRect(nXPos, nYPos + (nGab + nButtonSizeY) * 4, nXPos + nButtonSizeX, nYPos + (nGab + nButtonSizeY) * 4 + nButtonSizeY), this, EXITGAME);
 
-	m_btMPServer.Create(_T("§Spiel erstellen"), WS_CHILD|BS_PUSHBUTTON|WS_DISABLED, CRect(nXPos, nYPos + (nGab + nButtonSizeY) * 1, nXPos + nButtonSizeX, nYPos + (nGab + nButtonSizeY) * 1 + nButtonSizeY), this, MP_CREATE);
-	m_btMPClient.Create(_T("§Spiel beitreten"), WS_CHILD|BS_PUSHBUTTON|WS_DISABLED, CRect(nXPos, nYPos + (nGab + nButtonSizeY) * 2, nXPos + nButtonSizeX, nYPos + (nGab + nButtonSizeY) * 2 + nButtonSizeY), this, MP_JOIN);
+	m_btMPServer.Create(_T(CResourceManager::GetString("CREATEGAME")), WS_CHILD|BS_PUSHBUTTON|WS_DISABLED, CRect(nXPos, nYPos + (nGab + nButtonSizeY) * 1, nXPos + nButtonSizeX, nYPos + (nGab + nButtonSizeY) * 1 + nButtonSizeY), this, MP_CREATE);
+	m_btMPClient.Create(_T(CResourceManager::GetString("JOINGAME")), WS_CHILD|BS_PUSHBUTTON|WS_DISABLED, CRect(nXPos, nYPos + (nGab + nButtonSizeY) * 2, nXPos + nButtonSizeX, nYPos + (nGab + nButtonSizeY) * 2 + nButtonSizeY), this, MP_JOIN);
 
 	// Buttonstyle zuweisen
 	for (int i = NEWGAME; i <= MP_CREATE; i++)
@@ -240,20 +241,20 @@ void CStartMenuView::OnInitialUpdate()
 	}
 
 	// Für Tooltips registrieren
-	CString sTooltip = CHTMLStringBuilder::GetHTMLColor("§Neues Spiel starten", _T("silver"));
+	CString sTooltip = CHTMLStringBuilder::GetHTMLColor(CResourceManager::GetString("NEWGAMETT"), _T("silver"));
 	pDoc->GetMainFrame()->AddToTooltip(GetDlgItem(NEWGAME), sTooltip);
-	sTooltip = CHTMLStringBuilder::GetHTMLColor("§Ein Multiplayerspiel starten oder einem Multiplayerspiel beitreten", _T("silver"));
+	sTooltip = CHTMLStringBuilder::GetHTMLColor(CResourceManager::GetString("MULTIPLAYERTT"), _T("silver"));
 	pDoc->GetMainFrame()->AddToTooltip(GetDlgItem(MULTIPLAYER), sTooltip);
-	sTooltip = CHTMLStringBuilder::GetHTMLColor("§Ein gespeichertes Spiel laden", _T("silver"));
+	sTooltip = CHTMLStringBuilder::GetHTMLColor(CResourceManager::GetString("LOADGAMETT"), _T("silver"));
 	pDoc->GetMainFrame()->AddToTooltip(GetDlgItem(LOADGAME), sTooltip);
-	sTooltip = CHTMLStringBuilder::GetHTMLColor("§Spieleinstellungen ändern", _T("silver"));
+	sTooltip = CHTMLStringBuilder::GetHTMLColor(CResourceManager::GetString("SETTINGSTT"), _T("silver"));
 	pDoc->GetMainFrame()->AddToTooltip(GetDlgItem(OPTIONS), sTooltip);
-	sTooltip = CHTMLStringBuilder::GetHTMLColor("§Das Spiel beenden und Birth of the Empires verlassen", _T("silver"));
+	sTooltip = CHTMLStringBuilder::GetHTMLColor(CResourceManager::GetString("LEAVETT"), _T("silver"));
 	pDoc->GetMainFrame()->AddToTooltip(GetDlgItem(EXITGAME), sTooltip);
 
-	sTooltip = CHTMLStringBuilder::GetHTMLColor("§Ein neues Multiplayerspiel erstellen", _T("silver"));
+	sTooltip = CHTMLStringBuilder::GetHTMLColor(CResourceManager::GetString("CREATEGAMETT"), _T("silver"));
 	pDoc->GetMainFrame()->AddToTooltip(GetDlgItem(MP_CREATE), sTooltip);
-	sTooltip = CHTMLStringBuilder::GetHTMLColor("§Einem bestehenden Multiplayerspiel beitreten", _T("silver"));
+	sTooltip = CHTMLStringBuilder::GetHTMLColor(CResourceManager::GetString("JOINGAMETT"), _T("silver"));
 	pDoc->GetMainFrame()->AddToTooltip(GetDlgItem(MP_JOIN), sTooltip);
 
 	this->SetTimer(1,4000,NULL);	
@@ -401,12 +402,12 @@ void CStartMenuView::OnClientDisconnected()
 		CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 		if (!pDoc->m_bDontExit)
 		{
-			MessageBox("§Verbindung zum Server verloren.", "Fehler", MB_ICONEXCLAMATION | MB_OK);
+			MessageBox(CResourceManager::GetString("SERVERERROR1"), CResourceManager::GetString("ERROR"), MB_ICONEXCLAMATION | MB_OK);
 			pDoc->GetMainFrame()->SelectMainView(CHOOSERACE_VIEW);			
 		}
 		else
 		{
-			MessageBox("§Verbindung zum Server verloren.\nDas Spiel muss beednet werden.", "Fehler", MB_ICONEXCLAMATION | MB_OK);
+			MessageBox(CResourceManager::GetString("SERVERERROR2"), CResourceManager::GetString("ERROR"), MB_ICONEXCLAMATION | MB_OK);
 			AfxGetApp()->GetMainWnd()->PostMessage(WM_CLOSE);
 		}
 	}

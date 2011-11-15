@@ -696,7 +696,7 @@ void CDiplomacyMenuView::DrawRaceDiplomacyMenue(Graphics* g)
 			if (nVecPos-- > 21)
 				continue;
 			CRace* pRace = *it;
-			if(m_bSortRaceList==false&&pRace->GetType()==MINOR)//Linie zwischen Minors und Majors sorgt dafür das keine Buttons mehr angezeigt werden
+			if(m_bSortRaceList==false&&pRace->GetType()==MINOR)//Linie zwischen Minors und Majors
 			{
 				if(it-m_vRaceList.begin()>0&&m_vRaceList.at(it-m_vRaceList.begin()-1)->GetType()==MAJOR) g->DrawLine(&Gdiplus::Pen(penColor), 8, 100+count*25, 150, 100+count*25);
 			}
