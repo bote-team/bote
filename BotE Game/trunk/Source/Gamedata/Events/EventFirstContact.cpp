@@ -139,6 +139,22 @@ void CEventFirstContact::Draw(Graphics* g, CGraphicPool* graphicPool) const
 	for (UINT i = 0; i < sProperties.size(); i++)
 		g->DrawString(sProperties[i].AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(730,210 + i*30,540,30), &fontFormat, &fontBrush);
 
+	//Beziehungsbalken zeichnen
+	if (pContactedRace->GetType() == MINOR || pContactedRace->GetType() == MAJOR && ((CMajor*)pContactedRace)->IsHumanPlayer() == false)
+	{
+		for (int t = 0; t < 20; t++)
+		{
+			RectF timber(680,387-t*15,30,13);
+			if (pContactedRace->GetRelation(pMajor->GetRaceID()) * 2 / 10 > t)
+			{
+				//fontBrush.SetColor(Color(250-t*12, 0+t*12, 0));
+				g->FillRectangle(&SolidBrush(Color(200,250-t*12, 0+t*12, 0)), timber);
+			}
+			else
+				g->FillRectangle(&SolidBrush(Color(100,100,100,100)), timber);						
+		}
+	}
+	fontBrush.SetColor(color);
 	// Technischen Fortschritt zeichnen
 	CString sProgress;
 	if (pContactedRace->GetType() == MINOR)

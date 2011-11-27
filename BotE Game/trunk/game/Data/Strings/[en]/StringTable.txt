@@ -1874,18 +1874,33 @@ Blockade of the § system
 [BOMBARDEVENT_HEADLINE]
 Bombardment of the § system
 
-[BOMBARDEVENT_TEXT_MAJOR1]
+[BOMBARDEVENT_TEXT_AGRESSOR_MAJOR1]
 The civilian population of the § system is shocked by the bombardment and demands a definite end to the violence.
-[BOMBARDEVENT_TEXT_MAJOR2]
+[BOMBARDEVENT_TEXT_AGRESSOR_MAJOR2]
 Traders in the § system are disconsolate and shocked by the bombardment demanding immediate peace negotiation to preserve wealth on the planets.
-[BOMBARDEVENT_TEXT_MAJOR3]
+[BOMBARDEVENT_TEXT_AGRESSOR_MAJOR3]
 Warriors in the § system are restless due to the coward bombardment and demands war on the ground.
-[BOMBARDEVENT_TEXT_MAJOR4]
+[BOMBARDEVENT_TEXT_AGRESSOR_MAJOR4]
 Swarm population in the § system is flushed by the bombardment and demands outside swarm support.
-[BOMBARDEVENT_TEXT_MAJOR5]
+[BOMBARDEVENT_TEXT_AGRESSOR_MAJOR5]
 Work force in the § system is crippled by the bombardment and demands free access to their work stations.
-[BOMBARDEVENT_TEXT_MAJOR6]
+[BOMBARDEVENT_TEXT_AGRESSOR_MAJOR6]
 The § system Vi is displeased by the bombardment and demands immediate reinforcements.
+
+[BOMBARDEVENT_TEXT_DEFENDER_MAJOR1]
+The civilian population of the § system is shocked by the bombardment and demands a definite end to the violence.
+[BOMBARDEVENT_TEXT_DEFENDER_MAJOR2]
+Traders in the § system are disconsolate and shocked by the bombardment demanding immediate peace negotiation to preserve wealth on the planets.
+[BOMBARDEVENT_TEXT_DEFENDER_MAJOR3]
+Warriors in the § system are restless due to the coward bombardment and demands war on the ground.
+[BOMBARDEVENT_TEXT_DEFENDER_MAJOR4]
+Swarm population in the § system is flushed by the bombardment and demands outside swarm support.
+[BOMBARDEVENT_TEXT_DEFENDER_MAJOR5]
+Work force in the § system is crippled by the bombardment and demands free access to their work stations.
+[BOMBARDEVENT_TEXT_DEFENDER_MAJOR6]
+The § system Vi is displeased by the bombardment and demands immediate reinforcements.
+
+
 
 [INVASIONSUCCESSEVENT_HEADLINE]
 Successful invasion in § system

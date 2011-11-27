@@ -1879,18 +1879,31 @@ Das § System wird blockiert. Der Handel und die Produktion des Systems ist dadur
 [BOMBARDEVENT_HEADLINE]
 Bombardierung des § Systems
 
-[BOMBARDEVENT_TEXT_MAJOR1]
-Die zivile Bevölkerung des § Systems ist wegen der Bombardierung geschockt und fordert das Ende der Gewalt.
-[BOMBARDEVENT_TEXT_MAJOR2]
-Die zivile Bevölkerung des § Systems ist wegen der Bombardierung geschockt und fordert das Ende der Gewalt.
-[BOMBARDEVENT_TEXT_MAJOR3]
-Die zivile Bevölkerung des § Systems ist wegen der Bombardierung geschockt und fordert das Ende der Gewalt.
-[BOMBARDEVENT_TEXT_MAJOR4]
-Die zivile Bevölkerung des § Systems ist wegen der Bombardierung geschockt und fordert das Ende der Gewalt.
-[BOMBARDEVENT_TEXT_MAJOR5]
-Die zivile Bevölkerung des § Systems ist wegen der Bombardierung geschockt und fordert das Ende der Gewalt.
-[BOMBARDEVENT_TEXT_MAJOR6]
-Die zivile Bevölkerung des § Systems ist wegen der Bombardierung geschockt und fordert das Ende der Gewalt.
+[BOMBARDEVENT_TEXT_AGRESSOR_MAJOR1]
+Die zivile Bevölkerung des § Systems ist wegen unserer Bombardierung geschockt und fordert das Ende der Gewalt.
+[BOMBARDEVENT_TEXT_AGRESSOR_MAJOR2]
+Unsere Bombardierung im § System wird die dortige Wirtschaft bald ruiniert haben.
+[BOMBARDEVENT_TEXT_AGRESSOR_MAJOR3]
+Unsere Krieger im § System finden das Bombardement hinterhältig und fordern fairen Kampf auf den Planeten.
+[BOMBARDEVENT_TEXT_AGRESSOR_MAJOR4]
+Die zivile Bevölkerung des § Systems ist wegen unserer Bombardierung geschockt und fordert das Ende der Gewalt.
+[BOMBARDEVENT_TEXT_AGRESSOR_MAJOR5]
+Die zivile Bevölkerung des § Systems ist wegen unserer Bombardierung geschockt und fordert das Ende der Gewalt.
+[BOMBARDEVENT_TEXT_AGRESSOR_MAJOR6]
+Die zivile Bevölkerung des § Systems ist wegen unserer Bombardierung geschockt und fordert das Ende der Gewalt.
+
+[BOMBARDEVENT_TEXT_DEFENDER_MAJOR1]
+Die zivile Bevölkerung des § Systems ist wegen der feindlichen Bombardierung geschockt und fordert das Ende der Gewalt.
+[BOMBARDEVENT_TEXT_DEFENDER_MAJOR2]
+Die Bombardierung des § Systems schadet unserer Wirtschaft. Händler das die Regierung dagegen etwas unternimmt. 
+[BOMBARDEVENT_TEXT_DEFENDER_MAJOR3]
+Die Bombardierung des § Systems ist eine Beleidigung unserer Ehre. Die Krieger wollen sich dem Gegner Mann gegen Mann stellen. 
+[BOMBARDEVENT_TEXT_DEFENDER_MAJOR4]
+Die zivile Bevölkerung des § Systems ist wegen der feindlichen Bombardierung geschockt und fordert das Ende der Gewalt.
+[BOMBARDEVENT_TEXT_DEFENDER_MAJOR5]
+Unsere Fabriken im § System werden durch die Bombardierung geschädigt. Wir sollten Verstärkung schicken.
+[BOMBARDEVENT_TEXT_DEFENDER_MAJOR6]
+Die § System Vi ist entsetzt über die feindliche Bombardierung und fordert Verstärkung an.
 
 [INVASIONSUCCESSEVENT_HEADLINE]
 Erfolgreiche Invasion im § System

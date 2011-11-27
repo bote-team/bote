@@ -103,6 +103,9 @@
 #define IDC_CHECK_VC_SABOTAGE           1061
 #define IDC_CHECK_ANIMATEDICON2         1062
 #define IDC_CHECK_SHOWMINIMAP           1062
+#define IDC_EDIT1                       1063
+#define IDC_GENMODEEDIT                 1063
+#define IDC_GENMODE                     1064
 #define ID_OPTIONEN                     32773
 #define ID_INFORMATION                  32774
 #define ID_DATENBANK                    32775
@@ -128,7 +131,7 @@
 #define _APS_3D_CONTROLS                     1
 #define _APS_NEXT_RESOURCE_VALUE        190
 #define _APS_NEXT_COMMAND_VALUE         32790
-#define _APS_NEXT_CONTROL_VALUE         1054
+#define _APS_NEXT_CONTROL_VALUE         1065
 #define _APS_NEXT_SYMED_VALUE           107
 #endif
 #endif

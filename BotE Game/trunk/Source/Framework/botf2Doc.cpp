@@ -14,6 +14,7 @@
 #include "NetworkHandler.h"
 #include "MainFrm.h"
 #include "IniLoader.h"
+#include <cmath>
 
 #include "Races\RaceController.h"
 #include "Races\DiplomacyController.h"
@@ -1032,6 +1033,45 @@ void CBotf2Doc::GenerateGalaxy()
 			m_Sector[x][y].SetKO(x,y);
 		}
 	m_mRaceKO.clear();
+	int nGenerationMode=0;//0==Standart 1==Circle
+	bool nGenField[STARMAP_SECTORS_HCOUNT][STARMAP_SECTORS_VCOUNT];
+	CIniLoader::GetInstance()->ReadValue("Special", "GENERATIONMODE", nGenerationMode);
+	if(nGenerationMode==1)
+	{
+		int nRadius=11;
+			for(int i=STARMAP_SECTORS_HCOUNT/2-1;i>0;i--)//links oben
+		{
+			for(int j=STARMAP_SECTORS_VCOUNT/2-1;j>0;j--)
+			{
+				if(sqrt((pow((double)(STARMAP_SECTORS_HCOUNT/2-i),2)+pow((double)(STARMAP_SECTORS_VCOUNT/2-j),2)))<=nRadius) nGenField[i][j]=true;
+			}
+		}
+		for(int i=STARMAP_SECTORS_HCOUNT/2;i<STARMAP_SECTORS_HCOUNT;i++)//links unten
+		{
+			for(int j=STARMAP_SECTORS_VCOUNT/2-1;j>0;j--)
+			{
+				if(sqrt((pow((double)(i-STARMAP_SECTORS_HCOUNT/2),2)+pow((double)(STARMAP_SECTORS_VCOUNT/2-j),2)))<=nRadius) nGenField[i][j]=true;
+			}
+		}
+		for(int i=STARMAP_SECTORS_HCOUNT/2;i<STARMAP_SECTORS_HCOUNT;i++)//rechts unten
+		{
+			for(int j=STARMAP_SECTORS_VCOUNT/2;j<STARMAP_SECTORS_VCOUNT;j++)
+			{
+				if(sqrt((pow((double)(i-STARMAP_SECTORS_HCOUNT/2),2)+pow((double)(j-STARMAP_SECTORS_VCOUNT/2),2)))<=nRadius) nGenField[i][j]=true;
+			}
+		}
+		for(int i=STARMAP_SECTORS_HCOUNT/2-1;i>0;i--)//rechts oben
+		{
+			for(int j=STARMAP_SECTORS_VCOUNT/2;j<STARMAP_SECTORS_VCOUNT;j++)
+			{
+				if(sqrt((pow((double)(STARMAP_SECTORS_HCOUNT/2-i),2)+pow((double)(j-STARMAP_SECTORS_VCOUNT/2),2)))<=nRadius) nGenField[i][j]=true;
+			}
+		}
+	}else{
+		for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
+			for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
+				nGenField[x][y]=true;	
+	}
 
 	// Die sechs Hauptrassen werden zufällig auf der Karte verteilt. Dabei ist aber zu beachten, dass die Entfernungen
 	// zwischen den Systemen groß genug sind. Außerdem müssen um jedes der Hauptsysteme zwei weitere Systeme liegen.
@@ -1057,7 +1097,7 @@ void CBotf2Doc::GenerateGalaxy()
 			
 			for (map<CString, CMajor*>::const_iterator jt = pmMajors->begin(); jt != pmMajors->end(); ++jt)
 			{
-				if (it->first != jt->first && GetRaceKO(jt->first) != CPoint(-1,-1) && abs(GetRaceKO(it->first).x - GetRaceKO(jt->first).x) < nMinDiff && abs(GetRaceKO(it->first).y - GetRaceKO(jt->first).y) < nMinDiff)
+				if (it->first != jt->first && GetRaceKO(jt->first) != CPoint(-1,-1) && abs(GetRaceKO(it->first).x - GetRaceKO(jt->first).x) < nMinDiff && abs(GetRaceKO(it->first).y - GetRaceKO(jt->first).y) < nMinDiff||GetRaceKO(it->first) != CPoint(-1,-1)&&nGenField[GetRaceKO(it->first).x][GetRaceKO(it->first).y]==false)
 					m_mRaceKO[it->first] = pair<int,int>(-1,-1);
 			}
 			// Abbruchbedingung
@@ -1149,7 +1189,7 @@ void CBotf2Doc::GenerateGalaxy()
 	vector<CPoint> vSectorsToGenerate;
 	for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
 		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-			if (!m_Sector[x][y].GetOwned())
+			if ((!m_Sector[x][y].GetOwned())&&nGenField[x][y]==true)
 				vSectorsToGenerate.push_back(CPoint(x,y));
 
 	while (vSectorsToGenerate.size())
@@ -3076,7 +3116,7 @@ void CBotf2Doc::CalcSystemAttack()
 						if (pMajor->IsHumanPlayer())
 						{
 							if (!attackSystem->IsTroopsInvolved())
-								pMajor->GetEmpire()->GetEventMessages()->Add(new CEventBombardment(pMajor->GetRaceID(), "Bombardment", CResourceManager::GetString("BOMBARDEVENT_HEADLINE", FALSE, m_Sector[p.x][p.y].GetName()), CResourceManager::GetString("BOMBARDEVENT_TEXT_" + pMajor->GetRaceID(), FALSE, m_Sector[p.x][p.y].GetName())));
+								pMajor->GetEmpire()->GetEventMessages()->Add(new CEventBombardment(pMajor->GetRaceID(), "Bombardment", CResourceManager::GetString("BOMBARDEVENT_HEADLINE", FALSE, m_Sector[p.x][p.y].GetName()), CResourceManager::GetString("BOMBARDEVENT_TEXT_AGRESSOR_" + pMajor->GetRaceID(), FALSE, m_Sector[p.x][p.y].GetName())));
 							// gescheitere Invasion
 							else if (m_System[p.x][p.y].GetHabitants() > 0.000001f)
 								pMajor->GetEmpire()->GetEventMessages()->Add(new CEventBombardment(pMajor->GetRaceID(), "InvasionFailed", CResourceManager::GetString("INVASIONFAILUREEVENT_HEADLINE", FALSE, m_Sector[p.x][p.y].GetName()), CResourceManager::GetString("INVASIONFAILUREEVENT_TEXT_" + pMajor->GetRaceID(), FALSE, m_Sector[p.x][p.y].GetName())));
@@ -3090,7 +3130,7 @@ void CBotf2Doc::CalcSystemAttack()
 						{
 							// reine Bombardierung
 							if (!attackSystem->IsTroopsInvolved())
-								((CMajor*)defender)->GetEmpire()->GetEventMessages()->Add(new CEventBombardment(defender->GetRaceID(), "Bombardment", CResourceManager::GetString("BOMBARDEVENT_HEADLINE", FALSE, m_Sector[p.x][p.y].GetName()), CResourceManager::GetString("BOMBARDEVENT_TEXT_" + defender->GetRaceID(), FALSE, m_Sector[p.x][p.y].GetName())));
+								((CMajor*)defender)->GetEmpire()->GetEventMessages()->Add(new CEventBombardment(defender->GetRaceID(), "Bombardment", CResourceManager::GetString("BOMBARDEVENT_HEADLINE", FALSE, m_Sector[p.x][p.y].GetName()), CResourceManager::GetString("BOMBARDEVENT_TEXT_DEFENDER_" + defender->GetRaceID(), FALSE, m_Sector[p.x][p.y].GetName())));
 							// gescheitere Invasion
 							else if (m_System[p.x][p.y].GetHabitants() > 0.000001f)
 								((CMajor*)defender)->GetEmpire()->GetEventMessages()->Add(new CEventBombardment(defender->GetRaceID(), "InvasionFailed", CResourceManager::GetString("INVASIONFAILUREEVENT_HEADLINE", FALSE, m_Sector[p.x][p.y].GetName()), CResourceManager::GetString("INVASIONFAILUREEVENT_TEXT_" + defender->GetRaceID(), FALSE, m_Sector[p.x][p.y].GetName())));

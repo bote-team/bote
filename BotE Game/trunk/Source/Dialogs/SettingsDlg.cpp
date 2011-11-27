@@ -56,6 +56,7 @@ void CSettingsDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_SLIDER_MINORDENSITY, m_ctrlMinorDensity);
 	DDX_Control(pDX, IDC_SLIDER_ANOMALYDENSITY, m_ctrlAnomalyDensity);
 	DDX_Control(pDX, IDC_EDIT_RANDOMSEED, m_edtRandomSeed);
+	DDX_Control(pDX, IDC_GENMODEEDIT, m_edtGenMode);
 	DDX_Check(pDX, IDC_CHECK_HIDEMENUBAR, m_bHideMenu);
 	DDX_Check(pDX, IDC_CHECK_VC_ELIMINATION, m_bVCElimination);
 	DDX_Check(pDX, IDC_CHECK_VC_DIPLOMACY, m_bVCDiplomacy);
@@ -185,6 +186,15 @@ BOOL CSettingsDlg::OnInitDialog()
 	CString sRandomSeed;
 	sRandomSeed.Format("%d", nRandomSeed);
 	m_edtRandomSeed.SetWindowText(sRandomSeed);
+
+	int nGenMode;
+	if (!pIni->ReadValue("Special", "GENERATIONMODE", nGenMode))
+		ASSERT(false);
+	if (nGenMode != 0)
+		nGenMode = 0;
+	CString sGenMode;
+	sGenMode.Format("%d", nGenMode);
+	m_edtGenMode.SetWindowText(sGenMode);
 
 	int nStarDensity;
 	if (!pIni->ReadValue("Special", "STARDENSITY", nStarDensity))
@@ -322,6 +332,9 @@ void CSettingsDlg::OnOK()
 	pIni->WriteValue("Special", "MINORDENSITY", s);
 	s.Format("%d", m_ctrlAnomalyDensity.GetPos());
 	pIni->WriteValue("Special", "ANOMALYDENSITY", s);
+	m_edtGenMode.GetWindowText(s);
+	pIni->WriteValue("Special", "GENERATIONMODE", s);
+
 
 	// Victory Conditions
 	m_bVCElimination == TRUE ? s = "ON" : s = "OFF";
@@ -361,3 +374,4 @@ void CSettingsDlg::OnNMCustomdrawSliderDifficulty(NMHDR *pNMHDR, LRESULT *pResul
 		pCtrl->SetWindowText(m_sDifficulty);
 	*pResult = 0;
 }
+

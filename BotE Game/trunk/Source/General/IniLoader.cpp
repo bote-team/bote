@@ -48,6 +48,7 @@ CIniLoader::CIniLoader(void)
 		WriteValue("Special", "STARDENSITY", "35");
 		WriteValue("Special", "MINORDENSITY", "30");
 		WriteValue("Special", "ANOMALYDENSITY", "9");
+		WriteValue("Special", "GENERATIONMODE", "0");
 		
 		WriteValue("Victory_Conditions", "Elimination", "ON");
 		WriteValue("Victory_Conditions", "Diplomacy", "ON");
