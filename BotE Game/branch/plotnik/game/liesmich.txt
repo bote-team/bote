@@ -1,0 +1,652 @@
+Willkommen zu BIRTH OF THE EMPIRES [Alpha 6.1]
+Version: 0.81
+
+--------------------------------------------------------------------
++                     BIRTH OF THE EMPIRES                         +
+--------------------------------------------------------------------
+
+1. Inhaltsverzeichnis
+1.1 - Vorwort
+1.2 - Systemvoraussetzungen
+1.3 - Installationshinweise
+1.4 - Urheberrecht
+1.5 - Nutzungsbedingungen
+1.6 - Kontakt
+1.7 - Credits
+
+--------------------------------------------------------------------
+
+1.1 Vorwort
+
+Hallo
+
+Die aktuelle Version spiegelt den momentanen Fortschritt
+an dem Projekt wider. Nutzbare Features müssen nicht
+so in der fertigen Version vorkommen. Viele Features
+sind bis jetzt auch noch nicht eingebaut. Für
+Verbesserungsvorschläge bin ich sehr dankbar. Sollten Bugs
+entdeckt werden, so meldet diese bitte. Im weiteren Verlauf
+dieser Datei wird das Projekt/die Anwendung mit "BotE" abgekürzt.
+
+
+Viel Spaß
+die BotE-Crew
+
+
+--------------------------------------------------------------------
+
+1.2 Systemvoraussetzungen
+
+CPU mit mindestens 1000 Mhz
+mindestens 256 MB RAM
+170 MB freien Festplattenspeicher
+Soundkarte
+WindowsXP(tm), Windows Vista(tm), Windows 7(tm) Betriebssystem
+oder Linux inkl. Wine
+
+--------------------------------------------------------------------
+
+1.3 Installationshinweise für BotE
+
+Sollten die Fonts nicht korrekt in BotE angezeigt werden, dann müssen
+womöglich die BotE Fonts aus dem Windows Font Ordner manuell gelöscht werden
+und die Font Dateien aus dem "Data\Fonts" Ordner im BotE Verzeichnis in den
+Windows Fonts Ordner kopiert werden (standardmäßig unter: C:\Windows\Fonts)
+
+Falls kein Sound unter Linux zu hören ist, oder man kann aus irgendwelchen
+Gründen nur Softwaresound benutzen, dann muss die fmodex.dll.linux
+Datei in fmodex.dll umbenannt werden. Sie ersetzt dann die standardmäßige
+fmodex.dll Datei.
+
+--------------------------------------------------------------------
+
+1.4 Urheberrecht
+
+
+§1 - BotE ist eine Software (Freeware), welche für den privaten
+     Gebrauch kostenlos benutzt werden darf. Jede kommerzielle
+     Nutzung ist strengstens verboten. Für den öffentlichen
+     Gebrauch ist die Zustimmung des Urhebers einzuholen.
+
+§2 - Als Urheberrechtsinhaber muß immer meine Person angegeben
+     werden. Urheberrechtlich geschützter Inhalt, an dem Andere
+     die Rechte besitzen, ist davon ausgeschlossen. Hier müssen
+     die Bedingungen der jeweiligen Rechteinhaber beachtet werden.
+
+§3 - Es ist nicht erlaubt, den Quellcode bzw. Teile des Quellcodes
+     für andere Projekte zu verwenden bzw. diesen zu verbreiten.
+     Ausnahmen können nach Absprache mit den Urheberrechteinhabern
+     vereinbart werden.
+
+§4 - Änderungen am Quellcode sind erlaubt, sofern meine Person
+     als Urheber des Projekts mit angegeben wird (siehe §2) und
+     die Änderungen nicht gegen §3 verstoßen.
+
+§5 - Jegliche Modifikationen des Spiels sind erlaubt, außer
+     sie verstoßen gegen §2-3 oder gegen Urheberrrechte von Dritten.
+
+§6 - Es ist nicht erlaubt, BotE für irgendwelche Zwecke zu
+     benutzen, um sich finanziell zu bereichern.
+
+§7 - Es ist nicht erlaubt, BotE für irgendwelche kommerzielle
+     Zwecke einzusetzen.
+     
+§8 - Alle Bilder, Grafiken und Designs, welche BotE benutzt
+     dürfen nicht für kommerzielle Projekte verwendet werden,
+     weiterhin ist es untersagt, diese selbstständig zu
+     verbreiten. Ausnahmen können nach Absprache mit den
+     Urheberrechteinhabern vereinbart werden.
+
+§9 - Die Software darf nur von Dritten (z.B. Freeware/Shareware - Seiten)
+     im Internet eigenständig, d.h. ohne Wissen bzw. Zustimmung des
+     Urhebers angeboten werden, sofern diese die volle Verantwortung
+     für die Bereitstellung des Downloads übernehmen. Der Urheber behält
+     sich das alleinige Recht vor, die Verbreitung auf andere Quellen
+     (z.B. Downloadportale) auszulagern.
+
+Es ist nicht erlaubt und nicht ratsam, Bilder u.a. Material aus dem BotE
+Download ohne vorherige Abklärung der speziellen Lizenzen jedes 
+einzelnen Bildes für andere Zwecke weiterzuverwenden. 
+Diese finden sie auf den angegebenen Webseiten der Künstler.
+
+Teile der Hanuhr Menügrafiken wurden designtechnisch von Vorlagen aus dem
+Star Trek Customizable Card Game (ST-CCG) TM der Firma Decipher, Inc.
+beeinflusst und teilweise sehr ähnlich nachgemacht. 
+Keine Urheberrechtsverletzung beabsichtigt.
+
+Ebenso sind einige Hintergrundgrafiken in den Rassenbildern nicht von den
+Künstlern selbst erstellt worden, die die Aliens erstellt haben, sondern
+aus gegoogleten Bildern hinzugefügt worden von uns ohne vorherige Abklärung
+mit den Künstlern. Auch hier ist keine Copyrightverletzung beabsichtigt.
+
+
+Für die Musik- und Soundwiedergabe wird das FMOD Sound System
+verwendet.
+FMOD Sound System, copyright © Firelight Technologies Pty, Ltd.,
+1994-2010
+
+© 2004-2011 Sir Pustekuchen
+
+
+--------------------------------------------------------------------
+
+1.5 Nutzungsbedingungen
+
+Weder die Urheberrechteinhaber, noch irgendjemand anderes,
+kann für etwaige Schäden, welche durch BotE, am System hätten
+verursacht werden können oder wurden verantwortlich gemacht
+werden. Ihnen ist es nur erlaubt, BotE zu benutzen, wenn Sie
+diesen Punkt und alle Punkte unter 1.4 akzeptieren.
+
+
+--------------------------------------------------------------------
+
+1.6 Kontakt
+
+Autor: Sir Pustekuchen
+Homepage: http://www.birth-of-the-empires.de
+
+
+--------------------------------------------------------------------
+
+1.7 Credits
+
+Produzent: 
+  Sir Pustekuchen
+
+Idee:
+  Sir Pustekuchen
+
+Programmierung:
+  Sir Pustekuchen
+  CBot
+
+Design:
+  Sir Pustekuchen
+  Malle
+  Zunder
+  nemesis5
+  pd
+
+Grafik:
+  Zunder
+  Malle
+  Sir Pustekuchen
+  nemesis5
+  rainer
+  YOT-Project
+  andere Künstler (siehe weiter unten)
+
+Text:
+  Malle
+  Topper
+  Homeros
+  Sir Pustekuchen
+  Luther Sloan
+  Data
+  master130686
+  Grammaton Cleric
+  Kyle Katarn73
+
+Daten:
+  Sir Pustekuchen
+  Scav
+  Malle
+  Alamar
+
+Balancing:
+  Mentat
+  Scav
+  Sir Pustekuchen
+
+Musik:
+  Eric James
+  Sandman
+  reel2
+  George R Powell
+  Edgen
+  MarkySpark
+  Kevin MacLeod
+
+Stimmen:
+  Kenneth_of_Borg
+  Kate Flanagan
+  Krista Flanagan
+  Mike Strobel
+
+Englische Übersetzung
+  Malle
+  Matress of Evil
+  denzil85
+
+Testing
+  Alabor
+  master130686
+  Rautzebautze
+  Grammaton Cleric
+  Dennis0078
+
+Handbuch (dt.)
+  Gottesanbeter
+  rainer
+  Xenox
+  Malle
+  Sir Pustekuchen
+
+---------------------------------------------------
+| Ein großer Dank geht an alle folgenden Personen  |
+---------------------------------------------------
+
+Schiffsgrafiken:
+  Majorrace-Schiffe:	
+	Atrocities
+	magicmot
+  Minorrace-Schiffe:
+	Kevin Williams
+	Dieter Ludmann
+	u.a. Künstler (siehe eigene Creditsdatei im ../Graphics/Ships/ Ordner)
+
+
+Hintergrundmusik:
+  Terranische Konföderation: Eric Fu-Wah James "Serenity" http://www.myspace.com/ericjames/
+  Hanuhr Handelsunion: reel2 "The Birth of a Legend" http://www.newgrounds.com/audio/listen/264050 + George R Powell "One Last Sunset" http://www.newgrounds.com/audio/listen/317246
+  Khayrin Imperium: Edgen "STOGAM - The Battle Begins" http://www.newgrounds.com/audio/listen/163447
+  Rotharianischer Sternenverbund: MarkySpark "Blood Throne Battle V" http://www.newgrounds.com/audio/listen/370234
+  Cartarer Invasoren: Sandman "Cirrus March" http://botf2.star-trek-games.com/memberlist.php?mode=viewprofile&u=4284
+  Omega-Allianz: Kenneth L. Welch "Starlight Requiem v2r" http://homepage.mac.com/klwelch/music.html
+  
+sonstige Musik:
+  Verloren: Kevin MacLeod - "For the Fallen"
+  Gewinnen: Eric Fu-Wah James "Finale" http://www.myspace.com/ericjames/
+
+Schriftarten:
+  Terranische Konföderation: League Gothic http://www.theleagueofmoveabletype.com/fonts/7-league-gothic (Open Font License, http://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&id=OFL&_sc=1 )
+  Hanuhr: Liberation Serif https://fedorahosted.org/liberation-fonts/ (GPL v2 mit Font-exception, siehe spezielle Lizenzdatei)
+  Khayrin: Klingon Dagger (John Tackett aka K'mel)
+  Rotharianer: Mandala http://www.aimwell.org/Fonts/fonts.html (GPL v3)
+  Cartarer: Final Frontier (Allen R. Walden; frei distributierbar)
+  Omega-Allianz: LilyUPC http://www.microsoft.com/typography/fonts/family.aspx?FID=272
+
+
+Major Races (Character artwork):
+  Konföderation: Tim Appleby http://bdimonkey.wordpress.com/
+  Hanuhr: 	 Aaron Sims http://www.aaron-sims.com/
+  Khayrin: 	 Baptiste Henry http://www.sewan.com/
+  Rotharianer: 	 Till Maginot http://blog.maginot.eu/index.php?seite=people&people=till&/
+  Cartarer: 	 Taehoon Oh http://www.taehoonoh.com/
+  Omega-Allianz: Andrew Kincaid http://redfishimagery.com/
+
+Minor Races (Character artwork):
+Albert Feliu http://albertfeliu.com/ : 
+	Adryl
+	Athari
+	Chewark
+	Minali
+	Nezaka
+	Sytaplet
+
+Alex [Brutikong] Velazquez :
+	Mozwar
+
+Andrew Kincaid http://redfishimagery.com/ :
+	Aszrethaner
+	Kelnorianer
+	Krepraaner
+	Remri
+	Templaner
+
+Arild Anfinnsen http://www.arildwiro.com/ :
+	Aldren
+	Ardren
+	Nundosa
+	Zhordanier
+
+Artur Grzegorczyn http://www.madgameart.blogspot.com/ : 
+	Nynjan
+	Riejson
+
+Baptiste Henry http://www.sewan.com/ :
+	Rurianer
+
+Bojana Nedeljkovic :
+	Azoraner
+
+Can Tuncer http://www.cgcan.com/ :
+	Aleubiten
+	Bentaner
+	Urengler
+
+Ching Lau http://lauch3d.com/ :
+	Excalbianer
+	
+
+Dmitriy Kuznetsov http://daemon3d.com/ :
+	Eptirel
+	Keraune
+	Klaanirer
+	Merdinianer
+	Tacmacs
+	Wollonen
+
+Dr. Markus Lutz http://www.marcus-lutz.de/ :
+	Alemnier
+	Antromel
+	Goboqon
+	Kyrier
+	Yaroborten
+
+Jean-Marc Labal http://3djml.com/ :
+	Ehlenen
+	
+
+Jean-Sébastien Rolhion http://www.designpicture.com/ :
+	(Aqindoan2)
+	Angolithen
+	Baon
+	Cainer
+	Chamorer
+	Hiro'akken
+	Karorr
+	Nacha'urr
+	Nuumbar
+	Okotai
+	Thremdomas
+	Vorianer
+	Xeggen
+
+Julian Johnson Mortimer http://johnson-mortimer.co.uk/ :
+	Bandoleri
+	Bretarianer
+	Callanec
+	Corvellianer
+	Drizzi
+	Falloraner
+	Giradorn
+	Hakonier
+	Herakleten
+	Levaner
+	Lokonor
+	Mardus
+	Miryaden
+	Mureaner
+	Nesaterianer
+	Orlans
+	Osseti
+	Scytorianer
+	Taltraden
+	Tarokaner
+	Tarokesen
+	Tarokianer
+	Tarokohe
+	Tarokuri
+	Tarokyten
+	Torgoni
+
+Kevin Williams http://kwstarships.co.uk/ :
+	Xibren
+
+Martin Aichner http://www.necs3dart.com/ :
+	Bao'begach
+	Boneraner
+	Droglith
+	Elay
+	Kanorren
+	Lisitaner
+	Lukarianer
+	Thom
+	Tuc
+	Viebaran
+	Vulmar
+	Xanthoner
+	Zarovianer
+	Zetarianer
+	Zuringlier
+
+Pascal Blanché http://www.3dluvr.com/pascalb/ :
+	Aihlinn
+	Andromedaner
+	Aqindoan
+	Ankaraner
+	Belamar
+	Berut
+	Bitorianer
+	Bosniaken
+	Deshant
+	Kryoraner
+	Miramari
+	Nordaner
+	Phiori
+	Sjapamarain
+	Skalatianer
+	T'arada
+
+Paul Tosca http://paultosca.com/ :
+	Delarianer
+
+Peter König http://peterkonig.com/ :
+	Canovek
+	Einar
+	Pambuka
+
+Petr Nasirov http://5k3d.com/ :
+	B'war
+	Dougtaeks
+	Hazeti
+	Phorath
+
+Piotr Slomowicz http://www.piotrslomowicz.com/ : 
+	Eneraner
+	Malodaner
+
+Robin [Overflow] Marshall :
+	Adamanen
+
+Sebastien Sonet http://xxeb.net/ :
+	Bothasiori
+	Hungoma
+	Irdaner
+	Janaianer
+	Ta'ichu
+	Ventrakaner
+
+Steve Burke http://burkestudios.com/ :
+	Vikarmo
+
+Taehoon Oh http://www.taehoonoh.com/ :
+	Storgor
+	Vawdor
+	Vorgor	
+
+Tim Appleby http://badpolygon.com/ :
+	Brane
+	Kaetrophaten
+	Sevar
+
+Timur Baysal http://www.taron.de/ :
+	Arcasaner
+	Bafliden
+	Brac
+	Deritianer
+	Hanchac
+	Malingorr
+	Palan
+	Xyretier
+
+Tyler Breon http://tylerbreon.com/ :
+	Ba'a
+	Kraetumir
+	Yimandar
+
+
+
+
+User Interface Menüdesign:
+
+  Terranische Konföderation: Zunder
+  Hanuhr Handelsunion: Zunder (Baumenü und generelles Design), Malle (restliche Menüs aus Baumenüvorlage erstellt)
+  Khayrin Imperium: pd http://www.optisch-edel.de/fo/hbk/back2.jpg (Generelles Design und Stilelementvorlage geliefert), Malle (alle Menüs aus dieser Vorlage erstellt)
+  Rotharianischer Sternenverbund: Zunder
+  Cartarer Invasoren: nemesis5
+  Omega Allianz: magicmot
+
+
+Gebäudegrafiken:
+Jason Leader aka "ForeverZ": http://www.turbosquid.com/Search/Index.cfm/FuseAction/ProcessSmartSearch/istIncAuthor/ForeverZ/blAuthorExact/y
+	u.a. Künstler, siehe separate Creditsdatei im ../Graphics/Buildings/ Ordner!
+
+
+Truppengrafiken:
+  Sicherheitskräfte: http://www.turbosquid.com/3d-models/free-obj-mode-tank/314777
+  Miliz: Artur Grzegorczyn
+  Marines: Andrew Kincaid
+  Hanuhr Raketenmänner: http://www.turbosquid.com/3d-models/free-c4d-model-sci-fi-missile/257166
+  Khayrin Krieger: Magneto1969_Stock (deviantart.com)
+  Heckenschützen: Andrew Kincaid
+  Alpha Invasoren: Aaron (sharecg.com)
+  Invasionsstoßtrupp: Taehoon Oh
+  Da'unor Sniper: Arild Anfinnsen http://www.arildwiro.com/
+  Da'unor Trooper: Magneto1969_Stock (deviantart.com)
+
+
+Planetengrafiken:
+ Texturen und Renders:
+
+	NASA http://www.jpl.nasa.gov/
+	www.celestiamotherlode.net , namely Tom Wilson aka "Fungun": http://www.geocities.com/fungun/
+	http://www.spiralgraphics.biz/packs/planet/index.htm
+	Earth system: http://planetpixelemporium.com/planets.html
+	Freeorion.org (all images from there are licensed under Creative Commons, see their website for further details)
+	Piratentunte http://www.worldranking.de/newsflash/planeten_grafiken_243_148.html
+	Wolfgang Sigl http://www.whiskeysierragrafics.com/
+	Sir Pustekuchen
+	Yesterday or Tomorrow  http://www.yot-project.net
+	San Monku http://www.sanmonku.net/
+	Fallen_Warrior http://www.battleclinic.com/docks/dock.php?id=881#881
+	Photoshop Planetenusertutorials
+	SavageDragon (from sharecg.com)
+	Tethys
+	Malle
+
+  Von Deviantart.com Künstlern (Um zur jeweiligen Webseite des Künstlers dort zu gelangen, gehen Sie auf die deviantart.com Hauptseite und geben den betreffenden Namen unten in die dortige Suchmaske ein):
+
+	KaizokuBG
+	Fragile_stock
+	Parad1gm
+	Fune_Stock
+	Tigg_stock
+	Savage_Stock
+	moonfishing_stock
+	Bareck (Chris Emmons)
+	Qzma
+	WinterglowStock
+	Superiorgamer
+	tovasshiCC
+	bmjewell_stock
+	TerraSpaceStock
+	TTOCloud
+	s_Forge_Planet
+	JerichoPro
+	Hafunui
+	AKLP
+	GeoffJesterPemberton
+	SparkStudios
+	Somnicelestia
+	Parasky
+	XvendettashredX
+	Acridx
+	Amitabho
+	PanDeVida85
+	Andr0o
+	The__archer
+	Magneto1969_Stock
+
+  Bearbeitet von: Malle
+
+
+
+Sonnengrafiken (in der Systemview)
+	Star Trek Supremacy
+
+
+Rassenlogos:
+  Terraner:	Hawksmont: http://hawksmont.com/wp-content/uploads/2007/05/globe24.jpg
+  Hanuhr: 	Anders Sandberg: http://www.orionsarm.com/authors.html#AS
+  Khayrin: 	Netcades: http://www.netcades.com/learn/FuturisticWallpaper/images/Final2.gif
+  Rotharianer: 	snecx.com: http://www.photoshop-tutorials.biz/author/SNECX.com/
+  Cartarer: 	Wifislax 3.1: http://www.wifislax.com/index.php respectively http://www.photoshop-tutorials.biz/author/SNECX.com/
+  Omeganer: 	Andy: http://www.devcustoms.com/exposed-fossil-abstract.dev
+
+
+
+Event screens:
+	San Monku http://sanmonku.deviantart.com/art/Spaceship-86044999
+		Kolonisationsevent
+	Steve Kilby: http://wittswallpapers.com/Kilby/kilby.html
+		Blockade
+		Bombardment
+		Erster Kontakt mit einer anderen Rasse
+		Fehlgeschlagene Invasion
+		Erfolgreiche Invasion
+	eRe4s3r http://ere4s3r.deviantart.com/
+		Kampfmenühintergrund
+		Gameover (wenn verloren)
+		Majorrace ausgelöscht
+	matiiii http://matiiii.deviantart.com/art/Space-art-resource-psd-68887393
+		Siegevent (am Ende des Spiels)
+	NASA http://mt360.files.wordpress.com/2008/11/larger-hubble-image.jpg
+		Forschungsevent
+	
+
+
+Galaxiehintergründe:
+	Konföderation: Courtesy NASA/JPL-Caltech http://photojournal.jpl.nasa.gov/jpeg/PIA01322.jpg
+	Hanuhr: University of Colorado, University of Hawaii and NOAO/AURA/NSF http://www.noao.edu/image_gallery/html/im0849.html
+	Khayrin: Star Trek Supremacy fan game
+	Rotharianer: moonchilde-stock (deviantart.com) http://moonchilde-stock.deviantart.com/art/Heart-of-Fire-Nebula-Stock-100596152
+	Cartarer: NASA, H. Ford (JHU), G. Illingworth (UCSC/LO), M. Clampin (STScl), G. Hartig (STScl), the ACS Science Team and ESA, STScl-PRC02-11c http://teacherlink.ed.usu.edu/tlnasa/OtherPRINT/picture/OmegaNebulaM17.jpg
+	Omeganer: moonchilde-stock (deviantart.com) http://moonchilde-stock.deviantart.com/art/The-Maelstrom-Nebula-Stock-122555462
+
+
+Anomalien: (einige der folgenden Grafiken wurden von Sir Pustekuchen per Paint.NET aus dem Radioaktiven Nebel durch grafische Bearbeitung gewonnen)
+	Radioaktiver Nebel: Star Trek Supremacy http://startreksupremacy.com/ 
+	Neutronenstern: Star Trek Supremacy 
+	Quasar: Star Trek Supremacy
+	Radiopulsar: Star Trek Supremacy
+	Röntgenpulsar: Star Trek Supremacy
+	Biphasennebel: Star Trek Supremacy
+	Meatureanischer Nebel: Star Trek Supremacy
+	Magnetar: Star Trek Supremacy
+	Kontinuumriss: Star Trek Supremacy
+	Gravitationsverzerrung: Star Trek Supremacy
+	Ionensturm: Star Trek Supremacy
+	Deuteriumnebel: Star Trek Supremacy
+	Toriongasnebel: Star Trek Supremacy
+	Schwarzes Loch: NASA, Dana Berry / Skyworks Digital http://www.astronomie-heute.de/sixcms/media.php/976/Blackhole_1920.jpg
+	Wurmloch: NASA http://www.nasa.gov/centers/goddard/images/content/255402main_BlackHole_print.jpg
+	
+
+
+Symbole und Minigrafiken:
+  Kleine Ressourcen-Icons: 
+	nemesis5
+	YoT-project
+  Daumen-hoch Clipart im Kampfmenü:
+	egore http://www.openclipart.org/user-detail/egore
+  Taktiksymbole im Kampfmenü:
+	vjeko1701
+  Pokal im Imperienstatus-Menü:
+	jadedreflection http://jaded-reflection.deviantart.com/art/Cup-03-85716437
+  Truppensymbol in der Systemview und auf beladenen Transportern:
+	Josh http://www.freeorion.org/forum/viewtopic.php?f=10&t=2033
+  Tarnsymbol auf getarnten Schiffen:
+	Josh http://www.freeorion.org/forum/viewtopic.php?f=10&t=2033
+
+
+Einige Rassenbeschreibungen:
+	Jerron http://www.annor.de und http://www.weltenbastler.net
+
+
+--------------------------------------------------------------------
+
+
+Copyright by Sir Pustekuchen ©2004-2011

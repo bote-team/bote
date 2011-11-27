@@ -1,0 +1,84 @@
+MAJOR1:0:0:A desastrous act by enemy saboteurs caused the destruction of $number$ buildings type "$building$" in our $system$ system.
+MAJOR2:0:0:A desastrous act by enemy saboteurs caused the destruction of $number$ buildings type "$building$" in our $system$ system.
+MAJOR3:0:0:A desastrous act by enemy saboteurs caused the destruction of $number$ buildings type "$building$" in our $system$ system.
+MAJOR4:0:0:A desastrous act by enemy saboteurs caused the destruction of $number$ buildings type "$building$" in our $system$ system.
+MAJOR5:0:0:A desastrous act by enemy saboteurs caused the destruction of $number$ buildings type "$building$" in our $system$ system.
+MAJOR6:0:0:A desastrous act by enemy saboteurs caused the destruction of $number$ buildings type "$building$" in our $system$ system.
+MAJOR1:0:1:Our intelligence reports the loss of $credits$ Credits. No traces of theft could be found.
+MAJOR2:0:1:Our intelligence reports the loss of $credits$ Credits. No traces of theft could be found. This means our certain ruin!
+MAJOR3:0:1:Our intelligence reports the loss of $credits$ Credits. No traces of theft could be found.
+MAJOR4:0:1:The Taq'rhiar reports the loss of $credits$ Credits. No traces of theft could be found.
+MAJOR5:0:1:The Cartare Order reports the loss of $credits$ Credits. No traces of theft could be found.
+MAJOR6:0:1:Our intelligence reports the loss of $credits$ Credits. No traces of theft could be found.
+MAJOR1:0:2:Poisoned food has been reported from the $system$ system. The number of people deceased in the incident amounts to $number$ billion.
+MAJOR2:0:2:Poisoned food has been reported from the $system$ system. The number of people deceased in the incident amounts to $number$ billion.
+MAJOR3:0:2:Poisoned food has been reported from the $system$ system. The number of people deceased in the incident amounts to $number$ billion.
+MAJOR4:0:2:Poisoned food has been reported from the $system$ system. The number of people deceased in the incident amounts to $number$ billion.
+MAJOR5:0:2:Poisoned food has been reported from the $system$ system. The number of people deceased in the incident amounts to $number$ billion.
+MAJOR6:0:2:Poisoned food has been reported from the $system$ system. The number of people deceased in the incident amounts to $number$ billion.
+MAJOR1:1:0:A devastating act by enemy saboteurs led to the destruction of $number$ buildings type "$building$" in our $system$ system.
+MAJOR2:1:0:A devastating act by enemy saboteurs led to the destruction of $number$ buildings type "$building$" in our $system$ system.
+MAJOR3:1:0:A devastating act by enemy saboteurs led to the destruction of $number$ buildings type "$building$" in our $system$ system.
+MAJOR4:1:0:A devastating act by enemy saboteurs led to the destruction of $number$ buildings type "$building$" in our $system$ system.
+MAJOR5:1:0:A devastating act by enemy saboteurs led to the destruction of $number$ buildings type "$building$" in our $system$ system.
+MAJOR6:1:0:A devastating act by enemy saboteurs led to the destruction of $number$ buildings type "$building$" in our $system$ system.
+MAJOR1:1:1:Enemy spies have succeeded in gaining access to our latest scientific research data and stealing them. We can no longer access these files hence lost $FP$ of research points.
+MAJOR2:1:1:Enemy spies have succeeded in gaining access to our latest scientific research data and stealing them. We can no longer access these files hence lost $FP$ of research points.
+MAJOR3:1:1:Enemy spies have succeeded in gaining access to our latest scientific research data and stealing them. We can no longer access these files hence lost $FP$ of research points.
+MAJOR4:1:1:Enemy spies have succeeded in gaining access to our latest scientific research data and stealing them. We can no longer access these files hence lost $FP$ of research points.
+MAJOR5:1:1:Enemy spies have succeeded in gaining access to our latest scientific research data and stealing them. We can no longer access these files hence lost $FP$ of research points.
+MAJOR6:1:1:Enemy spies have succeeded in gaining access to our latest scientific research data and stealing them. We can no longer access these files hence lost $FP$ of research points.
+MAJOR1:1:2:Foreign agents managed to sabotage one of our higher-profile experiments in the field of $techtype$. All data acquired up to the incident have been lost completely.
+MAJOR2:1:2:Foreign agents managed to sabotage one of our higher-profile experiments in the field of $techtype$. All data acquired up to the incident have been lost completely.
+MAJOR3:1:2:Foreign agents managed to sabotage one of our higher-profile experiments in the field of $techtype$. All data acquired up to the incident have been lost completely.
+MAJOR4:1:2:Foreign agents managed to sabotage one of our higher-profile experiments in the field of $techtype$. All data acquired up to the incident have been lost completely.
+MAJOR5:1:2:Foreign agents managed to sabotage one of our higher-profile experiments in the field of $techtype$. All data acquired up to the incident have been lost completely.
+MAJOR6:1:2:Foreign agents managed to sabotage one of our higher-profile experiments in the field of $techtype$. All data acquired up to the incident have been lost completely.
+MAJOR1:2:0:Enemy saboteurs destroyed $number$ buildings type "$building$" in our $system$ system.
+MAJOR2:2:0:Enemy saboteurs destroyed $number$ buildings type "$building$" in our $system$ system.
+MAJOR3:2:0:Enemy saboteurs destroyed $number$ buildings type "$building$" in our $system$ system.
+MAJOR4:2:0:Enemy saboteurs destroyed $number$ buildings type "$building$" in our $system$ system.
+MAJOR5:2:0:Enemy saboteurs destroyed $number$ buildings type "$building$" in our $system$ system.
+MAJOR6:2:0:Enemy saboteurs destroyed $number$ buildings type "$building$" in our $system$ system.
+MAJOR1:2:1:An intelligence report just arrived about enemy agents having deposited large amounts of radioactive material in the $system$ system. According to our current intel we must mourn the loss of $number$ $troop$ on site.
+MAJOR2:2:1:An intelligence report just arrived about enemy agents having deposited large amounts of radioactive material in the $system$ system. According to our current intel we must mourn the loss of $number$ $troop$ on site.
+MAJOR3:2:1:An intelligence report just arrived about enemy agents having deposited large amounts of radioactive material in the $system$ system. According to our current intel we must mourn the loss of $number$ $troop$ on site.
+MAJOR4:2:1:An intelligence report from the Taq'rhiar just arrived about enemy agents having deposited large amounts of radioactive material in the $system$ system. According to our current intel we must mourn the loss of $number$ $troop$ on site.
+MAJOR5:2:1:An intelligence report from the Cartare Order just arrived about enemy agents having deposited large amounts of radioactive material in the $system$ system. According to our current intel we must mourn the loss of $number$ $troop$ on site.
+MAJOR6:2:1:An intelligence report just arrived about enemy agents having deposited large amounts of radioactive material in the $system$ system. According to our current intel we must mourn the loss of $number$ $troop$ on site.
+MAJOR1:2:2:Enemy saboteurs managed to detonate a $ship$ in the $system$ system.
+MAJOR2:2:2:Enemy saboteurs managed to detonate a $ship$ in the $system$ system.
+MAJOR3:2:2:Enemy saboteurs managed to detonate a $ship$ in the $system$ system.
+MAJOR4:2:2:Enemy saboteurs managed to detonate a $ship$ in the $system$ system.
+MAJOR5:2:2:Enemy saboteurs managed to detonate a $ship$ in the $system$ system.
+MAJOR6:2:2:Enemy saboteurs managed to detonate a $ship$ in the $system$ system.
+MAJOR1:2:3:Enemy agents were able to take over the control of one of our ship in the $system$-sector. This $ship$ is no longer on our scanners.
+MAJOR2:2:3:Enemy agents were able to take over the control of one of our ship in the $system$-sector. This $ship$ is no longer on our scanners.
+MAJOR3:2:3:Enemy agents were able to take over the control of one of our ship in the $system$-sector. This $ship$ is no longer on our scanners.
+MAJOR4:2:3:Enemy agents were able to take over the control of one of our ship in the $system$-sector. This $ship$ is no longer on our scanners.
+MAJOR5:2:3:Enemy agents were able to take over the control of one of our ship in the $system$-sector. This $ship$ is no longer on our scanners.
+MAJOR6:2:3:Enemy agents were able to take over the control of one of our ship in the $system$-sector. This $ship$ is no longer on our scanners.
+MAJOR1:2:4:It appears from our intelligence reports that the explosives were kept hidden on a ship in the $system$ sector. We were able to remove large parts of it before the ignition so that only light hull damage had occured.
+MAJOR2:2:4:It appears from our intelligence reports that the explosives were kept hidden on a ship in the $system$ sector. We were able to remove large parts of it before the ignition so that only light hull damage had occured.
+MAJOR3:2:4:It appears from our intelligence reports that the explosives were kept hidden on a ship in the $system$ sector. We were able to remove large parts of it before the ignition so that only light hull damage had occured.
+MAJOR4:2:4:It appears from the Taq'rhiar report that the explosives were kept hidden on a ship in the $system$ sector. We were able to remove large parts of it before the ignition so that only light hull damage had occured.
+MAJOR5:2:4:It appears from the report of the Cartare Order that the explosives were kept hidden on a ship in the $system$ sector. We were able to remove large parts of it before the ignition so that only light hull damage had occured.
+MAJOR6:2:4:It appears from our intelligence reports that the explosives were kept hidden on a ship in the $system$ sector. We were able to remove large parts of it before the ignition so that only light hull damage had occured.
+MAJOR1:3:0:Our relations with the $race$ have improved in the last period of time. Any particuliar reason could not be made out.
+MAJOR2:3:0:Our relations with the $race$ have improved in the last period of time. Any particuliar reason could not be made out.
+MAJOR3:3:0:Our relations with the $race$ have improved in the last period of time. Any particuliar reason could not be made out.
+MAJOR4:3:0:Our relations with the $race$ have improved in the last period of time. Any particuliar reason could not be made out.
+MAJOR5:3:0:Our relations with the $race$ have improved in the last period of time. Any particuliar reason could not be made out.
+MAJOR6:3:0:Our relations with the $race$ have improved in the last period of time. Any particuliar reason could not be made out.
+MAJOR1:3:1:A propaganda strike by enemy intel against our institution ends in deteoration of our relations with the $major$.
+MAJOR2:3:1:A propaganda strike by enemy intel against our institution ends in deteoration of our relations with the $major$.
+MAJOR3:3:1:A propaganda strike by enemy intel against our institution ends in deteoration of our relations with the $major$.
+MAJOR4:3:1:A propaganda strike by enemy intel against our institution ends in deteoration of our relations with the $major$.
+MAJOR5:3:1:A propaganda strike by enemy intel against our institution ends in deteoration of our relations with the $major$.
+MAJOR6:3:1:A propaganda strike by enemy intel against our institution ends in deteoration of our relations with the $major$.
+MAJOR1:3:3:Falsified information spread around among the $minor$ negatively affected our relationship with them.
+MAJOR2:3:3:Falsified information spread around among the $minor$ negatively affected our relationship with them.
+MAJOR3:3:3:Falsified information spread around among the $minor$ negatively affected our relationship with them.
+MAJOR4:3:3:Falsified information spread around among the $minor$ negatively affected our relationship with them.
+MAJOR5:3:3:Falsified information spread around among the $minor$ negatively affected our relationship with them.
+MAJOR6:3:3:Falsified information spread around among the $minor$ negatively affected our relationship with them.
