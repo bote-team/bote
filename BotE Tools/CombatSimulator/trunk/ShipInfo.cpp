@@ -32,7 +32,7 @@ CShipInfo::CShipInfo(const CShipInfo & rhs) : CShip(rhs)
 {	
 	m_iRace = rhs.m_iRace;					
 	// nötige Forschung
-	m_iBioTech = rhs.m_iBioTech;
+	m_iBioTech = rhs.m_iBioTech; 
 	m_iEnergyTech = rhs.m_iEnergyTech;
 	m_iCompTech = rhs.m_iCompTech;
 	m_iPropulsionTech = rhs.m_iPropulsionTech;

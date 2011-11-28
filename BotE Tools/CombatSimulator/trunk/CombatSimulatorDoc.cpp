@@ -2,6 +2,7 @@
 //
 
 #include "stdafx.h"
+
 #include "CombatSimulator.h"
 
 #include "CombatSimulatorDoc.h"
@@ -29,6 +30,10 @@ CCombatSimulatorDoc::CCombatSimulatorDoc()
 
 CCombatSimulatorDoc::~CCombatSimulatorDoc()
 {
+	for (int q = 0; q < combat.m_CS.GetSize(); q++)
+	{
+		combat.m_CS.GetAt(q)->GetBulletParent()->drop();
+	}
 	m_ShipArray.RemoveAll();
 	m_ShipInfoArray.RemoveAll();
 	combat.Reset();

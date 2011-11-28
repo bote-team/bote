@@ -23,7 +23,11 @@ CCombatShip::CCombatShip(void)
 }
 
 CCombatShip::~CCombatShip(void)
-{	
+{
+
+	p_BulletParent->removeAll();
+
+	p_BulletParent->drop();
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -229,13 +233,27 @@ void CCombatShip::CalcRoute(const vec3i& ptTarget, int nMinDistance/* = 0*/)
 // Diese Funktion setzt das Schiff auf den nächsten Punkt seiner vorher berechneten Flugroute.
 void CCombatShip::GotoNextPosition()
 {
+	vec3i targetRoute;
 	// Wenn wir schon eine Route berechnet haben, dann nur auf den nächsten Punkt in der Route gehen
 	if (m_lRoute.size())
 	{
 		m_KO = m_lRoute.front();
 		// Routeneintrag entfernen
+		targetRoute = m_lRoute.back();
 		m_lRoute.pop_front();
+		
 	}
+	//fliege zur nächsten Position
+	
+	const vector3df toTarget(m_pNode->getAbsolutePosition() - vector3df(targetRoute.x,targetRoute.y,targetRoute.z)); 
+	const vector3df requiredRotation = toTarget.getHorizontalAngle(); 
+
+//	m_pNode->addAnimator(p_smgr->createRotationAnimator(vector3df(m_pNode->getAbsolutePosition().X - m_KO.x,m_pNode->getAbsolutePosition().Y - m_KO.y,m_pNode->getAbsolutePosition().Z -m_KO.z)));
+	m_pNode->addAnimator(p_smgr->createFlyStraightAnimator(m_pNode->getAbsolutePosition(),vector3df(m_KO.x,m_KO.y,m_KO.z),false,false));
+	m_pNode->setRotation(requiredRotation + vector3df(90,-90,0) );
+
+	//und aktualiesre die Textausgabe über dem Schiff
+	updateInfoString();
 }
 
 // Diese Funktion führt einen Beamangriff gegen das Ziel durch, welches in der Variablen <code>m_pTarget<code>
@@ -297,7 +315,26 @@ CPoint CCombatShip::AttackEnemyWithBeam(const CPoint& beamStart)
 								// Dies bedeutet, das wir kein Ziel mehr haben und uns ein neues suchen müssen. Bei der aktuellen
 								// Nummer des Beams geht dann die Berechnung weiter
 								if (m_pTarget->m_pShip->GetHull()->GetCurrentHull() == 0)
-									return CPoint(i, nBeamRay);								
+									return CPoint(i, nBeamRay);	
+								//Erstelle einen neuen Laserbeam
+								CBeamNode* beam = new CBeamNode(p_BulletParent, p_smgr, -1, "media\\LaserBeam.bmp", "media\\LaserBeam.bmp" );
+								//now set the beam
+								IBillboardSceneNode* glow = p_smgr->addBillboardSceneNode(beam, dimension2df(2.0f, 2.0f), vector3df(m_pTarget->m_KO.x,m_pTarget->m_KO.y,m_pTarget->m_KO.z));
+								               // Apply texture to Billboard, taken from glow texture name
+								IVideoDriver* d = p_smgr->getVideoDriver();
+								glow->setMaterialTexture(0 ,d->getTexture("media\\Kling_Glow.png"));
+								// Set material flag
+								glow->setMaterialFlag(EMF_LIGHTING , false);
+								// Set material type
+								glow->setMaterialType(EMT_TRANSPARENT_ADD_COLOR);
+		
+								// Set culling to off
+								glow->setAutomaticCulling(EAC_OFF);
+
+								beam->setLine(m_pNode->getAbsolutePosition(), vector3df(m_pTarget->m_KO.x,m_pTarget->m_KO.y,m_pTarget->m_KO.z), 0.5f);
+								beam->render();
+								//und löschen
+								beam->drop();
 							}
 							// bei der nächsten Waffe kann wieder mit dem ersten Strahl geschossen werden
 							nBeamRay = 0;
@@ -377,6 +414,7 @@ CPoint CCombatShip::AttackEnemyWithTorpedo(std::list<CTorpedo*>* pCT, const CPoi
 								//	+ m_pTarget->m_pShip->GetHull()->GetCurrentHull()) * 1.5))
 								//	return CPoint(i,n);
 								damage += FireTorpedo(pCT, i, targetKO, boni);					
+
 							}
 
 							//CString s;
@@ -723,7 +761,12 @@ UINT CCombatShip::FireTorpedo(std::list<CTorpedo*>* pCT, int torpedoWeapon, cons
 	m_bShootCloaked = TRUE;
 	m_Fire.torpedo[torpedoWeapon] = m_pShip->GetTorpedoWeapons()->GetAt(torpedoWeapon).GetTupeFirerate();
 	// Soviele Torpedos dem Feld zufügen wie wir mit einem Mal mit dem Launcher verschießen
-	CTorpedo *torpedo = new CTorpedo();;
+	CTorpedo *torpedo = new CTorpedo();
+	ISceneNode* node = p_smgr->addSphereSceneNode(5.0F,16,0,-1,m_pNode->getAbsolutePosition(),vector3df(0,0,0),vector3df(5,0,0));
+	node->setScale(vector3df(0.2f,0.2f,0.2f));
+	node->setMaterialFlag(EMF_LIGHTING, false);
+	torpedo->SetSceneManager(p_smgr);
+	torpedo->SetNode(node);
 	torpedo->m_TargetKO = targetKO;
 	torpedo->m_iNumber = m_pShip->GetTorpedoWeapons()->GetAt(torpedoWeapon).GetNumber();					
 	torpedo->m_KO = m_KO;
@@ -737,3 +780,35 @@ UINT CCombatShip::FireTorpedo(std::list<CTorpedo*>* pCT, int torpedoWeapon, cons
 	
 	return torpedo->m_iPower * torpedo->m_iNumber;	
 }
+
+void CCombatShip::updateInfoString()
+{
+	
+	//Baue String mit den notwendigen Infos zusammen
+	CString s;
+	s.Format("%s", m_pShip->GetShipClass());
+	if (m_byCloak > 0)
+		s += "(c)";
+	CString life;
+	life.Format(" %.0lf%%/%.0lf%%\n", SHIELDS, LIFE);
+	s += life;
+	CString scal;
+	scal.Format("%.0lf°", SCAL);
+	s += scal;
+	//hole das Textfeld welches ein Kind des SceneNode ist
+	irr::core::list<ISceneNode*> childs = m_pNode->getChildren();
+	irr::core::list<ISceneNode*>::Iterator it = childs.begin();
+	//Konvertiere in einen WCHAR*
+	LPWSTR lpszW = new WCHAR[255];
+
+	LPTSTR lpStr = s.GetBuffer( s.GetLength() );
+	int nLen = MultiByteToWideChar(CP_ACP, 0,lpStr, -1, NULL, NULL);
+	MultiByteToWideChar(CP_ACP, 0, lpStr, -1, lpszW, nLen);
+	//und schreiben
+	((ITextSceneNode*)(*it))->setText(lpszW);
+	delete lpszW;
+}
+
+
+ 
+

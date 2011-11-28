@@ -12,6 +12,8 @@ CTorpedo::CTorpedo(void)
 
 CTorpedo::~CTorpedo(void)
 {
+	p_node->removeAll();			
+	p_node->setVisible(false);
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -32,6 +34,8 @@ CTorpedo::CTorpedo(const CTorpedo &rhs)
 	m_sOwner = rhs.m_sOwner;
 	m_iModi = rhs.m_iModi;
 	m_byManeuverability = rhs.m_byManeuverability;
+
+
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -122,7 +126,12 @@ BOOLEAN CTorpedo::Fly(CArray<CCombatShip*,CCombatShip*>* CS)
 		// Wenn m_iNumber gleich NULL ist, dann gibt es hier keine Torpedos mehr und wir können ein TRUE zurückgeben.
 		// Dieses TRUE veranlaßt, dass dieses Torpedoobjekt zerstört wird
 		if (m_iNumber == NULL)
+		{
+
+		//	p_node->drop();
+
 			return TRUE;
+		}
 		// Die restlichen Torpedos fliegen ganz normal auf ihrer Bahn weiter, so als hätten sie kein Ziel auf dieser
 		// Bahn gehabt
 		else
@@ -235,7 +244,7 @@ BOOLEAN CTorpedo::FlyToNextPosition()
 	short speed = TORPEDOSPEED;
 	if (speed > distance)
 		speed = (short)distance;
-	
+
 	float multi = (float)speed / (float)distance;
 	vec3i temp = b - a;
 	// Runden durch floor und +0.5

@@ -13,13 +13,11 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// German (Germany) resources
+// Deutsch (Deutschland) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_DEU)
-#ifdef _WIN32
 LANGUAGE LANG_GERMAN, SUBLANG_GERMAN
 #pragma code_page(1252)
-#endif //_WIN32
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -66,7 +64,6 @@ END
 // remains consistent on all systems.
 IDR_MAINFRAME           ICON                    "res\\CombatSimulator.ico"
 IDR_CombatSimulatorTYPE ICON                    "res\\CombatSimulatorDoc.ico"
-IDI_ICON1               ICON                    "F:\\C++\\Projekte\\BotE Projekt\\BotE Source\\BotE_Work\\res\\BOTE.ico"
 IDI_ICON2               ICON                    "res\\icon2.ico"
 
 /////////////////////////////////////////////////////////////////////////////
@@ -81,7 +78,7 @@ IDR_MAINFRAME           BITMAP                  "res\\Toolbar.bmp"
 // Toolbar
 //
 
-IDR_MAINFRAME TOOLBAR  16, 15
+IDR_MAINFRAME TOOLBAR 16, 15
 BEGIN
     BUTTON      ID_FILE_NEW
     BUTTON      ID_FILE_OPEN
@@ -101,7 +98,7 @@ END
 // Menu
 //
 
-IDR_MAINFRAME MENU 
+IDR_MAINFRAME MENU
 BEGIN
     POPUP "&File"
     BEGIN
@@ -121,7 +118,7 @@ END
 // Accelerator
 //
 
-IDR_MAINFRAME ACCELERATORS 
+IDR_MAINFRAME ACCELERATORS
 BEGIN
     "N",            ID_FILE_NEW,            VIRTKEY, CONTROL
     "O",            ID_FILE_OPEN,           VIRTKEY, CONTROL
@@ -145,12 +142,11 @@ END
 //
 
 IDD_ABOUTBOX DIALOGEX 0, 0, 194, 54
-STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Info über CombatSimulator"
+STYLE DS_SETFONT | WS_POPUP | WS_SYSMENU
 FONT 9, "Microsoft Sans Serif", 400, 0, 0x0
 BEGIN
     LTEXT           "BotE Combat Simulator for Alpha 6",IDC_STATIC,7,7,180,8,SS_NOPREFIX
-    LTEXT           "Copyright (C) 2008-2011\nby Sir Pustekuchen",IDC_STATIC,7,29,140,18
+    LTEXT           "Copyright (C) 2008-2011\nby Sir Pustekuchen && Plotnik",IDC_STATIC,7,29,140,18
     DEFPUSHBUTTON   "OK",IDOK,137,31,50,16,WS_GROUP
 END
 
@@ -161,8 +157,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 0,8,0,0
- PRODUCTVERSION 0,8,0,0
+ FILEVERSION 0,0,3,0
+ PRODUCTVERSION 0,0,3,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -179,12 +175,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "Birth of the Empires"
             VALUE "FileDescription", "BotE CombatSimulator"
-            VALUE "FileVersion", "0.8"
+            VALUE "FileVersion", "0.0.3.0"
             VALUE "InternalName", "CombatSimulator.exe"
-            VALUE "LegalCopyright", "(C) 2006-2011 Sir Pustekuchen - Alle Rechte vorbehalten."
+            VALUE "LegalCopyright", "(C) 2006-2011 Sir Pustekuchen & Plotnik- Alle Rechte vorbehalten."
             VALUE "OriginalFilename", "CombatSimulator.exe"
             VALUE "ProductName", "CombatSimulator"
-            VALUE "ProductVersion", "0.8"
+            VALUE "ProductVersion", "0.0.3.0"
         END
     END
     BLOCK "VarFileInfo"
@@ -200,7 +196,7 @@ END
 //
 
 #ifdef APSTUDIO_INVOKED
-GUIDELINES DESIGNINFO 
+GUIDELINES DESIGNINFO
 BEGIN
     IDD_ABOUTBOX, DIALOG
     BEGIN
@@ -218,18 +214,18 @@ END
 // String Table
 //
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDR_MAINFRAME           "CombatSimulator\n\nCombatSimulator\n\n\nCombatSimulator.Document\nCombatSimulator.Document"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     AFX_IDS_APP_TITLE       "CombatSimulator"
     AFX_IDS_IDLEMESSAGE     "Bereit"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     ID_INDICATOR_EXT        "EXT"
     ID_INDICATOR_CAPS       "CAP"
@@ -239,7 +235,7 @@ BEGIN
     ID_INDICATOR_REC        "MA"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     ID_FILE_NEW             "Erstellt ein neues Dokument.\nNeu"
     ID_FILE_OPEN            "Öffnet ein vorhandenes Dokument.\nÖffnen"
@@ -248,13 +244,13 @@ BEGIN
     ID_FILE_SAVE_AS         "Speichert das aktive Dokument unter einem neuem Namen.\nSpeichern unter"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     ID_APP_ABOUT            "Zeigt Programm-, Versions- und Copyrightinformationen an.\nInfo"
     ID_APP_EXIT             "Beendet die Anwendung und fordert zum Speichern der Dokumente auf.\nBeenden"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     ID_FILE_MRU_FILE1       "Öffnet das Dokument."
     ID_FILE_MRU_FILE2       "Öffnet das Dokument."
@@ -274,18 +270,18 @@ BEGIN
     ID_FILE_MRU_FILE16      "Öffnet das Dokument."
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     ID_NEXT_PANE            "Wechselt zum nächsten Fensterbereich.\nNächster Bereich"
     ID_PREV_PANE            "Wechselt zum vorherigen Fensterbereich.\nVorheriger Bereich"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     ID_WINDOW_SPLIT         "Teilt das aktive Fenster in Bereiche.\nTeilen"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     ID_EDIT_CLEAR           "Löscht die Auswahl.\nLöschen"
     ID_EDIT_CLEAR_ALL       "Löscht alles.\nAlles löschen"
@@ -300,12 +296,12 @@ BEGIN
     ID_EDIT_REDO            "Wiederholt den zuletzt rückgängig gemachten Vorgang.\nWiederherstellen"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     ID_VIEW_TOOLBAR         "Blendet die Symbolleiste ein oder aus.\nSymbolleiste"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     AFX_IDS_SCSIZE          "Ändert die Fenstergröße."
     AFX_IDS_SCMOVE          "Ändert die Position des Fensters."
@@ -316,13 +312,13 @@ BEGIN
     AFX_IDS_SCCLOSE         "Schließt das aktive Fenster und fordert zum Speichern des Dokuments auf."
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     AFX_IDS_SCRESTORE       "Stellt die ursprüngliche Fenstergröße wieder her."
     AFX_IDS_SCTASKLIST      "Aktiviert die Taskliste."
 END
 
-#endif    // German (Germany) resources
+#endif    // Deutsch (Deutschland) resources
 /////////////////////////////////////////////////////////////////////////////
 
 

@@ -8,6 +8,19 @@
 #pragma once
 #include "Vec3.h"
 
+
+#include <irrlicht.h>
+
+using namespace irr;
+
+
+using namespace core;
+using namespace scene;
+using namespace video;
+using namespace io;
+using namespace gui;
+
+
 class CCombatShip;
 class CTorpedo : public CObject
 {
@@ -26,6 +39,19 @@ public:
 	
 	/// Zuweisungsoperatur
 	CTorpedo & operator=(const CTorpedo &);
+
+	/// Gebe Szenenmanager zurück
+	ISceneManager* GetSceneManager() const {return p_smgr;};
+	/// Gebe Node für Torpedo zurück
+	ISceneNode* GetNode() const {return p_node;};
+
+	///Setze Sezemanager
+	void SetSceneManager(ISceneManager* smgr) {	p_smgr = smgr;};
+
+	///Setze Node für Torpedo
+	void SetNode(ISceneNode* node) {p_node = node;};
+	
+	
 
 	/**
 	* Funktion berechnet die Flugbahn des Torpedos und macht die Kollisionsabfrage mit allen anderen Schiffen
@@ -62,6 +88,10 @@ private:
 
 	/// Die Manövriebarkeit des Schiffes, welches den Torepdo abgefeuert hat
 	BYTE m_byManeuverability;
+
+	/// Szenenmanager 
+	ISceneManager* p_smgr;	
+	ISceneNode* p_node;
 
 	/**
 	* Trefferwahrscheinlichkeit des Torepdowerfers + Zielgenauigkeit durch Erfahrung der Mannschaft des Schiffes,

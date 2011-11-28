@@ -15,12 +15,24 @@
 #if _MSC_VER > 1000
 #pragma once
 #endif // _MSC_VER > 1000
+
+#include <irrlicht.h>
+
+using namespace irr;
+
+
+using namespace core;
+using namespace scene;
+using namespace video;
+using namespace io;
+using namespace gui;
+
+
 #include "Options.h"
 #include "TorpedoWeapons.h"
 #include "BeamWeapons.h"
 #include "Shield.h"
 #include "Hull.h"
-
 // forward declaration
 class CFleet;
 class CGraphicPool;
@@ -54,6 +66,10 @@ public:
 	CShield* GetShield(void) {return &m_Shield;}	
 	CArray<CTorpedoWeapons, CTorpedoWeapons>* GetTorpedoWeapons(void) {return &m_TorpedoWeapons;}
 	CArray<CBeamWeapons, CBeamWeapons>* GetBeamWeapons(void) {return &m_BeamWeapons;}
+
+		///Setze Node für Torpedo
+	void SetNode(ISceneNode* node) {p_node = node;};
+
 	
 	/// Funktion gibt die gesamte Offensivpower des Schiffes zurück, welches es in 100s anrichten würde. Dieser
 	/// Dieser Wert hat keinen direkten Kampfeinfluss, er ist nur zum Vergleich heranzuziehen.
@@ -98,6 +114,7 @@ public:
 	USHORT GetLoadedResources(BYTE res) const {return m_iLoadedResources[res];}
 	COMBAT_TACTICS GetCombatTactic() const {return m_nCombatTactic;}
 	bool IsNonCombat() const {return (m_iShipType == TRANSPORTER || m_iShipType == COLONYSHIP || m_iShipType == PROBE);}
+
 		
 	// zum Schreiben der Membervariablen
 	void SetID(USHORT ID) {m_iID = ID+10000;}
@@ -127,6 +144,8 @@ public:
 	void SetShipClass(const CString& ShipClass) {m_strShipClass = ShipClass;}
 	void SetIsShipFlagShip(BOOLEAN is) {m_bIsFlagShip = is;}
 	void SetCombatTactic(COMBAT_TACTICS nTactic) {m_nCombatTactic = nTactic;}
+
+
 	
 	// sonstige Funktionen
 	void CreateFleet();	// Bevor wir mit der Flotte arbeiten können muß diese erst created werden
@@ -176,6 +195,9 @@ private:
 	USHORT m_iLoadedResources[DERITIUM+1];	// Die geladenen Ressourcen auf dem Schiff
 	// Kampftaktik
 	COMBAT_TACTICS m_nCombatTactic;		///< Taktik des Schiffes im Kampf
+
+	ISceneNode* p_node;
+
 };
 
 typedef CArray<CShip, CShip> ShipArray;	// Das dynamische Feld wird vereinfacht als ShipArray angegeben

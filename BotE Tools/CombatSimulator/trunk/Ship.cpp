@@ -93,7 +93,7 @@ CShip::CShip(const CShip & rhs)
 	m_bIsFlagShip = rhs.m_bIsFlagShip;
 	m_bySpecial[0] = rhs.m_bySpecial[0];
 	m_bySpecial[1] = rhs.m_bySpecial[1];
-	m_nCombatTactic = rhs.m_nCombatTactic;
+	m_nCombatTactic = rhs.m_nCombatTactic;						
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -420,3 +420,4 @@ void CShip::SetCrewExperiance(int nAdd)
 	if (m_iShipType != PROBE)
 		m_iCrewExperiance = min(64000, m_iCrewExperiance + nAdd);
 }
+

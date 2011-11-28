@@ -10,13 +10,14 @@ vec3i GivePosition(BYTE pos, USHORT posNumber)
 	// eigentlich nie mehr als 6 Rassen teilnehmen
 	switch (pos%6)
 	{
-	case 0: p.x = 200 + posNumber*5;	break;
-	case 1: p.x = -200 - posNumber*5;	break;
-	case 2: p.y = 200 + posNumber*5;	break;
-	case 3: p.y = -200 - posNumber*5;	break;
-	case 4: p.z = 200 + posNumber*5;	break;
-	case 5: p.z = -200 - posNumber*5;	break;	
+	case 0: p.x = 200 + posNumber*5;  break;
+	case 1: p.x = -200 - posNumber*5; 	break;
+	case 2: p.y = 200 + posNumber*5; 	break;
+	case 3: p.y = -200 - posNumber*5; 	break;
+	case 4: p.z = 200 + posNumber*5; 	break;
+	case 5: p.z = -200 - posNumber*5; 	break;	
 	}
+	
 	return p;
 }
 
@@ -109,6 +110,7 @@ void CCombat::PreCombatCalculation()
 
 			// Schiffsposition zuweisen
 			m_CS.GetAt(i)->m_KO = GivePosition(nRacePos, nShipPos++);
+			m_CS.GetAt(i)->m_Race = nRacePos;
 
 			/*
 			// Wenn das Schiff den Rückzugsbefehl hat, aber keine Speed oder keine Manövrierfähigkeit,
@@ -321,7 +323,7 @@ void CCombat::CalculateCombat(std::map<CString, BYTE>& winner)
 		}
 		
 		// Das Torpedofeld durchgehen und deren Flug berechnen
-		for (list<CTorpedo*>::iterator it = m_CT.begin(); it != m_CT.end(); )
+		for (std::list<CTorpedo*>::iterator it = m_CT.begin(); it != m_CT.end(); )
 		{
 			CTorpedo* pTorpedo = *it;
 			if (pTorpedo->Fly(&m_CS) == TRUE)
@@ -516,7 +518,7 @@ bool CCombat::CheckShipStayInCombat(int i)
 		}
 
 		// Dieses Schiff aus allen Enemy-Maps aller Kampfbeteiligten entfernen
-		for (map<CString, vector<CCombatShip*> >::iterator it = m_mEnemies.begin(); it != m_mEnemies.end(); ++it)
+		for (std::map<CString, vector<CCombatShip*> >::iterator it = m_mEnemies.begin(); it != m_mEnemies.end(); ++it)
 		{
 			// ist dieses Schiff im Vektor?
 			vector<CCombatShip*>* vVec = &it->second;
@@ -527,7 +529,7 @@ bool CCombat::CheckShipStayInCombat(int i)
 					break;
 				}
 		}
-
+		pCombatShip->hideShip();
 		return false;
 	}
 	
@@ -544,7 +546,7 @@ void CCombat::Reset()
 	m_InvolvedShips.RemoveAll();
 
 	m_CS.RemoveAll();
-	for (list<CTorpedo*>::iterator it = m_CT.begin(); it != m_CT.end(); ++it)
+	for (std::list<CTorpedo*>::iterator it = m_CT.begin(); it != m_CT.end(); ++it)
 	{
 		delete *it;
 		*it = NULL;

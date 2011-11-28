@@ -19,7 +19,7 @@ public:
 	int SlowingSpeed;
 	CString race;
 	short repeat;
-	map<CString, int> wins;
+	std::map<CString, int> wins;
 // Vorgänge
 public:
 	void ApplyShipsAtStartup();

@@ -2,6 +2,7 @@
 //
 
 #include "stdafx.h"
+#include <irrlicht.h>
 #include "CombatSimulator.h"
 
 #include "MainFrm.h"
@@ -9,6 +10,8 @@
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
+
+
 
 
 // CMainFrame

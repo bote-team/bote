@@ -1,11 +1,24 @@
 /*
  *   Copyright (C)2004-2011 Sir Pustekuchen
  *
- *   Author   :  Sir Pustekuchen
+ *   Author   :  Sir Pustekuchen & Plotnik
  *   Home     :  http://birth-of-the-empires.de
  *
  */
 #pragma once
+#include <irrlicht.h>
+#include "BeamSceneNode.h"
+
+
+using namespace irr;
+
+
+using namespace core;
+using namespace scene;
+using namespace video;
+using namespace io;
+using namespace gui;
+
 #include "Ship.h"
 #include "Torpedo.h"
 #include <deque>
@@ -104,6 +117,29 @@ public:
 	/// @param arc Zeiger auf Schussfeld
 	/// @return Wahrheitswert
 	bool AllowFire(const CFireArc* arc);	
+
+	IMeshSceneNode* GetNode() const {return m_pNode;};
+
+	IMesh* GetMesh() const {return m_pMesh;};
+	ISceneManager* GetSceneManager() const {return p_smgr;};
+	int GetOrientationconst() const {return m_iOrientation;}
+	ISceneNode* GetBulletParent() const {return p_BulletParent;};
+	ITexture* GetTexture() const {return p_Texture;};
+	void hideShip(){m_pNode->setVisible(false);};
+
+	void SetTexture(ITexture* texture) { p_Texture = texture;};
+	void SetNode(IMeshSceneNode* node) {m_pNode = node;};
+	void SetMesh(IMesh* mesh)  {m_pMesh = mesh;};
+	void SetOrientation (int i_o)  {m_iOrientation = i_o;}
+
+	/// Diese Funktion setzt den Szenenmanager und erstellt einen Container für die Laserstahlen
+	/// @param beamWeapon smgr Pointer zum Szenenmanager
+	void SetSceneManager(ISceneManager* smgr) {
+    	// logical parent for the bullets
+			p_BulletParent = smgr->addEmptySceneNode();
+			if ( p_BulletParent )
+		p_BulletParent->setName ( "Bullet Container" );			
+		p_smgr = smgr;}
 	
 private:
 	// private Funktionen
@@ -183,6 +219,17 @@ private:
 
 	/// Beim Rückzugbefehl muss dieser Counter runtergezählt sein
 	BYTE m_byRetreatCounter;
+
+	IMeshSceneNode* m_pNode;		    // Animation Schiffsmodell 
+	IMesh* m_pMesh;						// Schiffsmodell
+	ISceneManager* p_smgr;				// Szenenmanager
+	int	m_iOrientation;					// Ausrichtung im 2D Raum (0 = Postitive X-Achse  360 Grad)
+	ISceneNode* p_BulletParent;			//Container für Laserbeams
+	ITexture* p_Texture;				//Die Textur
+	/// Der über den Schiff angezeigte Infosting wird aktualisiert.
+	void updateInfoString();
+
+	int m_Race;							//Num´mer der Rasse
 
 	float SCAL;
 	float LIFE;

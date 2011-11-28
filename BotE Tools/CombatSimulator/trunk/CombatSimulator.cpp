@@ -2,6 +2,16 @@
 //
 
 #include "stdafx.h"
+#include <irrlicht.h>
+using namespace irr;
+
+
+using namespace core;
+using namespace scene;
+using namespace video;
+using namespace io;
+using namespace gui;
+
 #include "CombatSimulator.h"
 #include "MainFrm.h"
 
@@ -11,6 +21,7 @@
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
+
 
 
 // CCombatSimulatorApp
@@ -55,15 +66,16 @@ BOOL CCombatSimulatorApp::InitInstance()
 	// Dokumentvorlagen der Anwendung registrieren. Dokumentvorlagen
 	//  dienen als Verbindung zwischen Dokumenten, Rahmenfenstern und Ansichten.
 	CSingleDocTemplate* pDocTemplate;
+	CRuntimeClass* pSimulatorView= RUNTIME_CLASS(CCombatSimulatorView);
 	pDocTemplate = new CSingleDocTemplate(
 		IDR_MAINFRAME,
 		RUNTIME_CLASS(CCombatSimulatorDoc),
 		RUNTIME_CLASS(CMainFrame),       // Haupt-SDI-Rahmenfenster
-		RUNTIME_CLASS(CCombatSimulatorView));
+		pSimulatorView);
 	if (!pDocTemplate)
 		return FALSE;
 	AddDocTemplate(pDocTemplate);
-
+	
 
 
 	// Befehlszeile auf Standardumgebungsbefehle überprüfen, DDE, Datei öffnen
@@ -78,7 +90,9 @@ BOOL CCombatSimulatorApp::InitInstance()
 
 	// Das einzige Fenster ist initialisiert und kann jetzt angezeigt und aktualisiert werden.
 	m_pMainWnd->ShowWindow(SW_SHOWMAXIMIZED);
+
 	m_pMainWnd->UpdateWindow();
+	//pDocTemplate->GetNextDoc()->
 	// Rufen Sie DragAcceptFiles nur auf, wenn eine Suffix vorhanden ist.
 	//  In einer SDI-Anwendung ist dies nach ProcessShellCommand erforderlich
 	return TRUE;
