@@ -2316,6 +2316,34 @@ Die Geschichte der Geburt unseres Imperiums ist nun zu Ende...
 [REACHED_GAMEPOINTS]
 erreichte Punktezahl:
 
+//Randomevents
+[SYSTEMEVENTMORALBOOST]
+Die Bewohner des § Systems feiern ihre großartige Regierung
+[SYSTEMEVENTMORALMALUS]
+Die Bewohner des § Systems verlieren das Vertrauen in ihre Regierung
+[SYSTEMEVENTPLANETMOVEMENT]
+Es fand eine Klimaveränderung auf § statt
+[SYSTEMEVENTPLANETDEMOGRAPHIC]
+Drastischer Demographischer Wandel auf §
+[SYSTEMEVENTPLANETDEMOGRAPHICTITEL]
+Demografischer Wandel
+[SYSTEMEVENTPLANETDEMOGRAPHICLONG]
+Durch Fehlkalkulationen ist die Sterberate auf § sehr viel höher als geplant, wodurch die Bevölkerung schrumpft
+[BREAKTHROUGH]
+Durchbruch
+[GLOBALEVENTRESEARCH]
+Durch neue Forschungs-Methoden verdoppelten eure Wissentschaftler kurzzeitig ihre Effektivität 
+[GLOBALEVENTMINOR]
+Regierungswechsel bei den §
+[ALIENTECHEADLINE]
+Alien-Artefakt gefunden
+[ALIENTEC]
+Im Sektor § wurde äußerst interessante Alientechnologie entdeckt
+[ALIENTECLONG]
+Im Sektor § wurde Alientechnologie entdeckt, die unsere Forschung in allen Gebieten vorranbringt
+[EVENTSHIPXP]
+Beim Erkunden von § hat die Crew viel Erfahrung gesammelt
+
 // Truppen
 [MAJOR1_TROOP1_NAME]
 Sicherheitskräfte

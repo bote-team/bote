@@ -2313,6 +2313,22 @@ The story of the birth of our empire has come to an end now...
 [REACHED_GAMEPOINTS]
 score achieved:
 
+//Randomevents
+[SYSTEMEVENTMORALBOOST]
+The citizens of § are proud about their gouvernment
+[SYSTEMEVENTMORALMALUS]
+The Citizens of § become unhappy
+[SYSTEMEVENTPLANETMOVEMENT]
+There was a climatic change on §
+[GLOBALEVENTRESEARCH]
+Your scientists are working very eficently
+[GLOBALEVENTMINOR]
+The gouvernment of the § changes
+[ALIENTEC]
+Alien technologie was found in §
+[EVENTSHIPXP]
+During the exploration of §, the crew gained extra experience
+
 // Troops
 [MAJOR1_TROOP1_NAME]
 Security forces

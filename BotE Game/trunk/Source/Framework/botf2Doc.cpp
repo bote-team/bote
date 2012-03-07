@@ -1452,7 +1452,11 @@ void CBotf2Doc::NextRound()
 		// Vielleicht baut die Rasse ein Raumschiff
 		pMinor->PerhapsBuildShip(this);
 	}
-	
+	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
+	{
+		CMajor* pMajor = it->second;
+		m_RandomEventManager.CalcEvents(pMajor);
+	};
 	this->CalcSystemAttack();
 	this->CalcIntelligence();
 	this->CalcResearch();
@@ -5047,6 +5051,8 @@ void CBotf2Doc::CalcShipMovement()
 				// Die Anzahl speed ersten Felder in Pfad des Schiffes löschen
 				if (nextKO == targetKO)
 					m_ShipArray[y].GetPath()->RemoveAll();
+				if ( !(this->GetSector(nextKO.x,nextKO.y).GetFullKnown(sRace))&&pRace != NULL && pRace->GetType() == MAJOR) //Berechnet Zufalls entdeckung in dem Sector den das Schiff anfliegt
+					m_RandomEventManager.CalcExploreEvent(CPoint((int)nextKO.x,(int)nextKO.y),(CMajor*)pRace,&m_ShipArray);
 				int high = speed;
 				while (high > 0 && high < m_ShipArray[y].GetPath()->GetSize())
 				{

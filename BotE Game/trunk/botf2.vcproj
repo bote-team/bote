@@ -463,6 +463,10 @@
 			<Filter
 				Name="Gamedata"
 				>
+				<File
+					RelativePath=".\Source\Gamedata\Remanager.cpp"
+					>
+				</File>
 				<Filter
 					Name="Events"
 					>
@@ -488,6 +492,10 @@
 					</File>
 					<File
 						RelativePath=".\Source\Gamedata\Events\EventRaceKilled.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Source\Gamedata\Events\EventRandom.cpp"
 						>
 					</File>
 					<File
@@ -1148,6 +1156,10 @@
 			<Filter
 				Name="Gamedata"
 				>
+				<File
+					RelativePath=".\Source\Gamedata\Remanager.h"
+					>
+				</File>
 				<Filter
 					Name="Events"
 					>
@@ -1173,6 +1185,10 @@
 					</File>
 					<File
 						RelativePath=".\Source\Gamedata\Events\EventRaceKilled.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Source\Gamedata\Events\EventRandom.h"
 						>
 					</File>
 					<File

@@ -9,6 +9,7 @@
 #include "General\Statistics.h"
 #include "General\Message.h"
 #include "Races\VictoryObserver.h"
+#include "Remanager.h"
 #include "System\GlobalBuildings.h"
 #include "System\GlobalStorage.h"
 #include "PeerData.h"
@@ -80,6 +81,8 @@ protected: // Nur aus Serialisierung erzeugen
 	CAIPrios*		 m_pAIPrios;		///< zusätzliche Priotitäten, welche für die System-KI-Berechnung benötigt werden
 
 	CVictoryObserver m_VictoryObserver;	///< Überwachung der Siegbedingungen
+
+	CReManager m_RandomEventManager;    ///< Berechnet Random Events
 	
 public:
 	// Operationen
