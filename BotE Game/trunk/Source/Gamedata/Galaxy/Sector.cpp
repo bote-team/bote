@@ -487,6 +487,7 @@ void CSector::CreatePlanets(const CString& sMajorID)
 		}
 		else
 		{
+			int nSizeCounter = 0;
 			// dreimal die Zufallsfunktion aufgerufen, damit die mittlere Planetenanzahl häufiger als ganz wenig oder
 			// sehr viele Planeten vorkommt.
 			short number = (rand()%8+1 + rand()%8+1 + rand()%8+1 + 1) / 3;
@@ -495,7 +496,20 @@ void CSector::CreatePlanets(const CString& sMajorID)
 			{
 				CPlanet planet;
 				zone = planet.Create(m_strSectorName, zone, i, GetMinorRace());
-				m_Planets.Add(planet);				
+				m_Planets.Add(planet);
+
+				// nicht zu viele große Planeten generieren, da diese dann nicht mehr
+				// in die View passen
+				
+				// kleine und mittlere Planeten zählen die Systemgrößte um 1 hoch
+				if (planet.GetSize() <= 1)
+					nSizeCounter += 1;
+				// alle anderen um 2
+				else
+					nSizeCounter += 2;
+				
+				if (nSizeCounter > 10)
+					break;
 			}
 		}
 	}
