@@ -412,6 +412,7 @@ void CEmpireMenuView::DrawEmpireSystemMenue(Graphics* g)
 					s = CResourceManager::GetString("REBELLIOUS");
 					fontBrush.SetColor(Color(255,0,0));
 				}
+				s.Format("%s (%d)",s,pDoc->GetSystem(KO.x,KO.y).GetMoral());//Wert hinzufügen
 				g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(270,140+j*25,130,25), &fontFormat, &fontBrush);
 				
 				// Nahrungsproduktion anzeigen
@@ -437,6 +438,11 @@ void CEmpireMenuView::DrawEmpireSystemMenue(Graphics* g)
 				int ip = pDoc->GetSystem(KO).GetProduction()->GetIndustryProd();
 				s.Format("%d",ip);
 				g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(580,140+j*25,100,25), &fontFormat, &fontBrush);
+
+				//Creditproduktionanzeigen
+				int cp = pDoc->GetSystem(KO).GetProduction()->GetCreditsProd();
+				s.Format("%d",cp);
+				g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(680,140+j*25,100,25), &fontFormat, &fontBrush);
 								
 				// Bauauftrag anzeigen inkl. Anzeige der noch nötigen Runden bis Bauauftrag fertig ist
 				short id = pDoc->GetSystem(KO).GetAssemblyList()->GetAssemblyListEntry(0);
@@ -513,7 +519,7 @@ void CEmpireMenuView::DrawEmpireSystemMenue(Graphics* g)
 				}
 
 				fontFormat.SetTrimming(StringTrimmingEllipsisCharacter);
-				g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(680,140+j*25,345,25), &fontFormat, &fontBrush);
+				g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(780,140+j*25,345,25), &fontFormat, &fontBrush);
 				fontFormat.SetTrimming(StringTrimmingNone);
 				fontBrush.SetColor(normalColor);
 			}
@@ -640,7 +646,8 @@ void CEmpireMenuView::DrawEmpireSystemMenue(Graphics* g)
 		g->DrawString(CResourceManager::GetString("FOOD").AllocSysString(), -1, &font, RectF(400,110,80,30), &fontFormat, &fontBrush);
 		g->DrawString(CResourceManager::GetString("STORAGE").AllocSysString(), -1, &font, RectF(480,110,100,30), &fontFormat, &fontBrush);
 		g->DrawString(CResourceManager::GetString("INDUSTRY").AllocSysString(), -1, &font, RectF(580,110,100,30), &fontFormat, &fontBrush);
-		g->DrawString(CResourceManager::GetString("JOB").AllocSysString(), -1, &font, RectF(680,110,345,30), &fontFormat, &fontBrush);
+		g->DrawString(CResourceManager::GetString("CREDITS").AllocSysString(), -1, &font, RectF(680,110,100,30), &fontFormat, &fontBrush);
+		g->DrawString(CResourceManager::GetString("JOB").AllocSysString(), -1, &font, RectF(780,110,345,30), &fontFormat, &fontBrush);
 	}
 	else if (m_iSystemSubMenue == EMPIREVIEW_SYSTEMS_RESOURCE)
 	{
