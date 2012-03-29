@@ -4,6 +4,7 @@
 
 #include "stdafx.h"
 #include "Starmap.h"
+#include "botf2Doc.h"
 #include "Galaxy\Sector.h"
 #include "Galaxy\Anomaly.h"
 #include <math.h>
@@ -16,7 +17,8 @@ static char THIS_FILE[]=__FILE__;
 
 
 // statische Variablen initialisieren
-double CStarmap::m_BadMapModifiers[STARMAP_SECTORS_HCOUNT][STARMAP_SECTORS_VCOUNT];
+double** CStarmap::m_BadMapModifiers=new double*[STARMAP_SECTORS_HCOUNT];//[STARMAP_SECTORS_HCOUNT][STARMAP_SECTORS_VCOUNT];
+
 
 /**
  * @return <code>-1</code> wenn <code>x &lt; 0</code>, <code>0</code> wenn <code>x == 0</code>, <code>1</code> wenn <code>x &gt; 0</code>
@@ -36,13 +38,28 @@ inline int sgn(int x)
 
 CStarmap::CStarmap(BOOL bAICalculation, char nAIRange) : m_bAICalculation(bAICalculation), m_nAIRange(nAIRange)
 {
+
+	m_BadMapModifiers=new double*[STARMAP_SECTORS_HCOUNT];
+	for(int i=0;i<STARMAP_SECTORS_HCOUNT;i++)
+		m_BadMapModifiers[i]=new double[STARMAP_SECTORS_VCOUNT];
+	for(int i=0;i<STARMAP_SECTORS_HCOUNT;i++)
+		for(int j=0;j<STARMAP_SECTORS_VCOUNT;j++)
+			m_BadMapModifiers[i][j]=0;
+
 	ASSERT(nAIRange >= SM_RANGE_FAR && nAIRange <= SM_RANGE_NEAR);
 
 	// KI Berechnung mal auf immer TRUE gestellt. So wird bei einer Spielerrasse auch berechnet, aber nicht angewandt
 	m_bAICalculation = TRUE;
 
 	// m_Range komplett mit RANGE_SPACE füllen
-	memset(m_Range, SM_RANGE_SPACE, STARMAP_SECTORS_HCOUNT * STARMAP_SECTORS_VCOUNT * sizeof(unsigned char));
+	m_Range=new unsigned char*[STARMAP_SECTORS_HCOUNT];
+	for(int i=0;i<STARMAP_SECTORS_HCOUNT;i++)
+		m_Range[i]=new unsigned char[STARMAP_SECTORS_VCOUNT];
+	for(int i=0;i<STARMAP_SECTORS_HCOUNT;i++)
+		for(int j=0;j<STARMAP_SECTORS_VCOUNT;j++)
+			m_Range[i][j]=SM_RANGE_SPACE;
+
+	//memset(m_Range, SM_RANGE_SPACE, STARMAP_SECTORS_HCOUNT * STARMAP_SECTORS_VCOUNT * sizeof(unsigned char));
 
 	// Standard-Rangemap
 	m_RangeMap.range = new unsigned char [49];
@@ -61,16 +78,77 @@ CStarmap::CStarmap(BOOL bAICalculation, char nAIRange) : m_bAICalculation(bAICal
 	memcpy(m_RangeMap.range, rangeMap, 49 * sizeof(unsigned char));
 
 	// Bewertungen für Sektoren initialisieren
-	memset(m_AINeighbourCount, 0, STARMAP_SECTORS_HCOUNT * STARMAP_SECTORS_VCOUNT * sizeof(unsigned char));
-	memset(m_AIRangePoints, 0, STARMAP_SECTORS_HCOUNT * STARMAP_SECTORS_VCOUNT * sizeof(short));
-	memset(m_AIConnectionPoints, 0, STARMAP_SECTORS_HCOUNT * STARMAP_SECTORS_VCOUNT * sizeof(short));
-	memset(m_AITargetPoints, 0, STARMAP_SECTORS_HCOUNT * STARMAP_SECTORS_VCOUNT * sizeof(short));
-	memset(m_AIBadPoints, 0, STARMAP_SECTORS_HCOUNT * STARMAP_SECTORS_VCOUNT * sizeof(short));
+	m_AINeighbourCount=new unsigned char*[STARMAP_SECTORS_HCOUNT];
+	for(int i=0;i<STARMAP_SECTORS_HCOUNT;i++)
+		m_AINeighbourCount[i]=new unsigned char[STARMAP_SECTORS_VCOUNT];
+	for(int i=0;i<STARMAP_SECTORS_HCOUNT;i++)
+		for(int j=0;j<STARMAP_SECTORS_VCOUNT;j++)
+			m_AINeighbourCount[i][j]=0;
+	//memset(m_AINeighbourCount, 0, STARMAP_SECTORS_HCOUNT * STARMAP_SECTORS_VCOUNT * sizeof(unsigned char));
+
+	m_AIRangePoints=new short*[STARMAP_SECTORS_HCOUNT];
+	for(int i=0;i<STARMAP_SECTORS_HCOUNT;i++)
+		m_AIRangePoints[i]=new short[STARMAP_SECTORS_VCOUNT];
+	for(int i=0;i<STARMAP_SECTORS_HCOUNT;i++)
+		for(int j=0;j<STARMAP_SECTORS_VCOUNT;j++)
+			m_AIRangePoints[i][j]=0;
+	//memset(m_AIRangePoints, 0, STARMAP_SECTORS_HCOUNT * STARMAP_SECTORS_VCOUNT * sizeof(short));
+
+	m_AIConnectionPoints=new short*[STARMAP_SECTORS_HCOUNT];
+	for(int i=0;i<STARMAP_SECTORS_HCOUNT;i++)
+		m_AIConnectionPoints[i]=new short[STARMAP_SECTORS_VCOUNT];
+	for(int i=0;i<STARMAP_SECTORS_HCOUNT;i++)
+		for(int j=0;j<STARMAP_SECTORS_VCOUNT;j++)
+			m_AIConnectionPoints[i][j]=0;
+	//memset(m_AIConnectionPoints, 0, STARMAP_SECTORS_HCOUNT * STARMAP_SECTORS_VCOUNT * sizeof(short));
+
+	m_AITargetPoints=new short*[STARMAP_SECTORS_HCOUNT];
+	for(int i=0;i<STARMAP_SECTORS_HCOUNT;i++)
+		m_AITargetPoints[i]=new short[STARMAP_SECTORS_VCOUNT];
+	for(int i=0;i<STARMAP_SECTORS_HCOUNT;i++)
+		for(int j=0;j<STARMAP_SECTORS_VCOUNT;j++)
+			m_AITargetPoints[i][j]=0;
+	//memset(m_AITargetPoints, 0, STARMAP_SECTORS_HCOUNT * STARMAP_SECTORS_VCOUNT * sizeof(short));
+
+	m_AIBadPoints=new short*[STARMAP_SECTORS_HCOUNT];
+	for(int i=0;i<STARMAP_SECTORS_HCOUNT;i++)
+		m_AIBadPoints[i]=new short[STARMAP_SECTORS_VCOUNT];
+	for(int i=0;i<STARMAP_SECTORS_HCOUNT;i++)
+		for(int j=0;j<STARMAP_SECTORS_VCOUNT;j++)
+			m_AIBadPoints[i][j]=0;
+	//memset(m_AIBadPoints, 0, STARMAP_SECTORS_HCOUNT * STARMAP_SECTORS_VCOUNT * sizeof(short));
+	
+	pathMap=new PathSector*[STARMAP_SECTORS_HCOUNT];
+	for(int i=0;i<STARMAP_SECTORS_HCOUNT;i++)
+		pathMap[i]=new PathSector[STARMAP_SECTORS_VCOUNT];
+
 }
 
 CStarmap::~CStarmap()
 {
-	if (m_RangeMap.range) delete[] m_RangeMap.range;	
+	if (m_RangeMap.range) delete[] m_RangeMap.range;
+
+	for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
+		{
+			delete[] pathMap[x];
+			delete[] m_AIBadPoints[x];
+			delete[] m_AITargetPoints[x];
+			delete[] m_AIConnectionPoints[x];
+			delete[] m_AIRangePoints[x];
+			delete[] m_AINeighbourCount[x];
+			delete[] m_Range[x];
+			//delete[] m_BadMapModifiers[x];
+
+		}
+	delete[] pathMap;
+	delete[] m_AITargetPoints;
+	delete[] m_AIBadPoints;
+	delete[] m_AIConnectionPoints;
+	delete[] m_AIRangePoints;
+	delete[] m_AINeighbourCount;
+	delete[] m_Range;
+	//delete[] m_BadMapModifiers;
+
 }
 
 void CStarmap::SetRangeMap(unsigned char rangeMap[], char w, char h, char x0, char y0)
@@ -178,7 +256,7 @@ void CStarmap::AddBase(const Sector &sector, BYTE propTech)
 // Nichtangriffspakt haben, werden von der Rangemap entfernt. Übergeben werden dafür ein Zeiger auf alle
 // Sektoren <code>sectors</code> und ein Wahrheitswert <code>races</code> für alle Rassen, ob wir einen
 // Nichtangriffspakt mit dieser Rasse haben.
-void CStarmap::SynchronizeWithMap(CSector sectors[][STARMAP_SECTORS_VCOUNT], std::set<CString>* races)
+void CStarmap::SynchronizeWithMap(CSector** sectors/*[][STARMAP_SECTORS_VCOUNT]*/, std::set<CString>* races)
 {
 	for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
 		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
@@ -189,7 +267,7 @@ void CStarmap::SynchronizeWithMap(CSector sectors[][STARMAP_SECTORS_VCOUNT], std
 
 // Führt für gefährliche Anomalien mathematische Gewichte hinzu, so dass dieser Sektor bei der automatischen
 // Wegsuche nicht überflogen wird. Außerdem wird solch ein Sektor auch nicht für einen Außenpostenbau bestimmt.
-void CStarmap::SynchronizeWithAnomalies(CSector sectors[][STARMAP_SECTORS_VCOUNT])
+void CStarmap::SynchronizeWithAnomalies(CSector** sectors/*[][STARMAP_SECTORS_VCOUNT]*/)
 {
 	for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
 		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
@@ -200,15 +278,39 @@ void CStarmap::SynchronizeWithAnomalies(CSector sectors[][STARMAP_SECTORS_VCOUNT
 void CStarmap::ClearAll()
 {
 	// m_Range komplett mit RANGE_SPACE füllen
-	memset(m_Range, SM_RANGE_SPACE, STARMAP_SECTORS_HCOUNT * STARMAP_SECTORS_VCOUNT * sizeof(unsigned char));
+	//memset(m_Range, SM_RANGE_SPACE, STARMAP_SECTORS_HCOUNT * STARMAP_SECTORS_VCOUNT * sizeof(unsigned char));
+	for(int i=0;i<STARMAP_SECTORS_HCOUNT;i++)
+		for(int j=0;j<STARMAP_SECTORS_VCOUNT;j++)
+			m_Range[i][j]=SM_RANGE_SPACE;
 	m_lBases.clear();
 
 	// Bewertungen für Sektoren initialisieren
-	memset(m_AINeighbourCount, 0, STARMAP_SECTORS_HCOUNT * STARMAP_SECTORS_VCOUNT * sizeof(unsigned char));
-	memset(m_AIRangePoints, 0, STARMAP_SECTORS_HCOUNT * STARMAP_SECTORS_VCOUNT * sizeof(short));
-	memset(m_AIConnectionPoints, 0, STARMAP_SECTORS_HCOUNT * STARMAP_SECTORS_VCOUNT * sizeof(short));
-	memset(m_AITargetPoints, 0, STARMAP_SECTORS_HCOUNT * STARMAP_SECTORS_VCOUNT * sizeof(short));
-	memset(m_AIBadPoints, 0, STARMAP_SECTORS_HCOUNT * STARMAP_SECTORS_VCOUNT * sizeof(short));
+	//memset(m_AINeighbourCount, 0, STARMAP_SECTORS_HCOUNT * STARMAP_SECTORS_VCOUNT * sizeof(unsigned char));
+	for(int i=0;i<STARMAP_SECTORS_HCOUNT;i++)
+		for(int j=0;j<STARMAP_SECTORS_VCOUNT;j++)
+			m_AINeighbourCount[i][j]=0;
+
+	//memset(m_AIRangePoints, 0, STARMAP_SECTORS_HCOUNT * STARMAP_SECTORS_VCOUNT * sizeof(short));
+	for(int i=0;i<STARMAP_SECTORS_HCOUNT;i++)
+		for(int j=0;j<STARMAP_SECTORS_VCOUNT;j++)
+			m_AIRangePoints[i][j]=0;
+	
+	
+	//memset(m_AIConnectionPoints, 0, STARMAP_SECTORS_HCOUNT * STARMAP_SECTORS_VCOUNT * sizeof(short));
+	for(int i=0;i<STARMAP_SECTORS_HCOUNT;i++)
+		for(int j=0;j<STARMAP_SECTORS_VCOUNT;j++)
+			m_AIConnectionPoints[i][j]=0;
+
+	//memset(m_AITargetPoints, 0, STARMAP_SECTORS_HCOUNT * STARMAP_SECTORS_VCOUNT * sizeof(short));
+	for(int i=0;i<STARMAP_SECTORS_HCOUNT;i++)
+		for(int j=0;j<STARMAP_SECTORS_VCOUNT;j++)
+			m_AITargetPoints[i][j]=0;
+
+	//memset(m_AIBadPoints, 0, STARMAP_SECTORS_HCOUNT * STARMAP_SECTORS_VCOUNT * sizeof(short));
+	for(int i=0;i<STARMAP_SECTORS_HCOUNT;i++)
+		for(int j=0;j<STARMAP_SECTORS_VCOUNT;j++)
+			m_AIBadPoints[i][j]=0;
+
 	m_lAIKnownSystems.clear();
 	m_lAITargets.clear();
 }
@@ -250,21 +352,28 @@ Sector CStarmap::CalcPath(const Sector &pos, const Sector &target, unsigned char
 		for (int j = 0; j < STARMAP_SECTORS_VCOUNT; j++)
 			for (int i = 0; i < STARMAP_SECTORS_HCOUNT; i++)
 			{
-				PathSector *tmp = &pathMap[i][j];
+				/*PathSector *tmp = &(pathMap[i][j]);
 				tmp->used = false;
 				tmp->distance = 0.;
 				tmp->hops = 0;
 				tmp->parent.x = tmp->parent.y = -1;
 				
 				tmp->position.x = i; // für Zugriff aus leafList heraus merken
-				tmp->position.y = j;
+				tmp->position.y = j;*/
+				pathMap[i][j].used=false;
+				pathMap[i][j].distance=0;
+				pathMap[i][j].hops=0;
+				pathMap[i][j].parent.x=-1;
+				pathMap[i][j].parent.y=-1;
+				pathMap[i][j].position.x=i;
+				pathMap[i][j].position.y=j;
 			}
 
 		// leaves zurücksetzen
 		leaves.Clear();
 
 		// Startknoten zur Liste der auszuwählenden Blätter hinzufügen
-		leaves.Add(&pathMap[pos.x][pos.y]);
+		leaves.Add(&(pathMap[pos.x][pos.y]));
 
 		// Parameter merken
 		pathStart = pos;
@@ -301,7 +410,7 @@ Sector CStarmap::CalcPath(const Sector &pos, const Sector &target, unsigned char
 
 				// nur Nachbarn betrachten, die noch nicht ausgewählt wurden und innerhalb der
 				// Reichweite liegen
-				PathSector *neighb = &pathMap[npos.x][npos.y];
+				PathSector *neighb = &(pathMap[npos.x][npos.y]);
 				if (neighb->used || m_Range[npos.x][npos.y] < range)
 					continue;
 
@@ -617,7 +726,10 @@ BOOL CStarmap::IsKnownSystem(const Sector &sector)
 
 void CStarmap::RecalcRangePoints()
 {
-	memset(m_AIRangePoints, 0, STARMAP_SECTORS_HCOUNT * STARMAP_SECTORS_VCOUNT * sizeof(short));
+	//memset(m_AIRangePoints, 0, STARMAP_SECTORS_HCOUNT * STARMAP_SECTORS_VCOUNT * sizeof(short));
+	for(int i=0;i<STARMAP_SECTORS_HCOUNT;i++)
+		for(int j=0;j<STARMAP_SECTORS_VCOUNT;j++)
+			m_AIRangePoints[i][j]=0;
 
 	// komplette Starmap durchlaufen, Werte aus Effektivitätsgründen nur für Sektoren innerhalb der gegebenen
 	// Reichweite berechnen
@@ -646,8 +758,15 @@ void CStarmap::RecalcRangePoints()
 
 void CStarmap::RecalcConnectionPoints()
 {
-	memset(m_AINeighbourCount, 0, STARMAP_SECTORS_HCOUNT * STARMAP_SECTORS_VCOUNT * sizeof(unsigned char));
-	memset(m_AIConnectionPoints, 0, STARMAP_SECTORS_HCOUNT * STARMAP_SECTORS_VCOUNT * sizeof(short));
+	//memset(m_AINeighbourCount, 0, STARMAP_SECTORS_HCOUNT * STARMAP_SECTORS_VCOUNT * sizeof(unsigned char));
+	for(int i=0;i<STARMAP_SECTORS_HCOUNT;i++)
+		for(int j=0;j<STARMAP_SECTORS_VCOUNT;j++)
+			m_AINeighbourCount[i][j]=0;
+	//memset(m_AIConnectionPoints, 0, STARMAP_SECTORS_HCOUNT * STARMAP_SECTORS_VCOUNT * sizeof(short));
+
+	for(int i=0;i<STARMAP_SECTORS_HCOUNT;i++)
+		for(int j=0;j<STARMAP_SECTORS_VCOUNT;j++)
+			m_AIConnectionPoints[i][j]=0;
 
 	// für Sektoren, die außerhalb der Reichweite liegen, die Anzahl der Nachbarn innerhalb der Reichweite neu bestimmen
 	for (char x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
@@ -694,7 +813,10 @@ void CStarmap::RecalcConnectionPoints()
 
 void CStarmap::RecalcTargetPoints()
 {
-	memset(m_AITargetPoints, 0, STARMAP_SECTORS_HCOUNT * STARMAP_SECTORS_VCOUNT * sizeof(short));
+	//memset(m_AITargetPoints, 0, STARMAP_SECTORS_HCOUNT * STARMAP_SECTORS_VCOUNT * sizeof(short));
+	for(int i=0;i<STARMAP_SECTORS_HCOUNT;i++)
+		for(int j=0;j<STARMAP_SECTORS_VCOUNT;j++)
+			m_AITargetPoints[i][j]=0;
 
 	// abbrechen, wenn keine Ziele angegeben und keine Systeme bekannt sind
 	if (m_lAITargets.empty() && m_lAIKnownSystems.empty()) return;
@@ -790,9 +912,12 @@ short CStarmap::GetPoints(const Sector &sector)
 //	return m_AITargetPoints[sector.x][sector.y];
 }
 
-void CStarmap::SetBadAIBaseSectors(CSector sectors[][STARMAP_SECTORS_VCOUNT], const CString& race)
+void CStarmap::SetBadAIBaseSectors(CSector** sectors/*[][STARMAP_SECTORS_VCOUNT]*/, const CString& race)
 {
-	memset(m_AIBadPoints, 0, STARMAP_SECTORS_HCOUNT * STARMAP_SECTORS_VCOUNT * sizeof(short));
+	//memset(m_AIBadPoints, 0, STARMAP_SECTORS_HCOUNT * STARMAP_SECTORS_VCOUNT * sizeof(short));
+	for(int i=0;i<STARMAP_SECTORS_HCOUNT;i++)
+		for(int j=0;j<STARMAP_SECTORS_VCOUNT;j++)
+			m_AIBadPoints[i][j]=0;
 
 	for (int y = 0 ; y < STARMAP_SECTORS_VCOUNT; y++)
 		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)

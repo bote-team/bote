@@ -49,7 +49,9 @@ CIniLoader::CIniLoader(void)
 		WriteValue("Special", "MINORDENSITY", "30");
 		WriteValue("Special", "ANOMALYDENSITY", "9");
 		WriteValue("Special", "GENERATIONMODE", "0");
-		
+		WriteValue("Special", "MAPSIZEV", "20");
+		WriteValue("Special", "MAPSIZEH", "30");
+
 		WriteValue("Victory_Conditions", "Elimination", "ON");
 		WriteValue("Victory_Conditions", "Diplomacy", "ON");
 		WriteValue("Victory_Conditions", "Conquest", "ON");

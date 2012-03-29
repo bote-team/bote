@@ -1409,11 +1409,19 @@ void CGalaxyMenuView::GenerateGalaxyMap()
 		for (int y = 0; y < STARMAP_SECTOR_HEIGHT; y++)
 			for (int x = 0; x < STARMAP_SECTOR_WIDTH; x++)
 				ownerMark[sFogOfWarID]->SetPixel(x, y, Color(160,0,0,0));
+
+	FCObjImage img2;
+	FCWin32::GDIPlus_LoadBitmap(*m_pGalaxyBackground, img2);
+	img2.Stretch_Smooth(STARMAP_TOTALWIDTH, STARMAP_TOTALHEIGHT);
+	m_pGalaxyBackground = FCWin32::GDIPlus_CreateBitmap(img2);
+	img2.Destroy();
 	
 	Graphics* g = Graphics::FromImage(m_pGalaxyBackground);
+
 	g->SetSmoothingMode(SmoothingModeHighQuality);
 	g->SetInterpolationMode(InterpolationModeHighQualityBicubic);
 	g->SetPixelOffsetMode(PixelOffsetModeHighQuality);
+	
 	
 	for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
 		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)

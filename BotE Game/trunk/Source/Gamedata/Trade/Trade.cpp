@@ -179,11 +179,20 @@ void CTrade::SellRessource(USHORT res, ULONG number, CPoint system, BOOL flag)
 
 // Funktion berechnet die ganzen Handelsaktionen, lagert also Ressourcen ein oder gibt das Credits, welches
 // wir durch den Verkauf bekommen haben an das jeweilige Imperium
-void CTrade::CalculateTradeActions(CMajor* pMajor, CSystem systems[][STARMAP_SECTORS_VCOUNT], CSector sectors[][STARMAP_SECTORS_VCOUNT], USHORT* taxes)
+void CTrade::CalculateTradeActions(CMajor* pMajor, CSystem** systems/*[][STARMAP_SECTORS_VCOUNT]*/, CSector** sectors/*[][STARMAP_SECTORS_VCOUNT]*/, USHORT* taxes)
 {
 	ASSERT(pMajor);
 
-	int sum[STARMAP_SECTORS_HCOUNT][STARMAP_SECTORS_VCOUNT][IRIDIUM + 1] = {0};
+	int*** sum=new int**[STARMAP_SECTORS_HCOUNT];
+	//	[STARMAP_SECTORS_HCOUNT][STARMAP_SECTORS_VCOUNT][IRIDIUM + 1] = {0};  //WTF
+	for(int i=0;i<STARMAP_SECTORS_HCOUNT;i++)
+	{
+		sum[i]=new int*[STARMAP_SECTORS_VCOUNT];
+		for(int j=0;j<STARMAP_SECTORS_VCOUNT;j++)
+			sum[i][j]=new int[IRIDIUM + 1];
+	}
+	ASSERT(sum);
+
 	BOOLEAN didSome = FALSE;
 	for (int i = 0; i < m_TradeActions.GetSize(); )
 	{

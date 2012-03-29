@@ -38,11 +38,15 @@ void CIntelInfo::CalcIntelInfo(CBotf2Doc* pDoc, CMajor* pOurRace)
 	// 3-dim Feld, welches die Informationen zu den Sektoren/Systemen aufnimmt
 	// der Wert gibt an, ob es sich um kontrollierte Sektoren == 1, besitzte System == 2
 	// oder um bewohnte System == 3 handelt
-	map<CString,BYTE> sectors[STARMAP_SECTORS_HCOUNT][STARMAP_SECTORS_VCOUNT];
+	map<CString,BYTE>** sectors=new map<CString,BYTE>*[STARMAP_SECTORS_HCOUNT];//[STARMAP_SECTORS_HCOUNT][STARMAP_SECTORS_VCOUNT];
+	for(int i=0;i<STARMAP_SECTORS_HCOUNT;i++)
+		sectors[i]=new map<CString,BYTE> [STARMAP_SECTORS_VCOUNT];
 
 	// 3-dim Feld, welches Informationen zu bekannten und vermitgliederten Minors aufnimmt.
 	// der Wert gibt an, ob es eine bekannte Minorrace == 1 oder eine vermitgliederte Minorrace == 2 ist.
-	map<CString, BYTE> races[STARMAP_SECTORS_HCOUNT][STARMAP_SECTORS_VCOUNT];
+	map<CString,BYTE>** races=new map<CString,BYTE>*[STARMAP_SECTORS_HCOUNT];//[STARMAP_SECTORS_HCOUNT][STARMAP_SECTORS_VCOUNT];
+	for(int i=0;i<STARMAP_SECTORS_HCOUNT;i++)
+		races[i]=new map<CString,BYTE> [STARMAP_SECTORS_VCOUNT];
 
 
 	// jetzt Sektoren aus allen möglichen Geheimdienstberichten ermitteln

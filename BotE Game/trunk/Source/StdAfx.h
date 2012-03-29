@@ -49,3 +49,4 @@
 #include <gdiplus.h>				// GDI+ Verwendung
 using namespace Gdiplus;
 #pragma comment(lib, "gdiplus.lib")
+

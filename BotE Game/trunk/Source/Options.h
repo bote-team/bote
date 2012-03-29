@@ -19,16 +19,17 @@
 #define VERSION_INFORMATION			"0.81"	///< anzuzeigende Versionsinformation 
 
 // --- Feste Größen der Starmap ------------------------------------------------
-#define STARMAP_SECTORS_HCOUNT		30		///< Anzahl der Sektoren horizontal
-#define STARMAP_SECTORS_VCOUNT		20		///< Anzahl der Sektoren vertikal
+extern int STARMAP_SECTORS_HCOUNT;		///< Anzahl der Sektoren horizontal
+extern int STARMAP_SECTORS_VCOUNT;		///< Anzahl der Sektoren vertikal
 
-#define STARMAP_SECTOR_WIDTH		80		///< Breite eines Sektors in Pixel bei 100% Zoom
-#define STARMAP_SECTOR_HEIGHT		80		///< Höhe eines Sektors
-#define STARMAP_TOTALWIDTH			2400	///< Gesamtbreite der View in Pixel bei 100% (= 40 * 30)
-#define STARMAP_TOTALHEIGHT			1600	///< Gesamthöhe bei 100% (= 20 * 40)
+
+extern int STARMAP_SECTOR_WIDTH;//		80		///< Breite eines Sektors in Pixel bei 100% Zoom
+extern int STARMAP_SECTOR_HEIGHT;//		80		///< Höhe eines Sektors
+extern int STARMAP_TOTALWIDTH	;//		2400	///< Gesamtbreite der View in Pixel bei 100% (= 40 * 30)
+extern int STARMAP_TOTALHEIGHT	;//		1600	///< Gesamthöhe bei 100% (= 20 * 40)
 
 #define STARMAP_ZOOM_MIN			.6		///< minimaler Zoom-Faktor
-#define STARMAP_ZOOM_MAX			1.5		///< maximaler Zoom-Faktor
+extern double STARMAP_ZOOM_MAX;//			2	///< maximaler Zoom-Faktor
 #define STARMAP_ZOOM_STEP			.05		///< Änderung des Zoom-Faktors beim Drehen des Scrollrades
 #define STARMAP_ZOOM_INITIAL		1.0		///< Zoom-Faktor zu Beginn
 

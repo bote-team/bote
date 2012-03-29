@@ -32,6 +32,7 @@ class CMajor;
 class CSectorAI;
 class CAIPrios;
 
+
 class CBotf2Doc : public CDocument, public network::CPeerData
 {
 protected: // Nur aus Serialisierung erzeugen
@@ -49,8 +50,8 @@ protected: // Nur aus Serialisierung erzeugen
 	
 	CPoint m_ptScrollPoint;				///< aktuelle Scrollposition der Galaxieansicht wird auf diesen Point gespeichert
 	
-	CSector m_Sector[STARMAP_SECTORS_HCOUNT][STARMAP_SECTORS_VCOUNT];	///< Matrix von Sektoren der Klasse CSector anlegen
-	CSystem m_System[STARMAP_SECTORS_HCOUNT][STARMAP_SECTORS_VCOUNT];	///< auf jeden Sektor ein potentielles System anlegen
+	CSector** m_Sector/*[STARMAP_SECTORS_HCOUNT][STARMAP_SECTORS_VCOUNT]*/;	///< Matrix von Sektoren der Klasse CSector anlegen
+	CSystem** m_System/*[STARMAP_SECTORS_HCOUNT][STARMAP_SECTORS_VCOUNT]*/;	///< auf jeden Sektor ein potentielles System anlegen
 	
 	CGenShipName m_GenShipName;			///< Variable, die alle möglichen Schiffsnamen beinhaltet
 	

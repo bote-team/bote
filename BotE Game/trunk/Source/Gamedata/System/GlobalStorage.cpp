@@ -228,7 +228,7 @@ UINT CGlobalStorage::SubRessource(UINT sub, BYTE res, const CPoint& ko)
 
 /// Diese Funktion führt am Lagerinhalt alle möglichen Änderungen durch, die bei jeder neuen Runde eintreten
 /// können. Dabei füllt sie auch die Lager der entsprechenden Systeme.
-void CGlobalStorage::Calculate(CSystem systems[STARMAP_SECTORS_HCOUNT][STARMAP_SECTORS_VCOUNT])
+void CGlobalStorage::Calculate(CSystem** systems/*[STARMAP_SECTORS_HCOUNT][STARMAP_SECTORS_VCOUNT]*/)
 {
 	m_iTakeFromStorage = 0;
 	// zuerst werden die Ressourcen aus dem globalen Lager in die Systeme übertragen

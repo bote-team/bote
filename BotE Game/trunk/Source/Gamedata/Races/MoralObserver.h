@@ -46,7 +46,7 @@ public:
 	 * der jeweiligen Majorrace. Übergeben werden dafür alle Systeme <code>systems</code>, die RaceID und die
 	 * gemappte Nummer der Majorrace <code>byMappedRaceNumber</code>, auf welche Moralwerte sich bezogen werden soll.
 	 */
-	void CalculateEvents(CSystem systems[][STARMAP_SECTORS_VCOUNT], const CString& sRaceID, BYTE byMappedRaceNumber);
+	void CalculateEvents(CSystem** systems/*[][STARMAP_SECTORS_VCOUNT]*/, const CString& sRaceID, BYTE byMappedRaceNumber);
 
 	/**
 	 * Funktion erstellt einen Text, der in der Ereignisansicht angezeigt werden kann, aufgrund eines speziellen

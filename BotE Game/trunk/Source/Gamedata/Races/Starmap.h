@@ -126,7 +126,7 @@ class CStarmap
 protected:
 	/// Map, die die Entfernung vom nächsten Außenposten aufnimmt; der erste Index ist die x-,
 	/// der zweite die y-Koordinate eines Sektors (modelliert Einfluss, den der Außenposten hat)
-	unsigned char m_Range[STARMAP_SECTORS_HCOUNT][STARMAP_SECTORS_VCOUNT];
+	unsigned char **m_Range;//[STARMAP_SECTORS_HCOUNT][STARMAP_SECTORS_VCOUNT];
 	/// Koordinaten des aktuell ausgewählten Sektors; (-1, -1) wenn keiner ausgewählt ist
 	Sector m_Selection;
 
@@ -137,10 +137,10 @@ protected:
 	RangeMap m_RangeMap;
 
 	/// bestimmte Sektoren sind gefährlich und sollten daher nicht primär angeflogen werden
-	static double m_BadMapModifiers[STARMAP_SECTORS_HCOUNT][STARMAP_SECTORS_VCOUNT];
+	static double **m_BadMapModifiers;//[STARMAP_SECTORS_HCOUNT][STARMAP_SECTORS_VCOUNT];
 
 	/// Array, das Informationen zur Berechnung der kürzesten Wege aufnimmt
-	PathSector pathMap[STARMAP_SECTORS_HCOUNT][STARMAP_SECTORS_VCOUNT];
+	PathSector **pathMap;//[STARMAP_SECTORS_HCOUNT][STARMAP_SECTORS_VCOUNT];
 	/// Liste der Nachbarn, die von den aktuellen Blättern aus erreichbar sind
 	/// (werden als nächstes zu Blättern des Baumes)
 	LeafList leaves;
@@ -155,19 +155,19 @@ protected:
 	SECTORLIST m_lAIKnownSystems;	///< Liste von der KI bekannten Systemen (durch Scannen)
 
 	/// Gebietszuwachs für Sektor (x, y), wenn in diesem Sektor ein Außenposten gebaut würde
-	short m_AIRangePoints[STARMAP_SECTORS_HCOUNT][STARMAP_SECTORS_VCOUNT];
+	short **m_AIRangePoints;//[STARMAP_SECTORS_HCOUNT][STARMAP_SECTORS_VCOUNT];
 
 	/// für Sektoren außerhalb der gegebenen Reichweite die Anzahl der Nachbarn innerhalb der Reichweite
-	unsigned char m_AINeighbourCount[STARMAP_SECTORS_HCOUNT][STARMAP_SECTORS_VCOUNT];
+	unsigned char** m_AINeighbourCount;//[STARMAP_SECTORS_HCOUNT][STARMAP_SECTORS_VCOUNT];
 	/// Bewertung für den Zusammenhang eines Gebiets, um Lücken zu vermeiden und nicht zusammenhängende Gebiete zu verbinden
-	short m_AIConnectionPoints[STARMAP_SECTORS_HCOUNT][STARMAP_SECTORS_VCOUNT];
+	short** m_AIConnectionPoints;//[STARMAP_SECTORS_HCOUNT][STARMAP_SECTORS_VCOUNT];
 
 	/// Bewertung für bevorzugte Ausbreitungsrichtungen
-	short m_AITargetPoints[STARMAP_SECTORS_HCOUNT][STARMAP_SECTORS_VCOUNT];
+	short** m_AITargetPoints;//[STARMAP_SECTORS_HCOUNT][STARMAP_SECTORS_VCOUNT];
 
 	/// negative Bewertung für ein Gebiet durch feindliche Grenzen. Man sollte keinen Aussenposten auf einen freien
 	/// Fleck inmitten des gegnerischen Gebiets bauen.
-	short m_AIBadPoints[STARMAP_SECTORS_HCOUNT][STARMAP_SECTORS_VCOUNT];
+	short** m_AIBadPoints;//[STARMAP_SECTORS_HCOUNT][STARMAP_SECTORS_VCOUNT];
 
 public:
 	/**
@@ -228,13 +228,13 @@ public:
 	 * Sektoren <code>sectors</code> und ein Wahrheitswert <code>races</code> für alle Rassen, ob wir einen
 	 * Nichtangriffspakt mit dieser Rasse haben.
 	 */
-	void SynchronizeWithMap(CSector sectors[][STARMAP_SECTORS_VCOUNT], std::set<CString>* races);
+	void SynchronizeWithMap(CSector** sectors/*[][STARMAP_SECTORS_VCOUNT]*/, std::set<CString>* races);
 
 	/**
 	 * Führt für gefährliche Anomalien mathematische Gewichte hinzu, so dass dieser Sektor bei der automatischen
 	 * Wegsuche nicht überflogen wird.
 	 */
-	static void SynchronizeWithAnomalies(CSector sectors[][STARMAP_SECTORS_VCOUNT]);
+	static void SynchronizeWithAnomalies(CSector** sectors/*[][STARMAP_SECTORS_VCOUNT]*/);
 
 	/**
 	 * Löscht alle Basen und setzt die Einträge in der Rangemap wieder auf Ausgangswert
@@ -277,7 +277,7 @@ public:
 	 * einen Außenposten genutzt werden soll. Übergeben werden dafür ein Zeiger auf alle
 	 * Sektoren <code>sectors</code> und die Rasse, zu welcher das Starmap Objekt gehört <code>race</code>.
 	 */
-	void SetBadAIBaseSectors(CSector sectors[][STARMAP_SECTORS_VCOUNT], const CString& race);
+	void SetBadAIBaseSectors(CSector** sectors/*[][STARMAP_SECTORS_VCOUNT]*/, const CString& race);
 
 	/**
 	 * Ermittelt einen Sektor, in dem günstig ein Außenposten gebaut werden könnte. Liefert <code>Sector(-1, -1)</code> im

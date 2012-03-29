@@ -74,6 +74,8 @@ CBotf2Doc::CBotf2Doc()
 	m_pNetworkHandler = new CNetworkHandler(this);
 	server.AddServerListener(m_pNetworkHandler);
 	client.AddClientListener(m_pNetworkHandler);
+
+	
 }
 
 CBotf2Doc::~CBotf2Doc()
@@ -109,6 +111,16 @@ CBotf2Doc::~CBotf2Doc()
 			m_Sector[x][y].Reset();
 			m_System[x][y].ResetSystem();
 		}
+
+	for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
+		{
+			delete[] m_Sector[x];
+			delete[] m_System[x];
+		}
+	delete[] m_Sector;
+	delete[] m_System;
+
+
 
 	// stop MT
 	MYTRACE_DEINIT;
@@ -165,6 +177,20 @@ BOOL CBotf2Doc::OnNewDocument()
 
 	int nSeed = -1;
 	pIni->ReadValue("Special", "RANDOMSEED", nSeed);
+
+	//Kartengröße aus ini lesen
+	int mapHeight=20;
+	pIni->ReadValue("Special", "MAPSIZEV", mapHeight);
+	STARMAP_SECTORS_VCOUNT=mapHeight;
+
+	int mapWidth=40;
+	pIni->ReadValue("Special", "MAPSIZEH", mapWidth);
+	STARMAP_SECTORS_HCOUNT=mapWidth;
+	
+	STARMAP_TOTALWIDTH=STARMAP_SECTORS_HCOUNT*80;
+	STARMAP_TOTALHEIGHT=STARMAP_SECTORS_VCOUNT*80;
+
+
 	// festen vorgegeben Seed verwenden
 	if (nSeed >= 0)
 		srand(nSeed);
@@ -234,6 +260,9 @@ void CBotf2Doc::Serialize(CArchive& ar)
 		ar << m_iRound;
 		ar << m_fStardate;
 		ar << m_ptKO;
+		ar << STARMAP_SECTORS_HCOUNT;
+		ar << STARMAP_SECTORS_VCOUNT;
+
 								
 		// Hauptrassen-Koordinaten speichern
 		ar << m_mRaceKO.size();
@@ -272,6 +301,8 @@ void CBotf2Doc::Serialize(CArchive& ar)
 		ar >> m_iRound;
 		ar >> m_fStardate;
 		ar >> m_ptKO;
+		ar >> STARMAP_SECTORS_HCOUNT;
+		ar >> STARMAP_SECTORS_VCOUNT;
 										
 		// Hauptrassen-Koordinaten laden
 		m_mRaceKO.clear();
@@ -371,6 +402,9 @@ void CBotf2Doc::SerializeBeginGameData(CArchive& ar)
 	// senden auf Serverseite
 	if (ar.IsStoring())
 	{
+		//Kartengröße
+		ar<<STARMAP_SECTORS_HCOUNT;
+		ar<<STARMAP_SECTORS_VCOUNT;
 		// Hauptrassen-Koordinaten senden
 		ar << m_mRaceKO.size();
 		for (map<CString, pair<int, int> >::const_iterator it = m_mRaceKO.begin(); it != m_mRaceKO.end(); ++it)
@@ -386,6 +420,11 @@ void CBotf2Doc::SerializeBeginGameData(CArchive& ar)
 	// Empfangen auf Clientseite
 	else
 	{
+		//Kartengröße und initialisierung
+		ar>>STARMAP_SECTORS_HCOUNT;
+		ar>>STARMAP_SECTORS_VCOUNT;
+		STARMAP_TOTALWIDTH=STARMAP_SECTORS_HCOUNT*80;
+		STARMAP_TOTALHEIGHT=STARMAP_SECTORS_VCOUNT*80;
 		// Hauptrassen-Koordinaten empfangen
 		m_mRaceKO.clear();
 		size_t mapSize = 0;
@@ -949,6 +988,16 @@ void CBotf2Doc::PrepareData()
 #endif
 		
 		m_iRound = 1;
+
+		m_Sector = new CSector*[STARMAP_SECTORS_HCOUNT];
+		for(int i = 0; i < STARMAP_SECTORS_HCOUNT; i++)
+			m_Sector[i] = new CSector[STARMAP_SECTORS_VCOUNT];
+		ASSERT(m_Sector);
+
+		m_System = new CSystem*[STARMAP_SECTORS_HCOUNT];
+		for(int i = 0; i < STARMAP_SECTORS_HCOUNT; i++)
+			m_System[i] = new CSystem[STARMAP_SECTORS_VCOUNT];
+		ASSERT(m_System);
 		
 		// Generierungssektornamenklasse wieder neu starten
 		m_ShipArray.RemoveAll();
@@ -1034,7 +1083,10 @@ void CBotf2Doc::GenerateGalaxy()
 		}
 	m_mRaceKO.clear();
 	int nGenerationMode=0;//0==Standart 1==Circle
-	bool nGenField[STARMAP_SECTORS_HCOUNT][STARMAP_SECTORS_VCOUNT];
+	bool** nGenField=new bool*[STARMAP_SECTORS_HCOUNT];//[STARMAP_SECTORS_VCOUNT];
+	for(int i=0;i<STARMAP_SECTORS_HCOUNT;i++)
+		nGenField[i]=new bool[STARMAP_SECTORS_VCOUNT];
+
 	CIniLoader::GetInstance()->ReadValue("Special", "GENERATIONMODE", nGenerationMode);
 	if(nGenerationMode==1)
 	{
@@ -1070,7 +1122,7 @@ void CBotf2Doc::GenerateGalaxy()
 	}else{
 		for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
 			for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-				nGenField[x][y]=true;	
+				nGenField[x][y]=true;
 	}
 
 	// Die sechs Hauptrassen werden zufällig auf der Karte verteilt. Dabei ist aber zu beachten, dass die Entfernungen
@@ -1189,7 +1241,7 @@ void CBotf2Doc::GenerateGalaxy()
 	vector<CPoint> vSectorsToGenerate;
 	for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
 		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-			if ((!m_Sector[x][y].GetOwned())&&nGenField[x][y]==true)
+			if ((!m_Sector[x][y].GetOwned())/*&&nGenField[x][y]==true*/)
 				vSectorsToGenerate.push_back(CPoint(x,y));
 
 	while (vSectorsToGenerate.size())
