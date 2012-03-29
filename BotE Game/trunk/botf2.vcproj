@@ -253,6 +253,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\Source\Options.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Source\StdAfx.cpp"
 				>
 				<FileConfiguration
