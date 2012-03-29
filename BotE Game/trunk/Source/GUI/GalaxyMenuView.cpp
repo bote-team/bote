@@ -1415,7 +1415,6 @@ void CGalaxyMenuView::GenerateGalaxyMap()
 	img2.Stretch_Smooth(STARMAP_TOTALWIDTH, STARMAP_TOTALHEIGHT);
 	m_pGalaxyBackground = FCWin32::GDIPlus_CreateBitmap(img2);
 	img2.Destroy();
-	
 	Graphics* g = Graphics::FromImage(m_pGalaxyBackground);
 
 	g->SetSmoothingMode(SmoothingModeHighQuality);

@@ -190,7 +190,7 @@ BOOL CSettingsDlg::OnInitDialog()
 	int nGenMode;
 	if (!pIni->ReadValue("Special", "GENERATIONMODE", nGenMode))
 		ASSERT(false);
-	if (nGenMode != 0)
+	if (nGenMode >1||nGenMode<0)
 		nGenMode = 0;
 	CString sGenMode;
 	sGenMode.Format("%d", nGenMode);

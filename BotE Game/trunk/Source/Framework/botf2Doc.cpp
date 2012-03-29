@@ -14,6 +14,7 @@
 #include "NetworkHandler.h"
 #include "MainFrm.h"
 #include "IniLoader.h"
+#include "ImageStone/ImageStone.h"
 #include <cmath>
 
 #include "Races\RaceController.h"
@@ -1086,43 +1087,33 @@ void CBotf2Doc::GenerateGalaxy()
 	bool** nGenField=new bool*[STARMAP_SECTORS_HCOUNT];//[STARMAP_SECTORS_VCOUNT];
 	for(int i=0;i<STARMAP_SECTORS_HCOUNT;i++)
 		nGenField[i]=new bool[STARMAP_SECTORS_VCOUNT];
+	for(int i=0;i<STARMAP_SECTORS_HCOUNT;++i)
+		for(int j=0;j<STARMAP_SECTORS_VCOUNT;++j)
+			nGenField[i][j]=true;
 
 	CIniLoader::GetInstance()->ReadValue("Special", "GENERATIONMODE", nGenerationMode);
+
 	if(nGenerationMode==1)
 	{
-		int nRadius=11;
-			for(int i=STARMAP_SECTORS_HCOUNT/2-1;i>0;i--)//links oben
+		CString sAppPath = CIOData::GetInstance()->GetAppPath();
+		CString filePath = sAppPath + "Graphics\\Galaxies\\pattern0.boj";
+		Bitmap* GalaxyPattern = Bitmap::FromFile(filePath.AllocSysString());
+		if(GalaxyPattern==NULL)
 		{
-			for(int j=STARMAP_SECTORS_VCOUNT/2-1;j>0;j--)
-			{
-				if(sqrt((pow((double)(STARMAP_SECTORS_HCOUNT/2-i),2)+pow((double)(STARMAP_SECTORS_VCOUNT/2-j),2)))<=nRadius) nGenField[i][j]=true;
-			}
-		}
-		for(int i=STARMAP_SECTORS_HCOUNT/2;i<STARMAP_SECTORS_HCOUNT;i++)//links unten
-		{
-			for(int j=STARMAP_SECTORS_VCOUNT/2-1;j>0;j--)
-			{
-				if(sqrt((pow((double)(i-STARMAP_SECTORS_HCOUNT/2),2)+pow((double)(STARMAP_SECTORS_VCOUNT/2-j),2)))<=nRadius) nGenField[i][j]=true;
-			}
-		}
-		for(int i=STARMAP_SECTORS_HCOUNT/2;i<STARMAP_SECTORS_HCOUNT;i++)//rechts unten
-		{
-			for(int j=STARMAP_SECTORS_VCOUNT/2;j<STARMAP_SECTORS_VCOUNT;j++)
-			{
-				if(sqrt((pow((double)(i-STARMAP_SECTORS_HCOUNT/2),2)+pow((double)(j-STARMAP_SECTORS_VCOUNT/2),2)))<=nRadius) nGenField[i][j]=true;
-			}
-		}
-		for(int i=STARMAP_SECTORS_HCOUNT/2-1;i>0;i--)//rechts oben
-		{
-			for(int j=STARMAP_SECTORS_VCOUNT/2;j<STARMAP_SECTORS_VCOUNT;j++)
-			{
-				if(sqrt((pow((double)(STARMAP_SECTORS_HCOUNT/2-i),2)+pow((double)(j-STARMAP_SECTORS_VCOUNT/2),2)))<=nRadius) nGenField[i][j]=true;
-			}
-		}
-	}else{
+			AfxMessageBox("Galaxypattern: pattern0.boj not found! using standart pattern");
+
+		}else{
+		FCObjImage img;
+		FCWin32::GDIPlus_LoadBitmap(*GalaxyPattern, img);
+		img.Stretch(STARMAP_SECTORS_HCOUNT,STARMAP_SECTORS_VCOUNT);
 		for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
 			for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-				nGenField[x][y]=true;
+			{
+				if(img.GetPixelData(x,y)>(DWORD)514047) nGenField[x][y]=false;
+			}
+		img.Destroy();
+		delete GalaxyPattern;
+		};
 	}
 
 	// Die sechs Hauptrassen werden zufällig auf der Karte verteilt. Dabei ist aber zu beachten, dass die Entfernungen
@@ -1241,7 +1232,7 @@ void CBotf2Doc::GenerateGalaxy()
 	vector<CPoint> vSectorsToGenerate;
 	for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
 		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-			if ((!m_Sector[x][y].GetOwned())/*&&nGenField[x][y]==true*/)
+			if ((!m_Sector[x][y].GetOwned())&&nGenField[x][y]==true)
 				vSectorsToGenerate.push_back(CPoint(x,y));
 
 	while (vSectorsToGenerate.size())
