@@ -22,7 +22,7 @@ void CReManager::CalcEvents(CMajor* pRace)
 	int randnumber=rand()%101;
 	if(randnumber>m_Probability) return; //Es findet kein Ereignis statt
 	
-	if(rand()%900==1)//Ein nur 1 System betreffendes Event
+	if(rand()%2==1)//Ein nur 1 System betreffendes Event
 	{
 		int wichsystem=rand()%(pRace->GetEmpire()->GetSystemList()->GetSize());//wählt System aus
 		CPoint KO = pRace->GetEmpire()->GetSystemList()->GetAt(wichsystem).ko; //sucht koordinaten des Systems
@@ -132,6 +132,9 @@ bool CReManager::GlobalEvent(CMajor *pRace)
 
 void CReManager::CalcExploreEvent(const CPoint &ko, CMajor *pRace, CArray<CShip, CShip>* ships)
 {
+	int randnumber=rand()%101;
+	if(randnumber>m_Probability) return; //Es findet kein Ereignis statt
+
 	CBotf2Doc* pDoc = ((CBotf2App*)AfxGetApp())->GetDocument();
 	ASSERT(pDoc);
 	//ko=Koordinate wo es passiert, pRace = die Rasse der es passiert
