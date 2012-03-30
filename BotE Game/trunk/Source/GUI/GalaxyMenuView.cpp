@@ -1412,11 +1412,15 @@ void CGalaxyMenuView::GenerateGalaxyMap()
 
 	FCObjImage img2;
 	FCWin32::GDIPlus_LoadBitmap(*m_pGalaxyBackground, img2);
-	img2.Stretch_Smooth(STARMAP_TOTALWIDTH, STARMAP_TOTALHEIGHT);
+	//Bild entsprechend vergrößern. Dabei Seitenverhältnisse beibehalten
+	if(STARMAP_TOTALWIDTH<STARMAP_TOTALHEIGHT)	img2.Stretch_Smooth(img2.Width()*STARMAP_TOTALHEIGHT/img2.Height(), STARMAP_TOTALHEIGHT);
+	else										img2.Stretch_Smooth(STARMAP_TOTALWIDTH, img2.Height()*STARMAP_TOTALWIDTH/img2.Width());
 	m_pGalaxyBackground = FCWin32::GDIPlus_CreateBitmap(img2);
 	img2.Destroy();
+	//Bild zuschneiden
+	m_pGalaxyBackground= m_pGalaxyBackground->Clone(0,0,STARMAP_TOTALWIDTH,STARMAP_TOTALHEIGHT, m_pGalaxyBackground->GetPixelFormat()) ;
+	
 	Graphics* g = Graphics::FromImage(m_pGalaxyBackground);
-
 	g->SetSmoothingMode(SmoothingModeHighQuality);
 	g->SetInterpolationMode(InterpolationModeHighQualityBicubic);
 	g->SetPixelOffsetMode(PixelOffsetModeHighQuality);
@@ -1477,6 +1481,8 @@ void CGalaxyMenuView::GenerateGalaxyMap()
 	m_pGalaxyBackground = tmp;
 		
 	CSize thumbSize(150, STARMAP_TOTALHEIGHT * 150 / STARMAP_TOTALWIDTH);
+	if(STARMAP_TOTALWIDTH<STARMAP_TOTALHEIGHT) thumbSize.SetSize(STARMAP_TOTALWIDTH*150/STARMAP_TOTALHEIGHT,150);//wenn es eine hohe Karte ist wird anders skaliert 
+
 	img.Destroy();
 	FCWin32::GDIPlus_LoadBitmap(*m_pGalaxyBackground, img);
 	img.Stretch_Smooth(thumbSize.cx, thumbSize.cy);
