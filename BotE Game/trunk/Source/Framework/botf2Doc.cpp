@@ -1093,26 +1093,34 @@ void CBotf2Doc::GenerateGalaxy()
 
 	CIniLoader::GetInstance()->ReadValue("Special", "GENERATIONMODE", nGenerationMode);
 
-	if(nGenerationMode==1)
+	if(nGenerationMode!=0)
 	{
 		CString sAppPath = CIOData::GetInstance()->GetAppPath();
-		CString filePath = sAppPath + "Graphics\\Galaxies\\pattern0.boj";
+		CString filePath = "";
+		filePath.Format("%sGraphics\\Galaxies\\pattern%d.boj",sAppPath,nGenerationMode);
 		Bitmap* GalaxyPattern = Bitmap::FromFile(filePath.AllocSysString());
 		if(GalaxyPattern==NULL)
 		{
-			AfxMessageBox("Galaxypattern: pattern0.boj not found! using standart pattern");
+			sAppPath.Format("pattern%d.boj not found! using standart pattern", nGenerationMode);
+			AfxMessageBox(sAppPath);
 
 		}else{
-		FCObjImage img;
-		FCWin32::GDIPlus_LoadBitmap(*GalaxyPattern, img);
-		img.Stretch(STARMAP_SECTORS_HCOUNT,STARMAP_SECTORS_VCOUNT);
-		for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
-			for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
+			FCObjImage img;
+			FCWin32::GDIPlus_LoadBitmap(*GalaxyPattern, img);
+			if(img.IsValidImage())
 			{
-				if(img.GetPixelData(x,y)>(DWORD)514047) nGenField[x][y]=false;
-			}
-		img.Destroy();
-		delete GalaxyPattern;
+				img.Stretch(STARMAP_SECTORS_HCOUNT,STARMAP_SECTORS_VCOUNT);
+				GalaxyPattern=FCWin32::GDIPlus_CreateBitmap(img);
+				Gdiplus::Color nColor;
+				for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
+					for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
+					{
+						GalaxyPattern->GetPixel(x,y,&nColor);
+						if(nColor.GetR()>50&&nColor.GetB()>50&&nColor.GetG()>50) nGenField[x][y]=false;
+					}
+				}
+			img.Destroy();
+			delete GalaxyPattern;
 		};
 	}
 
@@ -1122,7 +1130,7 @@ void CBotf2Doc::GenerateGalaxy()
 	map<CString, CMajor*>* pmMajors = m_pRaceCtrl->GetMajors();
 	
 	// minimaler Abstand der Majorraceheimatsysteme
-	int nMinDiff = 14 - pmMajors->size();
+	int nMinDiff =(int)sqrt((double)STARMAP_SECTORS_VCOUNT*STARMAP_SECTORS_HCOUNT)/2+2  - pmMajors->size(); //Term der Abstand ungefähr an Feld größe anpasst
 	// minimal 4 Felder abstand
 	nMinDiff = max(nMinDiff, 4);
 
