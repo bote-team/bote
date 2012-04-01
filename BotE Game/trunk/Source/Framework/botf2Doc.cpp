@@ -1503,7 +1503,7 @@ void CBotf2Doc::NextRound()
 		// Vielleicht baut die Rasse ein Raumschiff
 		pMinor->PerhapsBuildShip(this);
 	}
-	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
+	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)//Random Events berechenn
 	{
 		CMajor* pMajor = it->second;
 		m_RandomEventManager.CalcEvents(pMajor);
@@ -3544,9 +3544,11 @@ void CBotf2Doc::CalcOldRoundData()
 								}
 							}
 							else
+							{
 								m_Sector[x][y].SetOwnerOfSector("");
 								m_System[x][y].SetOwnerOfSystem("");
 								m_Sector[x][y].SetTakenSector(FALSE);
+							}
 						}
 								
 						// Hier mit einbeziehen, wenn die Bevölkerung an Nahrungsmangel stirbt						
