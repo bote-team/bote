@@ -304,6 +304,7 @@ void CBotf2Doc::Serialize(CArchive& ar)
 		ar >> m_ptKO;
 		ar >> STARMAP_SECTORS_HCOUNT;
 		ar >> STARMAP_SECTORS_VCOUNT;
+		AllocateSectorsAndSystems();
 										
 		// Hauptrassen-Koordinaten laden
 		m_mRaceKO.clear();
@@ -990,15 +991,7 @@ void CBotf2Doc::PrepareData()
 		
 		m_iRound = 1;
 
-		m_Sector = new CSector*[STARMAP_SECTORS_HCOUNT];
-		for(int i = 0; i < STARMAP_SECTORS_HCOUNT; i++)
-			m_Sector[i] = new CSector[STARMAP_SECTORS_VCOUNT];
-		ASSERT(m_Sector);
-
-		m_System = new CSystem*[STARMAP_SECTORS_HCOUNT];
-		for(int i = 0; i < STARMAP_SECTORS_HCOUNT; i++)
-			m_System[i] = new CSystem[STARMAP_SECTORS_VCOUNT];
-		ASSERT(m_System);
+		AllocateSectorsAndSystems();
 		
 		// Generierungssektornamenklasse wieder neu starten
 		m_ShipArray.RemoveAll();
@@ -6607,3 +6600,16 @@ BOOL CBotf2Doc::OnSaveDocument(LPCTSTR lpszPathName)
 	SetModifiedFlag(FALSE);
 	return TRUE;
 }
+
+void CBotf2Doc::AllocateSectorsAndSystems()
+{
+   m_Sector = new CSector*[STARMAP_SECTORS_HCOUNT];
+   for(int i = 0; i < STARMAP_SECTORS_HCOUNT; i++)
+      m_Sector[i] = new CSector[STARMAP_SECTORS_VCOUNT];
+   ASSERT(m_Sector);
+
+   m_System = new CSystem*[STARMAP_SECTORS_HCOUNT];
+   for(int i = 0; i < STARMAP_SECTORS_HCOUNT; i++)
+      m_System[i] = new CSystem[STARMAP_SECTORS_VCOUNT];
+   ASSERT(m_System);
+ }
