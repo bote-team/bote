@@ -958,7 +958,7 @@ schliessen § mit § ab
 [MIN_DECLINE_OFFER]
 Die § haben unseren § abgelehnt
 [WE_DECLINE_MIN_OFFER]
-Wir haben den § der § abgelehnt
+Wir haben § der § abgelehnt
 [OUR_MIN_OFFER]
 bietet dem Volk der § § an
 [OUR_MIN_OFFER_WAR]
