@@ -110,13 +110,13 @@ bool CReManager::GlobalEvent(CMajor *pRace)
 		for (map<CString, CMinor*>::const_iterator it = pmMinors->begin(); it != pmMinors->end(); ++it)
 		{
 			CMinor* pMinor = it->second;
-			if(pRace->IsRaceContacted(pMinor->GetRaceID())&&pRace->GetAgreement(pMinor->GetRaceID())<85)
+			if(pRace->IsRaceContacted(pMinor->GetRaceID())&& pMinor->GetRelation(pRace->GetRaceID())<85)
 				PossibleMinors.insert(PossibleMinors.end(),pMinor);
 		}
 		if(PossibleMinors.size()>0)
 		{
 			CMinor* pMinor=PossibleMinors.at(rand()%PossibleMinors.size());
-			pMinor->SetAgreement(pRace->GetRaceID(),rand()%100);
+			pMinor->SetRelation(pRace->GetRaceID(), (rand() % 100) - pMinor->GetRelation(pRace->GetRaceID()));
 			messagetext=CResourceManager::GetString("GLOBALEVENTMINOR",false,pMinor->GetRaceName());
 			typ=4;
 		}else succes=false;
