@@ -76,7 +76,8 @@ CBotf2Doc::CBotf2Doc()
 	server.AddServerListener(m_pNetworkHandler);
 	client.AddClientListener(m_pNetworkHandler);
 
-	
+	m_Sector = NULL;
+	m_System = NULL;
 }
 
 CBotf2Doc::~CBotf2Doc()
@@ -106,22 +107,29 @@ CBotf2Doc::~CBotf2Doc()
 		m_pNetworkHandler = NULL;
 	}
 
-	for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
+	if(m_Sector || m_System)
+	{
+		ASSERT(m_Sector && m_System);
+
+		for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
+			for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
+			{
+				m_Sector[x][y].Reset();
+				m_System[x][y].ResetSystem();
+			}
+
 		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-		{
-			m_Sector[x][y].Reset();
-			m_System[x][y].ResetSystem();
-		}
-
-	for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-		{
-			delete[] m_Sector[x];
-			delete[] m_System[x];
-		}
-	delete[] m_Sector;
-	delete[] m_System;
-
-
+			{
+				delete[] m_Sector[x];
+				m_Sector[x] = NULL;
+				delete[] m_System[x];
+				m_System[x] = NULL;
+			}
+		delete[] m_Sector;
+		m_Sector = NULL;
+		delete[] m_System;
+		m_System = NULL;
+	}
 
 	// stop MT
 	MYTRACE_DEINIT;
