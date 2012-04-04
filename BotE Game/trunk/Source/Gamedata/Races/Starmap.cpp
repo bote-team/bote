@@ -17,7 +17,7 @@ static char THIS_FILE[]=__FILE__;
 
 
 // statische Variablen initialisieren
-double** CStarmap::m_BadMapModifiers=new double*[STARMAP_SECTORS_HCOUNT];//[STARMAP_SECTORS_HCOUNT][STARMAP_SECTORS_VCOUNT];
+double** CStarmap::m_BadMapModifiers = NULL;//[STARMAP_SECTORS_HCOUNT][STARMAP_SECTORS_VCOUNT];
 
 
 /**
@@ -39,12 +39,14 @@ inline int sgn(int x)
 CStarmap::CStarmap(BOOL bAICalculation, char nAIRange) : m_bAICalculation(bAICalculation), m_nAIRange(nAIRange)
 {
 
-	m_BadMapModifiers=new double*[STARMAP_SECTORS_HCOUNT];
-	for(int i=0;i<STARMAP_SECTORS_HCOUNT;i++)
-		m_BadMapModifiers[i]=new double[STARMAP_SECTORS_VCOUNT];
-	for(int i=0;i<STARMAP_SECTORS_HCOUNT;i++)
-		for(int j=0;j<STARMAP_SECTORS_VCOUNT;j++)
-			m_BadMapModifiers[i][j]=0;
+	if(!m_BadMapModifiers) {
+		m_BadMapModifiers=new double*[STARMAP_SECTORS_HCOUNT];
+		for(int i=0;i<STARMAP_SECTORS_HCOUNT;i++)
+			m_BadMapModifiers[i]=new double[STARMAP_SECTORS_VCOUNT];
+		for(int i=0;i<STARMAP_SECTORS_HCOUNT;i++)
+			for(int j=0;j<STARMAP_SECTORS_VCOUNT;j++)
+				m_BadMapModifiers[i][j]=0;
+	}
 
 	ASSERT(nAIRange >= SM_RANGE_FAR && nAIRange <= SM_RANGE_NEAR);
 
@@ -137,7 +139,10 @@ CStarmap::~CStarmap()
 			delete[] m_AIRangePoints[x];
 			delete[] m_AINeighbourCount[x];
 			delete[] m_Range[x];
-			//delete[] m_BadMapModifiers[x];
+			if(m_BadMapModifiers) {
+				delete[] m_BadMapModifiers[x];
+				m_BadMapModifiers[x] = NULL;
+			}
 
 		}
 	delete[] pathMap;
@@ -147,8 +152,10 @@ CStarmap::~CStarmap()
 	delete[] m_AIRangePoints;
 	delete[] m_AINeighbourCount;
 	delete[] m_Range;
-	//delete[] m_BadMapModifiers;
-
+	if(m_BadMapModifiers) {
+		delete[] m_BadMapModifiers;
+		m_BadMapModifiers = NULL;
+	}
 }
 
 void CStarmap::SetRangeMap(unsigned char rangeMap[], char w, char h, char x0, char y0)
