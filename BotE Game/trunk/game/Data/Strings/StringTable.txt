@@ -1245,7 +1245,7 @@ Aussenposten
 [STARBASE]
 Sternbasis
 [ALIEN]
-Schiff
+Weltraummonster
 
 // Schiffstypen, Plural
 [TRANSPORTERS]

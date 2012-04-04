@@ -187,6 +187,14 @@ void CShipBottomView::OnDraw(CDC* dc)
 			{
 				// Kennen wir den Besizter des Schiffes?
 				bool bUnknown = (pMajor->GetRaceID() != pShip->GetOwnerOfShip() && pMajor->IsRaceContacted(pShip->GetOwnerOfShip()) == false);
+				if (bUnknown)
+				{
+					// Wenn kein diplomatischer Kontakt möglich ist, wird das Schiff immer angezeigt
+					CRace* pShipOwner = pDoc->GetRaceCtrl()->GetRace(pShip->GetOwnerOfShip());
+					if (pShipOwner)
+						bUnknown = !pShipOwner->HasSpecialAbility(SPECIAL_NO_DIPLOMACY);
+				}
+
 				// ist das Schiff gerade markiert?
 				bool bMarked = (i == pDoc->GetCurrentShipIndex());
 				CPoint pt(250 * column, 65 * row);
@@ -1043,6 +1051,12 @@ void CShipBottomView::OnTimer(UINT_PTR nIDEvent)
 /// @return	der erstellte Tooltip-Text
 CString CShipBottomView::CreateTooltip(void)
 {
+	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	ASSERT(pDoc);
+
+	if (!pDoc->m_bDataReceived)
+		return "";
+
 	// Wo sind wir
 	CPoint pt;
 	GetCursorPos(&pt);
@@ -1063,16 +1077,24 @@ CString CShipBottomView::CreateTooltip(void)
 		}
 	
 	if (!pShip)
-		return "";	
+		return "";
 
 	// ist der Besitzer des Schiffes unbekannt?
-	if (pMajor->GetRaceID() != pShip->GetOwnerOfShip() && pMajor->IsRaceContacted(pShip->GetOwnerOfShip()) == false)
-	{
-		CString s = CResourceManager::GetString("UNKNOWN");
-		s = CHTMLStringBuilder::GetHTMLColor(s);
-		s = CHTMLStringBuilder::GetHTMLHeader(s, _T("h4"));		
-		s = CHTMLStringBuilder::GetHTMLCenter(s);
-		return s;
+	if (pMajor->GetRaceID() != pShip->GetOwnerOfShip())
+	{ 
+		bool bNoDiplomacy = false;
+		CRace* pShipOwner = pDoc->GetRaceCtrl()->GetRace(pShip->GetOwnerOfShip());
+		if (pShipOwner)
+			bNoDiplomacy = pShipOwner->HasSpecialAbility(SPECIAL_NO_DIPLOMACY);
+		
+		if (!bNoDiplomacy && pMajor->IsRaceContacted(pShip->GetOwnerOfShip()) == false)
+		{
+			CString s = CResourceManager::GetString("UNKNOWN");
+			s = CHTMLStringBuilder::GetHTMLColor(s);
+			s = CHTMLStringBuilder::GetHTMLHeader(s, _T("h4"));		
+			s = CHTMLStringBuilder::GetHTMLCenter(s);
+			return s;
+		}
 	}
 
 	return pShip->GetTooltip();

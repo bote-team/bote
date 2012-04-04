@@ -97,6 +97,11 @@ private:
 	/// @return <code>true</code> wenn Initalisierung erfolgreich war, sonst <code>false</code>
 	bool InitMinors(int nSource = RACESOURCE_DATAFILE);
 
+	/// Funktion zum Einlesen und Initialisieren der Aliens (Weltraummonster)
+	/// @param nSource Datenquelle der Rasseninformationen
+	/// @return <code>true</code> wenn Initalisierung erfolgreich war, sonst <code>false</code>
+	bool InitAlienEntities(int nSource = RACESOURCE_DATAFILE);
+
 	/// Funktion erstellt die Beziehungen der Rassen untereinander. Dabei werden jedoch nur die
 	/// Majorbeziehungen in beide Richtungen vergeben. Bei den Minors wird immer nur die Beziehung
 	/// von Minor zu Majors erstellt.

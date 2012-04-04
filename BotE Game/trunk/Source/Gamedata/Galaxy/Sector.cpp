@@ -751,9 +751,13 @@ void CSector::DrawShipSymbolInSector(Graphics *g, CBotf2Doc* pDoc, CMajor* pPlay
 		if (pPlayer->GetRaceID() == it->first && this->GetOwnerOfShip(it->first) == TRUE
 			|| this->GetOwnerOfShip(it->first) == TRUE && this->GetNeededScanPower(it->first) < this->GetScanPower(pPlayer->GetRaceID()))
 		{
+			// kann keine Diplomatie aufgenommen werden, dann das Alien Symbol zeichnen
+			if (pPlayer != it->second && it->second->HasSpecialAbility(SPECIAL_NO_DIPLOMACY))
+				sFilePath = sAppPath + "Graphics\\Symbols\\Entity.bop";
 			// ist der besitzer des Schiffes unbekannt, dann Fragezeichen zeichnen
-			if (pPlayer != it->second && pPlayer->IsRaceContacted(it->first) == false)
+			else if (pPlayer != it->second && pPlayer->IsRaceContacted(it->first) == false)
 				sFilePath = sAppPath + "Graphics\\Symbols\\Unknown.bop";
+			// sonst das Rassensymbol zeichnen
 			else
 				sFilePath = sAppPath + "Graphics\\Symbols\\" + it->first + ".bop";
 			
@@ -773,9 +777,13 @@ void CSector::DrawShipSymbolInSector(Graphics *g, CBotf2Doc* pDoc, CMajor* pPlay
 		if ((pPlayer->GetRaceID() == it->first || this->GetScanPower(pPlayer->GetRaceID()) > 0) &&
 			(this->GetIsStationBuilding(it->first) == TRUE || this->GetOutpost(it->first) == TRUE || this->GetStarbase(it->first) == TRUE))
 		{
+			// kann keine Diplomatie aufgenommen werden, dann das Alien Symbol zeichnen
+			if (pPlayer != it->second && it->second->HasSpecialAbility(SPECIAL_NO_DIPLOMACY))
+				sFilePath = sAppPath + "Graphics\\Symbols\\Entity.bop";
 			// ist der besitzer des Schiffes unbekannt, dann Fragezeichen zeichnen
-			if (pPlayer != it->second && pPlayer->IsRaceContacted(it->first) == false)
+			else if (pPlayer != it->second && pPlayer->IsRaceContacted(it->first) == false)
 				sFilePath = sAppPath + "Graphics\\Symbols\\Unknown.bop";
+			// sonst das Rassensymbol zeichnen
 			else
 				sFilePath = sAppPath + "Graphics\\Symbols\\" + it->first + ".bop";
 			

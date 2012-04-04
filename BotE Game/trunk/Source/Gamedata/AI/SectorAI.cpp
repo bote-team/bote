@@ -194,7 +194,8 @@ void CSectorAI::CalculateMinorraceSectors(int x, int y)
 		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 			if (it->second->GetStarmap()->GetRange(CPoint(x,y)) != 3)
 				if (it->second->IsRaceContacted(sOwner) == false)
-					m_vMinorraceSectors[it->first].push_back(pMinor->GetRaceKO());
+					if (pMinor->GetRaceKO() != CPoint(-1,-1))
+						m_vMinorraceSectors[it->first].push_back(pMinor->GetRaceKO());
 }
 
 /// Diese Funktion berechnet alle möglichen offensiven Ziele für eine bestimmte Rasse. Das Ergebnis wird im Array

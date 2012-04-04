@@ -1066,9 +1066,16 @@ void CShip::DrawShip(Gdiplus::Graphics* g, CGraphicPool* pGraphicPool, const CPo
 		// normale Infos zum Schiff sollen angezeigt werden
 		if (!bDrawFleet)
 		{
-			g->DrawString(m_strShipName.AllocSysString(), -1, &font, PointF((REAL)pt.x + 120, (REAL)pt.y + 37), &fontFormat, &fontBrush);
-			s = m_strShipClass + "-" + CResourceManager::GetString("CLASS");
-			g->DrawString(s.AllocSysString(), -1, &font, PointF((REAL)pt.x + 120, (REAL)pt.y + 57), &fontFormat, &fontBrush);
+			if (m_iShipType != ALIEN)
+			{
+				g->DrawString(m_strShipName.AllocSysString(), -1, &font, PointF((REAL)pt.x + 120, (REAL)pt.y + 37), &fontFormat, &fontBrush);
+				s = m_strShipClass + "-" + CResourceManager::GetString("CLASS");
+				g->DrawString(s.AllocSysString(), -1, &font, PointF((REAL)pt.x + 120, (REAL)pt.y + 57), &fontFormat, &fontBrush);
+			}
+			else
+			{
+				g->DrawString(m_strShipClass.AllocSysString(), -1, &font, PointF((REAL)pt.x + 120, (REAL)pt.y + 37), &fontFormat, &fontBrush);
+			}
 		}
 		// Schiff und dessen Flotteninfos sollen angezeigt werden
 		else

@@ -571,6 +571,11 @@ bool CMajorAI::MakeMinorOffer(const CString& sRaceID, CDiplomacyInfo& info)
 		short nOthersAgreement	= NO_AGREEMENT;
 		CString sCorruptedMajor = "";
 
+		// wenn nur Aliendiplomatie möglich ist, dann darf nur Krieg oder Freundschaft angeboten werden
+		bool bIsAlienDiplomacy = false;
+		if (pOurRace->HasSpecialAbility(SPECIAL_ALIEN_DIPLOMACY) || pMinor->HasSpecialAbility(SPECIAL_ALIEN_DIPLOMACY))
+			bIsAlienDiplomacy = true;
+
 		map<CString, CMajor*>* pmMajors = m_pDoc->GetRaceCtrl()->GetMajors();
 		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 		{
@@ -637,54 +642,34 @@ bool CMajorAI::MakeMinorOffer(const CString& sRaceID, CDiplomacyInfo& info)
 		info.m_sToRace = sRaceID;			
 		info.m_nSendRound = m_pDoc->GetCurrentRound() - 1;
 
-		// Nun haben wir den Vertrag, den wir anbieten möchten.
-		// Jetzt muss bestimmt werden, ob die Rasse zu den Lieblingsrassen unsererseits zählt.
-		// Dadurch soll sich beim Mitgift- und Geschenkegeben auf wenige Rassen konzentriert werden.
-		bool bIsFavorite = (pMinor->GetRaceID() == m_sFavoriteMinor) ? true : false;	
-
-		// Wenn es sich bei der Minorrace um unsere FavoriteRace handelt, dann versuchen wir ihr
-		// auch Mitgifte zum Vertrag zu geben.
-		
-		// sollen zum Vertragangebot noch Mitgifte gegeben werden?
-		if (bIsFavorite && nOffer > NO_AGREEMENT)
-			this->GiveDowry(info);
-		
-		// Wenn wir kein Angebot an unsere Favoritrace gemacht haben bzw. wir konnten keins machen, dann geben wir
-		// möglicherweise ein Geschenk oder wir Bestechen diese Rasse.
-		if (bIsFavorite && nOffer == NO_AGREEMENT && byTheirRelationToUs <= 91)
-			if (this->GiveDowry(info))
-				nOffer = PRESENT;
-		
-		// Wenn wir der Favoritminor kein Geschenk gemacht haben, dann Bestechen wir diese womöglich
-		if (bIsFavorite && nOffer == NO_AGREEMENT)
+		if (!bIsAlienDiplomacy)
 		{
-			// Wir können nur bestechen, wenn wir mindst. Freundschaft mit der Minorrace haben oder diese Minorrace
-			// hat mit irgendeiner anderen Rasse mindst. ein Bündnis
-			bool bGiveDowry = false;
-			if (nOthersAgreement >= AFFILIATION)
-			{
-				// Nun schauen ob wir die Bestechung durchführen kann
+			// Nun haben wir den Vertrag, den wir anbieten möchten.
+			// Jetzt muss bestimmt werden, ob die Rasse zu den Lieblingsrassen unsererseits zählt.
+			// Dadurch soll sich beim Mitgift- und Geschenkegeben auf wenige Rassen konzentriert werden.
+			bool bIsFavorite = (pMinor->GetRaceID() == m_sFavoriteMinor) ? true : false;	
+
+			// Wenn es sich bei der Minorrace um unsere FavoriteRace handelt, dann versuchen wir ihr
+			// auch Mitgifte zum Vertrag zu geben.
+			
+			// sollen zum Vertragangebot noch Mitgifte gegeben werden?
+			if (!bIsAlienDiplomacy && bIsFavorite && nOffer > NO_AGREEMENT)
+				this->GiveDowry(info);
+			
+			// Wenn wir kein Angebot an unsere Favoritrace gemacht haben bzw. wir konnten keins machen, dann geben wir
+			// möglicherweise ein Geschenk oder wir Bestechen diese Rasse.
+			if (!bIsAlienDiplomacy && bIsFavorite && nOffer == NO_AGREEMENT && byTheirRelationToUs <= 91)
 				if (this->GiveDowry(info))
-				{
-					nOffer = CORRUPTION;
-					info.m_sCorruptedRace = sCorruptedMajor;
-				}
-			}
-			else if (pMinor->GetAgreement(pOurRace->GetRaceID()) >= FRIENDSHIP_AGREEMENT
-				&& pMinor->GetAgreement(pOurRace->GetRaceID()) != MEMBERSHIP
-				&& nOthersAgreement > NO_AGREEMENT)
+					nOffer = PRESENT;
+			
+			// Wenn wir der Favoritminor kein Geschenk gemacht haben, dann Bestechen wir diese womöglich
+			if (bIsFavorite && nOffer == NO_AGREEMENT)
 			{
-				// hier müssen wir noch den Gegner der Bestechung wählen
-				// dieser wird zufällig unter den vorhandenen Majors ausgewählt
-				vector<CString> vCorrupted;
-				for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
-					// wir nicht selbst
-					if (it->first != pOurRace->GetRaceID() && pMinor->GetAgreement(it->first) > NO_AGREEMENT)
-						vCorrupted.push_back(it->first);
-				// zufällige Auswahl
-				if (vCorrupted.size())
+				// Wir können nur bestechen, wenn wir mindst. Freundschaft mit der Minorrace haben oder diese Minorrace
+				// hat mit irgendeiner anderen Rasse mindst. ein Bündnis
+				bool bGiveDowry = false;
+				if (nOthersAgreement >= AFFILIATION)
 				{
-					sCorruptedMajor = vCorrupted[rand()%vCorrupted.size()];
 					// Nun schauen ob wir die Bestechung durchführen kann
 					if (this->GiveDowry(info))
 					{
@@ -692,6 +677,40 @@ bool CMajorAI::MakeMinorOffer(const CString& sRaceID, CDiplomacyInfo& info)
 						info.m_sCorruptedRace = sCorruptedMajor;
 					}
 				}
+				else if (pMinor->GetAgreement(pOurRace->GetRaceID()) >= FRIENDSHIP_AGREEMENT
+					&& pMinor->GetAgreement(pOurRace->GetRaceID()) != MEMBERSHIP
+					&& nOthersAgreement > NO_AGREEMENT)
+				{
+					// hier müssen wir noch den Gegner der Bestechung wählen
+					// dieser wird zufällig unter den vorhandenen Majors ausgewählt
+					vector<CString> vCorrupted;
+					for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
+						// wir nicht selbst
+						if (it->first != pOurRace->GetRaceID() && pMinor->GetAgreement(it->first) > NO_AGREEMENT)
+							vCorrupted.push_back(it->first);
+					// zufällige Auswahl
+					if (vCorrupted.size())
+					{
+						sCorruptedMajor = vCorrupted[rand()%vCorrupted.size()];
+						// Nun schauen ob wir die Bestechung durchführen kann
+						if (this->GiveDowry(info))
+						{
+							nOffer = CORRUPTION;
+							info.m_sCorruptedRace = sCorruptedMajor;
+						}
+					}
+				}
+			}
+		}
+		else
+		{
+			// wenn nur Aliendiplomatie möglich ist, dann darf nur Krieg oder Freundschaft angeboten werden
+			if (nOffer >= FRIENDSHIP_AGREEMENT)
+			{
+				if (nAgreement < FRIENDSHIP_AGREEMENT)
+					nOffer = FRIENDSHIP_AGREEMENT;
+				else
+					nOffer = NO_AGREEMENT;
 			}
 		}
 	}
@@ -758,6 +777,11 @@ bool CMajorAI::MakeMajorOffer(CString& sRaceID, CDiplomacyInfo& info)
 				nRandom = 0;
 		}
 
+		// wenn nur Aliendiplomatie möglich ist, dann darf nur Krieg, Freundschaft oder NAP angeboten werden
+		bool bIsAlienDiplomacy = false;
+		if (pOurRace->HasSpecialAbility(SPECIAL_ALIEN_DIPLOMACY) || pTheirRace->HasSpecialAbility(SPECIAL_ALIEN_DIPLOMACY))
+			bIsAlienDiplomacy = true;
+		
 		// Jetzt haben wir nen Randomwert, wenn dieser einen zufälligen Wert überschreitet, bietet die
 		// Majorrace zu 33% etwas an, dieser zufällige Wert ist wiederrum von unserer Rasseneigenschaft abhängig
 		short nOffer = NO_AGREEMENT;
@@ -834,14 +858,14 @@ bool CMajorAI::MakeMajorOffer(CString& sRaceID, CDiplomacyInfo& info)
 				nMinRel += (short)fModi;	// somit wird auch Krieg erklärt, wenn die Beziehung eigentlich noch besser ist.
 			if (fModi > 1.0 && nRandom + abs(nAgreement * 2) < nMinRel && byOurRelationToThem + abs(nAgreement * 2) < nMinRel && nAgreement != WAR)
 				nOffer = WAR;
-			
+
 			// Hier möglicherweise Angebot eines Kriegspaktes
 			// das geht natürlich nur, wenn wir noch keinen Krieg mit der Rasse haben. Es ist aber möglich, wenn wir
 			// eine Runde zuvor einen Kriegspakt angeboten haben, der später angenommen wird und wir auch so der Rasse 
 			// den Krieg erklären, das wir ihr eigentlich 2x den Krieg erklären. Ist nicht so wichtig, sieht nur in der
 			// Nachrichtenübersicht nicht so schön aus
 			// wenn ich der Rasse den Krieg erklären würde, dann suche ich mir möglicherweise auch noch einen Kriegspaktpartner
-			if (nOffer == WAR && rand()%4 > 0)	// zu 75% wird versucht ein Kriegspakt anzubieten
+			if (!bIsAlienDiplomacy && nOffer == WAR && rand()%4 > 0)	// zu 75% wird versucht ein Kriegspakt anzubieten
 			{
 				CString sLikeBest	= "";		// beste Beziehung von uns zu
 				CString sLikeSecond = "";		// zweitbeste Beziehung von uns zu
@@ -905,7 +929,7 @@ bool CMajorAI::MakeMajorOffer(CString& sRaceID, CDiplomacyInfo& info)
 		// Kooperation anzubieten. Dies hat den Vorteil, dass sich relativ schwache Imperien nicht auch noch gegenseitig
 		// schwächen, sondern sich eher verbünden. In einem Lategame könnte z.B. eine Rasse so stark wie alle anderen Rassen
 		// zusammen sein, dann sollten sich die anderen Rassen verbünden und nicht selbst noch schwächen.
-		if (nOffer == NO_AGREEMENT && nAgreement < FRIENDSHIP_AGREEMENT && rand()%5 == 0)
+		if (!bIsAlienDiplomacy && nOffer == NO_AGREEMENT && nAgreement < FRIENDSHIP_AGREEMENT && rand()%5 == 0)
 		{
 			// maximale Schiffsstärke berechnen
 			UINT nMaxShipPower = 0;
@@ -934,85 +958,101 @@ bool CMajorAI::MakeMajorOffer(CString& sRaceID, CDiplomacyInfo& info)
 		info.m_sFromRace = pOurRace->GetRaceID();
 		info.m_sToRace = sRaceID;			
 		info.m_nSendRound = m_pDoc->GetCurrentRound() - 1;
-				
-		// Ab hier kommt noch was großes dazu, nämlich ob und wann eine computergesteuerte Rasse auch Mitgifte macht.
-		// Credits kann sie ja immer dazugeben, aber Ressourcen geht nur, wenn sie mindst. einen Handelsvertrag hat.
-		// Außerdem könnte die Rasse ja auch ein Geschenk geben oder eine Forderung stellen.
-		if (nOffer != NO_AGREEMENT)
+			
+		if (!bIsAlienDiplomacy)
 		{
-			//	CString s;
-			//	s.Format("Angebot: %d\nvon: %s\nan: %s",offer,CMajorRace::GetRaceName(m_iRaceNumber),CMajorRace::GetRaceName(race));
-			//	AfxMessageBox(s);
-
-			// Jetzt muss die Dauer des Vertrages festgelegt werden. Umso "höherwertiger" ein Vertrag ist, desto
-			// wahrscheinlicher sollte eine längere Vertragsdauer auch sein. Das heißt, wir holen uns eine Zufallszahl
-			// von 0 bis 10 und addieren darauf den Betrag des Wertes eines Vertrages. Alles was größer als 10 ist wird
-			// auf 0 gesetzt. 0 bedeutet unbegrenzt.
-			if (nOffer != WAR && nOffer != WAR_PACT)
+			// Ab hier kommt noch was großes dazu, nämlich ob und wann eine computergesteuerte Rasse auch Mitgifte macht.
+			// Credits kann sie ja immer dazugeben, aber Ressourcen geht nur, wenn sie mindst. einen Handelsvertrag hat.
+			// Außerdem könnte die Rasse ja auch ein Geschenk geben oder eine Forderung stellen.
+			if (nOffer != NO_AGREEMENT)
 			{
-				short nDuration = rand()%(11 + abs(nOffer));
-				if (nDuration > 10)
-					nDuration = 0;
-				// hier Dauer des Vertrages festlegen
-				info.m_nDuration = nDuration * 10;
-			}			
+				//	CString s;
+				//	s.Format("Angebot: %d\nvon: %s\nan: %s",offer,CMajorRace::GetRaceName(m_iRaceNumber),CMajorRace::GetRaceName(race));
+				//	AfxMessageBox(s);
 
-			info.m_nType = nOffer;
-			if (nOffer != WAR)
-				this->GiveDowry(info);
-		}
-		// wenn kein Angebot gemacht werden würde, so gibt die KI mit sehr geringer Wahrscheinlichkeit
-		// auch Geschenke. Diese werden zur Zeit nicht durch einen bestimmten Grund gegeben,
-		// sondern nur sehr unwahrscheinlich.
-		// Zu 3.33% wird wenn nix angeboten möglicherweise ein Geschenk gemacht.
-		else if (rand()%30 == 0 && nAgreement != WAR)
-		{
-			// Geschenk machen
-			if (GiveDowry(info))
-				info.m_nType = PRESENT;			
-		}
-		// wenn kein Angebot und kein Geschenk gemacht wird, dann wird vielleicht eine Forderung gestellt.
-		else if (nAgreement != WAR)
-		{
-			// Der Modifikator ausgehend von den Schiffsstärken verändert die Wahrscheinlichkeit für eine Forderung.
-			// Umso stärker unsere Schiffe sind, desto eher wird auch eine Forderung gestellt. Hier werden zwei Zufalls-
-			// variablen bestimmt, weil mit einer das Risiko trotz eines hohen modi-Werts eine Forderung zu stellen zu
-			// groß ist.
-			float fModi = 0.0f;
-			if (nTheirShipPower)
-				fModi = (float)nOurShipPower / (float)nTheirShipPower;
-			// old style
-			/*fModi *= 2.0f;
-			fModi = max(fModi, 1.0f);
+				// Jetzt muss die Dauer des Vertrages festgelegt werden. Umso "höherwertiger" ein Vertrag ist, desto
+				// wahrscheinlicher sollte eine längere Vertragsdauer auch sein. Das heißt, wir holen uns eine Zufallszahl
+				// von 0 bis 10 und addieren darauf den Betrag des Wertes eines Vertrages. Alles was größer als 10 ist wird
+				// auf 0 gesetzt. 0 bedeutet unbegrenzt.
+				if (nOffer != WAR && nOffer != WAR_PACT)
+				{
+					short nDuration = rand()%(11 + abs(nOffer));
+					if (nDuration > 10)
+						nDuration = 0;
+					// hier Dauer des Vertrages festlegen
+					info.m_nDuration = nDuration * 10;
+				}			
 
-			int temp = (int)(100 / fModi);
-			temp = max(temp, 1);
-
-			int a = rand()%temp;
-			int b = rand()%temp;
-			if (a < 2 && b < 7)
-			{
-			*/
-
-			// new
-			fModi *= 4.0f;
-			int a = rand()%100;
-			int b = rand()%100;
-			if (a < 2 + fModi && b < 7 + fModi)
-			{
-				#ifdef TRACE_DIPLOMATY
-				MYTRACE(MT::LEVEL_DEBUG, "rand: %d - a = %d - b = %d - Modi = %lf (wir %s (%d) - Gegner %s (%d))\n",((int)(100 / fModi)), a, b, fModi, pOurRace->GetRaceID(), nOurShipPower, sRaceID, nTheirShipPower);
-				#endif
-				// Forderung stellen			
-				if (ClaimRequest(info))
-					info.m_nType = DIP_REQUEST;				
+				info.m_nType = nOffer;
+				if (nOffer != WAR)
+					this->GiveDowry(info);
 			}
+			// wenn kein Angebot gemacht werden würde, so gibt die KI mit sehr geringer Wahrscheinlichkeit
+			// auch Geschenke. Diese werden zur Zeit nicht durch einen bestimmten Grund gegeben,
+			// sondern nur sehr unwahrscheinlich.
+			// Zu 3.33% wird wenn nix angeboten möglicherweise ein Geschenk gemacht.
+			else if (rand()%30 == 0 && nAgreement != WAR)
+			{
+				// Geschenk machen
+				if (GiveDowry(info))
+					info.m_nType = PRESENT;			
+			}
+			// wenn kein Angebot und kein Geschenk gemacht wird, dann wird vielleicht eine Forderung gestellt.
+			else if (nAgreement != WAR)
+			{
+				// Der Modifikator ausgehend von den Schiffsstärken verändert die Wahrscheinlichkeit für eine Forderung.
+				// Umso stärker unsere Schiffe sind, desto eher wird auch eine Forderung gestellt. Hier werden zwei Zufalls-
+				// variablen bestimmt, weil mit einer das Risiko trotz eines hohen modi-Werts eine Forderung zu stellen zu
+				// groß ist.
+				float fModi = 0.0f;
+				if (nTheirShipPower)
+					fModi = (float)nOurShipPower / (float)nTheirShipPower;
+				// old style
+				/*fModi *= 2.0f;
+				fModi = max(fModi, 1.0f);
 
-		}		
-	}	
+				int temp = (int)(100 / fModi);
+				temp = max(temp, 1);
+
+				int a = rand()%temp;
+				int b = rand()%temp;
+				if (a < 2 && b < 7)
+				{
+				*/
+
+				// new
+				fModi *= 4.0f;
+				int a = rand()%100;
+				int b = rand()%100;
+				if (a < 2 + fModi && b < 7 + fModi)
+				{
+					#ifdef TRACE_DIPLOMATY
+					MYTRACE(MT::LEVEL_DEBUG, "rand: %d - a = %d - b = %d - Modi = %lf (wir %s (%d) - Gegner %s (%d))\n",((int)(100 / fModi)), a, b, fModi, pOurRace->GetRaceID(), nOurShipPower, sRaceID, nTheirShipPower);
+					#endif
+					// Forderung stellen			
+					if (ClaimRequest(info))
+						info.m_nType = DIP_REQUEST;
+				}
+			}
+		}
+		else if (nOffer != NO_AGREEMENT)
+		{
+			// wenn nur Aliendiplomatie möglich ist, dann darf nur Krieg, Freundschaft oder NAP angeboten werden
+			if (nOffer >= FRIENDSHIP_AGREEMENT && nAgreement < FRIENDSHIP_AGREEMENT)
+				nOffer = FRIENDSHIP_AGREEMENT;
+			else if (nOffer == NON_AGGRESSION_PACT && nAgreement < NON_AGGRESSION_PACT)
+				nOffer = NON_AGGRESSION_PACT;
+			else if (nOffer == DEFENCE_PACT)
+				nOffer = NO_AGREEMENT;
+			else if (nOffer != WAR)
+				nOffer = NO_AGREEMENT;
+			
+			info.m_nType = nOffer;
+		}
+	}
 	
 	if (info.m_nType != NO_AGREEMENT)
-	{		
+	{	
 		CGenDiploMessage::GenerateMajorOffer(info);
 		MYTRACE(MT::LEVEL_INFO, "Major: %s makes offer %d to Major %s\n", info.m_sFromRace, info.m_nType, info.m_sToRace);
 		return true;

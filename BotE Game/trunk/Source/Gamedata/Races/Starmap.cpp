@@ -224,6 +224,13 @@ BOOL CStarmap::IsBase(const Sector &sector)
 	return FALSE;
 }
 
+void CStarmap::SetFullRangeMap(int nRange/* = SM_RANGE_NEAR*/)
+{
+	for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
+		for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
+			m_Range[x][y] = nRange;
+}
+
 void CStarmap::AddBase(const Sector &sector, BYTE propTech)
 {
 	ASSERT_SECTOR_VALID(sector);

@@ -2,6 +2,7 @@
 #include "RaceController.h"
 #include "Major.h"
 #include "Minor.h"
+#include "AI\MinorAI.h"
 #include "IOData.h"
 
 IMPLEMENT_SERIAL (CRaceController, CObject, 1)
@@ -75,7 +76,7 @@ bool CRaceController::Init(int nSource/* = RACESOURCE_DATAFILE*/)
 	// alle alten Rassen löschen
 	Reset();
 
-	if ((InitMajors(nSource) & InitMinors(nSource)) == false)
+	if ((InitMajors(nSource) & InitMinors(nSource) & InitAlienEntities(nSource)) == false)
 		return false;
 	
 	// Array aller Majors und Minors anlegen
@@ -398,6 +399,95 @@ bool CRaceController::InitMinors(int nSource/* = RACESOURCE_DATAFILE*/)
 				m_mRaces[pNewMinor->GetRaceID()] = pNewMinor;
 		}
 	}
+	return true;
+}
+
+/// Funktion zum Einlesen und Initialisieren der Aliens (Weltraummonster)
+/// @param nSource Datenquelle der Rasseninformationen
+/// @return <code>true</code> wenn Initalisierung erfolgreich war, sonst <code>false</code>
+bool CRaceController::InitAlienEntities(int nSource/* = RACESOURCE_DATAFILE*/)
+{
+	// Aliens nun anlegen
+	if (nSource == RACESOURCE_DATAFILE)
+	{
+		// danach die Minors einlesen
+		int nInfoCount = 9;
+		int nCurRow = 0;
+		CString sVersion;
+		
+		// Name des zu öffnenden Files 
+		CString fileName = CIOData::GetInstance()->GetAppPath() + "Data\\Races\\AlienEntities.data";
+		// Varibale vom Typ CStdioFile
+		CStdioFile file;
+		// Array mit allen Rasseninfos
+		CStringArray saInfo;
+				
+		// Datei öffnen		
+		if (file.Open(fileName, CFile::shareDenyNone | CFile::modeRead | CFile::typeText))
+		{
+			// auf sInput wird die jeweilige Zeile gespeichert
+			CString sInput;
+			while (file.ReadString(sInput))
+			{
+				// in der ersten Zeile müssen Versioninfos stehen
+				if (nCurRow == 0)
+				{
+					sVersion = sInput;
+					nCurRow++;
+				}
+				else
+				{
+					saInfo.Add(sInput);
+					nCurRow++;
+				}
+			}
+		}
+		else
+		{	
+			AfxMessageBox("Error! Could not open \"AlienEntities.data\"...");
+			return false;
+		}
+		// Datei wird geschlossen
+		file.Close();
+
+		// prüfen ob vollständige Rasseninformationen vorhanden sind
+		if (nCurRow < nInfoCount || (saInfo.GetSize())%nInfoCount != 0)
+		{
+			AfxMessageBox("Error in file!\nAlienEntities.data is corrupted");
+			return false;
+		}
+		// prüfen ob Version ausreichend ist
+		if (atof(sVersion) > VERSION)
+		{
+			AfxMessageBox("Version conflict in file AlienEntities.data");
+			return false;
+		}
+		
+		// Minorraces nun anlegen
+		int nPos = 0;
+		while (nPos < saInfo.GetSize())
+		{
+			CMinor* pAlien = new CMinor();
+			pAlien->CreateAlienEntities(saInfo, nPos);
+			// überprüfen das auch soviele Informationen ins Objekt geschrieben wurden
+			// wir auch Informationen in der Datei standen
+			if (nPos%nInfoCount != 0)
+			{
+				AfxMessageBox("Error in file AlienEntities.data!\nCould not create correct CMinor object!");
+				return false;
+			}
+			// Rasse der Map hinzufügen
+			if (m_mRaces.find(pAlien->GetRaceID()) != m_mRaces.end())
+			{
+				CString s;
+				s.Format("Error in file AlienEntities.data!\nThe race-ID %s exists more then one time!", pAlien->GetRaceID());
+				AfxMessageBox(s);
+			}
+			else
+				m_mRaces[pAlien->GetRaceID()] = pAlien;
+		}
+	}	
+
 	return true;
 }
 

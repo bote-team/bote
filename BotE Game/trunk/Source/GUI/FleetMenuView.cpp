@@ -194,8 +194,16 @@ void CFleetMenuView::DrawFleetMenue(Graphics* g)
 	fontBrush.SetColor(normalColor);
 	
 	CShip* pShip = &(pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfFleetShip()));
-	bool bUnkown = (pMajor->GetRaceID() != pShip->GetOwnerOfShip() && pMajor->IsRaceContacted(pShip->GetOwnerOfShip()) == false);
-	if (!bUnkown)
+	bool bUnknown = (pMajor->GetRaceID() != pShip->GetOwnerOfShip() && pMajor->IsRaceContacted(pShip->GetOwnerOfShip()) == false);
+	if (bUnknown)
+	{
+		// Wenn kein diplomatischer Kontakt möglich ist, wird das Schiff immer angezeigt
+		CRace* pShipOwner = pDoc->GetRaceCtrl()->GetRace(pShip->GetOwnerOfShip());
+		if (pShipOwner)
+			bUnknown = !pShipOwner->HasSpecialAbility(SPECIAL_NO_DIPLOMACY);
+	}
+
+	if (!bUnknown)
 	{
 		// der gleichen Klasse hinzufügen
 		s.Format("%s-%s", pShip->GetShipClass(),CResourceManager::GetString("CLASS"));
@@ -215,7 +223,7 @@ void CFleetMenuView::DrawFleetMenue(Graphics* g)
 	fontFormat.SetFormatFlags(StringFormatFlagsNoWrap);		
 	fontBrush.SetColor(normalColor);
 
-	if (!bUnkown)
+	if (!bUnknown)
 	{
 		// fremder Klassen entfernen
 		s.Format("%s %s-%s",CResourceManager::GetString("NOT"),	pShip->GetShipClass(),CResourceManager::GetString("CLASS"));
@@ -238,7 +246,7 @@ void CFleetMenuView::DrawFleetMenue(Graphics* g)
 		//bool bMarked = (pDoc->GetNumberOfTheShipInFleet() == 0);
 		bool bMarked = pShip == m_pMarkedShip;
 		CPoint pt(250 * column, 65 * row + 60);
-		pShip->DrawShip(g, pDoc->GetGraphicPool(), pt, bMarked, bUnkown, FALSE, normalColor, markColor, font);
+		pShip->DrawShip(g, pDoc->GetGraphicPool(), pt, bMarked, bUnknown, FALSE, normalColor, markColor, font);
 		m_vShipRects.push_back(pair<CRect, CShip*>(CRect(pt.x, pt.y + 20, pt.x + 250, pt.y + 85), pShip));
 	}
 	counter++;
@@ -263,7 +271,7 @@ void CFleetMenuView::DrawFleetMenue(Graphics* g)
 				//bool bMarked = (i + 1 == pDoc->GetNumberOfTheShipInFleet());
 				bool bMarked = pShip->GetFleet()->GetShipFromFleet(i) == m_pMarkedShip;
 				CPoint pt(250 * column, 65 * row + 60);
-				pShip->GetFleet()->GetShipFromFleet(i)->DrawShip(g, pDoc->GetGraphicPool(), pt, bMarked, bUnkown, FALSE, normalColor, markColor, font);
+				pShip->GetFleet()->GetShipFromFleet(i)->DrawShip(g, pDoc->GetGraphicPool(), pt, bMarked, bUnknown, FALSE, normalColor, markColor, font);
 				m_vShipRects.push_back(pair<CRect, CShip*>(CRect(pt.x, pt.y + 20, pt.x + 250, pt.y + 85), pShip->GetFleet()->GetShipFromFleet(i)));
 			}
 			row++;
@@ -621,10 +629,17 @@ CString CFleetMenuView::CreateTooltip(void)
 	if (!pShip)
 		return "";	
 
-	bool bUnkown = (pMajor->GetRaceID() != pShip->GetOwnerOfShip() && pMajor->IsRaceContacted(pShip->GetOwnerOfShip()) == false);
+	bool bUnknown = (pMajor->GetRaceID() != pShip->GetOwnerOfShip() && pMajor->IsRaceContacted(pShip->GetOwnerOfShip()) == false);
+	if (bUnknown)
+	{
+		// Wenn kein diplomatischer Kontakt möglich ist, wird das Schiff immer angezeigt
+		CRace* pShipOwner = pDoc->GetRaceCtrl()->GetRace(pShip->GetOwnerOfShip());
+		if (pShipOwner)
+			bUnknown = !pShipOwner->HasSpecialAbility(SPECIAL_NO_DIPLOMACY);
+	}
 
 	// ist der Besitzer des Schiffes unbekannt?
-	if (bUnkown)
+	if (bUnknown)
 	{
 		CString s = CResourceManager::GetString("UNKNOWN");
 		s = CHTMLStringBuilder::GetHTMLColor(s);

@@ -296,10 +296,17 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 
 		CString Range;
 		CString s;
-		bool bUnkown = (pMajor->GetRaceID() != m_pShip->GetOwnerOfShip() && pMajor->IsRaceContacted(m_pShip->GetOwnerOfShip()) == false);
+		bool bUnknown = (pMajor->GetRaceID() != m_pShip->GetOwnerOfShip() && pMajor->IsRaceContacted(m_pShip->GetOwnerOfShip()) == false);
+		if (bUnknown)
+		{
+			// Wenn kein diplomatischer Kontakt möglich ist, wird das Schiff immer angezeigt
+			CRace* pShipOwner = pDoc->GetRaceCtrl()->GetRace(m_pShip->GetOwnerOfShip());
+			if (pShipOwner)
+				bUnknown = !pShipOwner->HasSpecialAbility(SPECIAL_NO_DIPLOMACY);
+		}
 		
 		// ist der Besitzer des Schiffes bekannt
-		if (bUnkown)
+		if (bUnknown)
 		{
 			Bitmap* shipGraphic = NULL;
 			s = _T("Ships\\Unknown.bop");

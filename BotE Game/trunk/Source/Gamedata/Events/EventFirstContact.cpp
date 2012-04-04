@@ -243,7 +243,7 @@ void CEventFirstContact::Draw(Graphics* g, CGraphicPool* graphicPool) const
 		// Schiffe des Minors zeichnen
 		for (int i = 0; i < pDoc->m_ShipInfoArray.GetSize(); i++)
 			if (pDoc->m_ShipInfoArray[i].GetRace() == MINORNUMBER)
-				if (pDoc->m_ShipInfoArray[i].GetOnlyInSystem() == pContactedRace->GetHomesystemName())
+				if (pDoc->m_ShipInfoArray[i].GetOnlyInSystem() == pContactedRace->GetHomesystemName() && pContactedRace->GetHomesystemName() != "")
 				{
 					graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Ships\\" + pDoc->m_ShipInfoArray[i].GetShipClass() + ".bop");
 					if (graphic == NULL)

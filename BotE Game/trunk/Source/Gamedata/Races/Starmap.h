@@ -223,6 +223,11 @@ public:
 	BOOL IsBase(const Sector &sector);
 
 	/**
+	 * Schaltet die komplette Map frei, so dass überall mit kurzer Reichweite hingeflogen werden kann
+	 */
+	void SetFullRangeMap(int nRange = SM_RANGE_NEAR);
+
+	/**
 	 * Gleicht die komplette Rangemap mit der Galaxiemap ab. Gebiete, welche einer Rasse gehören mit der wir einen
 	 * Nichtangriffspakt haben, werden von der Rangemap entfernt. Übergeben werden dafür ein Zeiger auf alle
 	 * Sektoren <code>sectors</code> und ein Wahrheitswert <code>races</code> für alle Rassen, ob wir einen

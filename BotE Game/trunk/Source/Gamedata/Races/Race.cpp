@@ -40,6 +40,7 @@ void CRace::Serialize(CArchive &ar)
 		ar << m_byShipNumber;	// zugewiesene Nummer welche Schiffe verwendet werden sollen
 		ar << m_byBuildingNumber;	// zugewiesene Nummer welche Gebäude verwendet werden sollen
 		ar << m_byMoralNumber;	// zugewiesene Nummer welche Moralwerte verwendet werden sollen
+		ar << m_nSpecialAbility;// Spezialfähigkeiten der Rasse
 
 		// Ingame-Attribute (Rassenwechselwirkung)
 		// Beziehungsmap (Rassen-ID, Beziehungswert)
@@ -86,6 +87,7 @@ void CRace::Serialize(CArchive &ar)
 		ar >> m_byShipNumber;	// zugewiesene Nummer welche Schiffe verwendet werden sollen
 		ar >> m_byBuildingNumber;	// zugewiesene Nummer welche Gebäude verwendet werden sollen
 		ar >> m_byMoralNumber;	// zugewiesene Nummer welche Moralwerte verwendet werden sollen
+		ar >> m_nSpecialAbility;// Spezialfähigkeiten der Rasse
 
 		// Ingame-Attribute (Rassenwechselwirkung)
 		// Beziehungsmap (Rassen-ID, Beziehungswert)
@@ -207,6 +209,25 @@ void CRace::SetRaceProperty(BYTE prop, bool is)
 		case SOLOING:			SetAttributes(is, RACE_SOLOING, m_nProperty);		break;
 		case WARLIKE:			SetAttributes(is, RACE_WARLIKE, m_nProperty);		break;
 	}
+}
+
+/// Funktion zum Erfragen der Rassenspezialeigenschaften
+/// @param ability Rassenspezialeigenschaft
+/// @return <code>true</code>, wenn die Rasse die Spezialeigenschaft besitzt, sonst <code>false</code>
+bool CRace::HasSpecialAbility(int ability) const
+{
+	return (m_nSpecialAbility & ability) > 0;	
+}
+
+/// Funktion zum Setzen von Spezialeigenschaften der Rasse.
+/// @param ability Spezialeigenschaft
+/// @param is <code>true</code> oder <code>false</code>
+void CRace::SetSpecialAbility(int ability, bool is)
+{
+	if (ability == NOTHING_SPECIAL && is)
+		m_nSpecialAbility = 0;
+	else
+		SetAttributes(is, ability, m_nSpecialAbility);
 }
 
 /// Funktion setzt die neue Beziehung zur Rasse.

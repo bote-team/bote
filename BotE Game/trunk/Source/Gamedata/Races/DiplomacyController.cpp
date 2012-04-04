@@ -144,6 +144,8 @@ void CDiplomacyController::CalcDiplomacyFallouts(CBotf2Doc* pDoc)
 		// Mitgliedschaft mit dieser Rasse hat. Verträge werden gekündigt, wenn die Minorrace unterworfen wurde
 		pMinor->CheckDiplomaticConsistence(pDoc);
 		pMinor->PerhapsCancelAgreement(pDoc);
+		if (pMinor->GetRaceKO() == CPoint(-1,-1))
+			continue;
 
 		for (map<CString, CMajor*>::const_iterator jt = pmMajors->begin(); jt != pmMajors->end(); ++jt)
 		{
@@ -188,6 +190,8 @@ void CDiplomacyController::CalcDiplomacyFallouts(CBotf2Doc* pDoc)
 	for (map<CString, CMinor*>::const_iterator it = pmMinors->begin(); it != pmMinors->end(); ++it)
 	{
 		CMinor* pMinor = it->second;
+		if (pMinor->GetRaceKO() == CPoint(-1,-1))
+			continue;
 	
 		CString sOwner = pDoc->GetSystem(pMinor->GetRaceKO()).GetOwnerOfSystem();
 		if (sOwner != "")

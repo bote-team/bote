@@ -1327,11 +1327,15 @@ void CBotf2Doc::GenerateGalaxy()
 	for (map<CString, CMinor*>::iterator it = pmMinors->begin(); it != pmMinors->end(); ++it)
 	{
 		if (sUsedMinors.find(it->first) == sUsedMinors.end())
-			vDelMinors.push_back(it->first);
+		{
+			// keine Aliens ohne Heimatsystem rauslöschen
+			if (it->second->GetRaceKO() != CPoint(-1,-1))
+				vDelMinors.push_back(it->first);
+		}
 	}
 	
 	for (UINT i = 0; i < vDelMinors.size(); i++)
-		m_pRaceCtrl->RemoveRace(vDelMinors[i]);	
+		m_pRaceCtrl->RemoveRace(vDelMinors[i]);
 }
 
 void CBotf2Doc::NextRound()
@@ -1493,16 +1497,18 @@ void CBotf2Doc::NextRound()
 
 		CPoint ko = pMinor->GetRaceKO();
 
-		if (m_System[ko.x][ko.y].GetOwnerOfSystem() == "" && m_Sector[ko.x][ko.y].GetOwnerOfSector() == pMinor->GetRaceID())
+		if (ko != CPoint(-1,-1) && m_System[ko.x][ko.y].GetOwnerOfSystem() == "" && m_Sector[ko.x][ko.y].GetOwnerOfSector() == pMinor->GetRaceID())
+		{
 			// Vielleicht kolonisiert die Minorrace weitere Planeten in ihrem System
 			if (pMinor->PerhapsExtend(this))
 				// dann sind im System auch weitere Einwohner hinzugekommen
 				m_System[ko.x][ko.y].SetHabitants(this->GetSector(ko).GetCurrentHabitants());
 		
-		// Den Verbrauch der Rohstoffe der kleinen Rassen in jeder Runde berechnen
-		pMinor->ConsumeResources(this);
-		// Vielleicht baut die Rasse ein Raumschiff
-		pMinor->PerhapsBuildShip(this);
+			// Den Verbrauch der Rohstoffe der kleinen Rassen in jeder Runde berechnen
+			pMinor->ConsumeResources(this);
+			// Vielleicht baut die Rasse ein Raumschiff
+			pMinor->PerhapsBuildShip(this);
+		}
 	}
 	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)//Random Events berechenn
 	{
@@ -3602,6 +3608,8 @@ void CBotf2Doc::CalcOldRoundData()
 							}							
 						}					
 						m_System[x][y].CalculateVariables(&this->BuildingInfo, pMajor->GetEmpire()->GetResearch()->GetResearchInfo(), m_Sector[x][y].GetPlanets(), pMajor, CTrade::GetMonopolOwner());
+
+						// hier könnte die Energie durch Weltraummonster weggenommen werden!
 						
 						// Gebäude die Energie benötigen checken
 						if (m_System[x][y].CheckEnergyBuildings(&this->BuildingInfo))
@@ -4030,7 +4038,8 @@ void CBotf2Doc::CalcNewRoundData()
 				if (pMinor->GetSpaceflightNation() == TRUE && (pMinor->GetAgreement(pMajor->GetRaceID()) == COOPERATION || pMinor->GetAgreement(pMajor->GetRaceID()) == AFFILIATION))
 				{
 					CPoint p = pMinor->GetRaceKO();
-					m_Sector[p.x][p.y].SetShipPort(TRUE, pMajor->GetRaceID());					
+					if (p != CPoint(-1,-1))
+						m_Sector[p.x][p.y].SetShipPort(TRUE, pMajor->GetRaceID());					
 				}
 			}
 		}
@@ -5081,6 +5090,34 @@ void CBotf2Doc::CalcShipMovement()
 		Sector shipKO((char)m_ShipArray[y].GetKO().x,(char)m_ShipArray[y].GetKO().y);
 		Sector targetKO((char)m_ShipArray[y].GetTargetKO().x,(char)m_ShipArray[y].GetTargetKO().y);
 		Sector nextKO(-1,-1);
+
+		// Weltraummonster gesondert behandeln
+		if (m_ShipArray[y].GetShipType() == ALIEN)
+		{
+			// wenn bei einem Weltraummonster kein Ziel vorhanden ist, dann wird zufällig ein neues generiert
+			if (targetKO.x == -1)
+			{
+				// irgend ein zufälliges neues Ziel generieren, welches nicht auf einer Anomalie endet
+				while (true)
+				{
+					targetKO = Sector(rand()%STARMAP_SECTORS_HCOUNT, rand()%STARMAP_SECTORS_VCOUNT);
+					if (targetKO == shipKO)
+						continue;
+
+					if (GetSector(targetKO.x, targetKO.y).GetAnomaly())
+						continue;
+
+					m_ShipArray[y].SetTargetKO(CPoint(targetKO.x, targetKO.y), 0);
+					break;
+				}
+			}
+			// nur in ca. jeder fünften Runde fliegt das Weltraummonster weiter
+			else if (rand()%5 != 0)
+			{
+				targetKO = Sector(-1,-1);
+			}
+		}
+
 		if (targetKO.x != -1)
 		{
 			char range;
@@ -5096,17 +5133,43 @@ void CBotf2Doc::CalcShipMovement()
 				range = (char)(3 - m_ShipArray[y].GetRange());
 				speed = (char)(m_ShipArray[y].GetSpeed());
 			}
-			CRace* pRace = m_pRaceCtrl->GetRace(sRace);
-			if (pRace != NULL && pRace->GetType() == MAJOR)
-				nextKO = ((CMajor*)pRace)->GetStarmap()->CalcPath(shipKO,targetKO,range,speed,*m_ShipArray[y].GetPath());
+
+			CRace* pRace = NULL;
+
+			// Weltraummonster gesondert behandeln
+			if (m_ShipArray[y].GetShipType() == ALIEN)
+			{
+				CStarmap* pStarmap = new CStarmap(0);
+				pStarmap->SetFullRangeMap();
+				pStarmap->SynchronizeWithAnomalies(m_Sector);
+
+				nextKO = pStarmap->CalcPath(shipKO,targetKO,range,speed,*m_ShipArray[y].GetPath());
+
+				delete pStarmap;
+				pStarmap = NULL;
+			}
+			else
+			{
+				pRace = m_pRaceCtrl->GetRace(sRace);
+				if (pRace != NULL && pRace->GetType() == MAJOR)
+				{
+					nextKO = ((CMajor*)pRace)->GetStarmap()->CalcPath(shipKO,targetKO,range,speed,*m_ShipArray[y].GetPath());
+				}
+			}
+
+			// Ziel zum Anfliegen vorhanden
 			if (nextKO != Sector(-1,-1))
 			{
 				m_ShipArray[y].SetKO(CPoint((int)nextKO.x,(int)nextKO.y));
 				// Die Anzahl speed ersten Felder in Pfad des Schiffes löschen
 				if (nextKO == targetKO)
+				{
 					m_ShipArray[y].GetPath()->RemoveAll();
-				if ( !(this->GetSector(nextKO.x,nextKO.y).GetFullKnown(sRace))&&pRace != NULL && pRace->GetType() == MAJOR) //Berechnet Zufalls entdeckung in dem Sector den das Schiff anfliegt
+					m_ShipArray[y].SetTargetKO(CPoint(-1,-1), 0);
+				}
+				if (pRace != NULL && pRace->GetType() == MAJOR && !(this->GetSector(nextKO.x,nextKO.y).GetFullKnown(sRace))) //Berechnet Zufalls entdeckung in dem Sector den das Schiff anfliegt
 					m_RandomEventManager.CalcExploreEvent(CPoint((int)nextKO.x,(int)nextKO.y),(CMajor*)pRace,&m_ShipArray);
+				
 				int high = speed;
 				while (high > 0 && high < m_ShipArray[y].GetPath()->GetSize())
 				{
@@ -5114,7 +5177,7 @@ void CBotf2Doc::CalcShipMovement()
 					high--;
 				}
 			}
-		}
+		}		
 		
 		// Gibt es eine Anomalie, wodurch die Schilde schneller aufgeladen werden
 		bool bFasterShieldRecharge = false;
@@ -5850,11 +5913,19 @@ void CBotf2Doc::CalcContactNewRaces()
 		CString sRace = m_ShipArray[y].GetOwnerOfShip();
 
 		CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(sRace));
+		// kann der Major Rassen kennenlernen?
+		if (pMajor && pMajor->HasSpecialAbility(SPECIAL_NO_DIPLOMACY))
+			continue;
+
 		CMinor* pMinor = NULL;
 		// handelt es sich um eine Minorrace
 		if (!pMajor)
 			pMinor = dynamic_cast<CMinor*>(m_pRaceCtrl->GetRace(sRace));
-		
+
+		// kann der Minor Rassen kennenlernen?
+		if (pMinor && pMinor->HasSpecialAbility(SPECIAL_NO_DIPLOMACY))
+			continue;
+
 		// Wenn dieser Sektor einer anderen Majorrace gehört, wir die noch nicht kannten, dann bekanntgeben
 		if (pMajor != NULL && m_Sector[p.x][p.y].GetOwnerOfSector() != "" && m_Sector[p.x][p.y].GetOwnerOfSector() != sRace)
 		{
@@ -5864,6 +5935,10 @@ void CBotf2Doc::CalcContactNewRaces()
 				CRace* pSectorOwner = m_pRaceCtrl->GetRace(m_Sector[p.x][p.y].GetOwnerOfSector());
 				if (pSectorOwner)
 				{
+					// kann der Sektorbesitzer andere Rassen kennenlernen?
+					if (pSectorOwner->HasSpecialAbility(SPECIAL_NO_DIPLOMACY))
+						continue;
+
 					pMajor->SetIsRaceContacted(pSectorOwner->GetRaceID(), true);
 					pSectorOwner->SetIsRaceContacted(pMajor->GetRaceID(), true);
 
@@ -5940,6 +6015,10 @@ void CBotf2Doc::CalcContactNewRaces()
 			if (m_Sector[p.x][p.y].GetMinorRace())
 			{
 				CMinor* pMinor = m_pRaceCtrl->GetMinorRace(m_Sector[p.x][p.y].GetName());
+				// kann der Sektorbesitzer andere Rassen kennenlernen?
+				if (pMinor->HasSpecialAbility(SPECIAL_NO_DIPLOMACY))
+					continue;
+
 				// die Rasse ist noch nicht bekannt und nicht unterworfen
 				if (pMinor && pMajor->IsRaceContacted(pMinor->GetRaceID()) == false && pMinor->GetSubjugated() == false)
 				{
@@ -5980,6 +6059,9 @@ void CBotf2Doc::CalcContactNewRaces()
 						if (pMajor->IsRaceContacted(it->first) == false)
 						{
 							CMajor* pOtherMajor = it->second;
+							// kann der andere Schiffsbesitzer Rassen kennenlernen?
+							if (pOtherMajor->HasSpecialAbility(SPECIAL_NO_DIPLOMACY))
+								continue;
 							
 							pMajor->SetIsRaceContacted(pOtherMajor->GetRaceID(), true);
 							pOtherMajor->SetIsRaceContacted(pMajor->GetRaceID(), true);
@@ -6024,6 +6106,10 @@ void CBotf2Doc::CalcContactNewRaces()
 					CMajor* pSectorOwner = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(m_Sector[p.x][p.y].GetOwnerOfSector()));
 					if (pSectorOwner)
 					{
+						// kann der Sektorbesitzer andere Rassen kennenlernen?
+						if (pSectorOwner->HasSpecialAbility(SPECIAL_NO_DIPLOMACY))
+							continue;
+
 						pMinor->SetIsRaceContacted(pSectorOwner->GetRaceID(), true);
 						pSectorOwner->SetIsRaceContacted(pMinor->GetRaceID(), true);
 
@@ -6057,6 +6143,9 @@ void CBotf2Doc::CalcContactNewRaces()
 					if (pMinor->IsRaceContacted(it->first) == false)
 					{
 						CMajor* pOtherMajor = it->second;
+						// kann der andere Schiffsbesitzer Rassen kennenlernen?
+						if (pOtherMajor->HasSpecialAbility(SPECIAL_NO_DIPLOMACY))
+							continue;
 						
 						pMinor->SetIsRaceContacted(pOtherMajor->GetRaceID(), true);
 						pOtherMajor->SetIsRaceContacted(pMinor->GetRaceID(), true);

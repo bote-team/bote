@@ -80,7 +80,7 @@ void CCombatAI::ApplyCombatOrders(const CArray<CShip*>& vInvolvedShips, const ma
 				if (pRace2->GetType() != MAJOR || (pRace2->GetType() == MAJOR && ((CMajor*)pRace2)->IsHumanPlayer() == false))
 					nMinRelation = min(nMinRelation, pRace2->GetRelation(pRace1->GetRaceID()));
 				else if (pRace1->GetType() != MAJOR || (pRace1->GetType() == MAJOR && ((CMajor*)pRace1)->IsHumanPlayer() == false))
-					nMinRelation = min(nMinRelation, pRace2->GetRelation(pRace1->GetRaceID()));
+					nMinRelation = min(nMinRelation, pRace1->GetRelation(pRace2->GetRaceID()));
 			}
 		}
 
@@ -98,9 +98,9 @@ void CCombatAI::ApplyCombatOrders(const CArray<CShip*>& vInvolvedShips, const ma
 		if (pRace1->IsRaceProperty(SCIENTIFIC))
 			nRaceMod += 10;
 		if (pRace1->IsRaceProperty(AGRARIAN))
-			nRaceMod += 15;
-		if (pRace1->IsRaceProperty(PACIFIST))
 			nRaceMod += 25;
+		if (pRace1->IsRaceProperty(PACIFIST))
+			nRaceMod += 50;
 
 		// bei gute Beziehungen wird sehr wahrscheinlich die Grußfrequenzen geöffnet
 		if (rand()%100 < nMinRelation + nRaceMod)

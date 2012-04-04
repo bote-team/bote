@@ -1243,7 +1243,7 @@ Outpost
 [STARBASE]
 Starbase
 [ALIEN]
-Alien
+Alien Entitiy
 
 // ship types, plural
 [TRANSPORTERS]

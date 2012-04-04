@@ -16,6 +16,7 @@ class CBotf2Doc;
 class CMinor : public CRace
 {	
 	friend class CMinorAI;
+	friend class CRaceController;
 
 	DECLARE_SERIAL(CMinor)
 public:
@@ -128,6 +129,12 @@ public:
 	/// @param saInfo Referenz auf Rasseninformationen
 	/// @param nPos Referenz auf Position im Array, ab wann die Informationen gelten
 	virtual void Create(const CStringArray& saInfo, int& nPos);
+
+	/// Funktion zum erstellen von Weltraummonstern
+	/// Die Funktion liest einen entsprechenden Eintrag aus einer data Datei.
+	/// @param saInfo Referenz auf Rasseninformationen
+	/// @param nPos Referenz auf Position im Array, ab wann die Informationen gelten
+	void CreateAlienEntities(const CStringArray& saInfo, int& nPos);
 
 	/// Funktion zum zurücksetzen aller Werte auf Ausgangswerte.
 	virtual void Reset(void);

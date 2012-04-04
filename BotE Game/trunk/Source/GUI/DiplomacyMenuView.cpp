@@ -281,15 +281,20 @@ void CDiplomacyMenuView::DrawDiplomacyMenue(Graphics* g)
 		CRace* pRace = pDoc->GetRaceCtrl()->GetRace(m_sClickedOnRace);
 		if (!pRace)
 			return;
+
+		bool bAlienDiplomacy = false;
+		if (pRace->HasSpecialAbility(SPECIAL_ALIEN_DIPLOMACY) || pPlayer->HasSpecialAbility(SPECIAL_ALIEN_DIPLOMACY))
+			bAlienDiplomacy = true;
+
 		if (pRace->GetType() == MAJOR)
-		{
+		{		
 			for (int i = 0; i < m_DiplomacyMajorOfferButtons.GetSize(); i++)
 			{
 				CMyButton *button = m_DiplomacyMajorOfferButtons.GetAt(i);
 				// Handelsvertrag Button
 				if (button->GetText() == CResourceManager::GetString("BTN_TRADECONTRACT"))
 				{
-					if (pPlayer->GetAgreement(m_sClickedOnRace) < TRADE_AGREEMENT && m_OutgoingInfo.m_nType != TRADE_AGREEMENT)
+					if (!bAlienDiplomacy && pPlayer->GetAgreement(m_sClickedOnRace) < TRADE_AGREEMENT && m_OutgoingInfo.m_nType != TRADE_AGREEMENT)
 					{
 						if (button->GetState() != 1)
 							button->SetState(0);
@@ -299,7 +304,7 @@ void CDiplomacyMenuView::DrawDiplomacyMenue(Graphics* g)
 				}
 				else if (button->GetText() == CResourceManager::GetString("BTN_FRIENDSHIP"))
 				{
-					if (pPlayer->GetAgreement(m_sClickedOnRace) < FRIENDSHIP_AGREEMENT && m_OutgoingInfo.m_nType != FRIENDSHIP_AGREEMENT)
+					if (!bAlienDiplomacy && pPlayer->GetAgreement(m_sClickedOnRace) < FRIENDSHIP_AGREEMENT && m_OutgoingInfo.m_nType != FRIENDSHIP_AGREEMENT)
 					{
 						if (button->GetState() != 1)
 							button->SetState(0);
@@ -309,7 +314,7 @@ void CDiplomacyMenuView::DrawDiplomacyMenue(Graphics* g)
 				}
 				else if (button->GetText() == CResourceManager::GetString("BTN_COOPERATION"))
 				{
-					if (pPlayer->GetAgreement(m_sClickedOnRace) < COOPERATION && m_OutgoingInfo.m_nType != COOPERATION)
+					if (!bAlienDiplomacy && pPlayer->GetAgreement(m_sClickedOnRace) < COOPERATION && m_OutgoingInfo.m_nType != COOPERATION)
 					{
 						if (button->GetState() != 1)
 							button->SetState(0);
@@ -319,7 +324,7 @@ void CDiplomacyMenuView::DrawDiplomacyMenue(Graphics* g)
 				}
 				else if (button->GetText() == CResourceManager::GetString("BTN_AFFILIATION"))
 				{
-					if (pPlayer->GetAgreement(m_sClickedOnRace) < AFFILIATION && m_OutgoingInfo.m_nType != AFFILIATION)
+					if (!bAlienDiplomacy && pPlayer->GetAgreement(m_sClickedOnRace) < AFFILIATION && m_OutgoingInfo.m_nType != AFFILIATION)
 					{
 						if (button->GetState() != 1)
 							button->SetState(0);
@@ -339,7 +344,7 @@ void CDiplomacyMenuView::DrawDiplomacyMenue(Graphics* g)
 				}
 				else if (button->GetText() == CResourceManager::GetString("BTN_DEFENCE"))
 				{
-					if ((pPlayer->GetDefencePact(m_sClickedOnRace) != true && pPlayer->GetAgreement(m_sClickedOnRace) != WAR && pPlayer->GetAgreement(m_sClickedOnRace) != AFFILIATION) && m_OutgoingInfo.m_nType != DEFENCE_PACT)
+					if (!bAlienDiplomacy && (pPlayer->GetDefencePact(m_sClickedOnRace) != true && pPlayer->GetAgreement(m_sClickedOnRace) != WAR && pPlayer->GetAgreement(m_sClickedOnRace) != AFFILIATION) && m_OutgoingInfo.m_nType != DEFENCE_PACT)
 					{
 						if (button->GetState() != 1)
 							button->SetState(0);
@@ -349,7 +354,7 @@ void CDiplomacyMenuView::DrawDiplomacyMenue(Graphics* g)
 				}
 				else if (button->GetText() == CResourceManager::GetString("BTN_REQUEST"))
 				{
-					if (m_OutgoingInfo.m_nType != DIP_REQUEST)
+					if (!bAlienDiplomacy && m_OutgoingInfo.m_nType != DIP_REQUEST)
 					{
 						if (button->GetState() != 1)
 							button->SetState(0);
@@ -361,7 +366,7 @@ void CDiplomacyMenuView::DrawDiplomacyMenue(Graphics* g)
 				{
 					// sobald wir noch eine andere Majorrace kennen, mit der wir nicht im Krieg sind, können wir
 					// einen Kriegspakt anbieten
-					if (pPlayer->GetAgreement(m_sClickedOnRace) != WAR && m_OutgoingInfo.m_nType != WAR_PACT)
+					if (!bAlienDiplomacy && pPlayer->GetAgreement(m_sClickedOnRace) != WAR && m_OutgoingInfo.m_nType != WAR_PACT)
 					{
 						map<CString, CMajor*>* pmMajors = pDoc->GetRaceCtrl()->GetMajors();
 						for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
@@ -387,7 +392,7 @@ void CDiplomacyMenuView::DrawDiplomacyMenue(Graphics* g)
 				}
 				else if (button->GetText() == CResourceManager::GetString("BTN_PRESENT"))
 				{
-					if (m_OutgoingInfo.m_nType != PRESENT)
+					if (!bAlienDiplomacy && m_OutgoingInfo.m_nType != PRESENT)
 					{
 						if (button->GetState() != 1)
 							button->SetState(0);
@@ -429,7 +434,7 @@ void CDiplomacyMenuView::DrawDiplomacyMenue(Graphics* g)
 				// Handelsvertrag Button
 				if (button->GetText() == CResourceManager::GetString("BTN_TRADECONTRACT"))
 				{
-					if (pPlayer->GetAgreement(m_sClickedOnRace) < TRADE_AGREEMENT && status <= AFFILIATION && m_OutgoingInfo.m_nType != TRADE_AGREEMENT)
+					if (!bAlienDiplomacy && pPlayer->GetAgreement(m_sClickedOnRace) < TRADE_AGREEMENT && status <= AFFILIATION && m_OutgoingInfo.m_nType != TRADE_AGREEMENT)
 					{
 						if (button->GetState() != 1)
 							button->SetState(0);
@@ -449,7 +454,7 @@ void CDiplomacyMenuView::DrawDiplomacyMenue(Graphics* g)
 				}
 				else if (button->GetText() == CResourceManager::GetString("BTN_COOPERATION"))
 				{
-					if (pPlayer->GetAgreement(m_sClickedOnRace) < COOPERATION && status <= FRIENDSHIP_AGREEMENT && m_OutgoingInfo.m_nType != COOPERATION)
+					if (!bAlienDiplomacy && pPlayer->GetAgreement(m_sClickedOnRace) < COOPERATION && status <= FRIENDSHIP_AGREEMENT && m_OutgoingInfo.m_nType != COOPERATION)
 					{
 						if (button->GetState() != 1)
 							button->SetState(0);
@@ -459,7 +464,7 @@ void CDiplomacyMenuView::DrawDiplomacyMenue(Graphics* g)
 				}
 				else if (button->GetText() == CResourceManager::GetString("BTN_AFFILIATION"))
 				{
-					if (pPlayer->GetAgreement(m_sClickedOnRace) < AFFILIATION && status <= FRIENDSHIP_AGREEMENT && m_OutgoingInfo.m_nType != AFFILIATION)
+					if (!bAlienDiplomacy && pPlayer->GetAgreement(m_sClickedOnRace) < AFFILIATION && status <= FRIENDSHIP_AGREEMENT && m_OutgoingInfo.m_nType != AFFILIATION)
 					{
 						if (button->GetState() != 1)
 							button->SetState(0);
@@ -469,7 +474,7 @@ void CDiplomacyMenuView::DrawDiplomacyMenue(Graphics* g)
 				}
 				else if (button->GetText() == CResourceManager::GetString("BTN_MEMBERSHIP"))
 				{
-					if (pPlayer->GetAgreement(m_sClickedOnRace) < MEMBERSHIP && status <= FRIENDSHIP_AGREEMENT && m_OutgoingInfo.m_nType != MEMBERSHIP)
+					if (!bAlienDiplomacy && pPlayer->GetAgreement(m_sClickedOnRace) < MEMBERSHIP && status <= FRIENDSHIP_AGREEMENT && m_OutgoingInfo.m_nType != MEMBERSHIP)
 					{
 						if (button->GetState() != 1)
 							button->SetState(0);
@@ -489,7 +494,7 @@ void CDiplomacyMenuView::DrawDiplomacyMenue(Graphics* g)
 				}
 				else if (button->GetText() == CResourceManager::GetString("BTN_CORRUPTION"))
 				{
-					if ((status >= AFFILIATION || (pPlayer->GetAgreement(m_sClickedOnRace) >= FRIENDSHIP_AGREEMENT && status >= TRADE_AGREEMENT)) && m_OutgoingInfo.m_nType != CORRUPTION)
+					if (!bAlienDiplomacy && (status >= AFFILIATION || (pPlayer->GetAgreement(m_sClickedOnRace) >= FRIENDSHIP_AGREEMENT && status >= TRADE_AGREEMENT)) && m_OutgoingInfo.m_nType != CORRUPTION)
 					{
 						if (button->GetState() != 1)
 							button->SetState(0);
@@ -499,7 +504,7 @@ void CDiplomacyMenuView::DrawDiplomacyMenue(Graphics* g)
 				}				
 				else if (button->GetText() == CResourceManager::GetString("BTN_PRESENT"))
 				{
-					if (m_OutgoingInfo.m_nType != PRESENT)
+					if (!bAlienDiplomacy && m_OutgoingInfo.m_nType != PRESENT)
 					{
 						if (button->GetState() != 1)
 							button->SetState(0);

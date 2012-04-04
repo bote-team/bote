@@ -9,6 +9,7 @@
 #include "Ships\Combat.h"
 #include "Ships\Fleet.h"
 #include "Graphic\memdc.h"
+#include "HTMLStringBuilder.h"
 // CCombatMenuView
 
 IMPLEMENT_DYNCREATE(CCombatMenuView, CMainBaseView)
@@ -1021,9 +1022,6 @@ void CCombatMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 /// @return	der erstellte Tooltip-Text
 CString CCombatMenuView::CreateTooltip(void)
 {
-	if (!m_bInOrderMenu)
-		return "";
-
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
 
@@ -1034,10 +1032,55 @@ CString CCombatMenuView::CreateTooltip(void)
 	GetCursorPos(&pt);
 	ScreenToClient(&pt);
 	CalcLogicalPoint(pt);
-	
-	for (UINT i = 0; i < m_vShipRects.size(); i++)
-		if (m_vShipRects[i].first.PtInRect(pt))
-			return m_vShipRects[i].second->GetTooltip(false);			
+
+	if (!m_bInOrderMenu)
+	{
+		// wurde auf das Rassenbild gehalten, dann Beschreibung der Rasse anzeigen
+		int nPosX = m_TotalSize.cx / 2 - 100 - ((m_sFriends.size() - 1) * 220) / 2;
+		for (std::set<const CRace*>::const_iterator it = m_sFriends.begin(); it != m_sFriends.end(); ++it)
+		{
+			const CRace* pRace = *it;
+			if (!pRace)
+				continue;
+
+			if (CRect(nPosX, 125, nPosX + 200, 325).PtInRect(pt))
+			{
+				CString sTip = pRace->GetRaceDesc();
+				sTip = CHTMLStringBuilder::GetHTMLColor(sTip);
+				sTip = CHTMLStringBuilder::GetHTMLHeader(sTip, _T("h4"));
+
+				return sTip;
+			}
+			
+			nPosX += 220;
+		}
+
+		// wurde auf das Rassenbild gehalten, dann Beschreibung der Rasse anzeigen
+		nPosX = m_TotalSize.cx / 2 - 100 - ((m_sEnemies.size() - 1) * 220) / 2;
+		for (std::set<const CRace*>::const_iterator it = m_sEnemies.begin(); it != m_sEnemies.end(); ++it)
+		{
+			const CRace* pRace = *it;
+			if (!pRace)
+				continue;
+
+			if (CRect(nPosX, 450, nPosX + 200, 650).PtInRect(pt))
+			{
+				CString sTip = pRace->GetRaceDesc();
+				sTip = CHTMLStringBuilder::GetHTMLColor(sTip);
+				sTip = CHTMLStringBuilder::GetHTMLHeader(sTip, _T("h4"));
+
+				return sTip;
+			}
+			
+			nPosX += 220;
+		}
+	}
+	else
+	{
+		for (UINT i = 0; i < m_vShipRects.size(); i++)
+			if (m_vShipRects[i].first.PtInRect(pt))
+				return m_vShipRects[i].second->GetTooltip(false);
+	}
 	
 	return "";
 }

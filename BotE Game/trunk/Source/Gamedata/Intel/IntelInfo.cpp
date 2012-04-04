@@ -111,7 +111,7 @@ void CIntelInfo::CalcIntelInfo(CBotf2Doc* pDoc, CMajor* pOurRace)
 		// Wenn wir den Heimatsektor der Minorrace kennen und die von einer uns bekannten Majorrace vermitgliedert wurde,
 		// so wissen wir auch etwas von der Mitgliedschaft.
 		CPoint ko = pMinor->GetRaceKO();
-		if (pMinor->GetAgreement(pOurRace->GetRaceID()) >= FRIENDSHIP_AGREEMENT)
+		if (ko != CPoint(-1,-1) && pMinor->GetAgreement(pOurRace->GetRaceID()) >= FRIENDSHIP_AGREEMENT)
 		{
 			for (map<CString, CMajor*>::const_iterator jt = pmMajors->begin(); jt != pmMajors->end(); jt++)
 				if (jt->first != pOurRace->GetRaceID())

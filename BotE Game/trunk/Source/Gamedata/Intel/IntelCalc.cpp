@@ -996,8 +996,9 @@ BOOLEAN CIntelCalc::ExecuteDiplomacySpy(CMajor* pRace, CMajor* pEnemyRace, CMajo
 		if (rand()%2 == NULL && minors.GetSize())
 		{
 			CString minor = minors.GetAt(rand()%minors.GetSize());
-			report = new CDiplomacyIntelObj(pRace->GetRaceID(), pEnemyRace->GetRaceID(), m_pDoc->GetCurrentRound(), TRUE, (*pmMinors)[minor]->GetRaceKO(),
-				NO_AGREEMENT, (*pmMinors)[minor]->GetRelation(pEnemyRace->GetRaceID()));
+			CPoint ko = (*pmMinors)[minor]->GetRaceKO();
+			if (ko != CPoint(-1,-1))
+				report = new CDiplomacyIntelObj(pRace->GetRaceID(), pEnemyRace->GetRaceID(), m_pDoc->GetCurrentRound(), TRUE, ko, NO_AGREEMENT, (*pmMinors)[minor]->GetRelation(pEnemyRace->GetRaceID()));
 		}
 		else if (majors.GetSize())
 		{
@@ -1063,10 +1064,12 @@ BOOLEAN CIntelCalc::ExecuteDiplomacySpy(CMajor* pRace, CMajor* pEnemyRace, CMajo
 	{
 		if (minors.GetSize())
 		{
+			CDiplomacyIntelObj* report = NULL;
 			// in random steht eine zufällig ermittelte Minorrace, in welchem spioniert werden kann.
 			CString minor = minors.GetAt(rand()%minors.GetSize());
-			CDiplomacyIntelObj* report = new CDiplomacyIntelObj(pRace->GetRaceID(), pEnemyRace->GetRaceID(), m_pDoc->GetCurrentRound(), TRUE,
-				(*pmMinors)[minor]->GetRaceKO(), (*pmMinors)[minor]->GetAgreement(pEnemyRace->GetRaceID()), (*pmMinors)[minor]->GetRelation(pEnemyRace->GetRaceID()));
+			CPoint ko = (*pmMinors)[minor]->GetRaceKO();
+			if (ko != CPoint(-1,-1))
+				 report = new CDiplomacyIntelObj(pRace->GetRaceID(), pEnemyRace->GetRaceID(), m_pDoc->GetCurrentRound(), TRUE, ko, (*pmMinors)[minor]->GetAgreement(pEnemyRace->GetRaceID()), (*pmMinors)[minor]->GetRelation(pEnemyRace->GetRaceID()));
 			// Intelreport dem Akteur hinzufügen
 			if (report)
 			{
@@ -1088,8 +1091,10 @@ BOOLEAN CIntelCalc::ExecuteDiplomacySpy(CMajor* pRace, CMajor* pEnemyRace, CMajo
 	{
 		// in random steht eine zufällig ermittelte Minorrace, in welchem spioniert werden kann.
 		CString minor = minors.GetAt(rand()%minors.GetSize());
-		CDiplomacyIntelObj* report = new CDiplomacyIntelObj(pRace->GetRaceID(), pEnemyRace->GetRaceID(), m_pDoc->GetCurrentRound(), TRUE,
-			(*pmMinors)[minor]->GetRaceKO());
+		CDiplomacyIntelObj* report = NULL;
+		CPoint ko = (*pmMinors)[minor]->GetRaceKO();
+		if (ko != CPoint(-1,-1))
+			report = new CDiplomacyIntelObj(pRace->GetRaceID(), pEnemyRace->GetRaceID(), m_pDoc->GetCurrentRound(), TRUE, ko);
 		// Intelreport dem Akteur hinzufügen
 		if (report)
 		{
@@ -1766,7 +1771,10 @@ BOOLEAN CIntelCalc::ExecuteDiplomacySabotage(CMajor* pRace, CMajor* pEnemyRace, 
 					int relationAdd = rand()%20 + 1;
 					minor->SetRelation(pRace->GetRaceID(), relationAdd);
 					pRace->GetEmpire()->GetIntelligence()->GetIntelReports()->RemoveReport(oldReportNumber);
-					report = new CDiplomacyIntelObj(pRace->GetRaceID(), pEnemyRace->GetRaceID(), m_pDoc->GetCurrentRound(), FALSE, minor->GetRaceKO());
+					CPoint ko = minor->GetRaceKO();
+					if (ko != CPoint(-1,-1))
+						report = new CDiplomacyIntelObj(pRace->GetRaceID(), pEnemyRace->GetRaceID(), m_pDoc->GetCurrentRound(), FALSE, ko);
+					
 					if (report)
 					{
 						report->CreateText(m_pDoc, 2, pResponsibleRace->GetRaceID());
@@ -1786,7 +1794,10 @@ BOOLEAN CIntelCalc::ExecuteDiplomacySabotage(CMajor* pRace, CMajor* pEnemyRace, 
 					int relationSub = -rand()%20 + 1;
 					minor->SetRelation(pEnemyRace->GetRaceID(), relationSub);
 					pRace->GetEmpire()->GetIntelligence()->GetIntelReports()->RemoveReport(oldReportNumber);
-					report = new CDiplomacyIntelObj(pRace->GetRaceID(), pEnemyRace->GetRaceID(), m_pDoc->GetCurrentRound(), FALSE, minor->GetRaceKO());
+					CPoint ko = minor->GetRaceKO();
+					if (ko != CPoint(-1,-1))
+						report = new CDiplomacyIntelObj(pRace->GetRaceID(), pEnemyRace->GetRaceID(), m_pDoc->GetCurrentRound(), FALSE, ko);
+					
 					if (report)
 					{
 						report->CreateText(m_pDoc, 3, pResponsibleRace->GetRaceID());

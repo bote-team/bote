@@ -35,8 +35,6 @@ void CMajor::Serialize(CArchive &ar)
 		ar << m_sEmpireWithArticle;			// Artikel für Imperiumsnamen
 		ar << m_sEmpireWithAssignedArticle;	// bestimmter Artikel für den Imperiumsnamen
 		ar << m_sPrefix;					// Rassenprefix	
-
-		ar << m_nSpecialAbility;			// Spezialfähigkeiten der Rasse (derzeit nicht implementiert)
 		ar << m_nDiplomacyBonus;			// Bonus bei diplomatischen Verhandlungen, NULL == kein Bonus/kein Malus
 		
 		// noch verbleibende Runden des Vertrags (NULL == unbegrenzt)
@@ -60,9 +58,7 @@ void CMajor::Serialize(CArchive &ar)
 		ar >> m_sEmpireName;				// längerer Imperiumsname
 		ar >> m_sEmpireWithArticle;			// Artikel für Imperiumsnamen
 		ar >> m_sEmpireWithAssignedArticle;	// bestimmter Artikel für den Imperiumsnamen
-		ar >> m_sPrefix;					// Rassenprefix	
-
-		ar >> m_nSpecialAbility;			// Spezialfähigkeiten der Rasse (derzeit nicht implementiert)
+		ar >> m_sPrefix;					// Rassenprefix		
 		ar >> m_nDiplomacyBonus;			// Bonus bei diplomatischen Verhandlungen, NULL == kein Bonus/kein Malus
 		
 		// noch verbleibende Runden des Vertrags (NULL == unbegrenzt)
@@ -126,30 +122,6 @@ void CMajor::Serialize(CArchive &ar)
 //////////////////////////////////////////////////////////////////////
 // sonstige Funktionen
 //////////////////////////////////////////////////////////////////////
-
-/// Funktion zum Erfragen der Rassenspezialeigenschaften
-/// @param ability Rassenspezialeigenschaft
-/// @return <code>true</code>, wenn die Rasse die Spezialeigenschaft besitzt, sonst <code>false</code>
-bool CMajor::HasSpecialAbility(BYTE ability) const
-{
-	switch (ability)
-	{
-		case NO_FOOD_NEEDED:	return (m_nSpecialAbility & SPECIAL_NEED_NO_FOOD)	== SPECIAL_NEED_NO_FOOD;
-		default:				return NOTHING_SPECIAL;
-	}
-}
-
-/// Funktion zum Setzen von Spezialeigenschaften der Rasse.
-/// @param ability Spezialeigenschaft
-/// @param is <code>true</code> oder <code>false</code>
-void CMajor::SetSpecialAbility(BYTE ability, bool is)
-{
-	switch (ability)
-	{
-		case NOTHING_SPECIAL:	if (is) m_nSpecialAbility = 0;									break;
-		case NO_FOOD_NEEDED:	SetAttributes(is, SPECIAL_NEED_NO_FOOD, m_nSpecialAbility);		break;		
-	}
-}
 
 /// Funktion setzt die noch verbleibenden Runden des diplomatischen Vertrages.
 /// @param sRaceID Rassen-ID der anderen Rasse

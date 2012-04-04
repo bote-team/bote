@@ -291,6 +291,18 @@ bool CMinorAI::MakeOffer(CString& sRaceID, CDiplomacyInfo& info)
 
 			if (nOffer != NO_AGREEMENT)
 			{
+				// wenn nur Aliendiplomatie möglich ist, dann darf nur Krieg oder Freundschaft angeboten werden
+				if (pMinor->HasSpecialAbility(SPECIAL_ALIEN_DIPLOMACY) || pMajor->HasSpecialAbility(SPECIAL_ALIEN_DIPLOMACY))
+				{
+					if (nOffer >= FRIENDSHIP_AGREEMENT)
+					{
+						if (nAgreement < FRIENDSHIP_AGREEMENT)
+							nOffer = FRIENDSHIP_AGREEMENT;
+						else
+							nOffer = NO_AGREEMENT;
+					}
+				}
+
 				// wichte Parameter des Infoobjekts zuweisen
 				info.m_nFlag = DIPLOMACY_OFFER;
 				info.m_nType = nOffer;
@@ -521,6 +533,9 @@ bool CMinorAI::TryCorruption(const CDiplomacyInfo& info)
 	int nCredits = info.m_nCredits + CalcResInCredits(info);
 
 	// Bestechungsresitance durch z.B. Kommunikationsnetzwerke holen
+	if (pMinor->GetRaceKO() == CPoint(-1,-1))
+		return false;
+
 	CSystem* pSystem = &(m_pDoc->GetSystem(pMinor->GetRaceKO()));
 	ASSERT(pSystem);	
 	short nResistance = pSystem->GetProduction()->GetResistance();

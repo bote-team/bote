@@ -181,13 +181,16 @@ void CMinor::PerhapsBuildShip(CBotf2Doc* pDoc)
 {
 	ASSERT(pDoc);
 
+	// wenn keine Spaceflightrasse, dann Abbruch
+	if (!m_bSpaceflight)
+		return;
+
+	if (m_ptKO == CPoint(-1,-1))
+		return;
+
 	// Wenn der dazugehörige Sektor nicht der kleinen Rasse gehört, also eine andere Rasse diese vereinnahmt hat,
 	// dann wächst das System auch nicht mehr automatisch
 	if (pDoc->GetSector(m_ptKO).GetOwnerOfSector() != m_sID)
-		return;
-
-	// wenn keine Spaceflightrasse, dann Abbruch
-	if (!m_bSpaceflight)
 		return;
 
 	// Vielleicht baut die Minorrace ein Schiff in dieser Runde
@@ -676,7 +679,48 @@ void CMinor::Create(const CStringArray& saInfo, int& nPos)
 	m_byShipNumber = MINORNUMBER;
 
 	// Minorrace - KI anlegen
-	m_pDiplomacyAI = new CMinorAI(this);	
+	m_pDiplomacyAI = new CMinorAI(this);
+}
+
+/// Funktion zum erstellen von Weltraummonstern
+/// Die Funktion liest einen entsprechenden Eintrag aus einer data Datei.
+/// @param saInfo Referenz auf Rasseninformationen
+/// @param nPos Referenz auf Position im Array, ab wann die Informationen gelten
+void CMinor::CreateAlienEntities(const CStringArray& saInfo, int& nPos)
+{
+	ASSERT(nPos >= 0);
+
+	Reset();
+
+	// Minorrace nun anlegen
+	m_sID				= saInfo[nPos++];				// Rassen-ID
+	m_sID.Remove(':');
+	m_sName				= saInfo[nPos++];				// Rassenname
+	m_sDesc				= saInfo[nPos++];				// Rassenbeschreibung
+	
+	// grafische Attribute
+	m_sGraphicFile		= saInfo[nPos++];				// Name der zugehörigen Grafikdatei
+	m_iTechnologicalProgress = atoi(saInfo[nPos++]);
+	m_byType			= MINOR;						// Rassentyp (Major, Medior, Minor)
+	
+	// mehrere Rasseneigenschaften sind durch Komma getrennt
+	CString sRaceProperties = saInfo[nPos++];
+	int nStart = 0;
+	while (nStart < sRaceProperties.GetLength())
+	{
+		int nProperty = atoi(sRaceProperties.Tokenize(",", nStart));
+		SetRaceProperty(nProperty, true);				// Rasseneigenschaften
+	}
+	m_nSpecialAbility	= atoi(saInfo[nPos++]);
+	
+	m_bSpaceflight		= atoi(saInfo[nPos++]) == 0 ? false : true;
+	m_iCorruptibility	= atoi(saInfo[nPos++]);	
+
+	// Schiffsnummer vergeben
+	m_byShipNumber = MINORNUMBER;
+
+	// Minorrace - KI anlegen
+	m_pDiplomacyAI = new CMinorAI(this);
 }
 
 /// Funktion zum zurücksetzen aller Werte auf Ausgangswerte.

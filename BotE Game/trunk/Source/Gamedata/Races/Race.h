@@ -31,7 +31,12 @@ enum RaceProberties
 	RACE_WARLIKE				= 1024
 };
 
-#define RACEPROPERTIES			11
+enum RaceSpecialAbilities
+{
+	SPECIAL_NEED_NO_FOOD		= 1,	///< Rasse braucht keine Nahrung
+	SPECIAL_NO_DIPLOMACY		= 2,	///< Rasse kann keine Diplomatie (kein First Contact)
+	SPECIAL_ALIEN_DIPLOMACY		= 4		///< nur Alien-Diplomatie möglich (NAP, Freundschaft und Krieg)
+};
 
 /// Basisklasse für alle Rassen.
 class CRace : public CObject				
@@ -176,6 +181,16 @@ public:
 	/// @param nNumber Nummer des Schiffssets
 	void SetRaceShipNumber(BYTE nNumber) {m_byShipNumber = nNumber;}
 
+	/// Funktion zum Erfragen der Rassenspezialeigenschaften
+	/// @param ability Rassenspezialeigenschaft
+	/// @return <code>true</code>, wenn die Rasse die Spezialeigenschaft besitzt, sonst <code>false</code>
+	bool HasSpecialAbility(int ability) const;
+
+	/// Funktion zum Setzen von Spezialeigenschaften der Rasse.
+	/// @param ability Spezialeigenschaft
+	/// @param is <code>true</code> oder <code>false</code>
+	void SetSpecialAbility(int ability, bool is);
+
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	/// Funktion zum erstellen einer Rasse.
 	/// Die Funktion liest einen entsprechenden Eintrag aus einer data Datei.
@@ -206,6 +221,7 @@ protected:
 	BYTE				m_byShipNumber;	///<!!! zugewiesene Nummer, welche Schiffe verwendet werden sollen
 	BYTE				m_byBuildingNumber;	///<!!! zugewiesene Nummer, welche Gebäude verwendet werden sollen
 	BYTE				m_byMoralNumber;	///<!!! zugewiesene Nummer, welche Moralwerte verwendet werden sollen
+	int					m_nSpecialAbility;	///< Spezialfähigkeiten der Rasse
 
 	// Ingame-Attribute (Rassenwechselwirkung)
 	map<CString, BYTE>	m_mRelations;	///< Beziehungsmap (Rassen-ID, Beziehungswert)
