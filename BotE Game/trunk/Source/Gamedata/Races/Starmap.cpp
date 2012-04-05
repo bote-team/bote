@@ -131,20 +131,16 @@ CStarmap::~CStarmap()
 	if (m_RangeMap.range) delete[] m_RangeMap.range;
 
 	for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-		{
-			delete[] pathMap[x];
-			delete[] m_AIBadPoints[x];
-			delete[] m_AITargetPoints[x];
-			delete[] m_AIConnectionPoints[x];
-			delete[] m_AIRangePoints[x];
-			delete[] m_AINeighbourCount[x];
-			delete[] m_Range[x];
-			if(m_BadMapModifiers) {
-				delete[] m_BadMapModifiers[x];
-				m_BadMapModifiers[x] = NULL;
-			}
+	{
+		delete[] pathMap[x];
+		delete[] m_AIBadPoints[x];
+		delete[] m_AITargetPoints[x];
+		delete[] m_AIConnectionPoints[x];
+		delete[] m_AIRangePoints[x];
+		delete[] m_AINeighbourCount[x];
+		delete[] m_Range[x];
+	}
 
-		}
 	delete[] pathMap;
 	delete[] m_AITargetPoints;
 	delete[] m_AIBadPoints;
@@ -152,7 +148,21 @@ CStarmap::~CStarmap()
 	delete[] m_AIRangePoints;
 	delete[] m_AINeighbourCount;
 	delete[] m_Range;
-	if(m_BadMapModifiers) {
+}
+
+void CStarmap::DeleteStatics()
+{
+	for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
+	{
+		if (m_BadMapModifiers)
+		{
+			delete[] m_BadMapModifiers[x];
+			m_BadMapModifiers[x] = NULL;
+		}
+	}
+
+	if (m_BadMapModifiers)
+	{
 		delete[] m_BadMapModifiers;
 		m_BadMapModifiers = NULL;
 	}

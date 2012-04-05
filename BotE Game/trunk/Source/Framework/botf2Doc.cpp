@@ -107,7 +107,7 @@ CBotf2Doc::~CBotf2Doc()
 		m_pNetworkHandler = NULL;
 	}
 
-	if(m_Sector || m_System)
+	if (m_Sector || m_System)
 	{
 		ASSERT(m_Sector && m_System);
 
@@ -130,6 +130,9 @@ CBotf2Doc::~CBotf2Doc()
 		delete[] m_System;
 		m_System = NULL;
 	}
+
+	// statische Variablen der Starmap freigeben
+	CStarmap::DeleteStatics();
 
 	// stop MT
 	MYTRACE_DEINIT;
@@ -1151,7 +1154,7 @@ void CBotf2Doc::GenerateGalaxy()
 					m_mRaceKO[it->first] = pair<int,int>(-1,-1);
 			}
 			// Abbruchbedingung
-			if (++nCount > 250)
+			if (++nCount > max((STARMAP_SECTORS_HCOUNT * STARMAP_SECTORS_VCOUNT) / 4, 20))
 				bRestart = true;
 		}
 		while (GetRaceKO(it->first) == CPoint(-1,-1) && bRestart == false);
