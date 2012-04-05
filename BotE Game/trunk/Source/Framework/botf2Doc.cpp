@@ -435,6 +435,7 @@ void CBotf2Doc::SerializeBeginGameData(CArchive& ar)
 		ar>>STARMAP_SECTORS_VCOUNT;
 		STARMAP_TOTALWIDTH=STARMAP_SECTORS_HCOUNT*80;
 		STARMAP_TOTALHEIGHT=STARMAP_SECTORS_VCOUNT*80;
+		AllocateSectorsAndSystems();
 		// Hauptrassen-Koordinaten empfangen
 		m_mRaceKO.clear();
 		size_t mapSize = 0;
@@ -6697,13 +6698,18 @@ BOOL CBotf2Doc::OnSaveDocument(LPCTSTR lpszPathName)
 
 void CBotf2Doc::AllocateSectorsAndSystems()
 {
-   m_Sector = new CSector*[STARMAP_SECTORS_HCOUNT];
-   for(int i = 0; i < STARMAP_SECTORS_HCOUNT; i++)
-      m_Sector[i] = new CSector[STARMAP_SECTORS_VCOUNT];
-   ASSERT(m_Sector);
+	if(m_Sector || m_System) {
+		ASSERT(m_Sector && m_System);
+		return;
+	}
 
-   m_System = new CSystem*[STARMAP_SECTORS_HCOUNT];
-   for(int i = 0; i < STARMAP_SECTORS_HCOUNT; i++)
-      m_System[i] = new CSystem[STARMAP_SECTORS_VCOUNT];
-   ASSERT(m_System);
+	m_Sector = new CSector*[STARMAP_SECTORS_HCOUNT];
+	for(int i = 0; i < STARMAP_SECTORS_HCOUNT; i++)
+		m_Sector[i] = new CSector[STARMAP_SECTORS_VCOUNT];
+	ASSERT(m_Sector);
+
+	m_System = new CSystem*[STARMAP_SECTORS_HCOUNT];
+	for(int i = 0; i < STARMAP_SECTORS_HCOUNT; i++)
+		m_System[i] = new CSystem[STARMAP_SECTORS_VCOUNT];
+	ASSERT(m_System);
  }
