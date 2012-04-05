@@ -1085,12 +1085,9 @@ void CBotf2Doc::GenerateGalaxy()
 		}
 	m_mRaceKO.clear();
 	int nGenerationMode=0;//0==Standart 1==Circle
-	bool** nGenField=new bool*[STARMAP_SECTORS_HCOUNT];//[STARMAP_SECTORS_VCOUNT];
-	for(int i=0;i<STARMAP_SECTORS_HCOUNT;i++)
-		nGenField[i]=new bool[STARMAP_SECTORS_VCOUNT];
-	for(int i=0;i<STARMAP_SECTORS_HCOUNT;++i)
-		for(int j=0;j<STARMAP_SECTORS_VCOUNT;++j)
-			nGenField[i][j]=true;
+
+	std::vector<std::vector<bool>> nGenField
+		(STARMAP_SECTORS_HCOUNT, std::vector<bool>(STARMAP_SECTORS_VCOUNT, true));
 
 	CIniLoader::GetInstance()->ReadValue("Special", "GENERATIONMODE", nGenerationMode);
 
