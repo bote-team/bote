@@ -57,7 +57,7 @@ public:
 	CStarmap* GetStarmap(void) const {return m_pStarmap;}
 
 	/// Funktion erstellt eine neue Starmap für die Rasse.
-	void CreateStarmap(void) {if (!m_pStarmap) delete m_pStarmap; m_pStarmap = NULL; m_pStarmap = new CStarmap(!m_bPlayer, 3 - RANGE_MIDDLE);}
+	void CreateStarmap(void);
 
 	/// Funktion gibt den Imperiumsnamen zurück.
 	/// @return Imperiumsnamen inkl. Artikel

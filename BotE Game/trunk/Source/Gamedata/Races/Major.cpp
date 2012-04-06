@@ -442,3 +442,12 @@ void CMajor::Reset(void)
 	}
 	m_pStarmap = NULL;
 }
+
+void CMajor::CreateStarmap(void)
+{
+	if (m_pStarmap) {
+		delete m_pStarmap;
+		m_pStarmap = NULL;
+	}
+	m_pStarmap = new CStarmap(!m_bPlayer, 3 - RANGE_MIDDLE);
+}
