@@ -1413,12 +1413,12 @@ void CGalaxyMenuView::GenerateGalaxyMap()
 	FCObjImage img2;
 	FCWin32::GDIPlus_LoadBitmap(*m_pGalaxyBackground, img2);
 	//Bild entsprechend vergrößern. Dabei Seitenverhältnisse beibehalten
-	if(STARMAP_TOTALWIDTH<STARMAP_TOTALHEIGHT)	img2.Stretch_Smooth(img2.Width()*STARMAP_TOTALHEIGHT/img2.Height(), STARMAP_TOTALHEIGHT);
-	else										img2.Stretch_Smooth(STARMAP_TOTALWIDTH, img2.Height()*STARMAP_TOTALWIDTH/img2.Width());
+	if(STARMAP_TOTALWIDTH-img2.Width()*STARMAP_TOTALHEIGHT/img2.Height()<0)	img2.Stretch_Smooth(img2.Width()*STARMAP_TOTALHEIGHT/img2.Height(), STARMAP_TOTALHEIGHT);
+	else																	img2.Stretch_Smooth(STARMAP_TOTALWIDTH, img2.Height()*STARMAP_TOTALWIDTH/img2.Width());
 	m_pGalaxyBackground = FCWin32::GDIPlus_CreateBitmap(img2);
 	img2.Destroy();
 	//Bild zuschneiden
-	m_pGalaxyBackground= m_pGalaxyBackground->Clone(0,0,STARMAP_TOTALWIDTH,STARMAP_TOTALHEIGHT, m_pGalaxyBackground->GetPixelFormat()) ;
+	m_pGalaxyBackground= m_pGalaxyBackground->Clone(0,0,STARMAP_TOTALWIDTH,STARMAP_TOTALHEIGHT,m_pGalaxyBackground->GetPixelFormat()) ;
 	
 	Graphics* g = Graphics::FromImage(m_pGalaxyBackground);
 	g->SetSmoothingMode(SmoothingModeHighQuality);
