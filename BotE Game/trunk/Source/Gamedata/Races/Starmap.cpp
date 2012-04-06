@@ -54,13 +54,8 @@ CStarmap::CStarmap(BOOL bAICalculation, char nAIRange) : m_bAICalculation(bAICal
 	m_bAICalculation = TRUE;
 
 	// m_Range komplett mit RANGE_SPACE füllen
-	m_Range=new unsigned char*[STARMAP_SECTORS_HCOUNT];
-	for(int i=0;i<STARMAP_SECTORS_HCOUNT;i++)
-		m_Range[i]=new unsigned char[STARMAP_SECTORS_VCOUNT];
-	for(int i=0;i<STARMAP_SECTORS_HCOUNT;i++)
-		for(int j=0;j<STARMAP_SECTORS_VCOUNT;j++)
-			m_Range[i][j]=SM_RANGE_SPACE;
-
+	m_Range = std::vector<std::vector<unsigned char>>(
+		STARMAP_SECTORS_HCOUNT, std::vector<unsigned char>(STARMAP_SECTORS_VCOUNT, SM_RANGE_SPACE));
 	//memset(m_Range, SM_RANGE_SPACE, STARMAP_SECTORS_HCOUNT * STARMAP_SECTORS_VCOUNT * sizeof(unsigned char));
 
 	// Standard-Rangemap
@@ -79,75 +74,33 @@ CStarmap::CStarmap(BOOL bAICalculation, char nAIRange) : m_bAICalculation(bAICal
 
 	memcpy(m_RangeMap.range, rangeMap, 49 * sizeof(unsigned char));
 
-	// Bewertungen für Sektoren initialisieren
-	m_AINeighbourCount=new unsigned char*[STARMAP_SECTORS_HCOUNT];
-	for(int i=0;i<STARMAP_SECTORS_HCOUNT;i++)
-		m_AINeighbourCount[i]=new unsigned char[STARMAP_SECTORS_VCOUNT];
-	for(int i=0;i<STARMAP_SECTORS_HCOUNT;i++)
-		for(int j=0;j<STARMAP_SECTORS_VCOUNT;j++)
-			m_AINeighbourCount[i][j]=0;
+	m_AINeighbourCount = std::vector<std::vector<unsigned char>>(
+		STARMAP_SECTORS_HCOUNT, std::vector<unsigned char>(STARMAP_SECTORS_VCOUNT, 0));
 	//memset(m_AINeighbourCount, 0, STARMAP_SECTORS_HCOUNT * STARMAP_SECTORS_VCOUNT * sizeof(unsigned char));
 
-	m_AIRangePoints=new short*[STARMAP_SECTORS_HCOUNT];
-	for(int i=0;i<STARMAP_SECTORS_HCOUNT;i++)
-		m_AIRangePoints[i]=new short[STARMAP_SECTORS_VCOUNT];
-	for(int i=0;i<STARMAP_SECTORS_HCOUNT;i++)
-		for(int j=0;j<STARMAP_SECTORS_VCOUNT;j++)
-			m_AIRangePoints[i][j]=0;
+	m_AIRangePoints = std::vector<std::vector<short>>(
+		STARMAP_SECTORS_HCOUNT, std::vector<short>(STARMAP_SECTORS_VCOUNT, 0));
 	//memset(m_AIRangePoints, 0, STARMAP_SECTORS_HCOUNT * STARMAP_SECTORS_VCOUNT * sizeof(short));
 
-	m_AIConnectionPoints=new short*[STARMAP_SECTORS_HCOUNT];
-	for(int i=0;i<STARMAP_SECTORS_HCOUNT;i++)
-		m_AIConnectionPoints[i]=new short[STARMAP_SECTORS_VCOUNT];
-	for(int i=0;i<STARMAP_SECTORS_HCOUNT;i++)
-		for(int j=0;j<STARMAP_SECTORS_VCOUNT;j++)
-			m_AIConnectionPoints[i][j]=0;
+	m_AIConnectionPoints = std::vector<std::vector<short>>(
+		STARMAP_SECTORS_HCOUNT, std::vector<short>(STARMAP_SECTORS_VCOUNT, 0));
 	//memset(m_AIConnectionPoints, 0, STARMAP_SECTORS_HCOUNT * STARMAP_SECTORS_VCOUNT * sizeof(short));
 
-	m_AITargetPoints=new short*[STARMAP_SECTORS_HCOUNT];
-	for(int i=0;i<STARMAP_SECTORS_HCOUNT;i++)
-		m_AITargetPoints[i]=new short[STARMAP_SECTORS_VCOUNT];
-	for(int i=0;i<STARMAP_SECTORS_HCOUNT;i++)
-		for(int j=0;j<STARMAP_SECTORS_VCOUNT;j++)
-			m_AITargetPoints[i][j]=0;
+	m_AITargetPoints = std::vector<std::vector<short>>(
+		STARMAP_SECTORS_HCOUNT, std::vector<short>(STARMAP_SECTORS_VCOUNT, 0));
 	//memset(m_AITargetPoints, 0, STARMAP_SECTORS_HCOUNT * STARMAP_SECTORS_VCOUNT * sizeof(short));
 
-	m_AIBadPoints=new short*[STARMAP_SECTORS_HCOUNT];
-	for(int i=0;i<STARMAP_SECTORS_HCOUNT;i++)
-		m_AIBadPoints[i]=new short[STARMAP_SECTORS_VCOUNT];
-	for(int i=0;i<STARMAP_SECTORS_HCOUNT;i++)
-		for(int j=0;j<STARMAP_SECTORS_VCOUNT;j++)
-			m_AIBadPoints[i][j]=0;
+	m_AIBadPoints = std::vector<std::vector<short>>(
+		STARMAP_SECTORS_HCOUNT, std::vector<short>(STARMAP_SECTORS_VCOUNT, 0));
 	//memset(m_AIBadPoints, 0, STARMAP_SECTORS_HCOUNT * STARMAP_SECTORS_VCOUNT * sizeof(short));
 	
-	pathMap=new PathSector*[STARMAP_SECTORS_HCOUNT];
-	for(int i=0;i<STARMAP_SECTORS_HCOUNT;i++)
-		pathMap[i]=new PathSector[STARMAP_SECTORS_VCOUNT];
-
+	pathMap = std::vector<std::vector<PathSector>>(
+		STARMAP_SECTORS_HCOUNT, std::vector<PathSector>(STARMAP_SECTORS_VCOUNT));
 }
 
 CStarmap::~CStarmap()
 {
 	if (m_RangeMap.range) delete[] m_RangeMap.range;
-
-	for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-	{
-		delete[] pathMap[x];
-		delete[] m_AIBadPoints[x];
-		delete[] m_AITargetPoints[x];
-		delete[] m_AIConnectionPoints[x];
-		delete[] m_AIRangePoints[x];
-		delete[] m_AINeighbourCount[x];
-		delete[] m_Range[x];
-	}
-
-	delete[] pathMap;
-	delete[] m_AITargetPoints;
-	delete[] m_AIBadPoints;
-	delete[] m_AIConnectionPoints;
-	delete[] m_AIRangePoints;
-	delete[] m_AINeighbourCount;
-	delete[] m_Range;
 }
 
 void CStarmap::DeleteStatics()

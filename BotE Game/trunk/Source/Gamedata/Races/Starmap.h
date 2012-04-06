@@ -20,6 +20,7 @@
 #include <list>
 #include <set>
 #include <map>
+#include <vector>
 
 #if _MSC_VER > 1000
 #pragma once
@@ -126,7 +127,7 @@ class CStarmap
 protected:
 	/// Map, die die Entfernung vom nächsten Außenposten aufnimmt; der erste Index ist die x-,
 	/// der zweite die y-Koordinate eines Sektors (modelliert Einfluss, den der Außenposten hat)
-	unsigned char **m_Range;//[STARMAP_SECTORS_HCOUNT][STARMAP_SECTORS_VCOUNT];
+	std::vector<std::vector<unsigned char>> m_Range;//[STARMAP_SECTORS_HCOUNT][STARMAP_SECTORS_VCOUNT];
 	/// Koordinaten des aktuell ausgewählten Sektors; (-1, -1) wenn keiner ausgewählt ist
 	Sector m_Selection;
 
@@ -140,7 +141,7 @@ protected:
 	static double **m_BadMapModifiers;//[STARMAP_SECTORS_HCOUNT][STARMAP_SECTORS_VCOUNT];
 
 	/// Array, das Informationen zur Berechnung der kürzesten Wege aufnimmt
-	PathSector **pathMap;//[STARMAP_SECTORS_HCOUNT][STARMAP_SECTORS_VCOUNT];
+	std::vector<std::vector<PathSector>> pathMap;//[STARMAP_SECTORS_HCOUNT][STARMAP_SECTORS_VCOUNT];
 	/// Liste der Nachbarn, die von den aktuellen Blättern aus erreichbar sind
 	/// (werden als nächstes zu Blättern des Baumes)
 	LeafList leaves;
@@ -155,19 +156,19 @@ protected:
 	SECTORLIST m_lAIKnownSystems;	///< Liste von der KI bekannten Systemen (durch Scannen)
 
 	/// Gebietszuwachs für Sektor (x, y), wenn in diesem Sektor ein Außenposten gebaut würde
-	short **m_AIRangePoints;//[STARMAP_SECTORS_HCOUNT][STARMAP_SECTORS_VCOUNT];
+	std::vector<std::vector<short>> m_AIRangePoints;//[STARMAP_SECTORS_HCOUNT][STARMAP_SECTORS_VCOUNT];
 
 	/// für Sektoren außerhalb der gegebenen Reichweite die Anzahl der Nachbarn innerhalb der Reichweite
-	unsigned char** m_AINeighbourCount;//[STARMAP_SECTORS_HCOUNT][STARMAP_SECTORS_VCOUNT];
+	std::vector<std::vector<unsigned char>> m_AINeighbourCount;//[STARMAP_SECTORS_HCOUNT][STARMAP_SECTORS_VCOUNT];
 	/// Bewertung für den Zusammenhang eines Gebiets, um Lücken zu vermeiden und nicht zusammenhängende Gebiete zu verbinden
-	short** m_AIConnectionPoints;//[STARMAP_SECTORS_HCOUNT][STARMAP_SECTORS_VCOUNT];
+	std::vector<std::vector<short>> m_AIConnectionPoints;//[STARMAP_SECTORS_HCOUNT][STARMAP_SECTORS_VCOUNT];
 
 	/// Bewertung für bevorzugte Ausbreitungsrichtungen
-	short** m_AITargetPoints;//[STARMAP_SECTORS_HCOUNT][STARMAP_SECTORS_VCOUNT];
+	std::vector<std::vector<short>> m_AITargetPoints;//[STARMAP_SECTORS_HCOUNT][STARMAP_SECTORS_VCOUNT];
 
 	/// negative Bewertung für ein Gebiet durch feindliche Grenzen. Man sollte keinen Aussenposten auf einen freien
 	/// Fleck inmitten des gegnerischen Gebiets bauen.
-	short** m_AIBadPoints;//[STARMAP_SECTORS_HCOUNT][STARMAP_SECTORS_VCOUNT];
+	std::vector<std::vector<short>> m_AIBadPoints;//[STARMAP_SECTORS_HCOUNT][STARMAP_SECTORS_VCOUNT];
 
 public:
 	/**
