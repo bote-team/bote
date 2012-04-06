@@ -53,10 +53,7 @@ CStarmap::CStarmap(BOOL bAICalculation, char nAIRange) : m_bAICalculation(bAICal
 	// KI Berechnung mal auf immer TRUE gestellt. So wird bei einer Spielerrasse auch berechnet, aber nicht angewandt
 	m_bAICalculation = TRUE;
 
-	// m_Range komplett mit RANGE_SPACE füllen
-	m_Range = std::vector<std::vector<unsigned char>>(
-		STARMAP_SECTORS_HCOUNT, std::vector<unsigned char>(STARMAP_SECTORS_VCOUNT, SM_RANGE_SPACE));
-	//memset(m_Range, SM_RANGE_SPACE, STARMAP_SECTORS_HCOUNT * STARMAP_SECTORS_VCOUNT * sizeof(unsigned char));
+	InitSomeMembers();
 
 	// Standard-Rangemap
 	m_RangeMap.range = new unsigned char [49];
@@ -73,26 +70,6 @@ CStarmap::CStarmap(BOOL bAICalculation, char nAIRange) : m_bAICalculation(bAICal
 		 0, 0, 1, 1, 1, 0, 0};
 
 	memcpy(m_RangeMap.range, rangeMap, 49 * sizeof(unsigned char));
-
-	m_AINeighbourCount = std::vector<std::vector<unsigned char>>(
-		STARMAP_SECTORS_HCOUNT, std::vector<unsigned char>(STARMAP_SECTORS_VCOUNT, 0));
-	//memset(m_AINeighbourCount, 0, STARMAP_SECTORS_HCOUNT * STARMAP_SECTORS_VCOUNT * sizeof(unsigned char));
-
-	m_AIRangePoints = std::vector<std::vector<short>>(
-		STARMAP_SECTORS_HCOUNT, std::vector<short>(STARMAP_SECTORS_VCOUNT, 0));
-	//memset(m_AIRangePoints, 0, STARMAP_SECTORS_HCOUNT * STARMAP_SECTORS_VCOUNT * sizeof(short));
-
-	m_AIConnectionPoints = std::vector<std::vector<short>>(
-		STARMAP_SECTORS_HCOUNT, std::vector<short>(STARMAP_SECTORS_VCOUNT, 0));
-	//memset(m_AIConnectionPoints, 0, STARMAP_SECTORS_HCOUNT * STARMAP_SECTORS_VCOUNT * sizeof(short));
-
-	m_AITargetPoints = std::vector<std::vector<short>>(
-		STARMAP_SECTORS_HCOUNT, std::vector<short>(STARMAP_SECTORS_VCOUNT, 0));
-	//memset(m_AITargetPoints, 0, STARMAP_SECTORS_HCOUNT * STARMAP_SECTORS_VCOUNT * sizeof(short));
-
-	m_AIBadPoints = std::vector<std::vector<short>>(
-		STARMAP_SECTORS_HCOUNT, std::vector<short>(STARMAP_SECTORS_VCOUNT, 0));
-	//memset(m_AIBadPoints, 0, STARMAP_SECTORS_HCOUNT * STARMAP_SECTORS_VCOUNT * sizeof(short));
 	
 	pathMap = std::vector<std::vector<PathSector>>(
 		STARMAP_SECTORS_HCOUNT, std::vector<PathSector>(STARMAP_SECTORS_VCOUNT));
@@ -254,42 +231,40 @@ void CStarmap::SynchronizeWithAnomalies(CSector** sectors/*[][STARMAP_SECTORS_VC
 
 void CStarmap::ClearAll()
 {
-	// m_Range komplett mit RANGE_SPACE füllen
-	//memset(m_Range, SM_RANGE_SPACE, STARMAP_SECTORS_HCOUNT * STARMAP_SECTORS_VCOUNT * sizeof(unsigned char));
-	for(int i=0;i<STARMAP_SECTORS_HCOUNT;i++)
-		for(int j=0;j<STARMAP_SECTORS_VCOUNT;j++)
-			m_Range[i][j]=SM_RANGE_SPACE;
 	m_lBases.clear();
 
-	// Bewertungen für Sektoren initialisieren
-	//memset(m_AINeighbourCount, 0, STARMAP_SECTORS_HCOUNT * STARMAP_SECTORS_VCOUNT * sizeof(unsigned char));
-	for(int i=0;i<STARMAP_SECTORS_HCOUNT;i++)
-		for(int j=0;j<STARMAP_SECTORS_VCOUNT;j++)
-			m_AINeighbourCount[i][j]=0;
-
-	//memset(m_AIRangePoints, 0, STARMAP_SECTORS_HCOUNT * STARMAP_SECTORS_VCOUNT * sizeof(short));
-	for(int i=0;i<STARMAP_SECTORS_HCOUNT;i++)
-		for(int j=0;j<STARMAP_SECTORS_VCOUNT;j++)
-			m_AIRangePoints[i][j]=0;
-	
-	
-	//memset(m_AIConnectionPoints, 0, STARMAP_SECTORS_HCOUNT * STARMAP_SECTORS_VCOUNT * sizeof(short));
-	for(int i=0;i<STARMAP_SECTORS_HCOUNT;i++)
-		for(int j=0;j<STARMAP_SECTORS_VCOUNT;j++)
-			m_AIConnectionPoints[i][j]=0;
-
-	//memset(m_AITargetPoints, 0, STARMAP_SECTORS_HCOUNT * STARMAP_SECTORS_VCOUNT * sizeof(short));
-	for(int i=0;i<STARMAP_SECTORS_HCOUNT;i++)
-		for(int j=0;j<STARMAP_SECTORS_VCOUNT;j++)
-			m_AITargetPoints[i][j]=0;
-
-	//memset(m_AIBadPoints, 0, STARMAP_SECTORS_HCOUNT * STARMAP_SECTORS_VCOUNT * sizeof(short));
-	for(int i=0;i<STARMAP_SECTORS_HCOUNT;i++)
-		for(int j=0;j<STARMAP_SECTORS_VCOUNT;j++)
-			m_AIBadPoints[i][j]=0;
+	InitSomeMembers();
 
 	m_lAIKnownSystems.clear();
 	m_lAITargets.clear();
+}
+
+void CStarmap::InitSomeMembers()
+{
+	// m_Range komplett mit RANGE_SPACE füllen
+	m_Range = std::vector<std::vector<unsigned char>>(
+		STARMAP_SECTORS_HCOUNT, std::vector<unsigned char>(STARMAP_SECTORS_VCOUNT, SM_RANGE_SPACE));
+	//memset(m_Range, SM_RANGE_SPACE, STARMAP_SECTORS_HCOUNT * STARMAP_SECTORS_VCOUNT * sizeof(unsigned char));
+
+	m_AINeighbourCount = std::vector<std::vector<unsigned char>>(
+		STARMAP_SECTORS_HCOUNT, std::vector<unsigned char>(STARMAP_SECTORS_VCOUNT, 0));
+	//memset(m_AINeighbourCount, 0, STARMAP_SECTORS_HCOUNT * STARMAP_SECTORS_VCOUNT * sizeof(unsigned char));
+
+	m_AIRangePoints = std::vector<std::vector<short>>(
+		STARMAP_SECTORS_HCOUNT, std::vector<short>(STARMAP_SECTORS_VCOUNT, 0));
+	//memset(m_AIRangePoints, 0, STARMAP_SECTORS_HCOUNT * STARMAP_SECTORS_VCOUNT * sizeof(short));
+
+	m_AIConnectionPoints = std::vector<std::vector<short>>(
+		STARMAP_SECTORS_HCOUNT, std::vector<short>(STARMAP_SECTORS_VCOUNT, 0));
+	//memset(m_AIConnectionPoints, 0, STARMAP_SECTORS_HCOUNT * STARMAP_SECTORS_VCOUNT * sizeof(short));
+
+	m_AITargetPoints = std::vector<std::vector<short>>(
+		STARMAP_SECTORS_HCOUNT, std::vector<short>(STARMAP_SECTORS_VCOUNT, 0));
+	//memset(m_AITargetPoints, 0, STARMAP_SECTORS_HCOUNT * STARMAP_SECTORS_VCOUNT * sizeof(short));
+
+	m_AIBadPoints = std::vector<std::vector<short>>(
+		STARMAP_SECTORS_HCOUNT, std::vector<short>(STARMAP_SECTORS_VCOUNT, 0));
+	//memset(m_AIBadPoints, 0, STARMAP_SECTORS_HCOUNT * STARMAP_SECTORS_VCOUNT * sizeof(short));
 }
 
 // Kantengewichte; das diagonale Kantengewicht muss höher sein, da ein Weg sonst
@@ -1015,3 +990,4 @@ BaseSector CStarmap::CalcAIBaseSector(double variance)
 	// bei sonstigen Fehlern
 	return BaseSector();
 }
+

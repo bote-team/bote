@@ -322,6 +322,9 @@ private:
 
 	/// Berechnet Bewertungen für bevorzugte Ausbreitungsrichtungen.
 	void RecalcTargetPoints();
+
+	//(Re)Initializes some of the vector members
+	void InitSomeMembers();
 };
 
 #endif // !defined(AFX_STARMAP_H__28F3FFEA_139A_45A5_AFF3_76F41E48496B__INCLUDED_)
