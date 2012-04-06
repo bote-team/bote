@@ -1184,7 +1184,9 @@ void CBotf2Doc::GenerateGalaxy()
 			continue;
 		}
 		
-		vMinorRaceSystemNames.Add(pMinor->GetHomesystemName());
+		// keine Minors ohne Heimatsystem ins Spiel bringen (Aliens haben kein Heimatsystem)
+		if (!pMinor->IsAlienRace())
+			vMinorRaceSystemNames.Add(pMinor->GetHomesystemName());
 	}
 
 	// Namensgenerator initialisieren
@@ -1331,7 +1333,7 @@ void CBotf2Doc::GenerateGalaxy()
 		if (sUsedMinors.find(it->first) == sUsedMinors.end())
 		{
 			// keine Aliens ohne Heimatsystem rauslöschen
-			if (it->second->GetRaceKO() != CPoint(-1,-1))
+			if (!it->second->IsAlienRace())
 				vDelMinors.push_back(it->first);
 		}
 	}
@@ -1469,7 +1471,7 @@ void CBotf2Doc::NextRound()
 			// findet ein Kampf statt, so sofort aus der Funktion rausgehen und die Kampfberechnungen durchführen
 			return;
 		}
-	}	
+	}
 
 	map<CString, CMajor*>* pmMajors = m_pRaceCtrl->GetMajors();
 	// Minors erst nach einem Kampf berechnen, so dass nicht in der gleichen Runde deren Schiff gegen ein anderes Kämpfen kann
@@ -1517,6 +1519,7 @@ void CBotf2Doc::NextRound()
 		CMajor* pMajor = it->second;
 		m_RandomEventManager.CalcEvents(pMajor);
 	};
+
 	this->CalcSystemAttack();
 	this->CalcIntelligence();
 	this->CalcResearch();
@@ -1528,10 +1531,14 @@ void CBotf2Doc::NextRound()
 		CMajor* pMajor = it->second;
 		mOldCredits[it->first] = pMajor->GetEmpire()->GetCredits();
 	}
-	this->CalcOldRoundData();	
+	this->CalcOldRoundData();
+
+	// Aliens zufällig ins Spiel bringen (vor der Berechnung der Schiffsauswirkungen)
+	this->CalcRandomAlienEntities();
 	this->CalcShipEffects();
 	this->CalcNewRoundData();	
 	this->CalcTrade();
+
 	this->CalcEndDataForNextRound();
 
 	// Creditänderung berechnen
@@ -5143,8 +5150,9 @@ void CBotf2Doc::CalcShipMovement()
 			{
 				CStarmap* pStarmap = new CStarmap(0);
 				pStarmap->SetFullRangeMap();
-				pStarmap->SynchronizeWithAnomalies(m_Sector);
 
+				// Anomalien werden schon beachtet, da dies eine statische Variable ist und in NextRound() schon
+				// berechnet wurde.
 				nextKO = pStarmap->CalcPath(shipKO,targetKO,range,speed,*m_ShipArray[y].GetPath());
 
 				delete pStarmap;
@@ -6526,6 +6534,68 @@ Für den Erfahrungsgewinn gibt es mehrere Möglichkeiten:
 		case 2: expAdd = 5;		break;
 	}
 	ship->SetCrewExperiance(expAdd);	
+}
+
+/// Funktion berechnet, ob zufällig Alienschiffe ins Spiel kommen.
+void CBotf2Doc::CalcRandomAlienEntities()
+{
+	// Aliens zufällig ins Spiel bringen
+	for (int i = 0; i < m_ShipInfoArray.GetSize(); i++)
+	{
+		CShipInfo* pShipInfo = &m_ShipInfoArray.GetAt(i);
+		if (pShipInfo->GetShipType() != ALIEN)
+			continue;
+
+		// zugehörige Minorrace finden
+		if (CMinor* pAlien = dynamic_cast<CMinor*>(m_pRaceCtrl->GetRace(pShipInfo->GetOnlyInSystem())))
+		{
+			if (!pAlien->IsAlienRace())
+			{
+				ASSERT(pAlien->IsAlienRace());
+				continue;
+			}
+
+			// Prüfen ob das Alienschiff zum Galaxieweiten technologischen Fortschritt passt
+			// Alienschiff das höhere Voraussetzungen als der technologische Fortschritt hat
+			// kommt nicht ins Spiel. Ältere Alienschiffe, die viel geringer als der Fortschritt
+			// sind kommen mit niedrigerer Wahrscheinlichkeit ins Spiel.		
+			BYTE byAvgTechLevel = m_Statistics.GetAverageTechLevel();
+			BYTE researchLevels[6] = {byAvgTechLevel, byAvgTechLevel, byAvgTechLevel, byAvgTechLevel, byAvgTechLevel, byAvgTechLevel};
+			if (!pShipInfo->IsThisShipBuildableNow(researchLevels))
+				continue;
+
+			// jedes Level unterhalb der durchschnittlichen Techstufe verringert sich die Wahrscheinlichkeit
+			// des Auftauchens des Alienschiffes
+			BYTE byAvgShipTech = (pShipInfo->GetBioTech() + pShipInfo->GetEnergyTech() + pShipInfo->GetComputerTech() + pShipInfo->GetConstructionTech() + pShipInfo->GetPropulsionTech() + pShipInfo->GetWeaponTech()) / 6;
+			int nMod = max(byAvgTechLevel - byAvgShipTech, 0) * 5;
+
+			// nur ca. aller 20 + Techmodifikator Runden kommt das Alienschiff ins Spiel
+			if (rand()%(20 + nMod) != 0)
+				continue;
+
+			// zufälligen Sektor am Rand der Map ermitteln
+			while (true)
+			{
+				// Schiff irgendwo an einem Rand der Map auftauchen lassen
+				CPoint p;
+				switch(rand()%4)
+				{
+				case 0: p = CPoint(0, rand()%STARMAP_SECTORS_VCOUNT); break;
+				case 1: p = CPoint(STARMAP_SECTORS_HCOUNT - 1, rand()%STARMAP_SECTORS_VCOUNT); break;
+				case 2: p = CPoint(rand()%STARMAP_SECTORS_HCOUNT, 0); break;
+				case 3: p = CPoint(rand()%STARMAP_SECTORS_HCOUNT, STARMAP_SECTORS_VCOUNT - 1); break;
+				default: p = CPoint(rand()%STARMAP_SECTORS_HCOUNT, rand()%STARMAP_SECTORS_VCOUNT);
+				}
+
+				// nicht auf einer Anomalie!
+				if (!GetSector(p).GetAnomaly())
+				{
+					BuildShip(pShipInfo->GetID(), p, pAlien->GetRaceID());
+					break;
+				}
+			}
+		}
+	}
 }
 
 void CBotf2Doc::OnUpdateFileNew(CCmdUI *pCmdUI)

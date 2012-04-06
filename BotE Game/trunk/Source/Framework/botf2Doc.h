@@ -157,10 +157,10 @@ public:
 	/// @return Koordinate auf der Galaxiemap
 	CPoint GetRaceKO(const CString& sMajorID);
 		
-	CSector& GetSector(int x, int y) {return m_Sector[x][y];}
-	CSector& GetSector(const CPoint& ko) {return m_Sector[ko.x][ko.y];}
-	CSystem& GetSystem(int x, int y) {return m_System[x][y];}	
-	CSystem& GetSystem(const CPoint& ko) {return m_System[ko.x][ko.y];}
+	CSector& GetSector(int x, int y) { ASSERT(x < STARMAP_SECTORS_HCOUNT && y < STARMAP_SECTORS_VCOUNT); return m_Sector[x][y]; }
+	CSector& GetSector(const CPoint& ko) { return GetSector(ko.x, ko.y); }
+	CSystem& GetSystem(int x, int y) { ASSERT(x < STARMAP_SECTORS_HCOUNT && y < STARMAP_SECTORS_VCOUNT); return m_System[x][y]; }	
+	CSystem& GetSystem(const CPoint& ko) { return GetSystem(ko.x, ko.y); }
 	
 	CBuildingInfo& GetBuildingInfo(int id) {ASSERT(id); return BuildingInfo[id-1];}
 	const CString& GetBuildingName(int id) const {ASSERT(id); return BuildingInfo[id-1].GetBuildingName();}
@@ -324,6 +324,9 @@ protected:
 	/// Kampf direkt verteilt.
 	/// @param ship Zeiger auf Schiff (inkl. Flotte) für welches die Erfahrung berechnet werden soll
 	void CalcShipExp(CShip* ship);
+
+	/// Funktion berechnet, ob zufällig Alienschiffe ins Spiel kommen.
+	void CalcRandomAlienEntities();
 
 	/// Funktion generiert die Galaxiemap inkl. der ganzen Systeme und Planeten zu Beginn eines neuen Spiels.
 	void GenerateGalaxy();
