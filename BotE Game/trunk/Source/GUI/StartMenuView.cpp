@@ -51,6 +51,8 @@ CStartMenuView::~CStartMenuView()
 {
 	client.RemoveClientListener(this);
 	server.RemoveServerListener(this);
+
+	clientPublisher.Stop();
 }
 
 void CStartMenuView::DoDataExchange(CDataExchange* pDX)
