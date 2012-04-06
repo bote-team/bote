@@ -7,6 +7,10 @@
 #include "botf2Doc.h"
 #include "SettingsDlg.h"
 
+#ifdef VLD
+#include "vld.h"
+#endif
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
@@ -100,6 +104,10 @@ END_MESSAGE_MAP()
 
 CBotf2App::CBotf2App()
 {
+#ifdef VLD
+	_CrtSetDbgFlag(0);
+	VLDEnable();
+#endif
 	// ZU ERLEDIGEN: Hier Code zur Konstruktion einfügen
 	// Alle wichtigen Initialisierungen in InitInstance platzieren
 	m_pChatDlg = NULL;

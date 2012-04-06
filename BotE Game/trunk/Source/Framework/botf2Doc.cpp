@@ -33,9 +33,6 @@
 
 #include "Galaxy\Anomaly.h"
 
-#ifdef VLD
-#include "vld.h"
-#endif
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -62,10 +59,6 @@ END_MESSAGE_MAP()
 
 CBotf2Doc::CBotf2Doc()
 {
-#ifdef VLD
-	VLDEnable();
-#endif
-
 	//Init MT with single log file
 	CString sLogPath = CIOData::GetInstance()->GetLogPath();
 	MYTRACE_INIT(sLogPath);
