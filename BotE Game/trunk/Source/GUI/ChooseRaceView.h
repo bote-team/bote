@@ -70,6 +70,10 @@ private:
 	
 	Bitmap* m_pBkgndImg;				///< Hintergrundgrafik
 	CSize	m_TotalSize;				///< Größe der View	
+
+	//prevent weird crashes when calling OnDraw for too long after start game has already been clicked
+	//appears to happen under the debugger only
+	bool m_bStopDrawing;
 };
 
 

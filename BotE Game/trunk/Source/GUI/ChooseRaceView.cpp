@@ -20,7 +20,7 @@
 
 IMPLEMENT_DYNCREATE(CChooseRaceView, CFormView)
 
-CChooseRaceView::CChooseRaceView() : CFormView(CChooseRaceView::IDD), m_bIsServer(false), m_nPlayerCount(0)
+CChooseRaceView::CChooseRaceView() : CFormView(CChooseRaceView::IDD), m_bIsServer(false), m_nPlayerCount(0), m_bStopDrawing(false)
 {
 }
 
@@ -66,6 +66,9 @@ void CChooseRaceView::Dump(CDumpContext& dc) const
 
 void CChooseRaceView::OnDraw(CDC* dc)
 {
+	if(m_bStopDrawing)
+		return;
+
 	// TODO: Fügen Sie hier Ihren spezialisierten Code ein, und/oder rufen Sie die Basisklasse auf.
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
@@ -448,6 +451,8 @@ void CChooseRaceView::OnBnStartGameClicked()
 	ASSERT(pDoc);
 	if (!pDoc)
 		return;
+
+	m_bStopDrawing = true;
 
 	SetCursor(::LoadCursor(NULL, IDC_WAIT));
 
