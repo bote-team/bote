@@ -183,15 +183,11 @@ void CTrade::CalculateTradeActions(CMajor* pMajor, CSystem** systems/*[][STARMAP
 {
 	ASSERT(pMajor);
 
-	int*** sum=new int**[STARMAP_SECTORS_HCOUNT];
-	//	[STARMAP_SECTORS_HCOUNT][STARMAP_SECTORS_VCOUNT][IRIDIUM + 1] = {0};  //WTF
-	for(int i=0;i<STARMAP_SECTORS_HCOUNT;i++)
-	{
-		sum[i]=new int*[STARMAP_SECTORS_VCOUNT];
-		for(int j=0;j<STARMAP_SECTORS_VCOUNT;j++)
-			sum[i][j]=new int[IRIDIUM + 1];
-	}
-	ASSERT(sum);
+	std::vector<std::vector<std::vector<int>>> sum(
+		STARMAP_SECTORS_HCOUNT, std::vector<std::vector<int>>
+			(STARMAP_SECTORS_VCOUNT, std::vector<int>(IRIDIUM + 1, 0))
+	);
+	//	[STARMAP_SECTORS_HCOUNT][STARMAP_SECTORS_VCOUNT][IRIDIUM + 1] = {0};
 
 	BOOLEAN didSome = FALSE;
 	for (int i = 0; i < m_TradeActions.GetSize(); )
