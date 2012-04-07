@@ -1531,10 +1531,14 @@ void CBotf2Doc::NextRound()
 		CMajor* pMajor = it->second;
 		mOldCredits[it->first] = pMajor->GetEmpire()->GetCredits();
 	}
+	
+	// Auswirkungen von Alienschiffen beachten
+	this->CalcAlienShipEffects();
+	// alle Systeme berechnen (Bauliste, Moral, Energie usw.)
 	this->CalcOldRoundData();
-
 	// Aliens zufällig ins Spiel bringen (vor der Berechnung der Schiffsauswirkungen)
 	this->CalcRandomAlienEntities();
+	// Schiffsauswirkungen berechnen (Scanstärken, Erfahrung usw.)
 	this->CalcShipEffects();
 	this->CalcNewRoundData();	
 	this->CalcTrade();
@@ -2573,7 +2577,11 @@ void CBotf2Doc::CalcPreDataForNextRound()
 	for (int y = 0 ; y < STARMAP_SECTORS_VCOUNT; y++)
 		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
 			if (m_Sector[x][y].GetSunSystem())
-				m_System[x][y].SetBlockade(0);			
+			{
+				m_System[x][y].SetBlockade(0);
+				m_System[x][y].ClearDisabledProductions();
+			}
+	
 
 	//f(x):=min(731,max(14,trunc(743-x^3)))
 	m_fStardate += (float)(min(731, max(14, 743-pow((float)m_Statistics.GetAverageTechLevel(),3.0f))));
@@ -5100,6 +5108,9 @@ void CBotf2Doc::CalcShipMovement()
 		Sector targetKO((char)m_ShipArray[y].GetTargetKO().x,(char)m_ShipArray[y].GetTargetKO().y);
 		Sector nextKO(-1,-1);
 
+		if (shipKO == targetKO)
+			targetKO = Sector(-1,-1);
+
 		// Weltraummonster gesondert behandeln
 		if (m_ShipArray[y].GetShipType() == ALIEN)
 		{
@@ -5120,8 +5131,8 @@ void CBotf2Doc::CalcShipMovement()
 					break;
 				}
 			}
-			// nur in ca. jeder fünften Runde fliegt das Weltraummonster weiter
-			else if (rand()%5 != 0)
+			// nur in ca. jeder dritten Runde fliegt das Weltraummonster weiter
+			else if (rand()%3 != 0)
 			{
 				targetKO = Sector(-1,-1);
 			}
@@ -6211,7 +6222,7 @@ void CBotf2Doc::CalcEndDataForNextRound()
 					// Nachricht über Rassenauslöschung (hier die gleiche wie bei Minorauslöschung
 					CString news = CResourceManager::GetString("ELIMINATE_MINOR", FALSE, pMajor->GetRaceName());
 					message.GenerateMessage(news, SOMETHING, "", 0, 0);
-					itt->second->GetEmpire()->AddMessage(message);						
+					itt->second->GetEmpire()->AddMessage(message);
 					if (itt->second->IsHumanPlayer())
 					{
 						// Event über die Rassenauslöschung einfügen
@@ -6591,7 +6602,65 @@ void CBotf2Doc::CalcRandomAlienEntities()
 				if (!GetSector(p).GetAnomaly())
 				{
 					BuildShip(pShipInfo->GetID(), p, pAlien->GetRaceID());
+
+					// Wenn es eine friedliche Alienrasse ist, dann das Schiff auf Meiden stellen
+					if (pAlien->IsRaceProperty(PACIFIST) || pAlien->IsRaceProperty(AGRARIAN))
+						m_ShipArray[m_ShipArray.GetUpperBound()].SetCurrentOrder(AVOID);
+
 					break;
+				}
+			}
+		}
+	}
+}
+
+/// Funktion berechnet Auswirkungen von Alienschiffe auf Systeme, über denen sie sich befinden.
+void CBotf2Doc::CalcAlienShipEffects()
+{
+	for (int i = 0; i < m_ShipArray.GetSize(); i++)
+	{
+		CShip* pShip = &m_ShipArray.GetAt(i);
+		if (pShip->GetShipType() != ALIEN)
+			continue;
+
+		if (!GetSector(pShip->GetKO()).GetSunSystem())
+			continue;
+
+		if (!GetSector(pShip->GetKO()).GetOwned())
+			continue;
+
+		CString sSectorOwner = GetSector(pShip->GetKO()).GetOwnerOfSector();
+		CMajor* pOwner = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(sSectorOwner));
+		if (!pOwner)
+			continue;
+
+		CMinor* pAlien = dynamic_cast<CMinor*>(m_pRaceCtrl->GetRace(pShip->GetOwnerOfShip()));
+		if (!pAlien || !pAlien->IsAlienRace())
+		{
+			ASSERT(FALSE);
+			continue;
+		}
+
+		// verschiedene Alienrassen unterscheiden
+		if (pAlien->GetRaceID() == "Ionisierendes Gaswesen")
+		{
+			// Energie im System auf 0 setzen
+			GetSystem(pShip->GetKO()).SetDisabledProduction(ENERGY_WORKER);
+			
+			// Wenn Energie vorhanden war, dann die Nachricht bringen über Energieausfall
+			if (GetSystem(pShip->GetKO()).GetProduction()->GetMaxEnergyProd() > 0)
+			{				
+				// Nachricht und Event einfügen
+				CString s = CResourceManager::GetString("EVENT_IONISIERENDES_GASWESEN", FALSE, GetSector(pShip->GetKO()).GetName());
+				message.GenerateMessage(s, SOMETHING, GetSector(pShip->GetKO()).GetName(), pShip->GetKO(), 0);
+				pOwner->GetEmpire()->AddMessage(message);
+				if (pOwner->IsHumanPlayer())
+				{
+					CEventAlienEntity* eventScreen = new CEventAlienEntity(pOwner->GetRaceID(), pAlien->GetRaceID(), pAlien->GetRaceName(), s);
+					pOwner->GetEmpire()->GetEventMessages()->Add(eventScreen);
+
+					network::RACE client = m_pRaceCtrl->GetMappedClientID(pOwner->GetRaceID());
+					m_iSelectedView[client] = EMPIRE_VIEW;
 				}
 			}
 		}

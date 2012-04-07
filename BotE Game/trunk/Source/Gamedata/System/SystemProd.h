@@ -22,12 +22,6 @@ public:
 	// Destruktor
 	virtual ~CSystemProd(void);
 
-	// Kopierkonstruktor
-	CSystemProd(const CSystemProd & rhs);
-	
-	// Zuweisungsoperatur
-	CSystemProd & operator=(const CSystemProd &);
-
 	// Die Serialisierungsfunktion
 	virtual void Serialize(CArchive &ar);
 
@@ -100,6 +94,10 @@ public:
 	// Funktion berechnet die neuen Produktionen im System die sich durch das übergebene Gebäude ergeben
 	void CalculateProduction(const CBuildingInfo*);
 
+	/// Funktion zum deaktivieren bestimmter Produktionen
+	/// @param vDisabledProductions Array mit zu deaktiverenden Produktionen
+	void DisableProductions(const bool* vDisabledProductions);
+
 	// Funktion berechnet die mögliche Produktionsänderung durch die Moral im System
 	void IncludeSystemMoral(short moral);
 
@@ -168,6 +166,5 @@ private:
 	short m_iUpdateBuildSpeed;
 	short m_iShipBuildSpeed;
 	short m_iTroopBuildSpeed;
-	// new in ALPHA5
 	BOOLEAN m_bResourceDistributor[DERITIUM + 1];		///< Ressourcenverteiler (Nahrung, Titan, Deuterium, Duranium, Kristalle, Iridium, Deritium)
 };

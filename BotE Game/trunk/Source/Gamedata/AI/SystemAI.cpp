@@ -1215,48 +1215,58 @@ int CSystemAI::GetShipBuildPrios(BOOLEAN &chooseCombatship, BOOLEAN &chooseColos
 /// gelöscht.
 void CSystemAI::CalcProd()
 {
-	CPoint ko = m_KO;
-	int NumberOfBuildings;
-	NumberOfBuildings = m_pDoc->m_System[ko.x][ko.y].GetAllBuildings()->GetSize();
-	// Alle Werte wieder auf NULL setzen	
-	m_pDoc->m_System[ko.x][ko.y].GetProduction()->Reset();
+	CSystem* pSystem = &m_pDoc->GetSystem(m_KO);
 	
-	m_pDoc->m_System[ko.x][ko.y].GetWorker()->CheckWorkers();
-	unsigned short foodWorker	  = m_pDoc->m_System[ko.x][ko.y].GetWorker()->GetWorker(0);
-	unsigned short industryWorker = m_pDoc->m_System[ko.x][ko.y].GetWorker()->GetWorker(1);
-	unsigned short energyWorker   = m_pDoc->m_System[ko.x][ko.y].GetWorker()->GetWorker(2);
+	CSystemProd* pProduction = pSystem->GetProduction();
+	if (!pProduction)
+	{
+		ASSERT(pProduction);
+		return;
+	}
+	
+	// Alle Werte wieder auf NULL setzen	
+	pProduction->Reset();
+	
+	pSystem->GetWorker()->CheckWorkers();
+	unsigned short foodWorker	  = pSystem->GetWorker()->GetWorker(FOOD_WORKER);
+	unsigned short industryWorker = pSystem->GetWorker()->GetWorker(INDUSTRY_WORKER);
+	unsigned short energyWorker   = pSystem->GetWorker()->GetWorker(ENERGY_WORKER);
 
 	// Die einzelnen Produktionen berechnen
-	for (int i = 0; i < NumberOfBuildings; i++)
+	int nNumberOfBuildings = pSystem->GetAllBuildings()->GetSize();
+	for (int i = 0; i < nNumberOfBuildings; i++)
 	{
-		const CBuildingInfo *buildingInfo = &m_pDoc->BuildingInfo.GetAt(m_pDoc->m_System[ko.x][ko.y].GetAllBuildings()->GetAt(i).GetRunningNumber() - 1);
+		const CBuildingInfo *buildingInfo = &m_pDoc->BuildingInfo.GetAt(pSystem->GetAllBuildings()->GetAt(i).GetRunningNumber() - 1);
 
 		// Gebäude offline setzen
 		if (buildingInfo->GetWorker() == TRUE)
 		{
-			m_pDoc->m_System[ko.x][ko.y].GetAllBuildings()->ElementAt(i).SetIsBuildingOnline(FALSE);
+			pSystem->GetAllBuildings()->ElementAt(i).SetIsBuildingOnline(FALSE);
 			// Jetzt wieder wenn möglich online setzen
 			if (buildingInfo->GetFoodProd() > 0 && foodWorker > 0)
 			{
-				m_pDoc->m_System[ko.x][ko.y].GetAllBuildings()->ElementAt(i).SetIsBuildingOnline(TRUE);
+				pSystem->GetAllBuildings()->ElementAt(i).SetIsBuildingOnline(TRUE);
 				foodWorker--;
 			}
 			else if (buildingInfo->GetIPProd() > 0 && industryWorker > 0)
 			{
-				m_pDoc->m_System[ko.x][ko.y].GetAllBuildings()->ElementAt(i).SetIsBuildingOnline(TRUE);
+				pSystem->GetAllBuildings()->ElementAt(i).SetIsBuildingOnline(TRUE);
 				industryWorker--;
 			}
 			else if (buildingInfo->GetEnergyProd() > 0 && energyWorker > 0)
 			{
-				m_pDoc->m_System[ko.x][ko.y].GetAllBuildings()->ElementAt(i).SetIsBuildingOnline(TRUE);
+				pSystem->GetAllBuildings()->ElementAt(i).SetIsBuildingOnline(TRUE);
 				energyWorker--;
 			}
 		}
 		// Die einzelnen Produktionen berechnen (ohne Boni)
 		// vorher noch schauen, ob diese Gebäude auch online sind
-		if (m_pDoc->m_System[ko.x][ko.y].GetAllBuildings()->GetAt(i).GetIsBuildingOnline() == TRUE)
-			m_pDoc->m_System[ko.x][ko.y].GetProduction()->CalculateProduction(buildingInfo);
+		if (pSystem->GetAllBuildings()->GetAt(i).GetIsBuildingOnline() == TRUE)
+			pProduction->CalculateProduction(buildingInfo);
 	}
+
+	// falls vorhanden, deaktiverte Produktionen auf 0 setzen
+	pProduction->DisableProductions(pSystem->GetDisabledProductions());
 		
 	// Die Boni auf die einzelnen Produktionen berechnen
 	short tmpFoodBoni		= m_pMajor->GetEmpire()->GetResearch()->GetBioTech() * TECHPRODBONUS;
@@ -1264,15 +1274,15 @@ void CSystemAI::CalcProd()
 	short tmpEnergyBoni		= m_pMajor->GetEmpire()->GetResearch()->GetEnergyTechBoni() * TECHPRODBONUS;
 	
 	short neededEnergy = 0;
-	for (int i = 0; i < NumberOfBuildings; i++)
+	for (int i = 0; i < nNumberOfBuildings; i++)
 	{
-		const CBuildingInfo *buildingInfo = &m_pDoc->BuildingInfo.GetAt(m_pDoc->m_System[ko.x][ko.y].GetAllBuildings()->GetAt(i).GetRunningNumber() - 1);
+		const CBuildingInfo *buildingInfo = &m_pDoc->BuildingInfo.GetAt(pSystem->GetAllBuildings()->GetAt(i).GetRunningNumber() - 1);
 
 		// Hier die nötige Energie von der produzierten abziehen, geht aber nur hier, wenn wir keine Boni zur Energie reinmachen
-		if (m_pDoc->m_System[ko.x][ko.y].GetAllBuildings()->GetAt(i).GetIsBuildingOnline() == TRUE && buildingInfo->GetNeededEnergy() > 0)
+		if (pSystem->GetAllBuildings()->GetAt(i).GetIsBuildingOnline() == TRUE && buildingInfo->GetNeededEnergy() > 0)
 			neededEnergy += buildingInfo->GetNeededEnergy();
 
-		if (m_pDoc->m_System[ko.x][ko.y].GetAllBuildings()->GetAt(i).GetIsBuildingOnline() == TRUE)
+		if (pSystem->GetAllBuildings()->GetAt(i).GetIsBuildingOnline() == TRUE)
 		{
 			// Es wird IMMER abgerundet, gemacht durch "floor"
 			tmpFoodBoni			+= buildingInfo->GetFoodBoni();
@@ -1281,60 +1291,59 @@ void CSystemAI::CalcProd()
 		}
 	}
 	// Jetzt werden noch eventuelle Boni durch die Planetenklassen dazugerechnet
-	for (int i = 0; i < m_pDoc->m_Sector[ko.x][ko.y].GetPlanets()->GetSize(); i++)
-		if (m_pDoc->m_Sector[ko.x][ko.y].GetPlanets()->GetAt(i).GetColonized() == TRUE
-			&& m_pDoc->m_Sector[ko.x][ko.y].GetPlanets()->GetAt(i).GetCurrentHabitant() > 0.0f)
+	for (int i = 0; i < m_pDoc->GetSector(m_KO).GetPlanets()->GetSize(); i++)
+	{
+		CSector* pSector = &m_pDoc->GetSector(m_KO);
+		if (pSector->GetPlanets()->GetAt(i).GetColonized() == TRUE && pSector->GetPlanets()->GetAt(i).GetCurrentHabitant() > 0.0f)
 		{
-			if (m_pDoc->m_Sector[ko.x][ko.y].GetPlanets()->GetAt(i).GetBoni()[6] == TRUE)	// food
-				tmpFoodBoni		+= (m_pDoc->m_Sector[ko.x][ko.y].GetPlanets()->GetAt(i).GetSize()+1) * 25;
-			if (m_pDoc->m_Sector[ko.x][ko.y].GetPlanets()->GetAt(i).GetBoni()[7] == TRUE)	// energy
-				tmpEnergyBoni	+= (m_pDoc->m_Sector[ko.x][ko.y].GetPlanets()->GetAt(i).GetSize()+1) * 25;
+			if (pSector->GetPlanets()->GetAt(i).GetBoni()[6] == TRUE)	// food
+				tmpFoodBoni		+= (pSector->GetPlanets()->GetAt(i).GetSize()+1) * 25;
+			if (pSector->GetPlanets()->GetAt(i).GetBoni()[7] == TRUE)	// energy
+				tmpEnergyBoni	+= (pSector->GetPlanets()->GetAt(i).GetSize()+1) * 25;
 		}
+	}
 	
-	m_pDoc->m_System[ko.x][ko.y].GetProduction()->m_iFoodProd		+= (int)(tmpFoodBoni*m_pDoc->m_System[ko.x][ko.y].GetProduction()->m_iFoodProd/100);
-	m_pDoc->m_System[ko.x][ko.y].GetProduction()->m_iIndustryProd	+= (int)(tmpIndustryBoni*m_pDoc->m_System[ko.x][ko.y].GetProduction()->m_iIndustryProd/100);
-	m_pDoc->m_System[ko.x][ko.y].GetProduction()->m_iEnergyProd		+= (int)(tmpEnergyBoni*m_pDoc->m_System[ko.x][ko.y].GetProduction()->m_iEnergyProd/100);
+	pProduction->m_iFoodProd		+= (int)(tmpFoodBoni * pProduction->m_iFoodProd / 100);
+	pProduction->m_iIndustryProd	+= (int)(tmpIndustryBoni * pProduction->m_iIndustryProd / 100);
+	pProduction->m_iEnergyProd		+= (int)(tmpEnergyBoni * pProduction->m_iEnergyProd / 100);
 
 	// Wenn das System blockiert wird, dann verringern sich bestimmte Produktionswerte
-	if (m_pDoc->m_System[ko.x][ko.y].GetBlockade() > NULL)
+	if (pSystem->GetBlockade() > 0)
 	{
 		//m_pDoc->m_System[ko.x][ko.y].GetProduction()->m_iFoodProd		-= (int)(m_pDoc->m_System[ko.x][ko.y].GetBlockade() * m_pDoc->m_System[ko.x][ko.y].GetProduction()->m_iFoodProd/100);
-		m_pDoc->m_System[ko.x][ko.y].GetProduction()->m_iIndustryProd	-= (int)(m_pDoc->m_System[ko.x][ko.y].GetBlockade() * m_pDoc->m_System[ko.x][ko.y].GetProduction()->m_iIndustryProd/100);
+		pProduction->m_iIndustryProd	-= (int)(pSystem->GetBlockade() * pProduction->m_iIndustryProd/100);
 		//m_pDoc->m_System[ko.x][ko.y].GetProduction()->m_iEnergyProd		-= (int)(m_pDoc->m_System[ko.x][ko.y].GetBlockade() * m_pDoc->m_System[ko.x][ko.y].GetProduction()->m_iEnergyProd/100);		
 	}
 	
 	///// HIER DIE BONI DURCH SPEZIALFORSCHUNG //////
 	// Hier die Boni durch die Uniqueforschung "Wirtschaft" -> 10% mehr Industrie
 	if (m_pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(5)->GetFieldStatus(1) == RESEARCHED)
-		m_pDoc->m_System[ko.x][ko.y].GetProduction()->m_iIndustryProd += 
-		(int)(m_pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(5)->GetBonus(1)*m_pDoc->m_System[ko.x][ko.y].GetProduction()->m_iIndustryProd/100);
+		pProduction->m_iIndustryProd += (int)(m_pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(5)->GetBonus(1)*pProduction->m_iIndustryProd/100);
 	// Hier die Boni durch die Uniqueforschung "Produktion"
 	if (m_pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(6)->GetFieldStatus(1) == RESEARCHED)
-		m_pDoc->m_System[ko.x][ko.y].GetProduction()->m_iFoodProd +=
-		(int)(m_pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(6)->GetBonus(1)*m_pDoc->m_System[ko.x][ko.y].GetProduction()->m_iFoodProd/100); 
+		pProduction->m_iFoodProd += (int)(m_pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(6)->GetBonus(1)*pProduction->m_iFoodProd/100); 
 	// Wenn wir die Uniqueforschung "Produktion" gewählt haben, und dort mehr Energie haben wollen -> 20% mehr!
 	else if (m_pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(6)->GetFieldStatus(3) == RESEARCHED)
-		m_pDoc->m_System[ko.x][ko.y].GetProduction()->m_iEnergyProd +=
-		(int)(m_pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(6)->GetBonus(3)*m_pDoc->m_System[ko.x][ko.y].GetProduction()->m_iEnergyProd/100); 
+		pProduction->m_iEnergyProd += (int)(m_pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(6)->GetBonus(3)*pProduction->m_iEnergyProd/100); 
 	
 	// Maximalenergie, also hier noch ohne Abzüge durch energiebedürftige Gebäude
-	m_pDoc->m_System[ko.x][ko.y].GetProduction()->m_iMaxEnergyProd = m_pDoc->m_System[ko.x][ko.y].GetProduction()->m_iEnergyProd;
+	pProduction->m_iMaxEnergyProd = pProduction->m_iEnergyProd;
 	// hier die gesamte Energie durch energiebedürftige Gebäude abziehen
-	m_pDoc->m_System[ko.x][ko.y].GetProduction()->m_iEnergyProd -= neededEnergy;
+	pProduction->m_iEnergyProd -= neededEnergy;
 	
 	// imperiumweite Moralprod mit aufrechnen
-	m_pDoc->m_System[ko.x][ko.y].GetProduction()->AddMoralProd(m_pDoc->m_System[ko.x][ko.y].GetProduction()->GetMoralProdEmpireWide(m_pMajor->GetRaceID()));
+	pProduction->AddMoralProd(pProduction->GetMoralProdEmpireWide(m_pMajor->GetRaceID()));
 	// Den Moralboni im System noch auf die einzelnen Produktionen anrechnen
-	m_pDoc->m_System[ko.x][ko.y].GetProduction()->IncludeSystemMoral(m_pDoc->m_System[ko.x][ko.y].GetMoral());
+	pProduction->IncludeSystemMoral(pSystem->GetMoral());
 	// benötigte Nahrung durch Bevölkerung von der Produktion abiehen
 	if (!m_pMajor->HasSpecialAbility(NO_FOOD_NEEDED))
 		// ceil, wird auf Kommezahl berechnet, z.B brauchen wir für 14.5 Mrd. Leute 145 Nahrung und nicht 140 bzw. 150
-		m_pDoc->m_System[ko.x][ko.y].GetProduction()->m_iFoodProd -= (int)ceil(m_pDoc->m_System[ko.x][ko.y].GetHabitants()*10);
+		pProduction->m_iFoodProd -= (int)ceil(pSystem->GetHabitants()*10);
 	else
-		m_pDoc->m_System[ko.x][ko.y].GetProduction()->m_iFoodProd = m_pDoc->m_System[ko.x][ko.y].GetProduction()->m_iMaxFoodProd;
+		pProduction->m_iFoodProd = pProduction->m_iMaxFoodProd;
 	
 	// Jetzt noch die freien Arbeiter berechnen
-	m_pDoc->m_System[ko.x][ko.y].GetWorker()->CalculateFreeWorkers();
+	pSystem->GetWorker()->CalculateFreeWorkers();
 }
 
 /// Diese Funktion legt möglicherweise eine Handelsroute zu einem anderen System an. Dadurch wird halt auch die

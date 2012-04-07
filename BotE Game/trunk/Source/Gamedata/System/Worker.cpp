@@ -175,7 +175,7 @@ void CWorker::DekrementWorker(int WhatWorker)
 {
 	if (WhatWorker == 0) m_iFoodWorker--;
 	else if (WhatWorker == 1) m_iIndustryWorker--;
-	else if (WhatWorker == 2) m_iEnergyWorker --;
+	else if (WhatWorker == 2) m_iEnergyWorker--;
 	else if (WhatWorker == 3) m_iSecurityWorker--;
 	else if (WhatWorker == 4) m_iResearchWorker--;
 	else if (WhatWorker == 5) m_iTitanWorker--;

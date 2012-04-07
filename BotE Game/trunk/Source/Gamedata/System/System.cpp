@@ -39,119 +39,6 @@ CSystem::~CSystem()
 	m_Troops.RemoveAll();
 }
 
-//////////////////////////////////////////////////////////////////////
-// Kopierkonstruktor
-//////////////////////////////////////////////////////////////////////
-CSystem::CSystem(const CSystem &rhs)
-{
-	m_sOwnerOfSystem = rhs.m_sOwnerOfSystem;
-	m_dHabitants = rhs.m_dHabitants;
-	m_iMoral = rhs.m_iMoral;
-	m_byBlockade = rhs.m_byBlockade;
-	m_iFoodBuildings = rhs.m_iFoodBuildings;
-	m_iIndustryBuildings = rhs.m_iIndustryBuildings;
-	m_iEnergyBuildings = rhs.m_iEnergyBuildings;
-	m_iSecurityBuildings = rhs.m_iSecurityBuildings;
-	m_iResearchBuildings = rhs.m_iResearchBuildings;
-	m_iTitanMines = rhs.m_iTitanMines;
-	m_iDeuteriumMines = rhs.m_iDeuteriumMines;
-	m_iDuraniumMines = rhs.m_iDuraniumMines;
-	m_iIridiumMines = rhs.m_iIridiumMines;
-	m_iCrystalMines = rhs.m_iCrystalMines;
-	m_iFoodStore = rhs.m_iFoodStore;
-	m_iTitanStore = rhs.m_iTitanStore;
-	m_iDeuteriumStore = rhs.m_iDeuteriumStore;
-	m_iDuraniumStore = rhs.m_iDuraniumStore;
-	m_iCrystalStore = rhs.m_iCrystalStore;
-	m_iIridiumStore = rhs.m_iIridiumStore;
-	m_iDeritiumStore = rhs.m_iDeritiumStore;
-	for (int i = 0; i < m_BuildingDestroy.GetSize(); i++)
-		m_BuildingDestroy.ElementAt(i) = rhs.m_BuildingDestroy.GetAt(i);
-	m_Workers = rhs.m_Workers;
-	m_AssemblyList = rhs.m_AssemblyList;
-	m_Production = rhs.m_Production;
-	for (int i = 0; i < rhs.m_Buildings.GetSize(); i++)
-		m_Buildings.Add(rhs.m_Buildings.GetAt(i));
-	for (int i = 0; i < m_BuildableBuildings.GetSize(); i++)
-		m_BuildableBuildings.ElementAt(i) = rhs.m_BuildableBuildings.GetAt(i);
-	for (int i = 0; i < m_AllwaysBuildableBuildings.GetSize(); i++)
-		m_AllwaysBuildableBuildings.ElementAt(i) = rhs.m_AllwaysBuildableBuildings.GetAt(i);
-	for (int i = 0; i < m_BuildableUpdates.GetSize(); i++)
-		m_BuildableUpdates.ElementAt(i) = rhs.m_BuildableUpdates.GetAt(i);
-	for (int i = 0; i < m_BuildableWithoutAssemblylistCheck.GetSize(); i++)
-		m_BuildableWithoutAssemblylistCheck.ElementAt(i) = rhs.m_BuildableWithoutAssemblylistCheck.GetAt(i);
-	for (int i = 0; i < m_BuildableShips.GetSize(); i++)
-		m_BuildableShips.ElementAt(i) = rhs.m_BuildableShips.GetAt(i);
-	for (int i = 0; i < m_BuildableTroops.GetSize(); i++)
-		m_BuildableTroops.ElementAt(i) = rhs.m_BuildableTroops.GetAt(i);
-	for (int i = 0; i < rhs.m_TradeRoutes.GetSize(); i++)
-		m_TradeRoutes.Add(rhs.m_TradeRoutes.GetAt(i));
-	m_byMaxTradeRoutesFromHab = rhs.m_byMaxTradeRoutesFromHab;
-	for (int i = 0; i < rhs.m_ResourceRoutes.GetSize(); i++)
-		m_ResourceRoutes.Add(rhs.m_ResourceRoutes.GetAt(i));
-	for (int i = 0; i < rhs.m_Troops.GetSize(); i++)
-		m_Troops.Add(rhs.m_Troops.GetAt(i));
-	m_bAutoBuild = rhs.m_bAutoBuild;
-}
-
-//////////////////////////////////////////////////////////////////////
-// Zuweisungsoperator
-//////////////////////////////////////////////////////////////////////
-CSystem & CSystem::operator=(const CSystem & rhs)
-{
-	if (this == &rhs)
-		return *this;
-	m_sOwnerOfSystem = rhs.m_sOwnerOfSystem;
-	m_dHabitants = rhs.m_dHabitants;
-	m_iMoral = rhs.m_iMoral;
-	m_byBlockade = rhs.m_byBlockade;
-	m_iFoodBuildings = rhs.m_iFoodBuildings;
-	m_iIndustryBuildings = rhs.m_iIndustryBuildings;
-	m_iEnergyBuildings = rhs.m_iEnergyBuildings;
-	m_iSecurityBuildings = rhs.m_iSecurityBuildings;
-	m_iResearchBuildings = rhs.m_iResearchBuildings;
-	m_iTitanMines = rhs.m_iTitanMines;
-	m_iDeuteriumMines = rhs.m_iDeuteriumMines;
-	m_iDuraniumMines = rhs.m_iDuraniumMines;
-	m_iIridiumMines = rhs.m_iIridiumMines;
-	m_iCrystalMines = rhs.m_iCrystalMines;
-	m_iFoodStore = rhs.m_iFoodStore;
-	m_iTitanStore = rhs.m_iTitanStore;
-	m_iDeuteriumStore = rhs.m_iDeuteriumStore;
-	m_iDuraniumStore = rhs.m_iDuraniumStore;
-	m_iCrystalStore = rhs.m_iCrystalStore;
-	m_iIridiumStore = rhs.m_iIridiumStore;
-	m_iDeritiumStore = rhs.m_iDeritiumStore;
-	for (int i = 0; i < m_BuildingDestroy.GetSize(); i++)
-		m_BuildingDestroy.ElementAt(i) = rhs.m_BuildingDestroy.GetAt(i);
-	m_Workers = rhs.m_Workers;
-	m_AssemblyList = rhs.m_AssemblyList;
-	m_Production = rhs.m_Production;
-	for (int i = 0; i < rhs.m_Buildings.GetSize(); i++)
-		m_Buildings.Add(rhs.m_Buildings.GetAt(i));
-	for (int i = 0; i < m_BuildableBuildings.GetSize(); i++)
-		m_BuildableBuildings.ElementAt(i) = rhs.m_BuildableBuildings.GetAt(i);
-	for (int i = 0; i < m_AllwaysBuildableBuildings.GetSize(); i++)
-		m_AllwaysBuildableBuildings.ElementAt(i) = rhs.m_AllwaysBuildableBuildings.GetAt(i);
-	for (int i = 0; i < m_BuildableUpdates.GetSize(); i++)
-		m_BuildableUpdates.ElementAt(i) = rhs.m_BuildableUpdates.GetAt(i);
-	for (int i = 0; i < m_BuildableWithoutAssemblylistCheck.GetSize(); i++)
-		m_BuildableWithoutAssemblylistCheck.ElementAt(i) = rhs.m_BuildableWithoutAssemblylistCheck.GetAt(i);
-	for (int i = 0; i < m_BuildableShips.GetSize(); i++)
-		m_BuildableShips.ElementAt(i) = rhs.m_BuildableShips.GetAt(i);
-	for (int i = 0; i < m_BuildableTroops.GetSize(); i++)
-		m_BuildableTroops.ElementAt(i) = rhs.m_BuildableTroops.GetAt(i);
-	for (int i = 0; i < rhs.m_TradeRoutes.GetSize(); i++)
-		m_TradeRoutes.Add(rhs.m_TradeRoutes.GetAt(i));
-	m_byMaxTradeRoutesFromHab = rhs.m_byMaxTradeRoutesFromHab;
-	for (int i = 0; i < rhs.m_ResourceRoutes.GetSize(); i++)
-		m_ResourceRoutes.Add(rhs.m_ResourceRoutes.GetAt(i));
-	for (int i = 0; i < rhs.m_Troops.GetSize(); i++)
-		m_Troops.Add(rhs.m_Troops.GetAt(i));
-	m_bAutoBuild = rhs.m_bAutoBuild;
-	return *this;
-}
-
 ///////////////////////////////////////////////////////////////////////
 // Speichern / Laden
 ///////////////////////////////////////////////////////////////////////
@@ -185,6 +72,8 @@ void CSystem::Serialize(CArchive &ar)
 		ar << m_iDuraniumMines;
 		ar << m_iIridiumMines;
 		ar << m_iCrystalMines;
+		for (int i = 0; i <= IRIDIUM_WORKER; i++)
+			ar << m_bDisabledProductions[i];
 		ar << m_Buildings.GetSize();
 		for (int i = 0; i < m_Buildings.GetSize(); i++)
 			m_Buildings.GetAt(i).Serialize(ar);
@@ -232,6 +121,8 @@ void CSystem::Serialize(CArchive &ar)
 		ar >> m_iDuraniumMines;
 		ar >> m_iIridiumMines;
 		ar >> m_iCrystalMines;
+		for (int i = 0; i <= IRIDIUM_WORKER; i++)
+			ar >> m_bDisabledProductions[i];
 		ar >> number;
 		m_Buildings.RemoveAll();
 		m_Buildings.SetSize(number);
@@ -370,70 +261,90 @@ USHORT CSystem::GetNumberOfWorkbuildings(int WhatWorkbuilding, int Modus, Buildi
 	{
 		for (int i = 0; i < m_Buildings.GetSize(); i++)
 		{
-			CBuildingInfo* buildingInfo = &buildingInfos->GetAt(m_Buildings.GetAt(i).GetRunningNumber() - 1);
+			const CBuildingInfo* buildingInfo = &buildingInfos->GetAt(m_Buildings.GetAt(i).GetRunningNumber() - 1);
 			
 			if (buildingInfo->GetWorker() == TRUE)
 			{
 				if (WhatWorkbuilding == 0)
+				{
 					if (buildingInfo->GetFoodProd())
 					{
 						runningNumber = m_Buildings.GetAt(i).GetRunningNumber();
 						return runningNumber;
 					}
-				if (WhatWorkbuilding == 1)
+				}
+				else if (WhatWorkbuilding == 1)
+				{
 					if (buildingInfo->GetIPProd())
 					{
 						runningNumber = m_Buildings.GetAt(i).GetRunningNumber();
 						return runningNumber;
 					}
-				if (WhatWorkbuilding == 2)
+				}
+				else if (WhatWorkbuilding == 2)
+				{
 					if (buildingInfo->GetEnergyProd())
 					{
 						runningNumber = m_Buildings.GetAt(i).GetRunningNumber();
 						return runningNumber;
 					}
-				if (WhatWorkbuilding == 3)
+				}
+				else if (WhatWorkbuilding == 3)
+				{
 					if (buildingInfo->GetSPProd())
 					{
 						runningNumber = m_Buildings.GetAt(i).GetRunningNumber();
 						return runningNumber;
 					}
-				if (WhatWorkbuilding == 4)
+				}
+				else if (WhatWorkbuilding == 4)
+				{
 					if (buildingInfo->GetFPProd())
 					{
 						runningNumber = m_Buildings.GetAt(i).GetRunningNumber();
 						return runningNumber;
 					}
-				if (WhatWorkbuilding == 5)
+				}
+				else if (WhatWorkbuilding == 5)
+				{
 					if (buildingInfo->GetTitanProd())
 					{
 						runningNumber = m_Buildings.GetAt(i).GetRunningNumber();
 						return runningNumber;
 					}
-				if (WhatWorkbuilding == 6)
+				}
+				else if (WhatWorkbuilding == 6)
+				{
 					if (buildingInfo->GetDeuteriumProd())
 					{
 						runningNumber = m_Buildings.GetAt(i).GetRunningNumber();
 						return runningNumber;
 					}
-				if (WhatWorkbuilding == 7)
+				}
+				else if (WhatWorkbuilding == 7)
+				{
 					if (buildingInfo->GetDuraniumProd())
 					{
 						runningNumber = m_Buildings.GetAt(i).GetRunningNumber();
 						return runningNumber;
 					}
-				if (WhatWorkbuilding == 8)
+				}
+				else if (WhatWorkbuilding == 8)
+				{
 					if (buildingInfo->GetCrystalProd())
 					{
 						runningNumber = m_Buildings.GetAt(i).GetRunningNumber();
 						return runningNumber;
 					}
-				if (WhatWorkbuilding == 9)
+				}
+				else if (WhatWorkbuilding == 9)
+				{
 					if (buildingInfo->GetIridiumProd())
 					{
 						runningNumber = m_Buildings.GetAt(i).GetRunningNumber();
 						return runningNumber;
 					}
+				}
 			}
 		}
 	}
@@ -687,25 +598,25 @@ void CSystem::CalculateVariables(BuildingInfoArray* buildingInfos, CResearchInfo
 	// zuerst die Anzahl der Arbeiter auslesen und schauen ob die Arbeiter vielleicht größer sind als die 
 	// Anzahl der jeweiligen Gebäude (z.B. durch Abriß aus letzter Runde) -> dann Arbeiter auf Gebäudeanzahl verringern
 	if (m_Workers.GetWorker(FOOD_WORKER) > m_iFoodBuildings) m_Workers.SetWorker(FOOD_WORKER,m_iFoodBuildings);
-	unsigned short foodWorker = m_Workers.GetWorker(0);
-	if (m_Workers.GetWorker(1) > m_iIndustryBuildings) m_Workers.SetWorker(1,m_iIndustryBuildings);
-	unsigned short industryWorker = m_Workers.GetWorker(1);
-	if (m_Workers.GetWorker(2) > m_iEnergyBuildings) m_Workers.SetWorker(2,m_iEnergyBuildings);
-	unsigned short energyWorker = m_Workers.GetWorker(2);
-	if (m_Workers.GetWorker(3) > m_iSecurityBuildings) m_Workers.SetWorker(3,m_iSecurityBuildings);
-	unsigned short securityWorker = m_Workers.GetWorker(3);
-	if (m_Workers.GetWorker(4) > m_iResearchBuildings) m_Workers.SetWorker(4,m_iResearchBuildings);
-	unsigned short researchWorker = m_Workers.GetWorker(4);
-	if (m_Workers.GetWorker(5) > m_iTitanMines) m_Workers.SetWorker(5,m_iTitanMines);
-	unsigned short titanWorker = m_Workers.GetWorker(5);
-	if (m_Workers.GetWorker(6) > m_iDeuteriumMines) m_Workers.SetWorker(6,m_iDeuteriumMines);
-	unsigned short deuteriumWorker = m_Workers.GetWorker(6);
-	if (m_Workers.GetWorker(7) > m_iDuraniumMines) m_Workers.SetWorker(7,m_iDuraniumMines);
-	unsigned short duraniumWorker = m_Workers.GetWorker(7);
-	if (m_Workers.GetWorker(8) > m_iCrystalMines) m_Workers.SetWorker(8,m_iCrystalMines);
-	unsigned short crystalWorker = m_Workers.GetWorker(8);
-	if (m_Workers.GetWorker(9) > m_iIridiumMines) m_Workers.SetWorker(9,m_iIridiumMines);
-	unsigned short iridiumWorker = m_Workers.GetWorker(9);
+	unsigned short foodWorker = m_Workers.GetWorker(FOOD_WORKER);
+	if (m_Workers.GetWorker(INDUSTRY_WORKER) > m_iIndustryBuildings) m_Workers.SetWorker(INDUSTRY_WORKER,m_iIndustryBuildings);
+	unsigned short industryWorker = m_Workers.GetWorker(INDUSTRY_WORKER);
+	if (m_Workers.GetWorker(ENERGY_WORKER) > m_iEnergyBuildings) m_Workers.SetWorker(ENERGY_WORKER,m_iEnergyBuildings);
+	unsigned short energyWorker = m_Workers.GetWorker(ENERGY_WORKER);
+	if (m_Workers.GetWorker(SECURITY_WORKER) > m_iSecurityBuildings) m_Workers.SetWorker(SECURITY_WORKER,m_iSecurityBuildings);
+	unsigned short securityWorker = m_Workers.GetWorker(SECURITY_WORKER);
+	if (m_Workers.GetWorker(RESEARCH_WORKER) > m_iResearchBuildings) m_Workers.SetWorker(RESEARCH_WORKER,m_iResearchBuildings);
+	unsigned short researchWorker = m_Workers.GetWorker(RESEARCH_WORKER);
+	if (m_Workers.GetWorker(TITAN_WORKER) > m_iTitanMines) m_Workers.SetWorker(TITAN_WORKER,m_iTitanMines);
+	unsigned short titanWorker = m_Workers.GetWorker(TITAN_WORKER);
+	if (m_Workers.GetWorker(DEUTERIUM_WORKER) > m_iDeuteriumMines) m_Workers.SetWorker(DEUTERIUM_WORKER,m_iDeuteriumMines);
+	unsigned short deuteriumWorker = m_Workers.GetWorker(DEUTERIUM_WORKER);
+	if (m_Workers.GetWorker(DURANIUM_WORKER) > m_iDuraniumMines) m_Workers.SetWorker(DURANIUM_WORKER,m_iDuraniumMines);
+	unsigned short duraniumWorker = m_Workers.GetWorker(DURANIUM_WORKER);
+	if (m_Workers.GetWorker(CRYSTAL_WORKER) > m_iCrystalMines) m_Workers.SetWorker(CRYSTAL_WORKER,m_iCrystalMines);
+	unsigned short crystalWorker = m_Workers.GetWorker(CRYSTAL_WORKER);
+	if (m_Workers.GetWorker(IRIDIUM_WORKER) > m_iIridiumMines) m_Workers.SetWorker(IRIDIUM_WORKER,m_iIridiumMines);
+	unsigned short iridiumWorker = m_Workers.GetWorker(IRIDIUM_WORKER);
 	
 	// Wenn wir Handelsgüter in der Bauliste stehen haben, dann Anzahl der Online-Fabs in Credits umrechnen
 	if (m_AssemblyList.GetAssemblyListEntry(0) == 0)
@@ -782,6 +693,10 @@ void CSystem::CalculateVariables(BuildingInfoArray* buildingInfos, CResearchInfo
 		if (m_Buildings.GetAt(i).GetIsBuildingOnline() == TRUE)
 			m_Production.CalculateProduction(buildingInfo);
 	}
+
+	// falls vorhanden, deaktiverte Produktionen auf 0 setzen
+	m_Production.DisableProductions(m_bDisabledProductions);
+
 	// Credits durch Handelsrouten berechnen
 	m_Production.m_iCreditsProd += CreditsFromTradeRoutes();
 
@@ -844,6 +759,7 @@ void CSystem::CalculateVariables(BuildingInfoArray* buildingInfos, CResearchInfo
 	// Jetzt werden noch eventuelle Boni durch die Planetenklassen dazugerechnet
 	BYTE deritiumProdMulti = 0;
 	for (int i = 0; i < planets->GetSize(); i++)
+	{
 		if (planets->GetAt(i).GetColonized() == TRUE && planets->GetAt(i).GetCurrentHabitant() > 0.0f)
 		{
 			// pro Planetengröße gibt es 25% Bonus
@@ -866,6 +782,7 @@ void CSystem::CalculateVariables(BuildingInfoArray* buildingInfos, CResearchInfo
 			if (planets->GetAt(i).GetBoni()[DERITIUM] == TRUE)
 				deritiumProdMulti += 1;
 		}
+	}
 	m_Production.m_iDeritiumProd	*= deritiumProdMulti;
 
 	m_Production.m_iFoodProd		+= (int)(tmpFoodBoni*m_Production.m_iFoodProd/100);
@@ -886,7 +803,7 @@ void CSystem::CalculateVariables(BuildingInfoArray* buildingInfos, CResearchInfo
 	{
 		//m_Production.m_iFoodProd		-= (int)(m_byBlockade * m_Production.m_iFoodProd/100);
 		m_Production.m_iIndustryProd	-= (int)(m_byBlockade * m_Production.m_iIndustryProd/100);
-		//m_Production.m_iEnergyProd		-= (int)(m_byBlockade * m_Production.m_iEnergyProd/100);
+		//m_Production.m_iEnergyProd	-= (int)(m_byBlockade * m_Production.m_iEnergyProd/100);
 		m_Production.m_iSecurityProd	-= (int)(m_byBlockade * m_Production.m_iSecurityProd/100);
 		m_Production.m_iResearchProd	-= (int)(m_byBlockade * m_Production.m_iResearchProd/100);
 		m_Production.m_iTitanProd		-= (int)(m_byBlockade * m_Production.m_iTitanProd/100);
@@ -2444,6 +2361,12 @@ void CSystem::IncludeTroopMoralValue(CArray<CTroopInfo>* troopInfo)
 		}
 }
 
+// Alle deaktivierten Produktionen zurücksetzen
+void CSystem::ClearDisabledProductions()
+{
+	memset(m_bDisabledProductions, false, sizeof(m_bDisabledProductions));
+}
+
 // Funktion setzt alle Werte wieder zurück auf standard.
 void CSystem::ResetSystem()
 {
@@ -2485,6 +2408,9 @@ void CSystem::ResetSystem()
 	m_byMaxTradeRoutesFromHab = 0;
 	m_Troops.RemoveAll();
 	m_bAutoBuild = FALSE;
+
+	// Deaktivierte Produktionen zurücksetzen
+	ClearDisabledProductions();
 }
 
 //////////////////////////////////////////////////////////////////////

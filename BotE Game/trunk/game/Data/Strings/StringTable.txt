@@ -2325,7 +2325,7 @@ Die Bewohner des § Systems verlieren das Vertrauen in ihre Regierung
 Es fand eine Klimaveränderung auf § statt
 [SYSTEMEVENTPLANETDEMOGRAPHIC]
 Drastischer Demographischer Wandel auf §
-[SYSTEMEVENTPLANETDEMOGRAPHICTITEL]
+[SYSTEMEVENTPLANETDEMOGRAPHICTITLE]
 Demografischer Wandel
 [SYSTEMEVENTPLANETDEMOGRAPHICLONG]
 Durch Fehlkalkulationen ist die Sterberate auf § sehr viel höher als geplant, wodurch die Bevölkerung schrumpft
@@ -2396,3 +2396,6 @@ sehr hoch
 technischer Fortschritt
 [NEW_TECHNOLOGY_ALLOWS]
 neue Technologie ermöglicht:
+
+[EVENT_IONISIERENDES_GASWESEN]
+Durch ein Ionisierendes Gaswesen wurde die komplette Energieversorgung im § System lahmgelegt

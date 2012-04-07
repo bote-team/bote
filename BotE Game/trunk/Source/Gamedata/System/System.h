@@ -38,12 +38,6 @@ public:
 	// Destruktor
 	virtual ~CSystem(void);
 	
-	// Kopierkonstruktor
-	CSystem(const CSystem & rhs);
-	
-	// Zuweisungsoperatur
-	CSystem & operator=(const CSystem &);
-	
 	// Serialisierungsfunktion
 	virtual void Serialize(CArchive &ar);
 
@@ -97,6 +91,10 @@ public:
 	/// Funktion gibt den Prozentwert der Blockade des Systems zurück. Ist dieser Rückgabewert gleich
 	/// <code>NULL</code>, so existiert keine Blockade im System.
 	BYTE GetBlockade() const {return m_byBlockade;}
+
+	/// Funktion gibt Array mit Informationen ob eine Produktion deaktiviert ist zurück.
+	/// @return Zeiger auf Array mit Infos ob Produktion deaktiviert ist oder nicht
+	const bool* GetDisabledProductions() const { return m_bDisabledProductions; }
 
 	// Funktionen geben die einzelnen Lagerinhalte des Systems zurück.
 	long GetFoodStore() const {return m_iFoodStore;}
@@ -165,6 +163,10 @@ public:
 	/// Funktion setzt den Prozentwert der Blockade fest. Ist dieser Wert größer als <code>NULL</code>, so besteht
 	/// eine Blockade.
 	void SetBlockade(BYTE blockadeValue) {m_byBlockade = min(blockadeValue, 100);}
+
+	/// Funktion deaktiviert eine bestimmte Produktion.
+	/// @param nType Produktionstyp (siehe FOOD_WORKER, INDUSTRY_WORKER usw.)
+	void SetDisabledProduction(int nType) { m_bDisabledProductions[nType] = true; }
 
 	// Funktion setzt das Nahrungslager des Systems auf den Parameterwert "food".
 	void SetFoodStore(ULONG food) {m_iFoodStore = food;}
@@ -283,6 +285,9 @@ public:
 	/// Ist die Moral im System unter 100, so wird der Moralwert der Einheit dazuaddiert, wenn er über 100 ist, dann wird
 	/// der Moralwert abgezogen.
 	void IncludeTroopMoralValue(CArray<CTroopInfo>* troopInfo);
+
+	/// Alle deaktivierten Produktionen zurücksetzen
+	void ClearDisabledProductions();
 	
 	// Resetfunktion für die Klasse CSystem.
 	void ResetSystem();
@@ -331,6 +336,9 @@ private:
 	/// Besteht in dem System eine feindliche Blockade, so gibt diese Variable den Prozentwert der Blockade an.
 	/// Ist dieser größer <code>NULL</code>, so besteht eine Blockade.
 	BYTE m_byBlockade;
+
+	// Deaktivierte Produktion
+	bool m_bDisabledProductions[IRIDIUM_WORKER + 1];
 
 	// Die Lagerinhalt der einzelnen Rohstoffe und der Nahrung
 	int  m_iFoodStore;					// Lager für Nahrung

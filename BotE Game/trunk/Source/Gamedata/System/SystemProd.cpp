@@ -17,139 +17,6 @@ CSystemProd::~CSystemProd(void)
 {
 }
 
-//////////////////////////////////////////////////////////////////////
-// Kopierkonstruktor
-//////////////////////////////////////////////////////////////////////
-CSystemProd::CSystemProd(const CSystemProd &rhs)
-{
-	m_iFoodProd = rhs.m_iFoodProd;
-	m_iMaxFoodProd = rhs.m_iMaxFoodProd;
-	m_iIndustryProd = rhs.m_iIndustryProd;
-	m_iEnergyProd = rhs.m_iEnergyProd;
-	m_iMaxEnergyProd = rhs.m_iMaxEnergyProd;
-	m_iSecurityProd = rhs.m_iSecurityProd;
-	m_iResearchProd = rhs.m_iResearchProd;
-	m_iTitanProd = rhs.m_iTitanProd;
-	m_iDeuteriumProd = rhs.m_iDeuteriumProd;
-	m_iDuraniumProd = rhs.m_iDuraniumProd;
-	m_iCrystalProd = rhs.m_iCrystalProd;
-	m_iIridiumProd = rhs.m_iIridiumProd;
-	m_iDeritiumProd = rhs.m_iDeritiumProd;
-	m_iCreditsProd = rhs.m_iCreditsProd;
-	m_iMoralProd = rhs.m_iMoralProd;
-	// Forschungstechboni
-	m_iBioTechBoni = rhs.m_iBioTechBoni;
-	m_iEnergyTechBoni = rhs.m_iEnergyTechBoni;
-	m_iCompTechBoni = rhs.m_iCompTechBoni;
-	m_iPropulsionTechBoni = rhs.m_iPropulsionTechBoni;
-	m_iConstructionTechBoni = rhs.m_iConstructionTechBoni;
-	m_iWeaponTechBoni = rhs.m_iWeaponTechBoni;
-	// Geheimdienstboni
-	m_iInnerSecurityBoni = rhs.m_iInnerSecurityBoni;
-	m_iEconomySpyBoni = rhs.m_iEconomySpyBoni;
-	m_iEconomySabotageBoni = rhs.m_iEconomySabotageBoni;
-	m_iResearchSpyBoni = rhs.m_iResearchSpyBoni;
-	m_iResearchSabotageBoni = rhs.m_iResearchSabotageBoni;
-	m_iMilitarySpyBoni = rhs.m_iMilitarySpyBoni;
-	m_iMilitarySabotageBoni = rhs.m_iMilitarySabotageBoni;
-	// sonstige Informationen
-	m_bShipYard = rhs.m_bShipYard;
-	m_iBuildableShipSizes = rhs.m_iBuildableShipSizes;
-	m_iShipYardEfficiency = rhs.m_iShipYardEfficiency;
-	m_bBarrack = rhs.m_bBarrack;
-	m_iBarracksEfficiency = rhs.m_iBarracksEfficiency;
-	m_iShieldPower = rhs.m_iShieldPower;
-	m_iShieldPowerBoni = rhs.m_iShieldPowerBoni;
-	m_iShipDefend = rhs.m_iShipDefend;
-	m_iShipDefendBoni = rhs.m_iShipDefendBoni;
-	m_iGroundDefend = rhs.m_iGroundDefend;
-	m_iGroundDefendBoni = rhs.m_iGroundDefendBoni;
-	m_iScanPower = rhs.m_iScanPower;
-	m_iScanPowerBoni = rhs.m_iScanPowerBoni;
-	m_iScanRange = rhs.m_iScanRange;
-	m_iScanRangeBoni = rhs.m_iScanRangeBoni;
-	m_iShipTraining = rhs.m_iShipTraining;
-	m_iTroopTraining = rhs.m_iTroopTraining;
-	m_iResistance = rhs.m_iResistance;
-	m_iAddedTradeRouts = rhs.m_iAddedTradeRouts;
-	m_iIncomeOnTradeRoutes = rhs.m_iIncomeOnTradeRoutes;
-	m_iShipRecycling = rhs.m_iShipRecycling;
-	m_iBuildingBuildSpeed = rhs.m_iBuildingBuildSpeed;
-	m_iUpdateBuildSpeed = rhs.m_iUpdateBuildSpeed;
-	m_iShipBuildSpeed = rhs.m_iShipBuildSpeed;
-	m_iTroopBuildSpeed = rhs.m_iTroopBuildSpeed;
-	for (int res = TITAN; res <= DERITIUM; res++)
-		m_bResourceDistributor[res] = rhs.m_bResourceDistributor[res];
-}
-
-//////////////////////////////////////////////////////////////////////
-// Zuweisungsoperator
-//////////////////////////////////////////////////////////////////////
-CSystemProd & CSystemProd::operator=(const CSystemProd & rhs)
-{
-	if (this == &rhs)
-		return *this;
-	m_iFoodProd = rhs.m_iFoodProd;
-	m_iMaxFoodProd = rhs.m_iMaxFoodProd;
-	m_iIndustryProd = rhs.m_iIndustryProd;
-	m_iEnergyProd = rhs.m_iEnergyProd;
-	m_iMaxEnergyProd = rhs.m_iMaxEnergyProd;
-	m_iSecurityProd = rhs.m_iSecurityProd;
-	m_iResearchProd = rhs.m_iResearchProd;
-	m_iTitanProd = rhs.m_iTitanProd;
-	m_iDeuteriumProd = rhs.m_iDeuteriumProd;
-	m_iDuraniumProd = rhs.m_iDuraniumProd;
-	m_iCrystalProd = rhs.m_iCrystalProd;
-	m_iIridiumProd = rhs.m_iIridiumProd;
-	m_iDeritiumProd = rhs.m_iDeritiumProd;
-	m_iCreditsProd = rhs.m_iCreditsProd;
-	m_iMoralProd = rhs.m_iMoralProd;
-	// Forschungstechboni
-	m_iBioTechBoni = rhs.m_iBioTechBoni;
-	m_iEnergyTechBoni = rhs.m_iEnergyTechBoni;
-	m_iCompTechBoni = rhs.m_iCompTechBoni;
-	m_iPropulsionTechBoni = rhs.m_iPropulsionTechBoni;
-	m_iConstructionTechBoni = rhs.m_iConstructionTechBoni;
-	m_iWeaponTechBoni = rhs.m_iWeaponTechBoni;
-	// Geheimdienstboni
-	m_iInnerSecurityBoni = rhs.m_iInnerSecurityBoni;
-	m_iEconomySpyBoni = rhs.m_iEconomySpyBoni;
-	m_iEconomySabotageBoni = rhs.m_iEconomySabotageBoni;
-	m_iResearchSpyBoni = rhs.m_iResearchSpyBoni;
-	m_iResearchSabotageBoni = rhs.m_iResearchSabotageBoni;
-	m_iMilitarySpyBoni = rhs.m_iMilitarySpyBoni;
-	m_iMilitarySabotageBoni = rhs.m_iMilitarySabotageBoni;
-	// sonstige Informationen
-	m_bShipYard = rhs.m_bShipYard;
-	m_iBuildableShipSizes = rhs.m_iBuildableShipSizes;
-	m_iShipYardEfficiency = rhs.m_iShipYardEfficiency;
-	m_bBarrack = rhs.m_bBarrack;
-	m_iBarracksEfficiency = rhs.m_iBarracksEfficiency;
-	m_iShieldPower = rhs.m_iShieldPower;
-	m_iShieldPowerBoni = rhs.m_iShieldPowerBoni;
-	m_iShipDefend = rhs.m_iShipDefend;
-	m_iShipDefendBoni = rhs.m_iShipDefendBoni;
-	m_iGroundDefend = rhs.m_iGroundDefend;
-	m_iGroundDefendBoni = rhs.m_iGroundDefendBoni;
-	m_iScanPower = rhs.m_iScanPower;
-	m_iScanPowerBoni = rhs.m_iScanPowerBoni;
-	m_iScanRange = rhs.m_iScanRange;
-	m_iScanRangeBoni = rhs.m_iScanRangeBoni;
-	m_iShipTraining = rhs.m_iShipTraining;
-	m_iTroopTraining = rhs.m_iTroopTraining;
-	m_iResistance = rhs.m_iResistance;
-	m_iAddedTradeRouts = rhs.m_iAddedTradeRouts;
-	m_iIncomeOnTradeRoutes = rhs.m_iIncomeOnTradeRoutes;
-	m_iShipRecycling = rhs.m_iShipRecycling;
-	m_iBuildingBuildSpeed = rhs.m_iBuildingBuildSpeed;
-	m_iUpdateBuildSpeed = rhs.m_iUpdateBuildSpeed;
-	m_iShipBuildSpeed = rhs.m_iShipBuildSpeed;
-	m_iTroopBuildSpeed = rhs.m_iTroopBuildSpeed;
-	for (int res = TITAN; res <= DERITIUM; res++)
-		m_bResourceDistributor[res] = rhs.m_bResourceDistributor[res];
-	return *this;
-}
-
 ///////////////////////////////////////////////////////////////////////
 // Speichern / Laden
 ///////////////////////////////////////////////////////////////////////
@@ -344,6 +211,40 @@ void CSystemProd::CalculateProduction(const CBuildingInfo* building)
 	// Ressourcenverteiler
 	for (int res = TITAN; res <= DERITIUM; res++)
 		m_bResourceDistributor[res] |= building->GetResourceDistributor(res);
+}
+
+void CSystemProd::DisableProductions(const bool* vDisabledProductions)
+{
+	// deaktiverte Produktionen auf 0 setzen
+	if (vDisabledProductions[FOOD_WORKER])
+		m_iFoodProd = m_iMaxFoodProd = 0;
+
+	if (vDisabledProductions[INDUSTRY_WORKER])
+		m_iIndustryProd = 0;
+
+	if (vDisabledProductions[ENERGY_WORKER])
+		m_iEnergyProd = m_iMaxEnergyProd = 0;
+
+	if (vDisabledProductions[SECURITY_WORKER])
+		m_iSecurityProd = 0;
+
+	if (vDisabledProductions[RESEARCH_WORKER])
+		m_iResearchProd = 0;
+
+	if (vDisabledProductions[TITAN_WORKER])
+		m_iTitanProd = 0;
+
+	if (vDisabledProductions[DEUTERIUM_WORKER])
+		m_iDeuteriumProd = 0;
+
+	if (vDisabledProductions[DURANIUM_WORKER])
+		m_iDuraniumProd = 0;
+
+	if (vDisabledProductions[CRYSTAL_WORKER])
+		m_iCrystalProd = 0;
+
+	if (vDisabledProductions[IRIDIUM_WORKER])
+		m_iIridiumProd = 0;
 }
 
 void CSystemProd::IncludeSystemMoral(short moral)

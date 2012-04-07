@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9,00"
+	Version="9.00"
 	Name="BotE"
 	ProjectGUID="{5A569755-0BE5-4E97-9318-FA8BA42C4F03}"
 	RootNamespace="botf2"
@@ -50,7 +50,6 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalOptions="/MP"
 				Optimization="0"
 				AdditionalIncludeDirectories=".;Source;Source\include;Source\Graphic;Source\Gamedata;Source\Dialogs;Source\Framework;Source\GUI;Source\General;Source\include\foundation;Source\include\LZMA;Source\include\network;Source\include\sound;Source\include\CPPToolTip"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS"
@@ -153,7 +152,6 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalOptions="/MP"
 				Optimization="3"
 				InlineFunctionExpansion="1"
 				FavorSizeOrSpeed="1"
@@ -474,6 +472,10 @@
 				<Filter
 					Name="Events"
 					>
+					<File
+						RelativePath=".\Source\Gamedata\Events\EventAlienEntity.cpp"
+						>
+					</File>
 					<File
 						RelativePath=".\Source\Gamedata\Events\EventBlockade.cpp"
 						>
@@ -1167,6 +1169,10 @@
 				<Filter
 					Name="Events"
 					>
+					<File
+						RelativePath=".\Source\Gamedata\Events\EventAlienEntity.h"
+						>
+					</File>
 					<File
 						RelativePath=".\Source\Gamedata\Events\EventBlockade.h"
 						>

@@ -18,6 +18,7 @@
 #include "Events\EventGameOver.h"
 #include "Events\EventRaceKilled.h"
 #include "Events\EventVictory.h"
+#include "Events\EventAlienEntity.h"
 
 /**
  * Struktur, die die wichtigsten Informationen eines Systems aufnehmen kann. Dies wird benötigt, wenn wir in einer

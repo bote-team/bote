@@ -2381,3 +2381,6 @@ very high
 technical progress
 [NEW_TECHNOLOGY_ALLOWS]
 new technology allows:
+
+[EVENT_IONISIERENDES_GASWESEN]
+Durch ein Ionisierendes Gaswesen wurde die komplette Energieversorgung im § System lahmgelegt
