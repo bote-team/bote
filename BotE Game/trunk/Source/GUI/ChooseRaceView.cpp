@@ -4,7 +4,9 @@
 #include "stdafx.h"
 #include "resource.h"
 #include "ChooseRaceView.h"
+#include "botf2.h"
 #include "Botf2Doc.h"
+#include "MainFrm.h"
 #include "Races/RaceController.h"
 
 #include "BotEServer.h"

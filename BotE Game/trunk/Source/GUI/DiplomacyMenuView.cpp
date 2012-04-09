@@ -3,6 +3,7 @@
 
 #include "stdafx.h"
 #include "botf2.h"
+#include "MainFrm.h"
 #include "DiplomacyMenuView.h"
 #include "DiplomacyBottomView.h"
 #include "MenuChooseView.h"

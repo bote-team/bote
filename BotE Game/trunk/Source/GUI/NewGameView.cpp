@@ -5,7 +5,9 @@
 #include "resource.h"
 #include "NewGameView.h"
 #include "ChooseRaceView.h"
+#include "botf2.h"
 #include "Botf2Doc.h"
+#include "MainFrm.h"
 
 #include "Graphic\memdc.h"
 #include "GraphicPool.h"

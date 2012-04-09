@@ -3,6 +3,7 @@
 
 #include "stdafx.h"
 #include "botf2.h"
+#include "MainFrm.h"
 #include "ResearchMenuView.h"
 #include "ResearchBottomView.h"
 #include "Races\RaceController.h"

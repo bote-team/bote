@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "DiplomacyAI.h"
 #include "Botf2Doc.h"
+#include "botf2.h"
 #include "Races\RaceController.h"
 
 IMPLEMENT_SERIAL (CDiplomacyInfo, CObject, 1)

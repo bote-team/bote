@@ -9,6 +9,7 @@
 #include "NewGameView.h"
 
 #include "Botf2Doc.h"
+#include "MainFrm.h"
 #include "IniLoader.h"
 #include "SettingsDlg.h"
 

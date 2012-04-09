@@ -3,6 +3,7 @@
 
 #include "stdafx.h"
 #include "botf2.h"
+#include "MainFrm.h"
 #include "SystemMenuView.h"
 #include "ResearchMenuView.h"
 #include "IntelMenuView.h"

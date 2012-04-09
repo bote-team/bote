@@ -1,5 +1,6 @@
 #include "stdafx.h" 
 #include "Remanager.h"
+#include "botf2.h"
 #include "Botf2Doc.h"
 #include "Races/Major.h"
 #include "Races/Minor.h"

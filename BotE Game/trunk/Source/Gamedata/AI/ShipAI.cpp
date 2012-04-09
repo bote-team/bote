@@ -213,7 +213,7 @@ void CShipAI::CalculateShipOrders(CSectorAI* SectorAI)
 /// <code>TRUE</code>, wenn ein Terraformbefehl gegeben werden könnte.
 BOOLEAN CShipAI::DoTerraform(int index)
 {
-	// Es wird jeder Planet sofort genommen, welcher weniger als 6 Runden zum Terraformen
+	// Es wird jeder Planet sofort genommen, welcher weniger als 8 Runden zum Terraformen
 	// benötigt. Planeten welche mehr Runden zum Terraformen benötigen werden nur ausgewählt,
 	// wenn in dem Sektor kein Planet zum sofortigen Kolonisieren zur Verfügung steht
     
@@ -255,7 +255,7 @@ BOOLEAN CShipAI::DoTerraform(int index)
 	// Wurde ein zu terraformender Planet gefunden und würden weniger als 6 Runden
 	// zum Terraformen benötigt werden oder es gibt keinen Planeten, der
 	// sofort kolonisiert werden könnte, dann den gefundenen Planeten terraformen
-	if (nPlanet != -1 && (!bColonizable || nMinTerraPoints / nTerraPoints < 6))
+	if (nPlanet != -1 && (!bColonizable || nMinTerraPoints / nTerraPoints < 8))
 	{
 		// Hier muss als erstes ein möglicher neuer Kurs gelöscht werden
 		m_pDoc->m_ShipArray.GetAt(i).SetTargetKO(shipKO, 0);

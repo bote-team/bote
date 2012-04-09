@@ -3,6 +3,7 @@
 
 #include "stdafx.h"
 #include "botf2.h"
+#include "MainFrm.h"
 #include "IntelBottomView.h"
 #include "IntelMenuView.h"
 #include "Races\RaceController.h"

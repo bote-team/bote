@@ -13,6 +13,7 @@
 #include "Ships\Fleet.h"
 #include "HTMLStringBuilder.h"
 #include "Graphic\memdc.h"
+#include "MainFrm.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

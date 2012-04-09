@@ -4,7 +4,9 @@
 #include "stdafx.h"
 #include "IOData.h"
 
+#include "botf2.h"
 #include "botf2Doc.h"
+#include "MainFrm.h"
 #include "GalaxyMenuView.h"
 #include "SystemMenuView.h"
 #include "MenuChooseView.h"

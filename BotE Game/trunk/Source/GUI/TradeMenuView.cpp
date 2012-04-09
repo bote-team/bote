@@ -3,6 +3,7 @@
 
 #include "stdafx.h"
 #include "botf2.h"
+#include "MainFrm.h"
 #include "TradeMenuView.h"
 #include "MenuChooseView.h"
 #include "Races\RaceController.h"

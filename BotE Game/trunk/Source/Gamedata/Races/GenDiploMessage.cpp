@@ -3,6 +3,7 @@
 //////////////////////////////////////////////////////////////////////
 #include "StdAfx.h"
 #include "GenDiploMessage.h"
+#include "botf2.h"
 #include "Botf2Doc.h"
 #include "RaceController.h"
 #include <vector>

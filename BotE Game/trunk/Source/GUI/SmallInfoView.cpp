@@ -6,6 +6,7 @@
 #include "SmallInfoView.h"
 #include "GalaxyMenuView.h"
 #include "Botf2Doc.h"
+#include "MainFrm.h"
 #include "Galaxy\Planet.h"
 #include "Races\RaceController.h"
 #include "Ships\Fleet.h"

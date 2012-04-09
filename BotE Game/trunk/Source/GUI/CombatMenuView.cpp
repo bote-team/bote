@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include "botf2.h"
 #include "Botf2Doc.h"
+#include "MainFrm.h"
 #include "CombatMenuView.h"
 #include "Races\RaceController.h"
 #include "Ships\Combat.h"

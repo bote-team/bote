@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "Race.h"
+#include "botf2.h"
 #include "Botf2Doc.h"
 #include "RaceController.h"
 #include "AI\DiplomacyAI.h"

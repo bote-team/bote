@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "Statistics.h"
+#include "botf2.h"
 #include "Botf2Doc.h"
 #include "Races\RaceController.h"
 #include "AI\SectorAI.h"

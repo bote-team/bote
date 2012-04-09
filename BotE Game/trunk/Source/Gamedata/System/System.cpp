@@ -4,6 +4,7 @@
 
 #include "stdafx.h"
 #include "System.h"
+#include "botf2.h"
 #include "Botf2Doc.h"
 #include "Races\RaceController.h"
 

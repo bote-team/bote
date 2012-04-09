@@ -3,35 +3,25 @@
 /////////////////////////////////////////////////////////////////////////////
 #pragma once
 
-#include "Botf2.h"
-#include "MainFrm.h"
 #include "Ships\GenShipName.h"
 #include "General\Statistics.h"
-#include "General\Message.h"
 #include "Races\VictoryObserver.h"
 #include "Remanager.h"
 #include "System\GlobalBuildings.h"
-#include "System\GlobalStorage.h"
 #include "PeerData.h"
-#include "LZMA_BotE.h"
 #include "SoundManager.h"
-#include "MyTimer.h"
-#include "Galaxy\Sector.h"
-#include "System\System.h"
-#include <map>
-#include <utility>
 #include "IOData.h"
 
 // forward declaration
-class CMainDlg;
+class CMainFrame;
 class CNetworkHandler;
-class CStarmap;
+class CSector;
+class CSystem;
 class CGraphicPool;
 class CRaceController;
 class CMajor;
 class CSectorAI;
 class CAIPrios;
-
 
 class CBotf2Doc : public CDocument, public network::CPeerData
 {
@@ -63,8 +53,7 @@ protected: // Nur aus Serialisierung erzeugen
 	short m_iNumberOfFleetShip;			// Das Schiff welches sozusagen die Flotte anführt
 	short m_iNumberOfTheShipInFleet;	// Nummber des Schiffes in der Flotte, wenn wir ein Flotte haben
 	short m_NumberOfTheShipInArray;		// Hilfsvariable, mit der auf ein spezielles Schiff im Array zugekriffen werden kann
-	CMessage message;					// eine einzelne Nachricht
-		
+			
 	CStatistics m_Statistics;			///< Statistikobjekt, in dem Statistiken des Spiels gespeichert sind	
 	
 	CNetworkHandler *m_pNetworkHandler;
@@ -162,9 +151,9 @@ public:
 	CSystem& GetSystem(int x, int y) { ASSERT(x < STARMAP_SECTORS_HCOUNT && y < STARMAP_SECTORS_VCOUNT); return m_System[x][y]; }	
 	CSystem& GetSystem(const CPoint& ko) { return GetSystem(ko.x, ko.y); }
 	
-	CBuildingInfo& GetBuildingInfo(int id) {ASSERT(id); return BuildingInfo[id-1];}
-	const CString& GetBuildingName(int id) const {ASSERT(id); return BuildingInfo[id-1].GetBuildingName();}
-	const CString& GetBuildingDescription(int id) const {ASSERT(id); return BuildingInfo[id-1].GetBuildingDescription();}
+	CBuildingInfo& GetBuildingInfo(int id) {ASSERT(id > 0); return BuildingInfo[id-1];}
+	const CString& GetBuildingName(int id) const {ASSERT(id > 0); return BuildingInfo[id-1].GetBuildingName();}
+	const CString& GetBuildingDescription(int id) const {ASSERT(id > 0); return BuildingInfo[id-1].GetBuildingDescription();}
 	
 	/// Funktion lädt für die ausgewählte Spielerrasse alle Grafiken für die Views.
 	void LoadViewGraphics(void);
@@ -181,7 +170,7 @@ public:
 	void ReadBuildingInfosFromFile(void);		// Die Infos zu den Gebäuden aus den Datein einlesen
 	void ReadShipInfosFromFile(void);			// Die Infos zu den Schiffen aus der Datei einlesen
 	void ReadTroopInfosFromFile(void);			// Die Infos zu den Truppen aus der Datei einlesen
-	void BuildBuilding(USHORT id, CPoint KO);	// Das jeweilige Gebäude bauen
+	void BuildBuilding(USHORT id, const CPoint& KO);	// Das jeweilige Gebäude bauen
 	
 	/// Funktion zum bauen des jeweiligen Schiffes in einem System.
 	/// @param ID ID des Schiffes

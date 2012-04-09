@@ -4,6 +4,7 @@
 
 #pragma once
 #define _CRT_SECURE_NO_WARNINGS		// häufige Sicherheitswarnungen ausschalten
+#pragma warning( disable : 4244 )
 
 #ifndef _SECURE_ATL
 #define _SECURE_ATL 1

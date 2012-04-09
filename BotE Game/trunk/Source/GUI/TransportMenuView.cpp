@@ -3,6 +3,7 @@
 
 #include "stdafx.h"
 #include "botf2.h"
+#include "MainFrm.h"
 #include "TransportMenuView.h"
 #include "Races\RaceController.h"
 #include "Ships\Fleet.h"

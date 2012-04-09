@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "EventScreen.h"
 #include "IOData.h"
+#include "botf2.h"
 #include "Botf2Doc.h"
 #include "Races\RaceController.h"
 

@@ -8,6 +8,7 @@
 #include "MenuChooseView.h"
 #include "PlanetBottomView.h"
 #include "Botf2Doc.h"
+#include "MainFrm.h"
 #include "BotEClient.h"
 #include "Races\RaceController.h"
 #include "IniLoader.h"
