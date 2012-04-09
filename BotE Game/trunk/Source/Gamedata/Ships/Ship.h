@@ -113,6 +113,7 @@ public:
 	USHORT GetLoadedResources(BYTE res) const {return m_iLoadedResources[res];}
 	COMBAT_TACTICS GetCombatTactic() const {return m_nCombatTactic;}
 	bool IsNonCombat() const {return (m_iShipType == TRANSPORTER || m_iShipType == COLONYSHIP || m_iShipType == PROBE);}
+	ALIEN_TYPE::Typ GetAlienType() const { return m_nAlienType; }
 		
 	// zum Schreiben der Membervariablen
 	void SetID(USHORT ID) {m_iID = ID+10000;}
@@ -142,6 +143,7 @@ public:
 	void SetShipClass(const CString& ShipClass) {m_strShipClass = ShipClass;}
 	void SetIsShipFlagShip(BOOLEAN is) {m_bIsFlagShip = is;}
 	void SetCombatTactic(COMBAT_TACTICS nTactic) {m_nCombatTactic = nTactic;}
+	void SetAlienType(ALIEN_TYPE::Typ nAlienType) {m_nAlienType = nAlienType;}
 	
 	// sonstige Funktionen
 	void CreateFleet();	// Bevor wir mit der Flotte arbeiten können muß diese erst created werden
@@ -193,7 +195,7 @@ protected:
 	BYTE m_bySpecial[2];				// Die beiden möglichen Spezialfähigkeiten des Schiffes
 	CString m_strShipName;				// Der Name des Schiffes
 	CString m_strShipDescription;		// Die Beschreibung des Schiffes
-	CString m_strShipClass;				// Der Name der Schiffsklasse	
+	CString m_strShipClass;				// Der Name der Schiffsklasse
 
 private:
 	CString m_sOwnerOfShip;				// Besitzer des Schiffes
@@ -210,6 +212,7 @@ private:
 	USHORT m_iLoadedResources[DERITIUM+1];	// Die geladenen Ressourcen auf dem Schiff
 	// Kampftaktik
 	COMBAT_TACTICS m_nCombatTactic;		///< Taktik des Schiffes im Kampf
+	ALIEN_TYPE::Typ m_nAlienType;		///< Typ des Alienschiffes und dessen Auswirkungen
 };
 
 typedef CArray<CShip, CShip> ShipArray;	// Das dynamische Feld wird vereinfacht als ShipArray angegeben

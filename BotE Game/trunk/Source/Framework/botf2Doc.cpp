@@ -5116,7 +5116,7 @@ void CBotf2Doc::CalcShipMovement()
 			targetKO = Sector(-1,-1);
 
 		// Weltraummonster gesondert behandeln
-		if (pShip->GetShipType() == ALIEN)
+		if (pShip->GetAlienType() != ALIEN_TYPE::NONE)
 		{
 			// wenn bei einem Weltraummonster kein Ziel vorhanden ist, dann wird zufällig ein neues generiert
 			if (targetKO.x == -1)
@@ -6577,7 +6577,7 @@ void CBotf2Doc::CalcRandomAlienEntities()
 			continue;
 
 		// zugehörige Minorrace finden
-		if (CMinor* pAlien = dynamic_cast<CMinor*>(m_pRaceCtrl->GetRace(pShipInfo->GetOnlyInSystem())))
+		if (CMinor* pAlien = dynamic_cast<CMinor*>(m_pRaceCtrl->GetRace(pShipInfo->GetOnlyInSystem())))		
 		{
 			if (!pAlien->IsAlienRace())
 			{
@@ -6622,9 +6622,23 @@ void CBotf2Doc::CalcRandomAlienEntities()
 				{
 					BuildShip(pShipInfo->GetID(), p, pAlien->GetRaceID());
 
-					// Wenn es eine friedliche Alienrasse ist, dann das Schiff auf Meiden stellen
-					if (pAlien->IsRaceProperty(PACIFIST) || pAlien->IsRaceProperty(AGRARIAN))
-						m_ShipArray[m_ShipArray.GetUpperBound()].SetCurrentOrder(AVOID);
+					CShip* pShip = &m_ShipArray[m_ShipArray.GetUpperBound()];
+					// unterschiedliche Aliens unterschieden und Schiffseigenschaften festlegen
+					if (pAlien->GetRaceID() == "Ionisierendes Gaswesen")
+					{
+						pShip->SetAlienType(ALIEN_TYPE::IONISIERENDES_GASWESEN);
+						pShip->SetCurrentOrder(AVOID);
+					}
+					else if (pAlien->GetRaceID() == "Gaballianer")
+					{
+						pShip->SetAlienType(ALIEN_TYPE::GABALLIANER_SEUCHENSCHIFF);
+						pShip->SetCurrentOrder(ATTACK);
+					}
+					else if (pAlien->GetRaceID() == "Blizzard-Plasmawesen")
+					{
+						pShip->SetAlienType(ALIEN_TYPE::BLIZZARD_PLASMAWESEN);
+						pShip->SetCurrentOrder(ATTACK);
+					}
 
 					break;
 				}
@@ -6642,15 +6656,8 @@ void CBotf2Doc::CalcAlienShipEffects()
 		if (pShip->GetShipType() != ALIEN)
 			continue;
 
-		if (!GetSector(pShip->GetKO()).GetSunSystem())
-			continue;
-
-		if (!GetSector(pShip->GetKO()).GetOwned())
-			continue;
-
-		CString sSectorOwner = GetSector(pShip->GetKO()).GetOwnerOfSector();
-		CMajor* pOwner = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(sSectorOwner));
-		if (!pOwner)
+		// Aliens mit Rückzugsbefehl machen nix
+		if (pShip->GetCombatTactic() == COMBAT_TACTIC_RETREAT)
 			continue;
 
 		CMinor* pAlien = dynamic_cast<CMinor*>(m_pRaceCtrl->GetRace(pShip->GetOwnerOfShip()));
@@ -6661,8 +6668,13 @@ void CBotf2Doc::CalcAlienShipEffects()
 		}
 
 		// verschiedene Alienrassen unterscheiden
-		if (pAlien->GetRaceID() == "Ionisierendes Gaswesen")
+		if ((pShip->GetAlienType() & ALIEN_TYPE::IONISIERENDES_GASWESEN) > 0)
 		{
+			CString sSystemOwner = GetSystem(pShip->GetKO()).GetOwnerOfSystem();
+			CMajor* pOwner = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(sSystemOwner));
+			if (!pOwner)
+				continue;
+
 			// Energie im System auf 0 setzen
 			GetSystem(pShip->GetKO()).SetDisabledProduction(ENERGY_WORKER);
 			
@@ -6671,6 +6683,119 @@ void CBotf2Doc::CalcAlienShipEffects()
 			{				
 				// Nachricht und Event einfügen
 				CString s = CResourceManager::GetString("EVENT_IONISIERENDES_GASWESEN", FALSE, GetSector(pShip->GetKO()).GetName());
+				CMessage message;
+				message.GenerateMessage(s, SOMETHING, GetSector(pShip->GetKO()).GetName(), pShip->GetKO(), 0);
+				pOwner->GetEmpire()->AddMessage(message);
+				if (pOwner->IsHumanPlayer())
+				{
+					CEventAlienEntity* eventScreen = new CEventAlienEntity(pOwner->GetRaceID(), pAlien->GetRaceID(), pAlien->GetRaceName(), s);
+					pOwner->GetEmpire()->GetEventMessages()->Add(eventScreen);
+
+					network::RACE client = m_pRaceCtrl->GetMappedClientID(pOwner->GetRaceID());
+					m_iSelectedView[client] = EMPIRE_VIEW;
+				}
+			}
+		}
+		if ((pShip->GetAlienType() & ALIEN_TYPE::GABALLIANER_SEUCHENSCHIFF) > 0)
+		{
+			CString sSystemOwner = GetSystem(pShip->GetKO()).GetOwnerOfSystem();
+			if (CMajor* pOwner = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(sSystemOwner)))
+			{
+				// Nahrung im System auf 0 setzen
+				GetSystem(pShip->GetKO()).SetDisabledProduction(FOOD_WORKER);
+				GetSystem(pShip->GetKO()).SetFoodStore(GetSystem(pShip->GetKO()).GetFoodStore() / 2);
+				
+				// Wenn narung produziert oder vorhanden ist, dann die Nachricht bringen über Nahrung verseucht
+				if (GetSystem(pShip->GetKO()).GetProduction()->GetMaxFoodProd() > 0 || GetSystem(pShip->GetKO()).GetFoodStore() > 0)
+				{				
+					// Nachricht und Event einfügen
+					CString s = CResourceManager::GetString("EVENT_GABALLIANER_SEUCHENSCHIFF", FALSE, GetSector(pShip->GetKO()).GetName());
+					CMessage message;
+					message.GenerateMessage(s, SOMETHING, GetSector(pShip->GetKO()).GetName(), pShip->GetKO(), 0);
+					pOwner->GetEmpire()->AddMessage(message);
+					if (pOwner->IsHumanPlayer())
+					{
+						CEventAlienEntity* eventScreen = new CEventAlienEntity(pOwner->GetRaceID(), pAlien->GetRaceID(), pAlien->GetRaceName(), s);
+						pOwner->GetEmpire()->GetEventMessages()->Add(eventScreen);
+
+						network::RACE client = m_pRaceCtrl->GetMappedClientID(pOwner->GetRaceID());
+						m_iSelectedView[client] = EMPIRE_VIEW;
+					}
+				}
+			}
+
+			// befinden sich Schiffe in diesem Sektor, so werden diese ebenfalls zu Seuchenschiffen (33%)
+			if (GetSector(pShip->GetKO()).GetIsShipInSector() && rand()%3 == 0)
+			{
+				// alle Schiffe im Sektor zu Seuchenschiffen machen
+				for (int y = 0; y < m_ShipArray.GetSize(); y++)
+				{
+					CShip* pOtherShip = &m_ShipArray.GetAt(y);
+					// Schiff im gleichen Sektor?
+					if (pOtherShip->GetKO() != pShip->GetKO())
+						continue;
+
+					// keine anderen Alienschiffe
+					if (pOtherShip->GetShipType() == ALIEN || (pOtherShip->GetAlienType() & ALIEN_TYPE::GABALLIANER_SEUCHENSCHIFF) > 0)
+						continue;
+
+					// keine Außenposten und Sternenbasen
+					if (pOtherShip->GetShipType() == OUTPOST || pOtherShip->GetShipType() == STARBASE)
+						continue;
+
+					vector<CShip*> vShips;
+					vShips.push_back(pOtherShip);
+
+					if (pOtherShip->GetFleet())
+					{
+						for (int x = 0; x < pOtherShip->GetFleet()->GetFleetSize(); x++)
+							vShips.push_back(pOtherShip->GetFleet()->GetShipFromFleet(x));
+					}
+
+					for (unsigned int n = 0; n < vShips.size(); n++)
+					{
+						// Schiffe mit Rückzugsbefehl werden nie vom Virus befallen
+						if (vShips[n]->GetCombatTactic() == COMBAT_RETREAT)
+							continue;
+					
+						vShips[n]->SetOwnerOfShip(pAlien->GetRaceID());
+						vShips[n]->SetTargetKO(pShip->GetKO(), 0);
+						vShips[n]->SetAlienType(ALIEN_TYPE::GABALLIANER_SEUCHENSCHIFF);
+						vShips[n]->SetCurrentOrder(ATTACK);
+						vShips[n]->SetTerraformingPlanet(-1);
+						vShips[n]->SetIsShipFlagShip(FALSE);
+
+						// für jedes Schiff eine Meldung über den Verlust machen
+
+						// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
+						if (CMajor* pShipOwner = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(vShips[n]->GetOwnerOfShip())))
+						{
+							AddToLostShipHistory(vShips[n], CResourceManager::GetString("COMBAT"), CResourceManager::GetString("MISSED"));
+							CString s;
+							s.Format("%s", CResourceManager::GetString("DESTROYED_SHIPS_IN_COMBAT",0,vShips[n]->GetShipName()));
+							CMessage message;
+							message.GenerateMessage(s, MILITARY, "", 0, 0);
+							pShipOwner->GetEmpire()->AddMessage(message);
+						}
+					}
+				}
+			}
+		}
+		if ((pShip->GetAlienType() & ALIEN_TYPE::BLIZZARD_PLASMAWESEN) > 0)
+		{
+			CString sSystemOwner = GetSystem(pShip->GetKO()).GetOwnerOfSystem();
+			CMajor* pOwner = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(sSystemOwner));
+			if (!pOwner)
+				continue;
+
+			// Energie im System auf 0 setzen
+			GetSystem(pShip->GetKO()).SetDisabledProduction(ENERGY_WORKER);
+			
+			// Wenn Energie vorhanden war, dann die Nachricht bringen über Energieausfall
+			if (GetSystem(pShip->GetKO()).GetProduction()->GetMaxEnergyProd() > 0)
+			{				
+				// Nachricht und Event einfügen
+				CString s = CResourceManager::GetString("EVENT_BLIZZARD_PLASMAWESEN", FALSE, GetSector(pShip->GetKO()).GetName());
 				CMessage message;
 				message.GenerateMessage(s, SOMETHING, GetSector(pShip->GetKO()).GetName(), pShip->GetKO(), 0);
 				pOwner->GetEmpire()->AddMessage(message);

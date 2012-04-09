@@ -2399,3 +2399,7 @@ neue Technologie ermöglicht:
 
 [EVENT_IONISIERENDES_GASWESEN]
 Durch ein Ionisierendes Gaswesen wurde die komplette Energieversorgung im § System lahmgelegt
+[EVENT_GABALLIANER_SEUCHENSCHIFF]
+Durch ein Gaballianisches Seuchenschiff wurde die komplette Nahrungsversorgung im § System lahmgelegt
+[EVENT_BLIZZARD_PLASMAWESEN]
+Durch ein Blizzard Plasmawesen wurde die komplette Energieversorgung im § System lahmgelegt

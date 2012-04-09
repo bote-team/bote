@@ -11484,12 +11484,12 @@ This entity is very aggressive and likes to discharge itself at any given surfac
 14
 3
 7
-0
-0
-0
-0
-0
-0
+4
+4
+4
+4
+4
+4
 0
 0
 0
@@ -11497,7 +11497,7 @@ This entity is very aggressive and likes to discharge itself at any given surfac
 0
 0
 1
-
+Blizzard-Plasmawesen
 6000
 2
 0
@@ -12332,16 +12332,16 @@ Laser Emitter
 $END_OF_SHIPDATA$
 7
 Gaballian Plagueship
-The unarmed plagueship carries a multi-resistent vacuum-persistent virus within the whole ship and everything getting in close contact with it is infected and contaminated. Ships getting too close are taken over by the virus which can control computers as well as organic lifeforms. They are in search of a permanent dwelling place.
+The weakly armed plagueship carries a multi-resistent vacuum-persistent virus within the whole ship and everything getting in close contact with it is infected and contaminated. Ships getting too close are taken over by the virus which can control computers as well as organic lifeforms. They are in search of a permanent dwelling place.
 14
 2
 4
-0
-0
-0
-0
-0
-0
+1
+1
+1
+1
+1
+1
 0
 0
 0
@@ -12349,7 +12349,7 @@ The unarmed plagueship carries a multi-resistent vacuum-persistent virus within 
 0
 0
 1
-
+Gaballianer
 3000
 2
 1
@@ -12370,6 +12370,19 @@ The unarmed plagueship carries a multi-resistent vacuum-persistent virus within 
 0
 0
 
+$Beam$
+1
+10
+1
+Virus
+0
+0
+0
+10
+50
+1
+0
+10
 $END_OF_SHIPDATA$
 7
 Gas Entity

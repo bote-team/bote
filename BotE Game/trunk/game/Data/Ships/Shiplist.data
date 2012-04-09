@@ -11430,12 +11430,12 @@ Dieses Wesen ist sehr aggressiv und entlädt sich gerne an gleich welchen Oberflä
 14
 3
 7
-0
-0
-0
-0
-0
-0
+4
+4
+4
+4
+4
+4
 0
 0
 0
@@ -11443,7 +11443,7 @@ Dieses Wesen ist sehr aggressiv und entlädt sich gerne an gleich welchen Oberflä
 0
 0
 1
-
+Blizzard-Plasmawesen
 6000
 2
 0
@@ -12278,16 +12278,16 @@ Laser Emitter
 $END_OF_SHIPDATA$
 7
 Gaballianer Seuchenschiff
-Das unbewaffnete Seuchenschiff trägt ein multiresistentes vakuumübertragbares Virus im gesamten Schiff, womit sie alles, was mit ihnen in Kontakt kommt, infizieren und kontaminieren. Schiffe, die ihnen zu nahe kommen, gelangen unter die Kontrolle der Gaballianer, die selbst unter der Kontrolle des Virus stehen. Sie suchen eine dauerhafte Bleibe.
+Das schwach bewaffnete Seuchenschiff trägt ein multiresistentes vakuumübertragbares Virus im gesamten Schiff, womit sie alles, was mit ihnen in Kontakt kommt, infizieren und kontaminieren. Schiffe, die ihnen zu nahe kommen, gelangen unter die Kontrolle der Gaballianer, die selbst unter der Kontrolle des Virus stehen. Sie suchen eine dauerhafte Bleibe.
 14
 2
 4
-0
-0
-0
-0
-0
-0
+1
+1
+1
+1
+1
+1
 0
 0
 0
@@ -12295,7 +12295,7 @@ Das unbewaffnete Seuchenschiff trägt ein multiresistentes vakuumübertragbares Vi
 0
 0
 1
-
+Gaballianer
 3000
 2
 1
@@ -12316,6 +12316,19 @@ Das unbewaffnete Seuchenschiff trägt ein multiresistentes vakuumübertragbares Vi
 0
 0
 
+$Beam$
+1
+10
+1
+Virus
+0
+0
+0
+10
+50
+1
+0
+10
 $END_OF_SHIPDATA$
 7
 Havri
