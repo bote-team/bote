@@ -26,7 +26,7 @@ public:
 	void CalculateShipOrders(CSectorAI* SectorAI);
 
 private:
-	/// Funktion erteilt einen Terraformbefehl, sofern dies auch möglich ist. Übergebn wird dafür der index
+	/// Funktion erteilt einen Terraformbefehl, sofern dies auch möglich ist. Übergeben wird dafür der index
 	/// <code>index</code> des Schiffes aus dem Schiffsarray des Documents. Der Rückgabewert der Funktion ist
 	/// <code>TRUE</code>, wenn ein Terraformbefehl gegeben werden könnte.
 	BOOLEAN DoTerraform(int index);

@@ -213,15 +213,13 @@ void CShipAI::CalculateShipOrders(CSectorAI* SectorAI)
 /// <code>TRUE</code>, wenn ein Terraformbefehl gegeben werden könnte.
 BOOLEAN CShipAI::DoTerraform(int index)
 {
-	/*
-	   Es wird jeder Planet sofort genommen, welcher weniger als 7 Terraformpunkte
-	   benötigt. Planeten welche mehr als 6 Terraformpunkte benötigen werden nicht
-	   unbedingt sofort gewählt. Dort müssen wir die doppelte Anzahl an Runden erreicht
-	   haben. Außer es gibt keinen Planeten, welcher in diesem Moment kolonisiert werden
-	   könnte.
-    */
+	// Es wird jeder Planet sofort genommen, welcher weniger als 6 Runden zum Terraformen
+	// benötigt. Planeten welche mehr Runden zum Terraformen benötigen werden nur ausgewählt,
+	// wenn in dem Sektor kein Planet zum sofortigen Kolonisieren zur Verfügung steht
+    
 	int i = index;
-	if (m_pDoc->m_ShipArray.GetAt(i).GetColonizePoints() == 0)
+	int nTerraPoints = m_pDoc->m_ShipArray.GetAt(i).GetColonizePoints();
+	if (nTerraPoints <= 0)
 		return FALSE;
 	
 	// nur wenn der Sektor noch niemandem gehört bzw. uns selbst ist, sollen Planeten terraformt werden
@@ -229,67 +227,43 @@ BOOLEAN CShipAI::DoTerraform(int index)
 	if (m_pDoc->GetSector(shipKO).GetOwnerOfSector() != "" && m_pDoc->GetSector(shipKO).GetOwnerOfSector() != m_pDoc->m_ShipArray.GetAt(i).GetOwnerOfShip())
 		return FALSE;
 
-	BYTE minTerraPoints = MAXBYTE;
-	short planet = -1;
-	BYTE terraPoints = m_pDoc->m_ShipArray.GetAt(i).GetColonizePoints();
-	for (int j = 0; j < m_pDoc->m_Sector[shipKO.x][shipKO.y].GetNumberOfPlanets(); j++)
-		if (m_pDoc->m_Sector[shipKO.x][shipKO.y].GetPlanet(j)->GetTerraformed() == FALSE
-			&& m_pDoc->m_Sector[shipKO.x][shipKO.y].GetPlanet(j)->GetHabitable() == TRUE)
+	int nMinTerraPoints = INT_MAX;
+	short nPlanet = -1;
+	
+	bool bColonizable = false;
+	for (int j = 0; j < m_pDoc->GetSector(shipKO).GetNumberOfPlanets(); j++)
+	{
+		const CPlanet* pPlanet = m_pDoc->GetSector(shipKO).GetPlanet(j);
+		// Planet überhaupt bewohnbar?
+		if (!pPlanet->GetHabitable())
+			continue;
+
+		// Planet schon terraformt?
+		if (pPlanet->GetTerraformed())
 		{
-			if (m_pDoc->m_Sector[shipKO.x][shipKO.y].GetPlanet(j)->GetNeededTerraformPoints() < minTerraPoints)
-				minTerraPoints = m_pDoc->m_Sector[shipKO.x][shipKO.y].GetPlanet(j)->GetNeededTerraformPoints();
-			// minTerraPoints - TerraformingPoints des Schiffes > 6 + Planetentyp
-			if ((minTerraPoints - terraPoints) > (4 + m_pDoc->m_Sector[shipKO.x][shipKO.y].GetPlanet(j)->GetType()) && 2*minTerraPoints > m_pDoc->m_iRound)
-			{
-				minTerraPoints = MAXBYTE;
-				planet = -1;
-			}
-			if (minTerraPoints == MAXBYTE && (m_pDoc->m_Sector[shipKO.x][shipKO.y].GetPlanet(j)->GetNeededTerraformPoints() - terraPoints) <= (4 + m_pDoc->m_Sector[shipKO.x][shipKO.y].GetPlanet(j)->GetType()))
-				minTerraPoints = m_pDoc->m_Sector[shipKO.x][shipKO.y].GetPlanet(j)->GetNeededTerraformPoints();
-			if (minTerraPoints == m_pDoc->m_Sector[shipKO.x][shipKO.y].GetPlanet(j)->GetNeededTerraformPoints())
-				planet = j;
+			// und noch nicht kolonisiert?
+			if (!pPlanet->GetColonized())
+				bColonizable = true;
 		}
-	if (planet != -1)
+		else if (pPlanet->GetNeededTerraformPoints() < nMinTerraPoints)
+		{
+			nMinTerraPoints = pPlanet->GetNeededTerraformPoints();
+			nPlanet = j;
+		}
+	}
+	
+	// Wurde ein zu terraformender Planet gefunden und würden weniger als 6 Runden
+	// zum Terraformen benötigt werden oder es gibt keinen Planeten, der
+	// sofort kolonisiert werden könnte, dann den gefundenen Planeten terraformen
+	if (nPlanet != -1 && (!bColonizable || nMinTerraPoints / nTerraPoints < 6))
 	{
 		// Hier muss als erstes ein möglicher neuer Kurs gelöscht werden
-		m_pDoc->m_ShipArray.GetAt(i).SetTargetKO(shipKO,0);
-		m_pDoc->m_ShipArray.GetAt(i).SetTerraformingPlanet(planet);
+		m_pDoc->m_ShipArray.GetAt(i).SetTargetKO(shipKO, 0);
+		m_pDoc->m_ShipArray.GetAt(i).SetTerraformingPlanet(nPlanet);
 		m_pDoc->m_ShipArray.GetAt(i).SetCurrentOrder(TERRAFORM);
 		return TRUE;
 	}
-	// Wenn kein Planet zum Terraformen gefunden wurde, wir aber auch keinen Planeten kolonisieren
-	// können, dann wähle den mit der kürzesten Terraformdauer.
-	else
-	{
-		minTerraPoints = MAXBYTE;
-		planet = -1;
-		for (int j = 0; j < m_pDoc->m_Sector[shipKO.x][shipKO.y].GetNumberOfPlanets(); j++)
-		{
-			if (m_pDoc->m_Sector[shipKO.x][shipKO.y].GetPlanet(j)->GetTerraformed() == TRUE
-				&& m_pDoc->m_Sector[shipKO.x][shipKO.y].GetPlanet(j)->GetColonized() == FALSE)
-			{
-				planet = -1;
-				break;
-			}
-			else if (m_pDoc->m_Sector[shipKO.x][shipKO.y].GetPlanet(j)->GetTerraformed() == FALSE
-				&& m_pDoc->m_Sector[shipKO.x][shipKO.y].GetPlanet(j)->GetHabitable() == TRUE)
-			{
-				if (m_pDoc->m_Sector[shipKO.x][shipKO.y].GetPlanet(j)->GetNeededTerraformPoints() < minTerraPoints)
-				{
-					minTerraPoints = m_pDoc->m_Sector[shipKO.x][shipKO.y].GetPlanet(j)->GetNeededTerraformPoints();
-					planet = j;
-				}
-			}
-		}
-		if (planet != -1)
-		{
-			// Hier muss als erstes ein möglicher neuer Kurs gelöscht werden
-			m_pDoc->m_ShipArray.GetAt(i).SetTargetKO(shipKO,0);
-			m_pDoc->m_ShipArray.GetAt(i).SetTerraformingPlanet(planet);
-			m_pDoc->m_ShipArray.GetAt(i).SetCurrentOrder(TERRAFORM);
-			return TRUE;
-		}
-	}
+		
 	return FALSE;
 }
 
