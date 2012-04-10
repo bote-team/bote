@@ -1113,3 +1113,12 @@ void CShip::DrawShip(Gdiplus::Graphics* g, CGraphicPool* pGraphicPool, const CPo
 		g->DrawString(s.AllocSysString(), -1, &font, PointF((REAL)pt.x + 35, (REAL)pt.y + 30), &fontFormat, &fontBrush);
 	}	
 }
+
+void CShip::SetTargetKO(const CPoint& TargetKO, int Index)
+{
+	m_TargetKO[Index] = TargetKO;
+	if (m_iCurrentOrder > AVOID) {
+		IsNonCombat() ? m_iCurrentOrder = AVOID : m_iCurrentOrder = ATTACK;
+	}
+	m_nTerraformingPlanet = -1;
+}

@@ -118,7 +118,7 @@ public:
 	// zum Schreiben der Membervariablen
 	void SetID(USHORT ID) {m_iID = ID+10000;}
 	void SetKO(const CPoint& KO) {m_KO = KO;}
-	void SetTargetKO(const CPoint& TargetKO, int Index) {m_TargetKO[Index] = TargetKO; if (m_iCurrentOrder > AVOID) m_iCurrentOrder = ATTACK; m_nTerraformingPlanet = -1;}
+	void SetTargetKO(const CPoint& TargetKO, int Index);
 	void SetOwnerOfShip(const CString& sOwnerOfShip) {m_sOwnerOfShip = sOwnerOfShip;}
 	void SetMaintenanceCosts(USHORT MaintenanceCosts) {m_iMaintenanceCosts = MaintenanceCosts;}
 	void SetShipType(BYTE ShipType) {m_iShipType = ShipType;}
