@@ -231,6 +231,17 @@ extern double STARMAP_ZOOM_MAX;//			2	///< maximaler Zoom-Faktor
 // Schiffseigenschaften
 enum {NONE, ASSULTSHIP, BLOCKADESHIP, COMMANDSHIP, COMBATTRACTORBEAM, DOGFIGHTER, DOGKILLER, PATROLSHIP, RAIDER, SCIENCEVESSEL};
 
+namespace ALIEN_TYPE
+{
+	enum Typ
+	{
+		NONE						= 0,
+		IONISIERENDES_GASWESEN		= 1,
+		GABALLIANER_SEUCHENSCHIFF	= 2,
+		BLIZZARD_PLASMAWESEN		= 4
+	};
+}
+
 // ------------- Arbeiter ------------------------------------------------------
 #define FOOD_WORKER			0
 #define INDUSTRY_WORKER		1
