@@ -97,7 +97,7 @@ void CSectorAI::CalcualteSectorPriorities()
 #ifdef TRACE_AI
 			if (m_vSectorsToTerraform[it->first].size())
 			{
-				MYTRACE(MT::LEVEL_INFO, "\n---------- sectors to terraform or colinize -------------\n");
+				MYTRACE(MT::LEVEL_INFO, "\n---------- sectors to terraform or colonize -------------\n");
 				MYTRACE(MT::LEVEL_INFO, "Race-ID: %s\n",it->first);
 				for (UINT j = 0; j < m_vSectorsToTerraform[it->first].size(); j++)
 					MYTRACE(MT::LEVEL_INFO, "POP: %d - KO: %d/%d\n",m_vSectorsToTerraform[it->first][j].pop, m_vSectorsToTerraform[it->first][j].p.x, m_vSectorsToTerraform[it->first][j].p.y);

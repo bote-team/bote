@@ -228,7 +228,7 @@ public:
 	BYTE GetNumberOfPlanets(void) const {return m_Planets.GetSize();}	
 	
 	/// Diese Funktion gibt einen Zeiger auf einen Planeten in diesem System zurück.
-	CPlanet* GetPlanet(short NumberOfPlanet) {return &m_Planets[NumberOfPlanet];}
+	CPlanet* GetPlanet(BYTE nPlanetIndex) {return &m_Planets[nPlanetIndex];}
 
 	/// Diese Funktion gibt einen Zeiger auf eine eventuell vorhandene Anomalie zurück (<code>NULL</code> wenn kein vorhanden)
 	CAnomaly* GetAnomaly(void) const {return m_pAnomaly;}

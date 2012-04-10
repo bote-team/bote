@@ -29,7 +29,7 @@ CShip::CShip()
 	m_Fleet = NULL;
 	for (int i = TITAN; i <= DERITIUM; i++)
 		m_iLoadedResources[i] = 0;
-	m_bCloakOn = FALSE;
+	m_bCloakOn = false;
 	m_nCombatTactic = COMBAT_TACTIC_ATTACK;
 	m_nAlienType = ALIEN_TYPE::NONE;
 }

@@ -88,7 +88,7 @@ public:
 	const CString& GetOwnerOfShip(void) const {return m_sOwnerOfShip;}
 	USHORT GetMaintenanceCosts() const {return m_iMaintenanceCosts;}
 	BYTE GetStealthPower() const {return m_iStealthPower;}
-	BOOLEAN GetCloak() const {return m_bCloakOn;}
+	bool GetCloak() const {return m_bCloakOn;}
 	BYTE GetShipType() const {return m_iShipType;}
 	BYTE GetShipSize() const {return m_byShipSize;}
 	BYTE GetManeuverability() const {return m_byManeuverability;}
@@ -203,7 +203,7 @@ private:
 	CPoint m_KO;						// Koordinate des Schiffes im Raum (welcher Sector?)
 	CPoint m_TargetKO[4];				// Der Zielkurs des Schiffes
 	CArray<Sector> m_Path;				// Der Kurs des Schiffes zum Ziel
-	BOOLEAN m_bCloakOn;					// ist die Tarnung eingeschaltet
+	bool m_bCloakOn;					// ist die Tarnung eingeschaltet
 	short m_nTerraformingPlanet;		// Nummer des Planeten der kolonisiert werden soll
 	BOOLEAN m_bIsFlagShip;				// Ist dieses Schiff ein Flagschiff (es kann immer nur ein Schiff eines Imperiums Flagschiff sein)
 	USHORT m_iCrewExperiance;			// Crewerfahrung des Schiffes

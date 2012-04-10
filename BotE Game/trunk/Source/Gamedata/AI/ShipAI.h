@@ -11,8 +11,12 @@
 
 using namespace std;
 
+// forward declaration
 class CBotf2Doc;
 class CSectorAI;
+class CShip;
+class CMajor;
+
 class CShipAI
 {
 public:
@@ -26,43 +30,45 @@ public:
 	void CalculateShipOrders(CSectorAI* SectorAI);
 
 private:
-	/// Funktion erteilt einen Terraformbefehl, sofern dies auch möglich ist. Übergeben wird dafür der index
-	/// <code>index</code> des Schiffes aus dem Schiffsarray des Documents. Der Rückgabewert der Funktion ist
-	/// <code>TRUE</code>, wenn ein Terraformbefehl gegeben werden könnte.
-	BOOLEAN DoTerraform(int index);
+	/// Funktion erteilt einen Terraformbefehl, sofern dies auch möglich ist.
+	/// @param pShip Zeiger des Schiffes
+	/// @return <code>true</code> wenn ein Terraformbefehl gegeben werden könnte
+	bool DoTerraform(CShip* pShip);
 
-	/// Funktion erteilt einen Kolonisierungsbefehl, sofern dies auch möglich ist. Übergeben wird dafür der index
-	/// <code>index</code> des Schiffes aus dem Schiffsarray des Dokuments. Der Rückgabewert der Funktion ist
-	/// <code>TRUE</code>, wenn ein Kolonisierungsbefehl gegeben werden könnte.
-	BOOLEAN DoColonize(int index);
+	/// Funktion erteilt einen Kolonisierungsbefehl, sofern dies auch möglich ist.
+	/// @param pShip Zeiger des Schiffes
+	/// @return <code>true</code> wenn ein Kolonisierungsbefehl gegeben werden könnte
+	bool DoColonize(CShip* pShip);
 
 	/// Funktion schickt Kriegsschiffe zu einem möglichen Offensivziel. Unter Umständen wird auch der Befehl zum
 	/// Angriff automatisch erteilt. Auch kann es passieren, das diese Funktion die Kriegsschiffe zu einem
-	/// gemeinsamen Sammelpunkt schickt. Übergebn wird dafür der index <code>index</code> des Schiffes aus dem
-	/// Schiffsarray des Documents. Der Rückgabewert der Funktion ist <code>TRUE</code>, wenn ein Bewegungsbefehl
-	/// gegeben werden könnte.
-	BOOLEAN DoAttackMove(int index);
+	/// gemeinsamen Sammelpunkt schickt.
+	/// @param pShip Zeiger des Schiffes
+	/// @param pMajor Zeiger auf den Besitzer des Schiffes
+	/// @return <code>true</code> wenn ein Bewegungsbefehl gegeben werden könnte
+	bool DoAttackMove(CShip* pShip, const CMajor* pMajor);
 
-	/// Funktion schickt Kriegsschiffe zu einem möglichen System, welches Bombardiert werden könnte. Übergeben wird
-	/// dafür der index <code>index</code> des Schiffes aus dem Schiffsarray des Documents. Der Rückgabewert der
-	/// Funktion ist <code>TRUE</code>, wenn ein Bewegungsbefehl gegeben werden konnte oder eine Bombardierung
-	/// befohlen wurde oder das Schiff auf Verstärkung zur Bombardierung im System wartet.
-	BOOLEAN DoBombardSystem(int index);
+	/// Funktion schickt Kriegsschiffe zu einem möglichen System, welches Bombardiert werden könnte.
+	/// @param pShip Zeiger des Schiffes
+	/// @return <code>true</code> wenn ein Bewegungsbefehl gegeben werden konnte, eine Bombardierung befohlen wurde oder das Schiff auf Verstärkung zur Bombardierung im System wartet
+	bool DoBombardSystem(CShip* pShip);
 
-	/// Funktion erteilt einen Tarnbefehl, wenn <code>camouflage</code> wahr ist. Ist <code>camouflage</code> falsch,
-	/// wird ein Enttarnbefehl gegeben. Übergebn wird dafür der index <code>index</code> des Schiffes aus dem
-	/// Schiffsarray des Documents. Der Rückgabewert der Funktion ist <code>TRUE</code>, wenn der Befehl gegeben wurde.
-	BOOLEAN DoCamouflage(int index, BOOLEAN camouflage = TRUE);
+	/// Funktion erteilt einen Tarnbefehl oder Enttarnbefehl.
+	/// @param pShip Zeiger des Schiffes
+	/// @param bCamouflage <code>true</code> für Tarnen, <code>false</code> für Enttarnen
+	/// @return <code>true</code> wenn der Befehl gegeben wurde
+	bool DoCamouflage(CShip* pShip, bool bCamouflage = true);
 
-	/// Funktion erteilt einen Außenpostenbaubefehl, sofern dies auch möglich ist. Übergeben wird dafür der index
-	/// <code>index</code> des Schiffes aus dem Schiffsarray des Dokuments. Der Rückgabewert der Funktion ist
-	/// <code>TRUE</code>, wenn ein Außenpostenbaubefehl gegeben werden könnte.
-	BOOLEAN DoStationBuild(int index);
+	/// Funktion erteilt einen Außenpostenbaubefehl, sofern dies auch möglich ist.
+	/// @param pShip Zeiger des Schiffes
+	/// @return <code>true</code> wenn ein Außenpostenbaubefehl gegeben werden könnte
+	bool DoStationBuild(CShip* pShip);
 
 	/// Funktion erstellt eine Flotte. Schiffe werden der Flotte nur hinzugefügt, wenn diese bestimmte Voraussetzungen erfüllen.
 	/// So muss der ungefähre Schiffstyp übereinstimmen (Combat <-> NonCombat) sowie die Geschwindigkeit des Schiffes.
-	/// @param index Index des aktuellen Schiffes im Array.
-	void DoMakeFleet(int index);
+	/// @param pShip Zeiger des Schiffes
+	/// @param nIndex Index des aktuellen Schiffes im Array.
+	void DoMakeFleet(CShip* pShip, int nIndex);
 	
 	/// Funkion berechnet einen möglichen Angriffssektor, welcher später gesammelt angegriffen werden kann.
 	void CalcAttackSector(void);
