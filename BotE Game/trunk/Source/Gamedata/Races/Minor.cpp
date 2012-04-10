@@ -734,4 +734,5 @@ void CMinor::Reset(void)
 	m_bSpaceflight = false;					// Spaceflightnation (hat Schiffe)
 	m_bSubjugated = false;					// wurde die Rasse unterworfen
 	m_mAcceptance.clear();					// Punkte die eine MajorRace durch längere Beziehung mit der Rasse ansammelt, wird schwerer diese Rasse wegzukaufen
+	m_nSpecialAbility = 0;
 }
