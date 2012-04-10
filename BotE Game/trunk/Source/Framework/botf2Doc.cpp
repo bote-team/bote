@@ -2669,7 +2669,7 @@ void CBotf2Doc::CalcSystemAttack()
 							if (it->second->IsRaceContacted(pMinor->GetRaceID()))
 							{
 								CMessage message;
-								message.GenerateMessage(CResourceManager::GetString("MINOR_SUBJUGATED", FALSE, pMinor->GetRaceName()), MILITARY, param, p, 0);
+								message.GenerateMessage(CResourceManager::GetString("MINOR_SUBJUGATED", FALSE, pMinor->GetRaceName()), MESSAGE_TYPE::MILITARY, param, p, 0);
 								it->second->GetEmpire()->AddMessage(message);
 								if (it->second->IsHumanPlayer())
 								{
@@ -2684,7 +2684,7 @@ void CBotf2Doc::CalcSystemAttack()
 						if (!eventText.IsEmpty())
 						{
 							CMessage message;
-							message.GenerateMessage(eventText, MILITARY, param, p, 0, 1);
+							message.GenerateMessage(eventText, MESSAGE_TYPE::MILITARY, param, p, 0, 1);
 							pMajor->GetEmpire()->AddMessage(message);
 							if (pMajor->IsHumanPlayer())
 							{
@@ -2712,7 +2712,7 @@ void CBotf2Doc::CalcSystemAttack()
 						if (!eventText.IsEmpty())
 						{
 							CMessage message;
-							message.GenerateMessage(eventText, MILITARY, param, p, 0);
+							message.GenerateMessage(eventText, MESSAGE_TYPE::MILITARY, param, p, 0);
 							((CMajor*)defender)->GetEmpire()->AddMessage(message);
 							if (((CMajor*)defender)->IsHumanPlayer())
 							{
@@ -2727,7 +2727,7 @@ void CBotf2Doc::CalcSystemAttack()
 						if (!eventText.IsEmpty())
 						{
 							CMessage message;
-							message.GenerateMessage(eventText, MILITARY, param, p, 0);
+							message.GenerateMessage(eventText, MESSAGE_TYPE::MILITARY, param, p, 0);
 							pMajor->GetEmpire()->AddMessage(message);
 							if (pMajor->IsHumanPlayer())
 							{
@@ -2761,7 +2761,7 @@ void CBotf2Doc::CalcSystemAttack()
 							if (!eventText.IsEmpty())
 							{
 								CMessage message;
-								message.GenerateMessage(eventText, MILITARY, param, p, 0, 1);
+								message.GenerateMessage(eventText, MESSAGE_TYPE::MILITARY, param, p, 0, 1);
 								pMajor->GetEmpire()->AddMessage(message);
 								if (pMajor->IsHumanPlayer())
 								{
@@ -2777,7 +2777,7 @@ void CBotf2Doc::CalcSystemAttack()
 								if (!eventText.IsEmpty())
 								{
 									CMessage message;
-									message.GenerateMessage(eventText, MILITARY, param, p, 0);
+									message.GenerateMessage(eventText, MESSAGE_TYPE::MILITARY, param, p, 0);
 									((CMajor*)defender)->GetEmpire()->AddMessage(message);
 									if (((CMajor*)defender)->IsHumanPlayer())
 									{
@@ -2800,7 +2800,7 @@ void CBotf2Doc::CalcSystemAttack()
 							if (!eventText.IsEmpty())
 							{
 								CMessage message;
-								message.GenerateMessage(eventText, MILITARY, param, p, 0);
+								message.GenerateMessage(eventText, MESSAGE_TYPE::MILITARY, param, p, 0);
 								((CMajor*)defender)->GetEmpire()->AddMessage(message);
 								if (((CMajor*)defender)->IsHumanPlayer())
 								{
@@ -2815,7 +2815,7 @@ void CBotf2Doc::CalcSystemAttack()
 							if (!eventText.IsEmpty())
 							{
 								CMessage message;
-								message.GenerateMessage(eventText, MILITARY, param, p, 0, 1);
+								message.GenerateMessage(eventText, MESSAGE_TYPE::MILITARY, param, p, 0, 1);
 								pMajor->GetEmpire()->AddMessage(message);
 								if (pMajor->IsHumanPlayer())
 								{
@@ -2868,7 +2868,7 @@ void CBotf2Doc::CalcSystemAttack()
 									if (it->second->IsRaceContacted(pMinor->GetRaceID()))
 									{
 										CMessage message;
-										message.GenerateMessage(CResourceManager::GetString("MINOR_SUBJUGATED", FALSE, pMinor->GetRaceName()), MILITARY, param, p, 0);
+										message.GenerateMessage(CResourceManager::GetString("MINOR_SUBJUGATED", FALSE, pMinor->GetRaceName()), MESSAGE_TYPE::MILITARY, param, p, 0);
 										it->second->GetEmpire()->AddMessage(message);
 										if (it->second->IsHumanPlayer())
 										{
@@ -2895,7 +2895,7 @@ void CBotf2Doc::CalcSystemAttack()
 							if (!eventText.IsEmpty())
 							{
 								CMessage message;
-								message.GenerateMessage(eventText, MILITARY, param, p, 0);
+								message.GenerateMessage(eventText, MESSAGE_TYPE::MILITARY, param, p, 0);
 								((CMajor*)defender)->GetEmpire()->AddMessage(message);
 								if (((CMajor*)defender)->IsHumanPlayer())
 								{
@@ -2911,7 +2911,7 @@ void CBotf2Doc::CalcSystemAttack()
 							if (!eventText.IsEmpty())
 							{
 								CMessage message;
-								message.GenerateMessage(eventText, MILITARY, param, p, 0, 1);
+								message.GenerateMessage(eventText, MESSAGE_TYPE::MILITARY, param, p, 0, 1);
 								pMajor->GetEmpire()->AddMessage(message);
 								if (pMajor->IsHumanPlayer())
 								{
@@ -2943,7 +2943,7 @@ void CBotf2Doc::CalcSystemAttack()
 							if (!eventText.IsEmpty())
 							{
 								CMessage message;
-								message.GenerateMessage(eventText, MILITARY, param, p, 0, 1);
+								message.GenerateMessage(eventText, MESSAGE_TYPE::MILITARY, param, p, 0, 1);
 								pMajor->GetEmpire()->AddMessage(message);
 								if (pMajor->IsHumanPlayer())
 								{
@@ -3010,7 +3010,7 @@ void CBotf2Doc::CalcSystemAttack()
 									CString param = pMinor->GetRaceName();
 									CString eventText = it->second->GetMoralObserver()->AddEvent(21, it->second->GetRaceMoralNumber(), param);
 									CMessage message;
-									message.GenerateMessage(eventText, MILITARY, param, p, 0);
+									message.GenerateMessage(eventText, MESSAGE_TYPE::MILITARY, param, p, 0);
 									it->second->GetEmpire()->AddMessage(message);									
 								}
 								
@@ -3019,7 +3019,7 @@ void CBotf2Doc::CalcSystemAttack()
 								{
 									CString news = CResourceManager::GetString("ELIMINATE_MINOR", FALSE, pMinor->GetRaceName());
 									CMessage message;
-									message.GenerateMessage(news, SOMETHING, "", 0, 0);
+									message.GenerateMessage(news, MESSAGE_TYPE::SOMETHING, "", 0, 0);
 									it->second->GetEmpire()->AddMessage(message);
 									if (it->second->IsHumanPlayer())
 									{
@@ -3064,7 +3064,7 @@ void CBotf2Doc::CalcSystemAttack()
 							if (!eventText.IsEmpty())
 							{
 								CMessage message;
-								message.GenerateMessage(eventText, MILITARY, param, p, 0);
+								message.GenerateMessage(eventText, MESSAGE_TYPE::MILITARY, param, p, 0);
 								((CMajor*)defender)->GetEmpire()->AddMessage(message);
 								if (((CMajor*)defender)->IsHumanPlayer())
 								{
@@ -3099,7 +3099,7 @@ void CBotf2Doc::CalcSystemAttack()
 									if (!sEventText.IsEmpty())
 									{
 										CMessage message;
-										message.GenerateMessage(sEventText, MILITARY, sParam, p, 0, 1);
+										message.GenerateMessage(sEventText, MESSAGE_TYPE::MILITARY, sParam, p, 0, 1);
 										pMajor->GetEmpire()->AddMessage(message);
 										if (pMajor->IsHumanPlayer())
 										{
@@ -3133,7 +3133,7 @@ void CBotf2Doc::CalcSystemAttack()
 								if (!eventText.IsEmpty())
 								{
 									CMessage message;
-									message.GenerateMessage(eventText, MILITARY, param, p, 0);
+									message.GenerateMessage(eventText, MESSAGE_TYPE::MILITARY, param, p, 0);
 									pMajor->GetEmpire()->AddMessage(message);
 									if (pMajor->IsHumanPlayer())
 									{
@@ -3196,7 +3196,7 @@ void CBotf2Doc::CalcSystemAttack()
 						ASSERT(pMajor);
 
 						CMessage message;
-						message.GenerateMessage(attackSystem->GetNews()->GetAt(i), MILITARY, m_Sector[p.x][p.y].GetName(), p, 0);
+						message.GenerateMessage(attackSystem->GetNews()->GetAt(i), MESSAGE_TYPE::MILITARY, m_Sector[p.x][p.y].GetName(), p, 0);
 						pMajor->GetEmpire()->AddMessage(message);
 						if (pMajor->IsHumanPlayer())
 						{
@@ -3207,7 +3207,7 @@ void CBotf2Doc::CalcSystemAttack()
 					if (defender != NULL && defender->GetType() == MAJOR && attackSystem->IsDefenderNotAttacker(defender->GetRaceID(), &attackers))
 					{
 						CMessage message;
-						message.GenerateMessage(attackSystem->GetNews()->GetAt(i), MILITARY, m_Sector[p.x][p.y].GetName(), p, 0);
+						message.GenerateMessage(attackSystem->GetNews()->GetAt(i), MESSAGE_TYPE::MILITARY, m_Sector[p.x][p.y].GetName(), p, 0);
 						((CMajor*)defender)->GetEmpire()->AddMessage(message);
 						if (((CMajor*)defender)->IsHumanPlayer())
 						{
@@ -3288,7 +3288,7 @@ void CBotf2Doc::CalcIntelligence()
 				pIntel->GetIntelReports()->SortAllReports();
 			
 				CMessage message;
-				message.GenerateMessage(CResourceManager::GetString("WE_HAVE_NEW_INTELREPORTS"), SECURITY, "", NULL, FALSE, 4);
+				message.GenerateMessage(CResourceManager::GetString("WE_HAVE_NEW_INTELREPORTS"), MESSAGE_TYPE::SECURITY, "", NULL, FALSE, 4);
 				it->second->GetEmpire()->AddMessage(message);
 				
 				network::RACE client = m_pRaceCtrl->GetMappedClientID(it->first);
@@ -3316,7 +3316,7 @@ void CBotf2Doc::CalcIntelligence()
 						// Eventnachricht hinzufügen
 						if (!eventText.IsEmpty())
 						{
-							message.GenerateMessage(eventText, SECURITY, "", NULL, FALSE, 4);
+							message.GenerateMessage(eventText, MESSAGE_TYPE::SECURITY, "", NULL, FALSE, 4);
 							it->second->GetEmpire()->AddMessage(message);
 						}
 					}
@@ -3385,7 +3385,7 @@ void CBotf2Doc::CalcResearch()
 						m_SoundMessages[client].Add(entry);
 						m_iSelectedView[client] = EMPIRE_VIEW;
 					}
-					message.GenerateMessage(news[j], RESEARCH, "", 0, FALSE, 1);
+					message.GenerateMessage(news[j], MESSAGE_TYPE::RESEARCH, "", 0, FALSE, 1);
 				}
 				else
 				{
@@ -3400,7 +3400,7 @@ void CBotf2Doc::CalcResearch()
 						if (j < 6)
 							pMajor->GetEmpire()->GetEventMessages()->Add(new CEventResearch(pMajor->GetRaceID(), CResourceManager::GetString("RESEARCHEVENT_HEADLINE"), j));
 					}
-					message.GenerateMessage(news[j], RESEARCH, "", 0, FALSE);
+					message.GenerateMessage(news[j], MESSAGE_TYPE::RESEARCH, "", 0, FALSE);
 				}
 				
 				pMajor->GetEmpire()->AddMessage(message);
@@ -3511,11 +3511,11 @@ void CBotf2Doc::CalcOldRoundData()
 							
 							CString news = CResourceManager::GetString("REBELLION_IN_SYSTEM", FALSE, m_Sector[x][y].GetName());
 							CMessage message;
-							message.GenerateMessage(news, SOMETHING, "", CPoint(x,y), FALSE);							
+							message.GenerateMessage(news, MESSAGE_TYPE::SOMETHING, "", CPoint(x,y), FALSE);							
 							pMajor->GetEmpire()->AddMessage(message);
 
 							// zusätzliche Eventnachricht (Lose a System to Rebellion #18) wegen der Moral an das Imperium
-							message.GenerateMessage(pMajor->GetMoralObserver()->AddEvent(18, pMajor->GetRaceMoralNumber(), m_Sector[x][y].GetName()), SOMETHING, "", CPoint(x,y), FALSE);
+							message.GenerateMessage(pMajor->GetMoralObserver()->AddEvent(18, pMajor->GetRaceMoralNumber(), m_Sector[x][y].GetName()), MESSAGE_TYPE::SOMETHING, "", CPoint(x,y), FALSE);
 							pMajor->GetEmpire()->AddMessage(message);
 							
 							if (pMajor->IsHumanPlayer())
@@ -3536,7 +3536,7 @@ void CBotf2Doc::CalcOldRoundData()
 										pMinor->SetRelation(pMajor->GetRaceID(), (-(rand()%50+20)));
 										news = CResourceManager::GetString("MINOR_CANCELS_MEMBERSHIP", FALSE, pMinor->GetRaceName());
 										CMessage message;
-										message.GenerateMessage(news, DIPLOMACY, "", CPoint(x,y), FALSE);
+										message.GenerateMessage(news, MESSAGE_TYPE::DIPLOMACY, "", CPoint(x,y), FALSE);
 										pMajor->GetEmpire()->AddMessage(message);
 									}									
 								}
@@ -3560,7 +3560,7 @@ void CBotf2Doc::CalcOldRoundData()
 							
 							CString news = CResourceManager::GetString("FAMINE", FALSE, m_Sector[x][y].GetName());
 							CMessage message;
-							message.GenerateMessage(news, SOMETHING, "", CPoint(x,y), FALSE, 1);
+							message.GenerateMessage(news, MESSAGE_TYPE::SOMETHING, "", CPoint(x,y), FALSE, 1);
 							pMajor->GetEmpire()->AddMessage(message);
 							if (pMajor->IsHumanPlayer())
 								m_iSelectedView[client] = EMPIRE_VIEW;							
@@ -3594,7 +3594,7 @@ void CBotf2Doc::CalcOldRoundData()
 							{
 								CString news = CResourceManager::GetString("ENOUGH_HABITANTS_FOR_NEW_TRADEROUTE", FALSE, m_Sector[x][y].GetName());
 								CMessage message;
-								message.GenerateMessage(news, ECONOMY, "", CPoint(x,y), FALSE, 4);
+								message.GenerateMessage(news, MESSAGE_TYPE::ECONOMY, "", CPoint(x,y), FALSE, 4);
 								pMajor->GetEmpire()->AddMessage(message);
 								if (pMajor->IsHumanPlayer())
 									m_iSelectedView[client] = EMPIRE_VIEW;
@@ -3609,7 +3609,7 @@ void CBotf2Doc::CalcOldRoundData()
 						{
 							CString news = CResourceManager::GetString("BUILDING_TURN_OFF",FALSE,m_Sector[x][y].GetName());
 							CMessage message;
-							message.GenerateMessage(news, SOMETHING, "", CPoint(x,y), FALSE, 2);
+							message.GenerateMessage(news, MESSAGE_TYPE::SOMETHING, "", CPoint(x,y), FALSE, 2);
 							pMajor->GetEmpire()->AddMessage(message);
 							if (pMajor->IsHumanPlayer())
 								m_iSelectedView[client] = EMPIRE_VIEW;							
@@ -3672,7 +3672,7 @@ void CBotf2Doc::CalcOldRoundData()
 								{
 									// Die Nachricht, dass neues Gebäude fertig ist mit allen Daten generieren
 									CMessage message;
-									message.GenerateMessage(BuildingInfo[list-1].GetBuildingName(), ECONOMY, m_Sector[x][y].GetName(), CPoint(x,y), FALSE);
+									message.GenerateMessage(BuildingInfo[list-1].GetBuildingName(), MESSAGE_TYPE::ECONOMY, m_Sector[x][y].GetName(), CPoint(x,y), FALSE);
 									pMajor->GetEmpire()->AddMessage(message);
 									// Gebäude bauen
 									BuildBuilding(list, CPoint(x,y));
@@ -3683,7 +3683,7 @@ void CBotf2Doc::CalcOldRoundData()
 									if (CheckValue == 1)
 									{
 										CString news = CResourceManager::GetString("NOT_ENOUGH_WORKER", FALSE, m_Sector[x][y].GetName());
-										message.GenerateMessage(news, SOMETHING, "",CPoint(x,y), FALSE, 1);
+										message.GenerateMessage(news, MESSAGE_TYPE::SOMETHING, "",CPoint(x,y), FALSE, 1);
 										pMajor->GetEmpire()->AddMessage(message);
 										if (pMajor->IsHumanPlayer())
 											m_iSelectedView[client] = EMPIRE_VIEW;
@@ -3691,7 +3691,7 @@ void CBotf2Doc::CalcOldRoundData()
 									else if (CheckValue == 2)
 									{
 										CString news = CResourceManager::GetString("NOT_ENOUGH_ENERGY", FALSE, m_Sector[x][y].GetName());
-										message.GenerateMessage(news, SOMETHING, "",CPoint(x,y), FALSE, 2);
+										message.GenerateMessage(news, MESSAGE_TYPE::SOMETHING, "",CPoint(x,y), FALSE, 2);
 										pMajor->GetEmpire()->AddMessage(message);
 										if (pMajor->IsHumanPlayer())
 											m_iSelectedView[client] = EMPIRE_VIEW;
@@ -3702,7 +3702,7 @@ void CBotf2Doc::CalcOldRoundData()
 									list *= (-1);
 									// Die Nachricht, dass neues Gebäudeupdate fertig wurde, mit allen Daten generieren
 									CMessage message;
-									message.GenerateMessage(BuildingInfo[list-1].GetBuildingName(),ECONOMY,m_Sector[x][y].GetName(),CPoint(x,y),TRUE);
+									message.GenerateMessage(BuildingInfo[list-1].GetBuildingName(),MESSAGE_TYPE::ECONOMY,m_Sector[x][y].GetName(),CPoint(x,y),TRUE);
 									pMajor->GetEmpire()->AddMessage(message);
 									// Vorgänger von "list" holen
 									// Gebäude mit RunningNumbner == pre werden durch UpdateBuilding() gelöscht und 
@@ -3717,7 +3717,7 @@ void CBotf2Doc::CalcOldRoundData()
 										if (GetBuildingInfo(list).GetNeededEnergy() > NULL && m_System[x][y].SetNewBuildingOnline(&this->BuildingInfo) == 2)
 										{
 											CString news = CResourceManager::GetString("NOT_ENOUGH_ENERGY",FALSE,m_Sector[x][y].GetName());
-											message.GenerateMessage(news,SOMETHING,"",CPoint(x,y),FALSE,2);
+											message.GenerateMessage(news,MESSAGE_TYPE::SOMETHING,"",CPoint(x,y),FALSE,2);
 											pMajor->GetEmpire()->AddMessage(message);
 											if (pMajor->IsHumanPlayer())
 												m_iSelectedView[client] = EMPIRE_VIEW;
@@ -3730,7 +3730,7 @@ void CBotf2Doc::CalcOldRoundData()
 									CString s = CResourceManager::GetString("SHIP_BUILDING_FINISHED",FALSE,
 										m_ShipInfoArray[list-10000].GetShipTypeAsString(),m_Sector[x][y].GetName());
 									CMessage message;
-									message.GenerateMessage(s,MILITARY,m_Sector[x][y].GetName(),CPoint(x,y),FALSE);
+									message.GenerateMessage(s,MESSAGE_TYPE::MILITARY,m_Sector[x][y].GetName(),CPoint(x,y),FALSE);
 									pMajor->GetEmpire()->AddMessage(message);
 								}
 								else if (list >= 20000)					// Es wird eine Truppe gebaut
@@ -3739,7 +3739,7 @@ void CBotf2Doc::CalcOldRoundData()
 									CString s = CResourceManager::GetString("TROOP_BUILDING_FINISHED",FALSE,
 										m_TroopInfo[list-20000].GetName(),m_Sector[x][y].GetName());
 									CMessage message;
-									message.GenerateMessage(s,MILITARY,m_Sector[x][y].GetName(),CPoint(x,y),FALSE);
+									message.GenerateMessage(s,MESSAGE_TYPE::MILITARY,m_Sector[x][y].GetName(),CPoint(x,y),FALSE);
 									pMajor->GetEmpire()->AddMessage(message);									
 								}
 								// Nach CalculateBuildInAssemblyList wird ClearAssemblyList() aufgerufen, wenn der Auftrag fertig wurde.
@@ -3753,7 +3753,7 @@ void CBotf2Doc::CalcOldRoundData()
 								{
 									CString news = CResourceManager::GetString("EMPTY_BUILDLIST",FALSE,m_Sector[x][y].GetName());
 									CMessage message;
-									message.GenerateMessage(news,SOMETHING,"",CPoint(x,y),FALSE);
+									message.GenerateMessage(news,MESSAGE_TYPE::SOMETHING,"",CPoint(x,y),FALSE);
 									pMajor->GetEmpire()->AddMessage(message);
 									if (pMajor->IsHumanPlayer())
 										m_iSelectedView[client] = EMPIRE_VIEW;
@@ -3853,7 +3853,7 @@ void CBotf2Doc::CalcNewRoundData()
 						news = CResourceManager::GetString("LOST_TRADEROUTES",FALSE,lost,m_Sector[x][y].GetName());
 					}
 					CMessage message;
-					message.GenerateMessage(news, ECONOMY, "", CPoint(x,y), FALSE, 4);
+					message.GenerateMessage(news, MESSAGE_TYPE::ECONOMY, "", CPoint(x,y), FALSE, 4);
 					pMajor->GetEmpire()->AddMessage(message);
 					if (pMajor->IsHumanPlayer())
 						m_iSelectedView[client] = EMPIRE_VIEW;
@@ -3882,7 +3882,7 @@ void CBotf2Doc::CalcNewRoundData()
 						news = CResourceManager::GetString("LOST_RESOURCEROUTES",FALSE,lost,m_Sector[x][y].GetName());
 					}
 					CMessage message;
-					message.GenerateMessage(news, ECONOMY, "", CPoint(x,y), FALSE, 4);
+					message.GenerateMessage(news, MESSAGE_TYPE::ECONOMY, "", CPoint(x,y), FALSE, 4);
 					pMajor->GetEmpire()->AddMessage(message);
 					if (pMajor->IsHumanPlayer())
 						m_iSelectedView[client] = EMPIRE_VIEW;
@@ -4140,7 +4140,7 @@ void CBotf2Doc::CalcTrade()
 			if (!sNews.IsEmpty())
 			{
 				CMessage message;
-				message.GenerateMessage(sNews,SOMETHING,"",0,FALSE);
+				message.GenerateMessage(sNews,MESSAGE_TYPE::SOMETHING,"",0,FALSE);
 				pMajor->GetEmpire()->AddMessage(message);
 				if (pMajor->IsHumanPlayer())
 				{
@@ -4163,7 +4163,7 @@ void CBotf2Doc::CalcTrade()
 								
 				CString news = CResourceManager::GetString("SOMEBODY_GET_MONOPOLY",TRUE,sRace,resName);
 				CMessage message;
-				message.GenerateMessage(news,SOMETHING,"",0,FALSE);
+				message.GenerateMessage(news,MESSAGE_TYPE::SOMETHING,"",0,FALSE);
 				pMajor->GetEmpire()->AddMessage(message);
 				if (pMajor->IsHumanPlayer())
 				{
@@ -4350,11 +4350,11 @@ void CBotf2Doc::CalcShipOrders()
 					// Nachricht an das Imperium senden, das ein System neu kolonisiert wurde
 					s = CResourceManager::GetString("FOUND_COLONY_MESSAGE",FALSE,pSector->GetName());
 					CMessage message;
-					message.GenerateMessage(s,SOMETHING,pSector->GetName(),pSector->GetKO(),FALSE);
+					message.GenerateMessage(s,MESSAGE_TYPE::SOMETHING,pSector->GetName(),pSector->GetKO(),FALSE);
 					pMajor->GetEmpire()->AddMessage(message);
 					
 					// zusätzliche Eventnachricht (Colonize a system #12) wegen der Moral an das Imperium
-					message.GenerateMessage(pMajor->GetMoralObserver()->AddEvent(12, pMajor->GetRaceMoralNumber(), pSector->GetName()), SOMETHING, "", pSector->GetKO(), FALSE); 
+					message.GenerateMessage(pMajor->GetMoralObserver()->AddEvent(12, pMajor->GetRaceMoralNumber(), pSector->GetName()), MESSAGE_TYPE::SOMETHING, "", pSector->GetKO(), FALSE); 
 					pMajor->GetEmpire()->AddMessage(message);
 					if (pMajor->IsHumanPlayer())
 					{	
@@ -4373,7 +4373,7 @@ void CBotf2Doc::CalcShipOrders()
 					// Nachricht an das Imperium senden, das ein Planet kolonisiert wurde
 					s = CResourceManager::GetString("NEW_PLANET_COLONIZED",FALSE,pSector->GetName());
 					CMessage message;
-					message.GenerateMessage(s,SOMETHING,pSector->GetName(),pSector->GetKO(),FALSE);
+					message.GenerateMessage(s,MESSAGE_TYPE::SOMETHING,pSector->GetName(),pSector->GetKO(),FALSE);
 					pMajor->GetEmpire()->AddMessage(message);
 					if (pMajor->IsHumanPlayer())
 						m_iSelectedView[client] = EMPIRE_VIEW;					
@@ -4418,7 +4418,7 @@ void CBotf2Doc::CalcShipOrders()
 					// Nachricht generieren, dass Terraforming abgeschlossen wurde
 					CString s = CResourceManager::GetString("TERRAFORMING_FINISHED",FALSE,pSector->GetName());
 					CMessage message;
-					message.GenerateMessage(s,SOMETHING,pSector->GetName(),pSector->GetKO(),FALSE);
+					message.GenerateMessage(s,MESSAGE_TYPE::SOMETHING,pSector->GetName(),pSector->GetKO(),FALSE);
 					pMajor->GetEmpire()->AddMessage(message);
 					if (pMajor->IsHumanPlayer())
 					{
@@ -4459,7 +4459,7 @@ void CBotf2Doc::CalcShipOrders()
 							// Nachricht generieren, dass Terraforming abgeschlossen wurde
 							CString s = CResourceManager::GetString("TERRAFORMING_FINISHED",FALSE,pSector->GetName());
 							CMessage message;
-							message.GenerateMessage(s,SOMETHING,pSector->GetName(),pShip->GetKO(),FALSE);
+							message.GenerateMessage(s,MESSAGE_TYPE::SOMETHING,pSector->GetName(),pShip->GetKO(),FALSE);
 							pMajor->GetEmpire()->AddMessage(message);
 							if (pMajor->IsHumanPlayer())
 							{
@@ -4558,7 +4558,7 @@ void CBotf2Doc::CalcShipOrders()
 									pSector->SetShipPort(TRUE,pShip->GetOwnerOfShip());
 									// Nachricht generieren, dass der Außenpostenbau abgeschlossen wurde
 									CMessage message;
-									message.GenerateMessage(CResourceManager::GetString("OUTPOST_FINISHED"),MILITARY,"",pSector->GetKO(),FALSE);
+									message.GenerateMessage(CResourceManager::GetString("OUTPOST_FINISHED"),MESSAGE_TYPE::MILITARY,"",pSector->GetKO(),FALSE);
 									pMajor->GetEmpire()->AddMessage(message);
 									// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
 									AddToLostShipHistory(pShip->GetFleet()->GetShipFromFleet(x), CResourceManager::GetString("OUTPOST_CONSTRUCTION"), CResourceManager::GetString("DESTROYED"));									
@@ -4598,7 +4598,7 @@ void CBotf2Doc::CalcShipOrders()
 							pSector->SetShipPort(TRUE,pShip->GetOwnerOfShip());
 							// Nachricht generieren, dass der Außenpostenbau abgeschlossen wurde
 							CMessage message;
-							message.GenerateMessage(CResourceManager::GetString("OUTPOST_FINISHED"),MILITARY,"",pSector->GetKO(),FALSE);
+							message.GenerateMessage(CResourceManager::GetString("OUTPOST_FINISHED"),MESSAGE_TYPE::MILITARY,"",pSector->GetKO(),FALSE);
 							pMajor->GetEmpire()->AddMessage(message);
 							// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
 							AddToLostShipHistory(pShip, CResourceManager::GetString("OUTPOST_CONSTRUCTION"), CResourceManager::GetString("DESTROYED"));
@@ -4706,7 +4706,7 @@ void CBotf2Doc::CalcShipOrders()
 									pSector->SetShipPort(TRUE,pShip->GetOwnerOfShip());
 									// Nachricht generieren, dass der Sternbasisbau abgeschlossen wurde
 									CMessage message;
-									message.GenerateMessage(CResourceManager::GetString("STARBASE_FINISHED"),MILITARY,"",pSector->GetKO(),FALSE);
+									message.GenerateMessage(CResourceManager::GetString("STARBASE_FINISHED"),MESSAGE_TYPE::MILITARY,"",pSector->GetKO(),FALSE);
 									pMajor->GetEmpire()->AddMessage(message);
 									// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
 									AddToLostShipHistory(pShip->GetFleet()->GetShipFromFleet(x), CResourceManager::GetString("STARBASE_CONSTRUCTION"), CResourceManager::GetString("DESTROYED"));									
@@ -4757,7 +4757,7 @@ void CBotf2Doc::CalcShipOrders()
 							pSector->SetShipPort(TRUE,pShip->GetOwnerOfShip());
 							// Nachricht generieren, dass der Sternbasisbau abgeschlossen wurde
 							CMessage message;
-							message.GenerateMessage(CResourceManager::GetString("STARBASE_FINISHED"),MILITARY,"",pShip->GetKO(),FALSE);
+							message.GenerateMessage(CResourceManager::GetString("STARBASE_FINISHED"),MESSAGE_TYPE::MILITARY,"",pShip->GetKO(),FALSE);
 							pMajor->GetEmpire()->AddMessage(message);
 							// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
 							AddToLostShipHistory(pShip, CResourceManager::GetString("STARBASE_CONSTRUCTION"), CResourceManager::GetString("DESTROYED"));
@@ -4903,7 +4903,7 @@ void CBotf2Doc::CalcShipOrders()
 			// Nachricht generieren, dass ein neues Schiff zum Flagschiff ernannt wurde
 			CString s = CResourceManager::GetString("ASSIGN_FLAGSHIP_MESSAGE",FALSE,pShip->GetShipName(),pShip->GetShipTypeAsString());
 			CMessage message;
-			message.GenerateMessage(s,MILITARY,"",pShip->GetKO(),FALSE);
+			message.GenerateMessage(s,MESSAGE_TYPE::MILITARY,"",pShip->GetKO(),FALSE);
 			pMajor->GetEmpire()->AddMessage(message);
 			if (pMajor->IsHumanPlayer())
 				m_iSelectedView[client] = EMPIRE_VIEW;
@@ -5264,7 +5264,7 @@ void CBotf2Doc::CalcShipMovement()
 						sShip.Format("%s (%s)", pShip->GetFleet()->GetShipFromFleet(x)->GetShipName(), pShip->GetFleet()->GetShipFromFleet(x)->GetShipTypeAsString());
 						CString s = CResourceManager::GetString("ANOMALY_SHIP_LOST", FALSE, sShip, GetSector(pShip->GetKO()).GetAnomaly()->GetMapName(pShip->GetKO()));
 						CMessage message;
-						message.GenerateMessage(s, MILITARY, "", 0, 0);
+						message.GenerateMessage(s, MESSAGE_TYPE::MILITARY, "", 0, 0);
 						pMajor->GetEmpire()->AddMessage(message);
 						if (pMajor->IsHumanPlayer())
 						{
@@ -5291,7 +5291,7 @@ void CBotf2Doc::CalcShipMovement()
 				sShip.Format("%s (%s)", pShip->GetShipName(), pShip->GetShipTypeAsString());
 				CString s = CResourceManager::GetString("ANOMALY_SHIP_LOST", FALSE, sShip, GetSector(pShip->GetKO()).GetAnomaly()->GetMapName(pShip->GetKO()));
 				CMessage message;
-				message.GenerateMessage(s, MILITARY, "", 0, 0);
+				message.GenerateMessage(s, MESSAGE_TYPE::MILITARY, "", 0, 0);
 				pMajor->GetEmpire()->AddMessage(message);
 				if (pMajor->IsHumanPlayer())
 				{
@@ -5467,11 +5467,11 @@ void CBotf2Doc::CalcShipCombat()
 			network::RACE client = m_pRaceCtrl->GetMappedClientID(pMajor->GetRaceID());
 
 			CMessage message;
-			message.GenerateMessage(CResourceManager::GetString("WIN_COMBAT", false, sSectorName), MILITARY, "", NULL, FALSE);
+			message.GenerateMessage(CResourceManager::GetString("WIN_COMBAT", false, sSectorName), MESSAGE_TYPE::MILITARY, "", NULL, FALSE);
 			pMajor->GetEmpire()->AddMessage(message);
 			// win a minor battle
 			CString eventText = pMajor->GetMoralObserver()->AddEvent(3, pMajor->GetRaceMoralNumber());
-			message.GenerateMessage(eventText, MILITARY, "", 0, 0);
+			message.GenerateMessage(eventText, MESSAGE_TYPE::MILITARY, "", 0, 0);
 			pMajor->GetEmpire()->AddMessage(message);
 			if (pMajor->IsHumanPlayer())
 				m_iSelectedView[client] = EMPIRE_VIEW;
@@ -5486,11 +5486,11 @@ void CBotf2Doc::CalcShipCombat()
 				network::RACE client = m_pRaceCtrl->GetMappedClientID(pMajor->GetRaceID());
 
 				CMessage message;
-				message.GenerateMessage(CResourceManager::GetString("LOSE_COMBAT", false, sSectorName), MILITARY, "", 0,0);
+				message.GenerateMessage(CResourceManager::GetString("LOSE_COMBAT", false, sSectorName), MESSAGE_TYPE::MILITARY, "", 0,0);
 				pMajor->GetEmpire()->AddMessage(message);
 				// lose a minorbattle
 				CString eventText = pMajor->GetMoralObserver()->AddEvent(6, pMajor->GetRaceMoralNumber());
-				message.GenerateMessage(eventText, MILITARY, "", 0, 0);
+				message.GenerateMessage(eventText, MESSAGE_TYPE::MILITARY, "", 0, 0);
 				pMajor->GetEmpire()->AddMessage(message);
 				if (pMajor->IsHumanPlayer())
 					m_iSelectedView[client] = EMPIRE_VIEW;
@@ -5517,7 +5517,7 @@ void CBotf2Doc::CalcShipCombat()
 			network::RACE client = m_pRaceCtrl->GetMappedClientID(pMajor->GetRaceID());
 
 			CMessage message;
-			message.GenerateMessage(CResourceManager::GetString("DRAW_COMBAT", false, sSectorName), MILITARY, "", 0,0);
+			message.GenerateMessage(CResourceManager::GetString("DRAW_COMBAT", false, sSectorName), MESSAGE_TYPE::MILITARY, "", 0,0);
 			pMajor->GetEmpire()->AddMessage(message);
 			if (pMajor->IsHumanPlayer())
 				m_iSelectedView[client] = EMPIRE_VIEW;
@@ -5551,7 +5551,7 @@ void CBotf2Doc::CalcShipCombat()
 							CMajor* pMajor = dynamic_cast<CMajor*>(pOwner);
 							CString eventText = pMajor->GetMoralObserver()->AddEvent(7, pMajor->GetRaceMoralNumber(), m_ShipArray[i].GetFleet()->GetShipFromFleet(x)->GetShipName());
 							CMessage message;
-							message.GenerateMessage(eventText, MILITARY, "", 0, 0);
+							message.GenerateMessage(eventText, MESSAGE_TYPE::MILITARY, "", 0, 0);
 							pMajor->GetEmpire()->AddMessage(message);
 						}
 					}					
@@ -5576,7 +5576,7 @@ void CBotf2Doc::CalcShipCombat()
 					CMajor* pMajor = dynamic_cast<CMajor*>(pOwner);
 					CString eventText = pMajor->GetMoralObserver()->AddEvent(7, pMajor->GetRaceMoralNumber(), m_ShipArray[i].GetShipName());
 					CMessage message;
-					message.GenerateMessage(eventText, MILITARY, "", 0, 0);
+					message.GenerateMessage(eventText, MESSAGE_TYPE::MILITARY, "", 0, 0);
 					pMajor->GetEmpire()->AddMessage(message);
 				}
 			}
@@ -5593,7 +5593,7 @@ void CBotf2Doc::CalcShipCombat()
 					else
 						eventText = pMajor->GetMoralObserver()->AddEvent(9, pMajor->GetRaceMoralNumber());
 					CMessage message;
-					message.GenerateMessage(eventText, MILITARY, "", 0, 0);
+					message.GenerateMessage(eventText, MESSAGE_TYPE::MILITARY, "", 0, 0);
 					pMajor->GetEmpire()->AddMessage(message);
 				}
 			}
@@ -5612,7 +5612,7 @@ void CBotf2Doc::CalcShipCombat()
 				CString s;
 				s.Format("%s", CResourceManager::GetString("DESTROYED_SHIPS_IN_COMBAT",0,destroyedShips[j]));
 				CMessage message;
-				message.GenerateMessage(s, MILITARY, "", 0, 0);
+				message.GenerateMessage(s, MESSAGE_TYPE::MILITARY, "", 0, 0);
 				pMajor->GetEmpire()->AddMessage(message);
 			}
 	}
@@ -5985,7 +5985,7 @@ void CBotf2Doc::CalcContactNewRaces()
 						// Dem Sektorbesitzer eine Nachricht über Erstkontakt überbringen
 						s = CResourceManager::GetString("GET_CONTACT_TO_MAJOR",FALSE, pMajor->GetRaceName(),sect);
 						CMessage message;
-						message.GenerateMessage(s,DIPLOMACY,"",0,FALSE);
+						message.GenerateMessage(s,MESSAGE_TYPE::DIPLOMACY,"",0,FALSE);
 						((CMajor*)pSectorOwner)->GetEmpire()->AddMessage(message);
 						
 						// Nachricht generieren, dass wir eine Majorrace kennengelernt haben
@@ -6000,7 +6000,7 @@ void CBotf2Doc::CalcContactNewRaces()
 
 					// dem Major, dem das Schiff gehört die Nachricht überreichen
 					CMessage message;
-					message.GenerateMessage(s,DIPLOMACY,"",0,FALSE);
+					message.GenerateMessage(s,MESSAGE_TYPE::DIPLOMACY,"",0,FALSE);
 					pMajor->GetEmpire()->AddMessage(message);
 					
 					// Audiovorstellung der kennengelernten Majorrace
@@ -6068,7 +6068,7 @@ void CBotf2Doc::CalcContactNewRaces()
 					s = CResourceManager::GetString("GET_CONTACT_TO_MINOR", FALSE, pMinor->GetRaceName());
 					// dem Major, dem das Schiff gehört die Nachricht überreichen
 					CMessage message;
-					message.GenerateMessage(s,DIPLOMACY,"",0,FALSE);
+					message.GenerateMessage(s,MESSAGE_TYPE::DIPLOMACY,"",0,FALSE);
 					pMajor->GetEmpire()->AddMessage(message);
 					// Audiovorstellung der kennengelernten Majorrace
 					if (pMajor->IsHumanPlayer())
@@ -6106,11 +6106,11 @@ void CBotf2Doc::CalcContactNewRaces()
 							// der Major, der das erste Schiff gehört
 							s = CResourceManager::GetString("GET_CONTACT_TO_MAJOR", FALSE, pMajor->GetRaceName() ,sect);
 							CMessage message;
-							message.GenerateMessage(s, DIPLOMACY, "", 0, FALSE);
+							message.GenerateMessage(s, MESSAGE_TYPE::DIPLOMACY, "", 0, FALSE);
 							pOtherMajor->GetEmpire()->AddMessage(message);
 							// der Major, der das zweite Schiff gehört
 							s = CResourceManager::GetString("GET_CONTACT_TO_MAJOR", FALSE, pOtherMajor->GetRaceName(), sect);
-							message.GenerateMessage(s, DIPLOMACY, "", 0, FALSE);
+							message.GenerateMessage(s, MESSAGE_TYPE::DIPLOMACY, "", 0, FALSE);
 							pMajor->GetEmpire()->AddMessage(message);
 							if (pMajor->IsHumanPlayer() || pOtherMajor->IsHumanPlayer())
 							{
@@ -6157,7 +6157,7 @@ void CBotf2Doc::CalcContactNewRaces()
 						// Dem Sektorbesitzer eine Nachricht über Erstkontakt überbringen
 						s = CResourceManager::GetString("GET_CONTACT_TO_MINOR",FALSE, pMinor->GetRaceName(),sect);
 						CMessage message;
-						message.GenerateMessage(s,DIPLOMACY,"",0,FALSE);
+						message.GenerateMessage(s,MESSAGE_TYPE::DIPLOMACY,"",0,FALSE);
 						pSectorOwner->GetEmpire()->AddMessage(message);						
 						
 						if (pSectorOwner->IsHumanPlayer())
@@ -6192,7 +6192,7 @@ void CBotf2Doc::CalcContactNewRaces()
 						// der Major, der das erste Schiff gehört
 						s = CResourceManager::GetString("GET_CONTACT_TO_MINOR", FALSE, pMinor->GetRaceName() ,sect);
 						CMessage message;
-						message.GenerateMessage(s, DIPLOMACY, "", 0, FALSE);
+						message.GenerateMessage(s, MESSAGE_TYPE::DIPLOMACY, "", 0, FALSE);
 						pOtherMajor->GetEmpire()->AddMessage(message);
 						
 						if (pOtherMajor->IsHumanPlayer())
@@ -6239,7 +6239,7 @@ void CBotf2Doc::CalcEndDataForNextRound()
 					// Nachricht über Rassenauslöschung (hier die gleiche wie bei Minorauslöschung
 					CString news = CResourceManager::GetString("ELIMINATE_MINOR", FALSE, pMajor->GetRaceName());
 					CMessage message;
-					message.GenerateMessage(news, SOMETHING, "", 0, 0);
+					message.GenerateMessage(news, MESSAGE_TYPE::SOMETHING, "", 0, 0);
 					itt->second->GetEmpire()->AddMessage(message);
 					if (itt->second->IsHumanPlayer())
 					{
@@ -6371,7 +6371,7 @@ void CBotf2Doc::CalcEndDataForNextRound()
 		{
 			CString s = CResourceManager::GetString("RESOURCES_IN_GLOBAL_STORAGE");
 			CMessage message;
-			message.GenerateMessage(s, ECONOMY, "", NULL, FALSE, 4);
+			message.GenerateMessage(s, MESSAGE_TYPE::ECONOMY, "", NULL, FALSE, 4);
 			pMajor->GetEmpire()->AddMessage(message);
 			if (pMajor->IsHumanPlayer())
 			{
@@ -6684,7 +6684,7 @@ void CBotf2Doc::CalcAlienShipEffects()
 				// Nachricht und Event einfügen
 				CString s = CResourceManager::GetString("EVENT_IONISIERENDES_GASWESEN", FALSE, GetSector(pShip->GetKO()).GetName());
 				CMessage message;
-				message.GenerateMessage(s, SOMETHING, GetSector(pShip->GetKO()).GetName(), pShip->GetKO(), 0);
+				message.GenerateMessage(s, MESSAGE_TYPE::SOMETHING, GetSector(pShip->GetKO()).GetName(), pShip->GetKO(), 0);
 				pOwner->GetEmpire()->AddMessage(message);
 				if (pOwner->IsHumanPlayer())
 				{
@@ -6711,7 +6711,7 @@ void CBotf2Doc::CalcAlienShipEffects()
 					// Nachricht und Event einfügen
 					CString s = CResourceManager::GetString("EVENT_GABALLIANER_SEUCHENSCHIFF", FALSE, GetSector(pShip->GetKO()).GetName());
 					CMessage message;
-					message.GenerateMessage(s, SOMETHING, GetSector(pShip->GetKO()).GetName(), pShip->GetKO(), 0);
+					message.GenerateMessage(s, MESSAGE_TYPE::SOMETHING, GetSector(pShip->GetKO()).GetName(), pShip->GetKO(), 0);
 					pOwner->GetEmpire()->AddMessage(message);
 					if (pOwner->IsHumanPlayer())
 					{
@@ -6774,7 +6774,7 @@ void CBotf2Doc::CalcAlienShipEffects()
 							CString s;
 							s.Format("%s", CResourceManager::GetString("DESTROYED_SHIPS_IN_COMBAT",0,vShips[n]->GetShipName()));
 							CMessage message;
-							message.GenerateMessage(s, MILITARY, "", 0, 0);
+							message.GenerateMessage(s, MESSAGE_TYPE::MILITARY, "", 0, 0);
 							pShipOwner->GetEmpire()->AddMessage(message);
 						}
 					}
@@ -6797,7 +6797,7 @@ void CBotf2Doc::CalcAlienShipEffects()
 				// Nachricht und Event einfügen
 				CString s = CResourceManager::GetString("EVENT_BLIZZARD_PLASMAWESEN", FALSE, GetSector(pShip->GetKO()).GetName());
 				CMessage message;
-				message.GenerateMessage(s, SOMETHING, GetSector(pShip->GetKO()).GetName(), pShip->GetKO(), 0);
+				message.GenerateMessage(s, MESSAGE_TYPE::SOMETHING, GetSector(pShip->GetKO()).GetName(), pShip->GetKO(), 0);
 				pOwner->GetEmpire()->AddMessage(message);
 				if (pOwner->IsHumanPlayer())
 				{

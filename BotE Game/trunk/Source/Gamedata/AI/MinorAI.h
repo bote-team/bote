@@ -27,7 +27,7 @@ public:
 	/// @return <code>ACCEPTED</code> für Annahme
 	///			<code>DECLINED</code> für Ablehnung
 	///			<code>NOT_REACTED</code> für keine Reaktion
-	virtual short ReactOnOffer(const CDiplomacyInfo& info);
+	virtual ANSWER_STATUS::Typ ReactOnOffer(const CDiplomacyInfo& info);
 
 	/// Funktion zur Erstellung eines diplomatischen Angebots.
 	/// @param sRaceID RassenID der Rasse, an die das Angebot gemacht werden soll

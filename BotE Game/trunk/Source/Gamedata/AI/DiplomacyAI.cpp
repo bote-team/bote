@@ -125,7 +125,9 @@ void CDiplomacyInfo::Serialize(CArchive &ar)
 		ar >> m_sWarpactEnemy;				// der Gegner bei einem Kriegspaktangebot
 		ar >> m_sCorruptedRace;				// Hauptrasse, welche bei einer Bestechnung betroffen sein soll
 
-		ar >> m_nAnswerStatus;				// wurde das Angebot angenommen, abgelehnt oder nicht darauf reagiert
+		int nAnswerStatus;
+		ar >> nAnswerStatus;
+		m_nAnswerStatus = (ANSWER_STATUS::Typ)nAnswerStatus; // wurde das Angebot angenommen, abgelehnt oder nicht darauf reagiert
 		ar >> m_sHeadline;					// Überschrift bei Angebotsantwort
 		ar >> m_sWarPartner;				// Krieg aufgrund Diplomatiepartner
 	}
@@ -149,7 +151,7 @@ void CDiplomacyInfo::Reset(void)
 	m_sToRace = "";
 	m_sWarpactEnemy = "";
 	m_sWarPartner = "";
-	m_nAnswerStatus = NOT_REACTED;
+	m_nAnswerStatus = ANSWER_STATUS::NOT_REACTED;
 }
 
 //////////////////////////////////////////////////////////////////////

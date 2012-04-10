@@ -59,12 +59,12 @@ BOOL CChooseRacePage::OnInitDialog()
 		CString empireName;
 		switch (race)
 		{
-		case HUMAN:		empireName = CResourceManager::GetString("RACE1_EMPIRE"); break;
-		case FERENGI:	empireName = CResourceManager::GetString("RACE2_EMPIRE"); break;
-		case KLINGON:	empireName = CResourceManager::GetString("RACE3_EMPIRE"); break;
-		case ROMULAN:	empireName = CResourceManager::GetString("RACE4_EMPIRE"); break;
-		case CARDASSIAN:empireName = CResourceManager::GetString("RACE5_EMPIRE"); break;
-		case DOMINION:	empireName = CResourceManager::GetString("RACE6_EMPIRE"); break;
+		case network::RACE_1:	empireName = CResourceManager::GetString("RACE1_EMPIRE"); break;
+		case network::RACE_2:	empireName = CResourceManager::GetString("RACE2_EMPIRE"); break;
+		case network::RACE_3:	empireName = CResourceManager::GetString("RACE3_EMPIRE"); break;
+		case network::RACE_4:	empireName = CResourceManager::GetString("RACE4_EMPIRE"); break;
+		case network::RACE_5:	empireName = CResourceManager::GetString("RACE5_EMPIRE"); break;
+		case network::RACE_6:	empireName = CResourceManager::GetString("RACE6_EMPIRE"); break;
 		}
 		SetDlgItemTextA(ids[nRace], empireName);
 	}
@@ -259,12 +259,12 @@ afx_msg void CChooseRacePage::OnChooseRace(UINT nID)
 				// Soundwiedergabe für die Rasse
 				switch (i + 1)
 				{
-				case HUMAN:		CSoundManager::GetInstance()->PlaySound(SNDMGR_VOICE_FED_RACESELECT); break;
-				case FERENGI:	CSoundManager::GetInstance()->PlaySound(SNDMGR_VOICE_FER_RACESELECT); break;
-				case KLINGON:	CSoundManager::GetInstance()->PlaySound(SNDMGR_VOICE_KLI_RACESELECT); break;
-				case ROMULAN:	CSoundManager::GetInstance()->PlaySound(SNDMGR_VOICE_ROM_RACESELECT); break;
-				case CARDASSIAN:CSoundManager::GetInstance()->PlaySound(SNDMGR_VOICE_CAR_RACESELECT); break;
-				case DOMINION:	CSoundManager::GetInstance()->PlaySound(SNDMGR_VOICE_DOM_RACESELECT); break;
+				case network::RACE_1:	CSoundManager::GetInstance()->PlaySound(SNDMGR_VOICE_FED_RACESELECT); break;
+				case network::RACE_2:	CSoundManager::GetInstance()->PlaySound(SNDMGR_VOICE_FER_RACESELECT); break;
+				case network::RACE_3:	CSoundManager::GetInstance()->PlaySound(SNDMGR_VOICE_KLI_RACESELECT); break;
+				case network::RACE_4:	CSoundManager::GetInstance()->PlaySound(SNDMGR_VOICE_ROM_RACESELECT); break;
+				case network::RACE_5:	CSoundManager::GetInstance()->PlaySound(SNDMGR_VOICE_CAR_RACESELECT); break;
+				case network::RACE_6:	CSoundManager::GetInstance()->PlaySound(SNDMGR_VOICE_DOM_RACESELECT); break;
 				}
 			}
 		}

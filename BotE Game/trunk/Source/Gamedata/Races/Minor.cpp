@@ -406,7 +406,7 @@ void CMinor::CheckDiplomaticConsistence(CBotf2Doc* pDoc)
 				if (!s.IsEmpty())
 				{
 					CMessage message;
-					message.GenerateMessage(s, DIPLOMACY,"",0,0);
+					message.GenerateMessage(s, MESSAGE_TYPE::DIPLOMACY,"",0,0);
 					pMajor->GetEmpire()->AddMessage(message);
 				}
 			}
@@ -442,7 +442,7 @@ void CMinor::CheckDiplomaticConsistence(CBotf2Doc* pDoc)
 					CMajor* pMajor = itt->second;
 					pMajor->SetAgreement(m_sID, NO_AGREEMENT);
 					CMessage message;
-					message.GenerateMessage(s, DIPLOMACY, "", 0, 0);
+					message.GenerateMessage(s, MESSAGE_TYPE::DIPLOMACY, "", 0, 0);
 					pMajor->GetEmpire()->AddMessage(message);
 				}
 			}
@@ -471,7 +471,7 @@ void CMinor::CheckDiplomaticConsistence(CBotf2Doc* pDoc)
 					CMajor* pMajor = itt->second;
 					pMajor->SetAgreement(m_sID, NO_AGREEMENT);
 					CMessage message;					
-					message.GenerateMessage(s, DIPLOMACY, "", 0, 0);
+					message.GenerateMessage(s, MESSAGE_TYPE::DIPLOMACY, "", 0, 0);
 					pMajor->GetEmpire()->AddMessage(message);
 				}
 			}
@@ -496,7 +496,7 @@ void CMinor::CheckDiplomaticConsistence(CBotf2Doc* pDoc)
 					CMajor* pMajor = itt->second;
 					pMajor->SetAgreement(m_sID, NO_AGREEMENT);
 					CMessage message;					
-					message.GenerateMessage(s, DIPLOMACY, "", 0, 0);
+					message.GenerateMessage(s, MESSAGE_TYPE::DIPLOMACY, "", 0, 0);
 					pMajor->GetEmpire()->AddMessage(message);
 				}
 			}
@@ -563,7 +563,7 @@ void CMinor::PerhapsCancelAgreement(CBotf2Doc* pDoc)
 				pMajor->SetAgreement(m_sID, NO_AGREEMENT);
 				SetAgreement(it->first, NO_AGREEMENT);
 				CMessage message;
-				message.GenerateMessage(sText, DIPLOMACY, "", 0, 0);
+				message.GenerateMessage(sText, MESSAGE_TYPE::DIPLOMACY, "", 0, 0);
 				pMajor->GetEmpire()->AddMessage(message);
 			}
 		}

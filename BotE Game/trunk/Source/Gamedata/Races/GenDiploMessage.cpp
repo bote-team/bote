@@ -315,7 +315,7 @@ bool CGenDiploMessage::GenerateMajorAnswer(CDiplomacyInfo& info)
 	{
 	case TRADE_AGREEMENT:
 		{
-			if (info.m_nAnswerStatus == ACCEPTED)
+			if (info.m_nAnswerStatus == ANSWER_STATUS::ACCEPTED)
 			{
 				sAnswer = read[1];
 				info.m_sHeadline = CResourceManager::GetString("ACCEPT_TRADE_AGREEMENT");
@@ -329,7 +329,7 @@ bool CGenDiploMessage::GenerateMajorAnswer(CDiplomacyInfo& info)
 		}
 	case FRIENDSHIP_AGREEMENT:
 		{
-			if (info.m_nAnswerStatus == ACCEPTED)
+			if (info.m_nAnswerStatus == ANSWER_STATUS::ACCEPTED)
 			{
 				sAnswer = read[2];
 				info.m_sHeadline = CResourceManager::GetString("ACCEPT_FRIENDSHIP");
@@ -343,7 +343,7 @@ bool CGenDiploMessage::GenerateMajorAnswer(CDiplomacyInfo& info)
 		}
 	case COOPERATION:
 		{
-			if (info.m_nAnswerStatus == ACCEPTED)
+			if (info.m_nAnswerStatus == ANSWER_STATUS::ACCEPTED)
 			{
 				sAnswer = read[3];
 				info.m_sHeadline = CResourceManager::GetString("ACCEPT_COOPERATION");
@@ -357,7 +357,7 @@ bool CGenDiploMessage::GenerateMajorAnswer(CDiplomacyInfo& info)
 		}
 	case AFFILIATION:
 		{
-			if (info.m_nAnswerStatus == ACCEPTED)
+			if (info.m_nAnswerStatus == ANSWER_STATUS::ACCEPTED)
 			{
 				sAnswer = read[4];
 				info.m_sHeadline = CResourceManager::GetString("ACCEPT_AFFILIATION");
@@ -371,7 +371,7 @@ bool CGenDiploMessage::GenerateMajorAnswer(CDiplomacyInfo& info)
 		}
 	case NON_AGGRESSION_PACT:
 		{
-			if (info.m_nAnswerStatus == ACCEPTED)
+			if (info.m_nAnswerStatus == ANSWER_STATUS::ACCEPTED)
 			{
 				sAnswer = read[5];
 				info.m_sHeadline = CResourceManager::GetString("ACCEPT_NON_AGGRESSION");
@@ -385,7 +385,7 @@ bool CGenDiploMessage::GenerateMajorAnswer(CDiplomacyInfo& info)
 		}
 	case DEFENCE_PACT:
 		{
-			if (info.m_nAnswerStatus == ACCEPTED)
+			if (info.m_nAnswerStatus == ANSWER_STATUS::ACCEPTED)
 			{
 				sAnswer = read[6];
 				info.m_sHeadline = CResourceManager::GetString("ACCEPT_DEFENCE_PACT");
@@ -399,7 +399,7 @@ bool CGenDiploMessage::GenerateMajorAnswer(CDiplomacyInfo& info)
 		}
 	case WAR_PACT:
 		{
-			if (info.m_nAnswerStatus == ACCEPTED)
+			if (info.m_nAnswerStatus == ANSWER_STATUS::ACCEPTED)
 			{
 				sAnswer = read[7];
 				info.m_sHeadline = CResourceManager::GetString("ACCEPT_WARPACT");
@@ -413,7 +413,7 @@ bool CGenDiploMessage::GenerateMajorAnswer(CDiplomacyInfo& info)
 		}
 	case DIP_REQUEST:
 		{
-			if (info.m_nAnswerStatus == ACCEPTED)
+			if (info.m_nAnswerStatus == ANSWER_STATUS::ACCEPTED)
 			{
 				sAnswer = read[8];
 				info.m_sHeadline = CResourceManager::GetString("ACCEPT_REQUEST");
@@ -647,7 +647,7 @@ bool CGenDiploMessage::GenerateMinorAnswer(CDiplomacyInfo& info)
 	{
 	case TRADE_AGREEMENT:
 		{
-			if (info.m_nAnswerStatus == ACCEPTED)
+			if (info.m_nAnswerStatus == ANSWER_STATUS::ACCEPTED)
 			{
 				sAnswer = read[1];
 				info.m_sHeadline = CResourceManager::GetString("ACCEPT_TRADE_AGREEMENT");
@@ -661,7 +661,7 @@ bool CGenDiploMessage::GenerateMinorAnswer(CDiplomacyInfo& info)
 		}
 	case FRIENDSHIP_AGREEMENT:
 		{
-			if (info.m_nAnswerStatus == ACCEPTED)
+			if (info.m_nAnswerStatus == ANSWER_STATUS::ACCEPTED)
 			{
 				sAnswer = read[2];
 				info.m_sHeadline = CResourceManager::GetString("ACCEPT_FRIENDSHIP");
@@ -675,7 +675,7 @@ bool CGenDiploMessage::GenerateMinorAnswer(CDiplomacyInfo& info)
 		}
 	case COOPERATION:
 		{
-			if (info.m_nAnswerStatus == ACCEPTED)
+			if (info.m_nAnswerStatus == ANSWER_STATUS::ACCEPTED)
 			{
 				sAnswer = read[3];
 				info.m_sHeadline = CResourceManager::GetString("ACCEPT_COOPERATION");
@@ -689,7 +689,7 @@ bool CGenDiploMessage::GenerateMinorAnswer(CDiplomacyInfo& info)
 		}
 	case AFFILIATION:
 		{
-			if (info.m_nAnswerStatus == ACCEPTED)
+			if (info.m_nAnswerStatus == ANSWER_STATUS::ACCEPTED)
 			{
 				sAnswer = read[4];
 				info.m_sHeadline = CResourceManager::GetString("ACCEPT_AFFILIATION");
@@ -703,7 +703,7 @@ bool CGenDiploMessage::GenerateMinorAnswer(CDiplomacyInfo& info)
 		}
 	case MEMBERSHIP:
 		{
-			if (info.m_nAnswerStatus == ACCEPTED)
+			if (info.m_nAnswerStatus == ANSWER_STATUS::ACCEPTED)
 			{
 				sAnswer = read[5];
 				info.m_sHeadline = CResourceManager::GetString("ACCEPT_MEMBERSHIP");
@@ -717,7 +717,7 @@ bool CGenDiploMessage::GenerateMinorAnswer(CDiplomacyInfo& info)
 		}
 	case CORRUPTION:
 		{
-			if (info.m_nAnswerStatus == ACCEPTED)
+			if (info.m_nAnswerStatus == ANSWER_STATUS::ACCEPTED)
 			{
 				sAnswer = read[6];
 				info.m_sHeadline = CResourceManager::GetString("ACCEPT_CORRUPTION");

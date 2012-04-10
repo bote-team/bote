@@ -26,17 +26,17 @@ CMinorAI::~CMinorAI(void)
 /// @return <code>ACCEPTED</code> für Annahme
 ///			<code>DECLINED</code> für Ablehnung
 ///			<code>NOT_REACTED</code> für keine Reaktion
-short CMinorAI::ReactOnOffer(const CDiplomacyInfo& info)
+ANSWER_STATUS::Typ CMinorAI::ReactOnOffer(const CDiplomacyInfo& info)
 {
 	if (m_pRace->GetRaceID() != info.m_sToRace)
 	{
 		MYTRACE(MT::LEVEL_INFO, "CMinorAI::ReactOnOffer(): Race-ID %s difference from Info-ID %s", m_pRace->GetRaceID(), info.m_sToRace);
-		return DECLINED;
+		return ANSWER_STATUS::DECLINED;
 	}
 
 	CRace* pFromRace = m_pDoc->GetRaceCtrl()->GetRace(info.m_sFromRace);
 	if (!pFromRace)
-		return DECLINED;
+		return ANSWER_STATUS::DECLINED;
 
 	if (pFromRace->GetType() == MAJOR)
 	{
@@ -45,28 +45,33 @@ short CMinorAI::ReactOnOffer(const CDiplomacyInfo& info)
 
 		// wurde die Rasse erobert, so kann die Minorrace nicht auf das Angebot reagieren
 		if (pMinor->GetSubjugated())
-			return DECLINED;
+			return ANSWER_STATUS::DECLINED;
 
 		// bei bestimmten Sachen kann die KI nicht besonders reagieren und liefert ein festes Ergebnis
 		// wurde Krieg erklärt
 		if (info.m_nType == WAR)
-			return ACCEPTED;
+			return ANSWER_STATUS::ACCEPTED;
 		// soll der Vertrag aufgelöst werden
 		else if (info.m_nType == NO_AGREEMENT)
-			return ACCEPTED;
+			return ANSWER_STATUS::ACCEPTED;
 		// wurde ein Bestechungsversuch unternommen
 		else if (info.m_nType == CORRUPTION)
-			return TryCorruption(info);
+		{
+			if (TryCorruption(info))
+				return ANSWER_STATUS::ACCEPTED;
+			else
+				return ANSWER_STATUS::DECLINED;
+		}
 		// wurde ein Geschenk übergeben
 		else if (info.m_nType == PRESENT)
 		{
 			ReactOnDowry(info);
-			return ACCEPTED;
+			return ANSWER_STATUS::ACCEPTED;
 		}
 		
 		// Prüfen ob der Vertrag aufgrund aktuell bestehender Verträge überhaupt angenommen werden darf
 		if (!pMinor->CanAcceptOffer(m_pDoc, info.m_sFromRace, info.m_nType))
-			return DECLINED;
+			return ANSWER_STATUS::DECLINED;
 		
 		// nun werden die aktuellen Beziehungen der Minorrace zu allen anderen Majorraces gespeichert. Wenn
 		// beim Vertragsangebot eine Mitgift gemacht wurde und die Minor das Angebot nämlich ablehnt, dann
@@ -84,7 +89,7 @@ short CMinorAI::ReactOnOffer(const CDiplomacyInfo& info)
 			const CDiplomacyInfo* pLastOffer = m_pRace->GetLastOffer(info.m_sFromRace);
 			if (pLastOffer != NULL)
 				if (info.m_nType <= pLastOffer->m_nType)
-					return ACCEPTED;
+					return ANSWER_STATUS::ACCEPTED;
 		}
 
 		// Wenn wir das Angebot wahrmachen könnten, berechnen ob es klappt
@@ -169,7 +174,7 @@ short CMinorAI::ReactOnOffer(const CDiplomacyInfo& info)
 	
 		// Wenn wir den Status erfolgreich ändern
 		if (nRandom >= nNeededRelation)
-			return ACCEPTED;
+			return ANSWER_STATUS::ACCEPTED;
 
 		// Wenn der Vertrag nicht angenommen wurde, dann bleiben alle Beziehungswerte vorerst auf ihrem alten Stand
 		pMinor->m_mRelations = mOldRelations;
@@ -179,10 +184,10 @@ short CMinorAI::ReactOnOffer(const CDiplomacyInfo& info)
 		if (relationMali > 0)
 			relationMali = rand()%relationMali;
 		else
-			return DECLINED;
+			return ANSWER_STATUS::DECLINED;
 		
 		pMinor->SetRelation(info.m_sFromRace, -relationMali);
-		return DECLINED;
+		return ANSWER_STATUS::DECLINED;
 	}
 	else
 	{
@@ -190,7 +195,7 @@ short CMinorAI::ReactOnOffer(const CDiplomacyInfo& info)
 		throw NotImplemented;
 	}
 
-	return DECLINED;
+	return ANSWER_STATUS::DECLINED;
 }
 
 /// Funktion zur Erstellung eines diplomatischen Angebots.
@@ -640,12 +645,12 @@ bool CMinorAI::TryCorruption(const CDiplomacyInfo& info)
 		{
 			pCorruptedMajor->SetAgreement(pMinor->GetRaceID(), NO_AGREEMENT);
 			pMinor->SetAgreement(info.m_sCorruptedRace, NO_AGREEMENT);			
-			message.GenerateMessage(sText, DIPLOMACY, "", 0, 0);
+			message.GenerateMessage(sText, MESSAGE_TYPE::DIPLOMACY, "", 0, 0);
 			pCorruptedMajor->GetEmpire()->AddMessage(message);
 		}	
 		// Nachricht über Erfolg bei Bestecherrasse erzeugen
 		sText = CResourceManager::GetString("CORRUPTION_SUCCESS", FALSE, pMinor->m_sName);
-		message.GenerateMessage(sText, DIPLOMACY, "", 0, 0);
+		message.GenerateMessage(sText, MESSAGE_TYPE::DIPLOMACY, "", 0, 0);
 		pFromMajor->GetEmpire()->AddMessage(message);
 		return true;
 	}
@@ -662,12 +667,12 @@ bool CMinorAI::TryCorruption(const CDiplomacyInfo& info)
 			s.SetAt(0, sUpper.MakeUpper().GetAt(0));
 
 			sText = CResourceManager::GetString("TRYED_CORRUPTION", FALSE, s, pMinor->m_sName);
-			message.GenerateMessage(sText, DIPLOMACY, "", 0, 0);
+			message.GenerateMessage(sText, MESSAGE_TYPE::DIPLOMACY, "", 0, 0);
 			pCorruptedMajor->GetEmpire()->AddMessage(message);
 		}
 
 		sText = CResourceManager::GetString("CORRUPTION_FAILED", FALSE, pMinor->m_sName);	
-		message.GenerateMessage(sText, DIPLOMACY, "", 0, 0);
+		message.GenerateMessage(sText, MESSAGE_TYPE::DIPLOMACY, "", 0, 0);
 		pFromMajor->GetEmpire()->AddMessage(message);
 		return false;
 	}

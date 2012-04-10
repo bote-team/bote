@@ -1000,24 +1000,6 @@ void CGalaxyMenuView::OnRButtonDown(UINT nFlags, CPoint point)
 	// TODO: Code für die Behandlungsroutine für Nachrichten hier einfügen und/oder Standard aufrufen
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	
-	// Das hier alles nur machen, wenn wir in der Galaxiemap-Ansicht sind
-	// Überprüfen, ob mit einem Doppelklick auf ein eigenes System geklickt wurde,
-	// wenn ja, dann in die Systemansicht von diesem System gehen
-	
-	/*
-	// Mit Rechtsklick gehört das System ner Testrasse
-	pDoc->m_Sector[pDoc->GetKO().x][pDoc->GetKO().y].SetColonyOwner(FERENGI);
-	pDoc->m_Sector[pDoc->GetKO().x][pDoc->GetKO().y].SetOwnerOfSector(FERENGI);
-	pDoc->m_Sector[pDoc->GetKO().x][pDoc->GetKO().y].SetOwned(TRUE);
-	for (int i = 0; i < pDoc->m_Sector[pDoc->GetKO().x][pDoc->GetKO().y].GetNumberOfPlanets(); i++)
-	{
-		pDoc->m_Sector[pDoc->GetKO().x][pDoc->GetKO().y].GetPlanet(i)->SetColonisized(TRUE);
-		pDoc->m_Sector[pDoc->GetKO().x][pDoc->GetKO().y].GetPlanet(i)->SetMaxHabitant(10);
-		pDoc->m_Sector[pDoc->GetKO().x][pDoc->GetKO().y].GetPlanet(i)->SetCurrentHabitant(2);			
-	}
-	pDoc->m_System[pDoc->GetKO().x][pDoc->GetKO().y].SetOwnerOfSystem(FERENGI);
-	*/	
-
 	//Wenn wir das Befehlgeben eines Schiffes abbrechen wollen
 	if (m_bShipMove)
 	{
@@ -1026,7 +1008,6 @@ void CGalaxyMenuView::OnRButtonDown(UINT nFlags, CPoint point)
 		pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
 		m_nRange = 0;
 		Invalidate();
-	//	pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(View3));
 		return;
 	}
 	// Wenn wir gerade eine Handelsroute ziehen, können wir mit einem Rechtsklick dies abbrechen

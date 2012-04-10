@@ -866,9 +866,9 @@ void CDiplomacyMenuView::DrawRaceDiplomacyMenue(Graphics* g)
 				if (m_OutgoingInfo.m_nFlag == DIPLOMACY_OFFER)
 				{
 					// Haben wir auf einen Button geklickt, so muß dieser gedrückt dargestellt werden
-					if (m_OutgoingInfo.m_nAnswerStatus == ACCEPTED)
+					if (m_OutgoingInfo.m_nAnswerStatus == ANSWER_STATUS::ACCEPTED)
 						m_bShowSendButton = FALSE;
-					else if (m_OutgoingInfo.m_nAnswerStatus == DECLINED)
+					else if (m_OutgoingInfo.m_nAnswerStatus == ANSWER_STATUS::DECLINED)
 						m_bShowDeclineButton = FALSE;
 					
 					// Bei Kriegserklärung oder Geschenk haben wir keine Wahlmöglichkeit
@@ -903,7 +903,7 @@ void CDiplomacyMenuView::DrawRaceDiplomacyMenue(Graphics* g)
 					// handelt es sich um das angeklickte Angebot
 					if (m_pIncomingInfo == *it)
 					{
-						if (m_pIncomingInfo->m_nAnswerStatus == ACCEPTED)
+						if (m_pIncomingInfo->m_nAnswerStatus == ANSWER_STATUS::ACCEPTED)
 							m_bShowSendButton = false;
 						else
 						{
@@ -1706,7 +1706,7 @@ void CDiplomacyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 				// Systemauswahlbutton, mit dem wir das System wählen können, woraus wir die Ressourcen abzapfen, wenn wir
 				// eine Forderung einer anderen Majorrasse erfüllen wollen, welche Ressourcen beinhaltet
 				rect.SetRect(500,100+count*25,620,125+count*25);
-				if (rect.PtInRect(point) && m_pIncomingInfo->m_nAnswerStatus != ACCEPTED)
+				if (rect.PtInRect(point) && m_pIncomingInfo->m_nAnswerStatus != ANSWER_STATUS::ACCEPTED)
 				{
 					// Nächstes System finden, wenn wir durchklicken
 					if (m_pIncomingInfo->m_ptKO != CPoint(-1,-1))
@@ -2124,7 +2124,7 @@ void CDiplomacyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		rect.SetRect(852,480,1012,520);
 		if (rect.PtInRect(point) && m_bShowSendButton == true)
 		{
-			m_pIncomingInfo->m_nAnswerStatus = ACCEPTED;
+			m_pIncomingInfo->m_nAnswerStatus = ANSWER_STATUS::ACCEPTED;
 			// Wenn wir eine Forderung annehmen, dann sofort die Credits und Ressourcen aus den Lagern nehmen
 			if (m_OutgoingInfo.m_nType == DIP_REQUEST)
 			{
@@ -2140,12 +2140,12 @@ void CDiplomacyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		{
 			// Wenn wir eine Forderung zuerst angenommen hatten und diese in der selben Runde doch ablehnen
 			// wollen, so die geforderten Ressourcen und Credits wieder zurückgeben
-			if (m_OutgoingInfo.m_nType == DIP_REQUEST && m_OutgoingInfo.m_nAnswerStatus == ACCEPTED)
+			if (m_OutgoingInfo.m_nType == DIP_REQUEST && m_OutgoingInfo.m_nAnswerStatus == ANSWER_STATUS::ACCEPTED)
 			{
 				this->TakeOrGetbackResLat(false);
 				pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
 			}
-			m_pIncomingInfo->m_nAnswerStatus = DECLINED;			
+			m_pIncomingInfo->m_nAnswerStatus = ANSWER_STATUS::DECLINED;			
 			Invalidate();			
 		}
 	}

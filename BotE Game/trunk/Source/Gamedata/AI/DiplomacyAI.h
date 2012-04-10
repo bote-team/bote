@@ -53,7 +53,7 @@ public:
 	CString		m_sWarpactEnemy;				///< der Gegner bei einem Kriegspaktangebot
 	CString		m_sCorruptedRace;				///< Hauptrasse, welche bei einer Bestechnung betroffen sein soll
 
-	short		m_nAnswerStatus;				///< wurde das Angebot angenommen, abgelehnt oder nicht darauf reagiert
+	ANSWER_STATUS::Typ	m_nAnswerStatus;		///< wurde das Angebot angenommen, abgelehnt oder nicht darauf reagiert
 	CString		m_sHeadline;					///< Überschrift bei Angebotsantwort
 	CString		m_sWarPartner;					///< Krieg aufgrund Diplomatiepartner
 };
@@ -79,7 +79,7 @@ public:
 	/// @return <code>ACCEPTED</code> für Annahme
 	///			<code>DECLINED</code> für Ablehnung
 	///			<code>NOT_REACTED</code> für keine Reaktion
-	virtual short ReactOnOffer(const CDiplomacyInfo& info) = 0;
+	virtual ANSWER_STATUS::Typ ReactOnOffer(const CDiplomacyInfo& info) = 0;
 
 	/// Funktion zur Erstellung eines diplomatischen Angebots.
 	/// @param sRaceID RassenID der Rasse, an die das Angebot gemacht werden soll

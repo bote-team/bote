@@ -27,7 +27,7 @@ public:
 	/// @return <code>ACCEPTED</code> für Annahme
 	///			<code>DECLINED</code> für Ablehnung
 	///			<code>NOT_REACTED</code> für keine Reaktion
-	virtual short ReactOnOffer(const CDiplomacyInfo& info);
+	virtual ANSWER_STATUS::Typ ReactOnOffer(const CDiplomacyInfo& info);
 
 	/// Funktion zur Erstellung eines diplomatischen Angebots.
 	/// @param sRaceID RassenID der Rasse, an die das Angebot gemacht werden soll
@@ -47,21 +47,21 @@ protected:
 	/// @return <code>ACCEPTED</code> für Annahme
 	///			<code>DECLINED</code> für Ablehnung
 	///			<code>NOT_REACTED</code> für keine Reaktion
-	short ReactOnMinorOffer(const CDiplomacyInfo& info);
+	ANSWER_STATUS::Typ ReactOnMinorOffer(const CDiplomacyInfo& info);
 
 	/// Diese Funktion berechnet, wie eine computergesteuerte Rasse, auf ein Angebot eines Majors reagiert.
 	/// @param info Information des diplomatischen Angebots
 	/// @return <code>ACCEPTED</code> für Annahme
 	///			<code>DECLINED</code> für Ablehnung
 	///			<code>NOT_REACTED</code> für keine Reaktion
-	short ReactOnMajorOffer(const CDiplomacyInfo& info);
+	ANSWER_STATUS::Typ ReactOnMajorOffer(const CDiplomacyInfo& info);
 
 	/// Diese Funktion berechnet wie eine Majorrace auf eine Forderung reagiert.
 	/// @param info Information des diplomatischen Angebots
 	/// @return <code>ACCEPTED</code> für Annahme
 	///			<code>DECLINED</code> für Ablehnung
 	///			<code>NOT_REACTED</code> für keine Reaktion
-	short CalcDiplomacyRequest(const CDiplomacyInfo& info);
+	ANSWER_STATUS::Typ CalcDiplomacyRequest(const CDiplomacyInfo& info);
 
 	/// Funktion zur Erstellung eines diplomatischen Angebots an einen Minor.
 	/// @param sRaceID RassenID der Rasse, an die das Angebot gemacht werden soll

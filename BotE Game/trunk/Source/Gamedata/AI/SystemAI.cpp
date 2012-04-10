@@ -1336,7 +1336,7 @@ void CSystemAI::CalcProd()
 	// Den Moralboni im System noch auf die einzelnen Produktionen anrechnen
 	pProduction->IncludeSystemMoral(pSystem->GetMoral());
 	// benötigte Nahrung durch Bevölkerung von der Produktion abiehen
-	if (!m_pMajor->HasSpecialAbility(NO_FOOD_NEEDED))
+	if (!m_pMajor->HasSpecialAbility(SPECIAL_NEED_NO_FOOD))
 		// ceil, wird auf Kommezahl berechnet, z.B brauchen wir für 14.5 Mrd. Leute 145 Nahrung und nicht 140 bzw. 150
 		pProduction->m_iFoodProd -= (int)ceil(pSystem->GetHabitants()*10);
 	else

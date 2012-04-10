@@ -327,7 +327,7 @@ void CRace::ReactOnOfferAI(CDiplomacyInfo* pOffer)
 	// auf Angebot reagieren
 	if (pOffer->m_nFlag == DIPLOMACY_OFFER)
 	{
-		short nResult = m_pDiplomacyAI->ReactOnOffer(*pOffer);
+		ANSWER_STATUS::Typ nResult = m_pDiplomacyAI->ReactOnOffer(*pOffer);
 		pOffer->m_nAnswerStatus = nResult;
 	}
 	else

@@ -74,7 +74,7 @@ void CEmpireMenuView::OnNewRound()
 	c_arraysort<CArray<CShipHistoryStruct,CShipHistoryStruct>,CShipHistoryStruct>(*(pMajor->GetShipHistory()->GetShipHistoryArray()),CShipHistoryStruct::sort_by_shipname);
 
 	m_iSubMenu = EMPIREVIEW_NEWS;
-	m_iWhichNewsButtonIsPressed = NO_TYPE;
+	m_iWhichNewsButtonIsPressed = MESSAGE_TYPE::NO_TYPE;
 	m_iClickedNews = -1;
 	m_iClickedSystem = -1;
 	m_iClickedShip = -1;
@@ -129,7 +129,7 @@ void CEmpireMenuView::OnInitialUpdate()
 
 	// TODO: Add your specialized code here and/or call the base class
 	m_iSubMenu = EMPIREVIEW_NEWS;
-	m_iWhichNewsButtonIsPressed = NO_TYPE;
+	m_iWhichNewsButtonIsPressed = MESSAGE_TYPE::NO_TYPE;
 	m_iClickedNews = -1;
 	m_iClickedSystem = -1;
 	m_iClickedShip = -1;
@@ -225,7 +225,7 @@ void CEmpireMenuView::DrawEmpireNewsMenue(Graphics* g)
 	for (int i = 0; i < pMajor->GetEmpire()->GetMessages()->GetSize(); i++)
 		// nur Nachrichten anzeigen, dessen Typ wir auch gewählt haben
 		if (m_iWhichNewsButtonIsPressed == pMajor->GetEmpire()->GetMessages()->GetAt(i).GetMessageType() ||
-			m_iWhichNewsButtonIsPressed == NO_TYPE)
+			m_iWhichNewsButtonIsPressed == MESSAGE_TYPE::NO_TYPE)
 		{
 			if (counter > 0)
 			{
@@ -248,11 +248,11 @@ void CEmpireMenuView::DrawEmpireNewsMenue(Graphics* g)
 				{
 					switch (pMajor->GetEmpire()->GetMessages()->GetAt(i).GetMessageType())
 					{
-						case ECONOMY:  fontBrush.SetColor(Color(0,150,0));		break;
-						case RESEARCH: fontBrush.SetColor(Color(50,75,255));	break;
-						case SECURITY: fontBrush.SetColor(Color(155,25,255));	break;
-						case DIPLOMACY:fontBrush.SetColor(Color(255,220,0));	break;
-						case MILITARY: fontBrush.SetColor(Color(255,0,0));		break;
+						case MESSAGE_TYPE::ECONOMY:  fontBrush.SetColor(Color(0,150,0));	break;
+						case MESSAGE_TYPE::RESEARCH: fontBrush.SetColor(Color(50,75,255));	break;
+						case MESSAGE_TYPE::SECURITY: fontBrush.SetColor(Color(155,25,255));	break;
+						case MESSAGE_TYPE::DIPLOMACY:fontBrush.SetColor(Color(255,220,0));	break;
+						case MESSAGE_TYPE::MILITARY: fontBrush.SetColor(Color(255,0,0));	break;
 						default: fontBrush.SetColor(normalColor);
 					}
 				}
@@ -1432,7 +1432,7 @@ void CEmpireMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		int temp = m_iWhichNewsButtonIsPressed;
 		if (ButtonReactOnLeftClick(point, &m_EmpireNewsFilterButtons, temp))
 		{
-			m_iWhichNewsButtonIsPressed = temp;
+			m_iWhichNewsButtonIsPressed = (MESSAGE_TYPE::Typ)temp;
 			return;
 		}
 		
@@ -1444,7 +1444,7 @@ void CEmpireMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		short add = 0;
 		for (int i = 0; i < pMajor->GetEmpire()->GetMessages()->GetSize(); i++)
 			if (m_iWhichNewsButtonIsPressed == pMajor->GetEmpire()->GetMessages()->GetAt(i).GetMessageType()
-				|| m_iWhichNewsButtonIsPressed == NO_TYPE)
+				|| m_iWhichNewsButtonIsPressed == MESSAGE_TYPE::NO_TYPE)
 			{
 				if (counter > 0)
 				{
@@ -1669,7 +1669,7 @@ BOOL CEmpireMenuView::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 		// nur Nachrichten anzeigen, dessen Typ wir auch gewählt haben
 		for (int i = 0; i < pMajor->GetEmpire()->GetMessages()->GetSize(); i++)
 			if (m_iWhichNewsButtonIsPressed == pMajor->GetEmpire()->GetMessages()->GetAt(i).GetMessageType() ||
-				m_iWhichNewsButtonIsPressed == NO_TYPE)
+				m_iWhichNewsButtonIsPressed == MESSAGE_TYPE::NO_TYPE)
 				maxNews++;
 		if (zDelta < 0)
 		{
@@ -1771,7 +1771,7 @@ void CEmpireMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 		short add = 0;
 		for (int i = 0; i < pMajor->GetEmpire()->GetMessages()->GetSize(); i++)
 			if (m_iWhichNewsButtonIsPressed == pMajor->GetEmpire()->GetMessages()->GetAt(i).GetMessageType() ||
-					m_iWhichNewsButtonIsPressed == NO_TYPE)
+					m_iWhichNewsButtonIsPressed == MESSAGE_TYPE::NO_TYPE)
 			{
 				if (counter > 0)
 				{
@@ -1783,8 +1783,8 @@ void CEmpireMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 				{
 					if (CRect(r.left+100,r.top+140+j*25,r.right-100,r.top+165+j*25).PtInRect(point))
 					{
-						if (pMajor->GetEmpire()->GetMessages()->GetAt(i).GetMessageType() == ECONOMY || 
-							pMajor->GetEmpire()->GetMessages()->GetAt(i).GetMessageType() == SOMETHING)
+						if (pMajor->GetEmpire()->GetMessages()->GetAt(i).GetMessageType() == MESSAGE_TYPE::ECONOMY || 
+							pMajor->GetEmpire()->GetMessages()->GetAt(i).GetMessageType() == MESSAGE_TYPE::SOMETHING)
 						{
 							CPoint p = pMajor->GetEmpire()->GetMessages()->GetAt(i).GetKO();
 							if (pDoc->GetSystem(p.x,p.y).GetOwnerOfSystem() == pMajor->GetRaceID())
@@ -1797,7 +1797,7 @@ void CEmpireMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 								pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
 							}
 						}
-						else if (pMajor->GetEmpire()->GetMessages()->GetAt(i).GetMessageType() == MILITARY)
+						else if (pMajor->GetEmpire()->GetMessages()->GetAt(i).GetMessageType() == MESSAGE_TYPE::MILITARY)
 						{
 							if (pMajor->GetEmpire()->GetMessages()->GetAt(i).GetFlag() == FALSE)
 							{
@@ -1813,21 +1813,21 @@ void CEmpireMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 								}
 							}
 						}
-						else if (pMajor->GetEmpire()->GetMessages()->GetAt(i).GetMessageType() == RESEARCH)
+						else if (pMajor->GetEmpire()->GetMessages()->GetAt(i).GetMessageType() == MESSAGE_TYPE::RESEARCH)
 						{
 							pDoc->GetMainFrame()->SelectMainView(RESEARCH_VIEW, pMajor->GetRaceID());
 							pDoc->GetMainFrame()->SetSubMenu(RUNTIME_CLASS(CResearchMenuView), pMajor->GetEmpire()->GetMessages()->GetAt(i).GetFlag());
 							Invalidate();
 							pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
 						}
-						else if (pMajor->GetEmpire()->GetMessages()->GetAt(i).GetMessageType() == SECURITY)
+						else if (pMajor->GetEmpire()->GetMessages()->GetAt(i).GetMessageType() == MESSAGE_TYPE::SECURITY)
 						{
 							pDoc->GetMainFrame()->SelectMainView(INTEL_VIEW, pMajor->GetRaceID());
 							pDoc->GetMainFrame()->SetSubMenu(RUNTIME_CLASS(CIntelMenuView), pMajor->GetEmpire()->GetMessages()->GetAt(i).GetFlag());
 							Invalidate();
 							pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CMenuChooseView));							
 						}
-						else if (pMajor->GetEmpire()->GetMessages()->GetAt(i).GetMessageType() == DIPLOMACY)
+						else if (pMajor->GetEmpire()->GetMessages()->GetAt(i).GetMessageType() == MESSAGE_TYPE::DIPLOMACY)
 						{
 							pDoc->GetMainFrame()->SelectMainView(DIPLOMACY_VIEW, pMajor->GetRaceID());
 							// bei Angeboten an uns direkt in das Eingangmenü schalten
@@ -1936,7 +1936,7 @@ void CEmpireMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 	if (m_iSubMenu == EMPIREVIEW_NEWS)
 	{
 		// Wenn wir auf eine News ausgewählt haben, können wir diese durch Betätigen der Entf-Taste löschen
-		if (m_iClickedNews != -1 && nChar == VK_DELETE && m_iWhichNewsButtonIsPressed == NO_TYPE)
+		if (m_iClickedNews != -1 && nChar == VK_DELETE && m_iWhichNewsButtonIsPressed == MESSAGE_TYPE::NO_TYPE)
 		{
 			pMajor->GetEmpire()->GetMessages()->RemoveAt(m_iClickedNews);
 			if (m_iClickedNews == pMajor->GetEmpire()->GetMessages()->GetSize())
@@ -1949,7 +1949,7 @@ void CEmpireMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 		// nur Nachrichten anzeigen, dessen Typ wir auch gewählt haben
 		for (int i = 0; i < pMajor->GetEmpire()->GetMessages()->GetSize(); i++)
 			if (m_iWhichNewsButtonIsPressed == pMajor->GetEmpire()->GetMessages()->GetAt(i).GetMessageType() ||
-				m_iWhichNewsButtonIsPressed == NO_TYPE)
+				m_iWhichNewsButtonIsPressed == MESSAGE_TYPE::NO_TYPE)
 				maxNews++;
 		if (nChar == VK_DOWN)
 		{

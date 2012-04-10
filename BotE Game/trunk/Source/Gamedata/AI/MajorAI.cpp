@@ -27,17 +27,17 @@ CMajorAI::~CMajorAI(void)
 /// @return <code>ACCEPTED</code> für Annahme
 ///			<code>DECLINED</code> für Ablehnung
 ///			<code>NOT_REACTED</code> für keine Reaktion
-short CMajorAI::ReactOnOffer(const CDiplomacyInfo& info)
+ANSWER_STATUS::Typ CMajorAI::ReactOnOffer(const CDiplomacyInfo& info)
 {
 	if (m_pRace->GetRaceID() != info.m_sToRace)
 	{
 		MYTRACE(MT::LEVEL_WARNING, "CMajorAI::ReactOnOffer(): Warning: Race-ID %s difference from Info-ID %s", m_pRace->GetRaceID(), info.m_sToRace);
-		return NOT_REACTED;
+		return ANSWER_STATUS::NOT_REACTED;
 	}
 
 	CRace* pFromRace = m_pDoc->GetRaceCtrl()->GetRace(info.m_sFromRace);
 	if (!pFromRace)
-		return NOT_REACTED;
+		return ANSWER_STATUS::NOT_REACTED;
 
 	if (pFromRace->GetType() == MAJOR)
 	{
@@ -50,7 +50,7 @@ short CMajorAI::ReactOnOffer(const CDiplomacyInfo& info)
 	else
 		throw NotImplemented;
 
-	return NOT_REACTED;
+	return ANSWER_STATUS::NOT_REACTED;
 }
 
 /// Funktion zur Erstellung eines diplomatischen Angebots.
@@ -159,19 +159,19 @@ void CMajorAI::CalcFavoriteMinors(void)
 /// @return <code>ACCEPTED</code> für Annahme
 ///			<code>DECLINED</code> für Ablehnung
 ///			<code>NOT_REACTED</code> für keine Reaktion
-short CMajorAI::ReactOnMinorOffer(const CDiplomacyInfo& info)
+ANSWER_STATUS::Typ CMajorAI::ReactOnMinorOffer(const CDiplomacyInfo& info)
 {
 	if (info.m_nType == WAR)
-		return ACCEPTED;
+		return ANSWER_STATUS::ACCEPTED;
 
 	// Angenommen wird einfach zu 89%, zu 9% wird nicht reagiert und zu 2% abgelehnt
 	int nResult = rand()%100;
 	if (nResult > 10)		
-		return ACCEPTED;
+		return ANSWER_STATUS::ACCEPTED;
 	if (nResult > 1)	
-		return NOT_REACTED;
+		return ANSWER_STATUS::NOT_REACTED;
 					
-	return DECLINED;
+	return ANSWER_STATUS::DECLINED;
 }
 
 /// Diese Funktion berechnet, wie eine computergesteuerte Rasse, auf ein Angebot eines Majors reagiert.
@@ -179,18 +179,18 @@ short CMajorAI::ReactOnMinorOffer(const CDiplomacyInfo& info)
 /// @return <code>ACCEPTED</code> für Annahme
 ///			<code>DECLINED</code> für Ablehnung
 ///			<code>NOT_REACTED</code> für keine Reaktion
-short CMajorAI::ReactOnMajorOffer(const CDiplomacyInfo& info)
+ANSWER_STATUS::Typ CMajorAI::ReactOnMajorOffer(const CDiplomacyInfo& info)
 {
 	CRace* pRace = m_pRace;
 	if (!pRace)
-		return NOT_REACTED;
+		return ANSWER_STATUS::NOT_REACTED;
 
 	// Hier werden auch die Verbesserungen der Beziehung durch Geschenke bzw. deren Verschlechterung
 	// wird hier auch behandelt
 	if (info.m_nType == PRESENT)
 	{
 		ReactOnDowry(info);
-		return ACCEPTED;
+		return ANSWER_STATUS::ACCEPTED;
 	}
 	
 	// berechnen ob es klappt
@@ -337,7 +337,7 @@ short CMajorAI::ReactOnMajorOffer(const CDiplomacyInfo& info)
 		const CDiplomacyInfo* pLastOffer = m_pRace->GetLastOffer(info.m_sFromRace);
 		if (pLastOffer != NULL)
 			if (info.m_nType <= pLastOffer->m_nType)
-				return ACCEPTED;
+				return ANSWER_STATUS::ACCEPTED;
 	}
 
 	// Hier werden zusätzlich noch die Schiffsstärken der anderen Rassen mit der unseren verglichen. Ist die andere Rasse
@@ -396,7 +396,7 @@ short CMajorAI::ReactOnMajorOffer(const CDiplomacyInfo& info)
 
 	// Wenn der Randomwert höher größer gleich dem Wert ist, den wir erreichen mußten, dann wird angenommen
 	if (nRandom >= nNeededRelation)
-		return ACCEPTED;
+		return ANSWER_STATUS::ACCEPTED;
 	
 	// alte Beziehung wiederherstellen (konnte durch Mitgifte zuvor erhöht werden)
 	BYTE byCurrentRelation = pRace->GetRelation(info.m_sFromRace);
@@ -405,16 +405,16 @@ short CMajorAI::ReactOnMajorOffer(const CDiplomacyInfo& info)
 
 	// sonst wird zu 9/10 abgelehnt
 	if (rand()%10 > 0)
-		return DECLINED;
+		return ANSWER_STATUS::DECLINED;
 	// oder dann "nicht reagiert" zurückgegeben
 	else
-		return NOT_REACTED;
+		return ANSWER_STATUS::NOT_REACTED;
 }
 
 /// Diese Funktion berechnet wie eine Majorrace auf eine Forderung reagiert.
 /// @param info Information des diplomatischen Angebots
 /// @return <code>ACCEPTED</code> für Annahme oder <code>DECLINED</code> bei Ablehnung.
-short CMajorAI::CalcDiplomacyRequest(const CDiplomacyInfo& info)
+ANSWER_STATUS::Typ CMajorAI::CalcDiplomacyRequest(const CDiplomacyInfo& info)
 {
 	//Als erstes wird überprüft wie unsere Beziehung zu der Rasse ist und welchen aktuellen Vertrag wir mit ihr 
 	//aufrechterhalten. Umso besser die Beziehung und umso höherwertiger der Vertrag ist, desto eher nehmen wir
@@ -426,16 +426,16 @@ short CMajorAI::CalcDiplomacyRequest(const CDiplomacyInfo& info)
 	
 	// zu 10% reagieren wir gar nicht auf die Forderung
 	if (rand()%10 == 0)
-		return NOT_REACTED;
+		return ANSWER_STATUS::NOT_REACTED;
 
 	CMajor* pRace = dynamic_cast<CMajor*>(m_pRace);
 	if (!pRace)
-		return NOT_REACTED;	
+		return ANSWER_STATUS::NOT_REACTED;	
 
 	BYTE byRelation = pRace->GetRelation(info.m_sFromRace);
 	short nAgreement = pRace->GetAgreement(info.m_sFromRace);
 	
-	short nAnswer = ACCEPTED;
+	ANSWER_STATUS::Typ nAnswer = ANSWER_STATUS::ACCEPTED;
 	// (14-(unsere Beziehung / 10 + Vertrag)) / 10 , 14 ist das Maximum, was wir erreichen könnten
 	double dValue = (double)(14 - ((double)byRelation / 10 + nAgreement)) / 10;
 	
@@ -476,13 +476,13 @@ short CMajorAI::CalcDiplomacyRequest(const CDiplomacyInfo& info)
 
 		// schauen ob wir den prozentualen Mehrwert der Durchschnittscredits besitzen
 		if (pRace->GetEmpire()->GetCredits() > (lCredits * dValue))
-			nAnswer = ACCEPTED;
+			nAnswer = ANSWER_STATUS::ACCEPTED;
 		else
-			nAnswer = DECLINED;
+			nAnswer = ANSWER_STATUS::DECLINED;
 	}
 	
 	// Wenn Ressourcen (mit)gefordert werden
-	if (nAnswer == ACCEPTED)
+	if (nAnswer == ANSWER_STATUS::ACCEPTED)
 	{
 		short nRes = -1;
 		if (info.m_nResources[TITAN])
@@ -524,15 +524,15 @@ short CMajorAI::CalcDiplomacyRequest(const CDiplomacyInfo& info)
 					//AfxMessageBox(s);
 					m_pDoc->GetSystem(ptSystem).SetResourceStore(nRes, -info.m_nResources[nRes]);
 				}
-				else nAnswer = DECLINED;
+				else nAnswer = ANSWER_STATUS::DECLINED;
 			}
 			else
-				nAnswer = DECLINED;
+				nAnswer = ANSWER_STATUS::DECLINED;
 		}
 	}
 	// Wenn ich, falls gefordert, die Ressourcen dazugebe und auch Credits gefordert sind und dieses auch geben
 	// könnte, dann muß ich dieses noch von meinem Credits abziehen
-	if (nAnswer == ACCEPTED && info.m_nCredits > 0)
+	if (nAnswer == ANSWER_STATUS::ACCEPTED && info.m_nCredits > 0)
 	{
 		//CString s;
 		//s.Format("Request from: %d an %d\nunsere Beziehung zu denen: %d\nunser Status: %d\nvalue: %lf\ngefordertes Credits: %d\ndavon bei uns vorhanden: %d\nForderer besitzt: %d",requestFrom,m_iRaceNumber,m_iRelationshipOtherMajor[requestFrom],m_iDiplomacyStatus[requestFrom],value,requestedCredits,empire[m_iRaceNumber].GetCredits(),empire[requestFrom].GetCredits());

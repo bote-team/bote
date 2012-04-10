@@ -257,7 +257,7 @@ bool CMajor::DecrementAgreementsDuration(map<CString, CMajor*>* pmMajors)
 			
 			CString s = CResourceManager::GetString("CONTRACT_ENDED", FALSE, sAgreement, sRace);
 			CMessage message;
-			message.GenerateMessage(s, DIPLOMACY, "", 0, FALSE);
+			message.GenerateMessage(s, MESSAGE_TYPE::DIPLOMACY, "", 0, FALSE);
 			this->GetEmpire()->AddMessage(message);
 			vDelAgrs.push_back(it->first);			
 		}
@@ -294,7 +294,7 @@ bool CMajor::DecrementAgreementsDuration(map<CString, CMajor*>* pmMajors)
 			
 			CString s = CResourceManager::GetString("DEFENCE_PACT_ENDED", FALSE, sRace);
 			CMessage message;
-			message.GenerateMessage(s, DIPLOMACY, "", 0, FALSE);
+			message.GenerateMessage(s, MESSAGE_TYPE::DIPLOMACY, "", 0, FALSE);
 			this->GetEmpire()->AddMessage(message);
 			vDelAgrs.push_back(*it);
 			it = m_vDefencePact.erase(it++);			

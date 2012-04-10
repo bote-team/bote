@@ -41,17 +41,17 @@ public:
 	
 	// Zugriffsfunktionen
 	// zum Lesen der Membervariablen
-	USHORT GetMessageType(void) const {return m_iMessageType;}
+	MESSAGE_TYPE::Typ GetMessageType(void) const {return m_nMessageType;}
 	const CPoint& GetKO(void) const {return m_KO;}
 	BYTE GetFlag(void) const {return m_byFlag;}
 	const CString& GetMessageString(void) const {return m_strMessage;}
 		
 	// sonstige Funktionen
-	void GenerateMessage(const CString& sMessage, USHORT nMessageType, const CString& sSystemName, const CPoint& SystemKO, bool bUpdate, BYTE byFlag = 0);
+	void GenerateMessage(const CString& sMessage, MESSAGE_TYPE::Typ nMessageType, const CString& sSystemName, const CPoint& SystemKO, bool bUpdate, BYTE byFlag = 0);
 	
 private:
 	CString	m_strMessage;
-	USHORT	m_iMessageType;
+	MESSAGE_TYPE::Typ m_nMessageType;
 	CPoint	m_KO;			// Koordinaten des Systems, worauf sich die Nachricht bezieht
 	BYTE	m_byFlag;		// irgendeine Zusatzinformation, die ich mit übergeben kann
 };

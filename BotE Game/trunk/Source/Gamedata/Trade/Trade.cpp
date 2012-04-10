@@ -232,7 +232,7 @@ void CTrade::CalculateTradeActions(CMajor* pMajor, CSystem** systems/*[][STARMAP
 						CString s;
 						s.Format("%d %s",sum[x][y][i],resName);
 						CMessage message;
-						message.GenerateMessage(CResourceManager::GetString("GET_RESOURCES",0,s,sectors[x][y].GetName()), ECONOMY, "", sectors[x][y].GetKO(), FALSE);
+						message.GenerateMessage(CResourceManager::GetString("GET_RESOURCES",0,s,sectors[x][y].GetName()), MESSAGE_TYPE::ECONOMY, "", sectors[x][y].GetKO(), FALSE);
 						pMajor->GetEmpire()->AddMessage(message);
 					}
 }

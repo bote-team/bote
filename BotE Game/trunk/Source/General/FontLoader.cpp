@@ -2,42 +2,6 @@
 #include "FontLoader.h"
 #include "Races\Major.h"
 
-/*
-BYTE CFontLoader::m_byFontSizes[DOMINION][6] = {
-	14,24,25,34,50,54,	// ohne GDI+
-	8,13,13,19,27,27,	// Ferengi Bajoran Regular Font
-//	7,13,15,19,23,23,	// Ferengi Chemical Reaction Font
-	10,13,15,20,31,34,
-	12,20,19,28,40,50,
-	11,17,17,23,31,45,
-	11,17,17,23,31,45};	// Dominion Hammerhead
-//	10,17,17,22,32,42};	// Dominion Hammerhead
-//	16,25,25,35,45,55};	// Dominion Opticon
-
-BYTE CFontLoader::m_byGDIPlusFontSizes[DOMINION][6] = {
-	4,14,15,22,32,38,
-	6,9,10,14,19,19,
-	5,10,10,14,21,25,
-	6,11,11,15,22,28,
-	4,11,11,15,22,28,
-	4,11,11,15,22,28};
-//	10,17,17,22,32,42};	// Dominion Hammerhead
-
-//	0 -> ganz kleine Schriften
-//	1 -> kleiner Button
-//	2 -> großer Button
-//	3 -> für normale Schirften
-//	4 -> Zweitfarbe für normale Schriften
-COLORREF CFontLoader::m_Colors[DOMINION][5] = {
-	RGB(200,150,0), RGB(0,0,0),		 RGB(0,0,0),   RGB(255,185,45),  RGB(175,82,154),	// Föderation
-	RGB(200,150,0), RGB(0,0,0),		 RGB(0,50,0),  RGB(195,195,0),	 RGB(195,195,0),	// Ferengi
-	RGB(200,150,0),	RGB(0,0,0),		 RGB(0,0,0),   RGB(255,60,60),	 RGB(180,180,180),	// Klingonen
-	RGB(200,150,0),	RGB(80,180,230), RGB(4,35,15), RGB(140,196,203), RGB(50,185,0),		// Romulaner
-	RGB(200,150,0), RGB(0,0,0),		 RGB(0,0,0),   RGB(180,180,180), RGB(74,146,138),	// Cardassianer
-	RGB(200,150,0), RGB(0,0,0),		 RGB(0,0,0),   RGB(200,255,255), RGB(74,146,138)	// Dominion
-};
-*/
-
 //////////////////////////////////////////////////////////////////////
 // Konstruktion/Destruktion
 //////////////////////////////////////////////////////////////////////

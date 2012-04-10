@@ -45,7 +45,6 @@ bool CReManager::SystemEvent(CPoint &ko, CMajor* pRace)
 	ASSERT(pDoc);
 	//ko= Systemkoordinate
 	CString messagetext;//Nachrichtentext
-	USHORT typ;//Nachrichten typ
 	bool succes=true;
 	int eventnumber=rand()%4;
 	if(eventnumber==SYSTEMEVENTMORALBOOST)//If abfrage mit allen möglichen Randomevents; evtl. hier bedingungen einfügen
@@ -53,12 +52,10 @@ bool CReManager::SystemEvent(CPoint &ko, CMajor* pRace)
 		//CEventRandom* EmpireEvent=new CEventRandom(pRace->GetRaceID(),imagename,headline,text);
 		//pRace->GetEmpire()->GetEventMessages()->Add(EmpireEvent);
 		messagetext=CResourceManager::GetString("SYSTEMEVENTMORALBOOST",false,pDoc->GetSector(ko).GetName());
-		typ=6;//Nachrichten typ
 		pDoc->GetSystem(ko).SetMoral(10);
 	}else if(eventnumber==SYSTEMEVENTMORALMALUS)
 	{
 		messagetext=CResourceManager::GetString("SYSTEMEVENTMORALMALUS",false,pDoc->GetSector(ko).GetName());
-		typ=6;//Nachrichten typ
 		pDoc->GetSystem(ko).SetMoral(-10);
 	}else if(eventnumber==SYSTEMEVENTPLANETMOVEMENT)//Planetenveränderung
 	{
@@ -67,7 +64,6 @@ bool CReManager::SystemEvent(CPoint &ko, CMajor* pRace)
 		while(!(Planets->GetAt(planet).GetHabitable())) planet=rand()%Planets->GetSize();
 		Planets->GetAt(planet).SetMaxHabitant(Planets->GetAt(planet).GetMaxHabitant()+rand()%7-3);
 		messagetext=CResourceManager::GetString("SYSTEMEVENTPLANETMOVEMENT",false,Planets->GetAt(planet).GetPlanetName());
-		typ=6;
 	}else if(eventnumber==SYSTEMEVENTDEMOGRAPHIC)
 	{
 	
@@ -76,13 +72,12 @@ bool CReManager::SystemEvent(CPoint &ko, CMajor* pRace)
 		while(!(Planets->GetAt(planet).GetHabitable())) planet=rand()%Planets->GetSize();
 		Planets->GetAt(planet).SetCurrentHabitant(Planets->GetAt(planet).GetCurrentHabitant()-rand()%(int)(Planets->GetAt(planet).GetCurrentHabitant()));
 		messagetext=CResourceManager::GetString("SYSTEMEVENTPLANETDEMOGRAPHIC",false,Planets->GetAt(planet).GetPlanetName());
-		typ=6;
 		CEventRandom* EmpireEvent=new CEventRandom(pRace->GetRaceID(),"demographic",CResourceManager::GetString("SYSTEMEVENTPLANETDEMOGRAPHICTITLE"),CResourceManager::GetString("SYSTEMEVENTPLANETDEMOGRAPHICLONG",false,Planets->GetAt(planet).GetPlanetName()));
 		pRace->GetEmpire()->GetEventMessages()->Add(EmpireEvent);
 	}
 	if(succes)
 	{CMessage message;
-	message.GenerateMessage(messagetext,typ,"",ko,FALSE,0);//Nachricht über Randomevent erstellen
+	message.GenerateMessage(messagetext,MESSAGE_TYPE::SOMETHING,"",ko,FALSE,0);//Nachricht über Randomevent erstellen
 	pRace->GetEmpire()->AddMessage(message);
 	}
 	return succes;
@@ -95,14 +90,14 @@ bool CReManager::GlobalEvent(CMajor *pRace)
 	ASSERT(pDoc);
 	int eventnumber=rand()%2;
 	CString messagetext;
-	USHORT typ;
+	MESSAGE_TYPE::Typ typ = MESSAGE_TYPE::NO_TYPE;
 	bool succes=true;
 	if(eventnumber==GLOBALEVENTRESEARCH)//If abfrage mit allen möglichen Randomevents; evtl. hier bedingungen einfügen
 	{
 		CEventRandom* EmpireEvent=new CEventRandom(pRace->GetRaceID(),"Breakthrough",CResourceManager::GetString("BREAKTHROUGH"),CResourceManager::GetString("GLOBALEVENTRESEARCH"));
 		pRace->GetEmpire()->GetEventMessages()->Add(EmpireEvent);
 		messagetext=CResourceManager::GetString("GLOBALEVENTRESEARCH");
-		typ=2;
+		typ=MESSAGE_TYPE::RESEARCH;
 		pRace->GetEmpire()->AddFP((int)(pRace->GetEmpire()->GetFP()));
 	}else if(eventnumber==GLOBALEVENTMINOR)// Für Minorregierungswechsel
 	{
@@ -119,7 +114,7 @@ bool CReManager::GlobalEvent(CMajor *pRace)
 			CMinor* pMinor=PossibleMinors.at(rand()%PossibleMinors.size());
 			pMinor->SetRelation(pRace->GetRaceID(), (rand() % 100) - pMinor->GetRelation(pRace->GetRaceID()));
 			messagetext=CResourceManager::GetString("GLOBALEVENTMINOR",false,pMinor->GetRaceName());
-			typ=4;
+			typ=MESSAGE_TYPE::DIPLOMACY;
 		}else succes=false;
 	}
 	
@@ -141,13 +136,13 @@ void CReManager::CalcExploreEvent(const CPoint &ko, CMajor *pRace, CArray<CShip,
 	//ko=Koordinate wo es passiert, pRace = die Rasse der es passiert
 	int eventnumber=rand()%2;
 	CString messagetext="";
-	USHORT typ=0;
+	MESSAGE_TYPE::Typ typ = MESSAGE_TYPE::NO_TYPE;
 	if(eventnumber==ALIENTEC)
 	{
 		CEventRandom* EmpireEvent=new CEventRandom(pRace->GetRaceID(),"alientech",CResourceManager::GetString("ALIENTECHEADLINE"),CResourceManager::GetString("ALIENTECLONG",false,pDoc->GetSector(ko).GetName(true)));
 		pRace->GetEmpire()->GetEventMessages()->Add(EmpireEvent);
 		messagetext=CResourceManager::GetString("ALIENTEC",false,pDoc->GetSector(ko).GetName(true));
-		typ=0;
+		typ=MESSAGE_TYPE::RESEARCH;
 		pRace->GetEmpire()->AddFP(100);
 	}else if(eventnumber==EVENTSHIPXP)
 	{
@@ -158,7 +153,7 @@ void CReManager::CalcExploreEvent(const CPoint &ko, CMajor *pRace, CArray<CShip,
 			
 		}
 		messagetext=CResourceManager::GetString("EVENTSHIPXP",false,pDoc->GetSector(ko).GetName(true));
-		typ=5;
+		typ=MESSAGE_TYPE::MILITARY;
 
 	}
 	CMessage message;

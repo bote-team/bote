@@ -91,18 +91,30 @@ extern double STARMAP_ZOOM_MAX;//			2	///< maximaler Zoom-Faktor
 #define ALE					8	// AssemblyListEntries
 
 // ------------- Message-Types -------------------------------------------------
-#define NO_TYPE				0
-#define ECONOMY				1
-#define RESEARCH			2
-#define SECURITY			3
-#define DIPLOMACY			4
-#define MILITARY			5
-#define SOMETHING			6
+namespace MESSAGE_TYPE
+{
+	enum Typ
+	{
+		NO_TYPE		= 0,
+		ECONOMY		= 1,
+		RESEARCH	= 2,
+		SECURITY	= 3,
+		DIPLOMACY	= 4,
+		MILITARY	= 5,
+		SOMETHING	= 6
+	};
+}
 
 // ------------- Reaktion auf Nachrichten --------------------------------------
-#define DECLINED			0
-#define ACCEPTED			1
-#define NOT_REACTED			2
+namespace ANSWER_STATUS
+{
+	enum Typ
+	{
+		DECLINED	= 0,
+		ACCEPTED	= 1,
+		NOT_REACTED	= 2
+	};
+}
 
 // ------------- Diplomatische Vereinbarungen-----------------------------------
 // Die verschiedenen Arten, welchen Status eine Minorrace gegenüber ein Majorrace haben kann
@@ -134,9 +146,6 @@ extern double STARMAP_ZOOM_MAX;//			2	///< maximaler Zoom-Faktor
 #define SNEAKY              9	// Hinterhältig
 #define SOLOING				10	// Alleingeher
 #define	HOSTILE				11
-
-// ------------- Die möglichen Spezialeigenschaften einer Rasse ----------------
-#define NO_FOOD_NEEDED		1	// Rasse benötigt keine Nahrung
 
 // ------------- Planeteneigenschaften -----------------------------------------
 // Zonen
