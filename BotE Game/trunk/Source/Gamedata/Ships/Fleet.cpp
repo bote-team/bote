@@ -202,12 +202,15 @@ BOOLEAN CFleet::CheckOrder(const CShip* ship, BYTE order) const
 	#define TRANSPORT			13
 	#define FOLLOW_SHIP			14
 	#define TRAIN_SHIP			15
+	#define WAIT_SHIP_ORDER		16
+	#define SENTRY_SHIP_ORDER	17
 */
-	// AVOID, ATTACK, RAID_SYSTEM, DESTROY_SHIP, CREATE_FLEET, FOLLOW_SHIP, TRAIN_SHIP
+	// AVOID, ATTACK, RAID_SYSTEM, DESTROY_SHIP, CREATE_FLEET, FOLLOW_SHIP, TRAIN_SHIP, WAIT_SHIP_ORDER, SENTRY_SHIP_ORDER
 	// können wenn möglich immer von jedem Schiff ausgeführt werden. Deshalb können wir hier immer
 	// ein TRUE zurückgeben bzw. es ist erst gar nicht nötig die "CheckOrder" Funktion aufzurufen
 	if (order == AVOID || order == ATTACK || order == RAID_SYSTEM || order == DESTROY_SHIP
-		|| order == CREATE_FLEET || order == FOLLOW_SHIP || order == TRAIN_SHIP)
+		|| order == CREATE_FLEET || order == FOLLOW_SHIP || order == TRAIN_SHIP
+		|| order == WAIT_SHIP_ORDER || order == SENTRY_SHIP_ORDER)
 		return TRUE;
 
 	// ASSIGN_FLAGSHIP und TRANSPORT können nicht als Befehl an eine Flotte gegeben werden, daher wird hier

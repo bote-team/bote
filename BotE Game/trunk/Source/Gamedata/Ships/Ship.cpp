@@ -399,6 +399,8 @@ CString CShip::GetCurrentOrderAsString() const
 	case TRANSPORT: order = CResourceManager::GetString("TRANSPORT_ORDER"); break;
 	case FOLLOW_SHIP: order = CResourceManager::GetString("FOLLOW_SHIP_ORDER"); break;
 	case TRAIN_SHIP: order = CResourceManager::GetString("TRAIN_SHIP_ORDER"); break;
+	case WAIT_SHIP_ORDER: order = CResourceManager::GetString("WAIT_SHIP_ORDER"); break;
+	case SENTRY_SHIP_ORDER: order = CResourceManager::GetString("SENTRY_SHIP_ORDER"); break;
 	default: order = "nothing"; break;
 	}
 	return order;

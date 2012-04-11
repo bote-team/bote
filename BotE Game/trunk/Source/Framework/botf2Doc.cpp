@@ -5042,6 +5042,16 @@ void CBotf2Doc::CalcShipOrders()
 				}
 			}
 		}
+		else if (pShip->GetCurrentOrder() == WAIT_SHIP_ORDER)
+		{
+			//Do nothing, but only for this round.
+			if (pShip->IsNonCombat())
+				pShip->SetCurrentOrder(AVOID);
+			else
+				pShip->SetCurrentOrder(ATTACK);
+		}
+		//else if (pShip->GetCurrentOrder() == SENTRY_SHIP_ORDER)
+			//Do nothing for this and all following rounds until an explicit player input.
 
 		// Vor der Schiffsbewegung aber nach einer möglichen Demontage dort überall einen ShipPort setzen wo
 		// eine Sternbasis oder ein Außenposten steht

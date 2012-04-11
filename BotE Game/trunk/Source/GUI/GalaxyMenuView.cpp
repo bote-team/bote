@@ -1299,9 +1299,10 @@ void CGalaxyMenuView::HandleShipHotkeys(const UINT nChar, CBotf2Doc* pDoc)
 	if (!pMajor)
 		return;
 
-	if(nChar == 'N') {
+	if(nChar == 'N' || nChar == VK_SPACE) {
 		int start_at = -1;
 		int stop_at = size - 1;
+		CShip* previous_ship = NULL;
 		if(m_PreviouslyJumpedToShip.index < size
 			&& pDoc->m_ShipArray.GetAt(m_PreviouslyJumpedToShip.index).GetOwnerOfShip()
 				== pMajor->GetRaceID()
@@ -1311,6 +1312,7 @@ void CGalaxyMenuView::HandleShipHotkeys(const UINT nChar, CBotf2Doc* pDoc)
 			//the previously jumped to ship is still valid
 			start_at = m_PreviouslyJumpedToShip.index;
 			stop_at = m_PreviouslyJumpedToShip.index;
+			previous_ship = &pDoc->m_ShipArray.GetAt(m_PreviouslyJumpedToShip.index);
 		}
 
 		int i = start_at;
@@ -1325,6 +1327,8 @@ void CGalaxyMenuView::HandleShipHotkeys(const UINT nChar, CBotf2Doc* pDoc)
 			const Sector& sector = Sector(coords.x, coords.y);
 
 			if(ship.HasNothingToDo()) {
+				if(previous_ship && nChar == VK_SPACE)
+					previous_ship->SetCurrentOrder(WAIT_SHIP_ORDER);
 				m_PreviouslyJumpedToShip = RememberedShip(i, ship.GetShipName());
 				pMajor->GetStarmap()->Select(sector);// sets orange rectangle in galaxy view
 				pDoc->SetKO(sector.x,sector.y);//neccessary for that the ship is selected for SHIP_BOTTOM_VIEW

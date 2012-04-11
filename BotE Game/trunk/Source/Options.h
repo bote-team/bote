@@ -244,6 +244,8 @@ namespace RACE_PROPERTY
 #define TRANSPORT			13
 #define FOLLOW_SHIP			14
 #define TRAIN_SHIP			15
+#define WAIT_SHIP_ORDER		16
+#define SENTRY_SHIP_ORDER	17
 // Sonstiges
 #define DIFFERENT_TORPEDOS	29
 #define TORPEDOSPEED		15
