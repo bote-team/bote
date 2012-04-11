@@ -220,7 +220,7 @@ Trainieren
 [BTN_WAIT_SHIP_ORDER]
 Warten
 [BTN_SENTRY_SHIP_ORDER]
-Wache
+Stationieren
 
 // Entscheidungsbuttons
 [BTN_NEXT]
@@ -1218,6 +1218,10 @@ Transport
 Folgen
 [TRAIN_SHIP_ORDER]
 Trainieren
+[WAIT_SHIP_ORDER]
+Warten
+[SENTRY_SHIP_ORDER]
+Stationieren
 
 // Schiffstypen, Einzahl
 [TRANSPORTER]

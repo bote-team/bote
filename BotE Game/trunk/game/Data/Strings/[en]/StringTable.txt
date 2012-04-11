@@ -1216,6 +1216,10 @@ Transport
 Follow
 [TRAIN_SHIP_ORDER]
 Train
+[WAIT_SHIP_ORDER]
+Wait
+[SENTRY_SHIP_ORDER]
+Sentry
 
 // ship types, singular
 [TRANSPORTER]
