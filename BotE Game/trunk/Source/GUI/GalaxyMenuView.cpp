@@ -1278,8 +1278,45 @@ void CGalaxyMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 	{
 		AfxGetApp()->PostThreadMessage(WM_SHOWCHATDLG, 0, 0);
 	}
+
+	HandleShipHotkeys(nChar, pDoc);
 	
 	CScrollView::OnKeyDown(nChar, nRepCnt, nFlags);
+}
+
+void CGalaxyMenuView::HandleShipHotkeys(const UINT nChar, CBotf2Doc* pDoc)
+{
+	CMajor const* pMajor = m_pPlayersRace;
+	ASSERT(pMajor);
+	if (!pMajor)
+		return;
+
+	const unsigned size = pDoc->m_ShipArray.GetSize();
+
+	if(nChar == 'N') {
+		for(unsigned i = 0; i < size; ++i) {
+			const CShip& ship = pDoc->m_ShipArray.GetAt(i);
+			if(pMajor->GetRaceID() != ship.GetOwnerOfShip())
+				continue;
+			const CPoint& coords = ship.GetKO();
+			const Sector& sector = Sector(coords.x, coords.y);
+
+			if(ship.HasNothingToDo() && !m_bShipMove && sector != pMajor->GetStarmap()->GetSelection()) {
+				pMajor->GetStarmap()->Select(sector);// sets orange rectangle in galaxy view
+				pDoc->SetKO(sector.x,sector.y);//neccessary for that the ship is selected for SHIP_BOTTOM_VIEW
+
+				CShipBottomView::SetShowStation(false);
+				pDoc->GetMainFrame()->SelectBottomView(SHIP_BOTTOM_VIEW);
+				pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CShipBottomView));//What's this doing ? Neccessary/sensible ?
+
+				CSmallInfoView::SetShipInfo(true);
+				pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CSmallInfoView));//And this ?
+
+				Invalidate();//And this ?
+				break;
+			}
+		}
+	}
 }
 
 int CGalaxyMenuView::GetRangeBorder(const unsigned char range1, const unsigned char range2, int m_nRange) const

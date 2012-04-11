@@ -105,7 +105,16 @@ public:
 	COMBAT_TACTIC::Typ GetCombatTactic() const {return m_nCombatTactic;}
 	bool IsNonCombat() const {return (m_iShipType == TRANSPORTER || m_iShipType == COLONYSHIP || m_iShipType == PROBE);}
 	ALIEN_TYPE::Typ GetAlienType() const { return m_nAlienType; }
-		
+
+	//Is this ship in need for a player command input in this round ?
+	//Does not cover "self-renewing" orders without a turn limit
+	//such as ATTACK_SYSTEM; player is expected to look after such
+	//fleets manually.
+	//@return true if yes
+	bool HasNothingToDo() const {
+		return (m_iCurrentOrder == AVOID || m_iCurrentOrder == ATTACK)
+			&& GetTargetKO() == GetKO() && m_iShipType != OUTPOST && m_iShipType != STARBASE;
+	}
 	// zum Schreiben der Membervariablen
 	void SetID(USHORT ID) {m_iID = ID+10000;}
 	void SetKO(const CPoint& KO) {m_KO = KO;}

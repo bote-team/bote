@@ -152,4 +152,7 @@ public:
 	virtual BOOL OnScroll(UINT nScrollCode, UINT nPos, BOOL bDoScroll = TRUE);
 protected:
 	virtual BOOL OnScrollBy(CSize sizeScroll, BOOL bDoScroll = TRUE);	
+
+private:
+	void HandleShipHotkeys(const UINT nChar, CBotf2Doc* pDoc);
 };

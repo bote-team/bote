@@ -130,6 +130,7 @@ protected:
 	/// der zweite die y-Koordinate eines Sektors (modelliert Einfluss, den der Auﬂenposten hat)
 	std::vector<std::vector<unsigned char>> m_Range;//[STARMAP_SECTORS_HCOUNT][STARMAP_SECTORS_VCOUNT];
 	/// Koordinaten des aktuell ausgew‰hlten Sektors; (-1, -1) wenn keiner ausgew‰hlt ist
+	// (orange rectangle visible in galaxy view)
 	Sector m_Selection;
 
 	/// Liste der Sektoren, in denen sich ein Auﬂenposten befindet
