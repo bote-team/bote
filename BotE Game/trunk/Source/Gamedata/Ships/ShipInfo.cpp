@@ -255,7 +255,7 @@ void CShipInfo::CalculateFinalCosts()
 // Funktion bestimmt die 1. Order des Schiffs nach dem Bau anhand dessen Typs
 void CShipInfo::SetStartOrder()
 {
-	if (m_iShipType >= SCOUT)
+	if (m_iShipType >= SHIP_TYPE::SCOUT)
 		m_iCurrentOrder = ATTACK;
 	else
 		m_iCurrentOrder = AVOID;
@@ -281,12 +281,12 @@ void CShipInfo::DrawShipInformation(Graphics* g, CRect rect, Gdiplus::Font* font
 	r.SetRect(rect.left,rect.top+36,rect.right,rect.top+56);
 	CString speed = CResourceManager::GetString("SPEED");
 	CString range = CResourceManager::GetString("RANGE");
-	BYTE tmpRange = m_iRange;
+	SHIP_RANGE::Typ tmpRange = m_iRange;
 	BYTE tmpSpeed = m_iSpeed;
 	if (research->GetResearchInfo()->GetResearchComplex(2)->GetFieldStatus(1) == RESEARCHED)
 	{
-		if (m_iRange == RANGE_SHORT)
-			tmpRange = (BYTE)(research->GetResearchInfo()->GetResearchComplex(2)->GetBonus(1));
+		if (m_iRange == SHIP_RANGE::SHORT)
+			tmpRange = (SHIP_RANGE::Typ)(research->GetResearchInfo()->GetResearchComplex(2)->GetBonus(1));
 	}
 	else if (research->GetResearchInfo()->GetResearchComplex(2)->GetFieldStatus(2) == RESEARCHED)
 	{
@@ -300,18 +300,18 @@ void CShipInfo::DrawShipInformation(Graphics* g, CRect rect, Gdiplus::Font* font
 		CString sMaintenance = CResourceManager::GetString("SHIPCOSTS");
 		switch (tmpRange)
 		{
-		case RANGE_SHORT: s.Format("%s: %d  -  %s: %d  -  %s: %d  -  %s: %s",Size, m_byShipSize, sMaintenance, m_iMaintenanceCosts, speed, tmpSpeed, range, CResourceManager::GetString("SHORT"));break;
-		case RANGE_MIDDLE: s.Format("%s: %d  -  %s: %d  -  %s: %d  -  %s: %s",Size, m_byShipSize, sMaintenance, m_iMaintenanceCosts, speed, tmpSpeed, range, CResourceManager::GetString("MIDDLE")); break;
-		case RANGE_LONG: s.Format("%s: %d  -  %s: %d  -  %s: %d  -  %s: %s",Size, m_byShipSize, sMaintenance, m_iMaintenanceCosts, speed, tmpSpeed, range, CResourceManager::GetString("LONG")); break;
+		case SHIP_RANGE::SHORT: s.Format("%s: %d  -  %s: %d  -  %s: %d  -  %s: %s",Size, m_nShipSize, sMaintenance, m_iMaintenanceCosts, speed, tmpSpeed, range, CResourceManager::GetString("SHORT"));break;
+		case SHIP_RANGE::MIDDLE: s.Format("%s: %d  -  %s: %d  -  %s: %d  -  %s: %s",Size, m_nShipSize, sMaintenance, m_iMaintenanceCosts, speed, tmpSpeed, range, CResourceManager::GetString("MIDDLE")); break;
+		case SHIP_RANGE::LONG: s.Format("%s: %d  -  %s: %d  -  %s: %d  -  %s: %s",Size, m_nShipSize, sMaintenance, m_iMaintenanceCosts, speed, tmpSpeed, range, CResourceManager::GetString("LONG")); break;
 		}
 	}
 	else
 	{
 		switch (tmpRange)
 		{
-		case RANGE_SHORT: s.Format("%s: %d  -  %s: %s",speed, tmpSpeed, range, CResourceManager::GetString("SHORT"));break;
-		case RANGE_MIDDLE: s.Format("%s: %d  -  %s: %s",speed, tmpSpeed, range, CResourceManager::GetString("MIDDLE")); break;
-		case RANGE_LONG: s.Format("%s: %d  -  %s: %s",speed, tmpSpeed, range, CResourceManager::GetString("LONG")); break;
+		case SHIP_RANGE::SHORT: s.Format("%s: %d  -  %s: %s",speed, tmpSpeed, range, CResourceManager::GetString("SHORT"));break;
+		case SHIP_RANGE::MIDDLE: s.Format("%s: %d  -  %s: %s",speed, tmpSpeed, range, CResourceManager::GetString("MIDDLE")); break;
+		case SHIP_RANGE::LONG: s.Format("%s: %d  -  %s: %s",speed, tmpSpeed, range, CResourceManager::GetString("LONG")); break;
 		}
 	}
 	

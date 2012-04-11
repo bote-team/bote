@@ -114,7 +114,9 @@ void CSystemProd::Serialize(CArchive &ar)
 		ar >> m_iMilitarySpyBoni;
 		ar >> m_iMilitarySabotageBoni;
 		ar >> m_bShipYard;
-		ar >> m_iBuildableShipSizes;
+		int nBuildableShipSize;
+		ar >> nBuildableShipSize;
+		m_iBuildableShipSizes = (SHIP_SIZE::Typ)nBuildableShipSize;
 		ar >> m_iShipYardEfficiency;
 		ar >> m_bBarrack;
 		ar >> m_iBarracksEfficiency;
@@ -319,7 +321,7 @@ void CSystemProd::Reset()
 	m_iMilitarySabotageBoni = 0;
 	// sonstige Informationen
 	m_bShipYard = FALSE;
-	m_iBuildableShipSizes = TRANSPORTER;
+	m_iBuildableShipSizes = SHIP_SIZE::SMALL;
 	m_iShipYardEfficiency = 0;
 	m_bBarrack = FALSE;
 	m_iBarracksEfficiency = 0;

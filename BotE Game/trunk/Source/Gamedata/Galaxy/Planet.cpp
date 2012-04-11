@@ -109,7 +109,9 @@ void CPlanet::Serialize(CArchive &ar)
 		ar >> m_bIsTerraforming;
 		ar >> m_dCurrentHabitant;
 		ar >> m_dMaxHabitant;
-		ar >> m_iSize;
+		int nSize;
+		ar >> nSize;
+		m_iSize = (PLANT_SIZE::Typ)nSize;
 		ar >> m_iType;
 		ar >> m_strName;
 		ar >> m_cClass;
@@ -142,114 +144,37 @@ CString CPlanet::GetGraphicFile() const
 
 /// Funktion erzeugt einen Planeten.
 /// @param sSectorName Sektorname
-/// @param byLastPlanetType im Sektor zuletzt erzeugte Planetenklasse
-/// @param byPlanetNumber Nummer des erzeugten Planeten (Anzahl bzw. Position im Sonnensystem)
+/// @param nLastZone Zone des zuletzt erzeugten Planeten (neuer Planet kann nicht in einer vorherigen Zone sein) 
+/// @param byPlanetNumer Anzahl schon erzeugeter Planeten in diesem Sektor
 /// @param bMinor Minorrace im Sektor
-/// @return erzeugte Planetenklasse
-BYTE CPlanet::Create(const CString& sSectorName, BYTE byLastPlanetType, BYTE byPlanetNumber, BOOLEAN bMinor)
+/// @return Zone des erzeugten Planeten
+PLANET_ZONE::Typ CPlanet::Create(const CString& sSectorName, PLANET_ZONE::Typ nLastZone, BYTE byPlanetNumber, BOOLEAN bMinor)
 {
 	// Standardwerte initialisieren
 	Reset();
 
-	BYTE m_iRandomSize = 0;	// Zufallszahl, die die Größe bestimmt (abhängig vom DEFINE!)
 	BYTE m_iRandomType = 0;	// Zufallszahl, die den Type bestimmt (abhängug vom DEFINE!)
-	BYTE Zone = HOT;		// Zone in der der Planet liegt
-	
-	// Ersten Planeten bestimmen, größte Wahrscheinlichkeit für einen Planeten aus heißer Zone
-	// nur machen, wenn NumberOfPlanet == 0
-	if (byPlanetNumber == 0)
+	PLANET_ZONE::Typ nZone = nLastZone; // Zone in der der generierte Planet ist
+	// Planetenklassen bestimmen, abhängig von der Zone und dem vorherigen Planeten
+
+	// Es könnten alle Klassen auftreten, aber halt mit unterschiedlicher Wahrscheinlichkeit
+	if (nLastZone == PLANET_ZONE::HOT)
 	{
-		// Zufallszahl aus 0 bis 9 ermitteln
-		BYTE WhatZone = rand()%10;						
-		if (WhatZone > 2)
-			Zone = HOT;					
-		// Wenn diese größer 2 ist, dann Planet aus heißer Zone
-		else if (WhatZone > 0)
-			Zone = TEMPERATE;
+		int WhatPlanet = rand()%75;
+		// Planeten aus kalter Zone
+		nZone = PLANET_ZONE::COOL;
+		if (WhatPlanet == 0) m_iRandomType = PLANETCLASS_I;
+		else if (WhatPlanet == 1) m_iRandomType = PLANETCLASS_J;
+		else if (WhatPlanet == 2) m_iRandomType = PLANETCLASS_S;
+		else if (WhatPlanet == 3) m_iRandomType = PLANETCLASS_T;
+		else if (WhatPlanet == 4) m_iRandomType = PLANETCLASS_A;
+		else if (WhatPlanet == 5) m_iRandomType = PLANETCLASS_C;
+		else if (WhatPlanet == 6) m_iRandomType = PLANETCLASS_P;
 		else
-			Zone = COOL;
-
-		// Den ersten Planeten bestimmen, abhängig von der Zone in der er liegen würde
-		if (Zone == HOT)
 		{
-			int WhatPlanet = rand()%9;	
-			if (WhatPlanet >= 0) m_iRandomType = PLANETCLASS_H;
-			if (WhatPlanet >= 2) m_iRandomType = PLANETCLASS_B;
-			if (WhatPlanet >= 4) m_iRandomType = PLANETCLASS_N;
-			if (WhatPlanet >= 6) m_iRandomType = PLANETCLASS_Y;
-			if (WhatPlanet >= 8) m_iRandomType = PLANETCLASS_R;
-		}
-		else if (Zone == TEMPERATE)
-		{
-			int WhatPlanet = rand()%9;
-			if (WhatPlanet == 0) m_iRandomType = PLANETCLASS_E;
-			if (WhatPlanet == 1) m_iRandomType = PLANETCLASS_F;
-			if (WhatPlanet == 2) m_iRandomType = PLANETCLASS_G;
-			if (WhatPlanet == 3) m_iRandomType = PLANETCLASS_K;
-			if (WhatPlanet == 4) m_iRandomType = PLANETCLASS_L;
-			if (WhatPlanet == 5) m_iRandomType = PLANETCLASS_M;
-			if (WhatPlanet == 6) m_iRandomType = PLANETCLASS_O;
-			if (WhatPlanet == 7) m_iRandomType = PLANETCLASS_Q;
-			if (WhatPlanet == 8) m_iRandomType = PLANETCLASS_R;
-		}
-		else if (Zone == COOL)
-		{
-			int WhatPlanet = rand()%8;	
-			if (WhatPlanet == 0) m_iRandomType = PLANETCLASS_I;
-			if (WhatPlanet == 1) m_iRandomType = PLANETCLASS_J;
-			if (WhatPlanet == 2) m_iRandomType = PLANETCLASS_S;
-			if (WhatPlanet == 3) m_iRandomType = PLANETCLASS_T;
-			if (WhatPlanet == 4) m_iRandomType = PLANETCLASS_A;
-			if (WhatPlanet == 5) m_iRandomType = PLANETCLASS_C;
-			if (WhatPlanet == 6) m_iRandomType = PLANETCLASS_P;
-			if (WhatPlanet == 7) m_iRandomType = PLANETCLASS_R;
-		}
-	}	
-	// Bestimmen, in welcher Zone der vorherige Planet lag, abhängig vom letzten Planeten
-	else
-	{
-		switch (byLastPlanetType)
-		{
-			case PLANETCLASS_A: Zone = COOL;		break;
-			case PLANETCLASS_B: Zone = HOT; 		break;
-			case PLANETCLASS_C: Zone = COOL;		break;
-			case PLANETCLASS_E: Zone = TEMPERATE;	break;
-			case PLANETCLASS_F: Zone = TEMPERATE;	break;
-			case PLANETCLASS_G: Zone = TEMPERATE;	break;
-			case PLANETCLASS_H: Zone = HOT;			break;
-			case PLANETCLASS_I: Zone = COOL;		break;
-			case PLANETCLASS_J: Zone = COOL;		break;
-			case PLANETCLASS_K: Zone = TEMPERATE;	break;
-			case PLANETCLASS_L: Zone = TEMPERATE;	break;
-			case PLANETCLASS_M: Zone = TEMPERATE;	break;
-			case PLANETCLASS_N: Zone = HOT;			break;
-			case PLANETCLASS_O: Zone = TEMPERATE;	break;
-			case PLANETCLASS_P: Zone = COOL;		break;
-			case PLANETCLASS_Q: Zone = TEMPERATE;	break;
-			// R Kann überall liegen
-			case PLANETCLASS_R: Zone = rand()%byLastPlanetType;	break;
-			case PLANETCLASS_S: Zone = COOL;		break;
-			case PLANETCLASS_T: Zone = COOL;		break;
-			case PLANETCLASS_Y: Zone = HOT;			break;
-			default:	Zone = COOL;				break;
-		}
-
-		// Planetenklassen bestimmen, abhängig von der Zone und dem vorherigen Planeten
-
-		// Es könnten alle Klassen auftreten, aber halt mit unterschiedlicher Wahrscheinlichkeit
-		if (Zone == HOT)
-		{
-			int WhatPlanet = rand()%75;
-			// Planeten aus kalter Zone
-			if (WhatPlanet == 0) m_iRandomType = PLANETCLASS_I;
-			if (WhatPlanet == 1) m_iRandomType = PLANETCLASS_J;
-			if (WhatPlanet == 2) m_iRandomType = PLANETCLASS_S;
-			if (WhatPlanet == 3) m_iRandomType = PLANETCLASS_T;
-			if (WhatPlanet == 4) m_iRandomType = PLANETCLASS_A;
-			if (WhatPlanet == 5) m_iRandomType = PLANETCLASS_C;
-			if (WhatPlanet == 6) m_iRandomType = PLANETCLASS_P;
 			// Planeten aus gemäßigter Zone
-			if (WhatPlanet > 6) m_iRandomType = PLANETCLASS_E;
+			nZone = PLANET_ZONE::TEMPERATE;
+			if (WhatPlanet > 6)	m_iRandomType = PLANETCLASS_E;
 			if (WhatPlanet > 11) m_iRandomType = PLANETCLASS_F;
 			if (WhatPlanet > 16) m_iRandomType = PLANETCLASS_G;
 			if (WhatPlanet > 21) m_iRandomType = PLANETCLASS_K;
@@ -259,23 +184,32 @@ BYTE CPlanet::Create(const CString& sSectorName, BYTE byLastPlanetType, BYTE byP
 			if (WhatPlanet > 40) m_iRandomType = PLANETCLASS_Q;	// selten
 			if (WhatPlanet > 43) m_iRandomType = PLANETCLASS_R; // selten
 			// Planeten aus heißer Zone
-			if (WhatPlanet > 46) m_iRandomType = PLANETCLASS_H;
+			if (WhatPlanet > 46)
+			{
+				m_iRandomType = PLANETCLASS_H;
+				nZone = PLANET_ZONE::HOT;
+			}
 			if (WhatPlanet > 53) m_iRandomType = PLANETCLASS_B;
 			if (WhatPlanet > 60) m_iRandomType = PLANETCLASS_N;
 			if (WhatPlanet > 67) m_iRandomType = PLANETCLASS_Y;
 		}
-		else if (Zone == TEMPERATE && byPlanetNumber >= 1)
+	}
+	else if (nLastZone == PLANET_ZONE::TEMPERATE)
+	{
+		int WhatPlanet = rand()%47;
+		// Planeten aus kalter Zone
+		nZone = PLANET_ZONE::COOL;
+		if (WhatPlanet == 0) m_iRandomType = PLANETCLASS_I;
+		else if (WhatPlanet == 1) m_iRandomType = PLANETCLASS_J;
+		else if (WhatPlanet == 2) m_iRandomType = PLANETCLASS_S;
+		else if (WhatPlanet == 3) m_iRandomType = PLANETCLASS_T;
+		else if (WhatPlanet == 4) m_iRandomType = PLANETCLASS_A;
+		else if (WhatPlanet == 5) m_iRandomType = PLANETCLASS_C;
+		else if (WhatPlanet == 6) m_iRandomType = PLANETCLASS_P;
+		else
 		{
-			int WhatPlanet = rand()%47;
-			// Planeten aus kalter Zone
-			if (WhatPlanet == 0) m_iRandomType = PLANETCLASS_I;
-			if (WhatPlanet == 1) m_iRandomType = PLANETCLASS_J;
-			if (WhatPlanet == 2) m_iRandomType = PLANETCLASS_S;
-			if (WhatPlanet == 3) m_iRandomType = PLANETCLASS_T;
-			if (WhatPlanet == 4) m_iRandomType = PLANETCLASS_A;
-			if (WhatPlanet == 5) m_iRandomType = PLANETCLASS_C;
-			if (WhatPlanet == 6) m_iRandomType = PLANETCLASS_P;
 			// Planeten aus gemäßigter Zone
+			nZone = PLANET_ZONE::TEMPERATE;
 			if (WhatPlanet > 6) m_iRandomType  = PLANETCLASS_E;
 			if (WhatPlanet > 11) m_iRandomType = PLANETCLASS_F;
 			if (WhatPlanet > 16) m_iRandomType = PLANETCLASS_G;
@@ -286,13 +220,17 @@ BYTE CPlanet::Create(const CString& sSectorName, BYTE byLastPlanetType, BYTE byP
 			if (WhatPlanet > 40) m_iRandomType = PLANETCLASS_Q;
 			if (WhatPlanet > 43) m_iRandomType = PLANETCLASS_R;
 		}
-		else if (Zone == COOL && byPlanetNumber >= 1)
+	}
+	else if (nLastZone == PLANET_ZONE::COOL)
+	{
+		nZone = PLANET_ZONE::COOL;
+		int WhatPlanet = rand()%18;
+		if (WhatPlanet == 0) m_iRandomType  = PLANETCLASS_I;
+		else if (WhatPlanet == 1) m_iRandomType  = PLANETCLASS_J;
+		else if (WhatPlanet == 2) m_iRandomType  = PLANETCLASS_S;
+		else if (WhatPlanet == 3) m_iRandomType  = PLANETCLASS_T;
+		else
 		{
-			int WhatPlanet = rand()%18;
-			if (WhatPlanet == 0) m_iRandomType  = PLANETCLASS_I;
-			if (WhatPlanet == 1) m_iRandomType  = PLANETCLASS_J;
-			if (WhatPlanet == 2) m_iRandomType  = PLANETCLASS_S;
-			if (WhatPlanet == 3) m_iRandomType  = PLANETCLASS_T;
 			if (WhatPlanet >= 4) m_iRandomType  = PLANETCLASS_A;
 			if (WhatPlanet >= 8) m_iRandomType  = PLANETCLASS_C;
 			if (WhatPlanet >= 12) m_iRandomType = PLANETCLASS_P;
@@ -301,24 +239,28 @@ BYTE CPlanet::Create(const CString& sSectorName, BYTE byLastPlanetType, BYTE byP
 	}
 	
 	float Habitants = 0.0f;
-	m_iRandomSize = rand()%3;					// mod der Anzahl, die im zugehörigen ENUM stehen
-	
+	BYTE m_iRandomSize = rand()%3;	// Zufallszahl, die die Größe bestimmt (abhängig vom DEFINE!)
+		
 	// zufällige Planetengrafik auswählen
 	m_iGraphicType = rand()%GRAPHICNUMBER;
 		
-	m_iSize = m_iRandomSize;
-	m_iType = m_iRandomType;
+	m_iSize = (PLANT_SIZE::Typ)m_iRandomSize;
 	// Bestimmen, ob der Planet überhaupt bewohnbar ist! A,B,E,I,J,S,T,Y
 	if (m_iRandomType == PLANETCLASS_A || m_iRandomType == PLANETCLASS_B || m_iRandomType == PLANETCLASS_E
 		|| m_iRandomType == PLANETCLASS_I || m_iRandomType == PLANETCLASS_J || m_iRandomType == PLANETCLASS_S
 		|| m_iRandomType == PLANETCLASS_T || m_iRandomType == PLANETCLASS_Y)
 		m_bHabitable = FALSE;
-	if (m_iRandomType == PLANETCLASS_M)		// Ein erdähnlicher Planet ist schon terraformed
+	// Ein erdähnlicher Planet ist schon terraformed
+	else if (m_iRandomType == PLANETCLASS_M)
 		m_bTerraformed = TRUE;
+	
 	if (m_iRandomType == PLANETCLASS_I || m_iRandomType == PLANETCLASS_J || m_iRandomType == PLANETCLASS_S || m_iRandomType == PLANETCLASS_T)
-		m_iSize = GIANT;			// Gasriesen sind immer GROß
+		m_iSize = PLANT_SIZE::GIANT;			// Gasriesen sind immer riesig
+	
 	if (m_bHabitable == FALSE)
+	{
 		m_dMaxHabitant = 0;
+	}
 	else
 	{	
 		if (m_iRandomType < PLANETCLASS_A)	// Ab Klasse A sind alle Planeten eh nicht mehr kolonisierbar
@@ -347,8 +289,11 @@ BYTE CPlanet::Create(const CString& sSectorName, BYTE byLastPlanetType, BYTE byP
 			m_iStartTerraformPoints = m_iNeededTerraformPoints;
 		}
 		else
+		{
 			m_dMaxHabitant = 0;
+		}
 	}
+	
 	// Wenn eine MinorRace da ist, dann ein paar Planeten schon geterraformt machen
 	if (bMinor && m_bHabitable)
 	{
@@ -370,27 +315,28 @@ BYTE CPlanet::Create(const CString& sSectorName, BYTE byLastPlanetType, BYTE byP
 		m_bColonisized = TRUE;
 	}
 	
+	m_iType = m_iRandomType;
 	// M,O,L,P,H,Q,K,G,R,F,C,N,A,B,E,N,Y,I,J,S,T
-	if (m_iType == 0) {m_cClass = 'M';}
-	else if (m_iType == 1) {m_cClass = 'O';}
-	else if (m_iType == 2) {m_cClass = 'L';}
-	else if (m_iType == 3) {m_cClass = 'P';}
-	else if (m_iType == 4) {m_cClass = 'H';}
-	else if (m_iType == 5) {m_cClass = 'Q';}
-	else if (m_iType == 6) {m_cClass = 'K';}
-	else if (m_iType == 7) {m_cClass = 'G';}
-	else if (m_iType == 8) {m_cClass = 'R';}
-	else if (m_iType == 9) {m_cClass = 'F';}
-	else if (m_iType == 10) {m_cClass = 'C';}
-	else if (m_iType == 11) {m_cClass = 'N';}
-	else if (m_iType == 12) {m_cClass = 'A';}
-	else if (m_iType == 13) {m_cClass = 'B';}
-	else if (m_iType == 14) {m_cClass = 'E';}
-	else if (m_iType == 15) {m_cClass = 'Y';}
-	else if (m_iType == 16) {m_cClass = 'I';}
-	else if (m_iType == 17) {m_cClass = 'J';}
-	else if (m_iType == 18) {m_cClass = 'S';}
-	else if (m_iType == 19) {m_cClass = 'T';}
+	if (m_iType == PLANETCLASS_M) {m_cClass = 'M';}
+	else if (m_iType == PLANETCLASS_O) {m_cClass = 'O';}
+	else if (m_iType == PLANETCLASS_L) {m_cClass = 'L';}
+	else if (m_iType == PLANETCLASS_P) {m_cClass = 'P';}
+	else if (m_iType == PLANETCLASS_H) {m_cClass = 'H';}
+	else if (m_iType == PLANETCLASS_Q) {m_cClass = 'Q';}
+	else if (m_iType == PLANETCLASS_K) {m_cClass = 'K';}
+	else if (m_iType == PLANETCLASS_G) {m_cClass = 'G';}
+	else if (m_iType == PLANETCLASS_R) {m_cClass = 'R';}
+	else if (m_iType == PLANETCLASS_F) {m_cClass = 'F';}
+	else if (m_iType == PLANETCLASS_C) {m_cClass = 'C';}
+	else if (m_iType == PLANETCLASS_N) {m_cClass = 'N';}
+	else if (m_iType == PLANETCLASS_A) {m_cClass = 'A';}
+	else if (m_iType == PLANETCLASS_B) {m_cClass = 'B';}
+	else if (m_iType == PLANETCLASS_E) {m_cClass = 'E';}
+	else if (m_iType == PLANETCLASS_Y) {m_cClass = 'Y';}
+	else if (m_iType == PLANETCLASS_I) {m_cClass = 'I';}
+	else if (m_iType == PLANETCLASS_J) {m_cClass = 'J';}
+	else if (m_iType == PLANETCLASS_S) {m_cClass = 'S';}
+	else if (m_iType == PLANETCLASS_T) {m_cClass = 'T';}
 	
 	// Wachstumsprozent des Planeten berechnen
 	SetPlanetGrowth();
@@ -398,20 +344,10 @@ BYTE CPlanet::Create(const CString& sSectorName, BYTE byLastPlanetType, BYTE byP
 	// Namen für den Planeten geben, besteht aus Namen des Sonnensystems und der Nummer
 	m_strName.Format("%s %i",sSectorName, byPlanetNumber + 1);
 	
-	//m_strName.Format("%s %i\nmax. Einwohner: %.3lf Mrd.\nTyp: %i\nGröße: %i\nMultiplikator: %.2lf\nRandomwert: %.2lf\nZone: %i",NameOfSunSystem,NumberOfPlanet+1,m_iMaxHabitant,m_iType,m_iSize,mult,randomwert,Zone);
-	//AfxMessageBox(m_strName);
-	//CString s;
-	//s.Format("%i",m_dMaxHabitant);
-	//AfxMessageBox(s);
-	
 	// eventuelle Boni durch den Planeten berechnen
 	GenerateBoni();
-	
-	// Damit bei Klasse R keine Fehler auftreten und der nächste Planet in der richtigen Zone liegt
-	if (m_cClass == 'R')
-		return byLastPlanetType;
-	
-	return m_iType;
+
+	return nZone;
 }
 
 void CPlanet::DrawPlanet(Graphics &g, const CRect& rect, CGraphicPool* graphicPool)
@@ -648,7 +584,7 @@ void CPlanet::Reset(void)
 	m_bIsTerraforming = FALSE;
 	m_dCurrentHabitant = NULL;
 	m_dMaxHabitant = NULL;
-	m_iSize = NORMAL;
+	m_iSize = PLANT_SIZE::NORMAL;
 	m_iType = PLANETCLASS_I;
 	m_strName = ""; 
 	m_cClass = 'I';

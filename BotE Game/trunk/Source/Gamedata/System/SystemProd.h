@@ -63,7 +63,7 @@ public:
 	short GetMilitarySabotageBoni() const {return m_iMilitarySabotageBoni;}
 	// sonstige Informationen
 	BOOLEAN GetShipYard() const {return m_bShipYard;}
-	BYTE GetMaxBuildableShipSize() const {return m_iBuildableShipSizes;}
+	SHIP_SIZE::Typ GetMaxBuildableShipSize() const {return m_iBuildableShipSizes;}
 	short GetShipYardEfficiency() const {return m_iShipYardEfficiency;}
 	BOOLEAN GetBarrack() const {return m_bBarrack;}
 	short GetBarrackEfficiency() const {return m_iBarracksEfficiency;}
@@ -142,7 +142,7 @@ private:
 	short m_iMilitarySabotageBoni;
 	// sonstige Informationen
 	BOOLEAN m_bShipYard;
-	BYTE m_iBuildableShipSizes;
+	SHIP_SIZE::Typ m_iBuildableShipSizes;
 	short m_iShipYardEfficiency;
 	BOOLEAN m_bBarrack;
 	short m_iBarracksEfficiency;

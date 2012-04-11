@@ -237,7 +237,7 @@ void CAssemblyList::CalculateNeededRessources(CBuildingInfo* buildingInfo, CShip
 		}
 		// hier auch noch den eventuellen Bonus durch die Uniqueforschung "friedliche Schifftechnik"
 		// aber nur wenn es sich um ein Transportschiff oder Kolonieschiff handelt
-		if (ResearchInfo->GetResearchComplex(3)->GetFieldStatus(3) == RESEARCHED && shipInfo->GetShipType() <= COLONYSHIP) 	// 3 -> Allgemeine Schiffstechnik
+		if (ResearchInfo->GetResearchComplex(3)->GetFieldStatus(3) == RESEARCHED && shipInfo->GetShipType() <= SHIP_TYPE::COLONYSHIP) 	// 3 -> Allgemeine Schiffstechnik
 		{
 			m_iNeededIndustryForBuild	-= (int)(ResearchInfo->GetResearchComplex(3)->GetBonus(3)*m_iNeededIndustryForBuild/100);
 			m_iNeededTitanForBuild		-= (int)(ResearchInfo->GetResearchComplex(3)->GetBonus(3)*m_iNeededTitanForBuild/100);

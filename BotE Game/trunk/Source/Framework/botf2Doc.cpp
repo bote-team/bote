@@ -1945,7 +1945,7 @@ void CBotf2Doc::ReadBuildingInfosFromFile()
 				info.SetMilitarySpyBoni(atoi(data[95]));
 				info.SetMilitarySabotageBoni(atoi(data[96]));
 				info.SetShipYard(atoi(data[97]));
-				info.SetBuildableShipTypes(atoi(data[98]));
+				info.SetBuildableShipTypes((SHIP_SIZE::Typ)atoi(data[98]));
 				info.SetShipYardSpeed(atoi(data[99]));
 				info.SetBarrack(atoi(data[100]));
 				info.SetBarrackSpeed(atoi(data[101]));
@@ -2098,8 +2098,8 @@ void CBotf2Doc::ReadShipInfosFromFile()
 				ShipInfo.SetID(j);
 				ShipInfo.SetShipClass(data[1]);
 				ShipInfo.SetShipDescription(data[2]);
-				ShipInfo.SetShipType(atoi(data[3]));
-				ShipInfo.SetShipSize(atoi(data[4]));
+				ShipInfo.SetShipType((SHIP_TYPE::Typ)atoi(data[3]));
+				ShipInfo.SetShipSize((SHIP_SIZE::Typ)atoi(data[4]));
 				ShipInfo.SetManeuverability(atoi(data[5]));
 				ShipInfo.SetBioTech(atoi(data[6]));
 				ShipInfo.SetEnergyTech(atoi(data[7]));
@@ -2118,7 +2118,7 @@ void CBotf2Doc::ReadShipInfosFromFile()
 				ShipInfo.GetHull()->ModifyHull(atoi(data[22]),atoi(data[20]),atoi(data[21]),atoi(data[23]),atoi(data[24]));
 				ShipInfo.GetShield()->ModifyShield(atoi(data[25]),atoi(data[26]),atoi(data[27]));
 				ShipInfo.SetSpeed(atoi(data[28]));
-				ShipInfo.SetRange(atoi(data[29]));
+				ShipInfo.SetRange((SHIP_RANGE::Typ)atoi(data[29]));
 				ShipInfo.SetScanPower(atoi(data[30]));
 				ShipInfo.SetScanRange(atoi(data[31]));
 				ShipInfo.SetStealthPower(atoi(data[32]));
@@ -2197,7 +2197,7 @@ void CBotf2Doc::BuildShip(int nID, const CPoint& KO, const CString& sOwnerID)
 	m_ShipArray[n].SetKO(KO);
 
 	// Schiffsnamen vergeben
-	if (m_ShipArray.GetAt(n).GetShipType() != OUTPOST && m_ShipArray.GetAt(n).GetShipType() != STARBASE)
+	if (m_ShipArray.GetAt(n).GetShipType() != SHIP_TYPE::OUTPOST && m_ShipArray.GetAt(n).GetShipType() != SHIP_TYPE::STARBASE)
 		m_ShipArray.ElementAt(n).SetShipName(m_GenShipName.GenerateShipName(sOwner, FALSE));
 	else
 		m_ShipArray.ElementAt(n).SetShipName(m_GenShipName.GenerateShipName(sOwner, TRUE));
@@ -2331,8 +2331,8 @@ void CBotf2Doc::AddSpecialResearchBoniToShip(CShip* pShip, CMajor* pShipOwner) c
 		// erhoehte Reichweite für Schiffe mit zuvor kurzer Reichweite
 		if (pInfo->GetResearchComplex(2)->GetFieldStatus(1) == RESEARCHED)
 		{
-			if (pShip->GetRange() == RANGE_SHORT)
-				pShip->SetRange((BYTE)(pInfo->GetResearchComplex(2)->GetBonus(1)));
+			if (pShip->GetRange() == SHIP_RANGE::SHORT)
+				pShip->SetRange((SHIP_RANGE::Typ)(pInfo->GetResearchComplex(2)->GetBonus(1)));
 		}
 		// erhoehte Geschwindigkeit für Schiffe mit Geschwindigkeit 1
 		else if (pInfo->GetResearchComplex(2)->GetFieldStatus(2) == RESEARCHED)
@@ -2342,7 +2342,7 @@ void CBotf2Doc::AddSpecialResearchBoniToShip(CShip* pShip, CMajor* pShipOwner) c
 		}
 	}
 	// Spezialforschung #3: "friedliche Schiffstechnik"
-	if (pInfo->GetResearchComplex(3)->GetComplexStatus() == RESEARCHED && pShip->GetShipType() <= COLONYSHIP)
+	if (pInfo->GetResearchComplex(3)->GetComplexStatus() == RESEARCHED && pShip->GetShipType() <= SHIP_TYPE::COLONYSHIP)
 	{
 		// 25% erhoehte Transportkapazitaet
 		if (pInfo->GetResearchComplex(3)->GetFieldStatus(1) == RESEARCHED)
@@ -4512,7 +4512,7 @@ void CBotf2Doc::CalcShipOrders()
 				&& pSector->GetStarbase(pShip->GetOwnerOfShip()) == FALSE)
 				for (int l = 0; l < m_ShipInfoArray.GetSize(); l++)
 					if (m_ShipInfoArray.GetAt(l).GetRace() == pMajor->GetRaceShipNumber()
-						&& m_ShipInfoArray.GetAt(l).GetShipType() == OUTPOST
+						&& m_ShipInfoArray.GetAt(l).GetShipType() == SHIP_TYPE::OUTPOST
 						&& m_ShipInfoArray.GetAt(l).GetBaseIndustry() > costs						
 						&& m_ShipInfoArray.GetAt(l).IsThisShipBuildableNow(researchLevels))
 						{
@@ -4657,7 +4657,7 @@ void CBotf2Doc::CalcShipOrders()
 				&& pSector->GetStarbase(pShip->GetOwnerOfShip()) == FALSE)
 				for (int l = 0; l < m_ShipInfoArray.GetSize(); l++)
 					if (m_ShipInfoArray.GetAt(l).GetRace() == pMajor->GetRaceShipNumber()
-						&& m_ShipInfoArray.GetAt(l).GetShipType() == STARBASE
+						&& m_ShipInfoArray.GetAt(l).GetShipType() == SHIP_TYPE::STARBASE
 						&& m_ShipInfoArray.GetAt(l).GetBaseIndustry() > costs
 						&& m_ShipInfoArray.GetAt(l).IsThisShipBuildableNow(researchLevels))
 						{
@@ -4730,7 +4730,7 @@ void CBotf2Doc::CalcShipOrders()
 									// Wenn wir jetzt die Sternbasis gebaut haben, dann müssen wir den alten Außenposten aus der
 									// Schiffsliste nehmen
 									for (int k = 0; k <= m_ShipArray.GetSize(); k++)
-										if (m_ShipArray[k].GetShipType() == OUTPOST && m_ShipArray[k].GetKO() == pShip->GetKO())
+										if (m_ShipArray[k].GetShipType() == SHIP_TYPE::OUTPOST && m_ShipArray[k].GetKO() == pShip->GetKO())
 										{
 											// ebenfalls muss der Außenposten aus der Shiphistory der aktuellen Schiffe entfernt werden
 											pMajor->GetShipHistory()->RemoveShip(&m_ShipArray[k]);
@@ -4782,7 +4782,7 @@ void CBotf2Doc::CalcShipOrders()
 
 							// Wenn die Sternbasis gebaut haben, dann den alten Außenposten aus der Schiffsliste nehmen
 							for (int k = 0; k < m_ShipArray.GetSize(); k++)
-								if (m_ShipArray[k].GetShipType() == OUTPOST && m_ShipArray[k].GetKO() == pShip->GetKO())
+								if (m_ShipArray[k].GetShipType() == SHIP_TYPE::OUTPOST && m_ShipArray[k].GetKO() == pShip->GetKO())
 								{
 									// ebenfalls muss der Außenposten aus der Shiphistory der aktuellen Schiffe entfernt werden
 									pMajor->GetShipHistory()->RemoveShip(&m_ShipArray[k]);
@@ -4848,7 +4848,7 @@ void CBotf2Doc::CalcShipOrders()
 			}
 
 			// Wenn es ein Außenposten oder eine Sternbasis ist, dann dem Sektor bekanntgeben, dass in ihm keine Station mehr ist
-			if (pShip->GetShipType() == OUTPOST || pShip->GetShipType() == STARBASE)
+			if (pShip->GetShipType() == SHIP_TYPE::OUTPOST || pShip->GetShipType() == SHIP_TYPE::STARBASE)
 			{
 				pSector->SetOutpost(FALSE, pShip->GetOwnerOfShip());
 				pSector->SetStarbase(FALSE, pShip->GetOwnerOfShip());
@@ -5055,7 +5055,7 @@ void CBotf2Doc::CalcShipOrders()
 
 		// Vor der Schiffsbewegung aber nach einer möglichen Demontage dort überall einen ShipPort setzen wo
 		// eine Sternbasis oder ein Außenposten steht
-		if (pShip->GetShipType() == OUTPOST || pShip->GetShipType() == STARBASE)
+		if (pShip->GetShipType() == SHIP_TYPE::OUTPOST || pShip->GetShipType() == SHIP_TYPE::STARBASE)
 		{
 			pSector->SetShipPort(TRUE, pShip->GetOwnerOfShip());			
 		}
@@ -5172,7 +5172,7 @@ void CBotf2Doc::CalcShipMovement()
 			CRace* pRace = NULL;
 
 			// Weltraummonster gesondert behandeln
-			if (pShip->GetShipType() == ALIEN)
+			if (pShip->GetShipType() == SHIP_TYPE::ALIEN)
 			{
 				CStarmap* pStarmap = new CStarmap(0);
 				pStarmap->SetFullRangeMap();
@@ -5592,14 +5592,14 @@ void CBotf2Doc::CalcShipCombat()
 				}
 			}
 			// Wenn es ein Außenposten oder Sternbasis war, so ein Event über dessen Verlust hinzufügen
-			if (m_ShipArray[i].GetShipType() == OUTPOST || m_ShipArray[i].GetShipType() == STARBASE)
+			if (m_ShipArray[i].GetShipType() == SHIP_TYPE::OUTPOST || m_ShipArray[i].GetShipType() == SHIP_TYPE::STARBASE)
 			{
 				CRace* pOwner = m_pRaceCtrl->GetRace(m_ShipArray[i].GetOwnerOfShip());
 				if (pOwner && pOwner->GetType() == MAJOR)
 				{
 					CMajor* pMajor = dynamic_cast<CMajor*>(pOwner);					
 					CString eventText;
-					if (m_ShipArray[i].GetShipType() == OUTPOST)
+					if (m_ShipArray[i].GetShipType() == SHIP_TYPE::OUTPOST)
 						eventText = pMajor->GetMoralObserver()->AddEvent(8, pMajor->GetRaceMoralNumber());
 					else
 						eventText = pMajor->GetMoralObserver()->AddEvent(9, pMajor->GetRaceMoralNumber());
@@ -5823,7 +5823,7 @@ void CBotf2Doc::CalcShipEffects()
 		// Im Sektor die NeededScanPower setzen, die wir brauchen um dort Schiffe zu sehen. Wir sehen ja keine getarneten
 		// Schiffe, wenn wir dort nicht eine ausreichend hohe Scanpower haben. Ab Stealthstufe 4 muss das Schiff getarnt
 		// sein, ansonsten gilt dort nur Stufe 3.
-		if (m_ShipArray[y].GetShipType() != OUTPOST && m_ShipArray[y].GetShipType() != STARBASE)
+		if (m_ShipArray[y].GetShipType() != SHIP_TYPE::OUTPOST && m_ShipArray[y].GetShipType() != SHIP_TYPE::STARBASE)
 		{
 			short stealthPower = m_ShipArray[y].GetStealthPower() * 20;
 			if (m_ShipArray[y].GetStealthPower() > 3 && m_ShipArray[y].GetCloak() == FALSE)
@@ -5932,16 +5932,16 @@ void CBotf2Doc::CalcShipEffects()
 		// eine Station teilnahm, dann haben wir den Shipport in dem Sektor vorläufig entfernt. Es kann ja passieren,
 		// dass die Station zerstört wird. Haben wir jetzt aber immernoch eine Station, dann bleibt der Shipport dort auch
 		// bestehen
-		if (m_ShipArray[y].GetShipType() == OUTPOST || m_ShipArray[y].GetShipType() == STARBASE)
+		if (m_ShipArray[y].GetShipType() == SHIP_TYPE::OUTPOST || m_ShipArray[y].GetShipType() == SHIP_TYPE::STARBASE)
 		{
 			m_Sector[p.x][p.y].SetShipPort(TRUE, sRace);
-			if (m_ShipArray[y].GetShipType() == OUTPOST)
+			if (m_ShipArray[y].GetShipType() == SHIP_TYPE::OUTPOST)
 				m_Sector[p.x][p.y].SetOutpost(TRUE, sRace);
 			else
 				m_Sector[p.x][p.y].SetStarbase(TRUE, sRace);
 		}
 		// Dem Sektor bekanntgeben, das in ihm ein Schiff ist
-		if (m_ShipArray[y].GetShipType() != OUTPOST && m_ShipArray[y].GetShipType() != STARBASE) 
+		if (m_ShipArray[y].GetShipType() != SHIP_TYPE::OUTPOST && m_ShipArray[y].GetShipType() != SHIP_TYPE::STARBASE) 
 			m_Sector[p.x][p.y].SetOwnerOfShip(TRUE, sRace);
 	}
 }
@@ -6584,7 +6584,7 @@ void CBotf2Doc::CalcRandomAlienEntities()
 	for (int i = 0; i < m_ShipInfoArray.GetSize(); i++)
 	{
 		CShipInfo* pShipInfo = &m_ShipInfoArray.GetAt(i);
-		if (pShipInfo->GetShipType() != ALIEN)
+		if (pShipInfo->GetShipType() != SHIP_TYPE::ALIEN)
 			continue;
 
 		// zugehörige Minorrace finden
@@ -6664,7 +6664,7 @@ void CBotf2Doc::CalcAlienShipEffects()
 	for (int i = 0; i < m_ShipArray.GetSize(); i++)
 	{
 		CShip* pShip = &m_ShipArray.GetAt(i);
-		if (pShip->GetShipType() != ALIEN)
+		if (pShip->GetShipType() != SHIP_TYPE::ALIEN)
 			continue;
 
 		// Aliens mit Rückzugsbefehl machen nix
@@ -6747,11 +6747,11 @@ void CBotf2Doc::CalcAlienShipEffects()
 						continue;
 
 					// keine anderen Alienschiffe
-					if (pOtherShip->GetShipType() == ALIEN || (pOtherShip->GetAlienType() & ALIEN_TYPE::GABALLIANER_SEUCHENSCHIFF) > 0)
+					if (pOtherShip->GetShipType() == SHIP_TYPE::ALIEN || (pOtherShip->GetAlienType() & ALIEN_TYPE::GABALLIANER_SEUCHENSCHIFF) > 0)
 						continue;
 
 					// keine Außenposten und Sternenbasen
-					if (pOtherShip->GetShipType() == OUTPOST || pOtherShip->GetShipType() == STARBASE)
+					if (pOtherShip->GetShipType() == SHIP_TYPE::OUTPOST || pOtherShip->GetShipType() == SHIP_TYPE::STARBASE)
 						continue;
 
 					vector<CShip*> vShips;

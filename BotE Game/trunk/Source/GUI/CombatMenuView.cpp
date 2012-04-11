@@ -758,13 +758,13 @@ void CCombatMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		if (ButtonReactOnLeftClick(point, &m_ShipTypeButton, iClick, true, true))
 		{		
 			m_nShipType++;
-			if (m_nShipType > ALIEN - 1)
+			if (m_nShipType > SHIP_TYPE::ALIEN - 1)
 				m_nShipType = -1;
 			CString s = CResourceManager::GetString("ALL_SHIPS");
 			if (m_nShipType != -1)
 			{
 				CShip temp;
-				temp.SetShipType(m_nShipType);
+				temp.SetShipType((SHIP_TYPE::Typ)m_nShipType);
 				s = temp.GetShipTypeAsString();
 			}
 			m_ShipTypeButton[0]->SetText(s);
@@ -941,12 +941,12 @@ void CCombatMenuView::OnRButtonDown(UINT nFlags, CPoint point)
 	{		
 		m_nShipType--;
 		if (m_nShipType < -1)
-			m_nShipType = ALIEN - 1;
+			m_nShipType = SHIP_TYPE::ALIEN - 1;
 		CString s = CResourceManager::GetString("ALL_SHIPS");
 		if (m_nShipType != -1)
 		{
 			CShip temp;
-			temp.SetShipType(m_nShipType);
+			temp.SetShipType((SHIP_TYPE::Typ)m_nShipType);
 			s = temp.GetShipTypeAsString();
 		}
 		m_ShipTypeButton[0]->SetText(s);

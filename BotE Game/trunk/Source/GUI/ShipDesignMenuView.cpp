@@ -192,7 +192,7 @@ void CShipDesignMenuView::DrawShipDesignMenue(Graphics* g)
 	// Es gehen nur 21 Einträge auf die Seite, deshalb muss abgebrochen werden
 	for (int i = 0; i < pDoc->m_ShipInfoArray.GetSize(); i++)
 		if (pDoc->m_ShipInfoArray.GetAt(i).GetRace() == pMajor->GetRaceShipNumber())
-			if (pDoc->m_ShipInfoArray.GetAt(i).GetShipType() != OUTPOST && pDoc->m_ShipInfoArray.GetAt(i).GetShipType() != STARBASE)
+			if (pDoc->m_ShipInfoArray.GetAt(i).GetShipType() != SHIP_TYPE::OUTPOST && pDoc->m_ShipInfoArray.GetAt(i).GetShipType() != SHIP_TYPE::STARBASE)
 				if (pDoc->m_ShipInfoArray.GetAt(i).IsThisShipBuildableNow(researchLevels))
 				{					
 					// wurde dieses Schiff durch kein anderes jetzt baubares Schiff schon obsolet?
@@ -458,7 +458,7 @@ void CShipDesignMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 	
 	for (int i = 0; i < pDoc->m_ShipInfoArray.GetSize(); i++)
 		if (pDoc->m_ShipInfoArray.GetAt(i).GetRace() == pMajor->GetRaceShipNumber())
-			if (pDoc->m_ShipInfoArray.GetAt(i).GetShipType() != OUTPOST && pDoc->m_ShipInfoArray.GetAt(i).GetShipType() != STARBASE)
+			if (pDoc->m_ShipInfoArray.GetAt(i).GetShipType() != SHIP_TYPE::OUTPOST && pDoc->m_ShipInfoArray.GetAt(i).GetShipType() != SHIP_TYPE::STARBASE)
 				if (pDoc->m_ShipInfoArray.GetAt(i).IsThisShipBuildableNow(researchLevels))				
 				{
 					// wurde dieses Schiff durch kein anderes jetzt baubares Schiff schon obsolet?

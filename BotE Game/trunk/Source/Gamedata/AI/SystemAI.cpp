@@ -783,7 +783,7 @@ int CSystemAI::ChooseShip(int prio, BOOLEAN chooseCombatship, BOOLEAN chooseColo
 		for (int j = 0; j < m_pDoc->m_ShipInfoArray.GetSize(); j++)
 			// passt die Schiffsnummer zur Rassennummer
 			if (m_pDoc->m_ShipInfoArray.GetAt(j).GetRace() == pRace->GetRaceShipNumber()
-				&& m_pDoc->m_ShipInfoArray.GetAt(j).GetShipType() == COLONYSHIP
+				&& m_pDoc->m_ShipInfoArray.GetAt(j).GetShipType() == SHIP_TYPE::COLONYSHIP
 				&& m_pDoc->m_ShipInfoArray.GetAt(j).IsThisShipBuildableNow(researchLevels))
 			{
 				int id = m_pDoc->m_ShipInfoArray.GetAt(j).GetID();
@@ -806,7 +806,7 @@ int CSystemAI::ChooseShip(int prio, BOOLEAN chooseCombatship, BOOLEAN chooseColo
 		for (int j = 0; j < m_pDoc->m_ShipInfoArray.GetSize(); j++)
 			// passt die Schiffsnummer zur Rassennummer
 			if (m_pDoc->m_ShipInfoArray.GetAt(j).GetRace() == pRace->GetRaceShipNumber()
-				&& m_pDoc->m_ShipInfoArray.GetAt(j).GetShipType() == TRANSPORTER
+				&& m_pDoc->m_ShipInfoArray.GetAt(j).GetShipType() == SHIP_TYPE::TRANSPORTER
 				&& m_pDoc->m_ShipInfoArray.GetAt(j).IsThisShipBuildableNow(researchLevels))
 			{
 				int id = m_pDoc->m_ShipInfoArray.GetAt(j).GetID();
@@ -841,7 +841,7 @@ int CSystemAI::ChooseShip(int prio, BOOLEAN chooseCombatship, BOOLEAN chooseColo
 		for (int i = 0; i < m_pDoc->m_System[ko.x][ko.y].GetBuildableShips()->GetSize(); i++)
 		{
 			int id = m_pDoc->m_System[ko.x][ko.y].GetBuildableShips()->GetAt(i);
-			if (m_pDoc->m_ShipInfoArray.GetAt(id-10000).GetShipType() > COLONYSHIP)
+			if (m_pDoc->m_ShipInfoArray.GetAt(id-10000).GetShipType() > SHIP_TYPE::COLONYSHIP)
 			{
 				UINT strenght = m_pDoc->m_ShipInfoArray.GetAt(id-10000).GetCompleteOffensivePower() +
 					m_pDoc->m_ShipInfoArray.GetAt(id-10000).GetCompleteDefensivePower() / 2;

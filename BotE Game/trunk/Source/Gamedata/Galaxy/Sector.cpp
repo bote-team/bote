@@ -409,7 +409,7 @@ void CSector::CreatePlanets(const CString& sMajorID)
 						planet.SetCurrentHabitant(curHabitant); //aktuelle Einwohner
 						planet.SetHabitable(atoi(data[5]));//bewohnbar
 						planet.SetTerraformed(atoi(data[6]));//terraformed
-						planet.SetSize(atoi(data[7]));//Größe
+						planet.SetSize((PLANT_SIZE::Typ)atoi(data[7]));//Größe
 						planet.SetClass(data[8][0]);//Planetenklasse Char
 						planet.SetPlanetGrowth();
 						planet.SetGraphicType(rand()%GRAPHICNUMBER);
@@ -421,11 +421,18 @@ void CSector::CreatePlanets(const CString& sMajorID)
 				else
 				{
 					while (true)//Falls Major in der Datei nicht definiert ist wird der bisherige Generierungsalgorithmus benutzt
-						{
+					{
 						m_Planets.RemoveAll();
 
 						short number = (rand()%8+1 + rand()%8+1 + rand()%8+1 + 1) / 3;
-						BYTE zone = HOT;
+						PLANET_ZONE::Typ zone = PLANET_ZONE::HOT;
+						// mit welcher Plantenzone soll zufällig begonnen werden
+						int nRandom = rand()%10;
+						if (nRandom == 0)
+							zone = PLANET_ZONE::COOL;
+						else if (nRandom < 3)
+							zone = PLANET_ZONE::TEMPERATE;
+
 						for (int i = 0; i < number; i++)
 						{
 							CPlanet planet;
@@ -491,7 +498,14 @@ void CSector::CreatePlanets(const CString& sMajorID)
 			// dreimal die Zufallsfunktion aufgerufen, damit die mittlere Planetenanzahl häufiger als ganz wenig oder
 			// sehr viele Planeten vorkommt.
 			short number = (rand()%8+1 + rand()%8+1 + rand()%8+1 + 1) / 3;
-			BYTE zone = HOT;
+			PLANET_ZONE::Typ zone = PLANET_ZONE::HOT;
+			// mit welcher Plantenzone soll zufällig begonnen werden
+			int nRandom = rand()%10;
+			if (nRandom == 0)
+				zone = PLANET_ZONE::COOL;
+			else if (nRandom < 3)
+				zone = PLANET_ZONE::TEMPERATE;
+
 			for (int i = 0; i < number; i++)
 			{
 				CPlanet planet;

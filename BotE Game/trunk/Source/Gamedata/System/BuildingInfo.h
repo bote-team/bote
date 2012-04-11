@@ -191,7 +191,7 @@ public:
 	
 	// Hier die restlichen Zugriffsfunktionen
 	BOOLEAN GetShipYard() const {return m_bShipYard;}
-	BYTE GetMaxBuildableShipSize() const {return m_iBuildableShipSizes;}
+	SHIP_SIZE::Typ GetMaxBuildableShipSize() const {return m_iBuildableShipSizes;}
 	short GetShipYardSpeed() const {return m_iShipYardSpeed;}
 	BOOLEAN GetBarrack() const {return m_bBarrack;}
 	short GetBarrackSpeed() const {return m_iBarrackSpeed;}
@@ -359,7 +359,7 @@ public:
 	void SetMilitarySabotageBoni(short MilitarySabotageBoni) {m_iMilitarySabotageBoni = MilitarySabotageBoni;}
 	
 	void SetShipYard(BOOLEAN TrueOrFalse) {m_bShipYard = TrueOrFalse;}
-	void SetBuildableShipTypes(BYTE type) {m_iBuildableShipSizes = type;}
+	void SetBuildableShipTypes(SHIP_SIZE::Typ nSize) {m_iBuildableShipSizes = nSize;}
 	void SetShipYardSpeed(short speed) {m_iShipYardSpeed = speed;}
 	void SetBarrack(BOOLEAN TrueOrFalse) {m_bBarrack = TrueOrFalse;}
 	void SetBarrackSpeed(short speed) {m_iBarrackSpeed = speed;}
@@ -541,7 +541,7 @@ private:
 
 	// sonstige Informationen
 	BOOLEAN m_bShipYard;
-	BYTE m_iBuildableShipSizes;
+	SHIP_SIZE::Typ m_iBuildableShipSizes;
 	short m_iShipYardSpeed;
 	BOOLEAN m_bBarrack;
 	short m_iBarrackSpeed;

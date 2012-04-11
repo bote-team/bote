@@ -423,7 +423,7 @@ BYTE CCombatShip::GetAccBoniFromSpecials(void)
 		boni += 20;
 	// Wenn wir die Dogfighter/Nahkämpfer Eigenschaft haben, dann bekommen wir einen 20% Bonus, wenn
 	// wir gegen kleine Gegner kämpfen
-	if (m_pShip->HasSpecial(DOGFIGHTER) && m_pTarget->m_pShip->GetShipSize() == SMALL)
+	if (m_pShip->HasSpecial(DOGFIGHTER) && m_pTarget->m_pShip->GetShipSize() == SHIP_SIZE::SMALL)
 		boni += 30;
 	// Wenn wir die Dogkiller/Antinahkämpfer Eigenschaft haben, dann bekommen wir einen 20% Bonus gegen Dogfighter/Nahkämpfer
 	if (m_pShip->HasSpecial(DOGKILLER) && m_pTarget->m_pShip->HasSpecial(DOGFIGHTER))
@@ -439,7 +439,7 @@ BYTE CCombatShip::GetAccBoniFromSpecials(void)
 // @return Wahrheitswert
 bool CCombatShip::AllowFire(const CFireArc* arc)
 {
-	if (this->m_pShip->GetShipType() == OUTPOST || this->m_pShip->GetShipType() == STARBASE)
+	if (this->m_pShip->GetShipType() == SHIP_TYPE::OUTPOST || this->m_pShip->GetShipType() == SHIP_TYPE::STARBASE)
 		return true;
 	/*
 	Ich fasse nochmal zusammen was benötigt wird und was mittels Variablen festgehalten werden müsste:
@@ -641,11 +641,11 @@ void CCombatShip::FireBeam(int beamWeapon, int distance, BYTE boni)
 			+ m_pShip->GetBeamWeapons()->GetAt(beamWeapon).GetBonus() + m_pShip->GetBeamWeapons()->GetAt(beamWeapon).GetBeamType());
 		
 		// Modifikation durch die Schiffsgröße
-		if (m_pTarget->m_pShip->GetShipSize() == 0)
+		if (m_pTarget->m_pShip->GetShipSize() == SHIP_SIZE::SMALL)
 			Acc = (short)(Acc * 0.66);
-		else if (m_pTarget->m_pShip->GetShipSize() == 2)
+		else if (m_pTarget->m_pShip->GetShipSize() == SHIP_SIZE::BIG)
 			Acc = (short)(Acc * 1.33);
-		else if (m_pTarget->m_pShip->GetShipSize() >= 3)
+		else if (m_pTarget->m_pShip->GetShipSize() >= SHIP_SIZE::HUGE)
 			Acc = (short)(Acc * 1.66);
 										
 		// Wird Schaden gemacht?

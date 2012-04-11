@@ -81,7 +81,7 @@ CShip::CShip(const CShip & rhs)
 	m_sOwnerOfShip = rhs.m_sOwnerOfShip;
 	m_iMaintenanceCosts = rhs.m_iMaintenanceCosts;
 	m_iShipType = rhs.m_iShipType;
-	m_byShipSize = rhs.m_byShipSize;
+	m_nShipSize = rhs.m_nShipSize;
 	m_byManeuverability = rhs.m_byManeuverability;
 	m_iSpeed = rhs.m_iSpeed;
 	m_iRange = rhs.m_iRange;
@@ -146,7 +146,7 @@ CShip & CShip::operator=(const CShip & rhs)
 	m_sOwnerOfShip = rhs.m_sOwnerOfShip;
 	m_iMaintenanceCosts = rhs.m_iMaintenanceCosts;
 	m_iShipType = rhs.m_iShipType;
-	m_byShipSize = rhs.m_byShipSize;
+	m_nShipSize = rhs.m_nShipSize;
 	m_byManeuverability = rhs.m_byManeuverability;
 	m_iSpeed = rhs.m_iSpeed;
 	m_iRange = rhs.m_iRange;
@@ -195,7 +195,7 @@ void CShip::Serialize(CArchive &ar)
 		ar << m_sOwnerOfShip;
 		ar << m_iMaintenanceCosts;
 		ar << m_iShipType;
-		ar << m_byShipSize;
+		ar << m_nShipSize;
 		ar << m_byManeuverability;
 		ar << m_iSpeed;
 		ar << m_iRange;
@@ -241,11 +241,17 @@ void CShip::Serialize(CArchive &ar)
 			ar >> m_TargetKO[i];
 		ar >> m_sOwnerOfShip;
 		ar >> m_iMaintenanceCosts;
-		ar >> m_iShipType;
-		ar >> m_byShipSize;
+		int nType;
+		ar >> nType;
+		m_iShipType = (SHIP_TYPE::Typ)nType;
+		int nSize;
+		ar >> nSize;
+		m_nShipSize = (SHIP_SIZE::Typ)nSize;
 		ar >> m_byManeuverability;
 		ar >> m_iSpeed;
-		ar >> m_iRange;
+		int nRange;
+		ar >> nRange;
+		m_iRange = (SHIP_RANGE::Typ)nRange;
 		ar >> m_iScanPower;
 		ar >> m_iScanRange;
 		ar >> m_iCrewExperiance;
@@ -301,43 +307,47 @@ CString CShip::GetShipTypeAsString(BOOL plural) const
 {
 	CString shipType;
 	if (plural == FALSE)
+	{
 		switch (m_iShipType)
 		{
-		case TRANSPORTER: shipType = CResourceManager::GetString("TRANSPORTER"); break;
-		case COLONYSHIP: shipType = CResourceManager::GetString("COLONIZESHIP"); break;
-		case PROBE: shipType = CResourceManager::GetString("PROBE"); break;
-		case SCOUT: shipType = CResourceManager::GetString("SCOUT"); break;
-		case FIGHTER: shipType = CResourceManager::GetString("FIGHTER"); break;
-		case FRIGATE: shipType = CResourceManager::GetString("FRIGATE"); break;
-		case DESTROYER: shipType = CResourceManager::GetString("DESTROYER"); break;
-		case CRUISER: shipType = CResourceManager::GetString("CRUISER"); break;
-		case HEAVY_DESTROYER: shipType = CResourceManager::GetString("HEAVY_DESTROYER"); break;
-		case HEAVY_CRUISER: shipType = CResourceManager::GetString("HEAVY_CRUISER"); break;
-		case BATTLESHIP: shipType = CResourceManager::GetString("BATTLESHIP"); break;
-		case DREADNOUGHT: shipType = CResourceManager::GetString("DREADNOUGHT"); break;
-		case OUTPOST: shipType = CResourceManager::GetString("OUTPOST"); break;
-		case STARBASE: shipType = CResourceManager::GetString("STARBASE"); break;
-		case ALIEN: shipType = CResourceManager::GetString("ALIEN"); break;
+		case SHIP_TYPE::TRANSPORTER: shipType = CResourceManager::GetString("TRANSPORTER"); break;
+		case SHIP_TYPE::COLONYSHIP: shipType = CResourceManager::GetString("COLONIZESHIP"); break;
+		case SHIP_TYPE::PROBE: shipType = CResourceManager::GetString("PROBE"); break;
+		case SHIP_TYPE::SCOUT: shipType = CResourceManager::GetString("SCOUT"); break;
+		case SHIP_TYPE::FIGHTER: shipType = CResourceManager::GetString("FIGHTER"); break;
+		case SHIP_TYPE::FRIGATE: shipType = CResourceManager::GetString("FRIGATE"); break;
+		case SHIP_TYPE::DESTROYER: shipType = CResourceManager::GetString("DESTROYER"); break;
+		case SHIP_TYPE::CRUISER: shipType = CResourceManager::GetString("CRUISER"); break;
+		case SHIP_TYPE::HEAVY_DESTROYER: shipType = CResourceManager::GetString("HEAVY_DESTROYER"); break;
+		case SHIP_TYPE::HEAVY_CRUISER: shipType = CResourceManager::GetString("HEAVY_CRUISER"); break;
+		case SHIP_TYPE::BATTLESHIP: shipType = CResourceManager::GetString("BATTLESHIP"); break;
+		case SHIP_TYPE::DREADNOUGHT: shipType = CResourceManager::GetString("DREADNOUGHT"); break;
+		case SHIP_TYPE::OUTPOST: shipType = CResourceManager::GetString("OUTPOST"); break;
+		case SHIP_TYPE::STARBASE: shipType = CResourceManager::GetString("STARBASE"); break;
+		case SHIP_TYPE::ALIEN: shipType = CResourceManager::GetString("ALIEN"); break;
 		}
+	}
 	else
+	{
 		switch (m_iShipType)
 		{
-		case TRANSPORTER: shipType = CResourceManager::GetString("TRANSPORTERS"); break;
-		case COLONYSHIP: shipType = CResourceManager::GetString("COLONIZESHIPS"); break;
-		case PROBE: shipType = CResourceManager::GetString("PROBES"); break;
-		case SCOUT: shipType = CResourceManager::GetString("SCOUTS"); break;
-		case FIGHTER: shipType = CResourceManager::GetString("FIGHTERS"); break;
-		case FRIGATE: shipType = CResourceManager::GetString("FRIGATES"); break;
-		case DESTROYER: shipType = CResourceManager::GetString("DESTROYERS"); break;
-		case CRUISER: shipType = CResourceManager::GetString("CRUISERS"); break;
-		case HEAVY_DESTROYER: shipType = CResourceManager::GetString("HEAVY_DESTROYERS"); break;
-		case HEAVY_CRUISER: shipType = CResourceManager::GetString("HEAVY_CRUISERS"); break;
-		case BATTLESHIP: shipType = CResourceManager::GetString("BATTLESHIPS"); break;
-		case DREADNOUGHT: shipType = CResourceManager::GetString("DREADNOUGHTS"); break;
-		case OUTPOST: shipType = CResourceManager::GetString("OUTPOSTS"); break;
-		case STARBASE: shipType = CResourceManager::GetString("STARBASES"); break;
-		case ALIEN: shipType = CResourceManager::GetString("ALIENS"); break;
+		case SHIP_TYPE::TRANSPORTER: shipType = CResourceManager::GetString("TRANSPORTERS"); break;
+		case SHIP_TYPE::COLONYSHIP: shipType = CResourceManager::GetString("COLONIZESHIPS"); break;
+		case SHIP_TYPE::PROBE: shipType = CResourceManager::GetString("PROBES"); break;
+		case SHIP_TYPE::SCOUT: shipType = CResourceManager::GetString("SCOUTS"); break;
+		case SHIP_TYPE::FIGHTER: shipType = CResourceManager::GetString("FIGHTERS"); break;
+		case SHIP_TYPE::FRIGATE: shipType = CResourceManager::GetString("FRIGATES"); break;
+		case SHIP_TYPE::DESTROYER: shipType = CResourceManager::GetString("DESTROYERS"); break;
+		case SHIP_TYPE::CRUISER: shipType = CResourceManager::GetString("CRUISERS"); break;
+		case SHIP_TYPE::HEAVY_DESTROYER: shipType = CResourceManager::GetString("HEAVY_DESTROYERS"); break;
+		case SHIP_TYPE::HEAVY_CRUISER: shipType = CResourceManager::GetString("HEAVY_CRUISERS"); break;
+		case SHIP_TYPE::BATTLESHIP: shipType = CResourceManager::GetString("BATTLESHIPS"); break;
+		case SHIP_TYPE::DREADNOUGHT: shipType = CResourceManager::GetString("DREADNOUGHTS"); break;
+		case SHIP_TYPE::OUTPOST: shipType = CResourceManager::GetString("OUTPOSTS"); break;
+		case SHIP_TYPE::STARBASE: shipType = CResourceManager::GetString("STARBASES"); break;
+		case SHIP_TYPE::ALIEN: shipType = CResourceManager::GetString("ALIENS"); break;
 		}
+	}
 	
 	return shipType;
 }
@@ -514,7 +524,7 @@ UINT CShip::GetCompleteOffensivePower(bool bBeams/* = true*/, bool bTorpedos/* =
 	}
 
 	// Stationen bekommen einen Bonus, da sie keine Feuerwinkel beachten
-	if (m_iShipType == OUTPOST || m_iShipType == STARBASE)
+	if (m_iShipType == SHIP_TYPE::OUTPOST || m_iShipType == SHIP_TYPE::STARBASE)
 	{
 		beamDmg = (UINT)(beamDmg * 1.5);
 		torpedoDmg = (UINT)(torpedoDmg * 1.5);
@@ -522,7 +532,7 @@ UINT CShip::GetCompleteOffensivePower(bool bBeams/* = true*/, bool bTorpedos/* =
 
 	// Manövrierfähigkeit geht mit in den Wert ein
 	double dMan = 1.0;
-	if (m_iShipType != OUTPOST && m_iShipType != STARBASE)
+	if (m_iShipType != SHIP_TYPE::OUTPOST && m_iShipType != SHIP_TYPE::STARBASE)
 		dMan = ((int)m_byManeuverability - 4.0) / 10.0 * 1.75 + 1.0;
 
 	// Tarnung geht mit in den Wert ein
@@ -560,7 +570,7 @@ UINT CShip::GetCompleteDefensivePower(bool bShields/* = true*/, bool bHull/* = t
 	
 	// Manövrierfähigkeit geht mit in den Wert ein
 	double dMan = 1.0;
-	if (m_iShipType != OUTPOST && m_iShipType != STARBASE)
+	if (m_iShipType != SHIP_TYPE::OUTPOST && m_iShipType != SHIP_TYPE::STARBASE)
 		dMan = ((int)m_byManeuverability - 4.0) / 10.0 * 1.75 + 1.0;
 		
 	// Tarnung geht mit in den Wert ein
@@ -623,8 +633,8 @@ BYTE CShip::GetExpLevel() const
 
 void CShip::SetCrewExperiance(int nAdd)
 {
-	// Sonden sammeln keine Erfahrung
-	if (m_iShipType != PROBE)
+	// Sonden und Aliens sammeln keine Erfahrung
+	if (m_iShipType != SHIP_TYPE::PROBE && m_iShipType != SHIP_TYPE::ALIEN)
 		m_iCrewExperiance = min(64000, m_iCrewExperiance + nAdd);
 }
 
@@ -683,14 +693,14 @@ CString CShip::GetTooltip(bool bShowFleet/*= true*/)
 	sMovementHead += CHTMLStringBuilder::GetHTMLStringNewLine();
 	
 	CString sMovement = CResourceManager::GetString("RANGE") + _T(": ");
-	BYTE byRange = this->GetRange();
+	SHIP_RANGE::Typ nRange = this->GetRange();
 	if (bShowFleet && this->GetFleet())
-		byRange = this->GetFleet()->GetFleetRange();
-	if (byRange == RANGE_SHORT)
+		nRange = this->GetFleet()->GetFleetRange();
+	if (nRange == SHIP_RANGE::SHORT)
 		sMovement += CResourceManager::GetString("SHORT");
-	else if (byRange == RANGE_MIDDLE)
+	else if (nRange == SHIP_RANGE::MIDDLE)
 		sMovement += CResourceManager::GetString("MIDDLE");
-	else if (byRange == RANGE_LONG)
+	else if (nRange == SHIP_RANGE::LONG)
 		sMovement += CResourceManager::GetString("LONG");
 	sMovement += CHTMLStringBuilder::GetHTMLStringNewLine();
 	CString sSpeed;
@@ -1074,7 +1084,7 @@ void CShip::DrawShip(Gdiplus::Graphics* g, CGraphicPool* pGraphicPool, const CPo
 		// normale Infos zum Schiff sollen angezeigt werden
 		if (!bDrawFleet)
 		{
-			if (m_iShipType != ALIEN)
+			if (m_iShipType != SHIP_TYPE::ALIEN)
 			{
 				g->DrawString(m_strShipName.AllocSysString(), -1, &font, PointF((REAL)pt.x + 120, (REAL)pt.y + 37), &fontFormat, &fontBrush);
 				s = m_strShipClass + "-" + CResourceManager::GetString("CLASS");
@@ -1126,5 +1136,5 @@ void CShip::SetTargetKO(const CPoint& TargetKO, int Index)
 
 bool CShip::HasNothingToDo() const {
 	return (m_iCurrentOrder == AVOID || m_iCurrentOrder == ATTACK)
-		&& (GetTargetKO() == GetKO() || GetTargetKO() == CPoint(-1, -1)) && m_iShipType != OUTPOST && m_iShipType != STARBASE;
+		&& (GetTargetKO() == GetKO() || GetTargetKO() == CPoint(-1, -1)) && m_iShipType != SHIP_TYPE::OUTPOST && m_iShipType != SHIP_TYPE::STARBASE;
 }

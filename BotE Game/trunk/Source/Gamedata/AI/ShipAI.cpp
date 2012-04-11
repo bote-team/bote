@@ -84,7 +84,7 @@ void CShipAI::CalculateShipOrders(CSectorAI* SectorAI)
 
 		// haben Kolonieschiffe einen Sektor zum Terraformen als Ziel, welcher kurz zuvor aber von einer
 		// anderen Rasse weggeschnappt wurde, so wird ihr Kurs gelöscht
-		if (pShip->GetShipType() == COLONYSHIP)
+		if (pShip->GetShipType() == SHIP_TYPE::COLONYSHIP)
 		{
 			CPoint ptKO = pShip->GetKO();
 			// hat das Kolonieschiff den Befehl zum Terraformen, so wird dieser rückgängig gemacht, wenn der Sektor
@@ -113,7 +113,7 @@ void CShipAI::CalculateShipOrders(CSectorAI* SectorAI)
 		if (pShip->GetPath()->GetSize() == 0)
 		{
 			// Scouts und Kriegsschiffe fliegen zuerst einmal zu den Minorracesystemen
-			if (pShip->GetShipType() > COLONYSHIP)
+			if (pShip->GetShipType() > SHIP_TYPE::COLONYSHIP)
 			{
 				// Zeiger auf Vektor mit Minorracessektoren holen
 				vector<CPoint>* vMinorraceSectors = m_pSectorAI->GetMinorraceSectors(sOwner);
@@ -149,7 +149,7 @@ void CShipAI::CalculateShipOrders(CSectorAI* SectorAI)
 
 			// Kolonieschiffe zum Terraformen schicken. Andere Schiffe fliegen manchmal auch dort hin, wenn
 			// sie gerade keinen anderen Flugauftrag haben.
-			if (pShip->GetShipType() >= COLONYSHIP && pShip->GetCurrentOrder() != TERRAFORM)
+			if (pShip->GetShipType() >= SHIP_TYPE::COLONYSHIP && pShip->GetCurrentOrder() != TERRAFORM)
 			{
 				// Zeiger auf Vektor mit Terraformsektoren holen
 				vector<CSectorAI::SectorToTerraform>* vSectorsToTerrform = m_pSectorAI->GetSectorsToTerraform(sOwner);
@@ -158,7 +158,7 @@ void CShipAI::CalculateShipOrders(CSectorAI* SectorAI)
 				{
 					CPoint ko = vSectorsToTerrform->at(j).p;
 					// Wenn das Kolonieschiff schon auf einem Sektor für unser Terraforming steht, so fliegt es nicht weiter
-					if (pShip->GetShipType() == COLONYSHIP && pShip->GetKO() == ko)
+					if (pShip->GetShipType() == SHIP_TYPE::COLONYSHIP && pShip->GetKO() == ko)
 						break;
 					
 					// Wenn Gefahr der anderen Rassen kleiner als die der meinen ist
@@ -181,7 +181,7 @@ void CShipAI::CalculateShipOrders(CSectorAI* SectorAI)
 			{
 				// nur Truppentransporter oder andere Schiffe ohne Ziel fliegen zu diesem Punkt, niemals aber
 				// Kolonieschiffe
-				if (pShip->GetShipType() == TRANSPORTER	|| (pShip->GetShipType() != COLONYSHIP && pShip->GetTargetKO() == pShip->GetKO()))
+				if (pShip->GetShipType() == SHIP_TYPE::TRANSPORTER	|| (pShip->GetShipType() != SHIP_TYPE::COLONYSHIP && pShip->GetTargetKO() == pShip->GetKO()))
 				{
 					CPoint ko(m_pSectorAI->GetStationBuildSector(sOwner).position.x, m_pSectorAI->GetStationBuildSector(sOwner).position.y);
 					// Wenn Gefahr der anderen Rassen kleiner als die der meinen ist
@@ -294,7 +294,7 @@ bool CShipAI::DoColonize(CShip* pShip)
 	}
 
 	// Kolonieschiffe eine Kolonisierung vorschlagen
-	if (pShip->GetShipType() != COLONYSHIP)
+	if (pShip->GetShipType() != SHIP_TYPE::COLONYSHIP)
 		return false;
 
 	CSector* pSector = &m_pDoc->GetSector(pShip->GetKO());	
@@ -337,7 +337,7 @@ bool CShipAI::DoAttackMove(CShip* pShip, const CMajor* pMajor)
 		return false;
 	}
 
-	if (pShip->GetShipType() <= COLONYSHIP || pShip->GetShipType() >= OUTPOST)
+	if (pShip->GetShipType() <= SHIP_TYPE::COLONYSHIP || pShip->GetShipType() >= SHIP_TYPE::OUTPOST)
 		return false;
 
 	if (DoBombardSystem(pShip))
@@ -518,7 +518,7 @@ void CShipAI::DoMakeFleet(CShip* pShip, int nIndex)
 		return;
 	}
 
-	if (pShip->GetShipType() == OUTPOST || pShip->GetShipType() == STARBASE)
+	if (pShip->GetShipType() == SHIP_TYPE::OUTPOST || pShip->GetShipType() == SHIP_TYPE::STARBASE)
 		return;
 
 	ASSERT(pShip == &m_pDoc->m_ShipArray.GetAt(nIndex));
@@ -539,7 +539,7 @@ void CShipAI::DoMakeFleet(CShip* pShip, int nIndex)
 			continue;
 
 		// das hinzuzufügende Schiff darf kein Außenposten oder Sternbasis sein
-		if (pOtherShip->GetShipType() == OUTPOST || pOtherShip->GetShipType() == STARBASE)
+		if (pOtherShip->GetShipType() == SHIP_TYPE::OUTPOST || pOtherShip->GetShipType() == SHIP_TYPE::STARBASE)
 			continue;
 
 		// das hinzuzufügende Schiff darf kein individuelles Ziel haben
@@ -556,8 +556,8 @@ void CShipAI::DoMakeFleet(CShip* pShip, int nIndex)
 
 		// es muss sich bei beiden Schiffen um Kriegsschiffe handeln oder bei beiden Schiffen um Transporter oder bei beiden Schiffen um Kolonieschiffe
 		if ((!pShip->IsNonCombat() && !pOtherShip->IsNonCombat())
-			||(pShip->GetShipType() == TRANSPORTER && pOtherShip->GetShipType() == TRANSPORTER && pOtherShip->GetCurrentOrder() < BUILD_OUTPOST)
-			||(pShip->GetShipType() == COLONYSHIP && pOtherShip->GetShipType() == COLONYSHIP && pOtherShip->GetCurrentOrder() < COLONIZE))
+			||(pShip->GetShipType() == SHIP_TYPE::TRANSPORTER && pOtherShip->GetShipType() == SHIP_TYPE::TRANSPORTER && pOtherShip->GetCurrentOrder() < BUILD_OUTPOST)
+			||(pShip->GetShipType() == SHIP_TYPE::COLONYSHIP && pOtherShip->GetShipType() == SHIP_TYPE::COLONYSHIP && pOtherShip->GetCurrentOrder() < COLONIZE))
 		{
 			pShip->CreateFleet();
 			// hat das hinzuzufügende Schiff eine eigene Flotte

@@ -339,11 +339,11 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 				g->FillRectangle(&brush, 0, 50, 200, 150);
 			}
 
-			if (m_pShip->GetRange() == RANGE_SHORT)
+			if (m_pShip->GetRange() == SHIP_RANGE::SHORT)
 				Range = CResourceManager::GetString("SHORT");
-			else if (m_pShip->GetRange() == RANGE_MIDDLE)
+			else if (m_pShip->GetRange() == SHIP_RANGE::MIDDLE)
 				Range = CResourceManager::GetString("MIDDLE");
-			else if (m_pShip->GetRange() == RANGE_LONG)
+			else if (m_pShip->GetRange() == SHIP_RANGE::LONG)
 				Range = CResourceManager::GetString("LONG");
 			
 			s.Format("%s",m_pShip->GetShipName());

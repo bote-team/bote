@@ -95,19 +95,19 @@ void CPlanetBottomView::OnDraw(CDC* dc)
 			CRect rect;
 			switch (planet->GetSize())
 			{
-			case SMALL:
+			case PLANT_SIZE::SMALL:
 				nPosX -= 75;
 				rect.SetRect(nPosX, nVertCenter - 23, nPosX + 45, nVertCenter + 22);
 				break;
-			case NORMAL:
+			case PLANT_SIZE::NORMAL:
 				nPosX -= 90;
 				rect.SetRect(nPosX, nVertCenter - 30, nPosX + 60, nVertCenter + 30);
 				break;
-			case BIG:
+			case PLANT_SIZE::BIG:
 				nPosX -= 105;
 				rect.SetRect(nPosX, nVertCenter - 40, nPosX + 80, nVertCenter + 40);
 				break;
-			case GIANT:
+			case PLANT_SIZE::GIANT:
 				if (planet->GetPlanetName() == "Saturn")
 				{	
 					nPosX -= 155;

@@ -151,11 +151,11 @@ void CShipBottomView::OnDraw(CDC* dc)
 				continue;			
 
 			// Wenn eine Station angezeigt werden soll, dann muss der Typ von einer Station sein
-			if (m_bShowStation && pShip->GetShipType() != OUTPOST && pShip->GetShipType() != STARBASE)
+			if (m_bShowStation && pShip->GetShipType() != SHIP_TYPE::OUTPOST && pShip->GetShipType() != SHIP_TYPE::STARBASE)
 				continue;
 
 			// Wenn keine Station angezeigt werden soll, dann darf der Typ nicht von einer Station sein
-			if (!m_bShowStation && (pShip->GetShipType() == OUTPOST || pShip->GetShipType() == STARBASE))
+			if (!m_bShowStation && (pShip->GetShipType() == SHIP_TYPE::OUTPOST || pShip->GetShipType() == SHIP_TYPE::STARBASE))
 				continue;
 			
 			// Schiffe mit zu guter Stealthpower werden hier nicht angezeigt.
@@ -338,8 +338,8 @@ void CShipBottomView::OnDraw(CDC* dc)
 			counter++;
 		}
 		// folgende Befehle gehen alle nur, wenn es keine Station ist
-		if (pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetShipType() != OUTPOST &&
-			pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetShipType() != STARBASE)
+		if (pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetShipType() != SHIP_TYPE::OUTPOST &&
+			pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetShipType() != SHIP_TYPE::STARBASE)
 		{
 			// gruppieren
 			if (m_iTimeCounter > (3 + counter) && m_iWhichMainShipOrderButton == 0)
@@ -562,7 +562,7 @@ void CShipBottomView::OnDraw(CDC* dc)
 					// Hier überprüfen, ob ich einen Außenposten technologisch überhaupt bauen kann
 					for (int l = 0; l < pDoc->m_ShipInfoArray.GetSize(); l++)
 						if (pDoc->m_ShipInfoArray.GetAt(l).GetRace() == pMajor->GetRaceShipNumber()
-							&& pDoc->m_ShipInfoArray.GetAt(l).GetShipType() == OUTPOST
+							&& pDoc->m_ShipInfoArray.GetAt(l).GetShipType() == SHIP_TYPE::OUTPOST
 							&& pDoc->m_ShipInfoArray.GetAt(l).IsThisShipBuildableNow(researchLevels))
 							{
 								// Wenn ja dann Schaltfläche zum Außenpostenbau einblenden
@@ -582,7 +582,7 @@ void CShipBottomView::OnDraw(CDC* dc)
 					// Hier überprüfen, ob ich eine Sternbasis technologisch überhaupt bauen kann
 					for (int l = 0; l < pDoc->m_ShipInfoArray.GetSize(); l++)
 						if (pDoc->m_ShipInfoArray.GetAt(l).GetRace() == pMajor->GetRaceShipNumber()
-							&& pDoc->m_ShipInfoArray.GetAt(l).GetShipType() == STARBASE
+							&& pDoc->m_ShipInfoArray.GetAt(l).GetShipType() == SHIP_TYPE::STARBASE
 							&& pDoc->m_ShipInfoArray.GetAt(l).IsThisShipBuildableNow(researchLevels))
 							{
 								// Wenn ja dann Schaltfläche zum Außenpostenbau einblenden
@@ -773,8 +773,8 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 					// das sich das Schiff auch im gleichen Sektor befindet
 					if (pDoc->m_ShipArray[pDoc->GetNumberOfFleetShip()].GetKO() == pDoc->m_ShipArray[pDoc->GetCurrentShipIndex()].GetKO()
 						&& pDoc->m_ShipArray[pDoc->GetNumberOfFleetShip()].GetOwnerOfShip() == pDoc->m_ShipArray[pDoc->GetCurrentShipIndex()].GetOwnerOfShip()
-						&& pDoc->m_ShipArray[pDoc->GetCurrentShipIndex()].GetShipType() != OUTPOST
-						&& pDoc->m_ShipArray[pDoc->GetCurrentShipIndex()].GetShipType() != STARBASE)
+						&& pDoc->m_ShipArray[pDoc->GetCurrentShipIndex()].GetShipType() != SHIP_TYPE::OUTPOST
+						&& pDoc->m_ShipArray[pDoc->GetCurrentShipIndex()].GetShipType() != SHIP_TYPE::STARBASE)
 					{							
 						// Wenn das Schiff welches wir hinzufügen wollen selbst eine Flotte besizt, so müssen
 						// wir diese Flotte natürlich auch noch hinzugügen
@@ -1148,8 +1148,8 @@ int CShipBottomView::GetMouseOverShip(CPoint& pt)
 	
 	if (CGalaxyMenuView::IsMoveShip() == FALSE)
 		for (int i = 0; i < pDoc->m_ShipArray.GetSize(); i++)
-			if ((pDoc->GetKO() == pDoc->m_ShipArray.GetAt(i).GetKO() && pDoc->m_ShipArray.GetAt(i).GetShipType() != OUTPOST && pDoc->m_ShipArray.GetAt(i).GetShipType() != STARBASE && !m_bShowStation)
-				|| (pDoc->GetKO() == pDoc->m_ShipArray.GetAt(i).GetKO() && (pDoc->m_ShipArray.GetAt(i).GetShipType() == OUTPOST || pDoc->m_ShipArray.GetAt(i).GetShipType() == STARBASE) && m_bShowStation))
+			if ((pDoc->GetKO() == pDoc->m_ShipArray.GetAt(i).GetKO() && pDoc->m_ShipArray.GetAt(i).GetShipType() != SHIP_TYPE::OUTPOST && pDoc->m_ShipArray.GetAt(i).GetShipType() != SHIP_TYPE::STARBASE && !m_bShowStation)
+				|| (pDoc->GetKO() == pDoc->m_ShipArray.GetAt(i).GetKO() && (pDoc->m_ShipArray.GetAt(i).GetShipType() == SHIP_TYPE::OUTPOST || pDoc->m_ShipArray.GetAt(i).GetShipType() == SHIP_TYPE::STARBASE) && m_bShowStation))
 			{
 				// Schiffe mit zu guter Stealthpower werden hier nicht angezeigt.
 				// Schiffe mit zu guter Stealthpower werden hier nicht angezeigt.

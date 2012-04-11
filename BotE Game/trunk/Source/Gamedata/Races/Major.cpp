@@ -449,5 +449,5 @@ void CMajor::CreateStarmap(void)
 		delete m_pStarmap;
 		m_pStarmap = NULL;
 	}
-	m_pStarmap = new CStarmap(!m_bPlayer, 3 - RANGE_MIDDLE);
+	m_pStarmap = new CStarmap(!m_bPlayer, 3 - SHIP_RANGE::MIDDLE);
 }

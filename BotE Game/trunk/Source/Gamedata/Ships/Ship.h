@@ -80,10 +80,10 @@ public:
 	USHORT GetMaintenanceCosts() const {return m_iMaintenanceCosts;}
 	BYTE GetStealthPower() const {return m_iStealthPower;}
 	bool GetCloak() const {return m_bCloakOn;}
-	BYTE GetShipType() const {return m_iShipType;}
-	BYTE GetShipSize() const {return m_byShipSize;}
+	SHIP_TYPE::Typ GetShipType() const {return m_iShipType;}
+	SHIP_SIZE::Typ GetShipSize() const {return m_nShipSize;}
 	BYTE GetManeuverability() const {return m_byManeuverability;}
-	BYTE GetRange() const {return m_iRange;}
+	SHIP_RANGE::Typ GetRange() const {return m_iRange;}
 	BYTE GetSpeed() const {return m_iSpeed;}
 	USHORT GetScanPower() const {return m_iScanPower;}
 	BYTE GetScanRange() const {return m_iScanRange;}
@@ -103,7 +103,7 @@ public:
 	USHORT GetUsedStorageRoom(const CArray<CTroopInfo>* troopInfo);
 	USHORT GetLoadedResources(BYTE res) const {return m_iLoadedResources[res];}
 	COMBAT_TACTIC::Typ GetCombatTactic() const {return m_nCombatTactic;}
-	bool IsNonCombat() const {return (m_iShipType == TRANSPORTER || m_iShipType == COLONYSHIP || m_iShipType == PROBE);}
+	bool IsNonCombat() const {return (m_iShipType == SHIP_TYPE::TRANSPORTER || m_iShipType == SHIP_TYPE::COLONYSHIP || m_iShipType == SHIP_TYPE::PROBE);}
 	ALIEN_TYPE::Typ GetAlienType() const { return m_nAlienType; }
 
 	//Is this ship in need for a player command input in this round ?
@@ -119,11 +119,11 @@ public:
 	void SetTargetKO(const CPoint& TargetKO, int Index);
 	void SetOwnerOfShip(const CString& sOwnerOfShip) {m_sOwnerOfShip = sOwnerOfShip;}
 	void SetMaintenanceCosts(USHORT MaintenanceCosts) {m_iMaintenanceCosts = MaintenanceCosts;}
-	void SetShipType(BYTE ShipType) {m_iShipType = ShipType;}
-	void SetShipSize(BYTE size) {m_byShipSize = size;}
+	void SetShipType(SHIP_TYPE::Typ nShipType) {m_iShipType = nShipType;}
+	void SetShipSize(SHIP_SIZE::Typ nSize) {m_nShipSize = nSize;}
 	void SetManeuverability(BYTE value) {m_byManeuverability = value;}
 	void SetSpeed(BYTE Speed) {m_iSpeed = Speed;}
-	void SetRange(BYTE Range) {m_iRange = Range;}
+	void SetRange(SHIP_RANGE::Typ Range) {m_iRange = Range;}
 	void SetScanPower(USHORT ScanPower) {m_iScanPower = ScanPower;}
 	void SetScanRange(BYTE ScanRange) {m_iScanRange = ScanRange;}
 	void SetCrewExperiance(int nAdd);
@@ -179,11 +179,11 @@ protected:
 	USHORT m_iID;						// ID des Schiffes
 	BYTE m_iCurrentOrder;				// Aktueller Befehl des Schiffes, nutze dazu enum
 	USHORT m_iMaintenanceCosts;			// Unterhaltskosten des Schiffes pro Runde
-	BYTE m_iShipType;					// Schiffstype, siehe Options.h
-	BYTE m_byShipSize;					// Die Größe des Schiffes
+	SHIP_TYPE::Typ m_iShipType;			// Schiffstype, siehe Options.h
+	SHIP_SIZE::Typ m_nShipSize;			// Die Größe des Schiffes
 	BYTE m_byManeuverability;			// Die Manövriebarkeit des Schiffes im Kampf
 	BYTE m_iSpeed;						// Geschwindigkeit des Schiffes in der CMenuChooseView
-	BYTE m_iRange;						// Reichweite des Schiffes
+	SHIP_RANGE::Typ m_iRange;			// Reichweite des Schiffes
 	USHORT m_iScanPower;				// Scankraft des Schiffes
 	BYTE m_iScanRange;					// Die Reichweite der Scanner
 	BYTE m_iStealthPower;				// Tarnstärke des Schiffes: 0 = keine Tarnung, 1 = bissl ...

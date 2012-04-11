@@ -162,14 +162,28 @@ namespace RACE_PROPERTY
 
 // ------------- Planeteneigenschaften -----------------------------------------
 // Zonen
-#define HOT					0
-#define TEMPERATE			1
-#define COOL				2
+namespace PLANET_ZONE
+{
+	enum Typ
+	{
+		HOT			= 0,
+		TEMPERATE	= 1,
+		COOL		= 2
+	};
+}
+
 // Planetengröße
-#define SMALL				0
-#define NORMAL				1
-#define BIG					2
-#define GIANT				3
+namespace PLANT_SIZE
+{
+	enum Typ
+	{
+		SMALL	= 0,
+		NORMAL	= 1,
+		BIG		= 2,
+		GIANT	= 3
+	};
+}
+
 // Planetentypen
 #define PLANETCLASS_M		0
 #define PLANETCLASS_O		1
@@ -204,29 +218,53 @@ namespace RACE_PROPERTY
 
 // ------------- Schiffe -------------------------------------------------------
 // Schiffstypen
-#define TRANSPORTER			0
-#define COLONYSHIP          1
-#define PROBE				2
-#define SCOUT				3
-#define FIGHTER				4	// Jäger
-#define FRIGATE				5
-#define DESTROYER			6
-#define CRUISER				7
-#define HEAVY_DESTROYER     8
-#define HEAVY_CRUISER       9
-#define BATTLESHIP			10
-#define DREADNOUGHT			11
-#define OUTPOST				12
-#define STARBASE            13
-#define ALIEN				14
+namespace SHIP_TYPE
+{
+	enum Typ
+	{
+		TRANSPORTER		= 0,
+		COLONYSHIP		= 1,
+		PROBE			= 2,
+		SCOUT			= 3,
+		FIGHTER			= 4,// Jäger
+		FRIGATE			= 5,
+		DESTROYER		= 6,
+		CRUISER			= 7,
+		HEAVY_DESTROYER	= 8,
+		HEAVY_CRUISER	= 9,
+		BATTLESHIP		= 10,
+		DREADNOUGHT		= 11,
+		OUTPOST			= 12,
+		STARBASE		= 13,
+		ALIEN			= 14
+	};
+}
+
+// Schiffsgrößen
+namespace SHIP_SIZE
+{
+	enum Typ
+	{
+		SMALL	= 0,
+		NORMAL	= 1,
+		BIG		= 2,
+		HUGE	= 3
+	};
+}
 
 #define IS_NONCOMBATSHIP(type) \
 	((type) == TRANSPORTER || (type) == COLONYSHIP || (type) == PROBE)
 
 // Schiffsreichweiten
-#define RANGE_SHORT		    0
-#define RANGE_MIDDLE	    1
-#define RANGE_LONG		    2
+namespace SHIP_RANGE
+{
+	enum Typ
+	{
+		SHORT	= 0,
+		MIDDLE	= 1,
+		LONG	= 2
+	};
+}
 // Schiffsbefehle
 #define AVOID               0
 #define ATTACK              1

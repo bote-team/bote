@@ -104,17 +104,16 @@ BYTE CFleet::GetFleetSpeed(const CShip* ship) const
 
 // Funktion berechnet die Reichweite der Flotte. Der Parameter der hier übergeben werden sollte
 // ist der this-Zeiger des Schiffsobjektes, welches die Flotte besitzt
-BYTE CFleet::GetFleetRange(const CShip* ship) const
+SHIP_RANGE::Typ CFleet::GetFleetRange(const CShip* pShip) const
 {
-	BYTE range = 127;
-	if (ship != 0)
-		range = ship->GetRange();
+	SHIP_RANGE::Typ nRange = SHIP_RANGE::LONG;
+	if (pShip)
+		nRange = min(pShip->GetRange(), nRange);	
+	
 	for (int i = 0; i < m_vShips.GetSize(); i++)
-		if (m_vShips.GetAt(i).GetRange() < range)
-			range = m_vShips.GetAt(i).GetRange();
-	if (range == 127)
-		range = 0;
-	return range;
+		nRange = min(m_vShips.GetAt(i).GetRange(), nRange);
+	
+	return nRange;
 }
 
 // Funktion berechnet den Schiffstyp der Flotte. Wenn hier nur der selbe Schiffstyp in der Flotte vorkommt,

@@ -150,7 +150,7 @@ void CResearchComplex::GenerateComplex(USHORT complex)
 			m_strFieldDescription[0] = "Durch ein neues Verfahren zur Deritiumkristallgewinnung, bei dem die Kristalle nach dem Abbau auf molekularer Ebene optimiert werden, wuerde der Reinheitsgrad dieser deutlich verbessert. Dies wiederum haette einen positiven Effekt auf die Reichweite unserer Schiffe, welche eigentlich nur eine kurze Reichweite besitzen würden.";
 			m_strFieldDescription[1] = "Grosse Fortschritte in der Warp-Feld-Theorie ermoeglichen uns eine Neumodelierung der Warp-Blasen. Erste Tests bewiesen die technische Realisierbarkeit. Die gemessene Geschwindigkeit des zuvor sehr langsamenen Experimentalschiffes erhoehte sich, bei gleichbleibender Reichweite, deutlich.";
 			m_strFieldDescription[2] = "Der steigende Bedarf an Schiffen versetzt uns in die Lage die benoetigten Teile in grossen Stueckzahlen zu fertigen, was einen nicht unerheblichen Kostenvorteil von 10% mitsichbringt.";
-		*/	m_iBonus[0] = RANGE_MIDDLE;
+		*/	m_iBonus[0] = SHIP_RANGE::MIDDLE;
 			m_iBonus[1] = 2;
 			m_iBonus[2] = 10;
 			break;

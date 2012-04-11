@@ -398,6 +398,6 @@ void CAnomaly::PerhabsStrand(CShip* pShip) const
 	if (nRandom > nPropTech * 10)
 	{
 		pShip->SetSpeed(0);
-		pShip->SetRange(0);
+		pShip->SetRange(SHIP_RANGE::SHORT);
 	}
 }

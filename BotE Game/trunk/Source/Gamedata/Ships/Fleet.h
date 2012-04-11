@@ -51,11 +51,11 @@ public:
 	
 	// Funktion berechnet die Geschwindigkeit der Flotte. Der Parameter der hier übergeben werden sollte
 	// ist der this-Zeiger bzw. die Adresse des Schiffsobjektes, welches die Flotte besitzt
-	BYTE GetFleetSpeed(const CShip* ship = NULL) const;
+	BYTE GetFleetSpeed(const CShip* pShip = NULL) const;
 	
 	// Funktion berechnet die Reichweite der Flotte. Der Parameter der hier übergeben werden sollte
 	// ist der this-Zeiger bzw. die Adresse des Schiffsobjektes, welches die Flotte besitzt
-	BYTE GetFleetRange(const CShip* ship = NULL) const;
+	SHIP_RANGE::Typ GetFleetRange(const CShip* ship = NULL) const;
 	
 	// Funktion berechnet den Schiffstyp der Flotte. Wenn hier nur der selbe Schiffstyp in der Flotte vorkommt,
 	// dann gibt die Funktion diesen Schiffstyp zurück. Wenn verschiedene Schiffstypen in der Flotte vorkommen,

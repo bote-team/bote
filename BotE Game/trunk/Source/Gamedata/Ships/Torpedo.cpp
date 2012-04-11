@@ -277,11 +277,11 @@ BOOLEAN CTorpedo::PerhapsImpact(CCombatShip* CS, USHORT minDistance)
 	short probability = m_iModi - (short)((m_iDistance + minDistance) * 0.1) - 
 		CCombatShip::GetToHitMali(m_byManeuverability, CS->m_byManeuverability) - CS->GetCrewExperienceModi();
 			
-	if (CS->m_pShip->GetShipSize() == 0)
+	if (CS->m_pShip->GetShipSize() == SHIP_SIZE::SMALL)
 		probability = (short)(probability * 0.66);
-	else if (CS->m_pShip->GetShipSize() == 2)
+	else if (CS->m_pShip->GetShipSize() == SHIP_SIZE::BIG)
 		probability = (short)(probability * 1.33);
-	else if (CS->m_pShip->GetShipSize() >= 3)
+	else if (CS->m_pShip->GetShipSize() >= SHIP_SIZE::HUGE)
 		probability = (short)(probability * 1.66);
 
 	// Die Wahrscheinlichkeit beträgt mindestens 10% für einen Einschlag

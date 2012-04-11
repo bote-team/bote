@@ -133,16 +133,16 @@ void CSectorAI::AddDanger(CShip* ship)
 	UINT defensive = ship->GetCompleteDefensivePower() / 2;
 	m_iDangers[race][pair<int, int>(ship->GetKO().x, ship->GetKO().y)] += (offensive + defensive);
 	
-	if (ship->GetShipType() > COLONYSHIP && ship->GetShipType() < OUTPOST)
+	if (ship->GetShipType() > SHIP_TYPE::COLONYSHIP && ship->GetShipType() < SHIP_TYPE::OUTPOST)
 	{
 		m_iCompleteDanger[race] += (offensive + defensive);
 		m_iCombatShipDangers[race][pair<int, int>(ship->GetKO().x, ship->GetKO().y)] += (offensive + defensive);
 	}
 	
 	// Hier wird die Anzahl an Kolonieschiffen für die Rassen hochgezählt.
-	if (ship->GetShipType() == COLONYSHIP)
+	if (ship->GetShipType() == SHIP_TYPE::COLONYSHIP)
 		m_iColoShips[race] += 1;
-	else if (ship->GetShipType() == TRANSPORTER)
+	else if (ship->GetShipType() == SHIP_TYPE::TRANSPORTER)
 		m_iTransportShips[race] += 1;	
 }
 

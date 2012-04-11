@@ -332,7 +332,7 @@ void CGalaxyMenuView::OnDraw(CDC* dc)
 
 				// Grenze der Reichweite;
 				// muss modifiziert werden, wenn sich z.B. neben RANGE_NEAR ein Feld mit RANGE_FAR
-				// statt RANGE_MIDDLE befindet (kann bei entsprechender Rangemap um eine Starbase
+				// statt MIDDLE befindet (kann bei entsprechender Rangemap um eine Starbase
 				// auftreten, oder wenn sich das eigene Gebiet mit dem anderer Spieler überlappt)
 				int border = GetRangeBorder(pStarmap->m_Range[j][i], pStarmap->m_Range[j + 1][i], m_nRange);
 				// bei Auswahl eines Ziels nur die jeweilige Grenze zeichnen

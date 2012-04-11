@@ -65,7 +65,7 @@ public:
 	virtual void Serialize(CArchive &ar);
 	
 	// zum Lesen der Membervaribalen
-	BYTE GetSize() const {return m_iSize;}
+	PLANT_SIZE::Typ GetSize() const {return m_iSize;}
 	BYTE GetType() const {return m_iType;}
 	float GetMaxHabitant() const {return m_dMaxHabitant;}
 	float GetCurrentHabitant() const {return m_dCurrentHabitant;}
@@ -85,7 +85,7 @@ public:
 	CString GetGraphicFile() const;
 
 	// zum Schreiben der Membervariablen
-	void SetSize(BYTE Size) {m_iSize = Size;}
+	void SetSize(PLANT_SIZE::Typ Size) {m_iSize = Size;}
 	void SetMaxHabitant(float MaxHabitant) {m_dMaxHabitant = MaxHabitant;}
 	void SetCurrentHabitant(float CurrentHabitant) {m_dCurrentHabitant = CurrentHabitant;}
 	void SetType(BYTE Type) {m_iType = Type;}
@@ -112,11 +112,11 @@ public:
 	// Sonstige Funktionen
 	/// Funktion erzeugt einen Planeten.
 	/// @param sSectorName Sektorname
-	/// @param byLastPlanetType im Sektor zuletzt erzeugte Planetenklasse
-	/// @param byPlanetNumber Nummer des erzeugten Planeten (Anzahl bzw. Position im Sonnensystem)
+	/// @param nLastZone Zone des zuletzt erzeugten Planeten (neuer Planet kann nicht in einer vorherigen Zone sein) 
+	/// @param byPlanetNumer Anzahl schon erzeugeter Planeten in diesem Sektor
 	/// @param bMinor Minorrace im Sektor
-	/// @return erzeugte Planetenklasse
-	BYTE Create(const CString& sSectorName, BYTE byLastPlanetType, BYTE byPlanetNumber, BOOLEAN bMinor);
+	/// @return Zone des erzeugten Planeten
+	PLANET_ZONE::Typ Create(const CString& sSectorName, PLANET_ZONE::Typ nLastZone, BYTE byPlanetNumber, BOOLEAN bMinor);
 	
 	/// Planetenwachstum durchführen
 	void PlanetGrowth(void);
@@ -140,7 +140,7 @@ private:
 	void GenerateBoni(void);
 
 	// Attribute
-	BYTE m_iSize;					///< Größe das Planeten, siehe ENUM dazu
+	PLANT_SIZE::Typ m_iSize;		///< Größe das Planeten, siehe ENUM dazu
 	BYTE m_iGraphicType;			///< Grafiknummer des Planeten
 	BYTE m_iType;					///< Typ des Planeten
 	float m_dMaxHabitant;			///< maximale Anzahl der Bewohner

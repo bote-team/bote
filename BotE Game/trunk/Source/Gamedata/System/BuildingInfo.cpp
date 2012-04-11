@@ -495,7 +495,9 @@ void CBuildingInfo::Serialize(CArchive &ar)
 		ar >> m_iMilitarySabotageBoni;
 		// sonstige Informationen
 		ar >> m_bShipYard;
-		ar >> m_iBuildableShipSizes;
+		int nBuildableShipSizes;
+		ar >> nBuildableShipSizes;
+		m_iBuildableShipSizes = (SHIP_SIZE::Typ)nBuildableShipSizes;
 		ar >> m_iShipYardSpeed;
 		ar >> m_bBarrack;
 		ar >> m_iBarrackSpeed;

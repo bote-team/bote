@@ -792,7 +792,7 @@ BOOLEAN CIntelCalc::ExecuteMilitarySpy(CMajor* pRace, CMajor* pEnemyRace, CMajor
 		for (int i = 0; i < m_pDoc->m_ShipArray.GetSize(); i++)
 			if (m_pDoc->m_ShipArray[i].GetOwnerOfShip() == pEnemyRace->GetRaceID())
 			{
-				if (m_pDoc->m_ShipArray[i].GetShipType() == OUTPOST || m_pDoc->m_ShipArray[i].GetShipType() == STARBASE)
+				if (m_pDoc->m_ShipArray[i].GetShipType() == SHIP_TYPE::OUTPOST || m_pDoc->m_ShipArray[i].GetShipType() == SHIP_TYPE::STARBASE)
 					stations.Add(&m_pDoc->m_ShipArray[i]);
 				else
 					ships.Add(&m_pDoc->m_ShipArray[i]);
@@ -1451,7 +1451,7 @@ BOOLEAN CIntelCalc::ExecuteMilitarySabotage(CMajor* pRace, CMajor* pEnemyRace, C
 			// gestohlen
 			
 			// Schiff stehlen
-			if (rand()%2 == NULL && ship->GetShipType() != OUTPOST && ship->GetShipType() != STARBASE)
+			if (rand()%2 == NULL && ship->GetShipType() != SHIP_TYPE::OUTPOST && ship->GetShipType() != SHIP_TYPE::STARBASE)
 			{
 				pRace->GetEmpire()->GetIntelligence()->GetIntelReports()->RemoveReport(oldReportNumber);
 				report = new CMilitaryIntelObj(pRace->GetRaceID(), pEnemyRace->GetRaceID(), m_pDoc->GetCurrentRound(), FALSE, ship->GetKO(), ship->GetID(), 1, FALSE, TRUE, FALSE);
@@ -1528,8 +1528,8 @@ BOOLEAN CIntelCalc::ExecuteMilitarySabotage(CMajor* pRace, CMajor* pEnemyRace, C
 				}
 			}
 			// Schiff/Station zerstören
-			else if ((rand()%4 == NULL && (ship->GetShipType() == OUTPOST || ship->GetShipType() == STARBASE))
-				|| (rand()%2 == NULL && ship->GetShipType() != OUTPOST && ship->GetShipType() != STARBASE))
+			else if ((rand()%4 == NULL && (ship->GetShipType() == SHIP_TYPE::OUTPOST || ship->GetShipType() == SHIP_TYPE::STARBASE))
+				|| (rand()%2 == NULL && ship->GetShipType() != SHIP_TYPE::OUTPOST && ship->GetShipType() != SHIP_TYPE::STARBASE))
 			{
 				pRace->GetEmpire()->GetIntelligence()->GetIntelReports()->RemoveReport(oldReportNumber);
 				report = new CMilitaryIntelObj(pRace->GetRaceID(), pEnemyRace->GetRaceID(), m_pDoc->GetCurrentRound(), FALSE, ship->GetKO(), ship->GetID(), 1, FALSE, TRUE, FALSE);

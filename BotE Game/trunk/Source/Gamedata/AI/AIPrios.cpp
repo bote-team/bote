@@ -55,16 +55,16 @@ void CAIPrios::CalcShipPrios(CSectorAI* sectorAI)
 			pMajor->GetEmpire()->GetResearch()->GetWeaponTech()
 		};
 
-		short range = -1;
+		SHIP_RANGE::Typ range = SHIP_RANGE::SHORT;
 		// berechnen welche max. Reichweite das Kolonieschiff der Rasse hat
 		for (int j = 0; j < m_pDoc->m_ShipInfoArray.GetSize(); j++)
 			if (m_pDoc->m_ShipInfoArray.GetAt(j).GetRace() == pMajor->GetRaceShipNumber())
-				if (m_pDoc->m_ShipInfoArray.GetAt(j).GetShipType() == COLONYSHIP
+				if (m_pDoc->m_ShipInfoArray.GetAt(j).GetShipType() == SHIP_TYPE::COLONYSHIP
 					&& m_pDoc->m_ShipInfoArray.GetAt(j).GetRange() > range
 					&& m_pDoc->m_ShipInfoArray.GetAt(j).IsThisShipBuildableNow(researchLevels))
 				{
 					range = m_pDoc->m_ShipInfoArray.GetAt(j).GetRange();
-					if (range == RANGE_LONG)
+					if (range == SHIP_RANGE::LONG)
 						break;
 				}
 		// Jetzt die zum Terraformen ausgesuchten Sektoren durchgehen und schauen das diese innerhalb der Reichweite
@@ -106,7 +106,7 @@ void CAIPrios::CalcShipPrios(CSectorAI* sectorAI)
 			BOOLEAN buildableStation = FALSE;
 			for (int j = 0; j < m_pDoc->m_ShipInfoArray.GetSize(); j++)
 				if (m_pDoc->m_ShipInfoArray.GetAt(j).GetRace() == pMajor->GetRaceShipNumber())
-					if (m_pDoc->m_ShipInfoArray.GetAt(j).GetShipType() == OUTPOST || m_pDoc->m_ShipInfoArray.GetAt(j).GetShipType() == STARBASE)
+					if (m_pDoc->m_ShipInfoArray.GetAt(j).GetShipType() == SHIP_TYPE::OUTPOST || m_pDoc->m_ShipInfoArray.GetAt(j).GetShipType() == SHIP_TYPE::STARBASE)
 						if (m_pDoc->m_ShipInfoArray.GetAt(j).IsThisShipBuildableNow(researchLevels))
 						{
 							buildableStation = TRUE;

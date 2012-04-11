@@ -124,10 +124,10 @@ void CMilitaryIntelObj::CreateText(CBotf2Doc* pDoc, BYTE n, const CString& param
 							else if (m_bShip && m_nID < 20000)
 							{
 								// zwischen Schiff und Station unterscheiden
-								if (pDoc->m_ShipInfoArray[m_nID - 10000].GetShipType() == OUTPOST)
+								if (pDoc->m_ShipInfoArray[m_nID - 10000].GetShipType() == SHIP_TYPE::OUTPOST)
 									s.Format("%s-%s %s", pDoc->m_ShipInfoArray.GetAt(m_nID - 10000).GetShipClass(),
 										CResourceManager::GetString("CLASS"), CResourceManager::GetString("OUTPOST"));
-								else if (pDoc->m_ShipInfoArray[m_nID - 10000].GetShipType() == STARBASE)
+								else if (pDoc->m_ShipInfoArray[m_nID - 10000].GetShipType() == SHIP_TYPE::STARBASE)
 									s.Format("%s-%s %s", pDoc->m_ShipInfoArray.GetAt(m_nID - 10000).GetShipClass(),
 										CResourceManager::GetString("CLASS"), CResourceManager::GetString("STARBASE"));
 								else
@@ -209,10 +209,10 @@ void CMilitaryIntelObj::CreateText(CBotf2Doc* pDoc, BYTE n, const CString& param
 								else if (m_bShip && m_nID < 20000)
 								{
 									// zwischen Schiff und Station unterscheiden
-									if (pDoc->m_ShipInfoArray[m_nID - 10000].GetShipType() == OUTPOST)
+									if (pDoc->m_ShipInfoArray[m_nID - 10000].GetShipType() == SHIP_TYPE::OUTPOST)
 										s.Format("%s-%s %s", pDoc->m_ShipInfoArray.GetAt(m_nID - 10000).GetShipClass(),
 											CResourceManager::GetString("CLASS"), CResourceManager::GetString("OUTPOST"));
-									else if (pDoc->m_ShipInfoArray[m_nID - 10000].GetShipType() == STARBASE)
+									else if (pDoc->m_ShipInfoArray[m_nID - 10000].GetShipType() == SHIP_TYPE::STARBASE)
 										s.Format("%s-%s %s", pDoc->m_ShipInfoArray.GetAt(m_nID - 10000).GetShipClass(),
 											CResourceManager::GetString("CLASS"), CResourceManager::GetString("STARBASE"));
 									else
