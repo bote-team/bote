@@ -13,7 +13,7 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// German (Germany) resources
+// Deutsch (Deutschland) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_DEU)
 #ifdef _WIN32
@@ -86,16 +86,6 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "&Exit",                       ID_APP_EXIT
     END
-    MENUITEM "Information",                 ID_INFORMATION, GRAYED
-    MENUITEM "Galaxy",                      ID_GALAXIE, GRAYED
-    MENUITEM "System",                      ID_SYSTEM, GRAYED
-    MENUITEM "Research",                    ID_RESEARCH, GRAYED
-    MENUITEM "Intelligence",                ID_INTELLIGENCE, GRAYED
-    MENUITEM "Diplomacy",                   ID_DIPLOMACY, GRAYED
-    MENUITEM "Trade",                       ID_TRADE, GRAYED
-    MENUITEM "Empire",                      ID_IMPERIUM, GRAYED
-    MENUITEM "Database",                    ID_DATENBANK, GRAYED
-    MENUITEM "Statistics",                  ID_STATISTIK, GRAYED
     MENUITEM "Chat",                        ID_CHAT
     POPUP "Help"
     BEGIN
@@ -607,7 +597,7 @@ BEGIN
     ID_CHAT                 "Show Chatwindow"
 END
 
-#endif    // German (Germany) resources
+#endif    // Deutsch (Deutschland) resources
 /////////////////////////////////////////////////////////////////////////////
 
 

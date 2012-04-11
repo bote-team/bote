@@ -145,12 +145,9 @@ void CEventFirstContact::Draw(Graphics* g, CGraphicPool* graphicPool) const
 	{
 		for (int t = 0; t < 20; t++)
 		{
-			RectF timber(880,387-t*15,30,13);
+			RectF timber(7+t*15,360,13,30);
 			if (pContactedRace->GetRelation(pMajor->GetRaceID()) * 2 / 10 > t)
-			{
-				//fontBrush.SetColor(Color(250-t*12, 0+t*12, 0));
 				g->FillRectangle(&SolidBrush(Color(200,250-t*12, 0+t*12, 0)), timber);
-			}
 			else
 				g->FillRectangle(&SolidBrush(Color(100,100,100,100)), timber);						
 		}
