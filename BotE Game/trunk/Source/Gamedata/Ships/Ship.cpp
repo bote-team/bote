@@ -1123,3 +1123,8 @@ void CShip::SetTargetKO(const CPoint& TargetKO, int Index)
 	}
 	m_nTerraformingPlanet = -1;
 }
+
+bool CShip::HasNothingToDo() const {
+	return (m_iCurrentOrder == AVOID || m_iCurrentOrder == ATTACK)
+		&& (GetTargetKO() == GetKO() || GetTargetKO() == CPoint(-1, -1)) && m_iShipType != OUTPOST && m_iShipType != STARBASE;
+}

@@ -111,10 +111,8 @@ public:
 	//such as ATTACK_SYSTEM; player is expected to look after such
 	//fleets manually.
 	//@return true if yes
-	bool HasNothingToDo() const {
-		return (m_iCurrentOrder == AVOID || m_iCurrentOrder == ATTACK)
-			&& GetTargetKO() == GetKO() && m_iShipType != OUTPOST && m_iShipType != STARBASE;
-	}
+	bool HasNothingToDo() const;
+
 	// zum Schreiben der Membervariablen
 	void SetID(USHORT ID) {m_iID = ID+10000;}
 	void SetKO(const CPoint& KO) {m_KO = KO;}
