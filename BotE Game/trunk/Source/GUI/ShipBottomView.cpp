@@ -316,7 +316,7 @@ void CShipBottomView::OnDraw(CDC* dc)
 		}
 		// Alle Rechtecke für die Buttons der Schiffsbefehle erstmal auf NULL setzen, damit wir nicht draufklicken
 		// können. Wir dürfen ja nur auf Buttons klicken können, die wir auch sehen
-		for (int j = 0; j <= TRAIN_SHIP; j++)
+		for (int j = 0; j <= SENTRY_SHIP_ORDER; j++)
 			m_ShipOrders[j].SetRect(0,0,0,0);
 
 		// angreifen
@@ -456,6 +456,29 @@ void CShipBottomView::OnDraw(CDC* dc)
 				g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(r.right-245,r.top+70+counter*35,120,30), &fontFormat, &fontBrush);
 				counter++;
 			}
+			// Warten
+			if (m_iTimeCounter > (3 + counter) && m_iWhichMainShipOrderButton == 1
+				&& pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetCurrentOrder()
+					!= WAIT_SHIP_ORDER)
+			{
+				g.DrawImage(m_pShipOrderButton, r.right-245, r.top+70+counter*35, 120, 30);
+				s = CResourceManager::GetString("BTN_WAIT_SHIP_ORDER");
+				m_ShipOrders[WAIT_SHIP_ORDER].SetRect(r.right-245,r.top+70+counter*35,r.right-125,r.top+100+counter*35);
+				g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(r.right-245,r.top+70+counter*35,120,30), &fontFormat, &fontBrush);
+				counter++;
+			}
+			// Wache
+			if (m_iTimeCounter > (3 + counter) && m_iWhichMainShipOrderButton == 1
+				&& pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetCurrentOrder()
+				!= SENTRY_SHIP_ORDER)
+			{
+				g.DrawImage(m_pShipOrderButton, r.right-245, r.top+70+counter*35, 120, 30);
+				s = CResourceManager::GetString("BTN_SENTRY_SHIP_ORDER");
+				m_ShipOrders[SENTRY_SHIP_ORDER].SetRect(r.right-245,r.top+70+counter*35,r.right-125,r.top+100+counter*35);
+				g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(r.right-245,r.top+70+counter*35,120,30), &fontFormat, &fontBrush);
+				counter++;
+			}
+
 /*					// einem anderen Schiff folgen
 			if (m_iTimeCounter > (3 + counter) && m_iWhichMainShipOrderButton == 1)
 			{
@@ -678,7 +701,7 @@ void CShipBottomView::OnInitialUpdate()
 	m_iPage = 1;
 	m_iTimeCounter = 0;
 	m_bShowNextButton = FALSE;
-	for (int i = 0; i <= TRAIN_SHIP; i++)
+	for (int i = 0; i <= SENTRY_SHIP_ORDER; i++)
 		m_ShipOrders[i].SetRect(0,0,0,0);
 	m_iWhichMainShipOrderButton = -1;	
 }
@@ -848,7 +871,7 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 		}
 		// Ab jetzt die kleinen Buttons für die einzelnen genauen Schiffsbefehle
 		network::RACE client = pDoc->GetRaceCtrl()->GetMappedClientID(pMajor->GetRaceID());
-		for (int i = 0; i <= TRAIN_SHIP; i++)
+		for (int i = 0; i <= SENTRY_SHIP_ORDER; i++)
 			if (m_ShipOrders[i].PtInRect(point))
 			{
 				short nOldTerraformingPlanet = pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetTerraformingPlanet();

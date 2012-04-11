@@ -217,6 +217,10 @@ Transport
 Folgen
 [BTN_TRAIN_SHIP]
 Trainieren
+[BTN_WAIT_SHIP_ORDER]
+Warten
+[BTN_SENTRY_SHIP_ORDER]
+Wache
 
 // Entscheidungsbuttons
 [BTN_NEXT]
