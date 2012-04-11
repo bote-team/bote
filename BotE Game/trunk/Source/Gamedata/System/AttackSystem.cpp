@@ -370,19 +370,19 @@ void CAttackSystem::CalculateTroopAttack()
 		int nPower = 10;
 		if (m_pDefender != NULL)
 		{
-			if (m_pDefender->IsRaceProperty(FINANCIAL))
+			if (m_pDefender->IsRaceProperty(RACE_PROPERTY::FINANCIAL))
 				nPower -= 2;
-			if (m_pDefender->IsRaceProperty(WARLIKE))
+			if (m_pDefender->IsRaceProperty(RACE_PROPERTY::WARLIKE))
 				nPower += 10;
-			if (m_pDefender->IsRaceProperty(AGRARIAN))
+			if (m_pDefender->IsRaceProperty(RACE_PROPERTY::AGRARIAN))
 				nPower -= 3;
-			if (m_pDefender->IsRaceProperty(PACIFIST))
+			if (m_pDefender->IsRaceProperty(RACE_PROPERTY::PACIFIST))
 				nPower -= 5;
-			if (m_pDefender->IsRaceProperty(SNEAKY))
+			if (m_pDefender->IsRaceProperty(RACE_PROPERTY::SNEAKY))
 				nPower += 5;
-			if (m_pDefender->IsRaceProperty(SOLOING))
+			if (m_pDefender->IsRaceProperty(RACE_PROPERTY::SOLOING))
 				nPower += 2;
-			if (m_pDefender->IsRaceProperty(HOSTILE))
+			if (m_pDefender->IsRaceProperty(RACE_PROPERTY::HOSTILE))
 				nPower += 7;
 
 			if (nPower > MAXBYTE)

@@ -148,27 +148,27 @@ void CIntelAI::CalcIntelligence(CBotf2Doc* pDoc)
 				// jede Rasse läßt immer einen bestimmten prozentualen Anteil in der inneren Sicherheit.
 				int innerSecPerc = 25;
 
-				if (it->second->IsRaceProperty(FINANCIAL))
+				if (it->second->IsRaceProperty(RACE_PROPERTY::FINANCIAL))
 					innerSecPerc += 15;
-				if (it->second->IsRaceProperty(WARLIKE))
+				if (it->second->IsRaceProperty(RACE_PROPERTY::WARLIKE))
 					innerSecPerc += 25;
-				if (it->second->IsRaceProperty(AGRARIAN))
+				if (it->second->IsRaceProperty(RACE_PROPERTY::AGRARIAN))
 					innerSecPerc += 25;
-				if (it->second->IsRaceProperty(INDUSTRIAL))
+				if (it->second->IsRaceProperty(RACE_PROPERTY::INDUSTRIAL))
 					innerSecPerc += 10;
-				if (it->second->IsRaceProperty(SECRET))
+				if (it->second->IsRaceProperty(RACE_PROPERTY::SECRET))
 					innerSecPerc -= 10;
-				if (it->second->IsRaceProperty(SCIENTIFIC))
+				if (it->second->IsRaceProperty(RACE_PROPERTY::SCIENTIFIC))
 					innerSecPerc += 0;
-				if (it->second->IsRaceProperty(PRODUCER))
+				if (it->second->IsRaceProperty(RACE_PROPERTY::PRODUCER))
 					innerSecPerc += 5;
-				if (it->second->IsRaceProperty(PACIFIST))
+				if (it->second->IsRaceProperty(RACE_PROPERTY::PACIFIST))
 					innerSecPerc += 35;
-				if (it->second->IsRaceProperty(SNEAKY))
+				if (it->second->IsRaceProperty(RACE_PROPERTY::SNEAKY))
 					innerSecPerc -= 15;
-				if (it->second->IsRaceProperty(SOLOING))
+				if (it->second->IsRaceProperty(RACE_PROPERTY::SOLOING))
 					innerSecPerc += 40;
-				if (it->second->IsRaceProperty(HOSTILE))
+				if (it->second->IsRaceProperty(RACE_PROPERTY::HOSTILE))
 					innerSecPerc += 0;
 
 				if (innerSecPerc > 100)

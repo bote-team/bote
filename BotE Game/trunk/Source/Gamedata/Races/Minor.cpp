@@ -221,7 +221,7 @@ void CMinor::PerhapsBuildShip(CBotf2Doc* pDoc)
 					{
 						pDoc->BuildShip(pShipInfo->GetID(), this->GetRaceKO(), this->m_sID);
 						// Befehl für nicht "böse" Rassen auf Meiden stellen
-						if (!IsRaceProperty(HOSTILE) && !IsRaceProperty(WARLIKE) && !IsRaceProperty(SNEAKY) && !IsRaceProperty(SECRET))
+						if (!IsRaceProperty(RACE_PROPERTY::HOSTILE) && !IsRaceProperty(RACE_PROPERTY::WARLIKE) && !IsRaceProperty(RACE_PROPERTY::SNEAKY) && !IsRaceProperty(RACE_PROPERTY::SECRET))
 							pDoc->m_ShipArray[pDoc->m_ShipArray.GetUpperBound()].SetCurrentOrder(AVOID);
 						return;
 					}
@@ -667,7 +667,8 @@ void CMinor::Create(const CStringArray& saInfo, int& nPos)
 	int nStart = 0;
 	while (nStart < sRaceProperties.GetLength())
 	{
-		int nProperty = atoi(sRaceProperties.Tokenize(",", nStart));
+		RACE_PROPERTY::Typ nProperty = (RACE_PROPERTY::Typ)atoi(sRaceProperties.Tokenize(",", nStart));
+		ASSERT(nProperty >= RACE_PROPERTY::NOTHING_SPECIAL && nProperty <= RACE_PROPERTY::HOSTILE);
 		SetRaceProperty(nProperty, true);				// Rasseneigenschaften
 	}
 	
@@ -708,7 +709,8 @@ void CMinor::CreateAlienEntities(const CStringArray& saInfo, int& nPos)
 	int nStart = 0;
 	while (nStart < sRaceProperties.GetLength())
 	{
-		int nProperty = atoi(sRaceProperties.Tokenize(",", nStart));
+		RACE_PROPERTY::Typ nProperty = (RACE_PROPERTY::Typ)atoi(sRaceProperties.Tokenize(",", nStart));
+		ASSERT(nProperty >= RACE_PROPERTY::NOTHING_SPECIAL && nProperty <= RACE_PROPERTY::HOSTILE);
 		SetRaceProperty(nProperty, true);				// Rasseneigenschaften
 	}
 	m_nSpecialAbility	= atoi(saInfo[nPos++]);
@@ -733,6 +735,5 @@ void CMinor::Reset(void)
 	m_iCorruptibility = 0;					// wie stark ändert sich die Beziehung beim Geschenke geben?
 	m_bSpaceflight = false;					// Spaceflightnation (hat Schiffe)
 	m_bSubjugated = false;					// wurde die Rasse unterworfen
-	m_mAcceptance.clear();					// Punkte die eine MajorRace durch längere Beziehung mit der Rasse ansammelt, wird schwerer diese Rasse wegzukaufen
-	m_nSpecialAbility = 0;
+	m_mAcceptance.clear();					// Punkte die eine MajorRace durch längere Beziehung mit der Rasse ansammelt, wird schwerer diese Rasse wegzukaufen	
 }

@@ -129,23 +129,17 @@ void CRace::Serialize(CArchive &ar)
 		m_vDiplomacyNewsIn.clear();
 		vectorSize = 0;
 		ar >> vectorSize;
+		m_vDiplomacyNewsIn.resize(vectorSize);
 		for (size_t i = 0; i < vectorSize; i++)
-		{
-			CDiplomacyInfo info;
-			info.Serialize(ar);
-			m_vDiplomacyNewsIn.push_back(info);			
-		}
+			m_vDiplomacyNewsIn[i].Serialize(ar);
 		// diplomatische Nachrichten
 		m_vDiplomacyNewsOut.clear();
 		vectorSize = 0;
 		ar >> vectorSize;
+		m_vDiplomacyNewsOut.resize(vectorSize);
 		for (size_t i = 0; i < vectorSize; i++)
-		{
-			CDiplomacyInfo info;
-			info.Serialize(ar);
-			m_vDiplomacyNewsOut.push_back(info);			
-		}
-
+			m_vDiplomacyNewsOut[i].Serialize(ar);
+		
 		// gemachte Angebote der letzten beiden Runden
 		m_mLastOffers.clear();
 		mapSize = 0;
@@ -169,46 +163,48 @@ void CRace::Serialize(CArchive &ar)
 //////////////////////////////////////////////////////////////////////
 
 /// Funktion zum setzen der Rasseneigenschaften
-/// @param prop Rasseneigenschaft
+/// @param nProp Rasseneigenschaft
 /// @return <code>true</code>, wenn die Rasse die Eigenschaft besitzt, sonst <code>false</code>
-bool CRace::IsRaceProperty(BYTE prop) const
+bool CRace::IsRaceProperty(RACE_PROPERTY::Typ nProp) const
 {
-	switch (prop)
+	switch (nProp)
 	{
-		case AGRARIAN:		return (m_nProperty & RACE_AGRARIAN)	== RACE_AGRARIAN;
-		case FINANCIAL:		return (m_nProperty & RACE_FINANCIAL)	== RACE_FINANCIAL;
-		case HOSTILE:		return (m_nProperty & RACE_HOSTILE)		== RACE_HOSTILE;
-		case INDUSTRIAL:	return (m_nProperty & RACE_INDUSTRIAL)	== RACE_INDUSTRIAL;
-		case PACIFIST:		return (m_nProperty & RACE_PACIFIST)	== RACE_PACIFIST;
-		case PRODUCER:		return (m_nProperty & RACE_PRODUCER)	== RACE_PRODUCER;
-		case SCIENTIFIC:	return (m_nProperty & RACE_SCIENTIFIC)	== RACE_SCIENTIFIC;
-		case SECRET:		return (m_nProperty & RACE_SECRET)		== RACE_SECRET;
-		case SNEAKY:		return (m_nProperty & RACE_SNEAKY)		== RACE_SNEAKY;
-		case SOLOING:		return (m_nProperty & RACE_SOLOING)		== RACE_SOLOING;
-		case WARLIKE:		return (m_nProperty & RACE_WARLIKE)		== RACE_WARLIKE;
-		default:			return NOTHING_SPECIAL;
+		case RACE_PROPERTY::AGRARIAN:	return (m_nProperty & RACE_AGRARIAN)	== RACE_AGRARIAN;
+		case RACE_PROPERTY::FINANCIAL:	return (m_nProperty & RACE_FINANCIAL)	== RACE_FINANCIAL;
+		case RACE_PROPERTY::HOSTILE:	return (m_nProperty & RACE_HOSTILE)		== RACE_HOSTILE;
+		case RACE_PROPERTY::INDUSTRIAL:	return (m_nProperty & RACE_INDUSTRIAL)	== RACE_INDUSTRIAL;
+		case RACE_PROPERTY::PACIFIST:	return (m_nProperty & RACE_PACIFIST)	== RACE_PACIFIST;
+		case RACE_PROPERTY::PRODUCER:	return (m_nProperty & RACE_PRODUCER)	== RACE_PRODUCER;
+		case RACE_PROPERTY::SCIENTIFIC:	return (m_nProperty & RACE_SCIENTIFIC)	== RACE_SCIENTIFIC;
+		case RACE_PROPERTY::SECRET:		return (m_nProperty & RACE_SECRET)		== RACE_SECRET;
+		case RACE_PROPERTY::SNEAKY:		return (m_nProperty & RACE_SNEAKY)		== RACE_SNEAKY;
+		case RACE_PROPERTY::SOLOING:	return (m_nProperty & RACE_SOLOING)		== RACE_SOLOING;
+		case RACE_PROPERTY::WARLIKE:	return (m_nProperty & RACE_WARLIKE)		== RACE_WARLIKE;		
 	}
+
+	ASSERT(FALSE);
+	return RACE_PROPERTY::NOTHING_SPECIAL;
 }
 
 /// Funktion zum Setzen von Rasseneigenschaften.
-/// @param prop Rasseneigenschaft
+/// @param nProp Rasseneigenschaft
 /// @param is <code>true</code> oder <code>false</code>
-void CRace::SetRaceProperty(BYTE prop, bool is)
+void CRace::SetRaceProperty(RACE_PROPERTY::Typ nProp, bool is)
 {
-	switch (prop)
+	switch (nProp)
 	{
-		case NOTHING_SPECIAL:	if (is) m_nProperty = 0;							break;
-		case AGRARIAN:			SetAttributes(is, RACE_AGRARIAN, m_nProperty);		break;
-		case FINANCIAL:			SetAttributes(is, RACE_FINANCIAL, m_nProperty);		break;
-		case HOSTILE:			SetAttributes(is, RACE_HOSTILE, m_nProperty);		break;
-		case INDUSTRIAL:		SetAttributes(is, RACE_INDUSTRIAL, m_nProperty);	break;
-		case PACIFIST:			SetAttributes(is, RACE_PACIFIST, m_nProperty);		break;
-		case PRODUCER:			SetAttributes(is, RACE_PRODUCER, m_nProperty);		break;
-		case SCIENTIFIC:		SetAttributes(is, RACE_SCIENTIFIC, m_nProperty);	break;
-		case SECRET:			SetAttributes(is, RACE_SECRET, m_nProperty);		break;
-		case SNEAKY:			SetAttributes(is, RACE_SNEAKY, m_nProperty);		break;
-		case SOLOING:			SetAttributes(is, RACE_SOLOING, m_nProperty);		break;
-		case WARLIKE:			SetAttributes(is, RACE_WARLIKE, m_nProperty);		break;
+		case RACE_PROPERTY::NOTHING_SPECIAL:	if (is) m_nProperty = 0;							break;
+		case RACE_PROPERTY::AGRARIAN:			SetAttributes(is, RACE_AGRARIAN, m_nProperty);		break;
+		case RACE_PROPERTY::FINANCIAL:			SetAttributes(is, RACE_FINANCIAL, m_nProperty);		break;
+		case RACE_PROPERTY::HOSTILE:			SetAttributes(is, RACE_HOSTILE, m_nProperty);		break;
+		case RACE_PROPERTY::INDUSTRIAL:			SetAttributes(is, RACE_INDUSTRIAL, m_nProperty);	break;
+		case RACE_PROPERTY::PACIFIST:			SetAttributes(is, RACE_PACIFIST, m_nProperty);		break;
+		case RACE_PROPERTY::PRODUCER:			SetAttributes(is, RACE_PRODUCER, m_nProperty);		break;
+		case RACE_PROPERTY::SCIENTIFIC:			SetAttributes(is, RACE_SCIENTIFIC, m_nProperty);	break;
+		case RACE_PROPERTY::SECRET:				SetAttributes(is, RACE_SECRET, m_nProperty);		break;
+		case RACE_PROPERTY::SNEAKY:				SetAttributes(is, RACE_SNEAKY, m_nProperty);		break;
+		case RACE_PROPERTY::SOLOING:			SetAttributes(is, RACE_SOLOING, m_nProperty);		break;
+		case RACE_PROPERTY::WARLIKE:			SetAttributes(is, RACE_WARLIKE, m_nProperty);		break;
 	}
 }
 
@@ -225,7 +221,7 @@ bool CRace::HasSpecialAbility(int ability) const
 /// @param is <code>true</code> oder <code>false</code>
 void CRace::SetSpecialAbility(int ability, bool is)
 {
-	if (ability == NOTHING_SPECIAL && is)
+	if (ability == 0 && is)
 		m_nSpecialAbility = 0;
 	else
 		SetAttributes(is, ability, m_nSpecialAbility);
@@ -295,16 +291,27 @@ void CRace::MakeOffersAI(void)
 			if (m_byType == MINOR && it->second->m_byType == MINOR)
 				continue;
 
+			// Wenn an die Rasse in den letzen zwei Runden schon ein Angebot
+			// gemacht wurde, dann nicht gleich wieder eins schicken
+			if (GetLastOffer(it->first))
+				continue;
+
+			// TODO: Wird folgender Code noch benötigt, wenn obige Funktion nun verwendet wird?
 			// Nur wenn wir noch keine Angebote an diese Rasse gemacht haben
+			/*
 			bool bOffer = false;
 			for (UINT i = 0; i < m_vDiplomacyNewsOut.size(); i++)
+			{
 				if (m_vDiplomacyNewsOut[i].m_nFlag == DIPLOMACY_OFFER && m_vDiplomacyNewsOut[i].m_sToRace == it->first && m_vDiplomacyNewsOut[i].m_sFromRace == m_sID)
 				{
 					bOffer = true;
 					break;
 				}
+			}
+			
 			if (bOffer)
 				continue;
+			*/
 
 			// Angebot erstellen
 			CDiplomacyInfo info;
@@ -337,28 +344,29 @@ void CRace::ReactOnOfferAI(CDiplomacyInfo* pOffer)
 /// Funktion zum zurücksetzen aller Werte auf Ausgangswerte.
 void CRace::Reset(void)
 {
-	m_sID			= "";				// Rassen-ID
-	m_sHomeSystem	= "";				// Name des Heimatsystems
-	m_sName			= "";				// Rassenname
-	m_sNameArticle	= "";				// Artikel für Rassenname
-	m_sDesc			= "";				// Rassenbeschreibung
-	m_byType		= MINOR;			// Rassentyp (Major, Medior, Minor)
-	m_nProperty		= 0;				// Rasseneigenschaften
-	m_byShipNumber	= 0;				// zugewiesene Nummer welche Schiffe verwendet werden sollen
-	m_byBuildingNumber	= 0;			// zugewiesene Nummer welche Gebäude verwendet werden sollen
-	m_byMoralNumber	= 0;				// zugewiesene Nummer welche Moralwerte verwendet werden sollen
+	m_sID				= "";		// Rassen-ID
+	m_sHomeSystem		= "";		// Name des Heimatsystems
+	m_sName				= "";		// Rassenname
+	m_sNameArticle		= "";		// Artikel für Rassenname
+	m_sDesc				= "";		// Rassenbeschreibung
+	m_byType			= MINOR;	// Rassentyp (Major, Medior, Minor)
+	m_nProperty			= 0;		// Rasseneigenschaften
+	m_nSpecialAbility	= 0;		// Spezialfähigkeiten der Rasse
+	m_byShipNumber		= 0;		// zugewiesene Nummer welche Schiffe verwendet werden sollen
+	m_byBuildingNumber	= 0;		// zugewiesene Nummer welche Gebäude verwendet werden sollen
+	m_byMoralNumber		= 0;		// zugewiesene Nummer welche Moralwerte verwendet werden sollen
 
 	// Ingame-Attribute (Rassenwechselwirkung)
-	m_mRelations.clear();				// Beziehungsmap (Rassen-ID, Beziehungswert)
-	m_mAgreement.clear();				// Diplomatischer Status gegenüber anderen Rassen (Rassen-ID, Status)
-	m_vInContact.clear();				// kennt die Rasse eine andere Rasse (Rassen-ID, Wahrheitswert)
+	m_mRelations.clear();			// Beziehungsmap (Rassen-ID, Beziehungswert)
+	m_mAgreement.clear();			// Diplomatischer Status gegenüber anderen Rassen (Rassen-ID, Status)
+	m_vInContact.clear();			// kennt die Rasse eine andere Rasse (Rassen-ID, Wahrheitswert)
 	// diplomatische Nachrichten
 	m_vDiplomacyNewsIn.clear();
 	m_vDiplomacyNewsOut.clear();
 	m_mLastOffers.clear();
 
 	// grafische Attribute
-	m_sGraphicFile	= "";				// Name der zugehörigen Grafikdatei
+	m_sGraphicFile	= "";			// Name der zugehörigen Grafikdatei
 	
 	// Diplomatie-KI nullen
 	if (m_pDiplomacyAI)
@@ -415,27 +423,27 @@ CString CRace::GetTooltip(void) const
 
 	// Eigenschaften anzeigen
 	vector<CString> sProperties;
-	if (IsRaceProperty(FINANCIAL))
+	if (IsRaceProperty(RACE_PROPERTY::FINANCIAL))
 		sProperties.push_back(CResourceManager::GetString("FINANCIAL"));
-	if (IsRaceProperty(WARLIKE))
+	if (IsRaceProperty(RACE_PROPERTY::WARLIKE))
 		sProperties.push_back(CResourceManager::GetString("WARLIKE"));
-	if (IsRaceProperty(AGRARIAN))
+	if (IsRaceProperty(RACE_PROPERTY::AGRARIAN))
 		sProperties.push_back(CResourceManager::GetString("AGRARIAN"));
-	if (IsRaceProperty(INDUSTRIAL))
+	if (IsRaceProperty(RACE_PROPERTY::INDUSTRIAL))
 		sProperties.push_back(CResourceManager::GetString("INDUSTRIAL"));
-	if (IsRaceProperty(SECRET))
+	if (IsRaceProperty(RACE_PROPERTY::SECRET))
 		sProperties.push_back(CResourceManager::GetString("SECRET"));
-	if (IsRaceProperty(SCIENTIFIC))
+	if (IsRaceProperty(RACE_PROPERTY::SCIENTIFIC))
 		sProperties.push_back(CResourceManager::GetString("SCIENTIFIC"));
-	if (IsRaceProperty(PRODUCER))
+	if (IsRaceProperty(RACE_PROPERTY::PRODUCER))
 		sProperties.push_back(CResourceManager::GetString("PRODUCER"));
-	if (IsRaceProperty(PACIFIST))
+	if (IsRaceProperty(RACE_PROPERTY::PACIFIST))
 		sProperties.push_back(CResourceManager::GetString("PACIFIST"));
-	if (IsRaceProperty(SNEAKY))
+	if (IsRaceProperty(RACE_PROPERTY::SNEAKY))
 		sProperties.push_back(CResourceManager::GetString("SNEAKY"));
-	if (IsRaceProperty(SOLOING))
+	if (IsRaceProperty(RACE_PROPERTY::SOLOING))
 		sProperties.push_back(CResourceManager::GetString("SOLOING"));
-	if (IsRaceProperty(HOSTILE))
+	if (IsRaceProperty(RACE_PROPERTY::HOSTILE))
 		sProperties.push_back(CResourceManager::GetString("HOSTILE"));
 	if (sProperties.size() == 0)
 		sProperties.push_back(CResourceManager::GetString("NONE"));

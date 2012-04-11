@@ -652,7 +652,7 @@ void CShipAI::CalcBombardSector(void)
 	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 	{
 		// pazifistische Rassen bombardieren nie
-		if (it->second->IsRaceProperty(PACIFIST))
+		if (it->second->IsRaceProperty(RACE_PROPERTY::PACIFIST))
 			continue;
 
 		// die Hauptrassen bombardieren nicht alle gleichoft und gleich lang. Die Föderation z.B. kann wegen den

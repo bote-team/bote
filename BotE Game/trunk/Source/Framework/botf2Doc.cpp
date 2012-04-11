@@ -668,9 +668,10 @@ void CBotf2Doc::SerializeEndOfRoundData(CArchive &ar, network::RACE race)
 			MYTRACE(MT::LEVEL_INFO, "Server receiving CombatData from client %d...\n", race);
 			
 			// Informationen über die Taktik der Schiffe bzw. die Taktik des Kampfes empfangen
-			int nCombatOrder = COMBAT_NON;
-			ar >> nCombatOrder;
-			if (nCombatOrder != COMBAT_NON)
+			int nOrder;
+			ar >> nOrder;
+			COMBAT_ORDER::Typ nCombatOrder = (COMBAT_ORDER::Typ)nOrder;
+			if (nCombatOrder != COMBAT_ORDER::NONE)
 				m_mCombatOrders[sMajorID] = nCombatOrder;
 
 			/*
@@ -5422,7 +5423,7 @@ void CBotf2Doc::CalcShipCombat()
 	
 	// Möglichen Rückzugssektor für Rasse aus diesem Kampf ermitteln
 	// Diese Schiffe werden auf einem zufälligen Feld um den Kampfsektor platziert
-	for (map<CString, int>::const_iterator it = m_mCombatOrders.begin(); it != m_mCombatOrders.end(); ++it)
+	for (map<CString, COMBAT_ORDER::Typ>::const_iterator it = m_mCombatOrders.begin(); it != m_mCombatOrders.end(); ++it)
 	{
 		CPoint pt = m_ptCurrentCombatSector;
 		pair<int, int> ptCombatSector(pt.x, pt.y);
@@ -5622,7 +5623,7 @@ void CBotf2Doc::CalcShipCombat()
 	{
 		CShip* pShip = &m_ShipArray[i];
 		// Hat das Schiff den Rückzugsbefehl
-		if (pShip->GetCombatTactic() == COMBAT_TACTIC_RETREAT)
+		if (pShip->GetCombatTactic() == COMBAT_TACTIC::CT_RETREAT)
 		{
 			// Schiff auf Meiden stellen
 			if (pShip->IsNonCombat())
@@ -5647,10 +5648,10 @@ void CBotf2Doc::CalcShipEffects()
 	{
 		CShip* pShip = &m_ShipArray[i];
 		// Hat das Schiff den Rückzugsbefehl
-		if (pShip->GetCombatTactic() == COMBAT_TACTIC_RETREAT)
+		if (pShip->GetCombatTactic() == COMBAT_TACTIC::CT_RETREAT)
 		{
 			// Rückzugsbefehl zurücknehmen
-			pShip->SetCombatTactic(COMBAT_TACTIC_ATTACK);
+			pShip->SetCombatTactic(COMBAT_TACTIC::CT_ATTACK);
 			// Schiff auf Meiden stellen
 			if (pShip->IsNonCombat())
 				pShip->SetCurrentOrder(AVOID);
@@ -5685,7 +5686,7 @@ void CBotf2Doc::CalcShipEffects()
 			{
 				for (int j = 0; j < pShip->GetFleet()->GetFleetSize(); j++)
 				{
-					if (pShip->GetFleet()->GetShipFromFleet(j)->GetCombatTactic() != COMBAT_TACTIC_RETREAT
+					if (pShip->GetFleet()->GetShipFromFleet(j)->GetCombatTactic() != COMBAT_TACTIC::CT_RETREAT
 						|| pShip->GetFleet()->GetFleetSpeed(pShip) == 0)
 					{
 						bCompleteFleetRetreat = false;
@@ -5703,7 +5704,7 @@ void CBotf2Doc::CalcShipEffects()
 					for (int j = 0; j < pShip->GetFleet()->GetFleetSize(); j++)							
 					{
 						CShip* pFleetShip = pShip->GetFleet()->GetShipFromFleet(j);
-						pFleetShip->SetCombatTactic(COMBAT_TACTIC_ATTACK);
+						pFleetShip->SetCombatTactic(COMBAT_TACTIC::CT_ATTACK);
 						
 						// Schiff auf Meiden stellen
 						if (pFleetShip->IsNonCombat())
@@ -6657,7 +6658,7 @@ void CBotf2Doc::CalcAlienShipEffects()
 			continue;
 
 		// Aliens mit Rückzugsbefehl machen nix
-		if (pShip->GetCombatTactic() == COMBAT_TACTIC_RETREAT)
+		if (pShip->GetCombatTactic() == COMBAT_TACTIC::CT_RETREAT)
 			continue;
 
 		CMinor* pAlien = dynamic_cast<CMinor*>(m_pRaceCtrl->GetRace(pShip->GetOwnerOfShip()));
@@ -6755,7 +6756,7 @@ void CBotf2Doc::CalcAlienShipEffects()
 					for (unsigned int n = 0; n < vShips.size(); n++)
 					{
 						// Schiffe mit Rückzugsbefehl werden nie vom Virus befallen
-						if (vShips[n]->GetCombatTactic() == COMBAT_RETREAT)
+						if (vShips[n]->GetCombatTactic() == COMBAT_TACTIC::CT_RETREAT)
 							continue;
 					
 						vShips[n]->SetOwnerOfShip(pAlien->GetRaceID());

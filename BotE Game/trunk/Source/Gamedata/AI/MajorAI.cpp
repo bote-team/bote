@@ -202,95 +202,95 @@ ANSWER_STATUS::Typ CMajorAI::ReactOnMajorOffer(const CDiplomacyInfo& info)
 	if (info.m_nType == NON_AGGRESSION_PACT)
 	{
 		nNeededRelation = 35;
-		if (pRace->IsRaceProperty(HOSTILE))
+		if (pRace->IsRaceProperty(RACE_PROPERTY::HOSTILE))
 			nNeededRelation += 30;
-		if (pRace->IsRaceProperty(WARLIKE))
+		if (pRace->IsRaceProperty(RACE_PROPERTY::WARLIKE))
 			nNeededRelation += 20;
-		if (pRace->IsRaceProperty(SECRET))
+		if (pRace->IsRaceProperty(RACE_PROPERTY::SECRET))
 			nNeededRelation += 10;
-		if (pRace->IsRaceProperty(SCIENTIFIC))
+		if (pRace->IsRaceProperty(RACE_PROPERTY::SCIENTIFIC))
 			nNeededRelation -= 10;
-		if (pRace->IsRaceProperty(SOLOING))
+		if (pRace->IsRaceProperty(RACE_PROPERTY::SOLOING))
 			nNeededRelation -= 15;
-		if (pRace->IsRaceProperty(PACIFIST))
+		if (pRace->IsRaceProperty(RACE_PROPERTY::PACIFIST))
 			nNeededRelation -= 25;		
 	}
 	else if (info.m_nType == TRADE_AGREEMENT)
 	{
 		nNeededRelation = 55;
-		if (pRace->IsRaceProperty(HOSTILE))
+		if (pRace->IsRaceProperty(RACE_PROPERTY::HOSTILE))
 			nNeededRelation += 30;
-		if (pRace->IsRaceProperty(SOLOING))
+		if (pRace->IsRaceProperty(RACE_PROPERTY::SOLOING))
 			nNeededRelation += 20;
-		if (pRace->IsRaceProperty(SECRET))
+		if (pRace->IsRaceProperty(RACE_PROPERTY::SECRET))
 			nNeededRelation += 5;
-		if (pRace->IsRaceProperty(PRODUCER))
+		if (pRace->IsRaceProperty(RACE_PROPERTY::PRODUCER))
 			nNeededRelation -= 10;
-		if (pRace->IsRaceProperty(FINANCIAL))
+		if (pRace->IsRaceProperty(RACE_PROPERTY::FINANCIAL))
 			nNeededRelation -= 25;
 	}
 	else if (info.m_nType == FRIENDSHIP_AGREEMENT)
 	{
 		nNeededRelation = 70;
-		if (pRace->IsRaceProperty(HOSTILE))
+		if (pRace->IsRaceProperty(RACE_PROPERTY::HOSTILE))
 			nNeededRelation += 20;
-		if (pRace->IsRaceProperty(SOLOING))
+		if (pRace->IsRaceProperty(RACE_PROPERTY::SOLOING))
 			nNeededRelation += 15;
-		if (pRace->IsRaceProperty(WARLIKE))
+		if (pRace->IsRaceProperty(RACE_PROPERTY::WARLIKE))
 			nNeededRelation += 10;
-		if (pRace->IsRaceProperty(SECRET))
+		if (pRace->IsRaceProperty(RACE_PROPERTY::SECRET))
 			nNeededRelation += 5;		
-		if (pRace->IsRaceProperty(FINANCIAL))
+		if (pRace->IsRaceProperty(RACE_PROPERTY::FINANCIAL))
 			nNeededRelation -= 10;
-		if (pRace->IsRaceProperty(SCIENTIFIC))
+		if (pRace->IsRaceProperty(RACE_PROPERTY::SCIENTIFIC))
 			nNeededRelation -= 20;
-		if (pRace->IsRaceProperty(PACIFIST))
+		if (pRace->IsRaceProperty(RACE_PROPERTY::PACIFIST))
 			nNeededRelation -= 25;
 	}
 	else if (info.m_nType == DEFENCE_PACT)
 	{
 		nNeededRelation = 70;
-		if (pRace->IsRaceProperty(SOLOING))
+		if (pRace->IsRaceProperty(RACE_PROPERTY::SOLOING))
 			nNeededRelation += 10;
-		if (pRace->IsRaceProperty(SCIENTIFIC))
+		if (pRace->IsRaceProperty(RACE_PROPERTY::SCIENTIFIC))
 			nNeededRelation -= 5;
-		if (pRace->IsRaceProperty(AGRARIAN))
+		if (pRace->IsRaceProperty(RACE_PROPERTY::AGRARIAN))
 			nNeededRelation -= 10;
-		if (pRace->IsRaceProperty(FINANCIAL))
+		if (pRace->IsRaceProperty(RACE_PROPERTY::FINANCIAL))
 			nNeededRelation -= 15;		
 	}
 	else if (info.m_nType == COOPERATION)
 	{
 		nNeededRelation = 80;
-		if (pRace->IsRaceProperty(HOSTILE))
+		if (pRace->IsRaceProperty(RACE_PROPERTY::HOSTILE))
 			nNeededRelation += 20;
-		if (pRace->IsRaceProperty(SOLOING))
+		if (pRace->IsRaceProperty(RACE_PROPERTY::SOLOING))
 			nNeededRelation += 15;
-		if (pRace->IsRaceProperty(SECRET))
+		if (pRace->IsRaceProperty(RACE_PROPERTY::SECRET))
 			nNeededRelation += 10;
-		if (pRace->IsRaceProperty(AGRARIAN))
+		if (pRace->IsRaceProperty(RACE_PROPERTY::AGRARIAN))
 			nNeededRelation -= 5;
-		if (pRace->IsRaceProperty(FINANCIAL))
+		if (pRace->IsRaceProperty(RACE_PROPERTY::FINANCIAL))
 			nNeededRelation -= 10;
-		if (pRace->IsRaceProperty(SCIENTIFIC))
+		if (pRace->IsRaceProperty(RACE_PROPERTY::SCIENTIFIC))
 			nNeededRelation -= 15;
-		if (pRace->IsRaceProperty(PACIFIST))
+		if (pRace->IsRaceProperty(RACE_PROPERTY::PACIFIST))
 			nNeededRelation -= 20;
 	}
 	else if (info.m_nType == AFFILIATION)
 	{
 		nNeededRelation = 90;
-		if (pRace->IsRaceProperty(HOSTILE))
+		if (pRace->IsRaceProperty(RACE_PROPERTY::HOSTILE))
 			nNeededRelation += 15;
-		if (pRace->IsRaceProperty(SOLOING))
+		if (pRace->IsRaceProperty(RACE_PROPERTY::SOLOING))
 			nNeededRelation += 10;
-		if (pRace->IsRaceProperty(SECRET))
+		if (pRace->IsRaceProperty(RACE_PROPERTY::SECRET))
 			nNeededRelation += 5;
-		if (pRace->IsRaceProperty(SCIENTIFIC))
+		if (pRace->IsRaceProperty(RACE_PROPERTY::SCIENTIFIC))
 			nNeededRelation -= 5;
-		if (pRace->IsRaceProperty(FINANCIAL))
+		if (pRace->IsRaceProperty(RACE_PROPERTY::FINANCIAL))
 			nNeededRelation -= 10;
-		if (pRace->IsRaceProperty(PACIFIST))
+		if (pRace->IsRaceProperty(RACE_PROPERTY::PACIFIST))
 			nNeededRelation -= 15;
 	}
 	else if (info.m_nType == WAR_PACT)
@@ -298,28 +298,28 @@ ANSWER_STATUS::Typ CMajorAI::ReactOnMajorOffer(const CDiplomacyInfo& info)
 		int nRelationValue = pRace->GetRelation(info.m_sWarpactEnemy);
 		
 		// bei einer hinterhältigen Rasse gilt die Beziehung nur zu einem Viertel
-		if (pRace->IsRaceProperty(SNEAKY) && nRelationValue > 0)
+		if (pRace->IsRaceProperty(RACE_PROPERTY::SNEAKY) && nRelationValue > 0)
 			nRelationValue /= 4;
 		
 		nNeededRelation = 40 + nRelationValue;
 
-		if (pRace->IsRaceProperty(PACIFIST))
+		if (pRace->IsRaceProperty(RACE_PROPERTY::PACIFIST))
 			nNeededRelation += 40;
-		if (pRace->IsRaceProperty(AGRARIAN))
+		if (pRace->IsRaceProperty(RACE_PROPERTY::AGRARIAN))
 			nNeededRelation += 20;
-		if (pRace->IsRaceProperty(SOLOING))
+		if (pRace->IsRaceProperty(RACE_PROPERTY::SOLOING))
 			nNeededRelation += 15;
-		if (pRace->IsRaceProperty(SCIENTIFIC))
+		if (pRace->IsRaceProperty(RACE_PROPERTY::SCIENTIFIC))
 			nNeededRelation += 10;
-		if (pRace->IsRaceProperty(SECRET))
+		if (pRace->IsRaceProperty(RACE_PROPERTY::SECRET))
 			nNeededRelation += 5;		
-		if (pRace->IsRaceProperty(FINANCIAL))
+		if (pRace->IsRaceProperty(RACE_PROPERTY::FINANCIAL))
 			nNeededRelation -= 5;
-		if (pRace->IsRaceProperty(SNEAKY))
+		if (pRace->IsRaceProperty(RACE_PROPERTY::SNEAKY))
 			nNeededRelation -= 15;
-		if (pRace->IsRaceProperty(WARLIKE))
+		if (pRace->IsRaceProperty(RACE_PROPERTY::WARLIKE))
 			nNeededRelation -= 25;
-		if (pRace->IsRaceProperty(HOSTILE))
+		if (pRace->IsRaceProperty(RACE_PROPERTY::HOSTILE))
 			nNeededRelation -= 40;		
 	}
 	else if (info.m_nType == DIP_REQUEST)
@@ -605,17 +605,17 @@ bool CMajorAI::MakeMinorOffer(const CString& sRaceID, CDiplomacyInfo& info)
 		if (nOthersAgreement < MEMBERSHIP && nOffer == NO_AGREEMENT)
 		{
 			short nMinRel = 10;
-			if (pOurRace->IsRaceProperty(HOSTILE))			// Wir lieben Krieg
+			if (pOurRace->IsRaceProperty(RACE_PROPERTY::HOSTILE))		// Wir lieben Krieg
 				nMinRel += 25;
-			if (pOurRace->IsRaceProperty(WARLIKE))			// Wir lieben Krieg
+			if (pOurRace->IsRaceProperty(RACE_PROPERTY::WARLIKE))		// Wir lieben Krieg
 				nMinRel += 15;
-			if (pOurRace->IsRaceProperty(SNEAKY))			// Wir sind eh hinterhältig
+			if (pOurRace->IsRaceProperty(RACE_PROPERTY::SNEAKY))		// Wir sind eh hinterhältig
 				nMinRel += 5;
-			if (pOurRace->IsRaceProperty(FINANCIAL))		// Krieg ist nicht immer gut fürs Geschäft
+			if (pOurRace->IsRaceProperty(RACE_PROPERTY::FINANCIAL))		// Krieg ist nicht immer gut fürs Geschäft
 				nMinRel -= 5;
-			if (pOurRace->IsRaceProperty(SCIENTIFIC))		// Krieg ist nicht immer gut für Forschung
+			if (pOurRace->IsRaceProperty(RACE_PROPERTY::SCIENTIFIC))	// Krieg ist nicht immer gut für Forschung
 				nMinRel -= 5;
-			if (pOurRace->IsRaceProperty(PACIFIST))			// Wir hassen Krieg
+			if (pOurRace->IsRaceProperty(RACE_PROPERTY::PACIFIST))		// Wir hassen Krieg
 				nMinRel -= 10;
 
 			if (byTheirRelationToUs < nMinRel && nAgreement != WAR)
@@ -834,17 +834,17 @@ bool CMajorAI::MakeMajorOffer(CString& sRaceID, CDiplomacyInfo& info)
 			// Das könnte man noch von der Art der Rasse abhängig machen, kriegerische Rassen erklären eher Krieg,
 			// pazifistische Rasse erklären gar keinen Krieg oder so ähnlich -> hier gemacht
 			short nMinRel = 15;
-			if (pOurRace->IsRaceProperty(HOSTILE))			// Wir lieben Krieg
+			if (pOurRace->IsRaceProperty(RACE_PROPERTY::HOSTILE))		// Wir lieben Krieg
 				nMinRel += 25;
-			if (pOurRace->IsRaceProperty(WARLIKE))			// Wir lieben Krieg
+			if (pOurRace->IsRaceProperty(RACE_PROPERTY::WARLIKE))		// Wir lieben Krieg
 				nMinRel += 15;
-			if (pOurRace->IsRaceProperty(SNEAKY))			// Wir sind eh hinterhältig
+			if (pOurRace->IsRaceProperty(RACE_PROPERTY::SNEAKY))		// Wir sind eh hinterhältig
 				nMinRel += 5;
-			if (pOurRace->IsRaceProperty(FINANCIAL))		// Krieg ist nicht immer gut fürs Geschäft
+			if (pOurRace->IsRaceProperty(RACE_PROPERTY::FINANCIAL))		// Krieg ist nicht immer gut fürs Geschäft
 				nMinRel -= 5;
-			if (pOurRace->IsRaceProperty(SCIENTIFIC))		// Krieg ist nicht immer gut für Forschung
+			if (pOurRace->IsRaceProperty(RACE_PROPERTY::SCIENTIFIC))	// Krieg ist nicht immer gut für Forschung
 				nMinRel -= 10;
-			if (pOurRace->IsRaceProperty(PACIFIST))			// Wir hassen Krieg
+			if (pOurRace->IsRaceProperty(RACE_PROPERTY::PACIFIST))		// Wir hassen Krieg
 				nMinRel -= 15;
 
 			float fModi = 0.0f;
@@ -1074,97 +1074,97 @@ int CMajorAI::GetMinOfferValue(short nOfferType)
 	// Nichtangriffspakt
 	case NON_AGGRESSION_PACT:
 		nNeededRelation = 50;
-		if (m_pRace->IsRaceProperty(HOSTILE))
+		if (m_pRace->IsRaceProperty(RACE_PROPERTY::HOSTILE))
 			nNeededRelation += 50;
-		if (m_pRace->IsRaceProperty(WARLIKE))
+		if (m_pRace->IsRaceProperty(RACE_PROPERTY::WARLIKE))
 			nNeededRelation += 20;
-		if (m_pRace->IsRaceProperty(SECRET))
+		if (m_pRace->IsRaceProperty(RACE_PROPERTY::SECRET))
 			nNeededRelation += 10;
-		if (m_pRace->IsRaceProperty(SCIENTIFIC))
+		if (m_pRace->IsRaceProperty(RACE_PROPERTY::SCIENTIFIC))
 			nNeededRelation -= 10;
-		if (m_pRace->IsRaceProperty(SOLOING))
+		if (m_pRace->IsRaceProperty(RACE_PROPERTY::SOLOING))
 			nNeededRelation -= 15;
-		if (m_pRace->IsRaceProperty(PACIFIST))
+		if (m_pRace->IsRaceProperty(RACE_PROPERTY::PACIFIST))
 			nNeededRelation -= 25;		
 		break;
 	// Handelsvertrag
 	case TRADE_AGREEMENT:
 		nNeededRelation = 70;
-		if (m_pRace->IsRaceProperty(HOSTILE))
+		if (m_pRace->IsRaceProperty(RACE_PROPERTY::HOSTILE))
 			nNeededRelation += 40;
-		if (m_pRace->IsRaceProperty(SOLOING))
+		if (m_pRace->IsRaceProperty(RACE_PROPERTY::SOLOING))
 			nNeededRelation += 15;
-		if (m_pRace->IsRaceProperty(SECRET))
+		if (m_pRace->IsRaceProperty(RACE_PROPERTY::SECRET))
 			nNeededRelation += 10;
-		if (m_pRace->IsRaceProperty(PRODUCER))
+		if (m_pRace->IsRaceProperty(RACE_PROPERTY::PRODUCER))
 			nNeededRelation -= 10;
-		if (m_pRace->IsRaceProperty(FINANCIAL))
+		if (m_pRace->IsRaceProperty(RACE_PROPERTY::FINANCIAL))
 			nNeededRelation -= 20;		
 		break;
 	// Freundschaftsvertrag
 	case FRIENDSHIP_AGREEMENT:
 		nNeededRelation = 80;
-		if (m_pRace->IsRaceProperty(HOSTILE))
+		if (m_pRace->IsRaceProperty(RACE_PROPERTY::HOSTILE))
 			nNeededRelation += 30;
-		if (m_pRace->IsRaceProperty(SOLOING))
+		if (m_pRace->IsRaceProperty(RACE_PROPERTY::SOLOING))
 			nNeededRelation += 15;
-		if (m_pRace->IsRaceProperty(WARLIKE))
+		if (m_pRace->IsRaceProperty(RACE_PROPERTY::WARLIKE))
 			nNeededRelation += 10;
-		if (m_pRace->IsRaceProperty(SECRET))
+		if (m_pRace->IsRaceProperty(RACE_PROPERTY::SECRET))
 			nNeededRelation += 10;
-		if (m_pRace->IsRaceProperty(FINANCIAL))
+		if (m_pRace->IsRaceProperty(RACE_PROPERTY::FINANCIAL))
 			nNeededRelation -= 10;
-		if (m_pRace->IsRaceProperty(SCIENTIFIC))
+		if (m_pRace->IsRaceProperty(RACE_PROPERTY::SCIENTIFIC))
 			nNeededRelation -= 20;
-		if (m_pRace->IsRaceProperty(PACIFIST))
+		if (m_pRace->IsRaceProperty(RACE_PROPERTY::PACIFIST))
 			nNeededRelation -= 30;
 		break;
 	// Verteidigungspakt
 	case DEFENCE_PACT:
 		nNeededRelation = 100;
-		if (m_pRace->IsRaceProperty(HOSTILE))
+		if (m_pRace->IsRaceProperty(RACE_PROPERTY::HOSTILE))
 			nNeededRelation += 20;
-		if (m_pRace->IsRaceProperty(AGRARIAN))
+		if (m_pRace->IsRaceProperty(RACE_PROPERTY::AGRARIAN))
 			nNeededRelation -= 10;
-		if (m_pRace->IsRaceProperty(SCIENTIFIC))
+		if (m_pRace->IsRaceProperty(RACE_PROPERTY::SCIENTIFIC))
 			nNeededRelation -= 15;
-		if (m_pRace->IsRaceProperty(FINANCIAL))
+		if (m_pRace->IsRaceProperty(RACE_PROPERTY::FINANCIAL))
 			nNeededRelation -= 20;
-		if (m_pRace->IsRaceProperty(PACIFIST))
+		if (m_pRace->IsRaceProperty(RACE_PROPERTY::PACIFIST))
 			nNeededRelation -= 25;
-		if (m_pRace->IsRaceProperty(SOLOING))
+		if (m_pRace->IsRaceProperty(RACE_PROPERTY::SOLOING))
 			nNeededRelation -= 30;
 		break;
 	// Kooperation
 	case COOPERATION:
 		nNeededRelation = 115;
-		if (m_pRace->IsRaceProperty(HOSTILE))
+		if (m_pRace->IsRaceProperty(RACE_PROPERTY::HOSTILE))
 			nNeededRelation += 30;
-		if (m_pRace->IsRaceProperty(SOLOING))
+		if (m_pRace->IsRaceProperty(RACE_PROPERTY::SOLOING))
 			nNeededRelation += 10;
-		if (m_pRace->IsRaceProperty(SECRET))
+		if (m_pRace->IsRaceProperty(RACE_PROPERTY::SECRET))
 			nNeededRelation += 5;
-		if (m_pRace->IsRaceProperty(SCIENTIFIC))
+		if (m_pRace->IsRaceProperty(RACE_PROPERTY::SCIENTIFIC))
 			nNeededRelation -= 10;
-		if (m_pRace->IsRaceProperty(FINANCIAL))
+		if (m_pRace->IsRaceProperty(RACE_PROPERTY::FINANCIAL))
 			nNeededRelation -= 20;
-		if (m_pRace->IsRaceProperty(PACIFIST))
+		if (m_pRace->IsRaceProperty(RACE_PROPERTY::PACIFIST))
 			nNeededRelation -= 25;
 		break;
 	// Bündnis
 	case AFFILIATION:
 		nNeededRelation = 145;
-		if (m_pRace->IsRaceProperty(HOSTILE))
+		if (m_pRace->IsRaceProperty(RACE_PROPERTY::HOSTILE))
 			nNeededRelation += 15;
-		if (m_pRace->IsRaceProperty(SOLOING))
+		if (m_pRace->IsRaceProperty(RACE_PROPERTY::SOLOING))
 			nNeededRelation += 10;
-		if (m_pRace->IsRaceProperty(SECRET))
+		if (m_pRace->IsRaceProperty(RACE_PROPERTY::SECRET))
 			nNeededRelation += 5;
-		if (m_pRace->IsRaceProperty(PACIFIST))
+		if (m_pRace->IsRaceProperty(RACE_PROPERTY::PACIFIST))
 			nNeededRelation -= 5;
-		if (m_pRace->IsRaceProperty(SCIENTIFIC))
+		if (m_pRace->IsRaceProperty(RACE_PROPERTY::SCIENTIFIC))
 			nNeededRelation -= 15;
-		if (m_pRace->IsRaceProperty(FINANCIAL))
+		if (m_pRace->IsRaceProperty(RACE_PROPERTY::FINANCIAL))
 			nNeededRelation -= 25;
 		break;
 	}
@@ -1488,17 +1488,17 @@ void CMajorAI::ReactOnDowry(const CDiplomacyInfo& info)
 	// Wert nochmal modifizieren, aufgrund der Rassenart
 	if (fValue != 0.0f)
 	{
-		if (pOurRace->IsRaceProperty(PRODUCER))
+		if (pOurRace->IsRaceProperty(RACE_PROPERTY::PRODUCER))
 			fValue *= 1.5f;
-		if (pOurRace->IsRaceProperty(INDUSTRIAL))
+		if (pOurRace->IsRaceProperty(RACE_PROPERTY::INDUSTRIAL))
 			fValue *= 1.35f;
-		if (pOurRace->IsRaceProperty(WARLIKE))
+		if (pOurRace->IsRaceProperty(RACE_PROPERTY::WARLIKE))
 			fValue *= 1.2f;
-		if (pOurRace->IsRaceProperty(FINANCIAL))
+		if (pOurRace->IsRaceProperty(RACE_PROPERTY::FINANCIAL))
 			fValue *= 1.1f;
-		if (pOurRace->IsRaceProperty(SECRET))
+		if (pOurRace->IsRaceProperty(RACE_PROPERTY::SECRET))
 			fValue *= 0.9f;
-		if (pOurRace->IsRaceProperty(AGRARIAN))
+		if (pOurRace->IsRaceProperty(RACE_PROPERTY::AGRARIAN))
 			fValue *= 0.8f;
 	}
 
@@ -1531,17 +1531,17 @@ void CMajorAI::ReactOnDowry(const CDiplomacyInfo& info)
 	// Wert, den wir mit nRandomCredits erreichen müssen, um die Beziehung zu verbessern
 	short nNeededValue = DIPLOMACY_PRESENT_VALUE;	// 200 ist "normal"
 	
-	if (pOurRace->IsRaceProperty(SOLOING))
+	if (pOurRace->IsRaceProperty(RACE_PROPERTY::SOLOING))
 		nNeededValue += 150;	// bei einer zurückgezogenen Rasse ist der Wert wesentlich höher
-	if (pOurRace->IsRaceProperty(HOSTILE))
+	if (pOurRace->IsRaceProperty(RACE_PROPERTY::HOSTILE))
 		nNeededValue += 100;	// bei einer extrem feindlichen Rasse ist der Wert wesentlich höher
-	if (pOurRace->IsRaceProperty(SECRET))
+	if (pOurRace->IsRaceProperty(RACE_PROPERTY::SECRET))
 		nNeededValue += 75;		// bei einer Geheimdienstrasse ist der Wert höher
-	if (pOurRace->IsRaceProperty(WARLIKE))
+	if (pOurRace->IsRaceProperty(RACE_PROPERTY::WARLIKE))
 		nNeededValue += 50;		// bei einer kriegerischen Rasse ist der Wert höher
-	if (pOurRace->IsRaceProperty(INDUSTRIAL))
+	if (pOurRace->IsRaceProperty(RACE_PROPERTY::INDUSTRIAL))
 		nNeededValue -= 25;		// bei einer industriellen Rasse ist der Wert niedriger	
-	if (pOurRace->IsRaceProperty(FINANCIAL))
+	if (pOurRace->IsRaceProperty(RACE_PROPERTY::FINANCIAL))
 		nNeededValue -= 50;		// bei einer finanziellen Rasse ist der Wert niedriger	
 
 	// Jetzt berechnen, um wieviel sich die Beziehung verändern würde

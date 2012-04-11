@@ -446,7 +446,7 @@ void CCombatMenuView::DrawCombatInfoMenue(Graphics* g)
 	if (!pDoc->m_bRoundEndPressed)
 	{
 		// keine Kampfbeteiligung
-		pDoc->m_nCombatOrder = COMBAT_NON;
+		pDoc->m_nCombatOrder = COMBAT_ORDER::NONE;
 		Sleep(250);
 		pDoc->m_bRoundEndPressed = true;
 		client.EndOfRound(pDoc);		
@@ -525,9 +525,9 @@ void CCombatMenuView::DrawCombatOrderMenue(Graphics* g)
 			Bitmap* graphic = NULL;
 			switch (pShip->GetCombatTactic())
 			{
-			case COMBAT_TACTIC_ATTACK:	graphic	= pDoc->GetGraphicPool()->GetGDIGraphic("Other\\tactic_attack.bop"); break;
-			case COMBAT_TACTIC_AVOID:	graphic	= pDoc->GetGraphicPool()->GetGDIGraphic("Other\\tactic_avoid.bop"); break;
-			case COMBAT_TACTIC_RETREAT: graphic	= pDoc->GetGraphicPool()->GetGDIGraphic("Other\\tactic_retreat.bop"); break;
+			case COMBAT_TACTIC::CT_ATTACK:	graphic	= pDoc->GetGraphicPool()->GetGDIGraphic("Other\\tactic_attack.bop"); break;
+			case COMBAT_TACTIC::CT_AVOID:	graphic	= pDoc->GetGraphicPool()->GetGDIGraphic("Other\\tactic_avoid.bop"); break;
+			case COMBAT_TACTIC::CT_RETREAT:	graphic	= pDoc->GetGraphicPool()->GetGDIGraphic("Other\\tactic_retreat.bop"); break;
 			}
 			
 			if (graphic)
@@ -685,10 +685,10 @@ void CCombatMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 	
 	if (!m_bInOrderMenu)
 	{
-		int iClick = COMBAT_NON;
+		int iClick = COMBAT_ORDER::NONE;
 		if (ButtonReactOnLeftClick(point, &m_CombatDecisionButtons, iClick))
 		{
-			if (iClick == COMBAT_USER)
+			if (iClick == COMBAT_ORDER::USER)
 			{
 				// ins detailierte Schiffsbefehlsmenü springen
 				m_bInOrderMenu = true;
@@ -699,7 +699,7 @@ void CCombatMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			else
 			{
 				// Befehl festlegen
-				pDoc->m_nCombatOrder = iClick;
+				pDoc->m_nCombatOrder = (COMBAT_ORDER::Typ)iClick;
 				
 				pDoc->m_bRoundEndPressed = true;
 				client.EndOfRound(pDoc);
@@ -727,7 +727,7 @@ void CCombatMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			else
 			{
 				// Befehl festlegen
-				pDoc->m_nCombatOrder = COMBAT_USER;
+				pDoc->m_nCombatOrder = COMBAT_ORDER::USER;
 				pDoc->m_bRoundEndPressed = true;
 				client.EndOfRound(pDoc);
 			}
@@ -801,10 +801,10 @@ void CCombatMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 					}
 				switch (nOrder)
 				{
-				case 0: pShip->SetCombatTactic(COMBAT_TACTIC_ATTACK);	break;
-				case 1: pShip->SetCombatTactic(COMBAT_TACTIC_AVOID);	break;
+				case 0: pShip->SetCombatTactic(COMBAT_TACTIC::CT_ATTACK);	break;
+				case 1: pShip->SetCombatTactic(COMBAT_TACTIC::CT_AVOID);	break;
 				case 2: if (pShip->GetManeuverability() != 0)
-							pShip->SetCombatTactic(COMBAT_TACTIC_RETREAT);
+							pShip->SetCombatTactic(COMBAT_TACTIC::CT_RETREAT);
 						break;
 				default: ASSERT(FALSE);
 				}
@@ -855,10 +855,10 @@ void CCombatMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 				
 				switch (i)
 				{
-				case 0: pShip->SetCombatTactic(COMBAT_TACTIC_ATTACK);	break;
-				case 1: pShip->SetCombatTactic(COMBAT_TACTIC_AVOID);	break;
+				case 0: pShip->SetCombatTactic(COMBAT_TACTIC::CT_ATTACK);	break;
+				case 1: pShip->SetCombatTactic(COMBAT_TACTIC::CT_AVOID);	break;
 				case 2: if (pShip->GetManeuverability() != 0)
-							pShip->SetCombatTactic(COMBAT_TACTIC_RETREAT);
+							pShip->SetCombatTactic(COMBAT_TACTIC::CT_RETREAT);
 						break;
 				default: ASSERT(FALSE);
 				}
@@ -897,10 +897,10 @@ void CCombatMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 					}
 				switch (nOrder)
 				{
-				case 0: pShip2->SetCombatTactic(COMBAT_TACTIC_ATTACK);	break;
-				case 1: pShip2->SetCombatTactic(COMBAT_TACTIC_AVOID);	break;
+				case 0: pShip2->SetCombatTactic(COMBAT_TACTIC::CT_ATTACK);	break;
+				case 1: pShip2->SetCombatTactic(COMBAT_TACTIC::CT_AVOID);	break;
 				case 2: if (pShip2->GetManeuverability() != 0)
-							pShip2->SetCombatTactic(COMBAT_TACTIC_RETREAT);
+							pShip2->SetCombatTactic(COMBAT_TACTIC::CT_RETREAT);
 						break;
 				default: ASSERT(FALSE);
 				}

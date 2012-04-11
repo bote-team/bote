@@ -345,7 +345,8 @@ void CMajor::Create(const CStringArray& saInfo, int& nPos)
 	int nStart = 0;
 	while (nStart < sRaceProperties.GetLength())
 	{
-		int nProperty = atoi(sRaceProperties.Tokenize(",", nStart));
+		RACE_PROPERTY::Typ nProperty = (RACE_PROPERTY::Typ)atoi(sRaceProperties.Tokenize(",", nStart));
+		ASSERT(nProperty >= RACE_PROPERTY::NOTHING_SPECIAL && nProperty <= RACE_PROPERTY::HOSTILE);
 		SetRaceProperty(nProperty, true);				// Rasseneigenschaften
 	}
 
@@ -390,7 +391,7 @@ void CMajor::Create(const CStringArray& saInfo, int& nPos)
 	// Hier die Variablen für die Handelsklasse rassenspezifisch setzen
 	// die Handelssteuerrate festsetzen (alle 15% außer bis jetzt Finanzrassen, der hat 5%)
 	float fTax = 1.15f;
-	if (IsRaceProperty(FINANCIAL))
+	if (IsRaceProperty(RACE_PROPERTY::FINANCIAL))
 		fTax = min(fTax, 1.05f);
 	m_Trade.SetTax(fTax);
 	
@@ -416,7 +417,6 @@ void CMajor::Reset(void)
 	m_sEmpireWithAssignedArticle= "";		// bestimmter Artikel für den Imperiumsnamen
 	m_sPrefix					= "";		// Rassenprefix	
 
-	m_nSpecialAbility			= 0;		// Spezialfähigkeiten der Rasse (derzeit nicht implementiert)
 	m_nDiplomacyBonus			= 0;		// Bonus bei diplomatischen Verhandlungen, NULL == kein Bonus/kein Malus
 
 	m_mAgrDuration.clear();					// noch verbleibende Runden des Vertrags (NULL == unbegrenzt)

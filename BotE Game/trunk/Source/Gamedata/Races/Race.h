@@ -58,9 +58,9 @@ public:
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Funktionen
 	/// Funktion zum Erfragen der Rasseneigenschaften
-	/// @param prop Rasseneigenschaft
+	/// @param nProp Rasseneigenschaft
 	/// @return <code>true</code>, wenn die Rasse die Eigenschaft besitzt, sonst <code>false</code>
-	bool IsRaceProperty(BYTE prop) const;
+	bool IsRaceProperty(RACE_PROPERTY::Typ nProp) const;
 
 	/// Funktion gibt zurück, ob eine andere Rasse bekannt ist.
 	/// @param sRaceID ID der anderen Rasse
@@ -173,9 +173,9 @@ public:
 	virtual void SetAgreement(const CString& sOtherRace, short nNewAgreement);
 
 	/// Funktion zum Setzen von Rasseneigenschaften.
-	/// @param prop Rasseneigenschaft
+	/// @param nProp Rasseneigenschaft
 	/// @param is <code>true</code> oder <code>false</code>
-	void SetRaceProperty(BYTE prop, bool is);
+	void SetRaceProperty(RACE_PROPERTY::Typ nProp, bool is);
 
 	/// Funktion setzt die Schiffsnummer für die Rasse.
 	/// @param nNumber Nummer des Schiffssets

@@ -98,63 +98,63 @@ ANSWER_STATUS::Typ CMinorAI::ReactOnOffer(const CDiplomacyInfo& info)
 		if (info.m_nType == TRADE_AGREEMENT)
 		{
 			nNeededRelation = 40;
-			if (pMinor->IsRaceProperty(HOSTILE))
+			if (pMinor->IsRaceProperty(RACE_PROPERTY::HOSTILE))
 				nNeededRelation += 30;
-			if (pMinor->IsRaceProperty(SOLOING))
+			if (pMinor->IsRaceProperty(RACE_PROPERTY::SOLOING))
 				nNeededRelation += 20;
-			if (pMinor->IsRaceProperty(SECRET))
+			if (pMinor->IsRaceProperty(RACE_PROPERTY::SECRET))
 				nNeededRelation += 10;
-			if (pMinor->IsRaceProperty(FINANCIAL))
+			if (pMinor->IsRaceProperty(RACE_PROPERTY::FINANCIAL))
 				nNeededRelation -= 10;
 		}
 		else if (info.m_nType == FRIENDSHIP_AGREEMENT)
 		{
 			nNeededRelation = 50;
-			if (pMinor->IsRaceProperty(HOSTILE))
+			if (pMinor->IsRaceProperty(RACE_PROPERTY::HOSTILE))
 				nNeededRelation += 30;
-			if (pMinor->IsRaceProperty(SOLOING))
+			if (pMinor->IsRaceProperty(RACE_PROPERTY::SOLOING))
 				nNeededRelation += 20;
-			if (pMinor->IsRaceProperty(SECRET))
+			if (pMinor->IsRaceProperty(RACE_PROPERTY::SECRET))
 				nNeededRelation += 10;
-			if (pMinor->IsRaceProperty(PACIFIST))
+			if (pMinor->IsRaceProperty(RACE_PROPERTY::PACIFIST))
 				nNeededRelation -= 10;
 		}
 		else if (info.m_nType == COOPERATION)
 		{
 			nNeededRelation = 65;
-			if (pMinor->IsRaceProperty(HOSTILE))
+			if (pMinor->IsRaceProperty(RACE_PROPERTY::HOSTILE))
 				nNeededRelation += 30;
-			if (pMinor->IsRaceProperty(SOLOING))
+			if (pMinor->IsRaceProperty(RACE_PROPERTY::SOLOING))
 				nNeededRelation += 20;
-			if (pMinor->IsRaceProperty(SECRET))
+			if (pMinor->IsRaceProperty(RACE_PROPERTY::SECRET))
 				nNeededRelation += 10;
-			if (pMinor->IsRaceProperty(SCIENTIFIC))
+			if (pMinor->IsRaceProperty(RACE_PROPERTY::SCIENTIFIC))
 				nNeededRelation -= 5;
-			if (pMinor->IsRaceProperty(PACIFIST))
+			if (pMinor->IsRaceProperty(RACE_PROPERTY::PACIFIST))
 				nNeededRelation -= 10;
 		}
 		else if (info.m_nType == AFFILIATION)
 		{
 			nNeededRelation = 85;
-			if (pMinor->IsRaceProperty(HOSTILE))
+			if (pMinor->IsRaceProperty(RACE_PROPERTY::HOSTILE))
 				nNeededRelation += 30;
-			if (pMinor->IsRaceProperty(SOLOING))
+			if (pMinor->IsRaceProperty(RACE_PROPERTY::SOLOING))
 				nNeededRelation += 20;
-			if (pMinor->IsRaceProperty(SECRET))
+			if (pMinor->IsRaceProperty(RACE_PROPERTY::SECRET))
 				nNeededRelation += 10;			
 		}
 		else if (info.m_nType == MEMBERSHIP)
 		{
 			nNeededRelation = 100;
-			if (pMinor->IsRaceProperty(HOSTILE))
+			if (pMinor->IsRaceProperty(RACE_PROPERTY::HOSTILE))
 				nNeededRelation += 30;
-			if (pMinor->IsRaceProperty(SOLOING))
+			if (pMinor->IsRaceProperty(RACE_PROPERTY::SOLOING))
 				nNeededRelation += 20;
-			if (pMinor->IsRaceProperty(SECRET))
+			if (pMinor->IsRaceProperty(RACE_PROPERTY::SECRET))
 				nNeededRelation += 10;
-			if (pMinor->IsRaceProperty(AGRARIAN))
+			if (pMinor->IsRaceProperty(RACE_PROPERTY::AGRARIAN))
 				nNeededRelation -= 5;
-			if (pMinor->IsRaceProperty(PACIFIST))
+			if (pMinor->IsRaceProperty(RACE_PROPERTY::PACIFIST))
 				nNeededRelation -= 10;
 		}
 
@@ -278,17 +278,17 @@ bool CMinorAI::MakeOffer(CString& sRaceID, CDiplomacyInfo& info)
 			// Das könnte man noch von der Art der Rasse abhängig machen, kriegerische Rassen erklären eher Krieg,
 			// pazifistische Rasse erklären gar keinen Krieg oder so ähnlich -> hier gemacht
 			short nMinRel = 15;
-			if (pMinor->IsRaceProperty(HOSTILE))		// Wir lieben Krieg
+			if (pMinor->IsRaceProperty(RACE_PROPERTY::HOSTILE))		// Wir lieben Krieg
 				nMinRel += 25;
-			if (pMinor->IsRaceProperty(WARLIKE))		// Wir lieben Krieg
+			if (pMinor->IsRaceProperty(RACE_PROPERTY::WARLIKE))		// Wir lieben Krieg
 				nMinRel += 15;
-			if (pMinor->IsRaceProperty(SNEAKY))			// Wir sind eh hinterhältig
+			if (pMinor->IsRaceProperty(RACE_PROPERTY::SNEAKY))		// Wir sind eh hinterhältig
 				nMinRel += 5;
-			if (pMinor->IsRaceProperty(FINANCIAL))		// Krieg ist nicht immer gut fürs Geschäft
+			if (pMinor->IsRaceProperty(RACE_PROPERTY::FINANCIAL))	// Krieg ist nicht immer gut fürs Geschäft
 				nMinRel -= 5;
-			if (pMinor->IsRaceProperty(SCIENTIFIC))		// Krieg ist nicht immer gut für Forschung
+			if (pMinor->IsRaceProperty(RACE_PROPERTY::SCIENTIFIC))	// Krieg ist nicht immer gut für Forschung
 				nMinRel -= 10;
-			if (pMinor->IsRaceProperty(PACIFIST))		// Wir hassen Krieg
+			if (pMinor->IsRaceProperty(RACE_PROPERTY::PACIFIST))	// Wir hassen Krieg
 				nMinRel -= 15;
 			
 			if (nRandom < nMinRel && byOurRelationToThem < nMinRel && nAgreement != WAR)
@@ -393,19 +393,19 @@ void CMinorAI::ReactOnDowry(const CDiplomacyInfo& info)
 	// Wert, den wir mit nRandomCredits erreichen müssen, um die Beziehung zu verbessern
 	short nNeededValue = DIPLOMACY_PRESENT_VALUE;	// 200 ist "normal"
 	
-	if (pMinor->IsRaceProperty(SOLOING))
+	if (pMinor->IsRaceProperty(RACE_PROPERTY::SOLOING))
 		nNeededValue += 150;	// bei einer zurückgezogenen Rasse ist der Wert wesentlich höher
-	if (pMinor->IsRaceProperty(HOSTILE))
+	if (pMinor->IsRaceProperty(RACE_PROPERTY::HOSTILE))
 		nNeededValue += 100;	// bei einer extrem feindlichen Rasse ist der Wert wesentlich höher
-	if (pMinor->IsRaceProperty(SECRET))
+	if (pMinor->IsRaceProperty(RACE_PROPERTY::SECRET))
 		nNeededValue += 75;		// bei einer Geheimdienstrasse ist der Wert höher
-	if (pMinor->IsRaceProperty(WARLIKE))
+	if (pMinor->IsRaceProperty(RACE_PROPERTY::WARLIKE))
 		nNeededValue += 50;		// bei einer kriegerischen Rasse ist der Wert höher
-	if (pMinor->IsRaceProperty(INDUSTRIAL))
+	if (pMinor->IsRaceProperty(RACE_PROPERTY::INDUSTRIAL))
 		nNeededValue -= 25;		// bei einer industriellen Rasse ist der Wert niedriger	
-	if (pMinor->IsRaceProperty(AGRARIAN))
+	if (pMinor->IsRaceProperty(RACE_PROPERTY::AGRARIAN))
 		nNeededValue -= 50;		// bei einer landwirtschaftlichen Rasse ist der Wert niedriger	
-	if (pMinor->IsRaceProperty(FINANCIAL))
+	if (pMinor->IsRaceProperty(RACE_PROPERTY::FINANCIAL))
 		nNeededValue -= 100;	// bei einer finanziellen Rasse ist der Wert niedriger	
 
 	//Jetzt neededValue noch modifizieren mit der aktuellen Beziehung der Geldgeberrasse.
@@ -749,17 +749,17 @@ int CMinorAI::CalcResInCredits(const CDiplomacyInfo& info)
 		fValue /= fDiv;
 		
 		// Wert nochmal modifizieren, aufgrund der Rassenart
-		if (pMinor->IsRaceProperty(PRODUCER))
+		if (pMinor->IsRaceProperty(RACE_PROPERTY::PRODUCER))
 			fValue *= 1.5f;
-		if (pMinor->IsRaceProperty(INDUSTRIAL))
+		if (pMinor->IsRaceProperty(RACE_PROPERTY::INDUSTRIAL))
 			fValue *= 1.35f;
-		if (pMinor->IsRaceProperty(WARLIKE))
+		if (pMinor->IsRaceProperty(RACE_PROPERTY::WARLIKE))
 			fValue *= 1.2f;
-		if (pMinor->IsRaceProperty(FINANCIAL))
+		if (pMinor->IsRaceProperty(RACE_PROPERTY::FINANCIAL))
 			fValue *= 1.1f;
-		if (pMinor->IsRaceProperty(SECRET))
+		if (pMinor->IsRaceProperty(RACE_PROPERTY::SECRET))
 			fValue *= 0.9f;
-		if (pMinor->IsRaceProperty(AGRARIAN))
+		if (pMinor->IsRaceProperty(RACE_PROPERTY::AGRARIAN))
 			fValue *= 0.8f;
 
 		fValue = max(0.0f, fValue);

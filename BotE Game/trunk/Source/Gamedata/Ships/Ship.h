@@ -28,15 +28,6 @@ class CFleet;
 class CGraphicPool;
 class CResearchInfo;
 
-/// Mögliche Taktiken im Kampf
-typedef enum COMBAT_TACTICS
-{
-	COMBAT_TACTIC_ATTACK,	///< Angriff
-	COMBAT_TACTIC_AVOID,	///< Meiden
-	COMBAT_TACTIC_RETREAT	///< Rückzug
-}
-COMBAT_TACTICS;
-
 /// Klasse beschreibt ein Schiff in BotE
 class CShip : public CObject  
 {
@@ -111,7 +102,7 @@ public:
 	USHORT GetStorageRoom() const {return m_iStorageRoom;}
 	USHORT GetUsedStorageRoom(const CArray<CTroopInfo>* troopInfo);
 	USHORT GetLoadedResources(BYTE res) const {return m_iLoadedResources[res];}
-	COMBAT_TACTICS GetCombatTactic() const {return m_nCombatTactic;}
+	COMBAT_TACTIC::Typ GetCombatTactic() const {return m_nCombatTactic;}
 	bool IsNonCombat() const {return (m_iShipType == TRANSPORTER || m_iShipType == COLONYSHIP || m_iShipType == PROBE);}
 	ALIEN_TYPE::Typ GetAlienType() const { return m_nAlienType; }
 		
@@ -142,7 +133,7 @@ public:
 	void SetShipDescription(const CString& ShipDescription) {m_strShipDescription = ShipDescription;}
 	void SetShipClass(const CString& ShipClass) {m_strShipClass = ShipClass;}
 	void SetIsShipFlagShip(BOOLEAN is) {m_bIsFlagShip = is;}
-	void SetCombatTactic(COMBAT_TACTICS nTactic) {m_nCombatTactic = nTactic;}
+	void SetCombatTactic(COMBAT_TACTIC::Typ nTactic) {m_nCombatTactic = nTactic;}
 	void SetAlienType(ALIEN_TYPE::Typ nAlienType) {m_nAlienType = nAlienType;}
 	
 	// sonstige Funktionen
@@ -211,7 +202,7 @@ private:
 	CArray<CTroop> m_Troops;				// Die Truppen, welche auf dem Schiff transportiert werden.
 	USHORT m_iLoadedResources[DERITIUM+1];	// Die geladenen Ressourcen auf dem Schiff
 	// Kampftaktik
-	COMBAT_TACTICS m_nCombatTactic;		///< Taktik des Schiffes im Kampf
+	COMBAT_TACTIC::Typ m_nCombatTactic;///< Taktik des Schiffes im Kampf
 	ALIEN_TYPE::Typ m_nAlienType;		///< Typ des Alienschiffes und dessen Auswirkungen
 };
 

@@ -112,27 +112,27 @@ void CEventFirstContact::Draw(Graphics* g, CGraphicPool* graphicPool) const
 	CFontLoader::CreateGDIFont(pMajor, 3, fontName, fontSize);
 	fontBrush.SetColor(color);
 	vector<CString> sProperties;
-	if (pContactedRace->IsRaceProperty(FINANCIAL))
+	if (pContactedRace->IsRaceProperty(RACE_PROPERTY::FINANCIAL))
 		sProperties.push_back(CResourceManager::GetString("FINANCIAL"));
-	if (pContactedRace->IsRaceProperty(WARLIKE))
+	if (pContactedRace->IsRaceProperty(RACE_PROPERTY::WARLIKE))
 		sProperties.push_back(CResourceManager::GetString("WARLIKE"));
-	if (pContactedRace->IsRaceProperty(AGRARIAN))
+	if (pContactedRace->IsRaceProperty(RACE_PROPERTY::AGRARIAN))
 		sProperties.push_back(CResourceManager::GetString("AGRARIAN"));
-	if (pContactedRace->IsRaceProperty(INDUSTRIAL))
+	if (pContactedRace->IsRaceProperty(RACE_PROPERTY::INDUSTRIAL))
 		sProperties.push_back(CResourceManager::GetString("INDUSTRIAL"));
-	if (pContactedRace->IsRaceProperty(SECRET))
+	if (pContactedRace->IsRaceProperty(RACE_PROPERTY::SECRET))
 		sProperties.push_back(CResourceManager::GetString("SECRET"));
-	if (pContactedRace->IsRaceProperty(SCIENTIFIC))
+	if (pContactedRace->IsRaceProperty(RACE_PROPERTY::SCIENTIFIC))
 		sProperties.push_back(CResourceManager::GetString("SCIENTIFIC"));
-	if (pContactedRace->IsRaceProperty(PRODUCER))
+	if (pContactedRace->IsRaceProperty(RACE_PROPERTY::PRODUCER))
 		sProperties.push_back(CResourceManager::GetString("PRODUCER"));
-	if (pContactedRace->IsRaceProperty(PACIFIST))
+	if (pContactedRace->IsRaceProperty(RACE_PROPERTY::PACIFIST))
 		sProperties.push_back(CResourceManager::GetString("PACIFIST"));
-	if (pContactedRace->IsRaceProperty(SNEAKY))
+	if (pContactedRace->IsRaceProperty(RACE_PROPERTY::SNEAKY))
 		sProperties.push_back(CResourceManager::GetString("SNEAKY"));
-	if (pContactedRace->IsRaceProperty(SOLOING))
+	if (pContactedRace->IsRaceProperty(RACE_PROPERTY::SOLOING))
 		sProperties.push_back(CResourceManager::GetString("SOLOING"));
-	if (pContactedRace->IsRaceProperty(HOSTILE))
+	if (pContactedRace->IsRaceProperty(RACE_PROPERTY::HOSTILE))
 		sProperties.push_back(CResourceManager::GetString("HOSTILE"));
 	if (sProperties.size() == 0)
 		sProperties.push_back(CResourceManager::GetString("NONE"));

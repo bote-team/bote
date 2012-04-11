@@ -141,13 +141,13 @@ void CCombat::PreCombatCalculation()
 			/*
 			// Wenn das Schiff den Rückzugsbefehl hat, aber keine Speed oder keine Manövrierfähigkeit,
 			// so bekommt das Schiff den Befehl meiden
-			if (m_CS.GetAt(i)->m_pShip->GetCombatTactic() == COMBAT_TACTIC_RETREAT)
+			if (m_CS.GetAt(i)->m_pShip->GetCombatTactic() == RETREAT)
 				if (m_CS.GetAt(i)->m_pShip->GetSpeed() == 0 || m_CS.GetAt(i)->m_pShip->GetManeuverability() == 0)
-					m_CS.GetAt(i)->m_pShip->SetCombatTactic(COMBAT_TACTIC_AVOID);
+					m_CS.GetAt(i)->m_pShip->SetCombatTactic(AVOID);
 			*/
 						
 			// Wenn das Schiff den Rückzugbefehl hat, so gelten dessen Boni nicht für andere Schiffe
-			if (m_CS.GetAt(i)->m_pShip->GetCombatTactic() == COMBAT_TACTIC_RETREAT)
+			if (m_CS.GetAt(i)->m_pShip->GetCombatTactic() == COMBAT_TACTIC::CT_RETREAT)
 				continue;
 			
 			if (m_CS.GetAt(i)->m_pShip->GetIsShipFlagShip())
@@ -184,7 +184,7 @@ void CCombat::PreCombatCalculation()
 			if (m_CS.GetAt(i)->m_pShip->GetOwnerOfShip() == *it)
 			{
 				// Schiffe mit dem Befehl "Meiden" bekommen einen 25% Bonus
-				if (m_CS.GetAt(i)->m_pShip->GetCombatTactic() == COMBAT_TACTIC_AVOID)
+				if (m_CS.GetAt(i)->m_pShip->GetCombatTactic() == COMBAT_TACTIC::CT_AVOID)
 					m_CS.ElementAt(i)->m_iModifier += 25;
 				// 20% Bonus wenn Schiff mit Kommandoeigenschaft am Kampf teilnimmt
 				if (bCommandship)
@@ -251,13 +251,13 @@ void CCombat::CalculateCombat(std::map<CString, BYTE>& winner)
 
 			// Das Schiff hat noch kein Ziel aufgeschaltet...
 			// Ziel aufschalten
-			if (m_CS.GetAt(i)->m_pTarget == NULL && m_CS.GetAt(i)->m_pShip->GetCombatTactic() == COMBAT_TACTIC_ATTACK)
+			if (m_CS.GetAt(i)->m_pTarget == NULL && m_CS.GetAt(i)->m_pShip->GetCombatTactic() == COMBAT_TACTIC::CT_ATTACK)
 			{				
 				if (SetTarget(i) == false)
 					continue;
 			}
 			// Das Schiff soll sich zurückziehen
-			else if (m_CS.GetAt(i)->m_pShip->GetCombatTactic() == COMBAT_TACTIC_RETREAT)
+			else if (m_CS.GetAt(i)->m_pShip->GetCombatTactic() == COMBAT_TACTIC::CT_RETREAT)
 			{
 				// Kampf als Stattgefunden ansehen, damit nicht nach 20 Ticks abgebrochen wird.
 				// Ein Rückzug dauert länger.				
@@ -371,7 +371,7 @@ void CCombat::CalculateCombat(std::map<CString, BYTE>& winner)
 				continue;
 			}
 			
-			if (m_CS.GetAt(i)->m_pShip->GetCombatTactic() != COMBAT_TACTIC_RETREAT || m_CS.GetAt(i)->m_byManeuverability > 0)
+			if (m_CS.GetAt(i)->m_pShip->GetCombatTactic() != COMBAT_TACTIC::CT_RETREAT || m_CS.GetAt(i)->m_byManeuverability > 0)
 				bOnlyRetreatShipsWithSpeedNull = false;	
 
 			m_CS.ElementAt(i)->GotoNextPosition();
@@ -401,7 +401,7 @@ void CCombat::CalculateCombat(std::map<CString, BYTE>& winner)
 	// Nach einem Kampf alle Schiffe mit Rückzugsbefehl entfernen. Wenn der andere auf Meiden stand, können immernoch
 	// Rückzugsschiffe vorhanden sein, die keine Manövrierfähigkeit hatten.
 	for (int i = 0; i < m_CS.GetSize(); i++)
-		if (m_CS.GetAt(i)->m_pShip->GetCombatTactic() == COMBAT_TACTIC_RETREAT)
+		if (m_CS.GetAt(i)->m_pShip->GetCombatTactic() == COMBAT_TACTIC::CT_RETREAT)
 			m_CS.RemoveAt(i--);
 
 	if (m_bAttackedSomebody)
@@ -514,7 +514,7 @@ bool CCombat::CheckShipStayInCombat(int i)
 	bool bIsAlive = true;
 	if (pCombatShip->m_pShip->GetHull()->GetCurrentHull() < 1)
 		bIsAlive = false;
-	else if (pCombatShip->m_pShip->GetCombatTactic() == COMBAT_TACTIC_RETREAT && pCombatShip->m_byRetreatCounter == 0 && pCombatShip->m_lRoute.size() == 0)
+	else if (pCombatShip->m_pShip->GetCombatTactic() == COMBAT_TACTIC::CT_RETREAT && pCombatShip->m_byRetreatCounter == 0 && pCombatShip->m_lRoute.size() == 0)
 		bIsAlive = false;
 
 	// Bevor wir zur nächsten Position fliegen schauen ob das Schiff noch am Leben ist

@@ -124,7 +124,7 @@ void CCombatShip::CalculateNextPosition()
 	if (m_lRoute.size() == 0)
 	{
 		// Angreifen
-		if (m_pShip->GetCombatTactic() == COMBAT_TACTIC_ATTACK)
+		if (m_pShip->GetCombatTactic() == COMBAT_TACTIC::CT_ATTACK)
 		{
 			// Wenn noch kein Ziel aufgeschaltet wurde
 			if (m_pTarget != NULL)
@@ -138,7 +138,7 @@ void CCombatShip::CalculateNextPosition()
 		}
 
 		// Meiden
-		if (m_pShip->GetCombatTactic() == COMBAT_TACTIC_AVOID)
+		if (m_pShip->GetCombatTactic() == COMBAT_TACTIC::CT_AVOID)
 		{
 			// zufällige Zielposition im Raum
 			CalcRoute(m_KO, 100);
@@ -146,7 +146,7 @@ void CCombatShip::CalculateNextPosition()
 		}
 
 		// Rückzug	
-		if (m_pShip->GetCombatTactic() == COMBAT_TACTIC_RETREAT)
+		if (m_pShip->GetCombatTactic() == COMBAT_TACTIC::CT_RETREAT)
 		{
 			// möglichen frühesten Rückzugszeitpunkt runterzählen
 			if (m_byRetreatCounter > 0)

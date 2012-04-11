@@ -18,15 +18,15 @@ CCombatAI::~CCombatAI(void)
 //////////////////////////////////////////////////////////////////////
 // sonstige Funktionen
 //////////////////////////////////////////////////////////////////////
-bool CCombatAI::CalcCombatTactics(const CArray<CShip*>& vInvolvedShips, const map<CString, CRace*>* pmRaces, map<CString, int>& mCombatOrders, const CAnomaly* pAnomaly) const
+bool CCombatAI::CalcCombatTactics(const CArray<CShip*>& vInvolvedShips, const map<CString, CRace*>* pmRaces, map<CString, COMBAT_ORDER::Typ>& mCombatOrders, const CAnomaly* pAnomaly) const
 {
 	// allgemeinen Kampfbefehl für alle beteiligten KI Rassen einstellen
 	ApplyCombatOrders(vInvolvedShips, pmRaces, mCombatOrders, pAnomaly);
 
 	// Haben alle beteiligten Rassen Grußfrequenzen geöffnet, so findet kein Kampf statt
 	bool bAllHailingFrequencies = true;
-	for (map<CString, int>::const_iterator it = mCombatOrders.begin(); it != mCombatOrders.end(); ++it)
-		if (it->second != COMBAT_HAILING)
+	for (map<CString, COMBAT_ORDER::Typ>::const_iterator it = mCombatOrders.begin(); it != mCombatOrders.end(); ++it)
+		if (it->second != COMBAT_ORDER::HAILING)
 		{
 			bAllHailingFrequencies = false;
 			break;
@@ -45,7 +45,7 @@ bool CCombatAI::CalcCombatTactics(const CArray<CShip*>& vInvolvedShips, const ma
 //////////////////////////////////////////////////////////////////////
 // private Funktionen
 //////////////////////////////////////////////////////////////////////
-void CCombatAI::ApplyCombatOrders(const CArray<CShip*>& vInvolvedShips, const map<CString, CRace*>* pmRaces, map<CString, int>& mCombatOrders, const CAnomaly* pAnomaly) const
+void CCombatAI::ApplyCombatOrders(const CArray<CShip*>& vInvolvedShips, const map<CString, CRace*>* pmRaces, map<CString, COMBAT_ORDER::Typ>& mCombatOrders, const CAnomaly* pAnomaly) const
 {
 	// beteiligte Rassen
 	set<CString> sInvolvedRaces;
@@ -85,27 +85,27 @@ void CCombatAI::ApplyCombatOrders(const CArray<CShip*>& vInvolvedShips, const ma
 		}
 
 		int nRaceMod = 0;
-		if (pRace1->IsRaceProperty(HOSTILE))
+		if (pRace1->IsRaceProperty(RACE_PROPERTY::HOSTILE))
 			nRaceMod -= 50;
-		if (pRace1->IsRaceProperty(WARLIKE))
+		if (pRace1->IsRaceProperty(RACE_PROPERTY::WARLIKE))
 			nRaceMod -= 25;
-		if (pRace1->IsRaceProperty(SOLOING))
+		if (pRace1->IsRaceProperty(RACE_PROPERTY::SOLOING))
 			nRaceMod -= 10;
-		if (pRace1->IsRaceProperty(SNEAKY))
+		if (pRace1->IsRaceProperty(RACE_PROPERTY::SNEAKY))
 			nRaceMod -= 10;
-		if (pRace1->IsRaceProperty(FINANCIAL))
+		if (pRace1->IsRaceProperty(RACE_PROPERTY::FINANCIAL))
 			nRaceMod += 10;
-		if (pRace1->IsRaceProperty(SCIENTIFIC))
+		if (pRace1->IsRaceProperty(RACE_PROPERTY::SCIENTIFIC))
 			nRaceMod += 10;
-		if (pRace1->IsRaceProperty(AGRARIAN))
+		if (pRace1->IsRaceProperty(RACE_PROPERTY::AGRARIAN))
 			nRaceMod += 25;
-		if (pRace1->IsRaceProperty(PACIFIST))
+		if (pRace1->IsRaceProperty(RACE_PROPERTY::PACIFIST))
 			nRaceMod += 50;
 
 		// bei gute Beziehungen wird sehr wahrscheinlich die Grußfrequenzen geöffnet
 		if (rand()%100 < nMinRelation + nRaceMod)
 		{
-			mCombatOrders[*it] = COMBAT_HAILING;
+			mCombatOrders[*it] = COMBAT_ORDER::HAILING;
 			continue;
 		}
 
@@ -115,15 +115,15 @@ void CCombatAI::ApplyCombatOrders(const CArray<CShip*>& vInvolvedShips, const ma
 		double dWinningChance = CCombat::GetWinningChance(pRace1, vInvolvedShips, pmRaces, sFriends, sEnemies, pAnomaly);
 	
 		if (dWinningChance > 0.75)
-			mCombatOrders[*it] = COMBAT_AUTO;
+			mCombatOrders[*it] = COMBAT_ORDER::AUTOCOMBAT;
 		else if (dWinningChance < 0.25)
-			mCombatOrders[*it] = COMBAT_RETREAT;
+			mCombatOrders[*it] = COMBAT_ORDER::RETREAT;
 		else
 		{
 			if (rand()%100 < dWinningChance * 100 - nRaceMod / 2)
-				mCombatOrders[*it] = COMBAT_AUTO;
+				mCombatOrders[*it] = COMBAT_ORDER::AUTOCOMBAT;
 			else
-				mCombatOrders[*it] = COMBAT_RETREAT;
+				mCombatOrders[*it] = COMBAT_ORDER::RETREAT;
 		}
 	}
 
@@ -133,17 +133,17 @@ void CCombatAI::ApplyCombatOrders(const CArray<CShip*>& vInvolvedShips, const ma
 		CString sTactic;
 		switch (mCombatOrders[*it])
 		{
-		case COMBAT_NON:		sTactic = "- (error)"; break;
-		case COMBAT_USER:		sTactic = "User"; break;
-		case COMBAT_HAILING:	sTactic = "Hailing Frequencies"; break;
-		case COMBAT_RETREAT:	sTactic = "Retreat"; break;
-		case COMBAT_AUTO:		sTactic = "Auto"; break;
+		case COMBAT_ORDER::NONE:		sTactic = "- (error)"; break;
+		case COMBAT_ORDER::USER:		sTactic = "User"; break;
+		case COMBAT_ORDER::HAILING:		sTactic = "Hailing Frequencies"; break;
+		case COMBAT_ORDER::RETREAT:		sTactic = "Retreat"; break;
+		case COMBAT_ORDER::AUTOCOMBAT:	sTactic = "Auto"; break;
 		}
 		MYTRACE(MT::LEVEL_INFO, "Race %s is involved in combat. Tactic: %s\n", *it, sTactic);
 	}
 }
 
-void CCombatAI::ApplyShipTactics(const CArray<CShip*>& vInvolvedShips, map<CString, int>& mCombatOrders) const
+void CCombatAI::ApplyShipTactics(const CArray<CShip*>& vInvolvedShips, map<CString, COMBAT_ORDER::Typ>& mCombatOrders) const
 {
 	// eingestellte Befehle an die Schiffe übergeben	
 	for (int i = 0; i < vInvolvedShips.GetSize(); i++)
@@ -152,21 +152,21 @@ void CCombatAI::ApplyShipTactics(const CArray<CShip*>& vInvolvedShips, map<CStri
 		CString sOwner = pShip->GetOwnerOfShip();
 		if (mCombatOrders.find(sOwner) != mCombatOrders.end())
 		{
-			int nOrder = mCombatOrders[sOwner];
-			if (nOrder == COMBAT_AUTO)
+			COMBAT_ORDER::Typ nOrder = mCombatOrders[sOwner];
+			if (nOrder == COMBAT_ORDER::AUTOCOMBAT)
 			{
 				// Kampfschiffe bekommen den Angreifen-Befehl
-				pShip->SetCombatTactic(COMBAT_TACTIC_ATTACK);
+				pShip->SetCombatTactic(COMBAT_TACTIC::CT_ATTACK);
 				// Non-Combats bekommen den Meiden-Befehl
-				if (IS_NONCOMBATSHIP(pShip->GetShipType()))
+				if (pShip->IsNonCombat())
 				{
 					// Hat das Schiff Offensivpower, so kann es doch angreifen
 					if (pShip->GetCompleteOffensivePower() <= 1)
-						pShip->SetCombatTactic(COMBAT_TACTIC_AVOID);
+						pShip->SetCombatTactic(COMBAT_TACTIC::CT_AVOID);
 				}
 				// Bei einem Autokampf wird sich kein Schiff automatisch zurückziehen!
 			}
-			else if (nOrder == COMBAT_HAILING)
+			else if (nOrder == COMBAT_ORDER::HAILING)
 			{
 				// Hier gilt das gleiche wie beim Autokampf
 				// Außer wenn alle anderen Rassen Grüßen oder einen Rückzug machen,
@@ -174,42 +174,42 @@ void CCombatAI::ApplyShipTactics(const CArray<CShip*>& vInvolvedShips, map<CStri
 
 				// Prüfen ob alle anderen Kampfbeteiligten Grüßen
 				bool bAvoid = true;
-				for (map<CString, int>::const_iterator it = mCombatOrders.begin(); it != mCombatOrders.end(); ++it)
+				for (map<CString, COMBAT_ORDER::Typ>::const_iterator it = mCombatOrders.begin(); it != mCombatOrders.end(); ++it)
 					if (it->first != sOwner)
-						if (it->second != COMBAT_HAILING && it->second != COMBAT_RETREAT)
+						if (it->second != COMBAT_ORDER::HAILING && it->second != COMBAT_ORDER::RETREAT)
 						{
 							bAvoid = false;
 							break;
 						}
 				if (bAvoid)
 				{
-					pShip->SetCombatTactic(COMBAT_TACTIC_AVOID);
+					pShip->SetCombatTactic(COMBAT_TACTIC::CT_AVOID);
 				}
 				else
 				{
 					// gleiche Zuweisung wie beim Autokampf
 					// Kampfschiffe bekommen den Angreifen-Befehl
-					pShip->SetCombatTactic(COMBAT_TACTIC_ATTACK);
+					pShip->SetCombatTactic(COMBAT_TACTIC::CT_ATTACK);
 					// Non-Combats bekommen den Meiden-Befehl
 					if (pShip->IsNonCombat())
 					{
 						// Hat das Schiff Offensivpower, so kann es doch angreifen
 						if (pShip->GetCompleteOffensivePower() <= 1)
-							pShip->SetCombatTactic(COMBAT_TACTIC_AVOID);
+							pShip->SetCombatTactic(COMBAT_TACTIC::CT_AVOID);
 					}
 				}
 			}
-			else if (nOrder == COMBAT_RETREAT)
+			else if (nOrder == COMBAT_ORDER::RETREAT)
 			{
 				// alle Schiffe bekommen den Rückzugsbefehl, außer sie haben Manövrierbarkeit 0
 				if (pShip->GetManeuverability() == 0 && pShip->IsNonCombat())
-					pShip->SetCombatTactic(COMBAT_TACTIC_AVOID);
+					pShip->SetCombatTactic(COMBAT_TACTIC::CT_AVOID);
 				else if (pShip->GetManeuverability() == 0)
-					pShip->SetCombatTactic(COMBAT_TACTIC_ATTACK);
+					pShip->SetCombatTactic(COMBAT_TACTIC::CT_ATTACK);
 				else
-					pShip->SetCombatTactic(COMBAT_TACTIC_RETREAT);
+					pShip->SetCombatTactic(COMBAT_TACTIC::CT_RETREAT);
 			}
-			else if (nOrder == COMBAT_USER)
+			else if (nOrder == COMBAT_ORDER::USER)
 			{
 				// nichts umstellen, der Spieler hat die Befehle manuell eingestellt
 			}

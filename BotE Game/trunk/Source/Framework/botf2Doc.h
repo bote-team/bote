@@ -242,12 +242,12 @@ public:
 	
 	bool m_bCombatCalc;					///< es werden gerade die Kampfrunden berechnet
 
-	int m_nCombatOrder;					///< im Kampfmenü eingestellter Kampfbefehl
+	COMBAT_ORDER::Typ m_nCombatOrder;	///< im Kampfmenü eingestellter Kampfbefehl
 
 	bool m_bNewGame;					///< wird ein neues Spiel gestartet (bzw. geladen)
 
 private:
-	map<CString, int> m_mCombatOrders;	///< alle Kampfbefehle der Clients (Autokampf, Rückzug, Gruß...)
+	map<CString, COMBAT_ORDER::Typ> m_mCombatOrders; ///< alle Kampfbefehle der Clients (Autokampf, Rückzug, Gruß...)
 	
 	map<CString, map<pair<int, int>, CPoint> >  m_mShipRetreatSectors;	///< Rückzugsesktoren aller Schiffe nach allen Kämpfen
 

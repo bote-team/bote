@@ -30,7 +30,7 @@ CShip::CShip()
 	for (int i = TITAN; i <= DERITIUM; i++)
 		m_iLoadedResources[i] = 0;
 	m_bCloakOn = false;
-	m_nCombatTactic = COMBAT_TACTIC_ATTACK;
+	m_nCombatTactic = COMBAT_TACTIC::CT_ATTACK;
 	m_nAlienType = ALIEN_TYPE::NONE;
 }
 
@@ -227,8 +227,7 @@ void CShip::Serialize(CArchive &ar)
 		ar << m_Troops.GetSize();
 		for (int i = 0; i < m_Troops.GetSize(); i++)
 			m_Troops.GetAt(i).Serialize(ar);
-		int nTactic = (int)m_nCombatTactic;
-		ar << nTactic;
+		ar << m_nCombatTactic;		
 		ar << m_nAlienType;
 	}
 	// wenn geladen wird
@@ -285,7 +284,7 @@ void CShip::Serialize(CArchive &ar)
 		{
 			int nTactic;
 			ar >> nTactic;
-			m_nCombatTactic = (COMBAT_TACTICS)nTactic;
+			m_nCombatTactic = (COMBAT_TACTIC::Typ)nTactic;
 		}
 		int nAlienType;
 		ar >> nAlienType;

@@ -134,18 +134,24 @@ namespace ANSWER_STATUS
 #define DIPLOMACY_PRESENT_VALUE	200	// Ein konstanter Wert, der mindst. erreicht werden muss um Beziehung zu verbessern
 
 // ------------- Die verschiedenen Arten einer Rasse -----------------------
-#define NOTHING_SPECIAL		0
-#define FINANCIAL			1
-#define WARLIKE				2
-#define AGRARIAN			3	
-#define INDUSTRIAL			4
-#define SECRET				5
-#define SCIENTIFIC			6	
-#define PRODUCER			7
-#define PACIFIST			8
-#define SNEAKY              9	// Hinterhältig
-#define SOLOING				10	// Alleingeher
-#define	HOSTILE				11
+namespace RACE_PROPERTY
+{
+	enum Typ
+	{
+		NOTHING_SPECIAL = 0,
+		FINANCIAL		= 1,
+		WARLIKE			= 2,
+		AGRARIAN		= 3,
+		INDUSTRIAL		= 4,
+		SECRET			= 5,
+		SCIENTIFIC		= 6,
+		PRODUCER		= 7,
+		PACIFIST		= 8,
+		SNEAKY          = 9,	// Hinterhältig
+		SOLOING			= 10,	// Alleingeher
+		HOSTILE			= 11
+	};
+}
 
 // ------------- Planeteneigenschaften -----------------------------------------
 // Zonen
@@ -283,12 +289,29 @@ namespace ALIEN_TYPE
 #define MAX_RES_STORE		125000
 #define MAX_DERITIUM_STORE	100
 
+// ------------- Schiffskampfbefehle ----------------------------------------------------
+namespace COMBAT_ORDER
+{
+	enum Typ
+	{
+		NONE		= -1,
+		USER		= 0,
+		HAILING		= 1,
+		RETREAT		= 2,
+		AUTOCOMBAT	= 3
+	};
+}
+
 // ------------- Schiffskampftaktiken ----------------------------------------------------
-#define COMBAT_NON			-1
-#define COMBAT_USER			0
-#define COMBAT_HAILING		1
-#define COMBAT_RETREAT		2
-#define COMBAT_AUTO			3
+namespace COMBAT_TACTIC
+{
+	enum Typ
+	{
+		CT_ATTACK	= 0,	///< Angriff
+		CT_AVOID	= 1,	///< Meiden
+		CT_RETREAT	= 2		///< Rückzug
+	};
+}
 
 // --- Sonstiges ---------------------------------------------------------------
 #define PT_IN_RECT(pt, x1, y1, x2, y2) \

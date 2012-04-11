@@ -580,17 +580,17 @@ void CSystem::CalculateVariables(BuildingInfoArray* buildingInfos, CResearchInfo
 	m_Production.m_iCreditsProd = (int)(m_dHabitants);
 
 	float fCreditsMulti = 1.0f;
-	if (pOwner->IsRaceProperty(FINANCIAL))
+	if (pOwner->IsRaceProperty(RACE_PROPERTY::FINANCIAL))
 		fCreditsMulti += 0.5f;
-	if (pOwner->IsRaceProperty(PRODUCER))
+	if (pOwner->IsRaceProperty(RACE_PROPERTY::PRODUCER))
 		fCreditsMulti += 0.25f;
-	if (pOwner->IsRaceProperty(WARLIKE) || pOwner->IsRaceProperty(HOSTILE))
+	if (pOwner->IsRaceProperty(RACE_PROPERTY::WARLIKE) || pOwner->IsRaceProperty(RACE_PROPERTY::HOSTILE))
 		fCreditsMulti -= 0.1f;
-	if (pOwner->IsRaceProperty(SNEAKY))
+	if (pOwner->IsRaceProperty(RACE_PROPERTY::SNEAKY))
 		fCreditsMulti -= 0.2f;
-	if (pOwner->IsRaceProperty(SECRET))
+	if (pOwner->IsRaceProperty(RACE_PROPERTY::SECRET))
 		fCreditsMulti -= 0.25f;
-	if (pOwner->IsRaceProperty(SOLOING))
+	if (pOwner->IsRaceProperty(RACE_PROPERTY::SOLOING))
 		fCreditsMulti -= 0.5f;
 
 	fCreditsMulti = max(fCreditsMulti, 0.0f);
@@ -1687,34 +1687,34 @@ void CSystem::BuildBuildingsForMinorRace(CSector* sector, BuildingInfoArray* bui
 		BYTE researchLevels[6] = {level, level, level, level, level, level};
 
 		// die gültige Eigenschaft der Minor festlegen
-		vector<int> vProperty;
-		if (pMinor->IsRaceProperty(FINANCIAL))
-			vProperty.push_back(FINANCIAL);
-		if (pMinor->IsRaceProperty(WARLIKE))
-			vProperty.push_back(WARLIKE);
-		if (pMinor->IsRaceProperty(AGRARIAN))
-			vProperty.push_back(AGRARIAN);
-		if (pMinor->IsRaceProperty(INDUSTRIAL))
-			vProperty.push_back(INDUSTRIAL);
-		if (pMinor->IsRaceProperty(SECRET))
-			vProperty.push_back(SECRET);
-		if (pMinor->IsRaceProperty(SCIENTIFIC))
-			vProperty.push_back(SCIENTIFIC);
-		if (pMinor->IsRaceProperty(PRODUCER))
-			vProperty.push_back(PRODUCER);
-		if (pMinor->IsRaceProperty(PACIFIST))
-			vProperty.push_back(PACIFIST);
-		if (pMinor->IsRaceProperty(SNEAKY))
-			vProperty.push_back(SNEAKY);
-		if (pMinor->IsRaceProperty(SOLOING))
-			vProperty.push_back(SOLOING);
-		if (pMinor->IsRaceProperty(HOSTILE))
-			vProperty.push_back(HOSTILE);
+		vector<RACE_PROPERTY::Typ> vProperty;
+		if (pMinor->IsRaceProperty(RACE_PROPERTY::FINANCIAL))
+			vProperty.push_back(RACE_PROPERTY::FINANCIAL);
+		if (pMinor->IsRaceProperty(RACE_PROPERTY::WARLIKE))
+			vProperty.push_back(RACE_PROPERTY::WARLIKE);
+		if (pMinor->IsRaceProperty(RACE_PROPERTY::AGRARIAN))
+			vProperty.push_back(RACE_PROPERTY::AGRARIAN);
+		if (pMinor->IsRaceProperty(RACE_PROPERTY::INDUSTRIAL))
+			vProperty.push_back(RACE_PROPERTY::INDUSTRIAL);
+		if (pMinor->IsRaceProperty(RACE_PROPERTY::SECRET))
+			vProperty.push_back(RACE_PROPERTY::SECRET);
+		if (pMinor->IsRaceProperty(RACE_PROPERTY::SCIENTIFIC))
+			vProperty.push_back(RACE_PROPERTY::SCIENTIFIC);
+		if (pMinor->IsRaceProperty(RACE_PROPERTY::PRODUCER))
+			vProperty.push_back(RACE_PROPERTY::PRODUCER);
+		if (pMinor->IsRaceProperty(RACE_PROPERTY::PACIFIST))
+			vProperty.push_back(RACE_PROPERTY::PACIFIST);
+		if (pMinor->IsRaceProperty(RACE_PROPERTY::SNEAKY))
+			vProperty.push_back(RACE_PROPERTY::SNEAKY);
+		if (pMinor->IsRaceProperty(RACE_PROPERTY::SOLOING))
+			vProperty.push_back(RACE_PROPERTY::SOLOING);
+		if (pMinor->IsRaceProperty(RACE_PROPERTY::HOSTILE))
+			vProperty.push_back(RACE_PROPERTY::HOSTILE);
 
 		if (vProperty.size() == 0)
-			vProperty.push_back(NOTHING_SPECIAL);
+			vProperty.push_back(RACE_PROPERTY::NOTHING_SPECIAL);
 		
-		int nProperty = vProperty[rand()%vProperty.size()];
+		RACE_PROPERTY::Typ nProperty = vProperty[rand()%vProperty.size()];
 		// Jetzt die Gebäude bauen und auch das System nach der Art der MinorRace angleichen
 		// z.B. bei einer landwirtschaftlichen Rasse viele Farmen
 		// Die Rassenartzuweisung müsste man vielleicht noch dynamisch machen. Bis jetzt wird immer
@@ -1796,7 +1796,7 @@ void CSystem::BuildBuildingsForMinorRace(CSector* sector, BuildingInfoArray* bui
 			switch (nProperty)
 			{
 			// Wenn die Rasse eine landwirtschaftliche Rasse ist
-			case AGRARIAN:
+			case RACE_PROPERTY::AGRARIAN:
 				{
 					if (build >= 5)
 					{
@@ -1814,7 +1814,7 @@ void CSystem::BuildBuildingsForMinorRace(CSector* sector, BuildingInfoArray* bui
 						build = 0;
 					break;
 				}
-			case INDUSTRIAL:
+			case RACE_PROPERTY::INDUSTRIAL:
 				{
 					if (build >= 5)
 					{
@@ -1838,7 +1838,7 @@ void CSystem::BuildBuildingsForMinorRace(CSector* sector, BuildingInfoArray* bui
 					}
 					break;
 				}
-			case SECRET:
+			case RACE_PROPERTY::SECRET:
 				{
 					if (build >= 5)
 					{
@@ -1862,7 +1862,7 @@ void CSystem::BuildBuildingsForMinorRace(CSector* sector, BuildingInfoArray* bui
 					}
 					break;
 				}
-			case SCIENTIFIC:
+			case RACE_PROPERTY::SCIENTIFIC:
 				{
 					if (build >= 5)
 					{
@@ -1892,7 +1892,7 @@ void CSystem::BuildBuildingsForMinorRace(CSector* sector, BuildingInfoArray* bui
 					}
 					break;
 				}
-			case PRODUCER:
+			case RACE_PROPERTY::PRODUCER:
 				{
 					if (build < 5 && build > 1)
 					{
@@ -1910,11 +1910,11 @@ void CSystem::BuildBuildingsForMinorRace(CSector* sector, BuildingInfoArray* bui
 					}
 					break;
 				}
-			case SNEAKY:
+			case RACE_PROPERTY::SNEAKY:
 				break;
-			case SOLOING:
+			case RACE_PROPERTY::SOLOING:
 				break;
-			case NOTHING_SPECIAL:
+			case RACE_PROPERTY::NOTHING_SPECIAL:
 				break;
 				// Pazifisten, kriegerische Rassen sowie Finanzrassen bekommen nur weniger Geheimdienst drauf
 			default:

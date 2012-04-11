@@ -177,57 +177,57 @@ void CIntelCalc::ReduceDepotPoints(CMajor* pRace, int perc)
 	{
 		int nCount = 0;
 		perc = 0;
-		if (pRace->IsRaceProperty(FINANCIAL))
+		if (pRace->IsRaceProperty(RACE_PROPERTY::FINANCIAL))
 		{	
 			perc += 15;
 			nCount++;
 		}
-		if (pRace->IsRaceProperty(WARLIKE))
+		if (pRace->IsRaceProperty(RACE_PROPERTY::WARLIKE))
 		{
 			perc += 5;
 			nCount++;
 		}
-		if (pRace->IsRaceProperty(AGRARIAN))
+		if (pRace->IsRaceProperty(RACE_PROPERTY::AGRARIAN))
 		{
 			perc += 10;
 			nCount++;
 		}
-		if (pRace->IsRaceProperty(INDUSTRIAL))
+		if (pRace->IsRaceProperty(RACE_PROPERTY::INDUSTRIAL))
 		{
 			perc += 5;
 			nCount++;
 		}
-		if (pRace->IsRaceProperty(SECRET))
+		if (pRace->IsRaceProperty(RACE_PROPERTY::SECRET))
 		{
 			perc -= 10;
 			nCount++;
 		}
-		if (pRace->IsRaceProperty(SCIENTIFIC))
+		if (pRace->IsRaceProperty(RACE_PROPERTY::SCIENTIFIC))
 		{
 			perc += 0;
 			nCount++;
 		}
-		if (pRace->IsRaceProperty(PRODUCER))
+		if (pRace->IsRaceProperty(RACE_PROPERTY::PRODUCER))
 		{
 			perc += 0;
 			nCount++;
 		}
-		if (pRace->IsRaceProperty(PACIFIST))
+		if (pRace->IsRaceProperty(RACE_PROPERTY::PACIFIST))
 		{
 			perc += 35;
 			nCount++;
 		}
-		if (pRace->IsRaceProperty(SNEAKY))
+		if (pRace->IsRaceProperty(RACE_PROPERTY::SNEAKY))
 		{
 			perc -= 5;
 			nCount++;
 		}
-		if (pRace->IsRaceProperty(SOLOING))
+		if (pRace->IsRaceProperty(RACE_PROPERTY::SOLOING))
 		{
 			perc -= 20;
 			nCount++;
 		}
-		if (pRace->IsRaceProperty(HOSTILE))
+		if (pRace->IsRaceProperty(RACE_PROPERTY::HOSTILE))
 		{
 			perc += 10;
 			nCount++;

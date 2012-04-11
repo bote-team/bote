@@ -458,27 +458,27 @@ bool CGenDiploMessage::GenerateMinorOffer(CDiplomacyInfo& info)
 		return false;
 
 	std::vector<CString> vSearchText;
-	if (pRace->IsRaceProperty(FINANCIAL))
+	if (pRace->IsRaceProperty(RACE_PROPERTY::FINANCIAL))
 		vSearchText.push_back("FINANCIAL:");
-	if (pRace->IsRaceProperty(WARLIKE))
+	if (pRace->IsRaceProperty(RACE_PROPERTY::WARLIKE))
 		vSearchText.push_back("WARLIKE:");
-	if (pRace->IsRaceProperty(AGRARIAN))
+	if (pRace->IsRaceProperty(RACE_PROPERTY::AGRARIAN))
 		vSearchText.push_back("FARMER:");
-	if (pRace->IsRaceProperty(INDUSTRIAL))
+	if (pRace->IsRaceProperty(RACE_PROPERTY::INDUSTRIAL))
 		vSearchText.push_back("INDUSTRIAL:");
-	if (pRace->IsRaceProperty(SECRET))
+	if (pRace->IsRaceProperty(RACE_PROPERTY::SECRET))
 		vSearchText.push_back("SECRET:");
-	if (pRace->IsRaceProperty(SCIENTIFIC))
+	if (pRace->IsRaceProperty(RACE_PROPERTY::SCIENTIFIC))
 		vSearchText.push_back("RESEARCHER:");
-	if (pRace->IsRaceProperty(PRODUCER))
+	if (pRace->IsRaceProperty(RACE_PROPERTY::PRODUCER))
 		vSearchText.push_back("PRODUCER:");
-	if (pRace->IsRaceProperty(PACIFIST))
+	if (pRace->IsRaceProperty(RACE_PROPERTY::PACIFIST))
 		vSearchText.push_back("PACIFIST:");
-	if (pRace->IsRaceProperty(SNEAKY))
+	if (pRace->IsRaceProperty(RACE_PROPERTY::SNEAKY))
 		vSearchText.push_back("SNEAKY:");
-	if (pRace->IsRaceProperty(SOLOING))
+	if (pRace->IsRaceProperty(RACE_PROPERTY::SOLOING))
 		vSearchText.push_back("SOLOING:");
-	if (pRace->IsRaceProperty(HOSTILE))
+	if (pRace->IsRaceProperty(RACE_PROPERTY::HOSTILE))
 		vSearchText.push_back("HOSTILE:");
 
 	if (vSearchText.size() == 0)
@@ -582,27 +582,27 @@ bool CGenDiploMessage::GenerateMinorAnswer(CDiplomacyInfo& info)
 		return false;
 
 	std::vector<CString> vSearchText;
-	if (pRace->IsRaceProperty(FINANCIAL))
+	if (pRace->IsRaceProperty(RACE_PROPERTY::FINANCIAL))
 		vSearchText.push_back("FINANCIAL:");
-	if (pRace->IsRaceProperty(WARLIKE))
+	if (pRace->IsRaceProperty(RACE_PROPERTY::WARLIKE))
 		vSearchText.push_back("WARLIKE:");
-	if (pRace->IsRaceProperty(AGRARIAN))
+	if (pRace->IsRaceProperty(RACE_PROPERTY::AGRARIAN))
 		vSearchText.push_back("FARMER:");
-	if (pRace->IsRaceProperty(INDUSTRIAL))
+	if (pRace->IsRaceProperty(RACE_PROPERTY::INDUSTRIAL))
 		vSearchText.push_back("INDUSTRIAL:");
-	if (pRace->IsRaceProperty(SECRET))
+	if (pRace->IsRaceProperty(RACE_PROPERTY::SECRET))
 		vSearchText.push_back("SECRET:");
-	if (pRace->IsRaceProperty(SCIENTIFIC))
+	if (pRace->IsRaceProperty(RACE_PROPERTY::SCIENTIFIC))
 		vSearchText.push_back("RESEARCHER:");
-	if (pRace->IsRaceProperty(PRODUCER))
+	if (pRace->IsRaceProperty(RACE_PROPERTY::PRODUCER))
 		vSearchText.push_back("PRODUCER:");
-	if (pRace->IsRaceProperty(PACIFIST))
+	if (pRace->IsRaceProperty(RACE_PROPERTY::PACIFIST))
 		vSearchText.push_back("PACIFIST:");
-	if (pRace->IsRaceProperty(SNEAKY))
+	if (pRace->IsRaceProperty(RACE_PROPERTY::SNEAKY))
 		vSearchText.push_back("SNEAKY:");
-	if (pRace->IsRaceProperty(SOLOING))
+	if (pRace->IsRaceProperty(RACE_PROPERTY::SOLOING))
 		vSearchText.push_back("SOLOING:");
-	if (pRace->IsRaceProperty(HOSTILE))
+	if (pRace->IsRaceProperty(RACE_PROPERTY::HOSTILE))
 		vSearchText.push_back("HOSTILE:");
 
 	if (vSearchText.size() == 0)
