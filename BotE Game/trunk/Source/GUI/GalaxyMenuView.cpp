@@ -1358,6 +1358,7 @@ void CGalaxyMenuView::SearchNextIdleShipAndJumpToIt(CBotf2Doc* pDoc, const int o
 			m_PreviouslyJumpedToShip = RememberedShip(i, ship.GetShipName());
 			pMajor->GetStarmap()->Select(sector);// sets orange rectangle in galaxy view
 			pDoc->SetKO(sector.x,sector.y);//neccessary for that the ship is selected for SHIP_BOTTOM_VIEW
+			pDoc->SetCurrentShipIndex(i);
 
 			CShipBottomView::SetShowStation(false);
 			pDoc->GetMainFrame()->SelectBottomView(SHIP_BOTTOM_VIEW);
