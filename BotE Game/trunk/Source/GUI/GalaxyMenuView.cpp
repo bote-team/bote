@@ -98,6 +98,7 @@ void CGalaxyMenuView::OnNewRound()
 	m_bDrawTradeRoute = FALSE;
 	m_bDrawResourceRoute = FALSE;
 	m_bUpdateOnly = false;
+	m_PreviouslyJumpedToShip = RememberedShip();
 
 	if (m_bScrollToHome)
 	{
@@ -709,9 +710,19 @@ void CGalaxyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			{
 				map<CString, CRace*>* pmRaces = pDoc->GetRaceCtrl()->GetRaces();
 				for (map<CString, CRace*>::const_iterator it = pmRaces->begin(); it != pmRaces->end(); ++it)
-					if ((pDoc->m_Sector[sector.x][sector.y].GetOwnerOfShip(it->first) == TRUE && it->first == pMajor->GetRaceID())
-						|| (pDoc->m_Sector[sector.x][sector.y].GetOwnerOfShip(it->first) == TRUE && pDoc->m_Sector[sector.x][sector.y].GetNeededScanPower(it->first) < pDoc->m_Sector[sector.x][sector.y].GetScanPower(pMajor->GetRaceID())))
+					if (pDoc->m_Sector[sector.x][sector.y].GetOwnerOfShip(it->first) == TRUE && (it->first == pMajor->GetRaceID()
+						|| pDoc->m_Sector[sector.x][sector.y].GetNeededScanPower(it->first) < pDoc->m_Sector[sector.x][sector.y].GetScanPower(pMajor->GetRaceID())))
 						{
+							if(it->first == pMajor->GetRaceID()) {
+								for(int i = 0; i < pDoc->m_ShipArray.GetSize(); ++i) {
+									const CShip& ship = pDoc->m_ShipArray.GetAt(i);
+									const CPoint& point = ship.GetKO();
+									if(sector == Sector(point.x, point.y)) {
+										m_PreviouslyJumpedToShip = RememberedShip(i, ship.GetShipName());
+										break;
+									}
+								}
+							}
 							CShipBottomView::SetShowStation(false);
 							pDoc->GetMainFrame()->SelectBottomView(SHIP_BOTTOM_VIEW);
 							pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CShipBottomView));
@@ -1286,69 +1297,84 @@ void CGalaxyMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 
 void CGalaxyMenuView::HandleShipHotkeys(const UINT nChar, CBotf2Doc* pDoc)
 {
-	//not sure here; probably better to ingore ship command keys in this case
-	if(m_bShipMove)
+	if(m_bShipMove) {
+		m_bShipMove = FALSE;
+		m_nRange = 0;
+	}
+
+	if(nChar == 'N') {
+		SearchNextIdleShipAndJumpToIt(pDoc);
+	}
+	else if(nChar == VK_SPACE) {
+		SearchNextIdleShipAndJumpToIt(pDoc, WAIT_SHIP_ORDER);
+	}
+	else if(nChar == 'S') {
+		SearchNextIdleShipAndJumpToIt(pDoc, SENTRY_SHIP_ORDER);
+	}
+}
+
+void CGalaxyMenuView::SearchNextIdleShipAndJumpToIt(CBotf2Doc* pDoc, const int order)
+{
+	CMajor const* pMajor = m_pPlayersRace;
+	ASSERT(pMajor);
+	if (!pMajor)
 		return;
 
 	const int size = pDoc->m_ShipArray.GetSize();
 	if(size <= 0)
 		return;
 
-	CMajor const* pMajor = m_pPlayersRace;
-	ASSERT(pMajor);
-	if (!pMajor)
-		return;
+	int start_at = -1;
+	int stop_at = size - 1;
+	CShip* previous_ship = NULL;
+	if(m_PreviouslyJumpedToShip.index < size
+		&& pDoc->m_ShipArray.GetAt(m_PreviouslyJumpedToShip.index).GetOwnerOfShip()
+			== pMajor->GetRaceID()
+		&& Sector(pDoc->m_ShipArray.GetAt(m_PreviouslyJumpedToShip.index).GetKO())
+			== pMajor->GetStarmap()->GetSelection()
+		&& pDoc->m_ShipArray.GetAt(m_PreviouslyJumpedToShip.index).GetShipName()
+			== m_PreviouslyJumpedToShip.name)
+	{
+		//the previously jumped to ship is still valid
+		start_at = m_PreviouslyJumpedToShip.index;
+		stop_at = m_PreviouslyJumpedToShip.index;
+		previous_ship = &pDoc->m_ShipArray.GetAt(m_PreviouslyJumpedToShip.index);
+	}
 
-	if(nChar == 'N' || nChar == VK_SPACE) {
-		int start_at = -1;
-		int stop_at = size - 1;
-		CShip* previous_ship = NULL;
-		if(m_PreviouslyJumpedToShip.index < size
-			&& pDoc->m_ShipArray.GetAt(m_PreviouslyJumpedToShip.index).GetOwnerOfShip()
-				== pMajor->GetRaceID()
-			&& pDoc->m_ShipArray.GetAt(m_PreviouslyJumpedToShip.index).GetShipName()
-				== m_PreviouslyJumpedToShip.name)
-		{
-			//the previously jumped to ship is still valid
-			start_at = m_PreviouslyJumpedToShip.index;
-			stop_at = m_PreviouslyJumpedToShip.index;
-			previous_ship = &pDoc->m_ShipArray.GetAt(m_PreviouslyJumpedToShip.index);
+	int i = start_at;
+	for(;;) {
+		++i;
+		if(i >= size)
+			i = 0;
+		const CShip& ship = pDoc->m_ShipArray.GetAt(i);
+		if(pMajor->GetRaceID() != ship.GetOwnerOfShip())
+			continue;
+		const CPoint& coords = ship.GetKO();
+		const Sector& sector = Sector(coords.x, coords.y);
+
+		if(ship.HasNothingToDo()) {
+			if(previous_ship && order != -1)
+				previous_ship->SetCurrentOrder(order);
+			m_PreviouslyJumpedToShip = RememberedShip(i, ship.GetShipName());
+			pMajor->GetStarmap()->Select(sector);// sets orange rectangle in galaxy view
+			pDoc->SetKO(sector.x,sector.y);//neccessary for that the ship is selected for SHIP_BOTTOM_VIEW
+
+			CShipBottomView::SetShowStation(false);
+			pDoc->GetMainFrame()->SelectBottomView(SHIP_BOTTOM_VIEW);
+			pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CShipBottomView));//What's this doing ? Neccessary/sensible ?
+
+			CSmallInfoView::SetShipInfo(true);
+			pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CSmallInfoView));//And this ?
+
+			Invalidate();//And this ?
+			break;
 		}
 
-		int i = start_at;
-		for(;;) {
-			++i;
-			if(i >= size)
-				i = 0;
-			const CShip& ship = pDoc->m_ShipArray.GetAt(i);
-			if(pMajor->GetRaceID() != ship.GetOwnerOfShip())
-				continue;
-			const CPoint& coords = ship.GetKO();
-			const Sector& sector = Sector(coords.x, coords.y);
-
-			if(ship.HasNothingToDo()) {
-				if(previous_ship && nChar == VK_SPACE)
-					previous_ship->SetCurrentOrder(WAIT_SHIP_ORDER);
-				m_PreviouslyJumpedToShip = RememberedShip(i, ship.GetShipName());
-				pMajor->GetStarmap()->Select(sector);// sets orange rectangle in galaxy view
-				pDoc->SetKO(sector.x,sector.y);//neccessary for that the ship is selected for SHIP_BOTTOM_VIEW
-
-				CShipBottomView::SetShowStation(false);
-				pDoc->GetMainFrame()->SelectBottomView(SHIP_BOTTOM_VIEW);
-				pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CShipBottomView));//What's this doing ? Neccessary/sensible ?
-
-				CSmallInfoView::SetShipInfo(true);
-				pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CSmallInfoView));//And this ?
-
-				Invalidate();//And this ?
-				break;
-			}
-
-			if(i == stop_at)
-				break;
-		}
+		if(i == stop_at)
+			break;
 	}
 }
+
 
 int CGalaxyMenuView::GetRangeBorder(const unsigned char range1, const unsigned char range2, int m_nRange) const
 {
