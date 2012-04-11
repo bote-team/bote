@@ -1286,22 +1286,46 @@ void CGalaxyMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 
 void CGalaxyMenuView::HandleShipHotkeys(const UINT nChar, CBotf2Doc* pDoc)
 {
+	//not sure here; probably better to ingore ship command keys in this case
+	if(m_bShipMove)
+		return;
+
+	const int size = pDoc->m_ShipArray.GetSize();
+	if(size <= 0)
+		return;
+
 	CMajor const* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
 	if (!pMajor)
 		return;
 
-	const unsigned size = pDoc->m_ShipArray.GetSize();
-
 	if(nChar == 'N') {
-		for(unsigned i = 0; i < size; ++i) {
+		int start_at = -1;
+		int stop_at = size - 1;
+		if(m_PreviouslyJumpedToShip.index < size
+			&& pDoc->m_ShipArray.GetAt(m_PreviouslyJumpedToShip.index).GetOwnerOfShip()
+				== pMajor->GetRaceID()
+			&& pDoc->m_ShipArray.GetAt(m_PreviouslyJumpedToShip.index).GetShipName()
+				== m_PreviouslyJumpedToShip.name)
+		{
+			//the previously jumped to ship is still valid
+			start_at = m_PreviouslyJumpedToShip.index;
+			stop_at = m_PreviouslyJumpedToShip.index;
+		}
+
+		int i = start_at;
+		for(;;) {
+			++i;
+			if(i >= size)
+				i = 0;
 			const CShip& ship = pDoc->m_ShipArray.GetAt(i);
 			if(pMajor->GetRaceID() != ship.GetOwnerOfShip())
 				continue;
 			const CPoint& coords = ship.GetKO();
 			const Sector& sector = Sector(coords.x, coords.y);
 
-			if(ship.HasNothingToDo() && !m_bShipMove && sector != pMajor->GetStarmap()->GetSelection()) {
+			if(ship.HasNothingToDo()) {
+				m_PreviouslyJumpedToShip = RememberedShip(i, ship.GetShipName());
 				pMajor->GetStarmap()->Select(sector);// sets orange rectangle in galaxy view
 				pDoc->SetKO(sector.x,sector.y);//neccessary for that the ship is selected for SHIP_BOTTOM_VIEW
 
@@ -1315,6 +1339,9 @@ void CGalaxyMenuView::HandleShipHotkeys(const UINT nChar, CBotf2Doc* pDoc)
 				Invalidate();//And this ?
 				break;
 			}
+
+			if(i == stop_at)
+				break;
 		}
 	}
 }
