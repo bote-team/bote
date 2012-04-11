@@ -1348,7 +1348,10 @@ void CGalaxyMenuView::SearchNextIdleShipAndJumpToIt(CBotf2Doc* pDoc, const int o
 			i = 0;
 		const CShip& ship = pDoc->m_ShipArray.GetAt(i);
 		if(pMajor->GetRaceID() != ship.GetOwnerOfShip())
-			continue;
+			if(i == stop_at)
+				break;
+			else
+				continue;
 		const CPoint& coords = ship.GetKO();
 		const Sector& sector = Sector(coords.x, coords.y);
 
