@@ -49,13 +49,13 @@ ANSWER_STATUS::Typ CMinorAI::ReactOnOffer(const CDiplomacyInfo& info)
 
 		// bei bestimmten Sachen kann die KI nicht besonders reagieren und liefert ein festes Ergebnis
 		// wurde Krieg erklärt
-		if (info.m_nType == WAR)
+		if (info.m_nType == DIPLOMATIC_AGREEMENT::WAR)
 			return ANSWER_STATUS::ACCEPTED;
 		// soll der Vertrag aufgelöst werden
-		else if (info.m_nType == NO_AGREEMENT)
+		else if (info.m_nType == DIPLOMATIC_AGREEMENT::NONE)
 			return ANSWER_STATUS::ACCEPTED;
 		// wurde ein Bestechungsversuch unternommen
-		else if (info.m_nType == CORRUPTION)
+		else if (info.m_nType == DIPLOMATIC_AGREEMENT::CORRUPTION)
 		{
 			if (TryCorruption(info))
 				return ANSWER_STATUS::ACCEPTED;
@@ -63,7 +63,7 @@ ANSWER_STATUS::Typ CMinorAI::ReactOnOffer(const CDiplomacyInfo& info)
 				return ANSWER_STATUS::DECLINED;
 		}
 		// wurde ein Geschenk übergeben
-		else if (info.m_nType == PRESENT)
+		else if (info.m_nType == DIPLOMATIC_AGREEMENT::PRESENT)
 		{
 			ReactOnDowry(info);
 			return ANSWER_STATUS::ACCEPTED;
@@ -84,7 +84,7 @@ ANSWER_STATUS::Typ CMinorAI::ReactOnOffer(const CDiplomacyInfo& info)
 
 		// wurde in den letzten 2 Runden von der Minorrasse selbst ein Angebot an den Major gemacht, dann
 		// wird das Angebot angenommen, sofern der Vertrag eine kleiner oder gleich große Wertigkeit hat
-		if (info.m_nType > NO_AGREEMENT && info.m_nFlag == DIPLOMACY_OFFER)
+		if (info.m_nType > DIPLOMATIC_AGREEMENT::NONE && info.m_nFlag == DIPLOMACY_OFFER)
 		{
 			const CDiplomacyInfo* pLastOffer = m_pRace->GetLastOffer(info.m_sFromRace);
 			if (pLastOffer != NULL)
@@ -95,7 +95,7 @@ ANSWER_STATUS::Typ CMinorAI::ReactOnOffer(const CDiplomacyInfo& info)
 		// Wenn wir das Angebot wahrmachen könnten, berechnen ob es klappt
 		short nNeededRelation = 100;
 
-		if (info.m_nType == TRADE_AGREEMENT)
+		if (info.m_nType == DIPLOMATIC_AGREEMENT::TRADE)
 		{
 			nNeededRelation = 40;
 			if (pMinor->IsRaceProperty(RACE_PROPERTY::HOSTILE))
@@ -107,7 +107,7 @@ ANSWER_STATUS::Typ CMinorAI::ReactOnOffer(const CDiplomacyInfo& info)
 			if (pMinor->IsRaceProperty(RACE_PROPERTY::FINANCIAL))
 				nNeededRelation -= 10;
 		}
-		else if (info.m_nType == FRIENDSHIP_AGREEMENT)
+		else if (info.m_nType == DIPLOMATIC_AGREEMENT::FRIENDSHIP)
 		{
 			nNeededRelation = 50;
 			if (pMinor->IsRaceProperty(RACE_PROPERTY::HOSTILE))
@@ -119,7 +119,7 @@ ANSWER_STATUS::Typ CMinorAI::ReactOnOffer(const CDiplomacyInfo& info)
 			if (pMinor->IsRaceProperty(RACE_PROPERTY::PACIFIST))
 				nNeededRelation -= 10;
 		}
-		else if (info.m_nType == COOPERATION)
+		else if (info.m_nType == DIPLOMATIC_AGREEMENT::COOPERATION)
 		{
 			nNeededRelation = 65;
 			if (pMinor->IsRaceProperty(RACE_PROPERTY::HOSTILE))
@@ -133,7 +133,7 @@ ANSWER_STATUS::Typ CMinorAI::ReactOnOffer(const CDiplomacyInfo& info)
 			if (pMinor->IsRaceProperty(RACE_PROPERTY::PACIFIST))
 				nNeededRelation -= 10;
 		}
-		else if (info.m_nType == AFFILIATION)
+		else if (info.m_nType == DIPLOMATIC_AGREEMENT::AFFILIATION)
 		{
 			nNeededRelation = 85;
 			if (pMinor->IsRaceProperty(RACE_PROPERTY::HOSTILE))
@@ -143,7 +143,7 @@ ANSWER_STATUS::Typ CMinorAI::ReactOnOffer(const CDiplomacyInfo& info)
 			if (pMinor->IsRaceProperty(RACE_PROPERTY::SECRET))
 				nNeededRelation += 10;			
 		}
-		else if (info.m_nType == MEMBERSHIP)
+		else if (info.m_nType == DIPLOMATIC_AGREEMENT::MEMBERSHIP)
 		{
 			nNeededRelation = 100;
 			if (pMinor->IsRaceProperty(RACE_PROPERTY::HOSTILE))
@@ -229,23 +229,23 @@ bool CMinorAI::MakeOffer(CString& sRaceID, CDiplomacyInfo& info)
 		if (pMinor->IsRaceContacted(sRaceID))
 		{
 			BYTE byOurRelationToThem = pMinor->GetRelation(sRaceID);
-			short nAgreement = pMinor->GetAgreement(sRaceID);
+			DIPLOMATIC_AGREEMENT::Typ nAgreement = pMinor->GetAgreement(sRaceID);
 			
 			// jetzt zum Algorithmus:
 			//	Aufgrund der Beziehung zur Majorrace macht die Minorrace dieser vielleicht ein diplomatisches Angebot
 
 			// Checken ob wir ein Angebot überhaupt machen können, z.B. wenn eine andere Hauptrasse
 			// z.B. Mitgliedschaft mit der Minorrace hat, dann können wir ihr kein Angebot machen
-			short nOthersAgreement = NO_AGREEMENT;		
+			DIPLOMATIC_AGREEMENT::Typ nOthersAgreement = DIPLOMATIC_AGREEMENT::NONE;		
 			map<CString, CMajor*>* pmMajors = m_pDoc->GetRaceCtrl()->GetMajors();
 			for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 			{
-				short nTemp = pMinor->GetAgreement(it->first);
+				DIPLOMATIC_AGREEMENT::Typ nTemp = pMinor->GetAgreement(it->first);
 				if (nTemp > nOthersAgreement)
 					nOthersAgreement = nTemp;			
 			}
 			// wenn die Minor irgendeine Mitgliedschaft mit einer anderen Rasse hat, dann macht sie kein Angebot
-			if (nOthersAgreement == MEMBERSHIP)
+			if (nOthersAgreement == DIPLOMATIC_AGREEMENT::MEMBERSHIP)
 				return false;
 
 			float fMulti = byOurRelationToThem + 100;
@@ -260,20 +260,20 @@ bool CMinorAI::MakeOffer(CString& sRaceID, CDiplomacyInfo& info)
 			
 			// Jetzt haben wir nen Randomwert, wenn dieser einen zufälligen Wert überschreitet, bietet die
 			// Minorrace zu 50% etwas an
-			short nOffer = NO_AGREEMENT;
-			if (nRandom > 120 && nAgreement < MEMBERSHIP && nOthersAgreement <= FRIENDSHIP_AGREEMENT)
-				nOffer = MEMBERSHIP;
-			else if (nRandom > 105 && nAgreement < AFFILIATION && nOthersAgreement <= FRIENDSHIP_AGREEMENT)
-				nOffer = AFFILIATION;
-			else if (nRandom > 90 && nAgreement < COOPERATION && nOthersAgreement <= FRIENDSHIP_AGREEMENT)
-				nOffer = COOPERATION;
-			else if (nRandom > 75 && nAgreement < FRIENDSHIP_AGREEMENT && nOthersAgreement <= COOPERATION)
-				nOffer = FRIENDSHIP_AGREEMENT;
-			else if (nRandom > 55 && nAgreement < TRADE_AGREEMENT && nOthersAgreement <= AFFILIATION)
-				nOffer = TRADE_AGREEMENT;
+			DIPLOMATIC_AGREEMENT::Typ nOffer = DIPLOMATIC_AGREEMENT::NONE;
+			if (nRandom > 120 && nAgreement < DIPLOMATIC_AGREEMENT::MEMBERSHIP && nOthersAgreement <= DIPLOMATIC_AGREEMENT::FRIENDSHIP)
+				nOffer = DIPLOMATIC_AGREEMENT::MEMBERSHIP;
+			else if (nRandom > 105 && nAgreement < DIPLOMATIC_AGREEMENT::AFFILIATION && nOthersAgreement <= DIPLOMATIC_AGREEMENT::FRIENDSHIP)
+				nOffer = DIPLOMATIC_AGREEMENT::AFFILIATION;
+			else if (nRandom > 90 && nAgreement < DIPLOMATIC_AGREEMENT::COOPERATION && nOthersAgreement <= DIPLOMATIC_AGREEMENT::FRIENDSHIP)
+				nOffer = DIPLOMATIC_AGREEMENT::COOPERATION;
+			else if (nRandom > 75 && nAgreement < DIPLOMATIC_AGREEMENT::FRIENDSHIP && nOthersAgreement <= DIPLOMATIC_AGREEMENT::COOPERATION)
+				nOffer = DIPLOMATIC_AGREEMENT::FRIENDSHIP;
+			else if (nRandom > 55 && nAgreement < DIPLOMATIC_AGREEMENT::TRADE && nOthersAgreement <= DIPLOMATIC_AGREEMENT::AFFILIATION)
+				nOffer = DIPLOMATIC_AGREEMENT::TRADE;
 			// nochmalige Sicherheitsabfrage
 			if (nAgreement >= nOffer)
-				nOffer = NO_AGREEMENT;
+				nOffer = DIPLOMATIC_AGREEMENT::NONE;
 
 			// Das könnte man noch von der Art der Rasse abhängig machen, kriegerische Rassen erklären eher Krieg,
 			// pazifistische Rasse erklären gar keinen Krieg oder so ähnlich -> hier gemacht
@@ -291,20 +291,20 @@ bool CMinorAI::MakeOffer(CString& sRaceID, CDiplomacyInfo& info)
 			if (pMinor->IsRaceProperty(RACE_PROPERTY::PACIFIST))	// Wir hassen Krieg
 				nMinRel -= 15;
 			
-			if (nRandom < nMinRel && byOurRelationToThem < nMinRel && nAgreement != WAR)
-				nOffer = WAR;
+			if (nRandom < nMinRel && byOurRelationToThem < nMinRel && nAgreement != DIPLOMATIC_AGREEMENT::WAR)
+				nOffer = DIPLOMATIC_AGREEMENT::WAR;
 
-			if (nOffer != NO_AGREEMENT)
+			if (nOffer != DIPLOMATIC_AGREEMENT::NONE)
 			{
 				// wenn nur Aliendiplomatie möglich ist, dann darf nur Krieg oder Freundschaft angeboten werden
 				if (pMinor->HasSpecialAbility(SPECIAL_ALIEN_DIPLOMACY) || pMajor->HasSpecialAbility(SPECIAL_ALIEN_DIPLOMACY))
 				{
-					if (nOffer >= FRIENDSHIP_AGREEMENT)
+					if (nOffer >= DIPLOMATIC_AGREEMENT::FRIENDSHIP)
 					{
-						if (nAgreement < FRIENDSHIP_AGREEMENT)
-							nOffer = FRIENDSHIP_AGREEMENT;
+						if (nAgreement < DIPLOMATIC_AGREEMENT::FRIENDSHIP)
+							nOffer = DIPLOMATIC_AGREEMENT::FRIENDSHIP;
 						else
-							nOffer = NO_AGREEMENT;
+							nOffer = DIPLOMATIC_AGREEMENT::NONE;
 					}
 				}
 
@@ -609,31 +609,31 @@ bool CMinorAI::TryCorruption(const CDiplomacyInfo& info)
 	if (nValue > nCorruptionValue)			
 	{	
 		// Die Bestechnung war erfolgreich -> der Vertrag mit der CorruptedMajor wird gekündigt
-		short nAgreement = pMinor->GetAgreement(info.m_sCorruptedRace);
+		DIPLOMATIC_AGREEMENT::Typ nAgreement = pMinor->GetAgreement(info.m_sCorruptedRace);
 		CString sText;
 		switch (nAgreement)
 		{
-		case TRADE_AGREEMENT:
+		case DIPLOMATIC_AGREEMENT::TRADE:
 		{
 			sText = CResourceManager::GetString("CANCEL_TRADE_AGREEMENT", FALSE, pMinor->m_sName);
 			break;
 		}
-		case FRIENDSHIP_AGREEMENT:
+		case DIPLOMATIC_AGREEMENT::FRIENDSHIP:
 		{
 			sText = CResourceManager::GetString("CANCEL_FRIENDSHIP", FALSE, pMinor->m_sName);
 			break;
 		}
-		case COOPERATION:
+		case DIPLOMATIC_AGREEMENT::COOPERATION:
 		{
 			sText = CResourceManager::GetString("CANCEL_COOPERATION", FALSE, pMinor->m_sName);
 			break;
 		}
-		case AFFILIATION:
+		case DIPLOMATIC_AGREEMENT::AFFILIATION:
 		{
 			sText = CResourceManager::GetString("CANCEL_AFFILIATION", FALSE, pMinor->m_sName);
 			break;
 		}
-		case MEMBERSHIP:
+		case DIPLOMATIC_AGREEMENT::MEMBERSHIP:
 		{
 			sText = CResourceManager::GetString("CANCEL_MEMBERSHIP", FALSE, pMinor->m_sName);				
 			break;
@@ -643,8 +643,8 @@ bool CMinorAI::TryCorruption(const CDiplomacyInfo& info)
 		CMessage message;
 		if (!sText.IsEmpty())
 		{
-			pCorruptedMajor->SetAgreement(pMinor->GetRaceID(), NO_AGREEMENT);
-			pMinor->SetAgreement(info.m_sCorruptedRace, NO_AGREEMENT);			
+			pCorruptedMajor->SetAgreement(pMinor->GetRaceID(), DIPLOMATIC_AGREEMENT::NONE);
+			pMinor->SetAgreement(info.m_sCorruptedRace, DIPLOMATIC_AGREEMENT::NONE);			
 			message.GenerateMessage(sText, MESSAGE_TYPE::DIPLOMACY, "", 0, 0);
 			pCorruptedMajor->GetEmpire()->AddMessage(message);
 		}	

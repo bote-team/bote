@@ -118,19 +118,26 @@ namespace ANSWER_STATUS
 
 // ------------- Diplomatische Vereinbarungen-----------------------------------
 // Die verschiedenen Arten, welchen Status eine Minorrace gegenüber ein Majorrace haben kann
-#define WAR_PACT            -5 // bei Annahme des Partners gemeinsame Kriegserklärung
-#define DEFENCE_PACT        -2 // zusätzlich anbietbar, außer bei Bündnis oder Krieg
-#define WAR					-1 // Kriegserklärung
-#define NO_AGREEMENT		 0
-#define NON_AGGRESSION_PACT	 1 
-#define TRADE_AGREEMENT		 2 // Handel mgl. & Rohstoffe als Zugabe möglich
-#define FRIENDSHIP_AGREEMENT 3 // sehen dipl. Verträge mit anderen Rassen
-#define COOPERATION			 4 // gemeinsame Nutzung der Werften und Basen
-#define AFFILIATION			 5 // Zusammenarbeit auf dipl. Ebene
-#define MEMBERSHIP			 6
-#define PRESENT				 10
-#define CORRUPTION			 11
-#define DIP_REQUEST          12
+namespace DIPLOMATIC_AGREEMENT
+{
+	enum Typ
+	{
+		WARPACT			= -5,	// bei Annahme des Partners gemeinsame Kriegserklärung
+		DEFENCEPACT		= -2,	// zusätzlich anbietbar, außer bei Bündnis oder Krieg
+		WAR				= -1,	// Kriegserklärung
+		NONE			= 0,
+		NAP				= 1, 
+		TRADE			= 2,	// Handel mgl. & Rohstoffe als Zugabe möglich
+		FRIENDSHIP		= 3,	// sehen dipl. Verträge mit anderen Rassen
+		COOPERATION		= 4,	// gemeinsame Nutzung der Werften und Basen
+		AFFILIATION		= 5,	// Zusammenarbeit auf dipl. Ebene
+		MEMBERSHIP		= 6,
+		PRESENT			= 10,
+		CORRUPTION		= 11,
+		REQUEST			= 12
+	};
+}
+
 #define DIPLOMACY_PRESENT_VALUE	200	// Ein konstanter Wert, der mindst. erreicht werden muss um Beziehung zu verbessern
 
 // ------------- Die verschiedenen Arten einer Rasse -----------------------

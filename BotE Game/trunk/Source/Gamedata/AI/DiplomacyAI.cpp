@@ -16,7 +16,6 @@ CDiplomacyInfo::CDiplomacyInfo(void)
 
 CDiplomacyInfo::~CDiplomacyInfo(void)
 {
-	Reset();
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -114,7 +113,9 @@ void CDiplomacyInfo::Serialize(CArchive &ar)
 		ar >> m_sText;						// Angebotstext
 		
 		ar >> m_nFlag;						// Angebot, Antwort oder irgendwas anderes
-		ar >> m_nType;						// Art des Angebots (Krieg, NAP, Geschenk usw.)
+		int nType;
+		ar >> nType;						// Art des Angebots (Krieg, NAP, Geschenk usw.)
+		m_nType = (DIPLOMATIC_AGREEMENT::Typ)nType;
 		ar >> m_nSendRound;					// in welcher Runde wurde das Angebot abgeschickt
 		ar >> m_nCredits;					// wieviele Credits werden als Geschenk angeboten
 		for (int i = 0; i <= DERITIUM; i++)
@@ -142,7 +143,7 @@ void CDiplomacyInfo::Reset(void)
 	for (int res = TITAN; res <= DERITIUM; res++)
 		m_nResources[res] = 0;
 	m_nSendRound = -1;
-	m_nType = NO_AGREEMENT;
+	m_nType = DIPLOMATIC_AGREEMENT::NONE;
 	m_ptKO = CPoint(-1,-1);
 	m_sCorruptedRace = "";
 	m_sFromRace = "";

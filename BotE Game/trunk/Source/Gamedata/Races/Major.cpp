@@ -137,29 +137,29 @@ void CMajor::SetAgreementDuration(const CString& sRaceID, short nNewValue)
 /// Funktion legt den diplomatischen Status zu einer anderes Rasse fest.
 /// @param sOtherRace andere Rasse
 /// @param nNewAgreement neuer Vertrag
-void CMajor::SetAgreement(const CString& sOtherRace, short nNewAgreement)
+void CMajor::SetAgreement(const CString& sOtherRace, DIPLOMATIC_AGREEMENT::Typ nNewAgreement)
 {
-	if (nNewAgreement == DEFENCE_PACT) 
+	if (nNewAgreement == DIPLOMATIC_AGREEMENT::DEFENCEPACT) 
 	{
 		SetDefencePact(sOtherRace, true);
 		
-		if (GetAgreement(sOtherRace) == WAR)
-			nNewAgreement = NO_AGREEMENT;
-		else if (GetAgreement(sOtherRace) == AFFILIATION)
-			nNewAgreement = AFFILIATION;
+		if (GetAgreement(sOtherRace) == DIPLOMATIC_AGREEMENT::WAR)
+			nNewAgreement = DIPLOMATIC_AGREEMENT::NONE;
+		else if (GetAgreement(sOtherRace) == DIPLOMATIC_AGREEMENT::AFFILIATION)
+			nNewAgreement = DIPLOMATIC_AGREEMENT::AFFILIATION;
 	}
 	
 	// wenn kein Vertrag besteht, so kann der Eintrag auch aus der Map entfernt werden
-	if (nNewAgreement == NO_AGREEMENT)
+	if (nNewAgreement == DIPLOMATIC_AGREEMENT::NONE)
 	{
 		m_mAgreement.erase(sOtherRace);
 		SetAgreementDuration(sOtherRace, 0);
 	}
-	else if (nNewAgreement != DEFENCE_PACT)
+	else if (nNewAgreement != DIPLOMATIC_AGREEMENT::DEFENCEPACT)
 		m_mAgreement[sOtherRace] = nNewAgreement;
 	
 	// Bei Krieg erlischt der Verteidigungspakt und bei einem Bündnis bekommen wir den automatisch
-	if (nNewAgreement == WAR || nNewAgreement == AFFILIATION)
+	if (nNewAgreement == DIPLOMATIC_AGREEMENT::WAR || nNewAgreement == DIPLOMATIC_AGREEMENT::AFFILIATION)
 	{
 		for (vector<CString>::iterator it = m_vDefencePact.begin(); it != m_vDefencePact.end(); it++)
 			if (*it == sOtherRace)
@@ -171,7 +171,7 @@ void CMajor::SetAgreement(const CString& sOtherRace, short nNewAgreement)
 	}
 
 	// Bei Krieg wird die Dauer eines alten Vertrages auf NULL gesetzt
-	if (nNewAgreement == WAR)
+	if (nNewAgreement == DIPLOMATIC_AGREEMENT::WAR)
 		SetAgreementDuration(sOtherRace, 0);	
 }
 
@@ -228,7 +228,7 @@ bool CMajor::DecrementAgreementsDuration(map<CString, CMajor*>* pmMajors)
 	// Wenn wir verringern und auf einen Wert von "1" kommen, dann wird der Vertrag aufgelöst
 	// und eine Nachricht an unser Imperium versandt
 	vector<CString> vDelAgrs;
-	for (map<CString, short>::const_iterator it = m_mAgreement.begin(); it != m_mAgreement.end(); ++it)
+	for (map<CString, DIPLOMATIC_AGREEMENT::Typ>::const_iterator it = m_mAgreement.begin(); it != m_mAgreement.end(); ++it)
 	{
 		if (it->first == m_sID)
 			continue;
@@ -243,11 +243,11 @@ bool CMajor::DecrementAgreementsDuration(map<CString, CMajor*>* pmMajors)
 			CString sAgreement;
 			switch (this->GetAgreement(it->first))
 			{
-			case TRADE_AGREEMENT:		{sAgreement = CResourceManager::GetString("TRADE_AGREEMENT"); break;}
-			case FRIENDSHIP_AGREEMENT:	{sAgreement = CResourceManager::GetString("FRIENDSHIP"); break;}
-			case COOPERATION:			{sAgreement = CResourceManager::GetString("COOPERATION"); break;}
-			case AFFILIATION:			{sAgreement = CResourceManager::GetString("AFFILIATION"); break;}
-			case NON_AGGRESSION_PACT:	{sAgreement = CResourceManager::GetString("NON_AGGRESSION"); break;}
+			case DIPLOMATIC_AGREEMENT::TRADE:		{sAgreement = CResourceManager::GetString("TRADE_AGREEMENT"); break;}
+			case DIPLOMATIC_AGREEMENT::FRIENDSHIP:	{sAgreement = CResourceManager::GetString("FRIENDSHIP"); break;}
+			case DIPLOMATIC_AGREEMENT::COOPERATION:	{sAgreement = CResourceManager::GetString("COOPERATION"); break;}
+			case DIPLOMATIC_AGREEMENT::AFFILIATION:	{sAgreement = CResourceManager::GetString("AFFILIATION"); break;}
+			case DIPLOMATIC_AGREEMENT::NAP:			{sAgreement = CResourceManager::GetString("NON_AGGRESSION"); break;}
 			}
 
 			CString sRace = "";

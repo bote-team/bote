@@ -43,7 +43,7 @@ public:
 	CString		m_sText;						///< Angebotstext
 	
 	short		m_nFlag;						///< Angebot, Antwort oder irgendwas anderes
-	short		m_nType;						///< Art des Angebots (Krieg, NAP, Geschenk usw.)
+	DIPLOMATIC_AGREEMENT::Typ m_nType;			///< Art des Angebots (Krieg, NAP, Geschenk usw.)
 	USHORT		m_nSendRound;					///< in welcher Runde wurde das Angebot abgeschickt
 	USHORT		m_nCredits;						///< wieviele Credits werden als Geschenk angeboten bzw. bei einer Forderung verlangt
 	USHORT		m_nResources[DERITIUM + 1];		///< welche Ressourcen werden mit als Geschenk angeboten bzw. bei einer Forderung verlangt

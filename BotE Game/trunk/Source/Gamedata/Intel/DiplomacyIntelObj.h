@@ -30,7 +30,7 @@ public:
 	/// @param minorRaceKO die Koordinaten des Minorraceheimatsystems
 	/// @param agreement Vertrag von <code>enemy</code> mit der Minorrace
 	/// @param relationship Beziehung von <code>enemy</code> mit der Minorrace
-	CDiplomacyIntelObj(const CString& sOwnerID, const CString& sEnemyID, USHORT round, BOOLEAN isSpy, const CPoint &minorRaceKO, short agreement, short relationship);
+	CDiplomacyIntelObj(const CString& sOwnerID, const CString& sEnemyID, USHORT round, BOOLEAN isSpy, const CPoint &minorRaceKO, DIPLOMATIC_AGREEMENT::Typ agreement, short relationship);
 
 	/// Konstruktor mit Parameterübergabe
 	/// @param sOwnerID Auslöser/Eigentümer
@@ -41,7 +41,7 @@ public:
 	/// @param agreement Vertrag von <code>enemy</code> mit der Majorrace
 	/// @param duration Vertragsdauer
 	/// @param relationship Beziehung von <code>enemy</code> mit der Majorrace
-	CDiplomacyIntelObj(const CString& sOwnerID, const CString& sEnemyID, USHORT round, BOOLEAN isSpy, const CString& sMajorRaceID, short agreement, short duration, short relationship);
+	CDiplomacyIntelObj(const CString& sOwnerID, const CString& sEnemyID, USHORT round, BOOLEAN isSpy, const CString& sMajorRaceID, DIPLOMATIC_AGREEMENT::Typ agreement, short duration, short relationship);
 
 	///  Konstruktor mit Parameterübergabe
 	/// @param sOwnerID Auslöser/Eigentümer
@@ -68,7 +68,7 @@ public:
 	const CString& GetMajorRaceID() const {return m_sMajor;}
 
 	/// Funktion gibt einen bestehenden Vertrag zurück
-	short GetAgreement() const {return m_nAgreement;}
+	DIPLOMATIC_AGREEMENT::Typ GetAgreement() const {return m_nAgreement;}
 
 	/// Funktion gibt die Dauer eines möglichen Vertrages zurück.
 	short GetDuration() const {return m_nDuration;}
@@ -90,7 +90,7 @@ private:
 
 	CString m_sMajor;			///< betroffene Majorrace, mit welcher das Geheimdienstopfer einen Vertrag hat (oder auch nicht)
 
-	short m_nAgreement;			///< Vertrag zwischen den Rassen
+	DIPLOMATIC_AGREEMENT::Typ m_nAgreement;	///< Vertrag zwischen den Rassen
 
 	short m_nDuration;			///< Dauer des Vertrages
 

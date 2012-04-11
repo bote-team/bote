@@ -1359,7 +1359,7 @@ void CSystemAI::ApplyTradeRoutes()
 		for (map<CString, CMinor*>::const_iterator it = pmMinors->begin(); it != pmMinors->end(); ++it)
 		{
 			CMinor* pMinor = it->second;
-			if (pMinor->GetAgreement(race) >= TRADE_AGREEMENT && pMinor->GetAgreement(race) < MEMBERSHIP)
+			if (pMinor->GetAgreement(race) >= DIPLOMATIC_AGREEMENT::TRADE && pMinor->GetAgreement(race) < DIPLOMATIC_AGREEMENT::MEMBERSHIP)
 				if (m_pDoc->m_System[ko.x][ko.y].AddTradeRoute(pMinor->GetRaceKO(), m_pDoc->m_System, m_pMajor->GetEmpire()->GetResearch()->GetResearchInfo()) == FALSE)
 					break;
 		}
@@ -1370,7 +1370,7 @@ void CSystemAI::ApplyTradeRoutes()
 		for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
 			for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
 				if (m_pDoc->m_System[x][y].GetOwnerOfSystem() != "" && m_pDoc->m_System[x][y].GetOwnerOfSystem() != race)
-					if (m_pMajor->GetAgreement(m_pDoc->m_System[x][y].GetOwnerOfSystem()) >= TRADE_AGREEMENT)
+					if (m_pMajor->GetAgreement(m_pDoc->m_System[x][y].GetOwnerOfSystem()) >= DIPLOMATIC_AGREEMENT::TRADE)
 						m_pDoc->m_System[ko.x][ko.y].AddTradeRoute(CPoint(x,y), m_pDoc->m_System, m_pMajor->GetEmpire()->GetResearch()->GetResearchInfo());							
 	}
 }

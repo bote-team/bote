@@ -251,22 +251,22 @@ void CMinor::CalcAcceptancePoints(CBotf2Doc* pDoc)
 		short nAgreement = GetAgreement(it->first);
 		short nAccPoints = 0;
 		// bei keinem aktuell laufendem Vertrag verringern sich die gesammelten Punkte langsam
-		if (nAgreement == NO_AGREEMENT)
+		if (nAgreement == DIPLOMATIC_AGREEMENT::NONE)
 			nAccPoints -= rand()%80 + 1;
-		else if (nAgreement == FRIENDSHIP_AGREEMENT)
+		else if (nAgreement == DIPLOMATIC_AGREEMENT::FRIENDSHIP)
 			nAccPoints += 10;
-		else if (nAgreement == COOPERATION)
+		else if (nAgreement == DIPLOMATIC_AGREEMENT::COOPERATION)
 			nAccPoints += 20;
-		else if (nAgreement == AFFILIATION)
+		else if (nAgreement == DIPLOMATIC_AGREEMENT::AFFILIATION)
 			nAccPoints += 30;
-		else if (nAgreement == MEMBERSHIP)
+		else if (nAgreement == DIPLOMATIC_AGREEMENT::MEMBERSHIP)
 		{
 			nAccPoints += 40;
 			// bei einer Mitgliedschaft erhöht sich womoglich auch die Beziehung ein wenig
 			SetRelation(it->first, rand()%2);			
 		}
 		// bei Krieg werden alle Punkte gelöscht
-		else if (nAgreement == WAR)
+		else if (nAgreement == DIPLOMATIC_AGREEMENT::WAR)
 			nAccPoints -= GetAcceptancePoints(it->first);
 		
 		// Akzeptanzpunkte nun hinzufügen bzw. abziehen
@@ -344,24 +344,24 @@ bool CMinor::CanAcceptOffer(CBotf2Doc* pDoc, const CString& sMajorID, short nTyp
 	// Checken ob wir ein Angebot überhaupt annehmen können, wenn z.B. eine andere Hauptrasse
 	// eine Mitgliedschaft mit einer Minorrace hat, dann können wir ihr kein Angebot machen, außer
 	// Krieg erklären, Geschenke geben und Bestechen
-	short nOthersAgreement	= NO_AGREEMENT;		
+	DIPLOMATIC_AGREEMENT::Typ nOthersAgreement = DIPLOMATIC_AGREEMENT::NONE;		
 	map<CString, CMajor*>* pmMajors = pDoc->GetRaceCtrl()->GetMajors();
 	// nicht wir selbst
 	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 	{
 		if (it->first != sMajorID)
 		{
-			short nTemp = this->GetAgreement(it->first);
+			DIPLOMATIC_AGREEMENT::Typ nTemp = this->GetAgreement(it->first);
 			if (nTemp > nOthersAgreement)
 				nOthersAgreement = nTemp;			
 		}
 	}
 
-	if ((nType == COOPERATION || nType == AFFILIATION || nType == MEMBERSHIP) && nOthersAgreement > FRIENDSHIP_AGREEMENT)
+	if ((nType == DIPLOMATIC_AGREEMENT::COOPERATION || nType == DIPLOMATIC_AGREEMENT::AFFILIATION || nType == DIPLOMATIC_AGREEMENT::MEMBERSHIP) && nOthersAgreement > DIPLOMATIC_AGREEMENT::FRIENDSHIP)
 		return false;
-	if (nType == TRADE_AGREEMENT && nOthersAgreement > AFFILIATION)
+	if (nType == DIPLOMATIC_AGREEMENT::TRADE && nOthersAgreement > DIPLOMATIC_AGREEMENT::AFFILIATION)
 		return false;
-	if (nType == FRIENDSHIP_AGREEMENT && nOthersAgreement > COOPERATION)
+	if (nType == DIPLOMATIC_AGREEMENT::FRIENDSHIP && nOthersAgreement > DIPLOMATIC_AGREEMENT::COOPERATION)
 		return false;
 
 	return true;
@@ -386,23 +386,23 @@ void CMinor::CheckDiplomaticConsistence(CBotf2Doc* pDoc)
 		// Wenn die Minorrace unterworfen wurde, so wird jeglicher Vertrag gekündigt aller bakannten Majors gekündigt
 		if (GetSubjugated())
 		{
-			short nAgreement = GetAgreement(it->first);
+			DIPLOMATIC_AGREEMENT::Typ nAgreement = GetAgreement(it->first);
 			CString s = "";
 			switch (nAgreement)
 			{
-			case TRADE_AGREEMENT: {s = CResourceManager::GetString("CANCEL_TRADE_AGREEMENT", FALSE, m_sName);	break;}
-			case FRIENDSHIP_AGREEMENT: {s = CResourceManager::GetString("CANCEL_FRIENDSHIP", FALSE, m_sName);	break;}
-			case COOPERATION: {s = CResourceManager::GetString("CANCEL_COOPERATION", FALSE, m_sName);			break;}
-			case AFFILIATION: {s = CResourceManager::GetString("CANCEL_AFFILIATION", FALSE, m_sName);			break;}
-			case MEMBERSHIP: {s = CResourceManager::GetString("CANCEL_MEMBERSHIP", FALSE, m_sName);				break;}
+			case DIPLOMATIC_AGREEMENT::TRADE: {s = CResourceManager::GetString("CANCEL_TRADE_AGREEMENT", FALSE, m_sName);	break;}
+			case DIPLOMATIC_AGREEMENT::FRIENDSHIP: {s = CResourceManager::GetString("CANCEL_FRIENDSHIP", FALSE, m_sName);	break;}
+			case DIPLOMATIC_AGREEMENT::COOPERATION: {s = CResourceManager::GetString("CANCEL_COOPERATION", FALSE, m_sName);			break;}
+			case DIPLOMATIC_AGREEMENT::AFFILIATION: {s = CResourceManager::GetString("CANCEL_AFFILIATION", FALSE, m_sName);			break;}
+			case DIPLOMATIC_AGREEMENT::MEMBERSHIP: {s = CResourceManager::GetString("CANCEL_MEMBERSHIP", FALSE, m_sName);				break;}
 			}
 			// Krieg bleibt weiterhin bestehen
-			if (nAgreement != WAR)
+			if (nAgreement != DIPLOMATIC_AGREEMENT::WAR)
 			{
 				// Vertrag bei beiden Rassen auflösen
-				SetAgreement(it->first, NO_AGREEMENT);
+				SetAgreement(it->first, DIPLOMATIC_AGREEMENT::NONE);
 				CMajor* pMajor = it->second;
-				pMajor->SetAgreement(m_sID, NO_AGREEMENT);
+				pMajor->SetAgreement(m_sID, DIPLOMATIC_AGREEMENT::NONE);
 				if (!s.IsEmpty())
 				{
 					CMessage message;
@@ -412,89 +412,89 @@ void CMinor::CheckDiplomaticConsistence(CBotf2Doc* pDoc)
 			}
 		}
 
-		short nMajorsAgreement = GetAgreement(it->first);
+		DIPLOMATIC_AGREEMENT::Typ nMajorsAgreement = GetAgreement(it->first);
 		// hat die andere Rasse eine Mitgliedschaft, dann müssen Handelsvertrag und Freundschaft von allen anderen Rassen gekündigt werden
-		if (nMajorsAgreement == MEMBERSHIP)
+		if (nMajorsAgreement == DIPLOMATIC_AGREEMENT::MEMBERSHIP)
 		{
 			for (map<CString, CMajor*>::const_iterator itt = pmMajors->begin(); itt != pmMajors->end(); ++itt)
 			{
 				if (it->first == itt->first)
 					continue;
 
-				short nAgreement = GetAgreement(itt->first);
+				DIPLOMATIC_AGREEMENT::Typ nAgreement = GetAgreement(itt->first);
 				CString s = "";
 
-				if (nAgreement == TRADE_AGREEMENT)
+				if (nAgreement == DIPLOMATIC_AGREEMENT::TRADE)
 					s = CResourceManager::GetString("CANCEL_TRADE_AGREEMENT", FALSE, m_sName);					
-				else if (nAgreement == FRIENDSHIP_AGREEMENT)
+				else if (nAgreement == DIPLOMATIC_AGREEMENT::FRIENDSHIP)
 					s = CResourceManager::GetString("CANCEL_FRIENDSHIP", FALSE, m_sName);
-				else if (nAgreement == COOPERATION)
+				else if (nAgreement == DIPLOMATIC_AGREEMENT::COOPERATION)
 					s = CResourceManager::GetString("CANCEL_COOPERATION", FALSE, m_sName);
-				else if (nAgreement == AFFILIATION)
+				else if (nAgreement == DIPLOMATIC_AGREEMENT::AFFILIATION)
 					s = CResourceManager::GetString("CANCEL_AFFILIATION", FALSE, m_sName);
-				else if (nAgreement == MEMBERSHIP)
+				else if (nAgreement == DIPLOMATIC_AGREEMENT::MEMBERSHIP)
 					s = CResourceManager::GetString("CANCEL_MEMBERSHIP", FALSE, m_sName);
 				
 				if (!s.IsEmpty())
 				{
 					// Vertrag bei beiden Rassen auflösen
-					SetAgreement(itt->first, NO_AGREEMENT);
+					SetAgreement(itt->first, DIPLOMATIC_AGREEMENT::NONE);
 					CMajor* pMajor = itt->second;
-					pMajor->SetAgreement(m_sID, NO_AGREEMENT);
+					pMajor->SetAgreement(m_sID, DIPLOMATIC_AGREEMENT::NONE);
 					CMessage message;
 					message.GenerateMessage(s, MESSAGE_TYPE::DIPLOMACY, "", 0, 0);
 					pMajor->GetEmpire()->AddMessage(message);
 				}
 			}
 		}
-		else if (nMajorsAgreement == AFFILIATION)
+		else if (nMajorsAgreement == DIPLOMATIC_AGREEMENT::AFFILIATION)
 		{
 			for (map<CString, CMajor*>::const_iterator itt = pmMajors->begin(); itt != pmMajors->end(); ++itt)
 			{
 				if (it->first == itt->first)
 					continue;
 
-				short nAgreement = GetAgreement(itt->first);
+				DIPLOMATIC_AGREEMENT::Typ nAgreement = GetAgreement(itt->first);
 				CString s = "";
 
-				if (nAgreement == FRIENDSHIP_AGREEMENT)
+				if (nAgreement == DIPLOMATIC_AGREEMENT::FRIENDSHIP)
 					s = CResourceManager::GetString("CANCEL_FRIENDSHIP", FALSE, m_sName);
-				else if (nAgreement == COOPERATION)
+				else if (nAgreement == DIPLOMATIC_AGREEMENT::COOPERATION)
 					s = CResourceManager::GetString("CANCEL_COOPERATION", FALSE, m_sName);
-				else if (nAgreement == AFFILIATION)
+				else if (nAgreement == DIPLOMATIC_AGREEMENT::AFFILIATION)
 					s = CResourceManager::GetString("CANCEL_AFFILIATION", FALSE, m_sName);				
 				
 				if (!s.IsEmpty())
 				{
 					// Vertrag bei beiden Rassen auflösen
-					SetAgreement(itt->first, NO_AGREEMENT);
+					SetAgreement(itt->first, DIPLOMATIC_AGREEMENT::NONE);
 					CMajor* pMajor = itt->second;
-					pMajor->SetAgreement(m_sID, NO_AGREEMENT);
+					pMajor->SetAgreement(m_sID, DIPLOMATIC_AGREEMENT::NONE);
 					CMessage message;					
 					message.GenerateMessage(s, MESSAGE_TYPE::DIPLOMACY, "", 0, 0);
 					pMajor->GetEmpire()->AddMessage(message);
 				}
 			}
 		}
-		else if (nMajorsAgreement == COOPERATION)
+		else if (nMajorsAgreement == DIPLOMATIC_AGREEMENT::COOPERATION)
 		{
 			for (map<CString, CMajor*>::const_iterator itt = pmMajors->begin(); itt != pmMajors->end(); ++itt)
 			{
 				if (it->first == itt->first)
 					continue;
 
-				short nAgreement = GetAgreement(itt->first);
+				DIPLOMATIC_AGREEMENT::Typ nAgreement = GetAgreement(itt->first);
 				CString s = "";
 
-				if (nAgreement == COOPERATION)
+				if (nAgreement == DIPLOMATIC_AGREEMENT::COOPERATION)
 					s = CResourceManager::GetString("CANCEL_COOPERATION", FALSE, m_sName);				
 				
 				if (!s.IsEmpty())
 				{
 					// Vertrag bei beiden Rassen auflösen
-					SetAgreement(itt->first, NO_AGREEMENT);
+					SetAgreement(itt->first, DIPLOMATIC_AGREEMENT::NONE);
 					CMajor* pMajor = itt->second;
-					pMajor->SetAgreement(m_sID, NO_AGREEMENT);
+					pMajor->SetAgreement(m_sID, DIPLOMATIC_AGREEMENT::NONE);
 					CMessage message;					
 					message.GenerateMessage(s, MESSAGE_TYPE::DIPLOMACY, "", 0, 0);
 					pMajor->GetEmpire()->AddMessage(message);
@@ -522,35 +522,35 @@ void CMinor::PerhapsCancelAgreement(CBotf2Doc* pDoc)
 		if (!IsRaceContacted(it->first))
 			continue;
 	
-		short nRelation		= GetRelation(it->first);
-		short nAgreement	= GetAgreement(it->first);
-		if (nRelation < nAgreement * 12 && nAgreement >= TRADE_AGREEMENT && nAgreement <= MEMBERSHIP)
+		short nRelation	= GetRelation(it->first);
+		DIPLOMATIC_AGREEMENT::Typ nAgreement = GetAgreement(it->first);
+		if (nRelation < nAgreement * 12 && nAgreement >= DIPLOMATIC_AGREEMENT::TRADE && nAgreement <= DIPLOMATIC_AGREEMENT::MEMBERSHIP)
 		{
 			// Jetzt wird gekündigt
 			CString sText;
 			switch (nAgreement)
 			{
-			case TRADE_AGREEMENT:
+			case DIPLOMATIC_AGREEMENT::TRADE:
 			{
 				sText = CResourceManager::GetString("CANCEL_TRADE_AGREEMENT", FALSE, m_sName);
 				break;
 			}
-			case FRIENDSHIP_AGREEMENT:
+			case DIPLOMATIC_AGREEMENT::FRIENDSHIP:
 			{
 				sText = CResourceManager::GetString("CANCEL_FRIENDSHIP", FALSE, m_sName);
 				break;
 			}
-			case COOPERATION:
+			case DIPLOMATIC_AGREEMENT::COOPERATION:
 			{
 				sText = CResourceManager::GetString("CANCEL_COOPERATION", FALSE, m_sName);
 				break;
 			}
-			case AFFILIATION:
+			case DIPLOMATIC_AGREEMENT::AFFILIATION:
 			{
 				sText = CResourceManager::GetString("CANCEL_AFFILIATION", FALSE, m_sName);
 				break;
 			}
-			case MEMBERSHIP:
+			case DIPLOMATIC_AGREEMENT::MEMBERSHIP:
 			{
 				sText = CResourceManager::GetString("CANCEL_MEMBERSHIP", FALSE, m_sName);				
 				break;
@@ -560,8 +560,8 @@ void CMinor::PerhapsCancelAgreement(CBotf2Doc* pDoc)
 			if (!sText.IsEmpty())
 			{
 				CMajor* pMajor = it->second;
-				pMajor->SetAgreement(m_sID, NO_AGREEMENT);
-				SetAgreement(it->first, NO_AGREEMENT);
+				pMajor->SetAgreement(m_sID, DIPLOMATIC_AGREEMENT::NONE);
+				SetAgreement(it->first, DIPLOMATIC_AGREEMENT::NONE);
 				CMessage message;
 				message.GenerateMessage(sText, MESSAGE_TYPE::DIPLOMACY, "", 0, 0);
 				pMajor->GetEmpire()->AddMessage(message);

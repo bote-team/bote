@@ -1445,7 +1445,7 @@ void CBotf2Doc::NextRound()
 		bool bMember = false;
 		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 		{
-			if (pMinor->GetAgreement(it->first) == MEMBERSHIP)
+			if (pMinor->GetAgreement(it->first) == DIPLOMATIC_AGREEMENT::MEMBERSHIP)
 			{
 				bMember = true;
 				break;
@@ -2451,7 +2451,7 @@ void CBotf2Doc::GenerateStarmap(const CString& sOnlyForRaceID)
 
 		set<CString> NAPRaces;
 		for (map<CString, CMajor*>::const_iterator itt = pmMajors->begin(); itt != pmMajors->end(); ++itt)
-			if (it->first != itt->first && it->second->GetAgreement(itt->first) == NON_AGGRESSION_PACT)
+			if (it->first != itt->first && it->second->GetAgreement(itt->first) == DIPLOMATIC_AGREEMENT::NAP)
 				NAPRaces.insert(itt->first);
 		// interne Starmap für KI syncronisieren
 		it->second->GetStarmap()->SynchronizeWithMap(m_Sector, &NAPRaces);		
@@ -3035,7 +3035,7 @@ void CBotf2Doc::CalcSystemAttack()
 								// alle Majors durchgehen und die vernichtete Minor aus deren Maps entfernen
 								CMajor* pMajor = it->second;								
 								pMajor->SetIsRaceContacted(pMinor->GetRaceID(), false);				
-								pMajor->SetAgreement(pMinor->GetRaceID(), NO_AGREEMENT);
+								pMajor->SetAgreement(pMinor->GetRaceID(), DIPLOMATIC_AGREEMENT::NONE);
 							}
 							// Alle Schiffe der Minorrace entfernen
 							for (int j = 0; j < m_ShipArray.GetSize(); j++)
@@ -3531,8 +3531,8 @@ void CBotf2Doc::CalcOldRoundData()
 
 									if (m_Sector[x][y].GetTakenSector() == FALSE)
 									{
-										pMinor->SetAgreement(pMajor->GetRaceID(), NO_AGREEMENT);
-										pMajor->SetAgreement(pMinor->GetRaceID(), NO_AGREEMENT);
+										pMinor->SetAgreement(pMajor->GetRaceID(), DIPLOMATIC_AGREEMENT::NONE);
+										pMajor->SetAgreement(pMinor->GetRaceID(), DIPLOMATIC_AGREEMENT::NONE);
 										
 										pMinor->SetRelation(pMajor->GetRaceID(), (-(rand()%50+20)));
 										news = CResourceManager::GetString("MINOR_CANCELS_MEMBERSHIP", FALSE, pMinor->GetRaceName());
@@ -3952,24 +3952,24 @@ void CBotf2Doc::CalcNewRoundData()
 				for (map<CString, CMajor*>::const_iterator j = pmMajors->begin(); j != pmMajors->end(); j++)
 				{
 					if (m_Sector[x][y].GetScanned(i->first) == TRUE && i->first != j->first)
-						if (i->second->GetAgreement(j->first) >= COOPERATION)
+						if (i->second->GetAgreement(j->first) >= DIPLOMATIC_AGREEMENT::COOPERATION)
 							m_Sector[x][y].SetScanned(j->first);
 					if (m_Sector[x][y].GetKnown(i->first) == TRUE && i->first != j->first)
 					{
-						if (i->second->GetAgreement(j->first) >= FRIENDSHIP_AGREEMENT)
+						if (i->second->GetAgreement(j->first) >= DIPLOMATIC_AGREEMENT::FRIENDSHIP)
 							m_Sector[x][y].SetScanned(j->first);
-						if (i->second->GetAgreement(j->first) >= COOPERATION)
+						if (i->second->GetAgreement(j->first) >= DIPLOMATIC_AGREEMENT::COOPERATION)
 							m_Sector[x][y].SetKnown(j->first);
 					}
 					if (m_Sector[x][y].GetOwnerOfSector() == i->first && i->first != j->first)
 					{
-						if (i->second->GetAgreement(j->first) >= TRADE_AGREEMENT)
+						if (i->second->GetAgreement(j->first) >= DIPLOMATIC_AGREEMENT::TRADE)
 							m_Sector[x][y].SetScanned(j->first);
-						if (i->second->GetAgreement(j->first) >= FRIENDSHIP_AGREEMENT)
+						if (i->second->GetAgreement(j->first) >= DIPLOMATIC_AGREEMENT::FRIENDSHIP)
 							m_Sector[x][y].SetKnown(j->first);
 					}
 					if (m_Sector[x][y].GetShipPort(i->first) == TRUE && i->first != j->first)
-						if (i->second->GetAgreement(j->first) >= COOPERATION)
+						if (i->second->GetAgreement(j->first) >= DIPLOMATIC_AGREEMENT::COOPERATION)
 							mShipPort[j->first] = TRUE;
 				}
 
@@ -4036,7 +4036,7 @@ void CBotf2Doc::CalcNewRoundData()
 			for (map<CString, CMinor*>::const_iterator j = pmMinors->begin(); j != pmMinors->end(); j++)
 			{
 				CMinor* pMinor = j->second;
-				if (pMinor->GetSpaceflightNation() == TRUE && (pMinor->GetAgreement(pMajor->GetRaceID()) == COOPERATION || pMinor->GetAgreement(pMajor->GetRaceID()) == AFFILIATION))
+				if (pMinor->GetSpaceflightNation() == TRUE && (pMinor->GetAgreement(pMajor->GetRaceID()) == DIPLOMATIC_AGREEMENT::COOPERATION || pMinor->GetAgreement(pMajor->GetRaceID()) == DIPLOMATIC_AGREEMENT::AFFILIATION))
 				{
 					CPoint p = pMinor->GetRaceKO();
 					if (p != CPoint(-1,-1))
@@ -4219,7 +4219,7 @@ void CBotf2Doc::CalcShipOrders()
 				else if (pSector->GetOwnerOfSector() != "" && pSector->GetOwnerOfSector() != pShip->GetOwnerOfShip())
 				{
 					CRace* pRace = m_pRaceCtrl->GetRace(pSector->GetOwnerOfSector());
-					if (pRace != NULL && pRace->GetAgreement(pShip->GetOwnerOfShip()) != WAR)
+					if (pRace != NULL && pRace->GetAgreement(pShip->GetOwnerOfShip()) != DIPLOMATIC_AGREEMENT::WAR)
 						pShip->SetCurrentOrder(ATTACK);
 				}
 			}
@@ -4981,7 +4981,7 @@ void CBotf2Doc::CalcShipOrders()
 					CString shipOwner   = pShip->GetOwnerOfShip();
 					CRace* pShipOwner	= m_pRaceCtrl->GetRace(shipOwner);
 					// haben wir einen Vertrag kleiner einem Freundschaftsvertrag mit der Majorrace
-					if (pShipOwner->GetAgreement(systemOwner) < FRIENDSHIP_AGREEMENT)
+					if (pShipOwner->GetAgreement(systemOwner) < DIPLOMATIC_AGREEMENT::FRIENDSHIP)
 					{
 						int blockadeValue = pSystem->GetBlockade();
 						if (pShip->HasSpecial(BLOCKADESHIP))
@@ -5075,7 +5075,7 @@ void CBotf2Doc::CalcShipMovement()
 		pMajor->GetEmpire()->SetShipCosts(0);
 		set<CString> races;
 		for (map<CString, CMajor*>::const_iterator itt = pmMajors->begin(); itt != pmMajors->end(); ++itt)
-			if (it->first != itt->first && pMajor->GetAgreement(itt->first) == NON_AGGRESSION_PACT)
+			if (it->first != itt->first && pMajor->GetAgreement(itt->first) == DIPLOMATIC_AGREEMENT::NAP)
 				races.insert(itt->first);
 		pMajor->GetStarmap()->SynchronizeWithMap(m_Sector, &races);
 	}
@@ -6273,10 +6273,10 @@ void CBotf2Doc::CalcEndDataForNextRound()
 				CRace* pLivingRace = itt->second;
 				
 				pLivingRace->SetIsRaceContacted(pMajor->GetRaceID(), false);				
-				pLivingRace->SetAgreement(pMajor->GetRaceID(), NO_AGREEMENT);
+				pLivingRace->SetAgreement(pMajor->GetRaceID(), DIPLOMATIC_AGREEMENT::NONE);
 
 				pMajor->SetIsRaceContacted(pLivingRace->GetRaceID(), false);				
-				pMajor->SetAgreement(pLivingRace->GetRaceID(), NO_AGREEMENT);
+				pMajor->SetAgreement(pLivingRace->GetRaceID(), DIPLOMATIC_AGREEMENT::NONE);
 
 				// alle Diplomatischen Angebote und Antworten löschen
 				pMajor->GetIncomingDiplomacyNews()->clear();

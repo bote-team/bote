@@ -79,7 +79,7 @@ protected:
 	/// das diplomatische Angebot abgibt. Der Wert ist abhängig von den Rasseneigenschaften.
 	/// @param nOfferType Typ des Angebots
 	/// @return benötigter Wert
-	int GetMinOfferValue(short nOfferType);
+	int GetMinOfferValue(DIPLOMATIC_AGREEMENT::Typ nOfferType) const;
 
 	/// Funktion berechnet wieviel und welche Mitgifte die KI bei einem Angebot mitgibt.
 	/// @param info Referenz auf eine Diplomatieinformation (darin wird das Angebot abgelegt)

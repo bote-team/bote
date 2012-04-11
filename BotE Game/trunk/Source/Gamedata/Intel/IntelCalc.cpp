@@ -998,13 +998,13 @@ BOOLEAN CIntelCalc::ExecuteDiplomacySpy(CMajor* pRace, CMajor* pEnemyRace, CMajo
 			CString minor = minors.GetAt(rand()%minors.GetSize());
 			CPoint ko = (*pmMinors)[minor]->GetRaceKO();
 			if (ko != CPoint(-1,-1))
-				report = new CDiplomacyIntelObj(pRace->GetRaceID(), pEnemyRace->GetRaceID(), m_pDoc->GetCurrentRound(), TRUE, ko, NO_AGREEMENT, (*pmMinors)[minor]->GetRelation(pEnemyRace->GetRaceID()));
+				report = new CDiplomacyIntelObj(pRace->GetRaceID(), pEnemyRace->GetRaceID(), m_pDoc->GetCurrentRound(), TRUE, ko, DIPLOMATIC_AGREEMENT::NONE, (*pmMinors)[minor]->GetRelation(pEnemyRace->GetRaceID()));
 		}
 		else if (majors.GetSize())
 		{
 			CString major = majors.GetAt(rand()%majors.GetSize());
 			report = new CDiplomacyIntelObj(pRace->GetRaceID(), pEnemyRace->GetRaceID(), m_pDoc->GetCurrentRound(), TRUE, major,
-				NO_AGREEMENT, 0, (*pmMajors)[major]->GetRelation(pEnemyRace->GetRaceID()));
+				DIPLOMATIC_AGREEMENT::NONE, 0, (*pmMajors)[major]->GetRelation(pEnemyRace->GetRaceID()));
 		}
 		// Intelreport dem Akteur hinzufügen
 		if (report)
@@ -1027,12 +1027,12 @@ BOOLEAN CIntelCalc::ExecuteDiplomacySpy(CMajor* pRace, CMajor* pEnemyRace, CMajo
 		if (majors.GetSize())
 		{
 			CString major = majors.GetAt(rand()%majors.GetSize());
-			short agreement = NO_AGREEMENT;
+			DIPLOMATIC_AGREEMENT::Typ agreement = DIPLOMATIC_AGREEMENT::NONE;
 			short duration = 0;
 			// hier kann entweder ein normaler Vertrag, oder auch ein Verteidigungspakt spioniert werden
 			if (rand()%3 == NULL && pEnemyRace->GetDefencePact(major))
 			{
-				agreement = DEFENCE_PACT;
+				agreement = DIPLOMATIC_AGREEMENT::DEFENCEPACT;
 				duration = pEnemyRace->GetDefencePactDuration(major);
 			}
 			else
@@ -1714,7 +1714,7 @@ BOOLEAN CIntelCalc::ExecuteDiplomacySabotage(CMajor* pRace, CMajor* pEnemyRace, 
 				int relationAdd = rand()%20 + 1;
 				pEnemyRace->SetRelation(pRace->GetRaceID(), relationAdd);
 				pRace->GetEmpire()->GetIntelligence()->GetIntelReports()->RemoveReport(oldReportNumber);
-				report = new CDiplomacyIntelObj(pRace->GetRaceID(), pEnemyRace->GetRaceID(), m_pDoc->GetCurrentRound(), FALSE, pEnemyRace->GetRaceID(), FALSE, FALSE, FALSE);
+				report = new CDiplomacyIntelObj(pRace->GetRaceID(), pEnemyRace->GetRaceID(), m_pDoc->GetCurrentRound(), FALSE, pEnemyRace->GetRaceID(), DIPLOMATIC_AGREEMENT::NONE, FALSE, FALSE);
 				if (report)
 				{
 					report->CreateText(m_pDoc, 0, pResponsibleRace->GetRaceID());
@@ -1741,7 +1741,7 @@ BOOLEAN CIntelCalc::ExecuteDiplomacySabotage(CMajor* pRace, CMajor* pEnemyRace, 
 				pEnemyRace->SetRelation(pMajor->GetRaceID(), relationSub);
 				pMajor->SetRelation(pEnemyRace->GetRaceID(), relationSub);
 				pRace->GetEmpire()->GetIntelligence()->GetIntelReports()->RemoveReport(oldReportNumber);
-				report = new CDiplomacyIntelObj(pRace->GetRaceID(), pEnemyRace->GetRaceID(), m_pDoc->GetCurrentRound(), FALSE, major, FALSE, FALSE, FALSE);
+				report = new CDiplomacyIntelObj(pRace->GetRaceID(), pEnemyRace->GetRaceID(), m_pDoc->GetCurrentRound(), FALSE, major, DIPLOMATIC_AGREEMENT::NONE, FALSE, FALSE);
 				if (report)
 				{
 					report->CreateText(m_pDoc, 1, pResponsibleRace->GetRaceID());

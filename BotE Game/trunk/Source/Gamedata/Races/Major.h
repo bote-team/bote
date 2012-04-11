@@ -107,7 +107,7 @@ public:
 	/// Funktion legt den diplomatischen Status zu einer anderes Rasse fest.
 	/// @param sOtherRace andere Rasse
 	/// @param nNewAgreement neuer Vertrag
-	virtual void SetAgreement(const CString& sOtherRace, short nNewAgreement);
+	virtual void SetAgreement(const CString& sOtherRace, DIPLOMATIC_AGREEMENT::Typ nNewAgreement);
 
 	/// Funktion gibt zurück, ob die Hauptrasse einen Verteidigungspakt mit einer anderen Hauptrasse
 	/// aufrechterhält.

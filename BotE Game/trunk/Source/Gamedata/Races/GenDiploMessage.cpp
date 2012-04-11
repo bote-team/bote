@@ -73,49 +73,49 @@ bool CGenDiploMessage::GenerateMajorOffer(CDiplomacyInfo& info)
 	CString sHeadline = "";
 	switch (info.m_nType)
 	{
-		case TRADE_AGREEMENT:
+		case DIPLOMATIC_AGREEMENT::TRADE:
 		{
 			sHeadline = CResourceManager::GetString("TRADE_AGREEMENT_OFFER");
 			sOffer = read[1];
 			break;
 		}
-		case FRIENDSHIP_AGREEMENT:
+		case DIPLOMATIC_AGREEMENT::FRIENDSHIP:
 		{
 			sHeadline = CResourceManager::GetString("FRIENDSHIP_OFFER");
 			sOffer = read[2];
 			break;
 		}
-		case COOPERATION:
+		case DIPLOMATIC_AGREEMENT::COOPERATION:
 		{
 			sHeadline = CResourceManager::GetString("COOPERATION_OFFER");
 			sOffer = read[3];
 			break;
 		}
-		case AFFILIATION:
+		case DIPLOMATIC_AGREEMENT::AFFILIATION:
 		{
 			sHeadline = CResourceManager::GetString("AFFILIATION_OFFER");
 			sOffer = read[4];
 			break;
 		}
-		case MEMBERSHIP:
+		case DIPLOMATIC_AGREEMENT::MEMBERSHIP:
 		{
 			sHeadline = CResourceManager::GetString("MEMBERSHIP_OFFER");
 			sOffer = read[5];
 			break;
 		}
-		case NON_AGGRESSION_PACT:
+		case DIPLOMATIC_AGREEMENT::NAP:
 		{
 			sHeadline = CResourceManager::GetString("NON_AGGRESSION_OFFER");
 			sOffer = read[6];
 			break;
 		}
-		case DEFENCE_PACT:
+		case DIPLOMATIC_AGREEMENT::DEFENCEPACT:
 		{
 			sHeadline = CResourceManager::GetString("DEFENCE_PACT_OFFER");
 			sOffer = read[7];
 			break;
 		}
-		case WAR_PACT:
+		case DIPLOMATIC_AGREEMENT::WARPACT:
 		{
 			sHeadline = CResourceManager::GetString("WAR_PACT_OFFER");
 			sOffer = read[8];
@@ -128,13 +128,13 @@ bool CGenDiploMessage::GenerateMajorOffer(CDiplomacyInfo& info)
 				sOffer.Replace("$enemy$", pMajor->GetEmpireNameWithArticle());
 			break;
 		}
-		case WAR:
+		case DIPLOMATIC_AGREEMENT::WAR:
 		{
 			sHeadline = CResourceManager::GetString("WAR_OFFER");
 			sOffer = read[9];
 			break;
 		}
-		case CORRUPTION:
+		case DIPLOMATIC_AGREEMENT::CORRUPTION:
 		{
 			sHeadline = CResourceManager::GetString("CORRUPTION");
 			CString temp;
@@ -147,7 +147,7 @@ bool CGenDiploMessage::GenerateMajorOffer(CDiplomacyInfo& info)
 			sOffer.Replace("$credits$",temp);
 			break;
 		}
-		case DIP_REQUEST:
+		case DIPLOMATIC_AGREEMENT::REQUEST:
 		{
 			sHeadline = CResourceManager::GetString("REQUEST");
 			CString temp;
@@ -190,7 +190,7 @@ bool CGenDiploMessage::GenerateMajorOffer(CDiplomacyInfo& info)
 			sOffer.Replace("$credits$",temp);
 			break;
 		}
-		case PRESENT:
+		case DIPLOMATIC_AGREEMENT::PRESENT:
 		{
 			sHeadline = CResourceManager::GetString("PRESENT");
 			sOffer = read[12];
@@ -204,7 +204,7 @@ bool CGenDiploMessage::GenerateMajorOffer(CDiplomacyInfo& info)
 	}
 
 	// Wenn Credits mit dazugegeben wurden
-	if (info.m_nCredits > 0 && info.m_nType != PRESENT && info.m_nType != DIP_REQUEST && info.m_nType != CORRUPTION)
+	if (info.m_nCredits > 0 && info.m_nType != DIPLOMATIC_AGREEMENT::PRESENT && info.m_nType != DIPLOMATIC_AGREEMENT::REQUEST && info.m_nType != DIPLOMATIC_AGREEMENT::CORRUPTION)
 	{
 		CString temp = sOffer;
 		CString s;
@@ -213,7 +213,7 @@ bool CGenDiploMessage::GenerateMajorOffer(CDiplomacyInfo& info)
 	}
 	
 	// Wenn wir eine Ressource mit dazugeben und es sich nicht um eine Forderung handelt
-	if (info.m_nType != DIP_REQUEST)
+	if (info.m_nType != DIPLOMATIC_AGREEMENT::REQUEST)
 	{
 		if (info.m_nResources[TITAN] > 0)
 		{
@@ -246,7 +246,7 @@ bool CGenDiploMessage::GenerateMajorOffer(CDiplomacyInfo& info)
 			sOffer = CResourceManager::GetString("EXTRA_DERITIUM", FALSE, sOffer, s);
 		}
 	}
-	if (info.m_nType != CORRUPTION && info.m_nType != PRESENT && info.m_nType != DIP_REQUEST && info.m_nType != WAR && info.m_nType != WAR_PACT)
+	if (info.m_nType != DIPLOMATIC_AGREEMENT::CORRUPTION && info.m_nType != DIPLOMATIC_AGREEMENT::PRESENT && info.m_nType != DIPLOMATIC_AGREEMENT::REQUEST && info.m_nType != DIPLOMATIC_AGREEMENT::WAR && info.m_nType != DIPLOMATIC_AGREEMENT::WARPACT)
 	{
 		CString temp;
 		if (info.m_nDuration == 0)
@@ -313,7 +313,7 @@ bool CGenDiploMessage::GenerateMajorAnswer(CDiplomacyInfo& info)
 	CString sAnswer = 0;
 	switch (info.m_nType)
 	{
-	case TRADE_AGREEMENT:
+	case DIPLOMATIC_AGREEMENT::TRADE:
 		{
 			if (info.m_nAnswerStatus == ANSWER_STATUS::ACCEPTED)
 			{
@@ -327,7 +327,7 @@ bool CGenDiploMessage::GenerateMajorAnswer(CDiplomacyInfo& info)
 			}
 			break;
 		}
-	case FRIENDSHIP_AGREEMENT:
+	case DIPLOMATIC_AGREEMENT::FRIENDSHIP:
 		{
 			if (info.m_nAnswerStatus == ANSWER_STATUS::ACCEPTED)
 			{
@@ -341,7 +341,7 @@ bool CGenDiploMessage::GenerateMajorAnswer(CDiplomacyInfo& info)
 			}
 			break;
 		}
-	case COOPERATION:
+	case DIPLOMATIC_AGREEMENT::COOPERATION:
 		{
 			if (info.m_nAnswerStatus == ANSWER_STATUS::ACCEPTED)
 			{
@@ -355,7 +355,7 @@ bool CGenDiploMessage::GenerateMajorAnswer(CDiplomacyInfo& info)
 			}
 			break;
 		}
-	case AFFILIATION:
+	case DIPLOMATIC_AGREEMENT::AFFILIATION:
 		{
 			if (info.m_nAnswerStatus == ANSWER_STATUS::ACCEPTED)
 			{
@@ -369,7 +369,7 @@ bool CGenDiploMessage::GenerateMajorAnswer(CDiplomacyInfo& info)
 			}
 			break;
 		}
-	case NON_AGGRESSION_PACT:
+	case DIPLOMATIC_AGREEMENT::NAP:
 		{
 			if (info.m_nAnswerStatus == ANSWER_STATUS::ACCEPTED)
 			{
@@ -383,7 +383,7 @@ bool CGenDiploMessage::GenerateMajorAnswer(CDiplomacyInfo& info)
 			}
 			break;
 		}
-	case DEFENCE_PACT:
+	case DIPLOMATIC_AGREEMENT::DEFENCEPACT:
 		{
 			if (info.m_nAnswerStatus == ANSWER_STATUS::ACCEPTED)
 			{
@@ -397,7 +397,7 @@ bool CGenDiploMessage::GenerateMajorAnswer(CDiplomacyInfo& info)
 			}
 			break;
 		}
-	case WAR_PACT:
+	case DIPLOMATIC_AGREEMENT::WARPACT:
 		{
 			if (info.m_nAnswerStatus == ANSWER_STATUS::ACCEPTED)
 			{
@@ -411,7 +411,7 @@ bool CGenDiploMessage::GenerateMajorAnswer(CDiplomacyInfo& info)
 			}
 			break;
 		}
-	case DIP_REQUEST:
+	case DIPLOMATIC_AGREEMENT::REQUEST:
 		{
 			if (info.m_nAnswerStatus == ANSWER_STATUS::ACCEPTED)
 			{
@@ -425,7 +425,7 @@ bool CGenDiploMessage::GenerateMajorAnswer(CDiplomacyInfo& info)
 			}
 			break;
 		}
-	case WAR:
+	case DIPLOMATIC_AGREEMENT::WAR:
 		{
 			sAnswer = read[17];
 			info.m_sHeadline = CResourceManager::GetString("WAR_OFFER");
@@ -523,37 +523,37 @@ bool CGenDiploMessage::GenerateMinorOffer(CDiplomacyInfo& info)
 	CString sHeadline = "";
 	switch (info.m_nType)
 	{
-	case TRADE_AGREEMENT:
+	case DIPLOMATIC_AGREEMENT::TRADE:
 		{
 			sHeadline = CResourceManager::GetString("TRADE_AGREEMENT_OFFER");
 			sOfferText = read[1];
 			break;
 		}
-	case FRIENDSHIP_AGREEMENT:
+	case DIPLOMATIC_AGREEMENT::FRIENDSHIP:
 		{
 			sHeadline = CResourceManager::GetString("FRIENDSHIP_OFFER");
 			sOfferText = read[2];
 			break;
 		}
-	case COOPERATION:
+	case DIPLOMATIC_AGREEMENT::COOPERATION:
 		{
 			sHeadline = CResourceManager::GetString("COOPERATION_OFFER");
 			sOfferText = read[3];
 			break;
 		}
-	case AFFILIATION:
+	case DIPLOMATIC_AGREEMENT::AFFILIATION:
 		{
 			sHeadline = CResourceManager::GetString("AFFILIATION_OFFER");
 			sOfferText = read[4];
 			break;
 		}
-	case MEMBERSHIP:
+	case DIPLOMATIC_AGREEMENT::MEMBERSHIP:
 		{
 			sHeadline = CResourceManager::GetString("MEMBERSHIP_OFFER");
 			sOfferText = read[5];
 			break;
 		}
-	case WAR:
+	case DIPLOMATIC_AGREEMENT::WAR:
 		{
 			sHeadline = CResourceManager::GetString("WAR_OFFER");
 			sOfferText = read[6];
@@ -645,7 +645,7 @@ bool CGenDiploMessage::GenerateMinorAnswer(CDiplomacyInfo& info)
 	CString sAnswer = "";
 	switch (info.m_nType)
 	{
-	case TRADE_AGREEMENT:
+	case DIPLOMATIC_AGREEMENT::TRADE:
 		{
 			if (info.m_nAnswerStatus == ANSWER_STATUS::ACCEPTED)
 			{
@@ -659,7 +659,7 @@ bool CGenDiploMessage::GenerateMinorAnswer(CDiplomacyInfo& info)
 			}
 			break;
 		}
-	case FRIENDSHIP_AGREEMENT:
+	case DIPLOMATIC_AGREEMENT::FRIENDSHIP:
 		{
 			if (info.m_nAnswerStatus == ANSWER_STATUS::ACCEPTED)
 			{
@@ -673,7 +673,7 @@ bool CGenDiploMessage::GenerateMinorAnswer(CDiplomacyInfo& info)
 			}
 			break;
 		}
-	case COOPERATION:
+	case DIPLOMATIC_AGREEMENT::COOPERATION:
 		{
 			if (info.m_nAnswerStatus == ANSWER_STATUS::ACCEPTED)
 			{
@@ -687,7 +687,7 @@ bool CGenDiploMessage::GenerateMinorAnswer(CDiplomacyInfo& info)
 			}
 			break;
 		}
-	case AFFILIATION:
+	case DIPLOMATIC_AGREEMENT::AFFILIATION:
 		{
 			if (info.m_nAnswerStatus == ANSWER_STATUS::ACCEPTED)
 			{
@@ -701,7 +701,7 @@ bool CGenDiploMessage::GenerateMinorAnswer(CDiplomacyInfo& info)
 			}
 			break;
 		}
-	case MEMBERSHIP:
+	case DIPLOMATIC_AGREEMENT::MEMBERSHIP:
 		{
 			if (info.m_nAnswerStatus == ANSWER_STATUS::ACCEPTED)
 			{
@@ -715,7 +715,7 @@ bool CGenDiploMessage::GenerateMinorAnswer(CDiplomacyInfo& info)
 			}
 			break;
 		}
-	case CORRUPTION:
+	case DIPLOMATIC_AGREEMENT::CORRUPTION:
 		{
 			if (info.m_nAnswerStatus == ANSWER_STATUS::ACCEPTED)
 			{
@@ -729,7 +729,7 @@ bool CGenDiploMessage::GenerateMinorAnswer(CDiplomacyInfo& info)
 			}
 			break;
 		}
-	case WAR:
+	case DIPLOMATIC_AGREEMENT::WAR:
 		{
 			sAnswer = read[13];
 			info.m_sHeadline = CResourceManager::GetString("WAR_OFFER");

@@ -112,7 +112,7 @@ BOOLEAN CTradeRoute::CheckTradeRoute(const CPoint& pFrom, const CPoint& pDest, C
 	{
 		CMajor* pMajor = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(pDestSystem->GetOwnerOfSystem()));
 		if (pMajor)
-			if (pMajor->GetAgreement(sOwner) >= TRADE_AGREEMENT)
+			if (pMajor->GetAgreement(sOwner) >= DIPLOMATIC_AGREEMENT::TRADE)
 				return TRUE;		
 	}
 	// gehört der Zielsektor einer Minorrace
@@ -121,7 +121,7 @@ BOOLEAN CTradeRoute::CheckTradeRoute(const CPoint& pFrom, const CPoint& pDest, C
 		CMinor* pMinor = dynamic_cast<CMinor*>(pDoc->GetRaceCtrl()->GetRace(pDestSector->GetOwnerOfSector()));
 		if (pMinor)
 		{
-			if (pMinor->GetAgreement(sOwner) >= TRADE_AGREEMENT && pMinor->GetAgreement(sOwner) != MEMBERSHIP)
+			if (pMinor->GetAgreement(sOwner) >= DIPLOMATIC_AGREEMENT::TRADE && pMinor->GetAgreement(sOwner) != DIPLOMATIC_AGREEMENT::MEMBERSHIP)
 				return TRUE;
 			else
 				return FALSE;

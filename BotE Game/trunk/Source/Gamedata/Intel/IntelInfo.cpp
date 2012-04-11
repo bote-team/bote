@@ -88,7 +88,7 @@ void CIntelInfo::CalcIntelInfo(CBotf2Doc* pDoc, CMajor* pOurRace)
 						CMinor* pMinor = pDoc->GetRaceCtrl()->GetMinorRace(pDoc->m_Sector[ko.x][ko.y].GetName());
 						if (pMinor != NULL)
 						{
-							if (((CDiplomacyIntelObj*)intelObj)->GetAgreement() == MEMBERSHIP)
+							if (((CDiplomacyIntelObj*)intelObj)->GetAgreement() == DIPLOMATIC_AGREEMENT::MEMBERSHIP)
 								races[ko.x][ko.y][intelObj->GetEnemy()] = 2;
 							else
 								races[ko.x][ko.y][intelObj->GetEnemy()] = 1;
@@ -109,7 +109,7 @@ void CIntelInfo::CalcIntelInfo(CBotf2Doc* pDoc, CMajor* pOurRace)
 		// Wenn wir den Heimatsektor der Minorrace kennen und die von einer uns bekannten Majorrace vermitgliedert wurde,
 		// so wissen wir auch etwas von der Mitgliedschaft.
 		CPoint ko = pMinor->GetRaceKO();
-		if (ko != CPoint(-1,-1) && pMinor->GetAgreement(pOurRace->GetRaceID()) >= FRIENDSHIP_AGREEMENT)
+		if (ko != CPoint(-1,-1) && pMinor->GetAgreement(pOurRace->GetRaceID()) >= DIPLOMATIC_AGREEMENT::FRIENDSHIP)
 		{
 			for (map<CString, CMajor*>::const_iterator jt = pmMajors->begin(); jt != pmMajors->end(); jt++)
 				if (jt->first != pOurRace->GetRaceID())
@@ -124,13 +124,13 @@ void CIntelInfo::CalcIntelInfo(CBotf2Doc* pDoc, CMajor* pOurRace)
 			for (map<CString, CMajor*>::const_iterator jt = pmMajors->begin(); jt != pmMajors->end(); jt++)
 				if (jt->first != pOurRace->GetRaceID())
 					if (jt->second->IsRaceContacted(pOurRace->GetRaceID()))
-						if (pMinor->GetAgreement(jt->first) == MEMBERSHIP)
+						if (pMinor->GetAgreement(jt->first) == DIPLOMATIC_AGREEMENT::MEMBERSHIP)
 							races[ko.x][ko.y][jt->first] = 2;
 		}
 		// eigene Beziehung zu den Minorraces ermitteln
 		if (pMinor->IsRaceContacted(pOurRace->GetRaceID()))
 			races[ko.x][ko.y][pOurRace->GetRaceID()] = 1;
-		if (pMinor->GetAgreement(pOurRace->GetRaceID()) == MEMBERSHIP)
+		if (pMinor->GetAgreement(pOurRace->GetRaceID()) == DIPLOMATIC_AGREEMENT::MEMBERSHIP)
 			races[ko.x][ko.y][pOurRace->GetRaceID()] = 2;
 	}
 

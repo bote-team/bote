@@ -14,14 +14,14 @@ CDiplomacyIntelObj::CDiplomacyIntelObj(void)
 	m_MinorRaceKO = CPoint(-1,-1);
 }
 
-CDiplomacyIntelObj::CDiplomacyIntelObj(const CString& sOwnerID, const CString& sEnemyID, USHORT round, BOOLEAN isSpy, const CPoint &minorRaceKO, short agreement, short relationship)
+CDiplomacyIntelObj::CDiplomacyIntelObj(const CString& sOwnerID, const CString& sEnemyID, USHORT round, BOOLEAN isSpy, const CPoint &minorRaceKO, DIPLOMATIC_AGREEMENT::Typ agreement, short relationship)
 	: CIntelObject(sOwnerID, sEnemyID, round, isSpy, 3), m_MinorRaceKO(minorRaceKO), m_nAgreement(agreement), m_nRelationship(relationship)
 {
 	m_sMajor = "";
 	m_nDuration = NULL;
 }
 
-CDiplomacyIntelObj::CDiplomacyIntelObj(const CString& sOwnerID, const CString& sEnemyID, USHORT round, BOOLEAN isSpy, const CString& sMajorRaceID, short agreement, short duration, short relationship)
+CDiplomacyIntelObj::CDiplomacyIntelObj(const CString& sOwnerID, const CString& sEnemyID, USHORT round, BOOLEAN isSpy, const CString& sMajorRaceID, DIPLOMATIC_AGREEMENT::Typ agreement, short duration, short relationship)
 	: CIntelObject(sOwnerID, sEnemyID, round, isSpy, 3), m_sMajor(sMajorRaceID), m_nAgreement(agreement), m_nDuration(duration), m_nRelationship(relationship)
 {
 	m_MinorRaceKO = CPoint(-1,-1);	
@@ -31,7 +31,7 @@ CDiplomacyIntelObj::CDiplomacyIntelObj(const CString& sOwnerID, const CString& s
 	: CIntelObject(sOwnerID, sEnemyID, round, isSpy, 3), m_MinorRaceKO(minorRaceKO)
 {
 	m_sMajor = "";
-	m_nAgreement = NULL;
+	m_nAgreement = DIPLOMATIC_AGREEMENT::NONE;
 	m_nDuration = NULL;
 	m_nRelationship = NULL;
 }
@@ -76,7 +76,9 @@ void CDiplomacyIntelObj::Serialize(CArchive &ar)
 	{
 		ar >> m_MinorRaceKO;
 		ar >> m_sMajor;
-		ar >> m_nAgreement;
+		int nAgreement;
+		ar >> nAgreement;
+		m_nAgreement = (DIPLOMATIC_AGREEMENT::Typ)nAgreement;
 		ar >> m_nDuration;
 		ar >> m_nRelationship;		
 	}
@@ -136,15 +138,15 @@ void CDiplomacyIntelObj::CreateText(CBotf2Doc* pDoc, BYTE n, const CString& para
 							}
 							switch (m_nAgreement)
 							{
-							case DEFENCE_PACT:			{s = CResourceManager::GetString("DEFENCE_PACT_WITH_ARTICLE"); break;}
-							case WAR:					{s = CResourceManager::GetString("WAR_WITH_ARTICLE"); break;}
-							case NO_AGREEMENT:			{s = CResourceManager::GetString("NO_AGREEMENT"); break;}
-							case NON_AGGRESSION_PACT:	{s = CResourceManager::GetString("NON_AGGRESSION_WITH_ARTICLE"); break;}
-							case TRADE_AGREEMENT:		{s = CResourceManager::GetString("TRADE_AGREEMENT_WITH_ARTICLE"); break;}
-							case FRIENDSHIP_AGREEMENT:	{s = CResourceManager::GetString("FRIENDSHIP_WITH_ARTICLE"); break;}
-							case COOPERATION:			{s = CResourceManager::GetString("COOPERATION_WITH_ARTICLE"); break;}
-							case AFFILIATION:			{s = CResourceManager::GetString("AFFILIATION_WITH_ARTICLE"); break;}
-							case MEMBERSHIP:			{s = CResourceManager::GetString("MEMBERSHIP_WITH_ARTICLE"); break;}
+							case DIPLOMATIC_AGREEMENT::DEFENCEPACT:		{s = CResourceManager::GetString("DEFENCE_PACT_WITH_ARTICLE"); break;}
+							case DIPLOMATIC_AGREEMENT::WAR:				{s = CResourceManager::GetString("WAR_WITH_ARTICLE"); break;}
+							case DIPLOMATIC_AGREEMENT::NONE:	{s = CResourceManager::GetString("NO_AGREEMENT"); break;}
+							case DIPLOMATIC_AGREEMENT::NAP:				{s = CResourceManager::GetString("NON_AGGRESSION_WITH_ARTICLE"); break;}
+							case DIPLOMATIC_AGREEMENT::TRADE:			{s = CResourceManager::GetString("TRADE_AGREEMENT_WITH_ARTICLE"); break;}
+							case DIPLOMATIC_AGREEMENT::FRIENDSHIP:		{s = CResourceManager::GetString("FRIENDSHIP_WITH_ARTICLE"); break;}
+							case DIPLOMATIC_AGREEMENT::COOPERATION:		{s = CResourceManager::GetString("COOPERATION_WITH_ARTICLE"); break;}
+							case DIPLOMATIC_AGREEMENT::AFFILIATION:		{s = CResourceManager::GetString("AFFILIATION_WITH_ARTICLE"); break;}
+							case DIPLOMATIC_AGREEMENT::MEMBERSHIP:		{s = CResourceManager::GetString("MEMBERSHIP_WITH_ARTICLE"); break;}
 							default: s = "";
 							}
 							csInput.Replace("$agreement$", s);
@@ -158,7 +160,7 @@ void CDiplomacyIntelObj::CreateText(CBotf2Doc* pDoc, BYTE n, const CString& para
 									csInput.Replace("$major$", s);
 								}
 								
-								if (m_nAgreement == NO_AGREEMENT || m_nAgreement == WAR)
+								if (m_nAgreement == DIPLOMATIC_AGREEMENT::NONE || m_nAgreement == DIPLOMATIC_AGREEMENT::WAR)
 									csInput.Replace("($duration$) ", "");
 								else
 								{

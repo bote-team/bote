@@ -123,13 +123,13 @@ public:
 	/// Funktion gibt den diplomatischen Status zu einer anderes Rasse zurück.
 	/// @param sOtherRace andere Rasse
 	/// @return VertragsID (anscheinend -5 bis 6, Grenzen eingeschlossen)
-	short GetAgreement(const CString& sOtherRace) const
+	DIPLOMATIC_AGREEMENT::Typ GetAgreement(const CString& sOtherRace) const
 	{
-		map<CString, short>::const_iterator it = m_mAgreement.find(sOtherRace);
+		map<CString, DIPLOMATIC_AGREEMENT::Typ>::const_iterator it = m_mAgreement.find(sOtherRace);
 		if (it != m_mAgreement.end())
 			return it->second;
 		else
-			return NO_AGREEMENT;
+			return DIPLOMATIC_AGREEMENT::NONE;
 	}
 
 	/// Funktion gibt das Feld der ausgehenden Nachrichten zurück.
@@ -170,7 +170,7 @@ public:
 	/// Funktion legt den diplomatischen Status zu einer anderes Rasse fest.
 	/// @param sOtherRace andere Rasse
 	/// @param nNewAgreement neuer Vertrag
-	virtual void SetAgreement(const CString& sOtherRace, short nNewAgreement);
+	virtual void SetAgreement(const CString& sOtherRace, DIPLOMATIC_AGREEMENT::Typ nNewAgreement);
 
 	/// Funktion zum Setzen von Rasseneigenschaften.
 	/// @param nProp Rasseneigenschaft
@@ -225,7 +225,7 @@ protected:
 
 	// Ingame-Attribute (Rassenwechselwirkung)
 	map<CString, BYTE>	m_mRelations;	///< Beziehungsmap (Rassen-ID, Beziehungswert)
-	map<CString, short>	m_mAgreement;	///< Diplomatischer Status gegenüber anderen Rassen (Rassen-ID, Status)
+	map<CString, DIPLOMATIC_AGREEMENT::Typ>	m_mAgreement;	///< Diplomatischer Status gegenüber anderen Rassen (Rassen-ID, Status)
 	set<CString>		m_vInContact;	///< kennt die Rasse eine andere Rasse (Rassen-ID)
 	// diplomatische Nachrichten
 	vector<CDiplomacyInfo>	m_vDiplomacyNewsIn;	///< Vektor mit allen eingehenden diplomatischen Nachrichten

@@ -120,7 +120,7 @@ void CIntelAI::CalcIntelligence(CBotf2Doc* pDoc)
 					}
 
 					// vertragliche Situation und Mindestbeziehung checken
-					if ((it->second->GetAgreement(jt->first) < FRIENDSHIP_AGREEMENT && it->second->GetDefencePact(jt->first) == false)
+					if ((it->second->GetAgreement(jt->first) < DIPLOMATIC_AGREEMENT::FRIENDSHIP && it->second->GetDefencePact(jt->first) == false)
 						||	it->second->GetRelation(jt->first) < 50)
 					{
 						// schlechteste Beziehung ermitteln

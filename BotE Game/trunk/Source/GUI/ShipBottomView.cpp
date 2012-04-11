@@ -394,7 +394,7 @@ void CShipBottomView::OnDraw(CDC* dc)
 					CRace* pOwnerOfSector = pDoc->GetRaceCtrl()->GetRace(pDoc->GetSector(pDoc->GetKO()).GetOwnerOfSector());
 
 					// Wenn im System eine Rasse lebt und wir mit ihr im Krieg sind
-					if (pOwnerOfSector != NULL && pMajor->GetAgreement(pOwnerOfSector->GetRaceID()) == WAR
+					if (pOwnerOfSector != NULL && pMajor->GetAgreement(pOwnerOfSector->GetRaceID()) == DIPLOMATIC_AGREEMENT::WAR
 					// Wenn das System niemanden mehr gehört, aber noch Bevölkerung drauf lebt (z.B. durch Rebellion)
 						|| pDoc->GetSystem(pDoc->GetKO()).GetOwnerOfSystem() == "" && pDoc->GetSector(pDoc->GetKO()).GetMinorRace() == FALSE)
 					{
@@ -435,7 +435,7 @@ void CShipBottomView::OnDraw(CDC* dc)
 				// Wenn das System nicht der Rasse gehört, der auch das Schiff gehört
 				CRace* pOwnerOfSystem = pDoc->GetRaceCtrl()->GetRace(pDoc->GetSystem(pDoc->GetKO()).GetOwnerOfSystem());
 				if (pOwnerOfSystem != NULL && pOwnerOfSystem->GetRaceID() != pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetOwnerOfShip()
-					&& pMajor->GetAgreement(pOwnerOfSystem->GetRaceID()) < FRIENDSHIP_AGREEMENT)
+					&& pMajor->GetAgreement(pOwnerOfSystem->GetRaceID()) < DIPLOMATIC_AGREEMENT::FRIENDSHIP)
 				{
 					g.DrawImage(m_pShipOrderButton, r.right-245, r.top+70+counter*35, 120, 30);
 					s = CResourceManager::GetString("BTN_BLOCKADE_SYSTEM");

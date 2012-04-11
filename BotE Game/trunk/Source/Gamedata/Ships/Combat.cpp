@@ -634,9 +634,9 @@ bool CCombat::CheckDiplomacyStatus(const CRace* raceA, const CRace* raceB)
 	ASSERT(raceA != raceB);
 	// Wenn wir mit der Rasse, welcher das andere Schiff gehört nicht mindst. einen Freundschaftsvertrag
 	// oder einen Verteidigungspakt oder Kriegspakt oder Nichtangriffspakt haben
-	if (raceA->GetAgreement(raceB->GetRaceID()) == NO_AGREEMENT
-		|| raceA->GetAgreement(raceB->GetRaceID()) == TRADE_AGREEMENT
-		|| raceA->GetAgreement(raceB->GetRaceID()) == WAR)
+	if (raceA->GetAgreement(raceB->GetRaceID()) == DIPLOMATIC_AGREEMENT::NONE
+		|| raceA->GetAgreement(raceB->GetRaceID()) == DIPLOMATIC_AGREEMENT::TRADE
+		|| raceA->GetAgreement(raceB->GetRaceID()) == DIPLOMATIC_AGREEMENT::WAR)
 	{
 		if (raceA->GetType() == MAJOR && raceB->GetType() == MAJOR)
 		{

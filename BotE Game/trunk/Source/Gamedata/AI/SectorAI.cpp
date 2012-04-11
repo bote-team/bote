@@ -232,7 +232,7 @@ void CSectorAI::CalculateOffensiveTargets(int x, int y)
 					if (m_pDoc->m_Sector[x][y].GetOwnerOfSector() == it->first)
 					{
 						// jetzt wird überprüft, ob obige Bedingungen gelten
-						if (it->second->GetRelation(sEnemy) < 50 || it->second->GetAgreement(sEnemy) == WAR)
+						if (it->second->GetRelation(sEnemy) < 50 || it->second->GetAgreement(sEnemy) == DIPLOMATIC_AGREEMENT::WAR)
 							// Gefahr wird dem Feld hinzugeügt
 							m_vOffensiveTargets[it->first].push_back(CPoint(x,y));
 					}
@@ -240,7 +240,7 @@ void CSectorAI::CalculateOffensiveTargets(int x, int y)
 					else
 					{
 						// jetzt wird überprüft, ob obige Bedingungen gelten
-						if (it->second->GetRelation(sEnemy) < 30 || it->second->GetAgreement(sEnemy) == WAR)
+						if (it->second->GetRelation(sEnemy) < 30 || it->second->GetAgreement(sEnemy) == DIPLOMATIC_AGREEMENT::WAR)
 							// Gefahr wird dem Feld hinzugeügt
 							m_vOffensiveTargets[it->first].push_back(CPoint(x,y));
 					}
@@ -269,7 +269,7 @@ void CSectorAI::CalculateBombardTargets(const CString& sRaceID, int x, int y)
 		if (!pOurRace)
 			return;
 		// haben wir mit dieser anderen Majorrace Krieg?
-		if (pOurRace->GetAgreement(sOwner) == WAR)
+		if (pOurRace->GetAgreement(sOwner) == DIPLOMATIC_AGREEMENT::WAR)
 			// dann wäre dies ein lohnendes Ziel, welches angegriffen werden könnte
 			m_vBombardTargets[sRaceID].push_back(CPoint(x,y));
 	}

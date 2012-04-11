@@ -50,7 +50,7 @@ void CRace::Serialize(CArchive &ar)
 			ar << it->first << it->second;
 		// Diplomatischer Status gegenüber anderen Rassen (Rassen-ID, Status)
 		ar << m_mAgreement.size();
-		for (map<CString, short>::const_iterator it = m_mAgreement.begin(); it != m_mAgreement.end(); ++it)
+		for (map<CString, DIPLOMATIC_AGREEMENT::Typ>::const_iterator it = m_mAgreement.begin(); it != m_mAgreement.end(); ++it)
 			ar << it->first << it->second;
 		// kennt die Rasse eine andere Rasse (Rassen-ID, Wahrheitswert)
 		ar << m_vInContact.size();
@@ -110,10 +110,10 @@ void CRace::Serialize(CArchive &ar)
 		for (size_t i = 0; i < mapSize; i++)
 		{
 			CString key;
-			short value;
+			int value;
 			ar >> key;
 			ar >> value;
-			m_mAgreement[key] = value;
+			m_mAgreement[key] = (DIPLOMATIC_AGREEMENT::Typ)value;
 		}
 		// kennt die Rasse eine andere Rasse (Rassen-ID, Wahrheitswert)
 		m_vInContact.clear();
@@ -248,10 +248,10 @@ void CRace::SetRelation(const CString& sRaceID, short nAdd)
 /// Funktion legt den diplomatischen Status zu einer anderes Rasse fest.
 /// @param sOtherRace andere Rasse
 /// @param nNewAgreement neuer Vertrag
-void CRace::SetAgreement(const CString& sOtherRace, short nNewAgreement)
+void CRace::SetAgreement(const CString& sOtherRace, DIPLOMATIC_AGREEMENT::Typ nNewAgreement)
 {
 	// wenn kein Vertrag besteht, so kann der Eintrag auch aus der Map entfernt werden
-	if (nNewAgreement == NO_AGREEMENT)
+	if (nNewAgreement == DIPLOMATIC_AGREEMENT::NONE)
 		m_mAgreement.erase(sOtherRace);
 	else
 		m_mAgreement[sOtherRace] = nNewAgreement;
@@ -321,7 +321,7 @@ void CRace::MakeOffersAI(void)
 				this->GetOutgoingDiplomacyNews()->push_back(info);
 				// Angebot die nächsten 2 Runden lang merken. Wenn wir von anderen Rassen ein Angebot bekommen
 				// so nehmen wir es an, wenn es kleiner gleich unserem Angebot aus den letzten beiden Runden ist.
-				if (info.m_nFlag == DIPLOMACY_OFFER && info.m_nType > NO_AGREEMENT)
+				if (info.m_nFlag == DIPLOMACY_OFFER && info.m_nType > DIPLOMATIC_AGREEMENT::NONE)
 					m_mLastOffers[sID] = info;
 			}
 		}
