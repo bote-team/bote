@@ -45,7 +45,7 @@ bool CReManager::SystemEvent(CPoint &ko, CMajor* pRace)
 	ASSERT(pDoc);
 	//ko= Systemkoordinate
 	CString messagetext;//Nachrichtentext
-	bool succes=true;
+	bool success=true;
 	int eventnumber=rand()%4;
 	if(eventnumber==SYSTEMEVENTMORALBOOST)//If abfrage mit allen möglichen Randomevents; evtl. hier bedingungen einfügen
 	{
@@ -68,19 +68,29 @@ bool CReManager::SystemEvent(CPoint &ko, CMajor* pRace)
 	{
 	
 		CArray<CPlanet>* Planets=pDoc->GetSector(ko).GetPlanets();
-		int planet=rand()%Planets->GetSize();
-		while(!(Planets->GetAt(planet).GetHabitable())) planet=rand()%Planets->GetSize();
-		Planets->GetAt(planet).SetCurrentHabitant(Planets->GetAt(planet).GetCurrentHabitant()-rand()%(int)(Planets->GetAt(planet).GetCurrentHabitant()));
-		messagetext=CResourceManager::GetString("SYSTEMEVENTPLANETDEMOGRAPHIC",false,Planets->GetAt(planet).GetPlanetName());
-		CEventRandom* EmpireEvent=new CEventRandom(pRace->GetRaceID(),"demographic",CResourceManager::GetString("SYSTEMEVENTPLANETDEMOGRAPHICTITLE"),CResourceManager::GetString("SYSTEMEVENTPLANETDEMOGRAPHICLONG",false,Planets->GetAt(planet).GetPlanetName()));
-		pRace->GetEmpire()->GetEventMessages()->Add(EmpireEvent);
+		int planet;
+		// Es sollte hier immer mindestens 1 habitabler bewohnter Planet im System sein...
+		success = false;
+		for(int i = 0; i < 100; ++i) {
+			planet = rand()%Planets->GetSize();
+			if(Planets->GetAt(planet).GetHabitable() && Planets->GetAt(planet).GetCurrentHabitant() > 1) {
+				success = true;
+				break;
+			}
+		}
+		if(success) {
+			Planets->GetAt(planet).SetCurrentHabitant(Planets->GetAt(planet).GetCurrentHabitant()-rand()%(int)(Planets->GetAt(planet).GetCurrentHabitant()));
+			messagetext=CResourceManager::GetString("SYSTEMEVENTPLANETDEMOGRAPHIC",false,Planets->GetAt(planet).GetPlanetName());
+			CEventRandom* EmpireEvent=new CEventRandom(pRace->GetRaceID(),"demographic",CResourceManager::GetString("SYSTEMEVENTPLANETDEMOGRAPHICTITLE"),CResourceManager::GetString("SYSTEMEVENTPLANETDEMOGRAPHICLONG",false,Planets->GetAt(planet).GetPlanetName()));
+			pRace->GetEmpire()->GetEventMessages()->Add(EmpireEvent);
+		}
 	}
-	if(succes)
+	if(success)
 	{CMessage message;
 	message.GenerateMessage(messagetext,MESSAGE_TYPE::SOMETHING,"",ko,FALSE,0);//Nachricht über Randomevent erstellen
 	pRace->GetEmpire()->AddMessage(message);
 	}
-	return succes;
+	return success;
 
 }
 
