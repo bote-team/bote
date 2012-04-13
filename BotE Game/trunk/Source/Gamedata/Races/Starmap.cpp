@@ -78,6 +78,12 @@ CStarmap::CStarmap(BOOL bAICalculation, char nAIRange) : m_bAICalculation(bAICal
 CStarmap::~CStarmap()
 {
 	if (m_RangeMap.range) delete[] m_RangeMap.range;
+	m_AIRangePoints.clear();
+	m_AINeighbourCount.clear();
+	m_AIConnectionPoints.clear();
+	m_AITargetPoints.clear();
+	m_AIBadPoints.clear();
+	pathMap.clear();
 }
 
 void CStarmap::DeleteStatics()
