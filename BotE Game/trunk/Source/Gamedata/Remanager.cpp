@@ -59,11 +59,15 @@ bool CReManager::SystemEvent(CPoint &ko, CMajor* pRace)
 		pDoc->GetSystem(ko).SetMoral(-10);
 	}else if(eventnumber==SYSTEMEVENTPLANETMOVEMENT)//Planetenveränderung
 	{
-		CArray<CPlanet>* Planets=pDoc->GetSector(ko).GetPlanets();
-		int planet=rand()%Planets->GetSize();
-		while(!(Planets->GetAt(planet).GetHabitable())) planet=rand()%Planets->GetSize();
-		Planets->GetAt(planet).SetMaxHabitant(Planets->GetAt(planet).GetMaxHabitant()+rand()%7-3);
-		messagetext=CResourceManager::GetString("SYSTEMEVENTPLANETMOVEMENT",false,Planets->GetAt(planet).GetPlanetName());
+		if(pDoc->GetRaceKO(pRace->GetRaceID()) == ko)
+			success = false;
+		else {
+			CArray<CPlanet>* Planets=pDoc->GetSector(ko).GetPlanets();
+			int planet=rand()%Planets->GetSize();
+			while(!(Planets->GetAt(planet).GetHabitable())) planet=rand()%Planets->GetSize();
+			Planets->GetAt(planet).SetMaxHabitant(Planets->GetAt(planet).GetMaxHabitant()+rand()%7-3);
+			messagetext=CResourceManager::GetString("SYSTEMEVENTPLANETMOVEMENT",false,Planets->GetAt(planet).GetPlanetName());
+		}
 	}else if(eventnumber==SYSTEMEVENTDEMOGRAPHIC)
 	{
 	
