@@ -49,7 +49,7 @@ public:
 	/// @param techType Typ des ausspionierten Techlevel (Biotechnik, Energietechnik usw.)
 	/// @param specialTechComplex ausspionierter Spezialforschungskomplex
 	/// @param choosenSpecialTech gewählter Bonus aus der Spezialforschungs
-	CScienceIntelObj(const CString& sOwnerID, const CString& sEnemyID, USHORT round, BOOLEAN isSpy, short techLevel, short techType, short specialTechComplex, short choosenSpecialTech);
+	CScienceIntelObj(const CString& sOwnerID, const CString& sEnemyID, USHORT round, BOOLEAN isSpy, short techLevel, short techType, RESEARCH_COMPLEX::Typ specialTechComplex, short choosenSpecialTech);
 	
 	/// Destruktor
 	~CScienceIntelObj(void);
@@ -80,7 +80,7 @@ public:
 	short GetTechType() const {return m_nTechType;}
 
 	/// Funktion gibt einen erforschten Spezialforschungskomplex zurück.
-	short GetSpecialTechComplex() const {return m_nSpecialTechComplex;}
+	RESEARCH_COMPLEX::Typ GetSpecialTechComplex() const {return m_nSpecialTechComplex;}
 
 	/// Funktion gibt die gewählte Auswahl aus dem Spezialforschungskomplex zurück.
 	short GetChoosenSpecialTech() const {return m_nChoosenSpecialTech;}
@@ -107,7 +107,7 @@ private:
 
 	short m_nTechType;				///< Typ des ausspionierten Techlevel (Biotechnik, Energietechnik usw.)
 
-	short m_nSpecialTechComplex;	///< ausspionierter Spezialforschungskomplex
+	RESEARCH_COMPLEX::Typ m_nSpecialTechComplex;	///< ausspionierter Spezialforschungskomplex
 
 	short m_nChoosenSpecialTech;	///< gewählter Bonus aus der Spezialforschungs
 };

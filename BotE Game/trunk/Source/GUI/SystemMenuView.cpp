@@ -570,8 +570,8 @@ void CSystemMenuView::DrawBuildMenue(Graphics* g)
 				fontBrush.SetColor(oldColor);
 				r.top += 60;
 				BYTE offPower = pDoc->m_TroopInfo.GetAt(RunningNumber-20000).GetOffense();
-				if (pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(4)->GetFieldStatus(1) == RESEARCHED)
-					offPower += (offPower * pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(4)->GetBonus(1) / 100);
+				if (pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(RESEARCH_COMPLEX::TROOPS)->GetFieldStatus(1) == RESEARCH_STATUS::RESEARCHED)
+					offPower += (offPower * pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(RESEARCH_COMPLEX::TROOPS)->GetBonus(1) / 100);
 				s.Format("%s: %d",CResourceManager::GetString("OPOWER"), offPower);
 				g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(r.left,r.top,r.Width(),r.Height()), &fontFormat, &fontBrush);
 				r.top += 25;
@@ -1531,17 +1531,17 @@ void CSystemMenuView::DrawSystemTradeMenue(Graphics* g)
 	short addResRoute = 1;
 	///// HIER DIE BONI DURCH SPEZIALFORSCHUNG //////
 	// Hier die Boni durch die Uniqueforschung "Handel" -> mindestens eine Handelsroute
-	if (pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(11)->GetFieldStatus(3) == RESEARCHED)
+	if (pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(RESEARCH_COMPLEX::TRADE)->GetFieldStatus(3) == RESEARCH_STATUS::RESEARCHED)
 		if (maxTradeRoutes == NULL)
 		{
-			maxTradeRoutes += pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(11)->GetBonus(3);
-			addResRoute += pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(11)->GetBonus(3);
+			maxTradeRoutes += pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(RESEARCH_COMPLEX::TRADE)->GetBonus(3);
+			addResRoute += pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(RESEARCH_COMPLEX::TRADE)->GetBonus(3);
 		}
 	s.Format("%d", maxTradeRoutes);
 	///// HIER DIE BONI DURCH SPEZIALFORSCHUNG //////
 	// Hier die Boni durch die Uniqueforschung "Lager und Transport" -> eine Ressourcenroute mehr
-	if (pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(10)->GetFieldStatus(3) == RESEARCHED)
-		addResRoute += pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(10)->GetBonus(3);
+	if (pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(RESEARCH_COMPLEX::STORAGE_AND_TRANSPORT)->GetFieldStatus(3) == RESEARCH_STATUS::RESEARCHED)
+		addResRoute += pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(RESEARCH_COMPLEX::STORAGE_AND_TRANSPORT)->GetBonus(3);
 	USHORT maxResourceRoutes = (USHORT)(pDoc->m_System[p.x][p.y].GetHabitants() / TRADEROUTEHAB) + pDoc->m_System[p.x][p.y].GetProduction()->GetAddedTradeRoutes() + addResRoute;
 	s2.Format("%d", maxResourceRoutes);
 	fontFormat.SetAlignment(StringAlignmentNear);

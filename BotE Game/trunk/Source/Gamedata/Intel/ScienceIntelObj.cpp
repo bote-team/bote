@@ -20,7 +20,7 @@ CScienceIntelObj::CScienceIntelObj(const CString& sOwnerID, const CString& sEnem
 	m_iFP = NULL;
 	m_nTechlevel = -1;
 	m_nTechType = -1;
-	m_nSpecialTechComplex = -1;
+	m_nSpecialTechComplex = RESEARCH_COMPLEX::NONE;
 	m_nChoosenSpecialTech = -1;
 }
 
@@ -32,11 +32,11 @@ CScienceIntelObj::CScienceIntelObj(const CString& sOwnerID, const CString& sEnem
 	m_byNumber = 0;
 	m_nTechlevel = -1;
 	m_nTechType = -1;
-	m_nSpecialTechComplex = -1;
+	m_nSpecialTechComplex = RESEARCH_COMPLEX::NONE;
 	m_nChoosenSpecialTech = -1;
 }
 
-CScienceIntelObj::CScienceIntelObj(const CString& sOwnerID, const CString& sEnemyID, USHORT round, BOOLEAN isSpy, short techLevel, short techType, short specialTechComplex, short choosenSpecialTech)
+CScienceIntelObj::CScienceIntelObj(const CString& sOwnerID, const CString& sEnemyID, USHORT round, BOOLEAN isSpy, short techLevel, short techType, RESEARCH_COMPLEX::Typ specialTechComplex, short choosenSpecialTech)
 : CIntelObject(sOwnerID, sEnemyID, round, isSpy, 1), m_nTechlevel(techLevel), m_nTechType(techType), m_nSpecialTechComplex(specialTechComplex), m_nChoosenSpecialTech(choosenSpecialTech)
 {
 	m_iFP = NULL;
@@ -94,7 +94,9 @@ void CScienceIntelObj::Serialize(CArchive &ar)
 		ar >> m_KO;
 		ar >> m_nChoosenSpecialTech;
 		ar >> m_nID;
-		ar >> m_nSpecialTechComplex;
+		int nComplex;
+		ar >> nComplex;
+		m_nSpecialTechComplex = (RESEARCH_COMPLEX::Typ)nComplex;
 		ar >> m_nTechlevel;
 		ar >> m_nTechType;		
 	}
@@ -170,11 +172,11 @@ void CScienceIntelObj::CreateText(CBotf2Doc* pDoc, BYTE n, const CString& param)
 							s.Format("%d", m_nTechlevel);
 							csInput.Replace("$techlevel$", s);
 						}
-						if (m_nSpecialTechComplex != -1)
+						if (m_nSpecialTechComplex != RESEARCH_COMPLEX::NONE)
 						{
-							s = pEnemy->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex((BYTE)m_nSpecialTechComplex)->GetComplexName();
+							s = pEnemy->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(m_nSpecialTechComplex)->GetComplexName();
 							csInput.Replace("$specialtech$", s);
-							s = pEnemy->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex((BYTE)m_nSpecialTechComplex)->GetFieldName((BYTE)m_nChoosenSpecialTech);							
+							s = pEnemy->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(m_nSpecialTechComplex)->GetFieldName((BYTE)m_nChoosenSpecialTech);							
 							csInput.Replace("$choosenspecial$", s);
 						}
 						s.Format("%d", m_iFP);
@@ -250,14 +252,14 @@ void CScienceIntelObj::CreateText(CBotf2Doc* pDoc, BYTE n, const CString& param)
 								s.Format("%d", m_nTechlevel);
 								csInput.Replace("$techlevel$", s);
 							}
-							if (m_nSpecialTechComplex != -1)
+							if (m_nSpecialTechComplex != RESEARCH_COMPLEX::NONE)
 							{
 								CMajor* pEnemy = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(m_sEnemy));
 								if (pEnemy)
 								{
-									s = pEnemy->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex((BYTE)m_nSpecialTechComplex)->GetComplexName();
+									s = pEnemy->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(m_nSpecialTechComplex)->GetComplexName();
 									csInput.Replace("$specialtech$", s);
-									s = pEnemy->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex((BYTE)m_nSpecialTechComplex)->GetFieldName((BYTE)m_nChoosenSpecialTech);							
+									s = pEnemy->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(m_nSpecialTechComplex)->GetFieldName((BYTE)m_nChoosenSpecialTech);							
 									csInput.Replace("$choosenspecial$", s);
 								}
 							}

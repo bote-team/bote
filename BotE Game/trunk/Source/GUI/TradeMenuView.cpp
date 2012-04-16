@@ -409,8 +409,8 @@ void CTradeMenuView::DrawMonopolMenue(Graphics* g)
 
 			///// HIER DIE BONI DURCH SPEZIALFORSCHUNG //////
 			// Hier die Boni durch die Uniqueforschung "Handel" -> keine Handelsgebühr
-			if (pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(11)->GetFieldStatus(2) == RESEARCHED)
-				m_dMonopolCosts[i] -= m_dMonopolCosts[i] * pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(11)->GetBonus(2) / 100;
+			if (pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(RESEARCH_COMPLEX::TRADE)->GetFieldStatus(2) == RESEARCH_STATUS::RESEARCHED)
+				m_dMonopolCosts[i] -= m_dMonopolCosts[i] * pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(RESEARCH_COMPLEX::TRADE)->GetBonus(2) / 100;
 			
 			fontBrush.SetColor(markColor);
 			fontFormat.SetAlignment(StringAlignmentFar);

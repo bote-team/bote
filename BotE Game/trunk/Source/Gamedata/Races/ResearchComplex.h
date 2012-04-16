@@ -5,16 +5,8 @@
  *   Home     :  http://birth-of-the-empires.de
  *
  */
-// ResearchComplex.h: Schnittstelle für die Klasse CResearchComplex.
-//
-//////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_RESEARCHCOMPLEX_H__FA981EBD_61BB_4B24_9362_756715C0CEEC__INCLUDED_)
-#define AFX_RESEARCHCOMPLEX_H__FA981EBD_61BB_4B24_9362_756715C0CEEC__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 #include "Options.h"
 
 class CResearchComplex : public CObject  
@@ -43,14 +35,14 @@ public:
 	 * Diese Funktion gibt den Status des Komplexes zurück. Der Status des Komplex kann entweder
 	 * RESEARCHED, NOTRESEARCHED oder RESEARCHING sein.
 	 */
-	BYTE GetComplexStatus(void) const {return m_byComplexStatus;}
+	RESEARCH_STATUS::Typ GetComplexStatus(void) const {return m_nComplexStatus;}
 	
 	/**
 	 * Diese Funktion gibt den Status eines speziellen Gebietes in dem Komplex zurück. Der Status des Gebietes
 	 * kann entweder RESEARCHED, NOTRESEARCHED oder RESEARCHING sein. Als Paramter erwartet die Funktion das
 	 * gewünschte Gebiet <code>field</code>. Dieses beginnt bei 1 und nicht bei 0 (maximal 3)!
 	 */
-	BYTE GetFieldStatus(BYTE field) const {return m_byFieldStatus[field-1];}
+	RESEARCH_STATUS::Typ GetFieldStatus(BYTE field) const {return m_nFieldStatus[field-1];}
 
 	/**
 	 * Diese Funktion gibt den Namen (die Bezeichnung) des Komplexes zurück.
@@ -83,9 +75,9 @@ public:
 	// sonstige Funktionen
 	/**
 	 * Diese Funktion generiert einen Komplex, setzt also erst alle Attribute des Objektes. Als einziger Parameter
-	 * muss dafür eine Komplexnumme <code>complex</code> übergeben werden.
+	 * muss dafür eine Komplexnummer <code>nComplex</code> übergeben werden.
 	 */
-	void GenerateComplex(USHORT complex);
+	void GenerateComplex(RESEARCH_COMPLEX::Typ nComplex);
 	
 	/**
 	 * Diese Funktion setzt alle Variablen des CResearchComplex-Objektes wieder auf ihre Ausgangswerte
@@ -97,13 +89,13 @@ private:
 	 * Diese private Funktion liest die Beschreibungen zu den Spezialforschungen aus einer Datei ein und speichert sie
 	 * auf die entsprechenden Variablen.
 	 */
-	void ReadSpecialTech(BYTE complex);
+	void ReadSpecialTech(RESEARCH_COMPLEX::Typ nComplex);
 
 	/// Status des Komplexes (erforscht, nicht erforscht, gerade am erforschen).
-	BYTE m_byComplexStatus;
+	RESEARCH_STATUS::Typ m_nComplexStatus;
 		
 	/// Der Status der einzelnen Wahlgebiete des Komplexes (erforscht, nicht erforscht, gerade am erforschen).
-	BYTE m_byFieldStatus[3];
+	RESEARCH_STATUS::Typ m_nFieldStatus[3];
 	
 	/// Der Name (Bezeichnung) des Komplexes (z.B. Schiffstechnik offensiv oder Wirtschaft...).
 	CString m_strComplexName;
@@ -120,5 +112,3 @@ private:
 	/// Den einzelnen Bonus, den das jeweilige Gebiet macht.
 	short m_iBonus[3];
 };
-
-#endif // !defined(AFX_RESEARCHCOMPLEX_H__FA981EBD_61BB_4B24_9362_756715C0CEEC__INCLUDED_)

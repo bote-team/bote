@@ -613,21 +613,21 @@ void CResearchMenuView::DrawUniqueResearchMenue(Graphics* g)
 		fontBrush.SetColor(markColor);
 		// 1. Möglichkeit
 		if (pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetChoiceTaken() == FALSE || 
-			pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetCurrentResearchComplex()->GetFieldStatus(1) == RESEARCHING)
+			pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetCurrentResearchComplex()->GetFieldStatus(1) == RESEARCH_STATUS::RESEARCHING)
 		{			
 			s = pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetCurrentResearchComplex()->GetFieldName(1);
 			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(10,445,250,300), &fontFormatTop, &fontBrush);
 		}
 		// 2. Möglichkeit
 		if (pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetChoiceTaken() == FALSE || 
-			pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetCurrentResearchComplex()->GetFieldStatus(2) == RESEARCHING)
+			pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetCurrentResearchComplex()->GetFieldStatus(2) == RESEARCH_STATUS::RESEARCHING)
 		{
 			s = pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetCurrentResearchComplex()->GetFieldName(2);
 			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(270,445,250,300), &fontFormatTop, &fontBrush);
 		}
 		// 3. Möglichkeit
 		if (pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetChoiceTaken() == FALSE || 
-			pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetCurrentResearchComplex()->GetFieldStatus(3) == RESEARCHING)
+			pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetCurrentResearchComplex()->GetFieldStatus(3) == RESEARCH_STATUS::RESEARCHING)
 		{
 			s = pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetCurrentResearchComplex()->GetFieldName(3);
 			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(530,445,250,300), &fontFormatTop, &fontBrush);
@@ -636,19 +636,19 @@ void CResearchMenuView::DrawUniqueResearchMenue(Graphics* g)
 		// ab hier die Beschreibungen zu den einzelnen Wahlmöglichkeiten
 		fontBrush.SetColor(normalColor);
 		if (pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetChoiceTaken() == FALSE || 
-			pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetCurrentResearchComplex()->GetFieldStatus(1) == RESEARCHING)
+			pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetCurrentResearchComplex()->GetFieldStatus(1) == RESEARCH_STATUS::RESEARCHING)
 		{
 			s = pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetCurrentResearchComplex()->GetFieldDescription(1);
 			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(10,490,250,205), &fontFormatTop, &fontBrush);
 		}
 		if (pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetChoiceTaken() == FALSE || 
-			pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetCurrentResearchComplex()->GetFieldStatus(2) == RESEARCHING)
+			pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetCurrentResearchComplex()->GetFieldStatus(2) == RESEARCH_STATUS::RESEARCHING)
 		{
 			s = pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetCurrentResearchComplex()->GetFieldDescription(2);
 			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(270,490,250,205), &fontFormatTop, &fontBrush);
 		}
 		if (pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetChoiceTaken() == FALSE || 
-			pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetCurrentResearchComplex()->GetFieldStatus(3) == RESEARCHING)
+			pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetCurrentResearchComplex()->GetFieldStatus(3) == RESEARCH_STATUS::RESEARCHING)
 		{
 			s = pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetCurrentResearchComplex()->GetFieldDescription(3);
 			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(530,490,250,205), &fontFormatTop, &fontBrush);			
@@ -718,16 +718,17 @@ void CResearchMenuView::DrawUniqueResearchMenue(Graphics* g)
 		int nCount = 0;
 		for (int i = 0; i < NoUC; i++)
 		{
+			RESEARCH_COMPLEX::Typ nComplex = (RESEARCH_COMPLEX::Typ)i;
 			// Bereich ermitteln
-			if (pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(i)->GetComplexStatus() == RESEARCHED)
+			if (pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(nComplex)->GetComplexStatus() == RESEARCH_STATUS::RESEARCHED)
 			{
 				// Unterbereich bestimmen
 				for (int j = 1; j <= 3; j++)
 				{
-					if (pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(i)->GetFieldStatus(j) == RESEARCHED)
+					if (pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(nComplex)->GetFieldStatus(j) == RESEARCH_STATUS::RESEARCHED)
 					{
-						s = pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(i)->GetComplexName() + ": " +
-							pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(i)->GetFieldName(j);
+						s = pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(nComplex)->GetComplexName() + ": " +
+							pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(nComplex)->GetFieldName(j);
 						g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(100,350 + nCount * 30 , 680, 30), &fontFormatCenter, &fontBrush);
 						nCount++;
 						break;

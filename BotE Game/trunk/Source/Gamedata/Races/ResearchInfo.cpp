@@ -5,6 +5,7 @@
 #include "stdafx.h"
 #include "ResearchInfo.h"
 #include "IOData.h"
+#include <vector>
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -21,8 +22,8 @@ IMPLEMENT_SERIAL (CResearchInfo, CObject, 1)
 
 CResearchInfo::CResearchInfo()
 {
-	m_iCurrentComplex = -1;			// kein Complex gewählt
-	m_bChoiceTaken = FALSE;
+	m_nCurrentComplex = RESEARCH_COMPLEX::NONE;
+	m_bChoiceTaken = false;
 	for (int i = 0; i < NoUC; i++)
 		m_ResearchComplex[i].Reset();
 	for (int i = 0; i < 6; i++)
@@ -34,7 +35,6 @@ CResearchInfo::CResearchInfo()
 
 CResearchInfo::~CResearchInfo()
 {
-
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -43,7 +43,7 @@ CResearchInfo::~CResearchInfo()
 CResearchInfo::CResearchInfo(const CResearchInfo & rhs)
 {
 	m_bChoiceTaken = rhs.m_bChoiceTaken;
-	m_iCurrentComplex = rhs.m_iCurrentComplex;
+	m_nCurrentComplex = rhs.m_nCurrentComplex;
 	for (int i = 0; i < NoUC; i++)
 		m_ResearchComplex[i] = rhs.m_ResearchComplex[i];
 	for (int i = 0; i < 6; i++)
@@ -61,7 +61,7 @@ CResearchInfo & CResearchInfo::operator=(const CResearchInfo & rhs)
 	if (this == &rhs)
 		return *this;
 	m_bChoiceTaken = rhs.m_bChoiceTaken;
-	m_iCurrentComplex = rhs.m_iCurrentComplex;
+	m_nCurrentComplex = rhs.m_nCurrentComplex;
 	for (int i = 0; i < NoUC; i++)
 		m_ResearchComplex[i] = rhs.m_ResearchComplex[i];
 	for (int i = 0; i < 6; i++)
@@ -84,13 +84,15 @@ void CResearchInfo::Serialize(CArchive &ar)
 	// wenn gespeichert wird
 	if (ar.IsStoring())
 	{
-		ar << m_iCurrentComplex;
+		ar << m_nCurrentComplex;
 		ar << m_bChoiceTaken;
 	}
 	// wenn geladen wird
 	if (ar.IsLoading())
 	{
-		ar >> m_iCurrentComplex;
+		int nComplex;
+		ar >> nComplex;
+		m_nCurrentComplex = (RESEARCH_COMPLEX::Typ)nComplex;
 		ar >> m_bChoiceTaken;
 	}
 }
@@ -104,47 +106,58 @@ void CResearchInfo::Serialize(CArchive &ar)
 /// es sonst zum Absturz des Programms kommen könnte.
 void CResearchInfo::ChooseUniqueResearch(void)
 {
-	int count = 0;
-	while (1)
-	{
-		BYTE random = rand()%NoUC;
-		if (m_ResearchComplex[random].m_byComplexStatus == NOTRESEARCHED)
-		{
-			m_ResearchComplex[random].m_byComplexStatus = RESEARCHING;
-			m_iCurrentComplex = random;
-			m_bChoiceTaken = FALSE;
-			// Wenn wir einen Komplex ausgewählt haben, diesen erst generieren
-			m_ResearchComplex[random].GenerateComplex(random);
-			break;
-		}
-		count++;
-		if (count == MAXBYTE)
-			break;
-	}
+	// Vektor mit noch erforschbaren Spezialforschunen erstellen
+	std::vector<int> vResearchableComplexes;
+	for (int i = 0; i < NoUC; i++)
+		if (m_ResearchComplex[i].m_nComplexStatus == RESEARCH_STATUS::NOTRESEARCHED)
+			vResearchableComplexes.push_back(i);
+
+	if (vResearchableComplexes.empty())
+		return;
+
+	// zufällig eine Spezialforschung aus den noch zur Verfügung stehenden auswählen
+	RESEARCH_COMPLEX::Typ nComplex = (RESEARCH_COMPLEX::Typ)(rand()%vResearchableComplexes.size());
+	
+	// Status ändern
+	m_ResearchComplex[nComplex].m_nComplexStatus = RESEARCH_STATUS::RESEARCHING;
+	m_nCurrentComplex = nComplex;
+	m_bChoiceTaken = false;
+			
+	// Wenn wir einen Komplex ausgewählt haben, diesen erst generieren
+	m_ResearchComplex[nComplex].GenerateComplex(nComplex);
 }
 
 /// Diese Funktion ändert den Status des aktuellen Komplexes. Dabei ändert sie gleichzeitig auch den Status
-/// der zuvor gewählten Wahlmöglichkeit. Als Parameter wird dabei ein neuer Status <code>newstatus</code>
+/// der zuvor gewählten Wahlmöglichkeit. Als Parameter wird dabei ein neuer Status <code>nNewStatus</code>
 /// übergeben.
-void CResearchInfo::ChangeStatusOfComplex(BYTE newstatus)
+void CResearchInfo::ChangeStatusOfComplex(RESEARCH_STATUS::Typ nNewStatus)
 {
-	m_ResearchComplex[m_iCurrentComplex].m_byComplexStatus = newstatus;
+	if (m_nCurrentComplex == RESEARCH_COMPLEX::NONE)
+	{
+		ASSERT(m_nCurrentComplex != RESEARCH_COMPLEX::NONE);
+		return;
+	}
+
+	m_ResearchComplex[m_nCurrentComplex].m_nComplexStatus = nNewStatus;
 	// Wenn der neue Status RESEARCHED ist
-	if (newstatus == RESEARCHED)
+	if (nNewStatus == RESEARCH_STATUS::RESEARCHED)
 	{
 		// Alle drei möglichen Gebiete durchgehen
 		for (int i = 0; i < 3; i++)
+		{
 			// Wenn gerade das Gebiet i erforscht wird
-			if (m_ResearchComplex[m_iCurrentComplex].m_byFieldStatus[i] == RESEARCHING)
+			if (m_ResearchComplex[m_nCurrentComplex].m_nFieldStatus[i] == RESEARCH_STATUS::RESEARCHING)
 			{
 				// alle anderen Gebiete auf "nicht erforscht" setzen
-				memset(m_ResearchComplex[m_iCurrentComplex].m_byFieldStatus, NOTRESEARCHED, sizeof(m_ResearchComplex[m_iCurrentComplex].m_byFieldStatus));
+				memset(m_ResearchComplex[m_nCurrentComplex].m_nFieldStatus, RESEARCH_STATUS::NOTRESEARCHED, sizeof(m_ResearchComplex[m_nCurrentComplex].m_nFieldStatus));
 				// gerade erforschtes Gebiet auf "erforscht" setzen
-				m_ResearchComplex[m_iCurrentComplex].m_byFieldStatus[i] = RESEARCHED;
+				m_ResearchComplex[m_nCurrentComplex].m_nFieldStatus[i] = RESEARCH_STATUS::RESEARCHED;
 				break;
 			}
+		}
+		
 		// kein Komplex mehr ausgewählt
-		m_iCurrentComplex = -1; 
+		m_nCurrentComplex = RESEARCH_COMPLEX::NONE; 
 	}
 }
 
@@ -158,13 +171,13 @@ void CResearchInfo::SetUniqueResearchChoosePossibility(BYTE possibility)
 		für die 2. Wahlmöglichkeit	-> possibility == 2
 		für die 3. Wahlmöglichkeit	-> possibility == 3
 	*/
-	if (m_iCurrentComplex != -1 && m_bChoiceTaken == FALSE)
+	if (m_nCurrentComplex != RESEARCH_COMPLEX::NONE && !m_bChoiceTaken)
 	{
 		// alle Gebiete erstmal auf nicht erforscht setzen
-		memset(m_ResearchComplex[m_iCurrentComplex].m_byFieldStatus, NOTRESEARCHED, sizeof(m_ResearchComplex[m_iCurrentComplex].m_byFieldStatus));
+		memset(m_ResearchComplex[m_nCurrentComplex].m_nFieldStatus, RESEARCH_STATUS::NOTRESEARCHED, sizeof(m_ResearchComplex[m_nCurrentComplex].m_nFieldStatus));
 		// gewähltes Gebiet auf "wird erforscht" setzen
-		m_ResearchComplex[m_iCurrentComplex].m_byFieldStatus[possibility-1] = RESEARCHING;
-		m_bChoiceTaken = TRUE;
+		m_ResearchComplex[m_nCurrentComplex].m_nFieldStatus[possibility-1] = RESEARCH_STATUS::RESEARCHING;
+		m_bChoiceTaken = true;
 	}
 }
 

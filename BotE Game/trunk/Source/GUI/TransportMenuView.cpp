@@ -503,8 +503,8 @@ void CTransportMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 					else
 					{
 						UINT nMaxDeritiumStore = MAX_DERITIUM_STORE;
-						if (pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(10)->GetFieldStatus(1) == RESEARCHED)
-							nMaxDeritiumStore *= pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(10)->GetBonus(1);
+						if (pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(RESEARCH_COMPLEX::STORAGE_AND_TRANSPORT)->GetFieldStatus(1) == RESEARCH_STATUS::RESEARCHED)
+							nMaxDeritiumStore *= pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(RESEARCH_COMPLEX::STORAGE_AND_TRANSPORT)->GetBonus(1);
 						if (m_iTransportStorageQuantity + pDoc->m_System[p.x][p.y].GetResourceStore(i) > nMaxDeritiumStore)
 							m_iTransportStorageQuantity = nMaxDeritiumStore - pDoc->m_System[p.x][p.y].GetResourceStore(i);
 					}

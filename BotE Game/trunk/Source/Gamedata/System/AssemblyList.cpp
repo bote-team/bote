@@ -226,25 +226,25 @@ void CAssemblyList::CalculateNeededRessources(CBuildingInfo* buildingInfo, CShip
 		m_iNeededIridiumForBuild = shipInfo->GetNeededIridium();
 		m_iNeededDeritiumForBuild = shipInfo->GetNeededDeritium();
 		// hier auch noch den eventuellen Bonus durch die Uniqueforschung "Allgemeine Schifftechnik"
-		if (ResearchInfo->GetResearchComplex(2)->GetFieldStatus(3) == RESEARCHED)	// 2 -> Allgemeine Schiffstechnik
+		if (ResearchInfo->GetResearchComplex(RESEARCH_COMPLEX::GENERAL_SHIP_TECHNOLOGY)->GetFieldStatus(3) == RESEARCH_STATUS::RESEARCHED)	// 2 -> Allgemeine Schiffstechnik
 		{
-			m_iNeededIndustryForBuild	-= (int)(ResearchInfo->GetResearchComplex(2)->GetBonus(3)*m_iNeededIndustryForBuild/100);
-			m_iNeededTitanForBuild		-= (int)(ResearchInfo->GetResearchComplex(2)->GetBonus(3)*m_iNeededTitanForBuild/100);
-			m_iNeededDeuteriumForBuild	-= (int)(ResearchInfo->GetResearchComplex(2)->GetBonus(3)*m_iNeededDeuteriumForBuild/100);
-			m_iNeededDuraniumForBuild	-= (int)(ResearchInfo->GetResearchComplex(2)->GetBonus(3)*m_iNeededDuraniumForBuild/100);
-			m_iNeededCrystalForBuild	-= (int)(ResearchInfo->GetResearchComplex(2)->GetBonus(3)*m_iNeededCrystalForBuild/100);
-			m_iNeededIridiumForBuild	-= (int)(ResearchInfo->GetResearchComplex(2)->GetBonus(3)*m_iNeededIridiumForBuild/100);
+			m_iNeededIndustryForBuild	-= (int)(ResearchInfo->GetResearchComplex(RESEARCH_COMPLEX::GENERAL_SHIP_TECHNOLOGY)->GetBonus(3)*m_iNeededIndustryForBuild/100);
+			m_iNeededTitanForBuild		-= (int)(ResearchInfo->GetResearchComplex(RESEARCH_COMPLEX::GENERAL_SHIP_TECHNOLOGY)->GetBonus(3)*m_iNeededTitanForBuild/100);
+			m_iNeededDeuteriumForBuild	-= (int)(ResearchInfo->GetResearchComplex(RESEARCH_COMPLEX::GENERAL_SHIP_TECHNOLOGY)->GetBonus(3)*m_iNeededDeuteriumForBuild/100);
+			m_iNeededDuraniumForBuild	-= (int)(ResearchInfo->GetResearchComplex(RESEARCH_COMPLEX::GENERAL_SHIP_TECHNOLOGY)->GetBonus(3)*m_iNeededDuraniumForBuild/100);
+			m_iNeededCrystalForBuild	-= (int)(ResearchInfo->GetResearchComplex(RESEARCH_COMPLEX::GENERAL_SHIP_TECHNOLOGY)->GetBonus(3)*m_iNeededCrystalForBuild/100);
+			m_iNeededIridiumForBuild	-= (int)(ResearchInfo->GetResearchComplex(RESEARCH_COMPLEX::GENERAL_SHIP_TECHNOLOGY)->GetBonus(3)*m_iNeededIridiumForBuild/100);
 		}
 		// hier auch noch den eventuellen Bonus durch die Uniqueforschung "friedliche Schifftechnik"
 		// aber nur wenn es sich um ein Transportschiff oder Kolonieschiff handelt
-		if (ResearchInfo->GetResearchComplex(3)->GetFieldStatus(3) == RESEARCHED && shipInfo->GetShipType() <= SHIP_TYPE::COLONYSHIP) 	// 3 -> Allgemeine Schiffstechnik
+		if (ResearchInfo->GetResearchComplex(RESEARCH_COMPLEX::PEACEFUL_SHIP_TECHNOLOGY)->GetFieldStatus(3) == RESEARCH_STATUS::RESEARCHED && shipInfo->GetShipType() <= SHIP_TYPE::COLONYSHIP) 	// 3 -> Allgemeine Schiffstechnik
 		{
-			m_iNeededIndustryForBuild	-= (int)(ResearchInfo->GetResearchComplex(3)->GetBonus(3)*m_iNeededIndustryForBuild/100);
-			m_iNeededTitanForBuild		-= (int)(ResearchInfo->GetResearchComplex(3)->GetBonus(3)*m_iNeededTitanForBuild/100);
-			m_iNeededDeuteriumForBuild	-= (int)(ResearchInfo->GetResearchComplex(3)->GetBonus(3)*m_iNeededDeuteriumForBuild/100);
-			m_iNeededDuraniumForBuild	-= (int)(ResearchInfo->GetResearchComplex(3)->GetBonus(3)*m_iNeededDuraniumForBuild/100);
-			m_iNeededCrystalForBuild	-= (int)(ResearchInfo->GetResearchComplex(3)->GetBonus(3)*m_iNeededCrystalForBuild/100);
-			m_iNeededIridiumForBuild	-= (int)(ResearchInfo->GetResearchComplex(3)->GetBonus(3)*m_iNeededIridiumForBuild/100);
+			m_iNeededIndustryForBuild	-= (int)(ResearchInfo->GetResearchComplex(RESEARCH_COMPLEX::PEACEFUL_SHIP_TECHNOLOGY)->GetBonus(3)*m_iNeededIndustryForBuild/100);
+			m_iNeededTitanForBuild		-= (int)(ResearchInfo->GetResearchComplex(RESEARCH_COMPLEX::PEACEFUL_SHIP_TECHNOLOGY)->GetBonus(3)*m_iNeededTitanForBuild/100);
+			m_iNeededDeuteriumForBuild	-= (int)(ResearchInfo->GetResearchComplex(RESEARCH_COMPLEX::PEACEFUL_SHIP_TECHNOLOGY)->GetBonus(3)*m_iNeededDeuteriumForBuild/100);
+			m_iNeededDuraniumForBuild	-= (int)(ResearchInfo->GetResearchComplex(RESEARCH_COMPLEX::PEACEFUL_SHIP_TECHNOLOGY)->GetBonus(3)*m_iNeededDuraniumForBuild/100);
+			m_iNeededCrystalForBuild	-= (int)(ResearchInfo->GetResearchComplex(RESEARCH_COMPLEX::PEACEFUL_SHIP_TECHNOLOGY)->GetBonus(3)*m_iNeededCrystalForBuild/100);
+			m_iNeededIridiumForBuild	-= (int)(ResearchInfo->GetResearchComplex(RESEARCH_COMPLEX::PEACEFUL_SHIP_TECHNOLOGY)->GetBonus(3)*m_iNeededIridiumForBuild/100);
 		}
 	}
 	else if (RunningNumber >= 20000)	// es handelt sich um Truppen
@@ -257,25 +257,25 @@ void CAssemblyList::CalculateNeededRessources(CBuildingInfo* buildingInfo, CShip
 		m_iNeededIridiumForBuild = troopInfo->GetNeededResources()[IRIDIUM];
 		m_iNeededDeritiumForBuild = NULL;
 		// hier auch noch den eventuellen Bonus durch die Uniqueforschung "Truppen"
-		if (ResearchInfo->GetResearchComplex(4)->GetFieldStatus(3) == RESEARCHED)	// 4 -> Truppen
+		if (ResearchInfo->GetResearchComplex(RESEARCH_COMPLEX::TROOPS)->GetFieldStatus(3) == RESEARCH_STATUS::RESEARCHED)	// 4 -> Truppen
 		{
-			m_iNeededIndustryForBuild	-= (int)(ResearchInfo->GetResearchComplex(4)->GetBonus(3)*m_iNeededIndustryForBuild/100);
-			m_iNeededTitanForBuild		-= (int)(ResearchInfo->GetResearchComplex(4)->GetBonus(3)*m_iNeededTitanForBuild/100);
-			m_iNeededDeuteriumForBuild	-= (int)(ResearchInfo->GetResearchComplex(4)->GetBonus(3)*m_iNeededDeuteriumForBuild/100);
-			m_iNeededDuraniumForBuild	-= (int)(ResearchInfo->GetResearchComplex(4)->GetBonus(3)*m_iNeededDuraniumForBuild/100);
-			m_iNeededCrystalForBuild	-= (int)(ResearchInfo->GetResearchComplex(4)->GetBonus(3)*m_iNeededCrystalForBuild/100);
-			m_iNeededIridiumForBuild	-= (int)(ResearchInfo->GetResearchComplex(4)->GetBonus(3)*m_iNeededIridiumForBuild/100);
+			m_iNeededIndustryForBuild	-= (int)(ResearchInfo->GetResearchComplex(RESEARCH_COMPLEX::TROOPS)->GetBonus(3)*m_iNeededIndustryForBuild/100);
+			m_iNeededTitanForBuild		-= (int)(ResearchInfo->GetResearchComplex(RESEARCH_COMPLEX::TROOPS)->GetBonus(3)*m_iNeededTitanForBuild/100);
+			m_iNeededDeuteriumForBuild	-= (int)(ResearchInfo->GetResearchComplex(RESEARCH_COMPLEX::TROOPS)->GetBonus(3)*m_iNeededDeuteriumForBuild/100);
+			m_iNeededDuraniumForBuild	-= (int)(ResearchInfo->GetResearchComplex(RESEARCH_COMPLEX::TROOPS)->GetBonus(3)*m_iNeededDuraniumForBuild/100);
+			m_iNeededCrystalForBuild	-= (int)(ResearchInfo->GetResearchComplex(RESEARCH_COMPLEX::TROOPS)->GetBonus(3)*m_iNeededCrystalForBuild/100);
+			m_iNeededIridiumForBuild	-= (int)(ResearchInfo->GetResearchComplex(RESEARCH_COMPLEX::TROOPS)->GetBonus(3)*m_iNeededIridiumForBuild/100);
 		}
 	}
 	// hier noch den eventuellen Bonus durch die Uniqueforschung "Wirtschaft"
-	if (ResearchInfo->GetResearchComplex(5)->GetFieldStatus(2) == RESEARCHED)	// 5 -> Wirtschaft
+	if (ResearchInfo->GetResearchComplex(RESEARCH_COMPLEX::ECONOMY)->GetFieldStatus(2) == RESEARCH_STATUS::RESEARCHED)	// 5 -> Wirtschaft
 	{
-		m_iNeededIndustryForBuild	-= (int)(ResearchInfo->GetResearchComplex(5)->GetBonus(2)*m_iNeededIndustryForBuild/100);
-		m_iNeededTitanForBuild		-= (int)(ResearchInfo->GetResearchComplex(5)->GetBonus(2)*m_iNeededTitanForBuild/100);
-		m_iNeededDeuteriumForBuild	-= (int)(ResearchInfo->GetResearchComplex(5)->GetBonus(2)*m_iNeededDeuteriumForBuild/100);
-		m_iNeededDuraniumForBuild	-= (int)(ResearchInfo->GetResearchComplex(5)->GetBonus(2)*m_iNeededDuraniumForBuild/100);
-		m_iNeededCrystalForBuild	-= (int)(ResearchInfo->GetResearchComplex(5)->GetBonus(2)*m_iNeededCrystalForBuild/100);
-		m_iNeededIridiumForBuild	-= (int)(ResearchInfo->GetResearchComplex(5)->GetBonus(2)*m_iNeededIridiumForBuild/100);
+		m_iNeededIndustryForBuild	-= (int)(ResearchInfo->GetResearchComplex(RESEARCH_COMPLEX::ECONOMY)->GetBonus(2)*m_iNeededIndustryForBuild/100);
+		m_iNeededTitanForBuild		-= (int)(ResearchInfo->GetResearchComplex(RESEARCH_COMPLEX::ECONOMY)->GetBonus(2)*m_iNeededTitanForBuild/100);
+		m_iNeededDeuteriumForBuild	-= (int)(ResearchInfo->GetResearchComplex(RESEARCH_COMPLEX::ECONOMY)->GetBonus(2)*m_iNeededDeuteriumForBuild/100);
+		m_iNeededDuraniumForBuild	-= (int)(ResearchInfo->GetResearchComplex(RESEARCH_COMPLEX::ECONOMY)->GetBonus(2)*m_iNeededDuraniumForBuild/100);
+		m_iNeededCrystalForBuild	-= (int)(ResearchInfo->GetResearchComplex(RESEARCH_COMPLEX::ECONOMY)->GetBonus(2)*m_iNeededCrystalForBuild/100);
+		m_iNeededIridiumForBuild	-= (int)(ResearchInfo->GetResearchComplex(RESEARCH_COMPLEX::ECONOMY)->GetBonus(2)*m_iNeededIridiumForBuild/100);
 	}
 	// Modifikator noch mit einrechnen
 	m_iNeededIndustryForBuild	= (UINT)(m_iNeededIndustryForBuild * modifier);
@@ -322,14 +322,14 @@ void CAssemblyList::CalculateNeededRessourcesForUpdate(BuildingInfoArray* follow
 					
 				}
 			// hier noch den eventuellen Bonus durch die Uniqueforschung "Wirtschaft"
-			if (ResearchInfo->GetResearchComplex(5)->GetFieldStatus(2) == RESEARCHED)	// 5 -> Wirtschaft
+			if (ResearchInfo->GetResearchComplex(RESEARCH_COMPLEX::ECONOMY)->GetFieldStatus(2) == RESEARCH_STATUS::RESEARCHED)	// 5 -> Wirtschaft
 			{
-				m_iNeededIndustryForBuild	-= (int)(ResearchInfo->GetResearchComplex(5)->GetBonus(2)*m_iNeededIndustryForBuild/100);
-				m_iNeededTitanForBuild		-= (int)(ResearchInfo->GetResearchComplex(5)->GetBonus(2)*m_iNeededTitanForBuild/100);
-				m_iNeededDeuteriumForBuild	-= (int)(ResearchInfo->GetResearchComplex(5)->GetBonus(2)*m_iNeededDeuteriumForBuild/100);
-				m_iNeededDuraniumForBuild	-= (int)(ResearchInfo->GetResearchComplex(5)->GetBonus(2)*m_iNeededDuraniumForBuild/100);
-				m_iNeededCrystalForBuild	-= (int)(ResearchInfo->GetResearchComplex(5)->GetBonus(2)*m_iNeededCrystalForBuild/100);
-				m_iNeededIridiumForBuild	-= (int)(ResearchInfo->GetResearchComplex(5)->GetBonus(2)*m_iNeededIridiumForBuild/100);
+				m_iNeededIndustryForBuild	-= (int)(ResearchInfo->GetResearchComplex(RESEARCH_COMPLEX::ECONOMY)->GetBonus(2)*m_iNeededIndustryForBuild/100);
+				m_iNeededTitanForBuild		-= (int)(ResearchInfo->GetResearchComplex(RESEARCH_COMPLEX::ECONOMY)->GetBonus(2)*m_iNeededTitanForBuild/100);
+				m_iNeededDeuteriumForBuild	-= (int)(ResearchInfo->GetResearchComplex(RESEARCH_COMPLEX::ECONOMY)->GetBonus(2)*m_iNeededDeuteriumForBuild/100);
+				m_iNeededDuraniumForBuild	-= (int)(ResearchInfo->GetResearchComplex(RESEARCH_COMPLEX::ECONOMY)->GetBonus(2)*m_iNeededDuraniumForBuild/100);
+				m_iNeededCrystalForBuild	-= (int)(ResearchInfo->GetResearchComplex(RESEARCH_COMPLEX::ECONOMY)->GetBonus(2)*m_iNeededCrystalForBuild/100);
+				m_iNeededIridiumForBuild	-= (int)(ResearchInfo->GetResearchComplex(RESEARCH_COMPLEX::ECONOMY)->GetBonus(2)*m_iNeededIridiumForBuild/100);
 			}
 			// Wenn an der ersten Stelle der Auftragsliste ein Upgrade steht, kann man die Berechnung nicht so einfach
 			// durchführen, als hätte man es erst reingestellt. Denn dann würde der Bau nicht voranschreiten.

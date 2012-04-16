@@ -33,10 +33,10 @@ CResearchComplex::~CResearchComplex()
 //////////////////////////////////////////////////////////////////////
 CResearchComplex::CResearchComplex(const CResearchComplex & rhs)
 {
-	m_byComplexStatus = rhs.m_byComplexStatus;
+	m_nComplexStatus = rhs.m_nComplexStatus;
 	for (int i = 0; i < 3; i++)
 	{
-		m_byFieldStatus[i] = rhs.m_byFieldStatus[i];
+		m_nFieldStatus[i] = rhs.m_nFieldStatus[i];
 		m_strFieldName[i] = rhs.m_strFieldName[i];
 		m_strFieldDescription[i] = rhs.m_strFieldDescription[i];
 		m_iBonus[i] = rhs.m_iBonus[i];
@@ -52,10 +52,10 @@ CResearchComplex & CResearchComplex::operator=(const CResearchComplex & rhs)
 {
 	if (this == &rhs)
 		return *this;
-	m_byComplexStatus = rhs.m_byComplexStatus;
+	m_nComplexStatus = rhs.m_nComplexStatus;
 	for (int i = 0; i < 3; i++)
 	{
-		m_byFieldStatus[i] = rhs.m_byFieldStatus[i];
+		m_nFieldStatus[i] = rhs.m_nFieldStatus[i];
 		m_strFieldName[i] = rhs.m_strFieldName[i];
 		m_strFieldDescription[i] = rhs.m_strFieldDescription[i];
 		m_iBonus[i] = rhs.m_iBonus[i];
@@ -74,10 +74,10 @@ void CResearchComplex::Serialize(CArchive &ar)
 	// wenn gespeichert wird
 	if (ar.IsStoring())
 	{
-		ar << m_byComplexStatus;
+		ar << m_nComplexStatus;
 		for (int i = 0; i < 3; i++)
 		{
-			ar << m_byFieldStatus[i];
+			ar << m_nFieldStatus[i];
 			ar << m_strFieldName[i];
 			ar << m_strFieldDescription[i];
 			ar << m_iBonus[i];
@@ -88,10 +88,13 @@ void CResearchComplex::Serialize(CArchive &ar)
 	// wenn geladen wird
 	if (ar.IsLoading())
 	{
-		ar >> m_byComplexStatus;
+		int nStatus;
+		ar >> nStatus;
+		m_nComplexStatus = (RESEARCH_STATUS::Typ)nStatus;
 		for (int i = 0; i < 3; i++)
-		{
-			ar >> m_byFieldStatus[i];
+		{			
+			ar >> nStatus;
+			m_nFieldStatus[i] = (RESEARCH_STATUS::Typ)nStatus;
 			ar >> m_strFieldName[i];
 			ar >> m_strFieldDescription[i];
 			ar >> m_iBonus[i];
@@ -105,12 +108,12 @@ void CResearchComplex::Serialize(CArchive &ar)
 // sonstige Funktionen
 //////////////////////////////////////////////////////////////////////
 /// Diese Funktion generiert einen Komplex, setzt also erst alle Attribute des Objektes. Als einziger Parameter
-/// muss dafür eine Komplexnumme <code>complex</code> übergeben werden.
-void CResearchComplex::GenerateComplex(USHORT complex)
+/// muss dafür eine Komplexnumme <code>nComplex</code> übergeben werden.
+void CResearchComplex::GenerateComplex(RESEARCH_COMPLEX::Typ nComplex)
 {
-    switch(complex)
+    switch(nComplex)
 	{
-	case 0:		// Waffentechnik	-> eingebaut
+	case RESEARCH_COMPLEX::WEAPONS_TECHNOLOGY:		// Waffentechnik	-> eingebaut
 		{
 		/*	m_strComplexName = "Waffentechnik";
 			m_strComplexDescription = "Es wird immer deutlicher, dass die interstellare Expansion mit erhebliche Risiken verbunden ist. Um auf saemtliche Eventualitaeten vorbereitet zu sein wurde eine nicht unerhebliche Erhoehung des Militaerhaushalts beschlossen. Die fueherenden Strategen unseres Militaers sprachen sich einstimmig fuer den weiteren Ausbau der offensiven Faehigkeiten unserer Schiffe aus. Neben der ,daraus resultierenden, Ueberlegenheit in eventuellen Kampfhandlungen wird zusaetzlich mit einer abschreckenden Wirkung unserer Flotte gerechnet.";
@@ -125,7 +128,7 @@ void CResearchComplex::GenerateComplex(USHORT complex)
 			m_iBonus[2] = 20;
 			break;
 		}
-	case 1:	// Konstruktionstechnik	-> eingebaut
+	case RESEARCH_COMPLEX::CONSTRUCTION_TECHNOLOGY:	// Konstruktionstechnik	-> eingebaut
 		{
 		/*	m_strComplexName = "Konstruktionstechnik";
 			m_strComplexDescription = "Kosmische Strahlung, Kleinstmeteorieden aber auch die zunehmende Bedrohung zum teil feindsehliger Rassen machen eine kontinuierliche Verbesserung der passiven Schutzmechanismen underer Schiffe unumgaenglich. Schwerpunkte bilden die Frueherkennunug potentieller Risiken, das Energieabsorbtionsvermoegen unserer Schilde und die Struktur der Schiffe ansich.";
@@ -140,7 +143,7 @@ void CResearchComplex::GenerateComplex(USHORT complex)
 			m_iBonus[2] = 50;
 			break;
 		}
-	case 2:	// allgemeine Schiffstechnik	-> eingebaut
+	case RESEARCH_COMPLEX::GENERAL_SHIP_TECHNOLOGY:	// allgemeine Schiffstechnik	-> eingebaut
 		{
 		/*	m_strComplexName = "allgemeine Schiffstechnik";
 			m_strComplexDescription = "Die Grenzen unseres Territoriums dehnen sich bestaendig weiter aus, wodurch sich die Versorgung und die Kontrolle entfernt gelegener Systeme merklich schwieriger gestaltet. Um sicherzustellen in unserem gesamten Hoheitsgebiet praesent zu sein wurde beschlossen unsere gesamte Flotte weiter zu optimieren. Dies gilt ebenso fuer zivile als auch fuer militaerisch genutzte Schiffe.";
@@ -155,7 +158,7 @@ void CResearchComplex::GenerateComplex(USHORT complex)
 			m_iBonus[2] = 10;
 			break;
 		}
-	case 3:	// friedliche Schifftechnik		-> eingebaut, außer keine Unterhaltskosten??? -> prüfen ob das beim Schiffsbau gleich abgezogen wird.
+	case RESEARCH_COMPLEX::PEACEFUL_SHIP_TECHNOLOGY:	// friedliche Schifftechnik		-> eingebaut, außer keine Unterhaltskosten??? -> prüfen ob das beim Schiffsbau gleich abgezogen wird.
 		{
 		/*	m_strComplexName = "friedliche Schifftechnik";
 			m_strComplexDescription = "Zahlreichen Neuerungen in diversen militaerischen Bereichen koennten mehr und mehr auch für die zivile Raumfahrt genutzt werden. Sowohl fuehrende Vertreter der Wirtschaft als auch hochrangige Militaers sprachen sich fuer einen engeren Austausch aus. So wurde eine Veroeffentlichung von Forschungsergebnissen beschlossen, welche bisher der Sicherheitsstufe 3 unterlagen";
@@ -170,7 +173,7 @@ void CResearchComplex::GenerateComplex(USHORT complex)
 			m_iBonus[2] = 25;
 			break;
 		}
-	case 4:	// Truppen		-> eingebaut
+	case RESEARCH_COMPLEX::TROOPS:	// Truppen		-> eingebaut
 		{
 		/*	m_strComplexName = "Truppen";
 			m_strComplexDescription = "Neben den grossen Fortschritten im Bereich der militaerischen Schiffskomponenten verzeichnet unsere Forschungsabteilung auch zahlreiche Neuentwicklungen im Teilbereich der tragbaren Waffen. Zusammen mit einer intensiveren taktischen Ausbildung an unseren Militärakademien sollten wir in der Lage sein unsere Infanterie noch effizienter arbeiten zu lassen.";
@@ -185,7 +188,7 @@ void CResearchComplex::GenerateComplex(USHORT complex)
 			m_iBonus[2] = 20;
 			break;
 		}
-	case 5:	// Wirtschaft	-> eingebaut
+	case RESEARCH_COMPLEX::ECONOMY:	// Wirtschaft	-> eingebaut
 		{
 		/*	m_strComplexName = "Wirtschaft";
 			m_strComplexDescription = "Die Fokussierung unserer oekonomischen Kraefte auf bestimmte Bereiche koennte, laut unseren Wirtschaftseliten, bisher ungeahnte Potentiale freisetzen. Hinzu kommen technologischen Fortschritte, die nahezu aller Bereiche der Industrie revolutionieren. Zusammen werden diese beiden Faktoren eine messbare Staerkung unserer Wirstschaft mit sich bringen.";
@@ -200,7 +203,7 @@ void CResearchComplex::GenerateComplex(USHORT complex)
 			m_iBonus[2] = 25;
 			break;
 		}
-	case 6:	// Produktion	-> eingebaut
+	case RESEARCH_COMPLEX::PRODUCTION:	// Produktion	-> eingebaut
 		{
 		/*	m_strComplexName = "Produktion";
 			m_strComplexDescription = "Der flaechendeckende Einsatz neuester An -bzw Abbautechnologien haette eine signifikante Erhoehung der Produktivitaet in zahlreichen Bereichen der produzierenden Intustrie zur Folge. Die Infrastruktur unserer neu erschlossenen Welten kann ebenfalls noch spuehrbar optimiert werden, was ebenfalls positive Effekte fuer unsere Gesamtproduktionsleisung mitsichbraechte.  ";
@@ -215,7 +218,7 @@ void CResearchComplex::GenerateComplex(USHORT complex)
 			m_iBonus[2] = 20;
 			break;
 		}
-	case 7:	// Entwicklung & Sicherheit	-> eingebaut
+	case RESEARCH_COMPLEX::DEVELOPMENT_AND_SECURITY:	// Entwicklung & Sicherheit	-> eingebaut
 		{
 		/*	m_strComplexName = "Entwicklung und Sicherheit";
 			m_strComplexDescription = "Um auch in Zukunft die bestaendige Weiterentwicklung unserer Zivilisation zu garantieren und unsere Errungenschaften ausreichend gegen potentielle Agressoren zu schuetzen sollten wir den entsprechenden Sektionen erhoete finanzielle Mittel zur Verfuegung stellen. Ein entsprechender Entwurf wurde bereits ausgearbeitet und liegt nun zur Abstimmung vor.";
@@ -230,7 +233,7 @@ void CResearchComplex::GenerateComplex(USHORT complex)
 			m_iBonus[2] = 5;
 			break;
 		}
-	case 8:	// Forschung	-> eingebaut
+	case RESEARCH_COMPLEX::RESEARCH:	// Forschung	-> eingebaut
 		{
 		/*	m_strComplexName = "Forschung";
 			m_strComplexDescription = "Das oberste Gremium unserer Eliteakademien beschloss eine weitere Spezialisierung ihrer jeweiligen Forschungsabteilungen. Gekoppelt mit erheblichen finanziellen Zuwendungen privater Sponsoren wird den Forschungsprozess in zahlreichen Gebieten signifikant beschleunigt werden koennen. ";
@@ -245,7 +248,7 @@ void CResearchComplex::GenerateComplex(USHORT complex)
 			m_iBonus[2] = 20;
 			break;
 		}
-	case 9:	// Sicherheit	-> eingebaut
+	case RESEARCH_COMPLEX::SECURITY:	// Sicherheit	-> eingebaut
 		{
 		/*	m_strComplexName = "Sicherheit";
 			m_strComplexDescription = "Direkte militaerische Bedrohungen stellen, nach Meinung unserer Strategen, nur einen Teil der Gefahren fuer uns dar. Sie schlagen einen weiteren Ausbau unseres Geheimdienstes vor. Sowohl die Struktur als auch die Arbeitsweise sollte ueberdacht und gegebenenfalls reorganisiert werden. Die geforderte pauschale Optimierung des Geheimdienstes ist, wegen der nicht zu realisierenden Finanzierung, nicht moeglich.";
@@ -260,7 +263,7 @@ void CResearchComplex::GenerateComplex(USHORT complex)
 			m_iBonus[2] = 25;
 			break;
 		}
-	case 10:	// Lager und Transport	-> eingebaut
+	case RESEARCH_COMPLEX::STORAGE_AND_TRANSPORT:	// Lager und Transport	-> eingebaut
 		{
 		/*	m_strComplexName = "Lager und Transport";
 			m_strComplexDescription = "Durch eine Neujustierung unserer Lagertechniken und der internen Transportwege, sind wir nun in der Lage, enorme Vorteile daraus zu erhalten.";
@@ -275,7 +278,7 @@ void CResearchComplex::GenerateComplex(USHORT complex)
 			m_iBonus[2] = 1;
 			break;
 		}
-	case 11:	// Handel
+	case RESEARCH_COMPLEX::TRADE:	// Handel
 		{
 		/*	m_strComplexName = "Handel";
 			m_strComplexDescription = "Unsere besten Finanzhaie und Börsenmakler haben sich zusammengefunden, um über eine Verbesserung unserer veralteten Handelstechniken nachzudenken. Nach einiger Zeit haben sie verschiedenste Möglichkeiten gefunden, wie wir bei gleichem Auffwand noch mehr Gewinn machen können.";
@@ -290,7 +293,7 @@ void CResearchComplex::GenerateComplex(USHORT complex)
 			m_iBonus[2] = 1;
 			break;
 		}
-	case 12:	// Finanzen
+	case RESEARCH_COMPLEX::FINANCES:	// Finanzen
 		{
 		/*	m_strComplexName = "Finanzen";
 			m_strComplexDescription = "Durch eine genauer Abstimmung der einzelnen Finanzmaerkte unsere Teilsysteme waehren wir in der Lage, die staetige Ausdehnung des Gesamtmarktes besser zu nutzen. Somit koennten ohne grossen Aufwand zahlreiche Kostenvorteile erwirstschaftet werden.";
@@ -299,7 +302,7 @@ void CResearchComplex::GenerateComplex(USHORT complex)
 			m_strFieldName[2] = "35% Steuern in Heimatsystem";
 			m_strFieldDescription[0] = "Das steigende Angebot auf unseren Systemen senkt den Kaufpreis um 5%. Diese Kostenvorteile koennten wir sowohl beim Kauf einzelner Schiffe als auch beim Kauf stationaerer Strukturen auf all unseren Sytemen geltend machen.";
 			m_strFieldDescription[1] = "Die staendige Weiterentwicklung der verbauten Materialien und die zunehmende Automatisierung versaetzt uns in die Lage saemltiche Wartungsintervalle zu vergroessern. Das haette eine Senkung der Unterhaltskosten um 10% zur Folge";
-			m_strFieldDescription[2] = "Hier die Beschreibung";
+			m_strFieldDescription[2] = "Durch weitergehende Zentralisierung und Systematisierung des Handels sind wir in der Lage die Gewerbesteuer deutlich effizienter einzutreiben als bisher. Dies wird zu einem Anstieg der Steuereinnahmen auf unserem Heimatplaneten führen.";
 		*/	m_iBonus[0] = 5;
 			m_iBonus[1] = 10;
 			m_iBonus[2] = 35;
@@ -322,15 +325,15 @@ void CResearchComplex::GenerateComplex(USHORT complex)
 			break;
 		}
 	}
-	if (complex <= NoUC)
-		ReadSpecialTech((BYTE)complex);
+	if (nComplex <= NoUC)
+		ReadSpecialTech(nComplex);
 }
 
 /// Resetfunktion für die Klasse CResearchComplex
 void CResearchComplex::Reset()
 {
-	m_byComplexStatus = NOTRESEARCHED;
-	memset(m_byFieldStatus, NOTRESEARCHED, sizeof(m_byFieldStatus));
+	m_nComplexStatus = RESEARCH_STATUS::NOTRESEARCHED;
+	memset(m_nFieldStatus, RESEARCH_STATUS::NOTRESEARCHED, sizeof(m_nFieldStatus));
 	memset(m_iBonus, 0, sizeof(m_iBonus));
 	m_strComplexName = "";
 	m_strComplexDescription = "";
@@ -342,27 +345,31 @@ void CResearchComplex::Reset()
 
 /// Diese private Funktion liest die Beschreibungen zu den Spezialforschungen aus einer Datei ein und speichert sie
 /// auf die entsprechenden Variablen.
-void CResearchComplex::ReadSpecialTech(BYTE complex)
+void CResearchComplex::ReadSpecialTech(RESEARCH_COMPLEX::Typ nComplex)
 {
 	int i = 0;
-	int j = complex * 8;
+	int j = nComplex * 8;
 	int z = 0;
-	BOOLEAN found = FALSE;
-	CString data[8];
-	CString csInput;												// auf csInput wird die jeweilige Zeile gespeichert
+	
+	CString data[8];	
 	CString fileName = CIOData::GetInstance()->GetAppPath() + "Data\\Names\\Specialtechs.data";	// Name des zu Öffnenden Files 
 	CStdioFile file;												// Varibale vom Typ CStdioFile
 	if (file.Open(fileName, CFile::shareDenyNone | CFile::modeRead | CFile::typeText))	// Datei wird geöffnet
 	{
+		CString csInput; // auf csInput wird die jeweilige Zeile gespeichert
+		bool bFound = false;
 		while (file.ReadString(csInput))
 		{
 			if (i == j)
 			{
 				data[z++] = csInput;
-				found = TRUE;
+				bFound = true;
 			}
-			else if (found)
+			else if (bFound)
+			{
 				data[z++] = csInput;
+			}
+			
 			if (z == 8)
 				break;
 			i++;

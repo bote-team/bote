@@ -5,16 +5,8 @@
  *   Home     :  http://birth-of-the-empires.de
  *
  */
-// ResearchInfo.h: Schnittstelle für die Klasse CResearchInfo.
-//
-//////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_RESEARCHINFO_H__187C2D02_4967_4B6C_8079_8723C8473B26__INCLUDED_)
-#define AFX_RESEARCHINFO_H__187C2D02_4967_4B6C_8079_8723C8473B26__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 #include "ResearchComplex.h"
 #include <math.h>
 
@@ -54,18 +46,18 @@ public:
 	 * Diese Funktion gibt einen Wahrheitswert zurück, der angibt, ob der Spieler die Wahl einer der 3 Möglichkeiten
 	 * bei der Spezialforschung schon getroffen hat.
 	 */
-	BOOLEAN GetChoiceTaken(void) const {return m_bChoiceTaken;}
+	bool GetChoiceTaken(void) const {return m_bChoiceTaken;}
 
 	/**
 	 * Diese Funktion gibt einen Zeiger auf den aktuellen Komplex der Spezialforschung zurück.
 	 */
-	CResearchComplex* GetCurrentResearchComplex() {return &m_ResearchComplex[m_iCurrentComplex];}
+	const CResearchComplex* GetCurrentResearchComplex() const {return &m_ResearchComplex[m_nCurrentComplex];}
 	
 	/**
 	 * Diese Funktion gibt einen Zeiger auf einen bestimmten Komplex der Spezialforschung zurück.
-	 * Welcher Komplex zurückgegeben wird, wird durch den Parameter <code>complex</code> bestimmt.
+	 * Welcher Komplex zurückgegeben wird, wird durch den Parameter <code>nComplex</code> bestimmt.
 	 */
-	CResearchComplex* GetResearchComplex(BYTE complex) {return &m_ResearchComplex[complex];}
+	const CResearchComplex* GetResearchComplex(RESEARCH_COMPLEX::Typ nComplex) const {return &m_ResearchComplex[nComplex];}
 	
 	/**
 	 * Funktion gibt den Namen einer gewünschten Technologie zurück. Als Parameter muss eine Nummer <code>tech</code>
@@ -89,10 +81,10 @@ public:
 	
 	/**
 	 * Diese Funktion ändert den Status des aktuellen Komplexes. Dabei ändert sie gleichzeitig auch den Status
-	 * der zuvor gewählten Wahlmöglichkeit. Als Parameter wird dabei ein neuer Status <code>newstatus</code>
+	 * der zuvor gewählten Wahlmöglichkeit. Als Parameter wird dabei ein neuer Status <code>nNewStatus</code>
 	 * übergeben.
 	 */
-	void ChangeStatusOfComplex(BYTE newstatus);
+	void ChangeStatusOfComplex(RESEARCH_STATUS::Typ nNewStatus);
 	
 	/**
 	 * Diese Funktion wählt eine der drei Möglichkeiten der Uniqueforschung aus. Dafür muss man das Gebiet, welches
@@ -123,10 +115,10 @@ private:
 	CResearchComplex m_ResearchComplex[NoUC];
 	
 	/// Der aktuell gewählter Komplex
-	short m_iCurrentComplex;
+	RESEARCH_COMPLEX::Typ m_nCurrentComplex;
 	
 	/// Wurde eine der drei Wahlmöglichkeiten getroffen
-	BOOLEAN m_bChoiceTaken;
+	bool m_bChoiceTaken;
 
 	/// Der Name der Technologie, an der gerade geforscht wird.
 	CString m_strTechName[6];
@@ -134,5 +126,3 @@ private:
 	/// Die Beschreibung der Technologie, an der gerade geforscht wird.
 	CString m_strTechDescription[6];
 };
-
-#endif // !defined(AFX_RESEARCHINFO_H__187C2D02_4967_4B6C_8079_8723C8473B26__INCLUDED_)

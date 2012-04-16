@@ -590,18 +590,19 @@ BOOLEAN CIntelCalc::ExecuteScienceSpy(CMajor* pRace, CMajor* pEnemyRace, CMajor*
 	// 4. Versuch: etwas über die Spezialforschung herausbekommen
 	if (rand()%8 == NULL)
 	{
-		short specialTech = -1;
+		RESEARCH_COMPLEX::Typ specialTech = RESEARCH_COMPLEX::NONE;
 		short choosen = -1;
 		// zufällig mit einem Komplex starten und schauen ob dieser erforsch ist
 		int t = rand()%NoUC;
 		int j = 0;
 		for (int i = t; i < NoUC; i++)
 		{
-			if (pEnemyRace->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(i)->GetComplexStatus() == RESEARCHED)
+			RESEARCH_COMPLEX::Typ nComplex = (RESEARCH_COMPLEX::Typ)i;
+			if (pEnemyRace->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(nComplex)->GetComplexStatus() == RESEARCH_STATUS::RESEARCHED)
 			{
-				specialTech = i;
+				specialTech = nComplex;
 				for (int j = 1; j <= 3; j++)
-					if (pEnemyRace->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(i)->GetFieldStatus(j) == RESEARCHED)
+					if (pEnemyRace->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(nComplex)->GetFieldStatus(j) == RESEARCH_STATUS::RESEARCHED)
 					{
 						choosen = j;
 						break;
@@ -615,7 +616,7 @@ BOOLEAN CIntelCalc::ExecuteScienceSpy(CMajor* pRace, CMajor* pEnemyRace, CMajor*
 				break;
 		}
 		// wenn das Imperium irgendeinen Komplex erforscht hat, dann einen Geheimdienstbericht anlegen
-		if (specialTech != -1)
+		if (specialTech != RESEARCH_COMPLEX::NONE)
 		{
 			CScienceIntelObj* report = new CScienceIntelObj(pRace->GetRaceID(), pEnemyRace->GetRaceID(), m_pDoc->GetCurrentRound(), TRUE, -1, -1, specialTech, choosen);
 			// Intelreport dem Akteur hinzufügen
@@ -649,7 +650,7 @@ BOOLEAN CIntelCalc::ExecuteScienceSpy(CMajor* pRace, CMajor* pEnemyRace, CMajor*
 		case 4: techLevel = pEnemyRace->GetEmpire()->GetResearch()->GetPropulsionTech(); break;
 		case 5: techLevel = pEnemyRace->GetEmpire()->GetResearch()->GetWeaponTech(); break;
 		}
-		CScienceIntelObj* report = new CScienceIntelObj(pRace->GetRaceID(), pEnemyRace->GetRaceID(), m_pDoc->GetCurrentRound(), TRUE, techLevel, techType, -1, -1);
+		CScienceIntelObj* report = new CScienceIntelObj(pRace->GetRaceID(), pEnemyRace->GetRaceID(), m_pDoc->GetCurrentRound(), TRUE, techLevel, techType, RESEARCH_COMPLEX::NONE, -1);
 		// Intelreport dem Akteur hinzufügen
 		if (report)
 		{
@@ -1298,7 +1299,7 @@ BOOLEAN CIntelCalc::ExecuteScienceSabotage(CMajor* pRace, CMajor* pEnemyRace, CM
 				short techLevel = report->GetTechLevel();
 				pEnemyRace->GetEmpire()->GetResearch()->SetFP(techType, currentFP);
 				pRace->GetEmpire()->GetIntelligence()->GetIntelReports()->RemoveReport(oldReportNumber);
-				report = new CScienceIntelObj(pRace->GetRaceID(), pEnemyRace->GetRaceID(), m_pDoc->GetCurrentRound(), FALSE, techLevel, techType, -1, -1);
+				report = new CScienceIntelObj(pRace->GetRaceID(), pEnemyRace->GetRaceID(), m_pDoc->GetCurrentRound(), FALSE, techLevel, techType, RESEARCH_COMPLEX::NONE, -1);
 				if (report)
 				{
 					report->CreateText(m_pDoc, 2, pResponsibleRace->GetRaceID());

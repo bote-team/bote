@@ -596,20 +596,20 @@ void CResearch::SetFP(BYTE tech, UINT fp)
 CString* CResearch::CalculateResearch(ULONG FP)
 {
 	// Die Boni auf die einzelnen Forschungsgebiete berechnen
-	if (ResearchInfo.GetResearchComplex(8)->GetFieldStatus(1) == RESEARCHED)
+	if (ResearchInfo.GetResearchComplex(RESEARCH_COMPLEX::RESEARCH)->GetFieldStatus(1) == RESEARCH_STATUS::RESEARCHED)
 	{
-		m_iBioTechBoni += ResearchInfo.GetResearchComplex(8)->GetBonus(1);
-		m_iEnergyTechBoni += ResearchInfo.GetResearchComplex(8)->GetBonus(1);
+		m_iBioTechBoni += ResearchInfo.GetResearchComplex(RESEARCH_COMPLEX::RESEARCH)->GetBonus(1);
+		m_iEnergyTechBoni += ResearchInfo.GetResearchComplex(RESEARCH_COMPLEX::RESEARCH)->GetBonus(1);
 	}
-	else if (ResearchInfo.GetResearchComplex(8)->GetFieldStatus(2) == RESEARCHED)
+	else if (ResearchInfo.GetResearchComplex(RESEARCH_COMPLEX::RESEARCH)->GetFieldStatus(2) == RESEARCH_STATUS::RESEARCHED)
 	{
-		m_iCompTechBoni += ResearchInfo.GetResearchComplex(8)->GetBonus(2);
-		m_iPropulsionTechBoni += ResearchInfo.GetResearchComplex(8)->GetBonus(2);
+		m_iCompTechBoni += ResearchInfo.GetResearchComplex(RESEARCH_COMPLEX::RESEARCH)->GetBonus(2);
+		m_iPropulsionTechBoni += ResearchInfo.GetResearchComplex(RESEARCH_COMPLEX::RESEARCH)->GetBonus(2);
 	}
-	else if (ResearchInfo.GetResearchComplex(8)->GetFieldStatus(3) == RESEARCHED)
+	else if (ResearchInfo.GetResearchComplex(RESEARCH_COMPLEX::RESEARCH)->GetFieldStatus(3) == RESEARCH_STATUS::RESEARCHED)
 	{
-		m_iConstructionTechBoni += ResearchInfo.GetResearchComplex(8)->GetBonus(3);
-		m_iWeaponTechBoni += ResearchInfo.GetResearchComplex(8)->GetBonus(3);
+		m_iConstructionTechBoni += ResearchInfo.GetResearchComplex(RESEARCH_COMPLEX::RESEARCH)->GetBonus(3);
+		m_iWeaponTechBoni += ResearchInfo.GetResearchComplex(RESEARCH_COMPLEX::RESEARCH)->GetBonus(3);
 	}
 		
 	for (int i = 0; i < 8; i++)
@@ -621,7 +621,7 @@ CString* CResearch::CalculateResearch(ULONG FP)
 	m_lConstructionFP += (float)(FP*m_iConstructionPercentage)/100+(float)(FP*m_iConstructionPercentage)/100*m_iConstructionTechBoni/100;
 	m_lWeaponFP += (float)(FP*m_iWeaponPercentage)/100+(float)(FP*m_iWeaponPercentage)/100*m_iWeaponTechBoni/100;
 	
-	if (ResearchInfo.m_bChoiceTaken == TRUE)
+	if (ResearchInfo.m_bChoiceTaken)
 		m_lUniqueFP += (float)(FP*m_iUniquePercentage)/100;
 
 	// Checken, ob wir eine neue Stufe erreicht haben
@@ -683,7 +683,7 @@ CString* CResearch::CalculateResearch(ULONG FP)
 //		+ResearchInfo.GetConstruction(m_iNumberOfUnique)+ResearchInfo.GetWeapon(m_iNumberOfUnique)))
 	{
 		m_lUniqueFP = 0;
-		ResearchInfo.ChangeStatusOfComplex(RESEARCHED);
+		ResearchInfo.ChangeStatusOfComplex(RESEARCH_STATUS::RESEARCHED);
 		// !!!! Hier die SetPercentage Fkt. aufrufen, um die Uniqueforschung Anteile wieder auf NULL zu setzen
 		// könnten das später selbst nicht mehr machen, weil es sein kann, das wir auf die Uniqueforschung
 		// nicht zugreifen können !!!!!!!!
@@ -706,23 +706,23 @@ CString* CResearch::CalculateResearch(ULONG FP)
 		
 		// Wenn wir den Komplex "Forschung" erforscht haben, die Boni hier gleich berechnen, weil diese
 		// sonst nicht in der MainView direkt nach Erforschen angezeigt werden
-		if (ResearchInfo.GetResearchComplex(8)->GetComplexStatus() == RESEARCHED)
+		if (ResearchInfo.GetResearchComplex(RESEARCH_COMPLEX::RESEARCH)->GetComplexStatus() == RESEARCH_STATUS::RESEARCHED)
 		{
 			// Die Boni auf die einzelnen Forschungsgebiete berechnen
-			if (ResearchInfo.GetResearchComplex(8)->GetFieldStatus(1) == RESEARCHED)
+			if (ResearchInfo.GetResearchComplex(RESEARCH_COMPLEX::RESEARCH)->GetFieldStatus(1) == RESEARCH_STATUS::RESEARCHED)
 			{
-				m_iBioTechBoni += ResearchInfo.GetResearchComplex(8)->GetBonus(1);
-				m_iEnergyTechBoni += ResearchInfo.GetResearchComplex(8)->GetBonus(1);
+				m_iBioTechBoni += ResearchInfo.GetResearchComplex(RESEARCH_COMPLEX::RESEARCH)->GetBonus(1);
+				m_iEnergyTechBoni += ResearchInfo.GetResearchComplex(RESEARCH_COMPLEX::RESEARCH)->GetBonus(1);
 			}
-			else if (ResearchInfo.GetResearchComplex(8)->GetFieldStatus(2) == RESEARCHED)
+			else if (ResearchInfo.GetResearchComplex(RESEARCH_COMPLEX::RESEARCH)->GetFieldStatus(2) == RESEARCH_STATUS::RESEARCHED)
 			{
-				m_iCompTechBoni += ResearchInfo.GetResearchComplex(8)->GetBonus(2);
-				m_iPropulsionTechBoni += ResearchInfo.GetResearchComplex(8)->GetBonus(2);
+				m_iCompTechBoni += ResearchInfo.GetResearchComplex(RESEARCH_COMPLEX::RESEARCH)->GetBonus(2);
+				m_iPropulsionTechBoni += ResearchInfo.GetResearchComplex(RESEARCH_COMPLEX::RESEARCH)->GetBonus(2);
 			}
-			else if (ResearchInfo.GetResearchComplex(8)->GetFieldStatus(3) == RESEARCHED)
+			else if (ResearchInfo.GetResearchComplex(RESEARCH_COMPLEX::RESEARCH)->GetFieldStatus(3) == RESEARCH_STATUS::RESEARCHED)
 			{
-				m_iConstructionTechBoni += ResearchInfo.GetResearchComplex(8)->GetBonus(3);
-				m_iWeaponTechBoni += ResearchInfo.GetResearchComplex(8)->GetBonus(3);
+				m_iConstructionTechBoni += ResearchInfo.GetResearchComplex(RESEARCH_COMPLEX::RESEARCH)->GetBonus(3);
+				m_iWeaponTechBoni += ResearchInfo.GetResearchComplex(RESEARCH_COMPLEX::RESEARCH)->GetBonus(3);
 			}
 		}
 	}
@@ -797,6 +797,6 @@ void CResearch::Reset()
 
 	for (int i = 0; i < NoUC; i++)
 		ResearchInfo.m_ResearchComplex[i].Reset();
-	ResearchInfo.m_bChoiceTaken = FALSE;
-	ResearchInfo.m_iCurrentComplex = -1;
+	ResearchInfo.m_bChoiceTaken = false;
+	ResearchInfo.m_nCurrentComplex = RESEARCH_COMPLEX::NONE;
 }

@@ -827,34 +827,34 @@ void CSystem::CalculateVariables(BuildingInfoArray* buildingInfos, CResearchInfo
 
 	///// HIER DIE BONI DURCH SPEZIALFORSCHUNG //////
 	// Hier die Boni durch die Uniqueforschung "Wirtschaft" -> 10% mehr Industrie
-	if (ResearchInfo->GetResearchComplex(5)->GetFieldStatus(1) == RESEARCHED)
-		m_Production.m_iIndustryProd += (int)(ResearchInfo->GetResearchComplex(5)->GetBonus(1)*m_Production.m_iIndustryProd/100);
-	else if (ResearchInfo->GetResearchComplex(5)->GetFieldStatus(3) == RESEARCHED)
-		m_Production.m_iCreditsProd += (int)(ResearchInfo->GetResearchComplex(5)->GetBonus(3) * m_Production.m_iCreditsProd / 100);
+	if (ResearchInfo->GetResearchComplex(RESEARCH_COMPLEX::ECONOMY)->GetFieldStatus(1) == RESEARCH_STATUS::RESEARCHED)
+		m_Production.m_iIndustryProd += (int)(ResearchInfo->GetResearchComplex(RESEARCH_COMPLEX::ECONOMY)->GetBonus(1)*m_Production.m_iIndustryProd/100);
+	else if (ResearchInfo->GetResearchComplex(RESEARCH_COMPLEX::ECONOMY)->GetFieldStatus(3) == RESEARCH_STATUS::RESEARCHED)
+		m_Production.m_iCreditsProd += (int)(ResearchInfo->GetResearchComplex(RESEARCH_COMPLEX::ECONOMY)->GetBonus(3) * m_Production.m_iCreditsProd / 100);
 	// Hier die Boni durch die Uniqueforschung "Produktion"
-	if (ResearchInfo->GetResearchComplex(6)->GetFieldStatus(1) == RESEARCHED)
-		m_Production.m_iFoodProd += (int)(ResearchInfo->GetResearchComplex(6)->GetBonus(1)*m_Production.m_iFoodProd/100); 
-	else if (ResearchInfo->GetResearchComplex(6)->GetFieldStatus(2) == RESEARCHED)
+	if (ResearchInfo->GetResearchComplex(RESEARCH_COMPLEX::PRODUCTION)->GetFieldStatus(1) == RESEARCH_STATUS::RESEARCHED)
+		m_Production.m_iFoodProd += (int)(ResearchInfo->GetResearchComplex(RESEARCH_COMPLEX::PRODUCTION)->GetBonus(1)*m_Production.m_iFoodProd/100); 
+	else if (ResearchInfo->GetResearchComplex(RESEARCH_COMPLEX::PRODUCTION)->GetFieldStatus(2) == RESEARCH_STATUS::RESEARCHED)
 	{
-		m_Production.m_iTitanProd += (int)(ResearchInfo->GetResearchComplex(6)->GetBonus(2)*m_Production.m_iTitanProd/100);
-		m_Production.m_iDeuteriumProd += (int)(ResearchInfo->GetResearchComplex(6)->GetBonus(2)*m_Production.m_iDeuteriumProd/100);
-		m_Production.m_iDuraniumProd += (int)(ResearchInfo->GetResearchComplex(6)->GetBonus(2)*m_Production.m_iDuraniumProd/100);
-		m_Production.m_iCrystalProd += (int)(ResearchInfo->GetResearchComplex(6)->GetBonus(2)*m_Production.m_iCrystalProd/100);
-		m_Production.m_iIridiumProd += (int)(ResearchInfo->GetResearchComplex(6)->GetBonus(2)*m_Production.m_iIridiumProd/100);
+		m_Production.m_iTitanProd		+= (int)(ResearchInfo->GetResearchComplex(RESEARCH_COMPLEX::PRODUCTION)->GetBonus(2)*m_Production.m_iTitanProd/100);
+		m_Production.m_iDeuteriumProd	+= (int)(ResearchInfo->GetResearchComplex(RESEARCH_COMPLEX::PRODUCTION)->GetBonus(2)*m_Production.m_iDeuteriumProd/100);
+		m_Production.m_iDuraniumProd	+= (int)(ResearchInfo->GetResearchComplex(RESEARCH_COMPLEX::PRODUCTION)->GetBonus(2)*m_Production.m_iDuraniumProd/100);
+		m_Production.m_iCrystalProd		+= (int)(ResearchInfo->GetResearchComplex(RESEARCH_COMPLEX::PRODUCTION)->GetBonus(2)*m_Production.m_iCrystalProd/100);
+		m_Production.m_iIridiumProd		+= (int)(ResearchInfo->GetResearchComplex(RESEARCH_COMPLEX::PRODUCTION)->GetBonus(2)*m_Production.m_iIridiumProd/100);
 	}
 	// Wenn wir die Uniqueforschung "Produktion" gewählt haben, und dort mehr Energie haben wollen -> 20% mehr!
-	else if (ResearchInfo->GetResearchComplex(6)->GetFieldStatus(3) == RESEARCHED)
-		m_Production.m_iEnergyProd += (int)(ResearchInfo->GetResearchComplex(6)->GetBonus(3)*m_Production.m_iEnergyProd/100); 
+	else if (ResearchInfo->GetResearchComplex(RESEARCH_COMPLEX::PRODUCTION)->GetFieldStatus(3) == RESEARCH_STATUS::RESEARCHED)
+		m_Production.m_iEnergyProd += (int)(ResearchInfo->GetResearchComplex(RESEARCH_COMPLEX::PRODUCTION)->GetBonus(3)*m_Production.m_iEnergyProd/100); 
 	
 	// Hier die Boni durch die Uniqueforschung "Forschung und Sicherheit"
-	if (ResearchInfo->GetResearchComplex(7)->GetFieldStatus(1) == RESEARCHED)
-		m_Production.m_iResearchProd += (int)(ResearchInfo->GetResearchComplex(7)->GetBonus(1)*m_Production.m_iResearchProd/100);
-	else if (ResearchInfo->GetResearchComplex(7)->GetFieldStatus(2) == RESEARCHED)
-		m_Production.m_iSecurityProd += (int)(ResearchInfo->GetResearchComplex(7)->GetBonus(1)*m_Production.m_iSecurityProd/100);
-	else if (ResearchInfo->GetResearchComplex(7)->GetFieldStatus(3) == RESEARCHED)
+	if (ResearchInfo->GetResearchComplex(RESEARCH_COMPLEX::DEVELOPMENT_AND_SECURITY)->GetFieldStatus(1) == RESEARCH_STATUS::RESEARCHED)
+		m_Production.m_iResearchProd += (int)(ResearchInfo->GetResearchComplex(RESEARCH_COMPLEX::DEVELOPMENT_AND_SECURITY)->GetBonus(1)*m_Production.m_iResearchProd/100);
+	else if (ResearchInfo->GetResearchComplex(RESEARCH_COMPLEX::DEVELOPMENT_AND_SECURITY)->GetFieldStatus(2) == RESEARCH_STATUS::RESEARCHED)
+		m_Production.m_iSecurityProd += (int)(ResearchInfo->GetResearchComplex(RESEARCH_COMPLEX::DEVELOPMENT_AND_SECURITY)->GetBonus(1)*m_Production.m_iSecurityProd/100);
+	else if (ResearchInfo->GetResearchComplex(RESEARCH_COMPLEX::DEVELOPMENT_AND_SECURITY)->GetFieldStatus(3) == RESEARCH_STATUS::RESEARCHED)
 	{
-		m_Production.m_iResearchProd += (int)(ResearchInfo->GetResearchComplex(7)->GetBonus(3)*m_Production.m_iResearchProd/100);
-		m_Production.m_iSecurityProd += (int)(ResearchInfo->GetResearchComplex(7)->GetBonus(3)*m_Production.m_iSecurityProd/100);
+		m_Production.m_iResearchProd += (int)(ResearchInfo->GetResearchComplex(RESEARCH_COMPLEX::DEVELOPMENT_AND_SECURITY)->GetBonus(3)*m_Production.m_iResearchProd/100);
+		m_Production.m_iSecurityProd += (int)(ResearchInfo->GetResearchComplex(RESEARCH_COMPLEX::DEVELOPMENT_AND_SECURITY)->GetBonus(3)*m_Production.m_iSecurityProd/100);
 	}
 	
 	// Maximalenergie, also hier noch ohne Abzüge durch energiebedürftige Gebäude
@@ -908,8 +908,8 @@ BOOLEAN CSystem::CalculateStorages(CResearchInfo* researchInfo, int diliAdd)
 	short multi = 1;
 	///// HIER DIE BONI DURCH SPEZIALFORSCHUNG //////
 	// Hier die Boni durch die Uniqueforschung "Lager und Transport" -> doppeltes Deritiumlager
-	if (researchInfo->GetResearchComplex(10)->GetFieldStatus(1) == RESEARCHED)
-		multi = researchInfo->GetResearchComplex(10)->GetBonus(1);
+	if (researchInfo->GetResearchComplex(RESEARCH_COMPLEX::STORAGE_AND_TRANSPORT)->GetFieldStatus(1) == RESEARCH_STATUS::RESEARCHED)
+		multi = researchInfo->GetResearchComplex(RESEARCH_COMPLEX::STORAGE_AND_TRANSPORT)->GetBonus(1);
 	if ((int)m_iDeritiumStore > MAX_DERITIUM_STORE * multi)
 		m_iDeritiumStore = MAX_DERITIUM_STORE * multi;
 
@@ -2121,17 +2121,17 @@ BOOLEAN CSystem::CanAddTradeRoute(CResearchInfo* researchInfo)
 	USHORT maxTradeRoutes = (USHORT)(m_dHabitants / TRADEROUTEHAB) + m_Production.GetAddedTradeRoutes();
 	///// HIER DIE BONI DURCH SPEZIALFORSCHUNG //////
 	// Hier die Boni durch die Uniqueforschung "Lager und Transport" -> eine Ressourcenroute mehr
-	if (researchInfo->GetResearchComplex(10)->GetFieldStatus(3) == RESEARCHED)
-		addResRoute += researchInfo->GetResearchComplex(10)->GetBonus(3);
+	if (researchInfo->GetResearchComplex(RESEARCH_COMPLEX::STORAGE_AND_TRANSPORT)->GetFieldStatus(3) == RESEARCH_STATUS::RESEARCHED)
+		addResRoute += researchInfo->GetResearchComplex(RESEARCH_COMPLEX::STORAGE_AND_TRANSPORT)->GetBonus(3);
 	///// HIER DIE BONI DURCH SPEZIALFORSCHUNG //////
 	// Bei dieser Spezialforschung gibt es womöglich auch eine Ressourcenroute mehr
 	// Hier die Boni durch die Uniqueforschung "Handel" -> mindestens eine Handelsroute
-	if (researchInfo->GetResearchComplex(11)->GetFieldStatus(3) == RESEARCHED)
+	if (researchInfo->GetResearchComplex(RESEARCH_COMPLEX::TRADE)->GetFieldStatus(3) == RESEARCH_STATUS::RESEARCHED)
 	{
 		if (maxTradeRoutes == NULL)
 		{
-			addResRoute += researchInfo->GetResearchComplex(11)->GetBonus(3);
-			maxTradeRoutes += researchInfo->GetResearchComplex(11)->GetBonus(3);
+			addResRoute += researchInfo->GetResearchComplex(RESEARCH_COMPLEX::TRADE)->GetBonus(3);
+			maxTradeRoutes += researchInfo->GetResearchComplex(RESEARCH_COMPLEX::TRADE)->GetBonus(3);
 		}
 	}
 	if (m_ResourceRoutes.GetSize() > addResRoute)
@@ -2227,17 +2227,17 @@ BYTE CSystem::CheckTradeRoutes(CResearchInfo* researchInfo)
 	USHORT maxTradeRoutes = (USHORT)(m_dHabitants / TRADEROUTEHAB) + m_Production.GetAddedTradeRoutes();
 	///// HIER DIE BONI DURCH SPEZIALFORSCHUNG //////
 	// Hier die Boni durch die Uniqueforschung "Lager und Transport" -> eine Ressourcenroute mehr
-	if (researchInfo->GetResearchComplex(10)->GetFieldStatus(3) == RESEARCHED)
-		addResRoute += researchInfo->GetResearchComplex(10)->GetBonus(3);
+	if (researchInfo->GetResearchComplex(RESEARCH_COMPLEX::STORAGE_AND_TRANSPORT)->GetFieldStatus(3) == RESEARCH_STATUS::RESEARCHED)
+		addResRoute += researchInfo->GetResearchComplex(RESEARCH_COMPLEX::STORAGE_AND_TRANSPORT)->GetBonus(3);
 	///// HIER DIE BONI DURCH SPEZIALFORSCHUNG //////
 	// Bei dieser Spezialforschung gibt es womöglich auch eine Ressourcenroute mehr
 	// Hier die Boni durch die Uniqueforschung "Handel" -> mindestens eine Handelsroute
-	if (researchInfo->GetResearchComplex(11)->GetFieldStatus(3) == RESEARCHED)
+	if (researchInfo->GetResearchComplex(RESEARCH_COMPLEX::TRADE)->GetFieldStatus(3) == RESEARCH_STATUS::RESEARCHED)
 	{		
 		if (maxTradeRoutes == NULL)
 		{
-			addResRoute += researchInfo->GetResearchComplex(11)->GetBonus(3);
-			maxTradeRoutes += researchInfo->GetResearchComplex(11)->GetBonus(3);
+			addResRoute += researchInfo->GetResearchComplex(RESEARCH_COMPLEX::TRADE)->GetBonus(3);
+			maxTradeRoutes += researchInfo->GetResearchComplex(RESEARCH_COMPLEX::TRADE)->GetBonus(3);
 		}
 	}
 	if (m_ResourceRoutes.GetSize() > addResRoute)
@@ -2267,16 +2267,16 @@ BOOLEAN CSystem::AddResourceRoute(CPoint dest, BYTE res, CSystem** systems/*[][S
 	short addResRoute = 1;
 	///// HIER DIE BONI DURCH SPEZIALFORSCHUNG //////
 	// Hier die Boni durch die Uniqueforschung "Lager und Transport" -> eine Ressourcenroute mehr
-	if (researchInfo->GetResearchComplex(10)->GetFieldStatus(3) == RESEARCHED)
-		addResRoute += researchInfo->GetResearchComplex(10)->GetBonus(3);
+	if (researchInfo->GetResearchComplex(RESEARCH_COMPLEX::STORAGE_AND_TRANSPORT)->GetFieldStatus(3) == RESEARCH_STATUS::RESEARCHED)
+		addResRoute += researchInfo->GetResearchComplex(RESEARCH_COMPLEX::STORAGE_AND_TRANSPORT)->GetBonus(3);
 	///// HIER DIE BONI DURCH SPEZIALFORSCHUNG //////
 	// Bei dieser Spezialforschung gibt es womöglich auch eine Ressourcenroute mehr
 	// Hier die Boni durch die Uniqueforschung "Handel" -> mindestens eine Handelsroute
-	if (researchInfo->GetResearchComplex(11)->GetFieldStatus(3) == RESEARCHED)
+	if (researchInfo->GetResearchComplex(RESEARCH_COMPLEX::TRADE)->GetFieldStatus(3) == RESEARCH_STATUS::RESEARCHED)
 	{
 		USHORT maxTradeRoutes = (USHORT)(m_dHabitants / TRADEROUTEHAB) + m_Production.GetAddedTradeRoutes();
 		if (maxTradeRoutes == NULL)
-			addResRoute += researchInfo->GetResearchComplex(11)->GetBonus(3);
+			addResRoute += researchInfo->GetResearchComplex(RESEARCH_COMPLEX::TRADE)->GetBonus(3);
 	}
 		
 	USHORT maxResourceRoutes = (USHORT)(m_dHabitants / TRADEROUTEHAB) + m_Production.GetAddedTradeRoutes() + addResRoute;
@@ -2307,16 +2307,16 @@ BYTE CSystem::CheckResourceRoutes(CResearchInfo* researchInfo)
 	short addResRoute = 1;
 	///// HIER DIE BONI DURCH SPEZIALFORSCHUNG //////
 	// Hier die Boni durch die Uniqueforschung "Lager und Transport" -> eine Ressourcenroute mehr
-	if (researchInfo->GetResearchComplex(10)->GetFieldStatus(3) == RESEARCHED)
-		addResRoute += researchInfo->GetResearchComplex(10)->GetBonus(3);
+	if (researchInfo->GetResearchComplex(RESEARCH_COMPLEX::STORAGE_AND_TRANSPORT)->GetFieldStatus(3) == RESEARCH_STATUS::RESEARCHED)
+		addResRoute += researchInfo->GetResearchComplex(RESEARCH_COMPLEX::STORAGE_AND_TRANSPORT)->GetBonus(3);
 	///// HIER DIE BONI DURCH SPEZIALFORSCHUNG //////
 	// Bei dieser Spezialforschung gibt es womöglich auch eine Ressourcenroute mehr
 	// Hier die Boni durch die Uniqueforschung "Handel" -> mindestens eine Handelsroute
-	if (researchInfo->GetResearchComplex(11)->GetFieldStatus(3) == RESEARCHED)
+	if (researchInfo->GetResearchComplex(RESEARCH_COMPLEX::TRADE)->GetFieldStatus(3) == RESEARCH_STATUS::RESEARCHED)
 	{
 		USHORT maxTradeRoutes = (USHORT)(m_dHabitants / TRADEROUTEHAB) + m_Production.GetAddedTradeRoutes();
 		if (maxTradeRoutes == NULL)
-			addResRoute += researchInfo->GetResearchComplex(11)->GetBonus(3);
+			addResRoute += researchInfo->GetResearchComplex(RESEARCH_COMPLEX::TRADE)->GetBonus(3);
 	}
 
 	USHORT maxResourceRoutes = (USHORT)(m_dHabitants / TRADEROUTEHAB) + m_Production.GetAddedTradeRoutes() + addResRoute;

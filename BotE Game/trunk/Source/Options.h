@@ -208,11 +208,38 @@ namespace PLANT_SIZE
 #define GRAPHICNUMBER		31 // Anzahl der verschiedenen Grafiken der Planeten
 
 // ------------- Forschung -----------------------------------------------------
-#define NOTRESEARCHED		0
-#define RESEARCHED			1
-#define RESEARCHING 		2
+namespace RESEARCH_STATUS
+{
+	enum Typ
+	{
+		NOTRESEARCHED	= 0,
+		RESEARCHED		= 1,
+		RESEARCHING 	= 2
+	};
+}
 
-#define NoUC					12		// Number of Unique Complexes	( nur noch nicht Finanzen implementiert!!!! -> 13)
+namespace RESEARCH_COMPLEX
+{
+	enum Typ
+	{
+		NONE						= -1,
+		WEAPONS_TECHNOLOGY			= 0,
+		CONSTRUCTION_TECHNOLOGY		= 1,
+		GENERAL_SHIP_TECHNOLOGY		= 2,
+		PEACEFUL_SHIP_TECHNOLOGY	= 3,
+		TROOPS						= 4,
+		ECONOMY						= 5,
+		PRODUCTION					= 6,
+		DEVELOPMENT_AND_SECURITY	= 7,
+		RESEARCH					= 8,
+		SECURITY					= 9,
+		STORAGE_AND_TRANSPORT		= 10,
+		TRADE						= 11,
+		FINANCES					= 12	// noch nicht implementiert
+	};
+}
+
+#define NoUC					12		// Number of Unique Complexes	( nur noch nicht Finanzen implementiert!!!! -> dann auf 13 hochstellen)
 #define SPECIAL_RESEARCH_DIV	1.67	// Wert, durch den die benötigten Punkte bei der Spezialforschung geteilt werden (umso höher, umso weniger FP sind nötig)
 #define TECHPRODBONUS			2.0		// Techbonus auf die Produktion (z.B. 2% pro Stufe auf Energie, Nahrung und Industrie)
 

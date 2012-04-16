@@ -283,15 +283,15 @@ void CShipInfo::DrawShipInformation(Graphics* g, CRect rect, Gdiplus::Font* font
 	CString range = CResourceManager::GetString("RANGE");
 	SHIP_RANGE::Typ tmpRange = m_iRange;
 	BYTE tmpSpeed = m_iSpeed;
-	if (research->GetResearchInfo()->GetResearchComplex(2)->GetFieldStatus(1) == RESEARCHED)
+	if (research->GetResearchInfo()->GetResearchComplex(RESEARCH_COMPLEX::GENERAL_SHIP_TECHNOLOGY)->GetFieldStatus(1) == RESEARCH_STATUS::RESEARCHED)
 	{
 		if (m_iRange == SHIP_RANGE::SHORT)
-			tmpRange = (SHIP_RANGE::Typ)(research->GetResearchInfo()->GetResearchComplex(2)->GetBonus(1));
+			tmpRange = (SHIP_RANGE::Typ)(research->GetResearchInfo()->GetResearchComplex(RESEARCH_COMPLEX::GENERAL_SHIP_TECHNOLOGY)->GetBonus(1));
 	}
-	else if (research->GetResearchInfo()->GetResearchComplex(2)->GetFieldStatus(2) == RESEARCHED)
+	else if (research->GetResearchInfo()->GetResearchComplex(RESEARCH_COMPLEX::GENERAL_SHIP_TECHNOLOGY)->GetFieldStatus(2) == RESEARCH_STATUS::RESEARCHED)
 	{
 		if (m_iSpeed == 1)
-			tmpSpeed = (BYTE)(research->GetResearchInfo()->GetResearchComplex(2)->GetBonus(2));
+			tmpSpeed = (BYTE)(research->GetResearchInfo()->GetResearchComplex(RESEARCH_COMPLEX::GENERAL_SHIP_TECHNOLOGY)->GetBonus(2));
 	}
 	
 	if (rect.Width() >= 501)
@@ -376,8 +376,8 @@ void CShipInfo::DrawShipInformation(Graphics* g, CRect rect, Gdiplus::Font* font
 	
 	r.SetRect(rect.left,rect.top+165-sub,rect.right,rect.top+185-sub);
 	float shieldBoni = 1.0f;
-	if (research->GetResearchInfo()->GetResearchComplex(1)->GetFieldStatus(1) == RESEARCHED)
-		shieldBoni += (float)(research->GetResearchInfo()->GetResearchComplex(1)->GetBonus(1)) / 100;
+	if (research->GetResearchInfo()->GetResearchComplex(RESEARCH_COMPLEX::CONSTRUCTION_TECHNOLOGY)->GetFieldStatus(1) == RESEARCH_STATUS::RESEARCHED)
+		shieldBoni += (float)(research->GetResearchInfo()->GetResearchComplex(RESEARCH_COMPLEX::CONSTRUCTION_TECHNOLOGY)->GetBonus(1)) / 100;
 
 	s.Format("%s %d %s: %s %d",CResourceManager::GetString("TYPE"),m_Shield.GetShieldType(),
 		CResourceManager::GetString("SHIELDS"), CResourceManager::GetString("CAPACITY"), (UINT)(m_Shield.GetMaxShield() * shieldBoni));
@@ -393,8 +393,8 @@ void CShipInfo::DrawShipInformation(Graphics* g, CRect rect, Gdiplus::Font* font
 	default: material = "";
 	}
 	float hullBoni = 1.0f;
-	if (research->GetResearchInfo()->GetResearchComplex(1)->GetFieldStatus(2) == RESEARCHED)
-		hullBoni += (float)(research->GetResearchInfo()->GetResearchComplex(1)->GetBonus(2)) / 100;
+	if (research->GetResearchInfo()->GetResearchComplex(RESEARCH_COMPLEX::CONSTRUCTION_TECHNOLOGY)->GetFieldStatus(2) == RESEARCH_STATUS::RESEARCHED)
+		hullBoni += (float)(research->GetResearchInfo()->GetResearchComplex(RESEARCH_COMPLEX::CONSTRUCTION_TECHNOLOGY)->GetBonus(2)) / 100;
 	
 	if (m_Hull.GetDoubleHull() == TRUE)
 		s.Format("%s%s: %s %d",material, CResourceManager::GetString("DOUBLE_HULL_ARMOUR"),

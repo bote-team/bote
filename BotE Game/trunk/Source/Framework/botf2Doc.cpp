@@ -2262,96 +2262,96 @@ void CBotf2Doc::AddSpecialResearchBoniToShip(CShip* pShip, CMajor* pShipOwner) c
 
 	// mögliche Verbesserungen durch die Spezialforschung werden hier beachtet
 	// Spezialforschung #0: "Waffentechnik"
-	if (pInfo->GetResearchComplex(0)->GetComplexStatus() == RESEARCHED)
+	if (pInfo->GetResearchComplex(RESEARCH_COMPLEX::WEAPONS_TECHNOLOGY)->GetComplexStatus() == RESEARCH_STATUS::RESEARCHED)
 	{
 		// 20% erhoehter Phaserschaden
-		if (pInfo->GetResearchComplex(0)->GetFieldStatus(1) == RESEARCHED)
+		if (pInfo->GetResearchComplex(RESEARCH_COMPLEX::WEAPONS_TECHNOLOGY)->GetFieldStatus(1) == RESEARCH_STATUS::RESEARCHED)
 		{
 			for (int i = 0; i < pShip->GetBeamWeapons()->GetSize(); i++)
 			{
 				USHORT oldPower = pShip->GetBeamWeapons()->GetAt(i).GetBeamPower();
-				pShip->GetBeamWeapons()->GetAt(i).SetBeamPower(oldPower + (oldPower * pInfo->GetResearchComplex(0)->GetBonus(1) / 100));
+				pShip->GetBeamWeapons()->GetAt(i).SetBeamPower(oldPower + (oldPower * pInfo->GetResearchComplex(RESEARCH_COMPLEX::WEAPONS_TECHNOLOGY)->GetBonus(1) / 100));
 			}
 		}
 		// 20% erhoehte Torpedogenauigkeit
-		else if (pInfo->GetResearchComplex(0)->GetFieldStatus(2) == RESEARCHED)
+		else if (pInfo->GetResearchComplex(RESEARCH_COMPLEX::WEAPONS_TECHNOLOGY)->GetFieldStatus(2) == RESEARCH_STATUS::RESEARCHED)
 		{
 			for (int i = 0; i < pShip->GetTorpedoWeapons()->GetSize(); i++)
 			{
 				BYTE oldAcc = pShip->GetTorpedoWeapons()->GetAt(i).GetAccuracy();
-				pShip->GetTorpedoWeapons()->GetAt(i).SetAccuracy(oldAcc + (oldAcc * pInfo->GetResearchComplex(0)->GetBonus(2) / 100));
+				pShip->GetTorpedoWeapons()->GetAt(i).SetAccuracy(oldAcc + (oldAcc * pInfo->GetResearchComplex(RESEARCH_COMPLEX::WEAPONS_TECHNOLOGY)->GetBonus(2) / 100));
 			}
 		}
 		// 20% erhoehte Schussfreuquenz
-		else if (pInfo->GetResearchComplex(0)->GetFieldStatus(3) == RESEARCHED)
+		else if (pInfo->GetResearchComplex(RESEARCH_COMPLEX::WEAPONS_TECHNOLOGY)->GetFieldStatus(3) == RESEARCH_STATUS::RESEARCHED)
 		{
 			for (int i = 0; i < pShip->GetBeamWeapons()->GetSize(); i++)
 			{
 				BYTE oldRate = pShip->GetBeamWeapons()->GetAt(i).GetRechargeTime();
-				pShip->GetBeamWeapons()->GetAt(i).SetRechargeTime(oldRate	- (oldRate * pInfo->GetResearchComplex(0)->GetBonus(3) / 100));
+				pShip->GetBeamWeapons()->GetAt(i).SetRechargeTime(oldRate	- (oldRate * pInfo->GetResearchComplex(RESEARCH_COMPLEX::WEAPONS_TECHNOLOGY)->GetBonus(3) / 100));
 			}
 			for (int i = 0; i < pShip->GetTorpedoWeapons()->GetSize(); i++)
 			{
 				BYTE oldRate = pShip->GetTorpedoWeapons()->GetAt(i).GetTupeFirerate();
-				pShip->GetTorpedoWeapons()->GetAt(i).SetTubeFirerate(oldRate - (oldRate * pInfo->GetResearchComplex(0)->GetBonus(3) / 100));
+				pShip->GetTorpedoWeapons()->GetAt(i).SetTubeFirerate(oldRate - (oldRate * pInfo->GetResearchComplex(RESEARCH_COMPLEX::WEAPONS_TECHNOLOGY)->GetBonus(3) / 100));
 			}
 		}
 	}
 	// Spezialforschung #1: "Konstruktionstechnik"
-	if (pInfo->GetResearchComplex(1)->GetComplexStatus() == RESEARCHED)
+	if (pInfo->GetResearchComplex(RESEARCH_COMPLEX::CONSTRUCTION_TECHNOLOGY)->GetComplexStatus() == RESEARCH_STATUS::RESEARCHED)
 	{
 		// 20% bessere Schilde
-		if (pInfo->GetResearchComplex(1)->GetFieldStatus(1) == RESEARCHED)
+		if (pInfo->GetResearchComplex(RESEARCH_COMPLEX::CONSTRUCTION_TECHNOLOGY)->GetFieldStatus(1) == RESEARCH_STATUS::RESEARCHED)
 		{
 			UINT maxShield = pShip->GetShield()->GetMaxShield();
 			BYTE shieldType = pShip->GetShield()->GetShieldType();
 			BOOLEAN regenerative = pShip->GetShield()->GetRegenerative();
-			pShip->GetShield()->ModifyShield((maxShield + (maxShield * pInfo->GetResearchComplex(1)->GetBonus(1) / 100)), shieldType, regenerative);			
+			pShip->GetShield()->ModifyShield((maxShield + (maxShield * pInfo->GetResearchComplex(RESEARCH_COMPLEX::CONSTRUCTION_TECHNOLOGY)->GetBonus(1) / 100)), shieldType, regenerative);			
 		}
 		// 20% bessere Hülle
-		else if (pInfo->GetResearchComplex(1)->GetFieldStatus(2) == RESEARCHED)
+		else if (pInfo->GetResearchComplex(RESEARCH_COMPLEX::CONSTRUCTION_TECHNOLOGY)->GetFieldStatus(2) == RESEARCH_STATUS::RESEARCHED)
 		{
 			BOOLEAN doubleHull = pShip->GetHull()->GetDoubleHull();
 			BOOLEAN ablative = pShip->GetHull()->GetAblative();
 			BOOLEAN polarisation = pShip->GetHull()->GetPolarisation();
 			UINT baseHull = pShip->GetHull()->GetBaseHull();
 			BYTE hullMaterial = pShip->GetHull()->GetHullMaterial();
-			pShip->GetHull()->ModifyHull(doubleHull, (baseHull + (baseHull * pInfo->GetResearchComplex(1)->GetBonus(2) / 100)), hullMaterial,ablative,polarisation);
+			pShip->GetHull()->ModifyHull(doubleHull, (baseHull + (baseHull * pInfo->GetResearchComplex(RESEARCH_COMPLEX::CONSTRUCTION_TECHNOLOGY)->GetBonus(2) / 100)), hullMaterial,ablative,polarisation);
 		}
 		// 50% stärkere Scanner
-		else if (pInfo->GetResearchComplex(1)->GetFieldStatus(3) == RESEARCHED)
+		else if (pInfo->GetResearchComplex(RESEARCH_COMPLEX::CONSTRUCTION_TECHNOLOGY)->GetFieldStatus(3) == RESEARCH_STATUS::RESEARCHED)
 		{
 			USHORT scanPower = pShip->GetScanPower();
-			pShip->SetScanPower(scanPower + (scanPower * pInfo->GetResearchComplex(1)->GetBonus(3) / 100));
+			pShip->SetScanPower(scanPower + (scanPower * pInfo->GetResearchComplex(RESEARCH_COMPLEX::CONSTRUCTION_TECHNOLOGY)->GetBonus(3) / 100));
 		}
 	}
 	// Spezialforschung #2: "allgemeine Schiffstechnik"
-	if (pInfo->GetResearchComplex(2)->GetComplexStatus() == RESEARCHED)
+	if (pInfo->GetResearchComplex(RESEARCH_COMPLEX::GENERAL_SHIP_TECHNOLOGY)->GetComplexStatus() == RESEARCH_STATUS::RESEARCHED)
 	{
 		// erhoehte Reichweite für Schiffe mit zuvor kurzer Reichweite
-		if (pInfo->GetResearchComplex(2)->GetFieldStatus(1) == RESEARCHED)
+		if (pInfo->GetResearchComplex(RESEARCH_COMPLEX::GENERAL_SHIP_TECHNOLOGY)->GetFieldStatus(1) == RESEARCH_STATUS::RESEARCHED)
 		{
 			if (pShip->GetRange() == SHIP_RANGE::SHORT)
-				pShip->SetRange((SHIP_RANGE::Typ)(pInfo->GetResearchComplex(2)->GetBonus(1)));
+				pShip->SetRange((SHIP_RANGE::Typ)(pInfo->GetResearchComplex(RESEARCH_COMPLEX::GENERAL_SHIP_TECHNOLOGY)->GetBonus(1)));
 		}
 		// erhoehte Geschwindigkeit für Schiffe mit Geschwindigkeit 1
-		else if (pInfo->GetResearchComplex(2)->GetFieldStatus(2) == RESEARCHED)
+		else if (pInfo->GetResearchComplex(RESEARCH_COMPLEX::GENERAL_SHIP_TECHNOLOGY)->GetFieldStatus(2) == RESEARCH_STATUS::RESEARCHED)
 		{
 			if (pShip->GetSpeed() == 1)
-				pShip->SetSpeed((BYTE)(pInfo->GetResearchComplex(2)->GetBonus(2)));
+				pShip->SetSpeed((BYTE)(pInfo->GetResearchComplex(RESEARCH_COMPLEX::GENERAL_SHIP_TECHNOLOGY)->GetBonus(2)));
 		}
 	}
 	// Spezialforschung #3: "friedliche Schiffstechnik"
-	if (pInfo->GetResearchComplex(3)->GetComplexStatus() == RESEARCHED && pShip->GetShipType() <= SHIP_TYPE::COLONYSHIP)
+	if (pInfo->GetResearchComplex(RESEARCH_COMPLEX::PEACEFUL_SHIP_TECHNOLOGY)->GetComplexStatus() == RESEARCH_STATUS::RESEARCHED && pShip->GetShipType() <= SHIP_TYPE::COLONYSHIP)
 	{
 		// 25% erhoehte Transportkapazitaet
-		if (pInfo->GetResearchComplex(3)->GetFieldStatus(1) == RESEARCHED)
+		if (pInfo->GetResearchComplex(RESEARCH_COMPLEX::PEACEFUL_SHIP_TECHNOLOGY)->GetFieldStatus(1) == RESEARCH_STATUS::RESEARCHED)
 		{
 			USHORT storage = pShip->GetStorageRoom();
-			pShip->SetStorageRoom(storage + (storage * pInfo->GetResearchComplex(3)->GetBonus(1) / 100));
+			pShip->SetStorageRoom(storage + (storage * pInfo->GetResearchComplex(RESEARCH_COMPLEX::PEACEFUL_SHIP_TECHNOLOGY)->GetBonus(1) / 100));
 		}
 		// keine Unterhaltskosten
-		if (pInfo->GetResearchComplex(3)->GetFieldStatus(2) == RESEARCHED)
+		if (pInfo->GetResearchComplex(RESEARCH_COMPLEX::PEACEFUL_SHIP_TECHNOLOGY)->GetFieldStatus(2) == RESEARCH_STATUS::RESEARCHED)
 		{
 			pShip->SetMaintenanceCosts(0);
 		}
@@ -2382,19 +2382,19 @@ void CBotf2Doc::BuildTroop(BYTE ID, CPoint ko)
 	int n = m_System[ko.x][ko.y].GetTroops()->GetUpperBound();
 
 	// Spezialforschung #4: "Truppen"
-	if (pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(4)->GetComplexStatus() == RESEARCHED)
+	if (pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(RESEARCH_COMPLEX::TROOPS)->GetComplexStatus() == RESEARCH_STATUS::RESEARCHED)
 	{
 		// 20% verbesserte Offensive
-		if (pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(4)->GetFieldStatus(1) == RESEARCHED)
+		if (pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(RESEARCH_COMPLEX::TROOPS)->GetFieldStatus(1) == RESEARCH_STATUS::RESEARCHED)
 		{
 			BYTE power = m_System[ko.x][ko.y].GetTroops()->GetAt(n).GetOffense();
 			m_System[ko.x][ko.y].GetTroops()->GetAt(n).SetOffense(
-				power + (power * pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(4)->GetBonus(1) / 100));
+				power + (power * pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(RESEARCH_COMPLEX::TROOPS)->GetBonus(1) / 100));
 		}
 		// 500 Erfahrungspunkte dazu -> erste Stufe
-		else if (pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(4)->GetFieldStatus(2) == RESEARCHED)
+		else if (pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(RESEARCH_COMPLEX::TROOPS)->GetFieldStatus(2) == RESEARCH_STATUS::RESEARCHED)
 		{
-			m_System[ko.x][ko.y].GetTroops()->GetAt(n).AddExperiancePoints(pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(4)->GetBonus(2));
+			m_System[ko.x][ko.y].GetTroops()->GetAt(n).AddExperiancePoints(pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(RESEARCH_COMPLEX::TROOPS)->GetBonus(2));
 		}
 	}
 
@@ -3590,7 +3590,7 @@ void CBotf2Doc::CalcOldRoundData()
 							// wenn die Spezialforschung "mindestens 1 Handelsroute erforscht wurde, dann die Meldung erst bei
 							// der 2.ten Handelroute bringen
 							// Hier die Boni durch die Uniqueforschung "Handel" -> mindestens eine Handelsroute
-							bool bMinOneRoute = pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(11)->GetFieldStatus(3) == RESEARCHED;
+							bool bMinOneRoute = pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(RESEARCH_COMPLEX::TRADE)->GetFieldStatus(3) == RESEARCH_STATUS::RESEARCHED;
 							if (bMinOneRoute == false || (bMinOneRoute == true && (int)(m_System[x][y].GetHabitants() / TRADEROUTEHAB) > 1))
 							{
 								CString news = CResourceManager::GetString("ENOUGH_HABITANTS_FOR_NEW_TRADEROUTE", FALSE, m_Sector[x][y].GetName());
@@ -3986,20 +3986,20 @@ void CBotf2Doc::CalcNewRoundData()
 			CMajor* pMajor = it->second;
 			CResearchInfo* pInfo = pMajor->GetEmpire()->GetResearch()->GetResearchInfo();
 			// Die Boni auf die einzelnen Forschungsgebiete durch Spezialforschungen addieren
-			if (pInfo->GetResearchComplex(8)->GetFieldStatus(1) == RESEARCHED)
+			if (pInfo->GetResearchComplex(RESEARCH_COMPLEX::RESEARCH)->GetFieldStatus(1) == RESEARCH_STATUS::RESEARCHED)
 			{
-				researchBonis[it->first].nBoni[0] += pInfo->GetResearchComplex(8)->GetBonus(1);
-				researchBonis[it->first].nBoni[1] += pInfo->GetResearchComplex(8)->GetBonus(1);
+				researchBonis[it->first].nBoni[0] += pInfo->GetResearchComplex(RESEARCH_COMPLEX::RESEARCH)->GetBonus(1);
+				researchBonis[it->first].nBoni[1] += pInfo->GetResearchComplex(RESEARCH_COMPLEX::RESEARCH)->GetBonus(1);
 			}
-			else if (pInfo->GetResearchComplex(8)->GetFieldStatus(2) == RESEARCHED)
+			else if (pInfo->GetResearchComplex(RESEARCH_COMPLEX::RESEARCH)->GetFieldStatus(2) == RESEARCH_STATUS::RESEARCHED)
 			{
-				researchBonis[it->first].nBoni[2] += pInfo->GetResearchComplex(8)->GetBonus(2);
-				researchBonis[it->first].nBoni[3] += pInfo->GetResearchComplex(8)->GetBonus(2);
+				researchBonis[it->first].nBoni[2] += pInfo->GetResearchComplex(RESEARCH_COMPLEX::RESEARCH)->GetBonus(2);
+				researchBonis[it->first].nBoni[3] += pInfo->GetResearchComplex(RESEARCH_COMPLEX::RESEARCH)->GetBonus(2);
 			}
-			else if (pInfo->GetResearchComplex(8)->GetFieldStatus(3) == RESEARCHED)
+			else if (pInfo->GetResearchComplex(RESEARCH_COMPLEX::RESEARCH)->GetFieldStatus(3) == RESEARCH_STATUS::RESEARCHED)
 			{
-				researchBonis[it->first].nBoni[4] += pInfo->GetResearchComplex(8)->GetBonus(3);
-				researchBonis[it->first].nBoni[5] += pInfo->GetResearchComplex(8)->GetBonus(3);
+				researchBonis[it->first].nBoni[4] += pInfo->GetResearchComplex(RESEARCH_COMPLEX::RESEARCH)->GetBonus(3);
+				researchBonis[it->first].nBoni[5] += pInfo->GetResearchComplex(RESEARCH_COMPLEX::RESEARCH)->GetBonus(3);
 			}
 			pMajor->GetEmpire()->GetResearch()->SetResearchBoni(researchBonis[it->first].nBoni);
 		}
@@ -4011,19 +4011,19 @@ void CBotf2Doc::CalcNewRoundData()
 			CResearchInfo* pInfo = pMajor->GetEmpire()->GetResearch()->GetResearchInfo();
 
 			// Die Boni auf die einzelnen Geheimdienstgebiete berechnen
-			if (pInfo->GetResearchComplex(9)->GetFieldStatus(1) == RESEARCHED)
-				pMajor->GetEmpire()->GetIntelligence()->AddInnerSecurityBonus(pInfo->GetResearchComplex(9)->GetBonus(1));
-			else if (pInfo->GetResearchComplex(9)->GetFieldStatus(2) == RESEARCHED)
+			if (pInfo->GetResearchComplex(RESEARCH_COMPLEX::SECURITY)->GetFieldStatus(1) == RESEARCH_STATUS::RESEARCHED)
+				pMajor->GetEmpire()->GetIntelligence()->AddInnerSecurityBonus(pInfo->GetResearchComplex(RESEARCH_COMPLEX::SECURITY)->GetBonus(1));
+			else if (pInfo->GetResearchComplex(RESEARCH_COMPLEX::SECURITY)->GetFieldStatus(2) == RESEARCH_STATUS::RESEARCHED)
 			{
-				pMajor->GetEmpire()->GetIntelligence()->AddEconomyBonus(pInfo->GetResearchComplex(9)->GetBonus(2), 1);
-				pMajor->GetEmpire()->GetIntelligence()->AddMilitaryBonus(pInfo->GetResearchComplex(9)->GetBonus(2), 1);
-				pMajor->GetEmpire()->GetIntelligence()->AddScienceBonus(pInfo->GetResearchComplex(9)->GetBonus(2), 1);
+				pMajor->GetEmpire()->GetIntelligence()->AddEconomyBonus(pInfo->GetResearchComplex(RESEARCH_COMPLEX::SECURITY)->GetBonus(2), 1);
+				pMajor->GetEmpire()->GetIntelligence()->AddMilitaryBonus(pInfo->GetResearchComplex(RESEARCH_COMPLEX::SECURITY)->GetBonus(2), 1);
+				pMajor->GetEmpire()->GetIntelligence()->AddScienceBonus(pInfo->GetResearchComplex(RESEARCH_COMPLEX::SECURITY)->GetBonus(2), 1);
 			}
-			else if (pInfo->GetResearchComplex(9)->GetFieldStatus(3) == RESEARCHED)
+			else if (pInfo->GetResearchComplex(RESEARCH_COMPLEX::SECURITY)->GetFieldStatus(3) == RESEARCH_STATUS::RESEARCHED)
 			{
-				pMajor->GetEmpire()->GetIntelligence()->AddEconomyBonus(pInfo->GetResearchComplex(9)->GetBonus(3), 0);
-				pMajor->GetEmpire()->GetIntelligence()->AddMilitaryBonus(pInfo->GetResearchComplex(9)->GetBonus(3), 0);
-				pMajor->GetEmpire()->GetIntelligence()->AddScienceBonus(pInfo->GetResearchComplex(9)->GetBonus(3), 0);
+				pMajor->GetEmpire()->GetIntelligence()->AddEconomyBonus(pInfo->GetResearchComplex(RESEARCH_COMPLEX::SECURITY)->GetBonus(3), 0);
+				pMajor->GetEmpire()->GetIntelligence()->AddMilitaryBonus(pInfo->GetResearchComplex(RESEARCH_COMPLEX::SECURITY)->GetBonus(3), 0);
+				pMajor->GetEmpire()->GetIntelligence()->AddScienceBonus(pInfo->GetResearchComplex(RESEARCH_COMPLEX::SECURITY)->GetBonus(3), 0);
 			}
 		}		
 
@@ -4063,9 +4063,9 @@ void CBotf2Doc::CalcTrade()
 
 		///// HIER DIE BONI DURCH SPEZIALFORSCHUNG //////
 		// Hier die Boni durch die Uniqueforschung "Handel" -> keine Handelsgebühr
-		if (pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(11)->GetFieldStatus(1) == RESEARCHED)
+		if (pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(RESEARCH_COMPLEX::TRADE)->GetFieldStatus(1) == RESEARCH_STATUS::RESEARCHED)
 		{
-			float newTax = (float)pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(11)->GetBonus(1);
+			float newTax = (float)pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(RESEARCH_COMPLEX::TRADE)->GetBonus(1);
 			newTax = 1.0f + newTax / 100;
 			pMajor->GetTrade()->SetTax(newTax);
 		}
@@ -6372,8 +6372,8 @@ void CBotf2Doc::CalcEndDataForNextRound()
 		pMajor->GetMoralObserver()->CalculateEvents(m_System, pMajor->GetRaceID(), pMajor->GetRaceMoralNumber());
 		///// HIER DIE BONI DURCH SPEZIALFORSCHUNG //////
 		// Hier die Boni durch die Uniqueforschung "Lager und Transport" -> kein Abzug beim Stellaren Lager
-		if (pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(10)->GetFieldStatus(2) == RESEARCHED)
-			pMajor->GetEmpire()->GetGlobalStorage()->SetLosing(pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(10)->GetBonus(2));
+		if (pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(RESEARCH_COMPLEX::STORAGE_AND_TRANSPORT)->GetFieldStatus(2) == RESEARCH_STATUS::RESEARCHED)
+			pMajor->GetEmpire()->GetGlobalStorage()->SetLosing(pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(RESEARCH_COMPLEX::STORAGE_AND_TRANSPORT)->GetBonus(2));
 		// Ressourcentransfers im globalen Lager vornehmen
 		pMajor->GetEmpire()->GetGlobalStorage()->Calculate(m_System);
 		pMajor->GetEmpire()->GetGlobalStorage()->SetMaxTakenRessources(1000 * pMajor->GetEmpire()->GetNumberOfSystems());

@@ -1317,14 +1317,14 @@ void CSystemAI::CalcProd()
 	
 	///// HIER DIE BONI DURCH SPEZIALFORSCHUNG //////
 	// Hier die Boni durch die Uniqueforschung "Wirtschaft" -> 10% mehr Industrie
-	if (m_pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(5)->GetFieldStatus(1) == RESEARCHED)
-		pProduction->m_iIndustryProd += (int)(m_pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(5)->GetBonus(1)*pProduction->m_iIndustryProd/100);
+	if (m_pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(RESEARCH_COMPLEX::ECONOMY)->GetFieldStatus(1) == RESEARCH_STATUS::RESEARCHED)
+		pProduction->m_iIndustryProd += (int)(m_pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(RESEARCH_COMPLEX::ECONOMY)->GetBonus(1)*pProduction->m_iIndustryProd/100);
 	// Hier die Boni durch die Uniqueforschung "Produktion"
-	if (m_pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(6)->GetFieldStatus(1) == RESEARCHED)
-		pProduction->m_iFoodProd += (int)(m_pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(6)->GetBonus(1)*pProduction->m_iFoodProd/100); 
+	if (m_pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(RESEARCH_COMPLEX::PRODUCTION)->GetFieldStatus(1) == RESEARCH_STATUS::RESEARCHED)
+		pProduction->m_iFoodProd += (int)(m_pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(RESEARCH_COMPLEX::PRODUCTION)->GetBonus(1)*pProduction->m_iFoodProd/100); 
 	// Wenn wir die Uniqueforschung "Produktion" gewählt haben, und dort mehr Energie haben wollen -> 20% mehr!
-	else if (m_pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(6)->GetFieldStatus(3) == RESEARCHED)
-		pProduction->m_iEnergyProd += (int)(m_pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(6)->GetBonus(3)*pProduction->m_iEnergyProd/100); 
+	else if (m_pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(RESEARCH_COMPLEX::PRODUCTION)->GetFieldStatus(3) == RESEARCH_STATUS::RESEARCHED)
+		pProduction->m_iEnergyProd += (int)(m_pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(RESEARCH_COMPLEX::PRODUCTION)->GetBonus(3)*pProduction->m_iEnergyProd/100); 
 	
 	// Maximalenergie, also hier noch ohne Abzüge durch energiebedürftige Gebäude
 	pProduction->m_iMaxEnergyProd = pProduction->m_iEnergyProd;
