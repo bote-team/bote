@@ -574,7 +574,7 @@ void CSector::LetPlanetsShrink(float Value)
 				m_Planets[i].SetColonisized(FALSE);
 			}
 		}
-	delete Habitants;
+	delete[] Habitants;
 }
 
 /// In jeder neuen Runde die IsTerraforming und IsStationBuilding Variablen auf FALSE setzen, wenn Schiffe eine Aktion
