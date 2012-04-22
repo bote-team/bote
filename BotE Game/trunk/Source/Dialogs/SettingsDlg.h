@@ -61,7 +61,8 @@ private:
 	CSliderCtrl m_ctrlStarDensity;
 	CSliderCtrl m_ctrlMinorDensity;
 	CSliderCtrl m_ctrlAnomalyDensity;
-	CEdit m_edtGenMode; //Galaxiegenerator modus
+	CComboBox m_comboGalaxysize;
+	CComboBox m_comboGalaxyshape;
 
 	// Victory Conditions
 	BOOL m_bVCElimination;

@@ -13,7 +13,7 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// Deutsch (Deutschland) resources
+// German (Germany) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_DEU)
 #ifdef _WIN32
@@ -251,13 +251,13 @@ BEGIN
     PUSHBUTTON      "Abbrechen",IDCANCEL,191,106,50,14
 END
 
-IDD_SETTINGSDLG DIALOGEX 0, 0, 365, 295
+IDD_SETTINGSDLG DIALOGEX 0, 0, 365, 323
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Game Settings"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    DEFPUSHBUTTON   "OK",IDOK,131,273,50,14
-    PUSHBUTTON      "Cancel",IDCANCEL,185,273,50,14
+    DEFPUSHBUTTON   "OK",IDOK,131,301,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,185,301,50,14
     CONTROL         "Autosave",IDC_CHECK_AUTOSAVE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,22,79,10
     CONTROL         "",IDC_SLIDER_DIFFICULTY,"msctls_trackbar32",TBS_AUTOTICKS | WS_TABSTOP,23,53,100,18
     GROUPBOX        "General",IDC_STATIC,7,7,176,73
@@ -279,7 +279,7 @@ BEGIN
     GROUPBOX        "Control",IDC_STATIC,189,7,169,73
     CONTROL         "",IDC_SLIDER_TOOLTIPDELAY,"msctls_trackbar32",TBS_NOTICKS | TBS_ENABLESELRANGE | TBS_TOOLTIPS | WS_TABSTOP,250,137,100,18
     LTEXT           "Tooltip-Delay",IDC_STATIC,204,140,43,8
-    GROUPBOX        "Game",IDC_STATIC,7,163,176,96
+    GROUPBOX        "Game",IDC_STATIC,7,162,176,133
     EDITTEXT        IDC_EDIT_RANDOMSEED,75,176,43,12,ES_AUTOHSCROLL
     LTEXT           "Randomseed",IDC_STATIC,24,178,42,8
     CONTROL         "",IDC_SLIDER_STARDENSITY,"msctls_trackbar32",TBS_NOTICKS | TBS_ENABLESELRANGE | TBS_TOOLTIPS | WS_TABSTOP,71,198,100,14
@@ -297,8 +297,10 @@ BEGIN
     CONTROL         "Combat",IDC_CHECK_VC_COMBAT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,289,198,64,10
     CONTROL         "Sabotage",IDC_CHECK_VC_SABOTAGE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,289,214,64,10
     CONTROL         "Show minimap",IDC_CHECK_SHOWMINIMAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,204,124,61,10
-    EDITTEXT        IDC_GENMODEEDIT,77,239,40,14,ES_AUTOHSCROLL
-    LTEXT           "Generatormodus:",IDC_GENMODE,14,241,57,8
+    LTEXT           "Galaxyshape",IDC_GENMODE,15,260,42,8
+    LTEXT           "Galaxysize",IDC_STATIC,17,241,35,8
+    COMBOBOX        IDC_COMBOGALAXYSIZE,74,238,79,77,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_COMBOGALAXYSHAPE,74,259,79,56,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
 END
 
 IDD_STARTMENUVIEW DIALOGEX 0, 0, 237, 154
@@ -431,7 +433,7 @@ BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 358
         TOPMARGIN, 7
-        BOTTOMMARGIN, 287
+        BOTTOMMARGIN, 315
     END
 
     IDD_STARTMENUVIEW, DIALOG
@@ -597,7 +599,7 @@ BEGIN
     ID_CHAT                 "Show Chatwindow"
 END
 
-#endif    // Deutsch (Deutschland) resources
+#endif    // German (Germany) resources
 /////////////////////////////////////////////////////////////////////////////
 
 

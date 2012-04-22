@@ -56,7 +56,8 @@ void CSettingsDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_SLIDER_MINORDENSITY, m_ctrlMinorDensity);
 	DDX_Control(pDX, IDC_SLIDER_ANOMALYDENSITY, m_ctrlAnomalyDensity);
 	DDX_Control(pDX, IDC_EDIT_RANDOMSEED, m_edtRandomSeed);
-	DDX_Control(pDX, IDC_GENMODEEDIT, m_edtGenMode);
+	DDX_Control(pDX, IDC_COMBOGALAXYSHAPE, m_comboGalaxyshape);
+	DDX_Control(pDX, IDC_COMBOGALAXYSIZE, m_comboGalaxysize);
 	DDX_Check(pDX, IDC_CHECK_HIDEMENUBAR, m_bHideMenu);
 	DDX_Check(pDX, IDC_CHECK_VC_ELIMINATION, m_bVCElimination);
 	DDX_Check(pDX, IDC_CHECK_VC_DIPLOMACY, m_bVCDiplomacy);
@@ -118,6 +119,49 @@ BOOL CSettingsDlg::OnInitDialog()
 	CWnd* pCtrl = GetDlgItem(IDC_STATIC_DIFFICULTY);
 	if (pCtrl)
 		pCtrl->SetWindowText(m_sDifficulty);
+
+	//Galaxysize
+	m_comboGalaxysize.AddString("TINY 15x10");
+	m_comboGalaxysize.AddString("SMALL 20x15");
+	m_comboGalaxysize.AddString("CLASSIC 30x20");
+	m_comboGalaxysize.AddString("HUGE 40x30");
+	int sizeh=30,sizev=20;
+	pIni->ReadValue("Special", "MAPSIZEH", sizeh);
+	pIni->ReadValue("Special", "MAPSIZEV", sizev);
+	if(sizeh==15&&sizev==10)
+	{
+		m_comboGalaxysize.SetCurSel(0);
+	}
+	else if(sizeh==20&&sizev==15)
+	{
+		m_comboGalaxysize.SetCurSel(1);
+	}
+	else if(sizeh==30&&sizev==20)
+	{
+		m_comboGalaxysize.SetCurSel(2);
+	}
+	else if(sizeh==40&&sizev==30)
+	{
+		m_comboGalaxysize.SetCurSel(3);
+	}
+	else
+	{
+		CString s;
+		s.Format("Custom %dx%d",sizeh,sizev);
+		m_comboGalaxysize.AddString(s);
+		m_comboGalaxysize.SetCurSel(3);
+	}
+
+	//Galaxyshape
+	m_comboGalaxyshape.AddString("CLASSIC");
+	m_comboGalaxyshape.AddString("CIRCLE");
+	m_comboGalaxyshape.AddString("SPIRAL");
+	int genMode=0;
+	pIni->ReadValue("Special", "GENERATIONMODE", genMode);
+	m_comboGalaxyshape.SetCurSel(genMode);
+
+	
+
 
 	// Audio
 	bool bHardwareSound;
@@ -186,15 +230,6 @@ BOOL CSettingsDlg::OnInitDialog()
 	CString sRandomSeed;
 	sRandomSeed.Format("%d", nRandomSeed);
 	m_edtRandomSeed.SetWindowText(sRandomSeed);
-
-	int nGenMode;
-	if (!pIni->ReadValue("Special", "GENERATIONMODE", nGenMode))
-		ASSERT(false);
-	if (nGenMode >5||nGenMode<0)
-		nGenMode = 0;
-	CString sGenMode;
-	sGenMode.Format("%d", nGenMode);
-	m_edtGenMode.SetWindowText(sGenMode);
 
 	int nStarDensity;
 	if (!pIni->ReadValue("Special", "STARDENSITY", nStarDensity))
@@ -332,9 +367,39 @@ void CSettingsDlg::OnOK()
 	pIni->WriteValue("Special", "MINORDENSITY", s);
 	s.Format("%d", m_ctrlAnomalyDensity.GetPos());
 	pIni->WriteValue("Special", "ANOMALYDENSITY", s);
-	m_edtGenMode.GetWindowText(s);
+	s.Format("%d", m_comboGalaxyshape.GetCurSel());
 	pIni->WriteValue("Special", "GENERATIONMODE", s);
 
+	//Galaxysize
+	int choosen=m_comboGalaxysize.GetCurSel();
+	if(choosen==0)
+	{
+		s.Format("%d",15);
+		pIni->WriteValue("Special", "MAPSIZEH", s);//Tiny
+		s.Format("%d",10);
+		pIni->WriteValue("Special", "MAPSIZEV", s);
+	}
+	else if(choosen==1)
+	{
+		s.Format("%d",20);
+		pIni->WriteValue("Special", "MAPSIZEH", s);//Small
+		s.Format("%d",15);
+		pIni->WriteValue("Special", "MAPSIZEV", s);
+	}
+	else if(choosen==2)
+	{
+		s.Format("%d",30);
+		pIni->WriteValue("Special", "MAPSIZEH", s);//Classic
+		s.Format("%d",20);
+		pIni->WriteValue("Special", "MAPSIZEV", s);
+	}
+	else if(choosen==3)
+	{
+		s.Format("%d",40);
+		pIni->WriteValue("Special", "MAPSIZEH", s);//Huge
+		s.Format("%d",30);
+		pIni->WriteValue("Special", "MAPSIZEV", s);
+	}
 
 	// Victory Conditions
 	m_bVCElimination == TRUE ? s = "ON" : s = "OFF";
@@ -374,4 +439,5 @@ void CSettingsDlg::OnNMCustomdrawSliderDifficulty(NMHDR *pNMHDR, LRESULT *pResul
 		pCtrl->SetWindowText(m_sDifficulty);
 	*pResult = 0;
 }
+
 

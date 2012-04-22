@@ -165,7 +165,7 @@ BOOL CBotf2Doc::OnNewDocument()
 	pIni->ReadValue("Special", "MAPSIZEV", mapHeight);
 	STARMAP_SECTORS_VCOUNT=mapHeight;
 
-	int mapWidth=40;
+	int mapWidth=30;
 	pIni->ReadValue("Special", "MAPSIZEH", mapWidth);
 	STARMAP_SECTORS_HCOUNT=mapWidth;
 	
@@ -958,6 +958,19 @@ void CBotf2Doc::PrepareData()
 #endif
 		
 		m_iRound = 1;
+		
+		//Neuberechnung der Galaxiengröße falls im Einstellungsmenü geändert
+		CIniLoader* pIni = CIniLoader::GetInstance();
+		int mapHeight=20;
+		pIni->ReadValue("Special", "MAPSIZEV", mapHeight);
+		STARMAP_SECTORS_VCOUNT=mapHeight;
+
+		int mapWidth=30;
+		pIni->ReadValue("Special", "MAPSIZEH", mapWidth);
+		STARMAP_SECTORS_HCOUNT=mapWidth;
+	
+		STARMAP_TOTALWIDTH=STARMAP_SECTORS_HCOUNT*80;
+		STARMAP_TOTALHEIGHT=STARMAP_SECTORS_VCOUNT*80;
 
 		AllocateSectorsAndSystems();
 		
@@ -1044,6 +1057,19 @@ void CBotf2Doc::GenerateGalaxy()
 			m_Sector[x][y].SetKO(x,y);
 		}
 	m_mRaceKO.clear();
+	
+	for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
+		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
+		{
+			// Alle Werte der Systemklasse wieder auf NULL setzen
+			m_System[x][y].ResetSystem();
+			// Alle Werte der Sektorklasse wieder auf NULL setzen
+			m_Sector[x][y].Reset();
+			m_Sector[x][y].SetKO(x,y);
+		}
+
+
+
 	int nGenerationMode=0;//0==Standart 1==Circle
 
 	std::vector<std::vector<bool>> nGenField
@@ -1076,7 +1102,13 @@ void CBotf2Doc::GenerateGalaxy()
 						GalaxyPattern->GetPixel(x,y,&nColor);
 						if(nColor.GetR()>50&&nColor.GetB()>50&&nColor.GetG()>50) nGenField[x][y]=false;
 					}
-				}
+			}
+			else
+			{
+				sAppPath.Format("pattern%d.boj not found! using standart pattern", nGenerationMode);
+				AfxMessageBox(sAppPath);
+			}
+
 			img.Destroy();
 			delete GalaxyPattern;
 		};
