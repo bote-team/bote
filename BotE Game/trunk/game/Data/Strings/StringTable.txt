@@ -2348,7 +2348,7 @@ Alien-Artefakt gefunden
 [ALIENTEC]
 Im Sektor § wurde äußerst interessante Alientechnologie entdeckt
 [ALIENTECLONG]
-Im Sektor § wurde Alientechnologie entdeckt, die unsere Forschung in allen Gebieten vorranbringt
+Im Sektor § wurde Alientechnologie entdeckt, die unsere Forschung in allen Gebieten voranbringt
 [EVENTSHIPXP]
 Beim Erkunden von § hat die Crew viel Erfahrung gesammelt
 
@@ -2357,30 +2357,171 @@ Beim Erkunden von § hat die Crew viel Erfahrung gesammelt
 Sicherheitskräfte
 [MAJOR1_TROOP1_DESC]
 Dies ist eine relativ schwache Einheit der Terranischen Konföderation. Diese Einheiten kämpfen mit modernen Projektilwaffen, sind nicht besonders stark gepanzert und haben keine militärische Ausbildung genossen.
+[MAJOR1_TROOP2_NAME]
+Panzergrenadiere
+[MAJOR1_TROOP2_DESC]
+Gute ausgebildete Nahkampfeinheiten für Bodenkampf und Häuserkampf.
+[MAJOR1_TROOP3_NAME]
+Polizeikräfte
+[MAJOR1_TROOP3_DESC]
+Gut organisierte Polizeikräfte in gepanzerten Fahrzeugen. Sie wurden speziell dafür ausgebildet und ausgerüstet, um Aufstände und Unruhen in der eigenen Bevölkerung aufzulösen.
+[MAJOR1_TROOP4_NAME]
+Leichte  Artillerie
+[MAJOR1_TROOP4_DESC]
+Diese Panzereinheiten sind für Kämpfe auf kürzere Entfernungen ausgelegt. Sie durchkämmen jedes Gelände spielend und besitzen einen 360° Aktionsradius. Bodentruppen aller Art können mit diesen Panzereinheit bekämpft werden.
+[MAJOR1_TROOP5_NAME]
+Schwere Artillerie
+[MAJOR1_TROOP5_DESC]
+Diese Panzereinheiten können auf großer Distanz kleine und große Objekte anpeilen vernichten, Außerdem werden diese Panzereinheiten im Kampf gegen feindliche Lufteinheiten eingesetzt.
+[MAJOR1_TROOP6_NAME]
+Kampfhelikopter
+[MAJOR1_TROOP6_DESC]
+Die Kampfhelikopter der Terranischen Konföderation sind sehr schnell und wendig. Sie besitzen Kurzstreckenwaffen für präzise Zielattacken sowie Langstreckenwaffen für Flächenbeschuss.
+[MAJOR1_TROOP7_NAME]
+Marine Korps
+[MAJOR1_TROOP7_DESC]
+Die Marine Korps sind Spezialeinheiten der Terraner mit Spezialisten aus den verschiedensten Bereichen. Nur die Besten absolvieren die lange und harte Ausbildung erfolgreich. 
+
 [MAJOR2_TROOP1_NAME]
 Hanuhr Raketenmänner
 [MAJOR2_TROOP1_DESC]
-Ein zusammengewürfelter Haufen von Hanuhr, die mit gefährlichen Raketenabschussanlagen ausgerüstet sind. Leider ist ihre militärische Ausbildung mangelhaft.
+Ein zusammengewürfelter Haufen von Hanuhr, die mit gefährlichen Raketenabschussanlagen ausgerüstet sind. Leider ist ihre militärische Ausbildung mangelhaft
+[MAJOR2_TROOP2_NAME]
+Hanuhr  Spiders
+[MAJOR2_TROOP2_DESC]
+Die Spider der Hanuhr sind sehr wendig und können sehr geschickt feindlichem Beschuss ausweichen. Sie sind mit Nahkampfgeschossen ausgerüstet und besitzen Präzisionswerkzeuge, mit denen feindliche Maschinen in kurzer Zeit zerlegt werden können.
+[MAJOR2_TROOP3_NAME]
+HFA
+[MAJOR2_TROOP3_DESC]
+Die HFA (Hanuhr Finanz Aufsicht) überwacht, verwaltet und verteidigt das Finanzsystem der Hanuhr. Die Agenten der HFA fahren gepanzerte Fahrzeuge. Sie werden eingesetzt, um Aufständische zu bestechen oder zu beseitigen.
+[MAJOR2_TROOP4_NAME]
+Hanuhr Panzer-Droiden
+[MAJOR2_TROOP4_DESC]
+Stark gepanzerte, mechanische Einheiten. Ihre große Feuerkraft hält sowohl Nahkampftruppen als auch entfernte Ziele in Schach. Die Baupläne haben den Hanuhr große Mengen an Bestechungsgeldern gekostet. 
+[MAJOR2_TROOP5_NAME]
+Hanuhr Abwehr-Droiden
+[MAJOR2_TROOP5_DESC]
+Hanuhr Abwehr-Droiden sind besonders gut zur Verteidigung geeignet. Sie wehren Bodentruppen und fliegende Einheiten ab. 
+[MAJOR2_TROOP6_NAME]
+Hanuhr Kommandoeinheiten
+[MAJOR2_TROOP6_DESC]
+Spezialeinheiten der Hanuhr. Sie besitzen kleine, aber sehr präzise Handfeuerwaffen und weitere extrem fortgeschrittene Technik und Ausrüstung. Das macht sie zu äußerst effizienten Eliteeinheiten, zumindest für Hanuhr-Verhältnisse.
+
 [MAJOR3_TROOP1_NAME]
 Khayrin Krieger
 [MAJOR3_TROOP1_DESC]
 Dies ist eine relativ schwache Einheit des Khayrin Imperiums. Diese Einheiten kämpfen mit messerscharfen Nahkampfwaffen. Dies ist aber auch schon der einzige Nachteil in einem Kampf.
+[MAJOR3_TROOP2_NAME]
+Krieger des Kha'rehc Ordens
+[MAJOR3_TROOP2_DESC]
+Im Kha'rehc Orden ausgebildete Khayrin Krieger, eine sehr gut trainierte Einheit des Khayrin Imperiums. 
+[MAJOR3_TROOP3_NAME]
+Kha'rec Meister
+[MAJOR3_TROOP3_DESC]
+Krieger des Kha'rehc Ordens mit jahrelangem, auch mentalem Training werden zu Kha'rehc Meistern. Insbesondere durch das Mentaltraining haben sie eine perfektionierte Kampftechnik und gewinnen fast jede Schlacht.
+[MAJOR3_TROOP4_NAME]
+Khayrin Spezialkommandos 1. Rangs
+[MAJOR3_TROOP4_DESC]
+Khayrin Einheiten, welche die erste Stufe einer stark militärische Ausbildung genoss. Sie werden an verschiedenen Nahkampf- und Feuerwaffen ausgebildet und für den Angriff auf fremden Welten trainiert.
+[MAJOR3_TROOP5_NAME]
+Khayrin Spezialkommandos 2. Rangs
+[MAJOR3_TROOP5_DESC]
+Für diese zweite Stufe der Militärausbildung geeignete Khayrin Krieger erhalten zusätzlich eine psychologische und technische Schulung, um effektiver fortschrittliche Fremdwelten einzunehmen.
+[MAJOR3_TROOP6_NAME]
+Khayrin Spezialkommandos 3. Rangs
+[MAJOR3_TROOP6_DESC]
+Khayrin Krieger des 3. Ranges besitzen eine Spezialausbildung in biologischer und chemischer Kriegsführung. Sie sind insbesondere spezialisiert zur Eroberung sehr stark bevölkerter Welten. 
+[MAJOR3_TROOP7_NAME]
+Kha'rec Elite-Truppen
+[MAJOR3_TROOP7_DESC]
+Kha'rec Elite-Truppen sind die ultimativen Spezialeinheiten des Khayrin Imperiums. Sie sind intensiv für zahlreiche Aufgaben ausgebildet und besonders schlagkräftig und effizient.
+
 [MAJOR4_TROOP1_NAME]
 Heckenschützen
 [MAJOR4_TROOP1_DESC]
-Dies ist eine relativ schwache Einheit des Rotharianischen Sternenverbunds. Diese Einheiten bevorzugen eine hinterhältige Taktik, um ihre Gegner auszuschalten. Leider ist ihre militärische Grundausbildung sehr kurz.
+Dies sind relativ schwache Einheiten des Rotharianischen Sternenverbunds. Sie bevorzugen eine hinterhältige Taktik, um ihre Gegner auszuschalten. Ihre militärische Grundausbildung ist sehr kurz.
+[MAJOR4_TROOP2_NAME]
+Rotharianisches Luft-Geschwader
+[MAJOR4_TROOP2_DESC]
+Mit wenig Munition bestückt, aber sehr schnelle Lufteinheiten. Sie nutzen den Überraschungseffekt, weil sie aus hoher Luft herabstürzen und erst sehr spät erkannt werden. Meist werden sie in großen Geschwadern eingesetzt.
+[MAJOR4_TROOP3_NAME]
+Taq'riar
+[MAJOR4_TROOP3_DESC]
+Die Taq'riar bringen Ordnung auf die Straßen der Rotharianischen Welten. Sie werden zum Aufspüren und Beseitigen von Kollaborateuren und Verrätern eingesetzt. Angriffe von außen dulden sie aber genauso wenig.
+[MAJOR4_TROOP4_NAME]
+Rotharianischer Torpedoschwarm
+[MAJOR4_TROOP4_DESC]
+Die Rotharianischen Torpedoschwärme sind gefürchtet. Es handelt sich um sehr stark mit Torpedos bewaffnete, schwebende Einheiten, die für große Flächenbombadierung eingesetzt werden. Sie erreichen keine große Flughöhe und sind auch nicht besonders schnell, sind aber sehr effektiv, weil sie in Schwärmen angreifen.
+[MAJOR4_TROOP5_NAME]
+Taq'riars Schwarze Dornen
+[MAJOR4_TROOP5_DESC]
+Die Schwarze Dornen genannten Spezialeinheiten der Taq'riars sind besonders gefürchtet in der eigenen Bevölkerung. Da es schwebende Einheiten sind, finden sie sich leicht in jedem Gelände zurecht und gelangen leicht in jedes Versteck. So schalten sie Aufständische sowie Feinde blitzschnell aus.
+[MAJOR4_TROOP6_NAME]
+Rotharianische Drohnen
+[MAJOR4_TROOP6_DESC]
+Rotharianische Drohnen sind Defensiv-Streitkräfte mit hoher Feuerkraft. Ihre Aufgabe ist die totale Verteidigung der Rotharianischen Welten gegen Invasoren.
+[MAJOR4_TROOP7_NAME]
+Helikopterdrohnen (getarnt)
+[MAJOR4_TROOP7_DESC]
+Diese Helikopter sind sehr schnell, unsichtbar und kommen bei Spezialaufträgen aller Art zum Einsatz. Sie verraten sich allenfalls durch Ihren Fluggeräusch.
+[MAJOR4_TROOP8_NAME]
+Rotharianische Spezialtruppen
+[MAJOR4_TROOP8_DESC]
+Spezialeinheiten der Rotharianer, sehr gut ausgebildet und genetisch verbessert. 
+
 [MAJOR5_TROOP1_NAME]
-Invasionsstoßtrupp
+Cartarer Stoßtruppen
 [MAJOR5_TROOP1_DESC]
-Dies ist eine relativ schwache Einheit der Cartarer Invasoren. Trotzdem sind sie hervorragend für militärische Systeminvasionen geeignet.
+Dies sind relativ schwache Einheiten der Cartarer Invasoren. Nichtsdestotrotz sind sie hervorragend geeignet für Aufgaben aller Art wie Offensiven (auch planetarische Eroberungen), Verteidigungsaufgaben und Aufrechterhaltung der öffentlichen Ordnung.
 [MAJOR5_TROOP2_NAME]
 Alpha Invasoren
 [MAJOR5_TROOP2_DESC]
-Diese Einheit ist eine Spezialeinhait der Cartarer Invasoren. Durch ihre perfekte Ausbildung sind sie sofort in der Lage, feindliche Systeme blitzartig zu invasieren.
+Die Alpha Invasoren sind Spezialeinheiten der Cartarer. Durch ihre intensive Ausbildung sind sie gut vorbereitet, feindliche Systeme schnell zu eroberen.
+[MAJOR5_TROOP3_NAME]
+gepanzerte Security Kommandos
+[MAJOR5_TROOP3_DESC]
+Die gepanzerten Security Kommandos der Cartarer überwachen ständig Cartar und alle Kolonien des Imperiums. Aufständische oder angreifende Truppen werden aufs härteste bekämpft und zurückgeschlagen.
+[MAJOR5_TROOP4_NAME]
+Obsavarischer Orden
+[MAJOR5_TROOP4_DESC]
+Truppen des Obsavarischen Ordens beobachten und erobern Fremdwelten eher in intriganten Präzisionsangriffen als in Großangriffen. Dabei wird die bauliche Infrastruktur der Fremdwelt größtenteils intakt gelassen.
+[MAJOR5_TROOP5_NAME]
+Cartar Verteidigungs-Kommandos
+[MAJOR5_TROOP5_DESC]
+Cartarische Verteidigungs-Kommandos finden ihre Anwendung in stark gefährdeten Gebieten und zur Unterstützung der Security Kommandos. Sie sind beweglicher und effektiver im Kampf gegen feindliche Einheiten.
+[MAJOR5_TROOP6_NAME]
+Panzerverband
+[MAJOR5_TROOP6_DESC]
+Die sehr stark bewaffneten Panzerverbände der Cartarer überrollen förmlich bevölkerungsreiche Systeme. Ihre Feuerkraft ist immens und ihre Panzerung schwer zu durchdringen.
+[MAJOR5_TROOP7_NAME]
+Flugstaffeln
+[MAJOR5_TROOP7_DESC]
+Die cartarischen Flugstaffeln sind sehr schnell und wendig, sie sind bekannt für ihre legendären Flug- und Ausweichmanöver. Im Kampf kommt es dadurch meist nur zu geringen Verlustraten.
+
 [MAJOR6_TROOP1_NAME]
 Da'unor Sniper
 [MAJOR6_TROOP1_DESC]
-Dies ist eine relativ schwache Einheit der Omega Allianz. Diese Einheiten kämpfen mit Präzisionsgewehren, sind nicht besonders stark gepanzert und haben keine militärische Ausbildung durchlaufen.
+Obwohl die Da'unor Sniper mit Präzisionsgewehren ausgerüstet sind, sind sie ansonsten relativ schwache Einheiten der Omega Allianz. Ihre Ausbildung ist nur von kurzer Dauer.
+[MAJOR6_TROOP2_NAME]
+Da'unor Trooper
+[MAJOR6_TROOP2_DESC]
+Gut ausgebildete Einheiten der Omega Allianz, mit Schnellfeuerwaffen und Sprengmunition ausgerüstet. Die Vi benutzen die Da'unor Troopers auch, um Unruhen in eigenen Städten zu unterdrücken.
+[MAJOR6_TROOP3_NAME]
+Mechanische Kampf-Einheiten
+[MAJOR6_TROOP3_DESC]
+Mechanische Kampf-Einheiten werden für die Invasion von Systemen produziert. Sie haben sehr hohe Schußsequenzen und eignen sich hervorragend im Bodenkampf.
+[MAJOR6_TROOP4_NAME]
+Mechanische Tracing-Einheiten
+[MAJOR6_TROOP4_DESC]
+Mechanische Tracing-Einheiten können besonders gut Feindes des Imperiums ausmachen. Sie besitzen sehr empfindliche Detektoren und Ortungssysteme.
+[MAJOR6_TROOP5_NAME]
+Mechanische Angriffs-Einheiten
+[MAJOR6_TROOP5_DESC]
+Mechanische Angriffs-Einheiten sind mit einem großen Arsenal an Waffen ausgestattet und sind für die Eroberung von fremden Systemen optimiert.
+[MAJOR6_TROOP6_NAME]
+Da'unors Spezial-Einheiten
+[MAJOR6_TROOP6_DESC]
+Die mechanischen Spezial-Einheiten der Da'unor sind wendig, schnell und sehr effizient. Sie haben eine hohe Feuerkraft und operieren in kleinen Verbänden oder auch einzeln.
 
 [MRD]
 Mrd.

@@ -34,7 +34,6 @@ Create a new multiplayer match
 [JOINGAMETT]
 Join an existing mutiplayer match
 
-
 [WARNING]
 Warning
 [ERROR]
@@ -64,13 +63,13 @@ Publish game in LAN
 IP-adress of the server:
 [SERCHLANSERVER]
 Search for LAN-server
+
 [STARTGAME]
 Start match
 [CHOOSEEMPIRE]
 Choose your Empire
 [CHAT]
 Chat
-
 
 // left_View Buttons
 [BTN_ROUNDEND]
@@ -150,6 +149,9 @@ Demand
 [BTN_CORRUPTION]
 Bribe
 
+[SORT2]
+Treaty
+
 // trade buttons
 [BTN_STOCK_EXCHANGE]
 Exchange
@@ -215,10 +217,6 @@ Transport
 Follow
 [BTN_TRAIN_SHIP]
 Train ship
-[BTN_WAIT_SHIP_ORDER]
-Wait
-[BTN_SENTRY_SHIP_ORDER]
-Sentry
 
 // decision making buttons
 [BTN_NEXT]
@@ -1216,10 +1214,6 @@ Transport
 Follow
 [TRAIN_SHIP_ORDER]
 Train
-[WAIT_SHIP_ORDER]
-Wait
-[SENTRY_SHIP_ORDER]
-Sentry
 
 // ship types, singular
 [TRANSPORTER]
@@ -1251,7 +1245,7 @@ Outpost
 [STARBASE]
 Starbase
 [ALIEN]
-Alien Entitiy
+Alien
 
 // ship types, plural
 [TRANSPORTERS]
@@ -1402,8 +1396,11 @@ available
 [SELECTED]
 selected
 
-[POWER]
-Power
+[OPOWER]
+Attack Strength
+
+[DPOWER]
+Defence Strength
 
 [EXPERIANCE]
 Experience
@@ -1908,8 +1905,6 @@ Work force in the § system is crippled by the bombardment and demands free acces
 [BOMBARDEVENT_TEXT_DEFENDER_MAJOR6]
 The § system Vi is displeased by the bombardment and demands immediate reinforcements.
 
-
-
 [INVASIONSUCCESSEVENT_HEADLINE]
 Successful invasion in § system
 
@@ -2328,6 +2323,24 @@ The citizens of § are proud about their gouvernment
 The Citizens of § become unhappy
 [SYSTEMEVENTPLANETMOVEMENT]
 There was a climatic change on §
+[SYSTEMEVENTPLANETDEMOGRAPHIC]
+Dramatically demographic changes at §
+[SYSTEMEVENTPLANETDEMOGRAPHICTITLE]
+Demographic Changes
+[SYSTEMEVENTPLANETDEMOGRAPHICLONG]
+Through miscalculations the mortality rate in § is much higher than planned. Population is shrinking
+[BREAKTHROUGH]
+Breakthrough
+[GLOBALEVENTRESEARCH]
+Through new research methods scientist briefly doubled their effectiveness
+[GLOBALEVENTMINOR]
+Change of government at the people of §
+[ALIENTECHEADLINE]
+Alien artifact found
+[ALIENTEC]
+In sector § an extremely interesting alien technology was discovered
+[ALIENTECLONG]
+In sector § alien technology has been discovered which promotes our research in all areas
 [GLOBALEVENTRESEARCH]
 Your scientists are working very eficently
 [GLOBALEVENTMINOR]
@@ -2342,18 +2355,114 @@ During the exploration of §, the crew gained extra experience
 Security forces
 [MAJOR1_TROOP1_DESC]
 This is a relatively weak defence unit of the Coalition of Planets ground forces. Equipped with modern projectile weapons and lightly armored, they need to make up first for their lacking military training.
+[MAJOR1_TROOP2_NAME]
+Armored Infantry
+[MAJOR1_TROOP2_DESC]
+Well-trained melee unit for ground combat and urban warfare. 
+[MAJOR1_TROOP3_NAME]
+Police Forces
+[MAJOR1_TROOP3_DESC]
+Well-organized police forces in armored vehicles. They have been specially trained and equipped to resolve riots and unrest in their own population.
+[MAJOR1_TROOP4_NAME]
+Light Artillery
+[MAJOR1_TROOP4_DESC]
+These tanks are designed for combats in shorter distances. They comb through each terrain and have a 360 ° radius. Ground forces of all kinds can be engaged with these tanks. 
+[MAJOR1_TROOP5_NAME]
+Heavy Artillery
+[MAJOR1_TROOP5_DESC]
+These tanks are able to take accurate aim to destroy smaller and large targets over large distances. In addition, these tanks will be used against enemy air units. 
+[MAJOR1_TROOP6_NAME]
+Battle Helicopters
+[MAJOR1_TROOP6_DESC]
+The battle helicopters of the Coalition of Planets are very fast and agile. They have short-range missiles for precise target attacks and long-range weapons for bombardements at large areas. 
+[MAJOR1_TROOP7_NAME]
+Marine Corps 
+[MAJOR1_TROOP7_DESC]
+The Marine Corps are special units of the Terrans with specialists from many fields. Only the best pass the long and rigorous training successfully. 
 [MAJOR2_TROOP1_NAME]
 Heyoun Rocketeers
 [MAJOR2_TROOP1_DESC]
 A ragtag armed rabble equipped with deadly-dangerous rocket launchers. Unfortunately their military training is more than insufficient for their firepower.
+[MAJOR2_TROOP2_NAME]
+Heyoun Spiders
+[MAJOR2_TROOP2_DESC]
+Heyoun Spiders are very agile and can evade enemy fire very cleverly. They are equipped with close combat projectiles and with precision tool equipment for disassembling enemy maschines in a short time.
+[MAJOR2_TROOP3_NAME]
+HFA
+[MAJOR2_TROOP3_DESC]
+The HFA (Heyoun Financial Authority) monitors, manages and defends the financial system of the Heyouns. HFA agents driving armored vehicles and are bribing or eliminating insurgents. 
+[MAJOR2_TROOP4_NAME]
+Heyoun Armored Droids
+[MAJOR2_TROOP4_DESC]
+Heavily armored, mechanical units. Their high fire rate keeps in check close-quarters troops and range targets. The construction plans had cost large amounts of bribe money. 
+[MAJOR2_TROOP5_NAME]
+Heyoun Defence Droids
+[MAJOR2_TROOP5_DESC]
+Heyoun Defense Droids are particularly well suited for defending against ground troops and air forces. 
+[MAJOR2_TROOP6_NAME]
+Heyoun Command Units
+[MAJOR2_TROOP6_DESC]
+Heyoun special units. They have small, but very accurate handguns and other highly advanced technology and equipment which turns them to extremely efficient elite units, at least for Heyoun ratio. 
 [MAJOR3_TROOP1_NAME]
 Khaoron Warriors
 [MAJOR3_TROOP1_DESC]
 This is a relatively basic unit of the Khaoron Empire. They prefer close-quarters weapons but that's their only disadvantage.
+[MAJOR3_TROOP2_NAME]
+Warriors of Kha'rehc Order)
+[MAJOR3_TROOP2_DESC]
+Khaoron warriors drilled at Kha'rehc Order, a very well-trained unit of Khaoron Empire. 
+[MAJOR3_TROOP3_NAME]
+Kha'rehc Master
+[MAJOR3_TROOP3_DESC]
+Warriors of the Kha'rehc Order with long lasting and also mental training shape up to Kha'rehc Masters. In particular by the mental training they have a perfect fighting technique winning almost every battle. 
+[MAJOR3_TROOP4_NAME]
+Khaoron Special Forces 1st Skill
+[MAJOR3_TROOP4_DESC]
+Khaoron warriors who toke part in a strong military training. They are trained in various melee weapons and firearms and for attacks on alien worlds. 
+[MAJOR3_TROOP5_NAME]
+Khaoron Special Forces 2nd Skill
+[MAJOR3_TROOP5_DESC]
+Khaoron warriors appropriate to this military education receive a psychological and technical training to conquer developed foreign worlds more effectively. 
+[MAJOR3_TROOP6_NAME]
+Khaoron Special Forces 3rd Skill
+[MAJOR3_TROOP6_DESC]
+Khaoron warriors of the 3rd Skill have special knowledge in biological and chemical warfare. They are specialized for the conquest of heavily populated worlds. 
+[MAJOR3_TROOP7_NAME]
+Kha'rec Elite Forces
+[MAJOR3_TROOP7_DESC]
+Kha'rec elite warriors are the ultimate special forces of the Khaoron Empire. They are intensively trained for many tasks and particularly successful and efficient. 
 [MAJOR4_TROOP1_NAME]
 Marksmen
 [MAJOR4_TROOP1_DESC]
 A relatively weak unit of the Rotharian Star Network. These units prefer a treacherous tactic to neutralize their enemies. Unfortunately their training periods could be extended largely.
+[MAJOR4_TROOP2_NAME]
+Rotharian Air Squadron
+[MAJOR4_TROOP2_DESC]
+Little ammunition loaded, but very fast aircrafts. They use the element of surprise, because they dive back down from sky-high and are not detected until very close distance. Mostly they act in large squadrons. 
+[MAJOR4_TROOP3_NAME]
+Taq'riar
+[MAJOR4_TROOP3_DESC]
+The Taq'riar are taking care of public order to the streets of Rotharian planets. They detect and eliminate collaborators and traitors. Disturbances from the outside they don't tolerate too.
+[MAJOR4_TROOP4_NAME]
+Rotharian Torpedo Swarms
+[MAJOR4_TROOP4_DESC]
+Rotharian Torpedo Swarms are dreaded. Heavily armed with torpedo tubes these levitating units get charged with wide area bombardements. They don't reach high altitude and are not fast but they are very effective because they attack in swarms. 
+[MAJOR4_TROOP5_NAME]
+Taq'riars Black Thorns
+[MAJOR4_TROOP5_DESC]
+Black Thorns, a special units of the Taq'riar, are dreaded from the people. They levitate so they easily navigate through any terrain and can easily access into every hide-out. So they can catch insurgents and enemies rapidly. 
+[MAJOR4_TROOP6_NAME]
+Rotharian Drones
+[MAJOR4_TROOP6_DESC]
+Rotharian Drones are defense forces with high firepower. Their duty is the total defence of Rotharian planets against invaders. 
+[MAJOR4_TROOP7_NAME]
+Camouflaged Helicopter Drones
+[MAJOR4_TROOP7_DESC]
+These helicopters are very fast and invisible. They get charged with special orders of any kind. Only by your flight noise they are revealable. 
+[MAJOR4_TROOP8_NAME]
+Rotharianische Spezialtruppen
+[MAJOR4_TROOP8_DESC]
+Spezialeinheiten der Rotharianer. Sie sind sehr gut ausgebildet und wurden genetisch Verbessert.
 [MAJOR5_TROOP1_NAME]
 Stormtroopers
 [MAJOR5_TROOP1_DESC]
@@ -2362,10 +2471,50 @@ A modest unit in the Cartare Union ground force book. Nevertheless they are high
 Alpha Invaders
 [MAJOR5_TROOP2_DESC]
 This is a special force unit of the Cartare Union. By their perfect training they are immediately ready to push through enemy defences and gain territory very quickly during invasions.
+[MAJOR5_TROOP3_NAME]
+Armored Security Commands 
+[MAJOR5_TROOP3_DESC]
+Units of Cartare Armored Security Command constantly monitor Cartar and all the colonies of the Empire. Insurgents or attacking troops are fought and repulsed the hardest way. 
+[MAJOR5_TROOP4_NAME]
+Obsavarian Order
+[MAJOR5_TROOP4_DESC]
+Troops of the Obsavarian Order at first spy on and then conquer worlds more by scheming attacks than by large offensive. Hereby the infrastructure of the foreign worlds is mostly left intact.
+[MAJOR5_TROOP5_NAME]
+Cartare Defense Commands
+[MAJOR5_TROOP5_DESC]
+Troops of the Cartare Defense Command are used in high risk areas and to support the security command troops. In battles they are more agile and effective than those. 
+[MAJOR5_TROOP6_NAME]
+Cartare Defense Commands
+[MAJOR5_TROOP6_DESC]
+These heavily armed tanks overruns populous systems very quickly. Their firepower is immense and their armor is difficult to penetrate. 
+[MAJOR5_TROOP7_NAME]
+Cartar Aviation Squadrons
+[MAJOR5_TROOP7_DESC]
+Cartare aviation units are very fast and agile. They are known for their legendary flight and evasive maneuvers. Therefore they have low loss rates in battles. 
 [MAJOR6_TROOP1_NAME]
 Da'unor Sniper
 [MAJOR6_TROOP1_DESC]
 This is a rather infirm unit of the Omega-Alliance. They fight with precision rifles, lightly armored and lack extended training.
+[MAJOR6_TROOP2_NAME]
+Da'unor Trooper
+[MAJOR6_TROOP2_DESC]
+Well-trained units of Omega Alliance, armed with automatic weapons and blasting charge. The Vi also use Da'unor Troopers to suppress unrest in their own cities. 
+[MAJOR6_TROOP3_NAME]
+Mechanical Combat Units
+[MAJOR6_TROOP3_DESC]
+Mechanical combat units are produced for planetary invasions. They have very high shot sequence and are very well appropriate for ground combat. 
+[MAJOR6_TROOP4_NAME]
+Mechanical Trace Units
+[MAJOR6_TROOP4_DESC]
+Mechanical Trace Units are particularly successful in detecting enemies of the Empire. They have very sensitive detectors and locating systems. 
+[MAJOR6_TROOP5_NAME]
+Mechanical Attack Units
+[MAJOR6_TROOP5_DESC]
+Mechanical attack units are equipped with a large arsenal of weapons and are optimized for conquesting of foreign planets. 
+[MAJOR6_TROOP6_NAME]
+Da'unor Special Units
+[MAJOR6_TROOP1_DESC]
+The mechanical Da'unor Special Units are agile, fast and very efficient. They have a high firepower and operate in small groups or individually. 
 
 [MRD]
 bn.
@@ -2389,10 +2538,3 @@ very high
 technical progress
 [NEW_TECHNOLOGY_ALLOWS]
 new technology allows:
-
-[EVENT_IONISIERENDES_GASWESEN]
-Durch ein Ionisierendes Gaswesen wurde die komplette Energieversorgung im § System lahmgelegt
-[EVENT_GABALLIANER_SEUCHENSCHIFF]
-Durch ein Gaballianisches Seuchenschiff wurde die komplette Nahrungsversorgung im § System lahmgelegt
-[EVENT_BLIZZARD_PLASMAWESEN]
-Durch ein Blizzard Plasmawesen wurde die komplette Energieversorgung im § System lahmgelegt
