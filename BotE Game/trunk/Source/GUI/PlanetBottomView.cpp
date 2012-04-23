@@ -199,8 +199,9 @@ void CPlanetBottomView::OnDraw(CDC* dc)
 		RectF boundingBox;
 		g.MeasureString(s.AllocSysString(), s.GetLength(), &Gdiplus::Font(fontName.AllocSysString(), fontSize), PointF(735, 228), &fontFormat, &boundingBox); 
 		// Symbole der vorhanden Ressourcen im System ermitteln
-		BOOLEAN res[DERITIUM + 1] = {0};
-		pDoc->GetSector(KO).GetAvailableResources(res, false);
+		BOOLEAN res[DERITIUM + 1] = {0},rescol[DERITIUM + 1] = {0};
+		pDoc->GetSector(KO).GetAvailableResources(res, false);	//alle Ressourcen
+		pDoc->GetSector(KO).GetAvailableResources(rescol, true);//erschlossene Ressourcen
 		int nExist = 0;
 		for (int i = TITAN; i <= DERITIUM; i++)
 		{
@@ -218,6 +219,12 @@ void CPlanetBottomView::OnDraw(CDC* dc)
 				}
 				if (graphic)
 					g.DrawImage(graphic, (int)boundingBox.GetRight() + 5 + nExist * 20, 228, 20, 16);
+				if(!rescol[i])
+				{
+					fontBrush.SetColor(Color(150,25,25,25));//graut nicht erschlossene Ressourcen aus
+					g.FillRectangle(&fontBrush,(int)boundingBox.GetRight() + 5 + nExist * 20, 228,20,16);
+					fontBrush.SetColor(Color(170,170,170));
+				}
 				nExist++;
 			}
 		}
