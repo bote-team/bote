@@ -73,7 +73,7 @@ public:
 	// Diese Funktion liefert TRUE wenn die Flotte den "order" ausführen kann. Als Schiffszeiger muß das Schiff
 	// übergeben werden, welches die Flotte beinhaltet. Kann die Flotte den Befehl nicht befolgen liefert die
 	// Funktion FALSE zurück
-	BOOLEAN CheckOrder(const CShip* ship, BYTE order) const;
+	BOOLEAN CheckOrder(const CShip* ship, SHIP_ORDER::Typ nOrder) const;
 	
 	// Funktion löscht die gesamte Flotte
 	void DeleteFleet(void) { m_vShips.RemoveAll(); }

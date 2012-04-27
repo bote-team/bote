@@ -1303,17 +1303,17 @@ void CGalaxyMenuView::HandleShipHotkeys(const UINT nChar, CBotf2Doc* pDoc)
 	}
 
 	if(nChar == 'N') {
-		SearchNextIdleShipAndJumpToIt(pDoc);
+		SearchNextIdleShipAndJumpToIt(pDoc, SHIP_ORDER::NONE);
 	}
 	else if(nChar == VK_SPACE) {
-		SearchNextIdleShipAndJumpToIt(pDoc, WAIT_SHIP_ORDER);
+		SearchNextIdleShipAndJumpToIt(pDoc, SHIP_ORDER::WAIT_SHIP_ORDER);
 	}
 	else if(nChar == 'S') {
-		SearchNextIdleShipAndJumpToIt(pDoc, SENTRY_SHIP_ORDER);
+		SearchNextIdleShipAndJumpToIt(pDoc, SHIP_ORDER::SENTRY_SHIP_ORDER);
 	}
 }
 
-void CGalaxyMenuView::SearchNextIdleShipAndJumpToIt(CBotf2Doc* pDoc, const int order)
+void CGalaxyMenuView::SearchNextIdleShipAndJumpToIt(CBotf2Doc* pDoc, SHIP_ORDER::Typ order)
 {
 	CMajor const* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
@@ -1356,7 +1356,7 @@ void CGalaxyMenuView::SearchNextIdleShipAndJumpToIt(CBotf2Doc* pDoc, const int o
 		const Sector& sector = Sector(coords.x, coords.y);
 
 		if(ship.HasNothingToDo()) {
-			if(previous_ship && order != -1)
+			if(previous_ship && order != SHIP_ORDER::NONE)
 				previous_ship->SetCurrentOrder(order);
 			m_PreviouslyJumpedToShip = RememberedShip(i, ship.GetShipName());
 			pMajor->GetStarmap()->Select(sector);// sets orange rectangle in galaxy view

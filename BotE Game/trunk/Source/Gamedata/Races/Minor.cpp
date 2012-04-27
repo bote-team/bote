@@ -222,7 +222,7 @@ void CMinor::PerhapsBuildShip(CBotf2Doc* pDoc)
 						pDoc->BuildShip(pShipInfo->GetID(), this->GetRaceKO(), this->m_sID);
 						// Befehl für nicht "böse" Rassen auf Meiden stellen
 						if (!IsRaceProperty(RACE_PROPERTY::HOSTILE) && !IsRaceProperty(RACE_PROPERTY::WARLIKE) && !IsRaceProperty(RACE_PROPERTY::SNEAKY) && !IsRaceProperty(RACE_PROPERTY::SECRET))
-							pDoc->m_ShipArray[pDoc->m_ShipArray.GetUpperBound()].SetCurrentOrder(AVOID);
+							pDoc->m_ShipArray[pDoc->m_ShipArray.GetUpperBound()].SetCurrentOrder(SHIP_ORDER::AVOID);
 						return;
 					}
 				}

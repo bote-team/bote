@@ -60,7 +60,7 @@ private:
 	CPoint m_LastKO;							///< Hilfsvariable, die den zuletzt angeklickten Sektor sich merkt
 	BOOLEAN m_bShowNextButton;
 	Bitmap* m_pShipOrderButton;					///< kleiner Button für die Schiffbefehle
-	CRect m_ShipOrders[SENTRY_SHIP_ORDER + 1];			///< die ganzen Rechtecke für die Schiffsbefehlsbuttons
+	CRect m_ShipOrders[SHIP_ORDER::SENTRY_SHIP_ORDER + 1];			///< die ganzen Rechtecke für die Schiffsbefehlsbuttons
 	CRect m_MainShipOrders[3];					///< die 3 Hauptbuttons für die Schiffsbefehle
 	short m_iTimeCounter;
 	short m_iWhichMainShipOrderButton;			///< welchen Hauptschiffsbefehlsbutton haben wir gedrückt

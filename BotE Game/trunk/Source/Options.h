@@ -293,24 +293,32 @@ namespace SHIP_RANGE
 	};
 }
 // Schiffsbefehle
-#define AVOID               0
-#define ATTACK              1
-#define CLOAK               2
-#define ATTACK_SYSTEM       3
-#define RAID_SYSTEM         4
-#define BLOCKADE_SYSTEM		5
-#define DESTROY_SHIP        6
-#define COLONIZE            7
-#define TERRAFORM           8
-#define BUILD_OUTPOST       9
-#define BUILD_STARBASE		10
-#define ASSIGN_FLAGSHIP     11
-#define CREATE_FLEET        12
-#define TRANSPORT			13
-#define FOLLOW_SHIP			14
-#define TRAIN_SHIP			15
-#define WAIT_SHIP_ORDER		16
-#define SENTRY_SHIP_ORDER	17
+namespace SHIP_ORDER
+{
+	enum Typ
+	{
+		NONE				= -1,
+		AVOID               = 0,
+		ATTACK              = 1,
+		CLOAK               = 2,
+		ATTACK_SYSTEM       = 3,
+		RAID_SYSTEM         = 4,
+		BLOCKADE_SYSTEM		= 5,
+		DESTROY_SHIP        = 6,
+		COLONIZE            = 7,
+		TERRAFORM           = 8,
+		BUILD_OUTPOST       = 9,
+		BUILD_STARBASE		= 10,
+		ASSIGN_FLAGSHIP     = 11,
+		CREATE_FLEET        = 12,
+		TRANSPORT			= 13,
+		FOLLOW_SHIP			= 14,
+		TRAIN_SHIP			= 15,
+		WAIT_SHIP_ORDER		= 16,
+		SENTRY_SHIP_ORDER	= 17
+	};
+}
+
 // Sonstiges
 #define DIFFERENT_TORPEDOS	29
 #define TORPEDOSPEED		15

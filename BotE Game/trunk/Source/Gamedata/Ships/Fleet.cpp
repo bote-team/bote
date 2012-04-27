@@ -163,7 +163,7 @@ void CFleet::AdoptCurrentOrders(const CShip* ship)
 {
 	for (int i = 0; i < m_vShips.GetSize(); i++)
 	{
-		if (ship->GetCurrentOrder() != ASSIGN_FLAGSHIP && ship->GetCurrentOrder() != TRANSPORT)
+		if (ship->GetCurrentOrder() != SHIP_ORDER::ASSIGN_FLAGSHIP && ship->GetCurrentOrder() != SHIP_ORDER::TRANSPORT)
 		{
 			m_vShips.ElementAt(i).SetCurrentOrder(ship->GetCurrentOrder());			
 		}		
@@ -173,7 +173,7 @@ void CFleet::AdoptCurrentOrders(const CShip* ship)
 			m_vShips.ElementAt(i).SetTargetKO(ship->GetTargetKO(),0);
 
 		// wenn geterraformt werden soll den Terraformingplaneten neu setzen
-		if (ship->GetCurrentOrder() == TERRAFORM)
+		if (ship->GetCurrentOrder() == SHIP_ORDER::TERRAFORM)
 			m_vShips.ElementAt(i).SetTerraformingPlanet(ship->GetTerraformingPlanet());
 	}
 }
@@ -181,40 +181,40 @@ void CFleet::AdoptCurrentOrders(const CShip* ship)
 // Diese Funktion liefert TRUE wenn die Flotte den "order" ausführen kann. Als Schiffszeiger muß das Schiff
 // übergeben werden, welches die Flotte beinhaltet. Kann die Flotte den Befehl nicht befolgen liefert die
 // Funktion FALSE zurück
-BOOLEAN CFleet::CheckOrder(const CShip* ship, BYTE order) const
+BOOLEAN CFleet::CheckOrder(const CShip* ship, SHIP_ORDER::Typ nOrder) const
 {
 /*
 	// Schiffsbefehle
-	#define AVOID               0
-	#define ATTACK              1
-	#define CLOAK               2
-	#define ATTACK_SYSTEM       3
-	#define RAID_SYSTEM         4
-	#define BLOCKADE_SYSTEM		5
-	#define DESTROY_SHIP        6
-	#define COLONIZE            7
-	#define TERRAFORM           8
-	#define BUILD_OUTPOST       9
-	#define BUILD_STARBASE		10
-	#define ASSIGN_FLAGSHIP     11
-	#define CREATE_FLEET        12
-	#define TRANSPORT			13
-	#define FOLLOW_SHIP			14
-	#define TRAIN_SHIP			15
-	#define WAIT_SHIP_ORDER		16
-	#define SENTRY_SHIP_ORDER	17
+	AVOID               0
+	ATTACK              1
+	CLOAK               2
+	ATTACK_SYSTEM       3
+	RAID_SYSTEM         4
+	BLOCKADE_SYSTEM		5
+	DESTROY_SHIP        6
+	COLONIZE            7
+	TERRAFORM           8
+	BUILD_OUTPOST       9
+	BUILD_STARBASE		10
+	ASSIGN_FLAGSHIP     11
+	CREATE_FLEET        12
+	TRANSPORT			13
+	FOLLOW_SHIP			14
+	TRAIN_SHIP			15
+	WAIT_SHIP_ORDER		16
+	SENTRY_SHIP_ORDER	17
 */
 	// AVOID, ATTACK, RAID_SYSTEM, DESTROY_SHIP, CREATE_FLEET, FOLLOW_SHIP, TRAIN_SHIP, WAIT_SHIP_ORDER, SENTRY_SHIP_ORDER
 	// können wenn möglich immer von jedem Schiff ausgeführt werden. Deshalb können wir hier immer
 	// ein TRUE zurückgeben bzw. es ist erst gar nicht nötig die "CheckOrder" Funktion aufzurufen
-	if (order == AVOID || order == ATTACK || order == RAID_SYSTEM || order == DESTROY_SHIP
-		|| order == CREATE_FLEET || order == FOLLOW_SHIP || order == TRAIN_SHIP
-		|| order == WAIT_SHIP_ORDER || order == SENTRY_SHIP_ORDER)
+	if (nOrder == SHIP_ORDER::AVOID || nOrder == SHIP_ORDER::ATTACK || nOrder == SHIP_ORDER::RAID_SYSTEM || nOrder == SHIP_ORDER::DESTROY_SHIP
+		|| nOrder == SHIP_ORDER::CREATE_FLEET || nOrder == SHIP_ORDER::FOLLOW_SHIP || nOrder == SHIP_ORDER::TRAIN_SHIP
+		|| nOrder == SHIP_ORDER::WAIT_SHIP_ORDER || nOrder == SHIP_ORDER::SENTRY_SHIP_ORDER)
 		return TRUE;
 
 	// ASSIGN_FLAGSHIP und TRANSPORT können nicht als Befehl an eine Flotte gegeben werden, daher wird hier
 	// ein FALSE zurückgegeben
-	else if (order == ASSIGN_FLAGSHIP || order == TRANSPORT)
+	else if (nOrder == SHIP_ORDER::ASSIGN_FLAGSHIP || nOrder == SHIP_ORDER::TRANSPORT)
 		return FALSE;
 
 	// bei den restlichen Befehlen müssen wir einige Berechnungen anstellen.
@@ -222,7 +222,7 @@ BOOLEAN CFleet::CheckOrder(const CShip* ship, BYTE order) const
 	{
 		// Tarnen können wir die gesamte Flotte nur, wenn in ihr auch nur Schiffe vorkommen, die die Tarn-
 		// fähigkeit besitzen
-		if (order == CLOAK)
+		if (nOrder == SHIP_ORDER::CLOAK)
 		{
 			if (ship->GetStealthPower() < 4)
 				return FALSE;
@@ -237,7 +237,7 @@ BOOLEAN CFleet::CheckOrder(const CShip* ship, BYTE order) const
 		}
 		// Wenn der Befehl kolonisieren oder terraformen lautet kann das die gesamte Flotte nur, wenn jedes 
 		// Schiff in der Flotte "ColonizePoints" beitzt
-		else if (order == COLONIZE || order == TERRAFORM)
+		else if (nOrder == SHIP_ORDER::COLONIZE || nOrder == SHIP_ORDER::TERRAFORM)
 		{
 			if (ship->GetColonizePoints() < 1)
 				return FALSE;
@@ -252,7 +252,7 @@ BOOLEAN CFleet::CheckOrder(const CShip* ship, BYTE order) const
 		}
 		// Wenn der Befehl Außenposten oder Sternbasis bauen lautet kann das die gesamte Flotte nur, wenn jedes 
 		// Schiff in der Flotte "StationBuildPoints" beitzt
-		else if (order == BUILD_OUTPOST || order == BUILD_STARBASE)
+		else if (nOrder == SHIP_ORDER::BUILD_OUTPOST || nOrder == SHIP_ORDER::BUILD_STARBASE)
 		{
 			if (ship->GetStationBuildPoints() < 1)
 				return FALSE;
@@ -266,7 +266,7 @@ BOOLEAN CFleet::CheckOrder(const CShip* ship, BYTE order) const
 			return TRUE;
 		}
 		// Bei einem Blockadebefehl müssen alle Schiffe in der Flotte die Eigenschaft "Blockadeschiff" besitzen
-		else if (order == BLOCKADE_SYSTEM)
+		else if (nOrder == SHIP_ORDER::BLOCKADE_SYSTEM)
 		{
 			if (!ship->HasSpecial(SHIP_SPECIAL::BLOCKADESHIP))
 				return FALSE;
@@ -278,7 +278,7 @@ BOOLEAN CFleet::CheckOrder(const CShip* ship, BYTE order) const
 			return TRUE;
 		}
 		// Bei einem Systemangriff müssen alle Schiffe in der Flotte ungetarnt sein
-		else if (order == ATTACK_SYSTEM)
+		else if (nOrder == SHIP_ORDER::ATTACK_SYSTEM)
 		{
 			if (ship->GetCloak())
 				return FALSE;

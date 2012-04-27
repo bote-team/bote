@@ -262,7 +262,9 @@ void CShip::Serialize(CArchive &ar)
 			ar >> m_iLoadedResources[i];
 		ar >> m_iColonizePoints;
 		ar >> m_iStationBuildPoints;
-		ar >> m_iCurrentOrder;
+		int nOrder;
+		ar >> nOrder;
+		m_iCurrentOrder = (SHIP_ORDER::Typ)nOrder;
 		int nSpecial;
 		ar >> nSpecial;
 		m_nSpecial[0] = (SHIP_SPECIAL::Typ)nSpecial;
@@ -392,28 +394,28 @@ CString CShip::GetCurrentOrderAsString() const
 	CString order;
 	switch (m_iCurrentOrder)
 	{
-	case AVOID: order = CResourceManager::GetString("AVOID_ORDER"); break;
-	case ATTACK: order = CResourceManager::GetString("ATTACK_ORDER"); break;
-	case CLOAK: 
+	case SHIP_ORDER::AVOID: order = CResourceManager::GetString("AVOID_ORDER"); break;
+	case SHIP_ORDER::ATTACK: order = CResourceManager::GetString("ATTACK_ORDER"); break;
+	case SHIP_ORDER::CLOAK: 
 		if (m_bCloakOn)
 			order = CResourceManager::GetString("DECLOAK_ORDER");
 		else
 			order = CResourceManager::GetString("CLOAK_ORDER"); break;
-	case ATTACK_SYSTEM: order = CResourceManager::GetString("ATTACK_SYSTEM_ORDER"); break;
-	case RAID_SYSTEM: order = CResourceManager::GetString("RAID_SYSTEM_ORDER"); break;
-	case BLOCKADE_SYSTEM: order = CResourceManager::GetString("BLOCKADE_SYSTEM_ORDER"); break;
-	case DESTROY_SHIP: order = CResourceManager::GetString("DESTROY_SHIP_ORDER"); break;
-	case COLONIZE: order = CResourceManager::GetString("COLONIZE_ORDER"); break;
-	case TERRAFORM: order = CResourceManager::GetString("TERRAFORM_ORDER"); break;
-	case BUILD_OUTPOST: order = CResourceManager::GetString("BUILD_OUTPOST_ORDER"); break;
-	case BUILD_STARBASE: order = CResourceManager::GetString("BUILD_STARBASE_ORDER"); break;
-	case ASSIGN_FLAGSHIP: order = CResourceManager::GetString("ASSIGN_FLAGSHIP_ORDER"); break;
-	case CREATE_FLEET: order = CResourceManager::GetString("CREATE_FLEET_ORDER"); break;
-	case TRANSPORT: order = CResourceManager::GetString("TRANSPORT_ORDER"); break;
-	case FOLLOW_SHIP: order = CResourceManager::GetString("FOLLOW_SHIP_ORDER"); break;
-	case TRAIN_SHIP: order = CResourceManager::GetString("TRAIN_SHIP_ORDER"); break;
-	case WAIT_SHIP_ORDER: order = CResourceManager::GetString("WAIT_SHIP_ORDER"); break;
-	case SENTRY_SHIP_ORDER: order = CResourceManager::GetString("SENTRY_SHIP_ORDER"); break;
+	case SHIP_ORDER::ATTACK_SYSTEM: order = CResourceManager::GetString("ATTACK_SYSTEM_ORDER"); break;
+	case SHIP_ORDER::RAID_SYSTEM: order = CResourceManager::GetString("RAID_SYSTEM_ORDER"); break;
+	case SHIP_ORDER::BLOCKADE_SYSTEM: order = CResourceManager::GetString("BLOCKADE_SYSTEM_ORDER"); break;
+	case SHIP_ORDER::DESTROY_SHIP: order = CResourceManager::GetString("DESTROY_SHIP_ORDER"); break;
+	case SHIP_ORDER::COLONIZE: order = CResourceManager::GetString("COLONIZE_ORDER"); break;
+	case SHIP_ORDER::TERRAFORM: order = CResourceManager::GetString("TERRAFORM_ORDER"); break;
+	case SHIP_ORDER::BUILD_OUTPOST: order = CResourceManager::GetString("BUILD_OUTPOST_ORDER"); break;
+	case SHIP_ORDER::BUILD_STARBASE: order = CResourceManager::GetString("BUILD_STARBASE_ORDER"); break;
+	case SHIP_ORDER::ASSIGN_FLAGSHIP: order = CResourceManager::GetString("ASSIGN_FLAGSHIP_ORDER"); break;
+	case SHIP_ORDER::CREATE_FLEET: order = CResourceManager::GetString("CREATE_FLEET_ORDER"); break;
+	case SHIP_ORDER::TRANSPORT: order = CResourceManager::GetString("TRANSPORT_ORDER"); break;
+	case SHIP_ORDER::FOLLOW_SHIP: order = CResourceManager::GetString("FOLLOW_SHIP_ORDER"); break;
+	case SHIP_ORDER::TRAIN_SHIP: order = CResourceManager::GetString("TRAIN_SHIP_ORDER"); break;
+	case SHIP_ORDER::WAIT_SHIP_ORDER: order = CResourceManager::GetString("WAIT_SHIP_ORDER"); break;
+	case SHIP_ORDER::SENTRY_SHIP_ORDER: order = CResourceManager::GetString("SENTRY_SHIP_ORDER"); break;
 	default: order = "nothing"; break;
 	}
 	return order;
@@ -1131,13 +1133,13 @@ void CShip::DrawShip(Gdiplus::Graphics* g, CGraphicPool* pGraphicPool, const CPo
 void CShip::SetTargetKO(const CPoint& TargetKO, int Index)
 {
 	m_TargetKO[Index] = TargetKO;
-	if (m_iCurrentOrder > AVOID) {
-		IsNonCombat() ? m_iCurrentOrder = AVOID : m_iCurrentOrder = ATTACK;
+	if (m_iCurrentOrder > SHIP_ORDER::AVOID) {
+		IsNonCombat() ? m_iCurrentOrder = SHIP_ORDER::AVOID : m_iCurrentOrder = SHIP_ORDER::ATTACK;
 	}
 	m_nTerraformingPlanet = -1;
 }
 
 bool CShip::HasNothingToDo() const {
-	return (m_iCurrentOrder == AVOID || m_iCurrentOrder == ATTACK)
+	return (m_iCurrentOrder == SHIP_ORDER::AVOID || m_iCurrentOrder == SHIP_ORDER::ATTACK)
 		&& (GetTargetKO() == GetKO() || GetTargetKO() == CPoint(-1, -1)) && m_iShipType != SHIP_TYPE::OUTPOST && m_iShipType != SHIP_TYPE::STARBASE;
 }

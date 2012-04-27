@@ -155,7 +155,7 @@ protected:
 
 private:
 	void HandleShipHotkeys(const UINT nChar, CBotf2Doc* pDoc);
-	void SearchNextIdleShipAndJumpToIt(CBotf2Doc* pDoc, const int order = -1);
+	void SearchNextIdleShipAndJumpToIt(CBotf2Doc* pDoc, SHIP_ORDER::Typ order);
 
 	 //remember the ship in shiparray which was jumped to by last press of n or spacebar
 	struct RememberedShip {

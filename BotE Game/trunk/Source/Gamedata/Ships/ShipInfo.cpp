@@ -256,9 +256,9 @@ void CShipInfo::CalculateFinalCosts()
 void CShipInfo::SetStartOrder()
 {
 	if (m_iShipType >= SHIP_TYPE::SCOUT)
-		m_iCurrentOrder = ATTACK;
+		m_iCurrentOrder = SHIP_ORDER::ATTACK;
 	else
-		m_iCurrentOrder = AVOID;
+		m_iCurrentOrder = SHIP_ORDER::AVOID;
 }
 
 

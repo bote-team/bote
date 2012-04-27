@@ -234,7 +234,7 @@ void CShipBottomView::OnDraw(CDC* dc)
 		}
 
 		// Wenn nur ein Schiff in dem System ist, so wird es automatisch ausgewählt
-		if (counter == 1 && !m_bShowStation && pDoc->m_ShipArray[oneShip].GetCurrentOrder() <= ATTACK
+		if (counter == 1 && !m_bShowStation && pDoc->m_ShipArray[oneShip].GetCurrentOrder() <= SHIP_ORDER::ATTACK
 			&& pDoc->m_ShipArray[oneShip].GetOwnerOfShip() == pMajor->GetRaceID())
 		{
 			// Wenn wenn wir auf der Galaxiekarte sind
@@ -316,24 +316,24 @@ void CShipBottomView::OnDraw(CDC* dc)
 		}
 		// Alle Rechtecke für die Buttons der Schiffsbefehle erstmal auf NULL setzen, damit wir nicht draufklicken
 		// können. Wir dürfen ja nur auf Buttons klicken können, die wir auch sehen
-		for (int j = 0; j <= SENTRY_SHIP_ORDER; j++)
+		for (int j = 0; j <= SHIP_ORDER::SENTRY_SHIP_ORDER; j++)
 			m_ShipOrders[j].SetRect(0,0,0,0);
 
 		// angreifen
 		if (m_iTimeCounter > 3 && m_iWhichMainShipOrderButton == 0 &&
-			pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetCurrentOrder() == AVOID)
+			pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetCurrentOrder() == SHIP_ORDER::AVOID)
 		{
 			g.DrawImage(m_pShipOrderButton, r.right-245, r.top+70, 120, 30);
-			m_ShipOrders[ATTACK].SetRect(r.right-245,r.top+70,r.right-125,r.top+100);
+			m_ShipOrders[SHIP_ORDER::ATTACK].SetRect(r.right-245,r.top+70,r.right-125,r.top+100);
 			g.DrawString(CResourceManager::GetString("BTN_ATTACK").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(r.right-245,r.top+70,120,30), &fontFormat, &fontBrush);
 			counter++;
 		}
 		// meiden
 		else if (m_iTimeCounter > 3 && m_iWhichMainShipOrderButton == 0 &&
-			pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetCurrentOrder() > AVOID)
+			pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetCurrentOrder() > SHIP_ORDER::AVOID)
 		{
 			g.DrawImage(m_pShipOrderButton, r.right-245, r.top+70, 120, 30);
-			m_ShipOrders[AVOID].SetRect(r.right-245,r.top+70,r.right-125,r.top+100);
+			m_ShipOrders[SHIP_ORDER::AVOID].SetRect(r.right-245,r.top+70,r.right-125,r.top+100);
 			g.DrawString(CResourceManager::GetString("BTN_AVOID").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(r.right-245,r.top+70,120,30), &fontFormat, &fontBrush);
 			counter++;
 		}
@@ -345,7 +345,7 @@ void CShipBottomView::OnDraw(CDC* dc)
 			if (m_iTimeCounter > (3 + counter) && m_iWhichMainShipOrderButton == 0)
 			{
 				g.DrawImage(m_pShipOrderButton, r.right-245, r.top+70+counter*35, 120, 30);
-				m_ShipOrders[CREATE_FLEET].SetRect(r.right-245,r.top+70+counter*35,r.right-125,r.top+100+counter*35);
+				m_ShipOrders[SHIP_ORDER::CREATE_FLEET].SetRect(r.right-245,r.top+70+counter*35,r.right-125,r.top+100+counter*35);
 				g.DrawString(CResourceManager::GetString("BTN_CREATE_FLEET").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(r.right-245,r.top+70+counter*35,120,30), &fontFormat, &fontBrush);
 				counter++;
 			}
@@ -358,7 +358,7 @@ void CShipBottomView::OnDraw(CDC* dc)
 					pDoc->GetSystem(pDoc->GetKO()).GetProduction()->GetShipTraining() > 0)
 				{
 					g.DrawImage(m_pShipOrderButton, r.right-245, r.top+70+counter*35, 120, 30);
-					m_ShipOrders[TRAIN_SHIP].SetRect(r.right-245,r.top+70+counter*35,r.right-125,r.top+100+counter*35);
+					m_ShipOrders[SHIP_ORDER::TRAIN_SHIP].SetRect(r.right-245,r.top+70+counter*35,r.right-125,r.top+100+counter*35);
 					g.DrawString(CResourceManager::GetString("BTN_TRAIN_SHIP").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(r.right-245,r.top+70+counter*35,120,30), &fontFormat, &fontBrush);
 					counter++;
 				}
@@ -370,14 +370,14 @@ void CShipBottomView::OnDraw(CDC* dc)
 				((pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetFleet() == 0
 				&& pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetStealthPower() > 3)
 				|| (pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetFleet() != 0
-				&& pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetFleet()->CheckOrder(&pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()),CLOAK) == TRUE)))
+				&& pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetFleet()->CheckOrder(&pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()),SHIP_ORDER::CLOAK) == TRUE)))
 			{
 				g.DrawImage(m_pShipOrderButton, r.right-245, r.top+70+counter*35, 120, 30);
 				if (pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetCloak())
 					s = CResourceManager::GetString("BTN_DECLOAK");
 				else
 					s = CResourceManager::GetString("BTN_CLOAK");
-				m_ShipOrders[CLOAK].SetRect(r.right-245,r.top+70+counter*35,r.right-125,r.top+100+counter*35);
+				m_ShipOrders[SHIP_ORDER::CLOAK].SetRect(r.right-245,r.top+70+counter*35,r.right-125,r.top+100+counter*35);
 				g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(r.right-245,r.top+70+counter*35,120,30), &fontFormat, &fontBrush);
 				counter++;
 			}
@@ -403,11 +403,11 @@ void CShipBottomView::OnDraw(CDC* dc)
 						if ((pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetFleet() == 0
 							&& pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetCloak() == FALSE)
 							|| (pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetFleet() != 0
-							&& pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetFleet()->CheckOrder(&pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()), ATTACK_SYSTEM) == TRUE))
+							&& pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetFleet()->CheckOrder(&pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()), SHIP_ORDER::ATTACK_SYSTEM) == TRUE))
 						{
 							g.DrawImage(m_pShipOrderButton, r.right-245, r.top+70, 120, 30);
 							s = CResourceManager::GetString("BTN_ATTACK_SYSTEM");
-							m_ShipOrders[ATTACK_SYSTEM].SetRect(r.right-245,r.top+70,r.right-125,r.top+100);
+							m_ShipOrders[SHIP_ORDER::ATTACK_SYSTEM].SetRect(r.right-245,r.top+70,r.right-125,r.top+100);
 							g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(r.right-245,r.top+70,120,30), &fontFormat, &fontBrush);
 							counter++;
 						}
@@ -429,7 +429,7 @@ void CShipBottomView::OnDraw(CDC* dc)
 				((pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetFleet() == 0
 				&& pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).HasSpecial(SHIP_SPECIAL::BLOCKADESHIP))
 				|| (pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetFleet() != 0
-				&& pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetFleet()->CheckOrder(&pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()), BLOCKADE_SYSTEM) == TRUE)))
+				&& pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetFleet()->CheckOrder(&pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()), SHIP_ORDER::BLOCKADE_SYSTEM) == TRUE)))
 			{
 				// Überprüfen ob man eine Blockade im System überhaupt errichten kann
 				// Wenn das System nicht der Rasse gehört, der auch das Schiff gehört
@@ -439,7 +439,7 @@ void CShipBottomView::OnDraw(CDC* dc)
 				{
 					g.DrawImage(m_pShipOrderButton, r.right-245, r.top+70+counter*35, 120, 30);
 					s = CResourceManager::GetString("BTN_BLOCKADE_SYSTEM");
-					m_ShipOrders[BLOCKADE_SYSTEM].SetRect(r.right-245,r.top+70+counter*35,r.right-125,r.top+100+counter*35);
+					m_ShipOrders[SHIP_ORDER::BLOCKADE_SYSTEM].SetRect(r.right-245,r.top+70+counter*35,r.right-125,r.top+100+counter*35);
 					g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(r.right-245,r.top+70+counter*35,120,30), &fontFormat, &fontBrush);
 					counter++;
 				}
@@ -447,34 +447,34 @@ void CShipBottomView::OnDraw(CDC* dc)
 			// Flagschiffernennung, geht nur wenn es keine Flotte ist
 			if (m_iTimeCounter > (3 + counter) && m_iWhichMainShipOrderButton == 1
 				&& pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetFleet() == 0
-				&& pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetCurrentOrder() != ASSIGN_FLAGSHIP
+				&& pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetCurrentOrder() != SHIP_ORDER::ASSIGN_FLAGSHIP
 				&& pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetIsShipFlagShip() != TRUE)
 			{
 				g.DrawImage(m_pShipOrderButton, r.right-245, r.top+70+counter*35, 120, 30);
 				s = CResourceManager::GetString("BTN_ASSIGN_FLAGSHIP");
-				m_ShipOrders[ASSIGN_FLAGSHIP].SetRect(r.right-245,r.top+70+counter*35,r.right-125,r.top+100+counter*35);
+				m_ShipOrders[SHIP_ORDER::ASSIGN_FLAGSHIP].SetRect(r.right-245,r.top+70+counter*35,r.right-125,r.top+100+counter*35);
 				g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(r.right-245,r.top+70+counter*35,120,30), &fontFormat, &fontBrush);
 				counter++;
 			}
 			// Warten
 			if (m_iTimeCounter > (3 + counter) && m_iWhichMainShipOrderButton == 1
 				&& pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetCurrentOrder()
-					!= WAIT_SHIP_ORDER)
+					!= SHIP_ORDER::WAIT_SHIP_ORDER)
 			{
 				g.DrawImage(m_pShipOrderButton, r.right-245, r.top+70+counter*35, 120, 30);
 				s = CResourceManager::GetString("BTN_WAIT_SHIP_ORDER");
-				m_ShipOrders[WAIT_SHIP_ORDER].SetRect(r.right-245,r.top+70+counter*35,r.right-125,r.top+100+counter*35);
+				m_ShipOrders[SHIP_ORDER::WAIT_SHIP_ORDER].SetRect(r.right-245,r.top+70+counter*35,r.right-125,r.top+100+counter*35);
 				g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(r.right-245,r.top+70+counter*35,120,30), &fontFormat, &fontBrush);
 				counter++;
 			}
 			// Wache
 			if (m_iTimeCounter > (3 + counter) && m_iWhichMainShipOrderButton == 1
 				&& pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetCurrentOrder()
-				!= SENTRY_SHIP_ORDER)
+				!= SHIP_ORDER::SENTRY_SHIP_ORDER)
 			{
 				g.DrawImage(m_pShipOrderButton, r.right-245, r.top+70+counter*35, 120, 30);
 				s = CResourceManager::GetString("BTN_SENTRY_SHIP_ORDER");
-				m_ShipOrders[SENTRY_SHIP_ORDER].SetRect(r.right-245,r.top+70+counter*35,r.right-125,r.top+100+counter*35);
+				m_ShipOrders[SHIP_ORDER::SENTRY_SHIP_ORDER].SetRect(r.right-245,r.top+70+counter*35,r.right-125,r.top+100+counter*35);
 				g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(r.right-245,r.top+70+counter*35,120,30), &fontFormat, &fontBrush);
 				counter++;
 			}
@@ -492,12 +492,12 @@ void CShipBottomView::OnDraw(CDC* dc)
 			// Kolonisierung (hier beachten wenn es eine Flotte ist, dort schauen ob auch jedes Schiff in
 			// der Flotte auch kolonisieren kann)
 			if (m_iTimeCounter > 3 && m_iWhichMainShipOrderButton == 2 &&
-				pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetCurrentOrder() != COLONIZE &&
+				pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetCurrentOrder() != SHIP_ORDER::COLONIZE &&
 				// Ab hier check wegen Flotten, darum wirds lang
 				((pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetFleet() == 0
 				&& pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetColonizePoints() > 0)
 				|| (pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetFleet() != 0
-				&& pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetFleet()->CheckOrder(&pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()),COLONIZE) == TRUE)))
+				&& pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetFleet()->CheckOrder(&pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()),SHIP_ORDER::COLONIZE) == TRUE)))
 			{
 				// Wenn das System uns bzw. niemanden gehört können wir nur kolonisieren
 				if (pDoc->GetSector(pDoc->GetKO()).GetOwnerOfSector() == ""
@@ -508,7 +508,7 @@ void CShipBottomView::OnDraw(CDC* dc)
 						{
 							g.DrawImage(m_pShipOrderButton, r.right-245, r.top+140, 120, 30);
 							s = CResourceManager::GetString("BTN_COLONIZE");
-							m_ShipOrders[COLONIZE].SetRect(r.right-245,r.top+140,r.right-125,r.top+170);
+							m_ShipOrders[SHIP_ORDER::COLONIZE].SetRect(r.right-245,r.top+140,r.right-125,r.top+170);
 							g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(r.right-245,r.top+140,120,30), &fontFormat, &fontBrush);
 							counter++;
 							break;
@@ -522,7 +522,7 @@ void CShipBottomView::OnDraw(CDC* dc)
 				((pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetFleet() == 0
 				&& pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetColonizePoints() > 0)
 				|| (pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetFleet() != 0
-				&& pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetFleet()->CheckOrder(&pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()),TERRAFORM) == TRUE)))
+				&& pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetFleet()->CheckOrder(&pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()),SHIP_ORDER::TERRAFORM) == TRUE)))
 
 			{
 				for (int l = 0; l < pDoc->GetSector(pDoc->GetKO()).GetNumberOfPlanets(); l++)
@@ -531,7 +531,7 @@ void CShipBottomView::OnDraw(CDC* dc)
 					{
 						g.DrawImage(m_pShipOrderButton, r.right-245, r.top+140-counter*35, 120, 30);
 						s = CResourceManager::GetString("BTN_TERRAFORM");
-						m_ShipOrders[TERRAFORM].SetRect(r.right-245,r.top+140-counter*35,r.right-125,r.top+170-counter*35);
+						m_ShipOrders[SHIP_ORDER::TERRAFORM].SetRect(r.right-245,r.top+140-counter*35,r.right-125,r.top+170-counter*35);
 						g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(r.right-245,r.top+140-counter*35,120,30), &fontFormat, &fontBrush);
 						counter++;
 						break;
@@ -540,14 +540,14 @@ void CShipBottomView::OnDraw(CDC* dc)
 			// Außenposten/Sternbasis bauen (hier beachten wenn es eine Flotte ist, dort schauen ob auch jedes
 			// Schiff in der Flotte Stationen bauen kann)
 			if (m_iTimeCounter > (3 + counter) && m_iWhichMainShipOrderButton == 2 &&
-				pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetCurrentOrder() != BUILD_OUTPOST &&
-				pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetCurrentOrder() != BUILD_STARBASE &&
+				pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetCurrentOrder() != SHIP_ORDER::BUILD_OUTPOST &&
+				pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetCurrentOrder() != SHIP_ORDER::BUILD_STARBASE &&
 				// Ab hier check wegen Flotten, darum wirds lang (müssen nur einen der Befehle (egal ob Outpost oder
 				// Starbase gebaut werden soll) übergeben, weil wenn das eine geht, geht auch das andere
 				((pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetFleet() == 0
 				&& pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetStationBuildPoints() > 0)
 				|| (pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetFleet() != 0
-				&& pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetFleet()->CheckOrder(&pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()),BUILD_OUTPOST) == TRUE)))
+				&& pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetFleet()->CheckOrder(&pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()),SHIP_ORDER::BUILD_OUTPOST) == TRUE)))
 			{
 				USHORT n = pDoc->GetCurrentShipIndex();
 				CPoint ShipKO = pDoc->GetKO();
@@ -568,7 +568,7 @@ void CShipBottomView::OnDraw(CDC* dc)
 								// Wenn ja dann Schaltfläche zum Außenpostenbau einblenden
 								g.DrawImage(m_pShipOrderButton, r.right-245, r.top+140-counter*35, 120, 30);
 								s = CResourceManager::GetString("BTN_BUILD_OUTPOST");
-								m_ShipOrders[BUILD_OUTPOST].SetRect(r.right-245,r.top+140-counter*35,r.right-125,r.top+170-counter*35);
+								m_ShipOrders[SHIP_ORDER::BUILD_OUTPOST].SetRect(r.right-245,r.top+140-counter*35,r.right-125,r.top+170-counter*35);
 								g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(r.right-245,r.top+140-counter*35,120,30), &fontFormat, &fontBrush);
 								counter++;
 								break;
@@ -588,7 +588,7 @@ void CShipBottomView::OnDraw(CDC* dc)
 								// Wenn ja dann Schaltfläche zum Außenpostenbau einblenden
 								g.DrawImage(m_pShipOrderButton, r.right-245, r.top+140-counter*35, 120, 30);
 								s = CResourceManager::GetString("BTN_BUILD_STARBASE");
-								m_ShipOrders[BUILD_STARBASE].SetRect(r.right-245,r.top+140-counter*35,r.right-125,r.top+170-counter*35);
+								m_ShipOrders[SHIP_ORDER::BUILD_STARBASE].SetRect(r.right-245,r.top+140-counter*35,r.right-125,r.top+170-counter*35);
 								g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(r.right-245,r.top+140-counter*35,120,30), &fontFormat, &fontBrush);
 								counter++;
 								break;
@@ -601,18 +601,18 @@ void CShipBottomView::OnDraw(CDC* dc)
 			{
 				g.DrawImage(m_pShipOrderButton, r.right-245, r.top+140-counter*35, 120, 30);
 				s = CResourceManager::GetString("BTN_TRANSPORT");
-				m_ShipOrders[TRANSPORT].SetRect(r.right-245,r.top+140-counter*35,r.right-125,r.top+170-counter*35);
+				m_ShipOrders[SHIP_ORDER::TRANSPORT].SetRect(r.right-245,r.top+140-counter*35,r.right-125,r.top+170-counter*35);
 				g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(r.right-245,r.top+140-counter*35,120,30), &fontFormat, &fontBrush);
 				counter++;
 			}
 		}
 		// Schiff abwracken/zerstören
 		if (m_iTimeCounter > (3 + counter) && m_iWhichMainShipOrderButton == 2 &&
-			pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetCurrentOrder() != DESTROY_SHIP)
+			pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetCurrentOrder() != SHIP_ORDER::DESTROY_SHIP)
 		{
 			g.DrawImage(m_pShipOrderButton, r.right-245, r.top+140-counter*35, 120, 30);
 			s = CResourceManager::GetString("BTN_DESTROY_SHIP");
-			m_ShipOrders[DESTROY_SHIP].SetRect(r.right-245,r.top+140-counter*35,r.right-125,r.top+170-counter*35);
+			m_ShipOrders[SHIP_ORDER::DESTROY_SHIP].SetRect(r.right-245,r.top+140-counter*35,r.right-125,r.top+170-counter*35);
 			g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(r.right-245,r.top+140-counter*35,120,30), &fontFormat, &fontBrush);
 			counter++;
 		}
@@ -701,7 +701,7 @@ void CShipBottomView::OnInitialUpdate()
 	m_iPage = 1;
 	m_iTimeCounter = 0;
 	m_bShowNextButton = FALSE;
-	for (int i = 0; i <= SENTRY_SHIP_ORDER; i++)
+	for (int i = 0; i <= SHIP_ORDER::SENTRY_SHIP_ORDER; i++)
 		m_ShipOrders[i].SetRect(0,0,0,0);
 	m_iWhichMainShipOrderButton = -1;	
 }
@@ -871,58 +871,59 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 		}
 		// Ab jetzt die kleinen Buttons für die einzelnen genauen Schiffsbefehle
 		network::RACE client = pDoc->GetRaceCtrl()->GetMappedClientID(pMajor->GetRaceID());
-		for (int i = 0; i <= SENTRY_SHIP_ORDER; i++)
+		for (int i = SHIP_ORDER::AVOID; i <= SHIP_ORDER::SENTRY_SHIP_ORDER; i++)
 			if (m_ShipOrders[i].PtInRect(point))
 			{
+				SHIP_ORDER::Typ nOrder = (SHIP_ORDER::Typ)i;
 				short nOldTerraformingPlanet = pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetTerraformingPlanet();
 				// Bei manchen Befehlen müssen wir einen möglichen Zielkurs wieder zurücknehmen.				
-				if (i != AVOID && i != ATTACK && i != CLOAK && i != ASSIGN_FLAGSHIP && i != CREATE_FLEET && i != TRANSPORT)
+				if (nOrder != SHIP_ORDER::AVOID && nOrder != SHIP_ORDER::ATTACK && nOrder != SHIP_ORDER::CLOAK && nOrder != SHIP_ORDER::ASSIGN_FLAGSHIP && nOrder != SHIP_ORDER::CREATE_FLEET && nOrder != SHIP_ORDER::TRANSPORT)
 					pDoc->m_ShipArray.ElementAt(pDoc->GetCurrentShipIndex()).SetTargetKO(pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetKO(), 0);
 				// Wenn wir eine Flotte bilden wollen (Schiffe gruppieren), dann in der MainView die Flottenansicht zeigen
-				if (i == CREATE_FLEET)
+				if (nOrder == SHIP_ORDER::CREATE_FLEET)
 				{
 					pDoc->SetNumberOfFleetShip(pDoc->GetCurrentShipIndex());				// Dieses Schiff soll die Flotte beinhalten
 					pDoc->GetMainFrame()->SelectMainView(FLEET_VIEW, pMajor->GetRaceID());		// Flottenansicht in der MainView anzeigen							
 				}
 				// wenn wir ein Schiff zum Flagschiff ernennen wollen müssen wir schauen das diesen Befehl kein anderes
 				// Schiff des Imperiums hat, wenn ja dann diesen Befehl löschen
-				else if (i == ASSIGN_FLAGSHIP)
+				else if (nOrder == SHIP_ORDER::ASSIGN_FLAGSHIP)
 				{
 					// Das ganze Schiffsarray und auch die Flotten durchgehen, wenn wir ein altes Flagschiff finden, diesem den
 					// Titel wegnehmen
 					for (USHORT n = 0; n < pDoc->m_ShipArray.GetSize(); n++)
 						if (pDoc->m_ShipArray[n].GetOwnerOfShip() == pDoc->m_ShipArray[pDoc->GetCurrentShipIndex()].GetOwnerOfShip())
 						{
-							if (pDoc->m_ShipArray[n].GetCurrentOrder() == ASSIGN_FLAGSHIP)
+							if (pDoc->m_ShipArray[n].GetCurrentOrder() == SHIP_ORDER::ASSIGN_FLAGSHIP)
 							{
-								pDoc->m_ShipArray[n].SetCurrentOrder(ATTACK);
+								pDoc->m_ShipArray[n].SetCurrentOrder(SHIP_ORDER::ATTACK);
 								break;
 							}
 							// überprüfen ob ein Flagschiff in einer Flotte ist
 							else if (pDoc->m_ShipArray[n].GetFleet() != 0)
 							{
 								for (USHORT m = 0; m < pDoc->m_ShipArray[n].GetFleet()->GetFleetSize(); m++)
-									if (pDoc->m_ShipArray[n].GetFleet()->GetShipFromFleet(m)->GetCurrentOrder() == ASSIGN_FLAGSHIP)
+									if (pDoc->m_ShipArray[n].GetFleet()->GetShipFromFleet(m)->GetCurrentOrder() == SHIP_ORDER::ASSIGN_FLAGSHIP)
 									{
-										pDoc->m_ShipArray.ElementAt(n).GetFleet()->GetShipFromFleet(m)->SetCurrentOrder(ATTACK);
+										pDoc->m_ShipArray.ElementAt(n).GetFleet()->GetShipFromFleet(m)->SetCurrentOrder(SHIP_ORDER::ATTACK);
 										break;
 									}
 							}
 						}
-						pDoc->m_ShipArray.ElementAt(pDoc->GetCurrentShipIndex()).SetCurrentOrder(ASSIGN_FLAGSHIP);
+						pDoc->m_ShipArray.ElementAt(pDoc->GetCurrentShipIndex()).SetCurrentOrder(SHIP_ORDER::ASSIGN_FLAGSHIP);
 				}
 				// Bei einem Transportbefehl muss in der MainView auch die Transportansicht angeblendet werden
-				else if (i == TRANSPORT)
+				else if (nOrder == SHIP_ORDER::TRANSPORT)
 				{
 					pDoc->GetMainFrame()->SelectMainView(10, pMajor->GetRaceID());	// Transportansicht in der MainView anzeigen
 					pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CTransportMenuView));
 				}
 				// ansonsten ganz normal den Befehl geben
 				else
-					pDoc->m_ShipArray.ElementAt(pDoc->GetCurrentShipIndex()).SetCurrentOrder(i);
+					pDoc->m_ShipArray.ElementAt(pDoc->GetCurrentShipIndex()).SetCurrentOrder(nOrder);
 				
 				// bei Terraforming wird die Planetenansicht eingeblendet
-				if (i == TERRAFORM)
+				if (nOrder == SHIP_ORDER::TERRAFORM)
 				{
 					pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).SetTerraformingPlanet(nOldTerraformingPlanet);
 					pDoc->GetMainFrame()->SelectBottomView(PLANET_BOTTOM_VIEW);
@@ -931,11 +932,11 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 				}
 				else
 				{
-					if (i == COLONIZE)
+					if (nOrder == SHIP_ORDER::COLONIZE)
 						CSoundManager::GetInstance()->PlaySound(SNDMGR_MSG_COLONIZING, SNDMGR_PRIO_HIGH, 1.0f, client);
-					else if (i == BUILD_OUTPOST)
+					else if (nOrder == SHIP_ORDER::BUILD_OUTPOST)
 						CSoundManager::GetInstance()->PlaySound(SNDMGR_MSG_OUTPOST_CONSTRUCT, SNDMGR_PRIO_HIGH, 1.0f, client);
-					else if (i == BUILD_STARBASE)
+					else if (nOrder == SHIP_ORDER::BUILD_STARBASE)
 						CSoundManager::GetInstance()->PlaySound(SNDMGR_MSG_STARBASE_CONSTRUCT, SNDMGR_PRIO_HIGH, 1.0f, client);
 					CGalaxyMenuView::SetMoveShip(FALSE);
 					CSmallInfoView::SetShipInfo(true);
@@ -1040,7 +1041,7 @@ void CShipBottomView::OnRButtonDown(UINT nFlags, CPoint point)
 		CGalaxyMenuView::SetMoveShip(FALSE);
 		if (pDoc->GetMainFrame()->GetActiveView(1, 1) == PLANET_BOTTOM_VIEW)	// Wenn wir kolon oder terraformen abbrechen wollen, zurück zum Schiffsmenü
 		{
-			pDoc->m_ShipArray.ElementAt(pDoc->GetCurrentShipIndex()).SetCurrentOrder(AVOID);
+			pDoc->m_ShipArray.ElementAt(pDoc->GetCurrentShipIndex()).SetCurrentOrder(SHIP_ORDER::AVOID);
 			m_bShowStation = false;
 			Invalidate();
 		}

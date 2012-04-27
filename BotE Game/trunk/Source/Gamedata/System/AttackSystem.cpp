@@ -39,7 +39,7 @@ void CAttackSystem::Init(CRace* pDefender, CSystem* system, ShipArray* ships, CS
 	m_iDestroyedBuildings = 0;
 	
 	for (int i = 0; i < ships->GetSize(); i++)
-		if (ships->GetAt(i).GetKO() == m_KO && ships->GetAt(i).GetCurrentOrder() == ATTACK_SYSTEM)
+		if (ships->GetAt(i).GetKO() == m_KO && ships->GetAt(i).GetCurrentOrder() == SHIP_ORDER::ATTACK_SYSTEM)
 		{
 			m_pShips.Add(&ships->GetAt(i));
 			// Wenn das Schiff eine Flotte besitzt, diese Schiffe auch dem Feld hinzufügen

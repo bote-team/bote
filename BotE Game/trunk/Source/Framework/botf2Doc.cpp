@@ -2257,7 +2257,7 @@ void CBotf2Doc::RemoveShip(int nIndex)
 	if (pShip->GetFleet())
 	{
 		// alten Befehl merken
-		BYTE nOldOrder = pShip->GetCurrentOrder();
+		SHIP_ORDER::Typ nOldOrder = pShip->GetCurrentOrder();
 		// Kopie der Flotte holen
 		CFleet* pFleetCopy = pShip->GetFleet();
 		// erstes Schiff aus der Flotte holen
@@ -2583,7 +2583,7 @@ void CBotf2Doc::CalcSystemAttack()
 	set<CString> sKilledMinors;
 	CArray<CPoint> fightInSystem;
 	for (int y = 0; y < m_ShipArray.GetSize(); y++)
-		if (m_ShipArray.GetAt(y).GetCurrentOrder() == ATTACK_SYSTEM)
+		if (m_ShipArray.GetAt(y).GetCurrentOrder() == SHIP_ORDER::ATTACK_SYSTEM)
 		{
 			BOOLEAN okay = TRUE;
 			// Checken dass in diesem System nicht schon ein Angriff durchgeführt wurde
@@ -2595,9 +2595,9 @@ void CBotf2Doc::CalcSystemAttack()
 				}
 			
 			// nur wenn das Schiff und Schiffe in der Flotte ungetarnt sind
-			if (m_ShipArray[y].GetCloak() == TRUE || (m_ShipArray.GetAt(y).GetFleet() != 0 && m_ShipArray.GetAt(y).GetFleet()->CheckOrder(&m_ShipArray.GetAt(y), ATTACK_SYSTEM) == FALSE))
+			if (m_ShipArray[y].GetCloak() == TRUE || (m_ShipArray.GetAt(y).GetFleet() != 0 && m_ShipArray.GetAt(y).GetFleet()->CheckOrder(&m_ShipArray.GetAt(y), SHIP_ORDER::ATTACK_SYSTEM) == FALSE))
 			{
-				m_ShipArray.ElementAt(y).SetCurrentOrder(ATTACK);
+				m_ShipArray.ElementAt(y).SetCurrentOrder(SHIP_ORDER::ATTACK);
 				okay = FALSE;
 			}
 
@@ -2610,7 +2610,7 @@ void CBotf2Doc::CalcSystemAttack()
 				// Angreifer bzw. neuer Besitzer des Systems nach dem Angriff
 				set<CString> attackers;
 				for (int i = 0; i < m_ShipArray.GetSize(); i++)
-					if (m_ShipArray.GetAt(i).GetKO() == p && m_ShipArray.GetAt(i).GetCurrentOrder() == ATTACK_SYSTEM)
+					if (m_ShipArray.GetAt(i).GetKO() == p && m_ShipArray.GetAt(i).GetCurrentOrder() == SHIP_ORDER::ATTACK_SYSTEM)
 					{
 						CString sOwner = m_ShipArray.GetAt(i).GetOwnerOfShip();
 						if (!sOwner.IsEmpty() && m_pRaceCtrl->GetRace(sOwner)->GetType() == MAJOR)
@@ -4234,26 +4234,26 @@ void CBotf2Doc::CalcShipOrders()
 		// Hier wird ?berpr?ft, ob der Systemattack-Befehl noch g?ltig ist
 		// Alle Schiffe, welche einen Systemangriffsbefehl haben ?berpr?fen, ob dieser Befehl noch g?ltig ist
 		CPoint p = m_ShipArray.GetAt(y).GetKO();		
-		if (m_ShipArray[y].GetCurrentOrder() == ATTACK_SYSTEM)
+		if (m_ShipArray[y].GetCurrentOrder() == SHIP_ORDER::ATTACK_SYSTEM)
 		{
 			if (m_Sector[p.x][p.y].GetSunSystem())
 			{
 				// Wenn die Bev?lkerung komplett vernichtet wurde
 				if (m_System[p.x][p.y].GetHabitants() == 0.0f)
-					m_ShipArray.ElementAt(y).SetCurrentOrder(ATTACK);
+					m_ShipArray.ElementAt(y).SetCurrentOrder(SHIP_ORDER::ATTACK);
 				// Wenn das System der angreifenden Rasse geh?rt
 				else if (m_System[p.x][p.y].GetOwnerOfSystem() == m_ShipArray.GetAt(y).GetOwnerOfShip())
-					m_ShipArray.ElementAt(y).SetCurrentOrder(ATTACK);
+					m_ShipArray.ElementAt(y).SetCurrentOrder(SHIP_ORDER::ATTACK);
 				// Wenn eine Rasse in dem System lebt
 				else if (m_Sector[p.x][p.y].GetOwnerOfSector() != "" && m_Sector[p.x][p.y].GetOwnerOfSector() != m_ShipArray.GetAt(y).GetOwnerOfShip())
 				{
 					CRace* pRace = m_pRaceCtrl->GetRace(m_Sector[p.x][p.y].GetOwnerOfSector());
 					if (pRace != NULL && pRace->GetAgreement(m_ShipArray.GetAt(y).GetOwnerOfShip()) != DIPLOMATIC_AGREEMENT::WAR)
-						m_ShipArray.ElementAt(y).SetCurrentOrder(ATTACK);
+						m_ShipArray.ElementAt(y).SetCurrentOrder(SHIP_ORDER::ATTACK);
 				}
 			}
 			else
-				m_ShipArray.ElementAt(y).SetCurrentOrder(ATTACK);
+				m_ShipArray.ElementAt(y).SetCurrentOrder(SHIP_ORDER::ATTACK);
 		}
 
 		CPoint ShipKO = m_ShipArray[y].GetKO();
@@ -4263,15 +4263,15 @@ void CBotf2Doc::CalcShipOrders()
 
 		// wenn der Befehl "Terraform" ist und kein Planet ausgew?hlt ist, dann Befehl wieder auf "AVOID"
 		// setzen
-		if (m_ShipArray[y].GetCurrentOrder() == TERRAFORM && m_ShipArray[y].GetTerraformingPlanet() == -1)
-			m_ShipArray[y].SetCurrentOrder(AVOID);
+		if (m_ShipArray[y].GetCurrentOrder() == SHIP_ORDER::TERRAFORM && m_ShipArray[y].GetTerraformingPlanet() == -1)
+			m_ShipArray[y].SetCurrentOrder(SHIP_ORDER::AVOID);
 
 		// Haben wir eine Flotte, den aktuellen Befehl an alle Schiffe in der Flotte weitergeben
 		if (m_ShipArray[y].GetFleet() != 0)
 			m_ShipArray[y].GetFleet()->AdoptCurrentOrders(&m_ShipArray[y]);				
 		
 		 // Planet soll kolonisiert werden
-		if (m_ShipArray[y].GetCurrentOrder() == COLONIZE)
+		if (m_ShipArray[y].GetCurrentOrder() == SHIP_ORDER::COLONIZE)
 		{
 			// ?berpr?fen das der Sector auch nur mir oder niemandem geh?rt
 			if ((m_Sector[ShipKO.x][ShipKO.y].GetOwnerOfSector() == m_ShipArray[y].GetOwnerOfShip() || m_Sector[ShipKO.x][ShipKO.y].GetOwnerOfSector() == ""))
@@ -4332,7 +4332,7 @@ void CBotf2Doc::CalcShipOrders()
 					}
 					else
 					{
-						m_ShipArray[y].SetCurrentOrder(AVOID);
+						m_ShipArray[y].SetCurrentOrder(SHIP_ORDER::AVOID);
 						m_ShipArray[y].SetTerraformingPlanet(-1);
 						if (m_ShipArray[y].GetFleet() != 0)
 							m_ShipArray[y].GetFleet()->AdoptCurrentOrders(&m_ShipArray[y]);
@@ -4351,7 +4351,7 @@ void CBotf2Doc::CalcShipOrders()
 					}
 					else
 					{
-						m_ShipArray[y].SetCurrentOrder(AVOID);
+						m_ShipArray[y].SetCurrentOrder(SHIP_ORDER::AVOID);
 						m_ShipArray[y].SetTerraformingPlanet(-1);
 						if (m_ShipArray[y].GetFleet() != 0)
 							m_ShipArray[y].GetFleet()->AdoptCurrentOrders(&m_ShipArray[y]);
@@ -4413,7 +4413,7 @@ void CBotf2Doc::CalcShipOrders()
 				s.Format("%s %s",CResourceManager::GetString("COLONIZATION"), m_Sector[ShipKO.x][ShipKO.y].GetName());
 				AddToLostShipHistory(&m_ShipArray[y], s, CResourceManager::GetString("DESTROYED"));
 				// Schiff entfernen
-				m_ShipArray[y].SetCurrentOrder(AVOID);
+				m_ShipArray[y].SetCurrentOrder(SHIP_ORDER::AVOID);
 				m_ShipArray[y].SetTerraformingPlanet(-1);
 				if (m_ShipArray[y].GetFleet() != 0)
 					m_ShipArray[y].GetFleet()->AdoptCurrentOrders(&m_ShipArray[y]);
@@ -4422,12 +4422,12 @@ void CBotf2Doc::CalcShipOrders()
 			}
 			else
 			{
-				m_ShipArray[y].SetCurrentOrder(AVOID);
+				m_ShipArray[y].SetCurrentOrder(SHIP_ORDER::AVOID);
 				m_ShipArray[y].SetTerraformingPlanet(-1);
 			}
 		}
 		// hier wird ein Planet geterraformed
-		else if (m_ShipArray[y].GetCurrentOrder() == TERRAFORM && m_ShipArray[y].GetTerraformingPlanet() != -1)	// Planet soll terraformed werden
+		else if (m_ShipArray[y].GetCurrentOrder() == SHIP_ORDER::TERRAFORM && m_ShipArray[y].GetTerraformingPlanet() != -1)	// Planet soll terraformed werden
 		{
 			CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(m_ShipArray[y].GetOwnerOfShip()));
 			ASSERT(pMajor);
@@ -4438,7 +4438,7 @@ void CBotf2Doc::CalcShipOrders()
 				if (m_Sector[ShipKO.x][ShipKO.y].GetPlanet(m_ShipArray[y].GetTerraformingPlanet())->SetNeededTerraformPoints(m_ShipArray[y].GetColonizePoints()))
 				{
 					// Hier wurde ein Planet erfolgreich geterraformt
-					m_ShipArray[y].SetCurrentOrder(AVOID);
+					m_ShipArray[y].SetCurrentOrder(SHIP_ORDER::AVOID);
 					m_ShipArray[y].SetTerraformingPlanet(-1);
 					// Nachricht generieren, dass Terraforming abgeschlossen wurde
 					CString s = CResourceManager::GetString("TERRAFORMING_FINISHED",FALSE,m_Sector[ShipKO.x][ShipKO.y].GetName());
@@ -4462,7 +4462,7 @@ void CBotf2Doc::CalcShipOrders()
 			}
 			else	// wenn der Plani aus irgendeinen Grund schon geterraformed ist
 			{
-				m_ShipArray[y].SetCurrentOrder(AVOID);
+				m_ShipArray[y].SetCurrentOrder(SHIP_ORDER::AVOID);
 				m_ShipArray[y].SetTerraformingPlanet(-1);
 				if (m_ShipArray[y].GetFleet() != 0)
 					m_ShipArray[y].GetFleet()->AdoptCurrentOrders(&m_ShipArray[y]);
@@ -4477,7 +4477,7 @@ void CBotf2Doc::CalcShipOrders()
 					{
 						if (m_Sector[ShipKO.x][ShipKO.y].GetPlanet(pFleetShip->GetTerraformingPlanet())->SetNeededTerraformPoints(pFleetShip->GetColonizePoints()))
 						{
-							m_ShipArray[y].SetCurrentOrder(AVOID);
+							m_ShipArray[y].SetCurrentOrder(SHIP_ORDER::AVOID);
 							m_ShipArray[y].SetTerraformingPlanet(-1);
 							m_ShipArray[y].GetFleet()->AdoptCurrentOrders(&m_ShipArray[y]);
 							// Nachricht generieren, dass Terraforming abgeschlossen wurde
@@ -4503,7 +4503,7 @@ void CBotf2Doc::CalcShipOrders()
 					}
 					else	// wenn der Plani aus irgendeinen Grund schon geterraformed ist
 					{
-						m_ShipArray[y].SetCurrentOrder(AVOID);
+						m_ShipArray[y].SetCurrentOrder(SHIP_ORDER::AVOID);
 						m_ShipArray[y].SetTerraformingPlanet(-1);
 						m_ShipArray[y].GetFleet()->AdoptCurrentOrders(&m_ShipArray[y]);
 						break;
@@ -4511,7 +4511,7 @@ void CBotf2Doc::CalcShipOrders()
 				}
 		}
 		// hier wird ein Au?enposten gebaut
-		else if (m_ShipArray[y].GetCurrentOrder() == BUILD_OUTPOST)	// es soll eine Station gebaut werden
+		else if (m_ShipArray[y].GetCurrentOrder() == SHIP_ORDER::BUILD_OUTPOST)	// es soll eine Station gebaut werden
 		{
 			CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(m_ShipArray[y].GetOwnerOfShip()));
 			ASSERT(pMajor);
@@ -4604,7 +4604,7 @@ void CBotf2Doc::CalcShipOrders()
 									m_ShipArray[y].CheckFleet();
 									BuildShip(id, ShipKO, m_ShipArray[y].GetOwnerOfShip());
 									// Wenn hier ein Au?enposten gebaut wurde den Befehl f?r die Flotte auf Meiden stellen
-									m_ShipArray[y].SetCurrentOrder(AVOID);
+									m_ShipArray[y].SetCurrentOrder(SHIP_ORDER::AVOID);
 									break;
 								}
 							}
@@ -4643,20 +4643,20 @@ void CBotf2Doc::CalcShipOrders()
 							BuildShip(id, ShipKO, m_ShipArray[y].GetOwnerOfShip());
 
 							// Wenn hier ein Au?enposten gebaut wurde den Befehl f?r die Flotte auf Meiden stellen
-							m_ShipArray[y].SetCurrentOrder(AVOID);
+							m_ShipArray[y].SetCurrentOrder(SHIP_ORDER::AVOID);
 							RemoveShip(y--);
 							continue;
 						}
 					}
 				}
 				else
-					m_ShipArray[y].SetCurrentOrder(AVOID);
+					m_ShipArray[y].SetCurrentOrder(SHIP_ORDER::AVOID);
 			}
 			else
-				m_ShipArray[y].SetCurrentOrder(AVOID);
+				m_ShipArray[y].SetCurrentOrder(SHIP_ORDER::AVOID);
 		}
 		// hier wird eine Sternbasis gebaut
-		else if (m_ShipArray[y].GetCurrentOrder() == BUILD_STARBASE)	// es soll eine Sternbasis gebaut werden
+		else if (m_ShipArray[y].GetCurrentOrder() == SHIP_ORDER::BUILD_STARBASE)	// es soll eine Sternbasis gebaut werden
 		{
 			CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(m_ShipArray[y].GetOwnerOfShip()));
 			ASSERT(pMajor);
@@ -4762,7 +4762,7 @@ void CBotf2Doc::CalcShipOrders()
 											break;
 										}
 									// Wenn hier eine Station gebaut wurde den Befehl f?r die Flotte auf Meiden stellen
-									m_ShipArray[y].SetCurrentOrder(AVOID);
+									m_ShipArray[y].SetCurrentOrder(SHIP_ORDER::AVOID);
 									break;
 								}
 							}
@@ -4801,7 +4801,7 @@ void CBotf2Doc::CalcShipOrders()
 							// Sternbasis bauen
 							BuildShip(id, ShipKO, m_ShipArray[y].GetOwnerOfShip());
 							// Wenn hier eine Station gebaut wurde den Befehl f?r die Flotte auf Meiden stellen
-							m_ShipArray[y].SetCurrentOrder(AVOID);
+							m_ShipArray[y].SetCurrentOrder(SHIP_ORDER::AVOID);
 							RemoveShip(y--);
 
 							// Wenn die Sternbasis gebaut haben, dann den alten Au?enposten aus der Schiffsliste nehmen
@@ -4818,13 +4818,13 @@ void CBotf2Doc::CalcShipOrders()
 					}
 				}
 				else
-					m_ShipArray[y].SetCurrentOrder(AVOID);
+					m_ShipArray[y].SetCurrentOrder(SHIP_ORDER::AVOID);
 			}
 			else
-				m_ShipArray[y].SetCurrentOrder(AVOID);
+				m_ShipArray[y].SetCurrentOrder(SHIP_ORDER::AVOID);
 		}
 		// Wenn wir das Schiff abracken/zerst?ren/demontieren wollen
-		else if (m_ShipArray[y].GetCurrentOrder() == DESTROY_SHIP)	// das Schiff wird demontiert
+		else if (m_ShipArray[y].GetCurrentOrder() == SHIP_ORDER::DESTROY_SHIP)	// das Schiff wird demontiert
 		{
 			CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(m_ShipArray[y].GetOwnerOfShip()));
 			ASSERT(pMajor);
@@ -4878,13 +4878,13 @@ void CBotf2Doc::CalcShipOrders()
 				m_Sector[ShipKO.x][ShipKO.y].SetStarbase(FALSE, m_ShipArray[y].GetOwnerOfShip());
 			}
 
-			m_ShipArray[y].SetCurrentOrder(AVOID);
+			m_ShipArray[y].SetCurrentOrder(SHIP_ORDER::AVOID);
 			m_ShipArray.RemoveAt(y--);
 			continue;	// continue, damit wir am Ende der Schleife nicht sagen, dass ein Schiff im Sektor ist
 		}
 		
 		// Wenn wir ein Schiff zum Flagschiff ernennen wollen (nur ein Schiff pro Imperium kann ein Flagschiff sein!)
-		else if (m_ShipArray[y].GetCurrentOrder() == ASSIGN_FLAGSHIP && m_ShipArray[y].GetFleet() == 0)
+		else if (m_ShipArray[y].GetCurrentOrder() == SHIP_ORDER::ASSIGN_FLAGSHIP && m_ShipArray[y].GetFleet() == 0)
 		{
 			CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(m_ShipArray[y].GetOwnerOfShip()));
 			ASSERT(pMajor);
@@ -4922,9 +4922,9 @@ void CBotf2Doc::CalcShipOrders()
 			// Jetzt das neue Schiff zum Flagschiff ernennen
 			m_ShipArray[y].SetIsShipFlagShip(TRUE);
 			if (m_ShipArray[y].IsNonCombat())
-				m_ShipArray[y].SetCurrentOrder(AVOID);
+				m_ShipArray[y].SetCurrentOrder(SHIP_ORDER::AVOID);
 			else
-				m_ShipArray[y].SetCurrentOrder(ATTACK);
+				m_ShipArray[y].SetCurrentOrder(SHIP_ORDER::ATTACK);
 			// Nachricht generieren, dass ein neues Schiff zum Flagschiff ernannt wurde
 			CString s = CResourceManager::GetString("ASSIGN_FLAGSHIP_MESSAGE",FALSE,m_ShipArray[y].GetShipName(),m_ShipArray[y].GetShipTypeAsString());
 			CMessage message;
@@ -4933,7 +4933,7 @@ void CBotf2Doc::CalcShipOrders()
 			if (pMajor->IsHumanPlayer())
 				m_iSelectedView[client] = EMPIRE_VIEW;
 		}
-		else if (m_ShipArray[y].GetCurrentOrder() == TRAIN_SHIP)
+		else if (m_ShipArray[y].GetCurrentOrder() == SHIP_ORDER::TRAIN_SHIP)
 		{
 			// Checken ob der Befehl noch G?ltigkeit hat
 			if (m_Sector[ShipKO.x][ShipKO.y].GetSunSystem() == TRUE &&
@@ -4970,14 +4970,14 @@ void CBotf2Doc::CalcShipOrders()
 					}
 			}
 		}
-		else if (m_ShipArray[y].GetCurrentOrder() == CLOAK)
+		else if (m_ShipArray[y].GetCurrentOrder() == SHIP_ORDER::CLOAK)
 		{
 			m_ShipArray[y].SetCloak();
 			// Wenn das Schiff eine Flotte anf?hrt, checken ob der Tarnenbefehl noch G?ltigkeit hat. Wenn ja, dann
 			// alle Schiffe in der Flotte tarnen
 			if (m_ShipArray[y].GetCloak() == TRUE)
 				if (m_ShipArray[y].GetFleet() != 0)
-					if (m_ShipArray[y].GetFleet()->CheckOrder(&m_ShipArray[y], CLOAK) == TRUE)
+					if (m_ShipArray[y].GetFleet()->CheckOrder(&m_ShipArray[y], SHIP_ORDER::CLOAK) == TRUE)
 						for (int x = 0; x < m_ShipArray[y].GetFleet()->GetFleetSize(); x++)
 							if (m_ShipArray[y].GetFleet()->GetShipFromFleet(x)->GetCloak() == FALSE)
 								m_ShipArray[y].GetFleet()->GetShipFromFleet(x)->SetCloak();
@@ -4990,10 +4990,10 @@ void CBotf2Doc::CalcShipOrders()
 						if (m_ShipArray[y].GetFleet()->GetShipFromFleet(x)->GetCloak() == TRUE)
 							m_ShipArray[y].GetFleet()->GetShipFromFleet(x)->SetCloak();
 			// Befehl wieder auf Angreifen stellen
-			m_ShipArray[y].SetCurrentOrder(ATTACK);
+			m_ShipArray[y].SetCurrentOrder(SHIP_ORDER::ATTACK);
 		}
 		// Blockadebefehl
-		else if (m_ShipArray[y].GetCurrentOrder() == BLOCKADE_SYSTEM)
+		else if (m_ShipArray[y].GetCurrentOrder() == SHIP_ORDER::BLOCKADE_SYSTEM)
 		{
 			BOOLEAN blockadeStillActive = FALSE;
 			// ?berpr?fen ob der Blockadebefehl noch G?ltigkeit hat
@@ -5026,7 +5026,7 @@ void CBotf2Doc::CalcShipOrders()
 									CalcShipExp(m_ShipArray[y].GetFleet()->GetShipFromFleet(x));
 								}
 								else
-									m_ShipArray[y].GetFleet()->GetShipFromFleet(x)->SetCurrentOrder(ATTACK);
+									m_ShipArray[y].GetFleet()->GetShipFromFleet(x)->SetCurrentOrder(SHIP_ORDER::ATTACK);
 							}
 						m_System[ShipKO.x][ShipKO.y].SetBlockade((BYTE)blockadeValue);
 						// Die Beziehung zum Systembesitzer verringert sich um bis zu maximal 10 Punkte
@@ -5037,7 +5037,7 @@ void CBotf2Doc::CalcShipOrders()
 			// kann der Blockadebefehl nicht mehr ausgef?hrt werden, so wird der Befehl automatisch gel?scht
 			if (!blockadeStillActive)
 			{
-				m_ShipArray[y].SetCurrentOrder(ATTACK);
+				m_ShipArray[y].SetCurrentOrder(SHIP_ORDER::ATTACK);
 				if (m_ShipArray[y].GetFleet() != 0)
 					m_ShipArray[y].GetFleet()->AdoptCurrentOrders(&m_ShipArray[y]);
 			}
@@ -5110,28 +5110,28 @@ void CBotf2Doc::CalcShipMovement()
 	{
 		CString sRace = m_ShipArray[y].GetOwnerOfShip();
 		// Pr?fen, dass ein Terraformbefehl noch g?ltig ist
-		if (m_ShipArray[y].GetCurrentOrder() == TERRAFORM)
+		if (m_ShipArray[y].GetCurrentOrder() == SHIP_ORDER::TERRAFORM)
 		{
 			CPoint p = m_ShipArray[y].GetKO();
 			if (m_Sector[p.x][p.y].GetPlanet(m_ShipArray[y].GetTerraformingPlanet())->GetTerraformed() == TRUE)
 			{
-				m_ShipArray[y].SetCurrentOrder(AVOID);
+				m_ShipArray[y].SetCurrentOrder(SHIP_ORDER::AVOID);
 				m_ShipArray[y].SetTerraformingPlanet(-1);
 			}
 		}
 		// Pr?fen, dass ein Aussenpostenbaubefehl noch g?ltig ist
-		else if (m_ShipArray[y].GetCurrentOrder() == BUILD_OUTPOST)
+		else if (m_ShipArray[y].GetCurrentOrder() == SHIP_ORDER::BUILD_OUTPOST)
 		{
 			CPoint p = m_ShipArray[y].GetKO();
 			if (m_Sector[p.x][p.y].GetOutpost(sRace) == TRUE)
-				m_ShipArray[y].SetCurrentOrder(AVOID);
+				m_ShipArray[y].SetCurrentOrder(SHIP_ORDER::AVOID);
 		}
 		// Pr?fen, dass ein Sternbasenbaubefehl noch g?ltig ist
-		else if (m_ShipArray[y].GetCurrentOrder() == BUILD_STARBASE)
+		else if (m_ShipArray[y].GetCurrentOrder() == SHIP_ORDER::BUILD_STARBASE)
 		{
 			CPoint p = m_ShipArray[y].GetKO();
 			if (m_Sector[p.x][p.y].GetStarbase(sRace) == TRUE)
-				m_ShipArray[y].SetCurrentOrder(AVOID);
+				m_ShipArray[y].SetCurrentOrder(SHIP_ORDER::AVOID);
 		}
 		// weiter mit Schiffsbewegung
 		Sector shipKO((char)m_ShipArray[y].GetKO().x,(char)m_ShipArray[y].GetKO().y);
@@ -5343,7 +5343,7 @@ bool CBotf2Doc::IsShipCombat()
 	for (int y = 0; y < m_ShipArray.GetSize(); y++)
 	{
 		// Wenn unser Schiff auf Angreifen gestellt ist
-		if (m_ShipArray.GetAt(y).GetCurrentOrder() != ATTACK)
+		if (m_ShipArray.GetAt(y).GetCurrentOrder() != SHIP_ORDER::ATTACK)
 			continue;
 
 		CPoint p = m_ShipArray.GetAt(y).GetKO();
@@ -5651,9 +5651,9 @@ void CBotf2Doc::CalcShipCombat()
 		{
 			// Schiff auf Meiden stellen
 			if (pShip->IsNonCombat())
-				pShip->SetCurrentOrder(AVOID);
+				pShip->SetCurrentOrder(SHIP_ORDER::AVOID);
 			else
-				pShip->SetCurrentOrder(ATTACK);
+				pShip->SetCurrentOrder(SHIP_ORDER::ATTACK);
 
 			// womögicher Terraformplanet oder Stationsbau zurücknehmen
 			pShip->SetTerraformingPlanet(-1);
@@ -5678,9 +5678,9 @@ void CBotf2Doc::CalcShipEffects()
 			pShip->SetCombatTactic(COMBAT_TACTIC::CT_ATTACK);
 			// Schiff auf Meiden stellen
 			if (pShip->IsNonCombat())
-				pShip->SetCurrentOrder(AVOID);
+				pShip->SetCurrentOrder(SHIP_ORDER::AVOID);
 			else
-				pShip->SetCurrentOrder(ATTACK);
+				pShip->SetCurrentOrder(SHIP_ORDER::ATTACK);
 			
 			// womögicher Terraformplanet oder Stationsbau zurücknehmen
 			pShip->SetTerraformingPlanet(-1);
@@ -5732,9 +5732,9 @@ void CBotf2Doc::CalcShipEffects()
 						
 						// Schiff auf Meiden stellen
 						if (pFleetShip->IsNonCombat())
-							pFleetShip->SetCurrentOrder(AVOID);
+							pFleetShip->SetCurrentOrder(SHIP_ORDER::AVOID);
 						else
-							pFleetShip->SetCurrentOrder(ATTACK);
+							pFleetShip->SetCurrentOrder(SHIP_ORDER::ATTACK);
 
 						if (pFleetShip->GetSpeed() > 0)
 						{
@@ -5847,11 +5847,11 @@ void CBotf2Doc::CalcShipEffects()
 		}
 
 		// Wenn das Schiff gerade eine Station baut, so dies dem Sektor mitteilen
-		if (m_ShipArray[y].GetCurrentOrder() == BUILD_OUTPOST || m_ShipArray[y].GetCurrentOrder() == BUILD_STARBASE)
+		if (m_ShipArray[y].GetCurrentOrder() == SHIP_ORDER::BUILD_OUTPOST || m_ShipArray[y].GetCurrentOrder() == SHIP_ORDER::BUILD_STARBASE)
 			m_Sector[p.x][p.y].SetIsStationBuilding(TRUE, sRace);
 
 		// Wenn das Schiff gerade Terraform, so dies dem Planeten mitteilen
-		else if (m_ShipArray[y].GetCurrentOrder() == TERRAFORM)
+		else if (m_ShipArray[y].GetCurrentOrder() == SHIP_ORDER::TERRAFORM)
 		{
 			short nPlanet = m_ShipArray[y].GetTerraformingPlanet();
 			if (nPlanet != -1 && nPlanet < m_Sector[p.x][p.y].GetPlanets()->GetSize())
@@ -5859,7 +5859,7 @@ void CBotf2Doc::CalcShipEffects()
 			else
 			{
 				m_ShipArray[y].SetTerraformingPlanet(-1);
-				m_ShipArray[y].SetCurrentOrder(AVOID);
+				m_ShipArray[y].SetCurrentOrder(SHIP_ORDER::AVOID);
 			}
 		}
 		
@@ -6652,17 +6652,17 @@ void CBotf2Doc::CalcRandomAlienEntities()
 					if (pAlien->GetRaceID() == "Ionisierendes Gaswesen")
 					{
 						pShip->SetAlienType(ALIEN_TYPE::IONISIERENDES_GASWESEN);
-						pShip->SetCurrentOrder(AVOID);
+						pShip->SetCurrentOrder(SHIP_ORDER::AVOID);
 					}
 					else if (pAlien->GetRaceID() == "Gaballianer")
 					{
 						pShip->SetAlienType(ALIEN_TYPE::GABALLIANER_SEUCHENSCHIFF);
-						pShip->SetCurrentOrder(ATTACK);
+						pShip->SetCurrentOrder(SHIP_ORDER::ATTACK);
 					}
 					else if (pAlien->GetRaceID() == "Blizzard-Plasmawesen")
 					{
 						pShip->SetAlienType(ALIEN_TYPE::BLIZZARD_PLASMAWESEN);
-						pShip->SetCurrentOrder(ATTACK);
+						pShip->SetCurrentOrder(SHIP_ORDER::ATTACK);
 					}
 
 					break;
@@ -6786,7 +6786,7 @@ void CBotf2Doc::CalcAlienShipEffects()
 						vShips[n]->SetOwnerOfShip(pAlien->GetRaceID());
 						vShips[n]->SetTargetKO(pShip->GetKO(), 0);
 						vShips[n]->SetAlienType(ALIEN_TYPE::GABALLIANER_SEUCHENSCHIFF);
-						vShips[n]->SetCurrentOrder(ATTACK);
+						vShips[n]->SetCurrentOrder(SHIP_ORDER::ATTACK);
 						vShips[n]->SetTerraformingPlanet(-1);
 						vShips[n]->SetIsShipFlagShip(FALSE);
 

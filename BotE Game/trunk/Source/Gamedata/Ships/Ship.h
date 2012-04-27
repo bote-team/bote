@@ -89,7 +89,7 @@ public:
 	BYTE GetScanRange() const {return m_iScanRange;}
 	BYTE GetColonizePoints() const {return m_iColonizePoints;}
 	BYTE GetStationBuildPoints() const {return m_iStationBuildPoints;}
-	BYTE GetCurrentOrder() const {return m_iCurrentOrder;}
+	SHIP_ORDER::Typ GetCurrentOrder() const {return m_iCurrentOrder;}
 	short GetTerraformingPlanet() const {return m_nTerraformingPlanet;}
 	const CString& GetShipName() const {return m_strShipName;}
 	const CString& GetShipClass() const {return m_strShipClass;}
@@ -133,7 +133,7 @@ public:
 	void SetLoadedResources(USHORT add, BYTE res) {m_iLoadedResources[res] += add;}
 	void SetColonizePoints(BYTE ColonizePoints) {m_iColonizePoints = ColonizePoints;}
 	void SetStationBuildPoints(BYTE StationBuildPoints) {m_iStationBuildPoints = StationBuildPoints;}
-	void SetCurrentOrder(BYTE CurrentOrder) {m_iCurrentOrder = CurrentOrder;}
+	void SetCurrentOrder(SHIP_ORDER::Typ nCurrentOrder) {m_iCurrentOrder = nCurrentOrder;}
 	void SetSpecial(int n, SHIP_SPECIAL::Typ nAbility) {m_nSpecial[n] = nAbility;}
 	void SetTerraformingPlanet(short planetNumber) {m_nTerraformingPlanet = planetNumber;}
 	void SetShipName(const CString& ShipName) {m_strShipName = ShipName;}
@@ -177,7 +177,7 @@ protected:
 	CArray<CBeamWeapons,CBeamWeapons>		m_BeamWeapons;		// die Beamfirebewaffnung des Schiffes
 	
 	USHORT m_iID;						// ID des Schiffes
-	BYTE m_iCurrentOrder;				// Aktueller Befehl des Schiffes, nutze dazu enum
+	SHIP_ORDER::Typ m_iCurrentOrder;	// Aktueller Befehl des Schiffes, nutze dazu enum
 	USHORT m_iMaintenanceCosts;			// Unterhaltskosten des Schiffes pro Runde
 	SHIP_TYPE::Typ m_iShipType;			// Schiffstype, siehe Options.h
 	SHIP_SIZE::Typ m_nShipSize;			// Die Größe des Schiffes

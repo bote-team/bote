@@ -89,13 +89,13 @@ void CShipAI::CalculateShipOrders(CSectorAI* SectorAI)
 			CPoint ptKO = pShip->GetKO();
 			// hat das Kolonieschiff den Befehl zum Terraformen, so wird dieser rückgängig gemacht, wenn der Sektor
 			// schon einer anderen Rasse gehört
-			if (pShip->GetCurrentOrder() == TERRAFORM)
+			if (pShip->GetCurrentOrder() == SHIP_ORDER::TERRAFORM)
 			{
 				if (m_pDoc->GetSector(ptKO).GetOwnerOfSector() != "" && m_pDoc->GetSector(ptKO).GetOwnerOfSector() != sOwner)
 				{
 					// Terraforming abbrechen
 					pShip->SetTerraformingPlanet(-1);
-					pShip->SetCurrentOrder(AVOID);
+					pShip->SetCurrentOrder(SHIP_ORDER::AVOID);
 				}
 			}
 
@@ -149,7 +149,7 @@ void CShipAI::CalculateShipOrders(CSectorAI* SectorAI)
 
 			// Kolonieschiffe zum Terraformen schicken. Andere Schiffe fliegen manchmal auch dort hin, wenn
 			// sie gerade keinen anderen Flugauftrag haben.
-			if (pShip->GetShipType() >= SHIP_TYPE::COLONYSHIP && pShip->GetCurrentOrder() != TERRAFORM)
+			if (pShip->GetShipType() >= SHIP_TYPE::COLONYSHIP && pShip->GetCurrentOrder() != SHIP_ORDER::TERRAFORM)
 			{
 				// Zeiger auf Vektor mit Terraformsektoren holen
 				vector<CSectorAI::SectorToTerraform>* vSectorsToTerrform = m_pSectorAI->GetSectorsToTerraform(sOwner);
@@ -177,7 +177,7 @@ void CShipAI::CalculateShipOrders(CSectorAI* SectorAI)
 				}
 			}
 			// Truppentransporter zu einem möglichen Sektor fliegen lassen um dort einen Außenposten bauen zu können
-			if (m_pSectorAI->GetStationBuildSector(sOwner).points > MINBASEPOINTS && pShip->GetCurrentOrder() != BUILD_OUTPOST)
+			if (m_pSectorAI->GetStationBuildSector(sOwner).points > MINBASEPOINTS && pShip->GetCurrentOrder() != SHIP_ORDER::BUILD_OUTPOST)
 			{
 				// nur Truppentransporter oder andere Schiffe ohne Ziel fliegen zu diesem Punkt, niemals aber
 				// Kolonieschiffe
@@ -275,7 +275,7 @@ bool CShipAI::DoTerraform(CShip* pShip)
 		// Hier muss als erstes ein möglicher neuer Kurs gelöscht werden
 		pShip->SetTargetKO(pShip->GetKO(), 0);
 		pShip->SetTerraformingPlanet(nPlanet);
-		pShip->SetCurrentOrder(TERRAFORM);
+		pShip->SetCurrentOrder(SHIP_ORDER::TERRAFORM);
 		return true;
 	}
 		
@@ -309,7 +309,7 @@ bool CShipAI::DoColonize(CShip* pShip)
 		{
 			// Hier muss als erstes ein möglicher neuer Kurs gelöscht werden
 			pShip->SetTargetKO(pShip->GetKO(), 0);
-			pShip->SetCurrentOrder(COLONIZE);
+			pShip->SetCurrentOrder(SHIP_ORDER::COLONIZE);
 			return true;
 		}
 	}
@@ -430,10 +430,10 @@ bool CShipAI::DoBombardSystem(CShip* pShip)
 		pShip->SetTargetKO(pShip->GetKO(), 0);
 
 		// Wenn das Schiff bzw. Schiffe aus der Flotte getarnt sind, dann müssen diese erst enttarnt werden
-		if (pShip->GetCloak() || (pShip->GetFleet() != NULL && pShip->GetFleet()->CheckOrder(pShip, ATTACK_SYSTEM) == FALSE))
+		if (pShip->GetCloak() || (pShip->GetFleet() != NULL && pShip->GetFleet()->CheckOrder(pShip, SHIP_ORDER::ATTACK_SYSTEM) == FALSE))
 		{
 			// Schiff enttarnen
-			pShip->SetCurrentOrder(CLOAK);
+			pShip->SetCurrentOrder(SHIP_ORDER::CLOAK);
 			return true;
 		}
 
@@ -474,7 +474,7 @@ bool CShipAI::DoBombardSystem(CShip* pShip)
 			#ifdef TRACE_SHIPAI
 			MYTRACE(MT::LEVEL_INFO, "Race %s: Ship %s (%s) is bombarding system: %d,%d\n",pShip->GetOwnerOfShip(), pShip->GetShipName(), pShip->GetShipTypeAsString(), pShip->GetKO().x,pShip->GetKO().y);
 			#endif
-			pShip->SetCurrentOrder(ATTACK_SYSTEM);
+			pShip->SetCurrentOrder(SHIP_ORDER::ATTACK_SYSTEM);
 			return true;
 		}		
 	}
@@ -499,9 +499,9 @@ bool CShipAI::DoCamouflage(CShip* pShip, bool bCamouflage/* = true*/)
 		return false;
 
 	// Nur wenn das Schiff sich tarnen kann und nicht gerade dabei ist ein System zu bombardieren soll es sich tarnen
-	if (pShip->GetStealthPower() > 3 && pShip->GetCurrentOrder() != ATTACK_SYSTEM)
+	if (pShip->GetStealthPower() > 3 && pShip->GetCurrentOrder() != SHIP_ORDER::ATTACK_SYSTEM)
 	{
-		pShip->SetCurrentOrder(CLOAK);
+		pShip->SetCurrentOrder(SHIP_ORDER::CLOAK);
 		return true;		
 	}
 	
@@ -556,8 +556,8 @@ void CShipAI::DoMakeFleet(CShip* pShip, int nIndex)
 
 		// es muss sich bei beiden Schiffen um Kriegsschiffe handeln oder bei beiden Schiffen um Transporter oder bei beiden Schiffen um Kolonieschiffe
 		if ((!pShip->IsNonCombat() && !pOtherShip->IsNonCombat())
-			||(pShip->GetShipType() == SHIP_TYPE::TRANSPORTER && pOtherShip->GetShipType() == SHIP_TYPE::TRANSPORTER && pOtherShip->GetCurrentOrder() < BUILD_OUTPOST)
-			||(pShip->GetShipType() == SHIP_TYPE::COLONYSHIP && pOtherShip->GetShipType() == SHIP_TYPE::COLONYSHIP && pOtherShip->GetCurrentOrder() < COLONIZE))
+			||(pShip->GetShipType() == SHIP_TYPE::TRANSPORTER && pOtherShip->GetShipType() == SHIP_TYPE::TRANSPORTER && pOtherShip->GetCurrentOrder() < SHIP_ORDER::BUILD_OUTPOST)
+			||(pShip->GetShipType() == SHIP_TYPE::COLONYSHIP && pOtherShip->GetShipType() == SHIP_TYPE::COLONYSHIP && pOtherShip->GetCurrentOrder() < SHIP_ORDER::COLONIZE))
 		{
 			pShip->CreateFleet();
 			// hat das hinzuzufügende Schiff eine eigene Flotte
@@ -586,7 +586,7 @@ bool CShipAI::DoStationBuild(CShip* pShip)
 		return false;
 	}
 
-	if (pShip->GetStationBuildPoints() <= 0 || pShip->GetCurrentOrder() == BUILD_OUTPOST)
+	if (pShip->GetStationBuildPoints() <= 0 || pShip->GetCurrentOrder() == SHIP_ORDER::BUILD_OUTPOST)
 		return false;
 
 	const CString& sRace = pShip->GetOwnerOfShip();
@@ -601,7 +601,7 @@ bool CShipAI::DoStationBuild(CShip* pShip)
 	if (m_pDoc->GetSector(ptKO).GetOwnerOfSector() == "" || m_pDoc->GetSector(ptKO).GetOwnerOfSector() == sRace)
 	{
 		pShip->SetTargetKO(ptKO, 0);
-		pShip->SetCurrentOrder(BUILD_OUTPOST);
+		pShip->SetCurrentOrder(SHIP_ORDER::BUILD_OUTPOST);
 		return true;
 	}
 

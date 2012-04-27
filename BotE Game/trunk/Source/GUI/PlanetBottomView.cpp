@@ -389,7 +389,7 @@ void CPlanetBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 				// beim Terraforming nen bewohnbaren noch nicht geterraformten Planeten
 				if (pDoc->GetSector(pDoc->GetKO()).GetPlanet(i)->GetTerraformed() == FALSE
 					&& pDoc->GetSector(pDoc->GetKO()).GetPlanet(i)->GetHabitable() == TRUE
-					&& pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetCurrentOrder() == TERRAFORM)
+					&& pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetCurrentOrder() == SHIP_ORDER::TERRAFORM)
 				{
 					CGalaxyMenuView::SetMoveShip(FALSE);
 					CShipBottomView::SetShowStation(false);
