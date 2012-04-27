@@ -218,34 +218,34 @@ void CSystemProd::CalculateProduction(const CBuildingInfo* building)
 void CSystemProd::DisableProductions(const bool* vDisabledProductions)
 {
 	// deaktiverte Produktionen auf 0 setzen
-	if (vDisabledProductions[FOOD_WORKER])
+	if (vDisabledProductions[WORKER::FOOD_WORKER])
 		m_iFoodProd = m_iMaxFoodProd = 0;
 
-	if (vDisabledProductions[INDUSTRY_WORKER])
+	if (vDisabledProductions[WORKER::INDUSTRY_WORKER])
 		m_iIndustryProd = 0;
 
-	if (vDisabledProductions[ENERGY_WORKER])
+	if (vDisabledProductions[WORKER::ENERGY_WORKER])
 		m_iEnergyProd = m_iMaxEnergyProd = 0;
 
-	if (vDisabledProductions[SECURITY_WORKER])
+	if (vDisabledProductions[WORKER::SECURITY_WORKER])
 		m_iSecurityProd = 0;
 
-	if (vDisabledProductions[RESEARCH_WORKER])
+	if (vDisabledProductions[WORKER::RESEARCH_WORKER])
 		m_iResearchProd = 0;
 
-	if (vDisabledProductions[TITAN_WORKER])
+	if (vDisabledProductions[WORKER::TITAN_WORKER])
 		m_iTitanProd = 0;
 
-	if (vDisabledProductions[DEUTERIUM_WORKER])
+	if (vDisabledProductions[WORKER::DEUTERIUM_WORKER])
 		m_iDeuteriumProd = 0;
 
-	if (vDisabledProductions[DURANIUM_WORKER])
+	if (vDisabledProductions[WORKER::DURANIUM_WORKER])
 		m_iDuraniumProd = 0;
 
-	if (vDisabledProductions[CRYSTAL_WORKER])
+	if (vDisabledProductions[WORKER::CRYSTAL_WORKER])
 		m_iCrystalProd = 0;
 
-	if (vDisabledProductions[IRIDIUM_WORKER])
+	if (vDisabledProductions[WORKER::IRIDIUM_WORKER])
 		m_iIridiumProd = 0;
 }
 

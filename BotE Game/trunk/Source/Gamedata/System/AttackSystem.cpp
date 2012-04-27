@@ -183,7 +183,7 @@ void CAttackSystem::CalculateShipDefence()
 		USHORT hit = rand()%m_pShips.GetSize();
 		int dam = (defence * (rand()%41+80))/100 / m_pShips.GetSize();
 		// Wenn es sich um ein Assaultship handelt, so werden 20% des Schadens vermieden
-		if (m_pShips[hit]->HasSpecial(ASSULTSHIP))
+		if (m_pShips[hit]->HasSpecial(SHIP_SPECIAL::ASSULTSHIP))
 			dam = (int)(dam * 0.8f);
 		m_pShips[hit]->GetHull()->SetCurrentHull(-dam);
 	}
@@ -234,7 +234,7 @@ void CAttackSystem::CalculateBombAttack()
 				m_pShips.GetAt(i)->GetTorpedoWeapons()->GetAt(j).GetNumber() *
 				m_pShips.GetAt(i)->GetTorpedoWeapons()->GetAt(j).GetNumberOfTupes();
 			// Wenn es sich um ein Assultship handelt, so wird der Torpedoschaden um 20% erhöht
-			if (m_pShips.GetAt(i)->HasSpecial(ASSULTSHIP))
+			if (m_pShips.GetAt(i)->HasSpecial(SHIP_SPECIAL::ASSULTSHIP))
 			{
 				dmg = (int)(dmg * 1.2f);
 				m_bAssultShipInvolved = TRUE;

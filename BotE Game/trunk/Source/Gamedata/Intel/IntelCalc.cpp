@@ -535,31 +535,33 @@ BOOLEAN CIntelCalc::ExecuteEconomySpy(CMajor* pRace, CMajor* pEnemyRace, CMajor*
 			}
 		}
 		// ansonsten werden Gebäude welche Arbeiter benötigen ausspioniert
-		int buildingTypes[IRIDIUM_WORKER+1] = {0};
-		int start = rand()%(IRIDIUM_WORKER+1);
+		int buildingTypes[WORKER::IRIDIUM_WORKER+1] = {0};
+		int start = rand()%(WORKER::IRIDIUM_WORKER+1);
 		int j = 0;
-		for (int i = start; i <= IRIDIUM_WORKER; i++)
+		for (int i = start; i <= WORKER::IRIDIUM_WORKER; i++)
 		{
-			if (i != SECURITY_WORKER && i != RESEARCH_WORKER)
+			if (i != WORKER::SECURITY_WORKER && i != WORKER::RESEARCH_WORKER)
 			{
-				buildingTypes[i] = m_pDoc->m_System[sectors.GetAt(random).x][sectors.GetAt(random).y].GetNumberOfWorkbuildings(i, 0, NULL);
+				WORKER::Typ nWorker = (WORKER::Typ)i;
+				buildingTypes[i] = m_pDoc->m_System[sectors.GetAt(random).x][sectors.GetAt(random).y].GetNumberOfWorkbuildings(nWorker, 0, NULL);
 				if (buildingTypes[i] > NULL)
 				{
 					start = i;
 					break;
 				}
 			}
-			if (i == IRIDIUM_WORKER)
-				i = FOOD_WORKER;
+			if (i == WORKER::IRIDIUM_WORKER)
+				i = WORKER::FOOD_WORKER;
 			j++;
-			if (j == IRIDIUM_WORKER)
+			if (j == WORKER::IRIDIUM_WORKER)
 				break;
 		}
 		// in "start" steht möglicherweise das Gebäude zur Spionage
 		if (buildingTypes[start] > 0)
 		{
+			WORKER::Typ nWorker = (WORKER::Typ)start;
 			CEcoIntelObj* report = new CEcoIntelObj(pRace->GetRaceID(), pEnemyRace->GetRaceID(), m_pDoc->GetCurrentRound(), TRUE, CPoint(sectors.GetAt(random)),
-				m_pDoc->m_System[sectors.GetAt(random).x][sectors.GetAt(random).y].GetNumberOfWorkbuildings(start, 1, &m_pDoc->BuildingInfo), (BYTE)buildingTypes[start]);
+				m_pDoc->m_System[sectors.GetAt(random).x][sectors.GetAt(random).y].GetNumberOfWorkbuildings(nWorker, 1, &m_pDoc->BuildingInfo), (BYTE)buildingTypes[start]);
 			// Intelreport dem Akteur hinzufügen
 			if (report)
 			{
@@ -753,11 +755,11 @@ BOOLEAN CIntelCalc::ExecuteScienceSpy(CMajor* pRace, CMajor* pEnemyRace, CMajor*
 		}
 		
 		// ansonsten werden Gebäude welche Arbeiter benötigen ausspioniert
-		USHORT buildings = m_pDoc->m_System[sectors.GetAt(random).x][sectors.GetAt(random).y].GetNumberOfWorkbuildings(RESEARCH_WORKER, 0, NULL);
+		USHORT buildings = m_pDoc->m_System[sectors.GetAt(random).x][sectors.GetAt(random).y].GetNumberOfWorkbuildings(WORKER::RESEARCH_WORKER, 0, NULL);
 		if (buildings > 0)
 		{
 			CScienceIntelObj* report = new CScienceIntelObj(pRace->GetRaceID(), pEnemyRace->GetRaceID(), m_pDoc->GetCurrentRound(), TRUE, CPoint(sectors.GetAt(random)),
-				m_pDoc->m_System[sectors.GetAt(random).x][sectors.GetAt(random).y].GetNumberOfWorkbuildings(RESEARCH_WORKER, 1, &m_pDoc->BuildingInfo), (BYTE)buildings);
+				m_pDoc->m_System[sectors.GetAt(random).x][sectors.GetAt(random).y].GetNumberOfWorkbuildings(WORKER::RESEARCH_WORKER, 1, &m_pDoc->BuildingInfo), (BYTE)buildings);
 			// Intelreport dem Akteur hinzufügen
 			if (report)
 			{
@@ -894,11 +896,11 @@ BOOLEAN CIntelCalc::ExecuteMilitarySpy(CMajor* pRace, CMajor* pEnemyRace, CMajor
 		if (rand()%3 == NULL)	// zu 33% wird versucht ein arbeiterbenötigendes Gebäude zu spionieren
 		{
 			// ansonsten werden Gebäude welche Arbeiter benötigen ausspioniert
-			USHORT buildings = m_pDoc->m_System[sectors.GetAt(random).x][sectors.GetAt(random).y].GetNumberOfWorkbuildings(SECURITY_WORKER, 0, NULL);
+			USHORT buildings = m_pDoc->m_System[sectors.GetAt(random).x][sectors.GetAt(random).y].GetNumberOfWorkbuildings(WORKER::SECURITY_WORKER, 0, NULL);
 			if (buildings > 0)
 			{
 				CMilitaryIntelObj* report = new CMilitaryIntelObj(pRace->GetRaceID(), pEnemyRace->GetRaceID(), m_pDoc->GetCurrentRound(), TRUE, CPoint(sectors.GetAt(random)),
-					m_pDoc->m_System[sectors.GetAt(random).x][sectors.GetAt(random).y].GetNumberOfWorkbuildings(SECURITY_WORKER, 1, &m_pDoc->BuildingInfo), (BYTE)buildings, TRUE, FALSE, FALSE);
+					m_pDoc->m_System[sectors.GetAt(random).x][sectors.GetAt(random).y].GetNumberOfWorkbuildings(WORKER::SECURITY_WORKER, 1, &m_pDoc->BuildingInfo), (BYTE)buildings, TRUE, FALSE, FALSE);
 				// Intelreport dem Akteur hinzufügen
 				if (report)
 				{

@@ -317,8 +317,24 @@ namespace SHIP_RANGE
 #define MAX_TORPEDO_RANGE	200
 #define DAMAGE_TO_HULL		0.1	// Prozentwert der bei Treffer immer auf Hülle geht
 #define POPSUPPORT_MULTI	3.0	// Multiplikator für Schiffsunterstützungskosten aus Bevölkerung im System
+
 // Schiffseigenschaften
-enum {NONE, ASSULTSHIP, BLOCKADESHIP, COMMANDSHIP, COMBATTRACTORBEAM, DOGFIGHTER, DOGKILLER, PATROLSHIP, RAIDER, SCIENCEVESSEL};
+namespace SHIP_SPECIAL
+{
+	enum Typ
+	{
+		NONE				= 0,
+		ASSULTSHIP			= 1,
+		BLOCKADESHIP		= 2,
+		COMMANDSHIP			= 3,
+		COMBATTRACTORBEAM	= 4,
+		DOGFIGHTER			= 5,
+		DOGKILLER			= 6,
+		PATROLSHIP			= 7,
+		RAIDER				= 8,
+		SCIENCEVESSEL		= 9
+	};
+}
 
 namespace ALIEN_TYPE
 {
@@ -332,16 +348,25 @@ namespace ALIEN_TYPE
 }
 
 // ------------- Arbeiter ------------------------------------------------------
-#define FOOD_WORKER			0
-#define INDUSTRY_WORKER		1
-#define ENERGY_WORKER		2
-#define SECURITY_WORKER		3
-#define RESEARCH_WORKER		4
-#define TITAN_WORKER		5
-#define DEUTERIUM_WORKER	6
-#define DURANIUM_WORKER		7
-#define CRYSTAL_WORKER		8
-#define IRIDIUM_WORKER		9
+namespace WORKER
+{
+	enum Typ
+	{
+		NONE				= -1,
+		FOOD_WORKER			= 0,
+		INDUSTRY_WORKER		= 1,
+		ENERGY_WORKER		= 2,
+		SECURITY_WORKER		= 3,
+		RESEARCH_WORKER		= 4,
+		TITAN_WORKER		= 5,
+		DEUTERIUM_WORKER	= 6,
+		DURANIUM_WORKER		= 7,
+		CRYSTAL_WORKER		= 8,
+		IRIDIUM_WORKER		= 9,
+		ALL_WORKER			= 10,
+		FREE_WORKER			= 11
+	};
+}
 
 // ------------- System   ------------------------------------------------------
 #define	MAJOR				0	// Hauptrasse

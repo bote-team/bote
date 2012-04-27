@@ -443,34 +443,35 @@ void CSystemMenuView::DrawBuildMenue(Graphics* g)
 	// Arbeiterzuweisung unter dem Bild der Rasse zeichnen
 	// kleine Bilder von den Rohstoffen zeichnen
 	Bitmap* graphic = NULL;
-	CPoint px[IRIDIUM_WORKER+1] = {CPoint(0,0)};
+	CPoint px[WORKER::IRIDIUM_WORKER+1] = {CPoint(0,0)};
 	
-	px[FOOD_WORKER].SetPoint(80,230); px[INDUSTRY_WORKER].SetPoint(80,255); px[ENERGY_WORKER].SetPoint(80,280);
-	px[SECURITY_WORKER].SetPoint(80,305); px[RESEARCH_WORKER].SetPoint(80,330);
-	px[TITAN_WORKER].SetPoint(185,230); px[DEUTERIUM_WORKER].SetPoint(185,255); px[DURANIUM_WORKER].SetPoint(185,280);
-	px[CRYSTAL_WORKER].SetPoint(185,305); px[IRIDIUM_WORKER].SetPoint(185,330); 
+	px[WORKER::FOOD_WORKER].SetPoint(80,230); px[WORKER::INDUSTRY_WORKER].SetPoint(80,255); px[WORKER::ENERGY_WORKER].SetPoint(80,280);
+	px[WORKER::SECURITY_WORKER].SetPoint(80,305); px[WORKER::RESEARCH_WORKER].SetPoint(80,330);
+	px[WORKER::TITAN_WORKER].SetPoint(185,230); px[WORKER::DEUTERIUM_WORKER].SetPoint(185,255); px[WORKER::DURANIUM_WORKER].SetPoint(185,280);
+	px[WORKER::CRYSTAL_WORKER].SetPoint(185,305); px[WORKER::IRIDIUM_WORKER].SetPoint(185,330); 
 
-	for (int i = FOOD_WORKER; i <= IRIDIUM_WORKER; i++)
+	for (int i = WORKER::FOOD_WORKER; i <= WORKER::IRIDIUM_WORKER; i++)
 	{
-		switch (i)
+		WORKER::Typ nWorker = (WORKER::Typ)i;
+		switch (nWorker)
 		{
-		case FOOD_WORKER:		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\foodSmall.bop"); break;
-		case INDUSTRY_WORKER:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\industrySmall.bop"); break;
-		case ENERGY_WORKER:		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\energySmall.bop"); break;
-		case SECURITY_WORKER:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\securitySmall.bop"); break;
-		case RESEARCH_WORKER:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\researchSmall.bop"); break;
-		case TITAN_WORKER:		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\titanSmall.bop"); break;
-		case DEUTERIUM_WORKER:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\deuteriumSmall.bop"); break;
-		case DURANIUM_WORKER:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\duraniumSmall.bop"); break;
-		case CRYSTAL_WORKER:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\crystalSmall.bop"); break;
-		case IRIDIUM_WORKER:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\iridiumSmall.bop"); break;
+		case WORKER::FOOD_WORKER:		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\foodSmall.bop"); break;
+		case WORKER::INDUSTRY_WORKER:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\industrySmall.bop"); break;
+		case WORKER::ENERGY_WORKER:		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\energySmall.bop"); break;
+		case WORKER::SECURITY_WORKER:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\securitySmall.bop"); break;
+		case WORKER::RESEARCH_WORKER:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\researchSmall.bop"); break;
+		case WORKER::TITAN_WORKER:		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\titanSmall.bop"); break;
+		case WORKER::DEUTERIUM_WORKER:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\deuteriumSmall.bop"); break;
+		case WORKER::DURANIUM_WORKER:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\duraniumSmall.bop"); break;
+		case WORKER::CRYSTAL_WORKER:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\crystalSmall.bop"); break;
+		case WORKER::IRIDIUM_WORKER:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\iridiumSmall.bop"); break;
 		}
 		if (graphic)
 		{
 			g->DrawImage(graphic, px[i].x, px[i].y, 20, 16);
 			graphic = NULL;
 		}
-		s.Format("%d/%d", pDoc->m_System[p.x][p.y].GetWorker(i), pDoc->m_System[p.x][p.y].GetNumberOfWorkbuildings(i, 0, NULL));
+		s.Format("%d/%d", pDoc->m_System[p.x][p.y].GetWorker(nWorker), pDoc->m_System[p.x][p.y].GetNumberOfWorkbuildings(nWorker, 0, NULL));
 		fontFormat.SetAlignment(StringAlignmentNear);
 		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(30 + px[i].x, px[i].y, 70, 25), &fontFormat, &fontBrush);
 		
@@ -858,12 +859,13 @@ void CSystemMenuView::DrawWorkersMenue(Graphics* g)
 		unsigned short width = 0;							// Breite eines einzelnen Balkens
 		unsigned short size = 0;							// Größe der einzelnen Balken
 		// Größte Nummer berechnen
-		for (int i = 0; i < 5; i++)
+		for (int i = WORKER::FOOD_WORKER; i <= WORKER::RESEARCH_WORKER; i++)
 		{
-			number[i] = pDoc->GetSystem(p.x,p.y).GetNumberOfWorkbuildings(i,0,NULL);
+			WORKER::Typ nWorker = (WORKER::Typ)i;
+			number[i] = pDoc->GetSystem(p.x,p.y).GetNumberOfWorkbuildings(nWorker,0,NULL);
 			if (number[i] > greatestNumber)
 				greatestNumber = number[i];
-			online[i] = pDoc->GetSystem(p.x,p.y).GetWorker(i);
+			online[i] = pDoc->GetSystem(p.x,p.y).GetWorker(nWorker);
 			// Die Rechtecke der Arbeiterbalken erstmal löschen
 			for (int j = 0; j < 200; j++)
 				Timber[i][j].SetRect(0,0,0,0);
@@ -879,7 +881,7 @@ void CSystemMenuView::DrawWorkersMenue(Graphics* g)
 		space = max(2, space);
 				
 		// Den Balken zeichnen
-		for (int i = 0; i < 5; i++)
+		for (int i = WORKER::FOOD_WORKER; i <= WORKER::RESEARCH_WORKER; i++)
 		{
 			for (int j = 0; j < number[i]; j++)
 			{
@@ -907,10 +909,11 @@ void CSystemMenuView::DrawWorkersMenue(Graphics* g)
 			}
 		}
 		// Das Gebäude über dem Balken zeichnen
-		for (int i = 0; i < 5; i++)
+		for (int i = WORKER::FOOD_WORKER; i <= WORKER::RESEARCH_WORKER; i++)
 		{
 			CString name = "";
-			USHORT tmp = pDoc->GetSystem(p.x,p.y).GetNumberOfWorkbuildings(i, 1, &pDoc->BuildingInfo);
+			WORKER::Typ nWorker = (WORKER::Typ)i;
+			USHORT tmp = pDoc->GetSystem(p.x,p.y).GetNumberOfWorkbuildings(nWorker, 1, &pDoc->BuildingInfo);
 			if (tmp != 0) 
 			{
 				// Bild des jeweiligen Gebäudes zeichnen
@@ -981,12 +984,13 @@ void CSystemMenuView::DrawWorkersMenue(Graphics* g)
 		unsigned short width = 0;							// Breite eines einzelnen Balkens
 		unsigned short size = 0;							// Größe der einzelnen Balken
 		// Größte Nummer berechnen
-		for (int i = 0; i < 5; i++)
+		for (int i = WORKER::FOOD_WORKER; i <= WORKER::RESEARCH_WORKER; i++)
 		{
-			number[i] = pDoc->GetSystem(p.x,p.y).GetNumberOfWorkbuildings(i+5,0,NULL);
+			WORKER::Typ nWorker = (WORKER::Typ)(i+5);
+			number[i] = pDoc->GetSystem(p.x,p.y).GetNumberOfWorkbuildings(nWorker,0,NULL);
 			if (number[i] > greatestNumber)
 				greatestNumber = number[i];
-			online[i] = pDoc->GetSystem(p.x,p.y).GetWorker(i+5);
+			online[i] = pDoc->GetSystem(p.x,p.y).GetWorker(nWorker);
 			// Die Rechtecke der Arbeiterbalken erstmal löschen
 			for (int j = 0; j < 200; j++)
 				Timber[i][j].SetRect(0,0,0,0);
@@ -1030,10 +1034,11 @@ void CSystemMenuView::DrawWorkersMenue(Graphics* g)
 			}
 		}
 		// Das Gebäude über dem Balken zeichnen
-		for (int i = 0; i < 5; i++)
+		for (int i = WORKER::FOOD_WORKER; i <= WORKER::RESEARCH_WORKER; i++)
 		{
+			WORKER::Typ nWorker = (WORKER::Typ)(i+5);
 			CString name = "";
-			USHORT tmp = pDoc->GetSystem(p.x,p.y).GetNumberOfWorkbuildings(i+5,1,&pDoc->BuildingInfo);
+			USHORT tmp = pDoc->GetSystem(p.x,p.y).GetNumberOfWorkbuildings(nWorker,1,&pDoc->BuildingInfo);
 			if (tmp != 0) 
 			{
 				// Bild des jeweiligen Gebäudes zeichnen
@@ -1096,7 +1101,7 @@ void CSystemMenuView::DrawWorkersMenue(Graphics* g)
 	// Hier noch die Gesamt- und freien Arbeiter unten in der Mitte zeichnen
 	unsigned short width = 0;
 	unsigned short size = 0;
-	unsigned short worker = pDoc->GetSystem(p.x,p.y).GetNumberOfWorkbuildings(10,0,NULL);
+	unsigned short worker = pDoc->GetSystem(p.x,p.y).GetNumberOfWorkbuildings(WORKER::ALL_WORKER,0,NULL);
 	size = worker;
 	if (size != 0)
 		width = (unsigned short)200/size;
@@ -1109,7 +1114,7 @@ void CSystemMenuView::DrawWorkersMenue(Graphics* g)
 	for (int i = 0; i < worker; i++)
 	{
 		Color timberColor;
-		if (i < pDoc->GetSystem(p.x,p.y).GetWorker(11))
+		if (i < pDoc->GetSystem(p.x,p.y).GetWorker(WORKER::FREE_WORKER))
 		{
 			// Helle Farbe wenn sie Online sind
 			short color = i*4;
@@ -1129,7 +1134,7 @@ void CSystemMenuView::DrawWorkersMenue(Graphics* g)
 	
 	// freie Arbeiter über dem Balken zeichnen
 	fontBrush.SetColor(normalColor);
-	s.Format("%s %d/%d",CResourceManager::GetString("FREE_WORKERS"), pDoc->m_System[p.x][p.y].GetWorker(11), pDoc->m_System[p.x][p.y].GetWorker(10));
+	s.Format("%s %d/%d",CResourceManager::GetString("FREE_WORKERS"), pDoc->m_System[p.x][p.y].GetWorker(WORKER::FREE_WORKER), pDoc->m_System[p.x][p.y].GetWorker(WORKER::ALL_WORKER));
 	fontFormat.SetAlignment(StringAlignmentNear);
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(220,575,380,25), &fontFormat, &fontBrush);
 	
@@ -2776,7 +2781,7 @@ void CSystemMenuView::DrawBuildingProduction(Graphics* g)
 			fontBrush.SetColor(normalColor);
 			if (b1->GetFoodProd() > 0)
 			{
-				short number = pDoc->GetSystem(p.x,p.y).GetNumberOfWorkbuildings(0,0,NULL);
+				short number = pDoc->GetSystem(p.x,p.y).GetNumberOfWorkbuildings(WORKER::FOOD_WORKER,0,NULL);
 				s.Format("%i %s",b2->GetFoodProd()*number-b1->GetFoodProd()*number, CResourceManager::GetString("FOOD"));
 				g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), r, &fontFormat, &fontBrush);
 				
@@ -2788,7 +2793,7 @@ void CSystemMenuView::DrawBuildingProduction(Graphics* g)
 			}
 			else if (b1->GetIPProd() > 0)
 			{
-				short number = pDoc->GetSystem(p.x,p.y).GetNumberOfWorkbuildings(1,0,NULL);
+				short number = pDoc->GetSystem(p.x,p.y).GetNumberOfWorkbuildings(WORKER::INDUSTRY_WORKER,0,NULL);
 				s.Format("%i %s",b2->GetIPProd()*number-b1->GetIPProd()*number,CResourceManager::GetString("INDUSTRY"));
 				g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), r, &fontFormat, &fontBrush);
 				
@@ -2800,7 +2805,7 @@ void CSystemMenuView::DrawBuildingProduction(Graphics* g)
 			}
 			else if (b1->GetEnergyProd() > 0)
 			{
-				short number = pDoc->GetSystem(p.x,p.y).GetNumberOfWorkbuildings(2,0,NULL);
+				short number = pDoc->GetSystem(p.x,p.y).GetNumberOfWorkbuildings(WORKER::ENERGY_WORKER,0,NULL);
 				s.Format("%i %s",b2->GetEnergyProd()*number-b1->GetEnergyProd()*number,CResourceManager::GetString("ENERGY"));
 				g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), r, &fontFormat, &fontBrush);
 				
@@ -2812,7 +2817,7 @@ void CSystemMenuView::DrawBuildingProduction(Graphics* g)
 			}
 			else if (b1->GetSPProd() > 0)
 			{
-				short number = pDoc->GetSystem(p.x,p.y).GetNumberOfWorkbuildings(3,0,NULL);
+				short number = pDoc->GetSystem(p.x,p.y).GetNumberOfWorkbuildings(WORKER::SECURITY_WORKER,0,NULL);
 				s.Format("%i %s",b2->GetSPProd()*number-b1->GetSPProd()*number,CResourceManager::GetString("SECURITY"));
 				g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), r, &fontFormat, &fontBrush);
 				
@@ -2824,7 +2829,7 @@ void CSystemMenuView::DrawBuildingProduction(Graphics* g)
 			}
 			else if (b1->GetFPProd() > 0)
 			{
-				short number = pDoc->GetSystem(p.x,p.y).GetNumberOfWorkbuildings(4,0,NULL);
+				short number = pDoc->GetSystem(p.x,p.y).GetNumberOfWorkbuildings(WORKER::RESEARCH_WORKER,0,NULL);
 				s.Format("%i %s",b2->GetFPProd()*number-b1->GetFPProd()*number,CResourceManager::GetString("RESEARCH"));
 				g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), r, &fontFormat, &fontBrush);
 				
@@ -2836,7 +2841,7 @@ void CSystemMenuView::DrawBuildingProduction(Graphics* g)
 			}
 			else if (b1->GetTitanProd() > 0)
 			{
-				short number = pDoc->GetSystem(p.x,p.y).GetNumberOfWorkbuildings(5,0,NULL);
+				short number = pDoc->GetSystem(p.x,p.y).GetNumberOfWorkbuildings(WORKER::TITAN_WORKER,0,NULL);
 				s.Format("%i %s",b2->GetTitanProd()*number-b1->GetTitanProd()*number,CResourceManager::GetString("TITAN"));
 				g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), r, &fontFormat, &fontBrush);
 				
@@ -2848,7 +2853,7 @@ void CSystemMenuView::DrawBuildingProduction(Graphics* g)
 			}
 			else if (b1->GetDeuteriumProd() > 0)
 			{
-				short number = pDoc->GetSystem(p.x,p.y).GetNumberOfWorkbuildings(6,0,NULL);
+				short number = pDoc->GetSystem(p.x,p.y).GetNumberOfWorkbuildings(WORKER::DEUTERIUM_WORKER,0,NULL);
 				s.Format("%i %s",b2->GetDeuteriumProd()*number-b1->GetDeuteriumProd()*number,CResourceManager::GetString("DEUTERIUM"));
 				g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), r, &fontFormat, &fontBrush);
 				
@@ -2860,7 +2865,7 @@ void CSystemMenuView::DrawBuildingProduction(Graphics* g)
 			}
 			else if (b1->GetDuraniumProd() > 0)
 			{
-				short number = pDoc->GetSystem(p.x,p.y).GetNumberOfWorkbuildings(7,0,NULL);
+				short number = pDoc->GetSystem(p.x,p.y).GetNumberOfWorkbuildings(WORKER::DURANIUM_WORKER,0,NULL);
 				s.Format("%i %s",b2->GetDuraniumProd()*number-b1->GetDuraniumProd()*number,CResourceManager::GetString("DURANIUM"));
 				g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), r, &fontFormat, &fontBrush);
 				
@@ -2872,7 +2877,7 @@ void CSystemMenuView::DrawBuildingProduction(Graphics* g)
 			}
 			else if (b1->GetCrystalProd() > 0)
 			{
-				short number = pDoc->GetSystem(p.x,p.y).GetNumberOfWorkbuildings(8,0,NULL);
+				short number = pDoc->GetSystem(p.x,p.y).GetNumberOfWorkbuildings(WORKER::CRYSTAL_WORKER,0,NULL);
 				s.Format("%i %s",b2->GetCrystalProd()*number-b1->GetCrystalProd()*number,CResourceManager::GetString("CRYSTAL"));
 				g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), r, &fontFormat, &fontBrush);
 				
@@ -2884,7 +2889,7 @@ void CSystemMenuView::DrawBuildingProduction(Graphics* g)
 			}
 			else if (b1->GetIridiumProd() > 0)
 			{
-				short number = pDoc->GetSystem(p.x,p.y).GetNumberOfWorkbuildings(9,0,NULL);
+				short number = pDoc->GetSystem(p.x,p.y).GetNumberOfWorkbuildings(WORKER::IRIDIUM_WORKER,0,NULL);
 				s.Format("%i %s",b2->GetIridiumProd()*number-b1->GetIridiumProd()*number,CResourceManager::GetString("IRIDIUM"));
 				g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), r, &fontFormat, &fontBrush);
 				
@@ -3151,7 +3156,6 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		if (ChangeWorkersButton.PtInRect(point))
 		{
 			m_bySubMenu = 12;
-			//PlaySound(*((CBotf2App*)AfxGetApp())->GetPath() + "Sounds\\ComputerBeep2.wav", NULL, SND_FILENAME | SND_ASYNC);
 			Invalidate();
 			return;
 		}
@@ -3164,10 +3168,11 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			{
 				// bei den Plusbutton müssen wir 5 abziehen, um auf die korrelierten Arbeiter zu kommen
 				i -= 5;
+				WORKER::Typ nWorker = (WORKER::Typ)(i);
 				// Wenn wir noch freie Arbeiter haben
-				if (pDoc->GetSystem(p.x,p.y).GetWorker(11) > 0 && pDoc->GetSystem(p.x,p.y).GetNumberOfWorkbuildings(i,0,NULL) > pDoc->GetSystem(p.x,p.y).GetWorker(i))
+				if (pDoc->GetSystem(p.x,p.y).GetWorker(WORKER::FREE_WORKER) > 0 && pDoc->GetSystem(p.x,p.y).GetNumberOfWorkbuildings(nWorker,0,NULL) > pDoc->GetSystem(p.x,p.y).GetWorker(nWorker))
 				{
-					pDoc->m_System[p.x][p.y].SetWorker(i,0,0);	// FoodWorker inkrementieren
+					pDoc->m_System[p.x][p.y].SetWorker(nWorker,0,0);	// FoodWorker inkrementieren
 					// FP und SP aus dem System von den Gesamten FP des Imnperiums abziehen
 					pMajor->GetEmpire()->AddFP(-(pDoc->GetSystem(p.x,p.y).GetProduction()->GetResearchProd()));
 					pMajor->GetEmpire()->AddSP(-(pDoc->GetSystem(p.x,p.y).GetProduction()->GetSecurityProd()));
@@ -3176,7 +3181,6 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 					// FP´s und SP´s wieder draufrechnen
 					pMajor->GetEmpire()->AddFP((pDoc->GetSystem(p.x,p.y).GetProduction()->GetResearchProd()));
 					pMajor->GetEmpire()->AddSP((pDoc->GetSystem(p.x,p.y).GetProduction()->GetSecurityProd()));
-					//PlaySound(*((CBotf2App*)AfxGetApp())->GetPath() + "Sounds\\ComputerBeep1.wav", NULL, SND_FILENAME | SND_ASYNC);
 					Invalidate();
 					return;
 				}
@@ -3184,10 +3188,11 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			// Wenn wir die Arbeiterzahl verringern möchten
 			else
 			{
+				WORKER::Typ nWorker = (WORKER::Typ)(i);
 				// Wenn wir noch Arbeiter in dem bestimmten Gebäude haben
-				if (pDoc->GetSystem(p.x,p.y).GetWorker(i) > 0)
+				if (pDoc->GetSystem(p.x,p.y).GetWorker(nWorker) > 0)
 				{
-					pDoc->m_System[p.x][p.y].SetWorker(i,0,1);	// FoodWorker dekrementieren
+					pDoc->m_System[p.x][p.y].SetWorker(nWorker,0,1);	// FoodWorker dekrementieren
 					// FP und SP aus dem System von den Gesamten FP des Imnperiums abziehen
 					pMajor->GetEmpire()->AddFP(-(pDoc->GetSystem(p.x,p.y).GetProduction()->GetResearchProd()));
 					pMajor->GetEmpire()->AddSP(-(pDoc->GetSystem(p.x,p.y).GetProduction()->GetSecurityProd()));
@@ -3196,7 +3201,6 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 					// FP´s und SP´s wieder draufrechnen
 					pMajor->GetEmpire()->AddFP((pDoc->GetSystem(p.x,p.y).GetProduction()->GetResearchProd()));
 					pMajor->GetEmpire()->AddSP((pDoc->GetSystem(p.x,p.y).GetProduction()->GetSecurityProd()));
-					//PlaySound(*((CBotf2App*)AfxGetApp())->GetPath() + "Sounds\\ComputerBeep1.wav", NULL, SND_FILENAME | SND_ASYNC);
 					Invalidate();
 					return;
 				}
@@ -3207,17 +3211,18 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			for (int j = 0; j < 200; j++)
 				if (Timber[i][j].PtInRect(point))
 				{
+					WORKER::Typ nWorker = (WORKER::Typ)i;
 					// Wenn unsere Erhöhung größer der freien Arbeiter ist
-					if (j >= (pDoc->GetSystem(p.x,p.y).GetWorker(11)+pDoc->GetSystem(p.x,p.y).GetWorker(i)))
+					if (j >= (pDoc->GetSystem(p.x,p.y).GetWorker(WORKER::FREE_WORKER)+pDoc->GetSystem(p.x,p.y).GetWorker(nWorker)))
 					{
 						// Dann setzen wir die Erhöhung auf den max. mgl. Wert
-						j = (pDoc->GetSystem(p.x,p.y).GetWorker(11)+pDoc->GetSystem(p.x,p.y).GetWorker(i));
+						j = (pDoc->GetSystem(p.x,p.y).GetWorker(WORKER::FREE_WORKER)+pDoc->GetSystem(p.x,p.y).GetWorker(nWorker));
 						j--;	// Müssen wir machen
 					}
-					pDoc->m_System[p.x][p.y].SetWorker(i,j+1,2);
+					pDoc->m_System[p.x][p.y].SetWorker(nWorker,j+1,2);
 					// Wenn wir ziemlich weit ganz links geklickt haben, dann Arbeiter auf null setzen, werden hier nur um eins dekrementiert
 					if (j == 0 && point.x < Timber[i][j].left+3)
-						pDoc->m_System[p.x][p.y].SetWorker(i,0,1);
+						pDoc->m_System[p.x][p.y].SetWorker(nWorker,0,1);
 					// FP und SP aus dem System von den Gesamten FP des Imnperiums abziehen
 					pMajor->GetEmpire()->AddFP(-(pDoc->GetSystem(p.x,p.y).GetProduction()->GetResearchProd()));
 					pMajor->GetEmpire()->AddSP(-(pDoc->GetSystem(p.x,p.y).GetProduction()->GetSecurityProd()));
@@ -3226,7 +3231,6 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 					// FP´s und SP´s wieder draufrechnen
 					pMajor->GetEmpire()->AddFP((pDoc->GetSystem(p.x,p.y).GetProduction()->GetResearchProd()));
 					pMajor->GetEmpire()->AddSP((pDoc->GetSystem(p.x,p.y).GetProduction()->GetSecurityProd()));
-					//PlaySound(*((CBotf2App*)AfxGetApp())->GetPath() + "Sounds\\ComputerBeep1.wav", NULL, SND_FILENAME | SND_ASYNC);
 					Invalidate();
 					return;
 				}
@@ -3241,7 +3245,6 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			if (ChangeWorkersButton.PtInRect(point))
 			{
 				m_bySubMenu = 1;
-				//PlaySound(*((CBotf2App*)AfxGetApp())->GetPath() + "Sounds\\ComputerBeep2.wav", NULL, SND_FILENAME | SND_ASYNC);
 				Invalidate();
 			}
 			int i = -1;
@@ -3250,14 +3253,14 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 				// Wenn wir die Arbeiterzahl erhöhen wollen
 				if (i >= 5)
 				{
+					WORKER::Typ nWorker = (WORKER::Typ)i;
 					// bei den Plusbutton müssen wir 5 abziehen, um auf die korrelierten Arbeiter zu kommen
 					i -= 5;
 					// Wenn wir noch freie Arbeiter haben
-					if (pDoc->GetSystem(p.x,p.y).GetWorker(11) > 0 && pDoc->GetSystem(p.x,p.y).GetNumberOfWorkbuildings(i+5,0,NULL) > pDoc->GetSystem(p.x,p.y).GetWorker(i+5))
+					if (pDoc->GetSystem(p.x,p.y).GetWorker(WORKER::FREE_WORKER) > 0 && pDoc->GetSystem(p.x,p.y).GetNumberOfWorkbuildings(nWorker,0,NULL) > pDoc->GetSystem(p.x,p.y).GetWorker(nWorker))
 					{
-						pDoc->m_System[p.x][p.y].SetWorker(i+5,0,0);	// FoodWorker inkrementieren
+						pDoc->m_System[p.x][p.y].SetWorker(nWorker,0,0);	// FoodWorker inkrementieren
 						pDoc->m_System[p.x][p.y].CalculateVariables(&pDoc->BuildingInfo, pMajor->GetEmpire()->GetResearch()->GetResearchInfo(),pDoc->m_Sector[p.x][p.y].GetPlanets(), pMajor, CTrade::GetMonopolOwner());
-						//PlaySound(*((CBotf2App*)AfxGetApp())->GetPath() + "Sounds\\ComputerBeep1.wav", NULL, SND_FILENAME | SND_ASYNC);
 						Invalidate();
 						return;
 					}
@@ -3265,12 +3268,12 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 				// Wenn wir die Arbeiterzahl verringern möchten
 				else
 				{
+					WORKER::Typ nWorker = (WORKER::Typ)(i+5);
 					// Wenn wir noch Arbeiter in dem bestimmten Gebäude haben
-					if (pDoc->GetSystem(p.x,p.y).GetWorker(i+5) > 0)
+					if (pDoc->GetSystem(p.x,p.y).GetWorker(nWorker) > 0)
 					{
-						pDoc->m_System[p.x][p.y].SetWorker(i+5,0,1);	// FoodWorker dekrementieren
+						pDoc->m_System[p.x][p.y].SetWorker(nWorker,0,1);	// FoodWorker dekrementieren
 						pDoc->m_System[p.x][p.y].CalculateVariables(&pDoc->BuildingInfo, pMajor->GetEmpire()->GetResearch()->GetResearchInfo(),pDoc->m_Sector[p.x][p.y].GetPlanets(), pMajor, CTrade::GetMonopolOwner());
-						//PlaySound(*((CBotf2App*)AfxGetApp())->GetPath() + "Sounds\\ComputerBeep1.wav", NULL, SND_FILENAME | SND_ASYNC);
 						Invalidate();
 						return;
 					}
@@ -3281,19 +3284,19 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 				for (int j = 0; j < 200; j++)
 					if (Timber[i][j].PtInRect(point))
 					{
+						WORKER::Typ nWorker = (WORKER::Typ)(i+5);
 						// Wenn unsere Erhöhung größer der freien Arbeiter ist
-						if (j >= (pDoc->GetSystem(p.x,p.y).GetWorker(11)+pDoc->GetSystem(p.x,p.y).GetWorker(i+5)))
+						if (j >= (pDoc->GetSystem(p.x,p.y).GetWorker(WORKER::FREE_WORKER)+pDoc->GetSystem(p.x,p.y).GetWorker(nWorker)))
 						{
 							// Dann setzen wir die Erhöhung auf den max. mgl. Wert
-							j = (pDoc->GetSystem(p.x,p.y).GetWorker(11)+pDoc->GetSystem(p.x,p.y).GetWorker(i+5));
+							j = (pDoc->GetSystem(p.x,p.y).GetWorker(WORKER::FREE_WORKER)+pDoc->GetSystem(p.x,p.y).GetWorker(nWorker));
 							j--;	// Müssen wir machen
 						}
-						pDoc->m_System[p.x][p.y].SetWorker(i+5,j+1,2);
+						pDoc->m_System[p.x][p.y].SetWorker(nWorker,j+1,2);
 						// Wenn wir ziemlich weit ganz links geklickt haben, dann Arbeiter auf null setzen, werden hier nur um eins dekrementiert
 						if (j == 0 && point.x < Timber[i][j].left+3)
-							pDoc->m_System[p.x][p.y].SetWorker(i+5,0,1);
+							pDoc->m_System[p.x][p.y].SetWorker(nWorker,0,1);
 						pDoc->m_System[p.x][p.y].CalculateVariables(&pDoc->BuildingInfo, pMajor->GetEmpire()->GetResearch()->GetResearchInfo(),pDoc->m_Sector[p.x][p.y].GetPlanets(), pMajor, CTrade::GetMonopolOwner());
-						//PlaySound(*((CBotf2App*)AfxGetApp())->GetPath() + "Sounds\\ComputerBeep1.wav", NULL, SND_FILENAME | SND_ASYNC);
 						Invalidate();
 						return;
 					}
@@ -3329,7 +3332,6 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 					// noch alle Schiffe bauen kann. Denn wenn die aus ist, dann kann ich keine mehr bauen
 					if (buildingInfo->GetShipYard())
 						pDoc->m_System[p.x][p.y].CalculateBuildableShips(pDoc, p);
-					//PlaySound(*((CBotf2App*)AfxGetApp())->GetPath() + "Sounds\\ComputerBeep1.wav", NULL, SND_FILENAME | SND_ASYNC);
 					Invalidate(FALSE);
 					break;
 				}

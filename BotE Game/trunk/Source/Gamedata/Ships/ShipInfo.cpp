@@ -448,21 +448,21 @@ void CShipInfo::DrawShipInformation(Graphics* g, CRect rect, Gdiplus::Font* font
 		g->DrawString(CResourceManager::GetString("SPECIAL_ABILITIES").AllocSysString(), -1, font, RectF((REAL)r.left, (REAL)r.top, (REAL)r.Width(), (REAL)r.Height()), &fontFormat, &fontBrush);
 		s = "";
 		fontBrush.SetColor(clrNormal);
-		if (m_bySpecial[0] == ASSULTSHIP || m_bySpecial[1] == ASSULTSHIP)
+		if (HasSpecial(SHIP_SPECIAL::ASSULTSHIP))
 			s += CResourceManager::GetString("ASSAULTSHIP")+" \n";
-		if (m_bySpecial[0] == BLOCKADESHIP || m_bySpecial[1] == BLOCKADESHIP)
+		if (HasSpecial(SHIP_SPECIAL::BLOCKADESHIP))
 			s += CResourceManager::GetString("BLOCKADESHIP")+" \n";
-		if (m_bySpecial[0] == COMMANDSHIP || m_bySpecial[1] == COMMANDSHIP)
+		if (HasSpecial(SHIP_SPECIAL::COMMANDSHIP))
 			s += CResourceManager::GetString("COMMANDSHIP")+" \n";
-		if (m_bySpecial[0] == DOGFIGHTER || m_bySpecial[1] == DOGFIGHTER)
+		if (HasSpecial(SHIP_SPECIAL::DOGFIGHTER))
 			s += CResourceManager::GetString("DOGFIGHTER")+" \n";
-		if (m_bySpecial[0] == DOGKILLER || m_bySpecial[1] == DOGKILLER)
+		if (HasSpecial(SHIP_SPECIAL::DOGKILLER))
 			s += CResourceManager::GetString("DOGKILLER")+" \n";
-		if (m_bySpecial[0] == PATROLSHIP || m_bySpecial[1] == PATROLSHIP)
+		if (HasSpecial(SHIP_SPECIAL::PATROLSHIP))
 			s += CResourceManager::GetString("PATROLSHIP")+" \n";
-		if (m_bySpecial[0] == RAIDER || m_bySpecial[1] == RAIDER)
+		if (HasSpecial(SHIP_SPECIAL::RAIDER))
 			s += CResourceManager::GetString("RAIDER")+" \n";
-		if (m_bySpecial[0] == SCIENCEVESSEL || m_bySpecial[1] == SCIENCEVESSEL)
+		if (HasSpecial(SHIP_SPECIAL::SCIENCEVESSEL))
 			s += CResourceManager::GetString("SCIENCESHIP")+" \n";
 		if (m_Shield.GetRegenerative())
 			s += CResourceManager::GetString("REGENERATIVE_SHIELDS")+" \n";

@@ -427,7 +427,7 @@ void CShipBottomView::OnDraw(CDC* dc)
 			if (m_iTimeCounter > (3 + counter) && m_iWhichMainShipOrderButton == 1 &&
 				// Ab hier check wegen Flotten, darum wirds lang
 				((pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetFleet() == 0
-				&& pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).HasSpecial(BLOCKADESHIP))
+				&& pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).HasSpecial(SHIP_SPECIAL::BLOCKADESHIP))
 				|| (pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetFleet() != 0
 				&& pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetFleet()->CheckOrder(&pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()), BLOCKADE_SYSTEM) == TRUE)))
 			{

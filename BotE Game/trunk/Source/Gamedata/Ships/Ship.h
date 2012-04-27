@@ -97,7 +97,7 @@ public:
 	CString GetShipTypeAsString(BOOL plural = FALSE) const;
 	CString GetCurrentOrderAsString() const;
 	CString GetCurrentTargetAsString() const;
-	BOOLEAN GetIsShipFlagShip() const {return m_bIsFlagShip;}
+	bool GetIsShipFlagShip() const {return m_bIsFlagShip;}
 	USHORT GetCrewExperience() const {return m_iCrewExperiance;}
 	USHORT GetStorageRoom() const {return m_iStorageRoom;}
 	USHORT GetUsedStorageRoom(const CArray<CTroopInfo>* troopInfo);
@@ -134,12 +134,12 @@ public:
 	void SetColonizePoints(BYTE ColonizePoints) {m_iColonizePoints = ColonizePoints;}
 	void SetStationBuildPoints(BYTE StationBuildPoints) {m_iStationBuildPoints = StationBuildPoints;}
 	void SetCurrentOrder(BYTE CurrentOrder) {m_iCurrentOrder = CurrentOrder;}
-	void SetSpecial(BOOLEAN n, BYTE value) {m_bySpecial[n] = value;}
+	void SetSpecial(int n, SHIP_SPECIAL::Typ nAbility) {m_nSpecial[n] = nAbility;}
 	void SetTerraformingPlanet(short planetNumber) {m_nTerraformingPlanet = planetNumber;}
 	void SetShipName(const CString& ShipName) {m_strShipName = ShipName;}
 	void SetShipDescription(const CString& ShipDescription) {m_strShipDescription = ShipDescription;}
 	void SetShipClass(const CString& ShipClass) {m_strShipClass = ShipClass;}
-	void SetIsShipFlagShip(BOOLEAN is) {m_bIsFlagShip = is;}
+	void SetIsShipFlagShip(bool bIs) {m_bIsFlagShip = bIs;}
 	void SetCombatTactic(COMBAT_TACTIC::Typ nTactic) {m_nCombatTactic = nTactic;}
 	void SetAlienType(ALIEN_TYPE::Typ nAlienType) {m_nAlienType = nAlienType;}
 	
@@ -150,8 +150,8 @@ public:
 
 	/// Funktion gibt einen Wahrheitswert zurück, ob das Schiffsobjekt eine bestimmte Spezialfähigkeit besitzt.
 	/// @param ability Spezialfähigkeit
-	/// @return <code>TRUE</code> wenn es diese Fähigkeit besitzt, ansonsten <code>FALSE</code>
-	BOOLEAN HasSpecial(BYTE ability) const;
+	/// @return <code>true</code> wenn es diese Fähigkeit besitzt, ansonsten <code>false</code>
+	bool HasSpecial(SHIP_SPECIAL::Typ nAbility) const;
 
 	/// Funktion erstellt eine Tooltipinfo vom Schiff
 	/// @param bShowFleet wenn dieser Parameter <code>true</code> dann werden Informationen über die angeführte Flotte angezeigt, sonst nur über das Schiff
@@ -190,7 +190,7 @@ protected:
 	USHORT m_iStorageRoom;				// Laderaum des Schiffes
 	BYTE m_iColonizePoints;				// Kolonisierungs/Terraform-Punkte -> Dauer
 	BYTE m_iStationBuildPoints;			// Außenposten/Stations-baupunkte -> Dauer
-	BYTE m_bySpecial[2];				// Die beiden möglichen Spezialfähigkeiten des Schiffes
+	SHIP_SPECIAL::Typ m_nSpecial[2];	// Die beiden möglichen Spezialfähigkeiten des Schiffes
 	CString m_strShipName;				// Der Name des Schiffes
 	CString m_strShipDescription;		// Die Beschreibung des Schiffes
 	CString m_strShipClass;				// Der Name der Schiffsklasse
@@ -203,7 +203,7 @@ private:
 	CArray<Sector> m_Path;				// Der Kurs des Schiffes zum Ziel
 	bool m_bCloakOn;					// ist die Tarnung eingeschaltet
 	short m_nTerraformingPlanet;		// Nummer des Planeten der kolonisiert werden soll
-	BOOLEAN m_bIsFlagShip;				// Ist dieses Schiff ein Flagschiff (es kann immer nur ein Schiff eines Imperiums Flagschiff sein)
+	bool m_bIsFlagShip;					// Ist dieses Schiff ein Flagschiff (es kann immer nur ein Schiff eines Imperiums Flagschiff sein)
 	USHORT m_iCrewExperiance;			// Crewerfahrung des Schiffes
 	// Laderaum
 	CArray<CTroop> m_Troops;				// Die Truppen, welche auf dem Schiff transportiert werden.

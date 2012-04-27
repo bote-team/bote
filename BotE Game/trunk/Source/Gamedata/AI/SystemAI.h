@@ -6,6 +6,7 @@
  *
  */
 #pragma once
+#include "Options.h"
 
 // forward declaration
 class CBotf2Doc;
@@ -75,9 +76,40 @@ private:
 	/// Funktion überprüft, ob für einen bestimmten Arbeitertyp auch ein Gebäude in der Liste der baubaren
 	/// Gebäude exisitiert. Wenn dies nicht der Fall ist, so ist auch die Priorität solch ein Gebäude zu bauen
 	/// gleich Null.
-	/// @param whichWorker Arbeitertyp (FOOD_WORKER, INDUSTRY_WORKER usw.)
+	/// @param nWorker Arbeitertyp (FOOD_WORKER, INDUSTRY_WORKER usw.)
 	/// @return <code>TRUE</code> wenn ein Gebäude baubar ist, ansonsten <code>FALSE</code>
-	BOOLEAN CheckBuilding(BYTE whichWorker) const;
+	bool CheckBuilding(WORKER::Typ nWorker) const;
+
+	/// Funktion berechnet die Priorität der Nahrungsmittelproduktion im System
+	/// @param dMaxHab maximale Bevölkerungszahl im System
+	/// @return Priotität der Nahrungsmittelproduktion
+	int GetFoodPrio(double dMaxHab) const;
+
+	/// Funktion berechnet die Priorität der Industrieproduktion im System
+	/// @param dMaxHab maximale Bevölkerungszahl im System
+	/// @return Priotität der Industrieproduktion
+	int GetIndustryPrio(double dMaxHab) const;
+
+	/// Funktion berechnet die Priorität der Industrieproduktion im System
+	/// @param dMaxHab maximale Bevölkerungszahl im System
+	/// @return Priotität der Industrieproduktion
+	int GetEnergyPrio(double dMaxHab) const;
+
+	/// Funktion berechnet die Priorität der Geheimdienstproduktion im System
+	/// @param dMaxHab maximale Bevölkerungszahl im System
+	/// @return Priotität der Geheimdienstproduktion
+	int GetIntelPrio(double dMaxHab) const;
+
+	/// Funktion berechnet die Priorität der Forschungsproduktion im System
+	/// @param dMaxHab maximale Bevölkerungszahl im System
+	/// @return Priotität der Forschungsproduktion
+	int GetResearchPrio(double dMaxHab) const;
+
+	/// Funktion berechnet die Priorität einer bestimmten Ressourcenproduktion im System
+	/// @param nWorker Arbeiter für eine bestimmte Ressource
+	/// @param dMaxHab maximale Bevölkerungszahl im System
+	/// @return Priotität der Forschungsproduktion
+	int GetResourcePrio(WORKER::Typ nWorker, double dMaxHab) const;
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
 	

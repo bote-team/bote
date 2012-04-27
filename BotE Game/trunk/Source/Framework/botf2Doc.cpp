@@ -2158,8 +2158,8 @@ void CBotf2Doc::ReadShipInfosFromFile()
 				ShipInfo.SetColonizePoints(atoi(data[34]));
 				ShipInfo.SetStationBuildPoints(atoi(data[35]));
 				ShipInfo.SetMaintenanceCosts(atoi(data[36]));
-				ShipInfo.SetSpecial(0, atoi(data[37]));
-				ShipInfo.SetSpecial(1, atoi(data[38]));
+				ShipInfo.SetSpecial(0, (SHIP_SPECIAL::Typ)atoi(data[37]));
+				ShipInfo.SetSpecial(1, (SHIP_SPECIAL::Typ)atoi(data[38]));
 				ShipInfo.SetObsoleteShipClass(data[39]);
 				ShipInfo.CalculateFinalCosts();
 				ShipInfo.SetStartOrder();
@@ -5008,7 +5008,7 @@ void CBotf2Doc::CalcShipOrders()
 					if (pShipOwner->GetAgreement(systemOwner) < DIPLOMATIC_AGREEMENT::FRIENDSHIP)
 					{
 						int blockadeValue = m_System[ShipKO.x][ShipKO.y].GetBlockade();
-						if (m_ShipArray[y].HasSpecial(BLOCKADESHIP))
+						if (m_ShipArray[y].HasSpecial(SHIP_SPECIAL::BLOCKADESHIP))
 						{
 							blockadeValue += rand()%20 + 1;
 							blockadeStillActive = TRUE;
@@ -5019,7 +5019,7 @@ void CBotf2Doc::CalcShipOrders()
 						if (m_ShipArray[y].GetFleet() != 0)
 							for (int x = 0; x < m_ShipArray[y].GetFleet()->GetFleetSize(); x++)
 							{
-								if (m_ShipArray[y].GetFleet()->GetShipFromFleet(x)->HasSpecial(BLOCKADESHIP))
+								if (m_ShipArray[y].GetFleet()->GetShipFromFleet(x)->HasSpecial(SHIP_SPECIAL::BLOCKADESHIP))
 								{
 									blockadeValue += rand()%20 + 1;
 									blockadeStillActive = TRUE;
@@ -5801,7 +5801,7 @@ void CBotf2Doc::CalcShipEffects()
 				// Wenn das Schiff die Patrouillieneigenschaft besitzt und sich in einem eigenen Sektor befindet, dann
 				// wird die Scanleistung um 20% erhöht
 				float boni = 1.0f;
-				if (sRace == m_Sector[p.x][p.y].GetOwnerOfSector() && m_ShipArray[y].HasSpecial(PATROLSHIP))
+				if (sRace == m_Sector[p.x][p.y].GetOwnerOfSector() && m_ShipArray[y].HasSpecial(SHIP_SPECIAL::PATROLSHIP))
 					boni = 1.2f;
 				if (bBetterScanner)
 					boni += 0.5;
@@ -5905,7 +5905,7 @@ void CBotf2Doc::CalcShipEffects()
 									// Wenn das Schiff die Patrouillieneigenschaft besitzt und sich in einem eigenen Sektor
 									// befindet, dann wird die Scanleistung um 20% erhöht
 									float boni = 1.0f;
-									if (sRace == m_Sector[p.x][p.y].GetOwnerOfSector() && ship->HasSpecial(PATROLSHIP))
+									if (sRace == m_Sector[p.x][p.y].GetOwnerOfSector() && ship->HasSpecial(SHIP_SPECIAL::PATROLSHIP))
 										boni = 1.2f;
 									if (bBetterScanner)
 										boni += 0.5;
@@ -6701,7 +6701,7 @@ void CBotf2Doc::CalcAlienShipEffects()
 				continue;
 
 			// Energie im System auf 0 setzen
-			GetSystem(pShip->GetKO()).SetDisabledProduction(ENERGY_WORKER);
+			GetSystem(pShip->GetKO()).SetDisabledProduction(WORKER::ENERGY_WORKER);
 			
 			// Wenn Energie vorhanden war, dann die Nachricht bringen über Energieausfall
 			if (GetSystem(pShip->GetKO()).GetProduction()->GetMaxEnergyProd() > 0)
@@ -6727,7 +6727,7 @@ void CBotf2Doc::CalcAlienShipEffects()
 			if (CMajor* pOwner = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(sSystemOwner)))
 			{
 				// Nahrung im System auf 0 setzen
-				GetSystem(pShip->GetKO()).SetDisabledProduction(FOOD_WORKER);
+				GetSystem(pShip->GetKO()).SetDisabledProduction(WORKER::FOOD_WORKER);
 				GetSystem(pShip->GetKO()).SetFoodStore(GetSystem(pShip->GetKO()).GetFoodStore() / 2);
 				
 				// Wenn narung produziert oder vorhanden ist, dann die Nachricht bringen über Nahrung verseucht
@@ -6814,7 +6814,7 @@ void CBotf2Doc::CalcAlienShipEffects()
 				continue;
 
 			// Energie im System auf 0 setzen
-			GetSystem(pShip->GetKO()).SetDisabledProduction(ENERGY_WORKER);
+			GetSystem(pShip->GetKO()).SetDisabledProduction(WORKER::ENERGY_WORKER);
 			
 			// Wenn Energie vorhanden war, dann die Nachricht bringen über Energieausfall
 			if (GetSystem(pShip->GetKO()).GetProduction()->GetMaxEnergyProd() > 0)

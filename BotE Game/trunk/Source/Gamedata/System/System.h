@@ -74,13 +74,13 @@ public:
 	// Funktion gibt die Anzahl oder die RunningNumber (ID) der Gebäude zurück, welche Arbeiter benötigen.
 	// Wir übergeben dafür als Parameter den Typ des Gebäudes (FARM, BAUHOF usw.) und einen Modus.
 	// Ist der Modus NULL, dann bekommen wir die Anzahl zurück, ist der Modus EINS, dann die RunningNumber.
-	USHORT GetNumberOfWorkbuildings(int WhatWorkbuilding, int Modus, BuildingInfoArray* buildingInfos) const;
+	USHORT GetNumberOfWorkbuildings(WORKER::Typ nWorker, int Modus, BuildingInfoArray* buildingInfos) const;
 
 	// Funktion gibt die Anzahl des Gebäudes mit der übergebenen RunningNumber zurück.
 	USHORT GetNumberOfBuilding(USHORT runningNumber) const;
 
 	// Funktion gibt die Anzahl der aktiven Arbeiter zurück, deren Typ als Parameter an die Funktion übergeben wurde.
-	USHORT GetWorker(int WhatWorker) const {return m_Workers.GetWorker(WhatWorker);}
+	USHORT GetWorker(WORKER::Typ nWorker) const {return m_Workers.GetWorker(nWorker);}
 
 	// Funktion gibt einen Zeiger auf das Arbeiterobjekt der Systemklasse zurück.
 	CWorker* GetWorker() {return &m_Workers;}
@@ -152,7 +152,7 @@ public:
 
 	// Komplette Zugriffsfunktion für das Arbeiterobjekt. Bei Modus 0 wird der "WhatWorker" inkrementiert, bei Modus 2 wird
 	// er dekrementiert und bei Modus 2 wird der "WhatWorker" auf den Wert von Value gesetzt.
-	void SetWorker(int WhatWorker, int Value, int Modus);
+	void SetWorker(WORKER::Typ nWhatWorker, int Value, int Modus);
 	
 	// Funktion setzt alle vorhandenen Arbeiter soweit wie möglich in Gebäude, die Arbeiter benötigen.
 	void SetWorkersIntoBuildings();
@@ -338,7 +338,7 @@ private:
 	BYTE m_byBlockade;
 
 	// Deaktivierte Produktion
-	bool m_bDisabledProductions[IRIDIUM_WORKER + 1];
+	bool m_bDisabledProductions[WORKER::IRIDIUM_WORKER + 1];
 
 	// Die Lagerinhalt der einzelnen Rohstoffe und der Nahrung
 	int  m_iFoodStore;					// Lager für Nahrung

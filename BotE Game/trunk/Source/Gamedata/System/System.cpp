@@ -73,7 +73,7 @@ void CSystem::Serialize(CArchive &ar)
 		ar << m_iDuraniumMines;
 		ar << m_iIridiumMines;
 		ar << m_iCrystalMines;
-		for (int i = 0; i <= IRIDIUM_WORKER; i++)
+		for (int i = WORKER::FOOD_WORKER; i <= WORKER::IRIDIUM_WORKER; i++)
 			ar << m_bDisabledProductions[i];
 		ar << m_Buildings.GetSize();
 		for (int i = 0; i < m_Buildings.GetSize(); i++)
@@ -122,7 +122,7 @@ void CSystem::Serialize(CArchive &ar)
 		ar >> m_iDuraniumMines;
 		ar >> m_iIridiumMines;
 		ar >> m_iCrystalMines;
-		for (int i = 0; i <= IRIDIUM_WORKER; i++)
+		for (int i = WORKER::FOOD_WORKER; i <= WORKER::IRIDIUM_WORKER; i++)
 			ar >> m_bDisabledProductions[i];
 		ar >> number;
 		m_Buildings.RemoveAll();
@@ -235,7 +235,7 @@ int CSystem::GetNeededRoundsToCompleteProject(int nID)
 // Funktion gibt die Anzahl oder die RunningNumber (ID) der Gebäude zurück, welche Arbeiter benötigen.
 // Wir übergeben dafür als Parameter den Typ des Gebäudes (FARM, BAUHOF usw.) und einen Modus.
 // Ist der Modus NULL, dann bekommen wir die Anzahl zurück, ist der Modus EINS, dann die RunningNumber.
-USHORT CSystem::GetNumberOfWorkbuildings(int WhatWorkbuilding, int Modus, BuildingInfoArray* buildingInfos) const
+USHORT CSystem::GetNumberOfWorkbuildings(WORKER::Typ nWorker, int Modus, BuildingInfoArray* buildingInfos) const
 {
 	// "Modus" gibt an, ob wir die Anzahl der Gebäude oder die aktuelle RunningNumber
 	// des speziellen Gebäudes zurückgegeben wird
@@ -245,17 +245,17 @@ USHORT CSystem::GetNumberOfWorkbuildings(int WhatWorkbuilding, int Modus, Buildi
 	USHORT runningNumber = 0;
 	if (Modus == 0)
 	{
-		if (WhatWorkbuilding == 0) returnValue = m_iFoodBuildings;
-		else if (WhatWorkbuilding == 1) returnValue = m_iIndustryBuildings;
-		else if (WhatWorkbuilding == 2) returnValue = m_iEnergyBuildings;
-		else if (WhatWorkbuilding == 3) returnValue = m_iSecurityBuildings;
-		else if (WhatWorkbuilding == 4) returnValue = m_iResearchBuildings;
-		else if (WhatWorkbuilding == 5) returnValue = m_iTitanMines;
-		else if (WhatWorkbuilding == 6) returnValue = m_iDeuteriumMines;
-		else if (WhatWorkbuilding == 7) returnValue = m_iDuraniumMines;
-		else if (WhatWorkbuilding == 8) returnValue = m_iCrystalMines;
-		else if (WhatWorkbuilding == 9) returnValue = m_iIridiumMines;
-		else if (WhatWorkbuilding == 10) returnValue = m_Workers.GetWorker(10);
+		if (nWorker == WORKER::FOOD_WORKER) returnValue = m_iFoodBuildings;
+		else if (nWorker == WORKER::INDUSTRY_WORKER) returnValue = m_iIndustryBuildings;
+		else if (nWorker == WORKER::ENERGY_WORKER) returnValue = m_iEnergyBuildings;
+		else if (nWorker == WORKER::SECURITY_WORKER) returnValue = m_iSecurityBuildings;
+		else if (nWorker == WORKER::RESEARCH_WORKER) returnValue = m_iResearchBuildings;
+		else if (nWorker == WORKER::TITAN_WORKER) returnValue = m_iTitanMines;
+		else if (nWorker == WORKER::DEUTERIUM_WORKER) returnValue = m_iDeuteriumMines;
+		else if (nWorker == WORKER::DURANIUM_WORKER) returnValue = m_iDuraniumMines;
+		else if (nWorker == WORKER::CRYSTAL_WORKER) returnValue = m_iCrystalMines;
+		else if (nWorker == WORKER::IRIDIUM_WORKER) returnValue = m_iIridiumMines;
+		else if (nWorker == WORKER::ALL_WORKER) returnValue = m_Workers.GetWorker(WORKER::ALL_WORKER);
 		return returnValue;
 	}
 	else if (Modus == 1)
@@ -264,9 +264,9 @@ USHORT CSystem::GetNumberOfWorkbuildings(int WhatWorkbuilding, int Modus, Buildi
 		{
 			const CBuildingInfo* buildingInfo = &buildingInfos->GetAt(m_Buildings.GetAt(i).GetRunningNumber() - 1);
 			
-			if (buildingInfo->GetWorker() == TRUE)
+			if (buildingInfo->GetWorker())
 			{
-				if (WhatWorkbuilding == 0)
+				if (nWorker == WORKER::FOOD_WORKER)
 				{
 					if (buildingInfo->GetFoodProd())
 					{
@@ -274,7 +274,7 @@ USHORT CSystem::GetNumberOfWorkbuildings(int WhatWorkbuilding, int Modus, Buildi
 						return runningNumber;
 					}
 				}
-				else if (WhatWorkbuilding == 1)
+				else if (nWorker == WORKER::INDUSTRY_WORKER)
 				{
 					if (buildingInfo->GetIPProd())
 					{
@@ -282,7 +282,7 @@ USHORT CSystem::GetNumberOfWorkbuildings(int WhatWorkbuilding, int Modus, Buildi
 						return runningNumber;
 					}
 				}
-				else if (WhatWorkbuilding == 2)
+				else if (nWorker == WORKER::ENERGY_WORKER)
 				{
 					if (buildingInfo->GetEnergyProd())
 					{
@@ -290,7 +290,7 @@ USHORT CSystem::GetNumberOfWorkbuildings(int WhatWorkbuilding, int Modus, Buildi
 						return runningNumber;
 					}
 				}
-				else if (WhatWorkbuilding == 3)
+				else if (nWorker == WORKER::SECURITY_WORKER)
 				{
 					if (buildingInfo->GetSPProd())
 					{
@@ -298,7 +298,7 @@ USHORT CSystem::GetNumberOfWorkbuildings(int WhatWorkbuilding, int Modus, Buildi
 						return runningNumber;
 					}
 				}
-				else if (WhatWorkbuilding == 4)
+				else if (nWorker == WORKER::RESEARCH_WORKER)
 				{
 					if (buildingInfo->GetFPProd())
 					{
@@ -306,7 +306,7 @@ USHORT CSystem::GetNumberOfWorkbuildings(int WhatWorkbuilding, int Modus, Buildi
 						return runningNumber;
 					}
 				}
-				else if (WhatWorkbuilding == 5)
+				else if (nWorker == WORKER::TITAN_WORKER)
 				{
 					if (buildingInfo->GetTitanProd())
 					{
@@ -314,7 +314,7 @@ USHORT CSystem::GetNumberOfWorkbuildings(int WhatWorkbuilding, int Modus, Buildi
 						return runningNumber;
 					}
 				}
-				else if (WhatWorkbuilding == 6)
+				else if (nWorker == WORKER::DEUTERIUM_WORKER)
 				{
 					if (buildingInfo->GetDeuteriumProd())
 					{
@@ -322,7 +322,7 @@ USHORT CSystem::GetNumberOfWorkbuildings(int WhatWorkbuilding, int Modus, Buildi
 						return runningNumber;
 					}
 				}
-				else if (WhatWorkbuilding == 7)
+				else if (nWorker == WORKER::DURANIUM_WORKER)
 				{
 					if (buildingInfo->GetDuraniumProd())
 					{
@@ -330,7 +330,7 @@ USHORT CSystem::GetNumberOfWorkbuildings(int WhatWorkbuilding, int Modus, Buildi
 						return runningNumber;
 					}
 				}
-				else if (WhatWorkbuilding == 8)
+				else if (nWorker == WORKER::CRYSTAL_WORKER)
 				{
 					if (buildingInfo->GetCrystalProd())
 					{
@@ -338,7 +338,7 @@ USHORT CSystem::GetNumberOfWorkbuildings(int WhatWorkbuilding, int Modus, Buildi
 						return runningNumber;
 					}
 				}
-				else if (WhatWorkbuilding == 9)
+				else if (nWorker == WORKER::IRIDIUM_WORKER)
 				{
 					if (buildingInfo->GetIridiumProd())
 					{
@@ -464,40 +464,44 @@ void CSystem::SetIsBuildingOnline(int index, BOOLEAN newStatus)
 
 // Komplette Zugriffsfunktion für das Arbeiterobjekt. Bei Modus 0 wird der "WhatWorker" inkrementiert, bei Modus 2 wird
 // er dekrementiert und bei Modus 2 wird der "WhatWorker" auf den Wert von Value gesetzt.
-void CSystem::SetWorker(int WhatWorker, int Value, int Modus)
+void CSystem::SetWorker(WORKER::Typ nWhatWorker, int Value, int Modus)
 {
 	// Modus == 0 --> Inkrement
 	// Modus == 1 --> Dekrement
 	// Modus == 2 --> SetWorkers inkl. Value
 	if (Modus == 0)
-		m_Workers.InkrementWorker(WhatWorker);
+		m_Workers.InkrementWorker(nWhatWorker);
 	else if (Modus == 1)
-		m_Workers.DekrementWorker(WhatWorker);
+		m_Workers.DekrementWorker(nWhatWorker);
 	else if (Modus == 2)
-		m_Workers.SetWorker(WhatWorker,Value);
+		m_Workers.SetWorker(nWhatWorker, Value);
 }
 
 // Funktion setzt alle vorhandenen Arbeiter soweit wie möglich in Gebäude, die Arbeiter benötigen.
 void CSystem::SetWorkersIntoBuildings()
 {
-	m_Workers.SetWorker(10,(int)(m_dHabitants));
+	m_Workers.SetWorker(WORKER::ALL_WORKER, (int)(m_dHabitants));
 	m_Workers.CalculateFreeWorkers();
 	int numberOfWorkBuildings = 0;
 	int workers = 0;
-	for (int i = FOOD_WORKER; i <= IRIDIUM_WORKER; i++)
+	for (int i = WORKER::FOOD_WORKER; i <= WORKER::IRIDIUM_WORKER; i++)
 	{
-		numberOfWorkBuildings += GetNumberOfWorkbuildings(i,0,NULL);
-		workers += m_Workers.GetWorker(i);
+		WORKER::Typ nWorker = (WORKER::Typ)i;
+		numberOfWorkBuildings += GetNumberOfWorkbuildings(nWorker,0,NULL);
+		workers += m_Workers.GetWorker(nWorker);
 	}
-	while (m_Workers.GetWorker(11) > 0 && workers < numberOfWorkBuildings)
+	while (m_Workers.GetWorker(WORKER::FREE_WORKER) > 0 && workers < numberOfWorkBuildings)
 	{
-		for (int i = FOOD_WORKER; i <= IRIDIUM_WORKER; i++)
-			if (m_Workers.GetWorker(11) > 0 && GetNumberOfWorkbuildings(i,0,NULL) > m_Workers.GetWorker(i))
+		for (int i = WORKER::FOOD_WORKER; i <= WORKER::IRIDIUM_WORKER; i++)
+		{
+			WORKER::Typ nWorker = (WORKER::Typ)i;
+			if (m_Workers.GetWorker(WORKER::FREE_WORKER) > 0 && GetNumberOfWorkbuildings(nWorker,0,NULL) > m_Workers.GetWorker(nWorker))
 			{
 				workers++;
-				m_Workers.InkrementWorker(i);
-				m_Workers.DekrementWorker(11);
+				m_Workers.InkrementWorker(nWorker);
+				m_Workers.DekrementWorker(WORKER::FREE_WORKER);
 			}
+		}
 	}
 }
 
@@ -574,7 +578,7 @@ void CSystem::CalculateVariables(BuildingInfoArray* buildingInfos, CResearchInfo
 	// Alle werde wieder auf NULL setzen	
 	m_Production.Reset();
 	// Die Anzahl der Arbeiter aus der aktuellen Bevölkerung berechnen und auch an die Klasse CWorker übergeben
-	m_Workers.SetWorker(10,(int)(m_dHabitants));
+	m_Workers.SetWorker(WORKER::ALL_WORKER,(int)(m_dHabitants));
 	m_Workers.CheckWorkers();
 	// Die Creditsprod. aus der Bevölkerung berechnen und modifizieren durch jeweilige Rasseneigenschaft
 	m_Production.m_iCreditsProd = (int)(m_dHabitants);
@@ -598,26 +602,26 @@ void CSystem::CalculateVariables(BuildingInfoArray* buildingInfos, CResearchInfo
 	// Die Gebäude online setzen, wenn das Objekt der Klasse CWorker das sagt
 	// zuerst die Anzahl der Arbeiter auslesen und schauen ob die Arbeiter vielleicht größer sind als die 
 	// Anzahl der jeweiligen Gebäude (z.B. durch Abriß aus letzter Runde) -> dann Arbeiter auf Gebäudeanzahl verringern
-	if (m_Workers.GetWorker(FOOD_WORKER) > m_iFoodBuildings) m_Workers.SetWorker(FOOD_WORKER,m_iFoodBuildings);
-	unsigned short foodWorker = m_Workers.GetWorker(FOOD_WORKER);
-	if (m_Workers.GetWorker(INDUSTRY_WORKER) > m_iIndustryBuildings) m_Workers.SetWorker(INDUSTRY_WORKER,m_iIndustryBuildings);
-	unsigned short industryWorker = m_Workers.GetWorker(INDUSTRY_WORKER);
-	if (m_Workers.GetWorker(ENERGY_WORKER) > m_iEnergyBuildings) m_Workers.SetWorker(ENERGY_WORKER,m_iEnergyBuildings);
-	unsigned short energyWorker = m_Workers.GetWorker(ENERGY_WORKER);
-	if (m_Workers.GetWorker(SECURITY_WORKER) > m_iSecurityBuildings) m_Workers.SetWorker(SECURITY_WORKER,m_iSecurityBuildings);
-	unsigned short securityWorker = m_Workers.GetWorker(SECURITY_WORKER);
-	if (m_Workers.GetWorker(RESEARCH_WORKER) > m_iResearchBuildings) m_Workers.SetWorker(RESEARCH_WORKER,m_iResearchBuildings);
-	unsigned short researchWorker = m_Workers.GetWorker(RESEARCH_WORKER);
-	if (m_Workers.GetWorker(TITAN_WORKER) > m_iTitanMines) m_Workers.SetWorker(TITAN_WORKER,m_iTitanMines);
-	unsigned short titanWorker = m_Workers.GetWorker(TITAN_WORKER);
-	if (m_Workers.GetWorker(DEUTERIUM_WORKER) > m_iDeuteriumMines) m_Workers.SetWorker(DEUTERIUM_WORKER,m_iDeuteriumMines);
-	unsigned short deuteriumWorker = m_Workers.GetWorker(DEUTERIUM_WORKER);
-	if (m_Workers.GetWorker(DURANIUM_WORKER) > m_iDuraniumMines) m_Workers.SetWorker(DURANIUM_WORKER,m_iDuraniumMines);
-	unsigned short duraniumWorker = m_Workers.GetWorker(DURANIUM_WORKER);
-	if (m_Workers.GetWorker(CRYSTAL_WORKER) > m_iCrystalMines) m_Workers.SetWorker(CRYSTAL_WORKER,m_iCrystalMines);
-	unsigned short crystalWorker = m_Workers.GetWorker(CRYSTAL_WORKER);
-	if (m_Workers.GetWorker(IRIDIUM_WORKER) > m_iIridiumMines) m_Workers.SetWorker(IRIDIUM_WORKER,m_iIridiumMines);
-	unsigned short iridiumWorker = m_Workers.GetWorker(IRIDIUM_WORKER);
+	if (m_Workers.GetWorker(WORKER::FOOD_WORKER) > m_iFoodBuildings) m_Workers.SetWorker(WORKER::FOOD_WORKER,m_iFoodBuildings);
+	unsigned short foodWorker = m_Workers.GetWorker(WORKER::FOOD_WORKER);
+	if (m_Workers.GetWorker(WORKER::INDUSTRY_WORKER) > m_iIndustryBuildings) m_Workers.SetWorker(WORKER::INDUSTRY_WORKER,m_iIndustryBuildings);
+	unsigned short industryWorker = m_Workers.GetWorker(WORKER::INDUSTRY_WORKER);
+	if (m_Workers.GetWorker(WORKER::ENERGY_WORKER) > m_iEnergyBuildings) m_Workers.SetWorker(WORKER::ENERGY_WORKER,m_iEnergyBuildings);
+	unsigned short energyWorker = m_Workers.GetWorker(WORKER::ENERGY_WORKER);
+	if (m_Workers.GetWorker(WORKER::SECURITY_WORKER) > m_iSecurityBuildings) m_Workers.SetWorker(WORKER::SECURITY_WORKER,m_iSecurityBuildings);
+	unsigned short securityWorker = m_Workers.GetWorker(WORKER::SECURITY_WORKER);
+	if (m_Workers.GetWorker(WORKER::RESEARCH_WORKER) > m_iResearchBuildings) m_Workers.SetWorker(WORKER::RESEARCH_WORKER,m_iResearchBuildings);
+	unsigned short researchWorker = m_Workers.GetWorker(WORKER::RESEARCH_WORKER);
+	if (m_Workers.GetWorker(WORKER::TITAN_WORKER) > m_iTitanMines) m_Workers.SetWorker(WORKER::TITAN_WORKER,m_iTitanMines);
+	unsigned short titanWorker = m_Workers.GetWorker(WORKER::TITAN_WORKER);
+	if (m_Workers.GetWorker(WORKER::DEUTERIUM_WORKER) > m_iDeuteriumMines) m_Workers.SetWorker(WORKER::DEUTERIUM_WORKER,m_iDeuteriumMines);
+	unsigned short deuteriumWorker = m_Workers.GetWorker(WORKER::DEUTERIUM_WORKER);
+	if (m_Workers.GetWorker(WORKER::DURANIUM_WORKER) > m_iDuraniumMines) m_Workers.SetWorker(WORKER::DURANIUM_WORKER,m_iDuraniumMines);
+	unsigned short duraniumWorker = m_Workers.GetWorker(WORKER::DURANIUM_WORKER);
+	if (m_Workers.GetWorker(WORKER::CRYSTAL_WORKER) > m_iCrystalMines) m_Workers.SetWorker(WORKER::CRYSTAL_WORKER,m_iCrystalMines);
+	unsigned short crystalWorker = m_Workers.GetWorker(WORKER::CRYSTAL_WORKER);
+	if (m_Workers.GetWorker(WORKER::IRIDIUM_WORKER) > m_iIridiumMines) m_Workers.SetWorker(WORKER::IRIDIUM_WORKER,m_iIridiumMines);
+	unsigned short iridiumWorker = m_Workers.GetWorker(WORKER::IRIDIUM_WORKER);
 	
 	// Wenn wir Handelsgüter in der Bauliste stehen haben, dann Anzahl der Online-Fabs in Credits umrechnen
 	if (m_AssemblyList.GetAssemblyListEntry(0) == 0)
@@ -1563,28 +1567,28 @@ int CSystem::SetNewBuildingOnline(BuildingInfoArray *buildingInfos)
 
 	const CBuildingInfo *buildingInfo = &buildingInfos->GetAt(m_Buildings.GetAt(lastBuilding).GetRunningNumber() - 1);
 
-	if (m_Workers.GetWorker(11) > 0 && buildingInfo->GetWorker() == TRUE)
+	if (m_Workers.GetWorker(WORKER::FREE_WORKER) > 0 && buildingInfo->GetWorker() == TRUE)
 	{
 		if (buildingInfo->GetFoodProd() > 0)
-			m_Workers.InkrementWorker(0);
+			m_Workers.InkrementWorker(WORKER::FOOD_WORKER);
 		if (buildingInfo->GetIPProd() > 0)
-			m_Workers.InkrementWorker(1);
+			m_Workers.InkrementWorker(WORKER::INDUSTRY_WORKER);
 		if (buildingInfo->GetEnergyProd() > 0)
-			m_Workers.InkrementWorker(2);
+			m_Workers.InkrementWorker(WORKER::ENERGY_WORKER);
 		if (buildingInfo->GetSPProd() > 0)
-			m_Workers.InkrementWorker(3);
+			m_Workers.InkrementWorker(WORKER::SECURITY_WORKER);
 		if (buildingInfo->GetFPProd() > 0)
-			m_Workers.InkrementWorker(4);
+			m_Workers.InkrementWorker(WORKER::RESEARCH_WORKER);
 		if (buildingInfo->GetTitanProd() > 0)
-			m_Workers.InkrementWorker(5);
+			m_Workers.InkrementWorker(WORKER::TITAN_WORKER);
 		if (buildingInfo->GetDeuteriumProd() > 0)
-			m_Workers.InkrementWorker(6);
+			m_Workers.InkrementWorker(WORKER::DEUTERIUM_WORKER);
 		if (buildingInfo->GetDuraniumProd() > 0)
-			m_Workers.InkrementWorker(7);
+			m_Workers.InkrementWorker(WORKER::DURANIUM_WORKER);
 		if (buildingInfo->GetCrystalProd() > 0)
-			m_Workers.InkrementWorker(8);
+			m_Workers.InkrementWorker(WORKER::CRYSTAL_WORKER);
 		if (buildingInfo->GetIridiumProd() > 0)
-			m_Workers.InkrementWorker(9);
+			m_Workers.InkrementWorker(WORKER::IRIDIUM_WORKER);
 	}
 	else if (m_Buildings.GetAt(lastBuilding).GetIsBuildingOnline())
 		CheckValue = 0;
@@ -1950,10 +1954,11 @@ void CSystem::BuildBuildingsForMinorRace(CSector* sector, BuildingInfoArray* bui
 		// Ressourcen sind abhängig von der Anzahl der jeweiligen Gebäude und dem technologischen Fortschritt der
 		// Minorrace
 		this->CalculateNumberOfWorkbuildings(buildingInfo);
-		this->SetFoodStore(this->GetFoodStore() + rand()%(this->GetNumberOfWorkbuildings(0,0,NULL) * (pMinor->GetTechnologicalProgress() + 1) * 100 + 1));
+		this->SetFoodStore(this->GetFoodStore() + rand()%(this->GetNumberOfWorkbuildings(WORKER::FOOD_WORKER,0,NULL) * (pMinor->GetTechnologicalProgress() + 1) * 100 + 1));
 		for (int res = TITAN; res <= IRIDIUM; res++)
 		{
-			int resAdd = rand()%(this->GetNumberOfWorkbuildings(res + 5, 0, NULL) * (pMinor->GetTechnologicalProgress() + 1) * 100 + 1);
+			WORKER::Typ nWorker = (WORKER::Typ)(res + 5);
+			int resAdd = rand()%(this->GetNumberOfWorkbuildings(nWorker, 0, NULL) * (pMinor->GetTechnologicalProgress() + 1) * 100 + 1);
 			this->SetResourceStore(res, resAdd);			
 		}
 
@@ -2086,9 +2091,10 @@ void CSystem::BuildBuildingsAfterColonization(CSector *sector, BuildingInfoArray
 	// wenn schon Gebäude eines Typs stehen, dann dürfen keine des gleichen Typ zusätzlich gebaut werden. Z.B. wenn
 	// schon Typ 4 Automatikfarmen stehen darf das Kolonieschiff nicht auch noch Primitive Farmen bauen.
 	this->CalculateNumberOfWorkbuildings(buildingInfo);
-	for (int build = 0; build < 10; build++)
+	for (int build = WORKER::FOOD_WORKER; build <= WORKER::IRIDIUM_WORKER; build++)
 	{
-		if (this->GetNumberOfWorkbuildings(build, 0, NULL) > NULL)
+		WORKER::Typ nWorker = (WORKER::Typ)build;
+		if (this->GetNumberOfWorkbuildings(nWorker, 0, NULL) > 0)
 			runningNumber[build] = 0;
 		if (runningNumber[build] != 0)
 		{
@@ -2100,7 +2106,7 @@ void CSystem::BuildBuildingsAfterColonization(CSector *sector, BuildingInfoArray
 				m_Buildings.Add(building);
 			}
 			// Gebäude mit Arbeitern besetzen
-			this->SetWorker(build,colonizationPoints*2,2);
+			this->SetWorker(nWorker,colonizationPoints*2,2);
 		}
 	}
 	this->CalculateNumberOfWorkbuildings(buildingInfo);

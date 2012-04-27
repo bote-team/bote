@@ -152,7 +152,7 @@ void CCombat::PreCombatCalculation()
 			
 			if (m_CS.GetAt(i)->m_pShip->GetIsShipFlagShip())
 				bFlagship = true;
-			if (m_CS.GetAt(i)->m_pShip->HasSpecial(COMMANDSHIP))
+			if (m_CS.GetAt(i)->m_pShip->HasSpecial(SHIP_SPECIAL::COMMANDSHIP))
 				bCommandship = true;
 			// Kolonieschiffe, Transporter, Sonden, Outposts und Starbases gelten dabei nicht mit!
 			if (m_CS.GetAt(i)->m_pShip->GetShipType() >= SHIP_TYPE::SCOUT && m_CS.GetAt(i)->m_pShip->GetShipType() <= SHIP_TYPE::DREADNOUGHT)

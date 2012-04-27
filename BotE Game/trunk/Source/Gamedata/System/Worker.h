@@ -9,14 +9,8 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_WORKER_H__2E2BC2AE_A921_435B_8FFF_5695C7272F6F__INCLUDED_)
-#define AFX_WORKER_H__2E2BC2AE_A921_435B_8FFF_5695C7272F6F__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
-
-typedef unsigned short USHORT;
+#include "Options.h"
 
 class CWorker : public CObject  
 {
@@ -33,11 +27,11 @@ public:
 	virtual void Serialize(CArchive &ar);
 // Zugriffsfunktionen
 	// zum Lesen der Membervariablen
-	USHORT GetWorker(int WhatWorker) const;
+	USHORT GetWorker(WORKER::Typ nWorker) const;
 	// zum Schreiben der Membervariablen
-	void SetWorker(int WhatWorker, int Value);
-	void InkrementWorker(int WhatWorker);
-	void DekrementWorker(int WhatWorker);
+	void SetWorker(WORKER::Typ nWorker, int Value);
+	void InkrementWorker(WORKER::Typ nWorker);
+	void DekrementWorker(WORKER::Typ nWorker);
 
 // sonstige Funktionen
 	void CalculateFreeWorkers();
@@ -57,5 +51,3 @@ private:
 	USHORT m_iAllWorkers;
 	USHORT m_iFreeWorkers;
 };
-
-#endif // !defined(AFX_WORKER_H__2E2BC2AE_A921_435B_8FFF_5695C7272F6F__INCLUDED_)

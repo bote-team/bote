@@ -25,7 +25,7 @@ CShip::CShip()
 	m_iCrewExperiance = 0;
 	m_nTerraformingPlanet = -1;
 	m_bIsFlagShip = FALSE;
-	m_bySpecial[0] = m_bySpecial[1] = NONE;
+	m_nSpecial[0] = m_nSpecial[1] = SHIP_SPECIAL::NONE;
 	m_Fleet = NULL;
 	for (int i = TITAN; i <= DERITIUM; i++)
 		m_iLoadedResources[i] = 0;
@@ -101,8 +101,8 @@ CShip::CShip(const CShip & rhs)
 	m_strShipDescription = rhs.m_strShipDescription;
 	m_strShipClass = rhs.m_strShipClass;
 	m_bIsFlagShip = rhs.m_bIsFlagShip;
-	m_bySpecial[0] = rhs.m_bySpecial[0];
-	m_bySpecial[1] = rhs.m_bySpecial[1];
+	m_nSpecial[0] = rhs.m_nSpecial[0];
+	m_nSpecial[1] = rhs.m_nSpecial[1];
 	m_nCombatTactic = rhs.m_nCombatTactic;
 	m_nAlienType = rhs.m_nAlienType;
 }
@@ -166,8 +166,8 @@ CShip & CShip::operator=(const CShip & rhs)
 	m_strShipDescription = rhs.m_strShipDescription;
 	m_strShipClass = rhs.m_strShipClass;
 	m_bIsFlagShip = rhs.m_bIsFlagShip;
-	m_bySpecial[0] = rhs.m_bySpecial[0];
-	m_bySpecial[1] = rhs.m_bySpecial[1];
+	m_nSpecial[0] = rhs.m_nSpecial[0];
+	m_nSpecial[1] = rhs.m_nSpecial[1];
 	m_nCombatTactic = rhs.m_nCombatTactic;
 	m_nAlienType = rhs.m_nAlienType;
 
@@ -210,8 +210,8 @@ void CShip::Serialize(CArchive &ar)
 		ar << m_iColonizePoints;
 		ar << m_iStationBuildPoints;
 		ar << m_iCurrentOrder;
-		ar << m_bySpecial[0];
-		ar << m_bySpecial[1];
+		ar << m_nSpecial[0];
+		ar << m_nSpecial[1];
 		ar << m_nTerraformingPlanet;
 		ar << m_strShipName;
 		ar << m_strShipDescription;
@@ -263,8 +263,11 @@ void CShip::Serialize(CArchive &ar)
 		ar >> m_iColonizePoints;
 		ar >> m_iStationBuildPoints;
 		ar >> m_iCurrentOrder;
-		ar >> m_bySpecial[0];
-		ar >> m_bySpecial[1];
+		int nSpecial;
+		ar >> nSpecial;
+		m_nSpecial[0] = (SHIP_SPECIAL::Typ)nSpecial;
+		ar >> nSpecial;
+		m_nSpecial[1] = (SHIP_SPECIAL::Typ)nSpecial;
 		ar >> m_nTerraformingPlanet;
 		ar >> m_strShipName;
 		ar >> m_strShipDescription;
@@ -445,12 +448,12 @@ void CShip::DeleteFleet()
 	}
 }
 
-BOOLEAN CShip::HasSpecial(BYTE ability) const
+bool CShip::HasSpecial(SHIP_SPECIAL::Typ nAbility) const
 {
-	if (m_bySpecial[0] == ability || m_bySpecial[1] == ability)
-		return TRUE;
+	if (m_nSpecial[0] == nAbility || m_nSpecial[1] == nAbility)
+		return true;
 	else
-		return FALSE;
+		return false;
 }
 
 /// Funktion gibt die gesamte Offensivpower des Schiffes zurück, welches es in 100s anrichten würde.
@@ -919,21 +922,21 @@ CString CShip::GetTooltip(bool bShowFleet/*= true*/)
 	sSpecialsHead += CHTMLStringBuilder::GetHTMLStringNewLine();
 	
 	CString sSpecials;
-	if (this->HasSpecial(ASSULTSHIP))
+	if (this->HasSpecial(SHIP_SPECIAL::ASSULTSHIP))
 		sSpecials += CResourceManager::GetString("ASSAULTSHIP") + "\n";
-	if (this->HasSpecial(BLOCKADESHIP))
+	if (this->HasSpecial(SHIP_SPECIAL::BLOCKADESHIP))
 		sSpecials += CResourceManager::GetString("BLOCKADESHIP") + "\n";
-	if (this->HasSpecial(COMMANDSHIP))
+	if (this->HasSpecial(SHIP_SPECIAL::COMMANDSHIP))
 		sSpecials += CResourceManager::GetString("COMMANDSHIP") + "\n";
-	if (this->HasSpecial(DOGFIGHTER))
+	if (this->HasSpecial(SHIP_SPECIAL::DOGFIGHTER))
 		sSpecials += CResourceManager::GetString("DOGFIGHTER") + "\n";
-	if (this->HasSpecial(DOGKILLER))
+	if (this->HasSpecial(SHIP_SPECIAL::DOGKILLER))
 		sSpecials += CResourceManager::GetString("DOGKILLER") + "\n";
-	if (this->HasSpecial(PATROLSHIP))
+	if (this->HasSpecial(SHIP_SPECIAL::PATROLSHIP))
 		sSpecials += CResourceManager::GetString("PATROLSHIP") + "\n";
-	if (this->HasSpecial(RAIDER))
+	if (this->HasSpecial(SHIP_SPECIAL::RAIDER))
 		sSpecials += CResourceManager::GetString("RAIDER") + "\n";
-	if (this->HasSpecial(SCIENCEVESSEL))
+	if (this->HasSpecial(SHIP_SPECIAL::SCIENCEVESSEL))
 		sSpecials += CResourceManager::GetString("SCIENCESHIP") + "\n";
 	if (pShield->GetRegenerative())
 		sSpecials += CResourceManager::GetString("REGENERATIVE_SHIELDS") + "\n";

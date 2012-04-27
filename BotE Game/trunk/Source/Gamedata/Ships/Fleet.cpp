@@ -268,11 +268,11 @@ BOOLEAN CFleet::CheckOrder(const CShip* ship, BYTE order) const
 		// Bei einem Blockadebefehl müssen alle Schiffe in der Flotte die Eigenschaft "Blockadeschiff" besitzen
 		else if (order == BLOCKADE_SYSTEM)
 		{
-			if (ship->HasSpecial(BLOCKADESHIP) == FALSE)
+			if (!ship->HasSpecial(SHIP_SPECIAL::BLOCKADESHIP))
 				return FALSE;
 			for (int i = 0; i < m_vShips.GetSize(); i++)
 			{
-				if (m_vShips.GetAt(i).HasSpecial(BLOCKADESHIP) == FALSE)
+				if (!m_vShips.GetAt(i).HasSpecial(SHIP_SPECIAL::BLOCKADESHIP))
 					return FALSE;
 			}
 			return TRUE;
