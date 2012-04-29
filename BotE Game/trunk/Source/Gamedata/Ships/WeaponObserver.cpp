@@ -251,7 +251,7 @@ TupeWeaponsObserverStruct CWeaponObserver::GetNextTupe(const CString& currentTup
 			twos = m_TupeWeapons.GetAt(i);
 			return twos;
 		}
-		else if (!CTorpedoInfo::GetMicro(currentTorpedoType) && m_TupeWeapons.GetAt(i).onlyMicro == FALSE)
+		else if (m_TupeWeapons.GetAt(i).onlyMicro == FALSE)
 		{
 			twos = m_TupeWeapons.GetAt(i);
 			return twos;

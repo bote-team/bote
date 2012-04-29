@@ -221,7 +221,7 @@ void CPlanetBottomView::OnDraw(CDC* dc)
 					g.DrawImage(graphic, (int)boundingBox.GetRight() + 5 + nExist * 20, 228, 20, 16);
 				if(!rescol[i])
 				{
-					fontBrush.SetColor(Color(150,25,25,25));//graut nicht erschlossene Ressourcen aus
+					fontBrush.SetColor(Color(100,0,0,0));//graut nicht erschlossene Ressourcen aus
 					g.FillRectangle(&fontBrush,(int)boundingBox.GetRight() + 5 + nExist * 20, 228,20,16);
 					fontBrush.SetColor(Color(170,170,170));
 				}
