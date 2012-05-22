@@ -2,7 +2,7 @@
 //
 /////////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "vld.h"
+//#include "vld.h"
 
 #include "Ships\GenShipName.h"
 #include "General\Statistics.h"

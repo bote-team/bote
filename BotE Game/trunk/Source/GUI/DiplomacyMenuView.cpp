@@ -112,6 +112,7 @@ void CDiplomacyMenuView::OnNewRound()
 		if (pPlayer->IsRaceContacted(it->first))
 			vMinors.push_back(it->second);
 	std::sort(vMinors.begin(), vMinors.end(), CmpRaces);
+	m_bSortRaceList=false;
 
 	m_vRaceList.clear();
 	m_vRaceList.insert(m_vRaceList.end(), vMajors.begin(), vMajors.end());
