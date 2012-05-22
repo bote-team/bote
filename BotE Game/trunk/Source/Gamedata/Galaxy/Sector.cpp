@@ -27,9 +27,19 @@ CSector::CSector(void)
 	m_pAnomaly = NULL;
 }
 
+CSector::CSector(const CSector& other){
+	m_pAnomaly=NULL;
+
+};
+
+CSector& CSector::operator=(const CSector&){
+	
+	return (*this);
+};
+
 CSector::~CSector(void)
 {
-	if (m_pAnomaly)
+	if (m_pAnomaly!=NULL)
 	{
 		delete m_pAnomaly;
 		m_pAnomaly = NULL;

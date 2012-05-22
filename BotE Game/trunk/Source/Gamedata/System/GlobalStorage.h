@@ -8,6 +8,7 @@
 #pragma once
 #include "afx.h"
 #include "Options.h"
+#include <vector>
 
 // forward declaration
 class CSystem;
@@ -124,7 +125,7 @@ public:
 	 * Diese Funktion führt am Lagerinhalt alle möglichen Änderungen durch, die bei jeder neuen Runde eintreten
 	 * können. Dabei füllt sie auch die Lager der entsprechenden Systeme.
 	 */
-	void Calculate(CSystem** systems/*[STARMAP_SECTORS_HCOUNT][STARMAP_SECTORS_VCOUNT]*/);
+	void Calculate(std::vector<std::vector<CSystem>>& systems/*[STARMAP_SECTORS_HCOUNT][STARMAP_SECTORS_VCOUNT]*/);
 
 	/**
 	 * Resetfunktion für die Klasse CGlobalStorage, welche alle Werte wieder auf Ausgangswerte setzt.

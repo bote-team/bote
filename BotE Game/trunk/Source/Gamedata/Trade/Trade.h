@@ -101,7 +101,7 @@ public:
 
 	// Funktion berechnet die ganzen Handelsaktionen, lagert also Ressourcen ein oder gibt das Credits, welches
 	// wir durch den Verkauf bekommen haben an das jeweilige Imperium
-	void CalculateTradeActions(CMajor* pMajor, CSystem** systems/*[][STARMAP_SECTORS_VCOUNT]*/, CSector** sectors/*[][STARMAP_SECTORS_VCOUNT]*/, USHORT* taxes);
+	void CalculateTradeActions(CMajor* pMajor, std::vector<std::vector<CSystem>>& systems/*[][STARMAP_SECTORS_VCOUNT]*/, std::vector<std::vector<CSector>>& sectors/*[][STARMAP_SECTORS_VCOUNT]*/, USHORT* taxes);
 
 	/// Funktion berechnet den Preis der Ressourcen in Zusammenhang zu den anderen Börsen. 
 	/// @param pmMajors Zeiger auf Map mit allen Majors des Spiels

@@ -2,6 +2,7 @@
 //
 /////////////////////////////////////////////////////////////////////////////
 #pragma once
+#include "vld.h"
 
 #include "Ships\GenShipName.h"
 #include "General\Statistics.h"
@@ -11,6 +12,7 @@
 #include "PeerData.h"
 #include "SoundManager.h"
 #include "IOData.h"
+#include <vector>
 
 // forward declaration
 class CMainFrame;
@@ -39,9 +41,12 @@ protected: // Nur aus Serialisierung erzeugen
 	short m_iShowWhichShipInfoInView3;	///< Welche Schiffsinfo soll in View 3 angezeigt werden
 	
 	CPoint m_ptScrollPoint;				///< aktuelle Scrollposition der Galaxieansicht wird auf diesen Point gespeichert
+
+	std::vector<std::vector<CSector>> m_Sector;
+	std::vector<std::vector<CSystem>> m_System;
 	
-	CSector** m_Sector/*[STARMAP_SECTORS_HCOUNT][STARMAP_SECTORS_VCOUNT]*/;	///< Matrix von Sektoren der Klasse CSector anlegen
-	CSystem** m_System/*[STARMAP_SECTORS_HCOUNT][STARMAP_SECTORS_VCOUNT]*/;	///< auf jeden Sektor ein potentielles System anlegen
+	//CSector** m_Sector/*[STARMAP_SECTORS_HCOUNT][STARMAP_SECTORS_VCOUNT]*/;	///< Matrix von Sektoren der Klasse CSector anlegen
+	//CSystem** m_System/*[STARMAP_SECTORS_HCOUNT][STARMAP_SECTORS_VCOUNT]*/;	///< auf jeden Sektor ein potentielles System anlegen
 	
 	CGenShipName m_GenShipName;			///< Variable, die alle möglichen Schiffsnamen beinhaltet
 	

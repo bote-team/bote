@@ -35,6 +35,11 @@ public:
 	// Standardkonstruktor
 	CSystem(void);
 
+	//Kopierkontruktor (weil vector und braucht das)
+	CSystem(const CSystem& other);
+
+	CSystem& operator=(const CSystem&);
+
 	// Destruktor
 	virtual ~CSystem(void);
 	
@@ -259,7 +264,7 @@ public:
 	/// Funktion generiert eine neue Handelsroute. Wenn die Funktion <code>TRUE</code> zurückgibt, dann konnte die
 	/// Handelsroute erfolgreich angelegt werden. Als Parameter wird dabei die Koordinate <code>dest</code>des
 	/// Zielsektors übergeben sowie ein Zeiger auf alle Systeme <code>systems</code> auf der Map.
-	BOOLEAN AddTradeRoute(CPoint dest, CSystem** systems/*[][STARMAP_SECTORS_VCOUNT]*/, CResearchInfo* researchInfo);
+	BOOLEAN AddTradeRoute(CPoint dest, std::vector<std::vector<CSystem>>& m_System/*[][STARMAP_SECTORS_VCOUNT]*/, CResearchInfo* researchInfo);
 
 	// Funktion gibt das gesamte Credits zurück, was alle Handelsrouten aus diesem System generiert haben.
 	USHORT CreditsFromTradeRoutes();
@@ -272,7 +277,7 @@ public:
 	/// Ressourcenroute erfolgreich angelegt werden. Als Parameter wird dabei die Koordinate <code>dest</code> des
 	/// Zielsektors übergeben sowie die Art der betroffenen Ressource <code>res</code> und einen Zeiger auf alle
 	/// Systeme <code>systems</code> auf der Map.
-	BOOLEAN AddResourceRoute(CPoint dest, BYTE res, CSystem** systems/*[][STARMAP_SECTORS_VCOUNT]*/, CResearchInfo* researchInfo);
+	BOOLEAN AddResourceRoute(CPoint dest, BYTE res, std::vector<std::vector<CSystem>>& systems/*[][STARMAP_SECTORS_VCOUNT]*/, CResearchInfo* researchInfo);
 
 	/// Funktion überprüft alle Ressourcenrouten in dem System, ob sie Aufgrund der Bevölkerung oder der Gebäude noch
 	/// da sein dürfen. Wurden Ressourcenrouten gelöscht, so gibt die Funktion die Anzahl der Löschungen zurück.

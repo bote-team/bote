@@ -366,7 +366,7 @@ void CAssemblyList::CalculateNeededRessourcesForUpdate(BuildingInfoArray* follow
 
 // Diese Funktion entfernt die benötigten Ressourcen aus dem lokalen Lager des Systems und falls Ressourcenrouten
 // bestehen auch die Ressourcen in den Startsystemen der Route. Aber nur falls dies auch notwendig sein sollte.
-void CAssemblyList::RemoveResourceFromStorage(BYTE res, const CPoint &ko, CSystem** systems/*[][STARMAP_SECTORS_VCOUNT]*/, CArray<CPoint>* routesFrom)
+void CAssemblyList::RemoveResourceFromStorage(BYTE res, const CPoint &ko, std::vector<std::vector<CSystem>>& systems/*[][STARMAP_SECTORS_VCOUNT]*/, CArray<CPoint>* routesFrom)
 {
 	if (ko == CPoint(-1,-1))
 		return;
@@ -467,7 +467,7 @@ void CAssemblyList::RemoveResourceFromStorage(BYTE res, const CPoint &ko, CSyste
 		*system->GetResourceStorages(res) -= m_iNeededDeritiumInAssemblyList[0];
 }
 
-BOOLEAN CAssemblyList::MakeEntry(int runningNumber, const CPoint &ko, CSystem** systems/*[][STARMAP_SECTORS_VCOUNT]*/, bool bOnlyTest)
+BOOLEAN CAssemblyList::MakeEntry(int runningNumber, const CPoint &ko, std::vector<std::vector<CSystem>>& systems/*[][STARMAP_SECTORS_VCOUNT]*/, bool bOnlyTest)
 {
 	// Die Assemblylist durchgehen, ob wir einen Eintrag finden, der noch 0 ist
 	// dort können wir den nächsten speichern, gibt es keinen, dann ist die
@@ -661,7 +661,7 @@ BOOLEAN CAssemblyList::CalculateBuildInAssemblyList(USHORT m_iIndustryProd)
 // Funktion löscht einen Eintrag aus der Bauliste, wenn das Gebäude fertig wurde oder wir den ersten
 // Eintrag manuell löschen möchten. Nach Aufruf dieser Funktion muß unbedingt die Funktion
 // CalculateVariables() aufgerufen werden.
-void CAssemblyList::ClearAssemblyList(const CPoint &ko, CSystem** systems/*[][STARMAP_SECTORS_VCOUNT]*/)
+void CAssemblyList::ClearAssemblyList(const CPoint &ko, std::vector<std::vector<CSystem>>& systems/*[][STARMAP_SECTORS_VCOUNT]*/)
 {
 	// Alle prozentualen Anteile eines womöglich früheren Bauauftrages aus den Ressourcenrouten löschen
 	CSystem* system = &systems[ko.x][ko.y];	

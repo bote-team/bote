@@ -79,7 +79,7 @@ void CEmpire::Serialize(CArchive &ar)
 // sonstige Funktionen
 //////////////////////////////////////////////////////////////////////
 /// Funktion generiert die Liste der Systeme für das Imperium anhand aller Systeme.
-void CEmpire::GenerateSystemList(CSystem** systems/*[STARMAP_SECTORS_HCOUNT][STARMAP_SECTORS_VCOUNT]*/, CSector** sectors/*[STARMAP_SECTORS_HCOUNT][STARMAP_SECTORS_VCOUNT]*/)
+void CEmpire::GenerateSystemList(std::vector<std::vector<CSystem>>& systems/*[STARMAP_SECTORS_HCOUNT][STARMAP_SECTORS_VCOUNT]*/, std::vector<std::vector<CSector>>& sectors/*[STARMAP_SECTORS_HCOUNT][STARMAP_SECTORS_VCOUNT]*/)
 {
 	m_SystemList.RemoveAll();
 	for (int y = 0 ; y < STARMAP_SECTORS_VCOUNT; y++)

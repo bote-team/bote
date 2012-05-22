@@ -42,6 +42,11 @@ public:
 	
 	/// Konstruktor
 	CSector(void);
+
+	///Kopierkontruktor
+	CSector(const CSector& other);
+
+	CSector& operator=(const CSector&);
 	
 	/// Destruktor
 	virtual ~CSector(void);								

@@ -70,7 +70,7 @@ void CMoralObserver::SerializeStatics(CArchive &ar)
 /// Funktion berechnet die Moralauswirkung auf alle Systeme, abhängig von den vorgekommenen Events und
 /// der jeweiligen Majorrace. Übergeben werden dafür alle Systeme <code>systems</code>, die RaceID und die
 /// gemappte Nummer der Majorrace <code>byMappedRaceNumber</code>, auf welche Moralwerte sich bezogen werden soll.
-void CMoralObserver::CalculateEvents(CSystem** systems/*[][STARMAP_SECTORS_VCOUNT]*/, const CString& sRaceID, BYTE byMappedRaceNumber)
+void CMoralObserver::CalculateEvents(std::vector<std::vector<CSystem>>& systems/*[][STARMAP_SECTORS_VCOUNT]*/, const CString& sRaceID, BYTE byMappedRaceNumber)
 {
 	// derzeit nur 6 Moralwertdatensätze vorhanden
 	ASSERT(byMappedRaceNumber >= 1 && byMappedRaceNumber <= 6);

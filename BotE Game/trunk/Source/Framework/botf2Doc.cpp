@@ -75,8 +75,8 @@ CBotf2Doc::CBotf2Doc()
 	server.AddServerListener(m_pNetworkHandler);
 	client.AddClientListener(m_pNetworkHandler);
 
-	m_Sector = NULL;
-	m_System = NULL;
+	m_Sector.clear();
+	m_System.clear();
 }
 
 CBotf2Doc::~CBotf2Doc()
@@ -106,9 +106,8 @@ CBotf2Doc::~CBotf2Doc()
 		m_pNetworkHandler = NULL;
 	}
 
-	if (m_Sector || m_System)
+	if (!m_Sector.empty() || !m_System.empty())
 	{
-		ASSERT(m_Sector && m_System);
 
 		for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
 			for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
@@ -117,17 +116,8 @@ CBotf2Doc::~CBotf2Doc()
 				m_System[x][y].ResetSystem();
 			}
 
-		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-			{
-				delete[] m_Sector[x];
-				m_Sector[x] = NULL;
-				delete[] m_System[x];
-				m_System[x] = NULL;
-			}
-		delete[] m_Sector;
-		m_Sector = NULL;
-		delete[] m_System;
-		m_System = NULL;
+			m_Sector.clear();
+			m_System.clear();
 	}
 
 	// statische Variablen der Starmap freigeben
@@ -1058,17 +1048,6 @@ void CBotf2Doc::GenerateGalaxy()
 		}
 	m_mRaceKO.clear();
 	
-	for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
-		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-		{
-			// Alle Werte der Systemklasse wieder auf NULL setzen
-			m_System[x][y].ResetSystem();
-			// Alle Werte der Sektorklasse wieder auf NULL setzen
-			m_Sector[x][y].Reset();
-			m_Sector[x][y].SetKO(x,y);
-		}
-
-
 
 	int nGenerationMode=0;//0==Standart 1==Circle
 
@@ -7011,18 +6990,12 @@ BOOL CBotf2Doc::OnSaveDocument(LPCTSTR lpszPathName)
 
 void CBotf2Doc::AllocateSectorsAndSystems()
 {
-	if(m_Sector || m_System) {
-		ASSERT(m_Sector && m_System);
-		return;
-	}
+	m_Sector.clear();
+	m_System.clear();
+	m_Sector=std::vector<std::vector<CSector>>(
+		STARMAP_SECTORS_HCOUNT, std::vector<CSector>(STARMAP_SECTORS_VCOUNT));
+	m_System=std::vector<std::vector<CSystem>>(
+		STARMAP_SECTORS_HCOUNT, std::vector<CSystem>(STARMAP_SECTORS_VCOUNT));
 
-	m_Sector = new CSector*[STARMAP_SECTORS_HCOUNT];
-	for(int i = 0; i < STARMAP_SECTORS_HCOUNT; i++)
-		m_Sector[i] = new CSector[STARMAP_SECTORS_VCOUNT];
-	ASSERT(m_Sector);
 
-	m_System = new CSystem*[STARMAP_SECTORS_HCOUNT];
-	for(int i = 0; i < STARMAP_SECTORS_HCOUNT; i++)
-		m_System[i] = new CSystem[STARMAP_SECTORS_VCOUNT];
-	ASSERT(m_System);
  }

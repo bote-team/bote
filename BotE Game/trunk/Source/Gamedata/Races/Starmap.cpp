@@ -216,7 +216,7 @@ void CStarmap::AddBase(const Sector &sector, BYTE propTech)
 // Nichtangriffspakt haben, werden von der Rangemap entfernt. Übergeben werden dafür ein Zeiger auf alle
 // Sektoren <code>sectors</code> und ein Wahrheitswert <code>races</code> für alle Rassen, ob wir einen
 // Nichtangriffspakt mit dieser Rasse haben.
-void CStarmap::SynchronizeWithMap(CSector** sectors/*[][STARMAP_SECTORS_VCOUNT]*/, std::set<CString>* races)
+void CStarmap::SynchronizeWithMap(std::vector<std::vector<CSector>>& sectors/*[][STARMAP_SECTORS_VCOUNT]*/, std::set<CString>* races)
 {
 	for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
 		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
@@ -227,7 +227,7 @@ void CStarmap::SynchronizeWithMap(CSector** sectors/*[][STARMAP_SECTORS_VCOUNT]*
 
 // Führt für gefährliche Anomalien mathematische Gewichte hinzu, so dass dieser Sektor bei der automatischen
 // Wegsuche nicht überflogen wird. Außerdem wird solch ein Sektor auch nicht für einen Außenpostenbau bestimmt.
-void CStarmap::SynchronizeWithAnomalies(CSector** sectors/*[][STARMAP_SECTORS_VCOUNT]*/)
+void CStarmap::SynchronizeWithAnomalies(std::vector<std::vector<CSector>>& sectors/*[][STARMAP_SECTORS_VCOUNT]*/)
 {
 	for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
 		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
@@ -870,7 +870,7 @@ short CStarmap::GetPoints(const Sector &sector)
 //	return m_AITargetPoints[sector.x][sector.y];
 }
 
-void CStarmap::SetBadAIBaseSectors(CSector** sectors/*[][STARMAP_SECTORS_VCOUNT]*/, const CString& race)
+void CStarmap::SetBadAIBaseSectors(std::vector<std::vector<CSector>>& sectors/*[][STARMAP_SECTORS_VCOUNT]*/, const CString& race)
 {
 	//memset(m_AIBadPoints, 0, STARMAP_SECTORS_HCOUNT * STARMAP_SECTORS_VCOUNT * sizeof(short));
 	for(int i=0;i<STARMAP_SECTORS_HCOUNT;i++)

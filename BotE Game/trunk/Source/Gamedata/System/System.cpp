@@ -40,6 +40,40 @@ CSystem::~CSystem()
 	m_Troops.RemoveAll();
 }
 
+CSystem::CSystem(const CSystem &other){
+	/*m_AssemblyList=other.m_AssemblyList;
+	m_Production=other.m_Production;
+	m_Workers=other.m_Workers;
+	m_sOwnerOfSystem=other.m_sOwnerOfSystem;
+	m_dHabitants=other.m_dHabitants;
+	m_iMoral=other.m_iMoral;
+	m_byBlockade=other.m_byBlockade;
+	m_iFoodStore=other.m_iFoodStore;
+	m_iTitanStore=other.m_iTitanStore;
+	m_iDeuteriumStore=other.m_iDeuteriumStore;
+	m_iDuraniumStore=other.m_iDuraniumStore;
+		ar << m_iCrystalStore;
+		ar << m_iIridiumStore;
+		ar << m_iDeritiumStore;
+		ar << m_iFoodBuildings;
+		ar << m_iIndustryBuildings;
+		ar << m_iEnergyBuildings;	
+		ar << m_iSecurityBuildings;
+		ar << m_iResearchBuildings;
+		ar << m_iTitanMines;
+		ar << m_iDeuteriumMines;
+		ar << m_iDuraniumMines;
+		ar << m_iIridiumMines;
+		ar << m_iCrystalMines;*/
+
+
+}
+
+CSystem& CSystem::operator=(const CSystem&){
+	return (*this);
+	
+};
+
 ///////////////////////////////////////////////////////////////////////
 // Speichern / Laden
 ///////////////////////////////////////////////////////////////////////
@@ -2148,7 +2182,7 @@ BOOLEAN CSystem::CanAddTradeRoute(CResearchInfo* researchInfo)
 // Funktion generiert eine neue Handelsroute. Wenn die Funktion <code>TRUE</code> zurückgibt, dann konnte die
 // Handelsroute erfolgreich angelegt werden. Als Parameter wird dabei die Koordinate <code>dest</code>des
 // Zielsektors übergeben sowie ein Zeiger auf alle Systeme <code>systems</code> auf der Map..
-BOOLEAN CSystem::AddTradeRoute(CPoint dest, CSystem** systems/*[][STARMAP_SECTORS_VCOUNT]*/, CResearchInfo* researchInfo)
+BOOLEAN CSystem::AddTradeRoute(CPoint dest, std::vector<std::vector<CSystem>>& systems/*[][STARMAP_SECTORS_VCOUNT]*/, CResearchInfo* researchInfo)
 {
 	BOOLEAN canAddTradeRoute = CanAddTradeRoute(researchInfo);
 	// als erstes überprüfen, das noch keine Handelsroute aus einem System, welches den gleichen Besitzer wie
@@ -2266,7 +2300,7 @@ BYTE CSystem::CheckTradeRoutes(CResearchInfo* researchInfo)
 // Ressourcenroute erfolgreich angelegt werden. Als Parameter wird dabei die Koordinate <code>dest</code> des
 // Zielsektors übergeben sowie die Art der betroffenen Ressource <code>res</code> und einen Zeiger auf alle
 // Systeme <code>systems</code> auf der Map.
-BOOLEAN CSystem::AddResourceRoute(CPoint dest, BYTE res, CSystem** systems/*[][STARMAP_SECTORS_VCOUNT]*/, CResearchInfo* researchInfo)
+BOOLEAN CSystem::AddResourceRoute(CPoint dest, BYTE res, std::vector<std::vector<CSystem>>& systems/*[][STARMAP_SECTORS_VCOUNT]*/, CResearchInfo* researchInfo)
 {
 	// Es gibt immer mindst. eine Ressourcenroute pro System. Insgesamt stehen "Anzahl Handelsrouten + 1" Ressourcen-
 	// routen zur Vrefügung.
