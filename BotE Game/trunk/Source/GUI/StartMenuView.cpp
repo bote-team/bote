@@ -542,17 +542,18 @@ void CStartMenuView::OnTimer(UINT_PTR nIDEvent)
 	if (m_nLogoTimer < 2)
 	{
 		this->SetTimer(1,25,NULL);
-
-		CSoundManager* pSoundManager = CSoundManager::GetInstance();
-		ASSERT(pSoundManager);
-
 		CIniLoader* pIni = CIniLoader::GetInstance();
 		ASSERT(pIni);
-
-		float fMusicVolume;
-		pIni->ReadValue("Audio", "MUSICVOLUME", fMusicVolume);
-		pSoundManager->StartMusic(network::RACE_1, fMusicVolume);
-
+		bool bUseMusic;
+		pIni->ReadValue("Audio", "MUSIC", bUseMusic);
+		if (bUseMusic)
+		{
+			CSoundManager* pSoundManager = CSoundManager::GetInstance();
+			ASSERT(pSoundManager);
+			float fMusicVolume;
+			pIni->ReadValue("Audio", "MUSICVOLUME", fMusicVolume);
+			pSoundManager->StartMusic(network::RACE_1, fMusicVolume);
+		}
 		return;
 	}
 		
