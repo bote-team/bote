@@ -55,7 +55,25 @@ END_MESSAGE_MAP()
 /////////////////////////////////////////////////////////////////////////////
 // CBotf2Doc Konstruktion/Destruktion
 
-CBotf2Doc::CBotf2Doc()
+#pragma warning(push)
+#pragma warning (disable:4351)
+CBotf2Doc::CBotf2Doc() :
+	m_NumberOfTheShipInArray(-1),
+	m_bCombatCalc(false),
+	m_bDataReceived(false),
+	m_bDontExit(false),
+	m_bGameLoaded(false),
+	m_bGameOver(false),
+	m_bNewGame(true),
+	m_bRoundEndPressed(false),
+	m_fDifficultyLevel(0.75f),
+	m_fStardate(121000.0f),
+	m_iNumberOfFleetShip(-1),
+	m_iNumberOfTheShipInFleet(-1),
+	m_iRound(1),
+	m_iSelectedView(),
+	m_iShowWhichShipInfoInView3(0),
+	m_iShowWhichTechInView3(0)
 {
 	//Init MT with single log file
 	CString sLogPath = CIOData::GetInstance()->GetLogPath();
@@ -78,6 +96,7 @@ CBotf2Doc::CBotf2Doc()
 	m_Sector.clear();
 	m_System.clear();
 }
+#pragma warning(pop)
 
 CBotf2Doc::~CBotf2Doc()
 {
