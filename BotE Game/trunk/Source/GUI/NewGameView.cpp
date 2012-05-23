@@ -25,7 +25,7 @@
 IMPLEMENT_DYNCREATE(CNewGameView, CFormView)
 
 CNewGameView::CNewGameView()
-	: CFormView(CNewGameView::IDD)
+: CFormView(CNewGameView::IDD), m_nMode(MODE_SERVER), m_pBkgndImg()
 {
 
 }
