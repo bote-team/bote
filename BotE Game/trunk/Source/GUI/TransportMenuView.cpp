@@ -20,7 +20,11 @@ static char THIS_FILE[] = __FILE__;
 
 IMPLEMENT_DYNCREATE(CTransportMenuView, CMainBaseView)
 
-CTransportMenuView::CTransportMenuView()
+CTransportMenuView::CTransportMenuView() :
+bg_transportmenu(),
+m_byTroopNumberInShip(0),
+m_byTroopNumberInSystem(0),
+m_iTransportStorageQuantity(1)
 {
 }
 
