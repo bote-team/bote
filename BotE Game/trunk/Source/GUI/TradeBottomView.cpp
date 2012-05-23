@@ -11,7 +11,10 @@
 
 IMPLEMENT_DYNCREATE(CTradeBottomView, CBottomBaseView)
 
-CTradeBottomView::CTradeBottomView()
+CTradeBottomView::CTradeBottomView() :
+	m_iNumberOfHistoryRounds(20),
+	m_iWhichRessource(TITAN),
+	m_bDrawLittleRects(FALSE)
 {
 	m_pSmallButton = NULL;
 }
