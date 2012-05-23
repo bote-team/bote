@@ -24,7 +24,7 @@ IMPLEMENT_DYNAMIC(CNewGamePage, CPropertyPage)
 
 CNewGamePage::CNewGamePage()
 	: CPropertyPage(CNewGamePage::IDD), m_pClientBtn(NULL), m_pServerBtn(NULL),
-	m_pParent(NULL)
+	m_pParent(NULL), m_nMode(), m_pChooseBtn(), m_pLoadBtn(), m_pPublish(), m_pSearch()
 {
 }
 
