@@ -18,8 +18,18 @@ static char THIS_FILE[] = __FILE__;
 
 IMPLEMENT_DYNCREATE(CIntelMenuView, CMainBaseView)
 
-CIntelMenuView::CIntelMenuView()
+CIntelMenuView::CIntelMenuView() :
+	bg_intelassignmenu(),
+	bg_intelspymenu(),
+	bg_intelsabmenu(),
+	bg_intelreportmenu(),
+	bg_intelinfomenu(),
+	bg_intelattackmenu(),
+	m_bySubMenu(0),
+	m_iOldClickedIntelReport(0),
+	m_nScrollPos(0)
 {
+	memset(m_bSortDesc, true, sizeof(m_bSortDesc));
 }
 
 CIntelMenuView::~CIntelMenuView()
