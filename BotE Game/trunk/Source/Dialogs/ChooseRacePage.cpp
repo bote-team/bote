@@ -16,7 +16,7 @@
 IMPLEMENT_DYNAMIC(CChooseRacePage, CPropertyPage)
 
 CChooseRacePage::CChooseRacePage()
-	: CPropertyPage(CChooseRacePage::IDD), m_bIsServer(false), m_nPlayerCount(0)
+	: CPropertyPage(CChooseRacePage::IDD), m_bIsServer(false), m_nPlayerCount(0), m_pParent(NULL)
 {
 }
 
