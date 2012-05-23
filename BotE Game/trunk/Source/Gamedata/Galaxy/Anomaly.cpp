@@ -5,6 +5,7 @@
 #include "Botf2Doc.h"
 #include "Races/RaceController.h"
 #include "Ships/Fleet.h"
+#include <cassert>
 
 IMPLEMENT_SERIAL (CAnomaly, CObject, 1)
 //////////////////////////////////////////////////////////////////////
@@ -94,15 +95,12 @@ void CAnomaly::Draw(Graphics* g, const CPoint& ptSector) const
 	
 	CString sFile = CIOData::GetInstance()->GetAppPath() + "Graphics\\MapStars\\" + m_sImageFile;
 	pBGImage = Bitmap::FromFile(sFile.AllocSysString());
+	assert(pBGImage);
 	
 	if (m_bFlipHorz)
 		pBGImage->RotateFlip(Gdiplus::RotateNoneFlipX);
 
-	ASSERT(pBGImage);
-	if (pBGImage->GetLastStatus() != Ok)
-		return;
-
-	if (pBGImage)
+	if (pBGImage->GetLastStatus() == Ok)
 		g->DrawImage(pBGImage, ptSector.x, ptSector.y, STARMAP_SECTOR_WIDTH, STARMAP_SECTOR_HEIGHT);
 
 	delete pBGImage;
