@@ -26,7 +26,12 @@ BOOLEAN CShipBottomView::m_bShowStation = FALSE;
 
 IMPLEMENT_DYNCREATE(CShipBottomView, CBottomBaseView)
 
-CShipBottomView::CShipBottomView()
+CShipBottomView::CShipBottomView() :
+	m_iPage(1),
+	m_bShowNextButton(FALSE),
+	m_iTimeCounter(0),
+	m_iWhichMainShipOrderButton(-1),
+	m_pMarkedShip()
 {
 	m_pShipOrderButton = NULL;
 }
