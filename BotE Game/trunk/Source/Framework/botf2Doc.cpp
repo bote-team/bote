@@ -6053,12 +6053,13 @@ void CBotf2Doc::CalcContactNewRaces()
 			if (m_Sector[p.x][p.y].GetMinorRace())
 			{
 				CMinor* pMinor = m_pRaceCtrl->GetMinorRace(m_Sector[p.x][p.y].GetName());
+				assert(pMinor);
 				// kann der Sektorbesitzer andere Rassen kennenlernen?
 				if (pMinor->HasSpecialAbility(SPECIAL_NO_DIPLOMACY))
 					continue;
 
 				// die Rasse ist noch nicht bekannt und nicht unterworfen
-				if (pMinor && pMajor->IsRaceContacted(pMinor->GetRaceID()) == false && pMinor->GetSubjugated() == false)
+				if (pMajor->IsRaceContacted(pMinor->GetRaceID()) == false && pMinor->GetSubjugated() == false)
 				{
 					pMajor->SetIsRaceContacted(pMinor->GetRaceID(), true);
 					pMinor->SetIsRaceContacted(pMajor->GetRaceID(), true);
