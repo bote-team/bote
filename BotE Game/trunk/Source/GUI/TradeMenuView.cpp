@@ -26,8 +26,15 @@ BEGIN_MESSAGE_MAP(CTradeMenuView, CMainBaseView)
 END_MESSAGE_MAP()
 
 
-CTradeMenuView::CTradeMenuView()
+CTradeMenuView::CTradeMenuView() :
+	bg_trademenu(),
+	bg_monopolmenu(),
+	bg_tradetransfermenu(),
+	bg_empty1(),
+	m_bySubMenu(0),
+	m_bCouldBuyMonopols(FALSE)
 {
+	memset(m_dMonopolCosts, 0.0f, sizeof(m_dMonopolCosts));
 }
 
 CTradeMenuView::~CTradeMenuView()
