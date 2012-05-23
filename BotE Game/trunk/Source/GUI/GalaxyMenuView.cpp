@@ -49,7 +49,10 @@ END_MESSAGE_MAP()
 /////////////////////////////////////////////////////////////////////////////
 // CGalaxyMenuView Konstruktion/Destruktion
 
-CGalaxyMenuView::CGalaxyMenuView()
+CGalaxyMenuView::CGalaxyMenuView() :
+	m_bScrollToHome(TRUE),
+	m_fZoom(STARMAP_ZOOM_INITIAL),
+	m_nRange(SM_RANGE_SPACE)
 {
 	// ZU ERLEDIGEN: Hier Code zur Konstruktion einfügen
 	m_pGalaxyBackground = NULL;
