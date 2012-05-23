@@ -30,7 +30,8 @@ CShip* CSmallInfoView::m_pShip = NULL;
 
 IMPLEMENT_DYNCREATE(CSmallInfoView, CView)
 
-CSmallInfoView::CSmallInfoView()
+CSmallInfoView::CSmallInfoView() :
+	m_bAnimatedIcon(false)
 {
 	m_nTimer = 0;
 	CIniLoader::GetInstance()->ReadValue("Video", "ANIMATEDICON", m_bAnimatedIcon);
