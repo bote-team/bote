@@ -11,7 +11,15 @@
 
 IMPLEMENT_DYNCREATE(CShipDesignMenuView, CMainBaseView)
 
-CShipDesignMenuView::CShipDesignMenuView()
+CShipDesignMenuView::CShipDesignMenuView() :
+	bg_designmenu(),
+	m_iClickedOnShip(-1),
+	m_iOldClickedOnShip(-1),
+	m_nSizeOfShipDesignList(0),
+	m_iBeamWeaponNumber(0),
+	m_iTorpedoWeaponNumber(0),
+	m_bFoundBetterBeam(FALSE),
+	m_bFoundWorseBeam(FALSE)
 {
 
 }
