@@ -102,7 +102,8 @@ END_MESSAGE_MAP()
 /////////////////////////////////////////////////////////////////////////////
 // CBotf2App Konstruktion
 
-CBotf2App::CBotf2App()
+CBotf2App::CBotf2App() :
+	gdiplusToken()
 {
 #ifdef VLD
 	_CrtSetDbgFlag(0);
