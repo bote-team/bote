@@ -14,7 +14,11 @@
 
 IMPLEMENT_DYNCREATE(CResearchMenuView, CMainBaseView)
 
-CResearchMenuView::CResearchMenuView()
+CResearchMenuView::CResearchMenuView() :
+	bg_researchmenu(),
+	bg_urmenu(),
+	bg_emptyur(),
+	m_bySubMenu(0)
 {
 
 }
