@@ -22,7 +22,12 @@ static char THIS_FILE[] = __FILE__;
 
 IMPLEMENT_DYNCREATE(CFleetMenuView, CMainBaseView)
 
-CFleetMenuView::CFleetMenuView()
+CFleetMenuView::CFleetMenuView() :
+	bg_fleetmenu(),
+	m_iFleetPage(1),
+	m_bShowNextButton(FALSE),
+	m_bShowBackButton(FALSE),
+	m_pMarkedShip()
 {
 }
 
