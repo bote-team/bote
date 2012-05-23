@@ -48,7 +48,17 @@ BEGIN_MESSAGE_MAP(CDiplomacyMenuView, CMainBaseView)
 	ON_WM_RBUTTONDOWN()
 END_MESSAGE_MAP()
 
-CDiplomacyMenuView::CDiplomacyMenuView()
+CDiplomacyMenuView::CDiplomacyMenuView() :
+	bg_diploinfomenu(),
+	bg_diploinmenu(),
+	bg_diplooutmenu(),
+	m_bySubMenu(0),
+	m_byWhichResourceIsChosen(TITAN),
+	m_bSortRaceList(false),
+	m_bShowSendButton(true),
+	m_bShowDeclineButton(true),
+	m_bCanSend(true),
+	m_pIncomingInfo()
 {
 }
 
