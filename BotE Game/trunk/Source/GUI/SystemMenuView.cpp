@@ -18,7 +18,24 @@ BYTE CSystemMenuView::m_byResourceRouteRes = TITAN;
 // CSystemMenuView
 IMPLEMENT_DYNCREATE(CSystemMenuView, CMainBaseView)
 
-CSystemMenuView::CSystemMenuView()
+CSystemMenuView::CSystemMenuView() :
+	bg_buildmenu(),
+	bg_workmenu(),
+	bg_energymenu(),
+	bg_overviewmenu(),
+	bg_systrademenu(),
+	m_iWhichSubMenu(0),
+	m_byStartList(0),
+	m_byEndList(m_byStartList + NOEIBL),
+	m_iBOPage(0),
+	m_iELPage(0),
+	m_iSTPage(0),
+	m_bySubMenu(0),
+	m_bClickedOnBuyButton(FALSE),
+	m_bClickedOnDeleteButton(FALSE),
+	m_bClickedOnBuildingInfoButton(TRUE),
+	m_bClickedOnBuildingDescriptionButton(FALSE),
+	m_iGlobalStoreageQuantity(1)
 {
 }
 
