@@ -19,7 +19,23 @@
 
 IMPLEMENT_DYNCREATE(CEmpireMenuView, CMainBaseView)
 
-CEmpireMenuView::CEmpireMenuView()
+CEmpireMenuView::CEmpireMenuView() :
+	bg_newsovmenu(),
+	bg_systemovmenu(),
+	bg_shipovmenu(),
+	bg_demographicsmenu(),
+	bg_top5menu(),
+	bg_victorymenu(),
+	m_iSubMenu(EMPIREVIEW_NEWS),
+	m_iSystemSubMenue(EMPIREVIEW_SYSTEMS_NORMAL),
+	m_iClickedNews(-1),
+	m_iOldClickedNews(0),
+	m_iClickedSystem(-1),
+	m_iOldClickedSystem(0),
+	m_iClickedShip(-1),
+	m_iOldClickedShip(0),
+	m_iClickedShipIndex(-1),
+	m_bShowAliveShips(TRUE)
 {
 }
 
