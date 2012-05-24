@@ -8,7 +8,9 @@ IMPLEMENT_SERIAL (CDiplomacyIntelObj, CObject, 1)
 //////////////////////////////////////////////////////////////////////
 // Konstruktion/Destruktion
 //////////////////////////////////////////////////////////////////////
-CDiplomacyIntelObj::CDiplomacyIntelObj(void)
+CDiplomacyIntelObj::CDiplomacyIntelObj(void) :
+	m_nDuration(0),
+	m_nRelationship(0)
 {
 	m_byType = 3;
 	m_MinorRaceKO = CPoint(-1,-1);
