@@ -12,8 +12,10 @@ IMPLEMENT_SERIAL (CStatistics, CObject, 1)
 //////////////////////////////////////////////////////////////////////
 // Konstruktion/Destruktion
 //////////////////////////////////////////////////////////////////////
-CStatistics::CStatistics(void)
+CStatistics::CStatistics(void) :
+m_byAverageTechLevel(0)
 {
+	memset(m_nAverageResourceStorages, 0, sizeof(m_nAverageResourceStorages));
 }
 
 CStatistics::~CStatistics(void)
