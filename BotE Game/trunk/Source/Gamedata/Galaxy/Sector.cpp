@@ -22,12 +22,35 @@ IMPLEMENT_SERIAL (CSector, CObject, 1)
 //////////////////////////////////////////////////////////////////////
 // Konstruktion/Destruktion
 //////////////////////////////////////////////////////////////////////
-CSector::CSector(void)
+CSector::CSector(void) :
+	m_Attributes(0),
+	m_bySunColor(0),
+	m_iShipPathPoints(0)
 {
 	m_pAnomaly = NULL;
 }
 
-CSector::CSector(const CSector& other){
+CSector::CSector(const CSector& other) :
+	m_KO(),
+	m_strSectorName(),
+	m_Attributes(0),
+	m_sOwnerOfSector(),
+	m_sColonyOwner(),
+	m_byStatus(),
+	m_bShipPort(),
+	m_bOutpost(),
+	m_bStarbase(),
+	m_bWhoIsOwnerOfShip(),
+	m_bIsStationBuild(),
+	m_iScanPower(),
+	m_iNeededScanPower(),
+	m_iNeededStationPoints(),
+	m_iStartStationPoints(),
+	m_bySunColor(0),
+	m_byOwnerPoints(),
+	m_Planets(),
+	m_iShipPathPoints(0)
+{
 	m_pAnomaly=NULL;
 
 };
