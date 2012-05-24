@@ -1295,7 +1295,7 @@ void CBotf2Doc::GenerateGalaxy()
 					// gibt es kein Deritium=
 					if (!bRes[DERITIUM])
 					{
-						for (int p = 0; p < m_Sector[x][y].GetPlanets()->GetSize(); p++)
+						for (int p = 0; p < static_cast<int>(m_Sector[x][y].GetPlanets().size()); p++)
 							if (m_Sector[x][y].GetPlanet(p)->GetCurrentHabitant() > 0 && m_Sector[x][y].GetPlanet(p)->GetColonized())
 							{
 								m_Sector[x][y].GetPlanet(p)->SetBoni(DERITIUM, TRUE);
@@ -4283,8 +4283,8 @@ void CBotf2Doc::CalcShipOrders()
 				{
 					BYTE terraformedPlanets = 0;
 					for (int i = 0; i < m_Sector[ShipKO.x][ShipKO.y].GetNumberOfPlanets(); i++)
-						if (m_Sector[ShipKO.x][ShipKO.y].GetPlanets()->GetAt(i).GetTerraformed() == TRUE
-							&& m_Sector[ShipKO.x][ShipKO.y].GetPlanets()->GetAt(i).GetColonized() == FALSE)
+						if (m_Sector[ShipKO.x][ShipKO.y].GetPlanets().at(i).GetTerraformed() == TRUE
+							&& m_Sector[ShipKO.x][ShipKO.y].GetPlanets().at(i).GetColonized() == FALSE)
 							terraformedPlanets++;
 					if (terraformedPlanets > 0)
 					{
@@ -4293,8 +4293,8 @@ void CBotf2Doc::CalcShipOrders()
 						float oddHab = 0.0f;	// ?bersch?ssige Kolonisten, wenn ein Planet zu klein ist
 						// Geterraformte Planeten durchgehen und die Bev?lkerung auf diese verschieben
 						for (int i = 0; i < m_Sector[ShipKO.x][ShipKO.y].GetNumberOfPlanets(); i++)
-							if (m_Sector[ShipKO.x][ShipKO.y].GetPlanets()->GetAt(i).GetTerraformed() == TRUE
-								&& m_Sector[ShipKO.x][ShipKO.y].GetPlanets()->GetAt(i).GetColonized() == FALSE)
+							if (m_Sector[ShipKO.x][ShipKO.y].GetPlanets().at(i).GetTerraformed() == TRUE
+								&& m_Sector[ShipKO.x][ShipKO.y].GetPlanets().at(i).GetColonized() == FALSE)
 							{
 								if (startHabitants > m_Sector[ShipKO.x][ShipKO.y].GetPlanet(i)->GetMaxHabitant())
 								{
@@ -4310,20 +4310,20 @@ void CBotf2Doc::CalcShipOrders()
 						// die ?brigen Kolonisten auf die Planeten verteilen
 						if (oddHab > 0.0f)
 							for (int i = 0; i < m_Sector[ShipKO.x][ShipKO.y].GetNumberOfPlanets(); i++)
-								if (m_Sector[ShipKO.x][ShipKO.y].GetPlanets()->GetAt(i).GetTerraformed() == TRUE
-									&& m_Sector[ShipKO.x][ShipKO.y].GetPlanets()->GetAt(i).GetCurrentHabitant() > 0.0f)
+								if (m_Sector[ShipKO.x][ShipKO.y].GetPlanets().at(i).GetTerraformed() == TRUE
+									&& m_Sector[ShipKO.x][ShipKO.y].GetPlanets().at(i).GetCurrentHabitant() > 0.0f)
 								{
-									if ((oddHab + m_Sector[ShipKO.x][ShipKO.y].GetPlanets()->GetAt(i).GetCurrentHabitant())
+									if ((oddHab + m_Sector[ShipKO.x][ShipKO.y].GetPlanets().at(i).GetCurrentHabitant())
 										> m_Sector[ShipKO.x][ShipKO.y].GetPlanet(i)->GetMaxHabitant())
 									{
 										oddHab -= (m_Sector[ShipKO.x][ShipKO.y].GetPlanet(i)->GetMaxHabitant()
-											- m_Sector[ShipKO.x][ShipKO.y].GetPlanets()->GetAt(i).GetCurrentHabitant());
+											- m_Sector[ShipKO.x][ShipKO.y].GetPlanets().at(i).GetCurrentHabitant());
 										m_Sector[ShipKO.x][ShipKO.y].GetPlanet(i)->SetCurrentHabitant(m_Sector[ShipKO.x][ShipKO.y].GetPlanet(i)->GetMaxHabitant());
 									}
 									else
 									{
 										m_Sector[ShipKO.x][ShipKO.y].GetPlanet(i)->SetCurrentHabitant(
-											m_Sector[ShipKO.x][ShipKO.y].GetPlanets()->GetAt(i).GetCurrentHabitant() + oddHab);
+											m_Sector[ShipKO.x][ShipKO.y].GetPlanets().at(i).GetCurrentHabitant() + oddHab);
 										break;
 									}
 								}								
@@ -5852,7 +5852,7 @@ void CBotf2Doc::CalcShipEffects()
 		else if (m_ShipArray[y].GetCurrentOrder() == SHIP_ORDER::TERRAFORM)
 		{
 			short nPlanet = m_ShipArray[y].GetTerraformingPlanet();
-			if (nPlanet != -1 && nPlanet < m_Sector[p.x][p.y].GetPlanets()->GetSize())
+			if (nPlanet != -1 && nPlanet < static_cast<int>(m_Sector[p.x][p.y].GetPlanets().size()))
 				m_Sector[p.x][p.y].GetPlanet(nPlanet)->SetIsTerraforming(TRUE);
 			else
 			{

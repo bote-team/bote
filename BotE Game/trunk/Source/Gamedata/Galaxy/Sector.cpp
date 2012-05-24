@@ -127,9 +127,9 @@ void CSector::Serialize(CArchive &ar)
 		{
 			ar << m_strSectorName;
 			ar << m_bySunColor;
-			ar << m_Planets.GetSize();
-			for (int i = 0; i < m_Planets.GetSize(); i++)
-				m_Planets.GetAt(i).Serialize(ar);
+			ar << m_Planets.size();
+			for (int i = 0; i < static_cast<int>(m_Planets.size()); i++)
+				m_Planets.at(i).Serialize(ar);
 		}
 
 		ar << m_pAnomaly;
@@ -262,16 +262,16 @@ void CSector::Serialize(CArchive &ar)
 			ar >> m_strSectorName;
 			ar >> m_bySunColor;
 			ar >> number;
-			m_Planets.RemoveAll();
-			m_Planets.SetSize(number);
+			m_Planets.clear();
+			m_Planets.resize(number);
 			for (int i = 0; i < number; i++)
-				m_Planets.GetAt(i).Serialize(ar);
+				m_Planets.at(i).Serialize(ar);
 		}
 		else
 		{
 			m_strSectorName = "";
 			m_bySunColor = 0;
-			m_Planets.RemoveAll();
+			m_Planets.clear();
 		}
 
 		if (VERSION >= 0.72)
@@ -315,8 +315,8 @@ CString CSector::GetName(BOOLEAN longName) const
 float CSector::GetCurrentHabitants() const
 {
 	float currentHabitants = 0.0f;
-	for (int i = 0; i < m_Planets.GetSize(); i++)
-		currentHabitants += m_Planets.GetAt(i).GetCurrentHabitant();
+	for (int i = 0; i < static_cast<int>(m_Planets.size()); i++)
+		currentHabitants += m_Planets.at(i).GetCurrentHabitant();
 	return currentHabitants;
 }
 
@@ -324,7 +324,7 @@ float CSector::GetCurrentHabitants() const
 /// die Ressourcen <code>res</code>.
 void CSector::GetAvailableResources(BOOLEAN bResources[DERITIUM + 1], BOOLEAN bOnlyColonized/* = true */)
 {
-	for (int i = 0; i < m_Planets.GetSize(); i++)
+	for (int i = 0; i < static_cast<int>(m_Planets.size()); i++)
 	{
 		CPlanet* pPlanet = &m_Planets[i];
 		if (!pPlanet->GetHabitable())
@@ -381,8 +381,8 @@ void CSector::GenerateSector(int sunProb, int minorProb)
 				if (currentHabitants > 0.0f)
 				{
 					float maxHabitants = 0.0f;
-					for (int i = 0; i < m_Planets.GetSize(); i++)
-						maxHabitants += m_Planets.GetAt(i).GetMaxHabitant();
+					for (int i = 0; i < static_cast<int>(m_Planets.size()); i++)
+						maxHabitants += m_Planets.at(i).GetMaxHabitant();
 					if (maxHabitants > (40.000f + random * 7))
 						break;
 				}				
@@ -399,7 +399,7 @@ void CSector::GenerateSector(int sunProb, int minorProb)
 /// Diese Funktion generiert die Planeten in dem Sektor.
 void CSector::CreatePlanets(const CString& sMajorID)
 {
-	m_Planets.RemoveAll();
+	m_Planets.clear();
 	
 	if (GetSunSystem())
 	{
@@ -420,7 +420,7 @@ void CSector::CreatePlanets(const CString& sMajorID)
 				while(csInput!=sMajorID&&!endoffile) endoffile=!file.ReadString(csInput);//Zur Daten der gesuchten Majorrace springen
 				if(!endoffile)//Wenn Major daten vorhanden
 				{
-					m_Planets.RemoveAll();
+					m_Planets.clear();
 					file.ReadString(csInput);//Sonnenfarbe
 					m_bySunColor = atoi(csInput);
 					file.ReadString(csInput);//Planetenanzahl
@@ -448,14 +448,14 @@ void CSector::CreatePlanets(const CString& sMajorID)
 						planet.SetGraphicType(rand()%GRAPHICNUMBER);
 						planet.SetBoni(atoi(data[9]),atoi(data[10]),atoi(data[11]),atoi(data[12]),atoi(data[13]),atoi(data[14]),atoi(data[15]),atoi(data[16]));//Boni 8 Zeilen
 						planet.SetStartTerraformPoints(atoi(data[17]));//Terraformpoints
-						m_Planets.Add(planet);
+						m_Planets.push_back(planet);
 					}
 				}
 				else
 				{
 					while (true)//Falls Major in der Datei nicht definiert ist wird der bisherige Generierungsalgorithmus benutzt
 					{
-						m_Planets.RemoveAll();
+						m_Planets.clear();
 
 						short number = (rand()%8+1 + rand()%8+1 + rand()%8+1 + 1) / 3;
 						PLANET_ZONE::Typ zone = PLANET_ZONE::HOT;
@@ -470,7 +470,7 @@ void CSector::CreatePlanets(const CString& sMajorID)
 						{
 							CPlanet planet;
 							zone = planet.Create(m_strSectorName, zone, i, true);
-							m_Planets.Add(planet);				
+							m_Planets.push_back(planet);
 						}
 						
 						// aktuelle Bevölkerung prüfen
@@ -480,8 +480,8 @@ void CSector::CreatePlanets(const CString& sMajorID)
 						
 						// maximale Bevölkerung prüfen
 						float fMaxHabitants = 0.0f;
-						for (int i = 0; i < m_Planets.GetSize(); i++)
-							fMaxHabitants += m_Planets.GetAt(i).GetMaxHabitant();
+						for (int i = 0; i < static_cast<int>(m_Planets.size()); i++)
+							fMaxHabitants += m_Planets.at(i).GetMaxHabitant();
 						if (fMaxHabitants > 65.000f || fMaxHabitants < 45.000f)
 							continue;
 
@@ -504,7 +504,7 @@ void CSector::CreatePlanets(const CString& sMajorID)
 						// Deritium überprüfen
 						if (!bRes[DERITIUM])
 						{
-							for (int p = 0; p < this->GetPlanets()->GetSize(); p++)
+							for (int p = 0; p < static_cast<int>(this->GetPlanets().size()); p++)
 								if (this->GetPlanet(p)->GetCurrentHabitant() > 0 && this->GetPlanet(p)->GetColonized())
 								{
 									this->GetPlanet(p)->SetBoni(DERITIUM, TRUE);
@@ -543,7 +543,7 @@ void CSector::CreatePlanets(const CString& sMajorID)
 			{
 				CPlanet planet;
 				zone = planet.Create(m_strSectorName, zone, i, GetMinorRace());
-				m_Planets.Add(planet);
+				m_Planets.push_back(planet);
 
 				// nicht zu viele große Planeten generieren, da diese dann nicht mehr
 				// in die View passen
@@ -577,8 +577,8 @@ void CSector::CreateAnomaly(void)
 /// Diese Funktion führt das Planetenwachstum für diesen Sektor durch.
 void CSector::LetPlanetsGrowth()
 {
-	for (int i = 0; i < m_Planets.GetSize(); i++)
-		m_Planets.GetAt(i).PlanetGrowth();
+	for (int i = 0; i < static_cast<int>(m_Planets.size()); i++)
+		m_Planets.at(i).PlanetGrowth();
 }
 
 /// Diese Funktion lässt die Bevölkerung auf allen Planeten zusammen um den übergebenen Wert <code>Value</code>
@@ -586,16 +586,16 @@ void CSector::LetPlanetsGrowth()
 void CSector::LetPlanetsShrink(float Value)
 {
 	// aktuelle Einwohner auf den einzelnen Planeten
-	float* Habitants = new float[m_Planets.GetSize()];
+	float* Habitants = new float[m_Planets.size()];
 
 	// alle Einwohner im Sector
 	float allHabitants = 0.0f;
-	for (int i = 0; i < m_Planets.GetSize(); i++)
+	for (int i = 0; i < static_cast<int>(m_Planets.size()); i++)
 	{
 		allHabitants += m_Planets[i].GetCurrentHabitant();
 		Habitants[i] = m_Planets[i].GetCurrentHabitant();
 	}
-	for (int i = 0; i < m_Planets.GetSize(); i++)
+	for (int i = 0; i < static_cast<int>(m_Planets.size()); i++)
 		if (Habitants[i] > 0)
 		{
 			float prozAnteil = Habitants[i] / allHabitants;
@@ -620,7 +620,7 @@ void CSector::ClearAllPoints()
 	// wieder auf NULL
 	
 	// Falls der Planet gerade geterraformt wird, wird er hier erstmal wieder auf FALSE gesetzt.
-	for (int i = 0; i < m_Planets.GetSize(); i++)
+	for (int i = 0; i < static_cast<int>(m_Planets.size()); i++)
 		m_Planets[i].SetIsTerraforming(FALSE);
 	
 	m_byOwnerPoints.clear();
@@ -728,7 +728,7 @@ void CSector::Reset()
 	m_sColonyOwner = "";
 	m_strSectorName = "";
 	m_iShipPathPoints = 0;	
-	m_Planets.RemoveAll();
+	m_Planets.clear();
 
 	if (m_pAnomaly)
 	{

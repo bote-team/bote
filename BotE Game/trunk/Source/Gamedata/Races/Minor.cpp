@@ -131,39 +131,39 @@ bool CMinor::PerhapsExtend(CBotf2Doc* pDoc)
 	if (pDoc->GetSector(m_ptKO).GetOwnerOfSector() != m_sID)
 		return false;
 
-	CArray<CPlanet>* planets = pDoc->GetSector(m_ptKO).GetPlanets();
+	std::vector<CPlanet>& planets = pDoc->GetSector(m_ptKO).GetPlanets();
 	bool bColonized = false;
-	for (int i = 0; i < planets->GetSize(); i++)
+	for (int i = 0; i < static_cast<int>(planets.size()); i++)
 	{
 		// ist der Planet noch nicht geterraformt
-		if (planets->GetAt(i).GetColonized() == FALSE && planets->GetAt(i).GetHabitable() == TRUE && planets->GetAt(i).GetTerraformed() == FALSE)
+		if (planets.at(i).GetColonized() == FALSE && planets.at(i).GetHabitable() == TRUE && planets.at(i).GetTerraformed() == FALSE)
 		{
 			// mit einer gewissen Wahrscheinlichkeit wird der Planet geterraformt und kolonisiert
 			if (rand()%200 >= (200 - (m_iTechnologicalProgress+1)))
 			{
 				bColonized = true;
-				planets->ElementAt(i).SetNeededTerraformPoints(planets->ElementAt(i).GetNeededTerraformPoints());
-				planets->ElementAt(i).SetTerraformed(TRUE);
-				planets->ElementAt(i).SetColonisized(TRUE);
-				planets->ElementAt(i).SetIsTerraforming(FALSE);
-				if (planets->GetAt(i).GetMaxHabitant() < 1.0f)
-					planets->ElementAt(i).SetCurrentHabitant(planets->GetAt(i).GetMaxHabitant());
+				planets.at(i).SetNeededTerraformPoints(planets.at(i).GetNeededTerraformPoints());
+				planets.at(i).SetTerraformed(TRUE);
+				planets.at(i).SetColonisized(TRUE);
+				planets.at(i).SetIsTerraforming(FALSE);
+				if (planets.at(i).GetMaxHabitant() < 1.0f)
+					planets.at(i).SetCurrentHabitant(planets.at(i).GetMaxHabitant());
 				else
-					planets->ElementAt(i).SetCurrentHabitant(1.0f);
+					planets.at(i).SetCurrentHabitant(1.0f);
 			}
 		}
 		// ist der Planet schon geterraformt
-		else if (planets->GetAt(i).GetColonized() == FALSE && planets->GetAt(i).GetTerraformed() == TRUE)
+		else if (planets.at(i).GetColonized() == FALSE && planets.at(i).GetTerraformed() == TRUE)
 		{
 			// dann wird mit einer größeren Wahrscheinlichkeit kolonisiert
 			if (rand()%200 >= (200 - 3*(m_iTechnologicalProgress+1)))
 			{
 				bColonized = true;
-				planets->ElementAt(i).SetColonisized(TRUE);
-				if (planets->GetAt(i).GetMaxHabitant() < 1.0f)
-					planets->ElementAt(i).SetCurrentHabitant(planets->GetAt(i).GetMaxHabitant());
+				planets.at(i).SetColonisized(TRUE);
+				if (planets.at(i).GetMaxHabitant() < 1.0f)
+					planets.at(i).SetCurrentHabitant(planets.at(i).GetMaxHabitant());
 				else
-					planets->ElementAt(i).SetCurrentHabitant(1.0f);
+					planets.at(i).SetCurrentHabitant(1.0f);
 			}
 		}
 	}

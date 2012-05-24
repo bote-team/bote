@@ -605,7 +605,7 @@ BOOLEAN CSystem::SetHabitants(double habitants)
 // sonstige Funktionen
 //////////////////////////////////////////////////////////////////////
 // Funktion berechnet aus den Eigenschaften der stehenden Gebäude alle Attribute der System-Klasse.
-void CSystem::CalculateVariables(BuildingInfoArray* buildingInfos, CResearchInfo* ResearchInfo, CArray<CPlanet>* planets, CMajor* pOwner, const CString *sMonopolOwner)
+void CSystem::CalculateVariables(BuildingInfoArray* buildingInfos, CResearchInfo* ResearchInfo, const std::vector<CPlanet>& planets, CMajor* pOwner, const CString *sMonopolOwner)
 {
 	int NumberOfBuildings;
 	NumberOfBuildings = m_Buildings.GetSize();
@@ -797,28 +797,28 @@ void CSystem::CalculateVariables(BuildingInfoArray* buildingInfos, CResearchInfo
 	
 	// Jetzt werden noch eventuelle Boni durch die Planetenklassen dazugerechnet
 	BYTE deritiumProdMulti = 0;
-	for (int i = 0; i < planets->GetSize(); i++)
+	for (int i = 0; i < static_cast<int>(planets.size()); i++)
 	{
-		if (planets->GetAt(i).GetColonized() == TRUE && planets->GetAt(i).GetCurrentHabitant() > 0.0f)
+		if (planets.at(i).GetColonized() == TRUE && planets.at(i).GetCurrentHabitant() > 0.0f)
 		{
 			// pro Planetengröße gibt es 25% Bonus
-			if (planets->GetAt(i).GetBoni()[TITAN] == TRUE)
-				tmpTitanBoni	+= (planets->GetAt(i).GetSize()+1) * 25;
-			if (planets->GetAt(i).GetBoni()[DEUTERIUM] == TRUE)
-				tmpDeuteriumBoni+= (planets->GetAt(i).GetSize()+1) * 25;
-			if (planets->GetAt(i).GetBoni()[DURANIUM] == TRUE)
-				tmpDuraniumBoni	+= (planets->GetAt(i).GetSize()+1) * 25;
-			if (planets->GetAt(i).GetBoni()[CRYSTAL] == TRUE)
-				tmpCrystalBoni	+= (planets->GetAt(i).GetSize()+1) * 25;
-			if (planets->GetAt(i).GetBoni()[IRIDIUM] == TRUE)
-				tmpIridiumBoni	+= (planets->GetAt(i).GetSize()+1) * 25;
-			if (planets->GetAt(i).GetBoni()[6] == TRUE)	// food
-				tmpFoodBoni		+= (planets->GetAt(i).GetSize()+1) * 25;
-			if (planets->GetAt(i).GetBoni()[7] == TRUE)	// energy
-				tmpEnergyBoni	+= (planets->GetAt(i).GetSize()+1) * 25;
+			if (planets.at(i).GetBoni()[TITAN] == TRUE)
+				tmpTitanBoni	+= (planets.at(i).GetSize()+1) * 25;
+			if (planets.at(i).GetBoni()[DEUTERIUM] == TRUE)
+				tmpDeuteriumBoni+= (planets.at(i).GetSize()+1) * 25;
+			if (planets.at(i).GetBoni()[DURANIUM] == TRUE)
+				tmpDuraniumBoni	+= (planets.at(i).GetSize()+1) * 25;
+			if (planets.at(i).GetBoni()[CRYSTAL] == TRUE)
+				tmpCrystalBoni	+= (planets.at(i).GetSize()+1) * 25;
+			if (planets.at(i).GetBoni()[IRIDIUM] == TRUE)
+				tmpIridiumBoni	+= (planets.at(i).GetSize()+1) * 25;
+			if (planets.at(i).GetBoni()[6] == TRUE)	// food
+				tmpFoodBoni		+= (planets.at(i).GetSize()+1) * 25;
+			if (planets.at(i).GetBoni()[7] == TRUE)	// energy
+				tmpEnergyBoni	+= (planets.at(i).GetSize()+1) * 25;
 			// Menge des abgebauten Deritiums mit der Anzahl der kolonisierten Planeten mit Deritiumvorkommen
 			// multiplizieren
-			if (planets->GetAt(i).GetBoni()[DERITIUM] == TRUE)
+			if (planets.at(i).GetBoni()[DERITIUM] == TRUE)
 				deritiumProdMulti += 1;
 		}
 	}

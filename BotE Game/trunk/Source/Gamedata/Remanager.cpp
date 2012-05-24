@@ -62,30 +62,30 @@ bool CReManager::SystemEvent(CPoint &ko, CMajor* pRace)
 		if(pDoc->GetRaceKO(pRace->GetRaceID()) == ko)
 			success = false;
 		else {
-			CArray<CPlanet>* Planets=pDoc->GetSector(ko).GetPlanets();
-			int planet=rand()%Planets->GetSize();
-			while(!(Planets->GetAt(planet).GetHabitable())) planet=rand()%Planets->GetSize();
-			Planets->GetAt(planet).SetMaxHabitant(Planets->GetAt(planet).GetMaxHabitant()+rand()%7-3);
-			messagetext=CResourceManager::GetString("SYSTEMEVENTPLANETMOVEMENT",false,Planets->GetAt(planet).GetPlanetName());
+			std::vector<CPlanet> planets = pDoc->GetSector(ko).GetPlanets();
+			int planet=rand()%planets.size();
+			while(!(planets.at(planet).GetHabitable())) planet=rand()%planets.size();
+			planets.at(planet).SetMaxHabitant(planets.at(planet).GetMaxHabitant()+rand()%7-3);
+			messagetext=CResourceManager::GetString("SYSTEMEVENTPLANETMOVEMENT",false,planets.at(planet).GetPlanetName());
 		}
 	}else if(eventnumber==SYSTEMEVENTDEMOGRAPHIC)
 	{
 	
-		CArray<CPlanet>* Planets=pDoc->GetSector(ko).GetPlanets();
+		std::vector<CPlanet> planets = pDoc->GetSector(ko).GetPlanets();
 		int planet;
 		// Es sollte hier immer mindestens 1 habitabler bewohnter Planet im System sein...
 		success = false;
 		for(int i = 0; i < 100; ++i) {
-			planet = rand()%Planets->GetSize();
-			if(Planets->GetAt(planet).GetHabitable() && Planets->GetAt(planet).GetCurrentHabitant() > 1) {
+			planet = rand()%planets.size();
+			if(planets.at(planet).GetHabitable() && planets.at(planet).GetCurrentHabitant() > 1) {
 				success = true;
 				break;
 			}
 		}
 		if(success) {
-			Planets->GetAt(planet).SetCurrentHabitant(Planets->GetAt(planet).GetCurrentHabitant()-rand()%(int)(Planets->GetAt(planet).GetCurrentHabitant()));
-			messagetext=CResourceManager::GetString("SYSTEMEVENTPLANETDEMOGRAPHIC",false,Planets->GetAt(planet).GetPlanetName());
-			CEventRandom* EmpireEvent=new CEventRandom(pRace->GetRaceID(),"demographic",CResourceManager::GetString("SYSTEMEVENTPLANETDEMOGRAPHICTITLE"),CResourceManager::GetString("SYSTEMEVENTPLANETDEMOGRAPHICLONG",false,Planets->GetAt(planet).GetPlanetName()));
+			planets.at(planet).SetCurrentHabitant(planets.at(planet).GetCurrentHabitant()-rand()%(int)(planets.at(planet).GetCurrentHabitant()));
+			messagetext=CResourceManager::GetString("SYSTEMEVENTPLANETDEMOGRAPHIC",false,planets.at(planet).GetPlanetName());
+			CEventRandom* EmpireEvent=new CEventRandom(pRace->GetRaceID(),"demographic",CResourceManager::GetString("SYSTEMEVENTPLANETDEMOGRAPHICTITLE"),CResourceManager::GetString("SYSTEMEVENTPLANETDEMOGRAPHICLONG",false,planets.at(planet).GetPlanetName()));
 			pRace->GetEmpire()->GetEventMessages()->Add(EmpireEvent);
 		}
 	}

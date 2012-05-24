@@ -233,7 +233,7 @@ void CSystemAI::CalcPriorities()
 		return;	
 
 	double dMaxHab = 0.0;
-	for (int i = 0; i < m_pDoc->GetSector(ko).GetPlanets()->GetSize(); i++)
+	for (int i = 0; i < static_cast<int>(m_pDoc->GetSector(ko).GetPlanets().size()); i++)
 		if (m_pDoc->GetSector(ko).GetPlanet(i)->GetCurrentHabitant() > 0.0)
 			dMaxHab += m_pDoc->GetSector(ko).GetPlanet(i)->GetMaxHabitant();
 	// wenn die Maximale Anzahl an Einwohnern 1.25 mal größer als die aktuelle Anzahl der Einwoher ist, dann
@@ -864,10 +864,10 @@ void CSystemAI::ScrapBuildings()
 		// Nur wenn 80% der maximal Bevölkerung schon im System leben
 		float currentHab = 0.0f;
 		float maxHab = 0.0f;
-		for (int i = 0; i < m_pDoc->m_Sector[ko.x][ko.y].GetPlanets()->GetSize(); i++)
+		for (int i = 0; i < static_cast<int>(m_pDoc->m_Sector[ko.x][ko.y].GetPlanets().size()); i++)
 		{
-			currentHab += m_pDoc->m_Sector[ko.x][ko.y].GetPlanets()->GetAt(i).GetCurrentHabitant();
-			maxHab += m_pDoc->m_Sector[ko.x][ko.y].GetPlanets()->GetAt(i).GetMaxHabitant();
+			currentHab += m_pDoc->m_Sector[ko.x][ko.y].GetPlanets().at(i).GetCurrentHabitant();
+			maxHab += m_pDoc->m_Sector[ko.x][ko.y].GetPlanets().at(i).GetMaxHabitant();
 		}
 		if (currentHab > (maxHab * 0.8))
 		{
@@ -1048,15 +1048,15 @@ void CSystemAI::CalcProd()
 		}
 	}
 	// Jetzt werden noch eventuelle Boni durch die Planetenklassen dazugerechnet
-	for (int i = 0; i < m_pDoc->GetSector(m_KO).GetPlanets()->GetSize(); i++)
+	for (int i = 0; i < static_cast<int>(m_pDoc->GetSector(m_KO).GetPlanets().size()); i++)
 	{
 		CSector* pSector = &m_pDoc->GetSector(m_KO);
-		if (pSector->GetPlanets()->GetAt(i).GetColonized() == TRUE && pSector->GetPlanets()->GetAt(i).GetCurrentHabitant() > 0.0f)
+		if (pSector->GetPlanets().at(i).GetColonized() == TRUE && pSector->GetPlanets().at(i).GetCurrentHabitant() > 0.0f)
 		{
-			if (pSector->GetPlanets()->GetAt(i).GetBoni()[6] == TRUE)	// food
-				tmpFoodBoni		+= (pSector->GetPlanets()->GetAt(i).GetSize()+1) * 25;
-			if (pSector->GetPlanets()->GetAt(i).GetBoni()[7] == TRUE)	// energy
-				tmpEnergyBoni	+= (pSector->GetPlanets()->GetAt(i).GetSize()+1) * 25;
+			if (pSector->GetPlanets().at(i).GetBoni()[6] == TRUE)	// food
+				tmpFoodBoni		+= (pSector->GetPlanets().at(i).GetSize()+1) * 25;
+			if (pSector->GetPlanets().at(i).GetBoni()[7] == TRUE)	// energy
+				tmpEnergyBoni	+= (pSector->GetPlanets().at(i).GetSize()+1) * 25;
 		}
 	}
 	

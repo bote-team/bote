@@ -451,7 +451,7 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 			// Name des Planeten ermitteln, welche gerade geterraformt wird
 			if (m_pShip->GetCurrentOrder() == SHIP_ORDER::TERRAFORM && m_pShip->GetTerraformingPlanet() != -1)
 			{
-				if (pDoc->GetSector(m_pShip->GetKO()).GetPlanets()->GetSize() > m_pShip->GetTerraformingPlanet())
+				if (static_cast<int>(pDoc->GetSector(m_pShip->GetKO()).GetPlanets().size()) > m_pShip->GetTerraformingPlanet())
 					s.Format("%s: %s\n%s",CResourceManager::GetString("ORDER"), m_pShip->GetCurrentOrderAsString(), pDoc->GetSector(m_pShip->GetKO()).GetPlanet(m_pShip->GetTerraformingPlanet())->GetPlanetName());
 			}
 			else

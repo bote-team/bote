@@ -13,6 +13,7 @@
 #include "GenSectorName.h"
 #include <map>
 #include <set>
+#include <vector>
 
 using namespace std;
 
@@ -230,7 +231,7 @@ public:
 	BYTE GetSunColor() const {return m_bySunColor;}
 	
 	/// Diese Funktion gibt die Anzahl der Planeten zurück, die in dem Sektor beheimatet sind.
-	BYTE GetNumberOfPlanets(void) const {return m_Planets.GetSize();}	
+	BYTE GetNumberOfPlanets(void) const {return m_Planets.size();}
 	
 	/// Diese Funktion gibt einen Zeiger auf einen Planeten in diesem System zurück.
 	CPlanet* GetPlanet(BYTE nPlanetIndex) {return &m_Planets[nPlanetIndex];}
@@ -238,8 +239,10 @@ public:
 	/// Diese Funktion gibt einen Zeiger auf eine eventuell vorhandene Anomalie zurück (<code>NULL</code> wenn kein vorhanden)
 	CAnomaly* GetAnomaly(void) const {return m_pAnomaly;}
 
-	/// Diese Funktion gibt einen Zeiger auf das Feld mit den Planeten in diesem System zurück.
-	CArray<CPlanet>* GetPlanets() {return &m_Planets;}
+	/// Diese Funktion gibt eine Referenz auf das Feld mit den Planeten in diesem System zurück.
+	std::vector<CPlanet>& GetPlanets() {
+		return m_Planets;
+	}
 
 	/// Funktion gibt alle Einwohner aller Planeten in dem Sektor zurück.
 	float GetCurrentHabitants() const;
@@ -488,7 +491,7 @@ private:
 	map<CString, BYTE> m_byOwnerPoints;
 
 	/// Die Feld mit den einzelnen Planeten in dem Sektor
-	CArray<CPlanet> m_Planets;
+	std::vector<CPlanet> m_Planets;
 
 	/// Diese Variable wird hochgezählt, wenn ein Schiffspfad durch diesen Sektor geht. Muss nicht serialisiert werden.
 	short m_iShipPathPoints;
