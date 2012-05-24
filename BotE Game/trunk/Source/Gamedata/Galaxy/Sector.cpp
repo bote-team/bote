@@ -55,9 +55,29 @@ CSector::CSector(const CSector& other) :
 
 };
 
-CSector& CSector::operator=(const CSector&){
-	
-	return (*this);
+CSector& CSector::operator=(const CSector& other){
+	m_KO = other.m_KO;
+	m_strSectorName = other.m_strSectorName;
+	m_Attributes = other.m_Attributes;
+	m_sOwnerOfSector = other.m_sOwnerOfSector;
+	m_sColonyOwner = other.m_sColonyOwner;
+	m_byStatus = other.m_byStatus;
+	m_bShipPort = other.m_bShipPort;
+	m_bOutpost = other.m_bOutpost;
+	m_bStarbase = other.m_bStarbase;
+	m_bWhoIsOwnerOfShip = other.m_bWhoIsOwnerOfShip;
+	m_bIsStationBuild = other.m_bIsStationBuild;
+	m_iScanPower = other.m_iScanPower;
+	m_iNeededScanPower = other.m_iNeededScanPower;
+	m_iNeededStationPoints = other.m_iNeededStationPoints;
+	m_iStartStationPoints = other.m_iStartStationPoints;
+	m_bySunColor = other.m_bySunColor;
+	m_byOwnerPoints = other.m_byOwnerPoints;
+	m_Planets = other.m_Planets;
+	m_iShipPathPoints = other.m_iShipPathPoints;
+	m_pAnomaly = other.m_pAnomaly;
+
+	return *this;
 };
 
 CSector::~CSector(void)
