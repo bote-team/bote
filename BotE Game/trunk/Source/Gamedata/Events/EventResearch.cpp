@@ -9,11 +9,16 @@
 IMPLEMENT_SERIAL (CEventResearch, CObject, 1)
 
 CEventResearch::CEventResearch(const CString &sPlayersRaceID, const CString &headline, BYTE byTech) : m_byTech(byTech),
-	CEventScreen(sPlayersRaceID, "Research", headline, "")
+	CEventScreen(sPlayersRaceID, "Research", headline, ""),
+	_graphic(),
+	m_byTechlevel(0)
 {	
 }
 
-CEventResearch::CEventResearch(void) : m_byTech(0)
+CEventResearch::CEventResearch(void) :
+	m_byTech(0),
+	_graphic(),
+	m_byTechlevel(0)
 {
 }
 
