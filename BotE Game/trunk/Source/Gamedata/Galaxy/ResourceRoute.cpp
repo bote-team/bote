@@ -7,7 +7,9 @@ IMPLEMENT_SERIAL (CResourceRoute, CObject, 1)
 //////////////////////////////////////////////////////////////////////
 // Konstruktion und Destruktion
 //////////////////////////////////////////////////////////////////////
-CResourceRoute::CResourceRoute(void)
+CResourceRoute::CResourceRoute(void) :
+	m_byPercent(0),
+	m_byResource(TITAN)
 {
 }
 
