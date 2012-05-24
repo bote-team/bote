@@ -11,7 +11,8 @@ IMPLEMENT_SERIAL (CAnomaly, CObject, 1)
 //////////////////////////////////////////////////////////////////////
 // Konstruktion/Destruktion
 //////////////////////////////////////////////////////////////////////
-CAnomaly::CAnomaly(void)
+CAnomaly::CAnomaly(void) :
+	m_bFlipHorz(false)
 {
 	m_byType = (ANOMALYTYP)(rand()%15);
 	// Wurmlöcher sind sehr selten
