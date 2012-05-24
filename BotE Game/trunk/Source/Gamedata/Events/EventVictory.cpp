@@ -8,6 +8,11 @@
 
 IMPLEMENT_SERIAL (CEventVictory, CObject, 1)
 
+CEventVictory::CEventVictory(void) :
+	m_nType(VICTORYTYPE_ELIMINATION)
+{
+}
+
 CEventVictory::CEventVictory(const CString& sPlayersRace, const CString& sWinnerRace, int nType, const CString &imageName)
 	: CEventScreen(sPlayersRace, imageName)
 {

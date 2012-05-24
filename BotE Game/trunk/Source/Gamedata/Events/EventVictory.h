@@ -15,7 +15,7 @@ public:
 	DECLARE_SERIAL (CEventVictory)
 
 	/// Standardkonstruktor
-	CEventVictory(void) {};
+	CEventVictory(void);
 
 	/// Standardkonstruktor mit Parameterübergabe
 	CEventVictory(const CString& sPlayersRace, const CString& sWinnerRace, int nType, const CString &imageName);
