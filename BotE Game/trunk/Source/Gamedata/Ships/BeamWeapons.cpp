@@ -17,7 +17,17 @@ IMPLEMENT_SERIAL (CBeamWeapons, CObject, 1)
 // Konstruktion/Destruktion
 //////////////////////////////////////////////////////////////////////
 
-CBeamWeapons::CBeamWeapons()
+CBeamWeapons::CBeamWeapons() :
+	//TODO diese Initialisierungen zu -1 sind vermutlich nicht sinnvoll
+	m_iBeamPower(-1),
+	m_iBeamType(-1),
+	m_iBeamNumber(-1),
+	m_byShootNumber(-1),
+	m_byBonus(-1),
+	m_byBeamLenght(-1),
+	m_byRechargeTime(-1),
+	m_bPiercing(FALSE),
+	m_bModulating(FALSE)
 {
 
 }
