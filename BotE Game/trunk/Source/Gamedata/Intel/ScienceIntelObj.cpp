@@ -8,7 +8,13 @@ IMPLEMENT_SERIAL (CScienceIntelObj, CObject, 1)
 //////////////////////////////////////////////////////////////////////
 // Konstruktion/Destruktion
 //////////////////////////////////////////////////////////////////////
-CScienceIntelObj::CScienceIntelObj(void)
+CScienceIntelObj::CScienceIntelObj(void) :
+m_iFP(0),
+m_byNumber(0),
+m_nID(0),
+m_nTechlevel(-1),
+m_nTechType(-1),
+m_nChoosenSpecialTech(-1)
 {
 	m_byType = 1;
 	m_KO = CPoint(-1,-1);
