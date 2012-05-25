@@ -19,7 +19,17 @@ IMPLEMENT_SERIAL (CShip, CObject, 1)
 //////////////////////////////////////////////////////////////////////
 // Konstruktion/Destruktion
 //////////////////////////////////////////////////////////////////////
-CShip::CShip()
+CShip::CShip() :
+	m_iID(0),
+	m_iMaintenanceCosts(0),
+	m_byManeuverability(0),
+	m_iSpeed(0),
+	m_iScanPower(0),
+	m_iScanRange(0),
+	m_iStealthPower(0),
+	m_iStorageRoom(0),
+	m_iColonizePoints(0),
+	m_iStationBuildPoints(0)
 {
 	m_TargetKO[0] = CPoint(-1,-1);
 	m_iCrewExperiance = 0;
