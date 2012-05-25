@@ -10,8 +10,12 @@ IMPLEMENT_SERIAL (CVictoryObserver, CObject, 1)
 //////////////////////////////////////////////////////////////////////
 // Konstruktion/Destruktion
 //////////////////////////////////////////////////////////////////////
-CVictoryObserver::CVictoryObserver(void)
+CVictoryObserver::CVictoryObserver(void) :
+	m_nRivalsLeft(INT_MAX),
+	m_bIsVictory(false),
+	m_nVictoryType(VICTORYTYPE_ELIMINATION)
 {	
+	memset(m_bConditionStatus, true, sizeof(m_bConditionStatus));
 }
 
 CVictoryObserver::~CVictoryObserver(void)
