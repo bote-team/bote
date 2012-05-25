@@ -17,7 +17,28 @@ IMPLEMENT_SERIAL (CShipInfo, CObject, 1)
 // Konstruktion/Destruktion
 //////////////////////////////////////////////////////////////////////
 
-CShipInfo::CShipInfo()
+CShipInfo::CShipInfo() :
+	m_iRace(0),
+	m_iBioTech(0),
+	m_iEnergyTech(0),
+	m_iCompTech(0),
+	m_iPropulsionTech(0),
+	m_iConstructionTech(0),
+	m_iWeaponTech(0),
+	m_iNeededIndustry(0),
+	m_iNeededTitan(0),
+	m_iNeededDeuterium(0),
+	m_iNeededDuranium(0),
+	m_iNeededCrystal(0),
+	m_iNeededIridium(0),
+	m_iNeededDeritium(0),
+	m_iBaseIndustry(0),
+	m_iBaseTitan(0),
+	m_iBaseDeuterium(0),
+	m_iBaseDuranium(0),
+	m_iBaseCrystal(0),
+	m_iBaseIridium(0),
+	m_iBaseDeritium(0)
 {
 }
 
