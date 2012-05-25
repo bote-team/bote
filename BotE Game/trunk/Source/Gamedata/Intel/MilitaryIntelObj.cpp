@@ -8,7 +8,12 @@ IMPLEMENT_SERIAL (CMilitaryIntelObj, CObject, 1)
 //////////////////////////////////////////////////////////////////////
 // Konstruktion/Destruktion
 //////////////////////////////////////////////////////////////////////
-CMilitaryIntelObj::CMilitaryIntelObj(void)
+CMilitaryIntelObj::CMilitaryIntelObj(void) :
+	m_nID(0),
+	m_nNumber(0),
+	m_bTroop(FALSE),
+	m_bShip(FALSE),
+	m_bBuilding(FALSE)
 {
 	m_byType = 2;
 	m_KO = CPoint(-1,-1);
