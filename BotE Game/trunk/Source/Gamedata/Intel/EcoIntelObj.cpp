@@ -8,7 +8,10 @@ IMPLEMENT_SERIAL (CEcoIntelObj, CObject, 1)
 //////////////////////////////////////////////////////////////////////
 // Konstruktion/Destruktion
 //////////////////////////////////////////////////////////////////////
-CEcoIntelObj::CEcoIntelObj(void)
+CEcoIntelObj::CEcoIntelObj(void) :
+	m_byNumber(0),
+	m_nID(0),
+	m_iCredits(0)
 {
 	m_byType = 0;
 	m_KO = CPoint(-1,-1);
