@@ -17,15 +17,15 @@ IMPLEMENT_SERIAL (CHull, CObject, 1)
 // Konstruktion/Destruktion
 //////////////////////////////////////////////////////////////////////
 
-CHull::CHull()
+CHull::CHull() :
+	m_iBaseHull(0),
+	m_iCurrentHull(0),
+	m_iHullMaterial(0),
+	m_iMaxHull(0)
 {
 	m_bDoubleHull			= FALSE;
 	m_bAblative				= FALSE;
 	m_bPolarisation			= FALSE;
-	USHORT m_iBaseHull		= 0;
-	USHORT m_iCurrentHull	= 0;
-	USHORT m_iHullMaterial	= 0;
-	USHORT m_iMaxHull		= 0;
 }
 
 CHull::~CHull()
