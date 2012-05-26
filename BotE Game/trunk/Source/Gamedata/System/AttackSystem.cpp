@@ -5,10 +5,19 @@
 //////////////////////////////////////////////////////////////////////
 // Konstruktion/Destruktion
 //////////////////////////////////////////////////////////////////////
-CAttackSystem::CAttackSystem(void)
+CAttackSystem::CAttackSystem(void) :
+	m_KO(-1, -1),
+	m_pDefender(),
+	m_pSystem(),
+	m_pSector(),
+	m_pBuildingInfos(),
+	m_sMonopolOwner(),
+	m_bTroopsInvolved(FALSE),
+	m_bAssultShipInvolved(FALSE),
+	m_fKilledPop(0.0f),
+	m_iDestroyedBuildings(0)
 {	
 }
-
 
 CAttackSystem::~CAttackSystem(void)
 {
