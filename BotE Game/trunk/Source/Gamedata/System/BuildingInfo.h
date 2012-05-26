@@ -16,6 +16,11 @@ struct NumberOfID
 public:
 	USHORT RunningNumber;
 	USHORT Number;
+
+	NumberOfID::NumberOfID() :
+		RunningNumber(0),
+			Number(0)
+	{}
 };
 
 class CBuildingInfo : public CObject
