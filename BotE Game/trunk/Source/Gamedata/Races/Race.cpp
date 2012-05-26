@@ -12,7 +12,13 @@ IMPLEMENT_SERIAL (CRace, CObject, 1)
 //////////////////////////////////////////////////////////////////////
 // Konstruktion/Destruktion
 //////////////////////////////////////////////////////////////////////
-CRace::CRace(void)
+CRace::CRace(void) :
+	m_byType(MINOR),
+	m_nProperty(0),
+	m_byShipNumber(0),
+	m_byBuildingNumber(0),
+	m_byMoralNumber(0),
+	m_nSpecialAbility(0)
 {
 	m_pDiplomacyAI = NULL;
 }
