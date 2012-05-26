@@ -21,7 +21,8 @@ static char THIS_FILE[]=__FILE__;
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-CPPDrawManager::CPPDrawManager()
+CPPDrawManager::CPPDrawManager() :
+	m_bIsAlpha(FALSE)
 {
 
 }
