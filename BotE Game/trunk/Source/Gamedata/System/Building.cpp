@@ -10,11 +10,15 @@ IMPLEMENT_SERIAL (CBuilding, CObject, 1)
 // Konstruktion/Destruktion
 //////////////////////////////////////////////////////////////////////
 
-CBuilding::CBuilding()
+CBuilding::CBuilding() :
+	m_iRunningNumber(0),
+	m_bOnline(FALSE)
 {
 }
 
-CBuilding::CBuilding(USHORT id) : m_iRunningNumber(id)
+CBuilding::CBuilding(USHORT id) :
+	m_iRunningNumber(id),
+	m_bOnline(FALSE)
 {	
 }
 
