@@ -25,7 +25,8 @@ IMPLEMENT_SERIAL (CSector, CObject, 1)
 CSector::CSector(void) :
 	m_Attributes(0),
 	m_bySunColor(0),
-	m_iShipPathPoints(0)
+	m_iShipPathPoints(0),
+	m_KO(-1, -1)
 {
 	m_pAnomaly = NULL;
 }
