@@ -17,6 +17,129 @@ CSystemProd::~CSystemProd(void)
 {
 }
 
+CSystemProd::CSystemProd(const CSystemProd &other) :
+	m_iFoodProd(other.m_iFoodProd),
+	m_iMaxFoodProd(other.m_iMaxFoodProd),
+	m_iIndustryProd(other.m_iIndustryProd),
+	m_iEnergyProd(other.m_iEnergyProd),
+	m_iMaxEnergyProd(other.m_iMaxEnergyProd),
+	m_iSecurityProd(other.m_iSecurityProd),
+	m_iResearchProd(other.m_iResearchProd),
+	m_iTitanProd(other.m_iTitanProd),
+	m_iDeuteriumProd(other.m_iDeuteriumProd),
+	m_iDuraniumProd(other.m_iDuraniumProd),
+	m_iCrystalProd(other.m_iCrystalProd),
+	m_iIridiumProd(other.m_iIridiumProd),
+	m_iDeritiumProd(other.m_iDeritiumProd),
+	m_iCreditsProd(other.m_iCreditsProd),
+	m_iMoralProd(other.m_iMoralProd),
+	m_iBioTechBoni(other.m_iBioTechBoni),
+	m_iEnergyTechBoni(other.m_iEnergyTechBoni),
+	m_iCompTechBoni(other.m_iCompTechBoni),
+	m_iPropulsionTechBoni(other.m_iPropulsionTechBoni),
+	m_iConstructionTechBoni(other.m_iConstructionTechBoni),
+	m_iWeaponTechBoni(other.m_iWeaponTechBoni),
+	m_iInnerSecurityBoni(other.m_iInnerSecurityBoni),
+	m_iEconomySpyBoni(other.m_iEconomySpyBoni),
+	m_iEconomySabotageBoni(other.m_iEconomySabotageBoni),
+	m_iResearchSpyBoni(other.m_iResearchSpyBoni),
+	m_iResearchSabotageBoni(other.m_iResearchSabotageBoni),
+	m_iMilitarySpyBoni(other.m_iMilitarySpyBoni),
+	m_iMilitarySabotageBoni(other.m_iMilitarySabotageBoni),
+	m_bShipYard(other.m_bShipYard),
+	m_iBuildableShipSizes(other.m_iBuildableShipSizes),
+	m_iShipYardEfficiency(other.m_iShipYardEfficiency),
+	m_bBarrack(other.m_bBarrack),
+	m_iBarracksEfficiency(other.m_iBarracksEfficiency),
+	m_iShieldPower(other.m_iShieldPower),
+	m_iShieldPowerBoni(other.m_iShieldPowerBoni),
+	m_iShipDefend(other.m_iShipDefend),
+	m_iShipDefendBoni(other.m_iShipDefendBoni),
+	m_iGroundDefend(other.m_iGroundDefend),
+	m_iGroundDefendBoni(other.m_iGroundDefendBoni),
+	m_iScanPower(other.m_iScanPower),
+	m_iScanPowerBoni(other.m_iScanPowerBoni),
+	m_iScanRange(other.m_iScanRange),
+	m_iScanRangeBoni(other.m_iScanRangeBoni),
+	m_iShipTraining(other.m_iShipTraining),
+	m_iTroopTraining(other.m_iTroopTraining),
+	m_iResistance(other.m_iResistance),
+	m_iAddedTradeRouts(other.m_iAddedTradeRouts),
+	m_iIncomeOnTradeRoutes(other.m_iIncomeOnTradeRoutes),
+	m_iShipRecycling(other.m_iShipRecycling),
+	m_iBuildingBuildSpeed(other.m_iBuildingBuildSpeed),
+	m_iUpdateBuildSpeed(other.m_iUpdateBuildSpeed),
+	m_iShipBuildSpeed(other.m_iShipBuildSpeed),
+	m_iTroopBuildSpeed(other.m_iTroopBuildSpeed)
+{
+	const unsigned size = sizeof(m_bResourceDistributor) / sizeof(m_bResourceDistributor[0]);
+	for(unsigned i = 0; i < size; ++i)
+		m_bResourceDistributor[i] = other.m_bResourceDistributor[i];
+}
+
+CSystemProd& CSystemProd::operator=(const CSystemProd& other)
+{
+	m_iFoodProd = other.m_iFoodProd;
+	m_iMaxFoodProd = other.m_iMaxFoodProd;
+	m_iIndustryProd = other.m_iIndustryProd;
+	m_iEnergyProd = other.m_iEnergyProd;
+	m_iMaxEnergyProd = other.m_iMaxEnergyProd;
+	m_iSecurityProd = other.m_iSecurityProd;
+	m_iResearchProd = other.m_iResearchProd;
+	m_iTitanProd = other.m_iTitanProd;
+	m_iDeuteriumProd = other.m_iDeuteriumProd;
+	m_iDuraniumProd = other.m_iDuraniumProd;
+	m_iCrystalProd = other.m_iCrystalProd;
+	m_iIridiumProd = other.m_iIridiumProd;
+	m_iDeritiumProd = other.m_iDeritiumProd;
+	m_iCreditsProd = other.m_iCreditsProd;
+	m_iMoralProd = other.m_iMoralProd;
+	m_iBioTechBoni = other.m_iBioTechBoni;
+	m_iEnergyTechBoni = other.m_iEnergyTechBoni;
+	m_iCompTechBoni = other.m_iCompTechBoni;
+	m_iPropulsionTechBoni = other.m_iPropulsionTechBoni;
+	m_iConstructionTechBoni = other.m_iConstructionTechBoni;
+	m_iWeaponTechBoni = other.m_iWeaponTechBoni;
+	m_iInnerSecurityBoni = other.m_iInnerSecurityBoni;
+	m_iEconomySpyBoni = other.m_iEconomySpyBoni;
+	m_iEconomySabotageBoni = other.m_iEconomySabotageBoni;
+	m_iResearchSpyBoni = other.m_iResearchSpyBoni;
+	m_iResearchSabotageBoni = other.m_iResearchSabotageBoni;
+	m_iMilitarySpyBoni = other.m_iMilitarySpyBoni;
+	m_iMilitarySabotageBoni = other.m_iMilitarySabotageBoni;
+	m_bShipYard = other.m_bShipYard;
+	m_iBuildableShipSizes = other.m_iBuildableShipSizes;
+	m_iShipYardEfficiency = other.m_iShipYardEfficiency;
+	m_bBarrack = other.m_bBarrack;
+	m_iBarracksEfficiency = other.m_iBarracksEfficiency;
+	m_iShieldPower = other.m_iShieldPower;
+	m_iShieldPowerBoni = other.m_iShieldPowerBoni;
+	m_iShipDefend = other.m_iShipDefend;
+	m_iShipDefendBoni = other.m_iShipDefendBoni;
+	m_iGroundDefend = other.m_iGroundDefend;
+	m_iGroundDefendBoni = other.m_iGroundDefendBoni;
+	m_iScanPower = other.m_iScanPower;
+	m_iScanPowerBoni = other.m_iScanPowerBoni;
+	m_iScanRange = other.m_iScanRange;
+	m_iScanRangeBoni = other.m_iScanRangeBoni;
+	m_iShipTraining = other.m_iShipTraining;
+	m_iTroopTraining = other.m_iTroopTraining;
+	m_iResistance = other.m_iResistance;
+	m_iAddedTradeRouts = other.m_iAddedTradeRouts;
+	m_iIncomeOnTradeRoutes = other.m_iIncomeOnTradeRoutes;
+	m_iShipRecycling = other.m_iShipRecycling;
+	m_iBuildingBuildSpeed = other.m_iBuildingBuildSpeed;
+	m_iUpdateBuildSpeed = other.m_iUpdateBuildSpeed;
+	m_iShipBuildSpeed = other.m_iShipBuildSpeed;
+	m_iTroopBuildSpeed = other.m_iTroopBuildSpeed;
+
+	const unsigned size = sizeof(m_bResourceDistributor) / sizeof(m_bResourceDistributor[0]);
+	for(unsigned i = 0; i < size; ++i)
+		m_bResourceDistributor[i] = other.m_bResourceDistributor[i];
+
+	return *this;
+}
+
 ///////////////////////////////////////////////////////////////////////
 // Speichern / Laden
 ///////////////////////////////////////////////////////////////////////

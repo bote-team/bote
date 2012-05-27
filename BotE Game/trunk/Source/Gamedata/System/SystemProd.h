@@ -18,9 +18,13 @@ public:
 	DECLARE_SERIAL (CSystemProd)
 	// Standardkonstruktor
 	CSystemProd(void);
+
+	CSystemProd(const CSystemProd&);
 	
 	// Destruktor
 	virtual ~CSystemProd(void);
+
+	CSystemProd& operator=(const CSystemProd&);
 
 	// Die Serialisierungsfunktion
 	virtual void Serialize(CArchive &ar);
