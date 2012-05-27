@@ -40,7 +40,45 @@ CSystem::~CSystem()
 	m_Troops.RemoveAll();
 }
 
-CSystem::CSystem(const CSystem &other){
+CSystem::CSystem(const CSystem &other) :
+	m_sOwnerOfSystem(other.m_sOwnerOfSystem),
+	m_dHabitants(other.m_dHabitants),
+	m_AssemblyList(other.m_AssemblyList),
+	m_Production(other.m_Production),
+	m_Workers(other.m_Workers),
+	m_iMoral(other.m_iMoral),
+	m_byBlockade(other.m_byBlockade),
+	m_iFoodStore(other.m_iFoodStore),
+	m_iTitanStore(other.m_iTitanStore),
+	m_iDeuteriumStore(other.m_iDeuteriumStore),
+	m_iDuraniumStore(other.m_iDuraniumStore),
+	m_iCrystalStore(other.m_iCrystalStore),
+	m_iIridiumStore(other.m_iIridiumStore),
+	m_iDeritiumStore(other.m_iDeritiumStore),
+	m_iFoodBuildings(other.m_iFoodBuildings),
+	m_iIndustryBuildings(other.m_iIndustryBuildings),
+	m_iEnergyBuildings(other.m_iEnergyBuildings),
+	m_iSecurityBuildings(other.m_iSecurityBuildings),
+	m_iResearchBuildings(other.m_iResearchBuildings),
+	m_iTitanMines(other.m_iTitanMines),
+	m_iDeuteriumMines(other.m_iDeuteriumMines),
+	m_iDuraniumMines(other.m_iDuraniumMines),
+	m_iCrystalMines(other.m_iCrystalMines),
+	m_iIridiumMines(other.m_iIridiumMines),
+	m_byMaxTradeRoutesFromHab(other.m_byMaxTradeRoutesFromHab),
+	m_bAutoBuild(other.m_bAutoBuild)
+{
+	m_Buildings.Copy(other.m_Buildings);
+	m_BuildableBuildings.Copy(other.m_BuildableBuildings);
+	m_BuildableShips.Copy(other.m_BuildableShips);
+	m_BuildableTroops.Copy(other.m_BuildableTroops);
+	m_AllwaysBuildableBuildings.Copy(other.m_AllwaysBuildableBuildings);
+	m_BuildableWithoutAssemblylistCheck.Copy(other.m_BuildableWithoutAssemblylistCheck);
+	m_BuildingDestroy.Copy(other.m_BuildingDestroy);
+	m_TradeRoutes.Copy(other.m_TradeRoutes);
+	m_ResourceRoutes.Copy(other.m_ResourceRoutes);
+	m_Troops.Copy(other.m_Troops);
+
 	/*m_AssemblyList=other.m_AssemblyList;
 	m_Production=other.m_Production;
 	m_Workers=other.m_Workers;
@@ -69,9 +107,53 @@ CSystem::CSystem(const CSystem &other){
 
 }
 
-CSystem& CSystem::operator=(const CSystem&){
-	return (*this);
+
+CSystem& CSystem::operator=(const CSystem& other)
+{
+	m_sOwnerOfSystem = other.m_sOwnerOfSystem;
+	m_dHabitants = other.m_dHabitants;
+	m_AssemblyList = other.m_AssemblyList;
+	m_Production = other.m_Production;
+	m_Workers = other.m_Workers;
+	m_iMoral = other.m_iMoral;
+	m_byBlockade = other.m_byBlockade;
+	m_iFoodStore = other.m_iFoodStore;
+	m_iTitanStore = other.m_iTitanStore;
+	m_iDeuteriumStore = other.m_iDeuteriumStore;
+	m_iDuraniumStore = other.m_iDuraniumStore;
+	m_iCrystalStore = other.m_iCrystalStore;
+	m_iIridiumStore = other.m_iIridiumStore;
+	m_iDeritiumStore = other.m_iDeritiumStore;
+	m_iFoodBuildings = other.m_iFoodBuildings;
+	m_iIndustryBuildings = other.m_iIndustryBuildings;
+	m_iEnergyBuildings = other.m_iEnergyBuildings;
+	m_iSecurityBuildings = other.m_iSecurityBuildings;
+	m_iResearchBuildings = other.m_iResearchBuildings;
+	m_iTitanMines = other.m_iTitanMines;
+	m_iDeuteriumMines = other.m_iDeuteriumMines;
+	m_iDuraniumMines = other.m_iDuraniumMines;
+	m_iCrystalMines = other.m_iCrystalMines;
+	m_iIridiumMines = other.m_iIridiumMines;
+	m_byMaxTradeRoutesFromHab = other.m_byMaxTradeRoutesFromHab;
+	m_bAutoBuild = other.m_bAutoBuild;
+
+	m_Buildings.Copy(other.m_Buildings);
+	m_BuildableBuildings.Copy(other.m_BuildableBuildings);
+	m_BuildableUpdates.Copy(other.m_BuildableUpdates);
+	m_BuildableShips.Copy(other.m_BuildableShips);
+	m_BuildableTroops.Copy(other.m_BuildableTroops);
+	m_AllwaysBuildableBuildings.Copy(other.m_AllwaysBuildableBuildings);
+	m_BuildableWithoutAssemblylistCheck.Copy(other.m_BuildableWithoutAssemblylistCheck);
+	m_BuildingDestroy.Copy(other.m_BuildingDestroy);
+	m_TradeRoutes.Copy(other.m_TradeRoutes);
+	m_ResourceRoutes.Copy(other.m_ResourceRoutes);
+	m_Troops.Copy(other.m_Troops);
 	
+	const unsigned size = sizeof(m_bDisabledProductions) / sizeof(m_bDisabledProductions[0]);
+	for(unsigned i = 0; i < size; ++i)
+		m_bDisabledProductions[i] = other.m_bDisabledProductions[i];
+
+	return (*this);
 };
 
 ///////////////////////////////////////////////////////////////////////
