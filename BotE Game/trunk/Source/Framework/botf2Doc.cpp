@@ -5774,10 +5774,6 @@ void CBotf2Doc::CalcShipEffects()
 	{
 		CString sRace = m_ShipArray[y].GetOwnerOfShip();
 		CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(sRace));
-		CMinor* pMinor = NULL;
-		// handelt es sich um eine Minorrace
-		if (!pMajor)
-			pMinor = dynamic_cast<CMinor*>(m_pRaceCtrl->GetRace(sRace));
 
 		CPoint p = m_ShipArray[y].GetKO();
 
