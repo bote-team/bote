@@ -1857,13 +1857,13 @@ void CBotf2Doc::ReadBuildingInfosFromFile()
 		BuildingInfo.RemoveAt(i);
 	BuildingInfo.RemoveAll();
 	CBuildingInfo info;
-	USHORT i = 0;
 	CString csInput;
 	CString data[140];
 	CString fileName = CIOData::GetInstance()->GetAppPath() + "Data\\Buildings\\Buildings.data";		// Name des zu Öffnenden Files
 	CStdioFile file;													// Varibale vom Typ CStdioFile
 	if (file.Open(fileName, CFile::modeRead | CFile::typeBinary))			// Datei wird geöffnet
 	{
+		USHORT i = 0;
 		while (file.ReadString(csInput))
 		{
 			// Daten lesen
@@ -4526,11 +4526,12 @@ void CBotf2Doc::CalcShipOrders()
 
 			// jetzt m?ssen wir die Schiffsinfos durchgehen und schauen, welche Station wir technologisch bauen k?nnten.
 			// hier wird vereinfacht angenommen, das an teurerer Au?enposten auch ein besserer ist
-			USHORT costs = 0;
 			short id = -1;
 			// Wenn wir in dem Sektor noch keinen Au?enposten und noch keine Sternbasis stehen haben
 			if (m_Sector[ShipKO.x][ShipKO.y].GetOutpost(m_ShipArray[y].GetOwnerOfShip()) == FALSE
 				&& m_Sector[ShipKO.x][ShipKO.y].GetStarbase(m_ShipArray[y].GetOwnerOfShip()) == FALSE)
+			{
+				USHORT costs = 0;
 				for (int l = 0; l < m_ShipInfoArray.GetSize(); l++)
 					if (m_ShipInfoArray.GetAt(l).GetRace() == pMajor->GetRaceShipNumber()
 						&& m_ShipInfoArray.GetAt(l).GetShipType() == SHIP_TYPE::OUTPOST
@@ -4540,6 +4541,7 @@ void CBotf2Doc::CalcShipOrders()
 							costs = m_ShipInfoArray.GetAt(l).GetBaseIndustry();
 							id = m_ShipInfoArray.GetAt(l).GetID();
 						}					
+			}
 			// Wenn wir eine baubare Station gefunden haben und in dem Sektor nicht gerade eine andere (durch andere Rasse)
 			// Station fertig wurde, k?nnen wir diese dort auch errichten
 			if (id != -1)
@@ -4673,10 +4675,11 @@ void CBotf2Doc::CalcShipOrders()
 			// um eine Sternbasis bauen zu k?nnen mu? schon ein Au?enposten in dem Sektor stehen
 			// hier wird vereinfacht angenommen, das eine teurere Sternbasis auch eine bessere ist
 			// oder wir haben einen Au?enposten und wollen diesen zur Sternbasis updaten
-			USHORT costs = 0;
 			short id = -1;
 			if (m_Sector[ShipKO.x][ShipKO.y].GetOutpost(m_ShipArray[y].GetOwnerOfShip()) == TRUE
 				&& m_Sector[ShipKO.x][ShipKO.y].GetStarbase(m_ShipArray[y].GetOwnerOfShip()) == FALSE)
+			{
+				USHORT costs = 0;
 				for (int l = 0; l < m_ShipInfoArray.GetSize(); l++)
 					if (m_ShipInfoArray.GetAt(l).GetRace() == pMajor->GetRaceShipNumber()
 						&& m_ShipInfoArray.GetAt(l).GetShipType() == SHIP_TYPE::STARBASE
@@ -4686,7 +4689,7 @@ void CBotf2Doc::CalcShipOrders()
 							costs = m_ShipInfoArray.GetAt(l).GetBaseIndustry();
 							id = m_ShipInfoArray.GetAt(l).GetID();
 						}
-
+			}
 			// Wenn wir eine baubare Station gefunden haben und in dem Sektor nicht gerade eine andere (durch andere Rasse)
 			// Station fertig wurde, k?nnen wir diese dort auch errichten
 			if (id != -1)
