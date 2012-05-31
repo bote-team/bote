@@ -29,7 +29,6 @@ END_MESSAGE_MAP()
 
 void CBottomBaseView::OnDraw(CDC* pDC)
 {
-	CDocument* pDoc = GetDocument();
 	// TODO: add draw code here
 }
 
