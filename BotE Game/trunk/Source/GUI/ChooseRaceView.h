@@ -56,20 +56,20 @@ protected:
 private:
 	// This object includes the project wide style of the buttons
 	CRoundButtonStyle m_tButtonStyle;
-	
+
 	std::vector<std::pair<CRoundButton2*, CString> > m_vMajorBtns;	///< Rassenauswahlbuttons
-	
+
 	CEdit m_edtChat;					///< Chatfenster
 	CEdit m_edtChatMsg;					///< Eingabefeld für Chatnachrichten
-	
+
 	CRoundButton2 m_btStartGame;				///< Button zum Starten des Spiels
 	CRoundButton2 m_btCancel;					///< Button zum Abbrechen
-	
+
 	bool m_bIsServer;					///< <code>true</code>, wenn auf dem lokalen Rechner der Server läuft, sonst <code>false</code>
 	int m_nPlayerCount;					///< Anzahl der Spieler, die ein Volk gewählt haben
-	
+
 	Bitmap* m_pBkgndImg;				///< Hintergrundgrafik
-	CSize	m_TotalSize;				///< Größe der View	
+	CSize	m_TotalSize;				///< Größe der View
 
 	//prevent weird crashes when calling OnDraw for too long after start game has already been clicked
 	//appears to happen under the debugger only

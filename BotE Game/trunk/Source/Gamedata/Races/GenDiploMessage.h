@@ -11,7 +11,7 @@
 #pragma once
 #include "AI\DiplomacyAI.h"
 
-class CGenDiploMessage  
+class CGenDiploMessage
 {
 public:
 	// Konstruktion & Destruktion

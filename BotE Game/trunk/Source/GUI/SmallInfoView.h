@@ -18,7 +18,7 @@
 //
 
 /////////////////////////////////////////////////////////////////////////////
-// Ansicht CSmallInfoView 
+// Ansicht CSmallInfoView
 
 class CSmallInfoView : public CView
 {
@@ -67,7 +67,7 @@ public:
 	/// Funktion liefert einen Zeiger auf das aktuell angezeigte Schiff.
 	/// @return Zeiger auf Planeten
 	static const CShip* GetShip(void) { return m_pShip; }
-	
+
 // Überschreibungen
 	// Vom Klassen-Assistenten generierte virtuelle Funktionsüberschreibungen
 	//{{AFX_VIRTUAL(CSmallInfoView)
@@ -77,7 +77,7 @@ public:
 
 // Implementierung
 protected:
-	virtual ~CSmallInfoView();	
+	virtual ~CSmallInfoView();
 #ifdef _DEBUG
 	virtual void AssertValid() const;
 	virtual void Dump(CDumpContext& dc) const;
@@ -88,7 +88,7 @@ private:
 	void CalcLogicalPoint(CPoint &point);
 
 	const CString CheckPlanetClassForInfo(char PlanetClass);		// Wählt den richtigen Text anhand der Klasse des Planeten
-	const CString CheckPlanetClassForInfoHead(char PlanetClass);	// Wählt die richtige Überschrift anhand der KLasse des Planeten 
+	const CString CheckPlanetClassForInfoHead(char PlanetClass);	// Wählt die richtige Überschrift anhand der KLasse des Planeten
 
 	// Generierte Nachrichtenzuordnungsfunktionen
 protected:

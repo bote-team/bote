@@ -24,20 +24,20 @@ protected: // Nur aus Serialisierung erzeugen
 
 	CSize m_TotalSize;				///< Größe der View in logischen Koordinaten
 	BOOLEAN m_bScrollToHome;		///< soll zum Heimatsektor zu Beginn der Runde gescrollt werden
-	
+
 	static CMajor* m_pPlayersRace;	///< Spielerrasse
-		
+
 	Bitmap* m_pGalaxyBackground;	///< Zeiger auf Hintergrundbild-Objekt
 	Bitmap* m_pThumbnail;
-		
+
 	double m_fZoom;					///< aktueller Zoom-Faktor
 	int m_nRange;
 	Sector oldtarget;
-	Sector m_oldSelection;	
+	Sector m_oldSelection;
 	bool m_bUpdateOnly;
 	CPoint m_ptViewOrigin;			///< oberer linker Punkt der View, wenn Hintergrund zentriert wird (bei sehr weitem Rauszoom)
 	CPoint m_ptOldMousePos;
-	
+
 	// Hier Variablen, wenn wir eine Handelroute ziehen wollen
 	static BOOLEAN m_bDrawTradeRoute;		///< sollen wir bei MouseMove die Handelroute zeigen
 	static CTradeRoute m_TradeRoute;		///< die Handelsroute, die wir auf der Galaxiemap ziehen können
@@ -47,11 +47,11 @@ protected: // Nur aus Serialisierung erzeugen
 	// Hier Variablen für die Schiffsbewegung
 	static BOOLEAN m_bShipMove;				///< soll ein Schiff auf der Map bewegt werden (Kurs geben)
 	CArray<Sector> m_oldPath;				///< alter Pfad eines Schiffes, welcher auf der Map angezeigt wird
-	
+
 	/// Funktion zum Festlegen der Spielerrasse in der View
 	/// @pPlayer Zeiger auf Spielerrasse
 	static void SetPlayersRace(CMajor* pPlayer) {m_pPlayersRace = pPlayer;}
-	
+
 	/**
 	 * Multipliziert die cx und cy-Komponente von pSize mit dem Zoom-Faktor, rundet anschließend auf ganze Werte.
 	 */
@@ -64,11 +64,11 @@ protected: // Nur aus Serialisierung erzeugen
 	void UnZoom(CPoint *pPoint) const;
 
 	int GetRangeBorder(const unsigned char range1, const unsigned char range2, int m_nRange) const;
-	
+
 	/// Funktion generiert die visuelle Galaxiekarte. Muss bei jeder neuen Runde neu aufgerugen werden.
 	void GenerateGalaxyMap(void);
-		
-public:	
+
+public:
 	/// Funktion führt Aufgaben aus, welche zu jeder neuen Runde von der View ausgeführt werden müssen.
 	void OnNewRound();
 
@@ -145,13 +145,13 @@ protected:
 	afx_msg void OnRButtonDown(UINT nFlags, CPoint point);
 	afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
 	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
-	afx_msg void OnSize(UINT nType, int cx, int cy);	
+	afx_msg void OnSize(UINT nType, int cx, int cy);
 	//}}AFX_MSG
-	DECLARE_MESSAGE_MAP()	
+	DECLARE_MESSAGE_MAP()
 public:
 	virtual BOOL OnScroll(UINT nScrollCode, UINT nPos, BOOL bDoScroll = TRUE);
 protected:
-	virtual BOOL OnScrollBy(CSize sizeScroll, BOOL bDoScroll = TRUE);	
+	virtual BOOL OnScrollBy(CSize sizeScroll, BOOL bDoScroll = TRUE);
 
 private:
 	void HandleShipHotkeys(const UINT nChar, CBotf2Doc* pDoc);

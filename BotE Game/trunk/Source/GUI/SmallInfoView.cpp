@@ -50,7 +50,7 @@ BEGIN_MESSAGE_MAP(CSmallInfoView, CView)
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
-// Zeichnung CSmallInfoView 
+// Zeichnung CSmallInfoView
 
 void CSmallInfoView::OnDraw(CDC* pDC)
 {
@@ -75,7 +75,7 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 	// ZU ERLEDIGEN: Code zum Zeichnen hier einfügen
 	CRect r;
 	r.SetRect(0, 0, m_TotalSize.cx, m_TotalSize.cy);
-	
+
 	// Doublebuffering wird initialisiert
 	CRect client;
 	GetClientRect(&client);
@@ -92,12 +92,12 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 	g->SetInterpolationMode(InterpolationModeHighQualityBicubic);
 	g->SetPixelOffsetMode(PixelOffsetModeHighQuality);
 	g->ScaleTransform((REAL)client.Width() / (REAL)m_TotalSize.cx, (REAL)client.Height() / (REAL)m_TotalSize.cy);
-				
+
 	CString fontName = "";
 	Gdiplus::REAL fontSize = 0.0;
 	StringFormat fontFormat;
 	SolidBrush fontBrush(Color::White);
-	
+
 	////////////// Überprüfen, ob in der CSmallInfoView Planeten angezeigt werden //////////////////////
 	if (pDoc->GetMainFrame()->GetActiveView(1, 1) == PLANET_BOTTOM_VIEW && m_pPlanet != NULL && (m_bShowPlanetStats || m_bShowPlanetInfo))
 	{
@@ -112,7 +112,7 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 			// ansonsten wird die zufällige Planetengrafik geladen
 			if (planet == NULL)
 				planet = pDoc->GetGraphicPool()->GetGDIGraphic(m_pPlanet->GetGraphicFile());
-			
+
 			if (planet)
 			{
 				CPoint center = client.CenterPoint();
@@ -123,7 +123,7 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 				// Planet etwas abdunkeln
 				Gdiplus::SolidBrush brush(Gdiplus::Color(130, 0, 0, 0));
 				g->FillRectangle(&brush, drawRect);
-	
+
 			}
 
 			// Ab hier werden die ganzen Statistiken gezeichnet
@@ -134,7 +134,7 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 			Color color;
 			CFontLoader::GetGDIFontColor(pMajor, 3, color);
 			fontBrush.SetColor(color);
-			
+
 			CString s;
 			s.Format("%s: %s",CResourceManager::GetString("NAME"), m_pPlanet->GetPlanetName());
 			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0,0,r.right,55), &fontFormat, &fontBrush);
@@ -163,7 +163,7 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 				s = CResourceManager::GetString("EXISTING_RES") + ":";
 				g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0,165,r.right,25), &fontFormat, &fontBrush);
 			}
-			
+
 			BOOLEAN res[DERITIUM + 1] = {FALSE};
 			if (m_pPlanet->GetHabitable())
 				m_pPlanet->GetAvailableResources(res);
@@ -229,7 +229,7 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 				s = CResourceManager::GetString("EXISTING_RES")+":\n"+CResourceManager::GetString("CRYSTAL");
 			else if (PlanetClass == 'R')
 				s = CResourceManager::GetString("EXISTING_RES")+":\n"+CResourceManager::GetString("DURANIUM");
-			
+
 			fontFormat.SetAlignment(StringAlignmentCenter);
 			fontFormat.SetLineAlignment(StringAlignmentCenter);
 			fontFormat.SetFormatFlags(!StringFormatFlagsNoWrap);
@@ -245,7 +245,7 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 		else if (m_bShowPlanetInfo)
 		{
 			char PlanetClass = m_pPlanet->GetClass();
-						
+
 			// gibt es eine spezielle Grafik für den Planeten, so wird versucht diese zu laden
 			Bitmap* planet = NULL;
 			planet = pDoc->GetGraphicPool()->GetGDIGraphic("Planets\\" + m_pPlanet->GetPlanetName()+".bop");
@@ -278,7 +278,7 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 			fontFormat.SetLineAlignment(StringAlignmentNear);
 			fontFormat.SetFormatFlags(!StringFormatFlagsNoWrap);
 			g->DrawString(CheckPlanetClassForInfo(PlanetClass).AllocSysString(), -1, &Gdiplus::Font(L"Arial", 8.5), RectF(10,25,r.right-10,r.bottom-25), &fontFormat, &fontBrush);
-		}		
+		}
 	}
 	////////////// Überprüfen, ob in der CSmallInfoView Planeten angezeigt werden, hier zu ENDE //////////////////////
 
@@ -287,7 +287,7 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 	{
 		this->KillTimer(1);
 		m_nTimer = 0;
-				
+
 		CFontLoader::CreateGDIFont(pMajor, 2, fontName, fontSize);
 		Color color;
 		CFontLoader::GetGDIFontColor(pMajor, 3, color);
@@ -306,7 +306,7 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 			if (pShipOwner)
 				bUnknown = !pShipOwner->HasSpecialAbility(SPECIAL_NO_DIPLOMACY);
 		}
-		
+
 		// ist der Besitzer des Schiffes bekannt
 		if (bUnknown)
 		{
@@ -321,14 +321,14 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 				// Schiff etwas abdunkeln
 				Gdiplus::SolidBrush brush(Gdiplus::Color(175, 0, 0, 0));
 				g->FillRectangle(&brush, 0, 50, 200, 150);
-			}			
+			}
 		}
 		// Wenn wir ein einzelnes Schiff anzeigen und nicht eine Flotte
 		else if (m_pShip->GetFleet() == 0 || (m_pShip->GetFleet() != 0 && m_pShip->GetFleet()->GetFleetSize() == 0))
 		{
 			// Schiffsgrafik etwas größer anzeigen
 			Bitmap* shipGraphic = NULL;
-			s.Format("Ships\\%s.bop", m_pShip->GetShipClass());			
+			s.Format("Ships\\%s.bop", m_pShip->GetShipClass());
 			shipGraphic = pDoc->GetGraphicPool()->GetGDIGraphic(s);
 			if (shipGraphic == NULL)
 				shipGraphic = pDoc->GetGraphicPool()->GetGDIGraphic("Ships\\ImageMissing.bop");
@@ -346,23 +346,23 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 				Range = CResourceManager::GetString("MIDDLE");
 			else if (m_pShip->GetRange() == SHIP_RANGE::LONG)
 				Range = CResourceManager::GetString("LONG");
-			
+
 			s.Format("%s",m_pShip->GetShipName());
 			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0,0,r.right,45), &fontFormat, &fontBrush);
-			
+
 			fontBrush.SetColor(color);
 			s.Format("%s: %s",CResourceManager::GetString("TYPE"),	m_pShip->GetShipTypeAsString(FALSE));
 			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0,0,r.right,85), &fontFormat, &fontBrush);
-			
+
 			s.Format("%s: %i / %i",CResourceManager::GetString("HULL"), m_pShip->GetHull()->GetCurrentHull(),m_pShip->GetHull()->GetMaxHull());
 			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0,0,r.right,105), &fontFormat, &fontBrush);
 
 			s.Format("%s: %i / %i",CResourceManager::GetString("SHIELDS"), m_pShip->GetShield()->GetCurrentShield(),m_pShip->GetShield()->GetMaxShield());
 			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0,0,r.right,125), &fontFormat, &fontBrush);
-			
+
 			s.Format("%s: %s",CResourceManager::GetString("RANGE"), Range);
 			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0,0,r.right,145), &fontFormat, &fontBrush);
-			
+
 			s.Format("%s: %i",CResourceManager::GetString("SPEED"), m_pShip->GetSpeed());
 			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0,0,r.right,165), &fontFormat, &fontBrush);
 		}
@@ -378,12 +378,12 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 				Range = CResourceManager::GetString("LONG");
 			r.SetRect(0,0,m_TotalSize.cx,m_TotalSize.cy);
 
-			s.Format("%d %s",m_pShip->GetFleet()->GetFleetSize()+1, 
+			s.Format("%d %s",m_pShip->GetFleet()->GetFleetSize()+1,
 				CResourceManager::GetString("SHIPS"));
 			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0,0,r.right,45), &fontFormat, &fontBrush);
 
 			fontBrush.SetColor(color);
-			
+
 			if (m_pShip->GetFleet()->GetFleetShipType(&pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex())) != -1)
 				s.Format("%s: %s",CResourceManager::GetString("TYPE"),
 				m_pShip->GetShipTypeAsString(TRUE));
@@ -393,12 +393,12 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 
 			s.Format("%s: %s",CResourceManager::GetString("RANGE"), Range);
 			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0,0,r.right,105), &fontFormat, &fontBrush);
-			
-			s.Format("%s: %d",CResourceManager::GetString("SPEED"), 
+
+			s.Format("%s: %d",CResourceManager::GetString("SPEED"),
 				m_pShip->GetFleet()->GetFleetSpeed(&pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex())));
 			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0,0,r.right,125), &fontFormat, &fontBrush);
-		}			
-		
+		}
+
 		CPoint TargetKO = m_pShip->GetTargetKO();
 		if (TargetKO.x == -1 && m_pShip->GetOwnerOfShip() != pMajor->GetRaceID())
 			s = CResourceManager::GetString("UNKNOWN_TARGET");
@@ -446,7 +446,7 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0,0,r.right,185), &fontFormat, &fontBrush);
 		// bei eigenem Schiff aktuellen Befehl zeichnen
 		if (m_pShip->GetOwnerOfShip() == pMajor->GetRaceID())
-		{			
+		{
 			pDC->SetTextColor(CFontLoader::GetFontColor(pMajor, 4));
 			// Name des Planeten ermitteln, welche gerade geterraformt wird
 			if (m_pShip->GetCurrentOrder() == SHIP_ORDER::TERRAFORM && m_pShip->GetTerraformingPlanet() != -1)
@@ -463,7 +463,7 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 			fontFormat.SetFormatFlags(!StringFormatFlagsNoWrap);
 			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0,190,r.right,50), &fontFormat, &fontBrush);
 		}
-	}	
+	}
 	else
 	{
 		if (m_nTimer > 440)
@@ -498,7 +498,7 @@ void CSmallInfoView::OnInitialUpdate()
 
 	// TODO: Fügen Sie hier Ihren spezialisierten Code ein, und/oder rufen Sie die Basisklasse auf.
 	m_TotalSize.cx = 200;
-	m_TotalSize.cy = 249;	
+	m_TotalSize.cy = 249;
 }
 
 
@@ -518,7 +518,7 @@ void CSmallInfoView::Dump(CDumpContext& dc) const
 #endif //_DEBUG
 
 /////////////////////////////////////////////////////////////////////////////
-// Behandlungsroutinen für Nachrichten CSmallInfoView 
+// Behandlungsroutinen für Nachrichten CSmallInfoView
 
 
 const CString CSmallInfoView::CheckPlanetClassForInfo(char PlanetClass) // Funktion, die die Informationen für die Planetenklasse anließt und die richtige auswählt
@@ -538,19 +538,19 @@ const CString CSmallInfoView::CheckPlanetClassForInfoHead(char PlanetClass) // F
 	return s2;
 }
 
-BOOL CSmallInfoView::OnEraseBkgnd(CDC* pDC) 
+BOOL CSmallInfoView::OnEraseBkgnd(CDC* pDC)
 {
 	// TODO: Code für die Behandlungsroutine für Nachrichten hier einfügen und/oder Standard aufrufen
-	return FALSE;	
+	return FALSE;
 }
 
 void CSmallInfoView::CalcLogicalPoint(CPoint &point)
 {
 	CRect client;
 	GetClientRect(&client);
-	
+
 	point.x *= (float)m_TotalSize.cx / (float)client.Width();
-	point.y *= (float)m_TotalSize.cy / (float)client.Height();	
+	point.y *= (float)m_TotalSize.cy / (float)client.Height();
 }
 
 void CSmallInfoView::OnTimer(UINT_PTR nIDEvent)

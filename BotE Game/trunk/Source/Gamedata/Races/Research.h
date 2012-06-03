@@ -17,11 +17,11 @@
 #endif // _MSC_VER > 1000
 #include "ResearchInfo.h"
 
-class CResearch : public CObject  
+class CResearch : public CObject
 {
 public:
 	DECLARE_SERIAL (CResearch)
-// Konstruktor & Destruktor	
+// Konstruktor & Destruktor
 	CResearch();
 	virtual ~CResearch();
 // Kopierkonstruktor
@@ -39,7 +39,7 @@ public:
 	BYTE GetConstructionTech() const {return m_iConstructionTech;}
 	BYTE GetWeaponTech() const {return m_iWeaponTech;}
 	BYTE GetUniqueTech() const {return m_iUniqueTech;}
-	
+
 	BYTE GetBioPercentage() const {return m_iBioPercentage;}
 	BYTE GetEnergyPercentage() const {return m_iEnergyPercentage;}
 	BYTE GetCompPercentage() const {return m_iComputerPercentage;}
@@ -89,12 +89,12 @@ public:
 	void SetResearchBoni(const short researchBoni[6]);
 
 	// sonstige Funktionen
-	
-	/// Diese Funktion berechnet alles, was mit Forschung in einem Imperium zu tun hat. Diese Funktion wird in der 
+
+	/// Diese Funktion berechnet alles, was mit Forschung in einem Imperium zu tun hat. Diese Funktion wird in der
 	/// NextRound() Funktion aufgerufen. Als Parameter werden dafür die aktuellen <code>FP</code> des Imperiums
 	/// Der Rückgabewert dieser Funktion ist ein Zeiger auf das Attribut <code>m_strMessage</code> und vom Typ CString*.
 	CString* CalculateResearch(ULONG FP);
-	
+
 	/// Diese Funktion setzt alle Variablen des CResearch-Objektes wieder auf ihre Ausgangswerte
 	void Reset(void);
 

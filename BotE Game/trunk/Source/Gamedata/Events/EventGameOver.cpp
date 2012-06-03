@@ -10,11 +10,11 @@ IMPLEMENT_SERIAL (CEventGameOver, CObject, 1)
 
 CEventGameOver::CEventGameOver(const CString& sPlayersRace)
 	: CEventScreen(sPlayersRace, "GameOver")
-{	
+{
 }
 
 CEventGameOver::~CEventGameOver(void)
-{	
+{
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -35,7 +35,7 @@ void CEventGameOver::Create(void)
 
 	float fMusicVolume;
 	pIni->ReadValue("Audio", "MUSICVOLUME", fMusicVolume);
-	
+
 	CSoundManager* pSoundManager = CSoundManager::GetInstance();
 	ASSERT(pSoundManager);
 
@@ -49,11 +49,11 @@ void CEventGameOver::Close(void)
 {
 	client.Disconnect();
 	Sleep(2000);
-	
+
 	CBotf2Doc* pDoc = ((CBotf2App*)AfxGetApp())->GetDocument();
 	ASSERT(pDoc);
 	pDoc->SetModifiedFlag(FALSE);
-	
+
 	PostMessage(AfxGetApp()->GetMainWnd()->GetSafeHwnd(), WM_CLOSE, NULL, NULL);
 }
 
@@ -76,7 +76,7 @@ void CEventGameOver::Draw(Graphics* g, CGraphicPool* graphicPool) const
 	fontFormat.SetAlignment(StringAlignmentCenter);
 	fontFormat.SetLineAlignment(StringAlignmentCenter);
 	fontFormat.SetFormatFlags(!StringFormatFlagsNoWrap);
-	
+
 	Gdiplus::Color color;
 	CFontLoader::GetGDIFontColor(pMajor, 3, color);
 	fontBrush.SetColor(color);

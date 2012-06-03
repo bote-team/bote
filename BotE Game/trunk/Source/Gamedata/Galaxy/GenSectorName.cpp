@@ -18,7 +18,7 @@ static char THIS_FILE[]=__FILE__;
 // Konstruktion/Destruktion
 //////////////////////////////////////////////////////////////////////
 CGenSectorName::CGenSectorName(void)
-{	
+{
 }
 
 CGenSectorName::~CGenSectorName(void)
@@ -33,7 +33,7 @@ CGenSectorName::~CGenSectorName(void)
 /// @return Instanz dieser Klasse
 CGenSectorName* CGenSectorName::GetInstance(void)
 {
-	static CGenSectorName instance; 
+	static CGenSectorName instance;
     return &instance;
 }
 
@@ -60,7 +60,7 @@ void CGenSectorName::Init(const CStringArray& vMinorRaceSystemNames)
 			AfxMessageBox(sError);
 			continue;
 		}
-		
+
 		m_strRaceNames.Add(sMinorRaceSystemName);
 	}
 }
@@ -69,7 +69,7 @@ void CGenSectorName::Init(const CStringArray& vMinorRaceSystemNames)
 CString CGenSectorName::GetNextRandomSectorName(const CPoint& ptKO, bool& bMinor)
 {
 	CString sName;
-	
+
 	if (bMinor && m_strRaceNames.GetSize() > 0)
 	{
 		int nRandom = rand()%m_strRaceNames.GetSize();
@@ -87,7 +87,7 @@ CString CGenSectorName::GetNextRandomSectorName(const CPoint& ptKO, bool& bMinor
 		m_strNames.RemoveAt(nRandom);
 		return sName;
 	}
-	
+
 	// Standardname zurückgeben
 	sName.Format("%s %c%i", CResourceManager::GetString("SECTOR"), (char)(ptKO.y+97), ptKO.x + 1);
 	return sName;
@@ -104,15 +104,15 @@ void CGenSectorName::ReadSectorNames(void)
 
 	// Standardnamen festlegen, alle Namen von Systemen werden aus Datei eingelesen
 	CString csInput;						// auf csInput wird die jeweilige Zeile gespeichert
-	CString fileName = CIOData::GetInstance()->GetAppPath() + "Data\\Names\\PlanetNames.data";	// Name des zu Öffnenden Files 
+	CString fileName = CIOData::GetInstance()->GetAppPath() + "Data\\Names\\PlanetNames.data";	// Name des zu Öffnenden Files
 	CStdioFile file;
 	if (file.Open(fileName, CFile::modeRead | CFile::typeText) && m_strNames.IsEmpty())	// Datei wird geöffnet
 		while (file.ReadString(csInput))
 		{
-			m_strNames.Add(csInput);			// Konnte erfolgreich gelesen werden wird die jeweilige			
+			m_strNames.Add(csInput);			// Konnte erfolgreich gelesen werden wird die jeweilige
 		}
 	else
-	{	
+	{
 		AfxMessageBox("Fehler! Datei \"PlanetNames.data\" kann nicht geöffnet werden...");
 		exit(1);
 	}

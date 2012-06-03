@@ -74,7 +74,7 @@ CWorker & CWorker::operator=(const CWorker & rhs)
 	m_iCrystalWorker = rhs.m_iCrystalWorker;
 	m_iIridiumWorker = rhs.m_iIridiumWorker;
 	m_iAllWorkers = rhs.m_iAllWorkers;
-	m_iFreeWorkers = rhs.m_iFreeWorkers;	
+	m_iFreeWorkers = rhs.m_iFreeWorkers;
 	return *this;
 }
 
@@ -114,7 +114,7 @@ void CWorker::Serialize(CArchive &ar)
 		ar >> m_iCrystalWorker;
 		ar >> m_iIridiumWorker;
 		ar >> m_iAllWorkers;
-		ar >> m_iFreeWorkers;		
+		ar >> m_iFreeWorkers;
 	}
 }
 
@@ -139,7 +139,7 @@ USHORT CWorker::GetWorker(WORKER::Typ nWorker) const
 	case WORKER::FREE_WORKER:		return m_iFreeWorkers;
 	default: ASSERT(FALSE);
 	}
-	
+
 	return 0;
 }
 
@@ -219,7 +219,7 @@ void CWorker::CheckWorkers()
 	{
 		short diff = otherWorkers - m_iAllWorkers;	// Differenz der zuvielen Arbeiter
 		while (diff > 0)
-		{			
+		{
 			if (m_iResearchWorker > 0)
 			{
 				m_iResearchWorker--;

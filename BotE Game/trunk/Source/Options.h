@@ -16,7 +16,7 @@
 /// haben.
 #define DOCUMENT_VERSION			9		///< Alpha 6 Version
 #define VERSION						0.81	///< benötigte Version in Datafiles
-#define VERSION_INFORMATION			"0.81"	///< anzuzeigende Versionsinformation 
+#define VERSION_INFORMATION			"0.81"	///< anzuzeigende Versionsinformation
 
 // --- Feste Größen der Starmap ------------------------------------------------
 extern int STARMAP_SECTORS_HCOUNT;		///< Anzahl der Sektoren horizontal
@@ -127,7 +127,7 @@ namespace DIPLOMATIC_AGREEMENT
 		DEFENCEPACT		= -2,	// zusätzlich anbietbar, außer bei Bündnis oder Krieg
 		WAR				= -1,	// Kriegserklärung
 		NONE			= 0,
-		NAP				= 1, 
+		NAP				= 1,
 		TRADE			= 2,	// Handel mgl. & Rohstoffe als Zugabe möglich
 		FRIENDSHIP		= 3,	// sehen dipl. Verträge mit anderen Rassen
 		COOPERATION		= 4,	// gemeinsame Nutzung der Werften und Basen

@@ -16,13 +16,13 @@ CAttackSystem::CAttackSystem(void) :
 	m_bAssultShipInvolved(FALSE),
 	m_fKilledPop(0.0f),
 	m_iDestroyedBuildings(0)
-{	
+{
 }
 
 CAttackSystem::~CAttackSystem(void)
 {
 	m_pShips.RemoveAll();
-	m_pTroops.RemoveAll();	
+	m_pTroops.RemoveAll();
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -41,12 +41,12 @@ void CAttackSystem::Init(CRace* pDefender, CSystem* system, ShipArray* ships, CS
 	m_pBuildingInfos = buildingInfos;
 	m_KO = sector->GetKO();;
 	m_sMonopolOwner = monopolOwner;
-	
+
 	m_bTroopsInvolved = FALSE;
 	m_bAssultShipInvolved = FALSE;
 	m_fKilledPop = 0.0;
 	m_iDestroyedBuildings = 0;
-	
+
 	for (int i = 0; i < ships->GetSize(); i++)
 		if (ships->GetAt(i).GetKO() == m_KO && ships->GetAt(i).GetCurrentOrder() == SHIP_ORDER::ATTACK_SYSTEM)
 		{
@@ -58,7 +58,7 @@ void CAttackSystem::Init(CRace* pDefender, CSystem* system, ShipArray* ships, CS
 		}
 }
 
-/// Diese Funktion führt den Angriff durch. Außerdem werden alle Berechnungen der Auswirkungen des Angriffs 
+/// Diese Funktion führt den Angriff durch. Außerdem werden alle Berechnungen der Auswirkungen des Angriffs
 /// durchgeführt. Der Rückgabewert ist <code>TRUE</code>, wenn der Angriff erfolgreich war, bei Misserfolg
 /// ist der Rückgabewert <code>FALSE</code>.
 BOOLEAN CAttackSystem::Calculate()
@@ -76,7 +76,7 @@ BOOLEAN CAttackSystem::Calculate()
 	this->CalculateBombAttack();
 	// Jetzt kommt es zum Bodenangriff in dem System durch die Truppen.
 	this->CalculateTroopAttack();
-	
+
 	// abschließende Berechnungen für den Systemangriff
 	// Getötete Bevölkerung berechnen
 	m_fKilledPop -= (float)m_pSector->GetCurrentHabitants();
@@ -255,7 +255,7 @@ void CAttackSystem::CalculateBombAttack()
 		torpedoDamage = 0;
 	else
 		torpedoDamage -= shield;
-	
+
 	// Nachricht das Schilde den Schaden im System verringert haben
 	if (shield > 0)
 		m_strNews.Add(CResourceManager::GetString("SHIELDS_SAVED_LIFE",0,m_pSector->GetName()));
@@ -271,7 +271,7 @@ void CAttackSystem::CalculateBombAttack()
 		float killedPop = (float)((rand()%torpedoDamage)*0.00075f);
 		m_pSector->LetPlanetsShrink(-killedPop);
 		m_pSystem->SetHabitants(m_pSector->GetCurrentHabitants());
-		
+
 		// Dann werden zufällig Gebäude zerstört. Umso mehr Gebäude vorhanden sind, desto wahrscheinlicher werden diese
 		// zerstört. Auch stationierte Truppen können bei einem Angriff vernichtet werden.
 		for (int i = 0; i < torpedoDamage; i++)
@@ -295,7 +295,7 @@ void CAttackSystem::CalculateBombAttack()
 			m_pSystem->CheckEnergyBuildings(m_pBuildingInfos);
 			m_pSystem->CalculateVariables(m_pBuildingInfos, pInfo, m_pSector->GetPlanets(), ((CMajor*)m_pDefender), m_sMonopolOwner);
 		}
-		
+
 		if (m_iDestroyedBuildings != 0)
 		{
 			CString n;
@@ -319,7 +319,7 @@ void CAttackSystem::CalculateTroopAttack()
 	// vernichtet wurden, dann kämpft noch der Rest der Bevölkerung gegen die angreifenden Truppen. Wenn ein Großteil
 	// dieser vernichtet wurde, dann gilt das System als erobert.
 	int groundDefence = m_pSystem->GetProduction()->GetGroundDefend();	// <- beinhaltet schon GroundDefendBoni!
-	
+
 	// Dieser Verteidigungswert addiert sich zum Verteidigungswert durch die Bevölkerung. Aller 5Mrd. Bevölkerung bekommt
 	// man eine Verteidigungseinheit. Das würde bedeuten, dass man mit 50Mrd. Bevölkerung 10 Einheiten mit der
 	// Angriffsstärke von 10 bekommt. Ein GroundDefence-Wert von z.B. 30 wird behandelt, als wären zusätzliche
@@ -338,7 +338,7 @@ void CAttackSystem::CalculateTroopAttack()
 		{
 			// Alle Truppen mit Stärke NULL werden am Ende von den Schiffen gelöscht
 			m_pTroops.GetAt(number)->SetOffense(0);
-			m_pTroops.RemoveAt(number);			
+			m_pTroops.RemoveAt(number);
 		}
 		delete ti;
 	}
@@ -433,7 +433,7 @@ void CAttackSystem::CalculateTroopAttack()
 			m_pSystem->CalculateVariables(m_pBuildingInfos, pInfo, m_pSector->GetPlanets(), ((CMajor*)m_pDefender), m_sMonopolOwner);
 		}
 	}
-	
+
 	// Wenn Truppen verschiedener Imperien angegriffen haben, so müssen diese noch gegeneinander antreten. Es kann immer
 	// nur ein Imperium dieses System erobern.
 	if (m_pTroops.GetSize() > 0)
@@ -463,5 +463,5 @@ void CAttackSystem::CalculateTroopAttack()
 						m_pTroops.RemoveAt(i);
 					}
 					i = 0;
-				}	
+				}
 }

@@ -39,7 +39,7 @@ CEventScreen::~CEventScreen(void)
 ///////////////////////////////////////////////////////////////////////
 // Speichern / Laden
 ///////////////////////////////////////////////////////////////////////
-void CEventScreen::Serialize(CArchive &ar)		
+void CEventScreen::Serialize(CArchive &ar)
 {
 	CObject::Serialize(ar);
 	// wenn gespeichert wird
@@ -48,7 +48,7 @@ void CEventScreen::Serialize(CArchive &ar)
 		ar << m_sRace;
 		ar << m_strImagePath;
 		ar << m_strHeadline;
-		ar << m_strText;		
+		ar << m_strText;
 	}
 	// wenn geladen wird
 	else if (ar.IsLoading())
@@ -56,7 +56,7 @@ void CEventScreen::Serialize(CArchive &ar)
 		ar >> m_sRace;
 		ar >> m_strImagePath;
 		ar >> m_strHeadline;
-		ar >> m_strText;		
+		ar >> m_strText;
 	}
 }
 
@@ -82,7 +82,7 @@ void CEventScreen::Create(void)
 	ASSERT(pMajor);
 
 	CString sPrefix = pMajor->GetPrefix();
-	
+
 	CString fileN = "Other\\" + sPrefix + "button.bop";
 	CString fileI = "Other\\" + sPrefix + "buttoni.bop";
 	CString fileA = "Other\\" + sPrefix + "buttona.bop";
@@ -90,7 +90,7 @@ void CEventScreen::Create(void)
 }
 
 void CEventScreen::Draw(Graphics* g, CGraphicPool* graphicPool) const
-{	
+{
 	if (m_pBGImage)
-		g->DrawImage(m_pBGImage, 0, 0, 1280, 1024);	
+		g->DrawImage(m_pBGImage, 0, 0, 1280, 1024);
 }

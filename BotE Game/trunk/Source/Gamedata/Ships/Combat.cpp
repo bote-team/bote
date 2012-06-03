@@ -17,7 +17,7 @@ vec3i GivePosition(BYTE pos, USHORT posNumber)
 	case 2: p.y = 200 + posNumber*5;	break;
 	case 3: p.y = -200 - posNumber*5;	break;
 	case 4: p.z = 200 + posNumber*5;	break;
-	case 5: p.z = -200 - posNumber*5;	break;	
+	case 5: p.z = -200 - posNumber*5;	break;
 	}
 	return p;
 }
@@ -33,7 +33,7 @@ CCombat::CCombat(void)
 CCombat::~CCombat(void)
 {
 	Reset();
-}	
+}
 
 //////////////////////////////////////////////////////////////////////
 // sonstige Funktionen
@@ -76,7 +76,7 @@ void CCombat::SetInvolvedShips(CArray<CShip*>* pShips, std::map<CString, CRace*>
 			cs->m_KO.x = 0;
 			cs->m_KO.y = 0;
 			cs->m_KO.z = 0;
-						
+
 			// Anomalien beachten
 			if (pAnomaly)
 			{
@@ -96,7 +96,7 @@ void CCombat::SetInvolvedShips(CArray<CShip*>* pShips, std::map<CString, CRace*>
 				cs->m_Fire.phaser[i] = 0;
 			for (int i = 0; i < cs->m_Fire.torpedo.GetSize(); i++)
 				cs->m_Fire.torpedo[i] = 0;
-			
+
 			m_InvolvedShips.Add(cs);
 			m_CS.Add(m_InvolvedShips.GetAt(m_InvolvedShips.GetUpperBound()));
 		}
@@ -145,11 +145,11 @@ void CCombat::PreCombatCalculation()
 				if (m_CS.GetAt(i)->m_pShip->GetSpeed() == 0 || m_CS.GetAt(i)->m_pShip->GetManeuverability() == 0)
 					m_CS.GetAt(i)->m_pShip->SetCombatTactic(AVOID);
 			*/
-						
+
 			// Wenn das Schiff den Rückzugbefehl hat, so gelten dessen Boni nicht für andere Schiffe
 			if (m_CS.GetAt(i)->m_pShip->GetCombatTactic() == COMBAT_TACTIC::CT_RETREAT)
 				continue;
-			
+
 			if (m_CS.GetAt(i)->m_pShip->GetIsShipFlagShip())
 				bFlagship = true;
 			if (m_CS.GetAt(i)->m_pShip->HasSpecial(SHIP_SPECIAL::COMMANDSHIP))
@@ -162,13 +162,13 @@ void CCombat::PreCombatCalculation()
 		// Wir brauchen um den Bonus für viele verschiedene Schiffstypen zu bekommen eine bestimmte Anzahl von jedem
 		// Schiffstyp. Dieser Wert beträgt "Anzahl Schiffstypen" - 1 von jedem Typ. Schaffen wir diesen Wert nicht, dann
 		// bekommen wir den Bonus nur für "minimalen Wert + 1".
-		int mod = 0;		
+		int mod = 0;
 		int nSmallest = INT_MAX;
 		int nDifferentTypes = mShipTypes.size();
 		// Schiffstypen durchgehen
 		for (std::map<BYTE, int>::const_iterator types = mShipTypes.begin(); types != mShipTypes.end(); types++)
 			nSmallest = min(nSmallest, types->second);
-			
+
 		// Schaffen wir den Wert nicht
 		if ((nDifferentTypes - 1) > nSmallest)
 			// dann ist der maximale Bonus smallest + 1
@@ -177,7 +177,7 @@ void CCombat::PreCombatCalculation()
 			mod = nDifferentTypes;
 		else if (nDifferentTypes > 1)
 			mod = 1;
-				
+
 		// Jetzt noch die ganzen Boni/Mali den Schiffen zuweisen und die Felder mit den Gegnern für die einzelnen Rassen füllen
 		for (int i = 0; i < m_CS.GetSize(); i++)
 		{
@@ -199,36 +199,36 @@ void CCombat::PreCombatCalculation()
 				// Darf nicht 0% sein (normal sind 100 eingestellt)
 				if (m_CS.GetAt(i)->m_iModifier <= 0)
 					m_CS.ElementAt(i)->m_iModifier = 1;
-				
+
 				//CString mod;
 				//mod.Format("Modifikator: %d%%", m_CS.ElementAt(i)->m_iModifier);
 				//AfxMessageBox(mod);
 			}
 			else
 			{
-				// Feld mit allen möglichen gegnerischen Schiffen füllen				
+				// Feld mit allen möglichen gegnerischen Schiffen füllen
 				if (CCombat::CheckDiplomacyStatus((*m_mRaces)[*it], (*m_mRaces)[m_CS.GetAt(i)->m_pShip->GetOwnerOfShip()]))
 					m_mEnemies[*it].push_back(m_CS.GetAt(i));
-			}			
+			}
 		}
 		nRacePos++;
-	}	
+	}
 }
 
 // Diese Funktion ist das Herzstück der CCombat-Klasse. Sie führt die ganzen Kampfberechnungen durch.
 void CCombat::CalculateCombat(std::map<CString, BYTE>& winner)
-{	
+{
 	while (m_bReady)
 	{
 		m_bReady = false;
 		m_iTime++;
 		if (m_iTime > MAXSHORT)
 			break;
-		// Wenn 20 Runden lang niemand angegriffen hat, so wird hier abgebrochen. Kann passieren, wenn alle Schiffe 
+		// Wenn 20 Runden lang niemand angegriffen hat, so wird hier abgebrochen. Kann passieren, wenn alle Schiffe
 		// getarnt sind und sich nicht sehen können
 		if (m_bAttackedSomebody == FALSE && m_iTime > 20)
 			break;
-		
+
 		// Flugroute aller Schiffe berechnen und mögliches Ziel aufschalten
 		for (int i = 0; i < m_CS.GetSize(); i++)
 		{
@@ -252,7 +252,7 @@ void CCombat::CalculateCombat(std::map<CString, BYTE>& winner)
 			// Das Schiff hat noch kein Ziel aufgeschaltet...
 			// Ziel aufschalten
 			if (m_CS.GetAt(i)->m_pTarget == NULL && m_CS.GetAt(i)->m_pShip->GetCombatTactic() == COMBAT_TACTIC::CT_ATTACK)
-			{				
+			{
 				if (SetTarget(i) == false)
 					continue;
 			}
@@ -260,16 +260,16 @@ void CCombat::CalculateCombat(std::map<CString, BYTE>& winner)
 			else if (m_CS.GetAt(i)->m_pShip->GetCombatTactic() == COMBAT_TACTIC::CT_RETREAT)
 			{
 				// Kampf als Stattgefunden ansehen, damit nicht nach 20 Ticks abgebrochen wird.
-				// Ein Rückzug dauert länger.				
+				// Ein Rückzug dauert länger.
 				m_bAttackedSomebody = true;
 			}
-			
+
 			// Kampf läuft weiter
 			m_bReady = true;
-			
+
 			// Flug zur nächsten Position
 			m_CS.ElementAt(i)->CalculateNextPosition();
-			
+
 			// Wenn wir ein Ziel haben, dann greifen wir dieses auch an
 			if (m_CS.GetAt(i)->m_pTarget != NULL)
 			{
@@ -283,7 +283,7 @@ void CCombat::CalculateCombat(std::map<CString, BYTE>& winner)
 					// Wenn wir einen Wert ungleich -1 zurückbekommen, dann wurde das gegnerische Schiff vernichtet.
 					// Wir müssen dann also uns ein neues Ziel suchen
 					if (value.x != -1)
-					{						
+					{
 						// aktuelles Ziel nullen und Schiff aus Enemy-Listen nehmen
 						for (int j = 0; j < m_CS.GetSize(); j++)
 							if (m_CS.GetAt(j) == m_CS.GetAt(i)->m_pTarget)
@@ -298,7 +298,7 @@ void CCombat::CalculateCombat(std::map<CString, BYTE>& winner)
 							break;
 					}
 				} while (value.x != -1);
-				
+
 				// --- TORPEDOWAFFEN ---
 				// ab hier jetzt ein Angriff mit den Torpedowaffen
 				// wenn wir kein Ziel mehr haben, weil es z.B. durch den letzten Beamstrahl ausgeschaltet wurde,
@@ -316,7 +316,7 @@ void CCombat::CalculateCombat(std::map<CString, BYTE>& winner)
 					// Schleife ähnlich wie oben bei Beamangriff durchgehen
 					do {
 						value =	m_CS.ElementAt(i)->AttackEnemyWithTorpedo(&m_CT, value);
-						// Wenn wir einen Wert ungleich -1 zurückbekommen, dann haben wir genug Torpedos auf das 
+						// Wenn wir einen Wert ungleich -1 zurückbekommen, dann haben wir genug Torpedos auf das
 						// gegnerische Schiff abgefeuert, so das es vermutlich zerstört werden würde. Somit suchen
 						// wir uns ein neues Ziel.
 						if (value.x != -1)
@@ -337,7 +337,7 @@ void CCombat::CalculateCombat(std::map<CString, BYTE>& winner)
 				}
 			}
 		}
-		
+
 		// Das Torpedofeld durchgehen und deren Flug berechnen
 		for (list<CTorpedo*>::iterator it = m_CT.begin(); it != m_CT.end(); )
 		{
@@ -353,7 +353,7 @@ void CCombat::CalculateCombat(std::map<CString, BYTE>& winner)
 				// weiter in Liste
 				++it;
 		}
-		
+
 		// Wenn noch Torpedos rumschwirren, dann den Kampf noch nicht abbrechen
 		if (m_CT.size())
 			m_bReady = true;
@@ -370,9 +370,9 @@ void CCombat::CalculateCombat(std::map<CString, BYTE>& winner)
 				m_CS.RemoveAt(i--);
 				continue;
 			}
-			
+
 			if (m_CS.GetAt(i)->m_pShip->GetCombatTactic() != COMBAT_TACTIC::CT_RETREAT || m_CS.GetAt(i)->m_byManeuverability > 0)
-				bOnlyRetreatShipsWithSpeedNull = false;	
+				bOnlyRetreatShipsWithSpeedNull = false;
 
 			m_CS.ElementAt(i)->GotoNextPosition();
 			// wenn die Schilde noch nicht komplett zusammengebrochen sind
@@ -382,7 +382,7 @@ void CCombat::CalculateCombat(std::map<CString, BYTE>& winner)
 				// bei doppelter Schildaufladung können die Schilde nochmals aufgeladen werden
 				if (m_CS.ElementAt(i)->m_bFasterShieldRecharge)
 					m_CS.ElementAt(i)->m_pShip->GetShield()->RechargeShields();
-			}			
+			}
 		}
 
 		// Haben sich alle aus dem Kampf zurückgezogen, dann ist dieser beendet
@@ -392,7 +392,7 @@ void CCombat::CalculateCombat(std::map<CString, BYTE>& winner)
 			// Attacke zurücksetzen, damit bei der Auswertung ein Unentschieden herauskommt
 			m_bAttackedSomebody = false;
 		}
-		
+
 		// Wenn keine Schiffe mehr am Kampf teilnehmen, weil vielleicht alle vernichtet wurden, dann können wir abbrechen
 		if (m_CS.IsEmpty())
 			break;
@@ -439,10 +439,10 @@ void CCombat::CalculateCombat(std::map<CString, BYTE>& winner)
 */
 	}
 	// Dann ist der Kampf unentschieden ausgegangen
-	else 
-	{		
+	else
+	{
 		for (std::set<CString>::const_iterator it = m_mInvolvedRaces.begin(); it != m_mInvolvedRaces.end(); ++it)
-			winner[*it] = 3;		
+			winner[*it] = 3;
 	}
 }
 
@@ -453,7 +453,7 @@ bool CCombat::SetTarget(int i)
 	CShip* pShip = m_CS.GetAt(i)->m_pShip;
 	CString sOwner = pShip->GetOwnerOfShip();
 	ASSERT(m_CS.GetAt(i)->m_pTarget == NULL);
-		
+
 	// Wenn das enemy-Feld leer ist, dann gibt es keine gegnerischen Schiffe mehr in diesem Kampf und wir können
 	// diesen womöglich beenden
 	while (m_mEnemies[sOwner].size() > 0)
@@ -462,10 +462,10 @@ bool CCombat::SetTarget(int i)
 		// Es gibt noch keine weiteren Einschränkungen
 		int random = rand()%m_mEnemies[sOwner].size();
 		CCombatShip* targetShip = m_mEnemies[sOwner].at(random);
-		
+
 		if (targetShip->m_pShip->GetHull()->GetCurrentHull() < 1)
 			AfxMessageBox("ERROR in Combat SetTarget");
-				
+
 		// ist das Schiff nicht (mehr) getarnt
 		if (targetShip->m_byCloak == 0)
 		{
@@ -481,7 +481,7 @@ bool CCombat::SetTarget(int i)
 			targetShip->m_bShootCloaked = TRUE;
 			m_CS.ElementAt(i)->m_Fire.phaserIsShooting = FALSE;
 		}
-		
+
 		// Wenn möglich wieder Tarnen bevor ein neues Ziel gewählt wird
 		if (m_CS.GetAt(i)->m_byReCloak == 255)
 		{
@@ -492,10 +492,10 @@ bool CCombat::SetTarget(int i)
 				m_CS.GetAt(i)->m_byReCloak = 0;
 			}
 		}
-		// !!! Jedenfalls wird hier immer abgebrochen -> Ziel gilt als gefunden, 
+		// !!! Jedenfalls wird hier immer abgebrochen -> Ziel gilt als gefunden,
 		//	   auch wenn wegen der Tarnung noch keine echte Aufschaltung möglich war)
 
-		return true;		
+		return true;
 	};
 
 	// kein Ziel gefunden
@@ -510,7 +510,7 @@ bool CCombat::SetTarget(int i)
 bool CCombat::CheckShipStayInCombat(int i)
 {
 	CCombatShip* pCombatShip = m_CS[i];
-	
+
 	bool bIsAlive = true;
 	if (pCombatShip->m_pShip->GetHull()->GetCurrentHull() < 1)
 		bIsAlive = false;
@@ -549,7 +549,7 @@ bool CCombat::CheckShipStayInCombat(int i)
 
 		return false;
 	}
-	
+
 	return true;
 }
 
@@ -577,7 +577,7 @@ double CCombat::GetWinningChance(const CRace* pOurRace, const CArray<CShip*>& vI
 		if (pAnomaly->GetType() == METNEBULA || pAnomaly->GetType() == TORIONGASNEBULA)
 			bCanUseShields = false;
 		if (pAnomaly->GetType() == TORIONGASNEBULA)
-			bCanUseTorpedos = false;		
+			bCanUseTorpedos = false;
 	}
 
 	for (int i = 0; i < vInvolvedShips.GetSize(); i++)
@@ -586,7 +586,7 @@ double CCombat::GetWinningChance(const CRace* pOurRace, const CArray<CShip*>& vI
 
 		double dOffensive = pShip->GetCompleteOffensivePower(true, bCanUseTorpedos);
 		double dDefensive = pShip->GetCompleteDefensivePower(bCanUseShields) / 2.0;
-		
+
 		if (pShip->GetOwnerOfShip() == pOurRace->GetRaceID())
 		{
 			sFriends.insert(pOurRace);
@@ -597,7 +597,7 @@ double CCombat::GetWinningChance(const CRace* pOurRace, const CArray<CShip*>& vI
 		{
 			if (pmRaces->find(pShip->GetOwnerOfShip()) == pmRaces->end())
 				continue;
-			
+
 			const CRace* pOtherRace  = pmRaces->find(pShip->GetOwnerOfShip())->second;
 			ASSERT(pOtherRace);
 
@@ -647,7 +647,7 @@ bool CCombat::CheckDiplomacyStatus(const CRace* raceA, const CRace* raceB)
 		}
 		else
 			return TRUE;
-	}	
+	}
 	else
 		return FALSE;
 }
@@ -668,7 +668,7 @@ void CCombat::Reset()
 		*it = NULL;
 	}
 	m_CT.clear();
-	
+
 	m_bReady = FALSE;
 	m_iTime = 0;
 	m_bAttackedSomebody = FALSE;

@@ -9,11 +9,11 @@ class vec3
 public:
     T x, y, z;
 
-    vec3 (void) 
+    vec3 (void)
       {x = y = z = 0;};
-    vec3 (const T X, const T Y, const T Z) 
+    vec3 (const T X, const T Y, const T Z)
       { x=X; y=Y; z=Z; };
-    vec3 (const vec3& v) 
+    vec3 (const vec3& v)
       { x=v.x; y=v.y; z=v.z; };
     vec3 (T v[3])
       { x=v[0]; y=v[1]; z=v[2]; };
@@ -34,28 +34,28 @@ public:
       { return (x!=A.x || y!=A.y || z!=A.z); }
 
     vec3& operator = (const vec3& A)            // ASSIGNMENT (=)
-      { x=A.x; y=A.y; z=A.z; 
+      { x=A.x; y=A.y; z=A.z;
         return(*this);  };
     vec3 operator + (const vec3& A) const       // ADDITION (+)
-      { vec3 Sum(x+A.x, y+A.y, z+A.z); 
+      { vec3 Sum(x+A.x, y+A.y, z+A.z);
         return(Sum); };
     vec3 operator - (const vec3& A) const       // SUBTRACTION (-)
       { vec3 Diff(x-A.x, y-A.y, z-A.z);
         return(Diff); };
     T operator * (const vec3& A) const       // DOT-PRODUCT (*)
-      { T DotProd = x*A.x+y*A.y+z*A.z; 
+      { T DotProd = x*A.x+y*A.y+z*A.z;
         return(DotProd); };
     vec3 operator / (const vec3& A) const       // CROSS-PRODUCT (/)
       { vec3 CrossProd(y*A.z-z*A.y, z*A.x-x*A.z, x*A.y-y*A.x);
         return(CrossProd); };
     vec3 operator * (const T s) const        // MULTIPLY BY SCALAR V*s (*)
-      { vec3 Scaled(x*s, y*s, z*s); 
+      { vec3 Scaled(x*s, y*s, z*s);
         return(Scaled); };
     vec3 operator / (const T s) const        // DIVIDE BY SCALAR (/)
       { vec3 Scaled(x/s, y/s, z/s);
         return(Scaled); };
 	vec3 operator + (const T s) const        // ADDITION WITH SCALAR V+s (+)
-      { vec3 Add(x+s, y+s, z+s); 
+      { vec3 Add(x+s, y+s, z+s);
         return(Add); };
     vec3 operator - (const T s) const        // SUBTRACTION WITH SCALAR V-s (-)
       { vec3 Sub(x-s, y-s, z-s);
@@ -109,7 +109,7 @@ public:
 
 	//T ScalarProduct(const vec3 &B)				// SCALARPRODUCT
 	//{
-	//	return x * B.x + y * B.y + z * B.z;		
+	//	return x * B.x + y * B.y + z * B.z;
 	//}
 };
 

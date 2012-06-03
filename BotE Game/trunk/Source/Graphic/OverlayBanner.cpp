@@ -22,17 +22,17 @@ COverlayBanner::~COverlayBanner(void)
 void COverlayBanner::Draw(Graphics* g, Gdiplus::Font* font)
 {
 	Gdiplus::SolidBrush brush(Gdiplus::Color(m_iAlphaValue, 50, 50, 50));
-	
+
 	// Hintergrund zeichnen
 	g->FillRectangle(&brush, Rect(m_KO.x, m_KO.y, m_Size.cx, m_Size.cy));
-	
+
 	// Rahmen zeichnen
 	Gdiplus::Color color;
 	color.SetFromCOLORREF(m_BorderColor);
 	Gdiplus::Pen pen(color);
 	pen.SetWidth((REAL)m_iBorderWidth);
 	g->DrawRectangle(&pen, m_KO.x, m_KO.y, m_Size.cx - m_iBorderWidth, m_Size.cy - m_iBorderWidth);
-	
+
 	// Text zeichnen
 	StringFormat fontFormat;
 	fontFormat.SetAlignment(StringAlignmentCenter);
@@ -41,5 +41,5 @@ void COverlayBanner::Draw(Graphics* g, Gdiplus::Font* font)
 
 	color.SetFromCOLORREF(m_TextColor);
 	Gdiplus::SolidBrush fontBrush(color);
-	g->DrawString(m_strText.AllocSysString(), -1, font, RectF((REAL)m_KO.x, (REAL)m_KO.y + m_Size.cy / 3, (REAL)m_Size.cx, (REAL)m_Size.cy), &fontFormat, &fontBrush);	
+	g->DrawString(m_strText.AllocSysString(), -1, font, RectF((REAL)m_KO.x, (REAL)m_KO.y + m_Size.cy / 3, (REAL)m_Size.cx, (REAL)m_Size.cy), &fontFormat, &fontBrush);
 }

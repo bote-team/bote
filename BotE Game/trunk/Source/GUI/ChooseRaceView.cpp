@@ -80,17 +80,17 @@ void CChooseRaceView::OnDraw(CDC* dc)
 	CMyMemDC pDC(dc);
 	CRect clientRect;
 	GetClientRect(&clientRect);
-	
+
 	// Graphicsobjekt, in welches gezeichnet wird anlegen
 	Graphics g(pDC->GetSafeHdc());
-	
+
 	g.Clear(Color::Black);
 	g.SetSmoothingMode(SmoothingModeHighSpeed);
 	g.SetInterpolationMode(InterpolationModeLowQuality);
 	g.SetPixelOffsetMode(PixelOffsetModeHighSpeed);
 	g.SetCompositingQuality(CompositingQualityHighSpeed);
 	g.ScaleTransform((REAL)clientRect.Width() / (REAL)m_TotalSize.cx, (REAL)clientRect.Height() / (REAL)m_TotalSize.cy);
-	
+
 	g.DrawImage(m_pBkgndImg, 0, 0, m_TotalSize.cx, m_TotalSize.cy);
 
 	Gdiplus::Font font(L"Calibri", 10, FontStyleBold);
@@ -128,7 +128,7 @@ void CChooseRaceView::OnDraw(CDC* dc)
 		ASSERT(pButton);
 		if (!pButton)
 			continue;
-		
+
 		CString sPlayer = it->second;
 		if (sPlayer.IsEmpty())
 			continue;
@@ -140,7 +140,7 @@ void CChooseRaceView::OnDraw(CDC* dc)
 		rect.right /= (double)((double)clientRect.Width() / (double)m_TotalSize.cx);
 		rect.top /= (double)((double)clientRect.Height() / (double)m_TotalSize.cy);
 		rect.bottom /= (double)((double)clientRect.Height() / (double)m_TotalSize.cy);
-		
+
 		g.DrawString(sPlayer.AllocSysString(), -1, &font, RectF(rect.left, rect.top - 18, rect.Width(), 20), &format, &SolidBrush(Color::LightSkyBlue));
 
 		network::RACE race = (network::RACE)(it->first->GetDlgCtrlID());
@@ -158,24 +158,24 @@ void CChooseRaceView::OnDraw(CDC* dc)
 
 		Bitmap* graphic	= pDoc->GetGraphicPool()->GetGDIGraphic("Races\\" + pRace->GetGraphicFileName());
 		if (graphic == NULL)
-			graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Races\\ImageMissing.boj");		
+			graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Races\\ImageMissing.boj");
 		if (graphic)
-			g.DrawImage(graphic, 475, 307, 300, 300);		
+			g.DrawImage(graphic, 475, 307, 300, 300);
 		g.DrawRectangle(&Pen(Color(200,200,200), 1), 475, 307, 300, 300);
-		
+
 		g.FillRectangle(&Gdiplus::SolidBrush(clr), RectF(775, 307, 450, 300));
 		g.DrawRectangle(&Pen(Color(200,200,200), 1), RectF(775, 307, 450, 300));
 		format.SetAlignment(StringAlignmentCenter);
 		format.SetLineAlignment(StringAlignmentCenter);
 		Gdiplus::Font font(L"Calibri", 11, FontStyleBold);
 		g.DrawString(pRace->GetRaceDesc().AllocSysString(), -1, &font, RectF(775, 307, 450, 300), &format, &SolidBrush(Color::WhiteSmoke));
-				
+
 		// Rassensymbol noch in die Ecke zeichnen
 		graphic	= pDoc->GetGraphicPool()->GetGDIGraphic("Symbols\\" + pRace->GetRaceID() + ".bop");
 		if (graphic)
 			g.DrawImage(graphic, 575, 207, 100, 100);
 	}
-	
+
 	g.ReleaseHDC(pDC->GetSafeHdc());
 }
 
@@ -196,12 +196,12 @@ void CChooseRaceView::OnInitialUpdate()
 	// Structure containing Style
 	tButtonStyle tStyle;
 	//////////////////////////////////////////////////////////////////////////
-	
+
 	// Get default Style
 	m_tButtonStyle.GetButtonStyle(&tStyle);
 	// Change Radius of Button
 	tStyle.m_dRadius = 1.0;
-	
+
 	// Change Color Schema of Button
 	tStyle.m_tColorFace.m_tEnabled		= RGB(125, 125, 125);
 	tStyle.m_tColorBorder.m_tEnabled	= RGB(220, 220, 220);
@@ -220,7 +220,7 @@ void CChooseRaceView::OnInitialUpdate()
 
 	// Set Style again
 	m_tButtonStyle.SetButtonStyle(&tStyle);
-	
+
 	// Create a push button.
 	map<CString, CMajor*>* pmMajors = pDoc->GetRaceCtrl()->GetMajors();
 	int nRaceCount = 0;
@@ -261,10 +261,10 @@ void CChooseRaceView::OnSize(UINT nType, int cx, int cy)
 	// TODO: Fügen Sie hier Ihren Meldungsbehandlungscode ein.
 	double dSizeModX = m_TotalSize.cx / (double)cx;
 	double dSizeModY = m_TotalSize.cy / (double)cy;
-	
+
 	double nButtonSizeX = 300.0 / dSizeModX;
 	double nButtonSizeY = 40.0 / dSizeModY;
-	
+
 	int nXPos = 100 / dSizeModX;
 	int nYPos = 275 / dSizeModY;
 
@@ -275,7 +275,7 @@ void CChooseRaceView::OnSize(UINT nType, int cx, int cy)
 	double dFontHeight = 15 / min(dSizeModX, dSizeModY);
 	fnt.CreateFont(dFontHeight, 0, 0, 0, FW_BLACK, FALSE, FALSE, FALSE, ANSI_CHARSET, OUT_DEFAULT_PRECIS,
 		CLIP_DEFAULT_PRECIS, CLEARTYPE_QUALITY, DEFAULT_PITCH, "Calibri");
-	
+
 	// Buttons aktivieren/deaktivieren, aus-/abwählen, Anzahl der Spieler zählen
 	int nCount = 0;
 	for (vector<pair<CRoundButton2*, CString> >::const_iterator it = m_vMajorBtns.begin(); it != m_vMajorBtns.end(); ++it)
@@ -295,7 +295,7 @@ void CChooseRaceView::OnSize(UINT nType, int cx, int cy)
 	{
 		m_edtChat.SetWindowPos(NULL, 75 / dSizeModX, 700 / dSizeModY, 350 / dSizeModX, 200 / dSizeModY, SWP_FRAMECHANGED);
 		// Font dem Editcontrol zuweisen
-		m_edtChat.SetFont(&fnt);		
+		m_edtChat.SetFont(&fnt);
 	}
 
 	if (m_edtChatMsg.m_hWnd)
@@ -331,7 +331,7 @@ void CChooseRaceView::SetButtonStyle(CRoundButton2* pBtn, double dFontHeight)
 
 	// Initialize the Buttons with global style
 	pBtn->SetRoundButtonStyle(&m_tButtonStyle);
-	
+
 	LOGFONT tFont;
 	pBtn->GetFont(&tFont);
 	strcpy(tFont.lfFaceName, "Calibri");
@@ -351,7 +351,7 @@ void CChooseRaceView::SetButtonStyle(CRoundButton2* pBtn, double dFontHeight)
 	// Set Text-Color
 	pBtn->SetTextColor(&tColor);
 
-	pBtn->SetHotButton(true);	
+	pBtn->SetHotButton(true);
 }
 
 void CChooseRaceView::EnableRaceButtons()
@@ -365,7 +365,7 @@ void CChooseRaceView::EnableRaceButtons()
 		ASSERT(pButton);
 		if (!pButton)
 			continue;
-		
+
 		network::RACE race = (network::RACE)(pButton->GetDlgCtrlID());
 		if (client.IsPlayer(race))
 		{
@@ -381,7 +381,7 @@ void CChooseRaceView::EnableRaceButtons()
 			pButton->EnableWindow(TRUE);
 			pButton->SetCheck(FALSE);
 			it->second = "";
-		}	
+		}
 	}
 
 	m_btStartGame.EnableWindow(CheckValues());
@@ -403,7 +403,7 @@ void CChooseRaceView::EnableRaceButtons()
 			continue;
 
 		pButton->RedrawWindow();
-	}	
+	}
 }
 
 BOOL CChooseRaceView::CheckValues()
@@ -470,12 +470,12 @@ void CChooseRaceView::OnBnStartGameClicked()
 		if (!server.IsPlayedByClient(race))
 			server.SetPlayByServer(race,TRUE,FALSE);
 	}
-	
+
 	// Spiel starten; veranlasst die Clients, auf die nächste Seite zu wechseln
 	pDoc->PrepareData();
 	server.BeginGame(pDoc);
 
-	SetCursor(::LoadCursor(NULL, IDC_ARROW));	
+	SetCursor(::LoadCursor(NULL, IDC_ARROW));
 }
 
 void CChooseRaceView::OnBnCancelClicked()
@@ -486,7 +486,7 @@ void CChooseRaceView::OnBnCancelClicked()
 		return;
 
 	client.Disconnect();
-	
+
 	if (m_bIsServer)
 	{
 		// warten bis der Netzwerkthread die Nachricht für client.Disconnect() gesendet hat
@@ -497,8 +497,8 @@ void CChooseRaceView::OnBnCancelClicked()
 		serverPublisher.StopPublishing();
 		server.Stop();
 	}
-	
-	pDoc->GetMainFrame()->SelectMainView(START_VIEW);	
+
+	pDoc->GetMainFrame()->SelectMainView(START_VIEW);
 }
 
 void CChooseRaceView::AddChatMsg(const CString& name, const CString& msg)
@@ -507,7 +507,7 @@ void CChooseRaceView::AddChatMsg(const CString& name, const CString& msg)
 	GetDlgItemText(IDC_CHAT, total);
 	if (total != "")
 		total += "\r\n";
-	
+
 	CString newtext;
 	newtext.Format("%s: %s", name, msg);
 	SetDlgItemText(IDC_CHAT, total + newtext);

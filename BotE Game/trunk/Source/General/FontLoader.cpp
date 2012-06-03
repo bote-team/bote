@@ -24,16 +24,16 @@ CFontLoader::~CFontLoader(void)
 void CFontLoader::CreateFont(const CMajor* pPlayersRace, BYTE size, CFont* font)
 {
 	ASSERT(font != NULL);
-	
+
 	LOGFONT lf;
-	memset(&lf, 0, sizeof(LOGFONT)); 
-	
+	memset(&lf, 0, sizeof(LOGFONT));
+
 	strcpy_s(lf.lfFaceName, pPlayersRace->GetDesign()->m_sFontName);
-	
+
 	lf.lfHeight = pPlayersRace->GetDesign()->m_byGDIFontSize[size];
 	lf.lfQuality = CLEARTYPE_QUALITY;
 	lf.lfPitchAndFamily = FF_SWISS;
-	
+
 	font->CreateFontIndirect(&lf);
 }
 

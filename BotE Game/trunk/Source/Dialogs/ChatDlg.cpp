@@ -30,7 +30,7 @@ void CChatDlg::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(CChatDlg, CDialog)
 	ON_BN_CLICKED(IDC_SEND, &CChatDlg::OnBnClickedSend)
 	ON_BN_CLICKED(IDC_CLOSE, &CChatDlg::OnBnClickedClose)
-	
+
 END_MESSAGE_MAP()
 
 /// Nimmt einen String entgegen, welcher danach im Chat angezeigt werden kann.

@@ -5,7 +5,7 @@
  *   Create   :  2003-12-23
  *   Home     :  http://www.crazy-bit.com/
  *   Mail     :  crazybitwps@hotmail.com
- *   History  :  
+ *   History  :
  */
 #ifndef __FOO_HISTOGRAM__2003_12_23__H__
 #define __FOO_HISTOGRAM__2003_12_23__H__

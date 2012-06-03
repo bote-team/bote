@@ -21,10 +21,10 @@ public:
 
 	// Konstruktor mit Parameterübergabe
 	CBuilding(USHORT id);
-	
+
 	// Destruktor
 	~CBuilding(void);
-	
+
 	// Kopierkonstruktor
 	CBuilding(const CBuilding & rhs);
 
@@ -41,11 +41,11 @@ public:
 // Zugriffsfunktionen
 	// zum Lesen der Membervariablen
 	USHORT GetRunningNumber() const { return m_iRunningNumber; }
-	
-	BOOLEAN GetIsBuildingOnline() const { return m_bOnline; }	
-	
+
+	BOOLEAN GetIsBuildingOnline() const { return m_bOnline; }
+
 	// zum Schreiben der Membervariablen
-	void SetIsBuildingOnline(BOOLEAN TrueOrFalse) { m_bOnline = TrueOrFalse; }	
+	void SetIsBuildingOnline(BOOLEAN TrueOrFalse) { m_bOnline = TrueOrFalse; }
 
 private:
 	// Die laufende Nummer (ID) des Gebäudes

@@ -67,7 +67,7 @@ void CBottomBaseView::OnInitialUpdate()
 	// Größe der View in logischen Koordinaten
 	m_TotalSize = CSize(1075, 249);
 
-	pDoc->GetMainFrame()->AddToTooltip(this);	
+	pDoc->GetMainFrame()->AddToTooltip(this);
 }
 
 BOOL CBottomBaseView::OnEraseBkgnd(CDC* pDC)
@@ -94,9 +94,9 @@ void CBottomBaseView::CalcLogicalPoint(CPoint &point)
 {
 	CRect client;
 	GetClientRect(&client);
-	
+
 	point.x *= (float)m_TotalSize.cx / (float)client.Width();
-	point.y *= (float)m_TotalSize.cy / (float)client.Height();	
+	point.y *= (float)m_TotalSize.cy / (float)client.Height();
 }
 
 void CBottomBaseView::CalcDeviceRect(CRect &rect)
@@ -107,7 +107,7 @@ void CBottomBaseView::CalcDeviceRect(CRect &rect)
 	CPoint p1 = rect.TopLeft();
 	p1.x *= (float)client.Width() / (float)m_TotalSize.cx;
 	p1.y *= (float)client.Height() / (float)m_TotalSize.cy;
-	
+
 	CPoint p2 = rect.BottomRight();
 	p2.x *= (float)client.Width() / (float)m_TotalSize.cx;
 	p2.y *= (float)client.Height() / (float)m_TotalSize.cy;

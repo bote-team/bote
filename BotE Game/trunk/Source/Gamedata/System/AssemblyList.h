@@ -21,7 +21,7 @@ class CAssemblyList : public CObject
 {
 public:
 	DECLARE_SERIAL (CAssemblyList)
-	
+
 	// Standardkonstruktor
 	CAssemblyList(void);
 
@@ -30,7 +30,7 @@ public:
 
 	// Kopierkonstruktor
 	CAssemblyList(const CAssemblyList & rhs);
-	
+
 	// Zuweisungsoperatur
 	CAssemblyList & operator=(const CAssemblyList &);
 
@@ -41,7 +41,7 @@ public:
 	// zum Lesen der Membervariablen
 	// Funktion gibt den Bauauftrag an der Stelle "pos" in der Bauliste zurück
 	short GetAssemblyListEntry(USHORT pos) const {return m_iEntry[pos];}
-	
+
 	// Nachfolgende Funktionen geben die noch verbleibenden Kosten des Auftrages in der Bauliste zurück
 	int GetNeededIndustryInAssemblyList(USHORT entry) const {return m_iNeededIndustryInAssemblyList[entry];}
 	UINT GetNeededTitanInAssemblyList(USHORT entry) const {return m_iNeededTitanInAssemblyList[entry];}
@@ -68,10 +68,10 @@ public:
 
 	// Funktion gibt zurück, ob das Gebäude in der Bauliste gekauft wurde
 	BOOLEAN GetWasBuildingBought() const {return m_bWasBuildingBought;}
-	
+
 	// Funktion gibt die kompletten Kaufkosten des Bauauftrages zurück
 	int GetBuildCosts() const {return m_iBuildCosts;}
-	
+
 	// zum Schreiben der Membervariablen
 	// Setzt ob ein Bauauftrag gekauft wurde auf wahr oder falsch
 	void SetWasBuildingBought(BOOLEAN TrueOrFalse) {m_bWasBuildingBought = TrueOrFalse;}
@@ -91,7 +91,7 @@ public:
 
 	// Funktion	macht einen Eintrag in der Bauliste, dafür wird die RunningNumber des Auftrages übergeben.
 	// z.B. 1 = primitive Farm, -2 = Upgrade primitive Farm zu Typ 1 Automatikfarm.
-	// Nachdem wir diese Funktion aufgerufen haben und ein TRUE zurückbekommen haben müssen wir die Funktion 
+	// Nachdem wir diese Funktion aufgerufen haben und ein TRUE zurückbekommen haben müssen wir die Funktion
 	// CalculateVariables() aufgerufen! (Weil wir wenn die Handelsgüter aus der Bauliste verschwinden, sofort das
 	// neue Credits angezeigt werden soll.)
 	BOOLEAN MakeEntry(int runningNumber, const CPoint &ko, std::vector<std::vector<CSystem>>& systems/*[][STARMAP_SECTORS_VCOUNT]*/, bool bOnlyTest = false);
@@ -133,7 +133,7 @@ private:
 // Attribute
 	// Der Auftrag in der Bauliste.
 	short m_iEntry[ALE];
-	
+
 	// Variablen geben die noch verbleibenden Kosten der Elemente in der Bauliste an
 	int	  m_iNeededIndustryInAssemblyList[ALE];	// benötigte IP die wir noch benötigen um das Projekt fertig zu stellen
 	UINT m_iNeededTitanInAssemblyList[ALE];	// benötigtes Titan, das wir benötigen um das Projekt fertig zu stellen
@@ -153,8 +153,8 @@ private:
 	UINT m_iNeededDeritiumForBuild;			// benötigtes Deritium zum Bauen des Gebäudes/Updates
 
 	// Wurde das Gebäude gekauft in dieser Runde gekauft
-	BOOLEAN   m_bWasBuildingBought;			
-	
+	BOOLEAN   m_bWasBuildingBought;
+
 	// Die Baukosten eines Auftrages
-	int    m_iBuildCosts;	
+	int    m_iBuildCosts;
 };

@@ -97,14 +97,14 @@ void CSector::Serialize(CArchive &ar)
 {
 	// Funktion der Basisklasse aufrufen
 	CObject::Serialize(ar);
-	
+
 	// Wird geschrieben?
 	if (ar.IsStoring())
 	// Alle Variablen in der richtigen Reihenfolge schreiben
 	{
 		ar << m_Attributes;
 		ar << m_KO;
-		
+
 		// alle Maps speichern
 		ar << m_byStatus.size();
 		for (map<CString, BYTE>::const_iterator it = m_byStatus.begin(); it != m_byStatus.end(); ++it)
@@ -139,10 +139,10 @@ void CSector::Serialize(CArchive &ar)
 		ar << m_byOwnerPoints.size();
 		for (map<CString, BYTE>::const_iterator it = m_byOwnerPoints.begin(); it != m_byOwnerPoints.end(); ++it)
 			ar << it->first << it->second;
-		
+
 		ar << m_sColonyOwner;
-		ar << m_sOwnerOfSector;		
-		
+		ar << m_sOwnerOfSector;
+
 		// Nur wenn ein Sonnensystem in dem Sektor ist müssen die folgenden Variablen gespeichert werden
 		if (GetSunSystem())
 		{
@@ -161,7 +161,7 @@ void CSector::Serialize(CArchive &ar)
 		int number = 0;
 		ar >> m_Attributes;
 		ar >> m_KO;
-		
+
 		// Maps laden
 		m_byStatus.clear();
 		size_t mapSize = 0;
@@ -276,7 +276,7 @@ void CSector::Serialize(CArchive &ar)
 		}
 
 		ar >> m_sColonyOwner;
-		ar >> m_sOwnerOfSector;		
+		ar >> m_sOwnerOfSector;
 		// Nur wenn ein Sonnensystem in dem Sektor ist müssen die folgenden Variablen geladen werden
 		if (GetSunSystem())
 		{
@@ -350,7 +350,7 @@ void CSector::GetAvailableResources(BOOLEAN bResources[DERITIUM + 1], BOOLEAN bO
 		CPlanet* pPlanet = &m_Planets[i];
 		if (!pPlanet->GetHabitable())
 			continue;
-		
+
 		// wenn nur kolonisierte Planeten betrachtet werden sollen und der Planet nicht kolonisiert ist,
 		// dann nächsten Planeten betrachten
 		if (bOnlyColonized && !pPlanet->GetColonized())
@@ -387,12 +387,12 @@ void CSector::GenerateSector(int sunProb, int minorProb)
 
 		// Es konnte ein Sektor für eine Minorrace generiert werden
 		if (bMinor)
-		{	
+		{
 			float currentHabitants = 0.0f;
 			USHORT random = rand()%3+1;
 			// Solange Planeten generieren, bis mind. eine zufällige Anzahl Bevölkerung darauf leben
-			do 
-			{												
+			do
+			{
 				this->CreatePlanets();
 				currentHabitants = this->GetCurrentHabitants();
 				if (currentHabitants > 20.000f)
@@ -406,11 +406,11 @@ void CSector::GenerateSector(int sunProb, int minorProb)
 						maxHabitants += m_Planets.at(i).GetMaxHabitant();
 					if (maxHabitants > (40.000f + random * 7))
 						break;
-				}				
+				}
 			} while (currentHabitants <= (15.000f / random));
 		}
 		else
-		{		
+		{
 			// Wenn keine Minorrace im Sektor lebt
 			this->CreatePlanets();
 		}
@@ -421,7 +421,7 @@ void CSector::GenerateSector(int sunProb, int minorProb)
 void CSector::CreatePlanets(const CString& sMajorID)
 {
 	m_Planets.clear();
-	
+
 	if (GetSunSystem())
 	{
 		// Es gibt 7 verschiedene Sonnenfarben
@@ -493,12 +493,12 @@ void CSector::CreatePlanets(const CString& sMajorID)
 							zone = planet.Create(m_strSectorName, zone, i, true);
 							m_Planets.push_back(planet);
 						}
-						
+
 						// aktuelle Bevölkerung prüfen
 						float fCurrentHabitants = this->GetCurrentHabitants();
 						if (fCurrentHabitants > 25.000f || fCurrentHabitants < 10.000f)
 							continue;
-						
+
 						// maximale Bevölkerung prüfen
 						float fMaxHabitants = 0.0f;
 						for (int i = 0; i < static_cast<int>(m_Planets.size()); i++)
@@ -521,7 +521,7 @@ void CSector::CreatePlanets(const CString& sMajorID)
 						}
 						if (!bResOkay)
 							continue;
-						
+
 						// Deritium überprüfen
 						if (!bRes[DERITIUM])
 						{
@@ -540,7 +540,7 @@ void CSector::CreatePlanets(const CString& sMajorID)
 				}
 			}
 			else
-			{	
+			{
 				AfxMessageBox("ERROR! Could not open file \"MajorPlanets.data\"...");
 				exit(1);
 			}
@@ -568,14 +568,14 @@ void CSector::CreatePlanets(const CString& sMajorID)
 
 				// nicht zu viele große Planeten generieren, da diese dann nicht mehr
 				// in die View passen
-				
+
 				// kleine und mittlere Planeten zählen die Systemgrößte um 1 hoch
 				if (planet.GetSize() <= 1)
 					nSizeCounter += 1;
 				// alle anderen um 2
 				else
 					nSizeCounter += 2;
-				
+
 				if (nSizeCounter > 10)
 					break;
 			}
@@ -591,7 +591,7 @@ void CSector::CreateAnomaly(void)
 		delete m_pAnomaly;
 		m_pAnomaly = NULL;
 	}
-	
+
 	m_pAnomaly = new CAnomaly();
 }
 
@@ -639,13 +639,13 @@ void CSector::ClearAllPoints()
 	// Funktion bei jeder neuen Runde anfangs aufrufen!!! Wenn nämlich in diesem Sektor gerade keine Station einer
 	// Rasse gebaut wird, dann setzen wir auch die noch gebrauchten Punkte und die anfänglich gebrauchten Punkte
 	// wieder auf NULL
-	
+
 	// Falls der Planet gerade geterraformt wird, wird er hier erstmal wieder auf FALSE gesetzt.
 	for (int i = 0; i < static_cast<int>(m_Planets.size()); i++)
 		m_Planets[i].SetIsTerraforming(FALSE);
-	
+
 	m_byOwnerPoints.clear();
-	
+
 	// nun können alle StartStationPoint die auf 0 stehen in der Map gelöscht werden
 	for (map<CString, short>::iterator it = m_iStartStationPoints.begin(); it != m_iStartStationPoints.end(); )
 	{
@@ -658,7 +658,7 @@ void CSector::ClearAllPoints()
 			++it;
 	}
 	m_bIsStationBuild.clear();
-	
+
 	m_iShipPathPoints = 0;
 
 	m_bWhoIsOwnerOfShip.clear();
@@ -668,7 +668,7 @@ void CSector::ClearAllPoints()
 	// Sagen das erstmal kein Außenposten und keine Sternbasis in dem Sektor steht
 	m_bOutpost.clear();
 	m_bStarbase.clear();
-	m_bShipPort.clear();	
+	m_bShipPort.clear();
 }
 
 /// Diese Funktion berechnet anhand der Besitzerpunkte und anderen Enflüssen, wem dieser Sektor schlussendlich
@@ -681,24 +681,24 @@ void CSector::CalculateOwner(const CString& sSystemOwner)
 	{
 		SetOwned(TRUE);
 		m_sOwnerOfSector = sSystemOwner;
-		return;		
+		return;
 	}
 	// Sektor gehört einer Minorrace
 	else if (m_sOwnerOfSector != "" && sSystemOwner == "" && this->GetMinorRace() == TRUE)
 		return;
-	
+
 	for (set<CString>::const_iterator it = m_bOutpost.begin(); it != m_bOutpost.end(); ++it)
 	{
 		SetOwned(TRUE);
 		m_sOwnerOfSector = *it;
-		return;	
+		return;
 	}
-	
+
 	for (set<CString>::const_iterator it = m_bStarbase.begin(); it != m_bStarbase.end(); ++it)
 	{
 		SetOwned(TRUE);
 		m_sOwnerOfSector = *it;
-		return;		
+		return;
 	}
 
 	// Ist obiges nicht eingetreten, so gehört demjenigen der Sektor, wer die meisten Besitzerpunkte hat. Ist hier
@@ -729,9 +729,9 @@ void CSector::CalculateOwner(const CString& sSystemOwner)
 
 /// Resetfunktion für die Klasse CSector
 void CSector::Reset()
-{	
+{
 	m_Attributes = 0;
-	
+
 	// Maps löschen
 	m_byStatus.clear();
 	m_iScanPower.clear();
@@ -744,18 +744,18 @@ void CSector::Reset()
 	m_iStartStationPoints.clear();
 	m_iNeededStationPoints.clear();
 	m_byOwnerPoints.clear();
-	
+
 	m_sOwnerOfSector = "";
 	m_sColonyOwner = "";
 	m_strSectorName = "";
-	m_iShipPathPoints = 0;	
+	m_iShipPathPoints = 0;
 	m_Planets.clear();
 
 	if (m_pAnomaly)
 	{
 		delete m_pAnomaly;
 		m_pAnomaly = NULL;
-	}	
+	}
 }
 
 ////////////////////////////////////////////////////////////////
@@ -790,8 +790,8 @@ void CSector::DrawSectorsName(CDC *pDC, CBotf2Doc* pDoc, CMajor* pPlayer)
 		{
 			//CRect(m_KO.x*STARMAP_SECTOR_WIDTH-50,m_KO.y*STARMAP_SECTOR_HEIGHT,m_KO.x*STARMAP_SECTOR_WIDTH+90,m_KO.y*STARMAP_SECTOR_HEIGHT+40)
 			pDC->DrawText(m_pAnomaly->GetMapName(m_KO), CRect(m_KO.x*STARMAP_SECTOR_WIDTH, m_KO.y*STARMAP_SECTOR_HEIGHT,m_KO.x*STARMAP_SECTOR_WIDTH+STARMAP_SECTOR_WIDTH,m_KO.y*STARMAP_SECTOR_HEIGHT+STARMAP_SECTOR_HEIGHT), DT_CENTER | DT_BOTTOM | DT_SINGLELINE | DT_WORD_ELLIPSIS);
-		}		
-	}	
+		}
+	}
 }
 
 /// Diese Funktion zeichnet die entsprechenden Schiffssymbole in den Sektor
@@ -804,10 +804,10 @@ void CSector::DrawShipSymbolInSector(Graphics *g, CBotf2Doc* pDoc, CMajor* pPlay
 	// alle Rassen holen
 	map<CString, CRace*>* pmRaces = pDoc->GetRaceCtrl()->GetRaces();
 	ASSERT(pmRaces);
-	
+
 	CString sFilePath;
 	short nCount = 0;
-	
+
 	CPoint pt;
 	pt.x = m_KO.x * STARMAP_SECTOR_WIDTH;
 	pt.y = m_KO.y * STARMAP_SECTOR_HEIGHT;
@@ -815,7 +815,7 @@ void CSector::DrawShipSymbolInSector(Graphics *g, CBotf2Doc* pDoc, CMajor* pPlay
 	// durch alle Rassen iterieren und Schiffsymbole zeichnen
 	CString sAppPath = CIOData::GetInstance()->GetAppPath();
 	for (map<CString, CRace*>::const_iterator it = pmRaces->begin(); it != pmRaces->end(); ++it)
-	{		
+	{
 		if (pPlayer->GetRaceID() == it->first && this->GetOwnerOfShip(it->first) == TRUE
 			|| this->GetOwnerOfShip(it->first) == TRUE && this->GetNeededScanPower(it->first) < this->GetScanPower(pPlayer->GetRaceID()))
 		{
@@ -828,7 +828,7 @@ void CSector::DrawShipSymbolInSector(Graphics *g, CBotf2Doc* pDoc, CMajor* pPlay
 			// sonst das Rassensymbol zeichnen
 			else
 				sFilePath = sAppPath + "Graphics\\Symbols\\" + it->first + ".bop";
-			
+
 			Bitmap* ship = Bitmap::FromFile(sFilePath.AllocSysString());
 			// konnte die Grafik nicht geladen werden, dann wird ein Standardsymbol geladen
 			if (!ship || ship->GetLastStatus() != Ok)
@@ -840,7 +840,7 @@ void CSector::DrawShipSymbolInSector(Graphics *g, CBotf2Doc* pDoc, CMajor* pPlay
 			delete ship;
 			nCount++;
 		}
-		
+
 		// Jetzt werden die Stationen wenn möglich gezeichnet
 		if ((pPlayer->GetRaceID() == it->first || this->GetScanPower(pPlayer->GetRaceID()) > 0) &&
 			(this->GetIsStationBuilding(it->first) == TRUE || this->GetOutpost(it->first) == TRUE || this->GetStarbase(it->first) == TRUE))
@@ -854,7 +854,7 @@ void CSector::DrawShipSymbolInSector(Graphics *g, CBotf2Doc* pDoc, CMajor* pPlay
 			// sonst das Rassensymbol zeichnen
 			else
 				sFilePath = sAppPath + "Graphics\\Symbols\\" + it->first + ".bop";
-			
+
 			Bitmap* ship = Bitmap::FromFile(sFilePath.AllocSysString());
 			// konnte die Grafik nicht geladen werden, dann wird ein Standardsymbol geladen
 			if (!ship || ship->GetLastStatus() != Ok)

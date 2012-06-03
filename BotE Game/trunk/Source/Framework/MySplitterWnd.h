@@ -15,7 +15,7 @@
 //
 
 /////////////////////////////////////////////////////////////////////////////
-// Fenster CMySplitterWnd 
+// Fenster CMySplitterWnd
 
 class CMySplitterWnd : public CSplitterWnd
 {

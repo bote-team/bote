@@ -35,11 +35,11 @@ CCeXDib::~CCeXDib()
 
 void CCeXDib::FreeResources()
 {
-	if (m_hMemDC)	
+	if (m_hMemDC)
 		::DeleteDC(m_hMemDC);
-	if (m_hBitmap)	
+	if (m_hBitmap)
 		::DeleteObject(m_hBitmap);
-	if (m_hDib)		
+	if (m_hDib)
 		delete m_hDib;
 
 	m_hDib = NULL;
@@ -58,11 +58,11 @@ HDIB CCeXDib::Create(DWORD dwWidth, DWORD dwHeight, WORD wBitCount)
 
 	// Following <switch> is taken from
 	// CDIBSectionLite class by Chris Maunder
-    switch (wBitCount) 
+    switch (wBitCount)
     {
 	    case 1:  m_wColors = 2;   break;
 #ifdef _WIN32_WCE
-        case 2:  m_wColors = 4;   break;   // winCE only       
+        case 2:  m_wColors = 4;   break;   // winCE only
 #endif
         case 4:  m_wColors = 16;  break;
         case 8:  m_wColors = 256; break;
@@ -104,7 +104,7 @@ HDIB CCeXDib::Create(DWORD dwWidth, DWORD dwHeight, WORD wBitCount)
     m_bi.biHeight = dwHeight;       // fill in height from parameter
     m_bi.biPlanes = 1;              // must be 1
     m_bi.biBitCount = wBitCount;    // from parameter
-    m_bi.biCompression = BI_RGB;    
+    m_bi.biCompression = BI_RGB;
     m_bi.biSizeImage = m_dwLineWidth * dwHeight;
     m_bi.biXPelsPerMeter = 0;
     m_bi.biYPelsPerMeter = 0;
@@ -139,8 +139,8 @@ DWORD CCeXDib::GetPaletteSize()
 
 LPBYTE CCeXDib::GetBits()
 {
-	if (m_hDib)	
-		return ((LPBYTE)m_hDib + *(LPDWORD)m_hDib + GetPaletteSize()); 
+	if (m_hDib)
+		return ((LPBYTE)m_hDib + *(LPDWORD)m_hDib + GetPaletteSize());
 
 	return NULL;
 } // End of GetBits
@@ -162,7 +162,7 @@ DWORD CCeXDib::GetLineWidth()
 
 void CCeXDib::BlendPalette(COLORREF crColor, DWORD dwPerc)
 {
-	if (m_hDib == NULL || m_wColors == 0) 
+	if (m_hDib == NULL || m_wColors == 0)
 		return;
 
 	LPBYTE iDst = (LPBYTE)(m_hDib) + sizeof(BITMAPINFOHEADER);
@@ -175,7 +175,7 @@ void CCeXDib::BlendPalette(COLORREF crColor, DWORD dwPerc)
 	g = GetGValue(crColor);
 	b = GetBValue(crColor);
 
-	if (dwPerc > 100) 
+	if (dwPerc > 100)
 		dwPerc = 100;
 
 	for (i = 0; i < m_wColors; i++)
@@ -188,7 +188,7 @@ void CCeXDib::BlendPalette(COLORREF crColor, DWORD dwPerc)
 
 void CCeXDib::Clear(BYTE byVal)
 {
-	if (m_hDib) 
+	if (m_hDib)
 		memset(GetBits(), byVal, m_bi.biSizeImage);
 } // End of Clear
 
@@ -204,7 +204,7 @@ void CCeXDib::SetPixelIndex(DWORD dwX, DWORD dwY, BYTE byI)
 void CCeXDib::Clone(CCeXDib* src)
 {
 	Create(src->GetWidth(), src->GetHeight(), src->GetBitCount());
-	if (m_hDib) 
+	if (m_hDib)
 		memcpy(m_hDib, src->m_hDib, GetSize());
 } // End of Clone
 
@@ -219,7 +219,7 @@ void CCeXDib::SetPaletteIndex(BYTE byIdx, BYTE byR, BYTE byG, BYTE byB)
 	{
 		LPBYTE iDst = (LPBYTE)(m_hDib) + sizeof(BITMAPINFOHEADER);
 		if ((byIdx >= 0) && (byIdx < m_wColors))
-		{	
+		{
 			long ldx = byIdx * sizeof(RGBQUAD);
 			iDst[ldx++] = (BYTE)byB;
 			iDst[ldx++] = (BYTE)byG;
@@ -276,7 +276,7 @@ void CCeXDib::Copy(HDC hDC, DWORD dwX, DWORD dwY)
 			return;
 		} // if
 	} // if
-	
+
 	HDC hMemDC = ::CreateCompatibleDC(hDC);
 	HBITMAP hOldBitmap = (HBITMAP)::SelectObject(hMemDC, m_hBitmap);
 	::BitBlt(hMemDC, 0, 0, m_bi.biWidth, m_bi.biHeight, hDC, dwX, dwY, SRCCOPY);
@@ -329,13 +329,13 @@ BOOL CCeXDib::WriteBMP(LPCTSTR bmpFileName)
 	if (*bmpFileName == _T('\0') || m_hDib == 0) return 0;
 
 	hFile=CreateFile(			// open if exist ini file
-		bmpFileName,			// pointer to name of the file 
-		GENERIC_WRITE,			// access mode 
-		0,						// share mode 
-		NULL,					// pointer to security descriptor 
-		CREATE_ALWAYS,			// how to create 
-		FILE_ATTRIBUTE_NORMAL,	// file attributes 
-		NULL				 	// handle to file with attributes to copy  
+		bmpFileName,			// pointer to name of the file
+		GENERIC_WRITE,			// access mode
+		0,						// share mode
+		NULL,					// pointer to security descriptor
+		CREATE_ALWAYS,			// how to create
+		FILE_ATTRIBUTE_NORMAL,	// file attributes
+		NULL				 	// handle to file with attributes to copy
 		);
 	if (hFile == INVALID_HANDLE_VALUE) return FALSE;
 
@@ -348,20 +348,20 @@ BOOL CCeXDib::WriteBMP(LPCTSTR bmpFileName)
 
     // Write the file header
 	WriteFile(						// write ini (sync mode <-> no overlapped)
-		hFile,						// handle of file to write 
-		(LPSTR) &hdr,				// address of buffer that contains data  
-		sizeof(BITMAPFILEHEADER),	// number of bytes to write 
-		&nByteWrite,				// address of number of bytes written 
-		NULL	 					// address of structure for data 
+		hFile,						// handle of file to write
+		(LPSTR) &hdr,				// address of buffer that contains data
+		sizeof(BITMAPFILEHEADER),	// number of bytes to write
+		&nByteWrite,				// address of number of bytes written
+		NULL	 					// address of structure for data
 		);
 
     // Write the DIB header and the bits
 	WriteFile(						// write ini (sync mode <-> no overlapped)
-		hFile,						// handle of file to write 
-		(LPSTR) m_hDib,				// address of buffer that contains data  
-		GetSize(),					// number of bytes to write 
-		&nByteWrite,				// address of number of bytes written 
-		NULL	 					// address of structure for data 
+		hFile,						// handle of file to write
+		(LPSTR) m_hDib,				// address of buffer that contains data
+		GetSize(),					// number of bytes to write
+		&nByteWrite,				// address of number of bytes written
+		NULL	 					// address of structure for data
 		);
 
 	CloseHandle(hFile);				// free file handle

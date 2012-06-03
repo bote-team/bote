@@ -50,7 +50,7 @@ public:
 	/// @param specialTechComplex ausspionierter Spezialforschungskomplex
 	/// @param choosenSpecialTech gewählter Bonus aus der Spezialforschungs
 	CScienceIntelObj(const CString& sOwnerID, const CString& sEnemyID, USHORT round, BOOLEAN isSpy, short techLevel, short techType, RESEARCH_COMPLEX::Typ specialTechComplex, short choosenSpecialTech);
-	
+
 	/// Destruktor
 	~CScienceIntelObj(void);
 

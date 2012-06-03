@@ -12,7 +12,7 @@
 #pragma once
 #include "Options.h"
 
-class CWorker : public CObject  
+class CWorker : public CObject
 {
 public:
 	DECLARE_SERIAL (CWorker)

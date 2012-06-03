@@ -26,7 +26,7 @@ CDiplomacyInfo::CDiplomacyInfo(const CDiplomacyInfo & rhs)
 	m_sToRace = rhs.m_sToRace;
 	m_sFromRace = rhs.m_sFromRace;
 	m_sText = rhs.m_sText;
-	
+
 	m_nFlag = rhs.m_nFlag;
 	m_nType = rhs.m_nType;
 	m_nSendRound = rhs.m_nSendRound;
@@ -55,7 +55,7 @@ CDiplomacyInfo & CDiplomacyInfo::operator=(const CDiplomacyInfo & rhs)
 	m_sToRace = rhs.m_sToRace;
 	m_sFromRace = rhs.m_sFromRace;
 	m_sText = rhs.m_sText;
-	
+
 	m_nFlag = rhs.m_nFlag;
 	m_nType = rhs.m_nType;
 	m_nSendRound = rhs.m_nSendRound;
@@ -71,24 +71,24 @@ CDiplomacyInfo & CDiplomacyInfo::operator=(const CDiplomacyInfo & rhs)
 	m_nAnswerStatus = rhs.m_nAnswerStatus;
 	m_sHeadline = rhs.m_sHeadline;
 	m_sWarPartner = rhs.m_sWarPartner;
-	
+
 	return *this;
 }
 
 ///////////////////////////////////////////////////////////////////////
 // Speichern / Laden
 ///////////////////////////////////////////////////////////////////////
-void CDiplomacyInfo::Serialize(CArchive &ar)		
+void CDiplomacyInfo::Serialize(CArchive &ar)
 {
 	CObject::Serialize(ar);
-	
+
 	// wenn gespeichert wird
 	if (ar.IsStoring())
 	{
 		ar << m_sToRace;					// an welche Rasse (ID) geht das Angebot
 		ar << m_sFromRace;					// von welcher Rasse (ID) kommt das Angebot
 		ar << m_sText;						// Angebotstext
-		
+
 		ar << m_nFlag;						// Angebot, Antwort oder irgendwas anderes
 		ar << m_nType;						// Art des Angebots (Krieg, NAP, Geschenk usw.)
 		ar << m_nSendRound;					// in welcher Runde wurde das Angebot abgeschickt
@@ -111,7 +111,7 @@ void CDiplomacyInfo::Serialize(CArchive &ar)
 		ar >> m_sToRace;					// an welche Rasse (ID) geht das Angebot
 		ar >> m_sFromRace;					// von welcher Rasse (ID) kommt das Angebot
 		ar >> m_sText;						// Angebotstext
-		
+
 		ar >> m_nFlag;						// Angebot, Antwort oder irgendwas anderes
 		int nType;
 		ar >> nType;						// Art des Angebots (Krieg, NAP, Geschenk usw.)

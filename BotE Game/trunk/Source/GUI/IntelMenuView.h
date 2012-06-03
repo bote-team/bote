@@ -103,7 +103,7 @@ private:
 	short m_iOldClickedIntelReport;			///< auf welchen Bericht wurde vorher geklickt, braucht man als Modifikator
 	bool m_bSortDesc[4];					///< bei Klick zum Sortieren soll wie sortiert werden?
 	int m_nScrollPos;						///< ab welcher Rasse sollen die Logos gezeichnet werden (es passen ja immer nur 6 hin)
-	
+
 protected:
 	DECLARE_MESSAGE_MAP()
 public:

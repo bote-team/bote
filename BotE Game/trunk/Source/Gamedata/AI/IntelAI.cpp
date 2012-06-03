@@ -22,12 +22,12 @@ CIntelAI::~CIntelAI(void)
 void CIntelAI::CalcIntelligence(CBotf2Doc* pDoc)
 {
 	ASSERT(pDoc);
-	
+
 	// Struktur für eine Liste mit Rassen-ID und Geheimdienstpunkten
 	struct INTELLIST {
 		CString sRace;
 		UINT points;
-		
+
 		bool operator< (const INTELLIST& elem2) const { return points < elem2.points;}
 		bool operator> (const INTELLIST& elem2) const { return points > elem2.points;}
 		INTELLIST() : sRace(""), points(0) {}
@@ -46,7 +46,7 @@ void CIntelAI::CalcIntelligence(CBotf2Doc* pDoc)
 				points += pIntel->GetSPStorage(0, itt->first) + pIntel->GetSPStorage(1, itt->first);
 		intellist.Add(INTELLIST(it->first, points));
 	}
-	// nun Feld nach den gesammten Geheimdienstpunkten absteigend sortiren lassen.		
+	// nun Feld nach den gesammten Geheimdienstpunkten absteigend sortiren lassen.
 	c_arraysort<CArray<INTELLIST>, INTELLIST> (intellist, sort_desc);
 	// unere Priorität ist der Index der Rasse im Feld.
 	// wenn die Punkte sich nicht mehr als 10% bzw. 100SP unterscheiden, dann wird die Priorität des vorherigen
@@ -54,7 +54,7 @@ void CIntelAI::CalcIntelligence(CBotf2Doc* pDoc)
 	m_byIntelPrio[intellist.GetAt(0).sRace] = rand()%2;
 	for (int i = 1; i < intellist.GetSize(); i++)	// beim zweiten Index starten! Da das erste Element eine 0er Priorität hat
 	{
-		if (intellist.GetAt(i-1).points - intellist.GetAt(i).points > 100			
+		if (intellist.GetAt(i-1).points - intellist.GetAt(i).points > 100
 			&& (intellist.GetAt(i).points * 100 / (intellist.GetAt(i-1).points+1) < 90))
 			m_byIntelPrio[intellist.GetAt(i).sRace] = i;
 		// ansonsten ist die Priorität der des Vorgängers
@@ -77,7 +77,7 @@ void CIntelAI::CalcIntelligence(CBotf2Doc* pDoc)
 			}
 			m_byIntelPrio[it->first] += badReports[it->first];
 		}
-	
+
 #ifdef TRACE_INTELAI
 	for (std::map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 		MYTRACE(MT::LEVEL_INFO, "Intel-AI: Intel Prio of %s is %d\n", it->first, m_byIntelPrio[it->first]);
@@ -99,10 +99,10 @@ void CIntelAI::CalcIntelligence(CBotf2Doc* pDoc)
 				pIntel->SetAssignment()->SetGlobalPercentage(2, 100, it->second, "", pmMajors);
 				continue;
 			}
-						
+
 			// wenn die innere Sicherheit nicht verändert werden musste, dann können wir vielleicht selbst aktiv werden
 			// KI benutzt nur Sabotage
-			
+
 			// Wie wird ein mögliches Geheimdienstopfer ermittelt?
 			// - haben die schlechteste Beziehung zum Opfer
 			// - Beziehung unter 50% oder aktueller Vertrag kleiner Freundschaft und kein Verteidigungsbündnis
@@ -175,16 +175,16 @@ void CIntelAI::CalcIntelligence(CBotf2Doc* pDoc)
 					innerSecPerc = 100;
 				else if (innerSecPerc < 0)
 					innerSecPerc = 0;
-				
+
 				if (pIntel->GetAssignment()->GetGlobalSabotagePercentage(pWorstRace->GetRaceID()) != 100 - innerSecPerc)
 					pIntel->SetAssignment()->SetGlobalPercentage(2, 100, it->second, "", pmMajors);
 				pIntel->SetAssignment()->SetGlobalPercentage(1, 100 - innerSecPerc, it->second, pWorstRace->GetRaceID(), pmMajors);
-			
+
 				// Wann wird die Geheimdiensaktion gestartet
 				// - wenn unsere Geheimdienstpunkte + Punkte aus Depot > gegnerische Innere Sicherheit + deren Inneres Depot
-				
+
 				int type = rand()%4;	// Typ der Aktion (Wirtschaft, Wissenschaft, Militär oder Diplomatie)
-				UINT ourPoints = pIntel->GetSecurityPoints() 
+				UINT ourPoints = pIntel->GetSecurityPoints()
 					* pIntel->GetAssignment()->GetGlobalSabotagePercentage(pWorstRace->GetRaceID()) / 100
 					+ pIntel->GetSPStorage(1, pWorstRace->GetRaceID()) * pIntel->GetAssignment()->GetSabotagePercentages(pWorstRace->GetRaceID(), type) / 100;
 				ourPoints += ourPoints * pIntel->GetBonus(type, 1) / 100;

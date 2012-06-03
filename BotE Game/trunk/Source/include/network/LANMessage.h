@@ -44,7 +44,7 @@ namespace network
 
 		void SetValue(const CString &param, const CString &value);
 		void SetValue(const CString &param, UINT value);
-		
+
 		void SetSenderIP(DWORD dwIP) {m_dwSenderIP = dwIP;}
 		void SetSenderPort(UINT nPort) {m_nSenderPort = nPort;}
 		void SetReceiverIP(DWORD dwIP) {m_dwReceiverIP = dwIP;}
@@ -60,7 +60,7 @@ namespace network
 		UINT GetSenderPort() const {return m_nSenderPort;}
 		DWORD GetReceiverIP() const {return m_dwReceiverIP;}
 		UINT GetReceiverPort() const {return m_nReceiverPort;}
-		
+
 		void GetSender(DWORD &dwIP, UINT &nPort) const {dwIP = m_dwSenderIP; nPort = m_nSenderPort;}
 		void GetReceiver(DWORD &dwIP, UINT &nPort) const {dwIP = m_dwReceiverIP; nPort = m_nReceiverPort;}
 

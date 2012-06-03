@@ -2,8 +2,8 @@
 #pragma once
 
 // Die folgenden Makros definieren die mindestens erforderliche Plattform. Die mindestens erforderliche Plattform
-// ist die früheste Windows-, Internet Explorer-Version usw., die über die erforderlichen Features zur Ausführung 
-// Ihrer Anwendung verfügt. Die Makros aktivieren alle Features, die auf den Plattformversionen bis 
+// ist die früheste Windows-, Internet Explorer-Version usw., die über die erforderlichen Features zur Ausführung
+// Ihrer Anwendung verfügt. Die Makros aktivieren alle Features, die auf den Plattformversionen bis
 // einschließlich der angegebenen Version verfügbar sind.
 
 // Ändern Sie folgende Definitionen für Plattformen, die älter als die unten angegebenen sind.

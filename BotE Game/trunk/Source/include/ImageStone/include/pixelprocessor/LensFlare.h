@@ -193,7 +193,7 @@ private:
         if (procent < 1)
             fixpix (s, 1 - procent, ref->ccol) ;
     }
-    
+
     virtual void OnEnterProcess (FCObjImage* pImg)
     {
         int   matt = pImg->Width() ;

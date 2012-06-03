@@ -30,7 +30,7 @@ protected:
 
 	// This object includes the project wide style of the buttons
 	CRoundButtonStyle m_tButtonStyle;
-	
+
 	CRoundButton2 m_btNewGame;
 	CRoundButton2 m_btMultiplayer;
 	CRoundButton2 m_btLoadGame;
@@ -42,10 +42,10 @@ protected:
 
 	Bitmap* m_pBkgndImg;				///< Hintergrundgrafik
 	CSize	m_TotalSize;				///< Größe der View
-	
+
 	int m_nTimeCounter;					///< Zähler für Timer
 	int m_nLogoTimer;					///< Zähler für Logo
-	
+
 	CChooseRaceView* m_pChooseRaceView;	///< Zeiger auf Rassenauswahlview
 	CNewGameView* m_pNewGameView;		///< Zeiger auf Spielstartansicht
 
@@ -63,7 +63,7 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 	virtual void OnDraw(CDC* /*pDC*/);
-	
+
 	virtual void OnInitialUpdate();
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
@@ -103,7 +103,7 @@ private:
 	virtual void OnCalculateGame();
 	virtual void OnChatMsg(network::CChatMsg *pMsg);
 
-	virtual void OnClientLost(const CString &) {}	
+	virtual void OnClientLost(const CString &) {}
 };
 
 

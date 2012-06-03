@@ -50,7 +50,7 @@ public:
 	/// Funktion gibt die Anzahl der bekannten Minorraces zurück.
 	/// @param race Rasse
 	short GetKnownMinors(const CString& sRace) {return m_nKnownMinors[sRace];}
-	
+
 	/// Funktion gibt die Anzahl der Minorracemitglieder zurück.
 	/// @param race Rasse
 	short GetMinorMembers(const CString& sRace) {return m_nMinorMembers[sRace];}

@@ -35,7 +35,7 @@ namespace MT
 #define MYTRACE_INIT_EX(x, y)	__noop
 #define MYTRACE_LEVEL(x)		__noop
 #define MYTRACE_DEINIT			__noop
-#define MYTRACE					__noop	
+#define MYTRACE					__noop
 */
 //#else	// _DEBUG
 
@@ -95,7 +95,7 @@ namespace MT
 #endif	// MT_USE_ATLTRACE
 			va_end(ptr);
 		};
-		
+
 		/* Open main log file */
 		static bool Init(LPCTSTR fName)
 		{
@@ -187,12 +187,12 @@ namespace MT
 				break;
 			}
 			CString decMsg;
-			//decMsg.Format("%s\t%s(%d)\t%s:\n%s%s", strLevel, m_pszFileName, m_nLineNo, m_callTime.Format("%c"), 
+			//decMsg.Format("%s\t%s(%d)\t%s:\n%s%s", strLevel, m_pszFileName, m_nLineNo, m_callTime.Format("%c"),
 			//	strFmt, strFmt.Right(1) != _T("\n") ? _T("\n") : "" );	// add line end if requred
 			decMsg.Format("%s\t%s%s", strLevel, strFmt, strFmt.Right(1) != _T("\n") ? _T("\n") : "" );	// add line end if requred
 			strFmt = decMsg;
 		};
-		
+
 		/* Printout message into file */
 		void __cdecl printMessageV(FILE *pFile,  CString &strFmt, va_list args) const
 		{

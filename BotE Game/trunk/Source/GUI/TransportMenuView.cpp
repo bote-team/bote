@@ -61,17 +61,17 @@ void CTransportMenuView::OnDraw(CDC* dc)
 	CMyMemDC pDC(dc);
 	CRect client;
 	GetClientRect(&client);
-		
+
 	// Graphicsobjekt, in welches gezeichnet wird anlegen
 	Graphics g(pDC->GetSafeHdc());
-	
+
 	g.Clear(Color::Black);
 	g.SetSmoothingMode(SmoothingModeHighSpeed);
 	g.SetInterpolationMode(InterpolationModeLowQuality);
 	g.SetPixelOffsetMode(PixelOffsetModeHighSpeed);
 	g.SetCompositingQuality(CompositingQualityHighSpeed);
 	g.ScaleTransform((REAL)client.Width() / (REAL)m_TotalSize.cx, (REAL)client.Height() / (REAL)m_TotalSize.cy);
-	
+
 	// ***************************** DIE SCHIFFSTRANSPORT ANSICHT ZEICHNEN **********************************
 	DrawTransportMenue(&g);
 	// ************** DIE SCHIFFSDESIGN ANSICHT ZEICHNEN ist hier zu Ende **************
@@ -104,7 +104,7 @@ void CTransportMenuView::OnInitialUpdate()
 	CMainBaseView::OnInitialUpdate();
 
 	// TODO: Add your specialized code here and/or call the base class
-		
+
 	// Transportansicht
 	m_iTransportStorageQuantity = 1;
 }
@@ -156,13 +156,13 @@ void CTransportMenuView::DrawTransportMenue(Graphics* g)
 
 	CString fontName = "";
 	Gdiplus::REAL fontSize = 0.0;
-	
+
 	// Rassenspezifische Schriftart auswählen
 	CFontLoader::CreateGDIFont(pMajor, 2, fontName, fontSize);
 	// Schriftfarbe wählen
 	Gdiplus::Color normalColor;
 	CFontLoader::GetGDIFontColor(pMajor, 3, normalColor);
-	
+
 	StringFormat fontFormat;
 	fontFormat.SetAlignment(StringAlignmentCenter);
 	fontFormat.SetLineAlignment(StringAlignmentCenter);
@@ -176,7 +176,7 @@ void CTransportMenuView::DrawTransportMenue(Graphics* g)
 
 	if (bg_transportmenu)
 		g->DrawImage(bg_transportmenu, 0, 0, 1075, 750);
-	
+
 	CString s;
 	CPoint p = pDoc->GetKO();
 	CString systemOwner = pDoc->m_System[p.x][p.y].GetOwnerOfSystem();
@@ -196,7 +196,7 @@ void CTransportMenuView::DrawTransportMenue(Graphics* g)
 	g->DrawString(CResourceManager::GetString("TROOPS").AllocSysString(), -1, &font, RectF(0,560,1075,60), &fontFormat, &fontBrush);
 	g->DrawString(CResourceManager::GetString("SELECTED").AllocSysString(), -1, &font, RectF(0,620,1075,60), &fontFormat, &fontBrush);
 	fontBrush.SetColor(normalColor);
-	
+
 	// Inhalte des system- und globalen Lagers zeichnen
 	CShip* ship = &pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex());
 	for (int i = TITAN; i <= DERITIUM; i++)
@@ -207,15 +207,15 @@ void CTransportMenuView::DrawTransportMenue(Graphics* g)
 				res += ship->GetFleet()->GetShipFromFleet(j)->GetLoadedResources(i);
 		// Lagerinhalt im Schiff zeichnen
 		fontFormat.SetAlignment(StringAlignmentFar);
-		s.Format("%d", res);		
+		s.Format("%d", res);
 		g->DrawString(s.AllocSysString(), -1, &font, RectF(0,120+i*60,725,60), &fontFormat, &fontBrush);
-		
+
 		if (systemOwner == shipOwner)
 		{
 			// Lagerinhalt im System zeichnen
 			fontFormat.SetAlignment(StringAlignmentNear);
 			s.Format("%d",pDoc->m_System[p.x][p.y].GetResourceStore(i));
-			g->DrawString(s.AllocSysString(), -1, &font, RectF(350,120+i*60,725,60), &fontFormat, &fontBrush);			
+			g->DrawString(s.AllocSysString(), -1, &font, RectF(350,120+i*60,725,60), &fontFormat, &fontBrush);
 		}
 	}
 	// verfügbaren Lagerraum im Schiff zeichnen:
@@ -235,16 +235,16 @@ void CTransportMenuView::DrawTransportMenue(Graphics* g)
 		usedStorage += pDoc->m_TroopInfo.GetAt(id).GetSize();
 	}
 */
-	
+
 	fontFormat.SetAlignment(StringAlignmentCenter);
 	s.Format("%s: %d", CResourceManager::GetString("AVAILABLE"), storageRoom - usedStorage);
 	g->DrawString(s.AllocSysString(), -1, &font, RectF(600,490,225,30), &fontFormat, &fontBrush);
-	
+
 	// Truppen im System und im Schiff zeichnen
 	fontFormat.SetAlignment(StringAlignmentFar);
 	s.Format("%d", troopNumber);
 	g->DrawString(s.AllocSysString(), -1, &font, RectF(0,560,725,60), &fontFormat, &fontBrush);
-	
+
 	if (systemOwner == shipOwner)
 	{
 		// Die Buttons zum Transportieren zeichen
@@ -254,14 +254,14 @@ void CTransportMenuView::DrawTransportMenue(Graphics* g)
 
 		s.Format("%d",pDoc->m_System[p.x][p.y].GetTroops()->GetSize());
 		fontFormat.SetAlignment(StringAlignmentNear);
-		g->DrawString(s.AllocSysString(), -1, &font, RectF(350,560,725,60), &fontFormat, &fontBrush);		
+		g->DrawString(s.AllocSysString(), -1, &font, RectF(350,560,725,60), &fontFormat, &fontBrush);
 	}
 	// Name der aktuell ausgewählten Truppe im System und auf dem Schiff zeichnen
 	if (m_byTroopNumberInSystem >= pDoc->m_System[p.x][p.y].GetTroops()->GetSize())
 		m_byTroopNumberInSystem = 0;
 	if (m_byTroopNumberInShip >= ship->GetTransportedTroops()->GetSize())
 		m_byTroopNumberInShip = 0;
-	
+
 	// Truppenbeschreibung auf der linken Seite, also die im System anzeigen
 	//pDC->Rectangle(25,270,225,700);
 	fontFormat.SetTrimming(StringTrimmingEllipsisCharacter);
@@ -273,7 +273,7 @@ void CTransportMenuView::DrawTransportMenue(Graphics* g)
 		fontFormat.SetAlignment(StringAlignmentCenter);
 		s = pDoc->m_TroopInfo.GetAt(id).GetName();
 		g->DrawString(s.AllocSysString(), -1, &font, RectF(25,280,200,30), &fontFormat, &fontBrush);
-				
+
 		fontBrush.SetColor(normalColor);
 		fontFormat.SetAlignment(StringAlignmentNear);
 		s.Format("%s: %d",CResourceManager::GetString("OPOWER"),pDoc->m_System[p.x][p.y].GetTroops()->GetAt(m_byTroopNumberInSystem).GetOffense());
@@ -286,14 +286,14 @@ void CTransportMenuView::DrawTransportMenue(Graphics* g)
 		g->DrawString(s.AllocSysString(), -1, &font, RectF(40,400,185,30), &fontFormat, &fontBrush);
 		s.Format("%s: %d",CResourceManager::GetString("MORALVALUE"),pDoc->m_TroopInfo.GetAt(id).GetMoralValue());
 		g->DrawString(s.AllocSysString(), -1, &font, RectF(40,430,185,30), &fontFormat, &fontBrush);
-		
+
 		fontFormat.SetLineAlignment(StringAlignmentNear);
 		fontFormat.SetFormatFlags(!StringFormatFlagsNoWrap);
 		s = pDoc->m_TroopInfo.GetAt(id).GetDescription();
 		g->DrawString(s.AllocSysString(), -1, &font, RectF(30,465,190,265), &fontFormat, &fontBrush);
 		fontFormat.SetLineAlignment(StringAlignmentCenter);
 		fontFormat.SetFormatFlags(StringFormatFlagsNoWrap);
-		
+
 		s.Format("#%d: %s", m_byTroopNumberInSystem+1, pDoc->m_TroopInfo.GetAt(id).GetName());
 		// Das Bild für die Truppe zeichnen
 		CString file;
@@ -302,15 +302,15 @@ void CTransportMenuView::DrawTransportMenue(Graphics* g)
 		if (graphic == NULL)
 				graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Troops\\ImageMissing.bop");
 		if (graphic)
-			g->DrawImage(graphic, 25, 95, 200, 150);		
+			g->DrawImage(graphic, 25, 95, 200, 150);
 	}
 	else
 		s = CResourceManager::GetString("NONE")+" "+CResourceManager::GetString("SELECTED");
-	
+
 	if (systemOwner == shipOwner)
 	{
 		fontFormat.SetAlignment(StringAlignmentNear);
-		g->DrawString(s.AllocSysString(), -1, &font, RectF(290,620,198,60), &fontFormat, &fontBrush);		
+		g->DrawString(s.AllocSysString(), -1, &font, RectF(290,620,198,60), &fontFormat, &fontBrush);
 	}
 	// Truppenbeschreibung auf der rechten Seite, also die im Schiff anzeigen
 	//pDC->Rectangle(850,270,1050,700);
@@ -322,7 +322,7 @@ void CTransportMenuView::DrawTransportMenue(Graphics* g)
 		fontFormat.SetAlignment(StringAlignmentCenter);
 		s = pDoc->m_TroopInfo.GetAt(id).GetName();
 		g->DrawString(s.AllocSysString(), -1, &font, RectF(850,280,200,30), &fontFormat, &fontBrush);
-				
+
 		fontBrush.SetColor(normalColor);
 		fontFormat.SetAlignment(StringAlignmentNear);
 		s.Format("%s: %d",CResourceManager::GetString("OPOWER"), ship->GetTransportedTroops()->GetAt(m_byTroopNumberInShip).GetOffense());
@@ -335,14 +335,14 @@ void CTransportMenuView::DrawTransportMenue(Graphics* g)
 		g->DrawString(s.AllocSysString(), -1, &font, RectF(865,400,185,30), &fontFormat, &fontBrush);
 		s.Format("%s: %d",CResourceManager::GetString("MORALVALUE"),pDoc->m_TroopInfo.GetAt(id).GetMoralValue());
 		g->DrawString(s.AllocSysString(), -1, &font, RectF(865,430,185,30), &fontFormat, &fontBrush);
-		
+
 		fontFormat.SetLineAlignment(StringAlignmentNear);
 		fontFormat.SetFormatFlags(!StringFormatFlagsNoWrap);
 		s = pDoc->m_TroopInfo.GetAt(id).GetDescription();
 		g->DrawString(s.AllocSysString(), -1, &font, RectF(855,465,190,265), &fontFormat, &fontBrush);
 		fontFormat.SetLineAlignment(StringAlignmentCenter);
 		fontFormat.SetFormatFlags(StringFormatFlagsNoWrap);
-		
+
 		s.Format("#%d: %s", m_byTroopNumberInShip+1, pDoc->m_TroopInfo.GetAt(id).GetName());
 		// Das Bild für die Truppe zeichnen
 		CString file;
@@ -355,10 +355,10 @@ void CTransportMenuView::DrawTransportMenue(Graphics* g)
 	}
 	else
 		s = CResourceManager::GetString("NONE")+" "+CResourceManager::GetString("SELECTED");
-	
+
 	fontFormat.SetAlignment(StringAlignmentFar);
 	g->DrawString(s.AllocSysString(), -1, &font, RectF(588,620,198,60), &fontFormat, &fontBrush);
-	
+
 	fontFormat.SetTrimming(StringTrimmingNone);
 
 	// Button zum Ändern der Menge, wieviel pro Klick vom oder ins Schiff verschoben werden zeichnen, sowie den
@@ -367,26 +367,26 @@ void CTransportMenuView::DrawTransportMenue(Graphics* g)
 	Color btnColor;
 	CFontLoader::GetGDIFontColor(pMajor, 1, btnColor);
 	SolidBrush btnBrush(btnColor);
-	
+
 	if (systemOwner == shipOwner)
 	{
 		fontFormat.SetAlignment(StringAlignmentFar);
 		s = CResourceManager::GetString("MULTIPLIER");
 		g->DrawString(s.AllocSysString(), -1, &font, RectF(0,490,457,30), &fontFormat, &fontBrush);
-		
+
 		if (graphic)
 			g->DrawImage(graphic, 477,490,120,30);
 		fontFormat.SetAlignment(StringAlignmentCenter);
 		s.Format("%d",m_iTransportStorageQuantity);
 		g->DrawString(s.AllocSysString(), -1, &font, RectF(477,490,120,30), &fontFormat, &btnBrush);
-		
+
 		// Vor-Button links
 		if (pDoc->m_System[p.x][p.y].GetTroops()->GetSize() > 0)
 		{
 			if (graphic)
 				g->DrawImage(graphic, 290,670,120,30);
 			s = CResourceManager::GetString("BTN_NEXT");
-			g->DrawString(s.AllocSysString(), -1, &font, RectF(290,670,120,30), &fontFormat, &btnBrush);			
+			g->DrawString(s.AllocSysString(), -1, &font, RectF(290,670,120,30), &fontFormat, &btnBrush);
 		}
 		// Vor-Button rechts
 		if (ship->GetTransportedTroops()->GetSize() && !ship->GetFleet())
@@ -394,7 +394,7 @@ void CTransportMenuView::DrawTransportMenue(Graphics* g)
 			if (graphic)
 				g->DrawImage(graphic, 665,670,120,30);
 			s = CResourceManager::GetString("BTN_NEXT");
-			g->DrawString(s.AllocSysString(), -1, &font, RectF(665,670,120,30), &fontFormat, &btnBrush);	
+			g->DrawString(s.AllocSysString(), -1, &font, RectF(665,670,120,30), &fontFormat, &btnBrush);
 		}
 	}
 	else if (ship->GetTransportedTroops()->GetSize() && !ship->GetFleet())
@@ -403,9 +403,9 @@ void CTransportMenuView::DrawTransportMenue(Graphics* g)
 		if (graphic)
 			g->DrawImage(graphic, 665,670,120,30);
 		s = CResourceManager::GetString("BTN_NEXT");
-		g->DrawString(s.AllocSysString(), -1, &font, RectF(665,670,120,30), &fontFormat, &btnBrush);		
+		g->DrawString(s.AllocSysString(), -1, &font, RectF(665,670,120,30), &fontFormat, &btnBrush);
 	}
-		
+
 	// Transport auf "Systemname" mit größerer Schrift in der Mitte zeichnen
 	fontFormat.SetAlignment(StringAlignmentCenter);
 	// Rassenspezifische Schriftart auswählen
@@ -433,7 +433,7 @@ void CTransportMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 	CMajor* pMajor = m_pPlayersRace;
 	if (!pMajor)
 		return;
-	
+
 	// Wenn wir in der Transportansicht sind (brauchen auch nur Klicks überprüfen, wenn das Schiff Lagerraum hat)
 	CShip* ship = NULL;
 	if (pDoc->GetCurrentShipIndex() != -1)
@@ -443,7 +443,7 @@ void CTransportMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		return;
 
 	CalcLogicalPoint(point);
-			
+
 	CPoint p = pDoc->GetKO();
 	CString systemOwner = pDoc->m_System[p.x][p.y].GetOwnerOfSystem();
 	CString shipOwner   = ship->GetOwnerOfShip();
@@ -456,11 +456,11 @@ void CTransportMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		isFleet = TRUE;
 		number += ship->GetFleet()->GetFleetSize();
 	}
-			
+
 	// Buttons um Ressourcen zu verschieben
 	int i = -1;
 	if (ButtonReactOnLeftClick(point, &m_TransportButtons, i, FALSE, TRUE))
-	{	
+	{
 		if (systemOwner == shipOwner)
 		{
 			if (i < 7)
@@ -469,7 +469,7 @@ void CTransportMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 				if (i == 6)
 				{
 					int nQuantity = m_iTransportStorageQuantity;
-					// Schiff und möglicherweise Schiffe in der Flotte durchgehen		
+					// Schiff und möglicherweise Schiffe in der Flotte durchgehen
 					for (int j = 0; j < number; j++)
 					{
 						while (nQuantity > 0)
@@ -489,7 +489,7 @@ void CTransportMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 								break;
 						}
 						if (isFleet && j < number-1)
-							ship = (&pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()))->GetFleet()->GetShipFromFleet(j);						
+							ship = (&pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()))->GetFleet()->GetShipFromFleet(j);
 					}
 					return;
 				}
@@ -519,7 +519,7 @@ void CTransportMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 						return;
 					}
 
-					// Schiff und möglicherweise Schiffe in der Flotte durchgehen		
+					// Schiff und möglicherweise Schiffe in der Flotte durchgehen
 					for (int j = 0; j < number; j++)
 					{
 						// wenn mehr Ressourcen auf dem Schiff vorhanden sind als verschoben werden
@@ -558,7 +558,7 @@ void CTransportMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 					// checken das noch genügend Lagerraum im Schiff vorhanden ist
 					if (pDoc->m_System[p.x][p.y].GetTroops()->GetSize() > 0)
 					{
-						// Schiff und möglicherweise Schiffe in der Flotte durchgehen		
+						// Schiff und möglicherweise Schiffe in der Flotte durchgehen
 						for (int j = 0; j < number; j++)
 						{
 							while (nQuantity > 0)
@@ -586,7 +586,7 @@ void CTransportMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 							}
 							if (isFleet && j < number-1)
 								ship = (&pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()))->GetFleet()->GetShipFromFleet(j);
-						}						
+						}
 					}
 					return;
 				}
@@ -599,7 +599,7 @@ void CTransportMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 
 					int oldQuantity = m_iTransportStorageQuantity;
 					int transportedRes = oldQuantity;
-					// Schiff und möglicherweise Schiffe in der Flotte durchgehen		
+					// Schiff und möglicherweise Schiffe in der Flotte durchgehen
 					for (int j = 0; j < number; j++)
 					{
 						m_iTransportStorageQuantity = oldQuantity;
@@ -632,7 +632,7 @@ void CTransportMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 					return;
 				}
 			}
-		}		
+		}
 	}
 	// Button zum Ändern der Menge, wieviel pro Klick vom oder ins Schiff verschoben werden überprüfen, sowie den
 	// Button um die nächste Einheit auf dem System bzw. auf dem Schiff wählen zu können überprüfen
@@ -668,7 +668,7 @@ void CTransportMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		// Vor-Button rechts
 		m_byTroopNumberInShip++;
 		Invalidate(FALSE);
-	}	
+	}
 
 	CMainBaseView::OnLButtonDown(nFlags, point);
 }
@@ -683,7 +683,7 @@ void CTransportMenuView::CreateButtons()
 
 	// alle Buttons in der View anlegen und Grafiken laden
 	CString sPrefix = pMajor->GetPrefix();
-	
+
 	// Zuweisungsbuttons für Ressourcen
 	CString fileN = "Other\\" + sPrefix + "buttonminus.bop";
 	CString fileA = "Other\\" + sPrefix + "buttonminusa.bop";
@@ -694,7 +694,7 @@ void CTransportMenuView::CreateButtons()
 
 	fileN = "Other\\" + sPrefix + "buttonplus.bop";
 	fileA = "Other\\" + sPrefix + "buttonplusa.bop";
-	for (int i = TITAN; i <= DERITIUM; i++)		
+	for (int i = TITAN; i <= DERITIUM; i++)
 		m_TransportButtons.Add(new CMyButton(CPoint(755,134+i*60) , CSize(30,30), "", fileN, fileN, fileA));
 	// plus für Truppen
 	m_TransportButtons.Add(new CMyButton(CPoint(755,573) , CSize(30,30), "", fileN, fileN, fileA));
@@ -753,7 +753,7 @@ void CTransportMenuView::OnMouseMove(UINT nFlags, CPoint point)
 	{
 		CalcLogicalPoint(point);
 		ButtonReactOnMouseOver(point, &m_TransportButtons);
-	}	
+	}
 
 	CMainBaseView::OnMouseMove(nFlags, point);
 }

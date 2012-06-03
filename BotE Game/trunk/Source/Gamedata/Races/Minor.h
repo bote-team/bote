@@ -14,7 +14,7 @@ class CBotf2Doc;
 
 /// Klasse zur Abstraktion einer Minorrace
 class CMinor : public CRace
-{	
+{
 	friend class CMinorAI;
 	friend class CRaceController;
 
@@ -41,10 +41,10 @@ public:
 	/// Funktion gibt diplomatische Bestechlichkeit der Rasse zurück.
 	/// @return Bestechlichkeit
 	BYTE GetCorruptibility(void) const {return m_iCorruptibility;}
-	
+
 	/// Funktion gibt zurück, ob die Rasse eine Raumfahrtnation ist.
 	/// @return <code>true</code> wenn Raumfahrtnation, sonst <code>false</code>
-	bool GetSpaceflightNation(void) const {return m_bSpaceflight;}	
+	bool GetSpaceflightNation(void) const {return m_bSpaceflight;}
 
 	/// Wurde die Minorrace von einer Hauptrasse unterworfen.
 	/// @return <code>true</code> wenn unterworfen, sonst <code>false</code>
@@ -67,7 +67,7 @@ public:
 	/// Funktion zum Setzen der technischen Fortschrittlichkeit der Rasse.
 	/// @param byProgress Fortschrittlichkeit
 	void SetTechnologicalProgress(BYTE byProgress) {m_iTechnologicalProgress = byProgress;}
-	
+
 	/// Funktion zum Setzen der Bestechlichkeit der Rasse.
 	/// @param byCorr Bestechlichkeit
 	void SetCorruptibility(BYTE byCorr) {m_iCorruptibility = byCorr;}
@@ -84,7 +84,7 @@ public:
 	/// Funktion legt fest, ob eine Minorrace als erobert gilt oder nicht.
 	/// @param bIs Wahrheitswert
 	void SetSubjugated(bool bIs) {m_bSubjugated = bIs;}
-	
+
 	// Funktionen
 	/// Diese Funktion lässt die Minorrace mit einer gewissen Wahrscheinlichkeit einen weiteren Planeten
 	/// in ihrem System kolonisieren.
@@ -94,7 +94,7 @@ public:
 
 	/// Diese Funktion lässt die Minorrace vielleicht ein Schiff bauen
 	/// @param pDoc Zeiger auf das Dokument
-	void PerhapsBuildShip(CBotf2Doc* pDoc);	
+	void PerhapsBuildShip(CBotf2Doc* pDoc);
 
 	/// Funktion berechnet wieviele Beziehungspunkte eine Majorrace für längere Beziehungsdauer bekommt.
 	/// Umso mehr Punkte sie hat, umso schwerer wird es für andere Majorraces diese Rasse durch Geschenke

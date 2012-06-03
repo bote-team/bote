@@ -22,12 +22,12 @@
 //	Terms of use
 //	------------
 //	THIS SOFTWARE IS FREE FOR PERSONAL USE OR FREEWARE APPLICATIONS.
-//	IF YOU WISH TO THANK MY WORK, YOU MAY DONATE ANY SUM OF MONEY TO ME 
+//	IF YOU WISH TO THANK MY WORK, YOU MAY DONATE ANY SUM OF MONEY TO ME
 //  FOR SUPPORT OF DEVELOPMENT OF THIS CLASS.
 //	IF YOU USE THIS SOFTWARE IN COMMERCIAL OR SHAREWARE APPLICATIONS YOU
 //	ARE GENTLY ASKED TO DONATE ANY SUM OF MONEY TO THE AUTHOR:
 //
-//--- History ------------------------------ 
+//--- History ------------------------------
 // 2004/03/01  *** Releases version 1.0 ***
 //------------------------------------------
 // 2004/04/04 [FIX] Removes all MFC classes (CRect, CPoint, CSize).
@@ -39,7 +39,7 @@
 //------------------------------------------
 // 2004/05/12  *** Releases version 1.2 ***
 //------------------------------------------
-// 2004/06/06 [FIX] Fixed a resource's leak (don't deleted an object of the pen 
+// 2004/06/06 [FIX] Fixed a resource's leak (don't deleted an object of the pen
 //					in DrawRectangle method)
 //------------------------------------------
 // 2004/07/01  *** Releases version 1.3 ***
@@ -64,9 +64,9 @@
 #include "CeXDib.h"
 #endif
 
-#define PPDRAWMANAGER_SHADOW_XOFFSET	4	// 
+#define PPDRAWMANAGER_SHADOW_XOFFSET	4	//
 #define PPDRAWMANAGER_SHADOW_YOFFSET	4	//
-#define PPDRAWMANAGER_SHADOW_XDEPTH		7	// 
+#define PPDRAWMANAGER_SHADOW_XDEPTH		7	//
 #define PPDRAWMANAGER_SHADOW_YDEPTH		7	//
 #define PPDRAWMANAGER_SHADOW_COLOR		RGB(128, 128, 128)
 
@@ -83,7 +83,7 @@
 #define IMAGE_EFFECT_MASK				(IMAGE_EFFECT_MONOCHROME | IMAGE_EFFECT_INVERT)
 #define IMAGE_EFFECT_SHADOW				(IMAGE_EFFECT_MONO_SHADOW | IMAGE_EFFECT_GRADIENT_SHADOW)
 
-class CPPDrawManager  
+class CPPDrawManager
 {
 public:
 	CPPDrawManager();
@@ -111,7 +111,7 @@ public:
 			MAX_EFFECTS
 		};
 
-	enum	{ 
+	enum	{
 			PEN_NULL = 0,
 			PEN_SOLID,
 			PEN_DASH,
@@ -129,14 +129,14 @@ public:
 	void  DrawRectangle(HDC hDC, int left, int top, int right, int bottom, COLORREF crLight, COLORREF crDark, int nStyle = PEN_SOLID, int nSize = 1);
 	void  GetSizeOfIcon(HICON hIcon, LPSIZE pSize) const;
 	void  GetSizeOfBitmap(HBITMAP hBitmap, LPSIZE pSize) const;
-	
+
 	void  AlphaBitBlt(HDC hDestDC, int nDestX, int nDestY, DWORD dwWidth, DWORD dwHeight, HDC hSrcDC, int nSrcX, int nSrcY, int percent = 100);
 	void  AlphaChannelBitBlt(HDC hDestDC, int nDestX, int nDestY, DWORD dwWidth, DWORD dwHeight, HDC hSrcDC, int nSrcX, int nSrcY);
 	void  DrawShadow(HDC hDestDC, int nDestX, int nDestY, DWORD dwWidth, DWORD dwHeight, HBITMAP hMask, BOOL bGradient = FALSE, DWORD dwDepthX = PPDRAWMANAGER_SHADOW_XOFFSET, DWORD dwDepthY = PPDRAWMANAGER_SHADOW_YOFFSET);
 	void  MaskToDepth(HDC hDC, DWORD dwWidth, DWORD dwHeight, HBITMAP hMask, double * pDepth, BOOL bGradient = FALSE, DWORD dwDepthX = PPDRAWMANAGER_SHADOW_XOFFSET, DWORD dwDepthY = PPDRAWMANAGER_SHADOW_YOFFSET);
 	void  DarkenByDepth(HDC hDC, int x, int y, DWORD dwWidth, DWORD dwHeight, double * pDepth);
 
-	void  SmoothMaskImage(const int ImageWidth, 
+	void  SmoothMaskImage(const int ImageWidth,
 				    const int ImageHeight,
                     const COLORREF* const pInitImg,
 			        const int KerWidth,
@@ -150,34 +150,34 @@ public:
 					unsigned int nPartCols,
 					double* const pBuff,
 					double* const pRes);
-	
+
 	void  DrawBitmap(HDC hDC, int x, int y, DWORD dwWidth, DWORD dwHeight, HBITMAP hSrcBitmap,
-					BOOL bUseMask, COLORREF crMask, 
-					DWORD dwEffect = IMAGE_EFFECT_NONE, 
-					BOOL bShadow = FALSE, 
-					DWORD dwCxShadow = PPDRAWMANAGER_SHADOW_XOFFSET, 
+					BOOL bUseMask, COLORREF crMask,
+					DWORD dwEffect = IMAGE_EFFECT_NONE,
+					BOOL bShadow = FALSE,
+					DWORD dwCxShadow = PPDRAWMANAGER_SHADOW_XOFFSET,
 					DWORD dwCyShadow = PPDRAWMANAGER_SHADOW_YOFFSET,
-					DWORD dwCxDepth = PPDRAWMANAGER_SHADOW_XDEPTH, 
+					DWORD dwCxDepth = PPDRAWMANAGER_SHADOW_XDEPTH,
 					DWORD dwCyDepth = PPDRAWMANAGER_SHADOW_YDEPTH,
 					COLORREF clrShadow = PPDRAWMANAGER_SHADOW_COLOR);
 
-	void  DrawIcon( HDC hDC, int x, int y, DWORD dwWidth, DWORD dwHeight, HICON hSrcIcon, 
-					DWORD dwEffect = IMAGE_EFFECT_NONE, 
-					BOOL bShadow = FALSE, 
-					DWORD dwCxShadow = PPDRAWMANAGER_SHADOW_XOFFSET, 
+	void  DrawIcon( HDC hDC, int x, int y, DWORD dwWidth, DWORD dwHeight, HICON hSrcIcon,
+					DWORD dwEffect = IMAGE_EFFECT_NONE,
+					BOOL bShadow = FALSE,
+					DWORD dwCxShadow = PPDRAWMANAGER_SHADOW_XOFFSET,
 					DWORD dwCyShadow = PPDRAWMANAGER_SHADOW_YOFFSET,
-					DWORD dwCxDepth = PPDRAWMANAGER_SHADOW_XDEPTH, 
+					DWORD dwCxDepth = PPDRAWMANAGER_SHADOW_XDEPTH,
 					DWORD dwCyDepth = PPDRAWMANAGER_SHADOW_YDEPTH,
 					COLORREF clrShadow = PPDRAWMANAGER_SHADOW_COLOR);
 
 	void  DrawImageList(HDC hDC, int x, int y, DWORD dwWidth, DWORD dwHeight, HBITMAP hSrcBitmap,
 					int nIndex, int cx, int cy,
-					BOOL bUseMask, COLORREF crMask, 
-					DWORD dwEffect = IMAGE_EFFECT_NONE, 
-					BOOL bShadow = FALSE, 
-					DWORD dwCxShadow = PPDRAWMANAGER_SHADOW_XOFFSET, 
+					BOOL bUseMask, COLORREF crMask,
+					DWORD dwEffect = IMAGE_EFFECT_NONE,
+					BOOL bShadow = FALSE,
+					DWORD dwCxShadow = PPDRAWMANAGER_SHADOW_XOFFSET,
 					DWORD dwCyShadow = PPDRAWMANAGER_SHADOW_YOFFSET,
-					DWORD dwCxDepth = PPDRAWMANAGER_SHADOW_XDEPTH, 
+					DWORD dwCxDepth = PPDRAWMANAGER_SHADOW_XDEPTH,
 					DWORD dwCyDepth = PPDRAWMANAGER_SHADOW_YDEPTH,
 					COLORREF clrShadow = PPDRAWMANAGER_SHADOW_COLOR);
 
@@ -189,7 +189,7 @@ public:
 	COLORREF LightenColor(COLORREF clrColor, double lighten);
 	COLORREF InvertColor(COLORREF clrColor);
 	COLORREF PixelAlpha (COLORREF clrSrc, double src_darken, COLORREF clrDest, double dest_darken);
-	
+
 	HICON StretchIcon(HICON hIcon, DWORD dwWidth, DWORD dwHeight);
 
 	void FillEffect(HDC hDC, DWORD dwEffect, LPCRECT lpRect, COLORREF clrBegin, COLORREF clrMid = 0, COLORREF clrEnd = 0,  BYTE granularity = 0, BYTE coloring = 0);

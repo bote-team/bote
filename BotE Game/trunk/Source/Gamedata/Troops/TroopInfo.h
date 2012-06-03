@@ -17,10 +17,10 @@ public:
 	/// Konstruktor mit kompletter Parameterübergabe
 	CTroopInfo(const CString& name, const CString& desc,const CString& file, BYTE offense, BYTE defense, BYTE costs, BYTE techs[6], USHORT res[5], USHORT ip,
 		BYTE ID, const CString& sOwner, USHORT size, BYTE moralValue);
-	
+
 	/// Destruktor
 	~CTroopInfo(void);
-	
+
 	// Serialisierungsfunktion; nötig für CBotf2Doc::SerializeBeginGameData
 	virtual void Serialize(CArchive &ar);
 
@@ -34,7 +34,7 @@ public:
 	 * Dieser Funktion gibt die Beschreibung der Truppe zurück.
 	 */
 	const CString& GetDescription() const {return m_strDescription;}
-	
+
 	/*
 	 *Diese Funktion gibt das Bild der Truppe zurück
 	 */
@@ -75,7 +75,7 @@ public:
 	 * Diese Funktion gibt den Moralwert dieser Truppe zurück.
 	 */
 	BYTE GetMoralValue() const {return m_byMoralValue;}
-	
+
 	// Zugriffsfunktionen zum Schreiben der Membervariablen
 	/**
 	 * Diese Funktion setzt den Namen der Einheit.
@@ -109,7 +109,7 @@ private:
 
 	/// Die Beschreibung der Einheit
 	CString m_strDescription;
-	
+
 	/// Das Bild der Einheit
 	CString m_strGraphicfile;
 

@@ -40,7 +40,7 @@ public:
 	/// @param nMountPos Position am Schiff (0 entspricht Front, 90 entspricht rechts, 180 Heck und 270 links)
 	/// @param nAngle Öffnungswinkel in °
 	void SetValues(USHORT nMountPos, USHORT nAngle);
-	
+
 private:
 	/// Anbringung der Waffe auf dem Schiff <code>FRONT, RIGHT, BACK, LEFT</code>
 	USHORT m_nMountPos;

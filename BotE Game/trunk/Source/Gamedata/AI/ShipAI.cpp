@@ -15,7 +15,7 @@ CShipAI::CShipAI(CBotf2Doc* pDoc) : m_pSectorAI()
 
 	map<CString, CRace*>* mRaces = m_pDoc->GetRaceCtrl()->GetRaces();
 	ASSERT(mRaces);
-	
+
 	// Durchschnittsmoral berechnen
 	map<CString, int> moralAll;
 	map<CString, int> systems;
@@ -26,7 +26,7 @@ CShipAI::CShipAI(CBotf2Doc* pDoc) : m_pSectorAI()
 				moralAll[m_pDoc->m_System[x][y].GetOwnerOfSystem()] += m_pDoc->m_System[x][y].GetMoral();
 				systems[m_pDoc->m_System[x][y].GetOwnerOfSystem()] += 1;
 			}
-	
+
 	// alles initial initialisieren
 	for (map<CString, CRace*>::const_iterator it = mRaces->begin(); it != mRaces->end(); ++it)
 	{
@@ -49,7 +49,7 @@ CShipAI::~CShipAI(void)
 //////////////////////////////////////////////////////////////////////
 /// Diese Funktion erteilt allen Schiffen aller computergesteuerten Rassen Befehle.
 void CShipAI::CalculateShipOrders(CSectorAI* SectorAI)
-{	
+{
 	ASSERT(SectorAI);
 	m_pSectorAI = SectorAI;
 
@@ -63,11 +63,11 @@ void CShipAI::CalculateShipOrders(CSectorAI* SectorAI)
 		CShip* pShip	= &m_pDoc->m_ShipArray.GetAt(i);
 		CString sOwner	= pShip->GetOwnerOfShip();
 		CMajor* pOwner	= dynamic_cast<CMajor*>(m_pDoc->GetRaceCtrl()->GetRace(sOwner));
-		
+
 		// gilt erstmal nur für Majors
 		if (!pOwner || pOwner->GetType() != MAJOR)
-			continue;		
-		
+			continue;
+
 		// gilt nicht für menschliche Spieler
 		if (pOwner->IsHumanPlayer())
 			continue;
@@ -75,9 +75,9 @@ void CShipAI::CalculateShipOrders(CSectorAI* SectorAI)
 		// Flotte versuchen zu erstellen
 		DoMakeFleet(pShip, i);
 
-		// Vielleicht haben unsere Schiffe ein Ziel, welches sie angreifen müssen/können			
+		// Vielleicht haben unsere Schiffe ein Ziel, welches sie angreifen müssen/können
 		if (DoAttackMove(pShip, pOwner))
-		{				
+		{
 			DoCamouflage(pShip);
 			continue;
 		}
@@ -106,9 +106,9 @@ void CShipAI::CalculateShipOrders(CSectorAI* SectorAI)
 				// nicht weiter fliegen und Kurs löschen
 				pShip->SetTargetKO(ptKO,0);
 				pShip->GetPath()->RemoveAll();
-			}				
+			}
 		}
-		
+
 		// exisitiert kein aktueller Kurs, so wird dieser hier versucht dem Schiff zu erteilen
 		if (pShip->GetPath()->GetSize() == 0)
 		{
@@ -125,7 +125,7 @@ void CShipAI::CalculateShipOrders(CSectorAI* SectorAI)
 					int j = rand()%vMinorraceSectors->size();
 					CPoint ko = vMinorraceSectors->at(j);
 					// Wenn Gefahr der anderen Rassen kleiner als die der meinen ist
-					if (m_pSectorAI->GetCompleteDanger(sOwner, ko) == NULL || 
+					if (m_pSectorAI->GetCompleteDanger(sOwner, ko) == NULL ||
 						(m_pSectorAI->GetCompleteDanger(sOwner, ko) <= m_pSectorAI->GetDangerOnlyFromCombatShips(sOwner, pShip->GetKO())))
 						if (pOwner->GetStarmap()->GetRange(ko) <= pShip->GetRange())
 						{
@@ -133,8 +133,8 @@ void CShipAI::CalculateShipOrders(CSectorAI* SectorAI)
 							pShip->SetTargetKO(ko,0);
 #ifdef TRACE_SHIPAI
 							MYTRACE(MT::LEVEL_INFO, "Race %s: Ship to Minor: %s (%s) - Target: %d,%d\n",sOwner, pShip->GetShipName(), pShip->GetShipTypeAsString(), ko.x,ko.y);
-#endif								
-							vMinorraceSectors->erase(vMinorraceSectors->begin() + j--);	
+#endif
+							vMinorraceSectors->erase(vMinorraceSectors->begin() + j--);
 							bSet = true;
 							break;
 						}
@@ -160,7 +160,7 @@ void CShipAI::CalculateShipOrders(CSectorAI* SectorAI)
 					// Wenn das Kolonieschiff schon auf einem Sektor für unser Terraforming steht, so fliegt es nicht weiter
 					if (pShip->GetShipType() == SHIP_TYPE::COLONYSHIP && pShip->GetKO() == ko)
 						break;
-					
+
 					// Wenn Gefahr der anderen Rassen kleiner als die der meinen ist
 					if (m_pSectorAI->GetCompleteDanger(sOwner, ko) == NULL || (m_pSectorAI->GetCompleteDanger(sOwner, ko) < m_pSectorAI->GetDanger(sOwner, pShip->GetKO())))
 					{
@@ -197,7 +197,7 @@ void CShipAI::CalculateShipOrders(CSectorAI* SectorAI)
 						}
 					}
 				}
-			}				
+			}
 
 			DoCamouflage(pShip);
 			if (m_pDoc->GetSector(pShip->GetKO()).GetSunSystem())
@@ -232,19 +232,19 @@ bool CShipAI::DoTerraform(CShip* pShip)
 	// Es wird jeder Planet sofort genommen, welcher weniger als 8 Runden zum Terraformen
 	// benötigt. Planeten welche mehr Runden zum Terraformen benötigen werden nur ausgewählt,
 	// wenn in dem Sektor kein Planet zum sofortigen Kolonisieren zur Verfügung steht
-    
+
 	int nTerraPoints = pShip->GetColonizePoints();
 	if (nTerraPoints <= 0)
 		return false;
 
-	CSector* pSector = &m_pDoc->GetSector(pShip->GetKO());	
+	CSector* pSector = &m_pDoc->GetSector(pShip->GetKO());
 	// nur wenn der Sektor noch niemandem gehört bzw. uns selbst ist, sollen Planeten terraformt werden
 	if (pSector->GetOwnerOfSector() != "" && pSector->GetOwnerOfSector() != pShip->GetOwnerOfShip())
 		return false;
 
 	int nMinTerraPoints = INT_MAX;
 	short nPlanet = -1;
-	
+
 	bool bColonizable = false;
 	for (int j = 0; j < pSector->GetNumberOfPlanets(); j++)
 	{
@@ -266,7 +266,7 @@ bool CShipAI::DoTerraform(CShip* pShip)
 			nPlanet = j;
 		}
 	}
-	
+
 	// Wurde ein zu terraformender Planet gefunden und würden weniger als 6 Runden
 	// zum Terraformen benötigt werden oder es gibt keinen Planeten, der
 	// sofort kolonisiert werden könnte, dann den gefundenen Planeten terraformen
@@ -278,7 +278,7 @@ bool CShipAI::DoTerraform(CShip* pShip)
 		pShip->SetCurrentOrder(SHIP_ORDER::TERRAFORM);
 		return true;
 	}
-		
+
 	return false;
 }
 
@@ -297,7 +297,7 @@ bool CShipAI::DoColonize(CShip* pShip)
 	if (pShip->GetShipType() != SHIP_TYPE::COLONYSHIP)
 		return false;
 
-	CSector* pSector = &m_pDoc->GetSector(pShip->GetKO());	
+	CSector* pSector = &m_pDoc->GetSector(pShip->GetKO());
 	// Gehört der Sektor aktuell auch keiner Minorrace (also niemanden oder uns selbst)
 	if (pSector->GetOwnerOfSector() != "" && pSector->GetOwnerOfSector() != pShip->GetOwnerOfShip())
 		return false;
@@ -313,7 +313,7 @@ bool CShipAI::DoColonize(CShip* pShip)
 			return true;
 		}
 	}
-	
+
 	return false;
 }
 
@@ -345,7 +345,7 @@ bool CShipAI::DoAttackMove(CShip* pShip, const CMajor* pMajor)
 
 	CString sRace = pMajor->GetRaceID();
 	UINT nOurDanger = m_pSectorAI->GetDangerOnlyFromCombatShips(sRace, pShip->GetKO());
-	
+
 	// Gibt es ein Bombardierungsziel, so wird dieses mit der höchsten Priorität angeflogen
 	if (m_BombardSector[sRace] != CPoint(-1,-1))
 	{
@@ -470,15 +470,15 @@ bool CShipAI::DoBombardSystem(CShip* pShip)
 		//s.Format("shipValue = %d\nshipDefend = %d\nSektor = %s", shipValue, shipDefend, m_pDoc->GetSector(pShip->GetKO().x, pShip->GetKO().y).GetName(true));
 		//AfxMessageBox(s);
 		if (nShipValue > nShipDefend)
-		{		
+		{
 			#ifdef TRACE_SHIPAI
 			MYTRACE(MT::LEVEL_INFO, "Race %s: Ship %s (%s) is bombarding system: %d,%d\n",pShip->GetOwnerOfShip(), pShip->GetShipName(), pShip->GetShipTypeAsString(), pShip->GetKO().x,pShip->GetKO().y);
 			#endif
 			pShip->SetCurrentOrder(SHIP_ORDER::ATTACK_SYSTEM);
 			return true;
-		}		
+		}
 	}
-	
+
 	return false;
 }
 
@@ -502,9 +502,9 @@ bool CShipAI::DoCamouflage(CShip* pShip, bool bCamouflage/* = true*/)
 	if (pShip->GetStealthPower() > 3 && pShip->GetCurrentOrder() != SHIP_ORDER::ATTACK_SYSTEM)
 	{
 		pShip->SetCurrentOrder(SHIP_ORDER::CLOAK);
-		return true;		
+		return true;
 	}
-	
+
 	return false;
 }
 
@@ -568,9 +568,9 @@ void CShipAI::DoMakeFleet(CShip* pShip, int nIndex)
 					pShip->GetFleet()->AddShipToFleet(pOtherShip->GetFleet()->GetShipFromFleet(n));
 				pOtherShip->DeleteFleet();
 			}
-			
+
 			pShip->GetFleet()->AddShipToFleet(pOtherShip);
-			m_pDoc->m_ShipArray.RemoveAt(i--);							
+			m_pDoc->m_ShipArray.RemoveAt(i--);
 		}
 	}
 }
@@ -613,7 +613,7 @@ void CShipAI::CalcAttackSector(void)
 {
 	// für alle Majors den Angriffssektor berechnen
 	map<CString, CMajor*>* pmMajors = m_pDoc->GetRaceCtrl()->GetMajors();
-	
+
 	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 	{
 		int nearestSector = MAXSHORT;
@@ -648,7 +648,7 @@ void CShipAI::CalcBombardSector(void)
 {
 	// für alle Majors den Angriffssektor berechnen
 	map<CString, CMajor*>* pmMajors = m_pDoc->GetRaceCtrl()->GetMajors();
-	
+
 	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 	{
 		// pazifistische Rassen bombardieren nie
@@ -664,8 +664,8 @@ void CShipAI::CalcBombardSector(void)
 			nMoralValue = abs(nMoralValue);
 			if (m_iAverageMoral[it->first] < 80 + nMoralValue * 5)
 				continue;
-		}	
-		
+		}
+
 		// ist der globale Angriffssektor auch bei den Bombardierungzielen vorhanden, so wird dieser benutzt und kein
 		// am nächsten befindlicher Bombardierungssektor
 		for (UINT j = 0; j < m_pSectorAI->GetBombardTargets(it->first)->size(); j++)
@@ -673,10 +673,10 @@ void CShipAI::CalcBombardSector(void)
 			if (m_pSectorAI->GetBombardTargets(it->first)->at(j) == m_AttackSector[it->first])
 			{
 				m_BombardSector[it->first] = m_pSectorAI->GetBombardTargets(it->first)->at(j);
-				break;				
+				break;
 			}
 		}
-		
+
 		// Wurde kein Bombardierungziel mit dem gleichen globalen Attackziel gefunden, so wird versucht ein nächstes
 		// zu unserer größten Flottenansammlung zu finden
 		if (m_BombardSector[it->first] == CPoint(-1,-1))

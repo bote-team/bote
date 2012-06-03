@@ -67,7 +67,7 @@ namespace network
 
 		/**
 		 * Versendet die Nachricht über den angegebenen Socket.
-		 * 
+		 *
 		 * @param nError enhält nach dem Aufruf den von <code>socket.GetLastError()</code>
 		 * gelieferten Fehler oder <code>0</code>, wenn kein Fehler aufgetreten ist
 		 */

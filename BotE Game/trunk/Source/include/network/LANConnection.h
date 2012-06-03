@@ -101,7 +101,7 @@ namespace network
 		 * Versenden der Kopie an den lokalen Host ein Fehler auf, wird eine Referenz auf die ursprüngliche
 		 * Nachricht an den jeweiligen Handler übergeben, d. h. deren Empfängeradresse ist nach wie vor
 		 * <code>INADDR_BROADCAST</code>.
-		 * 
+		 *
 		 * @return <code>TRUE</code> gdw. die Nachricht erfolgreich an die Warteschlange angehängt
 		 * werden konnte
 		 */

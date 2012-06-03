@@ -26,11 +26,11 @@ public:
 	static inline CString GetHTMLCenter(const CString& str)
 	{
 		CString msg = "";
-	
+
 		msg = _T("<center>");
 		msg += str;
 		msg += _T("</center>");
-	
+
 		return msg;
 	};
 
@@ -40,11 +40,11 @@ public:
 	static inline CString GetHTMLStringBold(const CString& str)
 	{
 		CString msg = "";
-	
+
 		msg = _T("<b>");
 		msg += str;
 		msg += _T("</b>");
-		
+
 		return msg;
 	}
 

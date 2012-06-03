@@ -43,7 +43,7 @@ private:
 	void ApplyCombatOrders(const CArray<CShip*>& vInvolvedShips, const map<CString, CRace*>* pmRaces, map<CString, COMBAT_ORDER::Typ>& mCombatOrders, const CAnomaly* pAnomaly) const;
 
 	/// Funktion erteilt allen im Kampf beteiligten Schiffen ihre zuvor ausgewählte Taktik.
-	/// @param vInvolvedShips Vektor mit allen beteiligten Schiffen	
+	/// @param vInvolvedShips Vektor mit allen beteiligten Schiffen
 	/// @param mCombatOrders allgemeiner Kampfbefehl aller beteiligten Rassen
 	void ApplyShipTactics(const CArray<CShip*>& vInvolvedShips, map<CString, COMBAT_ORDER::Typ>& mCombatOrders) const;
 };

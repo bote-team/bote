@@ -18,7 +18,7 @@
 #include "TorpedoInfo.h"
 #include "FireArc.h"
 
-class CTorpedoWeapons : public CObject  
+class CTorpedoWeapons : public CObject
 {
 	friend class CShip;
 public:
@@ -34,27 +34,27 @@ public:
 	 * Diese Funktion gibt den Namen des Torpedowerfers zurück.
 	 */
 	const CString& GetTupeName() const {return m_strTupeName;}
-	
+
 	/**
 	 * Diese Funktion gibt die Anzahl der abzufeuerten Torpedos zurück.
 	 */
 	BYTE GetNumber() const {return m_iNumber;}
-	
+
 	/**
 	 * Diese Funktion gibt die Feuerrate des Torepdowerfers zurück.
 	 */
 	BYTE GetTupeFirerate() const {return m_iTupeFirerate;}
-	
+
 	/**
 	 * Diese Funktion gibt die Anzahl dieser Torpedowerfer zurück, die sich auf dem Schiff befinden.
 	 */
 	BYTE GetNumberOfTupes() const {return m_iNumberOfTupes;}
-	
+
 	/**
 	 * Diese Funktion gibt die Trefferwahrscheinlichkeit des Torpedowerfers zurück.
 	 */
 	BYTE GetAccuracy() const {return m_byAccuracy;}
-	
+
 	/**
 	 * Diese Funktion gibt zurück, ob der Torpedo nur für Microphoton geeignet ist.
 	 */
@@ -63,12 +63,12 @@ public:
 	/// Funktion gibt Zeiger auf das Schussfeld der Waffe zurück.
 	/// @return Zeiger auf Schussfeld
 	CFireArc* GetFirearc(void) {return &m_Firearc;}
-	
+
 	/// folgende Funktionen geben nur Eigenschaften eines Torpedos zurück
 	BYTE GetTorpedoType() const {return m_iTorpedoType;}
 	const CString& GetTorpedoName() const {return CTorpedoInfo::GetName(m_iTorpedoType);}
 	USHORT GetTorpedoPower() const {return CTorpedoInfo::GetPower(m_iTorpedoType);}
-	
+
 	/**
 	 * Diese Funktion setzt die Genauigkeit eines Torpedowerfers direkt fest.
 	 */

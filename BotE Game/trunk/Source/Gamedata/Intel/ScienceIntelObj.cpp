@@ -48,7 +48,7 @@ CScienceIntelObj::CScienceIntelObj(const CString& sOwnerID, const CString& sEnem
 	m_iFP = NULL;
 	m_KO = CPoint(-1,-1);
 	m_nID = NULL;
-	m_byNumber = 0;	
+	m_byNumber = 0;
 }
 
 CScienceIntelObj::~CScienceIntelObj(void)
@@ -104,7 +104,7 @@ void CScienceIntelObj::Serialize(CArchive &ar)
 		ar >> nComplex;
 		m_nSpecialTechComplex = (RESEARCH_COMPLEX::Typ)nComplex;
 		ar >> m_nTechlevel;
-		ar >> m_nTechType;		
+		ar >> m_nTechType;
 	}
 }
 
@@ -118,9 +118,9 @@ void CScienceIntelObj::CreateText(CBotf2Doc* pDoc, BYTE n, const CString& param)
 	CString csInput;													// auf csInput wird die jeweilige Zeile gespeichert
 	CString fileName;
 	if (this->GetIsSpy())
-		fileName = CIOData::GetInstance()->GetAppPath() + "Data\\Races\\MajorIntelSpyOff.data";		// Name des zu Öffnenden Files 
+		fileName = CIOData::GetInstance()->GetAppPath() + "Data\\Races\\MajorIntelSpyOff.data";		// Name des zu Öffnenden Files
 	else
-		fileName = CIOData::GetInstance()->GetAppPath() + "Data\\Races\\MajorIntelSabOff.data";		// Name des zu Öffnenden Files 
+		fileName = CIOData::GetInstance()->GetAppPath() + "Data\\Races\\MajorIntelSabOff.data";		// Name des zu Öffnenden Files
 	CStdioFile file;													// Varibale vom Typ CStdioFile
 	if (file.Open(fileName, CFile::modeRead | CFile::typeText))			// Datei wird geöffnet
 	{
@@ -182,20 +182,20 @@ void CScienceIntelObj::CreateText(CBotf2Doc* pDoc, BYTE n, const CString& param)
 						{
 							s = pEnemy->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(m_nSpecialTechComplex)->GetComplexName();
 							csInput.Replace("$specialtech$", s);
-							s = pEnemy->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(m_nSpecialTechComplex)->GetFieldName((BYTE)m_nChoosenSpecialTech);							
+							s = pEnemy->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(m_nSpecialTechComplex)->GetFieldName((BYTE)m_nChoosenSpecialTech);
 							csInput.Replace("$choosenspecial$", s);
 						}
 						s.Format("%d", m_iFP);
 						csInput.Replace("$FP$", s);
 						m_strOwnerDesc = csInput;
 						break;
-					}					
+					}
 				}
-			}			
+			}
 		}
 	}
 	else
-	{	
+	{
 		if (this->GetIsSpy())
 			AfxMessageBox("Error! Could not open file \"MajorIntelSpyOff.data\"...");
 		else
@@ -207,7 +207,7 @@ void CScienceIntelObj::CreateText(CBotf2Doc* pDoc, BYTE n, const CString& param)
 	// Nachricht für das Opfer erstellen
 	if (this->GetIsSabotage())
 	{
-		fileName = CIOData::GetInstance()->GetAppPath() + "Data\\Races\\MajorIntelSabDef.data";			// Name des zu Öffnenden Files 
+		fileName = CIOData::GetInstance()->GetAppPath() + "Data\\Races\\MajorIntelSabDef.data";			// Name des zu Öffnenden Files
 		if (file.Open(fileName, CFile::modeRead | CFile::typeText))			// Datei wird geöffnet
 		{
 			while (file.ReadString(csInput))
@@ -265,7 +265,7 @@ void CScienceIntelObj::CreateText(CBotf2Doc* pDoc, BYTE n, const CString& param)
 								{
 									s = pEnemy->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(m_nSpecialTechComplex)->GetComplexName();
 									csInput.Replace("$specialtech$", s);
-									s = pEnemy->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(m_nSpecialTechComplex)->GetFieldName((BYTE)m_nChoosenSpecialTech);							
+									s = pEnemy->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(m_nSpecialTechComplex)->GetFieldName((BYTE)m_nChoosenSpecialTech);
 									csInput.Replace("$choosenspecial$", s);
 								}
 							}
@@ -285,13 +285,13 @@ void CScienceIntelObj::CreateText(CBotf2Doc* pDoc, BYTE n, const CString& param)
 								csInput = CResourceManager::GetString("DO_NOT_KNOW_RESPONSIBLE_RACE");
 							m_strEnemyDesc += " "+csInput;
 							break;
-						}					
+						}
 					}
-				}			
+				}
 			}
 		}
 		else
-		{	
+		{
 			AfxMessageBox("Error! Could not open file \"MajorIntelSabDef.data\"...");
 			exit(1);
 		}

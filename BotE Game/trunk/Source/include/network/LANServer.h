@@ -17,7 +17,7 @@ namespace network
 
 		CString m_strDescription;				///< Beschreibung, die veröffentlicht werden soll
 		UINT m_nTCPPort;						///< zu veröffentlichender TCP-Port, an dem der BotE-Server läuft
-		
+
 	public:
 		CLANServer();
 		virtual ~CLANServer();

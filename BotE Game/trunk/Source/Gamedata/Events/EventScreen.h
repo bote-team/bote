@@ -12,7 +12,7 @@
 using namespace Gdiplus;
 
 class CEventScreen : public CObject
-{	
+{
 public:
 	DECLARE_SERIAL (CEventScreen)
 

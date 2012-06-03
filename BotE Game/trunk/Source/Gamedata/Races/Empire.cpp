@@ -29,13 +29,13 @@ CEmpire::~CEmpire()
 ///////////////////////////////////////////////////////////////////////
 // Speichern / Laden
 ///////////////////////////////////////////////////////////////////////
-void CEmpire::Serialize(CArchive &ar)		
+void CEmpire::Serialize(CArchive &ar)
 {
 	CObject::Serialize(ar);
 	m_Research.Serialize(ar);
 	m_Intelligence.Serialize(ar);
 	m_GlobalStorage.Serialize(ar);
-		
+
 	// wenn gespeichert wird
 	if (ar.IsStoring())
 	{
@@ -69,10 +69,10 @@ void CEmpire::Serialize(CArchive &ar)
 		ar >> number;
 		m_Messages.SetSize(number);
 		for (int i = 0; i < number; i++)
-			m_Messages.GetAt(i).Serialize(ar);		
+			m_Messages.GetAt(i).Serialize(ar);
 	}
 
-	m_EventMessages.Serialize(ar);	
+	m_EventMessages.Serialize(ar);
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -123,13 +123,13 @@ void CEmpire::Reset(void)
 	m_iCreditsChange = 0;
 	m_iShipCosts = 0;
 	m_iPopSupportCosts = 0;
-	
+
 	m_Research.Reset();
 	m_Intelligence.Reset();
 	m_GlobalStorage.Reset();
-	
+
 	ClearAllPoints();
 	ClearMessagesAndEvents();
-	
-	m_SystemList.RemoveAll();	
+
+	m_SystemList.RemoveAll();
 }

@@ -27,17 +27,17 @@
 // flicker free drawing.
 
 class CMyMemDC : public CDC {
-private:	
+private:
 	CBitmap		m_bitmap;		// Offscreen bitmap
 	CBitmap*	m_oldBitmap;	// bitmap originally found in CMyMemDC
 	CDC*		m_pDC;			// Saves CDC passed in constructor
 	CRect		m_rect;			// Rectangle of drawing area.
 	BOOL		m_bMemDC;		// TRUE if CDC really is a Memory DC.
 public:
-	
+
 	CMyMemDC(CDC* pDC, const CRect* pRect = NULL) : CDC()
 	{
-		ASSERT(pDC != NULL); 
+		ASSERT(pDC != NULL);
 
 		// Some initialization
 		m_pDC = pDC;
@@ -73,35 +73,35 @@ public:
 			m_hAttribDC = pDC->m_hAttribDC;
 		}
 
-		// Fill background 
+		// Fill background
 		FillSolidRect(m_rect, pDC->GetBkColor());
 	}
-	
-	~CMyMemDC()	
-	{		
+
+	~CMyMemDC()
+	{
 		if (m_bMemDC) {
 			// Copy the offscreen bitmap onto the screen.
 			m_pDC->BitBlt(m_rect.left, m_rect.top, m_rect.Width(), m_rect.Height(),
-				this, m_rect.left, m_rect.top, SRCCOPY);			
-			
+				this, m_rect.left, m_rect.top, SRCCOPY);
+
 			//Swap back the original bitmap.
-			SelectObject(m_oldBitmap);		
+			SelectObject(m_oldBitmap);
 		} else {
 			// All we need to do is replace the DC with an illegal value,
 			// this keeps us from accidently deleting the handles associated with
-			// the CDC that was passed to the constructor.			
+			// the CDC that was passed to the constructor.
 			m_hDC = m_hAttribDC = NULL;
-		}	
+		}
 	}
-	
-	// Allow usage as a pointer	
-	CMyMemDC* operator->() 
+
+	// Allow usage as a pointer
+	CMyMemDC* operator->()
 	{
 		return this;
-	}	
+	}
 
-	// Allow usage as a pointer	
-	operator CMyMemDC*() 
+	// Allow usage as a pointer
+	operator CMyMemDC*()
 	{
 		return this;
 	}

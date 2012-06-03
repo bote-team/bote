@@ -36,7 +36,7 @@ namespace network
 
 		CLANConnection *m_pConnection;			///< Kommunikationsthread
 		UINT m_nServerPort;						///< UDP-Port, an dem der serverseitige Thread erreichbar ist
-		
+
 	public:
 		CLANClient();
 		virtual ~CLANClient();

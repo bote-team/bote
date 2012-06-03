@@ -50,15 +50,15 @@ CShipInfo::~CShipInfo()
 // Kopierkonstruktor
 //////////////////////////////////////////////////////////////////////
 CShipInfo::CShipInfo(const CShipInfo & rhs) : CShip(rhs)
-{	
-	m_iRace = rhs.m_iRace;					
+{
+	m_iRace = rhs.m_iRace;
 	// nötige Forschung
 	m_iBioTech = rhs.m_iBioTech;
 	m_iEnergyTech = rhs.m_iEnergyTech;
 	m_iCompTech = rhs.m_iCompTech;
 	m_iPropulsionTech = rhs.m_iPropulsionTech;
 	m_iConstructionTech = rhs.m_iConstructionTech;
-	m_iWeaponTech = rhs.m_iWeaponTech;	
+	m_iWeaponTech = rhs.m_iWeaponTech;
 	// aktuell nötige Rohstoffe zum Bau des Schiffes
 	m_iNeededIndustry = rhs.m_iNeededIndustry;
 	m_iNeededTitan = rhs.m_iNeededTitan;
@@ -89,18 +89,18 @@ CShipInfo & CShipInfo::operator=(const CShipInfo & rhs)
 {
 	if (this == &rhs)
 		return *this;
-	
+
 	// Basisklasse
 	__super::operator=(rhs);
 
-	m_iRace = rhs.m_iRace;					
+	m_iRace = rhs.m_iRace;
 	// nötige Forschung
 	m_iBioTech = rhs.m_iBioTech;
 	m_iEnergyTech = rhs.m_iEnergyTech;
 	m_iCompTech = rhs.m_iCompTech;
 	m_iPropulsionTech = rhs.m_iPropulsionTech;
 	m_iConstructionTech = rhs.m_iConstructionTech;
-	m_iWeaponTech = rhs.m_iWeaponTech;	
+	m_iWeaponTech = rhs.m_iWeaponTech;
 	// aktuell nötige Rohstoffe zum Bau des Schiffes
 	m_iNeededIndustry = rhs.m_iNeededIndustry;
 	m_iNeededTitan = rhs.m_iNeededTitan;
@@ -130,7 +130,7 @@ CShipInfo & CShipInfo::operator=(const CShipInfo & rhs)
 ///////////////////////////////////////////////////////////////////////
 // Speichern / Laden
 ///////////////////////////////////////////////////////////////////////
-void CShipInfo::Serialize(CArchive &ar)		
+void CShipInfo::Serialize(CArchive &ar)
 {
 	__super::Serialize(ar);
 
@@ -143,7 +143,7 @@ void CShipInfo::Serialize(CArchive &ar)
 		ar << m_iCompTech;
 		ar << m_iPropulsionTech;
 		ar << m_iConstructionTech;
-		ar << m_iWeaponTech;	
+		ar << m_iWeaponTech;
 		ar << m_iNeededIndustry;
 		ar << m_iNeededTitan;
 		ar << m_iNeededDeuterium;
@@ -170,7 +170,7 @@ void CShipInfo::Serialize(CArchive &ar)
 		ar >> m_iCompTech;
 		ar >> m_iPropulsionTech;
 		ar >> m_iConstructionTech;
-		ar >> m_iWeaponTech;	
+		ar >> m_iWeaponTech;
 		ar >> m_iNeededIndustry;
 		ar >> m_iNeededTitan;
 		ar >> m_iNeededDeuterium;
@@ -222,9 +222,9 @@ void CShipInfo::CalculateFinalCosts()
 		m_iNeededIndustry += (USHORT)(10 * (m_BeamWeapons.GetAt(i).GetBeamPower() * m_BeamWeapons.GetAt(i).GetBeamType()));
 	// Industrieleistung die wir zusätzlich erbringen müssen, wenn wir besserer Torpedos dranbauen
 //	for (int i = 0; i < m_TorpedoWeapons.GetSize(); i++)
-//		m_iNeededIndustry += (USHORT)((m_TorpedoWeapons.GetAt(i).GetTorpedoPower() * m_TorpedoWeapons.GetAt(i).GetNumber()) 
+//		m_iNeededIndustry += (USHORT)((m_TorpedoWeapons.GetAt(i).GetTorpedoPower() * m_TorpedoWeapons.GetAt(i).GetNumber())
 //							 / m_TorpedoWeapons.GetAt(i).GetTupeFirerate() * m_TorpedoWeapons.GetAt(i).GetNumberOfTupes() * 50);
-*/	
+*/
 	// Ab hier neue Kostenberechnung. Es geht mehr der Wert aller 100s ein. Also nicht mehr der absolute Stärkewert.
 	// Es wird nur ein gewisser Anteil durch den Beamtype mit aufgerechnet, da dieser sonst keinen Einfluss auf den
 	// Beamschaden hat, nur auf die Reichweite der Beams.
@@ -243,7 +243,7 @@ void CShipInfo::CalculateFinalCosts()
 		m_iNeededIndustry	+= (UINT)(this->GetCompleteDefensivePower() / 1.5);
 	else
 		m_iNeededIndustry	+= this->GetCompleteDefensivePower() / 2;
-	
+
 	m_iNeededIndustry	+= GetShield()->GetMaxShield() / 200 * ((USHORT)pow((float)GetShield()->GetShieldType(), 2.5f));
 	m_iNeededIndustry	/= 2;
 
@@ -255,7 +255,7 @@ void CShipInfo::CalculateFinalCosts()
 	m_iNeededCrystal	+= m_iBaseCrystal;
 	m_iNeededIridium	+= m_iBaseIridium;
 	m_iNeededDeritium	+= m_iBaseDeritium;
-	
+
 	// zusätzliche Rohstoffe die wir für bessere Anbauten/Umbauten benötigen
 	// wir brauchen für bessere Hüllen auch besseres Material
 	switch (m_Hull.GetHullMaterial())
@@ -269,7 +269,7 @@ void CShipInfo::CalculateFinalCosts()
 	{
 		if (m_TorpedoWeapons.GetAt(i).GetTorpedoPower() >= 500)
 			m_iNeededDeuterium += m_TorpedoWeapons.GetAt(i).GetTorpedoPower() * m_TorpedoWeapons.GetAt(i).GetNumber()
-			* m_TorpedoWeapons.GetAt(i).GetNumberOfTupes();	
+			* m_TorpedoWeapons.GetAt(i).GetNumberOfTupes();
 	}
 }
 
@@ -287,17 +287,17 @@ void CShipInfo::SetStartOrder()
 void CShipInfo::DrawShipInformation(Graphics* g, CRect rect, Gdiplus::Font* font, Gdiplus::Color clrNormal, Gdiplus::Color clrMark, CResearch* research)
 {
 	CRect r;
-	CString s;	
+	CString s;
 	r.SetRect(rect.left,rect.top+8,rect.right,rect.top+33);
 	s.Format("%s",this->GetShipTypeAsString());
-	
+
 	SolidBrush fontBrush(clrMark);
 	StringFormat fontFormat;
 	fontFormat.SetAlignment(StringAlignmentCenter);
 	fontFormat.SetLineAlignment(StringAlignmentNear);
 	fontFormat.SetFormatFlags(StringFormatFlagsNoWrap);
 	g->DrawString(s.AllocSysString(), -1, font, RectF((REAL)r.left, (REAL)r.top, (REAL)r.Width(), (REAL)r.Height()), &fontFormat, &fontBrush);
-	
+
 	// Größe, Unterhalt und Reichweite anzeigen
 	r.SetRect(rect.left,rect.top+36,rect.right,rect.top+56);
 	CString speed = CResourceManager::GetString("SPEED");
@@ -314,10 +314,10 @@ void CShipInfo::DrawShipInformation(Graphics* g, CRect rect, Gdiplus::Font* font
 		if (m_iSpeed == 1)
 			tmpSpeed = (BYTE)(research->GetResearchInfo()->GetResearchComplex(RESEARCH_COMPLEX::GENERAL_SHIP_TECHNOLOGY)->GetBonus(2));
 	}
-	
+
 	if (rect.Width() >= 501)
 	{
-		CString Size = CResourceManager::GetString("SHIPSIZE");		
+		CString Size = CResourceManager::GetString("SHIPSIZE");
 		CString sMaintenance = CResourceManager::GetString("SHIPCOSTS");
 		switch (tmpRange)
 		{
@@ -335,11 +335,11 @@ void CShipInfo::DrawShipInformation(Graphics* g, CRect rect, Gdiplus::Font* font
 		case SHIP_RANGE::LONG: s.Format("%s: %d  -  %s: %s",speed, tmpSpeed, range, CResourceManager::GetString("LONG")); break;
 		}
 	}
-	
+
 	fontBrush.SetColor(clrNormal);
 	g->DrawString(s.AllocSysString(), -1, font, RectF((REAL)r.left, (REAL)r.top, (REAL)r.Width(), (REAL)r.Height()), &fontFormat, &fontBrush);
 	fontBrush.SetColor(clrMark);
-	
+
 	r.SetRect(rect.left,rect.top+62,rect.right,rect.top+84);
 	s = CResourceManager::GetString("ARMAMENT");
 	g->DrawString(s.AllocSysString(), -1, font, RectF((REAL)r.left, (REAL)r.top, (REAL)r.Width(), (REAL)r.Height()), &fontFormat, &fontBrush);
@@ -355,7 +355,7 @@ void CShipInfo::DrawShipInformation(Graphics* g, CRect rect, Gdiplus::Font* font
 	for (int i = 0; i < m_TorpedoWeapons.GetSize(); i++)
 	{
 		s.Format("%s (%s)", m_TorpedoWeapons.GetAt(i).GetTupeName(), m_TorpedoWeapons.GetAt(i).GetTorpedoName());
-		mTorpedoWeapons[s] += m_TorpedoWeapons.GetAt(i).GetNumberOfTupes();				
+		mTorpedoWeapons[s] += m_TorpedoWeapons.GetAt(i).GetNumberOfTupes();
 	}
 
 	// Waffenbeschreibungstext zusammenbauen
@@ -383,7 +383,7 @@ void CShipInfo::DrawShipInformation(Graphics* g, CRect rect, Gdiplus::Font* font
 	fontBrush.SetColor(clrNormal);
 	fontFormat.SetFormatFlags(!StringFormatFlagsNoWrap);
 	g->DrawString(sWeapons.AllocSysString(), -1, font, RectF((REAL)r.left, (REAL)r.top, (REAL)r.Width(), (REAL)r.Height()), &fontFormat, &fontBrush);
-			
+
 	// Wenn das Rechteck, welches wir an diese Funktion übergeben haben breiter als 500 ist, dann wird der Abstand
 	// zwischen Bewaffnung und "Schilde und Hülle" um eine Zeile verkürzt
 	USHORT sub = 0;
@@ -394,7 +394,7 @@ void CShipInfo::DrawShipInformation(Graphics* g, CRect rect, Gdiplus::Font* font
 	fontFormat.SetFormatFlags(StringFormatFlagsNoWrap);
 	fontBrush.SetColor(clrMark);
 	g->DrawString(s.AllocSysString(), -1, font, RectF((REAL)r.left, (REAL)r.top, (REAL)r.Width(), (REAL)r.Height()), &fontFormat, &fontBrush);
-	
+
 	r.SetRect(rect.left,rect.top+165-sub,rect.right,rect.top+185-sub);
 	float shieldBoni = 1.0f;
 	if (research->GetResearchInfo()->GetResearchComplex(RESEARCH_COMPLEX::CONSTRUCTION_TECHNOLOGY)->GetFieldStatus(1) == RESEARCH_STATUS::RESEARCHED)
@@ -416,7 +416,7 @@ void CShipInfo::DrawShipInformation(Graphics* g, CRect rect, Gdiplus::Font* font
 	float hullBoni = 1.0f;
 	if (research->GetResearchInfo()->GetResearchComplex(RESEARCH_COMPLEX::CONSTRUCTION_TECHNOLOGY)->GetFieldStatus(2) == RESEARCH_STATUS::RESEARCHED)
 		hullBoni += (float)(research->GetResearchInfo()->GetResearchComplex(RESEARCH_COMPLEX::CONSTRUCTION_TECHNOLOGY)->GetBonus(2)) / 100;
-	
+
 	if (m_Hull.GetDoubleHull() == TRUE)
 		s.Format("%s%s: %s %d",material, CResourceManager::GetString("DOUBLE_HULL_ARMOUR"),
 			CResourceManager::GetString("INTEGRITY"), (int)(m_Hull.GetMaxHull()*hullBoni));
@@ -425,7 +425,7 @@ void CShipInfo::DrawShipInformation(Graphics* g, CRect rect, Gdiplus::Font* font
 			CResourceManager::GetString("INTEGRITY"), (int)(m_Hull.GetMaxHull()*hullBoni));
 	fontFormat.SetFormatFlags(StringFormatFlagsNoWrap);
 	g->DrawString(s.AllocSysString(), -1, font, RectF((REAL)r.left, (REAL)r.top, (REAL)r.Width(), (REAL)r.Height()), &fontFormat, &fontBrush);
-		
+
 	if (rect.Width() >= 501)
 	{
 		// Manövrierbarkeit anzeigen
@@ -498,7 +498,7 @@ void CShipInfo::DrawShipInformation(Graphics* g, CRect rect, Gdiplus::Font* font
 		r.SetRect(rect.left,rect.top+378,rect.right,rect.top+478);
 		fontBrush.SetColor(clrNormal);
 		fontFormat.SetFormatFlags(!StringFormatFlagsNoWrap);
-		g->DrawString(s.AllocSysString(), -1, font, RectF((REAL)r.left, (REAL)r.top, (REAL)r.Width(), (REAL)r.Height()), &fontFormat, &fontBrush);		
+		g->DrawString(s.AllocSysString(), -1, font, RectF((REAL)r.left, (REAL)r.top, (REAL)r.Width(), (REAL)r.Height()), &fontFormat, &fontBrush);
 	}
 }
 
@@ -513,14 +513,14 @@ bool CShipInfo::IsThisShipBuildableNow(const BYTE reserachLevels[6]) const
 	if (reserachLevels[4] < this->GetConstructionTech())
 		return false;
 	if (reserachLevels[3] < this->GetPropulsionTech())
-		return false;	
+		return false;
 	if (reserachLevels[2] < this->GetComputerTech())
 		return false;
 	if (reserachLevels[1] < this->GetEnergyTech())
 		return false;
 	if (reserachLevels[0] < this->GetBioTech())
 		return false;
-	
+
 	return true;
 }
 

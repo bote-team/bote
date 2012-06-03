@@ -59,7 +59,7 @@ typedef enum ANOMALYTYP
 	CONTINUUMRIP,
 	BLACKHOLE,
 
-	// sonstiges	
+	// sonstiges
 	QUASAR,
 	WORMHOLE
 };
@@ -131,7 +131,7 @@ protected:
 
 	bool m_bFlipHorz;			///< Grafik ist horizontal gespiegelt
 
-	ANOMALYTYP m_byType;		///< Typ der Anomalie	
+	ANOMALYTYP m_byType;		///< Typ der Anomalie
 
 	// Funktionen
 	void MakeShieldDmg(int nMinDmgValue, int nMaxDmgPercent, CShip* pShip) const;

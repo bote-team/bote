@@ -102,7 +102,7 @@ void CSearchServersDlg::OnOK()
 		m_strDescription = entry.strDescription;
 		m_dwIP = entry.dwIP;
 		m_nPort = entry.nPort;
-	
+
 		__super::OnOK();
 	}
 }

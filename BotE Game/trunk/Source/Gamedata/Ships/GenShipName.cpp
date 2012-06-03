@@ -14,20 +14,20 @@ IMPLEMENT_SERIAL (CGenShipName, CObject, 1)
 //////////////////////////////////////////////////////////////////////
 
 CGenShipName::CGenShipName()
-{	
+{
 }
 
 CGenShipName::~CGenShipName()
-{	
+{
 }
 
 ///////////////////////////////////////////////////////////////////////
 // Speichern / Laden
 ///////////////////////////////////////////////////////////////////////
-void CGenShipName::Serialize(CArchive &ar)		
+void CGenShipName::Serialize(CArchive &ar)
 {
 	CObject::Serialize(ar);
-	
+
 	// wenn gespeichert wird
 	if (ar.IsStoring())
 	{
@@ -50,7 +50,7 @@ void CGenShipName::Serialize(CArchive &ar)
 			for (size_t i = 0; i < it->second.size(); i++)
 				ar << it->second[i];
 		}
-	
+
 		ar << m_mCounter.size();
 		for (map<CString, USHORT>::const_iterator it = m_mCounter.begin(); it != m_mCounter.end(); ++it)
 			ar << it->first << it->second;
@@ -63,7 +63,7 @@ void CGenShipName::Serialize(CArchive &ar)
 		m_mCounter.clear();
 
 		size_t mapSize = 0;
-		ar >> mapSize;		
+		ar >> mapSize;
 		for (size_t i = 0; i < mapSize; i++)
 		{
 			CString key;
@@ -78,7 +78,7 @@ void CGenShipName::Serialize(CArchive &ar)
 				ar >> s;
 				value.push_back(s);
 			}
-			
+
 			m_mShipNames[key] = value;
 		}
 
@@ -98,7 +98,7 @@ void CGenShipName::Serialize(CArchive &ar)
 				ar >> s;
 				value.push_back(s);
 			}
-			
+
 			m_mUsedNames[key] = value;
 		}
 
@@ -111,7 +111,7 @@ void CGenShipName::Serialize(CArchive &ar)
 			ar >> key;
 			ar >> value;
 			m_mCounter[key] = value;
-		}		
+		}
 	}
 }
 
@@ -134,7 +134,7 @@ void CGenShipName::Init(CBotf2Doc* pDoc)
 		// für jede Rasse dem Counter festlegen
 		m_mCounter[sID] = 64;		// 65 == ASCII-Wert für 'A'; hier eins weniger
 
-		// Varibale vom Typ CStdioFile	
+		// Varibale vom Typ CStdioFile
 		CStdioFile file;
 		// Name des zu öffnenden Files zusammensetzen (die RaceID ist da mit drin)
 		CString fileName = CIOData::GetInstance()->GetAppPath() + "Data\\Names\\" + sID + "ShipNames.data";
@@ -160,9 +160,9 @@ CString CGenShipName::GenerateShipName(const CString& sRaceID, BOOLEAN station)
 		m_mShipNames[sRaceID].clear();
 		for (UINT i = 0; i < m_mUsedNames[sRaceID].size(); i++)
 			m_mShipNames[sRaceID].push_back(m_mUsedNames[sRaceID].at(i));
-		
+
 		m_mUsedNames[sRaceID].clear();
-				
+
 		m_mCounter[sRaceID] += 1;
 		// Wenn der ASCII Wert vom Z erreicht wurde, so fängt es automatisch wieder mit A an
 		if (m_mCounter[sRaceID] > 90)	// 90 entspricht Z
@@ -178,22 +178,22 @@ CString CGenShipName::GenerateShipName(const CString& sRaceID, BOOLEAN station)
 			return sName;
 		}
 	}
-	
+
 	int random = rand()%m_mShipNames[sRaceID].size();
 	CString sName;
-	
+
 	if (!station)
 	{
 		if (m_mCounter[sRaceID] > 64)
 			sName.Format("%s %c",m_mShipNames[sRaceID].at(random), (char)m_mCounter[sRaceID]);
 		else
-			sName.Format("%s",m_mShipNames[sRaceID].at(random));			
+			sName.Format("%s",m_mShipNames[sRaceID].at(random));
 	}
 	else
 		sName.Format("%s Station", m_mShipNames[sRaceID].at(random));
-	
+
 	m_mUsedNames[sRaceID].push_back(m_mShipNames[sRaceID].at(random));
 	m_mShipNames[sRaceID].erase(m_mShipNames[sRaceID].begin() + random);
-	
-	return sName;	
+
+	return sName;
 }

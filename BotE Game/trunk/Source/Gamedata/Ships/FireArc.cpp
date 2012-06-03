@@ -51,7 +51,7 @@ void CFireArc::Serialize(CArchive &ar)
 	if (ar.IsStoring())
 	{
 		ar << m_nMountPos;
-		ar << m_nAngle;		
+		ar << m_nAngle;
 	}
 	// wenn geladen wird
 	else if (ar.IsLoading())

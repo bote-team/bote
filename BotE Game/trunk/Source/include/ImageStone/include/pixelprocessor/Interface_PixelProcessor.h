@@ -5,7 +5,7 @@
  *   Create   :  2004-2-21
  *   Home     :  http://www.crazy-bit.com/
  *   Mail     :  crazybitwps@hotmail.com
- *   History  :  
+ *   History  :
  */
 #ifndef __FOO_INTERFACE_PIXEL_PROCESSOR__2004_02_21__H__
 #define __FOO_INTERFACE_PIXEL_PROCESSOR__2004_02_21__H__

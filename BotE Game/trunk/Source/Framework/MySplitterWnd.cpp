@@ -48,9 +48,9 @@ END_MESSAGE_MAP()
 
 
 /////////////////////////////////////////////////////////////////////////////
-// Behandlungsroutinen für Nachrichten CMySplitterWnd 
+// Behandlungsroutinen für Nachrichten CMySplitterWnd
 
-void CMySplitterWnd::OnMouseMove(UINT nFlags, CPoint point) 
+void CMySplitterWnd::OnMouseMove(UINT nFlags, CPoint point)
 {
 	// TODO: Code für die Behandlungsroutine für Nachrichten hier einfügen und/oder Standard aufrufen
 
@@ -59,19 +59,19 @@ void CMySplitterWnd::OnMouseMove(UINT nFlags, CPoint point)
 	CWnd::OnMouseMove(nFlags, point);
 }
 
-void CMySplitterWnd::OnLButtonDown(UINT nFlags, CPoint point) 
+void CMySplitterWnd::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO: Code für die Behandlungsroutine für Nachrichten hier einfügen und/oder Standard aufrufen
-	
+
 	// Das ist hier ganz wichtig, das wir die Methode nicht von MySplitterWnd aufrufen sondern von der
 	// Klasse CWnd
 	CWnd::OnLButtonDown(nFlags, point);
 }
 
-void CMySplitterWnd::OnLButtonDblClk(UINT nFlags, CPoint point) 
+void CMySplitterWnd::OnLButtonDblClk(UINT nFlags, CPoint point)
 {
 	// TODO: Code für die Behandlungsroutine für Nachrichten hier einfügen und/oder Standard aufrufen
-	
+
 	// Das ist hier ganz wichtig, das wir die Methode nicht von MySplitterWnd aufrufen sondern von der
 	// Klasse CWnd
 	CWnd::OnLButtonDblClk(nFlags, point);

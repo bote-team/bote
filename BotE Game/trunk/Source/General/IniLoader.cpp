@@ -19,7 +19,7 @@ CIniLoader::CIniLoader(void)
 	// Prüfen ob die Ini-Datei mit der aktuellen Version übereinstimmt
 	CString sVersion;
 	ReadValue("Special", "VERSION", sVersion);
-	
+
 	CFileFind fileFind;
 	// wenn es die Datei noch nicht gibt oder die Versionsnummer stimmt nicht überein
 	if (sVersion != VERSION_INFORMATION || !fileFind.FindFile(m_sIniPath))
@@ -28,7 +28,7 @@ CIniLoader::CIniLoader(void)
 		WriteValue("General", "AUTOSAVE", "ON");
 		WriteValue("General", "USERNAME", "");
 		WriteValue("General", "DIFFICULTY", "EASY");
-				
+
 		WriteValue("Audio", "HARDWARESOUND", "ON");
 		WriteValue("Audio", "SOUND", "ON");
 		WriteValue("Audio", "MUSIC", "ON");
@@ -37,12 +37,12 @@ CIniLoader::CIniLoader(void)
 		WriteValue("Video", "SHOWTRADEROUTES", "ON");
 		WriteValue("Video", "ANIMATEDICON", "ON");
 		WriteValue("Video", "SHOWMINIMAP", "ON");
-		WriteValue("Video", "TOOLTIPDELAY", "750");		
+		WriteValue("Video", "TOOLTIPDELAY", "750");
 
 		WriteValue("Control", "SHOWSCROLLBARS", "OFF");
 		WriteValue("Control", "INVERTMOUSE", "OFF");
 		WriteValue("Control", "HIDEMENUBAR", "ON");
-		
+
 		WriteValue("Special", "VERSION", VERSION_INFORMATION);
 		WriteValue("Special", "RANDOMSEED", "-1");
 		WriteValue("Special", "STARDENSITY", "35");
@@ -72,7 +72,7 @@ CIniLoader::~CIniLoader(void)
 /// @return Instanz dieser Klasse
 CIniLoader* CIniLoader::GetInstance(void)
 {
-	static CIniLoader instance; 
+	static CIniLoader instance;
     return &instance;
 }
 
@@ -82,12 +82,12 @@ bool CIniLoader::ReadValue(const CString& sSection, const CString& sKey, bool& b
 	CString sValue;
 	if (!ReadIniValue(sSection, sKey, sValue))
 		return false;
-	
+
 	if (StringToInt(sValue) == 1)
 		bValue = true;
 	else
 		bValue = false;
-	
+
 	return true;
 }
 
@@ -97,7 +97,7 @@ bool CIniLoader::ReadValue(const CString& sSection, const CString& sKey, int& nV
 	CString sValue;
 	if (!ReadIniValue(sSection, sKey, sValue))
 		return false;
-	
+
 	nValue = atoi(sValue);
 	return true;
 }
@@ -108,7 +108,7 @@ bool CIniLoader::ReadValue(const CString& sSection, const CString& sKey, float& 
 	CString sValue;
 	if (!ReadIniValue(sSection, sKey, sValue))
 		return false;
-	
+
 	fValue = (float)atof(sValue);
 	return true;
 }
@@ -123,7 +123,7 @@ bool CIniLoader::ReadValue(const CString& sSection, const CString& sKey, CString
 
 /// Diese Funktion schreibt den zum <code>sKey</code> gehörenden Eintrag <code>value</code> in die ini-Datei.
 bool CIniLoader::WriteValue(const CString& sSection, const CString& sKey, const CString& sValue)
-{	
+{
 	if (m_sIniPath.IsEmpty())
 		return false;
 	if (WritePrivateProfileString(sSection, sKey, sValue, m_sIniPath) == 0)
@@ -156,7 +156,7 @@ bool CIniLoader::ReadIniValue(const CString& sSection, const CString& sKey, CStr
 	char read[_MAX_PATH];
 	if (GetPrivateProfileString(sSection, sKey, "", read, _MAX_PATH, m_sIniPath) == 0)
 		return false;
-	
+
 	sReturnValue = read;
 	return true;
 }

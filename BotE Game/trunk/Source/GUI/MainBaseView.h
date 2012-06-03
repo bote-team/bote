@@ -85,13 +85,13 @@ protected:
 	void CalcDeviceRect(CRect &rect);
 
 	/// Funktion generiert alle Buttons für das Menü. Sollte von der abgeleiteten Klasse überschrieben werden.
-	virtual void CreateButtons() {};	
+	virtual void CreateButtons() {};
 
 	// Attribute
 	CSize m_TotalSize;				///< Größe der View in logischen Koordinaten
 
 	static CMajor* m_pPlayersRace;	///< Zeiger auf Spielerrasse
-	
+
 protected:
 	DECLARE_MESSAGE_MAP()
 public:

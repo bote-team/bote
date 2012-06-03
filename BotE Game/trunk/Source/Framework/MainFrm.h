@@ -25,10 +25,10 @@
 #include "PPTooltip.h"
 
 class CMainFrame : public CFrameWnd
-{	
+{
 protected: // Nur aus Serialisierung erzeugen
 	CMainFrame();
-	DECLARE_DYNCREATE(CMainFrame)	
+	DECLARE_DYNCREATE(CMainFrame)
 
 // Operationen
 public:

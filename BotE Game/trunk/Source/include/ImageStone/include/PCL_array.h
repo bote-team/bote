@@ -5,7 +5,7 @@
  *   Create   :  2004-7-19
  *   Home     :  http://www.crazy-bit.com/
  *   Mail     :  crazybitwps@hotmail.com
- *   History  :  
+ *   History  :
  */
 #ifndef __PCL_ARRAY__2004_07_19__H__
 #define __PCL_ARRAY__2004_07_19__H__

@@ -33,7 +33,7 @@ public:
 	void SetBorderWidth(int width) {m_iBorderWidth = width;}
 
 	// sonstige Funktionen
-	
+
 	/// Funktion zeichnet das Banner auf den übergebenen Zeichenkontext mittels GDI+.
 	/// @param g Zeiger auf das GDI+ Grafikobjekt
 	/// @param font Font zum Zeichnen des Textes

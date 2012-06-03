@@ -19,7 +19,7 @@ class CIntelAI
 public:
 	/// Konstruktor
 	CIntelAI(void);
-	
+
 	/// Destruktor
 	~CIntelAI(void);
 

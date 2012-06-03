@@ -23,10 +23,10 @@ CRaceController::~CRaceController(void)
 ///////////////////////////////////////////////////////////////////////
 // Speichern / Laden
 ///////////////////////////////////////////////////////////////////////
-void CRaceController::Serialize(CArchive &ar)		
+void CRaceController::Serialize(CArchive &ar)
 {
 	CObject::Serialize(ar);
-	
+
 	// wenn gespeichert wird
 	if (ar.IsStoring())
 	{
@@ -40,7 +40,7 @@ void CRaceController::Serialize(CArchive &ar)
 	{
 		// alle Rassen und Zeiger löschen
 		Reset();
-		
+
 		size_t mapSize = 0;
 		ar >> mapSize;
 		for (size_t i = 0; i < mapSize; i++)
@@ -78,7 +78,7 @@ bool CRaceController::Init(int nSource/* = RACESOURCE_DATAFILE*/)
 
 	if ((InitMajors(nSource) & InitMinors(nSource) & InitAlienEntities(nSource)) == false)
 		return false;
-	
+
 	// Array aller Majors und Minors anlegen
 	for (map<CString, CRace*>::const_iterator it = m_mRaces.begin(); it != m_mRaces.end(); ++it)
 	{
@@ -237,15 +237,15 @@ bool CRaceController::InitMajors(int nSource/* = RACESOURCE_DATAFILE*/)
 		int nInfoCount = 29;
 		int nCurRow = 0;
 		CString sVersion;
-		
-		// Name des zu öffnenden Files 
-		CString fileName = CIOData::GetInstance()->GetAppPath() + "Data\\Races\\MajorRaces.data";		
+
+		// Name des zu öffnenden Files
+		CString fileName = CIOData::GetInstance()->GetAppPath() + "Data\\Races\\MajorRaces.data";
 		// Varibale vom Typ CStdioFile
 		CStdioFile file;
 		// Array mit allen Rasseninfos
 		CStringArray saInfo;
-				
-		// Datei öffnen		
+
+		// Datei öffnen
 		if (file.Open(fileName, CFile::shareDenyNone | CFile::modeRead | CFile::typeText))
 		{
 			// auf sInput wird die jeweilige Zeile gespeichert
@@ -266,13 +266,13 @@ bool CRaceController::InitMajors(int nSource/* = RACESOURCE_DATAFILE*/)
 			}
 		}
 		else
-		{	
+		{
 			AfxMessageBox("Error! Could not open \"MajorRaces.data\"...");
 			return false;
 		}
 		// Datei wird geschlossen
 		file.Close();
-		
+
 		// prüfen ob vollständige Rasseninformationen vorhanden sind
 		if (nCurRow < nInfoCount || (saInfo.GetSize())%nInfoCount != 0)
 		{
@@ -284,7 +284,7 @@ bool CRaceController::InitMajors(int nSource/* = RACESOURCE_DATAFILE*/)
 		{
 			AfxMessageBox("Version conflict in file MajorRaces.data");
 			return false;
-		}		
+		}
 
 		// Majorrace nun anlegen
 		int nPos = 0;
@@ -307,8 +307,8 @@ bool CRaceController::InitMajors(int nSource/* = RACESOURCE_DATAFILE*/)
 				AfxMessageBox(s);
 			}
 			else
-				m_mRaces[pNewMajor->GetRaceID()] = pNewMajor;			
-		}		
+				m_mRaces[pNewMajor->GetRaceID()] = pNewMajor;
+		}
 	}
 	return true;
 }
@@ -325,16 +325,16 @@ bool CRaceController::InitMinors(int nSource/* = RACESOURCE_DATAFILE*/)
 		int nInfoCount = 14;
 		int nCurRow = 0;
 		CString sVersion;
-		
-		// Name des zu öffnenden Files 
+
+		// Name des zu öffnenden Files
 		CString fileName = CIOData::GetInstance()->GetAppPath() + "Data\\Races\\MinorRaces.data";
 		// Varibale vom Typ CStdioFile
 		CStdioFile file;
 		// Array mit allen Rasseninfos
 		CStringArray saInfo;
 		//saInfo.SetSize(nInfoCount);
-		
-		// Datei öffnen		
+
+		// Datei öffnen
 		if (file.Open(fileName, CFile::shareDenyNone | CFile::modeRead | CFile::typeText))
 		{
 			// auf sInput wird die jeweilige Zeile gespeichert
@@ -355,7 +355,7 @@ bool CRaceController::InitMinors(int nSource/* = RACESOURCE_DATAFILE*/)
 			}
 		}
 		else
-		{	
+		{
 			AfxMessageBox("Error! Could not open \"MinorRaces.data\"...");
 			return false;
 		}
@@ -374,7 +374,7 @@ bool CRaceController::InitMinors(int nSource/* = RACESOURCE_DATAFILE*/)
 			AfxMessageBox("Version conflict in file MinorRaces.data");
 			return false;
 		}
-		
+
 		// Minorraces nun anlegen
 		int nPos = 0;
 		while (nPos < saInfo.GetSize())
@@ -414,15 +414,15 @@ bool CRaceController::InitAlienEntities(int nSource/* = RACESOURCE_DATAFILE*/)
 		int nInfoCount = 9;
 		int nCurRow = 0;
 		CString sVersion;
-		
-		// Name des zu öffnenden Files 
+
+		// Name des zu öffnenden Files
 		CString fileName = CIOData::GetInstance()->GetAppPath() + "Data\\Races\\AlienEntities.data";
 		// Varibale vom Typ CStdioFile
 		CStdioFile file;
 		// Array mit allen Rasseninfos
 		CStringArray saInfo;
-				
-		// Datei öffnen		
+
+		// Datei öffnen
 		if (file.Open(fileName, CFile::shareDenyNone | CFile::modeRead | CFile::typeText))
 		{
 			// auf sInput wird die jeweilige Zeile gespeichert
@@ -443,7 +443,7 @@ bool CRaceController::InitAlienEntities(int nSource/* = RACESOURCE_DATAFILE*/)
 			}
 		}
 		else
-		{	
+		{
 			AfxMessageBox("Error! Could not open \"AlienEntities.data\"...");
 			return false;
 		}
@@ -462,7 +462,7 @@ bool CRaceController::InitAlienEntities(int nSource/* = RACESOURCE_DATAFILE*/)
 			AfxMessageBox("Version conflict in file AlienEntities.data");
 			return false;
 		}
-		
+
 		// Minorraces nun anlegen
 		int nPos = 0;
 		while (nPos < saInfo.GetSize())
@@ -486,7 +486,7 @@ bool CRaceController::InitAlienEntities(int nSource/* = RACESOURCE_DATAFILE*/)
 			else
 				m_mRaces[pAlien->GetRaceID()] = pAlien;
 		}
-	}	
+	}
 
 	return true;
 }
@@ -505,12 +505,12 @@ void CRaceController::InitRelations(void)
 				int nBase = 50;
 				// Beziehungsbonus wird durch die Rassenart der anderen Rasse bestimmt
 				int nBoni = 0;
-				
+
 				// und dann mit der Rasseneigenschaft angepasst
 				if (it->second->IsRaceProperty(RACE_PROPERTY::FINANCIAL))
 				{
 					nBase += 10;
-					
+
 					if (jt->second->IsRaceProperty(RACE_PROPERTY::FINANCIAL))
 						nBoni += 25;
 					if (jt->second->IsRaceProperty(RACE_PROPERTY::WARLIKE))
@@ -614,7 +614,7 @@ void CRaceController::InitRelations(void)
 						nBoni -= 15;
 					if (jt->second->IsRaceProperty(RACE_PROPERTY::HOSTILE))
 						nBoni -= 20;
-				}					
+				}
 				if (it->second->IsRaceProperty(RACE_PROPERTY::SECRET))
 				{
 					nBase -= 10;
@@ -779,9 +779,9 @@ void CRaceController::InitRelations(void)
 				}
 				if (it->second->IsRaceProperty(RACE_PROPERTY::HOSTILE))
 				{
-					nBase -= 40;					
+					nBase -= 40;
 					if (jt->second->IsRaceProperty(RACE_PROPERTY::PACIFIST))
-						nBoni -= 10;					
+						nBoni -= 10;
 				}
 
 				int nRel = nBase + nBoni;
@@ -796,7 +796,7 @@ void CRaceController::InitRelations(void)
 				for (int i = 0; i < 7; i++)
 					nValue += (rand()%nRel) * 2;
 				nValue /= 7;
-				
+
 				it->second->SetRelation(jt->first, nValue);
 			}
 }

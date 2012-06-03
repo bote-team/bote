@@ -6,8 +6,8 @@
 	file base:	RoundButton2
 	file ext:	cpp
 	author:		Markus Zocholl
-	
-	purpose:	CRoundButton2 defines a universal Button-Control with the 
+
+	purpose:	CRoundButton2 defines a universal Button-Control with the
 				following features:
 
 				* Shape is a rounded Rectangle
@@ -33,13 +33,13 @@ static char THIS_FILE[] = __FILE__;
 /************************************************************************/
 
 //! Construction
-CRoundButton2::CRoundButton2(void):	
+CRoundButton2::CRoundButton2(void):
 	  m_bDefaultButton(false)
 	, m_bIsCheckButton(false)
 	, m_bIsRadioButton(false)
 	, m_bIsHotButton(false)
 	, m_bMouseOnButton(false)
-	, m_bIsChecked(false)	
+	, m_bIsChecked(false)
 	, m_ptRoundButtonStyle(NULL)
 	, m_rBtnSize(CRect(0, 0, 0, 0))
 	, m_bRedraw(false)
@@ -213,49 +213,49 @@ void CRoundButton2::DrawButtonFace(CDC* _pDC)
 		/************************************************************************/
 		// Left-Top
 		_pDC->StretchBlt(
-			0, 
-			nState * m_rBtnSize.Height(), 
-			tCorrectedEdgeSize.cx, 
-			tCorrectedEdgeSize.cy, 
-			&SourceDC, 
-			0, 
+			0,
+			nState * m_rBtnSize.Height(),
+			tCorrectedEdgeSize.cx,
+			tCorrectedEdgeSize.cy,
+			&SourceDC,
+			0,
 			nState * tMaskSize.cy,
 			tEdgeSize.cx,
 			tEdgeSize.cy,
 			SRCCOPY);
 		// Left-Bottom
 		_pDC->StretchBlt(
-			0, 
-			nState * m_rBtnSize.Height() + m_rBtnSize.Height() - tCorrectedEdgeSize.cy, 
-			tCorrectedEdgeSize.cx, 
-			tCorrectedEdgeSize.cy, 
-			&SourceDC, 
-			0, 
-			nState * tMaskSize.cy + tMaskSize.cy - tEdgeSize.cy, 
+			0,
+			nState * m_rBtnSize.Height() + m_rBtnSize.Height() - tCorrectedEdgeSize.cy,
+			tCorrectedEdgeSize.cx,
+			tCorrectedEdgeSize.cy,
+			&SourceDC,
+			0,
+			nState * tMaskSize.cy + tMaskSize.cy - tEdgeSize.cy,
 			tEdgeSize.cx,
 			tEdgeSize.cy,
 			SRCCOPY);
 		// Right-Top
 		_pDC->StretchBlt(
-			m_rBtnSize.Width() - tCorrectedEdgeSize.cx, 
-			nState * m_rBtnSize.Height(), 
-			tCorrectedEdgeSize.cx, 
-			tCorrectedEdgeSize.cy, 
-			&SourceDC, 
-			tMaskSize.cx - tEdgeSize.cx, 
-			nState * tMaskSize.cy, 
+			m_rBtnSize.Width() - tCorrectedEdgeSize.cx,
+			nState * m_rBtnSize.Height(),
+			tCorrectedEdgeSize.cx,
+			tCorrectedEdgeSize.cy,
+			&SourceDC,
+			tMaskSize.cx - tEdgeSize.cx,
+			nState * tMaskSize.cy,
 			tEdgeSize.cx,
 			tEdgeSize.cy,
 			SRCCOPY);
 		// Right-Bottom
 		_pDC->StretchBlt(
-			m_rBtnSize.Width() - tCorrectedEdgeSize.cx, 
-			nState * m_rBtnSize.Height() + m_rBtnSize.Height() - tCorrectedEdgeSize.cy, 
-			tCorrectedEdgeSize.cx, 
-			tCorrectedEdgeSize.cy, 
-			&SourceDC, 
-			tMaskSize.cx - tEdgeSize.cx, 
-			nState * tMaskSize.cy + tMaskSize.cy - tEdgeSize.cy, 
+			m_rBtnSize.Width() - tCorrectedEdgeSize.cx,
+			nState * m_rBtnSize.Height() + m_rBtnSize.Height() - tCorrectedEdgeSize.cy,
+			tCorrectedEdgeSize.cx,
+			tCorrectedEdgeSize.cy,
+			&SourceDC,
+			tMaskSize.cx - tEdgeSize.cx,
+			nState * tMaskSize.cy + tMaskSize.cy - tEdgeSize.cy,
 			tEdgeSize.cx,
 			tEdgeSize.cy,
 			SRCCOPY);
@@ -264,7 +264,7 @@ void CRoundButton2::DrawButtonFace(CDC* _pDC)
 		/************************************************************************/
 		// Top
 		_pDC->StretchBlt(
-			tCorrectedEdgeSize.cx, 
+			tCorrectedEdgeSize.cx,
 			nState * m_rBtnSize.Height(),
 			m_rBtnSize.Width() - 2 * tCorrectedEdgeSize.cx,
 			tCorrectedEdgeSize.cy,
@@ -276,7 +276,7 @@ void CRoundButton2::DrawButtonFace(CDC* _pDC)
 			SRCCOPY);
 		// Bottom
 		_pDC->StretchBlt(
-			tCorrectedEdgeSize.cx, 
+			tCorrectedEdgeSize.cx,
 			nState * m_rBtnSize.Height() + m_rBtnSize.Height() - tCorrectedEdgeSize.cy,
 			m_rBtnSize.Width() - 2 * tCorrectedEdgeSize.cx,
 			tCorrectedEdgeSize.cy,
@@ -288,7 +288,7 @@ void CRoundButton2::DrawButtonFace(CDC* _pDC)
 			SRCCOPY);
 		// Left
 		_pDC->StretchBlt(
-			0, 
+			0,
 			nState * m_rBtnSize.Height() + tCorrectedEdgeSize.cy,
 			tCorrectedEdgeSize.cx,
 			m_rBtnSize.Height() - 2 * tCorrectedEdgeSize.cy,
@@ -300,7 +300,7 @@ void CRoundButton2::DrawButtonFace(CDC* _pDC)
 			SRCCOPY);
 		// Right
 		_pDC->StretchBlt(
-			m_rBtnSize.Width() - tCorrectedEdgeSize.cx, 
+			m_rBtnSize.Width() - tCorrectedEdgeSize.cx,
 			nState * m_rBtnSize.Height() + tCorrectedEdgeSize.cy,
 			tCorrectedEdgeSize.cx,
 			m_rBtnSize.Height() - 2 * tCorrectedEdgeSize.cy,
@@ -369,11 +369,11 @@ void CRoundButton2::DrawButtonCaption(CDC *_pDC)
 		}
 
 		_pDC->DrawText(
-			sCaption, 
+			sCaption,
 			CRect(
-				m_rBtnSize.left, 
-				nState * m_rBtnSize.Height() + m_rBtnSize.top, 
-				m_rBtnSize.right, 
+				m_rBtnSize.left,
+				nState * m_rBtnSize.Height() + m_rBtnSize.top,
+				m_rBtnSize.right,
 				nState * m_rBtnSize.Height() + m_rBtnSize.bottom),
 			DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 	}
@@ -485,13 +485,13 @@ void CRoundButton2::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 
 	// Copy correct Bitmap to Screen
 	pDC->BitBlt(
-		lpDrawItemStruct->rcItem.left, 
-		lpDrawItemStruct->rcItem.top, 
-		m_rBtnSize.Width(), 
-		m_rBtnSize.Height(), 
-		&MemDC, 
-		0, 
-		m_rBtnSize.Height() * nButtonState, 
+		lpDrawItemStruct->rcItem.left,
+		lpDrawItemStruct->rcItem.top,
+		m_rBtnSize.Width(),
+		m_rBtnSize.Height(),
+		&MemDC,
+		0,
+		m_rBtnSize.Height() * nButtonState,
 		SRCCOPY);
 
 	MemDC.SelectObject(hOldBmp);

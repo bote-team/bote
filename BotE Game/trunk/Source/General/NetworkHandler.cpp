@@ -51,7 +51,7 @@ void CNetworkHandler::OnNextRound(network::CNextRound *pMsg)
 		nMsg = WM_COMBATVIEW;
 	else if (m_pDoc->m_bNewGame)
 		nMsg = WM_INITVIEWS;
-			
+
 	// wurde schon ein Fenster erstellt, so wird die Nachricht der Aktualisierung an das Hauptfenster
 	// geschickt
 	CWnd* pWnd = ((CBotf2App*)AfxGetApp())->GetMainWnd();
@@ -76,7 +76,7 @@ void CNetworkHandler::OnNextRound(network::CNextRound *pMsg)
 	// bei einer Kampfansicht werden nicht die Nachrichten abgespielt, die kommen nur, wenn
 	// die neue Runde komplett beginnt
 	if (nMsg == WM_UPDATEVIEWS)
-	{				
+	{
 		CSoundManager* pSoundManager = CSoundManager::GetInstance();
 		ASSERT(pSoundManager);
 

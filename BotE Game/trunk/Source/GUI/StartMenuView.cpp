@@ -105,10 +105,10 @@ void CStartMenuView::OnDraw(CDC* dc)
 	CMyMemDC pDC(dc);
 	CRect client;
 	GetClientRect(&client);
-	
+
 	// Graphicsobjekt, in welches gezeichnet wird anlegen
 	Graphics g(pDC->GetSafeHdc());
-	
+
 	g.Clear(Color::Black);
 	g.SetSmoothingMode(SmoothingModeHighSpeed);
 	g.SetInterpolationMode(InterpolationModeLowQuality);
@@ -132,7 +132,7 @@ void CStartMenuView::OnDraw(CDC* dc)
 		// nichts weiter Zeichnen
 		return;
 	}
-	
+
 	// Hintergrundbild anzeigen
 	g.DrawImage(m_pBkgndImg, 0, 0, m_TotalSize.cx, m_TotalSize.cy);
 
@@ -160,8 +160,8 @@ void CStartMenuView::OnDraw(CDC* dc)
 		Color clr2(max(0, 255 - m_nTimeCounter * 1.2), 245,245,245);
 		CString s= CResourceManager::GetString("PRESENTEDBY")+"\n\n"+CResourceManager::GetString("PRESENTED");
 		g.DrawString(s.AllocSysString(), -1, &font, RectF(0, 0, m_TotalSize.cx, m_TotalSize.cy), &format, &SolidBrush(clr2));
-	}	
-	
+	}
+
 	g.ReleaseHDC(pDC->GetSafeHdc());
 }
 
@@ -175,7 +175,7 @@ void CStartMenuView::OnInitialUpdate()
 
 	m_pBkgndImg = pDoc->GetGraphicPool()->GetGDIGraphic("Events\\Startmenu.boj");
 	ASSERT(m_pBkgndImg);
-	
+
 	m_pChooseRaceView = dynamic_cast<CChooseRaceView*>(pDoc->GetMainFrame()->GetView(RUNTIME_CLASS(CChooseRaceView)));
 	ASSERT(m_pChooseRaceView);
 
@@ -189,24 +189,24 @@ void CStartMenuView::OnInitialUpdate()
 
 	CRect clientRect;
 	GetDesktopWindow()->GetClientRect(clientRect);
-		
+
 	double nButtonSizeX = 300.0;
 	double nButtonSizeY = 40.0;
-	
+
 	double nXPos = clientRect.Width() / 2.0 - nButtonSizeX / 2.0;
-	double nYPos = clientRect.Height() / 2.0 - 150.0;	
+	double nYPos = clientRect.Height() / 2.0 - 150.0;
 
 	double nGab = 10.0;
 
 	// Structure containing Style
 	tButtonStyle tStyle;
 	//////////////////////////////////////////////////////////////////////////
-	
+
 	// Get default Style
 	m_tButtonStyle.GetButtonStyle(&tStyle);
 	// Change Radius of Button
 	tStyle.m_dRadius = 1.0;
-	
+
 	// Change Color Schema of Button
 	tStyle.m_tColorFace.m_tEnabled		= RGB(125, 125, 125);
 	tStyle.m_tColorBorder.m_tEnabled	= RGB(220, 220, 220);
@@ -260,7 +260,7 @@ void CStartMenuView::OnInitialUpdate()
 	sTooltip = CHTMLStringBuilder::GetHTMLColor(CResourceManager::GetString("JOINGAMETT"), _T("silver"));
 	pDoc->GetMainFrame()->AddToTooltip(GetDlgItem(MP_JOIN), sTooltip);
 
-	this->SetTimer(1,4000,NULL);	
+	this->SetTimer(1,4000,NULL);
 }
 
 BOOL CStartMenuView::OnEraseBkgnd(CDC* pDC)
@@ -278,8 +278,8 @@ void CStartMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		m_nTimeCounter = 255;
 		this->SetTimer(1, 1, NULL);
 	}
-	
-	CFormView::OnLButtonDown(nFlags, point);	
+
+	CFormView::OnLButtonDown(nFlags, point);
 }
 
 void CStartMenuView::OnBnClickedNewGame()
@@ -319,7 +319,7 @@ void CStartMenuView::OnBnClickedLoadGame()
 {
 	CFileDialog dlg(TRUE, "sav", NULL, OFN_FILEMUSTEXIST | OFN_HIDEREADONLY | OFN_ENABLESIZING,
 		"BotE-Savegame (*.sav)|*.sav|All Files (*.*)|*.*||", this, 0);
-	
+
 	if (dlg.DoModal() == IDOK)
 	{
 		SetCursor(::LoadCursor(NULL, IDC_WAIT));
@@ -333,7 +333,7 @@ void CStartMenuView::OnBnClickedOptions()
 	CIniLoader* pIni = CIniLoader::GetInstance();
 	int nOldSeed = -1;
 	pIni->ReadValue("Special", "RANDOMSEED", nOldSeed);
-	
+
 	CSettingsDlg dlg;
 	if (dlg.DoModal() == IDOK)
 	{
@@ -406,7 +406,7 @@ void CStartMenuView::OnClientDisconnected()
 		if (!pDoc->m_bDontExit)
 		{
 			MessageBox(CResourceManager::GetString("SERVERERROR1"), CResourceManager::GetString("ERROR"), MB_ICONEXCLAMATION | MB_OK);
-			pDoc->GetMainFrame()->SelectMainView(CHOOSERACE_VIEW);			
+			pDoc->GetMainFrame()->SelectMainView(CHOOSERACE_VIEW);
 		}
 		else
 		{
@@ -427,7 +427,7 @@ void CStartMenuView::OnBeginGame(network::CBeginGame *pMsg)
 		return;
 
 	pMsg->DeserializeToDoc((network::CPeerData*)pDoc);
-	
+
 	if (!m_pChooseRaceView->IsServer())
 	{
 		pDoc->m_bDontExit = true;
@@ -436,7 +436,7 @@ void CStartMenuView::OnBeginGame(network::CBeginGame *pMsg)
 }
 
 void CStartMenuView::OnPrepareGame()
-{	
+{
 }
 
 void CStartMenuView::OnNextRound(network::CNextRound *pMsg)
@@ -453,7 +453,7 @@ void CStartMenuView::OnChatMsg(network::CChatMsg *pMsg)
 	if (!pMsg)
 		return;
 
-	m_pChooseRaceView->AddChatMsg(pMsg->GetSenderName(), pMsg->GetMessage());	
+	m_pChooseRaceView->AddChatMsg(pMsg->GetSenderName(), pMsg->GetMessage());
 }
 
 void CStartMenuView::SetButtonStyle(CRoundButton2* pBtn)
@@ -556,7 +556,7 @@ void CStartMenuView::OnTimer(UINT_PTR nIDEvent)
 		}
 		return;
 	}
-		
+
 	m_nTimeCounter++;
 	m_nTimeCounter *= 1.025;
 	if (m_nTimeCounter >= 255)
@@ -566,7 +566,7 @@ void CStartMenuView::OnTimer(UINT_PTR nIDEvent)
 		ShowMPButtons(false);
 	}
 
-	Invalidate(false);	
+	Invalidate(false);
 
 	__super::OnTimer(nIDEvent);
 }

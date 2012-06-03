@@ -25,9 +25,9 @@ enum RaceProberties
 	RACE_PACIFIST				= 16,
 	RACE_PRODUCER				= 32,
 	RACE_SCIENTIFIC				= 64,
-	RACE_SECRET					= 128,	
+	RACE_SECRET					= 128,
 	RACE_SNEAKY					= 256,
-	RACE_SOLOING				= 512,	
+	RACE_SOLOING				= 512,
 	RACE_WARLIKE				= 1024
 };
 
@@ -39,7 +39,7 @@ enum RaceSpecialAbilities
 };
 
 /// Basisklasse für alle Rassen.
-class CRace : public CObject				
+class CRace : public CObject
 {
 public:
 
@@ -143,13 +143,13 @@ public:
 	/// Funktion gibt das zuletzt gemachte Angebot an eine bestimmte Rasse aus den letzten beiden Runden zurück.
 	/// @param sToRace Rasse an welche das Angebot ging
 	/// @return Angebot oder <code>NULL</code>, wenn kein Angebot aus den letzten beiden Runden vorliegt.
-	const CDiplomacyInfo* GetLastOffer(const CString& sToRace) const 
+	const CDiplomacyInfo* GetLastOffer(const CString& sToRace) const
 	{
 		map<CString, CDiplomacyInfo>::const_iterator it = m_mLastOffers.find(sToRace);
 		if (it != m_mLastOffers.end())
 			return &it->second;
 		else
-			return NULL;		
+			return NULL;
 	}
 
 	/// Funktion gibt den zu nutzenden Grafikdateinamen inkl. Dateiendung zurück.
@@ -166,7 +166,7 @@ public:
 	/// @param sRace andere Rasse
 	/// @param bKnown <code>TRUE</code> wenn sie sie kennenlernt, ansonsten <code>FALSE</code>
 	void SetIsRaceContacted(const CString& sRace, bool bKnown);
-	
+
 	/// Funktion legt den diplomatischen Status zu einer anderes Rasse fest.
 	/// @param sOtherRace andere Rasse
 	/// @param nNewAgreement neuer Vertrag
@@ -204,7 +204,7 @@ public:
 	/// Funktion lässt die KI auf diplomatische Angebote reagieren.
 	/// @param pOffer diplomatisches Angebot
 	void ReactOnOfferAI(CDiplomacyInfo* pOffer);
-	
+
 	/// Funktion zum zurücksetzen aller Werte auf Ausgangswerte.
 	virtual void Reset(void);
 

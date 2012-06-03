@@ -56,8 +56,8 @@ private:
 
 	/// Funktion zeichnet alles für die Majorraces in der Diplomatieansicht
 	/// @param g Zeiger auf GDI+ Grafikobjekt
-	void DrawRaceDiplomacyMenue(Graphics* g);	
-	
+	void DrawRaceDiplomacyMenue(Graphics* g);
+
 	/// Funktion zeichnet das Informationsmenü in der Diplomatieansicht
 	/// @param g Zeiger auf GDI+ Grafikobjekt
 	/// @param sWhichRace aktuell angeklickte Rasse
@@ -83,8 +83,8 @@ private:
 	/// Funktion nimmt die Ressourcen und das Credits, welches für verschenken können aus den Lagern oder gibt es zurück
 	/// @param bTake soll etwas genommen oder zurückgegeben werden?
 	void TakeOrGetbackResLat(bool bTake);
-	
-	// Attribute 
+
+	// Attribute
 
 	// Grafiken
 	Bitmap* bg_diploinfomenu;		// Diplomatieinformationsmenü

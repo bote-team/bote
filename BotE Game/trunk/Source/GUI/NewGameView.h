@@ -24,7 +24,7 @@ protected:
 
 	// This object includes the project wide style of the buttons
 	CRoundButtonStyle m_tButtonStyle;
-	
+
 	CRoundButton2	m_btNext;
 	CRoundButton2	m_btBack;
 
@@ -63,7 +63,7 @@ private:
 	/// Den Style für die Button-Controls setzen
 	/// @pBtn Zeiger auf Button
 	void SetButtonStyle(CRoundButton2* pBtn);
-	
+
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV-Unterstützung
 
@@ -77,7 +77,7 @@ protected:
 	afx_msg void OnEnChangeUsername();
 	afx_msg void OnEnChangeDescription();
 	afx_msg void OnBnClickedSearchservers();
-	
+
 	virtual void OnInitialUpdate();
 	virtual void OnDraw(CDC* /*pDC*/);
 	afx_msg BOOL OnEraseBkgnd(CDC* pDC);

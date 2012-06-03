@@ -20,7 +20,7 @@ public:
 	CSystemProd(void);
 
 	CSystemProd(const CSystemProd&);
-	
+
 	// Destruktor
 	virtual ~CSystemProd(void);
 
@@ -72,7 +72,7 @@ public:
 	BOOLEAN GetBarrack() const {return m_bBarrack;}
 	short GetBarrackEfficiency() const {return m_iBarracksEfficiency;}
 	int GetShieldPower() const {return m_iShieldPower;}
-	int GetShipDefend() const {return m_iShipDefend;}	
+	int GetShipDefend() const {return m_iShipDefend;}
 	int GetGroundDefend() const {return m_iGroundDefend;}
 	short GetGroundDefendBoni() const {return m_iGroundDefendBoni;}
 	int GetScanPower() const {return m_iScanPower;}
@@ -88,7 +88,7 @@ public:
 	short GetShipBuildSpeed() const {return m_iShipBuildSpeed;}
 	short GetTroopBuildSpeed() const {return m_iTroopBuildSpeed;}
 	BOOLEAN GetResourceDistributor(BYTE res) const { return m_bResourceDistributor[res]; }
-	
+
 	// zum Schreiben der Membervariabeln
 	void AddMoralProd(short moralAdd) {m_iMoralProd += moralAdd;}
 

@@ -59,7 +59,7 @@ private:
 	virtual BOOL OnInitDialog();
 	virtual BOOL OnSetActive();
 	virtual LRESULT OnWizardBack();
-	
+
 	afx_msg void OnChooseRace(UINT nID);
 	afx_msg void OnSetPlayByServer(UINT nID);
 	virtual LRESULT OnWizardNext();

@@ -17,11 +17,11 @@ CIOData::CIOData(void)
 
 	// Pfad zu den eigenen Dateien ermitteln
 	m_sUserDataPath = GetUserDataPath();
-	
+
 	// konnte aus irgendeinem Grund nicht auf den Ordner der eigenen Dateien zugegriffen werden,
 	// so wird dieser Pfad gleich dem Anwendungspfad gesetzt
 	if (m_sUserDataPath == "")
-		m_sUserDataPath = m_sAppPath;	
+		m_sUserDataPath = m_sAppPath;
 }
 
 CIOData::~CIOData(void)
@@ -35,7 +35,7 @@ CIOData::~CIOData(void)
 /// @return Instanz dieser Klasse
 CIOData* CIOData::GetInstance(void)
 {
-	static CIOData instance; 
+	static CIOData instance;
     return &instance;
 }
 
@@ -51,10 +51,10 @@ CString CIOData::GetBotEAppPath(void) const
 	// absoluten Pfad ermitteln
 	char fullPath[_MAX_PATH];
 	_fullpath(fullPath, "", _MAX_PATH);
-	
+
 	sPath = fullPath;
 #ifdef DEVELOPMENT_VERSION
-	sPath += "\\game";	
+	sPath += "\\game";
 #endif
 	sPath += "\\";
 
@@ -80,8 +80,8 @@ CString CIOData::GetUserDataPath(void) const
 				AfxMessageBox("Error:\nCould not create \"Birth of the Empires\" folder in\n" + sUserDataPath);
 				return "";
 			}
-		}		
-		sPath += "\\";		
+		}
+		sPath += "\\";
 	}
 
 	return sPath;

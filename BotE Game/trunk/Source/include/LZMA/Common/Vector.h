@@ -17,7 +17,7 @@ protected:
 	void ReserveOnePosition();
   void InsertOneItem(int index);
   void TestIndexAndCorrectNum(int index, int &num) const
-    { if (index + num > _size) num = _size - index; } 
+    { if (index + num > _size) num = _size - index; }
 public:
   CBaseRecordVector(size_t itemSize):
       _capacity(0), _size(0), _items(0), _itemSize(itemSize) {}
@@ -80,7 +80,7 @@ public:
 
   int FindInSorted(const T& item) const
   {
-    int left = 0, right = Size(); 
+    int left = 0, right = Size();
     while (left != right)
     {
       int mid = (left + right) / 2;
@@ -96,7 +96,7 @@ public:
   }
 
   void Sort(int left, int right)
-  { 
+  {
     if (right - left < 2)
       return;
     Swap(left, (left + right) / 2);
@@ -110,7 +110,7 @@ public:
   }
   void Sort() { Sort(0, Size());  }
   void Sort(int left, int right, int (*compare)(const T*, const T*, void *), void *param)
-  { 
+  {
     if (right - left < 2)
       return;
     Swap(left, (left + right) / 2);
@@ -123,9 +123,9 @@ public:
     Sort(last + 1, right, compare, param);
   }
 
-  void Sort(int (*compare)(const T*, const T*, void *), void *param) 
-  {  
-    Sort(0, Size(), compare, param);  
+  void Sort(int (*compare)(const T*, const T*, void *), void *param)
+  {
+    Sort(0, Size(), compare, param);
   }
 };
 
@@ -182,7 +182,7 @@ public:
   }
   int FindInSorted(const T& item) const
   {
-    int left = 0, right = Size(); 
+    int left = 0, right = Size();
     while (left != right)
     {
       int mid = (left + right) / 2;
@@ -198,7 +198,7 @@ public:
   }
   int AddToSorted(const T& item)
   {
-    int left = 0, right = Size(); 
+    int left = 0, right = Size();
     while (left != right)
     {
       int mid = (left + right) / 2;
@@ -217,7 +217,7 @@ public:
     return right;
   }
 
-  void Sort(int (*compare)(void *const *, void *const *, void *), void *param) 
+  void Sort(int (*compare)(void *const *, void *const *, void *), void *param)
     { CPointerVector::Sort(compare, param); }
 
   static int CompareObjectItems(void *const *a1, void *const *a2, void *param)
@@ -225,4 +225,4 @@ public:
   void Sort() { CPointerVector::Sort(CompareObjectItems, 0); }
 };
 
-#endif 
+#endif

@@ -31,7 +31,7 @@ public:
 
 	/// Konstruktor
 	CIntelAssignment(void);
-	
+
 	/// Destruktor
 	~CIntelAssignment(void);
 

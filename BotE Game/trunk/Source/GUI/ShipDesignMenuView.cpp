@@ -52,23 +52,23 @@ void CShipDesignMenuView::OnDraw(CDC* dc)
 
 	if (!pDoc->m_bDataReceived)
 		return;
-	
+
 	// TODO: add draw code here
 	// Doublebuffering wird initialisiert
 	CMyMemDC pDC(dc);
 	CRect client;
 	GetClientRect(&client);
-		
+
 	// Graphicsobjekt, in welches gezeichnet wird anlegen
 	Graphics g(pDC->GetSafeHdc());
-	
+
 	g.Clear(Color::Black);
 	g.SetSmoothingMode(SmoothingModeHighSpeed);
 	g.SetInterpolationMode(InterpolationModeLowQuality);
 	g.SetPixelOffsetMode(PixelOffsetModeHighSpeed);
 	g.SetCompositingQuality(CompositingQualityHighSpeed);
 	g.ScaleTransform((REAL)client.Width() / (REAL)m_TotalSize.cx, (REAL)client.Height() / (REAL)m_TotalSize.cy);
-	
+
 	DrawShipDesignMenue(&g);
 
 	g.ReleaseHDC(pDC->GetSafeHdc());
@@ -99,7 +99,7 @@ void CShipDesignMenuView::OnInitialUpdate()
 	CMainBaseView::OnInitialUpdate();
 
 	// TODO: Add your specialized code here and/or call the base class
-		
+
 	// Schiffsdesignansicht
 	m_iClickedOnShip = -1;
 	m_iOldClickedOnShip = -1;
@@ -152,13 +152,13 @@ void CShipDesignMenuView::DrawShipDesignMenue(Graphics* g)
 
 	CString fontName = "";
 	Gdiplus::REAL fontSize = 0.0;
-	
+
 	// Rassenspezifische Schriftart auswählen
 	CFontLoader::CreateGDIFont(pMajor, 2, fontName, fontSize);
 	// Schriftfarbe wählen
 	Gdiplus::Color normalColor;
 	CFontLoader::GetGDIFontColor(pMajor, 3, normalColor);
-	
+
 	StringFormat fontFormat;
 	fontFormat.SetAlignment(StringAlignmentNear);
 	fontFormat.SetLineAlignment(StringAlignmentCenter);
@@ -166,20 +166,20 @@ void CShipDesignMenuView::DrawShipDesignMenue(Graphics* g)
 
 	Color penColor;
 	penColor.SetFromCOLORREF(pMajor->GetDesign()->m_clrListMarkPenColor);
-	
+
 	Color markColor;
 	markColor.SetFromCOLORREF(pMajor->GetDesign()->m_clrListMarkTextColor);
-		
+
 	if (bg_designmenu)
 		g->DrawImage(bg_designmenu, 0, 0, 1075, 750);
 
 	SolidBrush fontBrush(normalColor);
 
-	
+
 	// Links im Bild die veränderbaren Schiffklassen zeichnen (bis jetzt darf man keine Stationen verändern,
 	// weil deren Baukosten allein von den Industriekosten berechnet werden. Diese aber nicht steigen wenn
 	// man die Hülle oder Schilde verbessert. Somit könnte man bessere Stationen für den gleichen Preis bauen.
-		
+
 	// Schiffsinfoarray durchgehen und nach zum Imperium gehörende baubare Schiffe suchen
 	short j = 0;
 	short counter = m_iClickedOnShip - 23 + m_iOldClickedOnShip;
@@ -194,7 +194,7 @@ void CShipDesignMenuView::DrawShipDesignMenue(Graphics* g)
 		pMajor->GetEmpire()->GetResearch()->GetConstructionTech(),
 		pMajor->GetEmpire()->GetResearch()->GetWeaponTech()
 	};
-	
+
 	short ShipNumber = -1;
 	m_nSizeOfShipDesignList = 0;
 	// Es gehen nur 21 Einträge auf die Seite, deshalb muss abgebrochen werden
@@ -202,7 +202,7 @@ void CShipDesignMenuView::DrawShipDesignMenue(Graphics* g)
 		if (pDoc->m_ShipInfoArray.GetAt(i).GetRace() == pMajor->GetRaceShipNumber())
 			if (pDoc->m_ShipInfoArray.GetAt(i).GetShipType() != SHIP_TYPE::OUTPOST && pDoc->m_ShipInfoArray.GetAt(i).GetShipType() != SHIP_TYPE::STARBASE)
 				if (pDoc->m_ShipInfoArray.GetAt(i).IsThisShipBuildableNow(researchLevels))
-				{					
+				{
 					// wurde dieses Schiff durch kein anderes jetzt baubares Schiff schon obsolet?
 					BOOLEAN foundObsolet = FALSE;
 					for (int m = 0; m < pDoc->m_ShipInfoArray.GetSize(); m++)
@@ -213,7 +213,7 @@ void CShipDesignMenuView::DrawShipDesignMenue(Graphics* g)
 									foundObsolet = TRUE;
 									break;
 								}
-							
+
 					if (foundObsolet)
 						continue;
 
@@ -224,7 +224,7 @@ void CShipDesignMenuView::DrawShipDesignMenue(Graphics* g)
 						counter--;
 						continue;
 					}
-					
+
 					if (j < 24)
 					{
 						fontBrush.SetColor(normalColor);
@@ -239,7 +239,7 @@ void CShipDesignMenuView::DrawShipDesignMenue(Graphics* g)
 							if (oldClickedShip == -1)
 								oldClickedShip = j;
 							ShipNumber = i;
-							// Infos in View 3 aktualisieren							
+							// Infos in View 3 aktualisieren
 							if (pDoc->m_iShowWhichShipInfoInView3 != i)
 							{
 								pDoc->m_iShowWhichShipInfoInView3 = i;
@@ -254,7 +254,7 @@ void CShipDesignMenuView::DrawShipDesignMenue(Graphics* g)
 						g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(25, 120 + j * 25, 175, 25), &fontFormat, &fontBrush);
 						j++;
 					}
-				}			
+				}
 	m_iClickedOnShip = oldClickedShip;
 
 	// Hier jetzt Informationen zum angeklickten Schiff anzeigen
@@ -268,7 +268,7 @@ void CShipDesignMenuView::DrawShipDesignMenue(Graphics* g)
 			graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Ships\\ImageMissing.bop");
 		if (graphic)
 		{
-			g->DrawImage(graphic, 388, 90, 200, 150);			
+			g->DrawImage(graphic, 388, 90, 200, 150);
 			graphic = NULL;
 		}
 		// allgemeine Schiffsinformationen anzeigen
@@ -278,23 +278,23 @@ void CShipDesignMenuView::DrawShipDesignMenue(Graphics* g)
 		fontFormat.SetAlignment(StringAlignmentCenter);
 		fontFormat.SetLineAlignment(StringAlignmentNear);
 		g->DrawString(CResourceManager::GetString("BUILDCOSTS").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(190,440,580,25), &fontFormat, &fontBrush);
-		
+
 		fontBrush.SetColor(normalColor);
 		s.Format("%s: %d  %s: %d  %s: %d",CResourceManager::GetString("INDUSTRY"),pDoc->m_ShipInfoArray.GetAt(ShipNumber).GetNeededIndustry(),
 			CResourceManager::GetString("TITAN"),pDoc->m_ShipInfoArray.GetAt(ShipNumber).GetNeededTitan(),
 			CResourceManager::GetString("DEUTERIUM"),pDoc->m_ShipInfoArray.GetAt(ShipNumber).GetNeededDeuterium());
 		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(190,465,580,25), &fontFormat, &fontBrush);
-		
+
 		s.Format("%s: %d  %s: %d  %s: %d  %s: %d",CResourceManager::GetString("DURANIUM"),pDoc->m_ShipInfoArray.GetAt(ShipNumber).GetNeededDuranium(),
 			CResourceManager::GetString("CRYSTAL"),pDoc->m_ShipInfoArray.GetAt(ShipNumber).GetNeededCrystal(),
 			CResourceManager::GetString("IRIDIUM"),pDoc->m_ShipInfoArray.GetAt(ShipNumber).GetNeededIridium(),
 			CResourceManager::GetString("DERITIUM"),pDoc->m_ShipInfoArray.GetAt(ShipNumber).GetNeededDeritium());
-			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(190,490,580,25), &fontFormat, &fontBrush);	
-		
+			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(190,490,580,25), &fontFormat, &fontBrush);
+
 		// Die Buttons zur Eigenschaftsänderung in der Rechten Seite der Ansicht anzeigen
 		// zuerst überprüfen wir die Beamwaffen, wir können den Typ der Beamwaffe verändern, wenn wir mindst. ein anderes
 		// Schiff des Imperiums finden, welches DIESE Beamwaffe mit einem höheren Typ oder einem niedrigeren Typ besitzt
-		
+
 		graphic = NULL;
 		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\" + pMajor->GetPrefix() + "button_small.bop");
 		Color btnColor;
@@ -306,7 +306,7 @@ void CShipDesignMenuView::DrawShipDesignMenue(Graphics* g)
 
 		// Nach Beamwaffen suchen
 		if (pDoc->m_ShipInfoArray.GetAt(ShipNumber).GetBeamWeapons()->GetSize() > m_iBeamWeaponNumber)
-		{	
+		{
 			// gibt es schon von dieser Beamwaffe hier auf dem Schiff einen höheren Typ?
 			USHORT maxTyp =	pMajor->GetWeaponObserver()->GetMaxBeamType(pDoc->m_ShipInfoArray.GetAt(ShipNumber).GetBeamWeapons()->GetAt(m_iBeamWeaponNumber).GetBeamName());
 			if (maxTyp > pDoc->m_ShipInfoArray.GetAt(ShipNumber).GetBeamWeapons()->GetAt(m_iBeamWeaponNumber).GetBeamType())
@@ -326,7 +326,7 @@ void CShipDesignMenuView::DrawShipDesignMenue(Graphics* g)
 				g->DrawString(CResourceManager::GetString("BTN_WEAKER").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(800,120,120,30), &fontFormat, &btnBrush);
 				m_bFoundWorseBeam = TRUE;
 			}
-			
+
 			// Typ und Name der Beamwaffe zeichnen
 			fontBrush.SetColor(normalColor);
 			s.Format("%s %d %s",CResourceManager::GetString("TYPE"),pDoc->m_ShipInfoArray.GetAt(ShipNumber).GetBeamWeapons()->GetAt(m_iBeamWeaponNumber).GetBeamType(),pDoc->m_ShipInfoArray.GetAt(ShipNumber).GetBeamWeapons()->GetAt(m_iBeamWeaponNumber).GetBeamName());
@@ -334,7 +334,7 @@ void CShipDesignMenuView::DrawShipDesignMenue(Graphics* g)
 			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(845,80,160,25), &fontFormat, &fontBrush);
 			fontFormat.SetTrimming(StringTrimmingNone);
 		}
-		
+
 		// Nach anderer Torpedowaffe suchen
 		if (pDoc->m_ShipInfoArray.GetAt(ShipNumber).GetTorpedoWeapons()->GetSize() > m_iTorpedoWeaponNumber)
 		{
@@ -344,10 +344,10 @@ void CShipDesignMenuView::DrawShipDesignMenue(Graphics* g)
 			fontBrush.SetColor(normalColor);
 			s.Format("%s (%d°)",pDoc->m_ShipInfoArray.GetAt(ShipNumber).GetTorpedoWeapons()->GetAt(m_iTorpedoWeaponNumber).GetTupeName(), pDoc->m_ShipInfoArray.GetAt(ShipNumber).GetTorpedoWeapons()->GetAt(m_iTorpedoWeaponNumber).GetFirearc()->GetAngle());
 			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(775,170,300,25), &fontFormat, &fontBrush);
-			
-			s.Format("%s (%d)", CTorpedoInfo::GetName(currentTorpType), CTorpedoInfo::GetPower(currentTorpType));			
+
+			s.Format("%s (%d)", CTorpedoInfo::GetName(currentTorpType), CTorpedoInfo::GetPower(currentTorpType));
 			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(775,195,300,25), &fontFormat, &fontBrush);
-			
+
 			if (graphic)
 				g->DrawImage(graphic, 800, 230, 120, 30);
 			g->DrawString(CResourceManager::GetString("BTN_LAUNCHER").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(800,230,120,30), &fontFormat, &btnBrush);
@@ -355,7 +355,7 @@ void CShipDesignMenuView::DrawShipDesignMenue(Graphics* g)
 				g->DrawImage(graphic, 930, 230, 120, 30);
 			g->DrawString(CResourceManager::GetString("BTN_TORPEDO").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(930,230,120,30), &fontFormat, &btnBrush);
 		}
-		
+
 		// hier Möglichkeit anderes Hüllenmaterial anzubringen eingebaut
 		CString material;
 		switch (pDoc->m_ShipInfoArray.GetAt(ShipNumber).GetHull()->GetHullMaterial())
@@ -372,18 +372,18 @@ void CShipDesignMenuView::DrawShipDesignMenue(Graphics* g)
 		else
 			s.Format("%s%s",material, CResourceManager::GetString("HULL_ARMOR"));
 		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(775,380,300,30), &fontFormat, &fontBrush);
-				
+
 		// Hier kann man den Schildtyp ändern
 		// zuerst Anzeige der jetzt aktuellen Schilde. Beim Romulaner eine schwarze Schriftart wählen. Wenn dies
 		// später auch bei der Föd heller unterlegt ist kann auch dort eine schwarze Schriftfarbe gewählt werden.
 		s.Format("%s %d %s",CResourceManager::GetString("TYPE"),pDoc->m_ShipInfoArray.GetAt(ShipNumber).GetShield()->GetShieldType(),CResourceManager::GetString("SHIELDS"));
 		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(775,490,300,30), &fontFormat, &fontBrush);
-			
+
 		// Ab jetzt die Buttons zum Ändern der jeweiligen Komponenten
 		if (graphic)
 			g->DrawImage(graphic, 800, 420, 120, 30);
 		g->DrawString(CResourceManager::GetString("BTN_MATERIAL").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(800,420,120,30), &fontFormat, &btnBrush);
-		
+
 		// wenn eine Doppelhülle draus gemacht werden soll dann darf die Manövrierbarkeit nicht schon "keine" oder nur 1 sein
 		// wenn eine Einzelhülle draus gemacht werden soll, dann darf die Manövrierbarkeit nicht schon phänomenal sein
 		if ((bDoubleHull == FALSE && pDoc->m_ShipInfoArray.GetAt(ShipNumber).GetManeuverability() > 1) || (bDoubleHull == TRUE && pDoc->m_ShipInfoArray.GetAt(ShipNumber).GetManeuverability() < 9))
@@ -392,13 +392,13 @@ void CShipDesignMenuView::DrawShipDesignMenue(Graphics* g)
 				g->DrawImage(graphic, 930, 420, 120, 30);
 			g->DrawString(CResourceManager::GetString("BTN_HULLTYPE").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(930,420,120,30), &fontFormat, &btnBrush);
 		}
-		
+
 		// Schildtyp schwächer Button einblenden
 		if (pDoc->m_ShipInfoArray.GetAt(ShipNumber).GetShield()->GetShieldType() > 0)
 		{
 			if (graphic)
 				g->DrawImage(graphic, 800, 540, 120, 30);
-			g->DrawString(CResourceManager::GetString("BTN_WEAKER").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(800,540,120,30), &fontFormat, &btnBrush);			
+			g->DrawString(CResourceManager::GetString("BTN_WEAKER").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(800,540,120,30), &fontFormat, &btnBrush);
 		}
 		// Schildtyp stärker Button einblenden
 		if (pDoc->m_ShipInfoArray.GetAt(ShipNumber).GetShield()->GetShieldType() < pMajor->GetWeaponObserver()->GetMaxShieldType())
@@ -448,7 +448,7 @@ void CShipDesignMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 	CRect r;
 	r.SetRect(0,0,m_TotalSize.cx,m_TotalSize.cy);
 	// Schiffsinfoarray durchgehen und nach zum Imperium gehörende baubare Schiffe suchen
-	
+
 	short j = 0;
 	short counter = m_iClickedOnShip - 23 + m_iOldClickedOnShip;
 	short add = 0;
@@ -463,25 +463,25 @@ void CShipDesignMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		pMajor->GetEmpire()->GetResearch()->GetConstructionTech(),
 		pMajor->GetEmpire()->GetResearch()->GetWeaponTech()
 	};
-	
+
 	for (int i = 0; i < pDoc->m_ShipInfoArray.GetSize(); i++)
 		if (pDoc->m_ShipInfoArray.GetAt(i).GetRace() == pMajor->GetRaceShipNumber())
 			if (pDoc->m_ShipInfoArray.GetAt(i).GetShipType() != SHIP_TYPE::OUTPOST && pDoc->m_ShipInfoArray.GetAt(i).GetShipType() != SHIP_TYPE::STARBASE)
-				if (pDoc->m_ShipInfoArray.GetAt(i).IsThisShipBuildableNow(researchLevels))				
+				if (pDoc->m_ShipInfoArray.GetAt(i).IsThisShipBuildableNow(researchLevels))
 				{
 					// wurde dieses Schiff durch kein anderes jetzt baubares Schiff schon obsolet?
 					BOOLEAN foundObsolet = FALSE;
 					for (int m = 0; m < pDoc->m_ShipInfoArray.GetSize(); m++)
 						if (pDoc->m_ShipInfoArray.GetAt(m).GetRace() == pMajor->GetRaceShipNumber())
 							if (pDoc->m_ShipInfoArray.GetAt(m).GetObsoleteShipClass() == pDoc->m_ShipInfoArray.GetAt(i).GetShipClass())
-								if (pDoc->m_ShipInfoArray.GetAt(m).IsThisShipBuildableNow(researchLevels))							
+								if (pDoc->m_ShipInfoArray.GetAt(m).IsThisShipBuildableNow(researchLevels))
 								{
 									foundObsolet = TRUE;
 									break;
 								}
 					if (foundObsolet)
 						continue;
-		
+
 					if (counter > 0)
 					{
 						add++;
@@ -516,7 +516,7 @@ void CShipDesignMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		{
 			Invalidate(FALSE);
 			return;
-		}		
+		}
 	counter = 0;
 	// Überprüfen ob irgendetwas an den Beamwaffen ändern möchte
 	if (n != -1 && pDoc->m_ShipInfoArray.GetAt(n).GetBeamWeapons()->GetSize() > 0)
@@ -544,7 +544,7 @@ void CShipDesignMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		{
 			// Dann wird der Typ bei der aktuellen Beamwaffe um eins erhöht
 			CBeamWeapons* pWeapon = &pDoc->m_ShipInfoArray.GetAt(n).GetBeamWeapons()->GetAt(m_iBeamWeaponNumber);
-			
+
 			BYTE oldType		= pWeapon->GetBeamType();
 			USHORT oldPower		= pWeapon->GetBeamPower();
 			BYTE oldNumber		= pWeapon->GetBeamNumber();
@@ -568,7 +568,7 @@ void CShipDesignMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		{
 			// Dann wird der Typ bei der aktuellen Beamwaffe um eins erhöht
 			CBeamWeapons* pWeapon = &pDoc->m_ShipInfoArray.GetAt(n).GetBeamWeapons()->GetAt(m_iBeamWeaponNumber);
-			
+
 			BYTE oldType		= pWeapon->GetBeamType();
 			USHORT oldPower		= pWeapon->GetBeamPower();
 			BYTE oldNumber		= pWeapon->GetBeamNumber();
@@ -579,7 +579,7 @@ void CShipDesignMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			BYTE oldRechargeTime= pWeapon->GetRechargeTime();
 			BOOLEAN piercing	= pWeapon->GetPiercing();
 			BOOLEAN modulating	= pWeapon->GetModulating();
-			
+
 			// hier aktualisieren -> Reichweite erhöhen
 			pWeapon->ModifyBeamWeapon((oldType-1),oldPower,oldNumber,oldName,modulating,piercing,oldBonus,oldLenght,oldRechargeTime,oldShootNumber);
 			// Feuerwinkel bleiben alle beim alten
@@ -612,7 +612,7 @@ void CShipDesignMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		else if (CRect(r.right-275,140+counter*90,r.right-145,170+counter*90).PtInRect(point))
 		{
 			CTorpedoWeapons* pWeapon = &pDoc->m_ShipInfoArray.GetAt(n).GetTorpedoWeapons()->GetAt(m_iTorpedoWeaponNumber);
-			
+
 			BYTE oldTorpType	= pWeapon->GetTorpedoType();
 			BYTE oldNumber		= pWeapon->GetNumber();
 			BYTE oldFirerate	= pWeapon->GetTupeFirerate();
@@ -620,14 +620,14 @@ void CShipDesignMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			BOOLEAN oldOnlyMicro= pWeapon->GetOnlyMicroPhoton();
 			BYTE oldAcc			= pWeapon->GetAccuracy();
 			CString oldTupeName	= pWeapon->GetTupeName();
-						
+
 			TupeWeaponsObserverStruct twos = pMajor->GetWeaponObserver()->GetNextTupe(oldTupeName,oldTorpType);
 			// hier aktualisieren
 			pWeapon->ModifyTorpedoWeapon(oldTorpType,twos.number,twos.fireRate,oldTupeNumber,twos.TupeName,twos.onlyMicro,oldAcc);
 			USHORT nMountPos	= pWeapon->GetFirearc()->GetPosition();
 			USHORT nAngle		= twos.fireAngle;
 			pWeapon->GetFirearc()->SetValues(nMountPos, nAngle);
-						
+
 			pDoc->m_ShipInfoArray.GetAt(n).CalculateFinalCosts();
 			Invalidate();
 		}
@@ -635,7 +635,7 @@ void CShipDesignMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		else if (CRect(r.right-145,140+counter*90,r.right-25,170+counter*90).PtInRect(point))
 		{
 			CTorpedoWeapons* pWeapon = &pDoc->m_ShipInfoArray.GetAt(n).GetTorpedoWeapons()->GetAt(m_iTorpedoWeaponNumber);
-			
+
 			BYTE oldNumber		= pWeapon->GetNumber();
 			BYTE oldFirerate	= pWeapon->GetTupeFirerate();
 			BYTE oldTupeNumber	= pWeapon->GetNumberOfTupes();
@@ -643,7 +643,7 @@ void CShipDesignMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			BYTE oldAcc			= pWeapon->GetAccuracy();
 			BYTE oldTorpType	= pWeapon->GetTorpedoType();
 			CString oldTupeName	= pWeapon->GetTupeName();
-			
+
 			BYTE newTorpType = pMajor->GetWeaponObserver()->GetNextTorpedo(oldTorpType, oldOnlyMicro);
 			// hier aktualisieren
 			pWeapon->ModifyTorpedoWeapon(newTorpType,oldNumber,oldFirerate,oldTupeNumber,oldTupeName,oldOnlyMicro,oldAcc);
@@ -653,12 +653,12 @@ void CShipDesignMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		}
 	}
 	counter++;
-	
+
 	// Überprüfen ob wir das Hüllenmaterial ändern möchten, also ob wir auf den Button "Hüllenmaterial ändern" geklickt haben
 	if (n != -1 && CRect(r.right-275,180+counter*120,r.right-155,210+counter*120).PtInRect(point))
 	{
 		CHull* pHull			= pDoc->m_ShipInfoArray.GetAt(n).GetHull();
-		
+
 		BOOLEAN oldDoubleHull	= pHull->GetDoubleHull();
 		ULONG oldBaseHull		= pHull->GetBaseHull();
 		BOOLEAN ablative		= pHull->GetAblative();
@@ -680,9 +680,9 @@ void CShipDesignMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 	else if (n != -1 && CRect(r.right-145,180+counter*120,r.right-25,210+counter*120).PtInRect(point))
 	{
 		CHull* pHull			= pDoc->m_ShipInfoArray.GetAt(n).GetHull();
-		
+
 		BOOLEAN oldDoubleHull	= pHull->GetDoubleHull();
-		
+
 		// wenn eine Doppelhülle draus gemacht werden soll dann darf die Manövrierbarkeit nicht schon "keine" oder nur 1 sein
 		if (oldDoubleHull == FALSE && pDoc->m_ShipInfoArray.GetAt(n).GetManeuverability() <= 1)
 			return;
@@ -706,7 +706,7 @@ void CShipDesignMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		BOOLEAN polarisation	= pHull->GetPolarisation();
 		ULONG oldBaseHull		= pHull->GetBaseHull();
 		BYTE oldHullMaterial	= pHull->GetHullMaterial();
-		
+
 		pHull->ModifyHull(!oldDoubleHull,oldBaseHull,oldHullMaterial,ablative,polarisation);
 		pDoc->m_ShipInfoArray.GetAt(n).CalculateFinalCosts();
 		Invalidate();
@@ -721,7 +721,7 @@ void CShipDesignMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			UINT oldMaxShield	= pShield->GetMaxShield();
 			BYTE oldShieldType	= pShield->GetShieldType();
 			BOOLEAN regenerative= pShield->GetRegenerative();
-			
+
 			pShield->ModifyShield(oldMaxShield, (oldShieldType - 1), regenerative);
 			pDoc->m_ShipInfoArray.GetAt(n).CalculateFinalCosts();
 			Invalidate();
@@ -737,7 +737,7 @@ void CShipDesignMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		{
 			UINT oldMaxShield	= pShield->GetMaxShield();
 			BOOLEAN regenerative= pShield->GetRegenerative();
-			
+
 			pShield->ModifyShield(oldMaxShield, (oldShieldType + 1), regenerative);
 			pDoc->m_ShipInfoArray.GetAt(n).CalculateFinalCosts();
 			Invalidate();
@@ -818,5 +818,5 @@ void CShipDesignMenuView::CreateButtons()
 	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
 
-	// alle Buttons in der View anlegen und Grafiken laden	
+	// alle Buttons in der View anlegen und Grafiken laden
 }

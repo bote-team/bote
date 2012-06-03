@@ -143,14 +143,14 @@ CSystemProd& CSystemProd::operator=(const CSystemProd& other)
 ///////////////////////////////////////////////////////////////////////
 // Speichern / Laden
 ///////////////////////////////////////////////////////////////////////
-void CSystemProd::Serialize(CArchive &ar)		
+void CSystemProd::Serialize(CArchive &ar)
 {
 	CObject::Serialize(ar);
 	// wenn gespeichert wird
 	if (ar.IsStoring())
 	{
 		ar << m_iFoodProd;
-		ar << m_iMaxFoodProd;	
+		ar << m_iMaxFoodProd;
 		ar << m_iIndustryProd;
 		ar << m_iEnergyProd;
 		ar << m_iMaxEnergyProd;
@@ -203,13 +203,13 @@ void CSystemProd::Serialize(CArchive &ar)
 		ar << m_iShipBuildSpeed;
 		ar << m_iTroopBuildSpeed;
 		for (int res = TITAN; res <= DERITIUM; res++)
-			ar << m_bResourceDistributor[res];		
+			ar << m_bResourceDistributor[res];
 	}
 	// wenn geladen wird
 	if (ar.IsLoading())
 	{
 		ar >> m_iFoodProd;
-		ar >> m_iMaxFoodProd;	
+		ar >> m_iMaxFoodProd;
 		ar >> m_iIndustryProd;
 		ar >> m_iEnergyProd;
 		ar >> m_iMaxEnergyProd;
@@ -264,7 +264,7 @@ void CSystemProd::Serialize(CArchive &ar)
 		ar >> m_iShipBuildSpeed;
 		ar >> m_iTroopBuildSpeed;
 		for (int res = TITAN; res <= DERITIUM; res++)
-			ar >> m_bResourceDistributor[res];		
+			ar >> m_bResourceDistributor[res];
 	}
 }
 

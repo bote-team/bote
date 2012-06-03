@@ -37,7 +37,7 @@ END_MESSAGE_MAP()
 // CDBScrollView drawing
 
 void CDBScrollView::OnDraw(CDC *pDC)
-{	
+{
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -58,7 +58,7 @@ void CDBScrollView::Dump(CDumpContext& dc) const
 /////////////////////////////////////////////////////////////////////////////
 // CDBScrollView message handlers
 
-BOOL CDBScrollView::OnEraseBkgnd(CDC* pDC) 
+BOOL CDBScrollView::OnEraseBkgnd(CDC* pDC)
 {
 	// verhindern, dass der Hintergrund automatisch mit weiß gefüllt wird
 	return FALSE;
@@ -66,7 +66,7 @@ BOOL CDBScrollView::OnEraseBkgnd(CDC* pDC)
 //	return CScrollView::OnEraseBkgnd(pDC);
 }
 
-void CDBScrollView::OnPaint() 
+void CDBScrollView::OnPaint()
 {
 	CPaintDC dc(this);
 	OnPrepareDC(&dc);
@@ -141,6 +141,6 @@ void CDBScrollView::OnPaint()
 
 	// Änderungen wurden gezeichnet, wieder auf FALSE setzen
 	m_bUpdateOnly = FALSE;
-	
+
 	// Do not call CScrollView::OnPaint() for painting messages
 }

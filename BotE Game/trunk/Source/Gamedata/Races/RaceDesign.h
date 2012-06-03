@@ -16,7 +16,7 @@ class CRaceDesign :	public CObject
 	/// CMajor-Klasse, welche ein Objekt dieser Klasse verwendet hat uneingeschränkten Zugriff
 	friend class CMajor;
 	friend class CFontLoader;
-	
+
 	DECLARE_SERIAL(CRaceDesign)
 
 public:
@@ -41,7 +41,7 @@ public:
 	static COLORREF StringToColor(const CString& sRGB, const CString& sToken = ",")
 	{
 		int iStart = 0;
-		
+
 		return RGB(
 			atoi(sRGB.Tokenize(sToken, iStart)),
 			atoi(sRGB.Tokenize(sToken, iStart)),

@@ -23,14 +23,14 @@ CTradeHistory::~CTradeHistory(void)
 ///////////////////////////////////////////////////////////////////////
 // Speichern / Laden
 ///////////////////////////////////////////////////////////////////////
-void CTradeHistory::Serialize(CArchive &ar)		
+void CTradeHistory::Serialize(CArchive &ar)
 {
 	CObject::Serialize(ar);
 	// wenn gespeichert wird
 	if (ar.IsStoring())
 	{
 		for (int i = 0; i < 5; i++)
-			m_Prices[i].Serialize(ar);		
+			m_Prices[i].Serialize(ar);
 	}
 	// wenn geladen wird
 	if (ar.IsLoading())
@@ -39,7 +39,7 @@ void CTradeHistory::Serialize(CArchive &ar)
 		{
 			m_Prices[i].RemoveAll();
 			m_Prices[i].Serialize(ar);
-		}		
+		}
 	}
 }
 
@@ -51,7 +51,7 @@ void CTradeHistory::SaveCurrentPrices(USHORT* resPrices, float currentTax)
 {
 	for (int i = TITAN; i <= IRIDIUM; i++)
 	{
-		//resPrices[i] = (USHORT)ceil(resPrices[i] * currentTax);	
+		//resPrices[i] = (USHORT)ceil(resPrices[i] * currentTax);
 		m_Prices[i].Add((USHORT)ceil(resPrices[i] * currentTax));
 	}
 }

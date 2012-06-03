@@ -20,7 +20,7 @@ CShipHistory::~CShipHistory(void)
 //////////////////////////////////////////////////////////////////////
 CShipHistory::CShipHistory(const CShipHistory &rhs)
 {
-	
+
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -30,7 +30,7 @@ CShipHistory & CShipHistory::operator=(const CShipHistory & rhs)
 {
 	if (this == &rhs)
 		return *this;
-	
+
 	return *this;
 }
 */
@@ -38,7 +38,7 @@ CShipHistory & CShipHistory::operator=(const CShipHistory & rhs)
 ///////////////////////////////////////////////////////////////////////
 // Speichern / Laden
 ///////////////////////////////////////////////////////////////////////
-void CShipHistory::Serialize(CArchive &ar)		
+void CShipHistory::Serialize(CArchive &ar)
 {
 	CObject::Serialize(ar);
 	// wenn gespeichert wird
@@ -115,8 +115,8 @@ void CShipHistory::AddShip(CShip* ship, const CString& buildsector, short round)
 	temp.m_iBuildRound = round;
 	temp.m_iDestroyRound = 0;
 	temp.m_iExperiance = ship->GetCrewExperience();
-	
-		
+
+
 	m_ShipHistory.Add(temp);
 }
 
@@ -147,8 +147,8 @@ bool CShipHistory::ModifyShip(const CShip* ship, const CString& sector, short de
 			else
 			{
 				m_ShipHistory.ElementAt(i).m_iDestroyRound = 0;
-				m_ShipHistory.ElementAt(i).m_strKindOfDestroy = "";				
-			}			
+				m_ShipHistory.ElementAt(i).m_strKindOfDestroy = "";
+			}
 
 			return true;
 		}
@@ -165,7 +165,7 @@ void CShipHistory::RemoveShip(const CShip* ship)
 			m_ShipHistory.RemoveAt(i);
 			return;
 		}
-	
+
 	//AfxMessageBox("BUG: Ship -" + ship->GetShipName() + "- doesn't exist in shiphistory!\nPlease post a bugreport at www.birth-of-the-empires.de");
 	MYTRACE(MT::LEVEL_INFO, "Ship doesn't exist in shiphistory: %d\n", ship->GetShipName());
 }

@@ -38,7 +38,7 @@ CIntelMenuView::~CIntelMenuView()
 	{
 		delete m_IntelligenceMainButtons[i];
 		m_IntelligenceMainButtons[i] = 0;
-	}	
+	}
 	m_IntelligenceMainButtons.RemoveAll();
 
 	for (int i = 0; i < m_RaceLogoButtons.GetSize(); i++)
@@ -47,7 +47,7 @@ CIntelMenuView::~CIntelMenuView()
 		m_RaceLogoButtons[i] = 0;
 	}
 	m_RaceLogoButtons.RemoveAll();
-	
+
 }
 
 BEGIN_MESSAGE_MAP(CIntelMenuView, CMainBaseView)
@@ -74,7 +74,7 @@ void CIntelMenuView::OnDraw(CDC* dc)
 
 	if (!pDoc->m_bDataReceived)
 		return;
-	
+
 	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
 	if (!pMajor)
@@ -84,10 +84,10 @@ void CIntelMenuView::OnDraw(CDC* dc)
 	CMyMemDC pDC(dc);
 	CRect client;
 	GetClientRect(&client);
-		
+
 	// Graphicsobjekt, in welches gezeichnet wird anlegen
 	Graphics g(pDC->GetSafeHdc());
-	
+
 	g.Clear(Color::Black);
 	g.SetSmoothingMode(SmoothingModeHighSpeed);
 	g.SetInterpolationMode(InterpolationModeLowQuality);
@@ -108,7 +108,7 @@ void CIntelMenuView::OnDraw(CDC* dc)
 		DrawIntelReportsMenu(&g);
 	else if (m_bySubMenu == 5)
 		DrawIntelAttackMenu(&g);
-	
+
 	// Buttons am unteren Bildschirmrand zeichnen
 	DrawIntelMainButtons(&g, pMajor);
 
@@ -138,7 +138,7 @@ void CIntelMenuView::OnInitialUpdate()
 	CMainBaseView::OnInitialUpdate();
 
 	// TODO: Add your specialized code here and/or call the base class
-	
+
 	// Geheimdienstansicht
 	m_bySubMenu = 0;
 	m_sActiveIntelRace = "";
@@ -158,7 +158,7 @@ void CIntelMenuView::LoadRaceGraphics()
 	CreateButtons();
 
 	CString sPrefix = pMajor->GetPrefix();
-	
+
 	bg_intelassignmenu	= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "intelassignmenu.boj");
 	bg_intelspymenu		= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "intelspymenu.boj");
 	bg_intelspymenu		= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "intelsabmenu.boj");
@@ -188,18 +188,18 @@ void CIntelMenuView::DrawIntelAssignmentMenu(Graphics* g)
 {
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
-	
+
 	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
 	if (!pMajor)
 		return;
-	
+
 	CString s;
 	CRect timber[100];
 
 	CString fontName = "";
 	Gdiplus::REAL fontSize = 0.0;
-	
+
 	// Rassenspezifische Schriftart auswählen
 	CFontLoader::CreateGDIFont(pMajor, 2, fontName, fontSize);
 	// Schriftfarbe wählen
@@ -234,13 +234,13 @@ void CIntelMenuView::DrawIntelAssignmentMenu(Graphics* g)
 			}
 		}
 	}
-	
+
 	// rechtes Informationsmenü zeichnen
 	DrawIntelInformation(g, &Gdiplus::Font(fontName.AllocSysString(), fontSize), normalColor);
-	
+
 	// die einzelnen Rassensymbole zeichnen
 	DrawRaceLogosInIntelView(g);
-	
+
 	SolidBrush timberBrush(Color::White);
 	int count = 1;
 	int nPos = 0;
@@ -272,7 +272,7 @@ void CIntelMenuView::DrawIntelAssignmentMenu(Graphics* g)
 
 		// den Zuweisungsbalken für Sabotage zeichnen
 		if (pMajor->IsRaceContacted(it->first) == false || it->first == pMajor->GetRaceID())
-			timberBrush.SetColor(Color(22,26,15));					
+			timberBrush.SetColor(Color(22,26,15));
 		else
 			timberBrush.SetColor(Color(42,46,30));
 		for (int j = 99; j >= 0; j--)
@@ -282,11 +282,11 @@ void CIntelMenuView::DrawIntelAssignmentMenu(Graphics* g)
 			timber[j].SetRect(470+j*3, 80+count*90, 472+j*3, 110+count*90);
 			g->FillRectangle(&timberBrush, RectF(timber[j].left, timber[j].top, timber[j].Width(), timber[j].Height()));
 		}
-		
+
 		if (count++ == 6)
 			break;
 	}
-	
+
 	// Spionage und Sabotage oben über die Balken zeichnen
 	CFontLoader::CreateGDIFont(pMajor, 3, fontName, fontSize);
 	fontFormat.SetAlignment(StringAlignmentCenter);
@@ -303,7 +303,7 @@ void CIntelMenuView::DrawIntelAssignmentMenu(Graphics* g)
 	fontFormat.SetAlignment(StringAlignmentNear);
 	s.Format("%d%%", innerSecurityPerc);
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(915,70,160,50), &fontFormat, &fontBrush);
-	
+
 	timberBrush.SetColor(Color(42,46,30));
 	for (int i = 99; i >= 0; i--)
 	{
@@ -312,7 +312,7 @@ void CIntelMenuView::DrawIntelAssignmentMenu(Graphics* g)
 		timber[i].SetRect(200+i*7, 75, 205+i*7, 115);
 		g->FillRectangle(&timberBrush, RectF(timber[i].left, timber[i].top, timber[i].Width(), timber[i].Height()));
 	}
-	
+
 	// Geheimdienst mit größerer Schrift in der Mitte zeichnen
 	// Rassenspezifische Schriftart auswählen
 	CFontLoader::CreateGDIFont(pMajor, 5, fontName, fontSize);
@@ -321,22 +321,22 @@ void CIntelMenuView::DrawIntelAssignmentMenu(Graphics* g)
 	fontBrush.SetColor(normalColor);
 	fontFormat.SetAlignment(StringAlignmentCenter);
 	s = CResourceManager::GetString("SECURITY")+" - "+CResourceManager::GetString("SECURITY_HEADQUARTERS");
-	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0,10,m_TotalSize.cx, 50), &fontFormat, &fontBrush);	
+	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0,10,m_TotalSize.cx, 50), &fontFormat, &fontBrush);
 }
 
 void CIntelMenuView::DrawIntelSpyMenu(Graphics* g)
 {
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
-	
+
 	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
 	if (!pMajor)
 		return;
-	
+
 	CString s;
 	CRect timber[100];
-	
+
 	if (m_sActiveIntelRace == pMajor->GetRaceID())
 		m_sActiveIntelRace = "";
 	// Wenn noch keine Rasse ausgewählt wurde, so wird versucht eine bekannte Rasse auszuwählen
@@ -356,10 +356,10 @@ void CIntelMenuView::DrawIntelSpyMenu(Graphics* g)
 			}
 		}
 	}
-	
+
 	CString fontName = "";
 	Gdiplus::REAL fontSize = 0.0;
-	
+
 	// Rassenspezifische Schriftart auswählen
 	CFontLoader::CreateGDIFont(pMajor, 2, fontName, fontSize);
 	// Schriftfarbe wählen
@@ -380,7 +380,7 @@ void CIntelMenuView::DrawIntelSpyMenu(Graphics* g)
 	{
 		fontFormat.SetAlignment(StringAlignmentFar);
 		s = CResourceManager::GetString("AGGRESSIVENESS")+":";
-		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(200,140,190,30), &fontFormat, &fontBrush);	
+		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(200,140,190,30), &fontFormat, &fontBrush);
 
 		Bitmap* graphic = NULL;
 		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\" + pMajor->GetPrefix() + "button_small.bop");
@@ -388,8 +388,8 @@ void CIntelMenuView::DrawIntelSpyMenu(Graphics* g)
 		CFontLoader::GetGDIFontColor(pMajor, 1, btnColor);
 		SolidBrush btnBrush(btnColor);
 		if (graphic)
-			g->DrawImage(graphic, 400, 140, 120, 30);		
-		
+			g->DrawImage(graphic, 400, 140, 120, 30);
+
 		switch(pMajor->GetEmpire()->GetIntelligence()->GetAggressiveness(0, m_sActiveIntelRace))
 		{
 		case 0: s = CResourceManager::GetString("CAREFUL");		break;
@@ -404,9 +404,9 @@ void CIntelMenuView::DrawIntelSpyMenu(Graphics* g)
 	DrawRaceLogosInIntelView(g);
 	// rechtes Informationsmenü zeichnen
 	DrawIntelInformation(g, &Gdiplus::Font(fontName.AllocSysString(), fontSize), normalColor);
-	
+
 	SolidBrush timberBrush(Color(42,46,30));
-	
+
 	CIntelligence* pIntel = pMajor->GetEmpire()->GetIntelligence();
 
 	// Die einzelnen Spionagezuweisungsbalken zeichnen
@@ -415,7 +415,7 @@ void CIntelMenuView::DrawIntelSpyMenu(Graphics* g)
 		// Bild der aktiven Rasse im Hintergrund zeichnen
 		Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Symbols\\" + m_sActiveIntelRace + ".bop");
 		if (graphic == NULL)
-			graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Symbols\\Default.bop");		
+			graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Symbols\\Default.bop");
 		if (graphic)
 			g->DrawImage(graphic, 310, 230, 300, 300);
 		Gdiplus::SolidBrush brush(Gdiplus::Color(160, 0, 0, 0));
@@ -430,7 +430,7 @@ void CIntelMenuView::DrawIntelSpyMenu(Graphics* g)
 		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(100,410,190,30), &fontFormat, &fontBrush);
 		s = CResourceManager::GetString("DIPLOMACY")+":";
 		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(100,500,190,30), &fontFormat, &fontBrush);
-		
+
 		for (int i = 0; i < 4; i++)
 		{
 			BYTE spyPerc = pIntel->GetAssignment()->GetSpyPercentages(m_sActiveIntelRace, i);
@@ -448,7 +448,7 @@ void CIntelMenuView::DrawIntelSpyMenu(Graphics* g)
 			for (int j = 99; j >= 0; j--)
 			{
 				if (j < spyPerc)
-					timberBrush.SetColor(Color(250-j*2.5,50+j*2,0));	
+					timberBrush.SetColor(Color(250-j*2.5,50+j*2,0));
 				timber[j].SetRect(310+j*3, 230+i*90, 312+j*3, 260+i*90);
 				g->FillRectangle(&timberBrush, RectF(timber[j].left, timber[j].top, timber[j].Width(), timber[j].Height()));
 			}
@@ -458,7 +458,7 @@ void CIntelMenuView::DrawIntelSpyMenu(Graphics* g)
 		sPerc.Format("%d", pIntel->GetAssignment()->GetGlobalSpyPercentage(m_sActiveIntelRace));
 		s = CResourceManager::GetString("SPY_OF_ALL", FALSE, sPerc);
 		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(100,180,725,30), &fontFormat, &fontBrush);
-		
+
 		// kurze Erklärung und Punkte im Depot hinschreiben
 		CString race;
 		CMajor* pActiveRace = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(m_sActiveIntelRace));
@@ -483,7 +483,7 @@ void CIntelMenuView::DrawIntelSpyMenu(Graphics* g)
 	fontFormat.SetAlignment(StringAlignmentNear);
 	s.Format("%d%%", spyToStore);
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(915,70,160,50), &fontFormat, &fontBrush);
-		
+
 	timberBrush.SetColor(Color(42,46,30));
 	for (int i = 99; i >= 0; i--)
 	{
@@ -492,7 +492,7 @@ void CIntelMenuView::DrawIntelSpyMenu(Graphics* g)
 		timber[i].SetRect(200+i*7, 75, 205+i*7, 115);
 		g->FillRectangle(&timberBrush, RectF(timber[i].left, timber[i].top, timber[i].Width(), timber[i].Height()));
 	}
-		
+
 	// Geheimdienst mit größerer Schrift in der Mitte zeichnen
 	// Rassenspezifische Schriftart auswählen
 	CFontLoader::CreateGDIFont(pMajor, 5, fontName, fontSize);
@@ -501,22 +501,22 @@ void CIntelMenuView::DrawIntelSpyMenu(Graphics* g)
 	fontBrush.SetColor(normalColor);
 	fontFormat.SetAlignment(StringAlignmentCenter);
 	s = CResourceManager::GetString("SECURITY")+" - "+CResourceManager::GetString("SPY");
-	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0,10,m_TotalSize.cx, 50), &fontFormat, &fontBrush);	
+	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0,10,m_TotalSize.cx, 50), &fontFormat, &fontBrush);
 }
 
 void CIntelMenuView::DrawIntelSabotageMenu(Graphics* g)
 {
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
-	
+
 	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
 	if (!pMajor)
 		return;
-	
+
 	CString s;
 	CRect timber[100];
-	
+
 	if (m_sActiveIntelRace == pMajor->GetRaceID())
 		m_sActiveIntelRace = "";
 	// Wenn noch keine Rasse ausgewählt wurde, so wird versucht eine bekannte Rasse auszuwählen
@@ -539,7 +539,7 @@ void CIntelMenuView::DrawIntelSabotageMenu(Graphics* g)
 
 	CString fontName = "";
 	Gdiplus::REAL fontSize = 0.0;
-	
+
 	// Rassenspezifische Schriftart auswählen
 	CFontLoader::CreateGDIFont(pMajor, 2, fontName, fontSize);
 	// Schriftfarbe wählen
@@ -560,7 +560,7 @@ void CIntelMenuView::DrawIntelSabotageMenu(Graphics* g)
 	{
 		fontFormat.SetAlignment(StringAlignmentFar);
 		s = CResourceManager::GetString("AGGRESSIVENESS")+":";
-		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(200,140,190,30), &fontFormat, &fontBrush);	
+		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(200,140,190,30), &fontFormat, &fontBrush);
 
 		Bitmap* graphic = NULL;
 		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\" + pMajor->GetPrefix() + "button_small.bop");
@@ -568,8 +568,8 @@ void CIntelMenuView::DrawIntelSabotageMenu(Graphics* g)
 		CFontLoader::GetGDIFontColor(pMajor, 1, btnColor);
 		SolidBrush btnBrush(btnColor);
 		if (graphic)
-			g->DrawImage(graphic, 400, 140, 120, 30);		
-		
+			g->DrawImage(graphic, 400, 140, 120, 30);
+
 		switch(pMajor->GetEmpire()->GetIntelligence()->GetAggressiveness(1, m_sActiveIntelRace))
 		{
 		case 0: s = CResourceManager::GetString("CAREFUL");		break;
@@ -584,9 +584,9 @@ void CIntelMenuView::DrawIntelSabotageMenu(Graphics* g)
 	DrawRaceLogosInIntelView(g);
 	// rechtes Informationsmenü zeichnen
 	DrawIntelInformation(g, &Gdiplus::Font(fontName.AllocSysString(), fontSize), normalColor);
-	
+
 	SolidBrush timberBrush(Color(42,46,30));
-	
+
 	CIntelligence* pIntel = pMajor->GetEmpire()->GetIntelligence();
 
 	// Die einzelnen Spionagezuweisungsbalken zeichnen
@@ -595,7 +595,7 @@ void CIntelMenuView::DrawIntelSabotageMenu(Graphics* g)
 		// Bild der aktiven Rasse im Hintergrund zeichnen
 		Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Symbols\\" + m_sActiveIntelRace + ".bop");
 		if (graphic == NULL)
-			graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Symbols\\Default.bop");		
+			graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Symbols\\Default.bop");
 		if (graphic)
 			g->DrawImage(graphic, 310, 230, 300, 300);
 		Gdiplus::SolidBrush brush(Gdiplus::Color(160, 0, 0, 0));
@@ -610,7 +610,7 @@ void CIntelMenuView::DrawIntelSabotageMenu(Graphics* g)
 		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(100,410,190,30), &fontFormat, &fontBrush);
 		s = CResourceManager::GetString("DIPLOMACY")+":";
 		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(100,500,190,30), &fontFormat, &fontBrush);
-		
+
 		for (int i = 0; i < 4; i++)
 		{
 			BYTE sabPerc = pIntel->GetAssignment()->GetSabotagePercentages(m_sActiveIntelRace, i);
@@ -628,7 +628,7 @@ void CIntelMenuView::DrawIntelSabotageMenu(Graphics* g)
 			for (int j = 99; j >= 0; j--)
 			{
 				if (j < sabPerc)
-					timberBrush.SetColor(Color(250-j*2.5,50+j*2,0));	
+					timberBrush.SetColor(Color(250-j*2.5,50+j*2,0));
 				timber[j].SetRect(310+j*3, 230+i*90, 312+j*3, 260+i*90);
 				g->FillRectangle(&timberBrush, RectF(timber[j].left, timber[j].top, timber[j].Width(), timber[j].Height()));
 			}
@@ -638,7 +638,7 @@ void CIntelMenuView::DrawIntelSabotageMenu(Graphics* g)
 		sPerc.Format("%d", pIntel->GetAssignment()->GetGlobalSabotagePercentage(m_sActiveIntelRace));
 		s = CResourceManager::GetString("SABOTAGE_OF_ALL", FALSE, sPerc);
 		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(100,180,725,30), &fontFormat, &fontBrush);
-		
+
 		// kurze Erklärung und Punkte im Depot hinschreiben
 		CString race;
 		CMajor* pActiveRace = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(m_sActiveIntelRace));
@@ -663,7 +663,7 @@ void CIntelMenuView::DrawIntelSabotageMenu(Graphics* g)
 	fontFormat.SetAlignment(StringAlignmentNear);
 	s.Format("%d%%", sabToStore);
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(915,70,160,50), &fontFormat, &fontBrush);
-		
+
 	timberBrush.SetColor(Color(42,46,30));
 	for (int i = 99; i >= 0; i--)
 	{
@@ -672,7 +672,7 @@ void CIntelMenuView::DrawIntelSabotageMenu(Graphics* g)
 		timber[i].SetRect(200+i*7, 75, 205+i*7, 115);
 		g->FillRectangle(&timberBrush, RectF(timber[i].left, timber[i].top, timber[i].Width(), timber[i].Height()));
 	}
-		
+
 	// Geheimdienst mit größerer Schrift in der Mitte zeichnen
 	// Rassenspezifische Schriftart auswählen
 	CFontLoader::CreateGDIFont(pMajor, 5, fontName, fontSize);
@@ -681,14 +681,14 @@ void CIntelMenuView::DrawIntelSabotageMenu(Graphics* g)
 	fontBrush.SetColor(normalColor);
 	fontFormat.SetAlignment(StringAlignmentCenter);
 	s = CResourceManager::GetString("SECURITY")+" - "+CResourceManager::GetString("SABOTAGE");
-	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0,10,m_TotalSize.cx, 50), &fontFormat, &fontBrush);	
+	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0,10,m_TotalSize.cx, 50), &fontFormat, &fontBrush);
 }
 
 void CIntelMenuView::DrawIntelReportsMenu(Graphics* g)
 {
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
-	
+
 	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
 	if (!pMajor)
@@ -697,7 +697,7 @@ void CIntelMenuView::DrawIntelReportsMenu(Graphics* g)
 	CString s;
 	CString fontName = "";
 	Gdiplus::REAL fontSize = 0.0;
-	
+
 	// Rassenspezifische Schriftart auswählen
 	CFontLoader::CreateGDIFont(pMajor, 2, fontName, fontSize);
 	// Schriftfarbe wählen
@@ -718,7 +718,7 @@ void CIntelMenuView::DrawIntelReportsMenu(Graphics* g)
 	markColor.SetFromCOLORREF(pMajor->GetDesign()->m_clrListMarkPenColor);
 	Gdiplus::Pen pen(markColor);
 	markColor.SetFromCOLORREF(pMajor->GetDesign()->m_clrListMarkTextColor);
-		
+
 	CIntelligence* pIntel = pMajor->GetEmpire()->GetIntelligence();
 	// Es gehen nur 21 Berichte auf die Seite, deshalb muss abgebrochen werden
 	// wenn noch kein Bericht angeklickt wurde, es aber Berichte gibt, dann den ersten Bericht in der Reihe markieren
@@ -758,12 +758,12 @@ void CIntelMenuView::DrawIntelReportsMenu(Graphics* g)
 				if (intelObj->GetEnemy() == pMajor->GetRaceID())
 					fontBrush.SetColor(Color(150,150,150));
 				else
-					fontBrush.SetColor(normalColor);					
+					fontBrush.SetColor(normalColor);
 			}
-			
+
 			s.Format("%d",	intelObj->GetRound());
 			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(100,140+j*25,100,25), &fontFormat, &fontBrush);
-						
+
 			CMajor* pEnemy = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(intelObj->GetEnemy()));
 			if (pEnemy)
 				s = pEnemy->GetEmpiresName();
@@ -784,12 +784,12 @@ void CIntelMenuView::DrawIntelReportsMenu(Graphics* g)
 			default: s = CResourceManager::GetString("UNKNOWN");
 			}
 			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(800,140+j*25,200,25), &fontFormat, &fontBrush);
-			fontBrush.SetColor(normalColor);			
+			fontBrush.SetColor(normalColor);
 			j++;
 		}
 	}
 	pIntel->GetIntelReports()->SetActiveReport(oldClickedNews);
-		
+
 	// größere Schriftart für Tabellenüberschriften holen
 	CFontLoader::CreateGDIFont(pMajor, 3, fontName, fontSize);
 	// Tabellenüberschriften zeichnen
@@ -802,7 +802,7 @@ void CIntelMenuView::DrawIntelReportsMenu(Graphics* g)
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(600,100,200,30), &fontFormat, &fontBrush);
 	s = CResourceManager::GetString("TYPE");
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(800,100,200,30), &fontFormat, &fontBrush);
-	
+
 	// Geheimdienst mit größerer Schrift in der Mitte zeichnen
 	// Rassenspezifische Schriftart auswählen
 	CFontLoader::CreateGDIFont(pMajor, 5, fontName, fontSize);
@@ -820,7 +820,7 @@ void CIntelMenuView::DrawIntelAttackMenu(Graphics* g)
 {
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
-	
+
 	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
 	if (!pMajor)
@@ -829,7 +829,7 @@ void CIntelMenuView::DrawIntelAttackMenu(Graphics* g)
 	CString s;
 	CString fontName = "";
 	Gdiplus::REAL fontSize = 0.0;
-	
+
 	// Rassenspezifische Schriftart auswählen
 	CFontLoader::CreateGDIFont(pMajor, 2, fontName, fontSize);
 	// Schriftfarbe wählen
@@ -850,7 +850,7 @@ void CIntelMenuView::DrawIntelAttackMenu(Graphics* g)
 	markColor.SetFromCOLORREF(pMajor->GetDesign()->m_clrListMarkPenColor);
 	Gdiplus::Pen pen(markColor);
 	markColor.SetFromCOLORREF(pMajor->GetDesign()->m_clrListMarkTextColor);
-	
+
 	CIntelligence* pIntel = pMajor->GetEmpire()->GetIntelligence();
 	// Es gehen nur 10 Berichte auf die Seite, deshalb muss abgebrochen werden
 	// wenn noch kein Bericht angeklickt wurde, es aber Berichte gibt, dann den ersten Bericht in der Reihe markieren
@@ -891,7 +891,7 @@ void CIntelMenuView::DrawIntelAttackMenu(Graphics* g)
 				// Die News markieren
 				if (j == pIntel->GetIntelReports()->GetActiveReport())
 				{
-					activeReport = i;					
+					activeReport = i;
 				//	s.Format("aktiver Report: %d\n", activeReport);
 				//	AfxMessageBox(s + *intelObj->GetOwnerDesc() + "\n\n" + *intelObj->GetEnemyDesc());
 					// Markierung worauf wir geklickt haben
@@ -899,11 +899,11 @@ void CIntelMenuView::DrawIntelAttackMenu(Graphics* g)
 					g->DrawLine(&pen, 100, 140+j*25, 975, 140+j*25);
 					g->DrawLine(&pen, 100, 140+j*25+25, 975, 140+j*25+25);
 					// Farbe der Schrift wählen, wenn wir den Eintrag markiert haben
-					fontBrush.SetColor(markColor);					
+					fontBrush.SetColor(markColor);
 				}
 				else
-					fontBrush.SetColor(normalColor);					
-								
+					fontBrush.SetColor(normalColor);
+
 				s.Format("%d",	intelObj->GetRound());
 				g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(100,140+j*25,100,25), &fontFormat, &fontBrush);
 				s = "";
@@ -932,7 +932,7 @@ void CIntelMenuView::DrawIntelAttackMenu(Graphics* g)
 	}
 //	pIntel->GetIntelReports()->SetActiveReport(oldClickedNews);
 	pIntel->GetIntelReports()->SetActiveReport(activeReport);
-	
+
 	// Beschreibung und Auswahlmöglichkeiten zeichnen
 	fontFormat.SetAlignment(StringAlignmentCenter);
 	fontFormat.SetLineAlignment(StringAlignmentNear);
@@ -942,7 +942,7 @@ void CIntelMenuView::DrawIntelAttackMenu(Graphics* g)
 	fontFormat.SetFormatFlags(StringFormatFlagsNoWrap);
 	fontFormat.SetLineAlignment(StringAlignmentCenter);
 	fontFormat.SetAlignment(StringAlignmentNear);
-	
+
 	if (pIntel->GetIntelReports()->GetAttemptObject())
 	{
 		fontBrush.SetColor(markColor);
@@ -970,13 +970,13 @@ void CIntelMenuView::DrawIntelAttackMenu(Graphics* g)
 		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(800,565,200,25), &fontFormat, &fontBrush);
 		fontBrush.SetColor(normalColor);
 		s = *attemptObj->GetOwnerDesc();
-		fontFormat.SetAlignment(StringAlignmentCenter);	
+		fontFormat.SetAlignment(StringAlignmentCenter);
 		fontFormat.SetFormatFlags(!StringFormatFlagsNoWrap);
 		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(100,600,875,100), &fontFormat, &fontBrush);
-		fontFormat.SetFormatFlags(StringFormatFlagsNoWrap);		
+		fontFormat.SetFormatFlags(StringFormatFlagsNoWrap);
 		fontFormat.SetAlignment(StringAlignmentNear);
 	}
-		
+
 
 	Bitmap* graphic = NULL;
 	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\" + pMajor->GetPrefix() + "button_small.bop");
@@ -993,7 +993,7 @@ void CIntelMenuView::DrawIntelAttackMenu(Graphics* g)
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(400,510,120,30), &fontFormat, &btnBrush);
 	s = CResourceManager::GetString("BTN_CANCEL");
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(555,510,120,30), &fontFormat, &btnBrush);
-		
+
 	// größere Schriftart für Tabellenüberschriften holen
 	CFontLoader::CreateGDIFont(pMajor, 3, fontName, fontSize);
 	// Tabellenüberschriften zeichnen
@@ -1007,7 +1007,7 @@ void CIntelMenuView::DrawIntelAttackMenu(Graphics* g)
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(600,100,200,30), &fontFormat, &fontBrush);
 	s = CResourceManager::GetString("TYPE");
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(800,100,200,30), &fontFormat, &fontBrush);
-	
+
 	// Geheimdienst mit größerer Schrift in der Mitte zeichnen
 	// Rassenspezifische Schriftart auswählen
 	CFontLoader::CreateGDIFont(pMajor, 5, fontName, fontSize);
@@ -1025,19 +1025,19 @@ void CIntelMenuView::DrawIntelInfoMenu(Graphics* g)
 {
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
-	
+
 	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
 	if (!pMajor)
 		return;
 
 	CIntelligence* pIntel = pMajor->GetEmpire()->GetIntelligence();
-	// Daten für die Geheimdienstinformationen berechnen lassen. 
+	// Daten für die Geheimdienstinformationen berechnen lassen.
 	// Dies wird einmalig pro Runde durchgeführt, sobald man in das Geheimdienstinfomenü geht
 	pIntel->GetIntelInfo()->CalcIntelInfo(pDoc, pMajor);
 
 	CString s;
-		
+
 	// Wenn noch keine Rasse ausgewählt wurde, so wird versucht eine bekannte Rasse auszuwählen
 	if (m_sActiveIntelRace == "")
 	{
@@ -1054,7 +1054,7 @@ void CIntelMenuView::DrawIntelInfoMenu(Graphics* g)
 
 	CString fontName = "";
 	Gdiplus::REAL fontSize = 0.0;
-	
+
 	// Rassenspezifische Schriftart auswählen
 	CFontLoader::CreateGDIFont(pMajor, 2, fontName, fontSize);
 	// Schriftfarbe wählen
@@ -1076,12 +1076,12 @@ void CIntelMenuView::DrawIntelInfoMenu(Graphics* g)
 		// Bild der aktiven Rasse im Hintergrund zeichnen
 		Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Symbols\\" + m_sActiveIntelRace + ".bop");
 		if (graphic == NULL)
-			graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Symbols\\Default.bop");		
+			graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Symbols\\Default.bop");
 		if (graphic)
 			g->DrawImage(graphic, 210, 260, 300, 300);
 		Gdiplus::SolidBrush brush(Gdiplus::Color(160, 0, 0, 0));
 		g->FillRectangle(&brush, RectF(210,260,300,300));
-		
+
 		fontFormat.SetAlignment(StringAlignmentFar);
 		s.Format("%s:", CResourceManager::GetString("CONTROLLED_SECTORS"));
 		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(100,285,325,25), &fontFormat, &fontBrush);
@@ -1111,15 +1111,15 @@ void CIntelMenuView::DrawIntelInfoMenu(Graphics* g)
 		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(100,485,325,25), &fontFormat, &fontBrush);
 		fontFormat.SetAlignment(StringAlignmentNear);
 		s.Format(" %d", pIntel->GetIntelInfo()->GetMinorMembers(m_sActiveIntelRace));
-		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(425,485,175,25), &fontFormat, &fontBrush);		
+		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(425,485,175,25), &fontFormat, &fontBrush);
 	}
 
 	// die einzelnen Rassensymbole zeichnen
 	DrawRaceLogosInIntelView(g, true);
-		
+
 	Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Symbols\\" + pIntel->GetResponsibleRace() + ".bop");
 	if (graphic == NULL)
-		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Symbols\\Default.bop");		
+		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Symbols\\Default.bop");
 	if (graphic)
 		g->DrawImage(graphic, 737,435,75,75);
 
@@ -1137,14 +1137,14 @@ void CIntelMenuView::DrawIntelInfoMenu(Graphics* g)
 	SolidBrush btnBrush(btnColor);
 	if (graphic)
 		g->DrawImage(graphic, 715, 400, 120, 30);
-	
+
 	CMajor* pResponsibleRace = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(pIntel->GetResponsibleRace()));
 	if (pResponsibleRace)
 		s = pResponsibleRace->GetRaceName();
 	else
 		s = "ID_ERROR";
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(715,400,120,30), &fontFormat, &btnBrush);
-		
+
 	// Geheimdienst mit größerer Schrift in der Mitte zeichnen
 	// Rassenspezifische Schriftart auswählen
 	CFontLoader::CreateGDIFont(pMajor, 5, fontName, fontSize);
@@ -1160,12 +1160,12 @@ void CIntelMenuView::DrawRaceLogosInIntelView(Graphics* g, BOOLEAN highlightPlay
 {
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
-	
+
 	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
 	if (!pMajor)
 		return;
-	
+
 	int count = 1;
 	int nPos = 0;
 	map<CString, CMajor*>* pmMajors = pDoc->GetRaceCtrl()->GetMajors();
@@ -1177,7 +1177,7 @@ void CIntelMenuView::DrawRaceLogosInIntelView(Graphics* g, BOOLEAN highlightPlay
 		Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Symbols\\" + it->first + ".bop");
 		if (graphic == NULL)
 			graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Symbols\\Default.bop");
-		
+
 		if (graphic)
 		{
 			if (it->first != pMajor->GetRaceID() && pMajor->IsRaceContacted(it->first) == true
@@ -1213,14 +1213,14 @@ void CIntelMenuView::DrawRaceLogosInIntelView(Graphics* g, BOOLEAN highlightPlay
 		CArray<CMyButton*> vButtons;
 		vButtons.Add(m_RaceLogoButtons[1]);
 		DrawGDIButtons(g, &vButtons, -1, Gdiplus::Font(NULL), SolidBrush(Color::Black));
-	}	
+	}
 }
 
 void CIntelMenuView::DrawIntelInformation(Graphics* g, Gdiplus::Font* font, Gdiplus::Color color)
 {
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
-	
+
 	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
 	if (!pMajor)
@@ -1230,7 +1230,7 @@ void CIntelMenuView::DrawIntelInformation(Graphics* g, Gdiplus::Font* font, Gdip
 	StringFormat fontFormatCenter;
 	fontFormatCenter.SetAlignment(StringAlignmentCenter);
 	fontFormatCenter.SetLineAlignment(StringAlignmentCenter);
-	fontFormatCenter.SetFormatFlags(StringFormatFlagsNoWrap);	
+	fontFormatCenter.SetFormatFlags(StringFormatFlagsNoWrap);
 
 	CIntelligence* pIntel = pMajor->GetEmpire()->GetIntelligence();
 
@@ -1241,12 +1241,12 @@ void CIntelMenuView::DrawIntelInformation(Graphics* g, Gdiplus::Font* font, Gdip
 	g->DrawString(CResourceManager::GetString("SPY").AllocSysString(), -1, font, RectF(825,270,250,25), &fontFormatCenter, &fontBrush);
 	g->DrawString(CResourceManager::GetString("SABOTAGE").AllocSysString(), -1, font, RectF(825,410,250,25), &fontFormatCenter, &fontBrush);
 	g->DrawString(CResourceManager::GetString("DEPOTS").AllocSysString(), -1, font, RectF(825,550,250,25), &fontFormatCenter, &fontBrush);
-	
+
 	Color markColor;
 	markColor.SetFromCOLORREF(pMajor->GetDesign()->m_clrListMarkTextColor);
 	fontBrush.SetColor(markColor);
 	fontFormatCenter.SetAlignment(StringAlignmentNear);
-	
+
 	s = CResourceManager::GetString("TOTAL").MakeUpper()+":";
 	g->DrawString(s.AllocSysString(), -1, font, RectF(850,165,190,25), &fontFormatCenter, &fontBrush);
 	s = CResourceManager::GetString("INNER_SECURITY_SHORT").MakeUpper()+":";
@@ -1266,47 +1266,47 @@ void CIntelMenuView::DrawIntelInformation(Graphics* g, Gdiplus::Font* font, Gdip
 
 	fontFormatCenter.SetAlignment(StringAlignmentFar);
 	s.Format("%d "+CResourceManager::GetString("SP"), pMajor->GetEmpire()->GetSP());
-	g->DrawString(s.AllocSysString(), -1, font, RectF(850,165,190,25), &fontFormatCenter, &fontBrush);	
+	g->DrawString(s.AllocSysString(), -1, font, RectF(850,165,190,25), &fontFormatCenter, &fontBrush);
 	s.Format("%d%%", pIntel->GetInnerSecurityBoni());
-	g->DrawString(s.AllocSysString(), -1, font, RectF(850,235,190,25), &fontFormatCenter, &fontBrush);	
+	g->DrawString(s.AllocSysString(), -1, font, RectF(850,235,190,25), &fontFormatCenter, &fontBrush);
 	s.Format("%d%%", pIntel->GetEconomyBonus(0));
-	g->DrawString(s.AllocSysString(), -1, font, RectF(850,305,190,25), &fontFormatCenter, &fontBrush);	
+	g->DrawString(s.AllocSysString(), -1, font, RectF(850,305,190,25), &fontFormatCenter, &fontBrush);
 	s.Format("%d%%", pIntel->GetScienceBonus(0));
-	g->DrawString(s.AllocSysString(), -1, font, RectF(850,340,190,25), &fontFormatCenter, &fontBrush);	
+	g->DrawString(s.AllocSysString(), -1, font, RectF(850,340,190,25), &fontFormatCenter, &fontBrush);
 	s.Format("%d%%", pIntel->GetMilitaryBonus(0));
-	g->DrawString(s.AllocSysString(), -1, font, RectF(850,375,190,25), &fontFormatCenter, &fontBrush);	
+	g->DrawString(s.AllocSysString(), -1, font, RectF(850,375,190,25), &fontFormatCenter, &fontBrush);
 	s.Format("%d%%", pIntel->GetEconomyBonus(1));
-	g->DrawString(s.AllocSysString(), -1, font, RectF(850,445,190,25), &fontFormatCenter, &fontBrush);	
+	g->DrawString(s.AllocSysString(), -1, font, RectF(850,445,190,25), &fontFormatCenter, &fontBrush);
 	s.Format("%d%%", pIntel->GetScienceBonus(1));
-	g->DrawString(s.AllocSysString(), -1, font, RectF(850,480,190,25), &fontFormatCenter, &fontBrush);	
+	g->DrawString(s.AllocSysString(), -1, font, RectF(850,480,190,25), &fontFormatCenter, &fontBrush);
 	s.Format("%d%%", pIntel->GetMilitaryBonus(1));
-	g->DrawString(s.AllocSysString(), -1, font, RectF(850,515,190,25), &fontFormatCenter, &fontBrush);	
-		
+	g->DrawString(s.AllocSysString(), -1, font, RectF(850,515,190,25), &fontFormatCenter, &fontBrush);
+
 	// Depotlager
 	fontFormatCenter.SetAlignment(StringAlignmentNear);
 	s = CResourceManager::GetString("INNER_SECURITY_SHORT").MakeUpper()+":";
 	g->DrawString(s.AllocSysString(), -1, font, RectF(850,585,190,25), &fontFormatCenter, &fontBrush);
 	fontFormatCenter.SetAlignment(StringAlignmentFar);
 	s.Format("%d", pIntel->GetInnerSecurityStorage());
-	g->DrawString(s.AllocSysString(), -1, font, RectF(850,585,190,25), &fontFormatCenter, &fontBrush);	
-	
+	g->DrawString(s.AllocSysString(), -1, font, RectF(850,585,190,25), &fontFormatCenter, &fontBrush);
+
 	if (m_sActiveIntelRace != "" && m_sActiveIntelRace != m_pPlayersRace->GetRaceID())
 	{
 		fontFormatCenter.SetAlignment(StringAlignmentNear);
 		s =CResourceManager::GetString("SPY").MakeUpper()+":";
 		g->DrawString(s.AllocSysString(), -1, font, RectF(850,620,190,25), &fontFormatCenter, &fontBrush);
-		
+
 		fontFormatCenter.SetAlignment(StringAlignmentFar);
 		s.Format("%d", pIntel->GetSPStorage(0, m_sActiveIntelRace));
 		g->DrawString(s.AllocSysString(), -1, font, RectF(850,620,190,25), &fontFormatCenter, &fontBrush);
-		
+
 		fontFormatCenter.SetAlignment(StringAlignmentNear);
 		s = CResourceManager::GetString("SABOTAGE").MakeUpper()+":";
 		g->DrawString(s.AllocSysString(), -1, font, RectF(850,655,190,25), &fontFormatCenter, &fontBrush);
-		
+
 		fontFormatCenter.SetAlignment(StringAlignmentFar);
 		s.Format("%d", pIntel->GetSPStorage(1, m_sActiveIntelRace));
-		g->DrawString(s.AllocSysString(), -1, font, RectF(850,655,190,25), &fontFormatCenter, &fontBrush);		
+		g->DrawString(s.AllocSysString(), -1, font, RectF(850,655,190,25), &fontFormatCenter, &fontBrush);
 	}
 }
 
@@ -1314,7 +1314,7 @@ void CIntelMenuView::DrawIntelInformation(Graphics* g, Gdiplus::Font* font, Gdip
 /// @param g Zeiger auf GDI+ Grafikobjekt
 /// @param pMajor Spielerrasse
 void CIntelMenuView::DrawIntelMainButtons(Graphics* g, CMajor* pMajor)
-{	
+{
 	CString fontName;
 	REAL fontSize;
 	// Rassenspezifische Schriftart auswählen
@@ -1334,14 +1334,14 @@ void CIntelMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 
 	if (!pDoc->m_bDataReceived)
 		return;
-	
+
 	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
 	if (!pMajor)
 		return;
-		
+
 	CalcLogicalPoint(point);
-	// Wenn wir uns in der Geheimdienstansicht befinden		
+	// Wenn wir uns in der Geheimdienstansicht befinden
 	// Checken, ob ich auf einen Button geklickt habe um in ein anderes Untermenü zu gelangen
 	int temp = m_bySubMenu;
 	if (ButtonReactOnLeftClick(point, &m_IntelligenceMainButtons, temp))
@@ -1366,7 +1366,7 @@ void CIntelMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 				{
 					m_nScrollPos--;
 					Invalidate(FALSE);
-				}				
+				}
 			}
 			else if (temp == 1)
 			{
@@ -1374,7 +1374,7 @@ void CIntelMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 				{
 					m_nScrollPos++;
 					Invalidate(FALSE);
-				}				
+				}
 			}
 			return;
 		}
@@ -1393,7 +1393,7 @@ void CIntelMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			Invalidate(FALSE);
 			return;
 		}
-		
+
 		int count = 1;
 		int nPos = 0;
 		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
@@ -1437,7 +1437,7 @@ void CIntelMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		{
 			if (nPos++ < m_nScrollPos)
 				continue;
-			if (CRect(20,60+count*90,95,135+count*90).PtInRect(point) && it->first != pMajor->GetRaceID() && 
+			if (CRect(20,60+count*90,95,135+count*90).PtInRect(point) && it->first != pMajor->GetRaceID() &&
 				pMajor->IsRaceContacted(it->first) == true)
 			{
 				m_sActiveIntelRace = it->first;
@@ -1489,7 +1489,7 @@ void CIntelMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		{
 			if (nPos++ < m_nScrollPos)
 				continue;
-			if (CRect(20,60+count*90,95,135+count*90).PtInRect(point) && it->first != pMajor->GetRaceID() && 
+			if (CRect(20,60+count*90,95,135+count*90).PtInRect(point) && it->first != pMajor->GetRaceID() &&
 				pMajor->IsRaceContacted(it->first) == true)
 			{
 				m_sActiveIntelRace = it->first;
@@ -1537,7 +1537,7 @@ void CIntelMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		int count = 1;
 		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 		{
-			if (CRect(20,60+count*90,95,135+count*90).PtInRect(point) && ((it->first != pMajor->GetRaceID() && 
+			if (CRect(20,60+count*90,95,135+count*90).PtInRect(point) && ((it->first != pMajor->GetRaceID() &&
 				pMajor->IsRaceContacted(it->first) == true) || it->first == pMajor->GetRaceID()))
 			{
 				m_sActiveIntelRace = it->first;
@@ -1551,7 +1551,7 @@ void CIntelMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		if (CRect(715,400,835,430).PtInRect(point))
 		{
 			CString respRace = pMajor->GetEmpire()->GetIntelligence()->GetResponsibleRace();
-			map<CString, CMajor*>::iterator it = pmMajors->find(respRace);			
+			map<CString, CMajor*>::iterator it = pmMajors->find(respRace);
 			while (1)
 			{
 				++it;
@@ -1567,7 +1567,7 @@ void CIntelMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			Invalidate(FALSE);
 			return;
 		}
-		
+
 	}
 	// befinden wir uns im Geheimdienstberichtmenü
 	else if (m_bySubMenu == 4)
@@ -1586,7 +1586,7 @@ void CIntelMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			Invalidate(FALSE);
 			return;
 		}
-		
+
 		else if (CRect(r.left+200,r.top+100,r.left+600,r.top+130).PtInRect(point))
 		{
 			// Sortierung der Berichte nach dem Gegner
@@ -1711,7 +1711,7 @@ void CIntelMenuView::OnMouseMove(UINT nFlags, CPoint point)
 
 	if (!pDoc->m_bDataReceived)
 		return;
-	
+
 	// Wenn wir uns in der Geheimdienstansicht befinden
 	CalcLogicalPoint(point);
 	ButtonReactOnMouseOver(point, &m_IntelligenceMainButtons);
@@ -1770,7 +1770,7 @@ BOOL CIntelMenuView::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 			CIntelObject* intelObj = pIntel->GetIntelReports()->GetReport(i);
 			if (intelObj->GetIsSpy() == TRUE && intelObj->GetEnemy() != pMajor->GetRaceID() && intelObj->GetRound() > pDoc->GetCurrentRound() - 10)
 							maxReports++;
-		}		
+		}
 		if (zDelta < 0)
 		{
 			if (maxReports > pIntel->GetIntelReports()->GetActiveReport() + 1)
@@ -1869,7 +1869,7 @@ void CIntelMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 			CIntelObject* intelObj = pIntel->GetIntelReports()->GetReport(i);
 			if (intelObj->GetIsSpy() == TRUE && intelObj->GetEnemy() != pMajor->GetRaceID() && intelObj->GetRound() > pDoc->GetCurrentRound() - 10)
 				maxReports++;
-		}		
+		}
 		if (nChar == VK_DOWN)
 		{
 			if (maxReports > pIntel->GetIntelReports()->GetActiveReport() + 1)
@@ -1908,7 +1908,7 @@ void CIntelMenuView::CreateButtons()
 
 	CString sPrefix = pMajor->GetPrefix();
 	// alle Buttons in der View anlegen und Grafiken laden
-	
+
 	// Buttons in der Systemansicht
 	CString fileN = "Other\\" + sPrefix + "button.bop";
 	CString fileI = "Other\\" + sPrefix + "buttoni.bop";
@@ -1919,7 +1919,7 @@ void CIntelMenuView::CreateButtons()
 	m_IntelligenceMainButtons.Add(new CMyButton(CPoint(355,690), CSize(160,40), CResourceManager::GetString("BTN_SABOTAGE"), fileN, fileI, fileA));
 	m_IntelligenceMainButtons.Add(new CMyButton(CPoint(515,690), CSize(160,40), CResourceManager::GetString("INFORMATION"), fileN, fileI, fileA));
 	m_IntelligenceMainButtons.Add(new CMyButton(CPoint(675,690), CSize(160,40), CResourceManager::GetString("BTN_REPORTS"), fileN, fileI, fileA));
-	m_IntelligenceMainButtons.Add(new CMyButton(CPoint(835,690), CSize(160,40), CResourceManager::GetString("BTN_ATTEMPT"), fileN, fileI, fileA));	
+	m_IntelligenceMainButtons.Add(new CMyButton(CPoint(835,690), CSize(160,40), CResourceManager::GetString("BTN_ATTEMPT"), fileN, fileI, fileA));
 
 	// Buttons um Rassenlogos durchschalten zu können
 	fileN = "Other\\" + sPrefix + "buttonminus.bop";
@@ -1927,5 +1927,5 @@ void CIntelMenuView::CreateButtons()
 	m_RaceLogoButtons.Add(new CMyButton(CPoint(45,130) , CSize(25,25), "", fileN, fileN, fileA));
 	fileN = "Other\\" + sPrefix + "buttonplus.bop";
 	fileA = "Other\\" + sPrefix + "buttonplusa.bop";
-	m_RaceLogoButtons.Add(new CMyButton(CPoint(45,660) , CSize(25,25), "", fileN, fileN, fileA));	
+	m_RaceLogoButtons.Add(new CMyButton(CPoint(45,660) , CSize(25,25), "", fileN, fileN, fileA));
 }

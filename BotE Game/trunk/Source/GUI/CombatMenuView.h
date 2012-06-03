@@ -28,17 +28,17 @@ protected:
 	virtual void Dump(CDumpContext& dc) const;
 #endif
 #endif
-	
+
 protected:
 	DECLARE_MESSAGE_MAP()
 
 	/// Funktion lädt die rassenspezifischen Grafiken.
 	virtual void LoadRaceGraphics();
-	
+
 	///	Funktion erstellt zur aktuellen Mouse-Position einen HTML Tooltip
 	/// @return	der erstellte Tooltip-Text
 	virtual CString CreateTooltip(void);
-	
+
 public:
 	/// Funktion führt Aufgaben aus, welche zu jeder neuen Runde von den Views ausgeführt werden müssen. Sollte von jeder
 	/// abgeleiteten Klasse abgeleitet werden.
@@ -66,7 +66,7 @@ private:
 	Bitmap* bg_combatordermenu;			// Kampfbefehlsmenü
 
 	bool m_bInOrderMenu;				// Ist das Kampfbefehlsmenü aktiviert
-	
+
 	// Buttons
 	CArray<CMyButton*> m_CombatDecisionButtons;	///< Buttons zur Kampfentscheidung
 	CArray<CMyButton*> m_CombatTacticButtons;	///< Buttons zur Taktikeinstellung in der Kampfbefehlsansicht
@@ -79,7 +79,7 @@ private:
 	std::set<const CRace*> m_sEnemies;
 	CArray<CShip*> m_vInvolvedShips;
 	double m_dWinningChance;
-	
+
 	int m_nPageFriends;							///< Seite für alle befeundeten Schiffe in der Befehlsansicht
 	int m_nPageEnemies;							///< Seite für alle feindlichen Schiffe in der Befehlsansicht
 	vector<pair<CRect, CShip*> > m_vShipRects;	///< alle angezeigten Schiffe mit ihren Rechtecken zu draufklicken

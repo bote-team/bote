@@ -18,7 +18,7 @@
 typedef unsigned short USHORT;
 typedef unsigned long ULONG;
 
-class CHull : public CObject  
+class CHull : public CObject
 {
 	friend class CShip;
 public:
@@ -37,13 +37,13 @@ public:
 	UINT GetCurrentHull() const {return m_iCurrentHull;}
 	UINT GetMaxHull() const {return m_iMaxHull;}
 	BYTE GetHullMaterial() const {return m_iHullMaterial;}
-	
+
 	void SetCurrentHull(int add, bool bIgnoreHullSpecials = false);
 
 	void ModifyHull(BOOLEAN DoubleHull, UINT BaseHull, BYTE HullMaterial, BOOLEAN Ablative, BOOLEAN Polarisation);
 
 	/// Diese Funktion repariert die Hülle. Die Hülle wird bei jedem Aufruf dieser Funktion um 10% repariert.
-	void RepairHull();	
+	void RepairHull();
 
 private:
 	BOOLEAN m_bDoubleHull;

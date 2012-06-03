@@ -5,7 +5,7 @@
  *   Create   :  2001-4-27
  *   Home     :  http://www.crazy-bit.com/
  *   Mail     :  crazybitwps@hotmail.com
- *   History  :  
+ *   History  :
  */
 #ifndef __FOO_OBJECT_IMAGE__2001_04_27__H__
 #define __FOO_OBJECT_IMAGE__2001_04_27__H__
@@ -956,7 +956,7 @@ inline bool FCObjImage::Load (BYTE* pStart, int nMemSize, IMAGE_TYPE imgType, FC
     {
         if (listImage.PCL_GetObjectCount())
             *this = *listImage.PCL_GetObject(0) ;
-        
+
         if (pImgProp.get() && pProperty)
             *pProperty = *pImgProp ;
     }

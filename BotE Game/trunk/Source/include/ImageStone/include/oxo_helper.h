@@ -5,7 +5,7 @@
  *   Create   :  2004-6-26
  *   Home     :  http://www.crazy-bit.com/
  *   Mail     :  crazybitwps@hotmail.com
- *   History  :  
+ *   History  :
  */
 #ifndef __FOO_PHOXO_HELPER__2004_06_26__H__
 #define __FOO_PHOXO_HELPER__2004_06_26__H__

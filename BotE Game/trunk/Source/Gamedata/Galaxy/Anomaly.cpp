@@ -18,7 +18,7 @@ CAnomaly::CAnomaly(void) :
 	// Wurmlöcher sind sehr selten
 	if (m_byType == WORMHOLE)
 		m_byType = (ANOMALYTYP)(rand()%15);
-		
+
 
 	// Nebel
 	if (m_byType == RADIONEBULA)
@@ -65,7 +65,7 @@ CAnomaly::~CAnomaly(void)
 ///////////////////////////////////////////////////////////////////////
 // Speichern / Laden
 ///////////////////////////////////////////////////////////////////////
-void CAnomaly::Serialize(CArchive &ar)		
+void CAnomaly::Serialize(CArchive &ar)
 {
 	__super::Serialize(ar);
 	// wenn gespeichert wird
@@ -91,13 +91,13 @@ void CAnomaly::Serialize(CArchive &ar)
 // sonstige Funktionen
 //////////////////////////////////////////////////////////////////////
 void CAnomaly::Draw(Graphics* g, const CPoint& ptSector) const
-{	
+{
 	Gdiplus::Image* pBGImage;
-	
+
 	CString sFile = CIOData::GetInstance()->GetAppPath() + "Graphics\\MapStars\\" + m_sImageFile;
 	pBGImage = Bitmap::FromFile(sFile.AllocSysString());
 	assert(pBGImage);
-	
+
 	if (m_bFlipHorz)
 		pBGImage->RotateFlip(Gdiplus::RotateNoneFlipX);
 
@@ -163,7 +163,7 @@ CString CAnomaly::GetPhysicalDescription() const
 	case QUASAR:			return CResourceManager::GetString("QUASAR_DESC");
 	case WORMHOLE:			return CResourceManager::GetString("WORMHOLE_DESC");
 	}
-	
+
 	return _T("");
 }
 
@@ -191,7 +191,7 @@ CString CAnomaly::GetGameplayDescription(void) const
 	case QUASAR:			return CResourceManager::GetString("QUASAR_GAME");
 	case WORMHOLE:			return CResourceManager::GetString("WORMHOLE_GAME");
 	}
-	
+
 	return _T("");
 }
 
@@ -214,12 +214,12 @@ double CAnomaly::GetWaySearchWeight(void) const
 	// Verzerrungen
 	case GRAVDISTORTION:	return 10.0;
 	case CONTINUUMRIP:		return 100.0;
-	case BLACKHOLE:			return 0.0;	
+	case BLACKHOLE:			return 0.0;
 	// sonstigees
 	case QUASAR:			return 0.0;
 	case WORMHOLE:			return 0.0;
 	}
-	
+
 	return 0.0;
 }
 
@@ -242,16 +242,16 @@ void CAnomaly::CalcShipEffects(CShip* pShip) const
 				// sind die Schilde runter, so wird das Schiff zerstört
 				if (pShip->GetFleet()->GetShipFromFleet(i)->GetShield()->GetCurrentShield() == 0)
 					pShip->GetFleet()->GetShipFromFleet(i)->GetHull()->SetCurrentHull(pShip->GetFleet()->GetShipFromFleet(i)->GetHull()->GetCurrentHull() * (-1));
-				
+
 				// Verlust aller Crewerfahrung bei Röntgenpulsar und Magnetar
 				if (m_byType == XRAYPULSAR || m_byType == MAGNETAR)
 					pShip->GetFleet()->GetShipFromFleet(i)->SetCrewExperiance(pShip->GetFleet()->GetShipFromFleet(i)->GetCrewExperience() * (-1));
 				if (m_byType == MAGNETAR)
 					PerhabsStrand(pShip->GetFleet()->GetShipFromFleet(i));
-			}			
+			}
 		}
-		
-		// Schiff selbst 
+
+		// Schiff selbst
 		MakeShieldDmg(500, 75, pShip);
 		// sind die Schilde runter, so wird das Schiff zerstört
 		if (pShip->GetShield()->GetCurrentShield() == 0)
@@ -270,7 +270,7 @@ void CAnomaly::CalcShipEffects(CShip* pShip) const
 		if (pShip->GetFleet())
 			for (int i = 0; i < pShip->GetFleet()->GetFleetSize(); i++)
 				pShip->GetFleet()->GetShipFromFleet(i)->GetShield()->SetCurrentShield(pShip->GetFleet()->GetShipFromFleet(i)->GetShield()->GetCurrentShield() * (-1));
-		// Schiff selbst 
+		// Schiff selbst
 		pShip->GetShield()->SetCurrentShield(pShip->GetShield()->GetCurrentShield() * (-1));
 	}
 	else if (m_byType == RADIONEBULA)
@@ -279,7 +279,7 @@ void CAnomaly::CalcShipEffects(CShip* pShip) const
 		if (pShip->GetFleet())
 			for (int i = 0; i < pShip->GetFleet()->GetFleetSize(); i++)
 				pShip->GetFleet()->GetShipFromFleet(i)->SetCrewExperiance(pShip->GetFleet()->GetShipFromFleet(i)->GetCrewExperience() * (-1));
-		// Schiff selbst 
+		// Schiff selbst
 		pShip->SetCrewExperiance(pShip->GetCrewExperience() * (-1));
 	}
 	else if (m_byType == CONTINUUMRIP)
@@ -289,7 +289,7 @@ void CAnomaly::CalcShipEffects(CShip* pShip) const
 		if (pShip->GetFleet())
 			for (int i = 0; i < pShip->GetFleet()->GetFleetSize(); i++)
 				pShip->GetFleet()->GetShipFromFleet(i)->GetHull()->SetCurrentHull(pShip->GetFleet()->GetShipFromFleet(i)->GetHull()->GetCurrentHull() * (-1));
-		// Schiff selbst 
+		// Schiff selbst
 		pShip->GetHull()->SetCurrentHull(pShip->GetHull()->GetCurrentHull() * (-1), true);
 	}
 	else if (m_byType == GRAVDISTORTION)
@@ -298,8 +298,8 @@ void CAnomaly::CalcShipEffects(CShip* pShip) const
 		// hat das Schiff eine Flotte, so jedes Schiff in der Flotte beachten
 		if (pShip->GetFleet())
 			for (int i = 0; i < pShip->GetFleet()->GetFleetSize(); i++)
-				MakeHullDmg(50, 50, pShip->GetFleet()->GetShipFromFleet(i));			
-		// Schiff selbst 
+				MakeHullDmg(50, 50, pShip->GetFleet()->GetShipFromFleet(i));
+		// Schiff selbst
 		MakeHullDmg(50, 50, pShip);
 	}
 	else if (m_byType == IONSTORM)
@@ -308,7 +308,7 @@ void CAnomaly::CalcShipEffects(CShip* pShip) const
 		if (pShip->GetFleet())
 			for (int i = 0; i < pShip->GetFleet()->GetFleetSize(); i++)
 				pShip->GetFleet()->GetShipFromFleet(i)->SetCrewExperiance(pShip->GetFleet()->GetShipFromFleet(i)->GetCrewExperience() * (-1));
-		// Schiff selbst 
+		// Schiff selbst
 		pShip->SetCrewExperiance(pShip->GetCrewExperience() * (-1));
 
 		// maximale Schildkapazität um 3% erhöhen
@@ -322,7 +322,7 @@ void CAnomaly::CalcShipEffects(CShip* pShip) const
 
 				pShip->GetFleet()->GetShipFromFleet(i)->GetShield()->ModifyShield(nMaxShield, nShieldType, bRegenerative);
 			}
-		// Schiff selbst 
+		// Schiff selbst
 		UINT nMaxShield = pShip->GetShield()->GetMaxShield() * 1.23;
 		CBotf2Doc* pDoc = ((CBotf2App*)AfxGetApp())->GetDocument();
 		ASSERT(pDoc);
@@ -340,14 +340,14 @@ void CAnomaly::CalcShipEffects(CShip* pShip) const
 void CAnomaly::MakeShieldDmg(int nMinDmgValue, int nMaxDmgPercent, CShip* pShip) const
 {
 	int nMax = (int)pShip->GetShield()->GetCurrentShield() * (rand()%(nMaxDmgPercent + 1)) / 100;
-	int nShieldDmg = max(nMinDmgValue, nMax);	
+	int nShieldDmg = max(nMinDmgValue, nMax);
 	pShip->GetShield()->SetCurrentShield(pShip->GetShield()->GetCurrentShield() - nShieldDmg);
 }
 
 void CAnomaly::MakeHullDmg(int nMinDmgValue, int nMaxDmgPercent, CShip* pShip) const
 {
 	int nMax = (int)pShip->GetHull()->GetCurrentHull() * (rand()%(nMaxDmgPercent + 1)) / 100;
-	int nHullDmg = max(nMinDmgValue, nMax);	
+	int nHullDmg = max(nMinDmgValue, nMax);
 	pShip->GetHull()->SetCurrentHull(-nHullDmg, true);
 }
 
@@ -373,7 +373,7 @@ void CAnomaly::ReduceScanPower(const CPoint &pt) const
 							pDoc->GetSector(pt.x + i, pt.y + j).SetScanPower(pDoc->GetSector(pt.x + i, pt.y + j).GetScanPower(it->first) - 25 / div, it->first);
 						}
 		}
-	}	
+	}
 }
 
 void CAnomaly::PerhabsStrand(CShip* pShip) const

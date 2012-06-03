@@ -52,23 +52,23 @@ void CTradeBottomView::OnDraw(CDC* dc)
 
 	// Handelhistoryobjekt holen
 	CTradeHistory* pHistory = pMajor->GetTrade()->GetTradeHistory();
-	ASSERT(pHistory);	
+	ASSERT(pHistory);
 
 	// Doublebuffering wird initialisiert
 	CMyMemDC pDC(dc);
 	CRect client;
 	GetClientRect(&client);
-		
+
 	// Graphicsobjekt, in welches gezeichnet wird anlegen
 	Graphics g(pDC->GetSafeHdc());
-	
+
 	g.Clear(Color::Black);
 	g.SetSmoothingMode(SmoothingModeHighSpeed);
 	g.SetInterpolationMode(InterpolationModeLowQuality);
 	g.SetPixelOffsetMode(PixelOffsetModeHighSpeed);
 	g.SetCompositingQuality(CompositingQualityHighSpeed);
 	g.ScaleTransform((REAL)client.Width() / (REAL)m_TotalSize.cx, (REAL)client.Height() / (REAL)m_TotalSize.cy);
-				
+
 	CString fontName = "";
 	Gdiplus::REAL fontSize = 0.0;
 	StringFormat fontFormat;
@@ -80,12 +80,12 @@ void CTradeBottomView::OnDraw(CDC* dc)
 	CString s;
 
 	Bitmap* graphic = NULL;
-	
+
 	CString sPrefix = pMajor->GetPrefix();
 	// rassenspezifische Schriftart und Style wählen
 	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "tradeV3.boj");
-	
-	// Grafik zeichnen		
+
+	// Grafik zeichnen
 	if (graphic)
 	{
 		g.DrawImage(graphic, 0, 0, 1075, 249);
@@ -101,8 +101,8 @@ void CTradeBottomView::OnDraw(CDC* dc)
 	case DURANIUM: resName = CResourceManager::GetString("DURANIUM");	resColor.SetFromCOLORREF(RGB(132,198,127)); break;
 	case CRYSTAL: resName = CResourceManager::GetString("CRYSTAL");		resColor.SetFromCOLORREF(RGB(153,227,255)); break;
 	case IRIDIUM: resName = CResourceManager::GetString("IRIDIUM");		resColor.SetFromCOLORREF(RGB(255,189,76)); break;
-	}		
-	
+	}
+
 	USHORT start;
 	USHORT end;
 	USHORT backupNumberOfHistoryRounds = m_iNumberOfHistoryRounds;
@@ -127,14 +127,14 @@ void CTradeBottomView::OnDraw(CDC* dc)
 		s.Format("1");
 	else
 		s.Format("%d", max/10);
-	
+
 	CFontLoader::CreateGDIFont(pMajor, 2, fontName, fontSize);
 	fontBrush.SetColor(Color(200,200,200));
 	fontFormat.SetAlignment(StringAlignmentFar);
 	fontFormat.SetLineAlignment(StringAlignmentCenter);
 	fontFormat.SetFormatFlags(StringFormatFlagsNoWrap);
 	g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0, r.bottom-215, 290, 25), &fontFormat, &fontBrush);
-	
+
 	USHORT count = 0;
 	float temp1 = 0.0;
 	// Hier wird das Diagramm gezeichnet
@@ -145,20 +145,20 @@ void CTradeBottomView::OnDraw(CDC* dc)
 		if (count > 0)
 		{
 			float temp2 = (float)(pHistory->GetHistoryPriceFromRes(m_iWhichRessource)->GetAt(i-2)) / max;
-			g.DrawLine(&Gdiplus::Pen(resColor), (int)(302+(count-1)*(600/m_iNumberOfHistoryRounds)), (int)(r.bottom-150*temp2+2-60), (int)(302+count*(600/m_iNumberOfHistoryRounds)), (int)(r.bottom-150*temp1+2-60));			
+			g.DrawLine(&Gdiplus::Pen(resColor), (int)(302+(count-1)*(600/m_iNumberOfHistoryRounds)), (int)(r.bottom-150*temp2+2-60), (int)(302+count*(600/m_iNumberOfHistoryRounds)), (int)(r.bottom-150*temp1+2-60));
 		}
 		if (m_bDrawLittleRects)
 			g.FillRectangle(&Gdiplus::SolidBrush(resColor), RectF(300+count*(600/m_iNumberOfHistoryRounds), r.bottom-150*temp1-60, 5, 5));
-		count++;		
+		count++;
 	}
-	m_iNumberOfHistoryRounds = backupNumberOfHistoryRounds;	
-	
+	m_iNumberOfHistoryRounds = backupNumberOfHistoryRounds;
+
 	Gdiplus::Color fontColor;
 	CFontLoader::GetGDIFontColor(pMajor, 3, fontColor);
 	fontBrush.SetColor(fontColor);
 	fontFormat.SetAlignment(StringAlignmentNear);
 	fontFormat.SetLineAlignment(StringAlignmentCenter);
-			
+
 	// Maximal, Minimal und Durchschnittspreis links anzeigen
 	g.DrawString(CResourceManager::GetString("MIN_PRICE").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(40, 60, 180, 25), &fontFormat, &fontBrush);
 	if (pHistory->GetMinPrice(m_iWhichRessource) / 10 == 0)
@@ -176,19 +176,19 @@ void CTradeBottomView::OnDraw(CDC* dc)
 	fontFormat.SetAlignment(StringAlignmentFar);
 	g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(40, 90, 200, 25), &fontFormat, &fontBrush);
 	fontFormat.SetAlignment(StringAlignmentNear);
-	g.DrawString(CResourceManager::GetString("AVERAGE_PRICE").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(40, 120, 180, 25), &fontFormat, &fontBrush);		
+	g.DrawString(CResourceManager::GetString("AVERAGE_PRICE").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(40, 120, 180, 25), &fontFormat, &fontBrush);
 	if (pHistory->GetAveragePrice(m_iWhichRessource) / 10 == 0)
 		s.Format("1");
 	else
 		s.Format("%d", pHistory->GetAveragePrice(m_iWhichRessource) / 10);
 	fontFormat.SetAlignment(StringAlignmentFar);
 	g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(40, 120, 200, 25), &fontFormat, &fontBrush);
-	
+
 	// Namen der Ressource zeichnen
 	fontBrush.SetColor(Color(200,200,200));
 	fontFormat.SetAlignment(StringAlignmentCenter);
 	g.DrawString(resName.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(40, 20, 200, 45), &fontFormat, &fontBrush);
-	
+
 	// ganzen kleine Buttons darstellen
 	fontBrush.SetColor(this->GetFontColorForSmallButton());
 	for (int i = TITAN; i <= IRIDIUM; i++)
@@ -198,11 +198,11 @@ void CTradeBottomView::OnDraw(CDC* dc)
 	g.DrawString(CResourceManager::GetString("DURANIUM").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(r.right-120, 114, 120, 30), &fontFormat, &fontBrush);
 	g.DrawString(CResourceManager::GetString("CRYSTAL").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(r.right-120, 146, 120, 30), &fontFormat, &fontBrush);
 	g.DrawString(CResourceManager::GetString("IRIDIUM").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(r.right-120, 178, 120, 30), &fontFormat, &fontBrush);
-	
+
 	g.DrawImage(m_pSmallButton, 80, 160, 120, 30);
 	s.Format("%d %s",m_iNumberOfHistoryRounds, CResourceManager::GetString("ROUNDS"));
 	g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(80, 160, 120, 30), &fontFormat, &fontBrush);
-			
+
 	// Wenn das System blockiert wird, ein OverlayBanner über die Ansicht gelegt.
 	if (pDoc->m_System[pDoc->GetKO().x][pDoc->GetKO().y].GetBlockade() > NULL)
 	{
@@ -258,8 +258,8 @@ void CTradeBottomView::LoadRaceGraphics()
 	ASSERT(pMajor);
 
 	CString sPrefix = pMajor->GetPrefix();
-	CString s = CIOData::GetInstance()->GetAppPath() + "Graphics\\Other\\" + sPrefix + "button_small.bop";		
-	
+	CString s = CIOData::GetInstance()->GetAppPath() + "Graphics\\Other\\" + sPrefix + "button_small.bop";
+
 	m_pSmallButton = Bitmap::FromFile(s.AllocSysString());
 }
 
@@ -300,7 +300,7 @@ void CTradeBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 			m_iNumberOfHistoryRounds = 100;
 		else
 			m_iNumberOfHistoryRounds = 20;
-		Invalidate(FALSE);			
+		Invalidate(FALSE);
 	}
 	// Haben wir in das Diagramm geklickt um die kleinen Vierecke an- oder auszuschalten
 	else if (CRect(300,r.bottom-225,900,r.bottom-55).PtInRect(point))

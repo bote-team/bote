@@ -36,7 +36,7 @@ public:
 
 	// Kopierkonstruktor
 	CWeaponObserver(const CWeaponObserver & rhs);
-	
+
 	// Zuweisungsoperatur
 	CWeaponObserver & operator=(const CWeaponObserver &);
 
@@ -50,7 +50,7 @@ public:
 	// Funktion sucht einen weiteren baubaren Torpedo und übernimmt dafür den aktuell angebauten Torpedotyp und
 	// den aktuell angebauten Torpedowerfeer
 	BYTE GetNextTorpedo(BYTE currentTorpedoType, BOOLEAN onlyMircoTupe) const;
-	
+
 	// Funktion sucht einen weiteren Torpedowerfer, denn wir an das Schiff montieren können und übernimmt dafür
 	// den Namen des aktuell angebauten Werfers und den aktuell angebauten Torpedotyp
 	TupeWeaponsObserverStruct GetNextTupe(const CString& currentTupeName, BYTE currentTorpedoType) const;
@@ -77,7 +77,7 @@ private:
 
 	// dynamisches Feld speichert alle baubaren Torpedowerfer eines Imperiums
 	CArray<TupeWeaponsObserverStruct,TupeWeaponsObserverStruct> m_TupeWeapons;
-	
+
 	// Feld speichert welche Torpedos wir an Schiffen anbringen können
 	BOOLEAN m_BuildableTorpedos[DIFFERENT_TORPEDOS];
 

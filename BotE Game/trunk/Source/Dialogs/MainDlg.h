@@ -35,7 +35,7 @@ private:
 	CChooseRacePage *m_pChooseRace;
 //	CPlayGamePage *m_pPlayGame;
 	CBotf2Doc *m_pDoc;
-		
+
 public:
 	CMainDlg(CBotf2Doc* pDoc);
 	virtual ~CMainDlg();

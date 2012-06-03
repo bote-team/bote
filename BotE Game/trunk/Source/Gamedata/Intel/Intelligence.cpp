@@ -21,9 +21,9 @@ CIntelligence::~CIntelligence(void)
 void CIntelligence::Serialize(CArchive &ar)
 {
 	CObject::Serialize(ar);
-	
+
 	m_Assignment.Serialize(ar);
-	
+
 	if (ar.IsStoring())
 	{
 		ar << m_sRace;
@@ -31,7 +31,7 @@ void CIntelligence::Serialize(CArchive &ar)
 		ar << m_iSecurityPoints;
 		ar << m_iInnerStorage;
 		ar << m_nInnerSecurityBoni;
-		
+
 		for (int i = 0; i < 2; i++)
 		{
 			ar << m_iSPStorage[i].size();
@@ -46,7 +46,7 @@ void CIntelligence::Serialize(CArchive &ar)
 				ar << it->first << it->second;
 			}
 		}
-		
+
 		for (int i = 0; i < 2; i++)
 		{
 			ar << m_nEconomyBoni[i];
@@ -61,7 +61,7 @@ void CIntelligence::Serialize(CArchive &ar)
 		ar >> m_iSecurityPoints;
 		ar >> m_iInnerStorage;
 		ar >> m_nInnerSecurityBoni;
-		
+
 		for (int i = 0; i < 2; i++)
 		{
 			// alte Maps löschen
@@ -89,7 +89,7 @@ void CIntelligence::Serialize(CArchive &ar)
 				m_byAggressiveness[i][key] = value;
 			}
 		}
-		
+
 		for (int i = 0; i < 2; i++)
 		{
 			ar >> m_nEconomyBoni[i];
@@ -97,7 +97,7 @@ void CIntelligence::Serialize(CArchive &ar)
 			ar >> m_nMilitaryBoni[i];
 		}
 	}
-	
+
 	// Man kann die Textnachrichten in einem Report löschen, wenn sie eh nicht an die betroffene Rasse gerichtet sind
 	// dies spart Speicherplatz
 	for (int i = 0; i < m_Reports.GetNumberOfReports(); i++)
@@ -150,7 +150,7 @@ void CIntelligence::AddInnerSecurityPoints(int add)
 /// Funktion addiert die übergebenen Punkte zum jeweiligen Lager einer Rasse. Gleichzeitig wird überprüft, dass
 /// ihr neuer Wert im richtigen Bereich liegt.
 void CIntelligence::AddSPStoragePoints(BOOLEAN type, const CString& sRace, int add)
-{	
+{
 	if (((long)m_iSPStorage[type][sRace] + add) < NULL)
 		m_iSPStorage[type][sRace] = NULL;
 	else
@@ -177,7 +177,7 @@ void CIntelligence::ClearBoni()
 
 /// Resetfunktion für das CIntelligence-Objekt.
 void CIntelligence::Reset()
-{	
+{
 	for (int i = 0; i < 2; i++)
 	{
 		m_iSPStorage[i].clear();
@@ -190,6 +190,6 @@ void CIntelligence::Reset()
 	m_Assignment.Reset();
 	m_Reports.RemoveAllReports();
 	m_IntelInfo.Reset();
-	
+
 	ClearBoni();
 }

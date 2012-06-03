@@ -164,7 +164,7 @@ void CMainDlg::OnBeginGame(network::CBeginGame *pMsg)
 }
 
 void CMainDlg::OnPrepareGame()
-{	
+{
 }
 
 void CMainDlg::OnNextRound(network::CNextRound *pMsg)

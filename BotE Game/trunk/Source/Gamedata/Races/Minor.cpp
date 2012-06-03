@@ -24,10 +24,10 @@ CMinor::~CMinor(void)
 ///////////////////////////////////////////////////////////////////////
 // Speichern / Laden
 ///////////////////////////////////////////////////////////////////////
-void CMinor::Serialize(CArchive &ar)		
+void CMinor::Serialize(CArchive &ar)
 {
 	CRace::Serialize(ar);
-	
+
 	// wenn gespeichert wird
 	if (ar.IsStoring())
 	{
@@ -50,7 +50,7 @@ void CMinor::Serialize(CArchive &ar)
 		ar >> m_iCorruptibility;			// wie stark ändert sich die Beziehung beim Geschenke geben?
 		ar >> m_bSpaceflight;				// Spaceflightnation (hat Schiffe)
 
-		ar >> m_bSubjugated;			// wurde die Rasse unterworfen	
+		ar >> m_bSubjugated;			// wurde die Rasse unterworfen
 		// Akzeptanzpunkte (Rassen-ID, Punkte)
 		m_mAcceptance.clear();
 		size_t mapSize = 0;
@@ -101,7 +101,7 @@ void CMinor::SetAcceptancePoints(const CString& sRaceID, short nAdd)
 		return;
 
 	m_mAcceptance[sRaceID] += nAdd;
-	
+
 	map<CString, short>::iterator it = m_mAcceptance.find(sRaceID);
 
 	// Konsitenzprüfung durchführen
@@ -204,7 +204,7 @@ void CMinor::PerhapsBuildShip(CBotf2Doc* pDoc)
 				// schauen ob es technologisch baubar ist
 				BYTE byAvgTechLevel = pDoc->GetStatistics()->GetAverageTechLevel();
 				BYTE byTechLevel = byAvgTechLevel + m_iTechnologicalProgress / 2;
-				
+
 				BYTE researchLevels[6] = {byTechLevel, byTechLevel, byTechLevel, byTechLevel, byTechLevel, byTechLevel};
 				if (pShipInfo->IsThisShipBuildableNow(researchLevels))
 				{
@@ -263,12 +263,12 @@ void CMinor::CalcAcceptancePoints(CBotf2Doc* pDoc)
 		{
 			nAccPoints += 40;
 			// bei einer Mitgliedschaft erhöht sich womoglich auch die Beziehung ein wenig
-			SetRelation(it->first, rand()%2);			
+			SetRelation(it->first, rand()%2);
 		}
 		// bei Krieg werden alle Punkte gelöscht
 		else if (nAgreement == DIPLOMATIC_AGREEMENT::WAR)
 			nAccPoints -= GetAcceptancePoints(it->first);
-		
+
 		// Akzeptanzpunkte nun hinzufügen bzw. abziehen
 		SetAcceptancePoints(it->first, nAccPoints);
 	}
@@ -285,20 +285,20 @@ void CMinor::ConsumeResources(CBotf2Doc* pDoc)
 	// bewohnbar sind:    C,F,G,H,K,L,M,N,O,P,Q,R
 	BOOLEAN exist[DERITIUM + 1] = {0};
 	pDoc->GetSector(m_ptKO).GetAvailableResources(exist, true);
-	
+
 	short div;
 	int value;
-	
+
 	// Titan
 	exist[TITAN] == TRUE ? div = 1000 : div = 4000;
 	value = rand()%div;
 	value = min(3000, value);
 	pDoc->GetSystem(m_ptKO).SetResourceStore(TITAN, -value);
-	
+
 	//CString s;
 	//s.Format("Name der Rasse: %s\nTitanabbau: %d\nVerbrauch: %d\nLager: %d",m_strRaceName,exist[0],value,m_iRessourceStorage[0]);
 	//AfxMessageBox(s);
-	
+
 	// Deuterium
 	exist[DEUTERIUM] == TRUE ? div = 1500 : div = 4000;
 	value = rand()%div;
@@ -336,15 +336,15 @@ void CMinor::ConsumeResources(CBotf2Doc* pDoc)
 bool CMinor::CanAcceptOffer(CBotf2Doc* pDoc, const CString& sMajorID, short nType) const
 {
 	ASSERT(pDoc);
-	
+
 	// Nur wenn der aktuelle Vertrag nicht höherwertiger ist als der angebotene, dann wird er akzeptiert
 	if (this->GetAgreement(sMajorID) >= nType)
-		return false;	
+		return false;
 
 	// Checken ob wir ein Angebot überhaupt annehmen können, wenn z.B. eine andere Hauptrasse
 	// eine Mitgliedschaft mit einer Minorrace hat, dann können wir ihr kein Angebot machen, außer
 	// Krieg erklären, Geschenke geben und Bestechen
-	DIPLOMATIC_AGREEMENT::Typ nOthersAgreement = DIPLOMATIC_AGREEMENT::NONE;		
+	DIPLOMATIC_AGREEMENT::Typ nOthersAgreement = DIPLOMATIC_AGREEMENT::NONE;
 	map<CString, CMajor*>* pmMajors = pDoc->GetRaceCtrl()->GetMajors();
 	// nicht wir selbst
 	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
@@ -353,7 +353,7 @@ bool CMinor::CanAcceptOffer(CBotf2Doc* pDoc, const CString& sMajorID, short nTyp
 		{
 			DIPLOMATIC_AGREEMENT::Typ nTemp = this->GetAgreement(it->first);
 			if (nTemp > nOthersAgreement)
-				nOthersAgreement = nTemp;			
+				nOthersAgreement = nTemp;
 		}
 	}
 
@@ -382,7 +382,7 @@ void CMinor::CheckDiplomaticConsistence(CBotf2Doc* pDoc)
 		// nur wenn die Rasse bekannt ist weitermachen
 		if (!IsRaceContacted(it->first))
 			continue;
-		
+
 		// Wenn die Minorrace unterworfen wurde, so wird jeglicher Vertrag gekündigt aller bakannten Majors gekündigt
 		if (GetSubjugated())
 		{
@@ -425,7 +425,7 @@ void CMinor::CheckDiplomaticConsistence(CBotf2Doc* pDoc)
 				CString s = "";
 
 				if (nAgreement == DIPLOMATIC_AGREEMENT::TRADE)
-					s = CResourceManager::GetString("CANCEL_TRADE_AGREEMENT", FALSE, m_sName);					
+					s = CResourceManager::GetString("CANCEL_TRADE_AGREEMENT", FALSE, m_sName);
 				else if (nAgreement == DIPLOMATIC_AGREEMENT::FRIENDSHIP)
 					s = CResourceManager::GetString("CANCEL_FRIENDSHIP", FALSE, m_sName);
 				else if (nAgreement == DIPLOMATIC_AGREEMENT::COOPERATION)
@@ -434,7 +434,7 @@ void CMinor::CheckDiplomaticConsistence(CBotf2Doc* pDoc)
 					s = CResourceManager::GetString("CANCEL_AFFILIATION", FALSE, m_sName);
 				else if (nAgreement == DIPLOMATIC_AGREEMENT::MEMBERSHIP)
 					s = CResourceManager::GetString("CANCEL_MEMBERSHIP", FALSE, m_sName);
-				
+
 				if (!s.IsEmpty())
 				{
 					// Vertrag bei beiden Rassen auflösen
@@ -462,15 +462,15 @@ void CMinor::CheckDiplomaticConsistence(CBotf2Doc* pDoc)
 				else if (nAgreement == DIPLOMATIC_AGREEMENT::COOPERATION)
 					s = CResourceManager::GetString("CANCEL_COOPERATION", FALSE, m_sName);
 				else if (nAgreement == DIPLOMATIC_AGREEMENT::AFFILIATION)
-					s = CResourceManager::GetString("CANCEL_AFFILIATION", FALSE, m_sName);				
-				
+					s = CResourceManager::GetString("CANCEL_AFFILIATION", FALSE, m_sName);
+
 				if (!s.IsEmpty())
 				{
 					// Vertrag bei beiden Rassen auflösen
 					SetAgreement(itt->first, DIPLOMATIC_AGREEMENT::NONE);
 					CMajor* pMajor = itt->second;
 					pMajor->SetAgreement(m_sID, DIPLOMATIC_AGREEMENT::NONE);
-					CMessage message;					
+					CMessage message;
 					message.GenerateMessage(s, MESSAGE_TYPE::DIPLOMACY, "", 0, 0);
 					pMajor->GetEmpire()->AddMessage(message);
 				}
@@ -487,15 +487,15 @@ void CMinor::CheckDiplomaticConsistence(CBotf2Doc* pDoc)
 				CString s = "";
 
 				if (nAgreement == DIPLOMATIC_AGREEMENT::COOPERATION)
-					s = CResourceManager::GetString("CANCEL_COOPERATION", FALSE, m_sName);				
-				
+					s = CResourceManager::GetString("CANCEL_COOPERATION", FALSE, m_sName);
+
 				if (!s.IsEmpty())
 				{
 					// Vertrag bei beiden Rassen auflösen
 					SetAgreement(itt->first, DIPLOMATIC_AGREEMENT::NONE);
 					CMajor* pMajor = itt->second;
 					pMajor->SetAgreement(m_sID, DIPLOMATIC_AGREEMENT::NONE);
-					CMessage message;					
+					CMessage message;
 					message.GenerateMessage(s, MESSAGE_TYPE::DIPLOMACY, "", 0, 0);
 					pMajor->GetEmpire()->AddMessage(message);
 				}
@@ -521,7 +521,7 @@ void CMinor::PerhapsCancelAgreement(CBotf2Doc* pDoc)
 		// nur wenn die Rasse bekannt ist weitermachen
 		if (!IsRaceContacted(it->first))
 			continue;
-	
+
 		short nRelation	= GetRelation(it->first);
 		DIPLOMATIC_AGREEMENT::Typ nAgreement = GetAgreement(it->first);
 		if (nRelation < nAgreement * 12 && nAgreement >= DIPLOMATIC_AGREEMENT::TRADE && nAgreement <= DIPLOMATIC_AGREEMENT::MEMBERSHIP)
@@ -552,7 +552,7 @@ void CMinor::PerhapsCancelAgreement(CBotf2Doc* pDoc)
 			}
 			case DIPLOMATIC_AGREEMENT::MEMBERSHIP:
 			{
-				sText = CResourceManager::GetString("CANCEL_MEMBERSHIP", FALSE, m_sName);				
+				sText = CResourceManager::GetString("CANCEL_MEMBERSHIP", FALSE, m_sName);
 				break;
 			}
 			}
@@ -625,7 +625,7 @@ CString CMinor::GetTooltip(void) const
 	sCor += s;
 	sCor += CHTMLStringBuilder::GetHTMLStringNewLine();
 
-	return CHTMLStringBuilder::GetHTMLCenter(sTip + sProgress + sCor);	
+	return CHTMLStringBuilder::GetHTMLCenter(sTip + sProgress + sCor);
 }
 
 /// Funktion zum erstellen einer Rasse.
@@ -648,10 +648,10 @@ void CMinor::Create(const CStringArray& saInfo, int& nPos)
 
 	m_sName				= saInfo[nPos++];				// Rassenname
 	m_sDesc				= saInfo[nPos++];				// Rassenbeschreibung
-	
+
 	// grafische Attribute
 	m_sGraphicFile				= saInfo[nPos++];		// Name der zugehörigen Grafikdatei
-	
+
 	// Beziehungen
 	// ALPHA5 muss natürlich noch auf das neue System umgestellt werden -> werden nicht mehr in der data Datei gespeichert
 	for (int i = 0; i < 6; i++)
@@ -661,7 +661,7 @@ void CMinor::Create(const CStringArray& saInfo, int& nPos)
 
 	m_iTechnologicalProgress = atoi(saInfo[nPos++]);
 	m_byType			= MINOR;						// Rassentyp (Major, Medior, Minor)
-	
+
 	// mehrere Rasseneigenschaften sind durch Komma getrennt
 	CString sRaceProperties = saInfo[nPos++];
 	int nStart = 0;
@@ -671,10 +671,10 @@ void CMinor::Create(const CStringArray& saInfo, int& nPos)
 		ASSERT(nProperty >= RACE_PROPERTY::NOTHING_SPECIAL && nProperty <= RACE_PROPERTY::HOSTILE);
 		SetRaceProperty(nProperty, true);				// Rasseneigenschaften
 	}
-	
+
 	m_bSpaceflight		= atoi(saInfo[nPos++]) == 0 ? false : true;
 	m_iCorruptibility	= atoi(saInfo[nPos++]);
-	
+
 
 	// Schiffsnummer vergeben
 	m_byShipNumber = MINORNUMBER;
@@ -698,12 +698,12 @@ void CMinor::CreateAlienEntities(const CStringArray& saInfo, int& nPos)
 	m_sID.Remove(':');
 	m_sName				= saInfo[nPos++];				// Rassenname
 	m_sDesc				= saInfo[nPos++];				// Rassenbeschreibung
-	
+
 	// grafische Attribute
 	m_sGraphicFile		= saInfo[nPos++];				// Name der zugehörigen Grafikdatei
 	m_iTechnologicalProgress = atoi(saInfo[nPos++]);
 	m_byType			= MINOR;						// Rassentyp (Major, Medior, Minor)
-	
+
 	// mehrere Rasseneigenschaften sind durch Komma getrennt
 	CString sRaceProperties = saInfo[nPos++];
 	int nStart = 0;
@@ -714,9 +714,9 @@ void CMinor::CreateAlienEntities(const CStringArray& saInfo, int& nPos)
 		SetRaceProperty(nProperty, true);				// Rasseneigenschaften
 	}
 	m_nSpecialAbility	= atoi(saInfo[nPos++]);
-	
+
 	m_bSpaceflight		= atoi(saInfo[nPos++]) == 0 ? false : true;
-	m_iCorruptibility	= atoi(saInfo[nPos++]);	
+	m_iCorruptibility	= atoi(saInfo[nPos++]);
 
 	// Schiffsnummer vergeben
 	m_byShipNumber = MINORNUMBER;
@@ -735,5 +735,5 @@ void CMinor::Reset(void)
 	m_iCorruptibility = 0;					// wie stark ändert sich die Beziehung beim Geschenke geben?
 	m_bSpaceflight = false;					// Spaceflightnation (hat Schiffe)
 	m_bSubjugated = false;					// wurde die Rasse unterworfen
-	m_mAcceptance.clear();					// Punkte die eine MajorRace durch längere Beziehung mit der Rasse ansammelt, wird schwerer diese Rasse wegzukaufen	
+	m_mAcceptance.clear();					// Punkte die eine MajorRace durch längere Beziehung mit der Rasse ansammelt, wird schwerer diese Rasse wegzukaufen
 }

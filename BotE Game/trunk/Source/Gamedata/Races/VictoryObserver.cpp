@@ -14,7 +14,7 @@ CVictoryObserver::CVictoryObserver(void) :
 	m_nRivalsLeft(INT_MAX),
 	m_bIsVictory(false),
 	m_nVictoryType(VICTORYTYPE_ELIMINATION)
-{	
+{
 	memset(m_bConditionStatus, true, sizeof(m_bConditionStatus));
 }
 
@@ -25,10 +25,10 @@ CVictoryObserver::~CVictoryObserver(void)
 ///////////////////////////////////////////////////////////////////////
 // Speichern / Laden
 ///////////////////////////////////////////////////////////////////////
-void CVictoryObserver::Serialize(CArchive &ar)		
+void CVictoryObserver::Serialize(CArchive &ar)
 {
 	__super::Serialize(ar);
-	
+
 	// wenn gespeichert wird
 	if (ar.IsStoring())
 	{
@@ -62,7 +62,7 @@ void CVictoryObserver::Serialize(CArchive &ar)
 		Reset();
 
 		if (VERSION >= 0.72)
-		{	
+		{
 			for (int i = 0; i < VICTORY_CONDITION_NUMBER; i++)
 				ar >> m_bConditionStatus[i];
 
@@ -76,7 +76,7 @@ void CVictoryObserver::Serialize(CArchive &ar)
 				ar >> value;
 				m_mDiplomacy[key] = value;
 			}
-			
+
 			mapSize = 0;
 			ar >> mapSize;
 			for (size_t i = 0; i < mapSize; i++)
@@ -120,7 +120,7 @@ void CVictoryObserver::Serialize(CArchive &ar)
 				ar >> value;
 				m_mSabotage[key] = value;
 			}
-			
+
 			ar >> m_nRivalsLeft;
 			ar >> m_bIsVictory;
 			int nType;
@@ -156,47 +156,47 @@ int CVictoryObserver::GetVictoryStatus(const CString& sRaceID, VICTORYTYPE nType
 	{
 	case VICTORYTYPE_ELIMINATION:
 		return m_nRivalsLeft;
-	
+
 	case VICTORYTYPE_DIPLOMACY:
 		it = m_mDiplomacy.find(sRaceID);
 		if (it != m_mDiplomacy.end())
 			return it->second;
 		else
 			return 0;
-	
+
 	case VICTORYTYPE_CONQUEST:
 		it = m_mSlavery.find(sRaceID);
 		if (it != m_mSlavery.end())
 			return it->second;
 		else
 			return 0;
-	
+
 	case VICTORYTYPE_RESEARCH:
 		it = m_mResearch.find(sRaceID);
 		if (it != m_mResearch.end())
 			return it->second;
 		else
 			return 0;
-	
+
 	case VICTORYTYPE_COMBATWINS:
 		it = m_mCombatWins.find(sRaceID);
 		if (it != m_mCombatWins.end())
 			return it->second;
 		else
 			return 0;
-	
+
 	case VICTORYTYPE_SABOTAGE:
 		it = m_mSabotage.find(sRaceID);
 		if (it != m_mSabotage.end())
 			return it->second;
 		else
 			return 0;
-	
+
 	default:
 		return 0;
 	}
 }
-	
+
 int CVictoryObserver::GetBestVictoryValue(VICTORYTYPE nType) const
 {
 	vector<int> vValues;
@@ -206,27 +206,27 @@ int CVictoryObserver::GetBestVictoryValue(VICTORYTYPE nType) const
 	{
 	case VICTORYTYPE_ELIMINATION:
 		return m_nRivalsLeft;
-	
+
 	case VICTORYTYPE_DIPLOMACY:
 		for (map<CString, int>::const_iterator it = m_mDiplomacy.begin(); it != m_mDiplomacy.end(); ++it)
 			vValues.push_back(it->second);
 		break;
-	
+
 	case VICTORYTYPE_CONQUEST:
 		for (map<CString, int>::const_iterator it = m_mSlavery.begin(); it != m_mSlavery.end(); ++it)
 			vValues.push_back(it->second);
 		break;
-	
+
 	case VICTORYTYPE_RESEARCH:
 		for (map<CString, int>::const_iterator it = m_mResearch.begin(); it != m_mResearch.end(); ++it)
 			vValues.push_back(it->second);
 		break;
-	
+
 	case VICTORYTYPE_COMBATWINS:
 		for (map<CString, int>::const_iterator it = m_mCombatWins.begin(); it != m_mCombatWins.end(); ++it)
 			vValues.push_back(it->second);
 		break;
-	
+
 	case VICTORYTYPE_SABOTAGE:
 		for (map<CString, int>::const_iterator it = m_mSabotage.begin(); it != m_mSabotage.end(); ++it)
 			vValues.push_back(it->second);
@@ -237,7 +237,7 @@ int CVictoryObserver::GetBestVictoryValue(VICTORYTYPE nType) const
 	std::sort(vValues.begin(), vValues.end());
 	if (vValues.size())
 		return vValues.back();
-	
+
 	return 0;
 }
 
@@ -249,21 +249,21 @@ int CVictoryObserver::GetNeededVictoryValue(VICTORYTYPE nType) const
 	// aktuelle Runde
 	int nCurrentRound = pDoc->GetCurrentRound();
 	int nValue = 0;
-	
+
 	// Vektor mit allen Werten aus einem Bereich füllen
 	switch (nType)
 	{
 	case VICTORYTYPE_ELIMINATION:
 		// alle anderen müssen ausgelöscht sein
 		return 0;
-	
+
 	case VICTORYTYPE_DIPLOMACY:
 		// über 50% der Rassen auf Mitgliedschaft bzw. Bündnis (mindestens 10)
 		nValue = pDoc->GetRaceCtrl()->GetRaces()->size();
 		// eigene Rasse nicht mitzählen
 		nValue--;
 		return max(nValue >> 1, 10);
-	
+
 	case VICTORYTYPE_CONQUEST:
 		// über 50% aller bewohnten Systeme sind erobert (mindestens 10)
 		nValue = 0;
@@ -272,19 +272,19 @@ int CVictoryObserver::GetNeededVictoryValue(VICTORYTYPE nType) const
 				if (pDoc->GetSector(x,y).GetCurrentHabitants() > 0.0 && pDoc->GetSector(x,y).GetOwnerOfSector() != "")
 					nValue++;
 		return max(nValue >> 1, 10);
-	
+
 	case VICTORYTYPE_RESEARCH:
 		// Spezialforschung 10 wurde erforscht
 		return 10;
-	
+
 	case VICTORYTYPE_COMBATWINS:
 		// aktuelle Runde / 2.25 Schiffskampfsiege (mindestens 125)
 		return max(nCurrentRound / 2.25, 125);
-	
+
 	case VICTORYTYPE_SABOTAGE:
 		// aktuelle Runde * 1.6 erfolgreiche Sabotageaktionen (mindestens 250)
 		return max(nCurrentRound * 1.6, 250);
-	
+
 	default: return INT_MAX;
 	}
 }
@@ -325,7 +325,7 @@ void CVictoryObserver::Observe(void)
 		m_mDiplomacy.clear();
 		map<CString, CRace*>* pmRaces	= pDoc->GetRaceCtrl()->GetRaces();
 		map<CString, CMajor*>* pmMajors	= pDoc->GetRaceCtrl()->GetMajors();
-				
+
 		// Anzahl an Bündnissen und Mitgliedschaften zu allen anderen Rassen holen
 		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 		{
@@ -340,7 +340,7 @@ void CVictoryObserver::Observe(void)
 			if (nHighAgreements > 0)
 				m_mDiplomacy[it->first] = nHighAgreements;
 		}
-		
+
 		// prüfen ob Siegbedingung erreicht wurde
 		int nNeededValue = GetNeededVictoryValue(VICTORYTYPE_DIPLOMACY);
 		for (map<CString, int>::const_iterator it = m_mDiplomacy.begin(); it != m_mDiplomacy.end(); ++it)
@@ -350,7 +350,7 @@ void CVictoryObserver::Observe(void)
 				m_sVictoryRace	= it->first;
 				m_nVictoryType	= VICTORYTYPE_DIPLOMACY;
 				return;
-			}		
+			}
 	}
 
 	//////////////////////////////////////////////////////////////////////
@@ -393,7 +393,7 @@ void CVictoryObserver::Observe(void)
 	if (m_bConditionStatus[VICTORYTYPE_RESEARCH])
 	{
 		m_mResearch.clear();
-		map<CString, CMajor*>* pmMajors	= pDoc->GetRaceCtrl()->GetMajors();		
+		map<CString, CMajor*>* pmMajors	= pDoc->GetRaceCtrl()->GetMajors();
 		// Anzahl erforschter Spezialforschungen holen
 		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 		{
@@ -401,7 +401,7 @@ void CVictoryObserver::Observe(void)
 			int nValue = pMajor->GetEmpire()->GetResearch()->GetNumberOfUniqueResearch() - 1;
 			m_mResearch[it->first] = nValue;
 		}
-		
+
 		// prüfen ob Siegbedingung erreicht wurde
 		int nNeededValue = GetNeededVictoryValue(VICTORYTYPE_RESEARCH);
 		for (map<CString, int>::const_iterator it = m_mResearch.begin(); it != m_mResearch.end(); ++it)
@@ -437,7 +437,7 @@ void CVictoryObserver::Observe(void)
 	if (m_bConditionStatus[VICTORYTYPE_SABOTAGE])
 	{
 		m_mSabotage.clear();
-		map<CString, CMajor*>* pmMajors	= pDoc->GetRaceCtrl()->GetMajors();		
+		map<CString, CMajor*>* pmMajors	= pDoc->GetRaceCtrl()->GetMajors();
 		// Anzahl aller Sabotagereports holen
 		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 		{
@@ -465,7 +465,7 @@ void CVictoryObserver::Observe(void)
 void CVictoryObserver::Reset(void)
 {
 	memset(m_bConditionStatus, true, sizeof(m_bConditionStatus));
-		
+
 	m_mDiplomacy.clear();
 	m_mSlavery.clear();
 	m_mResearch.clear();
@@ -475,5 +475,5 @@ void CVictoryObserver::Reset(void)
 
 	m_bIsVictory = false;
 	m_nVictoryType = VICTORYTYPE_ELIMINATION;
-	m_sVictoryRace = "";	
+	m_sVictoryRace = "";
 }

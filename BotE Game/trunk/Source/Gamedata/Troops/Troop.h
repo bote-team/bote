@@ -21,7 +21,7 @@ public:
 
 	/// Kopierkonstruktor
 	CTroop(const CTroop & rhs);
-	
+
 	/// Zuweisungsoperator
 	CTroop & operator=(const CTroop &);
 
@@ -44,7 +44,7 @@ public:
 	 * Diese Funktion gibt die Angriffsstärke der Truppe zurück.
 	 */
 	BYTE GetOffense() const {return m_byOffense;}
-	
+
 	/**
 	 * Diese Funktion gibt die Verteidigungsstärke der Truppe zurück.
 	 */
@@ -94,7 +94,7 @@ public:
 protected:
 	/// Mittels der ID kann man die entsprechenden Informationen aus der zugehörigen Infoklasse abfragen
 	BYTE m_byID;
-	
+
 	/// Welcher Rasse gehört die Truppe
 	CString m_sOwner;
 

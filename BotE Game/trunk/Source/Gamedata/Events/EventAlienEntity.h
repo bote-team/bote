@@ -31,5 +31,5 @@ public:
 
 private:
 	// Attribute
-	CString	m_sAlienEntityID;	///< ID der Alien-Entity	
+	CString	m_sAlienEntityID;	///< ID der Alien-Entity
 };

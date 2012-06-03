@@ -76,7 +76,7 @@ CAssemblyList & CAssemblyList::operator=(const CAssemblyList & rhs)
 ///////////////////////////////////////////////////////////////////////
 // Speichern / Laden
 ///////////////////////////////////////////////////////////////////////
-void CAssemblyList::Serialize(CArchive &ar)		
+void CAssemblyList::Serialize(CArchive &ar)
 {
 	CObject::Serialize(ar);
 	// wenn gespeichert wird
@@ -87,25 +87,25 @@ void CAssemblyList::Serialize(CArchive &ar)
 			ar << m_iEntry[i];
 			// Variablen geben die noch verbleibenden Kosten der Elemente in der Bauliste an
 			ar << m_iNeededIndustryInAssemblyList[i];
-			ar << m_iNeededTitanInAssemblyList[i];	
+			ar << m_iNeededTitanInAssemblyList[i];
 			ar << m_iNeededDeuteriumInAssemblyList[i];
-			ar << m_iNeededDuraniumInAssemblyList[i];	
-			ar << m_iNeededCrystalInAssemblyList[i];	
-			ar << m_iNeededIridiumInAssemblyList[i];	
+			ar << m_iNeededDuraniumInAssemblyList[i];
+			ar << m_iNeededCrystalInAssemblyList[i];
+			ar << m_iNeededIridiumInAssemblyList[i];
 			ar << m_iNeededDeritiumInAssemblyList[i];
 		}
 		// Variablen, die Angeben, wieviel Industrie und Rohstoffe zum Bau benötigt werden
-		ar << m_iNeededIndustryForBuild;			
-		ar << m_iNeededTitanForBuild;				
-		ar << m_iNeededDeuteriumForBuild;			
-		ar << m_iNeededDuraniumForBuild;			
-		ar << m_iNeededCrystalForBuild;				
-		ar << m_iNeededIridiumForBuild;				
-		ar << m_iNeededDeritiumForBuild;			
+		ar << m_iNeededIndustryForBuild;
+		ar << m_iNeededTitanForBuild;
+		ar << m_iNeededDeuteriumForBuild;
+		ar << m_iNeededDuraniumForBuild;
+		ar << m_iNeededCrystalForBuild;
+		ar << m_iNeededIridiumForBuild;
+		ar << m_iNeededDeritiumForBuild;
 		// Wurde das Gebäude gekauft in dieser Runde gekauft
-		ar << m_bWasBuildingBought;			
+		ar << m_bWasBuildingBought;
 		// Die Baukosten eines Auftrages
-		ar << m_iBuildCosts;	
+		ar << m_iBuildCosts;
 	}
 	// wenn geladen wird
 	if (ar.IsLoading())
@@ -115,25 +115,25 @@ void CAssemblyList::Serialize(CArchive &ar)
 			ar >> m_iEntry[i];
 			// Variablen geben die noch verbleibenden Kosten der Elemente in der Bauliste an
 			ar >> m_iNeededIndustryInAssemblyList[i];
-			ar >> m_iNeededTitanInAssemblyList[i];	
+			ar >> m_iNeededTitanInAssemblyList[i];
 			ar >> m_iNeededDeuteriumInAssemblyList[i];
-			ar >> m_iNeededDuraniumInAssemblyList[i];	
-			ar >> m_iNeededCrystalInAssemblyList[i];	
-			ar >> m_iNeededIridiumInAssemblyList[i];	
+			ar >> m_iNeededDuraniumInAssemblyList[i];
+			ar >> m_iNeededCrystalInAssemblyList[i];
+			ar >> m_iNeededIridiumInAssemblyList[i];
 			ar >> m_iNeededDeritiumInAssemblyList[i];
 		}
 		// Variablen, die Angeben, wieviel Industrie und Rohstoffe zum Bau benötigt werden
-		ar >> m_iNeededIndustryForBuild;			
-		ar >> m_iNeededTitanForBuild;				
-		ar >> m_iNeededDeuteriumForBuild;			
-		ar >> m_iNeededDuraniumForBuild;			
-		ar >> m_iNeededCrystalForBuild;				
-		ar >> m_iNeededIridiumForBuild;				
-		ar >> m_iNeededDeritiumForBuild;			
+		ar >> m_iNeededIndustryForBuild;
+		ar >> m_iNeededTitanForBuild;
+		ar >> m_iNeededDeuteriumForBuild;
+		ar >> m_iNeededDuraniumForBuild;
+		ar >> m_iNeededCrystalForBuild;
+		ar >> m_iNeededIridiumForBuild;
+		ar >> m_iNeededDeritiumForBuild;
 		// Wurde das Gebäude gekauft in dieser Runde gekauft
-		ar >> m_bWasBuildingBought;			
+		ar >> m_bWasBuildingBought;
 		// Die Baukosten eines Auftrages
-		ar >> m_iBuildCosts;	
+		ar >> m_iBuildCosts;
 	}
 }
 
@@ -167,7 +167,7 @@ UINT CAssemblyList::GetNeededResourceForBuild(BYTE res) const
 	case IRIDIUM:		return this->GetNeededIridiumForBuild();
 	case DERITIUM:		return this->GetNeededDeritiumForBuild();
 	default:			return NULL;
-	}	
+	}
 }
 
 // Funktion berechnet die benötigten Rohstoffe. Übergeben wird die Information des gewünschten Gebäudes bzw. des
@@ -319,7 +319,7 @@ void CAssemblyList::CalculateNeededRessourcesForUpdate(BuildingInfoArray* follow
 					m_iNeededIridiumForBuild	+= (int)(follower->GetAt(m_iEntry[j]*(-1)-1).GetNeededIridium()*0.8);
 					m_iNeededIndustryForBuild	+= (int)(follower->GetAt(m_iEntry[j]*(-1)-1).GetNeededIndustry()*0.6);
 					// Total Cost == (Cost of Level X+1 Building) - ((Cost of Level X Building) * Recycle factor)
-					
+
 				}
 			// hier noch den eventuellen Bonus durch die Uniqueforschung "Wirtschaft"
 			if (ResearchInfo->GetResearchComplex(RESEARCH_COMPLEX::ECONOMY)->GetFieldStatus(2) == RESEARCH_STATUS::RESEARCHED)	// 5 -> Wirtschaft
@@ -372,7 +372,7 @@ void CAssemblyList::RemoveResourceFromStorage(BYTE res, const CPoint &ko, std::v
 		return;
 
 	CSystem *system = &systems[ko.x][ko.y];
-	
+
 	// für Deritium gibt es keine Ressourcenroute
 	if (res != DERITIUM)
 	{
@@ -389,11 +389,11 @@ void CAssemblyList::RemoveResourceFromStorage(BYTE res, const CPoint &ko, std::v
 			struct ROUTELIST {
 				CResourceRoute *route;
 				CPoint fromSystem;
-				
+
 				ROUTELIST() : route(0), fromSystem(0) {}
 				ROUTELIST(CResourceRoute *_route, CPoint _fromSystem) : route(_route), fromSystem(_fromSystem) {}
-			};			
-			CArray<ROUTELIST> routes;			
+			};
+			CArray<ROUTELIST> routes;
 			for (int j = 0; j < routesFrom->GetSize(); j++)
 			{
 				CPoint p = routesFrom->GetAt(j);
@@ -449,7 +449,7 @@ void CAssemblyList::RemoveResourceFromStorage(BYTE res, const CPoint &ko, std::v
 				}
 				// ROUTELIST Eintrag entfernen, wenn dieser abgearbeitet wurde
 				routes.RemoveAt(random);
-				
+
 				// werden keine Ressourcen mehr benötigt, so kann abgebrochen werden
 				if (remainingRes == 0)
 				{
@@ -478,17 +478,17 @@ BOOLEAN CAssemblyList::MakeEntry(int runningNumber, const CPoint &ko, std::vecto
 		for (int i = 0; i < ALE; i++)
 		{
 			if (m_iEntry[i] == 0)
-			{	
+			{
 				entry = i;
 				break;
 			}
 		}
-			
+
 		// prüfen ob Bauliste schon voll!
 		if (entry == -1)
 			return FALSE;
 	}
-	
+
 	CSystem* system = &systems[ko.x][ko.y];
 	// Ressourcenrouten durchgehen und womöglich die möglichen max. zusätzlichen Ressourcen erfragen
 	CArray<CPoint> routesFrom;
@@ -500,8 +500,8 @@ BOOLEAN CAssemblyList::MakeEntry(int runningNumber, const CPoint &ko, std::vecto
 	{
 		resourcesFromRoutes[i] = 0;
 		nResInDistSys[i] = 0;
-		ptResourceDistributorKOs[i] = CPoint(-1,-1);		
-	}	
+		ptResourceDistributorKOs[i] = CPoint(-1,-1);
+	}
 
 	for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
 	{
@@ -533,7 +533,7 @@ BOOLEAN CAssemblyList::MakeEntry(int runningNumber, const CPoint &ko, std::vecto
 						}
 					}
 				}
-			}			
+			}
 		}
 	}
 	// Überprüfen, ob wir genügend Rohstoffe in dem Lager haben
@@ -545,7 +545,7 @@ BOOLEAN CAssemblyList::MakeEntry(int runningNumber, const CPoint &ko, std::vecto
 	}
 	if (bOnlyTest)
 		return TRUE;
-	
+
 	// Ansonsten gibt es genügend Rohstoffe
 	m_iEntry[entry] = runningNumber;
 	// Was wir für das notwendige Projekt alles so brauchen speichern
@@ -575,7 +575,7 @@ BOOLEAN CAssemblyList::MakeEntry(int runningNumber, const CPoint &ko, std::vecto
 					RemoveResourceFromStorage(res, ptResourceDistributorKOs[res], systems, &vNullRoutes);
 				}
 			}
-		}		
+		}
 	}
 
 	// Eintrag konnte gesetzt werden
@@ -593,8 +593,8 @@ void CAssemblyList::CalculateBuildCosts(USHORT resPrices[5])
 		// 1000 Einheiten gelten wird hier durch 1000 geteilt. Die Preise vom Markt sind die,
 		// welche wir am Anfang der Runde an unserer Börse hatten. Damit ist es nicht möglich die
 		// Preise in der selben Runde wo wir kaufen wollen noch zu drücken.
-		
-		//  EDIT: 
+
+		//  EDIT:
 		//		Ich teile mittlerweile die Ressourcenpreise durch 2000, da der Kauf immer etwas teuer war.
 		//		Dies hat aber rein balancingtechnische Gründe.
 		// /EDIT
@@ -607,15 +607,15 @@ void CAssemblyList::CalculateBuildCosts(USHORT resPrices[5])
 	}
 }
 
-// Funktion setzt die noch restlichen Baukosten auf 1 und sagt, dass wir jetzt was gekauft haben 
+// Funktion setzt die noch restlichen Baukosten auf 1 und sagt, dass wir jetzt was gekauft haben
 // Wenn wir kaufen können bestimmt die Fkt "CalculateBuildCosts()". Diese Fkt. immer vorher aufrufen.
 // Die Creditskosten werden zurückgegeben
 int CAssemblyList::BuyBuilding(int EmpiresCredits)
 {
-	// EmpiresCredits ist das aktuelle Credits des Imperiums    
+	// EmpiresCredits ist das aktuelle Credits des Imperiums
 	if (m_iNeededIndustryInAssemblyList[0] > 1)
 		if (m_iBuildCosts <= EmpiresCredits)
-		{	
+		{
 			m_iNeededIndustryInAssemblyList[0] = 1;
 			m_bWasBuildingBought = TRUE;
 			return m_iBuildCosts;	// Gibt die Kosten zurück, wenn diese kleiner/gleich dem Creditsbestand sind
@@ -654,7 +654,7 @@ BOOLEAN CAssemblyList::CalculateBuildInAssemblyList(USHORT m_iIndustryProd)
 		return TRUE;
 		// Wenn wir TRUE zurückbekommen müssen wir direkt danach die
 		// Funktion ClearAssemblyList() aufrufen!
-	}	
+	}
 	return FALSE;
 }
 
@@ -664,8 +664,8 @@ BOOLEAN CAssemblyList::CalculateBuildInAssemblyList(USHORT m_iIndustryProd)
 void CAssemblyList::ClearAssemblyList(const CPoint &ko, std::vector<std::vector<CSystem>>& systems/*[][STARMAP_SECTORS_VCOUNT]*/)
 {
 	// Alle prozentualen Anteile eines womöglich früheren Bauauftrages aus den Ressourcenrouten löschen
-	CSystem* system = &systems[ko.x][ko.y];	
-	
+	CSystem* system = &systems[ko.x][ko.y];
+
 	CArray<CPoint> routesFrom;
 	ULONG resourcesFromRoutes[DERITIUM + 1];
 	ULONG nResInDistSys[DERITIUM + 1];
@@ -675,9 +675,9 @@ void CAssemblyList::ClearAssemblyList(const CPoint &ko, std::vector<std::vector<
 	{
 		resourcesFromRoutes[i] = 0;
 		nResInDistSys[i] = 0;
-		ptResourceDistributorKOs[i] = CPoint(-1,-1);		
+		ptResourceDistributorKOs[i] = CPoint(-1,-1);
 	}
-	
+
 	// Ressourcenrouten durchgehen und womöglich die möglichen max. zusätzlichen Ressourcen erfragen
 	for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
 	{
@@ -696,7 +696,7 @@ void CAssemblyList::ClearAssemblyList(const CPoint &ko, std::vector<std::vector<
 						{
 							routesFrom.Add(CPoint(x,y));
 							BYTE res = systems[x][y].GetResourceRoutes()->GetAt(i).GetResource();
-							resourcesFromRoutes[res] += systems[x][y].GetResourceStore(res);							
+							resourcesFromRoutes[res] += systems[x][y].GetResourceStore(res);
 						}
 					}
 				}
@@ -712,12 +712,12 @@ void CAssemblyList::ClearAssemblyList(const CPoint &ko, std::vector<std::vector<
 						}
 					}
 				}
-			}			
+			}
 		}
 	}
 
 	// AssemblyList Eintrag des gebauten Gebäudes/Updates/Schiffes löschen, wenn wir noch den
-	// Eintrag an der nächsten Stelle haben (sprich AssemblyList[1] != 0), dann alle 
+	// Eintrag an der nächsten Stelle haben (sprich AssemblyList[1] != 0), dann alle
 	// anderen Einträge um eins nach vorn verschieben -> letzter wird frei
 	m_iEntry[0] = 0;
 	m_iNeededIndustryInAssemblyList[0] = 0;
@@ -763,7 +763,7 @@ void CAssemblyList::ClearAssemblyList(const CPoint &ko, std::vector<std::vector<
 	// wird, wenn das Gebäude an erster Stelle in der Bauliste rückt, müssen
 	// wird das überprüfen. Haben wir nicht genug RES, wird der Bauauftrag
 	// gecancelt
-	
+
 	// Überprüfen, ob wir genügend Rohstoffe in dem Lager haben
 	for (int res = TITAN; res <= DERITIUM; res++)
 	{
@@ -776,7 +776,7 @@ void CAssemblyList::ClearAssemblyList(const CPoint &ko, std::vector<std::vector<
 		}
 	}
 
-	// Wenn er baubar ist, dann die Ressourcen entfernen	
+	// Wenn er baubar ist, dann die Ressourcen entfernen
 	for (int res = TITAN; res <= DERITIUM; res++)
 	{
 		UINT nNeededRes = this->GetNeededResourceInAssemblyList(0, res);

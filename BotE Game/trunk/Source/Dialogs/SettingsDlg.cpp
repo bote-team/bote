@@ -22,7 +22,7 @@ CSettingsDlg::CSettingsDlg(bool bDisableNonWorking/* = false*/, CWnd* pParent /*
 	, m_bAnimatedIcon(FALSE)
 	, m_bShowMiniMap(TRUE)
 	, m_bShowScrollBars(FALSE)
-	, m_bInvertMouse(FALSE)	
+	, m_bInvertMouse(FALSE)
 	, m_bHideMenu(FALSE)
 	, m_bVCElimination(FALSE)
 	, m_bVCDiplomacy(FALSE)
@@ -39,7 +39,7 @@ CSettingsDlg::~CSettingsDlg()
 
 void CSettingsDlg::DoDataExchange(CDataExchange* pDX)
 {
-	CDialog::DoDataExchange(pDX);	
+	CDialog::DoDataExchange(pDX);
 	DDX_Check(pDX, IDC_CHECK_AUTOSAVE, m_bAutoave);
 	DDX_Control(pDX, IDC_SLIDER_DIFFICULTY, m_ctrlDifficultySlider);
 	DDX_Check(pDX, IDC_CHECK_HARDWARESOUND, m_bHardwaresound);
@@ -68,7 +68,7 @@ void CSettingsDlg::DoDataExchange(CDataExchange* pDX)
 }
 
 
-BEGIN_MESSAGE_MAP(CSettingsDlg, CDialog)	
+BEGIN_MESSAGE_MAP(CSettingsDlg, CDialog)
 	ON_NOTIFY(NM_CUSTOMDRAW, IDC_SLIDER_DIFFICULTY, &CSettingsDlg::OnNMCustomdrawSliderDifficulty)
 END_MESSAGE_MAP()
 
@@ -80,7 +80,7 @@ BOOL CSettingsDlg::OnInitDialog()
 	CDialog::OnInitDialog();
 
 	// TODO:  hier zusätzliche Initialisierung hinzufügen.
-	m_ctrlDifficultySlider.SetRange(0,4);	
+	m_ctrlDifficultySlider.SetRange(0,4);
 	m_ctrlDifficultySlider.SetTicFreq(1);
 	m_ctrlMusicvolume.SetRange(0,100);
 	m_ctrlMusicvolume.SetTicFreq(1);
@@ -92,7 +92,7 @@ BOOL CSettingsDlg::OnInitDialog()
 	m_ctrlMinorDensity.SetTicFreq(1);
 	m_ctrlAnomalyDensity.SetRange(0,100);
 	m_ctrlAnomalyDensity.SetTicFreq(1);
-	
+
 	CIniLoader* pIni = CIniLoader::GetInstance();
 	ASSERT(pIni);
 
@@ -160,7 +160,7 @@ BOOL CSettingsDlg::OnInitDialog()
 	pIni->ReadValue("Special", "GENERATIONMODE", genMode);
 	m_comboGalaxyshape.SetCurSel(genMode);
 
-	
+
 
 
 	// Audio
@@ -309,7 +309,7 @@ BOOL CSettingsDlg::OnInitDialog()
 			pWnd->EnableWindow(FALSE);
 	}
 
-	UpdateData(false);	
+	UpdateData(false);
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// AUSNAHME: OCX-Eigenschaftenseite muss FALSE zurückgeben.
@@ -327,9 +327,9 @@ void CSettingsDlg::OnOK()
 	CString s;
 	// General
 	m_bAutoave == TRUE ? s = "ON" : s = "OFF";
-	pIni->WriteValue("General", "AUTOSAVE", s);	
+	pIni->WriteValue("General", "AUTOSAVE", s);
 	pIni->WriteValue("General", "DIFFICULTY", m_sDifficulty);
-	
+
 	// Audio
 	m_bHardwaresound == TRUE ? s = "ON" : s = "OFF";
 	pIni->WriteValue("Audio", "HARDWARESOUND", s);
@@ -339,7 +339,7 @@ void CSettingsDlg::OnOK()
 	pIni->WriteValue("Audio", "MUSIC", s);
 	s.Format("%.2lf", (float)m_ctrlMusicvolume.GetPos() / 100.0f);
 	pIni->WriteValue("Audio", "MUSICVOLUME", s);
-	
+
 	// Video
 	m_bShowTraderoutes == TRUE ? s = "ON" : s = "OFF";
 	pIni->WriteValue("Video", "SHOWTRADEROUTES", s);
@@ -358,7 +358,7 @@ void CSettingsDlg::OnOK()
 	m_bHideMenu == TRUE ? s = "ON" : s = "OFF";
 	pIni->WriteValue("Control", "HIDEMENUBAR", s);
 
-	// Special (Ingame)	
+	// Special (Ingame)
 	m_edtRandomSeed.GetWindowText(s);
 	pIni->WriteValue("Special", "RANDOMSEED", s);
 	s.Format("%d", m_ctrlStarDensity.GetPos());
@@ -423,7 +423,7 @@ void CSettingsDlg::OnNMCustomdrawSliderDifficulty(NMHDR *pNMHDR, LRESULT *pResul
 	LPNMCUSTOMDRAW pNMCD = reinterpret_cast<LPNMCUSTOMDRAW>(pNMHDR);
 	// TODO: Fügen Sie hier Ihren Kontrollbehandlungscode für die Benachrichtigung ein.
 	UpdateData(true);
-	
+
 	if (m_ctrlDifficultySlider.GetPos() == 0)
 		m_sDifficulty	= "BABY";
 	else if (m_ctrlDifficultySlider.GetPos() == 1)

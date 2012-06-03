@@ -75,10 +75,10 @@ CResearchInfo & CResearchInfo::operator=(const CResearchInfo & rhs)
 ///////////////////////////////////////////////////////////////////////
 // Speichern / Laden
 ///////////////////////////////////////////////////////////////////////
-void CResearchInfo::Serialize(CArchive &ar)		
+void CResearchInfo::Serialize(CArchive &ar)
 {
 	CObject::Serialize(ar);
-	// Namen und Techbeschreibungen werden beim Laden neu eingelesen. Dies wird in der Research-Klasse gemacht.	
+	// Namen und Techbeschreibungen werden beim Laden neu eingelesen. Dies wird in der Research-Klasse gemacht.
 	for (int i = 0; i < NoUC; i++)
 		m_ResearchComplex[i].Serialize(ar);
 	// wenn gespeichert wird
@@ -117,12 +117,12 @@ void CResearchInfo::ChooseUniqueResearch(void)
 
 	// zufällig eine Spezialforschung aus den noch zur Verfügung stehenden auswählen
 	RESEARCH_COMPLEX::Typ nComplex = (RESEARCH_COMPLEX::Typ)(rand()%vResearchableComplexes.size());
-	
+
 	// Status ändern
 	m_ResearchComplex[nComplex].m_nComplexStatus = RESEARCH_STATUS::RESEARCHING;
 	m_nCurrentComplex = nComplex;
 	m_bChoiceTaken = false;
-			
+
 	// Wenn wir einen Komplex ausgewählt haben, diesen erst generieren
 	m_ResearchComplex[nComplex].GenerateComplex(nComplex);
 }
@@ -155,9 +155,9 @@ void CResearchInfo::ChangeStatusOfComplex(RESEARCH_STATUS::Typ nNewStatus)
 				break;
 			}
 		}
-		
+
 		// kein Komplex mehr ausgewählt
-		m_nCurrentComplex = RESEARCH_COMPLEX::NONE; 
+		m_nCurrentComplex = RESEARCH_COMPLEX::NONE;
 	}
 }
 
@@ -189,7 +189,7 @@ void CResearchInfo::SetTechInfos(BYTE tech, BYTE level)
 {
 	m_strTechName[tech] = "Future Tech";
 	m_strTechDescription[tech] = "-";
-	
+
 	CResearchInfo::GetTechInfos(tech, level, m_strTechName[tech], m_strTechDescription[tech]);
 }
 
@@ -202,7 +202,7 @@ void CResearchInfo::GetTechInfos(BYTE tech, BYTE level, CString& sTechName, CStr
 	int i = 0;
 	int j = level * 12 + tech * 2;
 	CString csInput;											// auf csInput wird die jeweilige Zeile gespeichert
-	CString fileName = CIOData::GetInstance()->GetAppPath() + "Data\\Names\\Techs.data";		// Name des zu öffnenden Files 
+	CString fileName = CIOData::GetInstance()->GetAppPath() + "Data\\Names\\Techs.data";		// Name des zu öffnenden Files
 	CStdioFile file;											// Varibale vom Typ CStdioFile
 	if (file.Open(fileName, CFile::shareDenyNone | CFile::modeRead | CFile::typeText))	// Datei wird geöffnet
 	{
@@ -219,7 +219,7 @@ void CResearchInfo::GetTechInfos(BYTE tech, BYTE level, CString& sTechName, CStr
 		}
 	}
 	else
-	{	
+	{
 		MYTRACE(MT::LEVEL_ERROR, "Could not open file \"Techs.data\"...\n");
 		AfxMessageBox("ERROR! Could not open file \"Techs.data\"...\n(Maybe check your installation directory...)");
 	}

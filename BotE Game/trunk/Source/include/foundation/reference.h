@@ -130,7 +130,7 @@ public:
 	inline void Attach(T *pObject)
 	{
 		if (m_pObject) m_pObject->Release();
-		m_pObject = pObject; 
+		m_pObject = pObject;
 	}
 
 	/**

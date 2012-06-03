@@ -40,7 +40,7 @@ typedef enum SNDMGR_VALUE
 	SNDMGR_SOUND_ERROR,							///< Fehlerpiepsen
 
 	SNDMGR_MSG_BATTLELOST,
-	
+
 	SNDMGR_MSG_ALIENCONTACT,					///< Alienkontakt wurde hergestellt (Minorrace getroffen)
 	SNDMGR_MSG_CLAIMSYSTEM,						///< neue Kolonie / neues System
 	SNDMGR_MSG_COLONIZING,						///< Kolonisierung gestartet
@@ -55,7 +55,7 @@ typedef enum SNDMGR_VALUE
 	SNDMGR_MSG_STARBASE_READY,					///< Bau einer Sternbasis abgeschlossen
 	SNDMGR_MSG_TERRAFORM_COMPLETE,				///< Terraforming ist fertig
 	SNDMGR_MSG_TERRAFORM_SELECT,				///< Planet zum Terraformen auswählen
-	
+
 	// TODO ergänzen
 
 }

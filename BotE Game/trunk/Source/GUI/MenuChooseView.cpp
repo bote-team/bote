@@ -37,7 +37,7 @@ END_MESSAGE_MAP()
 
 CMenuChooseView::CMenuChooseView()
 {
-	m_RoundEnd = NULL;	
+	m_RoundEnd = NULL;
 }
 
 CMenuChooseView::~CMenuChooseView()
@@ -53,7 +53,7 @@ CMenuChooseView::~CMenuChooseView()
 }
 
 /////////////////////////////////////////////////////////////////////////////
-// Zeichnung CMenuChooseView 
+// Zeichnung CMenuChooseView
 
 void CMenuChooseView::OnDraw(CDC* pDC)
 {
@@ -63,7 +63,7 @@ void CMenuChooseView::OnDraw(CDC* pDC)
 
 	if (!pDoc->m_bDataReceived)
 		return;
-	
+
 	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
 	if (!pMajor)
@@ -75,7 +75,7 @@ void CMenuChooseView::OnDraw(CDC* pDC)
 	{
 		pDoc->m_bRoundEndPressed = true;
 		CSoundManager::GetInstance()->StopMessages(TRUE);
-		client.EndOfRound(pDoc);		
+		client.EndOfRound(pDoc);
 	}
 	*/
 
@@ -120,7 +120,7 @@ void CMenuChooseView::OnDraw(CDC* pDC)
 	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + prefix + "menuV2.bop");
 	if (graphic)
 		g->DrawImage(graphic, 0, 0, 200, 750);
-	
+
 	// Buttons zeichnen
 	// Den Rundenendebutton
 	if (pDoc->m_bRoundEndPressed)
@@ -147,11 +147,11 @@ void CMenuChooseView::OnDraw(CDC* pDC)
 	// Hier testweise paar Informationen zum Imperium
 	CString s;
 	fontBrush.SetColor(markColor);
-	
+
 	// Die aktuelle Runde darstellen, schauen ob schon gedrückt oder nicht
 	s.Format("%s %i",CResourceManager::GetString("ROUND"), pDoc->GetCurrentRound());
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(r.left+20, 50, m_TotalSize.cx-40, 30), &fontFormat, &fontBrush);
-	
+
 	CFontLoader::CreateGDIFont(pMajor, 2, fontName, fontSize);
 	CFontLoader::GetGDIFontColor(pMajor, 3, color);
 	fontFormat.SetAlignment(StringAlignmentNear);
@@ -162,16 +162,16 @@ void CMenuChooseView::OnDraw(CDC* pDC)
 	s.Format("%i",pMajor->GetEmpire()->GetCredits());
 	fontFormat.SetAlignment(StringAlignmentFar);
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(r.left+30, 90, m_TotalSize.cx-60, 25), &fontFormat, &fontBrush);
-	
+
 	s.Format("%s:",CResourceManager::GetString("CHANGE"));
 	fontFormat.SetAlignment(StringAlignmentNear);
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(r.left+30, 115, m_TotalSize.cx-60, 25), &fontFormat, &fontBrush);
 	fontFormat.SetAlignment(StringAlignmentFar);
 	if (pMajor->GetEmpire()->GetCreditsChange() >= 0)
-	{	
+	{
 		fontBrush.SetColor(Color(0,200,0));
 		s.Format("+%i", pMajor->GetEmpire()->GetCreditsChange());
-		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(r.left+30, 115, m_TotalSize.cx-60, 25), &fontFormat, &fontBrush);		
+		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(r.left+30, 115, m_TotalSize.cx-60, 25), &fontFormat, &fontBrush);
 	}
 	else
 	{
@@ -205,26 +205,26 @@ void CMenuChooseView::OnDraw(CDC* pDC)
 	fontFormat.SetAlignment(StringAlignmentNear);
 	s.Format("%s: %d",CResourceManager::GetString("NEWS"), pMajor->GetEmpire()->GetMessages()->GetSize());
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(r.left+30, 240, m_TotalSize.cx-60, 25), &fontFormat, &fontBrush);
-	
+
 	// Sternzeit anzeigen
 	fontBrush.SetColor(color);
 	fontFormat.SetAlignment(StringAlignmentCenter);
 	s.Format("%s: %.1lf",CResourceManager::GetString("STARDATE"), pDoc->m_fStardate);
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(r.left+20, r.bottom-65, m_TotalSize.cx-40, 25), &fontFormat, &fontBrush);
-	//********************************************************************************	
+	//********************************************************************************
 
 	doubleBuffer.DrawImage(&bmp, client.left, client.top, client.right, client.bottom);
 	delete g;
 }
 
-void CMenuChooseView::OnInitialUpdate() 
+void CMenuChooseView::OnInitialUpdate()
 {
 	CView::OnInitialUpdate();
 	// TODO: Speziellen Code hier einfügen und/oder Basisklasse aufrufen
 	m_TotalSize.cx = 200;
-	m_TotalSize.cy = 750;	
+	m_TotalSize.cy = 750;
 
-	m_LastSystem = CPoint(-1,-1);	
+	m_LastSystem = CPoint(-1,-1);
 
 	bool bHideMenu;
 	CIniLoader::GetInstance()->ReadValue("Control", "HIDEMENUBAR", bHideMenu);
@@ -244,7 +244,7 @@ void  CMenuChooseView::LoadRaceGraphics()
 
 	// alle Buttons in der View anlegen (erstmal 7) und Grafiken laden
 	CString sPrefix = pMajor->GetPrefix();
-	
+
 	CString fileN = "Other\\" + sPrefix + "button.bop";
 	CString fileI = "Other\\" + sPrefix + "buttoni.bop";
 	CString fileA = "Other\\" + sPrefix + "buttona.bop";
@@ -262,7 +262,7 @@ void  CMenuChooseView::LoadRaceGraphics()
 	m_RoundEnd = new CMyButton(CPoint(20,5), CSize(160,40), CResourceManager::GetString("BTN_ROUNDEND"), fileN, fileI, fileA);
 }
 
-BOOL CMenuChooseView::OnEraseBkgnd(CDC* pDC) 
+BOOL CMenuChooseView::OnEraseBkgnd(CDC* pDC)
 {
 	// TODO: Code für die Behandlungsroutine für Nachrichten hier einfügen und/oder Standard aufrufen
 	return TRUE;
@@ -284,14 +284,14 @@ void CMenuChooseView::Dump(CDumpContext& dc) const
 #endif //_DEBUG
 
 /////////////////////////////////////////////////////////////////////////////
-// Behandlungsroutinen für Nachrichten CMenuChooseView 
+// Behandlungsroutinen für Nachrichten CMenuChooseView
 
-void CMenuChooseView::OnLButtonDown(UINT nFlags, CPoint point) 
+void CMenuChooseView::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	CView::OnLButtonDown(nFlags, point);
 }
 
-void CMenuChooseView::OnLButtonUp(UINT nFlags, CPoint point) 
+void CMenuChooseView::OnLButtonUp(UINT nFlags, CPoint point)
 {
 	// TODO: Code für die Behandlungsroutine für Nachrichten hier einfügen und/oder Standard aufrufen
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
@@ -299,15 +299,15 @@ void CMenuChooseView::OnLButtonUp(UINT nFlags, CPoint point)
 
 	if (!pDoc->m_bDataReceived)
 		return;
-	
+
 	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
 	if (!pMajor)
 		return;
-		
+
 	CalcLogicalPoint(point);
 	CGalaxyMenuView::SetMoveShip(FALSE);
-	
+
 	if (m_RoundEnd->ClickedOnButton(point) && !pDoc->m_bRoundEndPressed)
 	{
 		pDoc->m_bRoundEndPressed = true;
@@ -315,7 +315,7 @@ void CMenuChooseView::OnLButtonUp(UINT nFlags, CPoint point)
 		CalcDeviceRect(r);
 		InvalidateRect(r, FALSE);
 		CSoundManager::GetInstance()->StopMessages(TRUE);
-		client.EndOfRound(pDoc);		
+		client.EndOfRound(pDoc);
 	}
 	short button = -1;
 	for (int i = 0; i < m_Buttons.GetSize(); i++)
@@ -362,7 +362,7 @@ void CMenuChooseView::OnLButtonUp(UINT nFlags, CPoint point)
 		}
 		if (pDoc->m_System[pDoc->GetKO().x][pDoc->GetKO().y].GetOwnerOfSystem() == pMajor->GetRaceID() &&
 			pDoc->m_Sector[pDoc->GetKO().x][pDoc->GetKO().y].GetSunSystem() == TRUE)
-		{			
+		{
 			pDoc->GetMainFrame()->SelectMainView(SYSTEM_VIEW, pMajor->GetRaceID());
 			pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CPlanetBottomView));
 			m_LastSystem = pDoc->GetKO();
@@ -379,7 +379,7 @@ void CMenuChooseView::OnLButtonUp(UINT nFlags, CPoint point)
 		pDoc->GetMainFrame()->SelectMainView(DIPLOMACY_VIEW, pMajor->GetRaceID());
 	// Handelsbutton
 	else if (button == 5)
-		pDoc->GetMainFrame()->SelectMainView(TRADE_VIEW, pMajor->GetRaceID());		
+		pDoc->GetMainFrame()->SelectMainView(TRADE_VIEW, pMajor->GetRaceID());
 	// Imperiumsbutton
 	else if (button == 6)
 		pDoc->GetMainFrame()->SelectMainView(EMPIRE_VIEW, pMajor->GetRaceID());
@@ -397,7 +397,7 @@ void CMenuChooseView::OnMouseMove(UINT nFlags, CPoint point)
 
 	bool bHideMenu;
 	CIniLoader::GetInstance()->ReadValue("Control", "HIDEMENUBAR", bHideMenu);
-	
+
 	if (bHideMenu && point.y > 5)
 	{
 		if (GetTopLevelFrame()->SetMenuBarState(AFX_MBS_HIDDEN))
@@ -463,9 +463,9 @@ void CMenuChooseView::CalcLogicalPoint(CPoint &point)
 {
 	CRect client;
 	GetClientRect(&client);
-	
+
 	point.x *= (float)m_TotalSize.cx / (float)client.Width();
-	point.y *= (float)m_TotalSize.cy / (float)client.Height();	
+	point.y *= (float)m_TotalSize.cy / (float)client.Height();
 }
 
 void CMenuChooseView::CalcDeviceRect(CRect &rect)
@@ -476,7 +476,7 @@ void CMenuChooseView::CalcDeviceRect(CRect &rect)
 	CPoint p1 = rect.TopLeft();
 	p1.x *= (float)client.Width() / (float)m_TotalSize.cx;
 	p1.y *= (float)client.Height() / (float)m_TotalSize.cy;
-	
+
 	CPoint p2 = rect.BottomRight();
 	p2.x *= (float)client.Width() / (float)m_TotalSize.cx;
 	p2.y *= (float)client.Height() / (float)m_TotalSize.cy;
@@ -485,6 +485,6 @@ void CMenuChooseView::CalcDeviceRect(CRect &rect)
 
 void CMenuChooseView::OnRButtonUp(UINT nFlags, CPoint point)
 {
-	// TODO: Add your message handler code here and/or call default	
+	// TODO: Add your message handler code here and/or call default
 	CView::OnRButtonUp(nFlags, point);
 }

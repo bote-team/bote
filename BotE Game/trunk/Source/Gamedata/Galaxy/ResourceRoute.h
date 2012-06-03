@@ -25,7 +25,7 @@ public:
 
 	/// Kopierkonstruktor
 	CResourceRoute(const CResourceRoute & rhs);
-	
+
 	/// Zuweisungsoperatur
 	CResourceRoute & operator=(const CResourceRoute &);
 

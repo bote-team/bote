@@ -49,22 +49,22 @@ void CEventMenuView::OnDraw(CDC* dc)
 	CMyMemDC pDC(dc);
 	CRect client;
 	GetClientRect(&client);
-		
+
 	// Graphicsobjekt, in welches gezeichnet wird anlegen
 	Graphics g(pDC->GetSafeHdc());
-	
+
 	g.Clear(Color::Black);
 	g.SetSmoothingMode(SmoothingModeHighSpeed);
 	g.SetInterpolationMode(InterpolationModeLowQuality);
 	g.SetPixelOffsetMode(PixelOffsetModeHighSpeed);
 	g.SetCompositingQuality(CompositingQualityHighSpeed);
 	g.ScaleTransform((REAL)client.Width() / (REAL)m_TotalSize.cx, (REAL)client.Height() / (REAL)m_TotalSize.cy);
-					
+
 	if (pMajor->GetEmpire()->GetEventMessages()->GetSize())
 	{
 		CEventScreen* eventScreen = (CEventScreen*)pMajor->GetEmpire()->GetEventMessages()->GetAt(0);
 		eventScreen->Create();
-		eventScreen->Draw(&g, pDoc->GetGraphicPool());		
+		eventScreen->Draw(&g, pDoc->GetGraphicPool());
 	}
 
 	g.ReleaseHDC(pDC->GetSafeHdc());
@@ -111,7 +111,7 @@ void CEventMenuView::OnPrepareDC(CDC* pDC, CPrintInfo* pInfo)
 BOOL CEventMenuView::OnEraseBkgnd(CDC* pDC)
 {
 	// TODO: Add your message handler code here and/or call default
-	return TRUE;	
+	return TRUE;
 }
 
 void CEventMenuView::OnLButtonDown(UINT nFlags, CPoint point)
@@ -150,7 +150,7 @@ void CEventMenuView::OnMouseMove(UINT nFlags, CPoint point)
 
 	if (!pDoc->m_bDataReceived)
 		return;
-	
+
 	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
 	if (!pMajor)
@@ -160,7 +160,7 @@ void CEventMenuView::OnMouseMove(UINT nFlags, CPoint point)
 	{
 		CEventScreen* eventScreen = (CEventScreen*)pMajor->GetEmpire()->GetEventMessages()->GetAt(0);
 		CalcLogicalPoint(point);
-		ButtonReactOnMouseOver(point, eventScreen->GetButtons());		
+		ButtonReactOnMouseOver(point, eventScreen->GetButtons());
 	}
 	CMainBaseView::OnMouseMove(nFlags, point);
 }
@@ -173,7 +173,7 @@ void CEventMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 
 	if (!pDoc->m_bDataReceived)
 		return;
-	
+
 	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
 	if (!pMajor)
@@ -197,7 +197,7 @@ void CEventMenuView::CloseScreen(CEventScreen* eventScreen)
 
 	if (!pDoc->m_bDataReceived)
 		return;
-	
+
 	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
 	if (!pMajor)
@@ -206,7 +206,7 @@ void CEventMenuView::CloseScreen(CEventScreen* eventScreen)
 	eventScreen->Close();
 	delete eventScreen;
 	pMajor->GetEmpire()->GetEventMessages()->RemoveAt(0);
-	
+
 	if (pMajor->GetEmpire()->GetEventMessages()->GetSize() == 0)
 	{
 		network::RACE client = pDoc->GetRaceCtrl()->GetMappedClientID(pMajor->GetRaceID());
@@ -229,7 +229,7 @@ CString CEventMenuView::CreateTooltip(void)
 
 	if (!pDoc->m_bDataReceived)
 		return "";
-	
+
 	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
 	if (!pMajor)
@@ -242,11 +242,11 @@ CString CEventMenuView::CreateTooltip(void)
 		GetCursorPos(&pt);
 		ScreenToClient(&pt);
 		CalcLogicalPoint(pt);
-		
+
 		CEventScreen* eventScreen = (CEventScreen*)pMajor->GetEmpire()->GetEventMessages()->GetAt(0);
 		return eventScreen->GetTooltip(pt);
 	}
-	
-	
+
+
 	return "";
 }

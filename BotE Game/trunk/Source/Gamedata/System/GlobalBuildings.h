@@ -29,7 +29,7 @@ public:
 	/// @param nID Gebäude-ID
 	/// @return Anzahl der Gebäude
 	int GetCountGlobalBuilding(const CString& sRaceID, USHORT nID) const;
-	
+
 	// zum Schreiben der Membervariablen
 	/// Funktion fügt ein Gebäude für eine bestimmte Rasse den globalen Gebäuden hinzu.
 	/// @param sRaceID Rassen-ID
@@ -50,5 +50,5 @@ private:
 	// Dieses Feld beinhaltet die Gebäude, welche ein imperienweites Attribut haben und in einer Bauliste stehen, sowei
 	// alle Gebäude die in allen Systemen stehen. Kommen mehrere gleiche Gebäude vor, so ist deren ID auch mehrmals
 	// hier in dem Feld vorhanden.
-	std::map<CString, std::list<USHORT> > m_mGlobalBuildings;	
+	std::map<CString, std::list<USHORT> > m_mGlobalBuildings;
 };

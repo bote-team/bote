@@ -58,7 +58,7 @@ CMessage & CMessage::operator=(const CMessage & rhs)
 ///////////////////////////////////////////////////////////////////////
 // Speichern / Laden
 ///////////////////////////////////////////////////////////////////////
-void CMessage::Serialize(CArchive &ar)		
+void CMessage::Serialize(CArchive &ar)
 {
 	CObject::Serialize(ar);
 	// wenn gespeichert wird

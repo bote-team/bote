@@ -23,26 +23,26 @@ struct CShipHistoryStruct {
 
 	/// Der Name des Sektors, in dem das Schiff gebaut bzw. zerstört wurde.
 	CString m_strSectorName;
-	
+
 	/// Der Name des aktuellen Sektors, in dem sich das Schiff befindet
 	CString m_strCurrentSector;
 
 	/// Der aktuelle Auftrag des Schiffes, wenn es nicht mehr vorhanden ist, dann steht
 	/// hier der Status des Schiffes, z.B. zuerstört, vermisst usw.
 	CString m_strCurrentTask;
-	
+
 	/// Art der Zerstörung des Schiffes, z.B. Kampf, Abwracken, Wurmloch usw.
 	CString m_strKindOfDestroy;
 
 	//Momentanes Ziel
 	CString m_strTarget;
-	
+
 	/// Die Runde in der das Schiff gebaut wurde
 	short m_iBuildRound;
 
 	/// Die Runde, in der das Schiff zerstört wurde
 	short m_iDestroyRound;
-	
+
 	/// Die aktuelle Erfahrung des Schiffes
 	USHORT m_iExperiance;
 
@@ -82,7 +82,7 @@ public:
 
 	/// Kopierkonstruktor
 //	CShipHistory(const CShipHistory & rhs);
-	
+
 	/// Zuweisungsoperatur
 //	CShipHistory & operator=(const CShipHistory &);
 
@@ -96,7 +96,7 @@ public:
 	 * sowie die aktuelle Runde.
 	 */
 	void AddShip(CShip* ship, const CString& buildsector, short round);
-	
+
 	/**
 	 * Funktion modifiziert den Eintrag in dem Feld <code>m_ShipHistory<code>. Dabei wird das Schiff übergeben, dessen
 	 * Werte modifiziert werden sollen. Wenn ein Schiff aus irgendeinem Grund (Kampf, Kolonisierung usw.) zerstört

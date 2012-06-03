@@ -22,7 +22,7 @@ class CShipAI
 public:
 	/// Konstruktor
 	CShipAI(CBotf2Doc* pDoc);
-	
+
 	/// Destruktor
 	~CShipAI(void);
 
@@ -69,7 +69,7 @@ private:
 	/// @param pShip Zeiger des Schiffes
 	/// @param nIndex Index des aktuellen Schiffes im Array.
 	void DoMakeFleet(CShip* pShip, int nIndex);
-	
+
 	/// Funkion berechnet einen möglichen Angriffssektor, welcher später gesammelt angegriffen werden kann.
 	void CalcAttackSector(void);
 

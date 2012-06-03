@@ -33,7 +33,7 @@ public:
 	Bitmap* GetGDIGraphic(const CString &name);
 
 private:
-	// Attribute	
+	// Attribute
 	/// Map welche zu einem Grafiknamen die passende Grafik bereithält.
 	CMap<CString, LPCSTR, CBitmap*, CBitmap*> m_Graphics;
 

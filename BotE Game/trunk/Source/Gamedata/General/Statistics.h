@@ -17,19 +17,19 @@
 // forward declaration
 class CBotf2Doc;
 
-class CStatistics : public CObject  
+class CStatistics : public CObject
 {
 public:
 	DECLARE_SERIAL (CStatistics)
-	
+
 	/// Standardkonstruktor
 	CStatistics(void);
 	/// Standarddestruktor
 	virtual ~CStatistics(void);
 	/// Serialisierungsfunktion
 	virtual void Serialize(CArchive &ar);
-	
-	// Zugriffsfunktionen	
+
+	// Zugriffsfunktionen
 	// zum Lesen der Membervariablen
 
 	/// Funktion gibt das universumweite Durchschnittstechlevel zurück.
@@ -138,11 +138,11 @@ private:
 	/// @param [out] fFirst bester Wert
 	/// @param [out] fLast schlechtester Wert
 	void CalcDemoValues(const CString& sRaceID, const std::map<CString, float>* pmMap, int& nPlace, float& fValue, float& fAverage, float& fFirst, float& fLast) const;
-	
+
 	// Attribute
 	BYTE m_byAverageTechLevel;						///< Durchschnittliches Techlevel aller Rassen
-	
-	UINT m_nAverageResourceStorages[DERITIUM + 1];	///< Durschschnittlicher Inhalt der Ressourcenlager	
-	
-	std::map<CString, UINT> m_mShipPowers;			///< Schiffsstärken aller Rassen	
+
+	UINT m_nAverageResourceStorages[DERITIUM + 1];	///< Durschschnittlicher Inhalt der Ressourcenlager
+
+	std::map<CString, UINT> m_mShipPowers;			///< Schiffsstärken aller Rassen
 };

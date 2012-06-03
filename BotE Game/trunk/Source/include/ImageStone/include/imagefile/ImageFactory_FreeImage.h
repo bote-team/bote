@@ -5,7 +5,7 @@
  *   Create   :  2005-7-29
  *   Home     :  http://www.crazy-bit.com/
  *   Mail     :  crazybitwps@hotmail.com
- *   History  :  
+ *   History  :
  */
 #ifdef PCL_3RD_LIBRARY_USE_FREEIMAGE
 #ifndef __FOO_IMAGEFACTORY_FREEIMAGE__2005_07_29__H__

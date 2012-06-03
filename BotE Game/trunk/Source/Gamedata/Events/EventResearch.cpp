@@ -12,7 +12,7 @@ CEventResearch::CEventResearch(const CString &sPlayersRaceID, const CString &hea
 	CEventScreen(sPlayersRaceID, "Research", headline, ""),
 	_graphic(),
 	m_byTechlevel(0)
-{	
+{
 }
 
 CEventResearch::CEventResearch(void) :
@@ -29,10 +29,10 @@ CEventResearch::~CEventResearch(void)
 ///////////////////////////////////////////////////////////////////////
 // Speichern / Laden
 ///////////////////////////////////////////////////////////////////////
-void CEventResearch::Serialize(CArchive &ar)		
+void CEventResearch::Serialize(CArchive &ar)
 {
 	__super::Serialize(ar);
-	
+
 	// wenn gespeichert wird
 	if (ar.IsStoring())
 	{
@@ -62,7 +62,7 @@ void CEventResearch::Create(void)
 	_graphic = NULL;
 	switch (m_byTech)
 	{
-	case 0: 
+	case 0:
 		_graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Research\\biotech.bop");
 		m_byTechlevel = pMajor->GetEmpire()->GetResearch()->GetBioTech();
 		break;
@@ -74,7 +74,7 @@ void CEventResearch::Create(void)
 		_graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Research\\computertech.bop");
 		m_byTechlevel = pMajor->GetEmpire()->GetResearch()->GetCompTech();
 		break;
-	case 3: 
+	case 3:
 		_graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Research\\propulsiontech.bop");
 		m_byTechlevel = pMajor->GetEmpire()->GetResearch()->GetPropulsionTech();
 		break;
@@ -82,7 +82,7 @@ void CEventResearch::Create(void)
 		_graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Research\\constructiontech.bop");
 		m_byTechlevel = pMajor->GetEmpire()->GetResearch()->GetConstructionTech();
 		break;
-	case 5: 
+	case 5:
 		_graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Research\\weapontech.bop");
 		m_byTechlevel = pMajor->GetEmpire()->GetResearch()->GetWeaponTech();
 		break;
@@ -141,15 +141,15 @@ void CEventResearch::Create(void)
 				case 5: nTechLevel = pDoc->m_ShipInfoArray[i].GetWeaponTech();			break;
 				}
 				if (nTechLevel != -1 && nTechLevel == m_byTechlevel)
-					m_vNewShips.push_back(&pDoc->m_ShipInfoArray[i]);				
+					m_vNewShips.push_back(&pDoc->m_ShipInfoArray[i]);
 			}
 	for (int i = 0; i < pDoc->m_TroopInfo.GetSize(); i++)
 		if (pDoc->m_TroopInfo[i].GetOwner() == pMajor->GetRaceID())
 			if (pDoc->m_TroopInfo[i].IsThisTroopBuildableNow(researchLevels))
 			{
-				int nTechLevel = pDoc->m_TroopInfo[i].GetNeededTechlevel(m_byTech);				
+				int nTechLevel = pDoc->m_TroopInfo[i].GetNeededTechlevel(m_byTech);
 				if (nTechLevel != -1 && nTechLevel == m_byTechlevel)
-					m_vNewTroops.push_back(&pDoc->m_TroopInfo[i]);				
+					m_vNewTroops.push_back(&pDoc->m_TroopInfo[i]);
 			}
 
 }
@@ -201,7 +201,7 @@ void CEventResearch::Draw(Graphics* g, CGraphicPool* graphicPool) const
 
 	// Bild der Forschungstech zeichnen
 	if (_graphic)
-		g->DrawImage(_graphic, 538,104,200,167);	
+		g->DrawImage(_graphic, 538,104,200,167);
 
 	// neue baubare Sachen anzeigen
 	CFontLoader::CreateGDIFont(pMajor, 1, fontName, fontSize);
@@ -266,7 +266,7 @@ void CEventResearch::Draw(Graphics* g, CGraphicPool* graphicPool) const
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0, 595, 1280, 20), &fontFormat, &fontBrush);
 	s = CResourceManager::GetString("RESEARCHEVENT_NEWSHIPS_AND_TROOPS");
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0, 790, 1280, 20), &fontFormat, &fontBrush);
-	
+
 	// Buttons zeichnen
 	CFontLoader::CreateGDIFont(pMajor, 3, fontName, fontSize);
 	CFontLoader::GetGDIFontColor(pMajor, 2, color);
@@ -298,11 +298,11 @@ CString CEventResearch::GetTooltip(const CPoint &pt) const
 			sProd += CHTMLStringBuilder::GetHTMLStringNewLine();
 			sProd += CHTMLStringBuilder::GetHTMLStringHorzLine();
 			sProd += CHTMLStringBuilder::GetHTMLStringNewLine();
-							
+
 			CString sDesc = (*it)->GetBuildingDescription();
 			sDesc = CHTMLStringBuilder::GetHTMLColor(sDesc, _T("silver"));
 			sDesc = CHTMLStringBuilder::GetHTMLHeader(sDesc, _T("h5"));
-			
+
 			return sName + sProd + sDesc;
 		}
 		nCount++;
@@ -327,22 +327,22 @@ CString CEventResearch::GetTooltip(const CPoint &pt) const
 			sProd += CHTMLStringBuilder::GetHTMLStringNewLine();
 			sProd += CHTMLStringBuilder::GetHTMLStringHorzLine();
 			sProd += CHTMLStringBuilder::GetHTMLStringNewLine();
-							
+
 			CString sDesc = (*it)->GetBuildingDescription();
 			sDesc = CHTMLStringBuilder::GetHTMLColor(sDesc, _T("silver"));
 			sDesc = CHTMLStringBuilder::GetHTMLHeader(sDesc, _T("h5"));
-			
-			return sName + sProd + sDesc;		
+
+			return sName + sProd + sDesc;
 		}
 		nCount++;
 	}
-	
+
 	// neue Schiffe und Truppen anzeigen
 	nCount = 0;
 	for (vector<CShipInfo*>::const_iterator it = m_vNewShips.begin(); it != m_vNewShips.end(); ++it)
 	{
 		if (CRect(15 + nCount * 165, 820, 15 + nCount * 165 + 150, 970).PtInRect(pt))
-			return (*it)->GetTooltip();		
+			return (*it)->GetTooltip();
 		nCount++;
 	}
 	return "";

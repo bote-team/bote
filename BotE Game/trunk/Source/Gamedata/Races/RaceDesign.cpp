@@ -18,10 +18,10 @@ CRaceDesign::~CRaceDesign(void)
 ///////////////////////////////////////////////////////////////////////
 // Speichern / Laden
 ///////////////////////////////////////////////////////////////////////
-void CRaceDesign::Serialize(CArchive &ar)		
+void CRaceDesign::Serialize(CArchive &ar)
 {
 	CObject::Serialize(ar);
-	
+
 	// wenn gespeichert wird
 	if (ar.IsStoring())
 	{
@@ -82,8 +82,8 @@ void CRaceDesign::Reset(void)
 	m_clrLargeBtn	= 0;				// Schriftfarbe für großen Button
 	m_clrSmallText	= 0;				// Schriftfarbe für kleinen Text
 	m_clrNormalText	= 0;				// Schriftfarbe für normalen Text
-	m_clrSecondText = 0;				// Zweitfarbe für normalen Text	
-	
+	m_clrSecondText = 0;				// Zweitfarbe für normalen Text
+
 	m_clrGalaxySectorText = RGB(255,255, 255);	// Farbe der Systemnamen auf der Galaxiemap
 
 	m_clrListMarkTextColor	= RGB(220,220,220);		// Farbe für Text wenn dieser markiert ist

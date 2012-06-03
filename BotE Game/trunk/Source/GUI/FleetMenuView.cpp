@@ -62,15 +62,15 @@ void CFleetMenuView::OnDraw(CDC* dc)
 
 	if (!pDoc->m_bDataReceived)
 		return;
-	
+
 	// Doublebuffering wird initialisiert
 	CMyMemDC pDC(dc);
 	CRect client;
 	GetClientRect(&client);
-		
+
 	// Graphicsobjekt, in welches gezeichnet wird anlegen
 	Graphics g(pDC->GetSafeHdc());
-	
+
 	g.Clear(Color::Black);
 	g.SetSmoothingMode(SmoothingModeHighQuality);
 	g.SetInterpolationMode(InterpolationModeLowQuality);
@@ -117,7 +117,7 @@ void CFleetMenuView::OnInitialUpdate()
 	m_bShowBackButton = FALSE;
 
 	// View bei den Tooltipps anmelden
-	pDoc->GetMainFrame()->AddToTooltip(this);		
+	pDoc->GetMainFrame()->AddToTooltip(this);
 }
 
 /// Funktion lädt die rassenspezifischen Grafiken.
@@ -133,7 +133,7 @@ void CFleetMenuView::LoadRaceGraphics()
 
 	// alle Hintergrundgrafiken laden
 	CString sPrefix = pMajor->GetPrefix();
-			
+
 	bg_fleetmenu	= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "fleetmenu.boj");
 }
 
@@ -167,12 +167,12 @@ void CFleetMenuView::DrawFleetMenue(Graphics* g)
 
 	CString fontName = "";
 	Gdiplus::REAL fontSize = 0.0;
-	
+
 	StringFormat fontFormat;
 	fontFormat.SetAlignment(StringAlignmentCenter);
 	fontFormat.SetLineAlignment(StringAlignmentCenter);
 	fontFormat.SetFormatFlags(StringFormatFlagsNoWrap);
-	
+
 	// Rassenspezifische Schriftart auswählen
 	CFontLoader::CreateGDIFont(pMajor, 2, fontName, fontSize);
 	// Schriftfarbe wählen
@@ -184,11 +184,11 @@ void CFleetMenuView::DrawFleetMenue(Graphics* g)
 	markColor.SetFromCOLORREF(pMajor->GetDesign()->m_clrListMarkTextColor);
 	Gdiplus::Color penColor;
 	penColor.SetFromCOLORREF(pMajor->GetDesign()->m_clrListMarkPenColor);
-	
-	Gdiplus::Font font(fontName.AllocSysString(), fontSize);	
-	
+
+	Gdiplus::Font font(fontName.AllocSysString(), fontSize);
+
 	if (bg_fleetmenu)
-		g->DrawImage(bg_fleetmenu, 0, 0, 1075, 750);	
+		g->DrawImage(bg_fleetmenu, 0, 0, 1075, 750);
 
 	// Hier die Buttons einzeigen, mit denen wir alle Schiffe im Sektor, Schiffe der gleichen Klasse oder
 	// Schiffe des gleichen Types hinzufügen bzw. entfernen können
@@ -196,9 +196,9 @@ void CFleetMenuView::DrawFleetMenue(Graphics* g)
 	CString s = CResourceManager::GetString("WHAT_SHIPS_TO_FLEET");
 	fontFormat.SetFormatFlags(!StringFormatFlagsNoWrap);
 	g->DrawString(s.AllocSysString(), -1, &font, RectF(20,140,210,75), &fontFormat, &fontBrush);
-	fontFormat.SetFormatFlags(StringFormatFlagsNoWrap);		
+	fontFormat.SetFormatFlags(StringFormatFlagsNoWrap);
 	fontBrush.SetColor(normalColor);
-	
+
 	CShip* pShip = &(pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfFleetShip()));
 	bool bUnknown = (pMajor->GetRaceID() != pShip->GetOwnerOfShip() && pMajor->IsRaceContacted(pShip->GetOwnerOfShip()) == false);
 	if (bUnknown)
@@ -226,7 +226,7 @@ void CFleetMenuView::DrawFleetMenue(Graphics* g)
 	s = CResourceManager::GetString("WHAT_SHIPS_FROM_FLEET");
 	fontFormat.SetFormatFlags(!StringFormatFlagsNoWrap);
 	g->DrawString(s.AllocSysString(), -1, &font, RectF(20,400,210,75), &fontFormat, &fontBrush);
-	fontFormat.SetFormatFlags(StringFormatFlagsNoWrap);		
+	fontFormat.SetFormatFlags(StringFormatFlagsNoWrap);
 	fontBrush.SetColor(normalColor);
 
 	if (!bUnknown)
@@ -240,15 +240,15 @@ void CFleetMenuView::DrawFleetMenue(Graphics* g)
 		// alle Schiffe entfernen
 		s = CResourceManager::GetString("ALL_SHIPS");
 		g->DrawString(s.AllocSysString(), -1, &font, RectF(0,580,250,30), &fontFormat, &fontBrush);
-	}		
+	}
 
-	
+
 	USHORT counter = 0;
 	USHORT column = 1;
-	USHORT row = 0;		
+	USHORT row = 0;
 	// Erstmal das Schiff anzeigen, welches die Flotte beinhaltet (nur auf erster Seite!)
 	if (m_iFleetPage == 1)
-	{			
+	{
 		//bool bMarked = (pDoc->GetNumberOfTheShipInFleet() == 0);
 		bool bMarked = pShip == m_pMarkedShip;
 		CPoint pt(250 * column, 65 * row + 60);
@@ -285,15 +285,15 @@ void CFleetMenuView::DrawFleetMenue(Graphics* g)
 			if (counter > m_iFleetPage*18)
 				break;
 		}
-	}			
-		
+	}
+
 	// Die Buttons für vor und zurück darstellen, wenn wir mehr als 9 Schiffe in dem Sektor sehen
 	Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\" + pMajor->GetPrefix() + "button_small.bop");
 	Color btnColor;
 	CFontLoader::GetGDIFontColor(pMajor, 1, btnColor);
 	SolidBrush btnBrush(btnColor);
 	fontFormat.SetAlignment(StringAlignmentCenter);
-	
+
 	m_bShowNextButton = FALSE;
 	if (counter > 18 && counter > m_iFleetPage*18)
 	{
@@ -308,13 +308,13 @@ void CFleetMenuView::DrawFleetMenue(Graphics* g)
 	if (m_iFleetPage > 1)
 	{
 		m_bShowBackButton = TRUE;
-		
+
 		if (graphic)
 			g->DrawImage(graphic, 286, 680, 120 ,30);
 		s = CResourceManager::GetString("BTN_BACK");
 		g->DrawString(s.AllocSysString(), -1, &font, RectF(286, 680, 120, 30), &fontFormat, &btnBrush);
 	}
-	
+
 	// "Flottenzusammenstellung" in der Mitte zeichnen
 	// Rassenspezifische Schriftart auswählen
 	CFontLoader::CreateGDIFont(pMajor, 5, fontName, fontSize);
@@ -322,7 +322,7 @@ void CFleetMenuView::DrawFleetMenue(Graphics* g)
 	CFontLoader::GetGDIFontColor(pMajor, 3, normalColor);
 	fontBrush.SetColor(normalColor);
 	s = CResourceManager::GetString("FLEET_MENUE");
-	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0,10,m_TotalSize.cx,60), &fontFormat, &fontBrush);	
+	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0,10,m_TotalSize.cx,60), &fontFormat, &fontBrush);
 }
 void CFleetMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 {
@@ -343,7 +343,7 @@ void CFleetMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 	// Wenn wir in der Flottenansicht sind
 	CRect r;
 	r.SetRect(0,0,m_TotalSize.cx,m_TotalSize.cy);
-	
+
 	USHORT whichRect = 0;	// Auf welches Rechteck haben wir geklickt (gleiche Klasse oder gleichen Typ oder alle hinzufügen?)
 
 	// Überprüfen ob wir auf den next-Button geklickt haben
@@ -428,7 +428,7 @@ void CFleetMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 	}
 	// Wenn wir auf einen der Buttons geklickt haben um Schiffe zu entfernen
 	else if (whichRect > 3)
-	{			
+	{
 		if (pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfFleetShip()).GetFleet() != 0)
 			for (USHORT i = 0; i < pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfFleetShip()).GetFleet()->GetFleetSize(); i++)
 				if ((whichRect == 4 && pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfFleetShip()).GetShipClass() != pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfFleetShip()).GetFleet()->GetShipFromFleet(i)->GetShipClass())
@@ -454,7 +454,7 @@ void CFleetMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 					pDoc->SetNumberOfTheShipInFleet(0);
 				}
 				Invalidate(FALSE);
-				pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CShipBottomView));				
+				pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CShipBottomView));
 	}
 	float column = ((float)(point.x - 287) / 250);
 	if (column < 0)
@@ -487,7 +487,7 @@ void CFleetMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 				pDoc->SetNumberOfTheShipInFleet(i-1);
 			// Wenn wir gerade das erste Schiff auf der nächsten Seite entfernt haben, dann eine Seite zurück
 			if (m_iFleetPage > 1 && i == (m_iFleetPage-1)*18 && pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfFleetShip()).GetFleet()->GetFleetSize() == i-1)
-				m_iFleetPage--;	
+				m_iFleetPage--;
 			// Wenn wir alle Schiffe aus der Flotte entfernt haben
 			if (pDoc->m_ShipArray[pDoc->GetNumberOfFleetShip()].GetFleet()->GetFleetSize() == 0)
 			{
@@ -514,7 +514,7 @@ void CFleetMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 				pFleetShip->GetFleet()->AddShipToFleet(pFleetCopy->GetShipFromFleet(i));
 			pFleetShip->CheckFleet();
 			// neues Flottenschiff dem Array hinzufügen
-			pDoc->m_ShipArray.Add(*pFleetShip);			
+			pDoc->m_ShipArray.Add(*pFleetShip);
 			// Schiff nochmal neu holen, da der Vektor verändert wurde und so sich auch der Zeiger ändern kann
 			pShip = &pDoc->m_ShipArray[pDoc->GetNumberOfFleetShip()];
 			// Flotte löschen
@@ -567,11 +567,11 @@ void CFleetMenuView::OnMouseMove(UINT nFlags, CPoint point)
 				m_rLastMarkedRect = r;
 				m_pMarkedShip = m_vShipRects[i].second;
 				InvalidateRect(r, FALSE);
-			}				
+			}
 			return;
 		}
 	}
-	
+
 	CMainBaseView::OnMouseMove(nFlags, point);
 }
 
@@ -580,13 +580,13 @@ void CFleetMenuView::OnRButtonDown(UINT nFlags, CPoint point)
 	// TODO: Add your message handler code here and/or call default
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
-	
+
 	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
 	if (!pMajor)
 		return;
 
-	// Das hier alles nur machen, wenn wir in der Flotten-Ansicht sind	
+	// Das hier alles nur machen, wenn wir in der Flotten-Ansicht sind
 	CGalaxyMenuView::SetMoveShip(FALSE);
 	pDoc->SetCurrentShipIndex(pDoc->GetNumberOfFleetShip());
 	pDoc->GetMainFrame()->SelectMainView(GALAXY_VIEW, pMajor->GetRaceID());
@@ -601,7 +601,7 @@ void CFleetMenuView::OnRButtonDown(UINT nFlags, CPoint point)
 void CFleetMenuView::CreateButtons()
 {
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
-	// alle Buttons in der View anlegen und Grafiken laden	
+	// alle Buttons in der View anlegen und Grafiken laden
 }
 
 ///	Funktion erstellt zur aktuellen Mouse-Position einen HTML Tooltip
@@ -613,7 +613,7 @@ CString CFleetMenuView::CreateTooltip(void)
 
 	if (!pDoc->m_bDataReceived)
 		return "";
-	
+
 	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
 	if (!pMajor)
@@ -631,9 +631,9 @@ CString CFleetMenuView::CreateTooltip(void)
 			pShip = m_vShipRects[i].second;
 			break;
 		}
-	
+
 	if (!pShip)
-		return "";	
+		return "";
 
 	bool bUnknown = (pMajor->GetRaceID() != pShip->GetOwnerOfShip() && pMajor->IsRaceContacted(pShip->GetOwnerOfShip()) == false);
 	if (bUnknown)
@@ -649,10 +649,10 @@ CString CFleetMenuView::CreateTooltip(void)
 	{
 		CString s = CResourceManager::GetString("UNKNOWN");
 		s = CHTMLStringBuilder::GetHTMLColor(s);
-		s = CHTMLStringBuilder::GetHTMLHeader(s, _T("h4"));		
+		s = CHTMLStringBuilder::GetHTMLHeader(s, _T("h4"));
 		s = CHTMLStringBuilder::GetHTMLCenter(s);
 		return s;
 	}
 
-	return pShip->GetTooltip(false);	
+	return pShip->GetTooltip(false);
 }

@@ -18,19 +18,19 @@
 
 #include "Ship.h"
 
-class CFleet : public CObject  
-{	
+class CFleet : public CObject
+{
 public:
 	DECLARE_SERIAL (CFleet)
 	// Standardkonstruktor
 	CFleet();
-	
+
 	// Destruktor
 	virtual ~CFleet();
-	
+
 	// Kopierkonstruktor
 	CFleet(const CFleet & rhs);
-	
+
 	// Zuweisungsoperatur
 	CFleet & operator=(const CFleet &);
 
@@ -39,24 +39,24 @@ public:
 
 	// Funktion gibt einen Zeiger auf ein Schiff aus der Flotte zurück
 	CShip* GetShipFromFleet(int n) { return &m_vShips.ElementAt(n); }
-	
+
 	// Funktion um ein Schiff zur Flotte hinzuzufügen
 	void AddShipToFleet(const CShip* pShip) { m_vShips.Add(*pShip); }
-	
+
 	// Funktion um ein Schiff aus der Flotte zu entfernen.
 	void RemoveShipFromFleet(UINT nIndex);
-	
+
 	// Funktion liefert die Anzahl der Schiffe in der Flotte
 	USHORT GetFleetSize() const { return m_vShips.GetSize(); }
-	
+
 	// Funktion berechnet die Geschwindigkeit der Flotte. Der Parameter der hier übergeben werden sollte
 	// ist der this-Zeiger bzw. die Adresse des Schiffsobjektes, welches die Flotte besitzt
 	BYTE GetFleetSpeed(const CShip* pShip = NULL) const;
-	
+
 	// Funktion berechnet die Reichweite der Flotte. Der Parameter der hier übergeben werden sollte
 	// ist der this-Zeiger bzw. die Adresse des Schiffsobjektes, welches die Flotte besitzt
 	SHIP_RANGE::Typ GetFleetRange(const CShip* ship = NULL) const;
-	
+
 	// Funktion berechnet den Schiffstyp der Flotte. Wenn hier nur der selbe Schiffstyp in der Flotte vorkommt,
 	// dann gibt die Funktion diesen Schiffstyp zurück. Wenn verschiedene Schiffstypen in der Flotte vorkommen,
 	// dann liefert und die Funktion ein -1. Der Parameter der hier übergeben werden sollte ist der this-Zeiger
@@ -66,7 +66,7 @@ public:
 	// Funktion berechnet die minimale Stealthpower der Flotte. Der Parameter der hier übergeben werden sollte
 	// ist der this-Zeiger bzw. die Adresse des Schiffsobjektes, welches die Flotte besitzt
 	BYTE GetFleetStealthPower(const CShip* ship = NULL) const;
-	
+
 	// Funktion übernimmt die Befehle des hier als Zeiger übergebenen Schiffsobjektes an alle Mitglieder der Flotte
 	void AdoptCurrentOrders(const CShip* ship);
 
@@ -74,7 +74,7 @@ public:
 	// übergeben werden, welches die Flotte beinhaltet. Kann die Flotte den Befehl nicht befolgen liefert die
 	// Funktion FALSE zurück
 	BOOLEAN CheckOrder(const CShip* ship, SHIP_ORDER::Typ nOrder) const;
-	
+
 	// Funktion löscht die gesamte Flotte
 	void DeleteFleet(void) { m_vShips.RemoveAll(); }
 

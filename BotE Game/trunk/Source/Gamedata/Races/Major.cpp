@@ -22,21 +22,21 @@ CMajor::~CMajor(void)
 ///////////////////////////////////////////////////////////////////////
 // Speichern / Laden
 ///////////////////////////////////////////////////////////////////////
-void CMajor::Serialize(CArchive &ar)		
+void CMajor::Serialize(CArchive &ar)
 {
 	CRace::Serialize(ar);
-	
+
 	// wenn gespeichert wird
 	if (ar.IsStoring())
 	{
 		ar << m_bPlayer;					// wird die Rasse von einem menschlichen Spieler gespielt?
-	
+
 		ar << m_sEmpireName;				// längerer Imperiumsname
 		ar << m_sEmpireWithArticle;			// Artikel für Imperiumsnamen
 		ar << m_sEmpireWithAssignedArticle;	// bestimmter Artikel für den Imperiumsnamen
-		ar << m_sPrefix;					// Rassenprefix	
+		ar << m_sPrefix;					// Rassenprefix
 		ar << m_nDiplomacyBonus;			// Bonus bei diplomatischen Verhandlungen, NULL == kein Bonus/kein Malus
-		
+
 		// noch verbleibende Runden des Vertrags (NULL == unbegrenzt)
 		ar << m_mAgrDuration.size();
 		for (map<CString, short>::const_iterator it = m_mAgrDuration.begin(); it != m_mAgrDuration.end(); ++it)
@@ -44,23 +44,23 @@ void CMajor::Serialize(CArchive &ar)
 		// Dauer des Verteidigungspaktes, einzeln speichern, weil er separat zu anderen Verträgen abgeschlossen werden kann.
 		ar << m_mDefDuration.size();
 		for (map<CString, short>::const_iterator it = m_mDefDuration.begin(); it != m_mDefDuration.end(); ++it)
-			ar << it->first << it->second;		
+			ar << it->first << it->second;
 		// besitzt die Majorrace eines Verteidigungspakt mit einer anderen Majorrace (Rassen-ID, Wahrheitswert)
 		ar << m_vDefencePact.size();
 		for (vector<CString>::const_iterator it = m_vDefencePact.begin(); it != m_vDefencePact.end(); ++it)
-			ar << *it;		
+			ar << *it;
 	}
 	// wenn geladen wird
 	else if (ar.IsLoading())
 	{
 		ar >> m_bPlayer;					// wird die Rasse von einem menschlichen Spieler gespielt?
-	
+
 		ar >> m_sEmpireName;				// längerer Imperiumsname
 		ar >> m_sEmpireWithArticle;			// Artikel für Imperiumsnamen
 		ar >> m_sEmpireWithAssignedArticle;	// bestimmter Artikel für den Imperiumsnamen
-		ar >> m_sPrefix;					// Rassenprefix		
+		ar >> m_sPrefix;					// Rassenprefix
 		ar >> m_nDiplomacyBonus;			// Bonus bei diplomatischen Verhandlungen, NULL == kein Bonus/kein Malus
-		
+
 		// noch verbleibende Runden des Vertrags (NULL == unbegrenzt)
 		m_mAgrDuration.clear();
 		size_t mapSize = 0;
@@ -139,16 +139,16 @@ void CMajor::SetAgreementDuration(const CString& sRaceID, short nNewValue)
 /// @param nNewAgreement neuer Vertrag
 void CMajor::SetAgreement(const CString& sOtherRace, DIPLOMATIC_AGREEMENT::Typ nNewAgreement)
 {
-	if (nNewAgreement == DIPLOMATIC_AGREEMENT::DEFENCEPACT) 
+	if (nNewAgreement == DIPLOMATIC_AGREEMENT::DEFENCEPACT)
 	{
 		SetDefencePact(sOtherRace, true);
-		
+
 		if (GetAgreement(sOtherRace) == DIPLOMATIC_AGREEMENT::WAR)
 			nNewAgreement = DIPLOMATIC_AGREEMENT::NONE;
 		else if (GetAgreement(sOtherRace) == DIPLOMATIC_AGREEMENT::AFFILIATION)
 			nNewAgreement = DIPLOMATIC_AGREEMENT::AFFILIATION;
 	}
-	
+
 	// wenn kein Vertrag besteht, so kann der Eintrag auch aus der Map entfernt werden
 	if (nNewAgreement == DIPLOMATIC_AGREEMENT::NONE)
 	{
@@ -157,7 +157,7 @@ void CMajor::SetAgreement(const CString& sOtherRace, DIPLOMATIC_AGREEMENT::Typ n
 	}
 	else if (nNewAgreement != DIPLOMATIC_AGREEMENT::DEFENCEPACT)
 		m_mAgreement[sOtherRace] = nNewAgreement;
-	
+
 	// Bei Krieg erlischt der Verteidigungspakt und bei einem Bündnis bekommen wir den automatisch
 	if (nNewAgreement == DIPLOMATIC_AGREEMENT::WAR || nNewAgreement == DIPLOMATIC_AGREEMENT::AFFILIATION)
 	{
@@ -167,12 +167,12 @@ void CMajor::SetAgreement(const CString& sOtherRace, DIPLOMATIC_AGREEMENT::Typ n
 				m_vDefencePact.erase(it);
 				SetDefencePactDuration(sOtherRace, 0);
 				break;
-			}	
+			}
 	}
 
 	// Bei Krieg wird die Dauer eines alten Vertrages auf NULL gesetzt
 	if (nNewAgreement == DIPLOMATIC_AGREEMENT::WAR)
-		SetAgreementDuration(sOtherRace, 0);	
+		SetAgreementDuration(sOtherRace, 0);
 }
 
 /// Funktion gibt zurück, ob die Hauptrasse einen Verteidigungspakt mit einer anderen Hauptrasse
@@ -183,7 +183,7 @@ bool CMajor::GetDefencePact(const CString& sRaceID) const
 {
 	if (std::find(m_vDefencePact.begin(), m_vDefencePact.end(), sRaceID) != m_vDefencePact.end())
 		return true;
-	
+
 	return false;
 }
 
@@ -254,12 +254,12 @@ bool CMajor::DecrementAgreementsDuration(map<CString, CMajor*>* pmMajors)
 			CMajor* pMajor = (*pmMajors)[it->first];
 			if (pMajor)
 				sRace = pMajor->m_sEmpireWithAssignedArticle;
-			
+
 			CString s = CResourceManager::GetString("CONTRACT_ENDED", FALSE, sAgreement, sRace);
 			CMessage message;
 			message.GenerateMessage(s, MESSAGE_TYPE::DIPLOMACY, "", 0, FALSE);
 			this->GetEmpire()->AddMessage(message);
-			vDelAgrs.push_back(it->first);			
+			vDelAgrs.push_back(it->first);
 		}
 	}
 	// nun die abgelaufenen Verträge aus den Maps entfernen
@@ -273,7 +273,7 @@ bool CMajor::DecrementAgreementsDuration(map<CString, CMajor*>* pmMajors)
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////////////////////////////
-	
+
 	// nun die Verteidigungspakte separat betrachten
 	for (vector<CString>::iterator it = m_vDefencePact.begin(); it != m_vDefencePact.end(); )
 	{
@@ -291,13 +291,13 @@ bool CMajor::DecrementAgreementsDuration(map<CString, CMajor*>* pmMajors)
 			CMajor* pMajor = (*pmMajors)[*it];
 			if (pMajor)
 				sRace = pMajor->m_sEmpireWithAssignedArticle;
-			
+
 			CString s = CResourceManager::GetString("DEFENCE_PACT_ENDED", FALSE, sRace);
 			CMessage message;
 			message.GenerateMessage(s, MESSAGE_TYPE::DIPLOMACY, "", 0, FALSE);
 			this->GetEmpire()->AddMessage(message);
 			vDelAgrs.push_back(*it);
-			it = m_vDefencePact.erase(it++);			
+			it = m_vDefencePact.erase(it++);
 			continue;
 		}
 
@@ -306,7 +306,7 @@ bool CMajor::DecrementAgreementsDuration(map<CString, CMajor*>* pmMajors)
 	// nun die abgelaufenen Verteidigungspaktdauer aus den Maps entfernen
 	for (size_t i = 0; i < vDelAgrs.size(); i++)
 	{
-		m_mDefDuration.erase(vDelAgrs[i]);		
+		m_mDefDuration.erase(vDelAgrs[i]);
 		bEnd = true;
 	}
 	vDelAgrs.clear();
@@ -321,9 +321,9 @@ bool CMajor::DecrementAgreementsDuration(map<CString, CMajor*>* pmMajors)
 void CMajor::Create(const CStringArray& saInfo, int& nPos)
 {
 	ASSERT(nPos >= 0);
-	
+
 	Reset();
-	
+
 	// Majorrace nun anlegen
 	m_sID			= saInfo[nPos++];				// Rassen-ID
 	m_sHomeSystem	= saInfo[nPos++];				// Name des Heimatsystems
@@ -333,8 +333,8 @@ void CMajor::Create(const CStringArray& saInfo, int& nPos)
 	m_sEmpireName				= saInfo[nPos++];	// längerer Imperiumsname
 	m_sEmpireWithArticle		= saInfo[nPos++] + " " + m_sEmpireName;		// Artikel für Imperiumsnamen
 	m_sEmpireWithAssignedArticle= saInfo[nPos++] + " " + m_sEmpireName;		// bestimmter Artikel für den Imperiumsnamen
-	m_sPrefix					= saInfo[nPos++];	// Rassenprefix	
-	
+	m_sPrefix					= saInfo[nPos++];	// Rassenprefix
+
 	m_sDesc				= saInfo[nPos++];				// Rassenbeschreibung
 	m_byBuildingNumber	= atoi(saInfo[nPos++]);			// zugewiesene Nummer, welche Gebäude verwendet werden sollen
 	m_byShipNumber		= atoi(saInfo[nPos++]);			// zugewiesene Nummer, welche Schiffe verwendet werden sollen
@@ -356,11 +356,11 @@ void CMajor::Create(const CStringArray& saInfo, int& nPos)
 	while (nStart < sRaceAbilities.GetLength())
 	{
 		int nAbility = atoi(sRaceAbilities.Tokenize(",", nStart));
-		SetSpecialAbility(nAbility, true);				// Spezialfähigkeiten der Rasse			
+		SetSpecialAbility(nAbility, true);				// Spezialfähigkeiten der Rasse
 	}
-	
+
 	m_nDiplomacyBonus	= atoi(saInfo[nPos++]);			// Bonus bei diplomatischen Verhandlungen, NULL == kein Bonus/kein Malus
-	
+
 	// grafische Attribute
 	m_sGraphicFile				= saInfo[nPos++];					// Name der zugehörigen Grafikdatei
 	m_RaceDesign.m_clrSector	= CRaceDesign::StringToColor(saInfo[nPos++]);	// Sektormarkierung
@@ -375,17 +375,17 @@ void CMajor::Create(const CStringArray& saInfo, int& nPos)
 	m_RaceDesign.m_clrListMarkTextColor = CRaceDesign::StringToColor(saInfo[nPos++]);	// Farbe für Text wenn dieser markiert ist
 	m_RaceDesign.m_clrListMarkPenColor	= CRaceDesign::StringToColor(saInfo[nPos++]);	// Farbe für Umrandung bei Markierung eines Eintrags in einer Liste
 	m_RaceDesign.m_clrRouteColor		= CRaceDesign::StringToColor(saInfo[nPos++]);	// Farbe der Handels- und Ressourcenrouten
-	
+
 	CString sGDI	= saInfo[nPos++];
 	CString sGDIPlus= saInfo[nPos++];
 	int iStart = 0;
 	for (int i = 0; i < 6; i++)
 		m_RaceDesign.m_byGDIFontSize[i]		= atoi(sGDI.Tokenize(",", iStart));			// Fontgrößen für GDI Darstellung
 	iStart = 0;
-	for (int i = 0; i < 6; i++)	
+	for (int i = 0; i < 6; i++)
 		m_RaceDesign.m_byGDIPlusFontSize[i]	=  atoi(sGDIPlus.Tokenize(",", iStart));	// Fontgrößen für GDI+ Darstellung
 	m_RaceDesign.m_sFontName	= saInfo[nPos++];					// Name der Schriftart
-	
+
 	m_bPlayer					= false;	// wird die Rasse von einem menschlichen Spieler gespielt?
 
 	// Hier die Variablen für die Handelsklasse rassenspezifisch setzen
@@ -394,13 +394,13 @@ void CMajor::Create(const CStringArray& saInfo, int& nPos)
 	if (IsRaceProperty(RACE_PROPERTY::FINANCIAL))
 		fTax = min(fTax, 1.05f);
 	m_Trade.SetTax(fTax);
-	
+
 	// Hier die aktuellen Kursdaten initial in die History schreiben
 	m_Trade.GetTradeHistory()->SaveCurrentPrices(m_Trade.GetRessourcePrice(), m_Trade.GetTax());
-	
+
 	m_Empire.Reset();
 	m_Empire.SetEmpireID(m_sID);
-	
+
 	// Majorrace - KI anlegen
 	m_pDiplomacyAI = new CMajorAI(this);
 }
@@ -409,13 +409,13 @@ void CMajor::Create(const CStringArray& saInfo, int& nPos)
 void CMajor::Reset(void)
 {
 	CRace::Reset();
-	
+
 	m_bPlayer					= false;	// wird die Rasse von einem menschlichen Spieler gespielt?
-	
+
 	m_sEmpireName				= "";		// längerer Imperiumsname
 	m_sEmpireWithArticle		= "";		// Artikel für Imperiumsnamen
 	m_sEmpireWithAssignedArticle= "";		// bestimmter Artikel für den Imperiumsnamen
-	m_sPrefix					= "";		// Rassenprefix	
+	m_sPrefix					= "";		// Rassenprefix
 
 	m_nDiplomacyBonus			= 0;		// Bonus bei diplomatischen Verhandlungen, NULL == kein Bonus/kein Malus
 
@@ -425,7 +425,7 @@ void CMajor::Reset(void)
 
 	// grafische Attribute
 	m_RaceDesign.Reset();					// Objekt welches gestalterische Informationen zur Rasse beinhaltet
-	
+
 	// größere Objekte
 	m_Trade.Reset();						// der Börsenhandel für diese Rasse
 	m_Empire.Reset();						// das Imperium (Reich) der Hauptrasse
@@ -433,12 +433,12 @@ void CMajor::Reset(void)
 
 	// Observer-Objekte
 	m_WeaponObserver.Reset();				// beobachtet die baubaren Waffen für Schiffe. Wird benötigt wenn wir Schiffe designen wollen
-	
+
 	// Starmap
 	if (m_pStarmap)						// Die Starmap des Majors, beinhaltet Reichweiteninformationen (muss nicht serialisiert werden)
 	{
 		m_pStarmap->ClearAll();
-		delete m_pStarmap;		
+		delete m_pStarmap;
 	}
 	m_pStarmap = NULL;
 }

@@ -5,7 +5,7 @@
  *   Create   :  2005-1-23
  *   Home     :  http://www.crazy-bit.com/
  *   Mail     :  crazybitwps@hotmail.com
- *   History  :  
+ *   History  :
  */
 #ifndef __PCL_INTERFACE_COMPOSITE__2005_01_23__H__
 #define __PCL_INTERFACE_COMPOSITE__2005_01_23__H__

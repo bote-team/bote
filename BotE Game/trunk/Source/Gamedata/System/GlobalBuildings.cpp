@@ -17,7 +17,7 @@ CGlobalBuildings::~CGlobalBuildings(void)
 ///////////////////////////////////////////////////////////////////////
 // Speichern / Laden
 ///////////////////////////////////////////////////////////////////////
-void CGlobalBuildings::Serialize(CArchive &ar)		
+void CGlobalBuildings::Serialize(CArchive &ar)
 {
 	CObject::Serialize(ar);
 	// wenn gespeichert wird
@@ -30,7 +30,7 @@ void CGlobalBuildings::Serialize(CArchive &ar)
 			ar << it->second.size();
 			for (std::list<USHORT>::const_iterator it2 = it->second.begin(); it2 != it->second.end(); ++it2)
 				ar << *it2;
-		}		
+		}
 	}
 	// wenn geladen wird
 	if (ar.IsLoading())
@@ -50,7 +50,7 @@ void CGlobalBuildings::Serialize(CArchive &ar)
 				ar >> value;
 				m_mGlobalBuildings[key].push_back(value);
 			}
-		}		
+		}
 	}
 }
 
@@ -68,7 +68,7 @@ int CGlobalBuildings::GetCountGlobalBuilding(const CString& sRaceID, USHORT nID)
 	for (std::list<USHORT>::const_iterator it2 = it->second.begin(); it2 != it->second.end(); ++it2)
 		if (*it2 == nID)
 			nCount++;
-	
+
 	return nCount;
 }
 

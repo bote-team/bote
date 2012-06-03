@@ -14,23 +14,23 @@ CEventRandom::~CEventRandom(void)
 
 CEventRandom::CEventRandom(const CString& sPlayersRace, const CString &imageName, const CString &headline, const CString &text)
 	: CEventScreen(sPlayersRace, imageName, headline, text)
-{	
+{
 }
 
 ///////////////////////////////////////////////////////////////////////
 // Speichern / Laden
 ///////////////////////////////////////////////////////////////////////
-void CEventRandom::Serialize(CArchive &ar)		
+void CEventRandom::Serialize(CArchive &ar)
 {
 	__super::Serialize(ar);
-	
+
 	// wenn gespeichert wird
 	if (ar.IsStoring())
-	{		
+	{
 	}
 	// wenn geladen wird
 	else if (ar.IsLoading())
-	{		
+	{
 	}
 }
 
@@ -77,5 +77,5 @@ void CEventRandom::Draw(Graphics* g, CGraphicPool* graphicPool) const//to do
 	CFontLoader::GetGDIFontColor(pMajor, 2, color);
 	fontBrush.SetColor(color);
 	for (int i = 0; i < m_Buttons.GetSize(); i++)
-		m_Buttons.GetAt(i)->DrawButton(*g, graphicPool, Gdiplus::Font(fontName.AllocSysString(), fontSize), fontBrush);	
+		m_Buttons.GetAt(i)->DrawButton(*g, graphicPool, Gdiplus::Font(fontName.AllocSysString(), fontSize), fontBrush);
 }

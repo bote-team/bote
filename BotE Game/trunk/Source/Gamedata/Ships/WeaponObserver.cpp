@@ -56,7 +56,7 @@ CWeaponObserver & CWeaponObserver::operator=(const CWeaponObserver & rhs)
 ///////////////////////////////////////////////////////////////////////
 // Speichern / Laden
 ///////////////////////////////////////////////////////////////////////
-void CWeaponObserver::Serialize(CArchive &ar)		
+void CWeaponObserver::Serialize(CArchive &ar)
 {
 	CObject::Serialize(ar);
 	// wenn gespeichert wird
@@ -87,7 +87,7 @@ void CWeaponObserver::Serialize(CArchive &ar)
 		int number = 0;
 		for (int i = 0; i < DIFFERENT_TORPEDOS; i++)
 			ar >> m_BuildableTorpedos[i];
-		ar >> m_MaxShieldLevel;	
+		ar >> m_MaxShieldLevel;
 		ar >> number;
 		BeamWeaponsObserverStruct bwos;
 		m_BeamWeapons.RemoveAll();
@@ -123,7 +123,7 @@ BYTE CWeaponObserver::GetMaxBeamType(const CString& NameOfBeamWeapon) const
 	for (int i = 0; i < m_BeamWeapons.GetSize(); i++)
 		if (m_BeamWeapons.GetAt(i).WeaponName == NameOfBeamWeapon)
 			return m_BeamWeapons.GetAt(i).maxLevel;
-	
+
 	return 0;
 }
 
@@ -192,10 +192,10 @@ void CWeaponObserver::CheckTorpedoWeapons(CShipInfo* info)
 			twos.fireRate  = info->GetTorpedoWeapons()->GetAt(j).GetTupeFirerate();
 			twos.number	   = info->GetTorpedoWeapons()->GetAt(j).GetNumber();
 			twos.onlyMicro = info->GetTorpedoWeapons()->GetAt(j).GetOnlyMicroPhoton();
-			twos.TupeName  = info->GetTorpedoWeapons()->GetAt(j).GetTupeName();			
+			twos.TupeName  = info->GetTorpedoWeapons()->GetAt(j).GetTupeName();
 			m_TupeWeapons.Add(twos);
 		}
-	}	
+	}
 }
 
 // Funktion sucht einen weiteren baubaren Torpedo und übernimmt dafür den aktuell angebauten Torpedotyp und
@@ -246,7 +246,7 @@ TupeWeaponsObserverStruct CWeaponObserver::GetNextTupe(const CString& currentTup
 			i = 0;
 		// Wenn wir mit dem neuen Werfer nur Mirco-Torpedos verschießen können, dann auch schauen, dass ein
 		// Micro-Torpedo eingestellt ist
-		if (CTorpedoInfo::GetMicro(currentTorpedoType) && m_TupeWeapons.GetAt(i).onlyMicro == TRUE)			
+		if (CTorpedoInfo::GetMicro(currentTorpedoType) && m_TupeWeapons.GetAt(i).onlyMicro == TRUE)
 		{
 			twos = m_TupeWeapons.GetAt(i);
 			return twos;
@@ -255,7 +255,7 @@ TupeWeaponsObserverStruct CWeaponObserver::GetNextTupe(const CString& currentTup
 		{
 			twos = m_TupeWeapons.GetAt(i);
 			return twos;
-		}		
+		}
 	}
 	return twos;
 }

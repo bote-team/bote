@@ -86,7 +86,7 @@ BYTE CTroop::Attack(CTroop* enemy, BYTE offenceBoni, short defenceBoni)
 	// Stärke der verteidigenden Truppe gewürfelt. Wer den höheren Wurf gemacht hat, gewinnt diesen Kampf.
 	// Bei Gleichstand haben beide verloren. Auf die Stärke wird die Erfahrung angerechnet. Die verteidigende
 	// Truppe erhält zusätzlich vielleicht auch einen DefenceBonus.
-	
+
 	// der angreifenden Truppe (also dieses Objekt)
 	BYTE damageBoni = 0;
 	if (m_iExperiance >= 64000)
@@ -108,7 +108,7 @@ BYTE CTroop::Attack(CTroop* enemy, BYTE offenceBoni, short defenceBoni)
 	damageBoni += offenceBoni;
 	BYTE attackPower = m_byOffense + m_byOffense * damageBoni / 100;
 	USHORT ExpBonusForDef = attackPower * 100;
-	
+
 /*	CString t;
 	t.Format("attackPower = %d\nExp: %d",attackPower, m_iExperiance);
 	AfxMessageBox(t);*/
@@ -140,7 +140,7 @@ BYTE CTroop::Attack(CTroop* enemy, BYTE offenceBoni, short defenceBoni)
 	{
 		// Um den Zufall etwas abzuschwächen, wird der Wert zweimal berechnet
 		for (int i = 0; i < 2; i++)
-			nAttackValue += rand()%attackPower;		
+			nAttackValue += rand()%attackPower;
 	}
 
 	int nDefenceValue = 0;
@@ -150,7 +150,7 @@ BYTE CTroop::Attack(CTroop* enemy, BYTE offenceBoni, short defenceBoni)
 		for (int i = 0; i < 2; i++)
 			nDefenceValue += rand()%defencePower;
 	}
-	
+
 /*	CString s;
 	s.Format("ATTACK: %d\nDEFENCE: %d",nAttackValue, nDefenceValue);
 	AfxMessageBox(s);*/

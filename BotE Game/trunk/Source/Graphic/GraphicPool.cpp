@@ -7,7 +7,7 @@
 // Konstruktion und Destruktion
 //////////////////////////////////////////////////////////////////////
 CGraphicPool::CGraphicPool(const CString& path) : m_strPath(path)
-{	
+{
 }
 
 CGraphicPool::~CGraphicPool(void)
@@ -58,20 +58,20 @@ CBitmap* CGraphicPool::GetGraphic(const CString &name)
 	// nach der Grafik in der Map suchen, wenn sie gefunden werden konnte, so wird sie zurückgegeben
 	if (m_Graphics.Lookup(name, g))
 		return g;
-		
+
 	// ansonsten muss die Grafik geladen werden und in die Map gesteckt werden
 	FCObjImage* img = new FCObjImage();
 	// kompletten Pfad inkl. relativen Pfadnamen
 	CString fileName(m_strPath + name);
 #ifdef TRACE_GRAPHICLOAD
-	MYTRACE(MT::LEVEL_DEBUG, "graphic: %s not found in map ... loading\n", fileName); 
+	MYTRACE(MT::LEVEL_DEBUG, "graphic: %s not found in map ... loading\n", fileName);
 #endif
 	// Grafik laden
 	if (!img->Load(fileName))
 	{
 #ifdef TRACE_GRAPHICLOAD
 		MYTRACE(MT::LEVEL_WARNING, "Could not load graphic: %s\n", fileName);
-#endif		
+#endif
 		delete img;
 		img = NULL;
 		return NULL;
@@ -101,21 +101,21 @@ Bitmap* CGraphicPool::GetGDIGraphic(const CString &name)
 	// nach der Grafik in der Map suchen, wenn sie gefunden werden konnte, so wird sie zurückgegeben
 	if (m_GDIGraphics.Lookup(name, img))
 		return img;
-	
+
 	// ansonsten muss die Grafik geladen werden und in die Map gesteckt werden
 	CString fileName(m_strPath + name);
 	img = NULL;
 	img = Bitmap::FromFile(fileName.AllocSysString());
-	
+
 #ifdef TRACE_GRAPHICLOAD
-	MYTRACE(MT::LEVEL_DEBUG, "graphic: %s not found in map ... loading\n", fileName); 
+	MYTRACE(MT::LEVEL_DEBUG, "graphic: %s not found in map ... loading\n", fileName);
 #endif
 	// Grafik laden
 	if (img->GetLastStatus() != Ok)
 	{
 #ifdef TRACE_GRAPHICLOAD
 		MYTRACE(MT::LEVEL_WARNING, "Could not load graphic: %s\n", fileName);
-#endif		
+#endif
 		delete img;
 		img = NULL;
 		return NULL;

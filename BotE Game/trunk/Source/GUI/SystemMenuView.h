@@ -55,36 +55,36 @@ private:
 
 	/// Funktion zum Zeichnen der Baumenüansicht
 	/// @param g Zeiger auf GDI+ Grafikobjekt
-	void DrawBuildMenue(Graphics* g);	
-	
+	void DrawBuildMenue(Graphics* g);
+
 	/// Funktion zum Zeichnen des Arbeiterzuweisungsmenues
 	/// @param g Zeiger auf GDI+ Grafikobjekt
 	void DrawWorkersMenue(Graphics* g);
-	
-	/// Funktion zum Zeichnen des Energiezuweisungsmenues 
+
+	/// Funktion zum Zeichnen des Energiezuweisungsmenues
 	/// @param g Zeiger auf GDI+ Grafikobjekt
 	void DrawEnergyMenue(Graphics* g);
-	
+
 	// Funktion zum zeichnen der Bauwerkeansicht
 	/// @param g Zeiger auf GDI+ Grafikobjekt
 	void DrawBuildingsOverviewMenue(Graphics* g);
-	
+
 	/// Funktion zum zeichnen der Systemhandelsansicht
 	/// @param g Zeiger auf GDI+ Grafikobjekt
 	void DrawSystemTradeMenue(Graphics* g);
-	
+
 	/// Funktion zeichnet die großen Buttons (Energy, Arbeiter...) unten in der Systemansicht
 	/// @param g Zeiger auf GDI+ Grafikobjekt
 	void DrawButtonsUnderSystemView(Graphics* g);
-	
+
 	/// Funktion zeichnet die Informationen rechts in der Systemansicht (Nahrung, Industrie usw.)
 	/// @param g Zeiger auf GDI+ Grafikobjekt
 	void DrawSystemProduction(Graphics* g);
 
-	/// Fkt. berechnet und zeichnet die Produktion eines Gebäudes (z.B. es macht 50 Nahrung) 
+	/// Fkt. berechnet und zeichnet die Produktion eines Gebäudes (z.B. es macht 50 Nahrung)
 	/// @param g Zeiger auf GDI+ Grafikobjekt
 	void DrawBuildingProduction(Graphics* g);
-	
+
 	/// Funktion zeichnet die Bauliste in der Baumenü- und Arbeitermenüansicht
 	/// @param g Zeiger auf GDI+ Grafikobjekt
 	void DrawBuildList(Graphics* g);
@@ -150,7 +150,7 @@ private:
 	UINT m_iGlobalStoreageQuantity;			// Wieviel Ressourcen werden pro Klick verschoben
 	// Hier Variablen, wenn wir eine Ressourcenroute ziehen wollen
 	static BYTE m_byResourceRouteRes;		// welche Ressource soll für die Ressourcenroute gelten
-	
+
 protected:
 	DECLARE_MESSAGE_MAP()
 public:

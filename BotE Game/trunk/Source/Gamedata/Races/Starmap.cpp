@@ -60,7 +60,7 @@ CStarmap::CStarmap(BOOL bAICalculation, char nAIRange) : m_bAICalculation(bAICal
 	m_RangeMap.w = m_RangeMap.h = 7;
 	m_RangeMap.x0 = m_RangeMap.y0 = 3;
 
-	unsigned char rangeMap[] = 
+	unsigned char rangeMap[] =
 		{0, 0, 1, 1, 1, 0, 0,
 		 0, 1, 2, 2, 2, 1, 0,
 		 1, 2, 3, 3, 3, 2, 1,
@@ -70,7 +70,7 @@ CStarmap::CStarmap(BOOL bAICalculation, char nAIRange) : m_bAICalculation(bAICal
 		 0, 0, 1, 1, 1, 0, 0};
 
 	memcpy(m_RangeMap.range, rangeMap, 49 * sizeof(unsigned char));
-	
+
 	pathMap = std::vector<std::vector<PathSector>>(
 		STARMAP_SECTORS_HCOUNT, std::vector<PathSector>(STARMAP_SECTORS_VCOUNT));
 }
@@ -232,7 +232,7 @@ void CStarmap::SynchronizeWithAnomalies(std::vector<std::vector<CSector>>& secto
 	for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
 		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
 			if (sectors[x][y].GetAnomaly())
-				m_BadMapModifiers[x][y] = sectors[x][y].GetAnomaly()->GetWaySearchWeight();		
+				m_BadMapModifiers[x][y] = sectors[x][y].GetAnomaly()->GetWaySearchWeight();
 }
 
 void CStarmap::ClearAll()
@@ -315,7 +315,7 @@ Sector CStarmap::CalcPath(const Sector &pos, const Sector &target, unsigned char
 				tmp->distance = 0.;
 				tmp->hops = 0;
 				tmp->parent.x = tmp->parent.y = -1;
-				
+
 				tmp->position.x = i; // für Zugriff aus leafList heraus merken
 				tmp->position.y = j;*/
 				pathMap[i][j].used=false;
@@ -376,8 +376,8 @@ Sector CStarmap::CalcPath(const Sector &pos, const Sector &target, unsigned char
 				// dann die bisherige Info überschreiben
 				double distance = next->distance + ((i % 2) ? WEIGHT_DIR : WEIGHT_DIAG);
 				// Anomalien beachten
-				distance += m_BadMapModifiers[next->position.x][next->position.y];				
-				
+				distance += m_BadMapModifiers[next->position.x][next->position.y];
+
 				if (neighb->distance == 0. || distance < neighb->distance)
 				{
 					// (distance ist für alle anderen Sektoren außer dem Start-Sektor > 0.,
@@ -416,7 +416,7 @@ Sector CStarmap::CalcPath(const Sector &pos, const Sector &target, unsigned char
 		path[idx] = next;
 		next = pathMap[next.x][next.y].parent;
 	}
-	ASSERT(idx == -1);	
+	ASSERT(idx == -1);
 
 	// entsprechend speed den nächsten Knoten des Weges zurückgeben; bzw. den Zielknoten,
 	// wenn der Weg kürzer ist
@@ -436,7 +436,7 @@ void CStarmap::CalcRangeMap(BYTE propTech)
 	switch (propTech)
 	{
 	case 0: {
-		unsigned char tmpRangeMap[] = 
+		unsigned char tmpRangeMap[] =
 			{0, 0, 1, 1, 1, 0, 0,
 			0, 1, 2, 2, 2, 1, 0,
 			1, 2, 3, 3, 3, 2, 1,
@@ -448,7 +448,7 @@ void CStarmap::CalcRangeMap(BYTE propTech)
 			this->SetRangeMap(tmpRangeMap, w, h, x0, y0);
 			break;}
 	case 1: {
-		unsigned char tmpRangeMap[] = 
+		unsigned char tmpRangeMap[] =
 			{0, 0, 1, 1, 1, 0, 0,
 			0, 1, 2, 2, 2, 1, 0,
 			1, 2, 3, 3, 3, 2, 1,
@@ -460,7 +460,7 @@ void CStarmap::CalcRangeMap(BYTE propTech)
 			this->SetRangeMap(tmpRangeMap, w, h, x0, y0);
 			break;}
 	case 2: {
-		unsigned char tmpRangeMap[] = 
+		unsigned char tmpRangeMap[] =
 			{0, 0, 0, 1, 1, 1, 0, 0, 0,
 			0, 0, 1, 1, 1, 1, 1, 0, 0,
 			0, 1, 1, 2, 2, 2, 1, 1, 0,
@@ -474,7 +474,7 @@ void CStarmap::CalcRangeMap(BYTE propTech)
 			this->SetRangeMap(tmpRangeMap, w, h, x0, y0);
 			break;}
 	case 3: {
-		unsigned char tmpRangeMap[] = 
+		unsigned char tmpRangeMap[] =
 			{0, 0, 0, 1, 1, 1, 0, 0, 0,
 			0, 0, 1, 2, 2, 2, 1, 0, 0,
 			0, 1, 2, 2, 2, 2, 2, 1, 0,
@@ -488,7 +488,7 @@ void CStarmap::CalcRangeMap(BYTE propTech)
 			this->SetRangeMap(tmpRangeMap, w, h, x0, y0);
 			break;}
 	case 4: {
-		unsigned char tmpRangeMap[] = 
+		unsigned char tmpRangeMap[] =
 			{0, 0, 0, 1, 1, 1, 0, 0, 0,
 			0, 0, 1, 2, 2, 2, 1, 0, 0,
 			0, 1, 2, 3, 3, 3, 2, 1, 0,
@@ -502,7 +502,7 @@ void CStarmap::CalcRangeMap(BYTE propTech)
 			this->SetRangeMap(tmpRangeMap, w, h, x0, y0);
 			break;}
 	case 5: {
-		unsigned char tmpRangeMap[] = 
+		unsigned char tmpRangeMap[] =
 			{0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0,
 			0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0,
 			0, 0, 1, 1, 2, 2, 2, 1, 1, 0, 0,
@@ -518,7 +518,7 @@ void CStarmap::CalcRangeMap(BYTE propTech)
 			this->SetRangeMap(tmpRangeMap, w, h, x0, y0);
 			break;}
 	case 6: {
-		unsigned char tmpRangeMap[] = 
+		unsigned char tmpRangeMap[] =
 			{0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0,
 			0, 0, 0, 1, 2, 2, 2, 1, 0, 0, 0,
 			0, 0, 1, 2, 2, 2, 2, 2, 1, 0, 0,
@@ -534,7 +534,7 @@ void CStarmap::CalcRangeMap(BYTE propTech)
 			this->SetRangeMap(tmpRangeMap, w, h, x0, y0);
 			break;}
 	case 7: {
-		unsigned char tmpRangeMap[] = 
+		unsigned char tmpRangeMap[] =
 			{0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0,
 			0, 0, 0, 1, 2, 2, 2, 1, 0, 0, 0,
 			0, 0, 1, 2, 3, 3, 3, 2, 1, 0, 0,
@@ -550,7 +550,7 @@ void CStarmap::CalcRangeMap(BYTE propTech)
 			this->SetRangeMap(tmpRangeMap, w, h, x0, y0);
 			break;}
 	case 8: {
-		unsigned char tmpRangeMap[] = 
+		unsigned char tmpRangeMap[] =
 			{0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0,
 			0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0,
 			0, 0, 0, 1, 1, 2, 2, 2, 1, 1, 0, 0, 0,
@@ -568,7 +568,7 @@ void CStarmap::CalcRangeMap(BYTE propTech)
 			this->SetRangeMap(tmpRangeMap, w, h, x0, y0);
 			break;}
 	case 9: {
-		unsigned char tmpRangeMap[] = 
+		unsigned char tmpRangeMap[] =
 			{0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0,
 			0, 0, 0, 0, 1, 2, 2, 2, 1, 0, 0, 0, 0,
 			0, 0, 0, 1, 2, 2, 2, 2, 2, 1, 0, 0, 0,
@@ -586,7 +586,7 @@ void CStarmap::CalcRangeMap(BYTE propTech)
 			this->SetRangeMap(tmpRangeMap, w, h, x0, y0);
 			break;}
 	case 10: {
-		unsigned char tmpRangeMap[] = 
+		unsigned char tmpRangeMap[] =
 			{0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0,
 			0, 0, 0, 0, 1, 2, 2, 2, 1, 0, 0, 0, 0,
 			0, 0, 0, 1, 2, 3, 3, 3, 2, 1, 0, 0, 0,
@@ -604,7 +604,7 @@ void CStarmap::CalcRangeMap(BYTE propTech)
 			this->SetRangeMap(tmpRangeMap, w, h, x0, y0);
 			break;}
 	 default: {
-		unsigned char tmpRangeMap[] = 
+		unsigned char tmpRangeMap[] =
 			{0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0,
 			0, 0, 0, 0, 1, 2, 2, 2, 1, 0, 0, 0, 0,
 			0, 0, 0, 1, 2, 3, 3, 3, 2, 1, 0, 0, 0,
@@ -629,7 +629,7 @@ void CStarmap::AddTarget(const Sector &target)
 	ASSERT_SECTOR_VALID(target);
 	ASSERT(m_bAICalculation);
 	if (!m_bAICalculation || !PT_IN_RECT(target, 0, 0, STARMAP_SECTORS_HCOUNT, STARMAP_SECTORS_VCOUNT)) return;
-	
+
 	// prüfen, ob Ziel bereits in Liste vorhanden ist
 	for (SECTORLIST::const_iterator it = m_lAITargets.begin(); it != m_lAITargets.end(); ++it)
 		if (*it == target)
@@ -658,7 +658,7 @@ void CStarmap::AddKnownSystem(const Sector &sector)
 	ASSERT_SECTOR_VALID(sector);
 	ASSERT(m_bAICalculation);
 	if (!m_bAICalculation || !PT_IN_RECT(sector, 0, 0, STARMAP_SECTORS_HCOUNT, STARMAP_SECTORS_VCOUNT)) return;
-	
+
 	// prüfen, ob Ziel bereits in Liste vorhanden ist
 	for (SECTORLIST::const_iterator it = m_lAIKnownSystems.begin(); it != m_lAIKnownSystems.end(); ++it)
 		if (*it == sector)
@@ -861,10 +861,10 @@ short CStarmap::GetPoints(const Sector &sector)
 		// wo Gebietszuwachs erreicht wird
 		points += m_AIConnectionPoints[sector.x][sector.y] + m_AITargetPoints[sector.x][sector.y];
 	}
-	
+
 	points -= m_AIBadPoints[sector.x][sector.y];
 	return points;
-	
+
 //	return m_AIRangePoints[sector.x][sector.y];
 //	return m_AIConnectionPoints[sector.x][sector.y];
 //	return m_AITargetPoints[sector.x][sector.y];
@@ -902,8 +902,8 @@ void CStarmap::SetBadAIBaseSectors(std::vector<std::vector<CSector>>& sectors/*[
 				if ((double)m_AIBadPoints[x][y] + dValue > MAXSHORT)
 					m_AIBadPoints[x][y] = MAXSHORT;
 				else
-					m_AIBadPoints[x][y] += (short)dValue;				
-			}		
+					m_AIBadPoints[x][y] += (short)dValue;
+			}
 }
 
 BaseSector CStarmap::CalcAIBaseSector(double variance)

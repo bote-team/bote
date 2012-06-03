@@ -29,11 +29,11 @@ class CGraphicPool;
 class CResearchInfo;
 
 /// Klasse beschreibt ein Schiff in BotE
-class CShip : public CObject  
+class CShip : public CObject
 {
 public:
 	DECLARE_SERIAL (CShip)
-// Konstruktion & Destruktion	
+// Konstruktion & Destruktion
 	CShip();
 	virtual ~CShip();
 // Kopierkonstruktor
@@ -42,16 +42,16 @@ public:
 	CShip & operator=(const CShip &);
 // Serialisierungsfunktion
 	virtual void Serialize(CArchive &ar);
-	
+
 // Zugriffsfunktionen
 	// zum Lesen der Membervariablen
 	CFleet*	GetFleet(void) {return m_Fleet;}
 	CHull* GetHull(void) {return &m_Hull;}
-	CShield* GetShield(void) {return &m_Shield;}	
+	CShield* GetShield(void) {return &m_Shield;}
 	CArray<CTorpedoWeapons, CTorpedoWeapons>* GetTorpedoWeapons(void) {return &m_TorpedoWeapons;}
 	CArray<CBeamWeapons, CBeamWeapons>* GetBeamWeapons(void) {return &m_BeamWeapons;}
 	CArray<CTroop>* GetTransportedTroops(void) {return &m_Troops;}
-	
+
 	/// Funktion gibt die gesamte Offensivpower des Schiffes zurück, welches es in 100s anrichten würde. Dieser
 	/// Dieser Wert hat keinen direkten Kampfeinfluss, er ist nur zum Vergleich heranzuziehen.
 	/// @param bBeams <code>true</code> wenn Beamwaffen beachtet werden sollen
@@ -142,7 +142,7 @@ public:
 	void SetIsShipFlagShip(bool bIs) {m_bIsFlagShip = bIs;}
 	void SetCombatTactic(COMBAT_TACTIC::Typ nTactic) {m_nCombatTactic = nTactic;}
 	void SetAlienType(ALIEN_TYPE::Typ nAlienType) {m_nAlienType = nAlienType;}
-	
+
 	// sonstige Funktionen
 	void CreateFleet();	// Bevor wir mit der Flotte arbeiten können muß diese erst created werden
 	void CheckFleet();	// am besten in jeder neuen Runde aufrufen, säubert die Flotte (aber nicht unbedingt notwendig)
@@ -169,13 +169,13 @@ public:
 	/// @param clrMark Schriftfarbe falls markiert
 	/// @param font zu benutzende Schrift
 	void DrawShip(Gdiplus::Graphics* g, CGraphicPool* pGraphicPool, const CPoint& pt, bool bIsMarked, bool bOwnerUnknown, bool bDrawFleet, const Gdiplus::Color& clrNormal, const Gdiplus::Color& clrMark, const Gdiplus::Font& font) const;
-	
+
 protected:
 	CHull	m_Hull;												// die Hülle des Schiffes
 	CShield m_Shield;											// die Schilde des Schiffes
 	CArray<CTorpedoWeapons,CTorpedoWeapons> m_TorpedoWeapons;	// die Torpedobewaffnung des Schiffes
 	CArray<CBeamWeapons,CBeamWeapons>		m_BeamWeapons;		// die Beamfirebewaffnung des Schiffes
-	
+
 	USHORT m_iID;						// ID des Schiffes
 	SHIP_ORDER::Typ m_iCurrentOrder;	// Aktueller Befehl des Schiffes, nutze dazu enum
 	USHORT m_iMaintenanceCosts;			// Unterhaltskosten des Schiffes pro Runde
@@ -216,4 +216,4 @@ private:
 typedef CArray<CShip, CShip> ShipArray;	// Das dynamische Feld wird vereinfacht als ShipArray angegeben
 
 #endif // !defined(AFX_SHIP_H__C9FE4406_A0D7_4AE0_A5D0_0070FCBC45C1__INCLUDED_)
- 
+

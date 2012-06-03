@@ -15,7 +15,7 @@
  * @author Sir Pustekuchen
  * @version 0.0.2
  */
-class CMyButton : public CObject  
+class CMyButton : public CObject
 {
 public:
 	/// Konstruktor mit kompletter Parameterübergabe.
@@ -25,7 +25,7 @@ public:
 	/// @param normGraphicName Name des Grafikfiles für die normale Darstellung
 	/// @param inactiveGraphicName Name des Grafikfiles für die inaktive Darstellung
 	/// @param activeGraphicName Name des Grafikfiles für die aktive Darstellung
-	CMyButton(CPoint point, CSize size, const CString& text, 
+	CMyButton(CPoint point, CSize size, const CString& text,
 		const CString& normGraphicName, const CString& inactiveGraphicName, const CString& activeGraphicName);
 
 	/// Destruktor
@@ -65,7 +65,7 @@ public:
 	BOOLEAN Activate();
 
 	/// Funktion deaktiviert den Button. Dieser kehrt dann zu seinem alten Zustand zurück.
-	BOOLEAN Deactivate();	
+	BOOLEAN Deactivate();
 
 private:
 	// Attribute

@@ -60,7 +60,7 @@ BOOL CPlayGamePage::OnInitDialog()
 	// Controls im Rundenende-Zustand initialisieren
 	m_nState = 0;
 	UpdateControls();
-	
+
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX Property Pages should return FALSE
 }

@@ -12,7 +12,7 @@
 
 #include "fmod.h"
 
-#ifdef __GNUC__ 
+#ifdef __GNUC__
 static char *FMOD_ErrorString(FMOD_RESULT errcode) __attribute__((unused));
 #endif
 

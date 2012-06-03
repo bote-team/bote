@@ -19,11 +19,11 @@ CBuilding::CBuilding() :
 CBuilding::CBuilding(USHORT id) :
 	m_iRunningNumber(id),
 	m_bOnline(FALSE)
-{	
+{
 }
 
 CBuilding::~CBuilding()
-{	
+{
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -32,7 +32,7 @@ CBuilding::~CBuilding()
 CBuilding::CBuilding(const CBuilding & rhs)
 {
 	m_iRunningNumber = rhs.m_iRunningNumber;
-	m_bOnline = rhs.m_bOnline;	
+	m_bOnline = rhs.m_bOnline;
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -43,7 +43,7 @@ CBuilding & CBuilding::operator=(const CBuilding & rhs)
 	if (this == &rhs)
 		return *this;
 
-	m_iRunningNumber = rhs.m_iRunningNumber;	
+	m_iRunningNumber = rhs.m_iRunningNumber;
 	m_bOnline = rhs.m_bOnline;
 	return *this;
 }
@@ -51,7 +51,7 @@ CBuilding & CBuilding::operator=(const CBuilding & rhs)
 ///////////////////////////////////////////////////////////////////////
 // Speichern / Laden
 ///////////////////////////////////////////////////////////////////////
-void CBuilding::Serialize(CArchive &ar)		
+void CBuilding::Serialize(CArchive &ar)
 {
 	CObject::Serialize(ar);
 	// wenn gespeichert wird
@@ -59,13 +59,13 @@ void CBuilding::Serialize(CArchive &ar)
 	{
 		ar << m_iRunningNumber;
 		// Ist das Gebäude online?
-		ar << m_bOnline;		
+		ar << m_bOnline;
 	}
 	// wenn geladen wird
 	if (ar.IsLoading())
 	{
-		ar >> m_iRunningNumber;		
+		ar >> m_iRunningNumber;
 		// Ist das Gebäude online?
-		ar >> m_bOnline;		
+		ar >> m_bOnline;
 	}
 }

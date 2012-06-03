@@ -14,20 +14,20 @@ CEventAlienEntity::CEventAlienEntity(const CString& sPlayersRace, const CString&
 }
 
 CEventAlienEntity::~CEventAlienEntity(void)
-{	
+{
 }
 
 ///////////////////////////////////////////////////////////////////////
 // Speichern / Laden
 ///////////////////////////////////////////////////////////////////////
-void CEventAlienEntity::Serialize(CArchive &ar)		
+void CEventAlienEntity::Serialize(CArchive &ar)
 {
 	__super::Serialize(ar);
-	
+
 	// wenn gespeichert wird
 	if (ar.IsStoring())
 	{
-		ar << m_sAlienEntityID;		
+		ar << m_sAlienEntityID;
 	}
 	// wenn geladen wird
 	else if (ar.IsLoading())
@@ -54,27 +54,27 @@ void CEventAlienEntity::Draw(Graphics* g, CGraphicPool* graphicPool) const
 	// Bild der Alien-Entity
 	CMinor* pAlien = dynamic_cast<CMinor*>(pDoc->GetRaceCtrl()->GetRace(m_sAlienEntityID));
 	ASSERT(pAlien);
-	
+
 	Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Races\\" + pAlien->GetGraphicFileName());
 	if (graphic == NULL)
 		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Races\\ImageMissing.boj");
 	if (graphic)
 		g->DrawImage(graphic, 50, 400, 300, 300);
-		
+
 	CFontLoader::CreateGDIFont(pMajor, 5, fontName, fontSize);
 	fontFormat.SetAlignment(StringAlignmentCenter);
 	fontFormat.SetLineAlignment(StringAlignmentCenter);
 	fontFormat.SetFormatFlags(!StringFormatFlagsNoWrap);
-	
+
 	Gdiplus::Color color;
 	CFontLoader::GetGDIFontColor(pMajor, 3, color);
 	fontBrush.SetColor(color);
 
-	g->DrawString(m_strHeadline.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0,0,1280,96), &fontFormat, &fontBrush);	
+	g->DrawString(m_strHeadline.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0,0,1280,96), &fontFormat, &fontBrush);
 
 	fontFormat.SetAlignment(StringAlignmentNear);
 	g->DrawString(m_strText.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(375, 400, 800, 300), &fontFormat, &fontBrush);
-	
+
 	// Buttons zeichnen
 	CFontLoader::CreateGDIFont(pMajor, 3, fontName, fontSize);
 	fontFormat.SetAlignment(StringAlignmentCenter);

@@ -36,7 +36,7 @@ CMultiSplitterView::~CMultiSplitterView()
 *
 * Function	: AddSwitchableView()
 * Author	: Dan Clark (www.dancclark.com)
-* Date		: 2/6/2003 
+* Date		: 2/6/2003
 *
 * Description:  Adds a view
 *
@@ -50,18 +50,18 @@ bool CMultiSplitterView::AddSwitchableView(UINT id, CRuntimeClass * pView,
 
    pWin  = (CWnd*) pView->CreateObject();
    style = WS_CHILD;
-   
-   if (isFirstView) 
+
+   if (isFirstView)
    {
-	   style |=  WS_VISIBLE ;	   
+	   style |=  WS_VISIBLE ;
    }
-   pWin->Create(NULL, NULL, style, size , this, id, pContext);   
-      
+   pWin->Create(NULL, NULL, style, size , this, id, pContext);
+
    if (isFirstView) // id provided is usally diff. so use alternate
    {
 	   views[pWin] =altId ;
    }
-   else 
+   else
    {
 	   views[pWin] = id;
    }
@@ -73,7 +73,7 @@ bool CMultiSplitterView::AddSwitchableView(UINT id, CRuntimeClass * pView,
 *
 * Function	: SwitchView()
 * Author	: Dan Clark (www.dancclark.com)
-* Date		: 2/6/2003 
+* Date		: 2/6/2003
 *
 * Description:  Hides one view and shows another
 *
@@ -111,12 +111,12 @@ bool CMultiSplitterView::SwitchView(UINT id, int paneRow, int paneCol)
 	   ASSERT(false);
 	   return false;
    }
-	
+
    if(mainWnd->GetActiveView() == pOldView)
 		mainWnd->SetActiveView(pNewView);
-	
-   pNewView->ShowWindow(SW_SHOW); 
-   pOldView->ShowWindow(SW_HIDE);     
+
+   pNewView->ShowWindow(SW_SHOW);
+   pOldView->ShowWindow(SW_HIDE);
 
    pNewView->SetDlgCtrlID(  IdFromRowCol(paneRow, paneCol));
 
@@ -146,9 +146,9 @@ bool CMultiSplitterView::SwitchView(UINT id, int paneRow, int paneCol)
 *
 * Function	: GetViewPtr()
 * Author	: Dan Clark (www.dancclark.com)
-* Date		: 2/6/2003 
+* Date		: 2/6/2003
 *
-* Description:  Gets a base class CWnd ptr 
+* Description:  Gets a base class CWnd ptr
 *
 *******************************************************************************/
 CWnd * CMultiSplitterView::GetViewPtr(UINT id)

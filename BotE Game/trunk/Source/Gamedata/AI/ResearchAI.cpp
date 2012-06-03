@@ -14,7 +14,7 @@ CResearchAI::~CResearchAI(void)
 void CResearchAI::Calc(CBotf2Doc* pDoc)
 {
 	ASSERT(pDoc);
-	
+
 	// Forschungsdurchschnitt aller Rassen berechnen
 	map<CString, CMajor*>* pmMajors = pDoc->GetRaceCtrl()->GetMajors();
 	ASSERT(pmMajors);

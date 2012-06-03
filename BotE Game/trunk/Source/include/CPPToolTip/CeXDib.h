@@ -50,7 +50,7 @@
 #define BFT_BITMAP 0x4d42   // 'BM'
 #endif
 
-class CCeXDib  
+class CCeXDib
 {
 public:
 	CCeXDib();
@@ -94,4 +94,4 @@ private:
 	LPVOID				m_lpBits;	// Pointer to actual bitmap bits
 };
 
-#endif 
+#endif

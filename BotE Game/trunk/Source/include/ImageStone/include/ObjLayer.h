@@ -5,7 +5,7 @@
  *   Create   :  2003-3-30
  *   Home     :  http://www.crazy-bit.com/
  *   Mail     :  crazybitwps@hotmail.com
- *   History  :  
+ *   History  :
  */
 #ifndef __FOO_OBJECT_LAYER__2003_03_30__H__
 #define __FOO_OBJECT_LAYER__2003_03_30__H__

@@ -1,4 +1,4 @@
-#include "stdafx.h" 
+#include "stdafx.h"
 #include "Remanager.h"
 #include "botf2.h"
 #include "Botf2Doc.h"
@@ -22,7 +22,7 @@ void CReManager::CalcEvents(CMajor* pRace)
 	//Berechnet ob ein Event für diese Race eintritt. Wenn nicht wird returnt
 	int randnumber=rand()%101;
 	if(randnumber>m_Probability) return; //Es findet kein Ereignis statt
-	
+
 	if(rand()%2==1)//Ein nur 1 System betreffendes Event
 	{
 		int wichsystem=rand()%(pRace->GetEmpire()->GetSystemList()->GetSize());//wählt System aus
@@ -36,7 +36,7 @@ void CReManager::CalcEvents(CMajor* pRace)
 	} else{  //Ein globales Event
 		for(int i=0;i<100&&(!GlobalEvent(pRace));i++);
 	}
-	
+
 }
 
 bool CReManager::SystemEvent(CPoint &ko, CMajor* pRace)
@@ -70,7 +70,7 @@ bool CReManager::SystemEvent(CPoint &ko, CMajor* pRace)
 		}
 	}else if(eventnumber==SYSTEMEVENTDEMOGRAPHIC)
 	{
-	
+
 		std::vector<CPlanet> planets = pDoc->GetSector(ko).GetPlanets();
 		int planet;
 		// Es sollte hier immer mindestens 1 habitabler bewohnter Planet im System sein...
@@ -131,7 +131,7 @@ bool CReManager::GlobalEvent(CMajor *pRace)
 			typ=MESSAGE_TYPE::DIPLOMACY;
 		}else succes=false;
 	}
-	
+
 	if(succes)
 	{	CMessage message;
 		message.GenerateMessage(messagetext,typ,"",NULL,FALSE,0);//Nachricht für Randomevent erstellen
@@ -164,7 +164,7 @@ void CReManager::CalcExploreEvent(const CPoint &ko, CMajor *pRace, CArray<CShip,
 		{
 			if(pDoc->GetShip(i).GetOwnerOfShip()==pRace->GetRaceID()&&pDoc->GetShip(i).GetKO()==ko)
 				ships->GetAt(i).SetCrewExperiance(4000);
-			
+
 		}
 		messagetext=CResourceManager::GetString("EVENTSHIPXP",false,pDoc->GetSector(ko).GetName(true));
 		typ=MESSAGE_TYPE::MILITARY;

@@ -22,7 +22,7 @@ CIntelAssignment::~CIntelAssignment(void)
 void CIntelAssignment::Serialize(CArchive &ar)
 {
 	CObject::Serialize(ar);
-	
+
 	if (ar.IsStoring())
 	{
 		for (int i = 0; i < 2; i++)
@@ -40,14 +40,14 @@ void CIntelAssignment::Serialize(CArchive &ar)
 			ar << m_bySabPercentage[i].size();
 			for (map<CString, BYTE>::const_iterator it = m_bySabPercentage[i].begin(); it != m_bySabPercentage[i].end(); it++)
 				ar << it->first << it->second;
-		}		
+		}
 	}
 	else if (ar.IsLoading())
 	{
 		size_t mapSize = 0;
 		CString key = "";
 		BYTE value = 0;
-		
+
 		for (int i = 0; i < 2; i++)
 		{
 			m_byPercentage[i].clear();
@@ -122,7 +122,7 @@ BYTE CIntelAssignment::GetSpyPercentages(const CString& sRace, BYTE type)
 
 /// Funktion gibt die einzelnen Sabotagezuteilungen für eine bestimmte Rasse zurück.
 BYTE CIntelAssignment::GetSabotagePercentages(const CString& sRace, BYTE type)
-{	
+{
 	if (type != 4)
 	{
 		map<CString, BYTE>::const_iterator it = m_bySabPercentage[type].find(sRace);
@@ -164,7 +164,7 @@ void CIntelAssignment::SetGlobalPercentage(BYTE type, BYTE perc, CMajor* pMajor,
 				m_byPercentage[1][it->first] = 0;
 		}
 	}
-	
+
 	// wenn die innere Sicherheitszuweisung verändert wird
 	if (type == 2 && known > 0)
 	{
@@ -174,7 +174,7 @@ void CIntelAssignment::SetGlobalPercentage(BYTE type, BYTE perc, CMajor* pMajor,
 			percentages[0][it->first] = m_byPercentage[0][it->first];
 			percentages[1][it->first] = m_byPercentage[1][it->first];
 		}
-		
+
 		// solange durchgehen, bis der richtige Prozentwert erreicht wurde
 		do
 		{
@@ -192,11 +192,11 @@ void CIntelAssignment::SetGlobalPercentage(BYTE type, BYTE perc, CMajor* pMajor,
 				}
 			// bleibt noch ein Rest übrig (z.B. durch ungerade Anzahl), diesen zufällig auf ein Gebiet verteilen
 			if (rest != 0 && vRandoms.GetSize())
-			{				
+			{
 				CString sRandomID = vRandoms[rand()%vRandoms.GetSize()];
 				percentages[rand()%2][sRandomID] += rest;
 			}
-		
+
 			// überprüfen das nirgends mehr als 100% oder weniger als 0% vorhanden sind
 			for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
 				for (int j = 0; j < 2; j++)
@@ -235,7 +235,7 @@ void CIntelAssignment::SetSpyPercentage(BYTE type, BYTE perc, const CString& sRa
 		int percentages[4];
 		for (int i = 0; i < 4; i++)
 			percentages[i] = m_bySpyPercentage[i][sRace];
-		
+
 		// solange durchgehen, bis der richtige Prozentwert erreicht wurde
 		do
 		{
@@ -245,14 +245,14 @@ void CIntelAssignment::SetSpyPercentage(BYTE type, BYTE perc, const CString& sRa
 			int rest = diff - t * 4;
 			// gleichen Anteil auf alle Gebiete von bekannten Rassen verteilen
 			for (int i = 0; i < 4; i++)
-				percentages[i] += t;				
+				percentages[i] += t;
 			// bleibt noch ein Rest übrig (z.B. durch ungerade Anzahl), diesen zufällig auf ein Gebiet verteilen
 			if (rest != 0)
 			{
 				int random = rand()%4;
 				percentages[random] += rest;
 			}
-		
+
 			// überprüfen das nirgends mehr als 100% oder weniger als 0% vorhanden sind
 			for (int i = 0; i < 4; i++)
 			{
@@ -287,7 +287,7 @@ void CIntelAssignment::SetSabotagePercentage(BYTE type, BYTE perc, const CString
 		int percentages[4];
 		for (int i = 0; i < 4; i++)
 			percentages[i] = m_bySabPercentage[i][sRace];
-		
+
 		// solange durchgehen, bis der richtige Prozentwert erreicht wurde
 		do
 		{
@@ -297,14 +297,14 @@ void CIntelAssignment::SetSabotagePercentage(BYTE type, BYTE perc, const CString
 			int rest = diff - t * 4;
 			// gleichen Anteil auf alle Gebiete von bekannten Rassen verteilen
 			for (int i = 0; i < 4; i++)
-				percentages[i] += t;				
+				percentages[i] += t;
 			// bleibt noch ein Rest übrig (z.B. durch ungerade Anzahl), diesen zufällig auf ein Gebiet verteilen
 			if (rest != 0)
 			{
 				int random = rand()%4;
 				percentages[random] += rest;
 			}
-		
+
 			// überprüfen das nirgends mehr als 100% oder weniger als 0% vorhanden sind
 			for (int i = 0; i < 4; i++)
 			{
@@ -346,5 +346,5 @@ void CIntelAssignment::RemoveRaceFromAssignments(const CString& sRace)
 
 /// Resetfunktion für das CIntelligence-Objekt.
 void CIntelAssignment::Reset()
-{	
+{
 }

@@ -22,7 +22,7 @@ class CCombat :	public CObject
 public:
 	/// Konstruktor
 	CCombat(void);
-	
+
 	/// Destruktor
 	~CCombat(void);
 
@@ -32,31 +32,31 @@ public:
 	/// Schiffskampfberechnungsfunktion
 	/**
 	* Diese Funktion verlangt beim Aufruf einen Zeiger auf ein Feld, welches Zeiger auf Schiffe beinhaltet
-	* <code>ships<code>. Diese Schiffe werden dann am Kampf teilnehmen. Kommt es zu einem Kampf, so muß 
+	* <code>ships<code>. Diese Schiffe werden dann am Kampf teilnehmen. Kommt es zu einem Kampf, so muß
 	* diese Funktion zu allererst aufgerufen werden.
 	*/
 	void SetInvolvedShips(CArray<CShip*>* pvShips, std::map<CString, CRace*>* pmRaces, const CAnomaly* pAnomaly);
-	
+
 	/**
 	* Diese Funktion setzt die gewählte Schiffsformation der Rasse <code>race<code> fest.
 	* Sie sollte vor dem Aufruf der Funktion <code>PreCombatCalculation()<code> aufgerufen werden.
 	*/
 	void ApplyShipFormation(int race);
-	
+
 	/**
 	* Diese Funktion setzt die gewählte Taktik <code>tactic<code> der Rasse <code>race<code> fest.
 	* Sie sollte vor dem Aufruf der Funktion <code>PreCombatCalculation()<code> aufgerufen werden.
 	*/
 	void ApplyShipTactic(int race, BYTE tactic);
-	
+
 	/**
 	* Diese Funktion muß vor der Funktion <code>CalculateCombat()<code> aufgerufen werden. Sie stellt alle
 	* Berechnungen an, welche für den späteren Kampfverlauf nötig sind. Wird diese Funktion nicht ordnungsgemäß
 	* durchgeführt, kann die Funktion <code>CalculateCombat()<code> nicht durchgeführt werden.
 	*/
 	void PreCombatCalculation();
-	
-	/** 
+
+	/**
 	* Diese Funktion ist das Herzstück der CCombat-Klasse. Sie führt die ganzen Kampfberechnungen durch.
 	*/
 	void CalculateCombat(std::map<CString, BYTE>& winner);
@@ -65,7 +65,7 @@ public:
 	* Funktion zum Berechnen der groben prozentualen Siegchance einer Rasse. Die Siegchance liegt zwischen 0 und 1.
 	*/
 	static double GetWinningChance(const CRace* pOurRace, const CArray<CShip*>& vInvolvedShips, const std::map<CString, CRace*>* pmRaces, std::set<const CRace*>& sFriends, std::set<const CRace*>& sEnemies, const CAnomaly* pAnomaly);
-	
+
 	/**
 	* Funktion überprüft, ob die Rassen in einem Kampf sich gegeneinander aus diplomatischen Gründen
 	* überhaupt attackieren. Die Funktion gibt <code>TRUE</code> zurück, wenn sie sich angreifen können,
@@ -94,7 +94,7 @@ private:
 	/// Das dynamische Feld in denen alle am Kampf abgefeuerten und noch vorhandenen Torpedos
 	/// mit allen dazughörigen Informationen abegelegt sind
 	std::list<CTorpedo*> m_CT;
-	
+
 	/// Sind alle Vorbereitungen für eine Kampfberechnungen abgeschlossen
 	BOOLEAN m_bReady;
 
@@ -113,8 +113,8 @@ private:
 	/**
 	* Diese Funktion versucht dem i-ten Schiff im Feld <code>m_CS<code> ein Ziel zu geben. Wird dem Schiff ein Ziel
 	* zugewiesen gibt die Funktion TRUE zurück, findet sich kein Ziel mehr gibt die Funktion FALSE zurück.
-	*/	
-	bool SetTarget(int i);		
+	*/
+	bool SetTarget(int i);
 
 	/**
 	* Diese private Funktion überprüft, ob das Schiff an der Stelle <code>i<code> im Feld <code>m_CS<code> weiterhin
@@ -123,5 +123,5 @@ private:
 	* um dieses Schiff aus dem Feld zu entfernen. D.h. mögliche Ziele werden verändert, Zeiger neu zugeweisen usw.
 	* Wenn das Schiff nicht mehr im Kampf ist gibt die Funktion FALSE zurück, ansonsten TRUE.
 	*/
-	bool CheckShipStayInCombat(int i);	
+	bool CheckShipStayInCombat(int i);
 };

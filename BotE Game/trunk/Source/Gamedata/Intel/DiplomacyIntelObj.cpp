@@ -26,7 +26,7 @@ CDiplomacyIntelObj::CDiplomacyIntelObj(const CString& sOwnerID, const CString& s
 CDiplomacyIntelObj::CDiplomacyIntelObj(const CString& sOwnerID, const CString& sEnemyID, USHORT round, BOOLEAN isSpy, const CString& sMajorRaceID, DIPLOMATIC_AGREEMENT::Typ agreement, short duration, short relationship)
 	: CIntelObject(sOwnerID, sEnemyID, round, isSpy, 3), m_sMajor(sMajorRaceID), m_nAgreement(agreement), m_nDuration(duration), m_nRelationship(relationship)
 {
-	m_MinorRaceKO = CPoint(-1,-1);	
+	m_MinorRaceKO = CPoint(-1,-1);
 }
 
 CDiplomacyIntelObj::CDiplomacyIntelObj(const CString& sOwnerID, const CString& sEnemyID, USHORT round, BOOLEAN isSpy, const CPoint &minorRaceKO)
@@ -82,7 +82,7 @@ void CDiplomacyIntelObj::Serialize(CArchive &ar)
 		ar >> nAgreement;
 		m_nAgreement = (DIPLOMATIC_AGREEMENT::Typ)nAgreement;
 		ar >> m_nDuration;
-		ar >> m_nRelationship;		
+		ar >> m_nRelationship;
 	}
 }
 
@@ -96,9 +96,9 @@ void CDiplomacyIntelObj::CreateText(CBotf2Doc* pDoc, BYTE n, const CString& para
 	CString csInput;													// auf csInput wird die jeweilige Zeile gespeichert
 	CString fileName;
 	if (this->GetIsSpy())
-		fileName = CIOData::GetInstance()->GetAppPath() + "Data\\Races\\MajorIntelSpyOff.data";			// Name des zu Öffnenden Files 
+		fileName = CIOData::GetInstance()->GetAppPath() + "Data\\Races\\MajorIntelSpyOff.data";			// Name des zu Öffnenden Files
 	else
-		fileName = CIOData::GetInstance()->GetAppPath() + "Data\\Races\\MajorIntelSabOff.data";		// Name des zu Öffnenden Files 
+		fileName = CIOData::GetInstance()->GetAppPath() + "Data\\Races\\MajorIntelSabOff.data";		// Name des zu Öffnenden Files
 	CStdioFile file;													// Varibale vom Typ CStdioFile
 	if (file.Open(fileName, CFile::modeRead | CFile::typeText))			// Datei wird geöffnet
 	{
@@ -132,7 +132,7 @@ void CDiplomacyIntelObj::CreateText(CBotf2Doc* pDoc, BYTE n, const CString& para
 									s = pEnemey->GetEmpireNameWithAssignedArticle();
 								csInput.Replace("$race$", s);
 							}
-							
+
 							if (m_MinorRaceKO != CPoint(-1,-1))
 							{
 								s = pDoc->GetRaceCtrl()->GetMinorRace(pDoc->m_Sector[m_MinorRaceKO.x][m_MinorRaceKO.y].GetName())->GetRaceName();
@@ -161,7 +161,7 @@ void CDiplomacyIntelObj::CreateText(CBotf2Doc* pDoc, BYTE n, const CString& para
 									s = pMajor->GetEmpireNameWithAssignedArticle();
 									csInput.Replace("$major$", s);
 								}
-								
+
 								if (m_nAgreement == DIPLOMATIC_AGREEMENT::NONE || m_nAgreement == DIPLOMATIC_AGREEMENT::WAR)
 									csInput.Replace("($duration$) ", "");
 								else
@@ -185,7 +185,7 @@ void CDiplomacyIntelObj::CreateText(CBotf2Doc* pDoc, BYTE n, const CString& para
 								s = pEnemey->GetEmpireNameWithAssignedArticle();
 								csInput.Replace("$race$", s);
 							}
-							
+
 							if (m_sMajor != "")
 							{
 								CMajor* pMajor = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(m_sMajor));
@@ -195,7 +195,7 @@ void CDiplomacyIntelObj::CreateText(CBotf2Doc* pDoc, BYTE n, const CString& para
 							else if (m_MinorRaceKO != CPoint(-1,-1))
 								s = CResourceManager::GetString("FEMALE_ARTICLE")+" " + pDoc->GetRaceCtrl()->GetMinorRace(pDoc->m_Sector[m_MinorRaceKO.x][m_MinorRaceKO.y].GetName())->GetRaceName();
 							csInput.Replace("$major$", s);
-							
+
 							if (m_nRelationship < 5) s = CResourceManager::GetString("HATEFUL");
 							else if (m_nRelationship < 15) s = CResourceManager::GetString("FURIOUS");
 							else if (m_nRelationship < 25) s = CResourceManager::GetString("HOSTILE");
@@ -218,13 +218,13 @@ void CDiplomacyIntelObj::CreateText(CBotf2Doc* pDoc, BYTE n, const CString& para
 
 						m_strOwnerDesc = csInput;
 						break;
-					}					
+					}
 				}
-			}			
+			}
 		}
 	}
 	else
-	{	
+	{
 		if (this->GetIsSpy())
 			AfxMessageBox("Error! Could not open file \"MajorIntelSpyOff.data\"...");
 		else
@@ -236,7 +236,7 @@ void CDiplomacyIntelObj::CreateText(CBotf2Doc* pDoc, BYTE n, const CString& para
 	// Nachricht für das Opfer erstellen
 	if (this->GetIsSabotage())
 	{
-		fileName = CIOData::GetInstance()->GetAppPath() + "Data\\Races\\MajorIntelSabDef.data";			// Name des zu Öffnenden Files 
+		fileName = CIOData::GetInstance()->GetAppPath() + "Data\\Races\\MajorIntelSabDef.data";			// Name des zu Öffnenden Files
 		if (file.Open(fileName, CFile::modeRead | CFile::typeText))			// Datei wird geöffnet
 		{
 			while (file.ReadString(csInput))
@@ -254,7 +254,7 @@ void CDiplomacyIntelObj::CreateText(CBotf2Doc* pDoc, BYTE n, const CString& para
 						// Nummer der Nachricht bestimmen
 						if (atoi(s) == n)
 						{
-							csInput.Delete(0, pos);						
+							csInput.Delete(0, pos);
 							// in csInput steht nun die Beschreibung für das Opfer
 							// Jetzt müssen noch die Variablen mit dem richtigen Text gefüllt werden
 							CMajor* pOwner = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(m_sOwner));
@@ -291,13 +291,13 @@ void CDiplomacyIntelObj::CreateText(CBotf2Doc* pDoc, BYTE n, const CString& para
 								csInput = CResourceManager::GetString("DO_NOT_KNOW_RESPONSIBLE_RACE");
 							m_strEnemyDesc += " "+csInput;
 							break;
-						}					
+						}
 					}
-				}			
+				}
 			}
 		}
 		else
-		{	
+		{
 			AfxMessageBox("Error! Could not open file \"MajorIntelSabDef.data\"...");
 			exit(1);
 		}

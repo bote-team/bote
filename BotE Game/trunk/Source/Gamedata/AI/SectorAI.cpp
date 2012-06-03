@@ -13,7 +13,7 @@ CSectorAI::CSectorAI(CBotf2Doc* pDoc)
 {
 	ASSERT(pDoc);
 	m_pDoc = pDoc;
-	
+
 	Clear();
 }
 
@@ -29,7 +29,7 @@ CSectorAI::~CSectorAI(void)
 UINT CSectorAI::GetCompleteDanger(const CString& sOwnRaceID, const CPoint& sector) const
 {
 	UINT danger = 0;
-	
+
 	for (map<CString, map<pair<int, int>, UINT> >::const_iterator it = m_iDangers.begin(); it != m_iDangers.end(); ++it)
 		if (it->first != sOwnRaceID)
 			for (map<pair<int, int>, UINT>::const_iterator itt = it->second.begin(); itt != it->second.end(); ++itt)
@@ -70,7 +70,7 @@ void CSectorAI::CalcualteSectorPriorities()
 			{
 				CalculateTerraformSectors(x,y);
 				CalculateMinorraceSectors(x,y);
-				
+
 			}
 			// Offensivziele in diesem Feld gelten nur, wenn nicht eine gefährliche Anomalie einen
 			// Einflug in den Sektor sinnlos machen würde. Also bei gefährlicher Anomalie wird kein Offensivziel berechnet, sonst immer
@@ -90,7 +90,7 @@ void CSectorAI::CalcualteSectorPriorities()
 		{
 			// Feld der am ehesten zu terraformenden Systeme der Größe nach Sortieren. Der höchste Eintrag steht an erster Stelle.
 			std::sort(m_vSectorsToTerraform[it->first].begin(), m_vSectorsToTerraform[it->first].end());
-			std::reverse(m_vSectorsToTerraform[it->first].begin(), m_vSectorsToTerraform[it->first].end());			
+			std::reverse(m_vSectorsToTerraform[it->first].begin(), m_vSectorsToTerraform[it->first].end());
 
 			// Sektor für den Bau eines Außenpostens berechnen
 			CalculateStationTargets(it->first);
@@ -115,7 +115,7 @@ void CSectorAI::CalcualteSectorPriorities()
 				MYTRACE(MT::LEVEL_INFO, "bombard target for race %s\n",it->first);
 				for (UINT j = 0; j < m_vBombardTargets[it->first].size(); j++)
 					MYTRACE(MT::LEVEL_INFO, "bombard target in sector %d/%d\n",m_vBombardTargets[it->first][j].x, m_vBombardTargets[it->first][j].y);
-			}		
+			}
 #endif
 		}
 }
@@ -128,22 +128,22 @@ void CSectorAI::CalcualteSectorPriorities()
 void CSectorAI::AddDanger(CShip* ship)
 {
 	CString race = ship->GetOwnerOfShip();
-		
+
 	UINT offensive = ship->GetCompleteOffensivePower();
 	UINT defensive = ship->GetCompleteDefensivePower() / 2;
 	m_iDangers[race][pair<int, int>(ship->GetKO().x, ship->GetKO().y)] += (offensive + defensive);
-	
+
 	if (ship->GetShipType() > SHIP_TYPE::COLONYSHIP && ship->GetShipType() < SHIP_TYPE::OUTPOST)
 	{
 		m_iCompleteDanger[race] += (offensive + defensive);
 		m_iCombatShipDangers[race][pair<int, int>(ship->GetKO().x, ship->GetKO().y)] += (offensive + defensive);
 	}
-	
+
 	// Hier wird die Anzahl an Kolonieschiffen für die Rassen hochgezählt.
 	if (ship->GetShipType() == SHIP_TYPE::COLONYSHIP)
 		m_iColoShips[race] += 1;
 	else if (ship->GetShipType() == SHIP_TYPE::TRANSPORTER)
-		m_iTransportShips[race] += 1;	
+		m_iTransportShips[race] += 1;
 }
 
 /// Diese Funktion ermittelt die Sektoren, welche sich am ehesten zum Terraformen für eine bestimmte Rasse eignen.
@@ -156,11 +156,11 @@ void CSectorAI::CalculateTerraformSectors(int x, int y)
 		if (m_pDoc->m_Sector[x][y].GetPlanet(j)->GetHabitable() == TRUE
 			&& m_pDoc->m_Sector[x][y].GetPlanet(j)->GetColonized() == FALSE)
 			pop += (BYTE)m_pDoc->m_Sector[x][y].GetPlanet(j)->GetMaxHabitant();
-	
+
 	if (pop > 5)
 	{
 		// Eintrag für die jeweilige Rasse machen.
-		map<CString, CMajor*>* pmMajors = m_pDoc->GetRaceCtrl()->GetMajors();	
+		map<CString, CMajor*>* pmMajors = m_pDoc->GetRaceCtrl()->GetMajors();
 		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 			if (it->second->GetStarmap()->GetRange(CPoint(x,y)) != 3)
 				if (m_pDoc->m_Sector[x][y].GetOwnerOfSector().IsEmpty() || m_pDoc->m_Sector[x][y].GetOwnerOfSector() == it->first)
@@ -168,7 +168,7 @@ void CSectorAI::CalculateTerraformSectors(int x, int y)
 					SectorToTerraform stt(pop,CPoint(x,y));
 					m_vSectorsToTerraform[it->first].push_back(stt);
 				}
-	}	
+	}
 }
 
 /// Funktion berechnet die Sektoren, in denen eine einem Imperium unbekannte Minorrace lebt, zu deren Sektor
@@ -190,7 +190,7 @@ void CSectorAI::CalculateMinorraceSectors(int x, int y)
 	ASSERT(pMinor);
 
 	// Eintrag für die jeweilige Rasse machen.
-	map<CString, CMajor*>* pmMajors = m_pDoc->GetRaceCtrl()->GetMajors();	
+	map<CString, CMajor*>* pmMajors = m_pDoc->GetRaceCtrl()->GetMajors();
 		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 			if (it->second->GetStarmap()->GetRange(CPoint(x,y)) != 3)
 				if (it->second->IsRaceContacted(sOwner) == false)
@@ -202,8 +202,8 @@ void CSectorAI::CalculateMinorraceSectors(int x, int y)
 /// <code>m_vOffensiveTargets</code> gespeichert.
 void CSectorAI::CalculateOffensiveTargets(int x, int y)
 {
-	map<CString, CMajor*>* pmMajors = m_pDoc->GetRaceCtrl()->GetMajors();	
-	
+	map<CString, CMajor*>* pmMajors = m_pDoc->GetRaceCtrl()->GetMajors();
+
 	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 		// Wenn unsere Rasse dieses Feld überhaupt erreichen kann.
 		if (it->second->GetStarmap()->GetRange(CPoint(x,y)) != 3)
@@ -283,7 +283,7 @@ void CSectorAI::CalculateStationTargets(const CString& sRaceID)
 	if (pMajor)
 	{
 		m_mStationBuild[sRaceID] = pMajor->GetStarmap()->CalcAIBaseSector(0.0f);
-		
+
 		// Umso weniger Terraformsektoren zur Verfügung stehen, umso höher sind die Stationsbauprioiritäten
 		if (GetSectorsToTerraform(sRaceID)->size() == 0)
 			m_mStationBuild[sRaceID].points *= 4.0f;
@@ -303,7 +303,7 @@ void CSectorAI::CalculateStationTargets(const CString& sRaceID)
 void CSectorAI::Clear(void)
 {
 	map<CString, CRace*>* mRaces = m_pDoc->GetRaceCtrl()->GetRaces();
-	
+
 	for (map<CString, CRace*>::const_iterator it = mRaces->begin(); it != mRaces->end(); ++it)
 		m_HighestShipDanger[it->first] = CPoint(-1,-1);
 
@@ -316,5 +316,5 @@ void CSectorAI::Clear(void)
 	m_vOffensiveTargets.clear();
 	m_vBombardTargets.clear();
 	m_iColoShips.clear();
-	m_iTransportShips.clear();		
+	m_iTransportShips.clear();
 }

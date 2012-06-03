@@ -11,17 +11,17 @@ CString CTrade::m_sMonopolOwner[] = {"","","","",""};	// überall keine ID eintra
 //////////////////////////////////////////////////////////////////////
 CTrade::CTrade(void)
 {
-	Reset();	
+	Reset();
 }
 
 CTrade::~CTrade(void)
-{	
+{
 }
 
 ///////////////////////////////////////////////////////////////////////
 // Speichern / Laden
 ///////////////////////////////////////////////////////////////////////
-void CTrade::Serialize(CArchive &ar)		
+void CTrade::Serialize(CArchive &ar)
 {
 	CObject::Serialize(ar);
 
@@ -170,7 +170,7 @@ void CTrade::SellRessource(USHORT res, ULONG number, CPoint system, BOOL flag)
 	{
 		m_iTaxes[res] += (int)(ts.price * m_fTax) - ts.price;
 		return;
-	}	
+	}
 	// Falls der Preis bei NULL liegt setzten wir den auf 1 (kostenlos gibts hier nix ;-) )
 	if (ts.price == NULL)
 		ts.price = -1;
@@ -204,7 +204,7 @@ void CTrade::CalculateTradeActions(CMajor* pMajor, std::vector<std::vector<CSyst
 		// Das Credits was wir bekommen dem Imperium geben
 		else
 			pMajor->GetEmpire()->SetCredits(-m_TradeActions.GetAt(i).price);
-		
+
 		// Hier die Monopole beachten, wenn jemand ein Monopol auf die Ressource hat und dieser jemand mit an unserer
 		// Handelsbörse aktiv ist, dann bekommt dieser die Steuern (auch wir selbst bekommen unsere Steuern zurück!)
 		if (CTrade::m_sMonopolOwner[res].IsEmpty() == false)
@@ -228,7 +228,7 @@ void CTrade::CalculateTradeActions(CMajor* pMajor, std::vector<std::vector<CSyst
 						case DURANIUM: resName = CResourceManager::GetString("DURANIUM"); break;
 						case CRYSTAL: resName = CResourceManager::GetString("CRYSTAL"); break;
 						case IRIDIUM: resName = CResourceManager::GetString("IRIDIUM"); break;
-						}			
+						}
 						CString s;
 						s.Format("%d %s",sum[x][y][i],resName);
 						CMessage message;
@@ -237,7 +237,7 @@ void CTrade::CalculateTradeActions(CMajor* pMajor, std::vector<std::vector<CSyst
 					}
 }
 
-/// Funktion berechnet den Preis der Ressourcen in Zusammenhang zu den anderen Börsen. 
+/// Funktion berechnet den Preis der Ressourcen in Zusammenhang zu den anderen Börsen.
 /// @param pmMajors Zeiger auf Map mit allen Majors des Spiels
 /// @param pCurMajor aktuelle Rasse, für die die Preise berechnet werden
 void CTrade::CalculatePrices(map<CString, CMajor*>* pmMajors, CMajor* pCurMajor)
@@ -258,7 +258,7 @@ void CTrade::CalculatePrices(map<CString, CMajor*>* pmMajors, CMajor* pCurMajor)
 				ASSERT(pMajor);
 
 				newPrices[j] += pMajor->GetTrade()->GetRessourcePrice()[j];
-				count++;				
+				count++;
 			}
 		newPrices[j] /= count;
 		m_iRessourcePrice[j] = (USHORT)ceil(newPrices[j]);
@@ -287,7 +287,7 @@ void CTrade::Reset(void)
 		}
 		m_iRessourcePriceAtRoundStart[i] = m_iRessourcePrice[i];
 		m_iTaxes[i] = 0;
-		m_dMonopolBuy[i] = 0.0f;		
+		m_dMonopolBuy[i] = 0.0f;
 	}
 	m_iQuantity = 100;
 	m_fTax		= 1.0f;

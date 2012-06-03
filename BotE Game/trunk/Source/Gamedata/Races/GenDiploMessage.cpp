@@ -27,17 +27,17 @@ CGenDiploMessage::~CGenDiploMessage(void)
 /// @param Diplomatieobjekt, in das die Textinformationen geschrieben werden
 /// @return <code>true</code> wenn alles geklappt hat, sonst <code>false</code>
 bool CGenDiploMessage::GenerateMajorOffer(CDiplomacyInfo& info)
-{	
+{
 	CString read[13] = {""};	// Anzahl der ganzen verschiedenen Nachrichten + 1
-	
+
 	CString search;
 	search.Format("%s:", info.m_sFromRace);
 	search.MakeUpper();
-	
+
 	CString csInput;											// auf csInput wird die jeweilige Zeile gespeichert
-	CString fileName = CIOData::GetInstance()->GetAppPath() + "Data\\Races\\MajorsDiploOffers.data";	// Name des zu Öffnenden Files 
+	CString fileName = CIOData::GetInstance()->GetAppPath() + "Data\\Races\\MajorsDiploOffers.data";	// Name des zu Öffnenden Files
 	CStdioFile file;											// Varibale vom Typ CStdioFile
-	
+
 	if (file.Open(fileName, CFile::modeRead | CFile::typeText))	// Datei wird geöffnet
 	{
 		int i = 0;
@@ -54,7 +54,7 @@ bool CGenDiploMessage::GenerateMajorOffer(CDiplomacyInfo& info)
 		}
 	}
 	else
-	{	
+	{
 		AfxMessageBox("Fehler! Datei \"MajorsDiploOffers.data\" kann nicht geöffnet werden...");
 		return false;
 	}
@@ -152,7 +152,7 @@ bool CGenDiploMessage::GenerateMajorOffer(CDiplomacyInfo& info)
 			sHeadline = CResourceManager::GetString("REQUEST");
 			CString temp;
 			temp.Format("%d", info.m_nCredits);
-			
+
 			sOffer = read[11];   // bei Forderung an eine andere Majorrace
 			CString res = "";
 			if (info.m_nResources[TITAN] > 0)
@@ -186,7 +186,7 @@ bool CGenDiploMessage::GenerateMajorOffer(CDiplomacyInfo& info)
 				res = CResourceManager::GetString("DERITIUM_REQUEST", FALSE, s);
 			}
 			sOffer.Replace("$ressource$",res);
-			
+
 			sOffer.Replace("$credits$",temp);
 			break;
 		}
@@ -211,7 +211,7 @@ bool CGenDiploMessage::GenerateMajorOffer(CDiplomacyInfo& info)
 		s.Format("%d", info.m_nCredits);
 		sOffer = CResourceManager::GetString("EXTRA_CREDITS", FALSE, temp, s);
 	}
-	
+
 	// Wenn wir eine Ressource mit dazugeben und es sich nicht um eine Forderung handelt
 	if (info.m_nType != DIPLOMATIC_AGREEMENT::REQUEST)
 	{
@@ -253,14 +253,14 @@ bool CGenDiploMessage::GenerateMajorOffer(CDiplomacyInfo& info)
 			temp = CResourceManager::GetString("UNLIMITED_CONTRACT_DURATION", FALSE, sOffer);
 		else
 		{
-			CString s; s.Format("%d", info.m_nDuration);	
+			CString s; s.Format("%d", info.m_nDuration);
 			temp = CResourceManager::GetString("LIMITED_CONTRACT_DURATION", FALSE, sOffer, s);
 		}
-		sOffer = temp;		
+		sOffer = temp;
 	}
 
 	info.m_sHeadline = sHeadline;
-	info.m_sText = sOffer;		
+	info.m_sText = sOffer;
 	return true;
 }
 
@@ -270,14 +270,14 @@ bool CGenDiploMessage::GenerateMajorOffer(CDiplomacyInfo& info)
 bool CGenDiploMessage::GenerateMajorAnswer(CDiplomacyInfo& info)
 {
 	CString read[18] = {""};	// Anzahl der ganzen verschiedenen Nachrichten + 1
-	
+
 	CString search;
 	search.Format("%s:", info.m_sToRace);
 	search.MakeUpper();
-	
-	CString fileName = CIOData::GetInstance()->GetAppPath() + "Data\\Races\\MajorsDiploAnswers.data";	// Name des zu Öffnenden Files 
+
+	CString fileName = CIOData::GetInstance()->GetAppPath() + "Data\\Races\\MajorsDiploAnswers.data";	// Name des zu Öffnenden Files
 	CStdioFile file;													// Varibale vom Typ CStdioFile
-	
+
 	if (file.Open(fileName, CFile::modeRead | CFile::typeText))			// Datei wird geöffnet
 	{
 		int i = 0;
@@ -294,18 +294,18 @@ bool CGenDiploMessage::GenerateMajorAnswer(CDiplomacyInfo& info)
 		}
 	}
 	else
-	{	
+	{
 		AfxMessageBox("Fehler! Datei \"MajorsDiploAnswers.data\" kann nicht geöffnet werden...");
 		exit(1);
 	}
-	
+
 	if (read[0] == "")
 	{
 		CString s;
 		s.Format("Fehler in Datei! Konnte %s nicht in MajorDiploAnswers.data finden", search);
 		AfxMessageBox(s);
 	}
-	
+
 	// Datei wird geschlossen
 	file.Close();
 
@@ -483,18 +483,18 @@ bool CGenDiploMessage::GenerateMinorOffer(CDiplomacyInfo& info)
 
 	if (vSearchText.size() == 0)
 		vSearchText.push_back("NOTHING_SPECIAL:");
-	
+
 	CString read[7];	// Anzahl der ganzen verschiedenen Nachrichten + 1
 	CString search;
 	search.Format("%s:", info.m_sFromRace);
 	search.MakeUpper();
 	// aus den ganzen Rasseneigenschaften eine zufällige aussuchen (falls mehrere vorhanden sind)
 	CString search2 = vSearchText[rand()%vSearchText.size()];
-	
-	CString fileName = CIOData::GetInstance()->GetAppPath() + "Data\\Races\\MinorsDiploOffers.data";	// Name des zu Öffnenden Files 
+
+	CString fileName = CIOData::GetInstance()->GetAppPath() + "Data\\Races\\MinorsDiploOffers.data";	// Name des zu Öffnenden Files
 	CStdioFile file;													// Varibale vom Typ CStdioFile
 	if (file.Open(fileName, CFile::modeRead | CFile::typeText))			// Datei wird geöffnet
-	{		
+	{
 		int i = 0;
 		CString sInput;	// auf csInput wird die jeweilige Zeile gespeichert
 		while (file.ReadString(sInput))
@@ -511,13 +511,13 @@ bool CGenDiploMessage::GenerateMinorOffer(CDiplomacyInfo& info)
 		}
 	}
 	else
-	{	
+	{
 		AfxMessageBox("Fehler! Datei \"MinorsDiploOffers.data\" kann nicht geöffnet werden...");
 		return false;
 	}
 	// Datei wird geschlossen
 	file.Close();
-	
+
 	// Jetzt die einzelnen Werte aus dem read-Feld in die Membervariablen schreiben
 	CString sOfferText = "";
 	CString sHeadline = "";
@@ -614,8 +614,8 @@ bool CGenDiploMessage::GenerateMinorAnswer(CDiplomacyInfo& info)
 	search.MakeUpper();
 	// aus den ganzen Rasseneigenschaften eine zufällige aussuchen (falls mehrere vorhanden sind)
 	CString search2 = vSearchText[rand()%vSearchText.size()];
-	
-	CString fileName = CIOData::GetInstance()->GetAppPath() + "Data\\Races\\MinorsDiploAnswers.data";	// Name des zu Öffnenden Files 
+
+	CString fileName = CIOData::GetInstance()->GetAppPath() + "Data\\Races\\MinorsDiploAnswers.data";	// Name des zu Öffnenden Files
 	CStdioFile file;													// Varibale vom Typ CStdioFile
 	if (file.Open(fileName, CFile::modeRead | CFile::typeText))			// Datei wird geöffnet
 	{
@@ -634,13 +634,13 @@ bool CGenDiploMessage::GenerateMinorAnswer(CDiplomacyInfo& info)
 		}
 	}
 	else
-	{	
+	{
 		AfxMessageBox("Fehler! Datei \"MinorsDiploAnswers.data\" kann nicht geöffnet werden...");
 		return false;
 	}
 	// Datei wird geschlossen
 	file.Close();
-	
+
 	// Jetzt die einzelnen Werte aus dem read-Feld in die Membervariablen schreiben
 	CString sAnswer = "";
 	switch (info.m_nType)

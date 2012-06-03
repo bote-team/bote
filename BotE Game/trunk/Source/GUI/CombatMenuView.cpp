@@ -102,7 +102,7 @@ void CCombatMenuView::OnNewRound()
 		m_FriendShipsCursor[i]->SetState(2);
 	for (int i = 0; i < m_EnemyShipsCursor.GetSize(); i++)
 		m_EnemyShipsCursor[i]->SetState(2);
-	
+
 	m_bInOrderMenu = false;
 	m_vInvolvedShips.RemoveAll();
 	m_sFriends.clear();
@@ -138,17 +138,17 @@ void CCombatMenuView::OnDraw(CDC* dc)
 	CMyMemDC pDC(dc);
 	CRect client;
 	GetClientRect(&client);
-		
+
 	// Graphicsobjekt, in welches gezeichnet wird anlegen
 	Graphics g(pDC->GetSafeHdc());
-	
+
 	g.Clear(Color::Black);
 	g.SetSmoothingMode(SmoothingModeHighSpeed);
 	g.SetInterpolationMode(InterpolationModeLowQuality);
 	g.SetPixelOffsetMode(PixelOffsetModeHighSpeed);
 	g.SetCompositingQuality(CompositingQualityHighSpeed);
 	g.ScaleTransform((REAL)client.Width() / (REAL)m_TotalSize.cx, (REAL)client.Height() / (REAL)m_TotalSize.cy);
-	
+
 	if (pDoc->m_bRoundEndPressed)
 	{
 		DrawCombatInfoMenue(&g);
@@ -169,7 +169,7 @@ void CCombatMenuView::OnDraw(CDC* dc)
 			for (int j = 0; j < pShip->GetFleet()->GetFleetSize(); j++)
 				m_vInvolvedShips.Add(pShip->GetFleet()->GetShipFromFleet(j));
 	}
-	
+
 	// grobe prozentuale Kampfchance und beteiligte Rassen berechnen
 	const CAnomaly* pAnomaly = pDoc->GetSector(pDoc->m_ptCurrentCombatSector).GetAnomaly();
 	m_dWinningChance = CCombat::GetWinningChance(pMajor, m_vInvolvedShips, pDoc->GetRaceCtrl()->GetRaces(), m_sFriends, m_sEnemies, pAnomaly);
@@ -219,9 +219,9 @@ void CCombatMenuView::OnInitialUpdate()
 	m_TotalSize = CSize(1280, 1024);
 
 	m_bInOrderMenu = false;
-	
+
 	// View bei den Tooltipps anmelden
-	pDoc->GetMainFrame()->AddToTooltip(this);	
+	pDoc->GetMainFrame()->AddToTooltip(this);
 }
 
 /// Funktion lädt die rassenspezifischen Grafiken.
@@ -233,11 +233,11 @@ void CCombatMenuView::LoadRaceGraphics()
 	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
 	CString sPrefix = pMajor->GetPrefix();
-	
+
 	bg_combatdecmenu	= pDoc->GetGraphicPool()->GetGDIGraphic("Events\\CombatDec.boj");
 	bg_combatinfomenu	= pDoc->GetGraphicPool()->GetGDIGraphic("Events\\CombatInfo.boj");
 	bg_combatordermenu	= pDoc->GetGraphicPool()->GetGDIGraphic("Events\\CombatOrder.boj");
-	
+
 	CreateButtons();
 }
 
@@ -250,14 +250,14 @@ void CCombatMenuView::OnPrepareDC(CDC* pDC, CPrintInfo* pInfo)
 BOOL CCombatMenuView::OnEraseBkgnd(CDC* pDC)
 {
 	// TODO: Add your message handler code here and/or call default
-	return TRUE;	
+	return TRUE;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 // Hier die Funktion zum Zeichnen des Nachrichtenmenüs
 /////////////////////////////////////////////////////////////////////////////////////////
 void CCombatMenuView::DrawCombatDecisionMenue(Graphics* g)
-{	
+{
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
 
@@ -265,10 +265,10 @@ void CCombatMenuView::DrawCombatDecisionMenue(Graphics* g)
 	ASSERT(pMajor);
 	if (!pMajor)
 		return;
-	
+
 	CString fontName = "";
 	Gdiplus::REAL fontSize = 0.0;
-	
+
 	// Rassenspezifische Schriftart auswählen
 	CFontLoader::CreateGDIFont(pMajor, 2, fontName, fontSize);
 	// Schriftfarbe wählen
@@ -301,7 +301,7 @@ void CCombatMenuView::DrawCombatDecisionMenue(Graphics* g)
 			graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Races\\ImageMissing.boj");
 		if (graphic)
 			g->DrawImage(graphic, nPosX, 125, 200, 200);
-		
+
 		g->DrawRectangle(&Pen(Color(200,200,200), 2), nPosX, 125, 200, 200);
 		// Rassenname über das Bild zeichnen
 		g->DrawString(pRace->GetRaceName().AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(nPosX,100,200,25), &fontFormat, &fontBrush);
@@ -310,7 +310,7 @@ void CCombatMenuView::DrawCombatDecisionMenue(Graphics* g)
 		graphic	= pDoc->GetGraphicPool()->GetGDIGraphic("Symbols\\" + pRace->GetRaceID() + ".bop");
 		if (graphic)
 			g->DrawImage(graphic, nPosX + 125, 250, 75, 75);
-		
+
 		nPosX += 220;
 	}
 	Bitmap* graphic = NULL;
@@ -324,8 +324,8 @@ void CCombatMenuView::DrawCombatDecisionMenue(Graphics* g)
 		if (graphic == NULL)
 			graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Races\\ImageMissing.boj");
 		if (graphic)
-			g->DrawImage(graphic, nPosX, 450, 200, 200);			
-		
+			g->DrawImage(graphic, nPosX, 450, 200, 200);
+
 		g->DrawRectangle(&Pen(Color(200,200,200), 2), nPosX, 450, 200, 200);
 		// Rassenname über das Bild zeichnen
 		g->DrawString(pRace->GetRaceName().AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(nPosX,425,200,25), &fontFormat, &fontBrush);
@@ -334,10 +334,10 @@ void CCombatMenuView::DrawCombatDecisionMenue(Graphics* g)
 		graphic	= pDoc->GetGraphicPool()->GetGDIGraphic("Symbols\\" + pRace->GetRaceID() + ".bop");
 		if (graphic)
 			g->DrawImage(graphic, nPosX + 125, 575, 75, 75);
-		
+
 		nPosX += 220;
 	}
-	
+
 	// größte Schriftart laden
 	CFontLoader::CreateGDIFont(pMajor, 5, fontName, fontSize);
 	fontSize *= 1.5;
@@ -389,7 +389,7 @@ void CCombatMenuView::DrawCombatDecisionMenue(Graphics* g)
 	}
 
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0,680,m_TotalSize.cx,200), &fontFormat, &fontBrush);
-	
+
 	// Schriftart für große Buttons laden
 	CFontLoader::CreateGDIFont(pMajor, 3, fontName, fontSize);
 	// Schriftfarbe wählen
@@ -398,14 +398,14 @@ void CCombatMenuView::DrawCombatDecisionMenue(Graphics* g)
 	SolidBrush btnBrush(btnColor);
 	// Buttons für Kampfentscheidung zeichnen
 	DrawGDIButtons(g, &m_CombatDecisionButtons, -1, Gdiplus::Font(fontName.AllocSysString(), fontSize), btnBrush);
-		
+
 	// Überschrift in der Mitte zeichnen
 	// Rassenspezifische Schriftart auswählen
 	CFontLoader::CreateGDIFont(pMajor, 5, fontName, fontSize);
 	// Schriftfarbe wählen
 	CFontLoader::GetGDIFontColor(pMajor, 3, normalColor);
 	fontBrush.SetColor(normalColor);
-	
+
 	if (pDoc->GetSector(p).GetKnown(pMajor->GetRaceID()))
 		s.Format("%s %s", CResourceManager::GetString("COMBAT_IN_SECTOR"), pDoc->GetSector(p).GetName(TRUE));
 	else
@@ -414,7 +414,7 @@ void CCombatMenuView::DrawCombatDecisionMenue(Graphics* g)
 }
 
 void CCombatMenuView::DrawCombatInfoMenue(Graphics* g)
-{	
+{
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
 
@@ -422,10 +422,10 @@ void CCombatMenuView::DrawCombatInfoMenue(Graphics* g)
 	ASSERT(pMajor);
 	if (!pMajor)
 		return;
-	
+
 	CString fontName = "";
 	Gdiplus::REAL fontSize = 0.0;
-	
+
 	// Rassenspezifische Schriftart auswählen
 	CFontLoader::CreateGDIFont(pMajor, 2, fontName, fontSize);
 	// Schriftfarbe wählen
@@ -458,12 +458,12 @@ void CCombatMenuView::DrawCombatInfoMenue(Graphics* g)
 		pDoc->m_nCombatOrder = COMBAT_ORDER::NONE;
 		Sleep(250);
 		pDoc->m_bRoundEndPressed = true;
-		client.EndOfRound(pDoc);		
-	}	
+		client.EndOfRound(pDoc);
+	}
 }
 
 void CCombatMenuView::DrawCombatOrderMenue(Graphics* g)
-{	
+{
 	m_vShipRects.clear();
 
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
@@ -473,10 +473,10 @@ void CCombatMenuView::DrawCombatOrderMenue(Graphics* g)
 	ASSERT(pMajor);
 	if (!pMajor)
 		return;
-	
+
 	CString fontName = "";
 	Gdiplus::REAL fontSize = 0.0;
-	
+
 	// Rassenspezifische Schriftart auswählen
 	CFontLoader::CreateGDIFont(pMajor, 2, fontName, fontSize);
 	// Schriftfarbe wählen
@@ -513,7 +513,7 @@ void CCombatMenuView::DrawCombatOrderMenue(Graphics* g)
 		if (!pRace || m_sFriends.find(pRace) == m_sFriends.end())
 			continue;
 
-		nCounter++;		
+		nCounter++;
 		if (nCounter <= m_nPageFriends * 18)
 			continue;
 
@@ -524,7 +524,7 @@ void CCombatMenuView::DrawCombatOrderMenue(Graphics* g)
 				m_FriendShipsCursor[1]->SetState(0);
 			break;
 		}
-		
+
 		CPoint pt(50 + 225 * nCol, 255 + 65 * nRow);
 		bool bMarked = pShip == m_pMarkedShip;
 		pShip->DrawShip(g, pDoc->GetGraphicPool(), pt, bMarked, false, false, normalColor, normalColor, Gdiplus::Font(fontName.AllocSysString(), fontSize));
@@ -538,14 +538,14 @@ void CCombatMenuView::DrawCombatOrderMenue(Graphics* g)
 			case COMBAT_TACTIC::CT_AVOID:	graphic	= pDoc->GetGraphicPool()->GetGDIGraphic("Other\\tactic_avoid.bop"); break;
 			case COMBAT_TACTIC::CT_RETREAT:	graphic	= pDoc->GetGraphicPool()->GetGDIGraphic("Other\\tactic_retreat.bop"); break;
 			}
-			
+
 			if (graphic)
 				g->DrawImage(graphic, pt.x, pt.y + 40, 30, 30);
 		}
-		
+
 		m_vShipRects.push_back(pair<CRect, CShip*>(CRect(pt.x, pt.y + 20, pt.x + 250, pt.y + 85), pShip));
-		nRow++;		
-		
+		nRow++;
+
 		if (nRow%9 == 0)
 		{
 			nRow = 0;
@@ -570,11 +570,11 @@ void CCombatMenuView::DrawCombatOrderMenue(Graphics* g)
 			continue;
 
 		CRace* pRace = pDoc->GetRaceCtrl()->GetRace(pShip->GetOwnerOfShip());
-				
+
 		if (!pRace || m_sEnemies.find(pRace) == m_sEnemies.end())
 			continue;
 
-		nCounter++;		
+		nCounter++;
 		if (nCounter <= m_nPageEnemies * 18)
 			continue;
 
@@ -585,12 +585,12 @@ void CCombatMenuView::DrawCombatOrderMenue(Graphics* g)
 				m_EnemyShipsCursor[1]->SetState(0);
 			break;
 		}
-		
+
 		CPoint pt(750 + 225 * nCol, 255 + 65 * nRow);
 		bool bMarked = pShip == m_pMarkedShip;
 		pShip->DrawShip(g, pDoc->GetGraphicPool(), pt, bMarked, false, false, normalColor, normalColor, Gdiplus::Font(fontName.AllocSysString(), fontSize));
 		m_vShipRects.push_back(pair<CRect, CShip*>(CRect(pt.x, pt.y + 20, pt.x + 250, pt.y + 85), pShip));
-		nRow++;		
+		nRow++;
 
 		if (nRow%9 == 0)
 		{
@@ -617,7 +617,7 @@ void CCombatMenuView::DrawCombatOrderMenue(Graphics* g)
 	CFontLoader::CreateGDIFont(pMajor, 5, fontName, fontSize);
 	fontSize *= 2.0;
 	g->DrawString(CResourceManager::GetString("VS").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0,65,m_TotalSize.cx,m_TotalSize.cy), &fontFormat, &fontBrush);
-	
+
 	// Schriftart für kleine Buttons laden
 	CFontLoader::CreateGDIFont(pMajor, 2, fontName, fontSize);
 
@@ -625,7 +625,7 @@ void CCombatMenuView::DrawCombatOrderMenue(Graphics* g)
 	Gdiplus::Color markColor;
 	markColor.SetFromCOLORREF(pMajor->GetDesign()->m_clrListMarkTextColor);
 	fontBrush.SetColor(markColor);
-	
+
 	g->DrawString(CResourceManager::GetString("FRIENDLY_SHIPS").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(50,255,480,25), &fontFormat, &fontBrush);
 	g->DrawString(CResourceManager::GetString("ENEMY_SHIPS").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(750,255,480,25), &fontFormat, &fontBrush);
 
@@ -658,7 +658,7 @@ void CCombatMenuView::DrawCombatOrderMenue(Graphics* g)
 	graphic	= pDoc->GetGraphicPool()->GetGDIGraphic("Other\\tactic_retreat.bop");
 	if (graphic)
 		g->DrawImage(graphic, 780, 80, 40, 40);
-			
+
 	// Überschrift in der Mitte zeichnen
 	// Rassenspezifische Schriftart auswählen
 	CFontLoader::CreateGDIFont(pMajor, 5, fontName, fontSize);
@@ -670,7 +670,7 @@ void CCombatMenuView::DrawCombatOrderMenue(Graphics* g)
 		s.Format("%s %s", CResourceManager::GetString("COMBAT_IN_SECTOR"), pDoc->GetSector(p).GetName(TRUE));
 	else
 		s.Format("%s %c%i", CResourceManager::GetString("COMBAT_IN_SECTOR"), (char)(p.y+97), p.x + 1);
-	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0,10,m_TotalSize.cx, 50), &fontFormat, &fontBrush);	
+	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0,10,m_TotalSize.cx, 50), &fontFormat, &fontBrush);
 }
 
 void CCombatMenuView::OnLButtonDown(UINT nFlags, CPoint point)
@@ -691,7 +691,7 @@ void CCombatMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		return;
 
 	CalcLogicalPoint(point);
-	
+
 	if (!m_bInOrderMenu)
 	{
 		int iClick = COMBAT_ORDER::NONE;
@@ -703,16 +703,16 @@ void CCombatMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 				m_bInOrderMenu = true;
 				Invalidate();
 				for (int i = 0; i < m_CombatDecisionButtons.GetSize(); i++)
-					m_CombatDecisionButtons[i]->SetState(0);	
+					m_CombatDecisionButtons[i]->SetState(0);
 			}
 			else
 			{
 				// Befehl festlegen
 				pDoc->m_nCombatOrder = (COMBAT_ORDER::Typ)iClick;
-				
+
 				pDoc->m_bRoundEndPressed = true;
 				client.EndOfRound(pDoc);
-			}		
+			}
 			return;
 		}
 	}
@@ -720,12 +720,12 @@ void CCombatMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 	{
 		int iClick = -1;
 		if (ButtonReactOnLeftClick(point, &m_CombatTacticButtons, iClick))
-		{		
+		{
 			return;
 		}
 
 		if (ButtonReactOnLeftClick(point, &m_CombatOrderButtons, iClick))
-		{	
+		{
 			if (iClick == 0)
 			{
 				m_bInOrderMenu = false;
@@ -740,12 +740,12 @@ void CCombatMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 				pDoc->m_bRoundEndPressed = true;
 				client.EndOfRound(pDoc);
 			}
-			
+
 			return;
 		}
 
 		if (ButtonReactOnLeftClick(point, &m_FriendShipsCursor, iClick))
-		{		
+		{
 			if (iClick == 0)
 				m_nPageFriends--;
 			else
@@ -755,7 +755,7 @@ void CCombatMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		}
 
 		if (ButtonReactOnLeftClick(point, &m_EnemyShipsCursor, iClick))
-		{		
+		{
 			if (iClick == 0)
 				m_nPageEnemies--;
 			else
@@ -765,7 +765,7 @@ void CCombatMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		}
 
 		if (ButtonReactOnLeftClick(point, &m_ShipTypeButton, iClick, true, true))
-		{		
+		{
 			m_nShipType++;
 			if (m_nShipType > SHIP_TYPE::ALIEN - 1)
 				m_nShipType = -1;
@@ -785,7 +785,7 @@ void CCombatMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 				m_FriendShipsCursor[i]->SetState(2);
 			for (int i = 0; i < m_EnemyShipsCursor.GetSize(); i++)
 				m_EnemyShipsCursor[i]->SetState(2);
-			
+
 			Invalidate();
 			return;
 		}
@@ -817,9 +817,9 @@ void CCombatMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 						break;
 				default: ASSERT(FALSE);
 				}
-				
+
 				CRect r = m_vShipRects[i].first;
-				CalcDeviceRect(r);				
+				CalcDeviceRect(r);
 				InvalidateRect(r, FALSE);
 				return;
 			}
@@ -845,13 +845,13 @@ void CCombatMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 	ASSERT(pMajor);
 	if (!pMajor)
 		return;
-	
+
 	CalcLogicalPoint(point);
-	
+
 	for (int i = 0; i < m_CombatTacticButtons.GetSize(); i++)
 	{
 		if (m_CombatTacticButtons[i]->GetRect().PtInRect(point))
-		{	
+		{
 			// allen eigenen Schiffen den geklickten Befehl geben
 			for (int j = 0; j < m_vInvolvedShips.GetSize(); j++)
 			{
@@ -861,7 +861,7 @@ void CCombatMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 
 				if (pShip->GetOwnerOfShip() != pMajor->GetRaceID() || pShip->GetKO() != pDoc->m_ptCurrentCombatSector)
 					continue;
-				
+
 				switch (i)
 				{
 				case 0: pShip->SetCombatTactic(COMBAT_TACTIC::CT_ATTACK);	break;
@@ -892,10 +892,10 @@ void CCombatMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 			for (int j = 0; j < m_vInvolvedShips.GetSize(); j++)
 			{
 				CShip* pShip2 = m_vInvolvedShips[j];
-				
+
 				if (pShip2->GetOwnerOfShip() != pMajor->GetRaceID() || pShip2->GetKO() != pDoc->m_ptCurrentCombatSector || pShip2->GetShipClass() != pShip->GetShipClass())
-					continue;		
-				
+					continue;
+
 				// aktuell eingestellt Befehl an das Schiff übergeben
 				int nOrder = -1;
 				for (int j = 0; j < m_CombatTacticButtons.GetSize(); j++)
@@ -944,10 +944,10 @@ void CCombatMenuView::OnRButtonDown(UINT nFlags, CPoint point)
 		return;
 
 	CalcLogicalPoint(point);
-	
+
 	int iClick = -1;
 	if (ButtonReactOnLeftClick(point, &m_ShipTypeButton, iClick, true, true))
-	{		
+	{
 		m_nShipType--;
 		if (m_nShipType < -1)
 			m_nShipType = SHIP_TYPE::ALIEN - 1;
@@ -967,7 +967,7 @@ void CCombatMenuView::OnRButtonDown(UINT nFlags, CPoint point)
 			m_FriendShipsCursor[i]->SetState(2);
 		for (int i = 0; i < m_EnemyShipsCursor.GetSize(); i++)
 			m_EnemyShipsCursor[i]->SetState(2);
-		
+
 		Invalidate();
 		return;
 	}
@@ -977,7 +977,7 @@ void CCombatMenuView::OnRButtonDown(UINT nFlags, CPoint point)
 
 void CCombatMenuView::OnMouseMove(UINT nFlags, CPoint point)
 {
-	// TODO: Add your message handler code here and/or call default	
+	// TODO: Add your message handler code here and/or call default
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
 
@@ -1007,7 +1007,7 @@ void CCombatMenuView::OnMouseMove(UINT nFlags, CPoint point)
 					m_rLastMarkedRect = r;
 					m_pMarkedShip = m_vShipRects[i].second;
 					InvalidateRect(r, FALSE);
-				}				
+				}
 				return;
 			}
 		}
@@ -1061,7 +1061,7 @@ CString CCombatMenuView::CreateTooltip(void)
 
 				return sTip;
 			}
-			
+
 			nPosX += 220;
 		}
 
@@ -1081,7 +1081,7 @@ CString CCombatMenuView::CreateTooltip(void)
 
 				return sTip;
 			}
-			
+
 			nPosX += 220;
 		}
 	}
@@ -1091,7 +1091,7 @@ CString CCombatMenuView::CreateTooltip(void)
 			if (m_vShipRects[i].first.PtInRect(pt))
 				return m_vShipRects[i].second->GetTooltip(false);
 	}
-	
+
 	return "";
 }
 
@@ -1105,7 +1105,7 @@ void CCombatMenuView::CreateButtons()
 
 	CString sPrefix = pMajor->GetPrefix();
 	// alle Buttons in der View anlegen und Grafiken laden
-	
+
 	CString fileN = "Other\\" + sPrefix + "button.bop";
 	CString fileI = "Other\\" + sPrefix + "buttoni.bop";
 	CString fileA = "Other\\" + sPrefix + "buttona.bop";
@@ -1131,4 +1131,4 @@ void CCombatMenuView::CreateButtons()
 	// Button zum Umschalten der Schiffstypen
 	m_ShipTypeButton.Add(new CMyButton(CPoint(580,285), CSize(120,30), CResourceManager::GetString("ALL_SHIPS"),  fileN, fileI, fileA));
 }
-	
+

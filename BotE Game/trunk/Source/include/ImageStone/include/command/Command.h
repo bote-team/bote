@@ -5,7 +5,7 @@
  *   Create   :  2003-4-8
  *   Home     :  http://www.crazy-bit.com/
  *   Mail     :  crazybitwps@hotmail.com
- *   History  :  
+ *   History  :
  */
 #ifndef	__FOO_COMMAND__2003_04_08__H__
 #define	__FOO_COMMAND__2003_04_08__H__
@@ -391,7 +391,7 @@ class FCCmdMaskColor : public FCCmdImageMask
     virtual void CreateMaskImage (const FCObjImage& img, FCObjImage& imgMask, FCObjProgress* pProgress)
     {
         imgMask.Create (img.Width(), img.Height(), 32) ;
-        
+
         FCPixelCombineColor   aCmd(m_crFill) ;
         imgMask.SinglePixelProcessProc (aCmd, pProgress) ;
     }
@@ -922,7 +922,7 @@ private:
         {
             FCObjSelect     selCreate ;
             CreateSelection (canvas, selCreate) ;
-            newSelect = canvas.GetSelection() ;        
+            newSelect = canvas.GetSelection() ;
             if (m_nType == FCObjSelect::RGN_ADD)
                 AddSelection (newSelect, selCreate) ;
             else if (m_nType == FCObjSelect::RGN_SUB)
@@ -934,7 +934,7 @@ private:
         if (!selCurr.HasSelected() || !sel.HasSelected())
             {assert(false); return;}
 
-        // selection's canvas position 
+        // selection's canvas position
         RECT     rcSel = {0, 0, sel.Width(), sel.Height()},
                  rcCurr = {0, 0, selCurr.Width(), selCurr.Height()} ;
         selCurr.Layer_to_Canvas (rcCurr) ;
@@ -965,7 +965,7 @@ private:
         if ((&selCurr == &sel) || !selCurr.HasSelected() || !sel.HasSelected())
             {assert(false); return;}
 
-        // selection's canvas position 
+        // selection's canvas position
         RECT     rcSel = {0, 0, sel.Width(), sel.Height()} ,
                  rcCurr = {0, 0, selCurr.Width(), selCurr.Height()} ;
         selCurr.Layer_to_Canvas (rcCurr) ;
@@ -1725,7 +1725,7 @@ private:
                 continue ;
 
             // position at new layer
-            pNewLayer->CombineImage (*pLayer, 
+            pNewLayer->CombineImage (*pLayer,
                                      pLayer->GetGraphObjPos().x - rcNewLayer.left,
                                      pLayer->GetGraphObjPos().y - rcNewLayer.top,
                                      pLayer->GetLayerTransparent()) ;
@@ -1937,14 +1937,14 @@ public:
         for (int i=0 ; i < rCanvas.GetLayerNumber() ; i++)
         {
             FCObjLayer     * pLayer = rCanvas.GetLayer(i) ;
-            
+
             // 计算新位置
             // 这里特殊点，先移动，后旋转，因为旋转时会绕中心点旋转
             POINT		ptNew = pLayer->GetGraphObjPos() ;
             ptNew.x += (m_NewCanvasSize.cx-OldSize.cx)/2 ;
             ptNew.y += (m_NewCanvasSize.cy-OldSize.cy)/2 ;
             PushImgCommand (new FCCmdLayerMove (pLayer, ptNew)) ;
-            
+
             PushImgCommand (new FCCmdLayerRotate (pLayer, nAngle)) ;
         }
         PushImgCommand (new FCCmdSelectionClear()) ;

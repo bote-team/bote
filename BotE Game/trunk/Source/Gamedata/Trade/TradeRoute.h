@@ -24,7 +24,7 @@ public:
 
 	/// Kopierkonstruktor
 	CTradeRoute(const CTradeRoute & rhs);
-	
+
 	/// Zuweisungsoperatur
 	CTradeRoute & operator=(const CTradeRoute &);
 
@@ -36,11 +36,11 @@ public:
 
 	/// Funktion gibt die Zielkoordinate der Handelsroute zurück
 	CPoint GetDestKO() const {return m_KO;}
-	
+
 	/// Funktion gibt das Credits inkl. Boni auf Handelroute, welches man durch die Handelsroute bekommt zurück
 	USHORT GetCredits(short boni) const;
 
-	/// Funktion gibt die verbleibende Dauer der Handelsroute zurück. Ist die Dauer negativ, so wird sie zum Ende 
+	/// Funktion gibt die verbleibende Dauer der Handelsroute zurück. Ist die Dauer negativ, so wird sie zum Ende
 	/// dieser Zeit aufgehoben.
 	short GetDuration() const {return m_iDuration;}
 
@@ -66,7 +66,7 @@ public:
 	/// Funktion zeichnet die Handelsroute auf der Galaxiekarte. Übergeben werden dafür die Koordinate des Systems
 	/// von wo die Handelsroute startet <code>start</code> sowie auch der Besitzer dieses Systems <code>pMajor</code>.
 	void DrawTradeRoute(CDC* pDC, CPoint start, const CMajor* pMajor);
-	
+
 private:
 	/// Die Koordinate des Sektors, zu dem die Handelsroute verläuft
 	CPoint m_KO;

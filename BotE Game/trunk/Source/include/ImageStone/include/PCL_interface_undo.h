@@ -5,7 +5,7 @@
  *   Create   :  2005-3-6
  *   Home     :  http://www.crazy-bit.com/
  *   Mail     :  crazybitwps@hotmail.com
- *   History  :  
+ *   History  :
  */
 #ifndef __FOO_PCL_INTERFACE_UNDO_MANAGER_H__
 #define __FOO_PCL_INTERFACE_UNDO_MANAGER_H__

@@ -47,17 +47,17 @@ void CIntelBottomView::OnDraw(CDC* dc)
 	CMyMemDC pDC(dc);
 	CRect client;
 	GetClientRect(&client);
-		
+
 	// Graphicsobjekt, in welches gezeichnet wird anlegen
 	Graphics g(pDC->GetSafeHdc());
-	
+
 	g.Clear(Color::Black);
 	g.SetSmoothingMode(SmoothingModeHighSpeed);
 	g.SetInterpolationMode(InterpolationModeLowQuality);
 	g.SetPixelOffsetMode(PixelOffsetModeHighSpeed);
 	g.SetCompositingQuality(CompositingQualityHighSpeed);
 	g.ScaleTransform((REAL)client.Width() / (REAL)m_TotalSize.cx, (REAL)client.Height() / (REAL)m_TotalSize.cy);
-				
+
 	CString fontName = "";
 	Gdiplus::REAL fontSize = 0.0;
 	StringFormat fontFormat;
@@ -66,11 +66,11 @@ void CIntelBottomView::OnDraw(CDC* dc)
 
 	Color color;
 	color.SetFromCOLORREF(pMajor->GetDesign()->m_clrGalaxySectorText);
-					
+
 	fontBrush.SetColor(color);
 	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + pMajor->GetPrefix() + "diplomacyV3.boj");
-	
-	// Grafik zeichnen		
+
+	// Grafik zeichnen
 	if (graphic)
 	{
 		g.DrawImage(graphic, 0, 0, 1075, 249);
@@ -106,7 +106,7 @@ void CIntelBottomView::OnDraw(CDC* dc)
 			else
 				s = *report->GetEnemyDesc();
 			g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(40, 100, r.right-250, r.bottom-20), &fontFormat, &fontBrush);
-		}			
+		}
 	}
 	g.ReleaseHDC(pDC->GetSafeHdc());
 }

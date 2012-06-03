@@ -7,13 +7,13 @@
 CTorpedoInfo::CTorpedoInfo(void)
 {
 	/*
-	EFFECTS: 
+	EFFECTS:
 			Micro..................Microtorpedo (nur für Microwerfer)
-			Penetrating............schilddurchschlagender Torpedo 
-			DoubleShieldDmg........Torpedo macht doppelten Schaden an den Schilden 
-			DoubleHullDmg..........Torpedo macht doppelten Schaden an der Hülle 
-			IgnoreAllShields.......Torpedo ignoriert alle Arten von Schilden 
-			CollapseShields........Torpedotreffer kann Schilde kollabieren lassen 
+			Penetrating............schilddurchschlagender Torpedo
+			DoubleShieldDmg........Torpedo macht doppelten Schaden an den Schilden
+			DoubleHullDmg..........Torpedo macht doppelten Schaden an der Hülle
+			IgnoreAllShields.......Torpedo ignoriert alle Arten von Schilden
+			CollapseShields........Torpedotreffer kann Schilde kollabieren lassen
 			ReduceManeuver........ Bei einem Treffer besteht die Chance, die Manövrierbarkeit des Zieles auf NULL zu verringern.
 	*/
 
@@ -23,7 +23,7 @@ CTorpedoInfo::CTorpedoInfo(void)
 // b.) Photon Torpedos
 	m_vInfos.push_back(TORPEDOINFO("Prototorpedo", 150));
 	m_vInfos.push_back(TORPEDOINFO("Photontorpedo", 250));
-	m_vInfos.push_back(TORPEDOINFO("Microphotontorpedo", 5, MICROTORPEDO | PENETRATING));	
+	m_vInfos.push_back(TORPEDOINFO("Microphotontorpedo", 5, MICROTORPEDO | PENETRATING));
 // c.) Plasma Torpedos
 	m_vInfos.push_back(TORPEDOINFO("Plasmatorpedo", 300));
 	m_vInfos.push_back(TORPEDOINFO("Plasmatorpedo I", 400));
@@ -41,21 +41,21 @@ CTorpedoInfo::CTorpedoInfo(void)
 	m_vInfos.push_back(TORPEDOINFO("Mytronictorpedo II", 500));
 	m_vInfos.push_back(TORPEDOINFO("Micromytrontic", 4, MICROTORPEDO | PENETRATING));
 // g.) Polaron Torpedos
-	m_vInfos.push_back(TORPEDOINFO("Polarontorpedo", 288, PENETRATING));	
+	m_vInfos.push_back(TORPEDOINFO("Polarontorpedo", 288, PENETRATING));
 // h.)Gravimetric Torpedos
-	m_vInfos.push_back(TORPEDOINFO("Gravimetrictorpedo", 600, PENETRATING));	
+	m_vInfos.push_back(TORPEDOINFO("Gravimetrictorpedo", 600, PENETRATING));
 // i.) Trilithium Torpedos
-	m_vInfos.push_back(TORPEDOINFO("Trilithiumtorpedo", 1000, DOUBLESHIELDDMG));	
+	m_vInfos.push_back(TORPEDOINFO("Trilithiumtorpedo", 1000, DOUBLESHIELDDMG));
 // j.) Tricobalt Torpedos
-	m_vInfos.push_back(TORPEDOINFO("Tricobalttorpedo", 900, PENETRATING));	
+	m_vInfos.push_back(TORPEDOINFO("Tricobalttorpedo", 900, PENETRATING));
 // k.) Ultritium Torpedos
 	m_vInfos.push_back(TORPEDOINFO("Ultritiumtorpedo", 800, COLLAPSESHIELDS));
 // l.) Positron Torpedos
-	m_vInfos.push_back(TORPEDOINFO("Positrontorpedo", 400, REDUCEMANEUVER));	
+	m_vInfos.push_back(TORPEDOINFO("Positrontorpedo", 400, REDUCEMANEUVER));
 // m.) Chroniton Torpedos
 	m_vInfos.push_back(TORPEDOINFO("Chronitontorpedo", 300, PENETRATING | DOUBLEHULLDMG));
 // n.) Transphasic Torpedos
-	m_vInfos.push_back(TORPEDOINFO("Transquantumtorpedo", 500, IGNOREALLSHIELDS));	
+	m_vInfos.push_back(TORPEDOINFO("Transquantumtorpedo", 500, IGNOREALLSHIELDS));
 // zusätzlicher d.) Ion Torpedo
 	m_vInfos.push_back(TORPEDOINFO("Microiontorpedo", 8, MICROTORPEDO | PENETRATING));
 // o.) Energy Dampening Weapons
@@ -79,6 +79,6 @@ CTorpedoInfo::~CTorpedoInfo(void)
 /// @return Instanz dieser Klasse
 CTorpedoInfo* CTorpedoInfo::GetInstance(void)
 {
-	static CTorpedoInfo instance; 
+	static CTorpedoInfo instance;
     return &instance;
 }

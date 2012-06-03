@@ -10,7 +10,7 @@ IMPLEMENT_SERIAL (CEventFirstContact, CObject, 1)
 
 CEventFirstContact::CEventFirstContact(const CString &sPlayersRaceID, const CString &sRaceID) : m_sRaceID(sRaceID),
 	CEventScreen(sPlayersRaceID, "FirstContact")
-{	
+{
 }
 
 CEventFirstContact::CEventFirstContact(void) : m_sRaceID("")
@@ -24,10 +24,10 @@ CEventFirstContact::~CEventFirstContact(void)
 ///////////////////////////////////////////////////////////////////////
 // Speichern / Laden
 ///////////////////////////////////////////////////////////////////////
-void CEventFirstContact::Serialize(CArchive &ar)		
+void CEventFirstContact::Serialize(CArchive &ar)
 {
 	__super::Serialize(ar);
-	
+
 	// wenn gespeichert wird
 	if (ar.IsStoring())
 	{
@@ -45,7 +45,7 @@ void CEventFirstContact::Serialize(CArchive &ar)
 //////////////////////////////////////////////////////////////////////
 void CEventFirstContact::Create(void)
 {
-	CEventScreen::Create();	
+	CEventScreen::Create();
 }
 
 void CEventFirstContact::Draw(Graphics* g, CGraphicPool* graphicPool) const
@@ -70,7 +70,7 @@ void CEventFirstContact::Draw(Graphics* g, CGraphicPool* graphicPool) const
 	Gdiplus::REAL fontSize = 0.0;
 	StringFormat fontFormat;
 	SolidBrush fontBrush(Color::White);
-	
+
 	CFontLoader::CreateGDIFont(pMajor, 5, fontName, fontSize);
 	fontFormat.SetAlignment(StringAlignmentCenter);
 	fontFormat.SetLineAlignment(StringAlignmentCenter);
@@ -89,7 +89,7 @@ void CEventFirstContact::Draw(Graphics* g, CGraphicPool* graphicPool) const
 	fontFormat.SetFormatFlags(!StringFormatFlagsNoWrap);
 	s = CResourceManager::GetString("FIRSTCONTACTEVENT_TEXT", FALSE, pContactedRace->GetRaceName());
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(800,610,470,75), &fontFormat, &fontBrush);
-	
+
 	// Bild der Rasse zeichnen
 	Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Races\\" + pContactedRace->GetGraphicFileName());
 	if (graphic == NULL)
@@ -108,7 +108,7 @@ void CEventFirstContact::Draw(Graphics* g, CGraphicPool* graphicPool) const
 	fontBrush.SetColor(markColor);
 	s = CResourceManager::GetString("PROPERTIES");
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(730,140,540,75), &fontFormat, &fontBrush);
-	
+
 	CFontLoader::CreateGDIFont(pMajor, 3, fontName, fontSize);
 	fontBrush.SetColor(color);
 	vector<CString> sProperties;
@@ -149,14 +149,14 @@ void CEventFirstContact::Draw(Graphics* g, CGraphicPool* graphicPool) const
 			if (pContactedRace->GetRelation(pMajor->GetRaceID()) * 2 / 10 > t)
 				g->FillRectangle(&SolidBrush(Color(200,250-t*12, 0+t*12, 0)), timber);
 			else
-				g->FillRectangle(&SolidBrush(Color(100,100,100,100)), timber);						
+				g->FillRectangle(&SolidBrush(Color(100,100,100,100)), timber);
 		}
 	}
 	fontBrush.SetColor(color);
 	// Technischen Fortschritt zeichnen
 	CString sProgress;
 	if (pContactedRace->GetType() == MINOR)
-	{		
+	{
 		switch (((CMinor*)pContactedRace)->GetTechnologicalProgress())
 		{
 		case 0: sProgress = CResourceManager::GetString("VERY_UNDERDEVELOPED");	break;
@@ -164,7 +164,7 @@ void CEventFirstContact::Draw(Graphics* g, CGraphicPool* graphicPool) const
 		case 2: sProgress = CResourceManager::GetString("NORMAL_DEVELOPED");	break;
 		case 3: sProgress = CResourceManager::GetString("DEVELOPED");			break;
 		case 4: sProgress = CResourceManager::GetString("VERY_DEVELOPED");		break;
-		}		
+		}
 	}
 	else if (pContactedRace->GetType() == MAJOR)
 	{
@@ -251,7 +251,7 @@ void CEventFirstContact::Draw(Graphics* g, CGraphicPool* graphicPool) const
 					s = pDoc->m_ShipInfoArray[i].GetShipClass() + "-" + CResourceManager::GetString("CLASS") + " (" + pDoc->m_ShipInfoArray[i].GetShipTypeAsString() + ")";
 					g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(nCount * 165, 935, 180, 50), &fontFormat, &fontBrush);
 					nCount++;
-				}		
+				}
 	}
 
 	// Buttons zeichnen
@@ -285,7 +285,7 @@ CString CEventFirstContact::GetTooltip(const CPoint &pt) const
 	if (pContactedRace->GetType() == MINOR)
 	{
 		// Spezialgebäude prüfen
-		int nCount = 0;		
+		int nCount = 0;
 		for (int i = 0; i < pDoc->BuildingInfo.GetSize(); i++)
 			if (pDoc->BuildingInfo[i].GetOwnerOfBuilding() == NOBODY)
 				if (pDoc->BuildingInfo[i].GetOnlyMinorRace() == TRUE)
@@ -308,11 +308,11 @@ CString CEventFirstContact::GetTooltip(const CPoint &pt) const
 							sProd += CHTMLStringBuilder::GetHTMLStringNewLine();
 							sProd += CHTMLStringBuilder::GetHTMLStringHorzLine();
 							sProd += CHTMLStringBuilder::GetHTMLStringNewLine();
-											
+
 							CString sDesc = pDoc->GetBuildingInfo(nID).GetBuildingDescription();
 							sDesc = CHTMLStringBuilder::GetHTMLColor(sDesc, _T("silver"));
 							sDesc = CHTMLStringBuilder::GetHTMLHeader(sDesc, _T("h5"));
-							
+
 							return sName + sProd + sDesc;
 						}
 						nCount++;
@@ -326,7 +326,7 @@ CString CEventFirstContact::GetTooltip(const CPoint &pt) const
 					if (CRect(15 + nCount * 165, 810, 15 + nCount * 165 + 150, 960).PtInRect(pt))
 						return pDoc->m_ShipInfoArray[i].GetTooltip();
 					nCount++;
-				}		
+				}
 	}
 	return "";
 }

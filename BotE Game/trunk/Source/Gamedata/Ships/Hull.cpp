@@ -67,7 +67,7 @@ CHull & CHull::operator=(const CHull & rhs)
 ///////////////////////////////////////////////////////////////////////
 // Speichern / Laden
 ///////////////////////////////////////////////////////////////////////
-void CHull::Serialize(CArchive &ar)		
+void CHull::Serialize(CArchive &ar)
 {
 	CObject::Serialize(ar);
 	// wenn gespeichert wird
@@ -117,7 +117,7 @@ void CHull::SetCurrentHull(int add, bool bIgnoreHullSpecials/* = false*/)
 {
 	double multi = 0.0f;
 	// wenn die Hülle die Polarisationseigenschaft hat, dann werden 10% des Schadens abgezogen
-	
+
 	if (bIgnoreHullSpecials == false)
 	{
 		if (GetPolarisation() && add < 0)

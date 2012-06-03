@@ -18,37 +18,37 @@
 
 #include "Options.h"
 
-class CMessage : public CObject  
+class CMessage : public CObject
 {
 public:
 	// Klasse serialisierbar machen
 	DECLARE_SERIAL (CMessage)
-	
+
 	/// Konstruktor
 	CMessage(void);
-	
-	/// Destruktor	
+
+	/// Destruktor
 	virtual ~CMessage(void);
-	
+
 	/// Kopierkonstruktor
 	CMessage(const CMessage & rhs);
-	
+
 	/// Zuweisungsoperator
 	CMessage & operator=(const CMessage &);
-	
+
 	/// Die Serialisierungsfunktion
 	virtual void Serialize(CArchive &ar);
-	
+
 	// Zugriffsfunktionen
 	// zum Lesen der Membervariablen
 	MESSAGE_TYPE::Typ GetMessageType(void) const {return m_nMessageType;}
 	const CPoint& GetKO(void) const {return m_KO;}
 	BYTE GetFlag(void) const {return m_byFlag;}
 	const CString& GetMessageString(void) const {return m_strMessage;}
-		
+
 	// sonstige Funktionen
 	void GenerateMessage(const CString& sMessage, MESSAGE_TYPE::Typ nMessageType, const CString& sSystemName, const CPoint& SystemKO, bool bUpdate, BYTE byFlag = 0);
-	
+
 private:
 	CString	m_strMessage;
 	MESSAGE_TYPE::Typ m_nMessageType;
@@ -66,7 +66,7 @@ typedef CArray<CMessage,CMessage> MessageArray;		// Das dynamische Feld wird ver
 /* TODO:
 
 1.Testen ob sich die Beziehung der Minorrace ändert, wenn wir ihrem Bündnispartner (Majorrace) den
-Krieg erklären. Für uns sollte die Beziehung sich enorm verschlechtern (auf 0) und für die 
+Krieg erklären. Für uns sollte die Beziehung sich enorm verschlechtern (auf 0) und für die
 Majorrace, mit welche mit dieser Minorrace mindst. ein Bündnis hat leicht verbessern. Aktuell
 ist das zwischen 0 und 15 Punkten. -> funzt erstmal
 
@@ -79,7 +79,7 @@ Auch Beziehung der Bündnispartner dann verschlechtern, wenn wir den Krieg erklär
 implementiert. Dann könnte man die Auswirkungen dieser Verträge einbauen und abschließend die
 Computer-KI. -> funzt
 
-4.KI weiter implementieren. 
+4.KI weiter implementieren.
 Es fehlt noch Geschenke geben und die Beziehungsverbesserung bei Geschenken. (-> funzt)
 Mitgifte bei Vertragsangeboten werden noch nicht beachtet. (jetzt schon ;-) -> funzt)
 Die KI gibt noch nicht selbstständig Mitgifte (-> funzt eigentlich alles)
@@ -111,7 +111,7 @@ Imperienweite Voraussetzungen noch überprüfen. (-> funzt)
 10. BUG: Bei Meeresfarm (glaub gebäude mit Attribut "immer online") kommt Meldung, das die Arbeiter fehlen (-> funzt)
 
 11. BUG: Wenn ich eine Mitgliedschaft (vlt. auch bei anderen Vertrag) aufhebe und das Spiel später verlasse, kommt
-	     eine Fehlermeldung 
+	     eine Fehlermeldung
 
 
 LATER TODO:
@@ -144,11 +144,11 @@ eingerechnet. Das mal testen ob es notwendig ist.
 alle potentiellen Vorgänger in der Liste suchen muß, oder ob es reicht wie es jetzt ist. Indem ich immer nur
 den nächsten Vorgänger überprüfe.
 
-10. Wenn wir von einem Gebäude nur eine maximale Anzahl auf einem System oder im Imperium haben dürfen und diese 
+10. Wenn wir von einem Gebäude nur eine maximale Anzahl auf einem System oder im Imperium haben dürfen und diese
 maximale Anzahl erreicht haben, verschwindet dieses Gebäude auch richtig aus der Bauliste. Entfernen wir ein solches
 Gebäude aus der AssemblyList, so erscheint dieses richtigerweise auch wieder in der Bauliste. Wenn wir aber die
 maximale Anzahl erreicht haben, eine Runde weiterklicken und dann erst das Gebäude aus der AssemblyList nehmen, so
-erscheint dieses nicht in der Bauliste. Noch eine Runde später erscheint es aber wieder. Dies liegt daran, dass die 
+erscheint dieses nicht in der Bauliste. Noch eine Runde später erscheint es aber wieder. Dies liegt daran, dass die
 Variable "m_BuildableWithoutAssemblyListCheck" dieses Gebäude in der neuen Runde nicht mehr führt, weil es ja eigentlich
 nicht mehr baubar ist.
 */

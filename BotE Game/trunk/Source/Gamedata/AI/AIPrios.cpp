@@ -35,11 +35,11 @@ void CAIPrios::CalcShipPrios(CSectorAI* sectorAI)
 	MYTRACE(MT::LEVEL_INFO, "CAIPrios::CalcShipPrios() begin... \n");
 #endif
 
-	ASSERT(sectorAI);	
-	Clear();	
+	ASSERT(sectorAI);
+	Clear();
 	int max = 0;
 	map<CString, CMajor*>* pmMajors = m_pDoc->GetRaceCtrl()->GetMajors();
-	
+
 	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 	{
 		CMajor* pMajor = it->second;
@@ -68,7 +68,7 @@ void CAIPrios::CalcShipPrios(CSectorAI* sectorAI)
 						break;
 				}
 		// Jetzt die zum Terraformen ausgesuchten Sektoren durchgehen und schauen das diese innerhalb der Reichweite
-		// des Schiffes liegen.		
+		// des Schiffes liegen.
 		for (UINT j = 0; j < sectorAI->GetSectorsToTerraform(it->first)->size(); j++)
 			if (pMajor->GetStarmap()->GetRange(sectorAI->GetSectorsToTerraform(it->first)->at(j).p) <= range)
 				m_mColoShipPrio[it->first] += 1;
@@ -143,14 +143,14 @@ void CAIPrios::CalcShipPrios(CSectorAI* sectorAI)
 		if (max < shipPower[it->first])
 			max = shipPower[it->first];
 	}
-	
+
 
 #ifdef TRACE_AI
 	MYTRACE(MT::LEVEL_INFO, "CAIPrios::CalcShipPrios(): max Combatship Priority is: %d\n",max);
 #endif
 	// Maximum der Schiffsstärken ermitteln
 	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
-	{	
+	{
 #ifdef TRACE_AI
 		MYTRACE(MT::LEVEL_INFO, "Calc Shippowers: Race: %s has a complete shippower of %d - all shippower is %d\n",it->first, shipPower[it->first], sectorAI->GetCompleteDanger(it->first));
 #endif

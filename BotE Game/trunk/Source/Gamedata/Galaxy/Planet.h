@@ -43,18 +43,18 @@
 class CGraphicPool;
 
 /// Klasse zur Abstraktion von Planeten in BotE
-class CPlanet : public CObject  
+class CPlanet : public CObject
 {
 public:
 	// Klasse serialisierbar machen
 	DECLARE_SERIAL (CPlanet)
-	
+
 	/// Standardkonstruktor
 	CPlanet(void);
-	
+
 	/// Standardestruktor
-	virtual ~CPlanet();						
-	
+	virtual ~CPlanet();
+
 	/// Kopierkonstruktor
 	CPlanet(const CPlanet & rhs);
 
@@ -63,7 +63,7 @@ public:
 
 	/// Serialisierungsfunktion
 	virtual void Serialize(CArchive &ar);
-	
+
 	// zum Lesen der Membervaribalen
 	PLANT_SIZE::Typ GetSize() const {return m_iSize;}
 	BYTE GetType() const {return m_iType;}
@@ -99,25 +99,25 @@ public:
 	BOOLEAN SetNeededTerraformPoints(BYTE sub);				// Subtrahiert "sub" von den Terraformpoints, bei kleiner 0 wird der Plani auf m_bTerraformed = TRUE gesetzt
 	void SetBoni(BOOLEAN titan, BOOLEAN deuterium, BOOLEAN duranium, BOOLEAN crystal, BOOLEAN iridium, BOOLEAN deritium, BOOLEAN food, BOOLEAN energy);
 	void SetBoni(BYTE res, BOOLEAN is) {m_bBoni[res] = is;}
-	
+
 	/// Funktion setzt die Nummer für das Graphikfile des Planeten.
 	/// @param n Nummer der Grafik
 	void SetGraphicType(BYTE n) {m_iGraphicType = n;}
-		
-	/// Funktion setzt die anfänglichen Terraformpunkte für einen Planeten fest. Normalerweise geschieht das bei der 
+
+	/// Funktion setzt die anfänglichen Terraformpunkte für einen Planeten fest. Normalerweise geschieht das bei der
 	/// Generierung des Planeten automatisch, wenn wir aber manuell Planeten anlegen wollen, dann müssen wir auch
 	/// diese Funktion aufrufen.
 	void SetStartTerraformPoints(BYTE startPoints = 0) {m_iStartTerraformPoints = m_iNeededTerraformPoints = startPoints;}
-	
+
 	// Sonstige Funktionen
 	/// Funktion erzeugt einen Planeten.
 	/// @param sSectorName Sektorname
-	/// @param nLastZone Zone des zuletzt erzeugten Planeten (neuer Planet kann nicht in einer vorherigen Zone sein) 
+	/// @param nLastZone Zone des zuletzt erzeugten Planeten (neuer Planet kann nicht in einer vorherigen Zone sein)
 	/// @param byPlanetNumer Anzahl schon erzeugeter Planeten in diesem Sektor
 	/// @param bMinor Minorrace im Sektor
 	/// @return Zone des erzeugten Planeten
 	PLANET_ZONE::Typ Create(const CString& sSectorName, PLANET_ZONE::Typ nLastZone, BYTE byPlanetNumber, BOOLEAN bMinor);
-	
+
 	/// Planetenwachstum durchführen
 	void PlanetGrowth(void);
 
@@ -130,8 +130,8 @@ public:
 	/// @param rect Rechteck um den Planeten
 	/// @param graphicPool Zeiger auf die Sammlung aller Grafiken
 	void DrawPlanet(Graphics &g, const CRect& rect, CGraphicPool* graphicPool);
-		
-	/// Die Resetfunktion für die CPlanet Klasse, welche alle Werte wieder auf Ausgangswerte setzt.	
+
+	/// Die Resetfunktion für die CPlanet Klasse, welche alle Werte wieder auf Ausgangswerte setzt.
 	void Reset(void);
 
 private:

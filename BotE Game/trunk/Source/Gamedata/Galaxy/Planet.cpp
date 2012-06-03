@@ -77,7 +77,7 @@ CPlanet & CPlanet::operator=(const CPlanet & rhs)
 ///////////////////////////////////////////////////////////////////////
 // Speichern / Laden
 ///////////////////////////////////////////////////////////////////////
-void CPlanet::Serialize(CArchive &ar)		
+void CPlanet::Serialize(CArchive &ar)
 {
 	CObject::Serialize(ar);
 	// wenn gespeichert wird
@@ -144,7 +144,7 @@ CString CPlanet::GetGraphicFile() const
 
 /// Funktion erzeugt einen Planeten.
 /// @param sSectorName Sektorname
-/// @param nLastZone Zone des zuletzt erzeugten Planeten (neuer Planet kann nicht in einer vorherigen Zone sein) 
+/// @param nLastZone Zone des zuletzt erzeugten Planeten (neuer Planet kann nicht in einer vorherigen Zone sein)
 /// @param byPlanetNumer Anzahl schon erzeugeter Planeten in diesem Sektor
 /// @param bMinor Minorrace im Sektor
 /// @return Zone des erzeugten Planeten
@@ -237,13 +237,13 @@ PLANET_ZONE::Typ CPlanet::Create(const CString& sSectorName, PLANET_ZONE::Typ nL
 			if (WhatPlanet >= 17) m_iRandomType = PLANETCLASS_R;
 		}
 	}
-	
+
 	float Habitants = 0.0f;
 	BYTE m_iRandomSize = rand()%3;	// Zufallszahl, die die Größe bestimmt (abhängig vom DEFINE!)
-		
+
 	// zufällige Planetengrafik auswählen
 	m_iGraphicType = rand()%GRAPHICNUMBER;
-		
+
 	m_iSize = (PLANT_SIZE::Typ)m_iRandomSize;
 	// Bestimmen, ob der Planet überhaupt bewohnbar ist! A,B,E,I,J,S,T,Y
 	if (m_iRandomType == PLANETCLASS_A || m_iRandomType == PLANETCLASS_B || m_iRandomType == PLANETCLASS_E
@@ -253,16 +253,16 @@ PLANET_ZONE::Typ CPlanet::Create(const CString& sSectorName, PLANET_ZONE::Typ nL
 	// Ein erdähnlicher Planet ist schon terraformed
 	else if (m_iRandomType == PLANETCLASS_M)
 		m_bTerraformed = TRUE;
-	
+
 	if (m_iRandomType == PLANETCLASS_I || m_iRandomType == PLANETCLASS_J || m_iRandomType == PLANETCLASS_S || m_iRandomType == PLANETCLASS_T)
 		m_iSize = PLANT_SIZE::GIANT;			// Gasriesen sind immer riesig
-	
+
 	if (m_bHabitable == FALSE)
 	{
 		m_dMaxHabitant = 0;
 	}
 	else
-	{	
+	{
 		if (m_iRandomType < PLANETCLASS_A)	// Ab Klasse A sind alle Planeten eh nicht mehr kolonisierbar
 		{
 			// Einen Muliplikator anlegen (0,8 ; 1,0 ; 1,2)
@@ -272,7 +272,7 @@ PLANET_ZONE::Typ CPlanet::Create(const CString& sSectorName, PLANET_ZONE::Typ nL
 			if (miniRandom == 0) multi = 0.8f;
 			else if (miniRandom == 1) multi = 1.0f;
 			else if (miniRandom == 2) multi = 1.2f;
-				
+
 			// Zufallszahl ermitteln, abhängig von der max. Einwohnerzahl, die später draufaddiert wird
 			int random = rand()%(((m_iRandomSize+1)*(12-m_iRandomType))/6 + 1);
 			// Max. Einwohner werden berechnet, inkl. "random " Zufallszahl
@@ -293,7 +293,7 @@ PLANET_ZONE::Typ CPlanet::Create(const CString& sSectorName, PLANET_ZONE::Typ nL
 			m_dMaxHabitant = 0;
 		}
 	}
-	
+
 	// Wenn eine MinorRace da ist, dann ein paar Planeten schon geterraformt machen
 	if (bMinor && m_bHabitable)
 	{
@@ -314,7 +314,7 @@ PLANET_ZONE::Typ CPlanet::Create(const CString& sSectorName, PLANET_ZONE::Typ nL
 		m_dCurrentHabitant = m_dMaxHabitant/randDiv;
 		m_bColonisized = TRUE;
 	}
-	
+
 	m_iType = m_iRandomType;
 	// M,O,L,P,H,Q,K,G,R,F,C,N,A,B,E,N,Y,I,J,S,T
 	if (m_iType == PLANETCLASS_M) {m_cClass = 'M';}
@@ -337,13 +337,13 @@ PLANET_ZONE::Typ CPlanet::Create(const CString& sSectorName, PLANET_ZONE::Typ nL
 	else if (m_iType == PLANETCLASS_J) {m_cClass = 'J';}
 	else if (m_iType == PLANETCLASS_S) {m_cClass = 'S';}
 	else if (m_iType == PLANETCLASS_T) {m_cClass = 'T';}
-	
+
 	// Wachstumsprozent des Planeten berechnen
 	SetPlanetGrowth();
-	
+
 	// Namen für den Planeten geben, besteht aus Namen des Sonnensystems und der Nummer
 	m_strName.Format("%s %i",sSectorName, byPlanetNumber + 1);
-	
+
 	// eventuelle Boni durch den Planeten berechnen
 	GenerateBoni();
 
@@ -353,21 +353,21 @@ PLANET_ZONE::Typ CPlanet::Create(const CString& sSectorName, PLANET_ZONE::Typ nL
 void CPlanet::DrawPlanet(Graphics &g, const CRect& rect, CGraphicPool* graphicPool)
 {
 	Gdiplus::PixelOffsetMode oldPixelOffsetMode = g.GetPixelOffsetMode();
-	
+
 	g.SetPixelOffsetMode(PixelOffsetModeHalf);
 
 	ASSERT(graphicPool);
 
 	Bitmap* planet = NULL;
 	planet = graphicPool->GetGDIGraphic("Planets\\" + m_strName + ".bop");
-	
+
 	// Konnte keine spezielle Planetengrafik gefunden werden, so wird eine zufällige Grafik ausgewählt
 	if (planet == NULL)
 		planet = graphicPool->GetGDIGraphic(GetGraphicFile());
-	
+
 	if (planet)
 		g.DrawImage(planet, rect.left, rect.top, rect.Width(), rect.Height());
-		
+
 	Color c;
 	if (m_bHabitable == FALSE)
 		c.SetFromCOLORREF(RGB(0,0,255));
@@ -380,7 +380,7 @@ void CPlanet::DrawPlanet(Graphics &g, const CRect& rect, CGraphicPool* graphicPo
 	}
 	else if (m_bIsTerraforming == TRUE)
 	{
-		c.SetFromCOLORREF(RGB(200,200,0));	
+		c.SetFromCOLORREF(RGB(200,200,0));
 		// Gitternetz zeichnen
 		if (planet)
 		{
@@ -404,10 +404,10 @@ void CPlanet::DrawPlanet(Graphics &g, const CRect& rect, CGraphicPool* graphicPo
 	CRect planetRect = rect;
 	// Rechteck ein wenig nach unten schieben
 	planetRect.OffsetRect(0, 20);
-	
+
 	CString s;
 	// Planetenklasse unter den Planeten zeichnen
-	s.Format("%c", m_cClass);	
+	s.Format("%c", m_cClass);
 	g.DrawString(s.AllocSysString(), -1, &font, RectF((REAL)planetRect.left, (REAL)planetRect.top, (REAL)planetRect.Width(), (REAL)planetRect.Height()), &format, &brush);
 
 	// prozentuale Angabe des Terraformfortschrittes anzeigen
@@ -417,7 +417,7 @@ void CPlanet::DrawPlanet(Graphics &g, const CRect& rect, CGraphicPool* graphicPo
 		s.Format("%d %%",100 - (short)(this->m_iNeededTerraformPoints * 100 / this->m_iStartTerraformPoints));
 		g.DrawString(s.AllocSysString(), -1, &font, RectF((REAL)planetRect.left, (REAL)planetRect.top, (REAL)planetRect.Width(), (REAL)planetRect.Height()), &format, &brush);
 	}
-		
+
 	// Symbole für eventuell vohandene Boni zeichnen
 	int x = rect.CenterPoint().x - 5;
 	int y = rect.top - 23;
@@ -426,7 +426,7 @@ void CPlanet::DrawPlanet(Graphics &g, const CRect& rect, CGraphicPool* graphicPo
 	for (int i = 0; i < 8; i++)
 		n += m_bBoni[i];
 	x -= (n*9-4);
-	
+
 	Bitmap* graphic = NULL;
 	for (int i = 0; i < 8; i++)
 		if (m_bBoni[i])
@@ -461,23 +461,23 @@ void CPlanet::PlanetGrowth(void)
 		m_dCurrentHabitant = m_dCurrentHabitant+m_dCurrentHabitant*m_dGrowing/100;
 	if (m_dCurrentHabitant < (tempCurrentHabitant + 0.1f) && m_bColonisized == TRUE)
 		m_dCurrentHabitant = tempCurrentHabitant + 0.1f;	// immer minimales Wachstum von 0.1 Mrd. pro Runde
-	if (m_dCurrentHabitant > m_dMaxHabitant)		
+	if (m_dCurrentHabitant > m_dMaxHabitant)
 		m_dCurrentHabitant = m_dMaxHabitant;				// Wenn MaxHabitant erreicht ist, natürlich kein Wachstum mehr
 }
 
 /// Subtrahiert "sub" von den Terraformpoints, bei kleiner 0 wird der Plani auf m_bTerraformed = TRUE gesetzt und ein
 /// TRUE zurückgegeben, ansonsten wird ein FALSE zurückgegeben
 /// Wenn der Planet noch nicht fertig geterraformt ist, wird m_bIsTerraforming auf TRUE gesetzt
-BOOLEAN CPlanet::SetNeededTerraformPoints(BYTE sub)	
+BOOLEAN CPlanet::SetNeededTerraformPoints(BYTE sub)
 {
 	if ((m_iNeededTerraformPoints - sub) < 0)
 		sub = m_iNeededTerraformPoints;
-	m_iNeededTerraformPoints -= sub;	
+	m_iNeededTerraformPoints -= sub;
 	if (m_iNeededTerraformPoints <= 0)
 	{
 		m_bIsTerraforming = FALSE;
 		m_bTerraformed = TRUE;
-		return TRUE;	
+		return TRUE;
 	}
 	else
 	{
@@ -498,7 +498,7 @@ void CPlanet::GenerateBoni()
 	//+-----------------------------------------------------------------------------------------------+
 	/*M*/	0,			10,			0,			0,			0,			11,			50,			0,
 	/*O*/	0,			50,			0,			0,			0,			0,			25,			0,
-	/*L*/	0,			5,			0,			0,			0,			0,			10,			0,	
+	/*L*/	0,			5,			0,			0,			0,			0,			10,			0,
 	/*P*/	5,			0,			0,			5,			5,			15,			0,			50,
 	/*H*/	0,			0,			0,			0,			50,			0,			0,			50,
 	/*Q*/	0,			0,			0,			50,			0,			15,			5,			0,
@@ -568,7 +568,7 @@ void CPlanet::GetAvailableResources(BOOLEAN res[DERITIUM + 1]) const
 	{	res[TITAN] = FALSE;  res[DEUTERIUM] = FALSE; res[DURANIUM] = FALSE; res[CRYSTAL] = TRUE;  res[IRIDIUM] = FALSE;}
 	else if (this->GetClass() == 'R')
 	{	res[TITAN] = FALSE; res[DEUTERIUM] = FALSE; res[DURANIUM] = TRUE;  res[CRYSTAL] = FALSE; res[IRIDIUM] = FALSE;}
-	
+
 	// Deritium ist klassenunabhängig und wird als Boni angegeben
 	if (this->GetBoni()[DERITIUM])
 		res[DERITIUM] = TRUE;
@@ -586,7 +586,7 @@ void CPlanet::Reset(void)
 	m_dMaxHabitant = NULL;
 	m_iSize = PLANT_SIZE::NORMAL;
 	m_iType = PLANETCLASS_I;
-	m_strName = ""; 
+	m_strName = "";
 	m_cClass = 'I';
 	m_dGrowing = 0;
 	m_iGraphicType = 0;

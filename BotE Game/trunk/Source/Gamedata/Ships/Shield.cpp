@@ -57,7 +57,7 @@ CShield & CShield::operator=(const CShield & rhs)
 ///////////////////////////////////////////////////////////////////////
 // Speichern / Laden
 ///////////////////////////////////////////////////////////////////////
-void CShield::Serialize(CArchive &ar)		
+void CShield::Serialize(CArchive &ar)
 {
 	CObject::Serialize(ar);
 	// wenn gespeichert wird

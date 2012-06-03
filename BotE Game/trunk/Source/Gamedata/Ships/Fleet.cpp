@@ -17,7 +17,7 @@ IMPLEMENT_SERIAL (CFleet, CObject, 1)
 //////////////////////////////////////////////////////////////////////
 
 CFleet::CFleet()
-{	
+{
 }
 
 CFleet::~CFleet()
@@ -42,18 +42,18 @@ CFleet & CFleet::operator=(const CFleet & rhs)
 {
 	if (this == &rhs)
 		return *this;
-	
+
 	m_vShips.RemoveAll();
 	for (int i = 0; i < rhs.m_vShips.GetSize(); i++)
 		m_vShips.Add(rhs.m_vShips.GetAt(i));
-	
+
 	return *this;
 }
 
 ///////////////////////////////////////////////////////////////////////
 // Speichern / Laden
 ///////////////////////////////////////////////////////////////////////
-void CFleet::Serialize(CArchive &ar)		
+void CFleet::Serialize(CArchive &ar)
 {
 	CObject::Serialize(ar);
 	// wenn gespeichert wird
@@ -61,7 +61,7 @@ void CFleet::Serialize(CArchive &ar)
 	{
 		ar << m_vShips.GetSize();
 		for (int i = 0; i < m_vShips.GetSize(); i++)
-			m_vShips.GetAt(i).Serialize(ar);		
+			m_vShips.GetAt(i).Serialize(ar);
 	}
 	// wenn geladen wird
 	if (ar.IsLoading())
@@ -108,11 +108,11 @@ SHIP_RANGE::Typ CFleet::GetFleetRange(const CShip* pShip) const
 {
 	SHIP_RANGE::Typ nRange = SHIP_RANGE::LONG;
 	if (pShip)
-		nRange = min(pShip->GetRange(), nRange);	
-	
+		nRange = min(pShip->GetRange(), nRange);
+
 	for (int i = 0; i < m_vShips.GetSize(); i++)
 		nRange = min(m_vShips.GetAt(i).GetRange(), nRange);
-	
+
 	return nRange;
 }
 
@@ -122,7 +122,7 @@ SHIP_RANGE::Typ CFleet::GetFleetRange(const CShip* pShip) const
 // des Schiffsobjektes, welches die Flotte besitzt
 short CFleet::GetFleetShipType(const CShip* ship) const
 {
-	short type = ship->GetShipType();	
+	short type = ship->GetShipType();
 	for (int i = 0; i < m_vShips.GetSize(); i++)
 		if (m_vShips.GetAt(i).GetShipType() != type)
 			return -1;
@@ -165,10 +165,10 @@ void CFleet::AdoptCurrentOrders(const CShip* ship)
 	{
 		if (ship->GetCurrentOrder() != SHIP_ORDER::ASSIGN_FLAGSHIP && ship->GetCurrentOrder() != SHIP_ORDER::TRANSPORT)
 		{
-			m_vShips.ElementAt(i).SetCurrentOrder(ship->GetCurrentOrder());			
-		}		
+			m_vShips.ElementAt(i).SetCurrentOrder(ship->GetCurrentOrder());
+		}
 		m_vShips.ElementAt(i).SetKO(ship->GetKO());
-		
+
 		if (m_vShips.ElementAt(i).GetTargetKO() != ship->GetTargetKO())
 			m_vShips.ElementAt(i).SetTargetKO(ship->GetTargetKO(),0);
 
@@ -235,7 +235,7 @@ BOOLEAN CFleet::CheckOrder(const CShip* ship, SHIP_ORDER::Typ nOrder) const
 			// und wir können ein TRUE zurückgeben
 			return TRUE;
 		}
-		// Wenn der Befehl kolonisieren oder terraformen lautet kann das die gesamte Flotte nur, wenn jedes 
+		// Wenn der Befehl kolonisieren oder terraformen lautet kann das die gesamte Flotte nur, wenn jedes
 		// Schiff in der Flotte "ColonizePoints" beitzt
 		else if (nOrder == SHIP_ORDER::COLONIZE || nOrder == SHIP_ORDER::TERRAFORM)
 		{
@@ -250,7 +250,7 @@ BOOLEAN CFleet::CheckOrder(const CShip* ship, SHIP_ORDER::Typ nOrder) const
 			// und wir können ein TRUE zurückgeben
 			return TRUE;
 		}
-		// Wenn der Befehl Außenposten oder Sternbasis bauen lautet kann das die gesamte Flotte nur, wenn jedes 
+		// Wenn der Befehl Außenposten oder Sternbasis bauen lautet kann das die gesamte Flotte nur, wenn jedes
 		// Schiff in der Flotte "StationBuildPoints" beitzt
 		else if (nOrder == SHIP_ORDER::BUILD_OUTPOST || nOrder == SHIP_ORDER::BUILD_STARBASE)
 		{

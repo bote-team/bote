@@ -6,8 +6,8 @@
 	file base:	RoundButton2
 	file ext:	h
 	author:		Markus Zocholl
-	
-	purpose:	CRoundButton2 defines a universal Button-Control with the 
+
+	purpose:	CRoundButton2 defines a universal Button-Control with the
 				following features:
 
 				* Shape is a rounded Rectangle

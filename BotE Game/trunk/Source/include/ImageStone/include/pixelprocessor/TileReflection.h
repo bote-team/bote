@@ -68,7 +68,7 @@ private:
             t += m_curvature * tan(t * m_scale) ;
             u = m_cos * s - m_sin * t ;
             v = m_sin * s + m_cos * t ;
-            
+
             int   xSample = (int)(hw + u) ;
             int   ySample = (int)(hh + v) ;
 

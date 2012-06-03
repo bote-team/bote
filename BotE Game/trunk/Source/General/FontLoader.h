@@ -47,5 +47,5 @@ private:
 	CFontLoader(void);
 
 	/// Destruktor
-	~CFontLoader(void);	
+	~CFontLoader(void);
 };

@@ -10,10 +10,10 @@
 /// Singletonklasse um Daten aus der Ini-Datei zu lesen bzw. zu schreiben.
 class CIniLoader
 {
-private:	
+private:
 	/// Konstruktor private, damit man sich keine Instanzen holen kann.
     CIniLoader(void);
-    
+
 	/// Den Kopierkonstruktor schützen um zu vermeiden, dass das Objekt unbeabsichtigt kopiert wird.
     CIniLoader(const CIniLoader& cc);
 
@@ -54,7 +54,7 @@ private:
 	/**
 	 * Diese Funktion wandelt ein Wort, wie z.B. On oder True in einen Wahrheitswert um.
 	 */
-	int StringToInt(const CString& sValue) const;	
+	int StringToInt(const CString& sValue) const;
 
 	/**
 	 * Diese Funktion gibt den zum <code>key</code> gehörenden Eintrag aus der ini-Datei zurück.

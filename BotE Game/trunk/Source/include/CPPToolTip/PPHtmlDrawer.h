@@ -22,12 +22,12 @@
 //	Terms of use
 //	------------
 //	THIS SOFTWARE IS FREE FOR PERSONAL USE OR FREEWARE APPLICATIONS.
-//	IF YOU WISH TO THANK MY WORK, YOU MAY DONATE ANY SUM OF MONEY TO ME 
+//	IF YOU WISH TO THANK MY WORK, YOU MAY DONATE ANY SUM OF MONEY TO ME
 //  FOR SUPPORT OF DEVELOPMENT OF THIS CLASS.
 //	IF YOU USE THIS SOFTWARE IN COMMERCIAL OR SHAREWARE APPLICATIONS YOU
 //	ARE GENTLY ASKED TO DONATE ANY SUM OF MONEY TO THE AUTHOR:
 //
-//--- History ------------------------------ 
+//--- History ------------------------------
 // 2004/03/01  *** Releases version 1.0 ***
 //------------------------------------------
 //		2004/04/13	[ADD] Added a "speed" parameter to a <ilst> tag for animation
@@ -47,7 +47,7 @@
 //					[ADD] Implemented a support to output a justified text.
 //					[ADD] Added new <justify> tag to output a justified text.
 //		2004/07/18	[ADD] Support a disabled draw in the tables
-//		2004/09/07	[FIX] Fixed minor errors of drawing table's cells 
+//		2004/09/07	[FIX] Fixed minor errors of drawing table's cells
 //		2004/10/13	[FIX] The last line of the paragraph alignment on fields now is not applied
 //		2004/10/20	[FIX] Fixed error in GetLengthUnit method. Thanks to Reinhard Steiner
 //		2004/10/26	[FIX] Corrected work of the justify for the multifont text in one line
@@ -126,7 +126,7 @@ public:
 	void  EnableEscapeSequences(BOOL bEnable = TRUE);
 	void  EnableOutput(BOOL bEnable = TRUE);
 	void  SetDisabledColor(COLORREF color);
-	
+
 	//Shadow of the image
 	void SetImageShadow(int nOffsetX, int nOffsetY, BYTE nDarkenPercent = 50, BOOL bGradient = TRUE, int nDepthX = 7, int nDepthY = 7);
 
@@ -167,7 +167,7 @@ public:
 
 	static short GetVersionI()		{return 0x13;}
 	static LPCTSTR GetVersionC()	{return (LPCTSTR)_T("1.3 beta");}
-	
+
 // Overrides
 	// ClassWizard generated virtual function overrides
 	//{{AFX_VIRTUAL(CPPHtmlDrawer)
@@ -183,7 +183,7 @@ protected:
 			ALIGN_RIGHT,
 			ALIGN_JUSTIFY
 		};
-	
+
 	enum{	ALIGN_TOP = 0,
 			ALIGN_VCENTER,
 			ALIGN_BOTTOM,
@@ -261,12 +261,12 @@ protected:
 		CPPString sHyperlink; // The hyperlink
 	} STRUCT_HYPERLINK;
 #pragma pack()
-	
+
 #pragma pack(1)
-	typedef struct _STRUCT_CHANGESTYLE 
+	typedef struct _STRUCT_CHANGESTYLE
 	{
 		CPPString strTag;		//The name of the last opened tag
-		
+
 		//Font
 		int  nSizeFont;		//The height of the logic font
 		int	 nWeightFont;	//The weight of the logic font
@@ -275,9 +275,9 @@ protected:
 		BOOL bStrikeOutFont;//Is strikeout logic font?
 		BOOL bOverlineFont; //Is overline logic font?
 		CPPString sFaceFont;  //The face name of the logic font
-		
-		//Color		
-		COLORREF crText;	//The foreground color 
+
+		//Color
+		COLORREF crText;	//The foreground color
 		COLORREF crBkgnd;	//The background color (also begin for the gradient)
 		COLORREF crBorderLight;	//The border color
 		COLORREF crBorderDark;	//The border color
@@ -292,7 +292,7 @@ protected:
 		//Align
 		int  nHorzAlign;	//The horizontal align
 		int  nVertAlign;	//The vertical align
-		
+
 		//Border
 		int  nBorderStyle;	//The border style
 		int  nBorderWidth;	//The width of the border
@@ -307,15 +307,15 @@ protected:
 		int  nTextTransform;//Transformation of the text (NONE, UPPERCASE, LOWERCASE, CAPITALIZE)
 
 		int nMargin;		//Margins
-		
+
 		int nPadding;		//Padding
-		
+
 		//Hyperlink
 		int  nTypeLink;		//The type of the link (NONE, HREF, MESSAGE)
 		CPPString sHyperlink; //The additional parameter for the link
-	} STRUCT_CHANGESTYLE; 
+	} STRUCT_CHANGESTYLE;
 #pragma pack()
-	
+
 #pragma pack(1)
 	typedef struct _STRUCT_IMAGE
 	{
@@ -338,7 +338,7 @@ protected:
 		CPPString   strPathDll;		//path on the resource dll
 	} STRUCT_IMAGE;
 #pragma pack()
-	
+
 #pragma pack(1)
 	typedef struct _STRUCT_CALLBACK
 	{
@@ -405,7 +405,7 @@ protected:
 	STRUCT_HTMLLINE m_hline;
 
 	CPPDrawManager m_drawmanager;
-	
+
 	//Values of the system context
 	HIMAGELIST m_hImageList;
 	SIZE m_szImageList;
@@ -443,7 +443,7 @@ protected:
 	int m_nCurIndexLink;
 	int m_nCurIndexAni; //The index of the animation
 	BOOL m_bLastValueIsPercent;
-	BOOL m_bEnableEscapeSequences; // 
+	BOOL m_bEnableEscapeSequences; //
 
 	//Shadow of the image
 	BOOL m_bGradientShadow;
@@ -458,7 +458,7 @@ protected:
 	HFONT m_hFont;
 
 	//Wrapper string
-	CPPString m_strPrefix; //Prefix string 
+	CPPString m_strPrefix; //Prefix string
 	CPPString m_strPostfix; //Postfix string
 	CPPString m_strCssStyles;
 
@@ -599,7 +599,7 @@ protected:
 	void GetStyleFontShortForm(CPPString & str);
 	UINT GetStyleImageShortForm(CPPString & str);
 	int GetStyleBkgndEffect(CPPString & str, int nDefault);
-	
+
 	void StyleTextDecoration(CPPString & str, _STRUCT_CHANGESTYLE & cs);
 	int StyleBorderWidth(CPPString & str, int Default);
 	int StyleBorder(CPPString & str, int nDefault);

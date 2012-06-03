@@ -68,7 +68,7 @@ CTorpedoWeapons & CTorpedoWeapons::operator=(const CTorpedoWeapons & rhs)
 ///////////////////////////////////////////////////////////////////////
 // Speichern / Laden
 ///////////////////////////////////////////////////////////////////////
-void CTorpedoWeapons::Serialize(CArchive &ar)		
+void CTorpedoWeapons::Serialize(CArchive &ar)
 {
 	CObject::Serialize(ar);
 
@@ -108,4 +108,4 @@ void CTorpedoWeapons::ModifyTorpedoWeapon(BYTE TorpedoType, BYTE Number, BYTE Tu
 	m_strTupeName		= TupeName;
 	m_bOnlyMicroPhoton  = OnlyMicroPhoton;
 	m_byAccuracy		= Acc;
-}	
+}

@@ -9,7 +9,7 @@ IMPLEMENT_SERIAL (CEventColonization, CObject, 1)
 
 CEventColonization::CEventColonization(const CString& sPlayersRaceID, const CString &headline, const CString &text)
 	: CEventScreen(sPlayersRaceID, "Colonization", headline, text)
-{	
+{
 }
 
 CEventColonization::~CEventColonization(void)
@@ -19,17 +19,17 @@ CEventColonization::~CEventColonization(void)
 ///////////////////////////////////////////////////////////////////////
 // Speichern / Laden
 ///////////////////////////////////////////////////////////////////////
-void CEventColonization::Serialize(CArchive &ar)		
+void CEventColonization::Serialize(CArchive &ar)
 {
 	__super::Serialize(ar);
-	
+
 	// wenn gespeichert wird
 	if (ar.IsStoring())
-	{		
+	{
 	}
 	// wenn geladen wird
 	else if (ar.IsLoading())
-	{		
+	{
 	}
 }
 
@@ -76,5 +76,5 @@ void CEventColonization::Draw(Graphics* g, CGraphicPool* graphicPool) const
 	CFontLoader::GetGDIFontColor(pMajor, 2, color);
 	fontBrush.SetColor(color);
 	for (int i = 0; i < m_Buttons.GetSize(); i++)
-		m_Buttons.GetAt(i)->DrawButton(*g, graphicPool, Gdiplus::Font(fontName.AllocSysString(), fontSize), fontBrush);		
+		m_Buttons.GetAt(i)->DrawButton(*g, graphicPool, Gdiplus::Font(fontName.AllocSysString(), fontSize), fontBrush);
 }

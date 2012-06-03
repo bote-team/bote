@@ -68,11 +68,11 @@ ANSWER_STATUS::Typ CMinorAI::ReactOnOffer(const CDiplomacyInfo& info)
 			ReactOnDowry(info);
 			return ANSWER_STATUS::ACCEPTED;
 		}
-		
+
 		// Prüfen ob der Vertrag aufgrund aktuell bestehender Verträge überhaupt angenommen werden darf
 		if (!pMinor->CanAcceptOffer(m_pDoc, info.m_sFromRace, info.m_nType))
 			return ANSWER_STATUS::DECLINED;
-		
+
 		// nun werden die aktuellen Beziehungen der Minorrace zu allen anderen Majorraces gespeichert. Wenn
 		// beim Vertragsangebot eine Mitgift gemacht wurde und die Minor das Angebot nämlich ablehnt, dann
 		// werden die Beziehungen wieder zurückgesetzt. Wenn die Minor den Vertrag akzeptiert, dann
@@ -141,7 +141,7 @@ ANSWER_STATUS::Typ CMinorAI::ReactOnOffer(const CDiplomacyInfo& info)
 			if (pMinor->IsRaceProperty(RACE_PROPERTY::SOLOING))
 				nNeededRelation += 20;
 			if (pMinor->IsRaceProperty(RACE_PROPERTY::SECRET))
-				nNeededRelation += 10;			
+				nNeededRelation += 10;
 		}
 		else if (info.m_nType == DIPLOMATIC_AGREEMENT::MEMBERSHIP)
 		{
@@ -167,11 +167,11 @@ ANSWER_STATUS::Typ CMinorAI::ReactOnOffer(const CDiplomacyInfo& info)
 		for (int i = 0; i < 5; i++)
 			nTemp += rand()%nRandom + 1;
 		nRandom = (short)(nTemp / 5);
-		
+
 		//CString s;
 		//s.Format("Beziehung: %d\nNeededRelation: %d\nMulti: %lf\nforRandom: %d",relations[race-1],neededRelation,multi,forRandom);
 		//AfxMessageBox(s);
-	
+
 		// Wenn wir den Status erfolgreich ändern
 		if (nRandom >= nNeededRelation)
 			return ANSWER_STATUS::ACCEPTED;
@@ -185,7 +185,7 @@ ANSWER_STATUS::Typ CMinorAI::ReactOnOffer(const CDiplomacyInfo& info)
 			relationMali = rand()%relationMali;
 		else
 			return ANSWER_STATUS::DECLINED;
-		
+
 		pMinor->SetRelation(info.m_sFromRace, -relationMali);
 		return ANSWER_STATUS::DECLINED;
 	}
@@ -230,19 +230,19 @@ bool CMinorAI::MakeOffer(CString& sRaceID, CDiplomacyInfo& info)
 		{
 			BYTE byOurRelationToThem = pMinor->GetRelation(sRaceID);
 			DIPLOMATIC_AGREEMENT::Typ nAgreement = pMinor->GetAgreement(sRaceID);
-			
+
 			// jetzt zum Algorithmus:
 			//	Aufgrund der Beziehung zur Majorrace macht die Minorrace dieser vielleicht ein diplomatisches Angebot
 
 			// Checken ob wir ein Angebot überhaupt machen können, z.B. wenn eine andere Hauptrasse
 			// z.B. Mitgliedschaft mit der Minorrace hat, dann können wir ihr kein Angebot machen
-			DIPLOMATIC_AGREEMENT::Typ nOthersAgreement = DIPLOMATIC_AGREEMENT::NONE;		
+			DIPLOMATIC_AGREEMENT::Typ nOthersAgreement = DIPLOMATIC_AGREEMENT::NONE;
 			map<CString, CMajor*>* pmMajors = m_pDoc->GetRaceCtrl()->GetMajors();
 			for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 			{
 				DIPLOMATIC_AGREEMENT::Typ nTemp = pMinor->GetAgreement(it->first);
 				if (nTemp > nOthersAgreement)
-					nOthersAgreement = nTemp;			
+					nOthersAgreement = nTemp;
 			}
 			// wenn die Minor irgendeine Mitgliedschaft mit einer anderen Rasse hat, dann macht sie kein Angebot
 			if (nOthersAgreement == DIPLOMATIC_AGREEMENT::MEMBERSHIP)
@@ -257,7 +257,7 @@ bool CMinorAI::MakeOffer(CString& sRaceID, CDiplomacyInfo& info)
 			for (int i = 0; i < 5; i++)
 				nTemp += rand()%nRandom + 1;
 			nRandom = (short)(nTemp / 5);
-			
+
 			// Jetzt haben wir nen Randomwert, wenn dieser einen zufälligen Wert überschreitet, bietet die
 			// Minorrace zu 50% etwas an
 			DIPLOMATIC_AGREEMENT::Typ nOffer = DIPLOMATIC_AGREEMENT::NONE;
@@ -290,7 +290,7 @@ bool CMinorAI::MakeOffer(CString& sRaceID, CDiplomacyInfo& info)
 				nMinRel -= 10;
 			if (pMinor->IsRaceProperty(RACE_PROPERTY::PACIFIST))	// Wir hassen Krieg
 				nMinRel -= 15;
-			
+
 			if (nRandom < nMinRel && byOurRelationToThem < nMinRel && nAgreement != DIPLOMATIC_AGREEMENT::WAR)
 				nOffer = DIPLOMATIC_AGREEMENT::WAR;
 
@@ -312,7 +312,7 @@ bool CMinorAI::MakeOffer(CString& sRaceID, CDiplomacyInfo& info)
 				info.m_nFlag = DIPLOMACY_OFFER;
 				info.m_nType = nOffer;
 				info.m_sFromRace = pMinor->GetRaceID();
-				info.m_sToRace = sRaceID;			
+				info.m_sToRace = sRaceID;
 				info.m_nSendRound = m_pDoc->GetCurrentRound() - 1;
 				CGenDiploMessage::GenerateMinorOffer(info);
 				MYTRACE(MT::LEVEL_INFO, "Minor: %s makes offer %d to Major %s\n", info.m_sFromRace, info.m_nType, info.m_sToRace);
@@ -323,7 +323,7 @@ bool CMinorAI::MakeOffer(CString& sRaceID, CDiplomacyInfo& info)
 	}
 	else
 	{
-		MYTRACE(MT::LEVEL_ERROR, "Minor: %s makes offer %d to Major %s\n", info.m_sFromRace, info.m_nType, info.m_sToRace);		
+		MYTRACE(MT::LEVEL_ERROR, "Minor: %s makes offer %d to Major %s\n", info.m_sFromRace, info.m_nType, info.m_sToRace);
 		throw NotImplemented;
 	}
 
@@ -342,14 +342,14 @@ void CMinorAI::ReactOnDowry(const CDiplomacyInfo& info)
 	USHORT nCreditsFromRes = (USHORT)CalcResInCredits(info);
 	//CString s;
 	//s.Format("Ressourcenwert: %d", nCreditsFromRes);
-	//AfxMessageBox(s);	
+	//AfxMessageBox(s);
 
 	//Berechnen wieviel die Credits eigentlich wert sind, wenn wir die langjährigen Beziehungen zu anderen
 	//Majorraces mit einberechnen. Das bedeutet, umso länger jemand anderes diese Rasse kennt, umso mehr
 	//AcceptancePoints wird diese bei der Rasse haben und umso schwerer wird es für andere Rassen die Beziehung
 	//zu dieser durch Geschenke zu verändern. Wir suchen uns also die Rasse, welche die meistens Acceptance-
 	//Points bei dieser hat (außer die Geldgeberrasse) und subtrahieren von diesem Wert unsere Akzeptanzpunkte.
-	// Den dadurch erhaltenen Wert (nur positiv) ziehen wir von den Credits ab. 
+	// Den dadurch erhaltenen Wert (nur positiv) ziehen wir von den Credits ab.
 	int nCredits = info.m_nCredits + nCreditsFromRes;
 	if (nCredits <= 0)
 		return;
@@ -364,7 +364,7 @@ void CMinorAI::ReactOnDowry(const CDiplomacyInfo& info)
 	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 		if (info.m_sFromRace != it->first)
 			nAcceptancePoints = max(nAcceptancePoints, pMinor->GetAcceptancePoints(it->first));
-	
+
 	// eigene AcceptancePoints mit einberechnen. Weil wenn wir selber eine gute Beziehung zu der Rasse haben,
 	// dann soll unser Geld auch was wert sein
 	if (pMinor->GetAcceptancePoints(info.m_sFromRace) > nAcceptancePoints)
@@ -392,7 +392,7 @@ void CMinorAI::ReactOnDowry(const CDiplomacyInfo& info)
 
 	// Wert, den wir mit nRandomCredits erreichen müssen, um die Beziehung zu verbessern
 	short nNeededValue = DIPLOMACY_PRESENT_VALUE;	// 200 ist "normal"
-	
+
 	if (pMinor->IsRaceProperty(RACE_PROPERTY::SOLOING))
 		nNeededValue += 150;	// bei einer zurückgezogenen Rasse ist der Wert wesentlich höher
 	if (pMinor->IsRaceProperty(RACE_PROPERTY::HOSTILE))
@@ -402,11 +402,11 @@ void CMinorAI::ReactOnDowry(const CDiplomacyInfo& info)
 	if (pMinor->IsRaceProperty(RACE_PROPERTY::WARLIKE))
 		nNeededValue += 50;		// bei einer kriegerischen Rasse ist der Wert höher
 	if (pMinor->IsRaceProperty(RACE_PROPERTY::INDUSTRIAL))
-		nNeededValue -= 25;		// bei einer industriellen Rasse ist der Wert niedriger	
+		nNeededValue -= 25;		// bei einer industriellen Rasse ist der Wert niedriger
 	if (pMinor->IsRaceProperty(RACE_PROPERTY::AGRARIAN))
-		nNeededValue -= 50;		// bei einer landwirtschaftlichen Rasse ist der Wert niedriger	
+		nNeededValue -= 50;		// bei einer landwirtschaftlichen Rasse ist der Wert niedriger
 	if (pMinor->IsRaceProperty(RACE_PROPERTY::FINANCIAL))
-		nNeededValue -= 100;	// bei einer finanziellen Rasse ist der Wert niedriger	
+		nNeededValue -= 100;	// bei einer finanziellen Rasse ist der Wert niedriger
 
 	//Jetzt neededValue noch modifizieren mit der aktuellen Beziehung der Geldgeberrasse.
 	//Alles über 50% wird auf die neededValue draufgerechnet, alles unter 50% wird von
@@ -419,7 +419,7 @@ void CMinorAI::ReactOnDowry(const CDiplomacyInfo& info)
 	short nOurRelationToThem = pMinor->GetRelation(info.m_sFromRace);
 	nNeededValue += nOurRelationToThem - 50;
 	nNeededValue = (short)(nNeededValue * (100 - pMajor->GetDiplomacyBonus()) / 100);
-	
+
 	// Jetzt berechnen, um wieviel sich die Beziehung verändern würde
 	float fBonus = 0.0f;
 	if (nRandomCredits >= nNeededValue)
@@ -428,7 +428,7 @@ void CMinorAI::ReactOnDowry(const CDiplomacyInfo& info)
 	//Jetzt den Modifikator der Bestechlichkeit der kleinen Rasse mit einbeziehen. Das bedeutet,
 	//ob der fBonus so bleibt oder nicht. Bei großer Resistenz wird fBonus nochmal verringert und
 	//wenn die Rasse sich von Geld gut beeinflussen läßt, dann wird fBonus sogar erhöht
-	
+
 	switch (pMinor->m_iCorruptibility)
 	{
 	// kaum
@@ -452,7 +452,7 @@ void CMinorAI::ReactOnDowry(const CDiplomacyInfo& info)
 	short nOldRelation = pMinor->GetRelation(info.m_sFromRace);
 	if (nOurRelationToThem - nOldRelation != 0)
 		pMinor->SetRelation(info.m_sFromRace, nOurRelationToThem - nOldRelation);
-	
+
 	if (fBonus >= 1.0)
 		// Jetzt die Funktion aufrufen, die die Beziehung zu den anderen Rassen um den
 		// Prozentwert verringert, den die Geldgeberrasse bekommen hat.
@@ -471,19 +471,19 @@ void CMinorAI::CalcOtherMajorsRelationChange(const CDiplomacyInfo& info, short n
 	// Es wird immer bei der schlechtesten Beziehung zuerst abgezogen, dann
 	// bei der nächst schlechtesten usw.
 	// Wenn keine Bonuswertpunkte mehr abgezogen werden können ist die Funktion beendet.
-	
+
 	// Struktur mit Major-ID und Beziehungswert (dazu ein paar Operatoren definieren)
 	struct MAJORLIST {
 		 CString sID;
 		 BYTE	 byRelation;
-		
+
 		bool operator< (const MAJORLIST& elem2) const { return byRelation < elem2.byRelation;}
 		bool operator> (const MAJORLIST& elem2) const { return byRelation > elem2.byRelation;}
 		MAJORLIST() : sID(""), byRelation(0) {}
 		MAJORLIST(const CString& _sID, BYTE _byRelation) : sID(_sID), byRelation(_byRelation) {}
 	};
 	vector<MAJORLIST> vKnownMajors;
-	
+
 	map<CString, CMajor*>* pmMajors = m_pDoc->GetRaceCtrl()->GetMajors();
 	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 		if (info.m_sFromRace != it->first)
@@ -542,7 +542,7 @@ bool CMinorAI::TryCorruption(const CDiplomacyInfo& info)
 		return false;
 
 	CSystem* pSystem = &(m_pDoc->GetSystem(pMinor->GetRaceKO()));
-	ASSERT(pSystem);	
+	ASSERT(pSystem);
 	short nResistance = pSystem->GetProduction()->GetResistance();
 	// Bei einer Bestechnung mit z.B. 5000 Creditübergabe ergibt dies einen Wert von 5000.
 	// Der Wert des Kommunikationsnetzwerkes wird diesen Wert verringern.
@@ -553,8 +553,8 @@ bool CMinorAI::TryCorruption(const CDiplomacyInfo& info)
 	// Dies verringert die Akzeptanzpunkte viel weniger und auch die Erfolgwahrscheinlichkeit nimmt ab.
 	nCredits -= nResistance;
 	nCredits = max(nCredits, 0);
-	
-	// Jetzt noch die angesammelten AcceptancePoints der corruptedMajor verringern. 
+
+	// Jetzt noch die angesammelten AcceptancePoints der corruptedMajor verringern.
 	// Somit haben wir hier die Möglichkeit, diese Punkte durch Bestechung zu verringern.
 	// Bis jetzt wird der Wert noch durch nichts modifiziert.
 	// zum Algorithmus:
@@ -576,14 +576,14 @@ bool CMinorAI::TryCorruption(const CDiplomacyInfo& info)
 	// nCredits/750 draufgerechnet. Wenn dieser Gesamtwert größer als 90 ist, dann war
 	// die Bestechung erfolgreich. Aber nicht immer 90, sondern Wert ist noch abhängig von
 	// der Bestechlichkeit der kleinen Rasse.
-	
+
 	USHORT nCorruptionValue = 90;
 	switch (pMinor->GetCorruptibility())
 	{
 	case 0:	// kaum (bestechlich)
 			nCorruptionValue = 100;	break;
 	case 1:	// wenig
-			nCorruptionValue = 95;	break;		
+			nCorruptionValue = 95;	break;
 	// Bei 2 verändert sich ja nichts
 	case 3:	// viel
 			nCorruptionValue = 85;	break;
@@ -603,11 +603,11 @@ bool CMinorAI::TryCorruption(const CDiplomacyInfo& info)
 		nValue = rand()%100 + nRelationDiff + nCredits / 750;
 		// war die Bestechung erfolgreich?
 		if (nValue > nCorruptionValue)
-			break;		
+			break;
 	}
 
-	if (nValue > nCorruptionValue)			
-	{	
+	if (nValue > nCorruptionValue)
+	{
 		// Die Bestechnung war erfolgreich -> der Vertrag mit der CorruptedMajor wird gekündigt
 		DIPLOMATIC_AGREEMENT::Typ nAgreement = pMinor->GetAgreement(info.m_sCorruptedRace);
 		CString sText;
@@ -635,7 +635,7 @@ bool CMinorAI::TryCorruption(const CDiplomacyInfo& info)
 		}
 		case DIPLOMATIC_AGREEMENT::MEMBERSHIP:
 		{
-			sText = CResourceManager::GetString("CANCEL_MEMBERSHIP", FALSE, pMinor->m_sName);				
+			sText = CResourceManager::GetString("CANCEL_MEMBERSHIP", FALSE, pMinor->m_sName);
 			break;
 		}
 		}
@@ -644,10 +644,10 @@ bool CMinorAI::TryCorruption(const CDiplomacyInfo& info)
 		if (!sText.IsEmpty())
 		{
 			pCorruptedMajor->SetAgreement(pMinor->GetRaceID(), DIPLOMATIC_AGREEMENT::NONE);
-			pMinor->SetAgreement(info.m_sCorruptedRace, DIPLOMATIC_AGREEMENT::NONE);			
+			pMinor->SetAgreement(info.m_sCorruptedRace, DIPLOMATIC_AGREEMENT::NONE);
 			message.GenerateMessage(sText, MESSAGE_TYPE::DIPLOMACY, "", 0, 0);
 			pCorruptedMajor->GetEmpire()->AddMessage(message);
-		}	
+		}
 		// Nachricht über Erfolg bei Bestecherrasse erzeugen
 		sText = CResourceManager::GetString("CORRUPTION_SUCCESS", FALSE, pMinor->m_sName);
 		message.GenerateMessage(sText, MESSAGE_TYPE::DIPLOMACY, "", 0, 0);
@@ -671,7 +671,7 @@ bool CMinorAI::TryCorruption(const CDiplomacyInfo& info)
 			pCorruptedMajor->GetEmpire()->AddMessage(message);
 		}
 
-		sText = CResourceManager::GetString("CORRUPTION_FAILED", FALSE, pMinor->m_sName);	
+		sText = CResourceManager::GetString("CORRUPTION_FAILED", FALSE, pMinor->m_sName);
 		message.GenerateMessage(sText, MESSAGE_TYPE::DIPLOMACY, "", 0, 0);
 		pFromMajor->GetEmpire()->AddMessage(message);
 		return false;
@@ -699,7 +699,7 @@ int CMinorAI::CalcResInCredits(const CDiplomacyInfo& info)
 	// Crystal wird getauscht im Verhältnis 3.25:1
 	// Iridium wird getauscht im Verhältnis 2.5:1
 	// Deritium wird getauscht im Verhältnis 1:50
-	
+
 	float fValue = 0.0f;
 	float fDiv = 0.0f;
 	CSystem* pSystem = &(m_pDoc->GetSystem(pMinor->m_ptKO));
@@ -741,13 +741,13 @@ int CMinorAI::CalcResInCredits(const CDiplomacyInfo& info)
 	//Dafür berechnen wir einen Teiler. Wir nehmen die aktuelle
 	//Menge des jeweiligen Rohstoffes, die in allen Systemen gelagert sind.
 	//Mit diesem Teiler wird der erhaltene Wert des Rohstoffes multipliziert.
-	//Dieser nun erhaltene Wert wird noch rassenabhängig modifiziert.	
+	//Dieser nun erhaltene Wert wird noch rassenabhängig modifiziert.
 
 	if (fValue != 0.0f)
 	{
 		fDiv = max(1.0f, fDiv);
 		fValue /= fDiv;
-		
+
 		// Wert nochmal modifizieren, aufgrund der Rassenart
 		if (pMinor->IsRaceProperty(RACE_PROPERTY::PRODUCER))
 			fValue *= 1.5f;
@@ -764,6 +764,6 @@ int CMinorAI::CalcResInCredits(const CDiplomacyInfo& info)
 
 		fValue = max(0.0f, fValue);
 	}
-	
+
 	return (int)fValue;
 }

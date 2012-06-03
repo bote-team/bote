@@ -38,20 +38,20 @@ public:
 	/// Funktion gibt die Map mit allen Rassen des Spiels zurück.
 	/// @return Map mit allen Rassen des Spiels
 	map<CString, CRace*>* GetRaces(void) {return &m_mRaces;}
-	
+
 	/// Funktion gibt eine bestimmte Rasse zurück.
 	/// @param sID ID der gewünschten Rassen
 	/// @return Zeiger auf gewünschte Rasse
 	CRace* GetRace(const CString& sID) const;
-	
+
 	/// Funktion gibt alle Hauptrassen des Spiels zurück.
 	/// @return Map mit allen Hauptrassen des Spiels
 	map<CString, CMajor*>* GetMajors(void) {return &m_mMajors;}
-	
+
 	/// Funktion gibt alle Minorrassen des Spiels zurück.
 	/// @return Map mit allen Minorrassen des Spiels
 	map<CString, CMinor*>* GetMinors(void) {return &m_mMinors;}
-	
+
 	/// Funktion gibt alle Rassen eines bestimmten Types zurück.
 	/// @param type Typ der Rasse (MAJOR, MINOR)
 	/// @return Map aller Rassen eines bestimmten Types
@@ -65,7 +65,7 @@ public:
 	/// Funktion entfernt eine nicht mehr zu benutzende Rasse.
 	/// @param sRaceID Rassen-ID
 	void RemoveRace(const CString& sRaceID);
-	
+
 	/// Funktion zum zurücksetzen aller Werte auf Ausgangswerte.
 	void Reset(void);
 
@@ -106,7 +106,7 @@ private:
 	/// Majorbeziehungen in beide Richtungen vergeben. Bei den Minors wird immer nur die Beziehung
 	/// von Minor zu Majors erstellt.
 	void InitRelations(void);
-	
+
 	// Attribute
 	map<CString, CRace*>		m_mRaces;			///< Map mit allen Rassen des Spiels
 

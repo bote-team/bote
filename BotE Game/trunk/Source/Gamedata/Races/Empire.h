@@ -23,7 +23,7 @@
 /**
  * Struktur, die die wichtigsten Informationen eines Systems aufnehmen kann. Dies wird benötigt, wenn wir in einer
  * View eine Liste der Systeme aufnehmen möchten. Ich möchte da nur die wichtigsten Infos haben
- */ 
+ */
 struct SystemViewStruct {
 		bool operator< (const SystemViewStruct& elem2) const { return name < elem2.name;}
 		bool operator> (const SystemViewStruct& elem2) const { return name > elem2.name;}
@@ -38,20 +38,20 @@ struct SystemViewStruct {
 
 class CSystem;
 class CSector;
-class CEmpire : public CObject  
+class CEmpire : public CObject
 {
 public:
 	DECLARE_SERIAL (CEmpire)
-	
+
 	/// Konstruktor
 	CEmpire();
-	
+
 	/// Destruktor
 	~CEmpire();
 
 	/// Serialisierungsfunktion
 	void Serialize(CArchive &ar);
-	
+
 	// Zugriffsfunktionen
 	// zum Lesen der Membervariablen
 	/// Funktion gibt die Anzahl der Systeme des Imperiums zurück.
@@ -59,22 +59,22 @@ public:
 
 	/// Funktion gibt einen Zeiger auf die Liste der zum Imperium gehörenden Systeme zurück.
 	CArray<SystemViewStruct>* GetSystemList() {return &m_SystemList;}
-	
+
 	/// Funktion gibt die Nummer des Imperiums zurück.
-	const CString& GetEmpireID() const {return m_sEmpireID;} 
-	
+	const CString& GetEmpireID() const {return m_sEmpireID;}
+
 	/// Funktion gibt den aktuellen Bestand an Credits zurück.
 	long GetCredits() const {return m_iCredits;}
-	
+
 	/// Funktion gibt die gesamte Creditsänderung seit der letzten Runde zurück.
 	long GetCreditsChange() const {return m_iCreditsChange;}
-	
+
 	/// Funktion gibt die Schiffsunterstützungskosten zurück.
 	USHORT GetShipCosts() const {return m_iShipCosts;}
-	
+
 	/// Funktion gibt die Schiffunterstützungkosten durch die Bevölkerung zurück.
 	USHORT GetPopSupportCosts() const {return m_iPopSupportCosts;}
-	
+
 	/// Funktion gibt die aktuell produzierten Forschungspunkte zurück.
 	UINT GetFP() const {return m_lFP;}
 
@@ -83,7 +83,7 @@ public:
 
 	/// Funktion gibt ein Feld mit der Menge aller Ressourcen auf allen Systemen des Imperiums zurück.
 	const UINT* GetStorage() const {return m_lResourceStorages;}
-	
+
 	/// Funktion gibt einen Zeiger auf alle Nachrichten an das Imperium zurück.
 	MessageArray* GetMessages() {return &m_Messages;}
 
@@ -93,13 +93,13 @@ public:
 
 	/// Funktion gibt einen Zeiger auf das Forschungsobjekt des Imperiums zurück.
 	CResearch* GetResearch(void) {return &m_Research;}
-	
+
 	/// Funktion gibt einen Zeiger auf das Geheimdienstobjekt des Imperiums zurück.
 	CIntelligence* GetIntelligence(void) {return &m_Intelligence;}
 
 	/// Funktion liefert einen Zeiger auf das globale Lager eines Imperiums.
 	CGlobalStorage* GetGlobalStorage(void) {return &m_GlobalStorage;}
-	
+
 	// zum Schreiben der Membervariablen
 	/// Funktion addiert die im Parameter <code>add</code> übergebene Menge zu der Anzahl der Systeme
 	/// des Imperiums.
@@ -117,7 +117,7 @@ public:
 	/// Funktion legt die Creditsänderung zur vorherigen Runde fest.
 	/// @param change Änderung des Creditss gegnüber der vorherigen Runde.
 	void SetCreditsChange(int change) {m_iCreditsChange = change;}
-	
+
 	/// Funktion setzt die Schiffsunterstützungskosten auf den Wert von <code>costs</code>.
 	void SetShipCosts(USHORT costs) {m_iShipCosts = costs;}
 
@@ -152,7 +152,7 @@ public:
 	// Sonstige Funktionen
 	/// Resetfunktion für das CEmpire-Objekt.
 	void Reset(void);
-	
+
 	/// Funktion generiert die Liste der Systeme für das Imperium anhand aller Systeme.
 	/// @param systems Feld aller Systeme
 	void GenerateSystemList(std::vector<std::vector<CSystem>>& systems/*[STARMAP_SECTORS_HCOUNT][STARMAP_SECTORS_VCOUNT]*/, std::vector<std::vector<CSector>>& sectors/*[STARMAP_SECTORS_HCOUNT][STARMAP_SECTORS_VCOUNT]*/);
@@ -167,30 +167,30 @@ public:
 
 private:
 	long m_iCredits;				///< Credits des Imperiums
-	
+
 	long m_iCreditsChange;			///< Gewinn bzw Creditsverlust zur letzten Runde
-	
+
 	USHORT m_iShipCosts;			///< die Schiffsunterstützungskosten des Imperiums
-	
+
 	USHORT m_iPopSupportCosts;		///< Unterstützungskosten aufgrund der Bevölkerung
-	
+
 	UINT m_lFP;						///< aktuelle FP des Imperiums
 
 	UINT m_lResourceStorages[DERITIUM+1];	///< die gesamte Menge auf allen Systemen der jeweiligen Ressource
-	
+
 	CString m_sEmpireID;			///< gibt die ID der Rasse des Imperiums zurück
-	
+
 	BYTE m_byNumberOfSystems;		///< Anzahl Systeme des Imperiums
-	
+
 	MessageArray m_Messages;		///< alle Nachrichten an das Imperium
 
 	CObArray m_EventMessages;		///< alle Events für das Imperium
-	
+
 	CResearch m_Research;			///< die Forschung des Imperiums
 
 	CIntelligence m_Intelligence;	///< der Geheimdienst des Imperiums
 
 	CGlobalStorage m_GlobalStorage;	///< das globale Lager des Imperiums
 
-	CArray<SystemViewStruct> m_SystemList;	///< Zeiger auf die zum Imperium gehörenden Systeme	
+	CArray<SystemViewStruct> m_SystemList;	///< Zeiger auf die zum Imperium gehörenden Systeme
 };

@@ -33,7 +33,7 @@ private:
 	void CalcPriorities();
 
 	/// Diese Funktion wählt ein zu bauendes Gebäude aus der Liste der baubaren Gebäude. Es werden nur Gebäude
-	/// ausgewählt, welche in die Prioritätenliste passen. Der Rückgabewert ist die ID des Bauauftrages. 
+	/// ausgewählt, welche in die Prioritätenliste passen. Der Rückgabewert ist die ID des Bauauftrages.
 	/// Wird <code>0</code> zurückgegeben, so wurde kein Gebäude gefunden, welches in das Anforderungsprofil passt.
 	int ChooseBuilding();
 
@@ -42,7 +42,7 @@ private:
 	/// Übergeben wird dafür die Priorität <code>prio</code> des zu bauenden Schiffes (mittels Funktion <function>
 	/// GetShipBuildPrios</function> ermitteln) und Wahrheitswertr, in denen steht welcher Schiffstyp gebaut werden soll.
 	int ChooseShip(int prio, BOOLEAN chooseCombatship, BOOLEAN chooseColoship, BOOLEAN chooseTransport);
-	
+
 	/// Funktion überprüft ob das Gebäude mit der ID <code>id</code> in die Bauliste gesetzt werden kann.
 	/// Wenn es in die Bauliste gesetzt werden konnte gibt die Funktion ein <code>TRUE</code> zurück.
 	BOOLEAN MakeEntryInAssemblyList(short id);
@@ -111,8 +111,8 @@ private:
 	/// @return Priotität der Forschungsproduktion
 	int GetResourcePrio(WORKER::Typ nWorker, double dMaxHab) const;
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
-	
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	/// Ein Zeiger auf das Document.
 	CBotf2Doc* m_pDoc;
 

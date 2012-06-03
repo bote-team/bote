@@ -29,7 +29,7 @@ public:
 	/// Funktion initialisiert alle möglichen Systemnamen.
 	/// @pram vMinorRaceSystemNames Namen aller Minorracesysteme
 	void Init(const CStringArray& vMinorRaceSystemNames);
-	
+
 	/// Diese Funktion gibt uns einen einzigartigen Systemnamen zurück. Dieser Name wurde vorher noch nicht vergeben.
 	/// @param ptKO Sektorkoordinate
 	/// @param [in|out] bMinor handelt sich um ein Minorracesystem, wenn keine Minorracesysteme mehr vorhanden sind, dann wird der Parameter auf <code>false</code> gesetzt

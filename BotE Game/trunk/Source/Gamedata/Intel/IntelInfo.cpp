@@ -32,7 +32,7 @@ void CIntelInfo::CalcIntelInfo(CBotf2Doc* pDoc, CMajor* pOurRace)
 
 	ASSERT(pDoc);
 	ASSERT(pOurRace);
-	
+
 	Reset();
 
 	// 3-dim Feld, welches die Informationen zu den Sektoren/Systemen aufnimmt

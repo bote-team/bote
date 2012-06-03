@@ -38,7 +38,7 @@ CResearch::CResearch(const CResearch & rhs)
 	m_iConstructionTech = rhs.m_iConstructionTech;
 	m_iWeaponTech = rhs.m_iWeaponTech;
 	m_iUniqueTech = rhs.m_iUniqueTech;
-	
+
 	m_iBioPercentage = rhs.m_iBioPercentage;
 	m_iEnergyPercentage = rhs.m_iEnergyPercentage;
 	m_iComputerPercentage = rhs.m_iComputerPercentage;
@@ -138,7 +138,7 @@ CResearch & CResearch::operator=(const CResearch & rhs)
 ///////////////////////////////////////////////////////////////////////
 // Speichern / Laden
 ///////////////////////////////////////////////////////////////////////
-void CResearch::Serialize(CArchive &ar)		
+void CResearch::Serialize(CArchive &ar)
 {
 	CObject::Serialize(ar);
 	ResearchInfo.Serialize(ar);
@@ -303,7 +303,7 @@ void CResearch::SetPercentage(BYTE tech, BYTE percentage)
 				m_iBioPercentage = percentage;
 				if (m_iBioPercentage > (100-difflock))
 					m_iBioPercentage = 100-difflock;
-				
+
 			}
 			break;
 		}
@@ -439,7 +439,7 @@ void CResearch::SetPercentage(BYTE tech, BYTE percentage)
 		// Wenn sich nichts geändert hat, dann die Schleife verlassen, kann vorkommen, wenn wir locken
 		if (changediff == diff)
 			break;
-		
+
 	}
 	// Wenn wir eine Forschung verringern
 	// Jetzt Punkte auf die anderen Gebiete verteilen
@@ -589,7 +589,7 @@ void CResearch::SetFP(BYTE tech, UINT fp)
 // sonstige Funktionen
 //////////////////////////////////////////////////////////////////////
 
-/// Diese Funktion berechnet alles, was mit Forschung in einem Imperium zu tun hat. Diese Funktion wird in der 
+/// Diese Funktion berechnet alles, was mit Forschung in einem Imperium zu tun hat. Diese Funktion wird in der
 /// NextRound() Funktion aufgerufen. Als Parameter werden dafür die aktuellen <code>FP</code> des Imperiums
 /// übergeben. Der Rückgabewert dieser Funktion ist ein Zeiger auf das Attribut <code>m_strMessage</code> und
 /// vom Typ CString*.
@@ -611,7 +611,7 @@ CString* CResearch::CalculateResearch(ULONG FP)
 		m_iConstructionTechBoni += ResearchInfo.GetResearchComplex(RESEARCH_COMPLEX::RESEARCH)->GetBonus(3);
 		m_iWeaponTechBoni += ResearchInfo.GetResearchComplex(RESEARCH_COMPLEX::RESEARCH)->GetBonus(3);
 	}
-		
+
 	for (int i = 0; i < 8; i++)
 		m_strMessage[i] = "";
 	m_lBioFP += (float)(FP*m_iBioPercentage)/100+(float)(FP*m_iBioPercentage)/100*m_iBioTechBoni/100;
@@ -620,7 +620,7 @@ CString* CResearch::CalculateResearch(ULONG FP)
 	m_lPropulsionFP += (float)(FP*m_iPropulsionPercentage)/100+(float)(FP*m_iPropulsionPercentage)/100*m_iPropulsionTechBoni/100;
 	m_lConstructionFP += (float)(FP*m_iConstructionPercentage)/100+(float)(FP*m_iConstructionPercentage)/100*m_iConstructionTechBoni/100;
 	m_lWeaponFP += (float)(FP*m_iWeaponPercentage)/100+(float)(FP*m_iWeaponPercentage)/100*m_iWeaponTechBoni/100;
-	
+
 	if (ResearchInfo.m_bChoiceTaken)
 		m_lUniqueFP += (float)(FP*m_iUniquePercentage)/100;
 
@@ -703,7 +703,7 @@ CString* CResearch::CalculateResearch(ULONG FP)
 		m_iNumberOfUnique++;
 		m_strMessage[6] = CResourceManager::GetString("SPECIAL_FINISHED");
 		m_bUniqueReady = TRUE;
-		
+
 		// Wenn wir den Komplex "Forschung" erforscht haben, die Boni hier gleich berechnen, weil diese
 		// sonst nicht in der MainView direkt nach Erforschen angezeigt werden
 		if (ResearchInfo.GetResearchComplex(RESEARCH_COMPLEX::RESEARCH)->GetComplexStatus() == RESEARCH_STATUS::RESEARCHED)
@@ -731,7 +731,7 @@ CString* CResearch::CalculateResearch(ULONG FP)
 	// wenn ja, dann eine neue UniqueForschung auswählen
 	if (m_bUniqueReady == TRUE && m_iUniqueTech < m_iBioTech && m_iUniqueTech < m_iEnergyTech && m_iUniqueTech < m_iCompTech &&
 		m_iUniqueTech < m_iPropulsionTech && m_iUniqueTech < m_iConstructionTech && m_iUniqueTech < m_iWeaponTech)
-	{	
+	{
 		if (m_iNumberOfUnique <= NoUC)
 		{
 			m_bUniqueReady = FALSE;

@@ -33,21 +33,21 @@ class CReManager : public CObject
 	//Konstruktor/Destruktor
 	CReManager(void);
 	~CReManager(void);
-	
+
 	///Berechnet Randomevents für die gegebene Majorrace
 	void CalcEvents(CMajor* pRace);
 
 	///Berechnet Events wenn ein Sektor erkundet wird
 	void CalcExploreEvent(const CPoint& ko, CMajor* pRace, CArray<CShip, CShip>* ships);
-	
+
 	///Gibt Wahrscheinlichkeit zurück
 	USHORT getProbability() {return m_Probability;};
-	
+
 	///Setzt die Wahrscheinlichkeit auf newProb
 	void setProbability(USHORT newProb) {m_Probability=((newProb<101)?newProb:100);};
 
 	private:
-	
+
 	//Für Random Events die nur ein System betreffen
 	bool SystemEvent(CPoint &ko, CMajor* pRace);
 

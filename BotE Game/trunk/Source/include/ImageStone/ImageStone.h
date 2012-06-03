@@ -2,10 +2,10 @@
  *   Copyright (C) =USTC= Fu Li
  *
  *   Author   :  Fu Li
- *   Create   :  
+ *   Create   :
  *   Home     :  http://www.crazy-bit.com/
  *   Mail     :  crazybitwps@hotmail.com
- *   History  :  
+ *   History  :
  */
 #ifndef __IMAGESTONE_HEADER__9711__H__
 #define __IMAGESTONE_HEADER__9711__H__

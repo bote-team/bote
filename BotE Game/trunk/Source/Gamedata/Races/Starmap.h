@@ -105,7 +105,7 @@ typedef struct RangeMap
 	unsigned char *range;		///< Array, das die Reichweitenmatrix zeilenweise enthält
 	char w;						///< Anzahl der Spalten der Matrix
 	char h;						///< Anzahl Zeilen der Matrix
-	
+
 	/// nullbasierter Index einer Spalte; die Matrix wird so ausgerichtet, dass diese Spalte über dem Sektor eines Außenpostens steht
 	char x0;
 	/// nullbasierter Index einer Zeile; die Matrix wird so ausgerichtet, dass diese Zeile über dem Sektor eines Außenpostens steht
@@ -121,7 +121,7 @@ RangeMap;
  * @version 0.0.2
  */
 class CSector;
-class CStarmap  
+class CStarmap
 {
 	friend class CGalaxyMenuView;
 
@@ -184,7 +184,7 @@ public:
 	 * Zeiger der statischen Variablen löschen
 	 */
 	static void DeleteStatics();
-	
+
 	/**
 	 * Funktion gibt den Wert aus der RangeMap <code>m_Range</code> an einer bestimmten Stelle <code>p</p> auf der
 	 * Karte zurück.
@@ -312,7 +312,7 @@ private:
 	/// das Ergebnis in den Parameter <code>rangeMap</code>. Zusätzlich werden Referenzen auf paar Hilfsvariablen
 	/// übergeben.
 	void CalcRangeMap(BYTE propTech);
-	
+
 	/// @return Eintrag der gesetzten RangeMap an der Stelle (x, y), wobei (0, 0) die Außenpostenposition ist
 	unsigned char GetRangeMapValue(char x, char y);
 

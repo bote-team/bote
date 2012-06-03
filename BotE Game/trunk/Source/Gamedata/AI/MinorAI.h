@@ -33,7 +33,7 @@ public:
 	/// @param sRaceID RassenID der Rasse, an die das Angebot gemacht werden soll
 	/// @param info Referenz auf eine Diplomatieinformation (darin wird das Angebot abgelegt)
 	/// @return <code>true</code> wenn ein Angebot erzeugt wurde, ansonsten <code>false</code>
-	virtual bool MakeOffer(CString& sRaceID, CDiplomacyInfo& info);	
+	virtual bool MakeOffer(CString& sRaceID, CDiplomacyInfo& info);
 
 protected:
 	// private Funktionen

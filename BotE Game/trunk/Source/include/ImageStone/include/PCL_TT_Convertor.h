@@ -5,7 +5,7 @@
  *   Create   :  2005-3-9
  *   Home     :  http://www.crazy-bit.com/
  *   Mail     :  crazybitwps@hotmail.com
- *   History  :  
+ *   History  :
  */
 #ifndef __PCL_TT_CONVERTOR__2005_03_09__H__
 #define __PCL_TT_CONVERTOR__2005_03_09__H__

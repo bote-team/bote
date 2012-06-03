@@ -38,7 +38,7 @@ bool CCombatAI::CalcCombatTactics(const CArray<CShip*>& vInvolvedShips, const ma
 
 	// genaue Befehle an alle beteiligten Schiffe übergeben
 	ApplyShipTactics(vInvolvedShips, mCombatOrders);
-	
+
 	return true;
 }
 
@@ -51,7 +51,7 @@ void CCombatAI::ApplyCombatOrders(const CArray<CShip*>& vInvolvedShips, const ma
 	set<CString> sInvolvedRaces;
 	for (int i = 0; i < vInvolvedShips.GetSize(); i++)
 		sInvolvedRaces.insert(vInvolvedShips[i]->GetOwnerOfShip());
-	
+
 	// Kampfbefehl berechnen
 	for (set<CString>::const_iterator it = sInvolvedRaces.begin(); it != sInvolvedRaces.end(); ++it)
 	{
@@ -64,7 +64,7 @@ void CCombatAI::ApplyCombatOrders(const CArray<CShip*>& vInvolvedShips, const ma
 		map<CString, CRace*>::const_iterator iter = pmRaces->find(*it);
 		if (iter == pmRaces->end())
 			continue;
-		
+
 		CRace* pRace1 = iter->second;
 		int nMinRelation = 100;
 		for (set<CString>::const_iterator it2 = sInvolvedRaces.begin(); it2 != sInvolvedRaces.end(); ++it2)
@@ -74,7 +74,7 @@ void CCombatAI::ApplyCombatOrders(const CArray<CShip*>& vInvolvedShips, const ma
 				iter = pmRaces->find(*it2);
 				if (iter == pmRaces->end())
 					continue;
-				
+
 				CRace* pRace2 = iter->second;
 				// Beziehung der anderes Rasse zu uns
 				if (pRace2->GetType() != MAJOR || (pRace2->GetType() == MAJOR && ((CMajor*)pRace2)->IsHumanPlayer() == false))
@@ -113,7 +113,7 @@ void CCombatAI::ApplyCombatOrders(const CArray<CShip*>& vInvolvedShips, const ma
 		set<const CRace*> sFriends;
 		set<const CRace*> sEnemies;
 		double dWinningChance = CCombat::GetWinningChance(pRace1, vInvolvedShips, pmRaces, sFriends, sEnemies, pAnomaly);
-	
+
 		if (dWinningChance > 0.75)
 			mCombatOrders[*it] = COMBAT_ORDER::AUTOCOMBAT;
 		else if (dWinningChance < 0.25)
@@ -145,7 +145,7 @@ void CCombatAI::ApplyCombatOrders(const CArray<CShip*>& vInvolvedShips, const ma
 
 void CCombatAI::ApplyShipTactics(const CArray<CShip*>& vInvolvedShips, map<CString, COMBAT_ORDER::Typ>& mCombatOrders) const
 {
-	// eingestellte Befehle an die Schiffe übergeben	
+	// eingestellte Befehle an die Schiffe übergeben
 	for (int i = 0; i < vInvolvedShips.GetSize(); i++)
 	{
 		CShip* pShip = vInvolvedShips[i];

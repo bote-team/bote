@@ -58,7 +58,7 @@ ANSWER_STATUS::Typ CMajorAI::ReactOnOffer(const CDiplomacyInfo& info)
 /// @param info Referenz auf eine Diplomatieinformation (darin wird das Angebot abgelegt)
 /// @return <code>true</code> wenn ein Angebot erzeugt wurde, ansonsten <code>false</code>
 bool CMajorAI::MakeOffer(CString& sRaceID, CDiplomacyInfo& info)
-{	
+{
 	CRace* pRace = m_pDoc->GetRaceCtrl()->GetRace(sRaceID);
 
 	if (!pRace)
@@ -92,14 +92,14 @@ void CMajorAI::CalcFavoriteMinors(void)
 	struct MINORLIST {
 		 CString sID;
 		 BYTE	 byRelation;
-		
+
 		bool operator< (const MINORLIST& elem2) const { return byRelation < elem2.byRelation;}
 		bool operator> (const MINORLIST& elem2) const { return byRelation > elem2.byRelation;}
 		MINORLIST() : sID(""), byRelation(0) {}
 		MINORLIST(const CString& _sID, BYTE _byRelation) : sID(_sID), byRelation(_byRelation) {}
 	};
 
-	vector<MINORLIST> vFavoriteMinors;		
+	vector<MINORLIST> vFavoriteMinors;
 
 	// Wir suchen hier nach der Minorrace, der ich ein Geschenk bzw. ein Angebot inkl. Mitgift machen würde
 	// ich suche mir die Rassen raus, zu denen ich die beste Beziehung habe.
@@ -137,7 +137,7 @@ void CMajorAI::CalcFavoriteMinors(void)
 	std::sort(vFavoriteMinors.begin(), vFavoriteMinors.end());
 	// absteigend sortieren
 	std::reverse(vFavoriteMinors.begin(), vFavoriteMinors.end());
-	
+
 	// zu 10% wird die Minor an dritter Stelle genommen
 	if (vFavoriteMinors.size() >= 3 && rand()%10 == 0)
 		m_sFavoriteMinor = vFavoriteMinors[2].sID;
@@ -166,11 +166,11 @@ ANSWER_STATUS::Typ CMajorAI::ReactOnMinorOffer(const CDiplomacyInfo& info)
 
 	// Angenommen wird einfach zu 89%, zu 9% wird nicht reagiert und zu 2% abgelehnt
 	int nResult = rand()%100;
-	if (nResult > 10)		
+	if (nResult > 10)
 		return ANSWER_STATUS::ACCEPTED;
-	if (nResult > 1)	
+	if (nResult > 1)
 		return ANSWER_STATUS::NOT_REACTED;
-					
+
 	return ANSWER_STATUS::DECLINED;
 }
 
@@ -192,7 +192,7 @@ ANSWER_STATUS::Typ CMajorAI::ReactOnMajorOffer(const CDiplomacyInfo& info)
 		ReactOnDowry(info);
 		return ANSWER_STATUS::ACCEPTED;
 	}
-	
+
 	// berechnen ob es klappt
    	short nNeededRelation = 100;
 	// Als erstes wird der Wert festgelegt, den wir später im Algorithmus zufällig erreichen müssen. Umso höher dieser
@@ -213,7 +213,7 @@ ANSWER_STATUS::Typ CMajorAI::ReactOnMajorOffer(const CDiplomacyInfo& info)
 		if (pRace->IsRaceProperty(RACE_PROPERTY::SOLOING))
 			nNeededRelation -= 15;
 		if (pRace->IsRaceProperty(RACE_PROPERTY::PACIFIST))
-			nNeededRelation -= 25;		
+			nNeededRelation -= 25;
 	}
 	else if (info.m_nType == DIPLOMATIC_AGREEMENT::TRADE)
 	{
@@ -239,7 +239,7 @@ ANSWER_STATUS::Typ CMajorAI::ReactOnMajorOffer(const CDiplomacyInfo& info)
 		if (pRace->IsRaceProperty(RACE_PROPERTY::WARLIKE))
 			nNeededRelation += 10;
 		if (pRace->IsRaceProperty(RACE_PROPERTY::SECRET))
-			nNeededRelation += 5;		
+			nNeededRelation += 5;
 		if (pRace->IsRaceProperty(RACE_PROPERTY::FINANCIAL))
 			nNeededRelation -= 10;
 		if (pRace->IsRaceProperty(RACE_PROPERTY::SCIENTIFIC))
@@ -257,7 +257,7 @@ ANSWER_STATUS::Typ CMajorAI::ReactOnMajorOffer(const CDiplomacyInfo& info)
 		if (pRace->IsRaceProperty(RACE_PROPERTY::AGRARIAN))
 			nNeededRelation -= 10;
 		if (pRace->IsRaceProperty(RACE_PROPERTY::FINANCIAL))
-			nNeededRelation -= 15;		
+			nNeededRelation -= 15;
 	}
 	else if (info.m_nType == DIPLOMATIC_AGREEMENT::COOPERATION)
 	{
@@ -296,11 +296,11 @@ ANSWER_STATUS::Typ CMajorAI::ReactOnMajorOffer(const CDiplomacyInfo& info)
 	else if (info.m_nType == DIPLOMATIC_AGREEMENT::WARPACT)
 	{
 		int nRelationValue = pRace->GetRelation(info.m_sWarpactEnemy);
-		
+
 		// bei einer hinterhältigen Rasse gilt die Beziehung nur zu einem Viertel
 		if (pRace->IsRaceProperty(RACE_PROPERTY::SNEAKY) && nRelationValue > 0)
 			nRelationValue /= 4;
-		
+
 		nNeededRelation = 40 + nRelationValue;
 
 		if (pRace->IsRaceProperty(RACE_PROPERTY::PACIFIST))
@@ -312,7 +312,7 @@ ANSWER_STATUS::Typ CMajorAI::ReactOnMajorOffer(const CDiplomacyInfo& info)
 		if (pRace->IsRaceProperty(RACE_PROPERTY::SCIENTIFIC))
 			nNeededRelation += 10;
 		if (pRace->IsRaceProperty(RACE_PROPERTY::SECRET))
-			nNeededRelation += 5;		
+			nNeededRelation += 5;
 		if (pRace->IsRaceProperty(RACE_PROPERTY::FINANCIAL))
 			nNeededRelation -= 5;
 		if (pRace->IsRaceProperty(RACE_PROPERTY::SNEAKY))
@@ -320,7 +320,7 @@ ANSWER_STATUS::Typ CMajorAI::ReactOnMajorOffer(const CDiplomacyInfo& info)
 		if (pRace->IsRaceProperty(RACE_PROPERTY::WARLIKE))
 			nNeededRelation -= 25;
 		if (pRace->IsRaceProperty(RACE_PROPERTY::HOSTILE))
-			nNeededRelation -= 40;		
+			nNeededRelation -= 40;
 	}
 	else if (info.m_nType == DIPLOMATIC_AGREEMENT::REQUEST)
 		return this->CalcDiplomacyRequest(info);
@@ -344,7 +344,7 @@ ANSWER_STATUS::Typ CMajorAI::ReactOnMajorOffer(const CDiplomacyInfo& info)
 	// stärker, so nehmen wir eher an.
 	UINT nOurShipPower		= m_pDoc->GetStatistics()->GetShipPower(info.m_sToRace);
 	UINT nTheirShipPower	= m_pDoc->GetStatistics()->GetShipPower(info.m_sFromRace);
-	
+
 	if (nOurShipPower > 0)
 	{
 		float compare = (float)(nTheirShipPower) / (float)(nOurShipPower);
@@ -355,7 +355,7 @@ ANSWER_STATUS::Typ CMajorAI::ReactOnMajorOffer(const CDiplomacyInfo& info)
 			nNeededRelation -= nMinus;
 		}
 	}
-	
+
 	BYTE byRelation = pRace->GetRelation(info.m_sFromRace);
 	double dMulti = (byRelation + 125.0) / 100.0;
 	double dValue = byRelation * dMulti;
@@ -370,7 +370,7 @@ ANSWER_STATUS::Typ CMajorAI::ReactOnMajorOffer(const CDiplomacyInfo& info)
 	CString s;
 	s.Format("Beziehung: %d\nNeededRelation: %d\nMulti: %lf\nforRandom: %d",m_iRelationshipOtherMajor[offerFrom],neededRelation,multi,forRandom);
 	AfxMessageBox(s);
-	*/	
+	*/
 
 	// Wenn ein Angebot von einer schwachen Rasse kommt und unsere Stärke auch ziemlich schwach ist,
 	// so nehmen wir das Angebot mit ziemlicher Wahrscheinlichkeit an. Dies wird gemacht, damit sich schwächere
@@ -386,7 +386,7 @@ ANSWER_STATUS::Typ CMajorAI::ReactOnMajorOffer(const CDiplomacyInfo& info)
 			UINT nShipPower = m_pDoc->GetStatistics()->GetShipPower(it->first);
 			nMaxShipPower = max(nMaxShipPower, nShipPower);
 		}
-		
+
 		// Wenn unsere Schiffstärke und die der Rasse, welche das Angebot gemacht hat kleiner der Hälfte der
 		// maximalen Schiffstärke ist, dann wird das Angebot angenommen
 		if (nTheirShipPower < nMaxShipPower * 0.5f)
@@ -397,7 +397,7 @@ ANSWER_STATUS::Typ CMajorAI::ReactOnMajorOffer(const CDiplomacyInfo& info)
 	// Wenn der Randomwert höher größer gleich dem Wert ist, den wir erreichen mußten, dann wird angenommen
 	if (nRandom >= nNeededRelation)
 		return ANSWER_STATUS::ACCEPTED;
-	
+
 	// alte Beziehung wiederherstellen (konnte durch Mitgifte zuvor erhöht werden)
 	BYTE byCurrentRelation = pRace->GetRelation(info.m_sFromRace);
 	if (byCurrentRelation > byOldRelation)
@@ -416,29 +416,29 @@ ANSWER_STATUS::Typ CMajorAI::ReactOnMajorOffer(const CDiplomacyInfo& info)
 /// @return <code>ACCEPTED</code> für Annahme oder <code>DECLINED</code> bei Ablehnung.
 ANSWER_STATUS::Typ CMajorAI::CalcDiplomacyRequest(const CDiplomacyInfo& info)
 {
-	//Als erstes wird überprüft wie unsere Beziehung zu der Rasse ist und welchen aktuellen Vertrag wir mit ihr 
+	//Als erstes wird überprüft wie unsere Beziehung zu der Rasse ist und welchen aktuellen Vertrag wir mit ihr
 	//aufrechterhalten. Umso besser die Beziehung und umso höherwertiger der Vertrag ist, desto eher nehmen wir
 	//den Vertrag auch an. Wann nehme ich den Vertrag an? -> wenn wir einen bestimmten Prozentsatz mehr als der
 	//globale Durchschnitt von der Forderung besitzen. Dieser Prozentsatz ist wie oben beschrieben abhängig von
 	//der Beziehung und der Wertigkeit des Vertrages. Wenn ich diesen Vertrag nun annehmen würde, wird überprüft,
 	//auf welchem Planeten ich das meiste der geforderten Ressource habe. Wenn ich die Forderung damit erfüllen
 	//könnte, wird angenommen. Bei gefordertem Credits brauche ich nicht die Planeten durchgehen.
-	
+
 	// zu 10% reagieren wir gar nicht auf die Forderung
 	if (rand()%10 == 0)
 		return ANSWER_STATUS::NOT_REACTED;
 
 	CMajor* pRace = dynamic_cast<CMajor*>(m_pRace);
 	if (!pRace)
-		return ANSWER_STATUS::NOT_REACTED;	
+		return ANSWER_STATUS::NOT_REACTED;
 
 	BYTE byRelation = pRace->GetRelation(info.m_sFromRace);
 	short nAgreement = pRace->GetAgreement(info.m_sFromRace);
-	
+
 	ANSWER_STATUS::Typ nAnswer = ANSWER_STATUS::ACCEPTED;
 	// (14-(unsere Beziehung / 10 + Vertrag)) / 10 , 14 ist das Maximum, was wir erreichen könnten
 	double dValue = (double)(14 - ((double)byRelation / 10 + nAgreement)) / 10;
-	
+
 	// Hier werden zusätzlich noch die Schiffsstärken der anderen Rassen mit der unseren verglichen. Ist die andere Rasse
 	// stärker, so nehmen wir eher an.
 	UINT nOurShipPower		= m_pDoc->GetStatistics()->GetShipPower(info.m_sToRace);
@@ -455,7 +455,7 @@ ANSWER_STATUS::Typ CMajorAI::CalcDiplomacyRequest(const CDiplomacyInfo& info)
 	dValue = max(dValue, 0);
 	// umso niedriger Value ist, desto eher wird angenommen
 	dValue += 1;
-	
+
 	// Jetzt haben wir den prozentulalen Wert (dValue) den wir brauchen, wenn Credits (mit)gefordert werden
 	if (info.m_nCredits > 0)
 	{
@@ -470,7 +470,7 @@ ANSWER_STATUS::Typ CMajorAI::CalcDiplomacyRequest(const CDiplomacyInfo& info)
 			lCredits += pMajor->GetEmpire()->GetCredits();
 			nRaces++;
 		}
-			
+
 		if (nRaces)
 			lCredits /= nRaces;
 
@@ -480,7 +480,7 @@ ANSWER_STATUS::Typ CMajorAI::CalcDiplomacyRequest(const CDiplomacyInfo& info)
 		else
 			nAnswer = ANSWER_STATUS::DECLINED;
 	}
-	
+
 	// Wenn Ressourcen (mit)gefordert werden
 	if (nAnswer == ANSWER_STATUS::ACCEPTED)
 	{
@@ -497,7 +497,7 @@ ANSWER_STATUS::Typ CMajorAI::CalcDiplomacyRequest(const CDiplomacyInfo& info)
 			nRes = IRIDIUM;
 		else if (info.m_nResources[DERITIUM])
 			nRes = DERITIUM;
-	
+
 		if (nRes != -1)
 		{
 			if (pRace->GetEmpire()->GetStorage()[nRes] > (m_pDoc->GetStatistics()->GetAverageResourceStorages()[nRes] * dValue))
@@ -509,13 +509,13 @@ ANSWER_STATUS::Typ CMajorAI::CalcDiplomacyRequest(const CDiplomacyInfo& info)
 				CPoint ptSystem(-1,-1);
 				for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
 					for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-						if (m_pDoc->GetSystem(x,y).GetOwnerOfSystem() == info.m_sToRace)							
+						if (m_pDoc->GetSystem(x,y).GetOwnerOfSystem() == info.m_sToRace)
 						{
 							nMaxRes = max(nMaxRes, m_pDoc->GetSystem(x,y).GetResourceStore(nRes));
 							ptSystem.x = x;
 							ptSystem.y = y;
 						}
-				
+
 				// Ressource wenn möglich abziehen
 				if (ptSystem != CPoint(-1,-1) && nMaxRes >= info.m_nResources[nRes])
 				{
@@ -539,8 +539,8 @@ ANSWER_STATUS::Typ CMajorAI::CalcDiplomacyRequest(const CDiplomacyInfo& info)
 		//AfxMessageBox(s);
 		pRace->GetEmpire()->SetCredits(-info.m_nCredits);
 	}
-	
-	return nAnswer;	
+
+	return nAnswer;
 }
 
 /// Funktion zur Erstellung eines diplomatischen Angebots an einen Minor.
@@ -597,7 +597,7 @@ bool CMajorAI::MakeMinorOffer(const CString& sRaceID, CDiplomacyInfo& info)
 			nOffer = DIPLOMATIC_AGREEMENT::FRIENDSHIP;
 		else if (byTheirRelationToUs > 55 && nAgreement < DIPLOMATIC_AGREEMENT::TRADE && nOthersAgreement < DIPLOMATIC_AGREEMENT::MEMBERSHIP)
 			nOffer = DIPLOMATIC_AGREEMENT::TRADE;
-		
+
 		// Das könnte man noch von der Art der Rasse abhängig machen, kriegerische Rassen erklären eher Krieg,
 		// pazifistische Rasse erklären gar keinen Krieg oder so ähnlich -> hier gemacht
 		// Auch noch überprüfen ob die Minorrace ein Bündnis hat, weil wenn wir zu der verbündeten Majorrace
@@ -620,7 +620,7 @@ bool CMajorAI::MakeMinorOffer(const CString& sRaceID, CDiplomacyInfo& info)
 
 			if (byTheirRelationToUs < nMinRel && nAgreement != DIPLOMATIC_AGREEMENT::WAR)
 				nOffer = DIPLOMATIC_AGREEMENT::WAR;
-			
+
 			// Nun checken das ich durch irgendeinen Pakt nicht nem Freund den Krieg miterklären würde
 			if (nOffer == DIPLOMATIC_AGREEMENT::WAR)
 			{
@@ -639,7 +639,7 @@ bool CMajorAI::MakeMinorOffer(const CString& sRaceID, CDiplomacyInfo& info)
 		// wichtige Parameter des Infoobjektes zuweisen
 		info.m_nFlag = DIPLOMACY_OFFER;
 		info.m_sFromRace = pOurRace->GetRaceID();
-		info.m_sToRace = sRaceID;			
+		info.m_sToRace = sRaceID;
 		info.m_nSendRound = m_pDoc->GetCurrentRound() - 1;
 
 		if (!bIsAlienDiplomacy)
@@ -647,21 +647,21 @@ bool CMajorAI::MakeMinorOffer(const CString& sRaceID, CDiplomacyInfo& info)
 			// Nun haben wir den Vertrag, den wir anbieten möchten.
 			// Jetzt muss bestimmt werden, ob die Rasse zu den Lieblingsrassen unsererseits zählt.
 			// Dadurch soll sich beim Mitgift- und Geschenkegeben auf wenige Rassen konzentriert werden.
-			bool bIsFavorite = (pMinor->GetRaceID() == m_sFavoriteMinor) ? true : false;	
+			bool bIsFavorite = (pMinor->GetRaceID() == m_sFavoriteMinor) ? true : false;
 
 			// Wenn es sich bei der Minorrace um unsere FavoriteRace handelt, dann versuchen wir ihr
 			// auch Mitgifte zum Vertrag zu geben.
-			
+
 			// sollen zum Vertragangebot noch Mitgifte gegeben werden?
 			if (!bIsAlienDiplomacy && bIsFavorite && nOffer > DIPLOMATIC_AGREEMENT::NONE)
 				this->GiveDowry(info);
-			
+
 			// Wenn wir kein Angebot an unsere Favoritrace gemacht haben bzw. wir konnten keins machen, dann geben wir
 			// möglicherweise ein Geschenk oder wir Bestechen diese Rasse.
 			if (!bIsAlienDiplomacy && bIsFavorite && nOffer == DIPLOMATIC_AGREEMENT::NONE && byTheirRelationToUs <= 91)
 				if (this->GiveDowry(info))
 					nOffer = DIPLOMATIC_AGREEMENT::PRESENT;
-			
+
 			// Wenn wir der Favoritminor kein Geschenk gemacht haben, dann Bestechen wir diese womöglich
 			if (bIsFavorite && nOffer == DIPLOMATIC_AGREEMENT::NONE)
 			{
@@ -759,7 +759,7 @@ bool CMajorAI::MakeMajorOffer(CString& sRaceID, CDiplomacyInfo& info)
 		for (int i = 0; i < 3; i++)
 			nTemp += rand()%nRandom + 1;
 		nRandom = (int)(nTemp / 3);
-		
+
 		// Hier werden zusätzlich noch die Schiffsstärken der anderen Rassen mit der unseren verglichen.
 		// Ist die andere Rasse stärker, so nehmen wir eher an.
 		UINT nOurShipPower		= m_pDoc->GetStatistics()->GetShipPower(pOurRace->GetRaceID());
@@ -781,14 +781,14 @@ bool CMajorAI::MakeMajorOffer(CString& sRaceID, CDiplomacyInfo& info)
 		bool bIsAlienDiplomacy = false;
 		if (pOurRace->HasSpecialAbility(SPECIAL_ALIEN_DIPLOMACY) || pTheirRace->HasSpecialAbility(SPECIAL_ALIEN_DIPLOMACY))
 			bIsAlienDiplomacy = true;
-		
+
 		// Jetzt haben wir nen Randomwert, wenn dieser einen zufälligen Wert überschreitet, bietet die
 		// Majorrace zu 33% etwas an, dieser zufällige Wert ist wiederrum von unserer Rasseneigenschaft abhängig
 		DIPLOMATIC_AGREEMENT::Typ nOffer = DIPLOMATIC_AGREEMENT::NONE;
 		// nur zu 33% wird irgendein Vertrag auch angeboten.
 		// Es soll nicht jede Runde ein Vertragsangebot gemacht werden.
 		if (rand()%3 == 0)
-		{		
+		{
 			if (nRandom > this->GetMinOfferValue(DIPLOMATIC_AGREEMENT::AFFILIATION) && nAgreement < DIPLOMATIC_AGREEMENT::AFFILIATION)
 				nOffer = DIPLOMATIC_AGREEMENT::AFFILIATION;
 			else if (nRandom > this->GetMinOfferValue(DIPLOMATIC_AGREEMENT::COOPERATION) && nAgreement < DIPLOMATIC_AGREEMENT::COOPERATION)
@@ -799,17 +799,17 @@ bool CMajorAI::MakeMajorOffer(CString& sRaceID, CDiplomacyInfo& info)
 			else if (nRandom > this->GetMinOfferValue(DIPLOMATIC_AGREEMENT::FRIENDSHIP) && nAgreement < DIPLOMATIC_AGREEMENT::FRIENDSHIP)
 				nOffer = DIPLOMATIC_AGREEMENT::FRIENDSHIP;
 			else if (nRandom > this->GetMinOfferValue(DIPLOMATIC_AGREEMENT::TRADE) && nAgreement < DIPLOMATIC_AGREEMENT::TRADE)
-				nOffer = DIPLOMATIC_AGREEMENT::TRADE;		
+				nOffer = DIPLOMATIC_AGREEMENT::TRADE;
 			else if (nRandom > this->GetMinOfferValue(DIPLOMATIC_AGREEMENT::NAP) && nAgreement < DIPLOMATIC_AGREEMENT::NAP)
 				nOffer = DIPLOMATIC_AGREEMENT::NAP;
 			// Sicherheitsabfrage
 			if (nAgreement >= nOffer && nOffer != DIPLOMATIC_AGREEMENT::DEFENCEPACT) // weil DEFENCE_PACT negativ ist
 				nOffer = DIPLOMATIC_AGREEMENT::NONE;
-				
+
 			// Hier jetzt schauen, dass die Beziehungen nicht so weit auseinanderliegen. Ein menschlicher Spieler würde
 			// einem anderen ja auch nix anbieten, wenn er diesen leiden kann aber der andere ihn nicht leiden kann und
 			// daher wahrscheinlich auch ablehnen wird.
-			// Umso höher meine Beziehung ist, umso mehr darf seine abweichen. Umso höherwertig der Vertrag ist, umso weniger 
+			// Umso höher meine Beziehung ist, umso mehr darf seine abweichen. Umso höherwertig der Vertrag ist, umso weniger
 			// darf sie abweichen
 			// (double)(byOurRelationToThem) / 100				// Indikator für bessere Beziehung
 			// abs(byTheirRelationToUs - byOurRelationToThem)	// Abweichung
@@ -852,7 +852,7 @@ bool CMajorAI::MakeMajorOffer(CString& sRaceID, CDiplomacyInfo& info)
 				fModi = (float)nOurShipPower / (float)nTheirShipPower;
 			if (fModi > 1.0)
 				fModi *= 3.0f;
-			
+
 			// wir sind stärker als der Gegner
 			if (fCompare < 1.0f)
 				nMinRel += (short)fModi;	// somit wird auch Krieg erklärt, wenn die Beziehung eigentlich noch besser ist.
@@ -861,7 +861,7 @@ bool CMajorAI::MakeMajorOffer(CString& sRaceID, CDiplomacyInfo& info)
 
 			// Hier möglicherweise Angebot eines Kriegspaktes
 			// das geht natürlich nur, wenn wir noch keinen Krieg mit der Rasse haben. Es ist aber möglich, wenn wir
-			// eine Runde zuvor einen Kriegspakt angeboten haben, der später angenommen wird und wir auch so der Rasse 
+			// eine Runde zuvor einen Kriegspakt angeboten haben, der später angenommen wird und wir auch so der Rasse
 			// den Krieg erklären, das wir ihr eigentlich 2x den Krieg erklären. Ist nicht so wichtig, sieht nur in der
 			// Nachrichtenübersicht nicht so schön aus
 			// wenn ich der Rasse den Krieg erklären würde, dann suche ich mir möglicherweise auch noch einen Kriegspaktpartner
@@ -923,7 +923,7 @@ bool CMajorAI::MakeMajorOffer(CString& sRaceID, CDiplomacyInfo& info)
 				}
 			}
 		}
-		
+
 		// Wenn bis jetzt noch kein Angebot gemacht wurde, dann wird überprüft, ob es Sinn macht, sich gegen ein stärkeres
 		// fremdes Imperium mit einem anderen Partner zu verbünden bzw. dem anderen Partner eine Freundschaft oder
 		// Kooperation anzubieten. Dies hat den Vorteil, dass sich relativ schwache Imperien nicht auch noch gegenseitig
@@ -956,9 +956,9 @@ bool CMajorAI::MakeMajorOffer(CString& sRaceID, CDiplomacyInfo& info)
 		// wichte Parameter des Infoobjekts zuweisen
 		info.m_nFlag = DIPLOMACY_OFFER;
 		info.m_sFromRace = pOurRace->GetRaceID();
-		info.m_sToRace = sRaceID;			
+		info.m_sToRace = sRaceID;
 		info.m_nSendRound = m_pDoc->GetCurrentRound() - 1;
-			
+
 		if (!bIsAlienDiplomacy)
 		{
 			// Ab hier kommt noch was großes dazu, nämlich ob und wann eine computergesteuerte Rasse auch Mitgifte macht.
@@ -981,7 +981,7 @@ bool CMajorAI::MakeMajorOffer(CString& sRaceID, CDiplomacyInfo& info)
 						nDuration = 0;
 					// hier Dauer des Vertrages festlegen
 					info.m_nDuration = nDuration * 10;
-				}			
+				}
 
 				info.m_nType = nOffer;
 				if (nOffer != DIPLOMATIC_AGREEMENT::WAR)
@@ -995,7 +995,7 @@ bool CMajorAI::MakeMajorOffer(CString& sRaceID, CDiplomacyInfo& info)
 			{
 				// Geschenk machen
 				if (GiveDowry(info))
-					info.m_nType = DIPLOMATIC_AGREEMENT::PRESENT;			
+					info.m_nType = DIPLOMATIC_AGREEMENT::PRESENT;
 			}
 			// wenn kein Angebot und kein Geschenk gemacht wird, dann wird vielleicht eine Forderung gestellt.
 			else if (nAgreement != DIPLOMATIC_AGREEMENT::WAR)
@@ -1029,7 +1029,7 @@ bool CMajorAI::MakeMajorOffer(CString& sRaceID, CDiplomacyInfo& info)
 					#ifdef TRACE_DIPLOMATY
 					MYTRACE(MT::LEVEL_DEBUG, "rand: %d - a = %d - b = %d - Modi = %lf (wir %s (%d) - Gegner %s (%d))\n",((int)(100 / fModi)), a, b, fModi, pOurRace->GetRaceID(), nOurShipPower, sRaceID, nTheirShipPower);
 					#endif
-					// Forderung stellen			
+					// Forderung stellen
 					if (ClaimRequest(info))
 						info.m_nType = DIPLOMATIC_AGREEMENT::REQUEST;
 				}
@@ -1046,13 +1046,13 @@ bool CMajorAI::MakeMajorOffer(CString& sRaceID, CDiplomacyInfo& info)
 				nOffer = DIPLOMATIC_AGREEMENT::NONE;
 			else if (nOffer != DIPLOMATIC_AGREEMENT::WAR)
 				nOffer = DIPLOMATIC_AGREEMENT::NONE;
-			
+
 			info.m_nType = nOffer;
 		}
 	}
-	
+
 	if (info.m_nType != DIPLOMATIC_AGREEMENT::NONE)
-	{	
+	{
 		CGenDiploMessage::GenerateMajorOffer(info);
 		MYTRACE(MT::LEVEL_INFO, "Major: %s makes offer %d to Major %s\n", info.m_sFromRace, info.m_nType, info.m_sToRace);
 		return true;
@@ -1068,7 +1068,7 @@ bool CMajorAI::MakeMajorOffer(CString& sRaceID, CDiplomacyInfo& info)
 int CMajorAI::GetMinOfferValue(DIPLOMATIC_AGREEMENT::Typ nOfferType) const
 {
 	int nNeededRelation = INT_MAX;
-	
+
 	switch (nOfferType)
 	{
 	// Nichtangriffspakt
@@ -1085,7 +1085,7 @@ int CMajorAI::GetMinOfferValue(DIPLOMATIC_AGREEMENT::Typ nOfferType) const
 		if (m_pRace->IsRaceProperty(RACE_PROPERTY::SOLOING))
 			nNeededRelation -= 15;
 		if (m_pRace->IsRaceProperty(RACE_PROPERTY::PACIFIST))
-			nNeededRelation -= 25;		
+			nNeededRelation -= 25;
 		break;
 	// Handelsvertrag
 	case DIPLOMATIC_AGREEMENT::TRADE:
@@ -1099,7 +1099,7 @@ int CMajorAI::GetMinOfferValue(DIPLOMATIC_AGREEMENT::Typ nOfferType) const
 		if (m_pRace->IsRaceProperty(RACE_PROPERTY::PRODUCER))
 			nNeededRelation -= 10;
 		if (m_pRace->IsRaceProperty(RACE_PROPERTY::FINANCIAL))
-			nNeededRelation -= 20;		
+			nNeededRelation -= 20;
 		break;
 	// Freundschaftsvertrag
 	case DIPLOMATIC_AGREEMENT::FRIENDSHIP:
@@ -1187,7 +1187,7 @@ bool CMajorAI::GiveDowry(CDiplomacyInfo& info)
 	if (!pToRace)
 		return false;
 
-	
+
 	// Als erstes gibt die KI-gesteuerte Rasse nur Geld, wenn sie mindst. 10% mehr als von dem globalen
 	// Durchschnittswert hat.
 	// Dies könnte man später vielleicht nochmal ändern, aber erstmal fällt mir da kein besserer Algo ein.
@@ -1196,7 +1196,7 @@ bool CMajorAI::GiveDowry(CDiplomacyInfo& info)
 	// dann gebe ich zu 50% auch Credits dazu.
 	long nCredits = 0;
 	USHORT counter = 0;
-	
+
 	map<CString, CMajor*>* pmMajors = m_pDoc->GetRaceCtrl()->GetMajors();
 	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 	{
@@ -1207,10 +1207,10 @@ bool CMajorAI::GiveDowry(CDiplomacyInfo& info)
 			counter++;
 		}
 	}
-	
+
 	if (counter > 0)
 		nCredits /= counter;
-	
+
 			// geht es an eine Minorrace, dann braucht es nicht so viel Geld übrig zu haben
 	if ((pToRace->GetType() == MINOR && pOurRace->GetEmpire()->GetCredits() > 3000 && rand()%3 == 0)
 		||	// oder an eine Majorrace, da braucht es viel mehr Geld
@@ -1237,7 +1237,7 @@ bool CMajorAI::GiveDowry(CDiplomacyInfo& info)
 	if (pOurRace->GetAgreement(info.m_sToRace) >= DIPLOMATIC_AGREEMENT::TRADE)
 	{
 		// Ressourcen gibt die Rasse nur, wenn sie 10% mehr als den globalen Durschschnitt dieser Ressource hat.
-		
+
 		// zuerst random-wert ermitteln, welche Ressource ich dazugeben würde
 		// dafür benutze ich den durchschnittlichen Techlevel im Universum. Am Anfang wird deswegen nur Titan angeboten
 		// später kommen dann auch die weiteren Ressourcen hinzu, wenn der Wert zu groß ist machen wir das solange,
@@ -1248,14 +1248,14 @@ bool CMajorAI::GiveDowry(CDiplomacyInfo& info)
 			whichRes = rand()%(m_pDoc->GetStatistics()->GetAverageTechLevel() + 1);
 		}
 		while (whichRes > DERITIUM);
-		
+
 		// Schauen ob wir mehr als 20% von der Ressource haben als der Durschnitt ist
 		// nicht gleich in der do_while-Schleife, da ich nicht so oft dies als Mitgift geben möchte
 		bool bCanGive = false;
-		
+
 		if (pOurRace->GetEmpire()->GetStorage()[whichRes] >= (ULONG)(m_pDoc->GetStatistics()->GetAverageResourceStorages()[whichRes] * 1.2))
 			bCanGive = true;
-		
+
 		// wenn wir das meiste davon haben, dann suchen wir unser System, wo wir am meisten von der Ressource gelagert haben
 		if (bCanGive)
 		{
@@ -1269,20 +1269,20 @@ bool CMajorAI::GiveDowry(CDiplomacyInfo& info)
 						ptSystem.x = x;
 						ptSystem.y = y;
 					}
-			
+
 			//CString d;
 			//d.Format("Meiste Ressource (%d) liegt in System: %d:%d\nBesitzer %s\nMenge: %d\nglobaler Durchschnitt: %d",whichRes,system.x,system.y,this->GetRaceName(m_iRaceNumber),mostRes,averageRessourceStorages[whichRes]);
 			//AfxMessageBox(d);
-			
+
 			// Jetzt geben wir eine Menge zwischen 0 und 20000 in 1000er Schritten als Mitgift (max. 20000)
 			// Wert zwischen 0 und dem Lagerinhalt generieren
 			UINT nGiveRes = rand()%(nMostRes + 1);
 			// bei Deritium wird viel weniger übergeben, bei den restlichen auf 1000er gerundet
 			if (whichRes != DERITIUM)
 				nGiveRes = (UINT)(nGiveRes / 1000) * 1000;
-			
+
 			if (nGiveRes > 20000)
-				nGiveRes = 20000;			
+				nGiveRes = 20000;
 			if (nGiveRes)
 			{
 				// Jetzt in die Ressource für das Angebot schreiben
@@ -1318,7 +1318,7 @@ bool CMajorAI::ClaimRequest(CDiplomacyInfo& info)
 	// Erstmal schauen ob ich eine Forderung mit Credits stelle, dafür globalen Durchschnitt der Credits berechnen
 	long nCredits = 0;
 	USHORT counter = 0;
-	
+
 	map<CString, CMajor*>* pmMajors = m_pDoc->GetRaceCtrl()->GetMajors();
 	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 	{
@@ -1328,7 +1328,7 @@ bool CMajorAI::ClaimRequest(CDiplomacyInfo& info)
 			nCredits += pMajor->GetEmpire()->GetCredits();
 			counter++;
 		}
-	}	
+	}
 	if (counter > 0)
 		nCredits /= counter;
 
@@ -1336,7 +1336,7 @@ bool CMajorAI::ClaimRequest(CDiplomacyInfo& info)
 	bool bStronger = false;
 	UINT nOurShipPower		= m_pDoc->GetStatistics()->GetShipPower(pOurRace->GetRaceID());
 	UINT nTheirShipPower	= m_pDoc->GetStatistics()->GetShipPower(pToRace->GetRaceID());
-	
+
 	if (nOurShipPower > 0)
 	{
 		// wenn unsere Beziehung hoch genug ist, oder wir einen Freundschaftsvertrag haben, so werden die Schiffsstärken
@@ -1366,29 +1366,29 @@ bool CMajorAI::ClaimRequest(CDiplomacyInfo& info)
 			bClaimRequest |= true;
 		}
 	}
-	
+
 	// Nun können wir auch noch Ressourcen fordern, auch zusätzlich zu den Credit und wir benötigen dafür auch keinen
 	// aktuellen Handelsvertrag mit der Rasse ;-)
 	// zuerst random-wert ermitteln, welche Ressource ich fordern würde
 	// dafür benutze ich den durchschnittlichen Techlevel im Universum. Am Anfang wird deswegen nur Titan angeboten
 	// später kommen dann auch die weiteren Ressourcen hinzu, wenn der Wert zu groß ist machen wir das solange,
-	// bis der Wert max. Deritium erhält	
+	// bis der Wert max. Deritium erhält
 	bool bCanGive = false;
 	USHORT whichRes = TITAN;
 	int count = 0;
-	
+
 	do {
 		whichRes = rand()%(m_pDoc->GetStatistics()->GetAverageTechLevel() / 2 + 1);
 		if (whichRes > DERITIUM)
 			whichRes = DERITIUM;
-		
+
 		// Schauen ob wir weniger als rand()%50Prozent von der Ressource haben als der Durchschnitt
 		if (bStronger || (pOurRace->GetEmpire()->GetStorage()[whichRes] <= (ULONG)(m_pDoc->GetStatistics()->GetAverageResourceStorages()[whichRes] * (rand()%50+1) / 100)
 			&& pOurRace->GetEmpire()->GetStorage()[whichRes] != 0))
 			bCanGive = true;
 		count++;
 	} while (count < 20 && bCanGive == false);
-	
+
 	// wenn wir zuwenig davon haben, dann stellen wir die Forderung
 	if (bCanGive)
 	{
@@ -1402,10 +1402,10 @@ bool CMajorAI::ClaimRequest(CDiplomacyInfo& info)
 		}
 		else
 			nClaimRes = rand()%(10 + m_pDoc->GetStatistics()->GetAverageTechLevel() * 5);
-		
+
 		if (nClaimRes > 20000)
-			nClaimRes = 20000;			
-		
+			nClaimRes = 20000;
+
 		if (nClaimRes)
 		{
 			// Jetzt in die Ressource für das Angebot schreiben
@@ -1413,7 +1413,7 @@ bool CMajorAI::ClaimRequest(CDiplomacyInfo& info)
 			bClaimRequest |= true;
 		}
 	}
-	
+
 	return bClaimRequest;
 }
 
@@ -1434,7 +1434,7 @@ void CMajorAI::ReactOnDowry(const CDiplomacyInfo& info)
 	// Crystal wird getauscht im Verhältnis 1.625:1
 	// Iridium wird getauscht im Verhältnis 1.25:1
 	// Deritium wird getauscht im Verhältnis 1:100
-	
+
 	float fValue = 0.0f;
 	float fDiv = 0.0f;
 
@@ -1476,15 +1476,15 @@ void CMajorAI::ReactOnDowry(const CDiplomacyInfo& info)
 	//Dafür berechnen wir einen Teiler. Wir nehmen die aktuelle
 	//Menge des jeweiligen Rohstoffes, die in allen Systemen gelagert sind.
 	//Mit diesem Teiler wird der erhaltene Wert des Rohstoffes multipliziert.
-	//Dieser nun erhaltene Wert wird noch rassenabhängig modifiziert.	
+	//Dieser nun erhaltene Wert wird noch rassenabhängig modifiziert.
 
 	if (fDiv > 1.0f)
 		fDiv = 1.0f;
 	else if (fDiv < 0.0f)
 		fDiv = 0.0f;
-	
+
 	fValue *= fDiv;
-	
+
 	// Wert nochmal modifizieren, aufgrund der Rassenart
 	if (fValue != 0.0f)
 	{
@@ -1506,12 +1506,12 @@ void CMajorAI::ReactOnDowry(const CDiplomacyInfo& info)
 	USHORT nCreditsFromRes = (USHORT)fValue;
 	//CString s;
 	//s.Format("Ressourcenwert: %d", nCreditsFromRes);
-	//AfxMessageBox(s);	
+	//AfxMessageBox(s);
 
 	USHORT nCredits = info.m_nCredits + nCreditsFromRes;
 	// wenn keine Credits übergeben werden, dann muss der Rest der Funktion nicht beachtet werden.
 	if (nCredits == 0)
-		return;	
+		return;
 
 	// Das ist hier alles wesentlich kürzer und nicht so komplex wie bei der Diplomatie mit
 	// den Minorraces. Hier kommt es wesentlich mehr drauf an, wieviel Geld wir im Lager haben.
@@ -1530,7 +1530,7 @@ void CMajorAI::ReactOnDowry(const CDiplomacyInfo& info)
 
 	// Wert, den wir mit nRandomCredits erreichen müssen, um die Beziehung zu verbessern
 	short nNeededValue = DIPLOMACY_PRESENT_VALUE;	// 200 ist "normal"
-	
+
 	if (pOurRace->IsRaceProperty(RACE_PROPERTY::SOLOING))
 		nNeededValue += 150;	// bei einer zurückgezogenen Rasse ist der Wert wesentlich höher
 	if (pOurRace->IsRaceProperty(RACE_PROPERTY::HOSTILE))
@@ -1540,9 +1540,9 @@ void CMajorAI::ReactOnDowry(const CDiplomacyInfo& info)
 	if (pOurRace->IsRaceProperty(RACE_PROPERTY::WARLIKE))
 		nNeededValue += 50;		// bei einer kriegerischen Rasse ist der Wert höher
 	if (pOurRace->IsRaceProperty(RACE_PROPERTY::INDUSTRIAL))
-		nNeededValue -= 25;		// bei einer industriellen Rasse ist der Wert niedriger	
+		nNeededValue -= 25;		// bei einer industriellen Rasse ist der Wert niedriger
 	if (pOurRace->IsRaceProperty(RACE_PROPERTY::FINANCIAL))
-		nNeededValue -= 50;		// bei einer finanziellen Rasse ist der Wert niedriger	
+		nNeededValue -= 50;		// bei einer finanziellen Rasse ist der Wert niedriger
 
 	// Jetzt berechnen, um wieviel sich die Beziehung verändern würde
 	float fBonus = 0.0f;
@@ -1559,11 +1559,11 @@ void CMajorAI::ReactOnDowry(const CDiplomacyInfo& info)
 		fValue = 1.0f;
 	else if (fValue < 0.0f)
 		fValue = 0.0;
-	
+
 	fBonus *= fValue;
 	// CString s;
 	// s.Format("Credits: %d\nWert: %lf\nBeziehungsverbesserung: %lf\nCreditslager: %i",credits,value,bonus,empires[m_iRaceNumber].GetCredits());
 	// AfxMessageBox(s);*/
-	
+
 	pOurRace->SetRelation(info.m_sFromRace, (short)fBonus);
 }

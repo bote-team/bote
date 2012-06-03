@@ -18,7 +18,7 @@
 
 #include "FireArc.h"
 
-class CBeamWeapons : public CObject  
+class CBeamWeapons : public CObject
 {
 	friend class CShip;
 public:
@@ -29,7 +29,7 @@ public:
 	CBeamWeapons & operator=(const CBeamWeapons &);
 // Die Serialisierungsfunktion
 	virtual void Serialize(CArchive &ar);
-	
+
 	const CString& GetBeamName() const {return m_strBeamName;}
 	USHORT GetBeamPower() const {return m_iBeamPower;}
 	BYTE GetBeamType() const {return m_iBeamType;}
@@ -50,7 +50,7 @@ public:
 
 	void ModifyBeamWeapon(BYTE BeamType, USHORT BeamPower, BYTE BeamNumber, const CString& BeamName, BOOLEAN Modulating,
 		BOOLEAN Piercing, BYTE Bonus, BYTE BeamLenght, BYTE RechargeTime, BYTE ShootNumber);
-	
+
 private:
 	CString m_strBeamName;			// Name der Beamart
 	USHORT m_iBeamPower;			// Stärke eines Beams

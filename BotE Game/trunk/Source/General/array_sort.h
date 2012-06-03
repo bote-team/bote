@@ -27,15 +27,15 @@ namespace arraysort
 		)
 		{
 			sort_array(array,array.GetSize(),CompareFunc);
-		}		
-		
+		}
+
 	protected:
 
 		//	Main order function
 		inline void sort_array(ARRAY& array,unsigned count,TCOMPAREFUNC CompareFunc)
 		{
 			qsort(array.GetData(),count,sizeof(ELEM),(GENERICCOMPAREFUNC)CompareFunc);
-		}		
+		}
 	};
 
 	//	Ascending order (ELEM must implement operator <)

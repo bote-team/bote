@@ -17,7 +17,7 @@
 #endif // _MSC_VER > 1000
 typedef unsigned short  USHORT;
 
-class CShield : public CObject  
+class CShield : public CObject
 {
 	friend class CShip;
 public:
@@ -35,7 +35,7 @@ public:
 	UINT GetMaxShield() const {return m_iMaxShield;}
 	UINT GetCurrentShield() const {return m_iCurrentShield;}
 	BOOLEAN GetRegenerative() const {return m_bRegenerative;}
-		
+
 	// zum Schreiben der Membervariablen
 	void SetCurrentShield(int newCurrentShield);
 	void ModifyShield(UINT MaxShield, BYTE ShieldType, BOOLEAN Regenerative);

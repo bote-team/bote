@@ -5,7 +5,7 @@
  *   Create   :  2005-7-29
  *   Home     :  http://www.crazy-bit.com/
  *   Mail     :  crazybitwps@hotmail.com
- *   History  :  
+ *   History  :
  */
 #ifndef __FOO_IMAGEFACTORY_MINI__2005_07_29__H__
 #define __FOO_IMAGEFACTORY_MINI__2005_07_29__H__

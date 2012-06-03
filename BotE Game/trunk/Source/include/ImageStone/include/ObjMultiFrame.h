@@ -5,7 +5,7 @@
  *   Create   :  2004-8-31
  *   Home     :  http://www.crazy-bit.com/
  *   Mail     :  crazybitwps@hotmail.com
- *   History  :  
+ *   History  :
  */
 #ifndef __FOO_OBJECT_MULTI_IMAGE__2004_08_31__H__
 #define __FOO_OBJECT_MULTI_IMAGE__2004_08_31__H__
@@ -92,7 +92,7 @@ public:
             listImage.PCL_ThrowOwnership (ls) ;
             for (size_t i=0 ; i < ls.size() ; i++)
                 AddFrame (ls[i]) ;
-            
+
             // get property
             if (pImgProp.get() && pProperty)
                 *pProperty = *pImgProp ;

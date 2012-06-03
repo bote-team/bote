@@ -41,7 +41,7 @@ public:
 	CString		m_sToRace;						///< an welche Rasse (ID) geht das Angebot
 	CString		m_sFromRace;					///< von welcher Rasse (ID) kommt das Angebot
 	CString		m_sText;						///< Angebotstext
-	
+
 	short		m_nFlag;						///< Angebot, Antwort oder irgendwas anderes
 	DIPLOMATIC_AGREEMENT::Typ m_nType;			///< Art des Angebots (Krieg, NAP, Geschenk usw.)
 	USHORT		m_nSendRound;					///< in welcher Runde wurde das Angebot abgeschickt
@@ -72,7 +72,7 @@ public:
 	virtual ~CDiplomacyAI(void);
 
 	// Funktionen
-	
+
 	/// Diese Funktion berechnet, wie eine computergesteuerte Rasse, auf ein Angebot reagiert
 	/// Das ist die komplette KI der Reaktion auf irgendwelche Angebote.
 	/// @param info Information des diplomatischen Angebots
@@ -85,8 +85,8 @@ public:
 	/// @param sRaceID RassenID der Rasse, an die das Angebot gemacht werden soll
 	/// @param info Referenz auf eine Diplomatieinformation (darin wird das Angebot abgelegt)
 	/// @return <code>true</code> wenn ein Angebot erzeugt wurde, ansonsten <code>false</code>
-	virtual bool MakeOffer(CString& sRaceID, CDiplomacyInfo& info) = 0;	
-	
+	virtual bool MakeOffer(CString& sRaceID, CDiplomacyInfo& info) = 0;
+
 protected:
 	/// Funktion berechnet die Beziehungsverbesserungen durch die Übergabe von Credits und Ressourcen.
 	/// Die Credits werden hier jedoch nicht gutgeschrieben, sondern nur die Beziehung zur Majorrace verbessert.
@@ -95,5 +95,5 @@ protected:
 
 	// Attribute
 	CBotf2Doc*	m_pDoc;				///< Zeiger auf das Dokument
-	CRace*		m_pRace;			///< Zeiger auf die Rasse, zu welcher das Diplomatie-KI Objekt gehört		
+	CRace*		m_pRace;			///< Zeiger auf die Rasse, zu welcher das Diplomatie-KI Objekt gehört
 };

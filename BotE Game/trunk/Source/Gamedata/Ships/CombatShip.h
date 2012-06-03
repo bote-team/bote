@@ -30,7 +30,7 @@ public:
 	CCombatShip(void);
 
 	/// Destruktor
-	~CCombatShip(void);	
+	~CCombatShip(void);
 
 	/**
 	 * Diese Funktion setzt die Manövriebarkeit des Schiffes. Sie muss direkt nach anlegen des CombatSchiffes aufgerufen
@@ -78,7 +78,7 @@ public:
 	* Diese Funktion führt einen Torpedoangriff gegen das Ziel durch, welches in der Variablen <code>m_pTarget<code>
 	* gespeichert ist. Als Parameter wird dabei ein Zeiger auf das Feld aller Torpedos im Kampf <code>CT<code>
 	* übergeben. Diese Funktion generiert dann automatisch die entsprechenden Torpedoobjekte und fügt diese
-	* in <code>pCT<code> ein. Wenn während des Angriff das Ziel vernichtet wird, dann gibt die Funktion die 
+	* in <code>pCT<code> ein. Wenn während des Angriff das Ziel vernichtet wird, dann gibt die Funktion die
 	* aktuelle Torpedonummer zurück. Ansonsten gibt sie immer (-1/-1) zurück. Der Rückgabewert ist eine Struktur
 	* mit 2 Variablen. Die erste Variable gibt die Nummer der Art des Launchers im Feld an, die zweite
 	* die Nummer der Anzahl dieses Launchers.
@@ -100,11 +100,11 @@ public:
 	/// dessen Feuerwinkel auch feuern kann.
 	/// @param arc Zeiger auf Schussfeld
 	/// @return Wahrheitswert
-	bool AllowFire(const CFireArc* arc);	
-	
+	bool AllowFire(const CFireArc* arc);
+
 private:
 	// private Funktionen
-	
+
 	/// Diese Funktion berechnet den Angriffsbonus, den Schiffe auf Grund ihrer Spezialeigenschaften womöglich erhalten.
 	/// @return Angriffsbonus durch Schiffseienschaften
 	BYTE GetAccBoniFromSpecials(void);
@@ -129,23 +129,23 @@ private:
 	void CalcRoute(const vec3i& ptTarget, int nMinDistance = 0);
 
 	// Attribute
-	
+
 	/// Zeiger auf das Schiff, welches hier im Kampf ist
 	CShip*	m_pShip;
-	
+
 	/// Aktuelle Position (Koordinate im Raum) des Schiffes
-	vec3i m_KO;					
-	
+	vec3i m_KO;
+
 	/// Flugroute des Schiffes, welche die folgenden Koordinaten beinhaltet
-	std::deque<vec3i> m_lRoute;	
-	
+	std::deque<vec3i> m_lRoute;
+
 	/// Zeit bis das Schiff wieder seine Waffen abfeuern kann. Wenn dieser Wert NULL erreicht hat, dann kann es
 	/// die Waffen wieder feuern.
 	ShootTime m_Fire;
-	
+
 	/// werden Pulsebeams geschossen? Nur für den CombatSimulator
 	bool m_bPulseFire;
-	
+
 	/// Die Manövrierbarkeit des Schiffes im Kampf.
 	BYTE m_byManeuverability;
 
@@ -155,7 +155,7 @@ private:
 	/// Zeiger auf das Schiff, welches es als Ziel erfasst hat
 	CCombatShip* m_pTarget;
 
-	/// Status der regenerativen Schilde, angepaßt oder nicht 
+	/// Status der regenerativen Schilde, angepaßt oder nicht
 	bool m_bRegShieldStatus;
 
 	/// Ist das Schiff noch getarnt oder nicht. Nach dem Feuern hat das Schiff noch 50 bis 70 Ticks Zeit,

@@ -64,7 +64,7 @@ private:
 
 	CString m_sUserDataPath;	///< Pfad zum Ordner "Eigene Dateien"
 
-	// private Funktionen	
+	// private Funktionen
 	/// Funktion ermittelt den Pfad zur BotE.exe Datei.
 	/// @return Pfad zur BotE.exe Datei
 	CString GetBotEAppPath(void) const;

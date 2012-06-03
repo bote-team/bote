@@ -5,7 +5,7 @@
  *   Create   :  2004-10-5
  *   Home     :  http://www.crazy-bit.com/
  *   Mail     :  crazybitwps@hotmail.com
- *   History  :  
+ *   History  :
  */
 #ifndef __FOO_INTERFACE_COMMAND__2004_10_05__H__
 #define __FOO_INTERFACE_COMMAND__2004_10_05__H__

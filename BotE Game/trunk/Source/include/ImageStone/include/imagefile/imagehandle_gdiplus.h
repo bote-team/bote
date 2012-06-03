@@ -5,7 +5,7 @@
  *   Create   :  2004-6-18
  *   Home     :  http://www.crazy-bit.com/
  *   Mail     :  crazybitwps@hotmail.com
- *   History  :  
+ *   History  :
 */
 #ifndef __FOO_IMAGE_HANDLE_GDIPLUS__2004_06_18__H__
 #define __FOO_IMAGE_HANDLE_GDIPLUS__2004_06_18__H__

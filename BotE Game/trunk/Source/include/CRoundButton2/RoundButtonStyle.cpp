@@ -6,11 +6,11 @@
 	file base:	RoundButtonStyle
 	file ext:	cpp
 	author:		Markus Zocholl
-	
-	purpose:	CRoundButtonStyle manages the Style of CRoundButton, a 
+
+	purpose:	CRoundButtonStyle manages the Style of CRoundButton, a
 				Button-Control with round Design.
 				Because the generation of the Button-Images is time consuming
-				this is only done once in the Style-Class, and all Buttons 
+				this is only done once in the Style-Class, and all Buttons
 				associated with this class take the same Images.
 *********************************************************************/
 
@@ -230,8 +230,8 @@ bool CRoundButtonStyle::DrawMasks(CDC* _pDC)
 
 	// Generate new Bitmap
 	m_tBmpButtonEdge.CreateCompatibleBitmap(
-		_pDC, 
-		2 * nSizeEdge + 1, 
+		_pDC,
+		2 * nSizeEdge + 1,
 		(2 * nSizeEdge + 1) * BS_LAST_STATE);
 
 	// Select Bitmap of Button-Edge into DC
@@ -245,7 +245,7 @@ bool CRoundButtonStyle::DrawMasks(CDC* _pDC)
 	COLORREF	tColorBack;
 	COLORREF	tColorBorder;
 	COLORREF	tColorFace;
-	
+
 	for (nX = -nSizeEdge; nX <= nSizeEdge; nX++)
 	{
 		for (nY = -nSizeEdge; nY <= nSizeEdge; nY++)
@@ -309,15 +309,15 @@ bool CRoundButtonStyle::DrawMasks(CDC* _pDC)
 				fFacFace = fFacFace * fFacHigh;
 
 				// Calculate Color-Factors
-				fFacR = 
+				fFacR =
 					(float)GetRValue(tColorBack)	* fFacBack +
 					(float)GetRValue(tColorBorder)	* fFacBorder +
 					(float)GetRValue(tColorFace)	* fFacFace;
-				fFacG = 
+				fFacG =
 					(float)GetGValue(tColorBack)	* fFacBack +
 					(float)GetGValue(tColorBorder)	* fFacBorder +
 					(float)GetGValue(tColorFace)	* fFacFace;
-				fFacB = 
+				fFacB =
 					(float)GetBValue(tColorBack)	* fFacBack +
 					(float)GetBValue(tColorBorder)	* fFacBorder +
 					(float)GetBValue(tColorFace)	* fFacFace;

@@ -10,7 +10,7 @@
 #include "ResearchComplex.h"
 #include <math.h>
 
-class CResearchInfo : public CObject 
+class CResearchInfo : public CObject
 {
 	friend class CResearch; // damit wir in der Klasse CResearch (und nur dieser) auf die private Attribute zugreifen können
 public:
@@ -20,7 +20,7 @@ public:
 
 	/// Destruktor
 	~CResearchInfo();
-	
+
 	/// Kopierkonstruktor
 	CResearchInfo(const CResearchInfo & rhs);
 	/// Zuweisungsoperator
@@ -41,7 +41,7 @@ public:
 	ULONG GetPropulsion(USHORT nTechLevel) const {return (ULONG)(pow(2.25f, nTechLevel) * 150.0);}
 	ULONG GetConstruction(USHORT nTechLevel) const {return (ULONG)(pow(2.25f, nTechLevel) * 175.0);}
 	ULONG GetWeapon(USHORT nTechLevel) const {return (ULONG)(pow(2.25f, nTechLevel) * 175.0);}
-	
+
 	/**
 	 * Diese Funktion gibt einen Wahrheitswert zurück, der angibt, ob der Spieler die Wahl einer der 3 Möglichkeiten
 	 * bei der Spezialforschung schon getroffen hat.
@@ -52,13 +52,13 @@ public:
 	 * Diese Funktion gibt einen Zeiger auf den aktuellen Komplex der Spezialforschung zurück.
 	 */
 	const CResearchComplex* GetCurrentResearchComplex() const {return &m_ResearchComplex[m_nCurrentComplex];}
-	
+
 	/**
 	 * Diese Funktion gibt einen Zeiger auf einen bestimmten Komplex der Spezialforschung zurück.
 	 * Welcher Komplex zurückgegeben wird, wird durch den Parameter <code>nComplex</code> bestimmt.
 	 */
 	const CResearchComplex* GetResearchComplex(RESEARCH_COMPLEX::Typ nComplex) const {return &m_ResearchComplex[nComplex];}
-	
+
 	/**
 	 * Funktion gibt den Namen einer gewünschten Technologie zurück. Als Parameter muss eine Nummer <code>tech</code>
 	 * übergeben werden, die die Technologie identifiziert.
@@ -78,14 +78,14 @@ public:
 	 * es sonst zum Absturz des Programms kommen könnte.
 	 */
 	void ChooseUniqueResearch(void);
-	
+
 	/**
 	 * Diese Funktion ändert den Status des aktuellen Komplexes. Dabei ändert sie gleichzeitig auch den Status
 	 * der zuvor gewählten Wahlmöglichkeit. Als Parameter wird dabei ein neuer Status <code>nNewStatus</code>
 	 * übergeben.
 	 */
 	void ChangeStatusOfComplex(RESEARCH_STATUS::Typ nNewStatus);
-	
+
 	/**
 	 * Diese Funktion wählt eine der drei Möglichkeiten der Uniqueforschung aus. Dafür muss man das Gebiet, welches
 	 * erforscht werden soll mit dem Parameter <code>possibility</code> übergeben. Genaueres steht in der Definition
@@ -109,14 +109,14 @@ public:
 	 * übergeben werden.
 	 */
 	static void GetTechInfos(BYTE tech, BYTE level, CString& sTechName, CString& sTechDesc);
-	
+
 private:
 	/// Die derzeit 12 Objekte für die einzelnen Komplexe der Spezialforschung
 	CResearchComplex m_ResearchComplex[NoUC];
-	
+
 	/// Der aktuell gewählter Komplex
 	RESEARCH_COMPLEX::Typ m_nCurrentComplex;
-	
+
 	/// Wurde eine der drei Wahlmöglichkeiten getroffen
 	bool m_bChoiceTaken;
 

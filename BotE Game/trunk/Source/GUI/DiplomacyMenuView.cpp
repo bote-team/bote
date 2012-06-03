@@ -87,7 +87,7 @@ void CDiplomacyMenuView::OnNewRound()
 {
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
-	
+
 	pPlayer = m_pPlayersRace;
 	ASSERT(pPlayer);
 
@@ -96,9 +96,9 @@ void CDiplomacyMenuView::OnNewRound()
 	m_sClickedOnRace = "";
 	m_byWhichResourceIsChosen = TITAN;
 
-	
+
 	CString race = pPlayer->GetRaceID();
-	
+
 	CPoint ko = pDoc->GetRaceKO(race);
 	if (ko != CPoint(-1,-1) && pDoc->GetSystem(ko).GetOwnerOfSystem() == race)
 		m_ptResourceFromSystem = pDoc->GetRaceKO(race);
@@ -132,7 +132,7 @@ void CDiplomacyMenuView::OnNewRound()
 	for (vector<CRace*>::const_iterator it = m_vRaceList.begin(); it != m_vRaceList.end(); ++it)
 		for (UINT i = 0; i < pPlayer->GetIncomingDiplomacyNews()->size(); i++)
 			if (pPlayer->GetIncomingDiplomacyNews()->at(i).m_sFromRace == (*it)->GetRaceID())
-				m_vIncomeList.push_back(&pPlayer->GetIncomingDiplomacyNews()->at(i));	
+				m_vIncomeList.push_back(&pPlayer->GetIncomingDiplomacyNews()->at(i));
 }
 
 // CDiplomacyMenuView drawing
@@ -143,7 +143,7 @@ void CDiplomacyMenuView::OnDraw(CDC* dc)
 
 	if (!pDoc->m_bDataReceived)
 		return;
-	
+
 	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
 	if (!pMajor)
@@ -153,10 +153,10 @@ void CDiplomacyMenuView::OnDraw(CDC* dc)
 	CMyMemDC pDC(dc);
 	CRect client;
 	GetClientRect(&client);
-		
+
 	// Graphicsobjekt, in welches gezeichnet wird anlegen
 	Graphics g(pDC->GetSafeHdc());
-	
+
 	g.Clear(Color::Black);
 	g.SetSmoothingMode(SmoothingModeHighSpeed);
 	g.SetInterpolationMode(InterpolationModeLowQuality);
@@ -219,10 +219,10 @@ void CDiplomacyMenuView::LoadRaceGraphics()
 
 	// Alle Buttons in der View erstellen
 	CreateButtons();
-	
+
 	// alle Hintergrundgrafiken laden
 	CString sPrefix = pPlayer->GetPrefix();
-	
+
 	bg_diploinfomenu	= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "diploinfomenu.boj");
 	bg_diplooutmenu		= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "diplooutmenu.boj");
 	bg_diploinmenu		= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "diploinmenu.boj");
@@ -251,10 +251,10 @@ void CDiplomacyMenuView::DrawDiplomacyMenue(Graphics* g)
 
 	CMajor* pPlayer = m_pPlayersRace;
 	ASSERT(pPlayer);
-	
+
 	CString fontName = "";
 	Gdiplus::REAL fontSize = 0.0;
-		
+
 	StringFormat fontFormat;
 	fontFormat.SetAlignment(StringAlignmentCenter);
 	fontFormat.SetLineAlignment(StringAlignmentCenter);
@@ -272,21 +272,21 @@ void CDiplomacyMenuView::DrawDiplomacyMenue(Graphics* g)
 	else if (m_bySubMenu == 1)
 	{
 		if (bg_diplooutmenu)
-			g->DrawImage(bg_diplooutmenu, 0, 0, 1075, 750);		
+			g->DrawImage(bg_diplooutmenu, 0, 0, 1075, 750);
 	}
 	else
 	{
 		if (bg_diploinmenu)
-			g->DrawImage(bg_diploinmenu, 0, 0, 1075, 750);		
+			g->DrawImage(bg_diploinmenu, 0, 0, 1075, 750);
 	}
-	
+
 	m_bShowSendButton = TRUE;
 	m_bShowDeclineButton = TRUE;
 	CString s;
 
 	CDiplomacyBottomView::SetText("");
 	this->DrawRaceDiplomacyMenue(g);
-		
+
 	// Wenn wir uns in der Angebotsanicht des Diplomatiemenüs befinden
 	if (m_bySubMenu == 1 && m_sClickedOnRace != "")
 	{
@@ -299,7 +299,7 @@ void CDiplomacyMenuView::DrawDiplomacyMenue(Graphics* g)
 			bAlienDiplomacy = true;
 
 		if (pRace->GetType() == MAJOR)
-		{		
+		{
 			for (int i = 0; i < m_DiplomacyMajorOfferButtons.GetSize(); i++)
 			{
 				CMyButton *button = m_DiplomacyMajorOfferButtons.GetAt(i);
@@ -383,11 +383,11 @@ void CDiplomacyMenuView::DrawDiplomacyMenue(Graphics* g)
 						map<CString, CMajor*>* pmMajors = pDoc->GetRaceCtrl()->GetMajors();
 						for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
 							if (it->first != pPlayer->GetRaceID() && it->first != m_sClickedOnRace && pRace->GetAgreement(it->first) != DIPLOMATIC_AGREEMENT::WAR && pPlayer->IsRaceContacted(it->first) && pRace->IsRaceContacted(it->first))
-							{							
+							{
 								if (button->GetState() != 1)
 									button->SetState(0);
 								break;
-							}						
+							}
 					}
 					else
 						button->SetState(2);
@@ -413,7 +413,7 @@ void CDiplomacyMenuView::DrawDiplomacyMenue(Graphics* g)
 						button->SetState(2);
 				}
 			}
-			DrawDiplomacyButtons(g, pPlayer, &m_DiplomacyMajorOfferButtons, -1);			
+			DrawDiplomacyButtons(g, pPlayer, &m_DiplomacyMajorOfferButtons, -1);
 		}
 		else if (pRace->GetType() == MINOR)
 		{
@@ -421,7 +421,7 @@ void CDiplomacyMenuView::DrawDiplomacyMenue(Graphics* g)
 			// z.B. Mitgliedschaft mit einer Minorrace hat, dann können wir ihr kein Angebot machen, außer
 			// Geschenke geben und Bestechen
 			DIPLOMATIC_AGREEMENT::Typ status = DIPLOMATIC_AGREEMENT::NONE;
-			
+
 			map<CString, CMajor*>* pmMajors = pDoc->GetRaceCtrl()->GetMajors();
 			for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
 				if (it->first != pPlayer->GetRaceID())
@@ -434,7 +434,7 @@ void CDiplomacyMenuView::DrawDiplomacyMenue(Graphics* g)
 			CMinor* pMinor = dynamic_cast<CMinor*>(pRace);
 			if (!pMinor)
 				return;
-			
+
 			for (int i = 0; i < m_DiplomacyMinorOfferButtons.GetSize(); i++)
 			{
 				CMyButton *button = m_DiplomacyMinorOfferButtons.GetAt(i);
@@ -513,7 +513,7 @@ void CDiplomacyMenuView::DrawDiplomacyMenue(Graphics* g)
 					}
 					else
 						button->SetState(2);
-				}				
+				}
 				else if (button->GetText() == CResourceManager::GetString("BTN_PRESENT"))
 				{
 					if (!bAlienDiplomacy && m_OutgoingInfo.m_nType != DIPLOMATIC_AGREEMENT::PRESENT)
@@ -525,7 +525,7 @@ void CDiplomacyMenuView::DrawDiplomacyMenue(Graphics* g)
 						button->SetState(2);
 				}
 			}
-			DrawDiplomacyButtons(g, pPlayer, &m_DiplomacyMinorOfferButtons, -1);			
+			DrawDiplomacyButtons(g, pPlayer, &m_DiplomacyMinorOfferButtons, -1);
 		}
 
 		// Abschicken- bzw. Abbrechenbutton anzeigen
@@ -565,8 +565,8 @@ void CDiplomacyMenuView::DrawDiplomacyMenue(Graphics* g)
 				else
 					m_bCanSend = false;
 			}
-		}					
-		
+		}
+
 		if (s != "")
 		{
 			// Rassenspezifische Schriftart auswählen
@@ -582,7 +582,7 @@ void CDiplomacyMenuView::DrawDiplomacyMenue(Graphics* g)
 			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(871,690,160,40), &fontFormat, &fontBrush);
 		}
 	}
-	
+
 	// Buttons in der Eingangsansicht zeichnen
 	else if (m_bySubMenu == 2 && m_pIncomingInfo != NULL)
 	{
@@ -602,7 +602,7 @@ void CDiplomacyMenuView::DrawDiplomacyMenue(Graphics* g)
 			g->DrawImage(graphic, 852,480,160,40);
 		s = CResourceManager::GetString("BTN_ACCEPT");
 		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(852,480,160,40), &fontFormat, &fontBrush);
-		
+
 		if (m_bShowDeclineButton == TRUE)
 			sFile = "Other\\" + pPlayer->GetPrefix() + "button.bop";
 		else
@@ -627,7 +627,7 @@ void CDiplomacyMenuView::DrawDiplomacyMenue(Graphics* g)
 	else if (m_bySubMenu == 2)
 		s = CResourceManager::GetString("DIPLOMACY_MENUE_RECEIPTS");
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0,10,m_TotalSize.cx, 50), &fontFormat, &fontBrush);
-	
+
 	pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CDiplomacyBottomView));
 }
 
@@ -648,7 +648,7 @@ void CDiplomacyMenuView::DrawRaceDiplomacyMenue(Graphics* g)
 	Gdiplus::Color normalColor;
 	CFontLoader::GetGDIFontColor(pPlayer, 1, normalColor);
 	SolidBrush fontBrush(normalColor);
-	
+
 	StringFormat fontFormat;
 	fontFormat.SetAlignment(StringAlignmentCenter);
 	fontFormat.SetLineAlignment(StringAlignmentCenter);
@@ -675,7 +675,7 @@ void CDiplomacyMenuView::DrawRaceDiplomacyMenue(Graphics* g)
 	Gdiplus::Color penColor;
 	penColor.SetFromCOLORREF(pPlayer->GetDesign()->m_clrListMarkPenColor);
 
-	
+
 
 	// Position im Vector suchen
 	int nVecPos = 0;
@@ -717,8 +717,8 @@ void CDiplomacyMenuView::DrawRaceDiplomacyMenue(Graphics* g)
 			{
 				if(it-m_vRaceList.begin()>0&&m_vRaceList.at(it-m_vRaceList.begin()-1)->GetType()==MAJOR) g->DrawLine(&Gdiplus::Pen(penColor), 8, 100+count*25, 150, 100+count*25);
 			}
-			
-			
+
+
 			RectF rect(20,100+count*25,130,25);
 			// Haben wir auf die Rasse geklickt haben, dann Farbe ändern und jeweiliges Untermenü aufrufen
 			if (m_sClickedOnRace == pRace->GetRaceID())
@@ -729,25 +729,25 @@ void CDiplomacyMenuView::DrawRaceDiplomacyMenue(Graphics* g)
 				// Wenn wir im Angebotsbildschirm sind
 				else if (m_bySubMenu == 1)
 					this->DrawDiplomacyOfferMenue(g, pRace->GetRaceID());
-				
-				
+
+
 				// Name der Rasse zeichnen
 				fontBrush.SetColor(markColor);
 				g->DrawString(pRace->GetRaceName().AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), rect, &fontFormat, &fontBrush);
-								
+
 				// Farbe der Schrift und Markierung wählen, wenn wir auf eine Rasse geklickt haben
 				g->FillRectangle(&SolidBrush(Color(50,200,200,200)), RectF(8,100+count*25,142,25));
 				g->DrawLine(&Gdiplus::Pen(penColor), 8, 100+count*25, 150, 100+count*25);
-				g->DrawLine(&Gdiplus::Pen(penColor), 8, 125+count*25, 150, 125+count*25);				
-				
+				g->DrawLine(&Gdiplus::Pen(penColor), 8, 125+count*25, 150, 125+count*25);
+
 				// Bild der Rasse zeichnen
 				CString name = pRace->GetGraphicFileName();
 				Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Races\\" + name);
 				if (graphic == NULL)
-					graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Races\\ImageMissing.boj");		
+					graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Races\\ImageMissing.boj");
 				if (graphic)
 					g->DrawImage(graphic, 735, 100, 300, 300);
-				
+
 				// Balken zeichnen, der angibt, wie gut die Rasse uns gegenübersteht, aber nur wenn der Computer sie spielt
 				if (pRace->GetType() == MINOR || pRace->GetType() == MAJOR && ((CMajor*)pRace)->IsHumanPlayer() == false)
 				{
@@ -760,7 +760,7 @@ void CDiplomacyMenuView::DrawRaceDiplomacyMenue(Graphics* g)
 							g->FillRectangle(&SolidBrush(Color(200,250-t*12, 0+t*12, 0)), timber);
 						}
 						else
-							g->FillRectangle(&SolidBrush(Color(100,100,100,100)), timber);						
+							g->FillRectangle(&SolidBrush(Color(100,100,100,100)), timber);
 					}
 					if (pRace->GetRelation(pPlayer->GetRaceID()) * 2 / 10 == 0)
 						fontBrush.SetColor(Color(255, 0, 0));
@@ -777,21 +777,21 @@ void CDiplomacyMenuView::DrawRaceDiplomacyMenue(Graphics* g)
 					else if (relation < 85) s = CResourceManager::GetString("OPTIMISTIC");
 					else if (relation < 95) s = CResourceManager::GetString("ENTHUSED");
 					else s = CResourceManager::GetString("DEVOTED");
-					
+
 					fontFormat.SetAlignment(StringAlignmentCenter);
 					g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(735,403,300,25), &fontFormat, &fontBrush);
 					fontFormat.SetAlignment(StringAlignmentNear);
 				}
 			}
 			else
-			{	
+			{
 
 				Gdiplus::Color color(normalColor);
 				s = this->PrintDiplomacyStatus(pPlayer->GetRaceID(), pRace->GetRaceID(), color);
 				fontBrush.SetColor(color);
 				g->DrawString(pRace->GetRaceName().AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), rect, &fontFormat, &fontBrush);
 			}
-			fontBrush.SetColor(normalColor);			
+			fontBrush.SetColor(normalColor);
 			count++;
 			if (count > 21)
 				break;
@@ -822,20 +822,20 @@ void CDiplomacyMenuView::DrawRaceDiplomacyMenue(Graphics* g)
 				// Name der Rasse zeichnen
 				fontBrush.SetColor(markColor);
 				g->DrawString(pRace->GetRaceName().AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), rect, &fontFormat, &fontBrush);
-								
+
 				// Farbe der Schrift und Markierung wählen, wenn wir auf eine Rasse geklickt haben
 				g->FillRectangle(&SolidBrush(Color(50,200,200,200)), RectF(8,100+count*25,142,25));
 				g->DrawLine(&Gdiplus::Pen(penColor), 8, 100+count*25, 150, 100+count*25);
-				g->DrawLine(&Gdiplus::Pen(penColor), 8, 125+count*25, 150, 125+count*25);				
-				
+				g->DrawLine(&Gdiplus::Pen(penColor), 8, 125+count*25, 150, 125+count*25);
+
 				// Bild der Rasse zeichnen
 				CString name = pRace->GetGraphicFileName();
 				Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Races\\" + name);
 				if (graphic == NULL)
-					graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Races\\ImageMissing.boj");		
+					graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Races\\ImageMissing.boj");
 				if (graphic)
 					g->DrawImage(graphic, 735, 100, 300, 300);
-				
+
 				// Balken zeichnen, der angibt, wie gut die Rasse uns gegenübersteht, aber nur wenn der Computer sie spielt
 				if (pRace->GetType() == MINOR || pRace->GetType() == MAJOR && ((CMajor*)pRace)->IsHumanPlayer() == false)
 				{
@@ -848,7 +848,7 @@ void CDiplomacyMenuView::DrawRaceDiplomacyMenue(Graphics* g)
 							g->FillRectangle(&SolidBrush(Color(200,250-t*12, 0+t*12, 0)), timber);
 						}
 						else
-							g->FillRectangle(&SolidBrush(Color(100,100,100,100)), timber);						
+							g->FillRectangle(&SolidBrush(Color(100,100,100,100)), timber);
 					}
 					// den Text zeichnen, der Angibt wie gut uns die Rasse gegenübersteht
 					USHORT relation = pRace->GetRelation(pPlayer->GetRaceID());
@@ -863,7 +863,7 @@ void CDiplomacyMenuView::DrawRaceDiplomacyMenue(Graphics* g)
 					else if (relation < 85) s = CResourceManager::GetString("OPTIMISTIC");
 					else if (relation < 95) s = CResourceManager::GetString("ENTHUSED");
 					else s = CResourceManager::GetString("DEVOTED");
-					
+
 					fontFormat.SetAlignment(StringAlignmentCenter);
 					g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(735,403,300,25), &fontFormat, &fontBrush);
 					fontFormat.SetAlignment(StringAlignmentNear);
@@ -881,7 +881,7 @@ void CDiplomacyMenuView::DrawRaceDiplomacyMenue(Graphics* g)
 						m_bShowSendButton = FALSE;
 					else if (m_OutgoingInfo.m_nAnswerStatus == ANSWER_STATUS::DECLINED)
 						m_bShowDeclineButton = FALSE;
-					
+
 					// Bei Kriegserklärung oder Geschenk haben wir keine Wahlmöglichkeit
 					if (m_OutgoingInfo.m_nType == DIPLOMATIC_AGREEMENT::WAR || m_OutgoingInfo.m_nType == DIPLOMATIC_AGREEMENT::PRESENT)
 					{
@@ -897,16 +897,16 @@ void CDiplomacyMenuView::DrawRaceDiplomacyMenue(Graphics* g)
 			}
 			// handelt es sich nicht um das angeklickte Angebot, so muss trotzdem deren Name angezeigt werden
 			else
-			{						
+			{
 				g->DrawString(pRace->GetRaceName().AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), rect, &fontFormat, &fontBrush);
 			}
-									
+
 			// Handelt es sich um eine diplomatisches Angebot (keine Antwort, kein normaler Text)
 			// Typ zeichnen (Vorschlag, Forderung, Geschenk)
 			rect.X = 200;
 			rect.Width = 150;
 			if (m_OutgoingInfo.m_nFlag == DIPLOMACY_OFFER)
-			{							
+			{
 				if (m_OutgoingInfo.m_nType == DIPLOMATIC_AGREEMENT::PRESENT)
 					s = CResourceManager::GetString("PRESENT");
 				else if (m_OutgoingInfo.m_nType == DIPLOMATIC_AGREEMENT::REQUEST)
@@ -933,7 +933,7 @@ void CDiplomacyMenuView::DrawRaceDiplomacyMenue(Graphics* g)
 								fontBrush.SetColor(normalColor);
 								s.Format("%s: ",CResourceManager::GetString("RESOURCE_FROM"));
 								g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(350,100+count*25,150,25), &fontFormat, &fontBrush);
-																
+
 								Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\" + pPlayer->GetPrefix() + "button_small.bop");
 								Color btnColor;
 								CFontLoader::GetGDIFontColor(pPlayer, 1, btnColor);
@@ -961,13 +961,13 @@ void CDiplomacyMenuView::DrawRaceDiplomacyMenue(Graphics* g)
 									if (resource[r] > 0 && pDoc->GetSystem(m_ptResourceFromSystem).GetResourceStore(r) < resource[r] && pDoc->GetSystem(m_ptResourceFromSystem).GetOwnerOfSystem() == pPlayer->GetRaceID())
 										m_bShowSendButton = false;
 								fontFormat.SetAlignment(StringAlignmentCenter);
-								g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(500,97+count*25,120,30), &fontFormat, &btnBrush);											
+								g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(500,97+count*25,120,30), &fontFormat, &btnBrush);
 							}
 							// Überprüfen ob wir auch die geforderten Credits bezahlen können
 							if (pPlayer->GetEmpire()->GetCredits() < m_pIncomingInfo->m_nCredits)
 								m_bShowSendButton = false;
 						}
-					}							
+					}
 					s = CResourceManager::GetString("REQUEST");
 				}
 				else if (m_OutgoingInfo.m_nType == DIPLOMATIC_AGREEMENT::WAR)
@@ -1006,27 +1006,27 @@ void CDiplomacyMenuView::DrawDiplomacyInfoMenue(Graphics* g, const CString& sWhi
 
 	CString fontName = "";
 	Gdiplus::REAL fontSize = 0.0;
-	
+
 	// Rassenspezifische Schriftart auswählen
 	CFontLoader::CreateGDIFont(pPlayer, 2, fontName, fontSize);
 	// Schriftfarbe wählen
 	Gdiplus::Color normalColor;
 	CFontLoader::GetGDIFontColor(pPlayer, 3, normalColor);
 	SolidBrush fontBrush(normalColor);
-	
+
 	StringFormat fontFormat;
 	fontFormat.SetAlignment(StringAlignmentNear);
 	fontFormat.SetLineAlignment(StringAlignmentNear);
 	fontFormat.SetFormatFlags(!StringFormatFlagsNoWrap);
 
 	Gdiplus::Color markColor;
-	markColor.SetFromCOLORREF(pPlayer->GetDesign()->m_clrListMarkTextColor);	
+	markColor.SetFromCOLORREF(pPlayer->GetDesign()->m_clrListMarkTextColor);
 
 	CString s;
-	
+
 	// Beschreibung der Rasse
 	g->DrawString(pRace->GetRaceDesc().AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(190,475,845,190), &fontFormat, &fontBrush);
-		
+
 	// Ingame-Daten zu der Rasse, welche in der Box angezeigt werden
 	fontFormat.SetFormatFlags(StringFormatFlagsNoWrap);
 	fontBrush.SetColor(markColor);
@@ -1042,7 +1042,7 @@ void CDiplomacyMenuView::DrawDiplomacyInfoMenue(Graphics* g, const CString& sWhi
 	rect.Y += 50;
 	s = CResourceManager::GetString("KNOWN_EMPIRES").MakeUpper()+":";
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), rect, &fontFormat, &fontBrush);
-			
+
 	// Informationen anzeigen
 	rect.Y -= 100;
 	fontBrush.SetColor(normalColor);
@@ -1058,19 +1058,19 @@ void CDiplomacyMenuView::DrawDiplomacyInfoMenue(Graphics* g, const CString& sWhi
 					s.Format("%s (%c%i)", s,(char)y+97,x+1);
 					break;
 				}else if(pDoc->GetSector(x,y).GetName()==s&&!pDoc->GetSector(x,y).GetKnown(pPlayer->GetRaceID()))
-				{	
+				{
 					s.Format("%s (%s)",s,CResourceManager::GetString("UNKNOWN"));
 					break;
 				}
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), rect, &fontFormat, &fontBrush);
 	rect.Y += 25;
-	
+
 	Gdiplus::Color color(normalColor);
 	s = this->PrintDiplomacyStatus(pPlayer->GetRaceID(), sWhichRace, color);
 	fontBrush.SetColor(color);
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), rect, &fontFormat, &fontBrush);
 	rect.Y += 25;
-	
+
 	if (pRace->GetType() == MINOR)
 	{
 		fontBrush.SetColor(markColor);
@@ -1081,7 +1081,7 @@ void CDiplomacyMenuView::DrawDiplomacyInfoMenue(Graphics* g, const CString& sWhi
 		fontFormat.SetAlignment(StringAlignmentFar);
 		s.Format("%d%%",(int)(((CMinor*)pRace)->GetAcceptancePoints(pPlayer->GetRaceID()) / 50));
 		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), rect, &fontFormat, &fontBrush);
-	}	
+	}
 	// Wenn wir einen Verteidigungpakt mit der Rasse haben (nur bei Majors)
 	else if (pRace->GetType() == MAJOR && pPlayer->GetDefencePact(sWhichRace) == true)
 	{
@@ -1110,7 +1110,7 @@ void CDiplomacyMenuView::DrawDiplomacyInfoMenue(Graphics* g, const CString& sWhi
 					fontFormat.SetAlignment(StringAlignmentNear);
 					s = it->second->GetRaceName();
 					g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), rect, &fontFormat, &fontBrush);
-						
+
 					fontFormat.SetAlignment(StringAlignmentFar);
 					Gdiplus::Color color(normalColor);
 					s = this->PrintDiplomacyStatus(it->first, sWhichRace, color);
@@ -1118,14 +1118,14 @@ void CDiplomacyMenuView::DrawDiplomacyInfoMenue(Graphics* g, const CString& sWhi
 					g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), rect, &fontFormat, &fontBrush);
 					rect.Y += 25;
 				}
-	}	
+	}
 	// sonst keine Angaben
 	else
 	{
 		s = CResourceManager::GetString("NO_SPECS");
-		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), rect, &fontFormat, &fontBrush);		
+		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), rect, &fontFormat, &fontBrush);
 	}
-		
+
 	// Hier die ganzen Buttons in der Informationsansicht zeichnen
 	// Wenn wir einen Vertrag mit einer Minorrace haben so können wir diesen auch aufheben
 	if (pRace->GetType() == MINOR)
@@ -1137,7 +1137,7 @@ void CDiplomacyMenuView::DrawDiplomacyInfoMenue(Graphics* g, const CString& sWhi
 			if (m_OutgoingInfo.m_nType == DIPLOMATIC_AGREEMENT::NONE && m_OutgoingInfo.m_sToRace == sWhichRace && m_OutgoingInfo.m_sFromRace == pPlayer->GetRaceID())
 			{
 				m_bShowSendButton = FALSE;
-				CDiplomacyBottomView::SetHeadLine(m_OutgoingInfo.m_sHeadline);			
+				CDiplomacyBottomView::SetHeadLine(m_OutgoingInfo.m_sHeadline);
 				CDiplomacyBottomView::SetText(m_OutgoingInfo.m_sText);
 				break;
 			}
@@ -1148,19 +1148,19 @@ void CDiplomacyMenuView::DrawDiplomacyInfoMenue(Graphics* g, const CString& sWhi
 			m_OutgoingInfo.m_sHeadline = CResourceManager::GetString("CANCEL_AGREEMENT");
 			Gdiplus::Color color;
 			m_OutgoingInfo.m_sText = CResourceManager::GetString("CANCEL_AGREEMENT_TEXT", FALSE, this->PrintDiplomacyStatus(pPlayer->GetRaceID(), m_sClickedOnRace, color), pRace->GetRaceName());
-			
+
 			if (m_bShowSendButton == TRUE)
 				s = CResourceManager::GetString("BTN_ANNUL");
 			else
 				s = CResourceManager::GetString("BTN_CANCEL");
-			
+
 			Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\" + pPlayer->GetPrefix() + "button_small.bop");
 			Color btnColor;
 			CFontLoader::GetGDIFontColor(pPlayer, 1, btnColor);
 			SolidBrush btnBrush(btnColor);
 			if (graphic)
 				g->DrawImage(graphic, 275, 370, 120, 30);
-			
+
 			fontFormat.SetAlignment(StringAlignmentCenter);
 			fontFormat.SetLineAlignment(StringAlignmentCenter);
 			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(275,370,120,30), &fontFormat, &btnBrush);
@@ -1182,14 +1182,14 @@ void CDiplomacyMenuView::DrawDiplomacyOfferMenue(Graphics* g, const CString& sWh
 
 	CString fontName = "";
 	Gdiplus::REAL fontSize = 0.0;
-	
+
 	// Rassenspezifische Schriftart auswählen
 	CFontLoader::CreateGDIFont(pPlayer, 2, fontName, fontSize);
 	// Schriftfarbe wählen
 	Gdiplus::Color normalColor;
 	CFontLoader::GetGDIFontColor(pPlayer, 3, normalColor);
 	SolidBrush fontBrush(normalColor);
-	
+
 	StringFormat fontFormat;
 	fontFormat.SetAlignment(StringAlignmentCenter);
 	fontFormat.SetLineAlignment(StringAlignmentCenter);
@@ -1199,10 +1199,10 @@ void CDiplomacyMenuView::DrawDiplomacyOfferMenue(Graphics* g, const CString& sWh
 	markColor.SetFromCOLORREF(pPlayer->GetDesign()->m_clrListMarkTextColor);
 
 	CString s;
-	
+
 	s = CResourceManager::GetString("CHOOSE_OFFER")+":";
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(200,100,360,25), &fontFormat, &fontBrush);
-	
+
 	// Abfragen, ob wir ein Angebot schon gemacht haben in dieser Runde
 	// wenn ja, können wir keine weiteren Angebote machen!
 	// Den jeweiligen Angebotsbildschirm dann auch einblenden
@@ -1216,13 +1216,13 @@ void CDiplomacyMenuView::DrawDiplomacyOfferMenue(Graphics* g, const CString& sWh
 			break;
 		}
 	}
-	
+
 	// Wenn wir auf den Geschenkbutton, Freundschaftsbutton, Kooperationsbutton usw. gedrückt haben
 	if (m_OutgoingInfo.m_nType != DIPLOMATIC_AGREEMENT::NONE)
 	{
 		// Balken zeichnen, auf dem ich den Betrag auswählen kann, außer bei Kriegserklärung
 		if (m_OutgoingInfo.m_nType != DIPLOMATIC_AGREEMENT::WAR)
-		{	
+		{
 			// ist aus irgendeinem Grund die übergebende Menge größer als die aktuellen Credits, so
 			// werden die Credits runtergerechnet
 			if (m_OutgoingInfo.m_nType != DIPLOMATIC_AGREEMENT::REQUEST && m_bShowSendButton && m_OutgoingInfo.m_nCredits > pPlayer->GetEmpire()->GetCredits())
@@ -1253,7 +1253,7 @@ void CDiplomacyMenuView::DrawDiplomacyOfferMenue(Graphics* g, const CString& sWh
 			{
 				// auch das Umschaltfeld auf die gegebene Ressource umstellen
 				int iWhichResource = m_byWhichResourceIsChosen;
-				
+
 				// Balken für Ressourcengeschenk zeichnen
 				CString res;
 				if (iWhichResource == TITAN)
@@ -1269,7 +1269,7 @@ void CDiplomacyMenuView::DrawDiplomacyOfferMenue(Graphics* g, const CString& sWh
 				else if (iWhichResource == DERITIUM)
 					res = CResourceManager::GetString("DERITIUM");
 				UINT nUnit = iWhichResource == DERITIUM ? 5 : 1000;
-				
+
 				// sind aus irgendeinem Grund die übergebende Menge größer als die aktuellen vorhandenen Ressourcen, so
 				// werden die Ressourcen runtergerechnet
 				if (m_OutgoingInfo.m_nType != DIPLOMATIC_AGREEMENT::REQUEST && m_bShowSendButton && m_OutgoingInfo.m_nResources[iWhichResource] > 0 && m_OutgoingInfo.m_ptKO != CPoint(-1,-1))
@@ -1277,17 +1277,17 @@ void CDiplomacyMenuView::DrawDiplomacyOfferMenue(Graphics* g, const CString& sWh
 					if (m_OutgoingInfo.m_nResources[iWhichResource] > pDoc->GetSystem(m_OutgoingInfo.m_ptKO).GetResourceStore(iWhichResource))
 					{
 						m_OutgoingInfo.m_nResources[iWhichResource] = pDoc->GetSystem(m_OutgoingInfo.m_ptKO).GetResourceStore(iWhichResource) / nUnit;
-						m_OutgoingInfo.m_nResources[iWhichResource] *= nUnit;						
+						m_OutgoingInfo.m_nResources[iWhichResource] *= nUnit;
 					}
 				}
-				
+
 				for (int t = 0; t < 20; t++)
 				{
 					RectF timber(195+t*12,520,10,25);
 					if ((USHORT)(m_OutgoingInfo.m_nResources[iWhichResource]/nUnit) > t)
 						g->FillRectangle(&SolidBrush(Color(200-t*10,200,0)), timber);
 					else
-						g->FillRectangle(&SolidBrush(Color(100,100,100,100)), timber);					
+						g->FillRectangle(&SolidBrush(Color(100,100,100,100)), timber);
 				}
 				s.Format("%s: %d %s %s",CResourceManager::GetString("TRANSFER"), m_OutgoingInfo.m_nResources[iWhichResource], CResourceManager::GetString("UNITS"),res);
 				fontFormat.SetAlignment(StringAlignmentNear);
@@ -1302,7 +1302,7 @@ void CDiplomacyMenuView::DrawDiplomacyOfferMenue(Graphics* g, const CString& sWh
 					CPoint ko = pMinor->GetRaceKO();
 					if (ko == CPoint(-1,-1))
 						return;
-					
+
 					UINT nStorage = pDoc->GetSystem(ko).GetResourceStore(iWhichResource);
 
 					if (nStorage <= 1 * nUnit)
@@ -1321,7 +1321,7 @@ void CDiplomacyMenuView::DrawDiplomacyOfferMenue(Graphics* g, const CString& sWh
 						s = CResourceManager::GetString("ABOUNDING_EXISTING");
 					g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(195,545,355,25), &fontFormat, &fontBrush);
 				}
-				
+
 				// Den Button für die Ressourcenauswahl zeichnen
 				if (graphic)
 					g->DrawImage(graphic, 510, 518, 120, 30);
@@ -1329,7 +1329,7 @@ void CDiplomacyMenuView::DrawDiplomacyOfferMenue(Graphics* g, const CString& sWh
 				g->DrawString(res.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(510,518,120,30), &fontFormat, &btnBrush);
 				s = CResourceManager::GetString("RESOURCE");
 				g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(510,490,120,30), &fontFormat, &fontBrush);
-				
+
 				// Den Button für die Systemauswahl der abzuknüpfenden Ressource zeichnen, nicht bei Forderung von Majorrace
 				if (m_OutgoingInfo.m_nType != DIPLOMATIC_AGREEMENT::REQUEST)
 				{
@@ -1341,16 +1341,16 @@ void CDiplomacyMenuView::DrawDiplomacyOfferMenue(Graphics* g, const CString& sWh
 					g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(510,577,120,30), &fontFormat, &fontBrush);
 				}
 			}
-						
+
 			// Wenn wir bestechen wollen, dann möglicherweise den Auswahlbutton wen wir bestechen wollen einblenden
 			if (m_OutgoingInfo.m_nType == DIPLOMATIC_AGREEMENT::CORRUPTION)
 			{
 				if (m_OutgoingInfo.m_sCorruptedRace == "")
-				{	
+				{
 					map<CString, CMajor*>* pmMajors = pDoc->GetRaceCtrl()->GetMajors();
 					// haben nicht auf den Button gedrückt -> mgl. Gegner auswählen
 					if (pRace->GetAgreement(pPlayer->GetRaceID()) < DIPLOMATIC_AGREEMENT::FRIENDSHIP)
-					{						
+					{
 						for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
 							if (it->first != pPlayer->GetRaceID() && pRace->GetAgreement(it->first) >= DIPLOMATIC_AGREEMENT::AFFILIATION)
 							{
@@ -1358,7 +1358,7 @@ void CDiplomacyMenuView::DrawDiplomacyOfferMenue(Graphics* g, const CString& sWh
 								break;
 							}
 					}
-					else 
+					else
 					{
 						for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
 							if (it->first != pPlayer->GetRaceID() && pRace->GetAgreement(it->first) >= DIPLOMATIC_AGREEMENT::TRADE)
@@ -1368,7 +1368,7 @@ void CDiplomacyMenuView::DrawDiplomacyOfferMenue(Graphics* g, const CString& sWh
 							}
 					}
 				}
-				
+
 				if (pRace->GetAgreement(pPlayer->GetRaceID()) >= DIPLOMATIC_AGREEMENT::FRIENDSHIP)
 				{
 					CMajor* pCorruptedMajor = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(m_OutgoingInfo.m_sCorruptedRace));
@@ -1384,7 +1384,7 @@ void CDiplomacyMenuView::DrawDiplomacyOfferMenue(Graphics* g, const CString& sWh
 					g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(510,410,120,30), &fontFormat, &fontBrush);
 				}
 			}
-			
+
 			// Wenn wir einen Vertrag einer Majorrace anbieten, dann Button für die Dauer dieses Vertrages einblenden
 			else if (pRace->GetType() == MAJOR && m_OutgoingInfo.m_nType != DIPLOMATIC_AGREEMENT::PRESENT && m_OutgoingInfo.m_nType != DIPLOMATIC_AGREEMENT::REQUEST && m_OutgoingInfo.m_nType != DIPLOMATIC_AGREEMENT::WARPACT)
 			{
@@ -1392,7 +1392,7 @@ void CDiplomacyMenuView::DrawDiplomacyOfferMenue(Graphics* g, const CString& sWh
 					s =CResourceManager::GetString("UNLIMITED");
 				else
 					s.Format("%d %s", m_OutgoingInfo.m_nDuration, CResourceManager::GetString("ROUNDS"));
-				
+
 				fontFormat.SetAlignment(StringAlignmentCenter);
 				if (graphic)
 					g->DrawImage(graphic, 510, 438, 120, 30);
@@ -1417,25 +1417,25 @@ void CDiplomacyMenuView::DrawDiplomacyOfferMenue(Graphics* g, const CString& sWh
 						}
 				}
 				if (m_OutgoingInfo.m_sWarpactEnemy != "")
-				{						
+				{
 					CMajor* pWarpactEnemy = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(m_OutgoingInfo.m_sWarpactEnemy));
 					if (!pWarpactEnemy)
 						return;
-					s = pWarpactEnemy->GetRaceName();						
-					
+					s = pWarpactEnemy->GetRaceName();
+
 					fontFormat.SetAlignment(StringAlignmentCenter);
 					if (graphic)
 						g->DrawImage(graphic, 510, 438, 120, 30);
 					g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(510,438,120,30), &fontFormat, &btnBrush);
 					s = CResourceManager::GetString("WARPACT_ENEMY");
-					g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(510,410,120,30), &fontFormat, &fontBrush);					
+					g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(510,410,120,30), &fontFormat, &fontBrush);
 				}
-			}			
+			}
 		}
 
 		if (CGenDiploMessage::GenerateMajorOffer(m_OutgoingInfo))
 			CDiplomacyBottomView::SetText(m_OutgoingInfo.m_sText);
-		
+
 		CDiplomacyBottomView::SetHeadLine(m_OutgoingInfo.m_sHeadline);
 	}
 }
@@ -1444,7 +1444,7 @@ void CDiplomacyMenuView::DrawDiplomacyOfferMenue(Graphics* g, const CString& sWh
 /// @param g Zeiger auf GDI+ Grafikobjekt
 /// @param pMajor Spielerrasse
 void CDiplomacyMenuView::DrawDiplomacyButtons(Graphics* g, CMajor* pMajor, CArray<CMyButton*>* buttonArray, int counter)
-{	
+{
 	CString fontName;
 	REAL fontSize;
 	// Rassenspezifische Schriftart auswählen
@@ -1476,8 +1476,8 @@ CString CDiplomacyMenuView::PrintDiplomacyStatus(const CString& sOurRace, const 
 		status = CResourceManager::GetString("SUBJUGATED");
 		color.SetFromCOLORREF(RGB(178,0,255));
 		return status;
-	}	
-	
+	}
+
 	// Namen der Vertragsform und Farbe ermitteln
 	switch (pOurRace->GetAgreement(sRace))
 	{
@@ -1502,7 +1502,7 @@ CString CDiplomacyMenuView::PrintDiplomacyStatus(const CString& sOurRace, const 
 			return status;
 		}
 	case DIPLOMATIC_AGREEMENT::FRIENDSHIP:
-		{			
+		{
 			if (pRace->GetType() == MAJOR && pOurRace->GetAgreementDuration(sRace) != 0)
 				status.Format("%s (%d)",CResourceManager::GetString("FRIENDSHIP_SHORT"), pOurRace->GetAgreementDuration(sRace));
 			else
@@ -1623,7 +1623,7 @@ void CDiplomacyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 
 	CalcLogicalPoint(point);
 
-	// Wenn wir uns in der Diplomatieansicht befinden		
+	// Wenn wir uns in der Diplomatieansicht befinden
 	// Überprüfen ob auf einen der Mainbuttons am unteren Rand der Diplomatieansicht geklickt wurde
 	int temp = m_bySubMenu;
 	if (ButtonReactOnLeftClick(point, &m_DiplomacyMainButtons, temp, FALSE))
@@ -1631,12 +1631,12 @@ void CDiplomacyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		m_bySubMenu = temp;
 		m_OutgoingInfo.Reset();
 		m_OutgoingInfo.m_ptKO = m_ptResourceFromSystem;
-		
+
 		m_pIncomingInfo = NULL;
 		Invalidate();
 		return;
 	}
-	
+
 	// Position im Vector der aktuell angeklickten Rasse suchen
 	int nVecPos = 0;
 	// nur wenn nicht Eingangsbildschirm sind
@@ -1664,7 +1664,7 @@ void CDiplomacyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			}
 		}
 	}
-	
+
 	// Dem Imperium bekannte Rassen durchgehen
 	CRect rect;
 	int count = 0;
@@ -1684,11 +1684,11 @@ void CDiplomacyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 				if (rect.PtInRect(point))
 				{
 					m_sClickedOnRace = pRace->GetRaceID();
-					
+
 					m_OutgoingInfo.Reset();
 					m_OutgoingInfo.m_sFromRace = pPlayer->GetRaceID();
 					m_OutgoingInfo.m_ptKO = m_ptResourceFromSystem;
-					
+
 					m_pIncomingInfo = NULL;
 					Invalidate();
 					return;
@@ -1701,7 +1701,7 @@ void CDiplomacyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 	}
 	// Wenn wir im Angebotseingangsbildschirm sind
 	else
-	{	
+	{
 		for (vector<CDiplomacyInfo*>::const_iterator it = m_vIncomeList.begin(); it != m_vIncomeList.end(); ++it)
 		{
 			if (nVecPos-- > 21)
@@ -1738,8 +1738,8 @@ void CDiplomacyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			count++;
 			if (count > 21)
 				break;
-		}				
-	}	
+		}
+	}
 
 	rect.SetRect(22,70,102,100);
 	if (rect.PtInRect(point))
@@ -1750,14 +1750,14 @@ void CDiplomacyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		Invalidate();
 		return;
 	}
-		
+
 	// Wenn wir in der Informationsansicht sind und eine Rasse angklickt haben
 	if (m_bySubMenu == 0 && m_sClickedOnRace != "")
 	{
 		CRace* pClickedRace = pDoc->GetRaceCtrl()->GetRace(m_sClickedOnRace);
 		// schauen ob bei einer Minorrace auf den Kündigungsbutton geklickt wurde
 		if (pClickedRace && pClickedRace->GetType() == MINOR && CRect(275,370,395,400).PtInRect(point) && pPlayer->GetAgreement(m_sClickedOnRace) > DIPLOMATIC_AGREEMENT::NONE)
-		{		
+		{
 			// Kündigung hinzufügen
 			if (m_bShowSendButton == TRUE)
 			{
@@ -1782,19 +1782,19 @@ void CDiplomacyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 						pPlayer->GetOutgoingDiplomacyNews()->erase(it);
 						break;
 					}
-				}				
+				}
 			}
 			CRect r(275,370,395,400);
 			CalcDeviceRect(r);
 			InvalidateRect(r, FALSE);
 		}
 	}
-	
+
 	// Wenn wir in der Angebotsansicht sind, überprüfen, auf welchen Angebotsbutton wir gedrückt haben
 	else if (m_bySubMenu == 1 && m_sClickedOnRace != "")
 	{
 		CRace* pClickedRace = pDoc->GetRaceCtrl()->GetRace(m_sClickedOnRace);
-		
+
 		// Checken ob wir ein Angebot überhaupt machen können, z.B. wenn eine andere Hauptrasse
 		// z.B. Mitgliedschaft mit einer Minorrace hat, dann können wir ihr kein Angebot machen, außer
 		// Krieg erklären, Geschenke geben und Bestechen
@@ -1907,8 +1907,8 @@ void CDiplomacyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 					Invalidate();
 					return;
 				}
-			}			
-		}			
+			}
+		}
 		// Sind wir in dem Diplomatiemenue für Geschenke geben, Freundschaft, Kooperation, Angliederung usw. anbieten und handelt es sich nicht um eine Kriegserkärung
 		if (m_OutgoingInfo.m_nType != DIPLOMATIC_AGREEMENT::NONE)
 		{
@@ -1927,17 +1927,17 @@ void CDiplomacyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 							if (m_OutgoingInfo.m_nCredits > pPlayer->GetEmpire()->GetCredits())
 							{
 								m_OutgoingInfo.m_nCredits = max(0, pPlayer->GetEmpire()->GetCredits() / 250);
-								m_OutgoingInfo.m_nCredits *= 250;								
+								m_OutgoingInfo.m_nCredits *= 250;
 							}
 							Invalidate();
 							break;
 					}
-					
+
 					// nur wenn wir mindst. einen Handelsvertrag besitzen können wir Ressourcen verschenken oder bei einer Forderung stellen
-					if (pPlayer->GetAgreement(m_sClickedOnRace) >= DIPLOMATIC_AGREEMENT::TRADE || m_OutgoingInfo.m_nType == DIPLOMATIC_AGREEMENT::REQUEST)					
+					if (pPlayer->GetAgreement(m_sClickedOnRace) >= DIPLOMATIC_AGREEMENT::TRADE || m_OutgoingInfo.m_nType == DIPLOMATIC_AGREEMENT::REQUEST)
 					{
 						timber[t].SetRect(183+t*12,520,193+t*12+2,545);
-						
+
 						// Haben wir auf den Balken gedrückt, um die Menge der zu verschenkenden bzw. zu fordernden Ressourcen zu ändern
 						if (timber[t].PtInRect(point))
 						{
@@ -1959,7 +1959,7 @@ void CDiplomacyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 						}
 					}
 				}
-				
+
 				// Wenn wir auf den kleinen Ressourcenbutton geklickt haben, nächste Ressource anzeigen
 				rect.SetRect(510,518,630,548);
 				if (rect.PtInRect(point))
@@ -1968,14 +1968,14 @@ void CDiplomacyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 						m_byWhichResourceIsChosen++;
 					else
 						m_byWhichResourceIsChosen = TITAN;
-					
+
 					// alle "alten" Ressourcenmengen löschen
 					for (int res = TITAN; res <= DERITIUM; res++)
 						m_OutgoingInfo.m_nResources[res] = 0;
 					Invalidate();
 					return;
 				}
-				
+
 				// Wenn wir auf den kleinen Systembutton geklickt haben um ein anderes System zu wählen
 				rect.SetRect(510,605,630,635);
 				if (rect.PtInRect(point) && m_OutgoingInfo.m_nType != DIPLOMATIC_AGREEMENT::REQUEST)
@@ -1997,7 +1997,7 @@ void CDiplomacyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 					Invalidate();
 					return;
 				}
-				
+
 				// Wenn wir auf den kleinen Button gedrückt haben um bei einer Bestechung den Gegner zu wählen
 				rect.SetRect(510,438,630,468);
 				if (rect.PtInRect(point) && m_OutgoingInfo.m_nType == DIPLOMATIC_AGREEMENT::CORRUPTION)
@@ -2051,7 +2051,7 @@ void CDiplomacyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 					InvalidateRect(rect);
 					return;
 				}
-				
+
 				// Wenn wir auf den kleinen Button geklickt haben um bei einem Kriegspakt den Kriegsgegner wählen zu wollen
 				else if (rect.PtInRect(point) && m_OutgoingInfo.m_nType == DIPLOMATIC_AGREEMENT::WARPACT)
 				{
@@ -2078,9 +2078,9 @@ void CDiplomacyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 									if (i < (vEnemies.size() - 1))
 										m_OutgoingInfo.m_sWarpactEnemy = vEnemies[i + 1]->GetRaceID();
 									else
-										m_OutgoingInfo.m_sWarpactEnemy = vEnemies[0]->GetRaceID();									
+										m_OutgoingInfo.m_sWarpactEnemy = vEnemies[0]->GetRaceID();
 									break;
-								}							
+								}
 						}
 						CalcDeviceRect(rect);
 						InvalidateRect(rect);
@@ -2088,22 +2088,22 @@ void CDiplomacyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 					}
 				}
 			}
-			
+
 			// Wenn wir auf den Abschicken Button geklicked haben
 			rect.SetRect(871,690,1031,730);
 			if (rect.PtInRect(point) && m_bShowSendButton == true && m_bCanSend == true)
 			{
 				m_OutgoingInfo.m_nFlag = DIPLOMACY_OFFER;
-				m_OutgoingInfo.m_nSendRound = pDoc->GetCurrentRound();				
+				m_OutgoingInfo.m_nSendRound = pDoc->GetCurrentRound();
 				pPlayer->GetOutgoingDiplomacyNews()->push_back(m_OutgoingInfo);
-				
+
 				// angebotenes Credits und Ressourcen aus den Lagern nehmen
 				this->TakeOrGetbackResLat(true);
 				pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
 				Invalidate();
 				return;
 			}
-			
+
 			// Wenn wir auf den Abbrechenbutton geklicked haben
 			else if (rect.PtInRect(point) && m_bShowSendButton == false)
 			{
@@ -2142,7 +2142,7 @@ void CDiplomacyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			}
 			Invalidate();
 		}
-		
+
 		// Ablehnenbutton
 		rect.SetRect(852,599,1012,639);
 		if (rect.PtInRect(point) && m_bShowDeclineButton == TRUE)
@@ -2154,8 +2154,8 @@ void CDiplomacyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 				this->TakeOrGetbackResLat(false);
 				pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
 			}
-			m_pIncomingInfo->m_nAnswerStatus = ANSWER_STATUS::DECLINED;			
-			Invalidate();			
+			m_pIncomingInfo->m_nAnswerStatus = ANSWER_STATUS::DECLINED;
+			Invalidate();
 		}
 	}
 
@@ -2200,7 +2200,7 @@ BOOL CDiplomacyMenuView::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 
 	if (!pDoc->m_bDataReceived)
 		return CMainBaseView::OnMouseWheel(nFlags, zDelta, pt);
-	
+
 	// wenn wir nicht im Eingangsmenü sind
 	if (m_bySubMenu != 2)
 	{
@@ -2221,11 +2221,11 @@ BOOL CDiplomacyMenuView::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 					if (it != m_vRaceList.end())
 					{
 						m_sClickedOnRace = (*it)->GetRaceID();
-						
+
 						m_OutgoingInfo.Reset();
 						m_OutgoingInfo.m_sFromRace = m_pPlayersRace->GetRaceID();
 						m_OutgoingInfo.m_ptKO = m_ptResourceFromSystem;
-				
+
 						m_pIncomingInfo = NULL;
 						Invalidate();
 					}
@@ -2253,7 +2253,7 @@ BOOL CDiplomacyMenuView::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 					if (it != m_vIncomeList.end())
 					{
 						m_pIncomingInfo = *it;
-						
+
 						m_OutgoingInfo.Reset();
 						m_OutgoingInfo.m_sFromRace = m_pPlayersRace->GetRaceID();
 						m_OutgoingInfo.m_ptKO = m_ptResourceFromSystem;
@@ -2278,7 +2278,7 @@ void CDiplomacyMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 		return;
 	// wenn wir nicht im Eingangsmenü sind
 	if (m_bySubMenu != 2)
-	{	
+	{
 		if (nChar == VK_ESCAPE)
 		{
 			m_sClickedOnRace = "";
@@ -2299,7 +2299,7 @@ void CDiplomacyMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 				m_OutgoingInfo.Reset();
 				m_OutgoingInfo.m_sFromRace = m_pPlayersRace->GetRaceID();
 				m_OutgoingInfo.m_ptKO = m_ptResourceFromSystem;
-					
+
 				m_pIncomingInfo = NULL;
 				Invalidate();
 			}
@@ -2310,14 +2310,14 @@ void CDiplomacyMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 			if (m_vRaceList.size())
 				it--;
 			if (it != m_vRaceList.end())
-			{			
+			{
 				if (it != m_vRaceList.end())
 				{
 					m_sClickedOnRace = (*it)->GetRaceID();
 					m_OutgoingInfo.Reset();
 					m_OutgoingInfo.m_sFromRace = m_pPlayersRace->GetRaceID();
 					m_OutgoingInfo.m_ptKO = m_ptResourceFromSystem;
-			
+
 					m_pIncomingInfo = NULL;
 					Invalidate();
 				}
@@ -2345,7 +2345,7 @@ void CDiplomacyMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 							m_OutgoingInfo.Reset();
 							m_OutgoingInfo.m_sFromRace = m_pPlayersRace->GetRaceID();
 							m_OutgoingInfo.m_ptKO = m_ptResourceFromSystem;
-					
+
 							m_pIncomingInfo = NULL;
 							Invalidate();
 						}
@@ -2402,7 +2402,7 @@ void CDiplomacyMenuView::CreateButtons()
 
 	CString sPrefix = pPlayer->GetPrefix();
 
-	// alle Buttons in der View anlegen und Grafiken laden	
+	// alle Buttons in der View anlegen und Grafiken laden
 	// Buttons in der Systemansicht
 	CString fileN = "Other\\" + sPrefix + "button.bop";
 	CString fileI = "Other\\" + sPrefix + "buttoni.bop";
@@ -2422,7 +2422,7 @@ void CDiplomacyMenuView::CreateButtons()
 	m_DiplomacyMajorOfferButtons.Add(new CMyButton(CPoint(400,290) , CSize(160,40), CResourceManager::GetString("BTN_REQUEST"), fileN, fileI, fileA));
 	m_DiplomacyMajorOfferButtons.Add(new CMyButton(CPoint(400,240) , CSize(160,40), CResourceManager::GetString("BTN_DEFENCE"), fileN, fileI, fileA));
 	m_DiplomacyMajorOfferButtons.Add(new CMyButton(CPoint(400,340) , CSize(160,40), CResourceManager::GetString("BTN_WARPACT"), fileN, fileI, fileA));
-		
+
 	m_DiplomacyMinorOfferButtons.Add(new CMyButton(CPoint(200,165) , CSize(160,40), CResourceManager::GetString("BTN_TRADECONTRACT"), fileN, fileI, fileA));
 	m_DiplomacyMinorOfferButtons.Add(new CMyButton(CPoint(400,165) , CSize(160,40), CResourceManager::GetString("BTN_FRIENDSHIP"), fileN, fileI, fileA));
 	m_DiplomacyMinorOfferButtons.Add(new CMyButton(CPoint(200,215) , CSize(160,40), CResourceManager::GetString("BTN_COOPERATION"), fileN, fileI, fileA));
@@ -2430,21 +2430,21 @@ void CDiplomacyMenuView::CreateButtons()
 	m_DiplomacyMinorOfferButtons.Add(new CMyButton(CPoint(200,265) , CSize(160,40), CResourceManager::GetString("BTN_MEMBERSHIP"), fileN, fileI, fileA));
 	m_DiplomacyMinorOfferButtons.Add(new CMyButton(CPoint(400,265) , CSize(160,40), CResourceManager::GetString("BTN_WAR"), fileN, fileI, fileA));
 	m_DiplomacyMinorOfferButtons.Add(new CMyButton(CPoint(200,315) , CSize(160,40), CResourceManager::GetString("BTN_PRESENT"), fileN, fileI, fileA));
-	m_DiplomacyMinorOfferButtons.Add(new CMyButton(CPoint(400,315) , CSize(160,40), CResourceManager::GetString("BTN_CORRUPTION"), fileN, fileI, fileA));	
+	m_DiplomacyMinorOfferButtons.Add(new CMyButton(CPoint(400,315) , CSize(160,40), CResourceManager::GetString("BTN_CORRUPTION"), fileN, fileI, fileA));
 }
 void CDiplomacyMenuView::OnXButtonDown(UINT nFlags, UINT nButton, CPoint point)
 {
 	// Dieses Feature erfordert mindestens Windows 2000.
 	// Die Symbole _WIN32_WINNT und WINVER müssen >= 0x0500 sein.
 	// TODO: Fügen Sie hier Ihren Meldungsbehandlungscode ein, und/oder benutzen Sie den Standard.
-	
+
 	CMainBaseView::OnXButtonDown(nFlags, nButton, point);
 }
 
 void CDiplomacyMenuView::OnRButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO: Fügen Sie hier Ihren Meldungsbehandlungscode ein, und/oder benutzen Sie den Standard.
-	
+
 	// Wenn wir in der Angebotsansicht sind, überprüfen, auf welchen Angebotsbutton wir gedrückt haben
 	if (m_bySubMenu == 1 && m_sClickedOnRace != "")
 	{
@@ -2465,7 +2465,7 @@ void CDiplomacyMenuView::OnRButtonDown(UINT nFlags, CPoint point)
 		if (m_OutgoingInfo.m_nType != DIPLOMATIC_AGREEMENT::NONE)
 		{
 			if (m_bShowSendButton == true && m_OutgoingInfo.m_nType != DIPLOMATIC_AGREEMENT::WAR)
-			{				
+			{
 				// Wenn wir auf den kleinen Ressourcenbutton geklickt haben, nächste Ressource anzeigen
 				CRect rect;
 				rect.SetRect(510,518,630,548);
@@ -2475,14 +2475,14 @@ void CDiplomacyMenuView::OnRButtonDown(UINT nFlags, CPoint point)
 						m_byWhichResourceIsChosen--;
 					else
 						m_byWhichResourceIsChosen = DERITIUM;
-					
+
 					// alle "alten" Ressourcenmengen löschen
 					for (int res = TITAN; res <= DERITIUM; res++)
 						m_OutgoingInfo.m_nResources[res] = 0;
 					Invalidate();
 					return;
 				}
-				
+
 				// Wenn wir auf den kleinen Systembutton geklickt haben um ein anderes System zu wählen
 				rect.SetRect(510,605,630,635);
 				if (rect.PtInRect(point) && m_OutgoingInfo.m_nType != DIPLOMATIC_AGREEMENT::REQUEST)
@@ -2504,9 +2504,9 @@ void CDiplomacyMenuView::OnRButtonDown(UINT nFlags, CPoint point)
 					Invalidate();
 					return;
 				}
-				
+
 				// Wenn wir auf den kleinen Button geklickt haben um die Vertragsdauer zu ändern, geht nur bei Angebot an Majorrace
-				rect.SetRect(510,438,630,468);				
+				rect.SetRect(510,438,630,468);
 				if (rect.PtInRect(point) && pClickedRace->GetType() == MAJOR && m_OutgoingInfo.m_nType != DIPLOMATIC_AGREEMENT::PRESENT && m_OutgoingInfo.m_nType != DIPLOMATIC_AGREEMENT::REQUEST && m_OutgoingInfo.m_nType != DIPLOMATIC_AGREEMENT::WARPACT)
 				{
 					m_OutgoingInfo.m_nDuration -= 10;
@@ -2538,7 +2538,7 @@ CString CDiplomacyMenuView::CreateTooltip(void)
 	GetCursorPos(&pt);
 	ScreenToClient(&pt);
 	CalcLogicalPoint(pt);
-	
+
 	// Tooltips in der Angebots und Informationsansicht
 	if (m_bySubMenu != 2)
 	{
@@ -2569,7 +2569,7 @@ CString CDiplomacyMenuView::CreateTooltip(void)
 					nVecPos++;
 				}
 			}
-		
+
 			// Dem Imperium bekannte Rassen durchgehen
 			int nCount = 0;
 			for (vector<CRace*>::iterator it = m_vRaceList.begin(); it != m_vRaceList.end(); ++it)
@@ -2583,7 +2583,7 @@ CString CDiplomacyMenuView::CreateTooltip(void)
 					if (!pRace)
 						return "";
 
-					return pRace->GetTooltip();					
+					return pRace->GetTooltip();
 				}
 
 				nCount++;
@@ -2591,7 +2591,7 @@ CString CDiplomacyMenuView::CreateTooltip(void)
 					break;
 			}
 		}
-	}	
+	}
 	// Tooltips in der Eingangsansicht
 	else
 	{
@@ -2635,10 +2635,10 @@ CString CDiplomacyMenuView::CreateTooltip(void)
 					CRace* pRace = pDoc->GetRaceCtrl()->GetRace(sRaceID);
 					if (!pRace)
 						return "";
-					
+
 					return pRace->GetTooltip();
 				}
-				
+
 				nCount++;
 				if (nCount > 21)
 					break;

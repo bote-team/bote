@@ -5,7 +5,7 @@
  *   Create   :  2003-3-30
  *   Home     :  http://www.crazy-bit.com/
  *   Mail     :  crazybitwps@hotmail.com
- *   History  :  
+ *   History  :
  */
 #ifndef	__FOO_OBJECT_CANVAS__2003_03_30__H__
 #define	__FOO_OBJECT_CANVAS__2003_03_30__H__
@@ -153,7 +153,7 @@ public:
         else
             m_LayerList.insert (m_LayerList.begin() + nIndex, pLayer) ;
         m_pCurrentLayer = pLayer ;
-        
+
         // remove from <Removed LayerList>
         pt = __pcl_FindDeque (m_RemovedLayerList, pLayer) ;
         if (pt != m_RemovedLayerList.end())
@@ -302,7 +302,7 @@ public:
                 rcOnImg.right = nSR ;
                 if (nSFrontR == nSR)
                     rcOnImg.right++ ;
-                
+
                 int   nSUpB = (int)(fScale * (rcOnImg.bottom-1)) ;
                 rcOnImg.bottom = nSB ;
                 if (nSUpB == nSB)

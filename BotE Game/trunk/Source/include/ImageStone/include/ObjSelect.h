@@ -5,7 +5,7 @@
  *   Create   :  2003-4-8
  *   Home     :  http://www.crazy-bit.com/
  *   Mail     :  crazybitwps@hotmail.com
- *   History  :  
+ *   History  :
  */
 #ifndef __FOO_OBJECT_SELECTION__2003_04_08__H__
 #define __FOO_OBJECT_SELECTION__2003_04_08__H__

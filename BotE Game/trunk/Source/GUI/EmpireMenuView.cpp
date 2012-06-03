@@ -112,10 +112,10 @@ void CEmpireMenuView::OnDraw(CDC* dc)
 	CMyMemDC pDC(dc);
 	CRect client;
 	GetClientRect(&client);
-		
+
 	// Graphicsobjekt, in welches gezeichnet wird anlegen
 	Graphics g(pDC->GetSafeHdc());
-	
+
 	g.Clear(Color::Black);
 	g.SetSmoothingMode(SmoothingModeHighSpeed);
 	g.SetInterpolationMode(InterpolationModeLowQuality);
@@ -166,7 +166,7 @@ void CEmpireMenuView::LoadRaceGraphics()
 	CreateButtons();
 
 	CString sPrefix = pMajor->GetPrefix();
-	
+
 	bg_newsovmenu			= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "newsovmenu.boj");
 	bg_systemovmenu			= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "systemovmenu.boj");
 	bg_shipovmenu			= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "shipovmenu.boj");
@@ -193,7 +193,7 @@ BOOL CEmpireMenuView::OnEraseBkgnd(CDC* pDC)
 // Hier die Funktion zum Zeichnen des Nachrichtenmenüs
 /////////////////////////////////////////////////////////////////////////////////////////
 void CEmpireMenuView::DrawEmpireNewsMenue(Graphics* g)
-{	
+{
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
 
@@ -201,10 +201,10 @@ void CEmpireMenuView::DrawEmpireNewsMenue(Graphics* g)
 	ASSERT(pMajor);
 	if (!pMajor)
 		return;
-	
+
 	CString fontName = "";
 	Gdiplus::REAL fontSize = 0.0;
-	
+
 	// Rassenspezifische Schriftart auswählen
 	CFontLoader::CreateGDIFont(pMajor, 2, fontName, fontSize);
 	// Schriftfarbe wählen
@@ -222,12 +222,12 @@ void CEmpireMenuView::DrawEmpireNewsMenue(Graphics* g)
 
 	if (bg_newsovmenu)
 		g->DrawImage(bg_newsovmenu, 0, 0, 1075, 750);
-	
+
 	CString s;
 	// Farbe der Schrift und Markierung wählen, wenn wir auf eine Rasse geklickt haben
 	Gdiplus::Color penColor;
 	penColor.SetFromCOLORREF(pMajor->GetDesign()->m_clrListMarkPenColor);
-	
+
 	// Es gehen nur 21 Einträge auf die Seite, deshalb muss abgebrochen werden
 	// Wenn noch keine News angeklickt wurde, es aber News gibt, dann die erste in der Reihe markieren
 	if (m_iClickedNews == -1 && pMajor->GetEmpire()->GetMessages()->GetSize() > 0)
@@ -258,7 +258,7 @@ void CEmpireMenuView::DrawEmpireNewsMenue(Graphics* g)
 					// Markierung worauf wir geklickt haben
 					g->FillRectangle(&SolidBrush(Color(50,200,200,200)), RectF(100,140+j*25,875,25));
 					g->DrawLine(&Gdiplus::Pen(penColor), 100, 140+j*25, 975, 140+j*25);
-					g->DrawLine(&Gdiplus::Pen(penColor), 100, 165+j*25, 975, 165+j*25);					
+					g->DrawLine(&Gdiplus::Pen(penColor), 100, 165+j*25, 975, 165+j*25);
 				}
 				else
 				{
@@ -278,7 +278,7 @@ void CEmpireMenuView::DrawEmpireNewsMenue(Graphics* g)
 			}
 		}
 	m_iClickedNews = oldClickedNews;
-	
+
 	// Schriftart für große Buttons laden
 	CFontLoader::CreateGDIFont(pMajor, 3, fontName, fontSize);
 	// Schriftfarbe wählen
@@ -289,7 +289,7 @@ void CEmpireMenuView::DrawEmpireNewsMenue(Graphics* g)
 	DrawGDIButtons(g, &m_EmpireNewsFilterButtons, m_iWhichNewsButtonIsPressed, Gdiplus::Font(fontName.AllocSysString(), fontSize), btnBrush);
 	// Buttons am unteren Bildrand zeichnen
 	DrawGDIButtons(g, &m_EmpireNewsButtons, m_iSubMenu, Gdiplus::Font(fontName.AllocSysString(), fontSize), btnBrush);
-		
+
 	// "Nachrichten und Informationen" in der Mitte zeichnen
 	// Rassenspezifische Schriftart auswählen
 	CFontLoader::CreateGDIFont(pMajor, 5, fontName, fontSize);
@@ -307,7 +307,7 @@ void CEmpireMenuView::DrawEmpireSystemMenue(Graphics* g)
 {
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
-	
+
 	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
 	if (!pMajor)
@@ -315,7 +315,7 @@ void CEmpireMenuView::DrawEmpireSystemMenue(Graphics* g)
 
 	CString fontName = "";
 	Gdiplus::REAL fontSize = 0.0;
-	
+
 	// Rassenspezifische Schriftart auswählen
 	CFontLoader::CreateGDIFont(pMajor, 2, fontName, fontSize);
 	// Schriftfarbe wählen
@@ -333,12 +333,12 @@ void CEmpireMenuView::DrawEmpireSystemMenue(Graphics* g)
 
 	if (bg_systemovmenu)
 		g->DrawImage(bg_systemovmenu, 0, 0, 1075, 750);
-	
+
 	CString s;
 	// Farbe der Schrift und Markierung wählen, wenn wir auf eine Rasse geklickt haben
 	Gdiplus::Color penColor;
-	penColor.SetFromCOLORREF(pMajor->GetDesign()->m_clrListMarkPenColor);		
-		
+	penColor.SetFromCOLORREF(pMajor->GetDesign()->m_clrListMarkPenColor);
+
 	// Wenn noch kein System angeklickt wurde, es aber Systeme gibt, dann das erste in der Liste markieren
 	if (m_iClickedSystem == -1 && pMajor->GetEmpire()->GetSystemList()->GetSize() > 0)
 	{
@@ -374,8 +374,8 @@ void CEmpireMenuView::DrawEmpireSystemMenue(Graphics* g)
 			s.Format("%c%i",(char)(KO.y+97),KO.x+1);
 			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(55,140+j*25,75,25), &fontFormat, &fontBrush);
 			s = pMajor->GetEmpire()->GetSystemList()->GetAt(i).name;
-			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(130,140+j*25,140,25), &fontFormat, &fontBrush);			
-			
+			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(130,140+j*25,140,25), &fontFormat, &fontBrush);
+
 			// soll die normale Systemüberischt angezeigt werden
 			if (m_iSystemSubMenue == EMPIREVIEW_SYSTEMS_NORMAL)
 			{
@@ -431,7 +431,7 @@ void CEmpireMenuView::DrawEmpireSystemMenue(Graphics* g)
 				}
 				s.Format("%s (%d)",s,pDoc->GetSystem(KO.x,KO.y).GetMoral());//Wert hinzufügen
 				g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(270,140+j*25,130,25), &fontFormat, &fontBrush);
-				
+
 				// Nahrungsproduktion anzeigen
 				int food = pDoc->GetSystem(KO.x,KO.y).GetProduction()->GetFoodProd();
 				s.Format("%d",food);
@@ -446,11 +446,11 @@ void CEmpireMenuView::DrawEmpireSystemMenue(Graphics* g)
 					fontBrush.SetColor(markColor);
 				else
 					fontBrush.SetColor(normalColor);
-				
+
 				// Nahrungslager anzeigen
 				s.Format("%d",pDoc->GetSystem(KO).GetFoodStore());
 				g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(480,140+j*25,100,25), &fontFormat, &fontBrush);
-				
+
 				// Industrieproduktion anzeigen
 				int ip = pDoc->GetSystem(KO).GetProduction()->GetIndustryProd();
 				s.Format("%d",ip);
@@ -460,7 +460,7 @@ void CEmpireMenuView::DrawEmpireSystemMenue(Graphics* g)
 				int cp = pDoc->GetSystem(KO).GetProduction()->GetCreditsProd();
 				s.Format("%d",cp);
 				g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(680,140+j*25,100,25), &fontFormat, &fontBrush);
-								
+
 				// Bauauftrag anzeigen inkl. Anzeige der noch nötigen Runden bis Bauauftrag fertig ist
 				short id = pDoc->GetSystem(KO).GetAssemblyList()->GetAssemblyListEntry(0);
 				int RoundToBuild = 0;
@@ -532,7 +532,7 @@ void CEmpireMenuView::DrawEmpireSystemMenue(Graphics* g)
 				if (pDoc->GetSystem(KO).GetAutoBuild())
 				{
 					s.Insert(0, CResourceManager::GetString("AUTOBUILD") + ": ");
-					fontBrush.SetColor(Color::Red);					
+					fontBrush.SetColor(Color::Red);
 				}
 
 				fontFormat.SetTrimming(StringTrimmingEllipsisCharacter);
@@ -558,11 +558,11 @@ void CEmpireMenuView::DrawEmpireSystemMenue(Graphics* g)
 					for (int k = TITAN; k <= DERITIUM; k++)
 						if (pBuildingInfo->GetResourceDistributor(k))
 							bDist[k] = true;
-				}				
+				}
 
 				for (int k = TITAN; k <= DERITIUM; k++)
 				{
-					fontFormat.SetTrimming(StringTrimmingEllipsisCharacter);					
+					fontFormat.SetTrimming(StringTrimmingEllipsisCharacter);
 					if (bDist[k])
 					{
 						Bitmap* graphic = NULL;
@@ -579,7 +579,7 @@ void CEmpireMenuView::DrawEmpireSystemMenue(Graphics* g)
 						if (graphic)
 							g->DrawImage(graphic, 245+k*120, 145+j*25, 20 , 16);
 					}
-					
+
 					s.Format("%d", pDoc->GetSystem(KO).GetResourceStore(k));
 					g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(270+k*120,140+j*25,120,25), &fontFormat, &fontBrush);
 					fontFormat.SetTrimming(StringTrimmingNone);
@@ -632,7 +632,7 @@ void CEmpireMenuView::DrawEmpireSystemMenue(Graphics* g)
 				g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(670,140+j*25,150,25), &fontFormat, &fontBrush);
 				// Scanstärke anzeigen
 				s.Format("%d", pDoc->GetSystem(KO).GetProduction()->GetScanPower());
-				g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(820,140+j*25,150,25), &fontFormat, &fontBrush);				
+				g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(820,140+j*25,150,25), &fontFormat, &fontBrush);
 			}
 			j++;
 		}
@@ -650,7 +650,7 @@ void CEmpireMenuView::DrawEmpireSystemMenue(Graphics* g)
 	DrawGDIButtons(g, &m_EmpireSystemFilterButtons, m_iSystemSubMenue, Gdiplus::Font(fontName.AllocSysString(), fontSize), btnBrush);
 	// Buttons am unteren Bildrand zeichnen
 	DrawGDIButtons(g, &m_EmpireNewsButtons, m_iSubMenu, Gdiplus::Font(fontName.AllocSysString(), fontSize), btnBrush);
-		
+
 	// Tabellenüberschriften zeichnen
 	fontBrush.SetColor(markColor);
 	Gdiplus::Font font(fontName.AllocSysString(), fontSize);
@@ -673,7 +673,7 @@ void CEmpireMenuView::DrawEmpireSystemMenue(Graphics* g)
 		g->DrawString(CResourceManager::GetString("DURANIUM").AllocSysString(), -1, &font, RectF(510,110,120,30), &fontFormat, &fontBrush);
 		g->DrawString(CResourceManager::GetString("CRYSTAL").AllocSysString(), -1, &font, RectF(630,110,120,30), &fontFormat, &fontBrush);
 		g->DrawString(CResourceManager::GetString("IRIDIUM").AllocSysString(), -1, &font, RectF(750,110,120,30), &fontFormat, &fontBrush);
-		g->DrawString(CResourceManager::GetString("DERITIUM").AllocSysString(), -1, &font, RectF(870,110,120,30), &fontFormat, &fontBrush);		
+		g->DrawString(CResourceManager::GetString("DERITIUM").AllocSysString(), -1, &font, RectF(870,110,120,30), &fontFormat, &fontBrush);
 	}
 	else if (m_iSystemSubMenue == EMPIREVIEW_SYSTEMS_DEFENCE)
 	{
@@ -684,7 +684,7 @@ void CEmpireMenuView::DrawEmpireSystemMenue(Graphics* g)
 		g->DrawString(CResourceManager::GetString("SCANPOWER").AllocSysString(), -1, &font, RectF(820,110,150,30), &fontFormat, &fontBrush);
 	}
 	fontFormat.SetTrimming(StringTrimmingNone);
-	fontFormat.SetAlignment(StringAlignmentCenter);	
+	fontFormat.SetAlignment(StringAlignmentCenter);
 	// "Übersicht aller Systeme" oben in der Mitte zeichnen
 	// Rassenspezifische Schriftart auswählen
 	CFontLoader::CreateGDIFont(pMajor, 5, fontName, fontSize);
@@ -692,7 +692,7 @@ void CEmpireMenuView::DrawEmpireSystemMenue(Graphics* g)
 	CFontLoader::GetGDIFontColor(pMajor, 3, normalColor);
 	fontBrush.SetColor(normalColor);
 	s = CResourceManager::GetString("SYSTEM_OVERVIEW_MENUE");
-	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0,10,m_TotalSize.cx, 50), &fontFormat, &fontBrush);	
+	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0,10,m_TotalSize.cx, 50), &fontFormat, &fontBrush);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -710,7 +710,7 @@ void CEmpireMenuView::DrawEmpireShipMenue(Graphics* g)
 
 	CString fontName = "";
 	Gdiplus::REAL fontSize = 0.0;
-	
+
 	// Rassenspezifische Schriftart auswählen
 	CFontLoader::CreateGDIFont(pMajor, 2, fontName, fontSize);
 	// Schriftfarbe wählen
@@ -729,19 +729,19 @@ void CEmpireMenuView::DrawEmpireShipMenue(Graphics* g)
 
 	if (bg_shipovmenu)
 		g->DrawImage(bg_shipovmenu, 0, 0, 1075, 750);
-	
+
 	CString s;
 	// Farbe der Schrift und Markierung wählen, wenn wir auf eine Rasse geklickt haben
 	Gdiplus::Color penColor;
 	penColor.SetFromCOLORREF(pMajor->GetDesign()->m_clrListMarkPenColor);
-	
+
 	// Wenn noch kein Schiff angeklickt wurde, es aber Schiffe gibt, dann das erste in der Liste markieren
 	if (m_iClickedShip == -1 && pMajor->GetShipHistory()->GetSizeOfShipHistory() > 0)
 	{
 		m_iClickedShip = 0;
 		m_iOldClickedShip = 0;
 	}
-	
+
 	unsigned short j = 0;
 	unsigned short k = 0;
 	unsigned short numberLive = 0;
@@ -772,7 +772,7 @@ void CEmpireMenuView::DrawEmpireShipMenue(Graphics* g)
 				}
 				else
 					fontBrush.SetColor(normalColor);
-				
+
 				s = pMajor->GetShipHistory()->GetShipHistory(i)->m_strShipName;
 				g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(55,140+j*25,170,25), &fontFormat, &fontBrush);
 				s = pMajor->GetShipHistory()->GetShipHistory(i)->m_strShipType;
@@ -804,7 +804,7 @@ void CEmpireMenuView::DrawEmpireShipMenue(Graphics* g)
 				continue;
 			}
 			if (!m_bShowAliveShips && k < 21) // Auf jede Seite gehen nur 22 Einträge, deshalb muss abgebrochen werden
-			{				
+			{
 				// Wenn Schiff markiert ist, dann andere Schriftfarbe wählen
 				if (k == m_iClickedShip)
 				{
@@ -831,7 +831,7 @@ void CEmpireMenuView::DrawEmpireShipMenue(Graphics* g)
 				g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(675,140+k*25,175,25), &fontFormat, &fontBrush);
 				s = pMajor->GetShipHistory()->GetShipHistory(i)->m_strCurrentTask;
 				g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(850,140+k*25,175,25), &fontFormat, &fontBrush);
-				
+
 			}
 			k++;
 		}
@@ -850,7 +850,7 @@ void CEmpireMenuView::DrawEmpireShipMenue(Graphics* g)
 	DrawGDIButtons(g, &m_EmpireShipsFilterButtons, !m_bShowAliveShips, Gdiplus::Font(fontName.AllocSysString(), fontSize), btnBrush);
 	// Buttons am unteren Bildrand zeichnen
 	DrawGDIButtons(g, &m_EmpireNewsButtons, m_iSubMenu, Gdiplus::Font(fontName.AllocSysString(), fontSize), btnBrush);
-	
+
 	// Tabellenüberschriften zeichnen
 	fontBrush.SetColor(markColor);
 	Gdiplus::Font font(fontName.AllocSysString(), fontSize);
@@ -874,13 +874,13 @@ void CEmpireMenuView::DrawEmpireShipMenue(Graphics* g)
 	}
 	CFontLoader::GetGDIFontColor(pMajor, 4, normalColor);
 	fontBrush.SetColor(normalColor);
-	
+
 	s.Format("%s: %d",CResourceManager::GetString("SHIPS_TOTAL"),numberLive);
 	g->DrawString(s.AllocSysString(), -1, &font, RectF(280,70,300,40), &fontFormat, &fontBrush);
-	
+
 	s.Format("%s: %d",CResourceManager::GetString("SHIPS_LOST"),numberDead);
 	g->DrawString(s.AllocSysString(), -1, &font, RectF(675,70,350,40), &fontFormat, &fontBrush);
-	
+
 	// "Übersicht aller Schiffe" oben in der Mitte zeichnen
 	fontFormat.SetAlignment(StringAlignmentCenter);
 	// Rassenspezifische Schriftart auswählen
@@ -889,7 +889,7 @@ void CEmpireMenuView::DrawEmpireShipMenue(Graphics* g)
 	CFontLoader::GetGDIFontColor(pMajor, 3, normalColor);
 	fontBrush.SetColor(normalColor);
 	s = CResourceManager::GetString("SHIP_OVERVIEW_MENUE");
-	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0,10,m_TotalSize.cx, 50), &fontFormat, &fontBrush);	
+	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0,10,m_TotalSize.cx, 50), &fontFormat, &fontBrush);
 }
 
 void CEmpireMenuView::DrawEmpireDemographicsMenue(Gdiplus::Graphics *g)
@@ -904,7 +904,7 @@ void CEmpireMenuView::DrawEmpireDemographicsMenue(Gdiplus::Graphics *g)
 
 	CString fontName = "";
 	Gdiplus::REAL fontSize = 0.0;
-	
+
 	// Rassenspezifische Schriftart auswählen
 	CFontLoader::CreateGDIFont(pMajor, 2, fontName, fontSize);
 	// Schriftfarbe wählen
@@ -923,7 +923,7 @@ void CEmpireMenuView::DrawEmpireDemographicsMenue(Gdiplus::Graphics *g)
 
 	if (bg_shipovmenu)
 		g->DrawImage(bg_demographicsmenu, 0, 0, 1075, 750);
-	
+
 	CString s;
 
 	// Tabellenüberschriften zeichnen
@@ -931,10 +931,10 @@ void CEmpireMenuView::DrawEmpireDemographicsMenue(Gdiplus::Graphics *g)
 	fontFormat.SetAlignment(StringAlignmentNear);
 	g->DrawString(CResourceManager::GetString("DEMO_BSP").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(165,250,165,25), &fontFormat, &fontBrush);
 	g->DrawString(CResourceManager::GetString("DEMO_PRODUCTIVITY").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(165,320,165,25), &fontFormat, &fontBrush);
-	g->DrawString(CResourceManager::GetString("DEMO_MILITARY").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(165,390,165,25), &fontFormat, &fontBrush);	
+	g->DrawString(CResourceManager::GetString("DEMO_MILITARY").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(165,390,165,25), &fontFormat, &fontBrush);
 	g->DrawString(CResourceManager::GetString("DEMO_SCIENCE").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(165,460,165,25), &fontFormat, &fontBrush);
 	g->DrawString(CResourceManager::GetString("DEMO_HAPPINESS").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(165,530,165,25), &fontFormat, &fontBrush);
-	
+
 	// Pokalgrafiken laden
 	Bitmap* trophy1 = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\trophy1.bop");
 	Bitmap* trophy2 = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\trophy2.bop");
@@ -945,7 +945,7 @@ void CEmpireMenuView::DrawEmpireDemographicsMenue(Gdiplus::Graphics *g)
 	float fMark = 0.0f;
 	int nPlace = 1;
 	float fValue, fAverage, fFirst, fLast = 0.0;
-	pDoc->GetStatistics()->GetDemographicsBSP(pMajor->GetRaceID(), nPlace, fValue, fAverage, fFirst, fLast);	
+	pDoc->GetStatistics()->GetDemographicsBSP(pMajor->GetRaceID(), nPlace, fValue, fAverage, fFirst, fLast);
 	s.Format("%d", nPlace);
 	fMark += nPlace;
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(330,250,70,25), &fontFormat, &fontBrush);
@@ -957,7 +957,7 @@ void CEmpireMenuView::DrawEmpireDemographicsMenue(Gdiplus::Graphics *g)
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(650,250,125,25), &fontFormat, &fontBrush);
 	s.Format("%.0lf", fLast * 5.0);
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(775,250,125,25), &fontFormat, &fontBrush);
-	
+
 	// Pokal zeichnen
 	if (nPlace == 1 && trophy1)
 		g->DrawImage(trophy1, 320, 247, 30, 30);
@@ -965,7 +965,7 @@ void CEmpireMenuView::DrawEmpireDemographicsMenue(Gdiplus::Graphics *g)
 		g->DrawImage(trophy2, 320, 247, 30, 30);
 	else if (nPlace == 3 && trophy3)
 		g->DrawImage(trophy3, 320, 247, 30, 30);
-	
+
 	pDoc->GetStatistics()->GetDemographicsProductivity(pMajor->GetRaceID(), nPlace, fValue, fAverage, fFirst, fLast);
 	s.Format("%d", nPlace);
 	fMark += nPlace;
@@ -978,7 +978,7 @@ void CEmpireMenuView::DrawEmpireDemographicsMenue(Gdiplus::Graphics *g)
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(650,320,125,25), &fontFormat, &fontBrush);
 	s.Format("%.0lf", fLast);
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(775,320,125,25), &fontFormat, &fontBrush);
-	
+
 	// Pokal zeichnen
 	if (nPlace == 1 && trophy1)
 		g->DrawImage(trophy1, 320, 317, 30, 30);
@@ -986,7 +986,7 @@ void CEmpireMenuView::DrawEmpireDemographicsMenue(Gdiplus::Graphics *g)
 		g->DrawImage(trophy2, 320, 317, 30, 30);
 	else if (nPlace == 3 && trophy3)
 		g->DrawImage(trophy3, 320, 317, 30, 30);
-		
+
 	pDoc->GetStatistics()->GetDemographicsMilitary(pMajor->GetRaceID(), nPlace, fValue, fAverage, fFirst, fLast);
 	s.Format("%d", nPlace);
 	fMark += nPlace;
@@ -999,7 +999,7 @@ void CEmpireMenuView::DrawEmpireDemographicsMenue(Gdiplus::Graphics *g)
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(650,390,125,25), &fontFormat, &fontBrush);
 	s.Format("%.0lf", fLast / 10);
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(775,390,125,25), &fontFormat, &fontBrush);
-	
+
 	// Pokal zeichnen
 	if (nPlace == 1 && trophy1)
 		g->DrawImage(trophy1, 320, 387, 30, 30);
@@ -1007,7 +1007,7 @@ void CEmpireMenuView::DrawEmpireDemographicsMenue(Gdiplus::Graphics *g)
 		g->DrawImage(trophy2, 320, 387, 30, 30);
 	else if (nPlace == 3 && trophy3)
 		g->DrawImage(trophy3, 320, 387, 30, 30);
-			
+
 	pDoc->GetStatistics()->GetDemographicsResearch(pMajor->GetRaceID(), nPlace, fValue, fAverage, fFirst, fLast);
 	s.Format("%d", nPlace);
 	fMark += nPlace;
@@ -1020,7 +1020,7 @@ void CEmpireMenuView::DrawEmpireDemographicsMenue(Gdiplus::Graphics *g)
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(650,460,125,25), &fontFormat, &fontBrush);
 	s.Format("%.0lf", fLast * 2.0);
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(775,460,125,25), &fontFormat, &fontBrush);
-	
+
 	// Pokal zeichnen
 	if (nPlace == 1 && trophy1)
 		g->DrawImage(trophy1, 320, 457, 30, 30);
@@ -1041,7 +1041,7 @@ void CEmpireMenuView::DrawEmpireDemographicsMenue(Gdiplus::Graphics *g)
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(650,530,125,25), &fontFormat, &fontBrush);
 	s.Format("%.0lf", fLast);
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(775,530,125,25), &fontFormat, &fontBrush);
-	
+
 	// Pokal zeichnen
 	if (nPlace == 1 && trophy1)
 		g->DrawImage(trophy1, 320, 527, 30, 30);
@@ -1049,7 +1049,7 @@ void CEmpireMenuView::DrawEmpireDemographicsMenue(Gdiplus::Graphics *g)
 		g->DrawImage(trophy2, 320, 527, 30, 30);
 	else if (nPlace == 3 && trophy3)
 		g->DrawImage(trophy3, 320, 527, 30, 30);
-	
+
 	CFontLoader::CreateGDIFont(pMajor, 3, fontName, fontSize);
 	// Schriftfarbe wählen
 	Gdiplus::Color btnColor;
@@ -1061,8 +1061,8 @@ void CEmpireMenuView::DrawEmpireDemographicsMenue(Gdiplus::Graphics *g)
 	// Bereiche zeichnen
 	fontBrush.SetColor(markColor);
 	Gdiplus::Font font(fontName.AllocSysString(), fontSize);
-	fontFormat.SetTrimming(StringTrimmingEllipsisCharacter);	
-	fontFormat.SetAlignment(StringAlignmentCenter);	
+	fontFormat.SetTrimming(StringTrimmingEllipsisCharacter);
+	fontFormat.SetAlignment(StringAlignmentCenter);
 	g->DrawString(CResourceManager::GetString("RANK").AllocSysString(), -1, &font, RectF(330,195,70,30), &fontFormat, &fontBrush);
 	g->DrawString(CResourceManager::GetString("VALUE").AllocSysString(), -1, &font, RectF(400,195,125,30), &fontFormat, &fontBrush);
 	g->DrawString(CResourceManager::GetString("FIRST_RANK").AllocSysString(), -1, &font, RectF(525,195,125,30), &fontFormat, &fontBrush);
@@ -1076,7 +1076,7 @@ void CEmpireMenuView::DrawEmpireDemographicsMenue(Gdiplus::Graphics *g)
 	fMark /= 5;
 	s.Format("%s: %.1lf", CResourceManager::GetString("RATING"), fMark);
 	g->DrawString(s.AllocSysString(), -1, &font, RectF(0,65,m_TotalSize.cx,50), &fontFormat, &fontBrush);
-	
+
 	// Pokal für Gesamtbewertung zeichnen
 	if (fMark < 1.5f && trophy1)
 	{
@@ -1093,12 +1093,12 @@ void CEmpireMenuView::DrawEmpireDemographicsMenue(Gdiplus::Graphics *g)
 		g->DrawImage(trophy3, 395, 65, 50, 45);
 		g->DrawImage(trophy3, 625, 65, 50, 45);
 	}
-	
+
 	// Schriftfarbe wählen
 	CFontLoader::GetGDIFontColor(pMajor, 3, normalColor);
 	fontBrush.SetColor(normalColor);
 	s = CResourceManager::GetString("DEMOGRAPHY_MENUE");
-	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0,10,m_TotalSize.cx, 50), &fontFormat, &fontBrush);	
+	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0,10,m_TotalSize.cx, 50), &fontFormat, &fontBrush);
 }
 
 void CEmpireMenuView::DrawEmpireTop5Menue(Gdiplus::Graphics *g)
@@ -1113,12 +1113,12 @@ void CEmpireMenuView::DrawEmpireTop5Menue(Gdiplus::Graphics *g)
 
 	CString fontName = "";
 	Gdiplus::REAL fontSize = 0.0;
-	
+
 	// Rassenspezifische Schriftart auswählen
 	CFontLoader::CreateGDIFont(pMajor, 2, fontName, fontSize);
 	// Schriftfarbe wählen
 	Gdiplus::Color normalColor;
-	CFontLoader::GetGDIFontColor(pMajor, 3, normalColor);	
+	CFontLoader::GetGDIFontColor(pMajor, 3, normalColor);
 	SolidBrush fontBrush(normalColor);
 
 	StringFormat fontFormat;
@@ -1162,13 +1162,13 @@ void CEmpireMenuView::DrawEmpireTop5Menue(Gdiplus::Graphics *g)
 		}
 		else
 		{
-			s.Format("%s %d: Unbekannt", CResourceManager::GetString("PLACE"), nCount + 1);			
-			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(150, 135 + 110 * nCount, m_TotalSize.cx - 250, 25), &fontFormat, &fontBrush);			
+			s.Format("%s %d: Unbekannt", CResourceManager::GetString("PLACE"), nCount + 1);
+			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(150, 135 + 110 * nCount, m_TotalSize.cx - 250, 25), &fontFormat, &fontBrush);
 		}
-		
+
 		nCount++;
-	}	
-	
+	}
+
 	// Buttons am unteren Bildrand zeichnen, womit wir die Menüs umschalten können
 	// Schriftart für große Buttons laden
 	CFontLoader::CreateGDIFont(pMajor, 3, fontName, fontSize);
@@ -1178,7 +1178,7 @@ void CEmpireMenuView::DrawEmpireTop5Menue(Gdiplus::Graphics *g)
 	SolidBrush btnBrush(btnColor);
 	// Buttons am unteren Bildrand zeichnen
 	DrawGDIButtons(g, &m_EmpireNewsButtons, m_iSubMenu, Gdiplus::Font(fontName.AllocSysString(), fontSize), btnBrush);
-		
+
 	// "Top-5 Systeme" oben in der Mitte zeichnen
 	fontFormat.SetAlignment(StringAlignmentCenter);
 	// Rassenspezifische Schriftart auswählen
@@ -1187,7 +1187,7 @@ void CEmpireMenuView::DrawEmpireTop5Menue(Gdiplus::Graphics *g)
 	CFontLoader::GetGDIFontColor(pMajor, 3, normalColor);
 	fontBrush.SetColor(normalColor);
 	s = CResourceManager::GetString("TOP5SYSTEMS_MENUE");
-	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0,10,m_TotalSize.cx, 50), &fontFormat, &fontBrush);	
+	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0,10,m_TotalSize.cx, 50), &fontFormat, &fontBrush);
 }
 
 void CEmpireMenuView::DrawSunSystem(Gdiplus::Graphics *g, const CPoint& ptKO, int nPos)
@@ -1211,19 +1211,19 @@ void CEmpireMenuView::DrawSunSystem(Gdiplus::Graphics *g, const CPoint& ptKO, in
 	case 3:
 		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Suns\\sun_red.bop");		break;
 	case 4:
-		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Suns\\sun_violet.bop");	break;			
+		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Suns\\sun_violet.bop");	break;
 	case 5:
 		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Suns\\sun_white.bop");		break;
 	case 6:
-		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Suns\\sun_yellow.bop");	break;					
-	}				
+		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Suns\\sun_yellow.bop");	break;
+	}
 	if (graphic)
 	{
 		UINT nWidth		= graphic->GetWidth() / 2.5;
 		UINT nHeight	= graphic->GetHeight() / 2.5;
 		g->DrawImage(graphic, (REAL)m_TotalSize.cx - 200, (REAL)nPosY - nHeight / 2.0, (REAL)nWidth, (REAL)nHeight);
 	}
-	
+
 	// Planeten zeichnen
 	for (int i = 0; i < pDoc->GetSector(ptKO).GetNumberOfPlanets(); i++)
 	{
@@ -1238,10 +1238,10 @@ void CEmpireMenuView::DrawSunSystem(Gdiplus::Graphics *g, const CPoint& ptKO, in
 			float fSizeMod	= max(1.0, (4 - pPlanet->GetSize()) / 2.0);
 			UINT nWidth		= graphic->GetWidth() / 1.75 / fSizeMod;
 			UINT nHeight	= graphic->GetHeight() / 1.75 / fSizeMod;
-			
+
 			nPosX -= (nWidth + 3);
 			g->DrawImage(graphic, (REAL)nPosX, (REAL)nPosY - nHeight / 2.0, (REAL)nWidth, (REAL)nHeight);
-		}		
+		}
 	}
 }
 
@@ -1257,13 +1257,13 @@ void CEmpireMenuView::DrawEmpireVictoryMenue(Gdiplus::Graphics *g)
 
 	CString fontName = "";
 	Gdiplus::REAL fontSize = 0.0;
-	
+
 	// Rassenspezifische Schriftart auswählen
 	CFontLoader::CreateGDIFont(pMajor, 2, fontName, fontSize);
 	// Schriftfarbe wählen
 	Gdiplus::Color normalColor;
 	CFontLoader::GetGDIFontColor(pMajor, 3, normalColor);
-	
+
 	Gdiplus::Color markColor;
 	markColor.SetFromCOLORREF(pMajor->GetDesign()->m_clrListMarkTextColor);
 	SolidBrush fontBrush(markColor);
@@ -1276,10 +1276,10 @@ void CEmpireMenuView::DrawEmpireVictoryMenue(Gdiplus::Graphics *g)
 
 	if (bg_shipovmenu)
 		g->DrawImage(bg_victorymenu, 0, 0, 1075, 750);
-	
+
 	CString s;
 	fontFormat.SetAlignment(StringAlignmentNear);
-	CFontLoader::CreateGDIFont(pMajor, 3, fontName, fontSize);	
+	CFontLoader::CreateGDIFont(pMajor, 3, fontName, fontSize);
 	// Kategorie "Auslöschung"
 	g->DrawString(CResourceManager::GetString("VC_ELIMINATION").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(165,175,250,25), &fontFormat, &fontBrush);
 	// Kategorie "Diplomatie"
@@ -1386,7 +1386,7 @@ void CEmpireMenuView::DrawEmpireVictoryMenue(Gdiplus::Graphics *g)
 	SolidBrush btnBrush(btnColor);
 	// Buttons am unteren Bildrand zeichnen
 	DrawGDIButtons(g, &m_EmpireNewsButtons, m_iSubMenu, Gdiplus::Font(fontName.AllocSysString(), fontSize), btnBrush);
-		
+
 	// "Siegbedingunen" oben in der Mitte zeichnen
 	fontFormat.SetAlignment(StringAlignmentCenter);
 	// Rassenspezifische Schriftart auswählen
@@ -1395,7 +1395,7 @@ void CEmpireMenuView::DrawEmpireVictoryMenue(Gdiplus::Graphics *g)
 	CFontLoader::GetGDIFontColor(pMajor, 3, normalColor);
 	fontBrush.SetColor(normalColor);
 	s = CResourceManager::GetString("VICTORY_CONDITIONS_MENUE");
-	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0,10,m_TotalSize.cx, 50), &fontFormat, &fontBrush);	
+	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0,10,m_TotalSize.cx, 50), &fontFormat, &fontBrush);
 }
 
 // CEmpireMenuView diagnostics
@@ -1440,10 +1440,10 @@ void CEmpireMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		m_iSubMenu = temp;
 		return;
 	}
-	
+
 	// Wenn wir in der Nachtichtenasicht sind
 	if (m_iSubMenu == EMPIREVIEW_NEWS)
-	{			
+	{
 		// Checken auf welchen Newsbutton ich geklickt habe, um nur Kategorien anzuzeigen
 		int temp = m_iWhichNewsButtonIsPressed;
 		if (ButtonReactOnLeftClick(point, &m_EmpireNewsFilterButtons, temp))
@@ -1451,7 +1451,7 @@ void CEmpireMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			m_iWhichNewsButtonIsPressed = (MESSAGE_TYPE::Typ)temp;
 			return;
 		}
-		
+
 		// Wenn wir auf eine News geklickt haben, diese Markieren
 		CRect r;
 		r.SetRect(0, 0, m_TotalSize.cx,m_TotalSize.cy);
@@ -1498,7 +1498,7 @@ void CEmpireMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		unsigned short j = 0;
 		short counter = m_iClickedSystem - 20 + m_iOldClickedSystem;
 		short add = 0;
-		
+
 		for (int i = 0; i < pMajor->GetEmpire()->GetSystemList()->GetSize(); i++)
 		{
 			if (counter > 0)
@@ -1596,7 +1596,7 @@ void CEmpireMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			Invalidate(FALSE);
 			return;
 		}
-		
+
 		// Haben wir auf einen Button geklickt, um nur noch vorhandene oder mittlerweile verlorene Schiffe anzuzeigen
 		int temp = m_bShowAliveShips;
 		if (ButtonReactOnLeftClick(point, &m_EmpireShipsFilterButtons, temp, FALSE))
@@ -1652,7 +1652,7 @@ void CEmpireMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 						m_iClickedShip = k + add;
 						m_iOldClickedShip = 20-(k)%21;
 						Invalidate(FALSE);
-						break;						
+						break;
 					}
 				k++;
 				}
@@ -1755,7 +1755,7 @@ BOOL CEmpireMenuView::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 				Invalidate();
 			}
 		}
-	}	
+	}
 
 	return CMainBaseView::OnMouseWheel(nFlags, zDelta, pt);
 }
@@ -1775,13 +1775,13 @@ void CEmpireMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 		return;
 
 	CalcLogicalPoint(point);
-	// Wenn wir uns in der Imperiumsübersichtansicht befinden	
+	// Wenn wir uns in der Imperiumsübersichtansicht befinden
 	// Wenn wir in der Nachtichtenansicht sind
 	if (m_iSubMenu == EMPIREVIEW_NEWS)
 	{
 		CRect r;
 		r.SetRect(0,0,m_TotalSize.cx,m_TotalSize.cy);
-		
+
 		int j = 0;
 		short counter = m_iClickedNews - 20 + m_iOldClickedNews;
 		short add = 0;
@@ -1799,7 +1799,7 @@ void CEmpireMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 				{
 					if (CRect(r.left+100,r.top+140+j*25,r.right-100,r.top+165+j*25).PtInRect(point))
 					{
-						if (pMajor->GetEmpire()->GetMessages()->GetAt(i).GetMessageType() == MESSAGE_TYPE::ECONOMY || 
+						if (pMajor->GetEmpire()->GetMessages()->GetAt(i).GetMessageType() == MESSAGE_TYPE::ECONOMY ||
 							pMajor->GetEmpire()->GetMessages()->GetAt(i).GetMessageType() == MESSAGE_TYPE::SOMETHING)
 						{
 							CPoint p = pMajor->GetEmpire()->GetMessages()->GetAt(i).GetKO();
@@ -1841,7 +1841,7 @@ void CEmpireMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 							pDoc->GetMainFrame()->SelectMainView(INTEL_VIEW, pMajor->GetRaceID());
 							pDoc->GetMainFrame()->SetSubMenu(RUNTIME_CLASS(CIntelMenuView), pMajor->GetEmpire()->GetMessages()->GetAt(i).GetFlag());
 							Invalidate();
-							pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CMenuChooseView));							
+							pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
 						}
 						else if (pMajor->GetEmpire()->GetMessages()->GetAt(i).GetMessageType() == MESSAGE_TYPE::DIPLOMACY)
 						{
@@ -1893,7 +1893,7 @@ void CEmpireMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 
 				CGalaxyMenuView* pView = dynamic_cast<CGalaxyMenuView*>(pDoc->GetMainFrame()->GetView(RUNTIME_CLASS(CGalaxyMenuView)));
 				if (pView && pt != CPoint(-1,-1))
-				{				
+				{
 					pDoc->SetKO(pt);
 					pView->ScrollToSector(pt);
 					pDoc->GetMainFrame()->SelectMainView(GALAXY_VIEW, pMajor->GetRaceID());
@@ -1926,10 +1926,10 @@ void CEmpireMenuView::OnMouseMove(UINT nFlags, CPoint point)
 		ButtonReactOnMouseOver(point, &m_EmpireNewsFilterButtons);
 	// sind wir in der Systenübersicht
 	else if (m_iSubMenu == EMPIREVIEW_SYSTEMS)
-		ButtonReactOnMouseOver(point, &m_EmpireSystemFilterButtons);	
+		ButtonReactOnMouseOver(point, &m_EmpireSystemFilterButtons);
 	// sind wir in der Schiffsübersicht
 	else if (m_iSubMenu == EMPIREVIEW_SHIPS)
-		ButtonReactOnMouseOver(point, &m_EmpireShipsFilterButtons);	
+		ButtonReactOnMouseOver(point, &m_EmpireShipsFilterButtons);
 
 	CMainBaseView::OnMouseMove(nFlags, point);
 }
@@ -1960,7 +1960,7 @@ void CEmpireMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 			Invalidate(FALSE);
 			return;
 		}
-		
+
 		int maxNews = 0;
 		// nur Nachrichten anzeigen, dessen Typ wir auch gewählt haben
 		for (int i = 0; i < pMajor->GetEmpire()->GetMessages()->GetSize(); i++)
@@ -1988,7 +1988,7 @@ void CEmpireMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 			}
 		}
 	}
-	
+
 	// Wenn wir in der Imperiumssystemübersicht sind
 	if (m_iSubMenu == EMPIREVIEW_SYSTEMS)
 	{

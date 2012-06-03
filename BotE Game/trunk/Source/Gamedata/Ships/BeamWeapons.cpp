@@ -78,7 +78,7 @@ CBeamWeapons & CBeamWeapons::operator=(const CBeamWeapons & rhs)
 ///////////////////////////////////////////////////////////////////////
 // Speichern / Laden
 ///////////////////////////////////////////////////////////////////////
-void CBeamWeapons::Serialize(CArchive &ar)		
+void CBeamWeapons::Serialize(CArchive &ar)
 {
 	CObject::Serialize(ar);
 
@@ -127,5 +127,5 @@ void CBeamWeapons::ModifyBeamWeapon(BYTE BeamType, USHORT BeamPower, BYTE BeamNu
 	m_byRechargeTime= RechargeTime;
 	m_bPiercing	= Piercing;
 	m_bModulating = Modulating;
-	
+
 }

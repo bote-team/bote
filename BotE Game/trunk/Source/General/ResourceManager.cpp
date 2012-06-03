@@ -17,10 +17,10 @@ CResourceManager::~CResourceManager(void)
 /// Funktion initiert die Klasse CResourceManager. Sie muss zu Beginn aufgerufen werden
 void CResourceManager::Init(void)
 {
-	// Name des zu öffnenden Files 
+	// Name des zu öffnenden Files
 	CString fileName = CIOData::GetInstance()->GetAppPath() + "Data\\Strings\\StringTable.txt";
 	CStdioFile file;
-	
+
 	// Datei wird geöffnet
 	if (file.Open(fileName, CFile::modeRead | CFile::typeText))
 	{
@@ -42,14 +42,14 @@ void CResourceManager::Init(void)
 			{
 				foundKey = FALSE;
 				m_StringTable.SetAt(key, csInput);
-			}			
+			}
 		}
 		file.Close();
 	}
 	else
-	{	
-		AfxMessageBox("Error! Could not open file \"StringTable.txt\" ...");		
-	}	
+	{
+		AfxMessageBox("Error! Could not open file \"StringTable.txt\" ...");
+	}
 }
 
 /// Funktion gibt einen String zurück, der in einer StringTable steht.
@@ -58,7 +58,7 @@ CString CResourceManager::GetString(const CString& key, BOOLEAN forceBigStarting
 	CString returnString;
 	if (!m_StringTable.Lookup(key, returnString))
 		return key + " is missing";
-	
+
 	// Haben wir subStrings übergeben, so müssen wir die § Zeichen ersetzen
 	if (subString1 != "")
 	{
@@ -87,19 +87,19 @@ CString CResourceManager::Text(LPCTSTR lpszKeyFormat, ...)
 	CString value;
 	if (!m_StringTable.Lookup(lpszKeyFormat, value))
 		return CString(lpszKeyFormat) + " is missing";
-	
+
 	// Format message into temporary buffer lpszTemp
 	va_list argList;
 	va_start(argList, lpszKeyFormat);
 	LPTSTR lpszTemp;
 	if (::FormatMessage(FORMAT_MESSAGE_FROM_STRING | FORMAT_MESSAGE_ALLOCATE_BUFFER, value, 0, 0, (LPTSTR)&lpszTemp, 0, &argList) == 0 || lpszTemp == NULL)
 	{
-		AfxThrowMemoryException();		
+		AfxThrowMemoryException();
 	}
-	
+
 	// Copy lpszTemp into the result string
 	value = CString(lpszTemp); // Compatible with VC6 and VC7.
-	
+
 	// Clean-up
 	LocalFree(lpszTemp);
 	va_end(argList);

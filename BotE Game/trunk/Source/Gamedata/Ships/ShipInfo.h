@@ -21,11 +21,11 @@
 // forward declaration
 class CResearch;
 
-class CShipInfo : public CShip  
+class CShipInfo : public CShip
 {
 public:
 	DECLARE_SERIAL (CShipInfo)
-// Konstruktion & Destruktion		
+// Konstruktion & Destruktion
 	CShipInfo();
 	virtual ~CShipInfo();
 
@@ -35,7 +35,7 @@ public:
 	CShipInfo & operator=(const CShipInfo &);
 	// Serialisierungsfunktion
 	virtual void Serialize(CArchive &ar);
-	
+
 	/// Funktion gibt eine Rassennummer zurück. Jede Rasse besitzt eine Nummer, welche Schiffe und Gebäude diese
 	/// bauen kann.
 	/// @return Rassennummer (nicht Rassen-ID!)
@@ -80,7 +80,7 @@ public:
 	void CalculateFinalCosts();						// Funktion berechnet die finalen Kosten zum Bau des Schiffes
 	void SetStartOrder();							// Funktion bestimmt die 1. Order des Schiffs nach dem Bau anhand dessen Typs
 	void DrawShipInformation(Graphics* g, CRect rect, Gdiplus::Font* font, Gdiplus::Color clrNormal, Gdiplus::Color clrMark, CResearch* research);	// Funktion zeichnet wichtige Informationen zu dem Schiff
-	
+
 	/// Funktion gibt zurück, ob das Schiff mit der aktuellen Forschung einer Rasse baubar ist.
 	/// @param researchLevels Forschungsstufen der Rasse
 	/// @return Wahrheitswert
@@ -94,7 +94,7 @@ private:
 	BYTE m_iCompTech;
 	BYTE m_iPropulsionTech;
 	BYTE m_iConstructionTech;
-	BYTE m_iWeaponTech;	
+	BYTE m_iWeaponTech;
 	// aktuell nötige Rohstoffe zum Bau des Schiffes
 	UINT m_iNeededIndustry;
 	USHORT m_iNeededTitan;

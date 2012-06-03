@@ -9,7 +9,7 @@ IMPLEMENT_SERIAL (CEventBlockade, CObject, 1)
 
 CEventBlockade::CEventBlockade(const CString &sPlayersRaceID, const CString &headline, const CString &text)
 	: CEventScreen(sPlayersRaceID, "Blockade", headline, text)
-{	
+{
 }
 
 CEventBlockade::~CEventBlockade(void)
@@ -19,17 +19,17 @@ CEventBlockade::~CEventBlockade(void)
 ///////////////////////////////////////////////////////////////////////
 // Speichern / Laden
 ///////////////////////////////////////////////////////////////////////
-void CEventBlockade::Serialize(CArchive &ar)		
+void CEventBlockade::Serialize(CArchive &ar)
 {
 	__super::Serialize(ar);
-	
+
 	// wenn gespeichert wird
 	if (ar.IsStoring())
-	{		
+	{
 	}
 	// wenn geladen wird
 	else if (ar.IsLoading())
-	{		
+	{
 	}
 }
 

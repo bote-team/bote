@@ -69,7 +69,7 @@ public:
 	CArray<m_TradeStruct,m_TradeStruct>* GetTradeActions() {return &m_TradeActions;}
 
 	// zum Schreiben der Membervariablen
-		
+
 	// Funktion setzt den Preis für eine Ressource fest
 	void SetRessourcePrice(USHORT res, USHORT price) {m_iRessourcePrice[res] = price;}
 
@@ -103,7 +103,7 @@ public:
 	// wir durch den Verkauf bekommen haben an das jeweilige Imperium
 	void CalculateTradeActions(CMajor* pMajor, std::vector<std::vector<CSystem>>& systems/*[][STARMAP_SECTORS_VCOUNT]*/, std::vector<std::vector<CSector>>& sectors/*[][STARMAP_SECTORS_VCOUNT]*/, USHORT* taxes);
 
-	/// Funktion berechnet den Preis der Ressourcen in Zusammenhang zu den anderen Börsen. 
+	/// Funktion berechnet den Preis der Ressourcen in Zusammenhang zu den anderen Börsen.
 	/// @param pmMajors Zeiger auf Map mit allen Majors des Spiels
 	/// @param pCurMajor aktuelle Rasse, für die die Preise berechnet werden
 	void CalculatePrices(map<CString, CMajor*>* pmMajors, CMajor* pCurMajor);
@@ -113,11 +113,11 @@ public:
 
 	// Resetfunktion für die Klasse CTrade
 	void Reset(void);
-	
+
 private:
 
 	// Das Handelshistoryobjekt, welches alle vergangenen Börsenkurse gespeichert hat
-	CTradeHistory m_TradeHistory;	
+	CTradeHistory m_TradeHistory;
 
 	// Der aktuelle Preis der jeweiligen Ressource an der globalen Handelsbörse
 	USHORT m_iRessourcePrice[IRIDIUM + 1];
@@ -125,10 +125,10 @@ private:
 	// Der Preis der Ressource zu Beginn einer Runde (wird genommen, wenn wir Bauaufträge kaufen, sonst könnte man
 	// in der gleichen Runde den Preis drücken, dann billig kaufen und dann den Preis wieder hochtreiben)
 	USHORT m_iRessourcePriceAtRoundStart[IRIDIUM + 1];
-	
+
 	// Die Anzahl der jeweiligen Ressource die wir kaufen oder verkaufen möchten (negative Werte bedeuten verkaufen)
-	CArray<m_TradeStruct,m_TradeStruct> m_TradeActions;	
-	
+	CArray<m_TradeStruct,m_TradeStruct> m_TradeActions;
+
 	// Die Menge die wir bei einem Klick kaufen bzw. Verkaufen
 	USHORT m_iQuantity;
 
@@ -138,7 +138,7 @@ private:
 	// Steuergelder auf Ressourcen nur durch Sofortkauf von Bauaufträgen, nicht die Steuern, die wir durch normalen
 	// Handel machen
 	USHORT m_iTaxes[IRIDIUM + 1];
-	
+
 	// Welche Majorrace besitzt ein Monopol auf die jeweilige Ressource
 	static CString m_sMonopolOwner[IRIDIUM + 1];
 

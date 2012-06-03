@@ -78,7 +78,7 @@ BOOL CNewGamePage::OnInitDialog()
 	ASSERT(m_pPublish);
 	m_pSearch = (CButton *)GetDlgItem(IDC_SEARCHSERVERS);
 	ASSERT(m_pSearch);
-	
+
 	m_pParent = (CMainDlg *)GetParent();
 	ASSERT(m_pParent);
 
@@ -109,12 +109,12 @@ BOOL CNewGamePage::OnInitDialog()
 	{
 		TCHAR userName[UNLEN + 1];
 		DWORD nLen = UNLEN + 1;
-		VERIFY(GetUserName(userName, &nLen));	
+		VERIFY(GetUserName(userName, &nLen));
 		SetDlgItemText(IDC_USERNAME, userName);
 	}
 	GetDlgItemText(IDC_USERNAME, userName);
 	CIniLoader::GetInstance()->WriteValue("General", "USERNAME", userName);
-		
+
 	m_hostIP.SetAddress(INADDR_LOOPBACK);
 	m_hostPort.SetWindowText("7777");
 	m_serverPort.SetWindowText("7777");
@@ -292,7 +292,7 @@ LRESULT CNewGamePage::OnWizardNext()
 
 	case MODE_LOAD:
 		{
-		// Datei laden		
+		// Datei laden
 		CString fileName;
 		GetDlgItemText(IDC_FILENAME, fileName);
 		m_pParent->GetServerDocument()->m_bGameLoaded = true;
@@ -416,7 +416,7 @@ void CNewGamePage::OnBnClickedShowoptionsdlg()
 	CIniLoader* pIni = CIniLoader::GetInstance();
 	int nOldSeed = -1;
 	pIni->ReadValue("Special", "RANDOMSEED", nOldSeed);
-	
+
 	CSettingsDlg dlg;
 	if (dlg.DoModal() == IDOK)
 	{

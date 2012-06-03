@@ -126,7 +126,7 @@ private:
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Variablen
-	
+
 	/// Ein Zeiger auf das Document.
 	CBotf2Doc* m_pDoc;
 
@@ -153,7 +153,7 @@ private:
 	/// In diesem Feld werden die Sektoren für die jeweilige Rasse gespeichert, welche sich am meisten zum
 	/// Terraformen lohnen.
 	map<CString, vector<SectorToTerraform> > m_vSectorsToTerraform;
-	
+
 	/// In diesem Feld werden die Sektoren von Minorraces gespeichert, die die entsprechende Rasse noch nicht
 	/// kennt, zu denen sie aber fliegen kann, um sie kennenzulernen.
 	map<CString, vector<CPoint> > m_vMinorraceSectors;

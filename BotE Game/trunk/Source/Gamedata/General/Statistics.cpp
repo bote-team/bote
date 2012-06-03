@@ -25,10 +25,10 @@ CStatistics::~CStatistics(void)
 ///////////////////////////////////////////////////////////////////////
 // Speichern / Laden
 ///////////////////////////////////////////////////////////////////////
-void CStatistics::Serialize(CArchive &ar)		
+void CStatistics::Serialize(CArchive &ar)
 {
 	CObject::Serialize(ar);
-	
+
 	// wenn gespeichert wird
 	if (ar.IsStoring())
 	{
@@ -37,7 +37,7 @@ void CStatistics::Serialize(CArchive &ar)
 			ar << m_nAverageResourceStorages[i];
 		ar << m_mShipPowers.size();
 		for (map<CString, UINT>::const_iterator it = m_mShipPowers.begin(); it != m_mShipPowers.end(); ++it)
-			ar << it->first << it->second;		
+			ar << it->first << it->second;
 	}
 	// wenn geladen wird
 	else if (ar.IsLoading())
@@ -45,7 +45,7 @@ void CStatistics::Serialize(CArchive &ar)
 		ar >> m_byAverageTechLevel;
 		for (int i = TITAN; i <= DERITIUM; i++)
 			ar >> m_nAverageResourceStorages[i];
-		
+
 		m_mShipPowers.clear();
 		size_t mapSize = 0;
 		ar >> mapSize;
@@ -56,7 +56,7 @@ void CStatistics::Serialize(CArchive &ar)
 			ar >> key;
 			ar >> value;
 			m_mShipPowers[key] = value;
-		}		
+		}
 	}
 }
 //////////////////////////////////////////////////////////////////////
@@ -71,10 +71,10 @@ void CStatistics::CalcStats(CBotf2Doc* pDoc)
 	this->Reset();
 
 	this->CalcAverageTechLevel(pDoc);
-	
+
 	this->CalcAverageResourceStorages(pDoc);
 
-	this->CalcShipPowers(pDoc);	
+	this->CalcShipPowers(pDoc);
 }
 
 /// Funktion ermittelt die Demographiewerte einer bestimmten Rasse.
@@ -238,7 +238,7 @@ int CStatistics::GetGamePoints(const CString& sRaceID, int nCurrentRound, float 
 
 	GetDemographicsResearch(sRaceID, nPlace, fValue, fAverage, fFirst, fLast);
 	nGamePoints += (int)(fValue * 2);
-	
+
 	// aller 10 Runden verringert sich die Punktzahl um 1%
 	float fTemp = nCurrentRound / 10.0;
 	nGamePoints -= nGamePoints * fTemp / 100.0;
@@ -267,9 +267,9 @@ void CStatistics::GetTopSystems(int nLimit, std::list<CPoint>& lSystems) const
 	{
 		CPoint	m_ptKO;
 		int		m_nValue;
-		
-		bool operator< (const SYSTEMLIST& elem2) const { return m_nValue < elem2.m_nValue;}		
-		
+
+		bool operator< (const SYSTEMLIST& elem2) const { return m_nValue < elem2.m_nValue;}
+
 		SYSTEMLIST() : m_ptKO(-1,-1), m_nValue(0) {}
 		SYSTEMLIST(const CPoint& ptKO, int nValue) : m_ptKO(ptKO), m_nValue(nValue) {}
 	};
@@ -283,7 +283,7 @@ void CStatistics::GetTopSystems(int nLimit, std::list<CPoint>& lSystems) const
 			{
 				// Wert berechnen
 				int nValue = 0;
-				
+
 				// Nahrung
 				nValue += pDoc->GetSystem(x,y).GetProduction()->GetMaxFoodProd() / 4;
 				// Industrie
@@ -409,7 +409,7 @@ void CStatistics::Reset(void)
 void CStatistics::CalcShipPowers(CBotf2Doc* pDoc)
 {
 	map<CString, CMajor*>* pmMajors = pDoc->GetRaceCtrl()->GetMajors();
-	
+
 	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 		m_mShipPowers[it->first] = pDoc->GetSectorAI()->GetCompleteDanger(it->first);
 }
@@ -446,16 +446,16 @@ void CStatistics::CalcDemoValues(const CString& sRaceID, const std::map<CString,
 			nPlace = ++i;
 			break;
 		}
-	
+
 	// Durchschnitt ermitteln
 	for (UINT i = 0; i < vSortedVec.size(); i++)
 		fAverage += vSortedVec[i];
 	fAverage /= vSortedVec.size();
-	
+
 	// eigener Wert
 	fValue = it->second;
 	// bester Wert
 	fFirst = vSortedVec.front();
 	// schlechtester Wert
-	fLast = vSortedVec.back();	
+	fLast = vSortedVec.back();
 }

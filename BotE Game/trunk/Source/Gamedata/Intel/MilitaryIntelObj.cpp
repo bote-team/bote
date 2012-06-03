@@ -70,7 +70,7 @@ void CMilitaryIntelObj::Serialize(CArchive &ar)
 		ar >> m_bTroop;
 		ar >> m_KO;
 		ar >> m_nID;
-		ar >> m_nNumber;		
+		ar >> m_nNumber;
 	}
 }
 
@@ -84,9 +84,9 @@ void CMilitaryIntelObj::CreateText(CBotf2Doc* pDoc, BYTE n, const CString& param
 	CString csInput;													// auf csInput wird die jeweilige Zeile gespeichert
 	CString fileName;
 	if (this->GetIsSpy())
-		fileName = CIOData::GetInstance()->GetAppPath() + "Data\\Races\\MajorIntelSpyOff.data";		// Name des zu Öffnenden Files 
+		fileName = CIOData::GetInstance()->GetAppPath() + "Data\\Races\\MajorIntelSpyOff.data";		// Name des zu Öffnenden Files
 	else
-		fileName = CIOData::GetInstance()->GetAppPath() + "Data\\Races\\MajorIntelSabOff.data";		// Name des zu Öffnenden Files 
+		fileName = CIOData::GetInstance()->GetAppPath() + "Data\\Races\\MajorIntelSabOff.data";		// Name des zu Öffnenden Files
 	CStdioFile file;													// Varibale vom Typ CStdioFile
 	if (file.Open(fileName, CFile::modeRead | CFile::typeText))			// Datei wird geöffnet
 	{
@@ -151,22 +151,22 @@ void CMilitaryIntelObj::CreateText(CBotf2Doc* pDoc, BYTE n, const CString& param
 								else
 									s = CResourceManager::GetString("TROOPS");
 								csInput.Replace("$troop$", s);
-							}							
+							}
 						}
 						if (m_nNumber != NULL)
 						{
 							s.Format("%d", m_nNumber);
 							csInput.Replace("$number$", s);
-						}						
+						}
 						m_strOwnerDesc = csInput;
 						break;
-					}					
+					}
 				}
-			}			
+			}
 		}
 	}
 	else
-	{	
+	{
 		if (this->GetIsSpy())
 			AfxMessageBox("Error! Could not open file \"MajorIntelSpyOff.data\"...");
 		else
@@ -178,7 +178,7 @@ void CMilitaryIntelObj::CreateText(CBotf2Doc* pDoc, BYTE n, const CString& param
 	// Nachricht für das Opfer erstellen
 	if (this->GetIsSabotage())
 	{
-		fileName = CIOData::GetInstance()->GetAppPath() + "Data\\Races\\MajorIntelSabDef.data";			// Name des zu Öffnenden Files 
+		fileName = CIOData::GetInstance()->GetAppPath() + "Data\\Races\\MajorIntelSabDef.data";			// Name des zu Öffnenden Files
 		if (file.Open(fileName, CFile::modeRead | CFile::typeText))			// Datei wird geöffnet
 		{
 			while (file.ReadString(csInput))
@@ -236,13 +236,13 @@ void CMilitaryIntelObj::CreateText(CBotf2Doc* pDoc, BYTE n, const CString& param
 									else
 										s = CResourceManager::GetString("TROOPS");
 									csInput.Replace("$troop$", s);
-								}							
+								}
 							}
 							if (m_nNumber != NULL)
 							{
 								s.Format("%d", m_nNumber);
 								csInput.Replace("$number$", s);
-							}						
+							}
 							m_strEnemyDesc = csInput;
 							if (param != "")
 							{
@@ -257,13 +257,13 @@ void CMilitaryIntelObj::CreateText(CBotf2Doc* pDoc, BYTE n, const CString& param
 								csInput = CResourceManager::GetString("DO_NOT_KNOW_RESPONSIBLE_RACE");
 							m_strEnemyDesc += " "+csInput;
 							break;
-						}					
+						}
 					}
-				}			
+				}
 			}
 		}
 		else
-		{	
+		{
 			AfxMessageBox("Error! Could not open file \"MajorIntelSabDef.data\"...");
 			exit(1);
 		}

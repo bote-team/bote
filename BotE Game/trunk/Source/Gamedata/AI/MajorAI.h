@@ -85,7 +85,7 @@ protected:
 	/// @param info Referenz auf eine Diplomatieinformation (darin wird das Angebot abgelegt)
 	/// @return <code>true</code> wenn eine Mitgift gegeben wurde, ansonsten <code>false</code>
 	bool GiveDowry(CDiplomacyInfo& info);
-	
+
 	/// Funktion berechnet ob und was für eine Forderung gestellt wird.
 	/// @param info Referenz auf eine Diplomatieinformation (darin wird das Angebot abgelegt)
 	/// @return <code>true</code> wenn eine Forderung gestellt wurde, ansonsten <code>false</code>

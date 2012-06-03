@@ -87,7 +87,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		TRACE0("Symbolleiste konnte nicht erstellt werden\n");
 		return -1;      // Fehler bei Erstellung
 	}
-	if (!m_wndDlgBar.Create(this, IDR_MAINFRAME, 
+	if (!m_wndDlgBar.Create(this, IDR_MAINFRAME,
 		CBRS_ALIGN_TOP, AFX_IDW_DIALOGBAR))
 	{
 		TRACE0("Dialogleiste konnte nicht erstellt werden\n");
@@ -128,7 +128,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	// Times (in ms)
 	m_CPPToolTip.SetDelayTime(PPTOOLTIP_TIME_INITIAL, nDelayTime);	// nach 750ms wird es angezeigt
 	m_CPPToolTip.SetDelayTime(PPTOOLTIP_TIME_AUTOPOP, 200000);		// how long it stays
-	
+
 	//m_CPPToolTip.SetDefaultSizes(FALSE);
 	m_CPPToolTip.SetTransparency(20);
 	m_CPPToolTip.SetColorBk(RGB(20,20,20));
@@ -159,7 +159,7 @@ BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
 	// ZU ERLEDIGEN: Ändern Sie hier die Fensterklasse oder das Erscheinungsbild, indem Sie
 	//  CREATESTRUCT cs modifizieren.
 
-	// Unterdrücken der Taskbar durch die Applikation 
+	// Unterdrücken der Taskbar durch die Applikation
 	cs.style &= ~0x00010000;	//ich weiss nicht warum - aber es klappt
 
 	return TRUE;
@@ -185,7 +185,7 @@ void CMainFrame::Dump(CDumpContext& dc) const
 // CMainFrame Nachrichten-Handler
 
 
-BOOL CMainFrame::OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext) 
+BOOL CMainFrame::OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext)
 {
 	// Hauptfenster aufteilen:
 	// +---------------------------------------------------+
@@ -210,7 +210,7 @@ BOOL CMainFrame::OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext)
 	// |             0                                     |
 	// |             0	                                   |
 	// +---------------------------------------------------+
-	
+
 	/*	Größe der CGalaxyMenuView mit ScrollBars:	1058 | 733
 							 ohne Scrollbars:	1075 | 750
 		Größe der CCMenuChooseView:	200  | 750
@@ -226,7 +226,7 @@ BOOL CMainFrame::OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext)
 
 	CRect r;
 	this->GetDesktopWindow()->GetClientRect(r);
-	
+
 	m_wndSplitter.CreateStatic(this, 2, 2, WS_CHILD | WS_VISIBLE);
 	// Größen der Splitter festlegen. Der Mulitplikator kommt zustande, so dass es auf jeder Monitorauflösung trotzdem noch
 	// das selbe Verhältnis hat. Deswegen können dort keine statischen Werte verwendet werden.
@@ -298,7 +298,7 @@ BOOL CMainFrame::OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext)
 		pContext, CRect(0, 0, r.Width(), r.Height()) , true, MENUCHOOSE_VIEW);
 
 	//FullScreenMainView(true);
-	
+
 	return TRUE;
 //	return CFrameWnd::OnCreateClient(lpcs, pContext);
 }
@@ -349,7 +349,7 @@ void CMainFrame::SelectMainView(USHORT whichView)
 
 void CMainFrame::SelectBottomView(USHORT viewID)
 {
-	m_wndSplitter.SwitchView(viewID, 1, 1);	
+	m_wndSplitter.SwitchView(viewID, 1, 1);
 }
 
 short CMainFrame::GetActiveView(int paneRow, int paneCol) const
@@ -453,12 +453,12 @@ void CMainFrame::FullScreenMainView(bool fullScreen)
 {
 	CRect r;
 	this->GetDesktopWindow()->GetClientRect(r);
-	
+
 	// normalen Modus setzen
 	if (!fullScreen)
 	{
 		m_wndSplitter.SetRowInfo(0, r.bottom * VERT_PROPORTION, r.bottom * VERT_PROPORTION);
-		m_wndSplitter.SetColumnInfo(0, r.right * HORZ_PROPORTION, r.right * HORZ_PROPORTION);		
+		m_wndSplitter.SetColumnInfo(0, r.right * HORZ_PROPORTION, r.right * HORZ_PROPORTION);
 	}
 	// Fullscreenmodus für die Mainview setzen
 	else
@@ -475,7 +475,7 @@ LRESULT CMainFrame::UpdateViews(WPARAM wParam, LPARAM lParam)
 
 	CBotf2Doc* pDoc = (CBotf2Doc*)((CBotf2App*)AfxGetApp())->GetDocument();
 	ASSERT(pDoc);
-	
+
 	// Views ihre Arbeiten zu jeder neuen Runde machen lassen
 	pDoc->DoViewWorkOnNewRound();
 	MYTRACE(MT::LEVEL_INFO, "Updating all Views done\n");
@@ -486,10 +486,10 @@ LRESULT CMainFrame::UpdateViews(WPARAM wParam, LPARAM lParam)
 LRESULT CMainFrame::ShowCombatView(WPARAM wParam, LPARAM lParam)
 {
 	MYTRACE(MT::LEVEL_INFO, "Getting Message to Show CombatView...");
-	
+
 	CBotf2Doc* pDoc = (CBotf2Doc*)((CBotf2App*)AfxGetApp())->GetDocument();
 	ASSERT(pDoc);
-	
+
 	// Combat View anzeigen
 	FullScreenMainView(true);
 	SelectMainView(COMBAT_VIEW, pDoc->GetPlayersRaceID());
@@ -506,7 +506,7 @@ LRESULT CMainFrame::ShowCombatView(WPARAM wParam, LPARAM lParam)
 	pDoc->UpdateAllViews(NULL);
 
 	MYTRACE(MT::LEVEL_INFO, "Showing CombatView\n");
-	
+
 	return TRUE;
 }
 
@@ -555,14 +555,14 @@ void CMainFrame::NotifyCPPTooltip( NMHDR* pNMHDR, LRESULT* result )
 	CBotf2Doc* pDoc = (CBotf2Doc*)((CBotf2App*)AfxGetApp())->GetDocument();
 	ASSERT(pDoc);
 	if (pDoc->m_bDataReceived)
-	{	
+	{
 		CWnd* pWnd = CWnd::FromHandle(pNotify->hwndTool);
 		// Galaxieview
 		if  (pWnd->IsKindOf(RUNTIME_CLASS(CGalaxyMenuView)))
 		{
 			pNotify->ti->sTooltip = ((CGalaxyMenuView*)pWnd)->CreateTooltip();
 			return;
-		}	
+		}
 		// untere View
 		else if (pWnd->IsKindOf(RUNTIME_CLASS(CBottomBaseView)))
 		{
@@ -575,7 +575,7 @@ void CMainFrame::NotifyCPPTooltip( NMHDR* pNMHDR, LRESULT* result )
 			pNotify->ti->sTooltip = ((CMainBaseView*)pWnd)->CreateTooltip();
 			return;
 		}
-	}	
+	}
 }
 
 BOOL CMainFrame::OnEraseBkgnd(CDC* pDC)
@@ -583,7 +583,7 @@ BOOL CMainFrame::OnEraseBkgnd(CDC* pDC)
 	// TODO: Fügen Sie hier Ihren Meldungsbehandlungscode ein, und/oder benutzen Sie den Standard.
 	CRect rect;
 	GetClientRect(&rect);
-	
+
 	pDC->FillSolidRect(rect, RGB(0,0,0));
 	pDC->SetTextColor(RGB(200,200,200));
 	pDC->DrawText("§loading game data - please wait...", rect, DT_CENTER | DT_VCENTER | DT_SINGLELINE);

@@ -35,7 +35,7 @@ public:
 
 	/// Funktion lädt die rassenspezifischen Grafiken.
 	virtual void LoadRaceGraphics();
-	
+
 private:
 	// Funktionen
 	/// Funkion legt alle Buttons für die Geheimdienstansichten an.

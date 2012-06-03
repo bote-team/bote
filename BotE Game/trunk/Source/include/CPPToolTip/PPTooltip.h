@@ -22,13 +22,13 @@
 //	Terms of use
 //	------------
 //	THIS SOFTWARE IS FREE FOR PERSONAL USE OR FREEWARE APPLICATIONS.
-//	IF YOU WISH TO THANK MY WORK, YOU MAY DONATE ANY SUM OF MONEY TO ME 
+//	IF YOU WISH TO THANK MY WORK, YOU MAY DONATE ANY SUM OF MONEY TO ME
 //  FOR SUPPORT OF DEVELOPMENT OF THIS CLASS.
 //	IF YOU USE THIS SOFTWARE IN COMMERCIAL OR SHAREWARE APPLICATIONS YOU
 //	ARE GENTLY ASKED TO DONATE ANY SUM OF MONEY TO THE AUTHOR:
 //
 //
-//--- History ------------------------------ 
+//--- History ------------------------------
 // 2004/03/01 *** Releases version 2.0 ***
 //------------------------------------------
 //		2004/04/04 [ADD] Added method SetCssStyles(DWORD dwIdCssStyle, LPCTSTR lpszPathDll /* = NULL */)
@@ -38,7 +38,7 @@
 //		2004/04/28 [ADD] Disables a message translation if object was't created (thanks to Stoil Todorov)
 //		2004/07/02 [UPD] Changes a GetWndFromPoint mechanism of the window's searching
 //		2004/09/01 [ADD] New SetMaxTipWidth method was added
-//		2004/10/12 [FIX] Now a tooltip has a different methods to show a menu's tooltip and other 
+//		2004/10/12 [FIX] Now a tooltip has a different methods to show a menu's tooltip and other
 //							control's tooltip
 //------------------------------------------
 // 2004/11/19 *** Releases version 2.1 ***
@@ -73,7 +73,7 @@
 
 #define PPTOOLTIP_CLASSNAME    _T("CPPToolTip")  // Window class name
 
-//The 
+//The
 #define UDM_TOOLTIP_FIRST		   (WM_USER + 100)
 #define UDM_TOOLTIP_DISPLAY		   (UDM_TOOLTIP_FIRST) //User was changed the data
 #define UDM_TOOLTIP_REPAINT		   (UDM_TOOLTIP_FIRST + 1)
@@ -93,7 +93,7 @@
 #define PPTOOLTIP_MASK_COLORS			0x0004	// The background's colors for the tooltip gets from the structures
 #define PPTOOLTIP_MASK_DIRECTION		0x0008  // The align for the tooltip gets from the structures
 #define PPTOOLTIP_MASK_BEHAVIOUR		0x0010  // The behaviour for the tooltip gets from the structures
-#define PPTOOLTIP_MASK_TRANSPARENCY		0x0020  // 
+#define PPTOOLTIP_MASK_TRANSPARENCY		0x0020  //
 
 //The constants of the timers
 #define PPTOOLTIP_TIME_INITIAL			TTDT_INITIAL
@@ -138,10 +138,10 @@
 // This info structure
 typedef struct tagPPTOOLTIP_INFO
 {
-    UINT		nIDTool;		// ID of tool   
+    UINT		nIDTool;		// ID of tool
     CRect		rectBounds;		// Bounding rect for toolinfo to be displayed
 	CString		sTooltip;		// The string of the tooltip
-	UINT        nMask;			// The mask 
+	UINT        nMask;			// The mask
 	UINT		nStyles;		// The tooltip's styles
 	UINT        nDirection;		// Direction display the tooltip relate cursor point
 	UINT		nEffect;		// The color's type or effects
@@ -191,13 +191,13 @@ public:
 
 	enum {	SHOWEFFECT_NONE = 0,
 			SHOWEFFECT_FADEINOUT,
-			
+
 			SHOWEFFECT_MAX
 		};
 
 	// Operations
 protected:
-	enum TooltipState {  
+	enum TooltipState {
 			PPTOOLTIP_STATE_HIDEN = 0,
 			PPTOOLTIP_STATE_SHOWING,
 			PPTOOLTIP_STATE_SHOWN,
@@ -211,7 +211,7 @@ protected:
 		};
 
 	CPPHtmlDrawer m_drawer; //HTML drawer object
-	
+
 	HWND m_hParentWnd; // The handle of the parent window
 	HWND m_hNotifyWnd; // The handle of the notified window
 
@@ -231,7 +231,7 @@ protected:
 	HWND  m_hwndNextTool;
 	TooltipType m_nNextTooltipType;
 	PPTOOLTIP_INFO m_tiNextTool; //Info about next tooltip
-	
+
 	// Info about current tool
 	CRect m_rcCurTool;
 	DWORD m_dwCurDirection;
@@ -273,7 +273,7 @@ protected:
 	BYTE  m_nTransparency; //The current value of transparency
 	DWORD m_dwShowEffect; //
 	DWORD m_dwHideEffect;
-	int  m_nSizes [PPTTSZ_MAX_SIZES]; //All sizes 
+	int  m_nSizes [PPTTSZ_MAX_SIZES]; //All sizes
 
 #ifdef PPTOOLTIP_USE_MENU
 	DWORD m_dwMenuToolPos;
@@ -360,7 +360,7 @@ public:
 	DWORD GetDirection();
 
 	void SetCallbackHyperlink(HWND hWnd, UINT nMessage, LPARAM lParam = 0);
-	
+
 	void EnableHyperlink(BOOL bEnable = TRUE);
 	void SetDebugMode(BOOL bDebug = TRUE);
 
@@ -428,7 +428,7 @@ protected:
 
 	DWORD GetTooltipDirection(DWORD dwDirection, const CPoint & ptPoint, CPoint & ptAnchor, CRect & rcBody, CRect & rcFull, CRect & rcTipArea);
 	HRGN GetTooltipRgn(DWORD dwDirection, int x, int y, int nWidth, int nHeight);
-	
+
 	CString GetMaxDebugString(LPCTSTR lpszText);
 	CString CreateDebugCell(CString sTitle, LPCTSTR lpszDescription);
 

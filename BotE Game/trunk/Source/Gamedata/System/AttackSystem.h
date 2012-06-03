@@ -25,7 +25,7 @@ public:
 
 	/// Zugriffsfunktionen
 	// zum Lesen der Membervariablen
-	
+
 	/// Diese Funktion gibt das Feld der News zurück
 	CStringArray* GetNews() {return &m_strNews;}
 
@@ -51,7 +51,7 @@ public:
 	void Init(CRace* pDefender, CSystem* system, ShipArray* ships, CSector* sector, BuildingInfoArray* buildingInfos, const CString* monopolOwner);
 
 	/**
-	 * Diese Funktion führt den Angriff durch. Außerdem werden alle Berechnungen der Auswirkungen des Angriffs 
+	 * Diese Funktion führt den Angriff durch. Außerdem werden alle Berechnungen der Auswirkungen des Angriffs
 	 * durchgeführt. Der Rückgabewert ist <code>TRUE</code>, wenn der Angriff erfolgreich war, bei Misserfolg
 	 * ist der Rückgabewert <code>FALSE</code>.
 	 */

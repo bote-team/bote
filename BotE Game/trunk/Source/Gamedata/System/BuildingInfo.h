@@ -46,13 +46,13 @@ class CBuildingInfo : public CObject
 		PLANETTYPE_R	= 65536,
 		PLANETTYPE_S	= 131072,
 		PLANETTYPE_T	= 262144,
-		PLANETTYPE_Y	= 524288	
+		PLANETTYPE_Y	= 524288
 	};
 public:
 	DECLARE_SERIAL (CBuildingInfo)							// Klasse serialisierbar machen
 	// Standardkonstruktor
 	CBuildingInfo(void);
-	
+
 	// Destruktor
 	~CBuildingInfo(void);
 
@@ -68,21 +68,21 @@ public:
 // Zugriffsfunktionen
 	// zum Lesen der Membervariablen
 	USHORT GetRunningNumber() const {return m_iRunningNumber;}
-		
+
 	BYTE GetOwnerOfBuilding() const {return m_iOwnerOfBuilding;}
 
 	const CString& GetBuildingName() const {return m_strBuildingName;}
-	
+
 	const CString& GetBuildingDescription() const {return m_strDescription;}
 
 	BOOLEAN GetUpgradeable() const {return m_bUpgradeable;}
 
 	const CString& GetGraphikFileName() const {return m_strGraphikFileName;}
-	
+
 	NumberOfID GetMaxInSystem() const {return m_MaxInSystem;}
 
 	USHORT GetMaxInEmpire() const {return m_MaxInEmpire.Number;}
-	
+
 	BOOLEAN GetOnlyHomePlanet() const {return m_bOnlyHomePlanet;}
 
 	BOOLEAN GetOnlyOwnColony() const {return m_bOnlyOwnColony;}
@@ -133,7 +133,7 @@ public:
 	BYTE GetPropulsionTech() const {return m_iPropulsionTech;}
 	BYTE GetConstructionTech() const {return m_iConstructionTech;}
 	BYTE GetWeaponTech() const {return m_iWeaponTech;}
-	
+
 	USHORT GetNeededIndustry() const {return m_iNeededIndustry;}
 	USHORT GetNeededTitan() const {return m_iNeededTitan;}
 	USHORT GetNeededDeuterium() const {return m_iNeededDeuterium;}
@@ -142,13 +142,13 @@ public:
 	USHORT GetNeededIridium() const {return m_iNeededIridium;}
 	USHORT GetNeededDeritium() const {return m_iNeededDeritium;}
 	USHORT GetNeededResource(BYTE res) const;
-	
+
 	USHORT GetPredecessorID() const {return m_iPredecessorID;}
 
 	USHORT GetEquivalent(USHORT race) const {return m_iBuildingEquivalent[race];}
 
 	USHORT GetNeededEnergy() const {return m_iNeededEnergy;}
-	
+
 	short GetFoodProd() const {return m_iFood;}
 	USHORT GetIPProd() const {return m_iIP;}
 	USHORT GetEnergyProd() const {return m_iEnergy;}
@@ -164,7 +164,7 @@ public:
 	short GetCredits() const {return m_iCredits;}
 	short GetMoralProd() const {return m_iMoral;}
 	short GetMoralProdEmpire() const {return m_iMoralEmpire;}
-	
+
 	short GetFoodBoni() const {return m_iFoodBoni;}
 	short GetIndustryBoni() const {return m_iIndustryBoni;}
 	short GetEnergyBoni() const {return m_iEnergyBoni;}
@@ -185,7 +185,7 @@ public:
 	short GetPropulsionTechBoni() const {return m_iPropulsionTechBoni;}
 	short GetConstructionTechBoni() const {return m_iConstructionTechBoni;}
 	short GetWeaponTechBoni() const {return m_iWeaponTechBoni;}
-	
+
 	short GetInnerSecurityBoni() const {return m_iInnerSecurityBoni;}
 	short GetEconomySpyBoni() const {return m_iEconomySpyBoni;}
 	short GetEconomySabotageBoni() const {return m_iEconomySabotageBoni;}
@@ -193,7 +193,7 @@ public:
 	short GetResearchSabotageBoni() const {return m_iResearchSabotageBoni;}
 	short GetMilitarySpyBoni() const {return m_iMilitarySpyBoni;}
 	short GetMilitarySabotageBoni() const {return m_iMilitarySabotageBoni;}
-	
+
 	// Hier die restlichen Zugriffsfunktionen
 	BOOLEAN GetShipYard() const {return m_bShipYard;}
 	SHIP_SIZE::Typ GetMaxBuildableShipSize() const {return m_iBuildableShipSizes;}
@@ -230,31 +230,31 @@ public:
 	short GetNeededSystems() const { return m_iNeededSystems; }
 
 	// zum Schreiben der Membervariablen
-	
-	
+
+
 	// zum Schreiben der Membervariablen
 	void SetRunningNumber(USHORT RunningNumber) {m_iRunningNumber = RunningNumber;}
-	
+
 	void SetOwnerOfBuilding(BYTE owner) {m_iOwnerOfBuilding = owner;}
-	
+
 	void SetBuildingName(const CString& BuildingName) {m_strBuildingName = BuildingName;}
 
 	void SetBuildingDescription(const CString& Description) {m_strDescription = Description;}
-	
+
 	void SetUpgradeable(BOOLEAN TrueOrFalse) {m_bUpgradeable = TrueOrFalse;}
 
 	void SetGraphikFileName(const CString& FileName) {m_strGraphikFileName = FileName;}
-	
-	void SetMaxInSystem(USHORT number, USHORT runningNumber) {m_MaxInSystem.Number = number; 
+
+	void SetMaxInSystem(USHORT number, USHORT runningNumber) {m_MaxInSystem.Number = number;
 		m_MaxInSystem.RunningNumber = runningNumber;}
 
-	void SetMaxInEmpire(USHORT number, USHORT runningNumber) {m_MaxInEmpire.Number = number; 
+	void SetMaxInEmpire(USHORT number, USHORT runningNumber) {m_MaxInEmpire.Number = number;
 		m_MaxInEmpire.RunningNumber = runningNumber;}
 
 	void SetOnlyHomePlanet(BOOLEAN TrueOrFalse) {m_bOnlyHomePlanet = TrueOrFalse;}
-	
+
 	void SetOnlyOwnColony(BOOLEAN TrueOrFalse) {m_bOnlyOwnColony = TrueOrFalse;}
-	
+
 	void SetOnlyMinorRace(BOOLEAN TrueOrFalse) {m_bOnlyMinorRace = TrueOrFalse;}
 
 	void SetOnlyTakenSystem(BOOLEAN TrueOrFalse) {m_bOnlyTakenSystem = TrueOrFalse;}
@@ -263,10 +263,10 @@ public:
 
 	void SetMinHabitants(USHORT min) {m_iMinHabitants = min;}
 
-	void SetMinInSystem(USHORT number, USHORT runningNumber) {m_MinInSystem.Number = number; 
+	void SetMinInSystem(USHORT number, USHORT runningNumber) {m_MinInSystem.Number = number;
 		m_MinInSystem.RunningNumber = runningNumber;}
 
-	void SetMinInEmpire(USHORT number, USHORT runningNumber) {m_MinInEmpire.Number = number; 
+	void SetMinInEmpire(USHORT number, USHORT runningNumber) {m_MinInEmpire.Number = number;
 		m_MinInEmpire.RunningNumber = runningNumber;}
 
 	void SetOnlyRace(BOOLEAN TrueOrFalse) {m_bOnlyRace = TrueOrFalse;}
@@ -294,7 +294,7 @@ public:
 		case PLANETCLASS_R:	SetAttributes(allow, PLANETTYPE_R, m_PlanetTypes);	break;
 		case PLANETCLASS_S:	SetAttributes(allow, PLANETTYPE_S, m_PlanetTypes);	break;
 		case PLANETCLASS_T:	SetAttributes(allow, PLANETTYPE_T, m_PlanetTypes);	break;
-		case PLANETCLASS_Y:	SetAttributes(allow, PLANETTYPE_Y, m_PlanetTypes);	break;		
+		case PLANETCLASS_Y:	SetAttributes(allow, PLANETTYPE_Y, m_PlanetTypes);	break;
 		}
 	}
 
@@ -304,7 +304,7 @@ public:
 	void SetPropulsionTech(BYTE PropulsionTech) {m_iPropulsionTech = PropulsionTech;}
 	void SetConstructionTech(BYTE ConstructionTech) {m_iConstructionTech = ConstructionTech;}
 	void SetWeaponTech(BYTE WeaponTech) {m_iWeaponTech = WeaponTech;}
-	
+
 	void SetNeededIndustry(USHORT NeededIndustry) {m_iNeededIndustry = NeededIndustry;}
 	void SetNeededTitan(USHORT NeededTitan) {m_iNeededTitan = NeededTitan;}
 	void SetNeededDeuterium(USHORT NeededDeuterium) {m_iNeededDeuterium = NeededDeuterium;}
@@ -318,7 +318,7 @@ public:
 	void SetEquivalent(BYTE race, USHORT equivalentID) {m_iBuildingEquivalent[race] = equivalentID;}
 
 	void SetNeededEnergy(USHORT NeededEnergy) {m_iNeededEnergy = NeededEnergy;}
-	
+
 	void SetFoodProd(short Food) {m_iFood = Food;}
 	void SetIPProd(USHORT IP) {m_iIP = IP;}
 	void SetEnergyProd(USHORT Energy) {m_iEnergy = Energy;}
@@ -333,7 +333,7 @@ public:
 	void SetCreditsProd(short Credits) {m_iCredits = Credits;}
 	void SetMoralProd(short MoralProd) {m_iMoral = MoralProd;}
 	void SetMoralProdEmpire(short MoralProdEmpire) {m_iMoralEmpire = MoralProdEmpire;}
-	
+
 	void SetFoodBoni(short FoodBoni) {m_iFoodBoni = FoodBoni;}
 	void SetIndustryBoni(short IndustryBoni) {m_iIndustryBoni = IndustryBoni;}
 	void SetEnergyBoni(short EnergyBoni) {m_iEnergyBoni = EnergyBoni;}
@@ -347,14 +347,14 @@ public:
 	void SetDeritiumBoni(short DeritiumBoni) {m_iDeritiumBoni = DeritiumBoni;}
 	void SetAllRessourceBoni(short AllRessourceBoni) {m_iAllRessourceBoni = AllRessourceBoni;}
 	void SetCreditsBoni(short CreditsBoni) {m_iCreditsBoni = CreditsBoni;}
-	
+
 	void SetBioTechBoni(short BioTechBoni) {m_iBioTechBoni = BioTechBoni;}
 	void SetEnergyTechBoni(short EnergyTechBoni) {m_iEnergyTechBoni = EnergyTechBoni;}
 	void SetCompTechBoni(short CompTechBoni) {m_iCompTechBoni = CompTechBoni;}
 	void SetPropulsionTechBoni(short PropulsionTechBoni) {m_iPropulsionTechBoni = PropulsionTechBoni;}
 	void SetConstructionTechBoni(short ConstructionTechBoni) {m_iConstructionTechBoni = ConstructionTechBoni;}
 	void SetWeaponTechBoni(short WeaponTechBoni) {m_iWeaponTechBoni = WeaponTechBoni;}
-	
+
 	void SetInnerSecurityBoni(short InnerSecurityBoni) {m_iInnerSecurityBoni = InnerSecurityBoni;}
 	void SetEconomySpyBoni(short EconomySpyBoni) {m_iEconomySpyBoni = EconomySpyBoni;}
 	void SetEconomySabotageBoni(short EconomySabotageBoni) {m_iEconomySabotageBoni = EconomySabotageBoni;}
@@ -362,7 +362,7 @@ public:
 	void SetResearchSabotageBoni(short ResearchSabotageBoni) {m_iResearchSabotageBoni = ResearchSabotageBoni;}
 	void SetMilitarySpyBoni(short MilitarySpyBoni) {m_iMilitarySpyBoni = MilitarySpyBoni;}
 	void SetMilitarySabotageBoni(short MilitarySabotageBoni) {m_iMilitarySabotageBoni = MilitarySabotageBoni;}
-	
+
 	void SetShipYard(BOOLEAN TrueOrFalse) {m_bShipYard = TrueOrFalse;}
 	void SetBuildableShipTypes(SHIP_SIZE::Typ nSize) {m_iBuildableShipSizes = nSize;}
 	void SetShipYardSpeed(short speed) {m_iShipYardSpeed = speed;}
@@ -408,35 +408,35 @@ public:
 	/// @param pResearch Forschungsobjekt der Rasse
 	/// @return Wahrheitswert
 	bool IsBuildingBuildableNow(const BYTE reserachLevels[6]) const;
-	
+
 private:
 	// Die laufende Nummer (ID) des Gebäudes
 	USHORT m_iRunningNumber;
 
 	// Rasse wer Gebäude bauen kann
 	BYTE m_iOwnerOfBuilding;
-	
+
 	// Der Name des Gebäudes
 	CString m_strBuildingName;
-	
+
 	// Die Gebäudebeschreibung
 	CString m_strDescription;
 
 	// Ist das Gebäude upgradebar
 	BOOLEAN m_bUpgradeable;
-	
+
 	// Der Name der zum Gebäude gehörenden Grafikdatei
 	CString m_strGraphikFileName;
-	
+
 	// maximale Anzahl des Gebäudes die wir gebaut haben dürfen im System
 	NumberOfID m_MaxInSystem;
-	
+
 	// maximale Anzahl des Gebäudes die wir in allen Systemen gebaut haben müssen
 	NumberOfID m_MaxInEmpire;
-	
+
 	// Nur baubar im Heimatsystem der jeweiligen Rasse
 	BOOLEAN m_bOnlyHomePlanet;
-	
+
 	// Nur baubar auf eigenen Kolonien bzw. auch im Heimatsystem
 	BOOLEAN m_bOnlyOwnColony;
 
@@ -452,13 +452,13 @@ private:
 
 	// minimale Bevölkerungsvoraussetzung im System in Milliarden
 	USHORT m_iMinHabitants;
-	
+
 	// minimale Anzahl des Gebäudes die wir gebaut haben müssen im System
 	NumberOfID m_MinInSystem;
-	
+
 	// minimale Anzahl des Gebäudes die wir in allen Systemen gebaut haben müssen
 	NumberOfID m_MinInEmpire;
-	
+
 	// Wirklich nur die Rasse der das Gebäude gehört darf dieses bauen, z.B. wenn Planet erobert wurde und
 	// Eroberer bestimmte Gebäude nicht bauen darf, obwohl diese schon stehen
 	BOOLEAN m_bOnlyRace;
@@ -472,8 +472,8 @@ private:
 	BYTE m_iCompTech;
 	BYTE m_iPropulsionTech;
 	BYTE m_iConstructionTech;
-	BYTE m_iWeaponTech;	
-	
+	BYTE m_iWeaponTech;
+
 	// Die benötigten Rohstoffe für den Bau des Gebäudes
 	USHORT m_iNeededIndustry;
 	USHORT m_iNeededTitan;
@@ -482,15 +482,15 @@ private:
 	USHORT m_iNeededCrystal;
 	USHORT m_iNeededIridium;
 	USHORT m_iNeededDeritium;
-	
+
 	// Die RunningNumber (ID) des Vorgängers des Gebäudes. Wird für alle Updates benötigt.
 	USHORT m_iPredecessorID;
-	
+
 	// Gebäudeäquivalent zu den anderen Rassen. Darin wird die RunningNumber des Gebäudeäquivalents gespeichert.
 	USHORT m_iBuildingEquivalent[7];
 
 	// Die nötige Energie zum Betrieb des Gebäudes
-	USHORT m_iNeededEnergy;	
+	USHORT m_iNeededEnergy;
 
 	// Ist das Gebäude online?
 	BOOLEAN m_bAllwaysOnline;
@@ -524,7 +524,7 @@ private:
 	short m_iCrystalBoni;
 	short m_iIridiumBoni;
 	short m_iDeritiumBoni;
-	short m_iAllRessourceBoni;	
+	short m_iAllRessourceBoni;
 	short m_iCreditsBoni;
 
 	// Forschungstechboni
@@ -534,7 +534,7 @@ private:
 	short m_iPropulsionTechBoni;
 	short m_iConstructionTechBoni;
 	short m_iWeaponTechBoni;
-	
+
 	// Sicherheitsboni
 	short m_iInnerSecurityBoni;
 	short m_iEconomySpyBoni;
@@ -574,7 +574,7 @@ private:
 
 	// benötigt das Gebäude Arbeiter?
 	BOOLEAN m_bWorker;
-	
+
 	// ist das Gebäude niemals fertig (z.B. ein Tribunal)
 	BOOLEAN m_bNeverReady;
 

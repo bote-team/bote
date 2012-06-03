@@ -33,7 +33,7 @@ public:
 
 	/// Standardkonstruktor
 	CVictoryObserver(void);
-	
+
 	/// Standarddestruktor
 	virtual ~CVictoryObserver(void);
 
@@ -52,11 +52,11 @@ public:
 	int GetRivalsLeft(void) const {return m_nRivalsLeft;}
 
 	int GetVictoryStatus(const CString& sRaceID, VICTORYTYPE nType) const;
-	
+
 	int GetBestVictoryValue(VICTORYTYPE nType) const;
 
 	int GetNeededVictoryValue(VICTORYTYPE nType) const;
-		
+
 	void Observe(void);
 
 	void AddCombatWin(const CString& sRaceID) {m_mCombatWins[sRaceID] += 1;}
@@ -68,7 +68,7 @@ public:
 private:
 	// Attribute
 	bool m_bConditionStatus[VICTORY_CONDITION_NUMBER];	///< ist die jeweilige Siegbedingung aktiviert?
-	
+
 	map<CString, int> m_mDiplomacy;
 	map<CString, int> m_mSlavery;
 	map<CString, int> m_mResearch;
@@ -81,4 +81,4 @@ private:
 	VICTORYTYPE m_nVictoryType;
 	CString m_sVictoryRace;
 };
- 
+

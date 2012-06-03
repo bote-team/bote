@@ -78,11 +78,11 @@ BOOLEAN CTorpedo::Fly(CArray<CCombatShip*,CCombatShip*>* CS)
 	// wird dann getroffen. Wenn ich kein Schiff finde, welches auf der Bahn liegt und
 	// dessen Distanz kleiner TORPEDOSPEED ist oder ich finde gar kein Schiff auf der Bahn,
 	// dann können wir auf dem Punkt nach TORPEDOSPEED-Entfernung mit dem Torpedo vorrücken
-	
+
 	// Stützpunkt ist der Punkt m_KO
 	// Der Vektor ist der Vektor von m_KO zu m_TargetKO
 	// t.x = (D.x - A.x) / C.x mit C = (B-A) wobei A = m_KO und B = m_TargetKO und D = CS->m_KO
-	
+
 	vec3i c = m_TargetKO - m_KO;
 	int	minDistance = -1;
 	short shipNumber = -1;
@@ -104,7 +104,7 @@ BOOLEAN CTorpedo::Fly(CArray<CCombatShip*,CCombatShip*>* CS)
 				t.z = 0;
 			// Wenn irgendein t ungleich null ist aber negativ ist, dann liegt das Schiff zwar auf unserer Flugbahn,
 			// aber entgegengesetzt zur Torpedoflugrichtung. Also überprüfe ich das jedes t größer gleich NULL sein muß
-			if (t.x >= 0 && t.y >= 0 && t.z >= 0)	
+			if (t.x >= 0 && t.y >= 0 && t.z >= 0)
 				if ((t.x == 0 && t.y == t.z) || (t.y == 0 && t.x == t.z) || (t.z == 0 && t.x == t.y) || (t.x == t.y == t.z))
 					// Dann liegt das Schiff auf unserer Flugbahn, Distanz berechnen
 					if (minDistance == -1 || minDistance > m_KO.Distance(CS->GetAt(i)->m_KO))
@@ -120,7 +120,7 @@ BOOLEAN CTorpedo::Fly(CArray<CCombatShip*,CCombatShip*>* CS)
 		// Die Anzahl der auf diesem Feld gleichzeitigen Torpedos mit selben Ziel durchgehen
 		BYTE count = 0;
 		for (int i = 0; i < m_iNumber; i++)
-			// Wenn der Torpedo trifft wird count um eins inkrementiert		
+			// Wenn der Torpedo trifft wird count um eins inkrementiert
 			count += PerhapsImpact(CS->GetAt(shipNumber), (USHORT)minDistance);
 		// Die Anzahl dieser Torpedos in dem Feld um die Anzahl der Torpedos verringern, welche ihr Ziel getroffen haben
 		m_iNumber -= count;
@@ -152,7 +152,7 @@ void CTorpedo::MakeDamage(CCombatShip* CS)
 //	dam.Format("Torpedoschaden an Schiff zuvor: %s Schilde: %d Hülle: %d Torpedoschaden: %d",
 //		CS->m_pShip->GetShipClass(), CS->m_pShip->GetShield()->GetCurrentShield(),
 //		CS->m_pShip->GetHull()->GetCurrentHull(), torpedoDamage);
-//	MYTRACE(MT::LEVEL_INFO, dam);	
+//	MYTRACE(MT::LEVEL_INFO, dam);
 
 	int toHull = 0;
 	// Wenn das feindliche Schiff keine ablative Hüllenpanzerung hat, dann gehen 10% des Schadens sofort
@@ -168,7 +168,7 @@ void CTorpedo::MakeDamage(CCombatShip* CS)
 	CS->m_pShip->GetHull()->SetCurrentHull(-toHull);
 	// den restlichen Torpedoschaden ermitteln, welcher nicht direkt auf die Hülle ging
 	torpedoDamage -= toHull;
-	
+
 	// Torpedos verlieren ihre Effizienz, wenn sie auf noch relativ starke Schilde treffen. Umso weniger von den Schilden
 	// noch aktiv ist, umso stärker wirkt der Torpedo. Dies gilt jedoch nicht für Microtorpedos.
 	if (CTorpedoInfo::GetMicro(m_byType) == FALSE)
@@ -206,7 +206,7 @@ void CTorpedo::MakeDamage(CCombatShip* CS)
 		CS->m_pShip->GetHull()->SetCurrentHull((int)CS->m_pShip->GetShield()->GetCurrentShield() - torpedoDamage);
 		CS->m_pShip->GetShield()->SetCurrentShield(0);
 	}
-	
+
 	// Wenn wir schilddurchschlagende Torpedos haben und das feindliche Schiff regenerative Schilde, so kann es diese
 	// auf unsere Waffen einstellen
 	if (CTorpedoInfo::GetPenetrating(m_byType) == TRUE && CS->m_pShip->GetShield()->GetRegenerative() == TRUE)
@@ -220,7 +220,7 @@ void CTorpedo::MakeDamage(CCombatShip* CS)
 //		CS->m_pShip->GetShipClass(), CS->m_pShip->GetShield()->GetCurrentShield(),
 //		CS->m_pShip->GetHull()->GetCurrentHull(), torpedoDamage);
 //	//AfxMessageBox(dam);
-//	MYTRACE(MT::LEVEL_INFO, dam);	
+//	MYTRACE(MT::LEVEL_INFO, dam);
 }
 
 // Diese private Funktion setzt den Torpedo auf den nächsten Punkt seiner Flugbahn. Diese Funktion nur aufrufen,
@@ -240,7 +240,7 @@ BOOLEAN CTorpedo::FlyToNextPosition()
 	short speed = TORPEDOSPEED;
 	if (speed > distance)
 		speed = (short)distance;
-	
+
 	float multi = (float)speed / (float)distance;
 	vec3i temp = b - a;
 	// Runden durch floor und +0.5
@@ -266,7 +266,7 @@ BOOLEAN CTorpedo::PerhapsImpact(CCombatShip* CS, USHORT minDistance)
 	//	+ m_iModi		... Modifikator durch Crew welche den Torpedo abfeuerte, den Acc durch den Werfer
 	//						und den ToHitBonus durch die Manövriebarkeit
 	m_iModi += CCombatShip::GetToHitBoni(m_byManeuverability, CS->m_byManeuverability);
-	
+
 	//	+ m_iDistance	... Schon zurückgelegte Strecke des Torpedos
 	//	+ CS			... Das Zielschiff selbst
 
@@ -276,12 +276,12 @@ BOOLEAN CTorpedo::PerhapsImpact(CCombatShip* CS, USHORT minDistance)
 	// je erfahrener die Crew des Zielschiffes ist,	umso geringer ist die Trefferwahrscheinlichkeit
 
 	// zum Algorithmus:
-	
+
 	// ein Torpedo trifft normalerweise mit einer Wahrscheinlichkeit von XX%.
 	// m_iMode - (m_iDistance+minDistance)*0.1 - CS->Manövrierbarkeit*2 - CS->Crewerfahrung???
-	short probability = m_iModi - (short)((m_iDistance + minDistance) * 0.1) - 
+	short probability = m_iModi - (short)((m_iDistance + minDistance) * 0.1) -
 		CCombatShip::GetToHitMali(m_byManeuverability, CS->m_byManeuverability) - CS->GetCrewExperienceModi();
-			
+
 	if (CS->m_pShip->GetShipSize() == SHIP_SIZE::SMALL)
 		probability = (short)(probability * 0.66);
 	else if (CS->m_pShip->GetShipSize() == SHIP_SIZE::BIG)
@@ -291,7 +291,7 @@ BOOLEAN CTorpedo::PerhapsImpact(CCombatShip* CS, USHORT minDistance)
 
 	// Die Wahrscheinlichkeit beträgt mindestens 10% für einen Einschlag
 	probability = max(probability, 10);
-	
+
 	short random = rand()%100;	// {0,99}
 
 //	CString s;

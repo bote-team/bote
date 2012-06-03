@@ -30,10 +30,10 @@ CRace::~CRace(void)
 ///////////////////////////////////////////////////////////////////////
 // Speichern / Laden
 ///////////////////////////////////////////////////////////////////////
-void CRace::Serialize(CArchive &ar)		
+void CRace::Serialize(CArchive &ar)
 {
 	CObject::Serialize(ar);
-	
+
 	// wenn gespeichert wird
 	if (ar.IsStoring())
 	{
@@ -79,7 +79,7 @@ void CRace::Serialize(CArchive &ar)
 		}
 
 		// grafische Attribute
-		ar << m_sGraphicFile;	// Name der zugehörigen Grafikdatei		
+		ar << m_sGraphicFile;	// Name der zugehörigen Grafikdatei
 	}
 	// wenn geladen wird
 	else if (ar.IsLoading())
@@ -145,7 +145,7 @@ void CRace::Serialize(CArchive &ar)
 		m_vDiplomacyNewsOut.resize(vectorSize);
 		for (size_t i = 0; i < vectorSize; i++)
 			m_vDiplomacyNewsOut[i].Serialize(ar);
-		
+
 		// gemachte Angebote der letzten beiden Runden
 		m_mLastOffers.clear();
 		mapSize = 0;
@@ -185,7 +185,7 @@ bool CRace::IsRaceProperty(RACE_PROPERTY::Typ nProp) const
 		case RACE_PROPERTY::SECRET:		return (m_nProperty & RACE_SECRET)		== RACE_SECRET;
 		case RACE_PROPERTY::SNEAKY:		return (m_nProperty & RACE_SNEAKY)		== RACE_SNEAKY;
 		case RACE_PROPERTY::SOLOING:	return (m_nProperty & RACE_SOLOING)		== RACE_SOLOING;
-		case RACE_PROPERTY::WARLIKE:	return (m_nProperty & RACE_WARLIKE)		== RACE_WARLIKE;		
+		case RACE_PROPERTY::WARLIKE:	return (m_nProperty & RACE_WARLIKE)		== RACE_WARLIKE;
 	}
 
 	ASSERT(FALSE);
@@ -219,7 +219,7 @@ void CRace::SetRaceProperty(RACE_PROPERTY::Typ nProp, bool is)
 /// @return <code>true</code>, wenn die Rasse die Spezialeigenschaft besitzt, sonst <code>false</code>
 bool CRace::HasSpecialAbility(int ability) const
 {
-	return (m_nSpecialAbility & ability) > 0;	
+	return (m_nSpecialAbility & ability) > 0;
 }
 
 /// Funktion zum Setzen von Spezialeigenschaften der Rasse.
@@ -246,7 +246,7 @@ void CRace::SetRelation(const CString& sRaceID, short nAdd)
 		nRelation = 0;
 
 	m_mRelations[sRaceID] = (BYTE)nRelation;
-	
+
 	if (nRelation == 0)
 		m_mRelations.erase(sRaceID);
 }
@@ -314,7 +314,7 @@ void CRace::MakeOffersAI(void)
 					break;
 				}
 			}
-			
+
 			if (bOffer)
 				continue;
 			*/
@@ -373,7 +373,7 @@ void CRace::Reset(void)
 
 	// grafische Attribute
 	m_sGraphicFile	= "";			// Name der zugehörigen Grafikdatei
-	
+
 	// Diplomatie-KI nullen
 	if (m_pDiplomacyAI)
 	{
@@ -389,7 +389,7 @@ bool CRace::IsRaceContacted(const CString& sRaceID) const
 {
 	if (m_vInContact.find(sRaceID) != m_vInContact.end())
 		return true;
-	
+
 	return false;
 }
 
@@ -409,7 +409,7 @@ void CRace::SetIsRaceContacted(const CString& sRace, bool bKnown)
 		{
 			m_vInContact.erase(sRace);
 			return;
-		}		
+		}
 	}
 
 	// soll die Rasse hinzugefügt werden, ist aber noch nicht im Vektor. Dann einfach anhängen
@@ -460,16 +460,16 @@ CString CRace::GetTooltip(void) const
 	sProb += CHTMLStringBuilder::GetHTMLStringNewLine();
 	sProb += CHTMLStringBuilder::GetHTMLStringHorzLine();
 	sProb += CHTMLStringBuilder::GetHTMLStringNewLine();
-	
+
 	CString s = "";
 	for (UINT i = 0; i < sProperties.size(); i++)
 	{
-		s += sProperties[i];						
+		s += sProperties[i];
 		s += CHTMLStringBuilder::GetHTMLStringNewLine();
 	}
 	s = CHTMLStringBuilder::GetHTMLColor(s);
 	s = CHTMLStringBuilder::GetHTMLHeader(s, _T("h5"));
 	sProb += s;
 
-	return CHTMLStringBuilder::GetHTMLCenter(sName + sProb);	
+	return CHTMLStringBuilder::GetHTMLCenter(sName + sProb);
 }

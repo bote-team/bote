@@ -21,10 +21,10 @@ using namespace std;
  * @version 0.1
  */
 class CIntelligence : public CObject
-{	
+{
 public:
 	DECLARE_SERIAL (CIntelligence)
-	
+
 	/// Standardkonstruktor
 	CIntelligence(void);
 
@@ -113,7 +113,7 @@ public:
 	/// @param sRace Rasse
 	/// @param add der zu addierende Wert
 	void AddSPStoragePoints(BOOLEAN type, const CString& sRace, int add);
-	
+
 	/// Funktion fügt den im Parameter übergebenen Wert dem Bonus für die innere Sicherheit hinzu.
 	/// @param add hinzuzufügender Bonus
 	void AddInnerSecurityBonus(short add) {m_nInnerSecurityBoni += add;}

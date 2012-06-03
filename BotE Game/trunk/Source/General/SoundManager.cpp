@@ -26,7 +26,7 @@ CSoundManager::~CSoundManager()
 /// @return Instanz dieser Klasse
 CSoundManager* CSoundManager::GetInstance(void)
 {
-	static CSoundManager instance; 
+	static CSoundManager instance;
     return &instance;
 }
 
@@ -34,7 +34,7 @@ std::string CSoundManager::GetPathName(SNDMGR_VALUE nSound, network::RACE nRace)
 {
 	using namespace network;
 	std::string msg;
-	
+
 	switch (nSound)
 	{
 	// Hintergrundmusik
@@ -76,7 +76,7 @@ std::string CSoundManager::GetPathName(SNDMGR_VALUE nSound, network::RACE nRace)
 	case SNDMGR_MSG_STARBASE_READY:		msg = "starbaseReady.ogg"; break;
 	case SNDMGR_MSG_TERRAFORM_COMPLETE:	msg = "terraformComplete.ogg"; break;
 	case SNDMGR_MSG_TERRAFORM_SELECT:	msg = "terraformSelect.ogg"; break;
-	
+
 	// TODO ergänzen
 
 	default:							return "";
@@ -162,7 +162,7 @@ BOOL CSoundManager::StartMusic(network::RACE race, float fVolume)
 {
 	// zugehörigen Dateinamen ermitteln, abbrechen, falls keine Zuordnung vorhanden ist
 	std::string pathName = GetPathName(GetRaceMusic(race));
-	
+
 	// Musik starten
 	return StartMusic(pathName.c_str(), fVolume);
 }
@@ -214,7 +214,7 @@ error:
 void CSoundManager::StopMusic()
 {
 	if (!m_pSystem) return;
-	
+
 	if (m_pMusicChannel) m_pMusicChannel->stop();
 	if (m_pMusic) m_pMusic->release();
 
@@ -291,7 +291,7 @@ BOOL CSoundManager::PlaySound(SNDMGR_VALUE nSound, SNDMGR_PRIO nPriority, float 
 		}
 		else if (m_nLastResult != FMOD_ERR_INVALID_HANDLE)
 			return FALSE;
-		
+
 		// FMOD_ERR_INVALID_HANDLE: Sound zuvor wurde schon fertig abgespielt, in diesem Fall
 		// nicht abbrechen
 	}

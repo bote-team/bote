@@ -36,20 +36,20 @@ protected: // Nur aus Serialisierung erzeugen
 	float m_fDifficultyLevel;			///< der Schwierigkeitsgrad eines Spiels
 	float m_fStardate;					///< Startrek Sternzeit
 	CPoint m_ptKO;						///< Koordinaten des aktuell angeklickten Sektors
-			
+
 	BYTE m_iShowWhichTechInView3;		///< Welche Tech soll in View3 angezeigt werden?
 	short m_iShowWhichShipInfoInView3;	///< Welche Schiffsinfo soll in View 3 angezeigt werden
-	
+
 	CPoint m_ptScrollPoint;				///< aktuelle Scrollposition der Galaxieansicht wird auf diesen Point gespeichert
 
 	std::vector<std::vector<CSector>> m_Sector;
 	std::vector<std::vector<CSystem>> m_System;
-	
+
 	//CSector** m_Sector/*[STARMAP_SECTORS_HCOUNT][STARMAP_SECTORS_VCOUNT]*/;	///< Matrix von Sektoren der Klasse CSector anlegen
 	//CSystem** m_System/*[STARMAP_SECTORS_HCOUNT][STARMAP_SECTORS_VCOUNT]*/;	///< auf jeden Sektor ein potentielles System anlegen
-	
+
 	CGenShipName m_GenShipName;			///< Variable, die alle möglichen Schiffsnamen beinhaltet
-	
+
 	CArray<CTroopInfo> m_TroopInfo;		// In diesem Feld werden alle Informationen zu den Truppen gespeichert
 	ShipInfoArray m_ShipInfoArray;		// dynamisches Feld, in dem die ganzen Informationen zu den Schiffen gespeichert sind
 	ShipArray m_ShipArray;				// dynamisches Feld, in das die ganzen Schiffe gespeichert werden
@@ -58,15 +58,15 @@ protected: // Nur aus Serialisierung erzeugen
 	short m_iNumberOfFleetShip;			// Das Schiff welches sozusagen die Flotte anführt
 	short m_iNumberOfTheShipInFleet;	// Nummber des Schiffes in der Flotte, wenn wir ein Flotte haben
 	short m_NumberOfTheShipInArray;		// Hilfsvariable, mit der auf ein spezielles Schiff im Array zugekriffen werden kann
-			
-	CStatistics m_Statistics;			///< Statistikobjekt, in dem Statistiken des Spiels gespeichert sind	
-	
+
+	CStatistics m_Statistics;			///< Statistikobjekt, in dem Statistiken des Spiels gespeichert sind
+
 	CNetworkHandler *m_pNetworkHandler;
 	bool m_bDataReceived;				///< hat der Client die Daten komplett vom Server erhalten
 	bool m_bRoundEndPressed;			///< Wurde der Rundenendebutton gedrückt
 	bool m_bDontExit;					///< hartes Exit verhindern, wenn Spiel beginnt
 	bool m_bGameLoaded;					///< wurde im Dialog ein zu ladendes Spiel ausgewählt
-	
+
 	CArray<SNDMGR_MESSAGEENTRY> m_SoundMessages[7];	///< Die einzelnen Sprachmitteilungen zur neuen Runde
 	USHORT m_iSelectedView[7];						///< Welche View soll in der MainView angezeigt werden? z.B. Galaxie oder System
 
@@ -78,7 +78,7 @@ protected: // Nur aus Serialisierung erzeugen
 	CVictoryObserver m_VictoryObserver;	///< Überwachung der Siegbedingungen
 
 	CReManager m_RandomEventManager;    ///< Berechnet Random Events
-	
+
 public:
 	// Operationen
 public:
@@ -99,7 +99,7 @@ public:
 	/// <code>race</code> wird beim Schreiben ignoriert.
 	void SerializeEndOfRoundData(CArchive &ar, network::RACE race);
 	//}}AFX_VIRTUAL
-	
+
 	/**
 	 *  Lädt die angegebene Datei, deserialisiert die in der Datei enthaltenen Daten ins Dokument.
 	 *  Ruft unmittelbar vor dem Deserialisieren <code>Reset()</code> auf. <code>Reset()</code> wird
@@ -123,7 +123,7 @@ public:
 	// Implementierung
 	/// Standardkonstruktor
 	CBotf2Doc(void);
-	
+
 	/// Standarddestruktor
 	virtual ~CBotf2Doc(void);
 
@@ -136,37 +136,37 @@ public:
 
 	/// Funktion liest die Ini-Datei neu ein und legt die Werte neu fest.
 	void ResetIniSettings(void);
-	
+
 	/// Funktion gibt den Schwierigkeitsgrad des Spiels zurück.
 	float GetDifficultyLevel(void) const {return m_fDifficultyLevel;}
-	
+
 	const CShip& GetShip(int number) const {return m_ShipArray.GetAt(number);}
-	
-	const CPoint& GetKO(void) const {return m_ptKO;} 
+
+	const CPoint& GetKO(void) const {return m_ptKO;}
 	void SetKO(int x, int y);
 	void SetKO(const CPoint& ko) { SetKO(ko.x, ko.y); }
-	
+
 	/// Funktion gibt die Koordinate des Hauptsystems einer Majorrace zurück.
 	/// @param sMajor Rassen-ID
 	/// @return Koordinate auf der Galaxiemap
 	CPoint GetRaceKO(const CString& sMajorID);
-		
+
 	CSector& GetSector(int x, int y) { ASSERT(x < STARMAP_SECTORS_HCOUNT && y < STARMAP_SECTORS_VCOUNT); return m_Sector[x][y]; }
 	CSector& GetSector(const CPoint& ko) { return GetSector(ko.x, ko.y); }
-	CSystem& GetSystem(int x, int y) { ASSERT(x < STARMAP_SECTORS_HCOUNT && y < STARMAP_SECTORS_VCOUNT); return m_System[x][y]; }	
+	CSystem& GetSystem(int x, int y) { ASSERT(x < STARMAP_SECTORS_HCOUNT && y < STARMAP_SECTORS_VCOUNT); return m_System[x][y]; }
 	CSystem& GetSystem(const CPoint& ko) { return GetSystem(ko.x, ko.y); }
-	
+
 	CBuildingInfo& GetBuildingInfo(int id) {ASSERT(id > 0); return BuildingInfo[id-1];}
 	const CString& GetBuildingName(int id) const {ASSERT(id > 0); return BuildingInfo[id-1].GetBuildingName();}
 	const CString& GetBuildingDescription(int id) const {ASSERT(id > 0); return BuildingInfo[id-1].GetBuildingDescription();}
-	
+
 	/// Funktion lädt für die ausgewählte Spielerrasse alle Grafiken für die Views.
 	void LoadViewGraphics(void);
 
 	/// Funktion veranlasst die Views zu jeder neuen Runde ihr Aufgaben zu erledigen, welche zu jeder neuen Runde ausgeführt
 	/// werden müssen. Es werden zum Beispiel Variablen wieder zurückgesetzt.
 	void DoViewWorkOnNewRound(void);
-		
+
 	void PrepareData(void);						// generiert ein neues Spiel
 	void NextRound(void);						// zur Nächsten Runde voranschreiten
 	void ApplyShipsAtStartup(void);				// Die Schiffe zum Start anlegen, übersichtshalber nicht alles in NewDocument
@@ -176,7 +176,7 @@ public:
 	void ReadShipInfosFromFile(void);			// Die Infos zu den Schiffen aus der Datei einlesen
 	void ReadTroopInfosFromFile(void);			// Die Infos zu den Truppen aus der Datei einlesen
 	void BuildBuilding(USHORT id, const CPoint& KO);	// Das jeweilige Gebäude bauen
-	
+
 	/// Funktion zum bauen des jeweiligen Schiffes in einem System.
 	/// @param ID ID des Schiffes
 	/// @param KO Sektorkoordinate des Schiffes
@@ -197,16 +197,16 @@ public:
 	/// @param sEvent Ereignis warum Schiff weg/zerstört/verschwunden ist
 	/// @param sStatus Status des Schiffes (meist zerstört)
 	void AddToLostShipHistory(const CShip* pShip, const CString& sEvent, const CString& sStatus);
-	
+
 	/// Funktion generiert die Starmaps, so wie sie nach Rundenberechnung auch angezeigt werden können.
 	/// @param sOnlyForRaceID wenn dieser Wert gesetzt, wird die Starmap nur für diese Rasse neu berechnet
-	void GenerateStarmap(const CString& sOnlyForRaceID = "");	
-	
+	void GenerateStarmap(const CString& sOnlyForRaceID = "");
+
 	/// Die Truppe mit der ID <code>ID</code> wird im System mit der Koordinate <code>ko</code> gebaut.
 	void BuildTroop(BYTE ID, CPoint ko);
 
 	USHORT GetCurrentRound() const {return m_iRound;}
-	
+
 	USHORT GetCurrentShipIndex(void) const {return m_NumberOfTheShipInArray;}
 	USHORT GetNumberOfFleetShip(void) const {return m_iNumberOfFleetShip;}
 	USHORT GetNumberOfTheShipInFleet(void) const {return m_iNumberOfTheShipInFleet;}
@@ -239,12 +239,12 @@ public:
 	CString GetPlayersRaceID(void) const;
 
 	bool m_bGameOver;	///< ist das Spiel
-	
+
 	// neu für Kampf
 	set<CString> m_sCombatSectors;		///< Sektoren in denen diese Runde schon ein Kampf stattgefunden hat
 
 	CPoint m_ptCurrentCombatSector;		///< aktueller Kampfsektor
-	
+
 	bool m_bCombatCalc;					///< es werden gerade die Kampfrunden berechnet
 
 	COMBAT_ORDER::Typ m_nCombatOrder;	///< im Kampfmenü eingestellter Kampfbefehl
@@ -253,57 +253,57 @@ public:
 
 private:
 	map<CString, COMBAT_ORDER::Typ> m_mCombatOrders; ///< alle Kampfbefehle der Clients (Autokampf, Rückzug, Gruß...)
-	
+
 	map<CString, map<pair<int, int>, CPoint> >  m_mShipRetreatSectors;	///< Rückzugsesktoren aller Schiffe nach allen Kämpfen
 
 protected:
 	// Private Funktionen die bei der NextRound Berechnung aufgerufen werden. Dadurch wird die NextRound Funktion
 	// um einiges verkleinert
-	
+
 	/// Funktion gibt einen Zeiger auf die lokale Spielerrasse zurück.
 	/// @return Zeiger auf Majorrace-Rassenobjekt
 	CMajor* GetPlayersRace(void) const;
-			
+
 	/// Diese Funktion führt allgemeine Berechnung durch, die immer zu Beginn der NextRound-Calculation stattfinden
 	/// müssen. So werden z.B. alte Nachrichten gelöscht, die Statistiken berechnet usw..
-	void CalcPreDataForNextRound();	
-	
+	void CalcPreDataForNextRound();
+
 	/// Diese Funktion berechnet den kompletten Systemangriff.
 	void CalcSystemAttack();
-	
+
 	/// Diese Funktion berechnet alles im Zusammenhang mit dem Geheimdienst.
 	void CalcIntelligence();
-	
+
 	/// Diese Funktion berechnet die Forschung eines Imperiums
 	void CalcResearch();
-	
+
 	/// Diese Funktion berechnet die Auswirkungen von diplomatischen Angeboten und ob Minorraces Angebote an
 	/// Majorraces abgeben.
 	void CalcDiplomacy();
-	
+
 	/// Diese Funktion berechnet das Planetenwachstum, die Aufträge in der Bauliste und sonstige Einstellungen aus der
 	/// alten Runde.
 	void CalcOldRoundData();
-	
+
 	/// Diese Funktion berechnet die Produktion der Systeme, was in den Baulisten gebaut werden soll und sonstige
 	/// Daten für die neue Runde.
 	void CalcNewRoundData();
-	
+
 	/// Diese Funktion berechnet die kompletten Handelsaktivitäten.
 	void CalcTrade();
-	
+
 	/// Diese Funktion berechnet die Schiffsbefehle. Der Systemangriffsbefehl ist davon ausgenommen.
 	void CalcShipOrders();
-	
+
 	/// Diese Funktion berechnet die Schiffsbewegung und noch weitere kleine Sachen im Zusammenhang mit Schiffen.
 	void CalcShipMovement();
 
 	bool IsShipCombat();
-	
+
 	/// Diese Funktion berechnet einen möglichen Weltraumkampf und dessen Auswirkungen.
 	/// @return <code>true</code> wenn ein Kampf stattgefunden hat, sonst <code>false</code>
 	void CalcShipCombat();
-	
+
 	/// Diese Funktion berechnet die Auswirkungen von Schiffen und Stationen auf der Karte. So werden hier z.B. Sektoren
 	/// gescannt, Rassen kennengelernt und die Schiffe den Sektoren bekanntgegeben.
 	void CalcShipEffects();

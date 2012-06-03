@@ -11,7 +11,7 @@ CString CMoralObserver::m_strTextMatrix[][DOMINION] = {""};
 // Konstruktion/Destruktion
 //////////////////////////////////////////////////////////////////////
 CMoralObserver::CMoralObserver(void)
-{	
+{
 }
 
 CMoralObserver::~CMoralObserver(void)
@@ -22,7 +22,7 @@ CMoralObserver::~CMoralObserver(void)
 ///////////////////////////////////////////////////////////////////////
 // Speichern / Laden
 ///////////////////////////////////////////////////////////////////////
-void CMoralObserver::Serialize(CArchive &ar)		
+void CMoralObserver::Serialize(CArchive &ar)
 {
 	CObject::Serialize(ar);
 	// wenn gespeichert wird
@@ -112,7 +112,7 @@ void CMoralObserver::CalculateEvents(std::vector<std::vector<CSystem>>& systems/
 #27	Declare War on an Empire with Friendship Treaty	-9	-2	-2	-2	2	1		-> eingebaut
 #28	Declare War on an Empire with Defense Pact		-10	-3	-2	-4	0	1		-> eingabaut
 #29	Declare War on an Empire with CooperationTreaty -10	-4	-2	-6	-4	1		-> eingebaut
-#30	Declare War on an Empire with Affiliation		-12	-8	-5	-10	-5	1		-> eingebaut		
+#30	Declare War on an Empire with Affiliation		-12	-8	-5	-10	-5	1		-> eingebaut
 #31	Other Empire Declares War when Neutral			5	2	2	5	3	1		-> eingebaut
 #32	Other Empire Declares War with Treaty			7	4	4	6	4	1		-> eingebaut
 #33	Other Empire Declares War with an Affiliation	10	8	7	8	6	2		-> eingebaut
@@ -519,12 +519,12 @@ CString CMoralObserver::GenerateText(unsigned short Event, BYTE major, const CSt
 		"Krieger finden feige Saobtageaktionen als unehrenhaft",
 		"Das Volk begrüsst die Sabotageaktionen des Tal'Shiar",
 		"Bürger der Union finden Gefallen an den Sabotageaktionen des Ordens",
-		"Gründer nehmen die Sabotageaktionen mit einem Schmunzeln zur Kenntniss"		
+		"Gründer nehmen die Sabotageaktionen mit einem Schmunzeln zur Kenntniss"
 	};
 	*/
 	CString text = m_strTextMatrix[Event][major-1];
 	text.Replace("$param$", param);
-	
+
 	int nMoralValue = GetMoralValue(major, Event);
 	CString s = "";
 	if (nMoralValue > 0)
@@ -593,7 +593,7 @@ void CMoralObserver::InitMoralMatrix()
 		}
 	}
 	else
-	{	
+	{
 		AfxMessageBox("Error! Could not open \"Moral.data\"...");
 		exit(1);
 	}
@@ -618,11 +618,11 @@ void CMoralObserver::InitMoralMatrix()
 			{
 				i++;
 				race = 0;
-			}			
+			}
 		}
 	}
 	else
-	{	
+	{
 		AfxMessageBox("Error! Could not open \"MoralEvents.data\"...");
 		exit(1);
 	}

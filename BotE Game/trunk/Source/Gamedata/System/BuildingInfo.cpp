@@ -136,7 +136,7 @@ CBuildingInfo::CBuildingInfo(const CBuildingInfo & rhs)
 	m_iCredits = rhs.m_iCredits;
 	m_iMoral = rhs.m_iMoral;
 	m_iMoralEmpire = rhs.m_iMoralEmpire;
-	
+
 	m_iFoodBoni = rhs.m_iFoodBoni;
 	m_iIndustryBoni = rhs.m_iIndustryBoni;
 	m_iEnergyBoni = rhs.m_iEnergyBoni;
@@ -150,14 +150,14 @@ CBuildingInfo::CBuildingInfo(const CBuildingInfo & rhs)
 	m_iDeritiumBoni = rhs.m_iDeritiumBoni;
 	m_iAllRessourceBoni = rhs.m_iAllRessourceBoni;
 	m_iCreditsBoni = rhs.m_iCreditsBoni;
-	
+
 	m_iBioTechBoni = rhs.m_iBioTechBoni;
 	m_iEnergyTechBoni = rhs.m_iEnergyTechBoni;
 	m_iCompTechBoni = rhs.m_iCompTechBoni;
 	m_iPropulsionTechBoni = rhs.m_iPropulsionTechBoni;
 	m_iConstructionTechBoni = rhs.m_iConstructionTechBoni;
 	m_iWeaponTechBoni = rhs.m_iWeaponTechBoni;
-	
+
 	m_iInnerSecurityBoni = rhs.m_iInnerSecurityBoni;
 	m_iEconomySpyBoni = rhs.m_iEconomySpyBoni;
 	m_iEconomySabotageBoni = rhs.m_iEconomySabotageBoni;
@@ -165,7 +165,7 @@ CBuildingInfo::CBuildingInfo(const CBuildingInfo & rhs)
 	m_iResearchSabotageBoni = rhs.m_iResearchSabotageBoni;
 	m_iMilitarySpyBoni = rhs.m_iMilitarySpyBoni;
 	m_iMilitarySabotageBoni = rhs.m_iMilitarySabotageBoni;
-	
+
 	m_bShipYard = rhs.m_bShipYard;
 	m_iBuildableShipSizes = rhs.m_iBuildableShipSizes;
 	m_iShipYardSpeed = rhs.m_iShipYardSpeed;
@@ -191,8 +191,8 @@ CBuildingInfo::CBuildingInfo(const CBuildingInfo & rhs)
 	m_iBuildingBuildSpeed = rhs.m_iBuildingBuildSpeed;
 	m_iUpdateBuildSpeed = rhs.m_iUpdateBuildSpeed;
 	m_iShipBuildSpeed = rhs.m_iShipBuildSpeed;
-	m_iTroopBuildSpeed = rhs.m_iTroopBuildSpeed;	
-	
+	m_iTroopBuildSpeed = rhs.m_iTroopBuildSpeed;
+
 	m_bWorker = rhs.m_bWorker;
 	m_bNeverReady = rhs.m_bNeverReady;
 	m_bAllwaysOnline = rhs.m_bAllwaysOnline;
@@ -214,16 +214,16 @@ CBuildingInfo::CBuildingInfo(const CBuildingInfo & rhs)
 	m_MinInSystem = rhs.m_MinInSystem;
 	m_MinInEmpire = rhs.m_MinInEmpire;
 	m_bOnlyRace = rhs.m_bOnlyRace;
-	
+
 	m_PlanetTypes = rhs.m_PlanetTypes;
-	
+
 	m_iBioTech = rhs.m_iBioTech;
 	m_iEnergyTech = rhs.m_iEnergyTech;
 	m_iCompTech = rhs.m_iCompTech;
 	m_iPropulsionTech = rhs.m_iPropulsionTech;
 	m_iConstructionTech = rhs.m_iConstructionTech;
 	m_iWeaponTech = rhs.m_iWeaponTech;
-	
+
 	m_iNeededIndustry = rhs.m_iNeededIndustry;
 	m_iNeededEnergy = rhs.m_iNeededEnergy;
 	m_iNeededTitan = rhs.m_iNeededTitan;
@@ -264,7 +264,7 @@ CBuildingInfo & CBuildingInfo::operator=(const CBuildingInfo & rhs)
 	m_iCredits = rhs.m_iCredits;
 	m_iMoral = rhs.m_iMoral;
 	m_iMoralEmpire = rhs.m_iMoralEmpire;
-	
+
 	m_iFoodBoni = rhs.m_iFoodBoni;
 	m_iIndustryBoni = rhs.m_iIndustryBoni;
 	m_iEnergyBoni = rhs.m_iEnergyBoni;
@@ -278,14 +278,14 @@ CBuildingInfo & CBuildingInfo::operator=(const CBuildingInfo & rhs)
 	m_iDeritiumBoni = rhs.m_iDeritiumBoni;
 	m_iAllRessourceBoni = rhs.m_iAllRessourceBoni;
 	m_iCreditsBoni = rhs.m_iCreditsBoni;
-	
+
 	m_iBioTechBoni = rhs.m_iBioTechBoni;
 	m_iEnergyTechBoni = rhs.m_iEnergyTechBoni;
 	m_iCompTechBoni = rhs.m_iCompTechBoni;
 	m_iPropulsionTechBoni = rhs.m_iPropulsionTechBoni;
 	m_iConstructionTechBoni = rhs.m_iConstructionTechBoni;
 	m_iWeaponTechBoni = rhs.m_iWeaponTechBoni;
-	
+
 	m_iInnerSecurityBoni = rhs.m_iInnerSecurityBoni;
 	m_iEconomySpyBoni = rhs.m_iEconomySpyBoni;
 	m_iEconomySabotageBoni = rhs.m_iEconomySabotageBoni;
@@ -293,7 +293,7 @@ CBuildingInfo & CBuildingInfo::operator=(const CBuildingInfo & rhs)
 	m_iResearchSabotageBoni = rhs.m_iResearchSabotageBoni;
 	m_iMilitarySpyBoni = rhs.m_iMilitarySpyBoni;
 	m_iMilitarySabotageBoni = rhs.m_iMilitarySabotageBoni;
-	
+
 	m_bShipYard = rhs.m_bShipYard;
 	m_iBuildableShipSizes = rhs.m_iBuildableShipSizes;
 	m_iShipYardSpeed = rhs.m_iShipYardSpeed;
@@ -320,7 +320,7 @@ CBuildingInfo & CBuildingInfo::operator=(const CBuildingInfo & rhs)
 	m_iUpdateBuildSpeed = rhs.m_iUpdateBuildSpeed;
 	m_iShipBuildSpeed = rhs.m_iShipBuildSpeed;
 	m_iTroopBuildSpeed = rhs.m_iTroopBuildSpeed;
-		
+
 	m_bWorker = rhs.m_bWorker;
 	m_bNeverReady = rhs.m_bNeverReady;
 	m_bAllwaysOnline = rhs.m_bAllwaysOnline;
@@ -342,16 +342,16 @@ CBuildingInfo & CBuildingInfo::operator=(const CBuildingInfo & rhs)
 	m_MinInSystem = rhs.m_MinInSystem;
 	m_MinInEmpire = rhs.m_MinInEmpire;
 	m_bOnlyRace = rhs.m_bOnlyRace;
-	
+
 	m_PlanetTypes = rhs.m_PlanetTypes;
-	
+
 	m_iBioTech = rhs.m_iBioTech;
 	m_iEnergyTech = rhs.m_iEnergyTech;
 	m_iCompTech = rhs.m_iCompTech;
 	m_iPropulsionTech = rhs.m_iPropulsionTech;
 	m_iConstructionTech = rhs.m_iConstructionTech;
 	m_iWeaponTech = rhs.m_iWeaponTech;
-	
+
 	m_iNeededIndustry = rhs.m_iNeededIndustry;
 	m_iNeededEnergy = rhs.m_iNeededEnergy;
 	m_iNeededTitan = rhs.m_iNeededTitan;
@@ -376,7 +376,7 @@ CBuildingInfo & CBuildingInfo::operator=(const CBuildingInfo & rhs)
 ///////////////////////////////////////////////////////////////////////
 // Speichern / Laden
 ///////////////////////////////////////////////////////////////////////
-void CBuildingInfo::Serialize(CArchive &ar)		
+void CBuildingInfo::Serialize(CArchive &ar)
 {
 	CObject::Serialize(ar);
 	// wenn gespeichert wird
@@ -409,7 +409,7 @@ void CBuildingInfo::Serialize(CArchive &ar)
 		ar << m_iCompTech;
 		ar << m_iPropulsionTech;
 		ar << m_iConstructionTech;
-		ar << m_iWeaponTech;	
+		ar << m_iWeaponTech;
 		ar << m_iNeededIndustry;
 		ar << m_iNeededTitan;
 		ar << m_iNeededDeuterium;
@@ -422,7 +422,7 @@ void CBuildingInfo::Serialize(CArchive &ar)
 			ar << m_iBuildingEquivalent[i];
 
 		// Die nötige Energie zum Betrieb des Gebäudes
-		ar << m_iNeededEnergy;	
+		ar << m_iNeededEnergy;
 		// Produktion -> überprüfen ob diese auch ar << bleiben können?
 		ar << m_iFood;
 		ar << m_iIP;
@@ -451,7 +451,7 @@ void CBuildingInfo::Serialize(CArchive &ar)
 		ar << m_iCrystalBoni;
 		ar << m_iIridiumBoni;
 		ar << m_iDeritiumBoni;
-		ar << m_iAllRessourceBoni;	
+		ar << m_iAllRessourceBoni;
 		ar << m_iCreditsBoni;
 		// Forschungstechboni
 		ar << m_iBioTechBoni;
@@ -499,10 +499,10 @@ void CBuildingInfo::Serialize(CArchive &ar)
 		ar << m_bWorker;
 		// ist das Gebäude niemals fertig (z.B. ein Tribunal)
 		ar << m_bNeverReady;
-		ar << m_bAllwaysOnline;		
+		ar << m_bAllwaysOnline;
 		for (int res = TITAN; res <= DERITIUM; res++)
 			ar << m_bResourceDistributor[res];
-		ar << m_iNeededSystems;		
+		ar << m_iNeededSystems;
 	}
 	// wenn geladen wird
 	if (ar.IsLoading())
@@ -534,7 +534,7 @@ void CBuildingInfo::Serialize(CArchive &ar)
 		ar >> m_iCompTech;
 		ar >> m_iPropulsionTech;
 		ar >> m_iConstructionTech;
-		ar >> m_iWeaponTech;	
+		ar >> m_iWeaponTech;
 		ar >> m_iNeededIndustry;
 		ar >> m_iNeededTitan;
 		ar >> m_iNeededDeuterium;
@@ -547,7 +547,7 @@ void CBuildingInfo::Serialize(CArchive &ar)
 			ar >> m_iBuildingEquivalent[i];
 
 		// Die nötige Energie zum Betrieb des Gebäudes
-		ar >> m_iNeededEnergy;	
+		ar >> m_iNeededEnergy;
 		// Produktion -> überprüfen ob diese auch ar >> bleiben können?
 		ar >> m_iFood;
 		ar >> m_iIP;
@@ -576,7 +576,7 @@ void CBuildingInfo::Serialize(CArchive &ar)
 		ar >> m_iCrystalBoni;
 		ar >> m_iIridiumBoni;
 		ar >> m_iDeritiumBoni;
-		ar >> m_iAllRessourceBoni;	
+		ar >> m_iAllRessourceBoni;
 		ar >> m_iCreditsBoni;
 		// Forschungstechboni
 		ar >> m_iBioTechBoni;
@@ -626,10 +626,10 @@ void CBuildingInfo::Serialize(CArchive &ar)
 		ar >> m_bWorker;
 		// ist das Gebäude niemals fertig (z.B. ein Tribunal)
 		ar >> m_bNeverReady;
-		ar >> m_bAllwaysOnline;		
+		ar >> m_bAllwaysOnline;
 		for (int res = TITAN; res <= DERITIUM; res++)
 			ar >> m_bResourceDistributor[res];
-		ar >> m_iNeededSystems;		
+		ar >> m_iNeededSystems;
 	}
 }
 
@@ -709,7 +709,7 @@ CString CBuildingInfo::GetProductionAsString(USHORT number) const
 		s.AppendFormat("%s: %i\n",CResourceManager::GetString("MORAL"), this->GetMoralProd() * number);
 	if (this->GetMoralProdEmpire() != 0)
 		s.AppendFormat("%s: %i\n",CResourceManager::GetString("MORAL_EMPIREWIDE"), this->GetMoralProdEmpire() * number);
-	
+
 	// Ab hier die Boni
 	if (this->GetFoodBoni() != 0)
 		s.AppendFormat("%s: %i%%\n",CResourceManager::GetString("FOOD_BONUS"), this->GetFoodBoni() * number);
@@ -737,7 +737,7 @@ CString CBuildingInfo::GetProductionAsString(USHORT number) const
 		s.AppendFormat("%s: %i%%\n",CResourceManager::GetString("BONUS_TO_ALL_RES"), this->GetAllRessourcesBoni() * number);
 	if (this->GetCreditsBoni() != 0)
 		s.AppendFormat("%s: %i%%\n",CResourceManager::GetString("CREDITS_BONUS"), this->GetCreditsBoni() * number);
-	
+
 	// Wenn alle Forschungsboni belegt sind, sprich Bonus auf alles
 	if (this->GetBioTechBoni() != 0 && this->GetBioTechBoni() == this->GetEnergyTechBoni() && this->GetBioTechBoni() == this->GetCompTechBoni()
 		&& this->GetBioTechBoni() == this->GetPropulsionTechBoni() && this->GetBioTechBoni() == this->GetConstructionTechBoni()
@@ -759,7 +759,7 @@ CString CBuildingInfo::GetProductionAsString(USHORT number) const
 			s.AppendFormat("%s: %i%%\n",CResourceManager::GetString("WEAPONTECH_BONUS"), this->GetWeaponTechBoni() * number);
 	}
 	// Wenn alle Geheimdienstdinger belegt sind -> Geheimdienst auf alles
-	if (this->GetInnerSecurityBoni() != 0 && this->GetInnerSecurityBoni() == this->GetEconomySpyBoni() 
+	if (this->GetInnerSecurityBoni() != 0 && this->GetInnerSecurityBoni() == this->GetEconomySpyBoni()
 		&& this->GetInnerSecurityBoni() ==	this->GetEconomySabotageBoni() && this->GetInnerSecurityBoni() == this->GetResearchSpyBoni()
 		&& this->GetInnerSecurityBoni() == this->GetResearchSabotageBoni() && this->GetInnerSecurityBoni() == this->GetMilitarySpyBoni()
 		&& this->GetInnerSecurityBoni() == this->GetMilitarySabotageBoni())
@@ -854,7 +854,7 @@ CString CBuildingInfo::GetProductionAsString(USHORT number) const
 		s.AppendFormat("%s: %i%%\n",CResourceManager::GetString("SHIP_BUILDSPEED"), this->GetShipBuildSpeed() * number);
 	if (this->GetTroopBuildSpeed() != 0)
 		s.AppendFormat("%s: %i%%\n",CResourceManager::GetString("TROOP_BUILDSPEED"), this->GetTroopBuildSpeed() * number);
-	
+
 	if (this->GetResourceDistributor(TITAN))
 		s.AppendFormat("%s - %s\n", CResourceManager::GetString("RESOURCE_DISTRIBUTOR"), CResourceManager::GetString("TITAN"));
 	if (this->GetResourceDistributor(DEUTERIUM))
@@ -866,7 +866,7 @@ CString CBuildingInfo::GetProductionAsString(USHORT number) const
 	if (this->GetResourceDistributor(IRIDIUM))
 		s.AppendFormat("%s - %s\n", CResourceManager::GetString("RESOURCE_DISTRIBUTOR"), CResourceManager::GetString("IRIDIUM"));
 	if (this->GetResourceDistributor(DERITIUM))
-		s.AppendFormat("%s - %s\n", CResourceManager::GetString("RESOURCE_DISTRIBUTOR"), CResourceManager::GetString("DERITIUM"));	
+		s.AppendFormat("%s - %s\n", CResourceManager::GetString("RESOURCE_DISTRIBUTOR"), CResourceManager::GetString("DERITIUM"));
 
 	return s;
 }
@@ -889,6 +889,6 @@ bool CBuildingInfo::IsBuildingBuildableNow(const BYTE reserachLevels[6]) const
 		return false;
 	if (reserachLevels[5] < this->GetWeaponTech())
 		return false;
-	
+
 	return true;
 }

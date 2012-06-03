@@ -5,7 +5,7 @@
  *   Create   :  2005-2-27
  *   Home     :  http://www.crazy-bit.com/
  *   Mail     :  crazybitwps@hotmail.com
- *   History  :  
+ *   History  :
  */
 #ifndef __PCL_INTERFACE_ZOOMSCALE__2005_02_27__H__
 #define __PCL_INTERFACE_ZOOMSCALE__2005_02_27__H__

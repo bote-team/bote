@@ -9,7 +9,7 @@ CMyButton::CMyButton(CPoint point, CSize size, const CString& text, const CStrin
 					 const CString& inactiveGraphicName, const CString& activeGraphicName) : m_KO(point), m_Size(size),
 					 m_strText(text), m_strNormal(normGraphicName), m_strInactive(inactiveGraphicName),
 					 m_strActive(activeGraphicName), m_byStatus(0)
-{	
+{
 }
 
 CMyButton::~CMyButton()
@@ -29,7 +29,7 @@ void CMyButton::DrawButton(Gdiplus::Graphics &g, CGraphicPool* graphicPool, Gdip
 	ASSERT(graphicPool);
 
 	Bitmap* graphic = NULL;
-	CString sFile;		
+	CString sFile;
 	switch (m_byStatus)
 	{
 	case 0:  sFile = m_strNormal; break;
@@ -60,7 +60,7 @@ BOOLEAN CMyButton::Activate()
 {
 	// nicht deaktiviert
 	if (m_byStatus == 0)
-	{		
+	{
 		m_byStatus = 1;
 		return TRUE;
 	}

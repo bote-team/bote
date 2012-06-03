@@ -40,7 +40,7 @@ CResearchComplex::CResearchComplex(const CResearchComplex & rhs)
 		m_strFieldName[i] = rhs.m_strFieldName[i];
 		m_strFieldDescription[i] = rhs.m_strFieldDescription[i];
 		m_iBonus[i] = rhs.m_iBonus[i];
-	}	
+	}
 	m_strComplexName = rhs.m_strComplexName;
 	m_strComplexDescription = rhs.m_strComplexDescription;
 }
@@ -68,7 +68,7 @@ CResearchComplex & CResearchComplex::operator=(const CResearchComplex & rhs)
 ///////////////////////////////////////////////////////////////////////
 // Speichern / Laden
 ///////////////////////////////////////////////////////////////////////
-void CResearchComplex::Serialize(CArchive &ar)		
+void CResearchComplex::Serialize(CArchive &ar)
 {
 	CObject::Serialize(ar);
 	// wenn gespeichert wird
@@ -92,7 +92,7 @@ void CResearchComplex::Serialize(CArchive &ar)
 		ar >> nStatus;
 		m_nComplexStatus = (RESEARCH_STATUS::Typ)nStatus;
 		for (int i = 0; i < 3; i++)
-		{			
+		{
 			ar >> nStatus;
 			m_nFieldStatus[i] = (RESEARCH_STATUS::Typ)nStatus;
 			ar >> m_strFieldName[i];
@@ -308,7 +308,7 @@ void CResearchComplex::GenerateComplex(RESEARCH_COMPLEX::Typ nComplex)
 			m_iBonus[2] = 35;
 			break;
 		}
-	
+
 	default:
 		{
 			m_strComplexName = "";
@@ -350,9 +350,9 @@ void CResearchComplex::ReadSpecialTech(RESEARCH_COMPLEX::Typ nComplex)
 	int i = 0;
 	int j = nComplex * 8;
 	int z = 0;
-	
-	CString data[8];	
-	CString fileName = CIOData::GetInstance()->GetAppPath() + "Data\\Names\\Specialtechs.data";	// Name des zu Öffnenden Files 
+
+	CString data[8];
+	CString fileName = CIOData::GetInstance()->GetAppPath() + "Data\\Names\\Specialtechs.data";	// Name des zu Öffnenden Files
 	CStdioFile file;												// Varibale vom Typ CStdioFile
 	if (file.Open(fileName, CFile::shareDenyNone | CFile::modeRead | CFile::typeText))	// Datei wird geöffnet
 	{
@@ -369,14 +369,14 @@ void CResearchComplex::ReadSpecialTech(RESEARCH_COMPLEX::Typ nComplex)
 			{
 				data[z++] = csInput;
 			}
-			
+
 			if (z == 8)
 				break;
 			i++;
 		}
 	}
 	else
-	{	
+	{
 		AfxMessageBox("Error! Could not open file \"Specialtechs.data\" ...");
 		exit(1);
 	}

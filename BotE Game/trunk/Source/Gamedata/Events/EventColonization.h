@@ -19,7 +19,7 @@ public:
 
 	/// Standardkonstruktor mit Parameterübergabe
 	CEventColonization(const CString& sPlayersRaceID, const CString &headline = "", const CString &text = "");
-	
+
 	/// Standarddestruktor
 	~CEventColonization(void);
 

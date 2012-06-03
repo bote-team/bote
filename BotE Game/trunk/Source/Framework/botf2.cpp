@@ -93,10 +93,10 @@ BEGIN_MESSAGE_MAP(CBotf2App, CWinApp)
 	ON_COMMAND(ID_HELP_WIKI, &CBotf2App::OnHelpWiki)
 	ON_COMMAND(ID_HELP_README, &CBotf2App::OnOpenReadme)
 	ON_COMMAND(ID_HELP_CREDITS, &CBotf2App::OnOpenCredits)
-	
+
 	ON_THREAD_MESSAGE(WM_INITVIEWS, CBotf2App::InitViews)
 	ON_THREAD_MESSAGE(WM_UPDATEVIEWS, CBotf2App::UpdateViews)
-	ON_THREAD_MESSAGE(WM_SHOWCHATDLG, CBotf2App::ShowChatDlg)		
+	ON_THREAD_MESSAGE(WM_SHOWCHATDLG, CBotf2App::ShowChatDlg)
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -129,7 +129,7 @@ CBotf2App theApp;
 // CBotf2App Initialisierung
 
 BOOL CBotf2App::InitInstance()
-{	
+{
 	CWinApp::InitInstance();
 	GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);
 
@@ -141,10 +141,10 @@ BOOL CBotf2App::InitInstance()
 			return FALSE;
 		}
 	}
-	
-	//AfxEnableControlContainer();	
+
+	//AfxEnableControlContainer();
 	// Standardinitialisierung
-	// Wenn Sie diese Funktionen nicht nutzen und die Größe Ihrer fertigen 
+	// Wenn Sie diese Funktionen nicht nutzen und die Größe Ihrer fertigen
 	//  ausführbaren Datei reduzieren wollen, sollten Sie die nachfolgenden
 	//  spezifischen Initialisierungsroutinen, die Sie nicht benötigen, entfernen.
 /*
@@ -169,7 +169,7 @@ BOOL CBotf2App::InitInstance()
 		RUNTIME_CLASS(CBotf2Doc),
 		RUNTIME_CLASS(CMainFrame),       // Haupt-SDI-Rahmenfenster
 		NULL);
-	
+
 	AddDocTemplate(pDocTemplate);
 
 	// Befehlszeile parsen, um zu prüfen auf Standard-Umgebungsbefehle DDE, Datei offen
@@ -181,9 +181,9 @@ BOOL CBotf2App::InitInstance()
 		return FALSE;
 
 	// Das einzige Fenster ist initialisiert und kann jetzt angezeigt und aktualisiert werden.
-	m_pMainWnd->ModifyStyle(WS_CAPTION|WS_THICKFRAME|WS_SYSMENU|WS_OVERLAPPED|FWS_ADDTOTITLE ,0);	
+	m_pMainWnd->ModifyStyle(WS_CAPTION|WS_THICKFRAME|WS_SYSMENU|WS_OVERLAPPED|FWS_ADDTOTITLE ,0);
 	m_pMainWnd->ShowWindow(SW_SHOWMAXIMIZED);
-		
+
 	// Chatdialog erzeugen
 	m_pChatDlg = new CChatDlg(GetDocument());
 	m_pChatDlg->Create(IDD_CHATDLG);
@@ -264,14 +264,14 @@ void CBotf2App::OnOpenManual()
 {
 	// TODO: Add your command handler code here
 	CString sFile = CIOData::GetInstance()->GetManualPath();
-	
+
 	HINSTANCE hInst = ShellExecute(0,
 		"open",		// Operation to perform
 		sFile,		// Application name
         "",			// Additional parameters
         0,			// Default directory
         SW_SHOW);
-	
+
 }
 
 void CBotf2App::OnHelpWiki()
@@ -291,7 +291,7 @@ void CBotf2App::OnOpenReadme()
 {
 	// TODO: Add your command handler code here
 	CString sFile = CIOData::GetInstance()->GetAppPath() + "Liesmich.txt";
-	
+
 	HINSTANCE hInst = ShellExecute(0,
 		"open",		// Operation to perform
 		sFile,		// Application name

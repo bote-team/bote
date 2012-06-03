@@ -5,7 +5,7 @@
  *   Create   :  2005-7-29
  *   Home     :  http://www.crazy-bit.com/
  *   Mail     :  crazybitwps@hotmail.com
- *   History  :  
+ *   History  :
  */
 #ifndef __FOO_PIXEL_PROCESSOR_BASE__2005_07_29__H__
 #define __FOO_PIXEL_PROCESSOR_BASE__2005_07_29__H__
@@ -354,7 +354,7 @@ private:
 
         h = hue_transfer[hue][FClamp0255((int)h)] ;
         s = saturation_transfer[hue][FClamp0255((int)s)] ;
-        
+
         RGBQUAD   cr = FCColor::HLStoRGB(h/255.0, l, s/255.0) ;
         FCColor::CopyPixel (pPixel, &cr, 3) ;
     }
@@ -664,7 +664,7 @@ private:
 
         double   angle = floor (atan2(cy,cx) / 2.0 / fTmp) * 2.0 * fTmp + fTmp ;
         double   radius = FHypot (cx, cy) ;
-        
+
         int   xx = (int)(x - m_fOffset * cos (angle)),
               yy = (int)(y - m_fOffset * sin (angle)) ;
         xx = FClamp (xx, 0, pImg->Width()-1) ;
@@ -2055,7 +2055,7 @@ public:
 private:
     virtual bool calc_undistorted_coord (int x, int y, double& un_x, double& un_y)
     {
-        
+
         int      nImgWidth = GetBackupImage()->Width(),
                  nImgHeight = GetBackupImage()->Height() ;
         double   fScaleX = 1.0, fScaleY = 1.0 ;
@@ -2226,7 +2226,7 @@ class FCPixelSkew : public FCPixelBilinearDistord
 public:
     /**
      *  Constructor.
-     *  @param ptNewPos : new position of point LT, RT, RB, LB 
+     *  @param ptNewPos : new position of point LT, RT, RB, LB
      */
     FCPixelSkew (POINT ptNewPos[4])
     {
@@ -2279,7 +2279,7 @@ class FCPixelPerspective : public FCPixelBilinearDistord
 public:
     /**
      *  Constructor.
-     *  @param ptNewPos : new position of point LT, RT, RB, LB 
+     *  @param ptNewPos : new position of point LT, RT, RB, LB
      */
     FCPixelPerspective (POINT ptNewPos[4])
     {
@@ -2423,7 +2423,7 @@ private:
     virtual void OnEnterProcess (FCObjImage* pImg)
     {
         FCPixelBilinearDistord::OnEnterProcess (pImg) ;
-        
+
         // clear image
         memset (pImg->GetMemStart(), 0, pImg->GetPitch()*pImg->Height()) ;
 

@@ -24,14 +24,14 @@ CIntelCalc::~CIntelCalc(void)
 /// Die Funktion verschickt auch alle relevanten Nachrichten an die betroffenen Imperien.
 void CIntelCalc::StartCalc(CMajor* pRace)
 {
-	ASSERT(pRace);	
+	ASSERT(pRace);
 	// resultierende Spionagegeheimdienstpunkte bei einer Rasse
 	map<CString, UINT> m_iSpySP;
 	// resultierende Sabotagegeheimdienstpunkte bei einer Rasse
 	map<CString, UINT> m_iSabSP;
 
 	CIntelligence* pIntel = pRace->GetEmpire()->GetIntelligence();
-	
+
 	// Ein möglicher Anschlag wird vor allen anderen Geheimdienstaktionen durchgeführt. Bei einem Anschlag werden
 	// nur die angesammelten Geheimdienspunkte benutzt.
 	CIntelObject* attemptObj = pIntel->GetIntelReports()->GetAttemptObject();
@@ -49,10 +49,10 @@ void CIntelCalc::StartCalc(CMajor* pRace)
 	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
 		if (it->first != pRace->GetRaceID())
 		{
-			m_iSpySP[it->first] = pIntel->GetSecurityPoints() *	pIntel->GetAssignment()->GetGlobalSpyPercentage(it->first) / 100;		
+			m_iSpySP[it->first] = pIntel->GetSecurityPoints() *	pIntel->GetAssignment()->GetGlobalSpyPercentage(it->first) / 100;
 			m_iSabSP[it->first] = pIntel->GetSecurityPoints() *	pIntel->GetAssignment()->GetGlobalSabotagePercentage(it->first) / 100;
 		}
-	
+
 	// dann können die Geheimdienstaktionen gestartet werden
 	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
 		if (it->first != pRace->GetRaceID())
@@ -136,7 +136,7 @@ void CIntelCalc::StartCalc(CMajor* pRace)
 					count++;
 				}
 			}
-		}	
+		}
 }
 
 /// Funktion addiert Innere Sicherheitspunkte sowie die ganzen Depotgeheimdienstpunkte einer Rasse zu den vorhandenen.
@@ -178,7 +178,7 @@ void CIntelCalc::ReduceDepotPoints(CMajor* pRace, int perc)
 		int nCount = 0;
 		perc = 0;
 		if (pRace->IsRaceProperty(RACE_PROPERTY::FINANCIAL))
-		{	
+		{
 			perc += 15;
 			nCount++;
 		}
@@ -242,7 +242,7 @@ void CIntelCalc::ReduceDepotPoints(CMajor* pRace, int perc)
 			perc /= nCount;
 			perc += 20;
 		}
-		
+
 		// Bereichsüberprüfungen machen
 		if (perc > 100)
 			perc = 100;
@@ -278,7 +278,7 @@ void CIntelCalc::ReduceDepotPoints(CMajor* pRace, int perc)
 //////////////////////////////////////////////////////////////////////
 /// Funktion berechnet ob eine Geheimdienstaktion gegen eine andere Rasse erfolgreich verläuft.
 USHORT CIntelCalc::IsSuccess(CMajor* pEnemyRace, int ourSP, BOOLEAN isSpy, CMajor* pResponsibleRace, BYTE type)
-{	
+{
 #ifdef TRACE_INTEL
 	MYTRACE(MT::LEVEL_INFO, "CIntelCalc::IsSuccess() begin...\n");
 #endif
@@ -287,7 +287,7 @@ USHORT CIntelCalc::IsSuccess(CMajor* pEnemyRace, int ourSP, BOOLEAN isSpy, CMajo
 	USHORT actions = NULL;
 
 	int enemyInnerSec = GetCompleteInnerSecPoints(pEnemyRace);
-		
+
 #ifdef TRACE_INTEL
 	MYTRACE(MT::LEVEL_INFO, "inner security of %s is %d\n", pEnemyRace, enemyInnerSec);
 #endif
@@ -384,7 +384,7 @@ void CIntelCalc::DeleteConsumedPoints(CMajor* pOurRace, CMajor* pEnemyRace, BOOL
 		racePoints = pOurIntel->GetSecurityPoints() * pOurIntel->GetAssignment()->GetGlobalSpyPercentage(pEnemyRace->GetRaceID())
 			* pOurIntel->GetAssignment()->GetSpyPercentages(pEnemyRace->GetRaceID(), type) / 10000;
 		racePoints += racePoints * pOurIntel->GetBonus(type, 0) / 100;
-			
+
 		raceDepot = pOurIntel->GetSPStorage(0, pEnemyRace->GetRaceID()) * pOurIntel->GetAssignment()->GetSpyPercentages(pEnemyRace->GetRaceID(), type) / 100;
 		raceDepot += raceDepot * pOurIntel->GetBonus(type, 0) / 100;
 	}
@@ -393,7 +393,7 @@ void CIntelCalc::DeleteConsumedPoints(CMajor* pOurRace, CMajor* pEnemyRace, BOOL
 		racePoints = pOurIntel->GetSecurityPoints() * pOurIntel->GetAssignment()->GetGlobalSabotagePercentage(pEnemyRace->GetRaceID())
 			* pOurIntel->GetAssignment()->GetSabotagePercentages(pEnemyRace->GetRaceID(), type) / 10000;
 		racePoints += racePoints * pOurIntel->GetBonus(type, 1) / 100;
-			
+
 		raceDepot = pOurIntel->GetSPStorage(1, pEnemyRace->GetRaceID()) * pOurIntel->GetAssignment()->GetSabotagePercentages(pEnemyRace->GetRaceID(), type) / 100;
 		raceDepot += raceDepot * pOurIntel->GetBonus(type, 1) / 100;
 	}
@@ -575,7 +575,7 @@ BOOLEAN CIntelCalc::ExecuteEconomySpy(CMajor* pRace, CMajor* pEnemyRace, CMajor*
 				delete report;
 				report = NULL;
 			}
-		}		
+		}
 	}
 	return FALSE;
 }
@@ -691,7 +691,7 @@ BOOLEAN CIntelCalc::ExecuteScienceSpy(CMajor* pRace, CMajor* pEnemyRace, CMajor*
 	}
 
 	// wurde bis jetzt noch kein Versuch durchgeführt, so wird zwangsläufig der erste Versuch durchgeführt
-	
+
 	// 1. Versuch: Gebäude ausspionieren
 	// Die Spionage ist komplett zufällig. Man kann nicht beeinflussen in welchem System spioniert wird.
 	CArray<CPoint> sectors;
@@ -723,7 +723,7 @@ BOOLEAN CIntelCalc::ExecuteScienceSpy(CMajor* pRace, CMajor* pEnemyRace, CMajor*
 						const CBuilding* b = &m_pDoc->m_System[sectors.GetAt(random).x][sectors.GetAt(random).y].GetAllBuildings()->GetAt(i);
 						// nur wenn das Gebäude einen Forschungshintergrund hat, kann es spioniert werden
 						if (buildingInfo.GetFPProd() > 0 || buildingInfo.GetResearchBoni() > 0 || buildingInfo.GetBioTechBoni() > 0 || buildingInfo.GetCompTechBoni() > 0 ||
-							buildingInfo.GetConstructionTechBoni() > 0 || buildingInfo.GetEnergyTechBoni() > 0 || buildingInfo.GetPropulsionTechBoni() > 0 || 
+							buildingInfo.GetConstructionTechBoni() > 0 || buildingInfo.GetEnergyTechBoni() > 0 || buildingInfo.GetPropulsionTechBoni() > 0 ||
 							buildingInfo.GetWeaponTechBoni() > 0)
 						{
 							int id = buildingInfo.GetRunningNumber();
@@ -753,7 +753,7 @@ BOOLEAN CIntelCalc::ExecuteScienceSpy(CMajor* pRace, CMajor* pEnemyRace, CMajor*
 				}
 			}
 		}
-		
+
 		// ansonsten werden Gebäude welche Arbeiter benötigen ausspioniert
 		USHORT buildings = m_pDoc->m_System[sectors.GetAt(random).x][sectors.GetAt(random).y].GetNumberOfWorkbuildings(WORKER::RESEARCH_WORKER, 0, NULL);
 		if (buildings > 0)
@@ -837,7 +837,7 @@ BOOLEAN CIntelCalc::ExecuteMilitarySpy(CMajor* pRace, CMajor* pEnemyRace, CMajor
 		{
 			delete report;
 			report = NULL;
-		}	
+		}
 	}
 
 	// 2. Versuch: Stationierte Truppen ausspionieren
@@ -915,7 +915,7 @@ BOOLEAN CIntelCalc::ExecuteMilitarySpy(CMajor* pRace, CMajor* pEnemyRace, CMajor
 					report = NULL;
 					return FALSE;
 				}
-			}			
+			}
 		}
 
 		int number = m_pDoc->m_System[sectors.GetAt(random).x][sectors.GetAt(random).y].GetAllBuildings()->GetSize();
@@ -937,7 +937,7 @@ BOOLEAN CIntelCalc::ExecuteMilitarySpy(CMajor* pRace, CMajor* pEnemyRace, CMajor
 						buildingInfo.GetResistance() > NULL || buildingInfo.GetScanPower() > NULL || buildingInfo.GetScanPowerBoni() > NULL || buildingInfo.GetScanRange() > NULL ||
 						buildingInfo.GetScanRangeBoni() > NULL || buildingInfo.GetSecurityBoni() > NULL || buildingInfo.GetShieldPower() > NULL ||
 						buildingInfo.GetShieldPowerBoni() > NULL || buildingInfo.GetShipBuildSpeed() > NULL || buildingInfo.GetShipDefend() > NULL || buildingInfo.GetShipDefendBoni() > NULL ||
-						buildingInfo.GetShipTraining() > NULL || buildingInfo.GetTroopBuildSpeed() > NULL || buildingInfo.GetTroopTraining() > NULL)						
+						buildingInfo.GetShipTraining() > NULL || buildingInfo.GetTroopBuildSpeed() > NULL || buildingInfo.GetTroopTraining() > NULL)
 					{
 						int id = buildingInfo.GetRunningNumber();
 						int n = m_pDoc->m_System[sectors.GetAt(random).x][sectors.GetAt(random).y].GetNumberOfBuilding(id);
@@ -964,7 +964,7 @@ BOOLEAN CIntelCalc::ExecuteMilitarySpy(CMajor* pRace, CMajor* pEnemyRace, CMajor
 				if (j == number)
 					break;
 			}
-		}		
+		}
 	}
 	return FALSE;
 }
@@ -1043,7 +1043,7 @@ BOOLEAN CIntelCalc::ExecuteDiplomacySpy(CMajor* pRace, CMajor* pEnemyRace, CMajo
 				agreement = pEnemyRace->GetAgreement(major);
 				duration = pEnemyRace->GetAgreementDuration(major);
 			}
-			
+
 			CDiplomacyIntelObj* report = new CDiplomacyIntelObj(pRace->GetRaceID(), pEnemyRace->GetRaceID(), m_pDoc->GetCurrentRound(), TRUE, major, agreement,
 				duration, (*pmMajors)[major]->GetRelation(pEnemyRace->GetRaceID()));
 			// Intelreport dem Akteur hinzufügen
@@ -1141,7 +1141,7 @@ BOOLEAN CIntelCalc::ExecuteEconomySabotage(CMajor* pRace, CMajor* pEnemyRace, CM
 	{
 		CEcoIntelObj* report = (CEcoIntelObj*)pRace->GetEmpire()->GetIntelligence()->GetIntelReports()->GetReport(oldReportNumber);
 		int credits = report->GetCredits() / 2;
-		// 1. Möglichkeit: Credits stehlen		
+		// 1. Möglichkeit: Credits stehlen
 		if (credits > NULL)
 		{
 			credits = rand()%credits + 1;
@@ -1237,7 +1237,7 @@ BOOLEAN CIntelCalc::ExecuteEconomySabotage(CMajor* pRace, CMajor* pEnemyRace, CM
 			}
 		}
 		pRace->GetEmpire()->GetIntelligence()->GetIntelReports()->RemoveReport(oldReportNumber);
-	}	
+	}
 	return FALSE;
 }
 
@@ -1276,8 +1276,8 @@ BOOLEAN CIntelCalc::ExecuteScienceSabotage(CMajor* pRace, CMajor* pEnemyRace, CM
 			} while (isTrue == FALSE);
 			report = (CScienceIntelObj*)pRace->GetEmpire()->GetIntelligence()->GetIntelReports()->GetReport(oldReportNumber);
 			specialTech = report->GetSpecialTechComplex();
-			
-		} 
+
+		}
 
 		// 3. Versuch: einen Techbereich sabotieren
 		int techType = report->GetTechType();
@@ -1340,7 +1340,7 @@ BOOLEAN CIntelCalc::ExecuteScienceSabotage(CMajor* pRace, CMajor* pEnemyRace, CM
 				report = NULL;
 				return FALSE;
 			}
-		}	
+		}
 		// 1. Versuch: Forschungsgebäude zerstören
 		int buildings = report->GetNumber();
 		if (buildings > NULL)
@@ -1448,11 +1448,11 @@ BOOLEAN CIntelCalc::ExecuteMilitarySabotage(CMajor* pRace, CMajor* pEnemyRace, C
 
 			// Haben wir das alles überstanden, so können wir jetzt ein Schiff/Station sabotieren und wissen gleichzeitig,
 			// an welcher Position in welchem Feld (ShipArray oder Flotte eines Schiffes) es sich befindet.
-			
+
 			// eine Station wird entweder beschädigt oder mit geringerer Wahrscheinlichkeit komplett zerstört
 			// eine Schiff wird entweder beschädigt, mit geringerer Wahrscheinlichkeit komplett zerstört oder sogar
 			// gestohlen
-			
+
 			// Schiff stehlen
 			if (rand()%2 == NULL && ship->GetShipType() != SHIP_TYPE::OUTPOST && ship->GetShipType() != SHIP_TYPE::STARBASE)
 			{
@@ -1461,7 +1461,7 @@ BOOLEAN CIntelCalc::ExecuteMilitarySabotage(CMajor* pRace, CMajor* pEnemyRace, C
 				// die Station aus der ShipHistory der aktuellen Schiffe entfernen und den zerstörten Schiffen hinzufügen
 				pEnemyRace->GetShipHistory()->ModifyShip(ship, m_pDoc->m_Sector[ship->GetKO().x][ship->GetKO().y].GetName(TRUE),
 					m_pDoc->GetCurrentRound(), CResourceManager::GetString("SABOTAGE"), CResourceManager::GetString("MISSED"));
-				
+
 				// neuen Besitzer hinzufügen
 				ship->SetOwnerOfShip(pRace->GetRaceID());
 				ship->SetIsShipFlagShip(FALSE);
@@ -1501,14 +1501,14 @@ BOOLEAN CIntelCalc::ExecuteMilitarySabotage(CMajor* pRace, CMajor* pEnemyRace, C
 						pFleetShip->CreateFleet();
 						for (USHORT i = 1; i < pFleetCopy->GetFleetSize(); i++)
 							pFleetShip->GetFleet()->AddShipToFleet(pFleetCopy->GetShipFromFleet(i));
-						pFleetShip->CheckFleet();						
+						pFleetShip->CheckFleet();
 						// neues Flottenschiff dem Array hinzufügen
 						m_pDoc->m_ShipArray.Add(*pFleetShip);
 						// Schiff nochmal neu holen, da der Vektor verändert wurde und so sich auch der Zeiger ändern kann
 						ship = &m_pDoc->m_ShipArray.GetAt(n.x);
 						// Flotte des geklauten Schiffes löschen
 						ship->DeleteFleet();
-					}					
+					}
 				}
 				else	// Schiff ist in Flotte
 				{
@@ -1538,10 +1538,10 @@ BOOLEAN CIntelCalc::ExecuteMilitarySabotage(CMajor* pRace, CMajor* pEnemyRace, C
 				report = new CMilitaryIntelObj(pRace->GetRaceID(), pEnemyRace->GetRaceID(), m_pDoc->GetCurrentRound(), FALSE, ship->GetKO(), ship->GetID(), 1, FALSE, TRUE, FALSE);
 				// die Station aus der ShipHistory der aktuellen Schiffe entfernen und den zerstörten Schiffen hinzufügen
 				pEnemyRace->GetShipHistory()->ModifyShip(ship, m_pDoc->m_Sector[ship->GetKO().x][ship->GetKO().y].GetName(TRUE),
-					m_pDoc->GetCurrentRound(), CResourceManager::GetString("SABOTAGE"), CResourceManager::GetString("DESTROYED"));					
+					m_pDoc->GetCurrentRound(), CResourceManager::GetString("SABOTAGE"), CResourceManager::GetString("DESTROYED"));
 				if (n.y == -1)		// nicht in Flotte
 				{
-					m_pDoc->RemoveShip(n.x);					
+					m_pDoc->RemoveShip(n.x);
 				}
 				else	// Schiff ist in Flotte
 				{
@@ -1587,8 +1587,8 @@ BOOLEAN CIntelCalc::ExecuteMilitarySabotage(CMajor* pRace, CMajor* pEnemyRace, C
 					}
 				}
 			}
-		}		
-		
+		}
+
 		// 2. Versuch: Stationierte Truppen umbringen
 		int troopNumber = report->GetNumber();
 		if (troopNumber > NULL && report->GetIsTroop())
@@ -1675,7 +1675,7 @@ BOOLEAN CIntelCalc::ExecuteMilitarySabotage(CMajor* pRace, CMajor* pEnemyRace, C
 			}
 		}
 		pRace->GetEmpire()->GetIntelligence()->GetIntelReports()->RemoveReport(oldReportNumber);
-	}	
+	}
 	return FALSE;
 }
 
@@ -1701,7 +1701,7 @@ BOOLEAN CIntelCalc::ExecuteDiplomacySabotage(CMajor* pRace, CMajor* pEnemyRace, 
 		// Bei der Diplomatiesabotage kann entweder die Beziehung zwischen zwei Majorraces oder zwischen
 		// einer Majorrace und einer Minorrace verschlechtert werden. Eine andere Möglichkeit wäre die Beziehung
 		// zwischen uns und einer Minorrace oder einer Majorrace zu verbessern.
-		
+
 		// zwischen Major <-> Major
 		if (report->GetMajorRaceID() != "")
 		{
@@ -1710,7 +1710,7 @@ BOOLEAN CIntelCalc::ExecuteDiplomacySabotage(CMajor* pRace, CMajor* pEnemyRace, 
 			ASSERT(pMajor);
 			// hier zwei Möglichkeiten: verschlechtern der Beziehung zwischen Geheimdienstopfer und Major oder Verbesserung
 			// der Beziehung zwischen uns und dem Geheimdienstopfer
-			
+
 			// zu uns selbst verbessern
 			if (rand()%5 == NULL)
 			{
@@ -1758,7 +1758,7 @@ BOOLEAN CIntelCalc::ExecuteDiplomacySabotage(CMajor* pRace, CMajor* pEnemyRace, 
 					report = NULL;
 					return FALSE;
 				}
-			}			
+			}
 		}
 		// zwischen Major und Minor
 		else
@@ -1777,7 +1777,7 @@ BOOLEAN CIntelCalc::ExecuteDiplomacySabotage(CMajor* pRace, CMajor* pEnemyRace, 
 					CPoint ko = minor->GetRaceKO();
 					if (ko != CPoint(-1,-1))
 						report = new CDiplomacyIntelObj(pRace->GetRaceID(), pEnemyRace->GetRaceID(), m_pDoc->GetCurrentRound(), FALSE, ko);
-					
+
 					if (report)
 					{
 						report->CreateText(m_pDoc, 2, pResponsibleRace->GetRaceID());
@@ -1789,7 +1789,7 @@ BOOLEAN CIntelCalc::ExecuteDiplomacySabotage(CMajor* pRace, CMajor* pEnemyRace, 
 						delete report;
 						report = NULL;
 						return FALSE;
-					}					
+					}
 				}
 				// bei unserem gegenüber verschlechtern
 				else
@@ -1800,7 +1800,7 @@ BOOLEAN CIntelCalc::ExecuteDiplomacySabotage(CMajor* pRace, CMajor* pEnemyRace, 
 					CPoint ko = minor->GetRaceKO();
 					if (ko != CPoint(-1,-1))
 						report = new CDiplomacyIntelObj(pRace->GetRaceID(), pEnemyRace->GetRaceID(), m_pDoc->GetCurrentRound(), FALSE, ko);
-					
+
 					if (report)
 					{
 						report->CreateText(m_pDoc, 3, pResponsibleRace->GetRaceID());
@@ -1827,7 +1827,7 @@ void CIntelCalc::CreateMsg(CMajor* pResponsibleRace, CMajor* pEnemyRace, BYTE ty
 {
 	CString csInput;													// auf csInput wird die jeweilige Zeile gespeichert
 	CString fileName;
-	fileName = CIOData::GetInstance()->GetAppPath() + "Data\\Races\\MajorIntel.data";				// Name des zu Öffnenden Files 
+	fileName = CIOData::GetInstance()->GetAppPath() + "Data\\Races\\MajorIntel.data";				// Name des zu Öffnenden Files
 	CStdioFile file;													// Varibale vom Typ CStdioFile
 	if (file.Open(fileName, CFile::modeRead | CFile::typeText))			// Datei wird geöffnet
 	{
@@ -1854,14 +1854,14 @@ void CIntelCalc::CreateMsg(CMajor* pResponsibleRace, CMajor* pEnemyRace, BYTE ty
 				if (report)
 				{
 					report->SetEnemyDesc(csInput);
-					pEnemyRace->GetEmpire()->GetIntelligence()->GetIntelReports()->AddReport(report);						
+					pEnemyRace->GetEmpire()->GetIntelligence()->GetIntelReports()->AddReport(report);
 				}
 				break;
-			}			
+			}
 		}
 	}
 	else
-	{	
+	{
 		AfxMessageBox("Error! Could not open file \"MajorIntel.data\"...");
 		exit(1);
 	}
@@ -1910,9 +1910,9 @@ BOOLEAN CIntelCalc::ExecuteAttempt(CMajor* pRace, UINT ourSP)
 									}
 									intelObj = NULL;
 									pRace->GetEmpire()->GetIntelligence()->GetIntelReports()->RemoveAttemptObject();
-									return returnValue;									
-								}						
-			}			
+									return returnValue;
+								}
+			}
 		}
 	}
 	pRace->GetEmpire()->GetIntelligence()->GetIntelReports()->RemoveAttemptObject();

@@ -89,10 +89,10 @@ void CNewGameView::OnDraw(CDC* dc)
 
 	double dSizeModX = m_TotalSize.cx / (double)clientRect.Width();
 	double dSizeModY = m_TotalSize.cy / (double)clientRect.Height();
-	
+
 	// Graphicsobjekt, in welches gezeichnet wird anlegen
 	Graphics g(pDC->GetSafeHdc());
-	
+
 	g.Clear(Color::Black);
 	g.SetSmoothingMode(SmoothingModeHighSpeed);
 	g.SetInterpolationMode(InterpolationModeLowQuality);
@@ -177,24 +177,24 @@ void CNewGameView::OnInitialUpdate()
 
 	CRect clientRect;
 	GetDesktopWindow()->GetClientRect(clientRect);
-		
+
 	double nButtonSizeX = 300.0;
 	double nButtonSizeY = 40.0;
-	
+
 	double nXPos = clientRect.Width() / 2.0 - nButtonSizeX / 2.0;
-	double nYPos = clientRect.Height() / 2.0 - 175.0;	
+	double nYPos = clientRect.Height() / 2.0 - 175.0;
 
 	double nGab = 10.0;
 
 	// Structure containing Style
 	tButtonStyle tStyle;
 	//////////////////////////////////////////////////////////////////////////
-	
+
 	// Get default Style
 	m_tButtonStyle.GetButtonStyle(&tStyle);
 	// Change Radius of Button
 	tStyle.m_dRadius = 1.0;
-	
+
 	// Change Color Schema of Button
 	tStyle.m_tColorFace.m_tEnabled		= RGB(125, 125, 125);
 	tStyle.m_tColorBorder.m_tEnabled	= RGB(220, 220, 220);
@@ -243,13 +243,13 @@ void CNewGameView::OnInitialUpdate()
 
 	// Create push buttons
 	m_btBack.Create(_T(CResourceManager::GetString("BTN_BACK")), WS_CHILD|WS_VISIBLE|BS_PUSHBUTTON, CRect(), this, BTN_BACK);
-	m_btBack.SetWindowPos(NULL, clientRect.Width() / 2.0 - 160, nYPos + 175, 150, 30, SWP_FRAMECHANGED);	
+	m_btBack.SetWindowPos(NULL, clientRect.Width() / 2.0 - 160, nYPos + 175, 150, 30, SWP_FRAMECHANGED);
 	SetButtonStyle(&m_btBack);
 
 	m_btNext.Create(_T(CResourceManager::GetString("BTN_FURTHER")), WS_CHILD|WS_VISIBLE|BS_PUSHBUTTON, CRect(), this, BTN_NEXT);
 	m_btNext.SetWindowPos(NULL, clientRect.Width() / 2.0 + 10, nYPos + 175, 150, 30, SWP_FRAMECHANGED);
 	SetButtonStyle(&m_btNext);
-	
+
 	// Handle auf Font freigeben
 	fnt.Detach();
 
@@ -264,12 +264,12 @@ void CNewGameView::OnInitialUpdate()
 	{
 		TCHAR userName[UNLEN + 1];
 		DWORD nLen = UNLEN + 1;
-		VERIFY(GetUserName(userName, &nLen));	
+		VERIFY(GetUserName(userName, &nLen));
 		SetDlgItemText(IDC_USERNAME, userName);
 	}
 	GetDlgItemText(IDC_USERNAME, userName);
 	CIniLoader::GetInstance()->WriteValue("General", "USERNAME", userName);
-		
+
 	m_hostIP.SetAddress(INADDR_LOOPBACK);
 	m_hostPort.SetWindowText("7777");
 	m_serverPort.SetWindowText("7777");
@@ -340,7 +340,7 @@ void CNewGameView::StartServer(bool bPublish)
 		SetCursor(::LoadCursor(NULL, IDC_ARROW));
 		return;
 	}
-	
+
 	// Client zu 127.0.0.1:nPort verbinden
 	if (!client.Connect(INADDR_LOOPBACK, nPort, sName))
 	{
@@ -387,7 +387,7 @@ void CNewGameView::LoadGame(const CString& sPath)
 			m_sFileName = "";
 			return;
 		}
-	
+
 		pDoc->m_bGameLoaded = true;
 		Sleep(250);
 		StartServer(true);
@@ -464,13 +464,13 @@ BOOL CNewGameView::CheckValues()
 		return !m_sFileName.IsEmpty();
 		}
 	}
-	
+
 	return FALSE;
 }
 
 void CNewGameView::EnableNextButton()
 {
-	m_btNext.EnableWindow(CheckValues());	
+	m_btNext.EnableWindow(CheckValues());
 }
 
 void CNewGameView::OnEnChangeHostport()

@@ -9,7 +9,7 @@
 #pragma once
 #include "Options.h"
 
-class CResearchComplex : public CObject  
+class CResearchComplex : public CObject
 {
 	friend class CResearchInfo;
 public:
@@ -36,7 +36,7 @@ public:
 	 * RESEARCHED, NOTRESEARCHED oder RESEARCHING sein.
 	 */
 	RESEARCH_STATUS::Typ GetComplexStatus(void) const {return m_nComplexStatus;}
-	
+
 	/**
 	 * Diese Funktion gibt den Status eines speziellen Gebietes in dem Komplex zurück. Der Status des Gebietes
 	 * kann entweder RESEARCHED, NOTRESEARCHED oder RESEARCHING sein. Als Paramter erwartet die Funktion das
@@ -48,7 +48,7 @@ public:
 	 * Diese Funktion gibt den Namen (die Bezeichnung) des Komplexes zurück.
 	 */
 	const CString& GetComplexName(void) const {return m_strComplexName;}
-	
+
 	/**
 	 * Diese Funktion gibt die Beschreibung des Komplex zurück.
 	 */
@@ -65,7 +65,7 @@ public:
 	 * Funktion das gewünschte Gebiet <code>field</code>. Dieses beginnt bei 1 und nicht bei 0 (maximal 3)!
 	 */
 	const CString& GetFieldDescription(BYTE field) const {return m_strFieldDescription[field-1];}
-	
+
 	/**
 	 * Diese Funktion gibt den Bonus eines speziellen Gebietes in dem Komplex zurück. Als Paramter erwartet die
 	 * Funktion das gewünschte Gebiet <code>field</code>. Dieses beginnt bei 1 und nicht bei 0 (maximal 3)!
@@ -78,7 +78,7 @@ public:
 	 * muss dafür eine Komplexnummer <code>nComplex</code> übergeben werden.
 	 */
 	void GenerateComplex(RESEARCH_COMPLEX::Typ nComplex);
-	
+
 	/**
 	 * Diese Funktion setzt alle Variablen des CResearchComplex-Objektes wieder auf ihre Ausgangswerte
 	 */
@@ -93,13 +93,13 @@ private:
 
 	/// Status des Komplexes (erforscht, nicht erforscht, gerade am erforschen).
 	RESEARCH_STATUS::Typ m_nComplexStatus;
-		
+
 	/// Der Status der einzelnen Wahlgebiete des Komplexes (erforscht, nicht erforscht, gerade am erforschen).
 	RESEARCH_STATUS::Typ m_nFieldStatus[3];
-	
+
 	/// Der Name (Bezeichnung) des Komplexes (z.B. Schiffstechnik offensiv oder Wirtschaft...).
 	CString m_strComplexName;
-	
+
 	/// Die Beschreibung des Komplexes.
 	CString m_strComplexDescription;
 

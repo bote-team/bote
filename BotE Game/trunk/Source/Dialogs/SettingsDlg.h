@@ -33,24 +33,24 @@ public:
 	virtual BOOL OnInitDialog();
 private:
 	bool m_bDisable;
-	
+
 	// General
 	CSliderCtrl m_ctrlDifficultySlider;	///< Schiebregler zum Einstellen des Schwierigkeitsgrades
 	CString m_sDifficulty;				///< Anzeige des aktuell eingestellten Schwierigkeitsgrades
 	BOOL m_bAutoave;					///< Autosave aktivieren/deaktivieren
-	
+
 	// Audio
 	BOOL m_bHardwaresound;
 	BOOL m_bSound;
 	BOOL m_bMusic;
 	CSliderCtrl m_ctrlMusicvolume;
-	
+
 	// Video
 	BOOL m_bShowTraderoutes;
 	BOOL m_bAnimatedIcon;
 	BOOL m_bShowMiniMap;
 	CSliderCtrl m_ctrlTooltipDelay;
-	
+
 	// Control
 	BOOL m_bShowScrollBars;
 	BOOL m_bInvertMouse;
@@ -75,6 +75,6 @@ private:
 protected:
 	virtual void OnOK();
 
-public:	
-	afx_msg void OnNMCustomdrawSliderDifficulty(NMHDR *pNMHDR, LRESULT *pResult);		
+public:
+	afx_msg void OnNMCustomdrawSliderDifficulty(NMHDR *pNMHDR, LRESULT *pResult);
 };

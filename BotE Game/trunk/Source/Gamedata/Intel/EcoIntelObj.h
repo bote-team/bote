@@ -61,7 +61,7 @@ public:
 
 	/// Funktion gibt die Creditsmenge zurück
 	int GetCredits() const {return m_iCredits;}
-	
+
 	// sonstige Funktion
 	/// Funktion generiert einen Text, welcher eine Geheimdiestaktion beschreibt, für den Auslöser bzw. das Opfer
 	/// dieser Aktion.

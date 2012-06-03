@@ -24,7 +24,7 @@ public:
 		BYTE nRes;
 		CPoint ptKO;
 	};
-	
+
 	/// Konstruktor
 	CGlobalStorage(void);
 
@@ -101,7 +101,7 @@ public:
 	 * liegt dabei bei 20k.
 	 */
 	void SetMaxTakenRessources(int nMax) {m_iMaxTakeFromStorage = min(20000, nMax);}
-		
+
 	// sonstige Funktionen
 	/**
 	 * Diese Funktion addiert die mit dem Parameter <code>add</code> übergebende Anzahl der Ressource

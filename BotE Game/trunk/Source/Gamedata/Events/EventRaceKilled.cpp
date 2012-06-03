@@ -16,16 +16,16 @@ CEventRaceKilled::CEventRaceKilled(const CString& sPlayersRace, const CString& s
 }
 
 CEventRaceKilled::~CEventRaceKilled(void)
-{	
+{
 }
 
 ///////////////////////////////////////////////////////////////////////
 // Speichern / Laden
 ///////////////////////////////////////////////////////////////////////
-void CEventRaceKilled::Serialize(CArchive &ar)		
+void CEventRaceKilled::Serialize(CArchive &ar)
 {
 	__super::Serialize(ar);
-	
+
 	// wenn gespeichert wird
 	if (ar.IsStoring())
 	{
@@ -68,23 +68,23 @@ void CEventRaceKilled::Draw(Graphics* g, CGraphicPool* graphicPool) const
 	if (graphic)
 		g->DrawImage(graphic, 275, 625, 75, 75);
 	g->DrawRectangle(&Pen(Color(200,200,200), 2), 50, 400, 300, 300);
-	
+
 	CFontLoader::CreateGDIFont(pMajor, 5, fontName, fontSize);
 	fontFormat.SetAlignment(StringAlignmentCenter);
 	fontFormat.SetLineAlignment(StringAlignmentCenter);
 	fontFormat.SetFormatFlags(!StringFormatFlagsNoWrap);
-	
+
 	Gdiplus::Color color;
 	CFontLoader::GetGDIFontColor(pMajor, 3, color);
 	fontBrush.SetColor(color);
 
 	CString s = CResourceManager::GetString("IMPORTANT_NEWS");
-	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0,0,1280,96), &fontFormat, &fontBrush);	
+	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0,0,1280,96), &fontFormat, &fontBrush);
 
 	fontFormat.SetAlignment(StringAlignmentNear);
 	s = CResourceManager::GetString("RACE_ELIMINATED", FALSE, m_sKilledRaceName);
 	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(375, 400, 800, 300), &fontFormat, &fontBrush);
-	
+
 	// Buttons zeichnen
 	CFontLoader::CreateGDIFont(pMajor, 3, fontName, fontSize);
 	fontFormat.SetAlignment(StringAlignmentCenter);

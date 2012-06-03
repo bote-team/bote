@@ -28,7 +28,7 @@ class CMajor;
 class CMinor;
 class CBotf2Doc;
 
-class CSystem : public CObject  
+class CSystem : public CObject
 {
 public:
 	DECLARE_SERIAL (CSystem)
@@ -42,18 +42,18 @@ public:
 
 	// Destruktor
 	virtual ~CSystem(void);
-	
+
 	// Serialisierungsfunktion
 	virtual void Serialize(CArchive &ar);
 
 // Zugriffsfunktionen
 	// zum Lesen der Membervariablen
-	// Funktion gibt den Besitzer des Systems zurück, sollte eigentlich immer auch der Besitzer des Sektors sein.	
+	// Funktion gibt den Besitzer des Systems zurück, sollte eigentlich immer auch der Besitzer des Sektors sein.
 	const CString& GetOwnerOfSystem() const {return m_sOwnerOfSystem;}
-		
+
 	// Funktion gibt die aktuelle Bevölkerung des Systems zurück.
 	double GetHabitants() const {return m_dHabitants;}
-	
+
 	// Funktion gibt einen Zeiger auf die Bauliste des Systems zurück.
 	CAssemblyList* GetAssemblyList() {return &m_AssemblyList;}
 
@@ -65,10 +65,10 @@ public:
 
 	// Funktion gibt einen Zeiger auf alle Produktionswerte und manche Boni des Systems zurück
 	CSystemProd* GetProduction() {return &m_Production;}
-	
+
 	// Funktion gibt einen Zeiger auf das Feld aller Gebäude im System zurück.
 	BuildingArray* GetAllBuildings() {return &m_Buildings;}
-	
+
 	// Funktionen geben jeweils einen Zeiger auf das Feld mit den Informationen über baubare Gebäude,
 	// baubare Updates oder baubaren Schiffen in dem System zurück.
 	CArray<short,short>* GetBuildableBuildings() {return &m_BuildableBuildings;}
@@ -109,10 +109,10 @@ public:
 	UINT GetCrystalStore() const {return m_iCrystalStore;}
 	UINT GetIridiumStore() const {return m_iIridiumStore;}
 	UINT GetDeritiumStore() const {return m_iDeritiumStore;}
-	
+
 	// Funktion gibt den Lagerinhalt der Ressource zurück, die an die Funktion übergeben wurde.
 	UINT GetResourceStore(USHORT res) const;
-	
+
 	// Funktion gibt einen Zeiger auf den Lagerinhalt der Ressource zurück, die an die Funktion übergeben wurde.
 	UINT* GetResourceStorages(USHORT res);
 
@@ -131,20 +131,20 @@ public:
 
 	/// Funktion gibt zurück, ob die Autobaufunktion in dem System aktiviert ist.
 	BOOLEAN GetAutoBuild() const {return m_bAutoBuild;}
-		
+
 	// zum Schreiben der Membervariabblen
 	// Funktion setzt den neuen Besitzer des Systems. Übergeben wird der Besitzer.
 	void SetOwnerOfSystem(const CString& sOwnerOfSystem);
-	
+
 	// Funktion setzt die Bevölkerungsanzahl des Systems. Übergeben wird die Bevölkerung aller Planeten des Sektors.
 	// Gleichzeitig überprüft die Funktion auch, ob man eine weitere Handelsroute aufgrund der Bevölkerung bekommt, dann
 	// gibt die Funktion ein <code>TRUE</code> zurück, ansonsten <code>FALSE</code>.
 	BOOLEAN SetHabitants(double habitants);
-	
+
 	// Funktion sagt ob ein bestimmtes Gebäude in dem System baubar ist oder nicht. Als Parameter werden dafür
 	// die RunningNumber des gewünschten Gebäudes und der Wert übergeben.
 	void SetBuildableBuildings(int RunningNumber, BOOLEAN TrueOrFalse);
-	
+
 	// Funktion sagt ob ein bestimmtes Gebäudeupdate in dem System baubar ist oder nicht. Als Parameter werden dafür
 	// die RunningNumber des gewünschten Gebäudes und der Wert übergeben.
 	void SetBuildableUpdates(int RunningNumber, BOOLEAN TrueOrFalse);
@@ -158,10 +158,10 @@ public:
 	// Komplette Zugriffsfunktion für das Arbeiterobjekt. Bei Modus 0 wird der "WhatWorker" inkrementiert, bei Modus 2 wird
 	// er dekrementiert und bei Modus 2 wird der "WhatWorker" auf den Wert von Value gesetzt.
 	void SetWorker(WORKER::Typ nWhatWorker, int Value, int Modus);
-	
+
 	// Funktion setzt alle vorhandenen Arbeiter soweit wie möglich in Gebäude, die Arbeiter benötigen.
 	void SetWorkersIntoBuildings();
-	
+
 	// Funktion addiert moralAdd zu m_iMoral dazu und mach gleichzeitig noch die Überprüfen auf den richtigen Bereich.
 	void SetMoral(short moralAdd) {if ((m_iMoral+moralAdd) >= 0) m_iMoral += moralAdd; if (m_iMoral > 200) m_iMoral = 200;}
 
@@ -183,10 +183,10 @@ public:
 	void SetCrystalStore(int crystalAdd) {m_iCrystalStore += crystalAdd;}
 	void SetIridiumStore(int iridiumAdd) {m_iIridiumStore += iridiumAdd;}
 	void SetDeritiumStore(int deritiumAdd) {m_iDeritiumStore += deritiumAdd;}
-	
+
 	// Funktion addiert resAdd zur Ressource res.
 	void SetResourceStore(USHORT res, int resAdd);
-	
+
 	// Diese Funktion setzt die abzureißenden Gebäude fest. Die zu übergebenden Parameter sind die RunningNumber
 	// des Gebäudes und einen Wert 1 für hinzufügen und 0 für wieder aus der Liste nehmen
 	void SetBuildingDestroy(int RunningNumber, BOOLEAN add);
@@ -194,36 +194,36 @@ public:
 	/// Funktion setzt fest, ob die Autobaufunktion in dem System aktiviert ist.
 	/// param is <code>TRUE</code> wenn eingeschalten, ansonsten <code>FALSE</code>
 	void SetAutoBuild(BOOLEAN is) {m_bAutoBuild = is;}
-	
-// sonstige Funktionen	
+
+// sonstige Funktionen
 	// Funktion berechnet aus den Eigenschaften der stehenden Gebäude alle Attribute der Systemklasse.
 	void CalculateVariables(BuildingInfoArray*, CResearchInfo*, const std::vector<CPlanet>&, CMajor* pOwner, const CString*);
 
 	// Funktion berechnet die Lagerinhalte des Systems. Aufrufen bei Ende bzw. Beginn einer neuen Runde.
 	// Gibt die Funktion TRUE zurück hat sich das System Aufgrund zu schlechter Moral vom Besitzer losgesagt.
 	BOOLEAN CalculateStorages(CResearchInfo* researchInfo, int diliAdd);
-	
+
 	// Funktion fügt ein neues Gebäude zum System hinzu.
 	void AddNewBuilding(CBuilding &building) { m_Buildings.Add(building); }
 
 	// Funktion löscht alle Gebäude, die die übergebene RunningNumber haben und gibt deren Anzahl zurück.
 	// -> Danach muß AddBuilding() mit dem Nachfolger gleich der Anzahl aufgerufen werden.
 	int UpdateBuildings(int RunningNumber);
-	
-	// Funktion reißt alle Gebäude ab, die in der Variable m_BuildingDestroy stehen. Funktion wird in der Doc 
+
+	// Funktion reißt alle Gebäude ab, die in der Variable m_BuildingDestroy stehen. Funktion wird in der Doc
 	// bei NextRound() aufgerufen.
 // --- wird noch überarbeitet
 	bool DestroyBuildings(void);
-	
+
 	// Funktion berechnet die baubaren Gebäude und Gebäudeupdates in dem System.
 	void CalculateBuildableBuildings(CSector* sector, BuildingInfoArray* buildingInfo, CMajor* pMajor, CGlobalBuildings* globals);
-	
+
 	// Funktion berechnet die baubaren Schiffe in dem System.
 	void CalculateBuildableShips(CBotf2Doc* pDoc, const CPoint& p);
 
 	// Diese Funktion berechnet die baubaren Truppen in diesem System
 	void CalculateBuildableTroops(const CArray<CTroopInfo>* troopInfos, const CResearch *research);
-	
+
 	// Funktion berechnet die Anzahl aller Farmen, Bauhöfe usw., also alle Gebäude die Arbeiter benötigen.
 	// Sie muß am Rundenanfang vor CalculateVariables() aufgerufen werden und sortiert gleichzeitig das
 	// CArray m_Buildings nach der RunningNumber. // In der Doc-Klasse nach der Funktion DestroyBuildings()
@@ -232,10 +232,10 @@ public:
 
 	// Funktion berechnet die imperiumweite Moralproduktion, welche aus diesem System generiert wird.
 	void CalculateEmpireWideMoralProd(BuildingInfoArray *buildingInfos);
-	
+
 	// Funktion setzt das letzte Gebäude, welches gebaut wurde online, sofern dies möglich ist.
 	int SetNewBuildingOnline(BuildingInfoArray *buildingInfos);
-	
+
 	// Funktion überprüft Gebäude die Energie benötigen und schaltet diese gegebenfalls ab,
 	// falls zuwenig Energie im System vorhanden ist. Diese Funktion aufrufen, bevor wir CalculateVariables() usw.
 	// aufrufen, weil wir ja die bösen Onlinegebäude vorher ausschalten wollen.
@@ -246,7 +246,7 @@ public:
 
 	// Funktion baut die Gebäude der Minorrace, wenn wir eine Mitgliedschaft mit dieser erreicht haben.
 	void BuildBuildingsForMinorRace(CSector* sector, BuildingInfoArray* buildingInfo, USHORT averageTechlevel, const CMinor* pMinor);
-	
+
 	// Funktion berechnet und baut die Startgebäude in einem System, nachdem wir einen Planeten
 	// in diesem kolonisiert haben.
 	void BuildBuildingsAfterColonization(CSector* sector, BuildingInfoArray* buildingInfo, USHORT ColonizationPoints);
@@ -260,7 +260,7 @@ public:
 	// Funktion überprüft, ob wie aufgrund der Bevölkerung hier im System überhaupt (noch) eine Handelsroute
 	// anlegen können
 	BOOLEAN CanAddTradeRoute(CResearchInfo* researchInfo);
-	
+
 	/// Funktion generiert eine neue Handelsroute. Wenn die Funktion <code>TRUE</code> zurückgibt, dann konnte die
 	/// Handelsroute erfolgreich angelegt werden. Als Parameter wird dabei die Koordinate <code>dest</code>des
 	/// Zielsektors übergeben sowie ein Zeiger auf alle Systeme <code>systems</code> auf der Map.
@@ -293,17 +293,17 @@ public:
 
 	/// Alle deaktivierten Produktionen zurücksetzen
 	void ClearDisabledProductions();
-	
+
 	// Resetfunktion für die Klasse CSystem.
 	void ResetSystem();
 
 private:
 	// Der Besitzer des Systems
 	CString m_sOwnerOfSystem;
-	
+
 	// Einwohner in dem System
 	double m_dHabitants;
-	
+
 	// Die Bauliste des Systems
 	CAssemblyList m_AssemblyList;
 
@@ -315,7 +315,7 @@ private:
 
 	// Variable beinhaltet welche Gebäude in dem System baubar sind
 	CArray<short,short> m_BuildableBuildings;
-	
+
 	// Variable beinhaltet welche Gebäudeupdates in dem System baubar sind
 	CArray<short,short> m_BuildableUpdates;
 
@@ -334,7 +334,7 @@ private:
 
 	// Die Arbeiter in dem System
 	CWorker m_Workers;
-	
+
 	// Die Moral der Bevölkerung auf in dem System
 	short m_iMoral;
 
@@ -356,7 +356,7 @@ private:
 
 	// Variable zum Abreißen von Gebäuden
 	CArray<USHORT,USHORT> m_BuildingDestroy;
-	
+
 	// Anzahl der Gebäude des jeweiligen Types
 	BYTE m_iFoodBuildings;				// Anzahl der Nahrungsgebäude in dem System
 	BYTE m_iIndustryBuildings;			// Anzahl der Industriegebäude in dem System
@@ -381,7 +381,7 @@ private:
 
 	/// Autofunktion aktiviert oder nicht
 	BOOLEAN m_bAutoBuild;
-		
+
 	// private Hilfsfunktionen (mal schauen ob wir die direkt in die cpp-Datei schreiben können)
 	BOOLEAN CheckTech(CBuildingInfo* building, CResearch* research);
 	BOOLEAN CheckPlanet(CBuildingInfo* building, CSector* sector);

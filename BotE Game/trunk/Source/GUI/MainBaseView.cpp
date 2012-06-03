@@ -16,7 +16,7 @@ CMainBaseView::CMainBaseView()
 }
 
 CMainBaseView::~CMainBaseView()
-{	
+{
 }
 
 BEGIN_MESSAGE_MAP(CMainBaseView, CView)
@@ -28,7 +28,7 @@ END_MESSAGE_MAP()
 
 void CMainBaseView::OnDraw(CDC* pDC)
 {
-	// TODO: add draw code here	
+	// TODO: add draw code here
 }
 
 
@@ -63,7 +63,7 @@ void CMainBaseView::OnInitialUpdate()
 	ASSERT(m_pPlayersRace);*/
 
 	// TODO: Add your specialized code here and/or call the base class
-	m_TotalSize = CSize(1075, 750);		
+	m_TotalSize = CSize(1075, 750);
 }
 
 void CMainBaseView::OnPrepareDC(CDC* pDC, CPrintInfo* pInfo)
@@ -73,16 +73,16 @@ void CMainBaseView::OnPrepareDC(CDC* pDC, CPrintInfo* pInfo)
 
 	CRect client;
 	GetClientRect(&client);
-		
+
 	// MapMode setzen
 	pDC->SetMapMode(MM_ANISOTROPIC);
-	pDC->SetWindowExt(m_TotalSize);		
+	pDC->SetWindowExt(m_TotalSize);
 	pDC->SetViewportExt(client.right, client.bottom);
-		
+
 	pDC->SetViewportOrg(0, 0);
 	pDC->SetBkColor(RGB(0,0,0));
-	pDC->SetBkMode(TRANSPARENT);*/	
-		
+	pDC->SetBkMode(TRANSPARENT);*/
+
 	CView::OnPrepareDC(pDC, pInfo);
 }
 
@@ -121,7 +121,7 @@ void CMainBaseView::ButtonReactOnMouseOver(const CPoint &point, CArray<CMyButton
 	for (int i = 0; i < buttonArray->GetSize(); i++)
 	{
 		if (buttonArray->GetAt(i)->ClickedOnButton(point))
-		{			
+		{
 			if (buttonArray->GetAt(i)->Activate())
 			{
 				CSoundManager::GetInstance()->PlaySound(SNDMGR_SOUND_MAINMENU);
@@ -148,7 +148,7 @@ BOOLEAN CMainBaseView::ButtonReactOnLeftClick(const CPoint &point, CArray<CMyBut
 		{
 			// Wenn der Button schon deaktiviert ist, dann kann er nicht angeklickt werden
 			if (buttonArray->GetAt(i)->GetState() == 2)
-				return FALSE;			
+				return FALSE;
 			button = i;
 			if (!onlyActivate)
 			{
@@ -184,9 +184,9 @@ void CMainBaseView::CalcLogicalPoint(CPoint &point)
 {
 	CRect client;
 	GetClientRect(&client);
-	
+
 	point.x *= (float)m_TotalSize.cx / (float)client.Width();
-	point.y *= (float)m_TotalSize.cy / (float)client.Height();	
+	point.y *= (float)m_TotalSize.cy / (float)client.Height();
 }
 
 void CMainBaseView::CalcDeviceRect(CRect &rect)
@@ -197,7 +197,7 @@ void CMainBaseView::CalcDeviceRect(CRect &rect)
 	CPoint p1 = rect.TopLeft();
 	p1.x *= (float)client.Width() / (float)m_TotalSize.cx;
 	p1.y *= (float)client.Height() / (float)m_TotalSize.cy;
-	
+
 	CPoint p2 = rect.BottomRight();
 	p2.x *= (float)client.Width() / (float)m_TotalSize.cx;
 	p2.y *= (float)client.Height() / (float)m_TotalSize.cy;

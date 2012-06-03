@@ -130,7 +130,7 @@ private:
 	/// @param createText soll die Beschreibung zu der Aktion schon miterstellt werden
 	/// @return <code>TRUE</code> wenn eine Aktion durchgeführt wurde, ansonsten <code>FALSE</code>
 	BOOLEAN ExecuteDiplomacySpy(CMajor* pOurRace, CMajor* pEnemyRace, CMajor* pResponsibleRace, BOOLEAN createText = TRUE);
-	
+
 	/// Funktion führt eine Wirtschatfssabotageaktion aus.
 	/// @param pOurRace unsere Rasse
 	/// @param pEnemyRace Zielrasse
@@ -168,7 +168,7 @@ private:
 	/// @param pEnemyRace Zielrasse, welche Wind von unserer Aktion bekommt
 	/// @param type Typ der Aktion -> Wirtschaft == 0, Forschung == 1, Militär == 2, Diplomatie == 3
 	void CreateMsg(CMajor* pResponsibleRace, CMajor* pEnemyRace, BYTE type);
-	
+
 	/// Funktion führt einen Anschlag durch.
 	/// @param pRace unsere Rasse
 	/// @param ourSP unsere effektive Geheimdienstpunkte für diese Aktion
@@ -180,5 +180,5 @@ private:
 	UINT GetCompleteInnerSecPoints(CMajor* pEnemyRace);
 
 	// Attribute
-	CBotf2Doc* m_pDoc;			///< Zeiger auf das Dokument	
+	CBotf2Doc* m_pDoc;			///< Zeiger auf das Dokument
 };

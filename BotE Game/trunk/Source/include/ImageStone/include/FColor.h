@@ -5,7 +5,7 @@
  *   Create   :  2003-4-17
  *   Home     :  http://www.crazy-bit.com/
  *   Mail     :  crazybitwps@hotmail.com
- *   History  :  
+ *   History  :
  */
 #ifndef __FOO_COLOR__2003_04_17__H__
 #define __FOO_COLOR__2003_04_17__H__
@@ -57,7 +57,7 @@ public:
         return (30*PCL_R(prgb) + 59*PCL_G(prgb) + 11*PCL_B(prgb)) / 100 ;
     }
 
-    /** 
+    /**
      *  Rapid pixel copy.
      *  @param nBytes : can be 1,2,3,4
      */
@@ -181,7 +181,7 @@ inline void FCColor::RGBtoHLS (const void* prgb, double* H, double* L, double* S
                    cmin = n_cmin / 255.0,
                    delta = cmax - cmin ;
 
-    if (*L < 0.5) 
+    if (*L < 0.5)
         *S = delta / (cmax+cmin) ;
     else
         *S = delta / (2.0-cmax-cmin) ;

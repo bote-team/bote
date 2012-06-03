@@ -51,7 +51,7 @@ BOOL CChooseRacePage::OnInitDialog()
 
 	using namespace network;
 	// Name der Buttons aus dem ResourceManager auslesen
-	int ids[] = {IDC_RACE, IDC_RACE2, IDC_RACE3, IDC_RACE4, IDC_RACE5, IDC_RACE6};	
+	int ids[] = {IDC_RACE, IDC_RACE2, IDC_RACE3, IDC_RACE4, IDC_RACE5, IDC_RACE6};
 	for (int nRace = 0; nRace < RACE_COUNT; nRace++)
 	{
 		ASSERT(nRace < 6);
@@ -210,7 +210,7 @@ void CChooseRacePage::EnableRaceButtons()
 			pButton->EnableWindow(TRUE);
 			pButton->SetCheck(FALSE);
 		}
-		
+
 		////////////////////////////////////////////
 		// Alpha5 Bedingung
 #ifndef DEVELOPMENT_VERSION
@@ -250,7 +250,7 @@ afx_msg void CChooseRacePage::OnChooseRace(UINT nID)
 				pButton->SetCheck(FALSE);
 				m_pParent->GetDlgItem(ID_WIZBACK)->SetFocus();
 				client.RequestRace(network::RACE_NONE);
-				
+
 			}
 			else
 			{
@@ -278,7 +278,7 @@ afx_msg void CChooseRacePage::OnSetPlayByServer(UINT nID)
 /*	using namespace network;
 
 	if (!m_bIsServer) return;
-	
+
 	int id[] = {IDC_SERVER1, IDC_SERVER2, IDC_SERVER3, IDC_SERVER4, IDC_SERVER5, IDC_SERVER6};
 	RACE race[] = {RACE_1, RACE_2, RACE_3, RACE_4, RACE_5, RACE_6};
 
@@ -317,7 +317,7 @@ LRESULT CChooseRacePage::OnWizardNext()
 		RACE race = (RACE)(RACE_FIRST + i);
 		if (!server.IsPlayedByClient(race)) server.SetPlayByServer(race, TRUE, FALSE);
 	}
-	
+
 	// Spiel starten; veranlasst die Clients, auf die nächste Seite zu wechseln
 	server.BeginGame((network::CPeerData*)m_pParent->GetServerDocument());
 
@@ -388,7 +388,7 @@ BOOL CChooseRacePage::OnWizardFinish()
 		RACE race = (RACE)(RACE_FIRST + i);
 		if (!server.IsPlayedByClient(race)) server.SetPlayByServer(race,TRUE,FALSE);
 	}
-	
+
 	// Spiel starten; veranlasst die Clients, auf die nächste Seite zu wechseln
 	m_pParent->GetServerDocument()->PrepareData();
 	server.BeginGame(m_pParent->GetServerDocument());
@@ -413,7 +413,7 @@ BOOL CChooseRacePage::OnWizardFinish()
 		RACE race = (RACE)(RACE_FIRST + i);
 		if (!server.IsPlayedByClient(race)) server.SetPlayByServer(race, TRUE, FALSE);
 	}
-	
+
 	// Spiel starten; veranlasst die Clients, auf die nächste Seite zu wechseln
 	server.BeginGame(m_pParent->GetServerDocument());
 

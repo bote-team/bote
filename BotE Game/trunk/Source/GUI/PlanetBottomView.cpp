@@ -18,11 +18,11 @@
 IMPLEMENT_DYNCREATE(CPlanetBottomView, CBottomBaseView)
 
 CPlanetBottomView::CPlanetBottomView()
-{	
+{
 }
 
 CPlanetBottomView::~CPlanetBottomView()
-{	
+{
 }
 
 BEGIN_MESSAGE_MAP(CPlanetBottomView, CBottomBaseView)
@@ -52,17 +52,17 @@ void CPlanetBottomView::OnDraw(CDC* dc)
 	CMyMemDC pDC(dc);
 	CRect client;
 	GetClientRect(&client);
-		
+
 	// Graphicsobjekt, in welches gezeichnet wird anlegen
 	Graphics g(pDC->GetSafeHdc());
-	
+
 	g.SetSmoothingMode(SmoothingModeHighSpeed);
 	g.SetInterpolationMode(InterpolationModeLowQuality);
 	g.SetPixelOffsetMode(PixelOffsetModeHighSpeed);
 	g.SetCompositingQuality(CompositingQualityHighSpeed);
 	g.ScaleTransform((REAL)client.Width() / (REAL)m_TotalSize.cx, (REAL)client.Height() / (REAL)m_TotalSize.cy);
 	g.Clear(Color::Black);
-				
+
 	CString fontName = "";
 	Gdiplus::REAL fontSize = 0.0;
 	StringFormat fontFormat;
@@ -74,11 +74,11 @@ void CPlanetBottomView::OnDraw(CDC* dc)
 
 	// Galaxie im Hintergrund zeichnen
 	CString sPrefix = pMajor->GetPrefix();
-	
+
 	Bitmap* background = pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "galaxyV3.bop");
 	if (background)
 		g.DrawImage(background, 0, 0, 1075, 249);
-	
+
 	CPoint KO = pDoc->GetKO();
 	short resizeItX = 0;
 	float maxHabitants = 0.0f;
@@ -109,21 +109,21 @@ void CPlanetBottomView::OnDraw(CDC* dc)
 				break;
 			case PLANT_SIZE::GIANT:
 				if (planet->GetPlanetName() == "Saturn")
-				{	
+				{
 					nPosX -= 155;
-					rect.SetRect(nPosX, nVertCenter - 35, nPosX + 145, nVertCenter + 49);					
+					rect.SetRect(nPosX, nVertCenter - 35, nPosX + 145, nVertCenter + 49);
 				}
 				else
 				{
 					nPosX -= 145;
-					rect.SetRect(nPosX, nVertCenter - 63, nPosX + 125, nVertCenter + 62);					
+					rect.SetRect(nPosX, nVertCenter - 63, nPosX + 125, nVertCenter + 62);
 				}
 				break;
 			}
-			
+
 			m_vPlanetRects.push_back(rect);
 			planet->DrawPlanet(g, rect, pDoc->GetGraphicPool());
-		}			
+		}
 	}
 	if (pDoc->GetSector(KO.x,KO.y).GetScanned(pMajor->GetRaceID()))
 	{
@@ -141,12 +141,12 @@ void CPlanetBottomView::OnDraw(CDC* dc)
 			case 3:
 				graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Suns\\sun_red.bop"); break;
 			case 4:
-				graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Suns\\sun_violet.bop"); break;			
+				graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Suns\\sun_violet.bop"); break;
 			case 5:
 				graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Suns\\sun_white.bop"); break;
 			case 6:
-				graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Suns\\sun_yellow.bop"); break;					
-			}				
+				graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Suns\\sun_yellow.bop"); break;
+			}
 			if (graphic)
 				g.DrawImage(graphic, 950, -10, 250, 261);
 		}
@@ -170,13 +170,13 @@ void CPlanetBottomView::OnDraw(CDC* dc)
 			}
 		}
 	}
-	
+
 	// Rassenspezifische Schriftart auswählen
 	CFontLoader::CreateGDIFont(pMajor, 2, fontName, fontSize);
 	fontFormat.SetAlignment(StringAlignmentNear);
 	fontFormat.SetLineAlignment(StringAlignmentNear);
 	fontBrush.SetColor(Color(170,170,170));
-				
+
 	// Informationen zu dem System angeben
 	CString s;
 	float currentHabitants = pDoc->m_Sector[KO.x][KO.y].GetCurrentHabitants();
@@ -185,7 +185,7 @@ void CPlanetBottomView::OnDraw(CDC* dc)
 	else
 		s.Format("%s %c%i",CResourceManager::GetString("SECTOR"),(char)(KO.y+97),KO.x+1);
 	g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), PointF(40,25), &fontFormat, &fontBrush);
-	
+
 	if (pDoc->m_Sector[KO.x][KO.y].GetScanned(pMajor->GetRaceID()) == FALSE)
 	{
 		s = CResourceManager::GetString("UNKNOWN");
@@ -197,7 +197,7 @@ void CPlanetBottomView::OnDraw(CDC* dc)
 		s = CResourceManager::GetString("EXISTING_RES") + ":";
 		g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), PointF(735,228), &fontFormat, &fontBrush);
 		RectF boundingBox;
-		g.MeasureString(s.AllocSysString(), s.GetLength(), &Gdiplus::Font(fontName.AllocSysString(), fontSize), PointF(735, 228), &fontFormat, &boundingBox); 
+		g.MeasureString(s.AllocSysString(), s.GetLength(), &Gdiplus::Font(fontName.AllocSysString(), fontSize), PointF(735, 228), &fontFormat, &boundingBox);
 		// Symbole der vorhanden Ressourcen im System ermitteln
 		BOOLEAN res[DERITIUM + 1] = {0},rescol[DERITIUM + 1] = {0};
 		pDoc->GetSector(KO).GetAvailableResources(res, false);	//alle Ressourcen
@@ -228,7 +228,7 @@ void CPlanetBottomView::OnDraw(CDC* dc)
 				nExist++;
 			}
 		}
-		
+
 		s.Format("%s: %s",CResourceManager::GetString("SYSTEM"), pDoc->m_Sector[KO.x][KO.y].GetName());
 		g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), PointF(40,47), &fontFormat, &fontBrush);
 		if (pDoc->m_Sector[KO.x][KO.y].GetFullKnown(pMajor->GetRaceID()))
@@ -240,7 +240,7 @@ void CPlanetBottomView::OnDraw(CDC* dc)
 			graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\popmaxSmall.bop");
 			if (graphic)
 				g.DrawImage(graphic, 23, 180, 20, 16);
-			graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\populationSmall.bop");			
+			graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\populationSmall.bop");
 			if (graphic)
 				g.DrawImage(graphic, 23, 202, 20, 16);
 		}
@@ -280,8 +280,8 @@ void CPlanetBottomView::OnDraw(CDC* dc)
 		else if (pDoc->m_Sector[KO.x][KO.y].GetScanPower(pMajor->GetRaceID()) > 0)
 			fontBrush.SetColor(Color(230,100,0));
 		else
-			fontBrush.SetColor(Color(245,0,0));		
-		
+			fontBrush.SetColor(Color(245,0,0));
+
 		g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), PointF(711,0), &fontFormat, &fontBrush);
 	}
 	// Namen des Besitzers des Sector unten rechts zeichnen
@@ -299,11 +299,11 @@ void CPlanetBottomView::OnDraw(CDC* dc)
 				fontBrush.SetColor(color);
 			}
 			else
-				fontBrush.SetColor(Color(255,255,255));			
+				fontBrush.SetColor(Color(255,255,255));
 
 			CFontLoader::CreateGDIFont(pMajor, 4, fontName, fontSize);
 			g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), PointF(735,190), &fontFormat, &fontBrush);
-		}		
+		}
 
 		// Wir selbst und alle uns bekannten Rassen sehen, wenn das System blockiert wird.
 		// Dafür wird ein OverlayBanner über die Ansicht gelegt.
@@ -362,7 +362,7 @@ void CPlanetBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 		return;
 
 	CalcLogicalPoint(point);
-	
+
 	CPoint KO = pDoc->GetKO();
 	for (UINT i = 0; i < m_vPlanetRects.size(); i++)
 		if (m_vPlanetRects[i].PtInRect(point))
@@ -406,7 +406,7 @@ void CPlanetBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 								pDoc->GetSector(pDoc->GetKO()).GetPlanet(nOldTerraformingPlanet)->SetIsTerraforming(TRUE);
 								break;
 							}
-					}					
+					}
 
 					Invalidate();
 				}
@@ -426,7 +426,7 @@ void CPlanetBottomView::OnMouseMove(UINT nFlags, CPoint point)
 
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
-	
+
 	CalcLogicalPoint(point);
 
 	CPoint KO = pDoc->GetKO();
@@ -438,7 +438,7 @@ void CPlanetBottomView::OnMouseMove(UINT nFlags, CPoint point)
 			{
 				CSmallInfoView::SetPlanet(pPlanet);
 				CSmallInfoView::SetPlanetStats(true);
-				pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CSmallInfoView));				
+				pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
 			}
 			break;
 		}
@@ -477,7 +477,7 @@ CString CPlanetBottomView::CreateTooltip(void)
 				CRace* pOwner = pDoc->GetRaceCtrl()->GetRace(pDoc->GetSector(KO).GetOwnerOfSector());
 				if (!pOwner)
 					return "";
-				
+
 				return pOwner->GetTooltip();
 			}
 		}
@@ -532,7 +532,7 @@ CString CPlanetBottomView::CreateTooltip(void)
 			sSunColor = CHTMLStringBuilder::GetHTMLCenter(sSunColor);
 			sSunColor += CHTMLStringBuilder::GetHTMLStringNewLine();
 			sSunColor += CHTMLStringBuilder::GetHTMLStringNewLine();
-			
+
 			CString sSunDesc;
 			switch (pDoc->GetSector(KO).GetSunColor())
 			{
@@ -547,20 +547,20 @@ CString CPlanetBottomView::CreateTooltip(void)
 			sSunDesc = CHTMLStringBuilder::GetHTMLColor(sSunDesc);
 			sSunDesc = CHTMLStringBuilder::GetHTMLHeader(sSunDesc, _T("h5"));
 			sSunDesc += CHTMLStringBuilder::GetHTMLStringNewLine();
-			
+
 			// wurden keine Planeten angezeigt, das System ist also nicht bekannt, dann hier aufhören
 			if (m_vPlanetRects.size() == 0)
 				return sSunColor + sSunDesc;
-			
+
 			sSunDesc += CHTMLStringBuilder::GetHTMLStringNewLine();
 			sSunDesc += CHTMLStringBuilder::GetHTMLStringHorzLine();
 			sSunDesc += CHTMLStringBuilder::GetHTMLStringNewLine();
-			
+
 			CString sSystemBoni = CHTMLStringBuilder::GetHTMLColor(CResourceManager::GetString("BONI_IN_SYSTEM"), _T("silver"));
 			sSystemBoni = CHTMLStringBuilder::GetHTMLHeader(sSystemBoni, _T("h4"));
 			sSystemBoni = CHTMLStringBuilder::GetHTMLCenter(sSystemBoni);
 			sSystemBoni += CHTMLStringBuilder::GetHTMLStringNewLine();
-			
+
 			for (int j = 0; j < 8; j++)
 			{
 				short nBonus = 0;
@@ -586,16 +586,16 @@ CString CPlanetBottomView::CreateTooltip(void)
 						case 6:			sBoni = CResourceManager::GetString("FOOD_BONUS");		break;
 						case 7:			sBoni = CResourceManager::GetString("ENERGY_BONUS");	break;
 					}
-					
+
 					CString sBonus;
 					sBonus.Format("%d%% %s",nBonus, sBoni);
 					sBonus = CHTMLStringBuilder::GetHTMLColor(sBonus);
 					sBonus = CHTMLStringBuilder::GetHTMLHeader(sBonus, _T("h5"));
-					sSystemBoni += sBonus;				
+					sSystemBoni += sBonus;
 				}
 			}
 			return sSunColor + sSunDesc + sSystemBoni;
-		}	
+		}
 
 		// wurden keine Planeten angezeigt, das System ist also nicht bekannt, dann hier aufhören
 		if (m_vPlanetRects.size() == 0)
@@ -610,14 +610,14 @@ CString CPlanetBottomView::CreateTooltip(void)
 			// wurde auf den Planeten gezeigt
 			if (m_vPlanetRects[i].PtInRect(pt))
 			{
-				CString sTip;				
-				
+				CString sTip;
+
 				CString sName = CHTMLStringBuilder::GetHTMLColor(pPlanet->GetPlanetName());
 				sName = CHTMLStringBuilder::GetHTMLHeader(sName);
 				sName = CHTMLStringBuilder::GetHTMLCenter(sName);
 				sName += CHTMLStringBuilder::GetHTMLStringNewLine();
 				sTip += sName;
-				
+
 				CString s;
 				s.Format("CLASS_%c_TYPE", pPlanet->GetClass());
 				s = CHTMLStringBuilder::GetHTMLColor(_T("(") + CResourceManager::GetString(s) + _T(")"), _T("silver"));
@@ -626,12 +626,12 @@ CString CPlanetBottomView::CreateTooltip(void)
 				s += CHTMLStringBuilder::GetHTMLStringNewLine();
 				s += CHTMLStringBuilder::GetHTMLStringNewLine();
 				sTip += s;
-				
+
 				s.Format("CLASS_%c_INFO", pPlanet->GetClass());
 				s = CHTMLStringBuilder::GetHTMLColor(CResourceManager::GetString(s));
-				s = CHTMLStringBuilder::GetHTMLHeader(s, _T("h5"));			
-				sTip += s;				
-				return sTip;			
+				s = CHTMLStringBuilder::GetHTMLHeader(s, _T("h5"));
+				sTip += s;
+				return sTip;
 			}
 			else
 			{
@@ -648,7 +648,7 @@ CString CPlanetBottomView::CreateTooltip(void)
 						n += boni[j];
 					if (n == 0)
 						continue;
-					
+
 					int x = boniRect.CenterPoint().x - 5;
 					x -= (n*9-4);
 					int y = boniRect.top;
@@ -670,7 +670,7 @@ CString CPlanetBottomView::CreateTooltip(void)
 									case DERITIUM:
 										sBoni = CHTMLStringBuilder::GetHTMLColor(CResourceManager::GetString("DERITIUM") + " " + CResourceManager::GetString("EXISTING"));
 										sBoni = CHTMLStringBuilder::GetHTMLHeader(sBoni, _T("h5"));
-										return CHTMLStringBuilder::GetHTMLCenter(sBoni);									
+										return CHTMLStringBuilder::GetHTMLCenter(sBoni);
 									case 6:			sBoni = CResourceManager::GetString("FOOD_BONUS"); break;
 									case 7:			sBoni = CResourceManager::GetString("ENERGY_BONUS"); break;
 								}
@@ -679,13 +679,13 @@ CString CPlanetBottomView::CreateTooltip(void)
 								sTip = CHTMLStringBuilder::GetHTMLColor(sTip);
 								sTip = CHTMLStringBuilder::GetHTMLHeader(sTip, _T("h5"));
 								return CHTMLStringBuilder::GetHTMLCenter(sTip);
-							}					
-							x += 18;					
+							}
+							x += 18;
 						}
 				}
-			}	
-		}		
+			}
+		}
 	}
-	
+
 	return "";
 }

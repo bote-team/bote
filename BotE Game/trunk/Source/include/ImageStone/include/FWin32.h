@@ -5,7 +5,7 @@
  *   Create   :  2005-9-29
  *   Home     :  http://www.crazy-bit.com/
  *   Mail     :  crazybitwps@hotmail.com
- *   History  :  
+ *   History  :
  */
 #ifdef WIN32
 #ifndef __FOO_WIN32__2005_09_29__H__
@@ -84,7 +84,7 @@ public:
     {
         if (szAnsi == NULL)
             return "" ;
-        
+
         bstr_t   bstrTmp (szAnsi) ;
         int      nLen = ::WideCharToMultiByte (CP_UTF8, 0, (LPCWSTR)bstrTmp, -1, NULL, 0, NULL, NULL) ;
         char     * pUTF8 = new char[nLen+1] ;

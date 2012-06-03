@@ -11,17 +11,17 @@
 class CCombatShip;
 class CTorpedo : public CObject
 {
-	friend class CCombatShip;	
+	friend class CCombatShip;
 public:
 	/// Konstruktor
 	CTorpedo(void);
-	
+
 	/// Destruktor
 	~CTorpedo(void);
 
 	/// Kopierkonstruktor
 	CTorpedo(const CTorpedo & rhs);
-	
+
 	/// Zuweisungsoperatur
 	CTorpedo & operator=(const CTorpedo &);
 
@@ -44,7 +44,7 @@ private:
 	/// mit der Anzahl der Torpedos, die sich auf dieser Koordinate befinden. Im Normalfall ist dieser Wert eins, wenn
 	/// unser Werfer aber 10 Torpedos verschießt und alle das gleiche Ziel haben, dann setzen wird diesen Wert auf 10.
 	BYTE m_iNumber;
-	
+
 	/// Die Distanz, die der Torpedo schon zurückgelegt hat. Wenn MAX_TORPEDO_RANGE erreicht wurde wird der Torpedo
 	/// automatisch vernichtet
 	USHORT m_iDistance;

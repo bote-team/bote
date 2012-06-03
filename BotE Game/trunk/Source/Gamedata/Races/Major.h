@@ -17,7 +17,7 @@
 
 /// Klasse zur Abstraktion einer Hauptrasse
 class CMajor : public CRace
-{	
+{
 	friend class CMajorAI;
 
 	DECLARE_SERIAL(CMajor)
@@ -150,7 +150,7 @@ public:
 	virtual void Create(const CStringArray& saInfo, int& nPos);
 
 	/// Funktion zum zurücksetzen aller Werte auf Ausgangswerte.
-	virtual void Reset(void);	
+	virtual void Reset(void);
 
 protected:
 	// Attribute
@@ -159,7 +159,7 @@ protected:
 	CString				m_sEmpireName;					///<!!! längerer Imperiumsname
 	CString				m_sEmpireWithArticle;			///<!!! Artikel für Imperiumsnamen
 	CString				m_sEmpireWithAssignedArticle;	///<!!! bestimmter Artikel für den Imperiumsnamen
-	CString				m_sPrefix;						///<!!! Rassenprefix	
+	CString				m_sPrefix;						///<!!! Rassenprefix
 
 	short				m_nDiplomacyBonus;				///<!!! Bonus bei diplomatischen Verhandlungen, NULL == kein Bonus/kein Malus
 

@@ -43,7 +43,7 @@ CResourceRoute & CResourceRoute::operator=(const CResourceRoute & rhs)
 ///////////////////////////////////////////////////////////////////////
 // Speichern / Laden
 ///////////////////////////////////////////////////////////////////////
-void CResourceRoute::Serialize(CArchive &ar)		
+void CResourceRoute::Serialize(CArchive &ar)
 {
 	CObject::Serialize(ar);
 	// wenn gespeichert wird
@@ -70,7 +70,7 @@ BOOLEAN CResourceRoute::CheckResourceRoute(const CString& sOwner, CSector* dest)
 {
 	if (sOwner != dest->GetOwnerOfSector())
 		return FALSE;
-	
+
 	// wenn keine Leute in dem System leben, so gibt es auch keine Route.
 	float habitants = dest->GetCurrentHabitants();
 	if (habitants == 0.0f)
@@ -84,7 +84,7 @@ BOOLEAN CResourceRoute::CheckResourceRoute(const CString& sOwner, CSector* dest)
 void CResourceRoute::DrawResourceRoute(CDC* pDC, CPoint dest, const CMajor* pMajor)
 {
 	COLORREF color = pMajor->GetDesign()->m_clrRouteColor;
-	
+
 	CPen pen(PS_SOLID, 0, color);
 	pDC->SelectObject(&pen);
 	// Zeichnung mit Hilfe von Bezierkurve und 4 Punkten:

@@ -16,7 +16,7 @@ public:
 
 	/// Standardkonstruktor
 	CEventFirstContact(void);
-	
+
 	/// Standardkonstruktor mit Parameterübergabe
 	CEventFirstContact(const CString &sPlayersRaceID, const CString& sRaceID);
 

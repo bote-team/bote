@@ -16,7 +16,7 @@
 #include "FontLoader.h"
 
 /////////////////////////////////////////////////////////////////////////////
-// Ansicht CMenuChooseView 
+// Ansicht CMenuChooseView
 
 class CMenuChooseView : public CView
 {
@@ -28,11 +28,11 @@ protected:
 	CPoint m_LastSystem;			///< letztes System, in welchem wir uns aufgehalten haben
 	CArray<CMyButton*> m_Buttons;	///< Feld beinhaltet die ganzen Menübuttons in dieser Ansicht
 	CMyButton *m_RoundEnd;			///< der Rundenende Button
-	CSize m_TotalSize;				///< Größe der View in logischen Koordinaten	
+	CSize m_TotalSize;				///< Größe der View in logischen Koordinaten
 	static CMajor* m_pPlayersRace;	///< Zeiger auf Spielerrasse
 
 // Operationen
-public:	
+public:
 	/// Funktion führt Aufgaben aus, welche zu jeder neuen Runde von den Views ausgeführt werden müssen.
 	void OnNewRound(void) {};
 

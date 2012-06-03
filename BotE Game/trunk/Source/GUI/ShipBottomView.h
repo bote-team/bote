@@ -53,7 +53,7 @@ private:
 	/// @param pt Mauskoordinate
 	/// @return Nummer des Schiffes im Schiffsarray (<code>-1</code> wenn kein Schiff markiert wurde)
 	int GetMouseOverShip(CPoint& pt);
-	
+
 	// Attribute
 	CRect m_RectForTheShip;						///< Das Rechteck für das Schiff worüber wir die Maus bewegt haben
 	USHORT m_iPage;								///< bei mehr als 9 Schiffen können wir auf die nächste Seite wechseln

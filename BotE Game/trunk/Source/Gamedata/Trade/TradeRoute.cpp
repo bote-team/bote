@@ -44,7 +44,7 @@ CTradeRoute & CTradeRoute::operator=(const CTradeRoute & rhs)
 ///////////////////////////////////////////////////////////////////////
 // Speichern / Laden
 ///////////////////////////////////////////////////////////////////////
-void CTradeRoute::Serialize(CArchive &ar)		
+void CTradeRoute::Serialize(CArchive &ar)
 {
 	CObject::Serialize(ar);
 	// wenn gespeichert wird
@@ -92,13 +92,13 @@ BOOLEAN CTradeRoute::CheckTradeRoute(const CPoint& pFrom, const CPoint& pDest, C
 
 	// wurde der Zielsektor durch uns gescannt
 	if (pDestSector->GetScanned(sOwner) == FALSE)
-		return FALSE;	
+		return FALSE;
 	// zu allererst das Credits berechnen
 	float habitants = pDestSector->GetCurrentHabitants();
 	// wenn keine Leute in dem System leben, so gibt es auch keine Handelsroute.
 	if (habitants == 0.0f)
 		return FALSE;
-	
+
 	// zufällig wird das Credits bei der Handelsroute noch modifiziert (+-)20%
 	// also (rand()%41 + 80) / 100 -> [0,40]+80 = [80,120] / 100 -> [0.8,1.2]
 	float mod = (float)((float)(rand()%41 + 80) / 100);
@@ -113,7 +113,7 @@ BOOLEAN CTradeRoute::CheckTradeRoute(const CPoint& pFrom, const CPoint& pDest, C
 		CMajor* pMajor = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(pDestSystem->GetOwnerOfSystem()));
 		if (pMajor)
 			if (pMajor->GetAgreement(sOwner) >= DIPLOMATIC_AGREEMENT::TRADE)
-				return TRUE;		
+				return TRUE;
 	}
 	// gehört der Zielsektor einer Minorrace
 	else if (pDestSector->GetOwnerOfSector() != "" && pDestSector->GetMinorRace() == TRUE)
@@ -157,7 +157,7 @@ void CTradeRoute::PerhapsChangeRelationship(const CPoint& pFrom, const CPoint& p
 			s.Format("Verbesserung um %d Punkte",relAdd);
 			AfxMessageBox(s);*/
 			pMinor->SetRelation(sOwner, relAdd);
-		}		
+		}
 	}
 }
 
@@ -167,10 +167,10 @@ void CTradeRoute::DrawTradeRoute(CDC* pDC, CPoint start, const CMajor* pMajor)
 	COLORREF color = RGB(255,0,255);
 	if (m_iDuration >= 0)
 		color = pMajor->GetDesign()->m_clrRouteColor;
-	
+
 	CPen pen(PS_DOT, 0, color);
 	pDC->SelectObject(&pen);
 	pDC->MoveTo(start.x*STARMAP_SECTOR_WIDTH+STARMAP_SECTOR_WIDTH/2,start.y*STARMAP_SECTOR_HEIGHT+STARMAP_SECTOR_HEIGHT/2);
-	pDC->LineTo(m_KO.x*STARMAP_SECTOR_WIDTH+STARMAP_SECTOR_WIDTH/2,m_KO.y*STARMAP_SECTOR_HEIGHT+STARMAP_SECTOR_HEIGHT/2);	
+	pDC->LineTo(m_KO.x*STARMAP_SECTOR_WIDTH+STARMAP_SECTOR_WIDTH/2,m_KO.y*STARMAP_SECTOR_HEIGHT+STARMAP_SECTOR_HEIGHT/2);
 	pen.DeleteObject();
 }

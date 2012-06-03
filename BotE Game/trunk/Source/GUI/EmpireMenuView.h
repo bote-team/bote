@@ -99,9 +99,9 @@ private:
 	short  m_iClickedShip;					// auf welches Schiff wurde in der Liste geklickt, welches wurde markiert
 	short  m_iOldClickedShip;				// auf welches Schiffe wurde vorher geklickt, braucht man als Modifikator
 	short  m_iClickedShipIndex;				// Index des angeklickten Schiffes in der Schiffshistory
-	
+
 	BOOLEAN m_bShowAliveShips;				// sollen nur die noch vorhandenen Schiffe angezeigt werden, oder die verlorenen
-	
+
 };
 
 

@@ -21,16 +21,16 @@ CEventVictory::CEventVictory(const CString& sPlayersRace, const CString& sWinner
 }
 
 CEventVictory::~CEventVictory(void)
-{	
+{
 }
 
 ///////////////////////////////////////////////////////////////////////
 // Speichern / Laden
 ///////////////////////////////////////////////////////////////////////
-void CEventVictory::Serialize(CArchive &ar)		
+void CEventVictory::Serialize(CArchive &ar)
 {
 	__super::Serialize(ar);
-	
+
 	// wenn gespeichert wird
 	if (ar.IsStoring())
 	{
@@ -63,7 +63,7 @@ void CEventVictory::Create(void)
 
 	float fMusicVolume;
 	pIni->ReadValue("Audio", "MUSICVOLUME", fMusicVolume);
-	
+
 	CSoundManager* pSoundManager = CSoundManager::GetInstance();
 	ASSERT(pSoundManager);
 
@@ -81,11 +81,11 @@ void CEventVictory::Close(void)
 {
 	client.Disconnect();
 	Sleep(2000);
-	
+
 	CBotf2Doc* pDoc = ((CBotf2App*)AfxGetApp())->GetDocument();
 	ASSERT(pDoc);
 	pDoc->SetModifiedFlag(FALSE);
-	
+
 	PostMessage(AfxGetApp()->GetMainWnd()->GetSafeHwnd(), WM_CLOSE, NULL, NULL);
 }
 
@@ -108,7 +108,7 @@ void CEventVictory::Draw(Graphics* g, CGraphicPool* graphicPool) const
 	fontFormat.SetAlignment(StringAlignmentCenter);
 	fontFormat.SetLineAlignment(StringAlignmentCenter);
 	fontFormat.SetFormatFlags(!StringFormatFlagsNoWrap);
-	
+
 	Gdiplus::Color color;
 	CFontLoader::GetGDIFontColor(pMajor, 3, color);
 	fontBrush.SetColor(color);
@@ -128,7 +128,7 @@ void CEventVictory::Draw(Graphics* g, CGraphicPool* graphicPool) const
 	{
 		CString s = CResourceManager::GetString("VICTORY");
 		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize * 2.5f), RectF(0, 0, 1280, 1024 / 3.0f), &fontFormat, &fontBrush);
-		
+
 		CFontLoader::CreateGDIFont(pMajor, 3, fontName, fontSize);
 		s = CResourceManager::GetString("CONGRATULATIONS");
 		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize * 1.5), RectF(0, 75, 1280, 1024 / 3 + 75), &fontFormat, &fontBrush);
@@ -138,7 +138,7 @@ void CEventVictory::Draw(Graphics* g, CGraphicPool* graphicPool) const
 		int nGamePoints = pDoc->GetStatistics()->GetGamePoints(m_sRace, pDoc->GetCurrentRound(), pDoc->GetDifficultyLevel());
 		// bei Sieg werden die Punkte verdoppelt!
 		nGamePoints *= 2;
-		
+
 		CString sStarDate;
 		sStarDate.Format("%s: %.1lf", CResourceManager::GetString("STARDATE"), pDoc->m_fStardate);
 		s.Format("%s:\n\n%s\n\n%s\n%s\n\n%s %d",
@@ -154,7 +154,7 @@ void CEventVictory::Draw(Graphics* g, CGraphicPool* graphicPool) const
 	{
 		CString s = CResourceManager::GetString("DEFEAT");
 		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize * 2.5f), RectF(0, 0, 1280, 1024 / 3.0f), &fontFormat, &fontBrush);
-		
+
 		CFontLoader::CreateGDIFont(pMajor, 3, fontName, fontSize);
 		fontFormat.SetAlignment(StringAlignmentNear);
 
@@ -167,12 +167,12 @@ void CEventVictory::Draw(Graphics* g, CGraphicPool* graphicPool) const
 			CString sUpper = (CString)sRaceName.GetAt(0);
 			sRaceName.SetAt(0, sUpper.MakeUpper().GetAt(0));
 		}
-		
-		int nGamePoints = pDoc->GetStatistics()->GetGamePoints(m_sRace, pDoc->GetCurrentRound(), pDoc->GetDifficultyLevel());		
+
+		int nGamePoints = pDoc->GetStatistics()->GetGamePoints(m_sRace, pDoc->GetCurrentRound(), pDoc->GetDifficultyLevel());
 		s.Format("%s\n\n\n%s %d",
 			CResourceManager::GetString("OTHER_REACHED_VICTORY_IN_TYPE", FALSE, sRaceName, sType),
 			CResourceManager::GetString("REACHED_GAMEPOINTS"),
-			nGamePoints);		
+			nGamePoints);
 		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(75, 1024 / 1.5f - 75, 1280 - 75, 1024 / 3 - 75), &fontFormat, &fontBrush);
 	}
 
@@ -181,8 +181,8 @@ void CEventVictory::Draw(Graphics* g, CGraphicPool* graphicPool) const
 	CString sLogo = "Birth of the Empires";
 	g->DrawString(sLogo.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(1280 - 200, 1024 - 25, 200, 25), &fontFormat, &fontBrush);
 
-	// Buttons zeichnen	
-	
+	// Buttons zeichnen
+
 	fontFormat.SetAlignment(StringAlignmentCenter);
 	fontFormat.SetFormatFlags(StringFormatFlagsNoWrap);
 	CFontLoader::GetGDIFontColor(pMajor, 2, color);

@@ -5,7 +5,7 @@
  *   Create   :  2006-9-24
  *   Home     :  http://www.crazy-bit.com/
  *   Mail     :  crazybitwps@hotmail.com
- *   History  :  
+ *   History  :
  */
 #ifndef __FOO_IMAGE_PROPERTY__2006_09_24__H__
 #define __FOO_IMAGE_PROPERTY__2006_09_24__H__

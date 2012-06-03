@@ -16,7 +16,7 @@ typedef struct FMOD_OUTPUT_STATE FMOD_OUTPUT_STATE;
 
 /*
     Output callbacks
-*/ 
+*/
 typedef FMOD_RESULT (F_CALLBACK *FMOD_OUTPUT_GETNUMDRIVERSCALLBACK)(FMOD_OUTPUT_STATE *output_state, int *numdrivers);
 typedef FMOD_RESULT (F_CALLBACK *FMOD_OUTPUT_GETDRIVERNAMECALLBACK)(FMOD_OUTPUT_STATE *output_state, int id, char *name, int namelen);
 typedef FMOD_RESULT (F_CALLBACK *FMOD_OUTPUT_GETDRIVERCAPSCALLBACK)(FMOD_OUTPUT_STATE *output_state, int id, FMOD_CAPS *caps);
@@ -31,7 +31,7 @@ typedef FMOD_RESULT (F_CALLBACK *FMOD_OUTPUT_READFROMMIXER)        (FMOD_OUTPUT_
 
 
 /*
-[STRUCTURE] 
+[STRUCTURE]
 [
     [DESCRIPTION]
     When creating an output, declare one of these and provide the relevant callbacks and name for FMOD to use when it opens and reads a file of this type.
@@ -51,7 +51,7 @@ typedef struct FMOD_OUTPUT_DESCRIPTION
 {
     const char                        *name;                  /* [in] Name of the output. */
     unsigned int                       version;               /* [in] Plugin writer's version number. */
-    int                                polling;               /* [in] If TRUE (non zero), this tells FMOD to start a thread and call getposition / lock / unlock for feeding data.  If 0, the output is probably callback based, so all the plugin needs to do is call readfrommixer to the appropriate pointer. */ 
+    int                                polling;               /* [in] If TRUE (non zero), this tells FMOD to start a thread and call getposition / lock / unlock for feeding data.  If 0, the output is probably callback based, so all the plugin needs to do is call readfrommixer to the appropriate pointer. */
     FMOD_OUTPUT_GETNUMDRIVERSCALLBACK  getnumdrivers;         /* [in] For sound device enumeration.  This callback is to give System::getNumDrivers somthing to return. */
     FMOD_OUTPUT_GETDRIVERNAMECALLBACK  getdrivername;         /* [in] For sound device enumeration.  This callback is to give System::getDriverName somthing to return. */
     FMOD_OUTPUT_GETDRIVERCAPSCALLBACK  getdrivercaps;         /* [in] For sound device enumeration.  This callback is to give System::getDriverCaps somthing to return. */
@@ -66,7 +66,7 @@ typedef struct FMOD_OUTPUT_DESCRIPTION
 
 
 /*
-[STRUCTURE] 
+[STRUCTURE]
 [
     [DESCRIPTION]
     Output plugin structure that is passed into each callback.
