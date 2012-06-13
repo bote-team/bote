@@ -5067,6 +5067,16 @@ void CBotf2Doc::CalcShipOrders()
 				}
 			}
 		}
+		else if (m_ShipArray[y].GetCurrentOrder() == SHIP_ORDER::WAIT_SHIP_ORDER)
+		{
+			//Do nothing, but only for this round.
+			if (m_ShipArray[y].IsNonCombat())
+				m_ShipArray[y].SetCurrentOrder(SHIP_ORDER::AVOID);
+			else
+				m_ShipArray[y].SetCurrentOrder(SHIP_ORDER::ATTACK);
+		}
+		else if (m_ShipArray[y].GetCurrentOrder() == SHIP_ORDER::SENTRY_SHIP_ORDER)
+			//Do nothing for this and all following rounds until an explicit player input.
 
 		// Vor der Schiffsbewegung aber nach einer m?glichen Demontage dort ?berall einen ShipPort setzen wo
 		// eine Sternbasis oder ein Au?enposten steht
