@@ -600,7 +600,6 @@ void CFleetMenuView::OnRButtonDown(UINT nFlags, CPoint point)
 
 void CFleetMenuView::CreateButtons()
 {
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	// alle Buttons in der View anlegen und Grafiken laden
 }
 
