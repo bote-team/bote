@@ -80,7 +80,6 @@ void CPlanetBottomView::OnDraw(CDC* dc)
 		g.DrawImage(background, 0, 0, 1075, 249);
 
 	CPoint KO = pDoc->GetKO();
-	short resizeItX = 0;
 	float maxHabitants = 0.0f;
 	int nPosX = m_TotalSize.cx - 175;
 	int nVertCenter = m_TotalSize.cy / 2;
