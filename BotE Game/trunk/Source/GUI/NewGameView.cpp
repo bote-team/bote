@@ -178,13 +178,13 @@ void CNewGameView::OnInitialUpdate()
 	CRect clientRect;
 	GetDesktopWindow()->GetClientRect(clientRect);
 
-	double nButtonSizeX = 300.0;
-	double nButtonSizeY = 40.0;
+	//double nButtonSizeX = 300.0;
+	//double nButtonSizeY = 40.0;
 
-	double nXPos = clientRect.Width() / 2.0 - nButtonSizeX / 2.0;
+	//double nXPos = clientRect.Width() / 2.0 - nButtonSizeX / 2.0;
 	double nYPos = clientRect.Height() / 2.0 - 175.0;
 
-	double nGab = 10.0;
+	//double nGab = 10.0;
 
 	// Structure containing Style
 	tButtonStyle tStyle;
