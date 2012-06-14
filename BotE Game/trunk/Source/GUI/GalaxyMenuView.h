@@ -164,7 +164,7 @@ private:
 		int index;
 		CString name;
 
-		RememberedShip operator=(const RememberedShip &other) {
+		RememberedShip& operator=(const RememberedShip &other) {
 			index = other.index; name = other.name; return *this;
 		}
 	};
