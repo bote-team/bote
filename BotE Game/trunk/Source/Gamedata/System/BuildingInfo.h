@@ -17,7 +17,7 @@ public:
 	USHORT RunningNumber;
 	USHORT Number;
 
-	NumberOfID::NumberOfID() :
+	NumberOfID() :
 		RunningNumber(0),
 			Number(0)
 	{}
