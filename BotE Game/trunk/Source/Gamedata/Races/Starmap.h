@@ -44,7 +44,7 @@ struct Sector
 	Sector(const Sector &other) : x(other.x), y(other.y) {}
 	Sector(const CPoint& p) : x((char)p.x), y((char)p.y) {}
 	int operator==(const Sector &other) const {return (other.x == x && other.y == y);}
-	Sector operator=(const Sector &other) {x = other.x; y = other.y; return *this;}
+	Sector& operator=(const Sector &other) {x = other.x; y = other.y; return *this;}
 	Sector operator+(const Sector &other) {return Sector(x + other.x, y + other.y);}
 	int operator!=(const Sector &other) const {return (other.x != x || other.y != y);}
 
