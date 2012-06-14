@@ -155,7 +155,7 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 			// Die auf dem Planeten vorhanden Rohstoffe anzeigen
 			// Steht so auch in der ConsumeRessources() Funktion der Klasse CMinorRace und in der BuildBuildingsForMinorRace()
 			// Funktion in der CSystem Klasse, also wenn hier was geändert auch dort ändern!!
-			char PlanetClass = m_pPlanet->GetClass();
+			//char PlanetClass = m_pPlanet->GetClass();
 			fontFormat.SetAlignment(StringAlignmentCenter);
 			fontFormat.SetLineAlignment(StringAlignmentCenter);
 			if (m_pPlanet->GetHabitable())
