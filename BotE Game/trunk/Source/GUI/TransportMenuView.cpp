@@ -447,7 +447,6 @@ void CTransportMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 	CPoint p = pDoc->GetKO();
 	CString systemOwner = pDoc->m_System[p.x][p.y].GetOwnerOfSystem();
 	CString shipOwner   = ship->GetOwnerOfShip();
-	int usedStorage = 0;
 
 	BOOLEAN isFleet = FALSE;
 	int number = 1;
@@ -463,6 +462,7 @@ void CTransportMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 	{
 		if (systemOwner == shipOwner)
 		{
+			int usedStorage = 0;
 			if (i < 7)
 			{
 				// handelt es sich um Truppen
