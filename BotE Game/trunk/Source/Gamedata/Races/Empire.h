@@ -28,7 +28,7 @@ struct SystemViewStruct {
 		bool operator< (const SystemViewStruct& elem2) const { return name < elem2.name;}
 		bool operator> (const SystemViewStruct& elem2) const { return name > elem2.name;}
 
-		SystemViewStruct operator=(const SystemViewStruct &other) {name = other.name; ko = other.ko; return *this;}
+		SystemViewStruct& operator=(const SystemViewStruct &other) {name = other.name; ko = other.ko; return *this;}
 		SystemViewStruct(const CString& _name, CPoint _ko) : name(_name), ko(_ko) {};
 		SystemViewStruct() : name(""), ko(CPoint(-1,-1)) {};
 
