@@ -614,10 +614,7 @@ void CShipDesignMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			CTorpedoWeapons* pWeapon = &pDoc->m_ShipInfoArray.GetAt(n).GetTorpedoWeapons()->GetAt(m_iTorpedoWeaponNumber);
 
 			BYTE oldTorpType	= pWeapon->GetTorpedoType();
-			BYTE oldNumber		= pWeapon->GetNumber();
-			BYTE oldFirerate	= pWeapon->GetTupeFirerate();
 			BYTE oldTupeNumber	= pWeapon->GetNumberOfTupes();
-			BOOLEAN oldOnlyMicro= pWeapon->GetOnlyMicroPhoton();
 			BYTE oldAcc			= pWeapon->GetAccuracy();
 			CString oldTupeName	= pWeapon->GetTupeName();
 
