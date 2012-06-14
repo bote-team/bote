@@ -667,7 +667,6 @@ bool CMajorAI::MakeMinorOffer(const CString& sRaceID, CDiplomacyInfo& info)
 			{
 				// Wir können nur bestechen, wenn wir mindst. Freundschaft mit der Minorrace haben oder diese Minorrace
 				// hat mit irgendeiner anderen Rasse mindst. ein Bündnis
-				bool bGiveDowry = false;
 				if (nOthersAgreement >= DIPLOMATIC_AGREEMENT::AFFILIATION)
 				{
 					// Nun schauen ob wir die Bestechung durchführen kann
