@@ -436,7 +436,6 @@ void CResearchMenuView::DrawUniqueResearchMenue(Graphics* g)
 		return;
 
 	CString s;
-	USHORT techPercentage;
 
 	CString fontName = "";
 	Gdiplus::REAL fontSize = 0.0;
@@ -548,6 +547,7 @@ void CResearchMenuView::DrawUniqueResearchMenue(Graphics* g)
 	// Wenn wir eine Unique Forschung zur Auswahl haben, dann auch anzeigen
 	if (pMajor->GetEmpire()->GetResearch()->GetUniqueReady() == FALSE)
 	{
+		USHORT techPercentage;
 		RectF TechRect(10,80,250,25);
 		USHORT level = pMajor->GetEmpire()->GetResearch()->GetNumberOfUniqueResearch();
 		// UniqueForschung braucht ja soviele FP wie alle anderen des Level zusammen, deswegen die lange Anweisung
