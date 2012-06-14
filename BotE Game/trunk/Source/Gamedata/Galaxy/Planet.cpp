@@ -238,7 +238,6 @@ PLANET_ZONE::Typ CPlanet::Create(const CString& sSectorName, PLANET_ZONE::Typ nL
 		}
 	}
 
-	float Habitants = 0.0f;
 	BYTE m_iRandomSize = rand()%3;	// Zufallszahl, die die Größe bestimmt (abhängig vom DEFINE!)
 
 	// zufällige Planetengrafik auswählen
@@ -276,7 +275,7 @@ PLANET_ZONE::Typ CPlanet::Create(const CString& sSectorName, PLANET_ZONE::Typ nL
 			// Zufallszahl ermitteln, abhängig von der max. Einwohnerzahl, die später draufaddiert wird
 			int random = rand()%(((m_iRandomSize+1)*(12-m_iRandomType))/6 + 1);
 			// Max. Einwohner werden berechnet, inkl. "random " Zufallszahl
-			Habitants = ((((m_iRandomSize+1)*(12-m_iRandomType)+random)*1000)*multi*0.5f);
+			float Habitants = ((((m_iRandomSize+1)*(12-m_iRandomType)+random)*1000)*multi*0.5f);
 			// z.B. für kleine Erde (M): 1*12+z.B. 2 = 11 * 1000 = 9000 -> 11000 Mill. Einwohner (11 Mrd.)
 			m_dMaxHabitant = Habitants;
 			m_dMaxHabitant = m_dMaxHabitant/1000;
