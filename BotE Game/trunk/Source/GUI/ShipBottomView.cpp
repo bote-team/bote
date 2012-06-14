@@ -114,9 +114,6 @@ void CShipBottomView::OnDraw(CDC* dc)
 	r.SetRect(0, 0, m_TotalSize.cx, m_TotalSize.cy);
 
 	USHORT counter = 0;
-	USHORT column = 0;
-	USHORT row = 0;
-	USHORT oneShip = 0;
 
 	if (m_LastKO != pDoc->GetKO())
 	{
@@ -142,6 +139,9 @@ void CShipBottomView::OnDraw(CDC* dc)
 	// Bis jetzt nur eine Anzeige bis max. 9 Schiffe
 	if (m_iTimeCounter == 0)
 	{
+		USHORT column = 0;
+		USHORT row = 0;
+		USHORT oneShip = 0;
 		if (!CGalaxyMenuView::IsMoveShip())
 			m_vShipRects.clear();
 
