@@ -1147,12 +1147,12 @@ int CShipBottomView::GetMouseOverShip(CPoint& pt)
 	if (!pMajor)
 		return -1;
 
-	USHORT counter = 0;
-	USHORT row = 0;
-	USHORT column = 0;
 	m_RectForTheShip.SetRect(0,0,0,0);
 
-	if (CGalaxyMenuView::IsMoveShip() == FALSE)
+	if (CGalaxyMenuView::IsMoveShip() == FALSE) {
+		USHORT counter = 0;
+		USHORT row = 0;
+		USHORT column = 0;
 		for (int i = 0; i < pDoc->m_ShipArray.GetSize(); i++)
 			if ((pDoc->GetKO() == pDoc->m_ShipArray.GetAt(i).GetKO() && pDoc->m_ShipArray.GetAt(i).GetShipType() != SHIP_TYPE::OUTPOST && pDoc->m_ShipArray.GetAt(i).GetShipType() != SHIP_TYPE::STARBASE && !m_bShowStation)
 				|| (pDoc->GetKO() == pDoc->m_ShipArray.GetAt(i).GetKO() && (pDoc->m_ShipArray.GetAt(i).GetShipType() == SHIP_TYPE::OUTPOST || pDoc->m_ShipArray.GetAt(i).GetShipType() == SHIP_TYPE::STARBASE) && m_bShowStation))
@@ -1191,6 +1191,7 @@ int CShipBottomView::GetMouseOverShip(CPoint& pt)
 				if (counter > m_iPage*9)
 					break;
 			}
+	}
 
 	// kein Schiff markiert
 	return -1;
