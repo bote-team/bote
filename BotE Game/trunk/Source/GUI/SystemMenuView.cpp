@@ -994,7 +994,7 @@ void CSystemMenuView::DrawWorkersMenue(Graphics* g)
 	{
 		// Ab hier Anzeige der Besetzungsbalken
 		// Balken mit maximal 200 Einträgen, d.h. es dürfen nicht mehr als 200 Gebäude von einem Typ stehen!!!
-		CRect workertimber[200];
+		//CRect workertimber[200];
 		unsigned short number[5] = {0};						// Anzahl der Gebäude eines Types
 		unsigned short online[5] = {0};
 		unsigned short greatestNumber = 0;					// Größte Nummer der Number[5]
