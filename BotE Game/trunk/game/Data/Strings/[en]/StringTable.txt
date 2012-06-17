@@ -462,6 +462,8 @@ We have colonized new planets in the § system
 Colonization
 [TERRAFORMING_FINISHED]
 Terraforming in the § system completed
+[TERRAFORMING_POINTS_WASTED]
+In the § system a fleet will supposedly waste § terraforming points
 [OUTPOST_FINISHED]
 A new outpost has been constructed
 [STARBASE_FINISHED]

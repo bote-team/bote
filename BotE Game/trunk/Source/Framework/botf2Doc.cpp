@@ -4468,12 +4468,16 @@ void CBotf2Doc::CalcShipOrders()
 			// Wenn das Schiff eine Flotte anf?hrt, dann k?nnen auch die Schiffe in der Flotte ihre Terraformpunkte mit
 			// einbringen
 			if (m_ShipArray[y].GetFleet() != 0 && m_ShipArray[y].GetTerraformingPlanet() != -1)
+			{
+				unsigned colonize_points_sum = m_ShipArray[y].GetColonizePoints();
 				for (USHORT x = 0; x < m_ShipArray[y].GetFleet()->GetFleetSize(); x++)
 				{
 					CShip* pFleetShip = m_ShipArray[y].GetFleet()->GetShipFromFleet(x);
 					if (m_Sector[ShipKO.x][ShipKO.y].GetPlanet(m_ShipArray[y].GetTerraformingPlanet())->GetTerraformed() == FALSE)
 					{
-						if (m_Sector[ShipKO.x][ShipKO.y].GetPlanet(pFleetShip->GetTerraformingPlanet())->SetNeededTerraformPoints(pFleetShip->GetColonizePoints()))
+						const unsigned colonize_points = pFleetShip->GetColonizePoints();
+						colonize_points_sum += colonize_points;
+						if (m_Sector[ShipKO.x][ShipKO.y].GetPlanet(pFleetShip->GetTerraformingPlanet())->SetNeededTerraformPoints(colonize_points))
 						{
 							m_ShipArray[y].SetCurrentOrder(SHIP_ORDER::AVOID);
 							m_ShipArray[y].SetTerraformingPlanet(-1);
@@ -4507,6 +4511,24 @@ void CBotf2Doc::CalcShipOrders()
 						break;
 					}
 				}
+				//Gib eine Warnung aus falls Kolonisierungspunkte verschwendet werden würden.
+				//Es ist hoffentlich nicht möglich, dass ein Schiff einer Schiffsgruppe einen anderen Planeten
+				//terraformt als das die Gruppe anführende Schiff...
+				const unsigned terraforming_planet = m_ShipArray[y].GetTerraformingPlanet();
+				if(terraforming_planet != -1)//wird immernoch geterraformt ?
+				{
+					const unsigned needed_terraform_points = m_Sector[ShipKO.x][ShipKO.y].GetPlanet(terraforming_planet)->GetNeededTerraformPoints();
+					if(colonize_points_sum > needed_terraform_points)
+					{
+						CString s;
+						s.Format("%u", colonize_points_sum - needed_terraform_points);
+						s = CResourceManager::GetString("TERRAFORMING_POINTS_WASTED",FALSE,m_Sector[ShipKO.x][ShipKO.y].GetName(), s);
+						CMessage message;
+						message.GenerateMessage(s,MESSAGE_TYPE::SOMETHING,m_Sector[ShipKO.x][ShipKO.y].GetName(),ShipKO,FALSE);
+						pMajor->GetEmpire()->AddMessage(message);
+					}
+				}
+			}
 		}
 		// hier wird ein Au?enposten gebaut
 		else if (m_ShipArray[y].GetCurrentOrder() == SHIP_ORDER::BUILD_OUTPOST)	// es soll eine Station gebaut werden
