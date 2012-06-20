@@ -1499,6 +1499,7 @@ void CGalaxyMenuView::GenerateGalaxyMap()
 	//Bild entsprechend vergrößern. Dabei Seitenverhältnisse beibehalten
 	if(STARMAP_TOTALWIDTH-img2.Width()*STARMAP_TOTALHEIGHT/img2.Height()<0)	img2.Stretch_Smooth(img2.Width()*STARMAP_TOTALHEIGHT/img2.Height(), STARMAP_TOTALHEIGHT);
 	else																	img2.Stretch_Smooth(STARMAP_TOTALWIDTH, img2.Height()*STARMAP_TOTALWIDTH/img2.Width());
+	delete m_pGalaxyBackground;
 	m_pGalaxyBackground = FCWin32::GDIPlus_CreateBitmap(img2);
 	img2.Destroy();
 	//Bild zuschneiden
