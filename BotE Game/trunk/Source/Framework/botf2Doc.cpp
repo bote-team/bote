@@ -1330,7 +1330,7 @@ void CBotf2Doc::GenerateGalaxy()
 void CBotf2Doc::NextRound()
 {
 	// gibt es für diese Runde Sektoren in welchen ein Kampf stattfand
-	bool bCombatInCurrentRound = m_sCombatSectors.size() > 0 ? true : false;
+	bool bCombatInCurrentRound = !m_sCombatSectors.empty();
 
 	// Es fand noch kein Kampf die Runde statt. Dies tritt ein, wenn entweder wirklich kein Kampf diese Runde war
 	// oder das erste Mal in diese Funktion gesprungen wurde.
