@@ -38,7 +38,7 @@ public:
 	virtual void Serialize(CArchive &ar);
 
 	// Funktion gibt einen Zeiger auf ein Schiff aus der Flotte zurück
-	CShip* GetShipFromFleet(int n) { return &m_vShips.ElementAt(n); }
+	CShip* GetShipFromFleet(int n) { return &m_vShips.GetAt(n); }
 
 	// Funktion um ein Schiff zur Flotte hinzuzufügen
 	void AddShipToFleet(const CShip* pShip) { m_vShips.Add(*pShip); }
