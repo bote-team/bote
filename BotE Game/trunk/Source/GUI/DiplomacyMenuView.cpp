@@ -2064,7 +2064,7 @@ void CDiplomacyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 							vEnemies.push_back(m_vRaceList[i]);
 					}
 					// gibt es zulässige Kriegspaktgegner
-					if (vEnemies.size())
+					if (!vEnemies.empty())
 					{
 						// wenn noch kein Gegner gewählt wurde, dann den ersten im Feld auswählen (sollte so jedoch nicht vorkommen)
 						if (m_OutgoingInfo.m_sWarpactEnemy == "")
