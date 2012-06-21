@@ -4060,10 +4060,10 @@ void CBotf2Doc::CalcNewRoundData()
 		// Nun überprüfen, ob sich unsere Grenzen erweitern, wenn die MinorRasse eine Spaceflight-Rasse ist und wir mit
 		// ihr eine Kooperations oder ein Bündnis haben
 		map<CString, CMinor*>* pmMinors = m_pRaceCtrl->GetMinors();
-		for (map<CString, CMajor*>::const_iterator i = pmMajors->begin(); i != pmMajors->end(); i++)
+		for (map<CString, CMajor*>::const_iterator i = pmMajors->begin(); i != pmMajors->end(); ++i)
 		{
 			CMajor* pMajor = i->second;
-			for (map<CString, CMinor*>::const_iterator j = pmMinors->begin(); j != pmMinors->end(); j++)
+			for (map<CString, CMinor*>::const_iterator j = pmMinors->begin(); j != pmMinors->end(); ++j)
 			{
 				CMinor* pMinor = j->second;
 				if (pMinor->GetSpaceflightNation() == TRUE && (pMinor->GetAgreement(pMajor->GetRaceID()) == DIPLOMATIC_AGREEMENT::COOPERATION || pMinor->GetAgreement(pMajor->GetRaceID()) == DIPLOMATIC_AGREEMENT::AFFILIATION))
