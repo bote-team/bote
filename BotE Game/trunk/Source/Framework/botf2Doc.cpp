@@ -4083,7 +4083,7 @@ void CBotf2Doc::CalcTrade()
 	USHORT taxMoney[] = {0,0,0,0,0};	// alle Steuern auf eine Ressource
 
 	map<CString, CMajor*>* pmMajors = m_pRaceCtrl->GetMajors();
-	if (!pmMajors->size())
+	if (pmMajors->empty())
 		AfxMessageBox("Error in CBotf2Doc::CalcTrade(): Could not get any major from race controller!");
 
 	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
