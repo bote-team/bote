@@ -1494,16 +1494,27 @@ void CGalaxyMenuView::GenerateGalaxyMap()
 			for (int x = 0; x < STARMAP_SECTOR_WIDTH; x++)
 				ownerMark[sFogOfWarID]->SetPixel(x, y, Color(160,0,0,0));
 
-	FCObjImage img2;
-	FCWin32::GDIPlus_LoadBitmap(*m_pGalaxyBackground, img2);
+	FCObjImage img;
+	FCWin32::GDIPlus_LoadBitmap(*m_pGalaxyBackground, img);
 	//Bild entsprechend vergrößern. Dabei Seitenverhältnisse beibehalten
-	if(STARMAP_TOTALWIDTH-img2.Width()*STARMAP_TOTALHEIGHT/img2.Height()<0)	img2.Stretch_Smooth(img2.Width()*STARMAP_TOTALHEIGHT/img2.Height(), STARMAP_TOTALHEIGHT);
-	else																	img2.Stretch_Smooth(STARMAP_TOTALWIDTH, img2.Height()*STARMAP_TOTALWIDTH/img2.Width());
+	if(STARMAP_TOTALWIDTH-img.Width()*STARMAP_TOTALHEIGHT/img.Height()<0)
+		img.Stretch_Smooth(img.Width()*STARMAP_TOTALHEIGHT/img.Height(), STARMAP_TOTALHEIGHT);
+	else
+		img.Stretch_Smooth(STARMAP_TOTALWIDTH, img.Height()*STARMAP_TOTALWIDTH/img.Width());
+
+	assert(m_pGalaxyBackground && m_pGalaxyBackground->GetLastStatus() == Ok);
 	delete m_pGalaxyBackground;
-	m_pGalaxyBackground = FCWin32::GDIPlus_CreateBitmap(img2);
-	img2.Destroy();
+	m_pGalaxyBackground = FCWin32::GDIPlus_CreateBitmap(img);
+
 	//Bild zuschneiden
-	m_pGalaxyBackground= m_pGalaxyBackground->Clone(0,0,STARMAP_TOTALWIDTH,STARMAP_TOTALHEIGHT,m_pGalaxyBackground->GetPixelFormat()) ;
+	Bitmap* cut_galaxy_background = m_pGalaxyBackground->Clone(0,0,STARMAP_TOTALWIDTH,STARMAP_TOTALHEIGHT,m_pGalaxyBackground->GetPixelFormat());
+	assert(m_pGalaxyBackground && m_pGalaxyBackground->GetLastStatus() == Ok);
+	delete m_pGalaxyBackground;
+	m_pGalaxyBackground = cut_galaxy_background;
+	assert(cut_galaxy_background && cut_galaxy_background->GetLastStatus() == Ok);
+	//no delete cut_galaxy_background here, since m_pGalaxyBackground points to cut_galaxy_background's memory now
+	cut_galaxy_background = NULL;
+	assert(m_pGalaxyBackground && m_pGalaxyBackground->GetLastStatus() == Ok);
 
 	Graphics* g = Graphics::FromImage(m_pGalaxyBackground);
 	g->SetSmoothingMode(SmoothingModeHighQuality);
@@ -1547,6 +1558,7 @@ void CGalaxyMenuView::GenerateGalaxyMap()
 		}
 
 	delete g;
+	g = NULL;
 
 	// Thumbnail generieren
 	if (m_pThumbnail)
@@ -1554,26 +1566,30 @@ void CGalaxyMenuView::GenerateGalaxyMap()
 		delete m_pThumbnail;
 		m_pThumbnail = NULL;
 	}
-	Bitmap* tmp = m_pGalaxyBackground->Clone(0, 0, m_pGalaxyBackground->GetWidth(), m_pGalaxyBackground->GetHeight(), PixelFormat32bppPARGB);
-	FCObjImage img;
+
+	//this code is solely since the img2.SetAlphaChannelValue(120); call below asserts due to the 24 bit depth
+	Bitmap* thirty_two_bit_galaxy_background = m_pGalaxyBackground->Clone(0, 0, m_pGalaxyBackground->GetWidth(), m_pGalaxyBackground->GetHeight(), PixelFormat32bppPARGB);
+	delete m_pGalaxyBackground;
+	m_pGalaxyBackground = thirty_two_bit_galaxy_background;
+	//no delete thirty_two_bit_galaxy_background!
+	thirty_two_bit_galaxy_background = NULL;
+
 #ifdef SAVE_GALAXYIMAGE
-	FCWin32::GDIPlus_LoadBitmap(*tmp, img);
+	FCObjImage img_to_save;
+	FCWin32::GDIPlus_LoadBitmap(*m_pGalaxyBackground, img_to_save);
 	CString name;
 	name.Format("Round%iMajor%s",pDoc->GetCurrentRound(),pDoc->GetPlayersRaceID());
-	img.Save("Screenshots/"+name+".bmp");
+	img_to_save.Save("F://"+name+".bmp");
 #endif
-	delete m_pGalaxyBackground;
-	m_pGalaxyBackground = tmp;
 
 	CSize thumbSize(150, STARMAP_TOTALHEIGHT * 150 / STARMAP_TOTALWIDTH);
 	if(STARMAP_TOTALWIDTH<STARMAP_TOTALHEIGHT) thumbSize.SetSize(STARMAP_TOTALWIDTH*150/STARMAP_TOTALHEIGHT,150);//wenn es eine hohe Karte ist wird anders skaliert
 
-	img.Destroy();
-	FCWin32::GDIPlus_LoadBitmap(*m_pGalaxyBackground, img);
-	img.Stretch_Smooth(thumbSize.cx, thumbSize.cy);
-	img.SetAlphaChannelValue(120);
-	m_pThumbnail = FCWin32::GDIPlus_CreateBitmap(img);
-	img.Destroy();
+	FCObjImage img2;
+	FCWin32::GDIPlus_LoadBitmap(*m_pGalaxyBackground, img2);
+	img2.Stretch_Smooth(thumbSize.cx, thumbSize.cy);
+	img2.SetAlphaChannelValue(120);
+	m_pThumbnail = FCWin32::GDIPlus_CreateBitmap(img2);
 
 	// aufräumen
 	for (map<CString, Bitmap*>::const_iterator it = ownerMark.begin(); it != ownerMark.end(); ++it)
