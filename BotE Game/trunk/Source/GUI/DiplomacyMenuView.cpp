@@ -2307,7 +2307,7 @@ void CDiplomacyMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 		else if (nChar == VK_END)
 		{
 			vector<CRace*>::iterator it = m_vRaceList.end();
-			if (m_vRaceList.size())
+			if (!m_vRaceList.empty())
 				it--;
 			if (it != m_vRaceList.end())
 			{
