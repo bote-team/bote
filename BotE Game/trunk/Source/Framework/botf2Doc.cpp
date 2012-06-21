@@ -3978,8 +3978,8 @@ void CBotf2Doc::CalcNewRoundData()
 			// Hier wird berechnet, was wir von der Karte alles sehen, welche Sektoren wir durchfliegen können
 			// alles abhängig von unseren diplomatischen Beziehungen
 			map<CString, bool> mShipPort;
-			for (map<CString, CMajor*>::const_iterator i = pmMajors->begin(); i != pmMajors->end(); i++)
-				for (map<CString, CMajor*>::const_iterator j = pmMajors->begin(); j != pmMajors->end(); j++)
+			for (map<CString, CMajor*>::const_iterator i = pmMajors->begin(); i != pmMajors->end(); ++i)
+				for (map<CString, CMajor*>::const_iterator j = pmMajors->begin(); j != pmMajors->end(); ++j)
 				{
 					if (m_Sector[x][y].GetScanned(i->first) == TRUE && i->first != j->first)
 						if (i->second->GetAgreement(j->first) >= DIPLOMATIC_AGREEMENT::COOPERATION)
