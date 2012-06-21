@@ -155,7 +155,7 @@ CWnd * CMultiSplitterView::GetViewPtr(UINT id)
 {
 	map<CWnd *, UINT>::iterator It, Iend = views.end();
 
-	for (It = views.begin(); It != Iend; It++)
+	for (It = views.begin(); It != Iend; ++It)
 	{
 		if ((*It).second == id)
 		{
