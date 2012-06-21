@@ -1233,7 +1233,7 @@ void CBotf2Doc::GenerateGalaxy()
 			if ((!m_Sector[x][y].GetOwned())&&nGenField[x][y]==true)
 				vSectorsToGenerate.push_back(CPoint(x,y));
 
-	while (vSectorsToGenerate.size())
+	while (!vSectorsToGenerate.empty())
 	{
 		int nSector = rand()%vSectorsToGenerate.size();
 		int x = vSectorsToGenerate[nSector].x;
