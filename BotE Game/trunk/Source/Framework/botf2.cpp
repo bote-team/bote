@@ -106,7 +106,6 @@ CBotf2App::CBotf2App() :
 	gdiplusToken()
 {
 #ifdef VLD
-	_CrtSetDbgFlag(0);
 	VLDEnable();
 #endif
 	// ZU ERLEDIGEN: Hier Code zur Konstruktion einfügen
