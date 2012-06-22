@@ -134,7 +134,7 @@ void CEventFirstContact::Draw(Graphics* g, CGraphicPool* graphicPool) const
 		sProperties.push_back(CResourceManager::GetString("SOLOING"));
 	if (pContactedRace->IsRaceProperty(RACE_PROPERTY::HOSTILE))
 		sProperties.push_back(CResourceManager::GetString("HOSTILE"));
-	if (sProperties.size() == 0)
+	if (sProperties.empty())
 		sProperties.push_back(CResourceManager::GetString("NONE"));
 
 	for (UINT i = 0; i < sProperties.size(); i++)
