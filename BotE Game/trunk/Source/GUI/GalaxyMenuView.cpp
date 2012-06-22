@@ -1695,7 +1695,7 @@ CString CGalaxyMenuView::CreateTooltip(void)
 				}
 			}
 
-			if (mAllDefenceBuildings.size())
+			if (!mAllDefenceBuildings.empty())
 			{
 				sTip += CHTMLStringBuilder::GetHTMLStringNewLine();
 				sTip += CHTMLStringBuilder::GetHTMLStringHorzLine();
