@@ -688,7 +688,7 @@ bool CMajorAI::MakeMinorOffer(const CString& sRaceID, CDiplomacyInfo& info)
 						if (it->first != pOurRace->GetRaceID() && pMinor->GetAgreement(it->first) > DIPLOMATIC_AGREEMENT::NONE)
 							vCorrupted.push_back(it->first);
 					// zufällige Auswahl
-					if (vCorrupted.size())
+					if (!vCorrupted.empty())
 					{
 						sCorruptedMajor = vCorrupted[rand()%vCorrupted.size()];
 						// Nun schauen ob wir die Bestechung durchführen kann
