@@ -548,7 +548,7 @@ CString CPlanetBottomView::CreateTooltip(void)
 			sSunDesc += CHTMLStringBuilder::GetHTMLStringNewLine();
 
 			// wurden keine Planeten angezeigt, das System ist also nicht bekannt, dann hier aufhören
-			if (m_vPlanetRects.size() == 0)
+			if (m_vPlanetRects.empty())
 				return sSunColor + sSunDesc;
 
 			sSunDesc += CHTMLStringBuilder::GetHTMLStringNewLine();
