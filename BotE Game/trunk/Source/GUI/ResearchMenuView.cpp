@@ -1094,7 +1094,7 @@ CString CResearchMenuView::CreateTooltip(void)
 		s += CHTMLStringBuilder::GetHTMLStringNewLine();
 	}
 	// gibt es keine neuen Gebäude
-	if (vNewBuildings.size() == 0)
+	if (vNewBuildings.empty())
 	{
 		s = CResourceManager::GetString("NONE");
 		s = CHTMLStringBuilder::GetHTMLColor(s);
