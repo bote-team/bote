@@ -1129,7 +1129,7 @@ CString CResearchMenuView::CreateTooltip(void)
 		s += CHTMLStringBuilder::GetHTMLStringNewLine();
 	}
 	// gibt es keine neuen Schiffe und Truppen
-	if (vNewShips.size() == 0 && vNewTroops.size() == 0)
+	if (vNewShips.empty() && vNewTroops.empty())
 	{
 		s = CResourceManager::GetString("NONE");
 		s = CHTMLStringBuilder::GetHTMLColor(s);
