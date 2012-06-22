@@ -123,7 +123,7 @@ bool CReManager::GlobalEvent(CMajor *pRace)
 			if(pRace->IsRaceContacted(pMinor->GetRaceID())&& pMinor->GetRelation(pRace->GetRaceID())<85)
 				PossibleMinors.insert(PossibleMinors.end(),pMinor);
 		}
-		if(PossibleMinors.size()>0)
+		if(!PossibleMinors.empty())
 		{
 			CMinor* pMinor=PossibleMinors.at(rand()%PossibleMinors.size());
 			pMinor->SetRelation(pRace->GetRaceID(), (rand() % 100) - pMinor->GetRelation(pRace->GetRaceID()));
