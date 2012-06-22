@@ -144,7 +144,7 @@ void CMajorAI::CalcFavoriteMinors(void)
 	// zu 33% wird die Minor an zweiter Stelle genommen
 	else if (vFavoriteMinors.size() >= 2 && rand()%3 == 0)
 		m_sFavoriteMinor = vFavoriteMinors[1].sID;
-	else if (vFavoriteMinors.size())
+	else if (!vFavoriteMinors.empty())
 		m_sFavoriteMinor = vFavoriteMinors[0].sID;
 
 	MYTRACE(MT::LEVEL_INFO, "Favorite Minorrace of Major: %s is %s\n", m_pRace->GetRaceID(), m_sFavoriteMinor);
