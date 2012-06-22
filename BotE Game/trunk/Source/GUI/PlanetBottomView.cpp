@@ -420,7 +420,7 @@ void CPlanetBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 void CPlanetBottomView::OnMouseMove(UINT nFlags, CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
-	if (m_vPlanetRects.size() == 0)
+	if (m_vPlanetRects.empty())
 		return;
 
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
