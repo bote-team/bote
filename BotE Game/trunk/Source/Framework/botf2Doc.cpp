@@ -5097,7 +5097,7 @@ void CBotf2Doc::CalcShipOrders()
 			else
 				m_ShipArray[y].SetCurrentOrder(SHIP_ORDER::ATTACK);
 		}
-		else if (m_ShipArray[y].GetCurrentOrder() == SHIP_ORDER::SENTRY_SHIP_ORDER)
+		//else if (m_ShipArray[y].GetCurrentOrder() == SHIP_ORDER::SENTRY_SHIP_ORDER)
 			//Do nothing for this and all following rounds until an explicit player input.
 
 		// Vor der Schiffsbewegung aber nach einer m?glichen Demontage dort ?berall einen ShipPort setzen wo
