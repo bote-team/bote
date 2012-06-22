@@ -490,7 +490,7 @@ void CMinorAI::CalcOtherMajorsRelationChange(const CDiplomacyInfo& info, short n
 			if (m_pRace->IsRaceContacted(it->first))
 				vKnownMajors.push_back(MAJORLIST(it->first, m_pRace->GetRelation(it->first)));
 	// gibt es keine andere bekannte Rasse, so kann die Funktion verlassen werden.
-	if (vKnownMajors.size() == 0)
+	if (vKnownMajors.empty())
 		return;
 
 	// nun die bekannten Majors nach deren Beziehung zur Minorrace aufsteigend sortieren
