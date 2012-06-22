@@ -357,7 +357,7 @@ void CPlanetBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 	if (!pDoc->m_bDataReceived)
 		return;
 
-	if (m_vPlanetRects.size() == 0)
+	if (m_vPlanetRects.empty())
 		return;
 
 	CalcLogicalPoint(point);
