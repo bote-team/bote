@@ -597,7 +597,7 @@ CString CPlanetBottomView::CreateTooltip(void)
 		}
 
 		// wurden keine Planeten angezeigt, das System ist also nicht bekannt, dann hier aufhören
-		if (m_vPlanetRects.size() == 0)
+		if (m_vPlanetRects.empty())
 			return "";
 
 		// wurde die Maus über einen der Planeten gehalten oder über die Planetenboni?
