@@ -1360,7 +1360,7 @@ void CDiplomacyMenuView::DrawDiplomacyOfferMenue(Graphics* g, const CString& sWh
 					}
 					else
 					{
-						for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+						for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 							if (it->first != pPlayer->GetRaceID() && pRace->GetAgreement(it->first) >= DIPLOMATIC_AGREEMENT::TRADE)
 							{
 								m_OutgoingInfo.m_sCorruptedRace = it->first;
