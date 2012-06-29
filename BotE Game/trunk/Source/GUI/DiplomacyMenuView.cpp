@@ -423,7 +423,7 @@ void CDiplomacyMenuView::DrawDiplomacyMenue(Graphics* g)
 			DIPLOMATIC_AGREEMENT::Typ status = DIPLOMATIC_AGREEMENT::NONE;
 
 			map<CString, CMajor*>* pmMajors = pDoc->GetRaceCtrl()->GetMajors();
-			for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+			for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 				if (it->first != pPlayer->GetRaceID())
 				{
 					DIPLOMATIC_AGREEMENT::Typ temp = pRace->GetAgreement(it->first);
