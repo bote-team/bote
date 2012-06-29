@@ -458,7 +458,7 @@ bool CCombatShip::AllowFire(const CFireArc* arc)
 	vec3<float> v;
 	// Besitzt das Schiff eine Flugroute, so ist dessen Ausrichtung der Vektor zwischen aktueller Position und dem
 	// nächsten Punkt auf der Flugroute
-	if (m_lRoute.size())
+	if (!m_lRoute.empty())
 	{
 		vec3i p = m_lRoute[0] - m_KO;
 		v.Set((float)p.x, (float)p.y, (float)p.z);
