@@ -121,7 +121,7 @@ void CCombatShip::CalculateNextPosition()
 		return;
 
 	// Wenn noch keine Flugroute berechnet wurde
-	if (m_lRoute.size() == 0)
+	if (m_lRoute.empty())
 	{
 		// Angreifen
 		if (m_pShip->GetCombatTactic() == COMBAT_TACTIC::CT_ATTACK)
