@@ -235,7 +235,7 @@ int CVictoryObserver::GetBestVictoryValue(VICTORYTYPE nType) const
 
 	// Vektor mit gefüllten Werten sortieren
 	std::sort(vValues.begin(), vValues.end());
-	if (vValues.size())
+	if (!vValues.empty())
 		return vValues.back();
 
 	return 0;
