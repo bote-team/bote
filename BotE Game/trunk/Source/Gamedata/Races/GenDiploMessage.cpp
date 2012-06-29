@@ -605,7 +605,7 @@ bool CGenDiploMessage::GenerateMinorAnswer(CDiplomacyInfo& info)
 	if (pRace->IsRaceProperty(RACE_PROPERTY::HOSTILE))
 		vSearchText.push_back("HOSTILE:");
 
-	if (vSearchText.size() == 0)
+	if (vSearchText.empty())
 		vSearchText.push_back("NOTHING_SPECIAL:");
 
 	CString read[14];	// Anzahl der ganzen verschiedenen Nachrichten + 1
