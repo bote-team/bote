@@ -230,7 +230,7 @@ void CCombatShip::CalcRoute(const vec3i& ptTarget, int nMinDistance/* = 0*/)
 void CCombatShip::GotoNextPosition()
 {
 	// Wenn wir schon eine Route berechnet haben, dann nur auf den nächsten Punkt in der Route gehen
-	if (m_lRoute.size())
+	if (!m_lRoute.empty())
 	{
 		m_KO = m_lRoute.front();
 		// Routeneintrag entfernen
