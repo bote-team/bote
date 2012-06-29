@@ -451,7 +451,7 @@ CString CRace::GetTooltip(void) const
 		sProperties.push_back(CResourceManager::GetString("SOLOING"));
 	if (IsRaceProperty(RACE_PROPERTY::HOSTILE))
 		sProperties.push_back(CResourceManager::GetString("HOSTILE"));
-	if (sProperties.size() == 0)
+	if (sProperties.empty())
 		sProperties.push_back(CResourceManager::GetString("NONE"));
 
 	CString sProb = CResourceManager::GetString("PROPERTIES");
