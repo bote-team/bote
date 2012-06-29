@@ -1408,7 +1408,7 @@ void CDiplomacyMenuView::DrawDiplomacyOfferMenue(Graphics* g, const CString& sWh
 				if (m_OutgoingInfo.m_sWarpactEnemy == "")
 				{
 					map<CString, CMajor*>* pmMajors = pDoc->GetRaceCtrl()->GetMajors();
-					for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+					for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 						if (it->first != pPlayer->GetRaceID() && it->first != m_sClickedOnRace && pPlayer->GetAgreement(m_sClickedOnRace) != DIPLOMATIC_AGREEMENT::WAR
 							&& pPlayer->IsRaceContacted(it->first) && pRace->IsRaceContacted(it->first) && pRace->GetAgreement(it->first) != DIPLOMATIC_AGREEMENT::WAR)
 						{
