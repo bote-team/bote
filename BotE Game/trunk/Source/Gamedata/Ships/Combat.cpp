@@ -355,7 +355,7 @@ void CCombat::CalculateCombat(std::map<CString, BYTE>& winner)
 		}
 
 		// Wenn noch Torpedos rumschwirren, dann den Kampf noch nicht abbrechen
-		if (m_CT.size())
+		if (!m_CT.empty())
 			m_bReady = true;
 
 		// sind nur noch Schiffe vorhanden die sich Zurückziehen soll aber sich nicht Bewegen können, so wird abgebrochen
