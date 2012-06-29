@@ -169,7 +169,7 @@ public:
 
 	/// Diese Funktion gibt einen Wahrheitswert zurück, der sagt, ob von irgendwem eine Station in diesem
 	/// Sektor ist
-	BOOLEAN GetIsStationInSector(void) const {return m_bOutpost.size() > 0 || m_bStarbase.size() > 0;}
+	BOOLEAN GetIsStationInSector(void) const {return !m_bOutpost.empty() || !m_bStarbase.empty();}
 
 	/// Diese Funktion gibt einen Wahrheitswert zurück, der sagt, ob die Majorrace <code>Race</code>
 	/// gerade eine Station in diesem Sektor baut.
