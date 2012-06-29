@@ -514,7 +514,7 @@ bool CCombat::CheckShipStayInCombat(int i)
 	bool bIsAlive = true;
 	if (pCombatShip->m_pShip->GetHull()->GetCurrentHull() < 1)
 		bIsAlive = false;
-	else if (pCombatShip->m_pShip->GetCombatTactic() == COMBAT_TACTIC::CT_RETREAT && pCombatShip->m_byRetreatCounter == 0 && pCombatShip->m_lRoute.size() == 0)
+	else if (pCombatShip->m_pShip->GetCombatTactic() == COMBAT_TACTIC::CT_RETREAT && pCombatShip->m_byRetreatCounter == 0 && pCombatShip->m_lRoute.empty())
 		bIsAlive = false;
 
 	// Bevor wir zur nächsten Position fliegen schauen ob das Schiff noch am Leben ist
