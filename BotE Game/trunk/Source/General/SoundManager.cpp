@@ -336,7 +336,7 @@ FMOD::Sound *CSoundManager::LoadSound(SNDMGR_VALUE nSound, network::RACE nRace)
 	}
 
 	// wenn schon maximale Anzahl geladen, ersten Eintrag entfernen
-	while (m_lSounds.size() >= m_nMaxLoadedSounds && m_lSounds.size() > 0)
+	while (m_lSounds.size() >= m_nMaxLoadedSounds && !m_lSounds.empty())
 	{
 		SNDMGR_SOUNDLIST::iterator it = m_lSounds.begin();
 		FMOD::Sound *pSound = (*it).pSound;
