@@ -1351,7 +1351,7 @@ void CDiplomacyMenuView::DrawDiplomacyOfferMenue(Graphics* g, const CString& sWh
 					// haben nicht auf den Button gedrückt -> mgl. Gegner auswählen
 					if (pRace->GetAgreement(pPlayer->GetRaceID()) < DIPLOMATIC_AGREEMENT::FRIENDSHIP)
 					{
-						for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+						for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 							if (it->first != pPlayer->GetRaceID() && pRace->GetAgreement(it->first) >= DIPLOMATIC_AGREEMENT::AFFILIATION)
 							{
 								m_OutgoingInfo.m_sCorruptedRace = it->first;
