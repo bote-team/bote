@@ -1831,7 +1831,7 @@ void CSystem::BuildBuildingsForMinorRace(CSector* sector, BuildingInfoArray* bui
 		if (pMinor->IsRaceProperty(RACE_PROPERTY::HOSTILE))
 			vProperty.push_back(RACE_PROPERTY::HOSTILE);
 
-		if (vProperty.size() == 0)
+		if (vProperty.empty())
 			vProperty.push_back(RACE_PROPERTY::NOTHING_SPECIAL);
 
 		RACE_PROPERTY::Typ nProperty = vProperty[rand()%vProperty.size()];
