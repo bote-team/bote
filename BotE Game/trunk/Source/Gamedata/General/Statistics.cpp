@@ -432,7 +432,7 @@ void CStatistics::CalcDemoValues(const CString& sRaceID, const std::map<CString,
 	std::sort(vSortedVec.begin(), vSortedVec.end());
 	std::reverse(vSortedVec.begin(), vSortedVec.end());
 
-	if (!vSortedVec.size())
+	if (vSortedVec.empty())
 		return;
 
 	// Platz ermitteln
