@@ -1102,7 +1102,7 @@ void CDiplomacyMenuView::DrawDiplomacyInfoMenue(Graphics* g, const CString& sWhi
 	if (pPlayer->GetAgreement(sWhichRace) >= DIPLOMATIC_AGREEMENT::FRIENDSHIP)
 	{
 		map<CString, CMajor*>* pmMajors = pDoc->GetRaceCtrl()->GetMajors();
-		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 			if (it->first != sWhichRace && it->first != pPlayer->GetRaceID())
 				if (pRace->IsRaceContacted(it->first))
 				{
