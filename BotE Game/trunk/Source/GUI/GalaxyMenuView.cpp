@@ -52,7 +52,9 @@ END_MESSAGE_MAP()
 CGalaxyMenuView::CGalaxyMenuView() :
 	m_bScrollToHome(TRUE),
 	m_fZoom(STARMAP_ZOOM_INITIAL),
-	m_nRange(SM_RANGE_SPACE)
+	m_nRange(SM_RANGE_SPACE),
+	m_ptViewOrigin(0, 0),
+	m_ptOldMousePos(0, 0)
 {
 	// ZU ERLEDIGEN: Hier Code zur Konstruktion einfügen
 	m_pGalaxyBackground = NULL;
