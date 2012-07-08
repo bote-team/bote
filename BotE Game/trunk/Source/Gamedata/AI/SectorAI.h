@@ -30,7 +30,7 @@ public:
 		bool operator< (const SectorToTerraform& elem2) const { return pop < elem2.pop;}
 		bool operator> (const SectorToTerraform& elem2) const { return pop > elem2.pop;}
 
-		SectorToTerraform() : pop(0) {}
+		SectorToTerraform() : pop(0), p(-1, -1) {}
 		SectorToTerraform(BYTE _pop, CPoint _p) : pop(_pop), p(_p) {}
 	};
 
