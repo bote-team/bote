@@ -40,8 +40,6 @@ protected: // Nur aus Serialisierung erzeugen
 	BYTE m_iShowWhichTechInView3;		///< Welche Tech soll in View3 angezeigt werden?
 	short m_iShowWhichShipInfoInView3;	///< Welche Schiffsinfo soll in View 3 angezeigt werden
 
-	CPoint m_ptScrollPoint;				///< aktuelle Scrollposition der Galaxieansicht wird auf diesen Point gespeichert
-
 	std::vector<std::vector<CSector>> m_Sector;
 	std::vector<std::vector<CSystem>> m_System;
 

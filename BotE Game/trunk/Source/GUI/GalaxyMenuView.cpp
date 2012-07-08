@@ -495,8 +495,6 @@ void CGalaxyMenuView::OnDraw(CDC* dc)
 
 	pOldPen->DeleteObject();
 
-	// aktuelle Scrollposition immer merken
-	pDoc->m_ptScrollPoint = GetScrollPosition();
 	g.ReleaseHDC(pDC.GetSafeHdc());
 }
 
