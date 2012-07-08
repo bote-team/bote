@@ -9,7 +9,8 @@ IMPLEMENT_SERIAL (CResourceRoute, CObject, 1)
 //////////////////////////////////////////////////////////////////////
 CResourceRoute::CResourceRoute(void) :
 	m_byPercent(0),
-	m_byResource(TITAN)
+	m_byResource(TITAN),
+	m_KO(-1, -1)
 {
 }
 
