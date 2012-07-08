@@ -20,6 +20,8 @@ public:
 
 	struct StorageStruct
 	{
+		StorageStruct() : nResTransfer(0), nRes(0), ptKO(-1, -1) {};
+
 		UINT nResTransfer;
 		BYTE nRes;
 		CPoint ptKO;
