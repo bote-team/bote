@@ -35,7 +35,8 @@ BEGIN_MESSAGE_MAP(CMenuChooseView, CView)
 	ON_WM_RBUTTONUP()
 END_MESSAGE_MAP()
 
-CMenuChooseView::CMenuChooseView()
+CMenuChooseView::CMenuChooseView() :
+	m_LastSystem(-1, -1)
 {
 	m_RoundEnd = NULL;
 }
