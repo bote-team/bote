@@ -108,15 +108,17 @@ void CResearchInfo::ChooseUniqueResearch(void)
 {
 	// Vektor mit noch erforschbaren Spezialforschunen erstellen
 	std::vector<int> vResearchableComplexes;
-	for (int i = 0; i < NoUC; i++)
+	for (int i = 0; i < NoUC; i++) {
 		if (m_ResearchComplex[i].m_nComplexStatus == RESEARCH_STATUS::NOTRESEARCHED)
 			vResearchableComplexes.push_back(i);
+	}
 
 	if (vResearchableComplexes.empty())
 		return;
 
 	// zufällig eine Spezialforschung aus den noch zur Verfügung stehenden auswählen
-	RESEARCH_COMPLEX::Typ nComplex = (RESEARCH_COMPLEX::Typ)(rand()%vResearchableComplexes.size());
+	unsigned choose_this = rand()%vResearchableComplexes.size();
+	RESEARCH_COMPLEX::Typ nComplex = static_cast<RESEARCH_COMPLEX::Typ>(vResearchableComplexes.at(choose_this));
 
 	// Status ändern
 	m_ResearchComplex[nComplex].m_nComplexStatus = RESEARCH_STATUS::RESEARCHING;
