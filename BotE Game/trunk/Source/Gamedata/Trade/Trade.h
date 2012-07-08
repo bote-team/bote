@@ -17,7 +17,13 @@ using namespace std;
 // forward declaration
 class CMajor;
 
-typedef struct {USHORT res; int number; CPoint system; int price;} m_TradeStruct;
+struct TradeStruct {
+	USHORT res;
+	int number;
+	CPoint system;
+	int price;
+	TradeStruct() : res(0), number(0), system(-1, -1), price(0) {}
+};
 
 class CTrade : public CObject
 {
@@ -66,7 +72,7 @@ public:
 	double* GetMonopolBuying() {return m_dMonopolBuy;}
 
 	// Funktion gibt das Feld der Handelsaktivitäten für das komplette Imperium zurück
-	CArray<m_TradeStruct,m_TradeStruct>* GetTradeActions() {return &m_TradeActions;}
+	CArray<TradeStruct,TradeStruct>* GetTradeActions() {return &m_TradeActions;}
 
 	// zum Schreiben der Membervariablen
 
@@ -127,7 +133,7 @@ private:
 	USHORT m_iRessourcePriceAtRoundStart[IRIDIUM + 1];
 
 	// Die Anzahl der jeweiligen Ressource die wir kaufen oder verkaufen möchten (negative Werte bedeuten verkaufen)
-	CArray<m_TradeStruct,m_TradeStruct> m_TradeActions;
+	CArray<TradeStruct,TradeStruct> m_TradeActions;
 
 	// Die Menge die wir bei einem Klick kaufen bzw. Verkaufen
 	USHORT m_iQuantity;

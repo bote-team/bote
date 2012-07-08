@@ -62,7 +62,7 @@ void CTrade::Serialize(CArchive &ar)
 			ar >> m_dMonopolBuy[i];
 		}
 		ar >> number;
-		m_TradeStruct ts;
+		TradeStruct ts;
 		m_TradeActions.RemoveAll();
 		for (int i = 0; i < number; i++)
 		{
@@ -85,7 +85,7 @@ void CTrade::Serialize(CArchive &ar)
 int CTrade::BuyRessource(USHORT res, ULONG number, CPoint system, long empires_credits, BOOL flag)
 {
 	USHORT oldResPrice = m_iRessourcePrice[res];
-	m_TradeStruct ts;
+	TradeStruct ts;
 	ts.res		= res;
 	ts.number	= number;
 	ts.system   = system;
@@ -134,7 +134,7 @@ int CTrade::BuyRessource(USHORT res, ULONG number, CPoint system, long empires_c
 // werden hier noch nicht in den Preis mit einbezogen.
 void CTrade::SellRessource(USHORT res, ULONG number, CPoint system, BOOL flag)
 {
-	m_TradeStruct ts;
+	TradeStruct ts;
 	ts.res		= res;
 	ts.number	= number;
 	ts.system   = system;
