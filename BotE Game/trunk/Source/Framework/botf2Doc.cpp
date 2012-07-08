@@ -58,6 +58,7 @@ END_MESSAGE_MAP()
 #pragma warning(push)
 #pragma warning (disable:4351)
 CBotf2Doc::CBotf2Doc() :
+	m_ptKO(0, 0),
 	m_NumberOfTheShipInArray(-1),
 	m_bCombatCalc(false),
 	m_bDataReceived(false),
