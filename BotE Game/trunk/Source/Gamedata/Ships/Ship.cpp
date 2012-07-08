@@ -20,6 +20,7 @@ IMPLEMENT_SERIAL (CShip, CObject, 1)
 // Konstruktion/Destruktion
 //////////////////////////////////////////////////////////////////////
 CShip::CShip() :
+	m_KO(-1, -1),
 	m_iID(0),
 	m_iMaintenanceCosts(0),
 	m_byManeuverability(0),
@@ -31,7 +32,10 @@ CShip::CShip() :
 	m_iColonizePoints(0),
 	m_iStationBuildPoints(0)
 {
-	m_TargetKO[0] = CPoint(-1,-1);
+	unsigned length = sizeof(m_TargetKO) / sizeof(m_TargetKO[0]);
+	for(unsigned i = 0; i < length; ++i) {
+		m_TargetKO[i] = CPoint(-1, -1);
+	}
 	m_iCrewExperiance = 0;
 	m_nTerraformingPlanet = -1;
 	m_bIsFlagShip = FALSE;
