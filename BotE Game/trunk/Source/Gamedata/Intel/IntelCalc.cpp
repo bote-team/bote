@@ -720,7 +720,6 @@ BOOLEAN CIntelCalc::ExecuteScienceSpy(CMajor* pRace, CMajor* pEnemyRace, CMajor*
 					// wenn das Gebäude keine Arbeiter benötigt
 					if (buildingInfo.GetWorker() == FALSE)
 					{
-						const CBuilding* b = &m_pDoc->m_System[sectors.GetAt(random).x][sectors.GetAt(random).y].GetAllBuildings()->GetAt(i);
 						// nur wenn das Gebäude einen Forschungshintergrund hat, kann es spioniert werden
 						if (buildingInfo.GetFPProd() > 0 || buildingInfo.GetResearchBoni() > 0 || buildingInfo.GetBioTechBoni() > 0 || buildingInfo.GetCompTechBoni() > 0 ||
 							buildingInfo.GetConstructionTechBoni() > 0 || buildingInfo.GetEnergyTechBoni() > 0 || buildingInfo.GetPropulsionTechBoni() > 0 ||
@@ -929,7 +928,6 @@ BOOLEAN CIntelCalc::ExecuteMilitarySpy(CMajor* pRace, CMajor* pEnemyRace, CMajor
 				// wenn das Gebäude keine Arbeiter benötigt
 				if (buildingInfo.GetWorker() == FALSE)
 				{
-					const CBuilding* b = &m_pDoc->m_System[sectors.GetAt(random).x][sectors.GetAt(random).y].GetAllBuildings()->GetAt(i);
 					// nur wenn das Gebäude einen Militär- oder Geheimdiensthintergrund hat, kann es spioniert werden
 					if (buildingInfo.GetShipYard() || buildingInfo.GetSPProd() > NULL || buildingInfo.GetBarrack() || buildingInfo.GetBarrackSpeed() > NULL ||
 						buildingInfo.GetEconomySabotageBoni() > NULL || buildingInfo.GetEconomySpyBoni() > NULL || buildingInfo.GetGroundDefend() > NULL ||
@@ -1421,7 +1419,6 @@ BOOLEAN CIntelCalc::ExecuteMilitarySabotage(CMajor* pRace, CMajor* pEnemyRace, C
 					// besitzt dieses Schiff eine Flotte, so könnte sich unser Schiff auch in der Flotte befinden
 					if (m_pDoc->m_ShipArray.GetAt(i).GetFleet())
 					{
-						CShip* pS = &m_pDoc->m_ShipArray[i];
 						for (int j = 0; j < m_pDoc->m_ShipArray.GetAt(i).GetFleet()->GetFleetSize(); j++)
 							if (m_pDoc->m_ShipArray.GetAt(i).GetFleet()->GetShipFromFleet(j)->GetID() == report->GetID())
 								allShips.Add(CPoint(i,j));
@@ -1640,7 +1637,7 @@ BOOLEAN CIntelCalc::ExecuteMilitarySabotage(CMajor* pRace, CMajor* pEnemyRace, C
 			// mindestens aber ein Gebäude sollte zerstört werden
 			if (buildings == NULL)
 				buildings++;
-			int n = buildings = rand()%buildings + 1;
+			buildings = rand()%buildings + 1;
 			CPoint ko = report->GetKO();
 			int id = report->GetID();
 			int destroyed = 0;

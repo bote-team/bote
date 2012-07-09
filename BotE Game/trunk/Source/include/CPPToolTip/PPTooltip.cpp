@@ -1457,7 +1457,7 @@ HRGN CPPToolTip::GetTooltipRgn(DWORD dwDirection, int x, int y, int nWidth, int 
 	ptAnchor [0].x = x;
 	ptAnchor [0].y = y;
 
-	HRGN hrgnRect = NULL;
+	/*HRGN hrgnRect = NULL;*/
 
 	//------------------------------
 	switch(dwDirection)

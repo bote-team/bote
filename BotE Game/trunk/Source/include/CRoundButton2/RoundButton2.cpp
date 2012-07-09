@@ -529,7 +529,7 @@ void CRoundButton2::OnMouseMove(UINT nFlags, CPoint point)
 	if (rcClient.PtInRect(point))
 	{
 		// We only need to redraw, if the mouse enters
-		bool bRedrawNeeded = !m_bMouseOnButton;
+		/*bool bRedrawNeeded = !m_bMouseOnButton;*/
 
 		// Mouse is on Control
 		m_bMouseOnButton = true;

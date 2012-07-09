@@ -383,8 +383,6 @@ void CPlanet::DrawPlanet(Graphics &g, const CRect& rect, CGraphicPool* graphicPo
 		// Gitternetz zeichnen
 		if (planet)
 		{
-			UINT nWidth = planet->GetWidth();
-			UINT nHeight = planet->GetHeight();
 			Bitmap* sphere = NULL;
 			sphere = graphicPool->GetGDIGraphic("Planets\\TerraformSphere.bop");
 			if (sphere)

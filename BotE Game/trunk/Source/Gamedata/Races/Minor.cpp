@@ -654,10 +654,13 @@ void CMinor::Create(const CStringArray& saInfo, int& nPos)
 
 	// Beziehungen
 	// ALPHA5 muss natürlich noch auf das neue System umgestellt werden -> werden nicht mehr in der data Datei gespeichert
-	for (int i = 0; i < 6; i++)
-	{
-		int ALPHA5 = atoi(saInfo[nPos++]);
-	}
+	//for (int i = 0; i < 6; i++)
+	//{
+	//	int ALPHA5 = atoi(saInfo[nPos++]);
+	//}
+	//TODO
+	//relations from the minor data file aren't used
+	nPos = nPos + 6;
 
 	m_iTechnologicalProgress = atoi(saInfo[nPos++]);
 	m_byType			= MINOR;						// Rassentyp (Major, Medior, Minor)

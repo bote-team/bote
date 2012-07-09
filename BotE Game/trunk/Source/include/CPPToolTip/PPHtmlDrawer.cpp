@@ -1749,7 +1749,6 @@ SIZE CPPHtmlDrawer::DrawHtmlString (CPPString & sHtml, LPCRECT lpRect)
 	int nRealWidth = m_hline.nWidthLine;
 
 	int nIndex = 0;
-	int nBegin = 0;
 	int i = 0;
 	while (i < sHtml.GetLength())
 	{
@@ -4017,7 +4016,7 @@ CPPString CPPHtmlDrawer::SearchPropertyOfTag(CPPString & str, int & nIndex)
 		//The begin of the property was found
 		int nBegin = nIndex;
 		//Searching end of the property
-		TCHAR chFound = GetIndexNextChars(str, nIndex, _T(" ="));
+		/*TCHAR chFound = GetIndexNextChars(str, nIndex, _T(" ="));*/
 		//Gets a property's string
 		sText = str.Mid(nBegin, nIndex - nBegin);
 	} //if

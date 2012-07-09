@@ -1401,7 +1401,6 @@ BOOLEAN CSystem::AssemblyListCheck(BuildingInfoArray* buildingInfo, CGlobalBuild
 				m_BuildableUpdates.Add(entry);
 		}
 	}
-	USHORT inSystem = 0;
 	// nach Updates in der Bauliste suchen. Wenn wir ein Update in der Bauliste gefunden haben, so
 	// müssen wir dieses und all deren Vorgänger aus der Liste der baubaren Gebäude entfernen
 	for (int i = 0; i < ALE; i++)
@@ -2738,7 +2737,6 @@ BOOLEAN CSystem::CheckFollower(BuildingInfoArray* buildings, USHORT id, BOOLEAN 
 				if (pre == id)
 					return TRUE;
 				// jetzt in die Schleife um sich immer neue ID´s zu holen
-				int z = 0;
 				do {
 					// VorgängerID des Vorgängers holen
 					if (pre > 0)

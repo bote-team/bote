@@ -68,7 +68,7 @@ END_MESSAGE_MAP()
 
 void CAboutDlg::OnIpnFieldchangedIpaddress1(NMHDR *pNMHDR, LRESULT *pResult)
 {
-	LPNMIPADDRESS pIPAddr = reinterpret_cast<LPNMIPADDRESS>(pNMHDR);
+	/*LPNMIPADDRESS pIPAddr = reinterpret_cast<LPNMIPADDRESS>(pNMHDR);*/
 	// TODO: Add your control notification handler code here
 	*pResult = 0;
 }
@@ -264,7 +264,7 @@ void CBotf2App::OnOpenManual()
 	// TODO: Add your command handler code here
 	CString sFile = CIOData::GetInstance()->GetManualPath();
 
-	HINSTANCE hInst = ShellExecute(0,
+	/*HINSTANCE hInst =*/ ShellExecute(0,
 		"open",		// Operation to perform
 		sFile,		// Application name
         "",			// Additional parameters
@@ -278,7 +278,7 @@ void CBotf2App::OnHelpWiki()
 	// TODO: Fügen Sie hier Ihren Befehlsbehandlungscode ein.
 	CString sFile =  "http://www.wiki.birth-of-the-empires.de";
 
-	HINSTANCE hInst = ShellExecute(0,
+	/*HINSTANCE hInst =*/ ShellExecute(0,
 		"open",		// Operation to perform
 		sFile,		// Application name
         "",			// Additional parameters
@@ -291,7 +291,7 @@ void CBotf2App::OnOpenReadme()
 	// TODO: Add your command handler code here
 	CString sFile = CIOData::GetInstance()->GetAppPath() + "Liesmich.txt";
 
-	HINSTANCE hInst = ShellExecute(0,
+	/*HINSTANCE hInst =*/ ShellExecute(0,
 		"open",		// Operation to perform
 		sFile,		// Application name
         "",			// Additional parameters

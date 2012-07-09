@@ -56,7 +56,7 @@ void CEventVictory::Create(void)
 	CBotf2Doc* pDoc = ((CBotf2App*)AfxGetApp())->GetDocument();
 	ASSERT(pDoc);
 
-	network::RACE client = pDoc->GetRaceCtrl()->GetMappedClientID(m_sRace);
+	/*network::RACE client = pDoc->GetRaceCtrl()->GetMappedClientID(m_sRace);*/
 
 	CIniLoader* pIni = CIniLoader::GetInstance();
 	ASSERT(pIni);

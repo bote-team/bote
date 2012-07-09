@@ -4853,7 +4853,7 @@ void CBotf2Doc::CalcShipOrders()
 		{
 			CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(m_ShipArray[y].GetOwnerOfShip()));
 			ASSERT(pMajor);
-			network::RACE client = m_pRaceCtrl->GetMappedClientID(pMajor->GetRaceID());
+			/*network::RACE client = m_pRaceCtrl->GetMappedClientID(pMajor->GetRaceID());*/
 
 			// wenn wir in dem Sector wo wir das Schiff demoniteren ein uns geh?rendes System haben, dann bekommen wir
 			// teilweise Rohstoffe aus der Demontage zur?ck (vlt. auch ein paar Credits)
@@ -5800,8 +5800,6 @@ void CBotf2Doc::CalcShipEffects()
 	}
 	m_mShipRetreatSectors.clear();
 
-
-	map<CString, CMajor*>* pmMajors = m_pRaceCtrl->GetMajors();
 
 	// Nach einem möglichen Kampf, aber natürlich auch generell die Schiffe und Stationen den Sektoren bekanntgeben
 	for (int y = 0; y < m_ShipArray.GetSize(); y++)

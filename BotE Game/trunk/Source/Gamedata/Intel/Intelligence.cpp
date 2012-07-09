@@ -35,7 +35,6 @@ void CIntelligence::Serialize(CArchive &ar)
 		for (int i = 0; i < 2; i++)
 		{
 			ar << m_iSPStorage[i].size();
-			size_t size = m_iSPStorage[i].size();
 			for (map<CString, UINT>::const_iterator it = m_iSPStorage[i].begin(); it != m_iSPStorage[i].end(); it++)
 			{
 				ar << it->first << it->second;

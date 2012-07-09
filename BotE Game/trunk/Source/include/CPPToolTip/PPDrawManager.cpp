@@ -1316,7 +1316,7 @@ void CPPDrawManager::GetPartialSums(const double* const pM,
 	const unsigned int nRowsPartSumsMRows = nMRows;
 	const unsigned int nRowsPartSumsMCols = nMCols - nPartCols + 1;
 
-	const unsigned int nResMRows = nMRows - nPartRows + 1;
+	/*const unsigned int nResMRows = nMRows - nPartRows + 1;*/
 	const unsigned int nResMCols = nMCols - nPartCols + 1;
 
 

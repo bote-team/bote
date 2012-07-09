@@ -242,7 +242,6 @@ void CTrade::CalculateTradeActions(CMajor* pMajor, std::vector<std::vector<CSyst
 /// @param pCurMajor aktuelle Rasse, für die die Preise berechnet werden
 void CTrade::CalculatePrices(map<CString, CMajor*>* pmMajors, CMajor* pCurMajor)
 {
-	USHORT nOldPrices[IRIDIUM + 1] = {0};
 
 	// Der Preis einer anderen Börse kann natürlich nur miteingerechnet werden, wenn wir diese Hauptrasse
 	// kennen.
