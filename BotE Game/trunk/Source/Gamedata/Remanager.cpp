@@ -72,7 +72,7 @@ bool CReManager::SystemEvent(CPoint &ko, CMajor* pRace)
 	{
 
 		std::vector<CPlanet> planets = pDoc->GetSector(ko).GetPlanets();
-		int planet;
+		int planet = 0;
 		// Es sollte hier immer mindestens 1 habitabler bewohnter Planet im System sein...
 		success = false;
 		for(int i = 0; i < 100; ++i) {

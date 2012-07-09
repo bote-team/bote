@@ -2,6 +2,8 @@
 #include "FontLoader.h"
 #include "Races\Major.h"
 
+#include <cassert>
+
 //////////////////////////////////////////////////////////////////////
 // Konstruktion/Destruktion
 //////////////////////////////////////////////////////////////////////
@@ -51,7 +53,7 @@ COLORREF CFontLoader::CreateFont(const CMajor* pPlayersRace, BYTE size, BYTE col
 
 COLORREF CFontLoader::GetFontColor(const CMajor* pPlayersRace, BYTE colorType)
 {
-	COLORREF clrColor;
+	COLORREF clrColor = RGB(0, 0, 0);
 	switch (colorType)
 	{
 	case 0:	clrColor = pPlayersRace->GetDesign()->m_clrSmallText; break;
@@ -59,6 +61,7 @@ COLORREF CFontLoader::GetFontColor(const CMajor* pPlayersRace, BYTE colorType)
 	case 2:	clrColor = pPlayersRace->GetDesign()->m_clrLargeBtn; break;
 	case 3:	clrColor = pPlayersRace->GetDesign()->m_clrNormalText; break;
 	case 4:	clrColor = pPlayersRace->GetDesign()->m_clrSecondText; break;
+	default: assert(false); break;
 	}
 
 	return clrColor;

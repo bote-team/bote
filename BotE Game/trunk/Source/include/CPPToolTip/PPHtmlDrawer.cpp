@@ -5,6 +5,8 @@
 #include <shellapi.h>
 #pragma comment(lib, "comctl32.lib")
 
+#include <cassert>
+
 
 
 
@@ -1530,7 +1532,7 @@ void CPPHtmlDrawer::DrawHtmlTableCell(CPPString & sCell, LPCRECT lpRect, STRUCT_
 	} //if
 
 	RECT rcCell = *lpRect;
-	RECT rcText;
+	RECT rcText = rcCell;
 
 	//ENG: Applies styles of <td> tag
 	//RUS: Применяем стили ячейки (тэг <td>)
@@ -1613,7 +1615,9 @@ void CPPHtmlDrawer::DrawHtmlTableCell(CPPString & sCell, LPCRECT lpRect, STRUCT_
 			rcText.top += (rcText.bottom - rcText.top - sc.szText.cy) / 2;
 			break;
 		} //switch
-	} //if
+	} else {
+		assert(false);
+	}//if
 
 	//ENG: Draws a cell
 	//RUS: Вывод ячейки

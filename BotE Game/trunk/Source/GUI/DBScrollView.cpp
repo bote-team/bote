@@ -72,7 +72,7 @@ void CDBScrollView::OnPaint()
 	OnPrepareDC(&dc);
 
 	CDC *pDC = &dc, *pMemDC = NULL;
-	CBitmap *pMemBMP;
+	CBitmap *pMemBMP = NULL;
 
 	// Größe des Client-Bereichs ermitteln
 	CRect client;
@@ -107,6 +107,7 @@ void CDBScrollView::OnPaint()
 			{
 				// bei Fehler alles freigeben
 				delete pMemBMP;
+				pMemBMP = NULL;
 				delete pMemDC;
 				pMemDC = NULL;
 			}
@@ -136,7 +137,9 @@ void CDBScrollView::OnPaint()
 		dc.BitBlt(0, 0, client.right, client.bottom, pMemDC, 0, 0, SRCCOPY);
 
 		delete pMemDC;
+		pMemDC = NULL;
 		delete pMemBMP;
+		pMemBMP = NULL;
 	}
 
 	// Änderungen wurden gezeichnet, wieder auf FALSE setzen
