@@ -6,6 +6,12 @@
 #define _CRT_SECURE_NO_WARNINGS		// häufige Sicherheitswarnungen ausschalten
 #pragma warning( disable : 4244 )
 
+//#pragma warning( 3 : 4702 )//Unerreichbarer Code
+#pragma warning( 3 : 4701 )//Potenziell nicht initialisierte lokale Variable 'Name' verwendet
+#pragma warning( 3 : 4189 )//'Bezeichner': Lokale Variable ist initialisiert, aber nicht referenziert
+//#pragma warning( 3 : 4100 )//Unreferenzierter formaler Parameter
+//#pragma warning( 3 : 4389 )//'Operator': Konflikt zwischen signed und unsigned
+
 #ifndef _SECURE_ATL
 #define _SECURE_ATL 1
 #endif
