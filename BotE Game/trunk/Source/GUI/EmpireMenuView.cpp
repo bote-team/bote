@@ -78,8 +78,7 @@ END_MESSAGE_MAP()
 
 void CEmpireMenuView::OnNewRound()
 {
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
-	ASSERT(pDoc);
+	ASSERT((CBotf2Doc*)GetDocument());
 
 	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
@@ -194,8 +193,7 @@ BOOL CEmpireMenuView::OnEraseBkgnd(CDC* pDC)
 /////////////////////////////////////////////////////////////////////////////////////////
 void CEmpireMenuView::DrawEmpireNewsMenue(Graphics* g)
 {
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
-	ASSERT(pDoc);
+	ASSERT((CBotf2Doc*)GetDocument());
 
 	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
@@ -700,8 +698,7 @@ void CEmpireMenuView::DrawEmpireSystemMenue(Graphics* g)
 /////////////////////////////////////////////////////////////////////////////////////////
 void CEmpireMenuView::DrawEmpireShipMenue(Graphics* g)
 {
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
-	ASSERT(pDoc);
+	ASSERT((CBotf2Doc*)GetDocument());
 
 	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
@@ -2056,8 +2053,7 @@ void CEmpireMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 
 void CEmpireMenuView::CreateButtons()
 {
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
-	ASSERT(pDoc);
+	ASSERT((CBotf2Doc*)GetDocument());
 
 	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);

@@ -55,8 +55,7 @@ void CMainBaseView::OnInitialUpdate()
 {
 	CView::OnInitialUpdate();
 
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
-	ASSERT(pDoc);
+	ASSERT((CBotf2Doc*)GetDocument());
 
 /*	CString sID = pDoc->GetPlayersRaceID();
 	m_pPlayersRace = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(sID));
@@ -115,8 +114,7 @@ void CMainBaseView::DrawGDIButtons(Graphics* g, CArray<CMyButton*>* buttonArray,
 
 void CMainBaseView::ButtonReactOnMouseOver(const CPoint &point, CArray<CMyButton*>* buttonArray)
 {
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
-	ASSERT(pDoc);
+	ASSERT((CBotf2Doc*)GetDocument());
 
 	for (int i = 0; i < buttonArray->GetSize(); i++)
 	{

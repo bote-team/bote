@@ -2529,8 +2529,7 @@ void CBotf2Doc::CalcPreDataForNextRound()
 {
 	m_iRound++;
 
-	CMajor* pPlayer = GetPlayersRace();
-	ASSERT(pPlayer);
+	ASSERT(GetPlayersRace());
 
 	// Berechnungen der neuen Runde
 	map<CString, CMajor*>* pmMajors = m_pRaceCtrl->GetMajors();

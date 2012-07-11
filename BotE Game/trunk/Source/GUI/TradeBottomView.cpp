@@ -251,8 +251,7 @@ void CTradeBottomView::OnInitialUpdate()
 /// Funktion lädt die rassenspezifischen Grafiken.
 void CTradeBottomView::LoadRaceGraphics()
 {
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
-	ASSERT(pDoc);
+	ASSERT((CBotf2Doc*)GetDocument());
 
 	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);

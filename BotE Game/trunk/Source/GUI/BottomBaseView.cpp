@@ -79,8 +79,7 @@ BOOL CBottomBaseView::OnEraseBkgnd(CDC* pDC)
 
 Gdiplus::Color CBottomBaseView::GetFontColorForSmallButton(void)
 {
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
-	ASSERT(pDoc);
+	ASSERT((CBotf2Doc*)GetDocument());
 
 	CMajor* pPlayer = m_pPlayersRace;
 	ASSERT(pPlayer);

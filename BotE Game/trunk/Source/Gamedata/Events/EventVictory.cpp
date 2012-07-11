@@ -53,8 +53,7 @@ void CEventVictory::Create(void)
 	if (m_pBGImage != NULL)
 		return;
 
-	CBotf2Doc* pDoc = ((CBotf2App*)AfxGetApp())->GetDocument();
-	ASSERT(pDoc);
+	ASSERT(((CBotf2App*)AfxGetApp())->GetDocument());
 
 	/*network::RACE client = pDoc->GetRaceCtrl()->GetMappedClientID(m_sRace);*/
 

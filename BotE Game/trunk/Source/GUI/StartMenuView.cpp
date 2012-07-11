@@ -99,8 +99,7 @@ void CStartMenuView::Dump(CDumpContext& dc) const
 void CStartMenuView::OnDraw(CDC* dc)
 {
 	// TODO: Fügen Sie hier Ihren spezialisierten Code ein, und/oder rufen Sie die Basisklasse auf.
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
-	ASSERT(pDoc);
+	ASSERT((CBotf2Doc*)GetDocument());
 
 	CMyMemDC pDC(dc);
 	CRect client;

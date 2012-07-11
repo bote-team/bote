@@ -675,8 +675,7 @@ void CTransportMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 
 void CTransportMenuView::CreateButtons()
 {
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
-	ASSERT(pDoc);
+	ASSERT((CBotf2Doc*)GetDocument());
 
 	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);

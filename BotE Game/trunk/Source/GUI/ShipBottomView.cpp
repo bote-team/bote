@@ -715,8 +715,7 @@ void CShipBottomView::OnInitialUpdate()
 /// Funktion lädt die rassenspezifischen Grafiken.
 void CShipBottomView::LoadRaceGraphics()
 {
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
-	ASSERT(pDoc);
+	ASSERT((CBotf2Doc*)GetDocument());
 
 	CMajor* pPlayer = m_pPlayersRace;
 	ASSERT(pPlayer);

@@ -809,11 +809,9 @@ CString CShipDesignMenuView::CheckIfShipIsBuilding(int n) const
 
 void CShipDesignMenuView::CreateButtons()
 {
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
-	ASSERT(pDoc);
+	ASSERT((CBotf2Doc*)GetDocument());
 
-	CMajor* pMajor = m_pPlayersRace;
-	ASSERT(pMajor);
+	ASSERT(m_pPlayersRace);
 
 	// alle Buttons in der View anlegen und Grafiken laden
 }

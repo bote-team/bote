@@ -955,8 +955,7 @@ void CResearchMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 
 void CResearchMenuView::CreateButtons()
 {
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
-	ASSERT(pDoc);
+	ASSERT((CBotf2Doc*)GetDocument());
 
 	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);

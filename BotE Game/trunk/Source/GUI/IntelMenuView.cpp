@@ -1218,8 +1218,7 @@ void CIntelMenuView::DrawRaceLogosInIntelView(Graphics* g, BOOLEAN highlightPlay
 
 void CIntelMenuView::DrawIntelInformation(Graphics* g, Gdiplus::Font* font, Gdiplus::Color color)
 {
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
-	ASSERT(pDoc);
+	ASSERT((CBotf2Doc*)GetDocument());
 
 	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
@@ -1900,8 +1899,7 @@ void CIntelMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 
 void CIntelMenuView::CreateButtons()
 {
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
-	ASSERT(pDoc);
+	ASSERT((CBotf2Doc*)GetDocument());
 
 	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
