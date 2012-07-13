@@ -119,36 +119,36 @@ void CNewGameView::OnDraw(CDC* dc)
 	// Spielername schreiben
 	m_username.GetWindowRect(rect);
 	CString sUserName = CResourceManager::GetString("PLAYERNAME");
-	g.DrawString(CComBSTR(sUserName.AllocSysString()), -1, &font, RectF((rect.left - 400) * dSizeModX, rect.top * dSizeModY, 375 * dSizeModX, rect.Height() * dSizeModY), &format, &SolidBrush(Color::WhiteSmoke));
+	g.DrawString(CComBSTR(sUserName), -1, &font, RectF((rect.left - 400) * dSizeModX, rect.top * dSizeModY, 375 * dSizeModX, rect.Height() * dSizeModY), &format, &SolidBrush(Color::WhiteSmoke));
 
 	if (m_nMode == MODE_SERVER)
 	{
 		// Servername schreiben
 		CString sServerName = CResourceManager::GetString("SERVERNAME");
 		m_description.GetWindowRect(rect);
-		g.DrawString(CComBSTR(sServerName.AllocSysString()), -1, &font, RectF((rect.left - 400) * dSizeModX, rect.top * dSizeModY, 375 * dSizeModX, rect.Height() * dSizeModY), &format, &SolidBrush(Color::WhiteSmoke));
+		g.DrawString(CComBSTR(sServerName), -1, &font, RectF((rect.left - 400) * dSizeModX, rect.top * dSizeModY, 375 * dSizeModX, rect.Height() * dSizeModY), &format, &SolidBrush(Color::WhiteSmoke));
 
 		// Serverport schreiben
 		CString sServerPort = CResourceManager::GetString("PORT");
 		m_serverPort.GetWindowRect(rect);
-		g.DrawString(CComBSTR(sServerPort.AllocSysString()), -1, &font, RectF((rect.left - 400) * dSizeModX, rect.top * dSizeModY, 375 * dSizeModX, rect.Height() * dSizeModY), &format, &SolidBrush(Color::WhiteSmoke));
+		g.DrawString(CComBSTR(sServerPort), -1, &font, RectF((rect.left - 400) * dSizeModX, rect.top * dSizeModY, 375 * dSizeModX, rect.Height() * dSizeModY), &format, &SolidBrush(Color::WhiteSmoke));
 
 		// publish in local area network schreiben
 		CString sPublishInLAN = CResourceManager::GetString("PUBLISHLAN");
 		m_btPublish.GetWindowRect(rect);
-		g.DrawString(CComBSTR(sPublishInLAN.AllocSysString()), -1, &font, RectF((rect.left - 400) * dSizeModX, rect.top * dSizeModY, 375 * dSizeModX, rect.Height() * dSizeModY), &format, &SolidBrush(Color::WhiteSmoke));
+		g.DrawString(CComBSTR(sPublishInLAN), -1, &font, RectF((rect.left - 400) * dSizeModX, rect.top * dSizeModY, 375 * dSizeModX, rect.Height() * dSizeModY), &format, &SolidBrush(Color::WhiteSmoke));
 	}
 	else if (m_nMode == MODE_CLIENT)
 	{
 		// IP-Adresse schreiben
 		CString sIPAddr = CResourceManager::GetString("SERVERIP");
 		m_hostIP.GetWindowRect(rect);
-		g.DrawString(CComBSTR(sIPAddr.AllocSysString()), -1, &font, RectF((rect.left - 400) * dSizeModX, rect.top * dSizeModY, 375 * dSizeModX, rect.Height() * dSizeModY), &format, &SolidBrush(Color::WhiteSmoke));
+		g.DrawString(CComBSTR(sIPAddr), -1, &font, RectF((rect.left - 400) * dSizeModX, rect.top * dSizeModY, 375 * dSizeModX, rect.Height() * dSizeModY), &format, &SolidBrush(Color::WhiteSmoke));
 
 		// Hostport schreiben
 		CString sHostPort = CResourceManager::GetString("PORT");
 		m_hostPort.GetWindowRect(rect);
-		g.DrawString(CComBSTR(sHostPort.AllocSysString()), -1, &font, RectF((rect.left - 400) * dSizeModX, rect.top * dSizeModY, 375 * dSizeModX, rect.Height() * dSizeModY), &format, &SolidBrush(Color::WhiteSmoke));
+		g.DrawString(CComBSTR(sHostPort), -1, &font, RectF((rect.left - 400) * dSizeModX, rect.top * dSizeModY, 375 * dSizeModX, rect.Height() * dSizeModY), &format, &SolidBrush(Color::WhiteSmoke));
 	}
 
 	Gdiplus::Font font2(L"Calibri", 10, FontStyleBold);
@@ -158,7 +158,7 @@ void CNewGameView::OnDraw(CDC* dc)
 	CString sVersion = "Birth of the Empires Pre-Alpha7 V";
 	sVersion += VERSION_INFORMATION;
 	sVersion += "\n© by Sir Pustekuchen 2011";
-	g.DrawString(CComBSTR(sVersion.AllocSysString()), -1, &font2, RectF(0, 0, m_TotalSize.cx, m_TotalSize.cy), &format, &SolidBrush(Color::WhiteSmoke));
+	g.DrawString(CComBSTR(sVersion), -1, &font2, RectF(0, 0, m_TotalSize.cx, m_TotalSize.cy), &format, &SolidBrush(Color::WhiteSmoke));
 
 	g.ReleaseHDC(pDC->GetSafeHdc());
 }

@@ -148,7 +148,7 @@ void CShipBottomView::OnDraw(CDC* dc)
 
 		Gdiplus::Color markColor;
 		markColor.SetFromCOLORREF(pMajor->GetDesign()->m_clrListMarkTextColor);
-		Gdiplus::Font font(CComBSTR(fontName.AllocSysString()), fontSize);
+		Gdiplus::Font font(CComBSTR(fontName), fontSize);
 
 		for (int i = 0; i < pDoc->m_ShipArray.GetSize(); i++)
 		{
@@ -266,13 +266,13 @@ void CShipBottomView::OnDraw(CDC* dc)
 		{
 			m_bShowNextButton = TRUE;
 			g.DrawImage(m_pShipOrderButton, r.right-120, r.top+210, 120, 30);
-			g.DrawString(CComBSTR(CResourceManager::GetString("BTN_NEXT").AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(r.right-120,r.top+210,120,30), &fontFormat, &fontBrush);
+			g.DrawString(CComBSTR(CResourceManager::GetString("BTN_NEXT")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.right-120,r.top+210,120,30), &fontFormat, &fontBrush);
 		}
 		// back-Button
 		if (m_iPage > 1)
 		{
 			g.DrawImage(m_pShipOrderButton, r.right-120, r.top, 120, 30);
-			g.DrawString(CComBSTR(CResourceManager::GetString("BTN_BACK").AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(r.right-120,r.top,120,30), &fontFormat, &fontBrush);
+			g.DrawString(CComBSTR(CResourceManager::GetString("BTN_BACK")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.right-120,r.top,120,30), &fontFormat, &fontBrush);
 		}
 	}
 
@@ -301,19 +301,19 @@ void CShipBottomView::OnDraw(CDC* dc)
 		if (m_iTimeCounter > 0)
 		{
 			g.DrawImage(m_pShipOrderButton, r.right-120, r.top+70, 120, 30);
-			g.DrawString(CComBSTR(CResourceManager::GetString("BTN_TACTIC").AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(r.right-120,r.top+70,120,30), &fontFormat, &fontBrush);
+			g.DrawString(CComBSTR(CResourceManager::GetString("BTN_TACTIC")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.right-120,r.top+70,120,30), &fontFormat, &fontBrush);
 		}
 		// Befehl
 		if (m_iTimeCounter > 1)
 		{
 			g.DrawImage(m_pShipOrderButton, r.right-120, r.top+105, 120, 30);
-			g.DrawString(CComBSTR(CResourceManager::GetString("BTN_ORDER").AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(r.right-120,r.top+105,120,30), &fontFormat, &fontBrush);
+			g.DrawString(CComBSTR(CResourceManager::GetString("BTN_ORDER")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.right-120,r.top+105,120,30), &fontFormat, &fontBrush);
 		}
 		// Aktion
 		if (m_iTimeCounter > 2)
 		{
 			g.DrawImage(m_pShipOrderButton, r.right-120, r.top+140, 120, 30);
-			g.DrawString(CComBSTR(CResourceManager::GetString("BTN_ACTION").AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(r.right-120,r.top+140,120,30), &fontFormat, &fontBrush);
+			g.DrawString(CComBSTR(CResourceManager::GetString("BTN_ACTION")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.right-120,r.top+140,120,30), &fontFormat, &fontBrush);
 			if (m_iWhichMainShipOrderButton == -1)
 			{
 				this->KillTimer(1);
@@ -331,7 +331,7 @@ void CShipBottomView::OnDraw(CDC* dc)
 		{
 			g.DrawImage(m_pShipOrderButton, r.right-245, r.top+70, 120, 30);
 			m_ShipOrders[SHIP_ORDER::ATTACK].SetRect(r.right-245,r.top+70,r.right-125,r.top+100);
-			g.DrawString(CComBSTR(CResourceManager::GetString("BTN_ATTACK").AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(r.right-245,r.top+70,120,30), &fontFormat, &fontBrush);
+			g.DrawString(CComBSTR(CResourceManager::GetString("BTN_ATTACK")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.right-245,r.top+70,120,30), &fontFormat, &fontBrush);
 			counter++;
 		}
 		// meiden
@@ -340,7 +340,7 @@ void CShipBottomView::OnDraw(CDC* dc)
 		{
 			g.DrawImage(m_pShipOrderButton, r.right-245, r.top+70, 120, 30);
 			m_ShipOrders[SHIP_ORDER::AVOID].SetRect(r.right-245,r.top+70,r.right-125,r.top+100);
-			g.DrawString(CComBSTR(CResourceManager::GetString("BTN_AVOID").AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(r.right-245,r.top+70,120,30), &fontFormat, &fontBrush);
+			g.DrawString(CComBSTR(CResourceManager::GetString("BTN_AVOID")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.right-245,r.top+70,120,30), &fontFormat, &fontBrush);
 			counter++;
 		}
 		// folgende Befehle gehen alle nur, wenn es keine Station ist
@@ -352,7 +352,7 @@ void CShipBottomView::OnDraw(CDC* dc)
 			{
 				g.DrawImage(m_pShipOrderButton, r.right-245, r.top+70+counter*35, 120, 30);
 				m_ShipOrders[SHIP_ORDER::CREATE_FLEET].SetRect(r.right-245,r.top+70+counter*35,r.right-125,r.top+100+counter*35);
-				g.DrawString(CComBSTR(CResourceManager::GetString("BTN_CREATE_FLEET").AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(r.right-245,r.top+70+counter*35,120,30), &fontFormat, &fontBrush);
+				g.DrawString(CComBSTR(CResourceManager::GetString("BTN_CREATE_FLEET")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.right-245,r.top+70+counter*35,120,30), &fontFormat, &fontBrush);
 				counter++;
 			}
 			// trainieren
@@ -365,7 +365,7 @@ void CShipBottomView::OnDraw(CDC* dc)
 				{
 					g.DrawImage(m_pShipOrderButton, r.right-245, r.top+70+counter*35, 120, 30);
 					m_ShipOrders[SHIP_ORDER::TRAIN_SHIP].SetRect(r.right-245,r.top+70+counter*35,r.right-125,r.top+100+counter*35);
-					g.DrawString(CComBSTR(CResourceManager::GetString("BTN_TRAIN_SHIP").AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(r.right-245,r.top+70+counter*35,120,30), &fontFormat, &fontBrush);
+					g.DrawString(CComBSTR(CResourceManager::GetString("BTN_TRAIN_SHIP")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.right-245,r.top+70+counter*35,120,30), &fontFormat, &fontBrush);
 					counter++;
 				}
 			}
@@ -384,7 +384,7 @@ void CShipBottomView::OnDraw(CDC* dc)
 				else
 					s = CResourceManager::GetString("BTN_CLOAK");
 				m_ShipOrders[SHIP_ORDER::CLOAK].SetRect(r.right-245,r.top+70+counter*35,r.right-125,r.top+100+counter*35);
-				g.DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(r.right-245,r.top+70+counter*35,120,30), &fontFormat, &fontBrush);
+				g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.right-245,r.top+70+counter*35,120,30), &fontFormat, &fontBrush);
 				counter++;
 			}
 			// Systemangriff
@@ -414,7 +414,7 @@ void CShipBottomView::OnDraw(CDC* dc)
 							g.DrawImage(m_pShipOrderButton, r.right-245, r.top+70, 120, 30);
 							s = CResourceManager::GetString("BTN_ATTACK_SYSTEM");
 							m_ShipOrders[SHIP_ORDER::ATTACK_SYSTEM].SetRect(r.right-245,r.top+70,r.right-125,r.top+100);
-							g.DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(r.right-245,r.top+70,120,30), &fontFormat, &fontBrush);
+							g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.right-245,r.top+70,120,30), &fontFormat, &fontBrush);
 							counter++;
 						}
 					}
@@ -446,7 +446,7 @@ void CShipBottomView::OnDraw(CDC* dc)
 					g.DrawImage(m_pShipOrderButton, r.right-245, r.top+70+counter*35, 120, 30);
 					s = CResourceManager::GetString("BTN_BLOCKADE_SYSTEM");
 					m_ShipOrders[SHIP_ORDER::BLOCKADE_SYSTEM].SetRect(r.right-245,r.top+70+counter*35,r.right-125,r.top+100+counter*35);
-					g.DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(r.right-245,r.top+70+counter*35,120,30), &fontFormat, &fontBrush);
+					g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.right-245,r.top+70+counter*35,120,30), &fontFormat, &fontBrush);
 					counter++;
 				}
 			}
@@ -459,7 +459,7 @@ void CShipBottomView::OnDraw(CDC* dc)
 				g.DrawImage(m_pShipOrderButton, r.right-245, r.top+70+counter*35, 120, 30);
 				s = CResourceManager::GetString("BTN_ASSIGN_FLAGSHIP");
 				m_ShipOrders[SHIP_ORDER::ASSIGN_FLAGSHIP].SetRect(r.right-245,r.top+70+counter*35,r.right-125,r.top+100+counter*35);
-				g.DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(r.right-245,r.top+70+counter*35,120,30), &fontFormat, &fontBrush);
+				g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.right-245,r.top+70+counter*35,120,30), &fontFormat, &fontBrush);
 				counter++;
 			}
 			// Warten
@@ -470,7 +470,7 @@ void CShipBottomView::OnDraw(CDC* dc)
 				g.DrawImage(m_pShipOrderButton, r.right-245, r.top+70+counter*35, 120, 30);
 				s = CResourceManager::GetString("BTN_WAIT_SHIP_ORDER");
 				m_ShipOrders[SHIP_ORDER::WAIT_SHIP_ORDER].SetRect(r.right-245,r.top+70+counter*35,r.right-125,r.top+100+counter*35);
-				g.DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(r.right-245,r.top+70+counter*35,120,30), &fontFormat, &fontBrush);
+				g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.right-245,r.top+70+counter*35,120,30), &fontFormat, &fontBrush);
 				counter++;
 			}
 			// Wache
@@ -481,7 +481,7 @@ void CShipBottomView::OnDraw(CDC* dc)
 				g.DrawImage(m_pShipOrderButton, r.right-245, r.top+70+counter*35, 120, 30);
 				s = CResourceManager::GetString("BTN_SENTRY_SHIP_ORDER");
 				m_ShipOrders[SHIP_ORDER::SENTRY_SHIP_ORDER].SetRect(r.right-245,r.top+70+counter*35,r.right-125,r.top+100+counter*35);
-				g.DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(r.right-245,r.top+70+counter*35,120,30), &fontFormat, &fontBrush);
+				g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.right-245,r.top+70+counter*35,120,30), &fontFormat, &fontBrush);
 				counter++;
 			}
 
@@ -515,7 +515,7 @@ void CShipBottomView::OnDraw(CDC* dc)
 							g.DrawImage(m_pShipOrderButton, r.right-245, r.top+140, 120, 30);
 							s = CResourceManager::GetString("BTN_COLONIZE");
 							m_ShipOrders[SHIP_ORDER::COLONIZE].SetRect(r.right-245,r.top+140,r.right-125,r.top+170);
-							g.DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(r.right-245,r.top+140,120,30), &fontFormat, &fontBrush);
+							g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.right-245,r.top+140,120,30), &fontFormat, &fontBrush);
 							counter++;
 							break;
 						}
@@ -538,7 +538,7 @@ void CShipBottomView::OnDraw(CDC* dc)
 						g.DrawImage(m_pShipOrderButton, r.right-245, r.top+140-counter*35, 120, 30);
 						s = CResourceManager::GetString("BTN_TERRAFORM");
 						m_ShipOrders[SHIP_ORDER::TERRAFORM].SetRect(r.right-245,r.top+140-counter*35,r.right-125,r.top+170-counter*35);
-						g.DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(r.right-245,r.top+140-counter*35,120,30), &fontFormat, &fontBrush);
+						g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.right-245,r.top+140-counter*35,120,30), &fontFormat, &fontBrush);
 						counter++;
 						break;
 					}
@@ -575,7 +575,7 @@ void CShipBottomView::OnDraw(CDC* dc)
 								g.DrawImage(m_pShipOrderButton, r.right-245, r.top+140-counter*35, 120, 30);
 								s = CResourceManager::GetString("BTN_BUILD_OUTPOST");
 								m_ShipOrders[SHIP_ORDER::BUILD_OUTPOST].SetRect(r.right-245,r.top+140-counter*35,r.right-125,r.top+170-counter*35);
-								g.DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(r.right-245,r.top+140-counter*35,120,30), &fontFormat, &fontBrush);
+								g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.right-245,r.top+140-counter*35,120,30), &fontFormat, &fontBrush);
 								counter++;
 								break;
 							}
@@ -595,7 +595,7 @@ void CShipBottomView::OnDraw(CDC* dc)
 								g.DrawImage(m_pShipOrderButton, r.right-245, r.top+140-counter*35, 120, 30);
 								s = CResourceManager::GetString("BTN_BUILD_STARBASE");
 								m_ShipOrders[SHIP_ORDER::BUILD_STARBASE].SetRect(r.right-245,r.top+140-counter*35,r.right-125,r.top+170-counter*35);
-								g.DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(r.right-245,r.top+140-counter*35,120,30), &fontFormat, &fontBrush);
+								g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.right-245,r.top+140-counter*35,120,30), &fontFormat, &fontBrush);
 								counter++;
 								break;
 							}
@@ -608,7 +608,7 @@ void CShipBottomView::OnDraw(CDC* dc)
 				g.DrawImage(m_pShipOrderButton, r.right-245, r.top+140-counter*35, 120, 30);
 				s = CResourceManager::GetString("BTN_TRANSPORT");
 				m_ShipOrders[SHIP_ORDER::TRANSPORT].SetRect(r.right-245,r.top+140-counter*35,r.right-125,r.top+170-counter*35);
-				g.DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(r.right-245,r.top+140-counter*35,120,30), &fontFormat, &fontBrush);
+				g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.right-245,r.top+140-counter*35,120,30), &fontFormat, &fontBrush);
 				counter++;
 			}
 		}
@@ -619,7 +619,7 @@ void CShipBottomView::OnDraw(CDC* dc)
 			g.DrawImage(m_pShipOrderButton, r.right-245, r.top+140-counter*35, 120, 30);
 			s = CResourceManager::GetString("BTN_DESTROY_SHIP");
 			m_ShipOrders[SHIP_ORDER::DESTROY_SHIP].SetRect(r.right-245,r.top+140-counter*35,r.right-125,r.top+170-counter*35);
-			g.DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(r.right-245,r.top+140-counter*35,120,30), &fontFormat, &fontBrush);
+			g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.right-245,r.top+140-counter*35,120,30), &fontFormat, &fontBrush);
 			counter++;
 		}
 		if (m_iTimeCounter >= (4 + counter))
@@ -659,7 +659,7 @@ void CShipBottomView::OnDraw(CDC* dc)
 				s = station + CResourceManager::GetString("STATION_BUILDING", FALSE, sRaceName, percent);
 				fontFormat.SetAlignment(StringAlignmentCenter);
 				fontFormat.SetLineAlignment(StringAlignmentCenter);
-				g.DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), PointF(250, 30+count*25), &fontFormat, &fontBrush);
+				g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), PointF(250, 30+count*25), &fontFormat, &fontBrush);
 				count++;
 			}
 	}
@@ -722,7 +722,7 @@ void CShipBottomView::LoadRaceGraphics()
 
 	CString sPrefix = pPlayer->GetPrefix();
 	CString s = CIOData::GetInstance()->GetAppPath() + "Graphics\\Other\\" + sPrefix + "button_shiporder.bop";
-	m_pShipOrderButton = Bitmap::FromFile(CComBSTR(s.AllocSysString()));
+	m_pShipOrderButton = Bitmap::FromFile(CComBSTR(s));
 }
 
 BOOL CShipBottomView::OnEraseBkgnd(CDC* pDC)

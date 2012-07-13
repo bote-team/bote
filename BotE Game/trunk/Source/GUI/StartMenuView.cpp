@@ -125,7 +125,7 @@ void CStartMenuView::OnDraw(CDC* dc)
 
 		CString s= CResourceManager::GetString("PRESENTEDBY")+"\n\n"+CResourceManager::GetString("PRESENTED");
 		//CString s = "§www.birth-of-the-empires.de\n\npräsentiert ...";
-		g.DrawString(CComBSTR(s.AllocSysString()), -1, &font, RectF(0, 0, m_TotalSize.cx, m_TotalSize.cy), &format, &SolidBrush(Color::WhiteSmoke));
+		g.DrawString(CComBSTR(s), -1, &font, RectF(0, 0, m_TotalSize.cx, m_TotalSize.cy), &format, &SolidBrush(Color::WhiteSmoke));
 
 		g.ReleaseHDC(pDC->GetSafeHdc());
 		// nichts weiter Zeichnen
@@ -143,7 +143,7 @@ void CStartMenuView::OnDraw(CDC* dc)
 	CString sVersion = "Birth of the Empires Pre-Alpha7 V";
 	sVersion += VERSION_INFORMATION;
 	sVersion += "\n© by Sir Pustekuchen 2011";
-	g.DrawString(CComBSTR(sVersion.AllocSysString()), -1, &font, RectF(0, 0, m_TotalSize.cx, m_TotalSize.cy), &format, &SolidBrush(Color::WhiteSmoke));
+	g.DrawString(CComBSTR(sVersion), -1, &font, RectF(0, 0, m_TotalSize.cx, m_TotalSize.cy), &format, &SolidBrush(Color::WhiteSmoke));
 
 	// Hintergrundbild langsam einblenden
 	if (m_nTimeCounter < 255)
@@ -158,7 +158,7 @@ void CStartMenuView::OnDraw(CDC* dc)
 
 		Color clr2(max(0, 255 - m_nTimeCounter * 1.2), 245,245,245);
 		CString s= CResourceManager::GetString("PRESENTEDBY")+"\n\n"+CResourceManager::GetString("PRESENTED");
-		g.DrawString(CComBSTR(s.AllocSysString()), -1, &font, RectF(0, 0, m_TotalSize.cx, m_TotalSize.cy), &format, &SolidBrush(clr2));
+		g.DrawString(CComBSTR(s), -1, &font, RectF(0, 0, m_TotalSize.cx, m_TotalSize.cy), &format, &SolidBrush(clr2));
 	}
 
 	g.ReleaseHDC(pDC->GetSafeHdc());

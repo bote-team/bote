@@ -79,11 +79,11 @@ void CEventRaceKilled::Draw(Graphics* g, CGraphicPool* graphicPool) const
 	fontBrush.SetColor(color);
 
 	CString s = CResourceManager::GetString("IMPORTANT_NEWS");
-	g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(0,0,1280,96), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,0,1280,96), &fontFormat, &fontBrush);
 
 	fontFormat.SetAlignment(StringAlignmentNear);
 	s = CResourceManager::GetString("RACE_ELIMINATED", FALSE, m_sKilledRaceName);
-	g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(375, 400, 800, 300), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(375, 400, 800, 300), &fontFormat, &fontBrush);
 
 	// Buttons zeichnen
 	CFontLoader::CreateGDIFont(pMajor, 3, fontName, fontSize);
@@ -92,5 +92,5 @@ void CEventRaceKilled::Draw(Graphics* g, CGraphicPool* graphicPool) const
 	CFontLoader::GetGDIFontColor(pMajor, 2, color);
 	fontBrush.SetColor(color);
 	for (int i = 0; i < m_Buttons.GetSize(); i++)
-		m_Buttons.GetAt(i)->DrawButton(*g, graphicPool, Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), fontBrush);
+		m_Buttons.GetAt(i)->DrawButton(*g, graphicPool, Gdiplus::Font(CComBSTR(fontName), fontSize), fontBrush);
 }

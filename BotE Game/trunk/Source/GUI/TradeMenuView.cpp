@@ -207,32 +207,32 @@ void CTradeMenuView::DrawGlobalTradeMenue(Graphics* g)
 		fontBrush.SetColor(markColor);
 		fontFormat.SetFormatFlags(!StringFormatFlagsNoWrap);
 		s = CResourceManager::GetString("CURRENT_PRICE");
-		g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(40+i*200,190,190,40), &fontFormat, &fontBrush);
+		g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(40+i*200,190,190,40), &fontFormat, &fontBrush);
 		fontFormat.SetFormatFlags(StringFormatFlagsNoWrap);
 
 		// "Lagermenge" hinschreiben
 		s = CResourceManager::GetString("STORAGE_QUANTUM");
-		g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(40+i*200,350,190,25), &fontFormat, &fontBrush);
+		g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(40+i*200,350,190,25), &fontFormat, &fontBrush);
 
 		// "Monopolist" hinschreiben
 		s = CResourceManager::GetString("MONOPOLIST");
-		g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(40+i*200,420,190,25), &fontFormat, &fontBrush);
+		g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(40+i*200,420,190,25), &fontFormat, &fontBrush);
 
 		// den Kurs auch hinzuschreiben
 		fontBrush.SetColor(normalColor);
 		s.Format("%d %s",(int)ceil((pMajor->GetTrade()->GetRessourcePrice()[i]) * pMajor->GetTrade()->GetTax()) / 10,
 			CResourceManager::GetString("CREDITS"));
-		g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(40+i*200,230,190,25), &fontFormat, &fontBrush);
+		g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(40+i*200,230,190,25), &fontFormat, &fontBrush);
 
 		// Lagermenge im aktuellen System von der Ressource hinschreiben
 		s.Format("%d %s",pDoc->m_System[pDoc->GetKO().x][pDoc->GetKO().y].GetResourceStore(i),CResourceManager::GetString("UNITS"));
-		g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(40+i*200,385,190,25), &fontFormat, &fontBrush);
+		g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(40+i*200,385,190,25), &fontFormat, &fontBrush);
 
 		// den Monopolbesitzer auch hinschreiben
 		if (CTrade::GetMonopolOwner(i).IsEmpty())
 		{
 			s = CResourceManager::GetString("NOBODY");
-			g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(40+i*200,455,190,25), &fontFormat, &fontBrush);
+			g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(40+i*200,455,190,25), &fontFormat, &fontBrush);
 		}
 		else if (CTrade::GetMonopolOwner(i) == pMajor->GetRaceID() || pMajor->IsRaceContacted(CTrade::GetMonopolOwner(i)) == true)
 		{
@@ -240,35 +240,35 @@ void CTradeMenuView::DrawGlobalTradeMenue(Graphics* g)
 			if (pMonopolist)
 			{
 				s = pMonopolist->GetRaceName();
-				g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(40+i*200,455,190,25), &fontFormat, &fontBrush);
+				g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(40+i*200,455,190,25), &fontFormat, &fontBrush);
 			}
 		}
 		else
 		{
 			s = CResourceManager::GetString("UNKNOWN");
-			g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(40+i*200,455,190,25), &fontFormat, &fontBrush);
+			g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(40+i*200,455,190,25), &fontFormat, &fontBrush);
 		}
 	}
 
 	// Namen der Rohstoffe in die Rechtecke schreiben
 	fontFormat.SetLineAlignment(StringAlignmentNear);
-	g->DrawString(CComBSTR(CResourceManager::GetString("TITAN").AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), resRect[TITAN], &fontFormat, &fontBrush);
-	g->DrawString(CComBSTR(CResourceManager::GetString("DEUTERIUM").AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), resRect[DEUTERIUM], &fontFormat, &fontBrush);
-	g->DrawString(CComBSTR(CResourceManager::GetString("DURANIUM").AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), resRect[DURANIUM], &fontFormat, &fontBrush);
-	g->DrawString(CComBSTR(CResourceManager::GetString("CRYSTAL").AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), resRect[CRYSTAL], &fontFormat, &fontBrush);
-	g->DrawString(CComBSTR(CResourceManager::GetString("IRIDIUM").AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), resRect[IRIDIUM], &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(CResourceManager::GetString("TITAN")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), resRect[TITAN], &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(CResourceManager::GetString("DEUTERIUM")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), resRect[DEUTERIUM], &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(CResourceManager::GetString("DURANIUM")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), resRect[DURANIUM], &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(CResourceManager::GetString("CRYSTAL")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), resRect[CRYSTAL], &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(CResourceManager::GetString("IRIDIUM")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), resRect[IRIDIUM], &fontFormat, &fontBrush);
 
 	// unsere Handelssteuer zeichnen
 	fontFormat.SetLineAlignment(StringAlignmentCenter);
 	CString sTax;
 	sTax.Format("%.0f",(pMajor->GetTrade()->GetTax() - 1) * 100);
 	s = CResourceManager::GetString("ALL_PRICES_INCL_TAX", FALSE, sTax);
-	g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(0,500,m_TotalSize.cx,25), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,500,m_TotalSize.cx,25), &fontFormat, &fontBrush);
 
 	// Kaufmenge ändern Text
 	fontFormat.SetFormatFlags(!StringFormatFlagsNoWrap);
 	s = CResourceManager::GetString("REPEAT_ACTIVITY");
-	g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(400,535,275,40), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(400,535,275,40), &fontFormat, &fontBrush);
 	fontFormat.SetFormatFlags(StringFormatFlagsNoWrap);
 
 	// Buttons für "Kaufen" und "Verkaufen zeichnen
@@ -282,18 +282,18 @@ void CTradeMenuView::DrawGlobalTradeMenue(Graphics* g)
 		if (graphic)
 			g->DrawImage(graphic, 75+i*200, 275, 120, 30);
 		s = CResourceManager::GetString("BTN_BUY");
-		g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(75+i*200,275,120,30), &fontFormat, &btnBrush);
+		g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(75+i*200,275,120,30), &fontFormat, &btnBrush);
 
 		if (graphic)
 			g->DrawImage(graphic, 75+i*200, 310, 120, 30);
 		s = CResourceManager::GetString("BTN_SELL");
-		g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(75+i*200,310,120,30), &fontFormat, &btnBrush);
+		g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(75+i*200,310,120,30), &fontFormat, &btnBrush);
 	}
 	// Button für Kaufmenge ändern hinmalen
 	if (graphic)
 		g->DrawImage(graphic, 478, 580, 120, 30);
 	s.Format("%dx",pMajor->GetTrade()->GetQuantity()/100);
-	g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(478,580,120,30), &fontFormat, &btnBrush);
+	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(478,580,120,30), &fontFormat, &btnBrush);
 
 	// "globale Handelsboerse" in der Mitte zeichnen
 	// Rassenspezifische Schriftart auswählen
@@ -302,13 +302,13 @@ void CTradeMenuView::DrawGlobalTradeMenue(Graphics* g)
 	CFontLoader::GetGDIFontColor(pMajor, 3, normalColor);
 	fontBrush.SetColor(normalColor);
 	s = CResourceManager::GetString("GLOBAL_TRADE_MENUE");
-	g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(0,10,m_TotalSize.cx, 50), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,10,m_TotalSize.cx, 50), &fontFormat, &fontBrush);
 
 	// System, in dem die Handelsaktivitäten stattfinden sollen hinschreiben
 	CFontLoader::CreateGDIFont(pMajor, 3, fontName, fontSize);
 	fontBrush.SetColor(markColor);
 	s.Format("%s: %s",CResourceManager::GetString("TRADE_IN_SYSTEM"), pDoc->m_Sector[pDoc->GetKO().x][pDoc->GetKO().y].GetName());
-	g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(0,90,m_TotalSize.cx,45), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,90,m_TotalSize.cx,45), &fontFormat, &fontBrush);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -378,7 +378,7 @@ void CTradeMenuView::DrawMonopolMenue(Graphics* g)
 			}
 			fontFormat.SetAlignment(StringAlignmentNear);
 			s.Format("%s %s:",CResourceManager::GetString("MONOPOLY_OWNER"), resName);
-			g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(40,120+i*110,360,30), &fontFormat, &fontBrush);
+			g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(40,120+i*110,360,30), &fontFormat, &fontBrush);
 
 			if (CTrade::GetMonopolOwner(i).IsEmpty())
 				s = CResourceManager::GetString("NOBODY");
@@ -392,12 +392,12 @@ void CTradeMenuView::DrawMonopolMenue(Graphics* g)
 				s = CResourceManager::GetString("UNKNOWN");
 			fontBrush.SetColor(markColor);
 			fontFormat.SetAlignment(StringAlignmentFar);
-			g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(40,120+i*110,360,30), &fontFormat, &fontBrush);
+			g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(40,120+i*110,360,30), &fontFormat, &fontBrush);
 
 			fontBrush.SetColor(normalColor);
 			fontFormat.SetAlignment(StringAlignmentNear);
 			s.Format("%s %s:",CResourceManager::GetString("MONOPOLY_COSTS"), resName);
-			g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(500,120+i*110,350,30), &fontFormat, &fontBrush);
+			g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(500,120+i*110,350,30), &fontFormat, &fontBrush);
 
 			// Die Monopolkosten sind die gesamten Einwohner aller Systeme unserer und uns bekannter Rassen mal die Nummer
 			// des Rohstoffes mal 15. Gehört jemand schon das Monopol und wir wollen das Wegkaufen, dann müssen wir
@@ -422,7 +422,7 @@ void CTradeMenuView::DrawMonopolMenue(Graphics* g)
 			fontBrush.SetColor(markColor);
 			fontFormat.SetAlignment(StringAlignmentFar);
 			s.Format("%.0lf %s",m_dMonopolCosts[i], CResourceManager::GetString("CREDITS"));
-			g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(500,120+i*110,350,30), &fontFormat, &fontBrush);
+			g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(500,120+i*110,350,30), &fontFormat, &fontBrush);
 		}
 
 		Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\" + pMajor->GetPrefix() + "button_small.bop");
@@ -438,7 +438,7 @@ void CTradeMenuView::DrawMonopolMenue(Graphics* g)
 			{
 				if (graphic)
 					g->DrawImage(graphic, 915, 120+i*110, 120, 30);
-				g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(915,120+i*110,120,30), &fontFormat, &btnBrush);
+				g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(915,120+i*110,120,30), &fontFormat, &btnBrush);
 			}
 		}
 	}
@@ -458,12 +458,12 @@ void CTradeMenuView::DrawMonopolMenue(Graphics* g)
 			g->DrawImage(bg_empty1, 0, 0, 1075, 750);
 		s = CResourceManager::GetString("NO_MONOPOLY_BUY");
 		fontFormat.SetFormatFlags(!StringFormatFlagsNoWrap);
-		g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(200,250,675,250), &fontFormat, &fontBrush);
+		g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(200,250,675,250), &fontFormat, &fontBrush);
 		fontFormat.SetFormatFlags(StringFormatFlagsNoWrap);
 	}
 	// "Handelsmonopole" in der Mitte zeichnen
 	s = CResourceManager::GetString("MONOPOLY_MENUE");
-	g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(0,10,m_TotalSize.cx, 50), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,10,m_TotalSize.cx, 50), &fontFormat, &fontBrush);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -533,11 +533,11 @@ void CTradeMenuView::DrawTradeTransferMenue(Graphics* g)
 			}
 		}
 	// berechnete und zusammengefasste Transfers hinschreiben
-	g->DrawString(CComBSTR(CResourceManager::GetString("TITAN").AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(0,250,m_TotalSize.cx,25), &fontFormat, &fontBrush);
-	g->DrawString(CComBSTR(CResourceManager::GetString("DEUTERIUM").AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(0,320,m_TotalSize.cx,25), &fontFormat, &fontBrush);
-	g->DrawString(CComBSTR(CResourceManager::GetString("DURANIUM").AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(0,390,m_TotalSize.cx,25), &fontFormat, &fontBrush);
-	g->DrawString(CComBSTR(CResourceManager::GetString("CRYSTAL").AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(0,460,m_TotalSize.cx,25), &fontFormat, &fontBrush);
-	g->DrawString(CComBSTR(CResourceManager::GetString("IRIDIUM").AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(0,530,m_TotalSize.cx,25), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(CResourceManager::GetString("TITAN")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,250,m_TotalSize.cx,25), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(CResourceManager::GetString("DEUTERIUM")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,320,m_TotalSize.cx,25), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(CResourceManager::GetString("DURANIUM")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,390,m_TotalSize.cx,25), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(CResourceManager::GetString("CRYSTAL")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,460,m_TotalSize.cx,25), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(CResourceManager::GetString("IRIDIUM")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,530,m_TotalSize.cx,25), &fontFormat, &fontBrush);
 
 	fontBrush.SetColor(normalColor);
 	for (int i = TITAN; i <= IRIDIUM; i++)
@@ -548,7 +548,7 @@ void CTradeMenuView::DrawTradeTransferMenue(Graphics* g)
 			s.Format("%d %s %d %s",boughtResNumber[i], CResourceManager::GetString("UNITS_FOR"),
 				(int)ceil((boughtResPrice[i]) * pMajor->GetTrade()->GetTax()), CResourceManager::GetString("CREDITS"));
 			fontFormat.SetAlignment(StringAlignmentNear);
-			g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(210,250+i*70,865,25), &fontFormat, &fontBrush);
+			g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(210,250+i*70,865,25), &fontFormat, &fontBrush);
 		}
 		// Alle verkauften
 		if (selledResPrice[i] < 0)
@@ -556,7 +556,7 @@ void CTradeMenuView::DrawTradeTransferMenue(Graphics* g)
 			s.Format("%d %s %d %s",selledResNumber[i], CResourceManager::GetString("UNITS_FOR"),
 				-selledResPrice[i], CResourceManager::GetString("CREDITS"));
 			fontFormat.SetAlignment(StringAlignmentFar);
-			g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(0,250+i*70,865,25), &fontFormat, &fontBrush);
+			g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,250+i*70,865,25), &fontFormat, &fontBrush);
 		}
 	}
 	fontFormat.SetAlignment(StringAlignmentCenter);
@@ -568,13 +568,13 @@ void CTradeMenuView::DrawTradeTransferMenue(Graphics* g)
 	CFontLoader::GetGDIFontColor(pMajor, 3, normalColor);
 	fontBrush.SetColor(normalColor);
 	s = CResourceManager::GetString("TRADE_TRANSFER_MENUE");
-	g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(0,10,m_TotalSize.cx, 50), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,10,m_TotalSize.cx, 50), &fontFormat, &fontBrush);
 
 	// System, in dem die Handelsaktivitäten stattfinden werden
 	CFontLoader::CreateGDIFont(pMajor, 3, fontName, fontSize);
 	fontBrush.SetColor(markColor);
 	s = CResourceManager::GetString("TRANSFERS_NEXT_ROUND",FALSE,pDoc->m_Sector[pDoc->GetKO().x][pDoc->GetKO().y].GetName());
-	g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(0,90,m_TotalSize.cx,45), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,90,m_TotalSize.cx,45), &fontFormat, &fontBrush);
 }
 
 /// Funktion zeichnet die Buttons unter den Handelsmenüs.
@@ -590,7 +590,7 @@ void CTradeMenuView::DrawTradeMainButtons(Graphics* g, CMajor* pMajor)
 	Gdiplus::Color btnColor;
 	CFontLoader::GetGDIFontColor(pMajor, 2, btnColor);
 	SolidBrush fontBrush(btnColor);
-	DrawGDIButtons(g, &m_TradeMainButtons, m_bySubMenu, Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), fontBrush);
+	DrawGDIButtons(g, &m_TradeMainButtons, m_bySubMenu, Gdiplus::Font(CComBSTR(fontName), fontSize), fontBrush);
 }
 
 void CTradeMenuView::OnLButtonDown(UINT nFlags, CPoint point)

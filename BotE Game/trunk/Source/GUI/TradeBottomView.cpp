@@ -133,7 +133,7 @@ void CTradeBottomView::OnDraw(CDC* dc)
 	fontFormat.SetAlignment(StringAlignmentFar);
 	fontFormat.SetLineAlignment(StringAlignmentCenter);
 	fontFormat.SetFormatFlags(StringFormatFlagsNoWrap);
-	g.DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(0, r.bottom-215, 290, 25), &fontFormat, &fontBrush);
+	g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0, r.bottom-215, 290, 25), &fontFormat, &fontBrush);
 
 	USHORT count = 0;
 	float temp1 = 0.0;
@@ -160,48 +160,48 @@ void CTradeBottomView::OnDraw(CDC* dc)
 	fontFormat.SetLineAlignment(StringAlignmentCenter);
 
 	// Maximal, Minimal und Durchschnittspreis links anzeigen
-	g.DrawString(CComBSTR(CResourceManager::GetString("MIN_PRICE").AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(40, 60, 180, 25), &fontFormat, &fontBrush);
+	g.DrawString(CComBSTR(CResourceManager::GetString("MIN_PRICE")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(40, 60, 180, 25), &fontFormat, &fontBrush);
 	if (pHistory->GetMinPrice(m_iWhichRessource) / 10 == 0)
 		s.Format("1");
 	else
 		s.Format("%d", pHistory->GetMinPrice(m_iWhichRessource) / 10);
 	fontFormat.SetAlignment(StringAlignmentFar);
-	g.DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(40, 60, 200, 25), &fontFormat, &fontBrush);
+	g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(40, 60, 200, 25), &fontFormat, &fontBrush);
 	fontFormat.SetAlignment(StringAlignmentNear);
-	g.DrawString(CComBSTR(CResourceManager::GetString("MAX_PRICE").AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(40, 90, 180, 25), &fontFormat, &fontBrush);
+	g.DrawString(CComBSTR(CResourceManager::GetString("MAX_PRICE")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(40, 90, 180, 25), &fontFormat, &fontBrush);
 	if (pHistory->GetMaxPrice(m_iWhichRessource) / 10 == 0)
 		s.Format("1");
 	else
 		s.Format("%d", pHistory->GetMaxPrice(m_iWhichRessource) / 10);
 	fontFormat.SetAlignment(StringAlignmentFar);
-	g.DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(40, 90, 200, 25), &fontFormat, &fontBrush);
+	g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(40, 90, 200, 25), &fontFormat, &fontBrush);
 	fontFormat.SetAlignment(StringAlignmentNear);
-	g.DrawString(CComBSTR(CResourceManager::GetString("AVERAGE_PRICE").AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(40, 120, 180, 25), &fontFormat, &fontBrush);
+	g.DrawString(CComBSTR(CResourceManager::GetString("AVERAGE_PRICE")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(40, 120, 180, 25), &fontFormat, &fontBrush);
 	if (pHistory->GetAveragePrice(m_iWhichRessource) / 10 == 0)
 		s.Format("1");
 	else
 		s.Format("%d", pHistory->GetAveragePrice(m_iWhichRessource) / 10);
 	fontFormat.SetAlignment(StringAlignmentFar);
-	g.DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(40, 120, 200, 25), &fontFormat, &fontBrush);
+	g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(40, 120, 200, 25), &fontFormat, &fontBrush);
 
 	// Namen der Ressource zeichnen
 	fontBrush.SetColor(Color(200,200,200));
 	fontFormat.SetAlignment(StringAlignmentCenter);
-	g.DrawString(CComBSTR(resName.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(40, 20, 200, 45), &fontFormat, &fontBrush);
+	g.DrawString(CComBSTR(resName), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(40, 20, 200, 45), &fontFormat, &fontBrush);
 
 	// ganzen kleine Buttons darstellen
 	fontBrush.SetColor(this->GetFontColorForSmallButton());
 	for (int i = TITAN; i <= IRIDIUM; i++)
 		g.DrawImage(m_pSmallButton, r.right-120, 50+i*32, 120, 30);
-	g.DrawString(CComBSTR(CResourceManager::GetString("TITAN").AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(r.right-120, 50, 120, 30), &fontFormat, &fontBrush);
-	g.DrawString(CComBSTR(CResourceManager::GetString("DEUTERIUM").AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(r.right-120, 82, 120, 30), &fontFormat, &fontBrush);
-	g.DrawString(CComBSTR(CResourceManager::GetString("DURANIUM").AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(r.right-120, 114, 120, 30), &fontFormat, &fontBrush);
-	g.DrawString(CComBSTR(CResourceManager::GetString("CRYSTAL").AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(r.right-120, 146, 120, 30), &fontFormat, &fontBrush);
-	g.DrawString(CComBSTR(CResourceManager::GetString("IRIDIUM").AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(r.right-120, 178, 120, 30), &fontFormat, &fontBrush);
+	g.DrawString(CComBSTR(CResourceManager::GetString("TITAN")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.right-120, 50, 120, 30), &fontFormat, &fontBrush);
+	g.DrawString(CComBSTR(CResourceManager::GetString("DEUTERIUM")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.right-120, 82, 120, 30), &fontFormat, &fontBrush);
+	g.DrawString(CComBSTR(CResourceManager::GetString("DURANIUM")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.right-120, 114, 120, 30), &fontFormat, &fontBrush);
+	g.DrawString(CComBSTR(CResourceManager::GetString("CRYSTAL")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.right-120, 146, 120, 30), &fontFormat, &fontBrush);
+	g.DrawString(CComBSTR(CResourceManager::GetString("IRIDIUM")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.right-120, 178, 120, 30), &fontFormat, &fontBrush);
 
 	g.DrawImage(m_pSmallButton, 80, 160, 120, 30);
 	s.Format("%d %s",m_iNumberOfHistoryRounds, CResourceManager::GetString("ROUNDS"));
-	g.DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(80, 160, 120, 30), &fontFormat, &fontBrush);
+	g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(80, 160, 120, 30), &fontFormat, &fontBrush);
 
 	// Wenn das System blockiert wird, ein OverlayBanner über die Ansicht gelegt.
 	if (pDoc->m_System[pDoc->GetKO().x][pDoc->GetKO().y].GetBlockade() > NULL)
@@ -211,7 +211,7 @@ void CTradeBottomView::OnDraw(CDC* dc)
 		s.Format("%d", pDoc->m_System[pDoc->GetKO().x][pDoc->GetKO().y].GetBlockade());
 		COverlayBanner* banner = new COverlayBanner(CPoint(80,60), viewSize, CResourceManager::GetString("SYSTEM_IS_BLOCKED", FALSE, s), RGB(200,0,0));
 		banner->SetBorderWidth(1);
-		Gdiplus::Font font(CComBSTR(fontName.AllocSysString()), fontSize);
+		Gdiplus::Font font(CComBSTR(fontName), fontSize);
 		banner->Draw(&g, &font);
 		delete banner;
 	}
@@ -259,7 +259,7 @@ void CTradeBottomView::LoadRaceGraphics()
 	CString sPrefix = pMajor->GetPrefix();
 	CString s = CIOData::GetInstance()->GetAppPath() + "Graphics\\Other\\" + sPrefix + "button_small.bop";
 
-	m_pSmallButton = Bitmap::FromFile(CComBSTR(s.AllocSysString()));
+	m_pSmallButton = Bitmap::FromFile(CComBSTR(s));
 }
 
 BOOL CTradeBottomView::OnEraseBkgnd(CDC* pDC)

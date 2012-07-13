@@ -41,5 +41,5 @@ void COverlayBanner::Draw(Graphics* g, Gdiplus::Font* font)
 
 	color.SetFromCOLORREF(m_TextColor);
 	Gdiplus::SolidBrush fontBrush(color);
-	g->DrawString(CComBSTR(m_strText.AllocSysString()), -1, font, RectF((REAL)m_KO.x, (REAL)m_KO.y + m_Size.cy / 3, (REAL)m_Size.cx, (REAL)m_Size.cy), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(m_strText), -1, font, RectF((REAL)m_KO.x, (REAL)m_KO.y + m_Size.cy / 3, (REAL)m_Size.cx, (REAL)m_Size.cy), &fontFormat, &fontBrush);
 }

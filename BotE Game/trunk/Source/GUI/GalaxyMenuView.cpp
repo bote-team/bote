@@ -171,22 +171,22 @@ void CGalaxyMenuView::OnDraw(CDC* dc)
 	CString s;
 #ifdef _DEBUG
 	s.Format("scrollposition: %.0lf/%.0lf", pt.x / m_fZoom, pt.y / m_fZoom);
-	g.DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(L"Arial", 8, FontStyleBold), PointF((REAL)pt.x, (REAL)pt.y), &SolidBrush(Color::Aquamarine));
+	g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(L"Arial", 8, FontStyleBold), PointF((REAL)pt.x, (REAL)pt.y), &SolidBrush(Color::Aquamarine));
 	int nMinRange, nMaxRange;
 	GetScrollRange(SB_HORZ, &nMinRange, &nMaxRange);
 	s.Format("scrollrange horz: %d/%d", nMinRange, nMaxRange);
-	g.DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(L"Arial", 8, FontStyleBold), PointF((REAL)pt.x, (REAL)pt.y + 10), &SolidBrush(Color::Aquamarine));
+	g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(L"Arial", 8, FontStyleBold), PointF((REAL)pt.x, (REAL)pt.y + 10), &SolidBrush(Color::Aquamarine));
 	GetScrollRange(SB_VERT, &nMinRange, &nMaxRange);
 	s.Format("scrollrange vert: %d/%d", nMinRange, nMaxRange);
-	g.DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(L"Arial", 8, FontStyleBold), PointF((REAL)pt.x, (REAL)pt.y + 20), &SolidBrush(Color::Aquamarine));
+	g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(L"Arial", 8, FontStyleBold), PointF((REAL)pt.x, (REAL)pt.y + 20), &SolidBrush(Color::Aquamarine));
 	s.Format("zoomlevel: %.1lf", m_fZoom);
-	g.DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(L"Arial", 8, FontStyleBold), PointF((REAL)pt.x, (REAL)pt.y + 30), &SolidBrush(Color::Aquamarine));
+	g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(L"Arial", 8, FontStyleBold), PointF((REAL)pt.x, (REAL)pt.y + 30), &SolidBrush(Color::Aquamarine));
 	//s.Format("filename: \"test.boj\"");
-	//g.DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(L"Arial", 8, FontStyleBold), PointF((REAL)pt.x, (REAL)pt.y + 20), &SolidBrush(Color::Aquamarine));
+	//g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(L"Arial", 8, FontStyleBold), PointF((REAL)pt.x, (REAL)pt.y + 20), &SolidBrush(Color::Aquamarine));
 	s.Format("resolution: %d * %d", m_pGalaxyBackground->GetWidth(), m_pGalaxyBackground->GetHeight());
-	g.DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(L"Arial", 8, FontStyleBold), PointF((REAL)pt.x, (REAL)pt.y + 40), &SolidBrush(Color::Aquamarine));
+	g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(L"Arial", 8, FontStyleBold), PointF((REAL)pt.x, (REAL)pt.y + 40), &SolidBrush(Color::Aquamarine));
 	//s.Format("dpi: %.1lf * %.1lf", m_pGalaxyBackground->GetHorizontalResolution(), m_pGalaxyBackground->GetVerticalResolution());
-	//g.DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(L"Arial", 8, FontStyleBold), PointF((REAL)pt.x, (REAL)pt.y + 40), &SolidBrush(Color::Orange));
+	//g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(L"Arial", 8, FontStyleBold), PointF((REAL)pt.x, (REAL)pt.y + 40), &SolidBrush(Color::Orange));
 #endif
 	// äußere schwarze Umrandung zeichnen
 	//g.DrawRectangle(&Pen(Color::Black, 3.0), posX - 1, posY - 1, picWidth + 2, picHeight + 2);
@@ -1422,7 +1422,7 @@ void CGalaxyMenuView::GenerateGalaxyMap()
 	CString prefix = pMajor->GetPrefix();
 	CString filePath = sAppPath + "Graphics\\Galaxies\\" + prefix + "galaxy.boj";
 
-	m_pGalaxyBackground = Bitmap::FromFile(CComBSTR(filePath.AllocSysString()));
+	m_pGalaxyBackground = Bitmap::FromFile(CComBSTR(filePath));
 
 	if (m_pGalaxyBackground->GetLastStatus() != Ok)
 	{
@@ -1438,19 +1438,19 @@ void CGalaxyMenuView::GenerateGalaxyMap()
 	// Mal die Sterne direkt in die Map setzen, neues Bild erzeugen
 	Bitmap *stars[7] = {NULL, NULL, NULL, NULL, NULL, NULL, NULL};
 	filePath = sAppPath + "Graphics\\MapStars\\star_blue.bop";
-	stars[0] = Bitmap::FromFile(CComBSTR(filePath.AllocSysString()));
+	stars[0] = Bitmap::FromFile(CComBSTR(filePath));
 	filePath = sAppPath + "Graphics\\MapStars\\star_green.bop";
-	stars[1] = Bitmap::FromFile(CComBSTR(filePath.AllocSysString()));
+	stars[1] = Bitmap::FromFile(CComBSTR(filePath));
 	filePath = sAppPath + "Graphics\\MapStars\\star_orange.bop";
-	stars[2] = Bitmap::FromFile(CComBSTR(filePath.AllocSysString()));
+	stars[2] = Bitmap::FromFile(CComBSTR(filePath));
 	filePath = sAppPath + "Graphics\\MapStars\\star_red.bop";
-	stars[3] = Bitmap::FromFile(CComBSTR(filePath.AllocSysString()));
+	stars[3] = Bitmap::FromFile(CComBSTR(filePath));
 	filePath = sAppPath + "Graphics\\MapStars\\star_violet.bop";
-	stars[4] = Bitmap::FromFile(CComBSTR(filePath.AllocSysString()));
+	stars[4] = Bitmap::FromFile(CComBSTR(filePath));
 	filePath = sAppPath + "Graphics\\MapStars\\star_white.bop";
-	stars[5] = Bitmap::FromFile(CComBSTR(filePath.AllocSysString()));
+	stars[5] = Bitmap::FromFile(CComBSTR(filePath));
 	filePath = sAppPath + "Graphics\\MapStars\\star_yellow.bop";
-	stars[6] = Bitmap::FromFile(CComBSTR(filePath.AllocSysString()));
+	stars[6] = Bitmap::FromFile(CComBSTR(filePath));
 
 	#ifdef TRACE_GRAPHICLOAD
 	for (int i = 0; i < 7; i++)

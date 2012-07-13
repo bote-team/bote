@@ -1105,13 +1105,13 @@ void CShip::DrawShip(Gdiplus::Graphics* g, CGraphicPool* pGraphicPool, const CPo
 		{
 			if (m_iShipType != SHIP_TYPE::ALIEN)
 			{
-				g->DrawString(CComBSTR(m_strShipName.AllocSysString()), -1, &font, PointF((REAL)pt.x + 120, (REAL)pt.y + 37), &fontFormat, &fontBrush);
+				g->DrawString(CComBSTR(m_strShipName), -1, &font, PointF((REAL)pt.x + 120, (REAL)pt.y + 37), &fontFormat, &fontBrush);
 				s = m_strShipClass + "-" + CResourceManager::GetString("CLASS");
-				g->DrawString(CComBSTR(s.AllocSysString()), -1, &font, PointF((REAL)pt.x + 120, (REAL)pt.y + 57), &fontFormat, &fontBrush);
+				g->DrawString(CComBSTR(s), -1, &font, PointF((REAL)pt.x + 120, (REAL)pt.y + 57), &fontFormat, &fontBrush);
 			}
 			else
 			{
-				g->DrawString(CComBSTR(m_strShipClass.AllocSysString()), -1, &font, PointF((REAL)pt.x + 120, (REAL)pt.y + 37), &fontFormat, &fontBrush);
+				g->DrawString(CComBSTR(m_strShipClass), -1, &font, PointF((REAL)pt.x + 120, (REAL)pt.y + 37), &fontFormat, &fontBrush);
 			}
 		}
 		// Schiff und dessen Flotteninfos sollen angezeigt werden
@@ -1126,12 +1126,12 @@ void CShip::DrawShip(Gdiplus::Graphics* g, CGraphicPool* pGraphicPool, const CPo
 
 			s.Append(" " + CResourceManager::GetString("GROUP"));
 			// Hier jetzt Namen und Schiffstype zur Flotte
-			g->DrawString(CComBSTR(s.AllocSysString()), -1, &font, PointF((REAL)pt.x + 120, (REAL)pt.y + 37), &fontFormat, &fontBrush);
+			g->DrawString(CComBSTR(s), -1, &font, PointF((REAL)pt.x + 120, (REAL)pt.y + 37), &fontFormat, &fontBrush);
 
 			if (m_Fleet->GetFleetShipType(this) == -1)
-				g->DrawString(CComBSTR(CResourceManager::GetString("MIXED_FLEET").AllocSysString()), -1, &font, PointF((REAL)pt.x + 120, (REAL)pt.y + 57), &fontFormat, &fontBrush);
+				g->DrawString(CComBSTR(CResourceManager::GetString("MIXED_FLEET")), -1, &font, PointF((REAL)pt.x + 120, (REAL)pt.y + 57), &fontFormat, &fontBrush);
 			else
-				g->DrawString(this->GetShipTypeAsString(TRUE).AllocSysString(), -1, &font, PointF((REAL)pt.x + 120, (REAL)pt.y + 57), &fontFormat, &fontBrush);
+				g->DrawString(CComBSTR(this->GetShipTypeAsString(TRUE)), -1, &font, PointF((REAL)pt.x + 120, (REAL)pt.y + 57), &fontFormat, &fontBrush);
 		}
 	}
 
@@ -1140,7 +1140,7 @@ void CShip::DrawShip(Gdiplus::Graphics* g, CGraphicPool* pGraphicPool, const CPo
 		// Anzahl der Schiffe in der Flotte (+1 weil das Führerschiff mitgezählt werden muß)
 		fontBrush.SetColor(Color::White);
 		s.Format("%d", m_Fleet->GetFleetSize() + 1);
-		g->DrawString(CComBSTR(s.AllocSysString()), -1, &font, PointF((REAL)pt.x + 35, (REAL)pt.y + 30), &fontFormat, &fontBrush);
+		g->DrawString(CComBSTR(s), -1, &font, PointF((REAL)pt.x + 35, (REAL)pt.y + 30), &fontFormat, &fontBrush);
 	}
 }
 

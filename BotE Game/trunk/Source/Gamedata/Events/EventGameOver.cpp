@@ -81,10 +81,10 @@ void CEventGameOver::Draw(Graphics* g, CGraphicPool* graphicPool) const
 	fontBrush.SetColor(color);
 
 	CString s = CResourceManager::GetString("GAMEOVER");
-	g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize * 2.5f), RectF(0, 0, 1280, 1024 / 3.0f), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize * 2.5f), RectF(0, 0, 1280, 1024 / 3.0f), &fontFormat, &fontBrush);
 	fontFormat.SetAlignment(StringAlignmentNear);
 	s = CResourceManager::GetString("WE_LOST") + "\n" + CResourceManager::GetString("OUR_EMPIRES_IS_ELIMINATED");
-	g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(75, 1024 / 1.5f - 50, 1280 / 2, 1024 / 3 - 50), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(75, 1024 / 1.5f - 50, 1280 / 2, 1024 / 3 - 50), &fontFormat, &fontBrush);
 
 	// Buttons zeichnen
 	CFontLoader::CreateGDIFont(pMajor, 3, fontName, fontSize);
@@ -93,5 +93,5 @@ void CEventGameOver::Draw(Graphics* g, CGraphicPool* graphicPool) const
 	CFontLoader::GetGDIFontColor(pMajor, 2, color);
 	fontBrush.SetColor(color);
 	for (int i = 0; i < m_Buttons.GetSize(); i++)
-		m_Buttons.GetAt(i)->DrawButton(*g, graphicPool, Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), fontBrush);
+		m_Buttons.GetAt(i)->DrawButton(*g, graphicPool, Gdiplus::Font(CComBSTR(fontName), fontSize), fontBrush);
 }

@@ -128,7 +128,7 @@ void CMenuChooseView::OnDraw(CDC* pDC)
 		m_RoundEnd->SetState(2);
 	else if (m_RoundEnd->GetState() != 1)
 		m_RoundEnd->SetState(0);
-	m_RoundEnd->DrawButton(*g, pDoc->GetGraphicPool(), Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), fontBrush);
+	m_RoundEnd->DrawButton(*g, pDoc->GetGraphicPool(), Gdiplus::Font(CComBSTR(fontName), fontSize), fontBrush);
 	// Wenn wir im Systemmenü sind, prüfen, ob der dazugehörige Button auch inaktiv ist.
 	// müssen das machen, da wir auch mittels Doppelklick auf den Sektor in die Systemansicht gelangen können
 	// oder in die Forschungs oder Imperiumsansicht
@@ -142,7 +142,7 @@ void CMenuChooseView::OnDraw(CDC* pDC)
 			break;
 		}
 	for (int i = 0; i < m_Buttons.GetSize(); i++)
-		m_Buttons.GetAt(i)->DrawButton(*g, pDoc->GetGraphicPool(), Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), fontBrush);
+		m_Buttons.GetAt(i)->DrawButton(*g, pDoc->GetGraphicPool(), Gdiplus::Font(CComBSTR(fontName), fontSize), fontBrush);
 
 		//********************************************************************************
 	// Hier testweise paar Informationen zum Imperium
@@ -151,7 +151,7 @@ void CMenuChooseView::OnDraw(CDC* pDC)
 
 	// Die aktuelle Runde darstellen, schauen ob schon gedrückt oder nicht
 	s.Format("%s %i",CResourceManager::GetString("ROUND"), pDoc->GetCurrentRound());
-	g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(r.left+20, 50, m_TotalSize.cx-40, 30), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.left+20, 50, m_TotalSize.cx-40, 30), &fontFormat, &fontBrush);
 
 	CFontLoader::CreateGDIFont(pMajor, 2, fontName, fontSize);
 	CFontLoader::GetGDIFontColor(pMajor, 3, color);
@@ -159,59 +159,59 @@ void CMenuChooseView::OnDraw(CDC* pDC)
 	fontBrush.SetColor(color);
 
 	s.Format("%s:",CResourceManager::GetString("CREDITS"), pMajor->GetEmpire()->GetCredits());
-	g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(r.left+30, 90, m_TotalSize.cx-60, 25), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.left+30, 90, m_TotalSize.cx-60, 25), &fontFormat, &fontBrush);
 	s.Format("%i",pMajor->GetEmpire()->GetCredits());
 	fontFormat.SetAlignment(StringAlignmentFar);
-	g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(r.left+30, 90, m_TotalSize.cx-60, 25), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.left+30, 90, m_TotalSize.cx-60, 25), &fontFormat, &fontBrush);
 
 	s.Format("%s:",CResourceManager::GetString("CHANGE"));
 	fontFormat.SetAlignment(StringAlignmentNear);
-	g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(r.left+30, 115, m_TotalSize.cx-60, 25), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.left+30, 115, m_TotalSize.cx-60, 25), &fontFormat, &fontBrush);
 	fontFormat.SetAlignment(StringAlignmentFar);
 	if (pMajor->GetEmpire()->GetCreditsChange() >= 0)
 	{
 		fontBrush.SetColor(Color(0,200,0));
 		s.Format("+%i", pMajor->GetEmpire()->GetCreditsChange());
-		g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(r.left+30, 115, m_TotalSize.cx-60, 25), &fontFormat, &fontBrush);
+		g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.left+30, 115, m_TotalSize.cx-60, 25), &fontFormat, &fontBrush);
 	}
 	else
 	{
 		fontBrush.SetColor(Color(200,0,0));
 		s.Format("%i",pMajor->GetEmpire()->GetCreditsChange());
-		g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(r.left+30, 115, m_TotalSize.cx-60, 25), &fontFormat, &fontBrush);
+		g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.left+30, 115, m_TotalSize.cx-60, 25), &fontFormat, &fontBrush);
 	}
 	fontBrush.SetColor(markColor);
 	s = CResourceManager::GetString("SHIPS");
 	fontFormat.SetAlignment(StringAlignmentCenter);
-	g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(r.left+30, 140, m_TotalSize.cx-60, 25), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.left+30, 140, m_TotalSize.cx-60, 25), &fontFormat, &fontBrush);
 
 	fontBrush.SetColor(color);
 	s.Format("%s:",CResourceManager::GetString("SHIPCOSTS"));
 	fontFormat.SetAlignment(StringAlignmentNear);
-	g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(r.left+30, 165, m_TotalSize.cx-60, 25), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.left+30, 165, m_TotalSize.cx-60, 25), &fontFormat, &fontBrush);
 	fontFormat.SetAlignment(StringAlignmentFar);
 	s.Format("%i",pMajor->GetEmpire()->GetShipCosts());
 	if (pMajor->GetEmpire()->GetShipCosts() > pMajor->GetEmpire()->GetPopSupportCosts())
 		fontBrush.SetColor(Color(200,0,0));
-	g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(r.left+30, 165, m_TotalSize.cx-60, 25), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.left+30, 165, m_TotalSize.cx-60, 25), &fontFormat, &fontBrush);
 
 	fontBrush.SetColor(color);
 	s.Format("%s:",CResourceManager::GetString("POPSUPPORT"));
 	fontFormat.SetAlignment(StringAlignmentNear);
-	g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(r.left+30, 190, m_TotalSize.cx-60, 25), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.left+30, 190, m_TotalSize.cx-60, 25), &fontFormat, &fontBrush);
 	fontFormat.SetAlignment(StringAlignmentFar);
 	s.Format("%i",pMajor->GetEmpire()->GetPopSupportCosts());
-	g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(r.left+30, 190, m_TotalSize.cx-60, 25), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.left+30, 190, m_TotalSize.cx-60, 25), &fontFormat, &fontBrush);
 
 	fontFormat.SetAlignment(StringAlignmentNear);
 	s.Format("%s: %d",CResourceManager::GetString("NEWS"), pMajor->GetEmpire()->GetMessages()->GetSize());
-	g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(r.left+30, 240, m_TotalSize.cx-60, 25), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.left+30, 240, m_TotalSize.cx-60, 25), &fontFormat, &fontBrush);
 
 	// Sternzeit anzeigen
 	fontBrush.SetColor(color);
 	fontFormat.SetAlignment(StringAlignmentCenter);
 	s.Format("%s: %.1lf",CResourceManager::GetString("STARDATE"), pDoc->m_fStardate);
-	g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(r.left+20, r.bottom-65, m_TotalSize.cx-40, 25), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.left+20, r.bottom-65, m_TotalSize.cx-40, 25), &fontFormat, &fontBrush);
 	//********************************************************************************
 
 	doubleBuffer.DrawImage(&bmp, client.left, client.top, client.right, client.bottom);

@@ -829,12 +829,12 @@ void CSector::DrawShipSymbolInSector(Graphics *g, CBotf2Doc* pDoc, CMajor* pPlay
 			else
 				sFilePath = sAppPath + "Graphics\\Symbols\\" + it->first + ".bop";
 
-			Bitmap* ship = Bitmap::FromFile(CComBSTR(sFilePath.AllocSysString()));
+			Bitmap* ship = Bitmap::FromFile(CComBSTR(sFilePath));
 			// konnte die Grafik nicht geladen werden, dann wird ein Standardsymbol geladen
 			if (!ship || ship->GetLastStatus() != Ok)
 			{
 				sFilePath = sAppPath + "Graphics\\Symbols\\Default.bop";
-				ship = Bitmap::FromFile(CComBSTR(sFilePath.AllocSysString()));
+				ship = Bitmap::FromFile(CComBSTR(sFilePath));
 			}
 			g->DrawImage(ship, pt.x + 45 - nCount * 12, pt.y, 35, 35);
 			delete ship;
@@ -855,12 +855,12 @@ void CSector::DrawShipSymbolInSector(Graphics *g, CBotf2Doc* pDoc, CMajor* pPlay
 			else
 				sFilePath = sAppPath + "Graphics\\Symbols\\" + it->first + ".bop";
 
-			Bitmap* ship = Bitmap::FromFile(CComBSTR(sFilePath.AllocSysString()));
+			Bitmap* ship = Bitmap::FromFile(CComBSTR(sFilePath));
 			// konnte die Grafik nicht geladen werden, dann wird ein Standardsymbol geladen
 			if (!ship || ship->GetLastStatus() != Ok)
 			{
 				sFilePath = sAppPath + "Graphics\\Symbols\\Default.bop";
-				ship = Bitmap::FromFile(CComBSTR(sFilePath.AllocSysString()));
+				ship = Bitmap::FromFile(CComBSTR(sFilePath));
 			}
 			g->DrawImage(ship, pt.x, pt.y + 45, 35, 35);
 			delete ship;

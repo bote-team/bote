@@ -405,14 +405,14 @@ void CPlanet::DrawPlanet(Graphics &g, const CRect& rect, CGraphicPool* graphicPo
 	CString s;
 	// Planetenklasse unter den Planeten zeichnen
 	s.Format("%c", m_cClass);
-	g.DrawString(CComBSTR(s.AllocSysString()), -1, &font, RectF((REAL)planetRect.left, (REAL)planetRect.top, (REAL)planetRect.Width(), (REAL)planetRect.Height()), &format, &brush);
+	g.DrawString(CComBSTR(s), -1, &font, RectF((REAL)planetRect.left, (REAL)planetRect.top, (REAL)planetRect.Width(), (REAL)planetRect.Height()), &format, &brush);
 
 	// prozentuale Angabe des Terraformfortschrittes anzeigen
 	if (m_bIsTerraforming == TRUE)
 	{
 		planetRect.OffsetRect(0, 15);
 		s.Format("%d %%",100 - (short)(this->m_iNeededTerraformPoints * 100 / this->m_iStartTerraformPoints));
-		g.DrawString(CComBSTR(s.AllocSysString()), -1, &font, RectF((REAL)planetRect.left, (REAL)planetRect.top, (REAL)planetRect.Width(), (REAL)planetRect.Height()), &format, &brush);
+		g.DrawString(CComBSTR(s), -1, &font, RectF((REAL)planetRect.left, (REAL)planetRect.top, (REAL)planetRect.Width(), (REAL)planetRect.Height()), &format, &brush);
 	}
 
 	// Symbole für eventuell vohandene Boni zeichnen

@@ -105,7 +105,7 @@ Bitmap* CGraphicPool::GetGDIGraphic(const CString &name)
 	// ansonsten muss die Grafik geladen werden und in die Map gesteckt werden
 	CString fileName(m_strPath + name);
 	img = NULL;
-	img = Bitmap::FromFile(CComBSTR(fileName.AllocSysString()));
+	img = Bitmap::FromFile(CComBSTR(fileName));
 
 #ifdef TRACE_GRAPHICLOAD
 	MYTRACE(MT::LEVEL_DEBUG, "graphic: %s not found in map ... loading\n", fileName);

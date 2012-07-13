@@ -95,7 +95,7 @@ void CAnomaly::Draw(Graphics* g, const CPoint& ptSector) const
 	Gdiplus::Image* pBGImage;
 
 	CString sFile = CIOData::GetInstance()->GetAppPath() + "Graphics\\MapStars\\" + m_sImageFile;
-	pBGImage = Bitmap::FromFile(CComBSTR(sFile.AllocSysString()));
+	pBGImage = Bitmap::FromFile(CComBSTR(sFile));
 	assert(pBGImage);
 
 	if (m_bFlipHorz)

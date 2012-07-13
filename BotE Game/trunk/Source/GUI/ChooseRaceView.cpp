@@ -101,7 +101,7 @@ void CChooseRaceView::OnDraw(CDC* dc)
 	CString sVersion = "Birth of the Empires Pre-Alpha7 V";
 	sVersion += VERSION_INFORMATION;
 	sVersion += "\n© by Sir Pustekuchen 2011";
-	g.DrawString(CComBSTR(sVersion.AllocSysString()), -1, &font, RectF(0, 0, m_TotalSize.cx, m_TotalSize.cy), &format, &SolidBrush(Color::WhiteSmoke));
+	g.DrawString(CComBSTR(sVersion), -1, &font, RectF(0, 0, m_TotalSize.cx, m_TotalSize.cy), &format, &SolidBrush(Color::WhiteSmoke));
 
 	// Umrandung für die Buttons zeichnen
 	Color clr(130, 0, 0, 0);
@@ -112,11 +112,11 @@ void CChooseRaceView::OnDraw(CDC* dc)
 	format.SetAlignment(StringAlignmentCenter);
 	format.SetLineAlignment(StringAlignmentNear);
 	CString sChooseRace = CResourceManager::GetString("CHOOSEEMPIRE");
-	g.DrawString(CComBSTR(sChooseRace.AllocSysString()), -1, &font, RectF(75, 235, 350, 25), &format, &SolidBrush(Color::WhiteSmoke));
+	g.DrawString(CComBSTR(sChooseRace), -1, &font, RectF(75, 235, 350, 25), &format, &SolidBrush(Color::WhiteSmoke));
 
 	// Chat schreiben
 	CString sChat = CResourceManager::GetString("CHAT");
-	g.DrawString(CComBSTR(sChat.AllocSysString()), -1, &font, RectF(75, 675, 350, 25), &format, &SolidBrush(Color::WhiteSmoke));
+	g.DrawString(CComBSTR(sChat), -1, &font, RectF(75, 675, 350, 25), &format, &SolidBrush(Color::WhiteSmoke));
 
 
 	format.SetAlignment(StringAlignmentCenter);
@@ -141,7 +141,7 @@ void CChooseRaceView::OnDraw(CDC* dc)
 		rect.top /= (double)((double)clientRect.Height() / (double)m_TotalSize.cy);
 		rect.bottom /= (double)((double)clientRect.Height() / (double)m_TotalSize.cy);
 
-		g.DrawString(CComBSTR(sPlayer.AllocSysString()), -1, &font, RectF(rect.left, rect.top - 18, rect.Width(), 20), &format, &SolidBrush(Color::LightSkyBlue));
+		g.DrawString(CComBSTR(sPlayer), -1, &font, RectF(rect.left, rect.top - 18, rect.Width(), 20), &format, &SolidBrush(Color::LightSkyBlue));
 
 		network::RACE race = (network::RACE)(it->first->GetDlgCtrlID());
 		if (!client.IsPlayer(race))
@@ -168,7 +168,7 @@ void CChooseRaceView::OnDraw(CDC* dc)
 		format.SetAlignment(StringAlignmentCenter);
 		format.SetLineAlignment(StringAlignmentCenter);
 		Gdiplus::Font font(L"Calibri", 11, FontStyleBold);
-		g.DrawString(pRace->GetRaceDesc().AllocSysString(), -1, &font, RectF(775, 307, 450, 300), &format, &SolidBrush(Color::WhiteSmoke));
+		g.DrawString(CComBSTR(pRace->GetRaceDesc()), -1, &font, RectF(775, 307, 450, 300), &format, &SolidBrush(Color::WhiteSmoke));
 
 		// Rassensymbol noch in die Ecke zeichnen
 		graphic	= pDoc->GetGraphicPool()->GetGDIGraphic("Symbols\\" + pRace->GetRaceID() + ".bop");
