@@ -794,7 +794,7 @@ void CIntelMenuView::DrawIntelReportsMenu(Graphics* g)
 	CFontLoader::CreateGDIFont(pMajor, 3, fontName, fontSize);
 	// Tabellenüberschriften zeichnen
 	fontBrush.SetColor(markColor);
-	s = CResourceManager::GetString("ROUND").AllocSysString();
+	s = CComBSTR(CResourceManager::GetString("ROUND").AllocSysString());
 	g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(100,100,100,30), &fontFormat, &fontBrush);
 	s = CResourceManager::GetString("ENEMY")+" ("+(CResourceManager::GetString("TARGET"))+")";
 	g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(200,100,400,30), &fontFormat, &fontBrush);
@@ -999,7 +999,7 @@ void CIntelMenuView::DrawIntelAttackMenu(Graphics* g)
 	// Tabellenüberschriften zeichnen
 	fontBrush.SetColor(markColor);
 	fontFormat.SetAlignment(StringAlignmentNear);
-	s = CResourceManager::GetString("ROUND").AllocSysString();
+	s = CComBSTR(CResourceManager::GetString("ROUND").AllocSysString());
 	g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(100,100,100,30), &fontFormat, &fontBrush);
 	s = CResourceManager::GetString("ENEMY")+" ("+(CResourceManager::GetString("TARGET"))+")";
 	g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(200,100,400,30), &fontFormat, &fontBrush);
@@ -1235,11 +1235,11 @@ void CIntelMenuView::DrawIntelInformation(Graphics* g, Gdiplus::Font* font, Gdip
 
 	CString s;
 
-	g->DrawString(CResourceManager::GetString("SECURITYPOINTS").AllocSysString(), -1, font, RectF(825,130,250,25), &fontFormatCenter, &fontBrush);
-	g->DrawString(CResourceManager::GetString("SECURITYBONI").AllocSysString(), -1, font, RectF(825,200,250,25), &fontFormatCenter, &fontBrush);
-	g->DrawString(CResourceManager::GetString("SPY").AllocSysString(), -1, font, RectF(825,270,250,25), &fontFormatCenter, &fontBrush);
-	g->DrawString(CResourceManager::GetString("SABOTAGE").AllocSysString(), -1, font, RectF(825,410,250,25), &fontFormatCenter, &fontBrush);
-	g->DrawString(CResourceManager::GetString("DEPOTS").AllocSysString(), -1, font, RectF(825,550,250,25), &fontFormatCenter, &fontBrush);
+	g->DrawString(CComBSTR(CResourceManager::GetString("SECURITYPOINTS").AllocSysString()), -1, font, RectF(825,130,250,25), &fontFormatCenter, &fontBrush);
+	g->DrawString(CComBSTR(CResourceManager::GetString("SECURITYBONI").AllocSysString()), -1, font, RectF(825,200,250,25), &fontFormatCenter, &fontBrush);
+	g->DrawString(CComBSTR(CResourceManager::GetString("SPY").AllocSysString()), -1, font, RectF(825,270,250,25), &fontFormatCenter, &fontBrush);
+	g->DrawString(CComBSTR(CResourceManager::GetString("SABOTAGE").AllocSysString()), -1, font, RectF(825,410,250,25), &fontFormatCenter, &fontBrush);
+	g->DrawString(CComBSTR(CResourceManager::GetString("DEPOTS").AllocSysString()), -1, font, RectF(825,550,250,25), &fontFormatCenter, &fontBrush);
 
 	Color markColor;
 	markColor.SetFromCOLORREF(pMajor->GetDesign()->m_clrListMarkTextColor);

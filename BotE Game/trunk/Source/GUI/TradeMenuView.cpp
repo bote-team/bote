@@ -252,11 +252,11 @@ void CTradeMenuView::DrawGlobalTradeMenue(Graphics* g)
 
 	// Namen der Rohstoffe in die Rechtecke schreiben
 	fontFormat.SetLineAlignment(StringAlignmentNear);
-	g->DrawString(CResourceManager::GetString("TITAN").AllocSysString(), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), resRect[TITAN], &fontFormat, &fontBrush);
-	g->DrawString(CResourceManager::GetString("DEUTERIUM").AllocSysString(), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), resRect[DEUTERIUM], &fontFormat, &fontBrush);
-	g->DrawString(CResourceManager::GetString("DURANIUM").AllocSysString(), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), resRect[DURANIUM], &fontFormat, &fontBrush);
-	g->DrawString(CResourceManager::GetString("CRYSTAL").AllocSysString(), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), resRect[CRYSTAL], &fontFormat, &fontBrush);
-	g->DrawString(CResourceManager::GetString("IRIDIUM").AllocSysString(), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), resRect[IRIDIUM], &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(CResourceManager::GetString("TITAN").AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), resRect[TITAN], &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(CResourceManager::GetString("DEUTERIUM").AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), resRect[DEUTERIUM], &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(CResourceManager::GetString("DURANIUM").AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), resRect[DURANIUM], &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(CResourceManager::GetString("CRYSTAL").AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), resRect[CRYSTAL], &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(CResourceManager::GetString("IRIDIUM").AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), resRect[IRIDIUM], &fontFormat, &fontBrush);
 
 	// unsere Handelssteuer zeichnen
 	fontFormat.SetLineAlignment(StringAlignmentCenter);
@@ -533,11 +533,11 @@ void CTradeMenuView::DrawTradeTransferMenue(Graphics* g)
 			}
 		}
 	// berechnete und zusammengefasste Transfers hinschreiben
-	g->DrawString(CResourceManager::GetString("TITAN").AllocSysString(), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(0,250,m_TotalSize.cx,25), &fontFormat, &fontBrush);
-	g->DrawString(CResourceManager::GetString("DEUTERIUM").AllocSysString(), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(0,320,m_TotalSize.cx,25), &fontFormat, &fontBrush);
-	g->DrawString(CResourceManager::GetString("DURANIUM").AllocSysString(), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(0,390,m_TotalSize.cx,25), &fontFormat, &fontBrush);
-	g->DrawString(CResourceManager::GetString("CRYSTAL").AllocSysString(), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(0,460,m_TotalSize.cx,25), &fontFormat, &fontBrush);
-	g->DrawString(CResourceManager::GetString("IRIDIUM").AllocSysString(), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(0,530,m_TotalSize.cx,25), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(CResourceManager::GetString("TITAN").AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(0,250,m_TotalSize.cx,25), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(CResourceManager::GetString("DEUTERIUM").AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(0,320,m_TotalSize.cx,25), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(CResourceManager::GetString("DURANIUM").AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(0,390,m_TotalSize.cx,25), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(CResourceManager::GetString("CRYSTAL").AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(0,460,m_TotalSize.cx,25), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(CResourceManager::GetString("IRIDIUM").AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(0,530,m_TotalSize.cx,25), &fontFormat, &fontBrush);
 
 	fontBrush.SetColor(normalColor);
 	for (int i = TITAN; i <= IRIDIUM; i++)

@@ -1129,7 +1129,7 @@ void CShip::DrawShip(Gdiplus::Graphics* g, CGraphicPool* pGraphicPool, const CPo
 			g->DrawString(CComBSTR(s.AllocSysString()), -1, &font, PointF((REAL)pt.x + 120, (REAL)pt.y + 37), &fontFormat, &fontBrush);
 
 			if (m_Fleet->GetFleetShipType(this) == -1)
-				g->DrawString(CResourceManager::GetString("MIXED_FLEET").AllocSysString(), -1, &font, PointF((REAL)pt.x + 120, (REAL)pt.y + 57), &fontFormat, &fontBrush);
+				g->DrawString(CComBSTR(CResourceManager::GetString("MIXED_FLEET").AllocSysString()), -1, &font, PointF((REAL)pt.x + 120, (REAL)pt.y + 57), &fontFormat, &fontBrush);
 			else
 				g->DrawString(this->GetShipTypeAsString(TRUE).AllocSysString(), -1, &font, PointF((REAL)pt.x + 120, (REAL)pt.y + 57), &fontFormat, &fontBrush);
 		}

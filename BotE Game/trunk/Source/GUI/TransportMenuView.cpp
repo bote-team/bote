@@ -184,17 +184,17 @@ void CTransportMenuView::DrawTransportMenue(Graphics* g)
 
 	Gdiplus::Font font(CComBSTR(fontName.AllocSysString()), fontSize);
 	if (systemOwner == shipOwner)
-		g->DrawString(CResourceManager::GetString("SYSTEM_STORAGE").AllocSysString(), -1, &font, RectF(200,80,338,25), &fontFormat, &fontBrush);
+		g->DrawString(CComBSTR(CResourceManager::GetString("SYSTEM_STORAGE").AllocSysString()), -1, &font, RectF(200,80,338,25), &fontFormat, &fontBrush);
 
-	g->DrawString(CResourceManager::GetString("SHIP_STORAGE").AllocSysString(), -1, &font, RectF(538,80,338,25), &fontFormat, &fontBrush);
-	g->DrawString(CResourceManager::GetString("TITAN").AllocSysString(), -1, &font, RectF(0,120,1075,60), &fontFormat, &fontBrush);
-	g->DrawString(CResourceManager::GetString("DEUTERIUM").AllocSysString(), -1, &font, RectF(0,180,1075,60), &fontFormat, &fontBrush);
-	g->DrawString(CResourceManager::GetString("DURANIUM").AllocSysString(), -1, &font, RectF(0,240,1075,60), &fontFormat, &fontBrush);
-	g->DrawString(CResourceManager::GetString("CRYSTAL").AllocSysString(), -1, &font, RectF(0,300,1075,60), &fontFormat, &fontBrush);
-	g->DrawString(CResourceManager::GetString("IRIDIUM").AllocSysString(), -1, &font, RectF(0,360,1075,60), &fontFormat, &fontBrush);
-	g->DrawString(CResourceManager::GetString("DERITIUM").AllocSysString(), -1, &font, RectF(0,420,1075,60), &fontFormat, &fontBrush);
-	g->DrawString(CResourceManager::GetString("TROOPS").AllocSysString(), -1, &font, RectF(0,560,1075,60), &fontFormat, &fontBrush);
-	g->DrawString(CResourceManager::GetString("SELECTED").AllocSysString(), -1, &font, RectF(0,620,1075,60), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(CResourceManager::GetString("SHIP_STORAGE").AllocSysString()), -1, &font, RectF(538,80,338,25), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(CResourceManager::GetString("TITAN").AllocSysString()), -1, &font, RectF(0,120,1075,60), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(CResourceManager::GetString("DEUTERIUM").AllocSysString()), -1, &font, RectF(0,180,1075,60), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(CResourceManager::GetString("DURANIUM").AllocSysString()), -1, &font, RectF(0,240,1075,60), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(CResourceManager::GetString("CRYSTAL").AllocSysString()), -1, &font, RectF(0,300,1075,60), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(CResourceManager::GetString("IRIDIUM").AllocSysString()), -1, &font, RectF(0,360,1075,60), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(CResourceManager::GetString("DERITIUM").AllocSysString()), -1, &font, RectF(0,420,1075,60), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(CResourceManager::GetString("TROOPS").AllocSysString()), -1, &font, RectF(0,560,1075,60), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(CResourceManager::GetString("SELECTED").AllocSysString()), -1, &font, RectF(0,620,1075,60), &fontFormat, &fontBrush);
 	fontBrush.SetColor(normalColor);
 
 	// Inhalte des system- und globalen Lagers zeichnen

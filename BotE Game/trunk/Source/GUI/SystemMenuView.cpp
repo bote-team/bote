@@ -323,9 +323,9 @@ void CSystemMenuView::DrawBuildMenue(Graphics* g)
 	s.Format("%s: %i",CResourceManager::GetString("MORAL"), pDoc->GetSystem(p).GetMoral());
 	g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(370, 106, 335, 25), &fontFormat, &fontBrush);
 	fontFormat.SetAlignment(StringAlignmentFar);
-	g->DrawString(CResourceManager::GetString("ROUNDS").AllocSysString(), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(370, 106, 335, 25), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(CResourceManager::GetString("ROUNDS").AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(370, 106, 335, 25), &fontFormat, &fontBrush);
 	fontFormat.SetAlignment(StringAlignmentNear);
-	g->DrawString(CResourceManager::GetString("JOB").AllocSysString(), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(370, 106, 335, 25), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(CResourceManager::GetString("JOB").AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(370, 106, 335, 25), &fontFormat, &fontBrush);
 
 	// Die Struktur BuildList erstmal löschen, alle Werte auf 0
 	m_vBuildlist.RemoveAll();
@@ -1539,15 +1539,15 @@ void CSystemMenuView::DrawSystemTradeMenue(Graphics* g)
 		g->DrawImage(bg_systrademenu, 0, 0, 1075, 750);
 
 	SolidBrush markBrush(textMark);
-	g->DrawString(CResourceManager::GetString("TRADE_AND_RESOURCEROUTES").AllocSysString(), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(0,80,538,25), &fontFormat, &markBrush);
-	g->DrawString(CResourceManager::GetString("STELLAR_STORAGE").AllocSysString(), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(538,80,538,25), &fontFormat, &markBrush);
-	g->DrawString(CResourceManager::GetString("SYSTEM_STORAGE").AllocSysString(), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(538,140,268,25), &fontFormat, &markBrush);
-	g->DrawString(CResourceManager::GetString("STELLAR_STORAGE").AllocSysString(), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(806,140,268,25), &fontFormat, &markBrush);
-	g->DrawString(CResourceManager::GetString("TITAN").AllocSysString(), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(538,220,538,60), &fontFormat, &markBrush);
-	g->DrawString(CResourceManager::GetString("DEUTERIUM").AllocSysString(), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(538,280,538,60), &fontFormat, &markBrush);
-	g->DrawString(CResourceManager::GetString("DURANIUM").AllocSysString(), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(538,340,538,60), &fontFormat, &markBrush);
-	g->DrawString(CResourceManager::GetString("CRYSTAL").AllocSysString(), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(538,400,538,60), &fontFormat, &markBrush);
-	g->DrawString(CResourceManager::GetString("IRIDIUM").AllocSysString(), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(538,460,538,60), &fontFormat, &markBrush);
+	g->DrawString(CComBSTR(CResourceManager::GetString("TRADE_AND_RESOURCEROUTES").AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(0,80,538,25), &fontFormat, &markBrush);
+	g->DrawString(CComBSTR(CResourceManager::GetString("STELLAR_STORAGE").AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(538,80,538,25), &fontFormat, &markBrush);
+	g->DrawString(CComBSTR(CResourceManager::GetString("SYSTEM_STORAGE").AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(538,140,268,25), &fontFormat, &markBrush);
+	g->DrawString(CComBSTR(CResourceManager::GetString("STELLAR_STORAGE").AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(806,140,268,25), &fontFormat, &markBrush);
+	g->DrawString(CComBSTR(CResourceManager::GetString("TITAN").AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(538,220,538,60), &fontFormat, &markBrush);
+	g->DrawString(CComBSTR(CResourceManager::GetString("DEUTERIUM").AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(538,280,538,60), &fontFormat, &markBrush);
+	g->DrawString(CComBSTR(CResourceManager::GetString("DURANIUM").AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(538,340,538,60), &fontFormat, &markBrush);
+	g->DrawString(CComBSTR(CResourceManager::GetString("CRYSTAL").AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(538,400,538,60), &fontFormat, &markBrush);
+	g->DrawString(CComBSTR(CResourceManager::GetString("IRIDIUM").AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(538,460,538,60), &fontFormat, &markBrush);
 
 	USHORT maxTradeRoutes = (USHORT)(pDoc->m_System[p.x][p.y].GetHabitants() / TRADEROUTEHAB) + pDoc->m_System[p.x][p.y].GetProduction()->GetAddedTradeRoutes();
 	short addResRoute = 1;
@@ -1577,7 +1577,7 @@ void CSystemMenuView::DrawSystemTradeMenue(Graphics* g)
 
 	fontFormat.SetLineAlignment(StringAlignmentCenter);
 	fontFormat.SetFormatFlags(!StringFormatFlagsNoWrap);
-	g->DrawString(CResourceManager::GetString("ROUTES_TO").AllocSysString(), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(60,220,440,30), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(CResourceManager::GetString("ROUTES_TO").AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(60,220,440,30), &fontFormat, &fontBrush);
 
 	fontFormat.SetTrimming(StringTrimmingEllipsisCharacter);
 	// Anzeige von max. NOTRIL Handelsrouten
@@ -1670,7 +1670,7 @@ void CSystemMenuView::DrawSystemTradeMenue(Graphics* g)
 	g->DrawString(CResourceManager::GetString("LOST_PER_ROUND",0,s).AllocSysString(), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(538,550,538,30), &fontFormat, &fontBrush);
 
 	fontFormat.SetAlignment(StringAlignmentFar);
-	g->DrawString(CResourceManager::GetString("MULTIPLIER").AllocSysString(), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(538,600,182,30), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(CResourceManager::GetString("MULTIPLIER").AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(538,600,182,30), &fontFormat, &fontBrush);
 
 	// kleine Buttons zeichnen
 	Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\" + pMajor->GetPrefix() + "button_small.bop");
@@ -1711,7 +1711,7 @@ void CSystemMenuView::DrawSystemTradeMenue(Graphics* g)
 		int j = i + numberOfTradeRoutes;
 		if (graphic)
 			g->DrawImage(graphic, 360, 260 + j * 30, 120, 30);
-		g->DrawString(CResourceManager::GetString("BTN_ANNUL").AllocSysString(), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(360, 260+j*30, 120, 30), &fontFormat, &btnBrush);
+		g->DrawString(CComBSTR(CResourceManager::GetString("BTN_ANNUL").AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(360, 260+j*30, 120, 30), &fontFormat, &btnBrush);
 	}
 
 	// Button zum Ändern der Menge, wieviel pro Klick vom oder ins Globale Lager verschoben werden zeichnen
@@ -1908,7 +1908,7 @@ void CSystemMenuView::DrawBuildList(Graphics* g)
 	if (pDoc->GetSystem(p).GetAssemblyList()->GetAssemblyListEntry(0) == 0)
 	{
 		usedBrush.SetColor(firstColor);
-		g->DrawString(CResourceManager::GetString("COMMODITIES").AllocSysString(), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(760,410,285,25), &fontFormat, &usedBrush);
+		g->DrawString(CComBSTR(CResourceManager::GetString("COMMODITIES").AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(760,410,285,25), &fontFormat, &usedBrush);
 	}
 }
 
@@ -1949,8 +1949,8 @@ void CSystemMenuView::DrawSystemProduction(Graphics* g)
 
 	// Die Rohstoffe und sonstige Informationen im System oben in der Mitte anzeigen
 	// Lager und Rohstoffe rechts zeichnen
-	g->DrawString(CResourceManager::GetString("PRODUCTION").AllocSysString(), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), PointF(870,20), &fontFormat, &fontBrush);
-	g->DrawString(CResourceManager::GetString("STORAGE").AllocSysString(), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), PointF(980,20), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(CResourceManager::GetString("PRODUCTION").AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), PointF(870,20), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(CResourceManager::GetString("STORAGE").AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), PointF(980,20), &fontFormat, &fontBrush);
 
 	fontBrush.SetColor(normalColor);
 	g->DrawString((CResourceManager::GetString("FOOD")+":").AllocSysString(), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), PointF(775,55), &fontFormat, &fontBrush);
@@ -2711,7 +2711,7 @@ void CSystemMenuView::DrawBuildingProduction(Graphics* g)
 		{
 			if (b->GetMaxInSystem().Number == 1)
 			{
-				g->DrawString(CResourceManager::GetString("ONCE_PER_SYSTEM").AllocSysString(), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), r, &fontFormat, &fontBrush);
+				g->DrawString(CComBSTR(CResourceManager::GetString("ONCE_PER_SYSTEM").AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), r, &fontFormat, &fontBrush);
 				r.Y += 22;
 			}
 			else
@@ -2736,17 +2736,17 @@ void CSystemMenuView::DrawBuildingProduction(Graphics* g)
 		}
 		if (b->GetOnlyHomePlanet() == TRUE)
 		{
-			g->DrawString(CResourceManager::GetString("ONLY_HOMEPLANET").AllocSysString(), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), r, &fontFormat, &fontBrush);
+			g->DrawString(CComBSTR(CResourceManager::GetString("ONLY_HOMEPLANET").AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), r, &fontFormat, &fontBrush);
 			r.Y += 22;
 		}
 		if (b->GetOnlyOwnColony() == TRUE)
 		{
-			g->DrawString(CResourceManager::GetString("ONLY_OWN_COLONY").AllocSysString(), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), r, &fontFormat, &fontBrush);
+			g->DrawString(CComBSTR(CResourceManager::GetString("ONLY_OWN_COLONY").AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), r, &fontFormat, &fontBrush);
 			r.Y += 22;
 		}
 		if (b->GetOnlyTakenSystem() == TRUE)
 		{
-			g->DrawString(CResourceManager::GetString("ONLY_TAKEN_SYSTEM").AllocSysString(), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), r, &fontFormat, &fontBrush);
+			g->DrawString(CComBSTR(CResourceManager::GetString("ONLY_TAKEN_SYSTEM").AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), r, &fontFormat, &fontBrush);
 			r.Y += 22;
 		}
 		if (b->GetMinHabitants() > 0)
@@ -2763,7 +2763,7 @@ void CSystemMenuView::DrawBuildingProduction(Graphics* g)
 		}
 		if (b->GetWorker() == TRUE)
 		{
-			g->DrawString(CResourceManager::GetString("NEED_WORKER").AllocSysString(), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), r, &fontFormat, &fontBrush);
+			g->DrawString(CComBSTR(CResourceManager::GetString("NEED_WORKER").AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), r, &fontFormat, &fontBrush);
 			r.Y += 22;
 		}
 	}
@@ -2791,7 +2791,7 @@ void CSystemMenuView::DrawBuildingProduction(Graphics* g)
 			fontFormat.SetFormatFlags(StringFormatFlagsNoWrap);
 			fontFormat.SetAlignment(StringAlignmentCenter);
 
-			g->DrawString(CResourceManager::GetString("RELATIVE_PROFIT").AllocSysString(), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), r, &fontFormat, &fontBrush);
+			g->DrawString(CComBSTR(CResourceManager::GetString("RELATIVE_PROFIT").AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), r, &fontFormat, &fontBrush);
 			r.Y += 25;
 
 			fontBrush.SetColor(normalColor);

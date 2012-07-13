@@ -431,7 +431,7 @@ void CShipInfo::DrawShipInformation(Graphics* g, CRect rect, Gdiplus::Font* font
 		// Manövrierbarkeit anzeigen
 		fontBrush.SetColor(clrMark);
 		r.SetRect(rect.left,rect.top+266,rect.right,rect.top+288);
-		g->DrawString(CResourceManager::GetString("MANEUVERABILITY").AllocSysString(), -1, font, RectF((REAL)r.left, (REAL)r.top, (REAL)r.Width(), (REAL)r.Height()), &fontFormat, &fontBrush);
+		g->DrawString(CComBSTR(CResourceManager::GetString("MANEUVERABILITY").AllocSysString()), -1, font, RectF((REAL)r.left, (REAL)r.top, (REAL)r.Width(), (REAL)r.Height()), &fontFormat, &fontBrush);
 		switch (m_byManeuverability)
 		{
 		case 9: s = CResourceManager::GetString("PHENOMENAL");	break;
@@ -452,7 +452,7 @@ void CShipInfo::DrawShipInformation(Graphics* g, CRect rect, Gdiplus::Font* font
 		// Scan anzeigen
 		fontBrush.SetColor(clrMark);
 		r.SetRect(rect.left,rect.top+311,rect.right,rect.top+333);
-		g->DrawString(CResourceManager::GetString("SENSORS").AllocSysString(), -1, font, RectF((REAL)r.left, (REAL)r.top, (REAL)r.Width(), (REAL)r.Height()), &fontFormat, &fontBrush);
+		g->DrawString(CComBSTR(CResourceManager::GetString("SENSORS").AllocSysString()), -1, font, RectF((REAL)r.left, (REAL)r.top, (REAL)r.Width(), (REAL)r.Height()), &fontFormat, &fontBrush);
 		r.SetRect(rect.left,rect.top+333,rect.right,rect.top+353);
 		CString Scanrange = CResourceManager::GetString("SCANRANGE");
 		CString Scanpower = CResourceManager::GetString("SCANPOWER");
@@ -466,7 +466,7 @@ void CShipInfo::DrawShipInformation(Graphics* g, CRect rect, Gdiplus::Font* font
 		// Spezialfähigkeiten anzeigen
 		fontBrush.SetColor(clrMark);
 		r.SetRect(rect.left,rect.top+356,rect.right,rect.top+378);
-		g->DrawString(CResourceManager::GetString("SPECIAL_ABILITIES").AllocSysString(), -1, font, RectF((REAL)r.left, (REAL)r.top, (REAL)r.Width(), (REAL)r.Height()), &fontFormat, &fontBrush);
+		g->DrawString(CComBSTR(CResourceManager::GetString("SPECIAL_ABILITIES").AllocSysString()), -1, font, RectF((REAL)r.left, (REAL)r.top, (REAL)r.Width(), (REAL)r.Height()), &fontFormat, &fontBrush);
 		s = "";
 		fontBrush.SetColor(clrNormal);
 		if (HasSpecial(SHIP_SPECIAL::ASSULTSHIP))

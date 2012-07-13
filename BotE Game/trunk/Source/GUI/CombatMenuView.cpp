@@ -342,7 +342,7 @@ void CCombatMenuView::DrawCombatDecisionMenue(Graphics* g)
 	CFontLoader::CreateGDIFont(pMajor, 5, fontName, fontSize);
 	fontSize *= 1.5;
 	fontBrush.SetColor(normalColor);
-	g->DrawString(CResourceManager::GetString("AGAINST").AllocSysString(), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(0,325,m_TotalSize.cx,100), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(CResourceManager::GetString("AGAINST").AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(0,325,m_TotalSize.cx,100), &fontFormat, &fontBrush);
 
 	// Gewinnchance zeichnen
 	CString s;
@@ -448,9 +448,9 @@ void CCombatMenuView::DrawCombatInfoMenue(Graphics* g)
 	g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(0,m_TotalSize.cy / 2,m_TotalSize.cx,m_TotalSize.cy / 2), &fontFormat, &fontBrush);
 	fontSize *= 1.5;
 	if (pDoc->m_bRoundEndPressed)
-		g->DrawString(CResourceManager::GetString("COMBATCALCULATION_IS_RUNNING").AllocSysString(), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(0,0,m_TotalSize.cx,m_TotalSize.cy), &fontFormat, &fontBrush);
+		g->DrawString(CComBSTR(CResourceManager::GetString("COMBATCALCULATION_IS_RUNNING").AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(0,0,m_TotalSize.cx,m_TotalSize.cy), &fontFormat, &fontBrush);
 	else
-		g->DrawString(CResourceManager::GetString("OTHER_PLAYERS_IN_COMBAT").AllocSysString(), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(0,0,m_TotalSize.cx,m_TotalSize.cy), &fontFormat, &fontBrush);
+		g->DrawString(CComBSTR(CResourceManager::GetString("OTHER_PLAYERS_IN_COMBAT").AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(0,0,m_TotalSize.cx,m_TotalSize.cy), &fontFormat, &fontBrush);
 
 	if (!pDoc->m_bRoundEndPressed)
 	{
@@ -616,7 +616,7 @@ void CCombatMenuView::DrawCombatOrderMenue(Graphics* g)
 	// größte Schriftart laden und VS in der Mitte zeichnen
 	CFontLoader::CreateGDIFont(pMajor, 5, fontName, fontSize);
 	fontSize *= 2.0;
-	g->DrawString(CResourceManager::GetString("VS").AllocSysString(), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(0,65,m_TotalSize.cx,m_TotalSize.cy), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(CResourceManager::GetString("VS").AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(0,65,m_TotalSize.cx,m_TotalSize.cy), &fontFormat, &fontBrush);
 
 	// Schriftart für kleine Buttons laden
 	CFontLoader::CreateGDIFont(pMajor, 2, fontName, fontSize);
@@ -626,8 +626,8 @@ void CCombatMenuView::DrawCombatOrderMenue(Graphics* g)
 	markColor.SetFromCOLORREF(pMajor->GetDesign()->m_clrListMarkTextColor);
 	fontBrush.SetColor(markColor);
 
-	g->DrawString(CResourceManager::GetString("FRIENDLY_SHIPS").AllocSysString(), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(50,255,480,25), &fontFormat, &fontBrush);
-	g->DrawString(CResourceManager::GetString("ENEMY_SHIPS").AllocSysString(), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(750,255,480,25), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(CResourceManager::GetString("FRIENDLY_SHIPS").AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(50,255,480,25), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(CResourceManager::GetString("ENEMY_SHIPS").AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(750,255,480,25), &fontFormat, &fontBrush);
 
 	// Schriftfarbe wählen
 	Gdiplus::Color btnColor;

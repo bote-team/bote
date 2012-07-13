@@ -302,7 +302,7 @@ void CResearchMenuView::DrawResearchMenue(Graphics* g)
 
 
 	// Die gesamten Forschungspunkte rechts anzeigen
-	g->DrawString(CResourceManager::GetString("RESEARCHPOINTS").AllocSysString(), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(835,80,240,25), &fontFormatCenter, &fontBrush);
+	g->DrawString(CComBSTR(CResourceManager::GetString("RESEARCHPOINTS").AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(835,80,240,25), &fontFormatCenter, &fontBrush);
 	fontBrush.SetColor(markColor);
 
 	fontFormatCenter.SetAlignment(StringAlignmentNear);
@@ -316,7 +316,7 @@ void CResearchMenuView::DrawResearchMenue(Graphics* g)
 
 	// Die einzelnen Forschungsboni anzeigen
 	fontBrush.SetColor(normalColor);
-	g->DrawString(CResourceManager::GetString("RESEARCH_BONI").AllocSysString(), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(835,145,245,25), &fontFormatCenter, &fontBrush);
+	g->DrawString(CComBSTR(CResourceManager::GetString("RESEARCH_BONI").AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(835,145,245,25), &fontFormatCenter, &fontBrush);
 	fontBrush.SetColor(markColor);
 
 	RectF rect(855,180,190,25);
@@ -419,7 +419,7 @@ void CResearchMenuView::DrawResearchMenue(Graphics* g)
 	fontFormatCenter.SetLineAlignment(StringAlignmentCenter);
 	fontFormatCenter.SetFormatFlags(StringFormatFlagsNoWrap);
 
-	g->DrawString(CResourceManager::GetString("RESEARCH_MENUE").AllocSysString(), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(0,10,m_TotalSize.cx,60), &fontFormatCenter, &fontBrush);
+	g->DrawString(CComBSTR(CResourceManager::GetString("RESEARCH_MENUE").AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(0,10,m_TotalSize.cx,60), &fontFormatCenter, &fontBrush);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -474,7 +474,7 @@ void CResearchMenuView::DrawUniqueResearchMenue(Graphics* g)
 	}
 
 	// Die gesamten Forschungspunkte rechts anzeigen
-	g->DrawString(CResourceManager::GetString("RESEARCHPOINTS").AllocSysString(), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(835,80,240,25), &fontFormatCenter, &fontBrush);
+	g->DrawString(CComBSTR(CResourceManager::GetString("RESEARCHPOINTS").AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(835,80,240,25), &fontFormatCenter, &fontBrush);
 	fontBrush.SetColor(markColor);
 
 	fontFormatCenter.SetAlignment(StringAlignmentNear);
@@ -488,7 +488,7 @@ void CResearchMenuView::DrawUniqueResearchMenue(Graphics* g)
 
 	// Die einzelnen Forschungsboni anzeigen
 	fontBrush.SetColor(normalColor);
-	g->DrawString(CResourceManager::GetString("RESEARCH_BONI").AllocSysString(), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(835,145,245,25), &fontFormatCenter, &fontBrush);
+	g->DrawString(CComBSTR(CResourceManager::GetString("RESEARCH_BONI").AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(835,145,245,25), &fontFormatCenter, &fontBrush);
 	fontBrush.SetColor(markColor);
 
 	RectF rect(855,180,190,25);

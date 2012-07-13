@@ -90,7 +90,7 @@ void CDiplomacyBottomView::OnDraw(CDC* dc)
 	g.DrawString(CComBSTR(m_strHeadLine.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(40, 30, rect.right, rect.bottom), &fontFormat, &fontBrush);
 
 	if (m_strText.IsEmpty())
-		g.DrawString(CResourceManager::GetString("NO_DIPLOMATIC_NEWS").AllocSysString(), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(40, 30, rect.right, rect.bottom), &fontFormat, &fontBrush);
+		g.DrawString(CComBSTR(CResourceManager::GetString("NO_DIPLOMATIC_NEWS").AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(40, 30, rect.right, rect.bottom), &fontFormat, &fontBrush);
 	m_strHeadLine = "";
 
 	CFontLoader::CreateGDIFont(pMajor, 2, fontName, fontSize);
