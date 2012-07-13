@@ -185,7 +185,7 @@ void CFleetMenuView::DrawFleetMenue(Graphics* g)
 	Gdiplus::Color penColor;
 	penColor.SetFromCOLORREF(pMajor->GetDesign()->m_clrListMarkPenColor);
 
-	Gdiplus::Font font(fontName.AllocSysString(), fontSize);
+	Gdiplus::Font font(CComBSTR(fontName.AllocSysString()), fontSize);
 
 	if (bg_fleetmenu)
 		g->DrawImage(bg_fleetmenu, 0, 0, 1075, 750);
@@ -195,7 +195,7 @@ void CFleetMenuView::DrawFleetMenue(Graphics* g)
 	fontBrush.SetColor(penColor);
 	CString s = CResourceManager::GetString("WHAT_SHIPS_TO_FLEET");
 	fontFormat.SetFormatFlags(!StringFormatFlagsNoWrap);
-	g->DrawString(s.AllocSysString(), -1, &font, RectF(20,140,210,75), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(s.AllocSysString()), -1, &font, RectF(20,140,210,75), &fontFormat, &fontBrush);
 	fontFormat.SetFormatFlags(StringFormatFlagsNoWrap);
 	fontBrush.SetColor(normalColor);
 
@@ -213,19 +213,19 @@ void CFleetMenuView::DrawFleetMenue(Graphics* g)
 	{
 		// der gleichen Klasse hinzufügen
 		s.Format("%s-%s", pShip->GetShipClass(),CResourceManager::GetString("CLASS"));
-		g->DrawString(s.AllocSysString(), -1, &font, RectF(0,220,250,30), &fontFormat, &fontBrush);
+		g->DrawString(CComBSTR(s.AllocSysString()), -1, &font, RectF(0,220,250,30), &fontFormat, &fontBrush);
 		// des gleichen Types hinzufügen
 		s.Format("%s %s",CResourceManager::GetString("TYPE"), pShip->GetShipTypeAsString());
-		g->DrawString(s.AllocSysString(), -1, &font, RectF(0,270,250,30), &fontFormat, &fontBrush);
+		g->DrawString(CComBSTR(s.AllocSysString()), -1, &font, RectF(0,270,250,30), &fontFormat, &fontBrush);
 		// alle Schiffe hinzufügen
 		s = CResourceManager::GetString("ALL_SHIPS");
-		g->DrawString(s.AllocSysString(), -1, &font, RectF(0,320,250,30), &fontFormat, &fontBrush);
+		g->DrawString(CComBSTR(s.AllocSysString()), -1, &font, RectF(0,320,250,30), &fontFormat, &fontBrush);
 	}
 
 	fontBrush.SetColor(penColor);
 	s = CResourceManager::GetString("WHAT_SHIPS_FROM_FLEET");
 	fontFormat.SetFormatFlags(!StringFormatFlagsNoWrap);
-	g->DrawString(s.AllocSysString(), -1, &font, RectF(20,400,210,75), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(s.AllocSysString()), -1, &font, RectF(20,400,210,75), &fontFormat, &fontBrush);
 	fontFormat.SetFormatFlags(StringFormatFlagsNoWrap);
 	fontBrush.SetColor(normalColor);
 
@@ -233,13 +233,13 @@ void CFleetMenuView::DrawFleetMenue(Graphics* g)
 	{
 		// fremder Klassen entfernen
 		s.Format("%s %s-%s",CResourceManager::GetString("NOT"),	pShip->GetShipClass(),CResourceManager::GetString("CLASS"));
-		g->DrawString(s.AllocSysString(), -1, &font, RectF(0,480,250,30), &fontFormat, &fontBrush);
+		g->DrawString(CComBSTR(s.AllocSysString()), -1, &font, RectF(0,480,250,30), &fontFormat, &fontBrush);
 		// fremden Types entfernen
 		s.Format("%s %s %s",CResourceManager::GetString("NOT"),CResourceManager::GetString("TYPE"),	pShip->GetShipTypeAsString());
-		g->DrawString(s.AllocSysString(), -1, &font, RectF(0,530,250,30), &fontFormat, &fontBrush);
+		g->DrawString(CComBSTR(s.AllocSysString()), -1, &font, RectF(0,530,250,30), &fontFormat, &fontBrush);
 		// alle Schiffe entfernen
 		s = CResourceManager::GetString("ALL_SHIPS");
-		g->DrawString(s.AllocSysString(), -1, &font, RectF(0,580,250,30), &fontFormat, &fontBrush);
+		g->DrawString(CComBSTR(s.AllocSysString()), -1, &font, RectF(0,580,250,30), &fontFormat, &fontBrush);
 	}
 
 
@@ -301,7 +301,7 @@ void CFleetMenuView::DrawFleetMenue(Graphics* g)
 		if (graphic)
 			g->DrawImage(graphic, 540, 680, 120 ,30);
 		s = CResourceManager::GetString("BTN_NEXT");
-		g->DrawString(s.AllocSysString(), -1, &font, RectF(540, 680, 120, 30), &fontFormat, &btnBrush);
+		g->DrawString(CComBSTR(s.AllocSysString()), -1, &font, RectF(540, 680, 120, 30), &fontFormat, &btnBrush);
 	}
 	// back-Button
 	m_bShowBackButton = FALSE;
@@ -312,7 +312,7 @@ void CFleetMenuView::DrawFleetMenue(Graphics* g)
 		if (graphic)
 			g->DrawImage(graphic, 286, 680, 120 ,30);
 		s = CResourceManager::GetString("BTN_BACK");
-		g->DrawString(s.AllocSysString(), -1, &font, RectF(286, 680, 120, 30), &fontFormat, &btnBrush);
+		g->DrawString(CComBSTR(s.AllocSysString()), -1, &font, RectF(286, 680, 120, 30), &fontFormat, &btnBrush);
 	}
 
 	// "Flottenzusammenstellung" in der Mitte zeichnen
@@ -322,7 +322,7 @@ void CFleetMenuView::DrawFleetMenue(Graphics* g)
 	CFontLoader::GetGDIFontColor(pMajor, 3, normalColor);
 	fontBrush.SetColor(normalColor);
 	s = CResourceManager::GetString("FLEET_MENUE");
-	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0,10,m_TotalSize.cx,60), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(0,10,m_TotalSize.cx,60), &fontFormat, &fontBrush);
 }
 void CFleetMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 {

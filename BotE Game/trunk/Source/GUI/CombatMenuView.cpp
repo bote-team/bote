@@ -304,7 +304,7 @@ void CCombatMenuView::DrawCombatDecisionMenue(Graphics* g)
 
 		g->DrawRectangle(&Pen(Color(200,200,200), 2), nPosX, 125, 200, 200);
 		// Rassenname über das Bild zeichnen
-		g->DrawString(pRace->GetRaceName().AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(nPosX,100,200,25), &fontFormat, &fontBrush);
+		g->DrawString(pRace->GetRaceName().AllocSysString(), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(nPosX,100,200,25), &fontFormat, &fontBrush);
 
 		// Rassensymbol noch in die Ecke zeichnen
 		graphic	= pDoc->GetGraphicPool()->GetGDIGraphic("Symbols\\" + pRace->GetRaceID() + ".bop");
@@ -328,7 +328,7 @@ void CCombatMenuView::DrawCombatDecisionMenue(Graphics* g)
 
 		g->DrawRectangle(&Pen(Color(200,200,200), 2), nPosX, 450, 200, 200);
 		// Rassenname über das Bild zeichnen
-		g->DrawString(pRace->GetRaceName().AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(nPosX,425,200,25), &fontFormat, &fontBrush);
+		g->DrawString(pRace->GetRaceName().AllocSysString(), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(nPosX,425,200,25), &fontFormat, &fontBrush);
 
 		// Rassensymbol noch in die Ecke zeichnen
 		graphic	= pDoc->GetGraphicPool()->GetGDIGraphic("Symbols\\" + pRace->GetRaceID() + ".bop");
@@ -342,7 +342,7 @@ void CCombatMenuView::DrawCombatDecisionMenue(Graphics* g)
 	CFontLoader::CreateGDIFont(pMajor, 5, fontName, fontSize);
 	fontSize *= 1.5;
 	fontBrush.SetColor(normalColor);
-	g->DrawString(CResourceManager::GetString("AGAINST").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0,325,m_TotalSize.cx,100), &fontFormat, &fontBrush);
+	g->DrawString(CResourceManager::GetString("AGAINST").AllocSysString(), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(0,325,m_TotalSize.cx,100), &fontFormat, &fontBrush);
 
 	// Gewinnchance zeichnen
 	CString s;
@@ -388,7 +388,7 @@ void CCombatMenuView::DrawCombatDecisionMenue(Graphics* g)
 		g->DrawImage(graphic, 850, 680, 150, 200);
 	}
 
-	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0,680,m_TotalSize.cx,200), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(0,680,m_TotalSize.cx,200), &fontFormat, &fontBrush);
 
 	// Schriftart für große Buttons laden
 	CFontLoader::CreateGDIFont(pMajor, 3, fontName, fontSize);
@@ -397,7 +397,7 @@ void CCombatMenuView::DrawCombatDecisionMenue(Graphics* g)
 	CFontLoader::GetGDIFontColor(pMajor, 2, btnColor);
 	SolidBrush btnBrush(btnColor);
 	// Buttons für Kampfentscheidung zeichnen
-	DrawGDIButtons(g, &m_CombatDecisionButtons, -1, Gdiplus::Font(fontName.AllocSysString(), fontSize), btnBrush);
+	DrawGDIButtons(g, &m_CombatDecisionButtons, -1, Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), btnBrush);
 
 	// Überschrift in der Mitte zeichnen
 	// Rassenspezifische Schriftart auswählen
@@ -410,7 +410,7 @@ void CCombatMenuView::DrawCombatDecisionMenue(Graphics* g)
 		s.Format("%s %s", CResourceManager::GetString("COMBAT_IN_SECTOR"), pDoc->GetSector(p).GetName(TRUE));
 	else
 		s.Format("%s %c%i", CResourceManager::GetString("COMBAT_IN_SECTOR"), (char)(p.y+97), p.x + 1);
-	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0,10,m_TotalSize.cx, 50), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(0,10,m_TotalSize.cx, 50), &fontFormat, &fontBrush);
 }
 
 void CCombatMenuView::DrawCombatInfoMenue(Graphics* g)
@@ -445,12 +445,12 @@ void CCombatMenuView::DrawCombatInfoMenue(Graphics* g)
 	CFontLoader::CreateGDIFont(pMajor, 5, fontName, fontSize);
 	CString s;
 	s.Format("%s ...", CResourceManager::GetString("PLEASE_WAIT"));
-	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0,m_TotalSize.cy / 2,m_TotalSize.cx,m_TotalSize.cy / 2), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(0,m_TotalSize.cy / 2,m_TotalSize.cx,m_TotalSize.cy / 2), &fontFormat, &fontBrush);
 	fontSize *= 1.5;
 	if (pDoc->m_bRoundEndPressed)
-		g->DrawString(CResourceManager::GetString("COMBATCALCULATION_IS_RUNNING").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0,0,m_TotalSize.cx,m_TotalSize.cy), &fontFormat, &fontBrush);
+		g->DrawString(CResourceManager::GetString("COMBATCALCULATION_IS_RUNNING").AllocSysString(), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(0,0,m_TotalSize.cx,m_TotalSize.cy), &fontFormat, &fontBrush);
 	else
-		g->DrawString(CResourceManager::GetString("OTHER_PLAYERS_IN_COMBAT").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0,0,m_TotalSize.cx,m_TotalSize.cy), &fontFormat, &fontBrush);
+		g->DrawString(CResourceManager::GetString("OTHER_PLAYERS_IN_COMBAT").AllocSysString(), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(0,0,m_TotalSize.cx,m_TotalSize.cy), &fontFormat, &fontBrush);
 
 	if (!pDoc->m_bRoundEndPressed)
 	{
@@ -527,7 +527,7 @@ void CCombatMenuView::DrawCombatOrderMenue(Graphics* g)
 
 		CPoint pt(50 + 225 * nCol, 255 + 65 * nRow);
 		bool bMarked = pShip == m_pMarkedShip;
-		pShip->DrawShip(g, pDoc->GetGraphicPool(), pt, bMarked, false, false, normalColor, normalColor, Gdiplus::Font(fontName.AllocSysString(), fontSize));
+		pShip->DrawShip(g, pDoc->GetGraphicPool(), pt, bMarked, false, false, normalColor, normalColor, Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize));
 		// aktueller Schiffsbefehl anzeigen
 		if (pShip->GetOwnerOfShip() == pMajor->GetRaceID())
 		{
@@ -588,7 +588,7 @@ void CCombatMenuView::DrawCombatOrderMenue(Graphics* g)
 
 		CPoint pt(750 + 225 * nCol, 255 + 65 * nRow);
 		bool bMarked = pShip == m_pMarkedShip;
-		pShip->DrawShip(g, pDoc->GetGraphicPool(), pt, bMarked, false, false, normalColor, normalColor, Gdiplus::Font(fontName.AllocSysString(), fontSize));
+		pShip->DrawShip(g, pDoc->GetGraphicPool(), pt, bMarked, false, false, normalColor, normalColor, Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize));
 		m_vShipRects.push_back(pair<CRect, CShip*>(CRect(pt.x, pt.y + 20, pt.x + 250, pt.y + 85), pShip));
 		nRow++;
 
@@ -609,14 +609,14 @@ void CCombatMenuView::DrawCombatOrderMenue(Graphics* g)
 	// Beschreibungstext hinzufügen
 	CString s;
 	s = CResourceManager::GetString("CHOOSE_TACTIC_DESC1") + "\n" + CResourceManager::GetString("CHOOSE_TACTIC_DESC2") + "\n" + CResourceManager::GetString("CHOOSE_TACTIC_DESC3");
-	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0, 170, m_TotalSize.cx, 75), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(0, 170, m_TotalSize.cx, 75), &fontFormat, &fontBrush);
 	s = CResourceManager::GetString("SHOWN_SHIPTYPES");
-	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0, 255, m_TotalSize.cx, 25), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(0, 255, m_TotalSize.cx, 25), &fontFormat, &fontBrush);
 
 	// größte Schriftart laden und VS in der Mitte zeichnen
 	CFontLoader::CreateGDIFont(pMajor, 5, fontName, fontSize);
 	fontSize *= 2.0;
-	g->DrawString(CResourceManager::GetString("VS").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0,65,m_TotalSize.cx,m_TotalSize.cy), &fontFormat, &fontBrush);
+	g->DrawString(CResourceManager::GetString("VS").AllocSysString(), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(0,65,m_TotalSize.cx,m_TotalSize.cy), &fontFormat, &fontBrush);
 
 	// Schriftart für kleine Buttons laden
 	CFontLoader::CreateGDIFont(pMajor, 2, fontName, fontSize);
@@ -626,18 +626,18 @@ void CCombatMenuView::DrawCombatOrderMenue(Graphics* g)
 	markColor.SetFromCOLORREF(pMajor->GetDesign()->m_clrListMarkTextColor);
 	fontBrush.SetColor(markColor);
 
-	g->DrawString(CResourceManager::GetString("FRIENDLY_SHIPS").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(50,255,480,25), &fontFormat, &fontBrush);
-	g->DrawString(CResourceManager::GetString("ENEMY_SHIPS").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(750,255,480,25), &fontFormat, &fontBrush);
+	g->DrawString(CResourceManager::GetString("FRIENDLY_SHIPS").AllocSysString(), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(50,255,480,25), &fontFormat, &fontBrush);
+	g->DrawString(CResourceManager::GetString("ENEMY_SHIPS").AllocSysString(), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(750,255,480,25), &fontFormat, &fontBrush);
 
 	// Schriftfarbe wählen
 	Gdiplus::Color btnColor;
 	CFontLoader::GetGDIFontColor(pMajor, 2, btnColor);
 	SolidBrush btnBrush(btnColor);
 	// Buttons für vor und zurück zeichnen
-	DrawGDIButtons(g, &m_FriendShipsCursor, -1, Gdiplus::Font(fontName.AllocSysString(), fontSize), btnBrush);
-	DrawGDIButtons(g, &m_EnemyShipsCursor, -1, Gdiplus::Font(fontName.AllocSysString(), fontSize), btnBrush);
+	DrawGDIButtons(g, &m_FriendShipsCursor, -1, Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), btnBrush);
+	DrawGDIButtons(g, &m_EnemyShipsCursor, -1, Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), btnBrush);
 	// Button für Schiffstypwechsel zeichnen
-	DrawGDIButtons(g, &m_ShipTypeButton, -1, Gdiplus::Font(fontName.AllocSysString(), fontSize), btnBrush);
+	DrawGDIButtons(g, &m_ShipTypeButton, -1, Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), btnBrush);
 
 	// Schriftart für große Buttons laden
 	CFontLoader::CreateGDIFont(pMajor, 3, fontName, fontSize);
@@ -645,8 +645,8 @@ void CCombatMenuView::DrawCombatOrderMenue(Graphics* g)
 	CFontLoader::GetGDIFontColor(pMajor, 2, btnColor);
 	btnBrush.SetColor(btnColor);
 	// Buttons für Kampfentscheidung zeichnen
-	DrawGDIButtons(g, &m_CombatTacticButtons, -1, Gdiplus::Font(fontName.AllocSysString(), fontSize), btnBrush);
-	DrawGDIButtons(g, &m_CombatOrderButtons, -1, Gdiplus::Font(fontName.AllocSysString(), fontSize), btnBrush);
+	DrawGDIButtons(g, &m_CombatTacticButtons, -1, Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), btnBrush);
+	DrawGDIButtons(g, &m_CombatOrderButtons, -1, Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), btnBrush);
 	// Grafik des Taktiksymbols zentriert über den Taktikbuttons zeichnen
 	Bitmap* graphic = NULL;
 	graphic	= pDoc->GetGraphicPool()->GetGDIGraphic("Other\\tactic_attack.bop");
@@ -670,7 +670,7 @@ void CCombatMenuView::DrawCombatOrderMenue(Graphics* g)
 		s.Format("%s %s", CResourceManager::GetString("COMBAT_IN_SECTOR"), pDoc->GetSector(p).GetName(TRUE));
 	else
 		s.Format("%s %c%i", CResourceManager::GetString("COMBAT_IN_SECTOR"), (char)(p.y+97), p.x + 1);
-	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0,10,m_TotalSize.cx, 50), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(0,10,m_TotalSize.cx, 50), &fontFormat, &fontBrush);
 }
 
 void CCombatMenuView::OnLButtonDown(UINT nFlags, CPoint point)

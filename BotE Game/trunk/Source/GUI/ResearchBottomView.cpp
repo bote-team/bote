@@ -107,7 +107,7 @@ void CResearchBottomView::OnDraw(CDC* dc)
 		s = pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetTechName(pDoc->m_iShowWhichTechInView3);
 	else
 		s = pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetCurrentResearchComplex()->GetComplexName();
-	g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(40, 30, rect.right-325, rect.bottom), &fontFormat, &fontBrush);
+	g.DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(40, 30, rect.right-325, rect.bottom), &fontFormat, &fontBrush);
 
 	CFontLoader::CreateGDIFont(pMajor, 2, fontName, fontSize);
 	fontBrush.SetColor(Color(200,200,250));
@@ -116,7 +116,7 @@ void CResearchBottomView::OnDraw(CDC* dc)
 		s = pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetTechDescription(pDoc->m_iShowWhichTechInView3);
 	else
 		s = pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetCurrentResearchComplex()->GetComplexDescription();
-	g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(40, 100, rect.right-325, rect.bottom), &fontFormat, &fontBrush);
+	g.DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(40, 100, rect.right-325, rect.bottom), &fontFormat, &fontBrush);
 
 	g.ReleaseHDC(pDC->GetSafeHdc());
 }

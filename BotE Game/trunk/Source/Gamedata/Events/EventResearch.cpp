@@ -183,21 +183,21 @@ void CEventResearch::Draw(Graphics* g, CGraphicPool* graphicPool) const
 	fontBrush.SetColor(color);
 
 	// Überschrift zeichnen
-	g->DrawString(m_strHeadline.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0,0,1280,48), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(m_strHeadline.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(0,0,1280,48), &fontFormat, &fontBrush);
 
 	CFontLoader::CreateGDIFont(pMajor, 3, fontName, fontSize);
 	fontFormat.SetAlignment(StringAlignmentCenter);
 	fontFormat.SetLineAlignment(StringAlignmentCenter);
 	fontFormat.SetFormatFlags(!StringFormatFlagsNoWrap);
 	// Forschungsbeschreibung zeichnen
-	g->DrawString(sTechDesc.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(185,275,910,125), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(sTechDesc.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(185,275,910,125), &fontFormat, &fontBrush);
 
 	Gdiplus::Color markColor;
 	markColor.SetFromCOLORREF(pMajor->GetDesign()->m_clrListMarkTextColor);
 	fontBrush.SetColor(markColor);
 	fontFormat.SetFormatFlags(StringFormatFlagsNoWrap);
 	// Forschungsname zeichnen
-	g->DrawString(sTechName.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0,65,1280,35), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(sTechName.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(0,65,1280,35), &fontFormat, &fontBrush);
 
 	// Bild der Forschungstech zeichnen
 	if (_graphic)
@@ -218,7 +218,7 @@ void CEventResearch::Draw(Graphics* g, CGraphicPool* graphicPool) const
 			graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Buildings\\ImageMissing.bop");
 		if (graphic)
 			g->DrawImage(graphic, 15 + nCount * 165, 430, 150, 113);
-		g->DrawString((*it)->GetBuildingName().AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(nCount * 165, 555, 180, 50), &fontFormat, &fontBrush);
+		g->DrawString((*it)->GetBuildingName().AllocSysString(), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(nCount * 165, 555, 180, 50), &fontFormat, &fontBrush);
 		nCount++;
 	}
 	nCount = 0;
@@ -230,7 +230,7 @@ void CEventResearch::Draw(Graphics* g, CGraphicPool* graphicPool) const
 			graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Buildings\\ImageMissing.bop");
 		if (graphic)
 			g->DrawImage(graphic, 15 + nCount * 165, 620, 150, 113);
-		g->DrawString((*it)->GetBuildingName().AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(nCount * 165, 745, 180, 50), &fontFormat, &fontBrush);
+		g->DrawString((*it)->GetBuildingName().AllocSysString(), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(nCount * 165, 745, 180, 50), &fontFormat, &fontBrush);
 		nCount++;
 	}
 
@@ -244,7 +244,7 @@ void CEventResearch::Draw(Graphics* g, CGraphicPool* graphicPool) const
 		if (graphic)
 			g->DrawImage(graphic, 15 + nCount * 165, 815, 150, 113);
 		s = (*it)->GetShipClass() + "-" + CResourceManager::GetString("CLASS") + " (" + (*it)->GetShipTypeAsString() + ")";
-		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(nCount * 165, 933, 180, 50), &fontFormat, &fontBrush);
+		g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(nCount * 165, 933, 180, 50), &fontFormat, &fontBrush);
 		nCount++;
 	}
 	for (vector<CTroopInfo*>::const_iterator it = m_vNewTroops.begin(); it != m_vNewTroops.end(); ++it)
@@ -255,24 +255,24 @@ void CEventResearch::Draw(Graphics* g, CGraphicPool* graphicPool) const
 		if (graphic)
 			g->DrawImage(graphic, 15 + nCount * 165, 815, 150, 113);
 		s = (*it)->GetName();
-		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(nCount * 165, 933, 180, 50), &fontFormat, &fontBrush);
+		g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(nCount * 165, 933, 180, 50), &fontFormat, &fontBrush);
 		nCount++;
 	}
 
 	fontBrush.SetColor(markColor);
 	s = CResourceManager::GetString("RESEARCHEVENT_NEWBUILDINGS");
-	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0, 405, 1280, 20), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(0, 405, 1280, 20), &fontFormat, &fontBrush);
 	s = CResourceManager::GetString("RESEARCHEVENT_NEWUPGRADES");
-	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0, 595, 1280, 20), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(0, 595, 1280, 20), &fontFormat, &fontBrush);
 	s = CResourceManager::GetString("RESEARCHEVENT_NEWSHIPS_AND_TROOPS");
-	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0, 790, 1280, 20), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(0, 790, 1280, 20), &fontFormat, &fontBrush);
 
 	// Buttons zeichnen
 	CFontLoader::CreateGDIFont(pMajor, 3, fontName, fontSize);
 	CFontLoader::GetGDIFontColor(pMajor, 2, color);
 	fontBrush.SetColor(color);
 	for (int i = 0; i < m_Buttons.GetSize(); i++)
-		m_Buttons.GetAt(i)->DrawButton(*g, graphicPool, Gdiplus::Font(fontName.AllocSysString(), fontSize), fontBrush);
+		m_Buttons.GetAt(i)->DrawButton(*g, graphicPool, Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), fontBrush);
 }
 
 ///	Funktion erstellt zur aktuellen Mouse-Position einen HTML Tooltip

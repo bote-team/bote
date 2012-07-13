@@ -64,17 +64,17 @@ void CEventBlockade::Draw(Graphics* g, CGraphicPool* graphicPool) const
 	CFontLoader::GetGDIFontColor(pMajor, 3, color);
 	fontBrush.SetColor(color);
 
-	g->DrawString(m_strHeadline.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0,0,1280,96), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(m_strHeadline.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(0,0,1280,96), &fontFormat, &fontBrush);
 
 	CFontLoader::CreateGDIFont(pMajor, 3, fontName, fontSize);
 	fontFormat.SetAlignment(StringAlignmentCenter);
 	fontFormat.SetLineAlignment(StringAlignmentCenter);
 	fontFormat.SetFormatFlags(!StringFormatFlagsNoWrap);
-	g->DrawString(m_strText.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(100,450,1080,128), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(m_strText.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(100,450,1080,128), &fontFormat, &fontBrush);
 
 	// Buttons zeichnen
 	CFontLoader::GetGDIFontColor(pMajor, 2, color);
 	fontBrush.SetColor(color);
 	for (int i = 0; i < m_Buttons.GetSize(); i++)
-		m_Buttons.GetAt(i)->DrawButton(*g, graphicPool, Gdiplus::Font(fontName.AllocSysString(), fontSize), fontBrush);
+		m_Buttons.GetAt(i)->DrawButton(*g, graphicPool, Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), fontBrush);
 }

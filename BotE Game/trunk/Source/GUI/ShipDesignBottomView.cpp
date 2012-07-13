@@ -87,13 +87,13 @@ void CShipDesignBottomView::OnDraw(CDC* dc)
 	CString s;
 	s.Format("%s %s %s-%s", pDoc->m_ShipInfoArray.GetAt(pDoc->m_iShowWhichShipInfoInView3).GetShipTypeAsString(), CResourceManager::GetString("MASC_ARTICLE"),
 		pDoc->m_ShipInfoArray.GetAt(pDoc->m_iShowWhichShipInfoInView3).GetShipClass(), CResourceManager::GetString("CLASS"));
-	g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(40, 30, rect.right - 90, rect.bottom - 30), &fontFormat, &fontBrush);
+	g.DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(40, 30, rect.right - 90, rect.bottom - 30), &fontFormat, &fontBrush);
 
 	CFontLoader::CreateGDIFont(pMajor, 2, fontName, fontSize);
 	fontBrush.SetColor(Color(200,200,250));
 	fontFormat.SetFormatFlags(!StringFormatFlagsNoWrap);
 	s = pDoc->m_ShipInfoArray.GetAt(pDoc->m_iShowWhichShipInfoInView3).GetShipDescription();
-	g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(40, 100, rect.right - 90, rect.bottom - 50), &fontFormat, &fontBrush);
+	g.DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(40, 100, rect.right - 90, rect.bottom - 50), &fontFormat, &fontBrush);
 
 	g.ReleaseHDC(pDC->GetSafeHdc());
 }

@@ -296,7 +296,7 @@ void CShipInfo::DrawShipInformation(Graphics* g, CRect rect, Gdiplus::Font* font
 	fontFormat.SetAlignment(StringAlignmentCenter);
 	fontFormat.SetLineAlignment(StringAlignmentNear);
 	fontFormat.SetFormatFlags(StringFormatFlagsNoWrap);
-	g->DrawString(s.AllocSysString(), -1, font, RectF((REAL)r.left, (REAL)r.top, (REAL)r.Width(), (REAL)r.Height()), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(s.AllocSysString()), -1, font, RectF((REAL)r.left, (REAL)r.top, (REAL)r.Width(), (REAL)r.Height()), &fontFormat, &fontBrush);
 
 	// Größe, Unterhalt und Reichweite anzeigen
 	r.SetRect(rect.left,rect.top+36,rect.right,rect.top+56);
@@ -337,12 +337,12 @@ void CShipInfo::DrawShipInformation(Graphics* g, CRect rect, Gdiplus::Font* font
 	}
 
 	fontBrush.SetColor(clrNormal);
-	g->DrawString(s.AllocSysString(), -1, font, RectF((REAL)r.left, (REAL)r.top, (REAL)r.Width(), (REAL)r.Height()), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(s.AllocSysString()), -1, font, RectF((REAL)r.left, (REAL)r.top, (REAL)r.Width(), (REAL)r.Height()), &fontFormat, &fontBrush);
 	fontBrush.SetColor(clrMark);
 
 	r.SetRect(rect.left,rect.top+62,rect.right,rect.top+84);
 	s = CResourceManager::GetString("ARMAMENT");
-	g->DrawString(s.AllocSysString(), -1, font, RectF((REAL)r.left, (REAL)r.top, (REAL)r.Width(), (REAL)r.Height()), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(s.AllocSysString()), -1, font, RectF((REAL)r.left, (REAL)r.top, (REAL)r.Width(), (REAL)r.Height()), &fontFormat, &fontBrush);
 	// Waffen typenrein sammeln
 	std::map<CString, int> mBeamWeapons;
 	for (int i = 0; i < m_BeamWeapons.GetSize(); i++)
@@ -382,7 +382,7 @@ void CShipInfo::DrawShipInformation(Graphics* g, CRect rect, Gdiplus::Font* font
 	r.SetRect(rect.left,rect.top+84,rect.right,rect.top+143);
 	fontBrush.SetColor(clrNormal);
 	fontFormat.SetFormatFlags(!StringFormatFlagsNoWrap);
-	g->DrawString(sWeapons.AllocSysString(), -1, font, RectF((REAL)r.left, (REAL)r.top, (REAL)r.Width(), (REAL)r.Height()), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(sWeapons.AllocSysString()), -1, font, RectF((REAL)r.left, (REAL)r.top, (REAL)r.Width(), (REAL)r.Height()), &fontFormat, &fontBrush);
 
 	// Wenn das Rechteck, welches wir an diese Funktion übergeben haben breiter als 500 ist, dann wird der Abstand
 	// zwischen Bewaffnung und "Schilde und Hülle" um eine Zeile verkürzt
@@ -393,7 +393,7 @@ void CShipInfo::DrawShipInformation(Graphics* g, CRect rect, Gdiplus::Font* font
 	s = CResourceManager::GetString("SHIELDS")+" "+CResourceManager::GetString("AND")+" "+CResourceManager::GetString("HULL");
 	fontFormat.SetFormatFlags(StringFormatFlagsNoWrap);
 	fontBrush.SetColor(clrMark);
-	g->DrawString(s.AllocSysString(), -1, font, RectF((REAL)r.left, (REAL)r.top, (REAL)r.Width(), (REAL)r.Height()), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(s.AllocSysString()), -1, font, RectF((REAL)r.left, (REAL)r.top, (REAL)r.Width(), (REAL)r.Height()), &fontFormat, &fontBrush);
 
 	r.SetRect(rect.left,rect.top+165-sub,rect.right,rect.top+185-sub);
 	float shieldBoni = 1.0f;
@@ -403,7 +403,7 @@ void CShipInfo::DrawShipInformation(Graphics* g, CRect rect, Gdiplus::Font* font
 	s.Format("%s %d %s: %s %d",CResourceManager::GetString("TYPE"),m_Shield.GetShieldType(),
 		CResourceManager::GetString("SHIELDS"), CResourceManager::GetString("CAPACITY"), (UINT)(m_Shield.GetMaxShield() * shieldBoni));
 	fontBrush.SetColor(clrNormal);
-	g->DrawString(s.AllocSysString(), -1, font, RectF((REAL)r.left, (REAL)r.top, (REAL)r.Width(), (REAL)r.Height()), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(s.AllocSysString()), -1, font, RectF((REAL)r.left, (REAL)r.top, (REAL)r.Width(), (REAL)r.Height()), &fontFormat, &fontBrush);
 	r.SetRect(rect.left,rect.top+185-sub,rect.right,rect.top+225-sub);
 	CString material;
 	switch (m_Hull.GetHullMaterial())
@@ -424,7 +424,7 @@ void CShipInfo::DrawShipInformation(Graphics* g, CRect rect, Gdiplus::Font* font
 		s.Format("%s%s: %s %d",material, CResourceManager::GetString("HULL_ARMOR"),
 			CResourceManager::GetString("INTEGRITY"), (int)(m_Hull.GetMaxHull()*hullBoni));
 	fontFormat.SetFormatFlags(StringFormatFlagsNoWrap);
-	g->DrawString(s.AllocSysString(), -1, font, RectF((REAL)r.left, (REAL)r.top, (REAL)r.Width(), (REAL)r.Height()), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(s.AllocSysString()), -1, font, RectF((REAL)r.left, (REAL)r.top, (REAL)r.Width(), (REAL)r.Height()), &fontFormat, &fontBrush);
 
 	if (rect.Width() >= 501)
 	{
@@ -447,7 +447,7 @@ void CShipInfo::DrawShipInformation(Graphics* g, CRect rect, Gdiplus::Font* font
 		}
 		fontBrush.SetColor(clrNormal);
 		r.SetRect(rect.left,rect.top+288,rect.right,rect.top+308);
-		g->DrawString(s.AllocSysString(), -1, font, RectF((REAL)r.left, (REAL)r.top, (REAL)r.Width(), (REAL)r.Height()), &fontFormat, &fontBrush);
+		g->DrawString(CComBSTR(s.AllocSysString()), -1, font, RectF((REAL)r.left, (REAL)r.top, (REAL)r.Width(), (REAL)r.Height()), &fontFormat, &fontBrush);
 
 		// Scan anzeigen
 		fontBrush.SetColor(clrMark);
@@ -460,7 +460,7 @@ void CShipInfo::DrawShipInformation(Graphics* g, CRect rect, Gdiplus::Font* font
 		USHORT ScanPower = m_iScanPower;
 		s.Format("%s: %d  -  %s: %d",Scanrange, ScanRange, Scanpower, ScanPower);
 		fontBrush.SetColor(clrNormal);
-		g->DrawString(s.AllocSysString(), -1, font, RectF((REAL)r.left, (REAL)r.top, (REAL)r.Width(), (REAL)r.Height()), &fontFormat, &fontBrush);
+		g->DrawString(CComBSTR(s.AllocSysString()), -1, font, RectF((REAL)r.left, (REAL)r.top, (REAL)r.Width(), (REAL)r.Height()), &fontFormat, &fontBrush);
 		fontBrush.SetColor(clrMark);
 
 		// Spezialfähigkeiten anzeigen
@@ -498,7 +498,7 @@ void CShipInfo::DrawShipInformation(Graphics* g, CRect rect, Gdiplus::Font* font
 		r.SetRect(rect.left,rect.top+378,rect.right,rect.top+478);
 		fontBrush.SetColor(clrNormal);
 		fontFormat.SetFormatFlags(!StringFormatFlagsNoWrap);
-		g->DrawString(s.AllocSysString(), -1, font, RectF((REAL)r.left, (REAL)r.top, (REAL)r.Width(), (REAL)r.Height()), &fontFormat, &fontBrush);
+		g->DrawString(CComBSTR(s.AllocSysString()), -1, font, RectF((REAL)r.left, (REAL)r.top, (REAL)r.Width(), (REAL)r.Height()), &fontFormat, &fontBrush);
 	}
 }
 

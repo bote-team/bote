@@ -49,7 +49,7 @@ void CMyButton::DrawButton(Gdiplus::Graphics &g, CGraphicPool* graphicPool, Gdip
 			fontFormat.SetAlignment(StringAlignmentCenter);
 			fontFormat.SetLineAlignment(StringAlignmentCenter);
 			fontFormat.SetFormatFlags(StringFormatFlagsNoWrap);
-			g.DrawString(m_strText.AllocSysString(), -1, &font, RectF((REAL)m_KO.x, (REAL)m_KO.y + 2, (REAL)m_Size.cx, (REAL)m_Size.cy), &fontFormat, &brush);
+			g.DrawString(CComBSTR(m_strText.AllocSysString()), -1, &font, RectF((REAL)m_KO.x, (REAL)m_KO.y + 2, (REAL)m_Size.cx, (REAL)m_Size.cy), &fontFormat, &brush);
 		}
 	}
 	else

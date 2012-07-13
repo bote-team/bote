@@ -96,7 +96,7 @@ void CIntelBottomView::OnDraw(CDC* dc)
 				s = CResourceManager::GetString("SPY");
 			else
 				s = CResourceManager::GetString("SABOTAGE");
-			g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(40, 40, r.right-100, r.bottom-20), &fontFormat, &fontBrush);
+			g.DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(40, 40, r.right-100, r.bottom-20), &fontFormat, &fontBrush);
 
 			CFontLoader::CreateGDIFont(pMajor, 2, fontName, fontSize);
 			fontBrush.SetColor(Color(200,200,250));
@@ -105,7 +105,7 @@ void CIntelBottomView::OnDraw(CDC* dc)
 				s = *report->GetOwnerDesc();
 			else
 				s = *report->GetEnemyDesc();
-			g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(40, 100, r.right-250, r.bottom-20), &fontFormat, &fontBrush);
+			g.DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(40, 100, r.right-250, r.bottom-20), &fontFormat, &fontBrush);
 		}
 	}
 	g.ReleaseHDC(pDC->GetSafeHdc());

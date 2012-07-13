@@ -579,7 +579,7 @@ void CDiplomacyMenuView::DrawDiplomacyMenue(Graphics* g)
 			Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic(sFile);
 			if (graphic)
 				g->DrawImage(graphic, 871,690,160,40);
-			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(871,690,160,40), &fontFormat, &fontBrush);
+			g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(871,690,160,40), &fontFormat, &fontBrush);
 		}
 	}
 
@@ -601,7 +601,7 @@ void CDiplomacyMenuView::DrawDiplomacyMenue(Graphics* g)
 		if (graphic)
 			g->DrawImage(graphic, 852,480,160,40);
 		s = CResourceManager::GetString("BTN_ACCEPT");
-		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(852,480,160,40), &fontFormat, &fontBrush);
+		g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(852,480,160,40), &fontFormat, &fontBrush);
 
 		if (m_bShowDeclineButton == TRUE)
 			sFile = "Other\\" + pPlayer->GetPrefix() + "button.bop";
@@ -611,7 +611,7 @@ void CDiplomacyMenuView::DrawDiplomacyMenue(Graphics* g)
 		if (graphic)
 			g->DrawImage(graphic, 852,599,160,40);
 		s = CResourceManager::GetString("BTN_DECLINE");
-		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(852,599,160,40), &fontFormat, &fontBrush);
+		g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(852,599,160,40), &fontFormat, &fontBrush);
 	}
 
 	// "Diplomatieuebersicht" in der Mitte zeichnen
@@ -626,7 +626,7 @@ void CDiplomacyMenuView::DrawDiplomacyMenue(Graphics* g)
 		s = CResourceManager::GetString("DIPLOMACY_MENUE_OFFERS");
 	else if (m_bySubMenu == 2)
 		s = CResourceManager::GetString("DIPLOMACY_MENUE_RECEIPTS");
-	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0,10,m_TotalSize.cx, 50), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(0,10,m_TotalSize.cx, 50), &fontFormat, &fontBrush);
 
 	pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CDiplomacyBottomView));
 }
@@ -660,7 +660,7 @@ void CDiplomacyMenuView::DrawRaceDiplomacyMenue(Graphics* g)
 	if(graphic) g->DrawImage(graphic, 22, 70, 80, 30);
 	if(!m_bSortRaceList) s.Format("%s","A-Z");
 	else s=CResourceManager::GetString("SORT2");
-	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(22,70,80,30), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(22,70,80,30), &fontFormat, &fontBrush);
 
 	CFontLoader::GetGDIFontColor(pPlayer, 3, normalColor);
 	fontBrush.SetColor(normalColor);
@@ -733,7 +733,7 @@ void CDiplomacyMenuView::DrawRaceDiplomacyMenue(Graphics* g)
 
 				// Name der Rasse zeichnen
 				fontBrush.SetColor(markColor);
-				g->DrawString(pRace->GetRaceName().AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), rect, &fontFormat, &fontBrush);
+				g->DrawString(pRace->GetRaceName().AllocSysString(), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), rect, &fontFormat, &fontBrush);
 
 				// Farbe der Schrift und Markierung wählen, wenn wir auf eine Rasse geklickt haben
 				g->FillRectangle(&SolidBrush(Color(50,200,200,200)), RectF(8,100+count*25,142,25));
@@ -779,7 +779,7 @@ void CDiplomacyMenuView::DrawRaceDiplomacyMenue(Graphics* g)
 					else s = CResourceManager::GetString("DEVOTED");
 
 					fontFormat.SetAlignment(StringAlignmentCenter);
-					g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(735,403,300,25), &fontFormat, &fontBrush);
+					g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(735,403,300,25), &fontFormat, &fontBrush);
 					fontFormat.SetAlignment(StringAlignmentNear);
 				}
 			}
@@ -789,7 +789,7 @@ void CDiplomacyMenuView::DrawRaceDiplomacyMenue(Graphics* g)
 				Gdiplus::Color color(normalColor);
 				s = this->PrintDiplomacyStatus(pPlayer->GetRaceID(), pRace->GetRaceID(), color);
 				fontBrush.SetColor(color);
-				g->DrawString(pRace->GetRaceName().AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), rect, &fontFormat, &fontBrush);
+				g->DrawString(pRace->GetRaceName().AllocSysString(), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), rect, &fontFormat, &fontBrush);
 			}
 			fontBrush.SetColor(normalColor);
 			count++;
@@ -821,7 +821,7 @@ void CDiplomacyMenuView::DrawRaceDiplomacyMenue(Graphics* g)
 			{
 				// Name der Rasse zeichnen
 				fontBrush.SetColor(markColor);
-				g->DrawString(pRace->GetRaceName().AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), rect, &fontFormat, &fontBrush);
+				g->DrawString(pRace->GetRaceName().AllocSysString(), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), rect, &fontFormat, &fontBrush);
 
 				// Farbe der Schrift und Markierung wählen, wenn wir auf eine Rasse geklickt haben
 				g->FillRectangle(&SolidBrush(Color(50,200,200,200)), RectF(8,100+count*25,142,25));
@@ -865,7 +865,7 @@ void CDiplomacyMenuView::DrawRaceDiplomacyMenue(Graphics* g)
 					else s = CResourceManager::GetString("DEVOTED");
 
 					fontFormat.SetAlignment(StringAlignmentCenter);
-					g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(735,403,300,25), &fontFormat, &fontBrush);
+					g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(735,403,300,25), &fontFormat, &fontBrush);
 					fontFormat.SetAlignment(StringAlignmentNear);
 				}
 
@@ -898,7 +898,7 @@ void CDiplomacyMenuView::DrawRaceDiplomacyMenue(Graphics* g)
 			// handelt es sich nicht um das angeklickte Angebot, so muss trotzdem deren Name angezeigt werden
 			else
 			{
-				g->DrawString(pRace->GetRaceName().AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), rect, &fontFormat, &fontBrush);
+				g->DrawString(pRace->GetRaceName().AllocSysString(), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), rect, &fontFormat, &fontBrush);
 			}
 
 			// Handelt es sich um eine diplomatisches Angebot (keine Antwort, kein normaler Text)
@@ -932,7 +932,7 @@ void CDiplomacyMenuView::DrawRaceDiplomacyMenue(Graphics* g)
 								fontFormat.SetAlignment(StringAlignmentNear);
 								fontBrush.SetColor(normalColor);
 								s.Format("%s: ",CResourceManager::GetString("RESOURCE_FROM"));
-								g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(350,100+count*25,150,25), &fontFormat, &fontBrush);
+								g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(350,100+count*25,150,25), &fontFormat, &fontBrush);
 
 								Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\" + pPlayer->GetPrefix() + "button_small.bop");
 								Color btnColor;
@@ -961,7 +961,7 @@ void CDiplomacyMenuView::DrawRaceDiplomacyMenue(Graphics* g)
 									if (resource[r] > 0 && pDoc->GetSystem(m_ptResourceFromSystem).GetResourceStore(r) < resource[r] && pDoc->GetSystem(m_ptResourceFromSystem).GetOwnerOfSystem() == pPlayer->GetRaceID())
 										m_bShowSendButton = false;
 								fontFormat.SetAlignment(StringAlignmentCenter);
-								g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(500,97+count*25,120,30), &fontFormat, &btnBrush);
+								g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(500,97+count*25,120,30), &fontFormat, &btnBrush);
 							}
 							// Überprüfen ob wir auch die geforderten Credits bezahlen können
 							if (pPlayer->GetEmpire()->GetCredits() < m_pIncomingInfo->m_nCredits)
@@ -981,7 +981,7 @@ void CDiplomacyMenuView::DrawRaceDiplomacyMenue(Graphics* g)
 
 			fontBrush.SetColor(normalColor);
 			fontFormat.SetAlignment(StringAlignmentNear);
-			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), rect, &fontFormat, &fontBrush);
+			g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), rect, &fontFormat, &fontBrush);
 			count++;
 			if (count > 21)
 				break;
@@ -1025,30 +1025,30 @@ void CDiplomacyMenuView::DrawDiplomacyInfoMenue(Graphics* g, const CString& sWhi
 	CString s;
 
 	// Beschreibung der Rasse
-	g->DrawString(pRace->GetRaceDesc().AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(190,475,845,190), &fontFormat, &fontBrush);
+	g->DrawString(pRace->GetRaceDesc().AllocSysString(), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(190,475,845,190), &fontFormat, &fontBrush);
 
 	// Ingame-Daten zu der Rasse, welche in der Box angezeigt werden
 	fontFormat.SetFormatFlags(StringFormatFlagsNoWrap);
 	fontBrush.SetColor(markColor);
 	RectF rect(215,110,260,25);
 	s = CResourceManager::GetString("NAME").MakeUpper()+":";
-	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), rect, &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), rect, &fontFormat, &fontBrush);
 	rect.Y += 25;
 	s = CResourceManager::GetString("HOMESYSTEM").MakeUpper()+":";
-	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), rect, &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), rect, &fontFormat, &fontBrush);
 	rect.Y += 25;
 	s = CResourceManager::GetString("RELATIONSHIP").MakeUpper()+":";
-	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), rect, &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), rect, &fontFormat, &fontBrush);
 	rect.Y += 50;
 	s = CResourceManager::GetString("KNOWN_EMPIRES").MakeUpper()+":";
-	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), rect, &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), rect, &fontFormat, &fontBrush);
 
 	// Informationen anzeigen
 	rect.Y -= 100;
 	fontBrush.SetColor(normalColor);
 	fontFormat.SetAlignment(StringAlignmentFar);
 	s = pRace->GetRaceName();
-	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), rect, &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), rect, &fontFormat, &fontBrush);
 	rect.Y += 25;
 	s = pRace->GetHomesystemName();
 	for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)//Sector anzeigen
@@ -1062,13 +1062,13 @@ void CDiplomacyMenuView::DrawDiplomacyInfoMenue(Graphics* g, const CString& sWhi
 					s.Format("%s (%s)",s,CResourceManager::GetString("UNKNOWN"));
 					break;
 				}
-	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), rect, &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), rect, &fontFormat, &fontBrush);
 	rect.Y += 25;
 
 	Gdiplus::Color color(normalColor);
 	s = this->PrintDiplomacyStatus(pPlayer->GetRaceID(), sWhichRace, color);
 	fontBrush.SetColor(color);
-	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), rect, &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), rect, &fontFormat, &fontBrush);
 	rect.Y += 25;
 
 	if (pRace->GetType() == MINOR)
@@ -1076,11 +1076,11 @@ void CDiplomacyMenuView::DrawDiplomacyInfoMenue(Graphics* g, const CString& sWhi
 		fontBrush.SetColor(markColor);
 		fontFormat.SetAlignment(StringAlignmentNear);
 		s = CResourceManager::GetString("ACCEPTANCE").MakeUpper()+":";
-		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), rect, &fontFormat, &fontBrush);
+		g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), rect, &fontFormat, &fontBrush);
 		fontBrush.SetColor(normalColor);
 		fontFormat.SetAlignment(StringAlignmentFar);
 		s.Format("%d%%",(int)(((CMinor*)pRace)->GetAcceptancePoints(pPlayer->GetRaceID()) / 50));
-		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), rect, &fontFormat, &fontBrush);
+		g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), rect, &fontFormat, &fontBrush);
 	}
 	// Wenn wir einen Verteidigungpakt mit der Rasse haben (nur bei Majors)
 	else if (pRace->GetType() == MAJOR && pPlayer->GetDefencePact(sWhichRace) == true)
@@ -1091,7 +1091,7 @@ void CDiplomacyMenuView::DrawDiplomacyInfoMenue(Graphics* g, const CString& sWhi
 		else
 			s = CResourceManager::GetString("DEFENCE_PACT");
 		fontFormat.SetAlignment(StringAlignmentCenter);
-		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), rect, &fontFormat, &fontBrush);
+		g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), rect, &fontFormat, &fontBrush);
 	}
 
 	fontBrush.SetColor(normalColor);
@@ -1109,13 +1109,13 @@ void CDiplomacyMenuView::DrawDiplomacyInfoMenue(Graphics* g, const CString& sWhi
 					fontBrush.SetColor(normalColor);
 					fontFormat.SetAlignment(StringAlignmentNear);
 					s = it->second->GetRaceName();
-					g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), rect, &fontFormat, &fontBrush);
+					g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), rect, &fontFormat, &fontBrush);
 
 					fontFormat.SetAlignment(StringAlignmentFar);
 					Gdiplus::Color color(normalColor);
 					s = this->PrintDiplomacyStatus(it->first, sWhichRace, color);
 					fontBrush.SetColor(color);
-					g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), rect, &fontFormat, &fontBrush);
+					g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), rect, &fontFormat, &fontBrush);
 					rect.Y += 25;
 				}
 	}
@@ -1123,7 +1123,7 @@ void CDiplomacyMenuView::DrawDiplomacyInfoMenue(Graphics* g, const CString& sWhi
 	else
 	{
 		s = CResourceManager::GetString("NO_SPECS");
-		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), rect, &fontFormat, &fontBrush);
+		g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), rect, &fontFormat, &fontBrush);
 	}
 
 	// Hier die ganzen Buttons in der Informationsansicht zeichnen
@@ -1163,7 +1163,7 @@ void CDiplomacyMenuView::DrawDiplomacyInfoMenue(Graphics* g, const CString& sWhi
 
 			fontFormat.SetAlignment(StringAlignmentCenter);
 			fontFormat.SetLineAlignment(StringAlignmentCenter);
-			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(275,370,120,30), &fontFormat, &btnBrush);
+			g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(275,370,120,30), &fontFormat, &btnBrush);
 		}
 	}
 }
@@ -1201,7 +1201,7 @@ void CDiplomacyMenuView::DrawDiplomacyOfferMenue(Graphics* g, const CString& sWh
 	CString s;
 
 	s = CResourceManager::GetString("CHOOSE_OFFER")+":";
-	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(200,100,360,25), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(200,100,360,25), &fontFormat, &fontBrush);
 
 	// Abfragen, ob wir ein Angebot schon gemacht haben in dieser Runde
 	// wenn ja, können wir keine weiteren Angebote machen!
@@ -1241,7 +1241,7 @@ void CDiplomacyMenuView::DrawDiplomacyOfferMenue(Graphics* g, const CString& sWh
 			}
 			s.Format("%s: %d %s", CResourceManager::GetString("PAYMENT"), m_OutgoingInfo.m_nCredits, CResourceManager::GetString("CREDITS"));
 			fontFormat.SetAlignment(StringAlignmentNear);
-			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(195,410,255,30), &fontFormat, &fontBrush);
+			g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(195,410,255,30), &fontFormat, &fontBrush);
 
 			Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\" + pPlayer->GetPrefix() + "button_small.bop");
 			Color btnColor;
@@ -1291,7 +1291,7 @@ void CDiplomacyMenuView::DrawDiplomacyOfferMenue(Graphics* g, const CString& sWh
 				}
 				s.Format("%s: %d %s %s",CResourceManager::GetString("TRANSFER"), m_OutgoingInfo.m_nResources[iWhichResource], CResourceManager::GetString("UNITS"),res);
 				fontFormat.SetAlignment(StringAlignmentNear);
-				g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(195,490,355,30), &fontFormat, &fontBrush);
+				g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(195,490,355,30), &fontFormat, &fontBrush);
 
 				// Wenn wir mit der Rasse mindst. einen Handelsvertrag haben, so zeigt er die ungefähre Menge des Rohstoffes an
 				if (pRace->GetType() == MINOR)
@@ -1319,16 +1319,16 @@ void CDiplomacyMenuView::DrawDiplomacyOfferMenue(Graphics* g, const CString& sWh
 						s = CResourceManager::GetString("VERY_MUCH_EXISTING");
 					else
 						s = CResourceManager::GetString("ABOUNDING_EXISTING");
-					g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(195,545,355,25), &fontFormat, &fontBrush);
+					g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(195,545,355,25), &fontFormat, &fontBrush);
 				}
 
 				// Den Button für die Ressourcenauswahl zeichnen
 				if (graphic)
 					g->DrawImage(graphic, 510, 518, 120, 30);
 				fontFormat.SetAlignment(StringAlignmentCenter);
-				g->DrawString(res.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(510,518,120,30), &fontFormat, &btnBrush);
+				g->DrawString(CComBSTR(res.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(510,518,120,30), &fontFormat, &btnBrush);
 				s = CResourceManager::GetString("RESOURCE");
-				g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(510,490,120,30), &fontFormat, &fontBrush);
+				g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(510,490,120,30), &fontFormat, &fontBrush);
 
 				// Den Button für die Systemauswahl der abzuknüpfenden Ressource zeichnen, nicht bei Forderung von Majorrace
 				if (m_OutgoingInfo.m_nType != DIPLOMATIC_AGREEMENT::REQUEST)
@@ -1336,9 +1336,9 @@ void CDiplomacyMenuView::DrawDiplomacyOfferMenue(Graphics* g, const CString& sWh
 					if (graphic)
 						g->DrawImage(graphic, 510, 605, 120, 30);
 					s.Format("%s", pDoc->GetSector(m_OutgoingInfo.m_ptKO).GetName());
-					g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(510,605,120,30), &fontFormat, &btnBrush);
+					g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(510,605,120,30), &fontFormat, &btnBrush);
 					s = CResourceManager::GetString("FROM_SYSTEM");
-					g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(510,577,120,30), &fontFormat, &fontBrush);
+					g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(510,577,120,30), &fontFormat, &fontBrush);
 				}
 			}
 
@@ -1379,9 +1379,9 @@ void CDiplomacyMenuView::DrawDiplomacyOfferMenue(Graphics* g, const CString& sWh
 					fontFormat.SetAlignment(StringAlignmentCenter);
 					if (graphic)
 						g->DrawImage(graphic, 510, 438, 120, 30);
-					g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(510,438,120,30), &fontFormat, &btnBrush);
+					g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(510,438,120,30), &fontFormat, &btnBrush);
 					s = CResourceManager::GetString("ENEMY");
-					g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(510,410,120,30), &fontFormat, &fontBrush);
+					g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(510,410,120,30), &fontFormat, &fontBrush);
 				}
 			}
 
@@ -1396,9 +1396,9 @@ void CDiplomacyMenuView::DrawDiplomacyOfferMenue(Graphics* g, const CString& sWh
 				fontFormat.SetAlignment(StringAlignmentCenter);
 				if (graphic)
 					g->DrawImage(graphic, 510, 438, 120, 30);
-				g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(510,438,120,30), &fontFormat, &btnBrush);
+				g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(510,438,120,30), &fontFormat, &btnBrush);
 				s = CResourceManager::GetString("CONTRACT_DURATION");
-				g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(510,410,120,30), &fontFormat, &fontBrush);
+				g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(510,410,120,30), &fontFormat, &fontBrush);
 			}
 
 			// Wenn wir einen Kriegspakt anbieten wollen, dann Button zur Auswahl des Kriegsgegners mit anzeigen
@@ -1426,9 +1426,9 @@ void CDiplomacyMenuView::DrawDiplomacyOfferMenue(Graphics* g, const CString& sWh
 					fontFormat.SetAlignment(StringAlignmentCenter);
 					if (graphic)
 						g->DrawImage(graphic, 510, 438, 120, 30);
-					g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(510,438,120,30), &fontFormat, &btnBrush);
+					g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(510,438,120,30), &fontFormat, &btnBrush);
 					s = CResourceManager::GetString("WARPACT_ENEMY");
-					g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(510,410,120,30), &fontFormat, &fontBrush);
+					g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(510,410,120,30), &fontFormat, &fontBrush);
 				}
 			}
 		}
@@ -1453,7 +1453,7 @@ void CDiplomacyMenuView::DrawDiplomacyButtons(Graphics* g, CMajor* pMajor, CArra
 	Gdiplus::Color btnColor;
 	CFontLoader::GetGDIFontColor(pMajor, 2, btnColor);
 	SolidBrush fontBrush(btnColor);
-	DrawGDIButtons(g, buttonArray, counter, Gdiplus::Font(fontName.AllocSysString(), fontSize), fontBrush);
+	DrawGDIButtons(g, buttonArray, counter, Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), fontBrush);
 }
 
 CString CDiplomacyMenuView::PrintDiplomacyStatus(const CString& sOurRace, const CString& sRace, Gdiplus::Color& color)

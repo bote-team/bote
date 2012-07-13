@@ -251,7 +251,7 @@ void CShipDesignMenuView::DrawShipDesignMenue(Graphics* g)
 							g->DrawLine(&Gdiplus::Pen(penColor), 15, 145+j*25, 198, 145+j*25);
 						}
 						CString s = pDoc->m_ShipInfoArray.GetAt(i).GetShipClass();
-						g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(25, 120 + j * 25, 175, 25), &fontFormat, &fontBrush);
+						g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(25, 120 + j * 25, 175, 25), &fontFormat, &fontBrush);
 						j++;
 					}
 				}
@@ -272,24 +272,24 @@ void CShipDesignMenuView::DrawShipDesignMenue(Graphics* g)
 			graphic = NULL;
 		}
 		// allgemeine Schiffsinformationen anzeigen
-		pDoc->m_ShipInfoArray.GetAt(ShipNumber).DrawShipInformation(g, CRect(220,250,740,440), &Gdiplus::Font(fontName.AllocSysString(), fontSize), normalColor, markColor, pMajor->GetEmpire()->GetResearch());
+		pDoc->m_ShipInfoArray.GetAt(ShipNumber).DrawShipInformation(g, CRect(220,250,740,440), &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), normalColor, markColor, pMajor->GetEmpire()->GetResearch());
 		// Baukosten des Schiffes anzeigen
 		fontBrush.SetColor(markColor);
 		fontFormat.SetAlignment(StringAlignmentCenter);
 		fontFormat.SetLineAlignment(StringAlignmentNear);
-		g->DrawString(CResourceManager::GetString("BUILDCOSTS").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(190,440,580,25), &fontFormat, &fontBrush);
+		g->DrawString(CResourceManager::GetString("BUILDCOSTS").AllocSysString(), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(190,440,580,25), &fontFormat, &fontBrush);
 
 		fontBrush.SetColor(normalColor);
 		s.Format("%s: %d  %s: %d  %s: %d",CResourceManager::GetString("INDUSTRY"),pDoc->m_ShipInfoArray.GetAt(ShipNumber).GetNeededIndustry(),
 			CResourceManager::GetString("TITAN"),pDoc->m_ShipInfoArray.GetAt(ShipNumber).GetNeededTitan(),
 			CResourceManager::GetString("DEUTERIUM"),pDoc->m_ShipInfoArray.GetAt(ShipNumber).GetNeededDeuterium());
-		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(190,465,580,25), &fontFormat, &fontBrush);
+		g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(190,465,580,25), &fontFormat, &fontBrush);
 
 		s.Format("%s: %d  %s: %d  %s: %d  %s: %d",CResourceManager::GetString("DURANIUM"),pDoc->m_ShipInfoArray.GetAt(ShipNumber).GetNeededDuranium(),
 			CResourceManager::GetString("CRYSTAL"),pDoc->m_ShipInfoArray.GetAt(ShipNumber).GetNeededCrystal(),
 			CResourceManager::GetString("IRIDIUM"),pDoc->m_ShipInfoArray.GetAt(ShipNumber).GetNeededIridium(),
 			CResourceManager::GetString("DERITIUM"),pDoc->m_ShipInfoArray.GetAt(ShipNumber).GetNeededDeritium());
-			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(190,490,580,25), &fontFormat, &fontBrush);
+			g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(190,490,580,25), &fontFormat, &fontBrush);
 
 		// Die Buttons zur Eigenschaftsänderung in der Rechten Seite der Ansicht anzeigen
 		// zuerst überprüfen wir die Beamwaffen, wir können den Typ der Beamwaffe verändern, wenn wir mindst. ein anderes
@@ -314,7 +314,7 @@ void CShipDesignMenuView::DrawShipDesignMenue(Graphics* g)
 				// Dann können wir den Typ unserer Beamwaffe(n) verbessern
 				if (graphic)
 					g->DrawImage(graphic, 930, 120, 120, 30);
-				g->DrawString(CResourceManager::GetString("BTN_STRONGER").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(930,120,120,30), &fontFormat, &btnBrush);
+				g->DrawString(CResourceManager::GetString("BTN_STRONGER").AllocSysString(), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(930,120,120,30), &fontFormat, &btnBrush);
 				m_bFoundBetterBeam = TRUE;
 			}
 			// Wenn wir einen größeren Typ als Typ 1 haben, dann können wir diesen verringern
@@ -323,7 +323,7 @@ void CShipDesignMenuView::DrawShipDesignMenue(Graphics* g)
 				// Dann können wir den Typ unserer Beamwaffe(n) verkleinern
 				if (graphic)
 					g->DrawImage(graphic, 800, 120, 120, 30);
-				g->DrawString(CResourceManager::GetString("BTN_WEAKER").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(800,120,120,30), &fontFormat, &btnBrush);
+				g->DrawString(CResourceManager::GetString("BTN_WEAKER").AllocSysString(), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(800,120,120,30), &fontFormat, &btnBrush);
 				m_bFoundWorseBeam = TRUE;
 			}
 
@@ -331,7 +331,7 @@ void CShipDesignMenuView::DrawShipDesignMenue(Graphics* g)
 			fontBrush.SetColor(normalColor);
 			s.Format("%s %d %s",CResourceManager::GetString("TYPE"),pDoc->m_ShipInfoArray.GetAt(ShipNumber).GetBeamWeapons()->GetAt(m_iBeamWeaponNumber).GetBeamType(),pDoc->m_ShipInfoArray.GetAt(ShipNumber).GetBeamWeapons()->GetAt(m_iBeamWeaponNumber).GetBeamName());
 			fontFormat.SetTrimming(StringTrimmingEllipsisCharacter);
-			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(845,80,160,25), &fontFormat, &fontBrush);
+			g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(845,80,160,25), &fontFormat, &fontBrush);
 			fontFormat.SetTrimming(StringTrimmingNone);
 		}
 
@@ -343,17 +343,17 @@ void CShipDesignMenuView::DrawShipDesignMenue(Graphics* g)
 			// Torpedoname zeichnen
 			fontBrush.SetColor(normalColor);
 			s.Format("%s (%d°)",pDoc->m_ShipInfoArray.GetAt(ShipNumber).GetTorpedoWeapons()->GetAt(m_iTorpedoWeaponNumber).GetTupeName(), pDoc->m_ShipInfoArray.GetAt(ShipNumber).GetTorpedoWeapons()->GetAt(m_iTorpedoWeaponNumber).GetFirearc()->GetAngle());
-			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(775,170,300,25), &fontFormat, &fontBrush);
+			g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(775,170,300,25), &fontFormat, &fontBrush);
 
 			s.Format("%s (%d)", CTorpedoInfo::GetName(currentTorpType), CTorpedoInfo::GetPower(currentTorpType));
-			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(775,195,300,25), &fontFormat, &fontBrush);
+			g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(775,195,300,25), &fontFormat, &fontBrush);
 
 			if (graphic)
 				g->DrawImage(graphic, 800, 230, 120, 30);
-			g->DrawString(CResourceManager::GetString("BTN_LAUNCHER").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(800,230,120,30), &fontFormat, &btnBrush);
+			g->DrawString(CResourceManager::GetString("BTN_LAUNCHER").AllocSysString(), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(800,230,120,30), &fontFormat, &btnBrush);
 			if (graphic)
 				g->DrawImage(graphic, 930, 230, 120, 30);
-			g->DrawString(CResourceManager::GetString("BTN_TORPEDO").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(930,230,120,30), &fontFormat, &btnBrush);
+			g->DrawString(CResourceManager::GetString("BTN_TORPEDO").AllocSysString(), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(930,230,120,30), &fontFormat, &btnBrush);
 		}
 
 		// hier Möglichkeit anderes Hüllenmaterial anzubringen eingebaut
@@ -371,18 +371,18 @@ void CShipDesignMenuView::DrawShipDesignMenue(Graphics* g)
 			s.Format("%s%s",material, CResourceManager::GetString("DOUBLE_HULL_ARMOUR"));
 		else
 			s.Format("%s%s",material, CResourceManager::GetString("HULL_ARMOR"));
-		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(775,380,300,30), &fontFormat, &fontBrush);
+		g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(775,380,300,30), &fontFormat, &fontBrush);
 
 		// Hier kann man den Schildtyp ändern
 		// zuerst Anzeige der jetzt aktuellen Schilde. Beim Romulaner eine schwarze Schriftart wählen. Wenn dies
 		// später auch bei der Föd heller unterlegt ist kann auch dort eine schwarze Schriftfarbe gewählt werden.
 		s.Format("%s %d %s",CResourceManager::GetString("TYPE"),pDoc->m_ShipInfoArray.GetAt(ShipNumber).GetShield()->GetShieldType(),CResourceManager::GetString("SHIELDS"));
-		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(775,490,300,30), &fontFormat, &fontBrush);
+		g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(775,490,300,30), &fontFormat, &fontBrush);
 
 		// Ab jetzt die Buttons zum Ändern der jeweiligen Komponenten
 		if (graphic)
 			g->DrawImage(graphic, 800, 420, 120, 30);
-		g->DrawString(CResourceManager::GetString("BTN_MATERIAL").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(800,420,120,30), &fontFormat, &btnBrush);
+		g->DrawString(CResourceManager::GetString("BTN_MATERIAL").AllocSysString(), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(800,420,120,30), &fontFormat, &btnBrush);
 
 		// wenn eine Doppelhülle draus gemacht werden soll dann darf die Manövrierbarkeit nicht schon "keine" oder nur 1 sein
 		// wenn eine Einzelhülle draus gemacht werden soll, dann darf die Manövrierbarkeit nicht schon phänomenal sein
@@ -390,7 +390,7 @@ void CShipDesignMenuView::DrawShipDesignMenue(Graphics* g)
 		{
 			if (graphic)
 				g->DrawImage(graphic, 930, 420, 120, 30);
-			g->DrawString(CResourceManager::GetString("BTN_HULLTYPE").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(930,420,120,30), &fontFormat, &btnBrush);
+			g->DrawString(CResourceManager::GetString("BTN_HULLTYPE").AllocSysString(), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(930,420,120,30), &fontFormat, &btnBrush);
 		}
 
 		// Schildtyp schwächer Button einblenden
@@ -398,14 +398,14 @@ void CShipDesignMenuView::DrawShipDesignMenue(Graphics* g)
 		{
 			if (graphic)
 				g->DrawImage(graphic, 800, 540, 120, 30);
-			g->DrawString(CResourceManager::GetString("BTN_WEAKER").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(800,540,120,30), &fontFormat, &btnBrush);
+			g->DrawString(CResourceManager::GetString("BTN_WEAKER").AllocSysString(), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(800,540,120,30), &fontFormat, &btnBrush);
 		}
 		// Schildtyp stärker Button einblenden
 		if (pDoc->m_ShipInfoArray.GetAt(ShipNumber).GetShield()->GetShieldType() < pMajor->GetWeaponObserver()->GetMaxShieldType())
 		{
 			if (graphic)
 				g->DrawImage(graphic, 930, 540, 120, 30);
-			g->DrawString(CResourceManager::GetString("BTN_STRONGER").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(930,540,120,30), &fontFormat, &btnBrush);
+			g->DrawString(CResourceManager::GetString("BTN_STRONGER").AllocSysString(), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(930,540,120,30), &fontFormat, &btnBrush);
 		}
 	}
 	// Wenn das Schiff in irgendeinem unserer Systeme gebaut wird, dann großen Text ausgeben, in welchem System das Schiff
@@ -415,7 +415,7 @@ void CShipDesignMenuView::DrawShipDesignMenue(Graphics* g)
 	{
 		COverlayBanner *banner = new COverlayBanner(CPoint(200,300), CSize(580, 200),
 			CResourceManager::GetString("NO_CHANGE_POSSIBLE", FALSE, systemName), RGB(220,0,0));
-		banner->Draw(g, &Gdiplus::Font(fontName.AllocSysString(), fontSize));
+		banner->Draw(g, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize));
 		delete banner;
 	}
 
@@ -425,7 +425,7 @@ void CShipDesignMenuView::DrawShipDesignMenue(Graphics* g)
 	// Schriftfarbe wählen
 	CFontLoader::GetGDIFontColor(pMajor, 3, normalColor);
 	fontBrush.SetColor(normalColor);
-	g->DrawString(CResourceManager::GetString("SHIPDESIGN").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(188,10,600,50), &fontFormat, &fontBrush);
+	g->DrawString(CResourceManager::GetString("SHIPDESIGN").AllocSysString(), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(188,10,600,50), &fontFormat, &fontBrush);
 }
 
 void CShipDesignMenuView::OnLButtonDown(UINT nFlags, CPoint point)

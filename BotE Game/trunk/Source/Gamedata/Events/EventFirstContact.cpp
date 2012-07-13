@@ -81,14 +81,14 @@ void CEventFirstContact::Draw(Graphics* g, CGraphicPool* graphicPool) const
 
 	// Überschrift zeichnen
 	s = CResourceManager::GetString("FIRSTCONTACTEVENT_HEADLINE");
-	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(730,500,540,75), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(730,500,540,75), &fontFormat, &fontBrush);
 
 	CFontLoader::CreateGDIFont(pMajor, 4, fontName, fontSize);
 	fontFormat.SetAlignment(StringAlignmentCenter);
 	fontFormat.SetLineAlignment(StringAlignmentNear);
 	fontFormat.SetFormatFlags(!StringFormatFlagsNoWrap);
 	s = CResourceManager::GetString("FIRSTCONTACTEVENT_TEXT", FALSE, pContactedRace->GetRaceName());
-	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(800,610,470,75), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(800,610,470,75), &fontFormat, &fontBrush);
 
 	// Bild der Rasse zeichnen
 	Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Races\\" + pContactedRace->GetGraphicFileName());
@@ -100,14 +100,14 @@ void CEventFirstContact::Draw(Graphics* g, CGraphicPool* graphicPool) const
 	fontFormat.SetLineAlignment(StringAlignmentCenter);
 	fontFormat.SetFormatFlags(StringFormatFlagsNoWrap);
 	s = pContactedRace->GetRaceName();
-	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(5,717,304,50), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(5,717,304,50), &fontFormat, &fontBrush);
 
 	// Eigenschaften zeichnen
 	Gdiplus::Color markColor;
 	markColor.SetFromCOLORREF(pMajor->GetDesign()->m_clrListMarkTextColor);
 	fontBrush.SetColor(markColor);
 	s = CResourceManager::GetString("PROPERTIES");
-	g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(730,140,540,75), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(730,140,540,75), &fontFormat, &fontBrush);
 
 	CFontLoader::CreateGDIFont(pMajor, 3, fontName, fontSize);
 	fontBrush.SetColor(color);
@@ -138,7 +138,7 @@ void CEventFirstContact::Draw(Graphics* g, CGraphicPool* graphicPool) const
 		sProperties.push_back(CResourceManager::GetString("NONE"));
 
 	for (UINT i = 0; i < sProperties.size(); i++)
-		g->DrawString(sProperties[i].AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(730,210 + i*30,540,30), &fontFormat, &fontBrush);
+		g->DrawString(sProperties[i].AllocSysString(), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(730,210 + i*30,540,30), &fontFormat, &fontBrush);
 
 	//Beziehungsbalken zeichnen
 	if (pContactedRace->GetType() == MINOR || pContactedRace->GetType() == MAJOR && ((CMajor*)pContactedRace)->IsHumanPlayer() == false)
@@ -212,7 +212,7 @@ void CEventFirstContact::Draw(Graphics* g, CGraphicPool* graphicPool) const
 	}
 
 	fontFormat.SetFormatFlags(!StringFormatFlagsNoWrap);
-	g->DrawString(sProgress.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(730,100,540,40), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(sProgress.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(730,100,540,40), &fontFormat, &fontBrush);
 	fontFormat.SetFormatFlags(StringFormatFlagsNoWrap);
 
 	// Spezialgebäude und -schiffe der Rasse zeichnen, sofern es sich um eine Minorrace handelt
@@ -235,7 +235,7 @@ void CEventFirstContact::Draw(Graphics* g, CGraphicPool* graphicPool) const
 						if (graphic)
 							g->DrawImage(graphic, 15 + nCount * 165, 810, 150, 113);
 						s = pDoc->BuildingInfo[i].GetBuildingName();
-						g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(nCount * 165, 935, 180, 50), &fontFormat, &fontBrush);
+						g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(nCount * 165, 935, 180, 50), &fontFormat, &fontBrush);
 						nCount++;
 					}
 		// Schiffe des Minors zeichnen
@@ -249,7 +249,7 @@ void CEventFirstContact::Draw(Graphics* g, CGraphicPool* graphicPool) const
 					if (graphic)
 						g->DrawImage(graphic, 15 + nCount * 165, 810, 150, 113);
 					s = pDoc->m_ShipInfoArray[i].GetShipClass() + "-" + CResourceManager::GetString("CLASS") + " (" + pDoc->m_ShipInfoArray[i].GetShipTypeAsString() + ")";
-					g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(nCount * 165, 935, 180, 50), &fontFormat, &fontBrush);
+					g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(nCount * 165, 935, 180, 50), &fontFormat, &fontBrush);
 					nCount++;
 				}
 	}
@@ -259,7 +259,7 @@ void CEventFirstContact::Draw(Graphics* g, CGraphicPool* graphicPool) const
 	CFontLoader::GetGDIFontColor(pMajor, 2, color);
 	fontBrush.SetColor(color);
 	for (int i = 0; i < m_Buttons.GetSize(); i++)
-		m_Buttons.GetAt(i)->DrawButton(*g, graphicPool, Gdiplus::Font(fontName.AllocSysString(), fontSize), fontBrush);
+		m_Buttons.GetAt(i)->DrawButton(*g, graphicPool, Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), fontBrush);
 }
 
 ///	Funktion erstellt zur aktuellen Mouse-Position einen HTML Tooltip

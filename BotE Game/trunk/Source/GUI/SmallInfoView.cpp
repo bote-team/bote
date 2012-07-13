@@ -137,20 +137,20 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 
 			CString s;
 			s.Format("%s: %s",CResourceManager::GetString("NAME"), m_pPlanet->GetPlanetName());
-			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0,0,r.right,55), &fontFormat, &fontBrush);
+			g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(0,0,r.right,55), &fontFormat, &fontBrush);
 			s.Format("%s: %c",CResourceManager::GetString("CLASS"), m_pPlanet->GetClass());
-			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0,0,r.right,75), &fontFormat, &fontBrush);
+			g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(0,0,r.right,75), &fontFormat, &fontBrush);
 			s.Format("%s: %.3lf %s",CResourceManager::GetString("MAX_HABITANTS"), m_pPlanet->GetMaxHabitant(), CResourceManager::GetString("MRD"));
-			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0,0,r.right,95), &fontFormat, &fontBrush);
+			g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(0,0,r.right,95), &fontFormat, &fontBrush);
 			s.Format("%s: %.3lf %s",CResourceManager::GetString("CURRENT_HABITANTS"), m_pPlanet->GetCurrentHabitant(), CResourceManager::GetString("MRD"));
-			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0,0,r.right,115), &fontFormat, &fontBrush);
+			g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(0,0,r.right,115), &fontFormat, &fontBrush);
 			s.Format("%s: %.2lf %% ",CResourceManager::GetString("GROWTH"), m_pPlanet->GetPlanetGrowth());
-			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0,0,r.right,135), &fontFormat, &fontBrush);
+			g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(0,0,r.right,135), &fontFormat, &fontBrush);
 			if (m_pPlanet->GetNeededTerraformPoints() > 0)
 			{
 				s.Format("%s: %d %s",CResourceManager::GetString("TERRAFORM_ORDER"),
 					m_pPlanet->GetNeededTerraformPoints(), CResourceManager::GetString("POINTS_SHORT"));
-				g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0,0,r.right,155), &fontFormat, &fontBrush);
+				g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(0,0,r.right,155), &fontFormat, &fontBrush);
 			}
 			// Die auf dem Planeten vorhanden Rohstoffe anzeigen
 			// Steht so auch in der ConsumeRessources() Funktion der Klasse CMinorRace und in der BuildBuildingsForMinorRace()
@@ -161,7 +161,7 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 			if (m_pPlanet->GetHabitable())
 			{
 				s = CResourceManager::GetString("EXISTING_RES") + ":";
-				g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0,165,r.right,25), &fontFormat, &fontBrush);
+				g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(0,165,r.right,25), &fontFormat, &fontBrush);
 			}
 
 			BOOLEAN res[DERITIUM + 1] = {FALSE};
@@ -233,12 +233,12 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 			fontFormat.SetAlignment(StringAlignmentCenter);
 			fontFormat.SetLineAlignment(StringAlignmentCenter);
 			fontFormat.SetFormatFlags(!StringFormatFlagsNoWrap);
-			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0,165,r.right,85), &fontFormat, &fontBrush);
+			g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(0,165,r.right,85), &fontFormat, &fontBrush);
 			*/
 			fontFormat.SetFormatFlags(!StringFormatFlagsNoWrap);
 			fontBrush.SetColor(Color(220,220,220));
 			s.Format("I N F O R M A T I O N");
-			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize, FontStyleUnderline), RectF(0,0,r.right,25), &fontFormat, &fontBrush);
+			g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize, FontStyleUnderline), RectF(0,0,r.right,25), &fontFormat, &fontBrush);
 		}
 
 		// Überprüfen, ob auf den Planeten geklickt wurde und dann Informationen über Klasse anzeigen
@@ -348,23 +348,23 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 				Range = CResourceManager::GetString("LONG");
 
 			s.Format("%s",m_pShip->GetShipName());
-			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0,0,r.right,45), &fontFormat, &fontBrush);
+			g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(0,0,r.right,45), &fontFormat, &fontBrush);
 
 			fontBrush.SetColor(color);
 			s.Format("%s: %s",CResourceManager::GetString("TYPE"),	m_pShip->GetShipTypeAsString(FALSE));
-			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0,0,r.right,85), &fontFormat, &fontBrush);
+			g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(0,0,r.right,85), &fontFormat, &fontBrush);
 
 			s.Format("%s: %i / %i",CResourceManager::GetString("HULL"), m_pShip->GetHull()->GetCurrentHull(),m_pShip->GetHull()->GetMaxHull());
-			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0,0,r.right,105), &fontFormat, &fontBrush);
+			g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(0,0,r.right,105), &fontFormat, &fontBrush);
 
 			s.Format("%s: %i / %i",CResourceManager::GetString("SHIELDS"), m_pShip->GetShield()->GetCurrentShield(),m_pShip->GetShield()->GetMaxShield());
-			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0,0,r.right,125), &fontFormat, &fontBrush);
+			g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(0,0,r.right,125), &fontFormat, &fontBrush);
 
 			s.Format("%s: %s",CResourceManager::GetString("RANGE"), Range);
-			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0,0,r.right,145), &fontFormat, &fontBrush);
+			g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(0,0,r.right,145), &fontFormat, &fontBrush);
 
 			s.Format("%s: %i",CResourceManager::GetString("SPEED"), m_pShip->GetSpeed());
-			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0,0,r.right,165), &fontFormat, &fontBrush);
+			g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(0,0,r.right,165), &fontFormat, &fontBrush);
 		}
 		// Wenn wir Infomationen zur Flotte anzeigen
 		else
@@ -380,7 +380,7 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 
 			s.Format("%d %s",m_pShip->GetFleet()->GetFleetSize()+1,
 				CResourceManager::GetString("SHIPS"));
-			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0,0,r.right,45), &fontFormat, &fontBrush);
+			g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(0,0,r.right,45), &fontFormat, &fontBrush);
 
 			fontBrush.SetColor(color);
 
@@ -389,14 +389,14 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 				m_pShip->GetShipTypeAsString(TRUE));
 			else
 				s = CResourceManager::GetString("MIXED_FLEET");
-			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0,0,r.right,85), &fontFormat, &fontBrush);
+			g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(0,0,r.right,85), &fontFormat, &fontBrush);
 
 			s.Format("%s: %s",CResourceManager::GetString("RANGE"), Range);
-			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0,0,r.right,105), &fontFormat, &fontBrush);
+			g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(0,0,r.right,105), &fontFormat, &fontBrush);
 
 			s.Format("%s: %d",CResourceManager::GetString("SPEED"),
 				m_pShip->GetFleet()->GetFleetSpeed(&pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex())));
-			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0,0,r.right,125), &fontFormat, &fontBrush);
+			g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(0,0,r.right,125), &fontFormat, &fontBrush);
 		}
 
 		CPoint TargetKO = m_pShip->GetTargetKO();
@@ -443,7 +443,7 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 			fontBrush.SetColor(Color(0,225,0));
 			s.Format("--- %s ---", CResourceManager::GetString("ACTION").MakeUpper());
 		}
-		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0,0,r.right,185), &fontFormat, &fontBrush);
+		g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(0,0,r.right,185), &fontFormat, &fontBrush);
 		// bei eigenem Schiff aktuellen Befehl zeichnen
 		if (m_pShip->GetOwnerOfShip() == pMajor->GetRaceID())
 		{
@@ -461,7 +461,7 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 			fontFormat.SetAlignment(StringAlignmentCenter);
 			fontFormat.SetLineAlignment(StringAlignmentNear);
 			fontFormat.SetFormatFlags(!StringFormatFlagsNoWrap);
-			g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(0,190,r.right,50), &fontFormat, &fontBrush);
+			g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(0,190,r.right,50), &fontFormat, &fontBrush);
 		}
 	}
 	else

@@ -126,11 +126,11 @@ void CEventVictory::Draw(Graphics* g, CGraphicPool* graphicPool) const
 	if (m_sRace == m_sWinnerRace)
 	{
 		CString s = CResourceManager::GetString("VICTORY");
-		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize * 2.5f), RectF(0, 0, 1280, 1024 / 3.0f), &fontFormat, &fontBrush);
+		g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize * 2.5f), RectF(0, 0, 1280, 1024 / 3.0f), &fontFormat, &fontBrush);
 
 		CFontLoader::CreateGDIFont(pMajor, 3, fontName, fontSize);
 		s = CResourceManager::GetString("CONGRATULATIONS");
-		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize * 1.5), RectF(0, 75, 1280, 1024 / 3 + 75), &fontFormat, &fontBrush);
+		g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize * 1.5), RectF(0, 75, 1280, 1024 / 3 + 75), &fontFormat, &fontBrush);
 
 		fontFormat.SetAlignment(StringAlignmentNear);
 
@@ -147,12 +147,12 @@ void CEventVictory::Draw(Graphics* g, CGraphicPool* graphicPool) const
 			CResourceManager::GetString("BIRTH_OF_THE_EMPIRE_END"),
 			CResourceManager::GetString("REACHED_GAMEPOINTS"),
 			nGamePoints);
-		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(75, 1024 / 1.5f - 75, 1280 - 75, 1024 / 3 - 75), &fontFormat, &fontBrush);
+		g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(75, 1024 / 1.5f - 75, 1280 - 75, 1024 / 3 - 75), &fontFormat, &fontBrush);
 	}
 	else
 	{
 		CString s = CResourceManager::GetString("DEFEAT");
-		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize * 2.5f), RectF(0, 0, 1280, 1024 / 3.0f), &fontFormat, &fontBrush);
+		g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize * 2.5f), RectF(0, 0, 1280, 1024 / 3.0f), &fontFormat, &fontBrush);
 
 		CFontLoader::CreateGDIFont(pMajor, 3, fontName, fontSize);
 		fontFormat.SetAlignment(StringAlignmentNear);
@@ -172,13 +172,13 @@ void CEventVictory::Draw(Graphics* g, CGraphicPool* graphicPool) const
 			CResourceManager::GetString("OTHER_REACHED_VICTORY_IN_TYPE", FALSE, sRaceName, sType),
 			CResourceManager::GetString("REACHED_GAMEPOINTS"),
 			nGamePoints);
-		g->DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(75, 1024 / 1.5f - 75, 1280 - 75, 1024 / 3 - 75), &fontFormat, &fontBrush);
+		g->DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(75, 1024 / 1.5f - 75, 1280 - 75, 1024 / 3 - 75), &fontFormat, &fontBrush);
 	}
 
 
 	fontFormat.SetAlignment(StringAlignmentFar);
 	CString sLogo = "Birth of the Empires";
-	g->DrawString(sLogo.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(1280 - 200, 1024 - 25, 200, 25), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(sLogo.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(1280 - 200, 1024 - 25, 200, 25), &fontFormat, &fontBrush);
 
 	// Buttons zeichnen
 
@@ -187,5 +187,5 @@ void CEventVictory::Draw(Graphics* g, CGraphicPool* graphicPool) const
 	CFontLoader::GetGDIFontColor(pMajor, 2, color);
 	fontBrush.SetColor(color);
 	for (int i = 0; i < m_Buttons.GetSize(); i++)
-		m_Buttons.GetAt(i)->DrawButton(*g, graphicPool, Gdiplus::Font(fontName.AllocSysString(), fontSize), fontBrush);
+		m_Buttons.GetAt(i)->DrawButton(*g, graphicPool, Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), fontBrush);
 }

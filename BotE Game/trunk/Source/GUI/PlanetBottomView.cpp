@@ -183,20 +183,20 @@ void CPlanetBottomView::OnDraw(CDC* dc)
 		s.Format("%s", pDoc->GetSector(KO).GetAnomaly()->GetMapName(KO));
 	else
 		s.Format("%s %c%i",CResourceManager::GetString("SECTOR"),(char)(KO.y+97),KO.x+1);
-	g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), PointF(40,25), &fontFormat, &fontBrush);
+	g.DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), PointF(40,25), &fontFormat, &fontBrush);
 
 	if (pDoc->m_Sector[KO.x][KO.y].GetScanned(pMajor->GetRaceID()) == FALSE)
 	{
 		s = CResourceManager::GetString("UNKNOWN");
-		g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), PointF(40,47), &fontFormat, &fontBrush);
+		g.DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), PointF(40,47), &fontFormat, &fontBrush);
 	}
 	else if (pDoc->m_Sector[KO.x][KO.y].GetSunSystem() == TRUE && pDoc->m_Sector[KO.x][KO.y].GetKnown(pMajor->GetRaceID()) == TRUE)
 	{
 		// vorhandene Rohstoffe auf allen Planeten zeichnen
 		s = CResourceManager::GetString("EXISTING_RES") + ":";
-		g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), PointF(735,228), &fontFormat, &fontBrush);
+		g.DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), PointF(735,228), &fontFormat, &fontBrush);
 		RectF boundingBox;
-		g.MeasureString(s.AllocSysString(), s.GetLength(), &Gdiplus::Font(fontName.AllocSysString(), fontSize), PointF(735, 228), &fontFormat, &boundingBox);
+		g.MeasureString(CComBSTR(s.AllocSysString()), s.GetLength(), &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), PointF(735, 228), &fontFormat, &boundingBox);
 		// Symbole der vorhanden Ressourcen im System ermitteln
 		BOOLEAN res[DERITIUM + 1] = {0},rescol[DERITIUM + 1] = {0};
 		pDoc->GetSector(KO).GetAvailableResources(res, false);	//alle Ressourcen
@@ -229,13 +229,13 @@ void CPlanetBottomView::OnDraw(CDC* dc)
 		}
 
 		s.Format("%s: %s",CResourceManager::GetString("SYSTEM"), pDoc->m_Sector[KO.x][KO.y].GetName());
-		g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), PointF(40,47), &fontFormat, &fontBrush);
+		g.DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), PointF(40,47), &fontFormat, &fontBrush);
 		if (pDoc->m_Sector[KO.x][KO.y].GetFullKnown(pMajor->GetRaceID()))
 		{
 			s.Format("%s: %.3lf %s",CResourceManager::GetString("MAX_HABITANTS"), maxHabitants, CResourceManager::GetString("MRD"));
-			g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), PointF(40,180), &fontFormat, &fontBrush);
+			g.DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), PointF(40,180), &fontFormat, &fontBrush);
 			s.Format("%s: %.3lf %s",CResourceManager::GetString("CURRENT_HABITANTS"), currentHabitants, CResourceManager::GetString("MRD"));
-			g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), PointF(40,202), &fontFormat, &fontBrush);
+			g.DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), PointF(40,202), &fontFormat, &fontBrush);
 			graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\popmaxSmall.bop");
 			if (graphic)
 				g.DrawImage(graphic, 23, 180, 20, 16);
@@ -259,7 +259,7 @@ void CPlanetBottomView::OnDraw(CDC* dc)
 				nPosX = 10;
 			if (nTroopNumber >= 100)
 				nPosX = 20;
-			g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), PointF(40,69), &fontFormat, &fontBrush);
+			g.DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), PointF(40,69), &fontFormat, &fontBrush);
 			// Bild zeichnen
 			g.DrawImage(graphic, 62 + nPosX, 64, 24, 24);
 		}
@@ -281,7 +281,7 @@ void CPlanetBottomView::OnDraw(CDC* dc)
 		else
 			fontBrush.SetColor(Color(245,0,0));
 
-		g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), PointF(711,0), &fontFormat, &fontBrush);
+		g.DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), PointF(711,0), &fontFormat, &fontBrush);
 	}
 	// Namen des Besitzers des Sector unten rechts zeichnen
 	if (pDoc->GetSector(KO).GetScanned(pMajor->GetRaceID()) && pMajor->IsRaceContacted(pDoc->GetSector(KO).GetOwnerOfSector())
@@ -301,7 +301,7 @@ void CPlanetBottomView::OnDraw(CDC* dc)
 				fontBrush.SetColor(Color(255,255,255));
 
 			CFontLoader::CreateGDIFont(pMajor, 4, fontName, fontSize);
-			g.DrawString(s.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), PointF(735,190), &fontFormat, &fontBrush);
+			g.DrawString(CComBSTR(s.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), PointF(735,190), &fontFormat, &fontBrush);
 		}
 
 		// Wir selbst und alle uns bekannten Rassen sehen, wenn das System blockiert wird.
@@ -313,7 +313,7 @@ void CPlanetBottomView::OnDraw(CDC* dc)
 			s.Format("%d", pDoc->m_System[KO.x][KO.y].GetBlockade());
 			COverlayBanner* banner = new COverlayBanner(CPoint(80,60), viewSize, CResourceManager::GetString("SYSTEM_IS_BLOCKED", FALSE, s), RGB(200,0,0));
 			banner->SetBorderWidth(1);
-			Gdiplus::Font font(fontName.AllocSysString(), fontSize);
+			Gdiplus::Font font(CComBSTR(fontName.AllocSysString()), fontSize);
 			banner->Draw(&g, &font);
 			delete banner;
 		}

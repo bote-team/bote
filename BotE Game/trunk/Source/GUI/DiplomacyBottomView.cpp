@@ -87,16 +87,16 @@ void CDiplomacyBottomView::OnDraw(CDC* dc)
 	fontFormat.SetAlignment(StringAlignmentNear);
 	fontFormat.SetLineAlignment(StringAlignmentNear);
 	fontFormat.SetFormatFlags(StringFormatFlagsNoWrap);
-	g.DrawString(m_strHeadLine.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(40, 30, rect.right, rect.bottom), &fontFormat, &fontBrush);
+	g.DrawString(CComBSTR(m_strHeadLine.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(40, 30, rect.right, rect.bottom), &fontFormat, &fontBrush);
 
 	if (m_strText.IsEmpty())
-		g.DrawString(CResourceManager::GetString("NO_DIPLOMATIC_NEWS").AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(40, 30, rect.right, rect.bottom), &fontFormat, &fontBrush);
+		g.DrawString(CResourceManager::GetString("NO_DIPLOMATIC_NEWS").AllocSysString(), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(40, 30, rect.right, rect.bottom), &fontFormat, &fontBrush);
 	m_strHeadLine = "";
 
 	CFontLoader::CreateGDIFont(pMajor, 2, fontName, fontSize);
 	fontBrush.SetColor(Color(200,200,250));
 	fontFormat.SetFormatFlags(!StringFormatFlagsNoWrap);
-	g.DrawString(m_strText.AllocSysString(), -1, &Gdiplus::Font(fontName.AllocSysString(), fontSize), RectF(40, 100, rect.right-250, rect.bottom), &fontFormat, &fontBrush);
+	g.DrawString(CComBSTR(m_strText.AllocSysString()), -1, &Gdiplus::Font(CComBSTR(fontName.AllocSysString()), fontSize), RectF(40, 100, rect.right-250, rect.bottom), &fontFormat, &fontBrush);
 
 	g.ReleaseHDC(pDC->GetSafeHdc());
 }
