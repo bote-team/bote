@@ -1082,8 +1082,8 @@ void CBotf2Doc::GenerateGalaxy()
 		CString sAppPath = CIOData::GetInstance()->GetAppPath();
 		CString filePath = "";
 		filePath.Format("%sGraphics\\Galaxies\\pattern%d.boj",sAppPath,nGenerationMode);
-		Bitmap* GalaxyPattern = Bitmap::FromFile(filePath.AllocSysString());
-		if(GalaxyPattern==NULL)
+		std::auto_ptr<Bitmap> GalaxyPattern(Bitmap::FromFile(CComBSTR(filePath)));
+		if(GalaxyPattern.get()==NULL)
 		{
 			sAppPath.Format("pattern%d.boj not found! using standart pattern", nGenerationMode);
 			AfxMessageBox(sAppPath);
@@ -1094,7 +1094,7 @@ void CBotf2Doc::GenerateGalaxy()
 			if(img.IsValidImage())
 			{
 				img.Stretch(STARMAP_SECTORS_HCOUNT,STARMAP_SECTORS_VCOUNT);
-				GalaxyPattern=FCWin32::GDIPlus_CreateBitmap(img);
+				GalaxyPattern.reset(FCWin32::GDIPlus_CreateBitmap(img));
 				Gdiplus::Color nColor;
 				for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
 					for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
@@ -1108,10 +1108,7 @@ void CBotf2Doc::GenerateGalaxy()
 				sAppPath.Format("pattern%d.boj not found! using standart pattern", nGenerationMode);
 				AfxMessageBox(sAppPath);
 			}
-
-			img.Destroy();
-			delete GalaxyPattern;
-		};
+		}
 	}
 
 	// Die sechs Hauptrassen werden zufällig auf der Karte verteilt. Dabei ist aber zu beachten, dass die Entfernungen
