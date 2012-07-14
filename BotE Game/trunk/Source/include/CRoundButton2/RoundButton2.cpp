@@ -22,6 +22,8 @@
 #include <math.h>
 #include ".\RoundButton2.h"
 
+#include <cassert>
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
@@ -74,6 +76,8 @@ CRoundButton2::CRoundButton2(void):
 //! Destruction
 CRoundButton2::~CRoundButton2(void)
 {
+	assert(m_tBtnFont.m_hObject);
+	m_tBtnFont.DeleteObject();
 }
 
 /************************************************************************/
