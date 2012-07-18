@@ -79,13 +79,17 @@ void CEmpire::Serialize(CArchive &ar)
 // sonstige Funktionen
 //////////////////////////////////////////////////////////////////////
 /// Funktion generiert die Liste der Systeme für das Imperium anhand aller Systeme.
-void CEmpire::GenerateSystemList(std::vector<std::vector<CSystem>>& systems/*[STARMAP_SECTORS_HCOUNT][STARMAP_SECTORS_VCOUNT]*/, std::vector<std::vector<CSector>>& sectors/*[STARMAP_SECTORS_HCOUNT][STARMAP_SECTORS_VCOUNT]*/)
+void CEmpire::GenerateSystemList(const std::vector<CSystem>& systems, const std::vector<CSector>& sectors)
 {
 	m_SystemList.RemoveAll();
-	for (int y = 0 ; y < STARMAP_SECTORS_VCOUNT; y++)
-		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-			if (systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem() == m_sEmpireID)
-				m_SystemList.Add(SystemViewStruct(sectors[x][y].GetName(), CPoint(x,y)));
+	for (int y = 0 ; y < STARMAP_SECTORS_VCOUNT; y++) {
+		const unsigned vertical_pos = y * STARMAP_SECTORS_HCOUNT;
+		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++) {
+			const unsigned index = vertical_pos + x;
+			if (systems.at(index).GetOwnerOfSystem() == m_sEmpireID)
+				m_SystemList.Add(SystemViewStruct(sectors.at(index).GetName(), CPoint(x,y)));
+		}
+	}
 }
 
 /// Funktion addiert die übergebene Anzahl an Forschungspunkten zu den Forschungspunkten des Imperiums.

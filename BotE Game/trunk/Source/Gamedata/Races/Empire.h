@@ -155,7 +155,7 @@ public:
 
 	/// Funktion generiert die Liste der Systeme für das Imperium anhand aller Systeme.
 	/// @param systems Feld aller Systeme
-	void GenerateSystemList(std::vector<std::vector<CSystem>>& systems/*[STARMAP_SECTORS_HCOUNT][STARMAP_SECTORS_VCOUNT]*/, std::vector<std::vector<CSector>>& sectors/*[STARMAP_SECTORS_HCOUNT][STARMAP_SECTORS_VCOUNT]*/);
+	void GenerateSystemList(const std::vector<CSystem>& systems, const std::vector<CSector>& sectors);
 
 	/// Funktion setzt die Lager und aktuell prodzuierten Forschungs- und Geheimdienstpunkte wieder auf NULL
 	/// damit man diese später wieder füllen kann. Die wirklichen Lager und Punkte in den einzelnen Systemen
