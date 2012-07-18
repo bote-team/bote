@@ -197,7 +197,7 @@ void CTrade::CalculateTradeActions(CMajor* pMajor, std::vector<std::vector<CSyst
 		// Die Ressource in dem System lagern, wenn wir diese gekauft haben
 		if (m_TradeActions.GetAt(i).price > 0)
 		{
-			systems[KO.x][KO.y].SetResourceStore(res,m_TradeActions.GetAt(i).number);
+			systems.at(KO.x+(KO.y)*STARMAP_SECTORS_HCOUNT).SetResourceStore(res,m_TradeActions.GetAt(i).number);
 			sum[KO.x][KO.y][res] += m_TradeActions.GetAt(i).number;
 			didSome = TRUE;
 		}
@@ -232,7 +232,7 @@ void CTrade::CalculateTradeActions(CMajor* pMajor, std::vector<std::vector<CSyst
 						CString s;
 						s.Format("%d %s",sum[x][y][i],resName);
 						CMessage message;
-						message.GenerateMessage(CResourceManager::GetString("GET_RESOURCES",0,s,sectors[x][y].GetName()), MESSAGE_TYPE::ECONOMY, "", sectors[x][y].GetKO(), FALSE);
+						message.GenerateMessage(CResourceManager::GetString("GET_RESOURCES",0,s,sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetName()), MESSAGE_TYPE::ECONOMY, "", sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetKO(), FALSE);
 						pMajor->GetEmpire()->AddMessage(message);
 					}
 }

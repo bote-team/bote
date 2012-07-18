@@ -371,7 +371,7 @@ void CAssemblyList::RemoveResourceFromStorage(BYTE res, const CPoint &ko, std::v
 	if (ko == CPoint(-1,-1))
 		return;
 
-	CSystem *system = &systems[ko.x][ko.y];
+	CSystem *system = &systems.at(ko.x+(ko.y)*STARMAP_SECTORS_HCOUNT);
 
 	// für Deritium gibt es keine Ressourcenroute
 	if (res != DERITIUM)
@@ -397,13 +397,13 @@ void CAssemblyList::RemoveResourceFromStorage(BYTE res, const CPoint &ko, std::v
 			for (int j = 0; j < routesFrom->GetSize(); j++)
 			{
 				CPoint p = routesFrom->GetAt(j);
-				for (int k = 0; k < systems[p.x][p.y].GetResourceRoutes()->GetSize(); k++)
+				for (int k = 0; k < systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetResourceRoutes()->GetSize(); k++)
 				{
 					// Stimmt die Ressource überein=
-					if (systems[p.x][p.y].GetResourceRoutes()->GetAt(k).GetResource() == res)
+					if (systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetResourceRoutes()->GetAt(k).GetResource() == res)
 					{
 						// Stimmt das Zielsystem mit unserem überein?
-						if (systems[p.x][p.y].GetResourceRoutes()->GetAt(k).GetKO() == ko)
+						if (systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetResourceRoutes()->GetAt(k).GetKO() == ko)
 						{
 							// prüfen das die Route nicht schon verwendet wird
 							bool bUsed = false;
@@ -414,7 +414,7 @@ void CAssemblyList::RemoveResourceFromStorage(BYTE res, const CPoint &ko, std::v
 									break;
 								}
 							if (!bUsed)
-								routes.Add(ROUTELIST(&systems[p.x][p.y].GetResourceRoutes()->GetAt(k), p));
+								routes.Add(ROUTELIST(&systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetResourceRoutes()->GetAt(k), p));
 						}
 					}
 				}
@@ -429,9 +429,9 @@ void CAssemblyList::RemoveResourceFromStorage(BYTE res, const CPoint &ko, std::v
 				int percent = 0;
 				CPoint start = routes.GetAt(random).fromSystem;
 				// sind im jeweiligen Lager des Startsystem genügend Rohstoffe vorhanden
-				if (systems[start.x][start.y].GetResourceStore(res) >= (ULONG)remainingRes)
+				if (systems.at(start.x+(start.y)*STARMAP_SECTORS_HCOUNT).GetResourceStore(res) >= (ULONG)remainingRes)
 				{
-					*systems[start.x][start.y].GetResourceStorages(res) -= remainingRes;
+					*systems.at(start.x+(start.y)*STARMAP_SECTORS_HCOUNT).GetResourceStorages(res) -= remainingRes;
 					if (GetNeededResourceInAssemblyList(0, res) > NULL)
 						percent = 100 * remainingRes / GetNeededResourceInAssemblyList(0, res);
 					CResourceRoute* pResRoute = routes.GetAt(random).route;
@@ -440,12 +440,12 @@ void CAssemblyList::RemoveResourceFromStorage(BYTE res, const CPoint &ko, std::v
 				}
 				else
 				{
-					remainingRes -= systems[start.x][start.y].GetResourceStore(res);
+					remainingRes -= systems.at(start.x+(start.y)*STARMAP_SECTORS_HCOUNT).GetResourceStore(res);
 					if (GetNeededResourceInAssemblyList(0, res) > NULL)
-						percent = 100 * systems[start.x][start.y].GetResourceStore(res) / GetNeededResourceInAssemblyList(0, res);
+						percent = 100 * systems.at(start.x+(start.y)*STARMAP_SECTORS_HCOUNT).GetResourceStore(res) / GetNeededResourceInAssemblyList(0, res);
 					CResourceRoute* pResRoute = routes.GetAt(random).route;
 					pResRoute->SetPercent((BYTE)percent);
-					*systems[start.x][start.y].GetResourceStorages(res) = NULL;
+					*systems.at(start.x+(start.y)*STARMAP_SECTORS_HCOUNT).GetResourceStorages(res) = NULL;
 				}
 				// ROUTELIST Eintrag entfernen, wenn dieser abgearbeitet wurde
 				routes.RemoveAt(random);
@@ -489,7 +489,7 @@ BOOLEAN CAssemblyList::MakeEntry(int runningNumber, const CPoint &ko, std::vecto
 			return FALSE;
 	}
 
-	CSystem* system = &systems[ko.x][ko.y];
+	CSystem* system = &systems.at(ko.x+(ko.y)*STARMAP_SECTORS_HCOUNT);
 	// Ressourcenrouten durchgehen und womöglich die möglichen max. zusätzlichen Ressourcen erfragen
 	CArray<CPoint> routesFrom;
 	ULONG resourcesFromRoutes[DERITIUM + 1];
@@ -507,29 +507,29 @@ BOOLEAN CAssemblyList::MakeEntry(int runningNumber, const CPoint &ko, std::vecto
 	{
 		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
 		{
-			if (systems[x][y].GetOwnerOfSystem() == system->GetOwnerOfSystem() && CPoint(x,y) != ko)
+			if (systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem() == system->GetOwnerOfSystem() && CPoint(x,y) != ko)
 			{
-				for (int i = 0; i < systems[x][y].GetResourceRoutes()->GetSize(); i++)
+				for (int i = 0; i < systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetResourceRoutes()->GetSize(); i++)
 				{
-					if (systems[x][y].GetResourceRoutes()->GetAt(i).GetKO() == ko)
+					if (systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetResourceRoutes()->GetAt(i).GetKO() == ko)
 					{
-						if (systems[x][y].GetBlockade() == NULL && systems[ko.x][ko.y].GetBlockade() == NULL)
+						if (systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetBlockade() == NULL && systems.at(ko.x+(ko.y)*STARMAP_SECTORS_HCOUNT).GetBlockade() == NULL)
 						{
 							routesFrom.Add(CPoint(x,y));
-							BYTE res = systems[x][y].GetResourceRoutes()->GetAt(i).GetResource();
-							resourcesFromRoutes[res] += systems[x][y].GetResourceStore(res);
+							BYTE res = systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetResourceRoutes()->GetAt(i).GetResource();
+							resourcesFromRoutes[res] += systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetResourceStore(res);
 						}
 					}
 				}
 				// gilt nicht bei Blockaden
-				if (systems[x][y].GetBlockade() == NULL && systems[ko.x][ko.y].GetBlockade() == NULL)
+				if (systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetBlockade() == NULL && systems.at(ko.x+(ko.y)*STARMAP_SECTORS_HCOUNT).GetBlockade() == NULL)
 				{
 					for (int res = TITAN; res <= DERITIUM; res++)
 					{
-						if (systems[x][y].GetProduction()->GetResourceDistributor(res))
+						if (systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetResourceDistributor(res))
 						{
 							ptResourceDistributorKOs[res] = CPoint(x,y);
-							nResInDistSys[res] = systems[x][y].GetResourceStore(res);
+							nResInDistSys[res] = systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetResourceStore(res);
 						}
 					}
 				}
@@ -664,7 +664,7 @@ BOOLEAN CAssemblyList::CalculateBuildInAssemblyList(USHORT m_iIndustryProd)
 void CAssemblyList::ClearAssemblyList(const CPoint &ko, std::vector<std::vector<CSystem>>& systems/*[][STARMAP_SECTORS_VCOUNT]*/)
 {
 	// Alle prozentualen Anteile eines womöglich früheren Bauauftrages aus den Ressourcenrouten löschen
-	CSystem* system = &systems[ko.x][ko.y];
+	CSystem* system = &systems.at(ko.x+(ko.y)*STARMAP_SECTORS_HCOUNT);
 
 	CArray<CPoint> routesFrom;
 	ULONG resourcesFromRoutes[DERITIUM + 1];
@@ -683,32 +683,32 @@ void CAssemblyList::ClearAssemblyList(const CPoint &ko, std::vector<std::vector<
 	{
 		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
 		{
-			if (systems[x][y].GetOwnerOfSystem() == system->GetOwnerOfSystem() && CPoint(x,y) != ko)
+			if (systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem() == system->GetOwnerOfSystem() && CPoint(x,y) != ko)
 			{
-				for (int i = 0; i < systems[x][y].GetResourceRoutes()->GetSize(); i++)
+				for (int i = 0; i < systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetResourceRoutes()->GetSize(); i++)
 				{
-					if (systems[x][y].GetResourceRoutes()->GetAt(i).GetKO() == ko)
+					if (systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetResourceRoutes()->GetAt(i).GetKO() == ko)
 					{
 						// prozentualen Anteil vom alten Auftrag zurücksetzen
-						systems[x][y].GetResourceRoutes()->ElementAt(i).SetPercent(0);
+						systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetResourceRoutes()->ElementAt(i).SetPercent(0);
 						// Ressourcen über Route holen
-						if (systems[x][y].GetBlockade() == NULL && systems[ko.x][ko.y].GetBlockade() == NULL)
+						if (systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetBlockade() == NULL && systems.at(ko.x+(ko.y)*STARMAP_SECTORS_HCOUNT).GetBlockade() == NULL)
 						{
 							routesFrom.Add(CPoint(x,y));
-							BYTE res = systems[x][y].GetResourceRoutes()->GetAt(i).GetResource();
-							resourcesFromRoutes[res] += systems[x][y].GetResourceStore(res);
+							BYTE res = systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetResourceRoutes()->GetAt(i).GetResource();
+							resourcesFromRoutes[res] += systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetResourceStore(res);
 						}
 					}
 				}
 				// gilt nicht bei Blockaden
-				if (systems[x][y].GetBlockade() == NULL && systems[ko.x][ko.y].GetBlockade() == NULL)
+				if (systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetBlockade() == NULL && systems.at(ko.x+(ko.y)*STARMAP_SECTORS_HCOUNT).GetBlockade() == NULL)
 				{
 					for (int res = TITAN; res <= DERITIUM; res++)
 					{
-						if (systems[x][y].GetProduction()->GetResourceDistributor(res))
+						if (systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetResourceDistributor(res))
 						{
 							ptResourceDistributorKOs[res] = CPoint(x,y);
-							nResInDistSys[res] = systems[x][y].GetResourceStore(res);
+							nResInDistSys[res] = systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetResourceStore(res);
 						}
 					}
 				}

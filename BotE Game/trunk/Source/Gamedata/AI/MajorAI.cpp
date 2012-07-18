@@ -520,7 +520,7 @@ ANSWER_STATUS::Typ CMajorAI::CalcDiplomacyRequest(const CDiplomacyInfo& info)
 				if (ptSystem != CPoint(-1,-1) && nMaxRes >= info.m_nResources[nRes])
 				{
 					//CString s;
-					//s.Format("Request from: %d an %d\nunsere Beziehung zu denen: %d\nunser Status: %d\nvalue: %lf\ngeforderte Res: %d Menge: %d\naus System: %d/%d\ndavon vorhanden: %d",requestFrom,m_iRaceNumber,m_iRelationshipOtherMajor[requestFrom],m_iDiplomacyStatus[requestFrom],value,res,requestedRessource[res],system.x,system.y,systems[system.x][system.y].GetResourceStore(res));
+					//s.Format("Request from: %d an %d\nunsere Beziehung zu denen: %d\nunser Status: %d\nvalue: %lf\ngeforderte Res: %d Menge: %d\naus System: %d/%d\ndavon vorhanden: %d",requestFrom,m_iRaceNumber,m_iRelationshipOtherMajor[requestFrom],m_iDiplomacyStatus[requestFrom],value,res,requestedRessource[res],system.x,system.y,systems.at(system.x+(system.y)*STARMAP_SECTORS_HCOUNT).GetResourceStore(res));
 					//AfxMessageBox(s);
 					m_pDoc->GetSystem(ptSystem).SetResourceStore(nRes, -info.m_nResources[nRes]);
 				}

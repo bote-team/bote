@@ -2272,10 +2272,10 @@ BOOLEAN CSystem::AddTradeRoute(CPoint dest, std::vector<std::vector<CSystem>>& s
 	if (canAddTradeRoute)
 		for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
 			for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-				if (systems[x][y].GetOwnerOfSystem() == this->GetOwnerOfSystem())
-					if (&systems[x][y] != this)
-						for (int i = 0; i < systems[x][y].GetTradeRoutes()->GetSize(); i++)
-							if (systems[x][y].GetTradeRoutes()->GetAt(i).GetDestKO() == dest)
+				if (systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem() == this->GetOwnerOfSystem())
+					if (&systems.at(x+(y)*STARMAP_SECTORS_HCOUNT) != this)
+						for (int i = 0; i < systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetTradeRoutes()->GetSize(); i++)
+							if (systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetTradeRoutes()->GetAt(i).GetDestKO() == dest)
 								return FALSE;
 
 	// nachschauen, das nicht schon eine Handelsroute mit dem Ziel vorhanden ist, wenn dies der Fall ist, dann wird
@@ -2402,9 +2402,9 @@ BOOLEAN CSystem::AddResourceRoute(CPoint dest, BYTE res, std::vector<std::vector
 
 	USHORT maxResourceRoutes = (USHORT)(m_dHabitants / TRADEROUTEHAB) + m_Production.GetAddedTradeRoutes() + addResRoute;
 
-	if (systems[dest.x][dest.y].GetOwnerOfSystem() != this->GetOwnerOfSystem())
+	if (systems.at(dest.x+(dest.y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem() != this->GetOwnerOfSystem())
 		return FALSE;
-	if (systems[dest.x][dest.y].GetHabitants() == 0.0f || this->GetHabitants() == 0.0f)
+	if (systems.at(dest.x+(dest.y)*STARMAP_SECTORS_HCOUNT).GetHabitants() == 0.0f || this->GetHabitants() == 0.0f)
 		return FALSE;
 	if (maxResourceRoutes <= m_ResourceRoutes.GetSize() + m_TradeRoutes.GetSize())
 		return FALSE;

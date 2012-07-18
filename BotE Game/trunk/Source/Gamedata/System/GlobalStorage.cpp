@@ -238,12 +238,12 @@ void CGlobalStorage::Calculate(std::vector<std::vector<CSystem>>& systems/*[STAR
 		// darin vorhanden ist
 		if (m_nResourceStorages[m_ResOut.GetAt(i).nRes] >= m_ResOut.GetAt(i).nResTransfer)
 		{
-			systems[m_ResOut.GetAt(i).ptKO.x][m_ResOut.GetAt(i).ptKO.y].SetResourceStore(m_ResOut.GetAt(i).nRes, m_ResOut.GetAt(i).nResTransfer);
+			systems.at(m_ResOut.GetAt(i).ptKO.x+(m_ResOut.GetAt(i).ptKO.y)*STARMAP_SECTORS_HCOUNT).SetResourceStore(m_ResOut.GetAt(i).nRes, m_ResOut.GetAt(i).nResTransfer);
 			m_nResourceStorages[m_ResOut.GetAt(i).nRes] -= m_ResOut.GetAt(i).nResTransfer;
 		}
 		else
 		{
-			systems[m_ResOut.GetAt(i).ptKO.x][m_ResOut.GetAt(i).ptKO.y].SetResourceStore(m_ResOut.GetAt(i).nRes, m_nResourceStorages[m_ResOut.GetAt(i).nRes]);
+			systems.at(m_ResOut.GetAt(i).ptKO.x+(m_ResOut.GetAt(i).ptKO.y)*STARMAP_SECTORS_HCOUNT).SetResourceStore(m_ResOut.GetAt(i).nRes, m_nResourceStorages[m_ResOut.GetAt(i).nRes]);
 			m_nResourceStorages[m_ResOut.GetAt(i).nRes] = 0;
 		}
 		m_ResOut.RemoveAt(i);

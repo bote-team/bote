@@ -84,7 +84,7 @@ void CEmpire::GenerateSystemList(std::vector<std::vector<CSystem>>& systems/*[ST
 	m_SystemList.RemoveAll();
 	for (int y = 0 ; y < STARMAP_SECTORS_VCOUNT; y++)
 		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-			if (systems[x][y].GetOwnerOfSystem() == m_sEmpireID)
+			if (systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem() == m_sEmpireID)
 				m_SystemList.Add(SystemViewStruct(sectors[x][y].GetName(), CPoint(x,y)));
 }
 

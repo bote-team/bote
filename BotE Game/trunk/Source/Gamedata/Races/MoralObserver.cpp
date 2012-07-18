@@ -221,8 +221,8 @@ void CMoralObserver::CalculateEvents(std::vector<std::vector<CSystem>>& systems/
 		short moral = m_iMoralMatrix[m_iEvents.GetAt(i)][byMappedRaceNumber - 1];
 		for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
 			for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-				if (systems[x][y].GetOwnerOfSystem() == sRaceID)
-					systems[x][y].SetMoral(moral);
+				if (systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem() == sRaceID)
+					systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).SetMoral(moral);
 		m_iEvents.RemoveAt(i);
 	}
 }

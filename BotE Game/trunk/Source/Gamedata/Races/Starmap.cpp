@@ -220,8 +220,8 @@ void CStarmap::SynchronizeWithMap(std::vector<std::vector<CSector>>& sectors/*[]
 {
 	for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
 		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-			if (sectors[x][y].GetOwnerOfSector() != "")
-				if (m_Range[x][y] > 0 && races->find(sectors[x][y].GetOwnerOfSector()) != races->end())
+			if (sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSector() != "")
+				if (m_Range[x][y] > 0 && races->find(sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSector()) != races->end())
 					m_Range[x][y] = 0;
 }
 
@@ -231,8 +231,8 @@ void CStarmap::SynchronizeWithAnomalies(std::vector<std::vector<CSector>>& secto
 {
 	for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
 		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-			if (sectors[x][y].GetAnomaly())
-				m_BadMapModifiers[x][y] = sectors[x][y].GetAnomaly()->GetWaySearchWeight();
+			if (sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetAnomaly())
+				m_BadMapModifiers[x][y] = sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetAnomaly()->GetWaySearchWeight();
 }
 
 void CStarmap::ClearAll()
@@ -882,22 +882,22 @@ void CStarmap::SetBadAIBaseSectors(std::vector<std::vector<CSector>>& sectors/*[
 			if (m_Range[x][y] >= m_nAIRange)
 			{
 				double dValue = 0.0;
-				if (sectors[x][y].GetOwnerOfSector() == race || sectors[x][y].GetOwnerOfSector() == "")
+				if (sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSector() == race || sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSector() == "")
 				{
 					int number = 0;
 					// in einem Umkreis von einem Sektor um den Sektor scannen
 					for (int j = -1; j <= 1; j++)
 						for (int i = -1; i <= 1; i++)
 							if (y + j > -1 && y + j < STARMAP_SECTORS_VCOUNT && x + i > -1 && x + i < STARMAP_SECTORS_HCOUNT)
-								if (sectors[x+i][y+j].GetOwnerOfSector() != race && sectors[x+i][y+j].GetOwnerOfSector() != "")
+								if (sectors.at(x+i+(y+j)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSector() != race && sectors.at(x+i+(y+j)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSector() != "")
 									number++;
 					dValue += (50.0 * number);
 				}
 				else
 					dValue += 1000.0;
 
-				if (sectors[x][y].GetAnomaly())
-					dValue += sectors[x][y].GetAnomaly()->GetWaySearchWeight() * 100.0;
+				if (sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetAnomaly())
+					dValue += sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetAnomaly()->GetWaySearchWeight() * 100.0;
 
 				if ((double)m_AIBadPoints[x][y] + dValue > MAXSHORT)
 					m_AIBadPoints[x][y] = MAXSHORT;
