@@ -118,7 +118,7 @@ void CEcoIntelObj::CreateText(CBotf2Doc* pDoc, BYTE n, const CString& param)
 
 						if (m_KO != CPoint(-1,-1))
 						{
-							s = pDoc->m_Sector[m_KO.x][m_KO.y].GetName();
+							s = pDoc->m_Sectors.at(m_KO.x+(m_KO.y)*STARMAP_SECTORS_HCOUNT).GetName();
 							csInput.Replace("$system$", s);
 						}
 						if (m_nID != NULL)
@@ -176,7 +176,7 @@ void CEcoIntelObj::CreateText(CBotf2Doc* pDoc, BYTE n, const CString& param)
 							// Jetzt müssen noch die Variablen mit dem richtigen Text gefüllt werden
 							if (m_KO != CPoint(-1,-1))
 							{
-								s = pDoc->m_Sector[m_KO.x][m_KO.y].GetName();
+								s = pDoc->m_Sectors.at(m_KO.x+(m_KO.y)*STARMAP_SECTORS_HCOUNT).GetName();
 								csInput.Replace("$system$", s);
 							}
 							if (m_nID != NULL)

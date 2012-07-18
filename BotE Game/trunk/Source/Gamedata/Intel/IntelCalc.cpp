@@ -477,7 +477,7 @@ BOOLEAN CIntelCalc::ExecuteEconomySpy(CMajor* pRace, CMajor* pEnemyRace, CMajor*
 	CArray<CPoint> sectors;
 	for (int y = 0 ; y < STARMAP_SECTORS_VCOUNT; y++)
 		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-			if (m_pDoc->m_System[x][y].GetOwnerOfSystem() == pEnemyRace->GetRaceID())
+			if (m_pDoc->m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem() == pEnemyRace->GetRaceID())
 				sectors.Add(CPoint(x,y));
 	if (sectors.GetSize())
 	{
@@ -488,14 +488,14 @@ BOOLEAN CIntelCalc::ExecuteEconomySpy(CMajor* pRace, CMajor* pEnemyRace, CMajor*
 		// welche Arbeiter benötigen. Doch auch arbeiterfreie Gebäude, wie z.B. eine Meeresfarm kann ermittelt werden.
 		if (rand()%4 == NULL)	// zu 25% wird versucht ein arbeiterfreies Gebäude zu spionieren
 		{
-			int number = m_pDoc->m_System[sectors.GetAt(random).x][sectors.GetAt(random).y].GetAllBuildings()->GetSize();
+			int number = m_pDoc->m_Systems.at(sectors.GetAt(random).x+(sectors.GetAt(random).y)*STARMAP_SECTORS_HCOUNT).GetAllBuildings()->GetSize();
 			int j = 0;
 			if (number > NULL)
 			{
 				// zufällig ein Gebäude aussuchen
 				for (int i = rand()%number; i < number; i++)
 				{
-					CBuildingInfo buildingInfo = m_pDoc->GetBuildingInfo(m_pDoc->m_System[sectors.GetAt(random).x][sectors.GetAt(random).y].GetAllBuildings()->GetAt(i).GetRunningNumber());
+					CBuildingInfo buildingInfo = m_pDoc->GetBuildingInfo(m_pDoc->m_Systems.at(sectors.GetAt(random).x+(sectors.GetAt(random).y)*STARMAP_SECTORS_HCOUNT).GetAllBuildings()->GetAt(i).GetRunningNumber());
 					// wenn das Gebäude keine Arbeiter benötigt
 					if (buildingInfo.GetWorker() == FALSE)
 					{
@@ -508,7 +508,7 @@ BOOLEAN CIntelCalc::ExecuteEconomySpy(CMajor* pRace, CMajor* pEnemyRace, CMajor*
 							&& !buildingInfo.GetShipYard() && !buildingInfo.GetSPProd() && !buildingInfo.GetTroopTraining())
 						{
 							int id = buildingInfo.GetRunningNumber();
-							int n = m_pDoc->m_System[sectors.GetAt(random).x][sectors.GetAt(random).y].GetNumberOfBuilding(id);
+							int n = m_pDoc->m_Systems.at(sectors.GetAt(random).x+(sectors.GetAt(random).y)*STARMAP_SECTORS_HCOUNT).GetNumberOfBuilding(id);
 							CEcoIntelObj* report = new CEcoIntelObj(pRace->GetRaceID(), pEnemyRace->GetRaceID(), m_pDoc->GetCurrentRound(), TRUE, CPoint(sectors.GetAt(random)), id, n);
 							// Intelreport dem Akteur hinzufügen
 							if (report)
@@ -543,7 +543,7 @@ BOOLEAN CIntelCalc::ExecuteEconomySpy(CMajor* pRace, CMajor* pEnemyRace, CMajor*
 			if (i != WORKER::SECURITY_WORKER && i != WORKER::RESEARCH_WORKER)
 			{
 				WORKER::Typ nWorker = (WORKER::Typ)i;
-				buildingTypes[i] = m_pDoc->m_System[sectors.GetAt(random).x][sectors.GetAt(random).y].GetNumberOfWorkbuildings(nWorker, 0, NULL);
+				buildingTypes[i] = m_pDoc->m_Systems.at(sectors.GetAt(random).x+(sectors.GetAt(random).y)*STARMAP_SECTORS_HCOUNT).GetNumberOfWorkbuildings(nWorker, 0, NULL);
 				if (buildingTypes[i] > NULL)
 				{
 					start = i;
@@ -561,7 +561,7 @@ BOOLEAN CIntelCalc::ExecuteEconomySpy(CMajor* pRace, CMajor* pEnemyRace, CMajor*
 		{
 			WORKER::Typ nWorker = (WORKER::Typ)start;
 			CEcoIntelObj* report = new CEcoIntelObj(pRace->GetRaceID(), pEnemyRace->GetRaceID(), m_pDoc->GetCurrentRound(), TRUE, CPoint(sectors.GetAt(random)),
-				m_pDoc->m_System[sectors.GetAt(random).x][sectors.GetAt(random).y].GetNumberOfWorkbuildings(nWorker, 1, &m_pDoc->BuildingInfo), (BYTE)buildingTypes[start]);
+				m_pDoc->m_Systems.at(sectors.GetAt(random).x+(sectors.GetAt(random).y)*STARMAP_SECTORS_HCOUNT).GetNumberOfWorkbuildings(nWorker, 1, &m_pDoc->BuildingInfo), (BYTE)buildingTypes[start]);
 			// Intelreport dem Akteur hinzufügen
 			if (report)
 			{
@@ -697,7 +697,7 @@ BOOLEAN CIntelCalc::ExecuteScienceSpy(CMajor* pRace, CMajor* pEnemyRace, CMajor*
 	CArray<CPoint> sectors;
 	for (int y = 0 ; y < STARMAP_SECTORS_VCOUNT; y++)
 		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-			if (m_pDoc->m_System[x][y].GetOwnerOfSystem() == pEnemyRace->GetRaceID())
+			if (m_pDoc->m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem() == pEnemyRace->GetRaceID())
 				sectors.Add(CPoint(x,y));
 	if (sectors.GetSize())
 	{
@@ -709,14 +709,14 @@ BOOLEAN CIntelCalc::ExecuteScienceSpy(CMajor* pRace, CMajor* pEnemyRace, CMajor*
 		// welche Arbeiter benötigen. Doch auch arbeiterfreie Gebäude, wie z.B. ein Theoriesimulator kann ermittelt werden.
 		if (rand()%4 == NULL)	// zu 25% wird versucht ein arbeiterfreies Gebäude zu spionieren
 		{
-			int number = m_pDoc->m_System[sectors.GetAt(random).x][sectors.GetAt(random).y].GetAllBuildings()->GetSize();
+			int number = m_pDoc->m_Systems.at(sectors.GetAt(random).x+(sectors.GetAt(random).y)*STARMAP_SECTORS_HCOUNT).GetAllBuildings()->GetSize();
 			int j = 0;
 			if (number > NULL)
 			{
 				// zufällig ein Gebäude aussuchen
 				for (int i = rand()%number; i < number; i++)
 				{
-					CBuildingInfo buildingInfo = m_pDoc->GetBuildingInfo(m_pDoc->m_System[sectors.GetAt(random).x][sectors.GetAt(random).y].GetAllBuildings()->GetAt(i).GetRunningNumber());
+					CBuildingInfo buildingInfo = m_pDoc->GetBuildingInfo(m_pDoc->m_Systems.at(sectors.GetAt(random).x+(sectors.GetAt(random).y)*STARMAP_SECTORS_HCOUNT).GetAllBuildings()->GetAt(i).GetRunningNumber());
 					// wenn das Gebäude keine Arbeiter benötigt
 					if (buildingInfo.GetWorker() == FALSE)
 					{
@@ -726,7 +726,7 @@ BOOLEAN CIntelCalc::ExecuteScienceSpy(CMajor* pRace, CMajor* pEnemyRace, CMajor*
 							buildingInfo.GetWeaponTechBoni() > 0)
 						{
 							int id = buildingInfo.GetRunningNumber();
-							int n = m_pDoc->m_System[sectors.GetAt(random).x][sectors.GetAt(random).y].GetNumberOfBuilding(id);
+							int n = m_pDoc->m_Systems.at(sectors.GetAt(random).x+(sectors.GetAt(random).y)*STARMAP_SECTORS_HCOUNT).GetNumberOfBuilding(id);
 							CScienceIntelObj* report = new CScienceIntelObj(pRace->GetRaceID(), pEnemyRace->GetRaceID(), m_pDoc->GetCurrentRound(), TRUE, CPoint(sectors.GetAt(random)), id, n);
 							// Intelreport dem Akteur hinzufügen
 							if (report)
@@ -754,11 +754,11 @@ BOOLEAN CIntelCalc::ExecuteScienceSpy(CMajor* pRace, CMajor* pEnemyRace, CMajor*
 		}
 
 		// ansonsten werden Gebäude welche Arbeiter benötigen ausspioniert
-		USHORT buildings = m_pDoc->m_System[sectors.GetAt(random).x][sectors.GetAt(random).y].GetNumberOfWorkbuildings(WORKER::RESEARCH_WORKER, 0, NULL);
+		USHORT buildings = m_pDoc->m_Systems.at(sectors.GetAt(random).x+(sectors.GetAt(random).y)*STARMAP_SECTORS_HCOUNT).GetNumberOfWorkbuildings(WORKER::RESEARCH_WORKER, 0, NULL);
 		if (buildings > 0)
 		{
 			CScienceIntelObj* report = new CScienceIntelObj(pRace->GetRaceID(), pEnemyRace->GetRaceID(), m_pDoc->GetCurrentRound(), TRUE, CPoint(sectors.GetAt(random)),
-				m_pDoc->m_System[sectors.GetAt(random).x][sectors.GetAt(random).y].GetNumberOfWorkbuildings(WORKER::RESEARCH_WORKER, 1, &m_pDoc->BuildingInfo), (BYTE)buildings);
+				m_pDoc->m_Systems.at(sectors.GetAt(random).x+(sectors.GetAt(random).y)*STARMAP_SECTORS_HCOUNT).GetNumberOfWorkbuildings(WORKER::RESEARCH_WORKER, 1, &m_pDoc->BuildingInfo), (BYTE)buildings);
 			// Intelreport dem Akteur hinzufügen
 			if (report)
 			{
@@ -846,19 +846,19 @@ BOOLEAN CIntelCalc::ExecuteMilitarySpy(CMajor* pRace, CMajor* pEnemyRace, CMajor
 		CArray<CPoint> troopSectors;
 		for (int y = 0 ; y < STARMAP_SECTORS_VCOUNT; y++)
 			for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-				if (m_pDoc->m_System[x][y].GetOwnerOfSystem() == pEnemyRace->GetRaceID())
-					if (m_pDoc->m_System[x][y].GetTroops()->GetSize())
+				if (m_pDoc->m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem() == pEnemyRace->GetRaceID())
+					if (m_pDoc->m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetTroops()->GetSize())
 						troopSectors.Add(CPoint(x,y));
 		if (troopSectors.GetSize())
 		{
 			int random = rand()%troopSectors.GetSize();
 			CMilitaryIntelObj* report = NULL;
-			if (m_pDoc->m_System[troopSectors.GetAt(random).x][troopSectors.GetAt(random).y].GetTroops()->GetSize() == 1)
+			if (m_pDoc->m_Systems.at(troopSectors.GetAt(random).x+(troopSectors.GetAt(random).y)*STARMAP_SECTORS_HCOUNT).GetTroops()->GetSize() == 1)
 				report = new CMilitaryIntelObj(pRace->GetRaceID(), pEnemyRace->GetRaceID(), m_pDoc->GetCurrentRound(), TRUE, CPoint(troopSectors.GetAt(random)),
-				m_pDoc->m_System[troopSectors.GetAt(random).x][troopSectors.GetAt(random).y].GetTroops()->GetAt(0).GetID() + 20000, 1, FALSE, FALSE, TRUE);
+				m_pDoc->m_Systems.at(troopSectors.GetAt(random).x+(troopSectors.GetAt(random).y)*STARMAP_SECTORS_HCOUNT).GetTroops()->GetAt(0).GetID() + 20000, 1, FALSE, FALSE, TRUE);
 			else
 				report = new CMilitaryIntelObj(pRace->GetRaceID(), pEnemyRace->GetRaceID(), m_pDoc->GetCurrentRound(), TRUE, CPoint(troopSectors.GetAt(random)),
-					20000, m_pDoc->m_System[troopSectors.GetAt(random).x][troopSectors.GetAt(random).y].GetTroops()->GetSize(), FALSE, FALSE, TRUE);
+					20000, m_pDoc->m_Systems.at(troopSectors.GetAt(random).x+(troopSectors.GetAt(random).y)*STARMAP_SECTORS_HCOUNT).GetTroops()->GetSize(), FALSE, FALSE, TRUE);
 			// Intelreport dem Akteur hinzufügen
 			if (report)
 			{
@@ -881,7 +881,7 @@ BOOLEAN CIntelCalc::ExecuteMilitarySpy(CMajor* pRace, CMajor* pEnemyRace, CMajor
 	CArray<CPoint> sectors;
 	for (int y = 0 ; y < STARMAP_SECTORS_VCOUNT; y++)
 		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-			if (m_pDoc->m_System[x][y].GetOwnerOfSystem() == pEnemyRace->GetRaceID())
+			if (m_pDoc->m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem() == pEnemyRace->GetRaceID())
 				sectors.Add(CPoint(x,y));
 	if (sectors.GetSize())
 	{
@@ -895,11 +895,11 @@ BOOLEAN CIntelCalc::ExecuteMilitarySpy(CMajor* pRace, CMajor* pEnemyRace, CMajor
 		if (rand()%3 == NULL)	// zu 33% wird versucht ein arbeiterbenötigendes Gebäude zu spionieren
 		{
 			// ansonsten werden Gebäude welche Arbeiter benötigen ausspioniert
-			USHORT buildings = m_pDoc->m_System[sectors.GetAt(random).x][sectors.GetAt(random).y].GetNumberOfWorkbuildings(WORKER::SECURITY_WORKER, 0, NULL);
+			USHORT buildings = m_pDoc->m_Systems.at(sectors.GetAt(random).x+(sectors.GetAt(random).y)*STARMAP_SECTORS_HCOUNT).GetNumberOfWorkbuildings(WORKER::SECURITY_WORKER, 0, NULL);
 			if (buildings > 0)
 			{
 				CMilitaryIntelObj* report = new CMilitaryIntelObj(pRace->GetRaceID(), pEnemyRace->GetRaceID(), m_pDoc->GetCurrentRound(), TRUE, CPoint(sectors.GetAt(random)),
-					m_pDoc->m_System[sectors.GetAt(random).x][sectors.GetAt(random).y].GetNumberOfWorkbuildings(WORKER::SECURITY_WORKER, 1, &m_pDoc->BuildingInfo), (BYTE)buildings, TRUE, FALSE, FALSE);
+					m_pDoc->m_Systems.at(sectors.GetAt(random).x+(sectors.GetAt(random).y)*STARMAP_SECTORS_HCOUNT).GetNumberOfWorkbuildings(WORKER::SECURITY_WORKER, 1, &m_pDoc->BuildingInfo), (BYTE)buildings, TRUE, FALSE, FALSE);
 				// Intelreport dem Akteur hinzufügen
 				if (report)
 				{
@@ -917,14 +917,14 @@ BOOLEAN CIntelCalc::ExecuteMilitarySpy(CMajor* pRace, CMajor* pEnemyRace, CMajor
 			}
 		}
 
-		int number = m_pDoc->m_System[sectors.GetAt(random).x][sectors.GetAt(random).y].GetAllBuildings()->GetSize();
+		int number = m_pDoc->m_Systems.at(sectors.GetAt(random).x+(sectors.GetAt(random).y)*STARMAP_SECTORS_HCOUNT).GetAllBuildings()->GetSize();
 		int j = 0;
 		if (number > NULL)
 		{
 			// zufällig ein Gebäude aussuchen
 			for (int i = rand()%number; i < number; i++)
 			{
-				CBuildingInfo buildingInfo = m_pDoc->GetBuildingInfo(m_pDoc->m_System[sectors.GetAt(random).x][sectors.GetAt(random).y].GetAllBuildings()->GetAt(i).GetRunningNumber());
+				CBuildingInfo buildingInfo = m_pDoc->GetBuildingInfo(m_pDoc->m_Systems.at(sectors.GetAt(random).x+(sectors.GetAt(random).y)*STARMAP_SECTORS_HCOUNT).GetAllBuildings()->GetAt(i).GetRunningNumber());
 				// wenn das Gebäude keine Arbeiter benötigt
 				if (buildingInfo.GetWorker() == FALSE)
 				{
@@ -938,7 +938,7 @@ BOOLEAN CIntelCalc::ExecuteMilitarySpy(CMajor* pRace, CMajor* pEnemyRace, CMajor
 						buildingInfo.GetShipTraining() > NULL || buildingInfo.GetTroopBuildSpeed() > NULL || buildingInfo.GetTroopTraining() > NULL)
 					{
 						int id = buildingInfo.GetRunningNumber();
-						int n = m_pDoc->m_System[sectors.GetAt(random).x][sectors.GetAt(random).y].GetNumberOfBuilding(id);
+						int n = m_pDoc->m_Systems.at(sectors.GetAt(random).x+(sectors.GetAt(random).y)*STARMAP_SECTORS_HCOUNT).GetNumberOfBuilding(id);
 						CMilitaryIntelObj* report = new CMilitaryIntelObj(pRace->GetRaceID(), pEnemyRace->GetRaceID(), m_pDoc->GetCurrentRound(), TRUE, CPoint(sectors.GetAt(random)), id, n, TRUE, FALSE, FALSE);
 						// Intelreport dem Akteur hinzufügen
 						if (report)
@@ -1171,7 +1171,7 @@ BOOLEAN CIntelCalc::ExecuteEconomySabotage(CMajor* pRace, CMajor* pEnemyRace, CM
 			if (rand()%6 == NULL)
 			{
 				CPoint ko = report->GetKO();
-				BYTE currentHabs = (BYTE)m_pDoc->m_Sector[ko.x][ko.y].GetCurrentHabitants();
+				BYTE currentHabs = (BYTE)m_pDoc->m_Sectors.at(ko.x+(ko.y)*STARMAP_SECTORS_HCOUNT).GetCurrentHabitants();
 				// maximal die Hälfte der Bevölkerung kann getötet werden
 				currentHabs /= 2;
 				if (currentHabs > NULL)
@@ -1179,7 +1179,7 @@ BOOLEAN CIntelCalc::ExecuteEconomySabotage(CMajor* pRace, CMajor* pEnemyRace, CM
 					currentHabs = rand()%currentHabs + 1;
 					pRace->GetEmpire()->GetIntelligence()->GetIntelReports()->RemoveReport(oldReportNumber);
 					report = new CEcoIntelObj(pRace->GetRaceID(), pEnemyRace->GetRaceID(), m_pDoc->GetCurrentRound(), FALSE, ko, 0, (BYTE)currentHabs);
-					m_pDoc->m_Sector[ko.x][ko.y].LetPlanetsShrink(-(float)currentHabs);
+					m_pDoc->m_Sectors.at(ko.x+(ko.y)*STARMAP_SECTORS_HCOUNT).LetPlanetsShrink(-(float)currentHabs);
 					if (report)
 					{
 						report->CreateText(m_pDoc, 2, pResponsibleRace->GetRaceID());
@@ -1205,7 +1205,7 @@ BOOLEAN CIntelCalc::ExecuteEconomySabotage(CMajor* pRace, CMajor* pEnemyRace, CM
 			int id = report->GetID();
 			// jetzt die Gebäude auf dem jeweiligen System zerstören
 			int destroyed = 0;
-			BuildingArray* allBuildings = m_pDoc->m_System[ko.x][ko.y].GetAllBuildings();
+			BuildingArray* allBuildings = m_pDoc->m_Systems.at(ko.x+(ko.y)*STARMAP_SECTORS_HCOUNT).GetAllBuildings();
 			for (int i = 0; i < allBuildings->GetSize(); i++)
 				if (allBuildings->GetAt(i).GetRunningNumber() == report->GetID())
 				{
@@ -1353,7 +1353,7 @@ BOOLEAN CIntelCalc::ExecuteScienceSabotage(CMajor* pRace, CMajor* pEnemyRace, CM
 			int id = report->GetID();
 			int destroyed = 0;
 			// jetzt die Gebäude auf dem jeweiligen System zerstören
-			BuildingArray* allBuildings = m_pDoc->m_System[ko.x][ko.y].GetAllBuildings();
+			BuildingArray* allBuildings = m_pDoc->m_Systems.at(ko.x+(ko.y)*STARMAP_SECTORS_HCOUNT).GetAllBuildings();
 			for (int i = 0; i < allBuildings->GetSize(); i++)
 				if (allBuildings->GetAt(i).GetRunningNumber() == report->GetID())
 				{
@@ -1456,7 +1456,7 @@ BOOLEAN CIntelCalc::ExecuteMilitarySabotage(CMajor* pRace, CMajor* pEnemyRace, C
 				pRace->GetEmpire()->GetIntelligence()->GetIntelReports()->RemoveReport(oldReportNumber);
 				report = new CMilitaryIntelObj(pRace->GetRaceID(), pEnemyRace->GetRaceID(), m_pDoc->GetCurrentRound(), FALSE, ship->GetKO(), ship->GetID(), 1, FALSE, TRUE, FALSE);
 				// die Station aus der ShipHistory der aktuellen Schiffe entfernen und den zerstörten Schiffen hinzufügen
-				pEnemyRace->GetShipHistory()->ModifyShip(ship, m_pDoc->m_Sector[ship->GetKO().x][ship->GetKO().y].GetName(TRUE),
+				pEnemyRace->GetShipHistory()->ModifyShip(ship, m_pDoc->m_Sectors.at(ship->GetKO().x+(ship->GetKO().y)*STARMAP_SECTORS_HCOUNT).GetName(TRUE),
 					m_pDoc->GetCurrentRound(), CResourceManager::GetString("SABOTAGE"), CResourceManager::GetString("MISSED"));
 
 				// neuen Besitzer hinzufügen
@@ -1469,7 +1469,7 @@ BOOLEAN CIntelCalc::ExecuteMilitarySabotage(CMajor* pRace, CMajor* pEnemyRace, C
 				short minDist = MAXSHORT;
 				for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
 					for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-						if (m_pDoc->m_Sector[x][y].GetShipPort(pRace->GetRaceID()))
+						if (m_pDoc->m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetShipPort(pRace->GetRaceID()))
 							if (minDist > min(abs(oldKO.x - x), abs(oldKO.y - y)))
 							{
 								minDist = (short)min(abs(oldKO.x - x), abs(oldKO.y - y));
@@ -1479,9 +1479,9 @@ BOOLEAN CIntelCalc::ExecuteMilitarySabotage(CMajor* pRace, CMajor* pEnemyRace, C
 				ship->SetTargetKO(newKO, 0);
 				// wurde dieses Schiff jedoch schonmal gestohlen, dann ist es in der Missed Shiphistory. Ist dies der Fall kann das Schiff
 				// wieder als aktives Schiff betrachtet werden.
-				if (pRace->GetShipHistory()->ModifyShip(ship, m_pDoc->m_Sector[ship->GetKO().x][ship->GetKO().y].GetName(TRUE), 0) == false)
+				if (pRace->GetShipHistory()->ModifyShip(ship, m_pDoc->m_Sectors.at(ship->GetKO().x+(ship->GetKO().y)*STARMAP_SECTORS_HCOUNT).GetName(TRUE), 0) == false)
 					// dem neuen Besitzer das Schiff als aktives Schiff hinzufügen
-					pRace->GetShipHistory()->AddShip(ship, m_pDoc->m_Sector[ship->GetKO().x][ship->GetKO().y].GetName(TRUE), m_pDoc->GetCurrentRound());
+					pRace->GetShipHistory()->AddShip(ship, m_pDoc->m_Sectors.at(ship->GetKO().x+(ship->GetKO().y)*STARMAP_SECTORS_HCOUNT).GetName(TRUE), m_pDoc->GetCurrentRound());
 
 				// jetzt Dinge wegen einer möglichen Flotte beachten
 				if (n.y == -1)		// Schiff nicht in Flotte
@@ -1534,7 +1534,7 @@ BOOLEAN CIntelCalc::ExecuteMilitarySabotage(CMajor* pRace, CMajor* pEnemyRace, C
 				pRace->GetEmpire()->GetIntelligence()->GetIntelReports()->RemoveReport(oldReportNumber);
 				report = new CMilitaryIntelObj(pRace->GetRaceID(), pEnemyRace->GetRaceID(), m_pDoc->GetCurrentRound(), FALSE, ship->GetKO(), ship->GetID(), 1, FALSE, TRUE, FALSE);
 				// die Station aus der ShipHistory der aktuellen Schiffe entfernen und den zerstörten Schiffen hinzufügen
-				pEnemyRace->GetShipHistory()->ModifyShip(ship, m_pDoc->m_Sector[ship->GetKO().x][ship->GetKO().y].GetName(TRUE),
+				pEnemyRace->GetShipHistory()->ModifyShip(ship, m_pDoc->m_Sectors.at(ship->GetKO().x+(ship->GetKO().y)*STARMAP_SECTORS_HCOUNT).GetName(TRUE),
 					m_pDoc->GetCurrentRound(), CResourceManager::GetString("SABOTAGE"), CResourceManager::GetString("DESTROYED"));
 				if (n.y == -1)		// nicht in Flotte
 				{
@@ -1600,7 +1600,7 @@ BOOLEAN CIntelCalc::ExecuteMilitarySabotage(CMajor* pRace, CMajor* pEnemyRace, C
 			int id = report->GetID();
 			int destroyed = 0;
 			// jetzt die Truppe/Truppen auf dem jeweiligen System zerstören
-			CArray<CTroop>* allTroops = m_pDoc->m_System[ko.x][ko.y].GetTroops();
+			CArray<CTroop>* allTroops = m_pDoc->m_Systems.at(ko.x+(ko.y)*STARMAP_SECTORS_HCOUNT).GetTroops();
 			for (int i = 0; i < allTroops->GetSize(); i++)
 			{
 				allTroops->RemoveAt(i--);
@@ -1642,7 +1642,7 @@ BOOLEAN CIntelCalc::ExecuteMilitarySabotage(CMajor* pRace, CMajor* pEnemyRace, C
 			int id = report->GetID();
 			int destroyed = 0;
 			// jetzt die Gebäude auf dem jeweiligen System zerstören
-			BuildingArray* allBuildings = m_pDoc->m_System[ko.x][ko.y].GetAllBuildings();
+			BuildingArray* allBuildings = m_pDoc->m_Systems.at(ko.x+(ko.y)*STARMAP_SECTORS_HCOUNT).GetAllBuildings();
 			for (int i = 0; i < allBuildings->GetSize(); i++)
 				if (allBuildings->GetAt(i).GetRunningNumber() == report->GetID())
 				{

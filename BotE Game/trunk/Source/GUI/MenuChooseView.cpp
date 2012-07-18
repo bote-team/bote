@@ -345,7 +345,7 @@ void CMenuChooseView::OnLButtonUp(UINT nFlags, CPoint point)
 	else if (button == 1)
 	{
 		// System suchen, welches dem Spieler auch gehört
-		if (pDoc->m_System[pDoc->GetKO().x][pDoc->GetKO().y].GetOwnerOfSystem() != pMajor->GetRaceID())
+		if (pDoc->m_Systems.at(pDoc->GetKO().x+(pDoc->GetKO().y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem() != pMajor->GetRaceID())
 		{
 			 if (m_LastSystem != CPoint(-1,-1))
 				 pDoc->SetKO(m_LastSystem.x, m_LastSystem.y);
@@ -353,16 +353,16 @@ void CMenuChooseView::OnLButtonUp(UINT nFlags, CPoint point)
 			 {
 				 for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
 					 for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-						 if (pDoc->m_Sector[x][y].GetSunSystem() == TRUE
-							 && pDoc->m_System[x][y].GetOwnerOfSystem() == pMajor->GetRaceID())
+						 if (pDoc->m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetSunSystem() == TRUE
+							 && pDoc->m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem() == pMajor->GetRaceID())
 							{
 								pDoc->SetKO(x,y);
 								break;
 							}
 			 }
 		}
-		if (pDoc->m_System[pDoc->GetKO().x][pDoc->GetKO().y].GetOwnerOfSystem() == pMajor->GetRaceID() &&
-			pDoc->m_Sector[pDoc->GetKO().x][pDoc->GetKO().y].GetSunSystem() == TRUE)
+		if (pDoc->m_Systems.at(pDoc->GetKO().x+(pDoc->GetKO().y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem() == pMajor->GetRaceID() &&
+			pDoc->m_Sectors.at(pDoc->GetKO().x+(pDoc->GetKO().y)*STARMAP_SECTORS_HCOUNT).GetSunSystem() == TRUE)
 		{
 			pDoc->GetMainFrame()->SelectMainView(SYSTEM_VIEW, pMajor->GetRaceID());
 			pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CPlanetBottomView));

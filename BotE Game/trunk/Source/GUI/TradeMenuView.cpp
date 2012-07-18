@@ -78,7 +78,7 @@ void CTradeMenuView::OnDraw(CDC* dc)
 
 	// ***************************** DIE HANDELSANSICHT ZEICHNEN **********************************
 	// System einstellen, in welchem wir handeln möchten
-	if (pDoc->m_System[pDoc->GetKO().x][pDoc->GetKO().y].GetOwnerOfSystem() != pMajor->GetRaceID())
+	if (pDoc->m_Systems.at(pDoc->GetKO().x+(pDoc->GetKO().y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem() != pMajor->GetRaceID())
 	{
 		if (pMajor->GetEmpire()->GetSystemList()->GetSize() > 0)
 			pDoc->SetKO(pMajor->GetEmpire()->GetSystemList()->GetAt(0).ko.x, pMajor->GetEmpire()->GetSystemList()->GetAt(0).ko.y);
@@ -225,7 +225,7 @@ void CTradeMenuView::DrawGlobalTradeMenue(Graphics* g)
 		g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(40+i*200,230,190,25), &fontFormat, &fontBrush);
 
 		// Lagermenge im aktuellen System von der Ressource hinschreiben
-		s.Format("%d %s",pDoc->m_System[pDoc->GetKO().x][pDoc->GetKO().y].GetResourceStore(i),CResourceManager::GetString("UNITS"));
+		s.Format("%d %s",pDoc->m_Systems.at(pDoc->GetKO().x+(pDoc->GetKO().y)*STARMAP_SECTORS_HCOUNT).GetResourceStore(i),CResourceManager::GetString("UNITS"));
 		g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(40+i*200,385,190,25), &fontFormat, &fontBrush);
 
 		// den Monopolbesitzer auch hinschreiben
@@ -307,7 +307,7 @@ void CTradeMenuView::DrawGlobalTradeMenue(Graphics* g)
 	// System, in dem die Handelsaktivitäten stattfinden sollen hinschreiben
 	CFontLoader::CreateGDIFont(pMajor, 3, fontName, fontSize);
 	fontBrush.SetColor(markColor);
-	s.Format("%s: %s",CResourceManager::GetString("TRADE_IN_SYSTEM"), pDoc->m_Sector[pDoc->GetKO().x][pDoc->GetKO().y].GetName());
+	s.Format("%s: %s",CResourceManager::GetString("TRADE_IN_SYSTEM"), pDoc->m_Sectors.at(pDoc->GetKO().x+(pDoc->GetKO().y)*STARMAP_SECTORS_HCOUNT).GetName());
 	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,90,m_TotalSize.cx,45), &fontFormat, &fontBrush);
 }
 
@@ -404,8 +404,8 @@ void CTradeMenuView::DrawMonopolMenue(Graphics* g)
 			// den doppelten Preis bezahlen
 			for (int y = 0; y < 20; y++)
 				for (int x = 0; x < 30; x++)
-					if (pDoc->m_System[x][y].GetOwnerOfSystem() != "" && (pDoc->m_System[x][y].GetOwnerOfSystem() == pMajor->GetRaceID() || pMajor->IsRaceContacted(pDoc->m_System[x][y].GetOwnerOfSystem()) == TRUE))
-						m_dMonopolCosts[i] += pDoc->m_System[x][y].GetHabitants();
+					if (pDoc->m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem() != "" && (pDoc->m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem() == pMajor->GetRaceID() || pMajor->IsRaceContacted(pDoc->m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem()) == TRUE))
+						m_dMonopolCosts[i] += pDoc->m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetHabitants();
 			// Wenn wir das Monopol schon besitzen oder es in der Runde schon gekauft haben
 			if (CTrade::GetMonopolOwner(i) == pMajor->GetRaceID() || pMajor->GetTrade()->GetMonopolBuying()[i] != 0.0f)
 				m_dMonopolCosts[i] = 0.0f;
@@ -573,7 +573,7 @@ void CTradeMenuView::DrawTradeTransferMenue(Graphics* g)
 	// System, in dem die Handelsaktivitäten stattfinden werden
 	CFontLoader::CreateGDIFont(pMajor, 3, fontName, fontSize);
 	fontBrush.SetColor(markColor);
-	s = CResourceManager::GetString("TRANSFERS_NEXT_ROUND",FALSE,pDoc->m_Sector[pDoc->GetKO().x][pDoc->GetKO().y].GetName());
+	s = CResourceManager::GetString("TRANSFERS_NEXT_ROUND",FALSE,pDoc->m_Sectors.at(pDoc->GetKO().x+(pDoc->GetKO().y)*STARMAP_SECTORS_HCOUNT).GetName());
 	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,90,m_TotalSize.cx,45), &fontFormat, &fontBrush);
 }
 
@@ -636,7 +636,7 @@ void CTradeMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			return;
 		}
 		// Wenn das System blockiert wird, so kann man an der globalen Handelsbörse keine Käufe und Verkäufe tätigen
-		if (pDoc->m_System[pDoc->GetKO().x][pDoc->GetKO().y].GetBlockade() > NULL)
+		if (pDoc->m_Systems.at(pDoc->GetKO().x+(pDoc->GetKO().y)*STARMAP_SECTORS_HCOUNT).GetBlockade() > NULL)
 			return;
 		// Checken ob wir auf irgendeinen Kaufen- oder Verkaufenbutton geklickt haben
 		for (int i = TITAN; i <= IRIDIUM; i++)
@@ -660,11 +660,11 @@ void CTradeMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			else if (CRect(r.left+75+i*200,r.top+310,r.left+195+i*200,r.top+340).PtInRect(point))
 			{
 				// Überprüfen, das wir bei einem Verkauf nicht mehr Ressourcen aus dem System nehmen als im Lager vorhanden sind
-				if (pDoc->m_System[pDoc->GetKO().x][pDoc->GetKO().y].GetResourceStore(i) >= pMajor->GetTrade()->GetQuantity())
+				if (pDoc->m_Systems.at(pDoc->GetKO().x+(pDoc->GetKO().y)*STARMAP_SECTORS_HCOUNT).GetResourceStore(i) >= pMajor->GetTrade()->GetQuantity())
 				{
 					pMajor->GetTrade()->SellRessource(i, pMajor->GetTrade()->GetQuantity(),pDoc->GetKO());
 					// Ressource aus dem Lager nehmen
-					pDoc->m_System[pDoc->GetKO().x][pDoc->GetKO().y].SetResourceStore(i,-pMajor->GetTrade()->GetQuantity());
+					pDoc->m_Systems.at(pDoc->GetKO().x+(pDoc->GetKO().y)*STARMAP_SECTORS_HCOUNT).SetResourceStore(i,-pMajor->GetTrade()->GetQuantity());
 					CSoundManager::GetInstance()->PlaySound(SNDMGR_SOUND_SHIPTARGET);
 					Invalidate(FALSE);
 					return;

@@ -62,11 +62,11 @@ void CSystemAI::PerhapsBuy()
 	CPoint p = m_KO;
 
 	// Wenn kein Bauauftrag in der Liste steht, so kann die Funktion sofort verlassen werden.
-	int id = m_pDoc->m_System[p.x][p.y].GetAssemblyList()->GetAssemblyListEntry(0);
+	int id = m_pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetAssemblyList()->GetAssemblyListEntry(0);
 	if (id == NULL)
 		return;
 	int roundToBuild = 0;
-	if (m_pDoc->m_System[p.x][p.y].GetProduction()->GetIndustryProd() > 0)
+	if (m_pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetIndustryProd() > 0)
 	{
 		// Never-Ready Auftrag
 		if (id > 0 && id < 10000 && m_pDoc->GetBuildingInfo(id).GetNeverReady())
@@ -74,54 +74,54 @@ void CSystemAI::PerhapsBuy()
 		// Bei Upgrades
 		else if (id < 0)
 		{
-			roundToBuild = (int)ceil((float)(m_pDoc->m_System[p.x][p.y].GetAssemblyList()->GetNeededIndustryInAssemblyList(0))
-				/((float)m_pDoc->m_System[p.x][p.y].GetProduction()->GetIndustryProd()
-					* (100+m_pDoc->m_System[p.x][p.y].GetProduction()->GetUpdateBuildSpeed())/100));
+			roundToBuild = (int)ceil((float)(m_pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetAssemblyList()->GetNeededIndustryInAssemblyList(0))
+				/((float)m_pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetIndustryProd()
+					* (100+m_pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetUpdateBuildSpeed())/100));
 		}
 		// Bei Gebäuden
 		else if (id < 10000)
 		{
-			roundToBuild = (int)ceil((float)(m_pDoc->m_System[p.x][p.y].GetAssemblyList()->GetNeededIndustryInAssemblyList(0))
-				/((float)m_pDoc->m_System[p.x][p.y].GetProduction()->GetIndustryProd()
-					* (100+m_pDoc->m_System[p.x][p.y].GetProduction()->GetBuildingBuildSpeed())/100));
+			roundToBuild = (int)ceil((float)(m_pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetAssemblyList()->GetNeededIndustryInAssemblyList(0))
+				/((float)m_pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetIndustryProd()
+					* (100+m_pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetBuildingBuildSpeed())/100));
 		}
 		// Bei Schiffen Wertfeffiziens mitbeachten
-		else if (id < 20000 && m_pDoc->m_System[p.x][p.y].GetProduction()->GetShipYardEfficiency() > 0)
+		else if (id < 20000 && m_pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetShipYardEfficiency() > 0)
 		{
-			roundToBuild = (int)ceil((float)(m_pDoc->m_System[p.x][p.y].GetAssemblyList()->GetNeededIndustryInAssemblyList(0))
-				/((float)m_pDoc->m_System[p.x][p.y].GetProduction()->GetIndustryProd() * m_pDoc->m_System[p.x][p.y].GetProduction()->GetShipYardEfficiency() / 100
-					* (100+m_pDoc->m_System[p.x][p.y].GetProduction()->GetShipBuildSpeed())/100));
+			roundToBuild = (int)ceil((float)(m_pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetAssemblyList()->GetNeededIndustryInAssemblyList(0))
+				/((float)m_pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetIndustryProd() * m_pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetShipYardEfficiency() / 100
+					* (100+m_pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetShipBuildSpeed())/100));
 		}
 		// Bei Truppen die Kaserneneffiziens beachten
-		else if (m_pDoc->m_System[p.x][p.y].GetProduction()->GetBarrackEfficiency() > 0)
+		else if (m_pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetBarrackEfficiency() > 0)
 		{
-			roundToBuild = (int)ceil((float)(m_pDoc->m_System[p.x][p.y].GetAssemblyList()->GetNeededIndustryInAssemblyList(0))
-				/((float)m_pDoc->m_System[p.x][p.y].GetProduction()->GetIndustryProd() * m_pDoc->m_System[p.x][p.y].GetProduction()->GetBarrackEfficiency() / 100
-					* (100+m_pDoc->m_System[p.x][p.y].GetProduction()->GetTroopBuildSpeed())/100));
+			roundToBuild = (int)ceil((float)(m_pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetAssemblyList()->GetNeededIndustryInAssemblyList(0))
+				/((float)m_pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetIndustryProd() * m_pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetBarrackEfficiency() / 100
+					* (100+m_pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetTroopBuildSpeed())/100));
 		}
 	}
 	// Sobald eine Rundendauer vorhanden ist, kann über den Kauf des Auftrages nachgedacht werden.
 	if (roundToBuild > 1)
 	{
-		m_pDoc->m_System[p.x][p.y].GetAssemblyList()->CalculateBuildCosts(m_pMajor->GetTrade()->GetRessourcePriceAtRoundStart());
-		int costs = m_pDoc->m_System[p.x][p.y].GetAssemblyList()->GetBuildCosts();
+		m_pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetAssemblyList()->CalculateBuildCosts(m_pMajor->GetTrade()->GetRessourcePriceAtRoundStart());
+		int costs = m_pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetAssemblyList()->GetBuildCosts();
 		int value = (m_pMajor->GetEmpire()->GetCredits() / costs) * 5;
 		// Umso mehr Credits das Imperium besitzt, desto eher wird gekauft. Außerdem wird bei einer niedrigen Moral
 		// eher versucht den Kauf zu tätigen, um nächstes Mal einen Polizeistaat oder ähnliches schneller starten zu können
-		if (rand()%100 < value || (value > 0 && m_pDoc->m_System[p.x][p.y].GetMoral() < (rand()%21 + 60)))
+		if (rand()%100 < value || (value > 0 && m_pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetMoral() < (rand()%21 + 60)))
 		{
-			costs = m_pDoc->m_System[p.x][p.y].GetAssemblyList()->BuyBuilding(m_pMajor->GetEmpire()->GetCredits());
+			costs = m_pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetAssemblyList()->BuyBuilding(m_pMajor->GetEmpire()->GetCredits());
 			if (costs != 0)
 			{
-				m_pDoc->m_System[p.x][p.y].GetAssemblyList()->SetWasBuildingBought(TRUE);
+				m_pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetAssemblyList()->SetWasBuildingBought(TRUE);
 				m_pMajor->GetEmpire()->SetCredits(-costs);
 				// Die Preise an der Börse anpassen, da wir ja bestimmte Mengen Ressourcen gekauft haben
 				// Achtung, hier flag == 1 setzen bei Aufruf der Funktion BuyRessource!!!!
-				m_pMajor->GetTrade()->BuyRessource(TITAN,	 m_pDoc->m_System[p.x][p.y].GetAssemblyList()->GetNeededTitanInAssemblyList(0),p,m_pMajor->GetEmpire()->GetCredits(),1);
-				m_pMajor->GetTrade()->BuyRessource(DEUTERIUM,m_pDoc->m_System[p.x][p.y].GetAssemblyList()->GetNeededDeuteriumInAssemblyList(0),p,m_pMajor->GetEmpire()->GetCredits(),1);
-				m_pMajor->GetTrade()->BuyRessource(DURANIUM, m_pDoc->m_System[p.x][p.y].GetAssemblyList()->GetNeededDuraniumInAssemblyList(0),p,m_pMajor->GetEmpire()->GetCredits(),1);
-				m_pMajor->GetTrade()->BuyRessource(CRYSTAL,  m_pDoc->m_System[p.x][p.y].GetAssemblyList()->GetNeededCrystalInAssemblyList(0),p,m_pMajor->GetEmpire()->GetCredits(),1);
-				m_pMajor->GetTrade()->BuyRessource(IRIDIUM,  m_pDoc->m_System[p.x][p.y].GetAssemblyList()->GetNeededIridiumInAssemblyList(0),p,m_pMajor->GetEmpire()->GetCredits(),1);
+				m_pMajor->GetTrade()->BuyRessource(TITAN,	 m_pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetAssemblyList()->GetNeededTitanInAssemblyList(0),p,m_pMajor->GetEmpire()->GetCredits(),1);
+				m_pMajor->GetTrade()->BuyRessource(DEUTERIUM,m_pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetAssemblyList()->GetNeededDeuteriumInAssemblyList(0),p,m_pMajor->GetEmpire()->GetCredits(),1);
+				m_pMajor->GetTrade()->BuyRessource(DURANIUM, m_pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetAssemblyList()->GetNeededDuraniumInAssemblyList(0),p,m_pMajor->GetEmpire()->GetCredits(),1);
+				m_pMajor->GetTrade()->BuyRessource(CRYSTAL,  m_pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetAssemblyList()->GetNeededCrystalInAssemblyList(0),p,m_pMajor->GetEmpire()->GetCredits(),1);
+				m_pMajor->GetTrade()->BuyRessource(IRIDIUM,  m_pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetAssemblyList()->GetNeededIridiumInAssemblyList(0),p,m_pMajor->GetEmpire()->GetCredits(),1);
 			}
 		}
 	}
@@ -143,7 +143,7 @@ void CSystemAI::CalcPriorities()
 		// Bauauftrag entfernen
 		// CHECK WW: KI sollte hier anteilige Ressourcen zurückbekommen
 		m_pDoc->GetSystem(ko).GetAssemblyList()->ClearAssemblyList(ko, m_pDoc->m_System);
-		m_pDoc->GetSystem(ko).CalculateVariables(&m_pDoc->BuildingInfo, m_pMajor->GetEmpire()->GetResearch()->GetResearchInfo(), m_pDoc->m_Sector[ko.x][ko.y].GetPlanets(), m_pMajor, CTrade::GetMonopolOwner());
+		m_pDoc->GetSystem(ko).CalculateVariables(&m_pDoc->BuildingInfo, m_pMajor->GetEmpire()->GetResearch()->GetResearchInfo(), m_pDoc->m_Sectors.at(ko.x+(ko.y)*STARMAP_SECTORS_HCOUNT).GetPlanets(), m_pMajor, CTrade::GetMonopolOwner());
 	}
 
 	// Wenn die Moral in dem System sehr niedrig ist, dann wird versucht ein Moralgebäude bzw. Polizeistaat oder ähnliches
@@ -196,9 +196,9 @@ void CSystemAI::CalcPriorities()
 				// Bau abbrechen
 				// CHECK WW: KI sollte hier anteilige Ressourcen zurückbekommen
 				m_pDoc->GetSystem(ko).GetAssemblyList()->ClearAssemblyList(ko, m_pDoc->m_System);
-				m_pDoc->GetSystem(ko).CalculateVariables(&m_pDoc->BuildingInfo, m_pMajor->GetEmpire()->GetResearch()->GetResearchInfo(), m_pDoc->m_Sector[ko.x][ko.y].GetPlanets(), m_pMajor, CTrade::GetMonopolOwner());
+				m_pDoc->GetSystem(ko).CalculateVariables(&m_pDoc->BuildingInfo, m_pMajor->GetEmpire()->GetResearch()->GetResearchInfo(), m_pDoc->m_Sectors.at(ko.x+(ko.y)*STARMAP_SECTORS_HCOUNT).GetPlanets(), m_pMajor, CTrade::GetMonopolOwner());
 #ifdef TRACE_AI
-				MYTRACE(MT::LEVEL_INFO, "CSystemAI::CalcPriorities(): Removed current buildorder because of low moral in System '%s'\n", m_pDoc->m_Sector[ko.x][ko.y].GetName());
+				MYTRACE(MT::LEVEL_INFO, "CSystemAI::CalcPriorities(): Removed current buildorder because of low moral in System '%s'\n", m_pDoc->m_Sectors.at(ko.x+(ko.y)*STARMAP_SECTORS_HCOUNT).GetName());
 #endif
 			}
 		}
@@ -218,7 +218,7 @@ void CSystemAI::CalcPriorities()
 			if (MakeEntryInAssemblyList(buildings.GetAt(nRandom)))
 			{
 #ifdef TRACE_AI
-				MYTRACE(MT::LEVEL_INFO, "CSystemAI::CalcPriorities(): Found building to increase moral in System '%s'\n", m_pDoc->m_Sector[ko.x][ko.y].GetName());
+				MYTRACE(MT::LEVEL_INFO, "CSystemAI::CalcPriorities(): Found building to increase moral in System '%s'\n", m_pDoc->m_Sectors.at(ko.x+(ko.y)*STARMAP_SECTORS_HCOUNT).GetName());
 #endif
 				// Moralverbesserungsgebäude gefunden -> aus Funktion springen
 				return;
@@ -309,11 +309,11 @@ void CSystemAI::CalcPriorities()
 	if (id > 0 && id < 10000)
 		name = m_pDoc->GetBuildingName(id);
 
-	if (m_pDoc->m_Sector[ko.x][ko.y].GetName() == "Tinaca")
+	if (m_pDoc->m_Sectors.at(ko.x+(ko.y)*STARMAP_SECTORS_HCOUNT).GetName() == "Tinaca")
 	{
 		CString s;
 		s.Format("System: %s\n\nFood: %d\nIndstry: %d\nEnergy: %d\nSecurity: %d\nResearch: %d\nTitan: %d\nDeuterium: %d\nDuranium: %d\nCrystal: %d\nIridium: %d\n\nchoosen Building: %s\nID: %d\nAssemblyListEntry: %d\nneeded IP: %d",
-			m_pDoc->m_Sector[ko.x][ko.y].GetName(),
+			m_pDoc->m_Sectors.at(ko.x+(ko.y)*STARMAP_SECTORS_HCOUNT).GetName(),
 			m_iPriorities[0],m_iPriorities[1],m_iPriorities[2],m_iPriorities[3],m_iPriorities[4],m_iPriorities[5],m_iPriorities[6],
 			m_iPriorities[7],m_iPriorities[8],m_iPriorities[9],name,id,m_pDoc->GetSystem(ko).GetAssemblyList()->GetAssemblyListEntry(0),
 			m_pDoc->GetSystem(ko).GetAssemblyList()->GetNeededIndustryForBuild());
@@ -322,7 +322,7 @@ void CSystemAI::CalcPriorities()
 */
 #ifdef TRACE_AI
 	if (id == 0)
-		MYTRACE(MT::LEVEL_INFO, "CSystemAI::CalcPriorities(): Could not create buildcontract in system '%s'\n", m_pDoc->m_Sector[ko.x][ko.y].GetName());
+		MYTRACE(MT::LEVEL_INFO, "CSystemAI::CalcPriorities(): Could not create buildcontract in system '%s'\n", m_pDoc->m_Sectors.at(ko.x+(ko.y)*STARMAP_SECTORS_HCOUNT).GetName());
 #endif
 }
 
@@ -526,7 +526,7 @@ int CSystemAI::ChooseShip(int prio, BOOLEAN chooseCombatship, BOOLEAN chooseColo
 						{
 							m_pDoc->m_pAIPrios->ChoosedColoShipPrio(sRace);
 #ifdef TRACE_AI
-							MYTRACE(MT::LEVEL_INFO, "CSystemAI::ChooseShip(): build colonyship in system: %s\n", m_pDoc->m_Sector[m_KO.x][m_KO.y].GetName());
+							MYTRACE(MT::LEVEL_INFO, "CSystemAI::ChooseShip(): build colonyship in system: %s\n", m_pDoc->m_Sectors.at(m_KO.x+(m_KO.y)*STARMAP_SECTORS_HCOUNT).GetName());
 #endif
 							return id;
 						}
@@ -549,7 +549,7 @@ int CSystemAI::ChooseShip(int prio, BOOLEAN chooseCombatship, BOOLEAN chooseColo
 						{
 							m_pDoc->m_pAIPrios->ChoosedTransportShipPrio(sRace);
 #ifdef TRACE_AI
-							MYTRACE(MT::LEVEL_INFO, "CSystemAI::ChooseShip(): build transportship in system: %s\n", m_pDoc->m_Sector[m_KO.x][m_KO.y].GetName());
+							MYTRACE(MT::LEVEL_INFO, "CSystemAI::ChooseShip(): build transportship in system: %s\n", m_pDoc->m_Sectors.at(m_KO.x+(m_KO.y)*STARMAP_SECTORS_HCOUNT).GetName());
 #endif
 							return id;
 						}
@@ -584,7 +584,7 @@ int CSystemAI::ChooseShip(int prio, BOOLEAN chooseCombatship, BOOLEAN chooseColo
 		// Feld nach der Stärke der Schiffe ordnen
 		c_arraysort<CArray<SHIPLIST>, SHIPLIST> (ships, sort_desc);
 #ifdef TRACE_AI
-		MYTRACE(MT::LEVEL_INFO, "CSystemAI::ChooseShip(): build combatship in system: %s\n", m_pDoc->m_Sector[m_KO.x][m_KO.y].GetName());
+		MYTRACE(MT::LEVEL_INFO, "CSystemAI::ChooseShip(): build combatship in system: %s\n", m_pDoc->m_Sectors.at(m_KO.x+(m_KO.y)*STARMAP_SECTORS_HCOUNT).GetName());
 		for (int i = 0; i < ships.GetSize(); i++)
 			MYTRACE(MT::LEVEL_INFO, "CSystemAI::ChooseShip(): buildable combatships %s - ID: %d - Power: %d\n", m_pDoc->m_ShipInfoArray[ships.GetAt(i).id - 10000].GetShipClass(),
 				ships.GetAt(i).id-10000, ships.GetAt(i).strenght);
@@ -621,7 +621,7 @@ BOOLEAN CSystemAI::MakeEntryInAssemblyList(short id)
 	float difficulty = m_pDoc->GetDifficultyLevel();
 	// Wenn ein menschlicher Spieler die Autobaufunktion in einem System aktiviert hat, dann bekommt er natürlich keinen
 	// Bonus durch den Schwierigkeitsgrad
-	if (m_pMajor->IsHumanPlayer() == true && m_pDoc->m_System[m_KO.x][m_KO.y].GetAutoBuild() == TRUE)
+	if (m_pMajor->IsHumanPlayer() == true && m_pDoc->m_Systems.at(m_KO.x+(m_KO.y)*STARMAP_SECTORS_HCOUNT).GetAutoBuild() == TRUE)
 		difficulty = 1.0f;
 	// Wenn gebäude die NeverReady gebaut werden sollen, dann ist der Schwierigkeitsgrad ein. Es bleibt also solange drin
 	// wie es Industrie kostet
@@ -841,11 +841,11 @@ BOOLEAN CSystemAI::DumpWorker()
 		WORKER::Typ nWorker = (WORKER::Typ)i;
 		if (nWorker != WORKER::ENERGY_WORKER)
 		{
-			if (m_pDoc->m_System[m_KO.x][m_KO.y].GetWorker(nWorker) > 0)
+			if (m_pDoc->m_Systems.at(m_KO.x+(m_KO.y)*STARMAP_SECTORS_HCOUNT).GetWorker(nWorker) > 0)
 			{
 				getWorker = TRUE;
-				m_pDoc->m_System[m_KO.x][m_KO.y].GetWorker()->DekrementWorker(nWorker);
-				m_pDoc->m_System[m_KO.x][m_KO.y].GetWorker()->InkrementWorker(WORKER::FREE_WORKER);
+				m_pDoc->m_Systems.at(m_KO.x+(m_KO.y)*STARMAP_SECTORS_HCOUNT).GetWorker()->DekrementWorker(nWorker);
+				m_pDoc->m_Systems.at(m_KO.x+(m_KO.y)*STARMAP_SECTORS_HCOUNT).GetWorker()->InkrementWorker(WORKER::FREE_WORKER);
 				break;
 			}
 		}
@@ -864,10 +864,10 @@ void CSystemAI::ScrapBuildings()
 		// Nur wenn 80% der maximal Bevölkerung schon im System leben
 		float currentHab = 0.0f;
 		float maxHab = 0.0f;
-		for (int i = 0; i < static_cast<int>(m_pDoc->m_Sector[ko.x][ko.y].GetPlanets().size()); i++)
+		for (int i = 0; i < static_cast<int>(m_pDoc->m_Sectors.at(ko.x+(ko.y)*STARMAP_SECTORS_HCOUNT).GetPlanets().size()); i++)
 		{
-			currentHab += m_pDoc->m_Sector[ko.x][ko.y].GetPlanets().at(i).GetCurrentHabitant();
-			maxHab += m_pDoc->m_Sector[ko.x][ko.y].GetPlanets().at(i).GetMaxHabitant();
+			currentHab += m_pDoc->m_Sectors.at(ko.x+(ko.y)*STARMAP_SECTORS_HCOUNT).GetPlanets().at(i).GetCurrentHabitant();
+			maxHab += m_pDoc->m_Sectors.at(ko.x+(ko.y)*STARMAP_SECTORS_HCOUNT).GetPlanets().at(i).GetMaxHabitant();
 		}
 		if (currentHab > (maxHab * 0.8))
 		{
@@ -915,7 +915,7 @@ int CSystemAI::GetShipBuildPrios(BOOLEAN &chooseCombatship, BOOLEAN &chooseColos
 		{
 			min = rand()%(m_pDoc->m_pAIPrios->GetColoShipPrio(sRace) + 1);
 			#ifdef TRACE_AI
-			MYTRACE(MT::LEVEL_INFO, "CSystemAI::GetShipBuildPrios(): Race %s - System: %s - ColonyShipPrio: %d (max %d)\n",sRace,m_pDoc->m_Sector[ko.x][ko.y].GetName(),min,m_pDoc->m_pAIPrios->GetColoShipPrio(sRace));
+			MYTRACE(MT::LEVEL_INFO, "CSystemAI::GetShipBuildPrios(): Race %s - System: %s - ColonyShipPrio: %d (max %d)\n",sRace,m_pDoc->m_Sectors.at(ko.x+(ko.y)*STARMAP_SECTORS_HCOUNT).GetName(),min,m_pDoc->m_pAIPrios->GetColoShipPrio(sRace));
 			#endif
 			chooseColoship = TRUE;
 		}
@@ -923,7 +923,7 @@ int CSystemAI::GetShipBuildPrios(BOOLEAN &chooseCombatship, BOOLEAN &chooseColos
 		{
 			int random = rand()%(m_pDoc->m_pAIPrios->GetTransportShipPrio(sRace) + 1);
 			#ifdef TRACE_AI
-			MYTRACE(MT::LEVEL_INFO, "CSystemAI::GetShipBuildPrios(): Race %s - System: %s - TransportShipPrio: %d (max %d)\n",sRace, m_pDoc->m_Sector[ko.x][ko.y].GetName(),random,m_pDoc->m_pAIPrios->GetTransportShipPrio(sRace));
+			MYTRACE(MT::LEVEL_INFO, "CSystemAI::GetShipBuildPrios(): Race %s - System: %s - TransportShipPrio: %d (max %d)\n",sRace, m_pDoc->m_Sectors.at(ko.x+(ko.y)*STARMAP_SECTORS_HCOUNT).GetName(),random,m_pDoc->m_pAIPrios->GetTransportShipPrio(sRace));
 			#endif
 			if (random > min)
 			{
@@ -936,7 +936,7 @@ int CSystemAI::GetShipBuildPrios(BOOLEAN &chooseCombatship, BOOLEAN &chooseColos
 		{
 			int random = rand()%(m_pDoc->m_pAIPrios->GetCombatShipPrio(sRace) + 1);
 			#ifdef TRACE_AI
-			MYTRACE(MT::LEVEL_INFO, "CSystemAI::GetShipBuildPrios(): Race %s - System: %s - CombatShipPrio: %d (max %d)\n",sRace,m_pDoc->m_Sector[ko.x][ko.y].GetName(),random,m_pDoc->m_pAIPrios->GetCombatShipPrio(sRace));
+			MYTRACE(MT::LEVEL_INFO, "CSystemAI::GetShipBuildPrios(): Race %s - System: %s - CombatShipPrio: %d (max %d)\n",sRace,m_pDoc->m_Sectors.at(ko.x+(ko.y)*STARMAP_SECTORS_HCOUNT).GetName(),random,m_pDoc->m_pAIPrios->GetCombatShipPrio(sRace));
 			#endif
 			if (random > min)
 			{
@@ -947,7 +947,7 @@ int CSystemAI::GetShipBuildPrios(BOOLEAN &chooseCombatship, BOOLEAN &chooseColos
 				{
 					chooseCombatship = FALSE;
 					#ifdef TRACE_AI
-					MYTRACE(MT::LEVEL_INFO, "CSystemAI::GetShipBuildPrios(): Race %s - System: %s - can't build ships because of too high shipcosts!\n",sRace, m_pDoc->m_Sector[ko.x][ko.y].GetName());
+					MYTRACE(MT::LEVEL_INFO, "CSystemAI::GetShipBuildPrios(): Race %s - System: %s - can't build ships because of too high shipcosts!\n",sRace, m_pDoc->m_Sectors.at(ko.x+(ko.y)*STARMAP_SECTORS_HCOUNT).GetName());
 					#endif
 				}
 				else
@@ -1126,8 +1126,8 @@ void CSystemAI::ApplyTradeRoutes()
 		// sekundär zu den anderen Majorraces
 		for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
 			for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-				if (m_pDoc->m_System[x][y].GetOwnerOfSystem() != "" && m_pDoc->m_System[x][y].GetOwnerOfSystem() != race)
-					if (m_pMajor->GetAgreement(m_pDoc->m_System[x][y].GetOwnerOfSystem()) >= DIPLOMATIC_AGREEMENT::TRADE)
+				if (m_pDoc->m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem() != "" && m_pDoc->m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem() != race)
+					if (m_pMajor->GetAgreement(m_pDoc->m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem()) >= DIPLOMATIC_AGREEMENT::TRADE)
 						m_pDoc->GetSystem(ko).AddTradeRoute(CPoint(x,y), m_pDoc->m_System, m_pMajor->GetEmpire()->GetResearch()->GetResearchInfo());
 	}
 }

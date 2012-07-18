@@ -295,7 +295,7 @@ void CGalaxyMenuView::OnDraw(CDC* dc)
 		for (int j = 0, x = 0; j < STARMAP_SECTORS_HCOUNT; j++, x += STARMAP_SECTOR_WIDTH)
 		{
 			// Flugweg der Schiffe zeichnen
-			if (pDoc->m_Sector[j][i].GetShipPathPoints() > 0)
+			if (pDoc->m_Sectors.at(j+(i)*STARMAP_SECTORS_HCOUNT).GetShipPathPoints() > 0)
 			{
 				COLORREF color = RGB(255,255,255);
 				CBrush brush(color);
@@ -476,12 +476,12 @@ void CGalaxyMenuView::OnDraw(CDC* dc)
 			pDoc->GetSector(x,y).DrawSectorsName(pDC ,pDoc, m_pPlayersRace);
 			// eigene Handelsrouten zeichnen
 			if (bShowTraderoutes)
-				if (pDoc->m_System[x][y].GetOwnerOfSystem() == pMajor->GetRaceID())
+				if (pDoc->m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem() == pMajor->GetRaceID())
 				{
-					for (int i = 0; i < pDoc->m_System[x][y].GetTradeRoutes()->GetSize(); i++)
-						pDoc->m_System[x][y].GetTradeRoutes()->GetAt(i).DrawTradeRoute(pDC, CPoint(x,y), pMajor);
-					for (int i = 0; i < pDoc->m_System[x][y].GetResourceRoutes()->GetSize(); i++)
-						pDoc->m_System[x][y].GetResourceRoutes()->GetAt(i).DrawResourceRoute(pDC, CPoint(x,y), pMajor);
+					for (int i = 0; i < pDoc->m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetTradeRoutes()->GetSize(); i++)
+						pDoc->m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetTradeRoutes()->GetAt(i).DrawTradeRoute(pDC, CPoint(x,y), pMajor);
+					for (int i = 0; i < pDoc->m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetResourceRoutes()->GetSize(); i++)
+						pDoc->m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetResourceRoutes()->GetAt(i).DrawResourceRoute(pDC, CPoint(x,y), pMajor);
 				}
 		}
 	pDC->SelectObject(oldfont);
@@ -489,9 +489,9 @@ void CGalaxyMenuView::OnDraw(CDC* dc)
 
 	if (bShowTraderoutes)
 	{
-		if (m_bDrawTradeRoute && (pDoc->m_System[pDoc->GetKO().x][pDoc->GetKO().y].GetOwnerOfSystem() == pMajor->GetRaceID()))
+		if (m_bDrawTradeRoute && (pDoc->m_Systems.at(pDoc->GetKO().x+(pDoc->GetKO().y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem() == pMajor->GetRaceID()))
 			m_TradeRoute.DrawTradeRoute(pDC, pDoc->GetKO(), pMajor);
-		if (m_bDrawResourceRoute && (pDoc->m_System[pDoc->GetKO().x][pDoc->GetKO().y].GetOwnerOfSystem() == pMajor->GetRaceID()))
+		if (m_bDrawResourceRoute && (pDoc->m_Systems.at(pDoc->GetKO().x+(pDoc->GetKO().y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem() == pMajor->GetRaceID()))
 			m_ResourceRoute.DrawResourceRoute(pDC, pDoc->GetKO(), pMajor);
 	}
 
@@ -713,8 +713,8 @@ void CGalaxyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			{
 				map<CString, CRace*>* pmRaces = pDoc->GetRaceCtrl()->GetRaces();
 				for (map<CString, CRace*>::const_iterator it = pmRaces->begin(); it != pmRaces->end(); ++it)
-					if (pDoc->m_Sector[sector.x][sector.y].GetOwnerOfShip(it->first) == TRUE && (it->first == pMajor->GetRaceID()
-						|| pDoc->m_Sector[sector.x][sector.y].GetNeededScanPower(it->first) < pDoc->m_Sector[sector.x][sector.y].GetScanPower(pMajor->GetRaceID())))
+					if (pDoc->m_Sectors.at(sector.x+(sector.y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfShip(it->first) == TRUE && (it->first == pMajor->GetRaceID()
+						|| pDoc->m_Sectors.at(sector.x+(sector.y)*STARMAP_SECTORS_HCOUNT).GetNeededScanPower(it->first) < pDoc->m_Sectors.at(sector.x+(sector.y)*STARMAP_SECTORS_HCOUNT).GetScanPower(pMajor->GetRaceID())))
 						{
 							if(it->first == pMajor->GetRaceID()) {
 								for(int i = 0; i < pDoc->m_ShipArray.GetSize(); ++i) {
@@ -738,9 +738,9 @@ void CGalaxyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			{
 				bool bShowStation = false;
 				// Uns selbst gehört die Station
-				if (pDoc->m_Sector[sector.x][sector.y].GetIsStationBuilding(pMajor->GetRaceID()) == TRUE ||
-					pDoc->m_Sector[sector.x][sector.y].GetOutpost(pMajor->GetRaceID()) == TRUE ||
-					pDoc->m_Sector[sector.x][sector.y].GetStarbase(pMajor->GetRaceID()) == TRUE)
+				if (pDoc->m_Sectors.at(sector.x+(sector.y)*STARMAP_SECTORS_HCOUNT).GetIsStationBuilding(pMajor->GetRaceID()) == TRUE ||
+					pDoc->m_Sectors.at(sector.x+(sector.y)*STARMAP_SECTORS_HCOUNT).GetOutpost(pMajor->GetRaceID()) == TRUE ||
+					pDoc->m_Sectors.at(sector.x+(sector.y)*STARMAP_SECTORS_HCOUNT).GetStarbase(pMajor->GetRaceID()) == TRUE)
 					bShowStation = true;
 
 				if (!bShowStation)
@@ -748,10 +748,10 @@ void CGalaxyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 					// wir können den Sektor scannen, so sehen wir automatisch die Station
 					map<CString, CRace*>* pmRaces = pDoc->GetRaceCtrl()->GetRaces();
 					for (map<CString, CRace*>::const_iterator it = pmRaces->begin(); it != pmRaces->end(); ++it)
-						if (pDoc->m_Sector[sector.x][sector.y].GetScanPower(pMajor->GetRaceID()) > 0 &&
-							(pDoc->m_Sector[sector.x][sector.y].GetIsStationBuilding(it->first) == TRUE ||
-							pDoc->m_Sector[sector.x][sector.y].GetOutpost(it->first) == TRUE ||
-							pDoc->m_Sector[sector.x][sector.y].GetStarbase(it->first) == TRUE))
+						if (pDoc->m_Sectors.at(sector.x+(sector.y)*STARMAP_SECTORS_HCOUNT).GetScanPower(pMajor->GetRaceID()) > 0 &&
+							(pDoc->m_Sectors.at(sector.x+(sector.y)*STARMAP_SECTORS_HCOUNT).GetIsStationBuilding(it->first) == TRUE ||
+							pDoc->m_Sectors.at(sector.x+(sector.y)*STARMAP_SECTORS_HCOUNT).GetOutpost(it->first) == TRUE ||
+							pDoc->m_Sectors.at(sector.x+(sector.y)*STARMAP_SECTORS_HCOUNT).GetStarbase(it->first) == TRUE))
 						{
 							bShowStation = true;
 							break;
@@ -781,48 +781,48 @@ void CGalaxyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		else if (sector != struct::Sector(-1,-1) && m_bDrawTradeRoute == TRUE)
 		{
 			CPoint p = pDoc->GetKO();
-			BYTE numberOfRoutes = pDoc->m_System[p.x][p.y].GetTradeRoutes()->GetSize();
+			BYTE numberOfRoutes = pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetTradeRoutes()->GetSize();
 			// konnten erfolgreich eine hinzufügen aufgrund der Bevölkerung
-			if (pDoc->m_Sector[sector.x][sector.y].GetSunSystem() == TRUE && pDoc->m_System[p.x][p.y].AddTradeRoute(CPoint(sector.x,sector.y), pDoc->m_System, pMajor->GetEmpire()->GetResearch()->GetResearchInfo()))
+			if (pDoc->m_Sectors.at(sector.x+(sector.y)*STARMAP_SECTORS_HCOUNT).GetSunSystem() == TRUE && pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).AddTradeRoute(CPoint(sector.x,sector.y), pDoc->m_System, pMajor->GetEmpire()->GetResearch()->GetResearchInfo()))
 			{
 				// wurde keine hinzugefügt, dann fertig
-				if (numberOfRoutes == pDoc->m_System[p.x][p.y].GetTradeRoutes()->GetSize())
+				if (numberOfRoutes == pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetTradeRoutes()->GetSize())
 				{
 					m_bDrawTradeRoute = FALSE;
 					Invalidate();
 				}
 				// jetzt diplomatische Beziehung checken
-				else if (pDoc->m_System[p.x][p.y].GetTradeRoutes()->GetAt(pDoc->m_System[p.x][p.y].GetTradeRoutes()->GetUpperBound()).CheckTradeRoute(p, CPoint(sector.x, sector.y), pDoc))
+				else if (pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetTradeRoutes()->GetAt(pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetTradeRoutes()->GetUpperBound()).CheckTradeRoute(p, CPoint(sector.x, sector.y), pDoc))
 				{
 					// wenn wir noch weitere Handelsrouten hinzufügen können, dann in der Ansicht bleiben
-					if (pDoc->m_System[p.x][p.y].CanAddTradeRoute(pMajor->GetEmpire()->GetResearch()->GetResearchInfo()))
+					if (pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).CanAddTradeRoute(pMajor->GetEmpire()->GetResearch()->GetResearchInfo()))
 						m_bDrawTradeRoute = TRUE;
 					else
 						m_bDrawTradeRoute = FALSE;
 					// Anzeige gleich aktualisieren
-					pDoc->m_System[p.x][p.y].CalculateVariables(&pDoc->BuildingInfo, pMajor->GetEmpire()->GetResearch()->GetResearchInfo(),
-						pDoc->m_Sector[p.x][p.y].GetPlanets(), pMajor, CTrade::GetMonopolOwner());
+					pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).CalculateVariables(&pDoc->BuildingInfo, pMajor->GetEmpire()->GetResearch()->GetResearchInfo(),
+						pDoc->m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetPlanets(), pMajor, CTrade::GetMonopolOwner());
 					Invalidate();
 				}
 				// konnten wie die Handelsroute aufgrund der diploamtischen Beziehungen nicht hinzufügen, so
 				// müssen wir sie gleich wieder löschen
 				else
 				{
-					pDoc->m_System[p.x][p.y].GetTradeRoutes()->RemoveAt(pDoc->m_System[p.x][p.y].GetTradeRoutes()->GetUpperBound());
+					pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetTradeRoutes()->RemoveAt(pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetTradeRoutes()->GetUpperBound());
 				}
 			}
 			// Wenn wir eine Handelsroute gelöscht haben, dann aktualisieren
-			else if (numberOfRoutes > pDoc->m_System[p.x][p.y].GetTradeRoutes()->GetSize())
-				pDoc->m_System[p.x][p.y].CalculateVariables(&pDoc->BuildingInfo, pMajor->GetEmpire()->GetResearch()->GetResearchInfo(),
-				pDoc->m_Sector[p.x][p.y].GetPlanets(), pMajor, CTrade::GetMonopolOwner());
+			else if (numberOfRoutes > pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetTradeRoutes()->GetSize())
+				pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).CalculateVariables(&pDoc->BuildingInfo, pMajor->GetEmpire()->GetResearch()->GetResearchInfo(),
+				pDoc->m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetPlanets(), pMajor, CTrade::GetMonopolOwner());
 		}
 		// Wenn wir eine Ressourcenroute festlegen wollen
 		else if (sector != struct::Sector(-1,-1) && m_bDrawResourceRoute == TRUE)
 		{
 			CPoint p = pDoc->GetKO();
 			// konnten erfolgreich eine hinzufügen aufgrund der Bevölkerung
-			if (pDoc->m_Sector[sector.x][sector.y].GetSunSystem() == TRUE && p != CPoint(sector.x,sector.y) &&
-				pDoc->m_System[p.x][p.y].AddResourceRoute(CPoint(sector.x,sector.y), CSystemMenuView::GetResourceRouteRes(), pDoc->m_System, pMajor->GetEmpire()->GetResearch()->GetResearchInfo()))
+			if (pDoc->m_Sectors.at(sector.x+(sector.y)*STARMAP_SECTORS_HCOUNT).GetSunSystem() == TRUE && p != CPoint(sector.x,sector.y) &&
+				pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).AddResourceRoute(CPoint(sector.x,sector.y), CSystemMenuView::GetResourceRouteRes(), pDoc->m_System, pMajor->GetEmpire()->GetResearch()->GetResearchInfo()))
 			{
 				m_bDrawResourceRoute = FALSE;
 				// Anzeige gleich aktualisieren
@@ -848,12 +848,12 @@ void CGalaxyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			CSoundManager::GetInstance()->PlaySound(SNDMGR_SOUND_SHIPTARGET);
 			// alte Flugdaten aus den Sektoren löschen
 			for (int i = 0; i < m_oldPath.GetSize(); i++)
-				pDoc->m_Sector[m_oldPath.GetAt(i).x][m_oldPath.GetAt(i).y].AddShipPathPoints(-1);
+				pDoc->m_Sectors.at(m_oldPath.GetAt(i).x+(m_oldPath.GetAt(i).y)*STARMAP_SECTORS_HCOUNT).AddShipPathPoints(-1);
 			m_oldPath.RemoveAll();
 			// Die Flugkoordinaten des Schiffes den Sektoren mitteilen, damit sie die Flugroute des Schiffes
 			// immer anzeigen können, auch wenn kein Schiff ausgewählt ist
 			for (int i = 0; i < pDoc->m_ShipArray[pDoc->GetCurrentShipIndex()].GetPath()->GetSize(); i++)
-				pDoc->m_Sector[pDoc->m_ShipArray[pDoc->GetCurrentShipIndex()].GetPath()->GetAt(i).x][pDoc->m_ShipArray[pDoc->GetCurrentShipIndex()].GetPath()->GetAt(i).y].AddShipPathPoints(1);
+				pDoc->m_Sectors.at(pDoc->m_ShipArray[pDoc->GetCurrentShipIndex()].GetPath()->GetAt(i).x+(pDoc->m_ShipArray[pDoc->GetCurrentShipIndex()].GetPath()->GetAt(i).y)*STARMAP_SECTORS_HCOUNT).AddShipPathPoints(1);
 			Invalidate();
 		}
 		else

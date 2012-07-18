@@ -149,9 +149,9 @@ public:
 	/// @return Koordinate auf der Galaxiemap
 	CPoint GetRaceKO(const CString& sMajorID);
 
-	CSector& GetSector(int x, int y) { ASSERT(x < STARMAP_SECTORS_HCOUNT && y < STARMAP_SECTORS_VCOUNT); return m_Sector[x][y]; }
+	CSector& GetSector(int x, int y) { ASSERT(x < STARMAP_SECTORS_HCOUNT && y < STARMAP_SECTORS_VCOUNT); return m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT); }
 	CSector& GetSector(const CPoint& ko) { return GetSector(ko.x, ko.y); }
-	CSystem& GetSystem(int x, int y) { ASSERT(x < STARMAP_SECTORS_HCOUNT && y < STARMAP_SECTORS_VCOUNT); return m_System[x][y]; }
+	CSystem& GetSystem(int x, int y) { ASSERT(x < STARMAP_SECTORS_HCOUNT && y < STARMAP_SECTORS_VCOUNT); return m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT); }
 	CSystem& GetSystem(const CPoint& ko) { return GetSystem(ko.x, ko.y); }
 
 	CBuildingInfo& GetBuildingInfo(int id) {ASSERT(id > 0); return BuildingInfo[id-1];}

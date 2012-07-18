@@ -66,13 +66,13 @@ void CIntelInfo::CalcIntelInfo(CBotf2Doc* pDoc, CMajor* pOurRace)
 			{
 				// Nun noch überprüfen, ob diese Informationen auch wirklich noch zutreffen. Veraltete Geheimdienstberichte
 				// können falsche Informationen beinhalten.
-				if (pDoc->m_Sector[ko.x][ko.y].GetOwnerOfSector() == intelObj->GetEnemy())
+				if (pDoc->m_Sectors.at(ko.x+(ko.y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSector() == intelObj->GetEnemy())
 				{
 					sectors[ko.x][ko.y][intelObj->GetEnemy()] = 1;
-					if (pDoc->m_System[ko.x][ko.y].GetOwnerOfSystem() == intelObj->GetEnemy())
+					if (pDoc->m_Systems.at(ko.x+(ko.y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem() == intelObj->GetEnemy())
 					{
 						sectors[ko.x][ko.y][intelObj->GetEnemy()] = 2;
-						if (pDoc->m_Sector[ko.x][ko.y].GetCurrentHabitants() > 0.0f)
+						if (pDoc->m_Sectors.at(ko.x+(ko.y)*STARMAP_SECTORS_HCOUNT).GetCurrentHabitants() > 0.0f)
 							sectors[ko.x][ko.y][intelObj->GetEnemy()] = 3;
 					}
 				}
@@ -85,7 +85,7 @@ void CIntelInfo::CalcIntelInfo(CBotf2Doc* pDoc, CMajor* pOurRace)
 					if (races[ko.x][ko.y][intelObj->GetEnemy()] < 2)
 					{
 						// überprüfen, ob die Minorrace noch vorhanden ist
-						CMinor* pMinor = pDoc->GetRaceCtrl()->GetMinorRace(pDoc->m_Sector[ko.x][ko.y].GetName());
+						CMinor* pMinor = pDoc->GetRaceCtrl()->GetMinorRace(pDoc->m_Sectors.at(ko.x+(ko.y)*STARMAP_SECTORS_HCOUNT).GetName());
 						if (pMinor != NULL)
 						{
 							if (((CDiplomacyIntelObj*)intelObj)->GetAgreement() == DIPLOMATIC_AGREEMENT::MEMBERSHIP)
@@ -121,7 +121,7 @@ void CIntelInfo::CalcIntelInfo(CBotf2Doc* pDoc, CMajor* pOurRace)
 		}
 		// kann nur eintreten, wenn wir zu dieser Minorrace weniger als eine Freundschaft haben. Denn nur dann könnte
 		// die andere Rasse eine Mitgliedschaft zu der Minorrace haben.
-		else if (pDoc->m_Sector[ko.x][ko.y].GetKnown(pOurRace->GetRaceID()))
+		else if (pDoc->m_Sectors.at(ko.x+(ko.y)*STARMAP_SECTORS_HCOUNT).GetKnown(pOurRace->GetRaceID()))
 		{
 			for (map<CString, CMajor*>::const_iterator jt = pmMajors->begin(); jt != pmMajors->end(); jt++)
 				if (jt->first != pOurRace->GetRaceID())
@@ -143,16 +143,16 @@ void CIntelInfo::CalcIntelInfo(CBotf2Doc* pDoc, CMajor* pOurRace)
 			for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
 			{
 				if (it->second->IsRaceContacted(pOurRace->GetRaceID()) || it->first == pOurRace->GetRaceID())
-					if (pDoc->m_Sector[x][y].GetScanned(pOurRace->GetRaceID()))
-						if (pDoc->m_Sector[x][y].GetOwnerOfSector() == it->first)
+					if (pDoc->m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetScanned(pOurRace->GetRaceID()))
+						if (pDoc->m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSector() == it->first)
 						{
 							if (sectors[x][y][it->first] < 1)
 								sectors[x][y][it->first] = 1;
-							if (pDoc->m_Sector[x][y].GetSunSystem())
+							if (pDoc->m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetSunSystem())
 							{
 								if (sectors[x][y][it->first] < 2)
 									sectors[x][y][it->first] = 2;
-								if (pDoc->m_Sector[x][y].GetKnown(pOurRace->GetRaceID()) && pDoc->m_System[x][y].GetHabitants() > 0.0f)
+								if (pDoc->m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetKnown(pOurRace->GetRaceID()) && pDoc->m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetHabitants() > 0.0f)
 									if (sectors[x][y][it->first] < 3)
 										sectors[x][y][it->first] = 3;
 							}

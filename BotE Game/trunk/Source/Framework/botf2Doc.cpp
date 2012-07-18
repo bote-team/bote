@@ -133,8 +133,8 @@ CBotf2Doc::~CBotf2Doc()
 		for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
 			for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
 			{
-				m_Sector[x][y].Reset();
-				m_System[x][y].ResetSystem();
+				m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).Reset();
+				m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).ResetSystem();
 			}
 
 			m_Sector.clear();
@@ -347,12 +347,12 @@ void CBotf2Doc::Serialize(CArchive& ar)
 		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
 		{
 			if (ar.IsLoading())
-				m_System[x][y].ResetSystem();
-			m_Sector[x][y].Serialize(ar);
-			if (m_Sector[x][y].GetSunSystem())
+				m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).ResetSystem();
+			m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).Serialize(ar);
+			if (m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetSunSystem())
 			{
-				if (m_Sector[x][y].GetOwnerOfSector() != "" || m_Sector[x][y].GetColonyOwner() != "" || m_Sector[x][y].GetMinorRace() == TRUE)
-					m_System[x][y].Serialize(ar);
+				if (m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSector() != "" || m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetColonyOwner() != "" || m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetMinorRace() == TRUE)
+					m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).Serialize(ar);
 			}
 		}
 
@@ -550,12 +550,12 @@ void CBotf2Doc::SerializeNextRoundData(CArchive &ar)
 		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
 		{
 			if (ar.IsLoading())
-				m_System[x][y].ResetSystem();
-			m_Sector[x][y].Serialize(ar);
-			if (m_Sector[x][y].GetSunSystem())
+				m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).ResetSystem();
+			m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).Serialize(ar);
+			if (m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetSunSystem())
 			{
-				if (m_Sector[x][y].GetOwnerOfSector() != "" || m_Sector[x][y].GetColonyOwner() != "" || m_Sector[x][y].GetMinorRace() == TRUE)
-					m_System[x][y].Serialize(ar);
+				if (m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSector() != "" || m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetColonyOwner() != "" || m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetMinorRace() == TRUE)
+					m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).Serialize(ar);
 			}
 		}
 
@@ -592,7 +592,7 @@ void CBotf2Doc::SerializeNextRoundData(CArchive &ar)
 		for (int y = 0; y < m_ShipArray.GetSize(); y++)
 			if (m_ShipArray.GetAt(y).GetOwnerOfShip() == pPlayer->GetRaceID())
 				for (int i = 0; i < m_ShipArray[y].GetPath()->GetSize(); i++)
-					m_Sector[m_ShipArray[y].GetPath()->GetAt(i).x][m_ShipArray[y].GetPath()->GetAt(i).y].AddShipPathPoints(1);
+					m_Sectors.at(m_ShipArray[y].GetPath()->GetAt(i).x+(m_ShipArray[y].GetPath()->GetAt(i).y)*STARMAP_SECTORS_HCOUNT).AddShipPathPoints(1);
 		// Sprachmeldungen an den Soundmanager schicken
 		CSoundManager* pSoundManager = CSoundManager::GetInstance();
 		ASSERT(pSoundManager);
@@ -645,9 +645,9 @@ void CBotf2Doc::SerializeEndOfRoundData(CArchive &ar, network::RACE race)
 		for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
 			for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
 			{
-				if (m_Sector[x][y].GetSunSystem())
+				if (m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetSunSystem())
 				{
-					if (m_Sector[x][y].GetOwnerOfSector() == pPlayer->GetRaceID() && m_System[x][y].GetOwnerOfSystem() == pPlayer->GetRaceID())
+					if (m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSector() == pPlayer->GetRaceID() && m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem() == pPlayer->GetRaceID())
 						number++;
 				}
 			}
@@ -655,12 +655,12 @@ void CBotf2Doc::SerializeEndOfRoundData(CArchive &ar, network::RACE race)
 		for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
 			for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
 			{
-				if (m_Sector[x][y].GetSunSystem())
+				if (m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetSunSystem())
 				{
-					if (m_System[x][y].GetOwnerOfSystem() == pPlayer->GetRaceID())
+					if (m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem() == pPlayer->GetRaceID())
 					{
 						ar << CPoint(x,y);
-						m_System[x][y].Serialize(ar);
+						m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).Serialize(ar);
 					}
 				}
 			}
@@ -730,7 +730,7 @@ void CBotf2Doc::SerializeEndOfRoundData(CArchive &ar, network::RACE race)
 		{
 			CPoint p;
 			ar >> p;
-			m_System[p.x][p.y].Serialize(ar);
+			m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).Serialize(ar);
 		}
 
 		pMajor->Serialize(ar);
@@ -1021,10 +1021,10 @@ void CBotf2Doc::PrepareData()
 			{
 				temp = 0;
 				hab = 0;
-				int number=m_Sector[x][y].GetNumberOfPlanets();
+				int number=m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetNumberOfPlanets();
 				for (int i=0;i<number;i++)
 				{
-					CPlanet* planet = m_Sector[x][y].GetPlanet(i);
+					CPlanet* planet = m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetPlanet(i);
 					temp+=planet->GetMaxHabitant();
 					hab = temp;
 				}
@@ -1034,7 +1034,7 @@ void CBotf2Doc::PrepareData()
 					poi.x = x; poi.y = y;
 				}
 			}
-		s.Format("Größtes System ist %s mit %lf Bevölkerung\nin Sektor %d:%d",m_Sector[poi.x][poi.y].GetName(),habis,poi.x,poi.y);
+		s.Format("Größtes System ist %s mit %lf Bevölkerung\nin Sektor %d:%d",m_Sectors.at(poi.x+(poi.y)*STARMAP_SECTORS_HCOUNT).GetName(),habis,poi.x,poi.y);
 		AfxMessageBox(s);
 		*/
 	}
@@ -1062,10 +1062,10 @@ void CBotf2Doc::GenerateGalaxy()
 		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
 		{
 			// Alle Werte der Systemklasse wieder auf NULL setzen
-			m_System[x][y].ResetSystem();
+			m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).ResetSystem();
 			// Alle Werte der Sektorklasse wieder auf NULL setzen
-			m_Sector[x][y].Reset();
-			m_Sector[x][y].SetKO(x,y);
+			m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).Reset();
+			m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).SetKO(x,y);
 		}
 	m_mRaceKO.clear();
 
@@ -1188,16 +1188,16 @@ void CBotf2Doc::GenerateGalaxy()
 		CMajor* pMajor = it->second;
 		CPoint raceKO = GetRaceKO(it->first);
 
-		m_Sector[raceKO.x][raceKO.y].SetSectorsName(pMajor->GetHomesystemName());
-		m_Sector[raceKO.x][raceKO.y].SetSunSystem(TRUE);
-		m_Sector[raceKO.x][raceKO.y].SetFullKnown(it->first);
-		m_Sector[raceKO.x][raceKO.y].SetOwned(TRUE);
-		m_Sector[raceKO.x][raceKO.y].SetOwnerOfSector(it->first);
-		m_Sector[raceKO.x][raceKO.y].SetColonyOwner(it->first);
-		m_Sector[raceKO.x][raceKO.y].CreatePlanets(it->first);
-		m_System[raceKO.x][raceKO.y].SetOwnerOfSystem(it->first);
-		m_System[raceKO.x][raceKO.y].SetResourceStore(TITAN, 1000);
-		m_System[raceKO.x][raceKO.y].SetResourceStore(DERITIUM, 3);
+		m_Sectors.at(raceKO.x+(raceKO.y)*STARMAP_SECTORS_HCOUNT).SetSectorsName(pMajor->GetHomesystemName());
+		m_Sectors.at(raceKO.x+(raceKO.y)*STARMAP_SECTORS_HCOUNT).SetSunSystem(TRUE);
+		m_Sectors.at(raceKO.x+(raceKO.y)*STARMAP_SECTORS_HCOUNT).SetFullKnown(it->first);
+		m_Sectors.at(raceKO.x+(raceKO.y)*STARMAP_SECTORS_HCOUNT).SetOwned(TRUE);
+		m_Sectors.at(raceKO.x+(raceKO.y)*STARMAP_SECTORS_HCOUNT).SetOwnerOfSector(it->first);
+		m_Sectors.at(raceKO.x+(raceKO.y)*STARMAP_SECTORS_HCOUNT).SetColonyOwner(it->first);
+		m_Sectors.at(raceKO.x+(raceKO.y)*STARMAP_SECTORS_HCOUNT).CreatePlanets(it->first);
+		m_Systems.at(raceKO.x+(raceKO.y)*STARMAP_SECTORS_HCOUNT).SetOwnerOfSystem(it->first);
+		m_Systems.at(raceKO.x+(raceKO.y)*STARMAP_SECTORS_HCOUNT).SetResourceStore(TITAN, 1000);
+		m_Systems.at(raceKO.x+(raceKO.y)*STARMAP_SECTORS_HCOUNT).SetResourceStore(DERITIUM, 3);
 
 		// Zwei Sonnensysteme in unmittelbarer Umgebung des Heimatsystems anlegen
 		BYTE nextSunSystems = 0;
@@ -1207,9 +1207,9 @@ void CBotf2Doc::GenerateGalaxy()
 			CPoint ko(rand()%3 - 1, rand()%3 - 1);
 			if (raceKO.x + ko.x < STARMAP_SECTORS_HCOUNT && raceKO.x + ko.x > -1
 				&& raceKO.y + ko.y < STARMAP_SECTORS_VCOUNT && raceKO.y + ko.y > -1)
-				if (!m_Sector[raceKO.x + ko.x][raceKO.y + ko.y].GetSunSystem())
+				if (!m_Sectors.at(raceKO.x + ko.x+(raceKO.y + ko.y)*STARMAP_SECTORS_HCOUNT).GetSunSystem())
 				{
-					m_Sector[raceKO.x + ko.x][raceKO.y + ko.y].GenerateSector(100, nMinorDensity);
+					m_Sectors.at(raceKO.x + ko.x+(raceKO.y + ko.y)*STARMAP_SECTORS_HCOUNT).GenerateSector(100, nMinorDensity);
 					nextSunSystems++;
 				}
 		};
@@ -1220,7 +1220,7 @@ void CBotf2Doc::GenerateGalaxy()
 				if (raceKO.y + y < STARMAP_SECTORS_VCOUNT && raceKO.y + y > -1
 					&& raceKO.x + x < STARMAP_SECTORS_HCOUNT && raceKO.x + x > -1)
 						if (raceKO.x + x != raceKO.x || raceKO.y + y != raceKO.y)
-							m_Sector[raceKO.x + x][raceKO.y + y].SetScanned(it->first);
+							m_Sectors.at(raceKO.x + x+(raceKO.y + y)*STARMAP_SECTORS_HCOUNT).SetScanned(it->first);
 	}
 
 	// Vektor der verwendeten Minors, diese nehmen aktiv am Spiel teil.
@@ -1229,7 +1229,7 @@ void CBotf2Doc::GenerateGalaxy()
 	vector<CPoint> vSectorsToGenerate;
 	for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
 		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-			if ((!m_Sector[x][y].GetOwned())&&nGenField[x][y]==true)
+			if ((!m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwned())&&nGenField[x][y]==true)
 				vSectorsToGenerate.push_back(CPoint(x,y));
 
 	while (!vSectorsToGenerate.empty())
@@ -1251,13 +1251,13 @@ void CBotf2Doc::GenerateGalaxy()
 			for (int i = -1; i <= 1; i++)
 				if (y + j < STARMAP_SECTORS_VCOUNT && y + j > -1 && x + i < STARMAP_SECTORS_HCOUNT && x + i > -1)
 				{
-					if (m_Sector[x + i][y + j].GetSunSystem())
+					if (m_Sectors.at(x + i+(y + j)*STARMAP_SECTORS_HCOUNT).GetSunSystem())
 					{
-						if (m_Sector[x + i][y + j].GetMinorRace())
+						if (m_Sectors.at(x + i+(y + j)*STARMAP_SECTORS_HCOUNT).GetMinorRace())
 							minorRaces++;
 						sunSystems++;
 					}
-					else if (m_Sector[x + i][y + j].GetAnomaly())
+					else if (m_Sectors.at(x + i+(y + j)*STARMAP_SECTORS_HCOUNT).GetAnomaly())
 						nAnomalys++;
 
 					for (map<CString, pair<int, int> >::const_iterator it = m_mRaceKO.begin(); it != m_mRaceKO.end(); ++it)
@@ -1272,32 +1272,32 @@ void CBotf2Doc::GenerateGalaxy()
 		if (minorRaceProb < 0)
 			minorRaceProb = 0;
 		if (sunSystemProb > 0)
-			m_Sector[x][y].GenerateSector(sunSystemProb, minorRaceProb);
-		if (m_Sector[x][y].GetMinorRace())
+			m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GenerateSector(sunSystemProb, minorRaceProb);
+		if (m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetMinorRace())
 		{
 			// Nun die Minorrace parametrisieren
-			CMinor* pMinor = m_pRaceCtrl->GetMinorRace(m_Sector[x][y].GetName());
+			CMinor* pMinor = m_pRaceCtrl->GetMinorRace(m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetName());
 			if (!pMinor)
 				AfxMessageBox("Error in function CBotf2Doc::GenerateGalaxy(): Could not create Minorrace");
 			else
 			{
 				pMinor->SetRaceKO(CPoint(x,y));
-				m_Sector[x][y].SetOwnerOfSector(pMinor->GetRaceID());
-				m_System[x][y].SetOwnerOfSystem("");
+				m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).SetOwnerOfSector(pMinor->GetRaceID());
+				m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).SetOwnerOfSystem("");
 				sUsedMinors.insert(pMinor->GetRaceID());
 				// wenn die Minorrace Schiffe bauen kann, sie aber kein Deritium im System besitzt, so wird
 				// ein Deritium auf dem ersten kolonisierten Planeten hinzugefügt
 				if (pMinor->GetSpaceflightNation())
 				{
 					BOOLEAN bRes[DERITIUM + 1] = {FALSE};
-					m_Sector[x][y].GetAvailableResources(bRes, true);
+					m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetAvailableResources(bRes, true);
 					// gibt es kein Deritium=
 					if (!bRes[DERITIUM])
 					{
-						for (int p = 0; p < static_cast<int>(m_Sector[x][y].GetPlanets().size()); p++)
-							if (m_Sector[x][y].GetPlanet(p)->GetCurrentHabitant() > 0 && m_Sector[x][y].GetPlanet(p)->GetColonized())
+						for (int p = 0; p < static_cast<int>(m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetPlanets().size()); p++)
+							if (m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetPlanet(p)->GetCurrentHabitant() > 0 && m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetPlanet(p)->GetColonized())
 							{
-								m_Sector[x][y].GetPlanet(p)->SetBoni(DERITIUM, TRUE);
+								m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetPlanet(p)->SetBoni(DERITIUM, TRUE);
 								break;
 							}
 					}
@@ -1305,9 +1305,9 @@ void CBotf2Doc::GenerateGalaxy()
 			}
 		}
 		// möglicherweise eine Anomalie im Sektor generieren
-		else if (!m_Sector[x][y].GetSunSystem())
+		else if (!m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetSunSystem())
 			if (rand()%100 >= (100 - (nAnomalyDensity - nAnomalys * 10)))
-				m_Sector[x][y].CreateAnomaly();
+				m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).CreateAnomaly();
 	}
 
 	// nun können alle nicht verwendeten Minors entfernt werden
@@ -1485,12 +1485,12 @@ void CBotf2Doc::NextRound()
 
 		CPoint ko = pMinor->GetRaceKO();
 
-		if (ko != CPoint(-1,-1) && m_System[ko.x][ko.y].GetOwnerOfSystem() == "" && m_Sector[ko.x][ko.y].GetOwnerOfSector() == pMinor->GetRaceID())
+		if (ko != CPoint(-1,-1) && m_Systems.at(ko.x+(ko.y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem() == "" && m_Sectors.at(ko.x+(ko.y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSector() == pMinor->GetRaceID())
 		{
 			// Vielleicht kolonisiert die Minorrace weitere Planeten in ihrem System
 			if (pMinor->PerhapsExtend(this))
 				// dann sind im System auch weitere Einwohner hinzugekommen
-				m_System[ko.x][ko.y].SetHabitants(this->GetSector(ko).GetCurrentHabitants());
+				m_Systems.at(ko.x+(ko.y)*STARMAP_SECTORS_HCOUNT).SetHabitants(this->GetSector(ko).GetCurrentHabitants());
 
 			// Den Verbrauch der Rohstoffe der kleinen Rassen in jeder Runde berechnen
 			pMinor->ConsumeResources(this);
@@ -1575,7 +1575,7 @@ void CBotf2Doc::ApplyShipsAtStartup()
 			{
 				for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
 					// Sektornamen gefunden
-					if (m_Sector[x][y].GetName(TRUE) == s)
+					if (m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetName(TRUE) == s)
 					{
 						bFoundSector = true;
 						// Schiffsklassen durchgehen, die dort stationiert werden sollen
@@ -1641,7 +1641,7 @@ void CBotf2Doc::ApplyTroopsAtStartup()
 			for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
 			{
 				for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-					if (m_Sector[x][y].GetName() == s)//Wenn der Name gefunden wurde
+					if (m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetName() == s)//Wenn der Name gefunden wurde
 					{
 						while (pos < csInput.GetLength())
 						{
@@ -1693,7 +1693,7 @@ void CBotf2Doc::ApplyBuildingsAtStartup()
 			for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
 			{
 				for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-					if (m_Sector[x][y].GetName() == s)
+					if (m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetName() == s)
 					{
 						while (pos < csInput.GetLength())
 						{
@@ -1733,35 +1733,35 @@ void CBotf2Doc::ApplyBuildingsAtStartup()
 
 	for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
 		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-			if (m_Sector[x][y].GetSunSystem() == TRUE)
+			if (m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetSunSystem() == TRUE)
 			{
-				m_System[x][y].SetHabitants(m_Sector[x][y].GetCurrentHabitants());
+				m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).SetHabitants(m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetCurrentHabitants());
 				for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 				{
-					if (m_System[x][y].GetOwnerOfSystem() == it->first)
+					if (m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem() == it->first)
 					{
 						CMajor* pMajor = it->second;
 						ASSERT(pMajor);
 						// Anzahl aller Farmen, Bauhöfe usw. im System berechnen
 						// baubare Gebäude, Schiffe und Truppen berechnen
-						m_System[x][y].CalculateNumberOfWorkbuildings(&this->BuildingInfo);
-						m_System[x][y].SetWorkersIntoBuildings();
-						m_System[x][y].CalculateVariables(&this->BuildingInfo, pMajor->GetEmpire()->GetResearch()->GetResearchInfo(), m_Sector[x][y].GetPlanets(), pMajor, CTrade::GetMonopolOwner());
+						m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).CalculateNumberOfWorkbuildings(&this->BuildingInfo);
+						m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).SetWorkersIntoBuildings();
+						m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).CalculateVariables(&this->BuildingInfo, pMajor->GetEmpire()->GetResearch()->GetResearchInfo(), m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetPlanets(), pMajor, CTrade::GetMonopolOwner());
 						// alle produzierten FP und SP der Imperien berechnen und zuweisen
 						int currentPoints;
-						currentPoints = m_System[x][y].GetProduction()->GetResearchProd();
+						currentPoints = m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetResearchProd();
 						pMajor->GetEmpire()->AddFP(currentPoints);
-						currentPoints = m_System[x][y].GetProduction()->GetSecurityProd();
+						currentPoints = m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetSecurityProd();
 						pMajor->GetEmpire()->AddSP(currentPoints);
 						// Schiffsunterstützungskosten eintragen
-						float fCurrentHabitants = m_Sector[x][y].GetCurrentHabitants();
+						float fCurrentHabitants = m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetCurrentHabitants();
 						pMajor->GetEmpire()->AddPopSupportCosts((USHORT)fCurrentHabitants * POPSUPPORT_MULTI);
 					}
 				}
-				for (int i = 0; i < m_System[x][y].GetAllBuildings()->GetSize(); i++)
+				for (int i = 0; i < m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetAllBuildings()->GetSize(); i++)
 				{
-					USHORT nID = m_System[x][y].GetAllBuildings()->GetAt(i).GetRunningNumber();
-					CString sRaceID = m_System[x][y].GetOwnerOfSystem();
+					USHORT nID = m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetAllBuildings()->GetAt(i).GetRunningNumber();
+					CString sRaceID = m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem();
 					if (GetBuildingInfo(nID).GetMaxInEmpire() > 0)
 						m_GlobalBuildings.AddGlobalBuilding(sRaceID, nID);
 				}
@@ -1803,9 +1803,9 @@ void CBotf2Doc::ApplyBuildingsAtStartup()
 		for (int i = 0; i < pMajor->GetEmpire()->GetSystemList()->GetSize(); i++)
 		{
 			CPoint p = pMajor->GetEmpire()->GetSystemList()->GetAt(i).ko;
-			m_System[p.x][p.y].CalculateBuildableBuildings(&m_Sector[p.x][p.y], &BuildingInfo, pMajor, &m_GlobalBuildings);
-			m_System[p.x][p.y].CalculateBuildableShips(this, p);
-			m_System[p.x][p.y].CalculateBuildableTroops(&m_TroopInfo, pMajor->GetEmpire()->GetResearch());
+			m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).CalculateBuildableBuildings(&m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT), &BuildingInfo, pMajor, &m_GlobalBuildings);
+			m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).CalculateBuildableShips(this, p);
+			m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).CalculateBuildableTroops(&m_TroopInfo, pMajor->GetEmpire()->GetResearch());
 		}
 	}
 }
@@ -2203,7 +2203,7 @@ void CBotf2Doc::BuildBuilding(USHORT id, const CPoint& KO)
 	CBuilding building(id);
 	BOOLEAN isOnline = this->GetBuildingInfo(id).GetAllwaysOnline();
 	building.SetIsBuildingOnline(isOnline);
-	m_System[KO.x][KO.y].AddNewBuilding(building);
+	m_Systems.at(KO.x+(KO.y)*STARMAP_SECTORS_HCOUNT).AddNewBuilding(building);
 }
 
 void CBotf2Doc::BuildShip(int nID, const CPoint& KO, const CString& sOwnerID)
@@ -2243,7 +2243,7 @@ void CBotf2Doc::BuildShip(int nID, const CPoint& KO, const CString& sOwnerID)
 
 	for (int i = 0; i < 4; i++)
 		m_ShipArray.ElementAt(n).SetTargetKO(CPoint(-1,-1), i);
-	pMajor->GetShipHistory()->AddShip(&m_ShipArray.GetAt(n), m_Sector[KO.x][KO.y].GetName(), m_iRound);
+	pMajor->GetShipHistory()->AddShip(&m_ShipArray.GetAt(n), m_Sectors.at(KO.x+(KO.y)*STARMAP_SECTORS_HCOUNT).GetName(), m_iRound);
 }
 
 void CBotf2Doc::RemoveShip(int nIndex)
@@ -2392,7 +2392,7 @@ void CBotf2Doc::AddToLostShipHistory(const CShip* pShip, const CString& sEvent, 
 	CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(pShip->GetOwnerOfShip()));
 	if (pMajor)
 	{
-		pMajor->GetShipHistory()->ModifyShip(pShip,	m_Sector[pShip->GetKO().x][pShip->GetKO().y].GetName(TRUE), m_iRound, sEvent, sStatus);
+		pMajor->GetShipHistory()->ModifyShip(pShip,	m_Sectors.at(pShip->GetKO().x+(pShip->GetKO().y)*STARMAP_SECTORS_HCOUNT).GetName(TRUE), m_iRound, sEvent, sStatus);
 	}
 }
 
@@ -2400,15 +2400,15 @@ void CBotf2Doc::AddToLostShipHistory(const CShip* pShip, const CString& sEvent, 
 void CBotf2Doc::BuildTroop(BYTE ID, CPoint ko)
 {
 	// Mal Testweise paar Truppen anlegen
-	m_System[ko.x][ko.y].AddTroop((CTroop*)&m_TroopInfo.GetAt(ID));
-	CString sRace = m_Sector[ko.x][ko.y].GetOwnerOfSector();
+	m_Systems.at(ko.x+(ko.y)*STARMAP_SECTORS_HCOUNT).AddTroop((CTroop*)&m_TroopInfo.GetAt(ID));
+	CString sRace = m_Sectors.at(ko.x+(ko.y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSector();
 	if (sRace == "")
 		return;
 
 	CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(sRace));
 	ASSERT(pMajor);
 
-	int n = m_System[ko.x][ko.y].GetTroops()->GetUpperBound();
+	int n = m_Systems.at(ko.x+(ko.y)*STARMAP_SECTORS_HCOUNT).GetTroops()->GetUpperBound();
 
 	// Spezialforschung #4: "Truppen"
 	if (pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(RESEARCH_COMPLEX::TROOPS)->GetComplexStatus() == RESEARCH_STATUS::RESEARCHED)
@@ -2416,14 +2416,14 @@ void CBotf2Doc::BuildTroop(BYTE ID, CPoint ko)
 		// 20% verbesserte Offensive
 		if (pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(RESEARCH_COMPLEX::TROOPS)->GetFieldStatus(1) == RESEARCH_STATUS::RESEARCHED)
 		{
-			BYTE power = m_System[ko.x][ko.y].GetTroops()->GetAt(n).GetOffense();
-			m_System[ko.x][ko.y].GetTroops()->GetAt(n).SetOffense(
+			BYTE power = m_Systems.at(ko.x+(ko.y)*STARMAP_SECTORS_HCOUNT).GetTroops()->GetAt(n).GetOffense();
+			m_Systems.at(ko.x+(ko.y)*STARMAP_SECTORS_HCOUNT).GetTroops()->GetAt(n).SetOffense(
 				power + (power * pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(RESEARCH_COMPLEX::TROOPS)->GetBonus(1) / 100));
 		}
 		// 500 Erfahrungspunkte dazu -> erste Stufe
 		else if (pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(RESEARCH_COMPLEX::TROOPS)->GetFieldStatus(2) == RESEARCH_STATUS::RESEARCHED)
 		{
-			m_System[ko.x][ko.y].GetTroops()->GetAt(n).AddExperiancePoints(pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(RESEARCH_COMPLEX::TROOPS)->GetBonus(2));
+			m_Systems.at(ko.x+(ko.y)*STARMAP_SECTORS_HCOUNT).GetTroops()->GetAt(n).AddExperiancePoints(pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(RESEARCH_COMPLEX::TROOPS)->GetBonus(2));
 		}
 	}
 
@@ -2456,15 +2456,15 @@ void CBotf2Doc::GenerateStarmap(const CString& sOnlyForRaceID)
 
 				CMajor* pMajor = it->second;
 				// Wenn in dem System eine aktive Werft ist bzw. eine Station/Werft im Sektor ist
-				if ((m_System[x][y].GetProduction()->GetShipYard() == TRUE && m_System[x][y].GetOwnerOfSystem() == pMajor->GetRaceID())
-					|| m_Sector[x][y].GetShipPort(pMajor->GetRaceID()))
+				if ((m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetShipYard() == TRUE && m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem() == pMajor->GetRaceID())
+					|| m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetShipPort(pMajor->GetRaceID()))
 				{
 					pMajor->GetStarmap()->AddBase(Sector(x,y), pMajor->GetEmpire()->GetResearch()->GetPropulsionTech());
 				}
 
-				if (m_Sector[x][y].GetSunSystem())
+				if (m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetSunSystem())
 				{
-					if (m_Sector[x][y].GetOwnerOfSector() == it->first || m_Sector[x][y].GetOwnerOfSector() == "")
+					if (m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSector() == it->first || m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSector() == "")
 					{
 						CMajor* pMajor = it->second;
 						pMajor->GetStarmap()->AddKnownSystem(Sector(x,y));
@@ -2559,10 +2559,10 @@ void CBotf2Doc::CalcPreDataForNextRound()
 	// Systeme durchgehen und die Blockadewert des Systems zurücksetzen
 	for (int y = 0 ; y < STARMAP_SECTORS_VCOUNT; y++)
 		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-			if (m_Sector[x][y].GetSunSystem())
+			if (m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetSunSystem())
 			{
-				m_System[x][y].SetBlockade(0);
-				m_System[x][y].ClearDisabledProductions();
+				m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).SetBlockade(0);
+				m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).ClearDisabledProductions();
 			}
 
 
@@ -2602,7 +2602,7 @@ void CBotf2Doc::CalcSystemAttack()
 			{
 				CPoint p = m_ShipArray.GetAt(y).GetKO();
 				// Besitzer des Systems (hier Sector wegen Minors) vor dem Systemangriff
-				CString sDefender = m_Sector[p.x][p.y].GetOwnerOfSector();
+				CString sDefender = m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSector();
 				// Angreifer bzw. neuer Besitzer des Systems nach dem Angriff
 				set<CString> attackers;
 				for (int i = 0; i < m_ShipArray.GetSize(); i++)
@@ -2619,33 +2619,33 @@ void CBotf2Doc::CalcSystemAttack()
 				if (!sDefender.IsEmpty())
 					defender = m_pRaceCtrl->GetRace(sDefender);
 				// Wenn eine Minorrace in dem System lebt und dieser nicht schon erobert wurde
-				if (defender && defender->GetType() == MINOR && m_Sector[p.x][p.y].GetTakenSector() == FALSE)
+				if (defender && defender->GetType() == MINOR && m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetTakenSector() == FALSE)
 				{
-					attackSystem->Init(defender, &m_System[p.x][p.y], &m_ShipArray, &m_Sector[p.x][p.y], &this->BuildingInfo, CTrade::GetMonopolOwner());
+					attackSystem->Init(defender, &m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT), &m_ShipArray, &m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT), &this->BuildingInfo, CTrade::GetMonopolOwner());
 				}
 				// Wenn eine Majorrace in dem System lebt
 				else if (defender && defender->GetType() == MAJOR && attackSystem->IsDefenderNotAttacker(sDefender, &attackers))
 				{
-					attackSystem->Init(defender, &m_System[p.x][p.y], &m_ShipArray, &m_Sector[p.x][p.y], &this->BuildingInfo, CTrade::GetMonopolOwner());
+					attackSystem->Init(defender, &m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT), &m_ShipArray, &m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT), &this->BuildingInfo, CTrade::GetMonopolOwner());
 				}
 				// Wenn niemand mehr in dem System lebt, z.B. durch Rebellion
 				else
 				{
-					attackSystem->Init(NULL, &m_System[p.x][p.y], &m_ShipArray, &m_Sector[p.x][p.y], &this->BuildingInfo, CTrade::GetMonopolOwner());
+					attackSystem->Init(NULL, &m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT), &m_ShipArray, &m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT), &this->BuildingInfo, CTrade::GetMonopolOwner());
 				}
 				// Ein Systemangriff verringert die Moral in allen Systemen, die von uns schon erobert wurden und zuvor
 				// der Majorrace gehörten, deren System hier angegriffen wird
 				if (!sDefender.IsEmpty())
 					for (int j = 0 ; j < STARMAP_SECTORS_VCOUNT; j++)
 						for (int i = 0; i < STARMAP_SECTORS_HCOUNT; i++)
-							if (m_Sector[i][j].GetTakenSector() == TRUE && m_Sector[i][j].GetColonyOwner() == sDefender
+							if (m_Sectors.at(i+(j)*STARMAP_SECTORS_HCOUNT).GetTakenSector() == TRUE && m_Sectors.at(i+(j)*STARMAP_SECTORS_HCOUNT).GetColonyOwner() == sDefender
 								&& attackSystem->IsDefenderNotAttacker(sDefender, &attackers))
-								m_System[i][j].SetMoral(-rand()%5);
+								m_Systems.at(i+(j)*STARMAP_SECTORS_HCOUNT).SetMoral(-rand()%5);
 
 				// Wurde das System mit Truppen erobert, so wechselt es den Besitzer
 				if (attackSystem->Calculate())
 				{
-					CString attacker = m_System[p.x][p.y].GetOwnerOfSystem();
+					CString attacker = m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem();
 					CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(attacker));
 					ASSERT(pMajor);
 					//* Der Besitzer des Systems wurde in der Calculate() Funktion schon auf den neuen Besitzer
@@ -2655,25 +2655,25 @@ void CBotf2Doc::CalcSystemAttack()
 					// Wenn in dem System eine Minorrace beheimatet ist und das System nicht vorher schon von jemand
 					// anderem militärisch erobert wurde oder die Minorace bei einem anderen Imperium schon vermitgliedelt
 					// wurde, dann muss diese zuerst die Gebäude bauen
-					if (m_Sector[p.x][p.y].GetMinorRace() == TRUE && m_Sector[p.x][p.y].GetTakenSector() == FALSE && defender != NULL && defender->GetType() == MINOR)
+					if (m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetMinorRace() == TRUE && m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetTakenSector() == FALSE && defender != NULL && defender->GetType() == MINOR)
 					{
 						CMinor* pMinor = dynamic_cast<CMinor*>(defender);
 						ASSERT(pMinor);
 						pMinor->SetSubjugated(true);
 						// Wenn das System noch keiner Majorrace gehört, dann Gebäude bauen
-						m_System[p.x][p.y].BuildBuildingsForMinorRace(&m_Sector[p.x][p.y], &BuildingInfo, m_Statistics.GetAverageTechLevel(), pMinor);
+						m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).BuildBuildingsForMinorRace(&m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT), &BuildingInfo, m_Statistics.GetAverageTechLevel(), pMinor);
 						// Sektor gilt ab jetzt als erobert.
-						m_Sector[p.x][p.y].SetTakenSector(TRUE);
-						m_Sector[p.x][p.y].SetOwned(TRUE);
-						m_Sector[p.x][p.y].SetOwnerOfSector(attacker);
+						m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetTakenSector(TRUE);
+						m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetOwned(TRUE);
+						m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetOwnerOfSector(attacker);
 						// Beziehung zu dieser Minorrace verschlechtert sich auf 0 Punkte
 						pMinor->SetRelation(attacker, -100);
 						// Moral in diesem System verschlechtert sich um rand()%25+10 Punkte
-						m_System[p.x][p.y].SetMoral(-rand()%25-10);
+						m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetMoral(-rand()%25-10);
 						// ist die Moral unter 50, so wird sie auf 50 gesetzt
-						if (m_System[p.x][p.y].GetMoral() < 50)
-							m_System[p.x][p.y].SetMoral(50 - m_System[p.x][p.y].GetMoral());
-						CString param = m_Sector[p.x][p.y].GetName();
+						if (m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetMoral() < 50)
+							m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetMoral(50 - m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetMoral());
+						CString param = m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetName();
 						CString eventText = "";
 
 						// Alle diplomatischen Nachrichten der Minorrace aus den Feldern löschen und an der Minorrace
@@ -2723,17 +2723,17 @@ void CBotf2Doc::CalcSystemAttack()
 						}
 					}
 					// Wenn das System einer Minorrace gehört, eingenommen wurde und somit befreit wird
-					else if (m_Sector[p.x][p.y].GetMinorRace() == TRUE && m_Sector[p.x][p.y].GetTakenSector() == TRUE && defender != NULL && defender->GetType() == MAJOR)
+					else if (m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetMinorRace() == TRUE && m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetTakenSector() == TRUE && defender != NULL && defender->GetType() == MAJOR)
 					{
 						// Die Beziehung zur der Majorrace, die das System vorher besaß verschlechtert sich
 						defender->SetRelation(attacker, -rand()%50);
 						// Die Beziehung zu der Minorrace verbessert sich auf Seiten des Retters
-						CMinor* pMinor = m_pRaceCtrl->GetMinorRace(m_Sector[p.x][p.y].GetName());
+						CMinor* pMinor = m_pRaceCtrl->GetMinorRace(m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetName());
 						ASSERT(pMinor);
 						pMinor->SetRelation(attacker, rand()%50);
 						pMinor->SetSubjugated(false);
 						// Eventnachricht an den, der das System verloren hat (erobertes Minorracesystem wieder verloren)
-						CString param = m_Sector[p.x][p.y].GetName();
+						CString param = m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetName();
 						CString eventText = "";
 
 						eventText = ((CMajor*)defender)->GetMoralObserver()->AddEvent(17, ((CMajor*)defender)->GetRaceMoralNumber(), param);
@@ -2765,12 +2765,12 @@ void CBotf2Doc::CalcSystemAttack()
 							}
 						}
 						// Sektor gilt ab jetzt als nicht mehr erobert.
-						m_Sector[p.x][p.y].SetTakenSector(FALSE);
-						m_Sector[p.x][p.y].SetOwned(FALSE);
-						m_Sector[p.x][p.y].SetOwnerOfSector(pMinor->GetRaceID());
-						m_System[p.x][p.y].SetOwnerOfSystem("");
+						m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetTakenSector(FALSE);
+						m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetOwned(FALSE);
+						m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetOwnerOfSector(pMinor->GetRaceID());
+						m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetOwnerOfSystem("");
 						// Moral in dem System um rand()%50+25 erhöhen
-						m_System[p.x][p.y].SetMoral(rand()%50+25);
+						m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetMoral(rand()%50+25);
 					}
 					// Eine andere Majorrace besaß das System
 					else
@@ -2779,10 +2779,10 @@ void CBotf2Doc::CalcSystemAttack()
 						if (defender != NULL && defender->GetRaceID() != attacker)
 							defender->SetRelation(attacker, -rand()%50);
 						// Wenn das System zurückerobert wird, dann gilt es als befreit
-						if (m_Sector[p.x][p.y].GetColonyOwner() == attacker)
+						if (m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetColonyOwner() == attacker)
 						{
-							m_Sector[p.x][p.y].SetTakenSector(FALSE);
-							CString param = m_Sector[p.x][p.y].GetName();
+							m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetTakenSector(FALSE);
+							CString param = m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetName();
 							// Eventnachricht an den Eroberer (unser ehemaliges System wieder zurückerobert)
 							CString eventText = "";
 							eventText = pMajor->GetMoralObserver()->AddEvent(14, pMajor->GetRaceMoralNumber(), param);
@@ -2816,13 +2816,13 @@ void CBotf2Doc::CalcSystemAttack()
 								}
 							}
 							// Moral in dem System um rand()%25+10 erhöhen
-							m_System[p.x][p.y].SetMoral(rand()%25+10);
+							m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetMoral(rand()%25+10);
 						}
 						// Handelte es sich dabei um das Heimatsystem einer Rasse
-						else if (defender != NULL && defender->GetType() == MAJOR && m_Sector[p.x][p.y].GetOwnerOfSector() == defender->GetRaceID() && m_Sector[p.x][p.y].GetName() == ((CMajor*)defender)->GetHomesystemName())
+						else if (defender != NULL && defender->GetType() == MAJOR && m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSector() == defender->GetRaceID() && m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetName() == ((CMajor*)defender)->GetHomesystemName())
 						{
 							// Eventnachricht an den ehemaligen Heimatsystembesitzer (Heimatsystem verloren)
-							CString param = m_Sector[p.x][p.y].GetName();
+							CString param = m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetName();
 							CString eventText = "";
 							eventText = ((CMajor*)defender)->GetMoralObserver()->AddEvent(15, ((CMajor*)defender)->GetRaceMoralNumber(), param);
 							// Eventnachricht hinzufügen
@@ -2853,27 +2853,27 @@ void CBotf2Doc::CalcSystemAttack()
 								}
 							}
 							// Sektor gilt ab jetzt als erobert.
-							m_Sector[p.x][p.y].SetTakenSector(TRUE);
+							m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetTakenSector(TRUE);
 							// Moral in diesem System verschlechtert sich um rand()%25+10 Punkte
-							m_System[p.x][p.y].SetMoral(-rand()%25-10);
+							m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetMoral(-rand()%25-10);
 							// ist die Moral unter 50, so wird sie auf 50 gesetzt
-							if (m_System[p.x][p.y].GetMoral() < 50)
-								m_System[p.x][p.y].SetMoral(50 - m_System[p.x][p.y].GetMoral());
+							if (m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetMoral() < 50)
+								m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetMoral(50 - m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetMoral());
 						}
 						// wurde das System erobert und obere Bedingungen traten nicht ein
 						else
 						{
-							CString param = m_Sector[p.x][p.y].GetName();
+							CString param = m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetName();
 							// Hat eine andere Majorrace die Minorrace vermitgliedelt, so unterwerfen wir auch diese Minorrace
-							if (m_Sector[p.x][p.y].GetMinorRace())
+							if (m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetMinorRace())
 							{
-								CMinor* pMinor = m_pRaceCtrl->GetMinorRace(m_Sector[p.x][p.y].GetName());
+								CMinor* pMinor = m_pRaceCtrl->GetMinorRace(m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetName());
 								ASSERT(pMinor);
 								pMinor->SetSubjugated(true);
 								// Beziehung zu dieser Minorrace verschlechtert sich auf 0 Punkte
 								pMinor->SetRelation(attacker, -100);
 
-								CString param = m_Sector[p.x][p.y].GetName();
+								CString param = m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetName();
 
 								// Alle diplomatischen Nachrichten der Minorrace aus den Feldern löschen und an der Minorrace
 								// bekannte Imperien die Nachricht der Unterwerfung senden
@@ -2909,12 +2909,12 @@ void CBotf2Doc::CalcSystemAttack()
 							}
 
 							// Sektor gilt ab jetzt als erobert.
-							m_Sector[p.x][p.y].SetTakenSector(TRUE);
+							m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetTakenSector(TRUE);
 							// Moral in diesem System verschlechtert sich um rand()%25+10 Punkte
-							m_System[p.x][p.y].SetMoral(-rand()%25-10);
+							m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetMoral(-rand()%25-10);
 							// ist die Moral unter 50, so wird sie auf 50 gesetzt
-							if (m_System[p.x][p.y].GetMoral() < 50)
-								m_System[p.x][p.y].SetMoral(50 - m_System[p.x][p.y].GetMoral());
+							if (m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetMoral() < 50)
+								m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetMoral(50 - m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetMoral());
 
 							CString eventText = "";
 							// Eventnachricht an den ehemaligen Besitzer (eigenes System verloren)
@@ -2949,13 +2949,13 @@ void CBotf2Doc::CalcSystemAttack()
 								}
 							}
 						}
-						m_Sector[p.x][p.y].SetOwnerOfSector(attacker);
+						m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetOwnerOfSector(attacker);
 					}
 					// Gebäude die nach Eroberung automatisch zerstört werden
-					m_System[p.x][p.y].RemoveSpecialRaceBuildings(&this->BuildingInfo);
+					m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).RemoveSpecialRaceBuildings(&this->BuildingInfo);
 					// Variablen berechnen und Gebäude besetzen
-					m_System[p.x][p.y].CalculateNumberOfWorkbuildings(&this->BuildingInfo);
-					m_System[p.x][p.y].SetWorkersIntoBuildings();
+					m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).CalculateNumberOfWorkbuildings(&this->BuildingInfo);
+					m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetWorkersIntoBuildings();
 
 					// war der Verteidiger eine Majorrace und wurde sie durch die Eroberung komplett ausgelöscht,
 					// so bekommt der Eroberer einen kräftigen Moralschub
@@ -2985,16 +2985,16 @@ void CBotf2Doc::CalcSystemAttack()
 
 					// erfolgreiches Invasionsevent für den Angreifer einfügen (sollte immer ein Major sein)
 					if (!attacker.IsEmpty() && pMajor && pMajor->IsHumanPlayer())
-						pMajor->GetEmpire()->GetEventMessages()->Add(new CEventBombardment(attacker, "InvasionSuccess", CResourceManager::GetString("INVASIONSUCCESSEVENT_HEADLINE", FALSE, m_Sector[p.x][p.y].GetName()), CResourceManager::GetString("INVASIONSUCCESSEVENT_TEXT_" + pMajor->GetRaceID(), FALSE, m_Sector[p.x][p.y].GetName())));
+						pMajor->GetEmpire()->GetEventMessages()->Add(new CEventBombardment(attacker, "InvasionSuccess", CResourceManager::GetString("INVASIONSUCCESSEVENT_HEADLINE", FALSE, m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetName()), CResourceManager::GetString("INVASIONSUCCESSEVENT_TEXT_" + pMajor->GetRaceID(), FALSE, m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetName())));
 
 					// Invasionsevent für den Verteidiger einfügen
 					if (defender != NULL && defender->GetType() == MAJOR && ((CMajor*)defender)->IsHumanPlayer() && attackSystem->IsDefenderNotAttacker(sDefender, &attackers))
-						((CMajor*)defender)->GetEmpire()->GetEventMessages()->Add(new CEventBombardment(sDefender, "InvasionSuccess", CResourceManager::GetString("INVASIONSUCCESSEVENT_HEADLINE", FALSE, m_Sector[p.x][p.y].GetName()), CResourceManager::GetString("INVASIONSUCCESSEVENT_TEXT_" + defender->GetRaceID(), FALSE, m_Sector[p.x][p.y].GetName())));
+						((CMajor*)defender)->GetEmpire()->GetEventMessages()->Add(new CEventBombardment(sDefender, "InvasionSuccess", CResourceManager::GetString("INVASIONSUCCESSEVENT_HEADLINE", FALSE, m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetName()), CResourceManager::GetString("INVASIONSUCCESSEVENT_TEXT_" + defender->GetRaceID(), FALSE, m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetName())));
 				}
 				// Wurde nur bombardiert, nicht erobert
 				else
 				{
-					CString param = m_Sector[p.x][p.y].GetName();
+					CString param = m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetName();
 					CString eventText = "";
 					for (set<CString>::const_iterator it = attackers.begin(); it != attackers.end(); ++it)
 					{
@@ -3006,15 +3006,15 @@ void CBotf2Doc::CalcSystemAttack()
 							defender->SetRelation(pMajor->GetRaceID(), -rand()%10);
 					}
 					// Wenn die Bevölkerung des Systems auf NULL geschrumpft ist, dann ist dieses System verloren
-					if (m_System[p.x][p.y].GetHabitants() <= 0.000001f)
+					if (m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetHabitants() <= 0.000001f)
 					{
 						// Bei einer Minorrace wird es komplizierter. Wenn diese keine Systeme mehr hat, dann ist diese
 						// aus dem Spiel verschwunden. Alle Einträge in der Diplomatie müssen daher gelöscht werden
-						if (m_Sector[p.x][p.y].GetMinorRace())
+						if (m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetMinorRace())
 						{
-							CMinor* pMinor = m_pRaceCtrl->GetMinorRace(m_Sector[p.x][p.y].GetName());
+							CMinor* pMinor = m_pRaceCtrl->GetMinorRace(m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetName());
 							ASSERT(pMinor);
-							m_Sector[p.x][p.y].SetMinorRace(FALSE);
+							m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetMinorRace(FALSE);
 
 							pMinor->GetIncomingDiplomacyNews()->clear();
 							pMinor->GetOutgoingDiplomacyNews()->clear();
@@ -3078,10 +3078,10 @@ void CBotf2Doc::CalcSystemAttack()
 						if (defender != NULL && defender->GetType() == MAJOR && attackSystem->IsDefenderNotAttacker(defender->GetRaceID(), &attackers))
 						{
 							eventText = "";
-							if (m_Sector[p.x][p.y].GetName() == ((CMajor*)defender)->GetHomesystemName())
+							if (m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetName() == ((CMajor*)defender)->GetHomesystemName())
 							{
 								// Eventnachricht an den ehemaligen Heimatsystembesitzer (Heimatsystem verloren)
-								param = m_Sector[p.x][p.y].GetName();
+								param = m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetName();
 								eventText = ((CMajor*)defender)->GetMoralObserver()->AddEvent(15, ((CMajor*)defender)->GetRaceMoralNumber(), param);
 							}
 							else
@@ -3102,11 +3102,11 @@ void CBotf2Doc::CalcSystemAttack()
 								}
 							}
 						}
-						m_System[p.x][p.y].SetOwnerOfSystem("");
-						m_Sector[p.x][p.y].SetOwnerOfSector("");
-						m_Sector[p.x][p.y].SetColonyOwner("");
-						m_Sector[p.x][p.y].SetTakenSector(FALSE);
-						m_Sector[p.x][p.y].SetOwned(FALSE);
+						m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetOwnerOfSystem("");
+						m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetOwnerOfSector("");
+						m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetColonyOwner("");
+						m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetTakenSector(FALSE);
+						m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetOwned(FALSE);
 
 						// war der Verteidiger eine Majorrace und wurde sie durch den Verlust des Systems komplett ausgelöscht,
 						// so bekommt der Eroberer einen kräftigen Moralschub
@@ -3145,7 +3145,7 @@ void CBotf2Doc::CalcSystemAttack()
 					{
 						// Eventnachrichten nicht jedesmal, sondern nur wenn Gebäude vernichtet wurden oder
 						// mindst. 3% der Bevölkerung vernichtet wurden
-						if (attackSystem->GetDestroyedBuildings() > 0 || attackSystem->GetKilledPop() >= m_System[p.x][p.y].GetHabitants() * 0.03)
+						if (attackSystem->GetDestroyedBuildings() > 0 || attackSystem->GetKilledPop() >= m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetHabitants() * 0.03)
 						{
 							for (set<CString>::const_iterator it = attackers.begin(); it != attackers.end(); ++it)
 							{
@@ -3156,7 +3156,7 @@ void CBotf2Doc::CalcSystemAttack()
 								if (defender != NULL)
 									eventText = pMajor->GetMoralObserver()->AddEvent(19, pMajor->GetRaceMoralNumber(), param);
 								// Wenn das System mal uns gehört hatte und durch eine Rebellion verloren ging
-								else if (m_Sector[p.x][p.y].GetColonyOwner() == pMajor->GetRaceID() && defender == NULL)
+								else if (m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetColonyOwner() == pMajor->GetRaceID() && defender == NULL)
 									eventText = pMajor->GetMoralObserver()->AddEvent(20, pMajor->GetRaceMoralNumber(), param);
 								// Eventnachricht für Agressor hinzufügen
 								if (!eventText.IsEmpty())
@@ -3194,10 +3194,10 @@ void CBotf2Doc::CalcSystemAttack()
 						if (pMajor->IsHumanPlayer())
 						{
 							if (!attackSystem->IsTroopsInvolved())
-								pMajor->GetEmpire()->GetEventMessages()->Add(new CEventBombardment(pMajor->GetRaceID(), "Bombardment", CResourceManager::GetString("BOMBARDEVENT_HEADLINE", FALSE, m_Sector[p.x][p.y].GetName()), CResourceManager::GetString("BOMBARDEVENT_TEXT_AGRESSOR_" + pMajor->GetRaceID(), FALSE, m_Sector[p.x][p.y].GetName())));
+								pMajor->GetEmpire()->GetEventMessages()->Add(new CEventBombardment(pMajor->GetRaceID(), "Bombardment", CResourceManager::GetString("BOMBARDEVENT_HEADLINE", FALSE, m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetName()), CResourceManager::GetString("BOMBARDEVENT_TEXT_AGRESSOR_" + pMajor->GetRaceID(), FALSE, m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetName())));
 							// gescheitere Invasion
-							else if (m_System[p.x][p.y].GetHabitants() > 0.000001f)
-								pMajor->GetEmpire()->GetEventMessages()->Add(new CEventBombardment(pMajor->GetRaceID(), "InvasionFailed", CResourceManager::GetString("INVASIONFAILUREEVENT_HEADLINE", FALSE, m_Sector[p.x][p.y].GetName()), CResourceManager::GetString("INVASIONFAILUREEVENT_TEXT_" + pMajor->GetRaceID(), FALSE, m_Sector[p.x][p.y].GetName())));
+							else if (m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetHabitants() > 0.000001f)
+								pMajor->GetEmpire()->GetEventMessages()->Add(new CEventBombardment(pMajor->GetRaceID(), "InvasionFailed", CResourceManager::GetString("INVASIONFAILUREEVENT_HEADLINE", FALSE, m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetName()), CResourceManager::GetString("INVASIONFAILUREEVENT_TEXT_" + pMajor->GetRaceID(), FALSE, m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetName())));
 						}
 
 					}
@@ -3208,10 +3208,10 @@ void CBotf2Doc::CalcSystemAttack()
 						{
 							// reine Bombardierung
 							if (!attackSystem->IsTroopsInvolved())
-								((CMajor*)defender)->GetEmpire()->GetEventMessages()->Add(new CEventBombardment(defender->GetRaceID(), "Bombardment", CResourceManager::GetString("BOMBARDEVENT_HEADLINE", FALSE, m_Sector[p.x][p.y].GetName()), CResourceManager::GetString("BOMBARDEVENT_TEXT_DEFENDER_" + defender->GetRaceID(), FALSE, m_Sector[p.x][p.y].GetName())));
+								((CMajor*)defender)->GetEmpire()->GetEventMessages()->Add(new CEventBombardment(defender->GetRaceID(), "Bombardment", CResourceManager::GetString("BOMBARDEVENT_HEADLINE", FALSE, m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetName()), CResourceManager::GetString("BOMBARDEVENT_TEXT_DEFENDER_" + defender->GetRaceID(), FALSE, m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetName())));
 							// gescheitere Invasion
-							else if (m_System[p.x][p.y].GetHabitants() > 0.000001f)
-								((CMajor*)defender)->GetEmpire()->GetEventMessages()->Add(new CEventBombardment(defender->GetRaceID(), "InvasionFailed", CResourceManager::GetString("INVASIONFAILUREEVENT_HEADLINE", FALSE, m_Sector[p.x][p.y].GetName()), CResourceManager::GetString("INVASIONFAILUREEVENT_TEXT_" + defender->GetRaceID(), FALSE, m_Sector[p.x][p.y].GetName())));
+							else if (m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetHabitants() > 0.000001f)
+								((CMajor*)defender)->GetEmpire()->GetEventMessages()->Add(new CEventBombardment(defender->GetRaceID(), "InvasionFailed", CResourceManager::GetString("INVASIONFAILUREEVENT_HEADLINE", FALSE, m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetName()), CResourceManager::GetString("INVASIONFAILUREEVENT_TEXT_" + defender->GetRaceID(), FALSE, m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetName())));
 						}
 					}
 				}
@@ -3225,7 +3225,7 @@ void CBotf2Doc::CalcSystemAttack()
 						ASSERT(pMajor);
 
 						CMessage message;
-						message.GenerateMessage(attackSystem->GetNews()->GetAt(i), MESSAGE_TYPE::MILITARY, m_Sector[p.x][p.y].GetName(), p, 0);
+						message.GenerateMessage(attackSystem->GetNews()->GetAt(i), MESSAGE_TYPE::MILITARY, m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetName(), p, 0);
 						pMajor->GetEmpire()->AddMessage(message);
 						if (pMajor->IsHumanPlayer())
 						{
@@ -3236,7 +3236,7 @@ void CBotf2Doc::CalcSystemAttack()
 					if (defender != NULL && defender->GetType() == MAJOR && attackSystem->IsDefenderNotAttacker(defender->GetRaceID(), &attackers))
 					{
 						CMessage message;
-						message.GenerateMessage(attackSystem->GetNews()->GetAt(i), MESSAGE_TYPE::MILITARY, m_Sector[p.x][p.y].GetName(), p, 0);
+						message.GenerateMessage(attackSystem->GetNews()->GetAt(i), MESSAGE_TYPE::MILITARY, m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetName(), p, 0);
 						((CMajor*)defender)->GetEmpire()->AddMessage(message);
 						if (((CMajor*)defender)->IsHumanPlayer())
 						{
@@ -3375,15 +3375,15 @@ void CBotf2Doc::CalcResearch()
 	map<CString, RESEARCHBONI> researchBonis;
 	for (int y = 0 ; y < STARMAP_SECTORS_VCOUNT; y++)
 		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-			if (m_System[x][y].GetOwnerOfSystem() != "")
+			if (m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem() != "")
 			{
 				// hier Forschungsboni besorgen
-				researchBonis[m_System[x][y].GetOwnerOfSystem()].nBoni[0] += m_System[x][y].GetProduction()->GetBioTechBoni();
-				researchBonis[m_System[x][y].GetOwnerOfSystem()].nBoni[1] += m_System[x][y].GetProduction()->GetEnergyTechBoni();
-				researchBonis[m_System[x][y].GetOwnerOfSystem()].nBoni[2] += m_System[x][y].GetProduction()->GetCompTechBoni();
-				researchBonis[m_System[x][y].GetOwnerOfSystem()].nBoni[3] += m_System[x][y].GetProduction()->GetPropulsionTechBoni();
-				researchBonis[m_System[x][y].GetOwnerOfSystem()].nBoni[4] += m_System[x][y].GetProduction()->GetConstructionTechBoni();
-				researchBonis[m_System[x][y].GetOwnerOfSystem()].nBoni[5] += m_System[x][y].GetProduction()->GetWeaponTechBoni();
+				researchBonis[m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem()].nBoni[0] += m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetBioTechBoni();
+				researchBonis[m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem()].nBoni[1] += m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetEnergyTechBoni();
+				researchBonis[m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem()].nBoni[2] += m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetCompTechBoni();
+				researchBonis[m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem()].nBoni[3] += m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetPropulsionTechBoni();
+				researchBonis[m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem()].nBoni[4] += m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetConstructionTechBoni();
+				researchBonis[m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem()].nBoni[5] += m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetWeaponTechBoni();
 			}
 
 	map<CString, CMajor*>* pmMajors = m_pRaceCtrl->GetMajors();
@@ -3486,78 +3486,78 @@ void CBotf2Doc::CalcOldRoundData()
 		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
 		{
 			// Mögliche Is? Variablen für Terraforming und Stationbau erstmal auf FALSE setzen
-			m_Sector[x][y].ClearAllPoints();
+			m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).ClearAllPoints();
 
 			// Wenn im Sektor ein Sonnensystem existiert
-			if (m_Sector[x][y].GetSunSystem() == TRUE)
+			if (m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetSunSystem() == TRUE)
 			{
 				// Jetzt das produzierte Credits im System dem jeweiligen Imperium geben
-				if (m_System[x][y].GetOwnerOfSystem() != "")
+				if (m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem() != "")
 				{
-					CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(m_System[x][y].GetOwnerOfSystem()));
+					CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem()));
 					if (pMajor)
 					{
 						network::RACE client = m_pRaceCtrl->GetMappedClientID(pMajor->GetRaceID());
 
 						// spielt es der Computer, so bekommt er etwas mehr Credits
 						if (pMajor->IsHumanPlayer() == false)
-							pMajor->GetEmpire()->SetCredits((int)(m_System[x][y].GetProduction()->GetCreditsProd() / m_fDifficultyLevel));
+							pMajor->GetEmpire()->SetCredits((int)(m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetCreditsProd() / m_fDifficultyLevel));
 						else
-							pMajor->GetEmpire()->SetCredits(m_System[x][y].GetProduction()->GetCreditsProd());
+							pMajor->GetEmpire()->SetCredits(m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetCreditsProd());
 
 						// Hier die Gebäude abreißen, die angeklickt wurden
-						if (m_System[x][y].DestroyBuildings())
-							m_System[x][y].CalculateNumberOfWorkbuildings(&this->BuildingInfo);
+						if (m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).DestroyBuildings())
+							m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).CalculateNumberOfWorkbuildings(&this->BuildingInfo);
 
 						// Variablen berechnen lassen, bevor der Planet wächst -> diese ins Lager
 						// nur berechnen, wenn das System auch jemandem gehört, ansonsten würde auch die Mind.Prod. ins Lager kommen
 						// In CalculateStorages wird auch die Systemmoral berechnet. Wenn wir einen Auftrag mit
 						// NeverReady (z.B. Kriegsrecht) in der Bauliste haben, und dieser Moral produziert, dann diese
 						// auf die Moral anrechnen. Das wird dann in CalculateStorages gemacht.
-						int list = m_System[x][y].GetAssemblyList()->GetAssemblyListEntry(0);
-						if (list > 0 && list < 10000 && BuildingInfo[list-1].GetNeverReady() && m_System[x][y].GetMoral() <= 85)
-							m_System[x][y].GetProduction()->AddMoralProd(BuildingInfo[list-1].GetMoralProd());
+						int list = m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetAssemblyList()->GetAssemblyListEntry(0);
+						if (list > 0 && list < 10000 && BuildingInfo[list-1].GetNeverReady() && m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetMoral() <= 85)
+							m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetProduction()->AddMoralProd(BuildingInfo[list-1].GetMoralProd());
 
 						// KI Anpassungen (KI bekommt zufälig etwas Deritium geschenkt)
 						int diliAdd = 0;
-						if (pMajor->IsHumanPlayer() == false && m_System[x][y].GetProduction()->GetDeritiumProd() == 0)
+						if (pMajor->IsHumanPlayer() == false && m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetDeritiumProd() == 0)
 						{
 							// umso höher der Schwierigkeitsgrad, desto höher die Wahrscheinlichkeit, das die KI
 							// Deritium auf ihrem Systemen geschenkt bekommt
 							int temp = rand()%((int)(m_fDifficultyLevel * 7.5));
-							// TRACE("KI: System: %s - DiliAddProb: %d (NULL for adding Dili) - Difficulty: %.2lf\n",m_Sector[x][y].GetName(), temp, m_fDifficultyLevel);
+							// TRACE("KI: System: %s - DiliAddProb: %d (NULL for adding Dili) - Difficulty: %.2lf\n",m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetName(), temp, m_fDifficultyLevel);
 							if (temp == NULL)
 								diliAdd = 1;
 						}
 
 						// Das Lager berechnen
-						BOOLEAN bIsRebellion = m_System[x][y].CalculateStorages(pMajor->GetEmpire()->GetResearch()->GetResearchInfo(), diliAdd);
+						BOOLEAN bIsRebellion = m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).CalculateStorages(pMajor->GetEmpire()->GetResearch()->GetResearchInfo(), diliAdd);
 						// Wenn wir true zurückbekommen, dann hat sich das System losgesagt
 						if (bIsRebellion)
 						{
-							m_Sector[x][y].SetOwned(FALSE);
-							m_Sector[x][y].SetShipPort(FALSE, pMajor->GetRaceID());
+							m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).SetOwned(FALSE);
+							m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).SetShipPort(FALSE, pMajor->GetRaceID());
 
-							CString news = CResourceManager::GetString("REBELLION_IN_SYSTEM", FALSE, m_Sector[x][y].GetName());
+							CString news = CResourceManager::GetString("REBELLION_IN_SYSTEM", FALSE, m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetName());
 							CMessage message;
 							message.GenerateMessage(news, MESSAGE_TYPE::SOMETHING, "", CPoint(x,y), FALSE);
 							pMajor->GetEmpire()->AddMessage(message);
 
 							// zusätzliche Eventnachricht (Lose a System to Rebellion #18) wegen der Moral an das Imperium
-							message.GenerateMessage(pMajor->GetMoralObserver()->AddEvent(18, pMajor->GetRaceMoralNumber(), m_Sector[x][y].GetName()), MESSAGE_TYPE::SOMETHING, "", CPoint(x,y), FALSE);
+							message.GenerateMessage(pMajor->GetMoralObserver()->AddEvent(18, pMajor->GetRaceMoralNumber(), m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetName()), MESSAGE_TYPE::SOMETHING, "", CPoint(x,y), FALSE);
 							pMajor->GetEmpire()->AddMessage(message);
 
 							if (pMajor->IsHumanPlayer())
 								m_iSelectedView[client] = EMPIRE_VIEW;
 
-							if (m_Sector[x][y].GetMinorRace() == TRUE)
+							if (m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetMinorRace() == TRUE)
 							{
-								CMinor* pMinor = m_pRaceCtrl->GetMinorRace(m_Sector[x][y].GetName());
+								CMinor* pMinor = m_pRaceCtrl->GetMinorRace(m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetName());
 								if (pMinor)
 								{
-									m_Sector[x][y].SetOwnerOfSector(pMinor->GetRaceID());
+									m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).SetOwnerOfSector(pMinor->GetRaceID());
 
-									if (m_Sector[x][y].GetTakenSector() == FALSE)
+									if (m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetTakenSector() == FALSE)
 									{
 										pMinor->SetAgreement(pMajor->GetRaceID(), DIPLOMATIC_AGREEMENT::NONE);
 										pMajor->SetAgreement(pMinor->GetRaceID(), DIPLOMATIC_AGREEMENT::NONE);
@@ -3572,22 +3572,22 @@ void CBotf2Doc::CalcOldRoundData()
 							}
 							else
 							{
-								m_Sector[x][y].SetOwnerOfSector("");
-								m_System[x][y].SetOwnerOfSystem("");
-								m_Sector[x][y].SetTakenSector(FALSE);
+								m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).SetOwnerOfSector("");
+								m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).SetOwnerOfSystem("");
+								m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).SetTakenSector(FALSE);
 							}
 						}
 
 						// Hier mit einbeziehen, wenn die Bevölkerung an Nahrungsmangel stirbt
-						if (m_System[x][y].GetFoodStore() < 0)
+						if (m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetFoodStore() < 0)
 						{
-							m_Sector[x][y].LetPlanetsShrink((float)(m_System[x][y].GetFoodStore()) * 0.01f);
+							m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).LetPlanetsShrink((float)(m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetFoodStore()) * 0.01f);
 							// nur wenn die Moral über 50 ist sinkt die Moral durch Hungersnöte
-							if (m_System[x][y].GetMoral() > 50)
-								m_System[x][y].SetMoral((short)(m_System[x][y].GetFoodStore() / (m_System[x][y].GetHabitants() + 1))); // +1, wegen Division durch NULL umgehen
-							m_System[x][y].SetFoodStore(0);
+							if (m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetMoral() > 50)
+								m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).SetMoral((short)(m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetFoodStore() / (m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetHabitants() + 1))); // +1, wegen Division durch NULL umgehen
+							m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).SetFoodStore(0);
 
-							CString news = CResourceManager::GetString("FAMINE", FALSE, m_Sector[x][y].GetName());
+							CString news = CResourceManager::GetString("FAMINE", FALSE, m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetName());
 							CMessage message;
 							message.GenerateMessage(news, MESSAGE_TYPE::SOMETHING, "", CPoint(x,y), FALSE, 1);
 							pMajor->GetEmpire()->AddMessage(message);
@@ -3596,32 +3596,32 @@ void CBotf2Doc::CalcOldRoundData()
 						}
 						else
 							// Planetenwachstum für Spielerrassen durchführen
-							m_Sector[x][y].LetPlanetsGrowth();
+							m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).LetPlanetsGrowth();
 					}
 				}
 				else
 					// Planetenwachstum für andere Sektoren durchführen
-					m_Sector[x][y].LetPlanetsGrowth();
+					m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).LetPlanetsGrowth();
 
-				if (m_System[x][y].GetOwnerOfSystem() != "")
+				if (m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem() != "")
 				{
-					CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(m_System[x][y].GetOwnerOfSystem()));
+					CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem()));
 					if (pMajor)
 					{
 						network::RACE client = m_pRaceCtrl->GetMappedClientID(pMajor->GetRaceID());
 
-						float fCurrentHabitants = m_Sector[x][y].GetCurrentHabitants();
+						float fCurrentHabitants = m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetCurrentHabitants();
 						pMajor->GetEmpire()->AddPopSupportCosts((USHORT)fCurrentHabitants * POPSUPPORT_MULTI);
 						// Funktion gibt TRUE zurück, wenn wir durch die Bevölkerung eine neue Handelsroute anlegen können
-						if (m_System[x][y].SetHabitants(fCurrentHabitants))
+						if (m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).SetHabitants(fCurrentHabitants))
 						{
 							// wenn die Spezialforschung "mindestens 1 Handelsroute erforscht wurde, dann die Meldung erst bei
 							// der 2.ten Handelroute bringen
 							// Hier die Boni durch die Uniqueforschung "Handel" -> mindestens eine Handelsroute
 							bool bMinOneRoute = pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(RESEARCH_COMPLEX::TRADE)->GetFieldStatus(3) == RESEARCH_STATUS::RESEARCHED;
-							if (bMinOneRoute == false || (bMinOneRoute == true && (int)(m_System[x][y].GetHabitants() / TRADEROUTEHAB) > 1))
+							if (bMinOneRoute == false || (bMinOneRoute == true && (int)(m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetHabitants() / TRADEROUTEHAB) > 1))
 							{
-								CString news = CResourceManager::GetString("ENOUGH_HABITANTS_FOR_NEW_TRADEROUTE", FALSE, m_Sector[x][y].GetName());
+								CString news = CResourceManager::GetString("ENOUGH_HABITANTS_FOR_NEW_TRADEROUTE", FALSE, m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetName());
 								CMessage message;
 								message.GenerateMessage(news, MESSAGE_TYPE::ECONOMY, "", CPoint(x,y), FALSE, 4);
 								pMajor->GetEmpire()->AddMessage(message);
@@ -3629,14 +3629,14 @@ void CBotf2Doc::CalcOldRoundData()
 									m_iSelectedView[client] = EMPIRE_VIEW;
 							}
 						}
-						m_System[x][y].CalculateVariables(&this->BuildingInfo, pMajor->GetEmpire()->GetResearch()->GetResearchInfo(), m_Sector[x][y].GetPlanets(), pMajor, CTrade::GetMonopolOwner());
+						m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).CalculateVariables(&this->BuildingInfo, pMajor->GetEmpire()->GetResearch()->GetResearchInfo(), m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetPlanets(), pMajor, CTrade::GetMonopolOwner());
 
 						// hier könnte die Energie durch Weltraummonster weggenommen werden!
 
 						// Gebäude die Energie benötigen checken
-						if (m_System[x][y].CheckEnergyBuildings(&this->BuildingInfo))
+						if (m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).CheckEnergyBuildings(&this->BuildingInfo))
 						{
-							CString news = CResourceManager::GetString("BUILDING_TURN_OFF",FALSE,m_Sector[x][y].GetName());
+							CString news = CResourceManager::GetString("BUILDING_TURN_OFF",FALSE,m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetName());
 							CMessage message;
 							message.GenerateMessage(news, MESSAGE_TYPE::SOMETHING, "", CPoint(x,y), FALSE, 2);
 							pMajor->GetEmpire()->AddMessage(message);
@@ -3645,17 +3645,17 @@ void CBotf2Doc::CalcOldRoundData()
 						}
 
 						// Die Bauaufträge in dem System berechnen. Außerdem wird hier auch die System-KI ausgeführt.
-						if (pMajor->IsHumanPlayer() == false || m_System[x][y].GetAutoBuild())
+						if (pMajor->IsHumanPlayer() == false || m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetAutoBuild())
 						{
 							CSystemAI* SAI = new CSystemAI(this);
 							SAI->ExecuteSystemAI(CPoint(x,y));
 							delete SAI;
 						}
 						// Hier berechnen, wenn was in der Bauliste ist, und ob es fertig wird usw.
-						if (m_System[x][y].GetAssemblyList()->GetAssemblyListEntry(0) != 0)	// wenn was drin ist
+						if (m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetAssemblyList()->GetAssemblyListEntry(0) != 0)	// wenn was drin ist
 						{
-							int list = m_System[x][y].GetAssemblyList()->GetAssemblyListEntry(0);
-							int IPProd = m_System[x][y].GetProduction()->GetIndustryProd();
+							int list = m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetAssemblyList()->GetAssemblyListEntry(0);
+							int IPProd = m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetIndustryProd();
 							// Wenn ein Auftrag in der Bauliste ist, der niemals fertig ist z.B. Kriegsrecht, dann dies
 							// einzeln beachten
 							if (list > 0 && list < 10000 && BuildingInfo[list-1].GetNeverReady() == TRUE)
@@ -3664,54 +3664,54 @@ void CBotf2Doc::CalcOldRoundData()
 								// es in der Liste stehen bleibt und den Bonus gibt
 								// Also wird immer nur ein IP abgezogen, außer wenn die Moral größer gleich 80 ist,
 								// dann wird der Auftrag gleich abgebrochen
-								if (m_System[x][y].GetMoral() >= 85)
-									IPProd = (int)m_System[x][y].GetAssemblyList()->GetNeededIndustryForBuild();
+								if (m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetMoral() >= 85)
+									IPProd = (int)m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetAssemblyList()->GetNeededIndustryForBuild();
 								else
 									IPProd = 1;
 							}
 							// Wenn ein Update in der Liste ist die mögliche UpdateBuildSpeed-Boni beachten
 							else if (list < 0)
-								IPProd = (int)floor((float)IPProd * (100 + m_System[x][y].GetProduction()->GetUpdateBuildSpeed()) / 100);
+								IPProd = (int)floor((float)IPProd * (100 + m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetUpdateBuildSpeed()) / 100);
 							// Wenn ein Gebäude in der Liste ist die mögliche BuildingBuildSpeed-Boni beachten
 							else if (list < 10000)
-								IPProd = (int)floor((float)IPProd * (100 + m_System[x][y].GetProduction()->GetBuildingBuildSpeed()) / 100);
+								IPProd = (int)floor((float)IPProd * (100 + m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetBuildingBuildSpeed()) / 100);
 							// Wenn es ein Schiff ist, dann die Effiziens der Werft und möglichen ShipBuildSpeed-Boni beachten
 							else if (list < 20000)
-								IPProd = (int)floor((float)IPProd * m_System[x][y].GetProduction()->GetShipYardEfficiency() / 100
-											* (100 + m_System[x][y].GetProduction()->GetShipBuildSpeed()) / 100);
+								IPProd = (int)floor((float)IPProd * m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetShipYardEfficiency() / 100
+											* (100 + m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetShipBuildSpeed()) / 100);
 							// Wenn es eine Truppe ist, dann Effiziens der Werft und möglichen TroopBuildSpeed-Boni beachten
 							else
-								IPProd = (int)floor((float)IPProd * m_System[x][y].GetProduction()->GetBarrackEfficiency() / 100
-											* (100 + m_System[x][y].GetProduction()->GetTroopBuildSpeed()) / 100);
+								IPProd = (int)floor((float)IPProd * m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetBarrackEfficiency() / 100
+											* (100 + m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetTroopBuildSpeed()) / 100);
 							// Ein Bauauftrag ist fertig gestellt worden
-							if (m_System[x][y].GetAssemblyList()->CalculateBuildInAssemblyList(IPProd))
+							if (m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetAssemblyList()->CalculateBuildInAssemblyList(IPProd))
 							{
 								// Wenn Gebäude gekauft wurde, dann die in der letzten Runde noch erbrachte IP-Leistung
 								// den Credits des Imperiums gutschreiben, IP-Leistung darf aber nicht größer der Baukosten sein
-								if (m_System[x][y].GetAssemblyList()->GetWasBuildingBought() == TRUE)
+								if (m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetAssemblyList()->GetWasBuildingBought() == TRUE)
 								{
 									int goods = IPProd;
-									if (goods > m_System[x][y].GetAssemblyList()->GetBuildCosts())
-										goods = m_System[x][y].GetAssemblyList()->GetBuildCosts();
+									if (goods > m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetAssemblyList()->GetBuildCosts())
+										goods = m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetAssemblyList()->GetBuildCosts();
 									pMajor->GetEmpire()->SetCredits(goods);
-									m_System[x][y].GetAssemblyList()->SetWasBuildingBought(FALSE);
+									m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetAssemblyList()->SetWasBuildingBought(FALSE);
 								}
 								// Ab jetzt die Abfrage ob Gebäude oder ein Update fertig wurde
 								if (list > 0 && list < 10000 && !BuildingInfo[list-1].GetNeverReady())	// Es wird ein Gebäude gebaut
 								{
 									// Die Nachricht, dass neues Gebäude fertig ist mit allen Daten generieren
 									CMessage message;
-									message.GenerateMessage(BuildingInfo[list-1].GetBuildingName(), MESSAGE_TYPE::ECONOMY, m_Sector[x][y].GetName(), CPoint(x,y), FALSE);
+									message.GenerateMessage(BuildingInfo[list-1].GetBuildingName(), MESSAGE_TYPE::ECONOMY, m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetName(), CPoint(x,y), FALSE);
 									pMajor->GetEmpire()->AddMessage(message);
 									// Gebäude bauen
 									BuildBuilding(list, CPoint(x,y));
 									// und Gebäude (welches letztes im Feld) ist auch gleich online setzen, wenn
 									// genügend Arbeiter da sind
-									unsigned short CheckValue = m_System[x][y].SetNewBuildingOnline(&this->BuildingInfo);
+									unsigned short CheckValue = m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).SetNewBuildingOnline(&this->BuildingInfo);
 									// Nachricht generierenm das das Gebäude nicht online genommen werden konnte
 									if (CheckValue == 1)
 									{
-										CString news = CResourceManager::GetString("NOT_ENOUGH_WORKER", FALSE, m_Sector[x][y].GetName());
+										CString news = CResourceManager::GetString("NOT_ENOUGH_WORKER", FALSE, m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetName());
 										message.GenerateMessage(news, MESSAGE_TYPE::SOMETHING, "",CPoint(x,y), FALSE, 1);
 										pMajor->GetEmpire()->AddMessage(message);
 										if (pMajor->IsHumanPlayer())
@@ -3719,7 +3719,7 @@ void CBotf2Doc::CalcOldRoundData()
 									}
 									else if (CheckValue == 2)
 									{
-										CString news = CResourceManager::GetString("NOT_ENOUGH_ENERGY", FALSE, m_Sector[x][y].GetName());
+										CString news = CResourceManager::GetString("NOT_ENOUGH_ENERGY", FALSE, m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetName());
 										message.GenerateMessage(news, MESSAGE_TYPE::SOMETHING, "",CPoint(x,y), FALSE, 2);
 										pMajor->GetEmpire()->AddMessage(message);
 										if (pMajor->IsHumanPlayer())
@@ -3731,21 +3731,21 @@ void CBotf2Doc::CalcOldRoundData()
 									list *= (-1);
 									// Die Nachricht, dass neues Gebäudeupdate fertig wurde, mit allen Daten generieren
 									CMessage message;
-									message.GenerateMessage(BuildingInfo[list-1].GetBuildingName(),MESSAGE_TYPE::ECONOMY,m_Sector[x][y].GetName(),CPoint(x,y),TRUE);
+									message.GenerateMessage(BuildingInfo[list-1].GetBuildingName(),MESSAGE_TYPE::ECONOMY,m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetName(),CPoint(x,y),TRUE);
 									pMajor->GetEmpire()->AddMessage(message);
 									// Vorgänger von "list" holen
 									// Gebäude mit RunningNumbner == pre werden durch UpdateBuilding() gelöscht und
 									// deren Anzahl wird zurückgegeben.
 									USHORT pre = BuildingInfo[list-1].GetPredecessorID();
-									int NumberOfNewBuildings = m_System[x][y].UpdateBuildings(pre);
+									int NumberOfNewBuildings = m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).UpdateBuildings(pre);
 									// So, nun bauen wir so viel mal das nächste
 									for (int z = 0; z < NumberOfNewBuildings; z++)
 									{
 										BuildBuilding(list,CPoint(x,y));
 										// falls das geupgradete Gebäude Energie benötigt wird versucht es gleich online zu setzen
-										if (GetBuildingInfo(list).GetNeededEnergy() > NULL && m_System[x][y].SetNewBuildingOnline(&this->BuildingInfo) == 2)
+										if (GetBuildingInfo(list).GetNeededEnergy() > NULL && m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).SetNewBuildingOnline(&this->BuildingInfo) == 2)
 										{
-											CString news = CResourceManager::GetString("NOT_ENOUGH_ENERGY",FALSE,m_Sector[x][y].GetName());
+											CString news = CResourceManager::GetString("NOT_ENOUGH_ENERGY",FALSE,m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetName());
 											message.GenerateMessage(news,MESSAGE_TYPE::SOMETHING,"",CPoint(x,y),FALSE,2);
 											pMajor->GetEmpire()->AddMessage(message);
 											if (pMajor->IsHumanPlayer())
@@ -3757,18 +3757,18 @@ void CBotf2Doc::CalcOldRoundData()
 								{
 									BuildShip(list, CPoint(x,y), pMajor->GetRaceID());
 									CString s = CResourceManager::GetString("SHIP_BUILDING_FINISHED",FALSE,
-										m_ShipInfoArray[list-10000].GetShipTypeAsString(),m_Sector[x][y].GetName());
+										m_ShipInfoArray[list-10000].GetShipTypeAsString(),m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetName());
 									CMessage message;
-									message.GenerateMessage(s,MESSAGE_TYPE::MILITARY,m_Sector[x][y].GetName(),CPoint(x,y),FALSE);
+									message.GenerateMessage(s,MESSAGE_TYPE::MILITARY,m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetName(),CPoint(x,y),FALSE);
 									pMajor->GetEmpire()->AddMessage(message);
 								}
 								else if (list >= 20000)					// Es wird eine Truppe gebaut
 								{
 									BuildTroop(list-20000, CPoint(x,y));
 									CString s = CResourceManager::GetString("TROOP_BUILDING_FINISHED",FALSE,
-										m_TroopInfo[list-20000].GetName(),m_Sector[x][y].GetName());
+										m_TroopInfo[list-20000].GetName(),m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetName());
 									CMessage message;
-									message.GenerateMessage(s,MESSAGE_TYPE::MILITARY,m_Sector[x][y].GetName(),CPoint(x,y),FALSE);
+									message.GenerateMessage(s,MESSAGE_TYPE::MILITARY,m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetName(),CPoint(x,y),FALSE);
 									pMajor->GetEmpire()->AddMessage(message);
 								}
 								// Nach CalculateBuildInAssemblyList wird ClearAssemblyList() aufgerufen, wenn der Auftrag fertig wurde.
@@ -3776,11 +3776,11 @@ void CBotf2Doc::CalcOldRoundData()
 								// Handelsgüter wenn nix mehr drin steht. Hier mal testweise weggelassen, weil diese Funktion
 								// später eh für das System aufgerufen wird und wir bis jetzt glaub ich keine Notwendigkeit
 								// haben die Funktion CalculateVariables() aufzurufen.
-								m_System[x][y].GetAssemblyList()->ClearAssemblyList(CPoint(x,y), m_System);
+								m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetAssemblyList()->ClearAssemblyList(CPoint(x,y), m_System);
 								// Wenn die Bauliste nach dem letzten gebauten Gebäude leer ist, eine Nachricht generieren
-								if (m_System[x][y].GetAssemblyList()->GetAssemblyListEntry(0) == 0)
+								if (m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetAssemblyList()->GetAssemblyListEntry(0) == 0)
 								{
-									CString news = CResourceManager::GetString("EMPTY_BUILDLIST",FALSE,m_Sector[x][y].GetName());
+									CString news = CResourceManager::GetString("EMPTY_BUILDLIST",FALSE,m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetName());
 									CMessage message;
 									message.GenerateMessage(news,MESSAGE_TYPE::SOMETHING,"",CPoint(x,y),FALSE);
 									pMajor->GetEmpire()->AddMessage(message);
@@ -3788,31 +3788,31 @@ void CBotf2Doc::CalcOldRoundData()
 										m_iSelectedView[client] = EMPIRE_VIEW;
 								}
 							}
-							m_System[x][y].GetAssemblyList()->CalculateNeededRessourcesForUpdate(&BuildingInfo, m_System[x][y].GetAllBuildings(), pMajor->GetEmpire()->GetResearch()->GetResearchInfo());
+							m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetAssemblyList()->CalculateNeededRessourcesForUpdate(&BuildingInfo, m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetAllBuildings(), pMajor->GetEmpire()->GetResearch()->GetResearchInfo());
 						}
 						// Anzahl aller Farmen, Bauhöfe usw. im System berechnen
-						m_System[x][y].CalculateNumberOfWorkbuildings(&this->BuildingInfo);
+						m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).CalculateNumberOfWorkbuildings(&this->BuildingInfo);
 						// freie Arbeiter den Gebäuden zuweisen
-						m_System[x][y].SetWorkersIntoBuildings();
+						m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).SetWorkersIntoBuildings();
 					}
 				}
 
 				// Jedes Sonnensystem wird durchgegangen und alle Gebäude des Systems werden in die Variable
 				// m_GlobalBuildings geschrieben. Damit wissen welche Gebäude in der Galaxie stehen. Benötigt wird
 				// dies z.B. um zu Überprüfen, ob max. X Gebäude einer bestimmten ID in einem Imperium stehen.
-				for (int i = 0; i < m_System[x][y].GetAllBuildings()->GetSize(); i++)
+				for (int i = 0; i < m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetAllBuildings()->GetSize(); i++)
 				{
-					USHORT nID = m_System[x][y].GetAllBuildings()->GetAt(i).GetRunningNumber();
-					CString sRaceID = m_System[x][y].GetOwnerOfSystem();
+					USHORT nID = m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetAllBuildings()->GetAt(i).GetRunningNumber();
+					CString sRaceID = m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem();
 					if (GetBuildingInfo(nID).GetMaxInEmpire() > 0)
 						m_GlobalBuildings.AddGlobalBuilding(sRaceID, nID);
 				}
 				// Alle Gebäude und Updates, die sich aktuell auch in der Bauliste befinden, werden dem Feld hinzugefügt
 				for (int i = 0; i < ALE; i++)
-					if (m_System[x][y].GetAssemblyList()->GetAssemblyListEntry(i) > 0 && m_System[x][y].GetAssemblyList()->GetAssemblyListEntry(i) < 10000)
+					if (m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetAssemblyList()->GetAssemblyListEntry(i) > 0 && m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetAssemblyList()->GetAssemblyListEntry(i) < 10000)
 					{
-						USHORT nID = abs(m_System[x][y].GetAssemblyList()->GetAssemblyListEntry(i));
-						CString sRaceID = m_System[x][y].GetOwnerOfSystem();
+						USHORT nID = abs(m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetAssemblyList()->GetAssemblyListEntry(i));
+						CString sRaceID = m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem();
 						if (GetBuildingInfo(nID).GetMaxInEmpire() > 0)
 							m_GlobalBuildings.AddGlobalBuilding(sRaceID, nID);
 					}
@@ -3829,10 +3829,10 @@ void CBotf2Doc::CalcNewRoundData()
 	// übertragen
 	for (int y = 0 ; y < STARMAP_SECTORS_VCOUNT; y++)
 		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-			if (m_Sector[x][y].GetSunSystem() == TRUE && m_System[x][y].GetOwnerOfSystem() != "")
+			if (m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetSunSystem() == TRUE && m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem() != "")
 			{
 				// imperiumsweite Moralproduktion aus diesem System berechnen
-				m_System[x][y].CalculateEmpireWideMoralProd(&this->BuildingInfo);
+				m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).CalculateEmpireWideMoralProd(&this->BuildingInfo);
 			}
 	struct RESEARCHBONI { short nBoni[6]; };
 	map<CString, RESEARCHBONI> researchBonis;
@@ -3846,40 +3846,40 @@ void CBotf2Doc::CalcNewRoundData()
 	for (int y = 0 ; y < STARMAP_SECTORS_VCOUNT; y++)
 		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
 		{
-			if (m_Sector[x][y].GetSunSystem() == TRUE && m_System[x][y].GetOwnerOfSystem() != "")
+			if (m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetSunSystem() == TRUE && m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem() != "")
 			{
-				CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(m_System[x][y].GetOwnerOfSystem()));
+				CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem()));
 				ASSERT(pMajor);
 
 				network::RACE client = m_pRaceCtrl->GetMappedClientID(pMajor->GetRaceID());
 
 				// Hier die Credits durch Handelsrouten berechnen
 				BYTE deletetTradeRoutes = 0;
-				for (int i = 0; i < m_System[x][y].GetTradeRoutes()->GetSize(); i++)
+				for (int i = 0; i < m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetTradeRoutes()->GetSize(); i++)
 				{
-					CPoint dest = m_System[x][y].GetTradeRoutes()->GetAt(i).GetDestKO();
+					CPoint dest = m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetTradeRoutes()->GetAt(i).GetDestKO();
 					// Wenn die Handelsroute aus diplomatischen Gründen nicht mehr vorhanden sein kann
-					if (m_System[x][y].GetTradeRoutes()->ElementAt(i).CheckTradeRoute(CPoint(x,y), CPoint(dest.x, dest.y), this) == FALSE)
+					if (m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetTradeRoutes()->ElementAt(i).CheckTradeRoute(CPoint(x,y), CPoint(dest.x, dest.y), this) == FALSE)
 					{
 						// dann müssen wir diese Route löschen
-						m_System[x][y].GetTradeRoutes()->RemoveAt(i--);
+						m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetTradeRoutes()->RemoveAt(i--);
 						deletetTradeRoutes++;
 					}
 					// Ansonsten könnte sich die Beziehung zu der Minorrace verbessern
 					else
-						m_System[x][y].GetTradeRoutes()->ElementAt(i).PerhapsChangeRelationship(CPoint(x,y), CPoint(dest.x, dest.y), this);
+						m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetTradeRoutes()->ElementAt(i).PerhapsChangeRelationship(CPoint(x,y), CPoint(dest.x, dest.y), this);
 
 				}
-				deletetTradeRoutes += m_System[x][y].CheckTradeRoutes(pMajor->GetEmpire()->GetResearch()->GetResearchInfo());
+				deletetTradeRoutes += m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).CheckTradeRoutes(pMajor->GetEmpire()->GetResearch()->GetResearchInfo());
 				if (deletetTradeRoutes > 0)
 				{
 					CString news;
 					if (deletetTradeRoutes == 1)
-						news = CResourceManager::GetString("LOST_ONE_TRADEROUTE",FALSE,m_Sector[x][y].GetName());
+						news = CResourceManager::GetString("LOST_ONE_TRADEROUTE",FALSE,m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetName());
 					else
 					{
 						CString lost; lost.Format("%d",deletetTradeRoutes);
-						news = CResourceManager::GetString("LOST_TRADEROUTES",FALSE,lost,m_Sector[x][y].GetName());
+						news = CResourceManager::GetString("LOST_TRADEROUTES",FALSE,lost,m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetName());
 					}
 					CMessage message;
 					message.GenerateMessage(news, MESSAGE_TYPE::ECONOMY, "", CPoint(x,y), FALSE, 4);
@@ -3890,25 +3890,25 @@ void CBotf2Doc::CalcNewRoundData()
 				// Ressourcenrouten checken
 				BYTE deletedResourceRoutes = 0;
 				// checken ob das System noch der Rasse gehört, welcher auch das Startsystem der Route gehört
-				for (int i = 0; i < m_System[x][y].GetResourceRoutes()->GetSize(); i++)
+				for (int i = 0; i < m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetResourceRoutes()->GetSize(); i++)
 				{
-					CPoint dest = m_System[x][y].GetResourceRoutes()->GetAt(i).GetKO();
-					if (!m_System[x][y].GetResourceRoutes()->GetAt(i).CheckResourceRoute(m_System[x][y].GetOwnerOfSystem(), &m_Sector[dest.x][dest.y]))
+					CPoint dest = m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetResourceRoutes()->GetAt(i).GetKO();
+					if (!m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetResourceRoutes()->GetAt(i).CheckResourceRoute(m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem(), &m_Sectors.at(dest.x+(dest.y)*STARMAP_SECTORS_HCOUNT)))
 					{
-						m_System[x][y].GetResourceRoutes()->RemoveAt(i--);
+						m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetResourceRoutes()->RemoveAt(i--);
 						deletedResourceRoutes++;
 					}
 				}
-				deletedResourceRoutes += m_System[x][y].CheckResourceRoutes(pMajor->GetEmpire()->GetResearch()->GetResearchInfo());
+				deletedResourceRoutes += m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).CheckResourceRoutes(pMajor->GetEmpire()->GetResearch()->GetResearchInfo());
 				if (deletedResourceRoutes > 0)
 				{
 					CString news;
 					if (deletedResourceRoutes == 1)
-						news = CResourceManager::GetString("LOST_ONE_RESOURCEROUTE",FALSE,m_Sector[x][y].GetName());
+						news = CResourceManager::GetString("LOST_ONE_RESOURCEROUTE",FALSE,m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetName());
 					else
 					{
 						CString lost; lost.Format("%d", deletedResourceRoutes);
-						news = CResourceManager::GetString("LOST_RESOURCEROUTES",FALSE,lost,m_Sector[x][y].GetName());
+						news = CResourceManager::GetString("LOST_RESOURCEROUTES",FALSE,lost,m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetName());
 					}
 					CMessage message;
 					message.GenerateMessage(news, MESSAGE_TYPE::ECONOMY, "", CPoint(x,y), FALSE, 4);
@@ -3917,58 +3917,58 @@ void CBotf2Doc::CalcNewRoundData()
 						m_iSelectedView[client] = EMPIRE_VIEW;
 				}
 
-				m_System[x][y].CalculateVariables(&this->BuildingInfo, pMajor->GetEmpire()->GetResearch()->GetResearchInfo(), m_Sector[x][y].GetPlanets(), pMajor, CTrade::GetMonopolOwner());
+				m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).CalculateVariables(&this->BuildingInfo, pMajor->GetEmpire()->GetResearch()->GetResearchInfo(), m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetPlanets(), pMajor, CTrade::GetMonopolOwner());
 				// Haben wir eine online Schiffswerft im System, dann ShipPort in dem Sektor setzen
-				if (m_System[x][y].GetProduction()->GetShipYard() == TRUE)
+				if (m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetShipYard() == TRUE)
 				{
-					m_Sector[x][y].SetShipPort(TRUE, m_System[x][y].GetOwnerOfSystem());
+					m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).SetShipPort(TRUE, m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem());
 				}
 				// Haben wir einen Scanner in dem System, dann Umgebung scannen
-				if (m_System[x][y].GetProduction()->GetScanPower() > 0)
+				if (m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetScanPower() > 0)
 				{
-					int power = m_System[x][y].GetProduction()->GetScanPower();
-					int range = m_System[x][y].GetProduction()->GetScanRange();
+					int power = m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetScanPower();
+					int range = m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetScanRange();
 					for (int j = -range; j <= range; j++)
 						for (int i = -range; i <= range; i++)
 							if (y+j < STARMAP_SECTORS_VCOUNT && y+j > -1 && x+i < STARMAP_SECTORS_HCOUNT && x+i > -1)
 							{
-								m_Sector[x+i][y+j].SetScanned(m_System[x][y].GetOwnerOfSystem());
+								m_Sectors.at(x+i+(y+j)*STARMAP_SECTORS_HCOUNT).SetScanned(m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem());
 								// Teiler für die Scanstärke berechnen
 								int div = max(abs(j),abs(i));
 								if (div == 0)
 									div = 1;
-								if (power / div > m_Sector[x+i][y+j].GetScanPower(m_System[x][y].GetOwnerOfSystem()))
-									m_Sector[x+i][y+j].SetScanPower(power / div, m_System[x][y].GetOwnerOfSystem());
+								if (power / div > m_Sectors.at(x+i+(y+j)*STARMAP_SECTORS_HCOUNT).GetScanPower(m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem()))
+									m_Sectors.at(x+i+(y+j)*STARMAP_SECTORS_HCOUNT).SetScanPower(power / div, m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem());
 							}
 				}
 				// Wurde das System militärisch erobert, so verringert sich die Moral pro Runde etwas
-				if (m_Sector[x][y].GetTakenSector() == TRUE && m_System[x][y].GetMoral() > 70)
-					m_System[x][y].SetMoral(-rand()%2);
+				if (m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetTakenSector() == TRUE && m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetMoral() > 70)
+					m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).SetMoral(-rand()%2);
 				// möglicherweise wird die Moral durch stationierte Truppen etwas stabilisiert
-				m_System[x][y].IncludeTroopMoralValue(&m_TroopInfo);
+				m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).IncludeTroopMoralValue(&m_TroopInfo);
 
 				// Hier die gesamten Forschungsboni der Imperien berechnen
 				// Forschungsboni, die die Systeme machen holen. Wir benötigen diese dann für die CalculateResearch Funktion
 				// hier Forschungsboni besorgen
-				researchBonis[m_System[x][y].GetOwnerOfSystem()].nBoni[0] += m_System[x][y].GetProduction()->GetBioTechBoni();
-				researchBonis[m_System[x][y].GetOwnerOfSystem()].nBoni[1] += m_System[x][y].GetProduction()->GetEnergyTechBoni();
-				researchBonis[m_System[x][y].GetOwnerOfSystem()].nBoni[2] += m_System[x][y].GetProduction()->GetCompTechBoni();
-				researchBonis[m_System[x][y].GetOwnerOfSystem()].nBoni[3] += m_System[x][y].GetProduction()->GetPropulsionTechBoni();
-				researchBonis[m_System[x][y].GetOwnerOfSystem()].nBoni[4] += m_System[x][y].GetProduction()->GetConstructionTechBoni();
-				researchBonis[m_System[x][y].GetOwnerOfSystem()].nBoni[5] += m_System[x][y].GetProduction()->GetWeaponTechBoni();
+				researchBonis[m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem()].nBoni[0] += m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetBioTechBoni();
+				researchBonis[m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem()].nBoni[1] += m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetEnergyTechBoni();
+				researchBonis[m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem()].nBoni[2] += m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetCompTechBoni();
+				researchBonis[m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem()].nBoni[3] += m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetPropulsionTechBoni();
+				researchBonis[m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem()].nBoni[4] += m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetConstructionTechBoni();
+				researchBonis[m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem()].nBoni[5] += m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetWeaponTechBoni();
 
 				// Hier die gesamten Sicherheitsboni der Imperien berechnen
-				pMajor->GetEmpire()->GetIntelligence()->AddInnerSecurityBonus(m_System[x][y].GetProduction()->GetInnerSecurityBoni());
-				pMajor->GetEmpire()->GetIntelligence()->AddEconomyBonus(m_System[x][y].GetProduction()->GetEconomySpyBoni(), 0);
-				pMajor->GetEmpire()->GetIntelligence()->AddEconomyBonus(m_System[x][y].GetProduction()->GetEconomySabotageBoni(), 1);
-				pMajor->GetEmpire()->GetIntelligence()->AddScienceBonus(m_System[x][y].GetProduction()->GetScienceSpyBoni(), 0);
-				pMajor->GetEmpire()->GetIntelligence()->AddScienceBonus(m_System[x][y].GetProduction()->GetScienceSabotageBoni(), 1);
-				pMajor->GetEmpire()->GetIntelligence()->AddMilitaryBonus(m_System[x][y].GetProduction()->GetMilitarySpyBoni(), 0);
-				pMajor->GetEmpire()->GetIntelligence()->AddMilitaryBonus(m_System[x][y].GetProduction()->GetMilitarySabotageBoni(), 1);
+				pMajor->GetEmpire()->GetIntelligence()->AddInnerSecurityBonus(m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetInnerSecurityBoni());
+				pMajor->GetEmpire()->GetIntelligence()->AddEconomyBonus(m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetEconomySpyBoni(), 0);
+				pMajor->GetEmpire()->GetIntelligence()->AddEconomyBonus(m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetEconomySabotageBoni(), 1);
+				pMajor->GetEmpire()->GetIntelligence()->AddScienceBonus(m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetScienceSpyBoni(), 0);
+				pMajor->GetEmpire()->GetIntelligence()->AddScienceBonus(m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetScienceSabotageBoni(), 1);
+				pMajor->GetEmpire()->GetIntelligence()->AddMilitaryBonus(m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetMilitarySpyBoni(), 0);
+				pMajor->GetEmpire()->GetIntelligence()->AddMilitaryBonus(m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetMilitarySabotageBoni(), 1);
 
 				// Anzahl aller Ressourcen in allen eigenen Systemen berechnen
 				for (int res = TITAN; res <= DERITIUM; res++)
-					pMajor->GetEmpire()->SetStorageAdd(res, m_System[x][y].GetResourceStore(res));
+					pMajor->GetEmpire()->SetStorageAdd(res, m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetResourceStore(res));
 			}
 
 			// für jede Rasse Sektorsachen berechnen
@@ -3979,24 +3979,24 @@ void CBotf2Doc::CalcNewRoundData()
 			for (map<CString, CMajor*>::const_iterator i = pmMajors->begin(); i != pmMajors->end(); ++i)
 				for (map<CString, CMajor*>::const_iterator j = pmMajors->begin(); j != pmMajors->end(); ++j)
 				{
-					if (m_Sector[x][y].GetScanned(i->first) == TRUE && i->first != j->first)
+					if (m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetScanned(i->first) == TRUE && i->first != j->first)
 						if (i->second->GetAgreement(j->first) >= DIPLOMATIC_AGREEMENT::COOPERATION)
-							m_Sector[x][y].SetScanned(j->first);
-					if (m_Sector[x][y].GetKnown(i->first) == TRUE && i->first != j->first)
+							m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).SetScanned(j->first);
+					if (m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetKnown(i->first) == TRUE && i->first != j->first)
 					{
 						if (i->second->GetAgreement(j->first) >= DIPLOMATIC_AGREEMENT::FRIENDSHIP)
-							m_Sector[x][y].SetScanned(j->first);
+							m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).SetScanned(j->first);
 						if (i->second->GetAgreement(j->first) >= DIPLOMATIC_AGREEMENT::COOPERATION)
-							m_Sector[x][y].SetKnown(j->first);
+							m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).SetKnown(j->first);
 					}
-					if (m_Sector[x][y].GetOwnerOfSector() == i->first && i->first != j->first)
+					if (m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSector() == i->first && i->first != j->first)
 					{
 						if (i->second->GetAgreement(j->first) >= DIPLOMATIC_AGREEMENT::TRADE)
-							m_Sector[x][y].SetScanned(j->first);
+							m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).SetScanned(j->first);
 						if (i->second->GetAgreement(j->first) >= DIPLOMATIC_AGREEMENT::FRIENDSHIP)
-							m_Sector[x][y].SetKnown(j->first);
+							m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).SetKnown(j->first);
 					}
-					if (m_Sector[x][y].GetShipPort(i->first) == TRUE && i->first != j->first)
+					if (m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetShipPort(i->first) == TRUE && i->first != j->first)
 						if (i->second->GetAgreement(j->first) >= DIPLOMATIC_AGREEMENT::COOPERATION)
 							mShipPort[j->first] = TRUE;
 				}
@@ -4004,7 +4004,7 @@ void CBotf2Doc::CalcNewRoundData()
 			for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 				if (mShipPort[it->first] == true)
 				{
-					m_Sector[x][y].SetShipPort(TRUE, it->first);
+					m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).SetShipPort(TRUE, it->first);
 				}
 		}
 
@@ -4068,7 +4068,7 @@ void CBotf2Doc::CalcNewRoundData()
 				{
 					CPoint p = pMinor->GetRaceKO();
 					if (p != CPoint(-1,-1))
-						m_Sector[p.x][p.y].SetShipPort(TRUE, pMajor->GetRaceID());
+						m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetShipPort(TRUE, pMajor->GetRaceID());
 				}
 			}
 		}
@@ -4232,18 +4232,18 @@ void CBotf2Doc::CalcShipOrders()
 		CPoint p = m_ShipArray.GetAt(y).GetKO();
 		if (m_ShipArray[y].GetCurrentOrder() == SHIP_ORDER::ATTACK_SYSTEM)
 		{
-			if (m_Sector[p.x][p.y].GetSunSystem())
+			if (m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetSunSystem())
 			{
 				// Wenn die Bev?lkerung komplett vernichtet wurde
-				if (m_System[p.x][p.y].GetHabitants() == 0.0f)
+				if (m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetHabitants() == 0.0f)
 					m_ShipArray.ElementAt(y).SetCurrentOrder(SHIP_ORDER::ATTACK);
 				// Wenn das System der angreifenden Rasse geh?rt
-				else if (m_System[p.x][p.y].GetOwnerOfSystem() == m_ShipArray.GetAt(y).GetOwnerOfShip())
+				else if (m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem() == m_ShipArray.GetAt(y).GetOwnerOfShip())
 					m_ShipArray.ElementAt(y).SetCurrentOrder(SHIP_ORDER::ATTACK);
 				// Wenn eine Rasse in dem System lebt
-				else if (m_Sector[p.x][p.y].GetOwnerOfSector() != "" && m_Sector[p.x][p.y].GetOwnerOfSector() != m_ShipArray.GetAt(y).GetOwnerOfShip())
+				else if (m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSector() != "" && m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSector() != m_ShipArray.GetAt(y).GetOwnerOfShip())
 				{
-					CRace* pRace = m_pRaceCtrl->GetRace(m_Sector[p.x][p.y].GetOwnerOfSector());
+					CRace* pRace = m_pRaceCtrl->GetRace(m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSector());
 					if (pRace != NULL && pRace->GetAgreement(m_ShipArray.GetAt(y).GetOwnerOfShip()) != DIPLOMATIC_AGREEMENT::WAR)
 						m_ShipArray.ElementAt(y).SetCurrentOrder(SHIP_ORDER::ATTACK);
 				}
@@ -4270,7 +4270,7 @@ void CBotf2Doc::CalcShipOrders()
 		if (m_ShipArray[y].GetCurrentOrder() == SHIP_ORDER::COLONIZE)
 		{
 			// ?berpr?fen das der Sector auch nur mir oder niemandem geh?rt
-			if ((m_Sector[ShipKO.x][ShipKO.y].GetOwnerOfSector() == m_ShipArray[y].GetOwnerOfShip() || m_Sector[ShipKO.x][ShipKO.y].GetOwnerOfSector() == ""))
+			if ((m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSector() == m_ShipArray[y].GetOwnerOfShip() || m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSector() == ""))
 			{
 				// Wieviele Einwohner bekommen wir in dem System durch die Kolonisierung?
 				float startHabitants = (float)(m_ShipArray[y].GetColonizePoints() * 4);
@@ -4280,9 +4280,9 @@ void CBotf2Doc::CalcShipOrders()
 				if (m_ShipArray[y].GetTerraformingPlanet() == -1)
 				{
 					BYTE terraformedPlanets = 0;
-					for (int i = 0; i < m_Sector[ShipKO.x][ShipKO.y].GetNumberOfPlanets(); i++)
-						if (m_Sector[ShipKO.x][ShipKO.y].GetPlanets().at(i).GetTerraformed() == TRUE
-							&& m_Sector[ShipKO.x][ShipKO.y].GetPlanets().at(i).GetColonized() == FALSE)
+					for (int i = 0; i < m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetNumberOfPlanets(); i++)
+						if (m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetPlanets().at(i).GetTerraformed() == TRUE
+							&& m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetPlanets().at(i).GetColonized() == FALSE)
 							terraformedPlanets++;
 					if (terraformedPlanets > 0)
 					{
@@ -4290,38 +4290,38 @@ void CBotf2Doc::CalcShipOrders()
 						float tmpHab2 = 0.0f;
 						float oddHab = 0.0f;	// ?bersch?ssige Kolonisten, wenn ein Planet zu klein ist
 						// Geterraformte Planeten durchgehen und die Bev?lkerung auf diese verschieben
-						for (int i = 0; i < m_Sector[ShipKO.x][ShipKO.y].GetNumberOfPlanets(); i++)
-							if (m_Sector[ShipKO.x][ShipKO.y].GetPlanets().at(i).GetTerraformed() == TRUE
-								&& m_Sector[ShipKO.x][ShipKO.y].GetPlanets().at(i).GetColonized() == FALSE)
+						for (int i = 0; i < m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetNumberOfPlanets(); i++)
+							if (m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetPlanets().at(i).GetTerraformed() == TRUE
+								&& m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetPlanets().at(i).GetColonized() == FALSE)
 							{
-								if (startHabitants > m_Sector[ShipKO.x][ShipKO.y].GetPlanet(i)->GetMaxHabitant())
+								if (startHabitants > m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetPlanet(i)->GetMaxHabitant())
 								{
-									oddHab += (startHabitants - m_Sector[ShipKO.x][ShipKO.y].GetPlanet(i)->GetMaxHabitant());
-									startHabitants = m_Sector[ShipKO.x][ShipKO.y].GetPlanet(i)->GetMaxHabitant();
+									oddHab += (startHabitants - m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetPlanet(i)->GetMaxHabitant());
+									startHabitants = m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetPlanet(i)->GetMaxHabitant();
 								}
 								tmpHab2 += startHabitants;
-								m_Sector[ShipKO.x][ShipKO.y].GetPlanet(i)->SetCurrentHabitant(startHabitants);
-								m_Sector[ShipKO.x][ShipKO.y].GetPlanet(i)->SetColonisized(TRUE);
+								m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetPlanet(i)->SetCurrentHabitant(startHabitants);
+								m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetPlanet(i)->SetColonisized(TRUE);
 								startHabitants = tmpHab;
 							}
 						startHabitants = tmpHab2;
 						// die ?brigen Kolonisten auf die Planeten verteilen
 						if (oddHab > 0.0f)
-							for (int i = 0; i < m_Sector[ShipKO.x][ShipKO.y].GetNumberOfPlanets(); i++)
-								if (m_Sector[ShipKO.x][ShipKO.y].GetPlanets().at(i).GetTerraformed() == TRUE
-									&& m_Sector[ShipKO.x][ShipKO.y].GetPlanets().at(i).GetCurrentHabitant() > 0.0f)
+							for (int i = 0; i < m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetNumberOfPlanets(); i++)
+								if (m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetPlanets().at(i).GetTerraformed() == TRUE
+									&& m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetPlanets().at(i).GetCurrentHabitant() > 0.0f)
 								{
-									if ((oddHab + m_Sector[ShipKO.x][ShipKO.y].GetPlanets().at(i).GetCurrentHabitant())
-										> m_Sector[ShipKO.x][ShipKO.y].GetPlanet(i)->GetMaxHabitant())
+									if ((oddHab + m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetPlanets().at(i).GetCurrentHabitant())
+										> m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetPlanet(i)->GetMaxHabitant())
 									{
-										oddHab -= (m_Sector[ShipKO.x][ShipKO.y].GetPlanet(i)->GetMaxHabitant()
-											- m_Sector[ShipKO.x][ShipKO.y].GetPlanets().at(i).GetCurrentHabitant());
-										m_Sector[ShipKO.x][ShipKO.y].GetPlanet(i)->SetCurrentHabitant(m_Sector[ShipKO.x][ShipKO.y].GetPlanet(i)->GetMaxHabitant());
+										oddHab -= (m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetPlanet(i)->GetMaxHabitant()
+											- m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetPlanets().at(i).GetCurrentHabitant());
+										m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetPlanet(i)->SetCurrentHabitant(m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetPlanet(i)->GetMaxHabitant());
 									}
 									else
 									{
-										m_Sector[ShipKO.x][ShipKO.y].GetPlanet(i)->SetCurrentHabitant(
-											m_Sector[ShipKO.x][ShipKO.y].GetPlanets().at(i).GetCurrentHabitant() + oddHab);
+										m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetPlanet(i)->SetCurrentHabitant(
+											m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetPlanets().at(i).GetCurrentHabitant() + oddHab);
 										break;
 									}
 								}
@@ -4337,13 +4337,13 @@ void CBotf2Doc::CalcShipOrders()
 				}
 				else
 				{
-					if (m_Sector[ShipKO.x][ShipKO.y].GetPlanet(m_ShipArray[y].GetTerraformingPlanet())->GetColonized() == FALSE
-						&& m_Sector[ShipKO.x][ShipKO.y].GetPlanet(m_ShipArray[y].GetTerraformingPlanet())->GetTerraformed() == TRUE)
+					if (m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetPlanet(m_ShipArray[y].GetTerraformingPlanet())->GetColonized() == FALSE
+						&& m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetPlanet(m_ShipArray[y].GetTerraformingPlanet())->GetTerraformed() == TRUE)
 					{
-						if (startHabitants > m_Sector[ShipKO.x][ShipKO.y].GetPlanet(m_ShipArray[y].GetTerraformingPlanet())->GetMaxHabitant())
-							startHabitants = m_Sector[ShipKO.x][ShipKO.y].GetPlanet(m_ShipArray[y].GetTerraformingPlanet())->GetMaxHabitant();
-						m_Sector[ShipKO.x][ShipKO.y].GetPlanet(m_ShipArray[y].GetTerraformingPlanet())->SetCurrentHabitant(startHabitants);
-						m_Sector[ShipKO.x][ShipKO.y].GetPlanet(m_ShipArray[y].GetTerraformingPlanet())->SetColonisized(TRUE);
+						if (startHabitants > m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetPlanet(m_ShipArray[y].GetTerraformingPlanet())->GetMaxHabitant())
+							startHabitants = m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetPlanet(m_ShipArray[y].GetTerraformingPlanet())->GetMaxHabitant();
+						m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetPlanet(m_ShipArray[y].GetTerraformingPlanet())->SetCurrentHabitant(startHabitants);
+						m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetPlanet(m_ShipArray[y].GetTerraformingPlanet())->SetColonisized(TRUE);
 					}
 					else
 					{
@@ -4360,23 +4360,23 @@ void CBotf2Doc::CalcShipOrders()
 				network::RACE client = m_pRaceCtrl->GetMappedClientID(pMajor->GetRaceID());
 
 				// Geb?ude bauen, wenn wir das System zum ersten Mal kolonisieren, sprich das System noch niemanden geh?rt
-				if (m_System[ShipKO.x][ShipKO.y].GetOwnerOfSystem() == "")
+				if (m_Systems.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem() == "")
 				{
 					// Sector- und Systemwerte ?ndern
-					m_Sector[ShipKO.x][ShipKO.y].SetOwned(TRUE);
-					m_Sector[ShipKO.x][ShipKO.y].SetOwnerOfSector(m_ShipArray[y].GetOwnerOfShip());
-					m_Sector[ShipKO.x][ShipKO.y].SetColonyOwner(m_ShipArray[y].GetOwnerOfShip());
-					m_System[ShipKO.x][ShipKO.y].SetOwnerOfSystem(m_ShipArray[y].GetOwnerOfShip());
+					m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).SetOwned(TRUE);
+					m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).SetOwnerOfSector(m_ShipArray[y].GetOwnerOfShip());
+					m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).SetColonyOwner(m_ShipArray[y].GetOwnerOfShip());
+					m_Systems.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).SetOwnerOfSystem(m_ShipArray[y].GetOwnerOfShip());
 					// Geb?ude nach einer Kolonisierung bauen
-					m_System[ShipKO.x][ShipKO.y].BuildBuildingsAfterColonization(&m_Sector[ShipKO.x][ShipKO.y],&BuildingInfo,m_ShipArray[y].GetColonizePoints());
+					m_Systems.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).BuildBuildingsAfterColonization(&m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT),&BuildingInfo,m_ShipArray[y].GetColonizePoints());
 					// Nachricht an das Imperium senden, das ein System neu kolonisiert wurde
-					s = CResourceManager::GetString("FOUND_COLONY_MESSAGE",FALSE,m_Sector[ShipKO.x][ShipKO.y].GetName());
+					s = CResourceManager::GetString("FOUND_COLONY_MESSAGE",FALSE,m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetName());
 					CMessage message;
-					message.GenerateMessage(s,MESSAGE_TYPE::SOMETHING,m_Sector[ShipKO.x][ShipKO.y].GetName(),ShipKO,FALSE);
+					message.GenerateMessage(s,MESSAGE_TYPE::SOMETHING,m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetName(),ShipKO,FALSE);
 					pMajor->GetEmpire()->AddMessage(message);
 
 					// zus?tzliche Eventnachricht (Colonize a system #12) wegen der Moral an das Imperium
-					message.GenerateMessage(pMajor->GetMoralObserver()->AddEvent(12, pMajor->GetRaceMoralNumber(), m_Sector[ShipKO.x][ShipKO.y].GetName()), MESSAGE_TYPE::SOMETHING, "", ShipKO, FALSE);
+					message.GenerateMessage(pMajor->GetMoralObserver()->AddEvent(12, pMajor->GetRaceMoralNumber(), m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetName()), MESSAGE_TYPE::SOMETHING, "", ShipKO, FALSE);
 					pMajor->GetEmpire()->AddMessage(message);
 					if (pMajor->IsHumanPlayer())
 					{
@@ -4384,29 +4384,29 @@ void CBotf2Doc::CalcShipOrders()
 						m_SoundMessages[client].Add(entry);
 						m_iSelectedView[client] = EMPIRE_VIEW;
 
-						CEventColonization* eventScreen = new CEventColonization(pMajor->GetRaceID(), CResourceManager::GetString("COLOEVENT_HEADLINE", FALSE, m_Sector[ShipKO.x][ShipKO.y].GetName()), CResourceManager::GetString("COLOEVENT_TEXT_" + pMajor->GetRaceID(), FALSE, m_Sector[ShipKO.x][ShipKO.y].GetName()));
+						CEventColonization* eventScreen = new CEventColonization(pMajor->GetRaceID(), CResourceManager::GetString("COLOEVENT_HEADLINE", FALSE, m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetName()), CResourceManager::GetString("COLOEVENT_TEXT_" + pMajor->GetRaceID(), FALSE, m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetName()));
 						pMajor->GetEmpire()->GetEventMessages()->Add(eventScreen);
-						s.Format("Added Colonization-Eventscreen for Race %s in System %s", pMajor->GetRaceName(), m_Sector[ShipKO.x][ShipKO.y].GetName());
+						s.Format("Added Colonization-Eventscreen for Race %s in System %s", pMajor->GetRaceName(), m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetName());
 						MYTRACE(MT::LEVEL_INFO, s);
 					}
 				}
 				else
 				{
 					// Nachricht an das Imperium senden, das ein Planet kolonisiert wurde
-					s = CResourceManager::GetString("NEW_PLANET_COLONIZED",FALSE,m_Sector[ShipKO.x][ShipKO.y].GetName());
+					s = CResourceManager::GetString("NEW_PLANET_COLONIZED",FALSE,m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetName());
 					CMessage message;
-					message.GenerateMessage(s,MESSAGE_TYPE::SOMETHING,m_Sector[ShipKO.x][ShipKO.y].GetName(),ShipKO,FALSE);
+					message.GenerateMessage(s,MESSAGE_TYPE::SOMETHING,m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetName(),ShipKO,FALSE);
 					pMajor->GetEmpire()->AddMessage(message);
 					if (pMajor->IsHumanPlayer())
 						m_iSelectedView[client] = EMPIRE_VIEW;
 				}
-				m_System[ShipKO.x][ShipKO.y].SetHabitants(m_Sector[ShipKO.x][ShipKO.y].GetCurrentHabitants());
+				m_Systems.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).SetHabitants(m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetCurrentHabitants());
 
-				m_System[ShipKO.x][ShipKO.y].CalculateNumberOfWorkbuildings(&this->BuildingInfo);
-				m_System[ShipKO.x][ShipKO.y].CalculateVariables(&this->BuildingInfo, pMajor->GetEmpire()->GetResearch()->GetResearchInfo(), m_Sector[ShipKO.x][ShipKO.y].GetPlanets(), pMajor, CTrade::GetMonopolOwner());
+				m_Systems.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).CalculateNumberOfWorkbuildings(&this->BuildingInfo);
+				m_Systems.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).CalculateVariables(&this->BuildingInfo, pMajor->GetEmpire()->GetResearch()->GetResearchInfo(), m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetPlanets(), pMajor, CTrade::GetMonopolOwner());
 
 				// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
-				s.Format("%s %s",CResourceManager::GetString("COLONIZATION"), m_Sector[ShipKO.x][ShipKO.y].GetName());
+				s.Format("%s %s",CResourceManager::GetString("COLONIZATION"), m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetName());
 				AddToLostShipHistory(&m_ShipArray[y], s, CResourceManager::GetString("DESTROYED"));
 				// Schiff entfernen
 				m_ShipArray[y].SetCurrentOrder(SHIP_ORDER::AVOID);
@@ -4429,17 +4429,17 @@ void CBotf2Doc::CalcShipOrders()
 			ASSERT(pMajor);
 			network::RACE client = m_pRaceCtrl->GetMappedClientID(pMajor->GetRaceID());
 
-			if (m_Sector[ShipKO.x][ShipKO.y].GetPlanet(m_ShipArray[y].GetTerraformingPlanet())->GetTerraformed() == FALSE)
+			if (m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetPlanet(m_ShipArray[y].GetTerraformingPlanet())->GetTerraformed() == FALSE)
 			{
-				if (m_Sector[ShipKO.x][ShipKO.y].GetPlanet(m_ShipArray[y].GetTerraformingPlanet())->SetNeededTerraformPoints(m_ShipArray[y].GetColonizePoints()))
+				if (m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetPlanet(m_ShipArray[y].GetTerraformingPlanet())->SetNeededTerraformPoints(m_ShipArray[y].GetColonizePoints()))
 				{
 					// Hier wurde ein Planet erfolgreich geterraformt
 					m_ShipArray[y].SetCurrentOrder(SHIP_ORDER::AVOID);
 					m_ShipArray[y].SetTerraformingPlanet(-1);
 					// Nachricht generieren, dass Terraforming abgeschlossen wurde
-					CString s = CResourceManager::GetString("TERRAFORMING_FINISHED",FALSE,m_Sector[ShipKO.x][ShipKO.y].GetName());
+					CString s = CResourceManager::GetString("TERRAFORMING_FINISHED",FALSE,m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetName());
 					CMessage message;
-					message.GenerateMessage(s,MESSAGE_TYPE::SOMETHING,m_Sector[ShipKO.x][ShipKO.y].GetName(),ShipKO,FALSE);
+					message.GenerateMessage(s,MESSAGE_TYPE::SOMETHING,m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetName(),ShipKO,FALSE);
 					pMajor->GetEmpire()->AddMessage(message);
 					if (pMajor->IsHumanPlayer())
 					{
@@ -4448,9 +4448,9 @@ void CBotf2Doc::CalcShipOrders()
 						m_iSelectedView[client] = EMPIRE_VIEW;
 					}
 					// Wenn wir einer Rasse beim Terraformen helfen, so gibt es einen Beziehungsboost
-					if (m_Sector[ShipKO.x][ShipKO.y].GetOwnerOfSector() != "" && m_Sector[ShipKO.x][ShipKO.y].GetMinorRace() == TRUE && m_System[ShipKO.x][ShipKO.y].GetOwnerOfSystem() == "")
+					if (m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSector() != "" && m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetMinorRace() == TRUE && m_Systems.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem() == "")
 					{
-						CMinor* pMinor = m_pRaceCtrl->GetMinorRace(m_Sector[ShipKO.x][ShipKO.y].GetName());
+						CMinor* pMinor = m_pRaceCtrl->GetMinorRace(m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetName());
 						if (pMinor)
 							pMinor->SetRelation(pMajor->GetRaceID(), +rand()%11);
 					}
@@ -4471,19 +4471,19 @@ void CBotf2Doc::CalcShipOrders()
 				for (USHORT x = 0; x < m_ShipArray[y].GetFleet()->GetFleetSize(); x++)
 				{
 					CShip* pFleetShip = m_ShipArray[y].GetFleet()->GetShipFromFleet(x);
-					if (m_Sector[ShipKO.x][ShipKO.y].GetPlanet(m_ShipArray[y].GetTerraformingPlanet())->GetTerraformed() == FALSE)
+					if (m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetPlanet(m_ShipArray[y].GetTerraformingPlanet())->GetTerraformed() == FALSE)
 					{
 						const unsigned colonize_points = pFleetShip->GetColonizePoints();
 						colonize_points_sum += colonize_points;
-						if (m_Sector[ShipKO.x][ShipKO.y].GetPlanet(pFleetShip->GetTerraformingPlanet())->SetNeededTerraformPoints(colonize_points))
+						if (m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetPlanet(pFleetShip->GetTerraformingPlanet())->SetNeededTerraformPoints(colonize_points))
 						{
 							m_ShipArray[y].SetCurrentOrder(SHIP_ORDER::AVOID);
 							m_ShipArray[y].SetTerraformingPlanet(-1);
 							m_ShipArray[y].GetFleet()->AdoptCurrentOrders(&m_ShipArray[y]);
 							// Nachricht generieren, dass Terraforming abgeschlossen wurde
-							CString s = CResourceManager::GetString("TERRAFORMING_FINISHED",FALSE,m_Sector[ShipKO.x][ShipKO.y].GetName());
+							CString s = CResourceManager::GetString("TERRAFORMING_FINISHED",FALSE,m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetName());
 							CMessage message;
-							message.GenerateMessage(s,MESSAGE_TYPE::SOMETHING,m_Sector[ShipKO.x][ShipKO.y].GetName(),ShipKO,FALSE);
+							message.GenerateMessage(s,MESSAGE_TYPE::SOMETHING,m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetName(),ShipKO,FALSE);
 							pMajor->GetEmpire()->AddMessage(message);
 							if (pMajor->IsHumanPlayer())
 							{
@@ -4492,9 +4492,9 @@ void CBotf2Doc::CalcShipOrders()
 								m_iSelectedView[client] = EMPIRE_VIEW;
 							}
 							// Wenn wir einer Rasse beim Terraformen helfen, so gibt es einen Beziehungsboost
-							if (m_Sector[ShipKO.x][ShipKO.y].GetOwnerOfSector() != "" && m_Sector[ShipKO.x][ShipKO.y].GetMinorRace() == TRUE && m_System[ShipKO.x][ShipKO.y].GetOwnerOfSystem() == "")
+							if (m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSector() != "" && m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetMinorRace() == TRUE && m_Systems.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem() == "")
 							{
-								CMinor* pMinor = m_pRaceCtrl->GetMinorRace(m_Sector[ShipKO.x][ShipKO.y].GetName());
+								CMinor* pMinor = m_pRaceCtrl->GetMinorRace(m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetName());
 								if (pMinor)
 									pMinor->SetRelation(pMajor->GetRaceID(), +rand()%11);
 							}
@@ -4515,14 +4515,14 @@ void CBotf2Doc::CalcShipOrders()
 				const unsigned terraforming_planet = m_ShipArray[y].GetTerraformingPlanet();
 				if(terraforming_planet != -1)//wird immernoch geterraformt ?
 				{
-					const unsigned needed_terraform_points = m_Sector[ShipKO.x][ShipKO.y].GetPlanet(terraforming_planet)->GetNeededTerraformPoints();
+					const unsigned needed_terraform_points = m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetPlanet(terraforming_planet)->GetNeededTerraformPoints();
 					if(colonize_points_sum > needed_terraform_points)
 					{
 						CString s;
 						s.Format("%u", colonize_points_sum - needed_terraform_points);
-						s = CResourceManager::GetString("TERRAFORMING_POINTS_WASTED",FALSE,m_Sector[ShipKO.x][ShipKO.y].GetName(), s);
+						s = CResourceManager::GetString("TERRAFORMING_POINTS_WASTED",FALSE,m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetName(), s);
 						CMessage message;
-						message.GenerateMessage(s,MESSAGE_TYPE::SOMETHING,m_Sector[ShipKO.x][ShipKO.y].GetName(),ShipKO,FALSE);
+						message.GenerateMessage(s,MESSAGE_TYPE::SOMETHING,m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetName(),ShipKO,FALSE);
 						pMajor->GetEmpire()->AddMessage(message);
 					}
 				}
@@ -4548,8 +4548,8 @@ void CBotf2Doc::CalcShipOrders()
 			// hier wird vereinfacht angenommen, das an teurerer Au?enposten auch ein besserer ist
 			short id = -1;
 			// Wenn wir in dem Sektor noch keinen Au?enposten und noch keine Sternbasis stehen haben
-			if (m_Sector[ShipKO.x][ShipKO.y].GetOutpost(m_ShipArray[y].GetOwnerOfShip()) == FALSE
-				&& m_Sector[ShipKO.x][ShipKO.y].GetStarbase(m_ShipArray[y].GetOwnerOfShip()) == FALSE)
+			if (m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetOutpost(m_ShipArray[y].GetOwnerOfShip()) == FALSE
+				&& m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetStarbase(m_ShipArray[y].GetOwnerOfShip()) == FALSE)
 			{
 				USHORT costs = 0;
 				for (int l = 0; l < m_ShipInfoArray.GetSize(); l++)
@@ -4570,8 +4570,8 @@ void CBotf2Doc::CalcShipOrders()
 				map<CString, CMajor*>* pmMajors = m_pRaceCtrl->GetMajors();
 				for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 				{
-					if (m_Sector[ShipKO.x][ShipKO.y].GetOutpost(it->first) == TRUE ||
-					   (m_Sector[ShipKO.x][ShipKO.y].GetOutpost(it->first) == FALSE && m_Sector[ShipKO.x][ShipKO.y].GetStarbase(it->first) == TRUE))
+					if (m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetOutpost(it->first) == TRUE ||
+					   (m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetOutpost(it->first) == FALSE && m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetStarbase(it->first) == TRUE))
 					{
 						buildable = FALSE;
 						break;
@@ -4580,27 +4580,27 @@ void CBotf2Doc::CalcShipOrders()
 				if (buildable == TRUE)
 				{
 					// Wenn wir also an einer Station gerade bauen -> Variable auf TRUE setzen
-					m_Sector[ShipKO.x][ShipKO.y].SetIsStationBuilding(TRUE, m_ShipArray[y].GetOwnerOfShip());
+					m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).SetIsStationBuilding(TRUE, m_ShipArray[y].GetOwnerOfShip());
 					// Wenn wir gerade anfangen an einer Station zu bauen, also noch keine BuildPoints zusammenhaben
-					if (m_Sector[ShipKO.x][ShipKO.y].GetStartStationPoints(m_ShipArray[y].GetOwnerOfShip()) == 0)
+					if (m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetStartStationPoints(m_ShipArray[y].GetOwnerOfShip()) == 0)
 						// dann Industriekosten der Station als StationBuildPoints nehmen
-						m_Sector[ShipKO.x][ShipKO.y].SetStartStationPoints(m_ShipInfoArray.GetAt((id-10000)).GetBaseIndustry(),m_ShipArray[y].GetOwnerOfShip());
+						m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).SetStartStationPoints(m_ShipInfoArray.GetAt((id-10000)).GetBaseIndustry(),m_ShipArray[y].GetOwnerOfShip());
 					// Wenn das Schiff eine Flotte anf?hrt, dann erstmal die Au?enpostenbaupunkte der Schiffe in der Flotte
 					// beachten und gegebenfalls das Schiff aus der Flotte entfernen
 					if (m_ShipArray[y].GetFleet() != 0)
 					{
 						for (USHORT x = 0; x < m_ShipArray[y].GetFleet()->GetFleetSize(); x++)
-							if (m_Sector[ShipKO.x][ShipKO.y].SetNeededStationPoints(m_ShipArray[y].GetFleet()->GetShipFromFleet(x)->GetStationBuildPoints(),m_ShipArray[y].GetOwnerOfShip()))
+							if (m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).SetNeededStationPoints(m_ShipArray[y].GetFleet()->GetShipFromFleet(x)->GetStationBuildPoints(),m_ShipArray[y].GetOwnerOfShip()))
 							{
 								// Station ist fertig, also bauen (wurde durch ein Schiff in der Flotte fertiggestellt)
-								if (m_Sector[ShipKO.x][ShipKO.y].GetOutpost(m_ShipArray[y].GetOwnerOfShip()) == FALSE
-									&& m_Sector[ShipKO.x][ShipKO.y].GetStarbase(m_ShipArray[y].GetOwnerOfShip()) == FALSE)
+								if (m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetOutpost(m_ShipArray[y].GetOwnerOfShip()) == FALSE
+									&& m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetStarbase(m_ShipArray[y].GetOwnerOfShip()) == FALSE)
 								{
-									m_Sector[ShipKO.x][ShipKO.y].SetOutpost(TRUE, m_ShipArray[y].GetOwnerOfShip());
-									m_Sector[ShipKO.x][ShipKO.y].SetOwnerOfSector(m_ShipArray[y].GetOwnerOfShip());
-									m_Sector[ShipKO.x][ShipKO.y].SetScanned(m_ShipArray[y].GetOwnerOfShip());
-									m_Sector[ShipKO.x][ShipKO.y].SetOwned(TRUE);
-									m_Sector[ShipKO.x][ShipKO.y].SetShipPort(TRUE,m_ShipArray[y].GetOwnerOfShip());
+									m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).SetOutpost(TRUE, m_ShipArray[y].GetOwnerOfShip());
+									m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).SetOwnerOfSector(m_ShipArray[y].GetOwnerOfShip());
+									m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).SetScanned(m_ShipArray[y].GetOwnerOfShip());
+									m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).SetOwned(TRUE);
+									m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).SetShipPort(TRUE,m_ShipArray[y].GetOwnerOfShip());
 									// Nachricht generieren, dass der Au?enpostenbau abgeschlossen wurde
 									CMessage message;
 									message.GenerateMessage(CResourceManager::GetString("OUTPOST_FINISHED"),MESSAGE_TYPE::MILITARY,"",ShipKO,FALSE);
@@ -4616,8 +4616,8 @@ void CBotf2Doc::CalcShipOrders()
 									// Wenn eine Station fertig wurde f?r alle Rassen die Punkte wieder canceln
 									for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 									{
-										m_Sector[ShipKO.x][ShipKO.y].SetIsStationBuilding(FALSE, it->first);
-										m_Sector[ShipKO.x][ShipKO.y].SetStartStationPoints(0, it->first);
+										m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).SetIsStationBuilding(FALSE, it->first);
+										m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).SetStartStationPoints(0, it->first);
 									}
 									// Das Schiff, welches die Station fertiggestellt hat aus der Flotte entfernen
 									m_ShipArray[y].GetFleet()->RemoveShipFromFleet(x);
@@ -4629,18 +4629,18 @@ void CBotf2Doc::CalcShipOrders()
 								}
 							}
 					}
-					if (m_Sector[ShipKO.x][ShipKO.y].GetIsStationBuilding(m_ShipArray[y].GetOwnerOfShip()) == TRUE
-						&& m_Sector[ShipKO.x][ShipKO.y].SetNeededStationPoints(m_ShipArray[y].GetStationBuildPoints(),m_ShipArray[y].GetOwnerOfShip()))
+					if (m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetIsStationBuilding(m_ShipArray[y].GetOwnerOfShip()) == TRUE
+						&& m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).SetNeededStationPoints(m_ShipArray[y].GetStationBuildPoints(),m_ShipArray[y].GetOwnerOfShip()))
 					{
 						// Station ist fertig, also bauen (wurde NICHT!!! durch ein Schiff in der Flotte fertiggestellt)
-						if (m_Sector[ShipKO.x][ShipKO.y].GetOutpost(m_ShipArray[y].GetOwnerOfShip()) == FALSE
-							&& m_Sector[ShipKO.x][ShipKO.y].GetStarbase(m_ShipArray[y].GetOwnerOfShip()) == FALSE)
+						if (m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetOutpost(m_ShipArray[y].GetOwnerOfShip()) == FALSE
+							&& m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetStarbase(m_ShipArray[y].GetOwnerOfShip()) == FALSE)
 						{
-							m_Sector[ShipKO.x][ShipKO.y].SetOutpost(TRUE,m_ShipArray[y].GetOwnerOfShip());
-							m_Sector[ShipKO.x][ShipKO.y].SetOwnerOfSector(m_ShipArray[y].GetOwnerOfShip());
-							m_Sector[ShipKO.x][ShipKO.y].SetScanned(m_ShipArray[y].GetOwnerOfShip());
-							m_Sector[ShipKO.x][ShipKO.y].SetOwned(TRUE);
-							m_Sector[ShipKO.x][ShipKO.y].SetShipPort(TRUE,m_ShipArray[y].GetOwnerOfShip());
+							m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).SetOutpost(TRUE,m_ShipArray[y].GetOwnerOfShip());
+							m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).SetOwnerOfSector(m_ShipArray[y].GetOwnerOfShip());
+							m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).SetScanned(m_ShipArray[y].GetOwnerOfShip());
+							m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).SetOwned(TRUE);
+							m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).SetShipPort(TRUE,m_ShipArray[y].GetOwnerOfShip());
 							// Nachricht generieren, dass der Au?enpostenbau abgeschlossen wurde
 							CMessage message;
 							message.GenerateMessage(CResourceManager::GetString("OUTPOST_FINISHED"),MESSAGE_TYPE::MILITARY,"",ShipKO,FALSE);
@@ -4656,8 +4656,8 @@ void CBotf2Doc::CalcShipOrders()
 							// Wenn eine Station fertig wurde f?r alle Rassen die Punkte wieder canceln
 							for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 							{
-								m_Sector[ShipKO.x][ShipKO.y].SetIsStationBuilding(FALSE, it->first);
-								m_Sector[ShipKO.x][ShipKO.y].SetStartStationPoints(0, it->first);
+								m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).SetIsStationBuilding(FALSE, it->first);
+								m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).SetStartStationPoints(0, it->first);
 							}
 							// Hier den Au?enposten bauen
 							BuildShip(id, ShipKO, m_ShipArray[y].GetOwnerOfShip());
@@ -4696,8 +4696,8 @@ void CBotf2Doc::CalcShipOrders()
 			// hier wird vereinfacht angenommen, das eine teurere Sternbasis auch eine bessere ist
 			// oder wir haben einen Au?enposten und wollen diesen zur Sternbasis updaten
 			short id = -1;
-			if (m_Sector[ShipKO.x][ShipKO.y].GetOutpost(m_ShipArray[y].GetOwnerOfShip()) == TRUE
-				&& m_Sector[ShipKO.x][ShipKO.y].GetStarbase(m_ShipArray[y].GetOwnerOfShip()) == FALSE)
+			if (m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetOutpost(m_ShipArray[y].GetOwnerOfShip()) == TRUE
+				&& m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetStarbase(m_ShipArray[y].GetOwnerOfShip()) == FALSE)
 			{
 				USHORT costs = 0;
 				for (int l = 0; l < m_ShipInfoArray.GetSize(); l++)
@@ -4718,8 +4718,8 @@ void CBotf2Doc::CalcShipOrders()
 				map<CString, CMajor*>* pmMajors = m_pRaceCtrl->GetMajors();
 				for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 				{
-					if (m_Sector[ShipKO.x][ShipKO.y].GetStarbase(it->first) == TRUE
-						|| (m_Sector[ShipKO.x][ShipKO.y].GetOutpost(it->first) == TRUE && it->first != m_ShipArray[y].GetOwnerOfShip()))
+					if (m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetStarbase(it->first) == TRUE
+						|| (m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetOutpost(it->first) == TRUE && it->first != m_ShipArray[y].GetOwnerOfShip()))
 					{
 						buildable = FALSE;
 						break;
@@ -4728,28 +4728,28 @@ void CBotf2Doc::CalcShipOrders()
 				if (buildable == TRUE)
 				{
 					// Wenn wir also an einer Station gerade bauen -> Variable auf TRUE setzen
-					m_Sector[ShipKO.x][ShipKO.y].SetIsStationBuilding(TRUE, m_ShipArray[y].GetOwnerOfShip());
+					m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).SetIsStationBuilding(TRUE, m_ShipArray[y].GetOwnerOfShip());
 					// Wenn wir gerade anfangen an einer Station zu bauen, also noch keine BuildPoints zusammenhaben
-					if (m_Sector[ShipKO.x][ShipKO.y].GetStartStationPoints(m_ShipArray[y].GetOwnerOfShip()) == 0)
+					if (m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetStartStationPoints(m_ShipArray[y].GetOwnerOfShip()) == 0)
 						// dann Industriekosten der Station als StationBuildPoints nehmen
-						m_Sector[ShipKO.x][ShipKO.y].SetStartStationPoints(m_ShipInfoArray.GetAt(id-10000).GetBaseIndustry(),m_ShipArray[y].GetOwnerOfShip());
+						m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).SetStartStationPoints(m_ShipInfoArray.GetAt(id-10000).GetBaseIndustry(),m_ShipArray[y].GetOwnerOfShip());
 					// Wenn das Schiff eine Flotte anf?hrt, dann erstmal die Au?enpostenbaupunkte der Schiffe in der Flotte
 					// beachten und gegebenfalls das Schiff aus der Flotte entfernen
 					if (m_ShipArray[y].GetFleet() != 0)
 					{
 						for (USHORT x = 0; x < m_ShipArray[y].GetFleet()->GetFleetSize(); x++)
-							if (m_Sector[ShipKO.x][ShipKO.y].SetNeededStationPoints(m_ShipArray[y].GetFleet()->GetShipFromFleet(x)->GetStationBuildPoints(),m_ShipArray[y].GetOwnerOfShip()))
+							if (m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).SetNeededStationPoints(m_ShipArray[y].GetFleet()->GetShipFromFleet(x)->GetStationBuildPoints(),m_ShipArray[y].GetOwnerOfShip()))
 							{
 								// Station ist fertig, also bauen (wurde durch ein Schiff in der Flotte fertiggestellt)
-								if (m_Sector[ShipKO.x][ShipKO.y].GetOutpost(m_ShipArray[y].GetOwnerOfShip()) == TRUE
-									&& m_Sector[ShipKO.x][ShipKO.y].GetStarbase(m_ShipArray[y].GetOwnerOfShip()) == FALSE)
+								if (m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetOutpost(m_ShipArray[y].GetOwnerOfShip()) == TRUE
+									&& m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetStarbase(m_ShipArray[y].GetOwnerOfShip()) == FALSE)
 								{
-									m_Sector[ShipKO.x][ShipKO.y].SetOutpost(FALSE,m_ShipArray[y].GetOwnerOfShip());
-									m_Sector[ShipKO.x][ShipKO.y].SetStarbase(TRUE,m_ShipArray[y].GetOwnerOfShip());
-									m_Sector[ShipKO.x][ShipKO.y].SetOwnerOfSector(m_ShipArray[y].GetOwnerOfShip());
-									m_Sector[ShipKO.x][ShipKO.y].SetScanned(m_ShipArray[y].GetOwnerOfShip());
-									m_Sector[ShipKO.x][ShipKO.y].SetOwned(TRUE);
-									m_Sector[ShipKO.x][ShipKO.y].SetShipPort(TRUE,m_ShipArray[y].GetOwnerOfShip());
+									m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).SetOutpost(FALSE,m_ShipArray[y].GetOwnerOfShip());
+									m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).SetStarbase(TRUE,m_ShipArray[y].GetOwnerOfShip());
+									m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).SetOwnerOfSector(m_ShipArray[y].GetOwnerOfShip());
+									m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).SetScanned(m_ShipArray[y].GetOwnerOfShip());
+									m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).SetOwned(TRUE);
+									m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).SetShipPort(TRUE,m_ShipArray[y].GetOwnerOfShip());
 									// Nachricht generieren, dass der Sternbasisbau abgeschlossen wurde
 									CMessage message;
 									message.GenerateMessage(CResourceManager::GetString("STARBASE_FINISHED"),MESSAGE_TYPE::MILITARY,"",ShipKO,FALSE);
@@ -4765,8 +4765,8 @@ void CBotf2Doc::CalcShipOrders()
 									// Wenn eine Station fertig wurde f?r alle Rassen die Punkte wieder canceln
 									for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 									{
-										m_Sector[ShipKO.x][ShipKO.y].SetIsStationBuilding(FALSE, it->first);
-										m_Sector[ShipKO.x][ShipKO.y].SetStartStationPoints(0, it->first);
+										m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).SetIsStationBuilding(FALSE, it->first);
+										m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).SetStartStationPoints(0, it->first);
 									}
 									// Das Schiff, welches die Station fertiggestellt hat aus der Flotte entfernen
 									m_ShipArray[y].GetFleet()->RemoveShipFromFleet(x);
@@ -4788,19 +4788,19 @@ void CBotf2Doc::CalcShipOrders()
 								}
 							}
 					}
-					if (m_Sector[ShipKO.x][ShipKO.y].GetIsStationBuilding(m_ShipArray[y].GetOwnerOfShip()) == TRUE
-						&& m_Sector[ShipKO.x][ShipKO.y].SetNeededStationPoints(m_ShipArray[y].GetStationBuildPoints(),m_ShipArray[y].GetOwnerOfShip()))
+					if (m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetIsStationBuilding(m_ShipArray[y].GetOwnerOfShip()) == TRUE
+						&& m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).SetNeededStationPoints(m_ShipArray[y].GetStationBuildPoints(),m_ShipArray[y].GetOwnerOfShip()))
 					{
 						// Station ist fertig, also bauen (wurde NICHT!!! durch ein Schiff in der Flotte fertiggestellt)
-						if (m_Sector[ShipKO.x][ShipKO.y].GetOutpost(m_ShipArray[y].GetOwnerOfShip()) == TRUE
-							&& m_Sector[ShipKO.x][ShipKO.y].GetStarbase(m_ShipArray[y].GetOwnerOfShip()) == FALSE)
+						if (m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetOutpost(m_ShipArray[y].GetOwnerOfShip()) == TRUE
+							&& m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetStarbase(m_ShipArray[y].GetOwnerOfShip()) == FALSE)
 						{
-							m_Sector[ShipKO.x][ShipKO.y].SetOutpost(FALSE,m_ShipArray[y].GetOwnerOfShip());
-							m_Sector[ShipKO.x][ShipKO.y].SetStarbase(TRUE,m_ShipArray[y].GetOwnerOfShip());
-							m_Sector[ShipKO.x][ShipKO.y].SetOwnerOfSector(m_ShipArray[y].GetOwnerOfShip());
-							m_Sector[ShipKO.x][ShipKO.y].SetScanned(m_ShipArray[y].GetOwnerOfShip());
-							m_Sector[ShipKO.x][ShipKO.y].SetOwned(TRUE);
-							m_Sector[ShipKO.x][ShipKO.y].SetShipPort(TRUE,m_ShipArray[y].GetOwnerOfShip());
+							m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).SetOutpost(FALSE,m_ShipArray[y].GetOwnerOfShip());
+							m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).SetStarbase(TRUE,m_ShipArray[y].GetOwnerOfShip());
+							m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).SetOwnerOfSector(m_ShipArray[y].GetOwnerOfShip());
+							m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).SetScanned(m_ShipArray[y].GetOwnerOfShip());
+							m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).SetOwned(TRUE);
+							m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).SetShipPort(TRUE,m_ShipArray[y].GetOwnerOfShip());
 							// Nachricht generieren, dass der Sternbasisbau abgeschlossen wurde
 							CMessage message;
 							message.GenerateMessage(CResourceManager::GetString("STARBASE_FINISHED"),MESSAGE_TYPE::MILITARY,"",ShipKO,FALSE);
@@ -4816,8 +4816,8 @@ void CBotf2Doc::CalcShipOrders()
 							// Wenn eine Station fertig wurde f?r alle Rassen die Punkte wieder canceln
 							for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 							{
-								m_Sector[ShipKO.x][ShipKO.y].SetIsStationBuilding(FALSE, it->first);
-								m_Sector[ShipKO.x][ShipKO.y].SetStartStationPoints(0, it->first);
+								m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).SetIsStationBuilding(FALSE, it->first);
+								m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).SetStartStationPoints(0, it->first);
 							}
 							// Sternbasis bauen
 							BuildShip(id, ShipKO, m_ShipArray[y].GetOwnerOfShip());
@@ -4853,50 +4853,50 @@ void CBotf2Doc::CalcShipOrders()
 
 			// wenn wir in dem Sector wo wir das Schiff demoniteren ein uns geh?rendes System haben, dann bekommen wir
 			// teilweise Rohstoffe aus der Demontage zur?ck (vlt. auch ein paar Credits)
-			if (m_System[ShipKO.x][ShipKO.y].GetOwnerOfSystem() == m_ShipArray[y].GetOwnerOfShip())
+			if (m_Systems.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem() == m_ShipArray[y].GetOwnerOfShip())
 			{
 				USHORT proz = rand()%26 + 50;	// Wert zwischen 50 und 75 ausw?hlen
 				// Wenn in dem System Geb?ude stehen, wodurch der Prozentsatz erh?ht wird, dann hier addieren
-				proz += m_System[ShipKO.x][ShipKO.y].GetProduction()->GetShipRecycling();
+				proz += m_Systems.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetShipRecycling();
 				USHORT id = m_ShipArray[y].GetID() - 10000;
-				m_System[ShipKO.x][ShipKO.y].SetTitanStore((int)(m_ShipInfoArray.GetAt(id).GetNeededTitan() * proz / 100));
-				m_System[ShipKO.x][ShipKO.y].SetDeuteriumStore((int)(m_ShipInfoArray.GetAt(id).GetNeededDeuterium() * proz / 100));
-				m_System[ShipKO.x][ShipKO.y].SetDuraniumStore((int)(m_ShipInfoArray.GetAt(id).GetNeededDuranium() * proz / 100));
-				m_System[ShipKO.x][ShipKO.y].SetCrystalStore((int)(m_ShipInfoArray.GetAt(id).GetNeededCrystal() * proz / 100));
-				m_System[ShipKO.x][ShipKO.y].SetIridiumStore((int)(m_ShipInfoArray.GetAt(id).GetNeededIridium() * proz / 100));
+				m_Systems.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).SetTitanStore((int)(m_ShipInfoArray.GetAt(id).GetNeededTitan() * proz / 100));
+				m_Systems.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).SetDeuteriumStore((int)(m_ShipInfoArray.GetAt(id).GetNeededDeuterium() * proz / 100));
+				m_Systems.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).SetDuraniumStore((int)(m_ShipInfoArray.GetAt(id).GetNeededDuranium() * proz / 100));
+				m_Systems.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).SetCrystalStore((int)(m_ShipInfoArray.GetAt(id).GetNeededCrystal() * proz / 100));
+				m_Systems.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).SetIridiumStore((int)(m_ShipInfoArray.GetAt(id).GetNeededIridium() * proz / 100));
 				pMajor->GetEmpire()->SetCredits((int)(m_ShipInfoArray.GetAt(id).GetNeededIndustry() * proz / 100));
 			}
 			// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
-			pMajor->GetShipHistory()->ModifyShip(&m_ShipArray[y], m_Sector[ShipKO.x][ShipKO.y].GetName(TRUE), m_iRound, CResourceManager::GetString("DISASSEMBLY"),	CResourceManager::GetString("DESTROYED"));
+			pMajor->GetShipHistory()->ModifyShip(&m_ShipArray[y], m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetName(TRUE), m_iRound, CResourceManager::GetString("DISASSEMBLY"),	CResourceManager::GetString("DESTROYED"));
 
 			// Wenn das Schiff eine Flotte anf?hrt, dann auch die Schiffe in der Flotte demontieren
 			if (m_ShipArray[y].GetFleet() != 0)
 			{
 				for (USHORT x = 0; x < m_ShipArray[y].GetFleet()->GetFleetSize(); x++)
 				{
-					if (m_System[ShipKO.x][ShipKO.y].GetOwnerOfSystem() == m_ShipArray[y].GetOwnerOfShip())
+					if (m_Systems.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem() == m_ShipArray[y].GetOwnerOfShip())
 					{
 						USHORT proz = rand()%26 + 50;	// Wert zwischen 50 und 75 ausw?hlen
 						// Wenn in dem System Geb?ude stehen, wodurch der Prozentsatz erh?ht wird, dann hier addieren
-						proz += m_System[ShipKO.x][ShipKO.y].GetProduction()->GetShipRecycling();
+						proz += m_Systems.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetShipRecycling();
 						USHORT id = m_ShipArray[y].GetFleet()->GetShipFromFleet(x)->GetID() - 10000;
-						m_System[ShipKO.x][ShipKO.y].SetTitanStore((int)(m_ShipInfoArray.GetAt(id).GetNeededTitan() * proz / 100));
-						m_System[ShipKO.x][ShipKO.y].SetDeuteriumStore((int)(m_ShipInfoArray.GetAt(id).GetNeededDeuterium() * proz / 100));
-						m_System[ShipKO.x][ShipKO.y].SetDuraniumStore((int)(m_ShipInfoArray.GetAt(id).GetNeededDuranium() * proz / 100));
-						m_System[ShipKO.x][ShipKO.y].SetCrystalStore((int)(m_ShipInfoArray.GetAt(id).GetNeededCrystal() * proz / 100));
-						m_System[ShipKO.x][ShipKO.y].SetIridiumStore((int)(m_ShipInfoArray.GetAt(id).GetNeededIridium() * proz / 100));
+						m_Systems.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).SetTitanStore((int)(m_ShipInfoArray.GetAt(id).GetNeededTitan() * proz / 100));
+						m_Systems.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).SetDeuteriumStore((int)(m_ShipInfoArray.GetAt(id).GetNeededDeuterium() * proz / 100));
+						m_Systems.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).SetDuraniumStore((int)(m_ShipInfoArray.GetAt(id).GetNeededDuranium() * proz / 100));
+						m_Systems.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).SetCrystalStore((int)(m_ShipInfoArray.GetAt(id).GetNeededCrystal() * proz / 100));
+						m_Systems.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).SetIridiumStore((int)(m_ShipInfoArray.GetAt(id).GetNeededIridium() * proz / 100));
 						pMajor->GetEmpire()->SetCredits((int)(m_ShipInfoArray.GetAt(id).GetNeededIndustry() * proz / 100));
 					}
 					// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
-					pMajor->GetShipHistory()->ModifyShip(m_ShipArray[y].GetFleet()->GetShipFromFleet(x), m_Sector[ShipKO.x][ShipKO.y].GetName(TRUE), m_iRound, CResourceManager::GetString("DISASSEMBLY"), CResourceManager::GetString("DESTROYED"));
+					pMajor->GetShipHistory()->ModifyShip(m_ShipArray[y].GetFleet()->GetShipFromFleet(x), m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetName(TRUE), m_iRound, CResourceManager::GetString("DISASSEMBLY"), CResourceManager::GetString("DESTROYED"));
 				}
 			}
 
 			// Wenn es ein Au?enposten oder eine Sternbasis ist, dann dem Sektor bekanntgeben, dass in ihm keine Station mehr ist
 			if (m_ShipArray[y].GetShipType() == SHIP_TYPE::OUTPOST || m_ShipArray[y].GetShipType() == SHIP_TYPE::STARBASE)
 			{
-				m_Sector[ShipKO.x][ShipKO.y].SetOutpost(FALSE, m_ShipArray[y].GetOwnerOfShip());
-				m_Sector[ShipKO.x][ShipKO.y].SetStarbase(FALSE, m_ShipArray[y].GetOwnerOfShip());
+				m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).SetOutpost(FALSE, m_ShipArray[y].GetOwnerOfShip());
+				m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).SetStarbase(FALSE, m_ShipArray[y].GetOwnerOfShip());
 			}
 
 			m_ShipArray[y].SetCurrentOrder(SHIP_ORDER::AVOID);
@@ -4957,12 +4957,12 @@ void CBotf2Doc::CalcShipOrders()
 		else if (m_ShipArray[y].GetCurrentOrder() == SHIP_ORDER::TRAIN_SHIP)
 		{
 			// Checken ob der Befehl noch G?ltigkeit hat
-			if (m_Sector[ShipKO.x][ShipKO.y].GetSunSystem() == TRUE &&
-				m_System[ShipKO.x][ShipKO.y].GetOwnerOfSystem() == m_ShipArray[y].GetOwnerOfShip())
+			if (m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetSunSystem() == TRUE &&
+				m_Systems.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem() == m_ShipArray[y].GetOwnerOfShip())
 			{
 				// Wenn ein Schiff mit Veteranenstatus (Level 4) in der Trainingsflotte ist, dann verdoppelt sich der Erfahrungsgewinn
 				// f?r die niedrigstufigen Schiffe
-				int XP = m_System[ShipKO.x][ShipKO.y].GetProduction()->GetShipTraining();
+				int XP = m_Systems.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetShipTraining();
 				bool isVeteran = false;
 				if (m_ShipArray[y].GetExpLevel() >= 4)
 					isVeteran = true;
@@ -5018,17 +5018,17 @@ void CBotf2Doc::CalcShipOrders()
 		{
 			BOOLEAN blockadeStillActive = FALSE;
 			// ?berpr?fen ob der Blockadebefehl noch G?ltigkeit hat
-			if (m_System[ShipKO.x][ShipKO.y].GetOwnerOfSystem() != m_ShipArray[y].GetOwnerOfShip())
+			if (m_Systems.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem() != m_ShipArray[y].GetOwnerOfShip())
 				// handelt es sich beim Systembesitzer um eine andere Majorrace
-				if (m_System[ShipKO.x][ShipKO.y].GetOwnerOfSystem() != "")
+				if (m_Systems.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem() != "")
 				{
-					CString systemOwner = m_System[ShipKO.x][ShipKO.y].GetOwnerOfSystem();
+					CString systemOwner = m_Systems.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem();
 					CString shipOwner   = m_ShipArray[y].GetOwnerOfShip();
 					CRace* pShipOwner	= m_pRaceCtrl->GetRace(shipOwner);
 					// haben wir einen Vertrag kleiner einem Freundschaftsvertrag mit der Majorrace
 					if (pShipOwner->GetAgreement(systemOwner) < DIPLOMATIC_AGREEMENT::FRIENDSHIP)
 					{
-						int blockadeValue = m_System[ShipKO.x][ShipKO.y].GetBlockade();
+						int blockadeValue = m_Systems.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetBlockade();
 						if (m_ShipArray[y].HasSpecial(SHIP_SPECIAL::BLOCKADESHIP))
 						{
 							blockadeValue += rand()%20 + 1;
@@ -5049,7 +5049,7 @@ void CBotf2Doc::CalcShipOrders()
 								else
 									m_ShipArray[y].GetFleet()->GetShipFromFleet(x)->SetCurrentOrder(SHIP_ORDER::ATTACK);
 							}
-						m_System[ShipKO.x][ShipKO.y].SetBlockade((BYTE)blockadeValue);
+						m_Systems.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).SetBlockade((BYTE)blockadeValue);
 						// Die Beziehung zum Systembesitzer verringert sich um bis zu maximal 10 Punkte
 						CRace* pSystemOwner	= m_pRaceCtrl->GetRace(systemOwner);
 						pSystemOwner->SetRelation(shipOwner, -rand()%(blockadeValue/10 + 1));
@@ -5063,25 +5063,25 @@ void CBotf2Doc::CalcShipOrders()
 					m_ShipArray[y].GetFleet()->AdoptCurrentOrders(&m_ShipArray[y]);
 			}
 			// wird das System schlu?endlich blockiert, so produzieren die Handelsrouten kein Credits mehr
-			if (m_System[ShipKO.x][ShipKO.y].GetBlockade() > NULL)
+			if (m_Systems.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetBlockade() > NULL)
 			{
 				// Wird das System blockiert, so generiert die Handelsroute kein Credits
-				for (int i = 0; i < m_System[ShipKO.x][ShipKO.y].GetTradeRoutes()->GetSize(); i++)
-					m_System[ShipKO.x][ShipKO.y].GetTradeRoutes()->GetAt(i).SetCredits(NULL);
+				for (int i = 0; i < m_Systems.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetTradeRoutes()->GetSize(); i++)
+					m_Systems.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetTradeRoutes()->GetAt(i).SetCredits(NULL);
 
 				// Eventscreen f?r den Angreifer und den Blockierten anlegen
 				CRace* pShipOwner = m_pRaceCtrl->GetRace(m_ShipArray[y].GetOwnerOfShip());
 				if (pShipOwner != NULL && pShipOwner->GetType() == MAJOR && ((CMajor*)pShipOwner)->IsHumanPlayer())
 				{
-					CEventBlockade* eventScreen = new CEventBlockade(m_ShipArray[y].GetOwnerOfShip(), CResourceManager::GetString("BLOCKADEEVENT_HEADLINE", FALSE, m_Sector[ShipKO.x][ShipKO.y].GetName()), CResourceManager::GetString("BLOCKADEEVENT_TEXT_" + pShipOwner->GetRaceID(), FALSE, m_Sector[ShipKO.x][ShipKO.y].GetName()));
+					CEventBlockade* eventScreen = new CEventBlockade(m_ShipArray[y].GetOwnerOfShip(), CResourceManager::GetString("BLOCKADEEVENT_HEADLINE", FALSE, m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetName()), CResourceManager::GetString("BLOCKADEEVENT_TEXT_" + pShipOwner->GetRaceID(), FALSE, m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetName()));
 					((CMajor*)pShipOwner)->GetEmpire()->GetEventMessages()->Add(eventScreen);
 				}
-				if (m_System[ShipKO.x][ShipKO.y].GetOwnerOfSystem() != "")
+				if (m_Systems.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem() != "")
 				{
-					CRace* pSystemOwner = m_pRaceCtrl->GetRace(m_System[ShipKO.x][ShipKO.y].GetOwnerOfSystem());
+					CRace* pSystemOwner = m_pRaceCtrl->GetRace(m_Systems.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem());
 					if (pSystemOwner != NULL && pSystemOwner->GetType() == MAJOR && ((CMajor*)pSystemOwner)->IsHumanPlayer())
 					{
-						CEventBlockade* eventScreen = new CEventBlockade(m_System[ShipKO.x][ShipKO.y].GetOwnerOfSystem(), CResourceManager::GetString("BLOCKADEEVENT_HEADLINE", FALSE, m_Sector[ShipKO.x][ShipKO.y].GetName()), CResourceManager::GetString("BLOCKADEEVENT_TEXT_" + pSystemOwner->GetRaceID(), FALSE, m_Sector[ShipKO.x][ShipKO.y].GetName()));
+						CEventBlockade* eventScreen = new CEventBlockade(m_Systems.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem(), CResourceManager::GetString("BLOCKADEEVENT_HEADLINE", FALSE, m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetName()), CResourceManager::GetString("BLOCKADEEVENT_TEXT_" + pSystemOwner->GetRaceID(), FALSE, m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetName()));
 						((CMajor*)pSystemOwner)->GetEmpire()->GetEventMessages()->Add(eventScreen);
 					}
 				}
@@ -5102,7 +5102,7 @@ void CBotf2Doc::CalcShipOrders()
 		// eine Sternbasis oder ein Au?enposten steht
 		if (m_ShipArray[y].GetShipType() == SHIP_TYPE::OUTPOST || m_ShipArray[y].GetShipType() == SHIP_TYPE::STARBASE)
 		{
-			m_Sector[ShipKO.x][ShipKO.y].SetShipPort(TRUE, m_ShipArray[y].GetOwnerOfShip());
+			m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).SetShipPort(TRUE, m_ShipArray[y].GetOwnerOfShip());
 		}
 	}
 
@@ -5144,7 +5144,7 @@ void CBotf2Doc::CalcShipMovement()
 		if (m_ShipArray[y].GetCurrentOrder() == SHIP_ORDER::TERRAFORM)
 		{
 			CPoint p = m_ShipArray[y].GetKO();
-			if (m_Sector[p.x][p.y].GetPlanet(m_ShipArray[y].GetTerraformingPlanet())->GetTerraformed() == TRUE)
+			if (m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetPlanet(m_ShipArray[y].GetTerraformingPlanet())->GetTerraformed() == TRUE)
 			{
 				m_ShipArray[y].SetCurrentOrder(SHIP_ORDER::AVOID);
 				m_ShipArray[y].SetTerraformingPlanet(-1);
@@ -5154,14 +5154,14 @@ void CBotf2Doc::CalcShipMovement()
 		else if (m_ShipArray[y].GetCurrentOrder() == SHIP_ORDER::BUILD_OUTPOST)
 		{
 			CPoint p = m_ShipArray[y].GetKO();
-			if (m_Sector[p.x][p.y].GetOutpost(sRace) == TRUE)
+			if (m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetOutpost(sRace) == TRUE)
 				m_ShipArray[y].SetCurrentOrder(SHIP_ORDER::AVOID);
 		}
 		// Pr?fen, dass ein Sternbasenbaubefehl noch g?ltig ist
 		else if (m_ShipArray[y].GetCurrentOrder() == SHIP_ORDER::BUILD_STARBASE)
 		{
 			CPoint p = m_ShipArray[y].GetKO();
-			if (m_Sector[p.x][p.y].GetStarbase(sRace) == TRUE)
+			if (m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetStarbase(sRace) == TRUE)
 				m_ShipArray[y].SetCurrentOrder(SHIP_ORDER::AVOID);
 		}
 		// weiter mit Schiffsbewegung
@@ -5263,15 +5263,15 @@ void CBotf2Doc::CalcShipMovement()
 
 		// Gibt es eine Anomalie, wodurch die Schilde schneller aufgeladen werden
 		bool bFasterShieldRecharge = false;
-		if (m_Sector[m_ShipArray[y].GetKO().x][m_ShipArray[y].GetKO().y].GetAnomaly())
-			if (m_Sector[m_ShipArray[y].GetKO().x][m_ShipArray[y].GetKO().y].GetAnomaly()->GetType() == BINEBULA)
+		if (m_Sectors.at(m_ShipArray[y].GetKO().x+(m_ShipArray[y].GetKO().y)*STARMAP_SECTORS_HCOUNT).GetAnomaly())
+			if (m_Sectors.at(m_ShipArray[y].GetKO().x+(m_ShipArray[y].GetKO().y)*STARMAP_SECTORS_HCOUNT).GetAnomaly()->GetType() == BINEBULA)
 				bFasterShieldRecharge = true;
 
 		// Nach der Bewegung, aber noch vor einem m?glichen Kampf werden die Schilde nach ihrem Typ wieder aufgeladen,
 		// wenn wir auf einem Shipport sind, dann wird auch die H?lle teilweise wieder repariert
 		m_ShipArray[y].GetShield()->RechargeShields(200 * (bFasterShieldRecharge + 1));
 		// Wenn wir in diesem Sektor einen Shipport haben, dann wird die H?lle repariert
-		if (m_Sector[m_ShipArray[y].GetKO().x][m_ShipArray[y].GetKO().y].GetShipPort(m_ShipArray[y].GetOwnerOfShip()) == TRUE)
+		if (m_Sectors.at(m_ShipArray[y].GetKO().x+(m_ShipArray[y].GetKO().y)*STARMAP_SECTORS_HCOUNT).GetShipPort(m_ShipArray[y].GetOwnerOfShip()) == TRUE)
 			m_ShipArray[y].GetHull()->RepairHull();
 		// Befehle an alle Schiffe in der Flotte weitergeben
 		if (m_ShipArray[y].GetFleet() != 0)
@@ -5280,15 +5280,15 @@ void CBotf2Doc::CalcShipMovement()
 			for (int x = 0; x < m_ShipArray[y].GetFleet()->GetFleetSize(); x++)
 			{
 				m_ShipArray[y].GetFleet()->GetShipFromFleet(x)->GetShield()->RechargeShields(200 * (bFasterShieldRecharge + 1));
-				if (m_Sector[m_ShipArray[y].GetKO().x][m_ShipArray[y].GetKO().y].GetShipPort(m_ShipArray[y].GetOwnerOfShip()) == TRUE)
+				if (m_Sectors.at(m_ShipArray[y].GetKO().x+(m_ShipArray[y].GetKO().y)*STARMAP_SECTORS_HCOUNT).GetShipPort(m_ShipArray[y].GetOwnerOfShip()) == TRUE)
 					m_ShipArray[y].GetFleet()->GetShipFromFleet(x)->GetHull()->RepairHull();
 			}
 		}
 
 		// wenn eine Anomalie vorhanden, deren m?gliche Auswirkungen auf das Schiff berechnen
-		if (m_Sector[m_ShipArray[y].GetKO().x][m_ShipArray[y].GetKO().y].GetAnomaly())
+		if (m_Sectors.at(m_ShipArray[y].GetKO().x+(m_ShipArray[y].GetKO().y)*STARMAP_SECTORS_HCOUNT).GetAnomaly())
 		{
-			m_Sector[m_ShipArray[y].GetKO().x][m_ShipArray[y].GetKO().y].GetAnomaly()->CalcShipEffects(&m_ShipArray[y]);
+			m_Sectors.at(m_ShipArray[y].GetKO().x+(m_ShipArray[y].GetKO().y)*STARMAP_SECTORS_HCOUNT).GetAnomaly()->CalcShipEffects(&m_ShipArray[y]);
 			bAnomaly = true;
 		}
 	}
@@ -5379,7 +5379,7 @@ bool CBotf2Doc::IsShipCombat()
 
 		CPoint p = m_ShipArray.GetAt(y).GetKO();
 		// Wenn in dem Sektor des Schiffes schon ein Kampf stattgefunden hat, dann findet hier keiner mehr statt
-		if (m_sCombatSectors.find(m_Sector[p.x][p.y].GetName(TRUE)) != m_sCombatSectors.end())
+		if (m_sCombatSectors.find(m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetName(TRUE)) != m_sCombatSectors.end())
 			continue;
 
 		// Wenn noch kein Kampf in dem Sektor stattfand, dann kommt es möglicherweise hier zum Kampf
@@ -5398,7 +5398,7 @@ bool CBotf2Doc::IsShipCombat()
 					{
 						m_bCombatCalc = true;
 						m_ptCurrentCombatSector = p;
-						m_sCombatSectors.insert(m_Sector[p.x][p.y].GetName(TRUE));
+						m_sCombatSectors.insert(m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetName(TRUE));
 						m_mCombatOrders.clear();
 						MYTRACE(MT::LEVEL_INFO, "Combat in Sector %d/%d\n", p.x, p.y);
 						return true;
@@ -5444,14 +5444,14 @@ void CBotf2Doc::CalcShipCombat()
 		// die Station nicht zerstört wurde.
 		/*if (pShip->GetShipType() == OUTPOST || pShip->GetShipType() == STARBASE)
 		{
-			m_Sector[p.x][p.y].SetShipPort(FALSE, pShip->GetOwnerOfShip());
-			m_Sector[p.x][p.y].SetOutpost(FALSE,  pShip->GetOwnerOfShip());
-			m_Sector[p.x][p.y].SetStarbase(FALSE, pShip->GetOwnerOfShip());
+			m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetShipPort(FALSE, pShip->GetOwnerOfShip());
+			m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetOutpost(FALSE,  pShip->GetOwnerOfShip());
+			m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetStarbase(FALSE, pShip->GetOwnerOfShip());
 		}
 		// Haben wir aber in diesem Sektor ein System mit aktiver Werft stehen, dann fügen
 		// wir den ShipPort aber gleich jetzt wieder hinzu
-		if (m_System[p.x][p.y].GetProduction()->GetShipYard() == TRUE && m_System[p.x][p.y].GetOwnerOfSystem() == pShip->GetOwnerOfShip())
-			m_Sector[p.x][p.y].SetShipPort(TRUE, pShip->GetOwnerOfShip());*/
+		if (m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetShipYard() == TRUE && m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem() == pShip->GetOwnerOfShip())
+			m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetShipPort(TRUE, pShip->GetOwnerOfShip());*/
 	}
 
 	// es sollten immer Schiffe im Array sein, sonst hätte in diesem Sektor kein Kampf stattfinden dürfen
@@ -5461,13 +5461,13 @@ void CBotf2Doc::CalcShipCombat()
 
 	// Kampf-KI
 	CCombatAI AI;
-	bool bCombat = AI.CalcCombatTactics(vInvolvedShips, m_pRaceCtrl->GetRaces(), m_mCombatOrders, m_Sector[p.x][p.y].GetAnomaly());
+	bool bCombat = AI.CalcCombatTactics(vInvolvedShips, m_pRaceCtrl->GetRaces(), m_mCombatOrders, m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetAnomaly());
 	if (!bCombat)
 		return;
 
 	// Jetzt können wir einen Kampf stattfinden lassen
 	CCombat Combat;
-	Combat.SetInvolvedShips(&vInvolvedShips, m_pRaceCtrl->GetRaces(), m_Sector[p.x][p.y].GetAnomaly());
+	Combat.SetInvolvedShips(&vInvolvedShips, m_pRaceCtrl->GetRaces(), m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetAnomaly());
 	if (!Combat.GetReadyForCombat())
 		return;
 
@@ -5507,8 +5507,8 @@ void CBotf2Doc::CalcShipCombat()
 	{
 		CString sSectorName;
 		// ist der Sektor bekannt?
-		if (m_Sector[p.x][p.y].GetKnown(it->first))
-			sSectorName = m_Sector[p.x][p.y].GetName(true);
+		if (m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetKnown(it->first))
+			sSectorName = m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetName(true);
 		else
 			sSectorName.Format("%s %c%i", CResourceManager::GetString("SECTOR"), (char)(p.y+97), p.x + 1);
 
@@ -5808,30 +5808,30 @@ void CBotf2Doc::CalcShipEffects()
 		// Anomalien beachten
 		bool bDeactivatedShipScanner = false;
 		bool bBetterScanner = false;
-		if (m_Sector[p.x][p.y].GetAnomaly() && m_Sector[p.x][p.y].GetAnomaly()->IsShipScannerDeactivated())
+		if (m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetAnomaly() && m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetAnomaly()->IsShipScannerDeactivated())
 			bDeactivatedShipScanner = true;
-		if (m_Sector[p.x][p.y].GetAnomaly() && m_Sector[p.x][p.y].GetAnomaly()->GetType() == QUASAR)
+		if (m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetAnomaly() && m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetAnomaly()->GetType() == QUASAR)
 			bBetterScanner = true;
 
 		short scanPower = 0;
 		// nur wenn das Schiff von einer Majorrace ist
 		if (pMajor != NULL)
 		{
-			m_Sector[p.x][p.y].SetScanned(sRace);
-			m_Sector[p.x][p.y].SetFullKnown(sRace);
+			m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetScanned(sRace);
+			m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetFullKnown(sRace);
 
 			if (!bDeactivatedShipScanner)
 			{
-				scanPower = m_Sector[p.x][p.y].GetScanPower(sRace);
+				scanPower = m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetScanPower(sRace);
 				// Wenn das Schiff die Patrouillieneigenschaft besitzt und sich in einem eigenen Sektor befindet, dann
 				// wird die Scanleistung um 20% erhöht
 				float boni = 1.0f;
-				if (sRace == m_Sector[p.x][p.y].GetOwnerOfSector() && m_ShipArray[y].HasSpecial(SHIP_SPECIAL::PATROLSHIP))
+				if (sRace == m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSector() && m_ShipArray[y].HasSpecial(SHIP_SPECIAL::PATROLSHIP))
 					boni = 1.2f;
 				if (bBetterScanner)
 					boni += 0.5;
 				if ((USHORT)(m_ShipArray[y].GetScanPower() * boni) > scanPower)
-					m_Sector[p.x][p.y].SetScanPower((short)(m_ShipArray[y].GetScanPower() * boni), sRace);
+					m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetScanPower((short)(m_ShipArray[y].GetScanPower() * boni), sRace);
 
 				int nScanRange = m_ShipArray[y].GetScanRange();
 				if (bBetterScanner)
@@ -5843,19 +5843,19 @@ void CBotf2Doc::CalcShipEffects()
 						if (p.y+j < STARMAP_SECTORS_VCOUNT && p.y+j > -1 && p.x+i < STARMAP_SECTORS_HCOUNT && p.x+i > -1)
 							if (p.x+i != p.x || p.y+j != p.y)
 							{
-								m_Sector[p.x+i][p.y+j].SetScanned(sRace);
+								m_Sectors.at(p.x+i+(p.y+j)*STARMAP_SECTORS_HCOUNT).SetScanned(sRace);
 								// Teiler für die Scanstärke berechnen
 								int div = max(abs(j),abs(i));
 								if (div > 0)
 								{
-									scanPower = m_Sector[p.x+i][p.y+j].GetScanPower(sRace);
+									scanPower = m_Sectors.at(p.x+i+(p.y+j)*STARMAP_SECTORS_HCOUNT).GetScanPower(sRace);
 									if ((USHORT)(m_ShipArray[y].GetScanPower() * boni) / div > scanPower)
-										m_Sector[p.x+i][p.y+j].SetScanPower((short)(m_ShipArray[y].GetScanPower() * boni / div), sRace);
+										m_Sectors.at(p.x+i+(p.y+j)*STARMAP_SECTORS_HCOUNT).SetScanPower((short)(m_ShipArray[y].GetScanPower() * boni / div), sRace);
 								}
 							}
 
 				// Jedes Schiff erhöht auf seinem Sektor zusätzlich die Scanpower um 1
-				m_Sector[p.x][p.y].SetScanPower(m_Sector[p.x][p.y].GetScanPower(sRace) + 1, sRace);
+				m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetScanPower(m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetScanPower(sRace) + 1, sRace);
 			}
 		}
 
@@ -5867,20 +5867,20 @@ void CBotf2Doc::CalcShipEffects()
 			short stealthPower = m_ShipArray[y].GetStealthPower() * 20;
 			if (m_ShipArray[y].GetStealthPower() > 3 && m_ShipArray[y].GetCloak() == FALSE)
 				stealthPower = 3 * 20;
-			if (stealthPower < m_Sector[p.x][p.y].GetNeededScanPower(sRace))
-				m_Sector[p.x][p.y].SetNeededScanPower(stealthPower, sRace);
+			if (stealthPower < m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetNeededScanPower(sRace))
+				m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetNeededScanPower(stealthPower, sRace);
 		}
 
 		// Wenn das Schiff gerade eine Station baut, so dies dem Sektor mitteilen
 		if (m_ShipArray[y].GetCurrentOrder() == SHIP_ORDER::BUILD_OUTPOST || m_ShipArray[y].GetCurrentOrder() == SHIP_ORDER::BUILD_STARBASE)
-			m_Sector[p.x][p.y].SetIsStationBuilding(TRUE, sRace);
+			m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetIsStationBuilding(TRUE, sRace);
 
 		// Wenn das Schiff gerade Terraform, so dies dem Planeten mitteilen
 		else if (m_ShipArray[y].GetCurrentOrder() == SHIP_ORDER::TERRAFORM)
 		{
 			short nPlanet = m_ShipArray[y].GetTerraformingPlanet();
-			if (nPlanet != -1 && nPlanet < static_cast<int>(m_Sector[p.x][p.y].GetPlanets().size()))
-				m_Sector[p.x][p.y].GetPlanet(nPlanet)->SetIsTerraforming(TRUE);
+			if (nPlanet != -1 && nPlanet < static_cast<int>(m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetPlanets().size()))
+				m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetPlanet(nPlanet)->SetIsTerraforming(TRUE);
 			else
 			{
 				m_ShipArray[y].SetTerraformingPlanet(-1);
@@ -5894,7 +5894,7 @@ void CBotf2Doc::CalcShipEffects()
 
 		// Die Schiffslisten der einzelnen Imperien modifizieren
 		if (pMajor)
-			pMajor->GetShipHistory()->ModifyShip(&m_ShipArray[y], m_Sector[p.x][p.y].GetName(TRUE));
+			pMajor->GetShipHistory()->ModifyShip(&m_ShipArray[y], m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetName(TRUE));
 
 		// Erfahrunspunkte der Schiffe anpassen
 		this->CalcShipExp(&m_ShipArray[y]);
@@ -5921,28 +5921,28 @@ void CBotf2Doc::CalcShipEffects()
 							{
 								if (p.y+j < STARMAP_SECTORS_VCOUNT && p.y+j > -1 && p.x+i < STARMAP_SECTORS_HCOUNT && p.x+i > -1)
 								{
-									m_Sector[p.x+i][p.y+j].SetScanned(sRace);
+									m_Sectors.at(p.x+i+(p.y+j)*STARMAP_SECTORS_HCOUNT).SetScanned(sRace);
 									// Teiler für die Scanstärke berechnen
 									int div = max(abs(j),abs(i));
 									if (div == 0)
 										div = 1;
-									scanPower = m_Sector[p.x+i][p.y+j].GetScanPower(sRace);
+									scanPower = m_Sectors.at(p.x+i+(p.y+j)*STARMAP_SECTORS_HCOUNT).GetScanPower(sRace);
 									// Wenn das Schiff die Patrouillieneigenschaft besitzt und sich in einem eigenen Sektor
 									// befindet, dann wird die Scanleistung um 20% erhöht
 									float boni = 1.0f;
-									if (sRace == m_Sector[p.x][p.y].GetOwnerOfSector() && ship->HasSpecial(SHIP_SPECIAL::PATROLSHIP))
+									if (sRace == m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSector() && ship->HasSpecial(SHIP_SPECIAL::PATROLSHIP))
 										boni = 1.2f;
 									if (bBetterScanner)
 										boni += 0.5;
 
 									if ((ship->GetScanPower() * boni / div) > scanPower)
-										m_Sector[p.x+i][p.y+j].SetScanPower((short)(ship->GetScanPower() * boni / div), sRace);
+										m_Sectors.at(p.x+i+(p.y+j)*STARMAP_SECTORS_HCOUNT).SetScanPower((short)(ship->GetScanPower() * boni / div), sRace);
 								}
 							}
 						}
 
 						// auch jedes Schiff in einer Flotte erhöht die Scankraft um +1
-						m_Sector[p.x][p.y].SetScanPower(m_Sector[p.x][p.y].GetScanPower(sRace) + 1, sRace);
+						m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetScanPower(m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetScanPower(sRace) + 1, sRace);
 					}
 				}
 
@@ -5951,8 +5951,8 @@ void CBotf2Doc::CalcShipEffects()
 				short stealthPower = ship->GetStealthPower() * 20;
 				if (ship->GetStealthPower() > 3 && ship->GetCloak() == FALSE)
 					stealthPower = 3 * 20;
-				if (stealthPower < m_Sector[p.x][p.y].GetNeededScanPower(sRace))
-					m_Sector[p.x][p.y].SetNeededScanPower(stealthPower, sRace);
+				if (stealthPower < m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetNeededScanPower(sRace))
+					m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetNeededScanPower(stealthPower, sRace);
 
 				// Schiffunterstützungkosten dem jeweiligen Imperium hinzufügen.
 				if (pMajor)
@@ -5960,7 +5960,7 @@ void CBotf2Doc::CalcShipEffects()
 
 				// die Schiffe in der Flotte beim modifizieren der Schiffslisten der einzelnen Imperien beachten
 				if (pMajor)
-					pMajor->GetShipHistory()->ModifyShip(ship, m_Sector[p.x][p.y].GetName(TRUE));
+					pMajor->GetShipHistory()->ModifyShip(ship, m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetName(TRUE));
 
 				// Erfahrunspunkte der Schiffe anpassen
 				this->CalcShipExp(ship);
@@ -5973,15 +5973,15 @@ void CBotf2Doc::CalcShipEffects()
 		// bestehen
 		if (m_ShipArray[y].GetShipType() == SHIP_TYPE::OUTPOST || m_ShipArray[y].GetShipType() == SHIP_TYPE::STARBASE)
 		{
-			m_Sector[p.x][p.y].SetShipPort(TRUE, sRace);
+			m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetShipPort(TRUE, sRace);
 			if (m_ShipArray[y].GetShipType() == SHIP_TYPE::OUTPOST)
-				m_Sector[p.x][p.y].SetOutpost(TRUE, sRace);
+				m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetOutpost(TRUE, sRace);
 			else
-				m_Sector[p.x][p.y].SetStarbase(TRUE, sRace);
+				m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetStarbase(TRUE, sRace);
 		}
 		// Dem Sektor bekanntgeben, das in ihm ein Schiff ist
 		if (m_ShipArray[y].GetShipType() != SHIP_TYPE::OUTPOST && m_ShipArray[y].GetShipType() != SHIP_TYPE::STARBASE)
-			m_Sector[p.x][p.y].SetOwnerOfShip(TRUE, sRace);
+			m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetOwnerOfShip(TRUE, sRace);
 	}
 }
 
@@ -6009,12 +6009,12 @@ void CBotf2Doc::CalcContactNewRaces()
 			continue;
 
 		// Wenn dieser Sektor einer anderen Majorrace gehört, wir die noch nicht kannten, dann bekanntgeben
-		if (pMajor != NULL && m_Sector[p.x][p.y].GetOwnerOfSector() != "" && m_Sector[p.x][p.y].GetOwnerOfSector() != sRace)
+		if (pMajor != NULL && m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSector() != "" && m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSector() != sRace)
 		{
 			// normale Zugehörigkeit
-			if (pMajor->IsRaceContacted(m_Sector[p.x][p.y].GetOwnerOfSector()) == false)
+			if (pMajor->IsRaceContacted(m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSector()) == false)
 			{
-				CRace* pSectorOwner = m_pRaceCtrl->GetRace(m_Sector[p.x][p.y].GetOwnerOfSector());
+				CRace* pSectorOwner = m_pRaceCtrl->GetRace(m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSector());
 				if (pSectorOwner)
 				{
 					// kann der Sektorbesitzer andere Rassen kennenlernen?
@@ -6096,9 +6096,9 @@ void CBotf2Doc::CalcContactNewRaces()
 			}
 
 			// in dem Sektor lebt eine Minorrace, der der Sektor aber nicht mehr gehört, z.B. durch Mitgliedschaft
-			if (m_Sector[p.x][p.y].GetMinorRace())
+			if (m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetMinorRace())
 			{
-				CMinor* pMinor = m_pRaceCtrl->GetMinorRace(m_Sector[p.x][p.y].GetName());
+				CMinor* pMinor = m_pRaceCtrl->GetMinorRace(m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetName());
 				assert(pMinor);
 				// kann der Sektorbesitzer andere Rassen kennenlernen?
 				if (pMinor->HasSpecialAbility(SPECIAL_NO_DIPLOMACY))
@@ -6141,7 +6141,7 @@ void CBotf2Doc::CalcContactNewRaces()
 			// wenn zwei Schiffe einer Rasse in diesem Sektor stationiert sind, so können sich die Besitzer auch kennenlernen
 			for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 				if (pMajor->GetRaceID() != it->first)
-					if (m_Sector[p.x][p.y].GetOwnerOfShip(it->first) == TRUE)
+					if (m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfShip(it->first) == TRUE)
 						if (pMajor->IsRaceContacted(it->first) == false)
 						{
 							CMajor* pOtherMajor = it->second;
@@ -6185,12 +6185,12 @@ void CBotf2Doc::CalcContactNewRaces()
 		else if (pMinor != NULL)
 		{
 			// auf einen Sektor einer Majorrace geflogen
-			if (m_Sector[p.x][p.y].GetOwnerOfSector() != "" && m_Sector[p.x][p.y].GetOwnerOfSector() != sRace)
+			if (m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSector() != "" && m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSector() != sRace)
 			{
 				// normale Zugehörigkeit
-				if (pMinor->IsRaceContacted(m_Sector[p.x][p.y].GetOwnerOfSector()) == false)
+				if (pMinor->IsRaceContacted(m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSector()) == false)
 				{
-					CMajor* pSectorOwner = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(m_Sector[p.x][p.y].GetOwnerOfSector()));
+					CMajor* pSectorOwner = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSector()));
 					if (pSectorOwner)
 					{
 						// kann der Sektorbesitzer andere Rassen kennenlernen?
@@ -6227,7 +6227,7 @@ void CBotf2Doc::CalcContactNewRaces()
 			// treffen mit einem Schiff eines anderen Majors
 			// wenn zwei Schiffe einer Rasse in diesem Sektor stationiert sind, so können sich die Besitzer auch kennenlernen
 			for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
-				if (m_Sector[p.x][p.y].GetOwnerOfShip(it->first) == TRUE)
+				if (m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfShip(it->first) == TRUE)
 					if (pMinor->IsRaceContacted(it->first) == false)
 					{
 						CMajor* pOtherMajor = it->second;
@@ -6368,7 +6368,7 @@ void CBotf2Doc::CalcEndDataForNextRound()
 				{
 					// Alle noch "lebenden" Schiffe aus der Schiffshistory ebenfalls als zerstört ansehen
 					pMajor->GetShipHistory()->ModifyShip(&m_ShipArray[j],
-								m_Sector[m_ShipArray[j].GetKO().x][m_ShipArray[j].GetKO().y].GetName(TRUE), m_iRound,
+								m_Sectors.at(m_ShipArray[j].GetKO().x+(m_ShipArray[j].GetKO().y)*STARMAP_SECTORS_HCOUNT).GetName(TRUE), m_iRound,
 								CResourceManager::GetString("UNKNOWN"), CResourceManager::GetString("DESTROYED"));
 					m_ShipArray.RemoveAt(j--);
 				}
@@ -6378,21 +6378,21 @@ void CBotf2Doc::CalcEndDataForNextRound()
 			for (int y = 0 ; y < STARMAP_SECTORS_VCOUNT; y++)
 				for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
 				{
-					if (m_Sector[x][y].GetOwnerOfSector() == pMajor->GetRaceID())
+					if (m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSector() == pMajor->GetRaceID())
 					{
-						m_Sector[x][y].SetOwnerOfSector("");
-						m_System[x][y].SetOwnerOfSystem("");
-						m_Sector[x][y].SetOwned(false);
-						m_Sector[x][y].SetTakenSector(false);
+						m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).SetOwnerOfSector("");
+						m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).SetOwnerOfSystem("");
+						m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).SetOwned(false);
+						m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).SetTakenSector(false);
 					}
-					if (m_Sector[x][y].GetColonyOwner() == pMajor->GetRaceID())
-						m_Sector[x][y].SetColonyOwner("");
+					if (m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetColonyOwner() == pMajor->GetRaceID())
+						m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).SetColonyOwner("");
 					// in allen Sektoren alle Schiffe aus den Sektoren nehmen
-					m_Sector[x][y].SetIsStationBuilding(false, pMajor->GetRaceID());
-					m_Sector[x][y].SetOutpost(false, pMajor->GetRaceID());
-					m_Sector[x][y].SetOwnerOfShip(false, pMajor->GetRaceID());
-					m_Sector[x][y].SetShipPort(false, pMajor->GetRaceID());
-					m_Sector[x][y].SetStarbase(false, pMajor->GetRaceID());
+					m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).SetIsStationBuilding(false, pMajor->GetRaceID());
+					m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).SetOutpost(false, pMajor->GetRaceID());
+					m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).SetOwnerOfShip(false, pMajor->GetRaceID());
+					m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).SetShipPort(false, pMajor->GetRaceID());
+					m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).SetStarbase(false, pMajor->GetRaceID());
 				}
 
 			// Wenn es ein menschlicher Spieler ist, so bekommt er den Eventscreen für die Niederlage angezeigt
@@ -6450,29 +6450,29 @@ void CBotf2Doc::CalcEndDataForNextRound()
 				// Befindet sich ein Außenposten oder ein System in einem der umliegenden Sektoren, so bekommt der
 				// Sektor einen Besitzerpunkt. Bei einer Sternbasis sind es sogar zwei Besitzerpunkte.
 				BYTE ownerPoints = 0;
-				if (m_System[x][y].GetOwnerOfSystem() == sID)
+				if (m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem() == sID)
 					ownerPoints += 1;
-				if (m_Sector[x][y].GetOutpost(sID) == TRUE)
+				if (m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOutpost(sID) == TRUE)
 					ownerPoints += 1;
-				if (m_Sector[x][y].GetStarbase(sID) == TRUE)
+				if (m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetStarbase(sID) == TRUE)
 					ownerPoints += 2;
 				if (ownerPoints > 0)
 				{
 					for (int j = -1; j <= 1; j++)
 						for (int i = -1; i <= 1; i++)
 							if ((y+j < STARMAP_SECTORS_VCOUNT && y+j > -1) && (x+i < STARMAP_SECTORS_HCOUNT && x+i > -1))
-									m_Sector[x+i][y+j].AddOwnerPoints(ownerPoints, sID);
+									m_Sectors.at(x+i+(y+j)*STARMAP_SECTORS_HCOUNT).AddOwnerPoints(ownerPoints, sID);
 
 					// in vertikaler und horizontaler Ausrichtung gibt es sogar 2 Felder vom Sector entfernt noch
 					// Besitzerpunkte
 					if (x-2 >= 0)
-						m_Sector[x-2][y].AddOwnerPoints(ownerPoints, sID);
+						m_Sectors.at(x-2+(y)*STARMAP_SECTORS_HCOUNT).AddOwnerPoints(ownerPoints, sID);
 					if (x+2 < STARMAP_SECTORS_HCOUNT)
-						m_Sector[x+2][y].AddOwnerPoints(ownerPoints, sID);
+						m_Sectors.at(x+2+(y)*STARMAP_SECTORS_HCOUNT).AddOwnerPoints(ownerPoints, sID);
 					if (y-2 >= 0)
-						m_Sector[x][y-2].AddOwnerPoints(ownerPoints, sID);
+						m_Sectors.at(x+(y-2)*STARMAP_SECTORS_HCOUNT).AddOwnerPoints(ownerPoints, sID);
 					if (y+2 < STARMAP_SECTORS_VCOUNT)
-						m_Sector[x][y+2].AddOwnerPoints(ownerPoints, sID);
+						m_Sectors.at(x+(y+2)*STARMAP_SECTORS_HCOUNT).AddOwnerPoints(ownerPoints, sID);
 				}
 			}
 		}
@@ -6482,30 +6482,30 @@ void CBotf2Doc::CalcEndDataForNextRound()
 	for (int y = 0 ; y < STARMAP_SECTORS_VCOUNT; y++)
 		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
 		{
-			m_Sector[x][y].CalculateOwner(m_System[x][y].GetOwnerOfSystem());
-			if (m_Sector[x][y].GetSunSystem() == TRUE && m_System[x][y].GetOwnerOfSystem() != "")
+			m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).CalculateOwner(m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem());
+			if (m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetSunSystem() == TRUE && m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem() != "")
 			{
-				CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(m_System[x][y].GetOwnerOfSystem()));
+				CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem()));
 				if (!pMajor || pMajor->GetType() != MAJOR)
 					continue;
 
 				// baubare Gebäude, Schiffe und Truppen berechnen
-				m_System[x][y].CalculateBuildableBuildings(&m_Sector[x][y], &BuildingInfo, pMajor, &m_GlobalBuildings);
-				m_System[x][y].CalculateBuildableShips(this, CPoint(x,y));
-				m_System[x][y].CalculateBuildableTroops(&m_TroopInfo, pMajor->GetEmpire()->GetResearch());
-				m_System[x][y].CalculateVariables(&this->BuildingInfo, pMajor->GetEmpire()->GetResearch()->GetResearchInfo(), m_Sector[x][y].GetPlanets(), pMajor, CTrade::GetMonopolOwner());
+				m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).CalculateBuildableBuildings(&m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT), &BuildingInfo, pMajor, &m_GlobalBuildings);
+				m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).CalculateBuildableShips(this, CPoint(x,y));
+				m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).CalculateBuildableTroops(&m_TroopInfo, pMajor->GetEmpire()->GetResearch());
+				m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).CalculateVariables(&this->BuildingInfo, pMajor->GetEmpire()->GetResearch()->GetResearchInfo(), m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetPlanets(), pMajor, CTrade::GetMonopolOwner());
 
 				// alle produzierten FP und SP der Imperien berechnen und zuweisen
 				int currentPoints;
-				currentPoints = m_System[x][y].GetProduction()->GetResearchProd();
+				currentPoints = m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetResearchProd();
 				pMajor->GetEmpire()->AddFP(currentPoints);
-				currentPoints = m_System[x][y].GetProduction()->GetSecurityProd();
+				currentPoints = m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetSecurityProd();
 				pMajor->GetEmpire()->AddSP(currentPoints);
 			}
 
 			// Gibt es eine Anomalie im Sektor, so vielleicht die Scanpower niedriger setzen
-			if (m_Sector[x][y].GetAnomaly())
-				m_Sector[x][y].GetAnomaly()->ReduceScanPower(CPoint(x,y));
+			if (m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetAnomaly())
+				m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetAnomaly()->ReduceScanPower(CPoint(x,y));
 		}
 
 	// Nachdem die Besitzerpunkte der Sektoren berechnet wurden kann versucht werden neue Rassen kennenzuelernen

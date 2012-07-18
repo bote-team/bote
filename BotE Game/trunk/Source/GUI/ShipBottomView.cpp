@@ -1169,7 +1169,7 @@ int CShipBottomView::GetMouseOverShip(CPoint& pt)
 				else
 					stealthPower = pDoc->m_ShipArray[i].GetFleet()->GetFleetStealthPower(&pDoc->m_ShipArray[i]);
 
-				if (pDoc->m_ShipArray[i].GetOwnerOfShip() != pMajor->GetRaceID() && pDoc->m_Sector[pDoc->GetKO().x][pDoc->GetKO().y].GetScanPower(pMajor->GetRaceID()) <= stealthPower)
+				if (pDoc->m_ShipArray[i].GetOwnerOfShip() != pMajor->GetRaceID() && pDoc->m_Sectors.at(pDoc->GetKO().x+(pDoc->GetKO().y)*STARMAP_SECTORS_HCOUNT).GetScanPower(pMajor->GetRaceID()) <= stealthPower)
 					continue;
 				if (counter < m_iPage*9 && counter >= (m_iPage-1)*9)
 				{

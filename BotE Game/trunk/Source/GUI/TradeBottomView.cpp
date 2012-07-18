@@ -204,11 +204,11 @@ void CTradeBottomView::OnDraw(CDC* dc)
 	g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(80, 160, 120, 30), &fontFormat, &fontBrush);
 
 	// Wenn das System blockiert wird, ein OverlayBanner über die Ansicht gelegt.
-	if (pDoc->m_System[pDoc->GetKO().x][pDoc->GetKO().y].GetBlockade() > NULL)
+	if (pDoc->m_Systems.at(pDoc->GetKO().x+(pDoc->GetKO().y)*STARMAP_SECTORS_HCOUNT).GetBlockade() > NULL)
 	{
 		CFontLoader::CreateGDIFont(pMajor, 3, fontName, fontSize);
 		CSize viewSize(m_TotalSize.cx - 160, m_TotalSize.cy - 120);
-		s.Format("%d", pDoc->m_System[pDoc->GetKO().x][pDoc->GetKO().y].GetBlockade());
+		s.Format("%d", pDoc->m_Systems.at(pDoc->GetKO().x+(pDoc->GetKO().y)*STARMAP_SECTORS_HCOUNT).GetBlockade());
 		COverlayBanner* banner = new COverlayBanner(CPoint(80,60), viewSize, CResourceManager::GetString("SYSTEM_IS_BLOCKED", FALSE, s), RGB(200,0,0));
 		banner->SetBorderWidth(1);
 		Gdiplus::Font font(CComBSTR(fontName), fontSize);

@@ -332,9 +332,9 @@ void CSystemMenuView::DrawBuildMenue(Graphics* g)
 
 	// Wenn man keine Schiffe zur Auswahl hat oder keine Truppen bauen kann, dann wird wieder auf das normale
 	// Gebäudebaumenü umgeschaltet
-	if (m_iWhichSubMenu == 1 && pDoc->m_System[p.x][p.y].GetBuildableShips()->GetSize() == 0)
+	if (m_iWhichSubMenu == 1 && pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetBuildableShips()->GetSize() == 0)
 		m_iWhichSubMenu = 0;
-	else if (m_iWhichSubMenu == 2 && pDoc->m_System[p.x][p.y].GetBuildableTroops()->GetSize() == 0)
+	else if (m_iWhichSubMenu == 2 && pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetBuildableTroops()->GetSize() == 0)
 		m_iWhichSubMenu = 0;
 
 	// hier Anzeige der baubaren Gebäude und Upgrades
@@ -488,7 +488,7 @@ void CSystemMenuView::DrawBuildMenue(Graphics* g)
 			g->DrawImage(graphic, px[i].x, px[i].y, 20, 16);
 			graphic = NULL;
 		}
-		s.Format("%d/%d", pDoc->m_System[p.x][p.y].GetWorker(nWorker), pDoc->m_System[p.x][p.y].GetNumberOfWorkbuildings(nWorker, 0, NULL));
+		s.Format("%d/%d", pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetWorker(nWorker), pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetNumberOfWorkbuildings(nWorker, 0, NULL));
 		fontFormat.SetAlignment(StringAlignmentNear);
 		g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(30 + px[i].x, px[i].y, 70, 25), &fontFormat, &fontBrush);
 
@@ -505,13 +505,13 @@ void CSystemMenuView::DrawBuildMenue(Graphics* g)
 		{
 			// also ein Gebäude oder Gebäudeupdate
 			if (m_vBuildlist[m_iClickedOn] < 10000)
-				pDoc->m_System[pDoc->GetKO().x][pDoc->GetKO().y].GetAssemblyList()->CalculateNeededRessources(&pDoc->GetBuildingInfo(RunningNumber),0,0, pDoc->m_System[pDoc->GetKO().x][pDoc->GetKO().y].GetAllBuildings(), m_vBuildlist[m_iClickedOn], pMajor->GetEmpire()->GetResearch()->GetResearchInfo());
+				pDoc->m_Systems.at(pDoc->GetKO().x+(pDoc->GetKO().y)*STARMAP_SECTORS_HCOUNT).GetAssemblyList()->CalculateNeededRessources(&pDoc->GetBuildingInfo(RunningNumber),0,0, pDoc->m_Systems.at(pDoc->GetKO().x+(pDoc->GetKO().y)*STARMAP_SECTORS_HCOUNT).GetAllBuildings(), m_vBuildlist[m_iClickedOn], pMajor->GetEmpire()->GetResearch()->GetResearchInfo());
 			// also ein Schiff
-			else if (m_vBuildlist[m_iClickedOn] < 20000 && pDoc->m_System[p.x][p.y].GetBuildableShips()->GetSize() > 0)
-				pDoc->m_System[pDoc->GetKO().x][pDoc->GetKO().y].GetAssemblyList()->CalculateNeededRessources(0,&pDoc->m_ShipInfoArray.GetAt(m_vBuildlist[m_iClickedOn] - 10000), 0, pDoc->m_System[pDoc->GetKO().x][pDoc->GetKO().y].GetAllBuildings(), m_vBuildlist[m_iClickedOn], pMajor->GetEmpire()->GetResearch()->GetResearchInfo());
+			else if (m_vBuildlist[m_iClickedOn] < 20000 && pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetBuildableShips()->GetSize() > 0)
+				pDoc->m_Systems.at(pDoc->GetKO().x+(pDoc->GetKO().y)*STARMAP_SECTORS_HCOUNT).GetAssemblyList()->CalculateNeededRessources(0,&pDoc->m_ShipInfoArray.GetAt(m_vBuildlist[m_iClickedOn] - 10000), 0, pDoc->m_Systems.at(pDoc->GetKO().x+(pDoc->GetKO().y)*STARMAP_SECTORS_HCOUNT).GetAllBuildings(), m_vBuildlist[m_iClickedOn], pMajor->GetEmpire()->GetResearch()->GetResearchInfo());
 			// also eine Truppe
-			else if (pDoc->m_System[p.x][p.y].GetBuildableTroops()->GetSize() > 0)
-				pDoc->m_System[p.x][p.y].GetAssemblyList()->CalculateNeededRessources(0,0,&pDoc->m_TroopInfo.GetAt(m_vBuildlist[m_iClickedOn] - 20000), pDoc->m_System[pDoc->GetKO().x][pDoc->GetKO().y].GetAllBuildings(), m_vBuildlist[m_iClickedOn], pMajor->GetEmpire()->GetResearch()->GetResearchInfo());
+			else if (pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetBuildableTroops()->GetSize() > 0)
+				pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetAssemblyList()->CalculateNeededRessources(0,0,&pDoc->m_TroopInfo.GetAt(m_vBuildlist[m_iClickedOn] - 20000), pDoc->m_Systems.at(pDoc->GetKO().x+(pDoc->GetKO().y)*STARMAP_SECTORS_HCOUNT).GetAllBuildings(), m_vBuildlist[m_iClickedOn], pMajor->GetEmpire()->GetResearch()->GetResearchInfo());
 
 			// Anzeige der ganzen Werte
 			s = CResourceManager::GetString("BUILD_COSTS");
@@ -553,9 +553,9 @@ void CSystemMenuView::DrawBuildMenue(Graphics* g)
 		{
 			if (m_iWhichSubMenu == 0)		// im Gebäudeuntermenü
 				s = pDoc->GetBuildingDescription(RunningNumber);
-			else if (m_iWhichSubMenu == 1 && pDoc->m_System[p.x][p.y].GetBuildableShips()->GetSize() > 0)	// im Schiffsuntermenü
+			else if (m_iWhichSubMenu == 1 && pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetBuildableShips()->GetSize() > 0)	// im Schiffsuntermenü
 				s = pDoc->m_ShipInfoArray.GetAt(RunningNumber-10000).GetShipDescription();
-			else if (m_iWhichSubMenu == 2 && pDoc->m_System[p.x][p.y].GetBuildableTroops()->GetSize() > 0)	// im Kasernenuntermenü
+			else if (m_iWhichSubMenu == 2 && pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetBuildableTroops()->GetSize() > 0)	// im Kasernenuntermenü
 				s = pDoc->m_TroopInfo.GetAt(RunningNumber-20000).GetDescription();
 			fontFormat.SetAlignment(StringAlignmentNear);
 			fontFormat.SetLineAlignment(StringAlignmentNear);
@@ -572,11 +572,11 @@ void CSystemMenuView::DrawBuildMenue(Graphics* g)
 
 			if (m_iWhichSubMenu == 0)
 				DrawBuildingProduction(g);
-			else if (m_iWhichSubMenu == 1 && pDoc->m_System[p.x][p.y].GetBuildableShips()->GetSize() > 0)
+			else if (m_iWhichSubMenu == 1 && pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetBuildableShips()->GetSize() > 0)
 			{
 				pDoc->m_ShipInfoArray.GetAt(RunningNumber-10000).DrawShipInformation(g, BuildingDescription, &(Gdiplus::Font(CComBSTR(fontName), fontSize)), oldColor, color, pMajor->GetEmpire()->GetResearch());
 			}
-			else if (m_iWhichSubMenu == 2 && pDoc->m_System[p.x][p.y].GetBuildableTroops()->GetSize() > 0)
+			else if (m_iWhichSubMenu == 2 && pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetBuildableTroops()->GetSize() > 0)
 			{
 				// Anzeige der Truppeneigenschaften
 				fontBrush.SetColor(color);
@@ -613,9 +613,9 @@ void CSystemMenuView::DrawBuildMenue(Graphics* g)
 		CString file;
 		if (m_iWhichSubMenu == 0)		// sind im Gebäudeuntermenü
 			file.Format("Buildings\\%s",pDoc->GetBuildingInfo(RunningNumber).GetGraphikFileName());
-		else if (m_iWhichSubMenu == 1 && pDoc->m_System[p.x][p.y].GetBuildableShips()->GetSize() > 0)	// sind im Schiffsuntermenü
+		else if (m_iWhichSubMenu == 1 && pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetBuildableShips()->GetSize() > 0)	// sind im Schiffsuntermenü
 			file.Format("Ships\\%s.bop",pDoc->m_ShipInfoArray.GetAt(RunningNumber-10000).GetShipClass());
-		else if (m_iWhichSubMenu == 2 && pDoc->m_System[p.x][p.y].GetBuildableTroops()->GetSize() > 0)	// sind im Kasernenuntermenü
+		else if (m_iWhichSubMenu == 2 && pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetBuildableTroops()->GetSize() > 0)	// sind im Kasernenuntermenü
 			file.Format("Troops\\%s",pDoc->m_TroopInfo.GetAt(RunningNumber-20000).GetGraphicfile());
 		graphic = NULL;
 		graphic = pDoc->GetGraphicPool()->GetGDIGraphic(file);
@@ -623,9 +623,9 @@ void CSystemMenuView::DrawBuildMenue(Graphics* g)
 		{
 			if (m_iWhichSubMenu == 0)		// sind im Gebäudeuntermenü
 				graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Buildings\\ImageMissing.bop");
-			else if (m_iWhichSubMenu == 1 && pDoc->m_System[p.x][p.y].GetBuildableShips()->GetSize() > 0)	// sind im Schiffsuntermenü
+			else if (m_iWhichSubMenu == 1 && pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetBuildableShips()->GetSize() > 0)	// sind im Schiffsuntermenü
 				graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Ships\\ImageMissing.bop");
-			else if (m_iWhichSubMenu == 2 && pDoc->m_System[p.x][p.y].GetBuildableTroops()->GetSize() > 0)	// sind im Kasernenuntermenü
+			else if (m_iWhichSubMenu == 2 && pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetBuildableTroops()->GetSize() > 0)	// sind im Kasernenuntermenü
 				graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Troops\\ImageMissing.bop");
 		}
 
@@ -741,7 +741,7 @@ void CSystemMenuView::DrawBuildMenue(Graphics* g)
 	if (graphic)
 		g->DrawImage(graphic, 460, 510, 120, 30);
 	s = CResourceManager::GetString("BTN_DOCKYARD");
-	if (pDoc->m_System[pDoc->GetKO().x][pDoc->GetKO().y].GetBuildableShips()->GetSize() != 0)//Schrift ausgrauen wenn keine Schiffe baubar/keine Schiffswerft
+	if (pDoc->m_Systems.at(pDoc->GetKO().x+(pDoc->GetKO().y)*STARMAP_SECTORS_HCOUNT).GetBuildableShips()->GetSize() != 0)//Schrift ausgrauen wenn keine Schiffe baubar/keine Schiffswerft
 		g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(460,510,120,30), &fontFormat, &btnBrush);
 	else
 	{
@@ -755,7 +755,7 @@ void CSystemMenuView::DrawBuildMenue(Graphics* g)
 	if (graphic)
 		g->DrawImage(graphic, 595, 510, 120, 30);
 	s = CResourceManager::GetString("BTN_BARRACK");
-	if (pDoc->m_System[pDoc->GetKO().x][pDoc->GetKO().y].GetBuildableTroops()->GetSize() != 0) //Schrift ausgrauen wenn keine Truppen baubar/keine Kaserne
+	if (pDoc->m_Systems.at(pDoc->GetKO().x+(pDoc->GetKO().y)*STARMAP_SECTORS_HCOUNT).GetBuildableTroops()->GetSize() != 0) //Schrift ausgrauen wenn keine Truppen baubar/keine Kaserne
 		g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(595,510,120,30), &fontFormat, &btnBrush);
 	else
 	{
@@ -1151,7 +1151,7 @@ void CSystemMenuView::DrawWorkersMenue(Graphics* g)
 
 	// freie Arbeiter über dem Balken zeichnen
 	fontBrush.SetColor(normalColor);
-	s.Format("%s %d/%d",CResourceManager::GetString("FREE_WORKERS"), pDoc->m_System[p.x][p.y].GetWorker(WORKER::FREE_WORKER), pDoc->m_System[p.x][p.y].GetWorker(WORKER::ALL_WORKER));
+	s.Format("%s %d/%d",CResourceManager::GetString("FREE_WORKERS"), pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetWorker(WORKER::FREE_WORKER), pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetWorker(WORKER::ALL_WORKER));
 	fontFormat.SetAlignment(StringAlignmentNear);
 	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(220,575,380,25), &fontFormat, &fontBrush);
 
@@ -1218,7 +1218,7 @@ void CSystemMenuView::DrawBuildingsOverviewMenue(Graphics* g)
 	short spaceY = 0;
 	while (i < NumberOfBuildings)
 	{
-		USHORT curRunningNumber = pDoc->m_System[p.x][p.y].GetAllBuildings()->GetAt(i).GetRunningNumber();
+		USHORT curRunningNumber = pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetAllBuildings()->GetAt(i).GetRunningNumber();
 		if (curRunningNumber > minRunningNumber)
 		{
 			BuildingOverviewStruct bos;
@@ -1282,7 +1282,7 @@ void CSystemMenuView::DrawBuildingsOverviewMenue(Graphics* g)
 				g->DrawImage(graphic, r.left+5, r.top+25, 130, 97);
 
 			//Gebäudenamen und Anzahl in den Rechtecken anzeigen
-			s.Format("%i x %s",pDoc->m_System[p.x][p.y].GetNumberOfBuilding(m_BuildingOverview.GetAt(i).runningNumber),
+			s.Format("%i x %s",pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetNumberOfBuilding(m_BuildingOverview.GetAt(i).runningNumber),
 				pDoc->GetBuildingName(m_BuildingOverview.GetAt(i).runningNumber));
 			fontFormat.SetAlignment(StringAlignmentNear);
 			fontFormat.SetLineAlignment(StringAlignmentNear);
@@ -1292,11 +1292,11 @@ void CSystemMenuView::DrawBuildingsOverviewMenue(Graphics* g)
 
 			// Gebäudeproduktion zeichnen
 			s = pDoc->GetBuildingInfo(m_BuildingOverview.GetAt(i).runningNumber).GetProductionAsString
-				(pDoc->m_System[p.x][p.y].GetNumberOfBuilding(m_BuildingOverview.GetAt(i).runningNumber));
+				(pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetNumberOfBuilding(m_BuildingOverview.GetAt(i).runningNumber));
 			SolidBrush markBrush(textMark);
 			g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.left+140,r.top+25,r.Width()-140,r.Height()-5), &fontFormat, &markBrush);
 			// Anzahl der abzureißenden Gebäude zeichnen
-			unsigned short dn = pDoc->m_System[p.x][p.y].GetBuildingDestroy(m_BuildingOverview.GetAt(i).runningNumber);
+			unsigned short dn = pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetBuildingDestroy(m_BuildingOverview.GetAt(i).runningNumber);
 			if (dn > 0)
 			{
 				s.Format("%s: %i",CResourceManager::GetString("TALON"), dn);
@@ -1310,7 +1310,7 @@ void CSystemMenuView::DrawBuildingsOverviewMenue(Graphics* g)
 	}
 
 	// Wenn eine 75%ige Blockade erreicht wurde, dann ist ein Abriss nicht mehr möglich
-	if (pDoc->m_System[p.x][p.y].GetBlockade() > NULL)
+	if (pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetBlockade() > NULL)
 	{
 		COverlayBanner *banner = new COverlayBanner(CPoint(250,250), CSize(560,150), CResourceManager::GetString("ONLY_PARTIAL_BUILDINGSCRAP"), RGB(200,0,0));
 		banner->Draw(g, &Gdiplus::Font(CComBSTR(fontName), fontSize));
@@ -1382,7 +1382,7 @@ void CSystemMenuView::DrawEnergyMenue(Gdiplus::Graphics *g)
 		{
 			ENERGYSTRUCT es;
 			es.index = i;
-			es.status = pDoc->m_System[p.x][p.y].GetAllBuildings()->GetAt(i).GetIsBuildingOnline();
+			es.status = pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetAllBuildings()->GetAt(i).GetIsBuildingOnline();
 			m_EnergyList.Add(es);
 		}
 	}
@@ -1549,7 +1549,7 @@ void CSystemMenuView::DrawSystemTradeMenue(Graphics* g)
 	g->DrawString(CComBSTR(CResourceManager::GetString("CRYSTAL")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(538,400,538,60), &fontFormat, &markBrush);
 	g->DrawString(CComBSTR(CResourceManager::GetString("IRIDIUM")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(538,460,538,60), &fontFormat, &markBrush);
 
-	USHORT maxTradeRoutes = (USHORT)(pDoc->m_System[p.x][p.y].GetHabitants() / TRADEROUTEHAB) + pDoc->m_System[p.x][p.y].GetProduction()->GetAddedTradeRoutes();
+	USHORT maxTradeRoutes = (USHORT)(pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetHabitants() / TRADEROUTEHAB) + pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetAddedTradeRoutes();
 	short addResRoute = 1;
 	///// HIER DIE BONI DURCH SPEZIALFORSCHUNG //////
 	// Hier die Boni durch die Uniqueforschung "Handel" -> mindestens eine Handelsroute
@@ -1564,15 +1564,15 @@ void CSystemMenuView::DrawSystemTradeMenue(Graphics* g)
 	// Hier die Boni durch die Uniqueforschung "Lager und Transport" -> eine Ressourcenroute mehr
 	if (pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(RESEARCH_COMPLEX::STORAGE_AND_TRANSPORT)->GetFieldStatus(3) == RESEARCH_STATUS::RESEARCHED)
 		addResRoute += pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(RESEARCH_COMPLEX::STORAGE_AND_TRANSPORT)->GetBonus(3);
-	USHORT maxResourceRoutes = (USHORT)(pDoc->m_System[p.x][p.y].GetHabitants() / TRADEROUTEHAB) + pDoc->m_System[p.x][p.y].GetProduction()->GetAddedTradeRoutes() + addResRoute;
+	USHORT maxResourceRoutes = (USHORT)(pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetHabitants() / TRADEROUTEHAB) + pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetAddedTradeRoutes() + addResRoute;
 	s2.Format("%d", maxResourceRoutes);
 	fontFormat.SetAlignment(StringAlignmentNear);
 	fontFormat.SetLineAlignment(StringAlignmentNear);
 	fontFormat.SetFormatFlags(!StringFormatFlagsNoWrap);
 	g->DrawString(CComBSTR(CResourceManager::GetString("SYSTEM_SUPPORTS_ROUTES",0,s,s2)), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(60,140,440,40), &fontFormat, &fontBrush);
 
-	s.Format("%d",pDoc->m_System[p.x][p.y].GetTradeRoutes()->GetSize());
-	s2.Format("%d",pDoc->m_System[p.x][p.y].GetResourceRoutes()->GetSize());
+	s.Format("%d",pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetTradeRoutes()->GetSize());
+	s2.Format("%d",pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetResourceRoutes()->GetSize());
 	g->DrawString(CComBSTR(CResourceManager::GetString("SYSTEM_HAS_ROUTES",0,s,s2)), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(60,180,440,40), &fontFormat, &fontBrush);
 
 	fontFormat.SetLineAlignment(StringAlignmentCenter);
@@ -1582,26 +1582,26 @@ void CSystemMenuView::DrawSystemTradeMenue(Graphics* g)
 	fontFormat.SetTrimming(StringTrimmingEllipsisCharacter);
 	// Anzeige von max. NOTRIL Handelsrouten
 	// prüfen, dass man nicht auf einer zu hohen Seite ist, wenn zu wenig Handelsrouten vorhanden sind
-	if (m_iSTPage * NOTRIL >= pDoc->m_System[p.x][p.y].GetTradeRoutes()->GetSize())
+	if (m_iSTPage * NOTRIL >= pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetTradeRoutes()->GetSize())
 		m_iSTPage = 0;
 	int numberOfTradeRoutes = 0;
 	// zuerst die Handelsrouten anzeigen
-	for (int i = m_iSTPage * NOTRIL; i < pDoc->m_System[p.x][p.y].GetTradeRoutes()->GetSize(); i++)
+	for (int i = m_iSTPage * NOTRIL; i < pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetTradeRoutes()->GetSize(); i++)
 	{
-		CPoint dest = pDoc->m_System[p.x][p.y].GetTradeRoutes()->GetAt(i).GetDestKO();
-		if (pDoc->GetSector(dest).GetKnown(pDoc->m_System[p.x][p.y].GetOwnerOfSystem()) == TRUE)
+		CPoint dest = pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetTradeRoutes()->GetAt(i).GetDestKO();
+		if (pDoc->GetSector(dest).GetKnown(pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem()) == TRUE)
 			s = pDoc->GetSector(dest).GetName();
 		else
 			s.Format("%s %c%i",CResourceManager::GetString("SECTOR"),(char)(dest.y+97),dest.x+1);
 		g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(70,260+i*30,125,25), &fontFormat, &fontBrush);
 
 		// Gewinn inkl. der Boni auf Handelsrouten ohne Boni auf Credits und Boni durch Moral
-		USHORT lat = pDoc->m_System[p.x][p.y].GetTradeRoutes()->GetAt(i).GetCredits(pDoc->m_System[p.x][p.y].GetProduction()->GetIncomeOnTradeRoutes());
+		USHORT lat = pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetTradeRoutes()->GetAt(i).GetCredits(pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetIncomeOnTradeRoutes());
 		s.Format("%s: %d %s",CResourceManager::GetString("PROFIT"), lat, CResourceManager::GetString("CREDITS"));
 		g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(200,260+i*30,170,25), &fontFormat, &fontBrush);
 
 		// verbleibende Dauer der Handelsroute anzeigen
-		short duration = pDoc->m_System[p.x][p.y].GetTradeRoutes()->GetAt(i).GetDuration();
+		short duration = pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetTradeRoutes()->GetAt(i).GetDuration();
 		if (duration < 0)
 			duration = 6-abs(duration);
 		if (duration > 1)
@@ -1614,13 +1614,13 @@ void CSystemMenuView::DrawSystemTradeMenue(Graphics* g)
 			break;
 	}
 	// jetzt die Ressourcenrouten anzeigen
-	for (int i = 0; i < pDoc->m_System[p.x][p.y].GetResourceRoutes()->GetSize(); i++)
+	for (int i = 0; i < pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetResourceRoutes()->GetSize(); i++)
 	{
 		int j = i + numberOfTradeRoutes;
-		CPoint dest = pDoc->m_System[p.x][p.y].GetResourceRoutes()->GetAt(i).GetKO();
+		CPoint dest = pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetResourceRoutes()->GetAt(i).GetKO();
 		s.Format("%s", pDoc->GetSector(dest).GetName());
 		g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(70,260+j*30,125,25), &fontFormat, &markBrush);
-		switch (pDoc->m_System[p.x][p.y].GetResourceRoutes()->GetAt(i).GetResource())
+		switch (pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetResourceRoutes()->GetAt(i).GetResource())
 		{
 		case TITAN:		s = CResourceManager::GetString("TITAN"); break;
 		case DEUTERIUM: s = CResourceManager::GetString("DEUTERIUM"); break;
@@ -1641,7 +1641,7 @@ void CSystemMenuView::DrawSystemTradeMenue(Graphics* g)
 	for (int i = TITAN; i <= IRIDIUM; i++)
 	{
 		fontFormat.SetAlignment(StringAlignmentNear);
-		s.Format("%d",pDoc->m_System[p.x][p.y].GetResourceStore(i));
+		s.Format("%d",pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetResourceStore(i));
 		g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(668,220+i*60,407,60), &fontFormat, &fontBrush);
 		// in Klammern darunter, wieviel Ressourcen ich nächste Runde aus diesem System ins Globale Lager verschiebe
 		s.Format("(%d)", pMajor->GetEmpire()->GetGlobalStorage()->GetSubResource(i,p) - pMajor->GetEmpire()->GetGlobalStorage()->GetAddedResource(i,p));
@@ -1706,7 +1706,7 @@ void CSystemMenuView::DrawSystemTradeMenue(Graphics* g)
 	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(360, 640, 120, 30), &fontFormat, &btnBrush);
 
 	// Buttons zum Kündigen/Aufheben einer Ressourcenroute zeichnen
-	for (int i = 0; i < pDoc->m_System[p.x][p.y].GetResourceRoutes()->GetSize(); i++)
+	for (int i = 0; i < pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetResourceRoutes()->GetSize(); i++)
 	{
 		int j = i + numberOfTradeRoutes;
 		if (graphic)
@@ -2059,16 +2059,16 @@ void CSystemMenuView::DrawSystemProduction(Graphics* g)
 		{
 			CPoint ko = pMajor->GetEmpire()->GetSystemList()->GetAt(j).ko;
 			// Wenn unser System blockiert wird so gelten die Ressourcenrouten nicht
-			if (pDoc->m_System[ko.x][ko.y].GetBlockade() > NULL)
+			if (pDoc->m_Systems.at(ko.x+(ko.y)*STARMAP_SECTORS_HCOUNT).GetBlockade() > NULL)
 				continue;
-			for (int i = 0; i < pDoc->m_System[ko.x][ko.y].GetResourceRoutes()->GetSize(); i++)
-				if (pDoc->m_System[ko.x][ko.y].GetResourceRoutes()->GetAt(i).GetKO() == p)
+			for (int i = 0; i < pDoc->m_Systems.at(ko.x+(ko.y)*STARMAP_SECTORS_HCOUNT).GetResourceRoutes()->GetSize(); i++)
+				if (pDoc->m_Systems.at(ko.x+(ko.y)*STARMAP_SECTORS_HCOUNT).GetResourceRoutes()->GetAt(i).GetKO() == p)
 				{
 					// Wenn das Startsystem blockiert wird, so kann die Ressourcenroute ebenfalls nicht benutzt werden
-					if (pDoc->m_System[pDoc->m_System[ko.x][ko.y].GetResourceRoutes()->GetAt(i).GetKO().x][pDoc->m_System[ko.x][ko.y].GetResourceRoutes()->GetAt(i).GetKO().y].GetBlockade() > NULL)
+					if (pDoc->m_Systems.at(pDoc->m_Systems.at(ko.x+(ko.y)*STARMAP_SECTORS_HCOUNT).GetResourceRoutes()->GetAt(i).GetKO().x+(pDoc->m_Systems.at(ko.x+(ko.y)*STARMAP_SECTORS_HCOUNT).GetResourceRoutes()->GetAt(i).GetKO().y)*STARMAP_SECTORS_HCOUNT).GetBlockade() > NULL)
 						continue;
-					BYTE res = pDoc->m_System[ko.x][ko.y].GetResourceRoutes()->GetAt(i).GetResource();
-					resFromRoutes[res] += pDoc->m_System[ko.x][ko.y].GetResourceStore(res);
+					BYTE res = pDoc->m_Systems.at(ko.x+(ko.y)*STARMAP_SECTORS_HCOUNT).GetResourceRoutes()->GetAt(i).GetResource();
+					resFromRoutes[res] += pDoc->m_Systems.at(ko.x+(ko.y)*STARMAP_SECTORS_HCOUNT).GetResourceStore(res);
 				}
 			// gilt nicht bei blockierten Systemen
 			if (pDoc->GetSystem(p).GetBlockade() == NULL)
@@ -2962,7 +2962,7 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		else if (ShipyardListButton.PtInRect(point))
 		{
 			// Wenn man keine Schiffe zur Auswahl hat dann wird wieder auf das normale Gebäudebaumenü umgeschaltet
-			if (pDoc->m_System[pDoc->GetKO().x][pDoc->GetKO().y].GetBuildableShips()->GetSize() == 0)
+			if (pDoc->m_Systems.at(pDoc->GetKO().x+(pDoc->GetKO().y)*STARMAP_SECTORS_HCOUNT).GetBuildableShips()->GetSize() == 0)
 				return;
 			m_iClickedOn = 0;
 			m_byStartList = 0;
@@ -2973,7 +2973,7 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		else if (TroopListButton.PtInRect(point))
 		{
 			// Wenn man keine Schiffe zur Auswahl hat dann wird wieder auf das normale Gebäudebaumenü umgeschaltet
-			if (pDoc->m_System[pDoc->GetKO().x][pDoc->GetKO().y].GetBuildableTroops()->GetSize() == 0)
+			if (pDoc->m_Systems.at(pDoc->GetKO().x+(pDoc->GetKO().y)*STARMAP_SECTORS_HCOUNT).GetBuildableTroops()->GetSize() == 0)
 				return;
 			m_iClickedOn = 0;
 			m_byStartList = 0;
@@ -3074,27 +3074,27 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			{
 				// bestanden Ressourcenrouten, so kann es sein, dass deren Startsysteme einen Anteil oder auch
 				// alles zurückbekommen
-				long getBackRes = pDoc->m_System[p.x][p.y].GetAssemblyList()->GetNeededResourceInAssemblyList(0, j);
+				long getBackRes = pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetAssemblyList()->GetNeededResourceInAssemblyList(0, j);
 				for (int k = 0; k < pMajor->GetEmpire()->GetSystemList()->GetSize(); k++)
 					if (pMajor->GetEmpire()->GetSystemList()->GetAt(k).ko != p)
 					{
 						CPoint ko = pMajor->GetEmpire()->GetSystemList()->GetAt(k).ko;
-						for (int l = 0; l < pDoc->m_System[ko.x][ko.y].GetResourceRoutes()->GetSize(); l++)
-							if (pDoc->m_System[ko.x][ko.y].GetResourceRoutes()->GetAt(l).GetKO() == p)
-								if (pDoc->m_System[ko.x][ko.y].GetResourceRoutes()->GetAt(l).GetKO() == p)
-									if (pDoc->m_System[ko.x][ko.y].GetResourceRoutes()->GetAt(l).GetResource() == j)
-										if (pDoc->m_System[ko.x][ko.y].GetResourceRoutes()->GetAt(l).GetPercent() > 0)
+						for (int l = 0; l < pDoc->m_Systems.at(ko.x+(ko.y)*STARMAP_SECTORS_HCOUNT).GetResourceRoutes()->GetSize(); l++)
+							if (pDoc->m_Systems.at(ko.x+(ko.y)*STARMAP_SECTORS_HCOUNT).GetResourceRoutes()->GetAt(l).GetKO() == p)
+								if (pDoc->m_Systems.at(ko.x+(ko.y)*STARMAP_SECTORS_HCOUNT).GetResourceRoutes()->GetAt(l).GetKO() == p)
+									if (pDoc->m_Systems.at(ko.x+(ko.y)*STARMAP_SECTORS_HCOUNT).GetResourceRoutes()->GetAt(l).GetResource() == j)
+										if (pDoc->m_Systems.at(ko.x+(ko.y)*STARMAP_SECTORS_HCOUNT).GetResourceRoutes()->GetAt(l).GetPercent() > 0)
 										{
 											// sind wir soweit, dann geht ein prozentualer Anteil zurück in das
 											// Startsystem der Ressourcenroute
-											int back = pDoc->m_System[p.x][p.y].GetAssemblyList()->GetNeededResourceInAssemblyList(0, j)
-												* pDoc->m_System[ko.x][ko.y].GetResourceRoutes()->GetAt(l).GetPercent() / 100;
+											int back = pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetAssemblyList()->GetNeededResourceInAssemblyList(0, j)
+												* pDoc->m_Systems.at(ko.x+(ko.y)*STARMAP_SECTORS_HCOUNT).GetResourceRoutes()->GetAt(l).GetPercent() / 100;
 											ASSERT(back >= 0);
-											pDoc->m_System[ko.x][ko.y].SetResourceStore(j, back);
+											pDoc->m_Systems.at(ko.x+(ko.y)*STARMAP_SECTORS_HCOUNT).SetResourceStore(j, back);
 											getBackRes -= back;
 										}
 					}
-				pDoc->m_System[p.x][p.y].SetResourceStore(j, getBackRes);
+				pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetResourceStore(j, getBackRes);
 			}
 			// Wenn wir was gekauft hatten, dann bekommen wir die Kaufkosten zurück und die Preise an der Börse
 			// regulieren sich wieder auf den Kurs, bevor wir gekauft haben
@@ -3104,14 +3104,14 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 				// Die Preise an der Börse anpassen, da wir ja bestimmte Mengen Ressourcen gekauft haben
 				// Achtung, hier flag == 1 setzen bei Aufruf der Funktion BuyRessource!!!!
 				for (int j = TITAN; j <= IRIDIUM; j++)
-					pMajor->GetTrade()->SellRessource(j, pDoc->m_System[p.x][p.y].GetAssemblyList()->GetNeededResourceInAssemblyList(0, j), p, 1);
-				pDoc->m_System[p.x][p.y].GetAssemblyList()->SetWasBuildingBought(FALSE);
+					pMajor->GetTrade()->SellRessource(j, pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetAssemblyList()->GetNeededResourceInAssemblyList(0, j), p, 1);
+				pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetAssemblyList()->SetWasBuildingBought(FALSE);
 				pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
 			}
-			pDoc->m_System[p.x][p.y].GetAssemblyList()->ClearAssemblyList(p, pDoc->m_System);
+			pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetAssemblyList()->ClearAssemblyList(p, pDoc->m_System);
 			// Nach ClearAssemblyList müssen wir die Funktion CalculateVariables() aufrufen
-			pDoc->m_System[p.x][p.y].CalculateVariables(&pDoc->BuildingInfo, pMajor->GetEmpire()->GetResearch()->GetResearchInfo(),
-				pDoc->m_Sector[p.x][p.y].GetPlanets(), pMajor, CTrade::GetMonopolOwner());
+			pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).CalculateVariables(&pDoc->BuildingInfo, pMajor->GetEmpire()->GetResearch()->GetResearchInfo(),
+				pDoc->m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetPlanets(), pMajor, CTrade::GetMonopolOwner());
 
 			int RunningNumber = abs(nFirstAssemblyListEntry);
 			// Baulistencheck machen, wenn wir kein Schiff reingesetzt haben.
@@ -3188,12 +3188,12 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 				// Wenn wir noch freie Arbeiter haben
 				if (pDoc->GetSystem(p.x,p.y).GetWorker(WORKER::FREE_WORKER) > 0 && pDoc->GetSystem(p.x,p.y).GetNumberOfWorkbuildings(nWorker,0,NULL) > pDoc->GetSystem(p.x,p.y).GetWorker(nWorker))
 				{
-					pDoc->m_System[p.x][p.y].SetWorker(nWorker,0,0);	// FoodWorker inkrementieren
+					pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetWorker(nWorker,0,0);	// FoodWorker inkrementieren
 					// FP und SP aus dem System von den Gesamten FP des Imnperiums abziehen
 					pMajor->GetEmpire()->AddFP(-(pDoc->GetSystem(p.x,p.y).GetProduction()->GetResearchProd()));
 					pMajor->GetEmpire()->AddSP(-(pDoc->GetSystem(p.x,p.y).GetProduction()->GetSecurityProd()));
 					// Variablen berechnen
-					pDoc->m_System[p.x][p.y].CalculateVariables(&pDoc->BuildingInfo, pMajor->GetEmpire()->GetResearch()->GetResearchInfo(),pDoc->m_Sector[p.x][p.y].GetPlanets(), pMajor, CTrade::GetMonopolOwner());
+					pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).CalculateVariables(&pDoc->BuildingInfo, pMajor->GetEmpire()->GetResearch()->GetResearchInfo(),pDoc->m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetPlanets(), pMajor, CTrade::GetMonopolOwner());
 					// FP´s und SP´s wieder draufrechnen
 					pMajor->GetEmpire()->AddFP((pDoc->GetSystem(p.x,p.y).GetProduction()->GetResearchProd()));
 					pMajor->GetEmpire()->AddSP((pDoc->GetSystem(p.x,p.y).GetProduction()->GetSecurityProd()));
@@ -3208,12 +3208,12 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 				// Wenn wir noch Arbeiter in dem bestimmten Gebäude haben
 				if (pDoc->GetSystem(p.x,p.y).GetWorker(nWorker) > 0)
 				{
-					pDoc->m_System[p.x][p.y].SetWorker(nWorker,0,1);	// FoodWorker dekrementieren
+					pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetWorker(nWorker,0,1);	// FoodWorker dekrementieren
 					// FP und SP aus dem System von den Gesamten FP des Imnperiums abziehen
 					pMajor->GetEmpire()->AddFP(-(pDoc->GetSystem(p.x,p.y).GetProduction()->GetResearchProd()));
 					pMajor->GetEmpire()->AddSP(-(pDoc->GetSystem(p.x,p.y).GetProduction()->GetSecurityProd()));
 					// Variablen berechnen
-					pDoc->m_System[p.x][p.y].CalculateVariables(&pDoc->BuildingInfo, pMajor->GetEmpire()->GetResearch()->GetResearchInfo(),pDoc->m_Sector[p.x][p.y].GetPlanets(), pMajor, CTrade::GetMonopolOwner());
+					pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).CalculateVariables(&pDoc->BuildingInfo, pMajor->GetEmpire()->GetResearch()->GetResearchInfo(),pDoc->m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetPlanets(), pMajor, CTrade::GetMonopolOwner());
 					// FP´s und SP´s wieder draufrechnen
 					pMajor->GetEmpire()->AddFP((pDoc->GetSystem(p.x,p.y).GetProduction()->GetResearchProd()));
 					pMajor->GetEmpire()->AddSP((pDoc->GetSystem(p.x,p.y).GetProduction()->GetSecurityProd()));
@@ -3235,15 +3235,15 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 						j = (pDoc->GetSystem(p.x,p.y).GetWorker(WORKER::FREE_WORKER)+pDoc->GetSystem(p.x,p.y).GetWorker(nWorker));
 						j--;	// Müssen wir machen
 					}
-					pDoc->m_System[p.x][p.y].SetWorker(nWorker,j+1,2);
+					pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetWorker(nWorker,j+1,2);
 					// Wenn wir ziemlich weit ganz links geklickt haben, dann Arbeiter auf null setzen, werden hier nur um eins dekrementiert
 					if (j == 0 && point.x < Timber[i][j].left+3)
-						pDoc->m_System[p.x][p.y].SetWorker(nWorker,0,1);
+						pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetWorker(nWorker,0,1);
 					// FP und SP aus dem System von den Gesamten FP des Imnperiums abziehen
 					pMajor->GetEmpire()->AddFP(-(pDoc->GetSystem(p.x,p.y).GetProduction()->GetResearchProd()));
 					pMajor->GetEmpire()->AddSP(-(pDoc->GetSystem(p.x,p.y).GetProduction()->GetSecurityProd()));
 					// Variablen berechnen
-					pDoc->m_System[p.x][p.y].CalculateVariables(&pDoc->BuildingInfo, pMajor->GetEmpire()->GetResearch()->GetResearchInfo(),pDoc->m_Sector[p.x][p.y].GetPlanets(), pMajor, CTrade::GetMonopolOwner());
+					pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).CalculateVariables(&pDoc->BuildingInfo, pMajor->GetEmpire()->GetResearch()->GetResearchInfo(),pDoc->m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetPlanets(), pMajor, CTrade::GetMonopolOwner());
 					// FP´s und SP´s wieder draufrechnen
 					pMajor->GetEmpire()->AddFP((pDoc->GetSystem(p.x,p.y).GetProduction()->GetResearchProd()));
 					pMajor->GetEmpire()->AddSP((pDoc->GetSystem(p.x,p.y).GetProduction()->GetSecurityProd()));
@@ -3275,8 +3275,8 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 					// Wenn wir noch freie Arbeiter haben
 					if (pDoc->GetSystem(p.x,p.y).GetWorker(WORKER::FREE_WORKER) > 0 && pDoc->GetSystem(p.x,p.y).GetNumberOfWorkbuildings(nWorker,0,NULL) > pDoc->GetSystem(p.x,p.y).GetWorker(nWorker))
 					{
-						pDoc->m_System[p.x][p.y].SetWorker(nWorker,0,0);	// FoodWorker inkrementieren
-						pDoc->m_System[p.x][p.y].CalculateVariables(&pDoc->BuildingInfo, pMajor->GetEmpire()->GetResearch()->GetResearchInfo(),pDoc->m_Sector[p.x][p.y].GetPlanets(), pMajor, CTrade::GetMonopolOwner());
+						pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetWorker(nWorker,0,0);	// FoodWorker inkrementieren
+						pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).CalculateVariables(&pDoc->BuildingInfo, pMajor->GetEmpire()->GetResearch()->GetResearchInfo(),pDoc->m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetPlanets(), pMajor, CTrade::GetMonopolOwner());
 						Invalidate();
 						return;
 					}
@@ -3288,8 +3288,8 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 					// Wenn wir noch Arbeiter in dem bestimmten Gebäude haben
 					if (pDoc->GetSystem(p.x,p.y).GetWorker(nWorker) > 0)
 					{
-						pDoc->m_System[p.x][p.y].SetWorker(nWorker,0,1);	// FoodWorker dekrementieren
-						pDoc->m_System[p.x][p.y].CalculateVariables(&pDoc->BuildingInfo, pMajor->GetEmpire()->GetResearch()->GetResearchInfo(),pDoc->m_Sector[p.x][p.y].GetPlanets(), pMajor, CTrade::GetMonopolOwner());
+						pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetWorker(nWorker,0,1);	// FoodWorker dekrementieren
+						pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).CalculateVariables(&pDoc->BuildingInfo, pMajor->GetEmpire()->GetResearch()->GetResearchInfo(),pDoc->m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetPlanets(), pMajor, CTrade::GetMonopolOwner());
 						Invalidate();
 						return;
 					}
@@ -3308,11 +3308,11 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 							j = (pDoc->GetSystem(p.x,p.y).GetWorker(WORKER::FREE_WORKER)+pDoc->GetSystem(p.x,p.y).GetWorker(nWorker));
 							j--;	// Müssen wir machen
 						}
-						pDoc->m_System[p.x][p.y].SetWorker(nWorker,j+1,2);
+						pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetWorker(nWorker,j+1,2);
 						// Wenn wir ziemlich weit ganz links geklickt haben, dann Arbeiter auf null setzen, werden hier nur um eins dekrementiert
 						if (j == 0 && point.x < Timber[i][j].left+3)
-							pDoc->m_System[p.x][p.y].SetWorker(nWorker,0,1);
-						pDoc->m_System[p.x][p.y].CalculateVariables(&pDoc->BuildingInfo, pMajor->GetEmpire()->GetResearch()->GetResearchInfo(),pDoc->m_Sector[p.x][p.y].GetPlanets(), pMajor, CTrade::GetMonopolOwner());
+							pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetWorker(nWorker,0,1);
+						pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).CalculateVariables(&pDoc->BuildingInfo, pMajor->GetEmpire()->GetResearch()->GetResearchInfo(),pDoc->m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetPlanets(), pMajor, CTrade::GetMonopolOwner());
 						Invalidate();
 						return;
 					}
@@ -3332,22 +3332,22 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 					if (m_EnergyList.GetAt(i).status == 0)
 					{
 						if (pDoc->GetSystem(p.x,p.y).GetProduction()->GetEnergyProd() >= buildingInfo->GetNeededEnergy())
-							pDoc->m_System[p.x][p.y].SetIsBuildingOnline(m_EnergyList.GetAt(i).index, 1);
+							pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetIsBuildingOnline(m_EnergyList.GetAt(i).index, 1);
 					}
 					else
-						pDoc->m_System[p.x][p.y].SetIsBuildingOnline(m_EnergyList.GetAt(i).index, 0);
+						pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetIsBuildingOnline(m_EnergyList.GetAt(i).index, 0);
 					// FP und SP aus dem System von den Gesamten FP des Imnperiums abziehen
 					pMajor->GetEmpire()->AddFP(-(pDoc->GetSystem(p.x,p.y).GetProduction()->GetResearchProd()));
 					pMajor->GetEmpire()->AddSP(-(pDoc->GetSystem(p.x,p.y).GetProduction()->GetSecurityProd()));
 					// Variablen berechnen
-					pDoc->m_System[p.x][p.y].CalculateVariables(&pDoc->BuildingInfo, pMajor->GetEmpire()->GetResearch()->GetResearchInfo(),pDoc->m_Sector[p.x][p.y].GetPlanets(), pMajor, CTrade::GetMonopolOwner());
+					pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).CalculateVariables(&pDoc->BuildingInfo, pMajor->GetEmpire()->GetResearch()->GetResearchInfo(),pDoc->m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetPlanets(), pMajor, CTrade::GetMonopolOwner());
 					// FP´s und SP´s wieder draufrechnen
 					pMajor->GetEmpire()->AddFP((pDoc->GetSystem(p.x,p.y).GetProduction()->GetResearchProd()));
 					pMajor->GetEmpire()->AddSP((pDoc->GetSystem(p.x,p.y).GetProduction()->GetSecurityProd()));
 					// Wenn es eine Werft war, die wir an bzw. aus geschaltet haben, dann nochmal schauen ob ich auch
 					// noch alle Schiffe bauen kann. Denn wenn die aus ist, dann kann ich keine mehr bauen
 					if (buildingInfo->GetShipYard())
-						pDoc->m_System[p.x][p.y].CalculateBuildableShips(pDoc, p);
+						pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).CalculateBuildableShips(pDoc, p);
 					Invalidate(FALSE);
 					break;
 				}
@@ -3375,7 +3375,7 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 				if (m_BuildingOverview.GetAt(i).rect.PtInRect(point))
 				{
 					USHORT ru = m_BuildingOverview.GetAt(i).runningNumber;
-					pDoc->m_System[p.x][p.y].SetBuildingDestroy(ru,TRUE);
+					pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetBuildingDestroy(ru,TRUE);
 					CRect r = m_BuildingOverview.GetAt(i).rect;
 					CalcDeviceRect(r);
 					InvalidateRect(r, FALSE);
@@ -3455,7 +3455,7 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			// einzelnen Buttons, um Waren zwischen System und globalen Lager hin und her zu schieben
 			// Wenn das System blockiert wird kann man nicht mehr Waren ins oder aus dem stellaren Lager
 			// nehmen
-			if (pDoc->m_System[p.x][p.y].GetBlockade() > NULL)
+			if (pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetBlockade() > NULL)
 				return;
 
 			int i = -1;
@@ -3466,13 +3466,13 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 				{
 					i -= 5;
 
-					if (pDoc->m_System[p.x][p.y].GetResourceStore(i) > 0 || pMajor->GetEmpire()->GetGlobalStorage()->GetSubResource(i,p) > 0)
+					if (pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetResourceStore(i) > 0 || pMajor->GetEmpire()->GetGlobalStorage()->GetSubResource(i,p) > 0)
 					{
 						UINT tempQuantity = m_iGlobalStoreageQuantity;
-						if (pDoc->m_System[p.x][p.y].GetResourceStore(i) < m_iGlobalStoreageQuantity && pMajor->GetEmpire()->GetGlobalStorage()->GetSubResource(i,p) == 0)
-							m_iGlobalStoreageQuantity = pDoc->m_System[p.x][p.y].GetResourceStore(i);
+						if (pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetResourceStore(i) < m_iGlobalStoreageQuantity && pMajor->GetEmpire()->GetGlobalStorage()->GetSubResource(i,p) == 0)
+							m_iGlobalStoreageQuantity = pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetResourceStore(i);
 						UINT getBack = pMajor->GetEmpire()->GetGlobalStorage()->AddRessource(m_iGlobalStoreageQuantity,i,p);
-						pDoc->m_System[p.x][p.y].SetResourceStore(i, (getBack - m_iGlobalStoreageQuantity));
+						pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetResourceStore(i, (getBack - m_iGlobalStoreageQuantity));
 						m_iGlobalStoreageQuantity = tempQuantity;
 						Invalidate(FALSE);
 					}
@@ -3480,7 +3480,7 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 				// kleine Pfeilbuttons um Waren aus dem System ins globale Lager zu verschieben
 				else
 				{
-					pDoc->m_System[p.x][p.y].SetResourceStore(i, pMajor->GetEmpire()->GetGlobalStorage()->SubRessource(m_iGlobalStoreageQuantity,i,p));
+					pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetResourceStore(i, pMajor->GetEmpire()->GetGlobalStorage()->SubRessource(m_iGlobalStoreageQuantity,i,p));
 					Invalidate(FALSE);
 				}
 			}
@@ -3587,7 +3587,7 @@ void CSystemMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 						pDoc->GetSystem(p).AssemblyListCheck(&pDoc->BuildingInfo,&pDoc->m_GlobalBuildings);
 
 					// Wenn wir den Baueintrag setzen konnten, also hier in der if-Bedingung sind, dann CalculateVariables() aufrufen
-					pDoc->GetSystem(p).CalculateVariables(&pDoc->BuildingInfo, pMajor->GetEmpire()->GetResearch()->GetResearchInfo(),pDoc->m_Sector[p.x][p.y].GetPlanets(), pMajor, CTrade::GetMonopolOwner());
+					pDoc->GetSystem(p).CalculateVariables(&pDoc->BuildingInfo, pMajor->GetEmpire()->GetResearch()->GetResearchInfo(),pDoc->m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetPlanets(), pMajor, CTrade::GetMonopolOwner());
 					m_iClickedOn = i;
 
 					// Die Struktur Buildlist löschen
@@ -3629,10 +3629,10 @@ void CSystemMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 						if (pMajor->GetEmpire()->GetSystemList()->GetAt(k).ko != p)
 						{
 							CPoint ko = pMajor->GetEmpire()->GetSystemList()->GetAt(k).ko;
-							for (int l = 0; l < pDoc->m_System[ko.x][ko.y].GetResourceRoutes()->GetSize(); l++)
-								if (pDoc->m_System[ko.x][ko.y].GetResourceRoutes()->GetAt(l).GetKO() == p)
-									if (pDoc->m_System[ko.x][ko.y].GetResourceRoutes()->GetAt(l).GetResource() == j)
-										if (pDoc->m_System[ko.x][ko.y].GetResourceRoutes()->GetAt(l).GetPercent() > 0)
+							for (int l = 0; l < pDoc->m_Systems.at(ko.x+(ko.y)*STARMAP_SECTORS_HCOUNT).GetResourceRoutes()->GetSize(); l++)
+								if (pDoc->m_Systems.at(ko.x+(ko.y)*STARMAP_SECTORS_HCOUNT).GetResourceRoutes()->GetAt(l).GetKO() == p)
+									if (pDoc->m_Systems.at(ko.x+(ko.y)*STARMAP_SECTORS_HCOUNT).GetResourceRoutes()->GetAt(l).GetResource() == j)
+										if (pDoc->m_Systems.at(ko.x+(ko.y)*STARMAP_SECTORS_HCOUNT).GetResourceRoutes()->GetAt(l).GetPercent() > 0)
 										{
 											// sind wir soweit, dann geht ein prozentualer Anteil zurück in das
 											// Startsystem der Ressourcenroute
@@ -3658,7 +3658,7 @@ void CSystemMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 				}
 				pDoc->GetSystem(p).GetAssemblyList()->ClearAssemblyList(p, pDoc->m_System);
 				// Nach ClearAssemblyList müssen wir die Funktion CalculateVariables() aufrufen
-				pDoc->GetSystem(p).CalculateVariables(&pDoc->BuildingInfo, pMajor->GetEmpire()->GetResearch()->GetResearchInfo(),pDoc->m_Sector[p.x][p.y].GetPlanets(), pMajor, CTrade::GetMonopolOwner());
+				pDoc->GetSystem(p).CalculateVariables(&pDoc->BuildingInfo, pMajor->GetEmpire()->GetResearch()->GetResearchInfo(),pDoc->m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetPlanets(), pMajor, CTrade::GetMonopolOwner());
 				// Baulistencheck machen, wenn wir kein Schiff reingesetzt haben.
 				// Den Check nur machen, wenn wir ein Update oder ein Gebäude welches eine Maxanzahl voraussetzt
 				// hinzufügen wollen
@@ -3700,7 +3700,7 @@ void CSystemMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 				}
 				// sonst den Baulistencheck nur in dem aktuellen System durchführen
 				else if (RunningNumber < 10000 && pDoc->GetBuildingInfo(RunningNumber).GetMaxInSystem().Number > 0)
-					pDoc->m_System[p.x][p.y].AssemblyListCheck(&pDoc->BuildingInfo,&pDoc->m_GlobalBuildings);
+					pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).AssemblyListCheck(&pDoc->BuildingInfo,&pDoc->m_GlobalBuildings);
 			}
 
 			Invalidate(FALSE);
@@ -3734,7 +3734,7 @@ void CSystemMenuView::OnRButtonDown(UINT nFlags, CPoint point)
 				if (m_BuildingOverview.GetAt(i).rect.PtInRect(point))
 				{
 					USHORT ru = m_BuildingOverview.GetAt(i).runningNumber;
-					pDoc->m_System[p.x][p.y].SetBuildingDestroy(ru,FALSE);
+					pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetBuildingDestroy(ru,FALSE);
 					CRect r = m_BuildingOverview.GetAt(i).rect;
 					CalcDeviceRect(r);
 					InvalidateRect(r);
@@ -3869,7 +3869,7 @@ void CSystemMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 					pDoc->GetSystem(p).AssemblyListCheck(&pDoc->BuildingInfo,&pDoc->m_GlobalBuildings);
 
 				// Wenn wir den Baueintrag setzen konnten, also hier in der if-Bedingung sind, dann CalculateVariables() aufrufen
-				pDoc->GetSystem(p).CalculateVariables(&pDoc->BuildingInfo, pMajor->GetEmpire()->GetResearch()->GetResearchInfo(),pDoc->m_Sector[p.x][p.y].GetPlanets(), pMajor, CTrade::GetMonopolOwner());
+				pDoc->GetSystem(p).CalculateVariables(&pDoc->BuildingInfo, pMajor->GetEmpire()->GetResearch()->GetResearchInfo(),pDoc->m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetPlanets(), pMajor, CTrade::GetMonopolOwner());
 
 				// Die Struktur BuildList löschen, alle Werte auf 0
 				m_vBuildlist.RemoveAll();
