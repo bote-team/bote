@@ -95,6 +95,7 @@ CBotf2Doc::CBotf2Doc() :
 	server.AddServerListener(m_pNetworkHandler);
 	client.AddClientListener(m_pNetworkHandler);
 
+	AllocateSectorsAndSystems();
 }
 #pragma warning(pop)
 
@@ -276,7 +277,7 @@ void CBotf2Doc::Serialize(CArchive& ar)
 		ar >> m_ptKO;
 		ar >> STARMAP_SECTORS_HCOUNT;
 		ar >> STARMAP_SECTORS_VCOUNT;
-		AllocateSectorsAndSystems();
+		//AllocateSectorsAndSystems();
 
 		// Hauptrassen-Koordinaten laden
 		m_mRaceKO.clear();
@@ -398,7 +399,7 @@ void CBotf2Doc::SerializeBeginGameData(CArchive& ar)
 		ar>>STARMAP_SECTORS_VCOUNT;
 		STARMAP_TOTALWIDTH=STARMAP_SECTORS_HCOUNT*80;
 		STARMAP_TOTALHEIGHT=STARMAP_SECTORS_VCOUNT*80;
-		AllocateSectorsAndSystems();
+		//AllocateSectorsAndSystems();
 		// Hauptrassen-Koordinaten empfangen
 		m_mRaceKO.clear();
 		size_t mapSize = 0;
@@ -976,7 +977,7 @@ void CBotf2Doc::PrepareData()
 		STARMAP_TOTALWIDTH=STARMAP_SECTORS_HCOUNT*80;
 		STARMAP_TOTALHEIGHT=STARMAP_SECTORS_VCOUNT*80;
 
-		AllocateSectorsAndSystems();
+		//AllocateSectorsAndSystems();
 
 		// Generierungssektornamenklasse wieder neu starten
 		m_ShipArray.RemoveAll();
@@ -7030,9 +7031,10 @@ BOOL CBotf2Doc::OnSaveDocument(LPCTSTR lpszPathName)
 
 void CBotf2Doc::AllocateSectorsAndSystems()
 {
-	m_Sectors.clear();
-	m_Systems.clear();
-	const unsigned size = STARMAP_SECTORS_HCOUNT*STARMAP_SECTORS_VCOUNT;
+	//m_Sectors.clear();
+	//m_Systems.clear();
+	//const unsigned size = STARMAP_SECTORS_HCOUNT*STARMAP_SECTORS_VCOUNT;
+	const unsigned size = 30*20;
 	m_Sectors.resize(size);
 	m_Systems.resize(size);
  }
