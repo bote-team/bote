@@ -94,7 +94,7 @@ public:
 	// Nachdem wir diese Funktion aufgerufen haben und ein TRUE zurückbekommen haben müssen wir die Funktion
 	// CalculateVariables() aufgerufen! (Weil wir wenn die Handelsgüter aus der Bauliste verschwinden, sofort das
 	// neue Credits angezeigt werden soll.)
-	BOOLEAN MakeEntry(int runningNumber, const CPoint &ko, std::vector<std::vector<CSystem>>& systems/*[][STARMAP_SECTORS_VCOUNT]*/, bool bOnlyTest = false);
+	BOOLEAN MakeEntry(int runningNumber, const CPoint &ko, std::vector<CSystem>& systems, bool bOnlyTest = false);
 
 	// Funktion berechnet die Kosten des Bauauftrags, wenn man dieses sofort kaufen will. Die Kosten des Sofortkaufes
 	// sind von den Marktpreisen abhängig, daher müssen diese übergeben werden.
@@ -113,7 +113,7 @@ public:
 	// Funktion löscht einen Eintrag aus der Bauliste, wenn das Gebäude fertig wurde oder wir den ersten
 	// Eintrag manuell löschen möchten. Nach Aufruf dieser Funktion muß unbedingt die Funktion
 	// CalculateVariables() aufgerufen werden.
-	void ClearAssemblyList(const CPoint &ko, std::vector<std::vector<CSystem>>& m_Systems/*[][STARMAP_SECTORS_VCOUNT]*/);
+	void ClearAssemblyList(const CPoint &ko, std::vector<CSystem>& systems);
 
 	// Ordnet die Bauliste so, dass keine leeren Einträge in der Mitte vorkommen können. Wird z.B. aufgerufen,
 	// nachdem wir einen Auftrag aus der Bauliste entfernt haben. Darf aber nicht aufgerufen werden, wenn wir
@@ -128,7 +128,7 @@ private:
 // private Funktionen
 	/// Diese Funktion entfernt die benötigten Ressourcen aus dem lokalen Lager des Systems und falls Ressourcenrouten
 	/// bestehen auch die Ressourcen in den Startsystemen der Route. Aber nur falls dies auch notwendig sein sollte.
-	void RemoveResourceFromStorage(BYTE res, const CPoint &ko, std::vector<std::vector<CSystem>>& systems/*[][STARMAP_SECTORS_VCOUNT]*/, CArray<CPoint>* routesFrom);
+	void RemoveResourceFromStorage(BYTE res, const CPoint &ko, std::vector<CSystem>& systems, CArray<CPoint>* routesFrom);
 
 // Attribute
 	// Der Auftrag in der Bauliste.

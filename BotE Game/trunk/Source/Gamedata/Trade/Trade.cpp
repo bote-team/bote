@@ -179,7 +179,7 @@ void CTrade::SellRessource(USHORT res, ULONG number, CPoint system, BOOL flag)
 
 // Funktion berechnet die ganzen Handelsaktionen, lagert also Ressourcen ein oder gibt das Credits, welches
 // wir durch den Verkauf bekommen haben an das jeweilige Imperium
-void CTrade::CalculateTradeActions(CMajor* pMajor, std::vector<std::vector<CSystem>>& systems/*[][STARMAP_SECTORS_VCOUNT]*/, std::vector<std::vector<CSector>>& sectors/*[][STARMAP_SECTORS_VCOUNT]*/, USHORT* taxes)
+void CTrade::CalculateTradeActions(CMajor* pMajor, std::vector<CSystem>& systems, const std::vector<CSector>& sectors, USHORT* taxes)
 {
 	ASSERT(pMajor);
 
