@@ -142,7 +142,7 @@ void CSystemAI::CalcPriorities()
 	{
 		// Bauauftrag entfernen
 		// CHECK WW: KI sollte hier anteilige Ressourcen zurückbekommen
-		m_pDoc->GetSystem(ko).GetAssemblyList()->ClearAssemblyList(ko, m_pDoc->m_System);
+		m_pDoc->GetSystem(ko).GetAssemblyList()->ClearAssemblyList(ko, m_pDoc->m_Systems);
 		m_pDoc->GetSystem(ko).CalculateVariables(&m_pDoc->BuildingInfo, m_pMajor->GetEmpire()->GetResearch()->GetResearchInfo(), m_pDoc->m_Sectors.at(ko.x+(ko.y)*STARMAP_SECTORS_HCOUNT).GetPlanets(), m_pMajor, CTrade::GetMonopolOwner());
 	}
 
@@ -195,7 +195,7 @@ void CSystemAI::CalcPriorities()
 			{
 				// Bau abbrechen
 				// CHECK WW: KI sollte hier anteilige Ressourcen zurückbekommen
-				m_pDoc->GetSystem(ko).GetAssemblyList()->ClearAssemblyList(ko, m_pDoc->m_System);
+				m_pDoc->GetSystem(ko).GetAssemblyList()->ClearAssemblyList(ko, m_pDoc->m_Systems);
 				m_pDoc->GetSystem(ko).CalculateVariables(&m_pDoc->BuildingInfo, m_pMajor->GetEmpire()->GetResearch()->GetResearchInfo(), m_pDoc->m_Sectors.at(ko.x+(ko.y)*STARMAP_SECTORS_HCOUNT).GetPlanets(), m_pMajor, CTrade::GetMonopolOwner());
 #ifdef TRACE_AI
 				MYTRACE(MT::LEVEL_INFO, "CSystemAI::CalcPriorities(): Removed current buildorder because of low moral in System '%s'\n", m_pDoc->m_Sectors.at(ko.x+(ko.y)*STARMAP_SECTORS_HCOUNT).GetName());
@@ -646,7 +646,7 @@ BOOLEAN CSystemAI::MakeEntryInAssemblyList(short id)
 			&m_pDoc->GetBuildingInfo(RunningNumber), 0, 0, m_pDoc->GetSystem(ko).GetAllBuildings(), id,
 			m_pMajor->GetEmpire()->GetResearch()->GetResearchInfo(), difficulty);
 	}
-	return m_pDoc->GetSystem(ko).GetAssemblyList()->MakeEntry(id, ko, m_pDoc->m_System);
+	return m_pDoc->GetSystem(ko).GetAssemblyList()->MakeEntry(id, ko, m_pDoc->m_Systems);
 }
 
 
@@ -1117,7 +1117,7 @@ void CSystemAI::ApplyTradeRoutes()
 		{
 			CMinor* pMinor = it->second;
 			if (pMinor->GetAgreement(race) >= DIPLOMATIC_AGREEMENT::TRADE && pMinor->GetAgreement(race) < DIPLOMATIC_AGREEMENT::MEMBERSHIP)
-				if (m_pDoc->GetSystem(ko).AddTradeRoute(pMinor->GetRaceKO(), m_pDoc->m_System, m_pMajor->GetEmpire()->GetResearch()->GetResearchInfo()) == FALSE)
+				if (m_pDoc->GetSystem(ko).AddTradeRoute(pMinor->GetRaceKO(), m_pDoc->m_Systems, m_pMajor->GetEmpire()->GetResearch()->GetResearchInfo()) == FALSE)
 					break;
 		}
 	}
@@ -1128,7 +1128,7 @@ void CSystemAI::ApplyTradeRoutes()
 			for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
 				if (m_pDoc->m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem() != "" && m_pDoc->m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem() != race)
 					if (m_pMajor->GetAgreement(m_pDoc->m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem()) >= DIPLOMATIC_AGREEMENT::TRADE)
-						m_pDoc->GetSystem(ko).AddTradeRoute(CPoint(x,y), m_pDoc->m_System, m_pMajor->GetEmpire()->GetResearch()->GetResearchInfo());
+						m_pDoc->GetSystem(ko).AddTradeRoute(CPoint(x,y), m_pDoc->m_Systems, m_pMajor->GetEmpire()->GetResearch()->GetResearchInfo());
 	}
 }
 

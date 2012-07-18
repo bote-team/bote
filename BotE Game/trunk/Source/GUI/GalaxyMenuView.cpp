@@ -783,7 +783,7 @@ void CGalaxyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			CPoint p = pDoc->GetKO();
 			BYTE numberOfRoutes = pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetTradeRoutes()->GetSize();
 			// konnten erfolgreich eine hinzufügen aufgrund der Bevölkerung
-			if (pDoc->m_Sectors.at(sector.x+(sector.y)*STARMAP_SECTORS_HCOUNT).GetSunSystem() == TRUE && pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).AddTradeRoute(CPoint(sector.x,sector.y), pDoc->m_System, pMajor->GetEmpire()->GetResearch()->GetResearchInfo()))
+			if (pDoc->m_Sectors.at(sector.x+(sector.y)*STARMAP_SECTORS_HCOUNT).GetSunSystem() == TRUE && pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).AddTradeRoute(CPoint(sector.x,sector.y), pDoc->m_Systems, pMajor->GetEmpire()->GetResearch()->GetResearchInfo()))
 			{
 				// wurde keine hinzugefügt, dann fertig
 				if (numberOfRoutes == pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetTradeRoutes()->GetSize())
@@ -822,7 +822,7 @@ void CGalaxyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			CPoint p = pDoc->GetKO();
 			// konnten erfolgreich eine hinzufügen aufgrund der Bevölkerung
 			if (pDoc->m_Sectors.at(sector.x+(sector.y)*STARMAP_SECTORS_HCOUNT).GetSunSystem() == TRUE && p != CPoint(sector.x,sector.y) &&
-				pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).AddResourceRoute(CPoint(sector.x,sector.y), CSystemMenuView::GetResourceRouteRes(), pDoc->m_System, pMajor->GetEmpire()->GetResearch()->GetResearchInfo()))
+				pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).AddResourceRoute(CPoint(sector.x,sector.y), CSystemMenuView::GetResourceRouteRes(), pDoc->m_Systems, pMajor->GetEmpire()->GetResearch()->GetResearchInfo()))
 			{
 				m_bDrawResourceRoute = FALSE;
 				// Anzeige gleich aktualisieren

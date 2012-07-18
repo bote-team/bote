@@ -95,8 +95,6 @@ CBotf2Doc::CBotf2Doc() :
 	server.AddServerListener(m_pNetworkHandler);
 	client.AddClientListener(m_pNetworkHandler);
 
-	m_Sector.clear();
-	m_System.clear();
 }
 #pragma warning(pop)
 
@@ -127,18 +125,13 @@ CBotf2Doc::~CBotf2Doc()
 		m_pNetworkHandler = NULL;
 	}
 
-	if (!m_Sector.empty() || !m_System.empty())
-	{
-
-		for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
-			for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-			{
-				m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).Reset();
-				m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).ResetSystem();
-			}
-
-			m_Sector.clear();
-			m_System.clear();
+	for(std::vector<CSector>::iterator sector = m_Sectors.begin();
+		sector != m_Sectors.end(); ++sector) {
+		sector->Reset();
+	}
+	for(std::vector<CSystem>::iterator system = m_Systems.begin();
+		system != m_Systems.end(); ++system) {
+		system->ResetSystem();;
 	}
 
 	// statische Variablen der Starmap freigeben
@@ -369,7 +362,7 @@ void CBotf2Doc::Serialize(CArchive& ar)
 		// Spieler den Majors zuweisen
 		map<CString, CMajor*>* pmMajors = m_pRaceCtrl->GetMajors();
 		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
-			it->second->GetEmpire()->GenerateSystemList(m_System, m_Sector);
+			it->second->GetEmpire()->GenerateSystemList(m_Systems, m_Sectors);
 	}
 
 	m_VictoryObserver.Serialize(ar);
@@ -606,7 +599,7 @@ void CBotf2Doc::SerializeNextRoundData(CArchive &ar)
 		// Systemliste der Imperien erstellen
 		map<CString, CMajor*>* pmMajors = m_pRaceCtrl->GetMajors();
 		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
-			it->second->GetEmpire()->GenerateSystemList(m_System, m_Sector);
+			it->second->GetEmpire()->GenerateSystemList(m_Systems, m_Sectors);
 	}
 	MYTRACE(MT::LEVEL_INFO, "... serialization of NextRoundData succesfull\n");
 }
@@ -1729,7 +1722,7 @@ void CBotf2Doc::ApplyBuildingsAtStartup()
 		pMajor->CreateStarmap();
 	}
 	// Anomalien beachten (ist für jede Starmap gleich, daher statisch)
-	CStarmap::SynchronizeWithAnomalies(m_Sector);
+	CStarmap::SynchronizeWithAnomalies(m_Sectors);
 
 	for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
 		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
@@ -1799,7 +1792,7 @@ void CBotf2Doc::ApplyBuildingsAtStartup()
 			}
 
 		// Systemliste erstellen und baubare Gebäude, Schiffe und Truppen berechnen
-		pMajor->GetEmpire()->GenerateSystemList(m_System, m_Sector);
+		pMajor->GetEmpire()->GenerateSystemList(m_Systems, m_Sectors);
 		for (int i = 0; i < pMajor->GetEmpire()->GetSystemList()->GetSize(); i++)
 		{
 			CPoint p = pMajor->GetEmpire()->GetSystemList()->GetAt(i).ko;
@@ -2443,7 +2436,7 @@ void CBotf2Doc::GenerateStarmap(const CString& sOnlyForRaceID)
 		pMajor->CreateStarmap();
 	}
 	// Anomalien beachten (ist für jede Starmap gleich, daher statisch)
-	CStarmap::SynchronizeWithAnomalies(m_Sector);
+	CStarmap::SynchronizeWithAnomalies(m_Sectors);
 
 	// Starmaps generieren
 	for (int y = 0 ; y < STARMAP_SECTORS_VCOUNT; y++)
@@ -2483,7 +2476,7 @@ void CBotf2Doc::GenerateStarmap(const CString& sOnlyForRaceID)
 			if (it->first != itt->first && it->second->GetAgreement(itt->first) == DIPLOMATIC_AGREEMENT::NAP)
 				NAPRaces.insert(itt->first);
 		// interne Starmap für KI syncronisieren
-		it->second->GetStarmap()->SynchronizeWithMap(m_Sector, &NAPRaces);
+		it->second->GetStarmap()->SynchronizeWithMap(m_Sectors, &NAPRaces);
 	}
 
 	// nun die Berechnung für den Außenpostenbau vornehmen
@@ -2494,7 +2487,7 @@ void CBotf2Doc::GenerateStarmap(const CString& sOnlyForRaceID)
 
 		CMajor* pMajor = it->second;
 		if (!pMajor->IsHumanPlayer())
-			pMajor->GetStarmap()->SetBadAIBaseSectors(m_Sector, it->first);
+			pMajor->GetStarmap()->SetBadAIBaseSectors(m_Sectors, it->first);
 	}
 }
 
@@ -2962,7 +2955,7 @@ void CBotf2Doc::CalcSystemAttack()
 					if (defender != NULL && defender->GetType() == MAJOR && !attacker.IsEmpty() && pMajor && attackSystem->IsDefenderNotAttacker(sDefender, &attackers))
 					{
 						// Anzahl der noch verbleibenden Systeme berechnen
-						((CMajor*)defender)->GetEmpire()->GenerateSystemList(m_System, m_Sector);
+						((CMajor*)defender)->GetEmpire()->GenerateSystemList(m_Systems, m_Sectors);
 						// hat der Verteidiger keine Systeme mehr, so bekommt der neue Besitzer den Bonus
 						if (((CMajor*)defender)->GetEmpire()->GetSystemList()->GetSize() == 0)
 						{
@@ -3118,7 +3111,7 @@ void CBotf2Doc::CalcSystemAttack()
 								ASSERT(pMajor);
 
 								// Anzahl der noch verbleibenden Systeme berechnen
-								((CMajor*)defender)->GetEmpire()->GenerateSystemList(m_System, m_Sector);
+								((CMajor*)defender)->GetEmpire()->GenerateSystemList(m_Systems, m_Sectors);
 								// hat der Verteidiger keine Systeme mehr, so bekommt der neue Besitzer den Bonus
 								if (((CMajor*)defender)->GetEmpire()->GetSystemList()->GetSize() == 0)
 								{
@@ -3776,7 +3769,7 @@ void CBotf2Doc::CalcOldRoundData()
 								// Handelsgüter wenn nix mehr drin steht. Hier mal testweise weggelassen, weil diese Funktion
 								// später eh für das System aufgerufen wird und wir bis jetzt glaub ich keine Notwendigkeit
 								// haben die Funktion CalculateVariables() aufzurufen.
-								m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetAssemblyList()->ClearAssemblyList(CPoint(x,y), m_System);
+								m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetAssemblyList()->ClearAssemblyList(CPoint(x,y), m_Systems);
 								// Wenn die Bauliste nach dem letzten gebauten Gebäude leer ist, eine Nachricht generieren
 								if (m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetAssemblyList()->GetAssemblyListEntry(0) == 0)
 								{
@@ -4097,7 +4090,7 @@ void CBotf2Doc::CalcTrade()
 			newTax = 1.0f + newTax / 100;
 			pMajor->GetTrade()->SetTax(newTax);
 		}
-		pMajor->GetTrade()->CalculateTradeActions(pMajor, m_System, m_Sector, taxMoney);
+		pMajor->GetTrade()->CalculateTradeActions(pMajor, m_Systems, m_Sectors, taxMoney);
 		for (int j = TITAN; j <= IRIDIUM; j++)
 		{
 			// plus Steuern, die durch Sofortkäufe von Bauaufträgen entstanden sind holen
@@ -5132,7 +5125,7 @@ void CBotf2Doc::CalcShipMovement()
 		for (map<CString, CMajor*>::const_iterator itt = pmMajors->begin(); itt != pmMajors->end(); ++itt)
 			if (it->first != itt->first && pMajor->GetAgreement(itt->first) == DIPLOMATIC_AGREEMENT::NAP)
 				races.insert(itt->first);
-		pMajor->GetStarmap()->SynchronizeWithMap(m_Sector, &races);
+		pMajor->GetStarmap()->SynchronizeWithMap(m_Sectors, &races);
 	}
 
 	// Hier kommt die Schiffsbewegung (also keine anderen Befehle werden hier noch ausgewertet, lediglich wird ?berpr?ft,
@@ -6272,7 +6265,7 @@ void CBotf2Doc::CalcEndDataForNextRound()
 	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 	{
 		CMajor* pMajor = it->second;
-		pMajor->GetEmpire()->GenerateSystemList(m_System, m_Sector);
+		pMajor->GetEmpire()->GenerateSystemList(m_Systems, m_Sectors);
 		pMajor->GetEmpire()->SetNumberOfSystems(pMajor->GetEmpire()->GetSystemList()->GetSize());
 
 		// Wenn das Imperium keine Systeme mehr besitzt, so wird es für alle anderen Rassen auf unbekannt gestellt.
@@ -6409,13 +6402,13 @@ void CBotf2Doc::CalcEndDataForNextRound()
 	{
 		CMajor* pMajor = it->second;
 		// Moralveränderungen aufgrund möglicher Ereignisse berechnen. Erst nach der Schiffsbewegung und allem anderen
-		pMajor->GetMoralObserver()->CalculateEvents(m_System, pMajor->GetRaceID(), pMajor->GetRaceMoralNumber());
+		pMajor->GetMoralObserver()->CalculateEvents(m_Systems, pMajor->GetRaceID(), pMajor->GetRaceMoralNumber());
 		///// HIER DIE BONI DURCH SPEZIALFORSCHUNG //////
 		// Hier die Boni durch die Uniqueforschung "Lager und Transport" -> kein Abzug beim Stellaren Lager
 		if (pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(RESEARCH_COMPLEX::STORAGE_AND_TRANSPORT)->GetFieldStatus(2) == RESEARCH_STATUS::RESEARCHED)
 			pMajor->GetEmpire()->GetGlobalStorage()->SetLosing(pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(RESEARCH_COMPLEX::STORAGE_AND_TRANSPORT)->GetBonus(2));
 		// Ressourcentransfers im globalen Lager vornehmen
-		pMajor->GetEmpire()->GetGlobalStorage()->Calculate(m_System);
+		pMajor->GetEmpire()->GetGlobalStorage()->Calculate(m_Systems);
 		pMajor->GetEmpire()->GetGlobalStorage()->SetMaxTakenRessources(1000 * pMajor->GetEmpire()->GetNumberOfSystems());
 		// Befindet sich irgendeine Ressource im globalen Lager, bekommt der Spieler eine Imperiumsmeldung
 		if (pMajor->GetEmpire()->GetGlobalStorage()->IsFilled())
@@ -7037,12 +7030,9 @@ BOOL CBotf2Doc::OnSaveDocument(LPCTSTR lpszPathName)
 
 void CBotf2Doc::AllocateSectorsAndSystems()
 {
-	m_Sector.clear();
-	m_System.clear();
-	m_Sector=std::vector<std::vector<CSector>>(
-		STARMAP_SECTORS_HCOUNT, std::vector<CSector>(STARMAP_SECTORS_VCOUNT));
-	m_System=std::vector<std::vector<CSystem>>(
-		STARMAP_SECTORS_HCOUNT, std::vector<CSystem>(STARMAP_SECTORS_VCOUNT));
-
-
+	m_Sectors.clear();
+	m_Systems.clear();
+	const unsigned size = STARMAP_SECTORS_HCOUNT*STARMAP_SECTORS_VCOUNT;
+	m_Sectors.resize(size);
+	m_Systems.resize(size);
  }

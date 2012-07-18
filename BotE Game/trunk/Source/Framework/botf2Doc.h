@@ -40,8 +40,8 @@ protected: // Nur aus Serialisierung erzeugen
 	BYTE m_iShowWhichTechInView3;		///< Welche Tech soll in View3 angezeigt werden?
 	short m_iShowWhichShipInfoInView3;	///< Welche Schiffsinfo soll in View 3 angezeigt werden
 
-	std::vector<std::vector<CSector>> m_Sector;
-	std::vector<std::vector<CSystem>> m_System;
+	std::vector<CSector> m_Sectors;
+	std::vector<CSystem> m_Systems;
 
 	//CSector** m_Sector/*[STARMAP_SECTORS_HCOUNT][STARMAP_SECTORS_VCOUNT]*/;	///< Matrix von Sektoren der Klasse CSector anlegen
 	//CSystem** m_System/*[STARMAP_SECTORS_HCOUNT][STARMAP_SECTORS_VCOUNT]*/;	///< auf jeden Sektor ein potentielles System anlegen

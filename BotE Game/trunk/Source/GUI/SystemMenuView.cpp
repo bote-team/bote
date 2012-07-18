@@ -390,7 +390,7 @@ void CSystemMenuView::DrawBuildMenue(Graphics* g)
 
 		// noch verbleibende Runden bis das Projekt fertig wird
 		int nRounds = pDoc->GetSystem(p).GetNeededRoundsToCompleteProject(m_vBuildlist[i]);
-		BOOLEAN bCanAddToAssemblyList = pDoc->GetSystem(p).GetAssemblyList()->MakeEntry(m_vBuildlist[i], p, pDoc->m_System, true);
+		BOOLEAN bCanAddToAssemblyList = pDoc->GetSystem(p).GetAssemblyList()->MakeEntry(m_vBuildlist[i], p, pDoc->m_Systems, true);
 		if (!bCanAddToAssemblyList)
 		{
 			// Schrift dunkler darstellen, wenn das Projekt aufgrund nicht ausreichender Rohstoffe nicht gebaut werden kann
@@ -3108,7 +3108,7 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 				pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetAssemblyList()->SetWasBuildingBought(FALSE);
 				pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
 			}
-			pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetAssemblyList()->ClearAssemblyList(p, pDoc->m_System);
+			pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetAssemblyList()->ClearAssemblyList(p, pDoc->m_Systems);
 			// Nach ClearAssemblyList müssen wir die Funktion CalculateVariables() aufrufen
 			pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).CalculateVariables(&pDoc->BuildingInfo, pMajor->GetEmpire()->GetResearch()->GetResearchInfo(),
 				pDoc->m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetPlanets(), pMajor, CTrade::GetMonopolOwner());
@@ -3565,7 +3565,7 @@ void CSystemMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 				else if (pDoc->GetSystem(p).GetBuildableTroops()->GetSize() > 0)
 					pDoc->GetSystem(p).GetAssemblyList()->CalculateNeededRessources(0,0,&pDoc->m_TroopInfo.GetAt(nID - 20000), pDoc->GetSystem(p).GetAllBuildings(), nID, pMajor->GetEmpire()->GetResearch()->GetResearchInfo());
 
-				if (pDoc->GetSystem(p).GetAssemblyList()->MakeEntry(nID, p, pDoc->m_System))
+				if (pDoc->GetSystem(p).GetAssemblyList()->MakeEntry(nID, p, pDoc->m_Systems))
 				{
 					// Baulistencheck machen, wenn wir kein Schiff reingesetzt haben.
 					// Den Check nur machen, wenn wir ein Update oder ein Gebäude welches eine Maxanzahl voraussetzt
@@ -3656,7 +3656,7 @@ void CSystemMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 					pDoc->GetSystem(p).GetAssemblyList()->SetWasBuildingBought(FALSE);
 					pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
 				}
-				pDoc->GetSystem(p).GetAssemblyList()->ClearAssemblyList(p, pDoc->m_System);
+				pDoc->GetSystem(p).GetAssemblyList()->ClearAssemblyList(p, pDoc->m_Systems);
 				// Nach ClearAssemblyList müssen wir die Funktion CalculateVariables() aufrufen
 				pDoc->GetSystem(p).CalculateVariables(&pDoc->BuildingInfo, pMajor->GetEmpire()->GetResearch()->GetResearchInfo(),pDoc->m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetPlanets(), pMajor, CTrade::GetMonopolOwner());
 				// Baulistencheck machen, wenn wir kein Schiff reingesetzt haben.
@@ -3847,7 +3847,7 @@ void CSystemMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 			else if (pDoc->GetSystem(p).GetBuildableTroops()->GetSize() > 0)
 				pDoc->GetSystem(p).GetAssemblyList()->CalculateNeededRessources(0,0,&pDoc->m_TroopInfo.GetAt(nID - 20000), pDoc->GetSystem(p).GetAllBuildings(), nID, pMajor->GetEmpire()->GetResearch()->GetResearchInfo());
 
-			if (pDoc->GetSystem(p).GetAssemblyList()->MakeEntry(nID, p, pDoc->m_System))
+			if (pDoc->GetSystem(p).GetAssemblyList()->MakeEntry(nID, p, pDoc->m_Systems))
 			{
 				// Baulistencheck machen, wenn wir kein Schiff reingesetzt haben.
 				// Den Check nur machen, wenn wir ein Update oder ein Gebäude welches eine Maxanzahl voraussetzt
