@@ -303,7 +303,7 @@ void CBotf2App::OnOpenCredits()
 {
 	// TODO: Add your command handler code here
 	CString sFile = CIOData::GetInstance()->GetAppPath() + "\\Graphics\\Buildings\\CreditsBuildings.txt";
-	HINSTANCE hInst = ShellExecute(0,
+	/*HINSTANCE hInst =*/ ShellExecute(0,
 		"open",		// Operation to perform
 		sFile,		// Application name
         "",			// Additional parameters
@@ -311,7 +311,7 @@ void CBotf2App::OnOpenCredits()
         SW_SHOW);
 
 	sFile = CIOData::GetInstance()->GetAppPath() + "\\Graphics\\Ships\\CreditsShips.txt";
-	hInst = ShellExecute(0,
+	/*hInst =*/ ShellExecute(0,
 		"open",		// Operation to perform
 		sFile,		// Application name
         "",			// Additional parameters
@@ -319,7 +319,7 @@ void CBotf2App::OnOpenCredits()
         SW_SHOW);
 
 	sFile = CIOData::GetInstance()->GetAppPath() + "\\Graphics\\Troops\\CreditsTroops.txt";
-	hInst = ShellExecute(0,
+	/*hInst =*/ ShellExecute(0,
 		"open",		// Operation to perform
 		sFile,		// Application name
         "",			// Additional parameters
@@ -327,7 +327,7 @@ void CBotf2App::OnOpenCredits()
         SW_SHOW);
 
 	sFile = CIOData::GetInstance()->GetAppPath() + "\\Graphics\\Planets\\CreditsPlanets.txt";
-	hInst = ShellExecute(0,
+	/*hInst =*/ ShellExecute(0,
 		"open",		// Operation to perform
 		sFile,		// Application name
         "",			// Additional parameters
