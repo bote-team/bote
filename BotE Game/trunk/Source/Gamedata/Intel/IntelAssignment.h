@@ -62,7 +62,7 @@ public:
 	/// Funktion gibt das Feld der globalen Zuteilung zurück.
 	/// @param sRace Rasse
 	/// @param nType (0 für Spionage, 1 für Sabotage
-	BYTE GetGlobalPercentage(const CString& sRace, BYTE nType) {ASSERT(nType >= 0 && nType <= 1); return m_byPercentage[nType][sRace];}
+	BYTE GetGlobalPercentage(const CString& sRace, BYTE nType) {ASSERT(nType <= 1); return m_byPercentage[nType][sRace];}
 
 	/// Funktion ändert die globale prozentuale Zuteilung der einzelnen Geheimdienstressorts. Dabei wird wenn
 	/// nötig die Zuteilung der anderen Ressorts verändert.
