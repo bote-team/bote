@@ -357,10 +357,9 @@ USHORT CSystem::GetNumberOfWorkbuildings(WORKER::Typ nWorker, int Modus, Buildin
 	// des speziellen Gebäudes zurückgegeben wird
 	// Modus == 0 -> Anzahl
 	// Modus == 1 -> RunningNumber
-	USHORT returnValue = 0;
-	USHORT runningNumber = 0;
 	if (Modus == 0)
 	{
+		USHORT returnValue = 0;
 		if (nWorker == WORKER::FOOD_WORKER) returnValue = m_iFoodBuildings;
 		else if (nWorker == WORKER::INDUSTRY_WORKER) returnValue = m_iIndustryBuildings;
 		else if (nWorker == WORKER::ENERGY_WORKER) returnValue = m_iEnergyBuildings;
@@ -382,6 +381,7 @@ USHORT CSystem::GetNumberOfWorkbuildings(WORKER::Typ nWorker, int Modus, Buildin
 
 			if (buildingInfo->GetWorker())
 			{
+				USHORT runningNumber = 0;
 				if (nWorker == WORKER::FOOD_WORKER)
 				{
 					if (buildingInfo->GetFoodProd())
