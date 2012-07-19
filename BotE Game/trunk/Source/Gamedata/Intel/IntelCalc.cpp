@@ -710,9 +710,9 @@ BOOLEAN CIntelCalc::ExecuteScienceSpy(CMajor* pRace, CMajor* pEnemyRace, CMajor*
 		if (rand()%4 == NULL)	// zu 25% wird versucht ein arbeiterfreies Gebäude zu spionieren
 		{
 			int number = m_pDoc->m_Systems.at(sectors.GetAt(random).x+(sectors.GetAt(random).y)*STARMAP_SECTORS_HCOUNT).GetAllBuildings()->GetSize();
-			int j = 0;
 			if (number > NULL)
 			{
+				int j = 0;
 				// zufällig ein Gebäude aussuchen
 				for (int i = rand()%number; i < number; i++)
 				{
