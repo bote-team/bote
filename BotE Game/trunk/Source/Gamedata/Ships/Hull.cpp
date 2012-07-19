@@ -115,11 +115,11 @@ void CHull::ModifyHull(BOOLEAN DoubleHull, UINT BaseHull, BYTE HullMaterial, BOO
 
 void CHull::SetCurrentHull(int add, bool bIgnoreHullSpecials/* = false*/)
 {
-	double multi = 0.0f;
 	// wenn die Hülle die Polarisationseigenschaft hat, dann werden 10% des Schadens abgezogen
 
 	if (bIgnoreHullSpecials == false)
 	{
+		double multi = 0.0f;
 		if (GetPolarisation() && add < 0)
 			multi += 0.1;
 		if (GetAblative() && add < 0)
