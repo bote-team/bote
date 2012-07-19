@@ -72,6 +72,6 @@ void CFireArc::SetValues(USHORT nMountPos, USHORT nAngle)
 	m_nMountPos	= nMountPos;
 	m_nAngle	= nAngle;
 
-	ASSERT(m_nMountPos >= 0 && m_nMountPos <= 360);
-	ASSERT(m_nAngle >= 0 && m_nAngle <= 360);
+	ASSERT(m_nMountPos <= 360);
+	ASSERT(m_nAngle <= 360);
 }
