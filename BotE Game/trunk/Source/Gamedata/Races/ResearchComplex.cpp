@@ -347,15 +347,14 @@ void CResearchComplex::Reset()
 /// auf die entsprechenden Variablen.
 void CResearchComplex::ReadSpecialTech(RESEARCH_COMPLEX::Typ nComplex)
 {
-	int i = 0;
-	int j = nComplex * 8;
-	int z = 0;
-
 	CString data[8];
 	CString fileName = CIOData::GetInstance()->GetAppPath() + "Data\\Names\\Specialtechs.data";	// Name des zu Öffnenden Files
 	CStdioFile file;												// Varibale vom Typ CStdioFile
 	if (file.Open(fileName, CFile::shareDenyNone | CFile::modeRead | CFile::typeText))	// Datei wird geöffnet
 	{
+		int i = 0;
+		int z = 0;
+		int j = nComplex * 8;
 		CString csInput; // auf csInput wird die jeweilige Zeile gespeichert
 		bool bFound = false;
 		while (file.ReadString(csInput))
