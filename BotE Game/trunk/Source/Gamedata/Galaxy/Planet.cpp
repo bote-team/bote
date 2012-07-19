@@ -465,22 +465,18 @@ void CPlanet::PlanetGrowth(void)
 /// Subtrahiert "sub" von den Terraformpoints, bei kleiner 0 wird der Plani auf m_bTerraformed = TRUE gesetzt und ein
 /// TRUE zurückgegeben, ansonsten wird ein FALSE zurückgegeben
 /// Wenn der Planet noch nicht fertig geterraformt ist, wird m_bIsTerraforming auf TRUE gesetzt
-BOOLEAN CPlanet::SetNeededTerraformPoints(BYTE sub)
+BOOLEAN CPlanet::SetNeededTerraformPoints(const unsigned sub)
 {
-	if ((m_iNeededTerraformPoints - sub) < 0)
-		sub = m_iNeededTerraformPoints;
-	m_iNeededTerraformPoints -= sub;
-	if (m_iNeededTerraformPoints <= 0)
+	const int result = m_iNeededTerraformPoints - sub;
+	m_iNeededTerraformPoints = max(result, 0);
+	if (m_iNeededTerraformPoints == 0)
 	{
 		m_bIsTerraforming = FALSE;
 		m_bTerraformed = TRUE;
 		return TRUE;
 	}
-	else
-	{
-		m_bIsTerraforming = TRUE;
-		return FALSE;
-	}
+	m_bIsTerraforming = TRUE;
+	return FALSE;
 }
 
 /// Diese Funktion generiert einen eventuellen Bonus anhand einer speziellen Wahrscheinlichkeitstabelle.

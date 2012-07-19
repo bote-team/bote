@@ -96,7 +96,7 @@ public:
 	void SetName(const CString& Name) {m_strName = Name;}
 	void SetClass(char Class) {m_cClass = Class;}
 	void SetPlanetGrowth() {m_dGrowing = m_dMaxHabitant/4;} // Wenn hier was geändert, auch in GeneratePlanet was ändern
-	BOOLEAN SetNeededTerraformPoints(BYTE sub);				// Subtrahiert "sub" von den Terraformpoints, bei kleiner 0 wird der Plani auf m_bTerraformed = TRUE gesetzt
+	BOOLEAN SetNeededTerraformPoints(const unsigned sub);				// Subtrahiert "sub" von den Terraformpoints, bei kleiner 0 wird der Plani auf m_bTerraformed = TRUE gesetzt
 	void SetBoni(BOOLEAN titan, BOOLEAN deuterium, BOOLEAN duranium, BOOLEAN crystal, BOOLEAN iridium, BOOLEAN deritium, BOOLEAN food, BOOLEAN energy);
 	void SetBoni(BYTE res, BOOLEAN is) {m_bBoni[res] = is;}
 
@@ -151,7 +151,7 @@ private:
 	BOOLEAN m_bTerraformed;			///< Wurde der Planet terraformt?
 	BOOLEAN m_bIsTerraforming;		///< Wird der Planet gerade geterraformt?
 	CString m_strName;				///< Name des Planeten
-	BYTE m_iNeededTerraformPoints;	///< nötige Terraformpunkte um den Planeten zu terraformen
+	unsigned m_iNeededTerraformPoints;	///< nötige Terraformpunkte um den Planeten zu terraformen
 	BYTE m_iStartTerraformPoints;	///< nötigen Terraformpunkte am Anfang, brauchen wir um den prozentualen Fortschritt berechnen zu können
 	char m_cClass;					///< Die Klasse nochmal als Buchstabe
 	BOOLEAN m_bBoni[8];				///< Gibt es einen bestimmten Bonus auf dem Planeten, TITAN, ..., IRDIUM, DERITIUM, FOOD, ENERGY
