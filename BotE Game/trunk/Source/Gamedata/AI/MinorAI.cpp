@@ -513,7 +513,7 @@ void CMinorAI::CalcOtherMajorsRelationChange(const CDiplomacyInfo& info, short n
 		m_pRace->SetRelation(vKnownMajors[nRace].sID, -1);
 		nRace++;
 		nRelationChange--;
-		if (nRace == vKnownMajors.size())
+		if (nRace == static_cast<int>(vKnownMajors.size()))
 			nRace = 0;
 	}
 }

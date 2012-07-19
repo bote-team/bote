@@ -10,7 +10,7 @@
 #pragma warning( 3 : 4701 )//Potenziell nicht initialisierte lokale Variable 'Name' verwendet
 #pragma warning( 3 : 4189 )//'Bezeichner': Lokale Variable ist initialisiert, aber nicht referenziert
 //#pragma warning( 3 : 4100 )//Unreferenzierter formaler Parameter
-//#pragma warning( 3 : 4389 )//'Operator': Konflikt zwischen signed und unsigned
+#pragma warning( 3 : 4389 )//'Operator': Konflikt zwischen signed und unsigned
 
 #ifndef _SECURE_ATL
 #define _SECURE_ATL 1

@@ -234,7 +234,7 @@ afx_msg void CChooseRacePage::OnChooseRace(UINT nID)
 	using namespace network;
 
 	// IDs der Buttons
-	int ids[] = {IDC_RACE, IDC_RACE2, IDC_RACE3, IDC_RACE4, IDC_RACE5, IDC_RACE6};
+	unsigned ids[] = {IDC_RACE, IDC_RACE2, IDC_RACE3, IDC_RACE4, IDC_RACE5, IDC_RACE6};
 
 	for (int i = 0; i < RACE_COUNT; i++)
 	{

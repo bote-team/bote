@@ -397,7 +397,7 @@ void CPlanetBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 					pDoc->m_ShipArray.ElementAt(pDoc->GetCurrentShipIndex()).SetTerraformingPlanet(i);
 					pDoc->m_Sectors.at(pDoc->GetKO().x+(pDoc->GetKO().y)*STARMAP_SECTORS_HCOUNT).GetPlanet(i)->SetIsTerraforming(TRUE);
 					// den Terraformingbefehl zurücknehmen, wenn kein anderes Schiff diesen Planeten mehr terraform
-					if (i != nOldTerraformingPlanet && nOldTerraformingPlanet != -1)
+					if (static_cast<short>(i) != nOldTerraformingPlanet && nOldTerraformingPlanet != -1)
 					{
 						for (int y = 0; y < pDoc->m_ShipArray.GetSize(); y++)
 							if (pDoc->m_ShipArray[y].GetKO() == pDoc->GetKO() && pDoc->m_ShipArray[y].GetTerraformingPlanet() == nOldTerraformingPlanet)
