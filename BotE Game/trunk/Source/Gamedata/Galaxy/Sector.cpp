@@ -158,7 +158,6 @@ void CSector::Serialize(CArchive &ar)
 	else
 	// Alle Variablen in der richtigen Reihenfolge lesen
 	{
-		int number = 0;
 		ar >> m_Attributes;
 		ar >> m_KO;
 
@@ -282,6 +281,7 @@ void CSector::Serialize(CArchive &ar)
 		{
 			ar >> m_strSectorName;
 			ar >> m_bySunColor;
+			int number = 0;
 			ar >> number;
 			m_Planets.clear();
 			m_Planets.resize(number);
