@@ -201,13 +201,13 @@ void CResearchInfo::SetTechInfos(BYTE tech, BYTE level)
 /// übergeben werden.
 void CResearchInfo::GetTechInfos(BYTE tech, BYTE level, CString& sTechName, CString& sTechDesc)
 {
-	int i = 0;
-	int j = level * 12 + tech * 2;
 	CString csInput;											// auf csInput wird die jeweilige Zeile gespeichert
 	CString fileName = CIOData::GetInstance()->GetAppPath() + "Data\\Names\\Techs.data";		// Name des zu öffnenden Files
 	CStdioFile file;											// Varibale vom Typ CStdioFile
 	if (file.Open(fileName, CFile::shareDenyNone | CFile::modeRead | CFile::typeText))	// Datei wird geöffnet
 	{
+		int i = 0;
+		int j = level * 12 + tech * 2;
 		while (file.ReadString(csInput))
 		{
 			if (i == j)
