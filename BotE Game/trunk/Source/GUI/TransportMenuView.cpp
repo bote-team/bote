@@ -462,7 +462,6 @@ void CTransportMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 	{
 		if (systemOwner == shipOwner)
 		{
-			int usedStorage = 0;
 			if (i < 7)
 			{
 				// handelt es sich um Truppen
@@ -549,6 +548,7 @@ void CTransportMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			// kleine Pfeilbuttons checken (rechts) -> auch checken ob genug Lagerraum vorhanden ist
 			else
 			{
+				int usedStorage = 0;
 				i -= 7;
 
 				// handelt es sich um Truppen
