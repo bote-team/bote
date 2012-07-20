@@ -1043,7 +1043,6 @@ SIZE CPPHtmlDrawer::DrawHtmlTable (CPPString & sTable, LPCRECT lpRect)
 	m_nCurTable++;
 
 	int i;
-	UINT pos;
 	SIZE size = {0, 0};
 	SIZE szTable;
 	RECT rcTable = {0, 0, 0, 0};
@@ -1114,6 +1113,7 @@ SIZE CPPHtmlDrawer::DrawHtmlTable (CPPString & sTable, LPCRECT lpRect)
 
 	if (MODE_FIRSTPASS != m_nNumPass)
 	{
+		UINT pos;
 		//ENG: Gets a real size of the table
 		//RUS: Получаем реальные размеры таблицы
 		rcTable.left = lpRect->left;
