@@ -218,7 +218,7 @@ void CCeXDib::SetPaletteIndex(BYTE byIdx, BYTE byR, BYTE byG, BYTE byB)
 	if (m_hDib && m_wColors)
 	{
 		LPBYTE iDst = (LPBYTE)(m_hDib) + sizeof(BITMAPINFOHEADER);
-		if ((byIdx >= 0) && (byIdx < m_wColors))
+		if (byIdx < m_wColors)
 		{
 			long ldx = byIdx * sizeof(RGBQUAD);
 			iDst[ldx++] = (BYTE)byB;
