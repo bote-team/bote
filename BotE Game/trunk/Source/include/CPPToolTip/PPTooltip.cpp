@@ -1798,7 +1798,7 @@ HWND CPPToolTip::FindToolBarItem(POINT point, PPTOOLTIP_INFO & ti)
 {
 	//ENG: Toolbar control was disabled
 	//RUS: Контроль за подсказками к панелям инструментов отключен
-	if (!m_wndToolBars.size())
+	if (m_wndToolBars.empty())
 		return NULL;
 
 	//ENG: Gets a window under mouse
@@ -2060,12 +2060,12 @@ void CPPToolTip::RemoveAllTools()
 
 	//ENG: Removes all tools
 	//RUS: Удаляем все инструменты
-	if (m_ToolMap.size())
+	if (!m_ToolMap.empty())
 		m_ToolMap.clear();
 
 	//ENG: Removes all toolbars
 	//RUS: Удаляем все панели инструментов
-	if (m_wndToolBars.size())
+	if (!m_wndToolBars.empty())
 		m_wndToolBars.clear();
 } //End of RemoveAllTools
 
