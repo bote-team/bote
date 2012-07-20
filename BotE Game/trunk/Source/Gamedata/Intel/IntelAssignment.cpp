@@ -28,17 +28,17 @@ void CIntelAssignment::Serialize(CArchive &ar)
 		for (int i = 0; i < 2; i++)
 		{
 			ar << m_byPercentage[i].size();
-			for (map<CString, BYTE>::const_iterator it = m_byPercentage[i].begin(); it != m_byPercentage[i].end(); it++)
+			for (map<CString, BYTE>::const_iterator it = m_byPercentage[i].begin(); it != m_byPercentage[i].end(); ++it)
 				ar << it->first << it->second;
 		}
 		for (int i = 0; i < 4; i++)
 		{
 			ar << m_bySpyPercentage[i].size();
-			for (map<CString, BYTE>::const_iterator it = m_bySpyPercentage[i].begin(); it != m_bySpyPercentage[i].end(); it++)
+			for (map<CString, BYTE>::const_iterator it = m_bySpyPercentage[i].begin(); it != m_bySpyPercentage[i].end(); ++it)
 				ar << it->first << it->second;
 
 			ar << m_bySabPercentage[i].size();
-			for (map<CString, BYTE>::const_iterator it = m_bySabPercentage[i].begin(); it != m_bySabPercentage[i].end(); it++)
+			for (map<CString, BYTE>::const_iterator it = m_bySabPercentage[i].begin(); it != m_bySabPercentage[i].end(); ++it)
 				ar << it->first << it->second;
 		}
 	}
@@ -89,9 +89,9 @@ void CIntelAssignment::Serialize(CArchive &ar)
 BYTE CIntelAssignment::GetInnerSecurityPercentage() const
 {
 	int perc = 100;
-	for (map<CString, BYTE>::const_iterator it = m_byPercentage[0].begin(); it != m_byPercentage[0].end(); it++)
+	for (map<CString, BYTE>::const_iterator it = m_byPercentage[0].begin(); it != m_byPercentage[0].end(); ++it)
 		perc -= it->second;
-	for (map<CString, BYTE>::const_iterator it = m_byPercentage[1].begin(); it != m_byPercentage[1].end(); it++)
+	for (map<CString, BYTE>::const_iterator it = m_byPercentage[1].begin(); it != m_byPercentage[1].end(); ++it)
 		perc -= it->second;
 	return perc;
 }
@@ -149,7 +149,7 @@ BYTE CIntelAssignment::GetSabotagePercentages(const CString& sRace, BYTE type)
 void CIntelAssignment::SetGlobalPercentage(BYTE type, BYTE perc, CMajor* pMajor, const CString& sRace, const map<CString, CMajor*>* pmMajors)
 {
 	USHORT known = 0;
-	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 	{
 		if (it->first != pMajor->GetRaceID() && pMajor->IsRaceContacted(it->first))
 			known++;
@@ -169,7 +169,7 @@ void CIntelAssignment::SetGlobalPercentage(BYTE type, BYTE perc, CMajor* pMajor,
 	if (type == 2 && known > 0)
 	{
 		map<CString, int> percentages[2];
-		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 		{
 			percentages[0][it->first] = m_byPercentage[0][it->first];
 			percentages[1][it->first] = m_byPercentage[1][it->first];
@@ -183,7 +183,7 @@ void CIntelAssignment::SetGlobalPercentage(BYTE type, BYTE perc, CMajor* pMajor,
 			int rest = diff - t * (known * 2);
 			// gleichen Anteil auf alle Gebiete von bekannten Rassen verteilen
 			CArray<CString> vRandoms;
-			for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+			for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 				if (it->first != pMajor->GetRaceID() && pMajor->IsRaceContacted(it->first))
 				{
 					vRandoms.Add(it->first);
@@ -198,7 +198,7 @@ void CIntelAssignment::SetGlobalPercentage(BYTE type, BYTE perc, CMajor* pMajor,
 			}
 
 			// überprüfen das nirgends mehr als 100% oder weniger als 0% vorhanden sind
-			for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+			for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 				for (int j = 0; j < 2; j++)
 				{
 					if (percentages[j][it->first] < 0)
@@ -207,7 +207,7 @@ void CIntelAssignment::SetGlobalPercentage(BYTE type, BYTE perc, CMajor* pMajor,
 						percentages[j][it->first] = 100;
 				}
 
-			for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+			for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 			{
 				m_byPercentage[0][it->first] = percentages[0][it->first];
 				m_byPercentage[1][it->first] = percentages[1][it->first];

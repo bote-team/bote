@@ -166,7 +166,7 @@ void CCombat::PreCombatCalculation()
 		int nSmallest = INT_MAX;
 		int nDifferentTypes = mShipTypes.size();
 		// Schiffstypen durchgehen
-		for (std::map<BYTE, int>::const_iterator types = mShipTypes.begin(); types != mShipTypes.end(); types++)
+		for (std::map<BYTE, int>::const_iterator types = mShipTypes.begin(); types != mShipTypes.end(); ++types)
 			nSmallest = min(nSmallest, types->second);
 
 		// Schaffen wir den Wert nicht

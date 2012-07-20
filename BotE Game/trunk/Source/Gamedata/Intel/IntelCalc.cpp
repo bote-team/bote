@@ -46,7 +46,7 @@ void CIntelCalc::StartCalc(CMajor* pRace)
 	// zuerst werden die Geheimdienstgegner ermittelt. Nur wenn bei einem Gegner mehr als NULL resultierende
 	// Geheimdienstpunkte vorhanden sind ist es ein wirklicher Gegner.
 	map<CString, CMajor*>* pmMajors = m_pDoc->GetRaceCtrl()->GetMajors();
-	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 		if (it->first != pRace->GetRaceID())
 		{
 			m_iSpySP[it->first] = pIntel->GetSecurityPoints() *	pIntel->GetAssignment()->GetGlobalSpyPercentage(it->first) / 100;
@@ -54,7 +54,7 @@ void CIntelCalc::StartCalc(CMajor* pRace)
 		}
 
 	// dann können die Geheimdienstaktionen gestartet werden
-	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 		if (it->first != pRace->GetRaceID())
 		{
 			// sind effektive Geheimdienstpunkte für Spionage gegen Rasse i vorhanden oder es befinden sich Punkte im Depot?
@@ -152,7 +152,7 @@ void CIntelCalc::AddPoints(CMajor* pRace)
 
 	// Punkte den einzelnen Depots hinzufügen (hier kein Bonus durch eventuelle Boni auf die einzelnen Ressorts)
 	map<CString, CMajor*>* pmMajors = m_pDoc->GetRaceCtrl()->GetMajors();
-	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 		if (it->first != pRace->GetRaceID())
 		{
 			// Spionagedepot auffüllen
@@ -255,7 +255,7 @@ void CIntelCalc::ReduceDepotPoints(CMajor* pRace, int perc)
 	pIntel->AddInnerSecurityPoints(-diff);
 
 	map<CString, CMajor*>* pmMajors = m_pDoc->GetRaceCtrl()->GetMajors();
-	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 		if (it->first != pRace->GetRaceID())
 		{
 			// Wenn die Rasse kein Systeme mehr besitzt, also ausgelöscht wurde, so verschwinden alle
@@ -980,12 +980,12 @@ BOOLEAN CIntelCalc::ExecuteDiplomacySpy(CMajor* pRace, CMajor* pEnemyRace, CMajo
 	CArray<CString> minors;
 
 	map<CString, CMinor*>* pmMinors = m_pDoc->GetRaceCtrl()->GetMinors();
-	for (map<CString, CMinor*>::const_iterator it = pmMinors->begin(); it != pmMinors->end(); it++)
+	for (map<CString, CMinor*>::const_iterator it = pmMinors->begin(); it != pmMinors->end(); ++it)
 		if (pEnemyRace->IsRaceContacted(it->first))
 			minors.Add(it->first);
 	CArray<CString> majors;
 	map<CString, CMajor*>* pmMajors = m_pDoc->GetRaceCtrl()->GetMajors();
-	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 		if (it->first != pRace->GetRaceID() && it->first != pEnemyRace->GetRaceID())
 			if (pEnemyRace->IsRaceContacted(it->first))
 				majors.Add(it->first);

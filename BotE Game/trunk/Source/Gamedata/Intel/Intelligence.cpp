@@ -35,12 +35,12 @@ void CIntelligence::Serialize(CArchive &ar)
 		for (int i = 0; i < 2; i++)
 		{
 			ar << m_iSPStorage[i].size();
-			for (map<CString, UINT>::const_iterator it = m_iSPStorage[i].begin(); it != m_iSPStorage[i].end(); it++)
+			for (map<CString, UINT>::const_iterator it = m_iSPStorage[i].begin(); it != m_iSPStorage[i].end(); ++it)
 			{
 				ar << it->first << it->second;
 			}
 			ar << m_byAggressiveness[i].size();
-			for (map<CString, BYTE>::const_iterator it = m_byAggressiveness[i].begin(); it != m_byAggressiveness[i].end(); it++)
+			for (map<CString, BYTE>::const_iterator it = m_byAggressiveness[i].begin(); it != m_byAggressiveness[i].end(); ++it)
 			{
 				ar << it->first << it->second;
 			}

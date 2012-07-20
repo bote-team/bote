@@ -320,7 +320,7 @@ FMOD::Sound *CSoundManager::LoadSound(SNDMGR_VALUE nSound, network::RACE nRace)
 {
 	// wenn schon geladen, ans Ende der Liste stellen und zurückgeben
 	UINT nIdx = 0;
-	for (SNDMGR_SOUNDLIST::iterator it = m_lSounds.begin(); it != m_lSounds.end(); it++, nIdx++)
+	for (SNDMGR_SOUNDLIST::iterator it = m_lSounds.begin(); it != m_lSounds.end(); ++it, nIdx++)
 	{
 		if ((*it).nType == nSound)
 		{
@@ -367,7 +367,7 @@ void CSoundManager::UnloadAllSounds()
 	if (!m_pSystem) return;
 
 	// alle Sounds freigeben
-	for (SNDMGR_SOUNDLIST::iterator it = m_lSounds.begin(); it != m_lSounds.end(); it++)
+	for (SNDMGR_SOUNDLIST::iterator it = m_lSounds.begin(); it != m_lSounds.end(); ++it)
 		(*it).pSound->release();
 	// sämtliche Einträge der Liste entfernen
 	m_lSounds.clear();

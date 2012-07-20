@@ -161,7 +161,7 @@ void CMajor::SetAgreement(const CString& sOtherRace, DIPLOMATIC_AGREEMENT::Typ n
 	// Bei Krieg erlischt der Verteidigungspakt und bei einem Bündnis bekommen wir den automatisch
 	if (nNewAgreement == DIPLOMATIC_AGREEMENT::WAR || nNewAgreement == DIPLOMATIC_AGREEMENT::AFFILIATION)
 	{
-		for (vector<CString>::iterator it = m_vDefencePact.begin(); it != m_vDefencePact.end(); it++)
+		for (vector<CString>::iterator it = m_vDefencePact.begin(); it != m_vDefencePact.end(); ++it)
 			if (*it == sOtherRace)
 			{
 				m_vDefencePact.erase(it);
@@ -196,7 +196,7 @@ void CMajor::SetDefencePact(const CString& sOtherRace, bool nIs)
 		m_vDefencePact.push_back(sOtherRace);
 	else if (!nIs && GetDefencePact(sOtherRace))
 	{
-		for (vector<CString>::iterator it = m_vDefencePact.begin(); it != m_vDefencePact.end(); it++)
+		for (vector<CString>::iterator it = m_vDefencePact.begin(); it != m_vDefencePact.end(); ++it)
 			if (*it == sOtherRace)
 			{
 				m_vDefencePact.erase(it);

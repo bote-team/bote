@@ -350,7 +350,7 @@ void CTradeMenuView::DrawMonopolMenue(Graphics* g)
 	USHORT otherKnownEmpires  = 0;
 
 	map<CString, CMajor*>* pmMajors = pDoc->GetRaceCtrl()->GetMajors();
-	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 		if (it->second->GetEmpire()->GetNumberOfSystems() > 0 && it->first != pMajor->GetRaceID())
 		{
 			otherEmpiresInGame++;

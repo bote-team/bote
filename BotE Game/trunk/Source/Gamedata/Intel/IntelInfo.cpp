@@ -101,7 +101,7 @@ void CIntelInfo::CalcIntelInfo(CBotf2Doc* pDoc, CMajor* pOurRace)
 	map<CString, CMajor*>* pmMajors = pDoc->GetRaceCtrl()->GetMajors();
 	// Minorracearray durchlaufen und bekannte bzw. vermitgliederte Minors einer anderen Rasse raussuchen
 	map<CString, CMinor*>* pmMinors = pDoc->GetRaceCtrl()->GetMinors();
-	for (map<CString, CMinor*>::const_iterator it = pmMinors->begin(); it != pmMinors->end(); it++)
+	for (map<CString, CMinor*>::const_iterator it = pmMinors->begin(); it != pmMinors->end(); ++it)
 	{
 		CMinor* pMinor = it->second;
 		if(pMinor->IsAlienRace())
@@ -113,7 +113,7 @@ void CIntelInfo::CalcIntelInfo(CBotf2Doc* pDoc, CMajor* pOurRace)
 		CPoint ko = pMinor->GetRaceKO();
 		if (ko != CPoint(-1,-1) && pMinor->GetAgreement(pOurRace->GetRaceID()) >= DIPLOMATIC_AGREEMENT::FRIENDSHIP)
 		{
-			for (map<CString, CMajor*>::const_iterator jt = pmMajors->begin(); jt != pmMajors->end(); jt++)
+			for (map<CString, CMajor*>::const_iterator jt = pmMajors->begin(); jt != pmMajors->end(); ++jt)
 				if (jt->first != pOurRace->GetRaceID())
 					if (pMinor->IsRaceContacted(jt->first))
 						if (races[ko.x][ko.y][jt->first] < 1)
@@ -123,7 +123,7 @@ void CIntelInfo::CalcIntelInfo(CBotf2Doc* pDoc, CMajor* pOurRace)
 		// die andere Rasse eine Mitgliedschaft zu der Minorrace haben.
 		else if (pDoc->m_Sectors.at(ko.x+(ko.y)*STARMAP_SECTORS_HCOUNT).GetKnown(pOurRace->GetRaceID()))
 		{
-			for (map<CString, CMajor*>::const_iterator jt = pmMajors->begin(); jt != pmMajors->end(); jt++)
+			for (map<CString, CMajor*>::const_iterator jt = pmMajors->begin(); jt != pmMajors->end(); ++jt)
 				if (jt->first != pOurRace->GetRaceID())
 					if (jt->second->IsRaceContacted(pOurRace->GetRaceID()))
 						if (pMinor->GetAgreement(jt->first) == DIPLOMATIC_AGREEMENT::MEMBERSHIP)
@@ -140,7 +140,7 @@ void CIntelInfo::CalcIntelInfo(CBotf2Doc* pDoc, CMajor* pOurRace)
 	// zuerst durch das, was man auf der Karte als markiertes Gebiet sieht
 	for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
 		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-			for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+			for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 			{
 				if (it->second->IsRaceContacted(pOurRace->GetRaceID()) || it->first == pOurRace->GetRaceID())
 					if (pDoc->m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetScanned(pOurRace->GetRaceID()))

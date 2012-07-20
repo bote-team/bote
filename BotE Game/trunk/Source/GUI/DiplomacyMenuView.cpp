@@ -1671,7 +1671,7 @@ void CDiplomacyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 	// wenn wir nicht im Angebotseingangsbildschirm sind
 	if (m_bySubMenu != 2)
 	{
-		for (vector<CRace*>::iterator it = m_vRaceList.begin(); it != m_vRaceList.end(); it++)
+		for (vector<CRace*>::iterator it = m_vRaceList.begin(); it != m_vRaceList.end(); ++it)
 		{
 			CRace* pRace = *it;
 			// wenn wir nicht im Angebotseingangsbildschirm sind
@@ -1772,7 +1772,7 @@ void CDiplomacyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			else
 			{
 				// Angebote durchgehen, suchen ob wir schon eine Kündigung bei der Rasse gemacht haben
-				for (vector<CDiplomacyInfo>::iterator it = pPlayer->GetOutgoingDiplomacyNews()->begin(); it != pPlayer->GetOutgoingDiplomacyNews()->end(); it++)
+				for (vector<CDiplomacyInfo>::iterator it = pPlayer->GetOutgoingDiplomacyNews()->begin(); it != pPlayer->GetOutgoingDiplomacyNews()->end(); ++it)
 				{
 					m_OutgoingInfo = *it;
 					if (m_OutgoingInfo.m_nType == DIPLOMATIC_AGREEMENT::NONE && m_OutgoingInfo.m_sToRace == m_sClickedOnRace && m_OutgoingInfo.m_sFromRace == pPlayer->GetRaceID())
@@ -2011,7 +2011,7 @@ void CDiplomacyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 							it = pmMajors->begin();
 						while (1)
 						{
-							it++;
+							++it;
 							if (it == pmMajors->end())
 								it = pmMajors->begin();
 
@@ -2029,7 +2029,7 @@ void CDiplomacyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 					// ansonsten können wir nur bestechen, wenn eine andere Rasse mindst. ein Bündnis mit der Minor hat
 					else
 					{
-						for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); it++)
+						for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 						{
 							if (it->first != pPlayer->GetRaceID() && pClickedRace->GetAgreement(it->first) >= DIPLOMATIC_AGREEMENT::AFFILIATION)
 							{
@@ -2212,11 +2212,11 @@ BOOL CDiplomacyMenuView::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 				{
 					if (zDelta < 0)
 					{
-						it++;
+						++it;
 					}
 					else if (zDelta > 0 && it != m_vRaceList.begin())
 					{
-						it--;
+						--it;
 					}
 					if (it != m_vRaceList.end())
 					{
@@ -2244,11 +2244,11 @@ BOOL CDiplomacyMenuView::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 				{
 					if (zDelta < 0)
 					{
-						it++;
+						++it;
 					}
 					else if (zDelta > 0 && it != m_vIncomeList.begin())
 					{
-						it--;
+						--it;
 					}
 					if (it != m_vIncomeList.end())
 					{
@@ -2308,7 +2308,7 @@ void CDiplomacyMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 		{
 			vector<CRace*>::iterator it = m_vRaceList.end();
 			if (!m_vRaceList.empty())
-				it--;
+				--it;
 			if (it != m_vRaceList.end())
 			{
 				if (it != m_vRaceList.end())
@@ -2333,11 +2333,11 @@ void CDiplomacyMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 					{
 						if (nChar == VK_DOWN)
 						{
-							it++;
+							++it;
 						}
 						else if (nChar == VK_UP && it != m_vRaceList.begin())
 						{
-							it--;
+							--it;
 						}
 						if (it != m_vRaceList.end())
 						{
@@ -2368,11 +2368,11 @@ void CDiplomacyMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 					{
 						if (nChar == VK_DOWN)
 						{
-							it++;
+							++it;
 						}
 						else if (nChar == VK_UP && it != m_vIncomeList.begin())
 						{
-							it--;
+							--it;
 						}
 						if (it != m_vIncomeList.end())
 						{
