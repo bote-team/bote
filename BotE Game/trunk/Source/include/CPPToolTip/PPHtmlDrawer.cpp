@@ -1151,7 +1151,7 @@ SIZE CPPHtmlDrawer::DrawHtmlTable (CPPString & sTable, LPCRECT lpRect)
 				if (!cur_table.fixed_width [pos])
 					nNotFixedColumns++;
 			} //for
-			for (pos = 0; (pos < cur_table.fixed_width.size()) && (nNotFixedColumns > 0); ++pos)
+			for (pos = 0; pos < cur_table.fixed_width.size() && (nNotFixedColumns > 0); ++pos)
 			{
 				if (!cur_table.fixed_width [pos])
 				{
