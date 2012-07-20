@@ -788,7 +788,7 @@ BOOL CPPHtmlDrawer::OnSetCursor(LPPOINT lpClient)
 BOOL CPPHtmlDrawer::OnTimer()
 {
 	BOOL bRedraw = FALSE;
-	if (m_arrAni.size() > 0)
+	if (!m_arrAni.empty())
 	{
 		for (UINT i = 0; i < m_arrAni.size(); ++i)
 		{
@@ -2808,7 +2808,7 @@ BOOL CPPHtmlDrawer::StoreRestoreStyle(BOOL bRestore)
 	if (bRestore)
 	{
 		//Restore styles
-		if (m_arrStack.size() > 0)
+		if (!m_arrStack.empty())
 		{
 			STRUCT_CHANGESTYLE cs = m_arrStack.back();
 			if (cs.strTag == m_defStyle.strTag)
