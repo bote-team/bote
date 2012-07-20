@@ -79,7 +79,7 @@ BOOL CNewGamePage::OnInitDialog()
 	m_pSearch = (CButton *)GetDlgItem(IDC_SEARCHSERVERS);
 	ASSERT(m_pSearch);
 
-	m_pParent = (CMainDlg *)GetParent();
+	m_pParent = dynamic_cast<CMainDlg*>(GetParent());
 	ASSERT(m_pParent);
 
 	// Anfangswerte setzen

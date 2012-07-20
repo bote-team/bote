@@ -308,7 +308,7 @@ void CMainFrame::SelectMainView(USHORT whichView, const CString& sRace)
 	if (sRace.IsEmpty())
 		return;
 
-	CBotf2Doc* pDoc = ((CBotf2App*)AfxGetApp())->GetDocument();
+	CBotf2Doc* pDoc = dynamic_cast<CBotf2App*>(AfxGetApp())->GetDocument();
 	ASSERT(pDoc);
 
 	if (pDoc->GetPlayersRaceID() == sRace)

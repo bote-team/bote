@@ -52,7 +52,7 @@ BOOL CPlayGamePage::OnInitDialog()
 {
 	CPropertyPage::OnInitDialog();
 
-	m_pParent = (CMainDlg *)GetParent();
+	m_pParent = dynamic_cast<CMainDlg*>(GetParent());
 	ASSERT(m_pParent);
 
 	((CButton *)GetDlgItem(IDC_TOALL))->SetCheck(TRUE);

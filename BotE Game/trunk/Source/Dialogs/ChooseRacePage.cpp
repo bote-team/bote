@@ -46,7 +46,7 @@ BOOL CChooseRacePage::OnInitDialog()
 	CPropertyPage::OnInitDialog();
 
 	// Zeiger auf Steuerelemente
-	m_pParent = (CMainDlg *)GetParent();
+	m_pParent = dynamic_cast<CMainDlg*>(GetParent());
 	ASSERT(m_pParent);
 
 	using namespace network;
