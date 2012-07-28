@@ -12,7 +12,7 @@ con_troop6.bop (size=22.913): Battle Helicopter by Nikolay Yeliseyev (http://nik
 con_troop7.bop (size=52.595): Gears of War 5A by Andrew Kincaid (http://redfishimagery.com/)
 
 MajorRace2:
-han_troop1.bop (size=10.976): rocket.c4d by Mr.Vegas
+han_troop1.bop (size=59.199): Electronic Warfare Mech by Kandzaemon (http://kandzaemon.deviantart.com/)
 han_troop2.bop (size=18.610): Grappler Mech MK3 by eRe4s3r (http://ere4s3r.deviantart.com)
 han_troop3.bop (size=68.440): I wish to fly... by Kandzaemon (http://kandzaemon.deviantart.com/)
 han_troop4.bop (size=34.065): Heavy Assault Mech by Kandzaemon (http://kandzaemon.deviantart.com/)
