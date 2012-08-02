@@ -231,7 +231,7 @@ CBotf2Doc* CBotf2App::GetDocument() const
 		{
 			CDocument *pDoc = docTemplate->GetNextDoc(docpos);
 			if (pDoc->IsKindOf(RUNTIME_CLASS(CBotf2Doc)))
-				return ((CBotf2Doc *)pDoc);
+				return dynamic_cast<CBotf2Doc*>(pDoc);
 		}
 	}
 	return NULL;
