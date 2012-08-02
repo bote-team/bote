@@ -355,7 +355,7 @@ void CMainFrame::SelectBottomView(USHORT viewID)
 short CMainFrame::GetActiveView(int paneRow, int paneCol) const
 {
 	const std::map<CWnd *, UINT>* views = &m_wndSplitter.views;
-	CView* curView = (CView*)((CMainFrame*)AfxGetMainWnd())->m_wndSplitter.GetPane(paneRow, paneCol); // get current view
+	CView* curView = dynamic_cast<CView*>(dynamic_cast<CMainFrame*>(AfxGetMainWnd())->m_wndSplitter.GetPane(paneRow, paneCol)); // get current view
 	ASSERT(curView);
 
 	for (std::map<CWnd *, UINT>::const_iterator it = views->begin(); it != views->end(); ++it)
@@ -473,7 +473,7 @@ LRESULT CMainFrame::UpdateViews(WPARAM wParam, LPARAM lParam)
 {
 	MYTRACE(MT::LEVEL_INFO, "Getting Message to UpdateViews...");
 
-	CBotf2Doc* pDoc = (CBotf2Doc*)((CBotf2App*)AfxGetApp())->GetDocument();
+	CBotf2Doc* pDoc = dynamic_cast<CBotf2App*>(AfxGetApp())->GetDocument();
 	ASSERT(pDoc);
 
 	// Views ihre Arbeiten zu jeder neuen Runde machen lassen
@@ -487,7 +487,7 @@ LRESULT CMainFrame::ShowCombatView(WPARAM wParam, LPARAM lParam)
 {
 	MYTRACE(MT::LEVEL_INFO, "Getting Message to Show CombatView...");
 
-	CBotf2Doc* pDoc = (CBotf2Doc*)((CBotf2App*)AfxGetApp())->GetDocument();
+	CBotf2Doc* pDoc = dynamic_cast<CBotf2App*>(AfxGetApp())->GetDocument();
 	ASSERT(pDoc);
 
 	// Combat View anzeigen
@@ -552,7 +552,7 @@ void CMainFrame::NotifyCPPTooltip( NMHDR* pNMHDR, LRESULT* result )
 	*result = 0;
 	NM_PPTOOLTIP_DISPLAY * pNotify = (NM_PPTOOLTIP_DISPLAY*)pNMHDR;
 
-	CBotf2Doc* pDoc = (CBotf2Doc*)((CBotf2App*)AfxGetApp())->GetDocument();
+	CBotf2Doc* pDoc = dynamic_cast<CBotf2App*>(AfxGetApp())->GetDocument();
 	ASSERT(pDoc);
 	if (pDoc->m_bDataReceived)
 	{
