@@ -2730,14 +2730,15 @@ void CBotf2Doc::CalcSystemAttack()
 						CString param = m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetName();
 						CString eventText = "";
 
-						eventText = ((CMajor*)defender)->GetMoralObserver()->AddEvent(17, ((CMajor*)defender)->GetRaceMoralNumber(), param);
+						CMajor* def = dynamic_cast<CMajor*>(defender);
+						eventText = def->GetMoralObserver()->AddEvent(17, def->GetRaceMoralNumber(), param);
 						// Eventnachricht hinzufügen
 						if (!eventText.IsEmpty())
 						{
 							CMessage message;
 							message.GenerateMessage(eventText, MESSAGE_TYPE::MILITARY, param, p, 0);
-							((CMajor*)defender)->GetEmpire()->AddMessage(message);
-							if (((CMajor*)defender)->IsHumanPlayer())
+							def->GetEmpire()->AddMessage(message);
+							if (def->IsHumanPlayer())
 							{
 								network::RACE client = m_pRaceCtrl->GetMappedClientID(defender->GetRaceID());
 								m_iSelectedView[client] = EMPIRE_VIEW;
