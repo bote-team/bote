@@ -7038,3 +7038,7 @@ void CBotf2Doc::AllocateSectorsAndSystems()
 	m_Sectors.resize(size);
 	m_Systems.resize(size);
  }
+
+CMainFrame* CBotf2Doc::GetMainFrame(void) const {
+	return dynamic_cast<CMainFrame*>(AfxGetApp()->GetMainWnd());
+}
