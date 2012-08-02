@@ -514,7 +514,7 @@ LRESULT CMainFrame::InitViews(WPARAM wParam, LPARAM lParam)
 {
 	MYTRACE(MT::LEVEL_INFO, "Getting Message to InitViews...");
 
-	CBotf2Doc* pDoc = (CBotf2Doc*)((CBotf2App*)AfxGetApp())->GetDocument();
+	CBotf2Doc* pDoc = dynamic_cast<CBotf2App*>(AfxGetApp())->GetDocument();
 	ASSERT(pDoc);
 
 	// alle rassenabhängigen Grafiken in jeder View laden
