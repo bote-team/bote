@@ -166,13 +166,13 @@ BOOL CBotf2Doc::OnNewDocument()
 	pIni->ReadValue("Special", "RANDOMSEED", nSeed);
 
 	//Kartengröße aus ini lesen
-	int mapHeight=20;
-	pIni->ReadValue("Special", "MAPSIZEV", mapHeight);
-	STARMAP_SECTORS_VCOUNT=mapHeight;
+	//int mapHeight=20;
+	//pIni->ReadValue("Special", "MAPSIZEV", mapHeight);
+	//STARMAP_SECTORS_VCOUNT=mapHeight;
 
-	int mapWidth=30;
-	pIni->ReadValue("Special", "MAPSIZEH", mapWidth);
-	STARMAP_SECTORS_HCOUNT=mapWidth;
+	//int mapWidth=30;
+	//pIni->ReadValue("Special", "MAPSIZEH", mapWidth);
+	//STARMAP_SECTORS_HCOUNT=mapWidth;
 
 	STARMAP_TOTALWIDTH=STARMAP_SECTORS_HCOUNT*80;
 	STARMAP_TOTALHEIGHT=STARMAP_SECTORS_VCOUNT*80;
@@ -965,14 +965,14 @@ void CBotf2Doc::PrepareData()
 		m_iRound = 1;
 
 		//Neuberechnung der Galaxiengröße falls im Einstellungsmenü geändert
-		CIniLoader* pIni = CIniLoader::GetInstance();
-		int mapHeight=20;
-		pIni->ReadValue("Special", "MAPSIZEV", mapHeight);
-		STARMAP_SECTORS_VCOUNT=mapHeight;
+		//CIniLoader* pIni = CIniLoader::GetInstance();
+		//int mapHeight=20;
+		//pIni->ReadValue("Special", "MAPSIZEV", mapHeight);
+		//STARMAP_SECTORS_VCOUNT=mapHeight;
 
-		int mapWidth=30;
-		pIni->ReadValue("Special", "MAPSIZEH", mapWidth);
-		STARMAP_SECTORS_HCOUNT=mapWidth;
+		//int mapWidth=30;
+		//pIni->ReadValue("Special", "MAPSIZEH", mapWidth);
+		//STARMAP_SECTORS_HCOUNT=mapWidth;
 
 		STARMAP_TOTALWIDTH=STARMAP_SECTORS_HCOUNT*80;
 		STARMAP_TOTALHEIGHT=STARMAP_SECTORS_VCOUNT*80;
@@ -7034,8 +7034,7 @@ void CBotf2Doc::AllocateSectorsAndSystems()
 {
 	//m_Sectors.clear();
 	//m_Systems.clear();
-	//const unsigned size = STARMAP_SECTORS_HCOUNT*STARMAP_SECTORS_VCOUNT;
-	const unsigned size = 30*20;
+	const unsigned size = STARMAP_SECTORS_HCOUNT*STARMAP_SECTORS_VCOUNT;
 	m_Sectors.resize(size);
 	m_Systems.resize(size);
  }

@@ -126,8 +126,8 @@ BOOL CSettingsDlg::OnInitDialog()
 	m_comboGalaxysize.AddString("CLASSIC 30x20");
 	m_comboGalaxysize.AddString("HUGE 40x30");
 	int sizeh=30,sizev=20;
-	pIni->ReadValue("Special", "MAPSIZEH", sizeh);
-	pIni->ReadValue("Special", "MAPSIZEV", sizev);
+	//pIni->ReadValue("Special", "MAPSIZEH", sizeh);
+	//pIni->ReadValue("Special", "MAPSIZEV", sizev);
 	if(sizeh==15&&sizev==10)
 	{
 		m_comboGalaxysize.SetCurSel(0);
@@ -278,9 +278,12 @@ BOOL CSettingsDlg::OnInitDialog()
 	m_bVCSabotage = bVCSabotage;
 
 	// alle nicht während des Spiels änderbaren Einstellungen deaktivieren
+	CWnd* pWnd = NULL;
+	pWnd = GetDlgItem(IDC_COMBOGALAXYSIZE);
+	pWnd->EnableWindow(FALSE);
 	if (m_bDisable)
 	{
-		CWnd* pWnd = GetDlgItem(IDC_SLIDER_STARDENSITY);
+		pWnd = GetDlgItem(IDC_SLIDER_STARDENSITY);
 		if (pWnd)
 			pWnd->EnableWindow(FALSE);
 		pWnd = GetDlgItem(IDC_SLIDER_MINORDENSITY);
