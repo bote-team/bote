@@ -162,20 +162,7 @@ BYTE CFleet::GetFleetStealthPower(const CShip* ship) const
 void CFleet::AdoptCurrentOrders(const CShip* ship)
 {
 	for (int i = 0; i < m_vShips.GetSize(); i++)
-	{
-		if (ship->GetCurrentOrder() != SHIP_ORDER::ASSIGN_FLAGSHIP && ship->GetCurrentOrder() != SHIP_ORDER::TRANSPORT)
-		{
-			m_vShips.ElementAt(i).SetCurrentOrder(ship->GetCurrentOrder());
-		}
-		m_vShips.ElementAt(i).SetKO(ship->GetKO());
-
-		if (m_vShips.ElementAt(i).GetTargetKO() != ship->GetTargetKO())
-			m_vShips.ElementAt(i).SetTargetKO(ship->GetTargetKO(),0);
-
-		// wenn geterraformt werden soll den Terraformingplaneten neu setzen
-		if (ship->GetCurrentOrder() == SHIP_ORDER::TERRAFORM)
-			m_vShips.ElementAt(i).SetTerraformingPlanet(ship->GetTerraformingPlanet());
-	}
+		m_vShips.ElementAt(i).AdoptOrdersFrom(*ship);
 }
 
 // Diese Funktion liefert TRUE wenn die Flotte den "order" ausführen kann. Als Schiffszeiger muß das Schiff
