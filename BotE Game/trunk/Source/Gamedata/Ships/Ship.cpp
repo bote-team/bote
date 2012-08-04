@@ -476,7 +476,7 @@ void CShip::AdoptOrdersFrom(const CShip& ship, const bool also_flagship_transpor
 
 		const CPoint& tko = ship.GetTargetKO();
 		if (GetTargetKO() != tko)
-			SetTargetKO(tko,0);
+			SetTargetKO(tko,0,true);
 
 		// wenn geterraformt werden soll den Terraformingplaneten neu setzen
 		if (order_to_adopt == SHIP_ORDER::TERRAFORM)
@@ -1164,9 +1164,11 @@ void CShip::DrawShip(Gdiplus::Graphics* g, CGraphicPool* pGraphicPool, const CPo
 	}
 }
 
-void CShip::SetTargetKO(const CPoint& TargetKO, int Index)
+void CShip::SetTargetKO(const CPoint& TargetKO, int Index, const bool simple_setter)
 {
 	m_TargetKO[Index] = TargetKO;
+	if(simple_setter)
+		return;
 	if (m_iCurrentOrder > SHIP_ORDER::AVOID) {
 		IsNonCombat() ? m_iCurrentOrder = SHIP_ORDER::AVOID : m_iCurrentOrder = SHIP_ORDER::ATTACK;
 	}
