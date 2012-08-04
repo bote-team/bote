@@ -464,6 +464,26 @@ void CShip::DeleteFleet()
 	}
 }
 
+void CShip::AdoptOrdersFrom(const CShip& ship, const bool also_flagship_transport)
+{
+	SHIP_ORDER::Typ order_to_adopt = ship.GetCurrentOrder();
+
+		if (order_to_adopt != SHIP_ORDER::ASSIGN_FLAGSHIP && order_to_adopt != SHIP_ORDER::TRANSPORT || also_flagship_transport)
+		{
+			SetCurrentOrder(order_to_adopt);
+		}
+		SetKO(ship.GetKO());
+
+		const CPoint& tko = ship.GetTargetKO();
+		if (GetTargetKO() != tko)
+			SetTargetKO(tko,0);
+
+		// wenn geterraformt werden soll den Terraformingplaneten neu setzen
+		if (order_to_adopt == SHIP_ORDER::TERRAFORM)
+			SetTerraformingPlanet(ship.GetTerraformingPlanet());
+}
+
+
 bool CShip::HasSpecial(SHIP_SPECIAL::Typ nAbility) const
 {
 	if (m_nSpecial[0] == nAbility || m_nSpecial[1] == nAbility)

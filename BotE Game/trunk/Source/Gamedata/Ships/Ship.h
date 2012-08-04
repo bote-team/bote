@@ -144,9 +144,13 @@ public:
 	void SetAlienType(ALIEN_TYPE::Typ nAlienType) {m_nAlienType = nAlienType;}
 
 	// sonstige Funktionen
+
+	//fleet related functions
 	void CreateFleet();	// Bevor wir mit der Flotte arbeiten können muß diese erst created werden
 	void CheckFleet();	// am besten in jeder neuen Runde aufrufen, säubert die Flotte (aber nicht unbedingt notwendig)
 	void DeleteFleet();	// wie es der Name schon sagt wird hier die Flotte gelöscht
+	void AdoptOrdersFrom(const CShip& ship, const bool also_flagship_transport = false);
+
 
 	/// Funktion gibt einen Wahrheitswert zurück, ob das Schiffsobjekt eine bestimmte Spezialfähigkeit besitzt.
 	/// @param ability Spezialfähigkeit
