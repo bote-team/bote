@@ -9,6 +9,8 @@
 #include "HTMLStringBuilder.h"
 #include "GraphicPool.h"
 
+#include <cassert>
+
 #ifdef _DEBUG
 #undef THIS_FILE
 static char THIS_FILE[]=__FILE__;
@@ -483,6 +485,12 @@ void CShip::AdoptOrdersFrom(const CShip& ship, const bool also_flagship_transpor
 			SetTerraformingPlanet(ship.GetTerraformingPlanet());
 }
 
+void CShip::AddShipToFleet(CShip& ship)
+{
+	assert(m_Fleet);
+	ship.AdoptOrdersFrom(*this, true);
+	m_Fleet->AddShipToFleet(&ship);
+}
 
 bool CShip::HasSpecial(SHIP_SPECIAL::Typ nAbility) const
 {
