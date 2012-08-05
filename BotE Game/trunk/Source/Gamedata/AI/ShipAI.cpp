@@ -104,7 +104,7 @@ void CShipAI::CalculateShipOrders(CSectorAI* SectorAI)
 			if (ptTarget != CPoint(-1,-1) && m_pDoc->GetSector(ptTarget).GetOwnerOfSector() != "" && m_pDoc->GetSector(ptTarget).GetOwnerOfSector() != sOwner)
 			{
 				// nicht weiter fliegen und Kurs löschen
-				pShip->SetTargetKO(ptKO,0);
+				pShip->SetTargetKO(CPoint(-1, -1),0);
 				pShip->GetPath()->RemoveAll();
 			}
 		}
@@ -273,7 +273,7 @@ bool CShipAI::DoTerraform(CShip* pShip)
 	if (nPlanet != -1 && (!bColonizable || nMinTerraPoints / nTerraPoints < 8))
 	{
 		// Hier muss als erstes ein möglicher neuer Kurs gelöscht werden
-		pShip->SetTargetKO(pShip->GetKO(), 0);
+		pShip->SetTargetKO(CPoint(-1, -1), 0);
 		pShip->SetTerraformingPlanet(nPlanet);
 		pShip->SetCurrentOrder(SHIP_ORDER::TERRAFORM);
 		return true;
@@ -308,7 +308,7 @@ bool CShipAI::DoColonize(CShip* pShip)
 		if (pSector->GetPlanet(i)->GetTerraformed() && !pSector->GetPlanet(i)->GetColonized())
 		{
 			// Hier muss als erstes ein möglicher neuer Kurs gelöscht werden
-			pShip->SetTargetKO(pShip->GetKO(), 0);
+			pShip->SetTargetKO(CPoint(-1, -1), 0);
 			pShip->SetCurrentOrder(SHIP_ORDER::COLONIZE);
 			return true;
 		}
@@ -427,7 +427,7 @@ bool CShipAI::DoBombardSystem(CShip* pShip)
 	if (pShip->GetKO() == m_BombardSector[pShip->GetOwnerOfShip()])
 	{
 		// Hier muss als erstes ein möglicher neuer Kurs gelöscht werden und ein alter Systemangriffsbefehl aufgehoben werden
-		pShip->SetTargetKO(pShip->GetKO(), 0);
+		pShip->SetTargetKO(CPoint(-1, -1), 0);
 
 		// Wenn das Schiff bzw. Schiffe aus der Flotte getarnt sind, dann müssen diese erst enttarnt werden
 		if (pShip->GetCloak() || (pShip->GetFleet() != NULL && pShip->GetFleet()->CheckOrder(pShip, SHIP_ORDER::ATTACK_SYSTEM) == FALSE))
@@ -600,7 +600,7 @@ bool CShipAI::DoStationBuild(CShip* pShip)
 	// Nur wenn der Sektor uns bzw. niemanden gehört
 	if (m_pDoc->GetSector(ptKO).GetOwnerOfSector() == "" || m_pDoc->GetSector(ptKO).GetOwnerOfSector() == sRace)
 	{
-		pShip->SetTargetKO(ptKO, 0);
+		pShip->SetTargetKO(CPoint(-1, -1), 0);
 		pShip->SetCurrentOrder(SHIP_ORDER::BUILD_OUTPOST);
 		return true;
 	}
