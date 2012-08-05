@@ -46,6 +46,7 @@ public:
 // Zugriffsfunktionen
 	// zum Lesen der Membervariablen
 	CFleet*	GetFleet(void) {return m_Fleet;}
+	CFleet const* const GetFleet(void) const { return m_Fleet; }
 	CHull* GetHull(void) {return &m_Hull;}
 	CShield* GetShield(void) {return &m_Shield;}
 	CArray<CTorpedoWeapons, CTorpedoWeapons>* GetTorpedoWeapons(void) {return &m_TorpedoWeapons;}
