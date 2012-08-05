@@ -6805,7 +6805,7 @@ void CBotf2Doc::CalcAlienShipEffects()
 							continue;
 
 						vShips[n]->SetOwnerOfShip(pAlien->GetRaceID());
-						vShips[n]->SetTargetKO(pShip->GetKO(), 0);
+						vShips[n]->SetTargetKO(CPoint(-1, -1), 0);
 						vShips[n]->SetAlienType(ALIEN_TYPE::GABALLIANER_SEUCHENSCHIFF);
 						vShips[n]->SetCurrentOrder(SHIP_ORDER::ATTACK);
 						vShips[n]->SetTerraformingPlanet(-1);
