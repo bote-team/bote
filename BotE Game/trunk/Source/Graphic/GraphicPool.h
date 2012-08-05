@@ -30,7 +30,7 @@ public:
 	/// @param name Name der Grafik.
 	CBitmap* GetGraphic(const CString &name);
 
-	Bitmap* GetGDIGraphic(const CString &name);
+	Bitmap* GetGDIGraphic(const CString &name, const bool require_existence = true);
 
 private:
 	// Attribute
