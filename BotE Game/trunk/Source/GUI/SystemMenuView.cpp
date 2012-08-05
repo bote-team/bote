@@ -616,7 +616,7 @@ void CSystemMenuView::DrawBuildMenue(Graphics* g)
 		else if (m_iWhichSubMenu == 1 && pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetBuildableShips()->GetSize() > 0)	// sind im Schiffsuntermenü
 			file.Format("Ships\\%s.bop",pDoc->m_ShipInfoArray.GetAt(RunningNumber-10000).GetShipClass());
 		else if (m_iWhichSubMenu == 2 && pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetBuildableTroops()->GetSize() > 0)	// sind im Kasernenuntermenü
-			file.Format("Troops\\%s",pDoc->m_TroopInfo.GetAt(RunningNumber-20000).GetGraphicfile());
+			file.Format("Troops\\%s",pDoc->m_TroopInfo.GetAt(RunningNumber-20000).GetGraphicFileName());
 		graphic = NULL;
 		graphic = pDoc->GetGraphicPool()->GetGDIGraphic(file);
 		if (graphic == NULL)

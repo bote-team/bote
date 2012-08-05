@@ -36,9 +36,9 @@ public:
 	const CString& GetDescription() const {return m_strDescription;}
 
 	/*
-	 *Diese Funktion gibt das Bild der Truppe zurück
+	 * This function returns the m_strGraphicfile (includes the extension)
 	 */
-	const CString& GetGraphicfile() const {return m_strGraphicfile;}
+	const CString& GetGraphicFileName() const {return m_strGraphicfile;}
 
 	/**
 	 * Diese Funktion gibt die Unterhaltskosten der Truppe zurück.

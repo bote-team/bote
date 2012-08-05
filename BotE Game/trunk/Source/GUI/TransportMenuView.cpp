@@ -297,7 +297,7 @@ void CTransportMenuView::DrawTransportMenue(Graphics* g)
 		s.Format("#%d: %s", m_byTroopNumberInSystem+1, pDoc->m_TroopInfo.GetAt(id).GetName());
 		// Das Bild für die Truppe zeichnen
 		CString file;
-		file.Format("Troops\\%s", pDoc->m_TroopInfo.GetAt(id).GetGraphicfile());
+		file.Format("Troops\\%s", pDoc->m_TroopInfo.GetAt(id).GetGraphicFileName());
 		Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic(file);
 		if (graphic == NULL)
 				graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Troops\\ImageMissing.bop");
@@ -346,7 +346,7 @@ void CTransportMenuView::DrawTransportMenue(Graphics* g)
 		s.Format("#%d: %s", m_byTroopNumberInShip+1, pDoc->m_TroopInfo.GetAt(id).GetName());
 		// Das Bild für die Truppe zeichnen
 		CString file;
-		file.Format("Troops\\%s", pDoc->m_TroopInfo.GetAt(id).GetGraphicfile());
+		file.Format("Troops\\%s", pDoc->m_TroopInfo.GetAt(id).GetGraphicFileName());
 		Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic(file);
 		if (graphic == NULL)
 				graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Troops\\ImageMissing.bop");
