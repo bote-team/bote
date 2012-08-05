@@ -4212,6 +4212,44 @@ void CBotf2Doc::CalcTrade()
 	}
 }
 
+//These debugging functions check that all ships which don't move have target CPoint(-1, -1) set
+//instead of their current coordinates. Later on, the places that handle the case of
+//(target coords)==(current coords) can be removed (filled with assert(false)).
+static void CheckShipTargetCoordinates(const CShip& ship)
+{
+	SHIP_ORDER::Typ order = ship.GetCurrentOrder();
+	//orders which match the fact that the ship has a target != CPoint(-1, -1) set
+	if(order == SHIP_ORDER::AVOID || order == SHIP_ORDER::ATTACK || order == SHIP_ORDER::CLOAK
+		|| order == SHIP_ORDER::ASSIGN_FLAGSHIP)
+		return;
+
+	//we no longer allow to unset a target by setting it to the current coordinates
+	if(ship.GetTargetKO() != CPoint(-1, -1)) {
+		CString s;
+		const CPoint& co = ship.GetKO();
+		const CPoint& tco = ship.GetTargetKO();
+		s.Format("The %s from %s at (%u, %u) has target (%u, %u) set but current order is %s. This is a bug, please report.",
+			ship.GetShipName(),
+			ship.GetOwnerOfShip(),
+			co.x, co.y,
+			tco.x, tco.y,
+			ship.GetCurrentOrderAsString());
+		MYTRACE(MT::LEVEL_WARNING, s);
+		//AfxMessageBox(s);
+	}
+}
+
+static void CheckFleetTargetCoordinates(const CShip& ship)
+{
+	CheckShipTargetCoordinates(ship);
+	if(ship.GetFleet() != NULL) {
+		CFleet const* const fleet = ship.GetFleet();
+		for(unsigned i = 0; i < fleet->GetFleetSize(); ++i) {
+			CheckShipTargetCoordinates(*fleet->GetShipFromFleet(i));
+		}
+	}
+}
+
 /// Diese Funktion berechnet die Schiffsbefehle. Der Systemangriffsbefehl ist davon ausgenommen.
 void CBotf2Doc::CalcShipOrders()
 {
@@ -4222,6 +4260,7 @@ void CBotf2Doc::CalcShipOrders()
 	// Hier kommt die Auswertung der Schiffsbefehle
 	for (int y = 0; y < m_ShipArray.GetSize(); y++)
 	{
+		CheckFleetTargetCoordinates(m_ShipArray.GetAt(y));
 		// Hier wird ?berpr?ft, ob der Systemattack-Befehl noch g?ltig ist
 		// Alle Schiffe, welche einen Systemangriffsbefehl haben ?berpr?fen, ob dieser Befehl noch g?ltig ist
 		CPoint p = m_ShipArray.GetAt(y).GetKO();
