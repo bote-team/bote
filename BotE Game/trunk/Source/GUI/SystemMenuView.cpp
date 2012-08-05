@@ -1818,25 +1818,25 @@ void CSystemMenuView::DrawBuildList(Graphics* g)
 			if (nAssemblyListEntry < 0)
 			{
 				m_strAssemblyListEntry = CResourceManager::GetString("UPGRADING", FALSE, pDoc->GetBuildingName(abs(nAssemblyListEntry)));
-				sFile = "Buildings//" + pDoc->GetBuildingInfo(abs(nAssemblyListEntry)).GetGraphikFileName();
+				sFile = "Buildings\\" + pDoc->GetBuildingInfo(abs(nAssemblyListEntry)).GetGraphikFileName();
 			}
 			// ist es ein Gebäude
 			else if (pDoc->GetSystem(p.x,p.y).GetAssemblyList()->GetAssemblyListEntry(i) < 10000)
 			{
 				m_strAssemblyListEntry = pDoc->GetBuildingName(nAssemblyListEntry);
-				sFile = "Buildings//" + pDoc->GetBuildingInfo(nAssemblyListEntry).GetGraphikFileName();
+				sFile = "Buildings\\" + pDoc->GetBuildingInfo(nAssemblyListEntry).GetGraphikFileName();
 			}
 			// ist es ein Schiff
 			else if (pDoc->GetSystem(p.x,p.y).GetAssemblyList()->GetAssemblyListEntry(i) < 20000)
 			{
 				m_strAssemblyListEntry.Format("%s-%s",pDoc->m_ShipInfoArray.GetAt(nAssemblyListEntry - 10000).GetShipClass(), CResourceManager::GetString("CLASS"));
-				sFile = "Ships//" + pDoc->m_ShipInfoArray.GetAt(nAssemblyListEntry - 10000).GetShipClass() + ".bop";
+				sFile = "Ships\\" + pDoc->m_ShipInfoArray.GetAt(nAssemblyListEntry - 10000).GetShipClass() + ".bop";
 			}
 			// ist es eine Truppe
 			else
 			{
 				m_strAssemblyListEntry = pDoc->m_TroopInfo.GetAt(nAssemblyListEntry - 20000).GetName();
-				sFile = "Troops//" + pDoc->m_TroopInfo.GetAt(nAssemblyListEntry - 20000).GetName() + ".bop";
+				sFile = "Troops\\" + pDoc->m_TroopInfo.GetAt(nAssemblyListEntry - 20000).GetGraphicFileName();
 			}
 
 			fontFormat.SetAlignment(StringAlignmentNear);

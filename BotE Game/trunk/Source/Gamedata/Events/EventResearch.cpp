@@ -249,7 +249,7 @@ void CEventResearch::Draw(Graphics* g, CGraphicPool* graphicPool) const
 	}
 	for (vector<CTroopInfo*>::const_iterator it = m_vNewTroops.begin(); it != m_vNewTroops.end(); ++it)
 	{
-		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Troops\\" + (*it)->GetName() + ".bop");
+		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Troops\\" + (*it)->GetGraphicFileName());
 		if (graphic == NULL)
 			graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Troops\\ImageMissing.bop");
 		if (graphic)
