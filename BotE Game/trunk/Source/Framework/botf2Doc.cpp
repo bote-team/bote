@@ -4218,17 +4218,20 @@ void CBotf2Doc::CalcTrade()
 static void CheckShipTargetCoordinates(const CShip& ship)
 {
 	SHIP_ORDER::Typ order = ship.GetCurrentOrder();
+	const CPoint& co = ship.GetKO();
+	const CPoint& tco = ship.GetTargetKO();
 	//orders which match the fact that the ship has a target != CPoint(-1, -1) set
 	if(order == SHIP_ORDER::AVOID || order == SHIP_ORDER::ATTACK || order == SHIP_ORDER::CLOAK
-		|| order == SHIP_ORDER::ASSIGN_FLAGSHIP)
-		return;
+		|| order == SHIP_ORDER::ASSIGN_FLAGSHIP) {
+		//It still should be an actual target and not the ship's coordinates
+		if(tco != co)
+			return;
+	}
 
 	//we no longer allow to unset a target by setting it to the current coordinates
-	if(ship.GetTargetKO() != CPoint(-1, -1)) {
+	if(tco != CPoint(-1, -1)) {
 		CString s;
-		const CPoint& co = ship.GetKO();
-		const CPoint& tco = ship.GetTargetKO();
-		s.Format("The %s from %s at (%u, %u) has target (%u, %u) set but current order is %s. This is a bug, please report.",
+		s.Format("The %s from %s at (%u, %u) has target (%u, %u) set and current order is %s. This is a bug, please report.",
 			ship.GetShipName(),
 			ship.GetOwnerOfShip(),
 			co.x, co.y,
