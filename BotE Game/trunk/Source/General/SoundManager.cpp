@@ -454,7 +454,7 @@ BOOL CSoundManager::StopMessages(BOOL bHardInterrupt, DWORD dwTimeout)
 UINT CSoundManager::ThreadProc(LPVOID pParam)
 {
 	ASSERT(pParam);
-	CSoundManager *pObj = (CSoundManager *)pParam;
+	CSoundManager *pObj = reinterpret_cast<CSoundManager*>(pParam);
 
 	while (pObj->m_bMessagesPlaying)
 	{
