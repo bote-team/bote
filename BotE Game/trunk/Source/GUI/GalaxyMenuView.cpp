@@ -840,7 +840,9 @@ void CGalaxyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		if (m_bShipMove && (pDoc->m_ShipArray[pDoc->GetCurrentShipIndex()].GetPath()->GetSize()
 			|| target == pDoc->m_ShipArray[pDoc->GetCurrentShipIndex()].GetKO()))
 		{
-			pDoc->m_ShipArray[pDoc->GetCurrentShipIndex()].SetTargetKO(target,0);
+			CShip& ship = pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex());
+			if(target != ship.GetKO())
+				ship.SetTargetKO(target, 0);
 			CSmallInfoView::SetShipInfo(true);
 			SetMoveShip(FALSE);
 			pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
