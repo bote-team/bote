@@ -498,15 +498,16 @@ int CSystemAI::ChooseShip(int prio, BOOLEAN chooseCombatship, BOOLEAN chooseColo
 	if (pRace->GetType() != MAJOR)
 		return 0;
 
-
+	const CResearch& research = *dynamic_cast<CMajor*>(pRace)->GetEmpire()->GetResearch();
 	BYTE researchLevels[6] =
 	{
-		((CMajor*)pRace)->GetEmpire()->GetResearch()->GetBioTech(),
-		((CMajor*)pRace)->GetEmpire()->GetResearch()->GetEnergyTech(),
-		((CMajor*)pRace)->GetEmpire()->GetResearch()->GetCompTech(),
-		((CMajor*)pRace)->GetEmpire()->GetResearch()->GetPropulsionTech(),
-		((CMajor*)pRace)->GetEmpire()->GetResearch()->GetConstructionTech(),
-		((CMajor*)pRace)->GetEmpire()->GetResearch()->GetWeaponTech()
+
+		research.GetBioTech(),
+		research.GetEnergyTech(),
+		research.GetCompTech(),
+		research.GetPropulsionTech(),
+		research.GetConstructionTech(),
+		research.GetWeaponTech()
 	};
 
 	// Wenn ein Kolonieschiff gebaut werden sollte
