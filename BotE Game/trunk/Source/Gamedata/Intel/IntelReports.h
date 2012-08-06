@@ -35,7 +35,7 @@ public:
 	// Zugriffsfunktionen
 	/// Funktion gibt einen einzelnen Geheimdienstreport zurück.
 	/// @param n Nummer des Reports im Feld
-	CIntelObject* GetReport(int n) const {return (CIntelObject*)m_IntelObjects.GetAt(n);}
+	CIntelObject* GetReport(int n) const {return dynamic_cast<CIntelObject*>(m_IntelObjects.GetAt(n));}
 
 	/// Funktion gibt einen Zeiger auf das komplette Feld aller Geheimdienstreports zurück.
 	CObArray* GetAllReports() {return &m_IntelObjects;}
