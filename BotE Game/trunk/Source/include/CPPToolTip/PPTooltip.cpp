@@ -1558,7 +1558,7 @@ BOOL CPPToolTip::IsCursorOverTooltip() const
     POINT pt;
     GetCursorPos(&pt);
 
-	CPPToolTip * pWnd = (CPPToolTip*)WindowFromPoint(pt);
+	CPPToolTip * pWnd = dynamic_cast<CPPToolTip*>(WindowFromPoint(pt));
 
 	return (pWnd == this);
 }
