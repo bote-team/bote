@@ -281,9 +281,9 @@ void CRace::MakeOffersAI(void)
 	if (this->GetType() == MAJOR)
 	{
 		// bei einem menschlichen Spieler wird die KI nicht ausgeführt
-		if (((CMajor*)this)->IsHumanPlayer())
+		if (dynamic_cast<CMajor*>(this)->IsHumanPlayer())
 			return;
-		((CMajorAI*)m_pDiplomacyAI)->CalcFavoriteMinors();
+		dynamic_cast<CMajorAI*>(m_pDiplomacyAI)->CalcFavoriteMinors();
 	}
 
 	// Angebote machen
