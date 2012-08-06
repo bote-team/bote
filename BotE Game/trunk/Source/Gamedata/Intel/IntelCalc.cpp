@@ -1137,7 +1137,7 @@ BOOLEAN CIntelCalc::ExecuteEconomySabotage(CMajor* pRace, CMajor* pEnemyRace, CM
 	// gab es eine erfolgreiche Spionageaktion, so kann diese jetzt in eine Sabotageaktion umgewandelt werden
 	if (newReportNumber > oldReportNumber)
 	{
-		CEcoIntelObj* report = (CEcoIntelObj*)pRace->GetEmpire()->GetIntelligence()->GetIntelReports()->GetReport(oldReportNumber);
+		CEcoIntelObj* report = dynamic_cast<CEcoIntelObj*>(pRace->GetEmpire()->GetIntelligence()->GetIntelReports()->GetReport(oldReportNumber));
 		int credits = report->GetCredits() / 2;
 		// 1. Möglichkeit: Credits stehlen
 		if (credits > NULL)
@@ -1257,7 +1257,7 @@ BOOLEAN CIntelCalc::ExecuteScienceSabotage(CMajor* pRace, CMajor* pEnemyRace, CM
 	// gab es eine erfolgreiche Spionageaktion, so kann diese jetzt in eine Sabotageaktion umgewandelt werden
 	if (newReportNumber > oldReportNumber)
 	{
-		CScienceIntelObj* report = (CScienceIntelObj*)pRace->GetEmpire()->GetIntelligence()->GetIntelReports()->GetReport(oldReportNumber);
+		CScienceIntelObj* report = dynamic_cast<CScienceIntelObj*>(pRace->GetEmpire()->GetIntelligence()->GetIntelReports()->GetReport(oldReportNumber));
 
 		// 4. Versuch: Spezialforschungen
 		// ->	kann nicht sabotiert werden, d.h. wenn der Report etwas mit Spezialforschungen zu tun hatte, dann wird er
@@ -1272,7 +1272,7 @@ BOOLEAN CIntelCalc::ExecuteScienceSabotage(CMajor* pRace, CMajor* pEnemyRace, CM
 			do {
 				isTrue = this->ExecuteScienceSpy(pRace, pEnemyRace, FALSE);
 			} while (isTrue == FALSE);
-			report = (CScienceIntelObj*)pRace->GetEmpire()->GetIntelligence()->GetIntelReports()->GetReport(oldReportNumber);
+			report = dynamic_cast<CScienceIntelObj*>(pRace->GetEmpire()->GetIntelligence()->GetIntelReports()->GetReport(oldReportNumber));
 			specialTech = report->GetSpecialTechComplex();
 
 		}
@@ -1405,7 +1405,7 @@ BOOLEAN CIntelCalc::ExecuteMilitarySabotage(CMajor* pRace, CMajor* pEnemyRace, C
 	// gab es eine erfolgreiche Spionageaktion, so kann diese jetzt in eine Sabotageaktion umgewandelt werden
 	if (newReportNumber > oldReportNumber)
 	{
-		CMilitaryIntelObj* report = (CMilitaryIntelObj*)pRace->GetEmpire()->GetIntelligence()->GetIntelReports()->GetReport(oldReportNumber);
+		CMilitaryIntelObj* report = dynamic_cast<CMilitaryIntelObj*>(pRace->GetEmpire()->GetIntelligence()->GetIntelReports()->GetReport(oldReportNumber));
 
 		// 3. Versuch: Schiffe beschädigen/zerstören/stehlen oder Stationen beschädigen/zerstören
 		if (report->GetIsShip())
@@ -1694,7 +1694,7 @@ BOOLEAN CIntelCalc::ExecuteDiplomacySabotage(CMajor* pRace, CMajor* pEnemyRace, 
 	// gab es eine erfolgreiche Spionageaktion, so kann diese jetzt in eine Sabotageaktion umgewandelt werden
 	if (newReportNumber > oldReportNumber)
 	{
-		CDiplomacyIntelObj* report = (CDiplomacyIntelObj*)pRace->GetEmpire()->GetIntelligence()->GetIntelReports()->GetReport(oldReportNumber);
+		CDiplomacyIntelObj* report = dynamic_cast<CDiplomacyIntelObj*>(pRace->GetEmpire()->GetIntelligence()->GetIntelReports()->GetReport(oldReportNumber));
 		// Bei der Diplomatiesabotage kann entweder die Beziehung zwischen zwei Majorraces oder zwischen
 		// einer Majorrace und einer Minorrace verschlechtert werden. Eine andere Möglichkeit wäre die Beziehung
 		// zwischen uns und einer Minorrace oder einer Majorrace zu verbessern.
