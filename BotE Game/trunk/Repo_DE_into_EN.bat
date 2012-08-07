@@ -7,7 +7,8 @@ echo *
 pause
 
 xcopy game\*.* c:\BotESVNCOPY_EN\game\*.* /Y /S
-xcopy *.* c:\BotESVNCOPY_EN\*.* /Y 
+xcopy *.* c:\BotESVNCOPY_EN\*.* /Y
+xcopy batch\*.* c:\BotESVNCOPY_EN\*.* /Y
 
 Echo *** now turns German into English ***
 xcopy c:\BotESVNCOPY_EN\game\Data\Buildings\[en]\*.* c:\BotESVNCOPY_EN\game\Data\Buildings\*.* /Y /S

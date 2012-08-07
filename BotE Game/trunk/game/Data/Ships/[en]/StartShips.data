@@ -6,10 +6,19 @@
 // 1. Nummer des Besitzer des Schiffes
 // 2. System, in dem das Schiff stationiert werden soll
 // 3. Schiffsklassennamen, getrennt durch Komma
+//
+//
+//          Terra  Han    Khayrin Rothar  Cartar  Omega
+//Sonden:     2
+//Aufklärer:  1,    2,       3,     2,      2,      2
+//Colony:     3,    2,       2,     3,      3,      3
+//Transport:  1,    1,       1,     1,      1,      1
+//Station:     ,     ,        ,      ,       ,      1
 
-MAJOR1:Terra:Sputnik,Sputnik,Seraphine
-MAJOR2:Han:Baran,Tirax
-MAJOR3:Khayrin:Battle Axe,Battle Axe,Battle Axe,Demon,Destiny
-MAJOR4:Rotharius:C'lypeus,C'lypeus,C'lypeus
-MAJOR5:Cartar:Caranna,Carpawel,Caroman
-MAJOR6:Omega Alpha:Home Defence,Kaph,Chet
+MAJOR1:Terra:Sputnik,Sputnik,Farscape,Seraphine,Seraphine,Seraphine,Fox
+MAJOR2:Han:Baran,Baran,Tirax,Tirax,Glantor
+MAJOR3:Khayrin:Battle Axe,Battle Axe,Battle Axe,Demon,Destiny,Destiny,Fear
+MAJOR4:Rotharius:P'ratarsus,P'ratarsus,C'lypeus,C'lypeus,C'lypeus,S'capus
+MAJOR5:Cartar:Caranna,Caranna,Carpawel,Carpawel,Carpawel,Caroman
+MAJOR6:Omega Alpha:Home Defence,Kaph,Kaph,Chet,Chet,Chet,Beth
+
