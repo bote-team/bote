@@ -12,6 +12,9 @@
 
 //=============================================================================
 
+#pragma warning(push)
+#pragma warning(disable : 4100)
+
 #include "include/PCL_interface_lazyobj.h"
 #include "include/FTimeCount.h"
 
@@ -138,3 +141,5 @@ inline void FCObjImage::Stretch_Smooth (int nNewWidth, int nNewHeight, FCObjProg
 }
 
 #endif
+
+#pragma warning(pop)
