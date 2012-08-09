@@ -281,7 +281,7 @@ void CNewGameView::OnInitialUpdate()
 	EnableNextButton();
 }
 
-BOOL CNewGameView::OnEraseBkgnd(CDC* pDC)
+BOOL CNewGameView::OnEraseBkgnd(CDC* /*pDC*/)
 {
 	// TODO: Fügen Sie hier Ihren Meldungsbehandlungscode ein, und/oder benutzen Sie den Standard.
 	return FALSE;

@@ -262,7 +262,7 @@ void CStartMenuView::OnInitialUpdate()
 	this->SetTimer(1,4000,NULL);
 }
 
-BOOL CStartMenuView::OnEraseBkgnd(CDC* pDC)
+BOOL CStartMenuView::OnEraseBkgnd(CDC* /*pDC*/)
 {
 	// TODO: Fügen Sie hier Ihren Meldungsbehandlungscode ein, und/oder benutzen Sie den Standard.
 	return FALSE;
@@ -375,12 +375,12 @@ LRESULT CStartMenuView::OnUserMsg(WPARAM wParam, LPARAM lParam)
 	return 0;
 }
 
-void CStartMenuView::OnServerSocketError(int nError)
+void CStartMenuView::OnServerSocketError(int /*nError*/)
 {
 //	MessageBox(network::GetWSAErrorMsg(nError), "Server-Fehler", MB_ICONEXCLAMATION | MB_OK);
 }
 
-void CStartMenuView::OnClientSocketError(int nError)
+void CStartMenuView::OnClientSocketError(int /*nError*/)
 {
 //	MessageBox(network::GetWSAErrorMsg(nError), "Client-Fehler", MB_ICONEXCLAMATION | MB_OK);
 }
@@ -438,7 +438,7 @@ void CStartMenuView::OnPrepareGame()
 {
 }
 
-void CStartMenuView::OnNextRound(network::CNextRound *pMsg)
+void CStartMenuView::OnNextRound(network::CNextRound* /*pMsg*/)
 {
 }
 

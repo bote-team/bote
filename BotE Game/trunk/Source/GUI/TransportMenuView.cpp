@@ -132,7 +132,7 @@ void CTransportMenuView::OnPrepareDC(CDC* pDC, CPrintInfo* pInfo)
 	CMainBaseView::OnPrepareDC(pDC, pInfo);
 }
 
-BOOL CTransportMenuView::OnEraseBkgnd(CDC* pDC)
+BOOL CTransportMenuView::OnEraseBkgnd(CDC* /*pDC*/)
 {
 	// TODO: Add your message handler code here and/or call default
 	return FALSE;

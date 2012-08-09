@@ -262,7 +262,7 @@ void CTradeBottomView::LoadRaceGraphics()
 	m_pSmallButton = Bitmap::FromFile(CComBSTR(s));
 }
 
-BOOL CTradeBottomView::OnEraseBkgnd(CDC* pDC)
+BOOL CTradeBottomView::OnEraseBkgnd(CDC* /*pDC*/)
 {
 	// TODO: Add your message handler code here and/or call default
 	return FALSE;

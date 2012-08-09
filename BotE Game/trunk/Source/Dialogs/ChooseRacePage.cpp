@@ -273,7 +273,7 @@ afx_msg void CChooseRacePage::OnChooseRace(UINT nID)
 	}
 }
 
-afx_msg void CChooseRacePage::OnSetPlayByServer(UINT nID)
+afx_msg void CChooseRacePage::OnSetPlayByServer(UINT /*nID*/)
 {
 /*	using namespace network;
 

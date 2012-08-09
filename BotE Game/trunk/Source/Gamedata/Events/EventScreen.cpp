@@ -89,7 +89,7 @@ void CEventScreen::Create(void)
 	m_Buttons.Add(new CMyButton(CPoint(560,970), CSize(160,40), CResourceManager::GetString("BTN_OKAY"),  fileN, fileI, fileA));
 }
 
-void CEventScreen::Draw(Graphics* g, CGraphicPool* graphicPool) const
+void CEventScreen::Draw(Graphics* g, CGraphicPool*) const
 {
 	if (m_pBGImage)
 		g->DrawImage(m_pBGImage, 0, 0, 1280, 1024);

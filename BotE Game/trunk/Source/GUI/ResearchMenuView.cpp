@@ -159,7 +159,7 @@ void CResearchMenuView::OnPrepareDC(CDC* pDC, CPrintInfo* pInfo)
 	CMainBaseView::OnPrepareDC(pDC, pInfo);
 }
 
-BOOL CResearchMenuView::OnEraseBkgnd(CDC* pDC)
+BOOL CResearchMenuView::OnEraseBkgnd(CDC* /*pDC*/)
 {
 	// TODO: Add your message handler code here and/or call default
 	return FALSE;

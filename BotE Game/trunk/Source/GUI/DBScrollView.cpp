@@ -36,7 +36,7 @@ END_MESSAGE_MAP()
 /////////////////////////////////////////////////////////////////////////////
 // CDBScrollView drawing
 
-void CDBScrollView::OnDraw(CDC *pDC)
+void CDBScrollView::OnDraw(CDC* /*pDC*/)
 {
 }
 
@@ -58,7 +58,7 @@ void CDBScrollView::Dump(CDumpContext& dc) const
 /////////////////////////////////////////////////////////////////////////////
 // CDBScrollView message handlers
 
-BOOL CDBScrollView::OnEraseBkgnd(CDC* pDC)
+BOOL CDBScrollView::OnEraseBkgnd(CDC* /*pDC*/)
 {
 	// verhindern, dass der Hintergrund automatisch mit weiß gefüllt wird
 	return FALSE;

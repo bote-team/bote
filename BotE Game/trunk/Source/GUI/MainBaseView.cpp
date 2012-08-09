@@ -26,7 +26,7 @@ END_MESSAGE_MAP()
 
 // CMainBaseView drawing
 
-void CMainBaseView::OnDraw(CDC* pDC)
+void CMainBaseView::OnDraw(CDC* /*pDC*/)
 {
 	// TODO: add draw code here
 }
@@ -85,7 +85,7 @@ void CMainBaseView::OnPrepareDC(CDC* pDC, CPrintInfo* pInfo)
 	CView::OnPrepareDC(pDC, pInfo);
 }
 
-BOOL CMainBaseView::OnEraseBkgnd(CDC* pDC)
+BOOL CMainBaseView::OnEraseBkgnd(CDC* /*pDC*/)
 {
 	// TODO: Add your message handler code here and/or call default
 	return FALSE;

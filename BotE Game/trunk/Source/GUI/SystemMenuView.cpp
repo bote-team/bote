@@ -272,7 +272,7 @@ void CSystemMenuView::OnXButtonDown(UINT nFlags, UINT nButton, CPoint point)
 	CMainBaseView::OnXButtonDown(nFlags, nButton, point);
 }
 
-BOOL CSystemMenuView::OnEraseBkgnd(CDC* pDC)
+BOOL CSystemMenuView::OnEraseBkgnd(CDC* /*pDC*/)
 {
 	// TODO: Add your message handler code here and/or call default
 	return FALSE;

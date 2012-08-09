@@ -725,7 +725,7 @@ void CShipBottomView::LoadRaceGraphics()
 	m_pShipOrderButton = Bitmap::FromFile(CComBSTR(s));
 }
 
-BOOL CShipBottomView::OnEraseBkgnd(CDC* pDC)
+BOOL CShipBottomView::OnEraseBkgnd(CDC* /*pDC*/)
 {
 	// TODO: Add your message handler code here and/or call default
 	return FALSE;

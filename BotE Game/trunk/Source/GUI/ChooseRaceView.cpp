@@ -247,7 +247,7 @@ void CChooseRaceView::OnInitialUpdate()
 	EnableRaceButtons();
 }
 
-BOOL CChooseRaceView::OnEraseBkgnd(CDC* pDC)
+BOOL CChooseRaceView::OnEraseBkgnd(CDC* /*pDC*/)
 {
 	// TODO: Fügen Sie hier Ihren Meldungsbehandlungscode ein, und/oder benutzen Sie den Standard.
 	return FALSE;

@@ -108,7 +108,7 @@ void CEventMenuView::OnPrepareDC(CDC* pDC, CPrintInfo* pInfo)
 	CMainBaseView::OnPrepareDC(pDC, pInfo);
 }
 
-BOOL CEventMenuView::OnEraseBkgnd(CDC* pDC)
+BOOL CEventMenuView::OnEraseBkgnd(CDC* /*pDC*/)
 {
 	// TODO: Add your message handler code here and/or call default
 	return TRUE;

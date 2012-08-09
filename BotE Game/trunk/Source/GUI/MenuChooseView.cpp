@@ -263,7 +263,7 @@ void  CMenuChooseView::LoadRaceGraphics()
 	m_RoundEnd = new CMyButton(CPoint(20,5), CSize(160,40), CResourceManager::GetString("BTN_ROUNDEND"), fileN, fileI, fileA);
 }
 
-BOOL CMenuChooseView::OnEraseBkgnd(CDC* pDC)
+BOOL CMenuChooseView::OnEraseBkgnd(CDC* /*pDC*/)
 {
 	// TODO: Code für die Behandlungsroutine für Nachrichten hier einfügen und/oder Standard aufrufen
 	return TRUE;

@@ -167,7 +167,7 @@ void CIntelMenuView::LoadRaceGraphics()
 	bg_intelinfomenu	= pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "intelinfomenu.boj");
 }
 
-BOOL CIntelMenuView::OnEraseBkgnd(CDC* pDC)
+BOOL CIntelMenuView::OnEraseBkgnd(CDC* /*pDC*/)
 {
 	// TODO: Add your message handler code here and/or call default
 	return FALSE;

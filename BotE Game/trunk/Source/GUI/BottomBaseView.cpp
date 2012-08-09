@@ -27,7 +27,7 @@ END_MESSAGE_MAP()
 
 // CBottomBaseView drawing
 
-void CBottomBaseView::OnDraw(CDC* pDC)
+void CBottomBaseView::OnDraw(CDC* /*pDC*/)
 {
 	// TODO: add draw code here
 }
@@ -70,7 +70,7 @@ void CBottomBaseView::OnInitialUpdate()
 	pDoc->GetMainFrame()->AddToTooltip(this);
 }
 
-BOOL CBottomBaseView::OnEraseBkgnd(CDC* pDC)
+BOOL CBottomBaseView::OnEraseBkgnd(CDC* /*pDC*/)
 {
 	// TODO: Add your message handler code here and/or call default
 	return FALSE;

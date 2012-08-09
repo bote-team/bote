@@ -538,7 +538,7 @@ const CString CSmallInfoView::CheckPlanetClassForInfoHead(char PlanetClass) // F
 	return s2;
 }
 
-BOOL CSmallInfoView::OnEraseBkgnd(CDC* pDC)
+BOOL CSmallInfoView::OnEraseBkgnd(CDC* /*pDC*/)
 {
 	// TODO: Code für die Behandlungsroutine für Nachrichten hier einfügen und/oder Standard aufrufen
 	return FALSE;

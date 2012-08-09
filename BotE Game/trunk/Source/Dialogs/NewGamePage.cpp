@@ -241,7 +241,7 @@ void CNewGamePage::EnableWizardButtons()
 	m_pParent->SetWizardButtons(dwFlags);
 }
 
-void CNewGamePage::OnChangedHostIP(NMHDR *pNMHDR, LRESULT *pResult)
+void CNewGamePage::OnChangedHostIP(NMHDR* /*pNMHDR*/, LRESULT *pResult)
 {
 	EnableWizardButtons();
 	*pResult = 0;

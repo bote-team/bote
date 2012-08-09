@@ -76,14 +76,14 @@ void CSearchServersDlg::OnServerFound(const CString &strDescription, DWORD dwIP,
 	m_lEntries.AddTail(entry);
 }
 
-void CSearchServersDlg::OnNMDblclkServers(NMHDR *pNMHDR, LRESULT *pResult)
+void CSearchServersDlg::OnNMDblclkServers(NMHDR* /*pNMHDR*/, LRESULT *pResult)
 {
 	int idx = m_listServers.GetNextItem(-1, LVNI_SELECTED);
 	if (idx > -1) OnOK();
 	*pResult = 0;
 }
 
-void CSearchServersDlg::OnNMClickServers(NMHDR *pNMHDR, LRESULT *pResult)
+void CSearchServersDlg::OnNMClickServers(NMHDR* /*pNMHDR*/, LRESULT *pResult)
 {
 	GetDlgItem(IDOK)->EnableWindow(m_listServers.GetNextItem(-1, LVNI_SELECTED) > -1);
 	*pResult = 0;

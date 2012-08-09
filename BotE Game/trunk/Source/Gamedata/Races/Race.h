@@ -196,7 +196,7 @@ public:
 	/// Die Funktion liest einen entsprechenden Eintrag aus einer data Datei.
 	/// @param saInfo Referenz auf Rasseninformationen
 	/// @param nPos Referenz auf Position im Array, ab wann die Informationen gelten
-	virtual void Create(const CStringArray& saInfo, int& nPos) {};
+	virtual void Create(const CStringArray&, int&) {};
 
 	/// Funktion lässt die Diplomatie-KI der Rasse Angebote an andere Rassen erstellen.
 	void MakeOffersAI(void);

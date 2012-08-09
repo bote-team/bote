@@ -45,7 +45,7 @@ private:
 	CTorpedoInfo(void);
 
 	/// Kopierkonstruktor
-	CTorpedoInfo(const CTorpedoInfo& cc) {};
+	CTorpedoInfo(const CTorpedoInfo&) {};
 
 public:
 	/// Destruktor

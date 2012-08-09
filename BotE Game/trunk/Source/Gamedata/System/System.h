@@ -242,7 +242,7 @@ public:
 	bool CheckEnergyBuildings(const BuildingInfoArray* pvBuildingInfos);
 
 	// Funktion fügt einen Baulistencheck durch
-	BOOLEAN AssemblyListCheck(BuildingInfoArray* buildingInfo, CGlobalBuildings* globals, int ID = 0);
+	BOOLEAN AssemblyListCheck(BuildingInfoArray* buildingInfo, CGlobalBuildings* globals);
 
 	// Funktion baut die Gebäude der Minorrace, wenn wir eine Mitgliedschaft mit dieser erreicht haben.
 	void BuildBuildingsForMinorRace(CSector* sector, BuildingInfoArray* buildingInfo, USHORT averageTechlevel, const CMinor* pMinor);

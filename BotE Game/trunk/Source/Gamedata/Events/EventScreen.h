@@ -39,7 +39,7 @@ public:
 
 	///	Funktion erstellt zur aktuellen Mouse-Position einen HTML Tooltip
 	/// @return	der erstellte Tooltip-Text
-	virtual CString GetTooltip(const CPoint &pt) const {return "";}
+	virtual CString GetTooltip(const CPoint &) const {return "";}
 
 // Attribute
 protected:

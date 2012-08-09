@@ -1366,7 +1366,7 @@ void CSystem::CalculateBuildableBuildings(CSector* sector, BuildingInfoArray* bu
 	c_arraysort<CArray<short,short>,short>(m_BuildableBuildings,sort_asc);
 }
 
-BOOLEAN CSystem::AssemblyListCheck(BuildingInfoArray* buildingInfo, CGlobalBuildings* globals, int ID)
+BOOLEAN CSystem::AssemblyListCheck(BuildingInfoArray* buildingInfo, CGlobalBuildings* globals)
 {
 	// zu allererst die Liste der baubaren Gebäude und Updates mit der Liste der in dieser Runde baubaren Gebäude
 	// vor dem AssemblyListCheck füllen

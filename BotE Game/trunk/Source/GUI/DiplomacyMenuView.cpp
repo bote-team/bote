@@ -235,7 +235,7 @@ void CDiplomacyMenuView::OnPrepareDC(CDC* pDC, CPrintInfo* pInfo)
 	CMainBaseView::OnPrepareDC(pDC, pInfo);
 }
 
-BOOL CDiplomacyMenuView::OnEraseBkgnd(CDC* pDC)
+BOOL CDiplomacyMenuView::OnEraseBkgnd(CDC* /*pDC*/)
 {
 	// TODO: Add your message handler code here and/or call default
 	return FALSE;

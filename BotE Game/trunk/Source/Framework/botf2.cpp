@@ -66,7 +66,7 @@ BEGIN_MESSAGE_MAP(CAboutDlg, CDialog)
 	ON_BN_CLICKED(IDOK, &CAboutDlg::OnBnClickedOk)
 END_MESSAGE_MAP()
 
-void CAboutDlg::OnIpnFieldchangedIpaddress1(NMHDR *pNMHDR, LRESULT *pResult)
+void CAboutDlg::OnIpnFieldchangedIpaddress1(NMHDR* /*pNMHDR*/, LRESULT *pResult)
 {
 	/*LPNMIPADDRESS pIPAddr = reinterpret_cast<LPNMIPADDRESS>(pNMHDR);*/
 	// TODO: Add your control notification handler code here

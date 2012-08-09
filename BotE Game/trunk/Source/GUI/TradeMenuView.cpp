@@ -156,7 +156,7 @@ void CTradeMenuView::OnPrepareDC(CDC* pDC, CPrintInfo* pInfo)
 	CMainBaseView::OnPrepareDC(pDC, pInfo);
 }
 
-BOOL CTradeMenuView::OnEraseBkgnd(CDC* pDC)
+BOOL CTradeMenuView::OnEraseBkgnd(CDC* /*pDC*/)
 {
 	// TODO: Add your message handler code here and/or call default
 	return FALSE;

@@ -118,7 +118,7 @@ void CShipDesignBottomView::Dump(CDumpContext& dc) const
 
 // CShipDesignBottomView message handlers
 
-BOOL CShipDesignBottomView::OnEraseBkgnd(CDC* pDC)
+BOOL CShipDesignBottomView::OnEraseBkgnd(CDC* /*pDC*/)
 {
 	// TODO: Add your message handler code here and/or call default
 	return FALSE;

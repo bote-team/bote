@@ -185,7 +185,7 @@ void CMainFrame::Dump(CDumpContext& dc) const
 // CMainFrame Nachrichten-Handler
 
 
-BOOL CMainFrame::OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext)
+BOOL CMainFrame::OnCreateClient(LPCREATESTRUCT /*lpcs*/, CCreateContext* pContext)
 {
 	// Hauptfenster aufteilen:
 	// +---------------------------------------------------+
@@ -469,7 +469,7 @@ void CMainFrame::FullScreenMainView(bool fullScreen)
 	m_wndSplitter.RecalcLayout();
 }
 
-LRESULT CMainFrame::UpdateViews(WPARAM wParam, LPARAM lParam)
+LRESULT CMainFrame::UpdateViews(WPARAM /*wParam*/, LPARAM /*lParam*/)
 {
 	MYTRACE(MT::LEVEL_INFO, "Getting Message to UpdateViews...");
 
@@ -483,7 +483,7 @@ LRESULT CMainFrame::UpdateViews(WPARAM wParam, LPARAM lParam)
 	return TRUE;
 }
 
-LRESULT CMainFrame::ShowCombatView(WPARAM wParam, LPARAM lParam)
+LRESULT CMainFrame::ShowCombatView(WPARAM /*wParam*/, LPARAM /*lParam*/)
 {
 	MYTRACE(MT::LEVEL_INFO, "Getting Message to Show CombatView...");
 
@@ -510,7 +510,7 @@ LRESULT CMainFrame::ShowCombatView(WPARAM wParam, LPARAM lParam)
 	return TRUE;
 }
 
-LRESULT CMainFrame::InitViews(WPARAM wParam, LPARAM lParam)
+LRESULT CMainFrame::InitViews(WPARAM /*wParam*/, LPARAM /*lParam*/)
 {
 	MYTRACE(MT::LEVEL_INFO, "Getting Message to InitViews...");
 

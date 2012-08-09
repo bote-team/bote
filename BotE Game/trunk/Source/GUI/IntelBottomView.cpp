@@ -130,7 +130,7 @@ void CIntelBottomView::Dump(CDumpContext& dc) const
 
 // CIntelBottomView message handlers
 
-BOOL CIntelBottomView::OnEraseBkgnd(CDC* pDC)
+BOOL CIntelBottomView::OnEraseBkgnd(CDC* /*pDC*/)
 {
 	// TODO: Add your message handler code here and/or call default
 	return FALSE;

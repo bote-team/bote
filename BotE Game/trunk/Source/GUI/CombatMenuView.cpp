@@ -247,7 +247,7 @@ void CCombatMenuView::OnPrepareDC(CDC* pDC, CPrintInfo* pInfo)
 	CMainBaseView::OnPrepareDC(pDC, pInfo);
 }
 
-BOOL CCombatMenuView::OnEraseBkgnd(CDC* pDC)
+BOOL CCombatMenuView::OnEraseBkgnd(CDC* /*pDC*/)
 {
 	// TODO: Add your message handler code here and/or call default
 	return TRUE;

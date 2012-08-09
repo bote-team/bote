@@ -312,7 +312,7 @@ CPoint CCombatShip::AttackEnemyWithBeam(const CPoint& beamStart)
 
 // Diese Funktion führt einen Torpedoangriff gegen das Ziel durch, welches in der Variablen <code>m_pTarget</code>
 // gespeichert ist
-CPoint CCombatShip::AttackEnemyWithTorpedo(std::list<CTorpedo*>* pCT, const CPoint& torpedoStart)
+CPoint CCombatShip::AttackEnemyWithTorpedo(/*std::list<CTorpedo*>* pCT,*/ const CPoint& torpedoStart)
 {
 	// Wenn wir ein Ziel aufgeschaltet haben
 	if (m_pTarget != NULL)

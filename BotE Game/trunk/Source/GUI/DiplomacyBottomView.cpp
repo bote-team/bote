@@ -120,7 +120,7 @@ void CDiplomacyBottomView::Dump(CDumpContext& dc) const
 
 // CDiplomacyBottomView message handlers
 
-BOOL CDiplomacyBottomView::OnEraseBkgnd(CDC* pDC)
+BOOL CDiplomacyBottomView::OnEraseBkgnd(CDC* /*pDC*/)
 {
 	// TODO: Add your message handler code here and/or call default
 	return FALSE;

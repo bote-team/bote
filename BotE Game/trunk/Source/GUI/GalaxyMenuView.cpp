@@ -570,7 +570,7 @@ BOOL CGalaxyMenuView::OnScrollBy(CSize sizeScroll, BOOL bDoScroll)
 	return CScrollView::OnScrollBy(sizeScroll, bDoScroll);
 }
 
-void CGalaxyMenuView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
+void CGalaxyMenuView::OnUpdate(CView* /*pSender*/, LPARAM /*lHint*/, CObject* /*pHint*/)
 {
 	// TODO: Add your specialized code here and/or call the base class
 	// ScrollSizes auf Gesamtgröße inkl. Zoom setzen
@@ -595,7 +595,7 @@ void CGalaxyMenuView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
 	}
 }
 
-void CGalaxyMenuView::OnSize(UINT nType, int cx, int cy)
+void CGalaxyMenuView::OnSize(UINT /*nType*/, int /*cx*/, int /*cy*/)
 {
 	//CScrollView::OnSize(nType, cx, cy);
 
@@ -876,7 +876,7 @@ void CGalaxyMenuView::OnLButtonUp(UINT nFlags, CPoint point)
 }
 
 
-BOOL CGalaxyMenuView::OnEraseBkgnd(CDC* pDC)
+BOOL CGalaxyMenuView::OnEraseBkgnd(CDC* /*pDC*/)
 {
 	// TODO: Code für die Behandlungsroutine für Nachrichten hier einfügen und/oder Standard aufrufen
 	//return CScrollView::OnEraseBkgnd(pDC);

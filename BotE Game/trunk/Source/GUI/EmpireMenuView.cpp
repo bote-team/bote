@@ -180,7 +180,7 @@ void CEmpireMenuView::OnPrepareDC(CDC* pDC, CPrintInfo* pInfo)
 	CMainBaseView::OnPrepareDC(pDC, pInfo);
 }
 
-BOOL CEmpireMenuView::OnEraseBkgnd(CDC* pDC)
+BOOL CEmpireMenuView::OnEraseBkgnd(CDC* /*pDC*/)
 {
 	// TODO: Add your message handler code here and/or call default
 	return TRUE;

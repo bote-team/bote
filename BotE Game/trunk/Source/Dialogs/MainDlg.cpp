@@ -122,12 +122,12 @@ LRESULT CMainDlg::OnUserMsg(WPARAM wParam, LPARAM lParam)
 	return 0;
 }
 
-void CMainDlg::OnServerSocketError(int nError)
+void CMainDlg::OnServerSocketError(int /*nError*/)
 {
 //	MessageBox(network::GetWSAErrorMsg(nError), "Server-Fehler", MB_ICONEXCLAMATION | MB_OK);
 }
 
-void CMainDlg::OnClientSocketError(int nError)
+void CMainDlg::OnClientSocketError(int /*nError*/)
 {
 //	MessageBox(network::GetWSAErrorMsg(nError), "Client-Fehler", MB_ICONEXCLAMATION | MB_OK);
 }
@@ -167,7 +167,7 @@ void CMainDlg::OnPrepareGame()
 {
 }
 
-void CMainDlg::OnNextRound(network::CNextRound *pMsg)
+void CMainDlg::OnNextRound(network::CNextRound* /*pMsg*/)
 {
 }
 

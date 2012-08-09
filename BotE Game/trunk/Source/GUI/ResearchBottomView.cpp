@@ -141,7 +141,7 @@ void CResearchBottomView::Dump(CDumpContext& dc) const
 
 // CResearchBottomView message handlers
 
-BOOL CResearchBottomView::OnEraseBkgnd(CDC* pDC)
+BOOL CResearchBottomView::OnEraseBkgnd(CDC* /*pDC*/)
 {
 	// TODO: Add your message handler code here and/or call default
 	return FALSE;

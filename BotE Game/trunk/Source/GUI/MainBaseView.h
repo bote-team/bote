@@ -32,7 +32,7 @@ public:
 public:
 	/// Funktion setzt ein Untermenü. Diese Funktion sollte von der abgeleiteten Klasse überschrieben werden.
 	/// @param menuID Nummer des Untermenüs
-	virtual void SetSubMenu(BYTE menuID) {};
+	virtual void SetSubMenu(BYTE) {};
 
 	/// Funktion gibt das aktuelle Untermenü zurück. Diese Funktion sollte von der abgeleiteten Klasse überschrieben werden.
 	/// @return <code>NULL</code>

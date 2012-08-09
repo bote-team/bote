@@ -421,7 +421,7 @@ void CSettingsDlg::OnOK()
 	CDialog::OnOK();
 }
 
-void CSettingsDlg::OnNMCustomdrawSliderDifficulty(NMHDR *pNMHDR, LRESULT *pResult)
+void CSettingsDlg::OnNMCustomdrawSliderDifficulty(NMHDR* /*pNMHDR*/, LRESULT *pResult)
 {
 	/*LPNMCUSTOMDRAW pNMCD = reinterpret_cast<LPNMCUSTOMDRAW>(pNMHDR);*/
 	// TODO: Fügen Sie hier Ihren Kontrollbehandlungscode für die Benachrichtigung ein.
