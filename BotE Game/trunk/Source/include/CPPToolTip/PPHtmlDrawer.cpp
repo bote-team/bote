@@ -3446,10 +3446,6 @@ void CPPHtmlDrawer::RemoveTextStyle(LPCTSTR lpszStyleName)
 	m_mapStyles.erase(iterMap);
 } //End RemoveTextStyle
 
-void CPPHtmlDrawer::AddToTextStyle(LPCTSTR lpszStyleName, LPCTSTR lpszAddStyle)
-{
-} //End AddToTextStyle
-
 void CPPHtmlDrawer::UnpackTextStyle(CPPString strStyle, _STRUCT_CHANGESTYLE & cs)
 {
 	//Gets a string
@@ -3816,7 +3812,7 @@ int CPPHtmlDrawer::StyleBorder(CPPString & str, int nDefault)
 	return nDefault;
 } //End StyleBorder
 
-void CPPHtmlDrawer::SetDefaultStyles(_STRUCT_CHANGESTYLE & cs)
+void CPPHtmlDrawer::SetDefaultStyles(_STRUCT_CHANGESTYLE & /*cs*/)
 {
 	m_defStyle.strTag.Empty();		//The name of the last opened tag
 

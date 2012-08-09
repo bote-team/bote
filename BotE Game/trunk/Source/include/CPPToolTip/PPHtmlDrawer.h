@@ -584,7 +584,6 @@ protected:
 	//Functions for the map of the styles
 	LPCTSTR GetTextStyle(LPCTSTR lpszStyleName);
 	void RemoveTextStyle(LPCTSTR lpszStyleName);
-	void AddToTextStyle(LPCTSTR lpszStyleName, LPCTSTR lpszAddStyle);
 	void UnpackTextStyle(CPPString strStyle, _STRUCT_CHANGESTYLE & cs);
 
 	//Functions for analyzing parameters

@@ -291,7 +291,7 @@ BOOL CPPToolTip::IsNotify()
 	return (BOOL)(m_hNotifyWnd != NULL);
 }  //End of IsNotify
 
-BOOL CPPToolTip::OnSetCursor(CWnd* pWnd, UINT nHitTest, UINT message)
+BOOL CPPToolTip::OnSetCursor(CWnd* /*pWnd*/, UINT /*nHitTest*/, UINT /*message*/)
 {
 	CPoint ptClient;
 	::GetCursorPos(&ptClient);
@@ -312,7 +312,7 @@ BOOL CPPToolTip::OnSetCursor(CWnd* pWnd, UINT nHitTest, UINT message)
 	return TRUE;
 } //End of the WM_SETCURSOR handler
 
-LRESULT CPPToolTip::OnRepaintWindow(WPARAM wParam, LPARAM lParam)
+LRESULT CPPToolTip::OnRepaintWindow(WPARAM /*wParam*/, LPARAM /*lParam*/)
 {
 	//TRACE (_T("CPPToolTip::OnRepaintWindow()\n"));
 	if (m_bHyperlinkEnabled)
@@ -1121,7 +1121,7 @@ void CPPToolTip::FreeResources()
 	} //if
 } //End of FreeResources
 
-void CPPToolTip::OutputTooltipOnScreen(LPPOINT lpPoint, HDC hDC /* = NULL */)
+void CPPToolTip::OutputTooltipOnScreen(LPPOINT lpPoint)
 {
 	//TRACE(_T("OutputTooltipOnScreen()\n"));
 	CRect rect = m_rcBoundsTooltip;

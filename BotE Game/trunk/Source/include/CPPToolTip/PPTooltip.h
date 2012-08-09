@@ -420,7 +420,7 @@ protected:
 	void PrepareDisplayTooltip(LPPOINT lpPoint);
 	void OnRedrawTooltip(HDC hDC, BYTE nTransparency = 0);
 
-	void OutputTooltipOnScreen(LPPOINT lpPoint, HDC hDC = NULL);
+	void OutputTooltipOnScreen(LPPOINT lpPoint);
 	void SetAutoPopTimer(); //Sets autopop timer
 
 	void FreeResources();
