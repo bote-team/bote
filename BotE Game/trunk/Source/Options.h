@@ -29,7 +29,7 @@ extern int STARMAP_TOTALWIDTH	;//		2400	///< Gesamtbreite der View in Pixel bei 
 extern int STARMAP_TOTALHEIGHT	;//		1600	///< Gesamthöhe bei 100% (= 20 * 40)
 
 
-#define STARMAP_ZOOM_MIN			.2		///< minimaler Zoom-Faktor
+#define STARMAP_ZOOM_MIN			.3		///< minimaler Zoom-Faktor
 extern double STARMAP_ZOOM_MAX;//			2	///< maximaler Zoom-Faktor
 #define STARMAP_ZOOM_STEP			.05		///< Änderung des Zoom-Faktors beim Drehen des Scrollrades
 #define STARMAP_ZOOM_INITIAL		1.0		///< Zoom-Faktor zu Beginn

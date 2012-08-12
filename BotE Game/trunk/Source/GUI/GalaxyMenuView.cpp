@@ -1580,7 +1580,7 @@ void CGalaxyMenuView::GenerateGalaxyMap()
 	FCWin32::GDIPlus_LoadBitmap(*m_pGalaxyBackground, img_to_save);
 	CString name;
 	name.Format("Round%iMajor%s",pDoc->GetCurrentRound(),pDoc->GetPlayersRaceID());
-	img_to_save.Save("F://"+name+".bmp");
+	img_to_save.Save("C://"+name+".bmp");
 #endif
 
 	CSize thumbSize(150, STARMAP_TOTALHEIGHT * 150 / STARMAP_TOTALWIDTH);

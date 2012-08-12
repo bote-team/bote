@@ -141,11 +141,19 @@ void CVictoryObserver::Init(void)
 	CIniLoader* pIni = CIniLoader::GetInstance();
 
 	pIni->ReadValue("Victory_Conditions", "Elimination", m_bConditionStatus[VICTORYTYPE_ELIMINATION]);
+	MYTRACE(MT::LEVEL_INFO, "Victory_Conditions - Elimination: %i", m_bConditionStatus[VICTORYTYPE_ELIMINATION]);
+	//MYTRACE(MT::LEVEL_INFO, "Victory_Conditions - Elimination: %s", m_bConditionStatus[VICTORYTYPE_ELIMINATION]);
+	//MYTRACE(MT::LEVEL_INFO, "Victory_Conditions - Elimination: %d", m_bConditionStatus[VICTORYTYPE_ELIMINATION]);
 	pIni->ReadValue("Victory_Conditions", "Diplomacy", m_bConditionStatus[VICTORYTYPE_DIPLOMACY]);
+	MYTRACE(MT::LEVEL_INFO, "Victory_Conditions - Diplomacy: %i", m_bConditionStatus[VICTORYTYPE_DIPLOMACY]);
 	pIni->ReadValue("Victory_Conditions", "Conquest", m_bConditionStatus[VICTORYTYPE_CONQUEST]);
+	MYTRACE(MT::LEVEL_INFO, "Victory_Conditions - Conquest: %i", m_bConditionStatus[VICTORYTYPE_CONQUEST]);
 	pIni->ReadValue("Victory_Conditions", "Research", m_bConditionStatus[VICTORYTYPE_RESEARCH]);
+	MYTRACE(MT::LEVEL_INFO, "Victory_Conditions - Research: %i", m_bConditionStatus[VICTORYTYPE_RESEARCH]);
 	pIni->ReadValue("Victory_Conditions", "Combat", m_bConditionStatus[VICTORYTYPE_COMBATWINS]);
+	MYTRACE(MT::LEVEL_INFO, "Victory_Conditions - Combat: %i", m_bConditionStatus[VICTORYTYPE_COMBATWINS]);
 	pIni->ReadValue("Victory_Conditions", "Sabotage", m_bConditionStatus[VICTORYTYPE_SABOTAGE]);
+	MYTRACE(MT::LEVEL_INFO, "Victory_Conditions - Sabotage: %i", m_bConditionStatus[VICTORYTYPE_SABOTAGE]);
 }
 
 int CVictoryObserver::GetVictoryStatus(const CString& sRaceID, VICTORYTYPE nType) const
@@ -262,6 +270,7 @@ int CVictoryObserver::GetNeededVictoryValue(VICTORYTYPE nType) const
 		nValue = pDoc->GetRaceCtrl()->GetRaces()->size();
 		// eigene Rasse nicht mitzählen
 		nValue--;
+		MYTRACE(MT::LEVEL_INFO, "VICTORYTYPE_DIPLOMACY - needed value: %d", nValue/2);
 		return max(nValue >> 1, 10);
 
 	case VICTORYTYPE_CONQUEST:
@@ -271,6 +280,7 @@ int CVictoryObserver::GetNeededVictoryValue(VICTORYTYPE nType) const
 			for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
 				if (pDoc->GetSector(x,y).GetCurrentHabitants() > 0.0 && pDoc->GetSector(x,y).GetOwnerOfSector() != "")
 					nValue++;
+		MYTRACE(MT::LEVEL_INFO, "VICTORYTYPE_CONQUEST - needed value: %d", nValue/2);
 		return max(nValue >> 1, 10);
 
 	case VICTORYTYPE_RESEARCH:
@@ -278,7 +288,10 @@ int CVictoryObserver::GetNeededVictoryValue(VICTORYTYPE nType) const
 		return 10;
 
 	case VICTORYTYPE_COMBATWINS:
+		//nValue = 0;
 		// aktuelle Runde / 2.25 Schiffskampfsiege (mindestens 125)
+		//nValue = nCurrentRound / 2.25, 125;
+		//MYTRACE(MT::LEVEL_INFO, "VICTORYTYPE_COMBATWINS - needed value: %d", nValue);
 		return max(nCurrentRound / 2.25, 125);
 
 	case VICTORYTYPE_SABOTAGE:
@@ -305,8 +318,10 @@ void CVictoryObserver::Observe(void)
 		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 			if (it->second->GetEmpire()->GetNumberOfSystems())
 				nMajorsAlive++;
+		MYTRACE(MT::LEVEL_INFO, "nMajorsAlive: %d", nMajorsAlive);
 		// eigene Rasse abziehen
 		m_nRivalsLeft = nMajorsAlive - 1;
+
 		// prüfen das keine andere Rasse mehr vorhanden ist
 		if (m_nRivalsLeft == GetNeededVictoryValue(VICTORYTYPE_ELIMINATION))
 		{
