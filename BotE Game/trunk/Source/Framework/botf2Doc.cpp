@@ -233,9 +233,7 @@ void CBotf2Doc::Serialize(CArchive& ar)
 		// ZU ERLEDIGEN: Hier Code zum Speichern einfügen
 		ar << m_iRound;
 		ar << m_fStardate;
-		MYTRACE(MT::LEVEL_INFO, "Stardate: i= %i", m_fStardate);
-		MYTRACE(MT::LEVEL_INFO, "Stardate: s= %s", m_fStardate);
-		MYTRACE(MT::LEVEL_INFO, "Stardate: d= %d", m_fStardate);
+		MYTRACE(MT::LEVEL_INFO, "Stardate: %f", m_fStardate);
 		ar << m_ptKO;
 		ar << STARMAP_SECTORS_HCOUNT;
 		ar << STARMAP_SECTORS_VCOUNT;
@@ -758,16 +756,11 @@ void CBotf2Doc::ResetIniSettings(void)
 		m_fDifficultyLevel			= 0.2f;
 	else
 		m_fDifficultyLevel			= 0.5f;
-	MYTRACE(MT::LEVEL_INFO, "m_fDifficultyLevel: i= %i", m_fDifficultyLevel);
-	MYTRACE(MT::LEVEL_INFO, "m_fDifficultyLevel: s= %s", m_fDifficultyLevel);
-	MYTRACE(MT::LEVEL_INFO, "m_fDifficultyLevel: d= %d", m_fDifficultyLevel);
+	MYTRACE(MT::LEVEL_INFO, "m_fDifficultyLevel: %f", m_fDifficultyLevel);
 
 
 	CSoundManager* pSoundManager = CSoundManager::GetInstance();
 	ASSERT(pSoundManager);
-	MYTRACE(MT::LEVEL_INFO, "pSoundManager: i= %i", pSoundManager);
-	MYTRACE(MT::LEVEL_INFO, "pSoundManager: s= %s", pSoundManager);
-	MYTRACE(MT::LEVEL_INFO, "pSoundManager: d= %d", pSoundManager);
 
 	bool bHardwareSound;
 	pIni->ReadValue("Audio", "HARDWARESOUND", bHardwareSound);
@@ -862,9 +855,7 @@ void CBotf2Doc::LoadViewGraphics(void)
 {
 	CMajor* pPlayersRace = GetPlayersRace();
 	ASSERT(pPlayersRace);
-MYTRACE(MT::LEVEL_INFO, "pPlayersRace: i= %i", pPlayersRace);
-MYTRACE(MT::LEVEL_INFO, "pPlayersRace: s= %i", pPlayersRace);
-MYTRACE(MT::LEVEL_INFO, "pPlayersRace: d= %i", pPlayersRace);
+	MYTRACE(MT::LEVEL_INFO, "pPlayersRace: %s", pPlayersRace->GetRaceName());
 
 	CGalaxyMenuView::SetPlayersRace(pPlayersRace);
 	CMainBaseView::SetPlayersRace(pPlayersRace);
@@ -1193,9 +1184,9 @@ void CBotf2Doc::GenerateGalaxy()
 	CIniLoader::GetInstance()->ReadValue("Special", "STARDENSITY", nStarDensity);
 	CIniLoader::GetInstance()->ReadValue("Special", "MINORDENSITY", nMinorDensity);
 	CIniLoader::GetInstance()->ReadValue("Special", "ANOMALYDENSITY", nAnomalyDensity);
-	MYTRACE(MT::LEVEL_INFO, "STARDENSITY: %d", nStarDensity);
-	MYTRACE(MT::LEVEL_INFO, "MINORDENSITY: %d", nMinorDensity);
-	MYTRACE(MT::LEVEL_INFO, "ANOMALYDENSITY: %d", nAnomalyDensity);
+	MYTRACE(MT::LEVEL_INFO, "STARDENSITY: %i", nStarDensity);
+	MYTRACE(MT::LEVEL_INFO, "MINORDENSITY: %i", nMinorDensity);
+	MYTRACE(MT::LEVEL_INFO, "ANOMALYDENSITY: %i", nAnomalyDensity);
 
 	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 	{
