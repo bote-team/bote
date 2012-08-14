@@ -6,11 +6,11 @@
 #define _CRT_SECURE_NO_WARNINGS		// häufige Sicherheitswarnungen ausschalten
 #pragma warning( disable : 4244 )
 
-//#pragma warning( 3 : 4702 )//Unerreichbarer Code
-#pragma warning( 3 : 4701 )//Potenziell nicht initialisierte lokale Variable 'Name' verwendet
-#pragma warning( 3 : 4189 )//'Bezeichner': Lokale Variable ist initialisiert, aber nicht referenziert
-#pragma warning( 3 : 4100 )//Unreferenzierter formaler Parameter
-#pragma warning( 3 : 4389 )//'Operator': Konflikt zwischen signed und unsigned
+//These warnings seem good to enable, but there are way too many of them for now
+//due to the default warning level set to 4.
+#pragma warning(disable : 4239)//nonstandard extension used : 'token' : conversion from 'type' to 'type' )
+#pragma warning(disable : 4238)//nonstandard extension used : class rvalue used as lvalue
+#pragma warning(disable : 4245)//'conversion' : conversion from 'type1' to 'type2', signed/unsigned mismatch
 
 #ifndef _SECURE_ATL
 #define _SECURE_ATL 1
