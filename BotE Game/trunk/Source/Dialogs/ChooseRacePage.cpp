@@ -78,6 +78,8 @@ BOOL CChooseRacePage::OnInitDialog()
 	// EXCEPTION: OCX Property Pages should return FALSE
 }
 
+#pragma warning(push)
+#pragma warning(disable : 4706)
 BOOL CChooseRacePage::OnSetActive()
 {
 	DWORD dwIP = 0;
@@ -148,6 +150,7 @@ BOOL CChooseRacePage::OnSetActive()
 
 	return CPropertyPage::OnSetActive();
 }
+#pragma warning(pop)
 
 void CChooseRacePage::EnableWizardButtons()
 {
