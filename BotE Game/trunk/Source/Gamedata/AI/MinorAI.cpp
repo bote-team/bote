@@ -4,6 +4,7 @@
 #include "Races\RaceController.h"
 #include "Races\GenDiploMessage.h"
 #include <algorithm>
+#include <cassert>
 
 //////////////////////////////////////////////////////////////////////
 // Konstruktion/Destruktion
@@ -192,7 +193,7 @@ ANSWER_STATUS::Typ CMinorAI::ReactOnOffer(const CDiplomacyInfo& info)
 	else
 	{
 		MYTRACE(MT::LEVEL_ERROR, "CMinorAI::ReactOnOffer(): %s could not react on offers from non Majors.", m_pRace->GetRaceID());
-		throw NotImplemented;
+		assert(false);
 	}
 
 	return ANSWER_STATUS::DECLINED;
@@ -324,7 +325,7 @@ bool CMinorAI::MakeOffer(CString& sRaceID, CDiplomacyInfo& info)
 	else
 	{
 		MYTRACE(MT::LEVEL_ERROR, "Minor: %s makes offer %d to Major %s\n", info.m_sFromRace, info.m_nType, info.m_sToRace);
-		throw NotImplemented;
+		assert(false);
 	}
 
 	return false;

@@ -135,7 +135,6 @@ short CIntelligence::GetBonus(BYTE bonus, BOOLEAN type) const
 		case 4: return this->GetInnerSecurityBoni(); break;
 		default: return 0;
 	}
-	return 0;
 }
 
 void CIntelligence::AddInnerSecurityPoints(int add)

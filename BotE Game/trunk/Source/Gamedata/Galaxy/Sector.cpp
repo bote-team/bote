@@ -671,6 +671,8 @@ void CSector::ClearAllPoints()
 	m_bShipPort.clear();
 }
 
+#pragma warning (push)
+#pragma warning (disable : 4702)
 /// Diese Funktion berechnet anhand der Besitzerpunkte und anderen Enflüssen, wem dieser Sektor schlussendlich
 /// gehört.
 void CSector::CalculateOwner(const CString& sSystemOwner)
@@ -726,6 +728,7 @@ void CSector::CalculateOwner(const CString& sSystemOwner)
 		SetOwned(FALSE);
 	m_sOwnerOfSector = newOwner;
 }
+#pragma warning (pop)
 
 /// Resetfunktion für die Klasse CSector
 void CSector::Reset()

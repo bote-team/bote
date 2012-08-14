@@ -5,6 +5,7 @@
 #include "Races\GenDiploMessage.h"
 
 #include <algorithm>
+#include <cassert>
 
 //////////////////////////////////////////////////////////////////////
 // Konstruktion/Destruktion
@@ -48,7 +49,7 @@ ANSWER_STATUS::Typ CMajorAI::ReactOnOffer(const CDiplomacyInfo& info)
 		return ReactOnMinorOffer(info);
 	}
 	else
-		throw NotImplemented;
+		assert(false);
 
 	return ANSWER_STATUS::NOT_REACTED;
 }
@@ -73,7 +74,7 @@ bool CMajorAI::MakeOffer(CString& sRaceID, CDiplomacyInfo& info)
 		return MakeMinorOffer(sRaceID, info);
 	}
 	else
-		throw NotImplemented;
+		assert(false);
 
 	return false;
 }
