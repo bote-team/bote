@@ -2342,7 +2342,7 @@ Durch Fehlkalkulationen ist die Sterberate auf § sehr viel höher als geplant, wo
 [BREAKTHROUGH]
 Durchbruch
 [GLOBALEVENTRESEARCH]
-Durch neue Forschungs-Methoden verdoppelten eure Wissentschaftler kurzzeitig ihre Effektivität 
+Durch neue Forschungs-Methoden verdoppelten eure Wissenschaftler kurzzeitig ihre Effektivität
 [GLOBALEVENTMINOR]
 Regierungswechsel bei den §
 [ALIENTECHEADLINE]

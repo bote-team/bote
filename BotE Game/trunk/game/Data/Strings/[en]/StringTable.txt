@@ -65,7 +65,7 @@ IP-adress of the server:
 Search for LAN-server
 
 [STARTGAME]
-Start match
+Start Game
 [CHOOSEEMPIRE]
 Choose your Empire
 [CHAT]
