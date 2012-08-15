@@ -980,7 +980,7 @@ kündigt den Vertrag mit dem Volk der §
 [WE_ACCEPT_MAJ_OFFER]
 Wir schliessen § mit § ab
 [WE_DECLINE_MAJ_OFFER]
-Wir haben den § der § abgelehnt
+Wir haben § der § abgelehnt
 [MAJ_ACCEPT_OFFER]
 § hat unseren § angenommen
 [MAJ_DECLINE_OFFER]
