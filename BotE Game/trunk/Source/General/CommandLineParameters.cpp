@@ -23,6 +23,9 @@ void CCommandLineParameters::ParseParam(const char* pszParam, BOOL /*bFlag*/, BO
 		args = parameter_with_args.substr(equals + 1);
 	}
 	if(strcmp(parameter.c_str(), "-log-dir") == 0) {
+		int max_index = args.length() - 1;
+		if(max_index >= 0 && args.substr(max_index) != "\\")
+			args = args + "\\";
 		m_sLogDir = args;
 	}
 	else if(strcmp(parameter.c_str(), "-log-level") == 0) {
