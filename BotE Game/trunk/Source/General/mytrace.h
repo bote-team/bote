@@ -212,7 +212,7 @@ namespace MT
 			CString decMsg;
 			//decMsg.Format("%s\t%s(%d)\t%s:\n%s%s", strLevel, m_pszFileName, m_nLineNo, m_callTime.Format("%c"),
 			//	strFmt, strFmt.Right(1) != _T("\n") ? _T("\n") : "" );	// add line end if requred
-			decMsg.Format("%s\t%s%s", strLevel, strFmt, strFmt.Right(1) != _T("\n") ? _T("\n") : "" );	// add line end if requred
+			decMsg.Format("%s %s\t%s%s", strLevel, CString(m_sDomain.c_str()), strFmt, strFmt.Right(1) != _T("\n") ? _T("\n") : "" );	// add line end if requred
 			strFmt = decMsg;
 		};
 
