@@ -448,8 +448,9 @@ inline void SetAttributes(BOOLEAN is, int attribute, int &variable)
 
 namespace MT
 {
-	const std::string DEFAULT_LOG_DOMAINS[6] =
+	const std::string DEFAULT_LOG_DOMAINS[7] =
 	{
+		"general",
 		"ai",
 		"graphicload",
 		"shipai",
@@ -458,7 +459,6 @@ namespace MT
 		"intelai",
 		//"ai_base_demo",
 	};
-
 }
 
 // Projektspezifische Defines

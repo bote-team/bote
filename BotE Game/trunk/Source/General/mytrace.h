@@ -56,7 +56,7 @@ namespace MT
 	class CMyTrace
 	{
 	public:
-		CMyTrace(const char *pszFileName, int nLineNo, const std::string& domain = std::string())
+		CMyTrace(const char *pszFileName, int nLineNo, const std::string& domain = "general")
 			: m_pszFileName(pszFileName), m_nLineNo(nLineNo),
 			m_callTime(time(NULL)), m_sDomain(domain)
 		{
