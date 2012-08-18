@@ -5,7 +5,7 @@ CCommandLineParameters::CCommandLineParameters(void) :
 	m_nLogLevel(MT::LEVEL_INFO),
 	m_sLogDir(""),
 	m_vLogDomains(),
-	m_bActiveDomains(false)
+	m_bActiveDomains(true)
 {
 }
 
@@ -61,10 +61,14 @@ void CCommandLineParameters::ParseParam(const char* pszParam, BOOL /*bFlag*/, BO
 		else if(strcmp(args.c_str(), "debug") == 0)
 			m_nLogLevel = MT::LEVEL_DEBUG;
 	}
-	else if(strcmp(parameter.c_str(), "-log-domain") == 0) {
-		ParseLogDomainParamArgs(args);
+	else if(strcmp(parameter.c_str(), "-log-domains") == 0) {
+		if(!args.empty())
+			ParseLogDomainParamArgs(args);
 	}
-	else if(strcmp(parameter.c_str(), "-active-log-domain") == 0) {
-		m_bActiveDomains = true;
+	else if(strcmp(parameter.c_str(), "-passive-domains") == 0) {
+		if(strcmp(args.c_str(), "no") == 0 || strcmp(args.c_str(), "false") == 0)
+			m_bActiveDomains = true;
+		else
+			m_bActiveDomains = false;
 	}
 }

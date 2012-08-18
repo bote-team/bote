@@ -176,6 +176,16 @@ namespace MT
 			traceLevel = level;
 		};
 
+		static void SetDomains(const std::vector<const std::string>& domains)
+		{
+			m_vDomains = domains;
+		}
+
+		static void SetActiveDomains(const bool active)
+		{
+			m_bActiveDomains = active;
+		}
+
 	private:
 		/* Change message format into desired form */
 		void __cdecl decorateMessage(CString &strFmt, int nLevel = LEVEL_INFO) const

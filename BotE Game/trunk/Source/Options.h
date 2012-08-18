@@ -446,6 +446,21 @@ inline void SetAttributes(BOOLEAN is, int attribute, int &variable)
 #define TRACE_INTELAI
 //#define DEBUG_AI_BASE_DEMO
 
+namespace MT
+{
+	const std::string DEFAULT_LOG_DOMAINS[6] =
+	{
+		"ai",
+		"graphicload",
+		"shipai",
+		"diplomacy",
+		"intel",
+		"intelai",
+		//"ai_base_demo",
+	};
+
+}
+
 // Projektspezifische Defines
 //#define SEE_ALL_OF_MAP		// komplette Map und alle Majorrassen sind sichtbar
 //#define SAVE_GALAXYIMAGE		// speichert Bild der Galaxie aus sicht der gespielten Major im Ordner Bote/Screenshots

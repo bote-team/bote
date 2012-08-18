@@ -80,9 +80,12 @@ CBotf2Doc::CBotf2Doc() :
 	//Init MT with single log file
 	CString sLogPath = CIOData::GetInstance()->GetLogPath();
 	const CCommandLineParameters* const clp = dynamic_cast<CBotf2App*>(AfxGetApp())->GetCommandLineParameters();
-
-	MT::CMyTrace::Init(sLogPath, clp->LogDomains(), clp->ActiveDomains());
-	MYTRACE_LEVEL(clp->LogLevel());
+	const std::vector<const std::string>& domains = clp->LogDomains();
+	MT::CMyTrace::Init(sLogPath,
+		domains.empty() ? std::vector<const std::string>(MT::DEFAULT_LOG_DOMAINS,
+			MT::DEFAULT_LOG_DOMAINS + sizeof(MT::DEFAULT_LOG_DOMAINS) / sizeof(*MT::DEFAULT_LOG_DOMAINS))
+			: domains, clp->ActiveDomains());
+	MT::CMyTrace::SetLevel(clp->LogLevel());
 
 	// ZU ERLEDIGEN: Hier Code für One-Time-Konstruktion einfügen
 	CResourceManager::Init();

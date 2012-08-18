@@ -20,16 +20,16 @@ public:
 	static CCommandLineParameters* GetInstance();
 	~CCommandLineParameters(void);
 
-	MT::Level LogLevel() const {
+	const MT::Level LogLevel() const {
 		return m_nLogLevel;
 	}
-	std::string LogDir() const {
+	const std::string LogDir() const {
 		return m_sLogDir;
 	}
-	std::vector<const std::string> LogDomains() const {
+	const std::vector<const std::string> LogDomains() const {
 		return m_vLogDomains;
 	}
-	bool ActiveDomains() const {
+	const bool ActiveDomains() const {
 		return m_bActiveDomains;
 	}
 
