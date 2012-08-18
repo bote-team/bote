@@ -9,6 +9,10 @@
 
 #pragma once
 
+#include <vector>
+#include <string>
+#include <algorithm>
+
 /////// MT defines start ///////
 
 #ifdef _DEBUG
@@ -46,22 +50,25 @@ namespace MT
 #define MYTRACE_LEVEL(x)		MT::CMyTrace::SetLevel(x);
 #define MYTRACE_DEINIT			MT::CMyTrace::Deinit();
 #define MYTRACE					MT::CMyTrace(__FILE__, __LINE__)
+#define MYTRACE_DOMAIN(domain)	MT::CMyTrace(__FILE__, __LINE__, domain)
 
 	/* MyTrace class */
 	class CMyTrace
 	{
 	public:
-		CMyTrace(const char *pszFileName, int nLineNo)
+		CMyTrace(const char *pszFileName, int nLineNo, const std::string& domain = std::string())
 			: m_pszFileName(pszFileName), m_nLineNo(nLineNo),
-			m_callTime(time(NULL))
+			m_callTime(time(NULL)), m_sDomain(domain)
 		{
 		}
 
 		/* Add trace messge to log with desired severity level */
 		void __cdecl operator()(UINT nLevel, LPCTSTR pszFmt, ...) const
 		{
+			if (!CheckDomain())
+				return;
 			va_list ptr; va_start(ptr, pszFmt);
-			if(nLevel <= (UINT)traceLevel)
+			if((nLevel <= (UINT)traceLevel))
 			{
 				CString strFormat(pszFmt);
 				decorateMessage(strFormat, nLevel);
@@ -85,6 +92,8 @@ namespace MT
 		/* Add trace messge to log with default INFO severity level */
 		void __cdecl operator()( LPCTSTR pszFmt, ...) const
 		{
+			if (!CheckDomain())
+				return;
 			va_list ptr; va_start(ptr, pszFmt);
 			CString strFormat(pszFmt);
 			decorateMessage(strFormat);
@@ -97,8 +106,12 @@ namespace MT
 		};
 
 		/* Open main log file */
-		static bool Init(LPCTSTR fName)
+		static bool Init(LPCTSTR fName,
+			const std::vector<const std::string>& domains = std::vector<const std::string>(),
+			const bool active_domains = false)
 		{
+			m_vDomains = domains;
+			m_bActiveDomains = active_domains;
 			bool bRes1= false;
 			if( (pLOG_FILE = fopen( fName, "w" )) == NULL )
 			{
@@ -208,17 +221,33 @@ namespace MT
 				fflush(pLOG_FILE);
 		}
 
+		bool __cdecl CheckDomain() const {
+			if(m_vDomains.empty())
+				return !m_bActiveDomains;
+			const bool found = std::find(m_vDomains.begin(), m_vDomains.end(), m_sDomain) != m_vDomains.end();
+			if(m_bActiveDomains)
+				return found;
+			return !found;
+		}
+
 		const char *const m_pszFileName;	// curent source file name
 		const int m_nLineNo;		// curent source line number
 		const CTime m_callTime;	// time of call
+		const std::string m_sDomain;
 		static FILE *pLOG_FILE;	// trace log file
 		static FILE *pLOG_FILE_ERRORS;	// trace errors file
 		static Level traceLevel;	// minimum severity level to report
+
+		static std::vector<const std::string> m_vDomains;
+		static bool m_bActiveDomains;
 	};
 
 	__declspec( selectany ) FILE *CMyTrace::pLOG_FILE = NULL;
 	__declspec( selectany ) FILE *CMyTrace::pLOG_FILE_ERRORS = NULL;
 	__declspec( selectany ) Level CMyTrace::traceLevel = LEVEL_INFO;
+	__declspec( selectany ) std::vector<const std::string> CMyTrace::m_vDomains;
+	__declspec( selectany ) bool CMyTrace::m_bActiveDomains = false;
+
 
 //#endif	// _DEBUG
 
