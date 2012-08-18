@@ -129,7 +129,7 @@ public:
 	/// @param g Referenz auf das Grafikobjekt
 	/// @param rect Rechteck um den Planeten
 	/// @param graphicPool Zeiger auf die Sammlung aller Grafiken
-	void DrawPlanet(Graphics &g, const CRect& rect, CGraphicPool* graphicPool, const bool special_graphic = true);
+	void DrawPlanet(Graphics &g, const CRect& rect, CGraphicPool* graphicPool);
 
 	/// Die Resetfunktion für die CPlanet Klasse, welche alle Werte wieder auf Ausgangswerte setzt.
 	void Reset(void);

@@ -349,7 +349,7 @@ PLANET_ZONE::Typ CPlanet::Create(const CString& sSectorName, PLANET_ZONE::Typ nL
 	return nZone;
 }
 
-void CPlanet::DrawPlanet(Graphics &g, const CRect& rect, CGraphicPool* graphicPool, const bool special_graphic)
+void CPlanet::DrawPlanet(Graphics &g, const CRect& rect, CGraphicPool* graphicPool)
 {
 	Gdiplus::PixelOffsetMode oldPixelOffsetMode = g.GetPixelOffsetMode();
 
@@ -357,9 +357,8 @@ void CPlanet::DrawPlanet(Graphics &g, const CRect& rect, CGraphicPool* graphicPo
 
 	ASSERT(graphicPool);
 
-	//try to load a possible special planet graphic
 	Bitmap* planet = NULL;
-	planet = graphicPool->GetGDIGraphic("Planets\\" + m_strName + ".bop", special_graphic);
+	planet = graphicPool->GetGDIGraphic("Planets\\" + m_strName + ".bop");
 
 	// Konnte keine spezielle Planetengrafik gefunden werden, so wird eine zufällige Grafik ausgewählt
 	if (planet == NULL)

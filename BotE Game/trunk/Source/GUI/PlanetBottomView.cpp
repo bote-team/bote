@@ -86,11 +86,9 @@ void CPlanetBottomView::OnDraw(CDC* dc)
 
 	if (pDoc->m_Sectors.at(KO.x+(KO.y)*STARMAP_SECTORS_HCOUNT).GetFullKnown(pMajor->GetRaceID()) == TRUE)
 	{
-		CSector& sector = pDoc->m_Sectors.at(KO.x+KO.y*STARMAP_SECTORS_HCOUNT);
-		const bool is_home_system = (pDoc->GetRaceKO(pMajor->GetRaceID()) == sector.GetKO()) == TRUE;
-		for (int i = 0; i < sector.GetNumberOfPlanets(); i++)
+		for (int i = 0; i < pDoc->m_Sectors.at(KO.x+(KO.y)*STARMAP_SECTORS_HCOUNT).GetNumberOfPlanets(); i++)
 		{
-			CPlanet* planet = sector.GetPlanet(i);
+			CPlanet* planet = pDoc->m_Sectors.at(KO.x+(KO.y)*STARMAP_SECTORS_HCOUNT).GetPlanet(i);
 			maxHabitants += planet->GetMaxHabitant();
 
 			CRect rect;
@@ -123,7 +121,7 @@ void CPlanetBottomView::OnDraw(CDC* dc)
 			}
 
 			m_vPlanetRects.push_back(rect);
-			planet->DrawPlanet(g, rect, pDoc->GetGraphicPool(), is_home_system);
+			planet->DrawPlanet(g, rect, pDoc->GetGraphicPool());
 		}
 	}
 	if (pDoc->GetSector(KO.x,KO.y).GetScanned(pMajor->GetRaceID()))

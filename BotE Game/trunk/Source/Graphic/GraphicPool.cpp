@@ -86,7 +86,7 @@ CBitmap* CGraphicPool::GetGraphic(const CString &name)
 
 /// Funktion liefert einen Zeiger auf eine Grafik.
 /// @param name Name der Grafik.
-Bitmap* CGraphicPool::GetGDIGraphic(const CString &name, const bool require_existence)
+Bitmap* CGraphicPool::GetGDIGraphic(const CString &name)
 {
 	// Funktion sucht in der Map nach der Grafik. Konnte sie nicht gefunden werden, so wird die
 	// Grafik in die Map geladen. Danach wird die Grafik zurückgegeben.
@@ -109,9 +109,7 @@ Bitmap* CGraphicPool::GetGDIGraphic(const CString &name, const bool require_exis
 	// Grafik laden
 	if (img->GetLastStatus() != Ok)
 	{
-		if(require_existence) {
-			TRACE_GRAPHICLOAD(MT::LEVEL_WARNING, "Could not load graphic: %s\n", fileName);
-		}
+		TRACE_GRAPHICLOAD(MT::LEVEL_WARNING, "Could not load graphic: %s\n", fileName);
 		delete img;
 		img = NULL;
 		return NULL;
