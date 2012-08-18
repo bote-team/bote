@@ -15,8 +15,9 @@ private:
 
 	void ParseLogDomainParamArgs(const std::string& args);
 
-public:
 	CCommandLineParameters(void);
+public:
+	static CCommandLineParameters* GetInstance();
 	~CCommandLineParameters(void);
 
 	MT::Level LogLevel() const {

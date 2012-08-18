@@ -13,6 +13,11 @@ CCommandLineParameters::~CCommandLineParameters(void)
 {
 }
 
+CCommandLineParameters* CCommandLineParameters::GetInstance() {
+	static CCommandLineParameters instance;
+	return &instance;
+}
+
 void CCommandLineParameters::ParseLogDomainParamArgs(const std::string& args) {
 	std::string::const_iterator start = args.begin();
 	std::string::const_iterator end = args.begin();

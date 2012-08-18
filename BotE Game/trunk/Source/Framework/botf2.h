@@ -29,7 +29,7 @@ private:
 	CChatDlg *m_pChatDlg;
 	GdiplusStartupInput gdiplusStartupInput;
 	ULONG_PTR gdiplusToken;
-	CCommandLineParameters m_clp;
+	CCommandLineParameters* m_pclp;
 
 public:
 	/// Konstruktor
@@ -44,7 +44,7 @@ public:
 	/// Funktion gibt einen Zeiger auf den ChatDialog zurück.
 	CChatDlg* GetChatDlg() {return m_pChatDlg;}
 	CCommandLineParameters const* const GetCommandLineParameters() const {
-		return &m_clp;
+		return m_pclp;
 	}
 
 // Überschreibungen

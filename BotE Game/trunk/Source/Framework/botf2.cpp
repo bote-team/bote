@@ -103,8 +103,7 @@ END_MESSAGE_MAP()
 // CBotf2App Konstruktion
 
 CBotf2App::CBotf2App() :
-	gdiplusToken(),
-	m_clp()
+	gdiplusToken()
 {
 #ifdef VLD
 	VLDEnable();
@@ -112,7 +111,8 @@ CBotf2App::CBotf2App() :
 	// ZU ERLEDIGEN: Hier Code zur Konstruktion einfügen
 	// Alle wichtigen Initialisierungen in InitInstance platzieren
 	m_pChatDlg = NULL;
-	ParseCommandLine(m_clp);
+	m_pclp = CCommandLineParameters::GetInstance();
+	ParseCommandLine(*m_pclp);
 }
 
 CBotf2App::~CBotf2App()
