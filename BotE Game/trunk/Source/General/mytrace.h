@@ -65,7 +65,7 @@ namespace MT
 		/* Add trace messge to log with desired severity level */
 		void __cdecl operator()(UINT nLevel, LPCTSTR pszFmt, ...) const
 		{
-			if (!CheckDomain())
+			if (!IsLoggingEnabledFor(m_sDomain))
 				return;
 			va_list ptr; va_start(ptr, pszFmt);
 			if((nLevel <= (UINT)traceLevel))
@@ -92,7 +92,7 @@ namespace MT
 		/* Add trace messge to log with default INFO severity level */
 		void __cdecl operator()( LPCTSTR pszFmt, ...) const
 		{
-			if (!CheckDomain())
+			if (!IsLoggingEnabledFor(m_sDomain))
 				return;
 			va_list ptr; va_start(ptr, pszFmt);
 			CString strFormat(pszFmt);
@@ -230,15 +230,16 @@ namespace MT
 			else
 				fflush(pLOG_FILE);
 		}
-
-		bool __cdecl CheckDomain() const {
+	public:
+		static bool __cdecl IsLoggingEnabledFor(const std::string& domain) {
 			if(m_vDomains.empty())
 				return !m_bActiveDomains;
-			const bool found = std::find(m_vDomains.begin(), m_vDomains.end(), m_sDomain) != m_vDomains.end();
+			const bool found = std::find(m_vDomains.begin(), m_vDomains.end(), domain) != m_vDomains.end();
 			if(m_bActiveDomains)
 				return found;
 			return !found;
 		}
+	private:
 
 		const char *const m_pszFileName;	// curent source file name
 		const int m_nLineNo;		// curent source line number
