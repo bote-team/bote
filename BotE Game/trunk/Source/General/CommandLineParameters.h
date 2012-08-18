@@ -10,6 +10,10 @@ class CCommandLineParameters :
 private:
 	MT::Level m_nLogLevel;
 	std::string m_sLogDir;
+	std::vector<const std::string> m_vLogDomains;
+	bool m_bActiveDomains;//should the m_vLogDomains be muted (false) or be the only ones that speak (true) ?
+
+	void ParseLogDomainParamArgs(const std::string& args);
 
 public:
 	CCommandLineParameters(void);
@@ -20,6 +24,12 @@ public:
 	}
 	std::string LogDir() const {
 		return m_sLogDir;
+	}
+	std::vector<const std::string> LogDomains() const {
+		return m_vLogDomains;
+	}
+	bool ActiveDomains() const {
+		return m_bActiveDomains;
 	}
 
 	void ParseParam(const char* pszParam, BOOL /*bFlag*/, BOOL /*bLast*/);
