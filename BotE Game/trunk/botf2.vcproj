@@ -302,6 +302,10 @@
 				Name="General"
 				>
 				<File
+					RelativePath=".\Source\General\CommandLineParameters.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\Source\General\FontLoader.cpp"
 					>
 				</File>
@@ -916,6 +920,10 @@
 				>
 				<File
 					RelativePath=".\Source\General\array_sort.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Source\General\CommandLineParameters.h"
 					>
 				</File>
 				<File

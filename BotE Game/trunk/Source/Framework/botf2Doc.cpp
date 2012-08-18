@@ -79,7 +79,9 @@ CBotf2Doc::CBotf2Doc() :
 {
 	//Init MT with single log file
 	CString sLogPath = CIOData::GetInstance()->GetLogPath();
+	const CCommandLineParameters* const clp = dynamic_cast<CBotf2App*>(AfxGetApp())->GetCommandLineParameters();
 	MYTRACE_INIT(sLogPath);
+	MYTRACE_LEVEL(clp->LogLevel());
 
 	// ZU ERLEDIGEN: Hier Code für One-Time-Konstruktion einfügen
 	CResourceManager::Init();

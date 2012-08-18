@@ -13,6 +13,7 @@
 
 #include "resource.h"       // Hauptsymbole
 #include "ChatDlg.h"
+#include "CommandLineParameters.h"
 
 #define WM_INITVIEWS	(WM_APP+10)
 #define WM_UPDATEVIEWS	(WM_APP+11)
@@ -28,6 +29,7 @@ private:
 	CChatDlg *m_pChatDlg;
 	GdiplusStartupInput gdiplusStartupInput;
 	ULONG_PTR gdiplusToken;
+	CCommandLineParameters m_clp;
 
 public:
 	/// Konstruktor
@@ -41,6 +43,9 @@ public:
 
 	/// Funktion gibt einen Zeiger auf den ChatDialog zurück.
 	CChatDlg* GetChatDlg() {return m_pChatDlg;}
+	CCommandLineParameters const* const GetCommandLineParameters() const {
+		return &m_clp;
+	}
 
 // Überschreibungen
 public:

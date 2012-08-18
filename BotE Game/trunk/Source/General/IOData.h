@@ -47,7 +47,7 @@ public:
 
 	/// Funktion liefert den kompletten Pfad zur Log-Datei.
 	/// @return kompletter Pfad zur Log-Datei
-	CString GetLogPath(void) const { return m_sUserDataPath + BOTE_LOG_FILE; }
+	CString GetLogPath(void) const;
 
 	/// Funktion liefert den kompletten Pfad zur Autosave-Datei.
 	/// @param nRound aktuelle Runde

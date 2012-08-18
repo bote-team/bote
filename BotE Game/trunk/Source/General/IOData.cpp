@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "IOData.h"
+#include "botf2.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -85,4 +86,12 @@ CString CIOData::GetUserDataPath(void) const
 	}
 
 	return sPath;
+}
+
+CString CIOData::GetLogPath() const {
+	const CCommandLineParameters* const clp = dynamic_cast<CBotf2App*>(AfxGetApp())->GetCommandLineParameters();
+	const std::string& log_path = clp->LogDir();
+	if(log_path.empty())
+		return m_sUserDataPath + BOTE_LOG_FILE;
+	return CString(log_path.c_str()) + BOTE_LOG_FILE;
 }
