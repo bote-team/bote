@@ -46,7 +46,7 @@ namespace MT
 	class CMyTrace;	// forward declaration
 
 #define MYTRACE_INIT(x)			MT::CMyTrace::Init(x);
-#define MYTRACE_INIT_EX(x, y)	MT::CMyTrace::InitEx((x), (y));
+//#define MYTRACE_INIT_EX(x, y)	MT::CMyTrace::InitEx((x), (y));
 #define MYTRACE_LEVEL(x)		MT::CMyTrace::SetLevel(x);
 #define MYTRACE_DEINIT			MT::CMyTrace::Deinit();
 #define MYTRACE					MT::CMyTrace(__FILE__, __LINE__)
@@ -116,7 +116,7 @@ namespace MT
 			if( (pLOG_FILE = fopen( fName, "w" )) == NULL )
 			{
 				::MessageBox(NULL, "Failed to open LOG file", "Notice", 0x10000);
-				MYTRACE(_T("\t\t\t FAILED TO OPEN LOG FILE: %s"), fName);
+				MYTRACE_DOMAIN("logging")(_T("\t\t\t FAILED TO OPEN LOG FILE: %s"), fName);
 				bRes1 = false;
 			}
 			else
@@ -127,44 +127,44 @@ namespace MT
 				setvbuf(stdout,NULL,_IONBF,0);	// turn off cashing
 				//sync_with_stdio();	// check
 #endif	// MT_REDIRECT_STDOUT
-				MYTRACE(_T("\t\t*** Log Started at %s ***\n\n"), CTime(time(NULL)).Format("%c"));
+				MYTRACE_DOMAIN("logging")(_T("\t\t*** Log Started at %s ***\n\n"), CTime(time(NULL)).Format("%c"));
 				bRes1 = true;
 			}
 			return bRes1;
 		};
 
 		/* Open main log file and extra log file for errors report only */
-		static bool InitEx(LPCTSTR fName, LPCTSTR fNameEx)
-		{
-			bool bRes1 = Init(fName), bRes2 = false;
-			// open extra log file for errors only
-			if( (pLOG_FILE_ERRORS = fopen( fNameEx, "w" )) == NULL )
-			{
-				//::MessageBox(NULL, "Failed to open Extra LOG file", "Notice", 0x10000);
-				MYTRACE(_T("\t\t\t FAILED TO OPEN EXTRA LOG FILE: %s"), fNameEx);
-				bRes2 = false;
-			}
-			else
-			{
-				MYTRACE(_T("\t\t Extra Log file opened"));
-				bRes2 = true;
-			}
-			return (bRes1 && bRes2);
-		};
+		//static bool InitEx(LPCTSTR fName, LPCTSTR fNameEx)
+		//{
+		//	bool bRes1 = Init(fName), bRes2 = false;
+		//	// open extra log file for errors only
+		//	if( (pLOG_FILE_ERRORS = fopen( fNameEx, "w" )) == NULL )
+		//	{
+		//		//::MessageBox(NULL, "Failed to open Extra LOG file", "Notice", 0x10000);
+		//		MYTRACE(_T("\t\t\t FAILED TO OPEN EXTRA LOG FILE: %s"), fNameEx);
+		//		bRes2 = false;
+		//	}
+		//	else
+		//	{
+		//		MYTRACE(_T("\t\t Extra Log file opened"));
+		//		bRes2 = true;
+		//	}
+		//	return (bRes1 && bRes2);
+		//};
 
 		/* Close all log files */
 		static void Deinit()
 		{
 			if(pLOG_FILE_ERRORS != NULL)	// close extra log file
 			{
-				MYTRACE(_T("\t\t Extra Log file closed"));
+				MYTRACE_DOMAIN("logging")(_T("\t\t Extra Log file closed"));
 				fflush(pLOG_FILE_ERRORS);
 				fclose(pLOG_FILE_ERRORS);
 				pLOG_FILE_ERRORS = NULL;
 			}
 			if(pLOG_FILE != NULL)	// close main log file
 			{
-				MYTRACE(_T("\n\t\t*** Log Finished at %s ***"), CTime(time(NULL)).Format("%c"));
+				MYTRACE_DOMAIN("logging")(_T("\n\t\t*** Log Finished at %s ***"), CTime(time(NULL)).Format("%c"));
 				fflush(pLOG_FILE);
 				fclose(pLOG_FILE);
 				pLOG_FILE = NULL;
