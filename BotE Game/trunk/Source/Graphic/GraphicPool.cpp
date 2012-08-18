@@ -3,6 +3,8 @@
 #include "Options.h"
 #include "ImageStone/ImageStone.h"
 
+#define TRACE_GRAPHICLOAD MYTRACE_DOMAIN("graphicload")
+
 //////////////////////////////////////////////////////////////////////
 // Konstruktion und Destruktion
 //////////////////////////////////////////////////////////////////////
@@ -63,15 +65,11 @@ CBitmap* CGraphicPool::GetGraphic(const CString &name)
 	FCObjImage* img = new FCObjImage();
 	// kompletten Pfad inkl. relativen Pfadnamen
 	CString fileName(m_strPath + name);
-#ifdef TRACE_GRAPHICLOAD
-	MYTRACE(MT::LEVEL_DEBUG, "graphic: %s not found in map ... loading\n", fileName);
-#endif
+	TRACE_GRAPHICLOAD(MT::LEVEL_DEBUG, "graphic: %s not found in map ... loading\n", fileName);
 	// Grafik laden
 	if (!img->Load(fileName))
 	{
-#ifdef TRACE_GRAPHICLOAD
-		MYTRACE(MT::LEVEL_WARNING, "Could not load graphic: %s\n", fileName);
-#endif
+		TRACE_GRAPHICLOAD(MT::LEVEL_WARNING, "Could not load graphic: %s\n", fileName);
 		delete img;
 		img = NULL;
 		return NULL;
@@ -107,17 +105,13 @@ Bitmap* CGraphicPool::GetGDIGraphic(const CString &name, const bool require_exis
 	img = NULL;
 	img = Bitmap::FromFile(CComBSTR(fileName));
 
-#ifdef TRACE_GRAPHICLOAD
-	MYTRACE(MT::LEVEL_DEBUG, "graphic: %s not found in map ... loading\n", fileName);
-#endif
+	TRACE_GRAPHICLOAD(MT::LEVEL_DEBUG, "graphic: %s not found in map ... loading\n", fileName);
 	// Grafik laden
 	if (img->GetLastStatus() != Ok)
 	{
-#ifdef TRACE_GRAPHICLOAD
 		if(require_existence) {
-			MYTRACE(MT::LEVEL_WARNING, "Could not load graphic: %s\n", fileName);
+			TRACE_GRAPHICLOAD(MT::LEVEL_WARNING, "Could not load graphic: %s\n", fileName);
 		}
-#endif
 		delete img;
 		img = NULL;
 		return NULL;
