@@ -89,6 +89,7 @@ namespace MT
 			va_end(ptr);
 		};
 
+	private:
 		/* Add trace messge to log with default INFO severity level */
 		void __cdecl operator()( LPCTSTR pszFmt, ...) const
 		{
@@ -104,6 +105,7 @@ namespace MT
 #endif	// MT_USE_ATLTRACE
 			va_end(ptr);
 		};
+	public:
 
 		/* Open main log file */
 		static bool Init(LPCTSTR fName,
