@@ -449,8 +449,11 @@ namespace MT
 {
 	const std::string DEFAULT_LOG_DOMAINS[8] =
 	{
-		"general",
-		"logging",
+		"general",//Used in case no domain is passed.
+		//Avoid "general", unless you want to make sure that also normal players
+		//can get, say, an important error or warning in the BotE.log
+		//without the need to change something about logging.
+		"logging",//Should be used by the MYTRACE class itsself only.
 		"ai",
 		"graphicload",
 		"shipai",

@@ -246,13 +246,14 @@ namespace MT
 		const char *const m_pszFileName;	// curent source file name
 		const int m_nLineNo;		// curent source line number
 		const CTime m_callTime;	// time of call
-		const std::string m_sDomain;
+		const std::string m_sDomain; //group of MYTRACE calls this one belongs to
 		static FILE *pLOG_FILE;	// trace log file
 		static FILE *pLOG_FILE_ERRORS;	// trace errors file
 		static Level traceLevel;	// minimum severity level to report
 
-		static std::vector<const std::string> m_vDomains;
-		static bool m_bActiveDomains;
+		static std::vector<const std::string> m_vDomains; //allowed (or muted) groups of MYTRACE calls
+		static bool m_bActiveDomains;//should the m_vDomains be exactly the ones which are muted (false)
+		//or be the only ones that speak (true) ?
 	};
 
 	__declspec( selectany ) FILE *CMyTrace::pLOG_FILE = NULL;
