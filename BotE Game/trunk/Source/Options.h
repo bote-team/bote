@@ -440,7 +440,6 @@ inline void SetAttributes(BOOLEAN is, int attribute, int &variable)
 // Tracebedingungen -> können hier ein und ausgeschaltet werden um bestimmte Traceausgaben zu bekommen
 #define TRACE_AI
 #define TRACE_SHIPAI
-#define TRACE_DIPLOMATY
 #define TRACE_INTEL
 #define TRACE_INTELAI
 //#define DEBUG_AI_BASE_DEMO

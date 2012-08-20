@@ -1026,9 +1026,7 @@ bool CMajorAI::MakeMajorOffer(CString& sRaceID, CDiplomacyInfo& info)
 				int b = rand()%100;
 				if (a < 2 + fModi && b < 7 + fModi)
 				{
-					#ifdef TRACE_DIPLOMATY
-					MYTRACE(MT::LEVEL_DEBUG, "rand: %d - a = %d - b = %d - Modi = %lf (wir %s (%d) - Gegner %s (%d))\n",((int)(100 / fModi)), a, b, fModi, pOurRace->GetRaceID(), nOurShipPower, sRaceID, nTheirShipPower);
-					#endif
+					MYTRACE_DOMAIN("diplomacy")(MT::LEVEL_DEBUG, "rand: %d - a = %d - b = %d - Modi = %lf (wir %s (%d) - Gegner %s (%d))\n",((int)(100 / fModi)), a, b, fModi, pOurRace->GetRaceID(), nOurShipPower, sRaceID, nTheirShipPower);
 					// Forderung stellen
 					if (ClaimRequest(info))
 						info.m_nType = DIPLOMATIC_AGREEMENT::REQUEST;
