@@ -10,9 +10,9 @@ class CCommandLineParameters :
 private:
 	MT::Level m_nLogLevel;//error, warning, info or debug passed in cmd line
 	std::string m_sLogDir;//directory with BotE.log passed in the cmd line
-	std::vector<const std::string> m_vLogDomains;//only allowed (or only muted) log domains
+	std::set<const std::string> m_LogDomains;//only allowed (or only muted) log domains
 	//passed in the cmd line such as "graphicload"
-	bool m_bActiveDomains;//should the m_vLogDomains be exactly the ones which are muted (false)
+	bool m_bActiveDomains;//should the m_LogDomains be exactly the ones which are muted (false)
 	//or be the only ones that speak (true) ?
 
 	void ParseLogDomainParamArgs(const std::string& args);
@@ -30,8 +30,8 @@ public:
 	const std::string LogDir() const {
 		return m_sLogDir;
 	}
-	const std::vector<const std::string> LogDomains() const {
-		return m_vLogDomains;
+	const std::set<const std::string> LogDomains() const {
+		return m_LogDomains;
 	}
 	const bool ActiveDomains() const {
 		return m_bActiveDomains;

@@ -9,7 +9,7 @@
 
 #pragma once
 
-#include <vector>
+#include <set>
 #include <string>
 #include <algorithm>
 
@@ -108,10 +108,10 @@ namespace MT
 
 		/* Open main log file */
 		static bool Init(LPCTSTR fName,
-			const std::vector<const std::string>& domains = std::vector<const std::string>(),
-			const bool active_domains = false)
+			const std::set<const std::string>& domains,
+			const bool active_domains)
 		{
-			m_vDomains = domains;
+			m_Domains = domains;
 			m_bActiveDomains = active_domains;
 			bool bRes1= false;
 			if( (pLOG_FILE = fopen( fName, "w" )) == NULL )
@@ -177,9 +177,9 @@ namespace MT
 			traceLevel = level;
 		};
 
-		static void SetDomains(const std::vector<const std::string>& domains)
+		static void SetDomains(const std::set<const std::string>& domains)
 		{
-			m_vDomains = domains;
+			m_Domains = domains;
 		}
 
 		static void SetActiveDomains(const bool active)
@@ -233,9 +233,9 @@ namespace MT
 		}
 	public:
 		static bool __cdecl IsLoggingEnabledFor(const std::string& domain) {
-			if(m_vDomains.empty())
+			if(m_Domains.empty())
 				return !m_bActiveDomains;
-			const bool found = std::find(m_vDomains.begin(), m_vDomains.end(), domain) != m_vDomains.end();
+			const bool found = m_Domains.find(domain) != m_Domains.end();
 			if(m_bActiveDomains)
 				return found;
 			return !found;
@@ -250,15 +250,15 @@ namespace MT
 		static FILE *pLOG_FILE_ERRORS;	// trace errors file
 		static Level traceLevel;	// minimum severity level to report
 
-		static std::vector<const std::string> m_vDomains; //allowed (or muted) groups of MYTRACE calls
-		static bool m_bActiveDomains;//should the m_vDomains be exactly the ones which are muted (false)
+		static std::set<const std::string> m_Domains; //allowed (or muted) groups of MYTRACE calls
+		static bool m_bActiveDomains;//should the m_Domains be exactly the ones which are muted (false)
 		//or be the only ones that speak (true) ?
 	};
 
 	__declspec( selectany ) FILE *CMyTrace::pLOG_FILE = NULL;
 	__declspec( selectany ) FILE *CMyTrace::pLOG_FILE_ERRORS = NULL;
 	__declspec( selectany ) Level CMyTrace::traceLevel = LEVEL_INFO;
-	__declspec( selectany ) std::vector<const std::string> CMyTrace::m_vDomains;
+	__declspec( selectany ) std::set<const std::string> CMyTrace::m_Domains;
 	__declspec( selectany ) bool CMyTrace::m_bActiveDomains = false;
 
 

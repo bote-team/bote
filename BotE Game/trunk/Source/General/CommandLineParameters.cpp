@@ -4,7 +4,7 @@
 CCommandLineParameters::CCommandLineParameters(void) :
 	m_nLogLevel(MT::LEVEL_INFO),
 	m_sLogDir(""),
-	m_vLogDomains(),
+	m_LogDomains(),
 	m_bActiveDomains(true)
 {
 }
@@ -23,14 +23,14 @@ void CCommandLineParameters::ParseLogDomainParamArgs(const std::string& args) {
 	std::string::const_iterator end = args.begin();
 	while(end != args.end()) {
 		if(*end == ',') {
-			m_vLogDomains.push_back(std::string(start, end));
+			m_LogDomains.insert(std::string(start, end));
 			++end;
 			start = end;
 		}
 		else
 			++end;
 	}
-	m_vLogDomains.push_back(std::string(start, end));
+	m_LogDomains.insert(std::string(start, end));
 }
 
 void CCommandLineParameters::ParseParam(const char* pszParam, BOOL /*bFlag*/, BOOL /*bLast*/)
