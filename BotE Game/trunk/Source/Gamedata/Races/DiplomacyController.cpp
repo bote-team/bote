@@ -670,7 +670,7 @@ void CDiplomacyController::ReceiveToMajor(CBotf2Doc* pDoc, CMajor* pToMajor, CDi
 					// Wir haben den Kriegspakt angenommen
 					if (answer.m_nAnswerStatus == ANSWER_STATUS::ACCEPTED)
 					{
-						MYTRACE(MT::LEVEL_INFO, "Race: %s accepted WARPACT from %s versus %s", pToMajor->GetRaceID(), pFromRace->GetRaceID(), pWarpactEnemy->GetRaceID());
+						MYTRACE_DOMAIN("general")(MT::LEVEL_INFO, "Race: %s accepted WARPACT from %s versus %s", pToMajor->GetRaceID(), pFromRace->GetRaceID(), pWarpactEnemy->GetRaceID());
 
 						s = CResourceManager::GetString("WE_ACCEPT_WARPACT", FALSE, pWarpactEnemy->GetRaceName(), ((CMajor*)pFromRace)->GetEmpireNameWithAssignedArticle());
 						message.GenerateMessage(s, MESSAGE_TYPE::DIPLOMACY, "", 0, 0);
@@ -1165,7 +1165,7 @@ std::vector<CString> CDiplomacyController::GetEnemiesFromContract(CBotf2Doc* pDo
 				if (pFromMajor->GetAgreement(it->first) != DIPLOMATIC_AGREEMENT::WAR)
 				{
 					vEnemies.push_back(it->first);
-					MYTRACE(MT::LEVEL_INFO, "Race: %s declares Race: %s WAR because affiliation contract with Race %s", pFromMajor->GetRaceID(), it->first, pToRace->GetRaceID());
+					MYTRACE_DOMAIN("general")(MT::LEVEL_INFO, "Race: %s declares Race: %s WAR because affiliation contract with Race %s", pFromMajor->GetRaceID(), it->first, pToRace->GetRaceID());
 				}
 			}
 		}

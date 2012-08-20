@@ -139,7 +139,7 @@ void CCombatAI::ApplyCombatOrders(const CArray<CShip*>& vInvolvedShips, const ma
 		case COMBAT_ORDER::RETREAT:		sTactic = "Retreat"; break;
 		case COMBAT_ORDER::AUTOCOMBAT:	sTactic = "Auto"; break;
 		}
-		MYTRACE(MT::LEVEL_INFO, "Race %s is involved in combat. Tactic: %s\n", *it, sTactic);
+		MYTRACE_DOMAIN("general")(MT::LEVEL_INFO, "Race %s is involved in combat. Tactic: %s\n", *it, sTactic);
 	}
 }
 

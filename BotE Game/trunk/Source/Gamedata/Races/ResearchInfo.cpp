@@ -222,7 +222,7 @@ void CResearchInfo::GetTechInfos(BYTE tech, BYTE level, CString& sTechName, CStr
 	}
 	else
 	{
-		MYTRACE(MT::LEVEL_ERROR, "Could not open file \"Techs.data\"...\n");
+		MYTRACE_DOMAIN("general")(MT::LEVEL_ERROR, "Could not open file \"Techs.data\"...\n");
 		AfxMessageBox("ERROR! Could not open file \"Techs.data\"...\n(Maybe check your installation directory...)");
 	}
 	// Datei wird geschlossen

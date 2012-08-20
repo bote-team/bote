@@ -350,7 +350,7 @@ void CStartMenuView::OnBnClickedOptions()
 				nSeed = (unsigned)time(NULL);
 				srand(nSeed);
 			}
-			MYTRACE(MT::LEVEL_INFO, "Used seed for randomgenerator: %i", nSeed);
+			MYTRACE_DOMAIN("general")(MT::LEVEL_INFO, "Used seed for randomgenerator: %i", nSeed);
 		}
 	}
 }

@@ -81,7 +81,7 @@ void CResearchAI::Calc(CBotf2Doc* pDoc)
 					// 100% zuteilen
 					pMajor->GetEmpire()->GetResearch()->SetPercentage(6, 100);
 					CString sName = pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetCurrentResearchComplex()->GetComplexName();
-					MYTRACE(MT::LEVEL_INFO, "CResearchAI::Calc(): %s choose in unique complex '%s' field %d and set level to 100%%\n", pMajor->GetRaceID(), sName, nComplex);
+					MYTRACE_DOMAIN("general")(MT::LEVEL_INFO, "CResearchAI::Calc(): %s choose in unique complex '%s' field %d and set level to 100%%\n", pMajor->GetRaceID(), sName, nComplex);
 				}
 			}
 		}

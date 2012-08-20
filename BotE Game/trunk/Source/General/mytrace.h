@@ -143,12 +143,12 @@ namespace MT
 		//	if( (pLOG_FILE_ERRORS = fopen( fNameEx, "w" )) == NULL )
 		//	{
 		//		//::MessageBox(NULL, "Failed to open Extra LOG file", "Notice", 0x10000);
-		//		MYTRACE(_T("\t\t\t FAILED TO OPEN EXTRA LOG FILE: %s"), fNameEx);
+		//		MYTRACE_DOMAIN("logging")(_T("\t\t\t FAILED TO OPEN EXTRA LOG FILE: %s"), fNameEx);
 		//		bRes2 = false;
 		//	}
 		//	else
 		//	{
-		//		MYTRACE(_T("\t\t Extra Log file opened"));
+		//		MYTRACE_DOMAIN("logging")(_T("\t\t Extra Log file opened"));
 		//		bRes2 = true;
 		//	}
 		//	return (bRes1 && bRes2);

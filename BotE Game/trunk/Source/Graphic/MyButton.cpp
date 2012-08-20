@@ -53,7 +53,7 @@ void CMyButton::DrawButton(Gdiplus::Graphics &g, CGraphicPool* graphicPool, Gdip
 		}
 	}
 	else
-		MYTRACE(MT::LEVEL_WARNING, "Could not load buttongraphic" + sFile + "\n");
+		MYTRACE_DOMAIN("general")(MT::LEVEL_WARNING, "Could not load buttongraphic" + sFile + "\n");
 }
 
 BOOLEAN CMyButton::Activate()

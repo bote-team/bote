@@ -333,7 +333,7 @@ UINT CStatistics::GetShipPower(const CString& sRaceID) const
 	if (it != m_mShipPowers.end())
 		return it->second;
 	else
-		MYTRACE(MT::LEVEL_WARNING, "CStatistics::GetShipPower: getting Shippower from race %s", sRaceID);
+		MYTRACE_DOMAIN("general")(MT::LEVEL_WARNING, "CStatistics::GetShipPower: getting Shippower from race %s", sRaceID);
 
 	return 0;
 }
