@@ -438,7 +438,6 @@ inline void SetAttributes(BOOLEAN is, int attribute, int &variable)
 #define MINBASEPOINTS 120	///< minimale Punkte für den Außenpostenbau, damit die KI überhaupt beginnt dort einen zu bauen
 
 // Tracebedingungen -> können hier ein und ausgeschaltet werden um bestimmte Traceausgaben zu bekommen
-#define TRACE_INTEL
 //#define DEBUG_AI_BASE_DEMO
 
 namespace MT
