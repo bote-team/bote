@@ -49,14 +49,13 @@ namespace MT
 //#define MYTRACE_INIT_EX(x, y)	MT::CMyTrace::InitEx((x), (y));
 #define MYTRACE_LEVEL(x)		MT::CMyTrace::SetLevel(x);
 #define MYTRACE_DEINIT			MT::CMyTrace::Deinit();
-#define MYTRACE					MT::CMyTrace(__FILE__, __LINE__)
 #define MYTRACE_DOMAIN(domain)	MT::CMyTrace(__FILE__, __LINE__, domain)
 
 	/* MyTrace class */
 	class CMyTrace
 	{
 	public:
-		CMyTrace(const char *pszFileName, int nLineNo, const std::string& domain = "general")
+		CMyTrace(const char *pszFileName, int nLineNo, const std::string& domain)
 			: m_pszFileName(pszFileName), m_nLineNo(nLineNo),
 			m_callTime(time(NULL)), m_sDomain(domain)
 		{
