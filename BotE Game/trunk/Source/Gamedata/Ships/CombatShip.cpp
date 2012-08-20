@@ -381,7 +381,7 @@ CPoint CCombatShip::AttackEnemyWithTorpedo(/*std::list<CTorpedo*>* pCT,*/ const 
 
 							//CString s;
 							//s.Format("Feuert Torpedo: %s auf %s", m_pShip->GetShipClass(), m_pTarget->m_pShip->GetShipClass());
-							//MYTRACE_DOMAIN("general")(MT::LEVEL_INFO, s);
+							//MYTRACE("general")(MT::LEVEL_INFO, s);
 
 						}
 					}

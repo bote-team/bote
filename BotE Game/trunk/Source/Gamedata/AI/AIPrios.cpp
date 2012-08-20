@@ -31,7 +31,7 @@ CAIPrios::~CAIPrios(void)
 /// geben sollen.
 void CAIPrios::CalcShipPrios(CSectorAI* sectorAI)
 {
-	MYTRACE_DOMAIN("ai")(MT::LEVEL_INFO, "CAIPrios::CalcShipPrios() begin... \n");
+	MYTRACE("ai")(MT::LEVEL_INFO, "CAIPrios::CalcShipPrios() begin... \n");
 
 	ASSERT(sectorAI);
 	Clear();
@@ -143,19 +143,19 @@ void CAIPrios::CalcShipPrios(CSectorAI* sectorAI)
 	}
 
 
-	MYTRACE_DOMAIN("ai")(MT::LEVEL_INFO, "CAIPrios::CalcShipPrios(): max Combatship Priority is: %d\n",max);
+	MYTRACE("ai")(MT::LEVEL_INFO, "CAIPrios::CalcShipPrios(): max Combatship Priority is: %d\n",max);
 	// Maximum der Schiffsstärken ermitteln
 	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 	{
-		MYTRACE_DOMAIN("ai")(MT::LEVEL_INFO, "Calc Shippowers: Race: %s has a complete shippower of %d - all shippower is %d\n",it->first, shipPower[it->first], sectorAI->GetCompleteDanger(it->first));
+		MYTRACE("ai")(MT::LEVEL_INFO, "Calc Shippowers: Race: %s has a complete shippower of %d - all shippower is %d\n",it->first, shipPower[it->first], sectorAI->GetCompleteDanger(it->first));
 		if (shipPower[it->first] > 0)
 			m_mCombatShipPrio[it->first] = (BYTE)(ceil)((float)max / (float)shipPower[it->first] * 1.5);
 		else
 			m_mCombatShipPrio[it->first] = MAXBYTE;
-		MYTRACE_DOMAIN("ai")(MT::LEVEL_INFO, "Calc Priorities: Race: %s - CombatShipPrio: %d - ColoshipPrio: %d - TransportPrio: %d\n",it->first, m_mCombatShipPrio[it->first], m_mColoShipPrio[it->first], m_mTransportPrio[it->first]);
-		MYTRACE_DOMAIN("ai")(MT::LEVEL_INFO, "Number of shiptypes: Race: %s - Colonyships: %d - Transporthips: %d\n",it->first, sectorAI->GetNumberOfColoships(it->first), sectorAI->GetNumberOfTransportShips(it->first));
+		MYTRACE("ai")(MT::LEVEL_INFO, "Calc Priorities: Race: %s - CombatShipPrio: %d - ColoshipPrio: %d - TransportPrio: %d\n",it->first, m_mCombatShipPrio[it->first], m_mColoShipPrio[it->first], m_mTransportPrio[it->first]);
+		MYTRACE("ai")(MT::LEVEL_INFO, "Number of shiptypes: Race: %s - Colonyships: %d - Transporthips: %d\n",it->first, sectorAI->GetNumberOfColoships(it->first), sectorAI->GetNumberOfTransportShips(it->first));
 	}
-	MYTRACE_DOMAIN("ai")(MT::LEVEL_INFO, "CAIPrios::CalcShipPrios() ... ready\n");
+	MYTRACE("ai")(MT::LEVEL_INFO, "CAIPrios::CalcShipPrios() ... ready\n");
 }
 
 /// Funktion löscht alle vorher berechneten Prioritäten.

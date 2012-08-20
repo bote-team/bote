@@ -471,21 +471,21 @@ void CMainFrame::FullScreenMainView(bool fullScreen)
 
 LRESULT CMainFrame::UpdateViews(WPARAM /*wParam*/, LPARAM /*lParam*/)
 {
-	MYTRACE_DOMAIN("general")(MT::LEVEL_INFO, "Getting Message to UpdateViews...");
+	MYTRACE("general")(MT::LEVEL_INFO, "Getting Message to UpdateViews...");
 
 	CBotf2Doc* pDoc = dynamic_cast<CBotf2App*>(AfxGetApp())->GetDocument();
 	ASSERT(pDoc);
 
 	// Views ihre Arbeiten zu jeder neuen Runde machen lassen
 	pDoc->DoViewWorkOnNewRound();
-	MYTRACE_DOMAIN("general")(MT::LEVEL_INFO, "Updating all Views done\n");
+	MYTRACE("general")(MT::LEVEL_INFO, "Updating all Views done\n");
 
 	return TRUE;
 }
 
 LRESULT CMainFrame::ShowCombatView(WPARAM /*wParam*/, LPARAM /*lParam*/)
 {
-	MYTRACE_DOMAIN("general")(MT::LEVEL_INFO, "Getting Message to Show CombatView...");
+	MYTRACE("general")(MT::LEVEL_INFO, "Getting Message to Show CombatView...");
 
 	CBotf2Doc* pDoc = dynamic_cast<CBotf2App*>(AfxGetApp())->GetDocument();
 	ASSERT(pDoc);
@@ -505,14 +505,14 @@ LRESULT CMainFrame::ShowCombatView(WPARAM /*wParam*/, LPARAM /*lParam*/)
 
 	pDoc->UpdateAllViews(NULL);
 
-	MYTRACE_DOMAIN("general")(MT::LEVEL_INFO, "Showing CombatView\n");
+	MYTRACE("general")(MT::LEVEL_INFO, "Showing CombatView\n");
 
 	return TRUE;
 }
 
 LRESULT CMainFrame::InitViews(WPARAM /*wParam*/, LPARAM /*lParam*/)
 {
-	MYTRACE_DOMAIN("general")(MT::LEVEL_INFO, "Getting Message to InitViews...");
+	MYTRACE("general")(MT::LEVEL_INFO, "Getting Message to InitViews...");
 
 	CBotf2Doc* pDoc = dynamic_cast<CBotf2App*>(AfxGetApp())->GetDocument();
 	ASSERT(pDoc);
@@ -520,7 +520,7 @@ LRESULT CMainFrame::InitViews(WPARAM /*wParam*/, LPARAM /*lParam*/)
 	// alle rassenabhängigen Grafiken in jeder View laden
 	pDoc->LoadViewGraphics();
 
-	MYTRACE_DOMAIN("general")(MT::LEVEL_INFO, "Init all Views done\n");
+	MYTRACE("general")(MT::LEVEL_INFO, "Init all Views done\n");
 	return TRUE;
 }
 
@@ -539,7 +539,7 @@ bool CMainFrame::AddToTooltip( CWnd* pWnd, const CString& sTip )
 
 	if (!m_CPPToolTip.GetSafeHwnd())
 	{
-		MYTRACE_DOMAIN("general")(MT::LEVEL_WARNING, "AddToTooltip not possible: tooltip hwnd is null\n");
+		MYTRACE("general")(MT::LEVEL_WARNING, "AddToTooltip not possible: tooltip hwnd is null\n");
 		return false;
 	}
 

@@ -176,7 +176,7 @@ BOOLEAN CAttackSystem::IsDefenderNotAttacker(const CString& sDefender, const set
 /// Private Funktion, die allein die Schiffsabwehr berechnet
 void CAttackSystem::CalculateShipDefence()
 {
-	MYTRACE_DOMAIN("general")(MT::LEVEL_INFO, "CAttackSystem::CalculateShipDefence() begin...\n");
+	MYTRACE("general")(MT::LEVEL_INFO, "CAttackSystem::CalculateShipDefence() begin...\n");
 	int defence = 0;
 	USHORT killedShips = 0;
 	if (m_pSystem->GetOwnerOfSystem() != "" && m_pDefender != NULL && m_pDefender->GetType() == MAJOR)
@@ -230,7 +230,7 @@ void CAttackSystem::CalculateShipDefence()
 /// Private Funktion, die allein die Systembombardierung beachtet
 void CAttackSystem::CalculateBombAttack()
 {
-	MYTRACE_DOMAIN("general")(MT::LEVEL_INFO, "CAttackSystem::CalculateBombAttack() begin...\n");
+	MYTRACE("general")(MT::LEVEL_INFO, "CAttackSystem::CalculateBombAttack() begin...\n");
 	// Bei der Bombardierung werden nur die Torpedos der Schiffe beachtet.
 	// Bei der Bombardierung können Gebäude, Truppen und Bevölkerung zerstört werden bzw. sterben. Aktivierte Schilde
 	// in dem System können dies reduzieren bzw. auch komplett verhindern.
@@ -308,7 +308,7 @@ void CAttackSystem::CalculateBombAttack()
 /// Private Funktion, die allein den Angriff durch Truppen berechnet
 void CAttackSystem::CalculateTroopAttack()
 {
-	MYTRACE_DOMAIN("general")(MT::LEVEL_INFO, "CAttackSystem::CalculateTroopAttack() begin...\n");
+	MYTRACE("general")(MT::LEVEL_INFO, "CAttackSystem::CalculateTroopAttack() begin...\n");
 	// Wenn ein Assaultship am Angriff beteiligt ist, so bekommen die angreifenden Truppen einen 20% Stärkebonus
 	BYTE offenceBoni = 0;
 	if (m_bAssultShipInvolved)

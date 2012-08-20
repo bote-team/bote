@@ -279,20 +279,20 @@ void CIntelCalc::ReduceDepotPoints(CMajor* pRace, int perc)
 /// Funktion berechnet ob eine Geheimdienstaktion gegen eine andere Rasse erfolgreich verläuft.
 USHORT CIntelCalc::IsSuccess(CMajor* pEnemyRace, int ourSP, BOOLEAN isSpy, CMajor* pResponsibleRace, BYTE type)
 {
-	MYTRACE_DOMAIN("intel")(MT::LEVEL_INFO, "CIntelCalc::IsSuccess() begin...\n");
+	MYTRACE("intel")(MT::LEVEL_INFO, "CIntelCalc::IsSuccess() begin...\n");
 	ASSERT(pEnemyRace);
 	ASSERT(pResponsibleRace);
 	USHORT actions = NULL;
 
 	int enemyInnerSec = GetCompleteInnerSecPoints(pEnemyRace);
 
-	MYTRACE_DOMAIN("intel")(MT::LEVEL_INFO, "inner security of %s is %d\n", pEnemyRace, enemyInnerSec);
+	MYTRACE("intel")(MT::LEVEL_INFO, "inner security of %s is %d\n", pEnemyRace, enemyInnerSec);
 
 	// Aggressivität der angreifenden Rasse holen
 
 	BYTE agg = pResponsibleRace->GetEmpire()->GetIntelligence()->GetAggressiveness(!isSpy, pEnemyRace->GetRaceID());
 
-	MYTRACE_DOMAIN("intel")(MT::LEVEL_INFO, "intel aggressiveness is %d\n", agg);
+	MYTRACE("intel")(MT::LEVEL_INFO, "intel aggressiveness is %d\n", agg);
 	agg = 3 - agg; // -> vorsichtig == 3, normal == 2, aggressiv == 1 -> drehen die Zahlen im Prinzip um
 
 	// Spionage hat größere Erfolgsaussichten als Sabotage
@@ -310,7 +310,7 @@ USHORT CIntelCalc::IsSuccess(CMajor* pEnemyRace, int ourSP, BOOLEAN isSpy, CMajo
 		minDiff /= 3;
 	}
 
-	MYTRACE_DOMAIN("intel")(MT::LEVEL_INFO, "SP of race %s %d > enemies inner security %d + random %d\n", pResponsibleRace->GetRaceID(), ourSP, enemyInnerSec, minDiff);
+	MYTRACE("intel")(MT::LEVEL_INFO, "SP of race %s %d > enemies inner security %d + random %d\n", pResponsibleRace->GetRaceID(), ourSP, enemyInnerSec, minDiff);
 	if (ourSP > (enemyInnerSec + minDiff))
 	{	// wenn wir viel mehr Punkte als der Gegner haben, so können auch mehrere Geheimdienstaktionen gestarten werden.
 		actions = ourSP / (enemyInnerSec + minDiff);
@@ -340,7 +340,7 @@ USHORT CIntelCalc::IsSuccess(CMajor* pEnemyRace, int ourSP, BOOLEAN isSpy, CMajo
 	// etwas davon erfährt.
 	else if ((ourSP * agg) < (enemyInnerSec + minDiff) && rand()%2 == NULL)
 		this->CreateMsg(pResponsibleRace, pEnemyRace, type);
-	MYTRACE_DOMAIN("intel")(MT::LEVEL_INFO, "number of starting intel actions: %d\n", actions);
+	MYTRACE("intel")(MT::LEVEL_INFO, "number of starting intel actions: %d\n", actions);
 	return actions;
 }
 
@@ -348,7 +348,7 @@ USHORT CIntelCalc::IsSuccess(CMajor* pEnemyRace, int ourSP, BOOLEAN isSpy, CMajo
 /// auf Seiten des Geheimdienstagressors.
 void CIntelCalc::DeleteConsumedPoints(CMajor* pOurRace, CMajor* pEnemyRace, BOOLEAN isSpy, BYTE type, BOOLEAN isAttempt)
 {
-	MYTRACE_DOMAIN("intel")(MT::LEVEL_INFO, "CIntelCalc::DeleteConsumedPoints() begin...\n");
+	MYTRACE("intel")(MT::LEVEL_INFO, "CIntelCalc::DeleteConsumedPoints() begin...\n");
 
 	CIntelligence* pOurIntel	= pOurRace->GetEmpire()->GetIntelligence();
 	CIntelligence* pIntelEnemy	= pEnemyRace->GetEmpire()->GetIntelligence();
@@ -360,7 +360,7 @@ void CIntelCalc::DeleteConsumedPoints(CMajor* pOurRace, CMajor* pEnemyRace, BOOL
 	enemyInnerSecPoints += enemyInnerSecPoints * pIntelEnemy->GetInnerSecurityBoni() / 100;
 	// beim Depot sind die Boni schon mit eingerechnet
 	int enemyInnerSecDepot = pIntelEnemy->GetInnerSecurityStorage();
-	MYTRACE_DOMAIN("intel")(MT::LEVEL_INFO, "enemies inner security points: %d - enemies inner security depot: %d\n", enemyInnerSecPoints, enemyInnerSecDepot);
+	MYTRACE("intel")(MT::LEVEL_INFO, "enemies inner security points: %d - enemies inner security depot: %d\n", enemyInnerSecPoints, enemyInnerSecDepot);
 
 	// nun die generierten Punkte des Agressors bestimmen
 	int racePoints = 0;
@@ -389,7 +389,7 @@ void CIntelCalc::DeleteConsumedPoints(CMajor* pOurRace, CMajor* pEnemyRace, BOOL
 		raceDepot += raceDepot * pOurIntel->GetBonus(type, 1) / 100;
 	}
 
-	MYTRACE_DOMAIN("intel")(MT::LEVEL_INFO, "racePoints: %d - raceDepot: %d\n", racePoints, raceDepot);
+	MYTRACE("intel")(MT::LEVEL_INFO, "racePoints: %d - raceDepot: %d\n", racePoints, raceDepot);
 	// jetzt gegenseitig die Punkte abziehen.
 	// zuerst werden immer die Punkte abgezogen, welche nicht aus den Depots kommen
 	int temp = racePoints + raceDepot - enemyInnerSecPoints;

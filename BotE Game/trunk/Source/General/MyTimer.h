@@ -23,5 +23,5 @@ private:
 
 inline CMyTimer::~CMyTimer()
 {
-	MYTRACE_DOMAIN("general")(MT::LEVEL_INFO, "Timer %d: %.3lf FPS\n", n, 1.0/((double)(clock()-start)/CLOCKS_PER_SEC));
+	MYTRACE("general")(MT::LEVEL_INFO, "Timer %d: %.3lf FPS\n", n, 1.0/((double)(clock()-start)/CLOCKS_PER_SEC));
 }

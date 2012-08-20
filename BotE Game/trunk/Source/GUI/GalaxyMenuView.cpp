@@ -1429,7 +1429,7 @@ void CGalaxyMenuView::GenerateGalaxyMap()
 	{
 		delete m_pGalaxyBackground;
 		m_pGalaxyBackground = NULL;
-		MYTRACE_DOMAIN("graphicload")(MT::LEVEL_WARNING, "CGalaxyMenuView::GenerateGalaxy(): Could not load galaxy background");
+		MYTRACE("graphicload")(MT::LEVEL_WARNING, "CGalaxyMenuView::GenerateGalaxy(): Could not load galaxy background");
 		AfxMessageBox("Could not load galaxy background\n\n" + filePath);
 		return;
 	}
@@ -1454,7 +1454,7 @@ void CGalaxyMenuView::GenerateGalaxyMap()
 	if(MT::CMyTrace::IsLoggingEnabledFor("graphicload")) {
 		for (int i = 0; i < 7; i++)
 			if (!stars[i] || stars[i]->GetLastStatus() != Ok)
-				MYTRACE_DOMAIN("graphicload")(MT::LEVEL_WARNING, "CGalaxyMenuView::GenerateGalaxy(): Could not load a star graphic");
+				MYTRACE("graphicload")(MT::LEVEL_WARNING, "CGalaxyMenuView::GenerateGalaxy(): Could not load a star graphic");
 	}
 
 	map<CString, Bitmap*> ownerMark;

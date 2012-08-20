@@ -3,7 +3,7 @@
 #include "Options.h"
 #include "ImageStone/ImageStone.h"
 
-#define TRACE_GRAPHICLOAD MYTRACE_DOMAIN("graphicload")
+#define TRACE_GRAPHICLOAD MYTRACE("graphicload")
 
 //////////////////////////////////////////////////////////////////////
 // Konstruktion und Destruktion

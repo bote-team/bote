@@ -193,7 +193,7 @@ BOOL CBotf2Doc::OnNewDocument()
 		nSeed = (unsigned)time(NULL);
 		srand(nSeed);
 	}
-	MYTRACE_DOMAIN("general")(MT::LEVEL_INFO, "Used seed for randomgenerator: %i", nSeed);
+	MYTRACE("general")(MT::LEVEL_INFO, "Used seed for randomgenerator: %i", nSeed);
 
 	// Standardwerte setzen
 	m_ptKO = CPoint(0,0);
@@ -239,7 +239,7 @@ void CBotf2Doc::Serialize(CArchive& ar)
 		// ZU ERLEDIGEN: Hier Code zum Speichern einfügen
 		ar << m_iRound;
 		ar << m_fStardate;
-		MYTRACE_DOMAIN("general")(MT::LEVEL_INFO, "Stardate: %f", m_fStardate);
+		MYTRACE("general")(MT::LEVEL_INFO, "Stardate: %f", m_fStardate);
 		ar << m_ptKO;
 		ar << STARMAP_SECTORS_HCOUNT;
 		ar << STARMAP_SECTORS_VCOUNT;
@@ -448,7 +448,7 @@ void CBotf2Doc::SerializeNextRoundData(CArchive &ar)
 		// Wenn es einen Kampf gab, dann Schiffe übertragen
 		if (m_bCombatCalc)
 		{
-			MYTRACE_DOMAIN("general")(MT::LEVEL_INFO, "Server is sending CombatData to client...\n");
+			MYTRACE("general")(MT::LEVEL_INFO, "Server is sending CombatData to client...\n");
 			// Sektor des Kampfes übertragen
 			ar << m_ptCurrentCombatSector;
 			int nCount = 0;
@@ -463,7 +463,7 @@ void CBotf2Doc::SerializeNextRoundData(CArchive &ar)
 			return;
 		}
 
-		MYTRACE_DOMAIN("general")(MT::LEVEL_INFO, "Server is sending NextRoundData to client...\n");
+		MYTRACE("general")(MT::LEVEL_INFO, "Server is sending NextRoundData to client...\n");
 		// Server-Dokument
 		// ZU ERLEDIGEN: Hier Code zum Speichern einfügen
 		ar << m_iRound;
@@ -491,7 +491,7 @@ void CBotf2Doc::SerializeNextRoundData(CArchive &ar)
 		ar >> m_bCombatCalc;
 		if (m_bCombatCalc)
 		{
-			MYTRACE_DOMAIN("general")(MT::LEVEL_INFO, "Client is receiving CombatData from server...\n");
+			MYTRACE("general")(MT::LEVEL_INFO, "Client is receiving CombatData from server...\n");
 			ar >> m_ptCurrentCombatSector;
 			// Es werden nur Schiffe aus dem aktuellen Kampfsektor empfangen
 			int nCount;
@@ -510,7 +510,7 @@ void CBotf2Doc::SerializeNextRoundData(CArchive &ar)
 		}
 
 		// Client-Dokument
-		MYTRACE_DOMAIN("general")(MT::LEVEL_INFO, "Client is receiving NextRoundData from server...\n");
+		MYTRACE("general")(MT::LEVEL_INFO, "Client is receiving NextRoundData from server...\n");
 		int number;
 		// ZU ERLEDIGEN: Hier Code zum Laden einfügen
 		ar >> m_iRound;
@@ -609,7 +609,7 @@ void CBotf2Doc::SerializeNextRoundData(CArchive &ar)
 		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 			it->second->GetEmpire()->GenerateSystemList(m_Systems, m_Sectors);
 	}
-	MYTRACE_DOMAIN("general")(MT::LEVEL_INFO, "... serialization of NextRoundData succesfull\n");
+	MYTRACE("general")(MT::LEVEL_INFO, "... serialization of NextRoundData succesfull\n");
 }
 
 void CBotf2Doc::SerializeEndOfRoundData(CArchive &ar, network::RACE race)
@@ -618,14 +618,14 @@ void CBotf2Doc::SerializeEndOfRoundData(CArchive &ar, network::RACE race)
 	{
 		if (m_bCombatCalc)
 		{
-			MYTRACE_DOMAIN("general")(MT::LEVEL_INFO, "Client %d sending CombatData to server...\n", race);
+			MYTRACE("general")(MT::LEVEL_INFO, "Client %d sending CombatData to server...\n", race);
 
 			// nur Informationen über die Taktik der Schiffe bzw. die Taktik des Kampfes senden
 			ar << m_nCombatOrder;
 			return;
 		}
 
-		MYTRACE_DOMAIN("general")(MT::LEVEL_INFO, "Client %d sending EndOfRoundData to server...\n", race);
+		MYTRACE("general")(MT::LEVEL_INFO, "Client %d sending EndOfRoundData to server...\n", race);
 		CMajor* pPlayer = GetPlayersRace();
 		// Client-Dokument
 		// Anzahl der eigenen Schiffsinfoobjekte ermitteln
@@ -677,7 +677,7 @@ void CBotf2Doc::SerializeEndOfRoundData(CArchive &ar, network::RACE race)
 
 		if (m_bCombatCalc)
 		{
-			MYTRACE_DOMAIN("general")(MT::LEVEL_INFO, "Server receiving CombatData from client %d...\n", race);
+			MYTRACE("general")(MT::LEVEL_INFO, "Server receiving CombatData from client %d...\n", race);
 
 			// Informationen über die Taktik der Schiffe bzw. die Taktik des Kampfes empfangen
 			int nOrder;
@@ -701,7 +701,7 @@ void CBotf2Doc::SerializeEndOfRoundData(CArchive &ar, network::RACE race)
 			return;
 		}
 
-		MYTRACE_DOMAIN("general")(MT::LEVEL_INFO, "Server receiving EndOfRoundData from client %d...\n", race);
+		MYTRACE("general")(MT::LEVEL_INFO, "Server receiving EndOfRoundData from client %d...\n", race);
 		// Server-Dokument
 		CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(sMajorID));
 		ASSERT(pMajor);
@@ -737,7 +737,7 @@ void CBotf2Doc::SerializeEndOfRoundData(CArchive &ar, network::RACE race)
 		pMajor->Serialize(ar);
 		ar >> m_iSelectedView[race];
 	}
-	MYTRACE_DOMAIN("general")(MT::LEVEL_INFO, "... serialization of RoundEndData succesfull\n", race);
+	MYTRACE("general")(MT::LEVEL_INFO, "... serialization of RoundEndData succesfull\n", race);
 }
 
 /// Funktion liest die Ini-Datei neu ein und legt die Werte neu fest.
@@ -749,7 +749,7 @@ void CBotf2Doc::ResetIniSettings(void)
 	CString difficulty = "EASY";
 	pIni->ReadValue("General", "DIFFICULTY", difficulty);
 	difficulty.MakeUpper();
-	MYTRACE_DOMAIN("general")(MT::LEVEL_INFO, "DIFFICULTY: %s", difficulty);
+	MYTRACE("general")(MT::LEVEL_INFO, "DIFFICULTY: %s", difficulty);
 	if (difficulty == "BABY")
 		m_fDifficultyLevel			= 1.0f;
 	else if (difficulty == "EASY")
@@ -762,7 +762,7 @@ void CBotf2Doc::ResetIniSettings(void)
 		m_fDifficultyLevel			= 0.2f;
 	else
 		m_fDifficultyLevel			= 0.5f;
-	MYTRACE_DOMAIN("general")(MT::LEVEL_INFO, "m_fDifficultyLevel: %f", m_fDifficultyLevel);
+	MYTRACE("general")(MT::LEVEL_INFO, "m_fDifficultyLevel: %f", m_fDifficultyLevel);
 
 
 	CSoundManager* pSoundManager = CSoundManager::GetInstance();
@@ -794,7 +794,7 @@ void CBotf2Doc::ResetIniSettings(void)
 		pSoundManager->SetSoundMasterVolume(NULL);
 	else
 		pSoundManager->SetSoundMasterVolume(0.5f);
-	MYTRACE_DOMAIN("general")(MT::LEVEL_INFO, "Init sound ready...\n");
+	MYTRACE("general")(MT::LEVEL_INFO, "Init sound ready...\n");
 
 	int nSeed = -1;
 	pIni->ReadValue("Special", "RANDOMSEED", nSeed);
@@ -808,7 +808,7 @@ void CBotf2Doc::ResetIniSettings(void)
 		nSeed = (unsigned)time(NULL);
 		srand(nSeed);
 	}
-	MYTRACE_DOMAIN("general")(MT::LEVEL_INFO, "Used seed for randomgenerator: %i", nSeed);
+	MYTRACE("general")(MT::LEVEL_INFO, "Used seed for randomgenerator: %i", nSeed);
 }
 
 /// Funktion gibt die Koordinate des Hauptsystems einer Majorrace zurück.
@@ -836,14 +836,14 @@ void CBotf2Doc::SetCurrentShipIndex(int NumberOfTheShipInArray)
 	m_NumberOfTheShipInArray = NumberOfTheShipInArray;
 	((CGalaxyMenuView*)GetMainFrame()->GetView(RUNTIME_CLASS(CGalaxyMenuView)))->SetNewShipPath();
 	CSmallInfoView::SetShip(&m_ShipArray.GetAt(NumberOfTheShipInArray));
-	MYTRACE_DOMAIN("general")(MT::LEVEL_INFO, "m_NumberOfTheShipInArray: %i", m_NumberOfTheShipInArray);
+	MYTRACE("general")(MT::LEVEL_INFO, "m_NumberOfTheShipInArray: %i", m_NumberOfTheShipInArray);
 }
 
 void CBotf2Doc::SetNumberOfFleetShip(int NumberOfFleetShip)
 {
 	m_iNumberOfFleetShip = NumberOfFleetShip;
 	CSmallInfoView::SetShip(&m_ShipArray.GetAt(NumberOfFleetShip));
-	MYTRACE_DOMAIN("general")(MT::LEVEL_INFO, "m_iNumberOfFleetShip: %i", m_iNumberOfFleetShip);
+	MYTRACE("general")(MT::LEVEL_INFO, "m_iNumberOfFleetShip: %i", m_iNumberOfFleetShip);
 
 }
 
@@ -861,7 +861,7 @@ void CBotf2Doc::LoadViewGraphics(void)
 {
 	CMajor* pPlayersRace = GetPlayersRace();
 	ASSERT(pPlayersRace);
-	MYTRACE_DOMAIN("general")(MT::LEVEL_INFO, "pPlayersRace: %s", pPlayersRace->GetRaceName());
+	MYTRACE("general")(MT::LEVEL_INFO, "pPlayersRace: %s", pPlayersRace->GetRaceName());
 
 	CGalaxyMenuView::SetPlayersRace(pPlayersRace);
 	CMainBaseView::SetPlayersRace(pPlayersRace);
@@ -945,7 +945,7 @@ void CBotf2Doc::DoViewWorkOnNewRound()
 // Generiert ein neues Spiel
 void CBotf2Doc::PrepareData()
 {
-	MYTRACE_DOMAIN("general")(MT::LEVEL_INFO, "Begin preparing game data...\n");
+	MYTRACE("general")(MT::LEVEL_INFO, "Begin preparing game data...\n");
 
 	if (!m_bGameLoaded)
 	{
@@ -1017,7 +1017,7 @@ void CBotf2Doc::PrepareData()
 		m_VictoryObserver.Init();
 		m_VictoryObserver.Observe();
 
-		MYTRACE_DOMAIN("general")(MT::LEVEL_INFO, "Preparing game data ready...\n");
+		MYTRACE("general")(MT::LEVEL_INFO, "Preparing game data ready...\n");
 		/*
 		double habis = 0;
 		CString s;
@@ -1190,9 +1190,9 @@ void CBotf2Doc::GenerateGalaxy()
 	CIniLoader::GetInstance()->ReadValue("Special", "STARDENSITY", nStarDensity);
 	CIniLoader::GetInstance()->ReadValue("Special", "MINORDENSITY", nMinorDensity);
 	CIniLoader::GetInstance()->ReadValue("Special", "ANOMALYDENSITY", nAnomalyDensity);
-	MYTRACE_DOMAIN("general")(MT::LEVEL_INFO, "STARDENSITY: %i", nStarDensity);
-	MYTRACE_DOMAIN("general")(MT::LEVEL_INFO, "MINORDENSITY: %i", nMinorDensity);
-	MYTRACE_DOMAIN("general")(MT::LEVEL_INFO, "ANOMALYDENSITY: %i", nAnomalyDensity);
+	MYTRACE("general")(MT::LEVEL_INFO, "STARDENSITY: %i", nStarDensity);
+	MYTRACE("general")(MT::LEVEL_INFO, "MINORDENSITY: %i", nMinorDensity);
+	MYTRACE("general")(MT::LEVEL_INFO, "ANOMALYDENSITY: %i", nAnomalyDensity);
 
 	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 	{
@@ -1346,7 +1346,7 @@ void CBotf2Doc::NextRound()
 	// oder das erste Mal in diese Funktion gesprungen wurde.
 	if (bCombatInCurrentRound == false)
 	{
-		MYTRACE_DOMAIN("general")(MT::LEVEL_INFO, "\nSTART NEXT ROUND (round: %d)\n", GetCurrentRound());
+		MYTRACE("general")(MT::LEVEL_INFO, "\nSTART NEXT ROUND (round: %d)\n", GetCurrentRound());
 
 		// Seed initialisieren
 		int nSeed = -1;
@@ -1361,7 +1361,7 @@ void CBotf2Doc::NextRound()
 			srand(nSeed);
 		}
 
-		MYTRACE_DOMAIN("general")(MT::LEVEL_INFO, "Used seed for randomgenerator: %i", nSeed);
+		MYTRACE("general")(MT::LEVEL_INFO, "Used seed for randomgenerator: %i", nSeed);
 
 		// Soundnachrichten aus alter Runde löschen
 		for (int i = network::RACE_1; i < network::RACE_ALL; i++)
@@ -1375,7 +1375,7 @@ void CBotf2Doc::NextRound()
 				vDelMajors.push_back(it->first);
 		for (UINT i = 0; i < vDelMajors.size(); i++)
 		{
-			MYTRACE_DOMAIN("general")(MT::LEVEL_INFO, "Race %d is out of game", vDelMajors[i]);
+			MYTRACE("general")(MT::LEVEL_INFO, "Race %d is out of game", vDelMajors[i]);
 			m_pRaceCtrl->RemoveRace(vDelMajors[i]);
 			pmMajors = m_pRaceCtrl->GetMajors();
 		}
@@ -1435,7 +1435,7 @@ void CBotf2Doc::NextRound()
 	// Es findet ein Kampf statt
 	else
 	{
-		MYTRACE_DOMAIN("general")(MT::LEVEL_INFO, "COMBAT ROUND\n");
+		MYTRACE("general")(MT::LEVEL_INFO, "COMBAT ROUND\n");
 		// Kampf berechnen
 		CalcShipCombat();
 		// Wenn wieder ein Kampf stattfindet, so aus der Funktion springen
@@ -1557,7 +1557,7 @@ void CBotf2Doc::NextRound()
 		DoSave(CIOData::GetInstance()->GetAutoSavePath(m_iRound), FALSE);
 	SetModifiedFlag();
 
-	MYTRACE_DOMAIN("general")(MT::LEVEL_INFO, "\nNEXT ROUND calculation successfull\n", GetCurrentRound());
+	MYTRACE("general")(MT::LEVEL_INFO, "\nNEXT ROUND calculation successfull\n", GetCurrentRound());
 }
 
 void CBotf2Doc::ApplyShipsAtStartup()
@@ -4254,7 +4254,7 @@ static void CheckShipTargetCoordinates(const CShip& ship)
 			co.x, co.y,
 			tco.x, tco.y,
 			ship.GetCurrentOrderAsString());
-		MYTRACE_DOMAIN("general")(MT::LEVEL_WARNING, s);
+		MYTRACE("general")(MT::LEVEL_WARNING, s);
 		//AfxMessageBox(s);
 	}
 }
@@ -4441,7 +4441,7 @@ void CBotf2Doc::CalcShipOrders()
 						CEventColonization* eventScreen = new CEventColonization(pMajor->GetRaceID(), CResourceManager::GetString("COLOEVENT_HEADLINE", FALSE, m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetName()), CResourceManager::GetString("COLOEVENT_TEXT_" + pMajor->GetRaceID(), FALSE, m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetName()));
 						pMajor->GetEmpire()->GetEventMessages()->Add(eventScreen);
 						s.Format("Added Colonization-Eventscreen for Race %s in System %s", pMajor->GetRaceName(), m_Sectors.at(ShipKO.x+(ShipKO.y)*STARMAP_SECTORS_HCOUNT).GetName());
-						MYTRACE_DOMAIN("general")(MT::LEVEL_INFO, s);
+						MYTRACE("general")(MT::LEVEL_INFO, s);
 					}
 				}
 				else
@@ -5454,7 +5454,7 @@ bool CBotf2Doc::IsShipCombat()
 						m_ptCurrentCombatSector = p;
 						m_sCombatSectors.insert(m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetName(TRUE));
 						m_mCombatOrders.clear();
-						MYTRACE_DOMAIN("general")(MT::LEVEL_INFO, "Combat in Sector %d/%d\n", p.x, p.y);
+						MYTRACE("general")(MT::LEVEL_INFO, "Combat in Sector %d/%d\n", p.x, p.y);
 						return true;
 					}
 				}
@@ -6933,7 +6933,7 @@ BOOL CBotf2Doc::OnOpenDocument(LPCTSTR lpszPathName)
 {
 //	return __super::OnOpenDocument(lpszPathName);
 
-	MYTRACE_DOMAIN("general")(MT::LEVEL_INFO, "loading savegame \"%s\"\n", lpszPathName);
+	MYTRACE("general")(MT::LEVEL_INFO, "loading savegame \"%s\"\n", lpszPathName);
 
 	CFile file;
 	BYTE *lpBuf = NULL;
@@ -6944,7 +6944,7 @@ BOOL CBotf2Doc::OnOpenDocument(LPCTSTR lpszPathName)
 	{
 		TCHAR cause[255];
 		ex.GetErrorMessage(cause, 255);
-		MYTRACE_DOMAIN("general")(MT::LEVEL_ERROR, "savegame: could not open file (%s)\n", cause);
+		MYTRACE("general")(MT::LEVEL_ERROR, "savegame: could not open file (%s)\n", cause);
 		return FALSE;
 	}
 
@@ -6954,7 +6954,7 @@ BOOL CBotf2Doc::OnOpenDocument(LPCTSTR lpszPathName)
 	UINT nDone = file.Read(lpBuf, nSize);
 	if (nDone < nSize)
 	{
-		MYTRACE_DOMAIN("general")(MT::LEVEL_ERROR, "savegame: unexpected end of file\n");
+		MYTRACE("general")(MT::LEVEL_ERROR, "savegame: unexpected end of file\n");
 		goto error;
 	}
 
@@ -6962,7 +6962,7 @@ BOOL CBotf2Doc::OnOpenDocument(LPCTSTR lpszPathName)
 	BYTE *p = lpBuf;
 	if (memcmp(p, "BotE", 4) != 0)
 	{
-		MYTRACE_DOMAIN("general")(MT::LEVEL_ERROR, "savegame: invalid magic number\n");
+		MYTRACE("general")(MT::LEVEL_ERROR, "savegame: invalid magic number\n");
 		goto error;
 	}
 	p += 4;
@@ -6973,7 +6973,7 @@ BOOL CBotf2Doc::OnOpenDocument(LPCTSTR lpszPathName)
 	p += sizeof(UINT);
 	if (nVersion != DOCUMENT_VERSION)
 	{
-		MYTRACE_DOMAIN("general")(MT::LEVEL_ERROR, "savegame: wrong version\n");
+		MYTRACE("general")(MT::LEVEL_ERROR, "savegame: wrong version\n");
 		goto error;
 	}
 
@@ -6988,7 +6988,7 @@ BOOL CBotf2Doc::OnOpenDocument(LPCTSTR lpszPathName)
 	nDone = file.Read(lpBuf, nSize);
 	if (nDone < nSize)
 	{
-		MYTRACE_DOMAIN("general")(MT::LEVEL_ERROR, "savegame: unexpected end of file\n");
+		MYTRACE("general")(MT::LEVEL_ERROR, "savegame: unexpected end of file\n");
 		goto error;
 	}
 
@@ -6996,7 +6996,7 @@ BOOL CBotf2Doc::OnOpenDocument(LPCTSTR lpszPathName)
 	CMemFile memFile;
 	if (!BotE_LzmaDecompress(lpBuf, nSize, memFile))
 	{
-		MYTRACE_DOMAIN("general")(MT::LEVEL_ERROR, "savegame: error during decompression\n");
+		MYTRACE("general")(MT::LEVEL_ERROR, "savegame: error during decompression\n");
 		goto error;
 	}
 	memFile.Seek(0, CFile::begin);
@@ -7025,7 +7025,7 @@ BOOL CBotf2Doc::OnSaveDocument(LPCTSTR lpszPathName)
 {
 //	return __super::OnSaveDocument(lpszPathName);
 
-	MYTRACE_DOMAIN("general")(MT::LEVEL_INFO, "storing savegame \"%s\"\n", lpszPathName);
+	MYTRACE("general")(MT::LEVEL_INFO, "storing savegame \"%s\"\n", lpszPathName);
 
 	// Savegame schreiben
 	CFileException ex;
@@ -7035,7 +7035,7 @@ BOOL CBotf2Doc::OnSaveDocument(LPCTSTR lpszPathName)
 	{
 		TCHAR cause[255];
 		ex.GetErrorMessage(cause, 255);
-		MYTRACE_DOMAIN("general")(MT::LEVEL_ERROR, "savegame: could not open file (%s)\n", cause);
+		MYTRACE("general")(MT::LEVEL_ERROR, "savegame: could not open file (%s)\n", cause);
 		return FALSE;
 	}
 
@@ -7059,10 +7059,10 @@ BOOL CBotf2Doc::OnSaveDocument(LPCTSTR lpszPathName)
 	// komprimieren, in Datei schreiben
 	nSize = memFile.GetLength();
 	BYTE *lpBuf = memFile.Detach();
-        MYTRACE_DOMAIN("general")(MT::LEVEL_INFO, "rainer-Test", lpszPathName);
+        MYTRACE("general")(MT::LEVEL_INFO, "rainer-Test", lpszPathName);
 	if (!BotE_LzmaCompress(lpBuf, nSize, file))
 	{
-		MYTRACE_DOMAIN("general")(MT::LEVEL_ERROR, "savegame: error during compression\n");
+		MYTRACE("general")(MT::LEVEL_ERROR, "savegame: error during compression\n");
 		free(lpBuf);
 		file.Close();
 		try
@@ -7073,7 +7073,7 @@ BOOL CBotf2Doc::OnSaveDocument(LPCTSTR lpszPathName)
 		{
 			TCHAR cause[255];
 			pEx->GetErrorMessage(cause, 255);
-			MYTRACE_DOMAIN("general")(MT::LEVEL_ERROR, "savegame: could not delete corrupted savegame (%s)\n", cause);
+			MYTRACE("general")(MT::LEVEL_ERROR, "savegame: could not delete corrupted savegame (%s)\n", cause);
 			pEx->Delete();
 		}
 		return FALSE;

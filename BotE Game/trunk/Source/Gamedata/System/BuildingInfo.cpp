@@ -670,7 +670,7 @@ USHORT CBuildingInfo::GetResourceProd(BYTE res) const
 	case IRIDIUM:	return GetIridiumProd();
 	case DERITIUM:	return GetDeritiumProd();
 	default: {
-		MYTRACE_DOMAIN("general")(MT::LEVEL_WARNING, "CBuildingInfo::GetResourceProd(): Resource %d doesn't exists!");
+		MYTRACE("general")(MT::LEVEL_WARNING, "CBuildingInfo::GetResourceProd(): Resource %d doesn't exists!");
 		return 0;
 			 }
 	}

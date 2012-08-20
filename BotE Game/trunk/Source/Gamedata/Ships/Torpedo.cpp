@@ -152,7 +152,7 @@ void CTorpedo::MakeDamage(CCombatShip* CS)
 //	dam.Format("Torpedoschaden an Schiff zuvor: %s Schilde: %d Hülle: %d Torpedoschaden: %d",
 //		CS->m_pShip->GetShipClass(), CS->m_pShip->GetShield()->GetCurrentShield(),
 //		CS->m_pShip->GetHull()->GetCurrentHull(), torpedoDamage);
-//	MYTRACE_DOMAIN("general")(MT::LEVEL_INFO, dam);
+//	MYTRACE("general")(MT::LEVEL_INFO, dam);
 
 	int toHull = 0;
 	// Wenn das feindliche Schiff keine ablative Hüllenpanzerung hat, dann gehen 10% des Schadens sofort
@@ -220,7 +220,7 @@ void CTorpedo::MakeDamage(CCombatShip* CS)
 //		CS->m_pShip->GetShipClass(), CS->m_pShip->GetShield()->GetCurrentShield(),
 //		CS->m_pShip->GetHull()->GetCurrentHull(), torpedoDamage);
 //	//AfxMessageBox(dam);
-//	MYTRACE_DOMAIN("general")(MT::LEVEL_INFO, dam);
+//	MYTRACE("general")(MT::LEVEL_INFO, dam);
 }
 
 // Diese private Funktion setzt den Torpedo auf den nächsten Punkt seiner Flugbahn. Diese Funktion nur aufrufen,
@@ -296,7 +296,7 @@ BOOLEAN CTorpedo::PerhapsImpact(CCombatShip* CS, USHORT minDistance)
 
 //	CString s;
 //	s.Format("vielleicht Einschlag in Schiff %s Modi: %d Wahrscheinlichkeit: %d Randomwert: %d zurückgelegte Strecke: %d MinDistanz: %d ToHitMali: %d, Crew: %d", CS->m_pShip->GetShipClass(), m_iModi, probability, random, m_iDistance, minDistance, CCombatShip::GetToHitMali(m_byManeuverability, CS->m_byManeuverability), CS->GetCrewExperienceModi());
-//	MYTRACE_DOMAIN("general")(MT::LEVEL_INFO, s);
+//	MYTRACE("general")(MT::LEVEL_INFO, s);
 //	CString s;
 //	s.Format("m_iDistance: %d\nminDistance: %d\nprobability: %d\nrandom: %d",m_iDistance,minDistance,probability,random);
 //	AfxMessageBox(s);

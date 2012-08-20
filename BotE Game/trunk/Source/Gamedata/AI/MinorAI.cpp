@@ -31,7 +31,7 @@ ANSWER_STATUS::Typ CMinorAI::ReactOnOffer(const CDiplomacyInfo& info)
 {
 	if (m_pRace->GetRaceID() != info.m_sToRace)
 	{
-		MYTRACE_DOMAIN("general")(MT::LEVEL_INFO, "CMinorAI::ReactOnOffer(): Race-ID %s difference from Info-ID %s", m_pRace->GetRaceID(), info.m_sToRace);
+		MYTRACE("general")(MT::LEVEL_INFO, "CMinorAI::ReactOnOffer(): Race-ID %s difference from Info-ID %s", m_pRace->GetRaceID(), info.m_sToRace);
 		return ANSWER_STATUS::DECLINED;
 	}
 
@@ -192,7 +192,7 @@ ANSWER_STATUS::Typ CMinorAI::ReactOnOffer(const CDiplomacyInfo& info)
 	}
 	else
 	{
-		MYTRACE_DOMAIN("general")(MT::LEVEL_ERROR, "CMinorAI::ReactOnOffer(): %s could not react on offers from non Majors.", m_pRace->GetRaceID());
+		MYTRACE("general")(MT::LEVEL_ERROR, "CMinorAI::ReactOnOffer(): %s could not react on offers from non Majors.", m_pRace->GetRaceID());
 		assert(false);
 	}
 
@@ -316,7 +316,7 @@ bool CMinorAI::MakeOffer(CString& sRaceID, CDiplomacyInfo& info)
 				info.m_sToRace = sRaceID;
 				info.m_nSendRound = m_pDoc->GetCurrentRound() - 1;
 				CGenDiploMessage::GenerateMinorOffer(info);
-				MYTRACE_DOMAIN("general")(MT::LEVEL_INFO, "Minor: %s makes offer %d to Major %s\n", info.m_sFromRace, info.m_nType, info.m_sToRace);
+				MYTRACE("general")(MT::LEVEL_INFO, "Minor: %s makes offer %d to Major %s\n", info.m_sFromRace, info.m_nType, info.m_sToRace);
 				return true;
 			}
 		}
@@ -324,7 +324,7 @@ bool CMinorAI::MakeOffer(CString& sRaceID, CDiplomacyInfo& info)
 	}
 	else
 	{
-		MYTRACE_DOMAIN("general")(MT::LEVEL_ERROR, "Minor: %s makes offer %d to Major %s\n", info.m_sFromRace, info.m_nType, info.m_sToRace);
+		MYTRACE("general")(MT::LEVEL_ERROR, "Minor: %s makes offer %d to Major %s\n", info.m_sFromRace, info.m_nType, info.m_sToRace);
 		assert(false);
 	}
 

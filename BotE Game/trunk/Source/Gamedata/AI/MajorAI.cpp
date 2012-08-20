@@ -32,7 +32,7 @@ ANSWER_STATUS::Typ CMajorAI::ReactOnOffer(const CDiplomacyInfo& info)
 {
 	if (m_pRace->GetRaceID() != info.m_sToRace)
 	{
-		MYTRACE_DOMAIN("general")(MT::LEVEL_WARNING, "CMajorAI::ReactOnOffer(): Warning: Race-ID %s difference from Info-ID %s", m_pRace->GetRaceID(), info.m_sToRace);
+		MYTRACE("general")(MT::LEVEL_WARNING, "CMajorAI::ReactOnOffer(): Warning: Race-ID %s difference from Info-ID %s", m_pRace->GetRaceID(), info.m_sToRace);
 		return ANSWER_STATUS::NOT_REACTED;
 	}
 
@@ -148,7 +148,7 @@ void CMajorAI::CalcFavoriteMinors(void)
 	else if (!vFavoriteMinors.empty())
 		m_sFavoriteMinor = vFavoriteMinors[0].sID;
 
-	MYTRACE_DOMAIN("general")(MT::LEVEL_INFO, "Favorite Minorrace of Major: %s is %s\n", m_pRace->GetRaceID(), m_sFavoriteMinor);
+	MYTRACE("general")(MT::LEVEL_INFO, "Favorite Minorrace of Major: %s is %s\n", m_pRace->GetRaceID(), m_sFavoriteMinor);
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -719,7 +719,7 @@ bool CMajorAI::MakeMinorOffer(const CString& sRaceID, CDiplomacyInfo& info)
 	{
 		info.m_nType = nOffer;
 		CGenDiploMessage::GenerateMajorOffer(info);
-		MYTRACE_DOMAIN("general")(MT::LEVEL_INFO, "Major: %s makes offer %d to Minor %s\n", info.m_sFromRace, info.m_nType, info.m_sToRace);
+		MYTRACE("general")(MT::LEVEL_INFO, "Major: %s makes offer %d to Minor %s\n", info.m_sFromRace, info.m_nType, info.m_sToRace);
 		return true;
 	}
 	else
@@ -1026,7 +1026,7 @@ bool CMajorAI::MakeMajorOffer(CString& sRaceID, CDiplomacyInfo& info)
 				int b = rand()%100;
 				if (a < 2 + fModi && b < 7 + fModi)
 				{
-					MYTRACE_DOMAIN("diplomacy")(MT::LEVEL_DEBUG, "rand: %d - a = %d - b = %d - Modi = %lf (wir %s (%d) - Gegner %s (%d))\n",((int)(100 / fModi)), a, b, fModi, pOurRace->GetRaceID(), nOurShipPower, sRaceID, nTheirShipPower);
+					MYTRACE("diplomacy")(MT::LEVEL_DEBUG, "rand: %d - a = %d - b = %d - Modi = %lf (wir %s (%d) - Gegner %s (%d))\n",((int)(100 / fModi)), a, b, fModi, pOurRace->GetRaceID(), nOurShipPower, sRaceID, nTheirShipPower);
 					// Forderung stellen
 					if (ClaimRequest(info))
 						info.m_nType = DIPLOMATIC_AGREEMENT::REQUEST;
@@ -1052,7 +1052,7 @@ bool CMajorAI::MakeMajorOffer(CString& sRaceID, CDiplomacyInfo& info)
 	if (info.m_nType != DIPLOMATIC_AGREEMENT::NONE)
 	{
 		CGenDiploMessage::GenerateMajorOffer(info);
-		MYTRACE_DOMAIN("general")(MT::LEVEL_INFO, "Major: %s makes offer %d to Major %s\n", info.m_sFromRace, info.m_nType, info.m_sToRace);
+		MYTRACE("general")(MT::LEVEL_INFO, "Major: %s makes offer %d to Major %s\n", info.m_sFromRace, info.m_nType, info.m_sToRace);
 		return true;
 	}
 	else

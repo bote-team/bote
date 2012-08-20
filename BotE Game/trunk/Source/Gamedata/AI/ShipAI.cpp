@@ -131,7 +131,7 @@ void CShipAI::CalculateShipOrders(CSectorAI* SectorAI)
 						{
 							// Zielkoordinate für das Schiff setzen
 							pShip->SetTargetKO(ko,0);
-							MYTRACE_DOMAIN("shipai")(MT::LEVEL_INFO, "Race %s: Ship to Minor: %s (%s) - Target: %d,%d\n",sOwner, pShip->GetShipName(), pShip->GetShipTypeAsString(), ko.x,ko.y);
+							MYTRACE("shipai")(MT::LEVEL_INFO, "Race %s: Ship to Minor: %s (%s) - Target: %d,%d\n",sOwner, pShip->GetShipName(), pShip->GetShipTypeAsString(), ko.x,ko.y);
 							vMinorraceSectors->erase(vMinorraceSectors->begin() + j--);
 							bSet = true;
 							break;
@@ -166,7 +166,7 @@ void CShipAI::CalculateShipOrders(CSectorAI* SectorAI)
 						{
 							// Zielkoordinate für das Schiff setzen
 							pShip->SetTargetKO(ko,0);
-							MYTRACE_DOMAIN("shipai")(MT::LEVEL_INFO, "Race %s: Ship %s (%s) has terraforming target: %d,%d\n",sOwner, pShip->GetShipName(), pShip->GetShipTypeAsString(), ko.x,ko.y);
+							MYTRACE("shipai")(MT::LEVEL_INFO, "Race %s: Ship %s (%s) has terraforming target: %d,%d\n",sOwner, pShip->GetShipName(), pShip->GetShipTypeAsString(), ko.x,ko.y);
 							break;
 						}
 					}
@@ -187,7 +187,7 @@ void CShipAI::CalculateShipOrders(CSectorAI* SectorAI)
 						{
 							// Zielkoordinate für das Schiff setzen
 							pShip->SetTargetKO(ko,0);
-							MYTRACE_DOMAIN("shipai")(MT::LEVEL_INFO, "Race %s: Ship %s (%s) has stationbuild target: %d,%d\n",sOwner, pShip->GetShipName(), pShip->GetShipTypeAsString(), ko.x,ko.y);
+							MYTRACE("shipai")(MT::LEVEL_INFO, "Race %s: Ship %s (%s) has stationbuild target: %d,%d\n",sOwner, pShip->GetShipName(), pShip->GetShipTypeAsString(), ko.x,ko.y);
 						}
 					}
 				}
@@ -350,7 +350,7 @@ bool CShipAI::DoAttackMove(CShip* pShip, const CMajor* pMajor)
 			if (pMajor->GetStarmap()->GetRange(m_BombardSector[sRace]) <= pShip->GetRange())
 			{
 				pShip->SetTargetKO(m_BombardSector[sRace], 0);
-				MYTRACE_DOMAIN("shipai")(MT::LEVEL_INFO, "Race %s: BOMBARDTARGET in sector: %d/%d\n",sRace,m_BombardSector[sRace].x,m_BombardSector[sRace].y);
+				MYTRACE("shipai")(MT::LEVEL_INFO, "Race %s: BOMBARDTARGET in sector: %d/%d\n",sRace,m_BombardSector[sRace].x,m_BombardSector[sRace].y);
 				return true;
 			}
 		}
@@ -379,11 +379,11 @@ bool CShipAI::DoAttackMove(CShip* pShip, const CMajor* pMajor)
 				pShip->SetTargetKO(m_AttackSector[sRace], 0);
 				if(MT::CMyTrace::IsLoggingEnabledFor("shipai"))
 				{
-					MYTRACE_DOMAIN("shipai")(MT::LEVEL_INFO, "Race %s: GLOBAL ATTACK in sector: %d/%d\n",sRace,m_AttackSector[sRace].x,m_AttackSector[sRace].y);
-					MYTRACE_DOMAIN("shipai")(MT::LEVEL_INFO, "Ship: %s\n",pShip->GetShipName());
-					MYTRACE_DOMAIN("shipai")(MT::LEVEL_INFO, "OnlyDangerFromShips: %d in Sector: %d/%d\n",nOurDanger,pShip->GetKO().x,pShip->GetKO().y);
-					MYTRACE_DOMAIN("shipai")(MT::LEVEL_INFO, "CompleteDangerInTargetSector: %d\n",nEnemyDanger);
-					MYTRACE_DOMAIN("shipai")(MT::LEVEL_INFO, "Our Complete Danger overall: %d\n",(m_pSectorAI->GetCompleteDanger(sRace) * 100 / (rand()%16+75)));
+					MYTRACE("shipai")(MT::LEVEL_INFO, "Race %s: GLOBAL ATTACK in sector: %d/%d\n",sRace,m_AttackSector[sRace].x,m_AttackSector[sRace].y);
+					MYTRACE("shipai")(MT::LEVEL_INFO, "Ship: %s\n",pShip->GetShipName());
+					MYTRACE("shipai")(MT::LEVEL_INFO, "OnlyDangerFromShips: %d in Sector: %d/%d\n",nOurDanger,pShip->GetKO().x,pShip->GetKO().y);
+					MYTRACE("shipai")(MT::LEVEL_INFO, "CompleteDangerInTargetSector: %d\n",nEnemyDanger);
+					MYTRACE("shipai")(MT::LEVEL_INFO, "Our Complete Danger overall: %d\n",(m_pSectorAI->GetCompleteDanger(sRace) * 100 / (rand()%16+75)));
 				}
 				return true;
 			}
@@ -396,7 +396,7 @@ bool CShipAI::DoAttackMove(CShip* pShip, const CMajor* pMajor)
 			if (pMajor->GetStarmap()->GetRange(p) <= pShip->GetRange())
 			{
 				pShip->SetTargetKO(p, 0);
-				MYTRACE_DOMAIN("shipai")(MT::LEVEL_INFO, "Race %s: COLLECT ships in sector: %d/%d\n", sRace,p.x,p.y);
+				MYTRACE("shipai")(MT::LEVEL_INFO, "Race %s: COLLECT ships in sector: %d/%d\n", sRace,p.x,p.y);
 				return true;
 			}
 		}
@@ -462,7 +462,7 @@ bool CShipAI::DoBombardSystem(CShip* pShip)
 		//AfxMessageBox(s);
 		if (nShipValue > nShipDefend)
 		{
-			MYTRACE_DOMAIN("shipai")(MT::LEVEL_INFO, "Race %s: Ship %s (%s) is bombarding system: %d,%d\n",pShip->GetOwnerOfShip(), pShip->GetShipName(), pShip->GetShipTypeAsString(), pShip->GetKO().x,pShip->GetKO().y);
+			MYTRACE("shipai")(MT::LEVEL_INFO, "Race %s: Ship %s (%s) is bombarding system: %d,%d\n",pShip->GetOwnerOfShip(), pShip->GetShipName(), pShip->GetShipTypeAsString(), pShip->GetKO().x,pShip->GetKO().y);
 			pShip->SetCurrentOrder(SHIP_ORDER::ATTACK_SYSTEM);
 			return true;
 		}
@@ -625,7 +625,7 @@ void CShipAI::CalcAttackSector(void)
 			}
 		}
 		m_AttackSector[it->first] = sector;
-		MYTRACE_DOMAIN("shipai")(MT::LEVEL_INFO, "Race %s: global attack sector is %d/%d\n",it->first, m_AttackSector[it->first].x, m_AttackSector[it->first].y);
+		MYTRACE("shipai")(MT::LEVEL_INFO, "Race %s: global attack sector is %d/%d\n",it->first, m_AttackSector[it->first].x, m_AttackSector[it->first].y);
 	}
 }
 
@@ -689,6 +689,6 @@ void CShipAI::CalcBombardSector(void)
 			}
 			m_BombardSector[it->first] = sector;
 		}
-		MYTRACE_DOMAIN("shipai")(MT::LEVEL_INFO, "Race %s: global bombard sector is %d/%d\n",it->first, m_BombardSector[it->first].x, m_BombardSector[it->first].y);
+		MYTRACE("shipai")(MT::LEVEL_INFO, "Race %s: global bombard sector is %d/%d\n",it->first, m_BombardSector[it->first].x, m_BombardSector[it->first].y);
 	}
 }

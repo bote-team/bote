@@ -84,7 +84,7 @@ void CNetworkHandler::OnNextRound(network::CNextRound *pMsg)
 			pSoundManager->PlaySound(SNDMGR_SOUND_ENDOFROUND, SNDMGR_PRIO_HIGH);
 		pSoundManager->PlayMessages(600, 200);
 
-		MYTRACE_DOMAIN("general")(MT::LEVEL_INFO, "CNetworkHandler::OnNextRound ready\n");
+		MYTRACE("general")(MT::LEVEL_INFO, "CNetworkHandler::OnNextRound ready\n");
 	}
 }
 
