@@ -438,13 +438,14 @@ inline void SetAttributes(BOOLEAN is, int attribute, int &variable)
 #define MINBASEPOINTS 120	///< minimale Punkte für den Außenpostenbau, damit die KI überhaupt beginnt dort einen zu bauen
 
 // Tracebedingungen -> können hier ein und ausgeschaltet werden um bestimmte Traceausgaben zu bekommen
-#define TRACE_SHIPAI
 #define TRACE_INTEL
 #define TRACE_INTELAI
 //#define DEBUG_AI_BASE_DEMO
 
 namespace MT
 {
+	//If you wanna change something here, please consider using the --log-domains and/or --passive-domains
+	//command line parameters instead!
 	const std::string DEFAULT_LOG_DOMAINS[8] =
 	{
 		"general",//Used in case no domain is passed.
