@@ -78,10 +78,8 @@ void CIntelAI::CalcIntelligence(CBotf2Doc* pDoc)
 			m_byIntelPrio[it->first] += badReports[it->first];
 		}
 
-#ifdef TRACE_INTELAI
 	for (std::map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
-		MYTRACE(MT::LEVEL_INFO, "Intel-AI: Intel Prio of %s is %d\n", it->first, m_byIntelPrio[it->first]);
-#endif
+		MYTRACE_DOMAIN("intelai")(MT::LEVEL_INFO, "Intel-AI: Intel Prio of %s is %d\n", it->first, m_byIntelPrio[it->first]);
 
 	// nun liegen die Prioritäten und die Listen mit den Punkten vor. Jetzt kann begonnen werde die Rassen zu
 	// vergeheimdiensteln. Ab hier kommt die KI für den Geheimdienst richtig ins Spiel.
@@ -142,9 +140,7 @@ void CIntelAI::CalcIntelligence(CBotf2Doc* pDoc)
 			if (pWorstRace != NULL)
 			{
 				CIntelligence* pWorstIntel = pWorstRace->GetEmpire()->GetIntelligence();
-#ifdef TRACE_INTELAI
-				MYTRACE(MT::LEVEL_INFO, "Intel-AI: assigned intel victim of %s is %s\n", it->first, pWorstRace->GetRaceID());
-#endif
+				MYTRACE_DOMAIN("intelai")(MT::LEVEL_INFO, "Intel-AI: assigned intel victim of %s is %s\n", it->first, pWorstRace->GetRaceID());
 				// jede Rasse läßt immer einen bestimmten prozentualen Anteil in der inneren Sicherheit.
 				int innerSecPerc = 25;
 
@@ -204,9 +200,7 @@ void CIntelAI::CalcIntelligence(CBotf2Doc* pDoc)
 				}
 				else
 					pIntel->SetAssignment()->SetSabotagePercentage(4, 100, pWorstRace->GetRaceID());
-#ifdef TRACE_INTELAI
-				MYTRACE(MT::LEVEL_INFO, "Intel-AI: our SP: %d - enemies SP: %d\n", ourPoints, enemyPoints);
-#endif
+				MYTRACE_DOMAIN("intelai")(MT::LEVEL_INFO, "Intel-AI: our SP: %d - enemies SP: %d\n", ourPoints, enemyPoints);
 
 			}
 			// finden wir keine Rasse zum vergeheimdiensteln, so die innere Sicherheit auf 100% stellen
