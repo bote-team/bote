@@ -88,23 +88,21 @@ namespace MT
 			va_end(ptr);
 		};
 
-	private:
 		/* Add trace messge to log with default INFO severity level */
-		void __cdecl operator()( LPCTSTR pszFmt, ...) const
-		{
-			if (!IsLoggingEnabledFor(m_sDomain))
-				return;
-			va_list ptr; va_start(ptr, pszFmt);
-			CString strFormat(pszFmt);
-			decorateMessage(strFormat);
-			if(pLOG_FILE != NULL)
-				printMessageV(pLOG_FILE, strFormat, ptr);
-#ifdef MT_USE_ATLTRACE
-			ATL::CTrace::s_trace.TraceV(m_pszFileName, m_nLineNo, atlTraceGeneral, 0, strFormat, ptr);
-#endif	// MT_USE_ATLTRACE
-			va_end(ptr);
-		};
-	public:
+//		void __cdecl operator()( LPCTSTR pszFmt, ...) const
+//		{
+//			if (!IsLoggingEnabledFor(m_sDomain))
+//				return;
+//			va_list ptr; va_start(ptr, pszFmt);
+//			CString strFormat(pszFmt);
+//			decorateMessage(strFormat);
+//			if(pLOG_FILE != NULL)
+//				printMessageV(pLOG_FILE, strFormat, ptr);
+//#ifdef MT_USE_ATLTRACE
+//			ATL::CTrace::s_trace.TraceV(m_pszFileName, m_nLineNo, atlTraceGeneral, 0, strFormat, ptr);
+//#endif	// MT_USE_ATLTRACE
+//			va_end(ptr);
+//		};
 
 		/* Open main log file */
 		static bool Init(LPCTSTR fName,
@@ -117,7 +115,7 @@ namespace MT
 			if( (pLOG_FILE = fopen( fName, "w" )) == NULL )
 			{
 				::MessageBox(NULL, "Failed to open LOG file", "Notice", 0x10000);
-				MYTRACE("logging")(_T("\t\t\t FAILED TO OPEN LOG FILE: %s"), fName);
+				MYTRACE("logging")(MT::LEVEL_INFO, _T("\t\t\t FAILED TO OPEN LOG FILE: %s"), fName);
 				bRes1 = false;
 			}
 			else
@@ -128,7 +126,7 @@ namespace MT
 				setvbuf(stdout,NULL,_IONBF,0);	// turn off cashing
 				//sync_with_stdio();	// check
 #endif	// MT_REDIRECT_STDOUT
-				MYTRACE("logging")(_T("\t\t*** Log Started at %s ***\n\n"), CTime(time(NULL)).Format("%c"));
+				MYTRACE("logging")(MT::LEVEL_INFO, _T("\t\t*** Log Started at %s ***\n\n"), CTime(time(NULL)).Format("%c"));
 				bRes1 = true;
 			}
 			return bRes1;
@@ -142,12 +140,12 @@ namespace MT
 		//	if( (pLOG_FILE_ERRORS = fopen( fNameEx, "w" )) == NULL )
 		//	{
 		//		//::MessageBox(NULL, "Failed to open Extra LOG file", "Notice", 0x10000);
-		//		MYTRACE("logging")(_T("\t\t\t FAILED TO OPEN EXTRA LOG FILE: %s"), fNameEx);
+		//		MYTRACE("logging")(MT::Level::LEVEL_INFO, _T("\t\t\t FAILED TO OPEN EXTRA LOG FILE: %s"), fNameEx);
 		//		bRes2 = false;
 		//	}
 		//	else
 		//	{
-		//		MYTRACE("logging")(_T("\t\t Extra Log file opened"));
+		//		MYTRACE("logging")(MT::Level::LEVEL_INFO, _T("\t\t Extra Log file opened"));
 		//		bRes2 = true;
 		//	}
 		//	return (bRes1 && bRes2);
@@ -158,14 +156,14 @@ namespace MT
 		{
 			if(pLOG_FILE_ERRORS != NULL)	// close extra log file
 			{
-				MYTRACE("logging")(_T("\t\t Extra Log file closed"));
+				MYTRACE("logging")(MT::LEVEL_INFO, _T("\t\t Extra Log file closed"));
 				fflush(pLOG_FILE_ERRORS);
 				fclose(pLOG_FILE_ERRORS);
 				pLOG_FILE_ERRORS = NULL;
 			}
 			if(pLOG_FILE != NULL)	// close main log file
 			{
-				MYTRACE("logging")(_T("\n\t\t*** Log Finished at %s ***"), CTime(time(NULL)).Format("%c"));
+				MYTRACE("logging")(MT::LEVEL_INFO, _T("\n\t\t*** Log Finished at %s ***"), CTime(time(NULL)).Format("%c"));
 				fflush(pLOG_FILE);
 				fclose(pLOG_FILE);
 				pLOG_FILE = NULL;
