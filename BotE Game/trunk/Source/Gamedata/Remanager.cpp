@@ -162,8 +162,10 @@ void CReManager::CalcExploreEvent(const CPoint &ko, CMajor *pRace, CArray<CShip,
 	{
 		for(int i=0;i<ships->GetSize();i++)
 		{
-			if(pDoc->GetShip(i).GetOwnerOfShip()==pRace->GetRaceID()&&pDoc->GetShip(i).GetKO()==ko)
-				ships->GetAt(i).SetCrewExperiance(4000);
+			if(pDoc->GetShip(i).GetOwnerOfShip()==pRace->GetRaceID()&&pDoc->GetShip(i).GetKO()==ko)  {
+				const int additional_experience = rand() % 401 + 50;
+				ships->GetAt(i).SetCrewExperiance(additional_experience);
+			}
 
 		}
 		messagetext=CResourceManager::GetString("EVENTSHIPXP",false,pDoc->GetSector(ko).GetName(true));
