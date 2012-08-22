@@ -49,22 +49,23 @@ namespace MT
 //#define MYTRACE_INIT_EX(x, y)	MT::CMyTrace::InitEx((x), (y));
 #define MYTRACE_LEVEL(x)		MT::CMyTrace::SetLevel(x);
 #define MYTRACE_DEINIT			MT::CMyTrace::Deinit();
-#define MYTRACE(domain)	MT::CMyTrace(__FILE__, __LINE__, domain)
+#define MYTRACE(domain)			MT::CMyTrace(__FILE__, __LINE__, domain)
+#define MYTRACE_CHECKED(domain)	MT::CMyTrace(__FILE__, __LINE__, domain, false)
 
 	/* MyTrace class */
 	class CMyTrace
 	{
 	public:
-		CMyTrace(const char *pszFileName, int nLineNo, const std::string& domain)
+		CMyTrace(const char *pszFileName, int nLineNo, const std::string& domain, const bool domain_needs_check = true)
 			: m_pszFileName(pszFileName), m_nLineNo(nLineNo),
-			m_callTime(time(NULL)), m_sDomain(domain)
+			m_callTime(time(NULL)), m_sDomain(domain), m_bStillToCheck(domain_needs_check)
 		{
 		}
 
 		/* Add trace messge to log with desired severity level */
 		void __cdecl operator()(UINT nLevel, LPCTSTR pszFmt, ...) const
 		{
-			if (!IsLoggingEnabledFor(m_sDomain))
+			if (m_bStillToCheck && !IsLoggingEnabledFor(m_sDomain))
 				return;
 			va_list ptr; va_start(ptr, pszFmt);
 			if((nLevel <= (UINT)traceLevel))
@@ -91,7 +92,7 @@ namespace MT
 		/* Add trace messge to log with default INFO severity level */
 //		void __cdecl operator()( LPCTSTR pszFmt, ...) const
 //		{
-//			if (!IsLoggingEnabledFor(m_sDomain))
+//			if (m_bStillToCheck && !IsLoggingEnabledFor(m_sDomain))
 //				return;
 //			va_list ptr; va_start(ptr, pszFmt);
 //			CString strFormat(pszFmt);
@@ -251,6 +252,7 @@ namespace MT
 		static std::set<const std::string> m_Domains; //allowed (or muted) groups of MYTRACE calls
 		static bool m_bActiveDomains;//should the m_Domains be exactly the ones which are muted (false)
 		//or be the only ones that speak (true) ?
+		const bool m_bStillToCheck;//has the domain of this MYTRACE call already been checked whether it should speak ?
 	};
 
 	__declspec( selectany ) FILE *CMyTrace::pLOG_FILE = NULL;

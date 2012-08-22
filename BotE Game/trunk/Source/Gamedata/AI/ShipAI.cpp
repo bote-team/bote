@@ -379,11 +379,11 @@ bool CShipAI::DoAttackMove(CShip* pShip, const CMajor* pMajor)
 				pShip->SetTargetKO(m_AttackSector[sRace], 0);
 				if(MT::CMyTrace::IsLoggingEnabledFor("shipai"))
 				{
-					MYTRACE("shipai")(MT::LEVEL_INFO, "Race %s: GLOBAL ATTACK in sector: %d/%d\n",sRace,m_AttackSector[sRace].x,m_AttackSector[sRace].y);
-					MYTRACE("shipai")(MT::LEVEL_INFO, "Ship: %s\n",pShip->GetShipName());
-					MYTRACE("shipai")(MT::LEVEL_INFO, "OnlyDangerFromShips: %d in Sector: %d/%d\n",nOurDanger,pShip->GetKO().x,pShip->GetKO().y);
-					MYTRACE("shipai")(MT::LEVEL_INFO, "CompleteDangerInTargetSector: %d\n",nEnemyDanger);
-					MYTRACE("shipai")(MT::LEVEL_INFO, "Our Complete Danger overall: %d\n",(m_pSectorAI->GetCompleteDanger(sRace) * 100 / (rand()%16+75)));
+					MYTRACE_CHECKED("shipai")(MT::LEVEL_INFO, "Race %s: GLOBAL ATTACK in sector: %d/%d\n",sRace,m_AttackSector[sRace].x,m_AttackSector[sRace].y);
+					MYTRACE_CHECKED("shipai")(MT::LEVEL_INFO, "Ship: %s\n",pShip->GetShipName());
+					MYTRACE_CHECKED("shipai")(MT::LEVEL_INFO, "OnlyDangerFromShips: %d in Sector: %d/%d\n",nOurDanger,pShip->GetKO().x,pShip->GetKO().y);
+					MYTRACE_CHECKED("shipai")(MT::LEVEL_INFO, "CompleteDangerInTargetSector: %d\n",nEnemyDanger);
+					MYTRACE_CHECKED("shipai")(MT::LEVEL_INFO, "Our Complete Danger overall: %d\n",(m_pSectorAI->GetCompleteDanger(sRace) * 100 / (rand()%16+75)));
 				}
 				return true;
 			}

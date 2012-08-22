@@ -1454,7 +1454,7 @@ void CGalaxyMenuView::GenerateGalaxyMap()
 	if(MT::CMyTrace::IsLoggingEnabledFor("graphicload")) {
 		for (int i = 0; i < 7; i++)
 			if (!stars[i] || stars[i]->GetLastStatus() != Ok)
-				MYTRACE("graphicload")(MT::LEVEL_WARNING, "CGalaxyMenuView::GenerateGalaxy(): Could not load a star graphic");
+				MYTRACE_CHECKED("graphicload")(MT::LEVEL_WARNING, "CGalaxyMenuView::GenerateGalaxy(): Could not load a star graphic");
 	}
 
 	map<CString, Bitmap*> ownerMark;

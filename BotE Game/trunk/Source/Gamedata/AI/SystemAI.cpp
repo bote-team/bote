@@ -570,9 +570,9 @@ int CSystemAI::ChooseShip(int prio, BOOLEAN chooseCombatship, BOOLEAN chooseColo
 		c_arraysort<CArray<SHIPLIST>, SHIPLIST> (ships, sort_desc);
 		if(MT::CMyTrace::IsLoggingEnabledFor("ai"))
 		{
-			MYTRACE("ai")(MT::LEVEL_INFO, "CSystemAI::ChooseShip(): build combatship in system: %s\n", m_pDoc->m_Sectors.at(m_KO.x+(m_KO.y)*STARMAP_SECTORS_HCOUNT).GetName());
+			MYTRACE_CHECKED("ai")(MT::LEVEL_INFO, "CSystemAI::ChooseShip(): build combatship in system: %s\n", m_pDoc->m_Sectors.at(m_KO.x+(m_KO.y)*STARMAP_SECTORS_HCOUNT).GetName());
 			for (int i = 0; i < ships.GetSize(); i++)
-				MYTRACE("ai")(MT::LEVEL_INFO, "CSystemAI::ChooseShip(): buildable combatships %s - ID: %d - Power: %d\n", m_pDoc->m_ShipInfoArray[ships.GetAt(i).id - 10000].GetShipClass(),
+				MYTRACE_CHECKED("ai")(MT::LEVEL_INFO, "CSystemAI::ChooseShip(): buildable combatships %s - ID: %d - Power: %d\n", m_pDoc->m_ShipInfoArray[ships.GetAt(i).id - 10000].GetShipClass(),
 					ships.GetAt(i).id-10000, ships.GetAt(i).strenght);
 		}
 		// zu 75% wird versucht das stärkste Schiff zu bauen
