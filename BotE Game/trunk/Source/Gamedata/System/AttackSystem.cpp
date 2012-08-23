@@ -290,10 +290,11 @@ void CAttackSystem::CalculateBombAttack()
 		// können. Diese auch offline schalten und dann die Sache nochmal berechnen.
 		if (m_pSystem->GetOwnerOfSystem() != "" && m_pDefender != NULL && m_pDefender->GetType() == MAJOR)
 		{
-			CResearchInfo* pInfo = ((CMajor*)m_pDefender)->GetEmpire()->GetResearch()->GetResearchInfo();
-			m_pSystem->CalculateVariables(m_pBuildingInfos, pInfo, m_pSector->GetPlanets(), ((CMajor*)m_pDefender), m_sMonopolOwner);
+			CMajor* pMajor = dynamic_cast<CMajor*>(m_pDefender);
+			CResearchInfo* pInfo = pMajor->GetEmpire()->GetResearch()->GetResearchInfo();
+			m_pSystem->CalculateVariables(m_pBuildingInfos, pInfo, m_pSector->GetPlanets(), pMajor, m_sMonopolOwner);
 			m_pSystem->CheckEnergyBuildings(m_pBuildingInfos);
-			m_pSystem->CalculateVariables(m_pBuildingInfos, pInfo, m_pSector->GetPlanets(), ((CMajor*)m_pDefender), m_sMonopolOwner);
+			m_pSystem->CalculateVariables(m_pBuildingInfos, pInfo, m_pSector->GetPlanets(), pMajor, m_sMonopolOwner);
 		}
 
 		if (m_iDestroyedBuildings != 0)
@@ -427,10 +428,11 @@ void CAttackSystem::CalculateTroopAttack()
 		m_pSystem->SetHabitants(m_pSector->GetCurrentHabitants());
 		if (m_pSystem->GetOwnerOfSystem() != "" && m_pDefender != NULL && m_pDefender->GetType() == MAJOR)
 		{
-			CResearchInfo* pInfo = ((CMajor*)m_pDefender)->GetEmpire()->GetResearch()->GetResearchInfo();
-			m_pSystem->CalculateVariables(m_pBuildingInfos, pInfo, m_pSector->GetPlanets(), ((CMajor*)m_pDefender), m_sMonopolOwner);
+			CMajor* pMajor = dynamic_cast<CMajor*>(m_pDefender);
+			CResearchInfo* pInfo = pMajor->GetEmpire()->GetResearch()->GetResearchInfo();
+			m_pSystem->CalculateVariables(m_pBuildingInfos, pInfo, m_pSector->GetPlanets(), pMajor, m_sMonopolOwner);
 			m_pSystem->CheckEnergyBuildings(m_pBuildingInfos);
-			m_pSystem->CalculateVariables(m_pBuildingInfos, pInfo, m_pSector->GetPlanets(), ((CMajor*)m_pDefender), m_sMonopolOwner);
+			m_pSystem->CalculateVariables(m_pBuildingInfos, pInfo, m_pSector->GetPlanets(), pMajor, m_sMonopolOwner);
 		}
 	}
 
