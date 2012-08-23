@@ -57,10 +57,15 @@ void CIntelInfo::CalcIntelInfo(CBotf2Doc* pDoc, CMajor* pOurRace)
 			// Sektoren und Systeme ermitteln
 			switch (intelObj->GetType())
 			{
-			case 0:	ko = ((CEcoIntelObj*)intelObj)->GetKO(); break;
-			case 1:	ko = ((CScienceIntelObj*)intelObj)->GetKO(); break;
-			case 2:	if (((CMilitaryIntelObj*)intelObj)->GetIsBuilding())
-						ko = ((CMilitaryIntelObj*)intelObj)->GetKO(); break;
+			case 0:	ko = dynamic_cast<CEcoIntelObj*>(intelObj)->GetKO(); break;
+			case 1:	ko = dynamic_cast<CScienceIntelObj*>(intelObj)->GetKO(); break;
+			case 2:
+			{
+				CMilitaryIntelObj* miobj = dynamic_cast<CMilitaryIntelObj*>(intelObj);
+				if (miobj->GetIsBuilding())
+					ko = miobj->GetKO();
+				break;
+			}
 			}
 			if (ko != CPoint(-1,-1))
 			{
@@ -80,7 +85,7 @@ void CIntelInfo::CalcIntelInfo(CBotf2Doc* pDoc, CMajor* pOurRace)
 			// Minors überprüfen
 			if (intelObj->GetType() == 3)		// also Diplomatieintelobjekt
 			{
-				ko = ((CDiplomacyIntelObj*)intelObj)->GetMinorRaceKO();
+				ko = dynamic_cast<CDiplomacyIntelObj*>(intelObj)->GetMinorRaceKO();
 				if (ko != CPoint(-1,-1))
 					if (races[ko.x][ko.y][intelObj->GetEnemy()] < 2)
 					{
@@ -88,7 +93,7 @@ void CIntelInfo::CalcIntelInfo(CBotf2Doc* pDoc, CMajor* pOurRace)
 						CMinor* pMinor = pDoc->GetRaceCtrl()->GetMinorRace(pDoc->m_Sectors.at(ko.x+(ko.y)*STARMAP_SECTORS_HCOUNT).GetName());
 						if (pMinor != NULL)
 						{
-							if (((CDiplomacyIntelObj*)intelObj)->GetAgreement() == DIPLOMATIC_AGREEMENT::MEMBERSHIP)
+							if (dynamic_cast<CDiplomacyIntelObj*>(intelObj)->GetAgreement() == DIPLOMATIC_AGREEMENT::MEMBERSHIP)
 								races[ko.x][ko.y][intelObj->GetEnemy()] = 2;
 							else
 								races[ko.x][ko.y][intelObj->GetEnemy()] = 1;
