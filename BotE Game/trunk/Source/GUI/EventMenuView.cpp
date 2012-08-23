@@ -62,7 +62,7 @@ void CEventMenuView::OnDraw(CDC* dc)
 
 	if (pMajor->GetEmpire()->GetEventMessages()->GetSize())
 	{
-		CEventScreen* eventScreen = (CEventScreen*)pMajor->GetEmpire()->GetEventMessages()->GetAt(0);
+		CEventScreen* eventScreen = dynamic_cast<CEventScreen*>(pMajor->GetEmpire()->GetEventMessages()->GetAt(0));
 		eventScreen->Create();
 		eventScreen->Draw(&g, pDoc->GetGraphicPool());
 	}
@@ -130,7 +130,7 @@ void CEventMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 
 	if (pMajor->GetEmpire()->GetEventMessages()->GetSize())
 	{
-		CEventScreen* eventScreen = (CEventScreen*)pMajor->GetEmpire()->GetEventMessages()->GetAt(0);
+		CEventScreen* eventScreen = dynamic_cast<CEventScreen*>(pMajor->GetEmpire()->GetEventMessages()->GetAt(0));
 		CalcLogicalPoint(point);
 		int counter = -1;
 		ButtonReactOnLeftClick(point, eventScreen->GetButtons(), counter);
@@ -158,7 +158,7 @@ void CEventMenuView::OnMouseMove(UINT nFlags, CPoint point)
 
 	if (pMajor->GetEmpire()->GetEventMessages()->GetSize())
 	{
-		CEventScreen* eventScreen = (CEventScreen*)pMajor->GetEmpire()->GetEventMessages()->GetAt(0);
+		CEventScreen* eventScreen = dynamic_cast<CEventScreen*>(pMajor->GetEmpire()->GetEventMessages()->GetAt(0));
 		CalcLogicalPoint(point);
 		ButtonReactOnMouseOver(point, eventScreen->GetButtons());
 	}
@@ -182,7 +182,7 @@ void CEventMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 	if (nChar == VK_RETURN || nChar == VK_ESCAPE)
 		if (pMajor->GetEmpire()->GetEventMessages()->GetSize())
 		{
-			CEventScreen* eventScreen = (CEventScreen*)pMajor->GetEmpire()->GetEventMessages()->GetAt(0);
+			CEventScreen* eventScreen = dynamic_cast<CEventScreen*>(pMajor->GetEmpire()->GetEventMessages()->GetAt(0));
 			CloseScreen(eventScreen);
 		}
 
@@ -243,7 +243,7 @@ CString CEventMenuView::CreateTooltip(void)
 		ScreenToClient(&pt);
 		CalcLogicalPoint(pt);
 
-		CEventScreen* eventScreen = (CEventScreen*)pMajor->GetEmpire()->GetEventMessages()->GetAt(0);
+		CEventScreen* eventScreen = dynamic_cast<CEventScreen*>(pMajor->GetEmpire()->GetEventMessages()->GetAt(0));
 		return eventScreen->GetTooltip(pt);
 	}
 
