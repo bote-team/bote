@@ -57,9 +57,9 @@ void CRaceController::Serialize(CArchive &ar)
 		for (map<CString, CRace*>::const_iterator it = m_mRaces.begin(); it != m_mRaces.end(); ++it)
 		{
 			if (it->second->GetType() == MAJOR)
-				m_mMajors[it->first] = (CMajor*)it->second;
+				m_mMajors[it->first] = dynamic_cast<CMajor*>(it->second);
 			else if (it->second->GetType() == MINOR)
-				m_mMinors[it->first] = (CMinor*)it->second;
+				m_mMinors[it->first] = dynamic_cast<CMinor*>(it->second);
 		}
 	}
 }
@@ -83,9 +83,9 @@ bool CRaceController::Init(int nSource/* = RACESOURCE_DATAFILE*/)
 	for (map<CString, CRace*>::const_iterator it = m_mRaces.begin(); it != m_mRaces.end(); ++it)
 	{
 		if (it->second->GetType() == MAJOR)
-			m_mMajors[it->first] = (CMajor*)it->second;
+			m_mMajors[it->first] = dynamic_cast<CMajor*>(it->second);
 		else if (it->second->GetType() == MINOR)
-			m_mMinors[it->first] = (CMinor*)it->second;
+			m_mMinors[it->first] = dynamic_cast<CMinor*>(it->second);
 	}
 
 	// Startbeziehungen initialisieren
@@ -152,9 +152,9 @@ void CRaceController::RemoveRace(const CString& sRaceID)
 	for (map<CString, CRace*>::const_iterator it = m_mRaces.begin(); it != m_mRaces.end(); ++it)
 	{
 		if (it->second->GetType() == MAJOR)
-			m_mMajors[it->first] = (CMajor*)it->second;
+			m_mMajors[it->first] = dynamic_cast<CMajor*>(it->second);
 		else if (it->second->GetType() == MINOR)
-			m_mMinors[it->first] = (CMinor*)it->second;
+			m_mMinors[it->first] = dynamic_cast<CMinor*>(it->second);
 	}
 }
 
