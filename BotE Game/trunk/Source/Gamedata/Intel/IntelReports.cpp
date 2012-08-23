@@ -82,10 +82,10 @@ void CIntelReports::CreateAttemptObject(CIntelObject* spyReport)
 	BYTE type = spyReport->GetType();
 	switch (type)
 	{
-	case 0: m_pAttemptObject = new CEcoIntelObj(*(CEcoIntelObj*)spyReport); break;
-	case 1: m_pAttemptObject = new CScienceIntelObj(*(CScienceIntelObj*)spyReport); break;
-	case 2: m_pAttemptObject = new CMilitaryIntelObj(*(CMilitaryIntelObj*)spyReport); break;
-	case 3: m_pAttemptObject = new CDiplomacyIntelObj(*(CDiplomacyIntelObj*)spyReport); break;
+	case 0: m_pAttemptObject = new CEcoIntelObj(*dynamic_cast<CEcoIntelObj*>(spyReport)); break;
+	case 1: m_pAttemptObject = new CScienceIntelObj(*dynamic_cast<CScienceIntelObj*>(spyReport)); break;
+	case 2: m_pAttemptObject = new CMilitaryIntelObj(*dynamic_cast<CMilitaryIntelObj*>(spyReport)); break;
+	case 3: m_pAttemptObject = new CDiplomacyIntelObj(*dynamic_cast<CDiplomacyIntelObj*>(spyReport)); break;
 	}
 }
 
