@@ -26,7 +26,7 @@ Kurz nach ihrer Gründung gab die Terranische Konföderation eine neue, revolution
 400
 0
 0
-1
+2
 1
 20
 1
@@ -34,7 +34,7 @@ Kurz nach ihrer Gründung gab die Terranische Konföderation eine neue, revolution
 50
 0
 0
-15
+16
 0
 0
 
@@ -811,7 +811,7 @@ Die Chilmark-Kreuzer sind die ersten echten Kreuzer der Konföderation. Sie sind 
 3000
 2
 0
-1
+2
 1
 60
 1
@@ -819,7 +819,7 @@ Die Chilmark-Kreuzer sind die ersten echten Kreuzer der Konföderation. Sie sind 
 200
 0
 0
-60
+61
 1
 0
 
@@ -5135,6 +5135,70 @@ Pulse Disruptor Cannon
 60
 $END_OF_SHIPDATA$
 3
+Demon II
+Mit der Demon II-Klasse wurde die Demon-Klasse stark verbessert und der unehrenhafte Nachteil der Diablo-Klasse beseitigt. 
+6
+2
+7
+11
+11
+11
+12
+12
+12
+150
+0
+0
+0
+0
+0
+8
+
+740
+0
+0
+0
+0
+3300
+7
+0
+4
+2
+80
+2
+4
+0
+0
+0
+39
+8
+0
+Demon
+$Torpedo$
+10
+1
+100
+1
+EMP Original Tube
+0
+50
+0
+60
+$Beam$
+7
+13
+4
+Pulse Disruptor Cannon
+0
+0
+10
+1
+14
+3
+0
+60
+$END_OF_SHIPDATA$
+3
 Destiny
 Das Standard-Kolonieschiff der Khayrin erlaubt dem Imperium neuen Siedlungsraum und neue Rohstoffquellen zu erschließen, obwohl wahre Krieger es vorziehen, diese in glorreichen Kämpfen ihren Feinden zu entreißen. Gemäß der khayrinischen Art ist dieses eigentlich zivile Schiff mit einem Disruptor bewaffnet.
 1
@@ -5872,7 +5936,7 @@ Disruptor Cannon
 $END_OF_SHIPDATA$
 3
 Punishment
-Die Punishment Klasse Transportschiffe können unsere Krieger schneller und tiefer in feindliches Gebiet tranportieren. Sie sind zwar etwas teurer, doch dies nehmen wir gern in Kauf.
+Die Punishment Klasse Transportschiffe können unsere Krieger schneller und tiefer in feindliches Gebiet transportieren. Sie sind zwar etwas teurer, doch dies nehmen wir gern in Kauf.
 0
 1
 2
@@ -6717,7 +6781,7 @@ Ein frühes rotharianisches Modell eines kleinen, wendigen Kampfschiffes, das vor
 1500
 0
 0
-1
+2
 1
 40
 1
@@ -10797,7 +10861,7 @@ Der Jäger der Resch-Klasse ist ein verbessertes Schiffsdesign mit Bezügen zum Da
 500
 0
 0
-1
+2
 1
 40
 1
@@ -10805,7 +10869,7 @@ Der Jäger der Resch-Klasse ist ein verbessertes Schiffsdesign mit Bezügen zum Da
 0
 0
 0
-39
+40
 6
 0
 
@@ -10861,7 +10925,7 @@ Das Schlachtschiff der Da'unor ist ein früher, schwer bewaffneter Schlachtschiff
 3000
 2
 0
-1
+2
 1
 60
 1
@@ -11748,7 +11812,7 @@ Azora
 6000
 8
 1
-1
+2
 1
 60
 1
@@ -11756,7 +11820,7 @@ Azora
 52000
 0
 6
-465
+469
 4
 6
 Lemmeth
@@ -12768,7 +12832,7 @@ Hazet
 2000
 3
 0
-1
+2
 0
 20
 0
@@ -12776,7 +12840,7 @@ Hazet
 0
 0
 0
-71
+72
 1
 0
 
@@ -13253,7 +13317,7 @@ Karorr
 2000
 2
 0
-1
+2
 0
 60
 1
@@ -13261,7 +13325,7 @@ Karorr
 0
 0
 0
-100
+101
 1
 0
 
@@ -13482,7 +13546,7 @@ Leva
 1900
 3
 0
-1
+2
 1
 50
 0
@@ -13490,7 +13554,7 @@ Leva
 0
 0
 0
-43
+44
 0
 0
 
@@ -14846,7 +14910,7 @@ Sevar
 6700
 8
 1
-1
+2
 1
 100
 1
@@ -14854,7 +14918,7 @@ Sevar
 0
 0
 0
-204
+206
 3
 0
 
@@ -15802,7 +15866,7 @@ Vawdor
 1000
 1
 0
-1
+2
 1
 60
 0
@@ -15810,7 +15874,7 @@ Vawdor
 0
 0
 0
-23
+24
 0
 0
 
