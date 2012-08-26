@@ -69,7 +69,7 @@ CBitmap* CGraphicPool::GetGraphic(const CString &name)
 	// Grafik laden
 	if (!img->Load(fileName))
 	{
-		TRACE_GRAPHICLOAD(MT::LEVEL_WARNING, "Could not load graphic: %s\n", fileName);
+		//deactivated - too much false errors: TRACE_GRAPHICLOAD(MT::LEVEL_WARNING, "Could not load graphic: %s\n", fileName);
 		delete img;
 		img = NULL;
 		return NULL;
@@ -109,7 +109,7 @@ Bitmap* CGraphicPool::GetGDIGraphic(const CString &name)
 	// Grafik laden
 	if (img->GetLastStatus() != Ok)
 	{
-		TRACE_GRAPHICLOAD(MT::LEVEL_WARNING, "Could not load graphic: %s\n", fileName);
+		//deactivated - too much false errors: TRACE_GRAPHICLOAD(MT::LEVEL_WARNING, "Could not load graphic: %s\n", fileName);
 		delete img;
 		img = NULL;
 		return NULL;

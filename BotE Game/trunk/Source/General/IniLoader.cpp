@@ -27,7 +27,7 @@ CIniLoader::CIniLoader(void)
 		// Werte schreiben
 		WriteValue("General", "AUTOSAVE", "ON");
 		WriteValue("General", "USERNAME", "");
-		WriteValue("General", "DIFFICULTY", "EASY");
+		WriteValue("General", "DIFFICULTY", "BABY");
 
 		WriteValue("Audio", "HARDWARESOUND", "ON");
 		WriteValue("Audio", "SOUND", "ON");
@@ -53,11 +53,11 @@ CIniLoader::CIniLoader(void)
 		WriteValue("Special", "MAPSIZEH", "30");
 
 		WriteValue("Victory_Conditions", "Elimination", "ON");
-		WriteValue("Victory_Conditions", "Diplomacy", "ON");
-		WriteValue("Victory_Conditions", "Conquest", "ON");
-		WriteValue("Victory_Conditions", "Research", "ON");
-		WriteValue("Victory_Conditions", "Combat", "ON");
-		WriteValue("Victory_Conditions", "Sabotage", "ON");
+		WriteValue("Victory_Conditions", "Diplomacy", "OFF");
+		WriteValue("Victory_Conditions", "Conquest", "OFF");
+		WriteValue("Victory_Conditions", "Research", "OFF");
+		WriteValue("Victory_Conditions", "Combat", "OFF");
+		WriteValue("Victory_Conditions", "Sabotage", "OFF");
 	}
 }
 

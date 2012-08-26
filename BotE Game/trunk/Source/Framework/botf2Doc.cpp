@@ -68,7 +68,7 @@ CBotf2Doc::CBotf2Doc() :
 	m_bGameOver(false),
 	m_bNewGame(true),
 	m_bRoundEndPressed(false),
-	m_fDifficultyLevel(0.75f),
+	m_fDifficultyLevel(1.0f),
 	m_fStardate(121000.0f),
 	m_iNumberOfFleetShip(-1),
 	m_iNumberOfTheShipInFleet(-1),
@@ -239,7 +239,7 @@ void CBotf2Doc::Serialize(CArchive& ar)
 		// ZU ERLEDIGEN: Hier Code zum Speichern einfügen
 		ar << m_iRound;
 		ar << m_fStardate;
-		MYTRACE("general")(MT::LEVEL_INFO, "Stardate: %f", m_fStardate);
+		//not here...MYTRACE("general")(MT::LEVEL_INFO, "Stardate: %f", m_fStardate);
 		ar << m_ptKO;
 		ar << STARMAP_SECTORS_HCOUNT;
 		ar << STARMAP_SECTORS_VCOUNT;
@@ -751,9 +751,9 @@ void CBotf2Doc::ResetIniSettings(void)
 	difficulty.MakeUpper();
 	MYTRACE("general")(MT::LEVEL_INFO, "DIFFICULTY: %s", difficulty);
 	if (difficulty == "BABY")
-		m_fDifficultyLevel			= 1.0f;
+		m_fDifficultyLevel			= 1.5f;
 	else if (difficulty == "EASY")
-		m_fDifficultyLevel			= 0.75f;
+		m_fDifficultyLevel			= 1.0f;
 	else if (difficulty == "NORMAL")
 		m_fDifficultyLevel			= 0.5f;
 	else if (difficulty == "HARD")
@@ -836,14 +836,14 @@ void CBotf2Doc::SetCurrentShipIndex(int NumberOfTheShipInArray)
 	m_NumberOfTheShipInArray = NumberOfTheShipInArray;
 	((CGalaxyMenuView*)GetMainFrame()->GetView(RUNTIME_CLASS(CGalaxyMenuView)))->SetNewShipPath();
 	CSmallInfoView::SetShip(&m_ShipArray.GetAt(NumberOfTheShipInArray));
-	MYTRACE("general")(MT::LEVEL_INFO, "m_NumberOfTheShipInArray: %i", m_NumberOfTheShipInArray);
+	//re-activation later...MYTRACE("general")(MT::LEVEL_INFO, "m_NumberOfTheShipInArray: %i", m_NumberOfTheShipInArray);
 }
 
 void CBotf2Doc::SetNumberOfFleetShip(int NumberOfFleetShip)
 {
 	m_iNumberOfFleetShip = NumberOfFleetShip;
 	CSmallInfoView::SetShip(&m_ShipArray.GetAt(NumberOfFleetShip));
-	MYTRACE("general")(MT::LEVEL_INFO, "m_iNumberOfFleetShip: %i", m_iNumberOfFleetShip);
+	//re-activation later...MYTRACE("general")(MT::LEVEL_INFO, "m_iNumberOfFleetShip: %i", m_iNumberOfFleetShip);
 
 }
 
@@ -1346,7 +1346,7 @@ void CBotf2Doc::NextRound()
 	// oder das erste Mal in diese Funktion gesprungen wurde.
 	if (bCombatInCurrentRound == false)
 	{
-		MYTRACE("general")(MT::LEVEL_INFO, "\nSTART NEXT ROUND (round: %d)\n", GetCurrentRound());
+		MYTRACE("general")(MT::LEVEL_INFO, "#### START NEXT ROUND (round: %d)####", GetCurrentRound());
 
 		// Seed initialisieren
 		int nSeed = -1;
@@ -7063,7 +7063,7 @@ BOOL CBotf2Doc::OnSaveDocument(LPCTSTR lpszPathName)
 	// komprimieren, in Datei schreiben
 	nSize = memFile.GetLength();
 	BYTE *lpBuf = memFile.Detach();
-        MYTRACE("general")(MT::LEVEL_INFO, "rainer-Test", lpszPathName);
+        //MYTRACE("general")(MT::LEVEL_INFO, "rainer-Test", lpszPathName);
 	if (!BotE_LzmaCompress(lpBuf, nSize, file))
 	{
 		MYTRACE("general")(MT::LEVEL_ERROR, "savegame: error during compression\n");
