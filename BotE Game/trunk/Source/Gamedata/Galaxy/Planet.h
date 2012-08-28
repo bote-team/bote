@@ -79,6 +79,7 @@ public:
 	BYTE GetNeededTerraformPoints() const {return m_iNeededTerraformPoints;}
 	BYTE GetStartdTerraformPoints() const {return m_iStartTerraformPoints;}
 	const BOOLEAN* GetBoni() const {return m_bBoni;}
+	bool HasIndividualGraphic() const { return m_bHasIndividualGraphic; }
 
 	/// Funktion gibt einen Dateinamen für die Planetengrafik zurück. Dieser wird automatisch aus der Nummer der
 	/// Grafik und der Planetenklasse generiert.
@@ -99,6 +100,7 @@ public:
 	BOOLEAN SetNeededTerraformPoints(const unsigned sub);				// Subtrahiert "sub" von den Terraformpoints, bei kleiner 0 wird der Plani auf m_bTerraformed = TRUE gesetzt
 	void SetBoni(BOOLEAN titan, BOOLEAN deuterium, BOOLEAN duranium, BOOLEAN crystal, BOOLEAN iridium, BOOLEAN deritium, BOOLEAN food, BOOLEAN energy);
 	void SetBoni(BYTE res, BOOLEAN is) {m_bBoni[res] = is;}
+	void SetHasIndividualGraphic(const bool has) { m_bHasIndividualGraphic = has; }
 
 	/// Funktion setzt die Nummer für das Graphikfile des Planeten.
 	/// @param n Nummer der Grafik
@@ -142,6 +144,7 @@ private:
 	// Attribute
 	PLANT_SIZE::Typ m_iSize;		///< Größe das Planeten, siehe ENUM dazu
 	BYTE m_iGraphicType;			///< Grafiknummer des Planeten
+	bool m_bHasIndividualGraphic;	///<Besitzt der Planet eine besondere Graphik die wir versuchen sollten zu laden; typischerweise (nur ?) Majorheimatsysteme.
 	BYTE m_iType;					///< Typ des Planeten
 	float m_dMaxHabitant;			///< maximale Anzahl der Bewohner
 	float m_dCurrentHabitant;		///< aktuelle Anzahl der Bewohner

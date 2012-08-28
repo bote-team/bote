@@ -108,7 +108,8 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 		{
 			// gibt es eine spezielle Grafik für den Planeten, so wird versucht diese zu laden
 			Bitmap* planet = NULL;
-			planet = pDoc->GetGraphicPool()->GetGDIGraphic("Planets\\" + m_pPlanet->GetPlanetName()+".bop");
+			if(m_pPlanet->HasIndividualGraphic())
+				planet = pDoc->GetGraphicPool()->GetGDIGraphic("Planets\\" + m_pPlanet->GetPlanetName()+".bop");
 			// ansonsten wird die zufällige Planetengrafik geladen
 			if (planet == NULL)
 				planet = pDoc->GetGraphicPool()->GetGDIGraphic(m_pPlanet->GetGraphicFile());

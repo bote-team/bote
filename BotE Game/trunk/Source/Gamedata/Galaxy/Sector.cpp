@@ -469,6 +469,7 @@ void CSector::CreatePlanets(const CString& sMajorID)
 						planet.SetGraphicType(rand()%GRAPHICNUMBER);
 						planet.SetBoni(atoi(data[9]),atoi(data[10]),atoi(data[11]),atoi(data[12]),atoi(data[13]),atoi(data[14]),atoi(data[15]),atoi(data[16]));//Boni 8 Zeilen
 						planet.SetStartTerraformPoints(atoi(data[17]));//Terraformpoints
+						planet.SetHasIndividualGraphic(true);
 						m_Planets.push_back(planet);
 					}
 				}

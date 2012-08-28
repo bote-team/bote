@@ -44,6 +44,7 @@ CPlanet::CPlanet(const CPlanet & rhs)
 	m_iGraphicType = rhs.m_iGraphicType;
 	m_iNeededTerraformPoints = rhs.m_iNeededTerraformPoints;
 	m_iStartTerraformPoints = rhs.m_iStartTerraformPoints;
+	m_bHasIndividualGraphic = rhs.m_bHasIndividualGraphic;
 	for (int i = 0; i < 8; i++)
 		m_bBoni[i] = rhs.m_bBoni[i];
 }
@@ -97,6 +98,7 @@ void CPlanet::Serialize(CArchive &ar)
 		ar << m_iGraphicType;
 		ar << m_iNeededTerraformPoints;
 		ar << m_iStartTerraformPoints;
+		ar << m_bHasIndividualGraphic;
 		for (int i = 0; i < 8; i++)
 			ar << m_bBoni[i];
 	}
@@ -119,6 +121,7 @@ void CPlanet::Serialize(CArchive &ar)
 		ar >> m_iGraphicType;
 		ar >> m_iNeededTerraformPoints;
 		ar >> m_iStartTerraformPoints;
+		ar >> m_bHasIndividualGraphic;
 		for (int i = 0; i < 8; i++)
 			ar >> m_bBoni[i];
 	}
@@ -358,7 +361,8 @@ void CPlanet::DrawPlanet(Graphics &g, const CRect& rect, CGraphicPool* graphicPo
 	ASSERT(graphicPool);
 
 	Bitmap* planet = NULL;
-	planet = graphicPool->GetGDIGraphic("Planets\\" + m_strName + ".bop");
+	if(m_bHasIndividualGraphic)
+		planet = graphicPool->GetGDIGraphic("Planets\\" + m_strName + ".bop");
 
 	// Konnte keine spezielle Planetengrafik gefunden werden, so wird eine zufällige Grafik ausgewählt
 	if (planet == NULL)
@@ -585,6 +589,7 @@ void CPlanet::Reset(void)
 	m_iGraphicType = 0;
 	m_iNeededTerraformPoints = 0;
 	m_iStartTerraformPoints = 0;
+	m_bHasIndividualGraphic = false;
 	for (int i = 0; i < 8; i++)
 		m_bBoni[i] = FALSE;
 }
