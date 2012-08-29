@@ -462,4 +462,5 @@ namespace MT
 }
 
 // Projektspezifische Defines
+//The SEE_ALL_OF_MAP define has been replaced by the --see-all command line parameter.
 //#define SAVE_GALAXYIMAGE		// speichert Bild der Galaxie aus sicht der gespielten Major im Ordner Bote/Screenshots
