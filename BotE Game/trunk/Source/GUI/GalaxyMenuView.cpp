@@ -994,10 +994,9 @@ void CGalaxyMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 	{
 		// angeklickten Sektor ermitteln
 		struct::Sector sector = pMajor->GetStarmap()->GetClickedSector(pt);
+		const CCommandLineParameters* const clp = dynamic_cast<CBotf2App*>(AfxGetApp())->GetCommandLineParameters();
 		if (PT_IN_RECT(sector, 0, 0, STARMAP_SECTORS_HCOUNT, STARMAP_SECTORS_VCOUNT) &&
-#ifndef SEE_ALL_OF_MAP
-			pDoc->GetSystem(sector.x, sector.y).GetOwnerOfSystem() == pMajor->GetRaceID() &&
-#endif
+			(clp->SeeAllOfMap() || pDoc->GetSystem(sector.x, sector.y).GetOwnerOfSystem() == pMajor->GetRaceID()) &&
 			pDoc->GetSector(sector.x, sector.y).GetSunSystem() == TRUE)
 			{
 				// falls ein Schiff markiert war wird dieses abgewählt

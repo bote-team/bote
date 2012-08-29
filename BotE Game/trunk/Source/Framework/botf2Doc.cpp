@@ -968,13 +968,14 @@ void CBotf2Doc::PrepareData()
 		}
 
 		// ALPHA6 DEBUG alle Rassen untereinander bekanntgeben
-#ifdef SEE_ALL_OF_MAP
-		map<CString, CRace*>* pmRaces = m_pRaceCtrl->GetRaces();
-		for (map<CString, CRace*>::iterator it = pmRaces->begin(); it != pmRaces->end(); it++)
-			for (map<CString, CRace*>::const_iterator jt = pmRaces->begin(); jt != pmRaces->end(); jt++)
-				if (it->first != jt->first && it->second->GetType() == MAJOR && jt->second->GetType() == MAJOR)
-					it->second->SetIsRaceContacted(jt->first, true);
-#endif
+		const CCommandLineParameters* const clp = dynamic_cast<CBotf2App*>(AfxGetApp())->GetCommandLineParameters();
+		if(clp->SeeAllOfMap()) {
+			map<CString, CRace*>* pmRaces = m_pRaceCtrl->GetRaces();
+			for (map<CString, CRace*>::iterator it = pmRaces->begin(); it != pmRaces->end(); it++)
+				for (map<CString, CRace*>::const_iterator jt = pmRaces->begin(); jt != pmRaces->end(); jt++)
+					if (it->first != jt->first && it->second->GetType() == MAJOR && jt->second->GetType() == MAJOR)
+						it->second->SetIsRaceContacted(jt->first, true);
+		}
 
 		m_iRound = 1;
 

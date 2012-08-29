@@ -14,6 +14,7 @@ private:
 	//passed in the cmd line such as "graphicload"
 	bool m_bActiveDomains;//should the m_LogDomains be exactly the ones which are muted (false)
 	//or be the only ones that speak (true) ?
+	bool m_bSeeAllOfMap; //true: komplette Map und alle Majorrassen sind sichtbar
 
 	void ParseLogDomainParamArgs(const std::string& args);
 
@@ -35,6 +36,9 @@ public:
 	}
 	const bool ActiveDomains() const {
 		return m_bActiveDomains;
+	}
+	const bool SeeAllOfMap() const {
+		return m_bSeeAllOfMap;
 	}
 
 	//called for each parameter passed in the comand line

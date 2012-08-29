@@ -5,7 +5,8 @@ CCommandLineParameters::CCommandLineParameters(void) :
 	m_nLogLevel(MT::LEVEL_INFO),
 	m_sLogDir(""),
 	m_LogDomains(),
-	m_bActiveDomains(true)
+	m_bActiveDomains(true),
+	m_bSeeAllOfMap(false)
 {
 }
 
@@ -70,5 +71,11 @@ void CCommandLineParameters::ParseParam(const char* pszParam, BOOL /*bFlag*/, BO
 			m_bActiveDomains = true;
 		else
 			m_bActiveDomains = false;
+	}
+	else if(strcmp(parameter.c_str(), "-see-all") == 0) {
+		if(strcmp(args.c_str(), "no") == 0 || strcmp(args.c_str(), "false") == 0)
+			m_bSeeAllOfMap = false;
+		else
+			m_bSeeAllOfMap = true;
 	}
 }

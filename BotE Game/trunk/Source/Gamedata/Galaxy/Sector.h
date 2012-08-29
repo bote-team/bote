@@ -15,6 +15,9 @@
 #include <set>
 #include <vector>
 
+#include "CommandLineParameters.h"
+#include "botf2.h"
+
 using namespace std;
 
 // forward declaration
@@ -89,9 +92,10 @@ public:
 	/// <code>Race</code> gescannt wurde.
 	BOOLEAN GetScanned(const CString& sRace)
 	{
-#ifdef SEE_ALL_OF_MAP
-		return true;
-#endif
+		const CCommandLineParameters* const clp = dynamic_cast<CBotf2App*>(AfxGetApp())->GetCommandLineParameters();
+		if(clp->SeeAllOfMap())
+			return true;
+
 		map<CString, BYTE>::const_iterator it = m_byStatus.find(sRace);
 		if (it != m_byStatus.end())
 			return it->second >= 1;
@@ -103,9 +107,10 @@ public:
 	/// Majorrace <code>Race</code> bekannt ist.
 	BOOLEAN GetKnown(const CString& sRace)
 	{
-#ifdef SEE_ALL_OF_MAP
-		return true;
-#endif
+		const CCommandLineParameters* const clp = dynamic_cast<CBotf2App*>(AfxGetApp())->GetCommandLineParameters();
+		if(clp->SeeAllOfMap())
+			return true;
+
 		map<CString, BYTE>::const_iterator it = m_byStatus.find(sRace);
 		if (it != m_byStatus.end())
 			return it->second >= 2;
@@ -117,9 +122,10 @@ public:
 	/// den kompletten Sektor (inkl. der Planeten) kennt.
 	BOOLEAN GetFullKnown(const CString& sRace)
 	{
-#ifdef SEE_ALL_OF_MAP
-		return true;
-#endif
+		const CCommandLineParameters* const clp = dynamic_cast<CBotf2App*>(AfxGetApp())->GetCommandLineParameters();
+		if(clp->SeeAllOfMap())
+			return true;
+
 		map<CString, BYTE>::const_iterator it = m_byStatus.find(sRace);
 		if (it != m_byStatus.end())
 			return it->second >= 3;
@@ -183,9 +189,10 @@ public:
 	/// Diese Funktion gibt die Scanpower zurück, die die Majorrace <code>Race</code> in diesem Sektor hat.
 	short GetScanPower(const CString& sRace)
 	{
-#ifdef SEE_ALL_OF_MAP
-		return 200;
-#endif
+		const CCommandLineParameters* const clp = dynamic_cast<CBotf2App*>(AfxGetApp())->GetCommandLineParameters();
+		if(clp->SeeAllOfMap())
+			return 200;
+
 		map<CString, short>::const_iterator it = m_iScanPower.find(sRace);
 		if (it != m_iScanPower.end())
 			return it->second;
