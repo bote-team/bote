@@ -1197,19 +1197,21 @@ void CBotf2Doc::GenerateGalaxy()
 
 	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 	{
-		CMajor* pMajor = it->second;
-		CPoint raceKO = GetRaceKO(it->first);
+		CMajor const* const pMajor = it->second;
+		const CPoint& raceKO = GetRaceKO(it->first);
+		CSector& sector = GetSector(raceKO);
+		CSystem& system = GetSystem(raceKO);
 
-		m_Sectors.at(raceKO.x+(raceKO.y)*STARMAP_SECTORS_HCOUNT).SetSectorsName(pMajor->GetHomesystemName());
-		m_Sectors.at(raceKO.x+(raceKO.y)*STARMAP_SECTORS_HCOUNT).SetSunSystem(TRUE);
-		m_Sectors.at(raceKO.x+(raceKO.y)*STARMAP_SECTORS_HCOUNT).SetFullKnown(it->first);
-		m_Sectors.at(raceKO.x+(raceKO.y)*STARMAP_SECTORS_HCOUNT).SetOwned(TRUE);
-		m_Sectors.at(raceKO.x+(raceKO.y)*STARMAP_SECTORS_HCOUNT).SetOwnerOfSector(it->first);
-		m_Sectors.at(raceKO.x+(raceKO.y)*STARMAP_SECTORS_HCOUNT).SetColonyOwner(it->first);
-		m_Sectors.at(raceKO.x+(raceKO.y)*STARMAP_SECTORS_HCOUNT).CreatePlanets(it->first);
-		m_Systems.at(raceKO.x+(raceKO.y)*STARMAP_SECTORS_HCOUNT).SetOwnerOfSystem(it->first);
-		m_Systems.at(raceKO.x+(raceKO.y)*STARMAP_SECTORS_HCOUNT).SetResourceStore(TITAN, 1000);
-		m_Systems.at(raceKO.x+(raceKO.y)*STARMAP_SECTORS_HCOUNT).SetResourceStore(DERITIUM, 3);
+		sector.SetSectorsName(pMajor->GetHomesystemName());
+		sector.SetSunSystem(TRUE);
+		sector.SetFullKnown(it->first);
+		sector.SetOwned(TRUE);
+		sector.SetOwnerOfSector(it->first);
+		sector.SetColonyOwner(it->first);
+		sector.CreatePlanets(it->first);
+		system.SetOwnerOfSystem(it->first);
+		system.SetResourceStore(TITAN, 1000);
+		system.SetResourceStore(DERITIUM, 3);
 
 		// Zwei Sonnensysteme in unmittelbarer Umgebung des Heimatsystems anlegen
 		BYTE nextSunSystems = 0;
