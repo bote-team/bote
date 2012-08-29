@@ -480,9 +480,8 @@ void CShip::AdoptOrdersFrom(const CShip& ship, const bool also_flagship_transpor
 		if (GetTargetKO() != tko)
 			SetTargetKO(tko,0,true);
 
-		// wenn geterraformt werden soll den Terraformingplaneten neu setzen
-		if (order_to_adopt == SHIP_ORDER::TERRAFORM)
-			SetTerraformingPlanet(ship.GetTerraformingPlanet());
+		//den Terraformingplaneten neu setzen
+		SetTerraformingPlanet(ship.GetTerraformingPlanet());
 }
 
 void CShip::AddShipToFleet(CShip& ship)
