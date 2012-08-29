@@ -4262,13 +4262,31 @@ static void CheckShipTargetCoordinates(const CShip& ship)
 	}
 }
 
-static void CheckFleetTargetCoordinates(const CShip& ship)
+static void SanityCheckShip(const CShip& ship)
 {
 	CheckShipTargetCoordinates(ship);
+
+	const CPoint& co = ship.GetKO();
+	if(ship.GetTerraformingPlanet() != -1 && ship.GetCurrentOrder() != SHIP_ORDER::TERRAFORM)
+	{
+		CString s;
+		s.Format("The %s from %s at (%u, %u) has m_nTerraformingPlanet %i set but current order is %s. This is a bug, please report.",
+			ship.GetShipName(),
+			ship.GetOwnerOfShip(),
+			co.x, co.y,
+			ship.GetTerraformingPlanet(),
+			ship.GetCurrentOrderAsString());
+		MYTRACE("general")(MT::LEVEL_WARNING, s);
+	}
+}
+
+static void SanityCheckFleet(const CShip& ship)
+{
+	SanityCheckShip(ship);
 	if(ship.GetFleet() != NULL) {
 		CFleet const* const fleet = ship.GetFleet();
 		for(unsigned i = 0; i < fleet->GetFleetSize(); ++i) {
-			CheckShipTargetCoordinates(*fleet->GetShipFromFleet(i));
+			SanityCheckShip(*fleet->GetShipFromFleet(i));
 		}
 	}
 }
@@ -4283,7 +4301,8 @@ void CBotf2Doc::CalcShipOrders()
 	// Hier kommt die Auswertung der Schiffsbefehle
 	for (int y = 0; y < m_ShipArray.GetSize(); y++)
 	{
-		CheckFleetTargetCoordinates(m_ShipArray.GetAt(y));
+		SanityCheckFleet(m_ShipArray.GetAt(y));
+
 		// Hier wird überprüft, ob der Systemattack-Befehl noch gültig ist
 		// Alle Schiffe, welche einen Systemangriffsbefehl haben überprüfen, ob dieser Befehl noch gültig ist
 		CSector* pSector = &GetSector(m_ShipArray[y].GetKO()); 
