@@ -149,8 +149,6 @@
    obj:/media/sf_HDI3_SOURCE_NTFS/BotE_git_trunc/game/GdiPlus.dll
    obj:/media/sf_HDI3_SOURCE_NTFS/BotE_git_trunc/game/GdiPlus.dll
    obj:/media/sf_HDI3_SOURCE_NTFS/BotE_git_trunc/game/GdiPlus.dll
-   obj:/media/sf_HDI3_SOURCE_NTFS/BotE_git_trunc/game/GdiPlus.dll
-   obj:/media/sf_HDI3_SOURCE_NTFS/BotE_git_trunc/game/GdiPlus.dll
 }
 
 ###########################################################################
