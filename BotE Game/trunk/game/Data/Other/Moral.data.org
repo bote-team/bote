@@ -1,6 +1,6 @@
-#0	Eliminate an Empire:								10	15	20	17	18	15
-#1	Win a Major Battle:									3	3	5	4	2	3
-#2	Win a Significant Battle:							2	2	4	3	2	2
+#0	Eliminate an Empire:								50	50	50	50	50	50
+#1	Win a Major Battle:									5	5	7	6	4	5
+#2	Win a Significant Battle:							3	3	5	4	2	2
 #3	Win a Minor Battle:									1	1	2	1	1	1
 #4	Lose a Major Battle:								-7	-7	-13	-11	-6	-7
 #5	Lose a Significant Battle:							-7	-6	-10	-9	-4	-5
@@ -8,8 +8,8 @@
 #7	Lose a Flagship:									-10	-9	-13	-10	-8	-8
 #8	Lose an Outpost:									-3	-5	-1	-4	-1	-1
 #9	Lose a Starbase: 									-4	-5	-2	-5	-2	-2
-#10	Sign a Membership treaty with Minor:				8	4	2	3	3	4
-#11	Take a System:										-4	2	5	3	4	4
+#10	Sign a Membership treaty with Minor:				12	6	6	6	4	4
+#11	Take a System:										-8	2	10	4	8	8
 #12	Colonize a System:									3	3	4	4	2	3
 #13	Liberate a Minor Race System:						20	1	-1	2	-5	-5
 #14	Liberate a Former Native System:					9	5	6	10	5	4
@@ -17,10 +17,10 @@
 #16	Lose a Member System to Outside Forces:				-10	-10	-10	-10	-7	-10
 #17	Lose a Subjugated System to Outside Forces: 		-5	-7	-10	-10	-7	-10
 #18	Lose a System to Rebellion:							-15	-10	-10	-15	-5	-10
-#19	Bombard a System:									-3	-1	3	2	2	1
+#19	Bombard a System:									-5	-2	6	4	4	2
 #20	Bombard native system that has Rebelled:			-7	-2	5	3	5	5
-#21	Eliminate a Minor Race Entirely:					-10	-7	2	-2	2	3
-#22	Suffer bombardment of System:						-1	-2	-1	-1	-2	-1
+#21	Eliminate a Minor Race Entirely:					-20	-15	2	-4	4	5
+#22	Suffer bombardment of System:						-1	-2	1	-1	2	-1
 #23	Suffer 50% pop loss in Home Sys. Bombardment:		-10	-10	-10	-10	-10	-10
 #24	Declare War on an Empire when Neutral:				-5	1	7	1	3	3
 #25	Declare War on an Empire when Non-Aggression:		-6	0	6	1	3	2
@@ -32,22 +32,22 @@
 #31	Other Empire Declares War when Neutral:				5	2	2	5	3	1
 #32	Other Empire Declares War with Treaty:				7	4	4	6	4	1
 #33	Other Empire Declares War with an Affiliation:		10	8	7	8	6	2
-#34	Sign Trade Treaty:									2	4	0	1	1	-2
-#35	Sign Friendship/Cooperation Treaty:					3	2	1	3	2	-3
-#36	Sign an Affiliation Treaty:							5	4	4	4	3	1
-#37	Receive Acceptance of Non-Aggression Pact:			2	1	-2	0	-1	-2
-#38	Accept a Non-Aggression Pact:						2	1	-3	-1	-2	-4
-#39	Receive Acceptance of Defence Pact:					3	2	-6	1	-2	-4
-#40	Accept a Defence Pact:								3	2	-8	-2	-4	-6
-#41	Receive Acceptance of War Pact:						-2	3	6	3	4	2
+#34	Sign Trade Treaty:									3	5	0	2	1	-3
+#35	Sign Friendship/Cooperation Treaty:					5	3	1	4	2	-6
+#36	Sign an Affiliation Treaty:							8	5	5	5	4	4
+#37	Receive Acceptance of Non-Aggression Pact:			2	1	-3	0	-1	-4
+#38	Accept a Non-Aggression Pact:						2	1	-4	-1	-2	-4
+#39	Receive Acceptance of Defence Pact:					5	2	-6	1	-2	-8
+#40	Accept a Defence Pact:								5	2	-8	-2	-4	-8
+#41	Receive Acceptance of War Pact:						-2	3	8	3	4	2
 #42	Accept a War Pact:									-6	1	6	2	4	2
-#43	Refuse a Treaty (Trade):							-2	-5	0	-1	-1	-2
-#44	Refuse a Treaty (Friendship, Coop):					-3	-3	-1	-1	-2	-2
-#45	Refuse a Treaty (Affiliation):						-5	-4	-3	-2	-2	-4
-#46	Refuse a Treaty (Non_Aggression, Defence Pact):		-3	-2	-2	-2	-3	-2
-#47	Refuse a Treaty (Warpact):							3	0	-5	-1	-2	-2
-#48	Accept a Request:									-2	-5	-4	-2	-4	-5
-#49	Refuse a Request:									1	2	2	1	1	1
+#43	Refuse a Treaty (Trade):							-3	-5	0	1	-1	3
+#44	Refuse a Treaty (Friendship, Coop):					-5	-2	1	2	-2	5
+#45	Refuse a Treaty (Affiliation):						-10	-4	2	4	-4	10
+#46	Refuse a Treaty (Non_Aggression, Defence Pact):		-5	-2	6	2	0	5
+#47	Refuse a Treaty (Warpact):							5	0	-10	0	-2	0
+#48	Accept a Request:									0	-5	-4	-2	-1	-3
+#49	Refuse a Request:									0	2	2	0	0	1
 #50	Receive Acceptance of a Request:					1	5	4	1	1	1
 #51	Accept Surrender:									-50	-50	-50	-50	-50	-50
 #52	Receive a Surrender:								20	20	20	20	20	10
@@ -57,5 +57,5 @@
 #56	Refuse a System's Request for Independence:			-4	2	2	2	5	2
 #57	Repel a Borg/Droid Attack:							10	6	6	12	8	3
 #58	Lose population of system to natural event:			-2	-2	-2	-2	-2	-1
-#59 Successful espionage:								0	0	0	1	1	2
-#60 Successful sabotage:								0	0	-1	2	2	1
+#59 Successful espionage:								0	0	0	2	2	4
+#60 Successful sabotage:								0	0	-1	5	5	2

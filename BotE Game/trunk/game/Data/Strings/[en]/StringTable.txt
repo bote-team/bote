@@ -1969,7 +1969,7 @@ Upkeep
 Public support
 
 [RESEARCHEVENT_HEADLINE]
-New technology achieved
+New technology researched
 
 [RESEARCHEVENT_NEWBUILDINGS]
 new buildings
@@ -2332,9 +2332,9 @@ Demographic Changes
 [SYSTEMEVENTPLANETDEMOGRAPHICLONG]
 Through miscalculations the mortality rate in § is much higher than planned. Population is shrinking
 [BREAKTHROUGH]
-Breakthrough
+Success
 [GLOBALEVENTRESEARCH]
-Through new research methods scientist briefly doubled their effectiveness
+Through a research success scientist briefly doubled their output
 [GLOBALEVENTMINOR]
 Change of government at the people of §
 [ALIENTECHEADLINE]
@@ -2344,7 +2344,7 @@ In sector § an extremely interesting alien technology was discovered
 [ALIENTECLONG]
 In sector § alien technology has been discovered which promotes our research in all areas
 [GLOBALEVENTRESEARCH]
-Your scientists are working very eficently
+Your scientists are working very efficently
 [GLOBALEVENTMINOR]
 The gouvernment of the § changes
 [ALIENTEC]

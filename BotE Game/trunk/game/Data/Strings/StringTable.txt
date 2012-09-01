@@ -1977,7 +1977,7 @@ Unterhalt
 Unterstützung
 
 [RESEARCHEVENT_HEADLINE]
-Neue Technologie entdeckt
+Neue Technologie erforscht
 
 [RESEARCHEVENT_NEWBUILDINGS]
 neue Gebäude
@@ -2340,9 +2340,9 @@ Demografischer Wandel
 [SYSTEMEVENTPLANETDEMOGRAPHICLONG]
 Durch Fehlkalkulationen ist die Sterberate auf § sehr viel höher als geplant, wodurch die Bevölkerung schrumpft
 [BREAKTHROUGH]
-Durchbruch
+Erfolg
 [GLOBALEVENTRESEARCH]
-Durch neue Forschungs-Methoden verdoppelten eure Wissenschaftler kurzzeitig ihre Effektivität
+Durch einen Forschungserfolg verdoppelten eure Wissenschaftler kurzzeitig ihre Ergebnisse
 [GLOBALEVENTMINOR]
 Regierungswechsel bei den §
 [ALIENTECHEADLINE]
