@@ -888,11 +888,16 @@ void CBotf2Doc::LoadViewGraphics(void)
 	// ab jetzt müssen keine neuen Grafiken mehr geladen werden
 	m_bNewGame = false;
 
-	// zum Schluss die Galxieview auswählen (nicht eher, da gibts manchmal Probleme beim Scrollen ganz nach rechts)
-	GetMainFrame()->SelectMainView(GALAXY_VIEW, pPlayersRace->GetRaceID());
-
 	// Views ihre Arbeit zu Beginn jeder neuen Runde machen lassen
 	DoViewWorkOnNewRound();
+
+	network::RACE client = m_pRaceCtrl->GetMappedClientID(pPlayersRace->GetRaceID());
+	// wenn neues Spiel gestartet wurde, dann initial auf die Galaxiekarte stellen
+	if (m_iSelectedView[client] == 0)
+	{
+		// zum Schluss die Galxieview auswählen (nicht eher, da gibts manchmal Probleme beim Scrollen ganz nach rechts)
+		GetMainFrame()->SelectMainView(GALAXY_VIEW, pPlayersRace->GetRaceID());
+	}
 }
 
 void CBotf2Doc::DoViewWorkOnNewRound()
