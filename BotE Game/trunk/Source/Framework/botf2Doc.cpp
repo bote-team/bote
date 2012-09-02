@@ -243,6 +243,8 @@ void CBotf2Doc::Serialize(CArchive& ar)
 		ar << m_ptKO;
 		ar << STARMAP_SECTORS_HCOUNT;
 		ar << STARMAP_SECTORS_VCOUNT;
+		// Zeitstempel
+		MYTRACE("logging")(MT::LEVEL_INFO, _T("Time: %s"), CTime(time(NULL)).Format("%c"));
 
 
 		// Hauptrassen-Koordinaten speichern
@@ -749,7 +751,7 @@ void CBotf2Doc::ResetIniSettings(void)
 	CString difficulty = "EASY";
 	pIni->ReadValue("General", "DIFFICULTY", difficulty);
 	difficulty.MakeUpper();
-	MYTRACE("general")(MT::LEVEL_INFO, "DIFFICULTY: %s", difficulty);
+	MYTRACE("general")(MT::LEVEL_INFO, "relevant only at new game: Bote.ini: DIFFICULTY: %s", difficulty);
 	if (difficulty == "BABY")
 		m_fDifficultyLevel			= 1.5f;
 	else if (difficulty == "EASY")
@@ -762,7 +764,7 @@ void CBotf2Doc::ResetIniSettings(void)
 		m_fDifficultyLevel			= 0.2f;
 	else
 		m_fDifficultyLevel			= 0.5f;
-	MYTRACE("general")(MT::LEVEL_INFO, "m_fDifficultyLevel: %f", m_fDifficultyLevel);
+	MYTRACE("general")(MT::LEVEL_INFO, "relevant only at new game: m_fDifficultyLevel: %f", m_fDifficultyLevel);
 
 
 	CSoundManager* pSoundManager = CSoundManager::GetInstance();
@@ -1196,9 +1198,9 @@ void CBotf2Doc::GenerateGalaxy()
 	CIniLoader::GetInstance()->ReadValue("Special", "STARDENSITY", nStarDensity);
 	CIniLoader::GetInstance()->ReadValue("Special", "MINORDENSITY", nMinorDensity);
 	CIniLoader::GetInstance()->ReadValue("Special", "ANOMALYDENSITY", nAnomalyDensity);
-	MYTRACE("general")(MT::LEVEL_INFO, "STARDENSITY: %i", nStarDensity);
-	MYTRACE("general")(MT::LEVEL_INFO, "MINORDENSITY: %i", nMinorDensity);
-	MYTRACE("general")(MT::LEVEL_INFO, "ANOMALYDENSITY: %i", nAnomalyDensity);
+	MYTRACE("general")(MT::LEVEL_INFO, "relevant only at new game: Bote.ini: STARDENSITY: %i", nStarDensity);
+	MYTRACE("general")(MT::LEVEL_INFO, "relevant only at new game: Bote.ini: MINORDENSITY: %i", nMinorDensity);
+	MYTRACE("general")(MT::LEVEL_INFO, "relevant only at new game: Bote.ini: ANOMALYDENSITY: %i", nAnomalyDensity);
 
 	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 	{
@@ -1354,7 +1356,7 @@ void CBotf2Doc::NextRound()
 	// oder das erste Mal in diese Funktion gesprungen wurde.
 	if (bCombatInCurrentRound == false)
 	{
-		MYTRACE("general")(MT::LEVEL_INFO, "#### START NEXT ROUND (round: %d)####", GetCurrentRound());
+		MYTRACE("general")(MT::LEVEL_INFO, "#### START NEXT ROUND (round: %d) ####", GetCurrentRound());
 
 		// Seed initialisieren
 		int nSeed = -1;
