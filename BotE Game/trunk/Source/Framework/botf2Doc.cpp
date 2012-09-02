@@ -888,11 +888,11 @@ void CBotf2Doc::LoadViewGraphics(void)
 	// ab jetzt müssen keine neuen Grafiken mehr geladen werden
 	m_bNewGame = false;
 
-	// Views ihre Arbeit zu Beginn jeder neuen Runde machen lassen
-	DoViewWorkOnNewRound();
-
 	// zum Schluss die Galxieview auswählen (nicht eher, da gibts manchmal Probleme beim Scrollen ganz nach rechts)
 	GetMainFrame()->SelectMainView(GALAXY_VIEW, pPlayersRace->GetRaceID());
+
+	// Views ihre Arbeit zu Beginn jeder neuen Runde machen lassen
+	DoViewWorkOnNewRound();
 }
 
 void CBotf2Doc::DoViewWorkOnNewRound()
@@ -1554,7 +1554,7 @@ void CBotf2Doc::NextRound()
 	m_sCombatSectors.clear();
 	m_bCombatCalc = false;
 
-	bool bAutoSave;
+	bool bAutoSave = false;
 	CIniLoader::GetInstance()->ReadValue("General", "AUTOSAVE", bAutoSave);
 	if (bAutoSave)
 		DoSave(CIOData::GetInstance()->GetAutoSavePath(m_iRound), FALSE);

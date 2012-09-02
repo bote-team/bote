@@ -414,7 +414,8 @@ HICON CPPDrawManager::StretchIcon(HICON hIcon, DWORD dwWidth, DWORD dwHeight)
 	BITMAP bmp;
 	HBITMAP hOldSrcBitmap = NULL;
 	HBITMAP hOldDestBitmap = NULL;
-	ICONINFO csOriginal, csStretched;
+	ICONINFO csOriginal = {0}; // Init the ICONINFO structure;
+	ICONINFO csStretched = {0}; // Init the ICONINFO structure;
 
 	if (!::GetIconInfo(hIcon, &csOriginal))
 		return FALSE;
