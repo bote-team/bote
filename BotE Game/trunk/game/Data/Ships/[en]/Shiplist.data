@@ -26,7 +26,7 @@ Shortly after the foundation of the Coalition of Planets, it was decided to comm
 400
 0
 0
-1
+2
 1
 20
 1
@@ -34,7 +34,7 @@ Shortly after the foundation of the Coalition of Planets, it was decided to comm
 50
 0
 0
-12
+16
 0
 0
 
@@ -147,7 +147,7 @@ The Agamemnon-class is a sheer monster among the ships of the Coalition of Plane
 800
 0
 0
-317
+305
 1
 2
 Firefly
@@ -224,7 +224,7 @@ After introduction to the fleet the Barracuda-class definitely counts as one of 
 100
 0
 0
-77
+93
 9
 0
 
@@ -301,7 +301,7 @@ The Belvedere-class is a highly modern spacecraft of the Coalion of Planets. It 
 120
 0
 0
-73
+60
 6
 0
 Peraine
@@ -378,7 +378,7 @@ The classification of the Benton-class is unknown. The ship is mainly a re-assem
 200
 0
 0
-24
+47
 7
 0
 AT
@@ -457,7 +457,7 @@ This improved colony ship class carries double the amount of colonists on board 
 4000
 1
 0
-1
+2
 1
 0
 0
@@ -465,7 +465,7 @@ This improved colony ship class carries double the amount of colonists on board 
 0
 2
 0
-26
+46
 0
 0
 Seraphine
@@ -498,7 +498,7 @@ The Chilmark-class is the first true cruiser of the Coalition and the most power
 3000
 2
 0
-1
+2
 1
 60
 1
@@ -506,7 +506,7 @@ The Chilmark-class is the first true cruiser of the Coalition and the most power
 200
 0
 0
-27
+61
 1
 0
 
@@ -622,7 +622,7 @@ The Duluth-class is the result of an ambitious development program at the Utopia
 1000
 0
 0
-136
+187
 3
 9
 Chilmark
@@ -699,7 +699,7 @@ Farscape-class explorers were brought into service as small, cheap research ship
 0
 0
 0
-8
+4
 9
 0
 
@@ -776,7 +776,7 @@ The Firefly-class is the little sister of the Duluth-class although it was desig
 900
 0
 0
-116
+145
 2
 1
 
@@ -863,7 +863,7 @@ The standard Coalition transporter. Small, efficient, reliable and well-suited f
 5000
 0
 1
-13
+9
 0
 0
 
@@ -904,7 +904,7 @@ The Hathaway-class is a sister ship of the Peraine-class. This ship type is buil
 100
 0
 0
-19
+46
 6
 7
 
@@ -1023,7 +1023,7 @@ The Ignition-class is the direct successor of the Hathaway-class. The mistakes m
 200
 0
 0
-32
+54
 2
 0
 Hathaway
@@ -1097,7 +1097,7 @@ This improved transporter can carry more troops and has better shields and bette
 7500
 0
 2
-28
+29
 0
 0
 Fox
@@ -1138,7 +1138,7 @@ Shortly after having forced the Ultima One project, newly-designed components we
 90
 0
 0
-42
+54
 9
 0
 Mole
@@ -1215,7 +1215,7 @@ The Matilda-class originally was an experimental prototype of more modern cruise
 300
 0
 0
-35
+86
 1
 0
 
@@ -1302,7 +1302,7 @@ The Mole-class is the direct successor of the Farscape-class. Their main task is
 20
 0
 0
-20
+43
 5
 0
 Farscape
@@ -1366,7 +1366,7 @@ The Montgomery-class is a bulky type of space ship that is equipped for scientif
 700
 0
 0
-86
+105
 3
 0
 Panslaight
@@ -1469,7 +1469,7 @@ This older Coalition outpost was commonly used as supply station in the early 22
 0
 0
 0
-13
+30
 0
 0
 
@@ -1582,7 +1582,7 @@ Outposts serve as fleet supply and carrier stations. This type is a light versio
 0
 0
 0
-76
+81
 6
 0
 
@@ -1695,7 +1695,7 @@ Outposts serve as fleet supply and carrier stations. This type is a medium versi
 0
 0
 0
-125
+180
 6
 0
 
@@ -1782,7 +1782,7 @@ The Panslaight-class is a modern cruiser of the Coalition. This class performs a
 100
 0
 0
-34
+60
 2
 0
 
@@ -1959,7 +1959,7 @@ The Peraine-class is a reliable ship design in duty since the end of the 22nd ce
 50
 0
 0
-13
+29
 6
 0
 
@@ -2033,7 +2033,7 @@ Peregrine-fighters are small attack vessels with few personnel yet relatively st
 0
 0
 0
-24
+23
 5
 0
 
@@ -2097,7 +2097,7 @@ This advanced class of colony ships can carry double the amount of colonists on 
 0
 3
 0
-49
+83
 0
 0
 Cherumir
@@ -2138,7 +2138,7 @@ The Seraphine is a conventional colony ship of the Coalition. Its main task is t
 0
 1
 0
-4
+6
 0
 0
 
@@ -2220,7 +2220,7 @@ A space dock with very powerful shields and large armament.
 0
 0
 0
-94
+109
 3
 0
 
@@ -2333,7 +2333,7 @@ The starbase is heavier armed than the original outpost. It also has better shie
 0
 0
 0
-184
+172
 3
 0
 
@@ -2420,7 +2420,7 @@ The starbase is heavier armed than the original outpost. It also has better shie
 0
 0
 0
-313
+526
 3
 0
 
@@ -2507,7 +2507,7 @@ This advanced transport ship carries more troops and has better shields and engi
 12500
 0
 3
-88
+68
 0
 0
 Lamprey
@@ -2548,7 +2548,7 @@ After the completion of the Ultima One project this ship type finally is availab
 800
 0
 0
-324
+304
 3
 1
 Matilda
@@ -2645,7 +2645,7 @@ In contrast to other ship classes of the Coalition, the Valkyrie-class was mainl
 50
 0
 0
-98
+127
 8
 0
 
@@ -2719,7 +2719,7 @@ The Wolf-class is replacing the not-so-old Benton-class. The prominent advantage
 200
 0
 0
-62
+76
 7
 0
 Benton
@@ -2870,7 +2870,7 @@ Baran-class scouts are small, lightly armed vessels designed to search the galax
 0
 0
 0
-13
+14
 9
 0
 Baran
@@ -2957,7 +2957,7 @@ Baran-class scouts are small, lightly armed vessels designed to search the galax
 0
 0
 0
-28
+39
 9
 0
 Baran II
@@ -3009,8 +3009,8 @@ Pulse Plasma Cannon
 90
 $END_OF_SHIPDATA$
 2
-G'Qora
-The G'Qora marauder is the most-renowned vessel in the Union's fleet. Only the best-connected commander can hope to be named its Qi'han. Its many weapons ensure that most opponents will capitulate, while the excellent shields guarantee any escape.
+Garor
+The Garor marauder is the most-renowned vessel in the Union's fleet. Only the best-connected commander can hope to be named its Qi'han. Its many weapons ensure that most opponents will capitulate, while the excellent shields guarantee any escape.
 10
 3
 1
@@ -3044,7 +3044,7 @@ The G'Qora marauder is the most-renowned vessel in the Union's fleet. Only the b
 400
 0
 0
-62
+65
 3
 1
 
@@ -3131,7 +3131,7 @@ Glantor-class transports are designed to follow combat vessels into enemy territ
 4000
 0
 1
-4
+2
 0
 0
 
@@ -3172,7 +3172,7 @@ Glantor-class transports are designed to follow combat vessels into enemy territ
 7000
 0
 2
-10
+6
 0
 0
 Glantor
@@ -3213,7 +3213,7 @@ The Golon is designed for the optimal execution of the hit-and-run tactics which
 0
 0
 0
-15
+18
 8
 7
 Tok
@@ -3265,8 +3265,8 @@ Forced Plasma Bank
 110
 $END_OF_SHIPDATA$
 2
-Han'Quhr
-The Han'Quhr is the flagship of the Heyoun Trade Union and therefore the most advanced and dangerous ship in the fleet. Earlier concerns about the non-profitability of such monstrous and expensive ship classes were dismissed after several unfavorable battles against enemy large warships of this size and soon this gorgeous ship was born. All ship systems, especially the weapons are state-of-the art.
+HanQuhr
+The HanQuhr is the flagship of the Heyoun Trade Union and therefore the most advanced and dangerous ship in the fleet. Earlier concerns about the non-profitability of such monstrous and expensive ship classes were dismissed after several unfavorable battles against enemy large warships of this size and soon this gorgeous ship was born. All ship systems, especially the weapons are state-of-the art.
 11
 3
 1
@@ -3300,7 +3300,7 @@ The Han'Quhr is the flagship of the Heyoun Trade Union and therefore the most ad
 40
 0
 0
-111
+113
 3
 1
 
@@ -3400,7 +3400,7 @@ The Mgart is designed for optimal execution of the hit-and-run tactics which mak
 5
 0
 0
-6
+14
 7
 8
 
@@ -3487,7 +3487,7 @@ A small base inside an asteroid, which provides a relatively safe place from ene
 0
 0
 0
-8
+9
 0
 0
 
@@ -3574,7 +3574,7 @@ The orbital control station is a master piece of Heyoun engineering art and is c
 0
 0
 0
-193
+112
 3
 0
 
@@ -3661,7 +3661,7 @@ This orbital trade station coordinates freight traffic mainly and is only lightl
 0
 0
 0
-75
+48
 3
 0
 
@@ -3830,7 +3830,7 @@ Tirax-class colony ships are equipped with a wide variety of equipment for makin
 0
 3
 0
-9
+12
 0
 0
 Tirax II
@@ -3871,7 +3871,7 @@ The Tok is an early torpedo boat designed to attack light cruisers with their re
 0
 0
 0
-7
+12
 7
 0
 
@@ -3935,7 +3935,7 @@ A well-armed outpost to secure and supply our trade routes.
 0
 0
 0
-92
+53
 0
 0
 
@@ -4022,7 +4022,7 @@ The Union base is the pride of the Heyoun Trade Union. Here, all bigwigs of the 
 0
 0
 0
-270
+121
 3
 0
 
@@ -4109,7 +4109,7 @@ Originally drafted as a small short-range freighter, this ship was equipped with
 0
 0
 0
-4
+12
 6
 0
 
@@ -4186,7 +4186,7 @@ The Vooran is a typical average sized frigate common among many Heyoun traders. 
 20
 0
 0
-10
+18
 1
 0
 Vantor
@@ -4273,7 +4273,7 @@ The Wokatorn is the Union's best military raider, designed to protect the Trade 
 30
 0
 0
-19
+37
 8
 2
 
@@ -4360,7 +4360,7 @@ This ship was designed to defend Heyoun borders and was quite successful in enga
 20
 0
 0
-15
+32
 3
 0
 
@@ -4447,7 +4447,7 @@ The success of the Yirin-type frigate led to a significant improvement in design
 20
 0
 0
-42
+55
 6
 0
 Yirin
@@ -4534,7 +4534,7 @@ The heavy strike cruisers of the Annihilation-class mark a milestone in the Khao
 30
 0
 0
-138
+206
 1
 3
 Damnation
@@ -4624,7 +4624,7 @@ Starbases generally serve as fleet supply and carrier stations. They also posses
 0
 0
 0
-438
+339
 3
 0
 
@@ -4711,7 +4711,7 @@ Starbases generally serve as fleet supply and carrier stations. They also posses
 0
 0
 0
-139
+127
 3
 0
 
@@ -4798,7 +4798,7 @@ As the earliest type of a whole family of ships this ship is a common sight. Mai
 0
 0
 0
-12
+14
 5
 0
 
@@ -4862,7 +4862,7 @@ The Behemoth, a true giant on the battlefield, is the flagship of the Khaoron Im
 0
 0
 0
-494
+496
 3
 1
 
@@ -4952,7 +4952,7 @@ This small, very nimble and fast ship stems from the Battle Axe-series and serve
 0
 0
 0
-28
+46
 5
 8
 Battle Axe
@@ -5016,7 +5016,7 @@ An early heavy cruiser, that comprises of powerful armaments, reliable engines a
 10
 0
 0
-25
+81
 2
 6
 
@@ -5106,10 +5106,74 @@ An acceptable destroyer design with strong  impulse disruptors, higher maneuvrab
 0
 0
 0
-19
+31
 8
 0
 
+$Torpedo$
+10
+1
+100
+1
+EMP Original Tube
+0
+50
+0
+60
+$Beam$
+7
+13
+4
+Pulse Disruptor Cannon
+0
+0
+10
+1
+14
+3
+0
+60
+$END_OF_SHIPDATA$
+3
+Demon II
+Mit der Demon II-Klasse wurde die Demon-Klasse stark verbessert und der unehrenhafte Nachteil der Diablo-Klasse beseitigt. 
+6
+2
+7
+11
+11
+11
+12
+12
+12
+150
+0
+0
+0
+0
+0
+8
+
+740
+0
+0
+0
+0
+3300
+7
+0
+4
+2
+80
+2
+4
+0
+0
+0
+39
+8
+0
+Demon
 $Torpedo$
 10
 1
@@ -5170,7 +5234,7 @@ This Khaoron colony ship allows the Empire to expand new space and tap new resou
 0
 1
 0
-10
+15
 0
 0
 
@@ -5224,7 +5288,7 @@ As another model of the Battle Axe-series, the Diablo is designed for quick fora
 10
 0
 0
-36
+81
 6
 2
 Demon
@@ -5308,7 +5372,7 @@ Starbases generally serve as fleet supply and carrier stations. They also posses
 0
 0
 0
-259
+290
 3
 0
 
@@ -5395,7 +5459,7 @@ A cheap and common design, that was produced in large quantities. Downfalls have
 20
 0
 0
-43
+100
 1
 0
 Perdition
@@ -5472,7 +5536,7 @@ Cruisers of the Dungeon-class are extremely well-armed with their multitude of d
 0
 0
 0
-140
+176
 2
 7
 Downfall
@@ -5575,7 +5639,7 @@ Fear-class transporters carry freight or invasion troops through the Empire. Its
 5000
 0
 1
-18
+11
 0
 0
 
@@ -5629,7 +5693,7 @@ One of the most deadly warships around, the Leviathan gets close to a starbase i
 40
 0
 0
-344
+397
 3
 1
 
@@ -5742,7 +5806,7 @@ A fast and versatile fighter whose maneuvrability guarantees itself enough time 
 0
 0
 0
-89
+39
 8
 0
 Dagger
@@ -5816,7 +5880,7 @@ These early cruiser models characterize themselves through a moderate mix of spe
 20
 0
 0
-22
+36
 1
 7
 
@@ -5906,7 +5970,7 @@ The Punishment-class transporters can deliver our troops faster and deeper into 
 10000
 0
 2
-39
+52
 0
 0
 Fear
@@ -5973,7 +6037,7 @@ Outposts generally serve as fleet supply and carrier stations. They also possess
 0
 0
 0
-36
+49
 0
 0
 
@@ -6040,7 +6104,7 @@ The new Khaoron colony ship allows the Empire to expand new space and tap new re
 0
 2
 0
-19
+51
 0
 0
 Destiny
@@ -6107,7 +6171,7 @@ One of the few frigates in Khaoron service. The Warlord is a fast, nimble and re
 0
 0
 0
-91
+82
 7
 0
 
@@ -6171,7 +6235,7 @@ Outposts generally serve as fleet supply and carrier stations. They also possess
 0
 0
 0
-125
+105
 6
 0
 
@@ -6258,7 +6322,7 @@ A small base inside an asteroid, which provides a relatively safe place from ene
 0
 0
 0
-12
+94
 0
 0
 
@@ -6345,7 +6409,7 @@ In its tireless efforts to expand territorial borders, the Rotharian Star Networ
 0
 2
 0
-18
+23
 0
 0
 C'lypeus
@@ -6386,7 +6450,7 @@ In its tireless efforts to expand territorial borders, the Rotharian Star Networ
 0
 1
 0
-5
+11
 0
 0
 
@@ -6427,7 +6491,7 @@ In its tireless efforts to expand territorial borders, the Rotharian Star Networ
 0
 3
 0
-13
+16
 0
 0
 
@@ -6468,7 +6532,7 @@ The D'Corax is the flagship of the Rotharian Star Network and therefore is the m
 40
 0
 0
-256
+398
 3
 1
 
@@ -6571,7 +6635,7 @@ The D'Ocellus-class battle colossus is double the size of a Coalition Duluth-cla
 40
 0
 0
-133
+187
 3
 1
 
@@ -6661,7 +6725,7 @@ M'adomen-class fighters are extremely nimble ships that are best used in large s
 0
 0
 0
-48
+68
 5
 0
 M'etathaurax
@@ -6717,7 +6781,7 @@ An early Rotharian model of a small nimble fighting ship that is preferably used
 1500
 0
 0
-1
+2
 1
 40
 1
@@ -6725,7 +6789,7 @@ An early Rotharian model of a small nimble fighting ship that is preferably used
 0
 0
 0
-11
+24
 6
 0
 
@@ -6789,7 +6853,7 @@ The M'etathaurax-class is the successor of the M'esothirax-fighter. This small, 
 0
 0
 0
-16
+32
 5
 0
 M'esothirax
@@ -6853,7 +6917,7 @@ Starbases generally serve as fleet supply and carrier stations. They also posses
 0
 0
 0
-94
+96
 3
 0
 
@@ -6940,7 +7004,7 @@ Starbases generally serve as fleet supply and carrier stations. They also posses
 0
 0
 0
-220
+208
 3
 0
 
@@ -7091,7 +7155,7 @@ The replacement of the P'ratarsus-class features higher speed as well as better 
 0
 0
 0
-29
+30
 9
 0
 P'ratarsus
@@ -7155,7 +7219,7 @@ P'socodea-class scouts are extremely fast and very nimble ships that are perfect
 0
 0
 0
-70
+69
 9
 0
 P'rotharax
@@ -7219,7 +7283,7 @@ R'Acron cruisers are heavy assault ships that can fire devastating broadsides on
 20
 0
 0
-38
+56
 1
 0
 
@@ -7316,7 +7380,7 @@ The heavy cruisers of the R'Tibia-class are impressive warships with powerful sh
 30
 0
 0
-113
+128
 1
 0
 R'Acron
@@ -7413,7 +7477,7 @@ S'altatoria-class transporters are fast unarmed units with large cargo modules. 
 10000
 0
 2
-32
+37
 0
 0
 S'capus
@@ -7454,7 +7518,7 @@ S'capus-class transporters are slow unarmed units with very large cargo modules.
 5000
 0
 1
-14
+7
 0
 0
 
@@ -7495,7 +7559,7 @@ S'vistraea-class transporters are fast unarmed units with large cargo modules. T
 15000
 0
 3
-21
+27
 0
 0
 
@@ -7536,7 +7600,7 @@ Outposts generally serve as fleet supply and carrier stations. They also possess
 0
 0
 0
-115
+98
 6
 0
 
@@ -7623,7 +7687,7 @@ Starbases generally serve as fleet supply and carrier stations. They also posses
 0
 0
 0
-300
+449
 3
 0
 
@@ -7710,7 +7774,7 @@ Another model of the Rotharian battle colossus series. The V'Tarsomer is a nimbl
 20
 0
 0
-179
+155
 6
 0
 V'epipharyn
@@ -7797,7 +7861,7 @@ This early destroyer model was the backbone of the Rotharian fleet for a long ti
 5
 0
 0
-21
+39
 7
 8
 
@@ -7884,7 +7948,7 @@ The V'epipharyn-class is a predecessor of the infamous D'Corax class and has the
 20
 0
 0
-71
+101
 3
 0
 
@@ -7948,7 +8012,7 @@ This class of advanced, highly modern destroyers serves as the fast response shi
 10
 0
 0
-125
+104
 7
 8
 V'emur
@@ -8025,7 +8089,7 @@ Little extra-data is available on the Boris class besides its deadliness to slow
 120
 0
 0
-66
+61
 6
 0
 Juri
@@ -8166,7 +8230,7 @@ Starbases generally serve as fleet supply and carrier stations. They also posses
 0
 0
 0
-117
+104
 3
 0
 
@@ -8253,7 +8317,7 @@ Starbases generally serve as fleet supply and carrier stations. They also posses
 0
 0
 0
-245
+238
 3
 0
 
@@ -8340,7 +8404,7 @@ Starbases generally serve as fleet supply and carrier stations. They also posses
 0
 0
 0
-422
+304
 3
 0
 
@@ -8427,7 +8491,7 @@ Caroman-class transports are designed to follow combat vessels into enemy territ
 5500
 0
 1
-8
+7
 0
 0
 
@@ -8468,7 +8532,7 @@ Caroman-class transports are designed to follow combat vessels into enemy territ
 7000
 0
 2
-27
+28
 0
 0
 Caroman
@@ -8509,7 +8573,7 @@ Caroman-class transports are designed to follow combat vessels into enemy territ
 17000
 0
 3
-72
+78
 0
 0
 Caroman II
@@ -8550,7 +8614,7 @@ Carpawel-class colony ships are equipped with a wide variety of equipment for ma
 0
 1
 0
-5
+6
 0
 0
 
@@ -8591,7 +8655,7 @@ Carpawel-class colony ships are equipped with a wide variety of equipment for ma
 0
 3
 0
-55
+48
 0
 0
 Carpawel
@@ -8632,7 +8696,7 @@ The fearsome Chariton-class Dreadnought carries more weaponry than any vessel in
 40
 0
 0
-238
+320
 3
 1
 
@@ -8722,7 +8786,7 @@ The Echolot heavy cruiser is designed to spearhead offensive actions against har
 30
 0
 0
-92
+156
 1
 3
 Fjodor
@@ -8812,7 +8876,7 @@ The Fjodor-class cruiser is a true warship, designed specifically to engage and 
 10
 0
 0
-26
+56
 2
 6
 
@@ -8876,7 +8940,7 @@ The Grigori-class cruiser is a true warship, designed specifically to engage and
 700
 0
 0
-77
+98
 3
 0
 Semjon
@@ -8940,7 +9004,7 @@ Outposts generally serve as fleet supply and carrier stations. They also possess
 0
 0
 0
-3
+36
 0
 0
 
@@ -9007,7 +9071,7 @@ Outposts generally serve as fleet supply and carrier stations. They also possess
 0
 0
 0
-92
+109
 6
 0
 
@@ -9094,7 +9158,7 @@ The Jakow-class fighter is a swift combat vessel with more weapons than armor. I
 0
 0
 0
-58
+50
 5
 8
 Wassili
@@ -9158,7 +9222,7 @@ The Juri-class destroyer is a swift combat vessel with more weapons than armor. 
 0
 0
 0
-11
+25
 8
 0
 
@@ -9222,7 +9286,7 @@ The Konstantin is the pride of Cartare. Its armor is nearly inpenetrable. It is 
 0
 0
 0
-295
+418
 3
 1
 
@@ -9312,7 +9376,7 @@ The Leonid class is heavily armed and like the Boris class is unknown as far as 
 200
 0
 0
-52
+64
 2
 0
 
@@ -9376,7 +9440,7 @@ The Semjon-class heavy cruiser is a bulk and heavy ship deployed in the early ti
 100
 0
 0
-25
+59
 2
 0
 
@@ -9440,7 +9504,7 @@ The Wassili-class fighter is a swift combat vessel with more weapons than armor.
 0
 0
 0
-16
+33
 5
 8
 
@@ -9504,7 +9568,7 @@ This improvement to the Caranna-class type of ship is designed to explore deep s
 0
 0
 0
-29
+26
 9
 0
 Caranna
@@ -9568,7 +9632,7 @@ The Aleph is close to the Rok'Hanar heavy cruiser but is used more as a frigate 
 200
 0
 0
-27
+55
 7
 0
 
@@ -9632,7 +9696,7 @@ Beth-class transports are designed to follow combat vessels into enemy territory
 6000
 0
 1
-18
+9
 0
 0
 
@@ -9673,7 +9737,7 @@ These upgraded Beth-class transports have heavier shields and armor to increase 
 7500
 0
 2
-37
+44
 0
 0
 Beth
@@ -9714,7 +9778,7 @@ Chet-class colony ships are equipped with a wide variety of equipment for making
 0
 1
 0
-9
+6
 0
 0
 
@@ -9755,7 +9819,7 @@ The improved Chet-class colony ships are equipped with a wide variety of equipme
 0
 2
 0
-47
+54
 0
 0
 Chet
@@ -9796,7 +9860,7 @@ The heavy cruiser is the pride of the Alliance fleet. Armed to the teeth and equ
 500
 0
 0
-136
+283
 2
 0
 
@@ -9860,7 +9924,7 @@ The advanced and upgraded Strike Fighter now is equipped with even more powerful
 50
 0
 0
-142
+153
 8
 0
 
@@ -10193,7 +10257,7 @@ An outpost is a waystation for deep-space starships, intended to act as a resupp
 0
 0
 0
-15
+33
 0
 0
 
@@ -10257,7 +10321,7 @@ An outpost is a waystation for deep-space starships, intended to act as a resupp
 0
 0
 0
-76
+97
 6
 0
 
@@ -10344,7 +10408,7 @@ The latest outposts support a large number of heavy weapons. They are also more 
 0
 0
 0
-125
+217
 6
 0
 
@@ -10423,7 +10487,7 @@ The Resch class fighter is a slightly improved ship with regards to the Rok'Hana
 500
 0
 0
-1
+2
 1
 40
 1
@@ -10431,7 +10495,7 @@ The Resch class fighter is a slightly improved ship with regards to the Rok'Hana
 0
 0
 0
-13
+40
 6
 0
 
@@ -10495,7 +10559,7 @@ The Strike Fighter is a light and fast attack vessel designed for escort mission
 0
 0
 0
-10
+9
 5
 0
 
@@ -10549,7 +10613,7 @@ The new Rok'Hanar strike fighter has been outfitted with improved engines, incre
 0
 0
 0
-65
+104
 5
 0
 Rok'Hanar Fighter Magnum
@@ -10613,7 +10677,7 @@ The new Rok'Hanar strike fighter has been outfitted with improved engines, incre
 0
 0
 0
-28
+27
 5
 0
 Rok'Hanar Fighter
@@ -10677,7 +10741,7 @@ The advanced and upgraded Strike Fighter now is equipped with even more powerful
 0
 0
 0
-68
+92
 5
 0
 Rok'Hanar Fighter Extreme
@@ -10741,7 +10805,7 @@ The Rok'Hanar scout vessel is designed to investigate enemy space and determine 
 0
 0
 0
-42
+36
 9
 0
 
@@ -10805,7 +10869,7 @@ The Rok'Hanar long-range scout vessel is superb for investigating enemy deep spa
 90
 0
 0
-100
+83
 9
 0
 Rok'Hanar Scout
@@ -10861,7 +10925,7 @@ The Rok'Hanar Battleship is an early heavy-armed type of battleship that carries
 3000
 2
 0
-1
+2
 1
 60
 1
@@ -10869,7 +10933,7 @@ The Rok'Hanar Battleship is an early heavy-armed type of battleship that carries
 200
 0
 0
-49
+76
 1
 0
 
@@ -10933,7 +10997,7 @@ This medium class cruiser is a good asset in a standard command fleet. Moderatel
 300
 0
 0
-35
+111
 1
 0
 
@@ -10997,7 +11061,7 @@ A space dock with very powerful shields and large armament.
 0
 0
 0
-94
+139
 3
 0
 
@@ -11084,7 +11148,7 @@ The modern starbase supports a much larger battery of weapons than its precursor
 0
 0
 0
-184
+191
 3
 0
 
@@ -11171,7 +11235,7 @@ The new enhanced starbase is a huge space stations which defends key sectors and
 0
 0
 0
-313
+616
 3
 0
 
@@ -11258,7 +11322,7 @@ The improved heavy cruiser is equipped with stronger shields, phasers and torped
 900
 0
 0
-106
+206
 1
 0
 
@@ -11322,7 +11386,7 @@ The Vi class is the most advanced ship type in the fleet and preferrably used by
 800
 0
 0
-335
+441
 3
 1
 
@@ -11386,7 +11450,7 @@ Andromeda
 0
 0
 0
-20
+35
 3
 0
 
@@ -11802,7 +11866,7 @@ Azora
 6000
 8
 1
-1
+2
 1
 60
 1
@@ -11810,7 +11874,7 @@ Azora
 52000
 0
 6
-221
+469
 4
 6
 Lemmeth
@@ -11864,7 +11928,7 @@ Chewark
 400
 0
 0
-60
+84
 3
 1
 
@@ -11928,7 +11992,7 @@ Chewark
 300
 0
 0
-98
+122
 3
 1
 Chaw
@@ -11992,7 +12056,7 @@ Adamar
 0
 0
 0
-16
+46
 7
 5
 
@@ -12066,7 +12130,7 @@ Vulmar
 200
 0
 0
-69
+93
 2
 3
 
@@ -12184,7 +12248,7 @@ Zhordan
 0
 0
 0
-440
+338
 1
 2
 
@@ -12248,7 +12312,7 @@ Zhordan
 0
 0
 0
-48
+63
 8
 0
 
@@ -12312,7 +12376,7 @@ Tarokyte
 0
 0
 0
-13
+15
 0
 0
 
@@ -12474,7 +12538,7 @@ Taroko
 20
 0
 0
-60
+53
 0
 0
 
@@ -12561,7 +12625,7 @@ Taroko
 0
 0
 0
-38
+29
 0
 0
 
@@ -12638,7 +12702,7 @@ Herakles
 0
 2
 0
-15
+12
 0
 0
 
@@ -12692,7 +12756,7 @@ Herakles
 0
 0
 0
-77
+79
 2
 0
 
@@ -12756,7 +12820,7 @@ Hiro'akka
 45
 0
 0
-251
+177
 3
 0
 
@@ -12843,7 +12907,7 @@ Hiro'akka
 0
 0
 0
-86
+43
 5
 8
 
@@ -12889,7 +12953,7 @@ Hazet
 2000
 3
 0
-1
+2
 0
 20
 0
@@ -12897,7 +12961,7 @@ Hazet
 0
 0
 0
-98
+72
 1
 0
 
@@ -12977,7 +13041,7 @@ Baflid
 0
 0
 0
-4
+14
 0
 0
 
@@ -13031,7 +13095,7 @@ Delari
 0
 0
 0
-12
+27
 0
 0
 
@@ -13146,7 +13210,7 @@ Adamar
 0
 0
 0
-13
+34
 7
 0
 
@@ -13210,7 +13274,7 @@ Vulmar
 50
 0
 0
-39
+50
 2
 0
 
@@ -13266,7 +13330,7 @@ Karorr
 2000
 2
 0
-1
+2
 0
 60
 1
@@ -13274,7 +13338,7 @@ Karorr
 0
 0
 0
-192
+101
 1
 0
 
@@ -13341,7 +13405,7 @@ Karorr
 0
 0
 0
-34
+31
 0
 0
 
@@ -13449,7 +13513,7 @@ Azora
 24000
 0
 3
-105
+108
 6
 0
 
@@ -13495,7 +13559,7 @@ Leva
 1900
 3
 0
-1
+2
 1
 50
 0
@@ -13503,7 +13567,7 @@ Leva
 0
 0
 0
-82
+44
 0
 0
 
@@ -13577,7 +13641,7 @@ Leva
 0
 0
 0
-8
+16
 7
 0
 
@@ -13746,7 +13810,7 @@ Remdomas
 0
 0
 0
-58
+39
 5
 0
 
@@ -13800,7 +13864,7 @@ Mozwar
 0
 0
 0
-57
+35
 8
 5
 
@@ -13867,7 +13931,7 @@ Remdomas
 0
 0
 0
-3
+9
 9
 0
 
@@ -13921,7 +13985,7 @@ Vulmar
 0
 0
 0
-28
+16
 2
 0
 
@@ -13977,7 +14041,7 @@ Delari
 7800
 5
 1
-1
+2
 0
 75
 1
@@ -13985,7 +14049,7 @@ Delari
 0
 0
 0
-231
+300
 3
 1
 
@@ -14188,7 +14252,7 @@ Palan
 3000
 0
 0
-20
+19
 0
 0
 
@@ -14278,7 +14342,7 @@ Deshant
 0
 0
 0
-34
+37
 7
 5
 
@@ -14342,7 +14406,7 @@ Nundosa
 0
 0
 0
-91
+68
 3
 0
 
@@ -14398,7 +14462,7 @@ Deshant
 3000
 5
 1
-1
+2
 1
 60
 1
@@ -14406,7 +14470,7 @@ Deshant
 0
 0
 0
-204
+87
 0
 0
 
@@ -14470,7 +14534,7 @@ Nundosa
 0
 0
 0
-26
+17
 7
 0
 
@@ -14575,7 +14639,7 @@ Andromeda
 350
 0
 0
-293
+191
 3
 1
 
@@ -14662,7 +14726,7 @@ Drizz
 0
 0
 0
-15
+34
 0
 0
 
@@ -14726,7 +14790,7 @@ Drizz
 10
 0
 0
-42
+54
 8
 9
 
@@ -14790,7 +14854,7 @@ Sevar
 60
 0
 0
-41
+40
 5
 8
 
@@ -14859,7 +14923,7 @@ Sevar
 6700
 8
 1
-1
+2
 1
 100
 1
@@ -14867,7 +14931,7 @@ Sevar
 0
 0
 0
-230
+206
 3
 0
 
@@ -14967,7 +15031,7 @@ Ankara
 0
 0
 0
-8
+20
 0
 0
 
@@ -15041,7 +15105,7 @@ Ankara
 0
 0
 0
-3
+9
 9
 0
 
@@ -15095,7 +15159,7 @@ Storgor
 30
 0
 0
-143
+61
 7
 9
 
@@ -15159,7 +15223,7 @@ Storgor
 0
 0
 0
-287
+257
 3
 9
 
@@ -15233,7 +15297,7 @@ Tarokyte
 0
 0
 0
-133
+40
 5
 0
 
@@ -15300,7 +15364,7 @@ Botha
 0
 0
 0
-184
+123
 7
 0
 
@@ -15387,7 +15451,7 @@ Brane
 0
 0
 0
-14
+63
 8
 5
 
@@ -15474,7 +15538,7 @@ Brane
 600
 0
 0
-258
+175
 3
 0
 
@@ -15574,7 +15638,7 @@ Tarok
 0
 0
 0
-5
+20
 5
 6
 
@@ -15702,7 +15766,7 @@ Baflid
 0
 0
 0
-12
+41
 0
 0
 
@@ -15769,7 +15833,7 @@ Botha
 0
 0
 0
-42
+26
 0
 0
 
@@ -15823,7 +15887,7 @@ Vawdor
 0
 0
 0
-28
+24
 0
 0
 
@@ -15877,7 +15941,7 @@ Vawdor
 0
 0
 0
-59
+71
 8
 2
 
@@ -15954,7 +16018,7 @@ Vikarmo
 450
 0
 0
-310
+158
 2
 0
 
@@ -16105,7 +16169,7 @@ Hazet
 50
 0
 0
-51
+44
 1
 0
 
@@ -16159,7 +16223,7 @@ Vorgor
 1500
 0
 0
-80
+147
 0
 0
 
@@ -16236,7 +16300,7 @@ Vorgor
 0
 0
 0
-45
+26
 8
 0
 
@@ -16290,7 +16354,7 @@ Xiborg
 200
 0
 0
-69
+62
 1
 3
 
@@ -16357,7 +16421,7 @@ Xiborg
 0
 0
 0
-32
+35
 0
 0
 
@@ -16411,7 +16475,7 @@ Xiborg
 0
 0
 0
-9
+24
 0
 0
 
@@ -16519,7 +16583,7 @@ Yimanda
 0
 0
 0
-7
+18
 8
 0
 
@@ -16573,7 +16637,7 @@ Mozwar
 1000
 0
 0
-127
+85
 8
 0
 Mozvra
