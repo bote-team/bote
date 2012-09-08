@@ -2342,7 +2342,7 @@ Durch Fehlkalkulationen ist die Sterberate auf § sehr viel höher als geplant, wo
 [BREAKTHROUGH]
 Erfolg
 [GLOBALEVENTRESEARCH]
-Durch einen Forschungserfolg verdoppelten eure Wissenschaftler kurzzeitig ihre Ergebnisse
+Durch einen Forschungserfolg verdoppelten unsere Wissenschaftler kurzzeitig ihre Ergebnisse
 [GLOBALEVENTMINOR]
 Regierungswechsel bei den §
 [ALIENTECHEADLINE]
