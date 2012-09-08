@@ -8,7 +8,7 @@ pause
 
 xcopy game\*.* c:\BotESVNCOPY_DE\game\*.* /Y /S
 xcopy *.* c:\BotESVNCOPY_DE\*.* /Y
-xcopy batch\*.* c:\BotESVNCOPY_EN\*.* /Y
+xcopy batch\*.* c:\BotESVNCOPY_DE\*.* /Y
 
 echo on
 pause
