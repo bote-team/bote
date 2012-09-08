@@ -217,6 +217,10 @@ Transport
 Follow
 [BTN_TRAIN_SHIP]
 Train ship
+[BTN_WAIT_SHIP_ORDER]
+Wait
+[BTN_SENTRY_SHIP_ORDER]
+Stand sentry
 
 // decision making buttons
 [BTN_NEXT]
