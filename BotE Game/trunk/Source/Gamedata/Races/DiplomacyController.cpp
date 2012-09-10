@@ -63,11 +63,11 @@ void CDiplomacyController::Send(void)
 				// Angebote senden
 				if (pToRace->GetType() == MAJOR)
 				{
-					SendToMajor(pDoc, (CMajor*)pToRace, pInfo);
+					SendToMajor(pDoc, dynamic_cast<CMajor*>(pToRace), pInfo);
 				}
 				else if (pToRace->GetType() == MINOR)
 				{
-					SendToMinor(pDoc, (CMinor*)pToRace, pInfo);
+					SendToMinor(pDoc, dynamic_cast<CMinor*>(pToRace), pInfo);
 				}
 			}
 		}
@@ -102,11 +102,11 @@ void CDiplomacyController::Receive(void)
 				CRace* pToRace = (*races)[pInfo->m_sToRace];
 				if (pToRace->GetType() == MAJOR)
 				{
-					ReceiveToMajor(pDoc, (CMajor*)pToRace, pInfo);
+					ReceiveToMajor(pDoc, dynamic_cast<CMajor*>(pToRace), pInfo);
 				}
 				else if (pToRace->GetType() == MINOR)
 				{
-					ReceiveToMinor(pDoc, (CMinor*)pToRace, pInfo);
+					ReceiveToMinor(pDoc, dynamic_cast<CMinor*>(pToRace), pInfo);
 				}
 			}
 		}
