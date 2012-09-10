@@ -249,7 +249,7 @@ void CDiplomacyController::SendToMajor(CBotf2Doc* pDoc, CMajor* pToMajor, CDiplo
 	if (pFromRace->GetType() == MAJOR)
 	{
 		// Imperiumsnamen inkl. Artikel holen
-		sEmpireArticleName = ((CMajor*)pFromRace)->GetEmpireNameWithArticle();
+		sEmpireArticleName = dynamic_cast<CMajor*>(pFromRace)->GetEmpireNameWithArticle();
 		// groß beginnen
 		CString sUpper = (CString)sEmpireArticleName.GetAt(0);
 		sEmpireArticleName.SetAt(0, sUpper.MakeUpper().GetAt(0));
@@ -280,7 +280,7 @@ void CDiplomacyController::SendToMajor(CBotf2Doc* pDoc, CMajor* pToMajor, CDiplo
 			{
 				CString s = CResourceManager::GetString("WE_GIVE_PRESENT", FALSE, sEmpireAssignedArticleName);
 				message.GenerateMessage(s, MESSAGE_TYPE::DIPLOMACY, "", 0, 0);
-				((CMajor*)pFromRace)->GetEmpire()->AddMessage(message);
+				dynamic_cast<CMajor*>(pFromRace)->GetEmpire()->AddMessage(message);
 
 				s = CResourceManager::GetString("WE_GET_PRESENT", FALSE, sEmpireArticleName);
 				message.GenerateMessage(s, MESSAGE_TYPE::DIPLOMACY, "", 0, 0, 2);
@@ -311,7 +311,7 @@ void CDiplomacyController::SendToMajor(CBotf2Doc* pDoc, CMajor* pToMajor, CDiplo
 			{
 				CString s = CResourceManager::GetString("WE_HAVE_REQUEST", FALSE, sEmpireAssignedArticleName, sAgreement);
 				message.GenerateMessage(s, MESSAGE_TYPE::DIPLOMACY, "", 0, 0);
-				((CMajor*)pFromRace)->GetEmpire()->AddMessage(message);
+				dynamic_cast<CMajor*>(pFromRace)->GetEmpire()->AddMessage(message);
 
 				s = CResourceManager::GetString("WE_GET_REQUEST", FALSE, sEmpireArticleName, sAgreement);
 				message.GenerateMessage(s, MESSAGE_TYPE::DIPLOMACY, "", 0, 0, 2);
@@ -330,7 +330,7 @@ void CDiplomacyController::SendToMajor(CBotf2Doc* pDoc, CMajor* pToMajor, CDiplo
 			// aufgrund diplomatischer Beziehungen könnte so weiter Krieg erklärt werden
 			std::vector<CString> vEnemies;
 			if (pFromRace->GetType() == MAJOR)
-				vEnemies = GetEnemiesFromContract(pDoc, (CMajor*)pFromRace, pToMajor);
+				vEnemies = GetEnemiesFromContract(pDoc, dynamic_cast<CMajor*>(pFromRace), pToMajor);
 			// allen weiteren Gegnern den Krieg erklären
 			for (UINT i = 0; i < vEnemies.size(); i++)
 			{
@@ -353,7 +353,7 @@ void CDiplomacyController::SendToMajor(CBotf2Doc* pDoc, CMajor* pToMajor, CDiplo
 			{
 				CString s = CResourceManager::GetString("WE_MAKE_MAJ_OFFER", FALSE, sEmpireAssignedArticleName, sAgreement);
 				message.GenerateMessage(s, MESSAGE_TYPE::DIPLOMACY, "", 0, 0);
-				((CMajor*)pFromRace)->GetEmpire()->AddMessage(message);
+				dynamic_cast<CMajor*>(pFromRace)->GetEmpire()->AddMessage(message);
 
 				s = CResourceManager::GetString("WE_GET_MAJ_OFFER", FALSE, sEmpireArticleName, sAgreement);
 				message.GenerateMessage(s, MESSAGE_TYPE::DIPLOMACY, "", 0, 0, 2);
