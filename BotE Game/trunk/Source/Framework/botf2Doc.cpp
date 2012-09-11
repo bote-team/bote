@@ -6448,17 +6448,18 @@ void CBotf2Doc::CalcEndDataForNextRound()
 
 				if (pLivingRace->GetType() == MAJOR)
 				{
-					((CMajor*)pLivingRace)->SetDefencePact(pMajor->GetRaceID(), false);
+					CMajor* pLivingMajor = dynamic_cast<CMajor*>(pLivingRace);
+					pLivingMajor->SetDefencePact(pMajor->GetRaceID(), false);
 					pMajor->SetDefencePact(pLivingRace->GetRaceID(), false);
 
 					// Geheimdienstzuweiseungen anpassen
 					// Spionage auf 0 setzen
-					((CMajor*)pLivingRace)->GetEmpire()->GetIntelligence()->GetAssignment()->SetGlobalPercentage(0, 0, (CMajor*)pLivingRace, pMajor->GetRaceID(), pmMajors);
+					pLivingMajor->GetEmpire()->GetIntelligence()->GetAssignment()->SetGlobalPercentage(0, 0, pLivingMajor, pMajor->GetRaceID(), pmMajors);
 					// Sabotage auf 0 setzen
-					((CMajor*)pLivingRace)->GetEmpire()->GetIntelligence()->GetAssignment()->SetGlobalPercentage(0, 0, (CMajor*)pLivingRace, pMajor->GetRaceID(), pmMajors);
-					if (((CMajor*)pLivingRace)->GetEmpire()->GetIntelligence()->GetResponsibleRace() == pMajor->GetRaceID())
-						((CMajor*)pLivingRace)->GetEmpire()->GetIntelligence()->SetResponsibleRace(pLivingRace->GetRaceID());
-					((CMajor*)pLivingRace)->GetEmpire()->GetIntelligence()->GetAssignment()->RemoveRaceFromAssignments(pMajor->GetRaceID());
+					pLivingMajor->GetEmpire()->GetIntelligence()->GetAssignment()->SetGlobalPercentage(0, 0, pLivingMajor, pMajor->GetRaceID(), pmMajors);
+					if (pLivingMajor->GetEmpire()->GetIntelligence()->GetResponsibleRace() == pMajor->GetRaceID())
+						pLivingMajor->GetEmpire()->GetIntelligence()->SetResponsibleRace(pLivingRace->GetRaceID());
+					pLivingMajor->GetEmpire()->GetIntelligence()->GetAssignment()->RemoveRaceFromAssignments(pMajor->GetRaceID());
 				}
 			}
 
