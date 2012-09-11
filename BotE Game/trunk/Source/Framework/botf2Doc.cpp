@@ -6137,7 +6137,7 @@ void CBotf2Doc::CalcContactNewRaces()
 						s = CResourceManager::GetString("GET_CONTACT_TO_MAJOR",FALSE, pMajor->GetRaceName(),sect);
 						CMessage message;
 						message.GenerateMessage(s,MESSAGE_TYPE::DIPLOMACY,"",0,FALSE);
-						((CMajor*)pSectorOwner)->GetEmpire()->AddMessage(message);
+						dynamic_cast<CMajor*>(pSectorOwner)->GetEmpire()->AddMessage(message);
 
 						// Nachricht generieren, dass wir eine Majorrace kennengelernt haben
 						s = CResourceManager::GetString("GET_CONTACT_TO_MAJOR",FALSE, pSectorOwner->GetRaceName(),sect);
@@ -6155,23 +6155,25 @@ void CBotf2Doc::CalcContactNewRaces()
 					pMajor->GetEmpire()->AddMessage(message);
 
 					// Audiovorstellung der kennengelernten Majorrace
-					if (pMajor->IsHumanPlayer() || (pSectorOwner->GetType() == MAJOR && ((CMajor*)pSectorOwner)->IsHumanPlayer()))
+					if (pMajor->IsHumanPlayer() || (pSectorOwner->GetType() == MAJOR && dynamic_cast<CMajor*>(pSectorOwner)->IsHumanPlayer()))
 					{
 						network::RACE clientShip = m_pRaceCtrl->GetMappedClientID(pMajor->GetRaceID());
 						m_iSelectedView[clientShip] = EMPIRE_VIEW;
 
 						// Systembesitzer ist ein Major
+
 						if (pSectorOwner->GetType() == MAJOR)
 						{
+							CMajor* pSectorOwnerMajor = dynamic_cast<CMajor*>(pSectorOwner);
 							network::RACE clientSystem = m_pRaceCtrl->GetMappedClientID(pSectorOwner->GetRaceID());
 							m_iSelectedView[clientSystem] = EMPIRE_VIEW;
 
 							// Systembesitzer
-							if (((CMajor*)pSectorOwner)->IsHumanPlayer())
+							if (pSectorOwnerMajor->IsHumanPlayer())
 							{
 								SNDMGR_MESSAGEENTRY entry = {SNDMGR_MSG_FIRSTCONTACT, clientShip, 2, 1.0f};
 								m_SoundMessages[clientSystem].Add(entry);
-								((CMajor*)pSectorOwner)->GetEmpire()->GetEventMessages()->Add(new CEventFirstContact(pSectorOwner->GetRaceID(), pMajor->GetRaceID()));
+								pSectorOwnerMajor->GetEmpire()->GetEventMessages()->Add(new CEventFirstContact(pSectorOwner->GetRaceID(), pMajor->GetRaceID()));
 							}
 							// Schiffsbesitzer
 							if (pMajor->IsHumanPlayer())
