@@ -5169,18 +5169,20 @@ void CBotf2Doc::CalcShipOrders()
 
 				// Eventscreen für den Angreifer und den Blockierten anlegen
 				CRace* pShipOwner = m_pRaceCtrl->GetRace(m_ShipArray[y].GetOwnerOfShip());
-				if (pShipOwner != NULL && pShipOwner->GetType() == MAJOR && ((CMajor*)pShipOwner)->IsHumanPlayer())
+				CMajor* pShipOwnerMajor = NULL;
+				if (pShipOwner != NULL && pShipOwner->GetType() == MAJOR && (pShipOwnerMajor = dynamic_cast<CMajor*>(pShipOwner))->IsHumanPlayer())
 				{					
 					CEventBlockade* eventScreen = new CEventBlockade(m_ShipArray[y].GetOwnerOfShip(), CResourceManager::GetString("BLOCKADEEVENT_HEADLINE", FALSE, pSector->GetName()), CResourceManager::GetString("BLOCKADEEVENT_TEXT_" + pShipOwner->GetRaceID(), FALSE, pSector->GetName()));
-					((CMajor*)pShipOwner)->GetEmpire()->GetEventMessages()->Add(eventScreen);
+					pShipOwnerMajor->GetEmpire()->GetEventMessages()->Add(eventScreen);
 				}
 				if (pSystem->GetOwnerOfSystem() != "")
 				{
 					CRace* pSystemOwner = m_pRaceCtrl->GetRace(pSystem->GetOwnerOfSystem());
-					if (pSystemOwner != NULL && pSystemOwner->GetType() == MAJOR && ((CMajor*)pSystemOwner)->IsHumanPlayer())
+					CMajor* pSystemOwnerMajor = NULL;
+					if (pSystemOwner != NULL && pSystemOwner->GetType() == MAJOR && (pSystemOwnerMajor = dynamic_cast<CMajor*>(pSystemOwner))->IsHumanPlayer())
 					{
 						CEventBlockade* eventScreen = new CEventBlockade(pSystem->GetOwnerOfSystem(), CResourceManager::GetString("BLOCKADEEVENT_HEADLINE", FALSE, pSector->GetName()), CResourceManager::GetString("BLOCKADEEVENT_TEXT_" + pSystemOwner->GetRaceID(), FALSE, pSector->GetName()));					
-						((CMajor*)pSystemOwner)->GetEmpire()->GetEventMessages()->Add(eventScreen);
+						pSystemOwnerMajor->GetEmpire()->GetEventMessages()->Add(eventScreen);
 					}
 				}
 			}
