@@ -5336,7 +5336,7 @@ void CBotf2Doc::CalcShipMovement()
 				pRace = m_pRaceCtrl->GetRace(pShip->GetOwnerOfShip());
 				if (pRace != NULL && pRace->GetType() == MAJOR)
 				{
-					nextKO = ((CMajor*)pRace)->GetStarmap()->CalcPath(shipKO,targetKO,range,speed,*pShip->GetPath());
+					nextKO = dynamic_cast<CMajor*>(pRace)->GetStarmap()->CalcPath(shipKO,targetKO,range,speed,*pShip->GetPath());
 				}
 			}
 
@@ -5351,7 +5351,7 @@ void CBotf2Doc::CalcShipMovement()
 					pShip->SetTargetKO(CPoint(-1,-1), 0);
 				}
 				if (pRace != NULL && pRace->GetType() == MAJOR && !(this->GetSector(nextKO.x,nextKO.y).GetFullKnown(pShip->GetOwnerOfShip()))) //Berechnet Zufalls entdeckung in dem Sector den das Schiff anfliegt
-					m_RandomEventManager.CalcExploreEvent(CPoint((int)nextKO.x,(int)nextKO.y),(CMajor*)pRace,&m_ShipArray);
+					m_RandomEventManager.CalcExploreEvent(CPoint((int)nextKO.x,(int)nextKO.y),dynamic_cast<CMajor*>(pRace),&m_ShipArray);
 
 				int high = speed;
 				while (high > 0 && high < pShip->GetPath()->GetSize())
