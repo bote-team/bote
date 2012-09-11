@@ -2822,15 +2822,16 @@ void CBotf2Doc::CalcSystemAttack()
 							}
 							if (defender != NULL && defender->GetRaceID() != attacker && defender->GetType() == MAJOR)
 							{
+								CMajor* pDefenderMajor = dynamic_cast<CMajor*>(defender);
 								// Eventnachricht an den, der das System verloren hat (unser erobertes System verloren)
-								eventText = ((CMajor*)defender)->GetMoralObserver()->AddEvent(17, ((CMajor*)defender)->GetRaceMoralNumber(), param);
+								eventText = pDefenderMajor->GetMoralObserver()->AddEvent(17, pDefenderMajor->GetRaceMoralNumber(), param);
 								// Eventnachricht hinzufügen
 								if (!eventText.IsEmpty())
 								{
 									CMessage message;
 									message.GenerateMessage(eventText, MESSAGE_TYPE::MILITARY, param, p, 0);
-									((CMajor*)defender)->GetEmpire()->AddMessage(message);
-									if (((CMajor*)defender)->IsHumanPlayer())
+									pDefenderMajor->GetEmpire()->AddMessage(message);
+									if (pDefenderMajor->IsHumanPlayer())
 									{
 										network::RACE client = m_pRaceCtrl->GetMappedClientID(defender->GetRaceID());
 										m_iSelectedView[client] = EMPIRE_VIEW;
@@ -2841,19 +2842,20 @@ void CBotf2Doc::CalcSystemAttack()
 							m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetMoral(rand()%25+10);
 						}
 						// Handelte es sich dabei um das Heimatsystem einer Rasse
-						else if (defender != NULL && defender->GetType() == MAJOR && m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSector() == defender->GetRaceID() && m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetName() == ((CMajor*)defender)->GetHomesystemName())
+						else if (defender != NULL && defender->GetType() == MAJOR && m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSector() == defender->GetRaceID() && m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetName() == dynamic_cast<CMajor*>(defender)->GetHomesystemName())
 						{
+							CMajor* pDefenderMajor = dynamic_cast<CMajor*>(defender);
 							// Eventnachricht an den ehemaligen Heimatsystembesitzer (Heimatsystem verloren)
 							CString param = m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetName();
 							CString eventText = "";
-							eventText = ((CMajor*)defender)->GetMoralObserver()->AddEvent(15, ((CMajor*)defender)->GetRaceMoralNumber(), param);
+							eventText = pDefenderMajor->GetMoralObserver()->AddEvent(15, pDefenderMajor->GetRaceMoralNumber(), param);
 							// Eventnachricht hinzufügen
 							if (!eventText.IsEmpty())
 							{
 								CMessage message;
 								message.GenerateMessage(eventText, MESSAGE_TYPE::MILITARY, param, p, 0);
-								((CMajor*)defender)->GetEmpire()->AddMessage(message);
-								if (((CMajor*)defender)->IsHumanPlayer())
+								pDefenderMajor->GetEmpire()->AddMessage(message);
+								if (pDefenderMajor->IsHumanPlayer())
 								{
 										network::RACE client = m_pRaceCtrl->GetMappedClientID(defender->GetRaceID());
 										m_iSelectedView[client] = EMPIRE_VIEW;
@@ -2940,15 +2942,21 @@ void CBotf2Doc::CalcSystemAttack()
 
 							CString eventText = "";
 							// Eventnachricht an den ehemaligen Besitzer (eigenes System verloren)
-							if (defender != NULL && defender->GetRaceID() != attacker && defender->GetType() == MAJOR)
-								eventText = ((CMajor*)defender)->GetMoralObserver()->AddEvent(16, ((CMajor*)defender)->GetRaceMoralNumber(), param);
+							if (defender != NULL && defender->GetRaceID() != attacker && defender->GetType() == MAJOR) {
+								CMajor* pDefenderMajor = dynamic_cast<CMajor*>(defender);
+								eventText = pDefenderMajor->GetMoralObserver()->AddEvent(16, pDefenderMajor->GetRaceMoralNumber(), param);
+							}
 							// Eventnachricht hinzufügen
 							if (!eventText.IsEmpty())
 							{
 								CMessage message;
 								message.GenerateMessage(eventText, MESSAGE_TYPE::MILITARY, param, p, 0);
-								((CMajor*)defender)->GetEmpire()->AddMessage(message);
-								if (((CMajor*)defender)->IsHumanPlayer())
+								//defender seems to be of type MAJOR here for sure ?
+								assert(defender->GetType() == MAJOR);
+								CMajor* pDefenderMajor = dynamic_cast<CMajor*>(defender);
+								assert(pDefenderMajor);
+								pDefenderMajor->GetEmpire()->AddMessage(message);
+								if (pDefenderMajor->IsHumanPlayer())
 								{
 									network::RACE client = m_pRaceCtrl->GetMappedClientID(defender->GetRaceID());
 									m_iSelectedView[client] = EMPIRE_VIEW;
@@ -2983,12 +2991,13 @@ void CBotf2Doc::CalcSystemAttack()
 					// so bekommt der Eroberer einen kräftigen Moralschub
 					if (defender != NULL && defender->GetType() == MAJOR && !attacker.IsEmpty() && pMajor && attackSystem->IsDefenderNotAttacker(sDefender, &attackers))
 					{
+						CMajor* pDefenderMajor = dynamic_cast<CMajor*>(defender);
 						// Anzahl der noch verbleibenden Systeme berechnen
-						((CMajor*)defender)->GetEmpire()->GenerateSystemList(m_Systems, m_Sectors);
+						pDefenderMajor->GetEmpire()->GenerateSystemList(m_Systems, m_Sectors);
 						// hat der Verteidiger keine Systeme mehr, so bekommt der neue Besitzer den Bonus
-						if (((CMajor*)defender)->GetEmpire()->GetSystemList()->GetSize() == 0)
+						if (pDefenderMajor->GetEmpire()->GetSystemList()->GetSize() == 0)
 						{
-							CString param = ((CMajor*)defender)->GetRaceName();
+							CString param = pDefenderMajor->GetRaceName();
 							CString eventText = pMajor->GetMoralObserver()->AddEvent(0, pMajor->GetRaceMoralNumber(), param);
 							// Eventnachricht hinzufügen
 							if (!eventText.IsEmpty())
@@ -3010,8 +3019,8 @@ void CBotf2Doc::CalcSystemAttack()
 						pMajor->GetEmpire()->GetEventMessages()->Add(new CEventBombardment(attacker, "InvasionSuccess", CResourceManager::GetString("INVASIONSUCCESSEVENT_HEADLINE", FALSE, m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetName()), CResourceManager::GetString("INVASIONSUCCESSEVENT_TEXT_" + pMajor->GetRaceID(), FALSE, m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetName())));
 
 					// Invasionsevent für den Verteidiger einfügen
-					if (defender != NULL && defender->GetType() == MAJOR && ((CMajor*)defender)->IsHumanPlayer() && attackSystem->IsDefenderNotAttacker(sDefender, &attackers))
-						((CMajor*)defender)->GetEmpire()->GetEventMessages()->Add(new CEventBombardment(sDefender, "InvasionSuccess", CResourceManager::GetString("INVASIONSUCCESSEVENT_HEADLINE", FALSE, m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetName()), CResourceManager::GetString("INVASIONSUCCESSEVENT_TEXT_" + defender->GetRaceID(), FALSE, m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetName())));
+					if (defender != NULL && defender->GetType() == MAJOR && dynamic_cast<CMajor*>(defender)->IsHumanPlayer() && attackSystem->IsDefenderNotAttacker(sDefender, &attackers))
+						dynamic_cast<CMajor*>(defender)->GetEmpire()->GetEventMessages()->Add(new CEventBombardment(sDefender, "InvasionSuccess", CResourceManager::GetString("INVASIONSUCCESSEVENT_HEADLINE", FALSE, m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetName()), CResourceManager::GetString("INVASIONSUCCESSEVENT_TEXT_" + defender->GetRaceID(), FALSE, m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetName())));
 				}
 				// Wurde nur bombardiert, nicht erobert
 				else
@@ -3099,25 +3108,26 @@ void CBotf2Doc::CalcSystemAttack()
 						// Minorracesystem von oben gewesen sein, hier verliert es aber die betroffene Majorrace)
 						if (defender != NULL && defender->GetType() == MAJOR && attackSystem->IsDefenderNotAttacker(defender->GetRaceID(), &attackers))
 						{
+							CMajor* pDefenderMajor = dynamic_cast<CMajor*>(defender);
 							eventText = "";
-							if (m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetName() == ((CMajor*)defender)->GetHomesystemName())
+							if (m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetName() == pDefenderMajor->GetHomesystemName())
 							{
 								// Eventnachricht an den ehemaligen Heimatsystembesitzer (Heimatsystem verloren)
 								param = m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetName();
-								eventText = ((CMajor*)defender)->GetMoralObserver()->AddEvent(15, ((CMajor*)defender)->GetRaceMoralNumber(), param);
+								eventText = pDefenderMajor->GetMoralObserver()->AddEvent(15, pDefenderMajor->GetRaceMoralNumber(), param);
 							}
 							else
 							{
 								// Eventnachricht an den ehemaligen Besitzer (eigenes System verloren)
-								eventText = ((CMajor*)defender)->GetMoralObserver()->AddEvent(16, ((CMajor*)defender)->GetRaceMoralNumber(), param);
+								eventText = pDefenderMajor->GetMoralObserver()->AddEvent(16, pDefenderMajor->GetRaceMoralNumber(), param);
 							}
 							// Eventnachricht hinzufügen
 							if (!eventText.IsEmpty())
 							{
 								CMessage message;
 								message.GenerateMessage(eventText, MESSAGE_TYPE::MILITARY, param, p, 0);
-								((CMajor*)defender)->GetEmpire()->AddMessage(message);
-								if (((CMajor*)defender)->IsHumanPlayer())
+								pDefenderMajor->GetEmpire()->AddMessage(message);
+								if (pDefenderMajor->IsHumanPlayer())
 								{
 									network::RACE client = m_pRaceCtrl->GetMappedClientID(defender->GetRaceID());
 									m_iSelectedView[client] = EMPIRE_VIEW;
@@ -3134,17 +3144,18 @@ void CBotf2Doc::CalcSystemAttack()
 						// so bekommt der Eroberer einen kräftigen Moralschub
 						if (defender != NULL && defender->GetType() == MAJOR && attackSystem->IsDefenderNotAttacker(defender->GetRaceID(), &attackers))
 						{
+							CMajor* pDefenderMajor = dynamic_cast<CMajor*>(defender);
 							for (set<CString>::const_iterator it = attackers.begin(); it != attackers.end(); ++it)
 							{
 								CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(*it));
 								ASSERT(pMajor);
 
 								// Anzahl der noch verbleibenden Systeme berechnen
-								((CMajor*)defender)->GetEmpire()->GenerateSystemList(m_Systems, m_Sectors);
+								pDefenderMajor->GetEmpire()->GenerateSystemList(m_Systems, m_Sectors);
 								// hat der Verteidiger keine Systeme mehr, so bekommt der neue Besitzer den Bonus
-								if (((CMajor*)defender)->GetEmpire()->GetSystemList()->GetSize() == 0)
+								if (pDefenderMajor->GetEmpire()->GetSystemList()->IsEmpty())
 								{
-									CString sParam		= ((CMajor*)defender)->GetRaceName();
+									CString sParam		= pDefenderMajor->GetRaceName();
 									CString sEventText	= pMajor->GetMoralObserver()->AddEvent(0, pMajor->GetRaceMoralNumber(), sParam);
 									// Eventnachricht hinzufügen
 									if (!sEventText.IsEmpty())
@@ -3196,8 +3207,9 @@ void CBotf2Doc::CalcSystemAttack()
 							// Eventnachricht über Bombardierung für Verteidiger erstellen und hinzufügen
 							if (defender != NULL && defender->GetType() == MAJOR && attackSystem->IsDefenderNotAttacker(defender->GetRaceID(), &attackers))
 							{
-								eventText = ((CMajor*)defender)->GetMoralObserver()->AddEvent(22, ((CMajor*)defender)->GetRaceMoralNumber(), param);
-								if (((CMajor*)defender)->IsHumanPlayer())
+								CMajor* pDefenderMajor = dynamic_cast<CMajor*>(defender);
+								eventText = pDefenderMajor->GetMoralObserver()->AddEvent(22, pDefenderMajor->GetRaceMoralNumber(), param);
+								if (pDefenderMajor->IsHumanPlayer())
 								{
 									network::RACE client = m_pRaceCtrl->GetMappedClientID(defender->GetRaceID());
 									m_iSelectedView[client] = EMPIRE_VIEW;
@@ -3226,14 +3238,15 @@ void CBotf2Doc::CalcSystemAttack()
 					// für den Verteidiger
 					if (defender != NULL && defender->GetType() == MAJOR && attackSystem->IsDefenderNotAttacker(defender->GetRaceID(), &attackers))
 					{
-						if (((CMajor*)defender)->IsHumanPlayer())
+						CMajor* pDefenderMajor = dynamic_cast<CMajor*>(defender);
+						if (pDefenderMajor->IsHumanPlayer())
 						{
 							// reine Bombardierung
 							if (!attackSystem->IsTroopsInvolved())
-								((CMajor*)defender)->GetEmpire()->GetEventMessages()->Add(new CEventBombardment(defender->GetRaceID(), "Bombardment", CResourceManager::GetString("BOMBARDEVENT_HEADLINE", FALSE, m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetName()), CResourceManager::GetString("BOMBARDEVENT_TEXT_DEFENDER_" + defender->GetRaceID(), FALSE, m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetName())));
+								pDefenderMajor->GetEmpire()->GetEventMessages()->Add(new CEventBombardment(defender->GetRaceID(), "Bombardment", CResourceManager::GetString("BOMBARDEVENT_HEADLINE", FALSE, m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetName()), CResourceManager::GetString("BOMBARDEVENT_TEXT_DEFENDER_" + defender->GetRaceID(), FALSE, m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetName())));
 							// gescheitere Invasion
 							else if (m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetHabitants() > 0.000001f)
-								((CMajor*)defender)->GetEmpire()->GetEventMessages()->Add(new CEventBombardment(defender->GetRaceID(), "InvasionFailed", CResourceManager::GetString("INVASIONFAILUREEVENT_HEADLINE", FALSE, m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetName()), CResourceManager::GetString("INVASIONFAILUREEVENT_TEXT_" + defender->GetRaceID(), FALSE, m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetName())));
+								pDefenderMajor->GetEmpire()->GetEventMessages()->Add(new CEventBombardment(defender->GetRaceID(), "InvasionFailed", CResourceManager::GetString("INVASIONFAILUREEVENT_HEADLINE", FALSE, m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetName()), CResourceManager::GetString("INVASIONFAILUREEVENT_TEXT_" + defender->GetRaceID(), FALSE, m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetName())));
 						}
 					}
 				}
@@ -3257,10 +3270,11 @@ void CBotf2Doc::CalcSystemAttack()
 					}
 					if (defender != NULL && defender->GetType() == MAJOR && attackSystem->IsDefenderNotAttacker(defender->GetRaceID(), &attackers))
 					{
+						CMajor* pDefenderMajor = dynamic_cast<CMajor*>(defender);
 						CMessage message;
 						message.GenerateMessage(attackSystem->GetNews()->GetAt(i), MESSAGE_TYPE::MILITARY, m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetName(), p, 0);
-						((CMajor*)defender)->GetEmpire()->AddMessage(message);
-						if (((CMajor*)defender)->IsHumanPlayer())
+						pDefenderMajor->GetEmpire()->AddMessage(message);
+						if (pDefenderMajor->IsHumanPlayer())
 						{
 							network::RACE client = m_pRaceCtrl->GetMappedClientID(defender->GetRaceID());
 							m_iSelectedView[client] = EMPIRE_VIEW;
