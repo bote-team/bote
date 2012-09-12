@@ -120,7 +120,11 @@ CBuildingInfo::~CBuildingInfo()
 //////////////////////////////////////////////////////////////////////
 // Kopierkonstruktor
 //////////////////////////////////////////////////////////////////////
-CBuildingInfo::CBuildingInfo(const CBuildingInfo & rhs)
+CBuildingInfo::CBuildingInfo(const CBuildingInfo & rhs) :
+	m_MaxInSystem(rhs.m_MaxInSystem),
+	m_MaxInEmpire(rhs.m_MaxInEmpire),
+	m_MinInSystem(rhs.m_MinInSystem),
+	m_MinInEmpire(rhs.m_MinInEmpire)
 {
 	m_iFood = rhs.m_iFood;
 	m_iIP = rhs.m_iIP;
@@ -203,16 +207,12 @@ CBuildingInfo::CBuildingInfo(const CBuildingInfo & rhs)
 	m_strDescription = rhs.m_strDescription;
 	m_bUpgradeable = rhs.m_bUpgradeable;
 	m_strGraphikFileName = rhs.m_strGraphikFileName;
-	m_MaxInSystem = rhs.m_MaxInSystem;
-	m_MaxInEmpire = rhs.m_MaxInEmpire;
 	m_bOnlyHomePlanet = rhs.m_bOnlyHomePlanet;
 	m_bOnlyOwnColony = rhs.m_bOnlyOwnColony;
 	m_bOnlyMinorRace = rhs.m_bOnlyMinorRace;
 	m_bOnlyTakenSystem = rhs.m_bOnlyTakenSystem;
 	m_strOnlyInSystemWithName = rhs.m_strOnlyInSystemWithName;
 	m_iMinHabitants = rhs.m_iMinHabitants;
-	m_MinInSystem = rhs.m_MinInSystem;
-	m_MinInEmpire = rhs.m_MinInEmpire;
 	m_bOnlyRace = rhs.m_bOnlyRace;
 
 	m_PlanetTypes = rhs.m_PlanetTypes;
