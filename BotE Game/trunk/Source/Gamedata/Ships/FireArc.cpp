@@ -12,8 +12,8 @@ CFireArc::CFireArc(void) : m_nMountPos(0), m_nAngle(90)
 
 CFireArc::CFireArc(USHORT mountPos, USHORT angle) : m_nMountPos(mountPos), m_nAngle(angle)
 {
-	ASSERT(m_nMountPos >= 0 && m_nMountPos <= 360);
-	ASSERT(m_nAngle >= 0 && m_nAngle <= 360);
+	ASSERT(m_nMountPos <= 360);
+	ASSERT(m_nAngle <= 360);
 }
 
 CFireArc::~CFireArc(void)
