@@ -2942,7 +2942,11 @@ void CBotf2Doc::CalcSystemAttack()
 
 							CString eventText = "";
 							// Eventnachricht an den ehemaligen Besitzer (eigenes System verloren)
-							if (defender != NULL && defender->GetRaceID() != attacker && defender->GetType() == MAJOR) {
+
+							//We later were dereferencing defender anyway; after casting to CMajor.
+							//Not sure whether defender should be allowed to be NULL here.
+							assert(defender);
+							if (defender->GetRaceID() != attacker && defender->GetType() == MAJOR) {
 								CMajor* pDefenderMajor = dynamic_cast<CMajor*>(defender);
 								eventText = pDefenderMajor->GetMoralObserver()->AddEvent(16, pDefenderMajor->GetRaceMoralNumber(), param);
 							}
