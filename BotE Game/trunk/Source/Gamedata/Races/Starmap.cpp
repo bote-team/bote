@@ -852,7 +852,7 @@ void CStarmap::RecalcTargetPoints()
 			}
 }
 
-short CStarmap::GetPoints(const Sector &sector)
+short CStarmap::GetPoints(const Sector &sector) const
 {
 	short points = m_AIRangePoints[sector.x][sector.y];
 	if (points > 0)

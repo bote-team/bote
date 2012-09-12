@@ -92,7 +92,7 @@ struct BaseSector
 
 	BaseSector() : position(Sector()), points(-1) {}
 
-	bool operator<(const BaseSector &other)
+	bool operator<(const BaseSector &other) const
 	{
 		// wollen absteigend sortieren
 		return points > other.points;
@@ -189,7 +189,7 @@ public:
 	 * Funktion gibt den Wert aus der RangeMap <code>m_Range</code> an einer bestimmten Stelle <code>p</p> auf der
 	 * Karte zurück.
 	 */
-	unsigned char GetRange(const CPoint &p) {return (3 - m_Range[p.x][p.y]);}
+	unsigned char GetRange(const CPoint &p) const {return (3 - m_Range[p.x][p.y]);}
 
 	/**
 	 * Ermittelt die Koordinaten eines angeklickten Sektors. <code>pt</code> gibt die ungezoomten Mauskoordinaten
@@ -305,7 +305,7 @@ public:
 	/**
 	 * @return Gesamtbewertung des angegebenen Sektors. Zuvor müssen die Funktionen zur Neuberechnung der Bewertung aufgerufen worden sein.
 	 */
-	short GetPoints(const Sector &sector);
+	short GetPoints(const Sector &sector) const;
 
 private:
 	/// Diese Funktion berechnet die Reichweitenkarte anhand der aktuellen Techstufe <code>propTech</code> und schreibt

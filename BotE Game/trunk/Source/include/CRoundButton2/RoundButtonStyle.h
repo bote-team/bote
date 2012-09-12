@@ -98,7 +98,7 @@ public:
 	/************************************************************************/
 
 	// Get Size of Edges
-	CSize GetEdgeSize(void)
+	CSize GetEdgeSize(void) const
 	{
 		return m_tBtnSize;
 	}
