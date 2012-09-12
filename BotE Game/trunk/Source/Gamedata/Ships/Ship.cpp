@@ -63,10 +63,14 @@ CShip::~CShip()
 //////////////////////////////////////////////////////////////////////
 // Kopierkonstruktor
 //////////////////////////////////////////////////////////////////////
-CShip::CShip(const CShip & rhs)
+CShip::CShip(const CShip & rhs) :
+	m_Hull(rhs.m_Hull),
+	m_Shield(rhs.m_Shield),
+	m_KO(rhs.m_KO),
+	m_sOwnerOfShip(rhs.m_sOwnerOfShip),
+	m_strShipName(rhs.m_strShipName),
+	m_strShipClass(rhs.m_strShipClass)
 {
-	m_Hull = rhs.m_Hull;
-	m_Shield = rhs.m_Shield;
 	m_TorpedoWeapons.RemoveAll();
 	for (int i = 0; i < rhs.m_TorpedoWeapons.GetSize(); i++)
 		m_TorpedoWeapons.Add(rhs.m_TorpedoWeapons.GetAt(i));
@@ -91,10 +95,8 @@ CShip::CShip(const CShip & rhs)
 
 	//m_Fleet = rhs.&m_Fleet;
 	m_iID = rhs.m_iID;
-	m_KO = rhs.m_KO;
 	for (int i=0;i<4;i++)
 		m_TargetKO[i] = rhs.m_TargetKO[i];
-	m_sOwnerOfShip = rhs.m_sOwnerOfShip;
 	m_iMaintenanceCosts = rhs.m_iMaintenanceCosts;
 	m_iShipType = rhs.m_iShipType;
 	m_nShipSize = rhs.m_nShipSize;
@@ -113,9 +115,7 @@ CShip::CShip(const CShip & rhs)
 	m_iStationBuildPoints = rhs.m_iStationBuildPoints;
 	m_iCurrentOrder = rhs.m_iCurrentOrder;
 	m_nTerraformingPlanet = rhs.m_nTerraformingPlanet;
-	m_strShipName = rhs.m_strShipName;
 	m_strShipDescription = rhs.m_strShipDescription;
-	m_strShipClass = rhs.m_strShipClass;
 	m_bIsFlagShip = rhs.m_bIsFlagShip;
 	m_nSpecial[0] = rhs.m_nSpecial[0];
 	m_nSpecial[1] = rhs.m_nSpecial[1];
