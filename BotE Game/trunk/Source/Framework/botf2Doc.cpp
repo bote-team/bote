@@ -5486,7 +5486,6 @@ bool CBotf2Doc::IsShipCombat()
 			continue;
 
 		// Wenn noch kein Kampf in dem Sektor stattfand, dann kommt es möglicherweise hier zum Kampf
-		vector<CShip*> pShipArray;
 		for (int i = 0; i < m_ShipArray.GetSize(); i++)
 		{
 			// Wenn das Schiff nicht unserer Rasse gehört
