@@ -82,3 +82,8 @@ CTorpedoInfo* CTorpedoInfo::GetInstance(void)
 	static CTorpedoInfo instance;
     return &instance;
 }
+
+const CString& CTorpedoInfo::GetName(BYTE type) {
+	const CTorpedoInfo& instance = *GetInstance();
+	return instance.m_vInfos[type].sName;
+}

@@ -54,7 +54,7 @@ public:
 	// Zugriffsfunktionen zum Lesen der Membervariablen
 
 	/// Diese Funktionen gibt den Torepdonamen zurück.
-	static const CString& GetName(BYTE type) { return GetInstance()->m_vInfos[type].sName; }
+	static const CString& GetName(BYTE type);
 
 	/// Diese Funktionen gibt die Torepdostärke zurück.
 	static USHORT GetPower(BYTE type) { return GetInstance()->m_vInfos[type].nDmg; }
