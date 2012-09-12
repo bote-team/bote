@@ -4326,7 +4326,7 @@ void CBotf2Doc::CalcShipOrders()
 
 		// Hier wird überprüft, ob der Systemattack-Befehl noch gültig ist
 		// Alle Schiffe, welche einen Systemangriffsbefehl haben überprüfen, ob dieser Befehl noch gültig ist
-		CSector* pSector = &GetSector(m_ShipArray[y].GetKO()); 
+		CSector* pSector = &GetSector(m_ShipArray[y].GetKO());
   		CSystem* pSystem = &GetSystem(m_ShipArray[y].GetKO());
 
 		if (m_ShipArray[y].GetCurrentOrder() == SHIP_ORDER::ATTACK_SYSTEM)
@@ -4474,14 +4474,14 @@ void CBotf2Doc::CalcShipOrders()
 					pMajor->GetEmpire()->AddMessage(message);
 
 					// zusätzliche Eventnachricht (Colonize a system #12) wegen der Moral an das Imperium
-					message.GenerateMessage(pMajor->GetMoralObserver()->AddEvent(12, pMajor->GetRaceMoralNumber(), pSector->GetName()), MESSAGE_TYPE::SOMETHING, "", pSector->GetKO(), FALSE); 
+					message.GenerateMessage(pMajor->GetMoralObserver()->AddEvent(12, pMajor->GetRaceMoralNumber(), pSector->GetName()), MESSAGE_TYPE::SOMETHING, "", pSector->GetKO(), FALSE);
 					pMajor->GetEmpire()->AddMessage(message);
 					if (pMajor->IsHumanPlayer())
 					{
 						SNDMGR_MESSAGEENTRY entry = {SNDMGR_MSG_CLAIMSYSTEM, client, 0, 1.0f};
 						m_SoundMessages[client].Add(entry);
-						m_iSelectedView[client] = EMPIRE_VIEW;						
-					
+						m_iSelectedView[client] = EMPIRE_VIEW;
+
 						CEventColonization* eventScreen = new CEventColonization(pMajor->GetRaceID(), CResourceManager::GetString("COLOEVENT_HEADLINE", FALSE, pSector->GetName()), CResourceManager::GetString("COLOEVENT_TEXT_" + pMajor->GetRaceID(), FALSE, pSector->GetName()));
 						pMajor->GetEmpire()->GetEventMessages()->Add(eventScreen);
 						s.Format("Added Colonization-Eventscreen for Race %s in System %s", pMajor->GetRaceName(), pSector->GetName());
@@ -4499,10 +4499,10 @@ void CBotf2Doc::CalcShipOrders()
 						m_iSelectedView[client] = EMPIRE_VIEW;
 				}
 				pSystem->SetHabitants(pSector->GetCurrentHabitants());
-								
+
 				pSystem->CalculateNumberOfWorkbuildings(&this->BuildingInfo);
 				pSystem->CalculateVariables(&this->BuildingInfo, pMajor->GetEmpire()->GetResearch()->GetResearchInfo(), pSector->GetPlanets(), pMajor, CTrade::GetMonopolOwner());
-				
+
 				// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
 				s.Format("%s %s",CResourceManager::GetString("COLONIZATION"), pSector->GetName());
 				AddToLostShipHistory(&m_ShipArray[y], s, CResourceManager::GetString("DESTROYED"));
@@ -4668,7 +4668,7 @@ void CBotf2Doc::CalcShipOrders()
 				map<CString, CMajor*>* pmMajors = m_pRaceCtrl->GetMajors();
 				for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 				{
-					if (pSector->GetOutpost(it->first) == TRUE || 
+					if (pSector->GetOutpost(it->first) == TRUE ||
 					   (pSector->GetOutpost(it->first) == FALSE && pSector->GetStarbase(it->first) == TRUE))
 					{
 						buildable = FALSE;
@@ -4966,7 +4966,7 @@ void CBotf2Doc::CalcShipOrders()
 			}
 			// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
 			pMajor->GetShipHistory()->ModifyShip(&m_ShipArray[y], pSector->GetName(TRUE), m_iRound, CResourceManager::GetString("DISASSEMBLY"),	CResourceManager::GetString("DESTROYED"));
-			
+
 			// Wenn das Schiff eine Flotte anf?hrt, dann auch die Schiffe in der Flotte demontieren
 			if (m_ShipArray[y].GetFleet() != 0)
 			{
@@ -4983,7 +4983,7 @@ void CBotf2Doc::CalcShipOrders()
 						pSystem->SetDuraniumStore((int)(m_ShipInfoArray.GetAt(id).GetNeededDuranium() * proz / 100));
 						pSystem->SetCrystalStore((int)(m_ShipInfoArray.GetAt(id).GetNeededCrystal() * proz / 100));
 						pSystem->SetIridiumStore((int)(m_ShipInfoArray.GetAt(id).GetNeededIridium() * proz / 100));
-						pMajor->GetEmpire()->SetCredits((int)(m_ShipInfoArray.GetAt(id).GetNeededIndustry() * proz / 100));						
+						pMajor->GetEmpire()->SetCredits((int)(m_ShipInfoArray.GetAt(id).GetNeededIndustry() * proz / 100));
 					}
 					// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
 					pMajor->GetShipHistory()->ModifyShip(m_ShipArray[y].GetFleet()->GetShipFromFleet(x), pSector->GetName(TRUE), m_iRound, CResourceManager::GetString("DISASSEMBLY"), CResourceManager::GetString("DESTROYED"));
@@ -5171,7 +5171,7 @@ void CBotf2Doc::CalcShipOrders()
 				CRace* pShipOwner = m_pRaceCtrl->GetRace(m_ShipArray[y].GetOwnerOfShip());
 				CMajor* pShipOwnerMajor = NULL;
 				if (pShipOwner != NULL && pShipOwner->GetType() == MAJOR && (pShipOwnerMajor = dynamic_cast<CMajor*>(pShipOwner))->IsHumanPlayer())
-				{					
+				{
 					CEventBlockade* eventScreen = new CEventBlockade(m_ShipArray[y].GetOwnerOfShip(), CResourceManager::GetString("BLOCKADEEVENT_HEADLINE", FALSE, pSector->GetName()), CResourceManager::GetString("BLOCKADEEVENT_TEXT_" + pShipOwner->GetRaceID(), FALSE, pSector->GetName()));
 					pShipOwnerMajor->GetEmpire()->GetEventMessages()->Add(eventScreen);
 				}
@@ -5181,7 +5181,7 @@ void CBotf2Doc::CalcShipOrders()
 					CMajor* pSystemOwnerMajor = NULL;
 					if (pSystemOwner != NULL && pSystemOwner->GetType() == MAJOR && (pSystemOwnerMajor = dynamic_cast<CMajor*>(pSystemOwner))->IsHumanPlayer())
 					{
-						CEventBlockade* eventScreen = new CEventBlockade(pSystem->GetOwnerOfSystem(), CResourceManager::GetString("BLOCKADEEVENT_HEADLINE", FALSE, pSector->GetName()), CResourceManager::GetString("BLOCKADEEVENT_TEXT_" + pSystemOwner->GetRaceID(), FALSE, pSector->GetName()));					
+						CEventBlockade* eventScreen = new CEventBlockade(pSystem->GetOwnerOfSystem(), CResourceManager::GetString("BLOCKADEEVENT_HEADLINE", FALSE, pSector->GetName()), CResourceManager::GetString("BLOCKADEEVENT_TEXT_" + pSystemOwner->GetRaceID(), FALSE, pSector->GetName()));
 						pSystemOwnerMajor->GetEmpire()->GetEventMessages()->Add(eventScreen);
 					}
 				}
@@ -5202,7 +5202,7 @@ void CBotf2Doc::CalcShipOrders()
 		// eine Sternbasis oder ein Au?enposten steht
 		if (m_ShipArray[y].GetShipType() == SHIP_TYPE::OUTPOST || m_ShipArray[y].GetShipType() == SHIP_TYPE::STARBASE)
 		{
-			pSector->SetShipPort(TRUE, m_ShipArray[y].GetOwnerOfShip());			
+			pSector->SetShipPort(TRUE, m_ShipArray[y].GetOwnerOfShip());
 		}
 	}
 
@@ -5244,7 +5244,7 @@ void CBotf2Doc::CalcShipMovement()
 	for (int y = 0; y < m_ShipArray.GetSize(); y++)
 	{
 		CShip* pShip = &m_ShipArray[y];
-		
+
 		// Prüfen, dass ein Terraformbefehl noch gültig ist
 		if (pShip->GetCurrentOrder() == SHIP_ORDER::TERRAFORM)
 		{
