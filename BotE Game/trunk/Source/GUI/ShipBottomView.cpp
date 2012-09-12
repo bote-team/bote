@@ -109,8 +109,6 @@ void CShipBottomView::OnDraw(CDC* dc)
 	CFontLoader::GetGDIFontColor(pMajor, 3, normalColor);
 	SolidBrush fontBrush(normalColor);
 
-	Bitmap* graphic = NULL;
-
 	CRect r;
 	r.SetRect(0, 0, m_TotalSize.cx, m_TotalSize.cy);
 
@@ -221,7 +219,7 @@ void CShipBottomView::OnDraw(CDC* dc)
 						if (pMajor->GetRaceID() == pShip->GetOwnerOfShip() || pMajor->IsRaceContacted(pShip->GetOwnerOfShip()))
 						{
 							s.Format("Other\\" + it->second->GetPrefix() + "Starbase.bop");
-							graphic = pDoc->GetGraphicPool()->GetGDIGraphic(s);
+							Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic(s);
 							if (graphic)
 								g.DrawImage(graphic, 550, 20, 235, 200);
 							break;
