@@ -39,9 +39,10 @@ CBeamWeapons::~CBeamWeapons()
 //////////////////////////////////////////////////////////////////////
 // Kopierkonstruktor
 //////////////////////////////////////////////////////////////////////
-CBeamWeapons::CBeamWeapons(const CBeamWeapons & rhs)
+CBeamWeapons::CBeamWeapons(const CBeamWeapons & rhs) :
+	m_Firearc(rhs.m_Firearc),
+	m_strBeamName(rhs.m_strBeamName)
 {
-	m_strBeamName	= rhs.m_strBeamName;
 	m_iBeamPower	= rhs.m_iBeamPower;
 	m_iBeamType		= rhs.m_iBeamType;
 	m_iBeamNumber	= rhs.m_iBeamNumber;
@@ -51,7 +52,6 @@ CBeamWeapons::CBeamWeapons(const CBeamWeapons & rhs)
 	m_byRechargeTime= rhs.m_byRechargeTime;
 	m_bPiercing	= rhs.m_bPiercing;
 	m_bModulating = rhs.m_bModulating;
-	m_Firearc		= rhs.m_Firearc;
 }
 
 //////////////////////////////////////////////////////////////////////
