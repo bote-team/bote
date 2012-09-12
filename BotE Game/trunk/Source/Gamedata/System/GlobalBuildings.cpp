@@ -64,7 +64,6 @@ int CGlobalBuildings::GetCountGlobalBuilding(const CString& sRaceID, USHORT nID)
 		return 0;
 
 	int nCount = 0;
-	std::list<USHORT> lGlobalBuildings = it->second;
 	for (std::list<USHORT>::const_iterator it2 = it->second.begin(); it2 != it->second.end(); ++it2)
 		if (*it2 == nID)
 			nCount++;
