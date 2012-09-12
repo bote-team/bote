@@ -77,7 +77,6 @@ void CGlobalBuildings::DeleteGlobalBuilding(const CString& sRaceID, USHORT nID)
 	if (it == m_mGlobalBuildings.end())
 		return;
 
-	std::list<USHORT> lGlobalBuildings = m_mGlobalBuildings[sRaceID];
 	for (std::list<USHORT>::const_iterator it2 = it->second.begin(); it2 != it->second.end(); ++it2)
 	{
 		if (*it2 == nID)
