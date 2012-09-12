@@ -412,8 +412,6 @@ HICON CPPDrawManager::StretchIcon(HICON hIcon, DWORD dwWidth, DWORD dwHeight)
 	HDC   hSrcDC = NULL;
 	HDC   hDestDC = NULL;
 	BITMAP bmp;
-	HBITMAP hOldSrcBitmap = NULL;
-	HBITMAP hOldDestBitmap = NULL;
 	ICONINFO csOriginal = {0}; // Init the ICONINFO structure;
 	ICONINFO csStretched = {0}; // Init the ICONINFO structure;
 
@@ -435,8 +433,8 @@ HICON CPPDrawManager::StretchIcon(HICON hIcon, DWORD dwWidth, DWORD dwHeight)
 		csStretched.hbmColor = ::CreateBitmap(dwWidth, dwHeight, bmp.bmPlanes, bmp.bmBitsPixel, NULL);
 		if (NULL != csStretched.hbmColor)
 		{
-			hOldSrcBitmap = (HBITMAP)::SelectObject(hSrcDC, csOriginal.hbmColor);
-			hOldDestBitmap = (HBITMAP)::SelectObject(hDestDC, csStretched.hbmColor);
+			const HBITMAP hOldSrcBitmap = (HBITMAP)::SelectObject(hSrcDC, csOriginal.hbmColor);
+			const HBITMAP hOldDestBitmap = (HBITMAP)::SelectObject(hDestDC, csStretched.hbmColor);
 			::StretchBlt(hDestDC, 0, 0, dwWidth, dwHeight, hSrcDC, 0, 0, dwWidthOrg, dwHeightOrg, SRCCOPY);
 			if (::GetObject(csOriginal.hbmMask, sizeof(BITMAP), &bmp))
 			{
