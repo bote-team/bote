@@ -77,10 +77,10 @@ CTorpedoInfo::~CTorpedoInfo(void)
 //////////////////////////////////////////////////////////////////////
 /// Funktion liefert die einzige Instanz dieser Klasse (Singleton).
 /// @return Instanz dieser Klasse
-CTorpedoInfo* CTorpedoInfo::GetInstance(void)
+CTorpedoInfo const* const CTorpedoInfo::GetInstance(void)
 {
-	static CTorpedoInfo instance;
-    return &instance;
+	static const CTorpedoInfo instance;
+	return &instance;
 }
 
 const CString& CTorpedoInfo::GetName(BYTE type) {

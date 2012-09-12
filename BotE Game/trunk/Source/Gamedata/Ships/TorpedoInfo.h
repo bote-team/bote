@@ -85,7 +85,7 @@ private:
 	// Funktionen
 	/// Funktion liefert die einzige Instanz dieser Klasse (Singleton).
 	/// @return Instanz dieser Klasse
-	static CTorpedoInfo* GetInstance(void);
+	static CTorpedoInfo const* const GetInstance(void);
 
 	// Attribute
 	std::vector<TORPEDOINFO> m_vInfos;	///< alle möglichen Torpedotypen
