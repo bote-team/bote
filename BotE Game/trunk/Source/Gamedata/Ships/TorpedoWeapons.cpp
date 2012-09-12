@@ -35,16 +35,16 @@ CTorpedoWeapons::~CTorpedoWeapons()
 //////////////////////////////////////////////////////////////////////
 // Kopierkonstruktor
 //////////////////////////////////////////////////////////////////////
-CTorpedoWeapons::CTorpedoWeapons(const CTorpedoWeapons & rhs)
+CTorpedoWeapons::CTorpedoWeapons(const CTorpedoWeapons & rhs) :
+	m_strTupeName(rhs.m_strTupeName),
+	m_Firearc(rhs.m_Firearc)
 {
 	m_iTorpedoType		= rhs.m_iTorpedoType;
 	m_iNumber			= rhs.m_iNumber;
 	m_iTupeFirerate		= rhs.m_iTupeFirerate;
 	m_iNumberOfTupes	= rhs.m_iNumberOfTupes;
 	m_byAccuracy		= rhs.m_byAccuracy;
-	m_strTupeName		= rhs.m_strTupeName;
 	m_bOnlyMicroPhoton  = rhs.m_bOnlyMicroPhoton;
-	m_Firearc		= rhs.m_Firearc;
 }
 
 //////////////////////////////////////////////////////////////////////
