@@ -1220,6 +1220,10 @@ Transport
 Follow
 [TRAIN_SHIP_ORDER]
 Train
+[WAIT_SHIP_ORDER]
+Wait
+[SENTRY_SHIP_ORDER]
+Sentry
 
 // ship types, singular
 [TRANSPORTER]
@@ -2347,12 +2351,6 @@ Alien artifact found
 In sector § an extremely interesting alien technology was discovered
 [ALIENTECLONG]
 In sector § alien technology has been discovered which promotes our research in all areas
-[GLOBALEVENTRESEARCH]
-Your scientists are working very efficently
-[GLOBALEVENTMINOR]
-The gouvernment of the § changes
-[ALIENTEC]
-Alien technologie was found in §
 [EVENTSHIPXP]
 During the exploration of §, the crew gained extra experience
 
@@ -2385,6 +2383,7 @@ The battle helicopters of the Coalition of Planets are very fast and agile. They
 Marine Corps 
 [MAJOR1_TROOP7_DESC]
 The Marine Corps are special units of the Terrans with specialists from many fields. Only the best pass the long and rigorous training successfully. 
+
 [MAJOR2_TROOP1_NAME]
 Heyoun Rocketeers
 [MAJOR2_TROOP1_DESC]
@@ -2409,6 +2408,7 @@ Heyoun Defense Droids are particularly well suited for defending against ground 
 Heyoun Command Units
 [MAJOR2_TROOP6_DESC]
 Heyoun special units. They have small, but very accurate handguns and other highly advanced technology and equipment which turns them to extremely efficient elite units, at least for Heyoun ratio. 
+
 [MAJOR3_TROOP1_NAME]
 Khaoron Warriors
 [MAJOR3_TROOP1_DESC]
@@ -2437,6 +2437,7 @@ Khaoron warriors of the 3rd Skill have special knowledge in biological and chemi
 Kha'rec Elite Forces
 [MAJOR3_TROOP7_DESC]
 Kha'rec elite warriors are the ultimate special forces of the Khaoron Empire. They are intensively trained for many tasks and particularly successful and efficient. 
+
 [MAJOR4_TROOP1_NAME]
 Marksmen
 [MAJOR4_TROOP1_DESC]
@@ -2469,6 +2470,7 @@ These helicopters are very fast and invisible. They get charged with special ord
 Rotharianische Spezialtruppen
 [MAJOR4_TROOP8_DESC]
 Spezialeinheiten der Rotharianer. Sie sind sehr gut ausgebildet und wurden genetisch Verbessert.
+
 [MAJOR5_TROOP1_NAME]
 Stormtroopers
 [MAJOR5_TROOP1_DESC]
@@ -2497,6 +2499,7 @@ These heavily armed tanks overruns populous systems very quickly. Their firepowe
 Cartar Aviation Squadrons
 [MAJOR5_TROOP7_DESC]
 Cartare aviation units are very fast and agile. They are known for their legendary flight and evasive maneuvers. Therefore they have low loss rates in battles. 
+
 [MAJOR6_TROOP1_NAME]
 Da'unor Sniper
 [MAJOR6_TROOP1_DESC]
@@ -2519,7 +2522,7 @@ Mechanical Attack Units
 Mechanical attack units are equipped with a large arsenal of weapons and are optimized for conquesting of foreign planets. 
 [MAJOR6_TROOP6_NAME]
 Da'unor Special Units
-[MAJOR6_TROOP1_DESC]
+[MAJOR6_TROOP6_DESC]
 The mechanical Da'unor Special Units are agile, fast and very efficient. They have a high firepower and operate in small groups or individually. 
 
 [MRD]
@@ -2544,3 +2547,10 @@ very high
 technical progress
 [NEW_TECHNOLOGY_ALLOWS]
 new technology allows:
+
+[EVENT_IONISIERENDES_GASWESEN]
+By an ionizing cloud being the complete energy supply system in § was disabled
+[EVENT_GABALLIANER_SEUCHENSCHIFF]
+By a Gaballian plague ship the complete food supply system in § was disabled
+[EVENT_BLIZZARD_PLASMAWESEN]
+Through a blizzard plasma being the entire energy supply system in § was disabled
