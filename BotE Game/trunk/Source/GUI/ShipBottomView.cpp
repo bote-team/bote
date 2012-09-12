@@ -112,8 +112,6 @@ void CShipBottomView::OnDraw(CDC* dc)
 	CRect r;
 	r.SetRect(0, 0, m_TotalSize.cx, m_TotalSize.cy);
 
-	USHORT counter = 0;
-
 	if (m_LastKO != pDoc->GetKO())
 	{
 		m_LastKO = pDoc->GetKO();
@@ -147,6 +145,8 @@ void CShipBottomView::OnDraw(CDC* dc)
 		Gdiplus::Color markColor;
 		markColor.SetFromCOLORREF(pMajor->GetDesign()->m_clrListMarkTextColor);
 		Gdiplus::Font font(CComBSTR(fontName), fontSize);
+
+		USHORT counter = 0;
 
 		for (int i = 0; i < pDoc->m_ShipArray.GetSize(); i++)
 		{
