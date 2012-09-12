@@ -89,19 +89,19 @@ void CAIPrios::CalcShipPrios(CSectorAI* sectorAI)
 	{
 		CMajor* pMajor = it->second;
 		ASSERT(pMajor);
-		BYTE researchLevels[6] =
-		{
-			pMajor->GetEmpire()->GetResearch()->GetBioTech(),
-			pMajor->GetEmpire()->GetResearch()->GetEnergyTech(),
-			pMajor->GetEmpire()->GetResearch()->GetCompTech(),
-			pMajor->GetEmpire()->GetResearch()->GetPropulsionTech(),
-			pMajor->GetEmpire()->GetResearch()->GetConstructionTech(),
-			pMajor->GetEmpire()->GetResearch()->GetWeaponTech()
-		};
 
 		if (sectorAI->GetStationBuildSector(it->first).points > MINBASEPOINTS)
 		{
 			BOOLEAN buildableStation = FALSE;
+			const BYTE researchLevels[6] =
+			{
+				pMajor->GetEmpire()->GetResearch()->GetBioTech(),
+				pMajor->GetEmpire()->GetResearch()->GetEnergyTech(),
+				pMajor->GetEmpire()->GetResearch()->GetCompTech(),
+				pMajor->GetEmpire()->GetResearch()->GetPropulsionTech(),
+				pMajor->GetEmpire()->GetResearch()->GetConstructionTech(),
+				pMajor->GetEmpire()->GetResearch()->GetWeaponTech()
+			};
 			for (int j = 0; j < m_pDoc->m_ShipInfoArray.GetSize(); j++)
 				if (m_pDoc->m_ShipInfoArray.GetAt(j).GetRace() == pMajor->GetRaceShipNumber())
 					if (m_pDoc->m_ShipInfoArray.GetAt(j).GetShipType() == SHIP_TYPE::OUTPOST || m_pDoc->m_ShipInfoArray.GetAt(j).GetShipType() == SHIP_TYPE::STARBASE)
