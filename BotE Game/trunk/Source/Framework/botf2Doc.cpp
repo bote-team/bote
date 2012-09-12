@@ -4632,15 +4632,6 @@ void CBotf2Doc::CalcShipOrders()
 			CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(m_ShipArray[y].GetOwnerOfShip()));
 			ASSERT(pMajor);
 			network::RACE client = m_pRaceCtrl->GetMappedClientID(pMajor->GetRaceID());
-			BYTE researchLevels[6] =
-			{
-				pMajor->GetEmpire()->GetResearch()->GetBioTech(),
-				pMajor->GetEmpire()->GetResearch()->GetEnergyTech(),
-				pMajor->GetEmpire()->GetResearch()->GetCompTech(),
-				pMajor->GetEmpire()->GetResearch()->GetPropulsionTech(),
-				pMajor->GetEmpire()->GetResearch()->GetConstructionTech(),
-				pMajor->GetEmpire()->GetResearch()->GetWeaponTech()
-			};
 
 			// jetzt müssen wir die Schiffsinfos durchgehen und schauen, welche Station wir technologisch bauen könnten.
 			// hier wird vereinfacht angenommen, das an teurerer Aussenposten auch ein besserer ist
@@ -4650,6 +4641,15 @@ void CBotf2Doc::CalcShipOrders()
 				&& pSector->GetStarbase(m_ShipArray[y].GetOwnerOfShip()) == FALSE)
 			{
 				USHORT costs = 0;
+				const BYTE researchLevels[6] =
+				{
+					pMajor->GetEmpire()->GetResearch()->GetBioTech(),
+					pMajor->GetEmpire()->GetResearch()->GetEnergyTech(),
+					pMajor->GetEmpire()->GetResearch()->GetCompTech(),
+					pMajor->GetEmpire()->GetResearch()->GetPropulsionTech(),
+					pMajor->GetEmpire()->GetResearch()->GetConstructionTech(),
+					pMajor->GetEmpire()->GetResearch()->GetWeaponTech()
+				};
 				for (int l = 0; l < m_ShipInfoArray.GetSize(); l++)
 					if (m_ShipInfoArray.GetAt(l).GetRace() == pMajor->GetRaceShipNumber()
 						&& m_ShipInfoArray.GetAt(l).GetShipType() == SHIP_TYPE::OUTPOST
