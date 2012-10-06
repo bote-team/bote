@@ -4015,36 +4015,34 @@ void CBotf2Doc::CalcNewRoundData()
 
 			// Hier wird berechnet, was wir von der Karte alles sehen, welche Sektoren wir durchfliegen können
 			// alles abhängig von unseren diplomatischen Beziehungen
-			map<CString, bool> mShipPort;
 			for (map<CString, CMajor*>::const_iterator i = pmMajors->begin(); i != pmMajors->end(); ++i)
 				for (map<CString, CMajor*>::const_iterator j = pmMajors->begin(); j != pmMajors->end(); ++j)
 				{
-					if (m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetScanned(i->first) == TRUE && i->first != j->first)
-						if (i->second->GetAgreement(j->first) >= DIPLOMATIC_AGREEMENT::COOPERATION)
-							m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).SetScanned(j->first);
-					if (m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetKnown(i->first) == TRUE && i->first != j->first)
-					{
-						if (i->second->GetAgreement(j->first) >= DIPLOMATIC_AGREEMENT::FRIENDSHIP)
-							m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).SetScanned(j->first);
-						if (i->second->GetAgreement(j->first) >= DIPLOMATIC_AGREEMENT::COOPERATION)
-							m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).SetKnown(j->first);
-					}
-					if (m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSector() == i->first && i->first != j->first)
-					{
-						if (i->second->GetAgreement(j->first) >= DIPLOMATIC_AGREEMENT::TRADE)
-							m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).SetScanned(j->first);
-						if (i->second->GetAgreement(j->first) >= DIPLOMATIC_AGREEMENT::FRIENDSHIP)
-							m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).SetKnown(j->first);
-					}
-					if (m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetShipPort(i->first) == TRUE && i->first != j->first)
-						if (i->second->GetAgreement(j->first) >= DIPLOMATIC_AGREEMENT::COOPERATION)
-							mShipPort[j->first] = TRUE;
-				}
+					if(i == j)
+						continue;
 
-			for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
-				if (mShipPort[it->first] == true)
-				{
-					m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).SetShipPort(TRUE, it->first);
+					CSector& sector = GetSector(x, y);
+					const DIPLOMATIC_AGREEMENT::Typ agreement = i->second->GetAgreement(j->first);
+					if (sector.GetScanned(i->first))
+						if (agreement >= DIPLOMATIC_AGREEMENT::COOPERATION)
+							sector.SetScanned(j->first);
+					if (sector.GetKnown(i->first))
+					{
+						if (agreement >= DIPLOMATIC_AGREEMENT::FRIENDSHIP)
+							sector.SetScanned(j->first);
+						if (agreement >= DIPLOMATIC_AGREEMENT::COOPERATION)
+							sector.SetKnown(j->first);
+					}
+					if (sector.GetOwnerOfSector() == i->first)
+					{
+						if (agreement >= DIPLOMATIC_AGREEMENT::TRADE)
+							sector.SetScanned(j->first);
+						if (agreement >= DIPLOMATIC_AGREEMENT::FRIENDSHIP)
+							sector.SetKnown(j->first);
+					}
+					if (sector.GetShipPort(i->first))
+						if (agreement >= DIPLOMATIC_AGREEMENT::COOPERATION)
+							sector.SetShipPort(TRUE, j->first);
 				}
 		}
 
