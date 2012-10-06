@@ -147,7 +147,7 @@ public:
 	/// Funktion gibt die Koordinate des Hauptsystems einer Majorrace zurück.
 	/// @param sMajor Rassen-ID
 	/// @return Koordinate auf der Galaxiemap
-	CPoint GetRaceKO(const CString& sMajorID);
+	CPoint GetRaceKO(const CString& sMajorID) const;
 
 	CSector& GetSector(int x, int y) { ASSERT(x < STARMAP_SECTORS_HCOUNT && y < STARMAP_SECTORS_VCOUNT); return m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT); }
 	CSector& GetSector(const CPoint& ko) { return GetSector(ko.x, ko.y); }

@@ -816,12 +816,12 @@ void CBotf2Doc::ResetIniSettings(void)
 /// Funktion gibt die Koordinate des Hauptsystems einer Majorrace zurück.
 /// @param sMajor Rassen-ID
 /// @return Koordinate auf der Galaxiemap
-CPoint CBotf2Doc::GetRaceKO(const CString& sMajorID)
+CPoint CBotf2Doc::GetRaceKO(const CString& sMajorID) const
 {
-	if (m_mRaceKO.find(sMajorID) == m_mRaceKO.end())
+	const std::map<CString, std::pair<int, int>>::const_iterator race = m_mRaceKO.find(sMajorID);
+	if (race == m_mRaceKO.end())
 		return CPoint(-1,-1);
-	else
-		return CPoint(m_mRaceKO[sMajorID].first, m_mRaceKO[sMajorID].second);
+	return CPoint(race->second.first, race->second.second);
 }
 
 void CBotf2Doc::SetKO(int x, int y)
