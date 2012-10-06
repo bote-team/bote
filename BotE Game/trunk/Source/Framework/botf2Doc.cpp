@@ -5836,7 +5836,7 @@ void CBotf2Doc::CalcShipEffects()
 			{
 				pShip->SetKO(ptRetreatSector);
 				// aktuell eingestellten Kurs löschen (nicht das das Schiff wieder in den Gefahrensektor fliegt)
-				pShip->SetTargetKO(ptRetreatSector, 0);
+				pShip->SetTargetKO(CPoint(-1, -1), 0);
 			}
 
 			// sind alle Schiffe in einer Flotte im Rückzug, so kann die ganze Flotte
@@ -5877,7 +5877,7 @@ void CBotf2Doc::CalcShipEffects()
 						{
 							pFleetShip->SetKO(ptRetreatSector);
 							// aktuell eingestellten Kurs löschen (nicht das das Schiff wieder in den Gefahrensektor fliegt)
-							pFleetShip->SetTargetKO(ptRetreatSector, 0);
+							pFleetShip->SetTargetKO(CPoint(-1, -1), 0);
 						}
 
 						// womögicher Terraformplanet oder Stationsbau zurücknehmen
