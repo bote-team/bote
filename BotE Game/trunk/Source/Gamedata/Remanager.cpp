@@ -145,8 +145,6 @@ bool CReManager::SystemEvent(const CPoint &ko, CMajor* pRace)
 
 void CReManager::GlobalEventResearch(CMajor *pRace)
 {
-	CBotf2Doc* pDoc = ((CBotf2App*)AfxGetApp())->GetDocument();
-	ASSERT(pDoc);
 	//CEventRandom* EmpireEvent=new CEventRandom(pRace->GetRaceID(),"Breakthrough",CResourceManager::GetString("BREAKTHROUGH"),CResourceManager::GetString("GLOBALEVENTRESEARCH"));
 	//pRace->GetEmpire()->GetEventMessages()->Add(EmpireEvent);
 	CString messagetext=CResourceManager::GetString("GLOBALEVENTRESEARCH");
