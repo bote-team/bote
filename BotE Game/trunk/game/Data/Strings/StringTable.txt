@@ -2332,13 +2332,13 @@ Die Bewohner des § Systems feiern ihre großartige Regierung
 [SYSTEMEVENTMORALMALUS]
 Die Bewohner des § Systems verlieren das Vertrauen in ihre Regierung
 [SYSTEMEVENTPLANETMOVEMENT]
-Es fand eine Klimaveränderung auf § statt
+Es fand eine Klimaveränderung auf § statt. Die Maximalbevölkerung hat sich um § Mrd. geändert.
 [SYSTEMEVENTPLANETDEMOGRAPHIC]
 Drastischer Demographischer Wandel auf §
 [SYSTEMEVENTPLANETDEMOGRAPHICTITLE]
 Demografischer Wandel
 [SYSTEMEVENTPLANETDEMOGRAPHICLONG]
-Durch Fehlkalkulationen ist die Sterberate auf § sehr viel höher als geplant, wodurch die Bevölkerung schrumpft
+Durch Fehlkalkulationen ist die Sterberate auf § sehr viel höher als geplant, wodurch die Bevölkerung um § Mrd. schrumpft.
 [BREAKTHROUGH]
 Erfolg
 [GLOBALEVENTRESEARCH]

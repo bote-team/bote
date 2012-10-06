@@ -4,10 +4,9 @@
 
 enum GLOBALEVENTTYPE
 {
-	GLOBALEVENTRESEARCH=0,
-	GLOBALEVENTMINOR=1
-
-
+	GLOBALEVENTSYSTEM = 0,
+	GLOBALEVENTRESEARCH = 1,
+	GLOBALEVENTMINOR = 2
 };
 
 enum SYSTEMEVENTTYPE
@@ -22,9 +21,9 @@ enum EXPLOREEVENTTYPE
 	ALIENTEC=0,
 	EVENTSHIPXP=1
 };
-#define GLOBALEVENTTYPES 2
-#define SYSTEMEVENTTYPES 3
-#define EXPLOREEVENTTYPES 2
+//#define GLOBALEVENTTYPES 2
+//#define SYSTEMEVENTTYPES 3
+//#define EXPLOREEVENTTYPES 2
 //Klasse zum berchnen der Random Events(Random Event Manager)
 class CReManager : public CObject
 {
@@ -40,21 +39,18 @@ class CReManager : public CObject
 	///Berechnet Events wenn ein Sektor erkundet wird
 	void CalcExploreEvent(const CPoint& ko, CMajor* pRace, CArray<CShip, CShip>* ships);
 
-	///Gibt Wahrscheinlichkeit zurück
-	USHORT getProbability() {return m_Probability;};
-
-	///Setzt die Wahrscheinlichkeit auf newProb
-	void setProbability(USHORT newProb) {m_Probability=((newProb<101)?newProb:100);};
-
-	private:
+private:
 
 	//Für Random Events die nur ein System betreffen
-	bool SystemEvent(CPoint &ko, CMajor* pRace);
+	bool SystemEvent(const CPoint &ko, CMajor* pRace);
 
 	//Für globale Events
-	bool GlobalEvent(CMajor* pRace);
+	void GlobalEventResearch(CMajor* pRace);
+	void GlobalEventMinor(CMajor* pRace, CMinor* pMinor);
 
-	USHORT m_Probability;
+	const unsigned m_uiGlobalProb;//0-100
+	const unsigned m_uiProbPerSystem;//0-1000
+	const unsigned m_uiProbPerMinor;//0-1000
 
 
 };

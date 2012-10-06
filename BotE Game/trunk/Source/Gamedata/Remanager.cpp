@@ -10,36 +10,65 @@
 #include "Events/EventRandom.h"
 #include "Gamedata/General/Message.h"
 
-CReManager::CReManager(void)
+#include <cassert>
+
+CReManager::CReManager(void) :
+	m_uiGlobalProb(3),
+	m_uiProbPerSystem(10),
+	m_uiProbPerMinor(10)
 {
-	m_Probability=5;
 }
 CReManager::~CReManager(void)
 {
 }
+
+//In this function, calculate whether an event fails or succeeds due to given probabilities.
+//Functions executed in succession only decide whether an event fails due to constraints
+//such as population already being at minimum.
 void CReManager::CalcEvents(CMajor* pRace)
 {
-	//Berechnet ob ein Event für diese Race eintritt. Wenn nicht wird returnt
-	int randnumber=rand()%101;
-	if(randnumber>m_Probability) return; //Es findet kein Ereignis statt
-
-	if(rand()%2==1)//Ein nur 1 System betreffendes Event
+	CBotf2Doc const* pDoc = dynamic_cast<CBotf2App*>(AfxGetApp())->GetDocument();
+	const unsigned event_type = rand() % 3;
+	if(event_type == GLOBALEVENTSYSTEM)//system affecting event
 	{
-		int wichsystem=rand()%(pRace->GetEmpire()->GetSystemList()->GetSize());//wählt System aus
-		CPoint KO = pRace->GetEmpire()->GetSystemList()->GetAt(wichsystem).ko; //sucht koordinaten des Systems
-		for(int i=0;i<100&&(!SystemEvent(KO, pRace));i++)
-		{
-			wichsystem=rand()%(pRace->GetEmpire()->GetSystemList()->GetSize());//wählt System aus
-			CPoint KO = pRace->GetEmpire()->GetSystemList()->GetAt(wichsystem).ko; //sucht koordinaten des Systems
-		};
-
-	} else{  //Ein globales Event
-		for(int i=0;i<100&&(!GlobalEvent(pRace));i++);
+		//Calculate whether such event happens. The more systems we have, the more
+		//likely it is that one of them is affected.
+		CArray<SystemViewStruct> const* systems = pRace->GetEmpire()->GetSystemList();
+		const unsigned size = systems->GetSize();
+		const int prob = min(m_uiProbPerSystem * size, 1000);
+		if(rand() % 999 >= prob)
+			return;
+		int whichsystem = rand() % size;//wählt System aus
+		const CPoint ko = systems->GetAt(whichsystem).ko; //sucht koordinaten des Systems
+		//Major home systems are generally unaffected. Unbalances too much.
+		if(pDoc->GetRaceKO(pRace->GetRaceID()) == ko)
+			return;
+		for(int i=0;i<100&&(!SystemEvent(ko, pRace));i++);
 	}
-
+	else if (event_type == GLOBALEVENTRESEARCH){
+		if(rand() % 99 >= static_cast<int>(m_uiGlobalProb))
+			return; //Es findet kein Ereignis statt
+		GlobalEventResearch(pRace);
+	}
+	else //event_type == GLOBALEVENTMINOR
+	{
+		std::vector<CMinor*> PossibleMinors;
+		const std::map<CString, CMinor*>* pmMinors = pDoc->GetRaceCtrl()->GetMinors();
+		for (map<CString, CMinor*>::const_iterator it = pmMinors->begin(); it != pmMinors->end(); ++it)
+		{
+			CMinor* pMinor = it->second;
+			if(pRace->IsRaceContacted(pMinor->GetRaceID())&& pMinor->GetRelation(pRace->GetRaceID())<85)
+				PossibleMinors.insert(PossibleMinors.end(),pMinor);
+		}
+		const unsigned size = PossibleMinors.size();
+		const int prob = min(m_uiProbPerMinor * size, 1000);
+		if(rand() % 999 >= prob)
+			return;
+		GlobalEventMinor(pRace, PossibleMinors.at(rand() % size));
+	}
 }
 
-bool CReManager::SystemEvent(CPoint &ko, CMajor* pRace)
+bool CReManager::SystemEvent(const CPoint &ko, CMajor* pRace)
 {
 	CBotf2Doc* pDoc = ((CBotf2App*)AfxGetApp())->GetDocument();
 	ASSERT(pDoc);
@@ -59,19 +88,26 @@ bool CReManager::SystemEvent(CPoint &ko, CMajor* pRace)
 		pDoc->GetSystem(ko).SetMoral(-10);
 	}else if(eventnumber==SYSTEMEVENTPLANETMOVEMENT)//Planetenveränderung
 	{
-		if(pDoc->GetRaceKO(pRace->GetRaceID()) == ko)
-			success = false;
-		else {
-			std::vector<CPlanet> planets = pDoc->GetSector(ko).GetPlanets();
-			int planet=rand()%planets.size();
-			while(!(planets.at(planet).GetHabitable())) planet=rand()%planets.size();
-			planets.at(planet).SetMaxHabitant(planets.at(planet).GetMaxHabitant()+rand()%7-3);
-			messagetext=CResourceManager::GetString("SYSTEMEVENTPLANETMOVEMENT",false,planets.at(planet).GetPlanetName());
+		std::vector<CPlanet>& planets = pDoc->GetSector(ko).GetPlanets();
+		const int size = planets.size();
+		assert(size >= 1);
+		int planet=rand()%size;
+		while(!(planets.at(planet).GetHabitable()))
+			planet=rand()%size;
+		const float old_habitants = planets.at(planet).GetMaxHabitant();
+		const float habitants_change = old_habitants * ((rand() % 11) / 10.0f) * ((rand() % 2 == 1) ? 1 : -1);
+		const float new_habitants = min(max(old_habitants + habitants_change, 1),100);
+		success = old_habitants != new_habitants;
+		if(success)
+		{
+			planets.at(planet).SetMaxHabitant(new_habitants);
+			CString habitants_change_string;
+			habitants_change_string.Format("%.3f", habitants_change);
+			messagetext=CResourceManager::GetString("SYSTEMEVENTPLANETMOVEMENT",false,planets.at(planet).GetPlanetName(), habitants_change_string);
 		}
 	}else if(eventnumber==SYSTEMEVENTDEMOGRAPHIC)
 	{
-
-		std::vector<CPlanet> planets = pDoc->GetSector(ko).GetPlanets();
+		std::vector<CPlanet>& planets = pDoc->GetSector(ko).GetPlanets();
 		int planet = 0;
 		// Es sollte hier immer mindestens 1 habitabler bewohnter Planet im System sein...
 		success = false;
@@ -83,67 +119,57 @@ bool CReManager::SystemEvent(CPoint &ko, CMajor* pRace)
 			}
 		}
 		if(success) {
-			planets.at(planet).SetCurrentHabitant(planets.at(planet).GetCurrentHabitant()-rand()%(int)(planets.at(planet).GetCurrentHabitant()));
-			messagetext=CResourceManager::GetString("SYSTEMEVENTPLANETDEMOGRAPHIC",false,planets.at(planet).GetPlanetName());
-			CEventRandom* EmpireEvent=new CEventRandom(pRace->GetRaceID(),"demographic",CResourceManager::GetString("SYSTEMEVENTPLANETDEMOGRAPHICTITLE"),CResourceManager::GetString("SYSTEMEVENTPLANETDEMOGRAPHICLONG",false,planets.at(planet).GetPlanetName()));
-			pRace->GetEmpire()->GetEventMessages()->Add(EmpireEvent);
+			const float old_habitants = planets.at(planet).GetCurrentHabitant();
+			const float habitants_change = old_habitants * ((rand() % 11) / 10.0f) * -1;
+			const float new_habitants = max(old_habitants + habitants_change, 1);
+			success = old_habitants != new_habitants;
+			if(success)
+			{
+				planets.at(planet).SetCurrentHabitant(new_habitants);
+				CString habitants_change_string;
+				habitants_change_string.Format("%.3f", habitants_change * -1);
+				messagetext=CResourceManager::GetString("SYSTEMEVENTPLANETDEMOGRAPHICLONG",false,planets.at(planet).GetPlanetName(), habitants_change_string);
+				//CEventRandom* EmpireEvent=new CEventRandom(pRace->GetRaceID(),"demographic",CResourceManager::GetString("SYSTEMEVENTPLANETDEMOGRAPHICTITLE"),CResourceManager::GetString("SYSTEMEVENTPLANETDEMOGRAPHICLONG",false,planets.at(planet).GetPlanetName()));
+				//pRace->GetEmpire()->GetEventMessages()->Add(EmpireEvent);
+			}
 		}
 	}
 	if(success)
-	{CMessage message;
-	message.GenerateMessage(messagetext,MESSAGE_TYPE::SOMETHING,"",ko,FALSE,0);//Nachricht über Randomevent erstellen
-	pRace->GetEmpire()->AddMessage(message);
+	{
+		CMessage message;
+		message.GenerateMessage(messagetext,MESSAGE_TYPE::SOMETHING,"",ko,FALSE,0);//Nachricht über Randomevent erstellen
+		pRace->GetEmpire()->AddMessage(message);
 	}
 	return success;
-
 }
 
-bool CReManager::GlobalEvent(CMajor *pRace)
+void CReManager::GlobalEventResearch(CMajor *pRace)
 {
 	CBotf2Doc* pDoc = ((CBotf2App*)AfxGetApp())->GetDocument();
 	ASSERT(pDoc);
-	int eventnumber=rand()%2;
-	CString messagetext;
-	MESSAGE_TYPE::Typ typ = MESSAGE_TYPE::NO_TYPE;
-	bool succes=true;
-	if(eventnumber==GLOBALEVENTRESEARCH)//If abfrage mit allen möglichen Randomevents; evtl. hier bedingungen einfügen
-	{
-		CEventRandom* EmpireEvent=new CEventRandom(pRace->GetRaceID(),"Breakthrough",CResourceManager::GetString("BREAKTHROUGH"),CResourceManager::GetString("GLOBALEVENTRESEARCH"));
-		pRace->GetEmpire()->GetEventMessages()->Add(EmpireEvent);
-		messagetext=CResourceManager::GetString("GLOBALEVENTRESEARCH");
-		typ=MESSAGE_TYPE::RESEARCH;
-		pRace->GetEmpire()->AddFP((int)(pRace->GetEmpire()->GetFP()));
-	}else if(eventnumber==GLOBALEVENTMINOR)// Für Minorregierungswechsel
-	{
-		vector<CMinor*> PossibleMinors;
-		map<CString, CMinor*>* pmMinors = pDoc->GetRaceCtrl()->GetMinors();
-		for (map<CString, CMinor*>::const_iterator it = pmMinors->begin(); it != pmMinors->end(); ++it)
-		{
-			CMinor* pMinor = it->second;
-			if(pRace->IsRaceContacted(pMinor->GetRaceID())&& pMinor->GetRelation(pRace->GetRaceID())<85)
-				PossibleMinors.insert(PossibleMinors.end(),pMinor);
-		}
-		if(!PossibleMinors.empty())
-		{
-			CMinor* pMinor=PossibleMinors.at(rand()%PossibleMinors.size());
-			pMinor->SetRelation(pRace->GetRaceID(), (rand() % 100) - pMinor->GetRelation(pRace->GetRaceID()));
-			messagetext=CResourceManager::GetString("GLOBALEVENTMINOR",false,pMinor->GetRaceName());
-			typ=MESSAGE_TYPE::DIPLOMACY;
-		}else succes=false;
-	}
+	//CEventRandom* EmpireEvent=new CEventRandom(pRace->GetRaceID(),"Breakthrough",CResourceManager::GetString("BREAKTHROUGH"),CResourceManager::GetString("GLOBALEVENTRESEARCH"));
+	//pRace->GetEmpire()->GetEventMessages()->Add(EmpireEvent);
+	CString messagetext=CResourceManager::GetString("GLOBALEVENTRESEARCH");
+	pRace->GetEmpire()->AddFP((int)(pRace->GetEmpire()->GetFP()));
 
-	if(succes)
-	{	CMessage message;
-		message.GenerateMessage(messagetext,typ,"",NULL,FALSE,0);//Nachricht für Randomevent erstellen
-		pRace->GetEmpire()->AddMessage(message);
-	}
-	return succes;
+	CMessage message;
+	message.GenerateMessage(messagetext,MESSAGE_TYPE::RESEARCH,"",NULL,FALSE,0);//Nachricht für Randomevent erstellen
+	pRace->GetEmpire()->AddMessage(message);
+}
+
+void CReManager::GlobalEventMinor(CMajor* pRace, CMinor* pMinor)
+{
+	pMinor->SetRelation(pRace->GetRaceID(), (rand() % 101) - pMinor->GetRelation(pRace->GetRaceID()));
+	CString messagetext=CResourceManager::GetString("GLOBALEVENTMINOR",false,pMinor->GetRaceName());
+	CMessage message;
+	message.GenerateMessage(messagetext,MESSAGE_TYPE::DIPLOMACY,"",NULL,FALSE,0);//Nachricht für Randomevent erstellen
+	pRace->GetEmpire()->AddMessage(message);
 }
 
 void CReManager::CalcExploreEvent(const CPoint &ko, CMajor *pRace, CArray<CShip, CShip>* ships)
 {
-	int randnumber=rand()%101;
-	if(randnumber>m_Probability) return; //Es findet kein Ereignis statt
+	if(rand() % 99 >= static_cast<int>(m_uiGlobalProb))
+		return; //Es findet kein Ereignis statt
 
 	CBotf2Doc* pDoc = ((CBotf2App*)AfxGetApp())->GetDocument();
 	ASSERT(pDoc);
@@ -153,8 +179,8 @@ void CReManager::CalcExploreEvent(const CPoint &ko, CMajor *pRace, CArray<CShip,
 	MESSAGE_TYPE::Typ typ = MESSAGE_TYPE::NO_TYPE;
 	if(eventnumber==ALIENTEC)
 	{
-		CEventRandom* EmpireEvent=new CEventRandom(pRace->GetRaceID(),"alientech",CResourceManager::GetString("ALIENTECHEADLINE"),CResourceManager::GetString("ALIENTECLONG",false,pDoc->GetSector(ko).GetName(true)));
-		pRace->GetEmpire()->GetEventMessages()->Add(EmpireEvent);
+		//CEventRandom* EmpireEvent=new CEventRandom(pRace->GetRaceID(),"alientech",CResourceManager::GetString("ALIENTECHEADLINE"),CResourceManager::GetString("ALIENTECLONG",false,pDoc->GetSector(ko).GetName(true)));
+		//pRace->GetEmpire()->GetEventMessages()->Add(EmpireEvent);
 		messagetext=CResourceManager::GetString("ALIENTEC",false,pDoc->GetSector(ko).GetName(true));
 		typ=MESSAGE_TYPE::RESEARCH;
 		pRace->GetEmpire()->AddFP(100);

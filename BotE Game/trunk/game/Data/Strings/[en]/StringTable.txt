@@ -2332,13 +2332,13 @@ The citizens of § are proud about their gouvernment
 [SYSTEMEVENTMORALMALUS]
 The Citizens of § become unhappy
 [SYSTEMEVENTPLANETMOVEMENT]
-There was a climatic change on §
+There was a climatic change on §. The maximum population has changed by § billions.
 [SYSTEMEVENTPLANETDEMOGRAPHIC]
 Dramatically demographic changes at §
 [SYSTEMEVENTPLANETDEMOGRAPHICTITLE]
 Demographic Changes
 [SYSTEMEVENTPLANETDEMOGRAPHICLONG]
-Through miscalculations the mortality rate in § is much higher than planned. Population is shrinking
+Through miscalculations the mortality rate in § is much higher than planned. The Population is shrinking by § billions.
 [BREAKTHROUGH]
 Success
 [GLOBALEVENTRESEARCH]
