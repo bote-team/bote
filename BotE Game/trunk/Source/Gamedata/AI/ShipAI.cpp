@@ -165,7 +165,7 @@ void CShipAI::CalculateShipOrders(CSectorAI* SectorAI)
 						if (pOwner->GetStarmap()->GetRange(ko) <= pShip->GetRange())
 						{
 							// Zielkoordinate für das Schiff setzen
-							pShip->SetTargetKO(ko,0);
+							pShip->SetTargetKO(ko == pShip->GetKO() ? CPoint(-1, -1) : ko,0);
 							MYTRACE("shipai")(MT::LEVEL_INFO, "Race %s: Ship %s (%s) has terraforming target: %d,%d\n",sOwner, pShip->GetShipName(), pShip->GetShipTypeAsString(), ko.x,ko.y);
 							break;
 						}
@@ -186,7 +186,7 @@ void CShipAI::CalculateShipOrders(CSectorAI* SectorAI)
 						if (pOwner->GetStarmap()->GetRange(ko) <= pShip->GetRange())
 						{
 							// Zielkoordinate für das Schiff setzen
-							pShip->SetTargetKO(ko,0);
+							pShip->SetTargetKO(ko == pShip->GetKO() ? CPoint(-1, -1) : ko,0);
 							MYTRACE("shipai")(MT::LEVEL_INFO, "Race %s: Ship %s (%s) has stationbuild target: %d,%d\n",sOwner, pShip->GetShipName(), pShip->GetShipTypeAsString(), ko.x,ko.y);
 						}
 					}
@@ -349,7 +349,7 @@ bool CShipAI::DoAttackMove(CShip* pShip, const CMajor* pMajor)
 			// hier überprüfen, ob der Sektor erreicht werden kann
 			if (pMajor->GetStarmap()->GetRange(m_BombardSector[sRace]) <= pShip->GetRange())
 			{
-				pShip->SetTargetKO(m_BombardSector[sRace], 0);
+				pShip->SetTargetKO(m_BombardSector[sRace] == pShip->GetKO() ? CPoint(-1, -1) : m_BombardSector[sRace], 0);
 				MYTRACE("shipai")(MT::LEVEL_INFO, "Race %s: BOMBARDTARGET in sector: %d/%d\n",sRace,m_BombardSector[sRace].x,m_BombardSector[sRace].y);
 				return true;
 			}
@@ -376,7 +376,7 @@ bool CShipAI::DoAttackMove(CShip* pShip, const CMajor* pMajor)
 			// hier noch überprüfen, ob der Sektor erreicht werden kann
 			if (pMajor->GetStarmap()->GetRange(m_AttackSector[sRace]) <= pShip->GetRange())
 			{
-				pShip->SetTargetKO(m_AttackSector[sRace], 0);
+				pShip->SetTargetKO(m_AttackSector[sRace] == pShip->GetKO() ? CPoint(-1, -1) : m_AttackSector[sRace], 0);
 				if(MT::CMyTrace::IsLoggingEnabledFor("shipai"))
 				{
 					MYTRACE_CHECKED("shipai")(MT::LEVEL_INFO, "Race %s: GLOBAL ATTACK in sector: %d/%d\n",sRace,m_AttackSector[sRace].x,m_AttackSector[sRace].y);
@@ -395,7 +395,7 @@ bool CShipAI::DoAttackMove(CShip* pShip, const CMajor* pMajor)
 			// hier noch überprüfen, ob der Sektor erreicht werden kann
 			if (pMajor->GetStarmap()->GetRange(p) <= pShip->GetRange())
 			{
-				pShip->SetTargetKO(p, 0);
+				pShip->SetTargetKO(p == pShip->GetKO() ? CPoint(-1, -1) : p, 0);
 				MYTRACE("shipai")(MT::LEVEL_INFO, "Race %s: COLLECT ships in sector: %d/%d\n", sRace,p.x,p.y);
 				return true;
 			}
