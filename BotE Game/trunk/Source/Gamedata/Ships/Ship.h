@@ -113,6 +113,9 @@ public:
 	//fleets manually.
 	//@return true if yes
 	bool HasNothingToDo() const;
+	//Are the hull of this ship and all the hulls of the ships in its fleet at their maximums ?
+	//@return false if yes
+	bool NeedsRepair() const;
 
 	// zum Schreiben der Membervariablen
 	void SetID(USHORT ID) {m_iID = ID+10000;}
@@ -143,6 +146,9 @@ public:
 	void SetIsShipFlagShip(bool bIs) {m_bIsFlagShip = bIs;}
 	void SetCombatTactic(COMBAT_TACTIC::Typ nTactic) {m_nCombatTactic = nTactic;}
 	void SetAlienType(ALIEN_TYPE::Typ nAlienType) {m_nAlienType = nAlienType;}
+
+	//Sets this ship's m_iCurrentOrder to AVOID if it's a civil ship and to ATTACK otherwise.
+	void UnsetCurrentOrder();
 
 	// sonstige Funktionen
 

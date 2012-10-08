@@ -221,6 +221,8 @@ Train ship
 Wait
 [BTN_SENTRY_SHIP_ORDER]
 Stand sentry
+[BTN_REPAIR_SHIP]
+Repair
 
 // decision making buttons
 [BTN_NEXT]
@@ -1224,6 +1226,8 @@ Train
 Wait
 [SENTRY_SHIP_ORDER]
 Sentry
+[REPAIR_SHIP_ORDER]
+Repair
 
 // ship types, singular
 [TRANSPORTER]

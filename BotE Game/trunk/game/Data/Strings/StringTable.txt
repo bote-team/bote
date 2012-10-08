@@ -221,6 +221,8 @@ Trainieren
 Warten
 [BTN_SENTRY_SHIP_ORDER]
 Stationieren
+[BTN_REPAIR_SHIP]
+Reparieren
 
 // Entscheidungsbuttons
 [BTN_NEXT]
@@ -1224,6 +1226,8 @@ Trainieren
 Warten
 [SENTRY_SHIP_ORDER]
 Stationieren
+[REPAIR_SHIP_ORDER]
+Reparieren
 
 // Schiffstypen, Einzahl
 [TRANSPORTER]

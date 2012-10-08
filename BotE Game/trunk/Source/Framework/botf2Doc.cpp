@@ -5192,13 +5192,15 @@ void CBotf2Doc::CalcShipOrders()
 		else if (m_ShipArray[y].GetCurrentOrder() == SHIP_ORDER::WAIT_SHIP_ORDER)
 		{
 			//Do nothing, but only for this round.
-			if (m_ShipArray[y].IsNonCombat())
-				m_ShipArray[y].SetCurrentOrder(SHIP_ORDER::AVOID);
-			else
-				m_ShipArray[y].SetCurrentOrder(SHIP_ORDER::ATTACK);
+			m_ShipArray[y].UnsetCurrentOrder();
 		}
 		//else if (m_ShipArray[y].GetCurrentOrder() == SHIP_ORDER::SENTRY_SHIP_ORDER)
 			//Do nothing for this and all following rounds until an explicit player input.
+		else if (m_ShipArray[y].GetCurrentOrder() == SHIP_ORDER::REPAIR)
+		{
+			//The actual Hull reparing is currenty done in CalcShipMovement(),
+			//after the call to this function.
+		}
 
 		// Vor der Schiffsbewegung aber nach einer möglichen Demontage dort ?berall einen ShipPort setzen wo
 		// eine Sternbasis oder ein Au?enposten steht
@@ -5389,6 +5391,9 @@ void CBotf2Doc::CalcShipMovement()
 					pShip->GetFleet()->GetShipFromFleet(x)->GetHull()->RepairHull();
 			}
 		}
+		if(pShip->GetCurrentOrder() == SHIP_ORDER::REPAIR && (!pShip->NeedsRepair() ||
+			!GetSector(pShip->GetKO()).GetShipPort(pShip->GetOwnerOfShip())))
+				pShip->UnsetCurrentOrder();
 
 		// wenn eine Anomalie vorhanden, deren m?gliche Auswirkungen auf das Schiff berechnen
 		if (GetSector(pShip->GetKO()).GetAnomaly())

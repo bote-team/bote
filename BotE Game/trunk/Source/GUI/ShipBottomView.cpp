@@ -320,7 +320,7 @@ void CShipBottomView::OnDraw(CDC* dc)
 		}
 		// Alle Rechtecke für die Buttons der Schiffsbefehle erstmal auf NULL setzen, damit wir nicht draufklicken
 		// können. Wir dürfen ja nur auf Buttons klicken können, die wir auch sehen
-		for (int j = 0; j <= SHIP_ORDER::SENTRY_SHIP_ORDER; j++)
+		for (int j = 0; j <= SHIP_ORDER::REPAIR; j++)
 			m_ShipOrders[j].SetRect(0,0,0,0);
 
 		// angreifen
@@ -479,6 +479,22 @@ void CShipBottomView::OnDraw(CDC* dc)
 				g.DrawImage(m_pShipOrderButton, r.right-245, r.top+70+counter*35, 120, 30);
 				s = CResourceManager::GetString("BTN_SENTRY_SHIP_ORDER");
 				m_ShipOrders[SHIP_ORDER::SENTRY_SHIP_ORDER].SetRect(r.right-245,r.top+70+counter*35,r.right-125,r.top+100+counter*35);
+				g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.right-245,r.top+70+counter*35,120,30), &fontFormat, &fontBrush);
+				counter++;
+			}
+			// Repairing
+			// Only possible if
+			// 1) the ship or any of the ships in its fleet are actually damaged.
+			// 2) we (or an allied race) have a ship port in this sector.
+			if (m_iTimeCounter > (3 + counter) && m_iWhichMainShipOrderButton == 1 &&
+				pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetCurrentOrder() != SHIP_ORDER::REPAIR &&
+				pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).NeedsRepair() &&
+				pDoc->GetSector(pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetKO()).GetShipPort(
+				pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetOwnerOfShip()))
+			{
+				g.DrawImage(m_pShipOrderButton, r.right-245, r.top+70+counter*35, 120, 30);
+				s = CResourceManager::GetString("BTN_REPAIR_SHIP");
+				m_ShipOrders[SHIP_ORDER::REPAIR].SetRect(r.right-245,r.top+70+counter*35,r.right-125,r.top+100+counter*35);
 				g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.right-245,r.top+70+counter*35,120,30), &fontFormat, &fontBrush);
 				counter++;
 			}
@@ -705,7 +721,7 @@ void CShipBottomView::OnInitialUpdate()
 	m_iPage = 1;
 	m_iTimeCounter = 0;
 	m_bShowNextButton = FALSE;
-	for (int i = 0; i <= SHIP_ORDER::SENTRY_SHIP_ORDER; i++)
+	for (int i = 0; i <= SHIP_ORDER::REPAIR; i++)
 		m_ShipOrders[i].SetRect(0,0,0,0);
 	m_iWhichMainShipOrderButton = -1;
 }
@@ -874,7 +890,7 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 		}
 		// Ab jetzt die kleinen Buttons für die einzelnen genauen Schiffsbefehle
 		network::RACE client = pDoc->GetRaceCtrl()->GetMappedClientID(pMajor->GetRaceID());
-		for (int i = SHIP_ORDER::AVOID; i <= SHIP_ORDER::SENTRY_SHIP_ORDER; i++)
+		for (int i = SHIP_ORDER::AVOID; i <= SHIP_ORDER::REPAIR; i++)
 			if (m_ShipOrders[i].PtInRect(point))
 			{
 				SHIP_ORDER::Typ nOrder = (SHIP_ORDER::Typ)i;

@@ -406,6 +406,9 @@ CString CShip::GetCurrentOrderAsString() const
 	#define TRANSPORT			13
 	#define FOLLOW_SHIP			14
 	#define TRAIN_SHIP			15
+	WAIT_SHIP_ORDER				16
+	SENTRY_SHIP_ORDER			17
+	REPAIR						18
 	*/
 	CString order;
 	switch (m_iCurrentOrder)
@@ -432,6 +435,7 @@ CString CShip::GetCurrentOrderAsString() const
 	case SHIP_ORDER::TRAIN_SHIP: order = CResourceManager::GetString("TRAIN_SHIP_ORDER"); break;
 	case SHIP_ORDER::WAIT_SHIP_ORDER: order = CResourceManager::GetString("WAIT_SHIP_ORDER"); break;
 	case SHIP_ORDER::SENTRY_SHIP_ORDER: order = CResourceManager::GetString("SENTRY_SHIP_ORDER"); break;
+	case SHIP_ORDER::REPAIR: order = CResourceManager::GetString("REPAIR_SHIP_ORDER"); break;
 	default: order = "nothing"; break;
 	}
 	return order;
@@ -1177,7 +1181,7 @@ void CShip::SetTargetKO(const CPoint& TargetKO, int Index, const bool simple_set
 	if(simple_setter)
 		return;
 	if (m_iCurrentOrder > SHIP_ORDER::AVOID) {
-		IsNonCombat() ? m_iCurrentOrder = SHIP_ORDER::AVOID : m_iCurrentOrder = SHIP_ORDER::ATTACK;
+		UnsetCurrentOrder();
 	}
 	m_nTerraformingPlanet = -1;
 }
@@ -1185,4 +1189,20 @@ void CShip::SetTargetKO(const CPoint& TargetKO, int Index, const bool simple_set
 bool CShip::HasNothingToDo() const {
 	return (m_iCurrentOrder == SHIP_ORDER::AVOID || m_iCurrentOrder == SHIP_ORDER::ATTACK)
 		&& (GetTargetKO() == GetKO() || GetTargetKO() == CPoint(-1, -1)) && m_iShipType != SHIP_TYPE::OUTPOST && m_iShipType != SHIP_TYPE::STARBASE;
+}
+
+bool CShip::NeedsRepair() const {
+	if(m_Fleet) {
+		const unsigned size = m_Fleet->GetFleetSize();
+		for(unsigned i = 0; i < size; ++i) {
+			const CHull& hull = *m_Fleet->GetShipFromFleet(i)->GetHull();
+			if(hull.GetCurrentHull() < hull.GetMaxHull())
+				return true;
+		}
+	}
+	return m_Hull.GetCurrentHull() < m_Hull.GetMaxHull();
+}
+
+void CShip::UnsetCurrentOrder() {
+	m_iCurrentOrder = IsNonCombat() ? SHIP_ORDER::AVOID : SHIP_ORDER::ATTACK;
 }
