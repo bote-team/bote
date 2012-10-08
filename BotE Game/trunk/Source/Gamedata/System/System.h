@@ -272,6 +272,9 @@ public:
 	// Funktion überprüft alle Handelsrouten in dem System, ob sie Aufgrund der Bevölkerung oder der Gebäude noch
 	// da sein dürfen. Wurden Handelsrouten gelöscht, so gibt die Funktion die Anzahl der Löschungen zurück
 	BYTE CheckTradeRoutes(CResearchInfo* researchInfo);
+	// Calculates diplomacy-related effects of and to this system's trade routes.
+	// @return number of deleted trade routes
+	unsigned CheckTradeRoutesDiplomacy(CBotf2Doc& pDoc, const CPoint& ko);
 
 	/// Funktion generiert eine neue Ressourcenroute. Wenn die Funktion <code>TRUE</code> zurückgibt, dann konnte die
 	/// Ressourcenroute erfolgreich angelegt werden. Als Parameter wird dabei die Koordinate <code>dest</code> des
@@ -282,6 +285,10 @@ public:
 	/// Funktion überprüft alle Ressourcenrouten in dem System, ob sie Aufgrund der Bevölkerung oder der Gebäude noch
 	/// da sein dürfen. Wurden Ressourcenrouten gelöscht, so gibt die Funktion die Anzahl der Löschungen zurück.
 	BYTE CheckResourceRoutes(CResearchInfo* researchInfo);
+	// Checks this system's resource routes for whether the target system is still part of the empire this system
+	// belongs to.
+	// @return number of deleted resource routes
+	unsigned CheckResourceRoutesExistence(CBotf2Doc& pDoc);
 
 	/// Diese Funktion fügt eine neue Truppe <code>troop</code> dem System hinzu.
 	void AddTroop(const CTroop* troop) {m_Troops.Add(*troop);}

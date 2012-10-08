@@ -153,6 +153,9 @@ public:
 	CSector& GetSector(const CPoint& ko) { return GetSector(ko.x, ko.y); }
 	CSystem& GetSystem(int x, int y) { ASSERT(x < STARMAP_SECTORS_HCOUNT && y < STARMAP_SECTORS_VCOUNT); return m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT); }
 	CSystem& GetSystem(const CPoint& ko) { return GetSystem(ko.x, ko.y); }
+	CSystem& GetSystemForSector(const CSector& s) {
+		return GetSystem(s.GetKO());
+	}
 
 	CBuildingInfo& GetBuildingInfo(int id) {ASSERT(id > 0); return BuildingInfo[id-1];}
 	const CString& GetBuildingName(int id) const {ASSERT(id > 0); return BuildingInfo[id-1].GetBuildingName();}
@@ -286,7 +289,13 @@ protected:
 	/// Diese Funktion berechnet die Produktion der Systeme, was in den Baulisten gebaut werden soll und sonstige
 	/// Daten für die neue Runde.
 	void CalcNewRoundData();
-
+private:
+	//helper functions for CalcNewRoundData()
+	void DistributeMoralProdToEmpire();
+	void AddShipPortsFromMinors(const std::map<CString, CMajor*>& pmMajors);
+	void CheckRoutes(const CSector& sector, CSystem& system, CMajor* pMajor);
+	void CalcNewRoundDataScannedSectors(const CSystem& system, const CSystemProd& production, const CPoint& co);
+protected:
 	/// Diese Funktion berechnet die kompletten Handelsaktivitäten.
 	void CalcTrade();
 

@@ -10,6 +10,7 @@
 #include "BuildingInfo.h"
 #include <map>
 
+
 class CSystemProd :	public CObject
 {
 	friend class CSystem;
@@ -25,6 +26,32 @@ public:
 	virtual ~CSystemProd(void);
 
 	CSystemProd& operator=(const CSystemProd&);
+
+
+	struct RESEARCHBONI {
+		public:
+			RESEARCHBONI() {
+				memset(nBoni, 0, sizeof(nBoni));
+			}
+			RESEARCHBONI(short bio, short energy, short comp, short prop, short cons, short weap) {
+				nBoni[0] = bio;
+				nBoni[1] = energy;
+				nBoni[2] = comp;
+				nBoni[3] = prop;
+				nBoni[4] = cons;
+				nBoni[5] = weap;
+			}
+			RESEARCHBONI& operator+=(const RESEARCHBONI& o) {
+				nBoni[0] += o.nBoni[0];
+				nBoni[1] += o.nBoni[1];
+				nBoni[2] += o.nBoni[2];
+				nBoni[3] += o.nBoni[3];
+				nBoni[4] += o.nBoni[4];
+				nBoni[5] += o.nBoni[5];
+				return *this;
+			}
+			short nBoni[6];
+	};
 
 	// Die Serialisierungsfunktion
 	virtual void Serialize(CArchive &ar);
@@ -88,6 +115,8 @@ public:
 	short GetShipBuildSpeed() const {return m_iShipBuildSpeed;}
 	short GetTroopBuildSpeed() const {return m_iTroopBuildSpeed;}
 	BOOLEAN GetResourceDistributor(BYTE res) const { return m_bResourceDistributor[res]; }
+
+	RESEARCHBONI GetResearchBoni() const;
 
 	// zum Schreiben der Membervariabeln
 	void AddMoralProd(short moralAdd) {m_iMoralProd += moralAdd;}

@@ -2377,6 +2377,26 @@ BYTE CSystem::CheckTradeRoutes(CResearchInfo* researchInfo)
 	return number;
 }
 
+unsigned CSystem::CheckTradeRoutesDiplomacy(CBotf2Doc& pDoc, const CPoint& ko) {
+	unsigned deletedTradeRoutes = 0;
+	for (int i = 0; i < m_TradeRoutes.GetSize(); i++)
+	{
+		CTradeRoute& trade_route = m_TradeRoutes.GetAt(i);
+		const CPoint& dest = trade_route.GetDestKO();
+		// Wenn die Handelsroute aus diplomatischen Gründen nicht mehr vorhanden sein kann
+		if (!trade_route.CheckTradeRoute(ko, CPoint(dest.x, dest.y), &pDoc))
+		{
+			// dann müssen wir diese Route löschen
+			m_TradeRoutes.RemoveAt(i--);
+			deletedTradeRoutes++;
+		}
+		// Ansonsten könnte sich die Beziehung zu der Minorrace verbessern
+		else
+			trade_route.PerhapsChangeRelationship(ko, CPoint(dest.x, dest.y), &pDoc);
+	}
+	return deletedTradeRoutes;
+}
+
 // Funktion generiert eine neue Ressourcenroute. Wenn die Funktion <code>TRUE</code> zurückgibt, dann konnte die
 // Ressourcenroute erfolgreich angelegt werden. Als Parameter wird dabei die Koordinate <code>dest</code> des
 // Zielsektors übergeben sowie die Art der betroffenen Ressource <code>res</code> und einen Zeiger auf alle
@@ -2455,6 +2475,23 @@ BYTE CSystem::CheckResourceRoutes(CResearchInfo* researchInfo)
 			break;
 	}
 	return number;
+}
+
+unsigned CSystem::CheckResourceRoutesExistence(CBotf2Doc& pDoc) {
+	unsigned deletedResourceRoutes = 0;
+	// checken ob das System noch der Rasse gehört, welcher auch das Startsystem der Route gehört
+	for (int i = 0; i < m_ResourceRoutes.GetSize(); i++)
+	{
+		CResourceRoute& res_route = m_ResourceRoutes.GetAt(i);
+		const CPoint dest = res_route.GetKO();
+
+		if (!res_route.CheckResourceRoute(m_sOwnerOfSystem, &pDoc.GetSector(dest.x, dest.y)))
+		{
+			m_ResourceRoutes.RemoveAt(i--);
+			deletedResourceRoutes++;
+		}
+	}
+	return deletedResourceRoutes;
 }
 
 // Wenn in diesem System Truppen stationiert sind, dann wird deren Moralwert mit einbezogen.

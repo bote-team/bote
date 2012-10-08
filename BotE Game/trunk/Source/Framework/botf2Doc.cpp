@@ -3860,256 +3860,271 @@ void CBotf2Doc::CalcOldRoundData()
 		}
 }
 
+///////BEGINN: HELPER FUNCTIONS FOR CBotf2Doc::CalcNewRoundData()///////
+void CBotf2Doc::DistributeMoralProdToEmpire() {
+	CSystemProd::ResetMoralEmpireWide();
+	// Hier müssen wir nochmal die Systeme durchgehen und die imperienweite Moralproduktion auf die anderen System
+	// übertragen
+	for(std::vector<CSector>::const_iterator se = m_Sectors.begin(); se != m_Sectors.end(); ++se) {
+		CSystem* sy = &GetSystemForSector(*se);
+		if(se->GetSunSystem() && sy->GetOwnerOfSystem() != "") {
+			// imperiumsweite Moralproduktion aus diesem System berechnen
+			sy->CalculateEmpireWideMoralProd(&BuildingInfo);
+		}
+	}
+}
+void CBotf2Doc::AddShipPortsFromMinors(const std::map<CString, CMajor*>& pmMajors) {
+	const map<CString, CMinor*>* pmMinors = m_pRaceCtrl->GetMinors();
+	for (map<CString, CMajor*>::const_iterator i = pmMajors.begin(); i != pmMajors.end(); ++i)
+	{
+		CMajor* pMajor = i->second;
+		for (map<CString, CMinor*>::const_iterator j = pmMinors->begin(); j != pmMinors->end(); ++j)
+		{
+			const CMinor* pMinor = j->second;
+			const DIPLOMATIC_AGREEMENT::Typ agreement = pMinor->GetAgreement(pMajor->GetRaceID());
+			if (pMinor->GetSpaceflightNation()&& (
+					agreement == DIPLOMATIC_AGREEMENT::COOPERATION ||
+					agreement == DIPLOMATIC_AGREEMENT::AFFILIATION))
+			{
+				CPoint p = pMinor->GetRaceKO();
+				if (p != CPoint(-1,-1))
+					GetSector(p).SetShipPort(TRUE, pMajor->GetRaceID());
+			}
+		}
+	}
+}
+static void EmitLostRouteMessage(unsigned deletedRoutes, const CString& single_key, const CString& multi_key,
+		const CString& sectorname, const CPoint& co, CEmpire* pEmpire) {
+	CString news;
+	if (deletedRoutes == 1)
+		news = CResourceManager::GetString(single_key,FALSE,sectorname);
+	else
+	{
+		CString lost; lost.Format("%u",deletedRoutes);
+		news = CResourceManager::GetString(multi_key,FALSE,lost,sectorname);
+	}
+	CMessage message;
+	message.GenerateMessage(news, MESSAGE_TYPE::ECONOMY, "", co, FALSE, 4);
+	pEmpire->AddMessage(message);
+}
+void CBotf2Doc::CheckRoutes(const CSector& sector, CSystem& system, CMajor* pMajor) {
+	CEmpire* pEmpire = pMajor->GetEmpire();
+	const CPoint& co = sector.GetKO();
+	const CString& sector_name = sector.GetName();
+	bool select_empire_view = false;
+
+	unsigned deletedTradeRoutes = 0;
+	deletedTradeRoutes += system.CheckTradeRoutesDiplomacy(*this, co);
+	deletedTradeRoutes += system.CheckTradeRoutes(pEmpire->GetResearch()->GetResearchInfo());
+	if(deletedTradeRoutes > 0) {
+		select_empire_view = true;
+		EmitLostRouteMessage(deletedTradeRoutes, "LOST_ONE_TRADEROUTE", "LOST_TRADEROUTES",
+			sector_name, co, pEmpire);
+	}
+	unsigned deletedResourceRoutes = 0;
+	deletedResourceRoutes += system.CheckResourceRoutesExistence(*this);
+	deletedResourceRoutes += system.CheckResourceRoutes(pEmpire->GetResearch()->GetResearchInfo());
+	if(deletedResourceRoutes > 0) {
+		select_empire_view = true;
+		EmitLostRouteMessage(deletedResourceRoutes, "LOST_ONE_RESOURCEROUTE", "LOST_RESOURCEROUTES",
+			sector_name, co, pEmpire);
+	}
+
+	if(select_empire_view && pMajor->IsHumanPlayer()) {
+		const network::RACE client = m_pRaceCtrl->GetMappedClientID(pMajor->GetRaceID());
+		m_iSelectedView[client] = EMPIRE_VIEW;
+	}
+}
+
+static void CalcExtraVisibilityAndRangeDueToDiplomacy(CSector& sector, const std::map<CString, CMajor*>* pmMajors) {
+	for (map<CString, CMajor*>::const_iterator i = pmMajors->begin(); i != pmMajors->end(); ++i)
+	{
+		for (map<CString, CMajor*>::const_iterator j = pmMajors->begin(); j != pmMajors->end(); ++j)
+		{
+			if(i == j)
+				continue;
+
+			const DIPLOMATIC_AGREEMENT::Typ agreement = i->second->GetAgreement(j->first);
+			if (sector.GetScanned(i->first))
+				if (agreement >= DIPLOMATIC_AGREEMENT::COOPERATION)
+					sector.SetScanned(j->first);
+			if (sector.GetKnown(i->first))
+			{
+				if (agreement >= DIPLOMATIC_AGREEMENT::FRIENDSHIP)
+					sector.SetScanned(j->first);
+				if (agreement >= DIPLOMATIC_AGREEMENT::COOPERATION)
+					sector.SetKnown(j->first);
+			}
+			if (sector.GetOwnerOfSector() == i->first)
+			{
+				if (agreement >= DIPLOMATIC_AGREEMENT::TRADE)
+					sector.SetScanned(j->first);
+				if (agreement >= DIPLOMATIC_AGREEMENT::FRIENDSHIP)
+					sector.SetKnown(j->first);
+			}
+			if (sector.GetShipPort(i->first))
+				if (agreement >= DIPLOMATIC_AGREEMENT::COOPERATION)
+					sector.SetShipPort(TRUE, j->first);
+		}
+	}
+}
+static void CalcNewRoundDataMoral(const CSector& sector, CSystem& system, CArray<CTroopInfo>& TroopInfo) {
+	// Wurde das System militärisch erobert, so verringert sich die Moral pro Runde etwas
+	if (sector.GetTakenSector() && system.GetMoral() > 70)
+		system.SetMoral(-rand()%2);
+	// möglicherweise wird die Moral durch stationierte Truppen etwas stabilisiert
+	system.IncludeTroopMoralValue(&TroopInfo);
+}
+void CBotf2Doc::CalcNewRoundDataScannedSectors(const CSystem& system, const CSystemProd& production, const CPoint& co) {
+	// Haben wir einen Scanner in dem System, dann Umgebung scannen
+	if (production.GetScanPower() > 0)
+	{
+		const int power = production.GetScanPower();
+		const int range = production.GetScanRange();
+		const int x = co.x;
+		const int y = co.y;
+		for (int j = -range; j <= range; j++)
+			for (int i = -range; i <= range; i++)
+				if (y+j < STARMAP_SECTORS_VCOUNT && y+j > -1 && x+i < STARMAP_SECTORS_HCOUNT && x+i > -1)
+				{
+					CSector& scanned_sector = GetSector(x+i, y+j);
+					const CString& system_owner = system.GetOwnerOfSystem();
+					scanned_sector.SetScanned(system_owner);
+					// Teiler für die Scanstärke berechnen
+					int div = max(abs(j),abs(i));
+					if (div == 0)
+						div = 1;
+					if (power / div > scanned_sector.GetScanPower(system_owner))
+						scanned_sector.SetScanPower(power / div, system_owner);
+				}
+	}
+}
+static void CalcNewRoundDataIntelligenceBoni(const CSystemProd* production, CIntelligence* intelligence) {
+	// Hier die gesamten Sicherheitsboni der Imperien berechnen
+	intelligence->AddInnerSecurityBonus(production->GetInnerSecurityBoni());
+	intelligence->AddEconomyBonus(production->GetEconomySpyBoni(), 0);
+	intelligence->AddEconomyBonus(production->GetEconomySabotageBoni(), 1);
+	intelligence->AddScienceBonus(production->GetScienceSpyBoni(), 0);
+	intelligence->AddScienceBonus(production->GetScienceSabotageBoni(), 1);
+	intelligence->AddMilitaryBonus(production->GetMilitarySpyBoni(), 0);
+	intelligence->AddMilitaryBonus(production->GetMilitarySabotageBoni(), 1);
+}
+static void GetResearchBoniFromSpecialTechsAndSetThem(
+	std::map<CString, CSystemProd::RESEARCHBONI>& researchBonis, const std::map<CString, CMajor*>* pmMajors) {
+	// Forschungsboni aus Spezialforschungen setzen, nachdem wir diese aus allen Systemen geholt haben
+	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
+	{
+		CResearch* pResearch = it->second->GetEmpire()->GetResearch();
+		const CResearchComplex* research_complex = pResearch->GetResearchInfo()
+			->GetResearchComplex(RESEARCH_COMPLEX::RESEARCH);
+		// Die Boni auf die einzelnen Forschungsgebiete durch Spezialforschungen addieren
+		if (research_complex->GetFieldStatus(1) == RESEARCH_STATUS::RESEARCHED)
+		{
+			researchBonis[it->first].nBoni[0] += research_complex->GetBonus(1);
+			researchBonis[it->first].nBoni[1] += research_complex->GetBonus(1);
+		}
+		else if (research_complex->GetFieldStatus(2) == RESEARCH_STATUS::RESEARCHED)
+		{
+			researchBonis[it->first].nBoni[2] += research_complex->GetBonus(2);
+			researchBonis[it->first].nBoni[3] += research_complex->GetBonus(2);
+		}
+		else if (research_complex->GetFieldStatus(3) == RESEARCH_STATUS::RESEARCHED)
+		{
+			researchBonis[it->first].nBoni[4] += research_complex->GetBonus(3);
+			researchBonis[it->first].nBoni[5] += research_complex->GetBonus(3);
+		}
+		pResearch->SetResearchBoni(researchBonis[it->first].nBoni);
+	}
+}
+static void GetIntelligenceBoniFromSpecialTechsAndSetThem(const std::map<CString, CMajor*>* pmMajors) {
+	// Geheimdienstboni aus Spezialforschungen holen
+	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
+	{
+		CIntelligence* pIntelligence = it->second->GetEmpire()->GetIntelligence();
+		const CResearchComplex* pResearchComplex = it->second->GetEmpire()->GetResearch()->GetResearchInfo()
+			->GetResearchComplex(RESEARCH_COMPLEX::SECURITY);
+		// Die Boni auf die einzelnen Geheimdienstgebiete berechnen
+		if (pResearchComplex->GetFieldStatus(1) == RESEARCH_STATUS::RESEARCHED)
+			pIntelligence->AddInnerSecurityBonus(pResearchComplex->GetBonus(1));
+		else if (pResearchComplex->GetFieldStatus(2) == RESEARCH_STATUS::RESEARCHED)
+		{
+			pIntelligence->AddEconomyBonus(pResearchComplex->GetBonus(2), 1);
+			pIntelligence->AddMilitaryBonus(pResearchComplex->GetBonus(2), 1);
+			pIntelligence->AddScienceBonus(pResearchComplex->GetBonus(2), 1);
+		}
+		else if (pResearchComplex->GetFieldStatus(3) == RESEARCH_STATUS::RESEARCHED)
+		{
+			pIntelligence->AddEconomyBonus(pResearchComplex->GetBonus(3), 0);
+			pIntelligence->AddMilitaryBonus(pResearchComplex->GetBonus(3), 0);
+			pIntelligence->AddScienceBonus(pResearchComplex->GetBonus(3), 0);
+		}
+	}
+}
+///////END: HELPER FUNCTIONS FOR CBotf2Doc::CalcNewRoundData()///////
+
 /// Diese Funktion berechnet die Produktion der Systeme, was in den Baulisten gebaut werden soll und sonstige
 /// Daten für die neue Runde.
 void CBotf2Doc::CalcNewRoundData()
 {
-	CSystemProd::ResetMoralEmpireWide();
-	// Hier müssen wir nochmal die Systeme durchgehen und die imperienweite Moralproduktion auf die anderen System
-	// übertragen
-	for (int y = 0 ; y < STARMAP_SECTORS_VCOUNT; y++)
-		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-			if (m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetSunSystem() == TRUE && m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem() != "")
-			{
-				// imperiumsweite Moralproduktion aus diesem System berechnen
-				m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).CalculateEmpireWideMoralProd(&this->BuildingInfo);
-			}
-	struct RESEARCHBONI { short nBoni[6]; };
-	map<CString, RESEARCHBONI> researchBonis;
+	DistributeMoralProdToEmpire();
 
-	map<CString, CMajor*>* pmMajors = m_pRaceCtrl->GetMajors();
+	map<CString, CSystemProd::RESEARCHBONI> researchBonis;
+	const map<CString, CMajor*>* const pmMajors = m_pRaceCtrl->GetMajors();
 
 	// Hier werden jetzt die baubaren Gebäude für die nächste Runde und auch die Produktion in den einzelnen
 	// Systemen berechnet. Können das nicht in obiger Hauptschleife machen, weil dort es alle globalen Gebäude
 	// gesammelt werden müssen und ich deswegen alle Systeme mit den fertigen Bauaufträgen in dieser Runde einmal
 	// durchgegangen sein muß.
-	for (int y = 0 ; y < STARMAP_SECTORS_VCOUNT; y++)
-		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
+	for(std::vector<CSector>::iterator sector = m_Sectors.begin(); sector != m_Sectors.end(); ++sector) {
+		CSystem& system = GetSystemForSector(*sector);
+		const CString& system_owner = system.GetOwnerOfSystem();
+		if (sector->GetSunSystem() && system_owner != "")
 		{
-			if (m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetSunSystem() == TRUE && m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem() != "")
-			{
-				CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem()));
-				ASSERT(pMajor);
+			CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(system_owner));
+			assert(pMajor);
+			CEmpire* empire = pMajor->GetEmpire();
 
-				network::RACE client = m_pRaceCtrl->GetMappedClientID(pMajor->GetRaceID());
+			// Hier die Credits durch Handelsrouten berechnen und
+			// Ressourcenrouten checken
+			CheckRoutes(*sector, system, pMajor);
 
-				// Hier die Credits durch Handelsrouten berechnen
-				BYTE deletetTradeRoutes = 0;
-				for (int i = 0; i < m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetTradeRoutes()->GetSize(); i++)
-				{
-					CPoint dest = m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetTradeRoutes()->GetAt(i).GetDestKO();
-					// Wenn die Handelsroute aus diplomatischen Gründen nicht mehr vorhanden sein kann
-					if (m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetTradeRoutes()->ElementAt(i).CheckTradeRoute(CPoint(x,y), CPoint(dest.x, dest.y), this) == FALSE)
-					{
-						// dann müssen wir diese Route löschen
-						m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetTradeRoutes()->RemoveAt(i--);
-						deletetTradeRoutes++;
-					}
-					// Ansonsten könnte sich die Beziehung zu der Minorrace verbessern
-					else
-						m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetTradeRoutes()->ElementAt(i).PerhapsChangeRelationship(CPoint(x,y), CPoint(dest.x, dest.y), this);
+			system.CalculateVariables(&this->BuildingInfo,
+				empire->GetResearch()->GetResearchInfo(),
+				sector->GetPlanets(), pMajor, CTrade::GetMonopolOwner());
 
-				}
-				deletetTradeRoutes += m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).CheckTradeRoutes(pMajor->GetEmpire()->GetResearch()->GetResearchInfo());
-				if (deletetTradeRoutes > 0)
-				{
-					CString news;
-					if (deletetTradeRoutes == 1)
-						news = CResourceManager::GetString("LOST_ONE_TRADEROUTE",FALSE,m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetName());
-					else
-					{
-						CString lost; lost.Format("%d",deletetTradeRoutes);
-						news = CResourceManager::GetString("LOST_TRADEROUTES",FALSE,lost,m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetName());
-					}
-					CMessage message;
-					message.GenerateMessage(news, MESSAGE_TYPE::ECONOMY, "", CPoint(x,y), FALSE, 4);
-					pMajor->GetEmpire()->AddMessage(message);
-					if (pMajor->IsHumanPlayer())
-						m_iSelectedView[client] = EMPIRE_VIEW;
-				}
-				// Ressourcenrouten checken
-				BYTE deletedResourceRoutes = 0;
-				// checken ob das System noch der Rasse gehört, welcher auch das Startsystem der Route gehört
-				for (int i = 0; i < m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetResourceRoutes()->GetSize(); i++)
-				{
-					CPoint dest = m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetResourceRoutes()->GetAt(i).GetKO();
-					if (!m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetResourceRoutes()->GetAt(i).CheckResourceRoute(m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem(), &m_Sectors.at(dest.x+(dest.y)*STARMAP_SECTORS_HCOUNT)))
-					{
-						m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetResourceRoutes()->RemoveAt(i--);
-						deletedResourceRoutes++;
-					}
-				}
-				deletedResourceRoutes += m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).CheckResourceRoutes(pMajor->GetEmpire()->GetResearch()->GetResearchInfo());
-				if (deletedResourceRoutes > 0)
-				{
-					CString news;
-					if (deletedResourceRoutes == 1)
-						news = CResourceManager::GetString("LOST_ONE_RESOURCEROUTE",FALSE,m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetName());
-					else
-					{
-						CString lost; lost.Format("%d", deletedResourceRoutes);
-						news = CResourceManager::GetString("LOST_RESOURCEROUTES",FALSE,lost,m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetName());
-					}
-					CMessage message;
-					message.GenerateMessage(news, MESSAGE_TYPE::ECONOMY, "", CPoint(x,y), FALSE, 4);
-					pMajor->GetEmpire()->AddMessage(message);
-					if (pMajor->IsHumanPlayer())
-						m_iSelectedView[client] = EMPIRE_VIEW;
-				}
+			const CSystemProd* const production = system.GetProduction();
+			// Haben wir eine online Schiffswerft im System, dann ShipPort in dem Sektor setzen
+			if (production->GetShipYard())
+				sector->SetShipPort(TRUE, system_owner);
+			CalcNewRoundDataScannedSectors(system, *production, sector->GetKO());
+			CalcNewRoundDataMoral(*sector, system, m_TroopInfo);
 
-				m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).CalculateVariables(&this->BuildingInfo, pMajor->GetEmpire()->GetResearch()->GetResearchInfo(), m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetPlanets(), pMajor, CTrade::GetMonopolOwner());
-				// Haben wir eine online Schiffswerft im System, dann ShipPort in dem Sektor setzen
-				if (m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetShipYard() == TRUE)
-				{
-					m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).SetShipPort(TRUE, m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem());
-				}
-				// Haben wir einen Scanner in dem System, dann Umgebung scannen
-				if (m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetScanPower() > 0)
-				{
-					int power = m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetScanPower();
-					int range = m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetScanRange();
-					for (int j = -range; j <= range; j++)
-						for (int i = -range; i <= range; i++)
-							if (y+j < STARMAP_SECTORS_VCOUNT && y+j > -1 && x+i < STARMAP_SECTORS_HCOUNT && x+i > -1)
-							{
-								m_Sectors.at(x+i+(y+j)*STARMAP_SECTORS_HCOUNT).SetScanned(m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem());
-								// Teiler für die Scanstärke berechnen
-								int div = max(abs(j),abs(i));
-								if (div == 0)
-									div = 1;
-								if (power / div > m_Sectors.at(x+i+(y+j)*STARMAP_SECTORS_HCOUNT).GetScanPower(m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem()))
-									m_Sectors.at(x+i+(y+j)*STARMAP_SECTORS_HCOUNT).SetScanPower(power / div, m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem());
-							}
-				}
-				// Wurde das System militärisch erobert, so verringert sich die Moral pro Runde etwas
-				if (m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetTakenSector() == TRUE && m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetMoral() > 70)
-					m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).SetMoral(-rand()%2);
-				// möglicherweise wird die Moral durch stationierte Truppen etwas stabilisiert
-				m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).IncludeTroopMoralValue(&m_TroopInfo);
+			// Hier die gesamten Forschungsboni der Imperien berechnen
+			// Forschungsboni, die die Systeme machen holen. Wir benötigen diese dann für die CalculateResearch Funktion
+			// hier Forschungsboni besorgen
+			researchBonis[system_owner] += production->GetResearchBoni();
 
-				// Hier die gesamten Forschungsboni der Imperien berechnen
-				// Forschungsboni, die die Systeme machen holen. Wir benötigen diese dann für die CalculateResearch Funktion
-				// hier Forschungsboni besorgen
-				researchBonis[m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem()].nBoni[0] += m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetBioTechBoni();
-				researchBonis[m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem()].nBoni[1] += m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetEnergyTechBoni();
-				researchBonis[m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem()].nBoni[2] += m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetCompTechBoni();
-				researchBonis[m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem()].nBoni[3] += m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetPropulsionTechBoni();
-				researchBonis[m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem()].nBoni[4] += m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetConstructionTechBoni();
-				researchBonis[m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem()].nBoni[5] += m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetWeaponTechBoni();
+			// Hier die gesamten Sicherheitsboni der Imperien berechnen
+			CalcNewRoundDataIntelligenceBoni(production, empire->GetIntelligence());
 
-				// Hier die gesamten Sicherheitsboni der Imperien berechnen
-				pMajor->GetEmpire()->GetIntelligence()->AddInnerSecurityBonus(m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetInnerSecurityBoni());
-				pMajor->GetEmpire()->GetIntelligence()->AddEconomyBonus(m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetEconomySpyBoni(), 0);
-				pMajor->GetEmpire()->GetIntelligence()->AddEconomyBonus(m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetEconomySabotageBoni(), 1);
-				pMajor->GetEmpire()->GetIntelligence()->AddScienceBonus(m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetScienceSpyBoni(), 0);
-				pMajor->GetEmpire()->GetIntelligence()->AddScienceBonus(m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetScienceSabotageBoni(), 1);
-				pMajor->GetEmpire()->GetIntelligence()->AddMilitaryBonus(m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetMilitarySpyBoni(), 0);
-				pMajor->GetEmpire()->GetIntelligence()->AddMilitaryBonus(m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetMilitarySabotageBoni(), 1);
+			// Anzahl aller Ressourcen in allen eigenen Systemen berechnen
+			for (int res = TITAN; res <= DERITIUM; res++)
+				empire->SetStorageAdd(res, system.GetResourceStore(res));
+		}//if (sector.GetSunSystem() && system_owner != "")
 
-				// Anzahl aller Ressourcen in allen eigenen Systemen berechnen
-				for (int res = TITAN; res <= DERITIUM; res++)
-					pMajor->GetEmpire()->SetStorageAdd(res, m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetResourceStore(res));
-			}
+		// für jede Rasse Sektorsachen berechnen
+		// Hier wird berechnet, was wir von der Karte alles sehen, welche Sektoren wir durchfliegen können
+		// alles abhängig von unseren diplomatischen Beziehungen
+		CalcExtraVisibilityAndRangeDueToDiplomacy(*sector, pmMajors);
+	}//for(std::vector<CSector>::iterator sector = m_Sectors.begin(); sector != m_Sectors.end(); ++sector) {
 
-			// für jede Rasse Sektorsachen berechnen
-
-			// Hier wird berechnet, was wir von der Karte alles sehen, welche Sektoren wir durchfliegen können
-			// alles abhängig von unseren diplomatischen Beziehungen
-			for (map<CString, CMajor*>::const_iterator i = pmMajors->begin(); i != pmMajors->end(); ++i)
-				for (map<CString, CMajor*>::const_iterator j = pmMajors->begin(); j != pmMajors->end(); ++j)
-				{
-					if(i == j)
-						continue;
-
-					CSector& sector = GetSector(x, y);
-					const DIPLOMATIC_AGREEMENT::Typ agreement = i->second->GetAgreement(j->first);
-					if (sector.GetScanned(i->first))
-						if (agreement >= DIPLOMATIC_AGREEMENT::COOPERATION)
-							sector.SetScanned(j->first);
-					if (sector.GetKnown(i->first))
-					{
-						if (agreement >= DIPLOMATIC_AGREEMENT::FRIENDSHIP)
-							sector.SetScanned(j->first);
-						if (agreement >= DIPLOMATIC_AGREEMENT::COOPERATION)
-							sector.SetKnown(j->first);
-					}
-					if (sector.GetOwnerOfSector() == i->first)
-					{
-						if (agreement >= DIPLOMATIC_AGREEMENT::TRADE)
-							sector.SetScanned(j->first);
-						if (agreement >= DIPLOMATIC_AGREEMENT::FRIENDSHIP)
-							sector.SetKnown(j->first);
-					}
-					if (sector.GetShipPort(i->first))
-						if (agreement >= DIPLOMATIC_AGREEMENT::COOPERATION)
-							sector.SetShipPort(TRUE, j->first);
-				}
-		}
-
-		// Forschungsboni aus Spezialforschungen setzen, nachdem wir diese aus allen Systemen geholt haben
-		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
-		{
-			CMajor* pMajor = it->second;
-			CResearchInfo* pInfo = pMajor->GetEmpire()->GetResearch()->GetResearchInfo();
-			// Die Boni auf die einzelnen Forschungsgebiete durch Spezialforschungen addieren
-			if (pInfo->GetResearchComplex(RESEARCH_COMPLEX::RESEARCH)->GetFieldStatus(1) == RESEARCH_STATUS::RESEARCHED)
-			{
-				researchBonis[it->first].nBoni[0] += pInfo->GetResearchComplex(RESEARCH_COMPLEX::RESEARCH)->GetBonus(1);
-				researchBonis[it->first].nBoni[1] += pInfo->GetResearchComplex(RESEARCH_COMPLEX::RESEARCH)->GetBonus(1);
-			}
-			else if (pInfo->GetResearchComplex(RESEARCH_COMPLEX::RESEARCH)->GetFieldStatus(2) == RESEARCH_STATUS::RESEARCHED)
-			{
-				researchBonis[it->first].nBoni[2] += pInfo->GetResearchComplex(RESEARCH_COMPLEX::RESEARCH)->GetBonus(2);
-				researchBonis[it->first].nBoni[3] += pInfo->GetResearchComplex(RESEARCH_COMPLEX::RESEARCH)->GetBonus(2);
-			}
-			else if (pInfo->GetResearchComplex(RESEARCH_COMPLEX::RESEARCH)->GetFieldStatus(3) == RESEARCH_STATUS::RESEARCHED)
-			{
-				researchBonis[it->first].nBoni[4] += pInfo->GetResearchComplex(RESEARCH_COMPLEX::RESEARCH)->GetBonus(3);
-				researchBonis[it->first].nBoni[5] += pInfo->GetResearchComplex(RESEARCH_COMPLEX::RESEARCH)->GetBonus(3);
-			}
-			pMajor->GetEmpire()->GetResearch()->SetResearchBoni(researchBonis[it->first].nBoni);
-		}
-
-		// Geheimdienstboni aus Spezialforschungen holen
-		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
-		{
-			CMajor* pMajor = it->second;
-			CResearchInfo* pInfo = pMajor->GetEmpire()->GetResearch()->GetResearchInfo();
-
-			// Die Boni auf die einzelnen Geheimdienstgebiete berechnen
-			if (pInfo->GetResearchComplex(RESEARCH_COMPLEX::SECURITY)->GetFieldStatus(1) == RESEARCH_STATUS::RESEARCHED)
-				pMajor->GetEmpire()->GetIntelligence()->AddInnerSecurityBonus(pInfo->GetResearchComplex(RESEARCH_COMPLEX::SECURITY)->GetBonus(1));
-			else if (pInfo->GetResearchComplex(RESEARCH_COMPLEX::SECURITY)->GetFieldStatus(2) == RESEARCH_STATUS::RESEARCHED)
-			{
-				pMajor->GetEmpire()->GetIntelligence()->AddEconomyBonus(pInfo->GetResearchComplex(RESEARCH_COMPLEX::SECURITY)->GetBonus(2), 1);
-				pMajor->GetEmpire()->GetIntelligence()->AddMilitaryBonus(pInfo->GetResearchComplex(RESEARCH_COMPLEX::SECURITY)->GetBonus(2), 1);
-				pMajor->GetEmpire()->GetIntelligence()->AddScienceBonus(pInfo->GetResearchComplex(RESEARCH_COMPLEX::SECURITY)->GetBonus(2), 1);
-			}
-			else if (pInfo->GetResearchComplex(RESEARCH_COMPLEX::SECURITY)->GetFieldStatus(3) == RESEARCH_STATUS::RESEARCHED)
-			{
-				pMajor->GetEmpire()->GetIntelligence()->AddEconomyBonus(pInfo->GetResearchComplex(RESEARCH_COMPLEX::SECURITY)->GetBonus(3), 0);
-				pMajor->GetEmpire()->GetIntelligence()->AddMilitaryBonus(pInfo->GetResearchComplex(RESEARCH_COMPLEX::SECURITY)->GetBonus(3), 0);
-				pMajor->GetEmpire()->GetIntelligence()->AddScienceBonus(pInfo->GetResearchComplex(RESEARCH_COMPLEX::SECURITY)->GetBonus(3), 0);
-			}
-		}
-
-		// Nun überprüfen, ob sich unsere Grenzen erweitern, wenn die MinorRasse eine Spaceflight-Rasse ist und wir mit
-		// ihr eine Kooperations oder ein Bündnis haben
-		map<CString, CMinor*>* pmMinors = m_pRaceCtrl->GetMinors();
-		for (map<CString, CMajor*>::const_iterator i = pmMajors->begin(); i != pmMajors->end(); ++i)
-		{
-			CMajor* pMajor = i->second;
-			for (map<CString, CMinor*>::const_iterator j = pmMinors->begin(); j != pmMinors->end(); ++j)
-			{
-				CMinor* pMinor = j->second;
-				if (pMinor->GetSpaceflightNation() == TRUE && (pMinor->GetAgreement(pMajor->GetRaceID()) == DIPLOMATIC_AGREEMENT::COOPERATION || pMinor->GetAgreement(pMajor->GetRaceID()) == DIPLOMATIC_AGREEMENT::AFFILIATION))
-				{
-					CPoint p = pMinor->GetRaceKO();
-					if (p != CPoint(-1,-1))
-						m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetShipPort(TRUE, pMajor->GetRaceID());
-				}
-			}
-		}
+	// Forschungsboni aus Spezialforschungen setzen, nachdem wir diese aus allen Systemen geholt haben
+	GetResearchBoniFromSpecialTechsAndSetThem(researchBonis, pmMajors);
+	// Geheimdienstboni aus Spezialforschungen holen
+	GetIntelligenceBoniFromSpecialTechsAndSetThem(pmMajors);
+	// Nun überprüfen, ob sich unsere Grenzen erweitern, wenn die MinorRasse eine Spaceflight-Rasse ist und wir mit
+	// ihr eine Kooperations oder ein Bündnis haben
+	AddShipPortsFromMinors(*pmMajors);
 }
 
 /// Diese Funktion berechnet die kompletten Handelsaktivitäten.

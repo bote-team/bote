@@ -471,3 +471,15 @@ void CSystemProd::Reset()
 	for (int res = TITAN; res <= DERITIUM; res++)
 		m_bResourceDistributor[res] = false;
 }
+
+CSystemProd::RESEARCHBONI CSystemProd::GetResearchBoni() const
+{
+	return RESEARCHBONI(
+			m_iBioTechBoni,
+			m_iEnergyTechBoni,
+			m_iCompTechBoni,
+			m_iPropulsionTechBoni,
+			m_iConstructionTechBoni,
+			m_iWeaponTechBoni
+		);
+}
