@@ -231,7 +231,7 @@ public:
 	void CalculateNumberOfWorkbuildings(BuildingInfoArray *buildingInfos);
 
 	// Funktion berechnet die imperiumweite Moralproduktion, welche aus diesem System generiert wird.
-	void CalculateEmpireWideMoralProd(BuildingInfoArray *buildingInfos);
+	void CalculateEmpireWideMoralProd(const BuildingInfoArray *buildingInfos);
 
 	// Funktion setzt das letzte Gebäude, welches gebaut wurde online, sofern dies möglich ist.
 	int SetNewBuildingOnline(BuildingInfoArray *buildingInfos);

@@ -1664,7 +1664,7 @@ void CSystem::CalculateNumberOfWorkbuildings(BuildingInfoArray *buildingInfos)
 }
 
 // Funktion berechnet die imperiumweite Moralproduktion, welche aus diesem System generiert wird.
-void CSystem::CalculateEmpireWideMoralProd(BuildingInfoArray *buildingInfos)
+void CSystem::CalculateEmpireWideMoralProd(const BuildingInfoArray *buildingInfos)
 {
 	for (int i = 0; i < m_Buildings.GetSize(); i++)
 		if (m_Buildings.GetAt(i).GetIsBuildingOnline())
