@@ -175,8 +175,10 @@ void CShipBottomView::OnDraw(CDC* dc)
 				stealthPower = pShip->GetFleet()->GetFleetStealthPower(pShip);
 			}
 
-			if (pShip->GetOwnerOfShip() != pMajor->GetRaceID() && pDoc->GetSector(pDoc->GetKO()).GetScanPower(pMajor->GetRaceID()) < stealthPower)
-				continue;
+			if (pShip->GetOwnerOfShip() != pMajor->GetRaceID())
+				if(pDoc->GetSector(pDoc->GetKO()).GetScanPower(pMajor->GetRaceID()) < stealthPower
+					&& pMajor->GetRelation(pShip->GetOwnerOfShip()) < DIPLOMATIC_AGREEMENT::AFFILIATION)
+					continue;
 
 			// mehrere Spalten anlegen, falls mehr als 3 Schiffe in dem System sind
 			if (counter != 0 && counter%3 == 0)

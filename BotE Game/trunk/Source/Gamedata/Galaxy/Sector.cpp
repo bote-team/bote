@@ -798,6 +798,30 @@ void CSector::DrawSectorsName(CDC *pDC, CBotf2Doc* pDoc, CMajor* pPlayer)
 	}
 }
 
+bool CSector::ShouldDrawShip(const CMajor& our_race, const CString& their_race_id) const {
+	if(!GetOwnerOfShip(their_race_id))
+		return false;
+	const CString& our_id = our_race.GetRaceID();
+	if(our_id == their_race_id)
+		return true;
+	if(GetNeededScanPower(their_race_id) < GetScanPower(our_id))
+		return true;
+	return our_race.GetAgreement(their_race_id) >= DIPLOMATIC_AGREEMENT::AFFILIATION;
+}
+
+bool CSector::ShouldDrawOutpost(const CMajor& our_race, const CString& their_race_id) const {
+	if(!GetIsStationBuilding(their_race_id)
+		&& !GetOutpost(their_race_id)
+		&& !GetStarbase(their_race_id))
+		return false;
+	const CString& our_id = our_race.GetRaceID();
+	if(our_id == their_race_id)
+		return true;
+	if(GetScanPower(our_id) > 0)
+		return true;
+	return our_race.GetAgreement(their_race_id) >= DIPLOMATIC_AGREEMENT::AFFILIATION;
+}
+
 /// Diese Funktion zeichnet die entsprechenden Schiffssymbole in den Sektor
 void CSector::DrawShipSymbolInSector(Graphics *g, CBotf2Doc* pDoc, CMajor* pPlayer)
 {
@@ -820,8 +844,7 @@ void CSector::DrawShipSymbolInSector(Graphics *g, CBotf2Doc* pDoc, CMajor* pPlay
 	CString sAppPath = CIOData::GetInstance()->GetAppPath();
 	for (map<CString, CRace*>::const_iterator it = pmRaces->begin(); it != pmRaces->end(); ++it)
 	{
-		if (pPlayer->GetRaceID() == it->first && this->GetOwnerOfShip(it->first) == TRUE
-			|| this->GetOwnerOfShip(it->first) == TRUE && this->GetNeededScanPower(it->first) < this->GetScanPower(pPlayer->GetRaceID()))
+		if (ShouldDrawShip(*pPlayer, it->first))
 		{
 			// kann keine Diplomatie aufgenommen werden, dann das Alien Symbol zeichnen
 			if (pPlayer != it->second && it->second->HasSpecialAbility(SPECIAL_NO_DIPLOMACY))
@@ -846,8 +869,7 @@ void CSector::DrawShipSymbolInSector(Graphics *g, CBotf2Doc* pDoc, CMajor* pPlay
 		}
 
 		// Jetzt werden die Stationen wenn möglich gezeichnet
-		if ((pPlayer->GetRaceID() == it->first || this->GetScanPower(pPlayer->GetRaceID()) > 0) &&
-			(this->GetIsStationBuilding(it->first) == TRUE || this->GetOutpost(it->first) == TRUE || this->GetStarbase(it->first) == TRUE))
+		if (ShouldDrawOutpost(*pPlayer, it->first))
 		{
 			// kann keine Diplomatie aufgenommen werden, dann das Alien Symbol zeichnen
 			if (pPlayer != it->second && it->second->HasSpecialAbility(SPECIAL_NO_DIPLOMACY))

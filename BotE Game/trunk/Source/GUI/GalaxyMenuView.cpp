@@ -711,10 +711,10 @@ void CGalaxyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			CPoint modulo(pt.x%STARMAP_SECTOR_WIDTH, pt.y%STARMAP_SECTOR_HEIGHT);
 			if (modulo.x > STARMAP_SECTOR_WIDTH * 0.66 && modulo.y < STARMAP_SECTOR_HEIGHT * 0.33)
 			{
-				map<CString, CRace*>* pmRaces = pDoc->GetRaceCtrl()->GetRaces();
+				const std::map<CString, CRace*>* pmRaces = pDoc->GetRaceCtrl()->GetRaces();
+				const CSector& s = pDoc->GetSector(sector.x, sector.y);
 				for (map<CString, CRace*>::const_iterator it = pmRaces->begin(); it != pmRaces->end(); ++it)
-					if (pDoc->m_Sectors.at(sector.x+(sector.y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfShip(it->first) == TRUE && (it->first == pMajor->GetRaceID()
-						|| pDoc->m_Sectors.at(sector.x+(sector.y)*STARMAP_SECTORS_HCOUNT).GetNeededScanPower(it->first) < pDoc->m_Sectors.at(sector.x+(sector.y)*STARMAP_SECTORS_HCOUNT).GetScanPower(pMajor->GetRaceID())))
+					if (s.ShouldDrawShip(*pMajor, it->first))
 						{
 							if(it->first == pMajor->GetRaceID()) {
 								for(int i = 0; i < pDoc->m_ShipArray.GetSize(); ++i) {
@@ -737,26 +737,14 @@ void CGalaxyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			else if (modulo.x < STARMAP_SECTOR_WIDTH * 0.33 && modulo.y > STARMAP_SECTOR_HEIGHT * 0.66)
 			{
 				bool bShowStation = false;
-				// Uns selbst gehört die Station
-				if (pDoc->m_Sectors.at(sector.x+(sector.y)*STARMAP_SECTORS_HCOUNT).GetIsStationBuilding(pMajor->GetRaceID()) == TRUE ||
-					pDoc->m_Sectors.at(sector.x+(sector.y)*STARMAP_SECTORS_HCOUNT).GetOutpost(pMajor->GetRaceID()) == TRUE ||
-					pDoc->m_Sectors.at(sector.x+(sector.y)*STARMAP_SECTORS_HCOUNT).GetStarbase(pMajor->GetRaceID()) == TRUE)
-					bShowStation = true;
-
-				if (!bShowStation)
-				{
-					// wir können den Sektor scannen, so sehen wir automatisch die Station
-					map<CString, CRace*>* pmRaces = pDoc->GetRaceCtrl()->GetRaces();
-					for (map<CString, CRace*>::const_iterator it = pmRaces->begin(); it != pmRaces->end(); ++it)
-						if (pDoc->m_Sectors.at(sector.x+(sector.y)*STARMAP_SECTORS_HCOUNT).GetScanPower(pMajor->GetRaceID()) > 0 &&
-							(pDoc->m_Sectors.at(sector.x+(sector.y)*STARMAP_SECTORS_HCOUNT).GetIsStationBuilding(it->first) == TRUE ||
-							pDoc->m_Sectors.at(sector.x+(sector.y)*STARMAP_SECTORS_HCOUNT).GetOutpost(it->first) == TRUE ||
-							pDoc->m_Sectors.at(sector.x+(sector.y)*STARMAP_SECTORS_HCOUNT).GetStarbase(it->first) == TRUE))
-						{
-							bShowStation = true;
-							break;
-						}
-				}
+				const CSector& s = pDoc->GetSector(sector.x, sector.y);
+				const std::map<CString, CRace*>* pmRaces = pDoc->GetRaceCtrl()->GetRaces();
+				for (map<CString, CRace*>::const_iterator it = pmRaces->begin(); it != pmRaces->end(); ++it)
+					if (s.ShouldDrawOutpost(*pMajor, it->first))
+					{
+						bShowStation = true;
+						break;
+					}
 
 				// Station anzeigen?
 				if (bShowStation)

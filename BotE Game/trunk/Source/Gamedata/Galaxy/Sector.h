@@ -144,7 +144,7 @@ public:
 
 	/// Diese Funktion gibt einen Wahrheitswert zurück, der sagt, ob die Majorrace <code>Race</code>
 	/// einen Aussenposten in diesem Sektor besitzt.
-	BOOLEAN GetOutpost(const CString& sRace)
+	BOOLEAN GetOutpost(const CString& sRace) const
 	{
 		if (m_bOutpost.find(sRace) != m_bOutpost.end())
 			return true;
@@ -153,7 +153,7 @@ public:
 
 	/// Diese Funktion gibt einen Wahrheitswert zurück, der sagt, ob die Majorrace <code>Race</code>
 	/// eine Sternbasis in diesem Sektor besitzt.
-	BOOLEAN GetStarbase(const CString& sRace)
+	BOOLEAN GetStarbase(const CString& sRace) const
 	{
 		if (m_bStarbase.find(sRace) != m_bStarbase.end())
 			return true;
@@ -162,7 +162,7 @@ public:
 
 	/// Diese Funktion gibt einen Wahrheitswert zurück, der sagt, ob die Rasse <code>Race</code> ein
 	/// bzw. mehrere Schiffe in diesem Sektor hat.
-	BOOLEAN GetOwnerOfShip(const CString& sRace)
+	BOOLEAN GetOwnerOfShip(const CString& sRace) const
 	{
 		if (m_bWhoIsOwnerOfShip.find(sRace) != m_bWhoIsOwnerOfShip.end())
 			return true;
@@ -179,7 +179,7 @@ public:
 
 	/// Diese Funktion gibt einen Wahrheitswert zurück, der sagt, ob die Majorrace <code>Race</code>
 	/// gerade eine Station in diesem Sektor baut.
-	BOOLEAN GetIsStationBuilding(const CString& sRace)
+	BOOLEAN GetIsStationBuilding(const CString& sRace) const
 	{
 		if (m_bIsStationBuild.find(sRace) != m_bIsStationBuild.end())
 			return true;
@@ -187,7 +187,7 @@ public:
 	}
 
 	/// Diese Funktion gibt die Scanpower zurück, die die Majorrace <code>Race</code> in diesem Sektor hat.
-	short GetScanPower(const CString& sRace)
+	short GetScanPower(const CString& sRace) const
 	{
 		const CCommandLineParameters* const clp = dynamic_cast<CBotf2App*>(AfxGetApp())->GetCommandLineParameters();
 		if(clp->SeeAllOfMap())
@@ -202,7 +202,7 @@ public:
 
 	/// Diese Funktion gibt die Scanpower zurück, die man benötigt, um das Schiff/die Schiffe der
 	/// Majorrace <code>Race</code> in diesem Sektor zu entdecken.
-	short GetNeededScanPower(const CString& sRace)
+	short GetNeededScanPower(const CString& sRace) const
 	{
 		map<CString, short>::const_iterator it = m_iNeededScanPower.find(sRace);
 		if (it != m_iNeededScanPower.end())
@@ -440,6 +440,12 @@ public:
 	/// Diese Funktion zeichnet den Namen des Sektors.
 	void DrawSectorsName(CDC *pDC, CBotf2Doc* pDoc, CMajor* pPlayer);
 
+	//Should any their_race_id's ship in this sector be visible to our_race ?
+	//not for outposts/starbases
+	bool CSector::ShouldDrawShip(const CMajor& our_race, const CString& their_race_id) const;
+	//Should any their_race_id's outpost/starbase (perhaps under construction) in this sector be visible to our_race ?
+	//only for outposts/starbases
+	bool CSector::ShouldDrawOutpost(const CMajor& our_race, const CString& their_race_id) const;
 	/// Diese Funktion zeichnet die entsprechenden Schiffssymbole in den Sektor
 	void DrawShipSymbolInSector(Graphics *g, CBotf2Doc* pDoc, CMajor* pPlayer);
 

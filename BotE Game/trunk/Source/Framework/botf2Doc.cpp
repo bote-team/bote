@@ -3941,13 +3941,20 @@ static void CalcExtraVisibilityAndRangeDueToDiplomacy(CSector& sector, const std
 	{
 		for (map<CString, CMajor*>::const_iterator j = pmMajors->begin(); j != pmMajors->end(); ++j)
 		{
-			if(i == j)
-				continue;
-
+			if(i == j) continue;
 			const DIPLOMATIC_AGREEMENT::Typ agreement = i->second->GetAgreement(j->first);
 			if (sector.GetScanned(i->first))
+			{
 				if (agreement >= DIPLOMATIC_AGREEMENT::COOPERATION)
 					sector.SetScanned(j->first);
+				if (agreement >= DIPLOMATIC_AGREEMENT::AFFILIATION)
+				{
+					const short iscanpower = sector.GetScanPower(i->first);
+					const short jscanpower = sector.GetScanPower(j->first);
+					if(iscanpower > jscanpower)
+						sector.SetScanPower(iscanpower, j->first);
+				}
+			}
 			if (sector.GetKnown(i->first))
 			{
 				if (agreement >= DIPLOMATIC_AGREEMENT::FRIENDSHIP)
@@ -3965,8 +3972,8 @@ static void CalcExtraVisibilityAndRangeDueToDiplomacy(CSector& sector, const std
 			if (sector.GetShipPort(i->first))
 				if (agreement >= DIPLOMATIC_AGREEMENT::COOPERATION)
 					sector.SetShipPort(TRUE, j->first);
-		}
-	}
+		}//for (map<CString, CMajor*>::const_iterator j = pmMajors->begin(); j != pmMajors->end(); ++j)
+	}//for (map<CString, CMajor*>::const_iterator i = pmMajors->begin(); i != pmMajors->end(); ++i)
 }
 static void CalcNewRoundDataMoral(const CSector& sector, CSystem& system, CArray<CTroopInfo>& TroopInfo) {
 	// Wurde das System militärisch erobert, so verringert sich die Moral pro Runde etwas
