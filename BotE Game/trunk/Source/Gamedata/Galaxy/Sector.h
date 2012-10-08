@@ -442,10 +442,10 @@ public:
 
 	//Should any their_race_id's ship in this sector be visible to our_race ?
 	//not for outposts/starbases
-	bool CSector::ShouldDrawShip(const CMajor& our_race, const CString& their_race_id) const;
+	bool ShouldDrawShip(const CMajor& our_race, const CString& their_race_id) const;
 	//Should any their_race_id's outpost/starbase (perhaps under construction) in this sector be visible to our_race ?
 	//only for outposts/starbases
-	bool CSector::ShouldDrawOutpost(const CMajor& our_race, const CString& their_race_id) const;
+	bool ShouldDrawOutpost(const CMajor& our_race, const CString& their_race_id) const;
 	/// Diese Funktion zeichnet die entsprechenden Schiffssymbole in den Sektor
 	void DrawShipSymbolInSector(Graphics *g, CBotf2Doc* pDoc, CMajor* pPlayer);
 

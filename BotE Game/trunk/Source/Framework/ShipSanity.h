@@ -10,6 +10,6 @@ class CShipSanity
 		~CShipSanity(void);
 
 
-		static void CShipSanity::SanityCheckFleet(const CShip& ship);
+		static void SanityCheckFleet(const CShip& ship);
 
 };
