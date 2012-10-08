@@ -135,7 +135,7 @@ public:
 
 	/// Diese Funktion gibt einen Wahrheitswert zurück, der sagt, ob die Majorrace <code>Race</code>
 	/// eine online Werft (bzw. kann auch eine Station sein) in diesem Sektor besitzt.
-	BOOLEAN GetShipPort(const CString& sRace)
+	BOOLEAN GetShipPort(const CString& sRace) const
 	{
 		if (m_bShipPort.find(sRace) != m_bShipPort.end())
 			return true;

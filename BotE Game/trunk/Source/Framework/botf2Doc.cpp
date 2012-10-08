@@ -5376,24 +5376,13 @@ void CBotf2Doc::CalcShipMovement()
 
 		// Nach der Bewegung, aber noch vor einem möglichen Kampf werden die Schilde nach ihrem Typ wieder aufgeladen,
 		// wenn wir auf einem Shipport sind, dann wird auch die Hülle teilweise wieder repariert
-		pShip->GetShield()->RechargeShields(200 * (bFasterShieldRecharge + 1));
-		// Wenn wir in diesem Sektor einen Shipport haben, dann wird die H?lle repariert
-		if (GetSector(pShip->GetKO()).GetShipPort(pShip->GetOwnerOfShip()) == TRUE)
-			pShip->GetHull()->RepairHull();
+		//FIXME: The shipports are not yet updated for changes due to diplomacy at this spot.
+		//If we declared war and are on a shipport of the former friend, the ship is repaired,
+		//and a possible repair command isn't unset though it can no longer be set by the player this turn then.
+		pShip->Repair(GetSector(pShip->GetKO()).GetShipPort(pShip->GetOwnerOfShip()), bFasterShieldRecharge);
 		// Befehle an alle Schiffe in der Flotte weitergeben
-		if (pShip->GetFleet() != 0)
-		{
+		if (pShip->GetFleet())
 			pShip->GetFleet()->AdoptCurrentOrders(&m_ShipArray[y]);
-			for (int x = 0; x < pShip->GetFleet()->GetFleetSize(); x++)
-			{
-				pShip->GetFleet()->GetShipFromFleet(x)->GetShield()->RechargeShields(200 * (bFasterShieldRecharge + 1));
-				if (GetSector(pShip->GetKO()).GetShipPort(pShip->GetOwnerOfShip()) == TRUE)
-					pShip->GetFleet()->GetShipFromFleet(x)->GetHull()->RepairHull();
-			}
-		}
-		if(pShip->GetCurrentOrder() == SHIP_ORDER::REPAIR && (!pShip->NeedsRepair() ||
-			!GetSector(pShip->GetKO()).GetShipPort(pShip->GetOwnerOfShip())))
-				pShip->UnsetCurrentOrder();
 
 		// wenn eine Anomalie vorhanden, deren m?gliche Auswirkungen auf das Schiff berechnen
 		if (GetSector(pShip->GetKO()).GetAnomaly())

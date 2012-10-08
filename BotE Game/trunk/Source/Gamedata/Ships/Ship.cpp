@@ -1206,3 +1206,16 @@ bool CShip::NeedsRepair() const {
 void CShip::UnsetCurrentOrder() {
 	m_iCurrentOrder = IsNonCombat() ? SHIP_ORDER::AVOID : SHIP_ORDER::ATTACK;
 }
+
+void CShip::Repair(BOOL bAtShipPort, bool bFasterShieldRecharge) {
+	m_Shield.RechargeShields(200 * (bFasterShieldRecharge + 1));
+	if (m_Fleet)
+		for (int x = 0; x < m_Fleet->GetFleetSize(); x++)
+			m_Fleet->GetShipFromFleet(x)->Repair(bAtShipPort, bFasterShieldRecharge);
+	// Wenn wir in diesem Sektor einen Shipport haben, dann wird die H?lle repariert
+	if(bAtShipPort)
+		m_Hull.RepairHull();
+
+	if(m_iCurrentOrder == SHIP_ORDER::REPAIR && (!NeedsRepair() || !bAtShipPort))
+		UnsetCurrentOrder();
+}

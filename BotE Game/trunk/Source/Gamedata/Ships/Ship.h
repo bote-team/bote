@@ -152,6 +152,9 @@ public:
 
 	// sonstige Funktionen
 
+	//Execute a 1-turn shield (always) and hull (if bAtShipPort == TRUE) repairing step
+	void Repair(BOOL bAtShipPort, bool bFasterShieldRecharge);
+
 	//fleet related functions
 	void CreateFleet();	// Bevor wir mit der Flotte arbeiten können muß diese erst created werden
 	void CheckFleet();	// am besten in jeder neuen Runde aufrufen, säubert die Flotte (aber nicht unbedingt notwendig)
