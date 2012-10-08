@@ -3872,6 +3872,13 @@ void CBotf2Doc::DistributeMoralProdToEmpire() {
 			// imperiumsweite Moralproduktion aus diesem System berechnen
 			sy->CalculateEmpireWideMoralProd(&BuildingInfo);
 		}
+		//Building scan power and range in a system isn't influenced by other systems, is it...?
+		//This needs to be here in the first loop, since when calculating the scan power that
+		//other majors get due to affiliation, the scan powers in all sectors are not yet calculated correctly.
+		//For instance, if the system (1,1) scans the sector (0,0) since the loop
+		//starts at (0,0) in the top left; so when transferring the scanpower in (0,0)
+		//it is not yet updated.
+		CalcNewRoundDataScannedSectors(*sy, se->GetKO());
 	}
 }
 void CBotf2Doc::AddShipPortsFromMinors(const std::map<CString, CMajor*>& pmMajors) {
@@ -3983,8 +3990,9 @@ static void CalcNewRoundDataMoral(const CSector& sector, CSystem& system, CArray
 	// möglicherweise wird die Moral durch stationierte Truppen etwas stabilisiert
 	system.IncludeTroopMoralValue(&TroopInfo);
 }
-void CBotf2Doc::CalcNewRoundDataScannedSectors(const CSystem& system, const CSystemProd& production, const CPoint& co) {
+void CBotf2Doc::CalcNewRoundDataScannedSectors(const CSystem& system, const CPoint& co) {
 	// Haben wir einen Scanner in dem System, dann Umgebung scannen
+	const CSystemProd& production = *system.GetProduction();
 	if (production.GetScanPower() > 0)
 	{
 		const int power = production.GetScanPower();
@@ -4104,7 +4112,7 @@ void CBotf2Doc::CalcNewRoundData()
 			// Haben wir eine online Schiffswerft im System, dann ShipPort in dem Sektor setzen
 			if (production->GetShipYard())
 				sector->SetShipPort(TRUE, system_owner);
-			CalcNewRoundDataScannedSectors(system, *production, sector->GetKO());
+			CalcNewRoundDataScannedSectors(system, sector->GetKO());
 			CalcNewRoundDataMoral(*sector, system, m_TroopInfo);
 
 			// Hier die gesamten Forschungsboni der Imperien berechnen

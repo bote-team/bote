@@ -65,6 +65,7 @@ public:
 
 	// Funktion gibt einen Zeiger auf alle Produktionswerte und manche Boni des Systems zurück
 	CSystemProd* GetProduction() {return &m_Production;}
+	const CSystemProd* GetProduction() const {return &m_Production;}
 
 	// Funktion gibt einen Zeiger auf das Feld aller Gebäude im System zurück.
 	BuildingArray* GetAllBuildings() {return &m_Buildings;}

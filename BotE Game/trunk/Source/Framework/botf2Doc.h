@@ -294,7 +294,7 @@ private:
 	void DistributeMoralProdToEmpire();
 	void AddShipPortsFromMinors(const std::map<CString, CMajor*>& pmMajors);
 	void CheckRoutes(const CSector& sector, CSystem& system, CMajor* pMajor);
-	void CalcNewRoundDataScannedSectors(const CSystem& system, const CSystemProd& production, const CPoint& co);
+	void CalcNewRoundDataScannedSectors(const CSystem& system, const CPoint& co);
 protected:
 	/// Diese Funktion berechnet die kompletten Handelsaktivitäten.
 	void CalcTrade();
