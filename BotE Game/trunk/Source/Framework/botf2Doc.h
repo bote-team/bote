@@ -290,11 +290,14 @@ protected:
 	/// Daten für die neue Runde.
 	void CalcNewRoundData();
 private:
+	//general helper function
+	void PutScannedSquareOverCoords(const CPoint& co, const int range, const unsigned power, const CString& race_id,
+					bool ship = false, bool bBetterScanner = false, bool patrolship = false);
+private:
 	//helper functions for CalcNewRoundData()
 	void CalcNewRoundDataPreLoop();
 	void AddShipPortsFromMinors(const std::map<CString, CMajor*>& pmMajors);
 	void CheckRoutes(const CSector& sector, CSystem& system, CMajor* pMajor);
-	void CalcNewRoundDataScannedSectors(const CSystem& system, const CPoint& co);
 protected:
 	/// Diese Funktion berechnet die kompletten Handelsaktivitäten.
 	void CalcTrade();

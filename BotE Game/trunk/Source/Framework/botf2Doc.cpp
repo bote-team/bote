@@ -3878,7 +3878,8 @@ void CBotf2Doc::CalcNewRoundDataPreLoop() {
 		//For instance, if the system (1,1) scans the sector (0,0) since the loop
 		//starts at (0,0) in the top left; so when transferring the scanpower in (0,0)
 		//it is not yet updated.
-		CalcNewRoundDataScannedSectors(*sy, se->GetKO());
+		const CSystemProd& production = *sy->GetProduction();
+		PutScannedSquareOverCoords(se->GetKO(), production.GetScanRange(), production.GetScanPower(), sy->GetOwnerOfSystem());
 	}
 }
 void CBotf2Doc::AddShipPortsFromMinors(const std::map<CString, CMajor*>& pmMajors) {
@@ -3990,31 +3991,41 @@ static void CalcNewRoundDataMoral(const CSector& sector, CSystem& system, CArray
 	// möglicherweise wird die Moral durch stationierte Truppen etwas stabilisiert
 	system.IncludeTroopMoralValue(&TroopInfo);
 }
-void CBotf2Doc::CalcNewRoundDataScannedSectors(const CSystem& system, const CPoint& co) {
-	// Haben wir einen Scanner in dem System, dann Umgebung scannen
-	const CSystemProd& production = *system.GetProduction();
-	if (production.GetScanPower() > 0)
-	{
-		const int power = production.GetScanPower();
-		const int range = production.GetScanRange();
-		const int x = co.x;
-		const int y = co.y;
-		for (int j = -range; j <= range; j++)
-			for (int i = -range; i <= range; i++)
-				if (y+j < STARMAP_SECTORS_VCOUNT && y+j > -1 && x+i < STARMAP_SECTORS_HCOUNT && x+i > -1)
-				{
-					CSector& scanned_sector = GetSector(x+i, y+j);
-					const CString& system_owner = system.GetOwnerOfSystem();
-					scanned_sector.SetScanned(system_owner);
-					// Teiler für die Scanstärke berechnen
-					int div = max(abs(j),abs(i));
-					if (div == 0)
-						div = 1;
-					if (power / div > scanned_sector.GetScanPower(system_owner))
-						scanned_sector.SetScanPower(power / div, system_owner);
-				}
+
+void CBotf2Doc::PutScannedSquareOverCoords(const CPoint& co, int range, const unsigned power, const CString& race_id,
+					bool ship, bool bBetterScanner, bool patrolship) {
+	if(!ship && power == 0) return;
+	float boni = 1.0f;
+	if(bBetterScanner) {
+		range *= 1.5;
+		boni += 0.5;
 	}
+	for (int i = -range; i <= range; ++i) {
+		const int x = co.x + i;
+		if(0 <= x && x < STARMAP_SECTORS_HCOUNT) {
+			for (int j = -range; j <= range; ++j) {
+				const int y = co.y + j;
+				if(0 <= y && y < STARMAP_SECTORS_VCOUNT) {
+					CSector& scanned_sector = GetSector(x, y);
+					scanned_sector.SetScanned(race_id);
+					// Wenn das Schiff die Patrouillieneigenschaft besitzt und sich in einem eigenen Sektor befindet,
+					// dann wird die Scanleistung um 20% erhöht.
+					if(patrolship && scanned_sector.GetOwnerOfSector() == race_id)
+						boni += 0.2f;
+					// Teiler für die Scanstärke berechnen
+					const unsigned div = max(max(abs(i), abs(j)), 1);
+					const unsigned old_scan_power = scanned_sector.GetScanPower(race_id);
+					unsigned new_scan_power = (power * boni) / div;
+					new_scan_power = max(old_scan_power, new_scan_power);
+					if(ship && x == co.x && y == co.y)
+						++new_scan_power;
+					scanned_sector.SetScanPower(new_scan_power, race_id);
+				}//if(0 <= y && y < STARMAP_SECTORS_VCOUNT)
+			}//for (int j = -range; j <= range; ++j)
+		}//if(0 <= x && x < STARMAP_SECTORS_HCOUNT)
+	}//for (int i = -range; i <= range; ++i)
 }
+
 static void CalcNewRoundDataIntelligenceBoni(const CSystemProd* production, CIntelligence* intelligence) {
 	// Hier die gesamten Sicherheitsboni der Imperien berechnen
 	intelligence->AddInnerSecurityBonus(production->GetInnerSecurityBoni());
@@ -5883,7 +5894,6 @@ void CBotf2Doc::CalcShipEffects()
 		if (sector.GetAnomaly() && sector.GetAnomaly()->GetType() == QUASAR)
 			bBetterScanner = true;
 
-		short scanPower = 0;
 		// nur wenn das Schiff von einer Majorrace ist
 		if (pMajor != NULL)
 		{
@@ -5891,43 +5901,8 @@ void CBotf2Doc::CalcShipEffects()
 			sector.SetFullKnown(sRace);
 
 			if (!bDeactivatedShipScanner)
-			{
-				scanPower = sector.GetScanPower(sRace);
-				// Wenn das Schiff die Patrouillieneigenschaft besitzt und sich in einem eigenen Sektor befindet, dann
-				// wird die Scanleistung um 20% erhöht
-				float boni = 1.0f;
-				if (sRace == sector.GetOwnerOfSector() && m_ShipArray[y].HasSpecial(SHIP_SPECIAL::PATROLSHIP))
-					boni = 1.2f;
-				if (bBetterScanner)
-					boni += 0.5;
-				if ((USHORT)(m_ShipArray[y].GetScanPower() * boni) > scanPower)
-					sector.SetScanPower((short)(m_ShipArray[y].GetScanPower() * boni), sRace);
-
-				int nScanRange = m_ShipArray[y].GetScanRange();
-				if (bBetterScanner)
-					nScanRange *= 1.5;
-
-				// Scanstärke auf die Sektoren abhängig von der Scanrange übertragen
-				for (int j = -nScanRange; j <= nScanRange; j++)
-					for (int i = -nScanRange; i <= nScanRange; i++)
-						if (p.y+j < STARMAP_SECTORS_VCOUNT && p.y+j > -1 && p.x+i < STARMAP_SECTORS_HCOUNT && p.x+i > -1)
-							if (p.x+i != p.x || p.y+j != p.y)
-							{
-								CSector& other_sector = GetSector(p.x+i, p.y+j);
-								other_sector.SetScanned(sRace);
-								// Teiler für die Scanstärke berechnen
-								int div = max(abs(j),abs(i));
-								if (div > 0)
-								{
-									scanPower = other_sector.GetScanPower(sRace);
-									if ((USHORT)(m_ShipArray[y].GetScanPower() * boni) / div > scanPower)
-										other_sector.SetScanPower((short)(m_ShipArray[y].GetScanPower() * boni / div), sRace);
-								}
-							}
-
-				// Jedes Schiff erhöht auf seinem Sektor zusätzlich die Scanpower um 1
-				sector.SetScanPower(sector.GetScanPower(sRace) + 1, sRace);
-			}
+				PutScannedSquareOverCoords(p, m_ShipArray[y].GetScanRange(), m_ShipArray[y].GetScanPower(),
+					sRace, true, bBetterScanner, m_ShipArray[y].HasSpecial(SHIP_SPECIAL::PATROLSHIP));
 		}
 
 		// Im Sektor die NeededScanPower setzen, die wir brauchen um dort Schiffe zu sehen. Wir sehen ja keine getarneten
@@ -5982,40 +5957,8 @@ void CBotf2Doc::CalcShipEffects()
 				if (pMajor != NULL)
 				{
 					if (!bDeactivatedShipScanner)
-					{
-						int nScanRange = fleetship->GetScanRange();
-						if (bBetterScanner)
-							nScanRange *= 1.5;
-						for (int j = -nScanRange; j <= nScanRange; j++)
-						{
-							for (int i = -nScanRange; i <= nScanRange; i++)
-							{
-								if (p.y+j < STARMAP_SECTORS_VCOUNT && p.y+j > -1 && p.x+i < STARMAP_SECTORS_HCOUNT && p.x+i > -1)
-								{
-									CSector& other_sector = GetSector(p.x+i, p.y+j);
-									other_sector.SetScanned(sRace);
-									// Teiler für die Scanstärke berechnen
-									int div = max(abs(j),abs(i));
-									if (div == 0)
-										div = 1;
-									scanPower = other_sector.GetScanPower(sRace);
-									// Wenn das Schiff die Patrouillieneigenschaft besitzt und sich in einem eigenen Sektor
-									// befindet, dann wird die Scanleistung um 20% erhöht
-									float boni = 1.0f;
-									if (sRace == other_sector.GetOwnerOfSector() && fleetship->HasSpecial(SHIP_SPECIAL::PATROLSHIP))
-										boni = 1.2f;
-									if (bBetterScanner)
-										boni += 0.5;
-
-									if ((fleetship->GetScanPower() * boni / div) > scanPower)
-										other_sector.SetScanPower((short)(fleetship->GetScanPower() * boni / div), sRace);
-								}
-							}
-						}
-
-						// auch jedes Schiff in einer Flotte erhöht die Scankraft um +1
-						sector.SetScanPower(sector.GetScanPower(sRace) + 1, sRace);
-					}
+						PutScannedSquareOverCoords(fleetship->GetKO(), fleetship->GetScanRange(), fleetship->GetScanPower(),
+							sRace, true, bBetterScanner, fleetship->HasSpecial(SHIP_SPECIAL::PATROLSHIP));
 				}
 
 				// Schiffe, wenn wir dort nicht eine ausreichend hohe Scanpower haben. Ab Stealthstufe 4 muss das Schiff getarnt
