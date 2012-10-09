@@ -5872,35 +5872,36 @@ void CBotf2Doc::CalcShipEffects()
 		CString sRace = m_ShipArray[y].GetOwnerOfShip();
 		CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(sRace));
 
-		CPoint p = m_ShipArray[y].GetKO();
+		const CPoint& p = m_ShipArray[y].GetKO();
+		CSector& sector = GetSector(p);
 
 		// Anomalien beachten
 		bool bDeactivatedShipScanner = false;
 		bool bBetterScanner = false;
-		if (m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetAnomaly() && m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetAnomaly()->IsShipScannerDeactivated())
+		if (sector.GetAnomaly() && sector.GetAnomaly()->IsShipScannerDeactivated())
 			bDeactivatedShipScanner = true;
-		if (m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetAnomaly() && m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetAnomaly()->GetType() == QUASAR)
+		if (sector.GetAnomaly() && sector.GetAnomaly()->GetType() == QUASAR)
 			bBetterScanner = true;
 
 		short scanPower = 0;
 		// nur wenn das Schiff von einer Majorrace ist
 		if (pMajor != NULL)
 		{
-			m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetScanned(sRace);
-			m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetFullKnown(sRace);
+			sector.SetScanned(sRace);
+			sector.SetFullKnown(sRace);
 
 			if (!bDeactivatedShipScanner)
 			{
-				scanPower = m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetScanPower(sRace);
+				scanPower = sector.GetScanPower(sRace);
 				// Wenn das Schiff die Patrouillieneigenschaft besitzt und sich in einem eigenen Sektor befindet, dann
 				// wird die Scanleistung um 20% erhöht
 				float boni = 1.0f;
-				if (sRace == m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSector() && m_ShipArray[y].HasSpecial(SHIP_SPECIAL::PATROLSHIP))
+				if (sRace == sector.GetOwnerOfSector() && m_ShipArray[y].HasSpecial(SHIP_SPECIAL::PATROLSHIP))
 					boni = 1.2f;
 				if (bBetterScanner)
 					boni += 0.5;
 				if ((USHORT)(m_ShipArray[y].GetScanPower() * boni) > scanPower)
-					m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetScanPower((short)(m_ShipArray[y].GetScanPower() * boni), sRace);
+					sector.SetScanPower((short)(m_ShipArray[y].GetScanPower() * boni), sRace);
 
 				int nScanRange = m_ShipArray[y].GetScanRange();
 				if (bBetterScanner)
@@ -5912,19 +5913,20 @@ void CBotf2Doc::CalcShipEffects()
 						if (p.y+j < STARMAP_SECTORS_VCOUNT && p.y+j > -1 && p.x+i < STARMAP_SECTORS_HCOUNT && p.x+i > -1)
 							if (p.x+i != p.x || p.y+j != p.y)
 							{
-								m_Sectors.at(p.x+i+(p.y+j)*STARMAP_SECTORS_HCOUNT).SetScanned(sRace);
+								CSector& other_sector = GetSector(p.x+i, p.y+j);
+								other_sector.SetScanned(sRace);
 								// Teiler für die Scanstärke berechnen
 								int div = max(abs(j),abs(i));
 								if (div > 0)
 								{
-									scanPower = m_Sectors.at(p.x+i+(p.y+j)*STARMAP_SECTORS_HCOUNT).GetScanPower(sRace);
+									scanPower = other_sector.GetScanPower(sRace);
 									if ((USHORT)(m_ShipArray[y].GetScanPower() * boni) / div > scanPower)
-										m_Sectors.at(p.x+i+(p.y+j)*STARMAP_SECTORS_HCOUNT).SetScanPower((short)(m_ShipArray[y].GetScanPower() * boni / div), sRace);
+										other_sector.SetScanPower((short)(m_ShipArray[y].GetScanPower() * boni / div), sRace);
 								}
 							}
 
 				// Jedes Schiff erhöht auf seinem Sektor zusätzlich die Scanpower um 1
-				m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetScanPower(m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetScanPower(sRace) + 1, sRace);
+				sector.SetScanPower(sector.GetScanPower(sRace) + 1, sRace);
 			}
 		}
 
@@ -5936,20 +5938,20 @@ void CBotf2Doc::CalcShipEffects()
 			short stealthPower = m_ShipArray[y].GetStealthPower() * 20;
 			if (m_ShipArray[y].GetStealthPower() > 3 && m_ShipArray[y].GetCloak() == FALSE)
 				stealthPower = 3 * 20;
-			if (stealthPower < m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetNeededScanPower(sRace))
-				m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetNeededScanPower(stealthPower, sRace);
+			if (stealthPower < sector.GetNeededScanPower(sRace))
+				sector.SetNeededScanPower(stealthPower, sRace);
 		}
 
 		// Wenn das Schiff gerade eine Station baut, so dies dem Sektor mitteilen
 		if (m_ShipArray[y].GetCurrentOrder() == SHIP_ORDER::BUILD_OUTPOST || m_ShipArray[y].GetCurrentOrder() == SHIP_ORDER::BUILD_STARBASE)
-			m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetIsStationBuilding(TRUE, sRace);
+			sector.SetIsStationBuilding(TRUE, sRace);
 
 		// Wenn das Schiff gerade Terraform, so dies dem Planeten mitteilen
 		else if (m_ShipArray[y].GetCurrentOrder() == SHIP_ORDER::TERRAFORM)
 		{
 			short nPlanet = m_ShipArray[y].GetTerraformingPlanet();
-			if (nPlanet != -1 && nPlanet < static_cast<int>(m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetPlanets().size()))
-				m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetPlanet(nPlanet)->SetIsTerraforming(TRUE);
+			if (nPlanet != -1 && nPlanet < static_cast<int>(sector.GetPlanets().size()))
+				sector.GetPlanet(nPlanet)->SetIsTerraforming(TRUE);
 			else
 			{
 				m_ShipArray[y].SetTerraformingPlanet(-1);
@@ -5963,7 +5965,7 @@ void CBotf2Doc::CalcShipEffects()
 
 		// Die Schiffslisten der einzelnen Imperien modifizieren
 		if (pMajor)
-			pMajor->GetShipHistory()->ModifyShip(&m_ShipArray[y], m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetName(TRUE));
+			pMajor->GetShipHistory()->ModifyShip(&m_ShipArray[y], sector.GetName(TRUE));
 
 		// Erfahrunspunkte der Schiffe anpassen
 		this->CalcShipExp(&m_ShipArray[y]);
@@ -5975,13 +5977,13 @@ void CBotf2Doc::CalcShipEffects()
 			for (int x = 0; x < m_ShipArray[y].GetFleet()->GetFleetSize(); x++)
 			{
 				// Scanstärke auf die Sektoren abhängig von der Scanrange übertragen
-				CShip* ship = m_ShipArray[y].GetFleet()->GetShipFromFleet(x);
+				CShip* fleetship = m_ShipArray[y].GetFleet()->GetShipFromFleet(x);
 				// nur wenn das Schiff von einer Majorrace ist
 				if (pMajor != NULL)
 				{
 					if (!bDeactivatedShipScanner)
 					{
-						int nScanRange = ship->GetScanRange();
+						int nScanRange = fleetship->GetScanRange();
 						if (bBetterScanner)
 							nScanRange *= 1.5;
 						for (int j = -nScanRange; j <= nScanRange; j++)
@@ -5990,49 +5992,50 @@ void CBotf2Doc::CalcShipEffects()
 							{
 								if (p.y+j < STARMAP_SECTORS_VCOUNT && p.y+j > -1 && p.x+i < STARMAP_SECTORS_HCOUNT && p.x+i > -1)
 								{
-									m_Sectors.at(p.x+i+(p.y+j)*STARMAP_SECTORS_HCOUNT).SetScanned(sRace);
+									CSector& other_sector = GetSector(p.x+i, p.y+j);
+									other_sector.SetScanned(sRace);
 									// Teiler für die Scanstärke berechnen
 									int div = max(abs(j),abs(i));
 									if (div == 0)
 										div = 1;
-									scanPower = m_Sectors.at(p.x+i+(p.y+j)*STARMAP_SECTORS_HCOUNT).GetScanPower(sRace);
+									scanPower = other_sector.GetScanPower(sRace);
 									// Wenn das Schiff die Patrouillieneigenschaft besitzt und sich in einem eigenen Sektor
 									// befindet, dann wird die Scanleistung um 20% erhöht
 									float boni = 1.0f;
-									if (sRace == m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSector() && ship->HasSpecial(SHIP_SPECIAL::PATROLSHIP))
+									if (sRace == other_sector.GetOwnerOfSector() && fleetship->HasSpecial(SHIP_SPECIAL::PATROLSHIP))
 										boni = 1.2f;
 									if (bBetterScanner)
 										boni += 0.5;
 
-									if ((ship->GetScanPower() * boni / div) > scanPower)
-										m_Sectors.at(p.x+i+(p.y+j)*STARMAP_SECTORS_HCOUNT).SetScanPower((short)(ship->GetScanPower() * boni / div), sRace);
+									if ((fleetship->GetScanPower() * boni / div) > scanPower)
+										other_sector.SetScanPower((short)(fleetship->GetScanPower() * boni / div), sRace);
 								}
 							}
 						}
 
 						// auch jedes Schiff in einer Flotte erhöht die Scankraft um +1
-						m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetScanPower(m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetScanPower(sRace) + 1, sRace);
+						sector.SetScanPower(sector.GetScanPower(sRace) + 1, sRace);
 					}
 				}
 
 				// Schiffe, wenn wir dort nicht eine ausreichend hohe Scanpower haben. Ab Stealthstufe 4 muss das Schiff getarnt
 				// sein, ansonsten gilt dort nur Stufe 3.
-				short stealthPower = ship->GetStealthPower() * 20;
-				if (ship->GetStealthPower() > 3 && ship->GetCloak() == FALSE)
+				short stealthPower = fleetship->GetStealthPower() * 20;
+				if (fleetship->GetStealthPower() > 3 && fleetship->GetCloak() == FALSE)
 					stealthPower = 3 * 20;
-				if (stealthPower < m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetNeededScanPower(sRace))
-					m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetNeededScanPower(stealthPower, sRace);
+				if (stealthPower < sector.GetNeededScanPower(sRace))
+					sector.SetNeededScanPower(stealthPower, sRace);
 
 				// Schiffunterstützungkosten dem jeweiligen Imperium hinzufügen.
 				if (pMajor)
-					pMajor->GetEmpire()->AddShipCosts(ship->GetMaintenanceCosts());
+					pMajor->GetEmpire()->AddShipCosts(fleetship->GetMaintenanceCosts());
 
 				// die Schiffe in der Flotte beim modifizieren der Schiffslisten der einzelnen Imperien beachten
 				if (pMajor)
-					pMajor->GetShipHistory()->ModifyShip(ship, m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetName(TRUE));
+					pMajor->GetShipHistory()->ModifyShip(fleetship, sector.GetName(TRUE));
 
 				// Erfahrunspunkte der Schiffe anpassen
-				this->CalcShipExp(ship);
+				this->CalcShipExp(fleetship);
 			}
 		}
 
@@ -6042,15 +6045,15 @@ void CBotf2Doc::CalcShipEffects()
 		// bestehen
 		if (m_ShipArray[y].GetShipType() == SHIP_TYPE::OUTPOST || m_ShipArray[y].GetShipType() == SHIP_TYPE::STARBASE)
 		{
-			m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetShipPort(TRUE, sRace);
+			sector.SetShipPort(TRUE, sRace);
 			if (m_ShipArray[y].GetShipType() == SHIP_TYPE::OUTPOST)
-				m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetOutpost(TRUE, sRace);
+				sector.SetOutpost(TRUE, sRace);
 			else
-				m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetStarbase(TRUE, sRace);
+				sector.SetStarbase(TRUE, sRace);
 		}
 		// Dem Sektor bekanntgeben, das in ihm ein Schiff ist
 		if (m_ShipArray[y].GetShipType() != SHIP_TYPE::OUTPOST && m_ShipArray[y].GetShipType() != SHIP_TYPE::STARBASE)
-			m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetOwnerOfShip(TRUE, sRace);
+			sector.SetOwnerOfShip(TRUE, sRace);
 	}
 }
 
