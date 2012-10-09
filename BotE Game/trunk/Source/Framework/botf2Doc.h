@@ -291,7 +291,7 @@ protected:
 	void CalcNewRoundData();
 private:
 	//helper functions for CalcNewRoundData()
-	void DistributeMoralProdToEmpire();
+	void CalcNewRoundDataPreLoop();
 	void AddShipPortsFromMinors(const std::map<CString, CMajor*>& pmMajors);
 	void CheckRoutes(const CSector& sector, CSystem& system, CMajor* pMajor);
 	void CalcNewRoundDataScannedSectors(const CSystem& system, const CPoint& co);

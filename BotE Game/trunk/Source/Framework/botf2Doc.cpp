@@ -3862,7 +3862,7 @@ void CBotf2Doc::CalcOldRoundData()
 }
 
 ///////BEGINN: HELPER FUNCTIONS FOR CBotf2Doc::CalcNewRoundData()///////
-void CBotf2Doc::DistributeMoralProdToEmpire() {
+void CBotf2Doc::CalcNewRoundDataPreLoop() {
 	CSystemProd::ResetMoralEmpireWide();
 	// Hier müssen wir nochmal die Systeme durchgehen und die imperienweite Moralproduktion auf die anderen System
 	// übertragen
@@ -4082,7 +4082,7 @@ static void GetIntelligenceBoniFromSpecialTechsAndSetThem(const std::map<CString
 /// Daten für die neue Runde.
 void CBotf2Doc::CalcNewRoundData()
 {
-	DistributeMoralProdToEmpire();
+	CalcNewRoundDataPreLoop();
 
 	map<CString, CSystemProd::RESEARCHBONI> researchBonis;
 	const map<CString, CMajor*>* const pmMajors = m_pRaceCtrl->GetMajors();
@@ -4112,7 +4112,6 @@ void CBotf2Doc::CalcNewRoundData()
 			// Haben wir eine online Schiffswerft im System, dann ShipPort in dem Sektor setzen
 			if (production->GetShipYard())
 				sector->SetShipPort(TRUE, system_owner);
-			CalcNewRoundDataScannedSectors(system, sector->GetKO());
 			CalcNewRoundDataMoral(*sector, system, m_TroopInfo);
 
 			// Hier die gesamten Forschungsboni der Imperien berechnen
