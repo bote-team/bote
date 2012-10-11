@@ -3879,7 +3879,8 @@ void CBotf2Doc::CalcNewRoundDataPreLoop() {
 		//starts at (0,0) in the top left; so when transferring the scanpower in (0,0)
 		//it is not yet updated.
 		const CSystemProd& production = *sy->GetProduction();
-		PutScannedSquareOverCoords(*se, production.GetScanRange(), production.GetScanPower(), sy->GetOwnerOfSystem());
+		PutScannedSquareOverCoords(*se, production.GetScanRange(), production.GetScanPower(),
+			*m_pRaceCtrl->GetRace(sy->GetOwnerOfSystem()));
 	}
 }
 void CBotf2Doc::AddShipPortsFromMinors(const std::map<CString, CMajor*>& pmMajors) {
@@ -3992,16 +3993,20 @@ static void CalcNewRoundDataMoral(const CSector& sector, CSystem& system, CArray
 	system.IncludeTroopMoralValue(&TroopInfo);
 }
 
-void CBotf2Doc::PutScannedSquareOverCoords(CSector& sector, int range, const unsigned power, const CString& race_id,
+void CBotf2Doc::PutScannedSquareOverCoords(CSector& sector, int range, const unsigned power, const CRace& race,
 					bool ship, bool bBetterScanner, bool patrolship) {
 	if(!ship && power == 0) return;
+	const CString& race_id = race.GetRaceID();
 	if(ship)
 		sector.IncrementNumberOfShips(race_id);
 	float boni = 1.0f;
 	// Wenn das Schiff die Patrouillieneigenschaft besitzt und sich in einem eigenen Sektor befindet,
 	// dann wird die Scanleistung um 20% erhöht.
-	if(patrolship && sector.GetOwnerOfSector() == race_id)
-		boni = 1.2f;
+	if(patrolship) {
+		const CString& owner_of_sector = sector.GetOwnerOfSector();
+		if(race_id == owner_of_sector || race.GetAgreement(owner_of_sector) >= DIPLOMATIC_AGREEMENT::AFFILIATION)
+			boni = 1.2f;
+	}
 	if(bBetterScanner) {
 		range *= 1.5;
 		boni += 0.5;
@@ -5881,7 +5886,7 @@ void CBotf2Doc::CalcShipEffectsForSingleShip(CShip& ship, CSector& sector, CMajo
 		if (!bDeactivatedShipScanner)
 			// Scanstärke auf die Sektoren abhängig von der Scanrange übertragen
 			PutScannedSquareOverCoords(sector, ship.GetScanRange(), ship.GetScanPower(),
-				sRace, true, bBetterScanner, ship.HasSpecial(SHIP_SPECIAL::PATROLSHIP));
+				*static_cast<CRace*>(pMajor), true, bBetterScanner, ship.HasSpecial(SHIP_SPECIAL::PATROLSHIP));
 	}
 	// Schiffe, wenn wir dort nicht eine ausreichend hohe Scanpower haben. Ab Stealthstufe 4 muss das Schiff getarnt
 	// sein, ansonsten gilt dort nur Stufe 3.

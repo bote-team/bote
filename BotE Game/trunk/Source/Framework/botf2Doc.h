@@ -291,7 +291,7 @@ protected:
 	void CalcNewRoundData();
 private:
 	//general helper function
-	void PutScannedSquareOverCoords(CSector& sector, const int range, const unsigned power, const CString& race_id,
+	void PutScannedSquareOverCoords(CSector& sector, const int range, const unsigned power, const CRace& race,
 					bool ship = false, bool bBetterScanner = false, bool patrolship = false);
 private:
 	//helper functions for CalcNewRoundData()
