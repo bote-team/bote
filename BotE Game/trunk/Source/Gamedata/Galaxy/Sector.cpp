@@ -126,6 +126,9 @@ void CSector::Serialize(CArchive &ar)
 		ar << m_bWhoIsOwnerOfShip.size();
 		for (set<CString>::const_iterator it = m_bWhoIsOwnerOfShip.begin(); it != m_bWhoIsOwnerOfShip.end(); ++it)
 			ar << *it;
+		ar << m_mNumbersOfShips.size();
+		for(std::map<CString, unsigned>::const_iterator it = m_mNumbersOfShips.begin(); it != m_mNumbersOfShips.end(); ++it)
+			ar << it->first << it->second;
 		ar << m_iNeededStationPoints.size();
 		for (map<CString, short>::const_iterator it = m_iNeededStationPoints.begin(); it != m_iNeededStationPoints.end(); ++it)
 			ar << it->first << it->second;
@@ -219,6 +222,17 @@ void CSector::Serialize(CArchive &ar)
 			CString value;
 			ar >> value;
 			m_bWhoIsOwnerOfShip.insert(value);
+		}
+		m_mNumbersOfShips.clear();
+		mapSize = 0;
+		ar >> mapSize;
+		for(unsigned i = 0; i < mapSize; ++i)
+		{
+			CString key;
+			ar >> key;
+			unsigned value;
+			ar >> value;
+			m_mNumbersOfShips.insert(std::pair<CString, unsigned>(key, value));
 		}
 		m_iNeededStationPoints.clear();
 		mapSize = 0;
