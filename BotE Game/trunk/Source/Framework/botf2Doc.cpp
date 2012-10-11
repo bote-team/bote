@@ -5772,110 +5772,108 @@ void CBotf2Doc::CalcShipCombat()
 	}
 }
 
+void CBotf2Doc::CalcShipRetreat() {
+	// Schiffe mit Rückzugsbefehl auf ein Feld neben dem aktuellen Feld setzen
+	for (int i = 0; i < m_ShipArray.GetSize(); i++)
+	{
+		CShip* pShip = &m_ShipArray.GetAt(i);
+		const CString& ship_owner = pShip->GetOwnerOfShip();
+		// Hat das Schiff den Rückzugsbefehl
+		if (pShip->GetCombatTactic() != COMBAT_TACTIC::CT_RETREAT)
+			continue;
+
+		// Rückzugsbefehl zurücknehmen
+		pShip->SetCombatTactic(COMBAT_TACTIC::CT_ATTACK);
+		// Schiff auf Meiden/Angriff stellen entsprechend seinem Typ
+		pShip->UnsetCurrentOrder();
+
+		// womögicher Terraformplanet oder Stationsbau zurücknehmen
+		pShip->SetTerraformingPlanet(-1);
+
+		// Rückzugssektor für dieses Schiff in diesem Sektor holen
+		if (m_mShipRetreatSectors.find(ship_owner) == m_mShipRetreatSectors.end())
+			continue;
+
+		const CPoint& co = pShip->GetKO();
+		const pair<int, int> CurrentSector(co.x, co.y);
+		if (m_mShipRetreatSectors[ship_owner].find(CurrentSector)
+			== m_mShipRetreatSectors[ship_owner].end())
+			continue;
+
+		CPoint ptRetreatSector = m_mShipRetreatSectors[ship_owner][CurrentSector];
+		// Kann das Schiff überhaupt fliegen?
+		if (pShip->GetSpeed() > 0)
+		{
+			pShip->SetKO(ptRetreatSector);
+			// aktuell eingestellten Kurs löschen (nicht das das Schiff wieder in den Gefahrensektor fliegt)
+			pShip->SetTargetKO(CPoint(-1, -1), 0);
+		}
+
+		// sind alle Schiffe in einer Flotte im Rückzug, so kann die ganze Flotte
+		// in den Rückzugssektor
+		bool bCompleteFleetRetreat = true;
+		pShip->CheckFleet();
+		if (pShip->GetFleet())
+		{
+			for (int j = 0; j < pShip->GetFleet()->GetFleetSize(); j++)
+			{
+				if (pShip->GetFleet()->GetShipFromFleet(j)->GetCombatTactic() != COMBAT_TACTIC::CT_RETREAT
+					|| pShip->GetFleet()->GetFleetSpeed(pShip) == 0)
+				{
+					bCompleteFleetRetreat = false;
+					break;
+				}
+			}
+		}
+
+		// haben alle Schiffe in der Flotte den Rückzugsbefehl oder hat das Schiff keine Flotte
+		// -> Rückzugssektor festlegen
+		if (bCompleteFleetRetreat)
+		{
+			// Rückzugsbefehl in Flotte zurücknehmen
+			if (pShip->GetFleet())
+				for (int j = 0; j < pShip->GetFleet()->GetFleetSize(); j++)
+				{
+					CShip* pFleetShip = pShip->GetFleet()->GetShipFromFleet(j);
+					pFleetShip->SetCombatTactic(COMBAT_TACTIC::CT_ATTACK);
+
+					// Schiff auf Meiden/Angriff stellen entsprechend seinem Typ
+					pFleetShip->UnsetCurrentOrder();
+
+					if (pFleetShip->GetSpeed() > 0)
+					{
+						pFleetShip->SetKO(ptRetreatSector);
+						// aktuell eingestellten Kurs löschen (nicht das das Schiff wieder in den Gefahrensektor fliegt)
+						pFleetShip->SetTargetKO(CPoint(-1, -1), 0);
+					}
+
+					// womögicher Terraformplanet oder Stationsbau zurücknehmen
+					pFleetShip->SetTerraformingPlanet(-1);
+				}
+		}
+		// Schiffe aus der Flotte nehmen und ans Ende des Schiffsarrays packen. Diese werden
+		// dann auch noch behandelt
+		else
+		{
+			// nicht mehr auf pShip arbeiten, da sich der Vektor hier verändern kann und somit
+			// der Zeiger nicht mehr gleich ist!
+			if (m_ShipArray[i].GetFleet())
+				while (m_ShipArray[i].GetFleet()->GetFleetSize())
+				{
+					m_ShipArray.Add(*m_ShipArray[i].GetFleet()->GetShipFromFleet(0));;
+					m_ShipArray[i].GetFleet()->RemoveShipFromFleet(0);
+				}
+			m_ShipArray[i].DeleteFleet();
+		}
+	}//	for (int i = 0; i < m_ShipArray.GetSize(); i++)
+	m_mShipRetreatSectors.clear();
+}
+
 /// Diese Funktion berechnet die Auswirkungen von Schiffen und Stationen auf der Karte. So werden hier z.B. Sektoren
 /// gescannt, Rassen kennengelernt und die Schiffe den Sektoren bekanntgegeben.
 void CBotf2Doc::CalcShipEffects()
 {
-	using namespace network;
-
-	// Schiffe mit Rückzugsbefehl auf ein Feld neben dem aktuellen Feld setzen
-	for (int i = 0; i < m_ShipArray.GetSize(); i++)
-	{
-		CShip* pShip = &m_ShipArray[i];
-		// Hat das Schiff den Rückzugsbefehl
-		if (pShip->GetCombatTactic() == COMBAT_TACTIC::CT_RETREAT)
-		{
-			// Rückzugsbefehl zurücknehmen
-			pShip->SetCombatTactic(COMBAT_TACTIC::CT_ATTACK);
-			// Schiff auf Meiden stellen
-			if (pShip->IsNonCombat())
-				pShip->SetCurrentOrder(SHIP_ORDER::AVOID);
-			else
-				pShip->SetCurrentOrder(SHIP_ORDER::ATTACK);
-
-			// womögicher Terraformplanet oder Stationsbau zurücknehmen
-			pShip->SetTerraformingPlanet(-1);
-
-			// Rückzugssektor für dieses Schiff in diesem Sektor holen
-			if (m_mShipRetreatSectors.find(pShip->GetOwnerOfShip()) == m_mShipRetreatSectors.end())
-				continue;
-
-			pair<int, int> ptCurrentSector(pShip->GetKO().x, pShip->GetKO().y);
-			if (m_mShipRetreatSectors[pShip->GetOwnerOfShip()].find(ptCurrentSector) == m_mShipRetreatSectors[pShip->GetOwnerOfShip()].end())
-				continue;
-
-			CPoint ptRetreatSector = m_mShipRetreatSectors[pShip->GetOwnerOfShip()][ptCurrentSector];
-			// Kann das Schiff überhaupt fliegen?
-			if (pShip->GetSpeed() > 0)
-			{
-				pShip->SetKO(ptRetreatSector);
-				// aktuell eingestellten Kurs löschen (nicht das das Schiff wieder in den Gefahrensektor fliegt)
-				pShip->SetTargetKO(CPoint(-1, -1), 0);
-			}
-
-			// sind alle Schiffe in einer Flotte im Rückzug, so kann die ganze Flotte
-			// in den Rückzugssektor
-			bool bCompleteFleetRetreat = true;
-			pShip->CheckFleet();
-			if (pShip->GetFleet())
-			{
-				for (int j = 0; j < pShip->GetFleet()->GetFleetSize(); j++)
-				{
-					if (pShip->GetFleet()->GetShipFromFleet(j)->GetCombatTactic() != COMBAT_TACTIC::CT_RETREAT
-						|| pShip->GetFleet()->GetFleetSpeed(pShip) == 0)
-					{
-						bCompleteFleetRetreat = false;
-						break;
-					}
-				}
-			}
-
-			// haben alle Schiffe in der Flotte den Rückzugsbefehl oder hat das Schiff keine Flotte
-			// -> Rückzugssektor festlegen
-			if (bCompleteFleetRetreat)
-			{
-				// Rückzugsbefehl in Flotte zurücknehmen
-				if (pShip->GetFleet())
-					for (int j = 0; j < pShip->GetFleet()->GetFleetSize(); j++)
-					{
-						CShip* pFleetShip = pShip->GetFleet()->GetShipFromFleet(j);
-						pFleetShip->SetCombatTactic(COMBAT_TACTIC::CT_ATTACK);
-
-						// Schiff auf Meiden stellen
-						if (pFleetShip->IsNonCombat())
-							pFleetShip->SetCurrentOrder(SHIP_ORDER::AVOID);
-						else
-							pFleetShip->SetCurrentOrder(SHIP_ORDER::ATTACK);
-
-						if (pFleetShip->GetSpeed() > 0)
-						{
-							pFleetShip->SetKO(ptRetreatSector);
-							// aktuell eingestellten Kurs löschen (nicht das das Schiff wieder in den Gefahrensektor fliegt)
-							pFleetShip->SetTargetKO(CPoint(-1, -1), 0);
-						}
-
-						// womögicher Terraformplanet oder Stationsbau zurücknehmen
-						pFleetShip->SetTerraformingPlanet(-1);
-					}
-			}
-			// Schiffe aus der Flotte nehmen und ans Ende des Schiffsarrays packen. Diese werden
-			// dann auch noch behandelt
-			else
-			{
-				// nicht mehr auf pShip arbeiten, da sich der Vektor hier verändern kann und somit
-				// der Zeiger nicht mehr gleich ist!
-				if (m_ShipArray[i].GetFleet())
-					while (m_ShipArray[i].GetFleet()->GetFleetSize())
-					{
-						m_ShipArray.Add(*m_ShipArray[i].GetFleet()->GetShipFromFleet(0));;
-						m_ShipArray[i].GetFleet()->RemoveShipFromFleet(0);
-					}
-				m_ShipArray[i].DeleteFleet();
-			}
-		}
-	}
-	m_mShipRetreatSectors.clear();
-
+	CalcShipRetreat();
 
 	// Nach einem möglichen Kampf, aber natürlich auch generell die Schiffe und Stationen den Sektoren bekanntgeben
 	for (int y = 0; y < m_ShipArray.GetSize(); y++)

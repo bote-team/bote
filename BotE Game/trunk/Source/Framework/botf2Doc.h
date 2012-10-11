@@ -317,7 +317,10 @@ protected:
 	/// Diese Funktion berechnet die Auswirkungen von Schiffen und Stationen auf der Karte. So werden hier z.B. Sektoren
 	/// gescannt, Rassen kennengelernt und die Schiffe den Sektoren bekanntgegeben.
 	void CalcShipEffects();
-
+private:
+	//helper functions for CalcShipEffects()
+	void CalcShipRetreat();
+protected:
 	/// Diese Funktion führt allgemeine Berechnung durch, die immer zum Ende der NextRound-Calculation stattfinden müssen.
 	void CalcEndDataForNextRound();
 
