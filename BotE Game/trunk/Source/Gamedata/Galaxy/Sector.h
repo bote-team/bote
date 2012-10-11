@@ -187,18 +187,7 @@ public:
 	}
 
 	/// Diese Funktion gibt die Scanpower zurück, die die Majorrace <code>Race</code> in diesem Sektor hat.
-	short GetScanPower(const CString& sRace) const
-	{
-		const CCommandLineParameters* const clp = dynamic_cast<CBotf2App*>(AfxGetApp())->GetCommandLineParameters();
-		if(clp->SeeAllOfMap())
-			return 200;
-
-		map<CString, short>::const_iterator it = m_iScanPower.find(sRace);
-		if (it != m_iScanPower.end())
-			return it->second;
-		else
-			return false;
-	}
+	short GetScanPower(const CString& sRace, bool bWith_ships = true) const;
 
 	/// Diese Funktion gibt die Scanpower zurück, die man benötigt, um das Schiff/die Schiffe der
 	/// Majorrace <code>Race</code> in diesem Sektor zu entdecken.
@@ -334,6 +323,9 @@ public:
 			m_bWhoIsOwnerOfShip.erase(sOwner);
 	}
 
+	//Add 1 to the number of race's ships in this sector
+	void IncrementNumberOfShips(const CString& race);
+
 	/// Funktion legt fest, ob die Majorrace <code>Race</code> gerade eine Station in diesem Sektor baut.
 	void SetIsStationBuilding(BOOLEAN is, const CString& Race)
 	{
@@ -345,13 +337,7 @@ public:
 
 	/// Funktion legt die Scanpower <code>scanpower</code>, welche die Majorrace <code>Race</code>
 	/// in diesem Sektor hat, fest.
-	void SetScanPower(short scanpower, const CString& Race)
-	{
-		if (scanpower)
-			m_iScanPower[Race] = scanpower;
-		else
-			m_iScanPower.erase(Race);
-	}
+	void SetScanPower(short scanpower, const CString& Race);
 
 	/// Funktion legt die Scanpower <code>scanpower</code> fest, welche benötigt wird, um ein Schiff der
 	/// Majorrace <code>Race</code> in diesem Sektor zu erkennen.
@@ -480,6 +466,9 @@ private:
 
 	/// Hat eine Majorrace ein Schiff in diesem Sektor?
 	set<CString> m_bWhoIsOwnerOfShip;
+
+	//race CString has this many ships in this sector
+	std::map<CString, unsigned> m_mNumbersOfShips;
 
 	/// Baut eine bestimmte Majorrasse gerade eine Station in dem Sektor?
 	set<CString> m_bIsStationBuild;

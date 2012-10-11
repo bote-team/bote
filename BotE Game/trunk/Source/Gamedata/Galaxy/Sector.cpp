@@ -42,6 +42,7 @@ CSector::CSector(const CSector& other) :
 	m_bOutpost(other.m_bOutpost),
 	m_bStarbase(other.m_bStarbase),
 	m_bWhoIsOwnerOfShip(other.m_bWhoIsOwnerOfShip),
+	m_mNumbersOfShips(other.m_mNumbersOfShips),
 	m_bIsStationBuild(other.m_bIsStationBuild),
 	m_iScanPower(other.m_iScanPower),
 	m_iNeededScanPower(other.m_iNeededScanPower),
@@ -67,6 +68,7 @@ CSector& CSector::operator=(const CSector& other){
 	m_bOutpost = other.m_bOutpost;
 	m_bStarbase = other.m_bStarbase;
 	m_bWhoIsOwnerOfShip = other.m_bWhoIsOwnerOfShip;
+	m_mNumbersOfShips = other.m_mNumbersOfShips;
 	m_bIsStationBuild = other.m_bIsStationBuild;
 	m_iScanPower = other.m_iScanPower;
 	m_iNeededScanPower = other.m_iNeededScanPower;
@@ -663,6 +665,7 @@ void CSector::ClearAllPoints()
 	m_iShipPathPoints = 0;
 
 	m_bWhoIsOwnerOfShip.clear();
+	m_mNumbersOfShips.clear();
 	// Die benötigte Scanpower um Schiffe sehen zu können wieder auf NULL setzen
 	m_iNeededScanPower.clear();
 	m_iScanPower.clear();
@@ -742,6 +745,7 @@ void CSector::Reset()
 	m_iNeededScanPower.clear();
 	m_bShipPort.clear();
 	m_bWhoIsOwnerOfShip.clear();
+	m_mNumbersOfShips.clear();
 	m_bOutpost.clear();
 	m_bStarbase.clear();
 	m_bIsStationBuild.clear();
@@ -892,4 +896,46 @@ void CSector::DrawShipSymbolInSector(Graphics *g, CBotf2Doc* pDoc, CMajor* pPlay
 			delete ship;
 		}
 	}
+}
+
+void CSector::IncrementNumberOfShips(const CString& race) {
+	const std::map<CString, unsigned>::iterator found = m_mNumbersOfShips.find(race);
+	if(found == m_mNumbersOfShips.end()) {
+		m_mNumbersOfShips.insert(std::pair<CString, unsigned>(race, 1));
+		return;
+	}
+	++(found->second);
+}
+
+/// Diese Funktion gibt die Scanpower zurück, die die Majorrace <code>Race</code> in diesem Sektor hat.
+short CSector::GetScanPower(const CString& sRace, bool bWith_ships) const
+{
+	const CCommandLineParameters* const clp = dynamic_cast<CBotf2App*>(AfxGetApp())->GetCommandLineParameters();
+	if(clp->SeeAllOfMap())
+		return 200;
+
+	unsigned scan_power_due_to_ship_number = 0;
+	if(bWith_ships) {
+		const CBotf2Doc* pDoc = dynamic_cast<CBotf2App*>(AfxGetApp())->GetDocument();
+		const CRaceController* pCtrl = pDoc->GetRaceCtrl();
+		const CRace* pRace = pCtrl->GetRace(sRace);
+		for(std::map<CString, unsigned>::const_iterator it = m_mNumbersOfShips.begin(); it != m_mNumbersOfShips.end(); ++ it) {
+			if(pRace->GetRaceID() == it->first || pRace->GetAgreement(it->first) >= DIPLOMATIC_AGREEMENT::AFFILIATION)
+				scan_power_due_to_ship_number += it->second;
+		}
+	}
+	map<CString, short>::const_iterator it = m_iScanPower.find(sRace);
+	if (it != m_iScanPower.end())
+		return it->second + scan_power_due_to_ship_number;
+	return scan_power_due_to_ship_number;
+}
+
+/// Funktion legt die Scanpower <code>scanpower</code>, welche die Majorrace <code>Race</code>
+/// in diesem Sektor hat, fest.
+void CSector::SetScanPower(short scanpower, const CString& Race)
+{
+	if (scanpower)
+		m_iScanPower[Race] = scanpower;
+	else
+		m_iScanPower.erase(Race);
 }
