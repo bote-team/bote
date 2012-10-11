@@ -289,10 +289,10 @@ protected:
 	/// Diese Funktion berechnet die Produktion der Systeme, was in den Baulisten gebaut werden soll und sonstige
 	/// Daten für die neue Runde.
 	void CalcNewRoundData();
-private:
-	//general helper function
-	void PutScannedSquareOverCoords(CSector& sector, const int range, const unsigned power, const CRace& race,
-					bool ship = false, bool bBetterScanner = false, bool patrolship = false);
+
+public:
+	void PutScannedSquareOverCoords(const CSector& sector, const int range, const int power, const CRace& race,
+		bool bBetterScanner = false, bool patrolship = false, bool anomaly = false);
 private:
 	//helper functions for CalcNewRoundData()
 	void CalcNewRoundDataPreLoop();

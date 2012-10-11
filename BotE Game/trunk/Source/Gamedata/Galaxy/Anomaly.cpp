@@ -355,23 +355,16 @@ void CAnomaly::ReduceScanPower(const CPoint &pt) const
 {
 	if (m_byType == BLACKHOLE || m_byType == RADIOPULSAR || m_byType == XRAYPULSAR || m_byType == MAGNETAR)
 	{
-		CBotf2Doc* pDoc = ((CBotf2App*)AfxGetApp())->GetDocument();
-		ASSERT(pDoc);
+		CBotf2Doc* pDoc = dynamic_cast<CBotf2App*>(AfxGetApp())->GetDocument();
+		assert(pDoc);
 
 		// Scanstärke verringern
 		map<CString, CMajor*>* pmMajors = pDoc->GetRaceCtrl()->GetMajors();
 		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 		{
-			int nRange = 1;	// Reichweite der Scannerbeeindrächtigung
-			pDoc->GetSector(pt).SetScanPower(pDoc->GetSector(pt).GetScanPower(it->first) -50, it->first);
-			for (int j = -nRange; j <= nRange; j++)
-				for (int i = -nRange; i <= nRange; i++)
-					if (pt.y + j < STARMAP_SECTORS_VCOUNT && pt.y + j > -1 && pt.x + i < STARMAP_SECTORS_HCOUNT && pt.x + i > -1)
-						if (pt.x + i != pt.x || pt.y + j != pt.y)
-						{
-							int div = max(abs(j),abs(i));
-							pDoc->GetSector(pt.x + i, pt.y + j).SetScanPower(pDoc->GetSector(pt.x + i, pt.y + j).GetScanPower(it->first) - 25 / div, it->first);
-						}
+			int nRange = 1;	// Reichweite der Scannerbeeinträchtigung
+			pDoc->PutScannedSquareOverCoords(pDoc->GetSector(pt), nRange, -50,
+				*static_cast<CRace*>(it->second), false, false, true);
 		}
 	}
 }
