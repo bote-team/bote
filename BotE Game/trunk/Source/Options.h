@@ -280,9 +280,6 @@ namespace SHIP_SIZE
 	};
 }
 
-#define IS_NONCOMBATSHIP(type) \
-	((type) == TRANSPORTER || (type) == COLONYSHIP || (type) == PROBE)
-
 // Schiffsreichweiten
 namespace SHIP_RANGE
 {
