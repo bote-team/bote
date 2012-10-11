@@ -105,6 +105,10 @@ public:
 	USHORT GetLoadedResources(BYTE res) const {return m_iLoadedResources[res];}
 	COMBAT_TACTIC::Typ GetCombatTactic() const {return m_nCombatTactic;}
 	bool IsNonCombat() const {return (m_iShipType == SHIP_TYPE::TRANSPORTER || m_iShipType == SHIP_TYPE::COLONYSHIP || m_iShipType == SHIP_TYPE::PROBE);}
+	//Is this ship an outpost or a starbase ?
+	bool IsBase() const {
+		return m_iShipType == SHIP_TYPE::OUTPOST || m_iShipType == SHIP_TYPE::STARBASE;
+	}
 	ALIEN_TYPE::Typ GetAlienType() const { return m_nAlienType; }
 
 	//Is this ship in need for a player command input in this round ?
