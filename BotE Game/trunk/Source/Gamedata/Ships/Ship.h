@@ -155,6 +155,10 @@ public:
 	//Execute a 1-turn shield (always) and hull (if bAtShipPort == TRUE) repairing step
 	void Repair(BOOL bAtShipPort, bool bFasterShieldRecharge);
 
+	/// Diese Funktion berechnet die Schiffserfahrung in einer neuen Runde. Außer Erfahrung im Kampf, diese werden nach einem
+	/// Kampf direkt verteilt.
+	void CalcExp();
+
 	//fleet related functions
 	void CreateFleet();	// Bevor wir mit der Flotte arbeiten können muß diese erst created werden
 	void CheckFleet();	// am besten in jeder neuen Runde aufrufen, säubert die Flotte (aber nicht unbedingt notwendig)

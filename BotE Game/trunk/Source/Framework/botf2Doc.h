@@ -327,11 +327,6 @@ protected:
 	/// Diese Funktion überprüft, ob neue Rassen kennengelernt wurden.
 	void CalcContactNewRaces();
 
-	/// Diese Funktion berechnet die Schiffserfahrung in einer neuen Runde. Außer Erfahrung im Kampf, diese werden nach einem
-	/// Kampf direkt verteilt.
-	/// @param ship Zeiger auf Schiff (inkl. Flotte) für welches die Erfahrung berechnet werden soll
-	void CalcShipExp(CShip* ship);
-
 	/// Funktion berechnet, ob zufällig Alienschiffe ins Spiel kommen.
 	void CalcRandomAlienEntities();
 

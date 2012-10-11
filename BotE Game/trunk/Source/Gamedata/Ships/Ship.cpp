@@ -1219,3 +1219,35 @@ void CShip::Repair(BOOL bAtShipPort, bool bFasterShieldRecharge) {
 	if(m_iCurrentOrder == SHIP_ORDER::REPAIR && (!NeedsRepair() || !bAtShipPort))
 		UnsetCurrentOrder();
 }
+
+/// Diese Funktion berechnet die Schiffserfahrung in einer neuen Runde. Außer Erfahrung im Kampf, diese werden nach einem
+/// Kampf direkt verteilt.
+void CShip::CalcExp()
+{
+/*
+Starterfahrung 0 (bis auf Schiffe, die in Systemen mit Akademien gebaut werden, die fangen mit 500 Erfahrung bereits an), Bezeichnung Unerfahren. Erfahrung steigt mit 10 pro Runde kontinuierlich an bis 500.
+Erfahrung 500 = Normal. Erfahrung steigt nun mit 5 pro Runde bis 1000.
+Erfahrung 1000 = Veteran. Erfahrung steigt nicht mehr.
+Erfahrung 2500 = Elite.
+Erfahrung 5000 = Legendär.
+
+Für den Erfahrungsgewinn gibt es mehrere Möglichkeiten:
+
+1. random events die pauschal jeweils immer EP geben (Ionensturm überstanden, diplomatische Eskortmission, Anomalie erforscht)
+2. Forschungsmissionen (Pulsar, Neutronenstern, schwarzes Loch, Wurmloch, Nebel scannen)
+3. Akademien: Bei Anwesenheit eines Veteranen- oder höher -schiffes in der Crewtrainingflotte werden die Erfahrungsgewinne von unerfahrenen und normalen Crews pro Runde verdoppelt. Das Veteranenschiff bekommt die normalen EP-Gewinne.
+4. Invasionen: Schiffe bekommen (Bevölkerungsverlust in Mrd.) * 100 + aktive shipdefence EP.
+5. Systemblockaden, Überfälle: Verdoppeln pro Runde Gewinn für unerfahrene und normale Crews
+6. Systemangriff: (Bevölkerungsverlust in Mrd.) * 100 + aktive shipdefence EP.
+7. Schiffskampf: ((Durchschnittscrewerfahrung aller gegnerischen Schiffe)/((Durchschnittscrewerfahrung aller gegnerischen Schiffe)+(Durchschnittscrewerfahrung aller eigenen Schiffe)))x(totalen Hüllenschaden am Gegner)/100. Letzteres sorgt dafür dass Schäden an erfahrenen Schiffen höher gewichtet werden (da sie ja auch seltener sind, weil erfahrenere Schiffe seltener getroffen werden). Distributiert wird dann gleichmäßig auf alle Schiffe.
+*/
+
+	int expAdd = 0;
+	switch (GetExpLevel())
+	{
+		case 0:	expAdd = 15;	break;
+		case 1: expAdd = 10;	break;
+		case 2: expAdd = 5;		break;
+	}
+	SetCrewExperiance(expAdd);
+}

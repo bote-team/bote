@@ -5115,7 +5115,7 @@ void CBotf2Doc::CalcShipOrders()
 						{
 							blockadeValue += rand()%20 + 1;
 							blockadeStillActive = TRUE;
-							CalcShipExp(&m_ShipArray[y]);
+							m_ShipArray[y].CalcExp();
 						}
 						// Wenn das Schiff eine Flotte anf?hrt, dann erh?hen auch alle Schiffe in der Flotte mit
 						// Blockadeeigenschaft den Blockadewert
@@ -5126,7 +5126,7 @@ void CBotf2Doc::CalcShipOrders()
 								{
 									blockadeValue += rand()%20 + 1;
 									blockadeStillActive = TRUE;
-									CalcShipExp(m_ShipArray[y].GetFleet()->GetShipFromFleet(x));
+									m_ShipArray[y].GetFleet()->GetShipFromFleet(x)->CalcExp();
 								}
 								else
 									m_ShipArray[y].GetFleet()->GetShipFromFleet(x)->SetCurrentOrder(SHIP_ORDER::ATTACK);
@@ -5941,7 +5941,7 @@ void CBotf2Doc::CalcShipEffects()
 			pMajor->GetShipHistory()->ModifyShip(&m_ShipArray[y], sector.GetName(TRUE));
 
 		// Erfahrunspunkte der Schiffe anpassen
-		this->CalcShipExp(&m_ShipArray[y]);
+		m_ShipArray[y].CalcExp();
 
 		// wenn das Schiff eine Flotte besitzt, dann die Schiffe in der Flotte auch beachten
 		if (m_ShipArray[y].GetFleet() != 0)
@@ -5976,7 +5976,7 @@ void CBotf2Doc::CalcShipEffects()
 					pMajor->GetShipHistory()->ModifyShip(fleetship, sector.GetName(TRUE));
 
 				// Erfahrunspunkte der Schiffe anpassen
-				this->CalcShipExp(fleetship);
+				fleetship->CalcExp();
 			}
 		}
 
@@ -6599,38 +6599,6 @@ void CBotf2Doc::CalcEndDataForNextRound()
 	m_NumberOfTheShipInArray = -1;
 	m_iNumberOfFleetShip = -1;
 	m_iNumberOfTheShipInFleet = -1;
-}
-
-/// Diese Funktion berechnet die Schiffserfahrung in einer neuen Runde. Außer Erfahrung im Kampf, diese werden nach einem
-/// Kampf direkt verteilt.
-void CBotf2Doc::CalcShipExp(CShip* ship)
-{
-/*
-Starterfahrung 0 (bis auf Schiffe, die in Systemen mit Akademien gebaut werden, die fangen mit 500 Erfahrung bereits an), Bezeichnung Unerfahren. Erfahrung steigt mit 10 pro Runde kontinuierlich an bis 500.
-Erfahrung 500 = Normal. Erfahrung steigt nun mit 5 pro Runde bis 1000.
-Erfahrung 1000 = Veteran. Erfahrung steigt nicht mehr.
-Erfahrung 2500 = Elite.
-Erfahrung 5000 = Legendär.
-
-Für den Erfahrungsgewinn gibt es mehrere Möglichkeiten:
-
-1. random events die pauschal jeweils immer EP geben (Ionensturm überstanden, diplomatische Eskortmission, Anomalie erforscht)
-2. Forschungsmissionen (Pulsar, Neutronenstern, schwarzes Loch, Wurmloch, Nebel scannen)
-3. Akademien: Bei Anwesenheit eines Veteranen- oder höher -schiffes in der Crewtrainingflotte werden die Erfahrungsgewinne von unerfahrenen und normalen Crews pro Runde verdoppelt. Das Veteranenschiff bekommt die normalen EP-Gewinne.
-4. Invasionen: Schiffe bekommen (Bevölkerungsverlust in Mrd.) * 100 + aktive shipdefence EP.
-5. Systemblockaden, Überfälle: Verdoppeln pro Runde Gewinn für unerfahrene und normale Crews
-6. Systemangriff: (Bevölkerungsverlust in Mrd.) * 100 + aktive shipdefence EP.
-7. Schiffskampf: ((Durchschnittscrewerfahrung aller gegnerischen Schiffe)/((Durchschnittscrewerfahrung aller gegnerischen Schiffe)+(Durchschnittscrewerfahrung aller eigenen Schiffe)))x(totalen Hüllenschaden am Gegner)/100. Letzteres sorgt dafür dass Schäden an erfahrenen Schiffen höher gewichtet werden (da sie ja auch seltener sind, weil erfahrenere Schiffe seltener getroffen werden). Distributiert wird dann gleichmäßig auf alle Schiffe.
-*/
-
-	int expAdd = 0;
-	switch (ship->GetExpLevel())
-	{
-		case 0:	expAdd = 15;	break;
-		case 1: expAdd = 10;	break;
-		case 2: expAdd = 5;		break;
-	}
-	ship->SetCrewExperiance(expAdd);
 }
 
 /// Funktion berechnet, ob zufällig Alienschiffe ins Spiel kommen.
