@@ -3871,18 +3871,18 @@ void CBotf2Doc::CalcNewRoundDataPreLoop() {
 		if(se->GetSunSystem() && sy->GetOwnerOfSystem() != "") {
 			// imperiumsweite Moralproduktion aus diesem System berechnen
 			sy->CalculateEmpireWideMoralProd(&BuildingInfo);
+			//Building scan power and range in a system isn't influenced by other systems, is it...?
+			//This needs to be here in the first loop, since when calculating the scan power that
+			//other majors get due to affiliation, the scan powers in all sectors are not yet calculated correctly.
+			//For instance, if the system (1,1) scans the sector (0,0) since the loop
+			//starts at (0,0) in the top left; so when transferring the scanpower in (0,0)
+			//it is not yet updated.
+			const CSystemProd& production = *sy->GetProduction();
+			const int scan_power = production.GetScanPower();
+			if(scan_power > 0)
+				PutScannedSquareOverCoords(*se, production.GetScanRange(), scan_power,
+					*m_pRaceCtrl->GetRace(sy->GetOwnerOfSystem()));
 		}
-		//Building scan power and range in a system isn't influenced by other systems, is it...?
-		//This needs to be here in the first loop, since when calculating the scan power that
-		//other majors get due to affiliation, the scan powers in all sectors are not yet calculated correctly.
-		//For instance, if the system (1,1) scans the sector (0,0) since the loop
-		//starts at (0,0) in the top left; so when transferring the scanpower in (0,0)
-		//it is not yet updated.
-		const CSystemProd& production = *sy->GetProduction();
-		const int scan_power = production.GetScanPower();
-		if(scan_power > 0)
-			PutScannedSquareOverCoords(*se, production.GetScanRange(), scan_power,
-				*m_pRaceCtrl->GetRace(sy->GetOwnerOfSystem()));
 	}
 }
 void CBotf2Doc::AddShipPortsFromMinors(const std::map<CString, CMajor*>& pmMajors) {
