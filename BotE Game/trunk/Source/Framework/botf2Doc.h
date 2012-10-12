@@ -293,11 +293,6 @@ protected:
 public:
 	void PutScannedSquareOverCoords(const CSector& sector, const int range, const int power, const CRace& race,
 		bool bBetterScanner = false, bool patrolship = false, bool anomaly = false);
-private:
-	//helper functions for CalcNewRoundData()
-	void CalcNewRoundDataPreLoop();
-	void AddShipPortsFromMinors(const std::map<CString, CMajor*>& pmMajors);
-	void CheckRoutes(const CSector& sector, CSystem& system, CMajor* pMajor);
 protected:
 	/// Diese Funktion berechnet die kompletten Handelsaktivitäten.
 	void CalcTrade();

@@ -286,6 +286,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\Source\Framework\CNewRoundDataCalculator.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\Source\Framework\MainFrm.cpp"
 					>
 				</File>
@@ -1168,6 +1172,10 @@
 				</File>
 				<File
 					RelativePath=".\Source\Framework\MySplitterWnd.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Source\Framework\NewRoundDataCalculator.h"
 					>
 				</File>
 				<File
