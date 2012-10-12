@@ -4046,33 +4046,6 @@ static void CalcNewRoundDataIntelligenceBoni(const CSystemProd* production, CInt
 	intelligence->AddMilitaryBonus(production->GetMilitarySpyBoni(), 0);
 	intelligence->AddMilitaryBonus(production->GetMilitarySabotageBoni(), 1);
 }
-static void GetResearchBoniFromSpecialTechsAndSetThem(
-	std::map<CString, CSystemProd::RESEARCHBONI>& researchBonis, const std::map<CString, CMajor*>* pmMajors) {
-	// Forschungsboni aus Spezialforschungen setzen, nachdem wir diese aus allen Systemen geholt haben
-	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
-	{
-		CResearch* pResearch = it->second->GetEmpire()->GetResearch();
-		const CResearchComplex* research_complex = pResearch->GetResearchInfo()
-			->GetResearchComplex(RESEARCH_COMPLEX::RESEARCH);
-		// Die Boni auf die einzelnen Forschungsgebiete durch Spezialforschungen addieren
-		if (research_complex->GetFieldStatus(1) == RESEARCH_STATUS::RESEARCHED)
-		{
-			researchBonis[it->first].nBoni[0] += research_complex->GetBonus(1);
-			researchBonis[it->first].nBoni[1] += research_complex->GetBonus(1);
-		}
-		else if (research_complex->GetFieldStatus(2) == RESEARCH_STATUS::RESEARCHED)
-		{
-			researchBonis[it->first].nBoni[2] += research_complex->GetBonus(2);
-			researchBonis[it->first].nBoni[3] += research_complex->GetBonus(2);
-		}
-		else if (research_complex->GetFieldStatus(3) == RESEARCH_STATUS::RESEARCHED)
-		{
-			researchBonis[it->first].nBoni[4] += research_complex->GetBonus(3);
-			researchBonis[it->first].nBoni[5] += research_complex->GetBonus(3);
-		}
-		pResearch->SetResearchBoni(researchBonis[it->first].nBoni);
-	}
-}
 static void GetIntelligenceBoniFromSpecialTechsAndSetThem(const std::map<CString, CMajor*>* pmMajors) {
 	// Geheimdienstboni aus Spezialforschungen holen
 	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
@@ -4105,7 +4078,6 @@ void CBotf2Doc::CalcNewRoundData()
 {
 	CalcNewRoundDataPreLoop();
 
-	map<CString, CSystemProd::RESEARCHBONI> researchBonis;
 	const map<CString, CMajor*>* const pmMajors = m_pRaceCtrl->GetMajors();
 
 	// Hier werden jetzt die baubaren Gebäude für die nächste Runde und auch die Produktion in den einzelnen
@@ -4135,11 +4107,6 @@ void CBotf2Doc::CalcNewRoundData()
 				sector->SetShipPort(TRUE, system_owner);
 			CalcNewRoundDataMoral(*sector, system, m_TroopInfo);
 
-			// Hier die gesamten Forschungsboni der Imperien berechnen
-			// Forschungsboni, die die Systeme machen holen. Wir benötigen diese dann für die CalculateResearch Funktion
-			// hier Forschungsboni besorgen
-			researchBonis[system_owner] += production->GetResearchBoni();
-
 			// Hier die gesamten Sicherheitsboni der Imperien berechnen
 			CalcNewRoundDataIntelligenceBoni(production, empire->GetIntelligence());
 
@@ -4155,7 +4122,7 @@ void CBotf2Doc::CalcNewRoundData()
 	}//for(std::vector<CSector>::iterator sector = m_Sectors.begin(); sector != m_Sectors.end(); ++sector) {
 
 	// Forschungsboni aus Spezialforschungen setzen, nachdem wir diese aus allen Systemen geholt haben
-	GetResearchBoniFromSpecialTechsAndSetThem(researchBonis, pmMajors);
+	//GetResearchBoniFromSpecialTechsAndSetThem(researchBonis, pmMajors);
 	// Geheimdienstboni aus Spezialforschungen holen
 	GetIntelligenceBoniFromSpecialTechsAndSetThem(pmMajors);
 	// Nun überprüfen, ob sich unsere Grenzen erweitern, wenn die MinorRasse eine Spaceflight-Rasse ist und wir mit
