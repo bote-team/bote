@@ -441,6 +441,25 @@ CString CShip::GetCurrentOrderAsString() const
 	return order;
 }
 
+CString CShip::GetCombatTacticAsString() const
+{
+
+	CString tactic;
+	switch (m_nCombatTactic)
+	{
+		case COMBAT_TACTIC::CT_AVOID:
+			tactic = CResourceManager::GetString("AVOID_ORDER");
+		break;
+		case COMBAT_TACTIC::CT_ATTACK:
+			tactic = CResourceManager::GetString("ATTACK_ORDER");
+		break;
+		default:
+			assert(false);
+		break;
+	}
+	return tactic;
+}
+
 void CShip::CreateFleet()
 {
 	if (!m_Fleet)

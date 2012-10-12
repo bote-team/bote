@@ -97,6 +97,7 @@ public:
 	const CString& GetShipDescription() const {return m_strShipDescription;}
 	CString GetShipTypeAsString(BOOL plural = FALSE) const;
 	CString GetCurrentOrderAsString() const;
+	CString GetCombatTacticAsString() const;
 	CString GetCurrentTargetAsString() const;
 	bool GetIsShipFlagShip() const {return m_bIsFlagShip;}
 	USHORT GetCrewExperience() const {return m_iCrewExperiance;}

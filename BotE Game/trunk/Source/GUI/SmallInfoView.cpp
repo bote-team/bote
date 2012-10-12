@@ -463,6 +463,8 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 			fontFormat.SetLineAlignment(StringAlignmentNear);
 			fontFormat.SetFormatFlags(!StringFormatFlagsNoWrap);
 			g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,190,r.right,50), &fontFormat, &fontBrush);
+			s.Format("%s: %s",CResourceManager::GetString("TACTIC"), m_pShip->GetCombatTacticAsString());
+			g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,210,r.right,50), &fontFormat, &fontBrush);
 		}
 	}
 	else

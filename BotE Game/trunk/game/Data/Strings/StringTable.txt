@@ -1336,6 +1336,8 @@ Ziel: keins
 Ziel: unbekannt
 [ORDER]
 Befehl
+[TACTIC]
+Taktik
 [ACTION]
 Aktion
 ////////////////////////// SHIPS END //////////////////////////////////

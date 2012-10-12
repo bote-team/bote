@@ -1336,6 +1336,8 @@ Target: none
 Target: unknown
 [ORDER]
 Order
+[TACTIC]
+Tactic
 [ACTION]
 Action
 ////////////////////////// SHIPS END //////////////////////////////////
