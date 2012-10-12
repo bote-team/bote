@@ -3412,20 +3412,13 @@ void CBotf2Doc::CalcIntelligence()
 void CBotf2Doc::CalcResearch()
 {
 	// Forschungsboni, die die Systeme machen holen. Wir benötigen diese dann für die CalculateResearch Funktion
-	struct RESEARCHBONI { short nBoni[6]; };
-	map<CString, RESEARCHBONI> researchBonis;
-	for (int y = 0 ; y < STARMAP_SECTORS_VCOUNT; y++)
-		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-			if (m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem() != "")
-			{
-				// hier Forschungsboni besorgen
-				researchBonis[m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem()].nBoni[0] += m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetBioTechBoni();
-				researchBonis[m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem()].nBoni[1] += m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetEnergyTechBoni();
-				researchBonis[m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem()].nBoni[2] += m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetCompTechBoni();
-				researchBonis[m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem()].nBoni[3] += m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetPropulsionTechBoni();
-				researchBonis[m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem()].nBoni[4] += m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetConstructionTechBoni();
-				researchBonis[m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem()].nBoni[5] += m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetWeaponTechBoni();
-			}
+	std::map<CString, CSystemProd::RESEARCHBONI> researchBoni;
+	for(std::vector<CSystem>::const_iterator system = m_Systems.begin(); system != m_Systems.end(); ++system) {
+		const CString& owner = system->GetOwnerOfSystem();
+		if(owner == "") continue;
+		const CSystemProd* prod = system->GetProduction();
+		researchBoni[owner] += prod->GetResearchBoni();
+	}
 
 	map<CString, CMajor*>* pmMajors = m_pRaceCtrl->GetMajors();
 
@@ -3433,7 +3426,7 @@ void CBotf2Doc::CalcResearch()
 	{
 		CMajor* pMajor = it->second;
 
-		pMajor->GetEmpire()->GetResearch()->SetResearchBoni(researchBonis[it->first].nBoni);
+		pMajor->GetEmpire()->GetResearch()->SetResearchBoni(researchBoni[it->first].nBoni);
 		CString *news = 0;
 		news = pMajor->GetEmpire()->GetResearch()->CalculateResearch(pMajor->GetEmpire()->GetFP());
 		network::RACE client = m_pRaceCtrl->GetMappedClientID(pMajor->GetRaceID());
