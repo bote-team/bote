@@ -4123,7 +4123,10 @@ void CBotf2Doc::CalcShipOrders()
 		// Alle Schiffe, welche einen Systemangriffsbefehl haben überprüfen, ob dieser Befehl noch gültig ist
 		CSector* pSector = &GetSector(m_ShipArray[y].GetKO());
   		CSystem* pSystem = &GetSystem(m_ShipArray[y].GetKO());
-
+		if (m_ShipArray[y].GetCurrentOrder() == SHIP_ORDER::ATTACK)
+			m_ShipArray[y].SetCombatTactic(COMBAT_TACTIC::CT_ATTACK);
+		else if (m_ShipArray[y].GetCurrentOrder() == SHIP_ORDER::AVOID)
+			m_ShipArray[y].SetCombatTactic(COMBAT_TACTIC::CT_AVOID);
 		if (m_ShipArray[y].GetCurrentOrder() == SHIP_ORDER::ATTACK_SYSTEM)
 		{
 			if (pSector->GetSunSystem())
@@ -5266,7 +5269,7 @@ bool CBotf2Doc::IsShipCombat()
 	for (int y = 0; y < m_ShipArray.GetSize(); y++)
 	{
 		// Wenn unser Schiff auf Angreifen gestellt ist
-		if (m_ShipArray.GetAt(y).GetCurrentOrder() != SHIP_ORDER::ATTACK)
+		if (m_ShipArray.GetAt(y).GetCombatTactic() != COMBAT_TACTIC::CT_ATTACK)
 			continue;
 
 		CPoint p = m_ShipArray.GetAt(y).GetKO();
@@ -5597,7 +5600,7 @@ void CBotf2Doc::CalcShipRetreat() {
 		// Rückzugsbefehl zurücknehmen
 		pShip->SetCombatTactic(COMBAT_TACTIC::CT_ATTACK);
 		// Schiff auf Meiden/Angriff stellen entsprechend seinem Typ
-		pShip->UnsetCurrentOrder();
+		pShip->SetCurrentOrderAccordingToType();
 
 		// womögicher Terraformplanet oder Stationsbau zurücknehmen
 		pShip->SetTerraformingPlanet(-1);
@@ -5650,7 +5653,7 @@ void CBotf2Doc::CalcShipRetreat() {
 					pFleetShip->SetCombatTactic(COMBAT_TACTIC::CT_ATTACK);
 
 					// Schiff auf Meiden/Angriff stellen entsprechend seinem Typ
-					pFleetShip->UnsetCurrentOrder();
+					pFleetShip->SetCurrentOrderAccordingToType();
 
 					if (pFleetShip->GetSpeed() > 0)
 					{

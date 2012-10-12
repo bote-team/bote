@@ -153,6 +153,8 @@ public:
 	void SetAlienType(ALIEN_TYPE::Typ nAlienType) {m_nAlienType = nAlienType;}
 
 	//Sets this ship's m_iCurrentOrder to AVOID if it's a civil ship and to ATTACK otherwise.
+	void SetCurrentOrderAccordingToType();
+	//Sets the current oder according to m_nCombatTactic
 	void UnsetCurrentOrder();
 
 	// sonstige Funktionen

@@ -1199,9 +1199,7 @@ void CShip::SetTargetKO(const CPoint& TargetKO, int Index, const bool simple_set
 	m_TargetKO[Index] = TargetKO;
 	if(simple_setter)
 		return;
-	if (m_iCurrentOrder > SHIP_ORDER::AVOID) {
-		UnsetCurrentOrder();
-	}
+	UnsetCurrentOrder();
 	m_nTerraformingPlanet = -1;
 }
 
@@ -1222,8 +1220,25 @@ bool CShip::NeedsRepair() const {
 	return m_Hull.GetCurrentHull() < m_Hull.GetMaxHull();
 }
 
-void CShip::UnsetCurrentOrder() {
+void CShip::SetCurrentOrderAccordingToType() {
 	m_iCurrentOrder = IsNonCombat() ? SHIP_ORDER::AVOID : SHIP_ORDER::ATTACK;
+}
+
+void CShip::UnsetCurrentOrder() {
+	switch(m_nCombatTactic) {
+		case COMBAT_TACTIC::CT_ATTACK:
+			m_iCurrentOrder = SHIP_ORDER::ATTACK;
+		break;
+		case COMBAT_TACTIC::CT_AVOID:
+			m_iCurrentOrder = SHIP_ORDER::AVOID;
+		break;
+		case COMBAT_TACTIC::CT_RETREAT:
+			m_iCurrentOrder = SHIP_ORDER::AVOID;
+		break;
+		default:
+			assert(false);
+		break;
+	}
 }
 
 void CShip::Repair(BOOL bAtShipPort, bool bFasterShieldRecharge) {
