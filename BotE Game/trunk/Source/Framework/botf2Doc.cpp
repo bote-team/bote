@@ -6384,25 +6384,24 @@ void CBotf2Doc::CalcEndDataForNextRound()
 			}
 
 			// Sektoren und Systeme neutral schalten
-			for (int y = 0 ; y < STARMAP_SECTORS_VCOUNT; y++)
-				for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
+			for(std::vector<CSector>::iterator se = m_Sectors.begin(); se != m_Sectors.end(); ++se) {
+				const CString& ID = pMajor->GetRaceID();
+				if (se->GetOwnerOfSector() == ID)
 				{
-					if (m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSector() == pMajor->GetRaceID())
-					{
-						m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).SetOwnerOfSector("");
-						m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).SetOwnerOfSystem("");
-						m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).SetOwned(false);
-						m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).SetTakenSector(false);
-					}
-					if (m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetColonyOwner() == pMajor->GetRaceID())
-						m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).SetColonyOwner("");
-					// in allen Sektoren alle Schiffe aus den Sektoren nehmen
-					m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).SetIsStationBuilding(false, pMajor->GetRaceID());
-					m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).SetOutpost(false, pMajor->GetRaceID());
-					m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).SetOwnerOfShip(false, pMajor->GetRaceID());
-					m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).SetShipPort(false, pMajor->GetRaceID());
-					m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).SetStarbase(false, pMajor->GetRaceID());
+					se->SetOwnerOfSector("");
+					GetSystemForSector(*se).SetOwnerOfSystem("");
+					se->SetOwned(false);
+					se->SetTakenSector(false);
 				}
+				if (se->GetColonyOwner() == ID)
+					se->SetColonyOwner("");
+				// in allen Sektoren alle Schiffe aus den Sektoren nehmen
+				se->SetIsStationBuilding(false, ID);
+				se->SetOutpost(false, ID);
+				se->SetOwnerOfShip(false, ID);
+				se->SetShipPort(false, ID);
+				se->SetStarbase(false, ID);
+			}
 
 			// Wenn es ein menschlicher Spieler ist, so bekommt er den Eventscreen für die Niederlage angezeigt
 			if (pMajor->IsHumanPlayer())
@@ -6488,34 +6487,34 @@ void CBotf2Doc::CalcEndDataForNextRound()
 	}
 
 	// Jetzt die Besitzer berechnen und die Variablen, welche nächste Runde auch angezeigt werden sollen.
-	for (int y = 0 ; y < STARMAP_SECTORS_VCOUNT; y++)
-		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
+	for(std::vector<CSector>::iterator sector = m_Sectors.begin(); sector != m_Sectors.end(); ++sector)
+	{
+		CSystem& system = GetSystemForSector(*sector);
+		sector->CalculateOwner(system.GetOwnerOfSystem());
+		if (sector->GetSunSystem() == TRUE && system.GetOwnerOfSystem() != "")
 		{
-			m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).CalculateOwner(m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem());
-			if (m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetSunSystem() == TRUE && m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem() != "")
-			{
-				CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem()));
-				if (!pMajor || pMajor->GetType() != MAJOR)
-					continue;
+			CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(system.GetOwnerOfSystem()));
+			if (!pMajor || pMajor->GetType() != MAJOR)
+				continue;
 
-				// baubare Gebäude, Schiffe und Truppen berechnen
-				m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).CalculateBuildableBuildings(&m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT), &BuildingInfo, pMajor, &m_GlobalBuildings);
-				m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).CalculateBuildableShips(this, CPoint(x,y));
-				m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).CalculateBuildableTroops(&m_TroopInfo, pMajor->GetEmpire()->GetResearch());
-				m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).CalculateVariables(&this->BuildingInfo, pMajor->GetEmpire()->GetResearch()->GetResearchInfo(), m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetPlanets(), pMajor, CTrade::GetMonopolOwner());
+			// baubare Gebäude, Schiffe und Truppen berechnen
+			system.CalculateBuildableBuildings(&*sector, &BuildingInfo, pMajor, &m_GlobalBuildings);
+			system.CalculateBuildableShips(this, sector->GetKO());
+			system.CalculateBuildableTroops(&m_TroopInfo, pMajor->GetEmpire()->GetResearch());
+			system.CalculateVariables(&this->BuildingInfo, pMajor->GetEmpire()->GetResearch()->GetResearchInfo(), sector->GetPlanets(), pMajor, CTrade::GetMonopolOwner());
 
-				// alle produzierten FP und SP der Imperien berechnen und zuweisen
-				int currentPoints;
-				currentPoints = m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetResearchProd();
-				pMajor->GetEmpire()->AddFP(currentPoints);
-				currentPoints = m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetSecurityProd();
-				pMajor->GetEmpire()->AddSP(currentPoints);
-			}
-
-			// Gibt es eine Anomalie im Sektor, so vielleicht die Scanpower niedriger setzen
-			if (m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetAnomaly())
-				m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetAnomaly()->ReduceScanPower(CPoint(x,y));
+			// alle produzierten FP und SP der Imperien berechnen und zuweisen
+			int currentPoints;
+			currentPoints = system.GetProduction()->GetResearchProd();
+			pMajor->GetEmpire()->AddFP(currentPoints);
+			currentPoints = system.GetProduction()->GetSecurityProd();
+			pMajor->GetEmpire()->AddSP(currentPoints);
 		}
+
+		// Gibt es eine Anomalie im Sektor, so vielleicht die Scanpower niedriger setzen
+		if (sector->GetAnomaly())
+			sector->GetAnomaly()->ReduceScanPower(sector->GetKO());
+	}
 
 	// Nachdem die Besitzerpunkte der Sektoren berechnet wurden kann versucht werden neue Rassen kennenzuelernen
 	CalcContactNewRaces();
