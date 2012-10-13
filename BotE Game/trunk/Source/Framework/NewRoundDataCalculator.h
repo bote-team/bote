@@ -15,7 +15,7 @@ public:
 	void CheckRoutes(const CSector& sector, CSystem& system, CMajor* pMajor);
 	static void CalcIntelligenceBoni(const CSystemProd* production, CIntelligence* intelligence);
 	static void CalcMoral(const CSector& sector, CSystem& system, CArray<CTroopInfo>& TroopInfo);
-	static void CNewRoundDataCalculator::CalcExtraVisibilityAndRangeDueToDiplomacy(CSector& sector, const std::map<CString, CMajor*>* pmMajors);
+	static void CalcExtraVisibilityAndRangeDueToDiplomacy(CSector& sector, const std::map<CString, CMajor*>* pmMajors);
 	void AddShipPortsFromMinors(const std::map<CString, CMajor*>& pmMajors);
 	void CalcPreLoop();
 
