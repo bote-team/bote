@@ -2917,3 +2917,36 @@ BOOLEAN CSystem::CheckFollower(BuildingInfoArray* buildings, USHORT id, BOOLEAN 
 	}
 	return FALSE;
 }
+
+int CSystem::CalcIPProd(const CArray<CBuildingInfo, CBuildingInfo>& BuildingInfo, const int list) const {
+	int IPProd = m_Production.GetIndustryProd();
+	// Wenn ein Auftrag in der Bauliste ist, der niemals fertig ist z.B. Kriegsrecht, dann dies
+	// einzeln beachten
+	if (list > 0 && list < 10000 && BuildingInfo[list-1].GetNeverReady() == TRUE)
+	{
+		// dann zählen die industriellen Baukosten des Auftrags als Anzahl Runden, wie lange
+		// es in der Liste stehen bleibt und den Bonus gibt
+		// Also wird immer nur ein IP abgezogen, außer wenn die Moral größer gleich 80 ist,
+		// dann wird der Auftrag gleich abgebrochen
+		if (m_iMoral >= 85)
+			IPProd = static_cast<int>(m_AssemblyList.GetNeededIndustryForBuild());
+		else
+			IPProd = 1;
+	}
+	// Wenn ein Update in der Liste ist die mögliche UpdateBuildSpeed-Boni beachten
+	else if (list < 0)
+		IPProd = (int)floor((float)IPProd * (100 + m_Production.GetUpdateBuildSpeed()) / 100);
+	// Wenn ein Gebäude in der Liste ist die mögliche BuildingBuildSpeed-Boni beachten
+	else if (list < 10000)
+		IPProd = (int)floor((float)IPProd * (100 + m_Production.GetBuildingBuildSpeed()) / 100);
+	// Wenn es ein Schiff ist, dann die Effiziens der Werft und möglichen ShipBuildSpeed-Boni beachten
+	else if (list < 20000)
+		IPProd = (int)floor((float)IPProd * m_Production.GetShipYardEfficiency() / 100
+					* (100 + m_Production.GetShipBuildSpeed()) / 100);
+	// Wenn es eine Truppe ist, dann Effizienz der Werft und möglichen TroopBuildSpeed-Boni beachten
+	else
+		IPProd = (int)floor((float)IPProd * m_Production.GetBarrackEfficiency() / 100
+					* (100 + m_Production.GetTroopBuildSpeed()) / 100);
+
+	return IPProd;
+}

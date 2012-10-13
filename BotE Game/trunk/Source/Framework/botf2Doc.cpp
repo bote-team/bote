@@ -3505,359 +3505,314 @@ void CBotf2Doc::CalcDiplomacy()
 	}
 }
 
-/// Diese Funktion berechnet das Planetenwachstum, die Aufträge in der Bauliste und sonstige Einstellungen aus der
-/// alten Runde.
-void CBotf2Doc::CalcOldRoundData()
-{
-	m_GlobalBuildings.Reset();
+////////////////////////////////////////////////
+//BEGIN: helper functions for CalcOldRoundData()
+void CBotf2Doc::CreditsDestructionMoral(CMajor* pMajor, CSystem& system) const {
+	// spielt es der Computer, so bekommt er etwas mehr Credits
+	CSystemProd* prod = system.GetProduction();
+	CEmpire* pEmpire = pMajor->GetEmpire();
+	if (!pMajor->IsHumanPlayer())
+		pEmpire->SetCredits(static_cast<int>(prod->GetCreditsProd() / m_fDifficultyLevel));
+	else
+		pEmpire->SetCredits(prod->GetCreditsProd());
 
-	map<CString, CMajor*>* pmMajors = m_pRaceCtrl->GetMajors();
+	// Hier die Gebäude abreißen, die angeklickt wurden
+	if (system.DestroyBuildings())
+		system.CalculateNumberOfWorkbuildings(&this->BuildingInfo);
+
+	// Variablen berechnen lassen, bevor der Planet wächst -> diese ins Lager
+	// nur berechnen, wenn das System auch jemandem gehört, ansonsten würde auch die Mind.Prod. ins Lager kommen
+	// In CalculateStorages wird auch die Systemmoral berechnet. Wenn wir einen Auftrag mit
+	// NeverReady (z.B. Kriegsrecht) in der Bauliste haben, und dieser Moral produziert, dann diese
+	// auf die Moral anrechnen. Das wird dann in CalculateStorages gemacht.
+	int list = system.GetAssemblyList()->GetAssemblyListEntry(0);
+	if (list > 0 && list < 10000 && BuildingInfo[list-1].GetNeverReady() && system.GetMoral() <= 85)
+		prod->AddMoralProd(BuildingInfo[list-1].GetMoralProd());
+}
+int CBotf2Doc::DeritiumForTheAI(bool human, const CSector& /*sector*/, const CSystem& system) const {
+	// KI Anpassungen (KI bekommt zufälig etwas Deritium geschenkt)
+	int diliAdd = 0;
+	if (!human && system.GetProduction()->GetDeritiumProd() == 0)
+	{
+		// umso höher der Schwierigkeitsgrad, desto höher die Wahrscheinlichkeit, das die KI
+		// Deritium auf ihrem Systemen geschenkt bekommt
+		int temp = rand()%((int)(m_fDifficultyLevel * 7.5));
+		//TRACE("KI: System: %s - DiliAddProb: %d (NULL for adding Dili) - Difficulty: %.2lf\n",sector.GetName(), temp, m_fDifficultyLevel);
+		if (temp == 0)
+			diliAdd = 1;
+	}
+	return diliAdd;
+}
+static void ClearAllPoints(const std::map<CString, CMajor*>* pmMajors) {
 	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 	{
 		// hier setzen wir wieder die gesamten FP, SP und die gesamten Lager auf 0
 		it->second->GetEmpire()->ClearAllPoints();
 	}
+}
+void CBotf2Doc::ExecuteRebellion(CSector& sector, CSystem& system, CMajor* pMajor) {
+	CEmpire* pEmpire = pMajor->GetEmpire();
+	const CPoint& co = sector.GetKO();
+	const CString& sectorname = sector.GetName();
+	sector.SetOwned(FALSE);
+	sector.SetShipPort(FALSE, pMajor->GetRaceID());
 
-	for (int y = 0 ; y < STARMAP_SECTORS_VCOUNT; y++)
+	CString news = CResourceManager::GetString("REBELLION_IN_SYSTEM", FALSE, sectorname);
+	CMessage message;
+	message.GenerateMessage(news, MESSAGE_TYPE::SOMETHING, "", co, FALSE);
+	pEmpire->AddMessage(message);
+
+	// zusätzliche Eventnachricht (Lose a System to Rebellion #18) wegen der Moral an das Imperium
+	message.GenerateMessage(pMajor->GetMoralObserver()->AddEvent(18, pMajor->GetRaceMoralNumber(), sectorname), MESSAGE_TYPE::SOMETHING, "", co, FALSE);
+	pEmpire->AddMessage(message);
+
+	if (pMajor->IsHumanPlayer()) {
+		const network::RACE client = m_pRaceCtrl->GetMappedClientID(pMajor->GetRaceID());
+		m_iSelectedView[client] = EMPIRE_VIEW;
+	}
+
+	if (sector.GetMinorRace()) {
+		CMinor* pMinor = m_pRaceCtrl->GetMinorRace(sectorname);
+		assert(pMinor);
+		sector.SetOwnerOfSector(pMinor->GetRaceID());
+
+		if (sector.GetTakenSector() == FALSE) {
+			pMinor->SetAgreement(pMajor->GetRaceID(), DIPLOMATIC_AGREEMENT::NONE);
+			pMajor->SetAgreement(pMinor->GetRaceID(), DIPLOMATIC_AGREEMENT::NONE);
+
+			pMinor->SetRelation(pMajor->GetRaceID(), (-(rand()%50+20)));
+			news = CResourceManager::GetString("MINOR_CANCELS_MEMBERSHIP", FALSE, pMinor->GetRaceName());
+			CMessage message;
+			message.GenerateMessage(news, MESSAGE_TYPE::DIPLOMACY, "", co, FALSE);
+			pEmpire->AddMessage(message);
+		}
+	} else {
+		sector.SetOwnerOfSector("");
+		system.SetOwnerOfSystem("");
+		sector.SetTakenSector(FALSE);
+	}
+}
+void CBotf2Doc::ExecuteFamine(CSector& sector, CSystem& system, CMajor* pMajor) {
+	const CPoint& co = sector.GetKO();
+	CEmpire* pEmpire = pMajor->GetEmpire();
+	sector.LetPlanetsShrink((float)(system.GetFoodStore()) * 0.01f);
+	// nur wenn die Moral über 50 ist sinkt die Moral durch Hungersnöte
+	if (system.GetMoral() > 50)
+		system.SetMoral((short)(system.GetFoodStore() / (system.GetHabitants() + 1))); // +1, wegen Division durch NULL umgehen
+	system.SetFoodStore(0);
+
+	CString news = CResourceManager::GetString("FAMINE", FALSE, sector.GetName());
+	CMessage message;
+	message.GenerateMessage(news, MESSAGE_TYPE::SOMETHING, "", co, FALSE, 1);
+	pEmpire->AddMessage(message);
+	if (pMajor->IsHumanPlayer()) {
+		const network::RACE client = m_pRaceCtrl->GetMappedClientID(pMajor->GetRaceID());
+		m_iSelectedView[client] = EMPIRE_VIEW;
+	}
+}
+void CBotf2Doc::SystemMessage(const CSector& sector, CMajor* pMajor, const CString& key,
+		MESSAGE_TYPE::Typ message_typ, BYTE byFlag) {
+	const CString& news = CResourceManager::GetString(key, FALSE, sector.GetName());
+	CMessage message;
+	message.GenerateMessage(news, message_typ, "", sector.GetKO(), FALSE, byFlag);
+	pMajor->GetEmpire()->AddMessage(message);
+	if (pMajor->IsHumanPlayer()) {
+		const network::RACE client = m_pRaceCtrl->GetMappedClientID(pMajor->GetRaceID());
+		m_iSelectedView[client] = EMPIRE_VIEW;
+	}
+}
+static void MilitaryMessage(const CSector& sector, CMajor* pMajor, const CString& key, const CString& object_name) {
+	const CString& s = CResourceManager::GetString(key,FALSE,
+		object_name,sector.GetName());
+	CMessage message;
+	message.GenerateMessage(s,MESSAGE_TYPE::MILITARY,sector.GetName(),sector.GetKO(),FALSE);
+	pMajor->GetEmpire()->AddMessage(message);
+}
+void CBotf2Doc::UpdateGlobalBuildings(CSystem& system) {
+	// Jedes Sonnensystem wird durchgegangen und alle Gebäude des Systems werden in die Variable
+	// m_GlobalBuildings geschrieben. Damit wissen welche Gebäude in der Galaxie stehen. Benötigt wird
+	// dies z.B. um zu Überprüfen, ob max. X Gebäude einer bestimmten ID in einem Imperium stehen.
+	for (int i = 0; i < system.GetAllBuildings()->GetSize(); i++)
 	{
-		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
+		USHORT nID = system.GetAllBuildings()->GetAt(i).GetRunningNumber();
+		CString sRaceID = system.GetOwnerOfSystem();
+		if (GetBuildingInfo(nID).GetMaxInEmpire() > 0)
+			m_GlobalBuildings.AddGlobalBuilding(sRaceID, nID);
+	}
+	// Alle Gebäude und Updates, die sich aktuell auch in der Bauliste befinden, werden dem Feld hinzugefügt
+	for (int i = 0; i < ALE; i++)
+		if (system.GetAssemblyList()->GetAssemblyListEntry(i) > 0 && system.GetAssemblyList()->GetAssemblyListEntry(i) < 10000)
 		{
-			CSector& sector = GetSector(x, y);
-			CSystem& system = GetSystemForSector(sector);
-			// Mögliche Is? Variablen für Terraforming und Stationbau erstmal auf FALSE setzen
-			sector.ClearAllPoints();
+			USHORT nID = abs(system.GetAssemblyList()->GetAssemblyListEntry(i));
+			CString sRaceID = system.GetOwnerOfSystem();
+			if (GetBuildingInfo(nID).GetMaxInEmpire() > 0)
+				m_GlobalBuildings.AddGlobalBuilding(sRaceID, nID);
+		}
+}
+void CBotf2Doc::FinishBuild(const int to_build, const CSector& sector, CSystem& system, CMajor* pMajor) {
+	int list = to_build;
+	const CPoint& co = sector.GetKO();
+	// Ab jetzt die Abfrage ob Gebäude oder ein Update fertig wurde
+	if (list > 0 && list < 10000 && !BuildingInfo[list-1].GetNeverReady())	// Es wird ein Gebäude gebaut
+	{
+		// Die Nachricht, dass neues Gebäude fertig ist mit allen Daten generieren
+		CMessage message;
+		message.GenerateMessage(BuildingInfo[list-1].GetBuildingName(), MESSAGE_TYPE::ECONOMY, sector.GetName(), co, FALSE);
+		pMajor->GetEmpire()->AddMessage(message);
+		// Gebäude bauen
+		BuildBuilding(list, co);
+		// und Gebäude (welches letztes im Feld) ist auch gleich online setzen, wenn
+		// genügend Arbeiter da sind
+		unsigned short CheckValue = system.SetNewBuildingOnline(&this->BuildingInfo);
+		// Nachricht generierenm das das Gebäude nicht online genommen werden konnte
+		if (CheckValue == 1)
+			SystemMessage(sector, pMajor, "NOT_ENOUGH_WORKER", MESSAGE_TYPE::SOMETHING, 1);
+		else if (CheckValue == 2)
+			SystemMessage(sector, pMajor, "NOT_ENOUGH_ENERGY", MESSAGE_TYPE::SOMETHING, 2);
+	}
+	else if (list < 0)	// Es wird ein Update gemacht
+	{
+		list *= (-1);
+		// Die Nachricht, dass neues Gebäudeupdate fertig wurde, mit allen Daten generieren
+		CMessage message;
+		message.GenerateMessage(BuildingInfo[list-1].GetBuildingName(),MESSAGE_TYPE::ECONOMY,sector.GetName(),co,TRUE);
+		pMajor->GetEmpire()->AddMessage(message);
+		// Vorgänger von "list" holen
+		// Gebäude mit RunningNumbner == pre werden durch UpdateBuilding() gelöscht und
+		// deren Anzahl wird zurückgegeben.
+		USHORT pre = BuildingInfo[list-1].GetPredecessorID();
+		int NumberOfNewBuildings = system.UpdateBuildings(pre);
+		// So, nun bauen wir so viel mal das nächste
+		for (int z = 0; z < NumberOfNewBuildings; z++)
+		{
+			BuildBuilding(list,co);
+			// falls das geupgradete Gebäude Energie benötigt wird versucht es gleich online zu setzen
+			if (GetBuildingInfo(list).GetNeededEnergy() > NULL && system.SetNewBuildingOnline(&this->BuildingInfo) == 2)
+				SystemMessage(sector, pMajor, "NOT_ENOUGH_ENERGY", MESSAGE_TYPE::SOMETHING, 2);
+		}
+	}
+	else if (list >= 10000 && list < 20000)	// Es wird ein Schiff gebaut
+	{
+		BuildShip(list, co, pMajor->GetRaceID());
+		MilitaryMessage(sector, pMajor, "SHIP_BUILDING_FINISHED", m_ShipInfoArray[list-10000].GetShipTypeAsString());
+	}
+	else if (list >= 20000)					// Es wird eine Truppe gebaut
+	{
+		BuildTroop(list-20000, co);
+		MilitaryMessage(sector, pMajor, "TROOP_BUILDING_FINISHED", m_TroopInfo[list-20000].GetName());
+	}
+}
+static void CreditsIfBought(CAssemblyList* assembly_list, const int IPProd, CEmpire* pEmpire) {
+	// Wenn Gebäude gekauft wurde, dann die in der letzten Runde noch erbrachte IP-Leistung
+	// den Credits des Imperiums gutschreiben, IP-Leistung darf aber nicht größer der Baukosten sein
+	if (assembly_list->GetWasBuildingBought() == TRUE)
+	{
+		int goods = IPProd;
+		if (goods > assembly_list->GetBuildCosts())
+			goods = assembly_list->GetBuildCosts();
+		pEmpire->SetCredits(goods);
+		assembly_list->SetWasBuildingBought(FALSE);
+	}
+}
+void CBotf2Doc::Build(CSector& sector, CSystem& system, CMajor* pMajor) {
+	// Hier berechnen, wenn was in der Bauliste ist, und ob es fertig wird usw.
+	CAssemblyList* assembly_list = system.GetAssemblyList();
+	const int list = assembly_list->GetAssemblyListEntry(0);
+	if (list != 0)	// wenn was drin ist
+	{
+		const int IPProd = system.CalcIPProd(BuildingInfo, list);
+		// Ein Bauauftrag ist fertig gestellt worden
+		if (assembly_list->CalculateBuildInAssemblyList(IPProd))
+		{
+			CreditsIfBought(assembly_list, IPProd, pMajor->GetEmpire());
+			FinishBuild(list, sector, system, pMajor);
+			// Nach CalculateBuildInAssemblyList wird ClearAssemblyList() aufgerufen, wenn der Auftrag fertig wurde.
+			// Normalerweise wird nach ClearAssemblyList() die Funktion CalculateVariables() aufgerufen, wegen Geld durch
+			// Handelsgüter wenn nix mehr drin steht. Hier mal testweise weggelassen, weil diese Funktion
+			// später eh für das System aufgerufen wird und wir bis jetzt glaub ich keine Notwendigkeit
+			// haben die Funktion CalculateVariables() aufzurufen.
+			assembly_list->ClearAssemblyList(sector.GetKO(), m_Systems);
+			// Wenn die Bauliste nach dem letzten gebauten Gebäude leer ist, eine Nachricht generieren
+			if (assembly_list->GetAssemblyListEntry(0) == 0)
+				SystemMessage(sector, pMajor, "EMPTY_BUILDLIST", MESSAGE_TYPE::SOMETHING, 0);
+		}
+		assembly_list->CalculateNeededRessourcesForUpdate(&BuildingInfo, system.GetAllBuildings(), pMajor->GetEmpire()->GetResearch()->GetResearchInfo());
+	}
+}
+void CBotf2Doc::HandlePopulationEffects(const CSector& sector, CSystem& system, CMajor* pMajor) {
+	const float fCurrentHabitants = sector.GetCurrentHabitants();
+	CEmpire* pEmpire = pMajor->GetEmpire();
+	pEmpire->AddPopSupportCosts((USHORT)fCurrentHabitants * POPSUPPORT_MULTI);
+	// Funktion gibt TRUE zurück, wenn wir durch die Bevölkerung eine neue Handelsroute anlegen können
+	if (system.SetHabitants(fCurrentHabitants))
+	{
+		// wenn die Spezialforschung "mindestens 1 Handelsroute erforscht wurde, dann die Meldung erst bei
+		// der 2.ten Handelroute bringen
+		// Hier die Boni durch die Uniqueforschung "Handel" -> mindestens eine Handelsroute
+		bool bMinOneRoute = pEmpire->GetResearch()->GetResearchInfo()->GetResearchComplex(RESEARCH_COMPLEX::TRADE)->GetFieldStatus(3) == RESEARCH_STATUS::RESEARCHED;
+		if (bMinOneRoute == false || (bMinOneRoute == true && (int)(system.GetHabitants() / TRADEROUTEHAB) > 1))
+			SystemMessage(sector, pMajor, "ENOUGH_HABITANTS_FOR_NEW_TRADEROUTE", MESSAGE_TYPE::ECONOMY, 4);
+	}
+}
+//END: helper functions for CalcOldRoundData()
+////////////////////////////////////////////////
+/// Diese Funktion berechnet das Planetenwachstum, die Aufträge in der Bauliste und sonstige Einstellungen aus der
+/// alten Runde.
+void CBotf2Doc::CalcOldRoundData()
+{
+	m_GlobalBuildings.Reset();
+	ClearAllPoints(m_pRaceCtrl->GetMajors());
 
-			// Wenn im Sektor ein Sonnensystem existiert
-			if (sector.GetSunSystem() == TRUE)
+	for(std::vector<CSector>::iterator sector = m_Sectors.begin(); sector != m_Sectors.end(); ++sector) {
+		CSystem& system = GetSystemForSector(*sector);
+		// Mögliche Is? Variablen für Terraforming und Stationbau erstmal auf FALSE setzen
+		sector->ClearAllPoints();
+		if(!sector->GetSunSystem()) continue;// Wenn im Sektor ein Sonnensystem existiert
+		const CString& system_owner = system.GetOwnerOfSystem();
+		if(system_owner == "")
+			sector->LetPlanetsGrowth();// Planetenwachstum für andere Sektoren durchführen
+		else {
+			CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(system_owner));
+			assert(pMajor);
+			CEmpire* pEmpire = pMajor->GetEmpire();
+			// Jetzt das produzierte Credits im System dem jeweiligen Imperium geben
+			CreditsDestructionMoral(pMajor, system);
+
+			// KI Anpassungen (KI bekommt zufälig etwas Deritium geschenkt)
+			int diliAdd = DeritiumForTheAI(pMajor->IsHumanPlayer(), *sector, system);
+			// Das Lager berechnen
+			const BOOLEAN bIsRebellion = system.CalculateStorages(pEmpire->GetResearch()->GetResearchInfo(), diliAdd);
+			// Wenn wir true zurückbekommen, dann hat sich das System losgesagt
+			if (bIsRebellion)
+				ExecuteRebellion(*sector, system, pMajor);
+			// Hier mit einbeziehen, wenn die Bevölkerung an Nahrungsmangel stirbt
+			if (system.GetFoodStore() < 0)
+				ExecuteFamine(*sector, system, pMajor);
+			 else
+				// Planetenwachstum für Spielerrassen durchführen
+				sector->LetPlanetsGrowth();
+			HandlePopulationEffects(*sector, system, pMajor);
+			system.CalculateVariables(&this->BuildingInfo, pEmpire->GetResearch()->GetResearchInfo(), sector->GetPlanets(), pMajor, CTrade::GetMonopolOwner());
+
+			// hier könnte die Energie durch Weltraummonster weggenommen werden!
+			// Gebäude die Energie benötigen checken
+			if (system.CheckEnergyBuildings(&this->BuildingInfo))
+				SystemMessage(*sector, pMajor, "BUILDING_TURN_OFF", MESSAGE_TYPE::SOMETHING, 2);
+			// Die Bauaufträge in dem System berechnen. Außerdem wird hier auch die System-KI ausgeführt.
+			if (!pMajor->IsHumanPlayer() || system.GetAutoBuild())
 			{
-				// Jetzt das produzierte Credits im System dem jeweiligen Imperium geben
-				if (system.GetOwnerOfSystem() != "")
-				{
-					CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(system.GetOwnerOfSystem()));
-					if (pMajor)
-					{
-						network::RACE client = m_pRaceCtrl->GetMappedClientID(pMajor->GetRaceID());
-
-						// spielt es der Computer, so bekommt er etwas mehr Credits
-						if (pMajor->IsHumanPlayer() == false)
-							pMajor->GetEmpire()->SetCredits((int)(system.GetProduction()->GetCreditsProd() / m_fDifficultyLevel));
-						else
-							pMajor->GetEmpire()->SetCredits(system.GetProduction()->GetCreditsProd());
-
-						// Hier die Gebäude abreißen, die angeklickt wurden
-						if (system.DestroyBuildings())
-							system.CalculateNumberOfWorkbuildings(&this->BuildingInfo);
-
-						// Variablen berechnen lassen, bevor der Planet wächst -> diese ins Lager
-						// nur berechnen, wenn das System auch jemandem gehört, ansonsten würde auch die Mind.Prod. ins Lager kommen
-						// In CalculateStorages wird auch die Systemmoral berechnet. Wenn wir einen Auftrag mit
-						// NeverReady (z.B. Kriegsrecht) in der Bauliste haben, und dieser Moral produziert, dann diese
-						// auf die Moral anrechnen. Das wird dann in CalculateStorages gemacht.
-						int list = system.GetAssemblyList()->GetAssemblyListEntry(0);
-						if (list > 0 && list < 10000 && BuildingInfo[list-1].GetNeverReady() && system.GetMoral() <= 85)
-							system.GetProduction()->AddMoralProd(BuildingInfo[list-1].GetMoralProd());
-
-						// KI Anpassungen (KI bekommt zufälig etwas Deritium geschenkt)
-						int diliAdd = 0;
-						if (pMajor->IsHumanPlayer() == false && system.GetProduction()->GetDeritiumProd() == 0)
-						{
-							// umso höher der Schwierigkeitsgrad, desto höher die Wahrscheinlichkeit, das die KI
-							// Deritium auf ihrem Systemen geschenkt bekommt
-							int temp = rand()%((int)(m_fDifficultyLevel * 7.5));
-							// TRACE("KI: System: %s - DiliAddProb: %d (NULL for adding Dili) - Difficulty: %.2lf\n",sector.GetName(), temp, m_fDifficultyLevel);
-							if (temp == NULL)
-								diliAdd = 1;
-						}
-
-						// Das Lager berechnen
-						BOOLEAN bIsRebellion = system.CalculateStorages(pMajor->GetEmpire()->GetResearch()->GetResearchInfo(), diliAdd);
-						// Wenn wir true zurückbekommen, dann hat sich das System losgesagt
-						if (bIsRebellion)
-						{
-							sector.SetOwned(FALSE);
-							sector.SetShipPort(FALSE, pMajor->GetRaceID());
-
-							CString news = CResourceManager::GetString("REBELLION_IN_SYSTEM", FALSE, sector.GetName());
-							CMessage message;
-							message.GenerateMessage(news, MESSAGE_TYPE::SOMETHING, "", CPoint(x,y), FALSE);
-							pMajor->GetEmpire()->AddMessage(message);
-
-							// zusätzliche Eventnachricht (Lose a System to Rebellion #18) wegen der Moral an das Imperium
-							message.GenerateMessage(pMajor->GetMoralObserver()->AddEvent(18, pMajor->GetRaceMoralNumber(), sector.GetName()), MESSAGE_TYPE::SOMETHING, "", CPoint(x,y), FALSE);
-							pMajor->GetEmpire()->AddMessage(message);
-
-							if (pMajor->IsHumanPlayer())
-								m_iSelectedView[client] = EMPIRE_VIEW;
-
-							if (sector.GetMinorRace() == TRUE)
-							{
-								CMinor* pMinor = m_pRaceCtrl->GetMinorRace(sector.GetName());
-								if (pMinor)
-								{
-									sector.SetOwnerOfSector(pMinor->GetRaceID());
-
-									if (sector.GetTakenSector() == FALSE)
-									{
-										pMinor->SetAgreement(pMajor->GetRaceID(), DIPLOMATIC_AGREEMENT::NONE);
-										pMajor->SetAgreement(pMinor->GetRaceID(), DIPLOMATIC_AGREEMENT::NONE);
-
-										pMinor->SetRelation(pMajor->GetRaceID(), (-(rand()%50+20)));
-										news = CResourceManager::GetString("MINOR_CANCELS_MEMBERSHIP", FALSE, pMinor->GetRaceName());
-										CMessage message;
-										message.GenerateMessage(news, MESSAGE_TYPE::DIPLOMACY, "", CPoint(x,y), FALSE);
-										pMajor->GetEmpire()->AddMessage(message);
-									}
-								}
-							}
-							else
-							{
-								sector.SetOwnerOfSector("");
-								system.SetOwnerOfSystem("");
-								sector.SetTakenSector(FALSE);
-							}
-						}
-
-						// Hier mit einbeziehen, wenn die Bevölkerung an Nahrungsmangel stirbt
-						if (system.GetFoodStore() < 0)
-						{
-							sector.LetPlanetsShrink((float)(system.GetFoodStore()) * 0.01f);
-							// nur wenn die Moral über 50 ist sinkt die Moral durch Hungersnöte
-							if (system.GetMoral() > 50)
-								system.SetMoral((short)(system.GetFoodStore() / (system.GetHabitants() + 1))); // +1, wegen Division durch NULL umgehen
-							system.SetFoodStore(0);
-
-							CString news = CResourceManager::GetString("FAMINE", FALSE, sector.GetName());
-							CMessage message;
-							message.GenerateMessage(news, MESSAGE_TYPE::SOMETHING, "", CPoint(x,y), FALSE, 1);
-							pMajor->GetEmpire()->AddMessage(message);
-							if (pMajor->IsHumanPlayer())
-								m_iSelectedView[client] = EMPIRE_VIEW;
-						}
-						else
-							// Planetenwachstum für Spielerrassen durchführen
-							sector.LetPlanetsGrowth();
-					}
-				}
-				else
-					// Planetenwachstum für andere Sektoren durchführen
-					sector.LetPlanetsGrowth();
-
-				if (system.GetOwnerOfSystem() != "")
-				{
-					CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(system.GetOwnerOfSystem()));
-					if (pMajor)
-					{
-						network::RACE client = m_pRaceCtrl->GetMappedClientID(pMajor->GetRaceID());
-
-						float fCurrentHabitants = sector.GetCurrentHabitants();
-						pMajor->GetEmpire()->AddPopSupportCosts((USHORT)fCurrentHabitants * POPSUPPORT_MULTI);
-						// Funktion gibt TRUE zurück, wenn wir durch die Bevölkerung eine neue Handelsroute anlegen können
-						if (system.SetHabitants(fCurrentHabitants))
-						{
-							// wenn die Spezialforschung "mindestens 1 Handelsroute erforscht wurde, dann die Meldung erst bei
-							// der 2.ten Handelroute bringen
-							// Hier die Boni durch die Uniqueforschung "Handel" -> mindestens eine Handelsroute
-							bool bMinOneRoute = pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(RESEARCH_COMPLEX::TRADE)->GetFieldStatus(3) == RESEARCH_STATUS::RESEARCHED;
-							if (bMinOneRoute == false || (bMinOneRoute == true && (int)(system.GetHabitants() / TRADEROUTEHAB) > 1))
-							{
-								CString news = CResourceManager::GetString("ENOUGH_HABITANTS_FOR_NEW_TRADEROUTE", FALSE, sector.GetName());
-								CMessage message;
-								message.GenerateMessage(news, MESSAGE_TYPE::ECONOMY, "", CPoint(x,y), FALSE, 4);
-								pMajor->GetEmpire()->AddMessage(message);
-								if (pMajor->IsHumanPlayer())
-									m_iSelectedView[client] = EMPIRE_VIEW;
-							}
-						}
-						system.CalculateVariables(&this->BuildingInfo, pMajor->GetEmpire()->GetResearch()->GetResearchInfo(), sector.GetPlanets(), pMajor, CTrade::GetMonopolOwner());
-
-						// hier könnte die Energie durch Weltraummonster weggenommen werden!
-
-						// Gebäude die Energie benötigen checken
-						if (system.CheckEnergyBuildings(&this->BuildingInfo))
-						{
-							CString news = CResourceManager::GetString("BUILDING_TURN_OFF",FALSE,sector.GetName());
-							CMessage message;
-							message.GenerateMessage(news, MESSAGE_TYPE::SOMETHING, "", CPoint(x,y), FALSE, 2);
-							pMajor->GetEmpire()->AddMessage(message);
-							if (pMajor->IsHumanPlayer())
-								m_iSelectedView[client] = EMPIRE_VIEW;
-						}
-
-						// Die Bauaufträge in dem System berechnen. Außerdem wird hier auch die System-KI ausgeführt.
-						if (pMajor->IsHumanPlayer() == false || system.GetAutoBuild())
-						{
-							CSystemAI* SAI = new CSystemAI(this);
-							SAI->ExecuteSystemAI(CPoint(x,y));
-							delete SAI;
-						}
-						// Hier berechnen, wenn was in der Bauliste ist, und ob es fertig wird usw.
-						if (system.GetAssemblyList()->GetAssemblyListEntry(0) != 0)	// wenn was drin ist
-						{
-							int list = system.GetAssemblyList()->GetAssemblyListEntry(0);
-							int IPProd = system.GetProduction()->GetIndustryProd();
-							// Wenn ein Auftrag in der Bauliste ist, der niemals fertig ist z.B. Kriegsrecht, dann dies
-							// einzeln beachten
-							if (list > 0 && list < 10000 && BuildingInfo[list-1].GetNeverReady() == TRUE)
-							{
-								// dann zählen die industriellen Baukosten des Auftrags als Anzahl Runden, wie lange
-								// es in der Liste stehen bleibt und den Bonus gibt
-								// Also wird immer nur ein IP abgezogen, außer wenn die Moral größer gleich 80 ist,
-								// dann wird der Auftrag gleich abgebrochen
-								if (system.GetMoral() >= 85)
-									IPProd = (int)system.GetAssemblyList()->GetNeededIndustryForBuild();
-								else
-									IPProd = 1;
-							}
-							// Wenn ein Update in der Liste ist die mögliche UpdateBuildSpeed-Boni beachten
-							else if (list < 0)
-								IPProd = (int)floor((float)IPProd * (100 + system.GetProduction()->GetUpdateBuildSpeed()) / 100);
-							// Wenn ein Gebäude in der Liste ist die mögliche BuildingBuildSpeed-Boni beachten
-							else if (list < 10000)
-								IPProd = (int)floor((float)IPProd * (100 + system.GetProduction()->GetBuildingBuildSpeed()) / 100);
-							// Wenn es ein Schiff ist, dann die Effiziens der Werft und möglichen ShipBuildSpeed-Boni beachten
-							else if (list < 20000)
-								IPProd = (int)floor((float)IPProd * system.GetProduction()->GetShipYardEfficiency() / 100
-											* (100 + system.GetProduction()->GetShipBuildSpeed()) / 100);
-							// Wenn es eine Truppe ist, dann Effiziens der Werft und möglichen TroopBuildSpeed-Boni beachten
-							else
-								IPProd = (int)floor((float)IPProd * system.GetProduction()->GetBarrackEfficiency() / 100
-											* (100 + system.GetProduction()->GetTroopBuildSpeed()) / 100);
-							// Ein Bauauftrag ist fertig gestellt worden
-							if (system.GetAssemblyList()->CalculateBuildInAssemblyList(IPProd))
-							{
-								// Wenn Gebäude gekauft wurde, dann die in der letzten Runde noch erbrachte IP-Leistung
-								// den Credits des Imperiums gutschreiben, IP-Leistung darf aber nicht größer der Baukosten sein
-								if (system.GetAssemblyList()->GetWasBuildingBought() == TRUE)
-								{
-									int goods = IPProd;
-									if (goods > system.GetAssemblyList()->GetBuildCosts())
-										goods = system.GetAssemblyList()->GetBuildCosts();
-									pMajor->GetEmpire()->SetCredits(goods);
-									system.GetAssemblyList()->SetWasBuildingBought(FALSE);
-								}
-								// Ab jetzt die Abfrage ob Gebäude oder ein Update fertig wurde
-								if (list > 0 && list < 10000 && !BuildingInfo[list-1].GetNeverReady())	// Es wird ein Gebäude gebaut
-								{
-									// Die Nachricht, dass neues Gebäude fertig ist mit allen Daten generieren
-									CMessage message;
-									message.GenerateMessage(BuildingInfo[list-1].GetBuildingName(), MESSAGE_TYPE::ECONOMY, sector.GetName(), CPoint(x,y), FALSE);
-									pMajor->GetEmpire()->AddMessage(message);
-									// Gebäude bauen
-									BuildBuilding(list, CPoint(x,y));
-									// und Gebäude (welches letztes im Feld) ist auch gleich online setzen, wenn
-									// genügend Arbeiter da sind
-									unsigned short CheckValue = system.SetNewBuildingOnline(&this->BuildingInfo);
-									// Nachricht generierenm das das Gebäude nicht online genommen werden konnte
-									if (CheckValue == 1)
-									{
-										CString news = CResourceManager::GetString("NOT_ENOUGH_WORKER", FALSE, sector.GetName());
-										message.GenerateMessage(news, MESSAGE_TYPE::SOMETHING, "",CPoint(x,y), FALSE, 1);
-										pMajor->GetEmpire()->AddMessage(message);
-										if (pMajor->IsHumanPlayer())
-											m_iSelectedView[client] = EMPIRE_VIEW;
-									}
-									else if (CheckValue == 2)
-									{
-										CString news = CResourceManager::GetString("NOT_ENOUGH_ENERGY", FALSE, sector.GetName());
-										message.GenerateMessage(news, MESSAGE_TYPE::SOMETHING, "",CPoint(x,y), FALSE, 2);
-										pMajor->GetEmpire()->AddMessage(message);
-										if (pMajor->IsHumanPlayer())
-											m_iSelectedView[client] = EMPIRE_VIEW;
-									}
-								}
-								else if (list < 0)	// Es wird ein Update gemacht
-								{
-									list *= (-1);
-									// Die Nachricht, dass neues Gebäudeupdate fertig wurde, mit allen Daten generieren
-									CMessage message;
-									message.GenerateMessage(BuildingInfo[list-1].GetBuildingName(),MESSAGE_TYPE::ECONOMY,sector.GetName(),CPoint(x,y),TRUE);
-									pMajor->GetEmpire()->AddMessage(message);
-									// Vorgänger von "list" holen
-									// Gebäude mit RunningNumbner == pre werden durch UpdateBuilding() gelöscht und
-									// deren Anzahl wird zurückgegeben.
-									USHORT pre = BuildingInfo[list-1].GetPredecessorID();
-									int NumberOfNewBuildings = system.UpdateBuildings(pre);
-									// So, nun bauen wir so viel mal das nächste
-									for (int z = 0; z < NumberOfNewBuildings; z++)
-									{
-										BuildBuilding(list,CPoint(x,y));
-										// falls das geupgradete Gebäude Energie benötigt wird versucht es gleich online zu setzen
-										if (GetBuildingInfo(list).GetNeededEnergy() > NULL && system.SetNewBuildingOnline(&this->BuildingInfo) == 2)
-										{
-											CString news = CResourceManager::GetString("NOT_ENOUGH_ENERGY",FALSE,sector.GetName());
-											message.GenerateMessage(news,MESSAGE_TYPE::SOMETHING,"",CPoint(x,y),FALSE,2);
-											pMajor->GetEmpire()->AddMessage(message);
-											if (pMajor->IsHumanPlayer())
-												m_iSelectedView[client] = EMPIRE_VIEW;
-										}
-									}
-								}
-								else if (list >= 10000 && list < 20000)	// Es wird ein Schiff gebaut
-								{
-									BuildShip(list, CPoint(x,y), pMajor->GetRaceID());
-									CString s = CResourceManager::GetString("SHIP_BUILDING_FINISHED",FALSE,
-										m_ShipInfoArray[list-10000].GetShipTypeAsString(),sector.GetName());
-									CMessage message;
-									message.GenerateMessage(s,MESSAGE_TYPE::MILITARY,sector.GetName(),CPoint(x,y),FALSE);
-									pMajor->GetEmpire()->AddMessage(message);
-								}
-								else if (list >= 20000)					// Es wird eine Truppe gebaut
-								{
-									BuildTroop(list-20000, CPoint(x,y));
-									CString s = CResourceManager::GetString("TROOP_BUILDING_FINISHED",FALSE,
-										m_TroopInfo[list-20000].GetName(),sector.GetName());
-									CMessage message;
-									message.GenerateMessage(s,MESSAGE_TYPE::MILITARY,sector.GetName(),CPoint(x,y),FALSE);
-									pMajor->GetEmpire()->AddMessage(message);
-								}
-								// Nach CalculateBuildInAssemblyList wird ClearAssemblyList() aufgerufen, wenn der Auftrag fertig wurde.
-								// Normalerweise wird nach ClearAssemblyList() die Funktion CalculateVariables() aufgerufen, wegen Geld durch
-								// Handelsgüter wenn nix mehr drin steht. Hier mal testweise weggelassen, weil diese Funktion
-								// später eh für das System aufgerufen wird und wir bis jetzt glaub ich keine Notwendigkeit
-								// haben die Funktion CalculateVariables() aufzurufen.
-								system.GetAssemblyList()->ClearAssemblyList(CPoint(x,y), m_Systems);
-								// Wenn die Bauliste nach dem letzten gebauten Gebäude leer ist, eine Nachricht generieren
-								if (system.GetAssemblyList()->GetAssemblyListEntry(0) == 0)
-								{
-									CString news = CResourceManager::GetString("EMPTY_BUILDLIST",FALSE,sector.GetName());
-									CMessage message;
-									message.GenerateMessage(news,MESSAGE_TYPE::SOMETHING,"",CPoint(x,y),FALSE);
-									pMajor->GetEmpire()->AddMessage(message);
-									if (pMajor->IsHumanPlayer())
-										m_iSelectedView[client] = EMPIRE_VIEW;
-								}
-							}
-							system.GetAssemblyList()->CalculateNeededRessourcesForUpdate(&BuildingInfo, system.GetAllBuildings(), pMajor->GetEmpire()->GetResearch()->GetResearchInfo());
-						}
-						// Anzahl aller Farmen, Bauhöfe usw. im System berechnen
-						system.CalculateNumberOfWorkbuildings(&this->BuildingInfo);
-						// freie Arbeiter den Gebäuden zuweisen
-						system.SetWorkersIntoBuildings();
-					}
-				}
-
-				// Jedes Sonnensystem wird durchgegangen und alle Gebäude des Systems werden in die Variable
-				// m_GlobalBuildings geschrieben. Damit wissen welche Gebäude in der Galaxie stehen. Benötigt wird
-				// dies z.B. um zu Überprüfen, ob max. X Gebäude einer bestimmten ID in einem Imperium stehen.
-				for (int i = 0; i < system.GetAllBuildings()->GetSize(); i++)
-				{
-					USHORT nID = system.GetAllBuildings()->GetAt(i).GetRunningNumber();
-					CString sRaceID = system.GetOwnerOfSystem();
-					if (GetBuildingInfo(nID).GetMaxInEmpire() > 0)
-						m_GlobalBuildings.AddGlobalBuilding(sRaceID, nID);
-				}
-				// Alle Gebäude und Updates, die sich aktuell auch in der Bauliste befinden, werden dem Feld hinzugefügt
-				for (int i = 0; i < ALE; i++)
-					if (system.GetAssemblyList()->GetAssemblyListEntry(i) > 0 && system.GetAssemblyList()->GetAssemblyListEntry(i) < 10000)
-					{
-						USHORT nID = abs(system.GetAssemblyList()->GetAssemblyListEntry(i));
-						CString sRaceID = system.GetOwnerOfSystem();
-						if (GetBuildingInfo(nID).GetMaxInEmpire() > 0)
-							m_GlobalBuildings.AddGlobalBuilding(sRaceID, nID);
-					}
-				}
-		}//for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-	}//for (int y = 0 ; y < STARMAP_SECTORS_VCOUNT; y++)
+				CSystemAI* SAI = new CSystemAI(this);
+				SAI->ExecuteSystemAI(sector->GetKO());
+				delete SAI;
+			}
+			Build(*sector, system, pMajor);
+			// Anzahl aller Farmen, Bauhöfe usw. im System berechnen
+			system.CalculateNumberOfWorkbuildings(&this->BuildingInfo);
+			// freie Arbeiter den Gebäuden zuweisen
+			system.SetWorkersIntoBuildings();
+		}//if(system_owner == "")
+		UpdateGlobalBuildings(system);
+	}//for(std::vector<CSector>::const_iterator sector = m_Sectors.begin(); sector != m_Sectors.end(); ++sector)
 }
 
 void CBotf2Doc::PutScannedSquareOverCoords(const CSector& sector, int range, const int power, const CRace& race,

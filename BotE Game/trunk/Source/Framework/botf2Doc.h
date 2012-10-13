@@ -284,6 +284,20 @@ protected:
 
 	/// Diese Funktion berechnet das Planetenwachstum, die Aufträge in der Bauliste und sonstige Einstellungen aus der
 	/// alten Runde.
+
+private:
+	//helpers for CalcOldRoundData
+	void CreditsDestructionMoral(CMajor* pMajor, CSystem& system) const;
+	int DeritiumForTheAI(bool human, const CSector& sector, const CSystem& system) const;
+	void ExecuteRebellion(CSector& sector, CSystem& system, CMajor* pMajor);
+	void ExecuteFamine(CSector& sector, CSystem& system, CMajor* pMajor);
+	void SystemMessage(const CSector& sector, CMajor* pMajor, const CString& key,
+		MESSAGE_TYPE::Typ message_typ, BYTE byFlag);
+	void UpdateGlobalBuildings(CSystem& system);
+	void Build(CSector& sector, CSystem& system, CMajor* pMajor);
+	void FinishBuild(const int to_build, const CSector& sector, CSystem& system, CMajor* pMajor);
+	void HandlePopulationEffects(const CSector& sector, CSystem& system, CMajor* pMajor);
+protected:
 	void CalcOldRoundData();
 
 	/// Diese Funktion berechnet die Produktion der Systeme, was in den Baulisten gebaut werden soll und sonstige

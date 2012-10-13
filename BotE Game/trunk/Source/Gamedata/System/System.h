@@ -258,6 +258,11 @@ public:
 	/// @param pvBuildingInfos Zeiger auf den Vektor mit allen Gebäudeinformationen
 	void RemoveSpecialRaceBuildings(const BuildingInfoArray* pvBuildingInfos);
 
+	//Function calculates, starting from the "base IPs", the actual industry points a system
+	//generates, considering "never ready" buildings, UpdateBuildSpeed-Boni, BuildingBuildSpeed-Boni,
+	//ShipYardEfficiency, BarrackEfficiency
+	int CalcIPProd(const CArray<CBuildingInfo, CBuildingInfo>& BuildingInfo, const int list) const;
+
 	// Funktion überprüft, ob wie aufgrund der Bevölkerung hier im System überhaupt (noch) eine Handelsroute
 	// anlegen können
 	BOOLEAN CanAddTradeRoute(CResearchInfo* researchInfo);
