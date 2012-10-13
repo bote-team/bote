@@ -229,7 +229,7 @@ public:
 	// Sie muﬂ am Rundenanfang vor CalculateVariables() aufgerufen werden und sortiert gleichzeitig das
 	// CArray m_Buildings nach der RunningNumber. // In der Doc-Klasse nach der Funktion DestroyBuildings()
 	// und zu Beginn aufrufen!
-	void CalculateNumberOfWorkbuildings(BuildingInfoArray *buildingInfos);
+	void CalculateNumberOfWorkbuildings(const BuildingInfoArray *buildingInfos);
 
 	// Funktion berechnet die imperiumweite Moralproduktion, welche aus diesem System generiert wird.
 	void CalculateEmpireWideMoralProd(const BuildingInfoArray *buildingInfos);

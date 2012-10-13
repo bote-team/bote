@@ -1617,7 +1617,7 @@ void CSystem::CalculateBuildableTroops(const CArray<CTroopInfo>* troopInfos, con
 // Sie muﬂ am Rundenanfang vor CalculateVariables() aufgerufen werden und sortiert gleichzeitig das
 // CArray m_Buildings nach der RunningNumber.
 // In der Doc-Klasse nach der Funktion DestroyBuildings() und zu Beginn aufrufen!
-void CSystem::CalculateNumberOfWorkbuildings(BuildingInfoArray *buildingInfos)
+void CSystem::CalculateNumberOfWorkbuildings(const BuildingInfoArray *buildingInfos)
 {
 	// Sortierung
 	c_arraysort<CArray<CBuilding>,CBuilding>(m_Buildings,sort_asc);
