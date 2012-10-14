@@ -1755,41 +1755,43 @@ void CBotf2Doc::ApplyBuildingsAtStartup()
 	// Anomalien beachten (ist für jede Starmap gleich, daher statisch)
 	CStarmap::SynchronizeWithAnomalies(m_Sectors);
 
-	for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
-		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-			if (m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetSunSystem() == TRUE)
+	for(std::vector<CSector>::iterator sector = m_Sectors.begin(); sector != m_Sectors.end(); ++sector)
+	{
+		CSystem& system = GetSystemForSector(*sector);
+		if (sector->GetSunSystem() == TRUE)
+		{
+			system.SetHabitants(sector->GetCurrentHabitants());
+			for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 			{
-				m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).SetHabitants(m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetCurrentHabitants());
-				for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
+				if (system.GetOwnerOfSystem() == it->first)
 				{
-					if (m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem() == it->first)
-					{
-						CMajor* pMajor = it->second;
-						ASSERT(pMajor);
-						// Anzahl aller Farmen, Bauhöfe usw. im System berechnen
-						// baubare Gebäude, Schiffe und Truppen berechnen
-						m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).CalculateNumberOfWorkbuildings(&this->BuildingInfo);
-						m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).SetWorkersIntoBuildings();
-						m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).CalculateVariables(&this->BuildingInfo, pMajor->GetEmpire()->GetResearch()->GetResearchInfo(), m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetPlanets(), pMajor, CTrade::GetMonopolOwner());
-						// alle produzierten FP und SP der Imperien berechnen und zuweisen
-						int currentPoints;
-						currentPoints = m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetResearchProd();
-						pMajor->GetEmpire()->AddFP(currentPoints);
-						currentPoints = m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetSecurityProd();
-						pMajor->GetEmpire()->AddSP(currentPoints);
-						// Schiffsunterstützungskosten eintragen
-						float fCurrentHabitants = m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetCurrentHabitants();
-						pMajor->GetEmpire()->AddPopSupportCosts((USHORT)fCurrentHabitants * POPSUPPORT_MULTI);
-					}
-				}
-				for (int i = 0; i < m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetAllBuildings()->GetSize(); i++)
-				{
-					USHORT nID = m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetAllBuildings()->GetAt(i).GetRunningNumber();
-					CString sRaceID = m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem();
-					if (GetBuildingInfo(nID).GetMaxInEmpire() > 0)
-						m_GlobalBuildings.AddGlobalBuilding(sRaceID, nID);
+					CMajor* pMajor = it->second;
+					ASSERT(pMajor);
+					// Anzahl aller Farmen, Bauhöfe usw. im System berechnen
+					// baubare Gebäude, Schiffe und Truppen berechnen
+					system.CalculateNumberOfWorkbuildings(&this->BuildingInfo);
+					system.SetWorkersIntoBuildings();
+					system.CalculateVariables(&this->BuildingInfo, pMajor->GetEmpire()->GetResearch()->GetResearchInfo(), sector->GetPlanets(), pMajor, CTrade::GetMonopolOwner());
+					// alle produzierten FP und SP der Imperien berechnen und zuweisen
+					int currentPoints;
+					currentPoints = system.GetProduction()->GetResearchProd();
+					pMajor->GetEmpire()->AddFP(currentPoints);
+					currentPoints = system.GetProduction()->GetSecurityProd();
+					pMajor->GetEmpire()->AddSP(currentPoints);
+					// Schiffsunterstützungskosten eintragen
+					float fCurrentHabitants = sector->GetCurrentHabitants();
+					pMajor->GetEmpire()->AddPopSupportCosts((USHORT)fCurrentHabitants * POPSUPPORT_MULTI);
 				}
 			}
+			for (int i = 0; i < system.GetAllBuildings()->GetSize(); i++)
+			{
+				USHORT nID = system.GetAllBuildings()->GetAt(i).GetRunningNumber();
+				CString sRaceID = system.GetOwnerOfSystem();
+				if (GetBuildingInfo(nID).GetMaxInEmpire() > 0)
+					m_GlobalBuildings.AddGlobalBuilding(sRaceID, nID);
+			}
+		}
+	}//for(std::vector<CSector>::const_iterator sector = m_Sectors.begin(); sector != m_Sectors.end(); ++sector)
 
 	this->CalcNewRoundData();
 	this->CalcShipEffects();
