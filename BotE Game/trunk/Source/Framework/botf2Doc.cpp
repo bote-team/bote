@@ -349,18 +349,7 @@ void CBotf2Doc::Serialize(CArchive& ar)
 		}
 	}
 
-	for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
-		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-		{
-			if (ar.IsLoading())
-				m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).ResetSystem();
-			m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).Serialize(ar);
-			if (m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetSunSystem())
-			{
-				if (m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSector() != "" || m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetColonyOwner() != "" || m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetMinorRace() == TRUE)
-					m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).Serialize(ar);
-			}
-		}
+	SerializeSectorsAndSystems(ar);
 
 	CMoralObserver::SerializeStatics(ar);
 
@@ -379,6 +368,28 @@ void CBotf2Doc::Serialize(CArchive& ar)
 	}
 
 	m_VictoryObserver.Serialize(ar);
+}
+
+void CBotf2Doc::SerializeSectorsAndSystems(CArchive& ar)
+{
+	for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
+	{
+		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
+		{
+			CSector& sector = GetSector(x,y);
+			CSystem& system = GetSystem(x,y);
+			if (ar.IsLoading())
+				system.ResetSystem();
+			sector.Serialize(ar);
+			if (sector.GetSunSystem())
+			{
+				if (sector.GetOwnerOfSector() != ""
+					|| sector.GetColonyOwner() != ""
+					|| sector.GetMinorRace())
+					system.Serialize(ar);
+			}
+		}
+	}
 }
 
 /// Serialisiert die Daten, welche am Anfang des Spiels einmal gesendet werden müssen.
@@ -552,18 +563,7 @@ void CBotf2Doc::SerializeNextRoundData(CArchive &ar)
 		}
 	}
 
-	for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
-		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-		{
-			if (ar.IsLoading())
-				m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).ResetSystem();
-			m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).Serialize(ar);
-			if (m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetSunSystem())
-			{
-				if (m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSector() != "" || m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetColonyOwner() != "" || m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetMinorRace() == TRUE)
-					m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).Serialize(ar);
-			}
-		}
+	SerializeSectorsAndSystems(ar);
 
 	m_pRaceCtrl->Serialize(ar);
 

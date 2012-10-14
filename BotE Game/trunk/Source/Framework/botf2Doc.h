@@ -347,7 +347,9 @@ protected:
 	/// Funktion generiert die Galaxiemap inkl. der ganzen Systeme und Planeten zu Beginn eines neuen Spiels.
 	void GenerateGalaxy();
 
+private:
 	void AllocateSectorsAndSystems();
+	void SerializeSectorsAndSystems(CArchive& ar);
 
 #ifdef _DEBUG
 	virtual void AssertValid() const;
