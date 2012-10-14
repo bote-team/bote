@@ -2472,32 +2472,34 @@ void CBotf2Doc::GenerateStarmap(const CString& sOnlyForRaceID)
 	CStarmap::SynchronizeWithAnomalies(m_Sectors);
 
 	// Starmaps generieren
-	for (int y = 0 ; y < STARMAP_SECTORS_VCOUNT; y++)
-		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
+	for(std::vector<CSector>::iterator sector = m_Sectors.begin(); sector != m_Sectors.end(); ++sector)
+	{
+		const CSystem& system = GetSystemForSector(*sector);
+		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 		{
-			for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
+			if (sOnlyForRaceID != "" && sOnlyForRaceID != it->first)
+				continue;
+
+			CMajor* pMajor = it->second;
+			// Wenn in dem System eine aktive Werft ist bzw. eine Station/Werft im Sektor ist
+			if ((system.GetProduction()->GetShipYard() == TRUE && system.GetOwnerOfSystem() == pMajor->GetRaceID())
+				|| sector->GetShipPort(pMajor->GetRaceID()))
 			{
-				if (sOnlyForRaceID != "" && sOnlyForRaceID != it->first)
-					continue;
+				pMajor->GetStarmap()->AddBase(Sector(sector->GetKO()),
+					pMajor->GetEmpire()->GetResearch()->GetPropulsionTech());
+			}
 
-				CMajor* pMajor = it->second;
-				// Wenn in dem System eine aktive Werft ist bzw. eine Station/Werft im Sektor ist
-				if ((m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetShipYard() == TRUE && m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem() == pMajor->GetRaceID())
-					|| m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetShipPort(pMajor->GetRaceID()))
+			if (sector->GetSunSystem())
+			{
+				if (sector->GetOwnerOfSector() == it->first || sector->GetOwnerOfSector() == "")
 				{
-					pMajor->GetStarmap()->AddBase(Sector(x,y), pMajor->GetEmpire()->GetResearch()->GetPropulsionTech());
-				}
-
-				if (m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetSunSystem())
-				{
-					if (m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSector() == it->first || m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSector() == "")
-					{
-						CMajor* pMajor = it->second;
-						pMajor->GetStarmap()->AddKnownSystem(Sector(x,y));
-					}
+					CMajor* pMajor = it->second;
+					pMajor->GetStarmap()->AddKnownSystem(Sector(sector->GetKO()));
 				}
 			}
 		}
+	}
+
 	// Jetzt die Starmap abgleichen, das wir nicht auf Gebiete fliegen können, wenn wir einen NAP mit einer Rasse haben
 	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 	{
