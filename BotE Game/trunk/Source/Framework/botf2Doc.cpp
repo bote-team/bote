@@ -2584,15 +2584,16 @@ void CBotf2Doc::CalcPreDataForNextRound()
 		if (!m_ShipInfoArray.GetAt(i).GetOnlyInSystem().IsEmpty())
 			m_ShipInfoArray.GetAt(i).SetRace(MINORNUMBER);
 
-	// Systeme durchgehen und die Blockadewert des Systems zurücksetzen
-	for (int y = 0 ; y < STARMAP_SECTORS_VCOUNT; y++)
-		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-			if (m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetSunSystem())
-			{
-				m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).SetBlockade(0);
-				m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).ClearDisabledProductions();
-			}
 
+	for(std::vector<CSector>::const_iterator sector = m_Sectors.begin(); sector != m_Sectors.end(); ++sector)
+	{
+		if (sector->GetSunSystem())
+		{
+			CSystem& system = GetSystemForSector(*sector);
+			system.SetBlockade(0);
+			system.ClearDisabledProductions();
+		}
+	}
 
 	//f(x):=min(731,max(14,trunc(743-x^3)))
 	m_fStardate += (float)(min(731, max(14, 743-pow((float)m_Statistics.GetAverageTechLevel(),3.0f))));
