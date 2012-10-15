@@ -1336,10 +1336,10 @@ Ziel: keins
 Ziel: unbekannt
 [ORDER]
 Befehl
-[TACTIC]
-Taktik
-[ACTION]
-Aktion
+[COMBAT_BEHAVIOR]
+Kampfverhalten
+[SET_MOVEMENT_TARGET]
+Bewegungsziel setzen
 ////////////////////////// SHIPS END //////////////////////////////////
 
 

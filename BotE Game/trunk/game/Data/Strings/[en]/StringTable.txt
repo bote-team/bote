@@ -1166,7 +1166,7 @@ curr. pos.
 [EXPERIANCE_SHORT]
 Exp.
 [STATUS]
-Orders
+Status
 [LOST]
 lost
 [EVENT]
@@ -1336,10 +1336,10 @@ Target: none
 Target: unknown
 [ORDER]
 Order
-[TACTIC]
-Tactic
-[ACTION]
-Action
+[COMBAT_BEHAVIOR]
+Combat behavior
+[SET_MOVEMENT_TARGET]
+Set movement target
 ////////////////////////// SHIPS END //////////////////////////////////
 
 
