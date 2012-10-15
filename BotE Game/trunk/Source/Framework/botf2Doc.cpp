@@ -3855,7 +3855,8 @@ void CBotf2Doc::PutScannedSquareOverCoords(const CSector& sector, int range, con
 					} else {
 						new_scan_power = (power * boni) / div;
 						new_scan_power = max(old_scan_power, new_scan_power);
-						scanned_sector.SetScanned(race_id);
+						if(race.GetType() == MAJOR)
+							scanned_sector.SetScanned(race_id);
 					}
 					scanned_sector.SetScanPower(new_scan_power, race_id);
 				}//if(0 <= y && y < STARMAP_SECTORS_VCOUNT)
@@ -5644,18 +5645,17 @@ void CBotf2Doc::CalcShipRetreat() {
 }
 
 //most of the stuff from CalcShipEffects() for either a ship from the shiparray or a ship of its fleet
-void CBotf2Doc::CalcShipEffectsForSingleShip(CShip& ship, CSector& sector, CMajor* pMajor, const CString& sRace,
+void CBotf2Doc::CalcShipEffectsForSingleShip(CShip& ship, CSector& sector, CRace* pRace,
 			bool bDeactivatedShipScanner, bool bBetterScanner, bool fleetship) {
-	// nur wenn das Schiff von einer Majorrace ist
-	if (pMajor) {
-		if(!fleetship)
-			sector.SetFullKnown(sRace);
-		if (!bDeactivatedShipScanner) {
-			// Scanstärke auf die Sektoren abhängig von der Scanrange übertragen
-			PutScannedSquareOverCoords(sector, ship.GetScanRange(), ship.GetScanPower(),
-				*static_cast<CRace*>(pMajor), bBetterScanner, ship.HasSpecial(SHIP_SPECIAL::PATROLSHIP));
-			sector.IncrementNumberOfShips(sRace);
-		}
+	const CString& sRace = pRace->GetRaceID();
+	const bool major = pRace->GetType() == MAJOR;
+	if(!fleetship && major)
+		sector.SetFullKnown(sRace);
+	if (!bDeactivatedShipScanner) {
+		// Scanstärke auf die Sektoren abhängig von der Scanrange übertragen
+		PutScannedSquareOverCoords(sector, ship.GetScanRange(), ship.GetScanPower(),
+			*pRace, bBetterScanner, ship.HasSpecial(SHIP_SPECIAL::PATROLSHIP));
+		sector.IncrementNumberOfShips(sRace);
 	}
 	// Schiffe, wenn wir dort nicht eine ausreichend hohe Scanpower haben. Ab Stealthstufe 4 muss das Schiff getarnt
 	// sein, ansonsten gilt dort nur Stufe 3.
@@ -5687,13 +5687,14 @@ void CBotf2Doc::CalcShipEffectsForSingleShip(CShip& ship, CSector& sector, CMajo
 			}
 		}
 	}
-	if (pMajor) {
+	if (major) {
+		CMajor* pMajor = dynamic_cast<CMajor*>(pRace);
 		// Schiffunterstützungkosten dem jeweiligen Imperium hinzufügen.
 		pMajor->GetEmpire()->AddShipCosts(ship.GetMaintenanceCosts());
 		// die Schiffe in der Flotte beim modifizieren der Schiffslisten der einzelnen Imperien beachten
 		pMajor->GetShipHistory()->ModifyShip(&ship, sector.GetName(TRUE));
 	}
-	// Erfahrunspunkte der Schiffe anpassen
+	// Erfahrungspunkte der Schiffe anpassen
 	ship.CalcExp();
 }
 /////END: HELPER FUNCTIONS FOR void CBotf2Doc::CalcShipEffects()
@@ -5708,7 +5709,7 @@ void CBotf2Doc::CalcShipEffects()
 	for (int y = 0; y < m_ShipArray.GetSize(); y++)
 	{
 		const CString sRace = m_ShipArray[y].GetOwnerOfShip();
-		CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(sRace));
+		CRace* pRace = m_pRaceCtrl->GetRace(sRace);
 		CShip& ship = m_ShipArray.GetAt(y);
 		const CPoint& p = ship.GetKO();
 		CSector& sector = GetSector(p);
@@ -5722,7 +5723,7 @@ void CBotf2Doc::CalcShipEffects()
 			bBetterScanner = anomaly->GetType() == QUASAR;
 		}
 
-		CalcShipEffectsForSingleShip(ship, sector, pMajor, sRace, bDeactivatedShipScanner, bBetterScanner, false);
+		CalcShipEffectsForSingleShip(ship, sector, pRace, bDeactivatedShipScanner, bBetterScanner, false);
 		// wenn das Schiff eine Flotte besitzt, dann die Schiffe in der Flotte auch beachten
 		CFleet* fleet = ship.GetFleet();
 		if(fleet)
@@ -5731,7 +5732,7 @@ void CBotf2Doc::CalcShipEffects()
 			for (int x = 0; x < fleet->GetFleetSize(); x++)
 			{
 				CShip* fleetship = fleet->GetShipFromFleet(x);
-				CalcShipEffectsForSingleShip(*fleetship, sector, pMajor, sRace,
+				CalcShipEffectsForSingleShip(*fleetship, sector, pRace,
 					bDeactivatedShipScanner, bBetterScanner, true);
 			}
 		}

@@ -491,7 +491,7 @@ private:
 	/// Baut eine bestimmte Majorrasse gerade eine Station in dem Sektor?
 	set<CString> m_bIsStationBuild;
 
-	/// Scanstärke der jeweiligen Majorrace in dem Sektor
+	/// Scanstärke der jeweiligen Major/Minorrace in dem Sektor
 	map<CString, short> m_iScanPower;
 
 	/// benötigte Scanstärke der Majorrace, um ihr Schiff in diesem Sektor erkennen zu können
