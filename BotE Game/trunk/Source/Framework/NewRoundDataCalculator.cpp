@@ -113,20 +113,27 @@ void CNewRoundDataCalculator::CalcPreLoop() {
 	// übertragen
 	for(std::vector<CSector>::iterator se = m_pDoc->m_Sectors.begin(); se != m_pDoc->m_Sectors.end(); ++se) {
 		CSystem* sy = &m_pDoc->GetSystemForSector(*se);
-		if(se->GetSunSystem() && sy->GetOwnerOfSystem() != "") {
-			// imperiumsweite Moralproduktion aus diesem System berechnen
-			sy->CalculateEmpireWideMoralProd(&m_pDoc->BuildingInfo);
-			//Building scan power and range in a system isn't influenced by other systems, is it...?
-			//This needs to be here in the first loop, since when calculating the scan power that
-			//other majors get due to affiliation, the scan powers in all sectors are not yet calculated correctly.
-			//For instance, if the system (1,1) scans the sector (0,0) since the loop
-			//starts at (0,0) in the top left; so when transferring the scanpower in (0,0)
-			//it is not yet updated.
-			const CSystemProd& production = *sy->GetProduction();
-			const int scan_power = production.GetScanPower();
-			if(scan_power > 0)
-				m_pDoc->PutScannedSquareOverCoords(*se, production.GetScanRange(), scan_power,
-					*m_pDoc->m_pRaceCtrl->GetRace(sy->GetOwnerOfSystem()));
+		if(se->GetSunSystem()) {
+			const bool system_owner_exists = !sy->GetOwnerOfSystem().IsEmpty();
+			if(system_owner_exists) {
+				// imperiumsweite Moralproduktion aus diesem System berechnen
+				sy->CalculateEmpireWideMoralProd(&m_pDoc->BuildingInfo);
+			}
+			if(system_owner_exists || se->GetMinorRace()) {
+				const CString& sector_owner = se->GetOwnerOfSector();
+				assert(!sector_owner.IsEmpty());
+				//Building scan power and range in a system isn't influenced by other systems, is it...?
+				//This needs to be here in the first loop, since when calculating the scan power that
+				//other majors get due to affiliation, the scan powers in all sectors are not yet calculated correctly.
+				//For instance, if the system (1,1) scans the sector (0,0) since the loop
+				//starts at (0,0) in the top left; so when transferring the scanpower in (0,0)
+				//it is not yet updated.
+				const CSystemProd& production = *sy->GetProduction();
+				const int scan_power = production.GetScanPower();
+				if(scan_power > 0)
+					m_pDoc->PutScannedSquareOverCoords(*se, production.GetScanRange(), scan_power,
+						*m_pDoc->m_pRaceCtrl->GetRace(sector_owner));
+			}
 		}
 	}
 }
