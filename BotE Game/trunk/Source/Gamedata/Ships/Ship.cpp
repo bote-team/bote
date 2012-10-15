@@ -46,6 +46,8 @@ CShip::CShip() :
 	for (int i = TITAN; i <= DERITIUM; i++)
 		m_iLoadedResources[i] = 0;
 	m_bCloakOn = false;
+	m_iShipType = SHIP_TYPE::PROBE;
+	m_iCurrentOrder = SHIP_ORDER::ATTACK;
 	m_nCombatTactic = COMBAT_TACTIC::CT_ATTACK;
 	m_nAlienType = ALIEN_TYPE::NONE;
 }
@@ -1224,6 +1226,10 @@ void CShip::SetCurrentOrderAccordingToType() {
 	m_iCurrentOrder = IsNonCombat() ? SHIP_ORDER::AVOID : SHIP_ORDER::ATTACK;
 }
 
+void CShip::SetCombatTacticAccordingToType() {
+	m_nCombatTactic = IsNonCombat() ? COMBAT_TACTIC::CT_AVOID : COMBAT_TACTIC::CT_ATTACK;
+}
+
 void CShip::UnsetCurrentOrder() {
 	switch(m_nCombatTactic) {
 		case COMBAT_TACTIC::CT_ATTACK:
@@ -1284,4 +1290,8 @@ Für den Erfahrungsgewinn gibt es mehrere Möglichkeiten:
 		case 2: expAdd = 5;		break;
 	}
 	SetCrewExperiance(expAdd);
+}
+
+bool CShip::IsNonCombat() const {
+	return m_iShipType <= SHIP_TYPE::PROBE;
 }

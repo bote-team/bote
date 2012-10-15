@@ -105,7 +105,7 @@ public:
 	USHORT GetUsedStorageRoom(const CArray<CTroopInfo>* troopInfo);
 	USHORT GetLoadedResources(BYTE res) const {return m_iLoadedResources[res];}
 	COMBAT_TACTIC::Typ GetCombatTactic() const {return m_nCombatTactic;}
-	bool IsNonCombat() const {return (m_iShipType == SHIP_TYPE::TRANSPORTER || m_iShipType == SHIP_TYPE::COLONYSHIP || m_iShipType == SHIP_TYPE::PROBE);}
+	bool IsNonCombat() const;
 	//Is this ship an outpost or a starbase ?
 	bool IsBase() const {
 		return m_iShipType == SHIP_TYPE::OUTPOST || m_iShipType == SHIP_TYPE::STARBASE;
@@ -154,6 +154,8 @@ public:
 
 	//Sets this ship's m_iCurrentOrder to AVOID if it's a civil ship and to ATTACK otherwise.
 	void SetCurrentOrderAccordingToType();
+	//Sets this ship's m_nCombatTactic to AVOID if it's a civil ship and to ATTACK otherwise.
+	void SetCombatTacticAccordingToType();
 	//Sets the current oder according to m_nCombatTactic
 	void UnsetCurrentOrder();
 

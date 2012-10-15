@@ -276,12 +276,13 @@ void CShipInfo::CalculateFinalCosts()
 // Funktion bestimmt die 1. Order des Schiffs nach dem Bau anhand dessen Typs
 void CShipInfo::SetStartOrder()
 {
-	if (m_iShipType >= SHIP_TYPE::SCOUT)
-		m_iCurrentOrder = SHIP_ORDER::ATTACK;
-	else
-		m_iCurrentOrder = SHIP_ORDER::AVOID;
+	SetCurrentOrderAccordingToType();
 }
 
+void CShipInfo::SetStartTactic()
+{
+	SetCombatTacticAccordingToType();
+}
 
 // Funktion zeichnet wichtige Informationen zu dem Schiff
 void CShipInfo::DrawShipInformation(Graphics* g, CRect rect, Gdiplus::Font* font, Gdiplus::Color clrNormal, Gdiplus::Color clrMark, CResearch* research)

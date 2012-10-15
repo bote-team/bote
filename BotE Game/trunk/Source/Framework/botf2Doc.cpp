@@ -2186,6 +2186,7 @@ void CBotf2Doc::ReadShipInfosFromFile()
 				ShipInfo.SetObsoleteShipClass(data[39]);
 				ShipInfo.CalculateFinalCosts();
 				ShipInfo.SetStartOrder();
+				ShipInfo.SetStartTactic();
 				m_ShipInfoArray.Add(ShipInfo);
 				ShipInfo.DeleteWeapons();
 				i = 0;
@@ -2268,7 +2269,9 @@ void CBotf2Doc::BuildShip(int nID, const CPoint& KO, const CString& sOwnerID)
 	AddSpecialResearchBoniToShip(&m_ShipArray[n], pMajor);
 
 	for (int i = 0; i < 4; i++)
-		m_ShipArray.ElementAt(n).SetTargetKO(CPoint(-1,-1), i);
+		m_ShipArray.ElementAt(n).SetTargetKO(CPoint(-1,-1), i, true);
+	m_ShipArray.ElementAt(n).SetTerraformingPlanet(-1);
+
 	pMajor->GetShipHistory()->AddShip(&m_ShipArray.GetAt(n), m_Sectors.at(KO.x+(KO.y)*STARMAP_SECTORS_HCOUNT).GetName(), m_iRound);
 }
 
@@ -5535,10 +5538,7 @@ void CBotf2Doc::CalcShipCombat()
 		if (pShip->GetCombatTactic() == COMBAT_TACTIC::CT_RETREAT)
 		{
 			// Schiff auf Meiden stellen
-			if (pShip->IsNonCombat())
-				pShip->SetCurrentOrder(SHIP_ORDER::AVOID);
-			else
-				pShip->SetCurrentOrder(SHIP_ORDER::ATTACK);
+			pShip->SetCurrentOrderAccordingToType();
 
 			// womögicher Terraformplanet oder Stationsbau zurücknehmen
 			pShip->SetTerraformingPlanet(-1);
