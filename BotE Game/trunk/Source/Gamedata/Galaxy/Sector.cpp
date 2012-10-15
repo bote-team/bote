@@ -37,7 +37,7 @@ CSector::CSector(const CSector& other) :
 	m_Attributes(other.m_Attributes),
 	m_sOwnerOfSector(other.m_sOwnerOfSector),
 	m_sColonyOwner(other.m_sColonyOwner),
-	m_byStatus(other.m_byStatus),
+	m_Status(other.m_Status),
 	m_bShipPort(other.m_bShipPort),
 	m_bOutpost(other.m_bOutpost),
 	m_bStarbase(other.m_bStarbase),
@@ -63,7 +63,7 @@ CSector& CSector::operator=(const CSector& other){
 	m_Attributes = other.m_Attributes;
 	m_sOwnerOfSector = other.m_sOwnerOfSector;
 	m_sColonyOwner = other.m_sColonyOwner;
-	m_byStatus = other.m_byStatus;
+	m_Status = other.m_Status;
 	m_bShipPort = other.m_bShipPort;
 	m_bOutpost = other.m_bOutpost;
 	m_bStarbase = other.m_bStarbase;
@@ -108,9 +108,9 @@ void CSector::Serialize(CArchive &ar)
 		ar << m_KO;
 
 		// alle Maps speichern
-		ar << m_byStatus.size();
-		for (map<CString, BYTE>::const_iterator it = m_byStatus.begin(); it != m_byStatus.end(); ++it)
-			ar << it->first << it->second;
+		ar << m_Status.size();
+		for (map<CString, DISCOVER_STATUS>::const_iterator it = m_Status.begin(); it != m_Status.end(); ++it)
+			ar << it->first << static_cast<BYTE>(it->second);
 		ar << m_bShipPort.size();
 		for (set<CString>::const_iterator it = m_bShipPort.begin(); it != m_bShipPort.end(); ++it)
 			ar << *it;
@@ -167,7 +167,7 @@ void CSector::Serialize(CArchive &ar)
 		ar >> m_KO;
 
 		// Maps laden
-		m_byStatus.clear();
+		m_Status.clear();
 		size_t mapSize = 0;
 		ar >> mapSize;
 		for (size_t i = 0; i < mapSize; i++)
@@ -176,7 +176,7 @@ void CSector::Serialize(CArchive &ar)
 			BYTE value;
 			ar >> key;
 			ar >> value;
-			m_byStatus[key] = value;
+			m_Status[key] = static_cast<DISCOVER_STATUS>(value);
 		}
 		m_bShipPort.clear();
 		mapSize = 0;
@@ -754,7 +754,7 @@ void CSector::Reset()
 	m_Attributes = 0;
 
 	// Maps löschen
-	m_byStatus.clear();
+	m_Status.clear();
 	m_iScanPower.clear();
 	m_iNeededScanPower.clear();
 	m_bShipPort.clear();

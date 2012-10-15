@@ -41,6 +41,15 @@ enum SectorAttributes
 class CSector : public CObject
 {
 public:
+
+	enum DISCOVER_STATUS
+	{
+		DISCOVER_STATUS_NONE		= 0,
+		DISCOVER_STATUS_SCANNED		= 1,
+		DISCOVER_STATUS_KNOWN		= 2,
+		DISCOVER_STATUS_FULL_KNOWN	= 3
+	};
+
 	// Klasse serialisierbar machen
 	DECLARE_SERIAL (CSector)
 
@@ -90,47 +99,56 @@ public:
 
 	/// Diese Funktion gibt einen Wahrheitswert zurück, der sagt, ob dieser Sektor von der Majorrace
 	/// <code>Race</code> gescannt wurde.
-	BOOLEAN GetScanned(const CString& sRace)
+	bool GetScanned(const CString& sRace)
 	{
 		const CCommandLineParameters* const clp = dynamic_cast<CBotf2App*>(AfxGetApp())->GetCommandLineParameters();
 		if(clp->SeeAllOfMap())
 			return true;
 
-		map<CString, BYTE>::const_iterator it = m_byStatus.find(sRace);
-		if (it != m_byStatus.end())
-			return it->second >= 1;
-		else
-			return false;
+		map<CString, DISCOVER_STATUS>::const_iterator it = m_Status.find(sRace);
+		if (it != m_Status.end())
+			return it->second >= DISCOVER_STATUS_SCANNED;
+		return false;
 	}
 
 	/// Diese Funktion gibt einen Wahrheitswert zurück, der sagt, ob der Name dieses Sektor der
 	/// Majorrace <code>Race</code> bekannt ist.
-	BOOLEAN GetKnown(const CString& sRace)
+	bool GetKnown(const CString& sRace)
 	{
 		const CCommandLineParameters* const clp = dynamic_cast<CBotf2App*>(AfxGetApp())->GetCommandLineParameters();
 		if(clp->SeeAllOfMap())
 			return true;
 
-		map<CString, BYTE>::const_iterator it = m_byStatus.find(sRace);
-		if (it != m_byStatus.end())
-			return it->second >= 2;
-		else
-			return false;
+		map<CString, DISCOVER_STATUS>::const_iterator it = m_Status.find(sRace);
+		if (it != m_Status.end())
+			return it->second >= DISCOVER_STATUS_KNOWN;
+		return false;
 	}
 
 	/// Diese Funktion gibt einen Wahrheitswert zurück, der sagt, ob die Majorrace <code>Race</code>
 	/// den kompletten Sektor (inkl. der Planeten) kennt.
-	BOOLEAN GetFullKnown(const CString& sRace)
+	bool GetFullKnown(const CString& sRace)
 	{
 		const CCommandLineParameters* const clp = dynamic_cast<CBotf2App*>(AfxGetApp())->GetCommandLineParameters();
 		if(clp->SeeAllOfMap())
 			return true;
 
-		map<CString, BYTE>::const_iterator it = m_byStatus.find(sRace);
-		if (it != m_byStatus.end())
-			return it->second >= 3;
-		else
-			return false;
+		map<CString, DISCOVER_STATUS>::const_iterator it = m_Status.find(sRace);
+		if (it != m_Status.end())
+			return it->second >= DISCOVER_STATUS_FULL_KNOWN;
+		return false;
+	}
+
+	const DISCOVER_STATUS GetDiscoverStatus(const CString& sRace) const
+	{
+		const CCommandLineParameters* const clp = dynamic_cast<CBotf2App*>(AfxGetApp())->GetCommandLineParameters();
+		if(clp->SeeAllOfMap())
+			return DISCOVER_STATUS_FULL_KNOWN;
+
+		map<CString, DISCOVER_STATUS>::const_iterator it = m_Status.find(sRace);
+		if (it != m_Status.end())
+			return it->second;
+		return DISCOVER_STATUS_NONE;
 	}
 
 	/// Diese Funktion gibt einen Wahrheitswert zurück, der sagt, ob die Majorrace <code>Race</code>
@@ -277,14 +295,14 @@ public:
 	void SetColonyOwner(const CString& sOwner) {m_sColonyOwner = sOwner;}
 
 	/// Diese Funktion legt fest, ob der Sektor von der Majorrace <code>Race</code> gescannt ist.
-	void SetScanned(const CString& Race) {if (this->GetScanned(Race) == FALSE) m_byStatus[Race] = 1;}
+	void SetScanned(const CString& Race) {if (this->GetScanned(Race) == FALSE) m_Status[Race] = CSector::DISCOVER_STATUS_SCANNED;}
 
 	/// Diese Funktion legt fest, ob die Majorrace <code>Race</code> den Namen des Sektor kennt.
-	void SetKnown(const CString& Race) {if (this->GetKnown(Race) == FALSE) m_byStatus[Race] = 2;}
+	void SetKnown(const CString& Race) {if (this->GetKnown(Race) == FALSE) m_Status[Race] = CSector::DISCOVER_STATUS_KNOWN;}
 
 	/// Diese Funktion legt fest, ob die Majorrace <code>Race</code> den Sektor kompletten Sektor
 	/// (inkl. der ganzen Planeten) kennt.
-	void SetFullKnown(const CString& Race) {m_byStatus[Race] = 3;}
+	void SetFullKnown(const CString& Race) {m_Status[Race] = CSector::DISCOVER_STATUS_FULL_KNOWN;}
 
 	/// Diese Funktion legt fest, ob die Majorrace <code>Race</code> eine online Werft (bzw. auch durch eine
 	/// Station erhalten) in diesem Sektor besitzt.
@@ -453,7 +471,7 @@ private:
 
 	/// Variable speichert den Status über diesen Sektor, wobei 0 -> nichts, 1 -> gescannt,
 	/// 2 -> Name bekannt, 3 -> alles inkl. Planeten bekannt, bedeutet
-	map<CString, BYTE> m_byStatus;
+	map<CString, DISCOVER_STATUS> m_Status;
 
 	/// Gibts in diesem Sektor eine online Werft (bzw. auch Station)
 	set<CString> m_bShipPort;
