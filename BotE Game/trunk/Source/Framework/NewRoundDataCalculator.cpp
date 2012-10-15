@@ -3,6 +3,8 @@
 
 #include "Races/RaceController.h"
 
+#include <cassert>
+
 CNewRoundDataCalculator::CNewRoundDataCalculator(void)
 {
 }
@@ -105,67 +107,6 @@ void CNewRoundDataCalculator::CalcMoral(const CSector& sector, CSystem& system, 
 	system.IncludeTroopMoralValue(&TroopInfo);
 }
 
-void CNewRoundDataCalculator::CalcExtraVisibilityAndRangeDueToDiplomacy(CSector& sector, const std::map<CString, CMajor*>* pmMajors) {
-	for (map<CString, CMajor*>::const_iterator i = pmMajors->begin(); i != pmMajors->end(); ++i)
-	{
-		for (map<CString, CMajor*>::const_iterator j = pmMajors->begin(); j != pmMajors->end(); ++j)
-		{
-			if(i == j) continue;
-			const DIPLOMATIC_AGREEMENT::Typ agreement = i->second->GetAgreement(j->first);
-			if (sector.GetScanned(i->first))
-			{
-				if (agreement >= DIPLOMATIC_AGREEMENT::COOPERATION)
-					sector.SetScanned(j->first);
-				if (agreement >= DIPLOMATIC_AGREEMENT::AFFILIATION)
-				{
-					const short iscanpower = sector.GetScanPower(i->first, false);
-					const short jscanpower = sector.GetScanPower(j->first, false);
-					if(iscanpower > jscanpower)
-						sector.SetScanPower(iscanpower, j->first);
-				}
-			}
-			if (sector.GetKnown(i->first))
-			{
-				if (agreement >= DIPLOMATIC_AGREEMENT::FRIENDSHIP)
-					sector.SetScanned(j->first);
-				if (agreement >= DIPLOMATIC_AGREEMENT::COOPERATION)
-					sector.SetKnown(j->first);
-			}
-			if (sector.GetOwnerOfSector() == i->first)
-			{
-				if (agreement >= DIPLOMATIC_AGREEMENT::TRADE)
-					sector.SetScanned(j->first);
-				if (agreement >= DIPLOMATIC_AGREEMENT::FRIENDSHIP)
-					sector.SetKnown(j->first);
-			}
-			if (sector.GetShipPort(i->first))
-				if (agreement >= DIPLOMATIC_AGREEMENT::COOPERATION)
-					sector.SetShipPort(TRUE, j->first);
-		}//for (map<CString, CMajor*>::const_iterator j = pmMajors->begin(); j != pmMajors->end(); ++j)
-	}//for (map<CString, CMajor*>::const_iterator i = pmMajors->begin(); i != pmMajors->end(); ++i)
-}
-
-void CNewRoundDataCalculator::AddShipPortsFromMinors(const std::map<CString, CMajor*>& pmMajors) {
-	const map<CString, CMinor*>* pmMinors = m_pDoc->m_pRaceCtrl->GetMinors();
-	for (map<CString, CMajor*>::const_iterator i = pmMajors.begin(); i != pmMajors.end(); ++i)
-	{
-		CMajor* pMajor = i->second;
-		for (map<CString, CMinor*>::const_iterator j = pmMinors->begin(); j != pmMinors->end(); ++j)
-		{
-			const CMinor* pMinor = j->second;
-			const DIPLOMATIC_AGREEMENT::Typ agreement = pMinor->GetAgreement(pMajor->GetRaceID());
-			if (pMinor->GetSpaceflightNation()&& (
-					agreement == DIPLOMATIC_AGREEMENT::COOPERATION ||
-					agreement == DIPLOMATIC_AGREEMENT::AFFILIATION))
-			{
-				CPoint p = pMinor->GetRaceKO();
-				if (p != CPoint(-1,-1))
-					m_pDoc->GetSector(p).SetShipPort(TRUE, pMajor->GetRaceID());
-			}
-		}
-	}
-}
-
 void CNewRoundDataCalculator::CalcPreLoop() {
 	CSystemProd::ResetMoralEmpireWide();
 	// Hier müssen wir nochmal die Systeme durchgehen und die imperienweite Moralproduktion auf die anderen System
@@ -188,4 +129,113 @@ void CNewRoundDataCalculator::CalcPreLoop() {
 					*m_pDoc->m_pRaceCtrl->GetRace(sy->GetOwnerOfSystem()));
 		}
 	}
+}
+
+namespace {
+	struct SectorSettings {
+		SectorSettings() : scanpower(0), scanned(false), known(false), port(false) {}
+		SectorSettings(const CSector& sector, const CString& race) :
+				scanpower(sector.GetScanPower(race, false)),
+				scanned(sector.GetScanned(race)),
+				known(sector.GetKnown(race)),
+				port(sector.GetShipPort(race))
+			{}
+		short scanpower;
+		bool scanned;
+		bool known;
+		bool port;
+
+		bool operator <(const SectorSettings& o) const {
+			return scanpower < o.scanpower || scanned < o.scanned || known < o.known || port < o.port;
+		}
+		SectorSettings& operator =(const SectorSettings& o) {
+			scanpower = o.scanpower;
+			scanned = o.scanned;
+			known = o.known;
+			port = o.port;
+			return *this;
+		}
+	};
+
+	std::map<CString, SectorSettings> new_sector_settings;
+
+	static void GiveDiploGoodies(const CSector& sector, const DIPLOMATIC_AGREEMENT::Typ agreement,
+							const CString& to, const CString& from, const bool bMinorPort = false) {
+		SectorSettings settings;
+		const std::map<CString, SectorSettings>::const_iterator found = new_sector_settings.find(to);
+		found == new_sector_settings.end() ?
+			settings = SectorSettings(sector, to) : settings = found->second;
+		const SectorSettings old_settings = settings;
+
+		const CSector::DISCOVER_STATUS from_disc_status = sector.GetDiscoverStatus(from);
+		if (agreement >= DIPLOMATIC_AGREEMENT::AFFILIATION) {
+			settings.scanpower = max(settings.scanpower, sector.GetScanPower(from, false));
+		}
+
+		if(from_disc_status >= CSector::DISCOVER_STATUS_KNOWN) {
+			if (agreement >= DIPLOMATIC_AGREEMENT::FRIENDSHIP)
+				settings.scanned = true;
+			if (agreement >= DIPLOMATIC_AGREEMENT::COOPERATION)
+				settings.known = true;
+		}
+		else if(from_disc_status >= CSector::DISCOVER_STATUS_SCANNED)
+			if (agreement >= DIPLOMATIC_AGREEMENT::COOPERATION)
+				settings.scanned = true;
+
+		if (sector.GetOwnerOfSector() == from) {
+			if (agreement >= DIPLOMATIC_AGREEMENT::TRADE)
+				settings.scanned = true;
+			if (agreement >= DIPLOMATIC_AGREEMENT::FRIENDSHIP)
+				settings.known = true;
+		}
+		if (bMinorPort || sector.GetShipPort(from))
+			if (agreement >= DIPLOMATIC_AGREEMENT::COOPERATION)
+				settings.port = true;
+
+		if(old_settings < settings)
+			new_sector_settings[to] = settings;
+	}
+
+	static void GiveDiploGoodiesMajorOrMinor(const CSector& sector, const CRace& left,
+			const CRace& right, bool bMinor) {
+		const CString& right_id = right.GetRaceID();
+		const DIPLOMATIC_AGREEMENT::Typ agreement = left.GetAgreement(right_id);
+		if(agreement < DIPLOMATIC_AGREEMENT::TRADE)
+			return;
+		const CString& left_id = left.GetRaceID();
+		if(bMinor) {
+			const CMinor* pMinor = dynamic_cast<const CMinor*>(&right);
+			assert(pMinor);
+			GiveDiploGoodies(sector, agreement, left_id, right_id,
+				sector.GetKO() == pMinor->GetRaceKO() && pMinor->GetSpaceflightNation());
+		}
+		else {
+			GiveDiploGoodies(sector, agreement, left_id, right_id);
+			GiveDiploGoodies(sector, agreement, right_id, left_id);
+		}
+	}
+}
+
+void CNewRoundDataCalculator::CalcExtraVisibilityAndRangeDueToDiplomacy(
+		CSector& sector, const std::map<CString, CMajor*>* pMajors, const std::map<CString, CMinor*>* pMinors) {
+
+	for(std::map<CString, CMajor*>::const_iterator left_major = pMajors->begin(); left_major != pMajors->end(); ++left_major) {
+		for(std::map<CString, CMinor*>::const_iterator minor = pMinors->begin(); minor != pMinors->end(); ++minor) {
+			GiveDiploGoodiesMajorOrMinor(sector, *left_major->second, *minor->second, true);
+		}
+
+		std::map<CString, CMajor*>::const_iterator right_major = left_major; ++right_major;
+		for(; right_major != pMajors->end(); ++right_major) {
+			GiveDiploGoodiesMajorOrMinor(sector, *left_major->second, *right_major->second, false);
+		}
+	}
+
+	for(std::map<CString, SectorSettings>::const_iterator settings = new_sector_settings.begin();
+					settings != new_sector_settings.end(); ++settings) {
+		sector.SetScanned(settings->first);
+		sector.SetKnown(settings->first);
+		sector.SetScanPower(settings->second.scanpower, settings->first);
+		sector.SetShipPort(TRUE, settings->first);
+	}
+	new_sector_settings.clear();
 }

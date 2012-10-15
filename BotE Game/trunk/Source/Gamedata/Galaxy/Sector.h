@@ -99,7 +99,7 @@ public:
 
 	/// Diese Funktion gibt einen Wahrheitswert zurück, der sagt, ob dieser Sektor von der Majorrace
 	/// <code>Race</code> gescannt wurde.
-	bool GetScanned(const CString& sRace)
+	bool GetScanned(const CString& sRace) const
 	{
 		const CCommandLineParameters* const clp = dynamic_cast<CBotf2App*>(AfxGetApp())->GetCommandLineParameters();
 		if(clp->SeeAllOfMap())
@@ -113,7 +113,7 @@ public:
 
 	/// Diese Funktion gibt einen Wahrheitswert zurück, der sagt, ob der Name dieses Sektor der
 	/// Majorrace <code>Race</code> bekannt ist.
-	bool GetKnown(const CString& sRace)
+	bool GetKnown(const CString& sRace) const
 	{
 		const CCommandLineParameters* const clp = dynamic_cast<CBotf2App*>(AfxGetApp())->GetCommandLineParameters();
 		if(clp->SeeAllOfMap())
@@ -127,7 +127,7 @@ public:
 
 	/// Diese Funktion gibt einen Wahrheitswert zurück, der sagt, ob die Majorrace <code>Race</code>
 	/// den kompletten Sektor (inkl. der Planeten) kennt.
-	bool GetFullKnown(const CString& sRace)
+	bool GetFullKnown(const CString& sRace) const
 	{
 		const CCommandLineParameters* const clp = dynamic_cast<CBotf2App*>(AfxGetApp())->GetCommandLineParameters();
 		if(clp->SeeAllOfMap())
@@ -153,7 +153,7 @@ public:
 
 	/// Diese Funktion gibt einen Wahrheitswert zurück, der sagt, ob die Majorrace <code>Race</code>
 	/// eine online Werft (bzw. kann auch eine Station sein) in diesem Sektor besitzt.
-	BOOLEAN GetShipPort(const CString& sRace) const
+	bool GetShipPort(const CString& sRace) const
 	{
 		if (m_bShipPort.find(sRace) != m_bShipPort.end())
 			return true;

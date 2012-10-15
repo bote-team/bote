@@ -3912,16 +3912,15 @@ void CBotf2Doc::CalcNewRoundData()
 		// für jede Rasse Sektorsachen berechnen
 		// Hier wird berechnet, was wir von der Karte alles sehen, welche Sektoren wir durchfliegen können
 		// alles abhängig von unseren diplomatischen Beziehungen
-		CNewRoundDataCalculator::CalcExtraVisibilityAndRangeDueToDiplomacy(*sector, pmMajors);
+		// Nun auch überprüfen, ob sich unsere Grenzen erweitern, wenn die MinorRasse eine Spaceflight-Rasse ist und wir mit
+		// ihr eine Kooperations oder ein Bündnis haben
+		CNewRoundDataCalculator::CalcExtraVisibilityAndRangeDueToDiplomacy(*sector, pmMajors, m_pRaceCtrl->GetMinors());
 	}//for(std::vector<CSector>::iterator sector = m_Sectors.begin(); sector != m_Sectors.end(); ++sector) {
 
 	// Forschungsboni aus Spezialforschungen setzen, nachdem wir diese aus allen Systemen geholt haben
 	//GetResearchBoniFromSpecialTechsAndSetThem(researchBonis, pmMajors);
 	// Geheimdienstboni aus Spezialforschungen holen
 	CNewRoundDataCalculator::GetIntelligenceBoniFromSpecialTechsAndSetThem(pmMajors);
-	// Nun überprüfen, ob sich unsere Grenzen erweitern, wenn die MinorRasse eine Spaceflight-Rasse ist und wir mit
-	// ihr eine Kooperations oder ein Bündnis haben
-	new_round_data_calc.AddShipPortsFromMinors(*pmMajors);
 }
 
 /// Diese Funktion berechnet die kompletten Handelsaktivitäten.
