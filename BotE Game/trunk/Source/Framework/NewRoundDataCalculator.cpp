@@ -147,6 +147,12 @@ namespace {
 				known(sector.GetKnown(race)),
 				port(sector.GetShipPort(race))
 			{}
+		SectorSettings(const SectorSettings& o) :
+				scanpower(o.scanpower),
+				scanned(o.scanned),
+				known(o.known),
+				port(o.port)
+			{}
 		short scanpower;
 		bool scanned;
 		bool known;
@@ -172,7 +178,7 @@ namespace {
 		const std::map<CString, SectorSettings>::const_iterator found = new_sector_settings.find(to);
 		found == new_sector_settings.end() ?
 			settings = SectorSettings(sector, to) : settings = found->second;
-		const SectorSettings old_settings = settings;
+		const SectorSettings old_settings(settings);
 
 		const CSector::DISCOVER_STATUS from_disc_status = sector.GetDiscoverStatus(from);
 		if (agreement >= DIPLOMATIC_AGREEMENT::AFFILIATION) {
