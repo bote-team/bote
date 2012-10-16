@@ -1207,7 +1207,7 @@ void CShip::SetTargetKO(const CPoint& TargetKO, int Index, const bool simple_set
 
 bool CShip::HasNothingToDo() const {
 	return (m_iCurrentOrder == SHIP_ORDER::AVOID || m_iCurrentOrder == SHIP_ORDER::ATTACK)
-		&& m_TargetKO[0] == CPoint(-1, -1) && m_iSpeed == 0;
+		&& m_TargetKO[0] == CPoint(-1, -1) && m_iSpeed != 0;
 }
 
 bool CShip::NeedsRepair() const {
