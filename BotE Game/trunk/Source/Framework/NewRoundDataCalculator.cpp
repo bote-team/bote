@@ -243,12 +243,16 @@ void CNewRoundDataCalculator::CalcExtraVisibilityAndRangeDueToDiplomacy(
 		}
 	}
 
-	for(std::map<CString, SectorSettings>::const_iterator settings = new_sector_settings.begin();
-					settings != new_sector_settings.end(); ++settings) {
-		sector.SetScanned(settings->first);
-		sector.SetKnown(settings->first);
-		sector.SetScanPower(settings->second.scanpower, settings->first);
-		sector.SetShipPort(TRUE, settings->first);
+	for(std::map<CString, SectorSettings>::const_iterator it = new_sector_settings.begin();
+					it != new_sector_settings.end(); ++it) {
+		const CString& ID = it->first;
+		const SectorSettings& settings = it->second;
+		if(settings.scanned)
+			sector.SetScanned(ID);
+		if(settings.known)
+			sector.SetKnown(ID);
+		sector.SetScanPower(settings.scanpower, ID);
+		sector.SetShipPort(settings.port, ID);
 	}
 	new_sector_settings.clear();
 }
