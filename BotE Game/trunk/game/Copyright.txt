@@ -1,5 +1,5 @@
 Alle Dateien (auch in weiteren Unterverzeichnissen) innerhalb
-des game Ordners besitzen eine eigenee Lizenz!
+des game Ordners besitzen eine eigene Lizenz!
 
 Die Dateien verwenden nicht die Lizenz des BotE-Quellcodes
 und sind somit nicht Freeware. Die Dateien dürfen nicht
