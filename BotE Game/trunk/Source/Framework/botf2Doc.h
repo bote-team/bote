@@ -296,8 +296,18 @@ protected:
 	void CalcNewRoundData();
 
 public:
-	void PutScannedSquareOverCoords(const CSector& sector, const int range, const int power, const CRace& race,
-		bool bBetterScanner = false, bool patrolship = false, bool anomaly = false);
+	/// Function puts a scanned square over the given sector in the middle, if range == 1, 9 sectors are affected
+	/// for instance. Function calculates and sets the scan power values for each of these sectors.
+	/// @param sector: The middle sector where the scan power affecting object is. This can be a ship,
+	/// a scanning deteriorating anomaly, or a continuum scanner (or continuum scanner upgrade).
+	/// @param range: range of the object
+	/// @param power: scan power of the object
+	/// @param race: race who gets these scan powers (can be a minor race)
+	/// @param bBetterScanner: are we on a scanning improving anomaly (implies the scan power affecting object is a ship or base)
+	/// @param patrolship: is this a patrolship (implies the scan power affecting object is a ship or base)
+	/// @param anomaly: is the scan power affecting object a scanning deteriorating anomaly
+	void PutScannedSquareOverSector(const CSector& sector, unsigned range, const int power,
+		const CRace& race, bool bBetterScanner = false, bool patrolship = false, bool anomaly = false);
 protected:
 	/// Diese Funktion berechnet die kompletten Handelsaktivitäten.
 	void CalcTrade();

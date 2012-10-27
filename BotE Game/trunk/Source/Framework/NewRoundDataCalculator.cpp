@@ -131,7 +131,7 @@ void CNewRoundDataCalculator::CalcPreLoop() {
 				const CSystemProd& production = *sy->GetProduction();
 				const int scan_power = production.GetScanPower();
 				if(scan_power > 0)
-					m_pDoc->PutScannedSquareOverCoords(*se, production.GetScanRange(), scan_power,
+					m_pDoc->PutScannedSquareOverSector(*se, production.GetScanRange(), scan_power,
 						*m_pDoc->m_pRaceCtrl->GetRace(sector_owner));
 			}
 		}
