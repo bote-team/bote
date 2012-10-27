@@ -1675,7 +1675,7 @@ void CSystem::CalculateEmpireWideMoralProd(const BuildingInfoArray *buildingInfo
 }
 
 // Funktion setzt das letzte Gebäude, welches gebaut wurde online, sofern dies möglich ist.
-int CSystem::SetNewBuildingOnline(BuildingInfoArray *buildingInfos)
+int CSystem::SetNewBuildingOnline(const BuildingInfoArray *buildingInfos)
 {
 	unsigned short CheckValue = 0;
 	unsigned short lastBuilding = m_Buildings.GetUpperBound();

@@ -56,6 +56,9 @@ public:
 
 	// Funktion gibt einen Zeiger auf die Bauliste des Systems zurück.
 	CAssemblyList* GetAssemblyList() {return &m_AssemblyList;}
+	const CAssemblyList* GetAssemblyList() const {
+		return &m_AssemblyList;
+	}
 
 	/// Funktion berechnet die theoretisch benötigte Anzahl an Runden, bis ein beliebiges Projekt in
 	/// diesem System fertig sein wird.
@@ -69,6 +72,9 @@ public:
 
 	// Funktion gibt einen Zeiger auf das Feld aller Gebäude im System zurück.
 	BuildingArray* GetAllBuildings() {return &m_Buildings;}
+	const BuildingArray* GetAllBuildings() const {
+		return &m_Buildings;
+	}
 
 	// Funktionen geben jeweils einen Zeiger auf das Feld mit den Informationen über baubare Gebäude,
 	// baubare Updates oder baubaren Schiffen in dem System zurück.
@@ -235,7 +241,7 @@ public:
 	void CalculateEmpireWideMoralProd(const BuildingInfoArray *buildingInfos);
 
 	// Funktion setzt das letzte Gebäude, welches gebaut wurde online, sofern dies möglich ist.
-	int SetNewBuildingOnline(BuildingInfoArray *buildingInfos);
+	int SetNewBuildingOnline(const BuildingInfoArray *buildingInfos);
 
 	// Funktion überprüft Gebäude die Energie benötigen und schaltet diese gegebenfalls ab,
 	// falls zuwenig Energie im System vorhanden ist. Diese Funktion aufrufen, bevor wir CalculateVariables() usw.

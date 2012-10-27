@@ -302,6 +302,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\Source\Framework\OldRoundDataCalculator.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\Source\Framework\ShipSanity.cpp"
 					>
 				</File>
@@ -1176,6 +1180,10 @@
 				</File>
 				<File
 					RelativePath=".\Source\Framework\NewRoundDataCalculator.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Source\Framework\OldRoundDataCalculator.h"
 					>
 				</File>
 				<File
