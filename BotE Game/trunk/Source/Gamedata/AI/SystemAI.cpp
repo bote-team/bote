@@ -60,13 +60,14 @@ void CSystemAI::ExecuteSystemAI(CPoint ko)
 void CSystemAI::PerhapsBuy()
 {
 	CPoint p = m_KO;
+	CSystem& system = m_pDoc->GetSystem(p);
 
 	// Wenn kein Bauauftrag in der Liste steht, so kann die Funktion sofort verlassen werden.
-	int id = m_pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetAssemblyList()->GetAssemblyListEntry(0);
+	int id = system.GetAssemblyList()->GetAssemblyListEntry(0);
 	if (id == NULL)
 		return;
 	int roundToBuild = 0;
-	if (m_pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetIndustryProd() > 0)
+	if (system.GetProduction()->GetIndustryProd() > 0)
 	{
 		// Never-Ready Auftrag
 		if (id > 0 && id < 10000 && m_pDoc->GetBuildingInfo(id).GetNeverReady())
@@ -74,54 +75,54 @@ void CSystemAI::PerhapsBuy()
 		// Bei Upgrades
 		else if (id < 0)
 		{
-			roundToBuild = (int)ceil((float)(m_pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetAssemblyList()->GetNeededIndustryInAssemblyList(0))
-				/((float)m_pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetIndustryProd()
-					* (100+m_pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetUpdateBuildSpeed())/100));
+			roundToBuild = (int)ceil((float)(system.GetAssemblyList()->GetNeededIndustryInAssemblyList(0))
+				/((float)system.GetProduction()->GetIndustryProd()
+					* (100+system.GetProduction()->GetUpdateBuildSpeed())/100));
 		}
 		// Bei Gebäuden
 		else if (id < 10000)
 		{
-			roundToBuild = (int)ceil((float)(m_pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetAssemblyList()->GetNeededIndustryInAssemblyList(0))
-				/((float)m_pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetIndustryProd()
-					* (100+m_pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetBuildingBuildSpeed())/100));
+			roundToBuild = (int)ceil((float)(system.GetAssemblyList()->GetNeededIndustryInAssemblyList(0))
+				/((float)system.GetProduction()->GetIndustryProd()
+					* (100+system.GetProduction()->GetBuildingBuildSpeed())/100));
 		}
 		// Bei Schiffen Wertfeffiziens mitbeachten
-		else if (id < 20000 && m_pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetShipYardEfficiency() > 0)
+		else if (id < 20000 && system.GetProduction()->GetShipYardEfficiency() > 0)
 		{
-			roundToBuild = (int)ceil((float)(m_pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetAssemblyList()->GetNeededIndustryInAssemblyList(0))
-				/((float)m_pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetIndustryProd() * m_pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetShipYardEfficiency() / 100
-					* (100+m_pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetShipBuildSpeed())/100));
+			roundToBuild = (int)ceil((float)(system.GetAssemblyList()->GetNeededIndustryInAssemblyList(0))
+				/((float)system.GetProduction()->GetIndustryProd() * system.GetProduction()->GetShipYardEfficiency() / 100
+					* (100+system.GetProduction()->GetShipBuildSpeed())/100));
 		}
 		// Bei Truppen die Kaserneneffiziens beachten
-		else if (m_pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetBarrackEfficiency() > 0)
+		else if (system.GetProduction()->GetBarrackEfficiency() > 0)
 		{
-			roundToBuild = (int)ceil((float)(m_pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetAssemblyList()->GetNeededIndustryInAssemblyList(0))
-				/((float)m_pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetIndustryProd() * m_pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetBarrackEfficiency() / 100
-					* (100+m_pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetTroopBuildSpeed())/100));
+			roundToBuild = (int)ceil((float)(system.GetAssemblyList()->GetNeededIndustryInAssemblyList(0))
+				/((float)system.GetProduction()->GetIndustryProd() * system.GetProduction()->GetBarrackEfficiency() / 100
+					* (100+system.GetProduction()->GetTroopBuildSpeed())/100));
 		}
 	}
 	// Sobald eine Rundendauer vorhanden ist, kann über den Kauf des Auftrages nachgedacht werden.
 	if (roundToBuild > 1)
 	{
-		m_pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetAssemblyList()->CalculateBuildCosts(m_pMajor->GetTrade()->GetRessourcePriceAtRoundStart());
-		int costs = m_pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetAssemblyList()->GetBuildCosts();
+		system.GetAssemblyList()->CalculateBuildCosts(m_pMajor->GetTrade()->GetRessourcePriceAtRoundStart());
+		int costs = system.GetAssemblyList()->GetBuildCosts();
 		int value = (m_pMajor->GetEmpire()->GetCredits() / costs) * 5;
 		// Umso mehr Credits das Imperium besitzt, desto eher wird gekauft. Außerdem wird bei einer niedrigen Moral
 		// eher versucht den Kauf zu tätigen, um nächstes Mal einen Polizeistaat oder ähnliches schneller starten zu können
-		if (rand()%100 < value || (value > 0 && m_pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetMoral() < (rand()%21 + 60)))
+		if (rand()%100 < value || (value > 0 && system.GetMoral() < (rand()%21 + 60)))
 		{
-			costs = m_pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetAssemblyList()->BuyBuilding(m_pMajor->GetEmpire()->GetCredits());
+			costs = system.GetAssemblyList()->BuyBuilding(m_pMajor->GetEmpire()->GetCredits());
 			if (costs != 0)
 			{
-				m_pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetAssemblyList()->SetWasBuildingBought(TRUE);
+				system.GetAssemblyList()->SetWasBuildingBought(TRUE);
 				m_pMajor->GetEmpire()->SetCredits(-costs);
 				// Die Preise an der Börse anpassen, da wir ja bestimmte Mengen Ressourcen gekauft haben
 				// Achtung, hier flag == 1 setzen bei Aufruf der Funktion BuyRessource!!!!
-				m_pMajor->GetTrade()->BuyRessource(TITAN,	 m_pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetAssemblyList()->GetNeededTitanInAssemblyList(0),p,m_pMajor->GetEmpire()->GetCredits(),1);
-				m_pMajor->GetTrade()->BuyRessource(DEUTERIUM,m_pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetAssemblyList()->GetNeededDeuteriumInAssemblyList(0),p,m_pMajor->GetEmpire()->GetCredits(),1);
-				m_pMajor->GetTrade()->BuyRessource(DURANIUM, m_pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetAssemblyList()->GetNeededDuraniumInAssemblyList(0),p,m_pMajor->GetEmpire()->GetCredits(),1);
-				m_pMajor->GetTrade()->BuyRessource(CRYSTAL,  m_pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetAssemblyList()->GetNeededCrystalInAssemblyList(0),p,m_pMajor->GetEmpire()->GetCredits(),1);
-				m_pMajor->GetTrade()->BuyRessource(IRIDIUM,  m_pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetAssemblyList()->GetNeededIridiumInAssemblyList(0),p,m_pMajor->GetEmpire()->GetCredits(),1);
+				m_pMajor->GetTrade()->BuyRessource(TITAN,	 system.GetAssemblyList()->GetNeededTitanInAssemblyList(0),p,m_pMajor->GetEmpire()->GetCredits(),1);
+				m_pMajor->GetTrade()->BuyRessource(DEUTERIUM,system.GetAssemblyList()->GetNeededDeuteriumInAssemblyList(0),p,m_pMajor->GetEmpire()->GetCredits(),1);
+				m_pMajor->GetTrade()->BuyRessource(DURANIUM, system.GetAssemblyList()->GetNeededDuraniumInAssemblyList(0),p,m_pMajor->GetEmpire()->GetCredits(),1);
+				m_pMajor->GetTrade()->BuyRessource(CRYSTAL,  system.GetAssemblyList()->GetNeededCrystalInAssemblyList(0),p,m_pMajor->GetEmpire()->GetCredits(),1);
+				m_pMajor->GetTrade()->BuyRessource(IRIDIUM,  system.GetAssemblyList()->GetNeededIridiumInAssemblyList(0),p,m_pMajor->GetEmpire()->GetCredits(),1);
 			}
 		}
 	}
