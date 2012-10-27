@@ -139,6 +139,10 @@ void CNewRoundDataCalculator::CalcPreLoop() {
 }
 
 namespace {
+	//The purpose of this struct is to to store all information acquired about the needed
+	//changes for this sector for each major race while iterating over all major - minor||major pairs.
+	//If these changes would be set directly, it can happen that, for instance, a ship port or the scan power
+	//in a certain sector transfers from major A to major C, while A and C are at war, but both are allied with B.
 	struct SectorSettings {
 		SectorSettings() : scanpower(0), scanned(false), known(false), port(false) {}
 		SectorSettings(const CSector& sector, const CString& race) :
@@ -205,6 +209,9 @@ namespace {
 			if (agreement >= DIPLOMATIC_AGREEMENT::COOPERATION)
 				settings.port = true;
 
+		//The new settings are stored for applying them later on in case that any of the single
+		//values involved is better than what we had previously.
+		//It can happen that only one of the four aspects has improved.
 		if(old_settings < settings)
 			new_sector_settings[to] = settings;
 	}
@@ -243,6 +250,7 @@ void CNewRoundDataCalculator::CalcExtraVisibilityAndRangeDueToDiplomacy(
 		}
 	}
 
+	//Now apply the possibly changes for this sector for the particular major races.
 	for(std::map<CString, SectorSettings>::const_iterator it = new_sector_settings.begin();
 					it != new_sector_settings.end(); ++it) {
 		const CString& ID = it->first;
