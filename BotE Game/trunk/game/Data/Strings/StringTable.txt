@@ -2471,7 +2471,7 @@ Rotharianische Drohnen sind Defensiv-Streitkräfte mit hoher Feuerkraft. Ihre Auf
 [MAJOR4_TROOP7_NAME]
 Helikopterdrohnen (getarnt)
 [MAJOR4_TROOP7_DESC]
-Diese Helikopter sind sehr schnell, unsichtbar und kommen bei Spezialaufträgen aller Art zum Einsatz. Sie verraten sich allenfalls durch Ihren Fluggeräusch.
+Diese Helikopter sind sehr schnell, unsichtbar und kommen bei Spezialaufträgen aller Art zum Einsatz. Sie verraten sich allenfalls durch Ihr Fluggeräusch.
 [MAJOR4_TROOP8_NAME]
 Rotharianische Spezialtruppen
 [MAJOR4_TROOP8_DESC]
