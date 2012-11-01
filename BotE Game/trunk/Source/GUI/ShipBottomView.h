@@ -52,7 +52,7 @@ private:
 	/// Funktion ermittelt die Nummer des Schiffes im Array, über welches die Maus bewegt wurde.
 	/// @param pt Mauskoordinate
 	/// @return Nummer des Schiffes im Schiffsarray (<code>-1</code> wenn kein Schiff markiert wurde)
-	int GetMouseOverShip(CPoint& pt);
+	//int GetMouseOverShip(CPoint& pt);
 
 	// Attribute
 	CRect m_RectForTheShip;						///< Das Rechteck für das Schiff worüber wir die Maus bewegt haben
