@@ -4995,7 +4995,6 @@ void CBotf2Doc::CalcShipMovement()
 /// so werden ihnen alle jeweils beteiligten Schiffe geschickt, so dass sie dort Befehle geben können.
 bool CBotf2Doc::IsShipCombat()
 {
-	using namespace network;
 	m_bCombatCalc = false;
 
 	// Jetzt gehen wir nochmal alle Sektoren durch, wenn in einem Sektor Schiffe mehrerer verschiedener Rassen sind,
@@ -5003,36 +5002,35 @@ bool CBotf2Doc::IsShipCombat()
 	// vertrag haben, dann kommt es in diesem Sektor zum Kampf
 	for (int y = 0; y < m_ShipArray.GetSize(); y++)
 	{
+		const CShip* pShip = &m_ShipArray.GetAt(y);
+		const CPoint& p = pShip->GetKO();
+		const CString& sector = GetSector(p).GetName(TRUE);
 		// Wenn unser Schiff auf Angreifen gestellt ist
-		if (m_ShipArray.GetAt(y).GetCombatTactic() != COMBAT_TACTIC::CT_ATTACK)
-			continue;
-
-		CPoint p = m_ShipArray.GetAt(y).GetKO();
 		// Wenn in dem Sektor des Schiffes schon ein Kampf stattgefunden hat, dann findet hier keiner mehr statt
-		if (m_sCombatSectors.find(m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetName(TRUE)) != m_sCombatSectors.end())
+		if (pShip->GetCombatTactic() != COMBAT_TACTIC::CT_ATTACK
+			|| m_sCombatSectors.find(sector) != m_sCombatSectors.end())
 			continue;
-
 		// Wenn noch kein Kampf in dem Sektor stattfand, dann kommt es möglicherweise hier zum Kampf
 		for (int i = 0; i < m_ShipArray.GetSize(); i++)
 		{
-			// Wenn das Schiff nicht unserer Rasse gehört
-			if (m_ShipArray.GetAt(i).GetOwnerOfShip() != m_ShipArray.GetAt(y).GetOwnerOfShip())
-				// Wenn das Schiff sich im gleichen Sektor befindet
-				if (m_ShipArray.GetAt(i).GetKO() == m_ShipArray.GetAt(y).GetKO())
-				{
-					CRace* pRace1 = m_pRaceCtrl->GetRace(m_ShipArray.GetAt(y).GetOwnerOfShip());
-					CRace* pRace2 = m_pRaceCtrl->GetRace(m_ShipArray.GetAt(i).GetOwnerOfShip());
-					// Wenn sich die Rassen aus diplomatischer Beziehung heraus angreifen können
-					if (CCombat::CheckDiplomacyStatus(pRace1, pRace2))
-					{
-						m_bCombatCalc = true;
-						m_ptCurrentCombatSector = p;
-						m_sCombatSectors.insert(m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetName(TRUE));
-						m_mCombatOrders.clear();
-						MYTRACE("general")(MT::LEVEL_INFO, "Combat in Sector %d/%d\n", p.x, p.y);
-						return true;
-					}
-				}
+			const CShip* pOtherShip = &m_ShipArray.GetAt(i);
+			const CString& sOwner1 = pShip->GetOwnerOfShip();
+			const CString& sOwner2 = pOtherShip->GetOwnerOfShip();
+			// nur weiter, wenn das Schiff nicht unserer Rasse gehört
+			// und wenn das Schiff sich im gleichen Sektor befindet
+			if (sOwner2 == sOwner1 || pOtherShip->GetKO() != p)
+				continue;
+			const CRace* pRace1 = m_pRaceCtrl->GetRace(sOwner1);
+			const CRace* pRace2 = m_pRaceCtrl->GetRace(sOwner2);
+			// Wenn sich die Rassen aus diplomatischer Beziehung heraus angreifen können
+			if (!CCombat::CheckDiplomacyStatus(pRace1, pRace2))
+				continue;
+			m_bCombatCalc = true;
+			m_ptCurrentCombatSector = p;
+			m_sCombatSectors.insert(sector);
+			m_mCombatOrders.clear();
+			MYTRACE("general")(MT::LEVEL_INFO, "Combat in Sector %d/%d\n", p.x, p.y);
+			return true;
 		}
 	}
 
