@@ -149,14 +149,42 @@ public:
 	/// @return Koordinate auf der Galaxiemap
 	CPoint GetRaceKO(const CString& sMajorID) const;
 
-	CSector& GetSector(int x, int y) { ASSERT(x < STARMAP_SECTORS_HCOUNT && y < STARMAP_SECTORS_VCOUNT); return m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT); }
-	CSector& GetSector(const CPoint& ko) { return GetSector(ko.x, ko.y); }
+	CSector& GetSector(int x, int y) {
+		return m_Sectors.at(x+y*STARMAP_SECTORS_HCOUNT);
+	}
+	const CSector& GetSector(int x, int y) const {
+		return m_Sectors.at(x+y*STARMAP_SECTORS_HCOUNT);
+	}
+
+	CSector& GetSector(const CPoint& ko) {
+		return GetSector(ko.x, ko.y);
+	}
+	const CSector& GetSector(const CPoint& ko) const {
+		return GetSector(ko.x, ko.y);
+	}
+
 	CSector& GetSector(const Sector& se) {
 		return GetSector(se.x, se.y);
 	}
-	CSystem& GetSystem(int x, int y) { ASSERT(x < STARMAP_SECTORS_HCOUNT && y < STARMAP_SECTORS_VCOUNT); return m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT); }
-	CSystem& GetSystem(const CPoint& ko) { return GetSystem(ko.x, ko.y); }
+
+	CSystem& GetSystem(int x, int y) {
+		return m_Systems.at(x+y*STARMAP_SECTORS_HCOUNT);
+	}
+	const CSystem& GetSystem(int x, int y) const {
+		return m_Systems.at(x+y*STARMAP_SECTORS_HCOUNT);
+	}
+
+	CSystem& GetSystem(const CPoint& ko) {
+		return GetSystem(ko.x, ko.y);
+	}
+	const CSystem& GetSystem(const CPoint& ko) const {
+		return GetSystem(ko.x, ko.y);
+	}
+
 	CSystem& GetSystemForSector(const CSector& s) {
+		return GetSystem(s.GetKO());
+	}
+	const CSystem& GetSystemForSector(const CSector& s) const {
 		return GetSystem(s.GetKO());
 	}
 
