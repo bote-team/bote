@@ -1355,6 +1355,23 @@ void CBotf2Doc::GenerateGalaxy()
 		m_pRaceCtrl->RemoveRace(vDelMinors[i]);
 }
 
+////////////////////////////////////////////////
+//BEGINN: helper functions for NextRound()
+static bool HumanPlayerInCombat(const CArray<CShip,CShip>& ships, const CPoint& CurrentCombatSector,
+		const std::map<CString, CMajor*>& majors) {
+	for(int i = 0; i < ships.GetSize(); ++i)
+	{
+		const CShip* pShip = &ships.GetAt(i);
+		if (pShip->GetKO() != CurrentCombatSector)
+			continue;
+		const std::map<CString, CMajor*>::const_iterator major = majors.find(pShip->GetOwnerOfShip());
+		if (major != majors.end() && major->second->IsHumanPlayer())
+			return true;
+	}
+	return false;
+}
+//END: helper functions for NextRound()
+////////////////////////////////////////////////
 void CBotf2Doc::NextRound()
 {
 	// gibt es für diese Runde Sektoren in welchen ein Kampf stattfand
@@ -1426,24 +1443,8 @@ void CBotf2Doc::NextRound()
 		if (IsShipCombat())
 		{
 			// Ist ein menschlicher Spieler beteiligt?
-			bool bHumanPlayerInCombat = false;
-			for (int i = 0; i < m_ShipArray.GetSize(); i++)
-			{
-				if (m_ShipArray[i].GetKO() == m_ptCurrentCombatSector)
-				{
-					CString sOwnerID = m_ShipArray[i].GetOwnerOfShip();
-					if (pmMajors->find(sOwnerID) != pmMajors->end())
-					{
-						if (pmMajors->find(sOwnerID)->second->IsHumanPlayer())
-						{
-							bHumanPlayerInCombat = true;
-							break;
-						}
-					}
-				}
-			}
 			// kein menschlicher Spieler beteiligt -> gleich weiter
-			if (!bHumanPlayerInCombat)
+			if (!HumanPlayerInCombat(m_ShipArray, m_ptCurrentCombatSector, *pmMajors))
 				NextRound();
 
 			// findet ein Kampf statt, so sofort aus der Funktion rausgehen und die Kampfberechnungen durchführen
@@ -1461,24 +1462,8 @@ void CBotf2Doc::NextRound()
 		{
 			map<CString, CMajor*>* pmMajors = m_pRaceCtrl->GetMajors();
 			// Ist ein menschlicher Spieler beteiligt?
-			bool bHumanPlayerInCombat = false;
-			for (int i = 0; i < m_ShipArray.GetSize(); i++)
-			{
-				if (m_ShipArray[i].GetKO() == m_ptCurrentCombatSector)
-				{
-					CString sOwnerID = m_ShipArray[i].GetOwnerOfShip();
-					if (pmMajors->find(sOwnerID) != pmMajors->end())
-					{
-						if (pmMajors->find(sOwnerID)->second->IsHumanPlayer())
-						{
-							bHumanPlayerInCombat = true;
-							break;
-						}
-					}
-				}
-			}
 			// kein menschlicher Spieler beteiligt -> gleich weiter
-			if (!bHumanPlayerInCombat)
+			if (!HumanPlayerInCombat(m_ShipArray, m_ptCurrentCombatSector, *pmMajors))
 				NextRound();
 
 			// findet ein Kampf statt, so sofort aus der Funktion rausgehen und die Kampfberechnungen durchführen
