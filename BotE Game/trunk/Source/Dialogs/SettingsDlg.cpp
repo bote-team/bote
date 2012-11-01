@@ -154,9 +154,11 @@ BOOL CSettingsDlg::OnInitDialog()
 
 	//Galaxyshape
 	m_comboGalaxyshape.AddString("CLASSIC");
-	m_comboGalaxyshape.AddString("CIRCLE");
-	m_comboGalaxyshape.AddString("SPIRAL");
-	int genMode=0;
+	m_comboGalaxyshape.AddString("PATTERN1");
+	m_comboGalaxyshape.AddString("PATTERN2");
+	m_comboGalaxyshape.AddString("PATTERN3");
+	m_comboGalaxyshape.AddString("PATTERN4");
+    int genMode=0;
 	pIni->ReadValue("Special", "GENERATIONMODE", genMode);
 	m_comboGalaxyshape.SetCurSel(genMode);
 
