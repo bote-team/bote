@@ -1518,7 +1518,7 @@ void CSystem::CalculateBuildableShips(CBotf2Doc* pDoc, const CPoint& p)
 			CShipInfo* pShipInfo = &(pDoc->GetShipInfos()->GetAt(i));
 			// Außenposten und Sternenbasen können wir natürlich nicht hier bauen
 			if ((pShipInfo->GetRace() == pMajor->GetRaceShipNumber() || pShipInfo->GetRace() == nMinorShipNumber)
-				&& !pShipInfo->IsBase())
+				&& !pShipInfo->IsStation())
 			{
 				// Forschungsstufen checken
 				if (pResearch->GetBioTech() <  pShipInfo->GetBioTech())

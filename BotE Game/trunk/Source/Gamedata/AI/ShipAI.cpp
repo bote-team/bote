@@ -507,7 +507,7 @@ void CShipAI::DoMakeFleet(CShip* pShip, int nIndex)
 		return;
 	}
 
-	if (pShip->IsBase())
+	if (pShip->IsStation())
 		return;
 
 	ASSERT(pShip == &m_pDoc->m_ShipArray.GetAt(nIndex));
@@ -528,7 +528,7 @@ void CShipAI::DoMakeFleet(CShip* pShip, int nIndex)
 			continue;
 
 		// das hinzuzufügende Schiff darf kein Außenposten oder Sternbasis sein
-		if (pOtherShip->IsBase())
+		if (pOtherShip->IsStation())
 			continue;
 
 		// das hinzuzufügende Schiff darf kein individuelles Ziel haben

@@ -107,7 +107,7 @@ public:
 	COMBAT_TACTIC::Typ GetCombatTactic() const {return m_nCombatTactic;}
 	bool IsNonCombat() const;
 	//Is this ship an outpost or a starbase ?
-	bool IsBase() const {
+	bool IsStation() const {
 		return m_iShipType == SHIP_TYPE::OUTPOST || m_iShipType == SHIP_TYPE::STARBASE;
 	}
 	bool IsAlien() const {

@@ -2243,7 +2243,7 @@ void CBotf2Doc::BuildShip(int nID, const CPoint& KO, const CString& sOwnerID)
 	m_ShipArray[n].SetKO(KO);
 
 	// Schiffsnamen vergeben
-	m_ShipArray.ElementAt(n).SetShipName(m_GenShipName.GenerateShipName(sOwner, m_ShipArray.ElementAt(n).IsBase()));
+	m_ShipArray.ElementAt(n).SetShipName(m_GenShipName.GenerateShipName(sOwner, m_ShipArray.ElementAt(n).IsStation()));
 
 	// den Rest nur machen, wenn das Schiff durch eine Majorrace gebaut wurde
 	if (pOwner->GetType() != MAJOR)
@@ -4524,7 +4524,7 @@ void CBotf2Doc::CalcShipOrders()
 			}
 
 			// Wenn es ein Au?enposten oder eine Sternbasis ist, dann dem Sektor bekanntgeben, dass in ihm keine Station mehr ist
-			if (m_ShipArray[y].IsBase())
+			if (m_ShipArray[y].IsStation())
 			{
 				pSector->SetOutpost(FALSE, m_ShipArray[y].GetOwnerOfShip());
 				pSector->SetStarbase(FALSE, m_ShipArray[y].GetOwnerOfShip());
@@ -4735,7 +4735,7 @@ void CBotf2Doc::CalcShipOrders()
 
 		// Vor der Schiffsbewegung aber nach einer möglichen Demontage dort ?berall einen ShipPort setzen wo
 		// eine Sternbasis oder ein Au?enposten steht
-		if (m_ShipArray[y].IsBase())
+		if (m_ShipArray[y].IsStation())
 		{
 			pSector->SetShipPort(TRUE, m_ShipArray[y].GetOwnerOfShip());
 		}
@@ -5264,7 +5264,7 @@ void CBotf2Doc::CalcShipCombat()
 				}
 			}
 			// Wenn es ein Außenposten oder Sternbasis war, so ein Event über dessen Verlust hinzufügen
-			if (m_ShipArray[i].IsBase())
+			if (m_ShipArray[i].IsStation())
 			{
 				CRace* pOwner = m_pRaceCtrl->GetRace(m_ShipArray[i].GetOwnerOfShip());
 				if (pOwner && pOwner->GetType() == MAJOR)
@@ -5429,7 +5429,7 @@ void CBotf2Doc::CalcShipEffectsForSingleShip(CShip& ship, CSector& sector, CRace
 	}
 	// Schiffe, wenn wir dort nicht eine ausreichend hohe Scanpower haben. Ab Stealthstufe 4 muss das Schiff getarnt
 	// sein, ansonsten gilt dort nur Stufe 3.
-	if (!ship.IsBase()) {
+	if (!ship.IsStation()) {
 		// Im Sektor die NeededScanPower setzen, die wir brauchen um dort Schiffe zu sehen. Wir sehen ja keine getarnten
 		// Schiffe, wenn wir dort nicht eine ausreichend hohe Scanpower haben. Ab Stealthstufe 4 muss das Schiff getarnt
 		// sein, ansonsten gilt dort nur Stufe 3.
@@ -5510,7 +5510,7 @@ void CBotf2Doc::CalcShipEffects()
 		// eine Station teilnahm, dann haben wir den Shipport in dem Sektor vorläufig entfernt. Es kann ja passieren,
 		// dass die Station zerstört wird. Haben wir jetzt aber immernoch eine Station, dann bleibt der Shipport dort auch
 		// bestehen
-		if (ship.IsBase()) {
+		if (ship.IsStation()) {
 			sector.SetShipPort(TRUE, sRace);
 			const SHIP_TYPE::Typ ship_type = ship.GetShipType();
 			if (ship_type == SHIP_TYPE::OUTPOST)
@@ -6301,7 +6301,7 @@ void CBotf2Doc::CalcAlienShipEffects()
 						continue;
 
 					// keine Außenposten und Sternenbasen
-					if (pOtherShip->IsBase())
+					if (pOtherShip->IsStation())
 						continue;
 
 					vector<CShip*> vShips;

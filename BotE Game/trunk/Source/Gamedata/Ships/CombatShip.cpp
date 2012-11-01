@@ -439,7 +439,7 @@ BYTE CCombatShip::GetAccBoniFromSpecials(void)
 // @return Wahrheitswert
 bool CCombatShip::AllowFire(const CFireArc* arc)
 {
-	if (m_pShip->IsBase())
+	if (m_pShip->IsStation())
 		return true;
 	/*
 	Ich fasse nochmal zusammen was benötigt wird und was mittels Variablen festgehalten werden müsste:
