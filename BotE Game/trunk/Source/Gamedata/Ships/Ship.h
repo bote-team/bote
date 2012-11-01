@@ -110,6 +110,9 @@ public:
 	bool IsBase() const {
 		return m_iShipType == SHIP_TYPE::OUTPOST || m_iShipType == SHIP_TYPE::STARBASE;
 	}
+	bool IsAlien() const {
+		return m_iShipType == SHIP_TYPE::ALIEN;
+	}
 	ALIEN_TYPE::Typ GetAlienType() const { return m_nAlienType; }
 
 	//Is this ship in need for a player command input in this round ?

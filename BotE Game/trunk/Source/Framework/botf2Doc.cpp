@@ -4856,7 +4856,7 @@ void CBotf2Doc::CalcShipMovement()
 			CRace* pRace = NULL;
 
 			// Weltraummonster gesondert behandeln
-			if (pShip->GetShipType() == SHIP_TYPE::ALIEN)
+			if (pShip->IsAlien())
 			{
 				CStarmap* pStarmap = new CStarmap(0);
 				pStarmap->SetFullRangeMap();
@@ -6134,7 +6134,7 @@ void CBotf2Doc::CalcRandomAlienEntities()
 	for (int i = 0; i < m_ShipInfoArray.GetSize(); i++)
 	{
 		CShipInfo* pShipInfo = &m_ShipInfoArray.GetAt(i);
-		if (pShipInfo->GetShipType() != SHIP_TYPE::ALIEN)
+		if (!pShipInfo->IsAlien())
 			continue;
 
 		// zugehörige Minorrace finden
@@ -6214,7 +6214,7 @@ void CBotf2Doc::CalcAlienShipEffects()
 	for (int i = 0; i < m_ShipArray.GetSize(); i++)
 	{
 		CShip* pShip = &m_ShipArray.GetAt(i);
-		if (pShip->GetShipType() != SHIP_TYPE::ALIEN)
+		if (!pShip->IsAlien())
 			continue;
 
 		// Aliens mit Rückzugsbefehl machen nix
@@ -6297,7 +6297,7 @@ void CBotf2Doc::CalcAlienShipEffects()
 						continue;
 
 					// keine anderen Alienschiffe
-					if (pOtherShip->GetShipType() == SHIP_TYPE::ALIEN || (pOtherShip->GetAlienType() & ALIEN_TYPE::GABALLIANER_SEUCHENSCHIFF) > 0)
+					if (pOtherShip->IsAlien() || (pOtherShip->GetAlienType() & ALIEN_TYPE::GABALLIANER_SEUCHENSCHIFF) > 0)
 						continue;
 
 					// keine Außenposten und Sternenbasen

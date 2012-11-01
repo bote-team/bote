@@ -705,7 +705,7 @@ BYTE CShip::GetExpLevel() const
 void CShip::SetCrewExperiance(int nAdd)
 {
 	// Sonden und Aliens sammeln keine Erfahrung
-	if (m_iShipType != SHIP_TYPE::PROBE && m_iShipType != SHIP_TYPE::ALIEN)
+	if (m_iShipType != SHIP_TYPE::PROBE && !IsAlien())
 		m_iCrewExperiance = min(64000, m_iCrewExperiance + nAdd);
 }
 
@@ -1155,7 +1155,7 @@ void CShip::DrawShip(Gdiplus::Graphics* g, CGraphicPool* pGraphicPool, const CPo
 		// normale Infos zum Schiff sollen angezeigt werden
 		if (!bDrawFleet)
 		{
-			if (m_iShipType != SHIP_TYPE::ALIEN)
+			if (!IsAlien())
 			{
 				g->DrawString(CComBSTR(m_strShipName), -1, &font, PointF((REAL)pt.x + 120, (REAL)pt.y + 37), &fontFormat, &fontBrush);
 				s = m_strShipClass + "-" + CResourceManager::GetString("CLASS");
