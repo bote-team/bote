@@ -1,0 +1,4 @@
+previews via http://birth-of-the-empires.de/wiki/index.php/Galaktischer_Hauptbildschirm#Galaxie-Form_.28galaxy_shape.29 or via graphic viewer program
+- only pattern 1 - 4 are used
+- pattern 0 (not used) is standard=complete map
+- pattern higher than 5 can be used to replace pattern 1-4
