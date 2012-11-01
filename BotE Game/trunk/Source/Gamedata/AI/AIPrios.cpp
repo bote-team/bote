@@ -104,7 +104,7 @@ void CAIPrios::CalcShipPrios(CSectorAI* sectorAI)
 			};
 			for (int j = 0; j < m_pDoc->m_ShipInfoArray.GetSize(); j++)
 				if (m_pDoc->m_ShipInfoArray.GetAt(j).GetRace() == pMajor->GetRaceShipNumber())
-					if (m_pDoc->m_ShipInfoArray.GetAt(j).GetShipType() == SHIP_TYPE::OUTPOST || m_pDoc->m_ShipInfoArray.GetAt(j).GetShipType() == SHIP_TYPE::STARBASE)
+					if (m_pDoc->m_ShipInfoArray.GetAt(j).IsBase())
 						if (m_pDoc->m_ShipInfoArray.GetAt(j).IsThisShipBuildableNow(researchLevels))
 						{
 							buildableStation = TRUE;
