@@ -596,10 +596,14 @@ void CBotf2Doc::SerializeNextRoundData(CArchive &ar)
 		network::RACE client = m_pRaceCtrl->GetMappedClientID(pPlayer->GetRaceID());
 
 		// Ausgehend vom Pfad des Schiffes den Sektoren mitteilen, das durch sie ein Schiff fliegt
-		for (int y = 0; y < m_ShipArray.GetSize(); y++)
-			if (m_ShipArray.GetAt(y).GetOwnerOfShip() == pPlayer->GetRaceID())
-				for (int i = 0; i < m_ShipArray[y].GetPath()->GetSize(); i++)
-					m_Sectors.at(m_ShipArray[y].GetPath()->GetAt(i).x+(m_ShipArray[y].GetPath()->GetAt(i).y)*STARMAP_SECTORS_HCOUNT).AddShipPathPoints(1);
+		for (int y = 0; y < m_ShipArray.GetSize(); y++) {
+			CShip& ship = m_ShipArray.GetAt(y);
+			if (ship.GetOwnerOfShip() == pPlayer->GetRaceID()) {
+				const CArray<Sector>& path = *ship.GetPath();
+				for (int i = 0; i < path.GetSize(); i++)
+					GetSector(path.GetAt(i)).AddShipPathPoints(1);
+			}
+		}
 		// Sprachmeldungen an den Soundmanager schicken
 		CSoundManager* pSoundManager = CSoundManager::GetInstance();
 		ASSERT(pSoundManager);

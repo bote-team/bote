@@ -151,6 +151,9 @@ public:
 
 	CSector& GetSector(int x, int y) { ASSERT(x < STARMAP_SECTORS_HCOUNT && y < STARMAP_SECTORS_VCOUNT); return m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT); }
 	CSector& GetSector(const CPoint& ko) { return GetSector(ko.x, ko.y); }
+	CSector& GetSector(const Sector& se) {
+		return GetSector(se.x, se.y);
+	}
 	CSystem& GetSystem(int x, int y) { ASSERT(x < STARMAP_SECTORS_HCOUNT && y < STARMAP_SECTORS_VCOUNT); return m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT); }
 	CSystem& GetSystem(const CPoint& ko) { return GetSystem(ko.x, ko.y); }
 	CSystem& GetSystemForSector(const CSector& s) {
