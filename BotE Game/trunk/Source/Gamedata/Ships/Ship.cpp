@@ -595,7 +595,7 @@ UINT CShip::GetCompleteOffensivePower(bool bBeams/* = true*/, bool bTorpedos/* =
 	}
 
 	// Stationen bekommen einen Bonus, da sie keine Feuerwinkel beachten
-	if (m_iShipType == SHIP_TYPE::OUTPOST || m_iShipType == SHIP_TYPE::STARBASE)
+	if (IsBase())
 	{
 		beamDmg = (UINT)(beamDmg * 1.5);
 		torpedoDmg = (UINT)(torpedoDmg * 1.5);
@@ -603,7 +603,7 @@ UINT CShip::GetCompleteOffensivePower(bool bBeams/* = true*/, bool bTorpedos/* =
 
 	// Manövrierfähigkeit geht mit in den Wert ein
 	double dMan = 1.0;
-	if (m_iShipType != SHIP_TYPE::OUTPOST && m_iShipType != SHIP_TYPE::STARBASE)
+	if (!IsBase())
 		dMan = ((int)m_byManeuverability - 4.0) / 10.0 * 1.75 + 1.0;
 
 	// Tarnung geht mit in den Wert ein
@@ -641,7 +641,7 @@ UINT CShip::GetCompleteDefensivePower(bool bShields/* = true*/, bool bHull/* = t
 
 	// Manövrierfähigkeit geht mit in den Wert ein
 	double dMan = 1.0;
-	if (m_iShipType != SHIP_TYPE::OUTPOST && m_iShipType != SHIP_TYPE::STARBASE)
+	if (!IsBase())
 		dMan = ((int)m_byManeuverability - 4.0) / 10.0 * 1.75 + 1.0;
 
 	// Tarnung geht mit in den Wert ein

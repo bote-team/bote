@@ -2254,10 +2254,7 @@ void CBotf2Doc::BuildShip(int nID, const CPoint& KO, const CString& sOwnerID)
 	m_ShipArray[n].SetKO(KO);
 
 	// Schiffsnamen vergeben
-	if (m_ShipArray.GetAt(n).GetShipType() != SHIP_TYPE::OUTPOST && m_ShipArray.GetAt(n).GetShipType() != SHIP_TYPE::STARBASE)
-		m_ShipArray.ElementAt(n).SetShipName(m_GenShipName.GenerateShipName(sOwner, FALSE));
-	else
-		m_ShipArray.ElementAt(n).SetShipName(m_GenShipName.GenerateShipName(sOwner, TRUE));
+	m_ShipArray.ElementAt(n).SetShipName(m_GenShipName.GenerateShipName(sOwner, m_ShipArray.ElementAt(n).IsBase()));
 
 	// den Rest nur machen, wenn das Schiff durch eine Majorrace gebaut wurde
 	if (pOwner->GetType() != MAJOR)
@@ -4538,7 +4535,7 @@ void CBotf2Doc::CalcShipOrders()
 			}
 
 			// Wenn es ein Au?enposten oder eine Sternbasis ist, dann dem Sektor bekanntgeben, dass in ihm keine Station mehr ist
-			if (m_ShipArray[y].GetShipType() == SHIP_TYPE::OUTPOST || m_ShipArray[y].GetShipType() == SHIP_TYPE::STARBASE)
+			if (m_ShipArray[y].IsBase())
 			{
 				pSector->SetOutpost(FALSE, m_ShipArray[y].GetOwnerOfShip());
 				pSector->SetStarbase(FALSE, m_ShipArray[y].GetOwnerOfShip());
@@ -4749,7 +4746,7 @@ void CBotf2Doc::CalcShipOrders()
 
 		// Vor der Schiffsbewegung aber nach einer möglichen Demontage dort ?berall einen ShipPort setzen wo
 		// eine Sternbasis oder ein Au?enposten steht
-		if (m_ShipArray[y].GetShipType() == SHIP_TYPE::OUTPOST || m_ShipArray[y].GetShipType() == SHIP_TYPE::STARBASE)
+		if (m_ShipArray[y].IsBase())
 		{
 			pSector->SetShipPort(TRUE, m_ShipArray[y].GetOwnerOfShip());
 		}
@@ -5280,7 +5277,7 @@ void CBotf2Doc::CalcShipCombat()
 				}
 			}
 			// Wenn es ein Außenposten oder Sternbasis war, so ein Event über dessen Verlust hinzufügen
-			if (m_ShipArray[i].GetShipType() == SHIP_TYPE::OUTPOST || m_ShipArray[i].GetShipType() == SHIP_TYPE::STARBASE)
+			if (m_ShipArray[i].IsBase())
 			{
 				CRace* pOwner = m_pRaceCtrl->GetRace(m_ShipArray[i].GetOwnerOfShip());
 				if (pOwner && pOwner->GetType() == MAJOR)
@@ -6317,7 +6314,7 @@ void CBotf2Doc::CalcAlienShipEffects()
 						continue;
 
 					// keine Außenposten und Sternenbasen
-					if (pOtherShip->GetShipType() == SHIP_TYPE::OUTPOST || pOtherShip->GetShipType() == SHIP_TYPE::STARBASE)
+					if (pOtherShip->IsBase())
 						continue;
 
 					vector<CShip*> vShips;

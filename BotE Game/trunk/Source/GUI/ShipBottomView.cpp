@@ -154,12 +154,10 @@ void CShipBottomView::OnDraw(CDC* dc)
 			if (pDoc->GetKO() != pShip->GetKO())
 				continue;
 
+			const BOOL is_base = pShip->IsBase();
 			// Wenn eine Station angezeigt werden soll, dann muss der Typ von einer Station sein
-			if (m_bShowStation && pShip->GetShipType() != SHIP_TYPE::OUTPOST && pShip->GetShipType() != SHIP_TYPE::STARBASE)
-				continue;
-
 			// Wenn keine Station angezeigt werden soll, dann darf der Typ nicht von einer Station sein
-			if (!m_bShowStation && (pShip->GetShipType() == SHIP_TYPE::OUTPOST || pShip->GetShipType() == SHIP_TYPE::STARBASE))
+			if (m_bShowStation != is_base)
 				continue;
 
 			// Schiffe mit zu guter Stealthpower werden hier nicht angezeigt.
@@ -344,8 +342,7 @@ void CShipBottomView::OnDraw(CDC* dc)
 			counter++;
 		}
 		// folgende Befehle gehen alle nur, wenn es keine Station ist
-		if (pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetShipType() != SHIP_TYPE::OUTPOST &&
-			pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetShipType() != SHIP_TYPE::STARBASE)
+		if (!pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).IsBase())
 		{
 			// gruppieren
 			if (m_iTimeCounter > (3 + counter) && m_iWhichMainShipOrderButton == 0)
@@ -794,8 +791,7 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 					// das sich das Schiff auch im gleichen Sektor befindet
 					if (pDoc->m_ShipArray[pDoc->GetNumberOfFleetShip()].GetKO() == pDoc->m_ShipArray[pDoc->GetCurrentShipIndex()].GetKO()
 						&& pDoc->m_ShipArray[pDoc->GetNumberOfFleetShip()].GetOwnerOfShip() == pDoc->m_ShipArray[pDoc->GetCurrentShipIndex()].GetOwnerOfShip()
-						&& pDoc->m_ShipArray[pDoc->GetCurrentShipIndex()].GetShipType() != SHIP_TYPE::OUTPOST
-						&& pDoc->m_ShipArray[pDoc->GetCurrentShipIndex()].GetShipType() != SHIP_TYPE::STARBASE)
+						&& !pDoc->m_ShipArray[pDoc->GetCurrentShipIndex()].IsBase())
 					{
 						// Wenn das Schiff welches wir hinzufügen wollen selbst eine Flotte besizt, so müssen
 						// wir diese Flotte natürlich auch noch hinzugügen
@@ -1169,9 +1165,11 @@ int CShipBottomView::GetMouseOverShip(CPoint& pt)
 		USHORT counter = 0;
 		USHORT row = 0;
 		USHORT column = 0;
-		for (int i = 0; i < pDoc->m_ShipArray.GetSize(); i++)
-			if ((pDoc->GetKO() == pDoc->m_ShipArray.GetAt(i).GetKO() && pDoc->m_ShipArray.GetAt(i).GetShipType() != SHIP_TYPE::OUTPOST && pDoc->m_ShipArray.GetAt(i).GetShipType() != SHIP_TYPE::STARBASE && !m_bShowStation)
-				|| (pDoc->GetKO() == pDoc->m_ShipArray.GetAt(i).GetKO() && (pDoc->m_ShipArray.GetAt(i).GetShipType() == SHIP_TYPE::OUTPOST || pDoc->m_ShipArray.GetAt(i).GetShipType() == SHIP_TYPE::STARBASE) && m_bShowStation))
+		for (int i = 0; i < pDoc->m_ShipArray.GetSize(); i++) {
+			if(pDoc->GetKO() != pDoc->m_ShipArray.GetAt(i).GetKO())
+				continue;
+			const BOOL is_base = pDoc->m_ShipArray.GetAt(i).IsBase();
+			if (m_bShowStation == is_base)
 			{
 				// Schiffe mit zu guter Stealthpower werden hier nicht angezeigt.
 				// Schiffe mit zu guter Stealthpower werden hier nicht angezeigt.
@@ -1207,6 +1205,7 @@ int CShipBottomView::GetMouseOverShip(CPoint& pt)
 				if (counter > m_iPage*9)
 					break;
 			}
+		}
 	}
 
 	// kein Schiff markiert
