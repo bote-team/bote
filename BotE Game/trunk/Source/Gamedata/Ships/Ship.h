@@ -175,7 +175,7 @@ public:
 	void CreateFleet();	// Bevor wir mit der Flotte arbeiten können muß diese erst created werden
 	void CheckFleet();	// am besten in jeder neuen Runde aufrufen, säubert die Flotte (aber nicht unbedingt notwendig)
 	void DeleteFleet();	// wie es der Name schon sagt wird hier die Flotte gelöscht
-	void AdoptOrdersFrom(const CShip& ship, const bool also_flagship_transport = false);
+	void AdoptOrdersFrom(const CShip& ship/*, const bool also_flagship_transport = false*/);
 	/*
 	 * adds ship to this ship's fleet and propagates this ship's orders to ship
 	**/

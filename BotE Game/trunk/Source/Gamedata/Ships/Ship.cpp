@@ -491,28 +491,27 @@ void CShip::DeleteFleet()
 	}
 }
 
-void CShip::AdoptOrdersFrom(const CShip& ship, const bool also_flagship_transport)
+void CShip::AdoptOrdersFrom(const CShip& ship/*, const bool also_flagship_transport*/)
 {
-	SHIP_ORDER::Typ order_to_adopt = ship.GetCurrentOrder();
+	const SHIP_ORDER::Typ order_to_adopt = ship.GetCurrentOrder();
 
-		if (order_to_adopt != SHIP_ORDER::ASSIGN_FLAGSHIP && order_to_adopt != SHIP_ORDER::TRANSPORT || also_flagship_transport)
-		{
-			SetCurrentOrder(order_to_adopt);
-		}
-		SetKO(ship.GetKO());
+	//if (order_to_adopt != SHIP_ORDER::ASSIGN_FLAGSHIP
+		//&& order_to_adopt != SHIP_ORDER::TRANSPORT || also_flagship_transport)
+	//{
+		m_iCurrentOrder = order_to_adopt;
+	//}
+	m_nCombatTactic = ship.GetCombatTactic();
 
-		const CPoint& tko = ship.GetTargetKO();
-		if (GetTargetKO() != tko)
-			SetTargetKO(tko,0,true);
-
-		//den Terraformingplaneten neu setzen
-		SetTerraformingPlanet(ship.GetTerraformingPlanet());
+	m_KO = ship.GetKO();
+	m_TargetKO[0] = ship.GetTargetKO();
+	//den Terraformingplaneten neu setzen
+	m_nTerraformingPlanet = ship.GetTerraformingPlanet();
 }
 
 void CShip::AddShipToFleet(CShip& ship)
 {
 	assert(m_Fleet);
-	ship.AdoptOrdersFrom(*this, true);
+	ship.AdoptOrdersFrom(*this);
 	m_Fleet->AddShipToFleet(&ship);
 }
 
