@@ -1148,13 +1148,13 @@ CString CShipBottomView::CreateTooltip(void)
 int CShipBottomView::GetMouseOverShip(CPoint& pt)
 {
 	// TODO: Add your message handler code here and/or call default
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	const CBotf2Doc* const pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
 
 	if (!pDoc->m_bDataReceived)
 		return -1;
 
-	CMajor* pMajor = m_pPlayersRace;
+	const CMajor* const pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
 	if (!pMajor)
 		return -1;
@@ -1166,45 +1166,48 @@ int CShipBottomView::GetMouseOverShip(CPoint& pt)
 		USHORT row = 0;
 		USHORT column = 0;
 		for (int i = 0; i < pDoc->m_ShipArray.GetSize(); i++) {
-			if(pDoc->GetKO() != pDoc->m_ShipArray.GetAt(i).GetKO())
+			const CShip* const pShip = &pDoc->m_ShipArray.GetAt(i);
+			const CPoint& active_sector = pDoc->GetKO();
+			if(active_sector != pShip->GetKO())
 				continue;
-			const BOOL is_base = pDoc->m_ShipArray.GetAt(i).IsBase();
-			if (m_bShowStation == is_base)
+			const BOOL is_base = pShip->IsBase();
+			if (m_bShowStation != is_base)
+				continue;
+			// Schiffe mit zu guter Stealthpower werden hier nicht angezeigt.
+			USHORT stealthPower = MAXBYTE;
+			const CFleet* pFleet = pShip->GetFleet();
+			if (!pFleet)
 			{
-				// Schiffe mit zu guter Stealthpower werden hier nicht angezeigt.
-				// Schiffe mit zu guter Stealthpower werden hier nicht angezeigt.
-				USHORT stealthPower = MAXBYTE;
-				if (pDoc->m_ShipArray[i].GetFleet() == NULL)
-				{
-					stealthPower = pDoc->m_ShipArray[i].GetStealthPower() * 20;
-					if (pDoc->m_ShipArray[i].GetStealthPower() > 3 && pDoc->m_ShipArray[i].GetCloak() == FALSE)
-						stealthPower = 3 * 20;
-				}
-				else
-					stealthPower = pDoc->m_ShipArray[i].GetFleet()->GetFleetStealthPower(&pDoc->m_ShipArray[i]);
-
-				if (pDoc->m_ShipArray[i].GetOwnerOfShip() != pMajor->GetRaceID() && pDoc->m_Sectors.at(pDoc->GetKO().x+(pDoc->GetKO().y)*STARMAP_SECTORS_HCOUNT).GetScanPower(pMajor->GetRaceID()) <= stealthPower)
-					continue;
-				if (counter < m_iPage*9 && counter >= (m_iPage-1)*9)
-				{
-					// mehrere Spalten anlegen, falls mehr als 3 Schiffe in dem System sind
-					if (counter != 0 && counter%3 == 0)
-					{
-						column++;
-						row = 0;
-					}
-					if (counter%9 == 0)
-						column = 0;
-					m_RectForTheShip.SetRect(column*250+37,row*65+30,column*250+187,row*65+80);
-					if (m_RectForTheShip.PtInRect(pt))
-						// Maus wurde über ein Schiff bewegt -> Nummer zurückgeben
-						return i;
-				}
-				row++;
-				counter++;
-				if (counter > m_iPage*9)
-					break;
+				stealthPower = pShip->GetStealthPower() * 20;
+				if (pShip->GetStealthPower() > 3 && pShip->GetCloak() == FALSE)
+					stealthPower = 3 * 20;
 			}
+			else
+				stealthPower = pFleet->GetFleetStealthPower(pShip);
+
+			const CString& sRaceID = pMajor->GetRaceID();
+			if (pShip->GetOwnerOfShip() != sRaceID
+				&& pDoc->GetSector(active_sector).GetScanPower(sRaceID) <= stealthPower)
+				continue;
+			if (counter < m_iPage*9 && counter >= (m_iPage-1)*9)
+			{
+				// mehrere Spalten anlegen, falls mehr als 3 Schiffe in dem System sind
+				if (counter != 0 && counter%3 == 0)
+				{
+					column++;
+					row = 0;
+				}
+				if (counter%9 == 0)
+					column = 0;
+				m_RectForTheShip.SetRect(column*250+37,row*65+30,column*250+187,row*65+80);
+				if (m_RectForTheShip.PtInRect(pt))
+					// Maus wurde über ein Schiff bewegt -> Nummer zurückgeben
+					return i;
+			}
+			row++;
+			counter++;
+			if (counter > m_iPage*9)
+				break;
 		}
 	}
 
