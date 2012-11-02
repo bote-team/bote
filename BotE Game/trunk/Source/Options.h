@@ -376,9 +376,6 @@ namespace WORKER
 }
 
 // ------------- System   ------------------------------------------------------
-#define	MAJOR				0	// Hauptrasse
-#define	MINOR				1	// kleine Rasse (keine Ausbreitung)
-
 // ------------- Handel ----------------------------------------------------
 #define TRADEROUTEHAB		20	// aller wieviel Bevölkerung gibt es eine Handelsroute
 #define NOTRIL				12	// Number of Trade Routes in List

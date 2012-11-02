@@ -45,6 +45,11 @@ public:
 
 	DECLARE_SERIAL(CRace)
 
+	enum RACE_TYPE {
+		RACE_TYPE_MAJOR				=	0,	// Hauptrasse
+		RACE_TYPE_MINOR				=	1	// kleine Rasse (keine Ausbreitung)
+	};
+
 	/// Standardkonstruktor
 	CRace(void);
 	/// Standarddestruktor
@@ -89,7 +94,13 @@ public:
 
 	/// Funktion gibt den Rassentyp zurück (MAJOR, MINOR).
 	/// @return Rassentyp
-	BYTE GetType(void) const {return m_byType;}
+	RACE_TYPE GetType(void) const {return m_RaceType;}
+	bool IsMajor() const {
+		return m_RaceType == RACE_TYPE_MAJOR;
+	}
+	bool IsMinor() const {
+		return m_RaceType == RACE_TYPE_MINOR;
+	}
 
 	/// Funktion gibt die Nummer zurück, welche auf bestimmte Schiffe gemappt werden kann.
 	/// @return Rassennummer
@@ -216,7 +227,7 @@ protected:
 	CString				m_sName;		///<!!! Rassenname
 	CString				m_sNameArticle;	///<!!! Artikel für Rassenname
 	CString				m_sDesc;		///<!!! Rassenbeschreibung
-	BYTE				m_byType;		///<!!! Rassentyp (Major, Medior, Minor)
+	RACE_TYPE			m_RaceType;		///<!!! Rassentyp (Major, Medior, Minor)
 	int					m_nProperty;	///<!!! Rasseneigenschaften
 	BYTE				m_byShipNumber;	///<!!! zugewiesene Nummer, welche Schiffe verwendet werden sollen
 	BYTE				m_byBuildingNumber;	///<!!! zugewiesene Nummer, welche Gebäude verwendet werden sollen

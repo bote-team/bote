@@ -141,7 +141,7 @@ void CEventFirstContact::Draw(Graphics* g, CGraphicPool* graphicPool) const
 		g->DrawString(CComBSTR(sProperties[i]), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(730,210 + i*30,540,30), &fontFormat, &fontBrush);
 
 	//Beziehungsbalken zeichnen
-	if (pContactedRace->GetType() == MINOR || pContactedRace->GetType() == MAJOR && ((CMajor*)pContactedRace)->IsHumanPlayer() == false)
+	if (pContactedRace->IsMinor() || pContactedRace->IsMajor() && ((CMajor*)pContactedRace)->IsHumanPlayer() == false)
 	{
 		for (int t = 0; t < 20; t++)
 		{
@@ -155,7 +155,7 @@ void CEventFirstContact::Draw(Graphics* g, CGraphicPool* graphicPool) const
 	fontBrush.SetColor(color);
 	// Technischen Fortschritt zeichnen
 	CString sProgress;
-	if (pContactedRace->GetType() == MINOR)
+	if (pContactedRace->IsMinor())
 	{
 		switch (((CMinor*)pContactedRace)->GetTechnologicalProgress())
 		{
@@ -166,7 +166,7 @@ void CEventFirstContact::Draw(Graphics* g, CGraphicPool* graphicPool) const
 		case 4: sProgress = CResourceManager::GetString("VERY_DEVELOPED");		break;
 		}
 	}
-	else if (pContactedRace->GetType() == MAJOR)
+	else if (pContactedRace->IsMajor())
 	{
 		// erforschte Techs vergleichen
 		double dOurLevel =		pMajor->GetEmpire()->GetResearch()->GetBioTech() +
@@ -216,7 +216,7 @@ void CEventFirstContact::Draw(Graphics* g, CGraphicPool* graphicPool) const
 	fontFormat.SetFormatFlags(StringFormatFlagsNoWrap);
 
 	// Spezialgebäude und -schiffe der Rasse zeichnen, sofern es sich um eine Minorrace handelt
-	if (pContactedRace->GetType() == MINOR)
+	if (pContactedRace->IsMinor())
 	{
 		fontFormat.SetFormatFlags(!StringFormatFlagsNoWrap);
 		fontFormat.SetLineAlignment(StringAlignmentNear);
@@ -282,7 +282,7 @@ CString CEventFirstContact::GetTooltip(const CPoint &pt) const
 		return sTip;
 	}
 
-	if (pContactedRace->GetType() == MINOR)
+	if (pContactedRace->IsMinor())
 	{
 		// Spezialgebäude prüfen
 		int nCount = 0;

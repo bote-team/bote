@@ -65,7 +65,7 @@ void CShipAI::CalculateShipOrders(CSectorAI* SectorAI)
 		CMajor* pOwner	= dynamic_cast<CMajor*>(m_pDoc->GetRaceCtrl()->GetRace(sOwner));
 
 		// gilt erstmal nur für Majors
-		if (!pOwner || pOwner->GetType() != MAJOR)
+		if (!pOwner || !pOwner->IsMajor())
 			continue;
 
 		// gilt nicht für menschliche Spieler

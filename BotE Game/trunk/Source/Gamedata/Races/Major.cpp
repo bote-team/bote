@@ -339,7 +339,7 @@ void CMajor::Create(const CStringArray& saInfo, int& nPos)
 	m_byBuildingNumber	= atoi(saInfo[nPos++]);			// zugewiesene Nummer, welche Gebäude verwendet werden sollen
 	m_byShipNumber		= atoi(saInfo[nPos++]);			// zugewiesene Nummer, welche Schiffe verwendet werden sollen
 	m_byMoralNumber		= atoi(saInfo[nPos++]);			// zugewiesene Nummer, welche Moralwerte verwendet werden sollen
-	m_byType			= MAJOR;						// Rassentyp (Major, Medior, Minor)
+	m_RaceType				= RACE_TYPE_MAJOR;				// Rassentyp (Major, Medior, Minor)
 	// mehrere Rasseneigenschaften sind durch Komma getrennt
 	CString sRaceProperties = saInfo[nPos++];
 	int nStart = 0;

@@ -23,8 +23,8 @@ CMajor* pPlayer;//Böser globaler Zeiger der nötig ist um große Verrenkungen wege
 /// Funktion zum Vergleichen zweier Rassen
 bool CmpRaces(const CRace* pRace1, const CRace* pRace2)
 {
-	if(pRace1->GetType()==MAJOR&&pRace2->GetType()==MINOR) return true;
-	if(pRace2->GetType()==MAJOR&&pRace1->GetType()==MINOR) return false;
+	if(pRace1->IsMajor()&&pRace2->IsMinor()) return true;
+	if(pRace2->IsMajor()&&pRace1->IsMinor()) return false;
 	return pRace1->GetRaceName() < pRace2->GetRaceName();
 }
 
@@ -298,7 +298,7 @@ void CDiplomacyMenuView::DrawDiplomacyMenue(Graphics* g)
 		if (pRace->HasSpecialAbility(SPECIAL_ALIEN_DIPLOMACY) || pPlayer->HasSpecialAbility(SPECIAL_ALIEN_DIPLOMACY))
 			bAlienDiplomacy = true;
 
-		if (pRace->GetType() == MAJOR)
+		if (pRace->IsMajor())
 		{
 			for (int i = 0; i < m_DiplomacyMajorOfferButtons.GetSize(); i++)
 			{
@@ -415,7 +415,7 @@ void CDiplomacyMenuView::DrawDiplomacyMenue(Graphics* g)
 			}
 			DrawDiplomacyButtons(g, pPlayer, &m_DiplomacyMajorOfferButtons, -1);
 		}
-		else if (pRace->GetType() == MINOR)
+		else if (pRace->IsMinor())
 		{
 			// Checken ob wir ein Angebot überhaupt machen können, z.B. wenn eine andere Hauptrasse
 			// z.B. Mitgliedschaft mit einer Minorrace hat, dann können wir ihr kein Angebot machen, außer
@@ -713,9 +713,9 @@ void CDiplomacyMenuView::DrawRaceDiplomacyMenue(Graphics* g)
 			if (nVecPos-- > 21)
 				continue;
 			CRace* pRace = *it;
-			if(m_bSortRaceList==false&&pRace->GetType()==MINOR)//Linie zwischen Minors und Majors
+			if(m_bSortRaceList==false&&pRace->IsMinor())//Linie zwischen Minors und Majors
 			{
-				if(it-m_vRaceList.begin()>0&&m_vRaceList.at(it-m_vRaceList.begin()-1)->GetType()==MAJOR) g->DrawLine(&Gdiplus::Pen(penColor), 8, 100+count*25, 150, 100+count*25);
+				if(it-m_vRaceList.begin()>0&&m_vRaceList.at(it-m_vRaceList.begin()-1)->IsMajor()) g->DrawLine(&Gdiplus::Pen(penColor), 8, 100+count*25, 150, 100+count*25);
 			}
 
 
@@ -749,7 +749,7 @@ void CDiplomacyMenuView::DrawRaceDiplomacyMenue(Graphics* g)
 					g->DrawImage(graphic, 735, 100, 300, 300);
 
 				// Balken zeichnen, der angibt, wie gut die Rasse uns gegenübersteht, aber nur wenn der Computer sie spielt
-				if (pRace->GetType() == MINOR || pRace->GetType() == MAJOR && ((CMajor*)pRace)->IsHumanPlayer() == false)
+				if (pRace->IsMinor() || pRace->IsMajor() && ((CMajor*)pRace)->IsHumanPlayer() == false)
 				{
 					for (int t = 0; t < 20; t++)
 					{
@@ -837,7 +837,7 @@ void CDiplomacyMenuView::DrawRaceDiplomacyMenue(Graphics* g)
 					g->DrawImage(graphic, 735, 100, 300, 300);
 
 				// Balken zeichnen, der angibt, wie gut die Rasse uns gegenübersteht, aber nur wenn der Computer sie spielt
-				if (pRace->GetType() == MINOR || pRace->GetType() == MAJOR && ((CMajor*)pRace)->IsHumanPlayer() == false)
+				if (pRace->IsMinor() || pRace->IsMajor() && ((CMajor*)pRace)->IsHumanPlayer() == false)
 				{
 					for (int t = 0; t < 20; t++)
 					{
@@ -1071,7 +1071,7 @@ void CDiplomacyMenuView::DrawDiplomacyInfoMenue(Graphics* g, const CString& sWhi
 	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), rect, &fontFormat, &fontBrush);
 	rect.Y += 25;
 
-	if (pRace->GetType() == MINOR)
+	if (pRace->IsMinor())
 	{
 		fontBrush.SetColor(markColor);
 		fontFormat.SetAlignment(StringAlignmentNear);
@@ -1083,7 +1083,7 @@ void CDiplomacyMenuView::DrawDiplomacyInfoMenue(Graphics* g, const CString& sWhi
 		g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), rect, &fontFormat, &fontBrush);
 	}
 	// Wenn wir einen Verteidigungpakt mit der Rasse haben (nur bei Majors)
-	else if (pRace->GetType() == MAJOR && pPlayer->GetDefencePact(sWhichRace) == true)
+	else if (pRace->IsMajor() && pPlayer->GetDefencePact(sWhichRace) == true)
 	{
 		fontBrush.SetColor(Color(226,44,250));
 		if (pPlayer->GetDefencePactDuration(sWhichRace) != 0)
@@ -1128,7 +1128,7 @@ void CDiplomacyMenuView::DrawDiplomacyInfoMenue(Graphics* g, const CString& sWhi
 
 	// Hier die ganzen Buttons in der Informationsansicht zeichnen
 	// Wenn wir einen Vertrag mit einer Minorrace haben so können wir diesen auch aufheben
-	if (pRace->GetType() == MINOR)
+	if (pRace->IsMinor())
 	{
 		// Angebote durchgehen, suchen ob wir schon eine Kündigung bei der Rasse gemacht haben
 		for (UINT i = 0; i < pPlayer->GetOutgoingDiplomacyNews()->size(); i++)
@@ -1294,7 +1294,7 @@ void CDiplomacyMenuView::DrawDiplomacyOfferMenue(Graphics* g, const CString& sWh
 				g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(195,490,355,30), &fontFormat, &fontBrush);
 
 				// Wenn wir mit der Rasse mindst. einen Handelsvertrag haben, so zeigt er die ungefähre Menge des Rohstoffes an
-				if (pRace->GetType() == MINOR)
+				if (pRace->IsMinor())
 				{
 					CMinor* pMinor = dynamic_cast<CMinor*>(pRace);
 					if (!pMinor)
@@ -1386,7 +1386,7 @@ void CDiplomacyMenuView::DrawDiplomacyOfferMenue(Graphics* g, const CString& sWh
 			}
 
 			// Wenn wir einen Vertrag einer Majorrace anbieten, dann Button für die Dauer dieses Vertrages einblenden
-			else if (pRace->GetType() == MAJOR && m_OutgoingInfo.m_nType != DIPLOMATIC_AGREEMENT::PRESENT && m_OutgoingInfo.m_nType != DIPLOMATIC_AGREEMENT::REQUEST && m_OutgoingInfo.m_nType != DIPLOMATIC_AGREEMENT::WARPACT)
+			else if (pRace->IsMajor() && m_OutgoingInfo.m_nType != DIPLOMATIC_AGREEMENT::PRESENT && m_OutgoingInfo.m_nType != DIPLOMATIC_AGREEMENT::REQUEST && m_OutgoingInfo.m_nType != DIPLOMATIC_AGREEMENT::WARPACT)
 			{
 				if (m_OutgoingInfo.m_nDuration == 0)
 					s =CResourceManager::GetString("UNLIMITED");
@@ -1471,7 +1471,7 @@ CString CDiplomacyMenuView::PrintDiplomacyStatus(const CString& sOurRace, const 
 
 	CString status;
 	// wurde die Minorrace unterworfen?
-	if (pRace->GetType() == MINOR && ((CMinor*)pRace)->GetSubjugated())
+	if (pRace->IsMinor() && ((CMinor*)pRace)->GetSubjugated())
 	{
 		status = CResourceManager::GetString("SUBJUGATED");
 		color.SetFromCOLORREF(RGB(178,0,255));
@@ -1485,7 +1485,7 @@ CString CDiplomacyMenuView::PrintDiplomacyStatus(const CString& sOurRace, const 
 		return status = CResourceManager::GetString("NONE");
 	case DIPLOMATIC_AGREEMENT::NAP:
 		{
-			if (pRace->GetType() == MAJOR && pOurRace->GetAgreementDuration(sRace) != 0)
+			if (pRace->IsMajor() && pOurRace->GetAgreementDuration(sRace) != 0)
 				status.Format("%s (%d)",CResourceManager::GetString("NON_AGGRESSION_SHORT"), pOurRace->GetAgreementDuration(sRace));
 			else
 				status = CResourceManager::GetString("NON_AGGRESSION_SHORT");
@@ -1494,7 +1494,7 @@ CString CDiplomacyMenuView::PrintDiplomacyStatus(const CString& sOurRace, const 
 		}
 	case DIPLOMATIC_AGREEMENT::TRADE:
 		{
-			if (pRace->GetType() == MAJOR && pOurRace->GetAgreementDuration(sRace) != 0)
+			if (pRace->IsMajor() && pOurRace->GetAgreementDuration(sRace) != 0)
 				status.Format("%s (%d)",CResourceManager::GetString("TRADE_AGREEMENT_SHORT"), pOurRace->GetAgreementDuration(sRace));
 			else
 				status = CResourceManager::GetString("TRADE_AGREEMENT_SHORT");
@@ -1503,7 +1503,7 @@ CString CDiplomacyMenuView::PrintDiplomacyStatus(const CString& sOurRace, const 
 		}
 	case DIPLOMATIC_AGREEMENT::FRIENDSHIP:
 		{
-			if (pRace->GetType() == MAJOR && pOurRace->GetAgreementDuration(sRace) != 0)
+			if (pRace->IsMajor() && pOurRace->GetAgreementDuration(sRace) != 0)
 				status.Format("%s (%d)",CResourceManager::GetString("FRIENDSHIP_SHORT"), pOurRace->GetAgreementDuration(sRace));
 			else
 				status = CResourceManager::GetString("FRIENDSHIP_SHORT");
@@ -1512,7 +1512,7 @@ CString CDiplomacyMenuView::PrintDiplomacyStatus(const CString& sOurRace, const 
 		}
 	case DIPLOMATIC_AGREEMENT::COOPERATION:
 		{
-			if (pRace->GetType() == MAJOR && pOurRace->GetAgreementDuration(sRace) != 0)
+			if (pRace->IsMajor() && pOurRace->GetAgreementDuration(sRace) != 0)
 				status.Format("%s (%d)",CResourceManager::GetString("COOPERATION"), pOurRace->GetAgreementDuration(sRace));
 			else
 				status = CResourceManager::GetString("COOPERATION");
@@ -1521,7 +1521,7 @@ CString CDiplomacyMenuView::PrintDiplomacyStatus(const CString& sOurRace, const 
 		}
 	case DIPLOMATIC_AGREEMENT::AFFILIATION:
 		{
-			if (pRace->GetType() == MAJOR && pOurRace->GetAgreementDuration(sRace) != 0)
+			if (pRace->IsMajor() && pOurRace->GetAgreementDuration(sRace) != 0)
 				status.Format("%s (%d)",CResourceManager::GetString("AFFILIATION"), pOurRace->GetAgreementDuration(sRace));
 			else
 				status = CResourceManager::GetString("AFFILIATION");
@@ -1756,7 +1756,7 @@ void CDiplomacyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 	{
 		CRace* pClickedRace = pDoc->GetRaceCtrl()->GetRace(m_sClickedOnRace);
 		// schauen ob bei einer Minorrace auf den Kündigungsbutton geklickt wurde
-		if (pClickedRace && pClickedRace->GetType() == MINOR && CRect(275,370,395,400).PtInRect(point) && pPlayer->GetAgreement(m_sClickedOnRace) > DIPLOMATIC_AGREEMENT::NONE)
+		if (pClickedRace && pClickedRace->IsMinor() && CRect(275,370,395,400).PtInRect(point) && pPlayer->GetAgreement(m_sClickedOnRace) > DIPLOMATIC_AGREEMENT::NONE)
 		{
 			// Kündigung hinzufügen
 			if (m_bShowSendButton == TRUE)
@@ -1802,7 +1802,7 @@ void CDiplomacyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		{
 			int nWhichOfferButtonIsPressed = INT_MIN;
 			// überprüfen, auf welchen Angebotsbutton geklickt wurde
-			if (pClickedRace->GetType() == MAJOR)
+			if (pClickedRace->IsMajor())
 			{
 				if (ButtonReactOnLeftClick(point, &m_DiplomacyMajorOfferButtons, nWhichOfferButtonIsPressed, FALSE, TRUE))
 				{
@@ -1859,7 +1859,7 @@ void CDiplomacyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 					return;
 				}
 			}
-			else if (pClickedRace->GetType() == MINOR)
+			else if (pClickedRace->IsMinor())
 			{
 				if (ButtonReactOnLeftClick(point, &m_DiplomacyMinorOfferButtons, nWhichOfferButtonIsPressed, FALSE, TRUE))
 				{
@@ -2042,7 +2042,7 @@ void CDiplomacyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 					}
 				}
 				// Wenn wir auf den kleinen Button geklickt haben um die Vertragsdauer zu ändern, geht nur bei Angebot an Majorrace
-				else if (rect.PtInRect(point) && pClickedRace->GetType() == MAJOR && m_OutgoingInfo.m_nType != DIPLOMATIC_AGREEMENT::PRESENT && m_OutgoingInfo.m_nType != DIPLOMATIC_AGREEMENT::REQUEST && m_OutgoingInfo.m_nType != DIPLOMATIC_AGREEMENT::WARPACT)
+				else if (rect.PtInRect(point) && pClickedRace->IsMajor() && m_OutgoingInfo.m_nType != DIPLOMATIC_AGREEMENT::PRESENT && m_OutgoingInfo.m_nType != DIPLOMATIC_AGREEMENT::REQUEST && m_OutgoingInfo.m_nType != DIPLOMATIC_AGREEMENT::WARPACT)
 				{
 					m_OutgoingInfo.m_nDuration += 10;
 					if (m_OutgoingInfo.m_nDuration > 100)
@@ -2060,7 +2060,7 @@ void CDiplomacyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 					for (UINT i = 0; i < m_vRaceList.size(); i++)
 					{
 						// die Bedingungen müssen erfüllt sein
-						if (m_vRaceList[i]->GetType() == MAJOR && m_sClickedOnRace != m_vRaceList[i]->GetRaceID() && pClickedRace->IsRaceContacted(m_vRaceList[i]->GetRaceID()) == true && pClickedRace->GetAgreement(m_vRaceList[i]->GetRaceID()) != DIPLOMATIC_AGREEMENT::WAR)
+						if (m_vRaceList[i]->IsMajor() && m_sClickedOnRace != m_vRaceList[i]->GetRaceID() && pClickedRace->IsRaceContacted(m_vRaceList[i]->GetRaceID()) == true && pClickedRace->GetAgreement(m_vRaceList[i]->GetRaceID()) != DIPLOMATIC_AGREEMENT::WAR)
 							vEnemies.push_back(m_vRaceList[i]);
 					}
 					// gibt es zulässige Kriegspaktgegner
@@ -2181,9 +2181,9 @@ void CDiplomacyMenuView::OnMouseMove(UINT nFlags, CPoint point)
 			CRace* pRace = pDoc->GetRaceCtrl()->GetRace(m_sClickedOnRace);
 			if (pRace)
 			{
-				if (pRace->GetType() == MAJOR)
+				if (pRace->IsMajor())
 					ButtonReactOnMouseOver(point, &m_DiplomacyMajorOfferButtons);
-				else if (pRace->GetType() == MINOR)
+				else if (pRace->IsMinor())
 					ButtonReactOnMouseOver(point, &m_DiplomacyMinorOfferButtons);
 			}
 		}
@@ -2506,7 +2506,7 @@ void CDiplomacyMenuView::OnRButtonDown(UINT nFlags, CPoint point)
 
 				// Wenn wir auf den kleinen Button geklickt haben um die Vertragsdauer zu ändern, geht nur bei Angebot an Majorrace
 				rect.SetRect(510,438,630,468);
-				if (rect.PtInRect(point) && pClickedRace->GetType() == MAJOR && m_OutgoingInfo.m_nType != DIPLOMATIC_AGREEMENT::PRESENT && m_OutgoingInfo.m_nType != DIPLOMATIC_AGREEMENT::REQUEST && m_OutgoingInfo.m_nType != DIPLOMATIC_AGREEMENT::WARPACT)
+				if (rect.PtInRect(point) && pClickedRace->IsMajor() && m_OutgoingInfo.m_nType != DIPLOMATIC_AGREEMENT::PRESENT && m_OutgoingInfo.m_nType != DIPLOMATIC_AGREEMENT::REQUEST && m_OutgoingInfo.m_nType != DIPLOMATIC_AGREEMENT::WARPACT)
 				{
 					m_OutgoingInfo.m_nDuration -= 10;
 					if (m_OutgoingInfo.m_nDuration < 0)

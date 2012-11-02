@@ -638,7 +638,7 @@ bool CCombat::CheckDiplomacyStatus(const CRace* raceA, const CRace* raceB)
 		|| raceA->GetAgreement(raceB->GetRaceID()) == DIPLOMATIC_AGREEMENT::TRADE
 		|| raceA->GetAgreement(raceB->GetRaceID()) == DIPLOMATIC_AGREEMENT::WAR)
 	{
-		if (raceA->GetType() == MAJOR && raceB->GetType() == MAJOR)
+		if (raceA->IsMajor() && raceB->IsMajor())
 		{
 			if (((CMajor*)raceA)->GetDefencePact(raceB->GetRaceID()) == FALSE)
 				return TRUE;

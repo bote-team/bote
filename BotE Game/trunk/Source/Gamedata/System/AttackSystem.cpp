@@ -67,7 +67,7 @@ BOOLEAN CAttackSystem::Calculate()
 	USHORT killedTroopsInSystem = m_pSystem->GetTroops()->GetSize();
 
 	int shipDefence = 0;
-	if (m_pSystem->GetOwnerOfSystem() != "" && m_pDefender != NULL && m_pDefender->GetType() == MAJOR)
+	if (m_pSystem->GetOwnerOfSystem() != "" && m_pDefender != NULL && m_pDefender->IsMajor())
 		shipDefence = m_pSystem->GetProduction()->GetShipDefend();
 
 	// Zuerst wird die Schiffsabwehr des Systems beachtet. Dadurch können schon einige Schiffe zerstört werden.
@@ -179,7 +179,7 @@ void CAttackSystem::CalculateShipDefence()
 	MYTRACE("general")(MT::LEVEL_INFO, "CAttackSystem::CalculateShipDefence() begin...\n");
 	int defence = 0;
 	USHORT killedShips = 0;
-	if (m_pSystem->GetOwnerOfSystem() != "" && m_pDefender != NULL && m_pDefender->GetType() == MAJOR)
+	if (m_pSystem->GetOwnerOfSystem() != "" && m_pDefender != NULL && m_pDefender->IsMajor())
 		defence = m_pSystem->GetProduction()->GetShipDefend();
 	// einfacher Algorithmus:
 	//		Der Defencewert wird durch die Anzahl der angreifenden Schiffe geteilt. Dann wird der Anzahl der
@@ -288,7 +288,7 @@ void CAttackSystem::CalculateBombAttack()
 		// Wenn der Torpedoangriff Gebäude zerstört hat, dann dies bei dem System beachten. Deshalb werden die Werte des
 		// Systems neu berechnet. Speziel muss man hier die Gebäude beachten, die durch einen Energiemangel hätten ausfallen
 		// können. Diese auch offline schalten und dann die Sache nochmal berechnen.
-		if (m_pSystem->GetOwnerOfSystem() != "" && m_pDefender != NULL && m_pDefender->GetType() == MAJOR)
+		if (m_pSystem->GetOwnerOfSystem() != "" && m_pDefender != NULL && m_pDefender->IsMajor())
 		{
 			CMajor* pMajor = dynamic_cast<CMajor*>(m_pDefender);
 			CResearchInfo* pInfo = pMajor->GetEmpire()->GetResearch()->GetResearchInfo();
@@ -426,7 +426,7 @@ void CAttackSystem::CalculateTroopAttack()
 	if (fighted)
 	{
 		m_pSystem->SetHabitants(m_pSector->GetCurrentHabitants());
-		if (m_pSystem->GetOwnerOfSystem() != "" && m_pDefender != NULL && m_pDefender->GetType() == MAJOR)
+		if (m_pSystem->GetOwnerOfSystem() != "" && m_pDefender != NULL && m_pDefender->IsMajor())
 		{
 			CMajor* pMajor = dynamic_cast<CMajor*>(m_pDefender);
 			CResearchInfo* pInfo = pMajor->GetEmpire()->GetResearch()->GetResearchInfo();

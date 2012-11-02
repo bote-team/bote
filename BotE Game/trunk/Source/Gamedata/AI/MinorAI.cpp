@@ -39,7 +39,7 @@ ANSWER_STATUS::Typ CMinorAI::ReactOnOffer(const CDiplomacyInfo& info)
 	if (!pFromRace)
 		return ANSWER_STATUS::DECLINED;
 
-	if (pFromRace->GetType() == MAJOR)
+	if (pFromRace->IsMajor())
 	{
 		CMinor* pMinor = dynamic_cast<CMinor*>(m_pRace);
 		ASSERT(pMinor);
@@ -214,7 +214,7 @@ bool CMinorAI::MakeOffer(CString& sRaceID, CDiplomacyInfo& info)
 	if (!pRace)
 		return false;
 
-	if (pRace->GetType() == MAJOR)
+	if (pRace->IsMajor())
 	{
 		CMinor* pMinor = dynamic_cast<CMinor*>(m_pRace);
 		if (!pMinor)

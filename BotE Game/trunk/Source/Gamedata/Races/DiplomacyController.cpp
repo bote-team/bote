@@ -63,11 +63,11 @@ void CDiplomacyController::Send(void)
 			{
 				CRace* pToRace = (*races)[pInfo->m_sToRace];
 				// Angebote senden
-				if (pToRace->GetType() == MAJOR)
+				if (pToRace->IsMajor())
 				{
 					SendToMajor(pDoc, dynamic_cast<CMajor*>(pToRace), pInfo);
 				}
-				else if (pToRace->GetType() == MINOR)
+				else if (pToRace->IsMinor())
 				{
 					SendToMinor(pDoc, dynamic_cast<CMinor*>(pToRace), pInfo);
 				}
@@ -102,11 +102,11 @@ void CDiplomacyController::Receive(void)
 			if (races->find(pInfo->m_sFromRace) != races->end())
 			{
 				CRace* pToRace = (*races)[pInfo->m_sToRace];
-				if (pToRace->GetType() == MAJOR)
+				if (pToRace->IsMajor())
 				{
 					ReceiveToMajor(pDoc, dynamic_cast<CMajor*>(pToRace), pInfo);
 				}
-				else if (pToRace->GetType() == MINOR)
+				else if (pToRace->IsMinor())
 				{
 					ReceiveToMinor(pDoc, dynamic_cast<CMinor*>(pToRace), pInfo);
 				}
@@ -248,7 +248,7 @@ void CDiplomacyController::SendToMajor(CBotf2Doc* pDoc, CMajor* pToMajor, CDiplo
 	// Imperiumsnamen mit bestimmten Artikel holen
 	CString sEmpireAssignedArticleName = pToMajor->GetEmpireNameWithAssignedArticle();
 	CString sEmpireArticleName = "";
-	if (pFromRace->GetType() == MAJOR)
+	if (pFromRace->IsMajor())
 	{
 		// Imperiumsnamen inkl. Artikel holen
 		sEmpireArticleName = dynamic_cast<CMajor*>(pFromRace)->GetEmpireNameWithArticle();
@@ -278,7 +278,7 @@ void CDiplomacyController::SendToMajor(CBotf2Doc* pDoc, CMajor* pToMajor, CDiplo
 	{
 		if (pInfo->m_nType == DIPLOMATIC_AGREEMENT::PRESENT)
 		{
-			if (pFromRace->GetType() == MAJOR)
+			if (pFromRace->IsMajor())
 			{
 				CString s = CResourceManager::GetString("WE_GIVE_PRESENT", FALSE, sEmpireAssignedArticleName);
 				message.GenerateMessage(s, MESSAGE_TYPE::DIPLOMACY, "", 0, 0);
@@ -309,7 +309,7 @@ void CDiplomacyController::SendToMajor(CBotf2Doc* pDoc, CMajor* pToMajor, CDiplo
 		// handelt es sich um eine Forderung
 		else if (pInfo->m_nType == DIPLOMATIC_AGREEMENT::REQUEST)
 		{
-			if (pFromRace->GetType() == MAJOR)
+			if (pFromRace->IsMajor())
 			{
 				CString s = CResourceManager::GetString("WE_HAVE_REQUEST", FALSE, sEmpireAssignedArticleName, sAgreement);
 				message.GenerateMessage(s, MESSAGE_TYPE::DIPLOMACY, "", 0, 0);
@@ -331,7 +331,7 @@ void CDiplomacyController::SendToMajor(CBotf2Doc* pDoc, CMajor* pToMajor, CDiplo
 
 			// aufgrund diplomatischer Beziehungen könnte so weiter Krieg erklärt werden
 			std::vector<CString> vEnemies;
-			if (pFromRace->GetType() == MAJOR)
+			if (pFromRace->IsMajor())
 				vEnemies = GetEnemiesFromContract(pDoc, dynamic_cast<CMajor*>(pFromRace), pToMajor);
 			// allen weiteren Gegnern den Krieg erklären
 			for (UINT i = 0; i < vEnemies.size(); i++)
@@ -351,7 +351,7 @@ void CDiplomacyController::SendToMajor(CBotf2Doc* pDoc, CMajor* pToMajor, CDiplo
 		else
 		{
 			// das Angebot stammt von einem Major
-			if (pFromRace->GetType() == MAJOR)
+			if (pFromRace->IsMajor())
 			{
 				CString s = CResourceManager::GetString("WE_MAKE_MAJ_OFFER", FALSE, sEmpireAssignedArticleName, sAgreement);
 				message.GenerateMessage(s, MESSAGE_TYPE::DIPLOMACY, "", 0, 0);
@@ -362,7 +362,7 @@ void CDiplomacyController::SendToMajor(CBotf2Doc* pDoc, CMajor* pToMajor, CDiplo
 				pToMajor->GetEmpire()->AddMessage(message);
 			}
 			// das Angebot stammt von einem Minor
-			else if (pFromRace->GetType() == MINOR)
+			else if (pFromRace->IsMinor())
 			{
 				CString s = "";
 				switch (pInfo->m_nType)
@@ -438,7 +438,7 @@ void CDiplomacyController::ReceiveToMajor(CBotf2Doc* pDoc, CMajor* pToMajor, CDi
 			CGenDiploMessage::GenerateMajorAnswer(answer);
 
 			// Die Antwort geht an einen Major
-			if (pFromRace->GetType() == MAJOR)
+			if (pFromRace->IsMajor())
 			{
 				CMajor* pFromMajor = dynamic_cast<CMajor*>(pFromRace);
 				assert(pFromMajor);
@@ -797,7 +797,7 @@ void CDiplomacyController::ReceiveToMajor(CBotf2Doc* pDoc, CMajor* pToMajor, CDi
 				}
 			}
 			// die Antwort geht an einen Minor
-			else if (pFromRace->GetType() == MINOR)
+			else if (pFromRace->IsMinor())
 			{
 				// wir haben das Angebot der Minor angenommen
 				if (pInfo->m_nAnswerStatus == ANSWER_STATUS::ACCEPTED)
@@ -1163,7 +1163,7 @@ std::vector<CString> CDiplomacyController::GetEnemiesFromContract(CBotf2Doc* pDo
 		if (it->first != pToRace->GetRaceID())
 		{
 			// hat die Rasse mit der anderen Rasse ein Bündnis oder einen Verteidigungspakt
-			if (pToRace->GetAgreement(it->first) >= DIPLOMATIC_AGREEMENT::AFFILIATION || (pToRace->GetType() == MAJOR && dynamic_cast<CMajor*>(pToRace)->GetDefencePact(it->first)))
+			if (pToRace->GetAgreement(it->first) >= DIPLOMATIC_AGREEMENT::AFFILIATION || (pToRace->IsMajor() && dynamic_cast<CMajor*>(pToRace)->GetDefencePact(it->first)))
 			{
 				// haben wir nicht schon Krieg mit dem anderen Major
 				if (pFromMajor->GetAgreement(it->first) != DIPLOMATIC_AGREEMENT::WAR)
@@ -1192,13 +1192,13 @@ void CDiplomacyController::DeclareWar(CRace* pFromRace, CRace* pEnemy, CDiplomac
 	CString s;
 	CMessage message;
 
-	if (pFromRace->GetType() == MAJOR)
+	if (pFromRace->IsMajor())
 	{
 		CMajor* pFromMajor = dynamic_cast<CMajor*>(pFromRace);
 		assert(pFromMajor);
-		if (pEnemy->GetType() == MAJOR)
+		if (pEnemy->IsMajor())
 			s = CResourceManager::GetString("WE_DECLARE_WAR", FALSE, dynamic_cast<CMajor*>(pEnemy)->GetEmpireNameWithAssignedArticle());
-		else if (pEnemy->GetType() == MINOR)
+		else if (pEnemy->IsMinor())
 			s = CResourceManager::GetString("WE_DECLARE_WAR_TO_MIN", FALSE, pEnemy->GetRaceName());
 
 		message.GenerateMessage(s, MESSAGE_TYPE::DIPLOMACY, "", 0, 0);
@@ -1210,12 +1210,12 @@ void CDiplomacyController::DeclareWar(CRace* pFromRace, CRace* pEnemy, CDiplomac
 			CString sEventText = "";
 			short nAgreement = pFromRace->GetAgreement(pEnemy->GetRaceID());
 			CString sParam = CResourceManager::GetString("FEMALE_ARTICLE") + " " + pEnemy->GetRaceName();
-			if (pEnemy->GetType() == MAJOR)
+			if (pEnemy->IsMajor())
 				sParam = dynamic_cast<CMajor*>(pEnemy)->GetEmpireNameWithArticle();
 
 			// Declare War on an Empire with Defense Pact #28 (nur, wenn wir einen Vertrag kleiner als den der
 			// Kooperation haben und dazu auch noch einen Verteidigungspakt)
-			if (pEnemy->GetType() == MAJOR && nAgreement < DIPLOMATIC_AGREEMENT::COOPERATION && pFromMajor->GetDefencePact(pEnemy->GetRaceID()) == true)
+			if (pEnemy->IsMajor() && nAgreement < DIPLOMATIC_AGREEMENT::COOPERATION && pFromMajor->GetDefencePact(pEnemy->GetRaceID()) == true)
 				sEventText = pFromMajor->GetMoralObserver()->AddEvent(28, pFromMajor->GetRaceMoralNumber(), sParam);
 			// Declare War on an Empire when Neutral #24
 			else if (nAgreement == DIPLOMATIC_AGREEMENT::NONE)
@@ -1243,7 +1243,7 @@ void CDiplomacyController::DeclareWar(CRace* pFromRace, CRace* pEnemy, CDiplomac
 			}
 		}
 
-		if (pEnemy->GetType() == MAJOR)
+		if (pEnemy->IsMajor())
 		{
 			CMajor* pEnemyMajor = dynamic_cast<CMajor*>(pEnemy);
 			// Antwort auf Kriegserklärung erstellen
@@ -1283,7 +1283,7 @@ void CDiplomacyController::DeclareWar(CRace* pFromRace, CRace* pEnemy, CDiplomac
 				pEnemyMajor->GetEmpire()->AddMessage(message);
 			}
 		}
-		else if (pEnemy->GetType() == MINOR)
+		else if (pEnemy->IsMinor())
 		{
 			// Antwort auf Kriegserklärung erstellen
 			CDiplomacyInfo answer = *pInfo;
@@ -1291,7 +1291,7 @@ void CDiplomacyController::DeclareWar(CRace* pFromRace, CRace* pEnemy, CDiplomac
 			pFromMajor->GetIncomingDiplomacyNews()->push_back(answer);
 		}
 	}
-	else if (pFromRace->GetType() == MINOR)
+	else if (pFromRace->IsMinor())
 	{
 		s = CResourceManager::GetString("MIN_OFFER_WAR", FALSE, pFromRace->GetRaceName());
 		message.GenerateMessage(s, MESSAGE_TYPE::DIPLOMACY, "", 0, 0, 2);
@@ -1300,13 +1300,13 @@ void CDiplomacyController::DeclareWar(CRace* pFromRace, CRace* pEnemy, CDiplomac
 	}
 
 	// Moral für den, dem Krieg erklärt wurde (braucht nur bei Majors gemacht werden)
-	if (pEnemy->GetType() == MAJOR)
+	if (pEnemy->IsMajor())
 	{
 		CMajor* pEnemyMajor = dynamic_cast<CMajor*>(pEnemy);
 		assert(pEnemyMajor);
 		// zusätzliche Eventnachricht wegen der Moral an das Imperium
 		CString sParam = CResourceManager::GetString("FEMALE_ARTICLE") + " " + pFromRace->GetRaceName();
-		if (pFromRace->GetType() == MAJOR)
+		if (pFromRace->IsMajor())
 			sParam = dynamic_cast<CMajor*>(pFromRace)->GetEmpireNameWithArticle();
 		CString sEventText = "";
 		short nAgreement = pFromRace->GetAgreement(pEnemy->GetRaceID());

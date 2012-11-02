@@ -40,11 +40,11 @@ ANSWER_STATUS::Typ CMajorAI::ReactOnOffer(const CDiplomacyInfo& info)
 	if (!pFromRace)
 		return ANSWER_STATUS::NOT_REACTED;
 
-	if (pFromRace->GetType() == MAJOR)
+	if (pFromRace->IsMajor())
 	{
 		return ReactOnMajorOffer(info);
 	}
-	else if (pFromRace->GetType() == MINOR)
+	else if (pFromRace->IsMinor())
 	{
 		return ReactOnMinorOffer(info);
 	}
@@ -65,11 +65,11 @@ bool CMajorAI::MakeOffer(CString& sRaceID, CDiplomacyInfo& info)
 	if (!pRace)
 		return false;
 
-	if (pRace->GetType() == MAJOR)
+	if (pRace->IsMajor())
 	{
 		return MakeMajorOffer(sRaceID, info);
 	}
-	else if (pRace->GetType() == MINOR)
+	else if (pRace->IsMinor())
 	{
 		return MakeMinorOffer(sRaceID, info);
 	}
@@ -1210,7 +1210,7 @@ bool CMajorAI::GiveDowry(CDiplomacyInfo& info)
 		nCredits /= counter;
 
 			// geht es an eine Minorrace, dann braucht es nicht so viel Geld übrig zu haben
-	if ((pToRace->GetType() == MINOR && pOurRace->GetEmpire()->GetCredits() > 3000 && rand()%3 == 0)
+	if ((pToRace->IsMinor() && pOurRace->GetEmpire()->GetCredits() > 3000 && rand()%3 == 0)
 		||	// oder an eine Majorrace, da braucht es viel mehr Geld
 		((pOurRace->GetEmpire()->GetCredits() >= (long)(nCredits * 1.2f) && pOurRace->GetEmpire()->GetCredits() > 1000)
 		||	// bzw. wir haben sehr viel Geld übrig

@@ -86,7 +86,7 @@ void CSectorAI::CalcualteSectorPriorities()
 		}
 
 	for (map<CString, CRace*>::const_iterator it = mRaces->begin(); it != mRaces->end(); ++it)
-		if (it->second->GetType() == MAJOR)
+		if (it->second->IsMajor())
 		{
 			// Feld der am ehesten zu terraformenden Systeme der Größe nach Sortieren. Der höchste Eintrag steht an erster Stelle.
 			std::sort(m_vSectorsToTerraform[it->first].begin(), m_vSectorsToTerraform[it->first].end());
@@ -184,7 +184,7 @@ void CSectorAI::CalculateMinorraceSectors(int x, int y)
 		return;
 
 	CRace* pOwner	= m_pDoc->GetRaceCtrl()->GetRace(sOwner);
-	if (!pOwner || pOwner->GetType() != MINOR)
+	if (!pOwner || !pOwner->IsMinor())
 		return;
 
 	CMinor* pMinor = dynamic_cast<CMinor*>(pOwner);
@@ -260,7 +260,7 @@ void CSectorAI::CalculateBombardTargets(const CString& sRaceID, int x, int y)
 		return;
 	CRace* pOwner	= m_pDoc->GetRaceCtrl()->GetRace(sOwner);
 	// wenn das System nicht einem anderen Major gehört
-	if (!pOwner || pOwner->GetType() != MAJOR)
+	if (!pOwner || !pOwner->IsMajor())
 		return;
 
 	// gehört das System einer anderen Majorrace, außer uns selbst?

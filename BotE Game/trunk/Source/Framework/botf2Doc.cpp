@@ -988,7 +988,7 @@ void CBotf2Doc::PrepareData()
 			map<CString, CRace*>* pmRaces = m_pRaceCtrl->GetRaces();
 			for (map<CString, CRace*>::iterator it = pmRaces->begin(); it != pmRaces->end(); ++it)
 				for (map<CString, CRace*>::const_iterator jt = pmRaces->begin(); jt != pmRaces->end(); ++jt)
-					if (it->first != jt->first && it->second->GetType() == MAJOR && jt->second->GetType() == MAJOR)
+					if (it->first != jt->first && it->second->IsMajor() && jt->second->IsMajor())
 						it->second->SetIsRaceContacted(jt->first, true);
 		}
 
@@ -2246,7 +2246,7 @@ void CBotf2Doc::BuildShip(int nID, const CPoint& KO, const CString& sOwnerID)
 	m_ShipArray.ElementAt(n).SetShipName(m_GenShipName.GenerateShipName(sOwner, m_ShipArray.ElementAt(n).IsStation()));
 
 	// den Rest nur machen, wenn das Schiff durch eine Majorrace gebaut wurde
-	if (pOwner->GetType() != MAJOR)
+	if (!pOwner->IsMajor())
 		return;
 
 	CMajor* pMajor = dynamic_cast<CMajor*>(pOwner);
@@ -2628,7 +2628,7 @@ void CBotf2Doc::CalcSystemAttack()
 					if (m_ShipArray.GetAt(i).GetKO() == p && m_ShipArray.GetAt(i).GetCurrentOrder() == SHIP_ORDER::ATTACK_SYSTEM)
 					{
 						CString sOwner = m_ShipArray.GetAt(i).GetOwnerOfShip();
-						if (!sOwner.IsEmpty() && m_pRaceCtrl->GetRace(sOwner)->GetType() == MAJOR)
+						if (!sOwner.IsEmpty() && m_pRaceCtrl->GetRace(sOwner)->IsMajor())
 							attackers.insert(sOwner);
 					}
 
@@ -2638,12 +2638,12 @@ void CBotf2Doc::CalcSystemAttack()
 				if (!sDefender.IsEmpty())
 					defender = m_pRaceCtrl->GetRace(sDefender);
 				// Wenn eine Minorrace in dem System lebt und dieser nicht schon erobert wurde
-				if (defender && defender->GetType() == MINOR && m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetTakenSector() == FALSE)
+				if (defender && defender->IsMinor() && m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetTakenSector() == FALSE)
 				{
 					attackSystem->Init(defender, &m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT), &m_ShipArray, &m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT), &this->BuildingInfo, CTrade::GetMonopolOwner());
 				}
 				// Wenn eine Majorrace in dem System lebt
-				else if (defender && defender->GetType() == MAJOR && attackSystem->IsDefenderNotAttacker(sDefender, &attackers))
+				else if (defender && defender->IsMajor() && attackSystem->IsDefenderNotAttacker(sDefender, &attackers))
 				{
 					attackSystem->Init(defender, &m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT), &m_ShipArray, &m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT), &this->BuildingInfo, CTrade::GetMonopolOwner());
 				}
@@ -2674,7 +2674,7 @@ void CBotf2Doc::CalcSystemAttack()
 					// Wenn in dem System eine Minorrace beheimatet ist und das System nicht vorher schon von jemand
 					// anderem militärisch erobert wurde oder die Minorace bei einem anderen Imperium schon vermitgliedelt
 					// wurde, dann muss diese zuerst die Gebäude bauen
-					if (m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetMinorRace() == TRUE && m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetTakenSector() == FALSE && defender != NULL && defender->GetType() == MINOR)
+					if (m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetMinorRace() == TRUE && m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetTakenSector() == FALSE && defender != NULL && defender->IsMinor())
 					{
 						CMinor* pMinor = dynamic_cast<CMinor*>(defender);
 						ASSERT(pMinor);
@@ -2742,7 +2742,7 @@ void CBotf2Doc::CalcSystemAttack()
 						}
 					}
 					// Wenn das System einer Minorrace gehört, eingenommen wurde und somit befreit wird
-					else if (m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetMinorRace() == TRUE && m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetTakenSector() == TRUE && defender != NULL && defender->GetType() == MAJOR)
+					else if (m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetMinorRace() == TRUE && m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetTakenSector() == TRUE && defender != NULL && defender->IsMajor())
 					{
 						// Die Beziehung zur der Majorrace, die das System vorher besaß verschlechtert sich
 						defender->SetRelation(attacker, -rand()%50);
@@ -2818,7 +2818,7 @@ void CBotf2Doc::CalcSystemAttack()
 									m_iSelectedView[client] = EMPIRE_VIEW;
 								}
 							}
-							if (defender != NULL && defender->GetRaceID() != attacker && defender->GetType() == MAJOR)
+							if (defender != NULL && defender->GetRaceID() != attacker && defender->IsMajor())
 							{
 								CMajor* pDefenderMajor = dynamic_cast<CMajor*>(defender);
 								// Eventnachricht an den, der das System verloren hat (unser erobertes System verloren)
@@ -2840,7 +2840,7 @@ void CBotf2Doc::CalcSystemAttack()
 							m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetMoral(rand()%25+10);
 						}
 						// Handelte es sich dabei um das Heimatsystem einer Rasse
-						else if (defender != NULL && defender->GetType() == MAJOR && m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSector() == defender->GetRaceID() && m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetName() == dynamic_cast<CMajor*>(defender)->GetHomesystemName())
+						else if (defender != NULL && defender->IsMajor() && m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSector() == defender->GetRaceID() && m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetName() == dynamic_cast<CMajor*>(defender)->GetHomesystemName())
 						{
 							CMajor* pDefenderMajor = dynamic_cast<CMajor*>(defender);
 							// Eventnachricht an den ehemaligen Heimatsystembesitzer (Heimatsystem verloren)
@@ -2944,7 +2944,7 @@ void CBotf2Doc::CalcSystemAttack()
 							//We later were dereferencing defender anyway; after casting to CMajor.
 							//Not sure whether defender should be allowed to be NULL here.
 							assert(defender);
-							if (defender->GetRaceID() != attacker && defender->GetType() == MAJOR) {
+							if (defender->GetRaceID() != attacker && defender->IsMajor()) {
 								CMajor* pDefenderMajor = dynamic_cast<CMajor*>(defender);
 								eventText = pDefenderMajor->GetMoralObserver()->AddEvent(16, pDefenderMajor->GetRaceMoralNumber(), param);
 							}
@@ -2954,7 +2954,7 @@ void CBotf2Doc::CalcSystemAttack()
 								CMessage message;
 								message.GenerateMessage(eventText, MESSAGE_TYPE::MILITARY, param, p, 0);
 								//defender seems to be of type MAJOR here for sure ?
-								assert(defender->GetType() == MAJOR);
+								assert(defender->IsMajor());
 								CMajor* pDefenderMajor = dynamic_cast<CMajor*>(defender);
 								assert(pDefenderMajor);
 								pDefenderMajor->GetEmpire()->AddMessage(message);
@@ -2991,7 +2991,7 @@ void CBotf2Doc::CalcSystemAttack()
 
 					// war der Verteidiger eine Majorrace und wurde sie durch die Eroberung komplett ausgelöscht,
 					// so bekommt der Eroberer einen kräftigen Moralschub
-					if (defender != NULL && defender->GetType() == MAJOR && !attacker.IsEmpty() && pMajor && attackSystem->IsDefenderNotAttacker(sDefender, &attackers))
+					if (defender != NULL && defender->IsMajor() && !attacker.IsEmpty() && pMajor && attackSystem->IsDefenderNotAttacker(sDefender, &attackers))
 					{
 						CMajor* pDefenderMajor = dynamic_cast<CMajor*>(defender);
 						// Anzahl der noch verbleibenden Systeme berechnen
@@ -3021,7 +3021,7 @@ void CBotf2Doc::CalcSystemAttack()
 						pMajor->GetEmpire()->GetEventMessages()->Add(new CEventBombardment(attacker, "InvasionSuccess", CResourceManager::GetString("INVASIONSUCCESSEVENT_HEADLINE", FALSE, m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetName()), CResourceManager::GetString("INVASIONSUCCESSEVENT_TEXT_" + pMajor->GetRaceID(), FALSE, m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetName())));
 
 					// Invasionsevent für den Verteidiger einfügen
-					if (defender != NULL && defender->GetType() == MAJOR && dynamic_cast<CMajor*>(defender)->IsHumanPlayer() && attackSystem->IsDefenderNotAttacker(sDefender, &attackers))
+					if (defender != NULL && defender->IsMajor() && dynamic_cast<CMajor*>(defender)->IsHumanPlayer() && attackSystem->IsDefenderNotAttacker(sDefender, &attackers))
 						dynamic_cast<CMajor*>(defender)->GetEmpire()->GetEventMessages()->Add(new CEventBombardment(sDefender, "InvasionSuccess", CResourceManager::GetString("INVASIONSUCCESSEVENT_HEADLINE", FALSE, m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetName()), CResourceManager::GetString("INVASIONSUCCESSEVENT_TEXT_" + defender->GetRaceID(), FALSE, m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetName())));
 				}
 				// Wurde nur bombardiert, nicht erobert
@@ -3108,7 +3108,7 @@ void CBotf2Doc::CalcSystemAttack()
 						}
 						// Bei einer Majorrace verringert sich nur die Anzahl der Systeme (auch konnte dies das
 						// Minorracesystem von oben gewesen sein, hier verliert es aber die betroffene Majorrace)
-						if (defender != NULL && defender->GetType() == MAJOR && attackSystem->IsDefenderNotAttacker(defender->GetRaceID(), &attackers))
+						if (defender != NULL && defender->IsMajor() && attackSystem->IsDefenderNotAttacker(defender->GetRaceID(), &attackers))
 						{
 							CMajor* pDefenderMajor = dynamic_cast<CMajor*>(defender);
 							eventText = "";
@@ -3144,7 +3144,7 @@ void CBotf2Doc::CalcSystemAttack()
 
 						// war der Verteidiger eine Majorrace und wurde sie durch den Verlust des Systems komplett ausgelöscht,
 						// so bekommt der Eroberer einen kräftigen Moralschub
-						if (defender != NULL && defender->GetType() == MAJOR && attackSystem->IsDefenderNotAttacker(defender->GetRaceID(), &attackers))
+						if (defender != NULL && defender->IsMajor() && attackSystem->IsDefenderNotAttacker(defender->GetRaceID(), &attackers))
 						{
 							CMajor* pDefenderMajor = dynamic_cast<CMajor*>(defender);
 							for (set<CString>::const_iterator it = attackers.begin(); it != attackers.end(); ++it)
@@ -3207,7 +3207,7 @@ void CBotf2Doc::CalcSystemAttack()
 								}
 							}
 							// Eventnachricht über Bombardierung für Verteidiger erstellen und hinzufügen
-							if (defender != NULL && defender->GetType() == MAJOR && attackSystem->IsDefenderNotAttacker(defender->GetRaceID(), &attackers))
+							if (defender != NULL && defender->IsMajor() && attackSystem->IsDefenderNotAttacker(defender->GetRaceID(), &attackers))
 							{
 								CMajor* pDefenderMajor = dynamic_cast<CMajor*>(defender);
 								eventText = pDefenderMajor->GetMoralObserver()->AddEvent(22, pDefenderMajor->GetRaceMoralNumber(), param);
@@ -3238,7 +3238,7 @@ void CBotf2Doc::CalcSystemAttack()
 
 					}
 					// für den Verteidiger
-					if (defender != NULL && defender->GetType() == MAJOR && attackSystem->IsDefenderNotAttacker(defender->GetRaceID(), &attackers))
+					if (defender != NULL && defender->IsMajor() && attackSystem->IsDefenderNotAttacker(defender->GetRaceID(), &attackers))
 					{
 						CMajor* pDefenderMajor = dynamic_cast<CMajor*>(defender);
 						if (pDefenderMajor->IsHumanPlayer())
@@ -3270,7 +3270,7 @@ void CBotf2Doc::CalcSystemAttack()
 							m_iSelectedView[client] = EMPIRE_VIEW;
 						}
 					}
-					if (defender != NULL && defender->GetType() == MAJOR && attackSystem->IsDefenderNotAttacker(defender->GetRaceID(), &attackers))
+					if (defender != NULL && defender->IsMajor() && attackSystem->IsDefenderNotAttacker(defender->GetRaceID(), &attackers))
 					{
 						CMajor* pDefenderMajor = dynamic_cast<CMajor*>(defender);
 						CMessage message;
@@ -3630,7 +3630,7 @@ void CBotf2Doc::PutScannedSquareOverSector(const CSector& sector, unsigned range
 					} else {
 						new_scan_power = (power * boni) / div;
 						new_scan_power = max(old_scan_power, new_scan_power);
-						if(race.GetType() == MAJOR)
+						if(race.IsMajor())
 							scanned_sector.SetScanned(race_id);
 					}
 					scanned_sector.SetScanPower(new_scan_power, race_id);
@@ -4703,7 +4703,7 @@ void CBotf2Doc::CalcShipOrders()
 				// Eventscreen für den Angreifer und den Blockierten anlegen
 				CRace* pShipOwner = m_pRaceCtrl->GetRace(m_ShipArray[y].GetOwnerOfShip());
 				CMajor* pShipOwnerMajor = NULL;
-				if (pShipOwner != NULL && pShipOwner->GetType() == MAJOR && (pShipOwnerMajor = dynamic_cast<CMajor*>(pShipOwner))->IsHumanPlayer())
+				if (pShipOwner != NULL && pShipOwner->IsMajor() && (pShipOwnerMajor = dynamic_cast<CMajor*>(pShipOwner))->IsHumanPlayer())
 				{
 					CEventBlockade* eventScreen = new CEventBlockade(m_ShipArray[y].GetOwnerOfShip(), CResourceManager::GetString("BLOCKADEEVENT_HEADLINE", FALSE, pSector->GetName()), CResourceManager::GetString("BLOCKADEEVENT_TEXT_" + pShipOwner->GetRaceID(), FALSE, pSector->GetName()));
 					pShipOwnerMajor->GetEmpire()->GetEventMessages()->Add(eventScreen);
@@ -4712,7 +4712,7 @@ void CBotf2Doc::CalcShipOrders()
 				{
 					CRace* pSystemOwner = m_pRaceCtrl->GetRace(pSystem->GetOwnerOfSystem());
 					CMajor* pSystemOwnerMajor = NULL;
-					if (pSystemOwner != NULL && pSystemOwner->GetType() == MAJOR && (pSystemOwnerMajor = dynamic_cast<CMajor*>(pSystemOwner))->IsHumanPlayer())
+					if (pSystemOwner != NULL && pSystemOwner->IsMajor() && (pSystemOwnerMajor = dynamic_cast<CMajor*>(pSystemOwner))->IsHumanPlayer())
 					{
 						CEventBlockade* eventScreen = new CEventBlockade(pSystem->GetOwnerOfSystem(), CResourceManager::GetString("BLOCKADEEVENT_HEADLINE", FALSE, pSector->GetName()), CResourceManager::GetString("BLOCKADEEVENT_TEXT_" + pSystemOwner->GetRaceID(), FALSE, pSector->GetName()));
 						pSystemOwnerMajor->GetEmpire()->GetEventMessages()->Add(eventScreen);
@@ -4871,7 +4871,7 @@ void CBotf2Doc::CalcShipMovement()
 			else
 			{
 				pRace = m_pRaceCtrl->GetRace(pShip->GetOwnerOfShip());
-				if (pRace != NULL && pRace->GetType() == MAJOR)
+				if (pRace != NULL && pRace->IsMajor())
 				{
 					nextKO = dynamic_cast<CMajor*>(pRace)->GetStarmap()->CalcPath(shipKO,targetKO,range,speed,*pShip->GetPath());
 				}
@@ -4887,7 +4887,7 @@ void CBotf2Doc::CalcShipMovement()
 					pShip->GetPath()->RemoveAll();
 					pShip->SetTargetKO(CPoint(-1,-1), 0);
 				}
-				if (pRace != NULL && pRace->GetType() == MAJOR && !(this->GetSector(nextKO.x,nextKO.y).GetFullKnown(pShip->GetOwnerOfShip()))) //Berechnet Zufalls entdeckung in dem Sector den das Schiff anfliegt
+				if (pRace != NULL && pRace->IsMajor() && !(this->GetSector(nextKO.x,nextKO.y).GetFullKnown(pShip->GetOwnerOfShip()))) //Berechnet Zufalls entdeckung in dem Sector den das Schiff anfliegt
 					m_RandomEventManager.CalcExploreEvent(CPoint((int)nextKO.x,(int)nextKO.y),dynamic_cast<CMajor*>(pRace),&m_ShipArray);
 
 				int high = speed;
@@ -5140,7 +5140,7 @@ void CBotf2Doc::CalcShipCombat()
 			sSectorName.Format("%s %c%i", CResourceManager::GetString("SECTOR"), (char)(p.y+97), p.x + 1);
 
 		// gewonnen
-		if (winner[it->first] == 1 && it->second->GetType() == MAJOR)
+		if (winner[it->first] == 1 && it->second->IsMajor())
 		{
 			// dem Siegbedingungsüberwacher den Sieg mitteilen
 			m_VictoryObserver.AddCombatWin(it->first);
@@ -5162,7 +5162,7 @@ void CBotf2Doc::CalcShipCombat()
 		// verloren
 		else if (winner[it->first] == 2)
 		{
-			if (it->second->GetType() == MAJOR)
+			if (it->second->IsMajor())
 			{
 				CMajor* pMajor = dynamic_cast<CMajor*>(it->second);
 				ASSERT(pMajor);
@@ -5193,7 +5193,7 @@ void CBotf2Doc::CalcShipCombat()
 			}
 		}
 		// unentschieden
-		else if (winner[it->first] == 3 && it->second->GetType() == MAJOR)
+		else if (winner[it->first] == 3 && it->second->IsMajor())
 		{
 			CMajor* pMajor = dynamic_cast<CMajor*>(it->second);
 			ASSERT(pMajor);
@@ -5229,7 +5229,7 @@ void CBotf2Doc::CalcShipCombat()
 					if (m_ShipArray[i].GetFleet()->GetShipFromFleet(x)->GetIsShipFlagShip())
 					{
 						CRace* pOwner = m_pRaceCtrl->GetRace(m_ShipArray[i].GetFleet()->GetShipFromFleet(x)->GetOwnerOfShip());
-						if (pOwner && pOwner->GetType() == MAJOR)
+						if (pOwner && pOwner->IsMajor())
 						{
 							CMajor* pMajor = dynamic_cast<CMajor*>(pOwner);
 							CString eventText = pMajor->GetMoralObserver()->AddEvent(7, pMajor->GetRaceMoralNumber(), m_ShipArray[i].GetFleet()->GetShipFromFleet(x)->GetShipName());
@@ -5254,7 +5254,7 @@ void CBotf2Doc::CalcShipCombat()
 			if (m_ShipArray[i].GetIsShipFlagShip())
 			{
 				CRace* pOwner = m_pRaceCtrl->GetRace(m_ShipArray[i].GetOwnerOfShip());
-				if (pOwner && pOwner->GetType() == MAJOR)
+				if (pOwner && pOwner->IsMajor())
 				{
 					CMajor* pMajor = dynamic_cast<CMajor*>(pOwner);
 					CString eventText = pMajor->GetMoralObserver()->AddEvent(7, pMajor->GetRaceMoralNumber(), m_ShipArray[i].GetShipName());
@@ -5267,7 +5267,7 @@ void CBotf2Doc::CalcShipCombat()
 			if (m_ShipArray[i].IsStation())
 			{
 				CRace* pOwner = m_pRaceCtrl->GetRace(m_ShipArray[i].GetOwnerOfShip());
-				if (pOwner && pOwner->GetType() == MAJOR)
+				if (pOwner && pOwner->IsMajor())
 				{
 					CMajor* pMajor = dynamic_cast<CMajor*>(pOwner);
 					CString eventText;
@@ -5384,7 +5384,7 @@ void CBotf2Doc::CalcShipRetreat() {
 void CBotf2Doc::CalcShipEffectsForSingleShip(CShip& ship, CSector& sector, CRace* pRace,
 			bool bDeactivatedShipScanner, bool bBetterScanner, bool fleetship) {
 	const CString& sRace = pRace->GetRaceID();
-	const bool major = pRace->GetType() == MAJOR;
+	const bool major = pRace->IsMajor();
 	if(!fleetship && major)
 		sector.SetFullKnown(sRace);
 	if (!bDeactivatedShipScanner) {
@@ -5536,7 +5536,7 @@ void CBotf2Doc::CalcContactNewRaces()
 					sect.Format("%c%i",(char)(p.y+97),p.x+1);
 
 					// der Sektor gehört gehört einem Major
-					if (pSectorOwner->GetType() == MAJOR)
+					if (pSectorOwner->IsMajor())
 					{
 						// Dem Sektorbesitzer eine Nachricht über Erstkontakt überbringen
 						s = CResourceManager::GetString("GET_CONTACT_TO_MAJOR",FALSE, pMajor->GetRaceName(),sect);
@@ -5560,14 +5560,14 @@ void CBotf2Doc::CalcContactNewRaces()
 					pMajor->GetEmpire()->AddMessage(message);
 
 					// Audiovorstellung der kennengelernten Majorrace
-					if (pMajor->IsHumanPlayer() || (pSectorOwner->GetType() == MAJOR && dynamic_cast<CMajor*>(pSectorOwner)->IsHumanPlayer()))
+					if (pMajor->IsHumanPlayer() || (pSectorOwner->IsMajor() && dynamic_cast<CMajor*>(pSectorOwner)->IsHumanPlayer()))
 					{
 						network::RACE clientShip = m_pRaceCtrl->GetMappedClientID(pMajor->GetRaceID());
 						m_iSelectedView[clientShip] = EMPIRE_VIEW;
 
 						// Systembesitzer ist ein Major
 
-						if (pSectorOwner->GetType() == MAJOR)
+						if (pSectorOwner->IsMajor())
 						{
 							CMajor* pSectorOwnerMajor = dynamic_cast<CMajor*>(pSectorOwner);
 							network::RACE clientSystem = m_pRaceCtrl->GetMappedClientID(pSectorOwner->GetRaceID());
@@ -5589,7 +5589,7 @@ void CBotf2Doc::CalcContactNewRaces()
 							}
 						}
 						// Systembesitzer ist ein Minor
-						else if (pSectorOwner->GetType() == MINOR)
+						else if (pSectorOwner->IsMinor())
 						{
 							// Schiffsbesitzer
 							if (pMajor->IsHumanPlayer())
@@ -5853,7 +5853,7 @@ void CBotf2Doc::CalcEndDataForNextRound()
 						pLivingRace->GetOutgoingDiplomacyNews()->erase(pLivingRace->GetOutgoingDiplomacyNews()->begin() + i--);
 				}
 
-				if (pLivingRace->GetType() == MAJOR)
+				if (pLivingRace->IsMajor())
 				{
 					CMajor* pLivingMajor = dynamic_cast<CMajor*>(pLivingRace);
 					pLivingMajor->SetDefencePact(pMajor->GetRaceID(), false);
@@ -5994,7 +5994,7 @@ void CBotf2Doc::CalcEndDataForNextRound()
 		if (sector->GetSunSystem() == TRUE && system.GetOwnerOfSystem() != "")
 		{
 			CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(system.GetOwnerOfSystem()));
-			if (!pMajor || pMajor->GetType() != MAJOR)
+			if (!pMajor || !pMajor->IsMajor())
 				continue;
 
 			// baubare Gebäude, Schiffe und Truppen berechnen

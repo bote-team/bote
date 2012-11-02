@@ -578,7 +578,7 @@ bool CGenDiploMessage::GenerateMinorAnswer(CDiplomacyInfo& info)
 	CRace* pRace = pDoc->GetRaceCtrl()->GetRace(info.m_sToRace);
 	if (!pRace)
 		return false;
-	if (pRace->GetType() != MINOR)
+	if (!pRace->IsMinor())
 		return false;
 
 	std::vector<CString> vSearchText;

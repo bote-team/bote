@@ -13,7 +13,7 @@ IMPLEMENT_SERIAL (CRace, CObject, 1)
 // Konstruktion/Destruktion
 //////////////////////////////////////////////////////////////////////
 CRace::CRace(void) :
-	m_byType(MINOR),
+	m_RaceType(RACE_TYPE_MINOR),
 	m_nProperty(0),
 	m_byShipNumber(0),
 	m_byBuildingNumber(0),
@@ -42,7 +42,7 @@ void CRace::Serialize(CArchive &ar)
 		ar << m_sName;			// Rassenname
 		ar << m_sNameArticle;	// Artikel für Rassenname
 		ar << m_sDesc;			// Rassenbeschreibung
-		ar << m_byType;			// Rassentyp (Major, Medior, Minor)
+		ar << static_cast<BYTE>(m_RaceType);			// Rassentyp (Major, Medior, Minor)
 		ar << m_nProperty;		// Rasseneigenschaften
 		ar << m_byShipNumber;	// zugewiesene Nummer welche Schiffe verwendet werden sollen
 		ar << m_byBuildingNumber;	// zugewiesene Nummer welche Gebäude verwendet werden sollen
@@ -89,7 +89,9 @@ void CRace::Serialize(CArchive &ar)
 		ar >> m_sName;			// Rassenname
 		ar >> m_sNameArticle;	// Artikel für Rassenname
 		ar >> m_sDesc;			// Rassenbeschreibung
-		ar >> m_byType;			// Rassentyp (Major, Medior, Minor)
+		BYTE type;
+		ar >> type;				// Rassentyp (Major, Medior, Minor)
+		m_RaceType = static_cast<RACE_TYPE>(type);
 		ar >> m_nProperty;		// Rasseneigenschaften
 		ar >> m_byShipNumber;	// zugewiesene Nummer welche Schiffe verwendet werden sollen
 		ar >> m_byBuildingNumber;	// zugewiesene Nummer welche Gebäude verwendet werden sollen
@@ -278,7 +280,7 @@ void CRace::MakeOffersAI(void)
 		m_mLastOffers.erase(*it);
 
 	// wenn es sich um eine Majorrace handelt, dann die Lieblingsminorrace berechnen
-	if (this->GetType() == MAJOR)
+	if (this->IsMajor())
 	{
 		// bei einem menschlichen Spieler wird die KI nicht ausgeführt
 		if (dynamic_cast<CMajor*>(this)->IsHumanPlayer())
@@ -294,7 +296,7 @@ void CRace::MakeOffersAI(void)
 		if (m_sID != it->first)
 		{
 			// Minorangebot zu anderer Minor geht nicht!
-			if (m_byType == MINOR && it->second->m_byType == MINOR)
+			if (m_RaceType == RACE_TYPE_MINOR && it->second->m_RaceType == RACE_TYPE_MINOR)
 				continue;
 
 			// Wenn an die Rasse in den letzen zwei Runden schon ein Angebot
@@ -355,7 +357,7 @@ void CRace::Reset(void)
 	m_sName				= "";		// Rassenname
 	m_sNameArticle		= "";		// Artikel für Rassenname
 	m_sDesc				= "";		// Rassenbeschreibung
-	m_byType			= MINOR;	// Rassentyp (Major, Medior, Minor)
+	m_RaceType				= RACE_TYPE_MINOR;	// Rassentyp (Major, Medior, Minor)
 	m_nProperty			= 0;		// Rasseneigenschaften
 	m_nSpecialAbility	= 0;		// Spezialfähigkeiten der Rasse
 	m_byShipNumber		= 0;		// zugewiesene Nummer welche Schiffe verwendet werden sollen

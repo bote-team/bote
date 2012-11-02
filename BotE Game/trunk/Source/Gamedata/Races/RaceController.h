@@ -55,7 +55,7 @@ public:
 	/// Funktion gibt alle Rassen eines bestimmten Types zurück.
 	/// @param type Typ der Rasse (MAJOR, MINOR)
 	/// @return Map aller Rassen eines bestimmten Types
-	map<CString, CRace*> GetRaces(BYTE type) const;
+	map<CString, CRace*> GetRaces(CRace::RACE_TYPE type) const;
 
 	/// Funktion liefert die Minorrace, welche in einem bestimmten Sektor beheimatet ist.
 	/// @param sMinorsHome Heimatsystem

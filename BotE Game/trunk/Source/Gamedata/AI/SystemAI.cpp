@@ -484,7 +484,7 @@ int CSystemAI::ChooseShip(int prio, BOOLEAN chooseCombatship, BOOLEAN chooseColo
 
 	CRace* pRace = m_pDoc->GetRaceCtrl()->GetRace(sRace);
 	ASSERT(pRace);
-	if (pRace->GetType() != MAJOR)
+	if (!pRace->IsMajor())
 		return 0;
 
 	const CResearch& research = *dynamic_cast<CMajor*>(pRace)->GetEmpire()->GetResearch();

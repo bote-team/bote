@@ -291,7 +291,7 @@ void CPlanetBottomView::OnDraw(CDC* dc)
 		if (pOwner)
 		{
 			s = pOwner->GetRaceName();
-			if (pOwner->GetType() == MAJOR)
+			if (pOwner->IsMajor())
 			{
 				Color color;
 				color.SetFromCOLORREF(((CMajor*)pOwner)->GetDesign()->m_clrSector);
