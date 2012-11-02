@@ -281,3 +281,17 @@ BOOLEAN CFleet::CheckOrder(const CShip* ship, SHIP_ORDER::Typ nOrder) const
 	}
 	return FALSE;
 }
+
+bool CFleet::AllOnTactic(COMBAT_TACTIC::Typ tactic) const {
+	const unsigned size = m_vShips.GetSize();
+	for(unsigned i = 0; i < size; ++i)
+	{
+		if(m_vShips.ElementAt(i).GetCombatTactic() != tactic)
+			return false;
+	}
+	return true;
+}
+
+BOOL CFleet::IsEmpty() const {
+	return m_vShips.IsEmpty();
+}

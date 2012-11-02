@@ -5327,74 +5327,41 @@ void CBotf2Doc::CalcShipRetreat() {
 		if (pShip->GetCombatTactic() != COMBAT_TACTIC::CT_RETREAT)
 			continue;
 
-		// Rückzugsbefehl zurücknehmen
-		pShip->SetCombatTactic(COMBAT_TACTIC::CT_ATTACK);
-		// Schiff auf Meiden/Angriff stellen entsprechend seinem Typ
-		pShip->SetCurrentOrderAccordingToType();
-
-		// womögicher Terraformplanet oder Stationsbau zurücknehmen
-		pShip->SetTerraformingPlanet(-1);
-
 		// Rückzugssektor für dieses Schiff in diesem Sektor holen
-		if (m_mShipRetreatSectors.find(ship_owner) == m_mShipRetreatSectors.end())
+		const std::map<CString, std::map<std::pair<int, int>, CPoint>>::const_iterator&
+			SectorRetreatSectorPairs = m_mShipRetreatSectors.find(ship_owner);
+		if (SectorRetreatSectorPairs == m_mShipRetreatSectors.end())
 			continue;
-
+		const std::map<std::pair<int, int>, CPoint>& mSectorRetreatSectorPairs
+			= SectorRetreatSectorPairs->second;
 		const CPoint& co = pShip->GetKO();
 		const pair<int, int> CurrentSector(co.x, co.y);
-		if (m_mShipRetreatSectors[ship_owner].find(CurrentSector)
-			== m_mShipRetreatSectors[ship_owner].end())
+		const std::map<std::pair<int, int>, CPoint>::const_iterator& RetreatSector
+			= mSectorRetreatSectorPairs.find(CurrentSector);
+		if (RetreatSector == mSectorRetreatSectorPairs.end())
 			continue;
 
-		CPoint ptRetreatSector = m_mShipRetreatSectors[ship_owner][CurrentSector];
-		// Kann das Schiff überhaupt fliegen?
-		if (pShip->GetSpeed() > 0)
-		{
-			pShip->SetKO(ptRetreatSector);
-			// aktuell eingestellten Kurs löschen (nicht das das Schiff wieder in den Gefahrensektor fliegt)
-			pShip->SetTargetKO(CPoint(-1, -1), 0);
-		}
+		pShip->Retreat(RetreatSector->second);
 
+		pShip->CheckFleet();
+		CFleet* pFleet = pShip->GetFleet();
+		if(!pFleet)
+			continue;
 		// sind alle Schiffe in einer Flotte im Rückzug, so kann die ganze Flotte
 		// in den Rückzugssektor
-		bool bCompleteFleetRetreat = true;
-		pShip->CheckFleet();
-		if (pShip->GetFleet())
-		{
-			for (int j = 0; j < pShip->GetFleet()->GetFleetSize(); j++)
-			{
-				if (pShip->GetFleet()->GetShipFromFleet(j)->GetCombatTactic() != COMBAT_TACTIC::CT_RETREAT
-					|| pShip->GetFleet()->GetFleetSpeed(pShip) == 0)
-				{
-					bCompleteFleetRetreat = false;
-					break;
-				}
-			}
-		}
+		const bool bCompleteFleetRetreat = pFleet->GetFleetSpeed(pShip) > 0
+			&& pFleet->AllOnTactic(COMBAT_TACTIC::CT_RETREAT);
 
 		// haben alle Schiffe in der Flotte den Rückzugsbefehl oder hat das Schiff keine Flotte
 		// -> Rückzugssektor festlegen
 		if (bCompleteFleetRetreat)
 		{
 			// Rückzugsbefehl in Flotte zurücknehmen
-			if (pShip->GetFleet())
-				for (int j = 0; j < pShip->GetFleet()->GetFleetSize(); j++)
-				{
-					CShip* pFleetShip = pShip->GetFleet()->GetShipFromFleet(j);
-					pFleetShip->SetCombatTactic(COMBAT_TACTIC::CT_ATTACK);
-
-					// Schiff auf Meiden/Angriff stellen entsprechend seinem Typ
-					pFleetShip->SetCurrentOrderAccordingToType();
-
-					if (pFleetShip->GetSpeed() > 0)
-					{
-						pFleetShip->SetKO(ptRetreatSector);
-						// aktuell eingestellten Kurs löschen (nicht das das Schiff wieder in den Gefahrensektor fliegt)
-						pFleetShip->SetTargetKO(CPoint(-1, -1), 0);
-					}
-
-					// womögicher Terraformplanet oder Stationsbau zurücknehmen
-					pFleetShip->SetTerraformingPlanet(-1);
-				}
+			for (int j = 0; j < pFleet->GetFleetSize(); j++)
+			{
+				CShip* pFleetShip = pFleet->GetShipFromFleet(j);
+				pFleetShip->Retreat(RetreatSector->second);
+			}
 		}
 		// Schiffe aus der Flotte nehmen und ans Ende des Schiffsarrays packen. Diese werden
 		// dann auch noch behandelt
@@ -5402,12 +5369,11 @@ void CBotf2Doc::CalcShipRetreat() {
 		{
 			// nicht mehr auf pShip arbeiten, da sich der Vektor hier verändern kann und somit
 			// der Zeiger nicht mehr gleich ist!
-			if (m_ShipArray[i].GetFleet())
-				while (m_ShipArray[i].GetFleet()->GetFleetSize())
-				{
-					m_ShipArray.Add(*m_ShipArray[i].GetFleet()->GetShipFromFleet(0));;
-					m_ShipArray[i].GetFleet()->RemoveShipFromFleet(0);
-				}
+			while (!m_ShipArray[i].GetFleet()->IsEmpty())
+			{
+				m_ShipArray.Add(*m_ShipArray[i].GetFleet()->GetShipFromFleet(0));
+				m_ShipArray[i].GetFleet()->RemoveShipFromFleet(0);
+			}
 			m_ShipArray[i].DeleteFleet();
 		}
 	}//	for (int i = 0; i < m_ShipArray.GetSize(); i++)

@@ -1294,3 +1294,20 @@ Für den Erfahrungsgewinn gibt es mehrere Möglichkeiten:
 bool CShip::IsNonCombat() const {
 	return m_iShipType <= SHIP_TYPE::PROBE;
 }
+
+void CShip::Retreat(const CPoint& ptRetreatSector)
+{
+	// Kann das Schiff überhaupt fliegen?
+	if (m_iSpeed > 0)
+	{
+		m_KO = ptRetreatSector;
+		// aktuell eingestellten Kurs löschen (nicht dass das Schiff wieder in den Gefahrensektor fliegt)
+		m_TargetKO[0] = CPoint(-1, -1);
+	}
+	// Schiff auf Meiden/Angriff stellen entsprechend seinem Typ
+	SetCurrentOrderAccordingToType();
+	// Rückzugsbefehl zurücknehmen
+	SetCombatTacticAccordingToType();
+	// womögicher Terraformplanet oder Stationsbau zurücknehmen
+	m_nTerraformingPlanet = -1;
+}

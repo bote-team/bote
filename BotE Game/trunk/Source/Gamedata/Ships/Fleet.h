@@ -76,6 +76,12 @@ public:
 	// Funktion FALSE zurück
 	BOOLEAN CheckOrder(const CShip* ship, SHIP_ORDER::Typ nOrder) const;
 
+	//Do all ships in this fleet have the given tactic ?
+	bool AllOnTactic(COMBAT_TACTIC::Typ tactic) const;
+
+	//Are there no ships in this fleet ?
+	BOOL IsEmpty() const;
+
 	// Funktion löscht die gesamte Flotte
 	void DeleteFleet(void) { m_vShips.RemoveAll(); }
 
