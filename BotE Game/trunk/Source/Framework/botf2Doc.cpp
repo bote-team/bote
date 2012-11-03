@@ -104,8 +104,6 @@ CBotf2Doc::CBotf2Doc() :
 	m_pNetworkHandler = new CNetworkHandler(this);
 	server.AddServerListener(m_pNetworkHandler);
 	client.AddClientListener(m_pNetworkHandler);
-
-	AllocateSectorsAndSystems();
 }
 #pragma warning(pop)
 
@@ -186,6 +184,9 @@ BOOL CBotf2Doc::OnNewDocument()
 
 	STARMAP_TOTALWIDTH=STARMAP_SECTORS_HCOUNT*80;
 	STARMAP_TOTALHEIGHT=STARMAP_SECTORS_VCOUNT*80;
+
+	// Sektoren und Systeme anlegen
+	AllocateSectorsAndSystems();
 
 
 	// festen vorgegeben Seed verwenden
@@ -1252,13 +1253,12 @@ void CBotf2Doc::GenerateGalaxy()
 							m_Sectors.at(raceKO.x + x+(raceKO.y + y)*STARMAP_SECTORS_HCOUNT).SetScanned(it->first);
 	}
 
-	// Vektor der verwendeten Minors, diese nehmen aktiv am Spiel teil.
-	set<CString> sUsedMinors;
 	// nun die Sektoren generieren
+	// diese nutzen die voreingestellten Patterns, so dass Galaxieformen möglich werden
 	vector<CPoint> vSectorsToGenerate;
 	for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
 		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-			if ((!m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwned())&&nGenField[x][y]==true)
+			if ((!m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetSunSystem()) && nGenField[x][y]==true)
 				vSectorsToGenerate.push_back(CPoint(x,y));
 
 	while (!vSectorsToGenerate.empty())
@@ -1277,7 +1277,9 @@ void CBotf2Doc::GenerateGalaxy()
 		int minorRaces = 0;
 		int nAnomalys  = 0;
 		for (int j = -1; j <= 1; j++)
+		{
 			for (int i = -1; i <= 1; i++)
+			{
 				if (y + j < STARMAP_SECTORS_VCOUNT && y + j > -1 && x + i < STARMAP_SECTORS_HCOUNT && x + i > -1)
 				{
 					if (m_Sectors.at(x + i+(y + j)*STARMAP_SECTORS_HCOUNT).GetSunSystem())
@@ -1287,57 +1289,85 @@ void CBotf2Doc::GenerateGalaxy()
 						sunSystems++;
 					}
 					else if (m_Sectors.at(x + i+(y + j)*STARMAP_SECTORS_HCOUNT).GetAnomaly())
+					{
 						nAnomalys++;
+					}
 
 					for (map<CString, pair<int, int> >::const_iterator it = m_mRaceKO.begin(); it != m_mRaceKO.end(); ++it)
+					{
 						if (it->second.first == x + i && it->second.second == y + j)
 						{
 							sunSystems	+= 100;
 							nAnomalys	+= 100;
 						}
+					}
 				}
+			}
+		}
+
 		int sunSystemProb = nStarDensity  - sunSystems * 15;
 		int minorRaceProb = nMinorDensity - minorRaces * 15;
 		if (minorRaceProb < 0)
 			minorRaceProb = 0;
 		if (sunSystemProb > 0)
 			m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GenerateSector(sunSystemProb, minorRaceProb);
-		if (m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetMinorRace())
+		
+		// Wenn keine Minorrace in dem System generiert wurde
+		if (!m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetMinorRace())
 		{
-			// Nun die Minorrace parametrisieren
-			CMinor* pMinor = m_pRaceCtrl->GetMinorRace(m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetName());
-			if (!pMinor)
-				AfxMessageBox("Error in function CBotf2Doc::GenerateGalaxy(): Could not create Minorrace");
-			else
+			// möglicherweise eine Anomalie im Sektor generieren
+			if (!m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetSunSystem())
 			{
-				pMinor->SetRaceKO(CPoint(x,y));
-				m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).SetOwnerOfSector(pMinor->GetRaceID());
-				m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).SetOwnerOfSystem("");
-				sUsedMinors.insert(pMinor->GetRaceID());
-				// wenn die Minorrace Schiffe bauen kann, sie aber kein Deritium im System besitzt, so wird
-				// ein Deritium auf dem ersten kolonisierten Planeten hinzugefügt
-				if (pMinor->GetSpaceflightNation())
+				if (rand()%100 >= (100 - (nAnomalyDensity - nAnomalys * 10)))
+					m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).CreateAnomaly();
+			}
+		}
+	}
+
+	// Vektor der verwendeten Minors, diese nehmen aktiv am Spiel teil.
+	set<CString> sUsedMinors;
+	// Nun alle generierten Sektoren durchgehen und die vorhandenen Minorraces parametriesieren
+	for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
+	{
+		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
+		{
+			if (m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetMinorRace())
+			{
+				// Nun die Minorrace parametrisieren
+				CMinor* pMinor = m_pRaceCtrl->GetMinorRace(m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetName());
+				if (!pMinor)
 				{
-					BOOLEAN bRes[DERITIUM + 1] = {FALSE};
-					m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetAvailableResources(bRes, true);
-					// gibt es kein Deritium=
-					if (!bRes[DERITIUM])
+					AfxMessageBox("Error in function CBotf2Doc::GenerateGalaxy(): Could not create Minorrace");
+				}
+				else
+				{
+					pMinor->SetRaceKO(CPoint(x,y));
+					m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).SetOwnerOfSector(pMinor->GetRaceID());
+					m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).SetOwnerOfSystem("");
+					sUsedMinors.insert(pMinor->GetRaceID());
+					// wenn die Minorrace Schiffe bauen kann, sie aber kein Deritium im System besitzt, so wird
+					// ein Deritium auf dem ersten kolonisierten Planeten hinzugefügt
+					if (pMinor->GetSpaceflightNation())
 					{
-						for (int p = 0; p < static_cast<int>(m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetPlanets().size()); p++)
-							if (m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetPlanet(p)->GetCurrentHabitant() > 0 && m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetPlanet(p)->GetColonized())
+						BOOLEAN bRes[DERITIUM + 1] = {FALSE};
+						m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetAvailableResources(bRes, true);
+						// gibt es kein Deritium=
+						if (!bRes[DERITIUM])
+						{
+							for (int p = 0; p < static_cast<int>(m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetPlanets().size()); p++)
 							{
-								m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetPlanet(p)->SetBoni(DERITIUM, TRUE);
-								break;
+								if (m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetPlanet(p)->GetCurrentHabitant() > 0 && m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetPlanet(p)->GetColonized())
+								{
+									m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetPlanet(p)->SetBoni(DERITIUM, TRUE);
+									break;
+								}
 							}
+						}
 					}
 				}
 			}
 		}
-		// möglicherweise eine Anomalie im Sektor generieren
-		else if (!m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetSunSystem())
-			if (rand()%100 >= (100 - (nAnomalyDensity - nAnomalys * 10)))
-				m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).CreateAnomaly();
-	}
+	}	
 
 	// nun können alle nicht verwendeten Minors entfernt werden
 	vector<CString> vDelMinors;

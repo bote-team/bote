@@ -68,7 +68,6 @@ protected: // Nur aus Serialisierung erzeugen
 	CArray<SNDMGR_MESSAGEENTRY> m_SoundMessages[7];	///< Die einzelnen Sprachmitteilungen zur neuen Runde
 	USHORT m_iSelectedView[7];						///< Welche View soll in der MainView angezeigt werden? z.B. Galaxie oder System
 
-	// new in ALPHA5
 	CRaceController* m_pRaceCtrl;		///< Rassencontroller für alle Rassen des Spiels
 	CSectorAI*		 m_pSectorAI;		///< Informationen zu allen Sektoren, welche die KI benötigt.
 	CAIPrios*		 m_pAIPrios;		///< zusätzliche Priotitäten, welche für die System-KI-Berechnung benötigt werden
