@@ -70,15 +70,18 @@ void CMenuChooseView::OnDraw(CDC* pDC)
 	if (!pMajor)
 		return;
 
-	// Das einschalten um automatisch bis zu einer gewissen Runde durchzuklicken
-	/*
-	if (!pDoc->m_bRoundEndPressed && pDoc->GetCurrentRound() < 50)
+	// TEST-OPTION (only for Debug)
+	// automatisch bis zu einer gewissen Runde durchzuklicken falls per Startparamter aktiviert
+	if (const CCommandLineParameters* const clp = dynamic_cast<CBotf2App*>(AfxGetApp())->GetCommandLineParameters())
 	{
-		pDoc->m_bRoundEndPressed = true;
-		CSoundManager::GetInstance()->StopMessages(TRUE);
-		client.EndOfRound(pDoc);
-	}
-	*/
+		int nAutoTurns = clp->GetAutoTurns();
+		if (!pDoc->m_bRoundEndPressed && pDoc->GetCurrentRound() < nAutoTurns)
+		{
+			pDoc->m_bRoundEndPressed = true;
+			CSoundManager::GetInstance()->StopMessages(TRUE);
+			client.EndOfRound(pDoc);
+		}
+	}		
 
 	CRect r(0, 0, m_TotalSize.cx, m_TotalSize.cy);
 

@@ -6,7 +6,8 @@ CCommandLineParameters::CCommandLineParameters(void) :
 	m_sLogDir(""),
 	m_LogDomains(),
 	m_bActiveDomains(true),
-	m_bSeeAllOfMap(false)
+	m_bSeeAllOfMap(false),
+	m_nAutoTurns(-1)
 {
 }
 
@@ -77,5 +78,9 @@ void CCommandLineParameters::ParseParam(const char* pszParam, BOOL /*bFlag*/, BO
 			m_bSeeAllOfMap = false;
 		else
 			m_bSeeAllOfMap = true;
+	}
+	else if(strcmp(parameter.c_str(), "-autoturn") == 0) {
+		if (args.length() > 0)
+			m_nAutoTurns = atoi(args.c_str());
 	}
 }

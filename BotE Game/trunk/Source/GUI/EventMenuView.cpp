@@ -68,6 +68,23 @@ void CEventMenuView::OnDraw(CDC* dc)
 	}
 
 	g.ReleaseHDC(pDC->GetSafeHdc());
+
+	
+	// TEST-OPTION (only for Debug)
+	// Automatisch bis zu einer gewissen Runde durchzuklicken falls per Startparamter aktiviert
+	// Eventscreen gleich wieder schlieﬂen
+	if (const CCommandLineParameters* const clp = dynamic_cast<CBotf2App*>(AfxGetApp())->GetCommandLineParameters())
+	{
+		int nAutoTurns = clp->GetAutoTurns();
+		if (!pDoc->m_bRoundEndPressed && pDoc->GetCurrentRound() < nAutoTurns)
+		{
+			if (pMajor->GetEmpire()->GetEventMessages()->GetSize())
+			{
+				CEventScreen* eventScreen = dynamic_cast<CEventScreen*>(pMajor->GetEmpire()->GetEventMessages()->GetAt(0));
+				CloseScreen(eventScreen);
+			}
+		}
+	}	
 }
 
 // CEventMenuView diagnostics

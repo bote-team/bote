@@ -15,6 +15,7 @@ private:
 	bool m_bActiveDomains;//should the m_LogDomains be exactly the ones which are muted (false)
 	//or be the only ones that speak (true) ?
 	bool m_bSeeAllOfMap; //true: komplette Map und alle Majorrassen sind sichtbar
+	int m_nAutoTurns; // number of turns automaticly terminated, -1 if option is disabled
 
 	void ParseLogDomainParamArgs(const std::string& args);
 
@@ -39,6 +40,9 @@ public:
 	}
 	const bool SeeAllOfMap() const {
 		return m_bSeeAllOfMap;
+	}
+	const int GetAutoTurns() const {
+		return m_nAutoTurns;
 	}
 
 	//called for each parameter passed in the comand line
