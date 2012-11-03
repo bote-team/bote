@@ -11,7 +11,8 @@
 
 #include "stdafx.h"
 
-#define DICT_SIZE	(512 * 1024)			///< Größe des Wörterbuchs, 512 KB
+//#define DICT_SIZE	(512 * 1024)			///< Größe des Wörterbuchs, 512 KB
+#define DICT_SIZE	(1024 * 1024) 	///< Größe des Wörterbuchs, 1 MB
 
 /**
  * Werte für <code>filterMode</code> in <code>BotE_LzmaCompress()</code>.
