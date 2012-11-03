@@ -281,10 +281,10 @@ void CGalaxyMenuView::OnDraw(CDC* dc)
 	if (m_bShipMove)
 	{
 		// Wenn das Schiff keine Flotte anführt
-		if (pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetFleet() == 0 || (pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetFleet() != 0 && pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetFleet()->GetFleetSize() == 0))
+		if (pDoc->CurrentShip().GetFleet() == 0 || (pDoc->CurrentShip().GetFleet() != 0 && pDoc->CurrentShip().GetFleet()->GetFleetSize() == 0))
 			m_nRange = 3-pDoc->GetShip(pDoc->GetCurrentShipIndex()).GetRange();
 		else
-			m_nRange = 3-pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetFleet()->GetFleetRange(&pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()));
+			m_nRange = 3-pDoc->CurrentShip().GetFleet()->GetFleetRange(&pDoc->CurrentShip());
 	}
 	else
 		m_nRange = SM_RANGE_SPACE;
@@ -447,10 +447,10 @@ void CGalaxyMenuView::OnDraw(CDC* dc)
 		CPoint last = pMajor->GetStarmap()->GetSectorCoords(pDoc->m_ShipArray[n].GetPath()->GetAt(pDoc->m_ShipArray[n].GetPath()->GetUpperBound()));
 		CString s;
 		// Wenn das Schiff keine Flotte anführt
-		if (pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetFleet() == 0 || (pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetFleet() != 0 && pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetFleet()->GetFleetSize() == 0))
+		if (pDoc->CurrentShip().GetFleet() == 0 || (pDoc->CurrentShip().GetFleet() != 0 && pDoc->CurrentShip().GetFleet()->GetFleetSize() == 0))
 			s.Format("%.0f",ceil((float)pDoc->m_ShipArray[n].GetPath()->GetSize() / (float)pDoc->m_ShipArray[n].GetSpeed()));
 		else
-			s.Format("%.0f",ceil((float)pDoc->m_ShipArray[n].GetPath()->GetSize() / (float)pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetFleet()->GetFleetSpeed(&pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()))));
+			s.Format("%.0f",ceil((float)pDoc->m_ShipArray[n].GetPath()->GetSize() / (float)pDoc->CurrentShip().GetFleet()->GetFleetSpeed(&pDoc->CurrentShip())));
 		pDC->SetTextColor(RGB(255,255,255));
 		pDC->TextOut(last.x+STARMAP_SECTOR_WIDTH/2+6, last.y+STARMAP_SECTOR_HEIGHT/2-8, s);
 
@@ -828,7 +828,7 @@ void CGalaxyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		if (m_bShipMove && (pDoc->m_ShipArray[pDoc->GetCurrentShipIndex()].GetPath()->GetSize()
 			|| target == pDoc->m_ShipArray[pDoc->GetCurrentShipIndex()].GetKO()))
 		{
-			CShip& ship = pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex());
+			CShip& ship = pDoc->CurrentShip();
 			ship.SetTargetKO(target == ship.GetKO() ? CPoint(-1, -1) : target, 0);
 			CSmallInfoView::SetShipInfo(true);
 			SetMoveShip(FALSE);
@@ -1056,17 +1056,17 @@ void CGalaxyMenuView::OnMouseMove(UINT nFlags, CPoint point)
 
 		// Sektor, über dem sich die Maus befindet, ermitteln
 		struct::Sector target = pMajor->GetStarmap()->GetClickedSector(pt);
-		struct::Sector shipKO(pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetKO().x,pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetKO().y);
+		struct::Sector shipKO(pDoc->CurrentShip().GetKO().x,pDoc->CurrentShip().GetKO().y);
 
 		if (PT_IN_RECT(target, 0, 0, STARMAP_SECTORS_HCOUNT, STARMAP_SECTORS_VCOUNT))
 		{
 			// Weg berechnen, neu zeichnen
 			char speed = 0;
 			// Wenn das Schiff keine Flotte anführt
-			if (pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetFleet() == 0 || (pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetFleet() != 0 && pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetFleet()->GetFleetSize() == 0))
+			if (pDoc->CurrentShip().GetFleet() == 0 || (pDoc->CurrentShip().GetFleet() != 0 && pDoc->CurrentShip().GetFleet()->GetFleetSize() == 0))
 				speed = (char)(pDoc->m_ShipArray[pDoc->GetCurrentShipIndex()].GetSpeed());
 			else
-				speed = (char)(pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetFleet()->GetFleetSpeed(&pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex())));
+				speed = (char)(pDoc->CurrentShip().GetFleet()->GetFleetSpeed(&pDoc->CurrentShip()));
 
 			struct::Sector result = pMajor->GetStarmap()->CalcPath(pMajor->GetStarmap()->GetSelection(), target, m_nRange, speed, *pDoc->m_ShipArray[pDoc->GetCurrentShipIndex()].GetPath());
 
@@ -1389,7 +1389,7 @@ void CGalaxyMenuView::SetNewShipPath()
 {
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	m_oldPath.RemoveAll();
-	m_oldPath.Copy(*pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetPath());
+	m_oldPath.Copy(*pDoc->CurrentShip().GetPath());
 }
 
 void CGalaxyMenuView::GenerateGalaxyMap()

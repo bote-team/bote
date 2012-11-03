@@ -180,7 +180,7 @@ void CTransportMenuView::DrawTransportMenue(Graphics* g)
 	CString s;
 	CPoint p = pDoc->GetKO();
 	CString systemOwner = pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem();
-	CString shipOwner = pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()).GetOwnerOfShip();
+	CString shipOwner = pDoc->CurrentShip().GetOwnerOfShip();
 
 	Gdiplus::Font font(CComBSTR(fontName), fontSize);
 	if (systemOwner == shipOwner)
@@ -198,7 +198,7 @@ void CTransportMenuView::DrawTransportMenue(Graphics* g)
 	fontBrush.SetColor(normalColor);
 
 	// Inhalte des system- und globalen Lagers zeichnen
-	CShip* ship = &pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex());
+	CShip* ship = &pDoc->CurrentShip();
 	for (int i = TITAN; i <= DERITIUM; i++)
 	{
 		int res = ship->GetLoadedResources(i);
@@ -438,7 +438,7 @@ void CTransportMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 	CShip* ship = NULL;
 	if (pDoc->GetCurrentShipIndex() != -1)
 		if (pDoc->GetCurrentShipIndex() < pDoc->m_ShipArray.GetSize())
-			ship = &pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex());
+			ship = &pDoc->CurrentShip();
 	if (ship == NULL || ship->GetOwnerOfShip() != pMajor->GetRaceID() || ship->GetStorageRoom() == 0)
 		return;
 
@@ -488,7 +488,7 @@ void CTransportMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 								break;
 						}
 						if (isFleet && j < number-1)
-							ship = (&pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()))->GetFleet()->GetShipFromFleet(j);
+							ship = (&pDoc->CurrentShip())->GetFleet()->GetShipFromFleet(j);
 					}
 					return;
 				}
@@ -538,7 +538,7 @@ void CTransportMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 						if (m_iTransportStorageQuantity == NULL)
 							break;
 						if (isFleet && j < number-1)
-							ship = (&pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()))->GetFleet()->GetShipFromFleet(j);
+							ship = (&pDoc->CurrentShip())->GetFleet()->GetShipFromFleet(j);
 					}
 					m_iTransportStorageQuantity = oldQuantity;
 					Invalidate(FALSE);
@@ -585,7 +585,7 @@ void CTransportMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 									break;
 							}
 							if (isFleet && j < number-1)
-								ship = (&pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()))->GetFleet()->GetShipFromFleet(j);
+								ship = (&pDoc->CurrentShip())->GetFleet()->GetShipFromFleet(j);
 						}
 					}
 					return;
@@ -625,7 +625,7 @@ void CTransportMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 						if (transportedRes == NULL)
 							break;
 						if (isFleet && j < number-1)
-							ship = (&pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex()))->GetFleet()->GetShipFromFleet(j);
+							ship = (&pDoc->CurrentShip())->GetFleet()->GetShipFromFleet(j);
 					}
 					m_iTransportStorageQuantity = oldQuantity;
 					Invalidate(FALSE);
@@ -740,7 +740,7 @@ void CTransportMenuView::OnMouseMove(UINT nFlags, CPoint point)
 	CShip* ship = NULL;
 	if (pDoc->GetCurrentShipIndex() != -1)
 		if (pDoc->GetCurrentShipIndex() < pDoc->m_ShipArray.GetSize())
-			ship = &pDoc->m_ShipArray.GetAt(pDoc->GetCurrentShipIndex());
+			ship = &pDoc->CurrentShip();
 	if (ship == NULL || ship->GetOwnerOfShip() != pMajor->GetRaceID() || ship->GetStorageRoom() == 0)
 		return;
 

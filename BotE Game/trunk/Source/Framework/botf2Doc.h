@@ -138,7 +138,20 @@ public:
 	/// Funktion gibt den Schwierigkeitsgrad des Spiels zurück.
 	float GetDifficultyLevel(void) const {return m_fDifficultyLevel;}
 
-	const CShip& GetShip(int number) const {return m_ShipArray.GetAt(number);}
+	const CShip& GetShip(int number) const {
+		return m_ShipArray.GetAt(number);
+	}
+	CShip& GetShip(int number) {
+		return m_ShipArray.GetAt(number);
+	}
+	//returns the ship at m_NumberOfTheShipInArray
+	const CShip& CurrentShip() const {
+		return GetShip(m_NumberOfTheShipInArray);
+	}
+	//returns the ship at m_NumberOfTheShipInArray
+	CShip& CurrentShip() {
+		return GetShip(m_NumberOfTheShipInArray);
+	}
 
 	const CPoint& GetKO(void) const {return m_ptKO;}
 	void SetKO(int x, int y);
