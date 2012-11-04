@@ -1347,8 +1347,14 @@ void CGalaxyMenuView::SearchNextIdleShipAndJumpToIt(CBotf2Doc* pDoc, SHIP_ORDER:
 		const Sector& sector = Sector(coords.x, coords.y);
 
 		if(ship.HasNothingToDo()) {
-			if(previous_ship && order != SHIP_ORDER::NONE)
+			if(previous_ship && order != SHIP_ORDER::NONE) {
 				previous_ship->SetCurrentOrder(order);
+				assert(order == SHIP_ORDER::WAIT_SHIP_ORDER || order == SHIP_ORDER::SENTRY_SHIP_ORDER);
+				//In case the previous ship was selected via mouse instead via hotkey, which
+				//checks whether there's a target != -1,-1 set, it can be a ship which still
+				//has a valid target, but still would get order sentry or wait
+				previous_ship->SetTargetKO(CPoint(-1, -1), 0, true);
+			}
 			m_PreviouslyJumpedToShip = RememberedShip(i, ship.GetShipName());
 			pMajor->GetStarmap()->Select(sector);// sets orange rectangle in galaxy view
 			pDoc->SetKO(sector.x,sector.y);//neccessary for that the ship is selected for SHIP_BOTTOM_VIEW
