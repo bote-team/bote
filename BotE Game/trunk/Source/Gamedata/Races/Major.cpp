@@ -3,6 +3,8 @@
 #include "AI\MajorAI.h"
 #include <algorithm>
 
+#include <cassert>
+
 IMPLEMENT_SERIAL (CMajor, CRace, 1)
 
 //////////////////////////////////////////////////////////////////////
@@ -450,4 +452,24 @@ void CMajor::CreateStarmap(void)
 		m_pStarmap = NULL;
 	}
 	m_pStarmap = new CStarmap(!m_bPlayer, 3 - SHIP_RANGE::MIDDLE);
+}
+
+void CMajor::Contact(const CRace& Race, const CPoint& p) {
+	CRace::Contact(Race, p);
+	// Nachricht generieren, dass wir eine andere Rasse kennengelernt haben
+	CString s;
+	CString sect;
+	sect.Format("%c%i",(char)(p.y+97),p.x+1);
+	//message to the involved major
+	CString sKey("GET_CONTACT_TO_MINOR");
+	if(Race.IsMajor())
+		sKey = "GET_CONTACT_TO_MAJOR";
+	s = CResourceManager::GetString(sKey,FALSE, Race.GetRaceName(),sect);
+	CMessage message;
+	message.GenerateMessage(s,MESSAGE_TYPE::DIPLOMACY,"",0,FALSE);
+	m_Empire.AddMessage(message);
+	// Eventscreen einfügen
+	m_Empire.GetEventMessages()->Add(
+		new CEventFirstContact(m_sID, Race.GetRaceID()));
+
 }

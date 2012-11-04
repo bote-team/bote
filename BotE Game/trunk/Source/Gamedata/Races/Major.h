@@ -109,6 +109,8 @@ public:
 	/// @param nNewAgreement neuer Vertrag
 	virtual void SetAgreement(const CString& sOtherRace, DIPLOMATIC_AGREEMENT::Typ nNewAgreement);
 
+	virtual void Contact(const CRace& Race, const CPoint& p);
+
 	/// Funktion gibt zurück, ob die Hauptrasse einen Verteidigungspakt mit einer anderen Hauptrasse
 	/// aufrechterhält.
 	/// @param pRaceID Rassen-ID der anderen Hauptrasse

@@ -5498,282 +5498,102 @@ void CBotf2Doc::CalcShipEffects()
 	}
 }
 
+///////////////////////////////////////////////////////////////////////
+/////BEGINN: HELPER FUNCTIONS FOR void CBotf2Doc::CalcContactNewRaces()
+
+void CBotf2Doc::CalcContactClientWork(CMajor& Major, const CRace& ContactedRace) {
+	const network::RACE client = m_pRaceCtrl->GetMappedClientID(Major.GetRaceID());
+	const network::RACE contacted_client = m_pRaceCtrl->GetMappedClientID(ContactedRace.GetRaceID());
+	m_iSelectedView[client] = EMPIRE_VIEW;
+	if(!Major.IsHumanPlayer())
+		return;
+	// Audiovorstellung der kennengelernten race
+	SNDMGR_MESSAGEENTRY entry = {SNDMGR_MSG_ALIENCONTACT, contacted_client, 1, 1.0f};
+	if(ContactedRace.IsMajor()) {
+		entry.nMessage = SNDMGR_MSG_FIRSTCONTACT;
+		entry.nPriority = 2;
+	}
+	m_SoundMessages[client].Add(entry);
+}
+
+void CBotf2Doc::CalcContactShipToMajorShip(CRace& Race, const CSector& sector, const CPoint& p) {
+	// treffen mit einem Schiff eines anderen Majors
+	// wenn zwei Schiffe verschiedener Rasse in diesem Sektor stationiert sind, so können sich die Besitzer auch kennenlernen
+	const std::map<CString, CMajor*>& mMajors = *m_pRaceCtrl->GetMajors();
+	for (std::map<CString, CMajor*>::const_iterator it = mMajors.begin(); it != mMajors.end(); ++it) {
+		CMajor* pMajor = it->second;
+		// kann der andere Schiffsbesitzer Rassen kennenlernen?
+		const CString& sMajorID = it->first;
+		if (!sector.GetOwnerOfShip(sMajorID) || !pMajor->CanBeContactedBy(Race.GetRaceID()) ||
+			Race.GetRaceID() == sMajorID)
+			continue;
+		CalcContactCommutative(*pMajor, Race, p);
+	}
+}
+
+void CBotf2Doc::CalcContactCommutative(CMajor& Major,
+	CRace& ContactedRace, const CPoint& p) {
+
+	Major.Contact(ContactedRace, p);
+	CalcContactClientWork(Major, ContactedRace);
+	ContactedRace.Contact(Major, p);
+	if(ContactedRace.IsMajor())
+		CalcContactClientWork(dynamic_cast<CMajor&>(ContactedRace), Major);
+}
+
+void CBotf2Doc::CalcContactMinor(CMajor& Major, const CSector& sector, const CPoint& p) {
+	if(!sector.GetMinorRace())
+		return;
+	// in dem Sektor lebt eine Minorrace
+	CMinor* pMinor = m_pRaceCtrl->GetMinorRace(sector.GetName());
+	assert(pMinor);
+	// kann der Sektorbesitzer andere Rassen kennenlernen?
+	if (pMinor->CanBeContactedBy(Major.GetRaceID()) && !pMinor->GetSubjugated())
+		// die Rasse ist noch nicht bekannt und nicht unterworfen
+		CalcContactCommutative(Major, *pMinor, p);
+}
+
+/////END: HELPER FUNCTIONS FOR void CBotf2Doc::CalcContactNewRaces()
+///////////////////////////////////////////////////////////////////////
+
 /// Diese Funktion überprüft, ob neue Rassen kennengelernt wurden.
 void CBotf2Doc::CalcContactNewRaces()
 {
-	map<CString, CMajor*>* pmMajors = m_pRaceCtrl->GetMajors();
 	for (int y = 0; y < m_ShipArray.GetSize(); y++)
 	{
-		CPoint p = m_ShipArray[y].GetKO();
-		CString sRace = m_ShipArray[y].GetOwnerOfShip();
-
-		CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(sRace));
-		// kann der Major Rassen kennenlernen?
-		if (pMajor && pMajor->HasSpecialAbility(SPECIAL_NO_DIPLOMACY))
+		const CShip* pShip = &m_ShipArray.GetAt(y);
+		const CString& sRace = pShip->GetOwnerOfShip();
+		CRace* pRace = m_pRaceCtrl->GetRace(sRace);
+		// kann die Rasse andere Rassen kennenlernen?
+		if(pRace->HasSpecialAbility(SPECIAL_NO_DIPLOMACY))
 			continue;
-
-		CMinor* pMinor = NULL;
-		// handelt es sich um eine Minorrace
-		if (!pMajor)
-			pMinor = dynamic_cast<CMinor*>(m_pRaceCtrl->GetRace(sRace));
-
-		// kann der Minor Rassen kennenlernen?
-		if (pMinor && pMinor->HasSpecialAbility(SPECIAL_NO_DIPLOMACY))
+		const CPoint& p = pShip->GetKO();
+		const CSector& sector = GetSector(p);
+		const CString& sOwnerOfSector = sector.GetOwnerOfSector();
+		CalcContactShipToMajorShip(*pRace, sector, p);
+		if(sOwnerOfSector.IsEmpty() || sOwnerOfSector == sRace)
 			continue;
-
-		// Wenn dieser Sektor einer anderen Majorrace gehört, wir die noch nicht kannten, dann bekanntgeben
-		if (pMajor != NULL && GetSector(p.x, p.y).GetOwnerOfSector() != "" && GetSector(p.x, p.y).GetOwnerOfSector() != sRace)
-		{
-			// normale Zugehörigkeit
-			if (pMajor->IsRaceContacted(GetSector(p.x, p.y).GetOwnerOfSector()) == false)
-			{
-				CRace* pSectorOwner = m_pRaceCtrl->GetRace(GetSector(p.x, p.y).GetOwnerOfSector());
-				if (pSectorOwner)
-				{
-					// kann der Sektorbesitzer andere Rassen kennenlernen?
-					if (pSectorOwner->HasSpecialAbility(SPECIAL_NO_DIPLOMACY))
-						continue;
-
-					pMajor->SetIsRaceContacted(pSectorOwner->GetRaceID(), true);
-					pSectorOwner->SetIsRaceContacted(pMajor->GetRaceID(), true);
-
-					// Nachricht generieren, dass wir eine andere Rasse kennengelernt haben
-					CString s;
-					CString sect;
-					sect.Format("%c%i",(char)(p.y+97),p.x+1);
-
-					// der Sektor gehört gehört einem Major
-					if (pSectorOwner->IsMajor())
-					{
-						// Dem Sektorbesitzer eine Nachricht über Erstkontakt überbringen
-						s = CResourceManager::GetString("GET_CONTACT_TO_MAJOR",FALSE, pMajor->GetRaceName(),sect);
-						CMessage message;
-						message.GenerateMessage(s,MESSAGE_TYPE::DIPLOMACY,"",0,FALSE);
-						dynamic_cast<CMajor*>(pSectorOwner)->GetEmpire()->AddMessage(message);
-
-						// Nachricht generieren, dass wir eine Majorrace kennengelernt haben
-						s = CResourceManager::GetString("GET_CONTACT_TO_MAJOR",FALSE, pSectorOwner->GetRaceName(),sect);
-					}
-					// der Sektor gehört einer Minorrace
-					else
-					{
-						// Nachricht generieren, dass wir eine Minorrace kennengelernt haben
-						s = CResourceManager::GetString("GET_CONTACT_TO_MINOR", FALSE, pSectorOwner->GetRaceName());
-					}
-
-					// dem Major, dem das Schiff gehört die Nachricht überreichen
-					CMessage message;
-					message.GenerateMessage(s,MESSAGE_TYPE::DIPLOMACY,"",0,FALSE);
-					pMajor->GetEmpire()->AddMessage(message);
-
-					// Audiovorstellung der kennengelernten Majorrace
-					if (pMajor->IsHumanPlayer() || (pSectorOwner->IsMajor() && dynamic_cast<CMajor*>(pSectorOwner)->IsHumanPlayer()))
-					{
-						network::RACE clientShip = m_pRaceCtrl->GetMappedClientID(pMajor->GetRaceID());
-						m_iSelectedView[clientShip] = EMPIRE_VIEW;
-
-						// Systembesitzer ist ein Major
-
-						if (pSectorOwner->IsMajor())
-						{
-							CMajor* pSectorOwnerMajor = dynamic_cast<CMajor*>(pSectorOwner);
-							network::RACE clientSystem = m_pRaceCtrl->GetMappedClientID(pSectorOwner->GetRaceID());
-							m_iSelectedView[clientSystem] = EMPIRE_VIEW;
-
-							// Systembesitzer
-							if (pSectorOwnerMajor->IsHumanPlayer())
-							{
-								SNDMGR_MESSAGEENTRY entry = {SNDMGR_MSG_FIRSTCONTACT, clientShip, 2, 1.0f};
-								m_SoundMessages[clientSystem].Add(entry);
-								pSectorOwnerMajor->GetEmpire()->GetEventMessages()->Add(new CEventFirstContact(pSectorOwner->GetRaceID(), pMajor->GetRaceID()));
-							}
-							// Schiffsbesitzer
-							if (pMajor->IsHumanPlayer())
-							{
-								SNDMGR_MESSAGEENTRY entry = {SNDMGR_MSG_FIRSTCONTACT, clientSystem, 2, 1.0f};
-								m_SoundMessages[clientShip].Add(entry);
-								pMajor->GetEmpire()->GetEventMessages()->Add(new CEventFirstContact(pMajor->GetRaceID(), pSectorOwner->GetRaceID()));
-							}
-						}
-						// Systembesitzer ist ein Minor
-						else if (pSectorOwner->IsMinor())
-						{
-							// Schiffsbesitzer
-							if (pMajor->IsHumanPlayer())
-							{
-								SNDMGR_MESSAGEENTRY entry = {SNDMGR_MSG_ALIENCONTACT, clientShip, 1, 1.0f};
-								m_SoundMessages[clientShip].Add(entry);
-								pMajor->GetEmpire()->GetEventMessages()->Add(new CEventFirstContact(pMajor->GetRaceID(), pSectorOwner->GetRaceID()));
-							}
-						}
-					}
-				}
+		CRace* pOwnerOfSector = m_pRaceCtrl->GetRace(sOwnerOfSector);
+		assert(pOwnerOfSector);
+		if(pRace->IsMinor()) {
+			if(pOwnerOfSector->CanBeContactedBy(sRace) && pOwnerOfSector->IsMajor()) {
+				CMajor* pMajor = dynamic_cast<CMajor*>(pOwnerOfSector);
+				assert(pMajor);
+				CalcContactCommutative(*pMajor, *pRace, p);
 			}
-
-			// in dem Sektor lebt eine Minorrace, der der Sektor aber nicht mehr gehört, z.B. durch Mitgliedschaft
-			if (GetSector(p.x, p.y).GetMinorRace())
-			{
-				CMinor* pMinor = m_pRaceCtrl->GetMinorRace(GetSector(p.x, p.y).GetName());
-				assert(pMinor);
-				// kann der Sektorbesitzer andere Rassen kennenlernen?
-				if (pMinor->HasSpecialAbility(SPECIAL_NO_DIPLOMACY))
-					continue;
-
-				// die Rasse ist noch nicht bekannt und nicht unterworfen
-				if (pMajor->IsRaceContacted(pMinor->GetRaceID()) == false && pMinor->GetSubjugated() == false)
-				{
-					pMajor->SetIsRaceContacted(pMinor->GetRaceID(), true);
-					pMinor->SetIsRaceContacted(pMajor->GetRaceID(), true);
-
-					// Nachricht generieren, dass wir eine andere Rasse kennengelernt haben
-					CString s;
-					CString sect;
-					sect.Format("%c%i",(char)(p.y+97),p.x+1);
-
-					// Nachricht generieren, dass wir eine Minorrace kennengelernt haben
-					s = CResourceManager::GetString("GET_CONTACT_TO_MINOR", FALSE, pMinor->GetRaceName());
-					// dem Major, dem das Schiff gehört die Nachricht überreichen
-					CMessage message;
-					message.GenerateMessage(s,MESSAGE_TYPE::DIPLOMACY,"",0,FALSE);
-					pMajor->GetEmpire()->AddMessage(message);
-					// Audiovorstellung der kennengelernten Majorrace
-					if (pMajor->IsHumanPlayer())
-					{
-						network::RACE clientShip = m_pRaceCtrl->GetMappedClientID(pMajor->GetRaceID());
-						m_iSelectedView[clientShip] = EMPIRE_VIEW;
-
-						// Systembesitzer ist ein Minor
-						SNDMGR_MESSAGEENTRY entry = {SNDMGR_MSG_ALIENCONTACT, clientShip, 1, 1.0f};
-						m_SoundMessages[clientShip].Add(entry);
-						pMajor->GetEmpire()->GetEventMessages()->Add(new CEventFirstContact(pMajor->GetRaceID(), pMinor->GetRaceID()));
-					}
-				}
-			}
+			continue;
 		}
-
-		if (pMajor != NULL)
-		{
-			// wenn zwei Schiffe einer Rasse in diesem Sektor stationiert sind, so können sich die Besitzer auch kennenlernen
-			for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
-				if (pMajor->GetRaceID() != it->first)
-					if (GetSector(p.x, p.y).GetOwnerOfShip(it->first) == TRUE)
-						if (pMajor->IsRaceContacted(it->first) == false)
-						{
-							CMajor* pOtherMajor = it->second;
-							// kann der andere Schiffsbesitzer Rassen kennenlernen?
-							if (pOtherMajor->HasSpecialAbility(SPECIAL_NO_DIPLOMACY))
-								continue;
-
-							pMajor->SetIsRaceContacted(pOtherMajor->GetRaceID(), true);
-							pOtherMajor->SetIsRaceContacted(pMajor->GetRaceID(), true);
-							// Nachricht generieren, dass wir eine Majorrace kennengelernt haben
-							CString s;
-							CString sect; sect.Format("%c%i",(char)(p.y+97),p.x+1);
-							// der Major, der das erste Schiff gehört
-							s = CResourceManager::GetString("GET_CONTACT_TO_MAJOR", FALSE, pMajor->GetRaceName() ,sect);
-							CMessage message;
-							message.GenerateMessage(s, MESSAGE_TYPE::DIPLOMACY, "", 0, FALSE);
-							pOtherMajor->GetEmpire()->AddMessage(message);
-							// der Major, der das zweite Schiff gehört
-							s = CResourceManager::GetString("GET_CONTACT_TO_MAJOR", FALSE, pOtherMajor->GetRaceName(), sect);
-							message.GenerateMessage(s, MESSAGE_TYPE::DIPLOMACY, "", 0, FALSE);
-							pMajor->GetEmpire()->AddMessage(message);
-							if (pMajor->IsHumanPlayer() || pOtherMajor->IsHumanPlayer())
-							{
-								network::RACE clientShip = m_pRaceCtrl->GetMappedClientID(pMajor->GetRaceID());
-								network::RACE clientOther = m_pRaceCtrl->GetMappedClientID(pOtherMajor->GetRaceID());
-								// Audiovorstellung der kennengelernten Majorrace
-								SNDMGR_MESSAGEENTRY entry = {SNDMGR_MSG_FIRSTCONTACT, clientShip, 2, 1.0f};
-								m_SoundMessages[clientOther].Add(entry);
-								SNDMGR_MESSAGEENTRY entry2 = {SNDMGR_MSG_FIRSTCONTACT, clientOther, 2, 1.0f};
-								m_SoundMessages[clientShip].Add(entry2);
-								m_iSelectedView[clientShip] = EMPIRE_VIEW;
-								m_iSelectedView[clientOther] = EMPIRE_VIEW;
-								// Eventscreen für das Kennenlernen
-								if (pMajor->IsHumanPlayer())
-									pMajor->GetEmpire()->GetEventMessages()->Add(new CEventFirstContact(pMajor->GetRaceID(), pOtherMajor->GetRaceID()));
-								if (pOtherMajor->IsHumanPlayer())
-									pOtherMajor->GetEmpire()->GetEventMessages()->Add(new CEventFirstContact(pOtherMajor->GetRaceID(), pMajor->GetRaceID()));
-							}
-						}
-		}
-		else if (pMinor != NULL)
-		{
-			// auf einen Sektor einer Majorrace geflogen
-			if (GetSector(p.x, p.y).GetOwnerOfSector() != "" && GetSector(p.x, p.y).GetOwnerOfSector() != sRace)
-			{
-				// normale Zugehörigkeit
-				if (pMinor->IsRaceContacted(GetSector(p.x, p.y).GetOwnerOfSector()) == false)
-				{
-					CMajor* pSectorOwner = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(GetSector(p.x, p.y).GetOwnerOfSector()));
-					if (pSectorOwner)
-					{
-						// kann der Sektorbesitzer andere Rassen kennenlernen?
-						if (pSectorOwner->HasSpecialAbility(SPECIAL_NO_DIPLOMACY))
-							continue;
-
-						pMinor->SetIsRaceContacted(pSectorOwner->GetRaceID(), true);
-						pSectorOwner->SetIsRaceContacted(pMinor->GetRaceID(), true);
-
-						// Nachricht generieren, dass wir eine andere Rasse kennengelernt haben
-						CString s;
-						CString sect;
-						sect.Format("%c%i",(char)(p.y+97),p.x+1);
-
-						// Dem Sektorbesitzer eine Nachricht über Erstkontakt überbringen
-						s = CResourceManager::GetString("GET_CONTACT_TO_MINOR",FALSE, pMinor->GetRaceName(),sect);
-						CMessage message;
-						message.GenerateMessage(s,MESSAGE_TYPE::DIPLOMACY,"",0,FALSE);
-						pSectorOwner->GetEmpire()->AddMessage(message);
-
-						if (pSectorOwner->IsHumanPlayer())
-						{
-							network::RACE clientSystem = m_pRaceCtrl->GetMappedClientID(pSectorOwner->GetRaceID());
-							m_iSelectedView[clientSystem] = EMPIRE_VIEW;
-
-							SNDMGR_MESSAGEENTRY entry = {SNDMGR_MSG_ALIENCONTACT, clientSystem, 1, 1.0f};
-							m_SoundMessages[clientSystem].Add(entry);
-							pSectorOwner->GetEmpire()->GetEventMessages()->Add(new CEventFirstContact(pSectorOwner->GetRaceID(), pMinor->GetRaceID()));
-						}
-					}
-				}
-			}
-
-			// treffen mit einem Schiff eines anderen Majors
-			// wenn zwei Schiffe einer Rasse in diesem Sektor stationiert sind, so können sich die Besitzer auch kennenlernen
-			for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
-				if (GetSector(p.x, p.y).GetOwnerOfShip(it->first) == TRUE)
-					if (pMinor->IsRaceContacted(it->first) == false)
-					{
-						CMajor* pOtherMajor = it->second;
-						// kann der andere Schiffsbesitzer Rassen kennenlernen?
-						if (pOtherMajor->HasSpecialAbility(SPECIAL_NO_DIPLOMACY))
-							continue;
-
-						pMinor->SetIsRaceContacted(pOtherMajor->GetRaceID(), true);
-						pOtherMajor->SetIsRaceContacted(pMinor->GetRaceID(), true);
-						// Nachricht generieren, dass wir eine Majorrace kennengelernt haben
-						CString s;
-						CString sect; sect.Format("%c%i",(char)(p.y+97),p.x+1);
-						// der Major, der das erste Schiff gehört
-						s = CResourceManager::GetString("GET_CONTACT_TO_MINOR", FALSE, pMinor->GetRaceName() ,sect);
-						CMessage message;
-						message.GenerateMessage(s, MESSAGE_TYPE::DIPLOMACY, "", 0, FALSE);
-						pOtherMajor->GetEmpire()->AddMessage(message);
-
-						if (pOtherMajor->IsHumanPlayer())
-						{
-							network::RACE clientOther = m_pRaceCtrl->GetMappedClientID(pOtherMajor->GetRaceID());
-							m_iSelectedView[clientOther] = EMPIRE_VIEW;
-							// Audiovorstellung der kennengelernten Minorrace
-							SNDMGR_MESSAGEENTRY entry = {SNDMGR_MSG_ALIENCONTACT, clientOther, 2, 1.0f};
-							m_SoundMessages[clientOther].Add(entry);
-							// Eventscreen einfügen
-							pOtherMajor->GetEmpire()->GetEventMessages()->Add(new CEventFirstContact(pOtherMajor->GetRaceID(), pMinor->GetRaceID()));
-						}
-					}
-		}
-	}
+		//At present, a race is always either a major or a minor.
+		//If this changes, this code needs to be adapted.
+		CMajor* pMajor = dynamic_cast<CMajor*>(pRace);
+		assert(pMajor);
+		CalcContactMinor(*pMajor, sector, p);
+		if (!pOwnerOfSector->CanBeContactedBy(sRace))
+			continue;
+		//At this point, pOwnerOfSector must be of type major, since independent or no diplo minors are handled.
+		assert(pOwnerOfSector->IsMajor());
+		CalcContactCommutative(*pMajor, *pOwnerOfSector, p);
+	}//for (int y = 0; y < m_ShipArray.GetSize(); y++)
 }
 
 /// Diese Funktion führt allgemeine Berechnung durch, die immer zum Ende der NextRound-Calculation stattfinden müssen.

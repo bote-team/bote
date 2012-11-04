@@ -7,6 +7,8 @@
 #include "AI\MajorAI.h"
 #include "HTMLStringBuilder.h"
 
+#include <cassert>
+
 IMPLEMENT_SERIAL (CRace, CObject, 1)
 
 //////////////////////////////////////////////////////////////////////
@@ -474,4 +476,14 @@ CString CRace::GetTooltip(void) const
 	sProb += s;
 
 	return CHTMLStringBuilder::GetHTMLCenter(sName + sProb);
+}
+
+bool CRace::CanBeContactedBy(const CString& sRaceID) const {
+	return !IsRaceContacted(sRaceID) && !HasSpecialAbility(SPECIAL_NO_DIPLOMACY);
+}
+
+void CRace::Contact(const CRace& Race, const CPoint& /*p*/) {
+	const CString& sContactedRaceID = Race.GetRaceID();
+	assert(!IsRaceContacted(sContactedRaceID));
+	SetIsRaceContacted(sContactedRaceID, true);
 }

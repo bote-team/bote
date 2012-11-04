@@ -378,7 +378,13 @@ private:
 protected:
 	/// Diese Funktion führt allgemeine Berechnung durch, die immer zum Ende der NextRound-Calculation stattfinden müssen.
 	void CalcEndDataForNextRound();
-
+private:
+	//helper functions for CalcContactNewRaces()
+	void CalcContactClientWork(CMajor& Major, const CRace& ContactedRace);
+	void CalcContactCommutative(CMajor& Major, CRace& ContactedRace, const CPoint& p);
+	void CalcContactShipToMajorShip(CRace& Race, const CSector& sector, const CPoint& p);
+	void CalcContactMinor(CMajor& Major, const CSector& sector, const CPoint& p);
+protected:
 	/// Diese Funktion überprüft, ob neue Rassen kennengelernt wurden.
 	void CalcContactNewRaces();
 

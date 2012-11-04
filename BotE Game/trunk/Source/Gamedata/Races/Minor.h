@@ -50,6 +50,8 @@ public:
 	/// @return <code>true</code> wenn unterworfen, sonst <code>false</code>
 	bool GetSubjugated(void) const {return m_bSubjugated;}
 
+	virtual void Contact(const CRace& Race, const CPoint& p);
+
 	/// Funktion gibt die Akzeptanzpunkte zu einer gewünschten Majorrace zurück.
 	/// @param sRaceID Rassen-ID der gewünschten Majorrace
 	/// @return Akzeptanzpunkte

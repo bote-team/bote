@@ -488,7 +488,7 @@ Sternbasisbau
 [ASSIGN_FLAGSHIP_MESSAGE]
 Die § (§) wurde zum Flaggschiff ernannt
 [GET_CONTACT_TO_MINOR]
-Wir haben die § kennengelernt
+Wir haben die § in Sektor § kennengelernt
 [GET_CONTACT_TO_MAJOR]
 Wir haben die § in Sektor § getroffen
 

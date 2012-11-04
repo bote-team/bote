@@ -197,6 +197,9 @@ public:
 	/// @return <code>true</code>, wenn die Rasse die Spezialeigenschaft besitzt, sonst <code>false</code>
 	bool HasSpecialAbility(int ability) const;
 
+	bool CanBeContactedBy(const CString& sRaceID) const;
+	virtual void Contact(const CRace& Race, const CPoint& p);
+
 	/// Funktion zum Setzen von Spezialeigenschaften der Rasse.
 	/// @param ability Spezialeigenschaft
 	/// @param is <code>true</code> oder <code>false</code>

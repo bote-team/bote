@@ -740,3 +740,7 @@ void CMinor::Reset(void)
 	m_bSubjugated = false;					// wurde die Rasse unterworfen
 	m_mAcceptance.clear();					// Punkte die eine MajorRace durch längere Beziehung mit der Rasse ansammelt, wird schwerer diese Rasse wegzukaufen
 }
+
+void CMinor::Contact(const CRace& Race, const CPoint& p) {
+	CRace::Contact(Race, p);
+}
