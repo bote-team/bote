@@ -84,11 +84,11 @@ void CPlanetBottomView::OnDraw(CDC* dc)
 	int nPosX = m_TotalSize.cx - 175;
 	int nVertCenter = m_TotalSize.cy / 2;
 
-	if (pDoc->m_Sectors.at(KO.x+(KO.y)*STARMAP_SECTORS_HCOUNT).GetFullKnown(pMajor->GetRaceID()) == TRUE)
+	if (pDoc->GetSector(KO.x, KO.y).GetFullKnown(pMajor->GetRaceID()) == TRUE)
 	{
-		for (int i = 0; i < pDoc->m_Sectors.at(KO.x+(KO.y)*STARMAP_SECTORS_HCOUNT).GetNumberOfPlanets(); i++)
+		for (int i = 0; i < pDoc->GetSector(KO.x, KO.y).GetNumberOfPlanets(); i++)
 		{
-			CPlanet* planet = pDoc->m_Sectors.at(KO.x+(KO.y)*STARMAP_SECTORS_HCOUNT).GetPlanet(i);
+			CPlanet* planet = pDoc->GetSector(KO.x, KO.y).GetPlanet(i);
 			maxHabitants += planet->GetMaxHabitant();
 
 			CRect rect;
@@ -178,19 +178,19 @@ void CPlanetBottomView::OnDraw(CDC* dc)
 
 	// Informationen zu dem System angeben
 	CString s;
-	float currentHabitants = pDoc->m_Sectors.at(KO.x+(KO.y)*STARMAP_SECTORS_HCOUNT).GetCurrentHabitants();
+	float currentHabitants = pDoc->GetSector(KO.x, KO.y).GetCurrentHabitants();
 	if (pDoc->GetSector(KO).GetAnomaly() && pDoc->GetSector(KO).GetScanned(pMajor->GetRaceID()))
 		s.Format("%s", pDoc->GetSector(KO).GetAnomaly()->GetMapName(KO));
 	else
 		s.Format("%s %c%i",CResourceManager::GetString("SECTOR"),(char)(KO.y+97),KO.x+1);
 	g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), PointF(40,25), &fontFormat, &fontBrush);
 
-	if (pDoc->m_Sectors.at(KO.x+(KO.y)*STARMAP_SECTORS_HCOUNT).GetScanned(pMajor->GetRaceID()) == FALSE)
+	if (pDoc->GetSector(KO.x, KO.y).GetScanned(pMajor->GetRaceID()) == FALSE)
 	{
 		s = CResourceManager::GetString("UNKNOWN");
 		g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), PointF(40,47), &fontFormat, &fontBrush);
 	}
-	else if (pDoc->m_Sectors.at(KO.x+(KO.y)*STARMAP_SECTORS_HCOUNT).GetSunSystem() == TRUE && pDoc->m_Sectors.at(KO.x+(KO.y)*STARMAP_SECTORS_HCOUNT).GetKnown(pMajor->GetRaceID()) == TRUE)
+	else if (pDoc->GetSector(KO.x, KO.y).GetSunSystem() == TRUE && pDoc->GetSector(KO.x, KO.y).GetKnown(pMajor->GetRaceID()) == TRUE)
 	{
 		// vorhandene Rohstoffe auf allen Planeten zeichnen
 		s = CResourceManager::GetString("EXISTING_RES") + ":";
@@ -228,9 +228,9 @@ void CPlanetBottomView::OnDraw(CDC* dc)
 			}
 		}
 
-		s.Format("%s: %s",CResourceManager::GetString("SYSTEM"), pDoc->m_Sectors.at(KO.x+(KO.y)*STARMAP_SECTORS_HCOUNT).GetName());
+		s.Format("%s: %s",CResourceManager::GetString("SYSTEM"), pDoc->GetSector(KO.x, KO.y).GetName());
 		g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), PointF(40,47), &fontFormat, &fontBrush);
-		if (pDoc->m_Sectors.at(KO.x+(KO.y)*STARMAP_SECTORS_HCOUNT).GetFullKnown(pMajor->GetRaceID()))
+		if (pDoc->GetSector(KO.x, KO.y).GetFullKnown(pMajor->GetRaceID()))
 		{
 			s.Format("%s: %.3lf %s",CResourceManager::GetString("MAX_HABITANTS"), maxHabitants, CResourceManager::GetString("MRD"));
 			g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), PointF(40,180), &fontFormat, &fontBrush);
@@ -265,18 +265,18 @@ void CPlanetBottomView::OnDraw(CDC* dc)
 		}
 	}
 	// Scannerstärke zeichnen
-	if (pDoc->m_Sectors.at(KO.x+(KO.y)*STARMAP_SECTORS_HCOUNT).GetScanned(pMajor->GetRaceID()) == TRUE)
+	if (pDoc->GetSector(KO.x, KO.y).GetScanned(pMajor->GetRaceID()) == TRUE)
 	{
 		// Rassenspezifische Schrift auswählen
 		CFontLoader::CreateGDIFont(pMajor, 1, fontName, fontSize);
-		s.Format("%s: %i%%",CResourceManager::GetString("SCANPOWER"), pDoc->m_Sectors.at(KO.x+(KO.y)*STARMAP_SECTORS_HCOUNT).GetScanPower(pMajor->GetRaceID()));
-		if (pDoc->m_Sectors.at(KO.x+(KO.y)*STARMAP_SECTORS_HCOUNT).GetScanPower(pMajor->GetRaceID()) >= 75)
+		s.Format("%s: %i%%",CResourceManager::GetString("SCANPOWER"), pDoc->GetSector(KO.x, KO.y).GetScanPower(pMajor->GetRaceID()));
+		if (pDoc->GetSector(KO.x, KO.y).GetScanPower(pMajor->GetRaceID()) >= 75)
 			fontBrush.SetColor(Color(0,245,0));
-		else if (pDoc->m_Sectors.at(KO.x+(KO.y)*STARMAP_SECTORS_HCOUNT).GetScanPower(pMajor->GetRaceID()) >= 50)
+		else if (pDoc->GetSector(KO.x, KO.y).GetScanPower(pMajor->GetRaceID()) >= 50)
 			fontBrush.SetColor(Color(50,180,50));
-		else if (pDoc->m_Sectors.at(KO.x+(KO.y)*STARMAP_SECTORS_HCOUNT).GetScanPower(pMajor->GetRaceID()) >= 25)
+		else if (pDoc->GetSector(KO.x, KO.y).GetScanPower(pMajor->GetRaceID()) >= 25)
 			fontBrush.SetColor(Color(230,230,20));
-		else if (pDoc->m_Sectors.at(KO.x+(KO.y)*STARMAP_SECTORS_HCOUNT).GetScanPower(pMajor->GetRaceID()) > 0)
+		else if (pDoc->GetSector(KO.x, KO.y).GetScanPower(pMajor->GetRaceID()) > 0)
 			fontBrush.SetColor(Color(230,100,0));
 		else
 			fontBrush.SetColor(Color(245,0,0));
@@ -367,7 +367,7 @@ void CPlanetBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 		if (m_vPlanetRects[i].PtInRect(point))
 		{
 			CSmallInfoView::SetPlanetInfo(true);
-			CSmallInfoView::SetPlanet(pDoc->m_Sectors.at(KO.x+(KO.y)*STARMAP_SECTORS_HCOUNT).GetPlanet(i));
+			CSmallInfoView::SetPlanet(pDoc->GetSector(KO.x, KO.y).GetPlanet(i));
 			pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
 			break;
 		}
@@ -432,7 +432,7 @@ void CPlanetBottomView::OnMouseMove(UINT nFlags, CPoint point)
 	for (UINT i = 0; i < m_vPlanetRects.size(); i++)
 		if (m_vPlanetRects[i].PtInRect(point))
 		{
-			CPlanet* pPlanet = pDoc->m_Sectors.at(KO.x+(KO.y)*STARMAP_SECTORS_HCOUNT).GetPlanet(i);
+			CPlanet* pPlanet = pDoc->GetSector(KO.x, KO.y).GetPlanet(i);
 			if (pPlanet != CSmallInfoView::GetPlanet())
 			{
 				CSmallInfoView::SetPlanet(pPlanet);
@@ -565,7 +565,7 @@ CString CPlanetBottomView::CreateTooltip(void)
 				short nBonus = 0;
 				for (int i = 0; i < pDoc->GetSector(KO).GetNumberOfPlanets(); i++)
 				{
-					CPlanet* pPlanet = pDoc->m_Sectors.at(KO.x+(KO.y)*STARMAP_SECTORS_HCOUNT).GetPlanet(i);
+					CPlanet* pPlanet = pDoc->GetSector(KO.x, KO.y).GetPlanet(i);
 					ASSERT(pPlanet);
 					if (pPlanet->GetBoni()[j])
 						if (j != DERITIUM)
@@ -603,7 +603,7 @@ CString CPlanetBottomView::CreateTooltip(void)
 		// wurde die Maus über einen der Planeten gehalten oder über die Planetenboni?
 		for (UINT i = 0; i < m_vPlanetRects.size(); i++)
 		{
-			CPlanet* pPlanet = pDoc->m_Sectors.at(KO.x+(KO.y)*STARMAP_SECTORS_HCOUNT).GetPlanet(i);
+			CPlanet* pPlanet = pDoc->GetSector(KO.x, KO.y).GetPlanet(i);
 			ASSERT(pPlanet);
 
 			// wurde auf den Planeten gezeigt

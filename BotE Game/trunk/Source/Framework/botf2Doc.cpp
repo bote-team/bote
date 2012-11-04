@@ -654,9 +654,9 @@ void CBotf2Doc::SerializeEndOfRoundData(CArchive &ar, network::RACE race)
 		for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
 			for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
 			{
-				if (m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetSunSystem())
+				if (GetSector(x, y).GetSunSystem())
 				{
-					if (m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSector() == pPlayer->GetRaceID() && m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem() == pPlayer->GetRaceID())
+					if (GetSector(x, y).GetOwnerOfSector() == pPlayer->GetRaceID() && GetSystem(x, y).GetOwnerOfSystem() == pPlayer->GetRaceID())
 						number++;
 				}
 			}
@@ -664,12 +664,12 @@ void CBotf2Doc::SerializeEndOfRoundData(CArchive &ar, network::RACE race)
 		for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
 			for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
 			{
-				if (m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetSunSystem())
+				if (GetSector(x, y).GetSunSystem())
 				{
-					if (m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem() == pPlayer->GetRaceID())
+					if (GetSystem(x, y).GetOwnerOfSystem() == pPlayer->GetRaceID())
 					{
 						ar << CPoint(x,y);
-						m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).Serialize(ar);
+						GetSystem(x, y).Serialize(ar);
 					}
 				}
 			}
@@ -739,7 +739,7 @@ void CBotf2Doc::SerializeEndOfRoundData(CArchive &ar, network::RACE race)
 		{
 			CPoint p;
 			ar >> p;
-			m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).Serialize(ar);
+			GetSystem(p.x, p.y).Serialize(ar);
 		}
 
 		pMajor->Serialize(ar);
@@ -1044,10 +1044,10 @@ void CBotf2Doc::PrepareData()
 			{
 				temp = 0;
 				hab = 0;
-				int number=m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetNumberOfPlanets();
+				int number=GetSector(x, y).GetNumberOfPlanets();
 				for (int i=0;i<number;i++)
 				{
-					CPlanet* planet = m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetPlanet(i);
+					CPlanet* planet = GetSector(x, y).GetPlanet(i);
 					temp+=planet->GetMaxHabitant();
 					hab = temp;
 				}
@@ -1085,10 +1085,10 @@ void CBotf2Doc::GenerateGalaxy()
 		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
 		{
 			// Alle Werte der Systemklasse wieder auf NULL setzen
-			m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).ResetSystem();
+			GetSystem(x, y).ResetSystem();
 			// Alle Werte der Sektorklasse wieder auf NULL setzen
-			m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).Reset();
-			m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).SetKO(x,y);
+			GetSector(x, y).Reset();
+			GetSector(x, y).SetKO(x,y);
 		}
 	m_mRaceKO.clear();
 
@@ -1256,7 +1256,7 @@ void CBotf2Doc::GenerateGalaxy()
 	vector<CPoint> vSectorsToGenerate;
 	for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
 		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-			if ((!m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetSunSystem()) && nGenField[x][y]==true)
+			if ((!GetSector(x, y).GetSunSystem()) && nGenField[x][y]==true)
 				vSectorsToGenerate.push_back(CPoint(x,y));
 
 	while (!vSectorsToGenerate.empty())
@@ -1308,16 +1308,16 @@ void CBotf2Doc::GenerateGalaxy()
 		if (minorRaceProb < 0)
 			minorRaceProb = 0;
 		if (sunSystemProb > 0)
-			m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GenerateSector(sunSystemProb, minorRaceProb);
+			GetSector(x, y).GenerateSector(sunSystemProb, minorRaceProb);
 		
 		// Wenn keine Minorrace in dem System generiert wurde
-		if (!m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetMinorRace())
+		if (!GetSector(x, y).GetMinorRace())
 		{
 			// möglicherweise eine Anomalie im Sektor generieren
-			if (!m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetSunSystem())
+			if (!GetSector(x, y).GetSunSystem())
 			{
 				if (rand()%100 >= (100 - (nAnomalyDensity - nAnomalys * 10)))
-					m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).CreateAnomaly();
+					GetSector(x, y).CreateAnomaly();
 			}
 		}
 	}
@@ -1329,10 +1329,10 @@ void CBotf2Doc::GenerateGalaxy()
 	{
 		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
 		{
-			if (m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetMinorRace())
+			if (GetSector(x, y).GetMinorRace())
 			{
 				// Nun die Minorrace parametrisieren
-				CMinor* pMinor = m_pRaceCtrl->GetMinorRace(m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetName());
+				CMinor* pMinor = m_pRaceCtrl->GetMinorRace(GetSector(x, y).GetName());
 				if (!pMinor)
 				{
 					AfxMessageBox("Error in function CBotf2Doc::GenerateGalaxy(): Could not create Minorrace");
@@ -1340,23 +1340,23 @@ void CBotf2Doc::GenerateGalaxy()
 				else
 				{
 					pMinor->SetRaceKO(CPoint(x,y));
-					m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).SetOwnerOfSector(pMinor->GetRaceID());
-					m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).SetOwnerOfSystem("");
+					GetSector(x, y).SetOwnerOfSector(pMinor->GetRaceID());
+					GetSystem(x, y).SetOwnerOfSystem("");
 					sUsedMinors.insert(pMinor->GetRaceID());
 					// wenn die Minorrace Schiffe bauen kann, sie aber kein Deritium im System besitzt, so wird
 					// ein Deritium auf dem ersten kolonisierten Planeten hinzugefügt
 					if (pMinor->GetSpaceflightNation())
 					{
 						BOOLEAN bRes[DERITIUM + 1] = {FALSE};
-						m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetAvailableResources(bRes, true);
+						GetSector(x, y).GetAvailableResources(bRes, true);
 						// gibt es kein Deritium=
 						if (!bRes[DERITIUM])
 						{
-							for (int p = 0; p < static_cast<int>(m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetPlanets().size()); p++)
+							for (int p = 0; p < static_cast<int>(GetSector(x, y).GetPlanets().size()); p++)
 							{
-								if (m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetPlanet(p)->GetCurrentHabitant() > 0 && m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetPlanet(p)->GetColonized())
+								if (GetSector(x, y).GetPlanet(p)->GetCurrentHabitant() > 0 && GetSector(x, y).GetPlanet(p)->GetColonized())
 								{
-									m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetPlanet(p)->SetBoni(DERITIUM, TRUE);
+									GetSector(x, y).GetPlanet(p)->SetBoni(DERITIUM, TRUE);
 									break;
 								}
 							}
@@ -1527,12 +1527,12 @@ void CBotf2Doc::NextRound()
 
 		CPoint ko = pMinor->GetRaceKO();
 
-		if (ko != CPoint(-1,-1) && m_Systems.at(ko.x+(ko.y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem() == "" && m_Sectors.at(ko.x+(ko.y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSector() == pMinor->GetRaceID())
+		if (ko != CPoint(-1,-1) && GetSystem(ko.x, ko.y).GetOwnerOfSystem() == "" && GetSector(ko).GetOwnerOfSector() == pMinor->GetRaceID())
 		{
 			// Vielleicht kolonisiert die Minorrace weitere Planeten in ihrem System
 			if (pMinor->PerhapsExtend(this))
 				// dann sind im System auch weitere Einwohner hinzugekommen
-				m_Systems.at(ko.x+(ko.y)*STARMAP_SECTORS_HCOUNT).SetHabitants(this->GetSector(ko).GetCurrentHabitants());
+				GetSystem(ko.x, ko.y).SetHabitants(this->GetSector(ko).GetCurrentHabitants());
 
 			// Den Verbrauch der Rohstoffe der kleinen Rassen in jeder Runde berechnen
 			pMinor->ConsumeResources(this);
@@ -1617,7 +1617,7 @@ void CBotf2Doc::ApplyShipsAtStartup()
 			{
 				for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
 					// Sektornamen gefunden
-					if (m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetName(TRUE) == s)
+					if (GetSector(x, y).GetName(TRUE) == s)
 					{
 						bFoundSector = true;
 						// Schiffsklassen durchgehen, die dort stationiert werden sollen
@@ -1683,7 +1683,7 @@ void CBotf2Doc::ApplyTroopsAtStartup()
 			for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
 			{
 				for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-					if (m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetName() == s)//Wenn der Name gefunden wurde
+					if (GetSector(x, y).GetName() == s)//Wenn der Name gefunden wurde
 					{
 						while (pos < csInput.GetLength())
 						{
@@ -1735,7 +1735,7 @@ void CBotf2Doc::ApplyBuildingsAtStartup()
 			for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
 			{
 				for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-					if (m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetName() == s)
+					if (GetSector(x, y).GetName() == s)
 					{
 						while (pos < csInput.GetLength())
 						{
@@ -1847,9 +1847,9 @@ void CBotf2Doc::ApplyBuildingsAtStartup()
 		for (int i = 0; i < pMajor->GetEmpire()->GetSystemList()->GetSize(); i++)
 		{
 			CPoint p = pMajor->GetEmpire()->GetSystemList()->GetAt(i).ko;
-			m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).CalculateBuildableBuildings(&m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT), &BuildingInfo, pMajor, &m_GlobalBuildings);
-			m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).CalculateBuildableShips(this, p);
-			m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).CalculateBuildableTroops(&m_TroopInfo, pMajor->GetEmpire()->GetResearch());
+			GetSystem(p.x, p.y).CalculateBuildableBuildings(&GetSector(p.x, p.y), &BuildingInfo, pMajor, &m_GlobalBuildings);
+			GetSystem(p.x, p.y).CalculateBuildableShips(this, p);
+			GetSystem(p.x, p.y).CalculateBuildableTroops(&m_TroopInfo, pMajor->GetEmpire()->GetResearch());
 		}
 	}
 }
@@ -2287,7 +2287,7 @@ void CBotf2Doc::BuildShip(int nID, const CPoint& KO, const CString& sOwnerID)
 		m_ShipArray.ElementAt(n).SetTargetKO(CPoint(-1,-1), i, true);
 	m_ShipArray.ElementAt(n).SetTerraformingPlanet(-1);
 
-	pMajor->GetShipHistory()->AddShip(&m_ShipArray.GetAt(n), m_Sectors.at(KO.x+(KO.y)*STARMAP_SECTORS_HCOUNT).GetName(), m_iRound);
+	pMajor->GetShipHistory()->AddShip(&m_ShipArray.GetAt(n), GetSector(KO.x, KO.y).GetName(), m_iRound);
 }
 
 void CBotf2Doc::RemoveShip(int nIndex)
@@ -2444,15 +2444,15 @@ void CBotf2Doc::AddToLostShipHistory(const CShip* pShip, const CString& sEvent, 
 void CBotf2Doc::BuildTroop(BYTE ID, CPoint ko)
 {
 	// Mal Testweise paar Truppen anlegen
-	m_Systems.at(ko.x+(ko.y)*STARMAP_SECTORS_HCOUNT).AddTroop((CTroop*)&m_TroopInfo.GetAt(ID));
-	CString sRace = m_Sectors.at(ko.x+(ko.y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSector();
+	GetSystem(ko.x, ko.y).AddTroop((CTroop*)&m_TroopInfo.GetAt(ID));
+	CString sRace = GetSector(ko).GetOwnerOfSector();
 	if (sRace == "")
 		return;
 
 	CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(sRace));
 	ASSERT(pMajor);
 
-	int n = m_Systems.at(ko.x+(ko.y)*STARMAP_SECTORS_HCOUNT).GetTroops()->GetUpperBound();
+	int n = GetSystem(ko.x, ko.y).GetTroops()->GetUpperBound();
 
 	// Spezialforschung #4: "Truppen"
 	if (pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(RESEARCH_COMPLEX::TROOPS)->GetComplexStatus() == RESEARCH_STATUS::RESEARCHED)
@@ -2460,14 +2460,14 @@ void CBotf2Doc::BuildTroop(BYTE ID, CPoint ko)
 		// 20% verbesserte Offensive
 		if (pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(RESEARCH_COMPLEX::TROOPS)->GetFieldStatus(1) == RESEARCH_STATUS::RESEARCHED)
 		{
-			BYTE power = m_Systems.at(ko.x+(ko.y)*STARMAP_SECTORS_HCOUNT).GetTroops()->GetAt(n).GetOffense();
-			m_Systems.at(ko.x+(ko.y)*STARMAP_SECTORS_HCOUNT).GetTroops()->GetAt(n).SetOffense(
+			BYTE power = GetSystem(ko.x, ko.y).GetTroops()->GetAt(n).GetOffense();
+			GetSystem(ko.x, ko.y).GetTroops()->GetAt(n).SetOffense(
 				power + (power * pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(RESEARCH_COMPLEX::TROOPS)->GetBonus(1) / 100));
 		}
 		// 500 Erfahrungspunkte dazu -> erste Stufe
 		else if (pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(RESEARCH_COMPLEX::TROOPS)->GetFieldStatus(2) == RESEARCH_STATUS::RESEARCHED)
 		{
-			m_Systems.at(ko.x+(ko.y)*STARMAP_SECTORS_HCOUNT).GetTroops()->GetAt(n).AddExperiancePoints(pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(RESEARCH_COMPLEX::TROOPS)->GetBonus(2));
+			GetSystem(ko.x, ko.y).GetTroops()->GetAt(n).AddExperiancePoints(pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(RESEARCH_COMPLEX::TROOPS)->GetBonus(2));
 		}
 	}
 
@@ -2649,7 +2649,7 @@ void CBotf2Doc::CalcSystemAttack()
 			{
 				CPoint p = m_ShipArray.GetAt(y).GetKO();
 				// Besitzer des Systems (hier Sector wegen Minors) vor dem Systemangriff
-				CString sDefender = m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSector();
+				CString sDefender = GetSector(p.x, p.y).GetOwnerOfSector();
 				// Angreifer bzw. neuer Besitzer des Systems nach dem Angriff
 				set<CString> attackers;
 				for (int i = 0; i < m_ShipArray.GetSize(); i++)
@@ -2666,19 +2666,19 @@ void CBotf2Doc::CalcSystemAttack()
 				if (!sDefender.IsEmpty())
 					defender = m_pRaceCtrl->GetRace(sDefender);
 				// Wenn eine Minorrace in dem System lebt und dieser nicht schon erobert wurde
-				if (defender && defender->IsMinor() && m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetTakenSector() == FALSE)
+				if (defender && defender->IsMinor() && GetSector(p.x, p.y).GetTakenSector() == FALSE)
 				{
-					attackSystem->Init(defender, &m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT), &m_ShipArray, &m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT), &this->BuildingInfo, CTrade::GetMonopolOwner());
+					attackSystem->Init(defender, &GetSystem(p.x, p.y), &m_ShipArray, &GetSector(p.x, p.y), &this->BuildingInfo, CTrade::GetMonopolOwner());
 				}
 				// Wenn eine Majorrace in dem System lebt
 				else if (defender && defender->IsMajor() && attackSystem->IsDefenderNotAttacker(sDefender, &attackers))
 				{
-					attackSystem->Init(defender, &m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT), &m_ShipArray, &m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT), &this->BuildingInfo, CTrade::GetMonopolOwner());
+					attackSystem->Init(defender, &GetSystem(p.x, p.y), &m_ShipArray, &GetSector(p.x, p.y), &this->BuildingInfo, CTrade::GetMonopolOwner());
 				}
 				// Wenn niemand mehr in dem System lebt, z.B. durch Rebellion
 				else
 				{
-					attackSystem->Init(NULL, &m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT), &m_ShipArray, &m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT), &this->BuildingInfo, CTrade::GetMonopolOwner());
+					attackSystem->Init(NULL, &GetSystem(p.x, p.y), &m_ShipArray, &GetSector(p.x, p.y), &this->BuildingInfo, CTrade::GetMonopolOwner());
 				}
 				// Ein Systemangriff verringert die Moral in allen Systemen, die von uns schon erobert wurden und zuvor
 				// der Majorrace gehörten, deren System hier angegriffen wird
@@ -2692,7 +2692,7 @@ void CBotf2Doc::CalcSystemAttack()
 				// Wurde das System mit Truppen erobert, so wechselt es den Besitzer
 				if (attackSystem->Calculate())
 				{
-					CString attacker = m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem();
+					CString attacker = GetSystem(p.x, p.y).GetOwnerOfSystem();
 					CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(attacker));
 					ASSERT(pMajor);
 					//* Der Besitzer des Systems wurde in der Calculate() Funktion schon auf den neuen Besitzer
@@ -2702,25 +2702,25 @@ void CBotf2Doc::CalcSystemAttack()
 					// Wenn in dem System eine Minorrace beheimatet ist und das System nicht vorher schon von jemand
 					// anderem militärisch erobert wurde oder die Minorace bei einem anderen Imperium schon vermitgliedelt
 					// wurde, dann muss diese zuerst die Gebäude bauen
-					if (m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetMinorRace() == TRUE && m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetTakenSector() == FALSE && defender != NULL && defender->IsMinor())
+					if (GetSector(p.x, p.y).GetMinorRace() == TRUE && GetSector(p.x, p.y).GetTakenSector() == FALSE && defender != NULL && defender->IsMinor())
 					{
 						CMinor* pMinor = dynamic_cast<CMinor*>(defender);
 						ASSERT(pMinor);
 						pMinor->SetSubjugated(true);
 						// Wenn das System noch keiner Majorrace gehört, dann Gebäude bauen
-						m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).BuildBuildingsForMinorRace(&m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT), &BuildingInfo, m_Statistics.GetAverageTechLevel(), pMinor);
+						GetSystem(p.x, p.y).BuildBuildingsForMinorRace(&GetSector(p.x, p.y), &BuildingInfo, m_Statistics.GetAverageTechLevel(), pMinor);
 						// Sektor gilt ab jetzt als erobert.
-						m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetTakenSector(TRUE);
-						m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetOwned(TRUE);
-						m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetOwnerOfSector(attacker);
+						GetSector(p.x, p.y).SetTakenSector(TRUE);
+						GetSector(p.x, p.y).SetOwned(TRUE);
+						GetSector(p.x, p.y).SetOwnerOfSector(attacker);
 						// Beziehung zu dieser Minorrace verschlechtert sich auf 0 Punkte
 						pMinor->SetRelation(attacker, -100);
 						// Moral in diesem System verschlechtert sich um rand()%25+10 Punkte
-						m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetMoral(-rand()%25-10);
+						GetSystem(p.x, p.y).SetMoral(-rand()%25-10);
 						// ist die Moral unter 50, so wird sie auf 50 gesetzt
-						if (m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetMoral() < 50)
-							m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetMoral(50 - m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetMoral());
-						CString param = m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetName();
+						if (GetSystem(p.x, p.y).GetMoral() < 50)
+							GetSystem(p.x, p.y).SetMoral(50 - GetSystem(p.x, p.y).GetMoral());
+						CString param = GetSector(p.x, p.y).GetName();
 						CString eventText = "";
 
 						// Alle diplomatischen Nachrichten der Minorrace aus den Feldern löschen und an der Minorrace
@@ -2770,17 +2770,17 @@ void CBotf2Doc::CalcSystemAttack()
 						}
 					}
 					// Wenn das System einer Minorrace gehört, eingenommen wurde und somit befreit wird
-					else if (m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetMinorRace() == TRUE && m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetTakenSector() == TRUE && defender != NULL && defender->IsMajor())
+					else if (GetSector(p.x, p.y).GetMinorRace() == TRUE && GetSector(p.x, p.y).GetTakenSector() == TRUE && defender != NULL && defender->IsMajor())
 					{
 						// Die Beziehung zur der Majorrace, die das System vorher besaß verschlechtert sich
 						defender->SetRelation(attacker, -rand()%50);
 						// Die Beziehung zu der Minorrace verbessert sich auf Seiten des Retters
-						CMinor* pMinor = m_pRaceCtrl->GetMinorRace(m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetName());
+						CMinor* pMinor = m_pRaceCtrl->GetMinorRace(GetSector(p.x, p.y).GetName());
 						ASSERT(pMinor);
 						pMinor->SetRelation(attacker, rand()%50);
 						pMinor->SetSubjugated(false);
 						// Eventnachricht an den, der das System verloren hat (erobertes Minorracesystem wieder verloren)
-						CString param = m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetName();
+						CString param = GetSector(p.x, p.y).GetName();
 						CString eventText = "";
 
 						CMajor* def = dynamic_cast<CMajor*>(defender);
@@ -2813,12 +2813,12 @@ void CBotf2Doc::CalcSystemAttack()
 							}
 						}
 						// Sektor gilt ab jetzt als nicht mehr erobert.
-						m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetTakenSector(FALSE);
-						m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetOwned(FALSE);
-						m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetOwnerOfSector(pMinor->GetRaceID());
-						m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetOwnerOfSystem("");
+						GetSector(p.x, p.y).SetTakenSector(FALSE);
+						GetSector(p.x, p.y).SetOwned(FALSE);
+						GetSector(p.x, p.y).SetOwnerOfSector(pMinor->GetRaceID());
+						GetSystem(p.x, p.y).SetOwnerOfSystem("");
 						// Moral in dem System um rand()%50+25 erhöhen
-						m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetMoral(rand()%50+25);
+						GetSystem(p.x, p.y).SetMoral(rand()%50+25);
 					}
 					// Eine andere Majorrace besaß das System
 					else
@@ -2827,10 +2827,10 @@ void CBotf2Doc::CalcSystemAttack()
 						if (defender != NULL && defender->GetRaceID() != attacker)
 							defender->SetRelation(attacker, -rand()%50);
 						// Wenn das System zurückerobert wird, dann gilt es als befreit
-						if (m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetColonyOwner() == attacker)
+						if (GetSector(p.x, p.y).GetColonyOwner() == attacker)
 						{
-							m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetTakenSector(FALSE);
-							CString param = m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetName();
+							GetSector(p.x, p.y).SetTakenSector(FALSE);
+							CString param = GetSector(p.x, p.y).GetName();
 							// Eventnachricht an den Eroberer (unser ehemaliges System wieder zurückerobert)
 							CString eventText = "";
 							eventText = pMajor->GetMoralObserver()->AddEvent(14, pMajor->GetRaceMoralNumber(), param);
@@ -2865,14 +2865,14 @@ void CBotf2Doc::CalcSystemAttack()
 								}
 							}
 							// Moral in dem System um rand()%25+10 erhöhen
-							m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetMoral(rand()%25+10);
+							GetSystem(p.x, p.y).SetMoral(rand()%25+10);
 						}
 						// Handelte es sich dabei um das Heimatsystem einer Rasse
-						else if (defender != NULL && defender->IsMajor() && m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSector() == defender->GetRaceID() && m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetName() == dynamic_cast<CMajor*>(defender)->GetHomesystemName())
+						else if (defender != NULL && defender->IsMajor() && GetSector(p.x, p.y).GetOwnerOfSector() == defender->GetRaceID() && GetSector(p.x, p.y).GetName() == dynamic_cast<CMajor*>(defender)->GetHomesystemName())
 						{
 							CMajor* pDefenderMajor = dynamic_cast<CMajor*>(defender);
 							// Eventnachricht an den ehemaligen Heimatsystembesitzer (Heimatsystem verloren)
-							CString param = m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetName();
+							CString param = GetSector(p.x, p.y).GetName();
 							CString eventText = "";
 							eventText = pDefenderMajor->GetMoralObserver()->AddEvent(15, pDefenderMajor->GetRaceMoralNumber(), param);
 							// Eventnachricht hinzufügen
@@ -2903,27 +2903,27 @@ void CBotf2Doc::CalcSystemAttack()
 								}
 							}
 							// Sektor gilt ab jetzt als erobert.
-							m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetTakenSector(TRUE);
+							GetSector(p.x, p.y).SetTakenSector(TRUE);
 							// Moral in diesem System verschlechtert sich um rand()%25+10 Punkte
-							m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetMoral(-rand()%25-10);
+							GetSystem(p.x, p.y).SetMoral(-rand()%25-10);
 							// ist die Moral unter 50, so wird sie auf 50 gesetzt
-							if (m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetMoral() < 50)
-								m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetMoral(50 - m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetMoral());
+							if (GetSystem(p.x, p.y).GetMoral() < 50)
+								GetSystem(p.x, p.y).SetMoral(50 - GetSystem(p.x, p.y).GetMoral());
 						}
 						// wurde das System erobert und obere Bedingungen traten nicht ein
 						else
 						{
-							CString param = m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetName();
+							CString param = GetSector(p.x, p.y).GetName();
 							// Hat eine andere Majorrace die Minorrace vermitgliedelt, so unterwerfen wir auch diese Minorrace
-							if (m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetMinorRace())
+							if (GetSector(p.x, p.y).GetMinorRace())
 							{
-								CMinor* pMinor = m_pRaceCtrl->GetMinorRace(m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetName());
+								CMinor* pMinor = m_pRaceCtrl->GetMinorRace(GetSector(p.x, p.y).GetName());
 								ASSERT(pMinor);
 								pMinor->SetSubjugated(true);
 								// Beziehung zu dieser Minorrace verschlechtert sich auf 0 Punkte
 								pMinor->SetRelation(attacker, -100);
 
-								CString param = m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetName();
+								CString param = GetSector(p.x, p.y).GetName();
 
 								// Alle diplomatischen Nachrichten der Minorrace aus den Feldern löschen und an der Minorrace
 								// bekannte Imperien die Nachricht der Unterwerfung senden
@@ -2959,12 +2959,12 @@ void CBotf2Doc::CalcSystemAttack()
 							}
 
 							// Sektor gilt ab jetzt als erobert.
-							m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetTakenSector(TRUE);
+							GetSector(p.x, p.y).SetTakenSector(TRUE);
 							// Moral in diesem System verschlechtert sich um rand()%25+10 Punkte
-							m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetMoral(-rand()%25-10);
+							GetSystem(p.x, p.y).SetMoral(-rand()%25-10);
 							// ist die Moral unter 50, so wird sie auf 50 gesetzt
-							if (m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetMoral() < 50)
-								m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetMoral(50 - m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetMoral());
+							if (GetSystem(p.x, p.y).GetMoral() < 50)
+								GetSystem(p.x, p.y).SetMoral(50 - GetSystem(p.x, p.y).GetMoral());
 
 							CString eventText = "";
 							// Eventnachricht an den ehemaligen Besitzer (eigenes System verloren)
@@ -3009,13 +3009,13 @@ void CBotf2Doc::CalcSystemAttack()
 								}
 							}
 						}
-						m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetOwnerOfSector(attacker);
+						GetSector(p.x, p.y).SetOwnerOfSector(attacker);
 					}
 					// Gebäude die nach Eroberung automatisch zerstört werden
-					m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).RemoveSpecialRaceBuildings(&this->BuildingInfo);
+					GetSystem(p.x, p.y).RemoveSpecialRaceBuildings(&this->BuildingInfo);
 					// Variablen berechnen und Gebäude besetzen
-					m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).CalculateNumberOfWorkbuildings(&this->BuildingInfo);
-					m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetWorkersIntoBuildings();
+					GetSystem(p.x, p.y).CalculateNumberOfWorkbuildings(&this->BuildingInfo);
+					GetSystem(p.x, p.y).SetWorkersIntoBuildings();
 
 					// war der Verteidiger eine Majorrace und wurde sie durch die Eroberung komplett ausgelöscht,
 					// so bekommt der Eroberer einen kräftigen Moralschub
@@ -3046,16 +3046,16 @@ void CBotf2Doc::CalcSystemAttack()
 
 					// erfolgreiches Invasionsevent für den Angreifer einfügen (sollte immer ein Major sein)
 					if (!attacker.IsEmpty() && pMajor && pMajor->IsHumanPlayer())
-						pMajor->GetEmpire()->GetEventMessages()->Add(new CEventBombardment(attacker, "InvasionSuccess", CResourceManager::GetString("INVASIONSUCCESSEVENT_HEADLINE", FALSE, m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetName()), CResourceManager::GetString("INVASIONSUCCESSEVENT_TEXT_" + pMajor->GetRaceID(), FALSE, m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetName())));
+						pMajor->GetEmpire()->GetEventMessages()->Add(new CEventBombardment(attacker, "InvasionSuccess", CResourceManager::GetString("INVASIONSUCCESSEVENT_HEADLINE", FALSE, GetSector(p.x, p.y).GetName()), CResourceManager::GetString("INVASIONSUCCESSEVENT_TEXT_" + pMajor->GetRaceID(), FALSE, GetSector(p.x, p.y).GetName())));
 
 					// Invasionsevent für den Verteidiger einfügen
 					if (defender != NULL && defender->IsMajor() && dynamic_cast<CMajor*>(defender)->IsHumanPlayer() && attackSystem->IsDefenderNotAttacker(sDefender, &attackers))
-						dynamic_cast<CMajor*>(defender)->GetEmpire()->GetEventMessages()->Add(new CEventBombardment(sDefender, "InvasionSuccess", CResourceManager::GetString("INVASIONSUCCESSEVENT_HEADLINE", FALSE, m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetName()), CResourceManager::GetString("INVASIONSUCCESSEVENT_TEXT_" + defender->GetRaceID(), FALSE, m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetName())));
+						dynamic_cast<CMajor*>(defender)->GetEmpire()->GetEventMessages()->Add(new CEventBombardment(sDefender, "InvasionSuccess", CResourceManager::GetString("INVASIONSUCCESSEVENT_HEADLINE", FALSE, GetSector(p.x, p.y).GetName()), CResourceManager::GetString("INVASIONSUCCESSEVENT_TEXT_" + defender->GetRaceID(), FALSE, GetSector(p.x, p.y).GetName())));
 				}
 				// Wurde nur bombardiert, nicht erobert
 				else
 				{
-					CString param = m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetName();
+					CString param = GetSector(p.x, p.y).GetName();
 					CString eventText = "";
 					for (set<CString>::const_iterator it = attackers.begin(); it != attackers.end(); ++it)
 					{
@@ -3067,15 +3067,15 @@ void CBotf2Doc::CalcSystemAttack()
 							defender->SetRelation(pMajor->GetRaceID(), -rand()%10);
 					}
 					// Wenn die Bevölkerung des Systems auf NULL geschrumpft ist, dann ist dieses System verloren
-					if (m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetHabitants() <= 0.000001f)
+					if (GetSystem(p.x, p.y).GetHabitants() <= 0.000001f)
 					{
 						// Bei einer Minorrace wird es komplizierter. Wenn diese keine Systeme mehr hat, dann ist diese
 						// aus dem Spiel verschwunden. Alle Einträge in der Diplomatie müssen daher gelöscht werden
-						if (m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetMinorRace())
+						if (GetSector(p.x, p.y).GetMinorRace())
 						{
-							CMinor* pMinor = m_pRaceCtrl->GetMinorRace(m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetName());
+							CMinor* pMinor = m_pRaceCtrl->GetMinorRace(GetSector(p.x, p.y).GetName());
 							ASSERT(pMinor);
-							m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetMinorRace(FALSE);
+							GetSector(p.x, p.y).SetMinorRace(FALSE);
 
 							pMinor->GetIncomingDiplomacyNews()->clear();
 							pMinor->GetOutgoingDiplomacyNews()->clear();
@@ -3140,10 +3140,10 @@ void CBotf2Doc::CalcSystemAttack()
 						{
 							CMajor* pDefenderMajor = dynamic_cast<CMajor*>(defender);
 							eventText = "";
-							if (m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetName() == pDefenderMajor->GetHomesystemName())
+							if (GetSector(p.x, p.y).GetName() == pDefenderMajor->GetHomesystemName())
 							{
 								// Eventnachricht an den ehemaligen Heimatsystembesitzer (Heimatsystem verloren)
-								param = m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetName();
+								param = GetSector(p.x, p.y).GetName();
 								eventText = pDefenderMajor->GetMoralObserver()->AddEvent(15, pDefenderMajor->GetRaceMoralNumber(), param);
 							}
 							else
@@ -3164,11 +3164,11 @@ void CBotf2Doc::CalcSystemAttack()
 								}
 							}
 						}
-						m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetOwnerOfSystem("");
-						m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetOwnerOfSector("");
-						m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetColonyOwner("");
-						m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetTakenSector(FALSE);
-						m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetOwned(FALSE);
+						GetSystem(p.x, p.y).SetOwnerOfSystem("");
+						GetSector(p.x, p.y).SetOwnerOfSector("");
+						GetSector(p.x, p.y).SetColonyOwner("");
+						GetSector(p.x, p.y).SetTakenSector(FALSE);
+						GetSector(p.x, p.y).SetOwned(FALSE);
 
 						// war der Verteidiger eine Majorrace und wurde sie durch den Verlust des Systems komplett ausgelöscht,
 						// so bekommt der Eroberer einen kräftigen Moralschub
@@ -3208,7 +3208,7 @@ void CBotf2Doc::CalcSystemAttack()
 					{
 						// Eventnachrichten nicht jedesmal, sondern nur wenn Gebäude vernichtet wurden oder
 						// mindst. 3% der Bevölkerung vernichtet wurden
-						if (attackSystem->GetDestroyedBuildings() > 0 || attackSystem->GetKilledPop() >= m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetHabitants() * 0.03)
+						if (attackSystem->GetDestroyedBuildings() > 0 || attackSystem->GetKilledPop() >= GetSystem(p.x, p.y).GetHabitants() * 0.03)
 						{
 							for (set<CString>::const_iterator it = attackers.begin(); it != attackers.end(); ++it)
 							{
@@ -3219,7 +3219,7 @@ void CBotf2Doc::CalcSystemAttack()
 								if (defender != NULL)
 									eventText = pMajor->GetMoralObserver()->AddEvent(19, pMajor->GetRaceMoralNumber(), param);
 								// Wenn das System mal uns gehört hatte und durch eine Rebellion verloren ging
-								else if (m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetColonyOwner() == pMajor->GetRaceID() && defender == NULL)
+								else if (GetSector(p.x, p.y).GetColonyOwner() == pMajor->GetRaceID() && defender == NULL)
 									eventText = pMajor->GetMoralObserver()->AddEvent(20, pMajor->GetRaceMoralNumber(), param);
 								// Eventnachricht für Agressor hinzufügen
 								if (!eventText.IsEmpty())
@@ -3258,10 +3258,10 @@ void CBotf2Doc::CalcSystemAttack()
 						if (pMajor->IsHumanPlayer())
 						{
 							if (!attackSystem->IsTroopsInvolved())
-								pMajor->GetEmpire()->GetEventMessages()->Add(new CEventBombardment(pMajor->GetRaceID(), "Bombardment", CResourceManager::GetString("BOMBARDEVENT_HEADLINE", FALSE, m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetName()), CResourceManager::GetString("BOMBARDEVENT_TEXT_AGRESSOR_" + pMajor->GetRaceID(), FALSE, m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetName())));
+								pMajor->GetEmpire()->GetEventMessages()->Add(new CEventBombardment(pMajor->GetRaceID(), "Bombardment", CResourceManager::GetString("BOMBARDEVENT_HEADLINE", FALSE, GetSector(p.x, p.y).GetName()), CResourceManager::GetString("BOMBARDEVENT_TEXT_AGRESSOR_" + pMajor->GetRaceID(), FALSE, GetSector(p.x, p.y).GetName())));
 							// gescheitere Invasion
-							else if (m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetHabitants() > 0.000001f)
-								pMajor->GetEmpire()->GetEventMessages()->Add(new CEventBombardment(pMajor->GetRaceID(), "InvasionFailed", CResourceManager::GetString("INVASIONFAILUREEVENT_HEADLINE", FALSE, m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetName()), CResourceManager::GetString("INVASIONFAILUREEVENT_TEXT_" + pMajor->GetRaceID(), FALSE, m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetName())));
+							else if (GetSystem(p.x, p.y).GetHabitants() > 0.000001f)
+								pMajor->GetEmpire()->GetEventMessages()->Add(new CEventBombardment(pMajor->GetRaceID(), "InvasionFailed", CResourceManager::GetString("INVASIONFAILUREEVENT_HEADLINE", FALSE, GetSector(p.x, p.y).GetName()), CResourceManager::GetString("INVASIONFAILUREEVENT_TEXT_" + pMajor->GetRaceID(), FALSE, GetSector(p.x, p.y).GetName())));
 						}
 
 					}
@@ -3273,10 +3273,10 @@ void CBotf2Doc::CalcSystemAttack()
 						{
 							// reine Bombardierung
 							if (!attackSystem->IsTroopsInvolved())
-								pDefenderMajor->GetEmpire()->GetEventMessages()->Add(new CEventBombardment(defender->GetRaceID(), "Bombardment", CResourceManager::GetString("BOMBARDEVENT_HEADLINE", FALSE, m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetName()), CResourceManager::GetString("BOMBARDEVENT_TEXT_DEFENDER_" + defender->GetRaceID(), FALSE, m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetName())));
+								pDefenderMajor->GetEmpire()->GetEventMessages()->Add(new CEventBombardment(defender->GetRaceID(), "Bombardment", CResourceManager::GetString("BOMBARDEVENT_HEADLINE", FALSE, GetSector(p.x, p.y).GetName()), CResourceManager::GetString("BOMBARDEVENT_TEXT_DEFENDER_" + defender->GetRaceID(), FALSE, GetSector(p.x, p.y).GetName())));
 							// gescheitere Invasion
-							else if (m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetHabitants() > 0.000001f)
-								pDefenderMajor->GetEmpire()->GetEventMessages()->Add(new CEventBombardment(defender->GetRaceID(), "InvasionFailed", CResourceManager::GetString("INVASIONFAILUREEVENT_HEADLINE", FALSE, m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetName()), CResourceManager::GetString("INVASIONFAILUREEVENT_TEXT_" + defender->GetRaceID(), FALSE, m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetName())));
+							else if (GetSystem(p.x, p.y).GetHabitants() > 0.000001f)
+								pDefenderMajor->GetEmpire()->GetEventMessages()->Add(new CEventBombardment(defender->GetRaceID(), "InvasionFailed", CResourceManager::GetString("INVASIONFAILUREEVENT_HEADLINE", FALSE, GetSector(p.x, p.y).GetName()), CResourceManager::GetString("INVASIONFAILUREEVENT_TEXT_" + defender->GetRaceID(), FALSE, GetSector(p.x, p.y).GetName())));
 						}
 					}
 				}
@@ -3290,7 +3290,7 @@ void CBotf2Doc::CalcSystemAttack()
 						ASSERT(pMajor);
 
 						CMessage message;
-						message.GenerateMessage(attackSystem->GetNews()->GetAt(i), MESSAGE_TYPE::MILITARY, m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetName(), p, 0);
+						message.GenerateMessage(attackSystem->GetNews()->GetAt(i), MESSAGE_TYPE::MILITARY, GetSector(p.x, p.y).GetName(), p, 0);
 						pMajor->GetEmpire()->AddMessage(message);
 						if (pMajor->IsHumanPlayer())
 						{
@@ -3302,7 +3302,7 @@ void CBotf2Doc::CalcSystemAttack()
 					{
 						CMajor* pDefenderMajor = dynamic_cast<CMajor*>(defender);
 						CMessage message;
-						message.GenerateMessage(attackSystem->GetNews()->GetAt(i), MESSAGE_TYPE::MILITARY, m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetName(), p, 0);
+						message.GenerateMessage(attackSystem->GetNews()->GetAt(i), MESSAGE_TYPE::MILITARY, GetSector(p.x, p.y).GetName(), p, 0);
 						pDefenderMajor->GetEmpire()->AddMessage(message);
 						if (pDefenderMajor->IsHumanPlayer())
 						{
@@ -5099,14 +5099,14 @@ void CBotf2Doc::CalcShipCombat()
 		// die Station nicht zerstört wurde.
 		/*if (pShip->GetShipType() == OUTPOST || pShip->GetShipType() == STARBASE)
 		{
-			m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetShipPort(FALSE, pShip->GetOwnerOfShip());
-			m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetOutpost(FALSE,  pShip->GetOwnerOfShip());
-			m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetStarbase(FALSE, pShip->GetOwnerOfShip());
+			GetSector(p.x, p.y).SetShipPort(FALSE, pShip->GetOwnerOfShip());
+			GetSector(p.x, p.y).SetOutpost(FALSE,  pShip->GetOwnerOfShip());
+			GetSector(p.x, p.y).SetStarbase(FALSE, pShip->GetOwnerOfShip());
 		}
 		// Haben wir aber in diesem Sektor ein System mit aktiver Werft stehen, dann fügen
 		// wir den ShipPort aber gleich jetzt wieder hinzu
-		if (m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetShipYard() == TRUE && m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem() == pShip->GetOwnerOfShip())
-			m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).SetShipPort(TRUE, pShip->GetOwnerOfShip());*/
+		if (GetSystem(p.x, p.y).GetProduction()->GetShipYard() == TRUE && GetSystem(p.x, p.y).GetOwnerOfSystem() == pShip->GetOwnerOfShip())
+			GetSector(p.x, p.y).SetShipPort(TRUE, pShip->GetOwnerOfShip());*/
 	}
 
 	// es sollten immer Schiffe im Array sein, sonst hätte in diesem Sektor kein Kampf stattfinden dürfen
@@ -5116,13 +5116,13 @@ void CBotf2Doc::CalcShipCombat()
 
 	// Kampf-KI
 	CCombatAI AI;
-	bool bCombat = AI.CalcCombatTactics(vInvolvedShips, m_pRaceCtrl->GetRaces(), m_mCombatOrders, m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetAnomaly());
+	bool bCombat = AI.CalcCombatTactics(vInvolvedShips, m_pRaceCtrl->GetRaces(), m_mCombatOrders, GetSector(p.x, p.y).GetAnomaly());
 	if (!bCombat)
 		return;
 
 	// Jetzt können wir einen Kampf stattfinden lassen
 	CCombat Combat;
-	Combat.SetInvolvedShips(&vInvolvedShips, m_pRaceCtrl->GetRaces(), m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetAnomaly());
+	Combat.SetInvolvedShips(&vInvolvedShips, m_pRaceCtrl->GetRaces(), GetSector(p.x, p.y).GetAnomaly());
 	if (!Combat.GetReadyForCombat())
 		return;
 
@@ -5162,8 +5162,8 @@ void CBotf2Doc::CalcShipCombat()
 	{
 		CString sSectorName;
 		// ist der Sektor bekannt?
-		if (m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetKnown(it->first))
-			sSectorName = m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetName(true);
+		if (GetSector(p.x, p.y).GetKnown(it->first))
+			sSectorName = GetSector(p.x, p.y).GetName(true);
 		else
 			sSectorName.Format("%s %c%i", CResourceManager::GetString("SECTOR"), (char)(p.y+97), p.x + 1);
 
@@ -5543,12 +5543,12 @@ void CBotf2Doc::CalcContactNewRaces()
 			continue;
 
 		// Wenn dieser Sektor einer anderen Majorrace gehört, wir die noch nicht kannten, dann bekanntgeben
-		if (pMajor != NULL && m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSector() != "" && m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSector() != sRace)
+		if (pMajor != NULL && GetSector(p.x, p.y).GetOwnerOfSector() != "" && GetSector(p.x, p.y).GetOwnerOfSector() != sRace)
 		{
 			// normale Zugehörigkeit
-			if (pMajor->IsRaceContacted(m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSector()) == false)
+			if (pMajor->IsRaceContacted(GetSector(p.x, p.y).GetOwnerOfSector()) == false)
 			{
-				CRace* pSectorOwner = m_pRaceCtrl->GetRace(m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSector());
+				CRace* pSectorOwner = m_pRaceCtrl->GetRace(GetSector(p.x, p.y).GetOwnerOfSector());
 				if (pSectorOwner)
 				{
 					// kann der Sektorbesitzer andere Rassen kennenlernen?
@@ -5632,9 +5632,9 @@ void CBotf2Doc::CalcContactNewRaces()
 			}
 
 			// in dem Sektor lebt eine Minorrace, der der Sektor aber nicht mehr gehört, z.B. durch Mitgliedschaft
-			if (m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetMinorRace())
+			if (GetSector(p.x, p.y).GetMinorRace())
 			{
-				CMinor* pMinor = m_pRaceCtrl->GetMinorRace(m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetName());
+				CMinor* pMinor = m_pRaceCtrl->GetMinorRace(GetSector(p.x, p.y).GetName());
 				assert(pMinor);
 				// kann der Sektorbesitzer andere Rassen kennenlernen?
 				if (pMinor->HasSpecialAbility(SPECIAL_NO_DIPLOMACY))
@@ -5677,7 +5677,7 @@ void CBotf2Doc::CalcContactNewRaces()
 			// wenn zwei Schiffe einer Rasse in diesem Sektor stationiert sind, so können sich die Besitzer auch kennenlernen
 			for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 				if (pMajor->GetRaceID() != it->first)
-					if (m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfShip(it->first) == TRUE)
+					if (GetSector(p.x, p.y).GetOwnerOfShip(it->first) == TRUE)
 						if (pMajor->IsRaceContacted(it->first) == false)
 						{
 							CMajor* pOtherMajor = it->second;
@@ -5721,12 +5721,12 @@ void CBotf2Doc::CalcContactNewRaces()
 		else if (pMinor != NULL)
 		{
 			// auf einen Sektor einer Majorrace geflogen
-			if (m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSector() != "" && m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSector() != sRace)
+			if (GetSector(p.x, p.y).GetOwnerOfSector() != "" && GetSector(p.x, p.y).GetOwnerOfSector() != sRace)
 			{
 				// normale Zugehörigkeit
-				if (pMinor->IsRaceContacted(m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSector()) == false)
+				if (pMinor->IsRaceContacted(GetSector(p.x, p.y).GetOwnerOfSector()) == false)
 				{
-					CMajor* pSectorOwner = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSector()));
+					CMajor* pSectorOwner = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(GetSector(p.x, p.y).GetOwnerOfSector()));
 					if (pSectorOwner)
 					{
 						// kann der Sektorbesitzer andere Rassen kennenlernen?
@@ -5763,7 +5763,7 @@ void CBotf2Doc::CalcContactNewRaces()
 			// treffen mit einem Schiff eines anderen Majors
 			// wenn zwei Schiffe einer Rasse in diesem Sektor stationiert sind, so können sich die Besitzer auch kennenlernen
 			for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
-				if (m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfShip(it->first) == TRUE)
+				if (GetSector(p.x, p.y).GetOwnerOfShip(it->first) == TRUE)
 					if (pMinor->IsRaceContacted(it->first) == false)
 					{
 						CMajor* pOtherMajor = it->second;
@@ -5986,11 +5986,11 @@ void CBotf2Doc::CalcEndDataForNextRound()
 				// Befindet sich ein Außenposten oder ein System in einem der umliegenden Sektoren, so bekommt der
 				// Sektor einen Besitzerpunkt. Bei einer Sternbasis sind es sogar zwei Besitzerpunkte.
 				BYTE ownerPoints = 0;
-				if (m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem() == sID)
+				if (GetSystem(x, y).GetOwnerOfSystem() == sID)
 					ownerPoints += 1;
-				if (m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOutpost(sID) == TRUE)
+				if (GetSector(x, y).GetOutpost(sID) == TRUE)
 					ownerPoints += 1;
-				if (m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetStarbase(sID) == TRUE)
+				if (GetSector(x, y).GetStarbase(sID) == TRUE)
 					ownerPoints += 2;
 				if (ownerPoints > 0)
 				{

@@ -476,12 +476,12 @@ void CGalaxyMenuView::OnDraw(CDC* dc)
 			pDoc->GetSector(x,y).DrawSectorsName(pDC ,pDoc, m_pPlayersRace);
 			// eigene Handelsrouten zeichnen
 			if (bShowTraderoutes)
-				if (pDoc->m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem() == pMajor->GetRaceID())
+				if (pDoc->GetSystem(x, y).GetOwnerOfSystem() == pMajor->GetRaceID())
 				{
-					for (int i = 0; i < pDoc->m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetTradeRoutes()->GetSize(); i++)
-						pDoc->m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetTradeRoutes()->GetAt(i).DrawTradeRoute(pDC, CPoint(x,y), pMajor);
-					for (int i = 0; i < pDoc->m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetResourceRoutes()->GetSize(); i++)
-						pDoc->m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetResourceRoutes()->GetAt(i).DrawResourceRoute(pDC, CPoint(x,y), pMajor);
+					for (int i = 0; i < pDoc->GetSystem(x, y).GetTradeRoutes()->GetSize(); i++)
+						pDoc->GetSystem(x, y).GetTradeRoutes()->GetAt(i).DrawTradeRoute(pDC, CPoint(x,y), pMajor);
+					for (int i = 0; i < pDoc->GetSystem(x, y).GetResourceRoutes()->GetSize(); i++)
+						pDoc->GetSystem(x, y).GetResourceRoutes()->GetAt(i).DrawResourceRoute(pDC, CPoint(x,y), pMajor);
 				}
 		}
 	pDC->SelectObject(oldfont);
@@ -489,9 +489,9 @@ void CGalaxyMenuView::OnDraw(CDC* dc)
 
 	if (bShowTraderoutes)
 	{
-		if (m_bDrawTradeRoute && (pDoc->m_Systems.at(pDoc->GetKO().x+(pDoc->GetKO().y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem() == pMajor->GetRaceID()))
+		if (m_bDrawTradeRoute && (pDoc->GetSystem(pDoc->GetKO()).GetOwnerOfSystem() == pMajor->GetRaceID()))
 			m_TradeRoute.DrawTradeRoute(pDC, pDoc->GetKO(), pMajor);
-		if (m_bDrawResourceRoute && (pDoc->m_Systems.at(pDoc->GetKO().x+(pDoc->GetKO().y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem() == pMajor->GetRaceID()))
+		if (m_bDrawResourceRoute && (pDoc->GetSystem(pDoc->GetKO()).GetOwnerOfSystem() == pMajor->GetRaceID()))
 			m_ResourceRoute.DrawResourceRoute(pDC, pDoc->GetKO(), pMajor);
 	}
 
@@ -769,40 +769,40 @@ void CGalaxyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		else if (sector != struct::Sector(-1,-1) && m_bDrawTradeRoute == TRUE)
 		{
 			CPoint p = pDoc->GetKO();
-			BYTE numberOfRoutes = pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetTradeRoutes()->GetSize();
+			BYTE numberOfRoutes = pDoc->GetSystem(p.x, p.y).GetTradeRoutes()->GetSize();
 			// konnten erfolgreich eine hinzufügen aufgrund der Bevölkerung
-			if (pDoc->m_Sectors.at(sector.x+(sector.y)*STARMAP_SECTORS_HCOUNT).GetSunSystem() == TRUE && pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).AddTradeRoute(CPoint(sector.x,sector.y), pDoc->m_Systems, pMajor->GetEmpire()->GetResearch()->GetResearchInfo()))
+			if (pDoc->m_Sectors.at(sector.x+(sector.y)*STARMAP_SECTORS_HCOUNT).GetSunSystem() == TRUE && pDoc->GetSystem(p.x, p.y).AddTradeRoute(CPoint(sector.x,sector.y), pDoc->m_Systems, pMajor->GetEmpire()->GetResearch()->GetResearchInfo()))
 			{
 				// wurde keine hinzugefügt, dann fertig
-				if (numberOfRoutes == pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetTradeRoutes()->GetSize())
+				if (numberOfRoutes == pDoc->GetSystem(p.x, p.y).GetTradeRoutes()->GetSize())
 				{
 					m_bDrawTradeRoute = FALSE;
 					Invalidate();
 				}
 				// jetzt diplomatische Beziehung checken
-				else if (pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetTradeRoutes()->GetAt(pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetTradeRoutes()->GetUpperBound()).CheckTradeRoute(p, CPoint(sector.x, sector.y), pDoc))
+				else if (pDoc->GetSystem(p.x, p.y).GetTradeRoutes()->GetAt(pDoc->GetSystem(p.x, p.y).GetTradeRoutes()->GetUpperBound()).CheckTradeRoute(p, CPoint(sector.x, sector.y), pDoc))
 				{
 					// wenn wir noch weitere Handelsrouten hinzufügen können, dann in der Ansicht bleiben
-					if (pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).CanAddTradeRoute(pMajor->GetEmpire()->GetResearch()->GetResearchInfo()))
+					if (pDoc->GetSystem(p.x, p.y).CanAddTradeRoute(pMajor->GetEmpire()->GetResearch()->GetResearchInfo()))
 						m_bDrawTradeRoute = TRUE;
 					else
 						m_bDrawTradeRoute = FALSE;
 					// Anzeige gleich aktualisieren
-					pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).CalculateVariables(&pDoc->BuildingInfo, pMajor->GetEmpire()->GetResearch()->GetResearchInfo(),
-						pDoc->m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetPlanets(), pMajor, CTrade::GetMonopolOwner());
+					pDoc->GetSystem(p.x, p.y).CalculateVariables(&pDoc->BuildingInfo, pMajor->GetEmpire()->GetResearch()->GetResearchInfo(),
+						pDoc->GetSector(p.x, p.y).GetPlanets(), pMajor, CTrade::GetMonopolOwner());
 					Invalidate();
 				}
 				// konnten wie die Handelsroute aufgrund der diploamtischen Beziehungen nicht hinzufügen, so
 				// müssen wir sie gleich wieder löschen
 				else
 				{
-					pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetTradeRoutes()->RemoveAt(pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetTradeRoutes()->GetUpperBound());
+					pDoc->GetSystem(p.x, p.y).GetTradeRoutes()->RemoveAt(pDoc->GetSystem(p.x, p.y).GetTradeRoutes()->GetUpperBound());
 				}
 			}
 			// Wenn wir eine Handelsroute gelöscht haben, dann aktualisieren
-			else if (numberOfRoutes > pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetTradeRoutes()->GetSize())
-				pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).CalculateVariables(&pDoc->BuildingInfo, pMajor->GetEmpire()->GetResearch()->GetResearchInfo(),
-				pDoc->m_Sectors.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).GetPlanets(), pMajor, CTrade::GetMonopolOwner());
+			else if (numberOfRoutes > pDoc->GetSystem(p.x, p.y).GetTradeRoutes()->GetSize())
+				pDoc->GetSystem(p.x, p.y).CalculateVariables(&pDoc->BuildingInfo, pMajor->GetEmpire()->GetResearch()->GetResearchInfo(),
+				pDoc->GetSector(p.x, p.y).GetPlanets(), pMajor, CTrade::GetMonopolOwner());
 		}
 		// Wenn wir eine Ressourcenroute festlegen wollen
 		else if (sector != struct::Sector(-1,-1) && m_bDrawResourceRoute == TRUE)
@@ -810,7 +810,7 @@ void CGalaxyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			CPoint p = pDoc->GetKO();
 			// konnten erfolgreich eine hinzufügen aufgrund der Bevölkerung
 			if (pDoc->m_Sectors.at(sector.x+(sector.y)*STARMAP_SECTORS_HCOUNT).GetSunSystem() == TRUE && p != CPoint(sector.x,sector.y) &&
-				pDoc->m_Systems.at(p.x+(p.y)*STARMAP_SECTORS_HCOUNT).AddResourceRoute(CPoint(sector.x,sector.y), CSystemMenuView::GetResourceRouteRes(), pDoc->m_Systems, pMajor->GetEmpire()->GetResearch()->GetResearchInfo()))
+				pDoc->GetSystem(p.x, p.y).AddResourceRoute(CPoint(sector.x,sector.y), CSystemMenuView::GetResourceRouteRes(), pDoc->m_Systems, pMajor->GetEmpire()->GetResearch()->GetResearchInfo()))
 			{
 				m_bDrawResourceRoute = FALSE;
 				// Anzeige gleich aktualisieren

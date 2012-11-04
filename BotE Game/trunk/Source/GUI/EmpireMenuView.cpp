@@ -2015,8 +2015,8 @@ void CEmpireMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 			if (m_iClickedSystem != -1)
 			{
 				CPoint ko = pMajor->GetEmpire()->GetSystemList()->GetAt(m_iClickedSystem).ko;
-				BOOLEAN autoBuild = pDoc->m_Systems.at(ko.x+(ko.y)*STARMAP_SECTORS_HCOUNT).GetAutoBuild();
-				pDoc->m_Systems.at(ko.x+(ko.y)*STARMAP_SECTORS_HCOUNT).SetAutoBuild(!autoBuild);
+				BOOLEAN autoBuild = pDoc->GetSystem(ko.x, ko.y).GetAutoBuild();
+				pDoc->GetSystem(ko.x, ko.y).SetAutoBuild(!autoBuild);
 			//	m_iClickedOn = 1;
 				Invalidate(FALSE);
 				return;

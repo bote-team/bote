@@ -66,7 +66,7 @@ void CSectorAI::CalcualteSectorPriorities()
 		for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
 		{
 			// Gibt es ein Sonnensystem im Sektor?
-			if (m_pDoc->m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetSunSystem())
+			if (m_pDoc->GetSector(x, y).GetSunSystem())
 			{
 				CalculateTerraformSectors(x,y);
 				CalculateMinorraceSectors(x,y);
@@ -74,7 +74,7 @@ void CSectorAI::CalcualteSectorPriorities()
 			}
 			// Offensivziele in diesem Feld gelten nur, wenn nicht eine gefährliche Anomalie einen
 			// Einflug in den Sektor sinnlos machen würde. Also bei gefährlicher Anomalie wird kein Offensivziel berechnet, sonst immer
-			if (m_pDoc->m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetAnomaly() == false || m_pDoc->m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetAnomaly()->GetWaySearchWeight() < 10.0)
+			if (m_pDoc->GetSector(x, y).GetAnomaly() == false || m_pDoc->GetSector(x, y).GetAnomaly()->GetWaySearchWeight() < 10.0)
 				CalculateOffensiveTargets(x,y);
 
 			for (map<CString, CRace*>::const_iterator it = mRaces->begin(); it != mRaces->end(); ++it)
@@ -153,10 +153,10 @@ void CSectorAI::CalculateTerraformSectors(int x, int y)
 {
 	BYTE pop = 0;
 	// wieviel Bevölkerung kann man noch ins System bringen
-	for (int j = 0; j < m_pDoc->m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetNumberOfPlanets(); j++)
-		if (m_pDoc->m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetPlanet(j)->GetHabitable() == TRUE
-			&& m_pDoc->m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetPlanet(j)->GetColonized() == FALSE)
-			pop += (BYTE)m_pDoc->m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetPlanet(j)->GetMaxHabitant();
+	for (int j = 0; j < m_pDoc->GetSector(x, y).GetNumberOfPlanets(); j++)
+		if (m_pDoc->GetSector(x, y).GetPlanet(j)->GetHabitable() == TRUE
+			&& m_pDoc->GetSector(x, y).GetPlanet(j)->GetColonized() == FALSE)
+			pop += (BYTE)m_pDoc->GetSector(x, y).GetPlanet(j)->GetMaxHabitant();
 
 	if (pop > 5)
 	{
@@ -164,7 +164,7 @@ void CSectorAI::CalculateTerraformSectors(int x, int y)
 		map<CString, CMajor*>* pmMajors = m_pDoc->GetRaceCtrl()->GetMajors();
 		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 			if (it->second->GetStarmap()->GetRange(CPoint(x,y)) != 3)
-				if (m_pDoc->m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSector().IsEmpty() || m_pDoc->m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSector() == it->first)
+				if (m_pDoc->GetSector(x, y).GetOwnerOfSector().IsEmpty() || m_pDoc->GetSector(x, y).GetOwnerOfSector() == it->first)
 				{
 					SectorToTerraform stt(pop,CPoint(x,y));
 					m_vSectorsToTerraform[it->first].push_back(stt);
@@ -179,7 +179,7 @@ void CSectorAI::CalculateMinorraceSectors(int x, int y)
 	// Gehört der Sektor aktuell auch einer Minorrace
 		// Wenn die Minorrace einem anderen Imperium beigetreten ist, so tritt folgende Bediengnung nicht ein!.
 		// Dann fliegt die KI diesen Sektor nicht bevorzugt an, was so auch realistischer ist.
-	CString sOwner	= m_pDoc->m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSector();
+	CString sOwner	= m_pDoc->GetSector(x, y).GetOwnerOfSector();
 	if (sOwner.IsEmpty())
 		return;
 
@@ -230,7 +230,7 @@ void CSectorAI::CalculateOffensiveTargets(int x, int y)
 				if (it->second->IsRaceContacted(sEnemy))
 				{
 					// prüfen ob es auf unserem eigenen Gebiet ist
-					if (m_pDoc->m_Sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSector() == it->first)
+					if (m_pDoc->GetSector(x, y).GetOwnerOfSector() == it->first)
 					{
 						// jetzt wird überprüft, ob obige Bedingungen gelten
 						if (it->second->GetRelation(sEnemy) < 50 || it->second->GetAgreement(sEnemy) == DIPLOMATIC_AGREEMENT::WAR)
@@ -255,7 +255,7 @@ void CSectorAI::CalculateOffensiveTargets(int x, int y)
 /// im Array <code>m_vBombardTargets</code> gespeichert.
 void CSectorAI::CalculateBombardTargets(const CString& sRaceID, int x, int y)
 {
-	CString sOwner	= m_pDoc->m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem();
+	CString sOwner	= m_pDoc->GetSystem(x, y).GetOwnerOfSystem();
 	if (sOwner.IsEmpty())
 		return;
 	CRace* pOwner	= m_pDoc->GetRaceCtrl()->GetRace(sOwner);
@@ -264,7 +264,7 @@ void CSectorAI::CalculateBombardTargets(const CString& sRaceID, int x, int y)
 		return;
 
 	// gehört das System einer anderen Majorrace, außer uns selbst?
-	if (m_pDoc->m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem() != sRaceID)
+	if (m_pDoc->GetSystem(x, y).GetOwnerOfSystem() != sRaceID)
 	{
 		CRace* pOurRace = m_pDoc->GetRaceCtrl()->GetRace(sRaceID);
 		if (!pOurRace)

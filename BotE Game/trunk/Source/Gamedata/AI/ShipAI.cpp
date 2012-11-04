@@ -21,10 +21,10 @@ CShipAI::CShipAI(CBotf2Doc* pDoc) : m_pSectorAI()
 	map<CString, int> systems;
 	for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
 		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-			if (m_pDoc->m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem() != "")
+			if (m_pDoc->GetSystem(x, y).GetOwnerOfSystem() != "")
 			{
-				moralAll[m_pDoc->m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem()] += m_pDoc->m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetMoral();
-				systems[m_pDoc->m_Systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetOwnerOfSystem()] += 1;
+				moralAll[m_pDoc->GetSystem(x, y).GetOwnerOfSystem()] += m_pDoc->GetSystem(x, y).GetMoral();
+				systems[m_pDoc->GetSystem(x, y).GetOwnerOfSystem()] += 1;
 			}
 
 	// alles initial initialisieren
