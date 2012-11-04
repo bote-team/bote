@@ -109,6 +109,7 @@
 #define IDC_COMBOGALAXYSIZE             1065
 #define IDC_COMBO2                      1066
 #define IDC_COMBOGALAXYSHAPE            1066
+#define IDC_STATIC_FOUND_BOTE_SERVERS   1067
 #define ID_OPTIONEN                     32773
 #define ID_INFORMATION                  32774
 #define ID_DATENBANK                    32775
@@ -134,7 +135,7 @@
 #define _APS_3D_CONTROLS                     1
 #define _APS_NEXT_RESOURCE_VALUE        190
 #define _APS_NEXT_COMMAND_VALUE         32790
-#define _APS_NEXT_CONTROL_VALUE         1067
+#define _APS_NEXT_CONTROL_VALUE         1068
 #define _APS_NEXT_SYMED_VALUE           107
 #endif
 #endif

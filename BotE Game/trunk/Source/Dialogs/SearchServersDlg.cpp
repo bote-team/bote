@@ -4,7 +4,7 @@
 #include "stdafx.h"
 #include "Botf2.h"
 #include "SearchServersDlg.h"
-
+#include "ResourceManager.h"
 
 // CSearchServersDlg dialog
 
@@ -40,6 +40,11 @@ BOOL CSearchServersDlg::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 
+	SetWindowText(CResourceManager::GetString("SEARCHLANSERVER"));
+
+	if (CWnd* pWnd = GetDlgItem(IDC_STATIC_FOUND_BOTE_SERVERS))
+		pWnd->SetWindowText(CResourceManager::GetString("FOUND_BOTE_SERVERS"));
+
 	// Erscheinung der Liste
 	m_listServers.SetExtendedStyle(LVS_EX_FULLROWSELECT);
 
@@ -47,8 +52,8 @@ BOOL CSearchServersDlg::OnInitDialog()
 	m_listServers.GetClientRect(&rect);
 	int cx = (rect.Width() * 7) / 12;
 
-	m_listServers.InsertColumn(0, "§Description", LVCFMT_LEFT, cx, -1);
-	m_listServers.InsertColumn(1, "§Address", LVCFMT_LEFT, rect.Width() - cx, -1);
+	m_listServers.InsertColumn(0, CResourceManager::GetString("LANSERVERNAME"), LVCFMT_LEFT, cx, -1);
+	m_listServers.InsertColumn(1, CResourceManager::GetString("LANSERVERIP"), LVCFMT_LEFT, rect.Width() - cx, -1);
 
 	// als Handler registrieren und Anfrage broadcasten
 	clientPublisher.AddLANClientListener(this);

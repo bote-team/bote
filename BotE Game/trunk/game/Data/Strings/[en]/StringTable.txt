@@ -61,7 +61,7 @@ Port:
 Publish game in LAN
 [SERVERIP]
 IP-adress of the server:
-[SERCHLANSERVER]
+[SEARCHLANSERVER]
 Search for LAN-server
 
 [STARTGAME]
@@ -70,6 +70,13 @@ Start Game
 Choose your Empire
 [CHAT]
 Chat
+
+[FOUND_BOTE_SERVERS]
+found BotE-Servers:
+[LANSERVERNAME]
+Servername
+[LANSERVERIP]
+IP-Address
 
 // left_View Buttons
 [BTN_ROUNDEND]

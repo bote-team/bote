@@ -124,7 +124,6 @@ void CStartMenuView::OnDraw(CDC* dc)
 		format.SetLineAlignment(StringAlignmentCenter);
 
 		CString s= CResourceManager::GetString("PRESENTEDBY")+"\n\n"+CResourceManager::GetString("PRESENTED");
-		//CString s = "§www.birth-of-the-empires.de\n\npräsentiert ...";
 		g.DrawString(CComBSTR(s), -1, &font, RectF(0, 0, m_TotalSize.cx, m_TotalSize.cy), &format, &SolidBrush(Color::WhiteSmoke));
 
 		g.ReleaseHDC(pDC->GetSafeHdc());
@@ -142,7 +141,7 @@ void CStartMenuView::OnDraw(CDC* dc)
 
 	CString sVersion = "Birth of the Empires Pre-Alpha7 V";
 	sVersion += VERSION_INFORMATION;
-	sVersion += "\n© by Sir Pustekuchen 2011";
+	sVersion += "\n© by Sir Pustekuchen 2012";
 	g.DrawString(CComBSTR(sVersion), -1, &font, RectF(0, 0, m_TotalSize.cx, m_TotalSize.cy), &format, &SolidBrush(Color::WhiteSmoke));
 
 	// Hintergrundbild langsam einblenden
@@ -207,7 +206,7 @@ void CStartMenuView::OnInitialUpdate()
 	tStyle.m_dRadius = 1.0;
 
 	// Change Color Schema of Button
-	tStyle.m_tColorFace.m_tEnabled		= RGB(125, 125, 125);
+	tStyle.m_tColorFace.m_tEnabled		= RGB(100, 100, 100);
 	tStyle.m_tColorBorder.m_tEnabled	= RGB(220, 220, 220);
 
 	tStyle.m_tColorFace.m_tClicked		= RGB(75, 75, 75);
