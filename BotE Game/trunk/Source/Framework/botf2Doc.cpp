@@ -173,22 +173,11 @@ BOOL CBotf2Doc::OnNewDocument()
 	int nSeed = -1;
 	pIni->ReadValue("Special", "RANDOMSEED", nSeed);
 
-	//Kartengröße aus ini lesen
-	int mapHeight=20;
-	pIni->ReadValue("Special", "MAPSIZEV", mapHeight);
-	STARMAP_SECTORS_VCOUNT=mapHeight;
-
-	int mapWidth=30;
-	pIni->ReadValue("Special", "MAPSIZEH", mapWidth);
-	STARMAP_SECTORS_HCOUNT=mapWidth;
-
-	STARMAP_TOTALWIDTH=STARMAP_SECTORS_HCOUNT*80;
-	STARMAP_TOTALHEIGHT=STARMAP_SECTORS_VCOUNT*80;
-
-
 	// festen vorgegeben Seed verwenden
 	if (nSeed >= 0)
+	{
 		srand(nSeed);
+	}
 	// zufälligen Seed verwenden
 	else
 	{
@@ -399,16 +388,19 @@ void CBotf2Doc::SerializeBeginGameData(CArchive& ar)
 	if (ar.IsStoring())
 	{
 		//Kartengröße
-		ar<<STARMAP_SECTORS_HCOUNT;
-		ar<<STARMAP_SECTORS_VCOUNT;
+		ar << STARMAP_SECTORS_HCOUNT;
+		ar << STARMAP_SECTORS_VCOUNT;
 		// Hauptrassen-Koordinaten senden
 		ar << m_mRaceKO.size();
 		for (map<CString, pair<int, int> >::const_iterator it = m_mRaceKO.begin(); it != m_mRaceKO.end(); ++it)
 			ar << it->first << it->second.first << it->second.second;
 
+		// Gebäudeinformationen
 		ar << BuildingInfo.GetSize();
 		for (int i = 0; i < BuildingInfo.GetSize(); i++)
 			BuildingInfo.GetAt(i).Serialize(ar);
+
+		// Truppeninformationen
 		ar << m_TroopInfo.GetSize();
 		for (int i = 0; i < m_TroopInfo.GetSize(); i++)
 			m_TroopInfo.GetAt(i).Serialize(ar);
@@ -416,11 +408,9 @@ void CBotf2Doc::SerializeBeginGameData(CArchive& ar)
 	// Empfangen auf Clientseite
 	else
 	{
-		//Kartengröße und initialisierung
-		ar>>STARMAP_SECTORS_HCOUNT;
-		ar>>STARMAP_SECTORS_VCOUNT;
-		STARMAP_TOTALWIDTH=STARMAP_SECTORS_HCOUNT*80;
-		STARMAP_TOTALHEIGHT=STARMAP_SECTORS_VCOUNT*80;
+		// Kartengröße und Initialisierung
+		ar >> STARMAP_SECTORS_HCOUNT;
+		ar >> STARMAP_SECTORS_VCOUNT;
 		AllocateSectorsAndSystems();
 		// Hauptrassen-Koordinaten empfangen
 		m_mRaceKO.clear();
@@ -456,7 +446,7 @@ void CBotf2Doc::SerializeBeginGameData(CArchive& ar)
 void CBotf2Doc::SerializeNextRoundData(CArchive &ar)
 {
 	m_bDataReceived = false;
-	// TODO Daten der nächsten Runde serialisieren; auf Server-Seite senden, auf Client-Seite empfangen
+	// Daten der nächsten Runde serialisieren; auf Server-Seite senden, auf Client-Seite empfangen
 	if (ar.IsStoring())
 	{
 		ar << m_bCombatCalc;
@@ -646,7 +636,7 @@ void CBotf2Doc::SerializeEndOfRoundData(CArchive &ar, network::RACE race)
 			if (m_ShipArray.GetAt(i).GetOwnerOfShip() == pPlayer->GetRaceID())
 				vShips.push_back(i);
 		ar << vShips.size();
-		for (unsigned int i = 0; i < vShips.size(); i++)
+		for (size_t i = 0; i < vShips.size(); i++)
 			m_ShipArray.GetAt(vShips[i]).Serialize(ar);
 
 		vector<CPoint> vSystems;
@@ -659,7 +649,7 @@ void CBotf2Doc::SerializeEndOfRoundData(CArchive &ar, network::RACE race)
 			}
 		}		
 		ar << vSystems.size();
-		for (unsigned int i = 0; i < vSystems.size(); i++)
+		for (size_t i = 0; i < vSystems.size(); i++)
 		{
 			ar << vSystems[i];
 			GetSystem(vSystems[i]).Serialize(ar);
@@ -972,22 +962,6 @@ void CBotf2Doc::PrepareData()
 
 		m_iRound = 1;
 
-		//Neuberechnung der Galaxiengröße falls im Einstellungsmenü geändert
-		CIniLoader* pIni = CIniLoader::GetInstance();
-		int mapHeight=20;
-		pIni->ReadValue("Special", "MAPSIZEV", mapHeight);
-		STARMAP_SECTORS_VCOUNT=mapHeight;
-
-		int mapWidth=30;
-		pIni->ReadValue("Special", "MAPSIZEH", mapWidth);
-		STARMAP_SECTORS_HCOUNT=mapWidth;
-
-		STARMAP_TOTALWIDTH=STARMAP_SECTORS_HCOUNT*80;
-		STARMAP_TOTALHEIGHT=STARMAP_SECTORS_VCOUNT*80;
-
-		// Sektoren und Systeme anlegen
-		AllocateSectorsAndSystems();
-
 		// Generierungssektornamenklasse wieder neu starten
 		m_ShipArray.RemoveAll();
 		m_ShipInfoArray.RemoveAll();
@@ -1061,7 +1035,25 @@ void CBotf2Doc::PrepareData()
 /// Funktion generiert die Galaxiemap inkl. der ganzen Systeme und Planeten zu Beginn eines neuen Spiels.
 void CBotf2Doc::GenerateGalaxy()
 {
+	///////////////////////////////////////////////////////////////////////
+	// Galaxiengröße festlegen
+	CIniLoader* pIni = CIniLoader::GetInstance();
+
+	int nMapHeight = STARMAP_SECTORS_VCOUNT;
+	if (pIni->ReadValue("Special", "MAPSIZEV", nMapHeight))
+		STARMAP_SECTORS_VCOUNT = nMapHeight;
+
+	int nMapWidth = STARMAP_SECTORS_HCOUNT;
+	if (pIni->ReadValue("Special", "MAPSIZEH", nMapWidth))
+		STARMAP_SECTORS_HCOUNT = nMapWidth;
+
+	// Vektoren für Sektoren und Systeme anlegen
+	AllocateSectorsAndSystems();
+
+	///////////////////////////////////////////////////////////////////////
+	// Alles auf Ausgangswerte setzen
 	for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
+	{
 		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
 		{
 			// Alle Werte der Systemklasse wieder auf NULL setzen
@@ -1070,31 +1062,32 @@ void CBotf2Doc::GenerateGalaxy()
 			GetSector(x, y).Reset();
 			GetSector(x, y).SetKO(x,y);
 		}
+	}
 	m_mRaceKO.clear();
 
+	///////////////////////////////////////////////////////////////////////
+	// Galaxieform anpassen
+	int nGenerationMode = 0; // 0 == Standard  sonst Pattern verwenden
+	pIni->ReadValue("Special", "GENERATIONMODE", nGenerationMode);
 
-	int nGenerationMode=0;//0==Standart 1==Circle
-
-	std::vector<std::vector<bool>> nGenField
-		(STARMAP_SECTORS_HCOUNT, std::vector<bool>(STARMAP_SECTORS_VCOUNT, true));
-
-	CIniLoader::GetInstance()->ReadValue("Special", "GENERATIONMODE", nGenerationMode);
-
-	if(nGenerationMode!=0)
+	std::vector<std::vector<bool>> nGenField(STARMAP_SECTORS_HCOUNT, std::vector<bool>(STARMAP_SECTORS_VCOUNT, true));
+	if (nGenerationMode != 0)
 	{
 		CString sAppPath = CIOData::GetInstance()->GetAppPath();
 		CString filePath = "";
 		filePath.Format("%sGraphics\\Galaxies\\pattern%d.boj",sAppPath,nGenerationMode);
 		std::auto_ptr<Bitmap> GalaxyPattern(Bitmap::FromFile(CComBSTR(filePath)));
-		if(GalaxyPattern.get()==NULL)
+		if (GalaxyPattern.get() == NULL)
 		{
 			sAppPath.Format("pattern%d.boj not found! using standart pattern", nGenerationMode);
 			AfxMessageBox(sAppPath);
 
-		}else{
+		}
+		else
+		{
 			FCObjImage img;
 			FCWin32::GDIPlus_LoadBitmap(*GalaxyPattern, img);
-			if(img.IsValidImage())
+			if (img.IsValidImage())
 			{
 				img.Stretch(STARMAP_SECTORS_HCOUNT,STARMAP_SECTORS_VCOUNT);
 				GalaxyPattern.reset(FCWin32::GDIPlus_CreateBitmap(img));
@@ -1103,12 +1096,13 @@ void CBotf2Doc::GenerateGalaxy()
 					for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
 					{
 						GalaxyPattern->GetPixel(x,y,&nColor);
-						if(nColor.GetR()>50&&nColor.GetB()>50&&nColor.GetG()>50) nGenField[x][y]=false;
+						if (nColor.GetR() > 50 && nColor.GetB() > 50 && nColor.GetG() > 50)
+							nGenField[x][y] = false;
 					}
 			}
 			else
 			{
-				sAppPath.Format("pattern%d.boj not found! using standart pattern", nGenerationMode);
+				sAppPath.Format("pattern%d.boj not found! using standard pattern", nGenerationMode);
 				AfxMessageBox(sAppPath);
 			}
 		}
@@ -6527,8 +6521,9 @@ BOOL CBotf2Doc::OnSaveDocument(LPCTSTR lpszPathName)
 
 void CBotf2Doc::AllocateSectorsAndSystems()
 {
-	//m_Sectors.clear();
-	//m_Systems.clear();
+	STARMAP_TOTALWIDTH = STARMAP_SECTORS_HCOUNT * STARMAP_SECTOR_WIDTH;
+	STARMAP_TOTALHEIGHT = STARMAP_SECTORS_VCOUNT * STARMAP_SECTOR_HEIGHT;
+
 	const unsigned size = STARMAP_SECTORS_HCOUNT*STARMAP_SECTORS_VCOUNT;
 	m_Sectors.resize(size);
 	m_Systems.resize(size);

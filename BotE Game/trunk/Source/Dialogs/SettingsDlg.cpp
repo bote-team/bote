@@ -309,6 +309,15 @@ BOOL CSettingsDlg::OnInitDialog()
 		pWnd = GetDlgItem(IDC_CHECK_VC_SABOTAGE);
 		if (pWnd)
 			pWnd->EnableWindow(FALSE);
+		pWnd = GetDlgItem(IDC_COMBOGALAXYSIZE);
+		if (pWnd)
+			pWnd->EnableWindow(FALSE);
+		pWnd = GetDlgItem(IDC_COMBOGALAXYSHAPE);
+		if (pWnd)
+			pWnd->EnableWindow(FALSE);
+		pWnd = GetDlgItem(IDC_EDIT_RANDOMSEED);
+		if (pWnd)
+			pWnd->EnableWindow(FALSE);
 	}
 
 	UpdateData(false);

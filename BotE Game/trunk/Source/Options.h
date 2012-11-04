@@ -23,8 +23,8 @@ extern int STARMAP_SECTORS_HCOUNT;		///< Anzahl der Sektoren horizontal
 extern int STARMAP_SECTORS_VCOUNT;		///< Anzahl der Sektoren vertikal
 
 
-extern int STARMAP_SECTOR_WIDTH;//		80		///< Breite eines Sektors in Pixel bei 100% Zoom
-extern int STARMAP_SECTOR_HEIGHT;//		80		///< Höhe eines Sektors
+extern const int STARMAP_SECTOR_WIDTH;//		80		///< Breite eines Sektors in Pixel bei 100% Zoom
+extern const int STARMAP_SECTOR_HEIGHT;//		80		///< Höhe eines Sektors
 extern int STARMAP_TOTALWIDTH	;//		2400	///< Gesamtbreite der View in Pixel bei 100% (= 40 * 30)
 extern int STARMAP_TOTALHEIGHT	;//		1600	///< Gesamthöhe bei 100% (= 20 * 40)
 
