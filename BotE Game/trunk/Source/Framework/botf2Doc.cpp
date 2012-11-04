@@ -641,38 +641,30 @@ void CBotf2Doc::SerializeEndOfRoundData(CArchive &ar, network::RACE race)
 			if (m_ShipInfoArray.GetAt(i).GetRace() == pPlayer->GetRaceShipNumber())
 				m_ShipInfoArray.GetAt(i).Serialize(ar);
 
-		int number = 0;
+		vector<int> vShips;
 		for (int i = 0; i < m_ShipArray.GetSize(); i++)
 			if (m_ShipArray.GetAt(i).GetOwnerOfShip() == pPlayer->GetRaceID())
-				number++;
-		ar << number;
-		for (int i = 0; i < m_ShipArray.GetSize(); i++)
-			if (m_ShipArray.GetAt(i).GetOwnerOfShip() == pPlayer->GetRaceID())
-				m_ShipArray.GetAt(i).Serialize(ar);
+				vShips.push_back(i);
+		ar << vShips.size();
+		for (unsigned int i = 0; i < vShips.size(); i++)
+			m_ShipArray.GetAt(vShips[i]).Serialize(ar);
 
-		number = 0;
+		vector<CPoint> vSystems;
 		for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
+		{
 			for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
 			{
-				if (GetSector(x, y).GetSunSystem())
-				{
-					if (GetSector(x, y).GetOwnerOfSector() == pPlayer->GetRaceID() && GetSystem(x, y).GetOwnerOfSystem() == pPlayer->GetRaceID())
-						number++;
-				}
+				if (GetSector(x, y).GetSunSystem() && GetSystem(x, y).GetOwnerOfSystem() == pPlayer->GetRaceID())
+					vSystems.push_back(CPoint(x, y));
 			}
-		ar << number;
-		for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
-			for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-			{
-				if (GetSector(x, y).GetSunSystem())
-				{
-					if (GetSystem(x, y).GetOwnerOfSystem() == pPlayer->GetRaceID())
-					{
-						ar << CPoint(x,y);
-						GetSystem(x, y).Serialize(ar);
-					}
-				}
-			}
+		}		
+		ar << vSystems.size();
+		for (unsigned int i = 0; i < vSystems.size(); i++)
+		{
+			ar << vSystems[i];
+			GetSystem(vSystems[i]).Serialize(ar);
+		}
+		
 		network::RACE client = m_pRaceCtrl->GetMappedClientID(pPlayer->GetRaceID());
 		pPlayer->Serialize(ar);
 		// aktuelle View mit zum Server senden
@@ -693,18 +685,6 @@ void CBotf2Doc::SerializeEndOfRoundData(CArchive &ar, network::RACE race)
 			COMBAT_ORDER::Typ nCombatOrder = (COMBAT_ORDER::Typ)nOrder;
 			if (nCombatOrder != COMBAT_ORDER::NONE)
 				m_mCombatOrders[sMajorID] = nCombatOrder;
-
-			/*
-			// Server stellt nun alle zum Client gehörenden Schiffe im Kampfsektor auf
-			// den erhaltenen Befehl um
-			for (int i = 0; i < m_ShipArray.GetSize(); i++)
-			{
-				if (m_ShipArray.GetAt(i).GetOwnerOfShip() == sMajorID && m_ShipArray.GetAt(i).GetKO() == m_ptCurrentCombatSector)
-				{
-
-				}
-			}
-			*/
 
 			return;
 		}
@@ -1232,12 +1212,12 @@ void CBotf2Doc::GenerateGalaxy()
 		while (nextSunSystems < 2)
 		{
 			// Punkt mit Koordinaten zwischen -1 und +1 generieren
-			CPoint ko(rand()%3 - 1, rand()%3 - 1);
-			if (raceKO.x + ko.x < STARMAP_SECTORS_HCOUNT && raceKO.x + ko.x > -1
-				&& raceKO.y + ko.y < STARMAP_SECTORS_VCOUNT && raceKO.y + ko.y > -1)
-				if (!m_Sectors.at(raceKO.x + ko.x+(raceKO.y + ko.y)*STARMAP_SECTORS_HCOUNT).GetSunSystem())
+			CPoint dist(rand()%3 - 1, rand()%3 - 1);
+			CPoint pt(raceKO.x + dist.x, raceKO.y + dist.y);
+			if (pt.x < STARMAP_SECTORS_HCOUNT && pt.x > -1 && pt.y < STARMAP_SECTORS_VCOUNT && pt.y > -1)
+				if (!GetSector(pt.y).GetSunSystem())
 				{
-					m_Sectors.at(raceKO.x + ko.x+(raceKO.y + ko.y)*STARMAP_SECTORS_HCOUNT).GenerateSector(100, nMinorDensity);
+					GetSector(pt).GenerateSector(100, nMinorDensity);
 					nextSunSystems++;
 				}
 		};
@@ -1245,10 +1225,14 @@ void CBotf2Doc::GenerateGalaxy()
 		// In einem Radius von einem Feld um das Hauptsystem die Sektoren scannen
 		for (int y = -1; y <= 1; y++)
 			for (int x = -1; x <= 1; x++)
-				if (raceKO.y + y < STARMAP_SECTORS_VCOUNT && raceKO.y + y > -1
-					&& raceKO.x + x < STARMAP_SECTORS_HCOUNT && raceKO.x + x > -1)
-						if (raceKO.x + x != raceKO.x || raceKO.y + y != raceKO.y)
-							m_Sectors.at(raceKO.x + x+(raceKO.y + y)*STARMAP_SECTORS_HCOUNT).SetScanned(it->first);
+			{
+				CPoint pt(raceKO.x + x, raceKO.y + y);
+				if (pt == raceKO)
+					continue;
+
+				if (pt.x < STARMAP_SECTORS_HCOUNT && pt.x > -1 && pt.y < STARMAP_SECTORS_VCOUNT && pt.y > -1)
+					GetSector(pt).SetScanned(it->first);
+			}
 	}
 
 	// nun die Sektoren generieren
@@ -1278,15 +1262,16 @@ void CBotf2Doc::GenerateGalaxy()
 		{
 			for (int i = -1; i <= 1; i++)
 			{
-				if (y + j < STARMAP_SECTORS_VCOUNT && y + j > -1 && x + i < STARMAP_SECTORS_HCOUNT && x + i > -1)
+				CPoint pt(x + i, y + j);
+				if (pt.x < STARMAP_SECTORS_HCOUNT && pt.x > -1 && pt.y < STARMAP_SECTORS_VCOUNT && pt.y > -1)
 				{
-					if (m_Sectors.at(x + i+(y + j)*STARMAP_SECTORS_HCOUNT).GetSunSystem())
+					if (GetSector(pt).GetSunSystem())
 					{
-						if (m_Sectors.at(x + i+(y + j)*STARMAP_SECTORS_HCOUNT).GetMinorRace())
+						if (GetSector(pt).GetMinorRace())
 							minorRaces++;
 						sunSystems++;
 					}
-					else if (m_Sectors.at(x + i+(y + j)*STARMAP_SECTORS_HCOUNT).GetAnomaly())
+					else if (GetSector(pt).GetAnomaly())
 					{
 						nAnomalys++;
 					}
@@ -2248,7 +2233,7 @@ void CBotf2Doc::BuildBuilding(USHORT id, const CPoint& KO)
 	CBuilding building(id);
 	BOOLEAN isOnline = this->GetBuildingInfo(id).GetAllwaysOnline();
 	building.SetIsBuildingOnline(isOnline);
-	m_Systems.at(KO.x+(KO.y)*STARMAP_SECTORS_HCOUNT).AddNewBuilding(building);
+	GetSystem(KO).AddNewBuilding(building);
 }
 
 void CBotf2Doc::BuildShip(int nID, const CPoint& KO, const CString& sOwnerID)
@@ -2436,7 +2421,7 @@ void CBotf2Doc::AddToLostShipHistory(const CShip* pShip, const CString& sEvent, 
 	CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(pShip->GetOwnerOfShip()));
 	if (pMajor)
 	{
-		pMajor->GetShipHistory()->ModifyShip(pShip,	m_Sectors.at(pShip->GetKO().x+(pShip->GetKO().y)*STARMAP_SECTORS_HCOUNT).GetName(TRUE), m_iRound, sEvent, sStatus);
+		pMajor->GetShipHistory()->ModifyShip(pShip,	GetSector(pShip->GetKO()).GetName(TRUE), m_iRound, sEvent, sStatus);
 	}
 }
 
@@ -2685,9 +2670,9 @@ void CBotf2Doc::CalcSystemAttack()
 				if (!sDefender.IsEmpty())
 					for (int j = 0 ; j < STARMAP_SECTORS_VCOUNT; j++)
 						for (int i = 0; i < STARMAP_SECTORS_HCOUNT; i++)
-							if (m_Sectors.at(i+(j)*STARMAP_SECTORS_HCOUNT).GetTakenSector() == TRUE && m_Sectors.at(i+(j)*STARMAP_SECTORS_HCOUNT).GetColonyOwner() == sDefender
+							if (GetSector(i, j).GetTakenSector() == TRUE && GetSector(i, j).GetColonyOwner() == sDefender
 								&& attackSystem->IsDefenderNotAttacker(sDefender, &attackers))
-								m_Systems.at(i+(j)*STARMAP_SECTORS_HCOUNT).SetMoral(-rand()%5);
+								GetSystem(i, j).SetMoral(-rand()%5);
 
 				// Wurde das System mit Truppen erobert, so wechselt es den Besitzer
 				if (attackSystem->Calculate())
@@ -5905,7 +5890,7 @@ void CBotf2Doc::CalcEndDataForNextRound()
 				{
 					// Alle noch "lebenden" Schiffe aus der Schiffshistory ebenfalls als zerstört ansehen
 					pMajor->GetShipHistory()->ModifyShip(&m_ShipArray[j],
-								m_Sectors.at(m_ShipArray[j].GetKO().x+(m_ShipArray[j].GetKO().y)*STARMAP_SECTORS_HCOUNT).GetName(TRUE), m_iRound,
+								GetSector(m_ShipArray[j].GetKO()).GetName(TRUE), m_iRound,
 								CResourceManager::GetString("UNKNOWN"), CResourceManager::GetString("DESTROYED"));
 					m_ShipArray.RemoveAt(j--);
 				}
@@ -5997,18 +5982,18 @@ void CBotf2Doc::CalcEndDataForNextRound()
 					for (int j = -1; j <= 1; j++)
 						for (int i = -1; i <= 1; i++)
 							if ((y+j < STARMAP_SECTORS_VCOUNT && y+j > -1) && (x+i < STARMAP_SECTORS_HCOUNT && x+i > -1))
-									m_Sectors.at(x+i+(y+j)*STARMAP_SECTORS_HCOUNT).AddOwnerPoints(ownerPoints, sID);
+								GetSector(x + i, y + j).AddOwnerPoints(ownerPoints, sID);
 
 					// in vertikaler und horizontaler Ausrichtung gibt es sogar 2 Felder vom Sector entfernt noch
 					// Besitzerpunkte
 					if (x-2 >= 0)
-						m_Sectors.at(x-2+(y)*STARMAP_SECTORS_HCOUNT).AddOwnerPoints(ownerPoints, sID);
+						GetSector(x - 2, y).AddOwnerPoints(ownerPoints, sID);
 					if (x+2 < STARMAP_SECTORS_HCOUNT)
-						m_Sectors.at(x+2+(y)*STARMAP_SECTORS_HCOUNT).AddOwnerPoints(ownerPoints, sID);
+						GetSector(x + 2, y).AddOwnerPoints(ownerPoints, sID);
 					if (y-2 >= 0)
-						m_Sectors.at(x+(y-2)*STARMAP_SECTORS_HCOUNT).AddOwnerPoints(ownerPoints, sID);
+						GetSector(x, y - 2).AddOwnerPoints(ownerPoints, sID);
 					if (y+2 < STARMAP_SECTORS_VCOUNT)
-						m_Sectors.at(x+(y+2)*STARMAP_SECTORS_HCOUNT).AddOwnerPoints(ownerPoints, sID);
+						GetSector(x, y + 2).AddOwnerPoints(ownerPoints, sID);
 				}
 			}
 		}

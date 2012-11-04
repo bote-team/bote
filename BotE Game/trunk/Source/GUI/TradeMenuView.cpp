@@ -307,7 +307,7 @@ void CTradeMenuView::DrawGlobalTradeMenue(Graphics* g)
 	// System, in dem die Handelsaktivitäten stattfinden sollen hinschreiben
 	CFontLoader::CreateGDIFont(pMajor, 3, fontName, fontSize);
 	fontBrush.SetColor(markColor);
-	s.Format("%s: %s",CResourceManager::GetString("TRADE_IN_SYSTEM"), pDoc->m_Sectors.at(pDoc->GetKO().x+(pDoc->GetKO().y)*STARMAP_SECTORS_HCOUNT).GetName());
+	s.Format("%s: %s",CResourceManager::GetString("TRADE_IN_SYSTEM"), pDoc->GetSector(pDoc->GetKO()).GetName());
 	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,90,m_TotalSize.cx,45), &fontFormat, &fontBrush);
 }
 
@@ -573,7 +573,7 @@ void CTradeMenuView::DrawTradeTransferMenue(Graphics* g)
 	// System, in dem die Handelsaktivitäten stattfinden werden
 	CFontLoader::CreateGDIFont(pMajor, 3, fontName, fontSize);
 	fontBrush.SetColor(markColor);
-	s = CResourceManager::GetString("TRANSFERS_NEXT_ROUND",FALSE,pDoc->m_Sectors.at(pDoc->GetKO().x+(pDoc->GetKO().y)*STARMAP_SECTORS_HCOUNT).GetName());
+	s = CResourceManager::GetString("TRANSFERS_NEXT_ROUND",FALSE,pDoc->GetSector(pDoc->GetKO()).GetName());
 	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,90,m_TotalSize.cx,45), &fontFormat, &fontBrush);
 }
 

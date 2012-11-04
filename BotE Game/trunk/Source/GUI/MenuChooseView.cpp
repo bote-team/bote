@@ -365,7 +365,7 @@ void CMenuChooseView::OnLButtonUp(UINT nFlags, CPoint point)
 			 }
 		}
 		if (pDoc->GetSystem(pDoc->GetKO()).GetOwnerOfSystem() == pMajor->GetRaceID() &&
-			pDoc->m_Sectors.at(pDoc->GetKO().x+(pDoc->GetKO().y)*STARMAP_SECTORS_HCOUNT).GetSunSystem() == TRUE)
+			pDoc->GetSector(pDoc->GetKO()).GetSunSystem() == TRUE)
 		{
 			pDoc->GetMainFrame()->SelectMainView(SYSTEM_VIEW, pMajor->GetRaceID());
 			pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CPlanetBottomView));

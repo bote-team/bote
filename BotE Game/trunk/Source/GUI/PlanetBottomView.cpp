@@ -306,11 +306,11 @@ void CPlanetBottomView::OnDraw(CDC* dc)
 
 		// Wir selbst und alle uns bekannten Rassen sehen, wenn das System blockiert wird.
 		// Dafür wird ein OverlayBanner über die Ansicht gelegt.
-		if (pDoc->m_Systems.at(KO.x+(KO.y)*STARMAP_SECTORS_HCOUNT).GetBlockade() > NULL)
+		if (pDoc->GetSystem(KO).GetBlockade() > 0)
 		{
 			CFontLoader::CreateGDIFont(pMajor, 3, fontName, fontSize);
 			CSize viewSize(m_TotalSize.cx - 160, m_TotalSize.cy - 120);
-			s.Format("%d", pDoc->m_Systems.at(KO.x+(KO.y)*STARMAP_SECTORS_HCOUNT).GetBlockade());
+			s.Format("%d", pDoc->GetSystem(KO).GetBlockade());
 			COverlayBanner* banner = new COverlayBanner(CPoint(80,60), viewSize, CResourceManager::GetString("SYSTEM_IS_BLOCKED", FALSE, s), RGB(200,0,0));
 			banner->SetBorderWidth(1);
 			Gdiplus::Font font(CComBSTR(fontName), fontSize);
@@ -395,7 +395,7 @@ void CPlanetBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 					CSmallInfoView::SetShipInfo(true);
 					pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
 					pDoc->m_ShipArray.ElementAt(pDoc->GetCurrentShipIndex()).SetTerraformingPlanet(i);
-					pDoc->m_Sectors.at(pDoc->GetKO().x+(pDoc->GetKO().y)*STARMAP_SECTORS_HCOUNT).GetPlanet(i)->SetIsTerraforming(TRUE);
+					pDoc->GetSector(pDoc->GetKO()).GetPlanet(i)->SetIsTerraforming(TRUE);
 					// den Terraformingbefehl zurücknehmen, wenn kein anderes Schiff diesen Planeten mehr terraform
 					if (static_cast<short>(i) != nOldTerraformingPlanet && nOldTerraformingPlanet != -1)
 					{

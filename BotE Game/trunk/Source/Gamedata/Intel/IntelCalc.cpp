@@ -837,12 +837,12 @@ BOOLEAN CIntelCalc::ExecuteMilitarySpy(CMajor* pRace, CMajor* pEnemyRace, CMajor
 		{
 			int random = rand()%troopSectors.GetSize();
 			CMilitaryIntelObj* report = NULL;
-			if (m_pDoc->m_Systems.at(troopSectors.GetAt(random).x+(troopSectors.GetAt(random).y)*STARMAP_SECTORS_HCOUNT).GetTroops()->GetSize() == 1)
+			if (m_pDoc->GetSystem(troopSectors.GetAt(random)).GetTroops()->GetSize() == 1)
 				report = new CMilitaryIntelObj(pRace->GetRaceID(), pEnemyRace->GetRaceID(), m_pDoc->GetCurrentRound(), TRUE, CPoint(troopSectors.GetAt(random)),
-				m_pDoc->m_Systems.at(troopSectors.GetAt(random).x+(troopSectors.GetAt(random).y)*STARMAP_SECTORS_HCOUNT).GetTroops()->GetAt(0).GetID() + 20000, 1, FALSE, FALSE, TRUE);
+				m_pDoc->GetSystem(troopSectors.GetAt(random)).GetTroops()->GetAt(0).GetID() + 20000, 1, FALSE, FALSE, TRUE);
 			else
 				report = new CMilitaryIntelObj(pRace->GetRaceID(), pEnemyRace->GetRaceID(), m_pDoc->GetCurrentRound(), TRUE, CPoint(troopSectors.GetAt(random)),
-					20000, m_pDoc->m_Systems.at(troopSectors.GetAt(random).x+(troopSectors.GetAt(random).y)*STARMAP_SECTORS_HCOUNT).GetTroops()->GetSize(), FALSE, FALSE, TRUE);
+					20000, m_pDoc->GetSystem(troopSectors.GetAt(random)).GetTroops()->GetSize(), FALSE, FALSE, TRUE);
 			// Intelreport dem Akteur hinzufügen
 			if (report)
 			{

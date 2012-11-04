@@ -2059,17 +2059,23 @@ void CSystemMenuView::DrawSystemProduction(Graphics* g)
 		{
 			CPoint ko = pMajor->GetEmpire()->GetSystemList()->GetAt(j).ko;
 			// Wenn unser System blockiert wird so gelten die Ressourcenrouten nicht
-			if (pDoc->GetSystem(ko.x, ko.y).GetBlockade() > NULL)
+			if (pDoc->GetSystem(ko).GetBlockade() > NULL)
 				continue;
-			for (int i = 0; i < pDoc->GetSystem(ko.x, ko.y).GetResourceRoutes()->GetSize(); i++)
-				if (pDoc->GetSystem(ko.x, ko.y).GetResourceRoutes()->GetAt(i).GetKO() == p)
+			
+			for (int i = 0; i < pDoc->GetSystem(ko).GetResourceRoutes()->GetSize(); i++)
+			{
+				CPoint ptTarget = pDoc->GetSystem(ko).GetResourceRoutes()->GetAt(i).GetKO();
+				// ist das Ziel das aktuelle System?
+				if (ptTarget == p)
 				{
 					// Wenn das Startsystem blockiert wird, so kann die Ressourcenroute ebenfalls nicht benutzt werden
-					if (pDoc->m_Systems.at(pDoc->GetSystem(ko.x, ko.y).GetResourceRoutes()->GetAt(i).GetKO().x+(pDoc->GetSystem(ko.x, ko.y).GetResourceRoutes()->GetAt(i).GetKO().y)*STARMAP_SECTORS_HCOUNT).GetBlockade() > NULL)
+					if (pDoc->GetSystem(ptTarget).GetBlockade() > NULL)
 						continue;
-					BYTE res = pDoc->GetSystem(ko.x, ko.y).GetResourceRoutes()->GetAt(i).GetResource();
-					resFromRoutes[res] += pDoc->GetSystem(ko.x, ko.y).GetResourceStore(res);
+					
+					BYTE res = pDoc->GetSystem(ko).GetResourceRoutes()->GetAt(i).GetResource();
+					resFromRoutes[res] += pDoc->GetSystem(ko).GetResourceStore(res);
 				}
+			}
 			// gilt nicht bei blockierten Systemen
 			if (pDoc->GetSystem(p).GetBlockade() == NULL)
 				for (int res = TITAN; res <= DERITIUM; res++)
