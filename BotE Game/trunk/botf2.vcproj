@@ -306,7 +306,7 @@
 					>
 				</File>
 				<File
-					RelativePath=".\Source\Framework\ShipSanity.cpp"
+					RelativePath=".\Source\Framework\Sanity.cpp"
 					>
 				</File>
 			</Filter>
@@ -1187,7 +1187,7 @@
 					>
 				</File>
 				<File
-					RelativePath=".\Source\Framework\ShipSanity.h"
+					RelativePath=".\Source\Framework\Sanity.h"
 					>
 				</File>
 			</Filter>

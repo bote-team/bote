@@ -21,7 +21,7 @@
 #include "Ships\Fleet.h"
 #include "System\AttackSystem.h"
 #include "Intel\IntelCalc.h"
-#include "ShipSanity.h"
+#include "Sanity.h"
 
 #include "AI\AIPrios.h"
 #include "AI\SectorAI.h"
@@ -3859,7 +3859,7 @@ void CBotf2Doc::CalcShipOrders()
 	// Hier kommt die Auswertung der Schiffsbefehle
 	for (int y = 0; y < m_ShipArray.GetSize(); y++)
 	{
-		CShipSanity::SanityCheckFleet(m_ShipArray.GetAt(y));
+		CSanity::SanityCheckFleet(m_ShipArray.GetAt(y));
 
 		// Hier wird überprüft, ob der Systemattack-Befehl noch gültig ist
 		// Alle Schiffe, welche einen Systemangriffsbefehl haben überprüfen, ob dieser Befehl noch gültig ist
