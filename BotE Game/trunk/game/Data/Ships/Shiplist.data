@@ -12504,12 +12504,12 @@ Dieses Wesen ist sehr aggressiv und entlädt sich gerne an gleich welchen Oberflä
 14
 3
 7
-0
-0
-0
-0
-0
-0
+4
+4
+4
+4
+4
+4
 0
 0
 0
@@ -12517,7 +12517,7 @@ Dieses Wesen ist sehr aggressiv und entlädt sich gerne an gleich welchen Oberflä
 0
 0
 1
-
+Blizzard-Plasmawesen
 6000
 2
 0
@@ -13356,12 +13356,12 @@ Das unbewaffnete Seuchenschiff trägt ein multiresistentes vakuumübertragbares Vi
 14
 2
 4
-0
-0
-0
-0
-0
-0
+1
+1
+1
+1
+1
+1
 0
 0
 0
@@ -13369,7 +13369,7 @@ Das unbewaffnete Seuchenschiff trägt ein multiresistentes vakuumübertragbares Vi
 0
 0
 1
-
+Gaballianer
 3000
 2
 1
@@ -13390,6 +13390,19 @@ Das unbewaffnete Seuchenschiff trägt ein multiresistentes vakuumübertragbares Vi
 0
 0
 
+$Beam$
+1
+10
+1
+Virus
+0
+0
+0
+10
+50
+1
+0
+10
 $END_OF_SHIPDATA$
 7
 Havri
@@ -13967,7 +13980,7 @@ Diese seltsame Lebensform ist relativ ungefährlich und wehrt sich nur, wenn sie 
 0
 0
 1
-
+Ionisierendes Gaswesen
 2000
 0
 0
