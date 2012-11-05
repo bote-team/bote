@@ -112,6 +112,14 @@ bool CIniLoader::ReadValue(const CString& sSection, const CString& sKey, int& nV
 	return true;
 }
 
+int CIniLoader::ReadValueDefault(const CString& sSection, const CString& sKey, int iDefault) const
+{
+	CString sValue;
+	if (!ReadIniValue(sSection, sKey, sValue))
+		return iDefault;
+	return atoi(sValue);
+}
+
 /// Diese Funktion gibt den zum <code>sKey</code> gehörenden Eintrag aus der ini-Datei zurück.
 bool CIniLoader::ReadValue(const CString& sSection, const CString& sKey, float& fValue) const
 {

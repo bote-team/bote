@@ -169,22 +169,7 @@ BOOL CBotf2Doc::OnNewDocument()
 	bool bHardwareSound;
 	pIni->ReadValue("Audio", "HARDWARESOUND", bHardwareSound);
 	CSoundManager::GetInstance()->Init(!bHardwareSound);
-
-	int nSeed = -1;
-	pIni->ReadValue("Special", "RANDOMSEED", nSeed);
-
-	// festen vorgegeben Seed verwenden
-	if (nSeed >= 0)
-	{
-		srand(nSeed);
-	}
-	// zufälligen Seed verwenden
-	else
-	{
-		nSeed = (unsigned)time(NULL);
-		srand(nSeed);
-	}
-	MYTRACE("general")(MT::LEVEL_INFO, "Used seed for randomgenerator: %i", nSeed);
+	RandomSeed();
 
 	// Standardwerte setzen
 	m_ptKO = CPoint(0,0);
@@ -774,19 +759,7 @@ void CBotf2Doc::ResetIniSettings(void)
 		pSoundManager->SetSoundMasterVolume(0.5f);
 	MYTRACE("general")(MT::LEVEL_INFO, "Init sound ready...\n");
 
-	int nSeed = -1;
-	pIni->ReadValue("Special", "RANDOMSEED", nSeed);
-
-	// festen vorgegeben Seed verwenden
-	if (nSeed >= 0)
-		srand(nSeed);
-	// zufälligen Seed verwenden
-	else
-	{
-		nSeed = (unsigned)time(NULL);
-		srand(nSeed);
-	}
-	MYTRACE("general")(MT::LEVEL_INFO, "Used seed for randomgenerator: %i", nSeed);
+	RandomSeed();
 }
 
 /// Funktion gibt die Koordinate des Hauptsystems einer Majorrace zurück.
@@ -1391,19 +1364,7 @@ void CBotf2Doc::NextRound()
 		MYTRACE("general")(MT::LEVEL_INFO, "#### START NEXT ROUND (round: %d) ####", GetCurrentRound());
 
 		// Seed initialisieren
-		int nSeed = -1;
-		CIniLoader::GetInstance()->ReadValue("Special", "RANDOMSEED", nSeed);
-		// festen vorgegeben Seed verwenden
-		if (nSeed >= 0)
-			srand(nSeed);
-		// zufälligen Seed verwenden
-		else
-		{
-			nSeed = (unsigned)time(NULL);
-			srand(nSeed);
-		}
-
-		MYTRACE("general")(MT::LEVEL_INFO, "Used seed for randomgenerator: %i", nSeed);
+		RandomSeed();
 
 		// Soundnachrichten aus alter Runde löschen
 		for (int i = network::RACE_1; i < network::RACE_ALL; i++)
@@ -6355,4 +6316,17 @@ void CBotf2Doc::AllocateSectorsAndSystems()
 
 CMainFrame* CBotf2Doc::GetMainFrame(void) const {
 	return dynamic_cast<CMainFrame*>(AfxGetApp()->GetMainWnd());
+}
+
+void CBotf2Doc::RandomSeed(const int* OnlyIfDifferentThan) {
+	const CIniLoader* pIni = CIniLoader::GetInstance();
+	int nSeed = pIni->ReadValueDefault("Special", "RANDOMSEED", -1);
+	if(OnlyIfDifferentThan && *OnlyIfDifferentThan == nSeed)
+		return;
+	if(nSeed < 0)
+		// zufälligen Seed verwenden
+		nSeed = (unsigned)time(NULL);
+	// sonst festen vorgegeben Seed verwenden
+	srand(nSeed);
+	MYTRACE("general")(MT::LEVEL_INFO, "Used seed for randomgenerator: %i", nSeed);
 }

@@ -39,6 +39,9 @@ public:
 	 */
 	bool ReadValue(const CString& sSection, const CString& sKey, int& nValue) const;
 
+	// Returns iDefault in case the value doesn't exist or other error.
+	int ReadValueDefault(const CString& sSection, const CString& sKey, int iDefault) const;
+
 	/**
 	 * Diese Funktion gibt den zum <code>key</code> gehörenden Eintrag aus der ini-Datei zurück.
 	 */

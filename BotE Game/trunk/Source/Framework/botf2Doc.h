@@ -134,6 +134,10 @@ public:
 	/// Funktion liest die Ini-Datei neu ein und legt die Werte neu fest.
 	void ResetIniSettings(void);
 
+	//Loads the random seed from ini file and seeds rand() with it In case that OnlyIfDifferentThan != NULL,
+	//sets the new seed only if the new one is different than the passed value.
+	static void RandomSeed(const int* OnlyIfDifferentThan = NULL);
+
 	/// Funktion gibt den Schwierigkeitsgrad des Spiels zurück.
 	float GetDifficultyLevel(void) const {return m_fDifficultyLevel;}
 

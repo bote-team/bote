@@ -419,22 +419,5 @@ void CNewGamePage::OnBnClickedShowoptionsdlg()
 
 	CSettingsDlg dlg;
 	if (dlg.DoModal() == IDOK)
-	{
-		int nSeed = -1;
-		pIni->ReadValue("Special", "RANDOMSEED", nSeed);
-
-		if (nSeed != nOldSeed)
-		{
-			// festen vorgegeben Seed verwenden
-			if (nSeed >= 0)
-				srand(nSeed);
-			// zufälligen Seed verwenden
-			else
-			{
-				nSeed = (unsigned)time(NULL);
-				srand(nSeed);
-			}
-			MYTRACE("general")(MT::LEVEL_INFO, "Used seed for randomgenerator: %i", nSeed);
-		}
-	}
+		CBotf2Doc::RandomSeed(&nOldSeed);
 }
