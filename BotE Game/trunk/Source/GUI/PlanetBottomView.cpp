@@ -377,7 +377,7 @@ void CPlanetBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 	{
 		short nOldTerraformingPlanet = pDoc->m_ShipArray.ElementAt(pDoc->GetCurrentShipIndex()).GetTerraformingPlanet();
 		if (nOldTerraformingPlanet != -1)
-			pDoc->GetSector(pDoc->GetKO()).GetPlanet(nOldTerraformingPlanet)->SetIsTerraforming(FALSE);
+			pDoc->CurrentSector().GetPlanet(nOldTerraformingPlanet)->SetIsTerraforming(FALSE);
 
 		pDoc->m_ShipArray.ElementAt(pDoc->GetCurrentShipIndex()).SetTerraformingPlanet(-1);
 		// Haben wir auf einen Planeten geklickt
@@ -386,8 +386,8 @@ void CPlanetBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 			{
 				// Lange Abfrage hie notwendig, weil bei Kolonisierung brauchen wir nen geterraformten Planeten und
 				// beim Terraforming nen bewohnbaren noch nicht geterraformten Planeten
-				if (pDoc->GetSector(pDoc->GetKO()).GetPlanet(i)->GetTerraformed() == FALSE
-					&& pDoc->GetSector(pDoc->GetKO()).GetPlanet(i)->GetHabitable() == TRUE
+				if (pDoc->CurrentSector().GetPlanet(i)->GetTerraformed() == FALSE
+					&& pDoc->CurrentSector().GetPlanet(i)->GetHabitable() == TRUE
 					&& pDoc->CurrentShip().GetCurrentOrder() == SHIP_ORDER::TERRAFORM)
 				{
 					CGalaxyMenuView::SetMoveShip(FALSE);
@@ -395,14 +395,14 @@ void CPlanetBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 					CSmallInfoView::SetShipInfo(true);
 					pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
 					pDoc->m_ShipArray.ElementAt(pDoc->GetCurrentShipIndex()).SetTerraformingPlanet(i);
-					pDoc->GetSector(pDoc->GetKO()).GetPlanet(i)->SetIsTerraforming(TRUE);
+					pDoc->CurrentSector().GetPlanet(i)->SetIsTerraforming(TRUE);
 					// den Terraformingbefehl zurücknehmen, wenn kein anderes Schiff diesen Planeten mehr terraform
 					if (static_cast<short>(i) != nOldTerraformingPlanet && nOldTerraformingPlanet != -1)
 					{
 						for (int y = 0; y < pDoc->m_ShipArray.GetSize(); y++)
 							if (pDoc->m_ShipArray[y].GetKO() == pDoc->GetKO() && pDoc->m_ShipArray[y].GetTerraformingPlanet() == nOldTerraformingPlanet)
 							{
-								pDoc->GetSector(pDoc->GetKO()).GetPlanet(nOldTerraformingPlanet)->SetIsTerraforming(TRUE);
+								pDoc->CurrentSector().GetPlanet(nOldTerraformingPlanet)->SetIsTerraforming(TRUE);
 								break;
 							}
 					}

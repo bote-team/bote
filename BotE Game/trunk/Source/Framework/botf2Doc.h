@@ -183,6 +183,15 @@ public:
 		return GetSector(se.x, se.y);
 	}
 
+	//returns sector at m_ptKO
+	const CSector& CurrentSector() const {
+		return GetSector(m_ptKO);
+	}
+	//returns sector at m_ptKO
+	CSector& CurrentSector() {
+		return GetSector(m_ptKO);
+	}
+
 	CSystem& GetSystem(int x, int y) {
 		return m_Systems.at(x+y*STARMAP_SECTORS_HCOUNT);
 	}
