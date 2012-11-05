@@ -206,6 +206,15 @@ public:
 		return GetSystem(ko.x, ko.y);
 	}
 
+	//returns system at m_ptKO
+	const CSystem& CurrentSystem() const {
+		return GetSystem(m_ptKO);
+	}
+	//returns system at m_ptKO
+	CSystem& CurrentSystem() {
+		return GetSystem(m_ptKO);
+	}
+
 	CSystem& GetSystemForSector(const CSector& s) {
 		return GetSystem(s.GetKO());
 	}

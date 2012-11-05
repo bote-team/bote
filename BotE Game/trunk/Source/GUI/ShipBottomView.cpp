@@ -357,8 +357,8 @@ void CShipBottomView::OnDraw(CDC* dc)
 			{
 				// Wenn in dem System die Möglichkeit des Schiffstrainings besteht
 				if (pDoc->CurrentSector().GetSunSystem() == TRUE &&
-					pDoc->GetSystem(pDoc->GetKO()).GetOwnerOfSystem() == pDoc->CurrentShip().GetOwnerOfShip() &&
-					pDoc->GetSystem(pDoc->GetKO()).GetProduction()->GetShipTraining() > 0)
+					pDoc->CurrentSystem().GetOwnerOfSystem() == pDoc->CurrentShip().GetOwnerOfShip() &&
+					pDoc->CurrentSystem().GetProduction()->GetShipTraining() > 0)
 				{
 					g.DrawImage(m_pShipOrderButton, r.right-245, r.top+70+counter*35, 120, 30);
 					m_ShipOrders[SHIP_ORDER::TRAIN_SHIP].SetRect(r.right-245,r.top+70+counter*35,r.right-125,r.top+100+counter*35);
@@ -392,14 +392,14 @@ void CShipBottomView::OnDraw(CDC* dc)
 					// Wenn im System noch Bevölkerung vorhanden ist
 					pDoc->CurrentSector().GetCurrentHabitants() > 0.0f &&
 					// Wenn das System nicht der Rasse gehört, der auch das Schiff gehört
-					pDoc->GetSystem(pDoc->GetKO()).GetOwnerOfSystem() != pDoc->CurrentShip().GetOwnerOfShip())
+					pDoc->CurrentSystem().GetOwnerOfSystem() != pDoc->CurrentShip().GetOwnerOfShip())
 				{
 					CRace* pOwnerOfSector = pDoc->GetRaceCtrl()->GetRace(pDoc->CurrentSector().GetOwnerOfSector());
 
 					// Wenn im System eine Rasse lebt und wir mit ihr im Krieg sind
 					if (pOwnerOfSector != NULL && pMajor->GetAgreement(pOwnerOfSector->GetRaceID()) == DIPLOMATIC_AGREEMENT::WAR
 					// Wenn das System niemanden mehr gehört, aber noch Bevölkerung drauf lebt (z.B. durch Rebellion)
-						|| pDoc->GetSystem(pDoc->GetKO()).GetOwnerOfSystem() == "" && pDoc->CurrentSector().GetMinorRace() == FALSE)
+						|| pDoc->CurrentSystem().GetOwnerOfSystem() == "" && pDoc->CurrentSector().GetMinorRace() == FALSE)
 					{
 						// nur wenn die Schiffe ungetarnt sind können sie Bombardieren
 						// Ab hier check wegen Flotten, darum wirds lang
@@ -436,7 +436,7 @@ void CShipBottomView::OnDraw(CDC* dc)
 			{
 				// Überprüfen ob man eine Blockade im System überhaupt errichten kann
 				// Wenn das System nicht der Rasse gehört, der auch das Schiff gehört
-				CRace* pOwnerOfSystem = pDoc->GetRaceCtrl()->GetRace(pDoc->GetSystem(pDoc->GetKO()).GetOwnerOfSystem());
+				CRace* pOwnerOfSystem = pDoc->GetRaceCtrl()->GetRace(pDoc->CurrentSystem().GetOwnerOfSystem());
 				if (pOwnerOfSystem != NULL && pOwnerOfSystem->GetRaceID() != pDoc->CurrentShip().GetOwnerOfShip()
 					&& pMajor->GetAgreement(pOwnerOfSystem->GetRaceID()) < DIPLOMATIC_AGREEMENT::FRIENDSHIP)
 				{

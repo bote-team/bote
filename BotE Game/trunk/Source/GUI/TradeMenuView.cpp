@@ -78,7 +78,7 @@ void CTradeMenuView::OnDraw(CDC* dc)
 
 	// ***************************** DIE HANDELSANSICHT ZEICHNEN **********************************
 	// System einstellen, in welchem wir handeln möchten
-	if (pDoc->GetSystem(pDoc->GetKO()).GetOwnerOfSystem() != pMajor->GetRaceID())
+	if (pDoc->CurrentSystem().GetOwnerOfSystem() != pMajor->GetRaceID())
 	{
 		if (pMajor->GetEmpire()->GetSystemList()->GetSize() > 0)
 			pDoc->SetKO(pMajor->GetEmpire()->GetSystemList()->GetAt(0).ko.x, pMajor->GetEmpire()->GetSystemList()->GetAt(0).ko.y);
@@ -225,7 +225,7 @@ void CTradeMenuView::DrawGlobalTradeMenue(Graphics* g)
 		g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(40+i*200,230,190,25), &fontFormat, &fontBrush);
 
 		// Lagermenge im aktuellen System von der Ressource hinschreiben
-		s.Format("%d %s",pDoc->GetSystem(pDoc->GetKO()).GetResourceStore(i),CResourceManager::GetString("UNITS"));
+		s.Format("%d %s",pDoc->CurrentSystem().GetResourceStore(i),CResourceManager::GetString("UNITS"));
 		g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(40+i*200,385,190,25), &fontFormat, &fontBrush);
 
 		// den Monopolbesitzer auch hinschreiben
@@ -636,7 +636,7 @@ void CTradeMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			return;
 		}
 		// Wenn das System blockiert wird, so kann man an der globalen Handelsbörse keine Käufe und Verkäufe tätigen
-		if (pDoc->GetSystem(pDoc->GetKO()).GetBlockade() > NULL)
+		if (pDoc->CurrentSystem().GetBlockade() > NULL)
 			return;
 		// Checken ob wir auf irgendeinen Kaufen- oder Verkaufenbutton geklickt haben
 		for (int i = TITAN; i <= IRIDIUM; i++)
@@ -660,11 +660,11 @@ void CTradeMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			else if (CRect(r.left+75+i*200,r.top+310,r.left+195+i*200,r.top+340).PtInRect(point))
 			{
 				// Überprüfen, das wir bei einem Verkauf nicht mehr Ressourcen aus dem System nehmen als im Lager vorhanden sind
-				if (pDoc->GetSystem(pDoc->GetKO()).GetResourceStore(i) >= pMajor->GetTrade()->GetQuantity())
+				if (pDoc->CurrentSystem().GetResourceStore(i) >= pMajor->GetTrade()->GetQuantity())
 				{
 					pMajor->GetTrade()->SellRessource(i, pMajor->GetTrade()->GetQuantity(),pDoc->GetKO());
 					// Ressource aus dem Lager nehmen
-					pDoc->GetSystem(pDoc->GetKO()).SetResourceStore(i,-pMajor->GetTrade()->GetQuantity());
+					pDoc->CurrentSystem().SetResourceStore(i,-pMajor->GetTrade()->GetQuantity());
 					CSoundManager::GetInstance()->PlaySound(SNDMGR_SOUND_SHIPTARGET);
 					Invalidate(FALSE);
 					return;

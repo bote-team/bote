@@ -348,7 +348,7 @@ void CMenuChooseView::OnLButtonUp(UINT nFlags, CPoint point)
 	else if (button == 1)
 	{
 		// System suchen, welches dem Spieler auch gehört
-		if (pDoc->GetSystem(pDoc->GetKO()).GetOwnerOfSystem() != pMajor->GetRaceID())
+		if (pDoc->CurrentSystem().GetOwnerOfSystem() != pMajor->GetRaceID())
 		{
 			 if (m_LastSystem != CPoint(-1,-1))
 				 pDoc->SetKO(m_LastSystem.x, m_LastSystem.y);
@@ -364,7 +364,7 @@ void CMenuChooseView::OnLButtonUp(UINT nFlags, CPoint point)
 							}
 			 }
 		}
-		if (pDoc->GetSystem(pDoc->GetKO()).GetOwnerOfSystem() == pMajor->GetRaceID() &&
+		if (pDoc->CurrentSystem().GetOwnerOfSystem() == pMajor->GetRaceID() &&
 			pDoc->CurrentSector().GetSunSystem() == TRUE)
 		{
 			pDoc->GetMainFrame()->SelectMainView(SYSTEM_VIEW, pMajor->GetRaceID());

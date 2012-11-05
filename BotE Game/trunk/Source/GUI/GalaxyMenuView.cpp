@@ -489,9 +489,9 @@ void CGalaxyMenuView::OnDraw(CDC* dc)
 
 	if (bShowTraderoutes)
 	{
-		if (m_bDrawTradeRoute && (pDoc->GetSystem(pDoc->GetKO()).GetOwnerOfSystem() == pMajor->GetRaceID()))
+		if (m_bDrawTradeRoute && (pDoc->CurrentSystem().GetOwnerOfSystem() == pMajor->GetRaceID()))
 			m_TradeRoute.DrawTradeRoute(pDC, pDoc->GetKO(), pMajor);
-		if (m_bDrawResourceRoute && (pDoc->GetSystem(pDoc->GetKO()).GetOwnerOfSystem() == pMajor->GetRaceID()))
+		if (m_bDrawResourceRoute && (pDoc->CurrentSystem().GetOwnerOfSystem() == pMajor->GetRaceID()))
 			m_ResourceRoute.DrawResourceRoute(pDC, pDoc->GetKO(), pMajor);
 	}
 

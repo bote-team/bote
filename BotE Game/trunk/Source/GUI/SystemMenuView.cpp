@@ -505,13 +505,13 @@ void CSystemMenuView::DrawBuildMenue(Graphics* g)
 		{
 			// also ein Gebäude oder Gebäudeupdate
 			if (m_vBuildlist[m_iClickedOn] < 10000)
-				pDoc->GetSystem(pDoc->GetKO()).GetAssemblyList()->CalculateNeededRessources(&pDoc->GetBuildingInfo(RunningNumber),0,0, pDoc->GetSystem(pDoc->GetKO()).GetAllBuildings(), m_vBuildlist[m_iClickedOn], pMajor->GetEmpire()->GetResearch()->GetResearchInfo());
+				pDoc->CurrentSystem().GetAssemblyList()->CalculateNeededRessources(&pDoc->GetBuildingInfo(RunningNumber),0,0, pDoc->CurrentSystem().GetAllBuildings(), m_vBuildlist[m_iClickedOn], pMajor->GetEmpire()->GetResearch()->GetResearchInfo());
 			// also ein Schiff
 			else if (m_vBuildlist[m_iClickedOn] < 20000 && pDoc->GetSystem(p.x, p.y).GetBuildableShips()->GetSize() > 0)
-				pDoc->GetSystem(pDoc->GetKO()).GetAssemblyList()->CalculateNeededRessources(0,&pDoc->m_ShipInfoArray.GetAt(m_vBuildlist[m_iClickedOn] - 10000), 0, pDoc->GetSystem(pDoc->GetKO()).GetAllBuildings(), m_vBuildlist[m_iClickedOn], pMajor->GetEmpire()->GetResearch()->GetResearchInfo());
+				pDoc->CurrentSystem().GetAssemblyList()->CalculateNeededRessources(0,&pDoc->m_ShipInfoArray.GetAt(m_vBuildlist[m_iClickedOn] - 10000), 0, pDoc->CurrentSystem().GetAllBuildings(), m_vBuildlist[m_iClickedOn], pMajor->GetEmpire()->GetResearch()->GetResearchInfo());
 			// also eine Truppe
 			else if (pDoc->GetSystem(p.x, p.y).GetBuildableTroops()->GetSize() > 0)
-				pDoc->GetSystem(p.x, p.y).GetAssemblyList()->CalculateNeededRessources(0,0,&pDoc->m_TroopInfo.GetAt(m_vBuildlist[m_iClickedOn] - 20000), pDoc->GetSystem(pDoc->GetKO()).GetAllBuildings(), m_vBuildlist[m_iClickedOn], pMajor->GetEmpire()->GetResearch()->GetResearchInfo());
+				pDoc->GetSystem(p.x, p.y).GetAssemblyList()->CalculateNeededRessources(0,0,&pDoc->m_TroopInfo.GetAt(m_vBuildlist[m_iClickedOn] - 20000), pDoc->CurrentSystem().GetAllBuildings(), m_vBuildlist[m_iClickedOn], pMajor->GetEmpire()->GetResearch()->GetResearchInfo());
 
 			// Anzeige der ganzen Werte
 			s = CResourceManager::GetString("BUILD_COSTS");
@@ -741,7 +741,7 @@ void CSystemMenuView::DrawBuildMenue(Graphics* g)
 	if (graphic)
 		g->DrawImage(graphic, 460, 510, 120, 30);
 	s = CResourceManager::GetString("BTN_DOCKYARD");
-	if (pDoc->GetSystem(pDoc->GetKO()).GetBuildableShips()->GetSize() != 0)//Schrift ausgrauen wenn keine Schiffe baubar/keine Schiffswerft
+	if (pDoc->CurrentSystem().GetBuildableShips()->GetSize() != 0)//Schrift ausgrauen wenn keine Schiffe baubar/keine Schiffswerft
 		g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(460,510,120,30), &fontFormat, &btnBrush);
 	else
 	{
@@ -755,7 +755,7 @@ void CSystemMenuView::DrawBuildMenue(Graphics* g)
 	if (graphic)
 		g->DrawImage(graphic, 595, 510, 120, 30);
 	s = CResourceManager::GetString("BTN_BARRACK");
-	if (pDoc->GetSystem(pDoc->GetKO()).GetBuildableTroops()->GetSize() != 0) //Schrift ausgrauen wenn keine Truppen baubar/keine Kaserne
+	if (pDoc->CurrentSystem().GetBuildableTroops()->GetSize() != 0) //Schrift ausgrauen wenn keine Truppen baubar/keine Kaserne
 		g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(595,510,120,30), &fontFormat, &btnBrush);
 	else
 	{
@@ -2968,7 +2968,7 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		else if (ShipyardListButton.PtInRect(point))
 		{
 			// Wenn man keine Schiffe zur Auswahl hat dann wird wieder auf das normale Gebäudebaumenü umgeschaltet
-			if (pDoc->GetSystem(pDoc->GetKO()).GetBuildableShips()->GetSize() == 0)
+			if (pDoc->CurrentSystem().GetBuildableShips()->GetSize() == 0)
 				return;
 			m_iClickedOn = 0;
 			m_byStartList = 0;
@@ -2979,7 +2979,7 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		else if (TroopListButton.PtInRect(point))
 		{
 			// Wenn man keine Schiffe zur Auswahl hat dann wird wieder auf das normale Gebäudebaumenü umgeschaltet
-			if (pDoc->GetSystem(pDoc->GetKO()).GetBuildableTroops()->GetSize() == 0)
+			if (pDoc->CurrentSystem().GetBuildableTroops()->GetSize() == 0)
 				return;
 			m_iClickedOn = 0;
 			m_byStartList = 0;
@@ -3967,7 +3967,7 @@ CString CSystemMenuView::CreateTooltip(void)
 			if (i < m_iELPage * NOBIEL + NOBIEL)
 				if (m_EnergyList.GetAt(i).rect.PtInRect(pt))
 				{
-					nID = pDoc->GetSystem(pDoc->GetKO()).GetAllBuildings()->GetAt(m_EnergyList.GetAt(i).index).GetRunningNumber();
+					nID = pDoc->CurrentSystem().GetAllBuildings()->GetAt(m_EnergyList.GetAt(i).index).GetRunningNumber();
 					break;
 				}
 		}
