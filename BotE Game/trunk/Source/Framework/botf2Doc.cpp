@@ -1456,7 +1456,7 @@ void CBotf2Doc::NextRound()
 		bool bMember = false;
 		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 		{
-			if (pMinor->GetAgreement(it->first) == DIPLOMATIC_AGREEMENT::MEMBERSHIP)
+			if (pMinor->IsMemberTo(it->first))
 			{
 				bMember = true;
 				break;

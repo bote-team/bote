@@ -161,7 +161,7 @@ void CDiplomacyController::CalcDiplomacyFallouts(CBotf2Doc* pDoc)
 			if (pMinor->GetAgreement(pMajor->GetRaceID()) >= DIPLOMATIC_AGREEMENT::FRIENDSHIP)
 				pDoc->GetSector(pMinor->GetRaceKO()).SetKnown(pMajor->GetRaceID());
 			// Wenn wir eine Mitgliedschaft mit der kleinen Rasse haben und das System noch der kleinen Rasse gehört, dann bekommen wir das
-			if (pMinor->GetAgreement(pMajor->GetRaceID()) == DIPLOMATIC_AGREEMENT::MEMBERSHIP && pDoc->GetSystem(pMinor->GetRaceKO()).GetOwnerOfSystem() == "")
+			if (pMinor->IsMemberTo(pMajor->GetRaceID()) && pDoc->GetSystem(pMinor->GetRaceKO()).GetOwnerOfSystem() == "")
 			{
 				pDoc->GetSector(pMinor->GetRaceKO()).SetFullKnown(pMajor->GetRaceID());
 				pDoc->GetSystem(pMinor->GetRaceKO()).SetOwnerOfSystem(pMajor->GetRaceID());

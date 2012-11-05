@@ -744,3 +744,15 @@ void CMinor::Reset(void)
 void CMinor::Contact(const CRace& Race, const CPoint& p) {
 	CRace::Contact(Race, p);
 }
+
+bool CMinor::IsMemberTo(const CString& MajorID) const {
+	if(!MajorID.IsEmpty())
+		return GetAgreement(MajorID) == DIPLOMATIC_AGREEMENT::MEMBERSHIP;
+
+	for(std::map<CString, DIPLOMATIC_AGREEMENT::Typ>::const_iterator it = m_mAgreement.begin();
+		it != m_mAgreement.end(); ++it) {
+		if(it->second == DIPLOMATIC_AGREEMENT::MEMBERSHIP)
+			return true;
+	}
+	return false;
+}

@@ -142,6 +142,9 @@ public:
 	/// @return <code>true</code> wenn es eine Alienrasse ist, sonst <code>false</code>
 	bool IsAlienRace() const { return m_sHomeSystem == ""; }
 
+	// Is this minor race member to the major race with given ID, or to any major in case of an empty ID ?
+	bool IsMemberTo(const CString& MajorID = "") const;
+
 	/// Funktion zum zurücksetzen aller Werte auf Ausgangswerte.
 	virtual void Reset(void);
 

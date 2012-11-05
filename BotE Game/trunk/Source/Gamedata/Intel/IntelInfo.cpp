@@ -131,13 +131,13 @@ void CIntelInfo::CalcIntelInfo(CBotf2Doc* pDoc, CMajor* pOurRace)
 			for (map<CString, CMajor*>::const_iterator jt = pmMajors->begin(); jt != pmMajors->end(); ++jt)
 				if (jt->first != pOurRace->GetRaceID())
 					if (jt->second->IsRaceContacted(pOurRace->GetRaceID()))
-						if (pMinor->GetAgreement(jt->first) == DIPLOMATIC_AGREEMENT::MEMBERSHIP)
+						if (pMinor->IsMemberTo(jt->first))
 							races[ko.x][ko.y][jt->first] = 2;
 		}
 		// eigene Beziehung zu den Minorraces ermitteln
 		if (pMinor->IsRaceContacted(pOurRace->GetRaceID()))
 			races[ko.x][ko.y][pOurRace->GetRaceID()] = 1;
-		if (pMinor->GetAgreement(pOurRace->GetRaceID()) == DIPLOMATIC_AGREEMENT::MEMBERSHIP)
+		if (pMinor->IsMemberTo(pOurRace->GetRaceID()))
 			races[ko.x][ko.y][pOurRace->GetRaceID()] = 2;
 	}
 

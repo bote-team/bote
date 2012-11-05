@@ -120,7 +120,7 @@ void CMajorAI::CalcFavoriteMinors(void)
 				map<CString, CMajor*>* pmMajors = m_pDoc->GetRaceCtrl()->GetMajors();
 				for (map<CString, CMajor*>::const_iterator itt = pmMajors->begin(); itt != pmMajors->end(); ++itt)
 					if (itt->first != pOurRace->GetRaceID())
-						if ((pMinor->GetAgreement(itt->first) == DIPLOMATIC_AGREEMENT::MEMBERSHIP && pMinor->GetAcceptancePoints(itt->first) > 3000)
+						if ((pMinor->IsMemberTo(itt->first) && pMinor->GetAcceptancePoints(itt->first) > 3000)
 							|| pMinor->GetAcceptancePoints(itt->first) > 4000)
 						{
 							bHighAcceptance = true;
