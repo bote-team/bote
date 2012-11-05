@@ -5923,6 +5923,10 @@ void CBotf2Doc::CalcEndDataForNextRound()
 /// Funktion berechnet, ob zufällig Alienschiffe ins Spiel kommen.
 void CBotf2Doc::CalcRandomAlienEntities()
 {
+	const CIniLoader* pIni = CIniLoader::GetInstance();
+	if(!pIni->ReadValueDefault("Special", "GENERATE_ALIEN_ENTITIES", true))
+		return;
+
 	// Aliens zufällig ins Spiel bringen
 	for (int i = 0; i < m_ShipInfoArray.GetSize(); i++)
 	{

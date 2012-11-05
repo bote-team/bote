@@ -30,6 +30,10 @@ public:
 	 */
 	bool ReadValue(const CString& sSection, const CString& sKey, bool& bValue) const;
 
+
+	// Returns bDefault in case the value doesn't exist or other error.
+	bool ReadValueDefault(const CString& sSection, const CString& sKey, bool bDefault) const;
+
 	/**
 	 * Diese Funktion gibt den zum <code>key</code> gehörenden Eintrag aus der ini-Datei zurück.
 	 */

@@ -51,6 +51,7 @@ CIniLoader::CIniLoader(void)
 		WriteValue("Special", "GENERATIONMODE", "0");
 		WriteValue("Special", "MAPSIZEV", "20");
 		WriteValue("Special", "MAPSIZEH", "30");
+		WriteValue("Special", "GENERATE_ALIEN_ENTITIES", "ON");
 
 		WriteValue("Victory_Conditions", "Elimination", "ON");
 		WriteValue("Victory_Conditions", "Diplomacy", "OFF");
@@ -89,6 +90,15 @@ bool CIniLoader::ReadValue(const CString& sSection, const CString& sKey, bool& b
 		bValue = false;
 
 	return true;
+}
+
+// Returns bDefault in case the value doesn't exist or other error.
+bool CIniLoader::ReadValueDefault(const CString& sSection, const CString& sKey, bool bDefault) const
+{
+	bool bResult;
+	if(ReadValue(sSection, sKey, bResult))
+		return bResult;
+	return bDefault;
 }
 
 /// Diese Funktion gibt den zum <code>sKey</code> gehörenden Eintrag aus der ini-Datei zurück.
