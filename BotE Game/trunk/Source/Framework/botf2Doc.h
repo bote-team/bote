@@ -155,6 +155,9 @@ public:
 	CShip& CurrentShip() {
 		return GetShip(m_NumberOfTheShipInArray);
 	}
+	const CFleet* const CurrentShipsFleet() {
+		return CurrentShip().GetFleet();
+	}
 
 	const CPoint& GetKO(void) const {return m_ptKO;}
 	void SetKO(int x, int y);

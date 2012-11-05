@@ -281,10 +281,10 @@ void CGalaxyMenuView::OnDraw(CDC* dc)
 	if (m_bShipMove)
 	{
 		// Wenn das Schiff keine Flotte anführt
-		if (pDoc->CurrentShip().GetFleet() == 0 || (pDoc->CurrentShip().GetFleet() != 0 && pDoc->CurrentShip().GetFleet()->GetFleetSize() == 0))
+		if (pDoc->CurrentShipsFleet() == 0 || (pDoc->CurrentShipsFleet() != 0 && pDoc->CurrentShipsFleet()->GetFleetSize() == 0))
 			m_nRange = 3-pDoc->GetShip(pDoc->GetCurrentShipIndex()).GetRange();
 		else
-			m_nRange = 3-pDoc->CurrentShip().GetFleet()->GetFleetRange(&pDoc->CurrentShip());
+			m_nRange = 3-pDoc->CurrentShipsFleet()->GetFleetRange(&pDoc->CurrentShip());
 	}
 	else
 		m_nRange = SM_RANGE_SPACE;
@@ -447,10 +447,10 @@ void CGalaxyMenuView::OnDraw(CDC* dc)
 		CPoint last = pMajor->GetStarmap()->GetSectorCoords(pDoc->m_ShipArray[n].GetPath()->GetAt(pDoc->m_ShipArray[n].GetPath()->GetUpperBound()));
 		CString s;
 		// Wenn das Schiff keine Flotte anführt
-		if (pDoc->CurrentShip().GetFleet() == 0 || (pDoc->CurrentShip().GetFleet() != 0 && pDoc->CurrentShip().GetFleet()->GetFleetSize() == 0))
+		if (pDoc->CurrentShipsFleet() == 0 || (pDoc->CurrentShipsFleet() != 0 && pDoc->CurrentShipsFleet()->GetFleetSize() == 0))
 			s.Format("%.0f",ceil((float)pDoc->m_ShipArray[n].GetPath()->GetSize() / (float)pDoc->m_ShipArray[n].GetSpeed()));
 		else
-			s.Format("%.0f",ceil((float)pDoc->m_ShipArray[n].GetPath()->GetSize() / (float)pDoc->CurrentShip().GetFleet()->GetFleetSpeed(&pDoc->CurrentShip())));
+			s.Format("%.0f",ceil((float)pDoc->m_ShipArray[n].GetPath()->GetSize() / (float)pDoc->CurrentShipsFleet()->GetFleetSpeed(&pDoc->CurrentShip())));
 		pDC->SetTextColor(RGB(255,255,255));
 		pDC->TextOut(last.x+STARMAP_SECTOR_WIDTH/2+6, last.y+STARMAP_SECTOR_HEIGHT/2-8, s);
 
@@ -1063,10 +1063,10 @@ void CGalaxyMenuView::OnMouseMove(UINT nFlags, CPoint point)
 			// Weg berechnen, neu zeichnen
 			char speed = 0;
 			// Wenn das Schiff keine Flotte anführt
-			if (pDoc->CurrentShip().GetFleet() == 0 || (pDoc->CurrentShip().GetFleet() != 0 && pDoc->CurrentShip().GetFleet()->GetFleetSize() == 0))
+			if (pDoc->CurrentShipsFleet() == 0 || (pDoc->CurrentShipsFleet() != 0 && pDoc->CurrentShipsFleet()->GetFleetSize() == 0))
 				speed = (char)(pDoc->m_ShipArray[pDoc->GetCurrentShipIndex()].GetSpeed());
 			else
-				speed = (char)(pDoc->CurrentShip().GetFleet()->GetFleetSpeed(&pDoc->CurrentShip()));
+				speed = (char)(pDoc->CurrentShipsFleet()->GetFleetSpeed(&pDoc->CurrentShip()));
 
 			struct::Sector result = pMajor->GetStarmap()->CalcPath(pMajor->GetStarmap()->GetSelection(), target, m_nRange, speed, *pDoc->m_ShipArray[pDoc->GetCurrentShipIndex()].GetPath());
 
