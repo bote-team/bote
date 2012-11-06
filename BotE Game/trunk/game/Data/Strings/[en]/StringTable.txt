@@ -2562,8 +2562,10 @@ technical progress
 new technology allows:
 
 [EVENT_IONISIERENDES_GASWESEN]
-By an ionizing cloud being the complete energy supply system in § was disabled
+By an ionizing cloud being the complete energy supply in § system was disabled
 [EVENT_GABALLIANER_SEUCHENSCHIFF]
-By a Gaballian plague ship the complete food supply system in § was disabled
+By a Gaballian plague ship the complete food supply in § system was disabled
 [EVENT_BLIZZARD_PLASMAWESEN]
-Through a blizzard plasma being the entire energy supply system in § was disabled
+Through a blizzard plasma being the entire energy supply in § system was disabled
+[EVENT_MORLOCK_RAIDER]
+By an attack of Morlock-Raider § Credits were stolen in § system

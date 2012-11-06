@@ -131,6 +131,9 @@ public:
 	/// @param vDisabledProductions Array mit zu deaktiverenden Produktionen
 	void DisableProductions(const bool* vDisabledProductions);
 
+	/// Funktion setzt die Creditproduktion auf 0.
+	void DisableCreditsProduction() { m_iCreditsProd = min(m_iCreditsProd, 0); }
+
 	// Funktion berechnet die mögliche Produktionsänderung durch die Moral im System
 	void IncludeSystemMoral(short moral);
 

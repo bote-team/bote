@@ -4635,9 +4635,10 @@ void CBotf2Doc::CalcShipOrders()
 							blockadeStillActive = TRUE;
 							m_ShipArray[y].CalcExp();
 						}
-						// Wenn das Schiff eine Flotte anf?hrt, dann erh?hen auch alle Schiffe in der Flotte mit
+						// Wenn das Schiff eine Flotte anführt, dann erhöhen auch alle Schiffe in der Flotte mit
 						// Blockadeeigenschaft den Blockadewert
 						if (m_ShipArray[y].GetFleet() != 0)
+						{
 							for (int x = 0; x < m_ShipArray[y].GetFleet()->GetFleetSize(); x++)
 							{
 								if (m_ShipArray[y].GetFleet()->GetShipFromFleet(x)->HasSpecial(SHIP_SPECIAL::BLOCKADESHIP))
@@ -4649,13 +4650,15 @@ void CBotf2Doc::CalcShipOrders()
 								else
 									m_ShipArray[y].GetFleet()->GetShipFromFleet(x)->SetCurrentOrder(SHIP_ORDER::ATTACK);
 							}
+						}
+
 						pSystem->SetBlockade((BYTE)blockadeValue);
 						// Die Beziehung zum Systembesitzer verringert sich um bis zu maximal 10 Punkte
 						CRace* pSystemOwner	= m_pRaceCtrl->GetRace(systemOwner);
 						pSystemOwner->SetRelation(shipOwner, -rand()%(blockadeValue/10 + 1));
 					}
 				}
-			// kann der Blockadebefehl nicht mehr ausgef?hrt werden, so wird der Befehl automatisch gelöscht
+			// kann der Blockadebefehl nicht mehr ausgeführt werden, so wird der Befehl automatisch gelöscht
 			if (!blockadeStillActive)
 			{
 				m_ShipArray[y].SetCurrentOrder(SHIP_ORDER::ATTACK);
@@ -6056,7 +6059,7 @@ void CBotf2Doc::CalcAlienShipEffects()
 				GetSystem(pShip->GetKO().x, pShip->GetKO().y).SetDisabledProduction(WORKER::FOOD_WORKER);
 				GetSystem(pShip->GetKO().x, pShip->GetKO().y).SetFoodStore(GetSystem(pShip->GetKO().x, pShip->GetKO().y).GetFoodStore() / 2);
 
-				// Wenn narung produziert oder vorhanden ist, dann die Nachricht bringen über Nahrung verseucht
+				// Wenn Nahrung produziert oder vorhanden ist, dann die Nachricht bringen über Nahrung verseucht
 				if (GetSystem(pShip->GetKO().x, pShip->GetKO().y).GetProduction()->GetMaxFoodProd() > 0 || GetSystem(pShip->GetKO().x, pShip->GetKO().y).GetFoodStore() > 0)
 				{
 					// Nachricht und Event einfügen
@@ -6162,9 +6165,35 @@ void CBotf2Doc::CalcAlienShipEffects()
 		}
 		if ((pShip->GetAlienType() & ALIEN_TYPE::MORLOCK_RAIDER) > 0)
 		{
-			// Sollte das System überfallen, falls das später mal geht
-			// Derzeit macht das Schiff nichts
-			// IDEE: Das System wird blockiert, so dass kein Handel möglich ist.
+			// Creditproduktion auf 0 stellen
+			CSystem* pSystem = &GetSystem(pShip->GetKO().x, pShip->GetKO().y);
+			CMajor* pOwner = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(pSystem->GetOwnerOfSystem()));
+			if (!pOwner)
+				continue;
+
+			// existiert keine Freundschaft zum Major
+			if (pAlien->GetAgreement(pOwner->GetRaceID()) >= DIPLOMATIC_AGREEMENT::FRIENDSHIP)
+				continue;
+
+			// alte Credits merken und aktuell auf 0 stellen
+			short nCreditProd = pSystem->GetProduction()->GetCreditsProd();
+			pSystem->GetProduction()->DisableCreditsProduction();
+
+			// Nachricht und Event einfügen
+			CString sCredits = "";
+			sCredits.Format("%d", nCreditProd);
+			CString s = CResourceManager::GetString("EVENT_MORLOCK_RAIDER", FALSE, sCredits, GetSector(pShip->GetKO().x, pShip->GetKO().y).GetName());
+			CMessage message;
+			message.GenerateMessage(s, MESSAGE_TYPE::SOMETHING, GetSector(pShip->GetKO().x, pShip->GetKO().y).GetName(), pShip->GetKO(), 0);
+			pOwner->GetEmpire()->AddMessage(message);
+			if (pOwner->IsHumanPlayer())
+			{
+				CEventAlienEntity* eventScreen = new CEventAlienEntity(pOwner->GetRaceID(), pAlien->GetRaceID(), pAlien->GetRaceName(), s);
+				pOwner->GetEmpire()->GetEventMessages()->Add(eventScreen);
+
+				network::RACE client = m_pRaceCtrl->GetMappedClientID(pOwner->GetRaceID());
+				m_iSelectedView[client] = EMPIRE_VIEW;
+			}
 		}
 	}
 }
