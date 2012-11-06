@@ -80,15 +80,15 @@ bool CReManager::SystemEvent(const CPoint &ko, CMajor* pRace)
 	{
 		//CEventRandom* EmpireEvent=new CEventRandom(pRace->GetRaceID(),imagename,headline,text);
 		//pRace->GetEmpire()->GetEventMessages()->Add(EmpireEvent);
-		messagetext=CResourceManager::GetString("SYSTEMEVENTMORALBOOST",false,pDoc->GetSector(ko).GetName());
+		messagetext=CResourceManager::GetString("SYSTEMEVENTMORALBOOST",false,pDoc->GetSector(ko.x, ko.y).GetName());
 		pDoc->GetSystem(ko).SetMoral(10);
 	}else if(eventnumber==SYSTEMEVENTMORALMALUS)
 	{
-		messagetext=CResourceManager::GetString("SYSTEMEVENTMORALMALUS",false,pDoc->GetSector(ko).GetName());
+		messagetext=CResourceManager::GetString("SYSTEMEVENTMORALMALUS",false,pDoc->GetSector(ko.x, ko.y).GetName());
 		pDoc->GetSystem(ko).SetMoral(-10);
 	}else if(eventnumber==SYSTEMEVENTPLANETMOVEMENT)//Planetenveränderung
 	{
-		std::vector<CPlanet>& planets = pDoc->GetSector(ko).GetPlanets();
+		std::vector<CPlanet>& planets = pDoc->GetSector(ko.x, ko.y).GetPlanets();
 		const int size = planets.size();
 		assert(size >= 1);
 		int planet=rand()%size;
@@ -107,7 +107,7 @@ bool CReManager::SystemEvent(const CPoint &ko, CMajor* pRace)
 		}
 	}else if(eventnumber==SYSTEMEVENTDEMOGRAPHIC)
 	{
-		std::vector<CPlanet>& planets = pDoc->GetSector(ko).GetPlanets();
+		std::vector<CPlanet>& planets = pDoc->GetSector(ko.x, ko.y).GetPlanets();
 		int planet = 0;
 		// Es sollte hier immer mindestens 1 habitabler bewohnter Planet im System sein...
 		success = false;
@@ -177,9 +177,9 @@ void CReManager::CalcExploreEvent(const CPoint &ko, CMajor *pRace, CArray<CShip,
 	MESSAGE_TYPE::Typ typ = MESSAGE_TYPE::NO_TYPE;
 	if(eventnumber==ALIENTEC)
 	{
-		//CEventRandom* EmpireEvent=new CEventRandom(pRace->GetRaceID(),"alientech",CResourceManager::GetString("ALIENTECHEADLINE"),CResourceManager::GetString("ALIENTECLONG",false,pDoc->GetSector(ko).GetName(true)));
+		//CEventRandom* EmpireEvent=new CEventRandom(pRace->GetRaceID(),"alientech",CResourceManager::GetString("ALIENTECHEADLINE"),CResourceManager::GetString("ALIENTECLONG",false,pDoc->GetSector(ko.x, ko.y).GetName(true)));
 		//pRace->GetEmpire()->GetEventMessages()->Add(EmpireEvent);
-		messagetext=CResourceManager::GetString("ALIENTEC",false,pDoc->GetSector(ko).GetName(true));
+		messagetext=CResourceManager::GetString("ALIENTEC",false,pDoc->GetSector(ko.x, ko.y).GetName(true));
 		typ=MESSAGE_TYPE::RESEARCH;
 		pRace->GetEmpire()->AddFP(100);
 	}else if(eventnumber==EVENTSHIPXP)
@@ -192,7 +192,7 @@ void CReManager::CalcExploreEvent(const CPoint &ko, CMajor *pRace, CArray<CShip,
 			}
 
 		}
-		messagetext=CResourceManager::GetString("EVENTSHIPXP",false,pDoc->GetSector(ko).GetName(true));
+		messagetext=CResourceManager::GetString("EVENTSHIPXP",false,pDoc->GetSector(ko.x, ko.y).GetName(true));
 		typ=MESSAGE_TYPE::MILITARY;
 
 	}

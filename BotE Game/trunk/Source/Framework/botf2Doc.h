@@ -175,24 +175,13 @@ public:
 		return m_Sectors.at(x+y*STARMAP_SECTORS_HCOUNT);
 	}
 
-	CSector& GetSector(const CPoint& ko) {
-		return GetSector(ko.x, ko.y);
-	}
-	const CSector& GetSector(const CPoint& ko) const {
-		return GetSector(ko.x, ko.y);
-	}
-
-	CSector& GetSector(const Sector& se) {
-		return GetSector(se.x, se.y);
-	}
-
 	//returns sector at m_ptKO
 	const CSector& CurrentSector() const {
-		return GetSector(m_ptKO);
+		return GetSector(m_ptKO.x, m_ptKO.y);
 	}
 	//returns sector at m_ptKO
 	CSector& CurrentSector() {
-		return GetSector(m_ptKO);
+		return GetSector(m_ptKO.x, m_ptKO.y);
 	}
 
 	CSystem& GetSystem(int x, int y) {

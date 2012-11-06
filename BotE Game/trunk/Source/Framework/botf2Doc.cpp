@@ -574,7 +574,7 @@ void CBotf2Doc::SerializeNextRoundData(CArchive &ar)
 			if (ship.GetOwnerOfShip() == pPlayer->GetRaceID()) {
 				const CArray<Sector>& path = *ship.GetPath();
 				for (int i = 0; i < path.GetSize(); i++)
-					GetSector(path.GetAt(i)).AddShipPathPoints(1);
+					GetSector(path.GetAt(i).x, path.GetAt(i).y).AddShipPathPoints(1);
 			}
 		}
 		// Sprachmeldungen an den Soundmanager schicken
@@ -1160,7 +1160,7 @@ void CBotf2Doc::GenerateGalaxy()
 	{
 		CMajor const* const pMajor = it->second;
 		const CPoint& raceKO = GetRaceKO(it->first);
-		CSector& sector = GetSector(raceKO);
+		CSector& sector = GetSector(raceKO.x, raceKO.y);
 		CSystem& system = GetSystem(raceKO);
 
 		sector.SetSectorsName(pMajor->GetHomesystemName());
@@ -1182,9 +1182,9 @@ void CBotf2Doc::GenerateGalaxy()
 			CPoint dist(rand()%3 - 1, rand()%3 - 1);
 			CPoint pt(raceKO.x + dist.x, raceKO.y + dist.y);
 			if (pt.x < STARMAP_SECTORS_HCOUNT && pt.x > -1 && pt.y < STARMAP_SECTORS_VCOUNT && pt.y > -1)
-				if (!GetSector(pt).GetSunSystem())
+				if (!GetSector(pt.x, pt.y).GetSunSystem())
 				{
-					GetSector(pt).GenerateSector(100, nMinorDensity);
+					GetSector(pt.x, pt.y).GenerateSector(100, nMinorDensity);
 					nextSunSystems++;
 				}
 		};
@@ -1198,7 +1198,7 @@ void CBotf2Doc::GenerateGalaxy()
 					continue;
 
 				if (pt.x < STARMAP_SECTORS_HCOUNT && pt.x > -1 && pt.y < STARMAP_SECTORS_VCOUNT && pt.y > -1)
-					GetSector(pt).SetScanned(it->first);
+					GetSector(pt.x, pt.y).SetScanned(it->first);
 			}
 	}
 
@@ -1232,13 +1232,13 @@ void CBotf2Doc::GenerateGalaxy()
 				CPoint pt(x + i, y + j);
 				if (pt.x < STARMAP_SECTORS_HCOUNT && pt.x > -1 && pt.y < STARMAP_SECTORS_VCOUNT && pt.y > -1)
 				{
-					if (GetSector(pt).GetSunSystem())
+					if (GetSector(pt.x, pt.y).GetSunSystem())
 					{
-						if (GetSector(pt).GetMinorRace())
+						if (GetSector(pt.x, pt.y).GetMinorRace())
 							minorRaces++;
 						sunSystems++;
 					}
-					else if (GetSector(pt).GetAnomaly())
+					else if (GetSector(pt.x, pt.y).GetAnomaly())
 					{
 						nAnomalys++;
 					}
@@ -1467,12 +1467,12 @@ void CBotf2Doc::NextRound()
 
 		CPoint ko = pMinor->GetRaceKO();
 
-		if (ko != CPoint(-1,-1) && GetSystem(ko.x, ko.y).GetOwnerOfSystem() == "" && GetSector(ko).GetOwnerOfSector() == pMinor->GetRaceID())
+		if (ko != CPoint(-1,-1) && GetSystem(ko.x, ko.y).GetOwnerOfSystem() == "" && GetSector(ko.x, ko.y).GetOwnerOfSector() == pMinor->GetRaceID())
 		{
 			// Vielleicht kolonisiert die Minorrace weitere Planeten in ihrem System
 			if (pMinor->PerhapsExtend(this))
 				// dann sind im System auch weitere Einwohner hinzugekommen
-				GetSystem(ko.x, ko.y).SetHabitants(this->GetSector(ko).GetCurrentHabitants());
+				GetSystem(ko.x, ko.y).SetHabitants(this->GetSector(ko.x, ko.y).GetCurrentHabitants());
 
 			// Den Verbrauch der Rohstoffe der kleinen Rassen in jeder Runde berechnen
 			pMinor->ConsumeResources(this);
@@ -2376,7 +2376,7 @@ void CBotf2Doc::AddToLostShipHistory(const CShip* pShip, const CString& sEvent, 
 	CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(pShip->GetOwnerOfShip()));
 	if (pMajor)
 	{
-		pMajor->GetShipHistory()->ModifyShip(pShip,	GetSector(pShip->GetKO()).GetName(TRUE), m_iRound, sEvent, sStatus);
+		pMajor->GetShipHistory()->ModifyShip(pShip,	GetSector(pShip->GetKO().x, pShip->GetKO().y).GetName(TRUE), m_iRound, sEvent, sStatus);
 	}
 }
 
@@ -2385,7 +2385,7 @@ void CBotf2Doc::BuildTroop(BYTE ID, CPoint ko)
 {
 	// Mal Testweise paar Truppen anlegen
 	GetSystem(ko.x, ko.y).AddTroop((CTroop*)&m_TroopInfo.GetAt(ID));
-	CString sRace = GetSector(ko).GetOwnerOfSector();
+	CString sRace = GetSector(ko.x, ko.y).GetOwnerOfSector();
 	if (sRace == "")
 		return;
 
@@ -3825,7 +3825,7 @@ void CBotf2Doc::CalcShipOrders()
 
 		// Hier wird überprüft, ob der Systemattack-Befehl noch gültig ist
 		// Alle Schiffe, welche einen Systemangriffsbefehl haben überprüfen, ob dieser Befehl noch gültig ist
-		CSector* pSector = &GetSector(m_ShipArray[y].GetKO());
+		CSector* pSector = &GetSector(m_ShipArray[y].GetKO().x, m_ShipArray[y].GetKO().y);
   		CSystem* pSystem = &GetSystem(m_ShipArray[y].GetKO());
 		if (m_ShipArray[y].GetCurrentOrder() == SHIP_ORDER::ATTACK)
 			m_ShipArray[y].SetCombatTactic(COMBAT_TACTIC::CT_ATTACK);
@@ -4753,7 +4753,7 @@ void CBotf2Doc::CalcShipMovement()
 		if (pShip->GetCurrentOrder() == SHIP_ORDER::TERRAFORM)
 		{
 			CPoint p = pShip->GetKO();
-			if (GetSector(pShip->GetKO()).GetPlanet(pShip->GetTerraformingPlanet())->GetTerraformed() == TRUE)
+			if (GetSector(pShip->GetKO().x, pShip->GetKO().y).GetPlanet(pShip->GetTerraformingPlanet())->GetTerraformed() == TRUE)
 			{
 				pShip->SetCurrentOrder(SHIP_ORDER::AVOID);
 				pShip->SetTerraformingPlanet(-1);
@@ -4762,13 +4762,13 @@ void CBotf2Doc::CalcShipMovement()
 		// Prüfen, dass ein Aussenpostenbaubefehl noch gültig ist
 		else if (pShip->GetCurrentOrder() == SHIP_ORDER::BUILD_OUTPOST)
 		{
-			if (GetSector(pShip->GetKO()).GetOutpost(pShip->GetOwnerOfShip()) == TRUE)
+			if (GetSector(pShip->GetKO().x, pShip->GetKO().y).GetOutpost(pShip->GetOwnerOfShip()) == TRUE)
 				pShip->SetCurrentOrder(SHIP_ORDER::AVOID);
 		}
 		// Prüfen, dass ein Sternbasenbaubefehl noch gültig ist
 		else if (pShip->GetCurrentOrder() == SHIP_ORDER::BUILD_STARBASE)
 		{
-			if (GetSector(pShip->GetKO()).GetStarbase(pShip->GetOwnerOfShip()) == TRUE)
+			if (GetSector(pShip->GetKO().x, pShip->GetKO().y).GetStarbase(pShip->GetOwnerOfShip()) == TRUE)
 				pShip->SetCurrentOrder(SHIP_ORDER::AVOID);
 		}
 		// weiter mit Schiffsbewegung
@@ -4870,8 +4870,8 @@ void CBotf2Doc::CalcShipMovement()
 
 		// Gibt es eine Anomalie, wodurch die Schilde schneller aufgeladen werden
 		bool bFasterShieldRecharge = false;
-		if (GetSector(pShip->GetKO()).GetAnomaly())
-			if (GetSector(pShip->GetKO()).GetAnomaly()->GetType() == BINEBULA)
+		if (GetSector(pShip->GetKO().x, pShip->GetKO().y).GetAnomaly())
+			if (GetSector(pShip->GetKO().x, pShip->GetKO().y).GetAnomaly()->GetType() == BINEBULA)
 				bFasterShieldRecharge = true;
 
 		// Nach der Bewegung, aber noch vor einem möglichen Kampf werden die Schilde nach ihrem Typ wieder aufgeladen,
@@ -4879,15 +4879,15 @@ void CBotf2Doc::CalcShipMovement()
 		//FIXME: The shipports are not yet updated for changes due to diplomacy at this spot.
 		//If we declared war and are on a shipport of the former friend, the ship is repaired,
 		//and a possible repair command isn't unset though it can no longer be set by the player this turn then.
-		pShip->Repair(GetSector(pShip->GetKO()).GetShipPort(pShip->GetOwnerOfShip()), bFasterShieldRecharge);
+		pShip->Repair(GetSector(pShip->GetKO().x, pShip->GetKO().y).GetShipPort(pShip->GetOwnerOfShip()), bFasterShieldRecharge);
 		// Befehle an alle Schiffe in der Flotte weitergeben
 		if (pShip->GetFleet())
 			pShip->GetFleet()->AdoptCurrentOrders(&m_ShipArray[y]);
 
 		// wenn eine Anomalie vorhanden, deren m?gliche Auswirkungen auf das Schiff berechnen
-		if (GetSector(pShip->GetKO()).GetAnomaly())
+		if (GetSector(pShip->GetKO().x, pShip->GetKO().y).GetAnomaly())
 		{
-			GetSector(pShip->GetKO()).GetAnomaly()->CalcShipEffects(&m_ShipArray[y]);
+			GetSector(pShip->GetKO().x, pShip->GetKO().y).GetAnomaly()->CalcShipEffects(&m_ShipArray[y]);
 			bAnomaly = true;
 		}
 	}
@@ -4913,11 +4913,11 @@ void CBotf2Doc::CalcShipMovement()
 					if (pMajor)
 					{
 						// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
-						AddToLostShipHistory(pShip->GetFleet()->GetShipFromFleet(x), GetSector(pShip->GetKO()).GetAnomaly()->GetMapName(pShip->GetKO()), CResourceManager::GetString("DESTROYED"));
+						AddToLostShipHistory(pShip->GetFleet()->GetShipFromFleet(x), GetSector(pShip->GetKO().x, pShip->GetKO().y).GetAnomaly()->GetMapName(pShip->GetKO()), CResourceManager::GetString("DESTROYED"));
 
 						CString sShip;
 						sShip.Format("%s (%s)", pShip->GetFleet()->GetShipFromFleet(x)->GetShipName(), pShip->GetFleet()->GetShipFromFleet(x)->GetShipTypeAsString());
-						CString s = CResourceManager::GetString("ANOMALY_SHIP_LOST", FALSE, sShip, GetSector(pShip->GetKO()).GetAnomaly()->GetMapName(pShip->GetKO()));
+						CString s = CResourceManager::GetString("ANOMALY_SHIP_LOST", FALSE, sShip, GetSector(pShip->GetKO().x, pShip->GetKO().y).GetAnomaly()->GetMapName(pShip->GetKO()));
 						CMessage message;
 						message.GenerateMessage(s, MESSAGE_TYPE::MILITARY, "", 0, 0);
 						pMajor->GetEmpire()->AddMessage(message);
@@ -4940,11 +4940,11 @@ void CBotf2Doc::CalcShipMovement()
 			if (pMajor)
 			{
 				// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
-				AddToLostShipHistory(pShip, GetSector(pShip->GetKO()).GetAnomaly()->GetMapName(pShip->GetKO()), CResourceManager::GetString("DESTROYED"));
+				AddToLostShipHistory(pShip, GetSector(pShip->GetKO().x, pShip->GetKO().y).GetAnomaly()->GetMapName(pShip->GetKO()), CResourceManager::GetString("DESTROYED"));
 
 				CString sShip;
 				sShip.Format("%s (%s)", pShip->GetShipName(), pShip->GetShipTypeAsString());
-				CString s = CResourceManager::GetString("ANOMALY_SHIP_LOST", FALSE, sShip, GetSector(pShip->GetKO()).GetAnomaly()->GetMapName(pShip->GetKO()));
+				CString s = CResourceManager::GetString("ANOMALY_SHIP_LOST", FALSE, sShip, GetSector(pShip->GetKO().x, pShip->GetKO().y).GetAnomaly()->GetMapName(pShip->GetKO()));
 				CMessage message;
 				message.GenerateMessage(s, MESSAGE_TYPE::MILITARY, "", 0, 0);
 				pMajor->GetEmpire()->AddMessage(message);
@@ -4973,7 +4973,7 @@ bool CBotf2Doc::IsShipCombat()
 	{
 		const CShip* pShip = &m_ShipArray.GetAt(y);
 		const CPoint& p = pShip->GetKO();
-		const CString& sector = GetSector(p).GetName(TRUE);
+		const CString& sector = GetSector(p.x, p.y).GetName(TRUE);
 		// Wenn unser Schiff auf Angreifen gestellt ist
 		// Wenn in dem Sektor des Schiffes schon ein Kampf stattgefunden hat, dann findet hier keiner mehr statt
 		if (pShip->GetCombatTactic() != COMBAT_TACTIC::CT_ATTACK
@@ -5417,7 +5417,7 @@ void CBotf2Doc::CalcShipEffects()
 		CRace* pRace = m_pRaceCtrl->GetRace(sRace);
 		CShip& ship = m_ShipArray.GetAt(y);
 		const CPoint& p = ship.GetKO();
-		CSector& sector = GetSector(p);
+		CSector& sector = GetSector(p.x, p.y);
 
 		// Anomalien beachten
 		bool bDeactivatedShipScanner = false;
@@ -5530,7 +5530,7 @@ void CBotf2Doc::CalcContactNewRaces()
 		if(pRace->HasSpecialAbility(SPECIAL_NO_DIPLOMACY))
 			continue;
 		const CPoint& p = pShip->GetKO();
-		const CSector& sector = GetSector(p);
+		const CSector& sector = GetSector(p.x, p.y);
 		const CString& sOwnerOfSector = sector.GetOwnerOfSector();
 		CalcContactShipToMajorShip(*pRace, sector, p);
 		if(sOwnerOfSector.IsEmpty() || sOwnerOfSector == sRace)
@@ -5666,7 +5666,7 @@ void CBotf2Doc::CalcEndDataForNextRound()
 				{
 					// Alle noch "lebenden" Schiffe aus der Schiffshistory ebenfalls als zerstört ansehen
 					pMajor->GetShipHistory()->ModifyShip(&m_ShipArray[j],
-								GetSector(m_ShipArray[j].GetKO()).GetName(TRUE), m_iRound,
+								GetSector(m_ShipArray[j].GetKO().x, m_ShipArray[j].GetKO().y).GetName(TRUE), m_iRound,
 								CResourceManager::GetString("UNKNOWN"), CResourceManager::GetString("DESTROYED"));
 					m_ShipArray.RemoveAt(j--);
 				}
@@ -5938,7 +5938,7 @@ void CBotf2Doc::CalcRandomAlienEntities()
 				}
 
 				// nicht auf einer Anomalie!
-				if (!GetSector(p).GetAnomaly())
+				if (!GetSector(p.x, p.y).GetAnomaly())
 				{
 					BuildShip(pShipInfo->GetID(), p, pAlien->GetRaceID());
 
@@ -6002,9 +6002,9 @@ void CBotf2Doc::CalcAlienShipEffects()
 			if (GetSystem(pShip->GetKO()).GetProduction()->GetMaxEnergyProd() > 0)
 			{
 				// Nachricht und Event einfügen
-				CString s = CResourceManager::GetString("EVENT_IONISIERENDES_GASWESEN", FALSE, GetSector(pShip->GetKO()).GetName());
+				CString s = CResourceManager::GetString("EVENT_IONISIERENDES_GASWESEN", FALSE, GetSector(pShip->GetKO().x, pShip->GetKO().y).GetName());
 				CMessage message;
-				message.GenerateMessage(s, MESSAGE_TYPE::SOMETHING, GetSector(pShip->GetKO()).GetName(), pShip->GetKO(), 0);
+				message.GenerateMessage(s, MESSAGE_TYPE::SOMETHING, GetSector(pShip->GetKO().x, pShip->GetKO().y).GetName(), pShip->GetKO(), 0);
 				pOwner->GetEmpire()->AddMessage(message);
 				if (pOwner->IsHumanPlayer())
 				{
@@ -6029,9 +6029,9 @@ void CBotf2Doc::CalcAlienShipEffects()
 				if (GetSystem(pShip->GetKO()).GetProduction()->GetMaxFoodProd() > 0 || GetSystem(pShip->GetKO()).GetFoodStore() > 0)
 				{
 					// Nachricht und Event einfügen
-					CString s = CResourceManager::GetString("EVENT_GABALLIANER_SEUCHENSCHIFF", FALSE, GetSector(pShip->GetKO()).GetName());
+					CString s = CResourceManager::GetString("EVENT_GABALLIANER_SEUCHENSCHIFF", FALSE, GetSector(pShip->GetKO().x, pShip->GetKO().y).GetName());
 					CMessage message;
-					message.GenerateMessage(s, MESSAGE_TYPE::SOMETHING, GetSector(pShip->GetKO()).GetName(), pShip->GetKO(), 0);
+					message.GenerateMessage(s, MESSAGE_TYPE::SOMETHING, GetSector(pShip->GetKO().x, pShip->GetKO().y).GetName(), pShip->GetKO(), 0);
 					pOwner->GetEmpire()->AddMessage(message);
 					if (pOwner->IsHumanPlayer())
 					{
@@ -6045,7 +6045,7 @@ void CBotf2Doc::CalcAlienShipEffects()
 			}
 
 			// befinden sich Schiffe in diesem Sektor, so werden diese ebenfalls zu Seuchenschiffen (33%)
-			if (GetSector(pShip->GetKO()).GetIsShipInSector() && rand()%3 == 0)
+			if (GetSector(pShip->GetKO().x, pShip->GetKO().y).GetIsShipInSector() && rand()%3 == 0)
 			{
 				// alle Schiffe im Sektor zu Seuchenschiffen machen
 				for (int y = 0; y < m_ShipArray.GetSize(); y++)
@@ -6115,9 +6115,9 @@ void CBotf2Doc::CalcAlienShipEffects()
 			if (GetSystem(pShip->GetKO()).GetProduction()->GetMaxEnergyProd() > 0)
 			{
 				// Nachricht und Event einfügen
-				CString s = CResourceManager::GetString("EVENT_BLIZZARD_PLASMAWESEN", FALSE, GetSector(pShip->GetKO()).GetName());
+				CString s = CResourceManager::GetString("EVENT_BLIZZARD_PLASMAWESEN", FALSE, GetSector(pShip->GetKO().x, pShip->GetKO().y).GetName());
 				CMessage message;
-				message.GenerateMessage(s, MESSAGE_TYPE::SOMETHING, GetSector(pShip->GetKO()).GetName(), pShip->GetKO(), 0);
+				message.GenerateMessage(s, MESSAGE_TYPE::SOMETHING, GetSector(pShip->GetKO().x, pShip->GetKO().y).GetName(), pShip->GetKO(), 0);
 				pOwner->GetEmpire()->AddMessage(message);
 				if (pOwner->IsHumanPlayer())
 				{

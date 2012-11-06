@@ -86,7 +86,7 @@ BOOLEAN CTradeRoute::CheckTradeRoute(const CPoint& pFrom, const CPoint& pDest, C
 {
 	ASSERT(pDoc);
 
-	CSector* pDestSector = &(pDoc->GetSector(pDest));
+	CSector* pDestSector = &(pDoc->GetSector(pDest.x, pDest.y));
 	CSystem* pDestSystem = &(pDoc->GetSystem(pDest));
 	CString  sOwner = pDoc->GetSystem(pFrom).GetOwnerOfSystem();
 

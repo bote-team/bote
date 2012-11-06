@@ -1503,9 +1503,9 @@ void CSystem::CalculateBuildableShips(CBotf2Doc* pDoc, const CPoint& p)
 	{
 		// Array mit baubaren Minorraceschiffen füllen
 		int nMinorShipNumber = -1;
-		if (pDoc->GetSector(p).GetMinorRace())
+		if (pDoc->GetSector(p.x, p.y).GetMinorRace())
 		{
-			CMinor* pMinor = pDoc->GetRaceCtrl()->GetMinorRace(pDoc->GetSector(p).GetName());
+			CMinor* pMinor = pDoc->GetRaceCtrl()->GetMinorRace(pDoc->GetSector(p.x, p.y).GetName());
 			if (pMinor)
 				nMinorShipNumber = pMinor->GetRaceShipNumber();
 		}
@@ -1548,7 +1548,7 @@ void CSystem::CalculateBuildableShips(CBotf2Doc* pDoc, const CPoint& p)
 				// Wenn das Schiff nur in einem bestimmten System gebaut werden kann, dann hier checken
 				if (!pShipInfo->GetOnlyInSystem().IsEmpty())
 				{
-					if (pShipInfo->GetOnlyInSystem() != pDoc->GetSector(p).GetName())
+					if (pShipInfo->GetOnlyInSystem() != pDoc->GetSector(p.x, p.y).GetName())
 						continue;
 					// der Besitzer der Schiffsklasse wird auf den Besitzer des Schiffes gesetzt. Somit kann
 					// eine Majorrace dann auch die Schiffe der Minorrace bauen

@@ -135,7 +135,7 @@ void CDiplomacyIntelObj::CreateText(CBotf2Doc* pDoc, BYTE n, const CString& para
 
 							if (m_MinorRaceKO != CPoint(-1,-1))
 							{
-								s = pDoc->GetRaceCtrl()->GetMinorRace(pDoc->GetSector(m_MinorRaceKO).GetName())->GetRaceName();
+								s = pDoc->GetRaceCtrl()->GetMinorRace(pDoc->GetSector(m_MinorRaceKO.x, m_MinorRaceKO.y).GetName())->GetRaceName();
 								csInput.Replace("$minor$", s);
 							}
 							switch (m_nAgreement)
@@ -193,7 +193,7 @@ void CDiplomacyIntelObj::CreateText(CBotf2Doc* pDoc, BYTE n, const CString& para
 									s = pMajor->GetEmpireNameWithArticle();
 							}
 							else if (m_MinorRaceKO != CPoint(-1,-1))
-								s = CResourceManager::GetString("FEMALE_ARTICLE")+" " + pDoc->GetRaceCtrl()->GetMinorRace(pDoc->GetSector(m_MinorRaceKO).GetName())->GetRaceName();
+								s = CResourceManager::GetString("FEMALE_ARTICLE")+" " + pDoc->GetRaceCtrl()->GetMinorRace(pDoc->GetSector(m_MinorRaceKO.x, m_MinorRaceKO.y).GetName())->GetRaceName();
 							csInput.Replace("$major$", s);
 
 							if (m_nRelationship < 5) s = CResourceManager::GetString("HATEFUL");
@@ -211,7 +211,7 @@ void CDiplomacyIntelObj::CreateText(CBotf2Doc* pDoc, BYTE n, const CString& para
 
 							if (m_MinorRaceKO != CPoint(-1,-1))
 							{
-								s = pDoc->GetRaceCtrl()->GetMinorRace(pDoc->GetSector(m_MinorRaceKO).GetName())->GetRaceName();
+								s = pDoc->GetRaceCtrl()->GetMinorRace(pDoc->GetSector(m_MinorRaceKO.x, m_MinorRaceKO.y).GetName())->GetRaceName();
 								csInput.Replace("$minor$", s);
 							}
 						}
@@ -265,7 +265,7 @@ void CDiplomacyIntelObj::CreateText(CBotf2Doc* pDoc, BYTE n, const CString& para
 							}
 							if (m_MinorRaceKO != CPoint(-1,-1))
 							{
-								s = pDoc->GetRaceCtrl()->GetMinorRace(pDoc->GetSector(m_MinorRaceKO).GetName())->GetRaceName();
+								s = pDoc->GetRaceCtrl()->GetMinorRace(pDoc->GetSector(m_MinorRaceKO.x, m_MinorRaceKO.y).GetName())->GetRaceName();
 								csInput.Replace("$minor$", s);
 							}
 							if (m_sMajor != "")

@@ -488,7 +488,7 @@ void CShipBottomView::OnDraw(CDC* dc)
 			if (m_iTimeCounter > (3 + counter) && m_iWhichMainShipOrderButton == 1 &&
 				pDoc->CurrentShip().GetCurrentOrder() != SHIP_ORDER::REPAIR &&
 				pDoc->CurrentShip().NeedsRepair() &&
-				pDoc->GetSector(pDoc->CurrentShip().GetKO()).GetShipPort(
+				pDoc->GetSector(pDoc->CurrentShip().GetKO().x, pDoc->CurrentShip().GetKO().y).GetShipPort(
 				pDoc->CurrentShip().GetOwnerOfShip()))
 			{
 				g.DrawImage(m_pShipOrderButton, r.right-245, r.top+70+counter*35, 120, 30);
@@ -1187,7 +1187,7 @@ CString CShipBottomView::CreateTooltip(void)
 //
 //			const CString& sRaceID = pMajor->GetRaceID();
 //			if (pShip->GetOwnerOfShip() != sRaceID
-//				&& pDoc->GetSector(active_sector).GetScanPower(sRaceID) <= stealthPower)
+//				&& pDoc->GetSector(active_sector.x, active_sector.y).GetScanPower(sRaceID) <= stealthPower)
 //				continue;
 //			if (counter < m_iPage*9 && counter >= (m_iPage-1)*9)
 //			{

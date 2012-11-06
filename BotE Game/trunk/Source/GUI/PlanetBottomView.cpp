@@ -149,14 +149,14 @@ void CPlanetBottomView::OnDraw(CDC* dc)
 			if (graphic)
 				g.DrawImage(graphic, 950, -10, 250, 261);
 		}
-		else if (pDoc->GetSector(KO).GetAnomaly())
+		else if (pDoc->GetSector(KO.x, KO.y).GetAnomaly())
 		{
 			graphic = NULL;;
-			graphic = pDoc->GetGraphicPool()->GetGDIGraphic("MapStars\\" + pDoc->GetSector(KO).GetAnomaly()->GetImageFileName());
+			graphic = pDoc->GetGraphicPool()->GetGDIGraphic("MapStars\\" + pDoc->GetSector(KO.x, KO.y).GetAnomaly()->GetImageFileName());
 
 			if (graphic)
 			{
-				if (pDoc->GetSector(KO).GetAnomaly()->GetImageFlipHorz())
+				if (pDoc->GetSector(KO.x, KO.y).GetAnomaly()->GetImageFlipHorz())
 				{
 					Bitmap* copy = graphic->Clone(0, 0, graphic->GetWidth(), graphic->GetHeight(), PixelFormat32bppPARGB);
 					copy->RotateFlip(Gdiplus::RotateNoneFlipX);
@@ -179,8 +179,8 @@ void CPlanetBottomView::OnDraw(CDC* dc)
 	// Informationen zu dem System angeben
 	CString s;
 	float currentHabitants = pDoc->GetSector(KO.x, KO.y).GetCurrentHabitants();
-	if (pDoc->GetSector(KO).GetAnomaly() && pDoc->GetSector(KO).GetScanned(pMajor->GetRaceID()))
-		s.Format("%s", pDoc->GetSector(KO).GetAnomaly()->GetMapName(KO));
+	if (pDoc->GetSector(KO.x, KO.y).GetAnomaly() && pDoc->GetSector(KO.x, KO.y).GetScanned(pMajor->GetRaceID()))
+		s.Format("%s", pDoc->GetSector(KO.x, KO.y).GetAnomaly()->GetMapName(KO));
 	else
 		s.Format("%s %c%i",CResourceManager::GetString("SECTOR"),(char)(KO.y+97),KO.x+1);
 	g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), PointF(40,25), &fontFormat, &fontBrush);
@@ -199,8 +199,8 @@ void CPlanetBottomView::OnDraw(CDC* dc)
 		g.MeasureString(CComBSTR(s), s.GetLength(), &Gdiplus::Font(CComBSTR(fontName), fontSize), PointF(735, 228), &fontFormat, &boundingBox);
 		// Symbole der vorhanden Ressourcen im System ermitteln
 		BOOLEAN res[DERITIUM + 1] = {0},rescol[DERITIUM + 1] = {0};
-		pDoc->GetSector(KO).GetAvailableResources(res, false);	//alle Ressourcen
-		pDoc->GetSector(KO).GetAvailableResources(rescol, true);//erschlossene Ressourcen
+		pDoc->GetSector(KO.x, KO.y).GetAvailableResources(res, false);	//alle Ressourcen
+		pDoc->GetSector(KO.x, KO.y).GetAvailableResources(rescol, true);//erschlossene Ressourcen
 		int nExist = 0;
 		for (int i = TITAN; i <= DERITIUM; i++)
 		{
@@ -245,8 +245,8 @@ void CPlanetBottomView::OnDraw(CDC* dc)
 		}
 	}
 	// Symbole zu Truppen zeichnen
-	if (pDoc->GetSector(KO).GetSunSystem() && pDoc->GetSector(KO).GetOwnerOfSector() != "" &&
-		(pDoc->GetSector(KO).GetScanPower(pMajor->GetRaceID()) > 50 || pDoc->GetSector(KO).GetOwnerOfSector() == pMajor->GetRaceID()))
+	if (pDoc->GetSector(KO.x, KO.y).GetSunSystem() && pDoc->GetSector(KO.x, KO.y).GetOwnerOfSector() != "" &&
+		(pDoc->GetSector(KO.x, KO.y).GetScanPower(pMajor->GetRaceID()) > 50 || pDoc->GetSector(KO.x, KO.y).GetOwnerOfSector() == pMajor->GetRaceID()))
 	{
 		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\troopSmall.bop");
 		int nTroopNumber = pDoc->GetSystem(KO).GetTroops()->GetSize();
@@ -284,10 +284,10 @@ void CPlanetBottomView::OnDraw(CDC* dc)
 		g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), PointF(711,0), &fontFormat, &fontBrush);
 	}
 	// Namen des Besitzers des Sector unten rechts zeichnen
-	if (pDoc->GetSector(KO).GetScanned(pMajor->GetRaceID()) && pMajor->IsRaceContacted(pDoc->GetSector(KO).GetOwnerOfSector())
-		|| pDoc->GetSector(KO).GetOwnerOfSector() == pMajor->GetRaceID())
+	if (pDoc->GetSector(KO.x, KO.y).GetScanned(pMajor->GetRaceID()) && pMajor->IsRaceContacted(pDoc->GetSector(KO.x, KO.y).GetOwnerOfSector())
+		|| pDoc->GetSector(KO.x, KO.y).GetOwnerOfSector() == pMajor->GetRaceID())
 	{
-		CRace* pOwner = pDoc->GetRaceCtrl()->GetRace(pDoc->GetSector(KO).GetOwnerOfSector());
+		CRace* pOwner = pDoc->GetRaceCtrl()->GetRace(pDoc->GetSector(KO.x, KO.y).GetOwnerOfSector());
 		if (pOwner)
 		{
 			s = pOwner->GetRaceName();
@@ -462,7 +462,7 @@ CString CPlanetBottomView::CreateTooltip(void)
 	CalcLogicalPoint(pt);
 
 	// wurde die Maus über den Namen einer Rasse gehalten
-	if (pDoc->GetSector(KO).GetOwnerOfSector() != "")
+	if (pDoc->GetSector(KO.x, KO.y).GetOwnerOfSector() != "")
 	{
 		if (CRect(735,190,885,220).PtInRect(pt))
 		{
@@ -471,9 +471,9 @@ CString CPlanetBottomView::CreateTooltip(void)
 			if (!pMajor)
 				return "";
 
-			if (pDoc->GetSector(KO).GetScanned(pMajor->GetRaceID()) && pMajor->IsRaceContacted(pDoc->GetSector(KO).GetOwnerOfSector()) || pDoc->GetSector(KO).GetOwnerOfSector() == pMajor->GetRaceID())
+			if (pDoc->GetSector(KO.x, KO.y).GetScanned(pMajor->GetRaceID()) && pMajor->IsRaceContacted(pDoc->GetSector(KO.x, KO.y).GetOwnerOfSector()) || pDoc->GetSector(KO.x, KO.y).GetOwnerOfSector() == pMajor->GetRaceID())
 			{
-				CRace* pOwner = pDoc->GetRaceCtrl()->GetRace(pDoc->GetSector(KO).GetOwnerOfSector());
+				CRace* pOwner = pDoc->GetRaceCtrl()->GetRace(pDoc->GetSector(KO.x, KO.y).GetOwnerOfSector());
 				if (!pOwner)
 					return "";
 
@@ -482,18 +482,18 @@ CString CPlanetBottomView::CreateTooltip(void)
 		}
 	}
 
-	if (pDoc->GetSector(KO).GetAnomaly())
+	if (pDoc->GetSector(KO.x, KO.y).GetAnomaly())
 	{
 		if (CRect(500, 0, 784, m_TotalSize.cy).PtInRect(pt))
 		{
-			CString sName = pDoc->GetSector(KO).GetAnomaly()->GetMapName(KO);
+			CString sName = pDoc->GetSector(KO.x, KO.y).GetAnomaly()->GetMapName(KO);
 			sName = CHTMLStringBuilder::GetHTMLColor(sName);
 			sName = CHTMLStringBuilder::GetHTMLHeader(sName);
 			sName = CHTMLStringBuilder::GetHTMLCenter(sName);
 			sName += CHTMLStringBuilder::GetHTMLStringNewLine();
 			sName += CHTMLStringBuilder::GetHTMLStringNewLine();
 
-			CString sDesc = pDoc->GetSector(KO).GetAnomaly()->GetPhysicalDescription();
+			CString sDesc = pDoc->GetSector(KO.x, KO.y).GetAnomaly()->GetPhysicalDescription();
 			sDesc = CHTMLStringBuilder::GetHTMLColor(sDesc);
 			sDesc = CHTMLStringBuilder::GetHTMLHeader(sDesc, _T("h5"));
 			sDesc += CHTMLStringBuilder::GetHTMLStringNewLine();
@@ -502,7 +502,7 @@ CString CPlanetBottomView::CreateTooltip(void)
 			sDesc += CHTMLStringBuilder::GetHTMLStringNewLine();
 			sDesc += CHTMLStringBuilder::GetHTMLStringNewLine();
 
-			CString sGame = pDoc->GetSector(KO).GetAnomaly()->GetGameplayDescription();
+			CString sGame = pDoc->GetSector(KO.x, KO.y).GetAnomaly()->GetGameplayDescription();
 			sGame = CHTMLStringBuilder::GetHTMLColor(sGame, _T("silver"));
 			sGame = CHTMLStringBuilder::GetHTMLHeader(sGame, _T("h5"));
 
@@ -511,12 +511,12 @@ CString CPlanetBottomView::CreateTooltip(void)
 	}
 
 	// wurde die Maus über die Sonne gehalten
-	else if (pDoc->GetSector(KO).GetSunSystem())
+	else if (pDoc->GetSector(KO.x, KO.y).GetSunSystem())
 	{
 		if (CRect(m_TotalSize.cx - 125, 0, m_TotalSize.cx, m_TotalSize.cy).PtInRect(pt))
 		{
 			CString sSunColor;
-			switch (pDoc->GetSector(KO).GetSunColor())
+			switch (pDoc->GetSector(KO.x, KO.y).GetSunColor())
 			{
 			case 0: sSunColor = CResourceManager::GetString("BLUE_STAR");	break;
 			case 1: sSunColor = CResourceManager::GetString("GREEN_STAR");	break;
@@ -533,7 +533,7 @@ CString CPlanetBottomView::CreateTooltip(void)
 			sSunColor += CHTMLStringBuilder::GetHTMLStringNewLine();
 
 			CString sSunDesc;
-			switch (pDoc->GetSector(KO).GetSunColor())
+			switch (pDoc->GetSector(KO.x, KO.y).GetSunColor())
 			{
 			case 0: sSunDesc = CResourceManager::GetString("BLUE_STAR_DESC");	break;
 			case 1: sSunDesc = CResourceManager::GetString("GREEN_STAR_DESC");	break;
@@ -563,7 +563,7 @@ CString CPlanetBottomView::CreateTooltip(void)
 			for (int j = 0; j < 8; j++)
 			{
 				short nBonus = 0;
-				for (int i = 0; i < pDoc->GetSector(KO).GetNumberOfPlanets(); i++)
+				for (int i = 0; i < pDoc->GetSector(KO.x, KO.y).GetNumberOfPlanets(); i++)
 				{
 					CPlanet* pPlanet = pDoc->GetSector(KO.x, KO.y).GetPlanet(i);
 					ASSERT(pPlanet);

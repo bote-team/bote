@@ -1155,7 +1155,7 @@ BOOLEAN CIntelCalc::ExecuteEconomySabotage(CMajor* pRace, CMajor* pEnemyRace, CM
 			if (rand()%6 == NULL)
 			{
 				CPoint ko = report->GetKO();
-				BYTE currentHabs = (BYTE)m_pDoc->GetSector(ko).GetCurrentHabitants();
+				BYTE currentHabs = (BYTE)m_pDoc->GetSector(ko.x, ko.y).GetCurrentHabitants();
 				// maximal die Hälfte der Bevölkerung kann getötet werden
 				currentHabs /= 2;
 				if (currentHabs > NULL)
@@ -1163,7 +1163,7 @@ BOOLEAN CIntelCalc::ExecuteEconomySabotage(CMajor* pRace, CMajor* pEnemyRace, CM
 					currentHabs = rand()%currentHabs + 1;
 					pRace->GetEmpire()->GetIntelligence()->GetIntelReports()->RemoveReport(oldReportNumber);
 					report = new CEcoIntelObj(pRace->GetRaceID(), pEnemyRace->GetRaceID(), m_pDoc->GetCurrentRound(), FALSE, ko, 0, (BYTE)currentHabs);
-					m_pDoc->GetSector(ko).LetPlanetsShrink(-(float)currentHabs);
+					m_pDoc->GetSector(ko.x, ko.y).LetPlanetsShrink(-(float)currentHabs);
 					if (report)
 					{
 						report->CreateText(m_pDoc, 2, pResponsibleRace->GetRaceID());
@@ -1440,7 +1440,7 @@ BOOLEAN CIntelCalc::ExecuteMilitarySabotage(CMajor* pRace, CMajor* pEnemyRace, C
 				pRace->GetEmpire()->GetIntelligence()->GetIntelReports()->RemoveReport(oldReportNumber);
 				report = new CMilitaryIntelObj(pRace->GetRaceID(), pEnemyRace->GetRaceID(), m_pDoc->GetCurrentRound(), FALSE, ship->GetKO(), ship->GetID(), 1, FALSE, TRUE, FALSE);
 				// die Station aus der ShipHistory der aktuellen Schiffe entfernen und den zerstörten Schiffen hinzufügen
-				pEnemyRace->GetShipHistory()->ModifyShip(ship, m_pDoc->GetSector(ship->GetKO()).GetName(TRUE),
+				pEnemyRace->GetShipHistory()->ModifyShip(ship, m_pDoc->GetSector(ship->GetKO().x, ship->GetKO().y).GetName(TRUE),
 					m_pDoc->GetCurrentRound(), CResourceManager::GetString("SABOTAGE"), CResourceManager::GetString("MISSED"));
 
 				// neuen Besitzer hinzufügen
@@ -1463,9 +1463,9 @@ BOOLEAN CIntelCalc::ExecuteMilitarySabotage(CMajor* pRace, CMajor* pEnemyRace, C
 				ship->SetTargetKO(CPoint(-1, -1), 0);
 				// wurde dieses Schiff jedoch schonmal gestohlen, dann ist es in der Missed Shiphistory. Ist dies der Fall kann das Schiff
 				// wieder als aktives Schiff betrachtet werden.
-				if (pRace->GetShipHistory()->ModifyShip(ship, m_pDoc->GetSector(ship->GetKO()).GetName(TRUE), 0) == false)
+				if (pRace->GetShipHistory()->ModifyShip(ship, m_pDoc->GetSector(ship->GetKO().x, ship->GetKO().y).GetName(TRUE), 0) == false)
 					// dem neuen Besitzer das Schiff als aktives Schiff hinzufügen
-					pRace->GetShipHistory()->AddShip(ship, m_pDoc->GetSector(ship->GetKO()).GetName(TRUE), m_pDoc->GetCurrentRound());
+					pRace->GetShipHistory()->AddShip(ship, m_pDoc->GetSector(ship->GetKO().x, ship->GetKO().y).GetName(TRUE), m_pDoc->GetCurrentRound());
 
 				// jetzt Dinge wegen einer möglichen Flotte beachten
 				if (n.y == -1)		// Schiff nicht in Flotte
@@ -1518,7 +1518,7 @@ BOOLEAN CIntelCalc::ExecuteMilitarySabotage(CMajor* pRace, CMajor* pEnemyRace, C
 				pRace->GetEmpire()->GetIntelligence()->GetIntelReports()->RemoveReport(oldReportNumber);
 				report = new CMilitaryIntelObj(pRace->GetRaceID(), pEnemyRace->GetRaceID(), m_pDoc->GetCurrentRound(), FALSE, ship->GetKO(), ship->GetID(), 1, FALSE, TRUE, FALSE);
 				// die Station aus der ShipHistory der aktuellen Schiffe entfernen und den zerstörten Schiffen hinzufügen
-				pEnemyRace->GetShipHistory()->ModifyShip(ship, m_pDoc->GetSector(ship->GetKO()).GetName(TRUE),
+				pEnemyRace->GetShipHistory()->ModifyShip(ship, m_pDoc->GetSector(ship->GetKO().x, ship->GetKO().y).GetName(TRUE),
 					m_pDoc->GetCurrentRound(), CResourceManager::GetString("SABOTAGE"), CResourceManager::GetString("DESTROYED"));
 				if (n.y == -1)		// nicht in Flotte
 				{
@@ -1744,7 +1744,7 @@ BOOLEAN CIntelCalc::ExecuteDiplomacySabotage(CMajor* pRace, CMajor* pEnemyRace, 
 		// zwischen Major und Minor
 		else
 		{
-			CMinor* minor = m_pDoc->GetRaceCtrl()->GetMinorRace(m_pDoc->GetSector(report->GetMinorRaceKO()).GetName());
+			CMinor* minor = m_pDoc->GetRaceCtrl()->GetMinorRace(m_pDoc->GetSector(report->GetMinorRaceKO().x, report->GetMinorRaceKO().y).GetName());
 			if (minor)
 			{
 				// hier zwei Möglichkeiten: verschlechtern der Beziehung zwischen Geheimdienstopfer und Minor oder Verbesserung

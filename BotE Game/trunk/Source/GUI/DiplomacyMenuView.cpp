@@ -941,7 +941,7 @@ void CDiplomacyMenuView::DrawRaceDiplomacyMenue(Graphics* g)
 								if (graphic)
 									g->DrawImage(graphic, 500, 97+count*25, 120, 30);
 
-								s.Format("%s",pDoc->GetSector(m_ptResourceFromSystem).GetName());
+								s.Format("%s",pDoc->GetSector(m_ptResourceFromSystem.x, m_ptResourceFromSystem.y).GetName());
 								// Wenn hier noch kein System eingestellt ist, dann müssen wir uns eins suchen
 								if (s.IsEmpty() || pDoc->GetSystem(m_ptResourceFromSystem).GetOwnerOfSystem() != pPlayer->GetRaceID())
 								{
@@ -1335,7 +1335,7 @@ void CDiplomacyMenuView::DrawDiplomacyOfferMenue(Graphics* g, const CString& sWh
 				{
 					if (graphic)
 						g->DrawImage(graphic, 510, 605, 120, 30);
-					s.Format("%s", pDoc->GetSector(m_OutgoingInfo.m_ptKO).GetName());
+					s.Format("%s", pDoc->GetSector(m_OutgoingInfo.m_ptKO.x, m_OutgoingInfo.m_ptKO.y).GetName());
 					g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(510,605,120,30), &fontFormat, &btnBrush);
 					s = CResourceManager::GetString("FROM_SYSTEM");
 					g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(510,577,120,30), &fontFormat, &fontBrush);

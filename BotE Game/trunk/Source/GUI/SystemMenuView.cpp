@@ -1589,8 +1589,8 @@ void CSystemMenuView::DrawSystemTradeMenue(Graphics* g)
 	for (int i = m_iSTPage * NOTRIL; i < pDoc->GetSystem(p.x, p.y).GetTradeRoutes()->GetSize(); i++)
 	{
 		CPoint dest = pDoc->GetSystem(p.x, p.y).GetTradeRoutes()->GetAt(i).GetDestKO();
-		if (pDoc->GetSector(dest).GetKnown(pDoc->GetSystem(p.x, p.y).GetOwnerOfSystem()) == TRUE)
-			s = pDoc->GetSector(dest).GetName();
+		if (pDoc->GetSector(dest.x, dest.y).GetKnown(pDoc->GetSystem(p.x, p.y).GetOwnerOfSystem()) == TRUE)
+			s = pDoc->GetSector(dest.x, dest.y).GetName();
 		else
 			s.Format("%s %c%i",CResourceManager::GetString("SECTOR"),(char)(dest.y+97),dest.x+1);
 		g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(70,260+i*30,125,25), &fontFormat, &fontBrush);
@@ -1618,7 +1618,7 @@ void CSystemMenuView::DrawSystemTradeMenue(Graphics* g)
 	{
 		int j = i + numberOfTradeRoutes;
 		CPoint dest = pDoc->GetSystem(p.x, p.y).GetResourceRoutes()->GetAt(i).GetKO();
-		s.Format("%s", pDoc->GetSector(dest).GetName());
+		s.Format("%s", pDoc->GetSector(dest.x, dest.y).GetName());
 		g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(70,260+j*30,125,25), &fontFormat, &markBrush);
 		switch (pDoc->GetSystem(p.x, p.y).GetResourceRoutes()->GetAt(i).GetResource())
 		{

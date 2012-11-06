@@ -771,7 +771,7 @@ void CGalaxyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			CPoint p = pDoc->GetKO();
 			BYTE numberOfRoutes = pDoc->GetSystem(p.x, p.y).GetTradeRoutes()->GetSize();
 			// konnten erfolgreich eine hinzufügen aufgrund der Bevölkerung
-			if (pDoc->GetSector(sector).GetSunSystem() == TRUE && pDoc->GetSystem(p.x, p.y).AddTradeRoute(CPoint(sector.x,sector.y), pDoc->m_Systems, pMajor->GetEmpire()->GetResearch()->GetResearchInfo()))
+			if (pDoc->GetSector(sector.x, sector.y).GetSunSystem() == TRUE && pDoc->GetSystem(p.x, p.y).AddTradeRoute(CPoint(sector.x,sector.y), pDoc->m_Systems, pMajor->GetEmpire()->GetResearch()->GetResearchInfo()))
 			{
 				// wurde keine hinzugefügt, dann fertig
 				if (numberOfRoutes == pDoc->GetSystem(p.x, p.y).GetTradeRoutes()->GetSize())
@@ -809,7 +809,7 @@ void CGalaxyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		{
 			CPoint p = pDoc->GetKO();
 			// konnten erfolgreich eine hinzufügen aufgrund der Bevölkerung
-			if (pDoc->GetSector(sector).GetSunSystem() == TRUE && p != CPoint(sector.x,sector.y) &&
+			if (pDoc->GetSector(sector.x, sector.y).GetSunSystem() == TRUE && p != CPoint(sector.x,sector.y) &&
 				pDoc->GetSystem(p.x, p.y).AddResourceRoute(CPoint(sector.x,sector.y), CSystemMenuView::GetResourceRouteRes(), pDoc->m_Systems, pMajor->GetEmpire()->GetResearch()->GetResearchInfo()))
 			{
 				m_bDrawResourceRoute = FALSE;
@@ -837,12 +837,12 @@ void CGalaxyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			CSoundManager::GetInstance()->PlaySound(SNDMGR_SOUND_SHIPTARGET);
 			// alte Flugdaten aus den Sektoren löschen
 			for (int i = 0; i < m_oldPath.GetSize(); i++)
-				pDoc->GetSector(m_oldPath.GetAt(i)).AddShipPathPoints(-1);
+				pDoc->GetSector(m_oldPath.GetAt(i).x, m_oldPath.GetAt(i).y).AddShipPathPoints(-1);
 			m_oldPath.RemoveAll();
 			// Die Flugkoordinaten des Schiffes den Sektoren mitteilen, damit sie die Flugroute des Schiffes
 			// immer anzeigen können, auch wenn kein Schiff ausgewählt ist
 			for (int i = 0; i < pDoc->m_ShipArray[pDoc->GetCurrentShipIndex()].GetPath()->GetSize(); i++)
-				pDoc->GetSector(pDoc->m_ShipArray[pDoc->GetCurrentShipIndex()].GetPath()->GetAt(i)).AddShipPathPoints(1);
+				pDoc->GetSector(pDoc->m_ShipArray[pDoc->GetCurrentShipIndex()].GetPath()->GetAt(i).x, pDoc->m_ShipArray[pDoc->GetCurrentShipIndex()].GetPath()->GetAt(i).y).AddShipPathPoints(1);
 			Invalidate();
 		}
 		else

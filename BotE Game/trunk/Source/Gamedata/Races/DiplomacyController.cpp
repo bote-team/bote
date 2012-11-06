@@ -156,21 +156,21 @@ void CDiplomacyController::CalcDiplomacyFallouts(CBotf2Doc* pDoc)
 
 			// Wenn wir mit der Minorrace mindst. einen Handelsvertrag abgeschlossen haben, dann wird deren Sector gescannt/gesehen
 			if (pMinor->GetAgreement(pMajor->GetRaceID()) >= DIPLOMATIC_AGREEMENT::TRADE)
-				pDoc->GetSector(pMinor->GetRaceKO()).SetScanned(pMajor->GetRaceID());
+				pDoc->GetSector(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).SetScanned(pMajor->GetRaceID());
 			// Wenn wir mit der Minorrace mindst. einen Freundschaftsvertrag abgeschlossen haben, dann wird deren Sector bekannt
 			if (pMinor->GetAgreement(pMajor->GetRaceID()) >= DIPLOMATIC_AGREEMENT::FRIENDSHIP)
-				pDoc->GetSector(pMinor->GetRaceKO()).SetKnown(pMajor->GetRaceID());
+				pDoc->GetSector(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).SetKnown(pMajor->GetRaceID());
 			// Wenn wir eine Mitgliedschaft mit der kleinen Rasse haben und das System noch der kleinen Rasse gehört, dann bekommen wir das
 			if (pMinor->IsMemberTo(pMajor->GetRaceID()) && pDoc->GetSystem(pMinor->GetRaceKO()).GetOwnerOfSystem() == "")
 			{
-				pDoc->GetSector(pMinor->GetRaceKO()).SetFullKnown(pMajor->GetRaceID());
+				pDoc->GetSector(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).SetFullKnown(pMajor->GetRaceID());
 				pDoc->GetSystem(pMinor->GetRaceKO()).SetOwnerOfSystem(pMajor->GetRaceID());
-				pDoc->GetSector(pMinor->GetRaceKO()).SetOwnerOfSector(pMajor->GetRaceID());
-				pDoc->GetSector(pMinor->GetRaceKO()).SetOwned(TRUE);
+				pDoc->GetSector(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).SetOwnerOfSector(pMajor->GetRaceID());
+				pDoc->GetSector(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).SetOwned(TRUE);
 				// Der Sector gilt jetzt als nicht eingenommen
-				pDoc->GetSector(pMinor->GetRaceKO()).SetTakenSector(FALSE);
+				pDoc->GetSector(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).SetTakenSector(FALSE);
 				// Nun Gebäude in neuen System bauen
-				pDoc->GetSystem(pMinor->GetRaceKO()).BuildBuildingsForMinorRace(&pDoc->GetSector(pMinor->GetRaceKO()), &pDoc->BuildingInfo, pDoc->GetStatistics()->GetAverageTechLevel(), pMinor);
+				pDoc->GetSystem(pMinor->GetRaceKO()).BuildBuildingsForMinorRace(&pDoc->GetSector(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y), &pDoc->BuildingInfo, pDoc->GetStatistics()->GetAverageTechLevel(), pMinor);
 				// Gebäude so weit wie möglich mit Arbeitern besetzen
 				pDoc->GetSystem(pMinor->GetRaceKO()).SetWorkersIntoBuildings();
 				// alle Schiffe der Minor gehen nun an den Major
@@ -181,7 +181,7 @@ void CDiplomacyController::CalcDiplomacyFallouts(CBotf2Doc* pDoc)
 					{
 						pShip->SetOwnerOfShip(pMajor->GetRaceID());
 						// Schiff in die Shiphistory stecken
-						pMajor->GetShipHistory()->AddShip(pShip, pDoc->GetSector(pMinor->GetRaceKO()).GetName(true), pDoc->GetCurrentRound());
+						pMajor->GetShipHistory()->AddShip(pShip, pDoc->GetSector(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).GetName(true), pDoc->GetCurrentRound());
 					}
 				}
 			}
@@ -202,11 +202,11 @@ void CDiplomacyController::CalcDiplomacyFallouts(CBotf2Doc* pDoc)
 			// Wenn wir eine Mitgliedschaft bei der kleinen Rasse hatten, sprich uns das System noch gehört, wir aber
 			// der kleinen Rasse den Krieg erklären bzw. den Vertrag aufheben (warum auch immer?!?) und das System nicht
 			// gewaltätig erobert wurde, dann gehört uns das System auch nicht mehr
-			if (pMinor->GetAgreement(sOwner) != DIPLOMATIC_AGREEMENT::MEMBERSHIP && pDoc->GetSector(pMinor->GetRaceKO()).GetMinorRace() == TRUE &&
-				pDoc->GetSector(pMinor->GetRaceKO()).GetTakenSector() == FALSE)
+			if (pMinor->GetAgreement(sOwner) != DIPLOMATIC_AGREEMENT::MEMBERSHIP && pDoc->GetSector(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).GetMinorRace() == TRUE &&
+				pDoc->GetSector(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).GetTakenSector() == FALSE)
 			{
-				pDoc->GetSector(pMinor->GetRaceKO()).SetOwned(false);
-				pDoc->GetSector(pMinor->GetRaceKO()).SetOwnerOfSector(pMinor->GetRaceID());
+				pDoc->GetSector(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).SetOwned(false);
+				pDoc->GetSector(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).SetOwnerOfSector(pMinor->GetRaceID());
 				pDoc->GetSystem(pMinor->GetRaceKO()).SetOwnerOfSystem("");
 				CMajor* pMajor = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(sOwner));
 				if (pMajor)

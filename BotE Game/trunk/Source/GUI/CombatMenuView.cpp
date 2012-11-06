@@ -171,7 +171,7 @@ void CCombatMenuView::OnDraw(CDC* dc)
 	}
 
 	// grobe prozentuale Kampfchance und beteiligte Rassen berechnen
-	const CAnomaly* pAnomaly = pDoc->GetSector(pDoc->m_ptCurrentCombatSector).GetAnomaly();
+	const CAnomaly* pAnomaly = pDoc->GetSector(pDoc->m_ptCurrentCombatSector.x, pDoc->m_ptCurrentCombatSector.y).GetAnomaly();
 	m_dWinningChance = CCombat::GetWinningChance(pMajor, m_vInvolvedShips, pDoc->GetRaceCtrl()->GetRaces(), m_sFriends, m_sEnemies, pAnomaly);
 
 	m_dWinningChance = min(0.99, m_dWinningChance);
@@ -406,8 +406,8 @@ void CCombatMenuView::DrawCombatDecisionMenue(Graphics* g)
 	CFontLoader::GetGDIFontColor(pMajor, 3, normalColor);
 	fontBrush.SetColor(normalColor);
 
-	if (pDoc->GetSector(p).GetKnown(pMajor->GetRaceID()))
-		s.Format("%s %s", CResourceManager::GetString("COMBAT_IN_SECTOR"), pDoc->GetSector(p).GetName(TRUE));
+	if (pDoc->GetSector(p.x, p.y).GetKnown(pMajor->GetRaceID()))
+		s.Format("%s %s", CResourceManager::GetString("COMBAT_IN_SECTOR"), pDoc->GetSector(p.x, p.y).GetName(TRUE));
 	else
 		s.Format("%s %c%i", CResourceManager::GetString("COMBAT_IN_SECTOR"), (char)(p.y+97), p.x + 1);
 	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,10,m_TotalSize.cx, 50), &fontFormat, &fontBrush);
@@ -666,8 +666,8 @@ void CCombatMenuView::DrawCombatOrderMenue(Graphics* g)
 	CFontLoader::GetGDIFontColor(pMajor, 3, normalColor);
 	fontBrush.SetColor(normalColor);
 
-	if (pDoc->GetSector(p).GetKnown(pMajor->GetRaceID()))
-		s.Format("%s %s", CResourceManager::GetString("COMBAT_IN_SECTOR"), pDoc->GetSector(p).GetName(TRUE));
+	if (pDoc->GetSector(p.x, p.y).GetKnown(pMajor->GetRaceID()))
+		s.Format("%s %s", CResourceManager::GetString("COMBAT_IN_SECTOR"), pDoc->GetSector(p.x, p.y).GetName(TRUE));
 	else
 		s.Format("%s %c%i", CResourceManager::GetString("COMBAT_IN_SECTOR"), (char)(p.y+97), p.x + 1);
 	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,10,m_TotalSize.cx, 50), &fontFormat, &fontBrush);
