@@ -1,6 +1,9 @@
 #pragma once
 
-#include "Ships/Fleet.h"
+class CShip;
+class CSector;
+class CSystem;
+class CBotf2Doc;
 
 class CSanity
 {
@@ -11,5 +14,9 @@ class CSanity
 
 
 		static void SanityCheckFleet(const CShip& ship);
+		static void SanityCheckSectorAndSystem(
+			const CSector& sector,
+			const CSystem& system,
+			const CBotf2Doc& doc);
 
 };

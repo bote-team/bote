@@ -3624,6 +3624,7 @@ void CBotf2Doc::CalcNewRoundData()
 	// durchgegangen sein muﬂ.
 	for(std::vector<CSector>::iterator sector = m_Sectors.begin(); sector != m_Sectors.end(); ++sector) {
 		CSystem& system = GetSystemForSector(*sector);
+		CSanity::SanityCheckSectorAndSystem(*sector, system, *this);
 		const CString& system_owner = system.GetOwnerOfSystem();
 		if (sector->GetSunSystem() && system_owner != "")
 		{
