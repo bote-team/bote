@@ -1182,7 +1182,7 @@ void CBotf2Doc::GenerateGalaxy()
 			CPoint dist(rand()%3 - 1, rand()%3 - 1);
 			CPoint pt(raceKO.x + dist.x, raceKO.y + dist.y);
 			if (pt.x < STARMAP_SECTORS_HCOUNT && pt.x > -1 && pt.y < STARMAP_SECTORS_VCOUNT && pt.y > -1)
-				if (!GetSector(pt.y).GetSunSystem())
+				if (!GetSector(pt).GetSunSystem())
 				{
 					GetSector(pt).GenerateSector(100, nMinorDensity);
 					nextSunSystems++;
