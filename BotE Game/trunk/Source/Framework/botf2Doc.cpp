@@ -5922,7 +5922,7 @@ void CBotf2Doc::CalcRandomAlienEntities()
 			// nur ca. aller 20 + Techmodifikator Runden kommt das Alienschiff ins Spiel
 			if (rand()%(20 + nMod) != 0)
 				continue;
-
+			
 			// zufälligen Sektor am Rand der Map ermitteln
 			while (true)
 			{
@@ -5958,6 +5958,37 @@ void CBotf2Doc::CalcRandomAlienEntities()
 					{
 						pShip->SetAlienType(ALIEN_TYPE::BLIZZARD_PLASMAWESEN);
 						pShip->SetCurrentOrder(SHIP_ORDER::ATTACK);
+					}
+					else if (pAlien->GetRaceID() == "Morlock-Raider")
+					{
+						pShip->SetAlienType(ALIEN_TYPE::MORLOCK_RAIDER);
+						pShip->SetCurrentOrder(SHIP_ORDER::ATTACK);
+						// zufällig gleich mehrere Raider bauen. Umso höher der technische Durchschnitt
+						// in der Galaxie ist, desto mehr Raider kommen auf dem System ins Spiel.
+						if (nMod > 0)
+						{
+							// Index des Flottenschiffes im Array merken
+							int nFleetShipIndex = m_ShipArray.GetUpperBound();
+							
+							int nCount = rand()%(nMod + 1);
+							while (nCount > 0)
+							{	
+								// Erst das Schiff bauen
+								BuildShip(pShipInfo->GetID(), p, pAlien->GetRaceID());
+								
+								// Dann erst das Flottenschiff holen, da sich der Zeiger
+								// beim Bauen eines neuen Schiffs verändert
+								CShip* pFleetShip = &m_ShipArray[nFleetShipIndex];
+								// Flotte erstellen
+								pFleetShip->CreateFleet();
+
+								// Raider in Gruppe stecken und Befehle gleich mit übernehmen
+								pFleetShip->AddShipToFleet(m_ShipArray[m_ShipArray.GetUpperBound()]);
+								m_ShipArray.RemoveAt(m_ShipArray.GetUpperBound());
+																
+								nCount--;
+							}
+						}
 					}
 
 					break;
@@ -6128,6 +6159,12 @@ void CBotf2Doc::CalcAlienShipEffects()
 					m_iSelectedView[client] = EMPIRE_VIEW;
 				}
 			}
+		}
+		if ((pShip->GetAlienType() & ALIEN_TYPE::MORLOCK_RAIDER) > 0)
+		{
+			// Sollte das System überfallen, falls das später mal geht
+			// Derzeit macht das Schiff nichts
+			// IDEE: Das System wird blockiert, so dass kein Handel möglich ist.
 		}
 	}
 }
