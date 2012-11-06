@@ -53,10 +53,10 @@ public:
 	/// @param credits erzeugtes Credits der Handelsroute
 	void SetCredits(USHORT credits) {m_iCredits = credits;}
 
-	/// Funktion überprüft, ob die Handelsroute noch Bestand haben darf und setzt das Credits, welches
+	/// Funktion überprüft, ob die Handelsroute noch Bestand haben darf und setzt die Credits, welche
 	/// diese Handelsroute fabriziert. Dabei werden noch keinerlei Boni auf die Creditsproduktion angerechnet.
 	/// Die Funktion gibt einen Wahrheitswert zurück, der sagt, ob die Handelsroute noch Bestand haben darf.
-	BOOLEAN CheckTradeRoute(const CPoint& pFrom, const CPoint& pDest, CBotf2Doc* pDoc);
+	bool CheckTradeRoute(const CPoint& pFrom, const CPoint& pDest, CBotf2Doc* pDoc);
 
 	/// Diese Funktion verbessert manchmal die Beziehung zu der Minorrace, die in dem betroffenem Sektor lebt.
 	/// Als Parameter wird hierfür die Ausgangskoordinate der Handerlsroute, die Zielkoordinate <code>pDest</code>

@@ -300,12 +300,19 @@ bool CMinorAI::MakeOffer(CString& sRaceID, CDiplomacyInfo& info)
 				// wenn nur Aliendiplomatie möglich ist, dann darf nur Krieg oder Freundschaft angeboten werden
 				if (pMinor->HasSpecialAbility(SPECIAL_ALIEN_DIPLOMACY) || pMajor->HasSpecialAbility(SPECIAL_ALIEN_DIPLOMACY))
 				{
+					// Wenn größer als Freundschaft, dann nur Freundschaft anbieten falls noch nicht vorhanden
 					if (nOffer >= DIPLOMATIC_AGREEMENT::FRIENDSHIP)
 					{
 						if (nAgreement < DIPLOMATIC_AGREEMENT::FRIENDSHIP)
 							nOffer = DIPLOMATIC_AGREEMENT::FRIENDSHIP;
-						else
-							nOffer = DIPLOMATIC_AGREEMENT::NONE;
+					}
+					
+					// Wenn nicht Krieg und auch nicht Freundschaft angeboten wurde (z.B. Handelsvertrag),
+					// dann kein Angebot machen
+					if (nOffer != DIPLOMATIC_AGREEMENT::WAR && nOffer != DIPLOMATIC_AGREEMENT::FRIENDSHIP)
+					{
+						nOffer = DIPLOMATIC_AGREEMENT::NONE;
+						return false;
 					}
 				}
 
@@ -690,6 +697,10 @@ int CMinorAI::CalcResInCredits(const CDiplomacyInfo& info)
 {
 	CMinor* pMinor = dynamic_cast<CMinor*>(m_pRace);
 	if (!pMinor)
+		return 0;
+
+	// An Alienrassen können keine Ressourcen übergeben werden
+	if (pMinor->IsAlienRace())
 		return 0;
 
 	// zuerst muss berechnet werden, wie viel die übergebenen Ressourcen als Credits wert sind

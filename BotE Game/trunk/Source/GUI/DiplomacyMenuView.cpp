@@ -1050,19 +1050,31 @@ void CDiplomacyMenuView::DrawDiplomacyInfoMenue(Graphics* g, const CString& sWhi
 	s = pRace->GetRaceName();
 	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), rect, &fontFormat, &fontBrush);
 	rect.Y += 25;
+
+	// Name des Heimatsystems und Sektorkoordinate anzeigen
 	s = pRace->GetHomesystemName();
-	for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)//Sector anzeigen
+	if (!s.IsEmpty())
+	{
+		for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
+		{
 			for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
+			{
 				if(pDoc->GetSector(x,y).GetName()==s&&pDoc->GetSector(x,y).GetKnown(pPlayer->GetRaceID()))
 				{
 					s.Format("%s (%c%i)", s,(char)y+97,x+1);
 					break;
-				}else if(pDoc->GetSector(x,y).GetName()==s&&!pDoc->GetSector(x,y).GetKnown(pPlayer->GetRaceID()))
+				}
+				else if(pDoc->GetSector(x,y).GetName()==s&&!pDoc->GetSector(x,y).GetKnown(pPlayer->GetRaceID()))
 				{
 					s.Format("%s (%s)",s,CResourceManager::GetString("UNKNOWN"));
 					break;
 				}
-	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), rect, &fontFormat, &fontBrush);
+			}
+		}
+
+		g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), rect, &fontFormat, &fontBrush);
+	}
+	
 	rect.Y += 25;
 
 	Gdiplus::Color color(normalColor);

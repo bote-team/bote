@@ -2,6 +2,7 @@
 #include "TradeRoute.h"
 #include "Botf2Doc.h"
 #include "Races\RaceController.h"
+#include <cassert>
 
 IMPLEMENT_SERIAL (CTradeRoute, CObject, 1)
 //////////////////////////////////////////////////////////////////////
@@ -69,6 +70,7 @@ void CTradeRoute::Serialize(CArchive &ar)
 /// Funktion legt die Handelsroute zum System mit der Koordinate <code>ko</code> an.
 void CTradeRoute::GenerateTradeRoute(CPoint ko)
 {
+	assert(ko != CPoint(-1, -1));
 	m_KO = ko;
 	m_iDuration = 20;
 }
@@ -79,10 +81,10 @@ USHORT CTradeRoute::GetCredits(short boni) const
 	return (USHORT)(m_iCredits + m_iCredits * boni/100);
 }
 
-/// Funktion überprüft, ob die Handelsroute noch Bestand haben darf und setzt das Credits, welches
+/// Funktion überprüft, ob die Handelsroute noch Bestand haben darf und setzt die Credits, welche
 /// diese Handelsroute fabriziert. Dabei werden noch keinerlei Boni auf die Creditsproduktion angerechnet.
 /// Die Funktion gibt einen Wahrheitswert zurück, der sagt, ob die Handelsroute noch Bestand haben darf.
-BOOLEAN CTradeRoute::CheckTradeRoute(const CPoint& pFrom, const CPoint& pDest, CBotf2Doc* pDoc)
+bool CTradeRoute::CheckTradeRoute(const CPoint& pFrom, const CPoint& pDest, CBotf2Doc* pDoc)
 {
 	ASSERT(pDoc);
 
@@ -91,13 +93,14 @@ BOOLEAN CTradeRoute::CheckTradeRoute(const CPoint& pFrom, const CPoint& pDest, C
 	CString  sOwner = pDoc->GetSystem(pFrom.x, pFrom.y).GetOwnerOfSystem();
 
 	// wurde der Zielsektor durch uns gescannt
-	if (pDestSector->GetScanned(sOwner) == FALSE)
-		return FALSE;
+	if (!pDestSector->GetScanned(sOwner))
+		return false;
+	
 	// zu allererst das Credits berechnen
 	float habitants = pDestSector->GetCurrentHabitants();
 	// wenn keine Leute in dem System leben, so gibt es auch keine Handelsroute.
 	if (habitants == 0.0f)
-		return FALSE;
+		return false;
 
 	// zufällig wird das Credits bei der Handelsroute noch modifiziert (+-)20%
 	// also (rand()%41 + 80) / 100 -> [0,40]+80 = [80,120] / 100 -> [0.8,1.2]
@@ -111,9 +114,8 @@ BOOLEAN CTradeRoute::CheckTradeRoute(const CPoint& pFrom, const CPoint& pDest, C
 	if (pDestSystem->GetOwnerOfSystem() != "" && pDestSystem->GetOwnerOfSystem() != sOwner)
 	{
 		CMajor* pMajor = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(pDestSystem->GetOwnerOfSystem()));
-		if (pMajor)
-			if (pMajor->GetAgreement(sOwner) >= DIPLOMATIC_AGREEMENT::TRADE)
-				return TRUE;
+		if (pMajor && pMajor->GetAgreement(sOwner) >= DIPLOMATIC_AGREEMENT::TRADE)
+			return true;
 	}
 	// gehört der Zielsektor einer Minorrace
 	else if (pDestSector->GetOwnerOfSector() != "" && pDestSector->GetMinorRace() == TRUE)
@@ -122,12 +124,13 @@ BOOLEAN CTradeRoute::CheckTradeRoute(const CPoint& pFrom, const CPoint& pDest, C
 		if (pMinor)
 		{
 			if (pMinor->GetAgreement(sOwner) >= DIPLOMATIC_AGREEMENT::TRADE && pMinor->GetAgreement(sOwner) != DIPLOMATIC_AGREEMENT::MEMBERSHIP)
-				return TRUE;
+				return true;
 			else
-				return FALSE;
+				return false;
 		}
 	}
-	return FALSE;
+
+	return false;
 }
 
 /// Diese Funktion verbessert manchmal die Beziehung zu der Minorrace, die in dem betroffenem Sektor lebt.

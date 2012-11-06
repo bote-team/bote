@@ -88,7 +88,7 @@ void CEventFirstContact::Draw(Graphics* g, CGraphicPool* graphicPool) const
 	fontFormat.SetLineAlignment(StringAlignmentNear);
 	fontFormat.SetFormatFlags(!StringFormatFlagsNoWrap);
 	s = CResourceManager::GetString("FIRSTCONTACTEVENT_TEXT", FALSE, pContactedRace->GetRaceName());
-	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(800,610,470,75), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(800,610,470,100), &fontFormat, &fontBrush);
 
 	// Bild der Rasse zeichnen
 	Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Races\\" + pContactedRace->GetGraphicFileName());
@@ -157,13 +157,17 @@ void CEventFirstContact::Draw(Graphics* g, CGraphicPool* graphicPool) const
 	CString sProgress;
 	if (pContactedRace->IsMinor())
 	{
-		switch (((CMinor*)pContactedRace)->GetTechnologicalProgress())
+		CMinor* pMinor = dynamic_cast<CMinor*>(pContactedRace);
+		if (!pMinor->IsAlienRace())
 		{
-		case 0: sProgress = CResourceManager::GetString("VERY_UNDERDEVELOPED");	break;
-		case 1: sProgress = CResourceManager::GetString("UNDERDEVELOPED");		break;
-		case 2: sProgress = CResourceManager::GetString("NORMAL_DEVELOPED");	break;
-		case 3: sProgress = CResourceManager::GetString("DEVELOPED");			break;
-		case 4: sProgress = CResourceManager::GetString("VERY_DEVELOPED");		break;
+			switch (pMinor->GetTechnologicalProgress())
+			{
+			case 0: sProgress = CResourceManager::GetString("VERY_UNDERDEVELOPED");	break;
+			case 1: sProgress = CResourceManager::GetString("UNDERDEVELOPED");		break;
+			case 2: sProgress = CResourceManager::GetString("NORMAL_DEVELOPED");	break;
+			case 3: sProgress = CResourceManager::GetString("DEVELOPED");			break;
+			case 4: sProgress = CResourceManager::GetString("VERY_DEVELOPED");		break;
+			}
 		}
 	}
 	else if (pContactedRace->IsMajor())

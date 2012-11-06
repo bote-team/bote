@@ -2384,7 +2384,7 @@ unsigned CSystem::CheckTradeRoutesDiplomacy(CBotf2Doc& pDoc, const CPoint& ko) {
 		CTradeRoute& trade_route = m_TradeRoutes.GetAt(i);
 		const CPoint& dest = trade_route.GetDestKO();
 		// Wenn die Handelsroute aus diplomatischen Gründen nicht mehr vorhanden sein kann
-		if (!trade_route.CheckTradeRoute(ko, CPoint(dest.x, dest.y), &pDoc))
+		if (!trade_route.CheckTradeRoute(ko, dest, &pDoc))
 		{
 			// dann müssen wir diese Route löschen
 			m_TradeRoutes.RemoveAt(i--);
@@ -2392,7 +2392,7 @@ unsigned CSystem::CheckTradeRoutesDiplomacy(CBotf2Doc& pDoc, const CPoint& ko) {
 		}
 		// Ansonsten könnte sich die Beziehung zu der Minorrace verbessern
 		else
-			trade_route.PerhapsChangeRelationship(ko, CPoint(dest.x, dest.y), &pDoc);
+			trade_route.PerhapsChangeRelationship(ko, dest, &pDoc);
 	}
 	return deletedTradeRoutes;
 }
