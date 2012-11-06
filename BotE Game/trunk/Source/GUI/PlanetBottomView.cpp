@@ -249,7 +249,7 @@ void CPlanetBottomView::OnDraw(CDC* dc)
 		(pDoc->GetSector(KO.x, KO.y).GetScanPower(pMajor->GetRaceID()) > 50 || pDoc->GetSector(KO.x, KO.y).GetOwnerOfSector() == pMajor->GetRaceID()))
 	{
 		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\troopSmall.bop");
-		int nTroopNumber = pDoc->GetSystem(KO).GetTroops()->GetSize();
+		int nTroopNumber = pDoc->GetSystem(KO.x, KO.y).GetTroops()->GetSize();
 		if (graphic && nTroopNumber)
 		{
 			// soviel wie Truppen stationiert sind, so viele Symbole werden gezeichnet
@@ -306,11 +306,11 @@ void CPlanetBottomView::OnDraw(CDC* dc)
 
 		// Wir selbst und alle uns bekannten Rassen sehen, wenn das System blockiert wird.
 		// Dafür wird ein OverlayBanner über die Ansicht gelegt.
-		if (pDoc->GetSystem(KO).GetBlockade() > 0)
+		if (pDoc->GetSystem(KO.x, KO.y).GetBlockade() > 0)
 		{
 			CFontLoader::CreateGDIFont(pMajor, 3, fontName, fontSize);
 			CSize viewSize(m_TotalSize.cx - 160, m_TotalSize.cy - 120);
-			s.Format("%d", pDoc->GetSystem(KO).GetBlockade());
+			s.Format("%d", pDoc->GetSystem(KO.x, KO.y).GetBlockade());
 			COverlayBanner* banner = new COverlayBanner(CPoint(80,60), viewSize, CResourceManager::GetString("SYSTEM_IS_BLOCKED", FALSE, s), RGB(200,0,0));
 			banner->SetBorderWidth(1);
 			Gdiplus::Font font(CComBSTR(fontName), fontSize);

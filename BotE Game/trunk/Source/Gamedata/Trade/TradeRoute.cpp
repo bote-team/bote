@@ -87,8 +87,8 @@ BOOLEAN CTradeRoute::CheckTradeRoute(const CPoint& pFrom, const CPoint& pDest, C
 	ASSERT(pDoc);
 
 	CSector* pDestSector = &(pDoc->GetSector(pDest.x, pDest.y));
-	CSystem* pDestSystem = &(pDoc->GetSystem(pDest));
-	CString  sOwner = pDoc->GetSystem(pFrom).GetOwnerOfSystem();
+	CSystem* pDestSystem = &(pDoc->GetSystem(pDest.x, pDest.y));
+	CString  sOwner = pDoc->GetSystem(pFrom.x, pFrom.y).GetOwnerOfSystem();
 
 	// wurde der Zielsektor durch uns gescannt
 	if (pDestSector->GetScanned(sOwner) == FALSE)

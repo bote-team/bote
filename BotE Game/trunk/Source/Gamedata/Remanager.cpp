@@ -81,11 +81,11 @@ bool CReManager::SystemEvent(const CPoint &ko, CMajor* pRace)
 		//CEventRandom* EmpireEvent=new CEventRandom(pRace->GetRaceID(),imagename,headline,text);
 		//pRace->GetEmpire()->GetEventMessages()->Add(EmpireEvent);
 		messagetext=CResourceManager::GetString("SYSTEMEVENTMORALBOOST",false,pDoc->GetSector(ko.x, ko.y).GetName());
-		pDoc->GetSystem(ko).SetMoral(10);
+		pDoc->GetSystem(ko.x, ko.y).SetMoral(10);
 	}else if(eventnumber==SYSTEMEVENTMORALMALUS)
 	{
 		messagetext=CResourceManager::GetString("SYSTEMEVENTMORALMALUS",false,pDoc->GetSector(ko.x, ko.y).GetName());
-		pDoc->GetSystem(ko).SetMoral(-10);
+		pDoc->GetSystem(ko.x, ko.y).SetMoral(-10);
 	}else if(eventnumber==SYSTEMEVENTPLANETMOVEMENT)//Planetenveränderung
 	{
 		std::vector<CPlanet>& planets = pDoc->GetSector(ko.x, ko.y).GetPlanets();

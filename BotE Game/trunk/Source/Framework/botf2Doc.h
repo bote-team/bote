@@ -191,27 +191,20 @@ public:
 		return m_Systems.at(x+y*STARMAP_SECTORS_HCOUNT);
 	}
 
-	CSystem& GetSystem(const CPoint& ko) {
-		return GetSystem(ko.x, ko.y);
-	}
-	const CSystem& GetSystem(const CPoint& ko) const {
-		return GetSystem(ko.x, ko.y);
-	}
-
 	//returns system at m_ptKO
 	const CSystem& CurrentSystem() const {
-		return GetSystem(m_ptKO);
+		return GetSystem(m_ptKO.x, m_ptKO.y);
 	}
 	//returns system at m_ptKO
 	CSystem& CurrentSystem() {
-		return GetSystem(m_ptKO);
+		return GetSystem(m_ptKO.x, m_ptKO.y);
 	}
 
 	CSystem& GetSystemForSector(const CSector& s) {
-		return GetSystem(s.GetKO());
+		return GetSystem(s.GetKO().x, s.GetKO().y);
 	}
 	const CSystem& GetSystemForSector(const CSector& s) const {
-		return GetSystem(s.GetKO());
+		return GetSystem(s.GetKO().x, s.GetKO().y);
 	}
 
 	CBuildingInfo& GetBuildingInfo(int id) {ASSERT(id > 0); return BuildingInfo[id-1];}

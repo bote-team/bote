@@ -523,7 +523,7 @@ ANSWER_STATUS::Typ CMajorAI::CalcDiplomacyRequest(const CDiplomacyInfo& info)
 					//CString s;
 					//s.Format("Request from: %d an %d\nunsere Beziehung zu denen: %d\nunser Status: %d\nvalue: %lf\ngeforderte Res: %d Menge: %d\naus System: %d/%d\ndavon vorhanden: %d",requestFrom,m_iRaceNumber,m_iRelationshipOtherMajor[requestFrom],m_iDiplomacyStatus[requestFrom],value,res,requestedRessource[res],system.x,system.y,systems.at(system.x+(system.y)*STARMAP_SECTORS_HCOUNT).GetResourceStore(res));
 					//AfxMessageBox(s);
-					m_pDoc->GetSystem(ptSystem).SetResourceStore(nRes, -info.m_nResources[nRes]);
+					m_pDoc->GetSystem(ptSystem.x, ptSystem.y).SetResourceStore(nRes, -info.m_nResources[nRes]);
 				}
 				else nAnswer = ANSWER_STATUS::DECLINED;
 			}
@@ -1287,7 +1287,7 @@ bool CMajorAI::GiveDowry(CDiplomacyInfo& info)
 				info.m_nResources[whichRes] = (USHORT)nGiveRes;
 				info.m_ptKO = ptSystem;
 				// Die Ressource aus dem Lager des Systems abziehen
-				m_pDoc->GetSystem(ptSystem).SetResourceStore(whichRes, (int)nGiveRes * (-1));
+				m_pDoc->GetSystem(ptSystem.x, ptSystem.y).SetResourceStore(whichRes, (int)nGiveRes * (-1));
 				bGiveDowry |= true;
 			}
 		}

@@ -170,7 +170,7 @@ bool CMinor::PerhapsExtend(CBotf2Doc* pDoc)
 
 	if (bColonized)
 		// dann sind im System auch weitere Einwohner hinzugekommen
-		pDoc->GetSystem(m_ptKO).SetHabitants(pDoc->GetSector(m_ptKO.x, m_ptKO.y).GetCurrentHabitants());
+		pDoc->GetSystem(m_ptKO.x, m_ptKO.y).SetHabitants(pDoc->GetSector(m_ptKO.x, m_ptKO.y).GetCurrentHabitants());
 
 	return bColonized;
 }
@@ -293,7 +293,7 @@ void CMinor::ConsumeResources(CBotf2Doc* pDoc)
 	exist[TITAN] == TRUE ? div = 1000 : div = 4000;
 	value = rand()%div;
 	value = min(3000, value);
-	pDoc->GetSystem(m_ptKO).SetResourceStore(TITAN, -value);
+	pDoc->GetSystem(m_ptKO.x, m_ptKO.y).SetResourceStore(TITAN, -value);
 
 	//CString s;
 	//s.Format("Name der Rasse: %s\nTitanabbau: %d\nVerbrauch: %d\nLager: %d",m_strRaceName,exist[0],value,m_iRessourceStorage[0]);
@@ -303,29 +303,29 @@ void CMinor::ConsumeResources(CBotf2Doc* pDoc)
 	exist[DEUTERIUM] == TRUE ? div = 1500 : div = 4000;
 	value = rand()%div;
 	value = min(3000, value);
-	pDoc->GetSystem(m_ptKO).SetResourceStore(DEUTERIUM, -value);
+	pDoc->GetSystem(m_ptKO.x, m_ptKO.y).SetResourceStore(DEUTERIUM, -value);
 
 	// Duranium
 	exist[DURANIUM] == TRUE ? div = 1500 : div = 4000;
 	value = rand()%div;
 	value = min(3000, value);
-	pDoc->GetSystem(m_ptKO).SetResourceStore(DURANIUM, -value);
+	pDoc->GetSystem(m_ptKO.x, m_ptKO.y).SetResourceStore(DURANIUM, -value);
 
 	// Kristalle
 	exist[CRYSTAL] == TRUE ? div = 1500 : div = 4000;
 	value = rand()%div;
 	value = min(3000, value);
-	pDoc->GetSystem(m_ptKO).SetResourceStore(CRYSTAL, -value);
+	pDoc->GetSystem(m_ptKO.x, m_ptKO.y).SetResourceStore(CRYSTAL, -value);
 
 	// Iridium
 	exist[IRIDIUM] == TRUE ? div = 1500 : div = 4000;
 	value = rand()%div;
 	value = min(3000, value);
-	pDoc->GetSystem(m_ptKO).SetResourceStore(IRIDIUM, -value);
+	pDoc->GetSystem(m_ptKO.x, m_ptKO.y).SetResourceStore(IRIDIUM, -value);
 
 	// Deritium
 	value = rand()%2;
-	pDoc->GetSystem(m_ptKO).SetResourceStore(DERITIUM, -value);
+	pDoc->GetSystem(m_ptKO.x, m_ptKO.y).SetResourceStore(DERITIUM, -value);
 }
 
 /// Funktion überprüft, ob die Minorrace das Angebot aufgrund anderer Verträge überhaupt annehmen kann.

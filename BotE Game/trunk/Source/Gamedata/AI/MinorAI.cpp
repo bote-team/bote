@@ -542,7 +542,7 @@ bool CMinorAI::TryCorruption(const CDiplomacyInfo& info)
 	if (pMinor->GetRaceKO() == CPoint(-1,-1))
 		return false;
 
-	CSystem* pSystem = &(m_pDoc->GetSystem(pMinor->GetRaceKO()));
+	CSystem* pSystem = &(m_pDoc->GetSystem(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y));
 	ASSERT(pSystem);
 	short nResistance = pSystem->GetProduction()->GetResistance();
 	// Bei einer Bestechnung mit z.B. 5000 Creditübergabe ergibt dies einen Wert von 5000.
@@ -703,7 +703,7 @@ int CMinorAI::CalcResInCredits(const CDiplomacyInfo& info)
 
 	float fValue = 0.0f;
 	float fDiv = 0.0f;
-	CSystem* pSystem = &(m_pDoc->GetSystem(pMinor->m_ptKO));
+	CSystem* pSystem = &(m_pDoc->GetSystem(pMinor->m_ptKO.x, pMinor->m_ptKO.y));
 
 	if (info.m_nResources[TITAN] != 0)			// Titan übergeben?
 	{

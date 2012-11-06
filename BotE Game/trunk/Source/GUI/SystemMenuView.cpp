@@ -320,7 +320,7 @@ void CSystemMenuView::DrawBuildMenue(Graphics* g)
 	fontBrush.SetColor(color);
 
 	// Anzeige der Moral und der Runden über der Bauliste
-	s.Format("%s: %i",CResourceManager::GetString("MORAL"), pDoc->GetSystem(p).GetMoral());
+	s.Format("%s: %i",CResourceManager::GetString("MORAL"), pDoc->GetSystem(p.x, p.y).GetMoral());
 	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(370, 106, 335, 25), &fontFormat, &fontBrush);
 	fontFormat.SetAlignment(StringAlignmentFar);
 	g->DrawString(CComBSTR(CResourceManager::GetString("ROUNDS")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(370, 106, 335, 25), &fontFormat, &fontBrush);
@@ -341,22 +341,22 @@ void CSystemMenuView::DrawBuildMenue(Graphics* g)
 	if (m_iWhichSubMenu == 0)				// Sind wir im Gebäude/Update Untermenü
 	{
 		// Zuerst werden die Upgrades angezeigt
-		for (int i = 0; i < pDoc->GetSystem(p).GetBuildableUpdates()->GetSize(); i++)
-			m_vBuildlist.Add(pDoc->GetSystem(p).GetBuildableUpdates()->GetAt(i) * (-1));
+		for (int i = 0; i < pDoc->GetSystem(p.x, p.y).GetBuildableUpdates()->GetSize(); i++)
+			m_vBuildlist.Add(pDoc->GetSystem(p.x, p.y).GetBuildableUpdates()->GetAt(i) * (-1));
 
 		// Dann werden die baubaren Gebäude angezeigt
-		for (int i = 0; i < pDoc->GetSystem(p).GetBuildableBuildings()->GetSize(); i++)
-			m_vBuildlist.Add(pDoc->GetSystem(p).GetBuildableBuildings()->GetAt(i));
+		for (int i = 0; i < pDoc->GetSystem(p.x, p.y).GetBuildableBuildings()->GetSize(); i++)
+			m_vBuildlist.Add(pDoc->GetSystem(p.x, p.y).GetBuildableBuildings()->GetAt(i));
 	}
 	else if (m_iWhichSubMenu == 1)		// Sind wir im Werftuntermenü?
 	{
-		for (int i = 0; i < pDoc->GetSystem(p).GetBuildableShips()->GetSize(); i++)
-			m_vBuildlist.Add(pDoc->GetSystem(p).GetBuildableShips()->GetAt(i));
+		for (int i = 0; i < pDoc->GetSystem(p.x, p.y).GetBuildableShips()->GetSize(); i++)
+			m_vBuildlist.Add(pDoc->GetSystem(p.x, p.y).GetBuildableShips()->GetAt(i));
 	}
 	else if (m_iWhichSubMenu == 2)		// Sind wir im Kasernenuntermenü?
 	{
-		for (int i = 0; i < pDoc->GetSystem(p).GetBuildableTroops()->GetSize(); i++)
-			m_vBuildlist.Add(pDoc->GetSystem(p).GetBuildableTroops()->GetAt(i) + 20000);
+		for (int i = 0; i < pDoc->GetSystem(p.x, p.y).GetBuildableTroops()->GetSize(); i++)
+			m_vBuildlist.Add(pDoc->GetSystem(p.x, p.y).GetBuildableTroops()->GetAt(i) + 20000);
 	}
 
 	if (m_iClickedOn > 0 && m_iClickedOn > m_vBuildlist.GetUpperBound())
@@ -389,8 +389,8 @@ void CSystemMenuView::DrawBuildMenue(Graphics* g)
 		}
 
 		// noch verbleibende Runden bis das Projekt fertig wird
-		int nRounds = pDoc->GetSystem(p).GetNeededRoundsToCompleteProject(m_vBuildlist[i]);
-		BOOLEAN bCanAddToAssemblyList = pDoc->GetSystem(p).GetAssemblyList()->MakeEntry(m_vBuildlist[i], p, pDoc->m_Systems, true);
+		int nRounds = pDoc->GetSystem(p.x, p.y).GetNeededRoundsToCompleteProject(m_vBuildlist[i]);
+		BOOLEAN bCanAddToAssemblyList = pDoc->GetSystem(p.x, p.y).GetAssemblyList()->MakeEntry(m_vBuildlist[i], p, pDoc->m_Systems, true);
 		if (!bCanAddToAssemblyList)
 		{
 			// Schrift dunkler darstellen, wenn das Projekt aufgrund nicht ausreichender Rohstoffe nicht gebaut werden kann
@@ -641,7 +641,7 @@ void CSystemMenuView::DrawBuildMenue(Graphics* g)
 	CFontLoader::GetGDIFontColor(pMajor, 1, btnColor);
 	SolidBrush btnBrush(btnColor);
 
-	int nFirstAssemblyListEntry = pDoc->GetSystem(p).GetAssemblyList()->GetAssemblyListEntry(0);
+	int nFirstAssemblyListEntry = pDoc->GetSystem(p.x, p.y).GetAssemblyList()->GetAssemblyListEntry(0);
 	// Hier die Anzeige der Kaufkosten, wenn wir auf den "kaufen Button" geklickt haben
 	if (m_bClickedOnBuyButton == TRUE)
 	{
@@ -778,7 +778,7 @@ void CSystemMenuView::DrawBuildMenue(Graphics* g)
 
 	// plus Anzeige der kleinen Buttons unter der Assemblylist (kaufen und abbrechen)
 	// wenn wir noch nicht in dieser Runde gekauft haben
-	if (pDoc->GetSystem(p).GetAssemblyList()->GetWasBuildingBought() == FALSE && nFirstAssemblyListEntry != 0)
+	if (pDoc->GetSystem(p.x, p.y).GetAssemblyList()->GetWasBuildingBought() == FALSE && nFirstAssemblyListEntry != 0)
 	{
 		// Bei Gebäuden nur wenn es nicht ein Auftrag mit NeverReady (z.B. Kriegsrecht) ist)
 		if ((nFirstAssemblyListEntry < 0)
@@ -786,10 +786,10 @@ void CSystemMenuView::DrawBuildMenue(Graphics* g)
 			(nFirstAssemblyListEntry > 0 && nFirstAssemblyListEntry < 10000 && pDoc->GetBuildingInfo(nFirstAssemblyListEntry).GetNeverReady() == FALSE)
 			||
 			// Bei Schiffen nur, wenn eine Werft noch aktiv ist
-			(nFirstAssemblyListEntry >= 10000 && nFirstAssemblyListEntry < 20000 && pDoc->GetSystem(p).GetProduction()->GetShipYard())
+			(nFirstAssemblyListEntry >= 10000 && nFirstAssemblyListEntry < 20000 && pDoc->GetSystem(p.x, p.y).GetProduction()->GetShipYard())
 			||
 			// Bei Truppen nur mit aktiver Kaseren
-			(nFirstAssemblyListEntry >= 20000 && pDoc->GetSystem(p).GetProduction()->GetBarrack()))
+			(nFirstAssemblyListEntry >= 20000 && pDoc->GetSystem(p.x, p.y).GetProduction()->GetBarrack()))
 		{
 			if (graphic)
 				g->DrawImage(graphic, 750, 625, 120, 30);
@@ -1803,7 +1803,7 @@ void CSystemMenuView::DrawBuildList(Graphics* g)
 	int y = 410;
 	for (int i = 0; i < ALE; i++)
 	{
-		int nAssemblyListEntry = pDoc->GetSystem(p).GetAssemblyList()->GetAssemblyListEntry(i);
+		int nAssemblyListEntry = pDoc->GetSystem(p.x, p.y).GetAssemblyList()->GetAssemblyListEntry(i);
 		if (nAssemblyListEntry != 0)
 		{
 			// ersten Eintrag in der Bauliste
@@ -1854,43 +1854,43 @@ void CSystemMenuView::DrawBuildList(Graphics* g)
 
 			// Hier Berechnung der noch verbleibenden Runden, bis das Projekt fertig wird (nicht bei NeverReady-Aufträgen)
 			// divide by zero check
-			if (pDoc->GetSystem(p).GetProduction()->GetIndustryProd() > 0)
+			if (pDoc->GetSystem(p.x, p.y).GetProduction()->GetIndustryProd() > 0)
 			{
 				if (nAssemblyListEntry > 0 && nAssemblyListEntry < 10000 && pDoc->GetBuildingInfo(nAssemblyListEntry).GetNeverReady())
 				{
-					RoundToBuild = pDoc->GetSystem(p).GetAssemblyList()->GetNeededIndustryInAssemblyList(i);
+					RoundToBuild = pDoc->GetSystem(p.x, p.y).GetAssemblyList()->GetNeededIndustryInAssemblyList(i);
 					m_strAssemblyListEntry.Format("%i", RoundToBuild);
 				}
 				// Bei Upgrades
 				else if (nAssemblyListEntry < 0)
 				{
-					RoundToBuild = (int)ceil((float)(pDoc->GetSystem(p).GetAssemblyList()->GetNeededIndustryInAssemblyList(i))
-						/((float)pDoc->GetSystem(p).GetProduction()->GetIndustryProd()
-							* (100+pDoc->GetSystem(p).GetProduction()->GetUpdateBuildSpeed())/100));
+					RoundToBuild = (int)ceil((float)(pDoc->GetSystem(p.x, p.y).GetAssemblyList()->GetNeededIndustryInAssemblyList(i))
+						/((float)pDoc->GetSystem(p.x, p.y).GetProduction()->GetIndustryProd()
+							* (100+pDoc->GetSystem(p.x, p.y).GetProduction()->GetUpdateBuildSpeed())/100));
 					m_strAssemblyListEntry.Format("%i",RoundToBuild);
 				}
 				// Bei Gebäuden
 				else if (nAssemblyListEntry < 10000)
 				{
-					RoundToBuild = (int)ceil((float)(pDoc->GetSystem(p).GetAssemblyList()->GetNeededIndustryInAssemblyList(i))
-						/((float)pDoc->GetSystem(p).GetProduction()->GetIndustryProd()
-							* (100+pDoc->GetSystem(p).GetProduction()->GetBuildingBuildSpeed())/100));
+					RoundToBuild = (int)ceil((float)(pDoc->GetSystem(p.x, p.y).GetAssemblyList()->GetNeededIndustryInAssemblyList(i))
+						/((float)pDoc->GetSystem(p.x, p.y).GetProduction()->GetIndustryProd()
+							* (100+pDoc->GetSystem(p.x, p.y).GetProduction()->GetBuildingBuildSpeed())/100));
 					m_strAssemblyListEntry.Format("%i",RoundToBuild);
 				}
 				// Bei Schiffen Wertfeffiziens mitbeachten
-				else if (nAssemblyListEntry < 20000 && pDoc->GetSystem(p).GetProduction()->GetShipYardEfficiency() > 0)
+				else if (nAssemblyListEntry < 20000 && pDoc->GetSystem(p.x, p.y).GetProduction()->GetShipYardEfficiency() > 0)
 				{
-					RoundToBuild = (int)ceil((float)(pDoc->GetSystem(p).GetAssemblyList()->GetNeededIndustryInAssemblyList(i))
-						/((float)pDoc->GetSystem(p).GetProduction()->GetIndustryProd() * pDoc->GetSystem(p.x,p.y).GetProduction()->GetShipYardEfficiency() / 100
-							* (100+pDoc->GetSystem(p).GetProduction()->GetShipBuildSpeed())/100));
+					RoundToBuild = (int)ceil((float)(pDoc->GetSystem(p.x, p.y).GetAssemblyList()->GetNeededIndustryInAssemblyList(i))
+						/((float)pDoc->GetSystem(p.x, p.y).GetProduction()->GetIndustryProd() * pDoc->GetSystem(p.x,p.y).GetProduction()->GetShipYardEfficiency() / 100
+							* (100+pDoc->GetSystem(p.x, p.y).GetProduction()->GetShipBuildSpeed())/100));
 					m_strAssemblyListEntry.Format("%i",RoundToBuild);
 				}
 				// Bei Truppen die Kaserneneffiziens beachten
-				else if (pDoc->GetSystem(p).GetProduction()->GetBarrackEfficiency() > 0)
+				else if (pDoc->GetSystem(p.x, p.y).GetProduction()->GetBarrackEfficiency() > 0)
 				{
-					RoundToBuild = (int)ceil((float)(pDoc->GetSystem(p).GetAssemblyList()->GetNeededIndustryInAssemblyList(i))
-						/((float)pDoc->GetSystem(p).GetProduction()->GetIndustryProd() * pDoc->GetSystem(p.x,p.y).GetProduction()->GetBarrackEfficiency() / 100
-							* (100+pDoc->GetSystem(p).GetProduction()->GetTroopBuildSpeed())/100));
+					RoundToBuild = (int)ceil((float)(pDoc->GetSystem(p.x, p.y).GetAssemblyList()->GetNeededIndustryInAssemblyList(i))
+						/((float)pDoc->GetSystem(p.x, p.y).GetProduction()->GetIndustryProd() * pDoc->GetSystem(p.x,p.y).GetProduction()->GetBarrackEfficiency() / 100
+							* (100+pDoc->GetSystem(p.x, p.y).GetProduction()->GetTroopBuildSpeed())/100));
 					m_strAssemblyListEntry.Format("%i",RoundToBuild);
 				}
 				else
@@ -1905,7 +1905,7 @@ void CSystemMenuView::DrawBuildList(Graphics* g)
 	}
 
 	// Wenn nix in der Bauliste steht, automatisch Handelsgüter reinschreiben
-	if (pDoc->GetSystem(p).GetAssemblyList()->GetAssemblyListEntry(0) == 0)
+	if (pDoc->GetSystem(p.x, p.y).GetAssemblyList()->GetAssemblyListEntry(0) == 0)
 	{
 		usedBrush.SetColor(firstColor);
 		g->DrawString(CComBSTR(CResourceManager::GetString("COMMODITIES")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(760,410,285,25), &fontFormat, &usedBrush);
@@ -2059,34 +2059,34 @@ void CSystemMenuView::DrawSystemProduction(Graphics* g)
 		{
 			CPoint ko = pMajor->GetEmpire()->GetSystemList()->GetAt(j).ko;
 			// Wenn unser System blockiert wird so gelten die Ressourcenrouten nicht
-			if (pDoc->GetSystem(ko).GetBlockade() > NULL)
+			if (pDoc->GetSystem(ko.x, ko.y).GetBlockade() > NULL)
 				continue;
 			
-			for (int i = 0; i < pDoc->GetSystem(ko).GetResourceRoutes()->GetSize(); i++)
+			for (int i = 0; i < pDoc->GetSystem(ko.x, ko.y).GetResourceRoutes()->GetSize(); i++)
 			{
-				CPoint ptTarget = pDoc->GetSystem(ko).GetResourceRoutes()->GetAt(i).GetKO();
+				CPoint ptTarget = pDoc->GetSystem(ko.x, ko.y).GetResourceRoutes()->GetAt(i).GetKO();
 				// ist das Ziel das aktuelle System?
 				if (ptTarget == p)
 				{
 					// Wenn das Startsystem blockiert wird, so kann die Ressourcenroute ebenfalls nicht benutzt werden
-					if (pDoc->GetSystem(ptTarget).GetBlockade() > NULL)
+					if (pDoc->GetSystem(ptTarget.x, ptTarget.y).GetBlockade() > NULL)
 						continue;
 					
-					BYTE res = pDoc->GetSystem(ko).GetResourceRoutes()->GetAt(i).GetResource();
-					resFromRoutes[res] += pDoc->GetSystem(ko).GetResourceStore(res);
+					BYTE res = pDoc->GetSystem(ko.x, ko.y).GetResourceRoutes()->GetAt(i).GetResource();
+					resFromRoutes[res] += pDoc->GetSystem(ko.x, ko.y).GetResourceStore(res);
 				}
 			}
 			// gilt nicht bei blockierten Systemen
-			if (pDoc->GetSystem(p).GetBlockade() == NULL)
+			if (pDoc->GetSystem(p.x, p.y).GetBlockade() == NULL)
 				for (int res = TITAN; res <= DERITIUM; res++)
-					if (pDoc->GetSystem(ko).GetProduction()->GetResourceDistributor(res))
-						nResInDistSys[res] = pDoc->GetSystem(ko).GetResourceStore(res);
+					if (pDoc->GetSystem(ko.x, ko.y).GetProduction()->GetResourceDistributor(res))
+						nResInDistSys[res] = pDoc->GetSystem(ko.x, ko.y).GetResourceStore(res);
 		}
 
 	for (int res = TITAN; res <= DERITIUM; res++)
 	{
 		rect.Y += 25;
-		if (nResInDistSys[res] > resFromRoutes[res] + pDoc->GetSystem(p).GetResourceStore(res))
+		if (nResInDistSys[res] > resFromRoutes[res] + pDoc->GetSystem(p.x, p.y).GetResourceStore(res))
 			s.Format("[%i]", nResInDistSys[res]);
 		else if (resFromRoutes[res] > 0)
 			s.Format("(%i)",pDoc->GetSystem(p.x,p.y).GetResourceStore(res) + resFromRoutes[res]);
@@ -3008,8 +3008,8 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		CPoint p = pDoc->GetKO();
 		// Überprüfen ob wir auf den KaufenButton gedrückt haben und wir noch nix gekauft haben
 		// dies geht nicht bei NeverReady wie z.B. Kriegsrecht Aufträgen
-		int nFirstAssemblyListEntry = pDoc->GetSystem(p).GetAssemblyList()->GetAssemblyListEntry(0);
-		if (BuyButton.PtInRect(point) && pDoc->GetSystem(p).GetAssemblyList()->GetWasBuildingBought() == FALSE
+		int nFirstAssemblyListEntry = pDoc->GetSystem(p.x, p.y).GetAssemblyList()->GetAssemblyListEntry(0);
+		if (BuyButton.PtInRect(point) && pDoc->GetSystem(p.x, p.y).GetAssemblyList()->GetWasBuildingBought() == FALSE
 			&& nFirstAssemblyListEntry != 0 && m_bClickedOnDeleteButton == FALSE)
 		{
 			// Bei Gebäuden nur wenn es nicht ein Auftrag mit NeverReady (z.B. Kriegsrecht) ist)
@@ -3018,12 +3018,12 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 				(nFirstAssemblyListEntry > 0 && nFirstAssemblyListEntry < 10000 && pDoc->GetBuildingInfo(nFirstAssemblyListEntry).GetNeverReady() == FALSE)
 				||
 				// Bei Schiffen nur, wenn eine Werft noch aktiv ist
-				(nFirstAssemblyListEntry >= 10000 && nFirstAssemblyListEntry < 20000 && pDoc->GetSystem(p).GetProduction()->GetShipYard())
+				(nFirstAssemblyListEntry >= 10000 && nFirstAssemblyListEntry < 20000 && pDoc->GetSystem(p.x, p.y).GetProduction()->GetShipYard())
 				||
 				// Bei Truppen nur mit aktiver Kaseren
-				(nFirstAssemblyListEntry >= 20000 && pDoc->GetSystem(p).GetProduction()->GetBarrack()))
+				(nFirstAssemblyListEntry >= 20000 && pDoc->GetSystem(p.x, p.y).GetProduction()->GetBarrack()))
 			{
-				pDoc->GetSystem(p).GetAssemblyList()->CalculateBuildCosts(pMajor->GetTrade()->GetRessourcePriceAtRoundStart());
+				pDoc->GetSystem(p.x, p.y).GetAssemblyList()->CalculateBuildCosts(pMajor->GetTrade()->GetRessourcePriceAtRoundStart());
 				m_bClickedOnBuyButton = TRUE;
 				Invalidate();
 				return;
@@ -3033,20 +3033,20 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		// Überprüfen ob wir auf den Okaybutton gedrückt haben um das aktuelle Projekt zu kaufen
 		if (OkayButton.PtInRect(point) && m_bClickedOnBuyButton == TRUE)
 		{
-			int costs = pDoc->GetSystem(p).GetAssemblyList()->BuyBuilding(pMajor->GetEmpire()->GetCredits());
+			int costs = pDoc->GetSystem(p.x, p.y).GetAssemblyList()->BuyBuilding(pMajor->GetEmpire()->GetCredits());
 			if (costs != 0)
 			{
 				OkayButton.SetRect(0,0,0,0);
 				CancelButton.SetRect(0,0,0,0);
-				pDoc->GetSystem(p).GetAssemblyList()->SetWasBuildingBought(TRUE);
+				pDoc->GetSystem(p.x, p.y).GetAssemblyList()->SetWasBuildingBought(TRUE);
 				pMajor->GetEmpire()->SetCredits(-costs);
 				// Die Preise an der Börse anpassen, da wir ja bestimmte Mengen Ressourcen gekauft haben
 				// Achtung, hier flag == 1 setzen bei Aufruf der Funktion BuyRessource!!!!
-				pMajor->GetTrade()->BuyRessource(TITAN,pDoc->GetSystem(p).GetAssemblyList()->GetNeededTitanInAssemblyList(0),p,pMajor->GetEmpire()->GetCredits(),1);
-				pMajor->GetTrade()->BuyRessource(DEUTERIUM,pDoc->GetSystem(p).GetAssemblyList()->GetNeededDeuteriumInAssemblyList(0),p,pMajor->GetEmpire()->GetCredits(),1);
-				pMajor->GetTrade()->BuyRessource(DURANIUM,pDoc->GetSystem(p).GetAssemblyList()->GetNeededDuraniumInAssemblyList(0),p,pMajor->GetEmpire()->GetCredits(),1);
-				pMajor->GetTrade()->BuyRessource(CRYSTAL,pDoc->GetSystem(p).GetAssemblyList()->GetNeededCrystalInAssemblyList(0),p,pMajor->GetEmpire()->GetCredits(),1);
-				pMajor->GetTrade()->BuyRessource(IRIDIUM,pDoc->GetSystem(p).GetAssemblyList()->GetNeededIridiumInAssemblyList(0),p,pMajor->GetEmpire()->GetCredits(),1);
+				pMajor->GetTrade()->BuyRessource(TITAN,pDoc->GetSystem(p.x, p.y).GetAssemblyList()->GetNeededTitanInAssemblyList(0),p,pMajor->GetEmpire()->GetCredits(),1);
+				pMajor->GetTrade()->BuyRessource(DEUTERIUM,pDoc->GetSystem(p.x, p.y).GetAssemblyList()->GetNeededDeuteriumInAssemblyList(0),p,pMajor->GetEmpire()->GetCredits(),1);
+				pMajor->GetTrade()->BuyRessource(DURANIUM,pDoc->GetSystem(p.x, p.y).GetAssemblyList()->GetNeededDuraniumInAssemblyList(0),p,pMajor->GetEmpire()->GetCredits(),1);
+				pMajor->GetTrade()->BuyRessource(CRYSTAL,pDoc->GetSystem(p.x, p.y).GetAssemblyList()->GetNeededCrystalInAssemblyList(0),p,pMajor->GetEmpire()->GetCredits(),1);
+				pMajor->GetTrade()->BuyRessource(IRIDIUM,pDoc->GetSystem(p.x, p.y).GetAssemblyList()->GetNeededIridiumInAssemblyList(0),p,pMajor->GetEmpire()->GetCredits(),1);
 
 				pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
 				m_bClickedOnBuyButton = FALSE;
@@ -3137,7 +3137,7 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			}
 			// sonst den Baulistencheck nur in dem aktuellen System durchführen
 			else if (nFirstAssemblyListEntry < 0 || (RunningNumber < 10000 && pDoc->GetBuildingInfo(RunningNumber).GetMaxInSystem().Number > 0))
-				pDoc->GetSystem(p).AssemblyListCheck(&pDoc->BuildingInfo,&pDoc->m_GlobalBuildings);
+				pDoc->GetSystem(p.x, p.y).AssemblyListCheck(&pDoc->BuildingInfo,&pDoc->m_GlobalBuildings);
 
 			m_bClickedOnDeleteButton = FALSE;
 			OkayButton.SetRect(0,0,0,0);
@@ -3442,17 +3442,17 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		{
 			CPoint p = pDoc->GetKO();
 			// einzelne Buttons um womöglich eine Ressourcenroute zu kündigen
-			for (int i = 0; i < pDoc->GetSystem(p).GetResourceRoutes()->GetSize(); i++)
+			for (int i = 0; i < pDoc->GetSystem(p.x, p.y).GetResourceRoutes()->GetSize(); i++)
 			{
-				int j = i + pDoc->GetSystem(p).GetTradeRoutes()->GetSize();
+				int j = i + pDoc->GetSystem(p.x, p.y).GetTradeRoutes()->GetSize();
 				if (CRect(360,260+j*30,480,290+j*30).PtInRect(point))
 				{
 					// Eine Ressourcenroute kann nur gekündigt werden, wenn sie keine prozentualen Anteile am Bauauftrag
 					// besitzt, sprich, wenn sie keine Ressourcen zum Bauauftrag beigetragen hat.
-					CResourceRoute* pResRoute = &pDoc->GetSystem(p).GetResourceRoutes()->GetAt(i);
+					CResourceRoute* pResRoute = &pDoc->GetSystem(p.x, p.y).GetResourceRoutes()->GetAt(i);
 					if (pResRoute->GetPercent() == 0)
 					{
-						pDoc->GetSystem(p).GetResourceRoutes()->RemoveAt(i--);
+						pDoc->GetSystem(p.x, p.y).GetResourceRoutes()->RemoveAt(i--);
 						Invalidate(FALSE);
 					}
 					return;
@@ -3563,15 +3563,15 @@ void CSystemMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 				// Denn bei ganz flinken Fingern kann es passieren, dass dies in der Draw Methode nicht gemacht werden.
 				// also ein Gebäude oder Gebäudeupdate
 				if (nID < 10000)
-					pDoc->GetSystem(p).GetAssemblyList()->CalculateNeededRessources(&pDoc->GetBuildingInfo(RunningNumber),0,0, pDoc->GetSystem(p).GetAllBuildings(), nID, pMajor->GetEmpire()->GetResearch()->GetResearchInfo());
+					pDoc->GetSystem(p.x, p.y).GetAssemblyList()->CalculateNeededRessources(&pDoc->GetBuildingInfo(RunningNumber),0,0, pDoc->GetSystem(p.x, p.y).GetAllBuildings(), nID, pMajor->GetEmpire()->GetResearch()->GetResearchInfo());
 				// also ein Schiff
-				else if (nID < 20000 && pDoc->GetSystem(p).GetBuildableShips()->GetSize() > 0)
-					pDoc->GetSystem(p).GetAssemblyList()->CalculateNeededRessources(0, &pDoc->m_ShipInfoArray.GetAt(nID - 10000),0, pDoc->GetSystem(p).GetAllBuildings(), nID, pMajor->GetEmpire()->GetResearch()->GetResearchInfo());
+				else if (nID < 20000 && pDoc->GetSystem(p.x, p.y).GetBuildableShips()->GetSize() > 0)
+					pDoc->GetSystem(p.x, p.y).GetAssemblyList()->CalculateNeededRessources(0, &pDoc->m_ShipInfoArray.GetAt(nID - 10000),0, pDoc->GetSystem(p.x, p.y).GetAllBuildings(), nID, pMajor->GetEmpire()->GetResearch()->GetResearchInfo());
 				// also eine Truppe
-				else if (pDoc->GetSystem(p).GetBuildableTroops()->GetSize() > 0)
-					pDoc->GetSystem(p).GetAssemblyList()->CalculateNeededRessources(0,0,&pDoc->m_TroopInfo.GetAt(nID - 20000), pDoc->GetSystem(p).GetAllBuildings(), nID, pMajor->GetEmpire()->GetResearch()->GetResearchInfo());
+				else if (pDoc->GetSystem(p.x, p.y).GetBuildableTroops()->GetSize() > 0)
+					pDoc->GetSystem(p.x, p.y).GetAssemblyList()->CalculateNeededRessources(0,0,&pDoc->m_TroopInfo.GetAt(nID - 20000), pDoc->GetSystem(p.x, p.y).GetAllBuildings(), nID, pMajor->GetEmpire()->GetResearch()->GetResearchInfo());
 
-				if (pDoc->GetSystem(p).GetAssemblyList()->MakeEntry(nID, p, pDoc->m_Systems))
+				if (pDoc->GetSystem(p.x, p.y).GetAssemblyList()->MakeEntry(nID, p, pDoc->m_Systems))
 				{
 					// Baulistencheck machen, wenn wir kein Schiff reingesetzt haben.
 					// Den Check nur machen, wenn wir ein Update oder ein Gebäude welches eine Maxanzahl voraussetzt
@@ -3590,10 +3590,10 @@ void CSystemMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 					}
 					// sonst den Baulistencheck nur in dem aktuellen System durchführen
 					else if (nID < 0 || (RunningNumber < 10000 && pDoc->GetBuildingInfo(RunningNumber).GetMaxInSystem().Number > 0))
-						pDoc->GetSystem(p).AssemblyListCheck(&pDoc->BuildingInfo,&pDoc->m_GlobalBuildings);
+						pDoc->GetSystem(p.x, p.y).AssemblyListCheck(&pDoc->BuildingInfo,&pDoc->m_GlobalBuildings);
 
 					// Wenn wir den Baueintrag setzen konnten, also hier in der if-Bedingung sind, dann CalculateVariables() aufrufen
-					pDoc->GetSystem(p).CalculateVariables(&pDoc->BuildingInfo, pMajor->GetEmpire()->GetResearch()->GetResearchInfo(),pDoc->GetSector(p.x, p.y).GetPlanets(), pMajor, CTrade::GetMonopolOwner());
+					pDoc->GetSystem(p.x, p.y).CalculateVariables(&pDoc->BuildingInfo, pMajor->GetEmpire()->GetResearch()->GetResearchInfo(),pDoc->GetSector(p.x, p.y).GetPlanets(), pMajor, CTrade::GetMonopolOwner());
 					m_iClickedOn = i;
 
 					// Die Struktur Buildlist löschen
@@ -3612,7 +3612,7 @@ void CSystemMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 	// Baulisteneintrag wieder entfernen
 	for (int i = 0; i < ALE; i++)
 	{
-		int nAssemblyListEntry = pDoc->GetSystem(p).GetAssemblyList()->GetAssemblyListEntry(i);
+		int nAssemblyListEntry = pDoc->GetSystem(p.x, p.y).GetAssemblyList()->GetAssemblyListEntry(i);
 		if (nAssemblyListEntry == 0)
 			break;
 
@@ -3630,7 +3630,7 @@ void CSystemMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 				{
 					// bestanden Ressourcenrouten, so kann es sein, dass deren Startsysteme einen Anteil oder auch
 					// alles zurückbekommen
-					long getBackRes = pDoc->GetSystem(p).GetAssemblyList()->GetNeededResourceInAssemblyList(0, j);
+					long getBackRes = pDoc->GetSystem(p.x, p.y).GetAssemblyList()->GetNeededResourceInAssemblyList(0, j);
 					for (int k = 0; k < pMajor->GetEmpire()->GetSystemList()->GetSize(); k++)
 						if (pMajor->GetEmpire()->GetSystemList()->GetAt(k).ko != p)
 						{
@@ -3642,29 +3642,29 @@ void CSystemMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 										{
 											// sind wir soweit, dann geht ein prozentualer Anteil zurück in das
 											// Startsystem der Ressourcenroute
-											int back = pDoc->GetSystem(p).GetAssemblyList()->GetNeededResourceInAssemblyList(0, j)
-												* pDoc->GetSystem(ko).GetResourceRoutes()->GetAt(l).GetPercent() / 100;
+											int back = pDoc->GetSystem(p.x, p.y).GetAssemblyList()->GetNeededResourceInAssemblyList(0, j)
+												* pDoc->GetSystem(ko.x, ko.y).GetResourceRoutes()->GetAt(l).GetPercent() / 100;
 											ASSERT(back >= 0);
-											pDoc->GetSystem(ko).SetResourceStore(j, back);
+											pDoc->GetSystem(ko.x, ko.y).SetResourceStore(j, back);
 											getBackRes -= back;
 										}
 						}
-					pDoc->GetSystem(p).SetResourceStore(j, getBackRes);
+					pDoc->GetSystem(p.x, p.y).SetResourceStore(j, getBackRes);
 				}
 				// Wenn wir was gekauft hatten, dann bekommen wir die Kaufkosten zurück
-				if (pDoc->GetSystem(p).GetAssemblyList()->GetWasBuildingBought() == TRUE)
+				if (pDoc->GetSystem(p.x, p.y).GetAssemblyList()->GetWasBuildingBought() == TRUE)
 				{
-					pMajor->GetEmpire()->SetCredits(pDoc->GetSystem(p).GetAssemblyList()->GetBuildCosts());
+					pMajor->GetEmpire()->SetCredits(pDoc->GetSystem(p.x, p.y).GetAssemblyList()->GetBuildCosts());
 					// Die Preise an der Börse anpassen, da wir ja bestimmte Mengen Ressourcen gekauft haben
 					// Achtung, hier flag == 1 setzen bei Aufruf der Funktion BuyRessource!!!!
 					for (int j = TITAN; j <= IRIDIUM; j++)
-						pMajor->GetTrade()->SellRessource(j, pDoc->GetSystem(p).GetAssemblyList()->GetNeededResourceInAssemblyList(0, j), p, 1);
-					pDoc->GetSystem(p).GetAssemblyList()->SetWasBuildingBought(FALSE);
+						pMajor->GetTrade()->SellRessource(j, pDoc->GetSystem(p.x, p.y).GetAssemblyList()->GetNeededResourceInAssemblyList(0, j), p, 1);
+					pDoc->GetSystem(p.x, p.y).GetAssemblyList()->SetWasBuildingBought(FALSE);
 					pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
 				}
-				pDoc->GetSystem(p).GetAssemblyList()->ClearAssemblyList(p, pDoc->m_Systems);
+				pDoc->GetSystem(p.x, p.y).GetAssemblyList()->ClearAssemblyList(p, pDoc->m_Systems);
 				// Nach ClearAssemblyList müssen wir die Funktion CalculateVariables() aufrufen
-				pDoc->GetSystem(p).CalculateVariables(&pDoc->BuildingInfo, pMajor->GetEmpire()->GetResearch()->GetResearchInfo(),pDoc->GetSector(p.x, p.y).GetPlanets(), pMajor, CTrade::GetMonopolOwner());
+				pDoc->GetSystem(p.x, p.y).CalculateVariables(&pDoc->BuildingInfo, pMajor->GetEmpire()->GetResearch()->GetResearchInfo(),pDoc->GetSector(p.x, p.y).GetPlanets(), pMajor, CTrade::GetMonopolOwner());
 				// Baulistencheck machen, wenn wir kein Schiff reingesetzt haben.
 				// Den Check nur machen, wenn wir ein Update oder ein Gebäude welches eine Maxanzahl voraussetzt
 				// hinzufügen wollen
@@ -3682,13 +3682,13 @@ void CSystemMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 				}
 				// sonst den Baulistencheck nur in dem aktuellen System durchführen
 				else if (nAssemblyListEntry < 0 || (RunningNumber < 10000 && pDoc->GetBuildingInfo(RunningNumber).GetMaxInSystem().Number > 0))
-					pDoc->GetSystem(p).AssemblyListCheck(&pDoc->BuildingInfo,&pDoc->m_GlobalBuildings);
+					pDoc->GetSystem(p.x, p.y).AssemblyListCheck(&pDoc->BuildingInfo,&pDoc->m_GlobalBuildings);
 			}
 			// Die restlichen Einträge
 			// seperat, weil wir die Bauliste anders löschen müssen und auch keine RES zurückbekommen müssen
 			else
 			{
-				pDoc->GetSystem(p).GetAssemblyList()->AdjustAssemblyList(i);
+				pDoc->GetSystem(p.x, p.y).GetAssemblyList()->AdjustAssemblyList(i);
 				// Baulistencheck machen, wenn wir kein Schiff reingesetzt haben.
 				// Den Check nur machen, wenn wir ein Update oder ein Gebäude welches eine Maxanzahl voraussetzt
 				// hinzufügen wollen
@@ -3845,15 +3845,15 @@ void CSystemMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 			// Denn bei ganz flinken Fingern kann es passieren, dass dies in der Draw Methode nicht gemacht werden.
 			// also ein Gebäude oder Gebäudeupdate
 			if (nID < 10000)
-				pDoc->GetSystem(p).GetAssemblyList()->CalculateNeededRessources(&pDoc->GetBuildingInfo(RunningNumber),0,0, pDoc->GetSystem(p).GetAllBuildings(), nID, pMajor->GetEmpire()->GetResearch()->GetResearchInfo());
+				pDoc->GetSystem(p.x, p.y).GetAssemblyList()->CalculateNeededRessources(&pDoc->GetBuildingInfo(RunningNumber),0,0, pDoc->GetSystem(p.x, p.y).GetAllBuildings(), nID, pMajor->GetEmpire()->GetResearch()->GetResearchInfo());
 			// also ein Schiff
-			else if (nID < 20000 && pDoc->GetSystem(p).GetBuildableShips()->GetSize() > 0)
-				pDoc->GetSystem(p).GetAssemblyList()->CalculateNeededRessources(0, &pDoc->m_ShipInfoArray.GetAt(nID - 10000),0, pDoc->GetSystem(p).GetAllBuildings(), nID, pMajor->GetEmpire()->GetResearch()->GetResearchInfo());
+			else if (nID < 20000 && pDoc->GetSystem(p.x, p.y).GetBuildableShips()->GetSize() > 0)
+				pDoc->GetSystem(p.x, p.y).GetAssemblyList()->CalculateNeededRessources(0, &pDoc->m_ShipInfoArray.GetAt(nID - 10000),0, pDoc->GetSystem(p.x, p.y).GetAllBuildings(), nID, pMajor->GetEmpire()->GetResearch()->GetResearchInfo());
 			// also eine Truppe
-			else if (pDoc->GetSystem(p).GetBuildableTroops()->GetSize() > 0)
-				pDoc->GetSystem(p).GetAssemblyList()->CalculateNeededRessources(0,0,&pDoc->m_TroopInfo.GetAt(nID - 20000), pDoc->GetSystem(p).GetAllBuildings(), nID, pMajor->GetEmpire()->GetResearch()->GetResearchInfo());
+			else if (pDoc->GetSystem(p.x, p.y).GetBuildableTroops()->GetSize() > 0)
+				pDoc->GetSystem(p.x, p.y).GetAssemblyList()->CalculateNeededRessources(0,0,&pDoc->m_TroopInfo.GetAt(nID - 20000), pDoc->GetSystem(p.x, p.y).GetAllBuildings(), nID, pMajor->GetEmpire()->GetResearch()->GetResearchInfo());
 
-			if (pDoc->GetSystem(p).GetAssemblyList()->MakeEntry(nID, p, pDoc->m_Systems))
+			if (pDoc->GetSystem(p.x, p.y).GetAssemblyList()->MakeEntry(nID, p, pDoc->m_Systems))
 			{
 				// Baulistencheck machen, wenn wir kein Schiff reingesetzt haben.
 				// Den Check nur machen, wenn wir ein Update oder ein Gebäude welches eine Maxanzahl voraussetzt
@@ -3872,10 +3872,10 @@ void CSystemMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 				}
 				// sonst den Baulistencheck nur in dem aktuellen System durchführen
 				else if (nID < 0 || (RunningNumber < 10000 && pDoc->GetBuildingInfo(RunningNumber).GetMaxInSystem().Number > 0))
-					pDoc->GetSystem(p).AssemblyListCheck(&pDoc->BuildingInfo,&pDoc->m_GlobalBuildings);
+					pDoc->GetSystem(p.x, p.y).AssemblyListCheck(&pDoc->BuildingInfo,&pDoc->m_GlobalBuildings);
 
 				// Wenn wir den Baueintrag setzen konnten, also hier in der if-Bedingung sind, dann CalculateVariables() aufrufen
-				pDoc->GetSystem(p).CalculateVariables(&pDoc->BuildingInfo, pMajor->GetEmpire()->GetResearch()->GetResearchInfo(),pDoc->GetSector(p.x, p.y).GetPlanets(), pMajor, CTrade::GetMonopolOwner());
+				pDoc->GetSystem(p.x, p.y).CalculateVariables(&pDoc->BuildingInfo, pMajor->GetEmpire()->GetResearch()->GetResearchInfo(),pDoc->GetSector(p.x, p.y).GetPlanets(), pMajor, CTrade::GetMonopolOwner());
 
 				// Die Struktur BuildList löschen, alle Werte auf 0
 				m_vBuildlist.RemoveAll();

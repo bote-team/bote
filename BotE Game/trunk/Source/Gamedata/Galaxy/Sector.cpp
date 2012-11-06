@@ -799,7 +799,7 @@ void CSector::DrawSectorsName(CDC *pDC, CBotf2Doc* pDoc, CMajor* pPlayer)
 	{
 		COLORREF clrTextColor = CFontLoader::GetFontColor(pPlayer, 0);
 		pDC->SetTextColor(clrTextColor);
-		CMajor* pOwner = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(pDoc->GetSystem(m_KO).GetOwnerOfSystem()));
+		CMajor* pOwner = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(pDoc->GetSystem(m_KO.x, m_KO.y).GetOwnerOfSystem()));
 		if (pOwner)
 		{
 			if (pPlayer->IsRaceContacted(pOwner->GetRaceID()) == true || pPlayer->GetRaceID() == pOwner->GetRaceID())

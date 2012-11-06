@@ -100,7 +100,7 @@ void CDiplomacyMenuView::OnNewRound()
 	CString race = pPlayer->GetRaceID();
 
 	CPoint ko = pDoc->GetRaceKO(race);
-	if (ko != CPoint(-1,-1) && pDoc->GetSystem(ko).GetOwnerOfSystem() == race)
+	if (ko != CPoint(-1,-1) && pDoc->GetSystem(ko.x, ko.y).GetOwnerOfSystem() == race)
 		m_ptResourceFromSystem = pDoc->GetRaceKO(race);
 	// Systeme nochmal durchgehen um ein System zu finden, aus dem wir Rohstoffe verschenken könnten
 	else if (pPlayer->GetEmpire()->GetSystemList()->GetSize() > 0)
@@ -943,7 +943,7 @@ void CDiplomacyMenuView::DrawRaceDiplomacyMenue(Graphics* g)
 
 								s.Format("%s",pDoc->GetSector(m_ptResourceFromSystem.x, m_ptResourceFromSystem.y).GetName());
 								// Wenn hier noch kein System eingestellt ist, dann müssen wir uns eins suchen
-								if (s.IsEmpty() || pDoc->GetSystem(m_ptResourceFromSystem).GetOwnerOfSystem() != pPlayer->GetRaceID())
+								if (s.IsEmpty() || pDoc->GetSystem(m_ptResourceFromSystem.x, m_ptResourceFromSystem.y).GetOwnerOfSystem() != pPlayer->GetRaceID())
 								{
 									for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
 										for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
@@ -958,7 +958,7 @@ void CDiplomacyMenuView::DrawRaceDiplomacyMenue(Graphics* g)
 								// Überprüfen ob wir auf dem gewählten System die Menge der geforderten
 								// Ressource im Lager haben und ob wir auch die geforderten Credits bezahlen können
 								for (int r = TITAN; r <= DERITIUM; r++)
-									if (resource[r] > 0 && pDoc->GetSystem(m_ptResourceFromSystem).GetResourceStore(r) < resource[r] && pDoc->GetSystem(m_ptResourceFromSystem).GetOwnerOfSystem() == pPlayer->GetRaceID())
+									if (resource[r] > 0 && pDoc->GetSystem(m_ptResourceFromSystem.x, m_ptResourceFromSystem.y).GetResourceStore(r) < resource[r] && pDoc->GetSystem(m_ptResourceFromSystem.x, m_ptResourceFromSystem.y).GetOwnerOfSystem() == pPlayer->GetRaceID())
 										m_bShowSendButton = false;
 								fontFormat.SetAlignment(StringAlignmentCenter);
 								g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(500,97+count*25,120,30), &fontFormat, &btnBrush);
@@ -1274,9 +1274,9 @@ void CDiplomacyMenuView::DrawDiplomacyOfferMenue(Graphics* g, const CString& sWh
 				// werden die Ressourcen runtergerechnet
 				if (m_OutgoingInfo.m_nType != DIPLOMATIC_AGREEMENT::REQUEST && m_bShowSendButton && m_OutgoingInfo.m_nResources[iWhichResource] > 0 && m_OutgoingInfo.m_ptKO != CPoint(-1,-1))
 				{
-					if (m_OutgoingInfo.m_nResources[iWhichResource] > pDoc->GetSystem(m_OutgoingInfo.m_ptKO).GetResourceStore(iWhichResource))
+					if (m_OutgoingInfo.m_nResources[iWhichResource] > pDoc->GetSystem(m_OutgoingInfo.m_ptKO.x, m_OutgoingInfo.m_ptKO.y).GetResourceStore(iWhichResource))
 					{
-						m_OutgoingInfo.m_nResources[iWhichResource] = pDoc->GetSystem(m_OutgoingInfo.m_ptKO).GetResourceStore(iWhichResource) / nUnit;
+						m_OutgoingInfo.m_nResources[iWhichResource] = pDoc->GetSystem(m_OutgoingInfo.m_ptKO.x, m_OutgoingInfo.m_ptKO.y).GetResourceStore(iWhichResource) / nUnit;
 						m_OutgoingInfo.m_nResources[iWhichResource] *= nUnit;
 					}
 				}
@@ -1303,7 +1303,7 @@ void CDiplomacyMenuView::DrawDiplomacyOfferMenue(Graphics* g, const CString& sWh
 					if (ko == CPoint(-1,-1))
 						return;
 
-					UINT nStorage = pDoc->GetSystem(ko).GetResourceStore(iWhichResource);
+					UINT nStorage = pDoc->GetSystem(ko.x, ko.y).GetResourceStore(iWhichResource);
 
 					if (nStorage <= 1 * nUnit)
 						s = CResourceManager::GetString("SCARCELY_EXISTING");
@@ -1571,7 +1571,7 @@ void CDiplomacyMenuView::TakeOrGetbackResLat(bool bTake)
 					AfxMessageBox("Error in CDiplomacyView::TakeOrGetbackResLat(): KO has no value!");
 				else
 				{
-					pDoc->GetSystem(ko).SetResourceStore(res, -m_OutgoingInfo.m_nResources[res]);
+					pDoc->GetSystem(ko.x, ko.y).SetResourceStore(res, -m_OutgoingInfo.m_nResources[res]);
 					m_OutgoingInfo.m_nResources[res] = 0;
 				}
 			}
@@ -1592,7 +1592,7 @@ void CDiplomacyMenuView::TakeOrGetbackResLat(bool bTake)
 					AfxMessageBox("Error in CDiplomacyView::TakeOrGetbackResLat(): KO has no value!");
 				else
 				{
-					pDoc->GetSystem(ko).SetResourceStore(res, m_OutgoingInfo.m_nResources[res]);
+					pDoc->GetSystem(ko.x, ko.y).SetResourceStore(res, m_OutgoingInfo.m_nResources[res]);
 					m_OutgoingInfo.m_nResources[res] = 0;
 				}
 			}
@@ -1943,7 +1943,7 @@ void CDiplomacyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 						{
 							ASSERT(m_byWhichResourceIsChosen >= TITAN && m_byWhichResourceIsChosen <= DERITIUM);
 
-							UINT nStorage = pDoc->GetSystem(m_OutgoingInfo.m_ptKO).GetResourceStore(m_byWhichResourceIsChosen);
+							UINT nStorage = pDoc->GetSystem(m_OutgoingInfo.m_ptKO.x, m_OutgoingInfo.m_ptKO.y).GetResourceStore(m_byWhichResourceIsChosen);
 							// bei normalen Ressourcen wird in 1000er Schritten gegeben, bei Deritium in 5er
 							int dUnit = m_byWhichResourceIsChosen == DERITIUM ? 5 : 1000;
 							m_OutgoingInfo.m_nResources[m_byWhichResourceIsChosen] = t * dUnit;

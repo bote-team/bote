@@ -446,21 +446,21 @@ void CEmpireMenuView::DrawEmpireSystemMenue(Graphics* g)
 					fontBrush.SetColor(normalColor);
 
 				// Nahrungslager anzeigen
-				s.Format("%d",pDoc->GetSystem(KO).GetFoodStore());
+				s.Format("%d",pDoc->GetSystem(KO.x, KO.y).GetFoodStore());
 				g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(480,140+j*25,100,25), &fontFormat, &fontBrush);
 
 				// Industrieproduktion anzeigen
-				int ip = pDoc->GetSystem(KO).GetProduction()->GetIndustryProd();
+				int ip = pDoc->GetSystem(KO.x, KO.y).GetProduction()->GetIndustryProd();
 				s.Format("%d",ip);
 				g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(580,140+j*25,100,25), &fontFormat, &fontBrush);
 
 				//Creditproduktionanzeigen
-				int cp = pDoc->GetSystem(KO).GetProduction()->GetCreditsProd();
+				int cp = pDoc->GetSystem(KO.x, KO.y).GetProduction()->GetCreditsProd();
 				s.Format("%d",cp);
 				g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(680,140+j*25,100,25), &fontFormat, &fontBrush);
 
 				// Bauauftrag anzeigen inkl. Anzeige der noch nötigen Runden bis Bauauftrag fertig ist
-				short id = pDoc->GetSystem(KO).GetAssemblyList()->GetAssemblyListEntry(0);
+				short id = pDoc->GetSystem(KO.x, KO.y).GetAssemblyList()->GetAssemblyListEntry(0);
 				int RoundToBuild = 0;
 				if (id == 0)
 					s = "";
@@ -468,8 +468,8 @@ void CEmpireMenuView::DrawEmpireSystemMenue(Graphics* g)
 				{
 					if (ip > 0 && !pDoc->GetBuildingInfo(id).GetNeverReady())
 					{
-						RoundToBuild = (int)ceil((float)(pDoc->GetSystem(KO).GetAssemblyList()->GetNeededIndustryInAssemblyList(0))/((float)ip
-							* (100+pDoc->GetSystem(KO).GetProduction()->GetBuildingBuildSpeed())/100));
+						RoundToBuild = (int)ceil((float)(pDoc->GetSystem(KO.x, KO.y).GetAssemblyList()->GetNeededIndustryInAssemblyList(0))/((float)ip
+							* (100+pDoc->GetSystem(KO.x, KO.y).GetProduction()->GetBuildingBuildSpeed())/100));
 						if (RoundToBuild > 1)
 							s.Format("%s (%d %s)",pDoc->GetBuildingName(id),RoundToBuild,CResourceManager::GetString("ROUNDS"));
 						else
@@ -480,11 +480,11 @@ void CEmpireMenuView::DrawEmpireSystemMenue(Graphics* g)
 				}
 				else if (id >= 10000 && id < 20000)
 				{
-					if (pDoc->GetSystem(KO).GetProduction()->GetShipYardEfficiency() > 0 && ip > 0)
+					if (pDoc->GetSystem(KO.x, KO.y).GetProduction()->GetShipYardEfficiency() > 0 && ip > 0)
 					{
-						RoundToBuild = (int)ceil((float)(pDoc->GetSystem(KO).GetAssemblyList()->GetNeededIndustryInAssemblyList(0))
-								/((float)ip * pDoc->GetSystem(KO).GetProduction()->GetShipYardEfficiency() / 100
-									* (100+pDoc->GetSystem(KO).GetProduction()->GetShipBuildSpeed())/100));
+						RoundToBuild = (int)ceil((float)(pDoc->GetSystem(KO.x, KO.y).GetAssemblyList()->GetNeededIndustryInAssemblyList(0))
+								/((float)ip * pDoc->GetSystem(KO.x, KO.y).GetProduction()->GetShipYardEfficiency() / 100
+									* (100+pDoc->GetSystem(KO.x, KO.y).GetProduction()->GetShipBuildSpeed())/100));
 						if (RoundToBuild > 1)
 							s.Format("%s-%s (%d %s)",pDoc->m_ShipInfoArray.GetAt(id-10000).GetShipClass(),CResourceManager::GetString("CLASS"),
 							RoundToBuild,CResourceManager::GetString("ROUNDS"));
@@ -498,11 +498,11 @@ void CEmpireMenuView::DrawEmpireSystemMenue(Graphics* g)
 				}
 				else if (id >= 20000)
 				{
-					if (pDoc->GetSystem(KO).GetProduction()->GetBarrackEfficiency() > 0 && ip > 0)
+					if (pDoc->GetSystem(KO.x, KO.y).GetProduction()->GetBarrackEfficiency() > 0 && ip > 0)
 					{
-						RoundToBuild = (int)ceil((float)(pDoc->GetSystem(KO).GetAssemblyList()->GetNeededIndustryInAssemblyList(0))
-								/((float)ip * pDoc->GetSystem(KO).GetProduction()->GetBarrackEfficiency() / 100
-									* (100+pDoc->GetSystem(KO).GetProduction()->GetTroopBuildSpeed())/100));
+						RoundToBuild = (int)ceil((float)(pDoc->GetSystem(KO.x, KO.y).GetAssemblyList()->GetNeededIndustryInAssemblyList(0))
+								/((float)ip * pDoc->GetSystem(KO.x, KO.y).GetProduction()->GetBarrackEfficiency() / 100
+									* (100+pDoc->GetSystem(KO.x, KO.y).GetProduction()->GetTroopBuildSpeed())/100));
 						if (RoundToBuild > 1)
 							s.Format("%s (%d %s)",pDoc->m_TroopInfo.GetAt(id-20000).GetName(),RoundToBuild,CResourceManager::GetString("ROUNDS"));
 						else
@@ -515,8 +515,8 @@ void CEmpireMenuView::DrawEmpireSystemMenue(Graphics* g)
 				{
 					if (ip > 0 && !pDoc->GetBuildingInfo(-id).GetNeverReady())
 					{
-						RoundToBuild = (int)ceil((float)(pDoc->GetSystem(KO).GetAssemblyList()->GetNeededIndustryInAssemblyList(0))/((float)ip
-							* (100+pDoc->GetSystem(KO).GetProduction()->GetUpdateBuildSpeed())/100));
+						RoundToBuild = (int)ceil((float)(pDoc->GetSystem(KO.x, KO.y).GetAssemblyList()->GetNeededIndustryInAssemblyList(0))/((float)ip
+							* (100+pDoc->GetSystem(KO.x, KO.y).GetProduction()->GetUpdateBuildSpeed())/100));
 						if (RoundToBuild > 1)
 							s.Format("Upgrade %s (%d %s)",pDoc->GetBuildingName(-id),RoundToBuild,CResourceManager::GetString("ROUNDS"));
 						else
@@ -527,7 +527,7 @@ void CEmpireMenuView::DrawEmpireSystemMenue(Graphics* g)
 				}
 				if (id > 0 && id < 10000 && pDoc->GetBuildingInfo(id).GetNeverReady())
 					s.Format("%s (%s)",pDoc->GetBuildingName(id),CResourceManager::GetString("RUNS"));
-				if (pDoc->GetSystem(KO).GetAutoBuild())
+				if (pDoc->GetSystem(KO.x, KO.y).GetAutoBuild())
 				{
 					s.Insert(0, CResourceManager::GetString("AUTOBUILD") + ": ");
 					fontBrush.SetColor(Color::Red);
@@ -544,9 +544,9 @@ void CEmpireMenuView::DrawEmpireSystemMenue(Graphics* g)
 				// prüfen ob irgendein Verteiler steht
 				bool bDist[DERITIUM + 1] = {false};
 				int nLastID = -1;
-				for (int l = 0; l < pDoc->GetSystem(KO).GetAllBuildings()->GetSize(); l++)
+				for (int l = 0; l < pDoc->GetSystem(KO.x, KO.y).GetAllBuildings()->GetSize(); l++)
 				{
-					int nID = pDoc->GetSystem(KO).GetAllBuildings()->GetAt(l).GetRunningNumber();
+					int nID = pDoc->GetSystem(KO.x, KO.y).GetAllBuildings()->GetAt(l).GetRunningNumber();
 					if (nID != nLastID)
 						nLastID = nID;
 					else
@@ -578,7 +578,7 @@ void CEmpireMenuView::DrawEmpireSystemMenue(Graphics* g)
 							g->DrawImage(graphic, 245+k*120, 145+j*25, 20 , 16);
 					}
 
-					s.Format("%d", pDoc->GetSystem(KO).GetResourceStore(k));
+					s.Format("%d", pDoc->GetSystem(KO.x, KO.y).GetResourceStore(k));
 					g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(270+k*120,140+j*25,120,25), &fontFormat, &fontBrush);
 					fontFormat.SetTrimming(StringTrimmingNone);
 				}
@@ -592,44 +592,44 @@ void CEmpireMenuView::DrawEmpireSystemMenue(Graphics* g)
 				int nShipDefenceOnlineCount		= 0;
 				int nGroundDefenceCount			= 0;
 				int nGroundDefenceOnlineCount	= 0;
-				for (int l = 0; l < pDoc->GetSystem(KO).GetAllBuildings()->GetSize(); l++)
+				for (int l = 0; l < pDoc->GetSystem(KO.x, KO.y).GetAllBuildings()->GetSize(); l++)
 				{
-					int nID = pDoc->GetSystem(KO).GetAllBuildings()->GetAt(l).GetRunningNumber();
+					int nID = pDoc->GetSystem(KO.x, KO.y).GetAllBuildings()->GetAt(l).GetRunningNumber();
 					CBuildingInfo* pBuildingInfo = &pDoc->GetBuildingInfo(nID);
 					if (pBuildingInfo->GetShieldPower() > 0 || pBuildingInfo->GetShieldPowerBoni())
 					{
 						nShieldDefenceCount++;
-						if (pDoc->GetSystem(KO).GetAllBuildings()->GetAt(l).GetIsBuildingOnline() || pBuildingInfo->GetNeededEnergy() == 0 || pBuildingInfo->GetAllwaysOnline())
+						if (pDoc->GetSystem(KO.x, KO.y).GetAllBuildings()->GetAt(l).GetIsBuildingOnline() || pBuildingInfo->GetNeededEnergy() == 0 || pBuildingInfo->GetAllwaysOnline())
 							nShieldDefenceOnlineCount++;
 					}
 					if (pBuildingInfo->GetShipDefend() > 0 || pBuildingInfo->GetShipDefendBoni() > 0)
 					{
 						nShipDefenceCount++;
-						if (pDoc->GetSystem(KO).GetAllBuildings()->GetAt(l).GetIsBuildingOnline() || pBuildingInfo->GetNeededEnergy() == 0 || pBuildingInfo->GetAllwaysOnline())
+						if (pDoc->GetSystem(KO.x, KO.y).GetAllBuildings()->GetAt(l).GetIsBuildingOnline() || pBuildingInfo->GetNeededEnergy() == 0 || pBuildingInfo->GetAllwaysOnline())
 							nShipDefenceOnlineCount++;
 					}
 					if (pBuildingInfo->GetGroundDefend() > 0 || pBuildingInfo->GetGroundDefendBoni() > 0)
 					{
 						nGroundDefenceCount++;
-						if (pDoc->GetSystem(KO).GetAllBuildings()->GetAt(l).GetIsBuildingOnline() || pBuildingInfo->GetNeededEnergy() == 0 || pBuildingInfo->GetAllwaysOnline())
+						if (pDoc->GetSystem(KO.x, KO.y).GetAllBuildings()->GetAt(l).GetIsBuildingOnline() || pBuildingInfo->GetNeededEnergy() == 0 || pBuildingInfo->GetAllwaysOnline())
 							nGroundDefenceOnlineCount++;
 					}
 				}
 
 				// Anzahl Truppen anzeigen
-				s.Format("%d", pDoc->GetSystem(KO).GetTroops()->GetSize());
+				s.Format("%d", pDoc->GetSystem(KO.x, KO.y).GetTroops()->GetSize());
 				g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(270,140+j*25,100,25), &fontFormat, &fontBrush);
 				// Schildstärke anzeigen
-				s.Format("%d (%d/%d)", pDoc->GetSystem(KO).GetProduction()->GetShieldPower(), nShieldDefenceOnlineCount, nShieldDefenceCount);
+				s.Format("%d (%d/%d)", pDoc->GetSystem(KO.x, KO.y).GetProduction()->GetShieldPower(), nShieldDefenceOnlineCount, nShieldDefenceCount);
 				g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(370,140+j*25,150,25), &fontFormat, &fontBrush);
 				// Schiffsabwehr anzeigen
-				s.Format("%d (%d/%d)", pDoc->GetSystem(KO).GetProduction()->GetShipDefend(), nShipDefenceOnlineCount, nShipDefenceCount);
+				s.Format("%d (%d/%d)", pDoc->GetSystem(KO.x, KO.y).GetProduction()->GetShipDefend(), nShipDefenceOnlineCount, nShipDefenceCount);
 				g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(520,140+j*25,150,25), &fontFormat, &fontBrush);
 				// Bodenabwehr anzeigen
-				s.Format("%d (%d/%d)", pDoc->GetSystem(KO).GetProduction()->GetGroundDefend(), nGroundDefenceOnlineCount, nGroundDefenceCount);
+				s.Format("%d (%d/%d)", pDoc->GetSystem(KO.x, KO.y).GetProduction()->GetGroundDefend(), nGroundDefenceOnlineCount, nGroundDefenceCount);
 				g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(670,140+j*25,150,25), &fontFormat, &fontBrush);
 				// Scanstärke anzeigen
-				s.Format("%d", pDoc->GetSystem(KO).GetProduction()->GetScanPower());
+				s.Format("%d", pDoc->GetSystem(KO.x, KO.y).GetProduction()->GetScanPower());
 				g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(820,140+j*25,150,25), &fontFormat, &fontBrush);
 			}
 			j++;
