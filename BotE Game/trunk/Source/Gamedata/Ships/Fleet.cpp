@@ -30,6 +30,9 @@ CFleet::~CFleet()
 //////////////////////////////////////////////////////////////////////
 CFleet::CFleet(const CFleet & rhs)
 {
+	if (this == &rhs)
+		return;
+
 	m_vShips.RemoveAll();
 	for (int i = 0; i < rhs.m_vShips.GetSize(); i++)
 		m_vShips.Add(rhs.m_vShips.GetAt(i));
