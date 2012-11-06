@@ -134,6 +134,20 @@ void CCombatMenuView::OnDraw(CDC* dc)
 	if (!pMajor)
 		return;
 
+	// TEST-OPTION (only for Debug)
+	// automatisch bis zu einer gewissen Runde durchzuklicken falls per Startparamter aktiviert
+	if (const CCommandLineParameters* const clp = dynamic_cast<CBotf2App*>(AfxGetApp())->GetCommandLineParameters())
+	{
+		int nAutoTurns = clp->GetAutoTurns();
+		if (pDoc->GetCurrentRound() < nAutoTurns)
+		{
+			pDoc->m_bRoundEndPressed = true;
+			// Befehl festlegen
+			pDoc->m_nCombatOrder = COMBAT_ORDER::AUTOCOMBAT;			
+			client.EndOfRound(pDoc);
+		}
+	}
+	
 	// TODO: add draw code here
 	CMyMemDC pDC(dc);
 	CRect client;
