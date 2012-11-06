@@ -2208,7 +2208,7 @@ void CBotf2Doc::BuildShip(int nID, const CPoint& KO, const CString& sOwnerID)
 	m_ShipArray.Add((CShip)m_ShipInfoArray.GetAt(nID));
 	int n = m_ShipArray.GetUpperBound();
 	m_ShipArray[n].SetOwnerOfShip(sOwner);
-	m_ShipArray[n].SetKO(KO);
+	m_ShipArray[n].SetKO(KO.x, KO.y);
 
 	// Schiffsnamen vergeben
 	m_ShipArray.ElementAt(n).SetShipName(m_GenShipName.GenerateShipName(sOwner, m_ShipArray.ElementAt(n).IsStation()));
@@ -4849,7 +4849,7 @@ void CBotf2Doc::CalcShipMovement()
 			// Ziel zum Anfliegen vorhanden
 			if (nextKO != Sector(-1,-1))
 			{
-				pShip->SetKO(CPoint((int)nextKO.x,(int)nextKO.y));
+				pShip->SetKO(nextKO.x, nextKO.y);
 				// Die Anzahl speed ersten Felder in Pfad des Schiffes l?schen
 				if (nextKO == targetKO)
 				{

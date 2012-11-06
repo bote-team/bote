@@ -1459,7 +1459,7 @@ BOOLEAN CIntelCalc::ExecuteMilitarySabotage(CMajor* pRace, CMajor* pEnemyRace, C
 								minDist = (short)min(abs(oldKO.x - x), abs(oldKO.y - y));
 								newKO = CPoint(x,y);
 							}
-				ship->SetKO(newKO);
+				ship->SetKO(newKO.x, newKO.y);
 				ship->SetTargetKO(CPoint(-1, -1), 0);
 				// wurde dieses Schiff jedoch schonmal gestohlen, dann ist es in der Missed Shiphistory. Ist dies der Fall kann das Schiff
 				// wieder als aktives Schiff betrachtet werden.

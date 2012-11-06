@@ -127,7 +127,7 @@ public:
 
 	// zum Schreiben der Membervariablen
 	void SetID(USHORT ID) {m_iID = ID+10000;}
-	void SetKO(const CPoint& KO) {m_KO = KO;}
+	void SetKO(int x, int y) {m_KO = CPoint(x, y);}
 	void SetTargetKO(const CPoint& TargetKO, int Index, const bool simple_setter = false);
 	void SetOwnerOfShip(const CString& sOwnerOfShip) {m_sOwnerOfShip = sOwnerOfShip;}
 	void SetMaintenanceCosts(USHORT MaintenanceCosts) {m_iMaintenanceCosts = MaintenanceCosts;}

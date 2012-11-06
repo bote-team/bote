@@ -1891,7 +1891,7 @@ void CEmpireMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 				CGalaxyMenuView* pView = dynamic_cast<CGalaxyMenuView*>(pDoc->GetMainFrame()->GetView(RUNTIME_CLASS(CGalaxyMenuView)));
 				if (pView && pt != CPoint(-1,-1))
 				{
-					pDoc->SetKO(pt);
+					pDoc->SetKO(pt.x, pt.y);
 					pView->ScrollToSector(pt);
 					pDoc->GetMainFrame()->SelectMainView(GALAXY_VIEW, pMajor->GetRaceID());
 					Invalidate(FALSE);

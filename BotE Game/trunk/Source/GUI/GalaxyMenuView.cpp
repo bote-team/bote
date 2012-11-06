@@ -529,7 +529,7 @@ void CGalaxyMenuView::OnInitialUpdate()
 	ASSERT(m_pPlayersRace);
 
 	CPoint pt = pDoc->GetRaceKO(m_pPlayersRace->GetRaceID());
-	pDoc->SetKO(pt);
+	pDoc->SetKO(pt.x, pt.y);
 	if (m_pPlayersRace->GetStarmap())
 		m_pPlayersRace->GetStarmap()->Select(Sector(pt.x, pt.y));
 	*/

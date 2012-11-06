@@ -161,7 +161,6 @@ public:
 
 	const CPoint& GetKO(void) const {return m_ptKO;}
 	void SetKO(int x, int y);
-	void SetKO(const CPoint& ko) { SetKO(ko.x, ko.y); }
 
 	/// Funktion gibt die Koordinate des Hauptsystems einer Majorrace zurück.
 	/// @param sMajor Rassen-ID
