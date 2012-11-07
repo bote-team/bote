@@ -787,15 +787,14 @@ void CBotf2Doc::SetCurrentShipIndex(int NumberOfTheShipInArray)
 	m_NumberOfTheShipInArray = NumberOfTheShipInArray;
 	((CGalaxyMenuView*)GetMainFrame()->GetView(RUNTIME_CLASS(CGalaxyMenuView)))->SetNewShipPath();
 	CSmallInfoView::SetShip(&m_ShipArray.GetAt(NumberOfTheShipInArray));
-	//re-activation later...MYTRACE("general")(MT::LEVEL_INFO, "m_NumberOfTheShipInArray: %i", m_NumberOfTheShipInArray);
+	CSanity::ShipInfo(m_ShipArray, m_NumberOfTheShipInArray, "m_NumberOfTheShipInArray");
 }
 
 void CBotf2Doc::SetNumberOfFleetShip(int NumberOfFleetShip)
 {
 	m_iNumberOfFleetShip = NumberOfFleetShip;
 	CSmallInfoView::SetShip(&m_ShipArray.GetAt(NumberOfFleetShip));
-	//re-activation later...MYTRACE("general")(MT::LEVEL_INFO, "m_iNumberOfFleetShip: %i", m_iNumberOfFleetShip);
-
+	CSanity::ShipInfo(m_ShipArray, m_iNumberOfFleetShip, "m_iNumberOfFleetShip");
 }
 
 void CBotf2Doc::SetNumberOfTheShipInFleet(int NumberOfTheShipInFleet)
@@ -805,6 +804,7 @@ void CBotf2Doc::SetNumberOfTheShipInFleet(int NumberOfTheShipInFleet)
 		CSmallInfoView::SetShip(m_ShipArray.GetAt(m_iNumberOfFleetShip).GetFleet()->GetShipFromFleet(NumberOfTheShipInFleet - 1));
 	else if (NumberOfTheShipInFleet == 0)
 		CSmallInfoView::SetShip(&m_ShipArray.GetAt(m_iNumberOfFleetShip));
+	CSanity::ShipInfo(m_ShipArray, m_iNumberOfTheShipInFleet, "m_iNumberOfTheShipInFleet");
 }
 
 /// Funktion lädt für die ausgewählte Spielerrasse alle Grafiken für die Views.
