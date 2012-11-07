@@ -9,6 +9,8 @@
 #include "Galaxy\Anomaly.h"
 #include <math.h>
 
+#include <cassert>
+
 #ifdef _DEBUG
 #undef THIS_FILE
 static char THIS_FILE[]=__FILE__;
@@ -136,7 +138,7 @@ Sector CStarmap::GetClickedSector(const CPoint &pt) const
 	{
 		result.x = (char)(pt.x / STARMAP_SECTOR_WIDTH);
 		result.y = (char)(pt.y / STARMAP_SECTOR_HEIGHT);
-		ASSERT_SECTOR_VALID(result);
+		assert(result.on_map());
 	}
 
 	return result;
@@ -146,7 +148,7 @@ void CStarmap::Select(const Sector &sector)
 {
 	if (sector.x > -1 && sector.y > -1)
 	{
-		ASSERT_SECTOR_VALID(sector);
+		assert(sector.on_map());
 		m_Selection = sector;
 	}
 }
@@ -158,7 +160,7 @@ void CStarmap::Deselect()
 
 CPoint CStarmap::GetSectorCoords(const Sector& sector) const
 {
-	ASSERT_SECTOR_VALID(sector);
+	assert(sector.on_map());
 	return CPoint(sector.x * STARMAP_SECTOR_WIDTH, sector.y * STARMAP_SECTOR_HEIGHT);
 }
 
@@ -179,7 +181,7 @@ void CStarmap::SetFullRangeMap(int nRange/* = SM_RANGE_NEAR*/)
 
 void CStarmap::AddBase(const Sector &sector, BYTE propTech)
 {
-	ASSERT_SECTOR_VALID(sector);
+	assert(sector.on_map());
 
 	// merken, dass Sektor einen Außenposten besitzt; falls der Außenposten schon vorhanden ist, die folgende
 	// Berechnung trotzdem durchführen, da eine andere <code>rangeMap</code> vorgegeben sein könnte.
@@ -282,8 +284,8 @@ void CStarmap::InitSomeMembers()
 Sector CStarmap::CalcPath(const Sector &pos, const Sector &target, unsigned char range,
 	unsigned char speed, CArray<Sector> &path)
 {
-	ASSERT_SECTOR_VALID(pos);
-	ASSERT_SECTOR_VALID(target);
+	assert(pos.on_map());
+	assert(target.on_map());
 
 	// bisherige Einträge von path löschen
 	path.RemoveAll();
@@ -412,7 +414,7 @@ Sector CStarmap::CalcPath(const Sector &pos, const Sector &target, unsigned char
 
 	while (next.x > -1 && next.y > -1 && --idx >= 0) // Start-Sektor nicht mit eintragen
 	{
-		ASSERT_SECTOR_VALID(next);
+		assert(next.on_map());
 		path[idx] = next;
 		next = pathMap[next.x][next.y].parent;
 	}
@@ -626,7 +628,7 @@ void CStarmap::CalcRangeMap(BYTE propTech)
 
 void CStarmap::AddTarget(const Sector &target)
 {
-	ASSERT_SECTOR_VALID(target);
+	assert(target.on_map());
 	ASSERT(m_bAICalculation);
 	if (!m_bAICalculation || !PT_IN_RECT(target, 0, 0, STARMAP_SECTORS_HCOUNT, STARMAP_SECTORS_VCOUNT)) return;
 
@@ -655,7 +657,7 @@ BOOL CStarmap::IsTarget(const Sector &sector)
 
 void CStarmap::AddKnownSystem(const Sector &sector)
 {
-	ASSERT_SECTOR_VALID(sector);
+	assert(sector.on_map());
 	ASSERT(m_bAICalculation);
 	if (!m_bAICalculation || !PT_IN_RECT(sector, 0, 0, STARMAP_SECTORS_HCOUNT, STARMAP_SECTORS_VCOUNT)) return;
 

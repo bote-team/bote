@@ -32,9 +32,6 @@
 #define SM_RANGE_MIDDLE		2		///< mittlere Entfernung
 #define SM_RANGE_NEAR		3		///< kurze Entfernung
 
-/// Makro, das prüft, ob der angegebene Parameter ein gültiger Sektor ist
-#define ASSERT_SECTOR_VALID(sector) \
-	ASSERT(PT_IN_RECT((sector), 0, 0, STARMAP_SECTORS_HCOUNT, STARMAP_SECTORS_VCOUNT))
 
 /// Struktur, die die Koordinaten eines Sektors aufnehmen kann
 struct Sector
@@ -47,6 +44,11 @@ struct Sector
 	Sector& operator=(const Sector &other) {x = other.x; y = other.y; return *this;}
 	Sector operator+(const Sector &other) {return Sector(x + other.x, y + other.y);}
 	int operator!=(const Sector &other) const {return (other.x != x || other.y != y);}
+
+	/// Funktion, welche prüft, ob dies ein gültiger Sektor ist
+	bool on_map() const {
+		return 0 <= x && x < STARMAP_SECTORS_HCOUNT && 0 <= y && y < STARMAP_SECTORS_VCOUNT;
+	}
 
 	char x, y;
 };

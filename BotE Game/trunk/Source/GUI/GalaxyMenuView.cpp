@@ -436,7 +436,7 @@ void CGalaxyMenuView::OnDraw(CDC* dc)
 			CPen pen(PS_SOLID , 0, color);
 			pDC->SelectObject(&brush);
 			pDC->SelectObject(&pen);
-			ASSERT_SECTOR_VALID(pDoc->m_ShipArray[pDoc->GetCurrentShipIndex()].GetPath()->GetAt(i));
+			assert(pDoc->m_ShipArray[pDoc->GetCurrentShipIndex()].GetPath()->GetAt(i).on_map());
 			CPoint pt = pMajor->GetStarmap()->GetSectorCoords(pDoc->m_ShipArray[pDoc->GetCurrentShipIndex()].GetPath()->GetAt(i));
 			pDC->Ellipse(pt.x+STARMAP_SECTOR_WIDTH/2-4,pt.y+STARMAP_SECTOR_HEIGHT/2-4,pt.x+STARMAP_SECTOR_WIDTH/2+4,pt.y+STARMAP_SECTOR_HEIGHT/2+4);
 		}
