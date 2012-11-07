@@ -778,19 +778,19 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 			// Wenn wir in der MainView im Flottenmenü sind, dann stecken wir das angeklickte Schiff in die
 			// gerade angezeigte Flotte
 			// Fremde Flotten können nicht bearbeitet werden
-			else if (pDoc->m_ShipArray.GetAt(pDoc->GetNumberOfFleetShip()).GetOwnerOfShip() == pMajor->GetRaceID())
+			else if (pDoc->FleetShip().GetOwnerOfShip() == pMajor->GetRaceID())
 			{
 				// Wenn das Schiff noch keine Flotte hat, dann müssen wir erstmal eine Flotte bilden
-				if (pDoc->m_ShipArray[pDoc->GetNumberOfFleetShip()].GetFleet() == 0 && pDoc->GetNumberOfFleetShip() != pDoc->GetCurrentShipIndex())
-					pDoc->m_ShipArray[pDoc->GetNumberOfFleetShip()].CreateFleet();
+				if (pDoc->FleetShip().GetFleet() == 0 && pDoc->GetNumberOfFleetShip() != pDoc->GetCurrentShipIndex())
+					pDoc->FleetShip().CreateFleet();
 				// Jetzt fügen wir der Flotte das angeklickte Schiff hinzu, wenn es nicht das Schiff selbst ist,
 				// welches die Flotte anführt
 				if (pDoc->GetNumberOfFleetShip() != pDoc->GetCurrentShipIndex())
 				{
 					// sicherheitshalber wird hier nochmal überprüft, dass keine Station hinzugefügt werden kann und
 					// das sich das Schiff auch im gleichen Sektor befindet
-					if (pDoc->m_ShipArray[pDoc->GetNumberOfFleetShip()].GetKO() == pDoc->m_ShipArray[pDoc->GetCurrentShipIndex()].GetKO()
-						&& pDoc->m_ShipArray[pDoc->GetNumberOfFleetShip()].GetOwnerOfShip() == pDoc->m_ShipArray[pDoc->GetCurrentShipIndex()].GetOwnerOfShip()
+					if (pDoc->FleetShip().GetKO() == pDoc->m_ShipArray[pDoc->GetCurrentShipIndex()].GetKO()
+						&& pDoc->FleetShip().GetOwnerOfShip() == pDoc->m_ShipArray[pDoc->GetCurrentShipIndex()].GetOwnerOfShip()
 						&& !pDoc->m_ShipArray[pDoc->GetCurrentShipIndex()].IsStation())
 					{
 						// Wenn das Schiff welches wir hinzufügen wollen selbst eine Flotte besizt, so müssen
@@ -798,15 +798,15 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 						if (pDoc->m_ShipArray[pDoc->GetCurrentShipIndex()].GetFleet() != 0 && pDoc->m_ShipArray[pDoc->GetCurrentShipIndex()].GetFleet()->GetFleetSize() > 0)
 						{
 							for (USHORT i = 0; i < pDoc->m_ShipArray[pDoc->GetCurrentShipIndex()].GetFleet()->GetFleetSize(); i++)
-								pDoc->m_ShipArray[pDoc->GetNumberOfFleetShip()].AddShipToFleet(*pDoc->m_ShipArray[pDoc->GetCurrentShipIndex()].GetFleet()->GetShipFromFleet(i));
+								pDoc->FleetShip().AddShipToFleet(*pDoc->m_ShipArray[pDoc->GetCurrentShipIndex()].GetFleet()->GetShipFromFleet(i));
 							// Jetzt haben wir die Schiffe auch noch hinzugefügt und können die Flotte nun löschen
 							pDoc->m_ShipArray[pDoc->GetCurrentShipIndex()].DeleteFleet();
 							// Zu allerletzt das ehemalige Flottenschiff hinzufügen, da es jetzt keine Flotte mehr besitzt
-							pDoc->m_ShipArray[pDoc->GetNumberOfFleetShip()].AddShipToFleet(pDoc->m_ShipArray[pDoc->GetCurrentShipIndex()]);
+							pDoc->FleetShip().AddShipToFleet(pDoc->m_ShipArray[pDoc->GetCurrentShipIndex()]);
 						}
 						// besitzt das Schiff welches wir hinzufügen wollen keine Flotte, so können wir es direkt hinzufügen
 						else
-							pDoc->m_ShipArray[pDoc->GetNumberOfFleetShip()].AddShipToFleet(pDoc->m_ShipArray[pDoc->GetCurrentShipIndex()]);
+							pDoc->FleetShip().AddShipToFleet(pDoc->m_ShipArray[pDoc->GetCurrentShipIndex()]);
 						// Wenn wir hier removen und ein Schiff im Feld entfernen, welches vor unserem FleetShip
 						// ist, dann müssen wir die Nummer des FleetShips um eins verringern
 						if (pDoc->GetCurrentShipIndex() < pDoc->GetNumberOfFleetShip())

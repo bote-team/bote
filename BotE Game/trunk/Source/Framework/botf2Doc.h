@@ -155,6 +155,15 @@ public:
 	CShip& CurrentShip() {
 		return GetShip(m_NumberOfTheShipInArray);
 	}
+	//return ship at m_iNumberOfFleetShip
+	const CShip& FleetShip() const {
+		return GetShip(m_iNumberOfFleetShip);
+	}
+	//return ship at m_iNumberOfFleetShip
+	CShip& FleetShip() {
+		return GetShip(m_iNumberOfFleetShip);
+	}
+
 	const CFleet* const CurrentShipsFleet() {
 		return CurrentShip().GetFleet();
 	}
