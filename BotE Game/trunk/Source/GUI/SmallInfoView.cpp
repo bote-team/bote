@@ -420,8 +420,9 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 				speed = pDoc->m_ShipArray.GetAt(n).GetFleet()->GetFleetSpeed(&pDoc->m_ShipArray.GetAt(n));
 			}
 			CArray<Sector> path;
-			Sector position(pDoc->m_ShipArray[n].GetKO().x, pDoc->m_ShipArray[n].GetKO().y);
-			Sector target(pDoc->m_ShipArray[n].GetTargetKO().x, pDoc->m_ShipArray[n].GetTargetKO().y);
+			const CShip& ship = pDoc->m_ShipArray.GetAt(n);
+			Sector position(ship.GetKO().x, ship.GetKO().y);
+			Sector target(ship.GetTargetKO().x, ship.GetTargetKO().y);
 			pMajor->GetStarmap()->CalcPath(position, target, range, speed, path);
 			short rounds = 0;
 			if (speed > 0)
