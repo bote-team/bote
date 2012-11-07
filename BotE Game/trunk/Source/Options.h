@@ -343,18 +343,6 @@ namespace SHIP_SPECIAL
 	};
 }
 
-namespace ALIEN_TYPE
-{
-	enum Typ
-	{
-		NONE						= 0,
-		IONISIERENDES_GASWESEN		= 1,
-		GABALLIANER_SEUCHENSCHIFF	= 2,
-		BLIZZARD_PLASMAWESEN		= 4,
-		MORLOCK_RAIDER				= 8
-	};
-}
-
 // ------------- Arbeiter ------------------------------------------------------
 namespace WORKER
 {

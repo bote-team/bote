@@ -26,7 +26,6 @@
 // forward declaration
 class CFleet;
 class CGraphicPool;
-class CResearchInfo;
 
 /// Klasse beschreibt ein Schiff in BotE
 class CShip : public CObject
@@ -113,8 +112,7 @@ public:
 	bool IsAlien() const {
 		return m_iShipType == SHIP_TYPE::ALIEN;
 	}
-	ALIEN_TYPE::Typ GetAlienType() const { return m_nAlienType; }
-
+	
 	//Is this ship in need for a player command input in this round ?
 	//Does not cover "self-renewing" orders without a turn limit
 	//such as ATTACK_SYSTEM; player is expected to look after such
@@ -153,8 +151,7 @@ public:
 	void SetShipClass(const CString& ShipClass) {m_strShipClass = ShipClass;}
 	void SetIsShipFlagShip(bool bIs) {m_bIsFlagShip = bIs;}
 	void SetCombatTactic(COMBAT_TACTIC::Typ nTactic) {m_nCombatTactic = nTactic;}
-	void SetAlienType(ALIEN_TYPE::Typ nAlienType) {m_nAlienType = nAlienType;}
-
+	
 	//Sets this ship's m_iCurrentOrder to AVOID if it's a civil ship and to ATTACK otherwise.
 	void SetCurrentOrderAccordingToType();
 	//Sets this ship's m_nCombatTactic to AVOID if it's a civil ship and to ATTACK otherwise.
@@ -247,7 +244,6 @@ private:
 	USHORT m_iLoadedResources[DERITIUM+1];	// Die geladenen Ressourcen auf dem Schiff
 	// Kampftaktik
 	COMBAT_TACTIC::Typ m_nCombatTactic;///< Taktik des Schiffes im Kampf
-	ALIEN_TYPE::Typ m_nAlienType;		///< Typ des Alienschiffes und dessen Auswirkungen
 };
 
 typedef CArray<CShip, CShip> ShipArray;	// Das dynamische Feld wird vereinfacht als ShipArray angegeben

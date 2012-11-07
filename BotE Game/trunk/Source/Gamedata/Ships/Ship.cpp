@@ -49,7 +49,6 @@ CShip::CShip() :
 	m_iShipType = SHIP_TYPE::PROBE;
 	m_iCurrentOrder = SHIP_ORDER::ATTACK;
 	m_nCombatTactic = COMBAT_TACTIC::CT_ATTACK;
-	m_nAlienType = ALIEN_TYPE::NONE;
 }
 
 CShip::~CShip()
@@ -122,7 +121,6 @@ CShip::CShip(const CShip & rhs) :
 	m_nSpecial[0] = rhs.m_nSpecial[0];
 	m_nSpecial[1] = rhs.m_nSpecial[1];
 	m_nCombatTactic = rhs.m_nCombatTactic;
-	m_nAlienType = rhs.m_nAlienType;
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -187,8 +185,7 @@ CShip & CShip::operator=(const CShip & rhs)
 	m_nSpecial[0] = rhs.m_nSpecial[0];
 	m_nSpecial[1] = rhs.m_nSpecial[1];
 	m_nCombatTactic = rhs.m_nCombatTactic;
-	m_nAlienType = rhs.m_nAlienType;
-
+	
 	return *this;
 }
 
@@ -246,7 +243,6 @@ void CShip::Serialize(CArchive &ar)
 		for (int i = 0; i < m_Troops.GetSize(); i++)
 			m_Troops.GetAt(i).Serialize(ar);
 		ar << m_nCombatTactic;
-		ar << m_nAlienType;
 	}
 	// wenn geladen wird
 	if (ar.IsLoading())
@@ -315,9 +311,6 @@ void CShip::Serialize(CArchive &ar)
 			ar >> nTactic;
 			m_nCombatTactic = (COMBAT_TACTIC::Typ)nTactic;
 		}
-		int nAlienType;
-		ar >> nAlienType;
-		m_nAlienType = (ALIEN_TYPE::Typ)nAlienType;
 	}
 }
 

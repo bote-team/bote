@@ -4783,7 +4783,7 @@ void CBotf2Doc::CalcShipMovement()
 			targetKO = Sector(-1,-1);
 
 		// Weltraummonster gesondert behandeln
-		if(pShip->GetAlienType()!=ALIEN_TYPE::NONE)
+		if (pShip->IsAlien())
 		{
 			// wenn bei einem Weltraummonster kein Ziel vorhanden ist, dann wird zufüllig ein neues generiert
 			if (targetKO.x == -1)
@@ -5949,22 +5949,18 @@ void CBotf2Doc::CalcRandomAlienEntities()
 					// unterschiedliche Aliens unterschieden und Schiffseigenschaften festlegen
 					if (pAlien->GetRaceID() == "Ionisierendes Gaswesen")
 					{
-						pShip->SetAlienType(ALIEN_TYPE::IONISIERENDES_GASWESEN);
 						pShip->SetCurrentOrder(SHIP_ORDER::AVOID);
 					}
 					else if (pAlien->GetRaceID() == "Gaballianer")
 					{
-						pShip->SetAlienType(ALIEN_TYPE::GABALLIANER_SEUCHENSCHIFF);
 						pShip->SetCurrentOrder(SHIP_ORDER::ATTACK);
 					}
 					else if (pAlien->GetRaceID() == "Blizzard-Plasmawesen")
 					{
-						pShip->SetAlienType(ALIEN_TYPE::BLIZZARD_PLASMAWESEN);
 						pShip->SetCurrentOrder(SHIP_ORDER::ATTACK);
 					}
 					else if (pAlien->GetRaceID() == "Morlock-Raider")
 					{
-						pShip->SetAlienType(ALIEN_TYPE::MORLOCK_RAIDER);
 						pShip->SetCurrentOrder(SHIP_ORDER::ATTACK);
 						// zufällig gleich mehrere Raider bauen. Umso höher der technische Durchschnitt
 						// in der Galaxie ist, desto mehr Raider kommen auf dem System ins Spiel.
@@ -6022,7 +6018,7 @@ void CBotf2Doc::CalcAlienShipEffects()
 		}
 
 		// verschiedene Alienrassen unterscheiden
-		if ((pShip->GetAlienType() & ALIEN_TYPE::IONISIERENDES_GASWESEN) > 0)
+		if (pAlien->GetRaceID() == "Ionisierendes Gaswesen")
 		{
 			CString sSystemOwner = GetSystem(pShip->GetKO().x, pShip->GetKO().y).GetOwnerOfSystem();
 			CMajor* pOwner = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(sSystemOwner));
@@ -6050,7 +6046,7 @@ void CBotf2Doc::CalcAlienShipEffects()
 				}
 			}
 		}
-		if ((pShip->GetAlienType() & ALIEN_TYPE::GABALLIANER_SEUCHENSCHIFF) > 0)
+		else if (pAlien->GetRaceID() == "Gaballianer")
 		{
 			CString sSystemOwner = GetSystem(pShip->GetKO().x, pShip->GetKO().y).GetOwnerOfSystem();
 			if (CMajor* pOwner = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(sSystemOwner)))
@@ -6090,7 +6086,7 @@ void CBotf2Doc::CalcAlienShipEffects()
 						continue;
 
 					// keine anderen Alienschiffe
-					if (pOtherShip->IsAlien() || (pOtherShip->GetAlienType() & ALIEN_TYPE::GABALLIANER_SEUCHENSCHIFF) > 0)
+					if (pOtherShip->IsAlien())
 						continue;
 
 					// keine Außenposten und Sternenbasen
@@ -6113,8 +6109,8 @@ void CBotf2Doc::CalcAlienShipEffects()
 							continue;
 
 						vShips[n]->SetOwnerOfShip(pAlien->GetRaceID());
+						vShips[n]->SetShipType(SHIP_TYPE::ALIEN);
 						vShips[n]->SetTargetKO(CPoint(-1, -1), 0);
-						vShips[n]->SetAlienType(ALIEN_TYPE::GABALLIANER_SEUCHENSCHIFF);
 						vShips[n]->SetCurrentOrder(SHIP_ORDER::ATTACK);
 						vShips[n]->SetTerraformingPlanet(-1);
 						vShips[n]->SetIsShipFlagShip(FALSE);
@@ -6135,7 +6131,7 @@ void CBotf2Doc::CalcAlienShipEffects()
 				}
 			}
 		}
-		if ((pShip->GetAlienType() & ALIEN_TYPE::BLIZZARD_PLASMAWESEN) > 0)
+		else if (pAlien->GetRaceID() == "Blizzard-Plasmawesen")
 		{
 			CString sSystemOwner = GetSystem(pShip->GetKO().x, pShip->GetKO().y).GetOwnerOfSystem();
 			CMajor* pOwner = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(sSystemOwner));
@@ -6163,7 +6159,7 @@ void CBotf2Doc::CalcAlienShipEffects()
 				}
 			}
 		}
-		if ((pShip->GetAlienType() & ALIEN_TYPE::MORLOCK_RAIDER) > 0)
+		else if (pAlien->GetRaceID() == "Morlock-Raider")
 		{
 			// Creditproduktion auf 0 stellen
 			CSystem* pSystem = &GetSystem(pShip->GetKO().x, pShip->GetKO().y);
@@ -6177,6 +6173,11 @@ void CBotf2Doc::CalcAlienShipEffects()
 
 			// alte Credits merken und aktuell auf 0 stellen
 			short nCreditProd = pSystem->GetProduction()->GetCreditsProd();
+			// Nichts machen wenn keine Credits im System produziert werden, z.B. durch einen
+			// vorherigen Raider.
+			if (nCreditProd <= 0)
+				continue;
+			
 			pSystem->GetProduction()->DisableCreditsProduction();
 
 			// Nachricht und Event einfügen

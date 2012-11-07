@@ -712,6 +712,11 @@ bool CMajorAI::MakeMinorOffer(const CString& sRaceID, CDiplomacyInfo& info)
 				else
 					nOffer = DIPLOMATIC_AGREEMENT::NONE;
 			}
+
+			// Wenn nicht Krieg und auch nicht Freundschaft angeboten wurde (z.B. Handelsvertrag),
+			// dann kein Angebot machen
+			if (nOffer != DIPLOMATIC_AGREEMENT::WAR && nOffer != DIPLOMATIC_AGREEMENT::FRIENDSHIP)
+				nOffer = DIPLOMATIC_AGREEMENT::NONE;
 		}
 	}
 
