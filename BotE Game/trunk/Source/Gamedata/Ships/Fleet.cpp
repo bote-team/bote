@@ -59,23 +59,8 @@ CFleet & CFleet::operator=(const CFleet & rhs)
 void CFleet::Serialize(CArchive &ar)
 {
 	CObject::Serialize(ar);
-	// wenn gespeichert wird
-	if (ar.IsStoring())
-	{
-		ar << m_vShips.GetSize();
-		for (int i = 0; i < m_vShips.GetSize(); i++)
-			m_vShips.GetAt(i).Serialize(ar);
-	}
-	// wenn geladen wird
-	if (ar.IsLoading())
-	{
-		int number = 0;
-		ar >> number;
-		m_vShips.RemoveAll();
-		m_vShips.SetSize(number);
-		for (int i = 0; i < number; i++)
-			m_vShips.GetAt(i).Serialize(ar);
-	}
+
+	m_vShips.Serialize(ar);
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -296,5 +281,5 @@ bool CFleet::AllOnTactic(COMBAT_TACTIC::Typ tactic) const {
 }
 
 BOOL CFleet::IsEmpty() const {
-	return m_vShips.IsEmpty();
+	return m_vShips.empty();
 }

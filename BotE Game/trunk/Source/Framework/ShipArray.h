@@ -33,6 +33,7 @@ public:
 
 	int GetSize() const;
 	int GetUpperBound() const;
+	bool empty() const;
 
 	void Serialize(CArchive& ar);
 	void SerializeEndOfRoundData(CArchive& ar, const CString& sMajorID);

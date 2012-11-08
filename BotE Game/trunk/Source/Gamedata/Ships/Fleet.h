@@ -17,6 +17,7 @@
 #endif // _MSC_VER > 1000
 
 #include "Ship.h"
+#include "ShipArray.h"
 
 class CFleet : public CObject
 {
@@ -86,7 +87,7 @@ public:
 	void DeleteFleet(void) { m_vShips.RemoveAll(); }
 
 private:
-	ShipArray m_vShips;		// Die Schiffe in der Flotte, auﬂer Schiff selbst, welches das Flottenobjekt besitzt
+	CShipArray m_vShips;		// Die Schiffe in der Flotte, auﬂer Schiff selbst, welches das Flottenobjekt besitzt
 };
 
 #endif // !defined(AFX_FLEET_H__EBC5B38C_84F8_4C71_B3CE_03B4ECFA1D1E__INCLUDED_)

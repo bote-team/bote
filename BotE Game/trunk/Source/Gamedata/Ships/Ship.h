@@ -27,6 +27,7 @@
 class CFleet;
 class CGraphicPool;
 
+
 /// Klasse beschreibt ein Schiff in BotE
 class CShip : public CObject
 {
@@ -245,8 +246,6 @@ private:
 	// Kampftaktik
 	COMBAT_TACTIC::Typ m_nCombatTactic;///< Taktik des Schiffes im Kampf
 };
-
-typedef CArray<CShip, CShip> ShipArray;	// Das dynamische Feld wird vereinfacht als ShipArray angegeben
 
 #endif // !defined(AFX_SHIP_H__C9FE4406_A0D7_4AE0_A5D0_0070FCBC45C1__INCLUDED_)
 

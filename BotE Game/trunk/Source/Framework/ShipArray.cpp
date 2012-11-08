@@ -71,6 +71,9 @@ int CShipArray::GetUpperBound() const {
 int CShipArray::GetSize() const {
 	return m_vShips.size();
 }
+bool CShipArray::empty() const {
+	return m_vShips.empty();
+}
 void CShipArray::SetSize(int size) {
 	m_vShips.resize(size);
 }
