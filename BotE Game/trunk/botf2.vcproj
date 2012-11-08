@@ -309,6 +309,10 @@
 					RelativePath=".\Source\Framework\Sanity.cpp"
 					>
 				</File>
+				<File
+					RelativePath=".\Source\Framework\ShipArray.cpp"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="General"
@@ -1188,6 +1192,10 @@
 				</File>
 				<File
 					RelativePath=".\Source\Framework\Sanity.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Source\Framework\ShipArray.h"
 					>
 				</File>
 			</Filter>

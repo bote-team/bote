@@ -13,6 +13,7 @@
 #include "SoundManager.h"
 #include "IOData.h"
 #include <vector>
+#include "ShipArray.h"
 
 // forward declaration
 class CMainFrame;
@@ -50,7 +51,7 @@ protected: // Nur aus Serialisierung erzeugen
 
 	CArray<CTroopInfo> m_TroopInfo;		// In diesem Feld werden alle Informationen zu den Truppen gespeichert
 	ShipInfoArray m_ShipInfoArray;		// dynamisches Feld, in dem die ganzen Informationen zu den Schiffen gespeichert sind
-	ShipArray m_ShipArray;				// dynamisches Feld, in das die ganzen Schiffe gespeichert werden
+	CShipArray m_ShipArray;				// dynamisches Feld, in das die ganzen Schiffe gespeichert werden
 	BuildingInfoArray BuildingInfo;		// alle Gebäudeinfos zu allen Gebäuden im Spiel
 	CGlobalBuildings m_GlobalBuildings;	// alle gebauten Gebäude aller Rassen im Spiel
 	short m_iNumberOfFleetShip;			// Das Schiff welches sozusagen die Flotte anführt

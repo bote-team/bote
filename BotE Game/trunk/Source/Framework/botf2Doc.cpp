@@ -236,9 +236,7 @@ void CBotf2Doc::Serialize(CArchive& ar)
 		ar << m_ShipInfoArray.GetSize();
 		for (int i = 0; i < m_ShipInfoArray.GetSize(); i++)
 			m_ShipInfoArray.GetAt(i).Serialize(ar);
-		ar << m_ShipArray.GetSize();
-		for (int i = 0; i < m_ShipArray.GetSize(); i++)
-			m_ShipArray.GetAt(i).Serialize(ar);
+		m_ShipArray.Serialize(ar);
 
 		ar<< m_TroopInfo.GetSize();//Truppen in Savegame speichern
 		for (int i = 0; i < m_TroopInfo.GetSize(); i++)
@@ -288,11 +286,7 @@ void CBotf2Doc::Serialize(CArchive& ar)
 		m_ShipInfoArray.SetSize(number);
 		for (int i = 0; i < number; i++)
 			m_ShipInfoArray.GetAt(i).Serialize(ar);
-		ar >> number;
-		m_ShipArray.RemoveAll();
-		m_ShipArray.SetSize(number);
-		for (int i = 0; i < number; i++)
-			m_ShipArray.GetAt(i).Serialize(ar);
+		m_ShipArray.Serialize(ar);
 		ar >> number;
 		m_TroopInfo.RemoveAll();
 		m_TroopInfo.SetSize(number);
@@ -441,15 +435,7 @@ void CBotf2Doc::SerializeNextRoundData(CArchive &ar)
 			MYTRACE("general")(MT::LEVEL_INFO, "Server is sending CombatData to client...\n");
 			// Sektor des Kampfes übertragen
 			ar << m_ptCurrentCombatSector;
-			int nCount = 0;
-			for (int i = 0; i < m_ShipArray.GetSize(); i++)
-				if (m_ShipArray[i].GetKO() == m_ptCurrentCombatSector)
-					nCount++;
-			ar << nCount;
-			// nur Schiffe aus diesem Sektor senden
-			for (int i = 0; i < m_ShipArray.GetSize(); i++)
-				if (m_ShipArray[i].GetKO() == m_ptCurrentCombatSector)
-					m_ShipArray.GetAt(i).Serialize(ar);
+			m_ShipArray.SerializeNextRoundData(ar, m_ptCurrentCombatSector);
 			return;
 		}
 
@@ -463,9 +449,7 @@ void CBotf2Doc::SerializeNextRoundData(CArchive &ar)
 		ar << m_ShipInfoArray.GetSize();
 		for (int i = 0; i < m_ShipInfoArray.GetSize(); i++)
 			m_ShipInfoArray.GetAt(i).Serialize(ar);
-		ar << m_ShipArray.GetSize();
-		for (int i = 0; i < m_ShipArray.GetSize(); i++)
-			m_ShipArray.GetAt(i).Serialize(ar);
+		m_ShipArray.Serialize(ar);
 
 		// statische Variablen serialisieren
 		for (int j = TITAN; j <= IRIDIUM; j++)
@@ -483,19 +467,7 @@ void CBotf2Doc::SerializeNextRoundData(CArchive &ar)
 		{
 			MYTRACE("general")(MT::LEVEL_INFO, "Client is receiving CombatData from server...\n");
 			ar >> m_ptCurrentCombatSector;
-			// Es werden nur Schiffe aus dem aktuellen Kampfsektor empfangen
-			int nCount;
-			ar >> nCount;
-			// alle Schiffe aus dem Kampfsektor entfernen
-			for (int i = 0; i < m_ShipArray.GetSize(); i++)
-				if (m_ShipArray.GetAt(i).GetKO() == m_ptCurrentCombatSector)
-					m_ShipArray.RemoveAt(i--);
-			int nSize = m_ShipArray.GetSize();
-			// empfangene Schiffe wieder hinzufügen
-			m_ShipArray.SetSize(nSize + nCount);
-			for (int i = nSize; i < m_ShipArray.GetSize(); i++)
-				m_ShipArray.GetAt(i).Serialize(ar);
-
+			m_ShipArray.SerializeNextRoundData(ar, m_ptCurrentCombatSector);
 			return;
 		}
 
@@ -512,11 +484,7 @@ void CBotf2Doc::SerializeNextRoundData(CArchive &ar)
 		m_ShipInfoArray.SetSize(number);
 		for (int i = 0; i < number; i++)
 			m_ShipInfoArray.GetAt(i).Serialize(ar);
-		ar >> number;
-		m_ShipArray.RemoveAll();
-		m_ShipArray.SetSize(number);
-		for (int i = 0; i < number; i++)
-			m_ShipArray.GetAt(i).Serialize(ar);
+		m_ShipArray.Serialize(ar);
 		// statische Variablen serialisieren
 		for (int j = TITAN; j <= IRIDIUM; j++)
 		{
@@ -616,13 +584,7 @@ void CBotf2Doc::SerializeEndOfRoundData(CArchive &ar, network::RACE race)
 			if (m_ShipInfoArray.GetAt(i).GetRace() == pPlayer->GetRaceShipNumber())
 				m_ShipInfoArray.GetAt(i).Serialize(ar);
 
-		vector<int> vShips;
-		for (int i = 0; i < m_ShipArray.GetSize(); i++)
-			if (m_ShipArray.GetAt(i).GetOwnerOfShip() == pPlayer->GetRaceID())
-				vShips.push_back(i);
-		ar << vShips.size();
-		for (size_t i = 0; i < vShips.size(); i++)
-			m_ShipArray.GetAt(vShips[i]).Serialize(ar);
+		m_ShipArray.SerializeEndOfRoundData(ar, pPlayer->GetRaceID());
 
 		vector<CPoint> vSystems;
 		for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
@@ -675,20 +637,9 @@ void CBotf2Doc::SerializeEndOfRoundData(CArchive &ar, network::RACE race)
 				ASSERT(m_ShipInfoArray.GetAt(i).GetRace() == pMajor->GetRaceShipNumber());
 			}
 
-		int number = 0;
-		ar >> number;
-		for (int i = 0; i < m_ShipArray.GetSize(); i++)
-			if (m_ShipArray.GetAt(i).GetOwnerOfShip() == sMajorID)
-				m_ShipArray.RemoveAt(i--);
-		int oldSize = m_ShipArray.GetSize();
-		m_ShipArray.SetSize(oldSize + number);
-		for (int i = oldSize; i < m_ShipArray.GetSize(); i++)
-		{
-			m_ShipArray.GetAt(i).Serialize(ar);
-			ASSERT(m_ShipArray.GetAt(i).GetOwnerOfShip() == sMajorID);
-		}
+		m_ShipArray.SerializeEndOfRoundData(ar, sMajorID);
 
-		number = 0;
+		int number = 0;
 		ar >> number;
 		for (int i = 0; i < number; i++)
 		{
@@ -787,14 +738,14 @@ void CBotf2Doc::SetCurrentShipIndex(int NumberOfTheShipInArray)
 	m_NumberOfTheShipInArray = NumberOfTheShipInArray;
 	((CGalaxyMenuView*)GetMainFrame()->GetView(RUNTIME_CLASS(CGalaxyMenuView)))->SetNewShipPath();
 	CSmallInfoView::SetShip(&m_ShipArray.GetAt(NumberOfTheShipInArray));
-	CSanity::ShipInfo(m_ShipArray, m_NumberOfTheShipInArray, "m_NumberOfTheShipInArray");
+	//CSanity::ShipInfo(m_ShipArray, m_NumberOfTheShipInArray, "m_NumberOfTheShipInArray");
 }
 
 void CBotf2Doc::SetNumberOfFleetShip(int NumberOfFleetShip)
 {
 	m_iNumberOfFleetShip = NumberOfFleetShip;
 	CSmallInfoView::SetShip(&m_ShipArray.GetAt(NumberOfFleetShip));
-	CSanity::ShipInfo(m_ShipArray, m_iNumberOfFleetShip, "m_iNumberOfFleetShip");
+	//CSanity::ShipInfo(m_ShipArray, m_iNumberOfFleetShip, "m_iNumberOfFleetShip");
 }
 
 void CBotf2Doc::SetNumberOfTheShipInFleet(int NumberOfTheShipInFleet)
@@ -804,7 +755,7 @@ void CBotf2Doc::SetNumberOfTheShipInFleet(int NumberOfTheShipInFleet)
 		CSmallInfoView::SetShip(m_ShipArray.GetAt(m_iNumberOfFleetShip).GetFleet()->GetShipFromFleet(NumberOfTheShipInFleet - 1));
 	else if (NumberOfTheShipInFleet == 0)
 		CSmallInfoView::SetShip(&m_ShipArray.GetAt(m_iNumberOfFleetShip));
-	CSanity::ShipInfo(m_ShipArray, m_iNumberOfTheShipInFleet, "m_iNumberOfTheShipInFleet");
+	//CSanity::ShipInfo(m_ShipArray, m_iNumberOfTheShipInFleet, "m_iNumberOfTheShipInFleet");
 }
 
 /// Funktion lädt für die ausgewählte Spielerrasse alle Grafiken für die Views.
@@ -1337,7 +1288,7 @@ void CBotf2Doc::GenerateGalaxy()
 
 ////////////////////////////////////////////////
 //BEGINN: helper functions for NextRound()
-static bool HumanPlayerInCombat(const CArray<CShip,CShip>& ships, const CPoint& CurrentCombatSector,
+static bool HumanPlayerInCombat(const CShipArray& ships, const CPoint& CurrentCombatSector,
 		const std::map<CString, CMajor*>& majors) {
 	for(int i = 0; i < ships.GetSize(); ++i)
 	{

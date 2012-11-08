@@ -2,6 +2,8 @@
 #include "AttackSystem.h"
 #include "Ships\Fleet.h"
 
+#include "ShipArray.h"
+
 //////////////////////////////////////////////////////////////////////
 // Konstruktion/Destruktion
 //////////////////////////////////////////////////////////////////////
@@ -33,7 +35,7 @@ CAttackSystem::~CAttackSystem(void)
 /// welches angegriffen wird, einen Zeiger auf das komplette Feld aller Schiffe <code>ships</code>, einen Zeiger auf den
 /// zum System gehörenden Sektor <code>sector</code>, einen Zeiger auf die Gebäudeinformationen <code>buildingInfos</code>
 /// und das Feld mit den Monopolbesitzern <code>monopolOwner</code>.
-void CAttackSystem::Init(CRace* pDefender, CSystem* system, ShipArray* ships, CSector* sector, BuildingInfoArray* buildingInfos, const CString* monopolOwner)
+void CAttackSystem::Init(CRace* pDefender, CSystem* system, CShipArray* ships, CSector* sector, BuildingInfoArray* buildingInfos, const CString* monopolOwner)
 {
 	m_pDefender = pDefender;
 	m_pSystem = system;

@@ -164,7 +164,7 @@ void CReManager::GlobalEventMinor(CMajor* pRace, CMinor* pMinor)
 	pRace->GetEmpire()->AddMessage(message);
 }
 
-void CReManager::CalcExploreEvent(const CPoint &ko, CMajor *pRace, CArray<CShip, CShip>* ships)
+void CReManager::CalcExploreEvent(const CPoint &ko, CMajor *pRace, CShipArray* ships)
 {
 	if(rand() % 99 >= static_cast<int>(m_uiGlobalProb))
 		return; //Es findet kein Ereignis statt

@@ -20,7 +20,7 @@ class CSanity
 		const CSystem& system,
 		const CBotf2Doc& doc);
 	static void ShipInfo(const CArray<CShip, CShip>& shiparray, int index, const CString& indexname);
-	static void ShipArray(const CBotf2Doc& doc);
+	//static void ShipArray(const CBotf2Doc& doc);
 
 
 };

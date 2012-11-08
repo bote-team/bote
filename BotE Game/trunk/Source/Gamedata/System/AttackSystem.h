@@ -12,6 +12,8 @@
 #include "Races\RaceController.h"
 #include <map>
 
+class CShipArray;
+
 using namespace std;
 
 class CAttackSystem : public CObject
@@ -48,7 +50,7 @@ public:
 	 * zum System gehörenden Sektor <code>sector</code>, einen Zeiger auf die Gebäudeinformationen <code>buildingInfos</code>
 	 * und das Feld mit den Monopolbesitzern <code>monopolOwner</code>.
 	 */
-	void Init(CRace* pDefender, CSystem* system, ShipArray* ships, CSector* sector, BuildingInfoArray* buildingInfos, const CString* monopolOwner);
+	void Init(CRace* pDefender, CSystem* system, CShipArray* ships, CSector* sector, BuildingInfoArray* buildingInfos, const CString* monopolOwner);
 
 	/**
 	 * Diese Funktion führt den Angriff durch. Außerdem werden alle Berechnungen der Auswirkungen des Angriffs
