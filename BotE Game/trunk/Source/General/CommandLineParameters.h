@@ -20,6 +20,7 @@ private:
 	void ParseLogDomainParamArgs(const std::string& args);
 
 	CCommandLineParameters(void);
+	CCommandLineParameters(const CCommandLineParameters& o);
 public:
 	//there is only a single instance of this class supposed to be created
 	static CCommandLineParameters* GetInstance();
