@@ -13,7 +13,7 @@
 #include "SoundManager.h"
 #include "IOData.h"
 #include <vector>
-#include "ShipArray.h"
+#include "Ships/ShipArray.h"
 
 // forward declaration
 class CMainFrame;

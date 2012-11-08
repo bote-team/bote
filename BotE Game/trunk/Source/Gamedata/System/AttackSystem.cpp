@@ -2,7 +2,7 @@
 #include "AttackSystem.h"
 #include "Ships\Fleet.h"
 
-#include "ShipArray.h"
+#include "Ships/ShipArray.h"
 
 //////////////////////////////////////////////////////////////////////
 // Konstruktion/Destruktion

@@ -309,10 +309,6 @@
 					RelativePath=".\Source\Framework\Sanity.cpp"
 					>
 				</File>
-				<File
-					RelativePath=".\Source\Framework\ShipArray.cpp"
-					>
-				</File>
 			</Filter>
 			<Filter
 				Name="General"
@@ -714,6 +710,10 @@
 					</File>
 					<File
 						RelativePath=".\Source\Gamedata\Ships\Ship.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Source\Gamedata\Ships\ShipArray.cpp"
 						>
 					</File>
 					<File
@@ -1194,10 +1194,6 @@
 					RelativePath=".\Source\Framework\Sanity.h"
 					>
 				</File>
-				<File
-					RelativePath=".\Source\Framework\ShipArray.h"
-					>
-				</File>
 			</Filter>
 			<Filter
 				Name="Gamedata"
@@ -1431,6 +1427,10 @@
 					</File>
 					<File
 						RelativePath=".\Source\Gamedata\Ships\ship.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Source\Gamedata\Ships\ShipArray.h"
 						>
 					</File>
 					<File
