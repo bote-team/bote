@@ -1404,7 +1404,7 @@ BOOLEAN CIntelCalc::ExecuteMilitarySabotage(CMajor* pRace, CMajor* pEnemyRace, C
 					if (m_pDoc->m_ShipArray.GetAt(i).GetFleet())
 					{
 						for (int j = 0; j < m_pDoc->m_ShipArray.GetAt(i).GetFleet()->GetFleetSize(); j++)
-							if (m_pDoc->m_ShipArray.GetAt(i).GetFleet()->GetShipFromFleet(j)->GetID() == report->GetID())
+							if (m_pDoc->m_ShipArray.GetAt(i).GetShipFromFleet(j)->GetID() == report->GetID())
 								allShips.Add(CPoint(i,j));
 					}
 					if (m_pDoc->m_ShipArray.GetAt(i).GetID() == report->GetID())
@@ -1420,7 +1420,7 @@ BOOLEAN CIntelCalc::ExecuteMilitarySabotage(CMajor* pRace, CMajor* pEnemyRace, C
 				if (n.y == -1)
 					ship = &m_pDoc->m_ShipArray.GetAt(n.x);
 				else
-					ship = m_pDoc->m_ShipArray.GetAt(n.x).GetFleet()->GetShipFromFleet(n.y);
+					ship = m_pDoc->m_ShipArray.GetAt(n.x).GetShipFromFleet(n.y);
 			}
 			// wurde kein Schiff mehr in diesem Sektor gefunden, sei es da es zerstört wurde oder jetzt in einem anderen
 			// Sektor ist, kann es auch nicht mehr zerstört werden.
@@ -1475,13 +1475,13 @@ BOOLEAN CIntelCalc::ExecuteMilitarySabotage(CMajor* pRace, CMajor* pEnemyRace, C
 					if (ship->GetFleet())
 					{
 						// Kopie der Flotte holen
-						CFleet* pFleetCopy = ship->GetFleet();
+						CFleet* pFleetCopy = ship->GetFleetDeprecated();
 						// erstes Schiff aus der Flotte holen
 						CShip* pFleetShip = pFleetCopy->GetShipFromFleet(0);
 						// für dieses eine Flotte erstellen
 						pFleetShip->CreateFleet();
 						for (USHORT i = 1; i < pFleetCopy->GetFleetSize(); i++)
-							pFleetShip->GetFleet()->AddShipToFleet(pFleetCopy->GetShipFromFleet(i));
+							pFleetShip->AddShipToFleet(*pFleetCopy->GetShipFromFleet(i));
 						pFleetShip->CheckFleet();
 						// neues Flottenschiff dem Array hinzufügen
 						m_pDoc->m_ShipArray.Add(m_pDoc->m_ShipArray.end(), *pFleetShip);
@@ -1494,7 +1494,7 @@ BOOLEAN CIntelCalc::ExecuteMilitarySabotage(CMajor* pRace, CMajor* pEnemyRace, C
 				else	// Schiff ist in Flotte
 				{
 					m_pDoc->m_ShipArray.Add(m_pDoc->m_ShipArray.end(), *ship);
-					m_pDoc->m_ShipArray.GetAt(n.x).GetFleet()->RemoveShipFromFleet(n.y);
+					m_pDoc->m_ShipArray.GetAt(n.x).RemoveShipFromFleet(n.y);
 					m_pDoc->m_ShipArray.GetAt(n.x).CheckFleet();
 				}
 				if (report)
@@ -1526,7 +1526,7 @@ BOOLEAN CIntelCalc::ExecuteMilitarySabotage(CMajor* pRace, CMajor* pEnemyRace, C
 				}
 				else	// Schiff ist in Flotte
 				{
-					m_pDoc->m_ShipArray.GetAt(n.x).GetFleet()->RemoveShipFromFleet(n.y);
+					m_pDoc->m_ShipArray.GetAt(n.x).RemoveShipFromFleet(n.y);
 					m_pDoc->m_ShipArray.GetAt(n.x).CheckFleet();
 				}
 				if (report)

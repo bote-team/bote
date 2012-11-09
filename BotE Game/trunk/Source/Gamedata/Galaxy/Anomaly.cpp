@@ -238,16 +238,16 @@ void CAnomaly::CalcShipEffects(CShip* pShip) const
 		{
 			for (int i = 0; i < pShip->GetFleet()->GetFleetSize(); i++)
 			{
-				MakeShieldDmg(500, 75, pShip->GetFleet()->GetShipFromFleet(i));
+				MakeShieldDmg(500, 75, pShip->GetShipFromFleet(i));
 				// sind die Schilde runter, so wird das Schiff zerstört
-				if (pShip->GetFleet()->GetShipFromFleet(i)->GetShield()->GetCurrentShield() == 0)
-					pShip->GetFleet()->GetShipFromFleet(i)->GetHull()->SetCurrentHull(pShip->GetFleet()->GetShipFromFleet(i)->GetHull()->GetCurrentHull() * (-1));
+				if (pShip->GetShipFromFleet(i)->GetShield()->GetCurrentShield() == 0)
+					pShip->GetShipFromFleet(i)->GetHull()->SetCurrentHull(pShip->GetShipFromFleet(i)->GetHull()->GetCurrentHull() * (-1));
 
 				// Verlust aller Crewerfahrung bei Röntgenpulsar und Magnetar
 				if (m_byType == XRAYPULSAR || m_byType == MAGNETAR)
-					pShip->GetFleet()->GetShipFromFleet(i)->SetCrewExperiance(pShip->GetFleet()->GetShipFromFleet(i)->GetCrewExperience() * (-1));
+					pShip->GetShipFromFleet(i)->SetCrewExperiance(pShip->GetShipFromFleet(i)->GetCrewExperience() * (-1));
 				if (m_byType == MAGNETAR)
-					PerhabsStrand(pShip->GetFleet()->GetShipFromFleet(i));
+					PerhabsStrand(pShip->GetShipFromFleet(i));
 			}
 		}
 
@@ -269,7 +269,7 @@ void CAnomaly::CalcShipEffects(CShip* pShip) const
 		// hat das Schiff eine Flotte, so jedes Schiff in der Flotte beachten
 		if (pShip->GetFleet())
 			for (int i = 0; i < pShip->GetFleet()->GetFleetSize(); i++)
-				pShip->GetFleet()->GetShipFromFleet(i)->GetShield()->SetCurrentShield(pShip->GetFleet()->GetShipFromFleet(i)->GetShield()->GetCurrentShield() * (-1));
+				pShip->GetShipFromFleet(i)->GetShield()->SetCurrentShield(pShip->GetShipFromFleet(i)->GetShield()->GetCurrentShield() * (-1));
 		// Schiff selbst
 		pShip->GetShield()->SetCurrentShield(pShip->GetShield()->GetCurrentShield() * (-1));
 	}
@@ -278,7 +278,7 @@ void CAnomaly::CalcShipEffects(CShip* pShip) const
 		// Verlust aller Crewerfahrung bei radioaktiven Nebel
 		if (pShip->GetFleet())
 			for (int i = 0; i < pShip->GetFleet()->GetFleetSize(); i++)
-				pShip->GetFleet()->GetShipFromFleet(i)->SetCrewExperiance(pShip->GetFleet()->GetShipFromFleet(i)->GetCrewExperience() * (-1));
+				pShip->GetShipFromFleet(i)->SetCrewExperiance(pShip->GetShipFromFleet(i)->GetCrewExperience() * (-1));
 		// Schiff selbst
 		pShip->SetCrewExperiance(pShip->GetCrewExperience() * (-1));
 	}
@@ -288,7 +288,7 @@ void CAnomaly::CalcShipEffects(CShip* pShip) const
 		// hat das Schiff eine Flotte, so jedes Schiff in der Flotte beachten
 		if (pShip->GetFleet())
 			for (int i = 0; i < pShip->GetFleet()->GetFleetSize(); i++)
-				pShip->GetFleet()->GetShipFromFleet(i)->GetHull()->SetCurrentHull(pShip->GetFleet()->GetShipFromFleet(i)->GetHull()->GetCurrentHull() * (-1));
+				pShip->GetShipFromFleet(i)->GetHull()->SetCurrentHull(pShip->GetShipFromFleet(i)->GetHull()->GetCurrentHull() * (-1));
 		// Schiff selbst
 		pShip->GetHull()->SetCurrentHull(pShip->GetHull()->GetCurrentHull() * (-1), true);
 	}
@@ -298,7 +298,7 @@ void CAnomaly::CalcShipEffects(CShip* pShip) const
 		// hat das Schiff eine Flotte, so jedes Schiff in der Flotte beachten
 		if (pShip->GetFleet())
 			for (int i = 0; i < pShip->GetFleet()->GetFleetSize(); i++)
-				MakeHullDmg(50, 50, pShip->GetFleet()->GetShipFromFleet(i));
+				MakeHullDmg(50, 50, pShip->GetShipFromFleet(i));
 		// Schiff selbst
 		MakeHullDmg(50, 50, pShip);
 	}
@@ -307,7 +307,7 @@ void CAnomaly::CalcShipEffects(CShip* pShip) const
 		// Verlust aller Crewerfahrung bei Ionensturm
 		if (pShip->GetFleet())
 			for (int i = 0; i < pShip->GetFleet()->GetFleetSize(); i++)
-				pShip->GetFleet()->GetShipFromFleet(i)->SetCrewExperiance(pShip->GetFleet()->GetShipFromFleet(i)->GetCrewExperience() * (-1));
+				pShip->GetShipFromFleet(i)->SetCrewExperiance(pShip->GetShipFromFleet(i)->GetCrewExperience() * (-1));
 		// Schiff selbst
 		pShip->SetCrewExperiance(pShip->GetCrewExperience() * (-1));
 
@@ -316,11 +316,11 @@ void CAnomaly::CalcShipEffects(CShip* pShip) const
 		if (pShip->GetFleet())
 			for (int i = 0; i < pShip->GetFleet()->GetFleetSize(); i++)
 			{
-				UINT nMaxShield = pShip->GetFleet()->GetShipFromFleet(i)->GetShield()->GetMaxShield() * 1.03;
-				BYTE nShieldType = pShip->GetFleet()->GetShipFromFleet(i)->GetShield()->GetShieldType();
-				BOOLEAN bRegenerative = pShip->GetFleet()->GetShipFromFleet(i)->GetShield()->GetRegenerative();
+				UINT nMaxShield = pShip->GetShipFromFleet(i)->GetShield()->GetMaxShield() * 1.03;
+				BYTE nShieldType = pShip->GetShipFromFleet(i)->GetShield()->GetShieldType();
+				BOOLEAN bRegenerative = pShip->GetShipFromFleet(i)->GetShield()->GetRegenerative();
 
-				pShip->GetFleet()->GetShipFromFleet(i)->GetShield()->ModifyShield(nMaxShield, nShieldType, bRegenerative);
+				pShip->GetShipFromFleet(i)->GetShield()->ModifyShield(nMaxShield, nShieldType, bRegenerative);
 			}
 		// Schiff selbst
 		UINT nMaxShield = pShip->GetShield()->GetMaxShield() * 1.23;

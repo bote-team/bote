@@ -449,7 +449,7 @@ bool CShipAI::DoBombardSystem(CShip* pShip)
 			{
 				for (int j = 0; j < pTempShip->GetFleet()->GetFleetSize(); j++)
 				{
-					nShipValue += pTempShip->GetFleet()->GetShipFromFleet(j)->GetHull()->GetCurrentHull();
+					nShipValue += pTempShip->GetShipFromFleet(j)->GetHull()->GetCurrentHull();
 				}
 			}
 
@@ -554,11 +554,11 @@ void CShipAI::DoMakeFleet(CShip* pShip, int nIndex)
 			{
 				// Schiffe aus der Flotte der neuen Flotte hinzufügen
 				for (int n = 0; n < pOtherShip->GetFleet()->GetFleetSize(); n++)
-					pShip->GetFleet()->AddShipToFleet(pOtherShip->GetFleet()->GetShipFromFleet(n));
+					pShip->AddShipToFleet(*pOtherShip->GetShipFromFleet(n));
 				pOtherShip->DeleteFleet();
 			}
 
-			pShip->GetFleet()->AddShipToFleet(pOtherShip);
+			pShip->AddShipToFleet(*pOtherShip);
 			m_pDoc->m_ShipArray.RemoveAt(i--);
 		}
 	}

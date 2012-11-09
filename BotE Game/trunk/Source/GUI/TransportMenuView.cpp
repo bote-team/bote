@@ -204,7 +204,7 @@ void CTransportMenuView::DrawTransportMenue(Graphics* g)
 		int res = ship->GetLoadedResources(i);
 		if (ship->GetFleet())
 			for (int j = 0; j < ship->GetFleet()->GetFleetSize(); j++)
-				res += ship->GetFleet()->GetShipFromFleet(j)->GetLoadedResources(i);
+				res += ship->GetShipFromFleet(j)->GetLoadedResources(i);
 		// Lagerinhalt im Schiff zeichnen
 		fontFormat.SetAlignment(StringAlignmentFar);
 		s.Format("%d", res);
@@ -225,9 +225,9 @@ void CTransportMenuView::DrawTransportMenue(Graphics* g)
 	if (ship->GetFleet())
 		for (int j = 0; j < ship->GetFleet()->GetFleetSize(); j++)
 		{
-			usedStorage += ship->GetFleet()->GetShipFromFleet(j)->GetUsedStorageRoom(&pDoc->m_TroopInfo);
-			storageRoom += ship->GetFleet()->GetShipFromFleet(j)->GetStorageRoom();
-			troopNumber += ship->GetFleet()->GetShipFromFleet(j)->GetTransportedTroops()->GetSize();
+			usedStorage += ship->GetShipFromFleet(j)->GetUsedStorageRoom(&pDoc->m_TroopInfo);
+			storageRoom += ship->GetShipFromFleet(j)->GetStorageRoom();
+			troopNumber += ship->GetShipFromFleet(j)->GetTransportedTroops()->GetSize();
 		}
 /*	for (int i = 0; i < ship->GetTransportedTroops()->GetSize(); i++)
 	{
@@ -488,7 +488,7 @@ void CTransportMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 								break;
 						}
 						if (isFleet && j < number-1)
-							ship = (&pDoc->CurrentShip())->GetFleet()->GetShipFromFleet(j);
+							ship = (&pDoc->CurrentShip())->GetShipFromFleet(j);
 					}
 					return;
 				}
@@ -538,7 +538,7 @@ void CTransportMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 						if (m_iTransportStorageQuantity == NULL)
 							break;
 						if (isFleet && j < number-1)
-							ship = (&pDoc->CurrentShip())->GetFleet()->GetShipFromFleet(j);
+							ship = (&pDoc->CurrentShip())->GetShipFromFleet(j);
 					}
 					m_iTransportStorageQuantity = oldQuantity;
 					Invalidate(FALSE);
@@ -585,7 +585,7 @@ void CTransportMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 									break;
 							}
 							if (isFleet && j < number-1)
-								ship = (&pDoc->CurrentShip())->GetFleet()->GetShipFromFleet(j);
+								ship = (&pDoc->CurrentShip())->GetShipFromFleet(j);
 						}
 					}
 					return;
@@ -625,7 +625,7 @@ void CTransportMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 						if (transportedRes == NULL)
 							break;
 						if (isFleet && j < number-1)
-							ship = (&pDoc->CurrentShip())->GetFleet()->GetShipFromFleet(j);
+							ship = (&pDoc->CurrentShip())->GetShipFromFleet(j);
 					}
 					m_iTransportStorageQuantity = oldQuantity;
 					Invalidate(FALSE);

@@ -158,7 +158,7 @@ void CStatistics::GetDemographicsMilitary(const CString& sRaceID, int& nPlace, f
 		{
 			for (int j = 0; j < pShip->GetFleet()->GetFleetSize(); j++)
 			{
-				CShip* pFleetShip = pShip->GetFleet()->GetShipFromFleet(j);
+				CShip* pFleetShip = pShip->GetShipFromFleet(j);
 				if (!pFleetShip->IsStation() && !pFleetShip->IsAlien())
 					mMap[pFleetShip->GetOwnerOfShip()] += pFleetShip->GetCompleteOffensivePower() + pFleetShip->GetCompleteOffensivePower() / 2;
 			}

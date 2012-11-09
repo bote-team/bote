@@ -507,6 +507,26 @@ void CShip::AddShipToFleet(CShip& ship)
 	ship.AdoptOrdersFrom(*this);
 	m_Fleet->AddShipToFleet(&ship);
 }
+CShip* CShip::GetShipFromFleet(int index)
+{
+	assert(m_Fleet);
+	return m_Fleet->GetShipFromFleet(index);
+}
+const CShip* const CShip::GetShipFromFleet(int index) const
+{
+	assert(m_Fleet);
+	return m_Fleet->GetShipFromFleet(index);
+}
+void CShip::RemoveShipFromFleet(int index)
+{
+	assert(m_Fleet);
+	m_Fleet->RemoveShipFromFleet(index);
+}
+void CShip::PropagateOrdersToFleet()
+{
+	assert(m_Fleet);
+	m_Fleet->AdoptCurrentOrders(this);
+}
 
 bool CShip::HasSpecial(SHIP_SPECIAL::Typ nAbility) const
 {

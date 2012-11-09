@@ -181,7 +181,7 @@ void CCombatMenuView::OnDraw(CDC* dc)
 		// Wenn das Schiff eine Flotte anführt, dann auch die Zeiger auf die Schiffe in der Flotte reingeben
 		if (pShip->GetFleet())
 			for (int j = 0; j < pShip->GetFleet()->GetFleetSize(); j++)
-				m_vInvolvedShips.Add(pShip->GetFleet()->GetShipFromFleet(j));
+				m_vInvolvedShips.Add(pShip->GetShipFromFleet(j));
 	}
 
 	// grobe prozentuale Kampfchance und beteiligte Rassen berechnen

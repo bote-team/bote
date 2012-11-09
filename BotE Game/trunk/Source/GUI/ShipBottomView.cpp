@@ -798,7 +798,7 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 						if (pDoc->CurrentShip().GetFleet() != 0 && pDoc->CurrentShip().GetFleet()->GetFleetSize() > 0)
 						{
 							for (USHORT i = 0; i < pDoc->CurrentShip().GetFleet()->GetFleetSize(); i++)
-								pDoc->FleetShip().AddShipToFleet(*pDoc->CurrentShip().GetFleet()->GetShipFromFleet(i));
+								pDoc->FleetShip().AddShipToFleet(*pDoc->CurrentShip().GetShipFromFleet(i));
 							// Jetzt haben wir die Schiffe auch noch hinzugefügt und können die Flotte nun löschen
 							pDoc->CurrentShip().DeleteFleet();
 							// Zu allerletzt das ehemalige Flottenschiff hinzufügen, da es jetzt keine Flotte mehr besitzt
@@ -920,9 +920,9 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 							else if (pDoc->m_ShipArray[n].GetFleet() != 0)
 							{
 								for (USHORT m = 0; m < pDoc->m_ShipArray[n].GetFleet()->GetFleetSize(); m++)
-									if (pDoc->m_ShipArray[n].GetFleet()->GetShipFromFleet(m)->GetCurrentOrder() == SHIP_ORDER::ASSIGN_FLAGSHIP)
+									if (pDoc->m_ShipArray[n].GetShipFromFleet(m)->GetCurrentOrder() == SHIP_ORDER::ASSIGN_FLAGSHIP)
 									{
-										pDoc->m_ShipArray.ElementAt(n).GetFleet()->GetShipFromFleet(m)->SetCurrentOrder(SHIP_ORDER::ATTACK);
+										pDoc->m_ShipArray.ElementAt(n).GetShipFromFleet(m)->SetCurrentOrder(SHIP_ORDER::ATTACK);
 										break;
 									}
 							}

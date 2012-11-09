@@ -45,7 +45,10 @@ public:
 
 // Zugriffsfunktionen
 	// zum Lesen der Membervariablen
-	CFleet*	GetFleet(void) {return m_Fleet;}
+
+	//deprecated; use functions CShip::AddShipToFleet, CShip::GetShipFromFleet,
+	//CShip::RemoveShipFromFleet, CShip::PropagateOrdersToFleet
+	CFleet*	GetFleetDeprecated(void) {return m_Fleet;}
 	CFleet const* const GetFleet(void) const { return m_Fleet; }
 	CHull* GetHull(void) {return &m_Hull;}
 	CShield* GetShield(void) {return &m_Shield;}
@@ -181,7 +184,10 @@ public:
 	 * adds ship to this ship's fleet and propagates this ship's orders to ship
 	**/
 	void AddShipToFleet(CShip& ship);
-
+	const CShip* const GetShipFromFleet(int index) const;
+	CShip* GetShipFromFleet(int index);
+	void RemoveShipFromFleet(int index);
+	void PropagateOrdersToFleet();
 
 	/// Funktion gibt einen Wahrheitswert zurück, ob das Schiffsobjekt eine bestimmte Spezialfähigkeit besitzt.
 	/// @param ability Spezialfähigkeit

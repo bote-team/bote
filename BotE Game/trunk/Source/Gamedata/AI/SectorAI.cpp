@@ -50,7 +50,7 @@ void CSectorAI::CalculateDangers()
 		// Führt das Schiff eine Flotte an, so muss dies alles auch für die Schiffe in der Flotte getan werden
 		if (ship->GetFleet() != NULL)
 			for (int j = 0; j < ship->GetFleet()->GetFleetSize(); j++)
-				AddDanger(ship->GetFleet()->GetShipFromFleet(j));
+				AddDanger(ship->GetShipFromFleet(j));
 	}
 }
 
