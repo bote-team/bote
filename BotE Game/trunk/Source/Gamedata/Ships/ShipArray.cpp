@@ -5,7 +5,9 @@
 
 #include <cassert>
 
-
+//////////////////////////////////////////////////////////////////////
+// Konstruktion/Destruktion
+//////////////////////////////////////////////////////////////////////
 CShipArray::CShipArray(void) :
 	m_vShips()
 {
@@ -14,21 +16,24 @@ CShipArray::CShipArray(void) :
 CShipArray::~CShipArray(void)
 {
 }
-
+//////////////////////////////////////////////////////////////////////
+// getting iterators
+//////////////////////////////////////////////////////////////////////
 CShipArray::const_iterator CShipArray::begin() const {
 	return m_vShips.begin();
 }
 CShipArray::const_iterator CShipArray::end() const {
 	return m_vShips.end();
 }
-
 CShipArray::iterator CShipArray::begin() {
 	return m_vShips.begin();
 }
 CShipArray::iterator CShipArray::end() {
 	return m_vShips.end();
 }
-
+//////////////////////////////////////////////////////////////////////
+// adding elements
+//////////////////////////////////////////////////////////////////////
 void CShipArray::Add(const CShip& ship, CShipArray::const_iterator& it) {
 	const int memory = it - begin();
 	m_vShips.push_back(ship);
@@ -38,6 +43,9 @@ void CShipArray::Add(const CShip& ship) {
 	m_vShips.push_back(ship);
 }
 
+//////////////////////////////////////////////////////////////////////
+// removing elements
+//////////////////////////////////////////////////////////////////////
 void CShipArray::RemoveAll() {
 	m_vShips.clear();
 }
@@ -46,25 +54,32 @@ void CShipArray::RemoveAt(int index) {
 	m_vShips.erase(it);
 }
 
+//////////////////////////////////////////////////////////////////////
+// getting elements
+//////////////////////////////////////////////////////////////////////
 CShip& CShipArray::GetAt(int index) {
 	return m_vShips.at(index);
 }
 const CShip& CShipArray::GetAt(int index) const {
 	return m_vShips.at(index);
 }
+
 CShip& CShipArray::ElementAt(int index) {
 	return m_vShips.at(index);
 }
 const CShip& CShipArray::ElementAt(int index) const {
 	return m_vShips.at(index);
 }
+
 CShip& CShipArray::operator[](int index) {
 	return m_vShips.at(index);
 }
 const CShip& CShipArray::operator[](int index) const {
 	return m_vShips.at(index);
 }
-
+//////////////////////////////////////////////////////////////////////
+// getting info
+//////////////////////////////////////////////////////////////////////
 int CShipArray::GetUpperBound() const {
 	return m_vShips.size() - 1;
 }
@@ -74,10 +89,15 @@ int CShipArray::GetSize() const {
 bool CShipArray::empty() const {
 	return m_vShips.empty();
 }
+//////////////////////////////////////////////////////////////////////
+// private size setting
+//////////////////////////////////////////////////////////////////////
 void CShipArray::SetSize(int size) {
 	m_vShips.resize(size);
 }
-
+//////////////////////////////////////////////////////////////////////
+// Serialisierungsfunktionen
+//////////////////////////////////////////////////////////////////////
 void CShipArray::Serialize(CArchive& ar) {
 	if(ar.IsStoring()) {
 		ar << m_vShips.size();
