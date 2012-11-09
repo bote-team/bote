@@ -34,8 +34,9 @@ CFleet::CFleet(const CFleet & rhs)
 		return;
 
 	m_vShips.RemoveAll();
-	for (int i = 0; i < rhs.m_vShips.GetSize(); i++)
-		m_vShips.Add(rhs.m_vShips.GetAt(i));
+	const CShipArray& shiparray = rhs.m_vShips;
+	for(CShipArray::const_iterator it = shiparray.begin(); it != shiparray.end(); ++it)
+		m_vShips.Add(m_vShips.end(), *it);
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -47,8 +48,9 @@ CFleet & CFleet::operator=(const CFleet & rhs)
 		return *this;
 
 	m_vShips.RemoveAll();
-	for (int i = 0; i < rhs.m_vShips.GetSize(); i++)
-		m_vShips.Add(rhs.m_vShips.GetAt(i));
+	const CShipArray& shiparray = rhs.m_vShips;
+	for(CShipArray::const_iterator it = shiparray.begin(); it != shiparray.end(); ++it)
+		m_vShips.Add(m_vShips.end(), *it);
 
 	return *this;
 }
@@ -282,4 +284,8 @@ bool CFleet::AllOnTactic(COMBAT_TACTIC::Typ tactic) const {
 
 BOOL CFleet::IsEmpty() const {
 	return m_vShips.empty();
+}
+
+const CShipArray& CFleet::ShipArray() const {
+	return m_vShips;
 }

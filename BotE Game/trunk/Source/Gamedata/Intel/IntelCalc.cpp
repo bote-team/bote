@@ -1484,7 +1484,7 @@ BOOLEAN CIntelCalc::ExecuteMilitarySabotage(CMajor* pRace, CMajor* pEnemyRace, C
 							pFleetShip->GetFleet()->AddShipToFleet(pFleetCopy->GetShipFromFleet(i));
 						pFleetShip->CheckFleet();
 						// neues Flottenschiff dem Array hinzufügen
-						m_pDoc->m_ShipArray.Add(*pFleetShip);
+						m_pDoc->m_ShipArray.Add(m_pDoc->m_ShipArray.end(), *pFleetShip);
 						// Schiff nochmal neu holen, da der Vektor verändert wurde und so sich auch der Zeiger ändern kann
 						ship = &m_pDoc->m_ShipArray.GetAt(n.x);
 						// Flotte des geklauten Schiffes löschen
@@ -1493,7 +1493,7 @@ BOOLEAN CIntelCalc::ExecuteMilitarySabotage(CMajor* pRace, CMajor* pEnemyRace, C
 				}
 				else	// Schiff ist in Flotte
 				{
-					m_pDoc->m_ShipArray.Add(*ship);
+					m_pDoc->m_ShipArray.Add(m_pDoc->m_ShipArray.end(), *ship);
 					m_pDoc->m_ShipArray.GetAt(n.x).GetFleet()->RemoveShipFromFleet(n.y);
 					m_pDoc->m_ShipArray.GetAt(n.x).CheckFleet();
 				}

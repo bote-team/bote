@@ -436,7 +436,7 @@ void CFleetMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 					|| whichRect == 6)
 				{
 					// Das Schiff welches wir aus der Flotte nehmen stecken wir wieder in das normale Schiffsarray
-					pDoc->m_ShipArray.Add(*(pDoc->FleetShip().GetFleet()->GetShipFromFleet(i)));
+					pDoc->m_ShipArray.Add(pDoc->m_ShipArray.end(), *(pDoc->FleetShip().GetFleet()->GetShipFromFleet(i)));
 					pDoc->FleetShip().GetFleet()->RemoveShipFromFleet(i);
 					// Wenn wir das letzte Schiff in der Flotte entfernt haben, dann müssen wir
 					// das markierte Schiff dekrementieren, da sonst ein ungültiger Feldaufruf kommt
@@ -479,7 +479,7 @@ void CFleetMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		if ((i != 0 && m_iFleetPage == 1) || m_iFleetPage > 1)
 		{
 			// Das Schiff welches wir aus der Flotte nehmen stecken wir wieder in das normale Schiffsarray
-			pDoc->m_ShipArray.Add(*(pDoc->FleetShip().GetFleet()->GetShipFromFleet(i-1)));
+			pDoc->m_ShipArray.Add(pDoc->m_ShipArray.end(), *(pDoc->FleetShip().GetFleet()->GetShipFromFleet(i-1)));
 			pDoc->FleetShip().GetFleet()->RemoveShipFromFleet(i-1);
 			// Wenn wir das letzte Schiff in der Flotte entfernt haben, dann müssen wir
 			// das markierte Schiff dekrementieren, da sonst ein ungültiger Feldaufruf kommt
@@ -514,7 +514,7 @@ void CFleetMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 				pFleetShip->GetFleet()->AddShipToFleet(pFleetCopy->GetShipFromFleet(i));
 			pFleetShip->CheckFleet();
 			// neues Flottenschiff dem Array hinzufügen
-			pDoc->m_ShipArray.Add(*pFleetShip);
+			pDoc->m_ShipArray.Add(pDoc->m_ShipArray.end(), *pFleetShip);
 			// Schiff nochmal neu holen, da der Vektor verändert wurde und so sich auch der Zeiger ändern kann
 			pShip = &pDoc->FleetShip();
 			// Flotte löschen

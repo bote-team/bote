@@ -41,9 +41,12 @@ public:
 	// Funktion gibt einen Zeiger auf ein Schiff aus der Flotte zurück
 	CShip* GetShipFromFleet(int n) { return &m_vShips.GetAt(n); }
 	CShip const* const GetShipFromFleet(int n) const { return &m_vShips.GetAt(n); }
+	const CShipArray& ShipArray() const;
 
 	// Funktion um ein Schiff zur Flotte hinzuzufügen
-	void AddShipToFleet(const CShip* pShip) { m_vShips.Add(*pShip); }
+	void AddShipToFleet(const CShip* pShip) {
+		m_vShips.Add(m_vShips.end(), *pShip);
+	}
 
 	// Funktion um ein Schiff aus der Flotte zu entfernen.
 	void RemoveShipFromFleet(UINT nIndex);

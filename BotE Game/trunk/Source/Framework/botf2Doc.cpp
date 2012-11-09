@@ -2156,7 +2156,7 @@ void CBotf2Doc::BuildShip(int nID, const CPoint& KO, const CString& sOwnerID)
 
 	// unbedingt Kopie machen, da die Refernz verlorengeht, sobald ein neues Schiff hinzugefügt wurde
 	CString sOwner = sOwnerID;
-	m_ShipArray.Add((CShip)m_ShipInfoArray.GetAt(nID));
+	m_ShipArray.Add(m_ShipArray.end(), static_cast<CShip&>(m_ShipInfoArray.GetAt(nID)));
 	int n = m_ShipArray.GetUpperBound();
 	m_ShipArray[n].SetOwnerOfShip(sOwner);
 	m_ShipArray[n].SetKO(KO.x, KO.y);
@@ -2202,7 +2202,7 @@ void CBotf2Doc::RemoveShip(int nIndex)
 		// alten Befehl übergeben
 		pFleetShip->SetCurrentOrder(nOldOrder);
 
-		m_ShipArray.Add(*pFleetShip);
+		m_ShipArray.Add(m_ShipArray.end(), *pFleetShip);
 		// Schiff nochmal neu holen, da der Vektor verändert wurde und so sich auch der Zeiger ändern kann
 		pShip = &m_ShipArray[nIndex];
 		// Flotte löschen
@@ -5242,12 +5242,10 @@ void CBotf2Doc::CalcShipCombat()
 /////BEGIN: HELPER FUNCTIONS FOR void CBotf2Doc::CalcShipEffects()
 void CBotf2Doc::CalcShipRetreat() {
 	// Schiffe mit Rückzugsbefehl auf ein Feld neben dem aktuellen Feld setzen
-	for (int i = 0; i < m_ShipArray.GetSize(); i++)
-	{
-		CShip* pShip = &m_ShipArray.GetAt(i);
-		const CString& ship_owner = pShip->GetOwnerOfShip();
+	for(CShipArray::iterator ship = m_ShipArray.begin(); ship != m_ShipArray.end(); ++ship) {
+		const CString& ship_owner = ship->GetOwnerOfShip();
 		// Hat das Schiff den Rückzugsbefehl
-		if (pShip->GetCombatTactic() != COMBAT_TACTIC::CT_RETREAT)
+		if (ship->GetCombatTactic() != COMBAT_TACTIC::CT_RETREAT)
 			continue;
 
 		// Rückzugssektor für dieses Schiff in diesem Sektor holen
@@ -5257,22 +5255,22 @@ void CBotf2Doc::CalcShipRetreat() {
 			continue;
 		const std::map<std::pair<int, int>, CPoint>& mSectorRetreatSectorPairs
 			= SectorRetreatSectorPairs->second;
-		const CPoint& co = pShip->GetKO();
+		const CPoint& co = ship->GetKO();
 		const pair<int, int> CurrentSector(co.x, co.y);
 		const std::map<std::pair<int, int>, CPoint>::const_iterator& RetreatSector
 			= mSectorRetreatSectorPairs.find(CurrentSector);
 		if (RetreatSector == mSectorRetreatSectorPairs.end())
 			continue;
 
-		pShip->Retreat(RetreatSector->second);
+		ship->Retreat(RetreatSector->second);
 
-		pShip->CheckFleet();
-		CFleet* pFleet = pShip->GetFleet();
+		ship->CheckFleet();
+		CFleet* pFleet = ship->GetFleet();
 		if(!pFleet)
 			continue;
 		// sind alle Schiffe in einer Flotte im Rückzug, so kann die ganze Flotte
 		// in den Rückzugssektor
-		const bool bCompleteFleetRetreat = pFleet->GetFleetSpeed(pShip) > 0
+		const bool bCompleteFleetRetreat = pFleet->GetFleetSpeed(&*ship) > 0
 			&& pFleet->AllOnTactic(COMBAT_TACTIC::CT_RETREAT);
 
 		// haben alle Schiffe in der Flotte den Rückzugsbefehl oder hat das Schiff keine Flotte
@@ -5290,14 +5288,12 @@ void CBotf2Doc::CalcShipRetreat() {
 		// dann auch noch behandelt
 		else
 		{
-			// nicht mehr auf pShip arbeiten, da sich der Vektor hier verändern kann und somit
-			// der Zeiger nicht mehr gleich ist!
-			while (!m_ShipArray[i].GetFleet()->IsEmpty())
-			{
-				m_ShipArray.Add(*m_ShipArray[i].GetFleet()->GetShipFromFleet(0));
-				m_ShipArray[i].GetFleet()->RemoveShipFromFleet(0);
-			}
-			m_ShipArray[i].DeleteFleet();
+			//we need to be careful, since we iterate over the array we're modifying, which
+			//would normally invalidate the iterator "ship"
+			const CShipArray& fleet = ship->GetFleet()->ShipArray();
+			for(CShipArray::const_iterator it = fleet.begin(); it != fleet.end(); ++it)
+				m_ShipArray.Add(ship, *it);
+			ship->DeleteFleet();
 		}
 	}//	for (int i = 0; i < m_ShipArray.GetSize(); i++)
 	m_mShipRetreatSectors.clear();
