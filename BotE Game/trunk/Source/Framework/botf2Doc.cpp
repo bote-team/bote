@@ -5947,17 +5947,18 @@ void CBotf2Doc::CalcRandomAlienEntities()
 /// Funktion berechnet Auswirkungen von Alienschiffe auf Systeme, über denen sie sich befinden.
 void CBotf2Doc::CalcAlienShipEffects()
 {
-	for (int i = 0; i < m_ShipArray.GetSize(); i++)
+	//for (int i = 0; i < m_ShipArray.GetSize(); i++)
+	for(CShipArray::const_iterator ship = m_ShipArray.begin(); ship != m_ShipArray.end(); ++ship)
 	{
-		CShip* pShip = &m_ShipArray.GetAt(i);
-		if (!pShip->IsAlien())
+		if (!ship->IsAlien())
 			continue;
+		const CPoint& co = ship->GetKO();
 
 		// Aliens mit Rückzugsbefehl machen nix
-		if (pShip->GetCombatTactic() == COMBAT_TACTIC::CT_RETREAT)
+		if (ship->GetCombatTactic() == COMBAT_TACTIC::CT_RETREAT)
 			continue;
 
-		CMinor* pAlien = dynamic_cast<CMinor*>(m_pRaceCtrl->GetRace(pShip->GetOwnerOfShip()));
+		CMinor* pAlien = dynamic_cast<CMinor*>(m_pRaceCtrl->GetRace(ship->GetOwnerOfShip()));
 		if (!pAlien || !pAlien->IsAlienRace())
 		{
 			ASSERT(FALSE);
@@ -5967,21 +5968,21 @@ void CBotf2Doc::CalcAlienShipEffects()
 		// verschiedene Alienrassen unterscheiden
 		if (pAlien->GetRaceID() == "Ionisierendes Gaswesen")
 		{
-			CString sSystemOwner = GetSystem(pShip->GetKO().x, pShip->GetKO().y).GetOwnerOfSystem();
+			CString sSystemOwner = GetSystem(co.x, co.y).GetOwnerOfSystem();
 			CMajor* pOwner = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(sSystemOwner));
 			if (!pOwner)
 				continue;
 
 			// Energie im System auf 0 setzen
-			GetSystem(pShip->GetKO().x, pShip->GetKO().y).SetDisabledProduction(WORKER::ENERGY_WORKER);
+			GetSystem(co.x, co.y).SetDisabledProduction(WORKER::ENERGY_WORKER);
 
 			// Wenn Energie vorhanden war, dann die Nachricht bringen über Energieausfall
-			if (GetSystem(pShip->GetKO().x, pShip->GetKO().y).GetProduction()->GetMaxEnergyProd() > 0)
+			if (GetSystem(co.x, co.y).GetProduction()->GetMaxEnergyProd() > 0)
 			{
 				// Nachricht und Event einfügen
-				CString s = CResourceManager::GetString("EVENT_IONISIERENDES_GASWESEN", FALSE, GetSector(pShip->GetKO().x, pShip->GetKO().y).GetName());
+				CString s = CResourceManager::GetString("EVENT_IONISIERENDES_GASWESEN", FALSE, GetSector(co.x, co.y).GetName());
 				CMessage message;
-				message.GenerateMessage(s, MESSAGE_TYPE::SOMETHING, GetSector(pShip->GetKO().x, pShip->GetKO().y).GetName(), pShip->GetKO(), 0);
+				message.GenerateMessage(s, MESSAGE_TYPE::SOMETHING, GetSector(co.x, co.y).GetName(), co, 0);
 				pOwner->GetEmpire()->AddMessage(message);
 				if (pOwner->IsHumanPlayer())
 				{
@@ -5995,20 +5996,20 @@ void CBotf2Doc::CalcAlienShipEffects()
 		}
 		else if (pAlien->GetRaceID() == "Gaballianer")
 		{
-			CString sSystemOwner = GetSystem(pShip->GetKO().x, pShip->GetKO().y).GetOwnerOfSystem();
+			CString sSystemOwner = GetSystem(co.x, co.y).GetOwnerOfSystem();
 			if (CMajor* pOwner = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(sSystemOwner)))
 			{
 				// Nahrung im System auf 0 setzen
-				GetSystem(pShip->GetKO().x, pShip->GetKO().y).SetDisabledProduction(WORKER::FOOD_WORKER);
-				GetSystem(pShip->GetKO().x, pShip->GetKO().y).SetFoodStore(GetSystem(pShip->GetKO().x, pShip->GetKO().y).GetFoodStore() / 2);
+				GetSystem(co.x, co.y).SetDisabledProduction(WORKER::FOOD_WORKER);
+				GetSystem(co.x, co.y).SetFoodStore(GetSystem(co.x, co.y).GetFoodStore() / 2);
 
 				// Wenn Nahrung produziert oder vorhanden ist, dann die Nachricht bringen über Nahrung verseucht
-				if (GetSystem(pShip->GetKO().x, pShip->GetKO().y).GetProduction()->GetMaxFoodProd() > 0 || GetSystem(pShip->GetKO().x, pShip->GetKO().y).GetFoodStore() > 0)
+				if (GetSystem(co.x, co.y).GetProduction()->GetMaxFoodProd() > 0 || GetSystem(co.x, co.y).GetFoodStore() > 0)
 				{
 					// Nachricht und Event einfügen
-					CString s = CResourceManager::GetString("EVENT_GABALLIANER_SEUCHENSCHIFF", FALSE, GetSector(pShip->GetKO().x, pShip->GetKO().y).GetName());
+					CString s = CResourceManager::GetString("EVENT_GABALLIANER_SEUCHENSCHIFF", FALSE, GetSector(co.x, co.y).GetName());
 					CMessage message;
-					message.GenerateMessage(s, MESSAGE_TYPE::SOMETHING, GetSector(pShip->GetKO().x, pShip->GetKO().y).GetName(), pShip->GetKO(), 0);
+					message.GenerateMessage(s, MESSAGE_TYPE::SOMETHING, GetSector(co.x, co.y).GetName(), co, 0);
 					pOwner->GetEmpire()->AddMessage(message);
 					if (pOwner->IsHumanPlayer())
 					{
@@ -6022,14 +6023,14 @@ void CBotf2Doc::CalcAlienShipEffects()
 			}
 
 			// befinden sich Schiffe in diesem Sektor, so werden diese ebenfalls zu Seuchenschiffen (33%)
-			if (GetSector(pShip->GetKO().x, pShip->GetKO().y).GetIsShipInSector() && rand()%3 == 0)
+			if (GetSector(co.x, co.y).GetIsShipInSector() && rand()%3 == 0)
 			{
 				// alle Schiffe im Sektor zu Seuchenschiffen machen
 				for (int y = 0; y < m_ShipArray.GetSize(); y++)
 				{
 					CShip* pOtherShip = &m_ShipArray.GetAt(y);
 					// Schiff im gleichen Sektor?
-					if (pOtherShip->GetKO() != pShip->GetKO())
+					if (pOtherShip->GetKO() != co)
 						continue;
 
 					// keine anderen Alienschiffe
@@ -6080,21 +6081,21 @@ void CBotf2Doc::CalcAlienShipEffects()
 		}
 		else if (pAlien->GetRaceID() == "Blizzard-Plasmawesen")
 		{
-			CString sSystemOwner = GetSystem(pShip->GetKO().x, pShip->GetKO().y).GetOwnerOfSystem();
+			CString sSystemOwner = GetSystem(co.x, co.y).GetOwnerOfSystem();
 			CMajor* pOwner = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(sSystemOwner));
 			if (!pOwner)
 				continue;
 
 			// Energie im System auf 0 setzen
-			GetSystem(pShip->GetKO().x, pShip->GetKO().y).SetDisabledProduction(WORKER::ENERGY_WORKER);
+			GetSystem(co.x, co.y).SetDisabledProduction(WORKER::ENERGY_WORKER);
 
 			// Wenn Energie vorhanden war, dann die Nachricht bringen über Energieausfall
-			if (GetSystem(pShip->GetKO().x, pShip->GetKO().y).GetProduction()->GetMaxEnergyProd() > 0)
+			if (GetSystem(co.x, co.y).GetProduction()->GetMaxEnergyProd() > 0)
 			{
 				// Nachricht und Event einfügen
-				CString s = CResourceManager::GetString("EVENT_BLIZZARD_PLASMAWESEN", FALSE, GetSector(pShip->GetKO().x, pShip->GetKO().y).GetName());
+				CString s = CResourceManager::GetString("EVENT_BLIZZARD_PLASMAWESEN", FALSE, GetSector(co.x, co.y).GetName());
 				CMessage message;
-				message.GenerateMessage(s, MESSAGE_TYPE::SOMETHING, GetSector(pShip->GetKO().x, pShip->GetKO().y).GetName(), pShip->GetKO(), 0);
+				message.GenerateMessage(s, MESSAGE_TYPE::SOMETHING, GetSector(co.x, co.y).GetName(), co, 0);
 				pOwner->GetEmpire()->AddMessage(message);
 				if (pOwner->IsHumanPlayer())
 				{
@@ -6109,7 +6110,7 @@ void CBotf2Doc::CalcAlienShipEffects()
 		else if (pAlien->GetRaceID() == "Morlock-Raider")
 		{
 			// Creditproduktion auf 0 stellen
-			CSystem* pSystem = &GetSystem(pShip->GetKO().x, pShip->GetKO().y);
+			CSystem* pSystem = &GetSystem(co.x, co.y);
 			CMajor* pOwner = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(pSystem->GetOwnerOfSystem()));
 			if (!pOwner)
 				continue;
@@ -6130,9 +6131,9 @@ void CBotf2Doc::CalcAlienShipEffects()
 			// Nachricht und Event einfügen
 			CString sCredits = "";
 			sCredits.Format("%d", nCreditProd);
-			CString s = CResourceManager::GetString("EVENT_MORLOCK_RAIDER", FALSE, sCredits, GetSector(pShip->GetKO().x, pShip->GetKO().y).GetName());
+			CString s = CResourceManager::GetString("EVENT_MORLOCK_RAIDER", FALSE, sCredits, GetSector(co.x, co.y).GetName());
 			CMessage message;
-			message.GenerateMessage(s, MESSAGE_TYPE::SOMETHING, GetSector(pShip->GetKO().x, pShip->GetKO().y).GetName(), pShip->GetKO(), 0);
+			message.GenerateMessage(s, MESSAGE_TYPE::SOMETHING, GetSector(co.x, co.y).GetName(), co, 0);
 			pOwner->GetEmpire()->AddMessage(message);
 			if (pOwner->IsHumanPlayer())
 			{
