@@ -295,8 +295,10 @@ CShip CFleet::MakeFirstShipTheLeadingShipFleet() {
 	CShip& new_fleet_ship = m_vShips.GetAt(0);
 	// für dieses eine Flotte erstellen
 	new_fleet_ship.CreateFleet();
-	CShipArray::iterator it = ++m_vShips.begin();
-	for(; it != m_vShips.end(); ++it)
+	for(CShipArray::iterator it = m_vShips.begin(); it != m_vShips.end(); ++it) {
+		if(it == m_vShips.begin())
+			continue;
 		new_fleet_ship.AddShipToFleet(*it);
+	}
 	return new_fleet_ship;
 }
