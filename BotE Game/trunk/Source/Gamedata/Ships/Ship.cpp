@@ -742,7 +742,7 @@ CString CShip::GetTooltip(bool bShowFleet/*= true*/)
 	}
 
 	CString sType;
-	if (bShowFleet && this->GetFleet() && this->GetFleet()->GetFleetShipType(this) == -1)
+	if (bShowFleet && HasFleet(false) && this->GetFleet()->GetFleetShipType(this) == -1)
 		sType = _T("(") + CResourceManager::GetString("MIXED_FLEET") + _T(")");
 	else if (bShowFleet && this->HasFleet(false))
 		sType = _T("(") + this->GetShipTypeAsString(TRUE) + _T(")");

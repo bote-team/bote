@@ -165,10 +165,6 @@ public:
 		return GetShip(m_iNumberOfFleetShip);
 	}
 
-	const CFleet* const CurrentShipsFleet() {
-		return CurrentShip().GetFleet();
-	}
-
 	const CPoint& GetKO(void) const {return m_ptKO;}
 	void SetKO(int x, int y);
 
