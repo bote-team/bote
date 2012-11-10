@@ -282,7 +282,7 @@ bool CFleet::AllOnTactic(COMBAT_TACTIC::Typ tactic) const {
 	return true;
 }
 
-BOOL CFleet::IsEmpty() const {
+bool CFleet::IsEmpty() const {
 	return m_vShips.empty();
 }
 

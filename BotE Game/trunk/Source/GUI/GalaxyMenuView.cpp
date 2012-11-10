@@ -281,7 +281,7 @@ void CGalaxyMenuView::OnDraw(CDC* dc)
 	if (m_bShipMove)
 	{
 		// Wenn das Schiff keine Flotte anführt
-		if (pDoc->CurrentShipsFleet() == 0 || (pDoc->CurrentShipsFleet() != 0 && pDoc->CurrentShipsFleet()->GetFleetSize() == 0))
+		if (!pDoc->CurrentShip().HasFleet())
 			m_nRange = 3-pDoc->GetShip(pDoc->GetCurrentShipIndex()).GetRange();
 		else
 			m_nRange = 3-pDoc->CurrentShipsFleet()->GetFleetRange(&pDoc->CurrentShip());
@@ -447,7 +447,7 @@ void CGalaxyMenuView::OnDraw(CDC* dc)
 		CPoint last = pMajor->GetStarmap()->GetSectorCoords(pDoc->m_ShipArray[n].GetPath()->GetAt(pDoc->m_ShipArray[n].GetPath()->GetUpperBound()));
 		CString s;
 		// Wenn das Schiff keine Flotte anführt
-		if (pDoc->CurrentShipsFleet() == 0 || (pDoc->CurrentShipsFleet() != 0 && pDoc->CurrentShipsFleet()->GetFleetSize() == 0))
+		if (!pDoc->CurrentShip().HasFleet())
 			s.Format("%.0f",ceil((float)pDoc->m_ShipArray[n].GetPath()->GetSize() / (float)pDoc->m_ShipArray[n].GetSpeed()));
 		else
 			s.Format("%.0f",ceil((float)pDoc->m_ShipArray[n].GetPath()->GetSize() / (float)pDoc->CurrentShipsFleet()->GetFleetSpeed(&pDoc->CurrentShip())));
@@ -1063,7 +1063,7 @@ void CGalaxyMenuView::OnMouseMove(UINT nFlags, CPoint point)
 			// Weg berechnen, neu zeichnen
 			char speed = 0;
 			// Wenn das Schiff keine Flotte anführt
-			if (pDoc->CurrentShipsFleet() == 0 || (pDoc->CurrentShipsFleet() != 0 && pDoc->CurrentShipsFleet()->GetFleetSize() == 0))
+			if (!pDoc->CurrentShip().HasFleet())
 				speed = (char)(pDoc->CurrentShip().GetSpeed());
 			else
 				speed = (char)(pDoc->CurrentShipsFleet()->GetFleetSpeed(&pDoc->CurrentShip()));

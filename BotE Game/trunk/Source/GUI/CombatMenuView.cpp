@@ -180,7 +180,7 @@ void CCombatMenuView::OnDraw(CDC* dc)
 		m_vInvolvedShips.Add(pShip);
 		// Wenn das Schiff eine Flotte anführt, dann auch die Zeiger auf die Schiffe in der Flotte reingeben
 		if (pShip->GetFleet())
-			for (int j = 0; j < pShip->GetFleet()->GetFleetSize(); j++)
+			for (int j = 0; j < pShip->GetFleetSize(); j++)
 				m_vInvolvedShips.Add(pShip->GetShipFromFleet(j));
 	}
 

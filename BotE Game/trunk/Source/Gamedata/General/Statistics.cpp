@@ -156,7 +156,7 @@ void CStatistics::GetDemographicsMilitary(const CString& sRaceID, int& nPlace, f
 		// Schiffe in der Flotte beachten
 		if (pShip->GetFleet())
 		{
-			for (int j = 0; j < pShip->GetFleet()->GetFleetSize(); j++)
+			for (int j = 0; j < pShip->GetFleetSize(); j++)
 			{
 				CShip* pFleetShip = pShip->GetShipFromFleet(j);
 				if (!pFleetShip->IsStation() && !pFleetShip->IsAlien())

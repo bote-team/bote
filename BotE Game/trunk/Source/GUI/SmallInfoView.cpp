@@ -325,7 +325,7 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 			}
 		}
 		// Wenn wir ein einzelnes Schiff anzeigen und nicht eine Flotte
-		else if (m_pShip->GetFleet() == 0 || (m_pShip->GetFleet() != 0 && m_pShip->GetFleet()->GetFleetSize() == 0))
+		else if (!m_pShip->HasFleet())
 		{
 			// Schiffsgrafik etwas größer anzeigen
 			Bitmap* shipGraphic = NULL;
@@ -379,7 +379,7 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 				Range = CResourceManager::GetString("LONG");
 			r.SetRect(0,0,m_TotalSize.cx,m_TotalSize.cy);
 
-			s.Format("%d %s",m_pShip->GetFleet()->GetFleetSize()+1,
+			s.Format("%d %s",m_pShip->GetFleetSize()+1,
 				CResourceManager::GetString("SHIPS"));
 			g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,0,r.right,45), &fontFormat, &fontBrush);
 
@@ -409,7 +409,7 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 			short range = 0;
 			short speed = 0;
 			// Wenn das Schiff keine Flotte anführt
-			if (pDoc->m_ShipArray.GetAt(n).GetFleet() == 0 || (pDoc->m_ShipArray.GetAt(n).GetFleet() != 0 && pDoc->m_ShipArray.GetAt(n).GetFleet()->GetFleetSize() == 0))
+			if (!pDoc->m_ShipArray.GetAt(n).HasFleet())
 			{
 				range = 3 - pDoc->m_ShipArray.GetAt(n).GetRange();
 				speed = pDoc->m_ShipArray.GetAt(n).GetSpeed();

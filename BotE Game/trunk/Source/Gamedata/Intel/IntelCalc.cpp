@@ -802,7 +802,7 @@ BOOLEAN CIntelCalc::ExecuteMilitarySpy(CMajor* pRace, CMajor* pEnemyRace, CMajor
 				{
 					number++;
 					if (ships.GetAt(i)->GetFleet())
-						for (int j = 0; j < ships.GetAt(i)->GetFleet()->GetFleetSize(); j++)
+						for (int j = 0; j < ships.GetAt(i)->GetFleetSize(); j++)
 							number++;
 				}
 			report = new CMilitaryIntelObj(pRace->GetRaceID(), pEnemyRace->GetRaceID(), m_pDoc->GetCurrentRound(), TRUE, CPoint(ships.GetAt(t)->GetKO()),
@@ -1403,7 +1403,7 @@ BOOLEAN CIntelCalc::ExecuteMilitarySabotage(CMajor* pRace, CMajor* pEnemyRace, C
 					// besitzt dieses Schiff eine Flotte, so könnte sich unser Schiff auch in der Flotte befinden
 					if (m_pDoc->m_ShipArray.GetAt(i).GetFleet())
 					{
-						for (int j = 0; j < m_pDoc->m_ShipArray.GetAt(i).GetFleet()->GetFleetSize(); j++)
+						for (int j = 0; j < m_pDoc->m_ShipArray.GetAt(i).GetFleetSize(); j++)
 							if (m_pDoc->m_ShipArray.GetAt(i).GetShipFromFleet(j)->GetID() == report->GetID())
 								allShips.Add(CPoint(i,j));
 					}

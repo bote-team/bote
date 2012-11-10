@@ -187,6 +187,12 @@ public:
 	const CShip* const GetShipFromFleet(int index) const;
 	CShip* GetShipFromFleet(int index);
 	void RemoveShipFromFleet(int index);
+	//are there no ships in this ship's fleet ?
+	bool IsFleetEmpty() const;
+	//has this ship a fleet with at least one ship ?
+	bool HasFleet() const;
+	//size of this ship's fleet
+	int GetFleetSize() const;
 
 	//uses this ship's fleet's first ship to make a leading ship, which has the remaining ships of this ship's
 	//fleet as its fleet, and returns the new leading ship

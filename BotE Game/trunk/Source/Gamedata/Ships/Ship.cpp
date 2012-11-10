@@ -463,15 +463,12 @@ void CShip::CreateFleet()
 
 void CShip::CheckFleet()
 {
-	if (m_Fleet)
-	{
-		if (m_Fleet->GetFleetSize() == 0)
-		{
-			m_Fleet->DeleteFleet();
-			delete m_Fleet;
-			m_Fleet = NULL;
-		}
-	}
+	if(!HasFleet())
+		return;
+
+	m_Fleet->DeleteFleet();
+	delete m_Fleet;
+	m_Fleet = NULL;
 }
 
 void CShip::DeleteFleet()
@@ -1331,4 +1328,20 @@ CShip CShip::GiveFleetToFleetsFirstShip() {
 	// Flotte löschen
 	DeleteFleet();
 	return new_fleet_ship;
+}
+
+bool CShip::IsFleetEmpty() const {
+	assert(m_Fleet);
+	return m_Fleet->IsEmpty();
+}
+
+bool CShip::HasFleet() const {
+	if(m_Fleet)
+		return !IsFleetEmpty();
+	return false;
+}
+
+int CShip::GetFleetSize() const {
+	assert(m_Fleet);
+	return m_Fleet->GetFleetSize();
 }

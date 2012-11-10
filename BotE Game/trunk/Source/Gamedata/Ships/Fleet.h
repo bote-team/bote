@@ -88,7 +88,7 @@ public:
 	bool AllOnTactic(COMBAT_TACTIC::Typ tactic) const;
 
 	//Are there no ships in this fleet ?
-	BOOL IsEmpty() const;
+	bool IsEmpty() const;
 
 	// Funktion löscht die gesamte Flotte
 	void DeleteFleet(void) { m_vShips.RemoveAll(); }

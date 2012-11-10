@@ -3204,7 +3204,7 @@ void CBotf2Doc::CalcSystemAttack()
 			// Wenn davon welche zerstört wurden diese aus der Flotte nehmen
 			if (m_ShipArray.GetAt(i).GetFleet())
 			{
-				for (int x = 0; x < m_ShipArray.GetAt(i).GetFleet()->GetFleetSize(); x++)
+				for (int x = 0; x < m_ShipArray.GetAt(i).GetFleetSize(); x++)
 					if (m_ShipArray.GetAt(i).GetShipFromFleet(x)->GetHull()->GetCurrentHull() < 1)
 					{
 						// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
@@ -4002,7 +4002,7 @@ void CBotf2Doc::CalcShipOrders()
 			if (m_ShipArray[y].GetFleet() != 0 && m_ShipArray[y].GetTerraformingPlanet() != -1)
 			{
 				unsigned colonize_points_sum = m_ShipArray[y].GetColonizePoints();
-				for (USHORT x = 0; x < m_ShipArray[y].GetFleet()->GetFleetSize(); x++)
+				for (USHORT x = 0; x < m_ShipArray[y].GetFleetSize(); x++)
 				{
 					CShip* pFleetShip = m_ShipArray[y].GetShipFromFleet(x);
 					if (pSector->GetPlanet(m_ShipArray[y].GetTerraformingPlanet())->GetTerraformed() == FALSE)
@@ -4123,7 +4123,7 @@ void CBotf2Doc::CalcShipOrders()
 					// beachten und gegebenfalls das Schiff aus der Flotte entfernen
 					if (m_ShipArray[y].GetFleet() != 0)
 					{
-						for (USHORT x = 0; x < m_ShipArray[y].GetFleet()->GetFleetSize(); x++)
+						for (USHORT x = 0; x < m_ShipArray[y].GetFleetSize(); x++)
 							if (pSector->SetNeededStationPoints(m_ShipArray[y].GetShipFromFleet(x)->GetStationBuildPoints(),m_ShipArray[y].GetOwnerOfShip()))
 							{
 								// Station ist fertig, also bauen (wurde durch ein Schiff in der Flotte fertiggestellt)
@@ -4271,7 +4271,7 @@ void CBotf2Doc::CalcShipOrders()
 					// beachten und gegebenfalls das Schiff aus der Flotte entfernen
 					if (m_ShipArray[y].GetFleet() != 0)
 					{
-						for (USHORT x = 0; x < m_ShipArray[y].GetFleet()->GetFleetSize(); x++)
+						for (USHORT x = 0; x < m_ShipArray[y].GetFleetSize(); x++)
 							if (pSector->SetNeededStationPoints(m_ShipArray[y].GetShipFromFleet(x)->GetStationBuildPoints(),m_ShipArray[y].GetOwnerOfShip()))
 							{
 								// Station ist fertig, also bauen (wurde durch ein Schiff in der Flotte fertiggestellt)
@@ -4406,7 +4406,7 @@ void CBotf2Doc::CalcShipOrders()
 			// Wenn das Schiff eine Flotte anf?hrt, dann auch die Schiffe in der Flotte demontieren
 			if (m_ShipArray[y].GetFleet() != 0)
 			{
-				for (USHORT x = 0; x < m_ShipArray[y].GetFleet()->GetFleetSize(); x++)
+				for (USHORT x = 0; x < m_ShipArray[y].GetFleetSize(); x++)
 				{
 					if (pSystem->GetOwnerOfSystem() == m_ShipArray[y].GetOwnerOfShip())
 					{
@@ -4460,7 +4460,7 @@ void CBotf2Doc::CalcShipOrders()
 					else if (m_ShipArray[n].GetFleet() != 0)
 					{
 						bool bFoundFlagShip = false;
-						for (USHORT m = 0; m < m_ShipArray[n].GetFleet()->GetFleetSize(); m++)
+						for (USHORT m = 0; m < m_ShipArray[n].GetFleetSize(); m++)
 						{
 							if (m_ShipArray[n].GetShipFromFleet(m)->GetIsShipFlagShip() == TRUE)
 							{
@@ -4502,7 +4502,7 @@ void CBotf2Doc::CalcShipOrders()
 					isVeteran = true;
 				else if (m_ShipArray[y].GetFleet() != 0)
 				{
-					for (int x = 0; x < m_ShipArray[y].GetFleet()->GetFleetSize(); x++)
+					for (int x = 0; x < m_ShipArray[y].GetFleetSize(); x++)
 						if (m_ShipArray[y].GetShipFromFleet(x)->GetExpLevel() >= 4)
 						{
 							isVeteran = true;
@@ -4516,7 +4516,7 @@ void CBotf2Doc::CalcShipOrders()
 					m_ShipArray[y].SetCrewExperiance(XP * 2);
 				// Wenn das Schiff eine Flotte anführt, Schiffstraining auf alle Schiffe in der Flotte anwenden
 				if (m_ShipArray[y].GetFleet() != 0)
-					for (int x = 0; x < m_ShipArray[y].GetFleet()->GetFleetSize(); x++)
+					for (int x = 0; x < m_ShipArray[y].GetFleetSize(); x++)
 					{
 						if (isVeteran == false || m_ShipArray[y].GetShipFromFleet(x)->GetExpLevel() >= 4)
 							m_ShipArray[y].GetShipFromFleet(x)->SetCrewExperiance(XP);
@@ -4533,7 +4533,7 @@ void CBotf2Doc::CalcShipOrders()
 			if (m_ShipArray[y].GetCloak() == TRUE)
 				if (m_ShipArray[y].GetFleet() != 0)
 					if (m_ShipArray[y].GetFleet()->CheckOrder(&m_ShipArray[y], SHIP_ORDER::CLOAK) == TRUE)
-						for (int x = 0; x < m_ShipArray[y].GetFleet()->GetFleetSize(); x++)
+						for (int x = 0; x < m_ShipArray[y].GetFleetSize(); x++)
 							if (m_ShipArray[y].GetShipFromFleet(x)->GetCloak() == FALSE)
 								m_ShipArray[y].GetShipFromFleet(x)->SetCloak();
 
@@ -4541,7 +4541,7 @@ void CBotf2Doc::CalcShipOrders()
 			// kann man es so nicht einstellen, aber die KI enttarnt so die Schiffe in der Flotte
 			if (m_ShipArray[y].GetCloak() == FALSE)
 				if (m_ShipArray[y].GetFleet() != 0)
-					for (int x = 0; x < m_ShipArray[y].GetFleet()->GetFleetSize(); x++)
+					for (int x = 0; x < m_ShipArray[y].GetFleetSize(); x++)
 						if (m_ShipArray[y].GetShipFromFleet(x)->GetCloak() == TRUE)
 							m_ShipArray[y].GetShipFromFleet(x)->SetCloak();
 			// Befehl wieder auf Angreifen stellen
@@ -4573,7 +4573,7 @@ void CBotf2Doc::CalcShipOrders()
 						// Blockadeeigenschaft den Blockadewert
 						if (m_ShipArray[y].GetFleet() != 0)
 						{
-							for (int x = 0; x < m_ShipArray[y].GetFleet()->GetFleetSize(); x++)
+							for (int x = 0; x < m_ShipArray[y].GetFleetSize(); x++)
 							{
 								if (m_ShipArray[y].GetShipFromFleet(x)->HasSpecial(SHIP_SPECIAL::BLOCKADESHIP))
 								{
@@ -4841,7 +4841,7 @@ void CBotf2Doc::CalcShipMovement()
 		// Wenn davon welche zerstört wurden diese aus der Flotte nehmen
 		if (pShip->GetFleet())
 		{
-			for (int x = 0; x < pShip->GetFleet()->GetFleetSize(); x++)
+			for (int x = 0; x < pShip->GetFleetSize(); x++)
 			{
 				if (pShip->GetShipFromFleet(x)->GetHull()->GetCurrentHull() < 1)
 				{
@@ -4967,7 +4967,7 @@ void CBotf2Doc::CalcShipCombat()
 
 		// Wenn das Schiff eine Flotte anführt, dann auch die Zeiger auf die Schiffe in der Flotte reingeben
 		if (pShip->GetFleet())
-			for (int j = 0; j < pShip->GetFleet()->GetFleetSize(); j++)
+			for (int j = 0; j < pShip->GetFleetSize(); j++)
 				vInvolvedShips.Add(pShip->GetShipFromFleet(j));
 		// CHECK WW:
 		// folgendes Zeug kann weg, wenn der Kampf vor der Systemberechnung dramkommt
@@ -5124,7 +5124,7 @@ void CBotf2Doc::CalcShipCombat()
 		// Wenn davon welche zerstört wurden diese aus der Flotte nehmen
 		if (m_ShipArray.GetAt(i).GetFleet())
 		{
-			for (int x = 0; x < m_ShipArray.GetAt(i).GetFleet()->GetFleetSize(); x++)
+			for (int x = 0; x < m_ShipArray.GetAt(i).GetFleetSize(); x++)
 				if (m_ShipArray.GetAt(i).GetShipFromFleet(x)->GetHull()->GetCurrentHull() < 1)
 				{
 					// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
@@ -6029,7 +6029,7 @@ void CBotf2Doc::CalcAlienShipEffects()
 
 					if (pOtherShip->GetFleet())
 					{
-						for (int x = 0; x < pOtherShip->GetFleet()->GetFleetSize(); x++)
+						for (int x = 0; x < pOtherShip->GetFleetSize(); x++)
 							vShips.push_back(pOtherShip->GetShipFromFleet(x));
 					}
 

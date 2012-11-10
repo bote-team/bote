@@ -795,9 +795,9 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 					{
 						// Wenn das Schiff welches wir hinzufügen wollen selbst eine Flotte besizt, so müssen
 						// wir diese Flotte natürlich auch noch hinzugügen
-						if (pDoc->CurrentShip().GetFleet() != 0 && pDoc->CurrentShip().GetFleet()->GetFleetSize() > 0)
+						if (pDoc->CurrentShip().HasFleet())
 						{
-							for (USHORT i = 0; i < pDoc->CurrentShip().GetFleet()->GetFleetSize(); i++)
+							for (USHORT i = 0; i < pDoc->CurrentShip().GetFleetSize(); i++)
 								pDoc->FleetShip().AddShipToFleet(*pDoc->CurrentShip().GetShipFromFleet(i));
 							// Jetzt haben wir die Schiffe auch noch hinzugefügt und können die Flotte nun löschen
 							pDoc->CurrentShip().DeleteFleet();
@@ -919,7 +919,7 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 							// überprüfen ob ein Flagschiff in einer Flotte ist
 							else if (pDoc->m_ShipArray[n].GetFleet() != 0)
 							{
-								for (USHORT m = 0; m < pDoc->m_ShipArray[n].GetFleet()->GetFleetSize(); m++)
+								for (USHORT m = 0; m < pDoc->m_ShipArray[n].GetFleetSize(); m++)
 									if (pDoc->m_ShipArray[n].GetShipFromFleet(m)->GetCurrentOrder() == SHIP_ORDER::ASSIGN_FLAGSHIP)
 									{
 										pDoc->m_ShipArray.ElementAt(n).GetShipFromFleet(m)->SetCurrentOrder(SHIP_ORDER::ATTACK);

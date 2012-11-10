@@ -203,7 +203,7 @@ void CTransportMenuView::DrawTransportMenue(Graphics* g)
 	{
 		int res = ship->GetLoadedResources(i);
 		if (ship->GetFleet())
-			for (int j = 0; j < ship->GetFleet()->GetFleetSize(); j++)
+			for (int j = 0; j < ship->GetFleetSize(); j++)
 				res += ship->GetShipFromFleet(j)->GetLoadedResources(i);
 		// Lagerinhalt im Schiff zeichnen
 		fontFormat.SetAlignment(StringAlignmentFar);
@@ -223,7 +223,7 @@ void CTransportMenuView::DrawTransportMenue(Graphics* g)
 	int storageRoom = ship->GetStorageRoom();
 	int troopNumber = ship->GetTransportedTroops()->GetSize();
 	if (ship->GetFleet())
-		for (int j = 0; j < ship->GetFleet()->GetFleetSize(); j++)
+		for (int j = 0; j < ship->GetFleetSize(); j++)
 		{
 			usedStorage += ship->GetShipFromFleet(j)->GetUsedStorageRoom(&pDoc->m_TroopInfo);
 			storageRoom += ship->GetShipFromFleet(j)->GetStorageRoom();
@@ -453,7 +453,7 @@ void CTransportMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 	if (ship->GetFleet())
 	{
 		isFleet = TRUE;
-		number += ship->GetFleet()->GetFleetSize();
+		number += ship->GetFleetSize();
 	}
 
 	// Buttons um Ressourcen zu verschieben
