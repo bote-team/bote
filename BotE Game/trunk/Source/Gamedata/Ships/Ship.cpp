@@ -1347,3 +1347,12 @@ int CShip::GetFleetSize() const {
 	assert(m_Fleet);
 	return m_Fleet->GetFleetSize();
 }
+
+void CShip::RetreatFleet(const CPoint& RetreatSector) {
+	assert(m_Fleet);
+	for (int j = 0; j < GetFleetSize(); j++)
+	{
+		CShip* pFleetShip = GetShipFromFleet(j);
+		pFleetShip->Retreat(RetreatSector);
+	}
+}

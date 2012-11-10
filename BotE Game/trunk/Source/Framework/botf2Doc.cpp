@@ -5248,7 +5248,7 @@ void CBotf2Doc::CalcShipRetreat() {
 		ship->Retreat(RetreatSector->second);
 
 		ship->CheckFleet();
-		CFleet* pFleet = ship->GetFleetDeprecated();
+		const CFleet* const pFleet = ship->GetFleet();
 		if(!pFleet)
 			continue;
 		// sind alle Schiffe in einer Flotte im Rückzug, so kann die ganze Flotte
@@ -5259,14 +5259,7 @@ void CBotf2Doc::CalcShipRetreat() {
 		// haben alle Schiffe in der Flotte den Rückzugsbefehl oder hat das Schiff keine Flotte
 		// -> Rückzugssektor festlegen
 		if (bCompleteFleetRetreat)
-		{
-			// Rückzugsbefehl in Flotte zurücknehmen
-			for (int j = 0; j < pFleet->GetFleetSize(); j++)
-			{
-				CShip* pFleetShip = pFleet->GetShipFromFleet(j);
-				pFleetShip->Retreat(RetreatSector->second);
-			}
-		}
+			ship->RetreatFleet(RetreatSector->second);
 		// Schiffe aus der Flotte nehmen und ans Ende des Schiffsarrays packen. Diese werden
 		// dann auch noch behandelt
 		else

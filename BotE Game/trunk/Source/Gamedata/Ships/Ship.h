@@ -170,6 +170,7 @@ public:
 
 	//Perform actions to retreat this ship to the given sector.
 	void Retreat(const CPoint& ptRetreatSector);
+	void RetreatFleet(const CPoint& RetreatSector);
 
 	/// Diese Funktion berechnet die Schiffserfahrung in einer neuen Runde. Auﬂer Erfahrung im Kampf, diese werden nach einem
 	/// Kampf direkt verteilt.
