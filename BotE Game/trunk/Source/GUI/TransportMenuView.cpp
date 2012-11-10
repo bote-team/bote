@@ -202,7 +202,7 @@ void CTransportMenuView::DrawTransportMenue(Graphics* g)
 	for (int i = TITAN; i <= DERITIUM; i++)
 	{
 		int res = ship->GetLoadedResources(i);
-		if (ship->GetFleet())
+		if (ship->HasFleet(false))
 			for (int j = 0; j < ship->GetFleetSize(); j++)
 				res += ship->GetShipFromFleet(j)->GetLoadedResources(i);
 		// Lagerinhalt im Schiff zeichnen
@@ -222,7 +222,7 @@ void CTransportMenuView::DrawTransportMenue(Graphics* g)
 	int usedStorage = ship->GetUsedStorageRoom(&pDoc->m_TroopInfo);
 	int storageRoom = ship->GetStorageRoom();
 	int troopNumber = ship->GetTransportedTroops()->GetSize();
-	if (ship->GetFleet())
+	if (ship->HasFleet(false))
 		for (int j = 0; j < ship->GetFleetSize(); j++)
 		{
 			usedStorage += ship->GetShipFromFleet(j)->GetUsedStorageRoom(&pDoc->m_TroopInfo);
@@ -314,7 +314,7 @@ void CTransportMenuView::DrawTransportMenue(Graphics* g)
 	}
 	// Truppenbeschreibung auf der rechten Seite, also die im Schiff anzeigen
 	//pDC->Rectangle(850,270,1050,700);
-	if (ship->GetTransportedTroops()->GetSize() > 0 && ship->GetFleet() == FALSE)
+	if (ship->GetTransportedTroops()->GetSize() > 0 && !ship->HasFleet(false))
 	{
 		BYTE id = ship->GetTransportedTroops()->GetAt(m_byTroopNumberInShip).GetID();
 		// ein paar Daten zur ausgewählten Einheit werden rechts angezeigt
@@ -389,7 +389,7 @@ void CTransportMenuView::DrawTransportMenue(Graphics* g)
 			g->DrawString(CComBSTR(s), -1, &font, RectF(290,670,120,30), &fontFormat, &btnBrush);
 		}
 		// Vor-Button rechts
-		if (ship->GetTransportedTroops()->GetSize() && !ship->GetFleet())
+		if (ship->GetTransportedTroops()->GetSize() && !ship->HasFleet(false))
 		{
 			if (graphic)
 				g->DrawImage(graphic, 665,670,120,30);
@@ -397,7 +397,7 @@ void CTransportMenuView::DrawTransportMenue(Graphics* g)
 			g->DrawString(CComBSTR(s), -1, &font, RectF(665,670,120,30), &fontFormat, &btnBrush);
 		}
 	}
-	else if (ship->GetTransportedTroops()->GetSize() && !ship->GetFleet())
+	else if (ship->GetTransportedTroops()->GetSize() && !ship->HasFleet(false))
 	{
 		// Vor-Button rechts
 		if (graphic)
@@ -450,7 +450,7 @@ void CTransportMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 
 	BOOLEAN isFleet = FALSE;
 	int number = 1;
-	if (ship->GetFleet())
+	if (ship->HasFleet(false))
 	{
 		isFleet = TRUE;
 		number += ship->GetFleetSize();
@@ -656,14 +656,14 @@ void CTransportMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		}
 		// Vor-Button rechts
 		else if (CRect(665,670,785,700).PtInRect(point) &&
-			ship->GetTransportedTroops()->GetSize() > 0 && ship->GetFleet() == FALSE)
+			ship->GetTransportedTroops()->GetSize() > 0 && !ship->HasFleet(false))
 		{
 			m_byTroopNumberInShip++;
 			Invalidate(FALSE);
 		}
 	}
 	else if (CRect(665,670,785,700).PtInRect(point) &&
-		ship->GetTransportedTroops()->GetSize() > 0 && ship->GetFleet() == FALSE)
+		ship->GetTransportedTroops()->GetSize() > 0 && !ship->HasFleet(false))
 	{
 		// Vor-Button rechts
 		m_byTroopNumberInShip++;

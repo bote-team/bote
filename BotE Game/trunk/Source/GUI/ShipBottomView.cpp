@@ -162,7 +162,7 @@ void CShipBottomView::OnDraw(CDC* dc)
 
 			// Schiffe mit zu guter Stealthpower werden hier nicht angezeigt.
 			USHORT stealthPower = MAXBYTE;
-			if (pShip->GetFleet() == NULL)
+			if (!pShip->HasFleet(false))
 			{
 				stealthPower = pShip->GetStealthPower() * 20;
 				if (pShip->GetStealthPower() > 3 && pShip->GetCloak() == FALSE)
@@ -781,7 +781,7 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 			else if (pDoc->FleetShip().GetOwnerOfShip() == pMajor->GetRaceID())
 			{
 				// Wenn das Schiff noch keine Flotte hat, dann müssen wir erstmal eine Flotte bilden
-				if (pDoc->FleetShip().GetFleet() == 0 && pDoc->GetNumberOfFleetShip() != pDoc->GetCurrentShipIndex())
+				if (!pDoc->FleetShip().HasFleet(false) && pDoc->GetNumberOfFleetShip() != pDoc->GetCurrentShipIndex())
 					pDoc->FleetShip().CreateFleet();
 				// Jetzt fügen wir der Flotte das angeklickte Schiff hinzu, wenn es nicht das Schiff selbst ist,
 				// welches die Flotte anführt
@@ -917,7 +917,7 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 								break;
 							}
 							// überprüfen ob ein Flagschiff in einer Flotte ist
-							else if (pDoc->m_ShipArray[n].GetFleet() != 0)
+							else if (pDoc->m_ShipArray[n].HasFleet(false))
 							{
 								for (USHORT m = 0; m < pDoc->m_ShipArray[n].GetFleetSize(); m++)
 									if (pDoc->m_ShipArray[n].GetShipFromFleet(m)->GetCurrentOrder() == SHIP_ORDER::ASSIGN_FLAGSHIP)

@@ -726,7 +726,7 @@ CString CShip::GetTooltip(bool bShowFleet/*= true*/)
 	CString sName = this->GetShipName();
 	if (sName.IsEmpty() == false)
 	{
-		if (bShowFleet && this->GetFleet())
+		if (bShowFleet && this->HasFleet(false))
 		{
 			// Schiffsnamen holen und die ersten 4 Zeichen (z.B. USS_) und die lezten 2 Zeichen (z.B. _A) entfernen
 			if (sName.GetLength() > 4 && sName.GetAt(3) == ' ')
@@ -744,7 +744,7 @@ CString CShip::GetTooltip(bool bShowFleet/*= true*/)
 	CString sType;
 	if (bShowFleet && this->GetFleet() && this->GetFleet()->GetFleetShipType(this) == -1)
 		sType = _T("(") + CResourceManager::GetString("MIXED_FLEET") + _T(")");
-	else if (bShowFleet && this->GetFleet())
+	else if (bShowFleet && this->HasFleet(false))
 		sType = _T("(") + this->GetShipTypeAsString(TRUE) + _T(")");
 	else
 		sType = _T("(") + this->GetShipTypeAsString() + _T(")");
@@ -774,7 +774,7 @@ CString CShip::GetTooltip(bool bShowFleet/*= true*/)
 
 	CString sMovement = CResourceManager::GetString("RANGE") + _T(": ");
 	SHIP_RANGE::Typ nRange = this->GetRange();
-	if (bShowFleet && this->GetFleet())
+	if (bShowFleet && this->HasFleet(false))
 		nRange = this->GetFleet()->GetFleetRange();
 	if (nRange == SHIP_RANGE::SHORT)
 		sMovement += CResourceManager::GetString("SHORT");
@@ -785,13 +785,13 @@ CString CShip::GetTooltip(bool bShowFleet/*= true*/)
 	sMovement += CHTMLStringBuilder::GetHTMLStringNewLine();
 	CString sSpeed;
 	BYTE bySpeed = this->GetSpeed();
-	if (bShowFleet && this->GetFleet())
+	if (bShowFleet && this->HasFleet(false))
 		bySpeed = this->GetFleet()->GetFleetSpeed();
 	sSpeed.Format("%s: %d\n", CResourceManager::GetString("SPEED"), bySpeed);
 	sMovement += sSpeed;
 
 	// wenn es eine Flotte ist keine weiteren Infos anzeigen
-	if (bShowFleet && this->GetFleet())
+	if (bShowFleet && this->HasFleet(false))
 	{
 		sMovement = CHTMLStringBuilder::GetHTMLColor(sMovement);
 		sMovement = CHTMLStringBuilder::GetHTMLHeader(sMovement, _T("h5"));
@@ -1335,10 +1335,12 @@ bool CShip::IsFleetEmpty() const {
 	return m_Fleet->IsEmpty();
 }
 
-bool CShip::HasFleet() const {
-	if(m_Fleet)
+bool CShip::HasFleet(bool bRequireFilled) const {
+	if(!m_Fleet)
+		return false;
+	if(bRequireFilled)
 		return !IsFleetEmpty();
-	return false;
+	return true;
 }
 
 int CShip::GetFleetSize() const {

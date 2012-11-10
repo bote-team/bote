@@ -54,7 +54,7 @@ void CAttackSystem::Init(CRace* pDefender, CSystem* system, CShipArray* ships, C
 		{
 			m_pShips.Add(&ships->GetAt(i));
 			// Wenn das Schiff eine Flotte besitzt, diese Schiffe auch dem Feld hinzufügen
-			if (ships->GetAt(i).GetFleet() != 0)
+			if (ships->GetAt(i).HasFleet(false))
 				for (int j = 0; j < ships->GetAt(i).GetFleetSize(); j++)
 					m_pShips.Add(ships->GetAt(i).GetShipFromFleet(j));
 		}

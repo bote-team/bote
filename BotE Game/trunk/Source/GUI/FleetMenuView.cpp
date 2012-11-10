@@ -259,7 +259,7 @@ void CFleetMenuView::DrawFleetMenue(Graphics* g)
 	row++;
 
 	// Wenn das Schiff eine Flotte anführt, dann Schiffe in dieser Flotte anzeigen
-	if (pShip->GetFleet() != NULL)
+	if (pShip->HasFleet(false))
 	{
 		for (USHORT i = 0; i < pShip->GetFleetSize(); i++)
 		{
@@ -397,11 +397,11 @@ void CFleetMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 							|| whichRect == 3)
 							{
 							// Wenn das Schiff noch keine Flotte hat, dann müssen wir erstmal eine Flotte bilden
-							if (pDoc->FleetShip().GetFleet() == 0 && pDoc->GetNumberOfFleetShip() != i)
+							if (!pDoc->FleetShip().HasFleet(false) && pDoc->GetNumberOfFleetShip() != i)
 									pDoc->FleetShip().CreateFleet();
 							// Jetzt fügen wir der Flotte das angeklickte Schiff hinzu, wenn es nicht das Schiff selbst ist,
 							// welches die Flotte anführt und wenn es selbst keine Flotte besitzt
-							if (pDoc->GetNumberOfFleetShip() != i && pDoc->m_ShipArray.GetAt(i).GetFleet() == 0)
+							if (pDoc->GetNumberOfFleetShip() != i && !pDoc->m_ShipArray.GetAt(i).HasFleet(false))
 							{
 								pDoc->FleetShip().AddShipToFleet(pDoc->m_ShipArray[i]);
 								// Wenn wir hier removen und ein Schiff im Feld entfernen, welches vor unserem FleetShip
@@ -429,7 +429,7 @@ void CFleetMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 	// Wenn wir auf einen der Buttons geklickt haben um Schiffe zu entfernen
 	else if (whichRect > 3)
 	{
-		if (pDoc->FleetShip().GetFleet() != 0)
+		if (pDoc->FleetShip().HasFleet(false))
 			for (USHORT i = 0; i < pDoc->FleetShip().GetFleetSize(); i++)
 				if ((whichRect == 4 && pDoc->FleetShip().GetShipClass() != pDoc->FleetShip().GetShipFromFleet(i)->GetShipClass())
 					|| (whichRect == 5 && pDoc->FleetShip().GetShipType() != pDoc->FleetShip().GetShipFromFleet(i)->GetShipType())
@@ -473,7 +473,7 @@ void CFleetMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 	// Dieses Schiff wird mit einem Linksklick aus der Flotte entfernt
 	// Aufpassen müssen wir wenn wir das Schiff aus der Flotte entfernen wollen, welches diese Flotte
 	// besitzt. Dann übernimmt das nächste Schiff die Flotte
-	if (pDoc->FleetShip().GetFleet() != 0 && i <= pDoc->FleetShip().GetFleetSize())
+	if (pDoc->FleetShip().HasFleet(false) && i <= pDoc->FleetShip().GetFleetSize())
 	{
 		// Wenn es nicht das Schiff ist welches die Flotte besitzt
 		if ((i != 0 && m_iFleetPage == 1) || m_iFleetPage > 1)

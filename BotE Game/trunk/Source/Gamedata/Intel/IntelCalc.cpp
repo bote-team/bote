@@ -801,7 +801,7 @@ BOOLEAN CIntelCalc::ExecuteMilitarySpy(CMajor* pRace, CMajor* pEnemyRace, CMajor
 				if (ships.GetAt(i)->GetKO() == ships.GetAt(t)->GetKO())
 				{
 					number++;
-					if (ships.GetAt(i)->GetFleet())
+					if (ships.GetAt(i)->HasFleet(false))
 						for (int j = 0; j < ships.GetAt(i)->GetFleetSize(); j++)
 							number++;
 				}
@@ -1401,7 +1401,7 @@ BOOLEAN CIntelCalc::ExecuteMilitarySabotage(CMajor* pRace, CMajor* pEnemyRace, C
 				if (m_pDoc->m_ShipArray.GetAt(i).GetKO() == report->GetKO() && m_pDoc->m_ShipArray.GetAt(i).GetOwnerOfShip() != report->GetOwner())
 				{
 					// besitzt dieses Schiff eine Flotte, so könnte sich unser Schiff auch in der Flotte befinden
-					if (m_pDoc->m_ShipArray.GetAt(i).GetFleet())
+					if (m_pDoc->m_ShipArray.GetAt(i).HasFleet(false))
 					{
 						for (int j = 0; j < m_pDoc->m_ShipArray.GetAt(i).GetFleetSize(); j++)
 							if (m_pDoc->m_ShipArray.GetAt(i).GetShipFromFleet(j)->GetID() == report->GetID())
@@ -1472,7 +1472,7 @@ BOOLEAN CIntelCalc::ExecuteMilitarySabotage(CMajor* pRace, CMajor* pEnemyRace, C
 				{
 					// das Schiff selbst kann aber eine Flotte anführen
 					// Wenn das Schiff eine Flotte besaß, so geht die Flotte auf das erste Schiff in der Flotte über
-					if (ship->GetFleet())
+					if (ship->HasFleet(false))
 					{
 						const CShip& new_fleetship = ship->GiveFleetToFleetsFirstShip();
 						// neues Flottenschiff dem Array hinzufügen

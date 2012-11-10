@@ -69,7 +69,7 @@ static void SanityCheckShip(const CShip& ship)
 void CSanity::SanityCheckFleet(const CShip& ship)
 {
 	SanityCheckShip(ship);
-	if(ship.GetFleet() != NULL) {
+	if(ship.HasFleet(false)) {
 		CFleet const* const fleet = ship.GetFleet();
 		for(unsigned i = 0; i < fleet->GetFleetSize(); ++i) {
 			SanityCheckShip(*fleet->GetShipFromFleet(i));

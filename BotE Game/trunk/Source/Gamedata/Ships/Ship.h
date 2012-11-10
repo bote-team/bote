@@ -190,7 +190,7 @@ public:
 	//are there no ships in this ship's fleet ?
 	bool IsFleetEmpty() const;
 	//has this ship a fleet with at least one ship ?
-	bool HasFleet() const;
+	bool HasFleet(bool bRequireFilled = true) const;
 	//size of this ship's fleet
 	int GetFleetSize() const;
 

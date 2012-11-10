@@ -234,7 +234,7 @@ void CAnomaly::CalcShipEffects(CShip* pShip) const
 	{
 		// teilweise Schildschaden machen
 		// hat das Schiff eine Flotte, so jedes Schiff in der Flotte beachten
-		if (pShip->GetFleet())
+		if (pShip->HasFleet(false))
 		{
 			for (int i = 0; i < pShip->GetFleetSize(); i++)
 			{
@@ -267,7 +267,7 @@ void CAnomaly::CalcShipEffects(CShip* pShip) const
 	{
 		// Schilde komplett weg
 		// hat das Schiff eine Flotte, so jedes Schiff in der Flotte beachten
-		if (pShip->GetFleet())
+		if (pShip->HasFleet(false))
 			for (int i = 0; i < pShip->GetFleetSize(); i++)
 				pShip->GetShipFromFleet(i)->GetShield()->SetCurrentShield(pShip->GetShipFromFleet(i)->GetShield()->GetCurrentShield() * (-1));
 		// Schiff selbst
@@ -276,7 +276,7 @@ void CAnomaly::CalcShipEffects(CShip* pShip) const
 	else if (m_byType == RADIONEBULA)
 	{
 		// Verlust aller Crewerfahrung bei radioaktiven Nebel
-		if (pShip->GetFleet())
+		if (pShip->HasFleet(false))
 			for (int i = 0; i < pShip->GetFleetSize(); i++)
 				pShip->GetShipFromFleet(i)->SetCrewExperiance(pShip->GetShipFromFleet(i)->GetCrewExperience() * (-1));
 		// Schiff selbst
@@ -286,7 +286,7 @@ void CAnomaly::CalcShipEffects(CShip* pShip) const
 	{
 		// Schiff zerstört
 		// hat das Schiff eine Flotte, so jedes Schiff in der Flotte beachten
-		if (pShip->GetFleet())
+		if (pShip->HasFleet(false))
 			for (int i = 0; i < pShip->GetFleetSize(); i++)
 				pShip->GetShipFromFleet(i)->GetHull()->SetCurrentHull(pShip->GetShipFromFleet(i)->GetHull()->GetCurrentHull() * (-1));
 		// Schiff selbst
@@ -296,7 +296,7 @@ void CAnomaly::CalcShipEffects(CShip* pShip) const
 	{
 		// teilweise Hüllenschaden machen (unabhängig von Schilden)
 		// hat das Schiff eine Flotte, so jedes Schiff in der Flotte beachten
-		if (pShip->GetFleet())
+		if (pShip->HasFleet(false))
 			for (int i = 0; i < pShip->GetFleetSize(); i++)
 				MakeHullDmg(50, 50, pShip->GetShipFromFleet(i));
 		// Schiff selbst
@@ -305,7 +305,7 @@ void CAnomaly::CalcShipEffects(CShip* pShip) const
 	else if (m_byType == IONSTORM)
 	{
 		// Verlust aller Crewerfahrung bei Ionensturm
-		if (pShip->GetFleet())
+		if (pShip->HasFleet(false))
 			for (int i = 0; i < pShip->GetFleetSize(); i++)
 				pShip->GetShipFromFleet(i)->SetCrewExperiance(pShip->GetShipFromFleet(i)->GetCrewExperience() * (-1));
 		// Schiff selbst
@@ -313,7 +313,7 @@ void CAnomaly::CalcShipEffects(CShip* pShip) const
 
 		// maximale Schildkapazität um 3% erhöhen
 		// hat das Schiff eine Flotte, so jedes Schiff in der Flotte beachten
-		if (pShip->GetFleet())
+		if (pShip->HasFleet(false))
 			for (int i = 0; i < pShip->GetFleetSize(); i++)
 			{
 				UINT nMaxShield = pShip->GetShipFromFleet(i)->GetShield()->GetMaxShield() * 1.03;

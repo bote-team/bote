@@ -48,7 +48,7 @@ void CSectorAI::CalculateDangers()
 		CShip* ship = &m_pDoc->m_ShipArray.GetAt(i);
 		AddDanger(ship);
 		// Führt das Schiff eine Flotte an, so muss dies alles auch für die Schiffe in der Flotte getan werden
-		if (ship->GetFleet() != NULL)
+		if (ship->HasFleet(false))
 			for (int j = 0; j < ship->GetFleetSize(); j++)
 				AddDanger(ship->GetShipFromFleet(j));
 	}

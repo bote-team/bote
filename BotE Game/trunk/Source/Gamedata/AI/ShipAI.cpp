@@ -421,7 +421,7 @@ bool CShipAI::DoBombardSystem(CShip* pShip)
 		pShip->SetTargetKO(CPoint(-1, -1), 0);
 
 		// Wenn das Schiff bzw. Schiffe aus der Flotte getarnt sind, dann müssen diese erst enttarnt werden
-		if (pShip->GetCloak() || (pShip->GetFleet() != NULL && pShip->GetFleet()->CheckOrder(pShip, SHIP_ORDER::ATTACK_SYSTEM) == FALSE))
+		if (pShip->GetCloak() || (pShip->HasFleet(false) && pShip->GetFleet()->CheckOrder(pShip, SHIP_ORDER::ATTACK_SYSTEM) == FALSE))
 		{
 			// Schiff enttarnen
 			pShip->SetCurrentOrder(SHIP_ORDER::CLOAK);
@@ -445,7 +445,7 @@ bool CShipAI::DoBombardSystem(CShip* pShip)
 				continue;
 
 			nShipValue += pTempShip->GetHull()->GetCurrentHull();
-			if (pTempShip->GetFleet())
+			if (pTempShip->HasFleet(false))
 			{
 				for (int j = 0; j < pTempShip->GetFleetSize(); j++)
 				{
@@ -550,7 +550,7 @@ void CShipAI::DoMakeFleet(CShip* pShip, int nIndex)
 		{
 			pShip->CreateFleet();
 			// hat das hinzuzufügende Schiff eine eigene Flotte
-			if (pOtherShip->GetFleet() != NULL)
+			if (pOtherShip->HasFleet(false))
 			{
 				// Schiffe aus der Flotte der neuen Flotte hinzufügen
 				for (int n = 0; n < pOtherShip->GetFleetSize(); n++)
