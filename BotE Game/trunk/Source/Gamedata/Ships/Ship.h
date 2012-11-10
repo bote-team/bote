@@ -27,7 +27,6 @@
 class CFleet;
 class CGraphicPool;
 class CRace;
-class CBotf2Doc;
 
 /// Klasse beschreibt ein Schiff in BotE
 class CShip : public CObject
@@ -173,11 +172,11 @@ public:
 private:
 	//calculate effects this ship has onto its sector
 	void CalcEffectsForSingleShip(CSector& sector, CRace* pRace,
-			bool bDeactivatedShipScanner, bool bBetterScanner, bool fleetship, CBotf2Doc& doc);
+			bool bDeactivatedShipScanner, bool bBetterScanner, bool fleetship);
 public:
 	//calc effects this ship and its fleet's ships have such as scanpower onto the sector they're in
 	void CalcEffects(CSector& sector, CRace* pRace,
-			bool bDeactivatedShipScanner, bool bBetterScanner, CBotf2Doc& doc);
+			bool bDeactivatedShipScanner, bool bBetterScanner);
 
 	/// Diese Funktion berechnet die Schiffserfahrung in einer neuen Runde. Auﬂer Erfahrung im Kampf, diese werden nach einem
 	/// Kampf direkt verteilt.

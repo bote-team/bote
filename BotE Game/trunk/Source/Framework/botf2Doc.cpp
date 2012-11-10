@@ -3496,52 +3496,6 @@ void CBotf2Doc::CalcOldRoundData()
 	}//for(std::vector<CSector>::const_iterator sector = m_Sectors.begin(); sector != m_Sectors.end(); ++sector)
 }
 
-void CBotf2Doc::PutScannedSquareOverSector(const CSector& sector, unsigned range, const int power,
-		const CRace& race, bool bBetterScanner, bool patrolship, bool anomaly) {
-	const CString& race_id = race.GetRaceID();
-	float boni = 1.0f;
-	// Wenn das Schiff die Patrouillieneigenschaft besitzt und sich in einem eigenen Sektor befindet,
-	// dann wird die Scanleistung um 20% erhöht.
-	if(patrolship) {
-		const CString& owner_of_sector = sector.GetOwnerOfSector();
-		if(race_id == owner_of_sector || race.GetAgreement(owner_of_sector) >= DIPLOMATIC_AGREEMENT::AFFILIATION)
-			boni = 1.2f;
-	}
-	if(bBetterScanner) {
-		range *= 1.5;
-		boni += 0.5;
-	}
-	const CPoint& co = sector.GetKO();
-	const int intrange = static_cast<int>(range);
-	for (int i = -intrange; i <= intrange; ++i) {
-		const int x = co.x + i;
-		if(0 <= x && x < STARMAP_SECTORS_HCOUNT) {
-			for (int j = -intrange; j <= intrange; ++j) {
-				const int y = co.y + j;
-				if(0 <= y && y < STARMAP_SECTORS_VCOUNT) {
-					CSector& scanned_sector = GetSector(x, y);
-					// Teiler für die Scanstärke berechnen
-					int div = max(abs(i), abs(j));
-					if(anomaly)
-						div *= 2;
-					div = max(div, 1);
-					const int old_scan_power = scanned_sector.GetScanPower(race_id, false);
-					int new_scan_power = 0;
-					if(anomaly) {
-						new_scan_power = old_scan_power + power / div;
-					} else {
-						new_scan_power = (power * boni) / div;
-						new_scan_power = max(old_scan_power, new_scan_power);
-						if(race.IsMajor())
-							scanned_sector.SetScanned(race_id);
-					}
-					scanned_sector.SetScanPower(new_scan_power, race_id);
-				}//if(0 <= y && y < STARMAP_SECTORS_VCOUNT)
-			}//for (int j = -range; j <= range; ++j)
-		}//if(0 <= x && x < STARMAP_SECTORS_HCOUNT)
-	}//for (int i = -range; i <= range; ++i)
-}
-
 /// Diese Funktion berechnet die Produktion der Systeme, was in den Baulisten gebaut werden soll und sonstige
 /// Daten für die neue Runde.
 void CBotf2Doc::CalcNewRoundData()
@@ -5300,7 +5254,7 @@ void CBotf2Doc::CalcShipEffects()
 			bBetterScanner = anomaly->GetType() == QUASAR;
 		}
 
-		ship.CalcEffects(sector, pRace, bDeactivatedShipScanner, bBetterScanner, *this);
+		ship.CalcEffects(sector, pRace, bDeactivatedShipScanner, bBetterScanner);
 		// Dem Sektor nochmal bekanntgeben, dass in ihm eine Sternbasis oder ein Außenposten steht. Weil wenn im Kampf
 		// eine Station teilnahm, dann haben wir den Shipport in dem Sektor vorläufig entfernt. Es kann ja passieren,
 		// dass die Station zerstört wird. Haben wir jetzt aber immernoch eine Station, dann bleibt der Shipport dort auch

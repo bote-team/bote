@@ -10,7 +10,6 @@
 #include "GraphicPool.h"
 #include "Races/race.h"
 #include "Races/major.h"
-#include "botf2Doc.h"
 
 #include <cassert>
 
@@ -1362,14 +1361,14 @@ void CShip::RetreatFleet(const CPoint& RetreatSector) {
 
 //most of the stuff from CalcShipEffects() for either a ship from the shiparray or a ship of its fleet
 void CShip::CalcEffectsForSingleShip(CSector& sector, CRace* pRace,
-			bool bDeactivatedShipScanner, bool bBetterScanner, bool fleetship, CBotf2Doc& doc) {
+			bool bDeactivatedShipScanner, bool bBetterScanner, bool fleetship) {
 	const CString& sRace = pRace->GetRaceID();
 	const bool major = pRace->IsMajor();
 	if(!fleetship && major)
 		sector.SetFullKnown(sRace);
 	if (!bDeactivatedShipScanner) {
 		// Scanstärke auf die Sektoren abhängig von der Scanrange übertragen
-		doc.PutScannedSquareOverSector(sector, GetScanRange(), GetScanPower(),
+		sector.PutScannedSquare(GetScanRange(), GetScanPower(),
 			*pRace, bBetterScanner, HasSpecial(SHIP_SPECIAL::PATROLSHIP));
 		sector.IncrementNumberOfShips(sRace);
 	}
@@ -1415,9 +1414,9 @@ void CShip::CalcEffectsForSingleShip(CSector& sector, CRace* pRace,
 }
 
 void CShip::CalcEffects(CSector& sector, CRace* pRace,
-			bool bDeactivatedShipScanner, bool bBetterScanner, CBotf2Doc& doc) {
+			bool bDeactivatedShipScanner, bool bBetterScanner) {
 
-		CalcEffectsForSingleShip(sector, pRace, bDeactivatedShipScanner, bBetterScanner, false, doc);
+		CalcEffectsForSingleShip(sector, pRace, bDeactivatedShipScanner, bBetterScanner, false);
 		// wenn das Schiff eine Flotte besitzt, dann die Schiffe in der Flotte auch beachten
 		if(!HasFleet(false))
 			return;
@@ -1426,6 +1425,6 @@ void CShip::CalcEffects(CSector& sector, CRace* pRace,
 		{
 			CShip* fleetship = GetShipFromFleet(x);
 			fleetship->CalcEffectsForSingleShip(sector, pRace,
-				bDeactivatedShipScanner, bBetterScanner, true, doc);
+				bDeactivatedShipScanner, bBetterScanner, true);
 		}
 }

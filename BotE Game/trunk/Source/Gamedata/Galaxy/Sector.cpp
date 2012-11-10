@@ -953,3 +953,48 @@ void CSector::SetScanPower(short scanpower, const CString& Race)
 	else
 		m_iScanPower.erase(Race);
 }
+
+void CSector::PutScannedSquare(unsigned range, const int power,
+		const CRace& race, bool bBetterScanner, bool patrolship, bool anomaly) {
+	const CString& race_id = race.GetRaceID();
+	float boni = 1.0f;
+	// Wenn das Schiff die Patrouillieneigenschaft besitzt und sich in einem eigenen Sektor befindet,
+	// dann wird die Scanleistung um 20% erhöht.
+	if(patrolship) {
+		if(race_id == m_sOwnerOfSector || race.GetAgreement(m_sOwnerOfSector) >= DIPLOMATIC_AGREEMENT::AFFILIATION)
+			boni = 1.2f;
+	}
+	if(bBetterScanner) {
+		range *= 1.5;
+		boni += 0.5;
+	}
+	const int intrange = static_cast<int>(range);
+	for (int i = -intrange; i <= intrange; ++i) {
+		const int x = m_KO.x + i;
+		if(0 <= x && x < STARMAP_SECTORS_HCOUNT) {
+			for (int j = -intrange; j <= intrange; ++j) {
+				const int y = m_KO.y + j;
+				if(0 <= y && y < STARMAP_SECTORS_VCOUNT) {
+					CBotf2Doc* pDoc = dynamic_cast<CBotf2App*>(AfxGetApp())->GetDocument();
+					CSector& scanned_sector = pDoc->GetSector(x, y);
+					// Teiler für die Scanstärke berechnen
+					int div = max(abs(i), abs(j));
+					if(anomaly)
+						div *= 2;
+					div = max(div, 1);
+					const int old_scan_power = scanned_sector.GetScanPower(race_id, false);
+					int new_scan_power = 0;
+					if(anomaly) {
+						new_scan_power = old_scan_power + power / div;
+					} else {
+						new_scan_power = (power * boni) / div;
+						new_scan_power = max(old_scan_power, new_scan_power);
+						if(race.IsMajor())
+							scanned_sector.SetScanned(race_id);
+					}
+					scanned_sector.SetScanPower(new_scan_power, race_id);
+				}//if(0 <= y && y < STARMAP_SECTORS_VCOUNT)
+			}//for (int j = -range; j <= range; ++j)
+		}//if(0 <= x && x < STARMAP_SECTORS_HCOUNT)
+	}//for (int i = -range; i <= range; ++i)
+}

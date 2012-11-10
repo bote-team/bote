@@ -363,7 +363,7 @@ void CAnomaly::ReduceScanPower(const CPoint &pt) const
 		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 		{
 			int nRange = 1;	// Reichweite der Scannerbeeinträchtigung
-			pDoc->PutScannedSquareOverSector(pDoc->GetSector(pt.x, pt.y), nRange, -50,
+			pDoc->GetSector(pt.x, pt.y).PutScannedSquare(nRange, -50,
 				*static_cast<CRace*>(it->second), false, false, true);
 		}
 	}
