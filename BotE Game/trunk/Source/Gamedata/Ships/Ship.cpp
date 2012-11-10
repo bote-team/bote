@@ -1324,3 +1324,11 @@ void CShip::Retreat(const CPoint& ptRetreatSector)
 	// womögicher Terraformplanet oder Stationsbau zurücknehmen
 	m_nTerraformingPlanet = -1;
 }
+
+CShip CShip::GiveFleetToFleetsFirstShip() {
+	assert(m_Fleet && !m_Fleet->IsEmpty());
+	const CShip& new_fleet_ship = m_Fleet->MakeFirstShipTheLeadingShipFleet();
+	// Flotte löschen
+	DeleteFleet();
+	return new_fleet_ship;
+}

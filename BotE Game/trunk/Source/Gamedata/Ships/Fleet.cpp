@@ -289,3 +289,14 @@ BOOL CFleet::IsEmpty() const {
 const CShipArray& CFleet::ShipArray() const {
 	return m_vShips;
 }
+
+CShip CFleet::MakeFirstShipTheLeadingShipFleet() {
+	// erstes Schiff aus der Flotte holen
+	CShip& new_fleet_ship = m_vShips.GetAt(0);
+	// für dieses eine Flotte erstellen
+	new_fleet_ship.CreateFleet();
+	CShipArray::iterator it = ++m_vShips.begin();
+	for(; it != m_vShips.end(); ++it)
+		new_fleet_ship.AddShipToFleet(*it);
+	return new_fleet_ship;
+}

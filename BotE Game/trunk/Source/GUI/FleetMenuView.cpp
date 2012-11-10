@@ -502,23 +502,9 @@ void CFleetMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		// Wenn es das Schiff ist, welches die Flotte besitzt
 		else if (i == 0 && m_iFleetPage == 1)
 		{
-			CShip* pShip = &pDoc->FleetShip();
-
-			// Kopie der Flotte holen
-			CFleet* pFleetCopy = pShip->GetFleetDeprecated();
-			// erstes Schiff aus der Flotte holen
-			CShip* pFleetShip = pFleetCopy->GetShipFromFleet(0);
-			// für dieses eine Flotte erstellen
-			pFleetShip->CreateFleet();
-			for (USHORT i = 1; i < pFleetCopy->GetFleetSize(); i++)
-				pFleetShip->AddShipToFleet(*pFleetCopy->GetShipFromFleet(i));
-			pFleetShip->CheckFleet();
-			// neues Flottenschiff dem Array hinzufügen
-			pDoc->m_ShipArray.Add(pDoc->m_ShipArray.end(), *pFleetShip);
-			// Schiff nochmal neu holen, da der Vektor verändert wurde und so sich auch der Zeiger ändern kann
-			pShip = &pDoc->FleetShip();
-			// Flotte löschen
-			pShip->DeleteFleet();
+			CShip& ship = pDoc->FleetShip();
+			const CShip& new_fleetship = ship.GiveFleetToFleetsFirstShip();
+			pDoc->m_ShipArray.Add(pDoc->m_ShipArray.end(), new_fleetship);
 
 			pDoc->SetNumberOfFleetShip(pDoc->m_ShipArray.GetUpperBound());
 			Invalidate();

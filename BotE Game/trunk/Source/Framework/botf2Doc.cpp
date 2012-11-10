@@ -2183,30 +2183,13 @@ void CBotf2Doc::BuildShip(int nID, const CPoint& KO, const CString& sOwnerID)
 
 void CBotf2Doc::RemoveShip(int nIndex)
 {
-	ASSERT(nIndex >= 0 && nIndex < m_ShipArray.GetSize());
+	assert(0 <= nIndex && nIndex < m_ShipArray.GetSize());
 
-	CShip* pShip = &m_ShipArray[nIndex];
-	if (pShip->GetFleet())
+	CShip& ship = m_ShipArray.GetAt(nIndex);
+	if (ship.GetFleet())
 	{
-		// alten Befehl merken
-		SHIP_ORDER::Typ nOldOrder = pShip->GetCurrentOrder();
-		// Kopie der Flotte holen
-		CFleet* pFleetCopy = pShip->GetFleetDeprecated();
-		// erstes Schiff aus der Flotte holen
-		CShip* pFleetShip = pFleetCopy->GetShipFromFleet(0);
-		// für dieses eine Flotte erstellen
-		pFleetShip->CreateFleet();
-		for (USHORT i = 1; i < pFleetCopy->GetFleetSize(); i++)
-			pFleetShip->AddShipToFleet(*pFleetCopy->GetShipFromFleet(i));
-		pFleetShip->CheckFleet();
-		// alten Befehl übergeben
-		pFleetShip->SetCurrentOrder(nOldOrder);
-
-		m_ShipArray.Add(m_ShipArray.end(), *pFleetShip);
-		// Schiff nochmal neu holen, da der Vektor verändert wurde und so sich auch der Zeiger ändern kann
-		pShip = &m_ShipArray[nIndex];
-		// Flotte löschen
-		pShip->DeleteFleet();
+		const CShip& new_fleetship = ship.GiveFleetToFleetsFirstShip();
+		m_ShipArray.Add(m_ShipArray.end(), new_fleetship);
 	}
 	m_ShipArray.RemoveAt(nIndex);
 }

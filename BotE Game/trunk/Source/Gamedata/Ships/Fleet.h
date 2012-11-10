@@ -48,6 +48,10 @@ public:
 		m_vShips.Add(m_vShips.end(), *pShip);
 	}
 
+	//uses this fleet's first ship to make a leading ship, which has the remaining ships of this
+	//fleet as its fleet
+	CShip MakeFirstShipTheLeadingShipFleet();
+
 	// Funktion um ein Schiff aus der Flotte zu entfernen.
 	void RemoveShipFromFleet(UINT nIndex);
 

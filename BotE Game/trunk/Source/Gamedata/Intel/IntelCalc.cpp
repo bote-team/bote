@@ -1474,21 +1474,12 @@ BOOLEAN CIntelCalc::ExecuteMilitarySabotage(CMajor* pRace, CMajor* pEnemyRace, C
 					// Wenn das Schiff eine Flotte besaß, so geht die Flotte auf das erste Schiff in der Flotte über
 					if (ship->GetFleet())
 					{
-						// Kopie der Flotte holen
-						CFleet* pFleetCopy = ship->GetFleetDeprecated();
-						// erstes Schiff aus der Flotte holen
-						CShip* pFleetShip = pFleetCopy->GetShipFromFleet(0);
-						// für dieses eine Flotte erstellen
-						pFleetShip->CreateFleet();
-						for (USHORT i = 1; i < pFleetCopy->GetFleetSize(); i++)
-							pFleetShip->AddShipToFleet(*pFleetCopy->GetShipFromFleet(i));
-						pFleetShip->CheckFleet();
+						const CShip& new_fleetship = ship->GiveFleetToFleetsFirstShip();
 						// neues Flottenschiff dem Array hinzufügen
-						m_pDoc->m_ShipArray.Add(m_pDoc->m_ShipArray.end(), *pFleetShip);
+						m_pDoc->m_ShipArray.Add(m_pDoc->m_ShipArray.end(), new_fleetship);
 						// Schiff nochmal neu holen, da der Vektor verändert wurde und so sich auch der Zeiger ändern kann
 						ship = &m_pDoc->m_ShipArray.GetAt(n.x);
-						// Flotte des geklauten Schiffes löschen
-						ship->DeleteFleet();
+						// Flotte des geklauten Schiffes löschen wurde in GiveFleetToFleetsFirstShip gemacht
 					}
 				}
 				else	// Schiff ist in Flotte

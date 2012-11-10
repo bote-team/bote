@@ -187,6 +187,10 @@ public:
 	const CShip* const GetShipFromFleet(int index) const;
 	CShip* GetShipFromFleet(int index);
 	void RemoveShipFromFleet(int index);
+
+	//uses this ship's fleet's first ship to make a leading ship, which has the remaining ships of this ship's
+	//fleet as its fleet, and returns the new leading ship
+	CShip GiveFleetToFleetsFirstShip();
 	void PropagateOrdersToFleet();
 
 	/// Funktion gibt einen Wahrheitswert zurück, ob das Schiffsobjekt eine bestimmte Spezialfähigkeit besitzt.
