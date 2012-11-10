@@ -385,8 +385,6 @@ protected:
 private:
 	//helper functions for CalcShipEffects()
 	void CalcShipRetreat();
-	void CalcShipEffectsForSingleShip(CShip& ship, CSector& sector, CRace* pRace,
-			bool bDeactivatedShipScanner, bool bBetterScanner, bool fleetship);
 protected:
 	/// Diese Funktion führt allgemeine Berechnung durch, die immer zum Ende der NextRound-Calculation stattfinden müssen.
 	void CalcEndDataForNextRound();

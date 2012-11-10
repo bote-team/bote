@@ -26,7 +26,8 @@
 // forward declaration
 class CFleet;
 class CGraphicPool;
-
+class CRace;
+class CBotf2Doc;
 
 /// Klasse beschreibt ein Schiff in BotE
 class CShip : public CObject
@@ -46,9 +47,6 @@ public:
 // Zugriffsfunktionen
 	// zum Lesen der Membervariablen
 
-	//deprecated; use functions CShip::AddShipToFleet, CShip::GetShipFromFleet,
-	//CShip::RemoveShipFromFleet, CShip::PropagateOrdersToFleet
-	CFleet*	GetFleetDeprecated(void) {return m_Fleet;}
 	CFleet const* const GetFleet(void) const { return m_Fleet; }
 	CHull* GetHull(void) {return &m_Hull;}
 	CShield* GetShield(void) {return &m_Shield;}
@@ -171,6 +169,15 @@ public:
 	//Perform actions to retreat this ship to the given sector.
 	void Retreat(const CPoint& ptRetreatSector);
 	void RetreatFleet(const CPoint& RetreatSector);
+
+private:
+	//calculate effects this ship has onto its sector
+	void CalcEffectsForSingleShip(CSector& sector, CRace* pRace,
+			bool bDeactivatedShipScanner, bool bBetterScanner, bool fleetship, CBotf2Doc& doc);
+public:
+	//calc effects this ship and its fleet's ships have such as scanpower onto the sector they're in
+	void CalcEffects(CSector& sector, CRace* pRace,
+			bool bDeactivatedShipScanner, bool bBetterScanner, CBotf2Doc& doc);
 
 	/// Diese Funktion berechnet die Schiffserfahrung in einer neuen Runde. Auﬂer Erfahrung im Kampf, diese werden nach einem
 	/// Kampf direkt verteilt.

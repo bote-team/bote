@@ -8,6 +8,9 @@
 #include "Fleet.h"
 #include "HTMLStringBuilder.h"
 #include "GraphicPool.h"
+#include "Races/race.h"
+#include "Races/major.h"
+#include "botf2Doc.h"
 
 #include <cassert>
 
@@ -1355,4 +1358,74 @@ void CShip::RetreatFleet(const CPoint& RetreatSector) {
 		CShip* pFleetShip = GetShipFromFleet(j);
 		pFleetShip->Retreat(RetreatSector);
 	}
+}
+
+//most of the stuff from CalcShipEffects() for either a ship from the shiparray or a ship of its fleet
+void CShip::CalcEffectsForSingleShip(CSector& sector, CRace* pRace,
+			bool bDeactivatedShipScanner, bool bBetterScanner, bool fleetship, CBotf2Doc& doc) {
+	const CString& sRace = pRace->GetRaceID();
+	const bool major = pRace->IsMajor();
+	if(!fleetship && major)
+		sector.SetFullKnown(sRace);
+	if (!bDeactivatedShipScanner) {
+		// Scanstärke auf die Sektoren abhängig von der Scanrange übertragen
+		doc.PutScannedSquareOverSector(sector, GetScanRange(), GetScanPower(),
+			*pRace, bBetterScanner, HasSpecial(SHIP_SPECIAL::PATROLSHIP));
+		sector.IncrementNumberOfShips(sRace);
+	}
+	// Schiffe, wenn wir dort nicht eine ausreichend hohe Scanpower haben. Ab Stealthstufe 4 muss das Schiff getarnt
+	// sein, ansonsten gilt dort nur Stufe 3.
+	if (!IsStation()) {
+		// Im Sektor die NeededScanPower setzen, die wir brauchen um dort Schiffe zu sehen. Wir sehen ja keine getarnten
+		// Schiffe, wenn wir dort nicht eine ausreichend hohe Scanpower haben. Ab Stealthstufe 4 muss das Schiff getarnt
+		// sein, ansonsten gilt dort nur Stufe 3.
+		short stealthPower = GetStealthPower();
+		if(!GetCloak() && stealthPower > 3)
+			stealthPower = 3;
+		const short NeededScanPower = stealthPower * 20;
+		if (NeededScanPower < sector.GetNeededScanPower(sRace))
+			sector.SetNeededScanPower(NeededScanPower, sRace);
+	}
+	if(!fleetship) {
+		// Wenn das Schiff gerade eine Station baut, so dies dem Sektor mitteilen
+		const SHIP_ORDER::Typ current_order = GetCurrentOrder();
+		if (current_order == SHIP_ORDER::BUILD_OUTPOST || current_order == SHIP_ORDER::BUILD_STARBASE)
+			sector.SetIsStationBuilding(TRUE, sRace);
+		// Wenn das Schiff gerade Terraform, so dies dem Planeten mitteilen
+		else if (current_order == SHIP_ORDER::TERRAFORM) {
+			const short nPlanet = GetTerraformingPlanet();
+			std::vector<CPlanet>& planets = sector.GetPlanets();
+			if (nPlanet != -1 && nPlanet < static_cast<int>(planets.size()))
+				planets.at(nPlanet).SetIsTerraforming(TRUE);
+			else {
+				SetTerraformingPlanet(-1);
+				SetCurrentOrder(SHIP_ORDER::AVOID);
+			}
+		}
+	}
+	if (major) {
+		CMajor* pMajor = dynamic_cast<CMajor*>(pRace);
+		// Schiffunterstützungkosten dem jeweiligen Imperium hinzufügen.
+		pMajor->GetEmpire()->AddShipCosts(GetMaintenanceCosts());
+		// die Schiffe in der Flotte beim modifizieren der Schiffslisten der einzelnen Imperien beachten
+		pMajor->GetShipHistory()->ModifyShip(this, sector.GetName(TRUE));
+	}
+	// Erfahrungspunkte der Schiffe anpassen
+	CalcExp();
+}
+
+void CShip::CalcEffects(CSector& sector, CRace* pRace,
+			bool bDeactivatedShipScanner, bool bBetterScanner, CBotf2Doc& doc) {
+
+		CalcEffectsForSingleShip(sector, pRace, bDeactivatedShipScanner, bBetterScanner, false, doc);
+		// wenn das Schiff eine Flotte besitzt, dann die Schiffe in der Flotte auch beachten
+		if(!HasFleet(false))
+			return;
+		// Scanstärke der Schiffe in der Flotte auf die Sektoren abhängig von der Scanrange übertragen
+		for (int x = 0; x < GetFleetSize(); x++)
+		{
+			CShip* fleetship = GetShipFromFleet(x);
+			fleetship->CalcEffectsForSingleShip(sector, pRace,
+				bDeactivatedShipScanner, bBetterScanner, true, doc);
+		}
 }
