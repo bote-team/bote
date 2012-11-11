@@ -1325,7 +1325,7 @@ void CShip::Retreat(const CPoint& ptRetreatSector)
 }
 
 CShip CShip::GiveFleetToFleetsFirstShip() {
-	assert(m_Fleet && !m_Fleet->IsEmpty());
+	assert(HasFleet(true));
 	const CShip& new_fleet_ship = m_Fleet->MakeFirstShipTheLeadingShipFleet();
 	// Flotte löschen
 	DeleteFleet();

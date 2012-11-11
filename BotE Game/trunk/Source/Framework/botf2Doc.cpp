@@ -2184,14 +2184,20 @@ void CBotf2Doc::BuildShip(int nID, const CPoint& KO, const CString& sOwnerID)
 void CBotf2Doc::RemoveShip(int nIndex)
 {
 	assert(0 <= nIndex && nIndex < m_ShipArray.GetSize());
+	RemoveShip(m_ShipArray.begin() + nIndex);
+}
 
-	CShip& ship = m_ShipArray.GetAt(nIndex);
-	if (ship.HasFleet(false))
+/// Funktion zum Löschen des Schiffes aus dem Schiffsarray.
+/// @param ship Iterator des Schiffes im Array
+/// iterator is updated to the new position of the element following the deleted one
+void CBotf2Doc::RemoveShip(CShipArray::iterator& ship)
+{
+	if (ship->HasFleet(false))
 	{
-		const CShip& new_fleetship = ship.GiveFleetToFleetsFirstShip();
-		m_ShipArray.Add(m_ShipArray.end(), new_fleetship);
+		const CShip& new_fleetship = ship->GiveFleetToFleetsFirstShip();
+		m_ShipArray.Add(ship, new_fleetship);
 	}
-	m_ShipArray.RemoveAt(nIndex);
+	m_ShipArray.RemoveAt(ship);
 }
 
 /// Funktion beachtet die erforschten Spezialforschungen einer Rasse und verbessert die

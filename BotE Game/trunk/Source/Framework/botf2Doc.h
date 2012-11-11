@@ -242,6 +242,10 @@ public:
 	/// Funktion zum Löschen des Schiffes aus dem Schiffsarray.
 	/// @param nIndex Index des Schiffes im Array
 	void RemoveShip(int nIndex);
+	/// Funktion zum Löschen des Schiffes aus dem Schiffsarray.
+	/// @param ship Iterator des Schiffes im Array
+	/// iterator is updated to the new position of the element following the deleted one
+	void RemoveShip(CShipArray::iterator& ship);
 
 	/// Funktion beachtet die erforschten Spezialforschungen einer Rasse und verbessert die
 	/// Eigenschaften der übergebenen Schiffes.
