@@ -3007,9 +3007,9 @@ void CBotf2Doc::CalcSystemAttack()
 								pMajor->SetAgreement(pMinor->GetRaceID(), DIPLOMATIC_AGREEMENT::NONE);
 							}
 							// Alle Schiffe der Minorrace entfernen
-							for (int j = 0; j < m_ShipArray.GetSize(); j++)
-								if (m_ShipArray.GetAt(j).GetOwnerOfShip() == pMinor->GetRaceID())
-									m_ShipArray.RemoveAt(j--);
+							for(CShipArray::iterator j = m_ShipArray.begin(); j != m_ShipArray.end(); ++j)
+								if (j->GetOwnerOfShip() == pMinor->GetRaceID())
+									m_ShipArray.RemoveAt(j);
 
 							// Rasse zum löschen vormerken
 							sKilledMinors.insert(pMinor->GetRaceID());
@@ -4394,7 +4394,8 @@ void CBotf2Doc::CalcShipOrders()
 			}
 
 			m_ShipArray[y].SetCurrentOrder(SHIP_ORDER::AVOID);
-			m_ShipArray.RemoveAt(y--);
+			m_ShipArray.RemoveAt(m_ShipArray.begin() + y);
+			--y;
 			continue;	// continue, damit wir am Ende der Schleife nicht sagen, dass ein Schiff im Sektor ist
 		}
 
@@ -4610,9 +4611,9 @@ void CBotf2Doc::CalcShipOrders()
 	// jetzt alle durch einen Sternbasisbau verschwundenen Aussenposten aus dem Feld entfernen
 	for (unsigned int i = 0; i < vRemoveableOutposts.size(); i++)
 	{
-		for (int y = 0; y < m_ShipArray.GetSize(); y++)
+		for(CShipArray::iterator y = m_ShipArray.begin(); y != m_ShipArray.end(); ++y)
 		{
-			if (vRemoveableOutposts[i] == m_ShipArray.GetAt(y).GetShipName())
+			if (vRemoveableOutposts[i] == y->GetShipName())
 			{
 				m_ShipArray.RemoveAt(y);
 				break;
@@ -5488,7 +5489,8 @@ void CBotf2Doc::CalcEndDataForNextRound()
 					pMajor->GetShipHistory()->ModifyShip(&m_ShipArray[j],
 								GetSector(m_ShipArray[j].GetKO().x, m_ShipArray[j].GetKO().y).GetName(TRUE), m_iRound,
 								CResourceManager::GetString("UNKNOWN"), CResourceManager::GetString("DESTROYED"));
-					m_ShipArray.RemoveAt(j--);
+					m_ShipArray.RemoveAt(m_ShipArray.begin() + j);
+					--j;
 				}
 			}
 
@@ -5800,7 +5802,7 @@ void CBotf2Doc::CalcRandomAlienEntities()
 
 								// Raider in Gruppe stecken und Befehle gleich mit übernehmen
 								pFleetShip->AddShipToFleet(m_ShipArray[m_ShipArray.GetUpperBound()]);
-								m_ShipArray.RemoveAt(m_ShipArray.GetUpperBound());
+								m_ShipArray.RemoveAt(m_ShipArray.begin() + m_ShipArray.GetUpperBound());
 																
 								nCount--;
 							}

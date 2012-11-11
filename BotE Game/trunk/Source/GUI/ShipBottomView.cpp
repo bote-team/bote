@@ -813,7 +813,7 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 							pDoc->SetNumberOfFleetShip(pDoc->GetNumberOfFleetShip()-1);
 						// Wenn wir das Schiff da hinzugefügt haben, dann müssen wir das aus der normalen Schiffsliste
 						// rausnehmen, damit es nicht zweimal im Spiel vorkommt
-						pDoc->m_ShipArray.RemoveAt(pDoc->GetCurrentShipIndex());
+						pDoc->m_ShipArray.RemoveAt(pDoc->m_ShipArray.begin() + pDoc->GetCurrentShipIndex());
 						// Wenn wir das letzte Schiff entfernt haben, dann müssen wir die angeklickte Nummer im Spiel
 						// um eins zurücknehmen
 						if (pDoc->GetCurrentShipIndex() == pDoc->m_ShipArray.GetSize())

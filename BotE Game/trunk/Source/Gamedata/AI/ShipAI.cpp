@@ -559,7 +559,8 @@ void CShipAI::DoMakeFleet(CShip* pShip, int nIndex)
 			}
 
 			pShip->AddShipToFleet(*pOtherShip);
-			m_pDoc->m_ShipArray.RemoveAt(i--);
+			m_pDoc->m_ShipArray.RemoveAt(m_pDoc->m_ShipArray.begin() + i);
+			--i;
 		}
 	}
 }

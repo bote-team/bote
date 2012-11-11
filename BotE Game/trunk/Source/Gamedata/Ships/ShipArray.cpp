@@ -52,10 +52,6 @@ void CShipArray::Append(CShipArray::iterator& it, const CShipArray& other) {
 void CShipArray::RemoveAll() {
 	m_vShips.clear();
 }
-void CShipArray::RemoveAt(int index) {
-	const std::vector<CShip>::const_iterator it = m_vShips.begin() + index;
-	m_vShips.erase(it);
-}
 void CShipArray::RemoveAt(CShipArray::iterator& index) {
 	index = m_vShips.erase(index);
 }
@@ -137,9 +133,9 @@ void CShipArray::SerializeEndOfRoundData(CArchive& ar, const CString& sMajorID) 
 	if(ar.IsLoading()) {
 		int number = 0;
 		ar >> number;
-		for (int i = 0; i < GetSize(); i++)
-			if (GetAt(i).GetOwnerOfShip() == sMajorID)
-				RemoveAt(i--);
+		for(CShipArray::iterator i = begin(); i != end(); ++i)
+			if (i->GetOwnerOfShip() == sMajorID)
+				RemoveAt(i);
 		int oldSize = GetSize();
 		SetSize(oldSize + number);
 		for (int i = oldSize; i < GetSize(); i++)
@@ -168,9 +164,9 @@ void CShipArray::SerializeNextRoundData(CArchive& ar, const CPoint& ptCurrentCom
 		int nCount = 0;
 		ar >> nCount;
 		// alle Schiffe aus dem Kampfsektor entfernen
-		for (int i = 0; i < GetSize(); i++)
-			if (GetAt(i).GetKO() == ptCurrentCombatSector)
-				RemoveAt(i--);
+		for(CShipArray::iterator i = begin(); i != end(); ++i)
+			if (i->GetKO() == ptCurrentCombatSector)
+				RemoveAt(i);
 		int nSize = GetSize();
 		// empfangene Schiffe wieder hinzufügen
 		SetSize(nSize + nCount);

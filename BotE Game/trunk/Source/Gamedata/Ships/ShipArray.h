@@ -27,13 +27,17 @@ public:
 //////////////////////////////////////////////////////////////////////
 // adding elements
 //////////////////////////////////////////////////////////////////////
+	//adds the passed ship at the end of this shiparray
+	//@param it: will be updated and point to the same position as before
+	//@param ship: the ship to add
 	void Add(CShipArray::iterator& it, const CShip& ship);
 	void Append(CShipArray::iterator& it, const CShipArray& other);
 //////////////////////////////////////////////////////////////////////
 // removing elements
 //////////////////////////////////////////////////////////////////////
 	void RemoveAll();
-	void RemoveAt(int index);
+	//removes the element pointed to by the passed iterator
+	//@param index: will be updated and point to the new position of the element which followed the erased one
 	void RemoveAt(CShipArray::iterator& index);
 //////////////////////////////////////////////////////////////////////
 // getting elements

@@ -74,7 +74,7 @@ void CFleet::Serialize(CArchive &ar)
 void CFleet::RemoveShipFromFleet(UINT nIndex)
 {
 	ASSERT(nIndex < (UINT)m_vShips.GetSize());
-	m_vShips.RemoveAt(nIndex);
+	m_vShips.RemoveAt(m_vShips.begin() + nIndex);
 }
 
 // Funktion berechnet die Geschwindigkeit der Flotte. Der Parameter der hier übergeben werden sollte
