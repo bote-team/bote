@@ -7844,7 +7844,7 @@ Type 4 Titanium Mine
 Typ 4 Titanmine
 Titanium is a naturally occurring metal element, present in limited quantities on Earth. It is mainly used in alloys to strengthen metal.
 Titan ist ein natürlich vorkommendes metallisches Element, welches in geringen Mengen auf der Erde vorhanden ist. Es wird hauptsächlich in Legierungen zur Härtung von Metall verwendet.
-1
+0
 con_5766.bop
 0
 0
@@ -7980,12 +7980,12 @@ con_5766.bop
 0
 58
 1
-Type 5 Titanium Mine
+Titanium Boost Facilities
 Typ 5 Titanmine
-Titanium is a naturally occurring metal element, present in limited quantities on Earth. It is mainly used in alloys to strengthen metal.
+By the use of new fracking methods commodities winning gets an excellent boost. But this new method has a strong health and environmental impact and people protest against it. So it was decided to use it only on distributional system-relevant planets.
 Titan ist ein natürlich vorkommendes metallisches Element, welches in geringen Mengen auf der Erde vorhanden ist. Es wird hauptsächlich in Legierungen zur Härtung von Metall verwendet.
 0
-con_5766.bop
+con_5768.bop
 0
 0
 0
@@ -7996,8 +7996,8 @@ con_5766.bop
 0
 
 0
-0
-0
+1
+59
 0
 0
 0
@@ -8024,35 +8024,37 @@ con_5766.bop
 0
 0
 0
-9
-19
+8
+8
 0
-1610
+2000
+60
+1200
 0
-724
+800
 0
-563
+200
 0
-241
 0
 0
 0
 0
 0
 0
-215
 0
 0
 0
 0
 0
 0
+2
 0
 0
 0
 0
 0
 0
+300
 0
 0
 0
@@ -8101,9 +8103,7 @@ con_5766.bop
 0
 0
 0
-57
 0
-1
 0
 0
 174
@@ -16284,7 +16284,7 @@ con_b91.bop
 0
 0
 0
-0
+6
 0
 0
 500
@@ -16426,7 +16426,7 @@ han_b123.bop
 0
 0
 0
-0
+9
 500
 20
 0
@@ -33784,7 +33784,7 @@ con_b91.bop
 0
 0
 0
-0
+6
 0
 0
 500
@@ -33926,7 +33926,7 @@ han_b123.bop
 0
 0
 0
-0
+9
 500
 20
 0
@@ -50304,7 +50304,7 @@ con_b91.bop
 0
 0
 0
-0
+6
 0
 0
 500
@@ -50446,7 +50446,7 @@ han_b123.bop
 0
 0
 0
-0
+9
 500
 20
 0
@@ -66964,7 +66964,7 @@ con_b91.bop
 0
 0
 0
-0
+6
 0
 0
 500
@@ -67106,7 +67106,7 @@ han_b123.bop
 0
 0
 0
-0
+9
 500
 20
 0
@@ -83624,7 +83624,7 @@ con_b91.bop
 0
 0
 0
-0
+6
 0
 0
 500
@@ -83766,7 +83766,7 @@ han_b123.bop
 0
 0
 0
-0
+9
 500
 20
 0
@@ -99864,7 +99864,7 @@ con_b91.bop
 0
 0
 0
-0
+6
 0
 0
 500
@@ -100006,7 +100006,7 @@ han_b123.bop
 0
 0
 0
-0
+9
 500
 20
 0
