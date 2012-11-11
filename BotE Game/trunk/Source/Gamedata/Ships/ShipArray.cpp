@@ -1,7 +1,7 @@
 #include "stdafx.h"
 
 #include "ShipArray.h"
-#include "Ships/ship.h"
+#include "fleet.h"
 
 #include <cassert>
 
@@ -39,6 +39,13 @@ void CShipArray::Add(CShipArray::const_iterator& it, const CShip& ship) {
 	m_vShips.push_back(ship);
 	it = begin() + memory;
 }
+void CShipArray::Append(CShipArray::const_iterator& it, const CShipArray& other) {
+	const int memory = it - begin();
+	assert(0 <= memory && memory < GetSize());
+	m_vShips.insert(end(), other.begin(), other.end());
+	assert(0 <= memory && memory < GetSize());
+	it = begin() + memory;
+}
 //////////////////////////////////////////////////////////////////////
 // removing elements
 //////////////////////////////////////////////////////////////////////
@@ -49,7 +56,9 @@ void CShipArray::RemoveAt(int index) {
 	const std::vector<CShip>::const_iterator it = m_vShips.begin() + index;
 	m_vShips.erase(it);
 }
-
+void CShipArray::RemoveAt(CShipArray::const_iterator& index) {
+	index = m_vShips.erase(index);
+}
 //////////////////////////////////////////////////////////////////////
 // getting elements
 //////////////////////////////////////////////////////////////////////
