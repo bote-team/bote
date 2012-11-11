@@ -56,7 +56,7 @@ namespace network
 		{
 			ar << m_nID;
 			CString params = "";
-			for (PARAM_MAP::const_iterator it = m_params.begin(); it != m_params.end(); it++)
+			for (PARAM_MAP::const_iterator it = m_params.begin(); it != m_params.end(); ++it)
 			{
 				if (!params.IsEmpty()) params += "&";
 				params += Encode((*it).first) + "=" + Encode((*it).second);
