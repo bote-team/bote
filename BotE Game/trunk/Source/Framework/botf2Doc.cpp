@@ -2181,12 +2181,6 @@ void CBotf2Doc::BuildShip(int nID, const CPoint& KO, const CString& sOwnerID)
 	pMajor->GetShipHistory()->AddShip(&m_ShipArray.GetAt(n), GetSector(KO.x, KO.y).GetName(), m_iRound);
 }
 
-void CBotf2Doc::RemoveShip(int nIndex)
-{
-	assert(0 <= nIndex && nIndex < m_ShipArray.GetSize());
-	RemoveShip(m_ShipArray.begin() + nIndex);
-}
-
 /// Funktion zum Löschen des Schiffes aus dem Schiffsarray.
 /// @param ship Iterator des Schiffes im Array
 /// iterator is updated to the new position of the element following the deleted one
@@ -3226,7 +3220,8 @@ void CBotf2Doc::CalcSystemAttack()
 				// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
 				AddToLostShipHistory(&m_ShipArray[i], CResourceManager::GetString("SYSTEMATTACK"), CResourceManager::GetString("DESTROYED"));
 				// Schiff entfernen
-				RemoveShip(i--);
+				RemoveShip(m_ShipArray.begin() + i);
+				--i;
 			}
 		}
 }
@@ -3907,7 +3902,8 @@ void CBotf2Doc::CalcShipOrders()
 				m_ShipArray[y].SetTerraformingPlanet(-1);
 				if (m_ShipArray[y].HasFleet(false))
 					m_ShipArray[y].PropagateOrdersToFleet();
-				RemoveShip(y--);
+				RemoveShip(m_ShipArray.begin() + y);
+				--y;
 				continue;
 			}
 			else
@@ -4158,7 +4154,8 @@ void CBotf2Doc::CalcShipOrders()
 
 							// Wenn hier ein Aussenposten gebaut wurde den Befehl für die Flotte auf Meiden stellen
 							m_ShipArray[y].SetCurrentOrder(SHIP_ORDER::AVOID);
-							RemoveShip(y--);
+							RemoveShip(m_ShipArray.begin() + y);
+							--y;
 							continue;
 						}
 					}
@@ -4317,7 +4314,8 @@ void CBotf2Doc::CalcShipOrders()
 							BuildShip(id, pSector->GetKO(), m_ShipArray[y].GetOwnerOfShip());
 							// Wenn hier eine Station gebaut wurde den Befehl für die Flotte auf Meiden stellen
 							m_ShipArray[y].SetCurrentOrder(SHIP_ORDER::AVOID);
-							RemoveShip(y--);
+							RemoveShip(m_ShipArray.begin() + y);
+							--y;
 
 							// Wenn die Sternbasis gebaut haben, dann den alten Au?enposten aus der Schiffsliste nehmen
 							for (int k = 0; k < m_ShipArray.GetSize(); k++)
@@ -4853,7 +4851,8 @@ void CBotf2Doc::CalcShipMovement()
 				}
 			}
 
-			RemoveShip(i--);
+			RemoveShip(m_ShipArray.begin() + i);
+			--i;
 		}
 	}
 }
@@ -5148,7 +5147,8 @@ void CBotf2Doc::CalcShipCombat()
 				}
 			}
 
-			RemoveShip(i--);
+			RemoveShip(m_ShipArray.begin() + i);
+			--i;
 		}
 	}
 

@@ -240,9 +240,6 @@ public:
 	void BuildShip(int nID, const CPoint& KO, const CString& sOwnerID);
 
 	/// Funktion zum Löschen des Schiffes aus dem Schiffsarray.
-	/// @param nIndex Index des Schiffes im Array
-	void RemoveShip(int nIndex);
-	/// Funktion zum Löschen des Schiffes aus dem Schiffsarray.
 	/// @param ship Iterator des Schiffes im Array
 	/// iterator is updated to the new position of the element following the deleted one
 	void RemoveShip(CShipArray::iterator& ship);

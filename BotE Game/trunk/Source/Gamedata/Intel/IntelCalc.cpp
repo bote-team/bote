@@ -1513,7 +1513,7 @@ BOOLEAN CIntelCalc::ExecuteMilitarySabotage(CMajor* pRace, CMajor* pEnemyRace, C
 					m_pDoc->GetCurrentRound(), CResourceManager::GetString("SABOTAGE"), CResourceManager::GetString("DESTROYED"));
 				if (n.y == -1)		// nicht in Flotte
 				{
-					m_pDoc->RemoveShip(n.x);
+					m_pDoc->RemoveShip(m_pDoc->m_ShipArray.begin() + n.x);
 				}
 				else	// Schiff ist in Flotte
 				{
