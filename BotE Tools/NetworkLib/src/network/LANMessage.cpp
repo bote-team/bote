@@ -106,7 +106,7 @@ namespace network
 	CString CLANMessage::GetParamName(int idx) const
 	{
 		int i = 0;
-		for (PARAM_MAP::const_iterator it = m_params.begin(); it != m_params.end(); it++, i++)
+		for (PARAM_MAP::const_iterator it = m_params.begin(); it != m_params.end(); ++it, i++)
 		{
 			if (i == idx) return (*it).first;
 		}
