@@ -83,6 +83,13 @@ BOOL BotE_LzmaDecompress(const BYTE *inBuffer, size_t inSize, CFile &out,
 
 class CInStreamRam : public ISequentialInStream, public CMyUnknownImp
 {
+public:
+	CInStreamRam() :
+		Data(NULL),
+		Size(0),
+		Pos(0)
+	{}
+
 private:
 	const Byte *Data;
 	size_t Size;
