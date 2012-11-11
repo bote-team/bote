@@ -123,6 +123,13 @@ private:
 	size_t m_nInitialPosition;
 
 public:
+	COutStreamRam() :
+		m_pOut(NULL),
+		m_nInitialPosition(0),
+		Overflow(false),
+		Pos(0)
+	{}
+
 	bool Overflow;
 	size_t Pos;
 
