@@ -34,12 +34,12 @@ CShipArray::iterator CShipArray::end() {
 //////////////////////////////////////////////////////////////////////
 // adding elements
 //////////////////////////////////////////////////////////////////////
-void CShipArray::Add(CShipArray::const_iterator& it, const CShip& ship) {
+void CShipArray::Add(CShipArray::iterator& it, const CShip& ship) {
 	const int memory = it - begin();
 	m_vShips.push_back(ship);
 	it = begin() + memory;
 }
-void CShipArray::Append(CShipArray::const_iterator& it, const CShipArray& other) {
+void CShipArray::Append(CShipArray::iterator& it, const CShipArray& other) {
 	const int memory = it - begin();
 	assert(0 <= memory && memory < GetSize());
 	m_vShips.insert(end(), other.begin(), other.end());
@@ -56,7 +56,7 @@ void CShipArray::RemoveAt(int index) {
 	const std::vector<CShip>::const_iterator it = m_vShips.begin() + index;
 	m_vShips.erase(it);
 }
-void CShipArray::RemoveAt(CShipArray::const_iterator& index) {
+void CShipArray::RemoveAt(CShipArray::iterator& index) {
 	index = m_vShips.erase(index);
 }
 //////////////////////////////////////////////////////////////////////
