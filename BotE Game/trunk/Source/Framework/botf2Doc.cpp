@@ -3001,9 +3001,13 @@ void CBotf2Doc::CalcSystemAttack()
 								pMajor->SetAgreement(pMinor->GetRaceID(), DIPLOMATIC_AGREEMENT::NONE);
 							}
 							// Alle Schiffe der Minorrace entfernen
-							for(CShipArray::iterator j = m_ShipArray.begin(); j != m_ShipArray.end(); ++j)
-								if (j->GetOwnerOfShip() == pMinor->GetRaceID())
+							for(CShipArray::iterator j = m_ShipArray.begin(); j != m_ShipArray.end();) {
+								if (j->GetOwnerOfShip() == pMinor->GetRaceID()) {
 									m_ShipArray.RemoveAt(j);
+									continue;
+								}
+								++j;
+							}
 
 							// Rasse zum löschen vormerken
 							sKilledMinors.insert(pMinor->GetRaceID());
@@ -4609,13 +4613,14 @@ void CBotf2Doc::CalcShipOrders()
 	// jetzt alle durch einen Sternbasisbau verschwundenen Aussenposten aus dem Feld entfernen
 	for (unsigned int i = 0; i < vRemoveableOutposts.size(); i++)
 	{
-		for(CShipArray::iterator y = m_ShipArray.begin(); y != m_ShipArray.end(); ++y)
+		for(CShipArray::iterator y = m_ShipArray.begin(); y != m_ShipArray.end();)
 		{
 			if (vRemoveableOutposts[i] == y->GetShipName())
 			{
 				m_ShipArray.RemoveAt(y);
 				break;
 			}
+			++y;
 		}
 	}
 }

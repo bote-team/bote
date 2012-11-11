@@ -133,9 +133,13 @@ void CShipArray::SerializeEndOfRoundData(CArchive& ar, const CString& sMajorID) 
 	if(ar.IsLoading()) {
 		int number = 0;
 		ar >> number;
-		for(CShipArray::iterator i = begin(); i != end(); ++i)
-			if (i->GetOwnerOfShip() == sMajorID)
+		for(CShipArray::iterator i = begin(); i != end();) {
+			if (i->GetOwnerOfShip() == sMajorID) {
 				RemoveAt(i);
+				continue;
+			}
+			++i;
+		}
 		int oldSize = GetSize();
 		SetSize(oldSize + number);
 		for (int i = oldSize; i < GetSize(); i++)
@@ -164,9 +168,13 @@ void CShipArray::SerializeNextRoundData(CArchive& ar, const CPoint& ptCurrentCom
 		int nCount = 0;
 		ar >> nCount;
 		// alle Schiffe aus dem Kampfsektor entfernen
-		for(CShipArray::iterator i = begin(); i != end(); ++i)
-			if (i->GetKO() == ptCurrentCombatSector)
+		for(CShipArray::iterator i = begin(); i != end();) {
+			if (i->GetKO() == ptCurrentCombatSector) {
 				RemoveAt(i);
+				continue;
+			}
+			++i;
+		}
 		int nSize = GetSize();
 		// empfangene Schiffe wieder hinzufügen
 		SetSize(nSize + nCount);
