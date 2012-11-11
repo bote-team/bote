@@ -173,7 +173,7 @@ BOOL BotE_LzmaCompress(const BYTE *inBuffer, size_t inSize, CFile &out,
 #endif
 		const size_t kIdSize = 1;
 		const size_t kLzmaPropsSize = 5;
-		const size_t kMinDestSize = kIdSize + kLzmaPropsSize + 8;
+		//const size_t kMinDestSize = kIdSize + kLzmaPropsSize + 8;
 		NCompress::NLZMA::CEncoder *encoderSpec = new NCompress::NLZMA::CEncoder;
 		CMyComPtr<ICompressCoder> encoder = encoderSpec;
 
