@@ -4,6 +4,7 @@
 #include "GenDiploMessage.h"
 #include "botf2.h"
 #include "Botf2Doc.h"
+#include "Ships/Ships.h"
 
 #include <cassert>
 
@@ -176,12 +177,12 @@ void CDiplomacyController::CalcDiplomacyFallouts(CBotf2Doc* pDoc)
 				// alle Schiffe der Minor gehen nun an den Major
 				for (int i = 0; i < pDoc->m_ShipArray.GetSize(); i++)
 				{
-					CShip* pShip = &(pDoc->m_ShipArray[i]);
+					CShips* pShip = &(pDoc->m_ShipArray[i]);
 					if (pShip->GetOwnerOfShip() == pMinor->GetRaceID())
 					{
 						pShip->SetOwnerOfShip(pMajor->GetRaceID());
 						// Schiff in die Shiphistory stecken
-						pMajor->GetShipHistory()->AddShip(pShip, pDoc->GetSector(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).GetName(true), pDoc->GetCurrentRound());
+						pMajor->GetShipHistory()->AddShip(&pShip->Leader(), pDoc->GetSector(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).GetName(true), pDoc->GetCurrentRound());
 					}
 				}
 			}

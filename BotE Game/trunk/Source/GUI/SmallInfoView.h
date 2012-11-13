@@ -12,7 +12,7 @@
 #pragma once
 #include "FontLoader.h"
 #include "Galaxy\Planet.h"
-#include "Ships\Ship.h"
+#include "Ships/Ships.h"
 #endif // _MSC_VER > 1000
 // CSmallInfoView.h : Header-Datei
 //
@@ -32,7 +32,7 @@ protected:
 	static BOOLEAN m_bShowPlanetInfo;	///< sollen Planeteninformationen angezeigt werden
 	static BOOLEAN m_bShowPlanetStats;	///< sollen Planetenstatistiken angezeigt werden
 	static CPlanet* m_pPlanet;			///< Planet über den Informationen bzw. Statistiken angezeigt werden sollen
-	static CShip* m_pShip;				///< Schiff über das Informationen angezeigt werden sollen
+	static CShips* m_pShip;				///< Schiff über das Informationen angezeigt werden sollen
 	int	m_nTimer;						///< Variable welche per Timerbefehl hochgezählt wird
 	bool m_bAnimatedIcon;				///< soll das Rassensymbol animiert werden
 
@@ -58,7 +58,7 @@ public:
 
 	/// Funktion legt das anzuzeigende Schiff fest.
 	/// @param planet Zeiger auf den anzuzeigenden Planeten
-	static void SetShip(CShip* ship) { m_pShip = ship; }
+	static void SetShip(CShips* ship) { m_pShip = ship; }
 
 	/// Funktion liefert einen Zeiger auf den aktuell angezeigten Planeten.
 	/// @return Zeiger auf Planeten
@@ -66,7 +66,7 @@ public:
 
 	/// Funktion liefert einen Zeiger auf das aktuell angezeigte Schiff.
 	/// @return Zeiger auf Planeten
-	static const CShip* GetShip(void) { return m_pShip; }
+	static const CShips* GetShip(void) { return m_pShip; }
 
 // Überschreibungen
 	// Vom Klassen-Assistenten generierte virtuelle Funktionsüberschreibungen

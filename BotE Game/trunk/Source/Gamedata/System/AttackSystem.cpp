@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "AttackSystem.h"
-#include "Ships\Fleet.h"
+#include "Ships/Ships.h"
 
 #include "Ships/ShipArray.h"
 
@@ -52,11 +52,11 @@ void CAttackSystem::Init(CRace* pDefender, CSystem* system, CShipArray* ships, C
 	for (int i = 0; i < ships->GetSize(); i++)
 		if (ships->GetAt(i).GetKO() == m_KO && ships->GetAt(i).GetCurrentOrder() == SHIP_ORDER::ATTACK_SYSTEM)
 		{
-			m_pShips.Add(&ships->GetAt(i));
+			m_pShips.Add(&ships->GetAt(i).Leader());
 			// Wenn das Schiff eine Flotte besitzt, diese Schiffe auch dem Feld hinzufügen
-			if (ships->GetAt(i).HasFleet(false))
+			if (ships->GetAt(i).HasFleet())
 				for (int j = 0; j < ships->GetAt(i).GetFleetSize(); j++)
-					m_pShips.Add(ships->GetAt(i).GetShipFromFleet(j));
+					m_pShips.Add(&ships->GetAt(i).GetShipFromFleet(j)->Leader());
 		}
 }
 

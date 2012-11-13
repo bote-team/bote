@@ -16,6 +16,7 @@
 // forward declaration
 class CRace;
 class CAnomaly;
+class CShips;
 
 class CCombat :	public CObject
 {
@@ -35,7 +36,7 @@ public:
 	* <code>ships<code>. Diese Schiffe werden dann am Kampf teilnehmen. Kommt es zu einem Kampf, so muß
 	* diese Funktion zu allererst aufgerufen werden.
 	*/
-	void SetInvolvedShips(CArray<CShip*>* pvShips, std::map<CString, CRace*>* pmRaces, const CAnomaly* pAnomaly);
+	void SetInvolvedShips(CArray<CShips*>* pvShips, std::map<CString, CRace*>* pmRaces, const CAnomaly* pAnomaly);
 
 	/**
 	* Diese Funktion setzt die gewählte Schiffsformation der Rasse <code>race<code> fest.
@@ -64,7 +65,7 @@ public:
 	/**
 	* Funktion zum Berechnen der groben prozentualen Siegchance einer Rasse. Die Siegchance liegt zwischen 0 und 1.
 	*/
-	static double GetWinningChance(const CRace* pOurRace, const CArray<CShip*>& vInvolvedShips, const std::map<CString, CRace*>* pmRaces, std::set<const CRace*>& sFriends, std::set<const CRace*>& sEnemies, const CAnomaly* pAnomaly);
+	static double GetWinningChance(const CRace* pOurRace, const CArray<CShips*>& vInvolvedShips, const std::map<CString, CRace*>* pmRaces, std::set<const CRace*>& sFriends, std::set<const CRace*>& sEnemies, const CAnomaly* pAnomaly);
 
 	/**
 	* Funktion überprüft, ob die Rassen in einem Kampf sich gegeneinander aus diplomatischen Gründen

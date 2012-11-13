@@ -14,12 +14,12 @@
 #include "ShipBottomView.h"
 #include "SmallInfoView.h"
 #include "Races\RaceController.h"
-#include "Ships\Fleet.h"
 #include "Galaxy\Anomaly.h"
 #include "IniLoader.h"
 #include "HTMLStringBuilder.h"
 #include "ImageStone/ImageStone.h"
 #include "Graphic\memdc.h"
+#include "Ships/Ships.h"
 
 BOOLEAN CGalaxyMenuView::m_bDrawTradeRoute = FALSE;
 CTradeRoute CGalaxyMenuView::m_TradeRoute;
@@ -284,7 +284,7 @@ void CGalaxyMenuView::OnDraw(CDC* dc)
 		if (!pDoc->CurrentShip().HasFleet())
 			m_nRange = 3-pDoc->GetShip(pDoc->GetCurrentShipIndex()).GetRange();
 		else
-			m_nRange = 3-pDoc->CurrentShip().GetFleet()->GetFleetRange(&pDoc->CurrentShip());
+			m_nRange = 3-pDoc->CurrentShip().GetFleetRange(&pDoc->CurrentShip().Leader());
 	}
 	else
 		m_nRange = SM_RANGE_SPACE;
@@ -450,7 +450,7 @@ void CGalaxyMenuView::OnDraw(CDC* dc)
 		if (!pDoc->CurrentShip().HasFleet())
 			s.Format("%.0f",ceil((float)pDoc->m_ShipArray[n].GetPath()->GetSize() / (float)pDoc->m_ShipArray[n].GetSpeed()));
 		else
-			s.Format("%.0f",ceil((float)pDoc->m_ShipArray[n].GetPath()->GetSize() / (float)pDoc->CurrentShip().GetFleet()->GetFleetSpeed(&pDoc->CurrentShip())));
+			s.Format("%.0f",ceil((float)pDoc->m_ShipArray[n].GetPath()->GetSize() / (float)pDoc->CurrentShip().GetFleetSpeed(&pDoc->CurrentShip().Leader())));
 		pDC->SetTextColor(RGB(255,255,255));
 		pDC->TextOut(last.x+STARMAP_SECTOR_WIDTH/2+6, last.y+STARMAP_SECTOR_HEIGHT/2-8, s);
 
@@ -718,7 +718,7 @@ void CGalaxyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 						{
 							if(it->first == pMajor->GetRaceID()) {
 								for(int i = 0; i < pDoc->m_ShipArray.GetSize(); ++i) {
-									const CShip& ship = pDoc->m_ShipArray.GetAt(i);
+									const CShips& ship = pDoc->m_ShipArray.GetAt(i);
 									const CPoint& point = ship.GetKO();
 									if(sector == Sector(point.x, point.y)) {
 										m_PreviouslyJumpedToShip = RememberedShip(i, ship.GetShipName());
@@ -828,7 +828,7 @@ void CGalaxyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		if (m_bShipMove && (pDoc->CurrentShip().GetPath()->GetSize()
 			|| target == pDoc->CurrentShip().GetKO()))
 		{
-			CShip& ship = pDoc->CurrentShip();
+			CShips& ship = pDoc->CurrentShip();
 			ship.SetTargetKO(target == ship.GetKO() ? CPoint(-1, -1) : target, 0);
 			CSmallInfoView::SetShipInfo(true);
 			SetMoveShip(FALSE);
@@ -1066,7 +1066,7 @@ void CGalaxyMenuView::OnMouseMove(UINT nFlags, CPoint point)
 			if (!pDoc->CurrentShip().HasFleet())
 				speed = (char)(pDoc->CurrentShip().GetSpeed());
 			else
-				speed = (char)(pDoc->CurrentShip().GetFleet()->GetFleetSpeed(&pDoc->CurrentShip()));
+				speed = (char)(pDoc->CurrentShip().GetFleetSpeed(&pDoc->CurrentShip().Leader()));
 
 			struct::Sector result = pMajor->GetStarmap()->CalcPath(pMajor->GetStarmap()->GetSelection(), target, m_nRange, speed, *pDoc->CurrentShip().GetPath());
 
@@ -1317,7 +1317,7 @@ void CGalaxyMenuView::SearchNextIdleShipAndJumpToIt(CBotf2Doc* pDoc, SHIP_ORDER:
 
 	int start_at = -1;
 	int stop_at = size - 1;
-	CShip* previous_ship = NULL;
+	CShips* previous_ship = NULL;
 	if(m_PreviouslyJumpedToShip.index < size
 		&& pDoc->m_ShipArray.GetAt(m_PreviouslyJumpedToShip.index).GetOwnerOfShip()
 			== pMajor->GetRaceID()
@@ -1337,7 +1337,7 @@ void CGalaxyMenuView::SearchNextIdleShipAndJumpToIt(CBotf2Doc* pDoc, SHIP_ORDER:
 		++i;
 		if(i >= size)
 			i = 0;
-		const CShip& ship = pDoc->m_ShipArray.GetAt(i);
+		const CShips& ship = pDoc->m_ShipArray.GetAt(i);
 		if(pMajor->GetRaceID() != ship.GetOwnerOfShip())
 			if(i == stop_at)
 				break;

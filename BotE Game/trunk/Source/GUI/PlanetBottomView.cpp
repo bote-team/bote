@@ -12,6 +12,8 @@
 #include "HTMLStringBuilder.h"
 #include "Galaxy\Anomaly.h"
 #include "Graphic\memdc.h"
+#include "Ships/Ships.h"
+
 
 // CPlanetBottomView
 

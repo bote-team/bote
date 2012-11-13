@@ -4,8 +4,8 @@
 #include "botf2.h"
 #include "Botf2Doc.h"
 #include "Races/RaceController.h"
-#include "Ships/Fleet.h"
 #include <cassert>
+#include "Ships/Ships.h"
 
 IMPLEMENT_SERIAL (CAnomaly, CObject, 1)
 //////////////////////////////////////////////////////////////////////
@@ -228,13 +228,13 @@ bool CAnomaly::IsShipScannerDeactivated(void) const
 	return (m_byType == NEUTRONSTAR || m_byType == RADIOPULSAR || m_byType == XRAYPULSAR || m_byType == MAGNETAR || m_byType == DEUTNEBULA || m_byType == IONSTORM);
 }
 
-void CAnomaly::CalcShipEffects(CShip* pShip) const
+void CAnomaly::CalcShipEffects(CShips* pShip) const
 {
 	if (m_byType == NEUTRONSTAR || m_byType == RADIOPULSAR || m_byType == XRAYPULSAR || m_byType == MAGNETAR)
 	{
 		// teilweise Schildschaden machen
 		// hat das Schiff eine Flotte, so jedes Schiff in der Flotte beachten
-		if (pShip->HasFleet(false))
+		if (pShip->HasFleet())
 		{
 			for (int i = 0; i < pShip->GetFleetSize(); i++)
 			{
@@ -267,7 +267,7 @@ void CAnomaly::CalcShipEffects(CShip* pShip) const
 	{
 		// Schilde komplett weg
 		// hat das Schiff eine Flotte, so jedes Schiff in der Flotte beachten
-		if (pShip->HasFleet(false))
+		if (pShip->HasFleet())
 			for (int i = 0; i < pShip->GetFleetSize(); i++)
 				pShip->GetShipFromFleet(i)->GetShield()->SetCurrentShield(pShip->GetShipFromFleet(i)->GetShield()->GetCurrentShield() * (-1));
 		// Schiff selbst
@@ -276,7 +276,7 @@ void CAnomaly::CalcShipEffects(CShip* pShip) const
 	else if (m_byType == RADIONEBULA)
 	{
 		// Verlust aller Crewerfahrung bei radioaktiven Nebel
-		if (pShip->HasFleet(false))
+		if (pShip->HasFleet())
 			for (int i = 0; i < pShip->GetFleetSize(); i++)
 				pShip->GetShipFromFleet(i)->SetCrewExperiance(pShip->GetShipFromFleet(i)->GetCrewExperience() * (-1));
 		// Schiff selbst
@@ -286,7 +286,7 @@ void CAnomaly::CalcShipEffects(CShip* pShip) const
 	{
 		// Schiff zerstört
 		// hat das Schiff eine Flotte, so jedes Schiff in der Flotte beachten
-		if (pShip->HasFleet(false))
+		if (pShip->HasFleet())
 			for (int i = 0; i < pShip->GetFleetSize(); i++)
 				pShip->GetShipFromFleet(i)->GetHull()->SetCurrentHull(pShip->GetShipFromFleet(i)->GetHull()->GetCurrentHull() * (-1));
 		// Schiff selbst
@@ -296,7 +296,7 @@ void CAnomaly::CalcShipEffects(CShip* pShip) const
 	{
 		// teilweise Hüllenschaden machen (unabhängig von Schilden)
 		// hat das Schiff eine Flotte, so jedes Schiff in der Flotte beachten
-		if (pShip->HasFleet(false))
+		if (pShip->HasFleet())
 			for (int i = 0; i < pShip->GetFleetSize(); i++)
 				MakeHullDmg(50, 50, pShip->GetShipFromFleet(i));
 		// Schiff selbst
@@ -305,7 +305,7 @@ void CAnomaly::CalcShipEffects(CShip* pShip) const
 	else if (m_byType == IONSTORM)
 	{
 		// Verlust aller Crewerfahrung bei Ionensturm
-		if (pShip->HasFleet(false))
+		if (pShip->HasFleet())
 			for (int i = 0; i < pShip->GetFleetSize(); i++)
 				pShip->GetShipFromFleet(i)->SetCrewExperiance(pShip->GetShipFromFleet(i)->GetCrewExperience() * (-1));
 		// Schiff selbst
@@ -313,7 +313,7 @@ void CAnomaly::CalcShipEffects(CShip* pShip) const
 
 		// maximale Schildkapazität um 3% erhöhen
 		// hat das Schiff eine Flotte, so jedes Schiff in der Flotte beachten
-		if (pShip->HasFleet(false))
+		if (pShip->HasFleet())
 			for (int i = 0; i < pShip->GetFleetSize(); i++)
 			{
 				UINT nMaxShield = pShip->GetShipFromFleet(i)->GetShield()->GetMaxShield() * 1.03;
@@ -337,14 +337,14 @@ void CAnomaly::CalcShipEffects(CShip* pShip) const
 	}
 }
 
-void CAnomaly::MakeShieldDmg(int nMinDmgValue, int nMaxDmgPercent, CShip* pShip) const
+void CAnomaly::MakeShieldDmg(int nMinDmgValue, int nMaxDmgPercent, CShips* pShip) const
 {
 	int nMax = (int)pShip->GetShield()->GetCurrentShield() * (rand()%(nMaxDmgPercent + 1)) / 100;
 	int nShieldDmg = max(nMinDmgValue, nMax);
 	pShip->GetShield()->SetCurrentShield(pShip->GetShield()->GetCurrentShield() - nShieldDmg);
 }
 
-void CAnomaly::MakeHullDmg(int nMinDmgValue, int nMaxDmgPercent, CShip* pShip) const
+void CAnomaly::MakeHullDmg(int nMinDmgValue, int nMaxDmgPercent, CShips* pShip) const
 {
 	int nMax = (int)pShip->GetHull()->GetCurrentHull() * (rand()%(nMaxDmgPercent + 1)) / 100;
 	int nHullDmg = max(nMinDmgValue, nMax);
@@ -369,7 +369,7 @@ void CAnomaly::ReduceScanPower(const CPoint &pt) const
 	}
 }
 
-void CAnomaly::PerhabsStrand(CShip* pShip) const
+void CAnomaly::PerhabsStrand(CShips* pShip) const
 {
 	CBotf2Doc* pDoc = ((CBotf2App*)AfxGetApp())->GetDocument();
 	ASSERT(pDoc);

@@ -77,13 +77,13 @@ private:
 
 	std::set<const CRace*> m_sFriends;
 	std::set<const CRace*> m_sEnemies;
-	CArray<CShip*> m_vInvolvedShips;
+	CArray<CShips*> m_vInvolvedShips;
 	double m_dWinningChance;
 
 	int m_nPageFriends;							///< Seite für alle befeundeten Schiffe in der Befehlsansicht
 	int m_nPageEnemies;							///< Seite für alle feindlichen Schiffe in der Befehlsansicht
-	vector<pair<CRect, CShip*> > m_vShipRects;	///< alle angezeigten Schiffe mit ihren Rechtecken zu draufklicken
-	CShip* m_pMarkedShip;						///< aktuell markiertes Schiff
+	vector<pair<CRect, CShips*> > m_vShipRects;	///< alle angezeigten Schiffe mit ihren Rechtecken zu draufklicken
+	CShips* m_pMarkedShip;						///< aktuell markiertes Schiff
 	CRect m_rLastMarkedRect;					///< zuletzt markiertes Rechteck
 	int m_nShipType;							///< nur Schiffstypen dieses Types werden angezeigt
 };

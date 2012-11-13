@@ -9,8 +9,9 @@
 #include "MainFrm.h"
 #include "Galaxy\Planet.h"
 #include "Races\RaceController.h"
-#include "Ships\Fleet.h"
 #include "Iniloader.h"
+#include "Ships/Ships.h"
+#include <cassert>
 
 
 #ifdef _DEBUG
@@ -26,7 +27,7 @@ BOOLEAN CSmallInfoView::m_bShowShipInfo = FALSE;
 BOOLEAN CSmallInfoView::m_bShowPlanetInfo = FALSE;
 BOOLEAN CSmallInfoView::m_bShowPlanetStats = FALSE;
 CPlanet* CSmallInfoView::m_pPlanet = NULL;
-CShip* CSmallInfoView::m_pShip = NULL;
+CShips* CSmallInfoView::m_pShip = NULL;
 
 IMPLEMENT_DYNCREATE(CSmallInfoView, CView)
 
@@ -370,7 +371,7 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 		// Wenn wir Infomationen zur Flotte anzeigen
 		else
 		{
-			short range = m_pShip->GetFleet()->GetFleetRange(&pDoc->CurrentShip());
+			short range = m_pShip->GetFleetRange(&pDoc->CurrentShip().Leader());
 			if (range == 0)
 				Range = CResourceManager::GetString("SHORT");
 			else if (range == 1)
@@ -385,7 +386,8 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 
 			fontBrush.SetColor(color);
 
-			if (m_pShip->GetFleet()->GetFleetShipType(&pDoc->CurrentShip()) != -1)
+			assert(m_pShip == &pDoc->CurrentShip());
+			if (m_pShip->GetFleetShipType() != -1)
 				s.Format("%s: %s",CResourceManager::GetString("TYPE"),
 				m_pShip->GetShipTypeAsString(TRUE));
 			else
@@ -396,7 +398,7 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 			g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,0,r.right,105), &fontFormat, &fontBrush);
 
 			s.Format("%s: %d",CResourceManager::GetString("SPEED"),
-				m_pShip->GetFleet()->GetFleetSpeed(&pDoc->CurrentShip()));
+				m_pShip->GetFleetSpeed(&pDoc->CurrentShip().Leader()));
 			g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,0,r.right,125), &fontFormat, &fontBrush);
 		}
 
@@ -416,11 +418,11 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 			}
 			else
 			{
-				range = 3-pDoc->m_ShipArray.GetAt(n).GetFleet()->GetFleetRange(&pDoc->m_ShipArray.GetAt(n));
-				speed = pDoc->m_ShipArray.GetAt(n).GetFleet()->GetFleetSpeed(&pDoc->m_ShipArray.GetAt(n));
+				range = 3-pDoc->m_ShipArray.GetAt(n).GetFleetRange(&pDoc->m_ShipArray.GetAt(n).Leader());
+				speed = pDoc->m_ShipArray.GetAt(n).GetFleetSpeed(&pDoc->m_ShipArray.GetAt(n).Leader());
 			}
 			CArray<Sector> path;
-			const CShip& ship = pDoc->m_ShipArray.GetAt(n);
+			const CShips& ship = pDoc->m_ShipArray.GetAt(n);
 			Sector position(ship.GetKO().x, ship.GetKO().y);
 			Sector target(ship.GetTargetKO().x, ship.GetTargetKO().y);
 			pMajor->GetStarmap()->CalcPath(position, target, range, speed, path);

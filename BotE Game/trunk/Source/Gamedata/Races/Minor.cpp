@@ -5,6 +5,7 @@
 #include "Botf2Doc.h"
 #include "AI\MinorAI.h"
 #include "HTMLStringBuilder.h"
+#include "Ships/Ships.h"
 
 IMPLEMENT_SERIAL (CMinor, CRace, 1)
 
@@ -212,7 +213,7 @@ void CMinor::PerhapsBuildShip(CBotf2Doc* pDoc)
 					int nNumber = 1;
 					for (int j = 0; j < pDoc->m_ShipArray.GetSize(); j++)
 					{
-						CShip* pShip = &(pDoc->m_ShipArray[j]);
+						CShips* pShip = &(pDoc->m_ShipArray[j]);
 						if (pShip->GetOwnerOfShip() == this->m_sID && pShip->GetShipClass() == pShipInfo->GetShipClass())
 							nNumber++;
 					}

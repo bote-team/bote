@@ -6,9 +6,9 @@
 #include "MainFrm.h"
 #include "TransportMenuView.h"
 #include "Races\RaceController.h"
-#include "Ships\Fleet.h"
 #include "ShipBottomView.h"
 #include "Graphic\memdc.h"
+#include "Ships/Ships.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -198,11 +198,11 @@ void CTransportMenuView::DrawTransportMenue(Graphics* g)
 	fontBrush.SetColor(normalColor);
 
 	// Inhalte des system- und globalen Lagers zeichnen
-	CShip* ship = &pDoc->CurrentShip();
+	CShips* ship = &pDoc->CurrentShip();
 	for (int i = TITAN; i <= DERITIUM; i++)
 	{
 		int res = ship->GetLoadedResources(i);
-		if (ship->HasFleet(false))
+		if (ship->HasFleet())
 			for (int j = 0; j < ship->GetFleetSize(); j++)
 				res += ship->GetShipFromFleet(j)->GetLoadedResources(i);
 		// Lagerinhalt im Schiff zeichnen
@@ -222,7 +222,7 @@ void CTransportMenuView::DrawTransportMenue(Graphics* g)
 	int usedStorage = ship->GetUsedStorageRoom(&pDoc->m_TroopInfo);
 	int storageRoom = ship->GetStorageRoom();
 	int troopNumber = ship->GetTransportedTroops()->GetSize();
-	if (ship->HasFleet(false))
+	if (ship->HasFleet())
 		for (int j = 0; j < ship->GetFleetSize(); j++)
 		{
 			usedStorage += ship->GetShipFromFleet(j)->GetUsedStorageRoom(&pDoc->m_TroopInfo);
@@ -314,7 +314,7 @@ void CTransportMenuView::DrawTransportMenue(Graphics* g)
 	}
 	// Truppenbeschreibung auf der rechten Seite, also die im Schiff anzeigen
 	//pDC->Rectangle(850,270,1050,700);
-	if (ship->GetTransportedTroops()->GetSize() > 0 && !ship->HasFleet(false))
+	if (ship->GetTransportedTroops()->GetSize() > 0 && !ship->HasFleet())
 	{
 		BYTE id = ship->GetTransportedTroops()->GetAt(m_byTroopNumberInShip).GetID();
 		// ein paar Daten zur ausgewählten Einheit werden rechts angezeigt
@@ -389,7 +389,7 @@ void CTransportMenuView::DrawTransportMenue(Graphics* g)
 			g->DrawString(CComBSTR(s), -1, &font, RectF(290,670,120,30), &fontFormat, &btnBrush);
 		}
 		// Vor-Button rechts
-		if (ship->GetTransportedTroops()->GetSize() && !ship->HasFleet(false))
+		if (ship->GetTransportedTroops()->GetSize() && !ship->HasFleet())
 		{
 			if (graphic)
 				g->DrawImage(graphic, 665,670,120,30);
@@ -397,7 +397,7 @@ void CTransportMenuView::DrawTransportMenue(Graphics* g)
 			g->DrawString(CComBSTR(s), -1, &font, RectF(665,670,120,30), &fontFormat, &btnBrush);
 		}
 	}
-	else if (ship->GetTransportedTroops()->GetSize() && !ship->HasFleet(false))
+	else if (ship->GetTransportedTroops()->GetSize() && !ship->HasFleet())
 	{
 		// Vor-Button rechts
 		if (graphic)
@@ -435,7 +435,7 @@ void CTransportMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		return;
 
 	// Wenn wir in der Transportansicht sind (brauchen auch nur Klicks überprüfen, wenn das Schiff Lagerraum hat)
-	CShip* ship = NULL;
+	CShips* ship = NULL;
 	if (pDoc->GetCurrentShipIndex() != -1)
 		if (pDoc->GetCurrentShipIndex() < pDoc->m_ShipArray.GetSize())
 			ship = &pDoc->CurrentShip();
@@ -450,7 +450,7 @@ void CTransportMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 
 	BOOLEAN isFleet = FALSE;
 	int number = 1;
-	if (ship->HasFleet(false))
+	if (ship->HasFleet())
 	{
 		isFleet = TRUE;
 		number += ship->GetFleetSize();
@@ -656,14 +656,14 @@ void CTransportMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		}
 		// Vor-Button rechts
 		else if (CRect(665,670,785,700).PtInRect(point) &&
-			ship->GetTransportedTroops()->GetSize() > 0 && !ship->HasFleet(false))
+			ship->GetTransportedTroops()->GetSize() > 0 && !ship->HasFleet())
 		{
 			m_byTroopNumberInShip++;
 			Invalidate(FALSE);
 		}
 	}
 	else if (CRect(665,670,785,700).PtInRect(point) &&
-		ship->GetTransportedTroops()->GetSize() > 0 && !ship->HasFleet(false))
+		ship->GetTransportedTroops()->GetSize() > 0 && !ship->HasFleet())
 	{
 		// Vor-Button rechts
 		m_byTroopNumberInShip++;
@@ -737,7 +737,7 @@ void CTransportMenuView::OnMouseMove(UINT nFlags, CPoint point)
 	ASSERT(pMajor);
 
 	// Wenn wir in der Transportansicht sind (brauchen auch nur Klicks überprüfen, wenn das Schiff Lagerraum hat)
-	CShip* ship = NULL;
+	CShips* ship = NULL;
 	if (pDoc->GetCurrentShipIndex() != -1)
 		if (pDoc->GetCurrentShipIndex() < pDoc->m_ShipArray.GetSize())
 			ship = &pDoc->CurrentShip();

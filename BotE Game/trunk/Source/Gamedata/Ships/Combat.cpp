@@ -2,6 +2,7 @@
 #include "Combat.h"
 #include "Races\RaceController.h"
 #include "Galaxy\Anomaly.h"
+#include "Ships/Ships.h"
 
 vec3i GivePosition(BYTE pos, USHORT posNumber)
 {
@@ -42,7 +43,7 @@ CCombat::~CCombat(void)
 // Diese Funktion verlangt beim Aufruf einen Zeiger auf ein Feld, welches Zeiger auf Schiffe beinhaltet
 // <code>ships<code>. Diese Schiffe werden dann am Kampf teilnehmen. Kommt es zu einem Kampf, so muﬂ
 // diese Funktion zu allererst aufgerufen werden.
-void CCombat::SetInvolvedShips(CArray<CShip*>* pShips, std::map<CString, CRace*>* pmRaces, const CAnomaly* pAnomaly)
+void CCombat::SetInvolvedShips(CArray<CShips*>* pShips, std::map<CString, CRace*>* pmRaces, const CAnomaly* pAnomaly)
 {
 	Reset();
 	ASSERT(pmRaces);
@@ -71,7 +72,7 @@ void CCombat::SetInvolvedShips(CArray<CShip*>* pShips, std::map<CString, CRace*>
 		for (int i = 0; i < pShips->GetSize(); i++)
 		{
 			CCombatShip* cs = new CCombatShip();;
-			cs->m_pShip = pShips->GetAt(i);
+			cs->m_pShip = &pShips->GetAt(i)->Leader();
 			cs->m_byManeuverability = pShips->GetAt(i)->GetManeuverability();
 			cs->m_KO.x = 0;
 			cs->m_KO.y = 0;
@@ -554,7 +555,7 @@ bool CCombat::CheckShipStayInCombat(int i)
 }
 
 // Funktion zum Berechnen der groben prozentualen Siegchance einer Rasse. Die Siegchance liegt zwischen 0 und 1.
-double CCombat::GetWinningChance(const CRace* pOurRace, const CArray<CShip*>& vInvolvedShips, const std::map<CString, CRace*>* pmRaces, std::set<const CRace*>& sFriends, std::set<const CRace*>& sEnemies, const CAnomaly* pAnomaly)
+double CCombat::GetWinningChance(const CRace* pOurRace, const CArray<CShips*>& vInvolvedShips, const std::map<CString, CRace*>* pmRaces, std::set<const CRace*>& sFriends, std::set<const CRace*>& sEnemies, const CAnomaly* pAnomaly)
 {
 	ASSERT(pOurRace);
 	ASSERT(pmRaces);
@@ -582,7 +583,7 @@ double CCombat::GetWinningChance(const CRace* pOurRace, const CArray<CShip*>& vI
 
 	for (int i = 0; i < vInvolvedShips.GetSize(); i++)
 	{
-		const CShip* pShip = vInvolvedShips[i];
+		const CShips* pShip = vInvolvedShips[i];
 
 		double dOffensive = pShip->GetCompleteOffensivePower(true, bCanUseTorpedos);
 		double dDefensive = pShip->GetCompleteDefensivePower(bCanUseShields) / 2.0;

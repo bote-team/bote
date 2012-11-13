@@ -2,7 +2,7 @@
 
 #include <vector>
 
-class CShip;
+class CShips;
 
 class CShipArray
 {
@@ -11,16 +11,16 @@ public:
 // Konstruktion/Destruktion
 //////////////////////////////////////////////////////////////////////
 	CShipArray(void);
-	~CShipArray(void);
+	virtual ~CShipArray(void);
 
 //////////////////////////////////////////////////////////////////////
 // iterators
 //////////////////////////////////////////////////////////////////////
-	typedef std::vector<CShip>::const_iterator const_iterator;
+	typedef std::vector<CShips>::const_iterator const_iterator;
 	const_iterator begin() const;
 	const_iterator end() const;
 
-	typedef std::vector<CShip>::iterator iterator;
+	typedef std::vector<CShips>::iterator iterator;
 	iterator begin();
 	iterator end();
 
@@ -28,9 +28,10 @@ public:
 // adding elements
 //////////////////////////////////////////////////////////////////////
 	//adds the passed ship at the end of this shiparray
+	//included fleets are not handled
 	//@param it: will be updated and point to the same position as before
 	//@param ship: the ship to add
-	void Add(CShipArray::iterator& it, const CShip& ship);
+	void Add(CShipArray::iterator& it, const CShips& ship);
 	void Append(CShipArray::iterator& it, const CShipArray& other);
 //////////////////////////////////////////////////////////////////////
 // removing elements
@@ -42,12 +43,12 @@ public:
 //////////////////////////////////////////////////////////////////////
 // getting elements
 //////////////////////////////////////////////////////////////////////
-	CShip& GetAt(int index);
-	const CShip& GetAt(int index) const;
-	CShip& ElementAt(int index);
-	const CShip& ElementAt(int index) const;
-	CShip& operator[](int index);
-	const CShip& operator[](int index) const;
+	CShips& GetAt(int index);
+	const CShips& GetAt(int index) const;
+	CShips& ElementAt(int index);
+	const CShips& ElementAt(int index) const;
+	CShips& operator[](int index);
+	const CShips& operator[](int index) const;
 
 //////////////////////////////////////////////////////////////////////
 // getting info
@@ -69,5 +70,5 @@ public:
 private:
 	void SetSize(int size);
 
-	std::vector<CShip> m_vShips;
+	std::vector<CShips> m_vShips;
 };

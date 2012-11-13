@@ -66,8 +66,8 @@ private:
 	short m_iWhichMainShipOrderButton;			///< welchen Hauptschiffsbefehlsbutton haben wir gedrückt
 	static BOOLEAN m_bShowStation;
 
-	vector<pair<CRect, CShip*> > m_vShipRects;	///< alle angezeigten Schiffe mit ihren Rechtecken zu draufklicken
-	CShip* m_pMarkedShip;						///< aktuell markiertes Schiff
+	vector<pair<CRect, CShips*> > m_vShipRects;	///< alle angezeigten Schiffe mit ihren Rechtecken zu draufklicken
+	CShips* m_pMarkedShip;						///< aktuell markiertes Schiff
 	CRect m_rLastMarkedRect;					///< zuletzt markiertes Rechteck
 
 protected:

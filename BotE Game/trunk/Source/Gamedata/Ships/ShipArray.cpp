@@ -1,9 +1,9 @@
 #include "stdafx.h"
 
-#include "ShipArray.h"
-#include "fleet.h"
-
 #include <cassert>
+
+#include "ShipArray.h"
+#include "Ships.h"
 
 //////////////////////////////////////////////////////////////////////
 // Konstruktion/Destruktion
@@ -34,7 +34,8 @@ CShipArray::iterator CShipArray::end() {
 //////////////////////////////////////////////////////////////////////
 // adding elements
 //////////////////////////////////////////////////////////////////////
-void CShipArray::Add(CShipArray::iterator& it, const CShip& ship) {
+
+void CShipArray::Add(CShipArray::iterator& it, const CShips& ship) {
 	const int memory = it - begin();
 	m_vShips.push_back(ship);
 	it = begin() + memory;
@@ -58,24 +59,24 @@ void CShipArray::RemoveAt(CShipArray::iterator& index) {
 //////////////////////////////////////////////////////////////////////
 // getting elements
 //////////////////////////////////////////////////////////////////////
-CShip& CShipArray::GetAt(int index) {
+CShips& CShipArray::GetAt(int index) {
 	return m_vShips.at(index);
 }
-const CShip& CShipArray::GetAt(int index) const {
-	return m_vShips.at(index);
-}
-
-CShip& CShipArray::ElementAt(int index) {
-	return m_vShips.at(index);
-}
-const CShip& CShipArray::ElementAt(int index) const {
+const CShips& CShipArray::GetAt(int index) const {
 	return m_vShips.at(index);
 }
 
-CShip& CShipArray::operator[](int index) {
+CShips& CShipArray::ElementAt(int index) {
 	return m_vShips.at(index);
 }
-const CShip& CShipArray::operator[](int index) const {
+const CShips& CShipArray::ElementAt(int index) const {
+	return m_vShips.at(index);
+}
+
+CShips& CShipArray::operator[](int index) {
+	return m_vShips.at(index);
+}
+const CShips& CShipArray::operator[](int index) const {
 	return m_vShips.at(index);
 }
 //////////////////////////////////////////////////////////////////////
@@ -102,7 +103,7 @@ void CShipArray::SetSize(int size) {
 void CShipArray::Serialize(CArchive& ar) {
 	if(ar.IsStoring()) {
 		ar << m_vShips.size();
-		for(std::vector<CShip>::iterator it = m_vShips.begin(); it != m_vShips.end(); ++it)
+		for(std::vector<CShips>::iterator it = m_vShips.begin(); it != m_vShips.end(); ++it)
 			it->Serialize(ar);
 	}
 	if(ar.IsLoading()) {
@@ -114,7 +115,7 @@ void CShipArray::Serialize(CArchive& ar) {
 		//Thus, call the destructors of all the current elements explicitely and manually.
 		m_vShips.clear();
 		m_vShips.resize(size);
-		for(std::vector<CShip>::iterator it = m_vShips.begin(); it != m_vShips.end(); ++it)
+		for(std::vector<CShips>::iterator it = m_vShips.begin(); it != m_vShips.end(); ++it)
 			it->Serialize(ar);
 	}
 }

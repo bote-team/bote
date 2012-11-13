@@ -3,7 +3,7 @@
 #include "Botf2Doc.h"
 #include "SectorAI.h"
 #include "Races\RaceController.h"
-#include "Ships\Fleet.h"
+#include "Ships/Ships.h"
 
 //////////////////////////////////////////////////////////////////////
 // Konstruktion/Destruktion
@@ -60,7 +60,7 @@ void CShipAI::CalculateShipOrders(CSectorAI* SectorAI)
 
 	for (int i = 0; i < m_pDoc->m_ShipArray.GetSize(); i++)
 	{
-		CShip* pShip	= &m_pDoc->m_ShipArray.GetAt(i);
+		CShips* pShip	= &m_pDoc->m_ShipArray.GetAt(i);
 		CString sOwner	= pShip->GetOwnerOfShip();
 		CMajor* pOwner	= dynamic_cast<CMajor*>(m_pDoc->GetRaceCtrl()->GetRace(sOwner));
 
@@ -215,7 +215,7 @@ void CShipAI::CalculateShipOrders(CSectorAI* SectorAI)
 /// Funktion erteilt einen Terraformbefehl, sofern dies auch möglich ist.
 /// @param pShip Zeiger des Schiffes
 /// @return <code>true</code> wenn ein Terraformbefehl gegeben werden könnte
-bool CShipAI::DoTerraform(CShip* pShip)
+bool CShipAI::DoTerraform(CShips* pShip)
 {
 	if (!pShip)
 	{
@@ -279,7 +279,7 @@ bool CShipAI::DoTerraform(CShip* pShip)
 /// Funktion erteilt einen Kolonisierungsbefehl, sofern dies auch möglich ist.
 /// @param pShip Zeiger des Schiffes
 /// @return <code>true</code> wenn ein Kolonisierungsbefehl gegeben werden könnte
-bool CShipAI::DoColonize(CShip* pShip)
+bool CShipAI::DoColonize(CShips* pShip)
 {
 	if (!pShip)
 	{
@@ -317,7 +317,7 @@ bool CShipAI::DoColonize(CShip* pShip)
 /// @param pShip Zeiger des Schiffes
 /// @param pMajor Zeiger auf den Besitzer des Schiffes
 /// @return <code>true</code> wenn ein Bewegungsbefehl gegeben werden könnte
-bool CShipAI::DoAttackMove(CShip* pShip, const CMajor* pMajor)
+bool CShipAI::DoAttackMove(CShips* pShip, const CMajor* pMajor)
 {
 	if (!pShip)
 	{
@@ -407,7 +407,7 @@ bool CShipAI::DoAttackMove(CShip* pShip, const CMajor* pMajor)
 /// Funktion schickt Kriegsschiffe zu einem möglichen System, welches Bombardiert werden könnte.
 /// @param pShip Zeiger des Schiffes
 /// @return <code>true</code> wenn ein Bewegungsbefehl gegeben werden konnte, eine Bombardierung befohlen wurde oder das Schiff auf Verstärkung zur Bombardierung im System wartet
-bool CShipAI::DoBombardSystem(CShip* pShip)
+bool CShipAI::DoBombardSystem(CShips* pShip)
 {
 	if (!pShip)
 	{
@@ -421,7 +421,7 @@ bool CShipAI::DoBombardSystem(CShip* pShip)
 		pShip->SetTargetKO(CPoint(-1, -1), 0);
 
 		// Wenn das Schiff bzw. Schiffe aus der Flotte getarnt sind, dann müssen diese erst enttarnt werden
-		if (pShip->GetCloak() || (pShip->HasFleet(false) && pShip->GetFleet()->CheckOrder(pShip, SHIP_ORDER::ATTACK_SYSTEM) == FALSE))
+		if (pShip->GetCloak() || (pShip->HasFleet() && pShip->CheckOrder(SHIP_ORDER::ATTACK_SYSTEM) == FALSE))
 		{
 			// Schiff enttarnen
 			pShip->SetCurrentOrder(SHIP_ORDER::CLOAK);
@@ -436,7 +436,7 @@ bool CShipAI::DoBombardSystem(CShip* pShip)
 		int nShipValue = 0;
 		for (int i = 0; i < m_pDoc->m_ShipArray.GetSize(); i++)
 		{
-			CShip* pTempShip = &m_pDoc->m_ShipArray.GetAt(i);
+			CShips* pTempShip = &m_pDoc->m_ShipArray.GetAt(i);
 
 			if (pTempShip->GetOwnerOfShip() != pShip->GetOwnerOfShip())
 				continue;
@@ -445,7 +445,7 @@ bool CShipAI::DoBombardSystem(CShip* pShip)
 				continue;
 
 			nShipValue += pTempShip->GetHull()->GetCurrentHull();
-			if (pTempShip->HasFleet(false))
+			if (pTempShip->HasFleet())
 			{
 				for (int j = 0; j < pTempShip->GetFleetSize(); j++)
 				{
@@ -475,7 +475,7 @@ bool CShipAI::DoBombardSystem(CShip* pShip)
 /// @param pShip Zeiger des Schiffes
 /// @param bCamouflage <code>true</code> für Tarnen, <code>false</code> für Enttarnen
 /// @return <code>true</code> wenn der Befehl gegeben wurde
-bool CShipAI::DoCamouflage(CShip* pShip, bool bCamouflage/* = true*/)
+bool CShipAI::DoCamouflage(CShips* pShip, bool bCamouflage/* = true*/)
 {
 	if (!pShip)
 	{
@@ -499,7 +499,7 @@ bool CShipAI::DoCamouflage(CShip* pShip, bool bCamouflage/* = true*/)
 
 /// Funktion erstellt eine Flotte. Schiffe werden der Flotte nur hinzugefügt, wenn diese bestimmte Voraussetzungen erfüllen.
 /// So muss der ungefähre Schiffstyp übereinstimmen (Combat <-> NonCombat) sowie die Reichweite des Schiffes.
-void CShipAI::DoMakeFleet(CShip* pShip, int nIndex)
+void CShipAI::DoMakeFleet(CShips* pShip, int nIndex)
 {
 	if (!pShip)
 	{
@@ -513,7 +513,7 @@ void CShipAI::DoMakeFleet(CShip* pShip, int nIndex)
 	ASSERT(pShip == &m_pDoc->m_ShipArray.GetAt(nIndex));
 	for (int i = nIndex + 1; i < m_pDoc->m_ShipArray.GetSize(); i++)
 	{
-		CShip* pOtherShip = &m_pDoc->m_ShipArray.GetAt(i);
+		CShips* pOtherShip = &m_pDoc->m_ShipArray.GetAt(i);
 
 		// Schiffe müssen von der selben Rasse sein
 		if (pShip->GetOwnerOfShip() != pOtherShip->GetOwnerOfShip())
@@ -548,16 +548,6 @@ void CShipAI::DoMakeFleet(CShip* pShip, int nIndex)
 			||(pShip->GetShipType() == SHIP_TYPE::TRANSPORTER && pOtherShip->GetShipType() == SHIP_TYPE::TRANSPORTER && pOtherShip->GetCurrentOrder() < SHIP_ORDER::BUILD_OUTPOST)
 			||(pShip->GetShipType() == SHIP_TYPE::COLONYSHIP && pOtherShip->GetShipType() == SHIP_TYPE::COLONYSHIP && pOtherShip->GetCurrentOrder() < SHIP_ORDER::COLONIZE))
 		{
-			pShip->CreateFleet();
-			// hat das hinzuzufügende Schiff eine eigene Flotte
-			if (pOtherShip->HasFleet(false))
-			{
-				// Schiffe aus der Flotte der neuen Flotte hinzufügen
-				for (int n = 0; n < pOtherShip->GetFleetSize(); n++)
-					pShip->AddShipToFleet(*pOtherShip->GetShipFromFleet(n));
-				pOtherShip->DeleteFleet();
-			}
-
 			pShip->AddShipToFleet(*pOtherShip);
 			m_pDoc->m_ShipArray.RemoveAt(m_pDoc->m_ShipArray.begin() + i);
 			--i;
@@ -568,7 +558,7 @@ void CShipAI::DoMakeFleet(CShip* pShip, int nIndex)
 /// Funktion erteilt einen Außenpostenbaubefehl, sofern dies auch möglich ist.
 /// @param pShip Zeiger des Schiffes
 /// @return <code>true</code> wenn ein Außenpostenbaubefehl gegeben werden könnte
-bool CShipAI::DoStationBuild(CShip* pShip)
+bool CShipAI::DoStationBuild(CShips* pShip)
 {
 	if (!pShip)
 	{

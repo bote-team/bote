@@ -1,5 +1,6 @@
 #pragma once
 
+class CShips;
 class CShip;
 class CSector;
 class CSystem;
@@ -14,7 +15,7 @@ class CSanity
 		~CSanity(void);
 
 
-	static void SanityCheckFleet(const CShip& ship);
+	static void SanityCheckFleet(const CShips& ship);
 	static void SanityCheckSectorAndSystem(
 		const CSector& sector,
 		const CSystem& system,

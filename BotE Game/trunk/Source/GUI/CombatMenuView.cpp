@@ -8,9 +8,9 @@
 #include "CombatMenuView.h"
 #include "Races\RaceController.h"
 #include "Ships\Combat.h"
-#include "Ships\Fleet.h"
 #include "Graphic\memdc.h"
 #include "HTMLStringBuilder.h"
+#include "Ships/Ships.h"
 // CCombatMenuView
 
 IMPLEMENT_DYNCREATE(CCombatMenuView, CMainBaseView)
@@ -173,13 +173,13 @@ void CCombatMenuView::OnDraw(CDC* dc)
 	m_vInvolvedShips.RemoveAll();
 	for (int i = 0; i < pDoc->m_ShipArray.GetSize(); i++)
 	{
-		CShip* pShip = &pDoc->m_ShipArray[i];
+		CShips* pShip = &pDoc->m_ShipArray[i];
 		if (pShip->GetKO() != pDoc->m_ptCurrentCombatSector)
 			continue;
 
 		m_vInvolvedShips.Add(pShip);
 		// Wenn das Schiff eine Flotte anführt, dann auch die Zeiger auf die Schiffe in der Flotte reingeben
-		if (pShip->HasFleet(false))
+		if (pShip->HasFleet())
 			for (int j = 0; j < pShip->GetFleetSize(); j++)
 				m_vInvolvedShips.Add(pShip->GetShipFromFleet(j));
 	}
@@ -518,7 +518,7 @@ void CCombatMenuView::DrawCombatOrderMenue(Graphics* g)
 	int nCounter = 0;
 	for (int i = 0; i < m_vInvolvedShips.GetSize(); i++)
 	{
-		CShip* pShip = m_vInvolvedShips[i];
+		CShips* pShip = m_vInvolvedShips[i];
 		if (m_nShipType != -1 && pShip->GetShipType() != m_nShipType)
 			continue;
 
@@ -557,7 +557,7 @@ void CCombatMenuView::DrawCombatOrderMenue(Graphics* g)
 				g->DrawImage(graphic, pt.x, pt.y + 40, 30, 30);
 		}
 
-		m_vShipRects.push_back(pair<CRect, CShip*>(CRect(pt.x, pt.y + 20, pt.x + 250, pt.y + 85), pShip));
+		m_vShipRects.push_back(pair<CRect, CShips*>(CRect(pt.x, pt.y + 20, pt.x + 250, pt.y + 85), pShip));
 		nRow++;
 
 		if (nRow%9 == 0)
@@ -579,7 +579,7 @@ void CCombatMenuView::DrawCombatOrderMenue(Graphics* g)
 	nCounter = 0;
 	for (int i = 0; i < m_vInvolvedShips.GetSize(); i++)
 	{
-		CShip* pShip = m_vInvolvedShips[i];
+		CShips* pShip = m_vInvolvedShips[i];
 		if (m_nShipType != -1 && pShip->GetShipType() != m_nShipType)
 			continue;
 
@@ -603,7 +603,7 @@ void CCombatMenuView::DrawCombatOrderMenue(Graphics* g)
 		CPoint pt(750 + 225 * nCol, 255 + 65 * nRow);
 		bool bMarked = pShip == m_pMarkedShip;
 		pShip->DrawShip(g, pDoc->GetGraphicPool(), pt, bMarked, false, false, normalColor, normalColor, Gdiplus::Font(CComBSTR(fontName), fontSize));
-		m_vShipRects.push_back(pair<CRect, CShip*>(CRect(pt.x, pt.y + 20, pt.x + 250, pt.y + 85), pShip));
+		m_vShipRects.push_back(pair<CRect, CShips*>(CRect(pt.x, pt.y + 20, pt.x + 250, pt.y + 85), pShip));
 		nRow++;
 
 		if (nRow%9 == 0)
@@ -809,7 +809,7 @@ void CCombatMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		{
 			if (m_vShipRects[i].first.PtInRect(point))
 			{
-				CShip* pShip = m_vShipRects[i].second;
+				CShips* pShip = m_vShipRects[i].second;
 				ASSERT(pShip);
 				// es können nur eigene Schiffe eingestellt werden
 				if (pShip->GetOwnerOfShip() != pMajor->GetRaceID())
@@ -869,7 +869,7 @@ void CCombatMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 			// allen eigenen Schiffen den geklickten Befehl geben
 			for (int j = 0; j < m_vInvolvedShips.GetSize(); j++)
 			{
-				CShip* pShip = m_vInvolvedShips[j];
+				CShips* pShip = m_vInvolvedShips[j];
 				if (m_nShipType != -1 && pShip->GetShipType() != m_nShipType)
 					continue;
 
@@ -897,7 +897,7 @@ void CCombatMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 	{
 		if (m_vShipRects[i].first.PtInRect(point))
 		{
-			CShip* pShip = m_vShipRects[i].second;
+			CShips* pShip = m_vShipRects[i].second;
 			ASSERT(pShip);
 			// es können nur eigene Schiffe eingestellt werden
 			if (pShip->GetOwnerOfShip() != pMajor->GetRaceID())
@@ -905,7 +905,7 @@ void CCombatMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 			// aktuell eingestellten Befehl an alle Schiffe dieser Klasse übergeben
 			for (int j = 0; j < m_vInvolvedShips.GetSize(); j++)
 			{
-				CShip* pShip2 = m_vInvolvedShips[j];
+				CShips* pShip2 = m_vInvolvedShips[j];
 
 				if (pShip2->GetOwnerOfShip() != pMajor->GetRaceID() || pShip2->GetKO() != pDoc->m_ptCurrentCombatSector || pShip2->GetShipClass() != pShip->GetShipClass())
 					continue;

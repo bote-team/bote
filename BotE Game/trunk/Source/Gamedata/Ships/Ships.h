@@ -19,10 +19,10 @@
 #include "Ship.h"
 #include "ShipArray.h"
 
-class CShips : public CObject
+class CShips/* : public CObject*/
 {
 public:
-	DECLARE_SERIAL (CShips)
+	//DECLARE_SERIAL (CShips)
 
 	//////////////////////////////////////////////////////////////////////
 	// iterators
@@ -37,29 +37,33 @@ public:
 
 	// Standardkonstruktor
 	CShips();
+	CShips(const CShip&);
 
 	// Destruktor
 	virtual ~CShips();
 
+
 	// Kopierkonstruktor
-	//CShips(const CFleet & rhs);
+	//CShips(const CFleet& rhs);
 
 	// Zuweisungsoperatur
-	//CShips & operator=(const CShips &);
+	//CShips& operator=(const CShips& rhs);
 
 	// Die Serialisierungsfunktion
-	virtual void Serialize(CArchive &ar);
+	void Serialize(CArchive &ar);
 
 	//////////////////////////////////////////////////////////////////////
 	// getting
 	//////////////////////////////////////////////////////////////////////
 
 	//// Funktion gibt einen Zeiger auf ein Schiff aus der Flotte zurück
-	CShip* GetShipFromFleet(int n) { return &m_Ships.GetAt(n); }
-	CShip const* const GetShipFromFleet(int n) const { return &m_Ships.GetAt(n); }
+	CShips* GetShipFromFleet(int n) { return &m_Ships.GetAt(n); }
+	CShips const* const GetShipFromFleet(int n) const { return &m_Ships.GetAt(n); }
 	// Funktion liefert die Anzahl der Schiffe in der Flotte
-	USHORT GetFleetSize() const { return m_Ships.GetSize(); }
-	//const CShipArray& ShipArray() const;
+	int GetFleetSize() const { return m_Ships.GetSize(); }
+	const CShip& Leader() const { return m_Leader; }
+	CShip& Leader() { return m_Leader; }
+	const CShipArray& Ships() const { return m_Ships; }
 
 		//////////////////////////////////////////////////////////////////////
 		// LEADER ACCESS
@@ -107,15 +111,16 @@ public:
 
 	// Funktion übernimmt die Befehle des hier als Zeiger übergebenen Schiffsobjektes an alle Mitglieder der Flotte
 	void AdoptCurrentOrders(const CShip* ship);
-	//// Funktion um ein Schiff zur Flotte hinzuzufügen
 	/*
-	 * adds pShip to this ship's fleet and propagates this ship's orders to ship
+	 * Adds fleet to this ship's fleet and propagates this ship's orders to fleet.
+	 * If the given object has ships in its fleet, they are also handled.
 	**/
-	void AddShipToFleet(CShip* pShip);
+	void AddShipToFleet(CShips& fleet);
 	//propagates this fleet's leading ship's orders to this fleet
 	void PropagateOrdersToFleet();
 	// Funktion um ein Schiff aus der Flotte zu entfernen.
 	void RemoveShipFromFleet(UINT nIndex);
+	void RemoveShipFromFleet(CShips::iterator& ship);
 	//// Funktion löscht die gesamte Flotte
 	void DeleteFleet(void) { m_Ships.RemoveAll(); }
 
@@ -168,7 +173,7 @@ public:
 
 	//// Funktion berechnet die Geschwindigkeit der Flotte. Der Parameter der hier übergeben werden sollte
 	//// ist der this-Zeiger bzw. die Adresse des Schiffsobjektes, welches die Flotte besitzt
-	BYTE GetFleetSpeed(const CShip* pShip = NULL) const;
+	unsigned GetFleetSpeed(const CShip* pShip = NULL) const;
 
 	//// Funktion berechnet die Reichweite der Flotte. Der Parameter der hier übergeben werden sollte
 	//// ist der this-Zeiger bzw. die Adresse des Schiffsobjektes, welches die Flotte besitzt
@@ -231,11 +236,9 @@ public:
 	////Do all ships in this fleet have the given tactic ?
 	bool AllOnTactic(COMBAT_TACTIC::Typ tactic) const;
 
-	////Are there no ships in this fleet ?
-	bool IsEmpty() const;
-	bool IsFleetEmpty() const;
 	//has this ship a fleet with at least one ship ?
 	bool HasFleet() const;
+	bool FleetHasTroops() const;
 
 		//////////////////////////////////////////////////////////////////////
 		// LEADER ACCESS
@@ -259,9 +262,6 @@ public:
 	//////////////////////////////////////////////////////////////////////
 	// other functions
 	//////////////////////////////////////////////////////////////////////
-	////uses this fleet's first ship to make a leading ship, which has the remaining ships of this
-	////fleet as its fleet
-	CShip MakeFirstShipTheLeadingShipFleet();
 
 	/// Funktion erstellt eine Tooltipinfo vom Schiff
 	/// @param bShowFleet wenn dieser Parameter <code>true</code> dann werden Informationen über die angeführte Flotte angezeigt, sonst nur über das Schiff
@@ -282,11 +282,11 @@ public:
 	/// Kampf direkt verteilt.
 	void CalcExp() { m_Leader.CalcExp(); };
 
-	//fleet functions from CShip to consider
-	//void CheckFleet();	// am besten in jeder neuen Runde aufrufen, säubert die Flotte (aber nicht unbedingt notwendig)
-	////uses this ship's fleet's first ship to make a leading ship, which has the remaining ships of this ship's
-	////fleet as its fleet, and returns the new leading ship
-	//CShip GiveFleetToFleetsFirstShip();
+	void CheckFleet();	// am besten in jeder neuen Runde aufrufen, säubert die Flotte (aber nicht unbedingt notwendig)
+
+	////uses this CShips's fleet's first ship to make a leading ship, which has the remaining ships of this CShips's
+	////fleet as its fleet, and returns the new CShips
+	CShips GiveFleetToFleetsFirstShip();
 
 	/// Funktion zum Zeichnen des Schiffes in der Schiffsansicht.
 	/// @param g Zeiger auf Zeichenkontext
@@ -305,6 +305,7 @@ public:
 // member variables
 //////////////////////////////////////////////////////////////////////
 private:
+	// Wenn wir eine Gruppe bilden und dieses Schiff hier Gruppenleader ist, dann werden die anderen Schiffe in die Fleet genommen
 	CShip m_Leader;//the ship leading this fleet
 	CShipArray m_Ships;//other ships in this fleet
 };

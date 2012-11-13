@@ -18,7 +18,6 @@
 #include "Races\RaceController.h"
 #include "Races\DiplomacyController.h"
 #include "Ships\Combat.h"
-#include "Ships\Fleet.h"
 #include "System\AttackSystem.h"
 #include "Intel\IntelCalc.h"
 #include "Sanity.h"
@@ -31,7 +30,7 @@
 #include "AI\ResearchAI.h"
 
 #include "Galaxy\Anomaly.h"
-
+#include "Ships/Ships.h"
 #include "NewRoundDataCalculator.h"
 #include "OldRoundDataCalculator.h"
 
@@ -538,7 +537,7 @@ void CBotf2Doc::SerializeNextRoundData(CArchive &ar)
 
 		// Ausgehend vom Pfad des Schiffes den Sektoren mitteilen, das durch sie ein Schiff fliegt
 		for (int y = 0; y < m_ShipArray.GetSize(); y++) {
-			CShip& ship = m_ShipArray.GetAt(y);
+			CShips& ship = m_ShipArray.GetAt(y);
 			if (ship.GetOwnerOfShip() == pPlayer->GetRaceID()) {
 				const CArray<Sector>& path = *ship.GetPath();
 				for (int i = 0; i < path.GetSize(); i++)
@@ -1292,7 +1291,7 @@ static bool HumanPlayerInCombat(const CShipArray& ships, const CPoint& CurrentCo
 		const std::map<CString, CMajor*>& majors) {
 	for(int i = 0; i < ships.GetSize(); ++i)
 	{
-		const CShip* pShip = &ships.GetAt(i);
+		const CShips* pShip = &ships.GetAt(i);
 		if (pShip->GetKO() != CurrentCombatSector)
 			continue;
 		const std::map<CString, CMajor*>::const_iterator major = majors.find(pShip->GetOwnerOfShip());
@@ -2172,13 +2171,13 @@ void CBotf2Doc::BuildShip(int nID, const CPoint& KO, const CString& sOwnerID)
 	ASSERT(pMajor);
 
 	// Spezialforschungsboni dem Schiff hinzufügen
-	AddSpecialResearchBoniToShip(&m_ShipArray[n], pMajor);
+	AddSpecialResearchBoniToShip(&m_ShipArray[n].Leader(), pMajor);
 
 	for (int i = 0; i < 4; i++)
 		m_ShipArray.ElementAt(n).SetTargetKO(CPoint(-1,-1), i, true);
 	m_ShipArray.ElementAt(n).SetTerraformingPlanet(-1);
 
-	pMajor->GetShipHistory()->AddShip(&m_ShipArray.GetAt(n), GetSector(KO.x, KO.y).GetName(), m_iRound);
+	pMajor->GetShipHistory()->AddShip(&m_ShipArray.GetAt(n).Leader(), GetSector(KO.x, KO.y).GetName(), m_iRound);
 }
 
 /// Funktion zum Löschen des Schiffes aus dem Schiffsarray.
@@ -2186,9 +2185,9 @@ void CBotf2Doc::BuildShip(int nID, const CPoint& KO, const CString& sOwnerID)
 /// iterator is updated to the new position of the element following the deleted one
 void CBotf2Doc::RemoveShip(CShipArray::iterator& ship)
 {
-	if (ship->HasFleet(false))
+	if (ship->HasFleet())
 	{
-		const CShip& new_fleetship = ship->GiveFleetToFleetsFirstShip();
+		const CShips& new_fleetship = ship->GiveFleetToFleetsFirstShip();
 		m_ShipArray.Add(ship, new_fleetship);
 	}
 	m_ShipArray.RemoveAt(ship);
@@ -2512,7 +2511,7 @@ void CBotf2Doc::CalcSystemAttack()
 				}
 
 			// nur wenn das Schiff und Schiffe in der Flotte ungetarnt sind
-			if (m_ShipArray[y].GetCloak() == TRUE || (m_ShipArray.GetAt(y).HasFleet(false) && m_ShipArray.GetAt(y).GetFleet()->CheckOrder(&m_ShipArray.GetAt(y), SHIP_ORDER::ATTACK_SYSTEM) == FALSE))
+			if (m_ShipArray[y].GetCloak() == TRUE || (m_ShipArray.GetAt(y).HasFleet() && m_ShipArray.GetAt(y).CheckOrder(SHIP_ORDER::ATTACK_SYSTEM) == FALSE))
 			{
 				m_ShipArray.ElementAt(y).SetCurrentOrder(SHIP_ORDER::ATTACK);
 				okay = FALSE;
@@ -3206,13 +3205,13 @@ void CBotf2Doc::CalcSystemAttack()
 		{
 			// Wenn das Schiff eine Flotte hatte, dann erstmal nur die Schiffe in der Flotte beachten
 			// Wenn davon welche zerstört wurden diese aus der Flotte nehmen
-			if (m_ShipArray.GetAt(i).HasFleet(false))
+			if (m_ShipArray.GetAt(i).HasFleet())
 			{
 				for (int x = 0; x < m_ShipArray.GetAt(i).GetFleetSize(); x++)
 					if (m_ShipArray.GetAt(i).GetShipFromFleet(x)->GetHull()->GetCurrentHull() < 1)
 					{
 						// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
-						AddToLostShipHistory(m_ShipArray.GetAt(i).GetShipFromFleet(x), CResourceManager::GetString("SYSTEMATTACK"), CResourceManager::GetString("DESTROYED"));
+						AddToLostShipHistory(&m_ShipArray.GetAt(i).GetShipFromFleet(x)->Leader(), CResourceManager::GetString("SYSTEMATTACK"), CResourceManager::GetString("DESTROYED"));
 						// Schiff entfernen
 						m_ShipArray[i].RemoveShipFromFleet(x--);
 					}
@@ -3222,7 +3221,7 @@ void CBotf2Doc::CalcSystemAttack()
 			if (m_ShipArray.GetAt(i).GetHull()->GetCurrentHull() < 1)
 			{
 				// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
-				AddToLostShipHistory(&m_ShipArray[i], CResourceManager::GetString("SYSTEMATTACK"), CResourceManager::GetString("DESTROYED"));
+				AddToLostShipHistory(&m_ShipArray[i].Leader(), CResourceManager::GetString("SYSTEMATTACK"), CResourceManager::GetString("DESTROYED"));
 				// Schiff entfernen
 				RemoveShip(m_ShipArray.begin() + i);
 				--i;
@@ -3756,7 +3755,7 @@ void CBotf2Doc::CalcShipOrders()
 			m_ShipArray[y].SetCurrentOrder(SHIP_ORDER::AVOID);
 
 		// Haben wir eine Flotte, den aktuellen Befehl an alle Schiffe in der Flotte weitergeben
-		if (m_ShipArray[y].HasFleet(false))
+		if (m_ShipArray[y].HasFleet())
 			m_ShipArray[y].PropagateOrdersToFleet();
 
 		 // Planet soll kolonisiert werden
@@ -3823,7 +3822,7 @@ void CBotf2Doc::CalcShipOrders()
 					{
 						m_ShipArray[y].SetCurrentOrder(SHIP_ORDER::AVOID);
 						m_ShipArray[y].SetTerraformingPlanet(-1);
-						if (m_ShipArray[y].HasFleet(false))
+						if (m_ShipArray[y].HasFleet())
 							m_ShipArray[y].PropagateOrdersToFleet();
 						continue;
 					}
@@ -3842,7 +3841,7 @@ void CBotf2Doc::CalcShipOrders()
 					{
 						m_ShipArray[y].SetCurrentOrder(SHIP_ORDER::AVOID);
 						m_ShipArray[y].SetTerraformingPlanet(-1);
-						if (m_ShipArray[y].HasFleet(false))
+						if (m_ShipArray[y].HasFleet())
 							m_ShipArray[y].PropagateOrdersToFleet();
 						continue;
 					}
@@ -3900,11 +3899,11 @@ void CBotf2Doc::CalcShipOrders()
 
 				// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
 				s.Format("%s %s",CResourceManager::GetString("COLONIZATION"), pSector->GetName());
-				AddToLostShipHistory(&m_ShipArray[y], s, CResourceManager::GetString("DESTROYED"));
+				AddToLostShipHistory(&m_ShipArray[y].Leader(), s, CResourceManager::GetString("DESTROYED"));
 				// Schiff entfernen
 				m_ShipArray[y].SetCurrentOrder(SHIP_ORDER::AVOID);
 				m_ShipArray[y].SetTerraformingPlanet(-1);
-				if (m_ShipArray[y].HasFleet(false))
+				if (m_ShipArray[y].HasFleet())
 					m_ShipArray[y].PropagateOrdersToFleet();
 				RemoveShip(m_ShipArray.begin() + y);
 				--y;
@@ -3954,17 +3953,17 @@ void CBotf2Doc::CalcShipOrders()
 			{
 				m_ShipArray[y].SetCurrentOrder(SHIP_ORDER::AVOID);
 				m_ShipArray[y].SetTerraformingPlanet(-1);
-				if (m_ShipArray[y].HasFleet(false))
+				if (m_ShipArray[y].HasFleet())
 					m_ShipArray[y].PropagateOrdersToFleet();
 			}
 			// Wenn das Schiff eine Flotte anf?hrt, dann k?nnen auch die Schiffe in der Flotte ihre Terraformpunkte mit
 			// einbringen
-			if (m_ShipArray[y].HasFleet(false) && m_ShipArray[y].GetTerraformingPlanet() != -1)
+			if (m_ShipArray[y].HasFleet() && m_ShipArray[y].GetTerraformingPlanet() != -1)
 			{
 				unsigned colonize_points_sum = m_ShipArray[y].GetColonizePoints();
 				for (USHORT x = 0; x < m_ShipArray[y].GetFleetSize(); x++)
 				{
-					CShip* pFleetShip = m_ShipArray[y].GetShipFromFleet(x);
+					CShips* pFleetShip = m_ShipArray[y].GetShipFromFleet(x);
 					if (pSector->GetPlanet(m_ShipArray[y].GetTerraformingPlanet())->GetTerraformed() == FALSE)
 					{
 						const unsigned colonize_points = pFleetShip->GetColonizePoints();
@@ -4081,7 +4080,7 @@ void CBotf2Doc::CalcShipOrders()
 						pSector->SetStartStationPoints(m_ShipInfoArray.GetAt((id-10000)).GetBaseIndustry(),m_ShipArray[y].GetOwnerOfShip());
 					// Wenn das Schiff eine Flotte anf?hrt, dann erstmal die Au?enpostenbaupunkte der Schiffe in der Flotte
 					// beachten und gegebenfalls das Schiff aus der Flotte entfernen
-					if (m_ShipArray[y].HasFleet(false))
+					if (m_ShipArray[y].HasFleet())
 					{
 						for (USHORT x = 0; x < m_ShipArray[y].GetFleetSize(); x++)
 							if (pSector->SetNeededStationPoints(m_ShipArray[y].GetShipFromFleet(x)->GetStationBuildPoints(),m_ShipArray[y].GetOwnerOfShip()))
@@ -4100,7 +4099,7 @@ void CBotf2Doc::CalcShipOrders()
 									message.GenerateMessage(CResourceManager::GetString("OUTPOST_FINISHED"),MESSAGE_TYPE::MILITARY,"",pSector->GetKO(),FALSE);
 									pMajor->GetEmpire()->AddMessage(message);
 									// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
-									AddToLostShipHistory(m_ShipArray[y].GetShipFromFleet(x), CResourceManager::GetString("OUTPOST_CONSTRUCTION"), CResourceManager::GetString("DESTROYED"));
+									AddToLostShipHistory(&m_ShipArray[y].GetShipFromFleet(x)->Leader(), CResourceManager::GetString("OUTPOST_CONSTRUCTION"), CResourceManager::GetString("DESTROYED"));
 									if (pMajor->IsHumanPlayer())
 									{
 										SNDMGR_MESSAGEENTRY entry = {SNDMGR_MSG_OUTPOST_READY, client, 0, 1.0f};
@@ -4140,7 +4139,7 @@ void CBotf2Doc::CalcShipOrders()
 							message.GenerateMessage(CResourceManager::GetString("OUTPOST_FINISHED"),MESSAGE_TYPE::MILITARY,"",pSector->GetKO(),FALSE);
 							pMajor->GetEmpire()->AddMessage(message);
 							// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
-							AddToLostShipHistory(&m_ShipArray[y], CResourceManager::GetString("OUTPOST_CONSTRUCTION"), CResourceManager::GetString("DESTROYED"));
+							AddToLostShipHistory(&m_ShipArray[y].Leader(), CResourceManager::GetString("OUTPOST_CONSTRUCTION"), CResourceManager::GetString("DESTROYED"));
 							if (pMajor->IsHumanPlayer())
 							{
 								SNDMGR_MESSAGEENTRY entry = {SNDMGR_MSG_OUTPOST_READY, client, 0, 1.0f};
@@ -4230,7 +4229,7 @@ void CBotf2Doc::CalcShipOrders()
 						pSector->SetStartStationPoints(m_ShipInfoArray.GetAt(id-10000).GetBaseIndustry(),m_ShipArray[y].GetOwnerOfShip());
 					// Wenn das Schiff eine Flotte anf?hrt, dann erstmal die Au?enpostenbaupunkte der Schiffe in der Flotte
 					// beachten und gegebenfalls das Schiff aus der Flotte entfernen
-					if (m_ShipArray[y].HasFleet(false))
+					if (m_ShipArray[y].HasFleet())
 					{
 						for (USHORT x = 0; x < m_ShipArray[y].GetFleetSize(); x++)
 							if (pSector->SetNeededStationPoints(m_ShipArray[y].GetShipFromFleet(x)->GetStationBuildPoints(),m_ShipArray[y].GetOwnerOfShip()))
@@ -4250,7 +4249,7 @@ void CBotf2Doc::CalcShipOrders()
 									message.GenerateMessage(CResourceManager::GetString("STARBASE_FINISHED"),MESSAGE_TYPE::MILITARY,"",pSector->GetKO(),FALSE);
 									pMajor->GetEmpire()->AddMessage(message);
 									// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
-									AddToLostShipHistory(m_ShipArray[y].GetShipFromFleet(x), CResourceManager::GetString("STARBASE_CONSTRUCTION"), CResourceManager::GetString("DESTROYED"));
+									AddToLostShipHistory(&m_ShipArray[y].GetShipFromFleet(x)->Leader(), CResourceManager::GetString("STARBASE_CONSTRUCTION"), CResourceManager::GetString("DESTROYED"));
 									if (pMajor->IsHumanPlayer())
 									{
 										SNDMGR_MESSAGEENTRY entry = {SNDMGR_MSG_STARBASE_READY, client, 0, 1.0f};
@@ -4273,7 +4272,7 @@ void CBotf2Doc::CalcShipOrders()
 										if (m_ShipArray[k].GetShipType() == SHIP_TYPE::OUTPOST && m_ShipArray[k].GetKO() == pSector->GetKO())
 										{
 											// ebenfalls muss der Au?enposten aus der Shiphistory der aktuellen Schiffe entfernt werden
-											pMajor->GetShipHistory()->RemoveShip(&m_ShipArray[k]);
+											pMajor->GetShipHistory()->RemoveShip(&m_ShipArray[k].Leader());
 											vRemoveableOutposts.push_back(m_ShipArray[k].GetShipName());
 											break;
 										}
@@ -4301,7 +4300,7 @@ void CBotf2Doc::CalcShipOrders()
 							message.GenerateMessage(CResourceManager::GetString("STARBASE_FINISHED"),MESSAGE_TYPE::MILITARY,"",pSector->GetKO(),FALSE);
 							pMajor->GetEmpire()->AddMessage(message);
 							// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
-							AddToLostShipHistory(&m_ShipArray[y], CResourceManager::GetString("STARBASE_CONSTRUCTION"), CResourceManager::GetString("DESTROYED"));
+							AddToLostShipHistory(&m_ShipArray[y].Leader(), CResourceManager::GetString("STARBASE_CONSTRUCTION"), CResourceManager::GetString("DESTROYED"));
 							if (pMajor->IsHumanPlayer())
 							{
 								SNDMGR_MESSAGEENTRY entry = {SNDMGR_MSG_STARBASE_READY, client, 0, 1.0f};
@@ -4326,7 +4325,7 @@ void CBotf2Doc::CalcShipOrders()
 								if (m_ShipArray[k].GetShipType() == SHIP_TYPE::OUTPOST && m_ShipArray[k].GetKO() == pSector->GetKO())
 								{
 									// ebenfalls muss der Au?enposten aus der Shiphistory der aktuellen Schiffe entfernt werden
-									pMajor->GetShipHistory()->RemoveShip(&m_ShipArray[k]);
+									pMajor->GetShipHistory()->RemoveShip(&m_ShipArray[k].Leader());
 									vRemoveableOutposts.push_back(m_ShipArray[k].GetShipName());
 									break;
 								}
@@ -4363,10 +4362,10 @@ void CBotf2Doc::CalcShipOrders()
 				pMajor->GetEmpire()->SetCredits((int)(m_ShipInfoArray.GetAt(id).GetNeededIndustry() * proz / 100));
 			}
 			// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
-			pMajor->GetShipHistory()->ModifyShip(&m_ShipArray[y], pSector->GetName(TRUE), m_iRound, CResourceManager::GetString("DISASSEMBLY"),	CResourceManager::GetString("DESTROYED"));
+			pMajor->GetShipHistory()->ModifyShip(&m_ShipArray[y].Leader(), pSector->GetName(TRUE), m_iRound, CResourceManager::GetString("DISASSEMBLY"),	CResourceManager::GetString("DESTROYED"));
 
 			// Wenn das Schiff eine Flotte anf?hrt, dann auch die Schiffe in der Flotte demontieren
-			if (m_ShipArray[y].HasFleet(false))
+			if (m_ShipArray[y].HasFleet())
 			{
 				for (USHORT x = 0; x < m_ShipArray[y].GetFleetSize(); x++)
 				{
@@ -4384,7 +4383,7 @@ void CBotf2Doc::CalcShipOrders()
 						pMajor->GetEmpire()->SetCredits((int)(m_ShipInfoArray.GetAt(id).GetNeededIndustry() * proz / 100));
 					}
 					// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
-					pMajor->GetShipHistory()->ModifyShip(m_ShipArray[y].GetShipFromFleet(x), pSector->GetName(TRUE), m_iRound, CResourceManager::GetString("DISASSEMBLY"), CResourceManager::GetString("DESTROYED"));
+					pMajor->GetShipHistory()->ModifyShip(&m_ShipArray[y].GetShipFromFleet(x)->Leader(), pSector->GetName(TRUE), m_iRound, CResourceManager::GetString("DISASSEMBLY"), CResourceManager::GetString("DESTROYED"));
 				}
 			}
 
@@ -4402,7 +4401,7 @@ void CBotf2Doc::CalcShipOrders()
 		}
 
 		// Wenn wir ein Schiff zum Flagschiff ernennen wollen (nur ein Schiff pro Imperium kann ein Flagschiff sein!)
-		else if (m_ShipArray[y].GetCurrentOrder() == SHIP_ORDER::ASSIGN_FLAGSHIP && !m_ShipArray[y].HasFleet(false))
+		else if (m_ShipArray[y].GetCurrentOrder() == SHIP_ORDER::ASSIGN_FLAGSHIP && !m_ShipArray[y].HasFleet())
 		{
 			CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(m_ShipArray[y].GetOwnerOfShip()));
 			ASSERT(pMajor);
@@ -4420,7 +4419,7 @@ void CBotf2Doc::CalcShipOrders()
 						break;
 					}
 					// überprüfen ob ein Flagschiff in einer Flotte ist
-					else if (m_ShipArray[n].HasFleet(false))
+					else if (m_ShipArray[n].HasFleet())
 					{
 						bool bFoundFlagShip = false;
 						for (USHORT m = 0; m < m_ShipArray[n].GetFleetSize(); m++)
@@ -4463,7 +4462,7 @@ void CBotf2Doc::CalcShipOrders()
 				bool isVeteran = false;
 				if (m_ShipArray[y].GetExpLevel() >= 4)
 					isVeteran = true;
-				else if (m_ShipArray[y].HasFleet(false))
+				else if (m_ShipArray[y].HasFleet())
 				{
 					for (int x = 0; x < m_ShipArray[y].GetFleetSize(); x++)
 						if (m_ShipArray[y].GetShipFromFleet(x)->GetExpLevel() >= 4)
@@ -4478,7 +4477,7 @@ void CBotf2Doc::CalcShipOrders()
 				else
 					m_ShipArray[y].SetCrewExperiance(XP * 2);
 				// Wenn das Schiff eine Flotte anführt, Schiffstraining auf alle Schiffe in der Flotte anwenden
-				if (m_ShipArray[y].HasFleet(false))
+				if (m_ShipArray[y].HasFleet())
 					for (int x = 0; x < m_ShipArray[y].GetFleetSize(); x++)
 					{
 						if (isVeteran == false || m_ShipArray[y].GetShipFromFleet(x)->GetExpLevel() >= 4)
@@ -4494,8 +4493,8 @@ void CBotf2Doc::CalcShipOrders()
 			// Wenn das Schiff eine Flotte anführt, checken ob der Tarnenbefehl noch G?ltigkeit hat. Wenn ja, dann
 			// alle Schiffe in der Flotte tarnen
 			if (m_ShipArray[y].GetCloak() == TRUE)
-				if (m_ShipArray[y].HasFleet(false))
-					if (m_ShipArray[y].GetFleet()->CheckOrder(&m_ShipArray[y], SHIP_ORDER::CLOAK) == TRUE)
+				if (m_ShipArray[y].HasFleet())
+					if (m_ShipArray[y].CheckOrder(SHIP_ORDER::CLOAK) == TRUE)
 						for (int x = 0; x < m_ShipArray[y].GetFleetSize(); x++)
 							if (m_ShipArray[y].GetShipFromFleet(x)->GetCloak() == FALSE)
 								m_ShipArray[y].GetShipFromFleet(x)->SetCloak();
@@ -4503,7 +4502,7 @@ void CBotf2Doc::CalcShipOrders()
 			// Wenn das Schiff enttarnt wurde, dann alle Schiffe in der Flotte entarnen. Dies sollte nicht häufig vorkommen. Selbst
 			// kann man es so nicht einstellen, aber die KI enttarnt so die Schiffe in der Flotte
 			if (m_ShipArray[y].GetCloak() == FALSE)
-				if (m_ShipArray[y].HasFleet(false))
+				if (m_ShipArray[y].HasFleet())
 					for (int x = 0; x < m_ShipArray[y].GetFleetSize(); x++)
 						if (m_ShipArray[y].GetShipFromFleet(x)->GetCloak() == TRUE)
 							m_ShipArray[y].GetShipFromFleet(x)->SetCloak();
@@ -4534,7 +4533,7 @@ void CBotf2Doc::CalcShipOrders()
 						}
 						// Wenn das Schiff eine Flotte anführt, dann erhöhen auch alle Schiffe in der Flotte mit
 						// Blockadeeigenschaft den Blockadewert
-						if (m_ShipArray[y].HasFleet(false))
+						if (m_ShipArray[y].HasFleet())
 						{
 							for (int x = 0; x < m_ShipArray[y].GetFleetSize(); x++)
 							{
@@ -4559,7 +4558,7 @@ void CBotf2Doc::CalcShipOrders()
 			if (!blockadeStillActive)
 			{
 				m_ShipArray[y].SetCurrentOrder(SHIP_ORDER::ATTACK);
-				if (m_ShipArray[y].HasFleet(false))
+				if (m_ShipArray[y].HasFleet())
 					m_ShipArray[y].PropagateOrdersToFleet();
 			}
 			// wird das System schlussendlich blockiert, so produzieren die Handelsrouten kein Credits mehr
@@ -4648,7 +4647,7 @@ void CBotf2Doc::CalcShipMovement()
 	// dass manche Befehle noch ihre Gültigkeit haben
 	for (int y = 0; y < m_ShipArray.GetSize(); y++)
 	{
-		CShip* pShip = &m_ShipArray[y];
+		CShips* pShip = &m_ShipArray[y];
 
 		// Prüfen, dass ein Terraformbefehl noch gültig ist
 		if (pShip->GetCurrentOrder() == SHIP_ORDER::TERRAFORM)
@@ -4712,10 +4711,10 @@ void CBotf2Doc::CalcShipMovement()
 			char range;
 			char speed;
 			// Unterscheiden, ob das Schiff eine Flotte anführt oder nicht
-			if (pShip->HasFleet(false))
+			if (pShip->HasFleet())
 			{
-				range = (char)(3 - pShip->GetFleet()->GetFleetRange(&m_ShipArray[y]));
-				speed = (char)(pShip->GetFleet()->GetFleetSpeed(&m_ShipArray[y]));
+				range = (char)(3 - pShip->GetFleetRange(&m_ShipArray[y].Leader()));
+				speed = (char)(pShip->GetFleetSpeed(&m_ShipArray[y].Leader()));
 			}
 			else
 			{
@@ -4782,7 +4781,7 @@ void CBotf2Doc::CalcShipMovement()
 		//and a possible repair command isn't unset though it can no longer be set by the player this turn then.
 		pShip->Repair(GetSector(pShip->GetKO().x, pShip->GetKO().y).GetShipPort(pShip->GetOwnerOfShip()), bFasterShieldRecharge);
 		// Befehle an alle Schiffe in der Flotte weitergeben
-		if (pShip->HasFleet(false))
+		if (pShip->HasFleet())
 			pShip->PropagateOrdersToFleet();
 
 		// wenn eine Anomalie vorhanden, deren m?gliche Auswirkungen auf das Schiff berechnen
@@ -4800,10 +4799,10 @@ void CBotf2Doc::CalcShipMovement()
 	// prüfen ob irgendwelche Schiffe durch eine Anomalie zerstört wurden
 	for (int i = 0; i < m_ShipArray.GetSize(); i++)
 	{
-		CShip* pShip = &m_ShipArray.GetAt(i);
+		CShips* pShip = &m_ShipArray.GetAt(i);
 		// Wenn das Schiff eine Flotte hatte, dann erstmal nur die Schiffe in der Flotte beachten
 		// Wenn davon welche zerstört wurden diese aus der Flotte nehmen
-		if (pShip->HasFleet(false))
+		if (pShip->HasFleet())
 		{
 			for (int x = 0; x < pShip->GetFleetSize(); x++)
 			{
@@ -4814,7 +4813,7 @@ void CBotf2Doc::CalcShipMovement()
 					if (pMajor)
 					{
 						// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
-						AddToLostShipHistory(pShip->GetShipFromFleet(x), GetSector(pShip->GetKO().x, pShip->GetKO().y).GetAnomaly()->GetMapName(pShip->GetKO()), CResourceManager::GetString("DESTROYED"));
+						AddToLostShipHistory(&pShip->GetShipFromFleet(x)->Leader(), GetSector(pShip->GetKO().x, pShip->GetKO().y).GetAnomaly()->GetMapName(pShip->GetKO()), CResourceManager::GetString("DESTROYED"));
 
 						CString sShip;
 						sShip.Format("%s (%s)", pShip->GetShipFromFleet(x)->GetShipName(), pShip->GetShipFromFleet(x)->GetShipTypeAsString());
@@ -4841,7 +4840,7 @@ void CBotf2Doc::CalcShipMovement()
 			if (pMajor)
 			{
 				// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
-				AddToLostShipHistory(pShip, GetSector(pShip->GetKO().x, pShip->GetKO().y).GetAnomaly()->GetMapName(pShip->GetKO()), CResourceManager::GetString("DESTROYED"));
+				AddToLostShipHistory(&pShip->Leader(), GetSector(pShip->GetKO().x, pShip->GetKO().y).GetAnomaly()->GetMapName(pShip->GetKO()), CResourceManager::GetString("DESTROYED"));
 
 				CString sShip;
 				sShip.Format("%s (%s)", pShip->GetShipName(), pShip->GetShipTypeAsString());
@@ -4873,7 +4872,7 @@ bool CBotf2Doc::IsShipCombat()
 	// vertrag haben, dann kommt es in diesem Sektor zum Kampf
 	for (int y = 0; y < m_ShipArray.GetSize(); y++)
 	{
-		const CShip* pShip = &m_ShipArray.GetAt(y);
+		const CShips* pShip = &m_ShipArray.GetAt(y);
 		const CPoint& p = pShip->GetKO();
 		const CString& sector = GetSector(p.x, p.y).GetName(TRUE);
 		// Wenn unser Schiff auf Angreifen gestellt ist
@@ -4884,7 +4883,7 @@ bool CBotf2Doc::IsShipCombat()
 		// Wenn noch kein Kampf in dem Sektor stattfand, dann kommt es möglicherweise hier zum Kampf
 		for (int i = 0; i < m_ShipArray.GetSize(); i++)
 		{
-			const CShip* pOtherShip = &m_ShipArray.GetAt(i);
+			const CShips* pOtherShip = &m_ShipArray.GetAt(i);
 			const CString& sOwner1 = pShip->GetOwnerOfShip();
 			const CString& sOwner2 = pOtherShip->GetOwnerOfShip();
 			// nur weiter, wenn das Schiff nicht unserer Rasse gehört
@@ -4919,19 +4918,19 @@ void CBotf2Doc::CalcShipCombat()
 		return;
 
 	// Alle Schiffe im zuvor berechneten Kampfsektor holen
-	CArray<CShip*> vInvolvedShips;
+	CArray<CShips*> vInvolvedShips;
 	CPoint p = m_ptCurrentCombatSector;
 	// Jetzt gehen wir nochmal alle Sektoren durch und schauen ob ein Schiff im Kampfsektor ist
 	for (int i = 0; i < m_ShipArray.GetSize(); i++)
 	{
-		CShip* pShip = &m_ShipArray[i];
+		CShips* pShip = &m_ShipArray[i];
 		if (pShip->GetKO() != m_ptCurrentCombatSector)
 			continue;
 
 		vInvolvedShips.Add(pShip);
 
 		// Wenn das Schiff eine Flotte anführt, dann auch die Zeiger auf die Schiffe in der Flotte reingeben
-		if (pShip->HasFleet(false))
+		if (pShip->HasFleet())
 			for (int j = 0; j < pShip->GetFleetSize(); j++)
 				vInvolvedShips.Add(pShip->GetShipFromFleet(j));
 		// CHECK WW:
@@ -5087,13 +5086,13 @@ void CBotf2Doc::CalcShipCombat()
 			continue;
 		// Wenn das Schiff eine Flotte hatte, dann erstmal nur die Schiffe in der Flotte beachten
 		// Wenn davon welche zerstört wurden diese aus der Flotte nehmen
-		if (m_ShipArray.GetAt(i).HasFleet(false))
+		if (m_ShipArray.GetAt(i).HasFleet())
 		{
 			for (int x = 0; x < m_ShipArray.GetAt(i).GetFleetSize(); x++)
 				if (m_ShipArray.GetAt(i).GetShipFromFleet(x)->GetHull()->GetCurrentHull() < 1)
 				{
 					// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
-					AddToLostShipHistory(m_ShipArray[i].GetShipFromFleet(x), CResourceManager::GetString("COMBAT"), CResourceManager::GetString("DESTROYED"));
+					AddToLostShipHistory(&m_ShipArray[i].GetShipFromFleet(x)->Leader(), CResourceManager::GetString("COMBAT"), CResourceManager::GetString("DESTROYED"));
 					destroyedShips.Add(m_ShipArray[i].GetShipFromFleet(x)->GetShipName()+" ("+m_ShipArray[i].GetShipFromFleet(x)->GetShipTypeAsString()+")");
 
 					// Wenn es das Flagschiff war, so ein Event über dessen Verlust hinzufügen
@@ -5119,7 +5118,7 @@ void CBotf2Doc::CalcShipCombat()
 		if (m_ShipArray.GetAt(i).GetHull()->GetCurrentHull() < 1)
 		{
 			// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
-			AddToLostShipHistory(&m_ShipArray[i], CResourceManager::GetString("COMBAT"), CResourceManager::GetString("DESTROYED"));
+			AddToLostShipHistory(&m_ShipArray[i].Leader(), CResourceManager::GetString("COMBAT"), CResourceManager::GetString("DESTROYED"));
 			destroyedShips.Add(m_ShipArray[i].GetShipName()+" ("+m_ShipArray[i].GetShipTypeAsString()+")");
 			// Wenn es das Flagschiff war, so ein Event über dessen Verlust hinzufügen
 			if (m_ShipArray[i].GetIsShipFlagShip())
@@ -5175,7 +5174,7 @@ void CBotf2Doc::CalcShipCombat()
 	// allen Schiffen mit Rückzugsbfehl den aktuellen Befehl zurücknehmen
 	for (int i = 0; i < m_ShipArray.GetSize(); i++)
 	{
-		CShip* pShip = &m_ShipArray[i];
+		CShips* pShip = &m_ShipArray[i];
 		// Hat das Schiff den Rückzugsbefehl
 		if (pShip->GetCombatTactic() == COMBAT_TACTIC::CT_RETREAT)
 		{
@@ -5214,13 +5213,12 @@ void CBotf2Doc::CalcShipRetreat() {
 		ship->Retreat(RetreatSector->second);
 
 		ship->CheckFleet();
-		const CFleet* const pFleet = ship->GetFleet();
-		if(!pFleet)
+		if(!ship->HasFleet())
 			continue;
 		// sind alle Schiffe in einer Flotte im Rückzug, so kann die ganze Flotte
 		// in den Rückzugssektor
-		const bool bCompleteFleetRetreat = pFleet->GetFleetSpeed(&*ship) > 0
-			&& pFleet->AllOnTactic(COMBAT_TACTIC::CT_RETREAT);
+		const bool bCompleteFleetRetreat = ship->GetFleetSpeed(&ship->Leader()) > 0
+			&& ship->AllOnTactic(COMBAT_TACTIC::CT_RETREAT);
 
 		// haben alle Schiffe in der Flotte den Rückzugsbefehl oder hat das Schiff keine Flotte
 		// -> Rückzugssektor festlegen
@@ -5232,9 +5230,8 @@ void CBotf2Doc::CalcShipRetreat() {
 		{
 			//we need to be careful, since we iterate over the array we're modifying, which
 			//would normally invalidate the iterator "ship"
-			const CShipArray& fleet = ship->GetFleet()->ShipArray();
-			for(CShipArray::const_iterator it = fleet.begin(); it != fleet.end(); ++it)
-				m_ShipArray.Add(ship, *it);
+			const CShipArray& fleet = ship->Ships();
+			m_ShipArray.Append(ship, fleet);
 			ship->DeleteFleet();
 		}
 	}//	for (int i = 0; i < m_ShipArray.GetSize(); i++)
@@ -5253,7 +5250,7 @@ void CBotf2Doc::CalcShipEffects()
 	{
 		const CString sRace = m_ShipArray[y].GetOwnerOfShip();
 		CRace* pRace = m_pRaceCtrl->GetRace(sRace);
-		CShip& ship = m_ShipArray.GetAt(y);
+		CShips& ship = m_ShipArray.GetAt(y);
 		const CPoint& p = ship.GetKO();
 		CSector& sector = GetSector(p.x, p.y);
 
@@ -5349,7 +5346,7 @@ void CBotf2Doc::CalcContactNewRaces()
 {
 	for (int y = 0; y < m_ShipArray.GetSize(); y++)
 	{
-		const CShip* pShip = &m_ShipArray.GetAt(y);
+		const CShips* pShip = &m_ShipArray.GetAt(y);
 		const CString& sRace = pShip->GetOwnerOfShip();
 		CRace* pRace = m_pRaceCtrl->GetRace(sRace);
 		// kann die Rasse andere Rassen kennenlernen?
@@ -5491,7 +5488,7 @@ void CBotf2Doc::CalcEndDataForNextRound()
 				if (m_ShipArray.GetAt(j).GetOwnerOfShip() == pMajor->GetRaceID())
 				{
 					// Alle noch "lebenden" Schiffe aus der Schiffshistory ebenfalls als zerstört ansehen
-					pMajor->GetShipHistory()->ModifyShip(&m_ShipArray[j],
+					pMajor->GetShipHistory()->ModifyShip(&m_ShipArray[j].Leader(),
 								GetSector(m_ShipArray[j].GetKO().x, m_ShipArray[j].GetKO().y).GetName(TRUE), m_iRound,
 								CResourceManager::GetString("UNKNOWN"), CResourceManager::GetString("DESTROYED"));
 					m_ShipArray.RemoveAt(m_ShipArray.begin() + j);
@@ -5769,7 +5766,7 @@ void CBotf2Doc::CalcRandomAlienEntities()
 				{
 					BuildShip(pShipInfo->GetID(), p, pAlien->GetRaceID());
 
-					CShip* pShip = &m_ShipArray[m_ShipArray.GetUpperBound()];
+					CShips* pShip = &m_ShipArray[m_ShipArray.GetUpperBound()];
 					// unterschiedliche Aliens unterschieden und Schiffseigenschaften festlegen
 					if (pAlien->GetRaceID() == "Ionisierendes Gaswesen")
 					{
@@ -5801,9 +5798,7 @@ void CBotf2Doc::CalcRandomAlienEntities()
 								
 								// Dann erst das Flottenschiff holen, da sich der Zeiger
 								// beim Bauen eines neuen Schiffs verändert
-								CShip* pFleetShip = &m_ShipArray[nFleetShipIndex];
-								// Flotte erstellen
-								pFleetShip->CreateFleet();
+								CShips* pFleetShip = &m_ShipArray[nFleetShipIndex];
 
 								// Raider in Gruppe stecken und Befehle gleich mit übernehmen
 								pFleetShip->AddShipToFleet(m_ShipArray[m_ShipArray.GetUpperBound()]);
@@ -5905,7 +5900,7 @@ void CBotf2Doc::CalcAlienShipEffects()
 				// alle Schiffe im Sektor zu Seuchenschiffen machen
 				for (int y = 0; y < m_ShipArray.GetSize(); y++)
 				{
-					CShip* pOtherShip = &m_ShipArray.GetAt(y);
+					CShips* pOtherShip = &m_ShipArray.GetAt(y);
 					// Schiff im gleichen Sektor?
 					if (pOtherShip->GetKO() != co)
 						continue;
@@ -5918,36 +5913,31 @@ void CBotf2Doc::CalcAlienShipEffects()
 					if (pOtherShip->IsStation())
 						continue;
 
-					vector<CShip*> vShips;
-					vShips.push_back(pOtherShip);
+					CShipArray vShips;
+					vShips.Add(vShips.end(), *pOtherShip);
+					vShips.Append(vShips.end(), pOtherShip->Ships());
 
-					if (pOtherShip->HasFleet(false))
-					{
-						for (int x = 0; x < pOtherShip->GetFleetSize(); x++)
-							vShips.push_back(pOtherShip->GetShipFromFleet(x));
-					}
-
-					for (unsigned int n = 0; n < vShips.size(); n++)
+					for(CShipArray::iterator i = vShips.begin(); i != vShips.end(); ++i)
 					{
 						// Schiffe mit Rückzugsbefehl werden nie vom Virus befallen
-						if (vShips[n]->GetCombatTactic() == COMBAT_TACTIC::CT_RETREAT)
+						if (i->GetCombatTactic() == COMBAT_TACTIC::CT_RETREAT)
 							continue;
 
-						vShips[n]->SetOwnerOfShip(pAlien->GetRaceID());
-						vShips[n]->SetShipType(SHIP_TYPE::ALIEN);
-						vShips[n]->SetTargetKO(CPoint(-1, -1), 0);
-						vShips[n]->SetCurrentOrder(SHIP_ORDER::ATTACK);
-						vShips[n]->SetTerraformingPlanet(-1);
-						vShips[n]->SetIsShipFlagShip(FALSE);
+						i->SetOwnerOfShip(pAlien->GetRaceID());
+						i->SetShipType(SHIP_TYPE::ALIEN);
+						i->SetTargetKO(CPoint(-1, -1), 0);
+						i->SetCurrentOrder(SHIP_ORDER::ATTACK);
+						i->SetTerraformingPlanet(-1);
+						i->SetIsShipFlagShip(FALSE);
 
 						// für jedes Schiff eine Meldung über den Verlust machen
 
 						// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
-						if (CMajor* pShipOwner = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(vShips[n]->GetOwnerOfShip())))
+						if (CMajor* pShipOwner = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(i->GetOwnerOfShip())))
 						{
-							AddToLostShipHistory(vShips[n], CResourceManager::GetString("COMBAT"), CResourceManager::GetString("MISSED"));
+							AddToLostShipHistory(&i->Leader(), CResourceManager::GetString("COMBAT"), CResourceManager::GetString("MISSED"));
 							CString s;
-							s.Format("%s", CResourceManager::GetString("DESTROYED_SHIPS_IN_COMBAT",0,vShips[n]->GetShipName()));
+							s.Format("%s", CResourceManager::GetString("DESTROYED_SHIPS_IN_COMBAT",0,i->GetShipName()));
 							CMessage message;
 							message.GenerateMessage(s, MESSAGE_TYPE::MILITARY, "", 0, 0);
 							pShipOwner->GetEmpire()->AddMessage(message);

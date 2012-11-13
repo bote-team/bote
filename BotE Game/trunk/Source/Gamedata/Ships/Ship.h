@@ -24,7 +24,6 @@
 #include "..\Troops\TroopInfo.h"
 
 // forward declaration
-class CFleet;
 class CGraphicPool;
 class CRace;
 
@@ -43,15 +42,31 @@ public:
 // Serialisierungsfunktion
 	virtual void Serialize(CArchive &ar);
 
+	struct FleetInfoForGetTooltip {
+		FleetInfoForGetTooltip() :
+			FleetShipType(-1),
+			FleetRange(SHIP_RANGE::LONG),
+			FleetSpeed(0)
+			{}
+		FleetInfoForGetTooltip(short FleetShipType, SHIP_RANGE::Typ FleetRange, BYTE FleetSpeed) :
+			FleetShipType(FleetShipType),
+			FleetRange(FleetRange),
+			FleetSpeed(FleetSpeed)
+			{}
+
+		short FleetShipType;
+		SHIP_RANGE::Typ FleetRange;
+		BYTE FleetSpeed;
+	};
+
 // Zugriffsfunktionen
 	// zum Lesen der Membervariablen
-
-	CFleet const* const GetFleet(void) const { return m_Fleet; }
 	CHull* GetHull(void) {return &m_Hull;}
 	CShield* GetShield(void) {return &m_Shield;}
 	CArray<CTorpedoWeapons, CTorpedoWeapons>* GetTorpedoWeapons(void) {return &m_TorpedoWeapons;}
 	CArray<CBeamWeapons, CBeamWeapons>* GetBeamWeapons(void) {return &m_BeamWeapons;}
 	CArray<CTroop>* GetTransportedTroops(void) {return &m_Troops;}
+	const CArray<CTroop>* GetTransportedTroops(void) const {return &m_Troops;}
 
 	/// Funktion gibt die gesamte Offensivpower des Schiffes zurück, welches es in 100s anrichten würde. Dieser
 	/// Dieser Wert hat keinen direkten Kampfeinfluss, er ist nur zum Vergleich heranzuziehen.
@@ -113,6 +128,7 @@ public:
 	bool IsAlien() const {
 		return m_iShipType == SHIP_TYPE::ALIEN;
 	}
+	bool HasTroops() const { return GetTransportedTroops()->GetSize() > 0; }
 	
 	//Is this ship in need for a player command input in this round ?
 	//Does not cover "self-renewing" orders without a turn limit
@@ -167,42 +183,17 @@ public:
 
 	//Perform actions to retreat this ship to the given sector.
 	void Retreat(const CPoint& ptRetreatSector);
-	void RetreatFleet(const CPoint& RetreatSector);
 
 	//calculate effects this ship has onto its sector
 	void CalcEffectsForSingleShip(CSector& sector, CRace* pRace,
 			bool bDeactivatedShipScanner, bool bBetterScanner, bool fleetship);
-	//calc effects this ship and its fleet's ships have such as scanpower onto the sector they're in
-	void CalcEffects(CSector& sector, CRace* pRace,
-			bool bDeactivatedShipScanner, bool bBetterScanner);
 
 	/// Diese Funktion berechnet die Schiffserfahrung in einer neuen Runde. Außer Erfahrung im Kampf, diese werden nach einem
 	/// Kampf direkt verteilt.
 	void CalcExp();
 
 	//fleet related functions
-	void CreateFleet();	// Bevor wir mit der Flotte arbeiten können muß diese erst created werden
-	void CheckFleet();	// am besten in jeder neuen Runde aufrufen, säubert die Flotte (aber nicht unbedingt notwendig)
-	void DeleteFleet();	// wie es der Name schon sagt wird hier die Flotte gelöscht
 	void AdoptOrdersFrom(const CShip& ship/*, const bool also_flagship_transport = false*/);
-	/*
-	 * adds ship to this ship's fleet and propagates this ship's orders to ship
-	**/
-	void AddShipToFleet(CShip& ship);
-	const CShip* const GetShipFromFleet(int index) const;
-	CShip* GetShipFromFleet(int index);
-	void RemoveShipFromFleet(int index);
-	//are there no ships in this ship's fleet ?
-	bool IsFleetEmpty() const;
-	//has this ship a fleet with at least one ship ?
-	bool HasFleet(bool bRequireFilled = true) const;
-	//size of this ship's fleet
-	int GetFleetSize() const;
-
-	//uses this ship's fleet's first ship to make a leading ship, which has the remaining ships of this ship's
-	//fleet as its fleet, and returns the new leading ship
-	CShip GiveFleetToFleetsFirstShip();
-	void PropagateOrdersToFleet();
 
 	/// Funktion gibt einen Wahrheitswert zurück, ob das Schiffsobjekt eine bestimmte Spezialfähigkeit besitzt.
 	/// @param ability Spezialfähigkeit
@@ -210,9 +201,11 @@ public:
 	bool HasSpecial(SHIP_SPECIAL::Typ nAbility) const;
 
 	/// Funktion erstellt eine Tooltipinfo vom Schiff
-	/// @param bShowFleet wenn dieser Parameter <code>true</code> dann werden Informationen über die angeführte Flotte angezeigt, sonst nur über das Schiff
+	/// @param info wenn dieser Parameter nicht NULL ist dann werden Informationen über die angeführte Flotte angezeigt, sonst nur über das Schiff
 	/// @return	der erstellte Tooltip-Text
-	CString GetTooltip(bool bShowFleet = true);
+	CString GetTooltip(const FleetInfoForGetTooltip* const info = NULL);
+	//CString GetTooltip(bool bShowFleet, short FleetShipType,
+	//	SHIP_RANGE::Typ FleetRange, BYTE FleetSpeed);
 
 	/// Funktion zum Zeichnen des Schiffes in der Schiffsansicht.
 	/// @param g Zeiger auf Zeichenkontext
@@ -224,7 +217,10 @@ public:
 	/// @param clrNormal Schriftfarbe
 	/// @param clrMark Schriftfarbe falls markiert
 	/// @param font zu benutzende Schrift
-	void DrawShip(Gdiplus::Graphics* g, CGraphicPool* pGraphicPool, const CPoint& pt, bool bIsMarked, bool bOwnerUnknown, bool bDrawFleet, const Gdiplus::Color& clrNormal, const Gdiplus::Color& clrMark, const Gdiplus::Font& font) const;
+	void DrawShip(Gdiplus::Graphics* g, CGraphicPool* pGraphicPool, const CPoint& pt, bool bIsMarked,
+		bool bOwnerUnknown, bool bDrawFleet, const Gdiplus::Color& clrNormal,
+		const Gdiplus::Color& clrMark, const Gdiplus::Font& font, bool bDrawTroopSymbol,
+		short FleetShipType, int FleetSize) const;
 
 protected:
 	CHull	m_Hull;												// die Hülle des Schiffes
@@ -253,7 +249,6 @@ protected:
 
 private:
 	CString m_sOwnerOfShip;				// Besitzer des Schiffes
-	CFleet*	m_Fleet;					// Wenn wir eine Gruppe bilden und dieses Schiff hier Gruppenleader ist, dann werden die anderen Schiffe in die Fleet genommen
 	CPoint m_KO;						// Koordinate des Schiffes im Raum (welcher Sector?)
 	CPoint m_TargetKO[4];				// Der Zielkurs des Schiffes
 	CArray<Sector> m_Path;				// Der Kurs des Schiffes zum Ziel

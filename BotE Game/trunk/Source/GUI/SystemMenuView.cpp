@@ -4018,7 +4018,7 @@ CString CSystemMenuView::CreateTooltip(void)
 			// Schiff erzeugen und Spezialforschungen einbeziehen
 			CShip ship = pDoc->m_ShipInfoArray[nID - 10000];
 			pDoc->AddSpecialResearchBoniToShip(&ship, m_pPlayersRace);
-			return ship.GetTooltip(false);
+			return ship.GetTooltip();
 		}
 	}
 

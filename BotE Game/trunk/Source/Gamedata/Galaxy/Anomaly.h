@@ -9,7 +9,7 @@
 #include "afx.h"
 
 // forward declaration
-class CShip;
+class CShips;
 
 // Eigenschaften aller Anomalien
 /*
@@ -123,7 +123,7 @@ public:
 
 	bool IsShipScannerDeactivated(void) const;
 
-	void CalcShipEffects(CShip* pShip) const;
+	void CalcShipEffects(CShips* pShip) const;
 
 protected:
 	// Attribute
@@ -134,9 +134,9 @@ protected:
 	ANOMALYTYP m_byType;		///< Typ der Anomalie
 
 	// Funktionen
-	void MakeShieldDmg(int nMinDmgValue, int nMaxDmgPercent, CShip* pShip) const;
+	void MakeShieldDmg(int nMinDmgValue, int nMaxDmgPercent, CShips* pShip) const;
 
-	void MakeHullDmg(int nMinDmgValue, int nMaxDmgPercent, CShip* pShip) const;
+	void MakeHullDmg(int nMinDmgValue, int nMaxDmgPercent, CShips* pShip) const;
 
-	void PerhabsStrand(CShip* pShip) const;
+	void PerhabsStrand(CShips* pShip) const;
 };

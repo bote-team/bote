@@ -142,26 +142,26 @@ public:
 	/// Funktion gibt den Schwierigkeitsgrad des Spiels zurück.
 	float GetDifficultyLevel(void) const {return m_fDifficultyLevel;}
 
-	const CShip& GetShip(int number) const {
+	const CShips& GetShip(int number) const {
 		return m_ShipArray.GetAt(number);
 	}
-	CShip& GetShip(int number) {
+	CShips& GetShip(int number) {
 		return m_ShipArray.GetAt(number);
 	}
 	//returns the ship at m_NumberOfTheShipInArray
-	const CShip& CurrentShip() const {
+	const CShips& CurrentShip() const {
 		return GetShip(m_NumberOfTheShipInArray);
 	}
 	//returns the ship at m_NumberOfTheShipInArray
-	CShip& CurrentShip() {
+	CShips& CurrentShip() {
 		return GetShip(m_NumberOfTheShipInArray);
 	}
 	//return ship at m_iNumberOfFleetShip
-	const CShip& FleetShip() const {
+	const CShips& FleetShip() const {
 		return GetShip(m_iNumberOfFleetShip);
 	}
 	//return ship at m_iNumberOfFleetShip
-	CShip& FleetShip() {
+	CShips& FleetShip() {
 		return GetShip(m_iNumberOfFleetShip);
 	}
 

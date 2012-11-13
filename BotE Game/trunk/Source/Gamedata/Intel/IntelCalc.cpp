@@ -2,7 +2,7 @@
 #include "IntelCalc.h"
 #include "Botf2Doc.h"
 #include "Races\RaceController.h"
-#include "Ships\Fleet.h"
+#include "Ships/Ships.h"
 
 //////////////////////////////////////////////////////////////////////
 // Konstruktion/Destruktion
@@ -772,8 +772,8 @@ BOOLEAN CIntelCalc::ExecuteMilitarySpy(CMajor* pRace, CMajor* pEnemyRace, CMajor
 	// 3. Versuch: Schiffe und Stationen ausspionieren
 	if (rand()%3 == NULL)	// zu 33% tritt dies ein
 	{
-		CArray<CShip*> ships;
-		CArray<CShip*> stations;
+		CArray<CShips*> ships;
+		CArray<CShips*> stations;
 		// Felder mit allen zu spionierenden Schiffe und Stationen anlegen
 		for (int i = 0; i < m_pDoc->m_ShipArray.GetSize(); i++)
 			if (m_pDoc->m_ShipArray[i].GetOwnerOfShip() == pEnemyRace->GetRaceID())
@@ -801,7 +801,7 @@ BOOLEAN CIntelCalc::ExecuteMilitarySpy(CMajor* pRace, CMajor* pEnemyRace, CMajor
 				if (ships.GetAt(i)->GetKO() == ships.GetAt(t)->GetKO())
 				{
 					number++;
-					if (ships.GetAt(i)->HasFleet(false))
+					if (ships.GetAt(i)->HasFleet())
 						for (int j = 0; j < ships.GetAt(i)->GetFleetSize(); j++)
 							number++;
 				}
@@ -1394,14 +1394,14 @@ BOOLEAN CIntelCalc::ExecuteMilitarySabotage(CMajor* pRace, CMajor* pEnemyRace, C
 		// 3. Versuch: Schiffe beschädigen/zerstören/stehlen oder Stationen beschädigen/zerstören
 		if (report->GetIsShip())
 		{
-			CShip* ship = NULL;
+			CShips* ship = NULL;
 			// überprüfen, ob die jeweilige Station oder das jeweilige Schiff auch noch im System vorhanden ist
 			CArray<CPoint> allShips;	// x für Schiffsposition im Feld, y für Schiffsposition in der Flotte
 			for (int i = 0; i < m_pDoc->m_ShipArray.GetSize(); i++)
 				if (m_pDoc->m_ShipArray.GetAt(i).GetKO() == report->GetKO() && m_pDoc->m_ShipArray.GetAt(i).GetOwnerOfShip() != report->GetOwner())
 				{
 					// besitzt dieses Schiff eine Flotte, so könnte sich unser Schiff auch in der Flotte befinden
-					if (m_pDoc->m_ShipArray.GetAt(i).HasFleet(false))
+					if (m_pDoc->m_ShipArray.GetAt(i).HasFleet())
 					{
 						for (int j = 0; j < m_pDoc->m_ShipArray.GetAt(i).GetFleetSize(); j++)
 							if (m_pDoc->m_ShipArray.GetAt(i).GetShipFromFleet(j)->GetID() == report->GetID())
@@ -1440,7 +1440,7 @@ BOOLEAN CIntelCalc::ExecuteMilitarySabotage(CMajor* pRace, CMajor* pEnemyRace, C
 				pRace->GetEmpire()->GetIntelligence()->GetIntelReports()->RemoveReport(oldReportNumber);
 				report = new CMilitaryIntelObj(pRace->GetRaceID(), pEnemyRace->GetRaceID(), m_pDoc->GetCurrentRound(), FALSE, ship->GetKO(), ship->GetID(), 1, FALSE, TRUE, FALSE);
 				// die Station aus der ShipHistory der aktuellen Schiffe entfernen und den zerstörten Schiffen hinzufügen
-				pEnemyRace->GetShipHistory()->ModifyShip(ship, m_pDoc->GetSector(ship->GetKO().x, ship->GetKO().y).GetName(TRUE),
+				pEnemyRace->GetShipHistory()->ModifyShip(&ship->Leader(), m_pDoc->GetSector(ship->GetKO().x, ship->GetKO().y).GetName(TRUE),
 					m_pDoc->GetCurrentRound(), CResourceManager::GetString("SABOTAGE"), CResourceManager::GetString("MISSED"));
 
 				// neuen Besitzer hinzufügen
@@ -1463,23 +1463,22 @@ BOOLEAN CIntelCalc::ExecuteMilitarySabotage(CMajor* pRace, CMajor* pEnemyRace, C
 				ship->SetTargetKO(CPoint(-1, -1), 0);
 				// wurde dieses Schiff jedoch schonmal gestohlen, dann ist es in der Missed Shiphistory. Ist dies der Fall kann das Schiff
 				// wieder als aktives Schiff betrachtet werden.
-				if (pRace->GetShipHistory()->ModifyShip(ship, m_pDoc->GetSector(ship->GetKO().x, ship->GetKO().y).GetName(TRUE), 0) == false)
+				if (pRace->GetShipHistory()->ModifyShip(&ship->Leader(), m_pDoc->GetSector(ship->GetKO().x, ship->GetKO().y).GetName(TRUE), 0) == false)
 					// dem neuen Besitzer das Schiff als aktives Schiff hinzufügen
-					pRace->GetShipHistory()->AddShip(ship, m_pDoc->GetSector(ship->GetKO().x, ship->GetKO().y).GetName(TRUE), m_pDoc->GetCurrentRound());
+					pRace->GetShipHistory()->AddShip(&ship->Leader(), m_pDoc->GetSector(ship->GetKO().x, ship->GetKO().y).GetName(TRUE), m_pDoc->GetCurrentRound());
 
 				// jetzt Dinge wegen einer möglichen Flotte beachten
 				if (n.y == -1)		// Schiff nicht in Flotte
 				{
 					// das Schiff selbst kann aber eine Flotte anführen
 					// Wenn das Schiff eine Flotte besaß, so geht die Flotte auf das erste Schiff in der Flotte über
-					if (ship->HasFleet(false))
+					if (ship->HasFleet())
 					{
-						const CShip& new_fleetship = ship->GiveFleetToFleetsFirstShip();
+						const CShips& new_fleetship = ship->GiveFleetToFleetsFirstShip();
 						// neues Flottenschiff dem Array hinzufügen
 						m_pDoc->m_ShipArray.Add(m_pDoc->m_ShipArray.end(), new_fleetship);
 						// Schiff nochmal neu holen, da der Vektor verändert wurde und so sich auch der Zeiger ändern kann
 						ship = &m_pDoc->m_ShipArray.GetAt(n.x);
-						// Flotte des geklauten Schiffes löschen wurde in GiveFleetToFleetsFirstShip gemacht
 					}
 				}
 				else	// Schiff ist in Flotte
@@ -1509,7 +1508,7 @@ BOOLEAN CIntelCalc::ExecuteMilitarySabotage(CMajor* pRace, CMajor* pEnemyRace, C
 				pRace->GetEmpire()->GetIntelligence()->GetIntelReports()->RemoveReport(oldReportNumber);
 				report = new CMilitaryIntelObj(pRace->GetRaceID(), pEnemyRace->GetRaceID(), m_pDoc->GetCurrentRound(), FALSE, ship->GetKO(), ship->GetID(), 1, FALSE, TRUE, FALSE);
 				// die Station aus der ShipHistory der aktuellen Schiffe entfernen und den zerstörten Schiffen hinzufügen
-				pEnemyRace->GetShipHistory()->ModifyShip(ship, m_pDoc->GetSector(ship->GetKO().x, ship->GetKO().y).GetName(TRUE),
+				pEnemyRace->GetShipHistory()->ModifyShip(&ship->Leader(), m_pDoc->GetSector(ship->GetKO().x, ship->GetKO().y).GetName(TRUE),
 					m_pDoc->GetCurrentRound(), CResourceManager::GetString("SABOTAGE"), CResourceManager::GetString("DESTROYED"));
 				if (n.y == -1)		// nicht in Flotte
 				{

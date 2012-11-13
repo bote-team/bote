@@ -4,8 +4,8 @@
 #include "Botf2Doc.h"
 #include "Races\RaceController.h"
 #include "AI\SectorAI.h"
-#include "Ships\Fleet.h"
 #include <algorithm>
+#include "Ships/Ships.h"
 
 IMPLEMENT_SERIAL (CStatistics, CObject, 1)
 
@@ -149,16 +149,16 @@ void CStatistics::GetDemographicsMilitary(const CString& sRaceID, int& nPlace, f
 	// Es werden alle Schiffe aller Rassen betrachtet
 	for (int i = 0; i < pDoc->m_ShipArray.GetSize(); i++)
 	{
-		CShip* pShip = &pDoc->m_ShipArray[i];
+		CShips* pShip = &pDoc->m_ShipArray[i];
 		// Stationen und Alienschiffe werden nicht mit einbezogen
 		if (!pShip->IsStation() && !pShip->IsAlien())
 			mMap[pShip->GetOwnerOfShip()] += pShip->GetCompleteOffensivePower() + pShip->GetCompleteOffensivePower() / 2;
 		// Schiffe in der Flotte beachten
-		if (pShip->HasFleet(false))
+		if (pShip->HasFleet())
 		{
 			for (int j = 0; j < pShip->GetFleetSize(); j++)
 			{
-				CShip* pFleetShip = pShip->GetShipFromFleet(j);
+				CShips* pFleetShip = pShip->GetShipFromFleet(j);
 				if (!pFleetShip->IsStation() && !pFleetShip->IsAlien())
 					mMap[pFleetShip->GetOwnerOfShip()] += pFleetShip->GetCompleteOffensivePower() + pFleetShip->GetCompleteOffensivePower() / 2;
 			}

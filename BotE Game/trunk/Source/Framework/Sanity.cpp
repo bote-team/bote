@@ -1,12 +1,12 @@
 #include "stdafx.h"
 #include "Sanity.h"
 
-#include "Ships/Fleet.h"
 #include "Galaxy/Sector.h"
 #include "System/System.h"
 #include "Races/race.h"
 #include "Botf2Doc.h"
 #include "Races/RaceController.h"
+#include "Ships/Ships.h"
 
 #include <cassert>
 
@@ -66,15 +66,11 @@ static void SanityCheckShip(const CShip& ship)
 	}
 }
 
-void CSanity::SanityCheckFleet(const CShip& ship)
+void CSanity::SanityCheckFleet(const CShips& ship)
 {
-	SanityCheckShip(ship);
-	if(ship.HasFleet(false)) {
-		CFleet const* const fleet = ship.GetFleet();
-		for(unsigned i = 0; i < fleet->GetFleetSize(); ++i) {
-			SanityCheckShip(*fleet->GetShipFromFleet(i));
-		}
-	}
+	SanityCheckShip(ship.Leader());
+	for(CShips::const_iterator i = ship.begin(); i != ship.end(); ++i)
+		SanityCheckShip(i->Leader());
 }
 
 void CSanity::SanityCheckSectorAndSystem(const CSector& sector, const CSystem& system, const CBotf2Doc& doc)

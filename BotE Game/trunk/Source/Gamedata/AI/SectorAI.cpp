@@ -2,8 +2,8 @@
 #include "SectorAI.h"
 #include "Botf2Doc.h"
 #include "Races\RaceController.h"
-#include "Ships\Fleet.h"
 #include "Galaxy\Anomaly.h"
+#include "Ships/Ships.h"
 #include <algorithm>
 
 //////////////////////////////////////////////////////////////////////
@@ -45,10 +45,10 @@ void CSectorAI::CalculateDangers()
 {
 	for (int i = 0; i < m_pDoc->m_ShipArray.GetSize(); i++)
 	{
-		CShip* ship = &m_pDoc->m_ShipArray.GetAt(i);
+		CShips* ship = &m_pDoc->m_ShipArray.GetAt(i);
 		AddDanger(ship);
 		// Führt das Schiff eine Flotte an, so muss dies alles auch für die Schiffe in der Flotte getan werden
-		if (ship->HasFleet(false))
+		if (ship->HasFleet())
 			for (int j = 0; j < ship->GetFleetSize(); j++)
 				AddDanger(ship->GetShipFromFleet(j));
 	}
@@ -126,7 +126,7 @@ void CSectorAI::CalcualteSectorPriorities()
 //////////////////////////////////////////////////////////////////////
 /// Diese Funktion addiert die Offensiv- und Defensivstärke eines Schiffes einer Rasse zum jeweiligen
 /// Sektor.
-void CSectorAI::AddDanger(CShip* ship)
+void CSectorAI::AddDanger(CShips* ship)
 {
 	CString race = ship->GetOwnerOfShip();
 
