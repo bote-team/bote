@@ -8,7 +8,6 @@
 #pragma once
 #include "afx.h"
 #include "System.h"
-#include "Ships\Ship.h"
 #include "Races\RaceController.h"
 #include <map>
 

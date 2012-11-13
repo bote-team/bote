@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "ShipHistory.h"
 
+#include "Ships/ship.h"
+
 IMPLEMENT_SERIAL (CShipHistory, CObject, 1)
 
 //////////////////////////////////////////////////////////////////////

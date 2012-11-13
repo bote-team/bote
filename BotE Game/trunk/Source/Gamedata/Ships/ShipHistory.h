@@ -7,8 +7,8 @@
  */
 #pragma once
 #include "afx.h"
-#include "Ship.h"
 #include "array_sort.h"
+class CShip;
 
 /// Deklaration einer Struktur zum Speichern aller relevanten Daten
 struct CShipHistoryStruct {

@@ -6,7 +6,6 @@
 #include "Races/Minor.h"
 #include "Races/RaceController.h"
 #include "Galaxy/planet.h"
-#include "Ships/ship.h"
 #include "Events/EventRandom.h"
 #include "Gamedata/General/Message.h"
 #include "Ships/Ships.h"
