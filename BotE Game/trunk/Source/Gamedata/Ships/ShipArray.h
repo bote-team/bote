@@ -27,12 +27,16 @@ public:
 //////////////////////////////////////////////////////////////////////
 // adding elements
 //////////////////////////////////////////////////////////////////////
-	//adds the passed ship at the end of this shiparray
-	//included fleets are not handled
+
+	//adds the passed CShips at the end of this shiparray
 	//@param it: will be updated and point to the same position as before
 	//@param ship: the ship to add
 	void Add(CShipArray::iterator& it, const CShips& ship);
+	//appends the passed CShipArray at the end of this shiparray
+	//@param it: will be updated and point to the same position as before
+	//@param other: the CShipArray to appends
 	void Append(CShipArray::iterator& it, const CShipArray& other);
+
 //////////////////////////////////////////////////////////////////////
 // removing elements
 //////////////////////////////////////////////////////////////////////
@@ -66,6 +70,10 @@ public:
 	//special purpose serialization function
 	void SerializeNextRoundData(CArchive& ar, const CPoint& ptCurrentCombatSector);
 
+//////////////////////////////////////////////////////////////////////
+// debugging helper
+//////////////////////////////////////////////////////////////////////
+	CString ToString() const;
 
 private:
 	void SetSize(int size);

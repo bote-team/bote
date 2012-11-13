@@ -36,15 +36,23 @@ CShipArray::iterator CShipArray::end() {
 //////////////////////////////////////////////////////////////////////
 
 void CShipArray::Add(CShipArray::iterator& it, const CShips& ship) {
+	CString s;
+	s.Format("CShipArray: adding ship %s", ship.GetShipName());
+	MYTRACE("ships")(MT::LEVEL_INFO, s);
 	const int memory = it - begin();
 	m_vShips.push_back(ship);
 	it = begin() + memory;
 }
 void CShipArray::Append(CShipArray::iterator& it, const CShipArray& other) {
+	if(MT::CMyTrace::IsLoggingEnabledFor("ships")) {
+		CString s;
+		s.Format("\nCShipArray: appending shiparray:\n%s\n", other.ToString());
+		MYTRACE("ships")(MT::LEVEL_INFO, s);
+	}
 	const int memory = it - begin();
-	assert(0 <= memory && memory < GetSize());
+	assert(0 <= memory && memory <= GetSize());
 	m_vShips.insert(end(), other.begin(), other.end());
-	assert(0 <= memory && memory < GetSize());
+	assert(0 <= memory && memory <= GetSize());
 	it = begin() + memory;
 }
 //////////////////////////////////////////////////////////////////////
@@ -54,6 +62,9 @@ void CShipArray::RemoveAll() {
 	m_vShips.clear();
 }
 void CShipArray::RemoveAt(CShipArray::iterator& index) {
+	CString s;
+	s.Format("CShipArray: removing ship %s", index->GetShipName());
+	MYTRACE("ships")(MT::LEVEL_INFO, s);
 	index = m_vShips.erase(index);
 }
 //////////////////////////////////////////////////////////////////////
@@ -182,4 +193,13 @@ void CShipArray::SerializeNextRoundData(CArchive& ar, const CPoint& ptCurrentCom
 		for (int i = nSize; i < GetSize(); i++)
 			GetAt(i).Serialize(ar);
 	}
+}
+
+CString CShipArray::ToString() const {
+	CString s("SHIPARRAY BEGINN\n");
+	unsigned index = 0;
+	for(CShipArray::const_iterator i = begin(); i != end(); ++i)
+		s.Format("%s%u: %s at (%u,%u)\n", s, index, i->GetShipName(), i->GetKO().x, i->GetKO().y);
+	s.Format("%s%s", s, "SHIPARRAY END");
+	return s;
 }

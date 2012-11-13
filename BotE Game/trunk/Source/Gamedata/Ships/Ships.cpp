@@ -113,6 +113,12 @@ void CShips::RemoveShipFromFleet(UINT nIndex)
 //@param index: will be updated and point to the new position of the element which followed the erased one
 void CShips::RemoveShipFromFleet(CShips::iterator& ship)
 {
+	if(MT::CMyTrace::IsLoggingEnabledFor("ships")) {
+		CString s;
+		s.Format("CShips: removing ship %s from fleet of %s", ship->m_Leader.GetShipName(),
+			m_Leader.GetShipName());
+		MYTRACE("ships")(MT::LEVEL_INFO, s);
+	}
 	const unsigned index = ship - begin();
 	assert(index < static_cast<unsigned>(m_Ships.GetSize()));
 	m_Ships.RemoveAt(ship);
@@ -127,10 +133,21 @@ void CShips::AdoptCurrentOrders(const CShip* ship)
 }
 
 void CShips::AddShipToFleet(CShips& fleet) {
+	CString s;
+	if(MT::CMyTrace::IsLoggingEnabledFor("ships")) {
+		s.Format("CShips: adding ship with leader %s to fleet of %s", fleet.m_Leader.GetShipName(),
+			m_Leader.GetShipName());
+		MYTRACE("ships")(MT::LEVEL_INFO, s);
+	}
 	CShip leader = fleet.m_Leader;
 	leader.AdoptOrdersFrom(m_Leader);
 	m_Ships.Add(end(), fleet.m_Leader);
 	if(fleet.HasFleet()) {
+		if(MT::CMyTrace::IsLoggingEnabledFor("ships")) {
+			s.Format("CShips: adding the fleet of leader %s to fleet of %s", fleet.m_Leader.GetShipName(),
+				m_Leader.GetShipName());
+			MYTRACE("ships")(MT::LEVEL_INFO, s);
+		}
 		m_Ships.Append(end(), fleet.m_Ships);
 		PropagateOrdersToFleet();
 		fleet.DeleteFleet();
