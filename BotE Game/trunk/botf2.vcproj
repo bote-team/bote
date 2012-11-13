@@ -725,6 +725,10 @@
 						>
 					</File>
 					<File
+						RelativePath=".\Source\Gamedata\Ships\Ships.cpp"
+						>
+					</File>
+					<File
 						RelativePath=".\Source\Gamedata\Ships\Torpedo.cpp"
 						>
 					</File>
@@ -1439,6 +1443,10 @@
 					</File>
 					<File
 						RelativePath=".\Source\Gamedata\Ships\shipinfo.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Source\Gamedata\Ships\Ships.h"
 						>
 					</File>
 					<File

@@ -169,11 +169,9 @@ public:
 	void Retreat(const CPoint& ptRetreatSector);
 	void RetreatFleet(const CPoint& RetreatSector);
 
-private:
 	//calculate effects this ship has onto its sector
 	void CalcEffectsForSingleShip(CSector& sector, CRace* pRace,
 			bool bDeactivatedShipScanner, bool bBetterScanner, bool fleetship);
-public:
 	//calc effects this ship and its fleet's ships have such as scanpower onto the sector they're in
 	void CalcEffects(CSector& sector, CRace* pRace,
 			bool bDeactivatedShipScanner, bool bBetterScanner);
