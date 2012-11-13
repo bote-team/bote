@@ -1274,3 +1274,12 @@ void CShip::CalcEffectsForSingleShip(CSector& sector, CRace* pRace,
 	// Erfahrungspunkte der Schiffe anpassen
 	CalcExp();
 }
+
+CString CShip::SanityCheckUniqueness(std::set<CString>& already_encountered) const {
+	const std::set<CString>::const_iterator found = already_encountered.find(m_strShipName);
+	if(found == already_encountered.end()) {
+		already_encountered.insert(m_strShipName);
+		return CString();
+	}
+	return m_strShipName;
+}

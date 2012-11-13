@@ -282,7 +282,7 @@ public:
 	/// Kampf direkt verteilt.
 	void CalcExp() { m_Leader.CalcExp(); };
 
-	void CheckFleet();	// am besten in jeder neuen Runde aufrufen, säubert die Flotte (aber nicht unbedingt notwendig)
+	CString SanityCheckUniqueness(std::set<CString>& already_encountered) const;
 
 	////uses this CShips's fleet's first ship to make a leading ship, which has the remaining ships of this CShips's
 	////fleet as its fleet, and returns the new CShips

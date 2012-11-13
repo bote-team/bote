@@ -426,7 +426,11 @@ void CShips::CalcEffects(CSector& sector, CRace* pRace,
 			j->m_Leader.CalcEffectsForSingleShip(sector, pRace, bDeactivatedShipScanner, bBetterScanner, true);
 }
 
-void CShips::CheckFleet() {
-	for(CShips::iterator j = begin(); j != end(); ++j)
-		assert(!j->HasFleet());
+CString CShips::SanityCheckUniqueness(std::set<CString>& already_encountered) const {
+	for(CShips::const_iterator i = begin(); i != end(); ++i) {
+		const CString& duplicate = i->SanityCheckUniqueness(already_encountered);
+		if(!duplicate.IsEmpty())
+			return duplicate;
+	}
+	return m_Leader.SanityCheckUniqueness(already_encountered);
 }

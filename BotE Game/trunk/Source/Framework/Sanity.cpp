@@ -69,8 +69,19 @@ static void SanityCheckShip(const CShip& ship)
 void CSanity::SanityCheckFleet(const CShips& ship)
 {
 	SanityCheckShip(ship.Leader());
-	for(CShips::const_iterator i = ship.begin(); i != ship.end(); ++i)
+	for(CShips::const_iterator i = ship.begin(); i != ship.end(); ++i) {
+		assert(!i->HasFleet());
 		SanityCheckShip(i->Leader());
+	}
+}
+
+void CSanity::CheckShipUniqueness(const CShips& ship, std::set<CString>& already_encountered) {
+	const CString& duplicate = ship.SanityCheckUniqueness(already_encountered);
+	if(duplicate.IsEmpty())
+		return;
+	CString s;
+	s.Format("duplicate ship named %s in fleet of %s", duplicate, ship.GetShipName());
+	Notify(s);
 }
 
 void CSanity::SanityCheckSectorAndSystem(const CSector& sector, const CSystem& system, const CBotf2Doc& doc)

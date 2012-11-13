@@ -188,6 +188,8 @@ public:
 	void CalcEffectsForSingleShip(CSector& sector, CRace* pRace,
 			bool bDeactivatedShipScanner, bool bBetterScanner, bool fleetship);
 
+	CString SanityCheckUniqueness(std::set<CString>& already_encountered) const;
+
 	/// Diese Funktion berechnet die Schiffserfahrung in einer neuen Runde. Auﬂer Erfahrung im Kampf, diese werden nach einem
 	/// Kampf direkt verteilt.
 	void CalcExp();

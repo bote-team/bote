@@ -3215,7 +3215,6 @@ void CBotf2Doc::CalcSystemAttack()
 						// Schiff entfernen
 						m_ShipArray[i].RemoveShipFromFleet(x--);
 					}
-				m_ShipArray[i].CheckFleet();
 			}
 			// Wenn das Schiff selbst zerstört wurde
 			if (m_ShipArray.GetAt(i).GetHull()->GetCurrentHull() < 1)
@@ -3745,10 +3744,6 @@ void CBotf2Doc::CalcShipOrders()
 				m_ShipArray.ElementAt(y).SetCurrentOrder(SHIP_ORDER::ATTACK);
 		}
 
-		// Flotten checken, falls keine mehr existiert, dann wird der Zeiger auf die Flotte aufgelöst
-		// muss nicht unbedingt gemacht werden, hält die Objekte aber sauberer
-		m_ShipArray[y].CheckFleet();
-
 		// wenn der Befehl "Terraform" ist und kein Planet ausgew?hlt ist, dann Befehl wieder auf "AVOID"
 		// setzen
 		if (m_ShipArray[y].GetCurrentOrder() == SHIP_ORDER::TERRAFORM && m_ShipArray[y].GetTerraformingPlanet() == -1)
@@ -4114,7 +4109,6 @@ void CBotf2Doc::CalcShipOrders()
 									}
 									// Das Schiff, welches die Station fertiggestellt hat aus der Flotte entfernen
 									m_ShipArray[y].RemoveShipFromFleet(x);
-									m_ShipArray[y].CheckFleet();
 									BuildShip(id, pSector->GetKO(), m_ShipArray[y].GetOwnerOfShip());
 									// Wenn hier ein Au?enposten gebaut wurde den Befehl f?r die Flotte auf Meiden stellen
 									m_ShipArray[y].SetCurrentOrder(SHIP_ORDER::AVOID);
@@ -4264,7 +4258,6 @@ void CBotf2Doc::CalcShipOrders()
 									}
 									// Das Schiff, welches die Station fertiggestellt hat aus der Flotte entfernen
 									m_ShipArray[y].RemoveShipFromFleet(x);
-									m_ShipArray[y].CheckFleet();
 									this->BuildShip(id, pSector->GetKO(), m_ShipArray[y].GetOwnerOfShip());
 									// Wenn wir jetzt die Sternbasis gebaut haben, dann müssen wir den alten Aussenposten aus der
 									// Schiffsliste nehmen
@@ -4643,11 +4636,14 @@ void CBotf2Doc::CalcShipMovement()
 		pMajor->GetStarmap()->SynchronizeWithMap(m_Sectors, &races);
 	}
 
+	std::set<CString> already_encountered_ships_for_sanity_check;
 	// Hier kommt die Schiffsbewegung (also keine anderen Befehle werden hier noch ausgewertet, lediglich wird überprüft,
 	// dass manche Befehle noch ihre Gültigkeit haben
 	for (int y = 0; y < m_ShipArray.GetSize(); y++)
 	{
 		CShips* pShip = &m_ShipArray[y];
+		//this call is expensive (about n*log(n) in the ship array length; TODO comment out)
+		CSanity::CheckShipUniqueness(*pShip, already_encountered_ships_for_sanity_check);
 
 		// Prüfen, dass ein Terraformbefehl noch gültig ist
 		if (pShip->GetCurrentOrder() == SHIP_ORDER::TERRAFORM)
@@ -4830,7 +4826,6 @@ void CBotf2Doc::CalcShipMovement()
 					pShip->RemoveShipFromFleet(x--);
 				}
 			}
-			pShip->CheckFleet();
 		}
 
 		// Wenn das Schiff selbst zerstört wurde
@@ -5111,7 +5106,6 @@ void CBotf2Doc::CalcShipCombat()
 
 					m_ShipArray[i].RemoveShipFromFleet(x--);
 				}
-			m_ShipArray[i].CheckFleet();
 		}
 
 		// Wenn das Schiff selbst zerstört wurde
@@ -5212,7 +5206,6 @@ void CBotf2Doc::CalcShipRetreat() {
 
 		ship->Retreat(RetreatSector->second);
 
-		ship->CheckFleet();
 		if(!ship->HasFleet())
 			continue;
 		// sind alle Schiffe in einer Flotte im Rückzug, so kann die ganze Flotte

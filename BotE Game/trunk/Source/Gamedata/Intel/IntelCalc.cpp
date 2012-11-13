@@ -1485,7 +1485,6 @@ BOOLEAN CIntelCalc::ExecuteMilitarySabotage(CMajor* pRace, CMajor* pEnemyRace, C
 				{
 					m_pDoc->m_ShipArray.Add(m_pDoc->m_ShipArray.end(), *ship);
 					m_pDoc->m_ShipArray.GetAt(n.x).RemoveShipFromFleet(n.y);
-					m_pDoc->m_ShipArray.GetAt(n.x).CheckFleet();
 				}
 				if (report)
 				{
@@ -1517,7 +1516,6 @@ BOOLEAN CIntelCalc::ExecuteMilitarySabotage(CMajor* pRace, CMajor* pEnemyRace, C
 				else	// Schiff ist in Flotte
 				{
 					m_pDoc->m_ShipArray.GetAt(n.x).RemoveShipFromFleet(n.y);
-					m_pDoc->m_ShipArray.GetAt(n.x).CheckFleet();
 				}
 				if (report)
 				{
