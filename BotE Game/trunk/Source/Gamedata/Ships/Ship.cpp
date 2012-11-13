@@ -289,8 +289,9 @@ void CShip::Serialize(CArchive &ar)
 	}
 }
 
+
 //////////////////////////////////////////////////////////////////////
-// Zugriffsfunktion
+// getting
 //////////////////////////////////////////////////////////////////////
 
 // Funktion gibt den Schiffstyp als char* zurück
@@ -343,43 +344,9 @@ CString CShip::GetShipTypeAsString(BOOL plural) const
 	return shipType;
 }
 
-//Funktion gibt aktuelles Ziel als char* zurück
-CString CShip::GetCurrentTargetAsString() const
-{
-CString target;
-if (m_TargetKO[0].x == -1)
-	target = "-";
-else if (m_TargetKO[0].x == GetKO().x && m_TargetKO[0].y == GetKO().y )
-	target = "-";
-else
-target.Format("%c%i", (char)(m_TargetKO[0].y+97),m_TargetKO[0].x+1);
-return target;
-}
-
 // Funktion gibt den aktuellen Schiffsauftrag als char* zurück
 CString CShip::GetCurrentOrderAsString() const
 {
-	/*
-	#define AVOID               0
-	#define ATTACK              1
-	#define CLOAK               2
-	#define ATTACK_SYSTEM       3
-	#define RAID_SYSTEM         4
-	#define BLOCKADE_SYSTEM		5
-	#define DESTROY_SHIP        6
-	#define COLONIZE            7
-	#define TERRAFORM           8
-	#define BUILD_OUTPOST       9
-	#define BUILD_STARBASE		10
-	#define ASSIGN_FLAGSHIP     11
-	#define CREATE_FLEET        12
-	#define TRANSPORT			13
-	#define FOLLOW_SHIP			14
-	#define TRAIN_SHIP			15
-	WAIT_SHIP_ORDER				16
-	SENTRY_SHIP_ORDER			17
-	REPAIR						18
-	*/
 	CString order;
 	switch (m_iCurrentOrder)
 	{
@@ -430,30 +397,109 @@ CString CShip::GetCombatTacticAsString() const
 	return tactic;
 }
 
-void CShip::AdoptOrdersFrom(const CShip& ship/*, const bool also_flagship_transport*/)
+//Funktion gibt aktuelles Ziel als char* zurück
+CString CShip::GetCurrentTargetAsString() const
 {
-	const SHIP_ORDER::Typ order_to_adopt = ship.GetCurrentOrder();
+	CString target;
+	if (m_TargetKO[0].x == -1)
+		target = "-";
+	else if (m_TargetKO[0].x == GetKO().x && m_TargetKO[0].y == GetKO().y )
+		target = "-";
+	else
+		target.Format("%c%i", (char)(m_TargetKO[0].y+97),m_TargetKO[0].x+1);
+	return target;
+}
 
-	//if (order_to_adopt != SHIP_ORDER::ASSIGN_FLAGSHIP
-		//&& order_to_adopt != SHIP_ORDER::TRANSPORT || also_flagship_transport)
-	//{
-		m_iCurrentOrder = order_to_adopt;
-	//}
+//////////////////////////////////////////////////////////////////////
+// setting
+//////////////////////////////////////////////////////////////////////
+
+void CShip::AdoptOrdersFrom(const CShip& ship)
+{
+	m_iCurrentOrder = ship.GetCurrentOrder();
 	m_nCombatTactic = ship.GetCombatTactic();
-
 	m_KO = ship.GetKO();
 	m_TargetKO[0] = ship.GetTargetKO();
 	//den Terraformingplaneten neu setzen
 	m_nTerraformingPlanet = ship.GetTerraformingPlanet();
 }
 
-bool CShip::HasSpecial(SHIP_SPECIAL::Typ nAbility) const
+void CShip::SetCrewExperiance(int nAdd)
 {
-	if (m_nSpecial[0] == nAbility || m_nSpecial[1] == nAbility)
-		return true;
-	else
-		return false;
+	// Sonden und Aliens sammeln keine Erfahrung
+	if (m_iShipType != SHIP_TYPE::PROBE && !IsAlien())
+		m_iCrewExperiance = min(64000, m_iCrewExperiance + nAdd);
 }
+
+/// Diese Funktion berechnet die Schiffserfahrung in einer neuen Runde. Außer Erfahrung im Kampf, diese werden nach einem
+/// Kampf direkt verteilt.
+void CShip::CalcExp()
+{
+/*
+Starterfahrung 0 (bis auf Schiffe, die in Systemen mit Akademien gebaut werden, die fangen mit 500 Erfahrung bereits an), Bezeichnung Unerfahren. Erfahrung steigt mit 10 pro Runde kontinuierlich an bis 500.
+Erfahrung 500 = Normal. Erfahrung steigt nun mit 5 pro Runde bis 1000.
+Erfahrung 1000 = Veteran. Erfahrung steigt nicht mehr.
+Erfahrung 2500 = Elite.
+Erfahrung 5000 = Legendär.
+
+Für den Erfahrungsgewinn gibt es mehrere Möglichkeiten:
+
+1. random events die pauschal jeweils immer EP geben (Ionensturm überstanden, diplomatische Eskortmission, Anomalie erforscht)
+2. Forschungsmissionen (Pulsar, Neutronenstern, schwarzes Loch, Wurmloch, Nebel scannen)
+3. Akademien: Bei Anwesenheit eines Veteranen- oder höher -schiffes in der Crewtrainingflotte werden die Erfahrungsgewinne von unerfahrenen und normalen Crews pro Runde verdoppelt. Das Veteranenschiff bekommt die normalen EP-Gewinne.
+4. Invasionen: Schiffe bekommen (Bevölkerungsverlust in Mrd.) * 100 + aktive shipdefence EP.
+5. Systemblockaden, Überfälle: Verdoppeln pro Runde Gewinn für unerfahrene und normale Crews
+6. Systemangriff: (Bevölkerungsverlust in Mrd.) * 100 + aktive shipdefence EP.
+7. Schiffskampf: ((Durchschnittscrewerfahrung aller gegnerischen Schiffe)/((Durchschnittscrewerfahrung aller gegnerischen Schiffe)+(Durchschnittscrewerfahrung aller eigenen Schiffe)))x(totalen Hüllenschaden am Gegner)/100. Letzteres sorgt dafür dass Schäden an erfahrenen Schiffen höher gewichtet werden (da sie ja auch seltener sind, weil erfahrenere Schiffe seltener getroffen werden). Distributiert wird dann gleichmäßig auf alle Schiffe.
+*/
+
+	int expAdd = 0;
+	switch (GetExpLevel())
+	{
+		case 0:	expAdd = 15;	break;
+		case 1: expAdd = 10;	break;
+		case 2: expAdd = 5;		break;
+	}
+	SetCrewExperiance(expAdd);
+}
+
+void CShip::SetTargetKO(const CPoint& TargetKO, int Index, const bool simple_setter)
+{
+	m_TargetKO[Index] = TargetKO;
+	if(simple_setter)
+		return;
+	UnsetCurrentOrder();
+	m_nTerraformingPlanet = -1;
+}
+
+void CShip::SetCurrentOrderAccordingToType() {
+	m_iCurrentOrder = IsNonCombat() ? SHIP_ORDER::AVOID : SHIP_ORDER::ATTACK;
+}
+
+void CShip::SetCombatTacticAccordingToType() {
+	m_nCombatTactic = IsNonCombat() ? COMBAT_TACTIC::CT_AVOID : COMBAT_TACTIC::CT_ATTACK;
+}
+
+void CShip::UnsetCurrentOrder() {
+	switch(m_nCombatTactic) {
+		case COMBAT_TACTIC::CT_ATTACK:
+			m_iCurrentOrder = SHIP_ORDER::ATTACK;
+		break;
+		case COMBAT_TACTIC::CT_AVOID:
+			m_iCurrentOrder = SHIP_ORDER::AVOID;
+		break;
+		case COMBAT_TACTIC::CT_RETREAT:
+			m_iCurrentOrder = SHIP_ORDER::AVOID;
+		break;
+		default:
+			assert(false);
+		break;
+	}
+}
+
+//////////////////////////////////////////////////////////////////////
+// calculated stements about this ship (should be const functions, non-bool returning)
+//////////////////////////////////////////////////////////////////////
 
 /// Funktion gibt die gesamte Offensivpower des Schiffes zurück, welches es in 100s anrichten würde.
 /// Dieser Wert hat keinen direkten Kampfeinfluss, er ist nur zum Vergleich heranzuziehen.
@@ -584,7 +630,7 @@ UINT CShip::GetCompleteDefensivePower(bool bShields/* = true*/, bool bHull/* = t
 }
 
 /// Funktion gibt den schon benutzten Lagerraum im Schiff zurück.
-USHORT CShip::GetUsedStorageRoom(const CArray<CTroopInfo>* troopInfo)
+USHORT CShip::GetUsedStorageRoom(const CArray<CTroopInfo>* troopInfo) const
 {
 	USHORT usedStorage = 0;
 	// benötigten Platz durch Truppen, welche schon im Schiff sind ermitteln
@@ -633,12 +679,34 @@ BYTE CShip::GetExpLevel() const
 		return 6;
 }
 
-void CShip::SetCrewExperiance(int nAdd)
+//////////////////////////////////////////////////////////////////////
+// bool statements about this ship
+//////////////////////////////////////////////////////////////////////
+
+bool CShip::HasSpecial(SHIP_SPECIAL::Typ nAbility) const
 {
-	// Sonden und Aliens sammeln keine Erfahrung
-	if (m_iShipType != SHIP_TYPE::PROBE && !IsAlien())
-		m_iCrewExperiance = min(64000, m_iCrewExperiance + nAdd);
+	if (m_nSpecial[0] == nAbility || m_nSpecial[1] == nAbility)
+		return true;
+	else
+		return false;
 }
+
+bool CShip::HasNothingToDo() const {
+	return (m_iCurrentOrder == SHIP_ORDER::AVOID || m_iCurrentOrder == SHIP_ORDER::ATTACK)
+		&& m_TargetKO[0] == CPoint(-1, -1) && m_iSpeed != 0;
+}
+
+bool CShip::NeedsRepair() const {
+	return m_Hull.GetCurrentHull() < m_Hull.GetMaxHull();
+}
+
+bool CShip::IsNonCombat() const {
+	return m_iShipType <= SHIP_TYPE::PROBE;
+}
+
+//////////////////////////////////////////////////////////////////////
+// other functions
+//////////////////////////////////////////////////////////////////////
 
 /// Funktion erstellt eine Tooltipinfo vom Schiff
 /// @param info wenn dieser Parameter nicht NULL ist dann werden Informationen über die angeführte Flotte angezeigt, sonst nur über das Schiff
@@ -1118,90 +1186,11 @@ void CShip::DrawShip(Gdiplus::Graphics* g, CGraphicPool* pGraphicPool, const CPo
 	}
 }
 
-void CShip::SetTargetKO(const CPoint& TargetKO, int Index, const bool simple_setter)
-{
-	m_TargetKO[Index] = TargetKO;
-	if(simple_setter)
-		return;
-	UnsetCurrentOrder();
-	m_nTerraformingPlanet = -1;
-}
-
-bool CShip::HasNothingToDo() const {
-	return (m_iCurrentOrder == SHIP_ORDER::AVOID || m_iCurrentOrder == SHIP_ORDER::ATTACK)
-		&& m_TargetKO[0] == CPoint(-1, -1) && m_iSpeed != 0;
-}
-
-bool CShip::NeedsRepair() const {
-	return m_Hull.GetCurrentHull() < m_Hull.GetMaxHull();
-}
-
-void CShip::SetCurrentOrderAccordingToType() {
-	m_iCurrentOrder = IsNonCombat() ? SHIP_ORDER::AVOID : SHIP_ORDER::ATTACK;
-}
-
-void CShip::SetCombatTacticAccordingToType() {
-	m_nCombatTactic = IsNonCombat() ? COMBAT_TACTIC::CT_AVOID : COMBAT_TACTIC::CT_ATTACK;
-}
-
-void CShip::UnsetCurrentOrder() {
-	switch(m_nCombatTactic) {
-		case COMBAT_TACTIC::CT_ATTACK:
-			m_iCurrentOrder = SHIP_ORDER::ATTACK;
-		break;
-		case COMBAT_TACTIC::CT_AVOID:
-			m_iCurrentOrder = SHIP_ORDER::AVOID;
-		break;
-		case COMBAT_TACTIC::CT_RETREAT:
-			m_iCurrentOrder = SHIP_ORDER::AVOID;
-		break;
-		default:
-			assert(false);
-		break;
-	}
-}
-
 void CShip::Repair(BOOL bAtShipPort, bool bFasterShieldRecharge) {
 	m_Shield.RechargeShields(200 * (bFasterShieldRecharge + 1));
 	// Wenn wir in diesem Sektor einen Shipport haben, dann wird die H?lle repariert
 	if(bAtShipPort)
 		m_Hull.RepairHull();
-}
-
-/// Diese Funktion berechnet die Schiffserfahrung in einer neuen Runde. Außer Erfahrung im Kampf, diese werden nach einem
-/// Kampf direkt verteilt.
-void CShip::CalcExp()
-{
-/*
-Starterfahrung 0 (bis auf Schiffe, die in Systemen mit Akademien gebaut werden, die fangen mit 500 Erfahrung bereits an), Bezeichnung Unerfahren. Erfahrung steigt mit 10 pro Runde kontinuierlich an bis 500.
-Erfahrung 500 = Normal. Erfahrung steigt nun mit 5 pro Runde bis 1000.
-Erfahrung 1000 = Veteran. Erfahrung steigt nicht mehr.
-Erfahrung 2500 = Elite.
-Erfahrung 5000 = Legendär.
-
-Für den Erfahrungsgewinn gibt es mehrere Möglichkeiten:
-
-1. random events die pauschal jeweils immer EP geben (Ionensturm überstanden, diplomatische Eskortmission, Anomalie erforscht)
-2. Forschungsmissionen (Pulsar, Neutronenstern, schwarzes Loch, Wurmloch, Nebel scannen)
-3. Akademien: Bei Anwesenheit eines Veteranen- oder höher -schiffes in der Crewtrainingflotte werden die Erfahrungsgewinne von unerfahrenen und normalen Crews pro Runde verdoppelt. Das Veteranenschiff bekommt die normalen EP-Gewinne.
-4. Invasionen: Schiffe bekommen (Bevölkerungsverlust in Mrd.) * 100 + aktive shipdefence EP.
-5. Systemblockaden, Überfälle: Verdoppeln pro Runde Gewinn für unerfahrene und normale Crews
-6. Systemangriff: (Bevölkerungsverlust in Mrd.) * 100 + aktive shipdefence EP.
-7. Schiffskampf: ((Durchschnittscrewerfahrung aller gegnerischen Schiffe)/((Durchschnittscrewerfahrung aller gegnerischen Schiffe)+(Durchschnittscrewerfahrung aller eigenen Schiffe)))x(totalen Hüllenschaden am Gegner)/100. Letzteres sorgt dafür dass Schäden an erfahrenen Schiffen höher gewichtet werden (da sie ja auch seltener sind, weil erfahrenere Schiffe seltener getroffen werden). Distributiert wird dann gleichmäßig auf alle Schiffe.
-*/
-
-	int expAdd = 0;
-	switch (GetExpLevel())
-	{
-		case 0:	expAdd = 15;	break;
-		case 1: expAdd = 10;	break;
-		case 2: expAdd = 5;		break;
-	}
-	SetCrewExperiance(expAdd);
-}
-
-bool CShip::IsNonCombat() const {
-	return m_iShipType <= SHIP_TYPE::PROBE;
 }
 
 void CShip::Retreat(const CPoint& ptRetreatSector)

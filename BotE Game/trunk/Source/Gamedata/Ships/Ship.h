@@ -9,6 +9,13 @@
 //
 //////////////////////////////////////////////////////////////////////
 
+/*
+ *@file
+ * ships
+ * A ship knows nothing about fleets, whether it is alone or contained within some fleet. Everything which
+ * affects or is calculated from only a single ship should be placed into this file.
+ */
+
 #if !defined(AFX_SHIP_H__C9FE4406_A0D7_4AE0_A5D0_0070FCBC45C1__INCLUDED_)
 #define AFX_SHIP_H__C9FE4406_A0D7_4AE0_A5D0_0070FCBC45C1__INCLUDED_
 
@@ -59,7 +66,10 @@ public:
 		BYTE FleetSpeed;
 	};
 
-// Zugriffsfunktionen
+	//////////////////////////////////////////////////////////////////////
+	// getting
+	//////////////////////////////////////////////////////////////////////
+	// Zugriffsfunktionen
 	// zum Lesen der Membervariablen
 	CHull* GetHull(void) {return &m_Hull;}
 	CShield* GetShield(void) {return &m_Shield;}
@@ -67,26 +77,6 @@ public:
 	CArray<CBeamWeapons, CBeamWeapons>* GetBeamWeapons(void) {return &m_BeamWeapons;}
 	CArray<CTroop>* GetTransportedTroops(void) {return &m_Troops;}
 	const CArray<CTroop>* GetTransportedTroops(void) const {return &m_Troops;}
-
-	/// Funktion gibt die gesamte Offensivpower des Schiffes zurück, welches es in 100s anrichten würde. Dieser
-	/// Dieser Wert hat keinen direkten Kampfeinfluss, er ist nur zum Vergleich heranzuziehen.
-	/// @param bBeams <code>true</code> wenn Beamwaffen beachtet werden sollen
-	/// @param bTorpedos <code>true</code> wenn Torpedowaffen beachtet werden sollen
-	/// @return Wert welcher die Offensivstärke des Schiffes angibt
-	UINT GetCompleteOffensivePower(bool bBeams = true, bool bTorpedos = true) const;
-
-	/// Funktion gibt die gesamte Defensivstärke des Schiffes zurück. Dabei wird die maximale Hülle, die maximalen
-	/// Schilde und die Schildaufladezeit beachtet. Dieser Wert hat keinen direkten Kampfeinfluss, er ist nur zum
-	/// Vergleich heranzuziehen.
-	/// @param bShields <code>true</code> wenn Schildstärken beachtet werden sollen
-	/// @param bHull <code>true</code> wenn Hüllenstärke beachtet werden sollen
-	/// @return Wert welcher die Defensivstärke des Schiffes angibt
-	UINT GetCompleteDefensivePower(bool bShields = true, bool bHull = true) const;
-
-	/// Funktion gibt das Erfahrungslevel des Schiffes zurück. Damit sind nicht die genauen Erfahrungspunkte gemeint, sondern das erreichte
-	/// Level aufgrund der Erfahrungspunkte.
-	/// @return Erfahrungstufe
-	BYTE GetExpLevel() const;
 
 	USHORT GetID() const {return m_iID;}
 	CPoint GetKO() const {return m_KO;}
@@ -117,28 +107,13 @@ public:
 	bool GetIsShipFlagShip() const {return m_bIsFlagShip;}
 	USHORT GetCrewExperience() const {return m_iCrewExperiance;}
 	USHORT GetStorageRoom() const {return m_iStorageRoom;}
-	USHORT GetUsedStorageRoom(const CArray<CTroopInfo>* troopInfo);
 	USHORT GetLoadedResources(BYTE res) const {return m_iLoadedResources[res];}
 	COMBAT_TACTIC::Typ GetCombatTactic() const {return m_nCombatTactic;}
-	bool IsNonCombat() const;
-	//Is this ship an outpost or a starbase ?
-	bool IsStation() const {
-		return m_iShipType == SHIP_TYPE::OUTPOST || m_iShipType == SHIP_TYPE::STARBASE;
-	}
-	bool IsAlien() const {
-		return m_iShipType == SHIP_TYPE::ALIEN;
-	}
-	bool HasTroops() const { return GetTransportedTroops()->GetSize() > 0; }
-	
-	//Is this ship in need for a player command input in this round ?
-	//Does not cover "self-renewing" orders without a turn limit
-	//such as ATTACK_SYSTEM; player is expected to look after such
-	//fleets manually.
-	//@return true if yes
-	bool HasNothingToDo() const;
-	//Are the hull of this ship and all the hulls of the ships in its fleet at their maximums ?
-	//@return false if yes
-	bool NeedsRepair() const;
+
+
+	//////////////////////////////////////////////////////////////////////
+	// setting
+	//////////////////////////////////////////////////////////////////////
 
 	// zum Schreiben der Membervariablen
 	void SetID(USHORT ID) {m_iID = ID+10000;}
@@ -153,7 +128,6 @@ public:
 	void SetRange(SHIP_RANGE::Typ Range) {m_iRange = Range;}
 	void SetScanPower(USHORT ScanPower) {m_iScanPower = ScanPower;}
 	void SetScanRange(BYTE ScanRange) {m_iScanRange = ScanRange;}
-	void SetCrewExperiance(int nAdd);
 	void SetStealthPower(BYTE StealthPower) {m_iStealthPower = StealthPower;}
 	void SetCloak() {m_bCloakOn = !m_bCloakOn;}
 	void SetStorageRoom(USHORT StorageRoom) {m_iStorageRoom = StorageRoom;}
@@ -168,7 +142,9 @@ public:
 	void SetShipClass(const CString& ShipClass) {m_strShipClass = ShipClass;}
 	void SetIsShipFlagShip(bool bIs) {m_bIsFlagShip = bIs;}
 	void SetCombatTactic(COMBAT_TACTIC::Typ nTactic) {m_nCombatTactic = nTactic;}
-	
+
+	//more complex setting
+
 	//Sets this ship's m_iCurrentOrder to AVOID if it's a civil ship and to ATTACK otherwise.
 	void SetCurrentOrderAccordingToType();
 	//Sets this ship's m_nCombatTactic to AVOID if it's a civil ship and to ATTACK otherwise.
@@ -176,7 +152,74 @@ public:
 	//Sets the current oder according to m_nCombatTactic
 	void UnsetCurrentOrder();
 
-	// sonstige Funktionen
+	/// Diese Funktion berechnet die Schiffserfahrung in einer neuen Runde. Außer Erfahrung im Kampf, diese werden nach einem
+	/// Kampf direkt verteilt.
+	void CalcExp();
+
+	//sets this ship's orders to the one of the passed ship
+	void AdoptOrdersFrom(const CShip& ship);
+
+	void SetCrewExperiance(int nAdd);
+
+	//////////////////////////////////////////////////////////////////////
+	// calculated stements about this ship (should be const functions, non-bool returning)
+	//////////////////////////////////////////////////////////////////////
+
+	/// Funktion gibt die gesamte Offensivpower des Schiffes zurück, welches es in 100s anrichten würde. Dieser
+	/// Dieser Wert hat keinen direkten Kampfeinfluss, er ist nur zum Vergleich heranzuziehen.
+	/// @param bBeams <code>true</code> wenn Beamwaffen beachtet werden sollen
+	/// @param bTorpedos <code>true</code> wenn Torpedowaffen beachtet werden sollen
+	/// @return Wert welcher die Offensivstärke des Schiffes angibt
+	UINT GetCompleteOffensivePower(bool bBeams = true, bool bTorpedos = true) const;
+
+	/// Funktion gibt die gesamte Defensivstärke des Schiffes zurück. Dabei wird die maximale Hülle, die maximalen
+	/// Schilde und die Schildaufladezeit beachtet. Dieser Wert hat keinen direkten Kampfeinfluss, er ist nur zum
+	/// Vergleich heranzuziehen.
+	/// @param bShields <code>true</code> wenn Schildstärken beachtet werden sollen
+	/// @param bHull <code>true</code> wenn Hüllenstärke beachtet werden sollen
+	/// @return Wert welcher die Defensivstärke des Schiffes angibt
+	UINT GetCompleteDefensivePower(bool bShields = true, bool bHull = true) const;
+
+	/// Funktion gibt das Erfahrungslevel des Schiffes zurück. Damit sind nicht die genauen Erfahrungspunkte gemeint, sondern das erreichte
+	/// Level aufgrund der Erfahrungspunkte.
+	/// @return Erfahrungstufe
+	BYTE GetExpLevel() const;
+
+	USHORT GetUsedStorageRoom(const CArray<CTroopInfo>* troopInfo) const;
+
+	//////////////////////////////////////////////////////////////////////
+	// bool statements about this ship
+	//////////////////////////////////////////////////////////////////////
+
+	//is this a civil ship (colony, transport, probe)
+	bool IsNonCombat() const;
+	//Is this ship an outpost or a starbase ?
+	bool IsStation() const {
+		return m_iShipType == SHIP_TYPE::OUTPOST || m_iShipType == SHIP_TYPE::STARBASE;
+	}
+	bool IsAlien() const {
+		return m_iShipType == SHIP_TYPE::ALIEN;
+	}
+	bool HasTroops() const { return !GetTransportedTroops()->IsEmpty(); }
+
+	//Is this ship in need for a player command input in this round ?
+	//Does not cover "self-renewing" orders without a turn limit
+	//such as ATTACK_SYSTEM; player is expected to look after such
+	//fleets manually.
+	//@return true if yes
+	bool HasNothingToDo() const;
+	//Are the hull of this ship and all the hulls of the ships in its fleet at their maximums ?
+	//@return false if yes
+	bool NeedsRepair() const;
+
+	/// Funktion gibt einen Wahrheitswert zurück, ob das Schiffsobjekt eine bestimmte Spezialfähigkeit besitzt.
+	/// @param ability Spezialfähigkeit
+	/// @return <code>true</code> wenn es diese Fähigkeit besitzt, ansonsten <code>false</code>
+	bool HasSpecial(SHIP_SPECIAL::Typ nAbility) const;
+
+	//////////////////////////////////////////////////////////////////////
+	// other functions
+	//////////////////////////////////////////////////////////////////////
 
 	//Execute a 1-turn shield (always) and hull (if bAtShipPort == TRUE) repairing step
 	void Repair(BOOL bAtShipPort, bool bFasterShieldRecharge);
@@ -190,24 +233,10 @@ public:
 
 	CString SanityCheckUniqueness(std::set<CString>& already_encountered) const;
 
-	/// Diese Funktion berechnet die Schiffserfahrung in einer neuen Runde. Außer Erfahrung im Kampf, diese werden nach einem
-	/// Kampf direkt verteilt.
-	void CalcExp();
-
-	//fleet related functions
-	void AdoptOrdersFrom(const CShip& ship/*, const bool also_flagship_transport = false*/);
-
-	/// Funktion gibt einen Wahrheitswert zurück, ob das Schiffsobjekt eine bestimmte Spezialfähigkeit besitzt.
-	/// @param ability Spezialfähigkeit
-	/// @return <code>true</code> wenn es diese Fähigkeit besitzt, ansonsten <code>false</code>
-	bool HasSpecial(SHIP_SPECIAL::Typ nAbility) const;
-
 	/// Funktion erstellt eine Tooltipinfo vom Schiff
 	/// @param info wenn dieser Parameter nicht NULL ist dann werden Informationen über die angeführte Flotte angezeigt, sonst nur über das Schiff
 	/// @return	der erstellte Tooltip-Text
 	CString GetTooltip(const FleetInfoForGetTooltip* const info = NULL);
-	//CString GetTooltip(bool bShowFleet, short FleetShipType,
-	//	SHIP_RANGE::Typ FleetRange, BYTE FleetSpeed);
 
 	/// Funktion zum Zeichnen des Schiffes in der Schiffsansicht.
 	/// @param g Zeiger auf Zeichenkontext

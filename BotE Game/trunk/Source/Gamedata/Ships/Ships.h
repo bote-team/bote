@@ -9,6 +9,19 @@
 //
 //////////////////////////////////////////////////////////////////////
 
+/*
+ *@file
+ * combination of a ship, which is the leading one, and its fleet
+ * It has "1 plus 0 till n" semantics, where n is the number of ships in this CShip's fleet. While those
+ * objects are of type CShip, they must always lack a fleet themselves. The fleet of this CShip is said
+ * to not exist if the container holding it is empty (the container always exists); the CShip just represents
+ * the leading ship then.
+ * Everything which is calculated from or affects "a leading ship and its fleet" should be placed
+ * into this file.
+ * Many functions are direct calls to the leading ship, some affect the fleet and the leader, and some
+ * only the fleet.
+ */
+
 #if !defined(SHIPS_H_INCLUDED)
 #define SHIPS_H_INCLUDED
 
@@ -217,7 +230,7 @@ public:
 		/// @return Erfahrungstufe
 		BYTE GetExpLevel() const { return m_Leader.GetExpLevel(); }
 
-		USHORT GetUsedStorageRoom(const CArray<CTroopInfo>* troopInfo) {
+		USHORT GetUsedStorageRoom(const CArray<CTroopInfo>* troopInfo) const {
 			return m_Leader.GetUsedStorageRoom(troopInfo);
 		}
 
