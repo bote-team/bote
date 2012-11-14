@@ -16,10 +16,12 @@
  * objects are of type CShip, they must always lack a fleet themselves. The fleet of this CShip is said
  * to not exist if the container holding it is empty (the container always exists); the CShip just represents
  * the leading ship then.
- * Everything which is calculated from or affects "a leading ship and its fleet" should be placed
- * into this file.
+ * Everything which is calculated from or affects "a leading ship and its fleet", or the fleet only,
+ * should be placed into this file.
  * Many functions are direct calls to the leading ship, some affect the fleet and the leader, and some
  * only the fleet.
+ * Iterating should be done using CShips::const_iterator, which iterates over this CShip's fleet (without
+ * the leader.)
  */
 
 #if !defined(SHIPS_H_INCLUDED)
@@ -70,13 +72,13 @@ public:
 	//////////////////////////////////////////////////////////////////////
 
 	//// Funktion gibt einen Zeiger auf ein Schiff aus der Flotte zurück
-	CShips* GetShipFromFleet(int n) { return &m_Ships.GetAt(n); }
-	CShips const* const GetShipFromFleet(int n) const { return &m_Ships.GetAt(n); }
+	CShips* GetShipFromFleet(int n) { return &m_Fleet.GetAt(n); }
+	CShips const* const GetShipFromFleet(int n) const { return &m_Fleet.GetAt(n); }
 	// Funktion liefert die Anzahl der Schiffe in der Flotte
-	int GetFleetSize() const { return m_Ships.GetSize(); }
+	int GetFleetSize() const { return m_Fleet.GetSize(); }
 	const CShip& Leader() const { return m_Leader; }
 	CShip& Leader() { return m_Leader; }
-	const CShipArray& Ships() const { return m_Ships; }
+	const CShipArray& Fleet() const { return m_Fleet; }
 
 		//////////////////////////////////////////////////////////////////////
 		// LEADER ACCESS
@@ -123,19 +125,20 @@ public:
 	//////////////////////////////////////////////////////////////////////
 
 	// Funktion übernimmt die Befehle des hier als Zeiger übergebenen Schiffsobjektes an alle Mitglieder der Flotte
+	//Affects the fleet only.
 	void AdoptCurrentOrders(const CShip* ship);
 	/*
-	 * Adds fleet to this ship's fleet and propagates this ship's orders to fleet.
-	 * If the given object has ships in its fleet, they are also handled.
+	 * Adds the given CShips to this CShips' fleet and propagates this CShips' leader's orders to the given
+	 * CShips' leader and fleet (both are in this CShips' fleet now).
 	**/
 	void AddShipToFleet(CShips& fleet);
-	//propagates this fleet's leading ship's orders to this fleet
+	//propagates this CShip's leading ship's orders to this CShip's fleet
 	void PropagateOrdersToFleet();
 	// Funktion um ein Schiff aus der Flotte zu entfernen.
 	void RemoveShipFromFleet(UINT nIndex);
 	void RemoveShipFromFleet(CShips::iterator& ship);
 	//// Funktion löscht die gesamte Flotte
-	void DeleteFleet(void) { m_Ships.RemoveAll(); }
+	void DeleteFleet(void) { m_Fleet.RemoveAll(); }
 
 		//////////////////////////////////////////////////////////////////////
 		// LEADER ACCESS
@@ -177,7 +180,7 @@ public:
 		void SetCurrentOrderAccordingToType() { m_Leader.SetCurrentOrderAccordingToType(); }
 		//Sets this ship's m_nCombatTactic to AVOID if it's a civil ship and to ATTACK otherwise.
 		void SetCombatTacticAccordingToType() { m_Leader.SetCombatTacticAccordingToType(); }
-		//Sets the current oder according to m_nCombatTactic
+		//Sets the current order according to m_nCombatTactic
 		void UnsetCurrentOrder() { m_Leader.UnsetCurrentOrder(); }
 
 	//////////////////////////////////////////////////////////////////////
@@ -320,7 +323,7 @@ public:
 private:
 	// Wenn wir eine Gruppe bilden und dieses Schiff hier Gruppenleader ist, dann werden die anderen Schiffe in die Fleet genommen
 	CShip m_Leader;//the ship leading this fleet
-	CShipArray m_Ships;//other ships in this fleet
+	CShipArray m_Fleet;//other ships in this fleet
 };
 
 #endif // !defined(SHIPS_H_INCLUDED)

@@ -5223,7 +5223,7 @@ void CBotf2Doc::CalcShipRetreat() {
 		{
 			//we need to be careful, since we iterate over the array we're modifying, which
 			//would normally invalidate the iterator "ship"
-			const CShipArray& fleet = ship->Ships();
+			const CShipArray& fleet = ship->Fleet();
 			m_ShipArray.Append(ship, fleet);
 			ship->DeleteFleet();
 		}
@@ -5908,7 +5908,7 @@ void CBotf2Doc::CalcAlienShipEffects()
 
 					CShipArray vShips;
 					vShips.Add(vShips.end(), *pOtherShip);
-					vShips.Append(vShips.end(), pOtherShip->Ships());
+					vShips.Append(vShips.end(), pOtherShip->Fleet());
 
 					for(CShipArray::iterator i = vShips.begin(); i != vShips.end(); ++i)
 					{
