@@ -95,7 +95,7 @@ void CShipHistory::Serialize(CArchive &ar)
 /// dabei automatisch gemacht. Es wird ebenfalls überprüft, dass dieses Schiff nicht schon hinzugefügt wurde.
 /// Zusätzlich müssen als Parameter noch der Name des Systems übergeben werden, in dem das Schiff gebaut wurde,
 /// sowie die aktuelle Runde.
-void CShipHistory::AddShip(CShip* ship, const CString& buildsector, short round)
+void CShipHistory::AddShip(const CShip* ship, const CString& buildsector, short round)
 {
 	// Überprüfen, das dieses Schiff nicht schon in der Liste der Schiffe vorhanden ist
 	for (int i = 0; i < m_ShipHistory.GetSize(); i++)

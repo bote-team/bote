@@ -95,7 +95,7 @@ public:
 	 * Zusätzlich müssen als Parameter noch der Name des Systems übergeben werden, in dem das Schiff gebaut wurde,
 	 * sowie die aktuelle Runde.
 	 */
-	void AddShip(CShip* ship, const CString& buildsector, short round);
+	void AddShip(const CShip* ship, const CString& buildsector, short round);
 
 	/**
 	 * Funktion modifiziert den Eintrag in dem Feld <code>m_ShipHistory<code>. Dabei wird das Schiff übergeben, dessen
