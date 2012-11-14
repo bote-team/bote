@@ -31,6 +31,16 @@ CShipArray::iterator CShipArray::begin() {
 CShipArray::iterator CShipArray::end() {
 	return m_vShips.end();
 }
+CShipArray::const_iterator CShipArray::find(int index) const {
+	if(index <= 0 || GetSize() < index)
+		return end();
+	return begin() + index;
+}
+CShipArray::iterator CShipArray::find(int index) {
+	if(index <= 0 || GetSize() < index)
+		return end();
+	return begin() + index;
+}
 //////////////////////////////////////////////////////////////////////
 // adding elements
 //////////////////////////////////////////////////////////////////////
@@ -134,9 +144,9 @@ void CShipArray::Serialize(CArchive& ar) {
 void CShipArray::SerializeEndOfRoundData(CArchive& ar, const CString& sMajorID) {
 	if(ar.IsStoring()) {
 		std::vector<int> vShips;
-		for (int i = 0; i < GetSize(); i++)
-			if (GetAt(i).GetOwnerOfShip() == sMajorID)
-				vShips.push_back(i);
+		for(CShipArray::const_iterator i = begin(); i != end(); ++i)
+			if (i->GetOwnerOfShip() == sMajorID)
+				vShips.push_back(i - begin());
 		ar << vShips.size();
 		for (size_t i = 0; i < vShips.size(); i++)
 			GetAt(vShips[i]).Serialize(ar);
@@ -165,14 +175,14 @@ void CShipArray::SerializeEndOfRoundData(CArchive& ar, const CString& sMajorID) 
 void CShipArray::SerializeNextRoundData(CArchive& ar, const CPoint& ptCurrentCombatSector) {
 	if(ar.IsStoring()) {
 		int nCount = 0;
-		for (int i = 0; i < GetSize(); i++)
-			if (GetAt(i).GetKO() == ptCurrentCombatSector)
+		for(CShipArray::const_iterator i = begin(); i != end(); ++i)
+			if (i->GetKO() == ptCurrentCombatSector)
 				nCount++;
 		ar << nCount;
 		// nur Schiffe aus diesem Sektor senden
-		for (int i = 0; i < GetSize(); i++)
-			if (GetAt(i).GetKO() == ptCurrentCombatSector)
-				GetAt(i).Serialize(ar);
+		for(CShipArray::iterator i = begin(); i != end(); ++i)
+			if (i->GetKO() == ptCurrentCombatSector)
+				i->Serialize(ar);
 	}
 
 	if(ar.IsLoading()) {

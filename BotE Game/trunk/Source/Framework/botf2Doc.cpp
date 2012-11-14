@@ -4769,70 +4769,58 @@ void CBotf2Doc::CalcShipMovement()
 
 	if (!bAnomaly)
 		return;
-
+	CheckShipsDestroyedByAnomaly();
+}
+/////BEGIN: HELPER FUNCTIONS FOR void CBotf2Doc::CalcShipMovement()
+void CBotf2Doc::CheckShipsDestroyedByAnomaly() {
 	// prüfen ob irgendwelche Schiffe durch eine Anomalie zerstört wurden
-	for (int i = 0; i < m_ShipArray.GetSize(); i++)
+	for(CShipArray::iterator i = m_ShipArray.begin(); i != m_ShipArray.end();)
 	{
-		CShips* pShip = &m_ShipArray.GetAt(i);
 		// Wenn das Schiff eine Flotte hatte, dann erstmal nur die Schiffe in der Flotte beachten
 		// Wenn davon welche zerstört wurden diese aus der Flotte nehmen
-		if (pShip->HasFleet())
+		for(CShips::iterator x = i->begin(); x != i->end();)
 		{
-			for (int x = 0; x < pShip->GetFleetSize(); x++)
+			if (x->GetHull()->GetCurrentHull() > 1)
 			{
-				if (pShip->GetShipFromFleet(x)->GetHull()->GetCurrentHull() < 1)
-				{
-					// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
-					CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(pShip->GetOwnerOfShip()));
-					if (pMajor)
-					{
-						// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
-						AddToLostShipHistory(&pShip->GetShipFromFleet(x)->Leader(), GetSector(pShip->GetKO().x, pShip->GetKO().y).GetAnomaly()->GetMapName(pShip->GetKO()), CResourceManager::GetString("DESTROYED"));
-
-						CString sShip;
-						sShip.Format("%s (%s)", pShip->GetShipFromFleet(x)->GetShipName(), pShip->GetShipFromFleet(x)->GetShipTypeAsString());
-						CString s = CResourceManager::GetString("ANOMALY_SHIP_LOST", FALSE, sShip, GetSector(pShip->GetKO().x, pShip->GetKO().y).GetAnomaly()->GetMapName(pShip->GetKO()));
-						CMessage message;
-						message.GenerateMessage(s, MESSAGE_TYPE::MILITARY, "", 0, 0);
-						pMajor->GetEmpire()->AddMessage(message);
-						if (pMajor->IsHumanPlayer())
-						{
-							network::RACE client = m_pRaceCtrl->GetMappedClientID(pMajor->GetRaceID());
-							m_iSelectedView[client] = EMPIRE_VIEW;
-						}
-					}
-					pShip->RemoveShipFromFleet(x--);
-				}
+				++x;
+				continue;
 			}
+			OnShipDestroyedByAnomaly(*i);
+			i->RemoveShipFromFleet(x);
 		}
-
 		// Wenn das Schiff selbst zerstört wurde
-		if (pShip->GetHull()->GetCurrentHull() < 1)
+		if (i->GetHull()->GetCurrentHull() > 1)
 		{
-			CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(pShip->GetOwnerOfShip()));
-			if (pMajor)
-			{
-				// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
-				AddToLostShipHistory(&pShip->Leader(), GetSector(pShip->GetKO().x, pShip->GetKO().y).GetAnomaly()->GetMapName(pShip->GetKO()), CResourceManager::GetString("DESTROYED"));
-
-				CString sShip;
-				sShip.Format("%s (%s)", pShip->GetShipName(), pShip->GetShipTypeAsString());
-				CString s = CResourceManager::GetString("ANOMALY_SHIP_LOST", FALSE, sShip, GetSector(pShip->GetKO().x, pShip->GetKO().y).GetAnomaly()->GetMapName(pShip->GetKO()));
-				CMessage message;
-				message.GenerateMessage(s, MESSAGE_TYPE::MILITARY, "", 0, 0);
-				pMajor->GetEmpire()->AddMessage(message);
-				if (pMajor->IsHumanPlayer())
-				{
-					network::RACE client = m_pRaceCtrl->GetMappedClientID(pMajor->GetRaceID());
-					m_iSelectedView[client] = EMPIRE_VIEW;
-				}
-			}
-
-			RemoveShip(m_ShipArray.begin() + i);
-			--i;
+			++i;
+			continue;
 		}
+		OnShipDestroyedByAnomaly(*i);
+		RemoveShip(i);
 	}
 }
+void CBotf2Doc::OnShipDestroyedByAnomaly(const CShips& ship) {
+	// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
+	CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(ship.GetOwnerOfShip()));
+	assert(pMajor);
+	const CPoint& co = ship.GetKO();
+	const CString& anomaly = GetSector(co.x, co.y).GetAnomaly()
+		->GetMapName(co);
+	// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
+	AddToLostShipHistory(&ship.Leader(), anomaly, CResourceManager::GetString("DESTROYED"));
+
+	CString sShip;
+	sShip.Format("%s (%s)", ship.GetShipName(), ship.GetShipTypeAsString());
+	CString s = CResourceManager::GetString("ANOMALY_SHIP_LOST", FALSE, sShip, anomaly);
+	CMessage message;
+	message.GenerateMessage(s, MESSAGE_TYPE::MILITARY, "", 0, 0);
+	pMajor->GetEmpire()->AddMessage(message);
+	if (pMajor->IsHumanPlayer())
+	{
+		network::RACE client = m_pRaceCtrl->GetMappedClientID(pMajor->GetRaceID());
+		m_iSelectedView[client] = EMPIRE_VIEW;
+	}
+}
+/////END: HELPER FUNCTIONS FOR void CBotf2Doc::CalcShipMovement()
 
 /// Funktion überprüft, ob irgendwo ein Schiffskampf stattfindet. Wenn ja und es sind menschliche Spieler beteiligt,
 /// so werden ihnen alle jeweils beteiligten Schiffe geschickt, so dass sie dort Befehle geben können.

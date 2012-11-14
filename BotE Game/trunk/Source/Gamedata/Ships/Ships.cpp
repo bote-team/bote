@@ -31,6 +31,13 @@ CShips::iterator CShips::end() {
 	return m_Fleet.end();
 }
 
+CShipArray::const_iterator CShips::find(int index) const {
+	return m_Fleet.find(index);
+}
+CShipArray::iterator CShips::find(int index) {
+	return m_Fleet.find(index);
+}
+
 //////////////////////////////////////////////////////////////////////
 // Konstruktion/Destruktion
 //////////////////////////////////////////////////////////////////////

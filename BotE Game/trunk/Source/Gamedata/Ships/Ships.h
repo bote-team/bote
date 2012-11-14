@@ -50,6 +50,9 @@ public:
 	iterator begin();
 	iterator end();
 
+	const_iterator find(int index) const;
+	iterator find(int index);
+
 	// Standardkonstruktor
 	CShips();
 	CShips(const CShip&);

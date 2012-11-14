@@ -360,6 +360,10 @@ protected:
 
 	/// Diese Funktion berechnet die Schiffsbewegung und noch weitere kleine Sachen im Zusammenhang mit Schiffen.
 	void CalcShipMovement();
+	/////BEGIN: HELPER FUNCTIONS FOR void CBotf2Doc::CalcShipMovement()
+	void OnShipDestroyedByAnomaly(const CShips& ship);
+	void CheckShipsDestroyedByAnomaly();
+	/////END: HELPER FUNCTIONS FOR void CBotf2Doc::CalcShipMovement()
 
 	bool IsShipCombat();
 
