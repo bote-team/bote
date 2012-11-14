@@ -129,7 +129,7 @@ public:
 	void SetScanPower(USHORT ScanPower) {m_iScanPower = ScanPower;}
 	void SetScanRange(BYTE ScanRange) {m_iScanRange = ScanRange;}
 	void SetStealthPower(BYTE StealthPower) {m_iStealthPower = StealthPower;}
-	void SetCloak() {m_bCloakOn = !m_bCloakOn;}
+	void SetCloak();
 	void SetStorageRoom(USHORT StorageRoom) {m_iStorageRoom = StorageRoom;}
 	void SetLoadedResources(USHORT add, BYTE res) {m_iLoadedResources[res] += add;}
 	void SetColonizePoints(BYTE ColonizePoints) {m_iColonizePoints = ColonizePoints;}
@@ -160,6 +160,8 @@ public:
 	void AdoptOrdersFrom(const CShip& ship);
 
 	void SetCrewExperiance(int nAdd);
+
+	void ApplyTraining(int xp, bool veteran);
 
 	//////////////////////////////////////////////////////////////////////
 	// calculated stements about this ship (should be const functions, non-bool returning)
@@ -216,6 +218,9 @@ public:
 	/// @param ability Spezialfähigkeit
 	/// @return <code>true</code> wenn es diese Fähigkeit besitzt, ansonsten <code>false</code>
 	bool HasSpecial(SHIP_SPECIAL::Typ nAbility) const;
+
+	//experience >= 4 ?
+	bool IsVeteran() const;
 
 	//////////////////////////////////////////////////////////////////////
 	// other functions

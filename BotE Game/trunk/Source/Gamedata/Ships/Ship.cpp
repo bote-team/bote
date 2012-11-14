@@ -431,6 +431,19 @@ void CShip::SetCrewExperiance(int nAdd)
 		m_iCrewExperiance = min(64000, m_iCrewExperiance + nAdd);
 }
 
+void CShip::ApplyTraining(int XP, bool veteran) {
+	if (!veteran || GetExpLevel() >= 4)
+		SetCrewExperiance(XP);
+	else
+		SetCrewExperiance(XP * 2);
+}
+
+void CShip::SetCloak() {
+	if(GetStealthPower() < 4)
+		return;
+	m_bCloakOn = !m_bCloakOn;
+}
+
 /// Diese Funktion berechnet die Schiffserfahrung in einer neuen Runde. Außer Erfahrung im Kampf, diese werden nach einem
 /// Kampf direkt verteilt.
 void CShip::CalcExp()
@@ -702,6 +715,10 @@ bool CShip::NeedsRepair() const {
 
 bool CShip::IsNonCombat() const {
 	return m_iShipType <= SHIP_TYPE::PROBE;
+}
+
+bool CShip::IsVeteran() const {
+	return GetExpLevel() >= 4;
 }
 
 //////////////////////////////////////////////////////////////////////

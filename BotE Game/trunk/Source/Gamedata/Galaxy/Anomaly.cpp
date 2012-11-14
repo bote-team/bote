@@ -234,21 +234,19 @@ void CAnomaly::CalcShipEffects(CShips* pShip) const
 	{
 		// teilweise Schildschaden machen
 		// hat das Schiff eine Flotte, so jedes Schiff in der Flotte beachten
-		if (pShip->HasFleet())
-		{
-			for (int i = 0; i < pShip->GetFleetSize(); i++)
-			{
-				MakeShieldDmg(500, 75, pShip->GetShipFromFleet(i));
-				// sind die Schilde runter, so wird das Schiff zerstört
-				if (pShip->GetShipFromFleet(i)->GetShield()->GetCurrentShield() == 0)
-					pShip->GetShipFromFleet(i)->GetHull()->SetCurrentHull(pShip->GetShipFromFleet(i)->GetHull()->GetCurrentHull() * (-1));
 
-				// Verlust aller Crewerfahrung bei Röntgenpulsar und Magnetar
-				if (m_byType == XRAYPULSAR || m_byType == MAGNETAR)
-					pShip->GetShipFromFleet(i)->SetCrewExperiance(pShip->GetShipFromFleet(i)->GetCrewExperience() * (-1));
-				if (m_byType == MAGNETAR)
-					PerhabsStrand(pShip->GetShipFromFleet(i));
-			}
+		for (CShips::iterator i = pShip->begin(); i != pShip->end(); ++i)
+		{
+			MakeShieldDmg(500, 75, &*i);
+			// sind die Schilde runter, so wird das Schiff zerstört
+			if (i->GetShield()->GetCurrentShield() == 0)
+				i->GetHull()->SetCurrentHull(i->GetHull()->GetCurrentHull() * (-1));
+
+			// Verlust aller Crewerfahrung bei Röntgenpulsar und Magnetar
+			if (m_byType == XRAYPULSAR || m_byType == MAGNETAR)
+				i->SetCrewExperiance(i->GetCrewExperience() * (-1));
+			if (m_byType == MAGNETAR)
+				PerhabsStrand(&*i);
 		}
 
 		// Schiff selbst
@@ -267,18 +265,18 @@ void CAnomaly::CalcShipEffects(CShips* pShip) const
 	{
 		// Schilde komplett weg
 		// hat das Schiff eine Flotte, so jedes Schiff in der Flotte beachten
-		if (pShip->HasFleet())
-			for (int i = 0; i < pShip->GetFleetSize(); i++)
-				pShip->GetShipFromFleet(i)->GetShield()->SetCurrentShield(pShip->GetShipFromFleet(i)->GetShield()->GetCurrentShield() * (-1));
+		for (CShips::iterator i = pShip->begin(); i != pShip->end(); ++i) {
+			i->GetShield()->SetCurrentShield(i->GetShield()->GetCurrentShield() * (-1));
+		}
 		// Schiff selbst
 		pShip->GetShield()->SetCurrentShield(pShip->GetShield()->GetCurrentShield() * (-1));
 	}
 	else if (m_byType == RADIONEBULA)
 	{
 		// Verlust aller Crewerfahrung bei radioaktiven Nebel
-		if (pShip->HasFleet())
-			for (int i = 0; i < pShip->GetFleetSize(); i++)
-				pShip->GetShipFromFleet(i)->SetCrewExperiance(pShip->GetShipFromFleet(i)->GetCrewExperience() * (-1));
+		for (CShips::iterator i = pShip->begin(); i != pShip->end(); ++i) {
+			i->SetCrewExperiance(i->GetCrewExperience() * (-1));
+		}
 		// Schiff selbst
 		pShip->SetCrewExperiance(pShip->GetCrewExperience() * (-1));
 	}
@@ -286,9 +284,8 @@ void CAnomaly::CalcShipEffects(CShips* pShip) const
 	{
 		// Schiff zerstört
 		// hat das Schiff eine Flotte, so jedes Schiff in der Flotte beachten
-		if (pShip->HasFleet())
-			for (int i = 0; i < pShip->GetFleetSize(); i++)
-				pShip->GetShipFromFleet(i)->GetHull()->SetCurrentHull(pShip->GetShipFromFleet(i)->GetHull()->GetCurrentHull() * (-1));
+		for (CShips::iterator i = pShip->begin(); i != pShip->end(); ++i) 
+				i->GetHull()->SetCurrentHull(i->GetHull()->GetCurrentHull() * (-1));
 		// Schiff selbst
 		pShip->GetHull()->SetCurrentHull(pShip->GetHull()->GetCurrentHull() * (-1), true);
 	}
@@ -296,31 +293,28 @@ void CAnomaly::CalcShipEffects(CShips* pShip) const
 	{
 		// teilweise Hüllenschaden machen (unabhängig von Schilden)
 		// hat das Schiff eine Flotte, so jedes Schiff in der Flotte beachten
-		if (pShip->HasFleet())
-			for (int i = 0; i < pShip->GetFleetSize(); i++)
-				MakeHullDmg(50, 50, pShip->GetShipFromFleet(i));
+		for (CShips::iterator i = pShip->begin(); i != pShip->end(); ++i) 
+				MakeHullDmg(50, 50, &*i);
 		// Schiff selbst
 		MakeHullDmg(50, 50, pShip);
 	}
 	else if (m_byType == IONSTORM)
 	{
 		// Verlust aller Crewerfahrung bei Ionensturm
-		if (pShip->HasFleet())
-			for (int i = 0; i < pShip->GetFleetSize(); i++)
-				pShip->GetShipFromFleet(i)->SetCrewExperiance(pShip->GetShipFromFleet(i)->GetCrewExperience() * (-1));
+		for (CShips::iterator i = pShip->begin(); i != pShip->end(); ++i) 
+				i->SetCrewExperiance(i->GetCrewExperience() * (-1));
 		// Schiff selbst
 		pShip->SetCrewExperiance(pShip->GetCrewExperience() * (-1));
 
 		// maximale Schildkapazität um 3% erhöhen
 		// hat das Schiff eine Flotte, so jedes Schiff in der Flotte beachten
-		if (pShip->HasFleet())
-			for (int i = 0; i < pShip->GetFleetSize(); i++)
+		for (CShips::iterator i = pShip->begin(); i != pShip->end(); ++i)
 			{
-				UINT nMaxShield = pShip->GetShipFromFleet(i)->GetShield()->GetMaxShield() * 1.03;
-				BYTE nShieldType = pShip->GetShipFromFleet(i)->GetShield()->GetShieldType();
-				BOOLEAN bRegenerative = pShip->GetShipFromFleet(i)->GetShield()->GetRegenerative();
+				UINT nMaxShield = i->GetShield()->GetMaxShield() * 1.03;
+				BYTE nShieldType = i->GetShield()->GetShieldType();
+				BOOLEAN bRegenerative = i->GetShield()->GetRegenerative();
 
-				pShip->GetShipFromFleet(i)->GetShield()->ModifyShield(nMaxShield, nShieldType, bRegenerative);
+				i->GetShield()->ModifyShield(nMaxShield, nShieldType, bRegenerative);
 			}
 		// Schiff selbst
 		UINT nMaxShield = pShip->GetShield()->GetMaxShield() * 1.23;

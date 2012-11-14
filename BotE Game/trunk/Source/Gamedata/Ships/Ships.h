@@ -73,7 +73,7 @@ public:
 
 	//// Funktion gibt einen Zeiger auf ein Schiff aus der Flotte zurück
 	CShips* GetShipFromFleet(int n) { return &m_Fleet.GetAt(n); }
-	CShips const* const GetShipFromFleet(int n) const { return &m_Fleet.GetAt(n); }
+	const CShips* GetShipFromFleet(int n) const { return &m_Fleet.GetAt(n); }
 	// Funktion liefert die Anzahl der Schiffe in der Flotte
 	int GetFleetSize() const { return m_Fleet.GetSize(); }
 	const CShip& Leader() const { return m_Leader; }
@@ -89,6 +89,7 @@ public:
 		CArray<CTorpedoWeapons, CTorpedoWeapons>* GetTorpedoWeapons(void) {return m_Leader.GetTorpedoWeapons();}
 		CArray<CBeamWeapons, CBeamWeapons>* GetBeamWeapons(void) {return m_Leader.GetBeamWeapons();}
 		CArray<CTroop>* GetTransportedTroops(void) {return m_Leader.GetTransportedTroops();}
+		const CArray<CTroop>* GetTransportedTroops(void) const {return m_Leader.GetTransportedTroops();}
 		USHORT GetID() const {return m_Leader.GetID();}
 		CPoint GetKO() const {return m_Leader.GetKO();}
 		CPoint GetTargetKO() const {return m_Leader.GetTargetKO();}
@@ -140,6 +141,9 @@ public:
 	//// Funktion löscht die gesamte Flotte
 	void DeleteFleet(void) { m_Fleet.RemoveAll(); }
 
+	//Affects leader and fleet
+	void ApplyTraining(int XP);
+
 		//////////////////////////////////////////////////////////////////////
 		// LEADER ACCESS
 		//////////////////////////////////////////////////////////////////////
@@ -158,7 +162,7 @@ public:
 		void SetScanRange(BYTE ScanRange) { m_Leader.SetScanRange(ScanRange); }
 		void SetCrewExperiance(int nAdd) { m_Leader.SetCrewExperiance(nAdd); }
 		void SetStealthPower(BYTE StealthPower) { m_Leader.SetStealthPower(StealthPower); }
-		void SetCloak() { m_Leader.SetCloak(); }
+		void SetCloak(bool apply_to_fleet = false);
 		void SetStorageRoom(USHORT StorageRoom) { m_Leader.SetStorageRoom(StorageRoom); }
 		void SetLoadedResources(USHORT add, BYTE res) { m_Leader.SetLoadedResources(add, res); }
 		void SetColonizePoints(BYTE ColonizePoints) { m_Leader.SetColonizePoints(ColonizePoints); }
@@ -181,7 +185,7 @@ public:
 		//Sets this ship's m_nCombatTactic to AVOID if it's a civil ship and to ATTACK otherwise.
 		void SetCombatTacticAccordingToType() { m_Leader.SetCombatTacticAccordingToType(); }
 		//Sets the current order according to m_nCombatTactic
-		void UnsetCurrentOrder() { m_Leader.UnsetCurrentOrder(); }
+		void UnsetCurrentOrder(bool apply_to_fleet = false);
 
 	//////////////////////////////////////////////////////////////////////
 	// calculated stements about this fleet (should be const functions, non-bool returning)
@@ -255,6 +259,10 @@ public:
 	//has this ship a fleet with at least one ship ?
 	bool HasFleet() const;
 	bool FleetHasTroops() const;
+
+	//Includes this CShip a CShip with experience >= 4 ?
+	//Covers leader and fleet.
+	bool HasVeteran() const;
 
 		//////////////////////////////////////////////////////////////////////
 		// LEADER ACCESS

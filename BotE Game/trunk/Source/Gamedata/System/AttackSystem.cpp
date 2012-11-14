@@ -49,14 +49,13 @@ void CAttackSystem::Init(CRace* pDefender, CSystem* system, CShipArray* ships, C
 	m_fKilledPop = 0.0;
 	m_iDestroyedBuildings = 0;
 
-	for (int i = 0; i < ships->GetSize(); i++)
-		if (ships->GetAt(i).GetKO() == m_KO && ships->GetAt(i).GetCurrentOrder() == SHIP_ORDER::ATTACK_SYSTEM)
+	for(CShipArray::iterator i = ships->begin(); i != ships->end(); ++i)
+		if (i->GetKO() == m_KO && i->GetCurrentOrder() == SHIP_ORDER::ATTACK_SYSTEM)
 		{
-			m_pShips.Add(&ships->GetAt(i).Leader());
+			m_pShips.Add(&i->Leader());
 			// Wenn das Schiff eine Flotte besitzt, diese Schiffe auch dem Feld hinzufügen
-			if (ships->GetAt(i).HasFleet())
-				for (int j = 0; j < ships->GetAt(i).GetFleetSize(); j++)
-					m_pShips.Add(&ships->GetAt(i).GetShipFromFleet(j)->Leader());
+			for(CShips::iterator j = i->begin(); j != i->end(); ++j)
+					m_pShips.Add(&j->Leader());
 		}
 }
 

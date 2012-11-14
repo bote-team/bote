@@ -43,14 +43,12 @@ UINT CSectorAI::GetCompleteDanger(const CString& sOwnRaceID, const CPoint& secto
 /// der einzelnen Rassen ermittelt.
 void CSectorAI::CalculateDangers()
 {
-	for (int i = 0; i < m_pDoc->m_ShipArray.GetSize(); i++)
+	for(CShipArray::const_iterator i =  m_pDoc->m_ShipArray.begin(); i !=  m_pDoc->m_ShipArray.end(); ++i)
 	{
-		CShips* ship = &m_pDoc->m_ShipArray.GetAt(i);
-		AddDanger(ship);
+		AddDanger(&*i);
 		// Führt das Schiff eine Flotte an, so muss dies alles auch für die Schiffe in der Flotte getan werden
-		if (ship->HasFleet())
-			for (int j = 0; j < ship->GetFleetSize(); j++)
-				AddDanger(ship->GetShipFromFleet(j));
+		for(CShips::const_iterator j =  i->begin(); j !=  i->end(); ++j)
+			AddDanger(&*j);
 	}
 }
 
@@ -126,7 +124,7 @@ void CSectorAI::CalcualteSectorPriorities()
 //////////////////////////////////////////////////////////////////////
 /// Diese Funktion addiert die Offensiv- und Defensivstärke eines Schiffes einer Rasse zum jeweiligen
 /// Sektor.
-void CSectorAI::AddDanger(CShips* ship)
+void CSectorAI::AddDanger(const CShips* ship)
 {
 	CString race = ship->GetOwnerOfShip();
 

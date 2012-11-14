@@ -159,6 +159,30 @@ void CShips::PropagateOrdersToFleet()
 	AdoptCurrentOrders(&m_Leader);
 }
 
+void CShips::ApplyTraining(int XP) {
+	const bool veteran = HasVeteran();
+	m_Leader.ApplyTraining(XP, veteran);
+	// Wenn das Schiff eine Flotte anführt, Schiffstraining auf alle Schiffe in der Flotte anwenden
+	if(!HasFleet())
+		return;
+	for(CShips::iterator i = begin(); i != end(); ++i)
+		i->m_Leader.ApplyTraining(XP, veteran);
+}
+
+void CShips::SetCloak(bool apply_to_fleet) { 
+	m_Leader.SetCloak();
+	if(apply_to_fleet)
+		for(CShips::iterator i = begin(); i != end(); ++i)
+			i->SetCloak();
+}
+
+void CShips::UnsetCurrentOrder(bool apply_to_fleet) { 
+	m_Leader.UnsetCurrentOrder(); 
+	if(apply_to_fleet)
+		for(CShips::iterator i = begin(); i != end(); ++i)
+			i->UnsetCurrentOrder();
+}
+
 //////////////////////////////////////////////////////////////////////
 // calculated stements about this fleet (should be const functions, non-bool returning)
 //////////////////////////////////////////////////////////////////////
@@ -381,6 +405,13 @@ bool CShips::FleetHasTroops() const {
 		if(j->FleetHasTroops())
 			return true;
 	return m_Leader.HasTroops();
+}
+
+bool CShips::HasVeteran() const {
+	for(CShips::const_iterator j = begin(); j != end(); ++j)
+		if(j->HasVeteran())
+			return true;
+	return m_Leader.IsVeteran();
 }
 
 //////////////////////////////////////////////////////////////////////

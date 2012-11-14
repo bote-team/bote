@@ -259,32 +259,29 @@ void CFleetMenuView::DrawFleetMenue(Graphics* g)
 	row++;
 
 	// Wenn das Schiff eine Flotte anführt, dann Schiffe in dieser Flotte anzeigen
-	if (pShip->HasFleet())
+	for (CShips::iterator i = pShip->begin(); i != pShip->end(); ++i)
 	{
-		for (USHORT i = 0; i < pShip->GetFleetSize(); i++)
+		// mehrere Spalten anlegen, falls mehr Schiffe in dem System sind
+		if (counter != 0 && counter%9 == 0)
 		{
-			// mehrere Spalten anlegen, falls mehr Schiffe in dem System sind
-			if (counter != 0 && counter%9 == 0)
-			{
-				column++;
-				row = 0;
-			}
-			// Wenn wir eine Seite vollhaben
-			if (counter%18 == 0)
-				column = 1;
-			if (counter < m_iFleetPage*18 && counter >= (m_iFleetPage-1)*18)
-			{
-				//bool bMarked = (i + 1 == pDoc->GetNumberOfTheShipInFleet());
-				bool bMarked = pShip->GetShipFromFleet(i) == m_pMarkedShip;
-				CPoint pt(250 * column, 65 * row + 60);
-				pShip->GetShipFromFleet(i)->DrawShip(g, pDoc->GetGraphicPool(), pt, bMarked, bUnknown, FALSE, normalColor, markColor, font);
-				m_vShipRects.push_back(pair<CRect, CShips*>(CRect(pt.x, pt.y + 20, pt.x + 250, pt.y + 85), pShip->GetShipFromFleet(i)));
-			}
-			row++;
-			counter++;
-			if (counter > m_iFleetPage*18)
-				break;
+			column++;
+			row = 0;
 		}
+		// Wenn wir eine Seite vollhaben
+		if (counter%18 == 0)
+			column = 1;
+		if (counter < m_iFleetPage*18 && counter >= (m_iFleetPage-1)*18)
+		{
+			//bool bMarked = (i + 1 == pDoc->GetNumberOfTheShipInFleet());
+			bool bMarked = &*i == m_pMarkedShip;
+			CPoint pt(250 * column, 65 * row + 60);
+			i->DrawShip(g, pDoc->GetGraphicPool(), pt, bMarked, bUnknown, FALSE, normalColor, markColor, font);
+			m_vShipRects.push_back(pair<CRect, CShips*>(CRect(pt.x, pt.y + 20, pt.x + 250, pt.y + 85), &*i));
+		}
+		row++;
+		counter++;
+		if (counter > m_iFleetPage*18)
+			break;
 	}
 
 	// Die Buttons für vor und zurück darstellen, wenn wir mehr als 9 Schiffe in dem Sektor sehen
@@ -535,16 +532,13 @@ void CFleetMenuView::OnMouseMove(UINT nFlags, CPoint point)
 			bool bNewMarkedShip = m_vShipRects[i].second != m_pMarkedShip;
 			if (bNewMarkedShip)
 			{
-				if (pDoc->FleetShip().HasFleet())
-				{
-					for (int j = 0; j < pDoc->FleetShip().GetFleetSize(); j++)
-						if (pDoc->FleetShip().GetShipFromFleet(j) == m_vShipRects[i].second)
-						{
-							pDoc->SetNumberOfTheShipInFleet(j + 1);
-							pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
-							break;
-						}
-				}
+				for (CShips::const_iterator j = pDoc->FleetShip().begin(); j != pDoc->FleetShip().end(); ++j)
+					if (&*j == m_vShipRects[i].second)
+					{
+						pDoc->SetNumberOfTheShipInFleet(j - pDoc->FleetShip().begin() + 1);
+						pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
+						break;
+					}
 
 				InvalidateRect(m_rLastMarkedRect, FALSE);
 				CRect r = m_vShipRects[i].first;

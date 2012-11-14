@@ -898,21 +898,21 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 				{
 					// Das ganze Schiffsarray und auch die Flotten durchgehen, wenn wir ein altes Flagschiff finden, diesem den
 					// Titel wegnehmen
-					for (USHORT n = 0; n < pDoc->m_ShipArray.GetSize(); n++)
-						if (pDoc->m_ShipArray[n].GetOwnerOfShip() == pDoc->CurrentShip().GetOwnerOfShip())
+					for (CShipArray::iterator n = pDoc->m_ShipArray.begin(); n != pDoc->m_ShipArray.end(); ++n)
+						if (n->GetOwnerOfShip() == pDoc->CurrentShip().GetOwnerOfShip())
 						{
-							if (pDoc->m_ShipArray[n].GetCurrentOrder() == SHIP_ORDER::ASSIGN_FLAGSHIP)
+							if (n->GetCurrentOrder() == SHIP_ORDER::ASSIGN_FLAGSHIP)
 							{
-								pDoc->m_ShipArray[n].SetCurrentOrder(SHIP_ORDER::ATTACK);
+								n->SetCurrentOrder(SHIP_ORDER::ATTACK);
 								break;
 							}
 							// überprüfen ob ein Flagschiff in einer Flotte ist
-							else if (pDoc->m_ShipArray[n].HasFleet())
+							else if (n->HasFleet())
 							{
-								for (USHORT m = 0; m < pDoc->m_ShipArray[n].GetFleetSize(); m++)
-									if (pDoc->m_ShipArray[n].GetShipFromFleet(m)->GetCurrentOrder() == SHIP_ORDER::ASSIGN_FLAGSHIP)
+								for (CShips::iterator m = n->begin(); m != n->end(); ++m)
+									if (m->GetCurrentOrder() == SHIP_ORDER::ASSIGN_FLAGSHIP)
 									{
-										pDoc->m_ShipArray.ElementAt(n).GetShipFromFleet(m)->SetCurrentOrder(SHIP_ORDER::ATTACK);
+										m->SetCurrentOrder(SHIP_ORDER::ATTACK);
 										break;
 									}
 							}

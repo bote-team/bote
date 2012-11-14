@@ -445,13 +445,8 @@ bool CShipAI::DoBombardSystem(CShips* pShip)
 				continue;
 
 			nShipValue += pTempShip->GetHull()->GetCurrentHull();
-			if (pTempShip->HasFleet())
-			{
-				for (int j = 0; j < pTempShip->GetFleetSize(); j++)
-				{
-					nShipValue += pTempShip->GetShipFromFleet(j)->GetHull()->GetCurrentHull();
-				}
-			}
+			for (CShips::iterator m = pTempShip->begin(); m != pTempShip->end(); ++m)
+				nShipValue += m->GetHull()->GetCurrentHull();
 
 			if (nShipValue > nShipDefend)
 				break;

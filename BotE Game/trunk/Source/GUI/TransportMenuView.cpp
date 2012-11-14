@@ -202,9 +202,8 @@ void CTransportMenuView::DrawTransportMenue(Graphics* g)
 	for (int i = TITAN; i <= DERITIUM; i++)
 	{
 		int res = ship->GetLoadedResources(i);
-		if (ship->HasFleet())
-			for (int j = 0; j < ship->GetFleetSize(); j++)
-				res += ship->GetShipFromFleet(j)->GetLoadedResources(i);
+		for(CShips::const_iterator j = ship->begin(); j != ship->end(); ++j)
+			res += j->GetLoadedResources(i);
 		// Lagerinhalt im Schiff zeichnen
 		fontFormat.SetAlignment(StringAlignmentFar);
 		s.Format("%d", res);
@@ -222,13 +221,13 @@ void CTransportMenuView::DrawTransportMenue(Graphics* g)
 	int usedStorage = ship->GetUsedStorageRoom(&pDoc->m_TroopInfo);
 	int storageRoom = ship->GetStorageRoom();
 	int troopNumber = ship->GetTransportedTroops()->GetSize();
-	if (ship->HasFleet())
-		for (int j = 0; j < ship->GetFleetSize(); j++)
-		{
-			usedStorage += ship->GetShipFromFleet(j)->GetUsedStorageRoom(&pDoc->m_TroopInfo);
-			storageRoom += ship->GetShipFromFleet(j)->GetStorageRoom();
-			troopNumber += ship->GetShipFromFleet(j)->GetTransportedTroops()->GetSize();
-		}
+
+	for(CShips::const_iterator j = ship->begin(); j != ship->end(); ++j)
+	{
+		usedStorage += j->GetUsedStorageRoom(&pDoc->m_TroopInfo);
+		storageRoom += j->GetStorageRoom();
+		troopNumber += j->GetTransportedTroops()->GetSize();
+	}
 /*	for (int i = 0; i < ship->GetTransportedTroops()->GetSize(); i++)
 	{
 		BYTE id = ship->GetTransportedTroops()->GetAt(i).GetID();
