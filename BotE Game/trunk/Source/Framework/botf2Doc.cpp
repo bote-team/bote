@@ -78,7 +78,8 @@ CBotf2Doc::CBotf2Doc() :
 	m_iRound(1),
 	m_iSelectedView(),
 	m_iShowWhichShipInfoInView3(0),
-	m_iShowWhichTechInView3(0)
+	m_iShowWhichTechInView3(0),
+	m_nCombatOrder(COMBAT_ORDER::NONE)
 {
 	//Init MT with single log file
 	CString sLogPath = CIOData::GetInstance()->GetLogPath();
