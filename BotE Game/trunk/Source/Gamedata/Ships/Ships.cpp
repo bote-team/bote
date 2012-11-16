@@ -63,40 +63,35 @@ CShips::CShips(const CShip& ship) :
 {
 }
 
-CShips::~CShips()
-{
-	m_Fleet.Reset();
-}
-
 //////////////////////////////////////////////////////////////////////
 // Kopierkonstruktor
 //////////////////////////////////////////////////////////////////////
-//CShips::CShips(const CShips& rhs)
-//{
-//	if (this == &rhs)
-//		return;
-//
-//	m_vShips.RemoveAll();
-//	const CShipArray& shiparray = rhs.m_vShips;
-//	for(CShipArray::const_iterator it = shiparray.begin(); it != shiparray.end(); ++it)
-//		m_vShips.Add(m_vShips.end(), *it);
-//}
+
+CShips::CShips(const CShips& o) :
+	m_Leader(o.m_Leader),
+	m_Fleet(o.m_Fleet),
+	m_Key(o.m_Key)
+{
+}
 
 //////////////////////////////////////////////////////////////////////
 // Zuweisungsoperator
 //////////////////////////////////////////////////////////////////////
-//CFleet & CFleet::operator=(const CFleet & rhs)
-//{
-//	if (this == &rhs)
-//		return *this;
-//
-//	m_vShips.RemoveAll();
-//	const CShipArray& shiparray = rhs.m_vShips;
-//	for(CShipArray::const_iterator it = shiparray.begin(); it != shiparray.end(); ++it)
-//		m_vShips.Add(m_vShips.end(), *it);
-//
-//	return *this;
-//}
+
+CShips& CShips::operator=(const CShips& o)
+{
+	if(this == &o)
+		return *this;
+	m_Leader = o.m_Leader;
+	m_Fleet = o.m_Fleet;
+	m_Key = o.m_Key;
+	return *this;
+}
+
+CShips::~CShips()
+{
+	m_Fleet.Reset();
+}
 
 ///////////////////////////////////////////////////////////////////////
 // Speichern / Laden

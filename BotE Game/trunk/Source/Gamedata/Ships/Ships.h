@@ -65,10 +65,10 @@ public:
 
 
 	// Kopierkonstruktor
-	//CShips(const CFleet& rhs);
+	CShips(const CShips& o);
 
 	// Zuweisungsoperatur
-	//CShips& operator=(const CShips& rhs);
+	CShips& operator=(const CShips& o);
 
 	// Die Serialisierungsfunktion
 	void Serialize(CArchive &ar);
