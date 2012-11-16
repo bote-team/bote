@@ -13,6 +13,8 @@ public:
 
 	CShipArray(void);
 	virtual ~CShipArray(void);
+	CShipArray(const CShipArray& o);
+	CShipArray& operator=(const CShipArray& o);
 
 //////////////////////////////////////////////////////////////////////
 // iterators

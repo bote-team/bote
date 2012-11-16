@@ -22,6 +22,30 @@ CShipArray::~CShipArray(void)
 	Reset();
 }
 
+CShipArray::CShipArray(const CShipArray& o) :
+	m_Ships(o.m_Ships),
+	m_NextKey(o.m_NextKey)
+{
+	m_CurrentShip = begin();
+	std::advance(m_CurrentShip, o.index_of(o.m_CurrentShip));
+	m_FleetShip = begin();
+	std::advance(m_FleetShip, o.index_of(o.m_FleetShip));
+}
+
+CShipArray& CShipArray::operator=(const CShipArray& o)
+{
+	if(this == &o)
+		return *this;
+
+	m_Ships = o.m_Ships;
+	m_NextKey = o.m_NextKey;
+	m_CurrentShip = begin();
+	std::advance(m_CurrentShip, o.index_of(o.m_CurrentShip));
+	m_FleetShip = begin();
+	std::advance(m_FleetShip, o.index_of(o.m_FleetShip));
+	return *this;
+}
+
 //////////////////////////////////////////////////////////////////////
 // getting iterators
 //////////////////////////////////////////////////////////////////////
@@ -48,13 +72,13 @@ CShipArray::iterator CShipArray::find(unsigned key) {
 }
 
 CShipArray::const_iterator CShipArray::iterator_at(int index) const {
-	assert(0 <= index && index < GetSize());
+	assert(0 <= index && index <= GetSize());
 	CShipArray::const_iterator i = begin();
 	std::advance(i, index);
 	return i;
 }
 CShipArray::iterator CShipArray::iterator_at(int index) {
-	assert(0 <= index && index < GetSize());
+	assert(0 <= index && index <= GetSize());
 	CShipArray::iterator i = begin();
 	std::advance(i, index);
 	return i;
@@ -72,11 +96,14 @@ CShipArray::iterator CShipArray::Add(const CShips& ship) {
 	//}
 
 	const unsigned key = NextKey();
-	const int old_size = GetSize();
 	CShipArray::iterator result = m_Ships.insert(end(), std::make_pair(key, ship));
+	if(GetSize() == 1)
+	{
+		m_CurrentShip = result;
+		m_FleetShip = result;
+	}
 	CShipArray::iterator temp = result;
 	result->second.SetKey(key);
-	assert(old_size + 1 == GetSize());
 	++temp;
 	assert(temp == end());
 	return result;
@@ -108,9 +135,12 @@ void CShipArray::RemoveAt(CShipArray::iterator& index) {
 	//	s.Format("CShipArray: removing ship %s", index->second.GetShipName());
 	//	MYTRACE("ships")(MT::LEVEL_INFO, s);
 	//}
+	assert(!empty() && index != end());
 	UpdateSpecialShip(m_CurrentShip, index);
 	UpdateSpecialShip(m_FleetShip, index);
 	m_Ships.erase(index++);
+	if(empty())
+		Reset();
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -120,9 +150,11 @@ void CShipArray::RemoveAt(CShipArray::iterator& index) {
 //TODO reduce amount and calls to these, complexity linear
 
 const CShips& CShipArray::GetAt(int index) const {
+	assert(index < GetSize());
 	return iterator_at(index)->second;
 }
 CShips& CShipArray::GetAt(int index) {
+	assert(index < GetSize());
 	return iterator_at(index)->second;
 }
 
@@ -141,8 +173,6 @@ CShips& CShipArray::at(unsigned key) {
 // getting info
 //////////////////////////////////////////////////////////////////////
 
-//TODO these could be used to get elements by an "array index" which is bad now
-
 int CShipArray::GetUpperBound() const {
 	return GetSize() - 1;
 }
@@ -156,6 +186,7 @@ bool CShipArray::empty() const {
 int CShipArray::index_of(const CShipArray::const_iterator& position) const {
 	return std::distance(begin(), position);
 }
+
 //////////////////////////////////////////////////////////////////////
 // private functions
 //////////////////////////////////////////////////////////////////////
@@ -267,7 +298,7 @@ void CShipArray::SerializeNextRoundData(CArchive& ar, const CPoint& ptCurrentCom
 //current ship
 
 int CShipArray::CurrentShipsIndex() const {
-	assert(begin() != m_CurrentShip || m_CurrentShip != end());
+	assert(!empty() && m_CurrentShip != end());
 	return index_of(m_CurrentShip);
 }
 
@@ -278,24 +309,24 @@ void CShipArray::SetCurrentShip(unsigned key) {
 }
 
 void CShipArray::SetCurrentShip(const CShipArray::iterator& position) {
-	assert(position != end());
+	assert(!empty() && position != end());
 	m_CurrentShip = position;
 }
 
 const CShips& CShipArray::CurrentShip() const {
-	assert(begin() != m_CurrentShip || m_CurrentShip != end());
+	assert(!empty() && m_CurrentShip != end());
 	return m_CurrentShip->second;
 }
 
 CShips& CShipArray::CurrentShip() {
-	assert(begin() != m_CurrentShip || m_CurrentShip != end());
+	assert(!empty() && m_CurrentShip != end());
 	return m_CurrentShip->second;
 }
 
 //fleet ship
 
 int CShipArray::FleetShipsIndex() const {
-	assert(begin() != m_FleetShip || m_FleetShip != end());
+	assert(!empty() && m_FleetShip != end());
 	return index_of(m_FleetShip);
 }
 
@@ -306,18 +337,18 @@ void CShipArray::SetFleetShip(unsigned key) {
 }
 
 void CShipArray::SetFleetShip(const CShipArray::iterator& position) {
-	assert(position != end());
+	assert(!empty() && position != end());
 	m_FleetShip = position;
 }
 
 const CShips& CShipArray::FleetShip() const {
-	assert(begin() != m_FleetShip || m_FleetShip != end());
+	assert(!empty() && m_FleetShip != end());
 	return m_FleetShip->second;
 }
 
 
 CShips& CShipArray::FleetShip() {
-	assert(begin() != m_FleetShip || m_FleetShip != end());
+	assert(!empty() && m_FleetShip != end());
 	return m_FleetShip->second;
 }
 
@@ -328,10 +359,8 @@ void CShipArray::UpdateSpecialShip(CShipArray::iterator& ship, CShipArray::itera
 		return;
 	if(ship != begin())
 		--ship;
-	else
+	else if (ship != end())
 		++ship;
-	//TODO unsolved; there should remain at least one ship in the container
-	assert(ship != end());
 }
 
 //////////////////////////////////////////////////////////////////////
