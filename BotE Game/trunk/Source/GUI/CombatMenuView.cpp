@@ -171,9 +171,9 @@ void CCombatMenuView::OnDraw(CDC* dc)
 
 	// beteiligte Schiff sammeln
 	m_vInvolvedShips.RemoveAll();
-	for (int i = 0; i < pDoc->m_ShipArray.GetSize(); i++)
+	for(CShipArray::iterator i = pDoc->m_ShipArray.begin(); i != pDoc->m_ShipArray.end(); ++i)
 	{
-		CShips* pShip = &pDoc->m_ShipArray[i];
+		CShips* pShip = &i->second;
 		if (pShip->GetKO() != pDoc->m_ptCurrentCombatSector)
 			continue;
 

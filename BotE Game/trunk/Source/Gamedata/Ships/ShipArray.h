@@ -58,10 +58,6 @@ public:
 
 	const CShips& GetAt(int index) const;
 	CShips& GetAt(int index);
-	const CShips& ElementAt(int index) const;
-	CShips& ElementAt(int index);
-	const CShips& operator[](int index) const;
-	CShips& operator[](int index);
 
 	const CShips& at(unsigned key) const;
 	CShips& at(unsigned key);

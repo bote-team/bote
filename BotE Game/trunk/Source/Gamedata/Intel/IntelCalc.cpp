@@ -775,13 +775,13 @@ BOOLEAN CIntelCalc::ExecuteMilitarySpy(CMajor* pRace, CMajor* pEnemyRace, CMajor
 		CArray<CShips*> ships;
 		CArray<CShips*> stations;
 		// Felder mit allen zu spionierenden Schiffe und Stationen anlegen
-		for (int i = 0; i < m_pDoc->m_ShipArray.GetSize(); i++)
-			if (m_pDoc->m_ShipArray[i].GetOwnerOfShip() == pEnemyRace->GetRaceID())
+		for(CShipArray::iterator i = m_pDoc->m_ShipArray.begin(); i != m_pDoc->m_ShipArray.end(); ++i)
+			if (i->second.GetOwnerOfShip() == pEnemyRace->GetRaceID())
 			{
-				if (m_pDoc->m_ShipArray[i].IsStation())
-					stations.Add(&m_pDoc->m_ShipArray[i]);
+				if (i->second.IsStation())
+					stations.Add(&i->second);
 				else
-					ships.Add(&m_pDoc->m_ShipArray[i]);
+					ships.Add(&i->second);
 			}
 		CMilitaryIntelObj* report = NULL;
 		// wenn Stationen vorhanden sind zu 33% dort spionieren

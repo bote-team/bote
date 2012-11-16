@@ -443,14 +443,15 @@ void CGalaxyMenuView::OnDraw(CDC* dc)
 
 		// Anzahl der benötigten Runden in letztes Feld des Weges zeichnen
 		//CPoint last = pMajor->GetStarmap()->GetSectorCoords(path[path.GetUpperBound()]);
-		int n = pDoc->GetCurrentShipIndex();
-		CPoint last = pMajor->GetStarmap()->GetSectorCoords(pDoc->m_ShipArray[n].GetPath()->GetAt(pDoc->m_ShipArray[n].GetPath()->GetUpperBound()));
+		CShips& current_ship = pDoc->CurrentShip();
+		CPoint last = pMajor->GetStarmap()->GetSectorCoords(current_ship.GetPath()->GetAt(
+			current_ship.GetPath()->GetUpperBound()));
 		CString s;
 		// Wenn das Schiff keine Flotte anführt
 		if (!pDoc->CurrentShip().HasFleet())
-			s.Format("%.0f",ceil((float)pDoc->m_ShipArray[n].GetPath()->GetSize() / (float)pDoc->m_ShipArray[n].GetSpeed()));
+			s.Format("%.0f",ceil((float)current_ship.GetPath()->GetSize() / (float)current_ship.GetSpeed()));
 		else
-			s.Format("%.0f",ceil((float)pDoc->m_ShipArray[n].GetPath()->GetSize() / (float)pDoc->CurrentShip().GetFleetSpeed(&pDoc->CurrentShip().Leader())));
+			s.Format("%.0f",ceil((float)current_ship.GetPath()->GetSize() / (float)pDoc->CurrentShip().GetFleetSpeed(&pDoc->CurrentShip().Leader())));
 		pDC->SetTextColor(RGB(255,255,255));
 		pDC->TextOut(last.x+STARMAP_SECTOR_WIDTH/2+6, last.y+STARMAP_SECTOR_HEIGHT/2-8, s);
 

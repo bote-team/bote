@@ -138,7 +138,7 @@ void CShipBottomView::OnDraw(CDC* dc)
 	{
 		USHORT column = 0;
 		USHORT row = 0;
-		USHORT oneShip = 0;
+		CShipArray::const_iterator oneShip = pDoc->m_ShipArray.begin();
 		if (!CGalaxyMenuView::IsMoveShip())
 			m_vShipRects.clear();
 
@@ -148,9 +148,9 @@ void CShipBottomView::OnDraw(CDC* dc)
 
 		USHORT counter = 0;
 
-		for (int i = 0; i < pDoc->m_ShipArray.GetSize(); i++)
+		for(CShipArray::iterator i = pDoc->m_ShipArray.begin(); i != pDoc->m_ShipArray.end(); ++i)
 		{
-			CShips* pShip = &pDoc->m_ShipArray[i];
+			CShips* pShip = &i->second;
 			if (pDoc->GetKO() != pShip->GetKO())
 				continue;
 
@@ -201,7 +201,7 @@ void CShipBottomView::OnDraw(CDC* dc)
 				}
 
 				// ist das Schiff gerade markiert?
-				bool bMarked = (i == pDoc->GetCurrentShipIndex());
+				bool bMarked = (pShip == &pDoc->CurrentShip());
 				CPoint pt(250 * column, 65 * row);
 				pShip->DrawShip(&g, pDoc->GetGraphicPool(), pt, bMarked, bUnknown, TRUE, normalColor, markColor, font);
 				m_vShipRects.push_back(pair<CRect, CShips*>(CRect(pt.x, pt.y + 20, pt.x + 250, pt.y + 85), pShip));
@@ -238,14 +238,14 @@ void CShipBottomView::OnDraw(CDC* dc)
 		}
 
 		// Wenn nur ein Schiff in dem System ist, so wird es automatisch ausgewählt
-		if (counter == 1 && !m_bShowStation && pDoc->m_ShipArray[oneShip].GetCurrentOrder() <= SHIP_ORDER::ATTACK
-			&& pDoc->m_ShipArray[oneShip].GetOwnerOfShip() == pMajor->GetRaceID())
+		if (counter == 1 && !m_bShowStation && oneShip->second.GetCurrentOrder() <= SHIP_ORDER::ATTACK
+			&& oneShip->second.GetOwnerOfShip() == pMajor->GetRaceID())
 		{
 			// Wenn wenn wir auf der Galaxiekarte sind
 			if (pDoc->GetMainFrame()->GetActiveView(0, 1) == GALAXY_VIEW)
 			{
 				this->SetTimer(1,100,NULL);
-				pDoc->SetCurrentShipIndex(oneShip);
+				pDoc->SetCurrentShipIndex(pDoc->m_ShipArray.index_of(oneShip));
 				CGalaxyMenuView::SetMoveShip(TRUE);
 				CSmallInfoView::SetShipInfo(true);
 				pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
@@ -1004,10 +1004,10 @@ void CShipBottomView::OnMouseMove(UINT nFlags, CPoint point)
 			bool bNewMarkedShip = m_vShipRects[i].second != m_pMarkedShip;
 			if (bNewMarkedShip)
 			{
-				for (int j = 0; j < pDoc->m_ShipArray.GetSize(); j++)
-					if (&pDoc->m_ShipArray[j] == m_vShipRects[i].second)
+				for(CShipArray::const_iterator j = pDoc->m_ShipArray.begin(); j != pDoc->m_ShipArray.end(); ++j)
+					if (&j->second == m_vShipRects[i].second)
 					{
-						pDoc->SetCurrentShipIndex(j);
+						pDoc->SetCurrentShipIndex(pDoc->m_ShipArray.index_of(j));
 						CSmallInfoView::SetShipInfo(true);
 						pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
 						m_iWhichMainShipOrderButton = -1;

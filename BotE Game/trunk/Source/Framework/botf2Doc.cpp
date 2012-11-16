@@ -2499,29 +2499,31 @@ void CBotf2Doc::CalcSystemAttack()
 	// Berechnung aus der Liste entfernt
 	set<CString> sKilledMinors;
 	CArray<CPoint> fightInSystem;
-	for (int y = 0; y < m_ShipArray.GetSize(); y++)
-		if (m_ShipArray.GetAt(y).GetCurrentOrder() == SHIP_ORDER::ATTACK_SYSTEM)
+	for(CShipArray::iterator y = m_ShipArray.begin(); y != m_ShipArray.end(); ++y)
+	{
+		CShips& ship = y->second;
+		if (ship.GetCurrentOrder() == SHIP_ORDER::ATTACK_SYSTEM)
 		{
 			BOOLEAN okay = TRUE;
 			// Checken dass in diesem System nicht schon ein Angriff durchgeführt wurde
 			for (int x = 0; x < fightInSystem.GetSize(); x++)
-				if (fightInSystem.GetAt(x) == m_ShipArray.GetAt(y).GetKO())
+				if (fightInSystem.GetAt(x) == ship.GetKO())
 				{
 					okay = FALSE;
 					break;
 				}
 
 			// nur wenn das Schiff und Schiffe in der Flotte ungetarnt sind
-			if (m_ShipArray[y].GetCloak() == TRUE || (m_ShipArray.GetAt(y).HasFleet() && m_ShipArray.GetAt(y).CheckOrder(SHIP_ORDER::ATTACK_SYSTEM) == FALSE))
+			if (ship.GetCloak() == TRUE || (ship.HasFleet() && ship.CheckOrder(SHIP_ORDER::ATTACK_SYSTEM) == FALSE))
 			{
-				m_ShipArray.ElementAt(y).SetCurrentOrder(SHIP_ORDER::ATTACK);
+				ship.SetCurrentOrder(SHIP_ORDER::ATTACK);
 				okay = FALSE;
 			}
 
 			// wenn in dem System noch kein Angriff durchgeführt wurde kann angegriffen werden
 			if (okay)
 			{
-				CPoint p = m_ShipArray.GetAt(y).GetKO();
+				CPoint p = ship.GetKO();
 				// Besitzer des Systems (hier Sector wegen Minors) vor dem Systemangriff
 				CString sDefender = GetSector(p.x, p.y).GetOwnerOfSector();
 				// Angreifer bzw. neuer Besitzer des Systems nach dem Angriff
@@ -3194,6 +3196,7 @@ void CBotf2Doc::CalcSystemAttack()
 				fightInSystem.Add(p);
 			}
 		}
+	}
 
 	// alle vernichteten Minorraces nun aus dem Feld löschen
 	for (set<CString>::const_iterator it = sKilledMinors.begin(); it != sKilledMinors.end(); ++it)
@@ -4278,12 +4281,12 @@ void CBotf2Doc::CalcShipOrders()
 									this->BuildShip(id, pSector->GetKO(), y->second.GetOwnerOfShip());
 									// Wenn wir jetzt die Sternbasis gebaut haben, dann müssen wir den alten Aussenposten aus der
 									// Schiffsliste nehmen
-									for (int k = 0; k <= m_ShipArray.GetSize(); k++)
-										if (m_ShipArray[k].GetShipType() == SHIP_TYPE::OUTPOST && m_ShipArray[k].GetKO() == pSector->GetKO())
+									for(CShipArray::const_iterator k = m_ShipArray.begin(); k != m_ShipArray.end(); ++k)
+										if (k->second.GetShipType() == SHIP_TYPE::OUTPOST && k->second.GetKO() == pSector->GetKO())
 										{
 											// ebenfalls muss der Au?enposten aus der Shiphistory der aktuellen Schiffe entfernt werden
-											pMajor->GetShipHistory()->RemoveShip(&m_ShipArray[k].Leader());
-											vRemoveableOutposts.push_back(m_ShipArray[k].GetShipName());
+											pMajor->GetShipHistory()->RemoveShip(&k->second.Leader());
+											vRemoveableOutposts.push_back(k->second.GetShipName());
 											break;
 										}
 									// Wenn hier eine Station gebaut wurde den Befehl für die Flotte auf Meiden stellen
@@ -4337,12 +4340,12 @@ void CBotf2Doc::CalcShipOrders()
 								--y;
 
 							// Wenn die Sternbasis gebaut haben, dann den alten Au?enposten aus der Schiffsliste nehmen
-							for (int k = 0; k < m_ShipArray.GetSize(); k++)
-								if (m_ShipArray[k].GetShipType() == SHIP_TYPE::OUTPOST && m_ShipArray[k].GetKO() == pSector->GetKO())
+							for(CShipArray::const_iterator k = m_ShipArray.begin(); k != m_ShipArray.end(); ++k)
+								if (k->second.GetShipType() == SHIP_TYPE::OUTPOST && k->second.GetKO() == pSector->GetKO())
 								{
 									// ebenfalls muss der Au?enposten aus der Shiphistory der aktuellen Schiffe entfernt werden
-									pMajor->GetShipHistory()->RemoveShip(&m_ShipArray[k].Leader());
-									vRemoveableOutposts.push_back(m_ShipArray[k].GetShipName());
+									pMajor->GetShipHistory()->RemoveShip(&k->second.Leader());
+									vRemoveableOutposts.push_back(k->second.GetShipName());
 									break;
 								}
 							continue;
@@ -4426,20 +4429,20 @@ void CBotf2Doc::CalcShipOrders()
 
 			// Das ganze Schiffsarray und auch die Flotten durchgehen, wenn wir ein altes Flagschiff finden, diesem den
 			// Titel wegnehmen
-			for (USHORT n = 0; n < m_ShipArray.GetSize(); n++)
+			for(CShipArray::iterator n = m_ShipArray.begin(); n != m_ShipArray.end(); ++n)
 			{
-				if (m_ShipArray[n].GetOwnerOfShip() == y->second.GetOwnerOfShip())
+				if (n->second.GetOwnerOfShip() == y->second.GetOwnerOfShip())
 				{
-					if (m_ShipArray[n].GetIsShipFlagShip() == TRUE)
+					if (n->second.GetIsShipFlagShip() == TRUE)
 					{
-						m_ShipArray[n].SetIsShipFlagShip(FALSE);
+						n->second.SetIsShipFlagShip(FALSE);
 						break;
 					}
 					// überprüfen ob ein Flagschiff in einer Flotte ist
-					else if (m_ShipArray[n].HasFleet())
+					else if (n->second.HasFleet())
 					{
 						bool bFoundFlagShip = false;
-						for(CShips::iterator m = m_ShipArray[n].begin(); m != m_ShipArray[n].end(); ++m)
+						for(CShips::iterator m = n->second.begin(); m != n->second.end(); ++m)
 						{
 							if (m->second.GetIsShipFlagShip() == TRUE)
 							{
@@ -4636,9 +4639,9 @@ void CBotf2Doc::CalcShipMovement()
 	std::set<CString> already_encountered_ships_for_sanity_check;
 	// Hier kommt die Schiffsbewegung (also keine anderen Befehle werden hier noch ausgewertet, lediglich wird überprüft,
 	// dass manche Befehle noch ihre Gültigkeit haben
-	for (int y = 0; y < m_ShipArray.GetSize(); y++)
+	for(CShipArray::iterator y = m_ShipArray.begin(); y != m_ShipArray.end(); ++y)
 	{
-		CShips* pShip = &m_ShipArray[y];
+		CShips* pShip = &y->second;
 		//this call is expensive (about n*log(n) in the ship array length; TODO comment out)
 		CSanity::CheckShipUniqueness(*pShip, already_encountered_ships_for_sanity_check);
 
@@ -4706,8 +4709,8 @@ void CBotf2Doc::CalcShipMovement()
 			// Unterscheiden, ob das Schiff eine Flotte anführt oder nicht
 			if (pShip->HasFleet())
 			{
-				range = (char)(3 - pShip->GetFleetRange(&m_ShipArray[y].Leader()));
-				speed = (char)(pShip->GetFleetSpeed(&m_ShipArray[y].Leader()));
+				range = (char)(3 - pShip->GetFleetRange(&pShip->Leader()));
+				speed = (char)(pShip->GetFleetSpeed(&pShip->Leader()));
 			}
 			else
 			{
@@ -4780,7 +4783,7 @@ void CBotf2Doc::CalcShipMovement()
 		// wenn eine Anomalie vorhanden, deren m?gliche Auswirkungen auf das Schiff berechnen
 		if (GetSector(pShip->GetKO().x, pShip->GetKO().y).GetAnomaly())
 		{
-			GetSector(pShip->GetKO().x, pShip->GetKO().y).GetAnomaly()->CalcShipEffects(&m_ShipArray[y]);
+			GetSector(pShip->GetKO().x, pShip->GetKO().y).GetAnomaly()->CalcShipEffects(pShip);
 			bAnomaly = true;
 		}
 	}
@@ -4901,9 +4904,9 @@ void CBotf2Doc::CalcShipCombat()
 	CArray<CShips*> vInvolvedShips;
 	CPoint p = m_ptCurrentCombatSector;
 	// Jetzt gehen wir nochmal alle Sektoren durch und schauen ob ein Schiff im Kampfsektor ist
-	for (int i = 0; i < m_ShipArray.GetSize(); i++)
+	for(CShipArray::iterator i = m_ShipArray.begin(); i != m_ShipArray.end(); ++i)
 	{
-		CShips* pShip = &m_ShipArray[i];
+		CShips* pShip = &i->second;
 		if (pShip->GetKO() != m_ptCurrentCombatSector)
 			continue;
 
@@ -5152,9 +5155,9 @@ void CBotf2Doc::CalcShipCombat()
 	}
 
 	// allen Schiffen mit Rückzugsbfehl den aktuellen Befehl zurücknehmen
-	for (int i = 0; i < m_ShipArray.GetSize(); i++)
+	for(CShipArray::iterator i = m_ShipArray.begin(); i != m_ShipArray.end(); ++i)
 	{
-		CShips* pShip = &m_ShipArray[i];
+		CShips* pShip = &i->second;
 		// Hat das Schiff den Rückzugsbefehl
 		if (pShip->GetCombatTactic() == COMBAT_TACTIC::CT_RETREAT)
 		{
@@ -5225,11 +5228,11 @@ void CBotf2Doc::CalcShipEffects()
 	CalcShipRetreat();
 
 	// Nach einem möglichen Kampf, aber natürlich auch generell die Schiffe und Stationen den Sektoren bekanntgeben
-	for (int y = 0; y < m_ShipArray.GetSize(); y++)
+	for(CShipArray::iterator y = m_ShipArray.begin(); y != m_ShipArray.end(); ++y)
 	{
-		const CString sRace = m_ShipArray[y].GetOwnerOfShip();
+		CShips& ship = y->second;
+		const CString sRace = ship.GetOwnerOfShip();
 		CRace* pRace = m_pRaceCtrl->GetRace(sRace);
-		CShips& ship = m_ShipArray.GetAt(y);
 		const CPoint& p = ship.GetKO();
 		CSector& sector = GetSector(p.x, p.y);
 

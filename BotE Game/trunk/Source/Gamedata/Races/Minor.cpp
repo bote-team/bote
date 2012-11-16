@@ -211,19 +211,22 @@ void CMinor::PerhapsBuildShip(CBotf2Doc* pDoc)
 				{
 					// Wahrscheinlichkeit berechnen, ob das Schiff gebaut wird
 					int nNumber = 1;
-					for (int j = 0; j < pDoc->m_ShipArray.GetSize(); j++)
+					for(CShipArray::const_iterator j = pDoc->m_ShipArray.begin(); j != pDoc->m_ShipArray.end(); ++j)
 					{
-						CShips* pShip = &(pDoc->m_ShipArray[j]);
-						if (pShip->GetOwnerOfShip() == this->m_sID && pShip->GetShipClass() == pShipInfo->GetShipClass())
+						const CShips* pShip = &j->second;
+						if (pShip->GetOwnerOfShip() == m_sID && pShip->GetShipClass() == pShipInfo->GetShipClass())
 							nNumber++;
 					}
 					nNumber *= 5;
 					if (rand()%nNumber == 0)
 					{
-						pDoc->BuildShip(pShipInfo->GetID(), this->GetRaceKO(), this->m_sID);
+						CShipArray::iterator ship = pDoc->BuildShip(pShipInfo->GetID(), GetRaceKO(), m_sID);
 						// Befehl für nicht "böse" Rassen auf Meiden stellen
-						if (!IsRaceProperty(RACE_PROPERTY::HOSTILE) && !IsRaceProperty(RACE_PROPERTY::WARLIKE) && !IsRaceProperty(RACE_PROPERTY::SNEAKY) && !IsRaceProperty(RACE_PROPERTY::SECRET))
-							pDoc->m_ShipArray[pDoc->m_ShipArray.GetUpperBound()].SetCurrentOrder(SHIP_ORDER::AVOID);
+						if (!IsRaceProperty(RACE_PROPERTY::HOSTILE)
+							&& !IsRaceProperty(RACE_PROPERTY::WARLIKE)
+							&& !IsRaceProperty(RACE_PROPERTY::SNEAKY)
+							&& !IsRaceProperty(RACE_PROPERTY::SECRET))
+							ship->second.SetCurrentOrder(SHIP_ORDER::AVOID);
 						return;
 					}
 				}

@@ -126,20 +126,6 @@ CShips& CShipArray::GetAt(int index) {
 	return iterator_at(index)->second;
 }
 
-const CShips& CShipArray::ElementAt(int index) const {
-	return GetAt(index);
-}
-CShips& CShipArray::ElementAt(int index) {
-	return GetAt(index);
-}
-
-const CShips& CShipArray::operator[](int index) const {
-	return GetAt(index);
-}
-CShips& CShipArray::operator[](int index) {
-	return GetAt(index);
-}
-
 const CShips& CShipArray::at(unsigned key) const {
 	const CShipArray::const_iterator i = find(key);
 	assert(i != end());

@@ -175,14 +175,13 @@ void CDiplomacyController::CalcDiplomacyFallouts(CBotf2Doc* pDoc)
 				// Gebäude so weit wie möglich mit Arbeitern besetzen
 				pDoc->GetSystem(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).SetWorkersIntoBuildings();
 				// alle Schiffe der Minor gehen nun an den Major
-				for (int i = 0; i < pDoc->m_ShipArray.GetSize(); i++)
+				for(CShipArray::iterator i = pDoc->m_ShipArray.begin(); i != pDoc->m_ShipArray.end(); ++i)
 				{
-					CShips* pShip = &(pDoc->m_ShipArray[i]);
-					if (pShip->GetOwnerOfShip() == pMinor->GetRaceID())
+					if (i->second.GetOwnerOfShip() == pMinor->GetRaceID())
 					{
-						pShip->SetOwnerOfShip(pMajor->GetRaceID());
+						i->second.SetOwnerOfShip(pMajor->GetRaceID());
 						// Schiff in die Shiphistory stecken
-						pMajor->GetShipHistory()->AddShip(&pShip->Leader(), pDoc->GetSector(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).GetName(true), pDoc->GetCurrentRound());
+						pMajor->GetShipHistory()->AddShip(&i->second.Leader(), pDoc->GetSector(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).GetName(true), pDoc->GetCurrentRound());
 					}
 				}
 			}

@@ -400,7 +400,7 @@ void CFleetMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 							// welches die Flotte anführt und wenn es selbst keine Flotte besitzt
 							if (pDoc->GetNumberOfFleetShip() != i && !pDoc->m_ShipArray.GetAt(i).HasFleet())
 							{
-								pDoc->FleetShip().AddShipToFleet(pDoc->m_ShipArray[i]);
+								pDoc->FleetShip().AddShipToFleet(pDoc->m_ShipArray.GetAt(i));
 								// Wenn wir hier removen und ein Schiff im Feld entfernen, welches vor unserem FleetShip
 								// ist, dann müssen wir die Nummer des FleetShips um eins verringern
 								if (i < pDoc->GetNumberOfFleetShip())
