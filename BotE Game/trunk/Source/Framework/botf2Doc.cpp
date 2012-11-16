@@ -5068,33 +5068,30 @@ void CBotf2Doc::CalcShipCombat()
 			continue;
 		// Wenn das Schiff eine Flotte hatte, dann erstmal nur die Schiffe in der Flotte beachten
 		// Wenn davon welche zerstört wurden diese aus der Flotte nehmen
-		if (i->second.HasFleet())
-		{
-			for(CShipArray::iterator x = i->second.begin(); x != i->second.end();) {
-				if (x->second.GetHull()->GetCurrentHull() > 1) {
-					++i;
-					continue;
-				}
-				// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
-				AddToLostShipHistory(&x->second.Leader(), CResourceManager::GetString("COMBAT"), CResourceManager::GetString("DESTROYED"));
-				destroyedShips.Add(x->second.GetShipName()+" ("+x->second.GetShipTypeAsString()+")");
-
-				// Wenn es das Flagschiff war, so ein Event über dessen Verlust hinzufügen
-				if (x->second.GetIsShipFlagShip())
-				{
-					CRace* pOwner = m_pRaceCtrl->GetRace(x->second.GetOwnerOfShip());
-					if (pOwner && pOwner->IsMajor())
-					{
-						CMajor* pMajor = dynamic_cast<CMajor*>(pOwner);
-						CString eventText = pMajor->GetMoralObserver()->AddEvent(7, pMajor->GetRaceMoralNumber(), x->second.GetShipName());
-						CMessage message;
-						message.GenerateMessage(eventText, MESSAGE_TYPE::MILITARY, "", 0, 0);
-						pMajor->GetEmpire()->AddMessage(message);
-					}
-				}
-
-				i->second.RemoveShipFromFleet(x);
+		for(CShips::iterator x = i->second.begin(); x != i->second.end();) {
+			if (x->second.GetHull()->GetCurrentHull() > 1) {
+				++x;
+				continue;
 			}
+			// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
+			AddToLostShipHistory(&x->second.Leader(), CResourceManager::GetString("COMBAT"), CResourceManager::GetString("DESTROYED"));
+			destroyedShips.Add(x->second.GetShipName()+" ("+x->second.GetShipTypeAsString()+")");
+
+			// Wenn es das Flagschiff war, so ein Event über dessen Verlust hinzufügen
+			if (x->second.GetIsShipFlagShip())
+			{
+				CRace* pOwner = m_pRaceCtrl->GetRace(x->second.GetOwnerOfShip());
+				if (pOwner && pOwner->IsMajor())
+				{
+					CMajor* pMajor = dynamic_cast<CMajor*>(pOwner);
+					CString eventText = pMajor->GetMoralObserver()->AddEvent(7, pMajor->GetRaceMoralNumber(), x->second.GetShipName());
+					CMessage message;
+					message.GenerateMessage(eventText, MESSAGE_TYPE::MILITARY, "", 0, 0);
+					pMajor->GetEmpire()->AddMessage(message);
+				}
+			}
+
+			i->second.RemoveShipFromFleet(x);
 		}
 
 		// Wenn das Schiff selbst zerstört wurde
