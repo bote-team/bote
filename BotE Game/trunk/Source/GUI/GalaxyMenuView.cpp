@@ -282,7 +282,7 @@ void CGalaxyMenuView::OnDraw(CDC* dc)
 	{
 		// Wenn das Schiff keine Flotte anführt
 		if (!pDoc->CurrentShip().HasFleet())
-			m_nRange = 3-pDoc->GetShip(pDoc->GetCurrentShipIndex()).GetRange();
+			m_nRange = 3-pDoc->CurrentShip().GetRange();
 		else
 			m_nRange = 3-pDoc->CurrentShip().GetFleetRange(&pDoc->CurrentShip().Leader());
 	}

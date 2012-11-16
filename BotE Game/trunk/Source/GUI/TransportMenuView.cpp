@@ -203,7 +203,7 @@ void CTransportMenuView::DrawTransportMenue(Graphics* g)
 	{
 		int res = ship->GetLoadedResources(i);
 		for(CShips::const_iterator j = ship->begin(); j != ship->end(); ++j)
-			res += j->GetLoadedResources(i);
+			res += j->second.GetLoadedResources(i);
 		// Lagerinhalt im Schiff zeichnen
 		fontFormat.SetAlignment(StringAlignmentFar);
 		s.Format("%d", res);
@@ -224,9 +224,9 @@ void CTransportMenuView::DrawTransportMenue(Graphics* g)
 
 	for(CShips::const_iterator j = ship->begin(); j != ship->end(); ++j)
 	{
-		usedStorage += j->GetUsedStorageRoom(&pDoc->m_TroopInfo);
-		storageRoom += j->GetStorageRoom();
-		troopNumber += j->GetTransportedTroops()->GetSize();
+		usedStorage += j->second.GetUsedStorageRoom(&pDoc->m_TroopInfo);
+		storageRoom += j->second.GetStorageRoom();
+		troopNumber += j->second.GetTransportedTroops()->GetSize();
 	}
 /*	for (int i = 0; i < ship->GetTransportedTroops()->GetSize(); i++)
 	{

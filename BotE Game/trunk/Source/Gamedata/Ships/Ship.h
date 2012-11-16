@@ -72,6 +72,7 @@ public:
 	// Zugriffsfunktionen
 	// zum Lesen der Membervariablen
 	CHull* GetHull(void) {return &m_Hull;}
+	const CHull* GetHull(void) const {return &m_Hull;}
 	CShield* GetShield(void) {return &m_Shield;}
 	CArray<CTorpedoWeapons, CTorpedoWeapons>* GetTorpedoWeapons(void) {return &m_TorpedoWeapons;}
 	CArray<CBeamWeapons, CBeamWeapons>* GetBeamWeapons(void) {return &m_BeamWeapons;}

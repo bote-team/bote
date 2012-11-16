@@ -50,12 +50,12 @@ void CAttackSystem::Init(CRace* pDefender, CSystem* system, CShipArray* ships, C
 	m_iDestroyedBuildings = 0;
 
 	for(CShipArray::iterator i = ships->begin(); i != ships->end(); ++i)
-		if (i->GetKO() == m_KO && i->GetCurrentOrder() == SHIP_ORDER::ATTACK_SYSTEM)
+		if (i->second.GetKO() == m_KO && i->second.GetCurrentOrder() == SHIP_ORDER::ATTACK_SYSTEM)
 		{
-			m_pShips.Add(&i->Leader());
+			m_pShips.Add(&i->second.Leader());
 			// Wenn das Schiff eine Flotte besitzt, diese Schiffe auch dem Feld hinzufügen
-			for(CShips::iterator j = i->begin(); j != i->end(); ++j)
-					m_pShips.Add(&j->Leader());
+			for(CShips::iterator j = i->second.begin(); j != i->second.end(); ++j)
+					m_pShips.Add(&j->second.Leader());
 		}
 }
 

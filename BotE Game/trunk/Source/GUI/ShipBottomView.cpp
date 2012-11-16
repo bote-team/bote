@@ -780,9 +780,6 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 			// Fremde Flotten können nicht bearbeitet werden
 			else if (pDoc->FleetShip().GetOwnerOfShip() == pMajor->GetRaceID())
 			{
-				// Wenn das Schiff noch keine Flotte hat, dann müssen wir erstmal eine Flotte bilden
-				//if (!pDoc->FleetShip().HasFleet() && pDoc->GetNumberOfFleetShip() != pDoc->GetCurrentShipIndex())
-				//	pDoc->FleetShip().CreateFleet();
 				// Jetzt fügen wir der Flotte das angeklickte Schiff hinzu, wenn es nicht das Schiff selbst ist,
 				// welches die Flotte anführt
 				if (pDoc->GetNumberOfFleetShip() != pDoc->GetCurrentShipIndex())
@@ -803,7 +800,7 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 							pDoc->SetNumberOfFleetShip(pDoc->GetNumberOfFleetShip()-1);
 						// Wenn wir das Schiff da hinzugefügt haben, dann müssen wir das aus der normalen Schiffsliste
 						// rausnehmen, damit es nicht zweimal im Spiel vorkommt
-						pDoc->m_ShipArray.RemoveAt(pDoc->m_ShipArray.begin() + pDoc->GetCurrentShipIndex());
+						pDoc->m_ShipArray.RemoveAt(pDoc->m_ShipArray.iterator_at(pDoc->GetCurrentShipIndex()));
 						// Wenn wir das letzte Schiff entfernt haben, dann müssen wir die angeklickte Nummer im Spiel
 						// um eins zurücknehmen
 						if (pDoc->GetCurrentShipIndex() == pDoc->m_ShipArray.GetSize())
@@ -885,7 +882,7 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 				short nOldTerraformingPlanet = pDoc->CurrentShip().GetTerraformingPlanet();
 				// Bei manchen Befehlen müssen wir einen möglichen Zielkurs wieder zurücknehmen.
 				if (nOrder != SHIP_ORDER::AVOID && nOrder != SHIP_ORDER::ATTACK && nOrder != SHIP_ORDER::CLOAK && nOrder != SHIP_ORDER::ASSIGN_FLAGSHIP && nOrder != SHIP_ORDER::CREATE_FLEET && nOrder != SHIP_ORDER::TRANSPORT)
-					pDoc->m_ShipArray.ElementAt(pDoc->GetCurrentShipIndex()).SetTargetKO(CPoint(-1, -1), 0);
+					pDoc->CurrentShip().SetTargetKO(CPoint(-1, -1), 0);
 				// Wenn wir eine Flotte bilden wollen (Schiffe gruppieren), dann in der MainView die Flottenansicht zeigen
 				if (nOrder == SHIP_ORDER::CREATE_FLEET)
 				{
@@ -899,25 +896,25 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 					// Das ganze Schiffsarray und auch die Flotten durchgehen, wenn wir ein altes Flagschiff finden, diesem den
 					// Titel wegnehmen
 					for (CShipArray::iterator n = pDoc->m_ShipArray.begin(); n != pDoc->m_ShipArray.end(); ++n)
-						if (n->GetOwnerOfShip() == pDoc->CurrentShip().GetOwnerOfShip())
+						if (n->second.GetOwnerOfShip() == pDoc->CurrentShip().GetOwnerOfShip())
 						{
-							if (n->GetCurrentOrder() == SHIP_ORDER::ASSIGN_FLAGSHIP)
+							if (n->second.GetCurrentOrder() == SHIP_ORDER::ASSIGN_FLAGSHIP)
 							{
-								n->SetCurrentOrder(SHIP_ORDER::ATTACK);
+								n->second.SetCurrentOrder(SHIP_ORDER::ATTACK);
 								break;
 							}
 							// überprüfen ob ein Flagschiff in einer Flotte ist
-							else if (n->HasFleet())
+							else if (n->second.HasFleet())
 							{
-								for (CShips::iterator m = n->begin(); m != n->end(); ++m)
-									if (m->GetCurrentOrder() == SHIP_ORDER::ASSIGN_FLAGSHIP)
+								for (CShips::iterator m = n->second.begin(); m != n->second.end(); ++m)
+									if (m->second.GetCurrentOrder() == SHIP_ORDER::ASSIGN_FLAGSHIP)
 									{
-										m->SetCurrentOrder(SHIP_ORDER::ATTACK);
+										m->second.SetCurrentOrder(SHIP_ORDER::ATTACK);
 										break;
 									}
 							}
 						}
-						pDoc->m_ShipArray.ElementAt(pDoc->GetCurrentShipIndex()).SetCurrentOrder(SHIP_ORDER::ASSIGN_FLAGSHIP);
+						pDoc->CurrentShip().SetCurrentOrder(SHIP_ORDER::ASSIGN_FLAGSHIP);
 				}
 				// Bei einem Transportbefehl muss in der MainView auch die Transportansicht angeblendet werden
 				else if (nOrder == SHIP_ORDER::TRANSPORT)
@@ -927,7 +924,7 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 				}
 				// ansonsten ganz normal den Befehl geben
 				else
-					pDoc->m_ShipArray.ElementAt(pDoc->GetCurrentShipIndex()).SetCurrentOrder(nOrder);
+					pDoc->CurrentShip().SetCurrentOrder(nOrder);
 
 				// bei Terraforming wird die Planetenansicht eingeblendet
 				if (nOrder == SHIP_ORDER::TERRAFORM)
@@ -1048,7 +1045,7 @@ void CShipBottomView::OnRButtonDown(UINT nFlags, CPoint point)
 		CGalaxyMenuView::SetMoveShip(FALSE);
 		if (pDoc->GetMainFrame()->GetActiveView(1, 1) == PLANET_BOTTOM_VIEW)	// Wenn wir kolon oder terraformen abbrechen wollen, zurück zum Schiffsmenü
 		{
-			pDoc->m_ShipArray.ElementAt(pDoc->GetCurrentShipIndex()).SetCurrentOrder(SHIP_ORDER::AVOID);
+			pDoc->CurrentShip().SetCurrentOrder(SHIP_ORDER::AVOID);
 			m_bShowStation = false;
 			Invalidate();
 		}

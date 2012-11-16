@@ -31,11 +31,18 @@ CShips::iterator CShips::end() {
 	return m_Fleet.end();
 }
 
-CShipArray::const_iterator CShips::find(int index) const {
+CShips::const_iterator CShips::find(int index) const {
 	return m_Fleet.find(index);
 }
-CShipArray::iterator CShips::find(int index) {
+CShips::iterator CShips::find(int index) {
 	return m_Fleet.find(index);
+}
+
+CShips::const_iterator CShips::iterator_at(int index) const{
+	return m_Fleet.iterator_at(index);
+}
+CShips::iterator CShips::iterator_at(int index) {
+	return m_Fleet.iterator_at(index);
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -44,19 +51,21 @@ CShipArray::iterator CShips::find(int index) {
 
 CShips::CShips() :
 	m_Leader(),
-	m_Fleet()
+	m_Fleet(),
+	m_Key(0)
 {
 }
 
 CShips::CShips(const CShip& ship) :
 	m_Leader(ship),
-	m_Fleet()
+	m_Fleet(),
+	m_Key(0)
 {
 }
 
 CShips::~CShips()
 {
-	m_Fleet.RemoveAll();
+	m_Fleet.Reset();
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -104,30 +113,24 @@ void CShips::Serialize(CArchive &ar)
 // getting
 //////////////////////////////////////////////////////////////////////
 
-//(none)
+int CShips::index_of(const CShipArray::const_iterator& position) const {
+	return m_Fleet.index_of(position);
+}
 
 //////////////////////////////////////////////////////////////////////
 // setting
 //////////////////////////////////////////////////////////////////////
 
-// Funktion um ein Schiff aus der Flotte zu entfernen. Das n-te Schiff in der Flotte wird entfernt
-void CShips::RemoveShipFromFleet(UINT nIndex)
-{
-	RemoveShipFromFleet(begin() + nIndex);
-}
-
 //removes the element pointed to by the passed iterator from this fleet
 //@param index: will be updated and point to the new position of the element which followed the erased one
 void CShips::RemoveShipFromFleet(CShips::iterator& ship)
 {
-	if(MT::CMyTrace::IsLoggingEnabledFor("ships")) {
-		CString s;
-		s.Format("CShips: removing ship %s from fleet of %s", ship->m_Leader.GetShipName(),
-			m_Leader.GetShipName());
-		MYTRACE("ships")(MT::LEVEL_INFO, s);
-	}
-	const unsigned index = ship - begin();
-	assert(index < static_cast<unsigned>(m_Fleet.GetSize()));
+	//if(MT::CMyTrace::IsLoggingEnabledFor("ships")) {
+	//	CString s;
+	//	s.Format("CShips: removing ship %s from fleet of %s", ship->m_Leader.GetShipName(),
+	//		m_Leader.GetShipName());
+	//	MYTRACE("ships")(MT::LEVEL_INFO, s);
+	//}
 	m_Fleet.RemoveAt(ship);
 }
 
@@ -135,7 +138,7 @@ void CShips::RemoveShipFromFleet(CShips::iterator& ship)
 void CShips::AdoptCurrentOrders(const CShip* ship)
 {
 	for(CShips::iterator i = begin(); i != end(); ++i) {
-		i->m_Leader.AdoptOrdersFrom(*ship);
+		i->second.m_Leader.AdoptOrdersFrom(*ship);
 	}
 }
 
@@ -148,14 +151,14 @@ void CShips::AddShipToFleet(CShips& fleet) {
 	}
 	CShip leader = fleet.m_Leader;
 	leader.AdoptOrdersFrom(m_Leader);
-	m_Fleet.Add(end(), fleet.m_Leader);
+	m_Fleet.Add(fleet.m_Leader);
 	if(fleet.HasFleet()) {
 		if(MT::CMyTrace::IsLoggingEnabledFor("ships")) {
 			s.Format("CShips: adding the fleet of leader %s to fleet of %s", fleet.m_Leader.GetShipName(),
 				m_Leader.GetShipName());
 			MYTRACE("ships")(MT::LEVEL_INFO, s);
 		}
-		m_Fleet.Append(end(), fleet.m_Fleet);
+		m_Fleet.Append(fleet.m_Fleet);
 		PropagateOrdersToFleet();
 		fleet.DeleteFleet();
 	}
@@ -173,21 +176,21 @@ void CShips::ApplyTraining(int XP) {
 	if(!HasFleet())
 		return;
 	for(CShips::iterator i = begin(); i != end(); ++i)
-		i->m_Leader.ApplyTraining(XP, veteran);
+		i->second.m_Leader.ApplyTraining(XP, veteran);
 }
 
 void CShips::SetCloak(bool apply_to_fleet) { 
 	m_Leader.SetCloak();
 	if(apply_to_fleet)
 		for(CShips::iterator i = begin(); i != end(); ++i)
-			i->SetCloak();
+			i->second.SetCloak();
 }
 
 void CShips::UnsetCurrentOrder(bool apply_to_fleet) { 
 	m_Leader.UnsetCurrentOrder(); 
 	if(apply_to_fleet)
 		for(CShips::iterator i = begin(); i != end(); ++i)
-			i->UnsetCurrentOrder();
+			i->second.UnsetCurrentOrder();
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -202,8 +205,8 @@ unsigned CShips::GetFleetSpeed(const CShip* ship) const
 	if (ship != NULL)
 		speed = ship->GetSpeed();
 	for(CShips::const_iterator i = begin(); i != end(); ++i)
-		if(i->GetSpeed() < speed)
-			speed = i->GetSpeed();
+		if(i->second.GetSpeed() < speed)
+			speed = i->second.GetSpeed();
 	if (speed == 127)
 		speed = 0;
 	return speed;
@@ -218,7 +221,7 @@ SHIP_RANGE::Typ CShips::GetFleetRange(const CShip* pShip) const
 		nRange = min(pShip->GetRange(), nRange);
 
 	for(CShips::const_iterator i = begin(); i != end(); ++i)
-		nRange = min(i->GetRange(), nRange);
+		nRange = min(i->second.GetRange(), nRange);
 
 	return nRange;
 }
@@ -231,7 +234,7 @@ short CShips::GetFleetShipType() const
 {
 	short type = m_Leader.GetShipType();
 	for(CShips::const_iterator i = begin(); i != end(); ++i)
-		if (i->GetShipType() != type)
+		if (i->second.GetShipType() != type)
 			return -1;
 	return type;
 }
@@ -255,8 +258,8 @@ BYTE CShips::GetFleetStealthPower(const CShip* ship) const
 		if (stealthPower == 0)
 			return 0;
 
-		BYTE fleetStealthPower = i->GetStealthPower() * 20;
-		if (i->GetStealthPower() > 3  && !i->GetCloak())
+		BYTE fleetStealthPower = i->second.GetStealthPower() * 20;
+		if (i->second.GetStealthPower() > 3  && !i->second.GetCloak())
 			fleetStealthPower = 3 * 20;
 		if (fleetStealthPower < stealthPower)
 			stealthPower = fleetStealthPower;
@@ -321,7 +324,7 @@ BOOLEAN CShips::CheckOrder(SHIP_ORDER::Typ nOrder) const
 				return FALSE;
 			for(CShips::const_iterator i = begin(); i != end(); ++i)
 			{
-				if (i->GetStealthPower() < 4)
+				if (i->second.GetStealthPower() < 4)
 					return FALSE;
 			}
 			// Haben wir bis jetzt kein FALSE zurückgegeben kann sich jedes Schiff in der Flotte tarnen
@@ -336,7 +339,7 @@ BOOLEAN CShips::CheckOrder(SHIP_ORDER::Typ nOrder) const
 				return FALSE;
 			for(CShips::const_iterator i = begin(); i != end(); ++i)
 			{
-				if (i->GetColonizePoints() < 1)
+				if (i->second.GetColonizePoints() < 1)
 					return FALSE;
 			}
 			// Haben wir bis jetzt kein FALSE zurückgegeben besitzt jedes Schiff in der Flotte "ColonizePoints"
@@ -351,7 +354,7 @@ BOOLEAN CShips::CheckOrder(SHIP_ORDER::Typ nOrder) const
 				return FALSE;
 			for(CShips::const_iterator i = begin(); i != end(); ++i)
 			{
-				if (i->GetStationBuildPoints() < 1)
+				if (i->second.GetStationBuildPoints() < 1)
 					return FALSE;
 			}
 			// Haben wir bis jetzt kein FALSE zurückgegeben besitzt jedes Schiff in der Flotte "StationBuildPoints"
@@ -365,7 +368,7 @@ BOOLEAN CShips::CheckOrder(SHIP_ORDER::Typ nOrder) const
 				return FALSE;
 			for(CShips::const_iterator i = begin(); i != end(); ++i)
 			{
-				if (!i->HasSpecial(SHIP_SPECIAL::BLOCKADESHIP))
+				if (!i->second.HasSpecial(SHIP_SPECIAL::BLOCKADESHIP))
 					return FALSE;
 			}
 			return TRUE;
@@ -377,7 +380,7 @@ BOOLEAN CShips::CheckOrder(SHIP_ORDER::Typ nOrder) const
 				return FALSE;
 			for(CShips::const_iterator i = begin(); i != end(); ++i)
 			{
-				if (i->GetCloak())
+				if (i->second.GetCloak())
 					return FALSE;
 			}
 			return TRUE;
@@ -389,7 +392,7 @@ BOOLEAN CShips::CheckOrder(SHIP_ORDER::Typ nOrder) const
 bool CShips::AllOnTactic(COMBAT_TACTIC::Typ tactic) const {
 	for(CShips::const_iterator i = begin(); i != end(); ++i)
 	{
-		if(i->GetCombatTactic() != tactic)
+		if(i->second.GetCombatTactic() != tactic)
 			return false;
 	}
 	return true;
@@ -401,7 +404,7 @@ bool CShips::HasFleet() const {
 
 bool CShips::NeedsRepair() const {
 	for(CShips::const_iterator i = begin(); i != end(); ++i) {
-		if(i->NeedsRepair())
+		if(i->second.NeedsRepair())
 			return true;
 	}
 	return m_Leader.NeedsRepair();
@@ -409,14 +412,14 @@ bool CShips::NeedsRepair() const {
 
 bool CShips::FleetHasTroops() const {
 	for(CShips::const_iterator j = begin(); j != end(); ++j)
-		if(j->FleetHasTroops())
+		if(j->second.FleetHasTroops())
 			return true;
 	return m_Leader.HasTroops();
 }
 
 bool CShips::HasVeteran() const {
 	for(CShips::const_iterator j = begin(); j != end(); ++j)
-		if(j->HasVeteran())
+		if(j->second.HasVeteran())
 			return true;
 	return m_Leader.IsVeteran();
 }
@@ -429,14 +432,14 @@ CShips CShips::GiveFleetToFleetsFirstShip() {
 	assert(HasFleet());
 	// erstes Schiff aus der Flotte holen
 	CShips::iterator i = begin();
-	CShips new_fleet_ship = *i;
+	CShips new_fleet_ship = i->second;
 
 	while(true)
 	{
 		++i;
 		if(i == end())
 			break;
-		new_fleet_ship.AddShipToFleet(*i);
+		new_fleet_ship.AddShipToFleet(i->second);
 	}
 	DeleteFleet();
 	return new_fleet_ship;
@@ -461,7 +464,7 @@ void CShips::DrawShip(Gdiplus::Graphics* g, CGraphicPool* pGraphicPool, const CP
 
 void CShips::Repair(BOOL bAtShipPort, bool bFasterShieldRecharge) {
 	for(CShips::iterator i = begin(); i != end(); ++i)
-		i->Repair(bAtShipPort, bFasterShieldRecharge);
+		i->second.Repair(bAtShipPort, bFasterShieldRecharge);
 
 	if(m_Leader.GetCurrentOrder() == SHIP_ORDER::REPAIR && (!NeedsRepair() || !bAtShipPort))
 		m_Leader.UnsetCurrentOrder();
@@ -469,7 +472,7 @@ void CShips::Repair(BOOL bAtShipPort, bool bFasterShieldRecharge) {
 
 void CShips::RetreatFleet(const CPoint& RetreatSector) {
 	for(CShips::iterator j = begin(); j != end(); ++j)
-		j->Retreat(RetreatSector);
+		j->second.Retreat(RetreatSector);
 }
 
 void CShips::CalcEffects(CSector& sector, CRace* pRace,
@@ -478,12 +481,12 @@ void CShips::CalcEffects(CSector& sector, CRace* pRace,
 		m_Leader.CalcEffectsForSingleShip(sector, pRace, bDeactivatedShipScanner, bBetterScanner, false);
 		// wenn das Schiff eine Flotte besitzt, dann die Schiffe in der Flotte auch beachten
 		for(CShips::iterator j = begin(); j != end(); ++j)
-			j->m_Leader.CalcEffectsForSingleShip(sector, pRace, bDeactivatedShipScanner, bBetterScanner, true);
+			j->second.m_Leader.CalcEffectsForSingleShip(sector, pRace, bDeactivatedShipScanner, bBetterScanner, true);
 }
 
 CString CShips::SanityCheckUniqueness(std::set<CString>& already_encountered) const {
 	for(CShips::const_iterator i = begin(); i != end(); ++i) {
-		const CString& duplicate = i->SanityCheckUniqueness(already_encountered);
+		const CString& duplicate = i->second.SanityCheckUniqueness(already_encountered);
 		if(!duplicate.IsEmpty())
 			return duplicate;
 	}

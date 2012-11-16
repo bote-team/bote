@@ -155,8 +155,8 @@ void CStatistics::GetDemographicsMilitary(const CString& sRaceID, int& nPlace, f
 			mMap[pShip->GetOwnerOfShip()] += pShip->GetCompleteOffensivePower() + pShip->GetCompleteOffensivePower() / 2;
 		// Schiffe in der Flotte beachten
 		for(CShips::const_iterator j = pShip->begin(); j != pShip->end(); ++j)
-			if (!j->IsStation() && !j->IsAlien())
-				mMap[j->GetOwnerOfShip()] += j->GetCompleteOffensivePower() + j->GetCompleteOffensivePower() / 2;
+			if (!j->second.IsStation() && !j->second.IsAlien())
+				mMap[j->second.GetOwnerOfShip()] += j->second.GetCompleteOffensivePower() + j->second.GetCompleteOffensivePower() / 2;
 	}
 
 	CalcDemoValues(sRaceID, &mMap, nPlace, fValue, fAverage, fFirst, fLast);

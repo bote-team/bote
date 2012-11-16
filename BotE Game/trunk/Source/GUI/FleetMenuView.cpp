@@ -273,10 +273,10 @@ void CFleetMenuView::DrawFleetMenue(Graphics* g)
 		if (counter < m_iFleetPage*18 && counter >= (m_iFleetPage-1)*18)
 		{
 			//bool bMarked = (i + 1 == pDoc->GetNumberOfTheShipInFleet());
-			bool bMarked = &*i == m_pMarkedShip;
+			bool bMarked = &i->second == m_pMarkedShip;
 			CPoint pt(250 * column, 65 * row + 60);
-			i->DrawShip(g, pDoc->GetGraphicPool(), pt, bMarked, bUnknown, FALSE, normalColor, markColor, font);
-			m_vShipRects.push_back(pair<CRect, CShips*>(CRect(pt.x, pt.y + 20, pt.x + 250, pt.y + 85), &*i));
+			i->second.DrawShip(g, pDoc->GetGraphicPool(), pt, bMarked, bUnknown, FALSE, normalColor, markColor, font);
+			m_vShipRects.push_back(pair<CRect, CShips*>(CRect(pt.x, pt.y + 20, pt.x + 250, pt.y + 85), &i->second));
 		}
 		row++;
 		counter++;
@@ -407,7 +407,7 @@ void CFleetMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 									pDoc->SetNumberOfFleetShip(pDoc->GetNumberOfFleetShip()-1);
 								// Wenn wir das Schiff da hinzugefügt haben, dann müssen wir das aus der normalen Schiffsliste
 								// rausnehmen, damit es nicht zweimal im Spiel vorkommt
-								pDoc->m_ShipArray.RemoveAt(pDoc->m_ShipArray.begin() + i);
+								pDoc->m_ShipArray.RemoveAt(pDoc->m_ShipArray.iterator_at(i));
 								// Wenn wir das letzte Schiff entfernt haben, dann müssen wir die angeklickte Nummer im Spiel
 								// um eins zurücknehmen
 								if (i == pDoc->m_ShipArray.GetSize())
@@ -433,8 +433,8 @@ void CFleetMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 					|| whichRect == 6)
 				{
 					// Das Schiff welches wir aus der Flotte nehmen stecken wir wieder in das normale Schiffsarray
-					pDoc->m_ShipArray.Add(pDoc->m_ShipArray.end(), *(pDoc->FleetShip().GetShipFromFleet(i)));
-					pDoc->FleetShip().RemoveShipFromFleet(i);
+					pDoc->m_ShipArray.Add(*(pDoc->FleetShip().GetShipFromFleet(i)));
+					pDoc->FleetShip().RemoveShipFromFleet(pDoc->FleetShip().iterator_at(i));
 					// Wenn wir das letzte Schiff in der Flotte entfernt haben, dann müssen wir
 					// das markierte Schiff dekrementieren, da sonst ein ungültiger Feldaufruf kommt
 					if (i >= (short)pDoc->FleetShip().GetFleetSize())
@@ -475,8 +475,8 @@ void CFleetMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		if ((i != 0 && m_iFleetPage == 1) || m_iFleetPage > 1)
 		{
 			// Das Schiff welches wir aus der Flotte nehmen stecken wir wieder in das normale Schiffsarray
-			pDoc->m_ShipArray.Add(pDoc->m_ShipArray.end(), *(pDoc->FleetShip().GetShipFromFleet(i-1)));
-			pDoc->FleetShip().RemoveShipFromFleet(i-1);
+			pDoc->m_ShipArray.Add(*(pDoc->FleetShip().GetShipFromFleet(i-1)));
+			pDoc->FleetShip().RemoveShipFromFleet(pDoc->FleetShip().iterator_at(i-1));
 			// Wenn wir das letzte Schiff in der Flotte entfernt haben, dann müssen wir
 			// das markierte Schiff dekrementieren, da sonst ein ungültiger Feldaufruf kommt
 			if (i > (short)pDoc->FleetShip().GetFleetSize())
@@ -499,7 +499,7 @@ void CFleetMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		{
 			CShips& ship = pDoc->FleetShip();
 			const CShips& new_fleetship = ship.GiveFleetToFleetsFirstShip();
-			pDoc->m_ShipArray.Add(pDoc->m_ShipArray.end(), new_fleetship);
+			pDoc->m_ShipArray.Add(new_fleetship);
 
 			pDoc->SetNumberOfFleetShip(pDoc->m_ShipArray.GetUpperBound());
 			pDoc->SetCurrentShipIndex(pDoc->m_ShipArray.GetUpperBound());
@@ -533,9 +533,9 @@ void CFleetMenuView::OnMouseMove(UINT nFlags, CPoint point)
 			if (bNewMarkedShip)
 			{
 				for (CShips::const_iterator j = pDoc->FleetShip().begin(); j != pDoc->FleetShip().end(); ++j)
-					if (&*j == m_vShipRects[i].second)
+					if (&j->second == m_vShipRects[i].second)
 					{
-						pDoc->SetNumberOfTheShipInFleet(j - pDoc->FleetShip().begin() + 1);
+						pDoc->SetNumberOfTheShipInFleet(pDoc->FleetShip().index_of(j) + 1);
 						pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
 						break;
 					}

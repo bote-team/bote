@@ -434,19 +434,18 @@ bool CShipAI::DoBombardSystem(CShips* pShip)
 		nShipDefend *= 1.25;
 
 		int nShipValue = 0;
-		for (int i = 0; i < m_pDoc->m_ShipArray.GetSize(); i++)
+
+		for(CShipArray::iterator i = m_pDoc->m_ShipArray.begin(); i != m_pDoc->m_ShipArray.end(); ++i)
 		{
-			CShips* pTempShip = &m_pDoc->m_ShipArray.GetAt(i);
-
-			if (pTempShip->GetOwnerOfShip() != pShip->GetOwnerOfShip())
+			if (i->second.GetOwnerOfShip() != pShip->GetOwnerOfShip())
 				continue;
 
-			if (pTempShip->GetKO() != pShip->GetKO())
+			if (i->second.GetKO() != pShip->GetKO())
 				continue;
 
-			nShipValue += pTempShip->GetHull()->GetCurrentHull();
-			for (CShips::iterator m = pTempShip->begin(); m != pTempShip->end(); ++m)
-				nShipValue += m->GetHull()->GetCurrentHull();
+			nShipValue += i->second.GetHull()->GetCurrentHull();
+			for (CShips::iterator m = i->second.begin(); m != i->second.end(); ++m)
+				nShipValue += m->second.GetHull()->GetCurrentHull();
 
 			if (nShipValue > nShipDefend)
 				break;
@@ -506,46 +505,46 @@ void CShipAI::DoMakeFleet(CShips* pShip, int nIndex)
 		return;
 
 	ASSERT(pShip == &m_pDoc->m_ShipArray.GetAt(nIndex));
-	for (int i = nIndex + 1; i < m_pDoc->m_ShipArray.GetSize(); i++)
+	for(CShipArray::iterator i = m_pDoc->m_ShipArray.iterator_at(nIndex + 1);
+		i != m_pDoc->m_ShipArray.end(); ++i)
 	{
-		CShips* pOtherShip = &m_pDoc->m_ShipArray.GetAt(i);
-
 		// Schiffe müssen von der selben Rasse sein
-		if (pShip->GetOwnerOfShip() != pOtherShip->GetOwnerOfShip())
+		if (pShip->GetOwnerOfShip() != i->second.GetOwnerOfShip())
 			continue;
 
 		// Schiffe müssen sich im selben Sektor befinden
-		if (pShip->GetKO() != pOtherShip->GetKO())
+		if (pShip->GetKO() != i->second.GetKO())
 			continue;
 
 		// beide Schiffe müssen die selbe Reichweite haben
-		if (pShip->GetRange() != pOtherShip->GetRange())
+		if (pShip->GetRange() != i->second.GetRange())
 			continue;
 
 		// das hinzuzufügende Schiff darf kein Außenposten oder Sternbasis sein
-		if (pOtherShip->IsStation())
+		if (i->second.IsStation())
 			continue;
 
 		// das hinzuzufügende Schiff darf kein individuelles Ziel haben
-		if (pOtherShip->GetPath()->GetSize() > 0)
+		if (i->second.GetPath()->GetSize() > 0)
 			continue;
 
 		// der Tarnstatus muss gleich sein (also keine getarnten und ungetarnte Schiffe in eine Flotte)
-		if (pShip->GetCloak() != pOtherShip->GetCloak())
+		if (pShip->GetCloak() != i->second.GetCloak())
 			continue;
 
 		// wenn sich das Führungsschiff tarnen kann, dann muss das hinzuzufügende Schiff sich auch tarnen können
-		if ((pShip->GetStealthPower() > 3 && pOtherShip->GetStealthPower() <= 3) || (pShip->GetStealthPower() <= 3 && pOtherShip->GetStealthPower() > 3))
+		if ((pShip->GetStealthPower() > 3 && i->second.GetStealthPower() <= 3) || (pShip->GetStealthPower() <= 3 && i->second.GetStealthPower() > 3))
 			continue;
 
 		// es muss sich bei beiden Schiffen um Kriegsschiffe handeln oder bei beiden Schiffen um Transporter oder bei beiden Schiffen um Kolonieschiffe
-		if ((!pShip->IsNonCombat() && !pOtherShip->IsNonCombat())
-			||(pShip->GetShipType() == SHIP_TYPE::TRANSPORTER && pOtherShip->GetShipType() == SHIP_TYPE::TRANSPORTER && pOtherShip->GetCurrentOrder() < SHIP_ORDER::BUILD_OUTPOST)
-			||(pShip->GetShipType() == SHIP_TYPE::COLONYSHIP && pOtherShip->GetShipType() == SHIP_TYPE::COLONYSHIP && pOtherShip->GetCurrentOrder() < SHIP_ORDER::COLONIZE))
+		if ((!pShip->IsNonCombat() && !i->second.IsNonCombat())
+			||(pShip->GetShipType() == SHIP_TYPE::TRANSPORTER && i->second.GetShipType() == SHIP_TYPE::TRANSPORTER && i->second.GetCurrentOrder() < SHIP_ORDER::BUILD_OUTPOST)
+			||(pShip->GetShipType() == SHIP_TYPE::COLONYSHIP && i->second.GetShipType() == SHIP_TYPE::COLONYSHIP && i->second.GetCurrentOrder() < SHIP_ORDER::COLONIZE))
 		{
-			pShip->AddShipToFleet(*pOtherShip);
-			m_pDoc->m_ShipArray.RemoveAt(m_pDoc->m_ShipArray.begin() + i);
-			--i;
+			pShip->AddShipToFleet(i->second);
+			m_pDoc->m_ShipArray.RemoveAt(i);
+			if(i != m_pDoc->m_ShipArray.begin())
+				--i;
 		}
 	}
 }

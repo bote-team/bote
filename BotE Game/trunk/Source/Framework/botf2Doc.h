@@ -56,7 +56,7 @@ protected: // Nur aus Serialisierung erzeugen
 	CGlobalBuildings m_GlobalBuildings;	// alle gebauten Gebäude aller Rassen im Spiel
 	short m_iNumberOfFleetShip;			// Das Schiff welches sozusagen die Flotte anführt
 	short m_iNumberOfTheShipInFleet;	// Nummber des Schiffes in der Flotte, wenn wir ein Flotte haben
-	short m_NumberOfTheShipInArray;		// Hilfsvariable, mit der auf ein spezielles Schiff im Array zugekriffen werden kann
+	//int m_NumberOfTheShipInArray;		// Hilfsvariable, mit der auf ein spezielles Schiff im Array zugekriffen werden kann
 
 	CStatistics m_Statistics;			///< Statistikobjekt, in dem Statistiken des Spiels gespeichert sind
 
@@ -150,11 +150,11 @@ public:
 	}
 	//returns the ship at m_NumberOfTheShipInArray
 	const CShips& CurrentShip() const {
-		return GetShip(m_NumberOfTheShipInArray);
+		return m_ShipArray.CurrentShip();
 	}
 	//returns the ship at m_NumberOfTheShipInArray
 	CShips& CurrentShip() {
-		return GetShip(m_NumberOfTheShipInArray);
+		return m_ShipArray.CurrentShip();
 	}
 	//return ship at m_iNumberOfFleetShip
 	const CShips& FleetShip() const {
@@ -237,7 +237,7 @@ public:
 	/// @param ID ID des Schiffes
 	/// @param KO Sektorkoordinate des Schiffes
 	/// @param sOwnerID Besitzer des Schiffes
-	void BuildShip(int nID, const CPoint& KO, const CString& sOwnerID);
+	CShipArray::iterator BuildShip(int nID, const CPoint& KO, const CString& sOwnerID);
 
 	/// Funktion zum Löschen des Schiffes aus dem Schiffsarray.
 	/// @param ship Iterator des Schiffes im Array
@@ -264,7 +264,9 @@ public:
 
 	USHORT GetCurrentRound() const {return m_iRound;}
 
-	USHORT GetCurrentShipIndex(void) const {return m_NumberOfTheShipInArray;}
+	int GetCurrentShipIndex(void) const {
+		return m_ShipArray.CurrentShipsIndex();
+	}
 	USHORT GetNumberOfFleetShip(void) const {return m_iNumberOfFleetShip;}
 	USHORT GetNumberOfTheShipInFleet(void) const {return m_iNumberOfTheShipInFleet;}
 	void SetCurrentShipIndex(int NumberOfTheShipInArray);

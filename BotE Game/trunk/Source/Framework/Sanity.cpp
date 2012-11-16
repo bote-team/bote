@@ -70,8 +70,8 @@ void CSanity::SanityCheckFleet(const CShips& ship)
 {
 	SanityCheckShip(ship.Leader());
 	for(CShips::const_iterator i = ship.begin(); i != ship.end(); ++i) {
-		assert(!i->HasFleet());
-		SanityCheckShip(i->Leader());
+		assert(!i->second.HasFleet());
+		SanityCheckShip(i->second.Leader());
 	}
 }
 

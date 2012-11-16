@@ -1403,8 +1403,8 @@ BOOLEAN CIntelCalc::ExecuteMilitarySabotage(CMajor* pRace, CMajor* pEnemyRace, C
 					{
 						for(CShips::const_iterator j = m_pDoc->m_ShipArray.begin();
 								j != m_pDoc->m_ShipArray.end(); ++j)
-							if (j->GetID() == report->GetID())
-								allShips.Add(CPoint(i,j - m_pDoc->m_ShipArray.begin()));
+							if (j->second.GetID() == report->GetID())
+								allShips.Add(CPoint(i, m_pDoc->m_ShipArray.index_of(j)));
 					}
 					if (m_pDoc->m_ShipArray.GetAt(i).GetID() == report->GetID())
 						allShips.Add(CPoint(i,-1));	// -1 als y Wert bedeutet, dass dieses Schiff in keiner Flotte vorkommt
@@ -1475,15 +1475,16 @@ BOOLEAN CIntelCalc::ExecuteMilitarySabotage(CMajor* pRace, CMajor* pEnemyRace, C
 					{
 						const CShips& new_fleetship = ship->GiveFleetToFleetsFirstShip();
 						// neues Flottenschiff dem Array hinzufügen
-						m_pDoc->m_ShipArray.Add(m_pDoc->m_ShipArray.end(), new_fleetship);
+						m_pDoc->m_ShipArray.Add(new_fleetship);
 						// Schiff nochmal neu holen, da der Vektor verändert wurde und so sich auch der Zeiger ändern kann
 						ship = &m_pDoc->m_ShipArray.GetAt(n.x);
 					}
 				}
 				else	// Schiff ist in Flotte
 				{
-					m_pDoc->m_ShipArray.Add(m_pDoc->m_ShipArray.end(), *ship);
-					m_pDoc->m_ShipArray.GetAt(n.x).RemoveShipFromFleet(n.y);
+					m_pDoc->m_ShipArray.Add(*ship);
+					CShips& ship = m_pDoc->m_ShipArray.GetAt(n.x);
+					ship.RemoveShipFromFleet(ship.iterator_at(n.y));
 				}
 				if (report)
 				{
