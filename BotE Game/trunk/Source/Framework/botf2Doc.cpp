@@ -535,8 +535,8 @@ void CBotf2Doc::SerializeNextRoundData(CArchive &ar)
 		network::RACE client = m_pRaceCtrl->GetMappedClientID(pPlayer->GetRaceID());
 
 		// Ausgehend vom Pfad des Schiffes den Sektoren mitteilen, das durch sie ein Schiff fliegt
-		for (int y = 0; y < m_ShipArray.GetSize(); y++) {
-			CShips& ship = m_ShipArray.GetAt(y);
+		for(CShipArray::const_iterator y = m_ShipArray.begin(); y != m_ShipArray.end(); ++y) {
+			const CShips& ship = y->second;
 			if (ship.GetOwnerOfShip() == pPlayer->GetRaceID()) {
 				const CArray<Sector>& path = *ship.GetPath();
 				for (int i = 0; i < path.GetSize(); i++)
@@ -1290,9 +1290,10 @@ void CBotf2Doc::GenerateGalaxy()
 //BEGINN: helper functions for NextRound()
 static bool HumanPlayerInCombat(const CShipArray& ships, const CPoint& CurrentCombatSector,
 		const std::map<CString, CMajor*>& majors) {
-	for(int i = 0; i < ships.GetSize(); ++i)
+
+	for(CShipArray::const_iterator i = ships.begin(); i != ships.end(); ++i)
 	{
-		const CShips* pShip = &ships.GetAt(i);
+		const CShips* pShip = &i->second;
 		if (pShip->GetKO() != CurrentCombatSector)
 			continue;
 		const std::map<CString, CMajor*>::const_iterator major = majors.find(pShip->GetOwnerOfShip());
@@ -2528,10 +2529,10 @@ void CBotf2Doc::CalcSystemAttack()
 				CString sDefender = GetSector(p.x, p.y).GetOwnerOfSector();
 				// Angreifer bzw. neuer Besitzer des Systems nach dem Angriff
 				set<CString> attackers;
-				for (int i = 0; i < m_ShipArray.GetSize(); i++)
-					if (m_ShipArray.GetAt(i).GetKO() == p && m_ShipArray.GetAt(i).GetCurrentOrder() == SHIP_ORDER::ATTACK_SYSTEM)
+				for(CShipArray::const_iterator i = m_ShipArray.begin(); i != m_ShipArray.end(); ++i)
+					if (i->second.GetKO() == p && i->second.GetCurrentOrder() == SHIP_ORDER::ATTACK_SYSTEM)
 					{
-						CString sOwner = m_ShipArray.GetAt(i).GetOwnerOfShip();
+						const CString& sOwner = i->second.GetOwnerOfShip();
 						if (!sOwner.IsEmpty() && m_pRaceCtrl->GetRace(sOwner)->IsMajor())
 							attackers.insert(sOwner);
 					}
@@ -4853,9 +4854,9 @@ bool CBotf2Doc::IsShipCombat()
 	// Jetzt gehen wir nochmal alle Sektoren durch, wenn in einem Sektor Schiffe mehrerer verschiedener Rassen sind,
 	// die Schiffe nicht auf Meiden gestellt sind und die Rassen untereinander nicht alle mindst. einen Freundschafts-
 	// vertrag haben, dann kommt es in diesem Sektor zum Kampf
-	for (int y = 0; y < m_ShipArray.GetSize(); y++)
+	for(CShipArray::const_iterator y = m_ShipArray.begin(); y != m_ShipArray.end(); ++y)
 	{
-		const CShips* pShip = &m_ShipArray.GetAt(y);
+		const CShips* pShip = &y->second;
 		const CPoint& p = pShip->GetKO();
 		const CString& sector = GetSector(p.x, p.y).GetName(TRUE);
 		// Wenn unser Schiff auf Angreifen gestellt ist
@@ -4864,9 +4865,9 @@ bool CBotf2Doc::IsShipCombat()
 			|| m_sCombatSectors.find(sector) != m_sCombatSectors.end())
 			continue;
 		// Wenn noch kein Kampf in dem Sektor stattfand, dann kommt es möglicherweise hier zum Kampf
-		for (int i = 0; i < m_ShipArray.GetSize(); i++)
+		for(CShipArray::const_iterator i = m_ShipArray.begin(); i != m_ShipArray.end(); ++i)
 		{
-			const CShips* pOtherShip = &m_ShipArray.GetAt(i);
+			const CShips* pOtherShip = &i->second;
 			const CString& sOwner1 = pShip->GetOwnerOfShip();
 			const CString& sOwner2 = pOtherShip->GetOwnerOfShip();
 			// nur weiter, wenn das Schiff nicht unserer Rasse gehört
@@ -5326,9 +5327,9 @@ void CBotf2Doc::CalcContactMinor(CMajor& Major, const CSector& sector, const CPo
 /// Diese Funktion überprüft, ob neue Rassen kennengelernt wurden.
 void CBotf2Doc::CalcContactNewRaces()
 {
-	for (int y = 0; y < m_ShipArray.GetSize(); y++)
+	for(CShipArray::const_iterator y = m_ShipArray.begin(); y != m_ShipArray.end(); ++y)
 	{
-		const CShips* pShip = &m_ShipArray.GetAt(y);
+		const CShips* pShip = &y->second;
 		const CString& sRace = pShip->GetOwnerOfShip();
 		CRace* pRace = m_pRaceCtrl->GetRace(sRace);
 		// kann die Rasse andere Rassen kennenlernen?
@@ -5873,9 +5874,9 @@ void CBotf2Doc::CalcAlienShipEffects()
 			if (GetSector(co.x, co.y).GetIsShipInSector() && rand()%3 == 0)
 			{
 				// alle Schiffe im Sektor zu Seuchenschiffen machen
-				for (int y = 0; y < m_ShipArray.GetSize(); y++)
+				for(CShipArray::const_iterator y = m_ShipArray.begin(); y != m_ShipArray.end(); ++y)
 				{
-					CShips* pOtherShip = &m_ShipArray.GetAt(y);
+					const CShips* pOtherShip = &y->second;
 					// Schiff im gleichen Sektor?
 					if (pOtherShip->GetKO() != co)
 						continue;

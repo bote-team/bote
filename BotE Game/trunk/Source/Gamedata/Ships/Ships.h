@@ -104,6 +104,7 @@ public:
 		CPoint GetKO() const {return m_Leader.GetKO();}
 		CPoint GetTargetKO() const {return m_Leader.GetTargetKO();}
 		CArray<Sector>* GetPath() {return m_Leader.GetPath();}
+		const CArray<Sector>* GetPath() const {return m_Leader.GetPath();}
 		const CString& GetOwnerOfShip(void) const {return m_Leader.GetOwnerOfShip();}
 		USHORT GetMaintenanceCosts() const {return m_Leader.GetMaintenanceCosts();}
 		BYTE GetStealthPower() const {return m_Leader.GetStealthPower(); }

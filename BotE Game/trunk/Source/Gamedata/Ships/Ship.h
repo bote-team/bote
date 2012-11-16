@@ -83,6 +83,7 @@ public:
 	CPoint GetKO() const {return m_KO;}
 	CPoint GetTargetKO() const {return m_TargetKO[0];}
 	CArray<Sector>* GetPath() {return &m_Path;}
+	const CArray<Sector>* GetPath() const {return &m_Path;}
 	const CString& GetOwnerOfShip(void) const {return m_sOwnerOfShip;}
 	USHORT GetMaintenanceCosts() const {return m_iMaintenanceCosts;}
 	BYTE GetStealthPower() const {return m_iStealthPower;}

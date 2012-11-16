@@ -568,13 +568,12 @@ void CShipBottomView::OnDraw(CDC* dc)
 				|| (pDoc->CurrentShip().HasFleet()
 				&& pDoc->CurrentShip().CheckOrder(SHIP_ORDER::BUILD_OUTPOST) == TRUE)))
 			{
-				USHORT n = pDoc->GetCurrentShipIndex();
 				CPoint ShipKO = pDoc->GetKO();
 				// hier schauen, ob ich in der Schiffsinfoliste schon einen Außenposten habe den ich bauen kann, wenn in dem
 				// Sector noch kein Außenposten steht und ob ich diesen in dem Sector überhaupt bauen kann. Das geht nur
 				// wenn der Sektor mir oder niemanden gehört
-				if (pDoc->CurrentSector().GetOutpost(pDoc->m_ShipArray.GetAt(n).GetOwnerOfShip()) == FALSE
-					&& pDoc->CurrentSector().GetStarbase(pDoc->m_ShipArray.GetAt(n).GetOwnerOfShip()) == FALSE
+				if (pDoc->CurrentSector().GetOutpost(pDoc->CurrentShip().GetOwnerOfShip()) == FALSE
+					&& pDoc->CurrentSector().GetStarbase(pDoc->CurrentShip().GetOwnerOfShip()) == FALSE
 					&& (pDoc->CurrentSector().GetOwnerOfSector() == ""
 					|| pDoc->CurrentSector().GetOwnerOfSector() == pDoc->CurrentShip().GetOwnerOfShip()))
 				{
@@ -594,8 +593,8 @@ void CShipBottomView::OnDraw(CDC* dc)
 							}
 				}
 				// Wenn hier schon ein Außenposten steht, können wir vielleicht auch eine Sternbasis bauen
-				else if (pDoc->CurrentSector().GetOutpost(pDoc->m_ShipArray.GetAt(n).GetOwnerOfShip()) == TRUE
-					&& pDoc->CurrentSector().GetStarbase(pDoc->m_ShipArray.GetAt(n).GetOwnerOfShip()) == FALSE
+				else if (pDoc->CurrentSector().GetOutpost(pDoc->CurrentShip().GetOwnerOfShip()) == TRUE
+					&& pDoc->CurrentSector().GetStarbase(pDoc->CurrentShip().GetOwnerOfShip()) == FALSE
 					&& pDoc->CurrentSector().GetOwnerOfSector() == pDoc->CurrentShip().GetOwnerOfShip())
 				{
 					// Hier überprüfen, ob ich eine Sternbasis technologisch überhaupt bauen kann

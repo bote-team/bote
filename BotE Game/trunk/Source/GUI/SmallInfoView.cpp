@@ -411,18 +411,18 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 			short range = 0;
 			short speed = 0;
 			// Wenn das Schiff keine Flotte anführt
-			if (!pDoc->m_ShipArray.GetAt(n).HasFleet())
+			const CShips& ship = pDoc->m_ShipArray.GetAt(n);
+			if (!ship.HasFleet())
 			{
-				range = 3 - pDoc->m_ShipArray.GetAt(n).GetRange();
-				speed = pDoc->m_ShipArray.GetAt(n).GetSpeed();
+				range = 3 - ship.GetRange();
+				speed = ship.GetSpeed();
 			}
 			else
 			{
-				range = 3-pDoc->m_ShipArray.GetAt(n).GetFleetRange(&pDoc->m_ShipArray.GetAt(n).Leader());
-				speed = pDoc->m_ShipArray.GetAt(n).GetFleetSpeed(&pDoc->m_ShipArray.GetAt(n).Leader());
+				range = 3-ship.GetFleetRange(&ship.Leader());
+				speed = ship.GetFleetSpeed(&ship.Leader());
 			}
 			CArray<Sector> path;
-			const CShips& ship = pDoc->m_ShipArray.GetAt(n);
 			Sector position(ship.GetKO().x, ship.GetKO().y);
 			Sector target(ship.GetTargetKO().x, ship.GetTargetKO().y);
 			pMajor->GetStarmap()->CalcPath(position, target, range, speed, path);

@@ -1395,19 +1395,19 @@ BOOLEAN CIntelCalc::ExecuteMilitarySabotage(CMajor* pRace, CMajor* pEnemyRace, C
 			CShips* ship = NULL;
 			// überprüfen, ob die jeweilige Station oder das jeweilige Schiff auch noch im System vorhanden ist
 			CArray<CPoint> allShips;	// x für Schiffsposition im Feld, y für Schiffsposition in der Flotte
-			for (int i = 0; i < m_pDoc->m_ShipArray.GetSize(); i++)
-				if (m_pDoc->m_ShipArray.GetAt(i).GetKO() == report->GetKO() && m_pDoc->m_ShipArray.GetAt(i).GetOwnerOfShip() != report->GetOwner())
+			for(CShipArray::const_iterator i = m_pDoc->m_ShipArray.begin(); i != m_pDoc->m_ShipArray.end(); ++i)
+				if (i->second.GetKO() == report->GetKO() && i->second.GetOwnerOfShip() != report->GetOwner())
 				{
 					// besitzt dieses Schiff eine Flotte, so könnte sich unser Schiff auch in der Flotte befinden
-					if (m_pDoc->m_ShipArray.GetAt(i).HasFleet())
+					if (i->second.HasFleet())
 					{
 						for(CShips::const_iterator j = m_pDoc->m_ShipArray.begin();
 								j != m_pDoc->m_ShipArray.end(); ++j)
 							if (j->second.GetID() == report->GetID())
-								allShips.Add(CPoint(i, m_pDoc->m_ShipArray.index_of(j)));
+								allShips.Add(CPoint(m_pDoc->m_ShipArray.index_of(i), m_pDoc->m_ShipArray.index_of(j)));
 					}
-					if (m_pDoc->m_ShipArray.GetAt(i).GetID() == report->GetID())
-						allShips.Add(CPoint(i,-1));	// -1 als y Wert bedeutet, dass dieses Schiff in keiner Flotte vorkommt
+					if (i->second.GetID() == report->GetID())
+						allShips.Add(CPoint(m_pDoc->m_ShipArray.index_of(i),-1));	// -1 als y Wert bedeutet, dass dieses Schiff in keiner Flotte vorkommt
 				}
 			// aus allen möglichen Schiffen, welche die ID unseres Reports und im richtigen Sektor sind eins zufällig aussuchen
 			CPoint n = CPoint(-1,0);

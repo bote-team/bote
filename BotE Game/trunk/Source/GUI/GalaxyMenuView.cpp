@@ -718,11 +718,13 @@ void CGalaxyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 					if (s.ShouldDrawShip(*pMajor, it->first))
 						{
 							if(it->first == pMajor->GetRaceID()) {
-								for(int i = 0; i < pDoc->m_ShipArray.GetSize(); ++i) {
-									const CShips& ship = pDoc->m_ShipArray.GetAt(i);
+								for(CShipArray::const_iterator i = pDoc->m_ShipArray.begin();
+										i != pDoc->m_ShipArray.end(); ++i) {
+									const CShips& ship = i->second;
 									const CPoint& point = ship.GetKO();
 									if(sector == Sector(point.x, point.y)) {
-										m_PreviouslyJumpedToShip = RememberedShip(i, ship.GetShipName());
+										m_PreviouslyJumpedToShip = RememberedShip(
+											pDoc->m_ShipArray.index_of(i), ship.GetShipName());
 										break;
 									}
 								}
@@ -1319,18 +1321,22 @@ void CGalaxyMenuView::SearchNextIdleShipAndJumpToIt(CBotf2Doc* pDoc, SHIP_ORDER:
 	int start_at = -1;
 	int stop_at = size - 1;
 	CShips* previous_ship = NULL;
-	if(m_PreviouslyJumpedToShip.index < size
-		&& pDoc->m_ShipArray.GetAt(m_PreviouslyJumpedToShip.index).GetOwnerOfShip()
-			== pMajor->GetRaceID()
-		&& Sector(pDoc->m_ShipArray.GetAt(m_PreviouslyJumpedToShip.index).GetKO())
-			== pMajor->GetStarmap()->GetSelection()
-		&& pDoc->m_ShipArray.GetAt(m_PreviouslyJumpedToShip.index).GetShipName()
-			== m_PreviouslyJumpedToShip.name)
+	CShips* perhaps_previous_ship = NULL;//this variable is perhaps/supposedly redundant to previous_ship
+	if(m_PreviouslyJumpedToShip.index < size)
 	{
-		//the previously jumped to ship is still valid
-		start_at = m_PreviouslyJumpedToShip.index;
-		stop_at = m_PreviouslyJumpedToShip.index;
-		previous_ship = &pDoc->m_ShipArray.GetAt(m_PreviouslyJumpedToShip.index);
+		perhaps_previous_ship = &pDoc->m_ShipArray.GetAt(m_PreviouslyJumpedToShip.index);
+		if(perhaps_previous_ship->GetOwnerOfShip()
+				== pMajor->GetRaceID()
+				&& Sector(perhaps_previous_ship->GetKO())
+				== pMajor->GetStarmap()->GetSelection()
+				&& perhaps_previous_ship->GetShipName()
+				== m_PreviouslyJumpedToShip.name)
+		{
+			//the previously jumped to ship is still valid
+			start_at = m_PreviouslyJumpedToShip.index;
+			stop_at = m_PreviouslyJumpedToShip.index;
+			previous_ship = perhaps_previous_ship;
+		}
 	}
 
 	int i = start_at;

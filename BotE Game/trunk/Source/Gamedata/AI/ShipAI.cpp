@@ -5,6 +5,8 @@
 #include "Races\RaceController.h"
 #include "Ships/Ships.h"
 
+#include <cassert>
+
 //////////////////////////////////////////////////////////////////////
 // Konstruktion/Destruktion
 //////////////////////////////////////////////////////////////////////
@@ -58,10 +60,10 @@ void CShipAI::CalculateShipOrders(CSectorAI* SectorAI)
 	// danach einen möglichen Bombardierungssektor finden
 	CalcBombardSector();
 
-	for (int i = 0; i < m_pDoc->m_ShipArray.GetSize(); i++)
+	for(CShipArray::iterator i = m_pDoc->m_ShipArray.begin(); i != m_pDoc->m_ShipArray.end(); ++i)
 	{
-		CShips* pShip	= &m_pDoc->m_ShipArray.GetAt(i);
-		CString sOwner	= pShip->GetOwnerOfShip();
+		CShips* pShip	= &i->second;
+		const CString& sOwner	= pShip->GetOwnerOfShip();
 		CMajor* pOwner	= dynamic_cast<CMajor*>(m_pDoc->GetRaceCtrl()->GetRace(sOwner));
 
 		// gilt erstmal nur für Majors
@@ -73,7 +75,7 @@ void CShipAI::CalculateShipOrders(CSectorAI* SectorAI)
 			continue;
 
 		// Flotte versuchen zu erstellen
-		DoMakeFleet(pShip, i);
+		DoMakeFleet(pShip, m_pDoc->m_ShipArray.index_of(i));
 
 		// Vielleicht haben unsere Schiffe ein Ziel, welches sie angreifen müssen/können
 		if (DoAttackMove(pShip, pOwner))
@@ -504,7 +506,7 @@ void CShipAI::DoMakeFleet(CShips* pShip, int nIndex)
 	if (pShip->IsStation())
 		return;
 
-	ASSERT(pShip == &m_pDoc->m_ShipArray.GetAt(nIndex));
+	assert(pShip == &m_pDoc->m_ShipArray.GetAt(nIndex));
 	for(CShipArray::iterator i = m_pDoc->m_ShipArray.iterator_at(nIndex + 1);
 		i != m_pDoc->m_ShipArray.end(); ++i)
 	{
