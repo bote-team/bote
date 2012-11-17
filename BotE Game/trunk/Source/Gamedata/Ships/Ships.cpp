@@ -112,7 +112,7 @@ void CShips::Serialize(CArchive &ar)
 // getting
 //////////////////////////////////////////////////////////////////////
 
-int CShips::index_of(const CShipArray::const_iterator& position) const {
+int CShips::index_of(const CShipMap::const_iterator& position) const {
 	return m_Fleet.index_of(position);
 }
 

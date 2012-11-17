@@ -60,7 +60,7 @@ void CShipAI::CalculateShipOrders(CSectorAI* SectorAI)
 	// danach einen möglichen Bombardierungssektor finden
 	CalcBombardSector();
 
-	for(CShipArray::iterator i = m_pDoc->m_ShipArray.begin(); i != m_pDoc->m_ShipArray.end(); ++i)
+	for(CShipMap::iterator i = m_pDoc->m_ShipArray.begin(); i != m_pDoc->m_ShipArray.end(); ++i)
 	{
 		CShips* pShip	= &i->second;
 		const CString& sOwner	= pShip->GetOwnerOfShip();
@@ -437,7 +437,7 @@ bool CShipAI::DoBombardSystem(CShips* pShip)
 
 		int nShipValue = 0;
 
-		for(CShipArray::iterator i = m_pDoc->m_ShipArray.begin(); i != m_pDoc->m_ShipArray.end(); ++i)
+		for(CShipMap::iterator i = m_pDoc->m_ShipArray.begin(); i != m_pDoc->m_ShipArray.end(); ++i)
 		{
 			if (i->second.GetOwnerOfShip() != pShip->GetOwnerOfShip())
 				continue;
@@ -508,7 +508,7 @@ void CShipAI::DoMakeFleet(CShips* pShip, int nIndex)
 
 	assert(pShip == &m_pDoc->m_ShipArray.GetAt(nIndex));
 	bool increment = false;
-	for(CShipArray::iterator i = m_pDoc->m_ShipArray.iterator_at(nIndex + 1);;)
+	for(CShipMap::iterator i = m_pDoc->m_ShipArray.iterator_at(nIndex + 1);;)
 	{
 		if(increment)
 			++i;

@@ -775,7 +775,7 @@ BOOLEAN CIntelCalc::ExecuteMilitarySpy(CMajor* pRace, CMajor* pEnemyRace, CMajor
 		CArray<CShips*> ships;
 		CArray<CShips*> stations;
 		// Felder mit allen zu spionierenden Schiffe und Stationen anlegen
-		for(CShipArray::iterator i = m_pDoc->m_ShipArray.begin(); i != m_pDoc->m_ShipArray.end(); ++i)
+		for(CShipMap::iterator i = m_pDoc->m_ShipArray.begin(); i != m_pDoc->m_ShipArray.end(); ++i)
 			if (i->second.GetOwnerOfShip() == pEnemyRace->GetRaceID())
 			{
 				if (i->second.IsStation())
@@ -1395,7 +1395,7 @@ BOOLEAN CIntelCalc::ExecuteMilitarySabotage(CMajor* pRace, CMajor* pEnemyRace, C
 			CShips* ship = NULL;
 			// überprüfen, ob die jeweilige Station oder das jeweilige Schiff auch noch im System vorhanden ist
 			CArray<CPoint> allShips;	// x für Schiffsposition im Feld, y für Schiffsposition in der Flotte
-			for(CShipArray::const_iterator i = m_pDoc->m_ShipArray.begin(); i != m_pDoc->m_ShipArray.end(); ++i)
+			for(CShipMap::const_iterator i = m_pDoc->m_ShipArray.begin(); i != m_pDoc->m_ShipArray.end(); ++i)
 				if (i->second.GetKO() == report->GetKO() && i->second.GetOwnerOfShip() != report->GetOwner())
 				{
 					// besitzt dieses Schiff eine Flotte, so könnte sich unser Schiff auch in der Flotte befinden

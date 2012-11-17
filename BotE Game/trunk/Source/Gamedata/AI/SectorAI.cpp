@@ -43,7 +43,7 @@ UINT CSectorAI::GetCompleteDanger(const CString& sOwnRaceID, const CPoint& secto
 /// der einzelnen Rassen ermittelt.
 void CSectorAI::CalculateDangers()
 {
-	for(CShipArray::const_iterator i =  m_pDoc->m_ShipArray.begin(); i !=  m_pDoc->m_ShipArray.end(); ++i)
+	for(CShipMap::const_iterator i =  m_pDoc->m_ShipArray.begin(); i !=  m_pDoc->m_ShipArray.end(); ++i)
 	{
 		AddDanger(&i->second);
 		// Führt das Schiff eine Flotte an, so muss dies alles auch für die Schiffe in der Flotte getan werden

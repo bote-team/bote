@@ -164,7 +164,7 @@ void CReManager::GlobalEventMinor(CMajor* pRace, CMinor* pMinor)
 	pRace->GetEmpire()->AddMessage(message);
 }
 
-void CReManager::CalcExploreEvent(const CPoint &ko, CMajor *pRace, CShipArray* ships)
+void CReManager::CalcExploreEvent(const CPoint &ko, CMajor *pRace, CShipMap* ships)
 {
 	if(rand() % 99 >= static_cast<int>(m_uiGlobalProb))
 		return; //Es findet kein Ereignis statt
@@ -184,7 +184,7 @@ void CReManager::CalcExploreEvent(const CPoint &ko, CMajor *pRace, CShipArray* s
 		pRace->GetEmpire()->AddFP(100);
 	}else if(eventnumber==EVENTSHIPXP)
 	{
-		for(CShipArray::iterator i = ships->begin(); i != ships->end(); ++i)
+		for(CShipMap::iterator i = ships->begin(); i != ships->end(); ++i)
 		{
 			if(i->second.GetOwnerOfShip()==pRace->GetRaceID()&&i->second.GetKO()==ko)  {
 				const int additional_experience = rand() % 401 + 50;

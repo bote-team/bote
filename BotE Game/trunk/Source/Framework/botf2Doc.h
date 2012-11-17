@@ -13,7 +13,7 @@
 #include "SoundManager.h"
 #include "IOData.h"
 #include <vector>
-#include "Ships/ShipArray.h"
+#include "Ships/ShipMap.h"
 
 // forward declaration
 class CMainFrame;
@@ -51,7 +51,7 @@ protected: // Nur aus Serialisierung erzeugen
 
 	CArray<CTroopInfo> m_TroopInfo;		// In diesem Feld werden alle Informationen zu den Truppen gespeichert
 	ShipInfoArray m_ShipInfoArray;		// dynamisches Feld, in dem die ganzen Informationen zu den Schiffen gespeichert sind
-	CShipArray m_ShipArray;				// dynamisches Feld, in das die ganzen Schiffe gespeichert werden
+	CShipMap m_ShipArray;				// dynamisches Feld, in das die ganzen Schiffe gespeichert werden
 	BuildingInfoArray BuildingInfo;		// alle Gebäudeinfos zu allen Gebäuden im Spiel
 	CGlobalBuildings m_GlobalBuildings;	// alle gebauten Gebäude aller Rassen im Spiel
 
@@ -139,10 +139,10 @@ public:
 	/// Funktion gibt den Schwierigkeitsgrad des Spiels zurück.
 	float GetDifficultyLevel(void) const {return m_fDifficultyLevel;}
 
-	const CShipArray::iterator& CurrentShip() const {
+	const CShipMap::iterator& CurrentShip() const {
 		return m_ShipArray.CurrentShip();
 	}
-	const CShipArray::iterator& FleetShip() const {
+	const CShipMap::iterator& FleetShip() const {
 		return m_ShipArray.FleetShip();
 	}
 
@@ -218,12 +218,12 @@ public:
 	/// @param ID ID des Schiffes
 	/// @param KO Sektorkoordinate des Schiffes
 	/// @param sOwnerID Besitzer des Schiffes
-	CShipArray::iterator BuildShip(int nID, const CPoint& KO, const CString& sOwnerID);
+	CShipMap::iterator BuildShip(int nID, const CPoint& KO, const CString& sOwnerID);
 
 	/// Funktion zum Löschen des Schiffes aus dem Schiffsarray.
 	/// @param ship Iterator des Schiffes im Array
 	/// iterator is updated to the new position of the element following the deleted one
-	void RemoveShip(CShipArray::iterator& ship);
+	void RemoveShip(CShipMap::iterator& ship);
 
 	/// Funktion beachtet die erforschten Spezialforschungen einer Rasse und verbessert die
 	/// Eigenschaften der übergebenen Schiffes.
@@ -249,9 +249,9 @@ public:
 		return m_ShipArray.CurrentShipsIndex();
 	}
 
-	void SetCurrentShip(const CShipArray::iterator& position);
-	void SetFleetShip(const CShipArray::iterator& position);
-	void SetShipInFleet(const CShipArray::iterator& position);
+	void SetCurrentShip(const CShipMap::iterator& position);
+	void SetFleetShip(const CShipMap::iterator& position);
+	void SetShipInFleet(const CShipMap::iterator& position);
 
 	// new in ALPHA5
 

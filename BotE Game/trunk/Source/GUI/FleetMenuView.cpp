@@ -199,7 +199,7 @@ void CFleetMenuView::DrawFleetMenue(Graphics* g)
 	fontFormat.SetFormatFlags(StringFormatFlagsNoWrap);
 	fontBrush.SetColor(normalColor);
 
-	const CShipArray::iterator& pShip = pDoc->FleetShip();
+	const CShipMap::iterator& pShip = pDoc->FleetShip();
 	bool bUnknown = (pMajor->GetRaceID() != pShip->second.GetOwnerOfShip() && pMajor->IsRaceContacted(pShip->second.GetOwnerOfShip()) == false);
 	if (bUnknown)
 	{
@@ -380,8 +380,8 @@ void CFleetMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 	if (whichRect > 0 && whichRect < 4)
 	{
 		const CPoint& ko = pDoc->FleetShip()->second.GetKO();
-		for(CShipArray::iterator i = pDoc->m_ShipArray.begin(); i != pDoc->m_ShipArray.end();) {
-			const CShipArray::iterator& fleetship = pDoc->FleetShip();
+		for(CShipMap::iterator i = pDoc->m_ShipArray.begin(); i != pDoc->m_ShipArray.end();) {
+			const CShipMap::iterator& fleetship = pDoc->FleetShip();
 			if (i->second.GetOwnerOfShip() != fleetship->second.GetOwnerOfShip() || i->second.GetKO() != ko || i->second.IsStation()) {
 				++i;
 				continue;
@@ -414,7 +414,7 @@ void CFleetMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 	// Wenn wir auf einen der Buttons geklickt haben um Schiffe zu entfernen
 	else if (whichRect > 3)
 	{
-		const CShipArray::iterator& fleetship = pDoc->FleetShip();
+		const CShipMap::iterator& fleetship = pDoc->FleetShip();
 		for(CShips::iterator i = fleetship->second.begin(); i != fleetship->second.end();) {
 			if ((whichRect == 4 && fleetship->second.GetShipClass() != i->second.GetShipClass())
 				|| (whichRect == 5 && fleetship->second.GetShipType() != i->second.GetShipType())
@@ -451,7 +451,7 @@ void CFleetMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 	// Aufpassen müssen wir wenn wir das Schiff aus der Flotte entfernen wollen, welches diese Flotte
 	// besitzt. Dann übernimmt das nächste Schiff die Flotte
 	//i == 0 : the ship which possesses the fleet (at the top)
-	const CShipArray::iterator& fleetship = pDoc->FleetShip();
+	const CShipMap::iterator& fleetship = pDoc->FleetShip();
 	if (fleetship->second.HasFleet() && i <= fleetship->second.GetFleetSize())
 	{
 		// Wenn es nicht das Schiff ist welches die Flotte besitzt
@@ -478,7 +478,7 @@ void CFleetMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		else if (i == 0 && m_iFleetPage == 1)
 		{
 			const CShips& new_fleetship = fleetship->second.GiveFleetToFleetsFirstShip();
-			const CShipArray::iterator it = pDoc->m_ShipArray.Add(new_fleetship);
+			const CShipMap::iterator it = pDoc->m_ShipArray.Add(new_fleetship);
 
 			pDoc->SetCurrentShip(it);
 			pDoc->SetFleetShip(it);

@@ -211,7 +211,7 @@ void CMinor::PerhapsBuildShip(CBotf2Doc* pDoc)
 				{
 					// Wahrscheinlichkeit berechnen, ob das Schiff gebaut wird
 					int nNumber = 1;
-					for(CShipArray::const_iterator j = pDoc->m_ShipArray.begin(); j != pDoc->m_ShipArray.end(); ++j)
+					for(CShipMap::const_iterator j = pDoc->m_ShipArray.begin(); j != pDoc->m_ShipArray.end(); ++j)
 					{
 						const CShips* pShip = &j->second;
 						if (pShip->GetOwnerOfShip() == m_sID && pShip->GetShipClass() == pShipInfo->GetShipClass())
@@ -220,7 +220,7 @@ void CMinor::PerhapsBuildShip(CBotf2Doc* pDoc)
 					nNumber *= 5;
 					if (rand()%nNumber == 0)
 					{
-						CShipArray::iterator ship = pDoc->BuildShip(pShipInfo->GetID(), GetRaceKO(), m_sID);
+						CShipMap::iterator ship = pDoc->BuildShip(pShipInfo->GetID(), GetRaceKO(), m_sID);
 						// Befehl für nicht "böse" Rassen auf Meiden stellen
 						if (!IsRaceProperty(RACE_PROPERTY::HOSTILE)
 							&& !IsRaceProperty(RACE_PROPERTY::WARLIKE)

@@ -32,7 +32,7 @@
 #endif // _MSC_VER > 1000
 
 #include "Ship.h"
-#include "ShipArray.h"
+#include "ShipMap.h"
 
 class CShips/* : public CObject*/
 {
@@ -42,11 +42,11 @@ public:
 	//////////////////////////////////////////////////////////////////////
 	// iterators
 	//////////////////////////////////////////////////////////////////////
-	typedef CShipArray::const_iterator const_iterator;
+	typedef CShipMap::const_iterator const_iterator;
 	const_iterator begin() const;
 	const_iterator end() const;
 
-	typedef CShipArray::iterator iterator;
+	typedef CShipMap::iterator iterator;
 	iterator begin();
 	iterator end();
 
@@ -83,10 +83,10 @@ public:
 	const CShips::const_iterator& CurrentShip() const;
 	// Funktion liefert die Anzahl der Schiffe in der Flotte
 	int GetFleetSize() const { return m_Fleet.GetSize(); }
-	int index_of(const CShipArray::const_iterator& position) const;
+	int index_of(const CShipMap::const_iterator& position) const;
 	const CShip& Leader() const { return m_Leader; }
 	CShip& Leader() { return m_Leader; }
-	const CShipArray& Fleet() const { return m_Fleet; }
+	const CShipMap& Fleet() const { return m_Fleet; }
 	unsigned Key() { return m_Key; }
 
 
@@ -347,7 +347,7 @@ public:
 private:
 	// Wenn wir eine Gruppe bilden und dieses Schiff hier Gruppenleader ist, dann werden die anderen Schiffe in die Fleet genommen
 	CShip m_Leader;//the ship leading this fleet
-	CShipArray m_Fleet;//other ships in this fleet
+	CShipMap m_Fleet;//other ships in this fleet
 	unsigned m_Key; //index of this CShip in the shipmap
 	bool m_bLeaderIsCurrent;
 };

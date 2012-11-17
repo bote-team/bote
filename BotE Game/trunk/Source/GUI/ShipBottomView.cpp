@@ -137,7 +137,7 @@ void CShipBottomView::OnDraw(CDC* dc)
 	{
 		USHORT column = 0;
 		USHORT row = 0;
-		CShipArray::iterator oneShip = pDoc->m_ShipArray.begin();
+		CShipMap::iterator oneShip = pDoc->m_ShipArray.begin();
 		if (!CGalaxyMenuView::IsMoveShip())
 			m_vShipRects.clear();
 
@@ -147,7 +147,7 @@ void CShipBottomView::OnDraw(CDC* dc)
 
 		USHORT counter = 0;
 
-		for(CShipArray::iterator i = pDoc->m_ShipArray.begin(); i != pDoc->m_ShipArray.end(); ++i)
+		for(CShipMap::iterator i = pDoc->m_ShipArray.begin(); i != pDoc->m_ShipArray.end(); ++i)
 		{
 			CShips* pShip = &i->second;
 			if (pDoc->GetKO() != pShip->GetKO())
@@ -774,9 +774,9 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 		// Fremde Flotten können nicht bearbeitet werden
 		else
 		{
-			const CShipArray::iterator& fleetship = pDoc->FleetShip();
+			const CShipMap::iterator& fleetship = pDoc->FleetShip();
 			assert(fleetship->second.GetOwnerOfShip() == pMajor->GetRaceID());
-			const CShipArray::iterator& current_ship = pDoc->CurrentShip();
+			const CShipMap::iterator& current_ship = pDoc->CurrentShip();
 			// Jetzt fügen wir der Flotte das angeklickte Schiff hinzu, wenn es nicht das Schiff selbst ist,
 			// welches die Flotte anführt
 			if (fleetship != current_ship)
@@ -793,11 +793,11 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 					fleetship->second.AddShipToFleet(current_ship->second);
 					// Wenn wir das Schiff da hinzugefügt haben, dann müssen wir das aus der normalen Schiffsliste
 					// rausnehmen, damit es nicht zweimal im Spiel vorkommt
-					CShipArray::iterator to_erase = current_ship;
+					CShipMap::iterator to_erase = current_ship;
 					//set the current ship to the next ship following the removed one of the same race in the
 					//same sector which must not be a station, or to the fleetship in case there's none
-					CShipArray::iterator next_current_ship = fleetship;
-					CShipArray::iterator it = current_ship;
+					CShipMap::iterator next_current_ship = fleetship;
+					CShipMap::iterator it = current_ship;
 					++it;
 					while(it != pDoc->m_ShipArray.end()) {
 						if(fleetship->second.GetKO() != it->second.GetKO()
@@ -898,7 +898,7 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 				{
 					// Das ganze Schiffsarray und auch die Flotten durchgehen, wenn wir ein altes Flagschiff finden, diesem den
 					// Titel wegnehmen
-					for (CShipArray::iterator n = pDoc->m_ShipArray.begin(); n != pDoc->m_ShipArray.end(); ++n)
+					for (CShipMap::iterator n = pDoc->m_ShipArray.begin(); n != pDoc->m_ShipArray.end(); ++n)
 						if (n->second.GetOwnerOfShip() == pDoc->CurrentShip()->second.GetOwnerOfShip())
 						{
 							if (n->second.GetCurrentOrder() == SHIP_ORDER::ASSIGN_FLAGSHIP)
@@ -999,7 +999,7 @@ void CShipBottomView::OnMouseMove(UINT nFlags, CPoint point)
 	for(std::vector<std::pair<CRect, CShips*>>::const_iterator i = m_vShipRects.begin(); i != m_vShipRects.end(); ++i) {
 		if (!i->first.PtInRect(point))
 			continue;
-		for(CShipArray::iterator j = pDoc->m_ShipArray.begin(); j != pDoc->m_ShipArray.end(); ++j) {
+		for(CShipMap::iterator j = pDoc->m_ShipArray.begin(); j != pDoc->m_ShipArray.end(); ++j) {
 			if(&j->second != i->second)
 				continue;
 			pDoc->SetCurrentShip(j);

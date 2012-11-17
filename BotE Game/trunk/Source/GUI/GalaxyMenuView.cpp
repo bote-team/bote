@@ -718,7 +718,7 @@ void CGalaxyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 					if (s.ShouldDrawShip(*pMajor, it->first))
 						{
 							if(it->first == pMajor->GetRaceID()) {
-								for(CShipArray::const_iterator i = pDoc->m_ShipArray.begin();
+								for(CShipMap::const_iterator i = pDoc->m_ShipArray.begin();
 										i != pDoc->m_ShipArray.end(); ++i) {
 									const CShips& ship = i->second;
 									const CPoint& point = ship.GetKO();

@@ -302,7 +302,7 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 		CString Range;
 		CString s;
 
-		const CShipArray::const_iterator& pShip = GetShip(*pDoc);
+		const CShipMap::const_iterator& pShip = GetShip(*pDoc);
 		bool bUnknown = (pMajor->GetRaceID() != pShip->second.GetOwnerOfShip()
 			&& pMajor->IsRaceContacted(pShip->second.GetOwnerOfShip()) == false);
 		if (bUnknown)
@@ -523,10 +523,10 @@ void CSmallInfoView::SetShipDisplayMode(CSmallInfoView::SHIP_DISPLAY_MODE mode) 
 	m_ShipDisplayMode = mode;
 }
 
-const CShipArray::const_iterator& CSmallInfoView::GetShip(const CBotf2Doc& doc)
+const CShipMap::const_iterator& CSmallInfoView::GetShip(const CBotf2Doc& doc)
 {
 	if(m_ShipDisplayMode == CSmallInfoView::SHIP_DISPLAY_MODE_FLEET_VIEW) {
-		const CShipArray::const_iterator& fleetship = doc.FleetShip();
+		const CShipMap::const_iterator& fleetship = doc.FleetShip();
 		if(fleetship->second.LeaderIsCurrent())
 			return fleetship;
 		return fleetship->second.CurrentShip();

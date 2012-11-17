@@ -709,15 +709,15 @@
 						>
 					</File>
 					<File
-						RelativePath=".\Source\Gamedata\Ships\ShipArray.cpp"
-						>
-					</File>
-					<File
 						RelativePath=".\Source\Gamedata\Ships\ShipHistory.cpp"
 						>
 					</File>
 					<File
 						RelativePath=".\Source\Gamedata\Ships\ShipInfo.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Source\Gamedata\Ships\ShipMap.cpp"
 						>
 					</File>
 					<File
@@ -1426,15 +1426,15 @@
 						>
 					</File>
 					<File
-						RelativePath=".\Source\Gamedata\Ships\ShipArray.h"
-						>
-					</File>
-					<File
 						RelativePath=".\Source\Gamedata\Ships\ShipHistory.h"
 						>
 					</File>
 					<File
 						RelativePath=".\Source\Gamedata\Ships\shipinfo.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Source\Gamedata\Ships\ShipMap.h"
 						>
 					</File>
 					<File

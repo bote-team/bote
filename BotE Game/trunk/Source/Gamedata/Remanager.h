@@ -1,7 +1,7 @@
 #pragma once
 #include "Races/Major.h"
 
-class CShipArray;
+class CShipMap;
 
 enum GLOBALEVENTTYPE
 {
@@ -38,7 +38,7 @@ class CReManager : public CObject
 	void CalcEvents(CMajor* pRace);
 
 	///Berechnet Events wenn ein Sektor erkundet wird
-	void CalcExploreEvent(const CPoint& ko, CMajor* pRace, CShipArray* ships);
+	void CalcExploreEvent(const CPoint& ko, CMajor* pRace, CShipMap* ships);
 
 private:
 

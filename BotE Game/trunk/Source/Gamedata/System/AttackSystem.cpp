@@ -2,7 +2,7 @@
 #include "AttackSystem.h"
 #include "Ships/Ships.h"
 
-#include "Ships/ShipArray.h"
+#include "Ships/ShipMap.h"
 
 //////////////////////////////////////////////////////////////////////
 // Konstruktion/Destruktion
@@ -35,7 +35,7 @@ CAttackSystem::~CAttackSystem(void)
 /// welches angegriffen wird, einen Zeiger auf das komplette Feld aller Schiffe <code>ships</code>, einen Zeiger auf den
 /// zum System gehörenden Sektor <code>sector</code>, einen Zeiger auf die Gebäudeinformationen <code>buildingInfos</code>
 /// und das Feld mit den Monopolbesitzern <code>monopolOwner</code>.
-void CAttackSystem::Init(CRace* pDefender, CSystem* system, CShipArray* ships, CSector* sector, BuildingInfoArray* buildingInfos, const CString* monopolOwner)
+void CAttackSystem::Init(CRace* pDefender, CSystem* system, CShipMap* ships, CSector* sector, BuildingInfoArray* buildingInfos, const CString* monopolOwner)
 {
 	m_pDefender = pDefender;
 	m_pSystem = system;
@@ -49,7 +49,7 @@ void CAttackSystem::Init(CRace* pDefender, CSystem* system, CShipArray* ships, C
 	m_fKilledPop = 0.0;
 	m_iDestroyedBuildings = 0;
 
-	for(CShipArray::iterator i = ships->begin(); i != ships->end(); ++i)
+	for(CShipMap::iterator i = ships->begin(); i != ships->end(); ++i)
 		if (i->second.GetKO() == m_KO && i->second.GetCurrentOrder() == SHIP_ORDER::ATTACK_SYSTEM)
 		{
 			m_pShips.Add(&i->second.Leader());

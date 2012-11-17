@@ -530,7 +530,7 @@ void CBotf2Doc::SerializeNextRoundData(CArchive &ar)
 		network::RACE client = m_pRaceCtrl->GetMappedClientID(pPlayer->GetRaceID());
 
 		// Ausgehend vom Pfad des Schiffes den Sektoren mitteilen, das durch sie ein Schiff fliegt
-		for(CShipArray::const_iterator y = m_ShipArray.begin(); y != m_ShipArray.end(); ++y) {
+		for(CShipMap::const_iterator y = m_ShipArray.begin(); y != m_ShipArray.end(); ++y) {
 			const CShips& ship = y->second;
 			if (ship.GetOwnerOfShip() == pPlayer->GetRaceID()) {
 				const CArray<Sector>& path = *ship.GetPath();
@@ -726,18 +726,18 @@ void CBotf2Doc::SetKO(int x, int y)
 		GetMainFrame()->InvalidateView(RUNTIME_CLASS(CPlanetBottomView));
 }
 
-void CBotf2Doc::SetCurrentShip(const CShipArray::iterator& position)
+void CBotf2Doc::SetCurrentShip(const CShipMap::iterator& position)
 {
 	m_ShipArray.SetCurrentShip(position);
 	dynamic_cast<CGalaxyMenuView*>(GetMainFrame()->GetView(RUNTIME_CLASS(CGalaxyMenuView)))->SetNewShipPath();
 	CSmallInfoView::SetShipDisplayMode(CSmallInfoView::SHIP_DISPLAY_MODE_SHIP_BOTTEM_VIEW);
 }
-void CBotf2Doc::SetFleetShip(const CShipArray::iterator& position)
+void CBotf2Doc::SetFleetShip(const CShipMap::iterator& position)
 {
 	m_ShipArray.SetFleetShip(position);
 	CSmallInfoView::SetShipDisplayMode(CSmallInfoView::SHIP_DISPLAY_MODE_SHIP_BOTTEM_VIEW);
 }
-void CBotf2Doc::SetShipInFleet(const CShipArray::iterator& position)
+void CBotf2Doc::SetShipInFleet(const CShipMap::iterator& position)
 {
 	FleetShip()->second.SetCurrentShip(position);
 	CSmallInfoView::SetShipDisplayMode(CSmallInfoView::SHIP_DISPLAY_MODE_FLEET_VIEW);
@@ -1273,10 +1273,10 @@ void CBotf2Doc::GenerateGalaxy()
 
 ////////////////////////////////////////////////
 //BEGINN: helper functions for NextRound()
-static bool HumanPlayerInCombat(const CShipArray& ships, const CPoint& CurrentCombatSector,
+static bool HumanPlayerInCombat(const CShipMap& ships, const CPoint& CurrentCombatSector,
 		const std::map<CString, CMajor*>& majors) {
 
-	for(CShipArray::const_iterator i = ships.begin(); i != ships.end(); ++i)
+	for(CShipMap::const_iterator i = ships.begin(); i != ships.end(); ++i)
 	{
 		const CShips* pShip = &i->second;
 		if (pShip->GetKO() != CurrentCombatSector)
@@ -2128,7 +2128,7 @@ void CBotf2Doc::BuildBuilding(USHORT id, const CPoint& KO)
 	GetSystem(KO.x, KO.y).AddNewBuilding(building);
 }
 
-CShipArray::iterator CBotf2Doc::BuildShip(int nID, const CPoint& KO, const CString& sOwnerID)
+CShipMap::iterator CBotf2Doc::BuildShip(int nID, const CPoint& KO, const CString& sOwnerID)
 {
 	CRace* pOwner = m_pRaceCtrl->GetRace(sOwnerID);
 	if (!pOwner)
@@ -2141,7 +2141,7 @@ CShipArray::iterator CBotf2Doc::BuildShip(int nID, const CPoint& KO, const CStri
 	nID -= 10000;
 
 	CString sOwner = sOwnerID;
-	const CShipArray::iterator it = m_ShipArray.Add(static_cast<CShip&>(m_ShipInfoArray.GetAt(nID)));
+	const CShipMap::iterator it = m_ShipArray.Add(static_cast<CShip&>(m_ShipInfoArray.GetAt(nID)));
 	CShips& ship = it->second;
 	ship.SetOwnerOfShip(sOwner);
 	ship.SetKO(KO.x, KO.y);
@@ -2170,7 +2170,7 @@ CShipArray::iterator CBotf2Doc::BuildShip(int nID, const CPoint& KO, const CStri
 /// Funktion zum Löschen des Schiffes aus dem Schiffsarray.
 /// @param ship Iterator des Schiffes im Array
 /// iterator is updated to the new position of the element following the deleted one
-void CBotf2Doc::RemoveShip(CShipArray::iterator& ship)
+void CBotf2Doc::RemoveShip(CShipMap::iterator& ship)
 {
 	if (ship->second.HasFleet())
 	{
@@ -2485,7 +2485,7 @@ void CBotf2Doc::CalcSystemAttack()
 	// Berechnung aus der Liste entfernt
 	set<CString> sKilledMinors;
 	CArray<CPoint> fightInSystem;
-	for(CShipArray::iterator y = m_ShipArray.begin(); y != m_ShipArray.end(); ++y)
+	for(CShipMap::iterator y = m_ShipArray.begin(); y != m_ShipArray.end(); ++y)
 	{
 		CShips& ship = y->second;
 		if (ship.GetCurrentOrder() == SHIP_ORDER::ATTACK_SYSTEM)
@@ -2514,7 +2514,7 @@ void CBotf2Doc::CalcSystemAttack()
 				CString sDefender = GetSector(p.x, p.y).GetOwnerOfSector();
 				// Angreifer bzw. neuer Besitzer des Systems nach dem Angriff
 				set<CString> attackers;
-				for(CShipArray::const_iterator i = m_ShipArray.begin(); i != m_ShipArray.end(); ++i)
+				for(CShipMap::const_iterator i = m_ShipArray.begin(); i != m_ShipArray.end(); ++i)
 					if (i->second.GetKO() == p && i->second.GetCurrentOrder() == SHIP_ORDER::ATTACK_SYSTEM)
 					{
 						const CString& sOwner = i->second.GetOwnerOfShip();
@@ -2989,7 +2989,7 @@ void CBotf2Doc::CalcSystemAttack()
 								pMajor->SetAgreement(pMinor->GetRaceID(), DIPLOMATIC_AGREEMENT::NONE);
 							}
 							// Alle Schiffe der Minorrace entfernen
-							for(CShipArray::iterator j = m_ShipArray.begin(); j != m_ShipArray.end();) {
+							for(CShipMap::iterator j = m_ShipArray.begin(); j != m_ShipArray.end();) {
 								if (j->second.GetOwnerOfShip() == pMinor->GetRaceID()) {
 									m_ShipArray.RemoveAt(j);
 									continue;
@@ -3191,7 +3191,7 @@ void CBotf2Doc::CalcSystemAttack()
 	// Schiffsfeld nochmal durchgehen und alle Schiffe ohne Hülle aus dem Feld entfernen.
 	// Aufpassen muß ich dabei, wenn das Schiff eine Flotte anführte.
 	if (fightInSystem.GetSize() > 0)
-		for(CShipArray::iterator i = m_ShipArray.begin(); i != m_ShipArray.end();)
+		for(CShipMap::iterator i = m_ShipArray.begin(); i != m_ShipArray.end();)
 		{
 			// Wenn das Schiff eine Flotte hatte, dann erstmal nur die Schiffe in der Flotte beachten
 			// Wenn davon welche zerstört wurden diese aus der Flotte nehmen
@@ -3707,7 +3707,7 @@ void CBotf2Doc::CalcShipOrders()
 
 	// Hier kommt die Auswertung der Schiffsbefehle
 	bool increment = false;
-	for(CShipArray::iterator y = m_ShipArray.begin();;)
+	for(CShipMap::iterator y = m_ShipArray.begin();;)
 	{
 		if(increment)
 			++y;
@@ -4079,7 +4079,7 @@ void CBotf2Doc::CalcShipOrders()
 					// beachten und gegebenfalls das Schiff aus der Flotte entfernen
 					if (y->second.HasFleet())
 					{
-						for(CShipArray::iterator x = y->second.begin(); x != y->second.end();)
+						for(CShipMap::iterator x = y->second.begin(); x != y->second.end();)
 						{
 							if (pSector->SetNeededStationPoints(x->second.GetStationBuildPoints(),y->second.GetOwnerOfShip()))
 							{
@@ -4122,7 +4122,7 @@ void CBotf2Doc::CalcShipOrders()
 							}
 							else
 								++x;
-						}//for(CShipArray::iterator x = y->second.begin(); x != y->second.end();)
+						}//for(CShipMap::iterator x = y->second.begin(); x != y->second.end();)
 					}
 					if (pSector->GetIsStationBuilding(y->second.GetOwnerOfShip()) == TRUE
 						&& pSector->SetNeededStationPoints(y->second.GetStationBuildPoints(),y->second.GetOwnerOfShip()))
@@ -4233,7 +4233,7 @@ void CBotf2Doc::CalcShipOrders()
 					// beachten und gegebenfalls das Schiff aus der Flotte entfernen
 					if (y->second.HasFleet())
 					{
-						for(CShipArray::iterator x = y->second.begin(); x != y->second.end();)
+						for(CShipMap::iterator x = y->second.begin(); x != y->second.end();)
 						{
 							if (pSector->SetNeededStationPoints(x->second.GetStationBuildPoints(),y->second.GetOwnerOfShip()))
 							{
@@ -4270,7 +4270,7 @@ void CBotf2Doc::CalcShipOrders()
 									this->BuildShip(id, pSector->GetKO(), y->second.GetOwnerOfShip());
 									// Wenn wir jetzt die Sternbasis gebaut haben, dann müssen wir den alten Aussenposten aus der
 									// Schiffsliste nehmen
-									for(CShipArray::const_iterator k = m_ShipArray.begin(); k != m_ShipArray.end(); ++k)
+									for(CShipMap::const_iterator k = m_ShipArray.begin(); k != m_ShipArray.end(); ++k)
 										if (k->second.GetShipType() == SHIP_TYPE::OUTPOST && k->second.GetKO() == pSector->GetKO())
 										{
 											// ebenfalls muss der Au?enposten aus der Shiphistory der aktuellen Schiffe entfernt werden
@@ -4328,7 +4328,7 @@ void CBotf2Doc::CalcShipOrders()
 							increment = false;
 
 							// Wenn die Sternbasis gebaut haben, dann den alten Au?enposten aus der Schiffsliste nehmen
-							for(CShipArray::const_iterator k = m_ShipArray.begin(); k != m_ShipArray.end(); ++k)
+							for(CShipMap::const_iterator k = m_ShipArray.begin(); k != m_ShipArray.end(); ++k)
 								if (k->second.GetShipType() == SHIP_TYPE::OUTPOST && k->second.GetKO() == pSector->GetKO())
 								{
 									// ebenfalls muss der Au?enposten aus der Shiphistory der aktuellen Schiffe entfernt werden
@@ -4416,7 +4416,7 @@ void CBotf2Doc::CalcShipOrders()
 
 			// Das ganze Schiffsarray und auch die Flotten durchgehen, wenn wir ein altes Flagschiff finden, diesem den
 			// Titel wegnehmen
-			for(CShipArray::iterator n = m_ShipArray.begin(); n != m_ShipArray.end(); ++n)
+			for(CShipMap::iterator n = m_ShipArray.begin(); n != m_ShipArray.end(); ++n)
 			{
 				if (n->second.GetOwnerOfShip() == y->second.GetOwnerOfShip())
 				{
@@ -4592,7 +4592,7 @@ void CBotf2Doc::CalcShipOrders()
 	// jetzt alle durch einen Sternbasisbau verschwundenen Aussenposten aus dem Feld entfernen
 	for (unsigned int i = 0; i < vRemoveableOutposts.size(); i++)
 	{
-		for(CShipArray::iterator y = m_ShipArray.begin(); y != m_ShipArray.end();)
+		for(CShipMap::iterator y = m_ShipArray.begin(); y != m_ShipArray.end();)
 		{
 			if (vRemoveableOutposts[i] == y->second.GetShipName())
 			{
@@ -4626,7 +4626,7 @@ void CBotf2Doc::CalcShipMovement()
 	std::set<CString> already_encountered_ships_for_sanity_check;
 	// Hier kommt die Schiffsbewegung (also keine anderen Befehle werden hier noch ausgewertet, lediglich wird überprüft,
 	// dass manche Befehle noch ihre Gültigkeit haben
-	for(CShipArray::iterator y = m_ShipArray.begin(); y != m_ShipArray.end(); ++y)
+	for(CShipMap::iterator y = m_ShipArray.begin(); y != m_ShipArray.end(); ++y)
 	{
 		CShips* pShip = &y->second;
 		//this call is expensive (about n*log(n) in the ship array length; TODO comment out)
@@ -4783,7 +4783,7 @@ void CBotf2Doc::CalcShipMovement()
 /////BEGIN: HELPER FUNCTIONS FOR void CBotf2Doc::CalcShipMovement()
 void CBotf2Doc::CheckShipsDestroyedByAnomaly() {
 	// prüfen ob irgendwelche Schiffe durch eine Anomalie zerstört wurden
-	for(CShipArray::iterator i = m_ShipArray.begin(); i != m_ShipArray.end();)
+	for(CShipMap::iterator i = m_ShipArray.begin(); i != m_ShipArray.end();)
 	{
 		// Wenn das Schiff eine Flotte hatte, dann erstmal nur die Schiffe in der Flotte beachten
 		// Wenn davon welche zerstört wurden diese aus der Flotte nehmen
@@ -4840,7 +4840,7 @@ bool CBotf2Doc::IsShipCombat()
 	// Jetzt gehen wir nochmal alle Sektoren durch, wenn in einem Sektor Schiffe mehrerer verschiedener Rassen sind,
 	// die Schiffe nicht auf Meiden gestellt sind und die Rassen untereinander nicht alle mindst. einen Freundschafts-
 	// vertrag haben, dann kommt es in diesem Sektor zum Kampf
-	for(CShipArray::const_iterator y = m_ShipArray.begin(); y != m_ShipArray.end(); ++y)
+	for(CShipMap::const_iterator y = m_ShipArray.begin(); y != m_ShipArray.end(); ++y)
 	{
 		const CShips* pShip = &y->second;
 		const CPoint& p = pShip->GetKO();
@@ -4851,7 +4851,7 @@ bool CBotf2Doc::IsShipCombat()
 			|| m_sCombatSectors.find(sector) != m_sCombatSectors.end())
 			continue;
 		// Wenn noch kein Kampf in dem Sektor stattfand, dann kommt es möglicherweise hier zum Kampf
-		for(CShipArray::const_iterator i = m_ShipArray.begin(); i != m_ShipArray.end(); ++i)
+		for(CShipMap::const_iterator i = m_ShipArray.begin(); i != m_ShipArray.end(); ++i)
 		{
 			const CShips* pOtherShip = &i->second;
 			const CString& sOwner1 = pShip->GetOwnerOfShip();
@@ -4891,7 +4891,7 @@ void CBotf2Doc::CalcShipCombat()
 	CArray<CShips*> vInvolvedShips;
 	CPoint p = m_ptCurrentCombatSector;
 	// Jetzt gehen wir nochmal alle Sektoren durch und schauen ob ein Schiff im Kampfsektor ist
-	for(CShipArray::iterator i = m_ShipArray.begin(); i != m_ShipArray.end(); ++i)
+	for(CShipMap::iterator i = m_ShipArray.begin(); i != m_ShipArray.end(); ++i)
 	{
 		CShips* pShip = &i->second;
 		if (pShip->GetKO() != m_ptCurrentCombatSector)
@@ -5048,7 +5048,7 @@ void CBotf2Doc::CalcShipCombat()
 	// Nach einem Kampf muß ich das Feld der Schiffe durchgehen und alle Schiffe aus diesem nehmen, die
 	// keine Hülle mehr besitzen. Aufpassen muß ich dabei, wenn das Schiff eine Flotte anführte
 	CStringArray destroyedShips;
-	for(CShipArray::iterator i = m_ShipArray.begin(); i != m_ShipArray.end();)
+	for(CShipMap::iterator i = m_ShipArray.begin(); i != m_ShipArray.end();)
 	{
 		if (i->second.GetKO() != m_ptCurrentCombatSector) {
 			++i;
@@ -5140,7 +5140,7 @@ void CBotf2Doc::CalcShipCombat()
 	}
 
 	// allen Schiffen mit Rückzugsbfehl den aktuellen Befehl zurücknehmen
-	for(CShipArray::iterator i = m_ShipArray.begin(); i != m_ShipArray.end(); ++i)
+	for(CShipMap::iterator i = m_ShipArray.begin(); i != m_ShipArray.end(); ++i)
 	{
 		CShips* pShip = &i->second;
 		// Hat das Schiff den Rückzugsbefehl
@@ -5158,7 +5158,7 @@ void CBotf2Doc::CalcShipCombat()
 /////BEGIN: HELPER FUNCTIONS FOR void CBotf2Doc::CalcShipEffects()
 void CBotf2Doc::CalcShipRetreat() {
 	// Schiffe mit Rückzugsbefehl auf ein Feld neben dem aktuellen Feld setzen
-	for(CShipArray::iterator ship = m_ShipArray.begin(); ship != m_ShipArray.end(); ++ship) {
+	for(CShipMap::iterator ship = m_ShipArray.begin(); ship != m_ShipArray.end(); ++ship) {
 		const CString& ship_owner = ship->second.GetOwnerOfShip();
 		// Hat das Schiff den Rückzugsbefehl
 		if (ship->second.GetCombatTactic() != COMBAT_TACTIC::CT_RETREAT)
@@ -5197,7 +5197,7 @@ void CBotf2Doc::CalcShipRetreat() {
 		{
 			//we need to be careful, since we iterate over the array we're modifying, which
 			//would normally invalidate the iterator "ship"
-			const CShipArray& fleet = ship->second.Fleet();
+			const CShipMap& fleet = ship->second.Fleet();
 			m_ShipArray.Append(fleet);
 			ship->second.Reset();
 		}
@@ -5213,7 +5213,7 @@ void CBotf2Doc::CalcShipEffects()
 	CalcShipRetreat();
 
 	// Nach einem möglichen Kampf, aber natürlich auch generell die Schiffe und Stationen den Sektoren bekanntgeben
-	for(CShipArray::iterator y = m_ShipArray.begin(); y != m_ShipArray.end(); ++y)
+	for(CShipMap::iterator y = m_ShipArray.begin(); y != m_ShipArray.end(); ++y)
 	{
 		CShips& ship = y->second;
 		const CString sRace = ship.GetOwnerOfShip();
@@ -5311,7 +5311,7 @@ void CBotf2Doc::CalcContactMinor(CMajor& Major, const CSector& sector, const CPo
 /// Diese Funktion überprüft, ob neue Rassen kennengelernt wurden.
 void CBotf2Doc::CalcContactNewRaces()
 {
-	for(CShipArray::const_iterator y = m_ShipArray.begin(); y != m_ShipArray.end(); ++y)
+	for(CShipMap::const_iterator y = m_ShipArray.begin(); y != m_ShipArray.end(); ++y)
 	{
 		const CShips* pShip = &y->second;
 		const CString& sRace = pShip->GetOwnerOfShip();
@@ -5450,7 +5450,7 @@ void CBotf2Doc::CalcEndDataForNextRound()
 			}
 
 			// Alle Schiffe entfernen
-			for(CShipArray::iterator j = m_ShipArray.begin(); j != m_ShipArray.end();)
+			for(CShipMap::iterator j = m_ShipArray.begin(); j != m_ShipArray.end();)
 			{
 				if (j->second.GetOwnerOfShip() == pMajor->GetRaceID())
 				{
@@ -5729,7 +5729,7 @@ void CBotf2Doc::CalcRandomAlienEntities()
 				// nicht auf einer Anomalie!
 				if (!GetSector(p.x, p.y).GetAnomaly())
 				{
-					CShipArray::iterator pShip = BuildShip(pShipInfo->GetID(), p, pAlien->GetRaceID());
+					CShipMap::iterator pShip = BuildShip(pShipInfo->GetID(), p, pAlien->GetRaceID());
 					// unterschiedliche Aliens unterschieden und Schiffseigenschaften festlegen
 					if (pAlien->GetRaceID() == "Ionisierendes Gaswesen")
 					{
@@ -5754,7 +5754,7 @@ void CBotf2Doc::CalcRandomAlienEntities()
 							while (nCount > 0)
 							{	
 								// Erst das Schiff bauen
-								CShipArray::iterator pFleetShip = BuildShip(pShipInfo->GetID(), p,
+								CShipMap::iterator pFleetShip = BuildShip(pShipInfo->GetID(), p,
 									pAlien->GetRaceID());
 
 								// Raider in Gruppe stecken und Befehle gleich mit übernehmen
@@ -5777,7 +5777,7 @@ void CBotf2Doc::CalcRandomAlienEntities()
 void CBotf2Doc::CalcAlienShipEffects()
 {
 	//for (int i = 0; i < m_ShipArray.GetSize(); i++)
-	for(CShipArray::const_iterator ship = m_ShipArray.begin(); ship != m_ShipArray.end(); ++ship)
+	for(CShipMap::const_iterator ship = m_ShipArray.begin(); ship != m_ShipArray.end(); ++ship)
 	{
 		if (!ship->second.IsAlien())
 			continue;
@@ -5855,7 +5855,7 @@ void CBotf2Doc::CalcAlienShipEffects()
 			if (GetSector(co.x, co.y).GetIsShipInSector() && rand()%3 == 0)
 			{
 				// alle Schiffe im Sektor zu Seuchenschiffen machen
-				for(CShipArray::const_iterator y = m_ShipArray.begin(); y != m_ShipArray.end(); ++y)
+				for(CShipMap::const_iterator y = m_ShipArray.begin(); y != m_ShipArray.end(); ++y)
 				{
 					const CShips* pOtherShip = &y->second;
 					// Schiff im gleichen Sektor?
@@ -5870,11 +5870,11 @@ void CBotf2Doc::CalcAlienShipEffects()
 					if (pOtherShip->IsStation())
 						continue;
 
-					CShipArray vShips;
+					CShipMap vShips;
 					vShips.Add(*pOtherShip);
 					vShips.Append(pOtherShip->Fleet());
 
-					for(CShipArray::iterator i = vShips.begin(); i != vShips.end(); ++i)
+					for(CShipMap::iterator i = vShips.begin(); i != vShips.end(); ++i)
 					{
 						// Schiffe mit Rückzugsbefehl werden nie vom Virus befallen
 						if (i->second.GetCombatTactic() == COMBAT_TACTIC::CT_RETREAT)

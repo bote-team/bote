@@ -71,7 +71,7 @@ public:
 	static const CPlanet* GetPlanet(void) { return m_pPlanet; }
 
 private:
-	const CShipArray::const_iterator& GetShip(const CBotf2Doc& doc);
+	const CShipMap::const_iterator& GetShip(const CBotf2Doc& doc);
 protected:
 
 // Überschreibungen
