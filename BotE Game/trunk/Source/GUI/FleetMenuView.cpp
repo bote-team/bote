@@ -405,7 +405,9 @@ void CFleetMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			}
 			++i;
 		}
-		Invalidate(FALSE);
+		Invalidate();
+		pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
+		CSmallInfoView::SetShipInfo(true);
 		pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CShipBottomView));
 		return;
 	}
@@ -424,10 +426,12 @@ void CFleetMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 				pDoc->SetShipInFleet(fleetship->second.end());
 				continue;
 			}
-			Invalidate(FALSE);
-			pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CShipBottomView));
 			++i;
 		}
+		Invalidate();
+		pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CShipBottomView));
+		CSmallInfoView::SetShipInfo(true);
+		pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
 	}
 	float column = ((float)(point.x - 287) / 250);
 	if (column < 0)
@@ -505,6 +509,7 @@ void CFleetMenuView::OnMouseMove(UINT nFlags, CPoint point)
 		if(i->second == &pDoc->FleetShip()->second) {
 			pDoc->SetShipInFleet(pDoc->FleetShip()->second.end());
 			pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
+			pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CFleetMenuView));
 		}
 		else
 			for (CShips::iterator j = pDoc->FleetShip()->second.begin(); j != pDoc->FleetShip()->second.end(); ++j) {
@@ -512,6 +517,7 @@ void CFleetMenuView::OnMouseMove(UINT nFlags, CPoint point)
 					continue;
 				pDoc->SetShipInFleet(j);
 				pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
+				pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CFleetMenuView));
 				break;
 			}
 
