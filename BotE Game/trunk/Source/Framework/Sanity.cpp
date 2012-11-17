@@ -64,6 +64,14 @@ static void SanityCheckShip(const CShip& ship)
 			ship.GetCurrentOrderAsString());
 		Notify(s);
 	}
+	if(ship.GetHull()->GetCurrentHull() < 1) {
+		CString s;
+		s.Format("The %s from %s at (%u, %u) has hull < 1 but wasn't removed!",
+			ship.GetShipName(),
+			ship.GetOwnerOfShip(),
+			co.x, co.y);
+		Notify(s);
+	}
 }
 
 void CSanity::SanityCheckFleet(const CShips& ship)
@@ -80,7 +88,7 @@ void CSanity::CheckShipUniqueness(const CShips& ship, std::set<CString>& already
 	if(duplicate.IsEmpty())
 		return;
 	CString s;
-	s.Format("duplicate ship named %s in fleet of %s", duplicate, ship.GetShipName());
+	s.Format("Duplicate ship named %s in fleet of %s!", duplicate, ship.GetShipName());
 	Notify(s);
 }
 
