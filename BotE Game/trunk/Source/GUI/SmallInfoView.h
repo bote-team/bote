@@ -22,7 +22,15 @@
 
 class CSmallInfoView : public CView
 {
+public:
+	enum SHIP_DISPLAY_MODE
+	{
+		SHIP_DISPLAY_MODE_SHIP_BOTTEM_VIEW,
+		SHIP_DISPLAY_MODE_FLEET_VIEW
+	};
+	//
 protected:
+
 	CSmallInfoView();           // Dynamische Erstellung verwendet geschützten Konstruktor
 	DECLARE_DYNCREATE(CSmallInfoView)
 
@@ -32,11 +40,13 @@ protected:
 	static BOOLEAN m_bShowPlanetInfo;	///< sollen Planeteninformationen angezeigt werden
 	static BOOLEAN m_bShowPlanetStats;	///< sollen Planetenstatistiken angezeigt werden
 	static CPlanet* m_pPlanet;			///< Planet über den Informationen bzw. Statistiken angezeigt werden sollen
-	static CShips* m_pShip;				///< Schiff über das Informationen angezeigt werden sollen
 	int	m_nTimer;						///< Variable welche per Timerbefehl hochgezählt wird
 	bool m_bAnimatedIcon;				///< soll das Rassensymbol animiert werden
+	static CSmallInfoView::SHIP_DISPLAY_MODE m_ShipDisplayMode;
 
 public:
+	static void SetShipDisplayMode(CSmallInfoView::SHIP_DISPLAY_MODE mode);
+
 	/// Funktion führt Aufgaben aus, welche zu jeder neuen Runde von den Views ausgeführt werden müssen.
 	void OnNewRound(void) {};
 
@@ -56,17 +66,13 @@ public:
 	/// @param planet Zeiger auf den anzuzeigenden Planeten
 	static void SetPlanet(CPlanet* planet) { m_pPlanet = planet; }
 
-	/// Funktion legt das anzuzeigende Schiff fest.
-	/// @param planet Zeiger auf den anzuzeigenden Planeten
-	static void SetShip(CShips* ship) { m_pShip = ship; }
-
 	/// Funktion liefert einen Zeiger auf den aktuell angezeigten Planeten.
 	/// @return Zeiger auf Planeten
 	static const CPlanet* GetPlanet(void) { return m_pPlanet; }
 
-	/// Funktion liefert einen Zeiger auf das aktuell angezeigte Schiff.
-	/// @return Zeiger auf Planeten
-	static const CShips* GetShip(void) { return m_pShip; }
+private:
+	const CShipArray::const_iterator& GetShip(const CBotf2Doc& doc);
+protected:
 
 // Überschreibungen
 	// Vom Klassen-Assistenten generierte virtuelle Funktionsüberschreibungen

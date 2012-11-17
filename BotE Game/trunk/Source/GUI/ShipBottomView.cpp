@@ -15,6 +15,8 @@
 #include "MainFrm.h"
 #include "Ships/Ships.h"
 
+#include <cassert>
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
@@ -138,7 +140,7 @@ void CShipBottomView::OnDraw(CDC* dc)
 	{
 		USHORT column = 0;
 		USHORT row = 0;
-		CShipArray::const_iterator oneShip = pDoc->m_ShipArray.begin();
+		CShipArray::iterator oneShip = pDoc->m_ShipArray.begin();
 		if (!CGalaxyMenuView::IsMoveShip())
 			m_vShipRects.clear();
 
@@ -201,7 +203,7 @@ void CShipBottomView::OnDraw(CDC* dc)
 				}
 
 				// ist das Schiff gerade markiert?
-				bool bMarked = (pShip == &pDoc->CurrentShip());
+				bool bMarked = (pShip == &pDoc->CurrentShip()->second);
 				CPoint pt(250 * column, 65 * row);
 				pShip->DrawShip(&g, pDoc->GetGraphicPool(), pt, bMarked, bUnknown, TRUE, normalColor, markColor, font);
 				m_vShipRects.push_back(pair<CRect, CShips*>(CRect(pt.x, pt.y + 20, pt.x + 250, pt.y + 85), pShip));
@@ -245,7 +247,7 @@ void CShipBottomView::OnDraw(CDC* dc)
 			if (pDoc->GetMainFrame()->GetActiveView(0, 1) == GALAXY_VIEW)
 			{
 				this->SetTimer(1,100,NULL);
-				pDoc->SetCurrentShipIndex(pDoc->m_ShipArray.index_of(oneShip));
+				pDoc->SetCurrentShip(oneShip);
 				CGalaxyMenuView::SetMoveShip(TRUE);
 				CSmallInfoView::SetShipInfo(true);
 				pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
@@ -276,7 +278,7 @@ void CShipBottomView::OnDraw(CDC* dc)
 
 	// Die ganzen Befehlsbuttons für die Schiffe anzeigen
 	if (CGalaxyMenuView::IsMoveShip() == TRUE &&
-		pDoc->CurrentShip().GetOwnerOfShip() == pMajor->GetRaceID())
+		pDoc->CurrentShip()->second.GetOwnerOfShip() == pMajor->GetRaceID())
 	{
 		BYTE researchLevels[6] =
 		{
@@ -325,7 +327,7 @@ void CShipBottomView::OnDraw(CDC* dc)
 
 		// angreifen
 		if (m_iTimeCounter > 3 && m_iWhichMainShipOrderButton == 0 &&
-			pDoc->CurrentShip().GetCurrentOrder() == SHIP_ORDER::AVOID)
+			pDoc->CurrentShip()->second.GetCurrentOrder() == SHIP_ORDER::AVOID)
 		{
 			g.DrawImage(m_pShipOrderButton, r.right-245, r.top+70, 120, 30);
 			m_ShipOrders[SHIP_ORDER::ATTACK].SetRect(r.right-245,r.top+70,r.right-125,r.top+100);
@@ -334,7 +336,7 @@ void CShipBottomView::OnDraw(CDC* dc)
 		}
 		// meiden
 		else if (m_iTimeCounter > 3 && m_iWhichMainShipOrderButton == 0 &&
-			pDoc->CurrentShip().GetCurrentOrder() > SHIP_ORDER::AVOID)
+			pDoc->CurrentShip()->second.GetCurrentOrder() > SHIP_ORDER::AVOID)
 		{
 			g.DrawImage(m_pShipOrderButton, r.right-245, r.top+70, 120, 30);
 			m_ShipOrders[SHIP_ORDER::AVOID].SetRect(r.right-245,r.top+70,r.right-125,r.top+100);
@@ -342,7 +344,7 @@ void CShipBottomView::OnDraw(CDC* dc)
 			counter++;
 		}
 		// folgende Befehle gehen alle nur, wenn es keine Station ist
-		if (!pDoc->CurrentShip().IsStation())
+		if (!pDoc->CurrentShip()->second.IsStation())
 		{
 			// gruppieren
 			if (m_iTimeCounter > (3 + counter) && m_iWhichMainShipOrderButton == 0)
@@ -357,7 +359,7 @@ void CShipBottomView::OnDraw(CDC* dc)
 			{
 				// Wenn in dem System die Möglichkeit des Schiffstrainings besteht
 				if (pDoc->CurrentSector().GetSunSystem() == TRUE &&
-					pDoc->CurrentSystem().GetOwnerOfSystem() == pDoc->CurrentShip().GetOwnerOfShip() &&
+					pDoc->CurrentSystem().GetOwnerOfSystem() == pDoc->CurrentShip()->second.GetOwnerOfShip() &&
 					pDoc->CurrentSystem().GetProduction()->GetShipTraining() > 0)
 				{
 					g.DrawImage(m_pShipOrderButton, r.right-245, r.top+70+counter*35, 120, 30);
@@ -370,13 +372,13 @@ void CShipBottomView::OnDraw(CDC* dc)
 			// tarnen kann)
 			if (m_iTimeCounter > (3 + counter) && m_iWhichMainShipOrderButton == 0 &&
 				// Ab hier check wegen Flotten, darum wirds lang
-				((!pDoc->CurrentShip().HasFleet()
-				&& pDoc->CurrentShip().GetStealthPower() > 3)
-				|| (pDoc->CurrentShip().HasFleet()
-				&& pDoc->CurrentShip().CheckOrder(SHIP_ORDER::CLOAK) == TRUE)))
+				((!pDoc->CurrentShip()->second.HasFleet()
+				&& pDoc->CurrentShip()->second.GetStealthPower() > 3)
+				|| (pDoc->CurrentShip()->second.HasFleet()
+				&& pDoc->CurrentShip()->second.CheckOrder(SHIP_ORDER::CLOAK) == TRUE)))
 			{
 				g.DrawImage(m_pShipOrderButton, r.right-245, r.top+70+counter*35, 120, 30);
-				if (pDoc->CurrentShip().GetCloak())
+				if (pDoc->CurrentShip()->second.GetCloak())
 					s = CResourceManager::GetString("BTN_DECLOAK");
 				else
 					s = CResourceManager::GetString("BTN_CLOAK");
@@ -392,7 +394,7 @@ void CShipBottomView::OnDraw(CDC* dc)
 					// Wenn im System noch Bevölkerung vorhanden ist
 					pDoc->CurrentSector().GetCurrentHabitants() > 0.0f &&
 					// Wenn das System nicht der Rasse gehört, der auch das Schiff gehört
-					pDoc->CurrentSystem().GetOwnerOfSystem() != pDoc->CurrentShip().GetOwnerOfShip())
+					pDoc->CurrentSystem().GetOwnerOfSystem() != pDoc->CurrentShip()->second.GetOwnerOfShip())
 				{
 					CRace* pOwnerOfSector = pDoc->GetRaceCtrl()->GetRace(pDoc->CurrentSector().GetOwnerOfSector());
 
@@ -403,10 +405,10 @@ void CShipBottomView::OnDraw(CDC* dc)
 					{
 						// nur wenn die Schiffe ungetarnt sind können sie Bombardieren
 						// Ab hier check wegen Flotten, darum wirds lang
-						if ((!pDoc->CurrentShip().HasFleet()
-							&& pDoc->CurrentShip().GetCloak() == FALSE)
-							|| (pDoc->CurrentShip().HasFleet()
-							&& pDoc->CurrentShip().CheckOrder(SHIP_ORDER::ATTACK_SYSTEM) == TRUE))
+						if ((!pDoc->CurrentShip()->second.HasFleet()
+							&& pDoc->CurrentShip()->second.GetCloak() == FALSE)
+							|| (pDoc->CurrentShip()->second.HasFleet()
+							&& pDoc->CurrentShip()->second.CheckOrder(SHIP_ORDER::ATTACK_SYSTEM) == TRUE))
 						{
 							g.DrawImage(m_pShipOrderButton, r.right-245, r.top+70, 120, 30);
 							s = CResourceManager::GetString("BTN_ATTACK_SYSTEM");
@@ -429,15 +431,15 @@ void CShipBottomView::OnDraw(CDC* dc)
 */			// Systemblockade
 			if (m_iTimeCounter > (3 + counter) && m_iWhichMainShipOrderButton == 1 &&
 				// Ab hier check wegen Flotten, darum wirds lang
-				((!pDoc->CurrentShip().HasFleet()
-				&& pDoc->CurrentShip().HasSpecial(SHIP_SPECIAL::BLOCKADESHIP))
-				|| (pDoc->CurrentShip().HasFleet()
-				&& pDoc->CurrentShip().CheckOrder(SHIP_ORDER::BLOCKADE_SYSTEM) == TRUE)))
+				((!pDoc->CurrentShip()->second.HasFleet()
+				&& pDoc->CurrentShip()->second.HasSpecial(SHIP_SPECIAL::BLOCKADESHIP))
+				|| (pDoc->CurrentShip()->second.HasFleet()
+				&& pDoc->CurrentShip()->second.CheckOrder(SHIP_ORDER::BLOCKADE_SYSTEM) == TRUE)))
 			{
 				// Überprüfen ob man eine Blockade im System überhaupt errichten kann
 				// Wenn das System nicht der Rasse gehört, der auch das Schiff gehört
 				CRace* pOwnerOfSystem = pDoc->GetRaceCtrl()->GetRace(pDoc->CurrentSystem().GetOwnerOfSystem());
-				if (pOwnerOfSystem != NULL && pOwnerOfSystem->GetRaceID() != pDoc->CurrentShip().GetOwnerOfShip()
+				if (pOwnerOfSystem != NULL && pOwnerOfSystem->GetRaceID() != pDoc->CurrentShip()->second.GetOwnerOfShip()
 					&& pMajor->GetAgreement(pOwnerOfSystem->GetRaceID()) < DIPLOMATIC_AGREEMENT::FRIENDSHIP)
 				{
 					g.DrawImage(m_pShipOrderButton, r.right-245, r.top+70+counter*35, 120, 30);
@@ -449,9 +451,9 @@ void CShipBottomView::OnDraw(CDC* dc)
 			}
 			// Flagschiffernennung, geht nur wenn es keine Flotte ist
 			if (m_iTimeCounter > (3 + counter) && m_iWhichMainShipOrderButton == 1
-				&& !pDoc->CurrentShip().HasFleet()
-				&& pDoc->CurrentShip().GetCurrentOrder() != SHIP_ORDER::ASSIGN_FLAGSHIP
-				&& pDoc->CurrentShip().GetIsShipFlagShip() != TRUE)
+				&& !pDoc->CurrentShip()->second.HasFleet()
+				&& pDoc->CurrentShip()->second.GetCurrentOrder() != SHIP_ORDER::ASSIGN_FLAGSHIP
+				&& pDoc->CurrentShip()->second.GetIsShipFlagShip() != TRUE)
 			{
 				g.DrawImage(m_pShipOrderButton, r.right-245, r.top+70+counter*35, 120, 30);
 				s = CResourceManager::GetString("BTN_ASSIGN_FLAGSHIP");
@@ -461,7 +463,7 @@ void CShipBottomView::OnDraw(CDC* dc)
 			}
 			// Warten
 			if (m_iTimeCounter > (3 + counter) && m_iWhichMainShipOrderButton == 1
-				&& pDoc->CurrentShip().GetCurrentOrder()
+				&& pDoc->CurrentShip()->second.GetCurrentOrder()
 					!= SHIP_ORDER::WAIT_SHIP_ORDER)
 			{
 				g.DrawImage(m_pShipOrderButton, r.right-245, r.top+70+counter*35, 120, 30);
@@ -472,7 +474,7 @@ void CShipBottomView::OnDraw(CDC* dc)
 			}
 			// Wache
 			if (m_iTimeCounter > (3 + counter) && m_iWhichMainShipOrderButton == 1
-				&& pDoc->CurrentShip().GetCurrentOrder()
+				&& pDoc->CurrentShip()->second.GetCurrentOrder()
 				!= SHIP_ORDER::SENTRY_SHIP_ORDER)
 			{
 				g.DrawImage(m_pShipOrderButton, r.right-245, r.top+70+counter*35, 120, 30);
@@ -486,10 +488,10 @@ void CShipBottomView::OnDraw(CDC* dc)
 			// 1) the ship or any of the ships in its fleet are actually damaged.
 			// 2) we (or an allied race) have a ship port in this sector.
 			if (m_iTimeCounter > (3 + counter) && m_iWhichMainShipOrderButton == 1 &&
-				pDoc->CurrentShip().GetCurrentOrder() != SHIP_ORDER::REPAIR &&
-				pDoc->CurrentShip().NeedsRepair() &&
-				pDoc->GetSector(pDoc->CurrentShip().GetKO().x, pDoc->CurrentShip().GetKO().y).GetShipPort(
-				pDoc->CurrentShip().GetOwnerOfShip()))
+				pDoc->CurrentShip()->second.GetCurrentOrder() != SHIP_ORDER::REPAIR &&
+				pDoc->CurrentShip()->second.NeedsRepair() &&
+				pDoc->GetSector(pDoc->CurrentShip()->second.GetKO().x, pDoc->CurrentShip()->second.GetKO().y).GetShipPort(
+				pDoc->CurrentShip()->second.GetOwnerOfShip()))
 			{
 				g.DrawImage(m_pShipOrderButton, r.right-245, r.top+70+counter*35, 120, 30);
 				s = CResourceManager::GetString("BTN_REPAIR_SHIP");
@@ -511,16 +513,16 @@ void CShipBottomView::OnDraw(CDC* dc)
 			// Kolonisierung (hier beachten wenn es eine Flotte ist, dort schauen ob auch jedes Schiff in
 			// der Flotte auch kolonisieren kann)
 			if (m_iTimeCounter > 3 && m_iWhichMainShipOrderButton == 2 &&
-				pDoc->CurrentShip().GetCurrentOrder() != SHIP_ORDER::COLONIZE &&
+				pDoc->CurrentShip()->second.GetCurrentOrder() != SHIP_ORDER::COLONIZE &&
 				// Ab hier check wegen Flotten, darum wirds lang
-				((!pDoc->CurrentShip().HasFleet()
-				&& pDoc->CurrentShip().GetColonizePoints() > 0)
-				|| (pDoc->CurrentShip().HasFleet()
-				&& pDoc->CurrentShip().CheckOrder(SHIP_ORDER::COLONIZE) == TRUE)))
+				((!pDoc->CurrentShip()->second.HasFleet()
+				&& pDoc->CurrentShip()->second.GetColonizePoints() > 0)
+				|| (pDoc->CurrentShip()->second.HasFleet()
+				&& pDoc->CurrentShip()->second.CheckOrder(SHIP_ORDER::COLONIZE) == TRUE)))
 			{
 				// Wenn das System uns bzw. niemanden gehört können wir nur kolonisieren
 				if (pDoc->CurrentSector().GetOwnerOfSector() == ""
-					|| pDoc->CurrentSector().GetOwnerOfSector() == pDoc->CurrentShip().GetOwnerOfShip())
+					|| pDoc->CurrentSector().GetOwnerOfSector() == pDoc->CurrentShip()->second.GetOwnerOfShip())
 					for (int l = 0; l < pDoc->CurrentSector().GetNumberOfPlanets(); l++)
 						if (pDoc->CurrentSector().GetPlanet(l)->GetTerraformed() == TRUE
 							&& pDoc->CurrentSector().GetPlanet(l)->GetCurrentHabitant() == 0.0f)
@@ -538,10 +540,10 @@ void CShipBottomView::OnDraw(CDC* dc)
 			if (m_iTimeCounter > (3 + counter) && m_iWhichMainShipOrderButton == 2 &&
 				//pDoc->CurrentShip().GetCurrentOrder() != TERRAFORM &&
 				// Ab hier check wegen Flotten, darum wirds lang
-				((!pDoc->CurrentShip().HasFleet()
-				&& pDoc->CurrentShip().GetColonizePoints() > 0)
-				|| (pDoc->CurrentShip().HasFleet()
-				&& pDoc->CurrentShip().CheckOrder(SHIP_ORDER::TERRAFORM) == TRUE)))
+				((!pDoc->CurrentShip()->second.HasFleet()
+				&& pDoc->CurrentShip()->second.GetColonizePoints() > 0)
+				|| (pDoc->CurrentShip()->second.HasFleet()
+				&& pDoc->CurrentShip()->second.CheckOrder(SHIP_ORDER::TERRAFORM) == TRUE)))
 
 			{
 				for (int l = 0; l < pDoc->CurrentSector().GetNumberOfPlanets(); l++)
@@ -559,23 +561,23 @@ void CShipBottomView::OnDraw(CDC* dc)
 			// Außenposten/Sternbasis bauen (hier beachten wenn es eine Flotte ist, dort schauen ob auch jedes
 			// Schiff in der Flotte Stationen bauen kann)
 			if (m_iTimeCounter > (3 + counter) && m_iWhichMainShipOrderButton == 2 &&
-				pDoc->CurrentShip().GetCurrentOrder() != SHIP_ORDER::BUILD_OUTPOST &&
-				pDoc->CurrentShip().GetCurrentOrder() != SHIP_ORDER::BUILD_STARBASE &&
+				pDoc->CurrentShip()->second.GetCurrentOrder() != SHIP_ORDER::BUILD_OUTPOST &&
+				pDoc->CurrentShip()->second.GetCurrentOrder() != SHIP_ORDER::BUILD_STARBASE &&
 				// Ab hier check wegen Flotten, darum wirds lang (müssen nur einen der Befehle (egal ob Outpost oder
 				// Starbase gebaut werden soll) übergeben, weil wenn das eine geht, geht auch das andere
-				((!pDoc->CurrentShip().HasFleet()
-				&& pDoc->CurrentShip().GetStationBuildPoints() > 0)
-				|| (pDoc->CurrentShip().HasFleet()
-				&& pDoc->CurrentShip().CheckOrder(SHIP_ORDER::BUILD_OUTPOST) == TRUE)))
+				((!pDoc->CurrentShip()->second.HasFleet()
+				&& pDoc->CurrentShip()->second.GetStationBuildPoints() > 0)
+				|| (pDoc->CurrentShip()->second.HasFleet()
+				&& pDoc->CurrentShip()->second.CheckOrder(SHIP_ORDER::BUILD_OUTPOST) == TRUE)))
 			{
 				CPoint ShipKO = pDoc->GetKO();
 				// hier schauen, ob ich in der Schiffsinfoliste schon einen Außenposten habe den ich bauen kann, wenn in dem
 				// Sector noch kein Außenposten steht und ob ich diesen in dem Sector überhaupt bauen kann. Das geht nur
 				// wenn der Sektor mir oder niemanden gehört
-				if (pDoc->CurrentSector().GetOutpost(pDoc->CurrentShip().GetOwnerOfShip()) == FALSE
-					&& pDoc->CurrentSector().GetStarbase(pDoc->CurrentShip().GetOwnerOfShip()) == FALSE
+				if (pDoc->CurrentSector().GetOutpost(pDoc->CurrentShip()->second.GetOwnerOfShip()) == FALSE
+					&& pDoc->CurrentSector().GetStarbase(pDoc->CurrentShip()->second.GetOwnerOfShip()) == FALSE
 					&& (pDoc->CurrentSector().GetOwnerOfSector() == ""
-					|| pDoc->CurrentSector().GetOwnerOfSector() == pDoc->CurrentShip().GetOwnerOfShip()))
+					|| pDoc->CurrentSector().GetOwnerOfSector() == pDoc->CurrentShip()->second.GetOwnerOfShip()))
 				{
 					// Hier überprüfen, ob ich einen Außenposten technologisch überhaupt bauen kann
 					for (int l = 0; l < pDoc->m_ShipInfoArray.GetSize(); l++)
@@ -593,9 +595,9 @@ void CShipBottomView::OnDraw(CDC* dc)
 							}
 				}
 				// Wenn hier schon ein Außenposten steht, können wir vielleicht auch eine Sternbasis bauen
-				else if (pDoc->CurrentSector().GetOutpost(pDoc->CurrentShip().GetOwnerOfShip()) == TRUE
-					&& pDoc->CurrentSector().GetStarbase(pDoc->CurrentShip().GetOwnerOfShip()) == FALSE
-					&& pDoc->CurrentSector().GetOwnerOfSector() == pDoc->CurrentShip().GetOwnerOfShip())
+				else if (pDoc->CurrentSector().GetOutpost(pDoc->CurrentShip()->second.GetOwnerOfShip()) == TRUE
+					&& pDoc->CurrentSector().GetStarbase(pDoc->CurrentShip()->second.GetOwnerOfShip()) == FALSE
+					&& pDoc->CurrentSector().GetOwnerOfSector() == pDoc->CurrentShip()->second.GetOwnerOfShip())
 				{
 					// Hier überprüfen, ob ich eine Sternbasis technologisch überhaupt bauen kann
 					for (int l = 0; l < pDoc->m_ShipInfoArray.GetSize(); l++)
@@ -615,7 +617,7 @@ void CShipBottomView::OnDraw(CDC* dc)
 			}
 			// Transport
 			if (m_iTimeCounter > (3 + counter) && m_iWhichMainShipOrderButton == 2 &&
-				pDoc->CurrentShip().GetStorageRoom() > 0)
+				pDoc->CurrentShip()->second.GetStorageRoom() > 0)
 			{
 				g.DrawImage(m_pShipOrderButton, r.right-245, r.top+140-counter*35, 120, 30);
 				s = CResourceManager::GetString("BTN_TRANSPORT");
@@ -626,7 +628,7 @@ void CShipBottomView::OnDraw(CDC* dc)
 		}
 		// Schiff abwracken/zerstören
 		if (m_iTimeCounter > (3 + counter) && m_iWhichMainShipOrderButton == 2 &&
-			pDoc->CurrentShip().GetCurrentOrder() != SHIP_ORDER::DESTROY_SHIP)
+			pDoc->CurrentShip()->second.GetCurrentOrder() != SHIP_ORDER::DESTROY_SHIP)
 		{
 			g.DrawImage(m_pShipOrderButton, r.right-245, r.top+140-counter*35, 120, 30);
 			s = CResourceManager::GetString("BTN_DESTROY_SHIP");
@@ -747,71 +749,76 @@ BOOL CShipBottomView::OnEraseBkgnd(CDC* /*pDC*/)
 void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
-	ASSERT(pDoc);
+	CBotf2Doc* pDoc = dynamic_cast<CBotf2Doc*>(GetDocument());
+	assert(pDoc);
 
 	if (!pDoc->m_bDataReceived)
 		return;
 
-	CMajor* pMajor = m_pPlayersRace;
-	ASSERT(pMajor);
-	if (!pMajor)
-		return;
+	const CMajor* const pMajor = m_pPlayersRace;
+	assert(pMajor);
 
 	CalcLogicalPoint(point);
 
-	if (m_RectForTheShip.PtInRect(point))
+	if (m_RectForTheShip.PtInRect(point) && pDoc->CurrentShip()->second.GetOwnerOfShip() == pMajor->GetRaceID())
 	{
-		if (pDoc->CurrentShip().GetOwnerOfShip() == pMajor->GetRaceID())
+		CSmallInfoView::SetShipInfo(true);
+		pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
+		// Wenn wir in der MainView nicht im Flottenmenü sind
+		if (pDoc->GetMainFrame()->GetActiveView(0, 1) != FLEET_VIEW)
 		{
-			CSmallInfoView::SetShipInfo(true);
-			pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
-			// Wenn wir in der MainView nicht im Flottenmenü sind
-			if (pDoc->GetMainFrame()->GetActiveView(0, 1) != FLEET_VIEW)
+			CGalaxyMenuView::SetMoveShip(TRUE);
+			this->SetTimer(1,100,NULL);
+			Invalidate(FALSE);
+			pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CGalaxyMenuView));
+		}
+		// Wenn wir in der MainView im Flottenmenü sind, dann stecken wir das angeklickte Schiff in die
+		// gerade angezeigte Flotte
+		// Fremde Flotten können nicht bearbeitet werden
+		else
+		{
+			const CShipArray::iterator& fleetship = pDoc->FleetShip();
+			assert(fleetship->second.GetOwnerOfShip() == pMajor->GetRaceID());
+			const CShipArray::iterator& current_ship = pDoc->CurrentShip();
+			// Jetzt fügen wir der Flotte das angeklickte Schiff hinzu, wenn es nicht das Schiff selbst ist,
+			// welches die Flotte anführt
+			if (fleetship != current_ship)
 			{
-				CGalaxyMenuView::SetMoveShip(TRUE);
-				this->SetTimer(1,100,NULL);
-				Invalidate(FALSE);
-				pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CGalaxyMenuView));
-			}
-			// Wenn wir in der MainView im Flottenmenü sind, dann stecken wir das angeklickte Schiff in die
-			// gerade angezeigte Flotte
-			// Fremde Flotten können nicht bearbeitet werden
-			else if (pDoc->FleetShip().GetOwnerOfShip() == pMajor->GetRaceID())
-			{
-				// Jetzt fügen wir der Flotte das angeklickte Schiff hinzu, wenn es nicht das Schiff selbst ist,
-				// welches die Flotte anführt
-				if (pDoc->GetNumberOfFleetShip() != pDoc->GetCurrentShipIndex())
+				assert(fleetship->second.GetKO() == current_ship->second.GetKO());
+				// sicherheitshalber wird hier nochmal überprüft, dass keine Station hinzugefügt werden kann und
+				// das sich das Schiff auch im gleichen Sektor befindet
+				if (fleetship->second.GetOwnerOfShip() == current_ship->second.GetOwnerOfShip()
+					&& !current_ship->second.IsStation())
 				{
-					// sicherheitshalber wird hier nochmal überprüft, dass keine Station hinzugefügt werden kann und
-					// das sich das Schiff auch im gleichen Sektor befindet
-					if (pDoc->FleetShip().GetKO() == pDoc->CurrentShip().GetKO()
-						&& pDoc->FleetShip().GetOwnerOfShip() == pDoc->CurrentShip().GetOwnerOfShip()
-						&& !pDoc->CurrentShip().IsStation())
-					{
-						// Wenn das Schiff welches wir hinzufügen wollen selbst eine Flotte besizt, so müssen
-						// wir diese Flotte natürlich auch noch hinzugügen
-						//this is done in CShips::AddShipToFleet
-						pDoc->FleetShip().AddShipToFleet(pDoc->CurrentShip());
-						// Wenn wir hier removen und ein Schiff im Feld entfernen, welches vor unserem FleetShip
-						// ist, dann müssen wir die Nummer des FleetShips um eins verringern
-						if (pDoc->GetCurrentShipIndex() < pDoc->GetNumberOfFleetShip())
-							pDoc->SetNumberOfFleetShip(pDoc->GetNumberOfFleetShip()-1);
-						// Wenn wir das Schiff da hinzugefügt haben, dann müssen wir das aus der normalen Schiffsliste
-						// rausnehmen, damit es nicht zweimal im Spiel vorkommt
-						pDoc->m_ShipArray.RemoveAt(pDoc->m_ShipArray.iterator_at(pDoc->GetCurrentShipIndex()));
-						// Wenn wir das letzte Schiff entfernt haben, dann müssen wir die angeklickte Nummer im Spiel
-						// um eins zurücknehmen
-						if (pDoc->GetCurrentShipIndex() == pDoc->m_ShipArray.GetSize())
-							pDoc->SetCurrentShipIndex(pDoc->GetCurrentShipIndex()-1);
-						// wenn das angeklickte Schiff aus irgendeinen Grund nicht mehr uns gehören sollte, so wird das Flottenschiff ausegwählt
-						if (pDoc->CurrentShip().GetOwnerOfShip() != pMajor->GetRaceID())
-							pDoc->SetCurrentShipIndex(pDoc->GetNumberOfFleetShip());
-
-						Invalidate(FALSE);
-						pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CFleetMenuView));
-						return;
+					// Wenn das Schiff welches wir hinzufügen wollen selbst eine Flotte besizt, so müssen
+					// wir diese Flotte natürlich auch noch hinzufügen
+					//this is done in CShips::AddShipToFleet
+					fleetship->second.AddShipToFleet(current_ship->second);
+					// Wenn wir das Schiff da hinzugefügt haben, dann müssen wir das aus der normalen Schiffsliste
+					// rausnehmen, damit es nicht zweimal im Spiel vorkommt
+					CShipArray::iterator to_erase = current_ship;
+					//set the current ship to the next ship following the removed one of the same race in the
+					//same sector which must not be a station, or to the fleetship in case there's none
+					CShipArray::iterator next_current_ship = fleetship;
+					CShipArray::iterator it = current_ship;
+					++it;
+					while(it != pDoc->m_ShipArray.end()) {
+						if(fleetship->second.GetKO() != it->second.GetKO()
+								|| fleetship->second.GetOwnerOfShip() != it->second.GetOwnerOfShip()
+								|| it->second.IsStation()) {
+							++it;
+							continue;
+						}
+						next_current_ship = it;
+						break;
 					}
+					assert(next_current_ship != to_erase);
+					pDoc->m_ShipArray.RemoveAt(to_erase);
+					pDoc->SetCurrentShip(next_current_ship);
+
+					Invalidate(FALSE);
+					pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CFleetMenuView));
+					return;
 				}
 			}
 		}
@@ -878,14 +885,14 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 			if (m_ShipOrders[i].PtInRect(point))
 			{
 				SHIP_ORDER::Typ nOrder = (SHIP_ORDER::Typ)i;
-				short nOldTerraformingPlanet = pDoc->CurrentShip().GetTerraformingPlanet();
+				short nOldTerraformingPlanet = pDoc->CurrentShip()->second.GetTerraformingPlanet();
 				// Bei manchen Befehlen müssen wir einen möglichen Zielkurs wieder zurücknehmen.
 				if (nOrder != SHIP_ORDER::AVOID && nOrder != SHIP_ORDER::ATTACK && nOrder != SHIP_ORDER::CLOAK && nOrder != SHIP_ORDER::ASSIGN_FLAGSHIP && nOrder != SHIP_ORDER::CREATE_FLEET && nOrder != SHIP_ORDER::TRANSPORT)
-					pDoc->CurrentShip().SetTargetKO(CPoint(-1, -1), 0);
+					pDoc->CurrentShip()->second.SetTargetKO(CPoint(-1, -1), 0);
 				// Wenn wir eine Flotte bilden wollen (Schiffe gruppieren), dann in der MainView die Flottenansicht zeigen
 				if (nOrder == SHIP_ORDER::CREATE_FLEET)
 				{
-					pDoc->SetNumberOfFleetShip(pDoc->GetCurrentShipIndex());				// Dieses Schiff soll die Flotte beinhalten
+					pDoc->SetFleetShip(pDoc->CurrentShip()); // Dieses Schiff soll die Flotte beinhalten
 					pDoc->GetMainFrame()->SelectMainView(FLEET_VIEW, pMajor->GetRaceID());		// Flottenansicht in der MainView anzeigen
 				}
 				// wenn wir ein Schiff zum Flagschiff ernennen wollen müssen wir schauen das diesen Befehl kein anderes
@@ -895,7 +902,7 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 					// Das ganze Schiffsarray und auch die Flotten durchgehen, wenn wir ein altes Flagschiff finden, diesem den
 					// Titel wegnehmen
 					for (CShipArray::iterator n = pDoc->m_ShipArray.begin(); n != pDoc->m_ShipArray.end(); ++n)
-						if (n->second.GetOwnerOfShip() == pDoc->CurrentShip().GetOwnerOfShip())
+						if (n->second.GetOwnerOfShip() == pDoc->CurrentShip()->second.GetOwnerOfShip())
 						{
 							if (n->second.GetCurrentOrder() == SHIP_ORDER::ASSIGN_FLAGSHIP)
 							{
@@ -913,7 +920,7 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 									}
 							}
 						}
-						pDoc->CurrentShip().SetCurrentOrder(SHIP_ORDER::ASSIGN_FLAGSHIP);
+						pDoc->CurrentShip()->second.SetCurrentOrder(SHIP_ORDER::ASSIGN_FLAGSHIP);
 				}
 				// Bei einem Transportbefehl muss in der MainView auch die Transportansicht angeblendet werden
 				else if (nOrder == SHIP_ORDER::TRANSPORT)
@@ -923,12 +930,12 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 				}
 				// ansonsten ganz normal den Befehl geben
 				else
-					pDoc->CurrentShip().SetCurrentOrder(nOrder);
+					pDoc->CurrentShip()->second.SetCurrentOrder(nOrder);
 
 				// bei Terraforming wird die Planetenansicht eingeblendet
 				if (nOrder == SHIP_ORDER::TERRAFORM)
 				{
-					pDoc->CurrentShip().SetTerraformingPlanet(nOldTerraformingPlanet);
+					pDoc->CurrentShip()->second.SetTerraformingPlanet(nOldTerraformingPlanet);
 					pDoc->GetMainFrame()->SelectBottomView(PLANET_BOTTOM_VIEW);
 					pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CPlanetBottomView));
 					CSoundManager::GetInstance()->PlaySound(SNDMGR_MSG_TERRAFORM_SELECT, SNDMGR_PRIO_HIGH, 1.0f, client);
@@ -977,7 +984,7 @@ void CShipBottomView::OnLButtonDblClk(UINT nFlags, CPoint point)
 		CGalaxyMenuView::SetMoveShip(FALSE);
 		this->KillTimer(1);
 		m_iTimeCounter = 0;
-		pDoc->SetNumberOfFleetShip(pDoc->GetCurrentShipIndex());				// Dieses Schiff soll die Flotte beinhalten
+		pDoc->SetFleetShip(pDoc->CurrentShip()); // Dieses Schiff soll die Flotte beinhalten	
 		pDoc->GetMainFrame()->SelectMainView(FLEET_VIEW, pMajor->GetRaceID());	// Flottenansicht in der MainView anzeigen
 	}
 
@@ -986,45 +993,35 @@ void CShipBottomView::OnLButtonDblClk(UINT nFlags, CPoint point)
 
 void CShipBottomView::OnMouseMove(UINT nFlags, CPoint point)
 {
-	// TODO: Add your message handler code here and/or call default
 	if (CGalaxyMenuView::IsMoveShip())
 		return;
-
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
-	ASSERT(pDoc);
-
+	CBotf2Doc* pDoc = dynamic_cast<CBotf2Doc*>(GetDocument());
+	assert(pDoc);
 	CalcLogicalPoint(point);
-
 	// wurde die Maus über ein Schiff gehalten
-	for (UINT i = 0; i < m_vShipRects.size(); i++)
-	{
-		if (m_vShipRects[i].first.PtInRect(point))
-		{
-			bool bNewMarkedShip = m_vShipRects[i].second != m_pMarkedShip;
-			if (bNewMarkedShip)
-			{
-				for(CShipArray::const_iterator j = pDoc->m_ShipArray.begin(); j != pDoc->m_ShipArray.end(); ++j)
-					if (&j->second == m_vShipRects[i].second)
-					{
-						pDoc->SetCurrentShipIndex(pDoc->m_ShipArray.index_of(j));
-						CSmallInfoView::SetShipInfo(true);
-						pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
-						m_iWhichMainShipOrderButton = -1;
-						break;
-					}
-
-				m_RectForTheShip = m_vShipRects[i].first;
-				InvalidateRect(m_rLastMarkedRect, FALSE);
-				CRect r = m_vShipRects[i].first;
-				CalcDeviceRect(r);
-				m_rLastMarkedRect = r;
-				m_pMarkedShip = m_vShipRects[i].second;
-				InvalidateRect(r, FALSE);
-			}
+	for(std::vector<std::pair<CRect, CShips*>>::const_iterator i = m_vShipRects.begin(); i != m_vShipRects.end(); ++i) {
+		if (!i->first.PtInRect(point))
+			continue;
+		if (i->second == m_pMarkedShip)
 			return;
+		for(CShipArray::iterator j = pDoc->m_ShipArray.begin(); j != pDoc->m_ShipArray.end(); ++j) {
+			if(&j->second != i->second)
+				continue;
+			pDoc->SetCurrentShip(j);
+			CSmallInfoView::SetShipInfo(true);
+			pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
+			m_iWhichMainShipOrderButton = -1;
+			break;
 		}
+		m_RectForTheShip = i->first;
+		InvalidateRect(m_rLastMarkedRect, FALSE);
+		CRect r = i->first;
+		CalcDeviceRect(r);
+		m_rLastMarkedRect = r;
+		m_pMarkedShip = i->second;
+		InvalidateRect(r, FALSE);
+		return;
 	}
-
 	CBottomBaseView::OnMouseMove(nFlags, point);
 }
 
@@ -1044,7 +1041,7 @@ void CShipBottomView::OnRButtonDown(UINT nFlags, CPoint point)
 		CGalaxyMenuView::SetMoveShip(FALSE);
 		if (pDoc->GetMainFrame()->GetActiveView(1, 1) == PLANET_BOTTOM_VIEW)	// Wenn wir kolon oder terraformen abbrechen wollen, zurück zum Schiffsmenü
 		{
-			pDoc->CurrentShip().SetCurrentOrder(SHIP_ORDER::AVOID);
+			pDoc->CurrentShip()->second.SetCurrentOrder(SHIP_ORDER::AVOID);
 			m_bShowStation = false;
 			Invalidate();
 		}

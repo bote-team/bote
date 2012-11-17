@@ -52,14 +52,16 @@ CShips::iterator CShips::iterator_at(int index) {
 CShips::CShips() :
 	m_Leader(),
 	m_Fleet(),
-	m_Key(0)
+	m_Key(0),
+	m_bLeaderIsCurrent(true)
 {
 }
 
 CShips::CShips(const CShip& ship) :
 	m_Leader(ship),
 	m_Fleet(),
-	m_Key(0)
+	m_Key(0),
+	m_bLeaderIsCurrent(true)
 {
 }
 
@@ -70,7 +72,8 @@ CShips::CShips(const CShip& ship) :
 CShips::CShips(const CShips& o) :
 	m_Leader(o.m_Leader),
 	m_Fleet(o.m_Fleet),
-	m_Key(o.m_Key)
+	m_Key(o.m_Key),
+	m_bLeaderIsCurrent(o.m_bLeaderIsCurrent)
 {
 }
 
@@ -85,12 +88,13 @@ CShips& CShips::operator=(const CShips& o)
 	m_Leader = o.m_Leader;
 	m_Fleet = o.m_Fleet;
 	m_Key = o.m_Key;
+	m_bLeaderIsCurrent = o.m_bLeaderIsCurrent;
 	return *this;
 }
 
 CShips::~CShips()
 {
-	m_Fleet.Reset();
+	Reset();
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -112,6 +116,11 @@ int CShips::index_of(const CShipArray::const_iterator& position) const {
 	return m_Fleet.index_of(position);
 }
 
+const CShips::const_iterator& CShips::CurrentShip() const {
+	assert(!m_bLeaderIsCurrent && HasFleet());
+	return m_Fleet.CurrentShip();
+}
+
 //////////////////////////////////////////////////////////////////////
 // setting
 //////////////////////////////////////////////////////////////////////
@@ -127,6 +136,13 @@ void CShips::RemoveShipFromFleet(CShips::iterator& ship)
 	//	MYTRACE("ships")(MT::LEVEL_INFO, s);
 	//}
 	m_Fleet.RemoveAt(ship);
+	if(!HasFleet())
+		Reset();
+}
+
+void CShips::Reset(void) { 
+	m_Fleet.Reset(); 
+	m_bLeaderIsCurrent = true;
 }
 
 // Funktion übernimmt die Befehle des hier als Zeiger übergebenen Schiffsobjektes an alle Mitglieder der Flotte
@@ -155,8 +171,19 @@ void CShips::AddShipToFleet(CShips& fleet) {
 		}
 		m_Fleet.Append(fleet.m_Fleet);
 		PropagateOrdersToFleet();
-		fleet.DeleteFleet();
+		fleet.Reset();
 	}
+}
+
+void CShips::SetCurrentShip(const CShips::iterator& position)
+{
+	if(position == end())
+	{
+		m_bLeaderIsCurrent = true;
+		return;
+	}
+	m_bLeaderIsCurrent = false;
+	m_Fleet.SetCurrentShip(position);
 }
 
 void CShips::PropagateOrdersToFleet()
@@ -436,7 +463,7 @@ CShips CShips::GiveFleetToFleetsFirstShip() {
 			break;
 		new_fleet_ship.AddShipToFleet(i->second);
 	}
-	DeleteFleet();
+	Reset();
 	return new_fleet_ship;
 }
 

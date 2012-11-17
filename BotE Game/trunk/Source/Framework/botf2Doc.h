@@ -54,9 +54,6 @@ protected: // Nur aus Serialisierung erzeugen
 	CShipArray m_ShipArray;				// dynamisches Feld, in das die ganzen Schiffe gespeichert werden
 	BuildingInfoArray BuildingInfo;		// alle Gebäudeinfos zu allen Gebäuden im Spiel
 	CGlobalBuildings m_GlobalBuildings;	// alle gebauten Gebäude aller Rassen im Spiel
-	short m_iNumberOfFleetShip;			// Das Schiff welches sozusagen die Flotte anführt
-	short m_iNumberOfTheShipInFleet;	// Nummber des Schiffes in der Flotte, wenn wir ein Flotte haben
-	//int m_NumberOfTheShipInArray;		// Hilfsvariable, mit der auf ein spezielles Schiff im Array zugekriffen werden kann
 
 	CStatistics m_Statistics;			///< Statistikobjekt, in dem Statistiken des Spiels gespeichert sind
 
@@ -142,21 +139,11 @@ public:
 	/// Funktion gibt den Schwierigkeitsgrad des Spiels zurück.
 	float GetDifficultyLevel(void) const {return m_fDifficultyLevel;}
 
-	//returns the ship at m_NumberOfTheShipInArray
-	const CShips& CurrentShip() const {
+	const CShipArray::iterator& CurrentShip() const {
 		return m_ShipArray.CurrentShip();
 	}
-	//returns the ship at m_NumberOfTheShipInArray
-	CShips& CurrentShip() {
-		return m_ShipArray.CurrentShip();
-	}
-	//return ship at m_iNumberOfFleetShip
-	const CShips& FleetShip() const {
-		return m_ShipArray.GetAt(m_iNumberOfFleetShip);
-	}
-	//return ship at m_iNumberOfFleetShip
-	CShips& FleetShip() {
-		return m_ShipArray.GetAt(m_iNumberOfFleetShip);
+	const CShipArray::iterator& FleetShip() const {
+		return m_ShipArray.FleetShip();
 	}
 
 	const CPoint& GetKO(void) const {return m_ptKO;}
@@ -261,11 +248,10 @@ public:
 	int GetCurrentShipIndex(void) const {
 		return m_ShipArray.CurrentShipsIndex();
 	}
-	USHORT GetNumberOfFleetShip(void) const {return m_iNumberOfFleetShip;}
-	USHORT GetNumberOfTheShipInFleet(void) const {return m_iNumberOfTheShipInFleet;}
-	void SetCurrentShipIndex(int NumberOfTheShipInArray);
-	void SetNumberOfFleetShip(int NumberOfFleetShip);
-	void SetNumberOfTheShipInFleet(int NumberOfTheShipInFleet);
+
+	void SetCurrentShip(const CShipArray::iterator& position);
+	void SetFleetShip(const CShipArray::iterator& position);
+	void SetShipInFleet(const CShipArray::iterator& position);
 
 	// new in ALPHA5
 

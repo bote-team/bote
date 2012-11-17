@@ -136,9 +136,16 @@ void CShipArray::RemoveAt(CShipArray::iterator& index) {
 	//	MYTRACE("ships")(MT::LEVEL_INFO, s);
 	//}
 	assert(!empty() && index != end());
-	UpdateSpecialShip(m_CurrentShip, index);
-	UpdateSpecialShip(m_FleetShip, index);
-	m_Ships.erase(index++);
+	//need to copy the iterator, because it can come from a reference to m_CurrentShip (or m_FleetShip),
+	//meaning updating m_CurrentShip/m_FleetShip would change it as well
+	const CShipArray::const_iterator to_erase = index;
+	UpdateSpecialShip(m_CurrentShip, to_erase);
+	UpdateSpecialShip(m_FleetShip, to_erase);
+	//now only prevent the passed iterator from becoming invalid via incrementing,
+	//if the above two calls didn't already update it
+	if(to_erase == index)
+		++index;
+	m_Ships.erase(to_erase);
 	if(empty())
 		Reset();
 }
@@ -313,14 +320,9 @@ void CShipArray::SetCurrentShip(const CShipArray::iterator& position) {
 	m_CurrentShip = position;
 }
 
-const CShips& CShipArray::CurrentShip() const {
+const CShipArray::iterator& CShipArray::CurrentShip() const {
 	assert(!empty() && m_CurrentShip != end());
-	return m_CurrentShip->second;
-}
-
-CShips& CShipArray::CurrentShip() {
-	assert(!empty() && m_CurrentShip != end());
-	return m_CurrentShip->second;
+	return m_CurrentShip;
 }
 
 //fleet ship
@@ -341,20 +343,14 @@ void CShipArray::SetFleetShip(const CShipArray::iterator& position) {
 	m_FleetShip = position;
 }
 
-const CShips& CShipArray::FleetShip() const {
+const CShipArray::iterator& CShipArray::FleetShip() const {
 	assert(!empty() && m_FleetShip != end());
-	return m_FleetShip->second;
-}
-
-
-CShips& CShipArray::FleetShip() {
-	assert(!empty() && m_FleetShip != end());
-	return m_FleetShip->second;
+	return m_FleetShip;
 }
 
 //updating
 
-void CShipArray::UpdateSpecialShip(CShipArray::iterator& ship, CShipArray::iterator& to_erase) {
+void CShipArray::UpdateSpecialShip(CShipArray::iterator& ship, const CShipArray::const_iterator& to_erase) {
 	if(ship != to_erase)
 		return;
 	if(ship != begin())

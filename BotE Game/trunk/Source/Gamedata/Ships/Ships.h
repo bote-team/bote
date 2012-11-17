@@ -80,6 +80,7 @@ public:
 	//// Funktion gibt einen Zeiger auf ein Schiff aus der Flotte zurück
 	CShips* GetShipFromFleet(int n) { return &m_Fleet.GetAt(n); }
 	const CShips* GetShipFromFleet(int n) const { return &m_Fleet.GetAt(n); }
+	const CShips::const_iterator& CurrentShip() const;
 	// Funktion liefert die Anzahl der Schiffe in der Flotte
 	int GetFleetSize() const { return m_Fleet.GetSize(); }
 	int index_of(const CShipArray::const_iterator& position) const;
@@ -93,9 +94,11 @@ public:
 		// LEADER ACCESS
 		//////////////////////////////////////////////////////////////////////
 		// zum Lesen der Membervariablen
+		bool LeaderIsCurrent() const { return m_bLeaderIsCurrent; }
 		CHull* GetHull(void) {return m_Leader.GetHull();}
 		const CHull* GetHull(void) const {return m_Leader.GetHull();}
 		CShield* GetShield(void) {return m_Leader.GetShield();}
+		const CShield* GetShield(void) const {return m_Leader.GetShield();}
 		CArray<CTorpedoWeapons, CTorpedoWeapons>* GetTorpedoWeapons(void) {return m_Leader.GetTorpedoWeapons();}
 		CArray<CBeamWeapons, CBeamWeapons>* GetBeamWeapons(void) {return m_Leader.GetBeamWeapons();}
 		CArray<CTroop>* GetTransportedTroops(void) {return m_Leader.GetTransportedTroops();}
@@ -144,12 +147,13 @@ public:
 	 * CShips' leader and fleet (both are in this CShips' fleet now).
 	**/
 	void AddShipToFleet(CShips& fleet);
+	void SetCurrentShip(const CShips::iterator& position);
 	//propagates this CShip's leading ship's orders to this CShip's fleet
 	void PropagateOrdersToFleet();
 	// Funktion um ein Schiff aus der Flotte zu entfernen.
 	void RemoveShipFromFleet(CShips::iterator& ship);
 	//// Funktion löscht die gesamte Flotte
-	void DeleteFleet(void) { m_Fleet.Reset(); }
+	void Reset(void);
 
 	//Affects leader and fleet
 	void ApplyTraining(int XP);
@@ -345,6 +349,7 @@ private:
 	CShip m_Leader;//the ship leading this fleet
 	CShipArray m_Fleet;//other ships in this fleet
 	unsigned m_Key; //index of this CShip in the shipmap
+	bool m_bLeaderIsCurrent;
 };
 
 #endif // !defined(SHIPS_H_INCLUDED)

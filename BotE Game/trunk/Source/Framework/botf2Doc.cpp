@@ -63,7 +63,6 @@ END_MESSAGE_MAP()
 CBotf2Doc::CBotf2Doc() :
 	m_ptKO(0, 0),
 	m_ptCurrentCombatSector(-1, -1),
-	//m_NumberOfTheShipInArray(-1),
 	m_bCombatCalc(false),
 	m_bDataReceived(false),
 	m_bDontExit(false),
@@ -73,8 +72,6 @@ CBotf2Doc::CBotf2Doc() :
 	m_bRoundEndPressed(false),
 	m_fDifficultyLevel(1.0f),
 	m_fStardate(121000.0f),
-	m_iNumberOfFleetShip(-1),
-	m_iNumberOfTheShipInFleet(-1),
 	m_iRound(1),
 	m_iSelectedView(),
 	m_iShowWhichShipInfoInView3(0),
@@ -175,8 +172,6 @@ BOOL CBotf2Doc::OnNewDocument()
 	m_bRoundEndPressed			= false;
 	m_iShowWhichTechInView3		= 0;
 	m_iShowWhichShipInfoInView3 = 0;
-	m_iNumberOfFleetShip		= -1;
-	m_iNumberOfTheShipInFleet	= -1;
 	for (int i = network::RACE_1; i < network::RACE_ALL; i++)
 		m_iSelectedView[i] = START_VIEW;
 
@@ -731,31 +726,21 @@ void CBotf2Doc::SetKO(int x, int y)
 		GetMainFrame()->InvalidateView(RUNTIME_CLASS(CPlanetBottomView));
 }
 
-void CBotf2Doc::SetCurrentShipIndex(int NumberOfTheShipInArray)
+void CBotf2Doc::SetCurrentShip(const CShipArray::iterator& position)
 {
-	m_ShipArray.SetCurrentShip(m_ShipArray.iterator_at(NumberOfTheShipInArray));
-	//m_NumberOfTheShipInArray = NumberOfTheShipInArray;
-	((CGalaxyMenuView*)GetMainFrame()->GetView(RUNTIME_CLASS(CGalaxyMenuView)))->SetNewShipPath();
-
-	CSmallInfoView::SetShip(&m_ShipArray.GetAt(NumberOfTheShipInArray));
-	//CSanity::ShipInfo(m_ShipArray, m_NumberOfTheShipInArray, "m_NumberOfTheShipInArray");
+	m_ShipArray.SetCurrentShip(position);
+	dynamic_cast<CGalaxyMenuView*>(GetMainFrame()->GetView(RUNTIME_CLASS(CGalaxyMenuView)))->SetNewShipPath();
+	CSmallInfoView::SetShipDisplayMode(CSmallInfoView::SHIP_DISPLAY_MODE_SHIP_BOTTEM_VIEW);
 }
-
-void CBotf2Doc::SetNumberOfFleetShip(int NumberOfFleetShip)
+void CBotf2Doc::SetFleetShip(const CShipArray::iterator& position)
 {
-	m_iNumberOfFleetShip = NumberOfFleetShip;
-	CSmallInfoView::SetShip(&m_ShipArray.GetAt(NumberOfFleetShip));
-	//CSanity::ShipInfo(m_ShipArray, m_iNumberOfFleetShip, "m_iNumberOfFleetShip");
+	m_ShipArray.SetFleetShip(position);
+	CSmallInfoView::SetShipDisplayMode(CSmallInfoView::SHIP_DISPLAY_MODE_SHIP_BOTTEM_VIEW);
 }
-
-void CBotf2Doc::SetNumberOfTheShipInFleet(int NumberOfTheShipInFleet)
+void CBotf2Doc::SetShipInFleet(const CShipArray::iterator& position)
 {
-	m_iNumberOfTheShipInFleet = NumberOfTheShipInFleet;
-	if (NumberOfTheShipInFleet > 0)
-		CSmallInfoView::SetShip(m_ShipArray.GetAt(m_iNumberOfFleetShip).GetShipFromFleet(NumberOfTheShipInFleet - 1));
-	else if (NumberOfTheShipInFleet == 0)
-		CSmallInfoView::SetShip(&m_ShipArray.GetAt(m_iNumberOfFleetShip));
-	//CSanity::ShipInfo(m_ShipArray, m_iNumberOfTheShipInFleet, "m_iNumberOfTheShipInFleet");
+	FleetShip()->second.SetCurrentShip(position);
+	CSmallInfoView::SetShipDisplayMode(CSmallInfoView::SHIP_DISPLAY_MODE_FLEET_VIEW);
 }
 
 /// Funktion lädt für die ausgewählte Spielerrasse alle Grafiken für die Views.
@@ -5212,7 +5197,7 @@ void CBotf2Doc::CalcShipRetreat() {
 			//would normally invalidate the iterator "ship"
 			const CShipArray& fleet = ship->second.Fleet();
 			m_ShipArray.Append(fleet);
-			ship->second.DeleteFleet();
+			ship->second.Reset();
 		}
 	}//	for (int i = 0; i < m_ShipArray.GetSize(); i++)
 	m_mShipRetreatSectors.clear();
@@ -5682,9 +5667,6 @@ void CBotf2Doc::CalcEndDataForNextRound()
 		if (m_iSelectedView[i] == FLEET_VIEW)
 			m_iSelectedView[i] = GALAXY_VIEW;
 
-	//m_NumberOfTheShipInArray = -1;
-	m_iNumberOfFleetShip = -1;
-	m_iNumberOfTheShipInFleet = -1;
 }
 
 /// Funktion berechnet, ob zufällig Alienschiffe ins Spiel kommen.

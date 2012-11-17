@@ -90,17 +90,15 @@ public:
 	int CurrentShipsIndex() const;
 	void SetCurrentShip(unsigned key);
 	void SetCurrentShip(const CShipArray::iterator& position);
-	const CShips& CurrentShip() const;
-	CShips& CurrentShip();
+	const CShipArray::iterator& CurrentShip() const;
 
 	int FleetShipsIndex() const;
 	void SetFleetShip(unsigned key);
 	void SetFleetShip(const CShipArray::iterator& position);
-	const CShips& FleetShip() const;
-	CShips& FleetShip();
+	const CShipArray::iterator& FleetShip() const;
 
 private:
-	void UpdateSpecialShip(CShipArray::iterator& ship, CShipArray::iterator& to_erase);
+	void UpdateSpecialShip(CShipArray::iterator& ship, const CShipArray::const_iterator& to_erase);
 
 //////////////////////////////////////////////////////////////////////
 // debugging helper
@@ -113,7 +111,7 @@ private:
 	std::map<unsigned, CShips> m_Ships;
 	unsigned m_NextKey;
 
-	CShipArray::iterator m_CurrentShip;
-	CShipArray::iterator m_FleetShip;
+	CShipArray::iterator m_CurrentShip;// Hilfsvariable, mit der auf ein spezielles Schiff im Array zugekriffen werden kann
+	CShipArray::iterator m_FleetShip;// Das Schiff welches sozusagen die Flotte anführt
 
 };

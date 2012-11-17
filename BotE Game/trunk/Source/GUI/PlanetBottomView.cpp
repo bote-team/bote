@@ -377,11 +377,11 @@ void CPlanetBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 	// soll müssen wir hier den Planeten anklicken können
 	if (CGalaxyMenuView::IsMoveShip() == TRUE)
 	{
-		short nOldTerraformingPlanet = pDoc->CurrentShip().GetTerraformingPlanet();
+		short nOldTerraformingPlanet = pDoc->CurrentShip()->second.GetTerraformingPlanet();
 		if (nOldTerraformingPlanet != -1)
 			pDoc->CurrentSector().GetPlanet(nOldTerraformingPlanet)->SetIsTerraforming(FALSE);
 
-		pDoc->CurrentShip().SetTerraformingPlanet(-1);
+		pDoc->CurrentShip()->second.SetTerraformingPlanet(-1);
 		// Haben wir auf einen Planeten geklickt
 		for (UINT i = 0; i < m_vPlanetRects.size(); i++)
 			if (m_vPlanetRects[i].PtInRect(point))
@@ -390,13 +390,13 @@ void CPlanetBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 				// beim Terraforming nen bewohnbaren noch nicht geterraformten Planeten
 				if (pDoc->CurrentSector().GetPlanet(i)->GetTerraformed() == FALSE
 					&& pDoc->CurrentSector().GetPlanet(i)->GetHabitable() == TRUE
-					&& pDoc->CurrentShip().GetCurrentOrder() == SHIP_ORDER::TERRAFORM)
+					&& pDoc->CurrentShip()->second.GetCurrentOrder() == SHIP_ORDER::TERRAFORM)
 				{
 					CGalaxyMenuView::SetMoveShip(FALSE);
 					CShipBottomView::SetShowStation(false);
 					CSmallInfoView::SetShipInfo(true);
 					pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
-					pDoc->CurrentShip().SetTerraformingPlanet(i);
+					pDoc->CurrentShip()->second.SetTerraformingPlanet(i);
 					pDoc->CurrentSector().GetPlanet(i)->SetIsTerraforming(TRUE);
 					// den Terraformingbefehl zurücknehmen, wenn kein anderes Schiff diesen Planeten mehr terraform
 					if (static_cast<short>(i) != nOldTerraformingPlanet && nOldTerraformingPlanet != -1)
