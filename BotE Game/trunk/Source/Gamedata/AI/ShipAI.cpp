@@ -507,9 +507,15 @@ void CShipAI::DoMakeFleet(CShips* pShip, int nIndex)
 		return;
 
 	assert(pShip == &m_pDoc->m_ShipArray.GetAt(nIndex));
-	for(CShipArray::iterator i = m_pDoc->m_ShipArray.iterator_at(nIndex + 1);
-		i != m_pDoc->m_ShipArray.end(); ++i)
+	bool increment = false;
+	for(CShipArray::iterator i = m_pDoc->m_ShipArray.iterator_at(nIndex + 1);;)
 	{
+		if(increment)
+			++i;
+		increment = true;
+		if(i == m_pDoc->m_ShipArray.end())
+			break;
+
 		// Schiffe müssen von der selben Rasse sein
 		if (pShip->GetOwnerOfShip() != i->second.GetOwnerOfShip())
 			continue;
@@ -545,8 +551,7 @@ void CShipAI::DoMakeFleet(CShips* pShip, int nIndex)
 		{
 			pShip->AddShipToFleet(i->second);
 			m_pDoc->m_ShipArray.RemoveAt(i);
-			if(i != m_pDoc->m_ShipArray.begin())
-				--i;
+			increment = false;
 		}
 	}
 }

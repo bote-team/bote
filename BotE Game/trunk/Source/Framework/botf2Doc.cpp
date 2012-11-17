@@ -3706,8 +3706,15 @@ void CBotf2Doc::CalcShipOrders()
 	std::vector<CString> vRemoveableOutposts;
 
 	// Hier kommt die Auswertung der Schiffsbefehle
-	for(CShipArray::iterator y = m_ShipArray.begin(); y != m_ShipArray.end(); ++y)
+	bool increment = false;
+	for(CShipArray::iterator y = m_ShipArray.begin();;)
 	{
+		if(increment)
+			++y;
+		increment = true;
+		if(y == m_ShipArray.end())
+			break;
+
 		CSanity::SanityCheckFleet(y->second);
 
 		// Hier wird überprüft, ob der Systemattack-Befehl noch gültig ist
@@ -3897,10 +3904,7 @@ void CBotf2Doc::CalcShipOrders()
 				if (y->second.HasFleet())
 					y->second.PropagateOrdersToFleet();
 				RemoveShip(y);
-				//undo previously the incrementation the loop will do,
-				//because it already points to the next element
-				if(y != m_ShipArray.begin())
-					--y;
+				increment = false;
 				continue;
 			}
 			else
@@ -4156,8 +4160,7 @@ void CBotf2Doc::CalcShipOrders()
 							// Wenn hier ein Aussenposten gebaut wurde den Befehl für die Flotte auf Meiden stellen
 							y->second.SetCurrentOrder(SHIP_ORDER::AVOID);
 							RemoveShip(y);
-							if(y != m_ShipArray.begin())
-								--y;
+							increment = false;
 							continue;
 						}
 					}
@@ -4322,8 +4325,7 @@ void CBotf2Doc::CalcShipOrders()
 							// Wenn hier eine Station gebaut wurde den Befehl für die Flotte auf Meiden stellen
 							y->second.SetCurrentOrder(SHIP_ORDER::AVOID);
 							RemoveShip(y);
-							if(y != m_ShipArray.begin())
-								--y;
+							increment = false;
 
 							// Wenn die Sternbasis gebaut haben, dann den alten Au?enposten aus der Schiffsliste nehmen
 							for(CShipArray::const_iterator k = m_ShipArray.begin(); k != m_ShipArray.end(); ++k)
@@ -4401,8 +4403,7 @@ void CBotf2Doc::CalcShipOrders()
 
 			y->second.SetCurrentOrder(SHIP_ORDER::AVOID);
 			m_ShipArray.RemoveAt(y);
-			if(y != m_ShipArray.begin())
-				--y;
+			increment = false;
 			continue;	// continue, damit wir am Ende der Schleife nicht sagen, dass ein Schiff im Sektor ist
 		}
 
@@ -5047,14 +5048,16 @@ void CBotf2Doc::CalcShipCombat()
 	// Nach einem Kampf muß ich das Feld der Schiffe durchgehen und alle Schiffe aus diesem nehmen, die
 	// keine Hülle mehr besitzen. Aufpassen muß ich dabei, wenn das Schiff eine Flotte anführte
 	CStringArray destroyedShips;
-	for(CShipArray::iterator i = m_ShipArray.begin(); i != m_ShipArray.end(); ++i)
+	for(CShipArray::iterator i = m_ShipArray.begin(); i != m_ShipArray.end();)
 	{
-		if (i->second.GetKO() != m_ptCurrentCombatSector)
+		if (i->second.GetKO() != m_ptCurrentCombatSector) {
+			++i;
 			continue;
+		}
 		// Wenn das Schiff eine Flotte hatte, dann erstmal nur die Schiffe in der Flotte beachten
 		// Wenn davon welche zerstört wurden diese aus der Flotte nehmen
 		for(CShips::iterator x = i->second.begin(); x != i->second.end();) {
-			if (x->second.GetHull()->GetCurrentHull() > 1) {
+			if (x->second.GetHull()->GetCurrentHull() >= 1) {
 				++x;
 				continue;
 			}
@@ -5115,11 +5118,10 @@ void CBotf2Doc::CalcShipCombat()
 					pMajor->GetEmpire()->AddMessage(message);
 				}
 			}
-
 			RemoveShip(i);
-			if(i != m_ShipArray.begin())
-				--i;
+			continue;
 		}
+		++i;
 	}
 
 	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
@@ -5448,7 +5450,7 @@ void CBotf2Doc::CalcEndDataForNextRound()
 			}
 
 			// Alle Schiffe entfernen
-			for(CShipArray::iterator j = m_ShipArray.begin(); j != m_ShipArray.end(); ++j)
+			for(CShipArray::iterator j = m_ShipArray.begin(); j != m_ShipArray.end();)
 			{
 				if (j->second.GetOwnerOfShip() == pMajor->GetRaceID())
 				{
@@ -5457,9 +5459,9 @@ void CBotf2Doc::CalcEndDataForNextRound()
 								GetSector(j->second.GetKO().x, j->second.GetKO().y).GetName(TRUE), m_iRound,
 								CResourceManager::GetString("UNKNOWN"), CResourceManager::GetString("DESTROYED"));
 					m_ShipArray.RemoveAt(j);
-					if(j != m_ShipArray.begin())
-						--j;
 				}
+				else
+					++j;
 			}
 
 			// Sektoren und Systeme neutral schalten
