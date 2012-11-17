@@ -28,8 +28,7 @@ CFleetMenuView::CFleetMenuView() :
 	bg_fleetmenu(),
 	m_iFleetPage(1),
 	m_bShowNextButton(FALSE),
-	m_bShowBackButton(FALSE),
-	m_pMarkedShip()
+	m_bShowBackButton(FALSE)
 {
 }
 
@@ -51,7 +50,6 @@ void CFleetMenuView::OnNewRound()
 	m_bShowBackButton = FALSE;
 
 	m_vShipRects.clear();
-	m_pMarkedShip = NULL;
 	m_rLastMarkedRect = CRect(0,0,0,0);
 }
 // CFleetMenuView drawing
@@ -251,8 +249,7 @@ void CFleetMenuView::DrawFleetMenue(Graphics* g)
 	// Erstmal das Schiff anzeigen, welches die Flotte beinhaltet (nur auf erster Seite!)
 	if (m_iFleetPage == 1)
 	{
-		//bool bMarked = (pDoc->GetNumberOfTheShipInFleet() == 0);
-		bool bMarked = &pShip->second == m_pMarkedShip;
+		bool bMarked = pShip->second.LeaderIsCurrent();
 		CPoint pt(250 * column, 65 * row + 60);
 		pShip->second.DrawShip(g, pDoc->GetGraphicPool(), pt, bMarked, bUnknown, FALSE, normalColor, markColor, font);
 		m_vShipRects.push_back(pair<CRect, CShips*>(CRect(pt.x, pt.y + 20, pt.x + 250, pt.y + 85), &pShip->second));
@@ -274,8 +271,7 @@ void CFleetMenuView::DrawFleetMenue(Graphics* g)
 			column = 1;
 		if (counter < m_iFleetPage*18 && counter >= (m_iFleetPage-1)*18)
 		{
-			//bool bMarked = (i + 1 == pDoc->GetNumberOfTheShipInFleet());
-			bool bMarked = &i->second == m_pMarkedShip;
+			bool bMarked = !pShip->second.LeaderIsCurrent() && pShip->second.CurrentShip() == i;
 			CPoint pt(250 * column, 65 * row + 60);
 			i->second.DrawShip(g, pDoc->GetGraphicPool(), pt, bMarked, bUnknown, FALSE, normalColor, markColor, font);
 			m_vShipRects.push_back(pair<CRect, CShips*>(CRect(pt.x, pt.y + 20, pt.x + 250, pt.y + 85), &i->second));
@@ -506,8 +502,6 @@ void CFleetMenuView::OnMouseMove(UINT nFlags, CPoint point)
 	for(std::vector<std::pair<CRect, CShips*>>::const_iterator i = m_vShipRects.begin(); i != m_vShipRects.end(); ++i) {
 		if (!i->first.PtInRect(point))
 			continue;
-		if (i->second == m_pMarkedShip)
-			return;
 		if(i->second == &pDoc->FleetShip()->second) {
 			pDoc->SetShipInFleet(pDoc->FleetShip()->second.end());
 			pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
@@ -525,7 +519,6 @@ void CFleetMenuView::OnMouseMove(UINT nFlags, CPoint point)
 		CRect r = i->first;
 		CalcDeviceRect(r);
 		m_rLastMarkedRect = r;
-		m_pMarkedShip = i->second;
 		InvalidateRect(r, FALSE);
 		return;
 	}

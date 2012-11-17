@@ -67,7 +67,6 @@ private:
 	static BOOLEAN m_bShowStation;
 
 	vector<pair<CRect, CShips*> > m_vShipRects;	///< alle angezeigten Schiffe mit ihren Rechtecken zu draufklicken
-	CShips* m_pMarkedShip;						///< aktuell markiertes Schiff
 	CRect m_rLastMarkedRect;					///< zuletzt markiertes Rechteck
 
 protected:

@@ -33,7 +33,6 @@ CShipBottomView::CShipBottomView() :
 	m_bShowNextButton(FALSE),
 	m_iTimeCounter(0),
 	m_iWhichMainShipOrderButton(-1),
-	m_pMarkedShip(),
 	m_LastKO(-1, -1)
 {
 	m_pShipOrderButton = NULL;
@@ -61,7 +60,6 @@ void CShipBottomView::OnNewRound()
 {
 	m_iPage = 1;
 	m_vShipRects.clear();
-	m_pMarkedShip = NULL;
 	m_rLastMarkedRect = CRect(0,0,0,0);
 	m_RectForTheShip = CRect(0,0,0,0);
 }
@@ -117,7 +115,6 @@ void CShipBottomView::OnDraw(CDC* dc)
 	if (m_LastKO != pDoc->GetKO())
 	{
 		m_LastKO = pDoc->GetKO();
-		m_pMarkedShip = NULL;
 		m_rLastMarkedRect = CRect(0,0,0,0);
 		m_RectForTheShip = CRect(0,0,0,0);
 		m_iPage = 1;
@@ -1002,8 +999,6 @@ void CShipBottomView::OnMouseMove(UINT nFlags, CPoint point)
 	for(std::vector<std::pair<CRect, CShips*>>::const_iterator i = m_vShipRects.begin(); i != m_vShipRects.end(); ++i) {
 		if (!i->first.PtInRect(point))
 			continue;
-		if (i->second == m_pMarkedShip)
-			return;
 		for(CShipArray::iterator j = pDoc->m_ShipArray.begin(); j != pDoc->m_ShipArray.end(); ++j) {
 			if(&j->second != i->second)
 				continue;
@@ -1018,7 +1013,6 @@ void CShipBottomView::OnMouseMove(UINT nFlags, CPoint point)
 		CRect r = i->first;
 		CalcDeviceRect(r);
 		m_rLastMarkedRect = r;
-		m_pMarkedShip = i->second;
 		InvalidateRect(r, FALSE);
 		return;
 	}
