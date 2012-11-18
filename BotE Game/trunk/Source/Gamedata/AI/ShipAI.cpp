@@ -75,7 +75,7 @@ void CShipAI::CalculateShipOrders(CSectorAI* SectorAI)
 			continue;
 
 		// Flotte versuchen zu erstellen
-		DoMakeFleet(pShip, m_pDoc->m_ShipArray.index_of(i));
+		DoMakeFleet(i);
 
 		// Vielleicht haben unsere Schiffe ein Ziel, welches sie angreifen müssen/können
 		if (DoAttackMove(pShip, pOwner))
@@ -495,20 +495,14 @@ bool CShipAI::DoCamouflage(CShips* pShip, bool bCamouflage/* = true*/)
 
 /// Funktion erstellt eine Flotte. Schiffe werden der Flotte nur hinzugefügt, wenn diese bestimmte Voraussetzungen erfüllen.
 /// So muss der ungefähre Schiffstyp übereinstimmen (Combat <-> NonCombat) sowie die Reichweite des Schiffes.
-void CShipAI::DoMakeFleet(CShips* pShip, int nIndex)
+void CShipAI::DoMakeFleet(const CShipMap::iterator& pShip)
 {
-	if (!pShip)
-	{
-		ASSERT(pShip);
-		return;
-	}
-
-	if (pShip->IsStation())
+	if (pShip->second.IsStation())
 		return;
 
-	assert(pShip == &m_pDoc->m_ShipArray.GetAt(nIndex));
-	bool increment = false;
-	for(CShipMap::iterator i = m_pDoc->m_ShipArray.iterator_at(nIndex + 1);;)
+	bool increment = true;
+	CShipMap::iterator i = pShip;
+	for(;;)
 	{
 		if(increment)
 			++i;
@@ -517,15 +511,15 @@ void CShipAI::DoMakeFleet(CShips* pShip, int nIndex)
 			break;
 
 		// Schiffe müssen von der selben Rasse sein
-		if (pShip->GetOwnerOfShip() != i->second.GetOwnerOfShip())
+		if (pShip->second.GetOwnerOfShip() != i->second.GetOwnerOfShip())
 			continue;
 
 		// Schiffe müssen sich im selben Sektor befinden
-		if (pShip->GetKO() != i->second.GetKO())
+		if (pShip->second.GetKO() != i->second.GetKO())
 			continue;
 
 		// beide Schiffe müssen die selbe Reichweite haben
-		if (pShip->GetRange() != i->second.GetRange())
+		if (pShip->second.GetRange() != i->second.GetRange())
 			continue;
 
 		// das hinzuzufügende Schiff darf kein Außenposten oder Sternbasis sein
@@ -537,19 +531,19 @@ void CShipAI::DoMakeFleet(CShips* pShip, int nIndex)
 			continue;
 
 		// der Tarnstatus muss gleich sein (also keine getarnten und ungetarnte Schiffe in eine Flotte)
-		if (pShip->GetCloak() != i->second.GetCloak())
+		if (pShip->second.GetCloak() != i->second.GetCloak())
 			continue;
 
 		// wenn sich das Führungsschiff tarnen kann, dann muss das hinzuzufügende Schiff sich auch tarnen können
-		if ((pShip->GetStealthPower() > 3 && i->second.GetStealthPower() <= 3) || (pShip->GetStealthPower() <= 3 && i->second.GetStealthPower() > 3))
+		if ((pShip->second.GetStealthPower() > 3 && i->second.GetStealthPower() <= 3) || (pShip->second.GetStealthPower() <= 3 && i->second.GetStealthPower() > 3))
 			continue;
 
 		// es muss sich bei beiden Schiffen um Kriegsschiffe handeln oder bei beiden Schiffen um Transporter oder bei beiden Schiffen um Kolonieschiffe
-		if ((!pShip->IsNonCombat() && !i->second.IsNonCombat())
-			||(pShip->GetShipType() == SHIP_TYPE::TRANSPORTER && i->second.GetShipType() == SHIP_TYPE::TRANSPORTER && i->second.GetCurrentOrder() < SHIP_ORDER::BUILD_OUTPOST)
-			||(pShip->GetShipType() == SHIP_TYPE::COLONYSHIP && i->second.GetShipType() == SHIP_TYPE::COLONYSHIP && i->second.GetCurrentOrder() < SHIP_ORDER::COLONIZE))
+		if ((!pShip->second.IsNonCombat() && !i->second.IsNonCombat())
+			||(pShip->second.GetShipType() == SHIP_TYPE::TRANSPORTER && i->second.GetShipType() == SHIP_TYPE::TRANSPORTER && i->second.GetCurrentOrder() < SHIP_ORDER::BUILD_OUTPOST)
+			||(pShip->second.GetShipType() == SHIP_TYPE::COLONYSHIP && i->second.GetShipType() == SHIP_TYPE::COLONYSHIP && i->second.GetCurrentOrder() < SHIP_ORDER::COLONIZE))
 		{
-			pShip->AddShipToFleet(i->second);
+			pShip->second.AddShipToFleet(i->second);
 			m_pDoc->m_ShipArray.EraseAt(i);
 			increment = false;
 		}

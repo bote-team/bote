@@ -87,12 +87,10 @@ public:
 // special ships
 //////////////////////////////////////////////////////////////////////
 
-	int CurrentShipsIndex() const;
 	void SetCurrentShip(unsigned key);
 	void SetCurrentShip(const CShipMap::iterator& position);
 	const CShipMap::iterator& CurrentShip() const;
 
-	int FleetShipsIndex() const;
 	void SetFleetShip(unsigned key);
 	void SetFleetShip(const CShipMap::iterator& position);
 	const CShipMap::iterator& FleetShip() const;

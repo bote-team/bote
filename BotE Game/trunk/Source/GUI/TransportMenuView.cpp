@@ -146,8 +146,6 @@ void CTransportMenuView::DrawTransportMenue(Graphics* g)
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
 	ASSERT(pDoc);
 
-	if (pDoc->GetCurrentShipIndex() == -1)
-		return;
 
 	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
@@ -434,10 +432,8 @@ void CTransportMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		return;
 
 	// Wenn wir in der Transportansicht sind (brauchen auch nur Klicks überprüfen, wenn das Schiff Lagerraum hat)
-	CShips* ship = NULL;
-	if (pDoc->GetCurrentShipIndex() != -1)
-		if (pDoc->GetCurrentShipIndex() < pDoc->m_ShipArray.GetSize())
-			ship = &pDoc->CurrentShip()->second;
+	
+	CShips* ship = &pDoc->CurrentShip()->second;
 	if (ship == NULL || ship->GetOwnerOfShip() != pMajor->GetRaceID() || ship->GetStorageRoom() == 0)
 		return;
 
@@ -736,10 +732,7 @@ void CTransportMenuView::OnMouseMove(UINT nFlags, CPoint point)
 	ASSERT(pMajor);
 
 	// Wenn wir in der Transportansicht sind (brauchen auch nur Klicks überprüfen, wenn das Schiff Lagerraum hat)
-	CShips* ship = NULL;
-	if (pDoc->GetCurrentShipIndex() != -1)
-		if (pDoc->GetCurrentShipIndex() < pDoc->m_ShipArray.GetSize())
-			ship = &pDoc->CurrentShip()->second;
+	const CShips* const ship = &pDoc->CurrentShip()->second;
 	if (ship == NULL || ship->GetOwnerOfShip() != pMajor->GetRaceID() || ship->GetStorageRoom() == 0)
 		return;
 

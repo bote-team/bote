@@ -112,10 +112,6 @@ void CShips::Serialize(CArchive &ar)
 // getting
 //////////////////////////////////////////////////////////////////////
 
-int CShips::index_of(const CShipMap::const_iterator& position) const {
-	return m_Fleet.index_of(position);
-}
-
 const CShips::const_iterator& CShips::CurrentShip() const {
 	assert(!m_bLeaderIsCurrent && HasFleet());
 	return m_Fleet.CurrentShip();

@@ -8,6 +8,7 @@
 #pragma once
 #include "Options.h"
 #include <map>
+#include "Ships/ShipMap.h"
 
 using namespace std;
 
@@ -68,7 +69,7 @@ private:
 	/// So muss der ungefähre Schiffstyp übereinstimmen (Combat <-> NonCombat) sowie die Geschwindigkeit des Schiffes.
 	/// @param pShip Zeiger des Schiffes
 	/// @param nIndex Index des aktuellen Schiffes im Array.
-	void DoMakeFleet(CShips* pShip, int nIndex);
+	void DoMakeFleet(const CShipMap::iterator& pShip);
 
 	/// Funkion berechnet einen möglichen Angriffssektor, welcher später gesammelt angegriffen werden kann.
 	void CalcAttackSector(void);

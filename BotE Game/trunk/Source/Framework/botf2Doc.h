@@ -245,10 +245,6 @@ public:
 
 	USHORT GetCurrentRound() const {return m_iRound;}
 
-	int GetCurrentShipIndex(void) const {
-		return m_ShipArray.CurrentShipsIndex();
-	}
-
 	void SetCurrentShip(const CShipMap::iterator& position);
 	void SetFleetShip(const CShipMap::iterator& position);
 	void SetShipInFleet(const CShipMap::iterator& position);

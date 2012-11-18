@@ -304,11 +304,6 @@ void CShipMap::SerializeNextRoundData(CArchive& ar, const CPoint& ptCurrentComba
 //////////////////////////////////////////////////////////////////////
 //current ship
 
-int CShipMap::CurrentShipsIndex() const {
-	assert(!empty() && m_CurrentShip != end());
-	return index_of(m_CurrentShip);
-}
-
 void CShipMap::SetCurrentShip(unsigned key) {
 	const CShipMap::iterator i = find(key);
 	assert(i != end());
@@ -326,11 +321,6 @@ const CShipMap::iterator& CShipMap::CurrentShip() const {
 }
 
 //fleet ship
-
-int CShipMap::FleetShipsIndex() const {
-	assert(!empty() && m_FleetShip != end());
-	return index_of(m_FleetShip);
-}
 
 void CShipMap::SetFleetShip(unsigned key) {
 	const CShipMap::iterator i = find(key);

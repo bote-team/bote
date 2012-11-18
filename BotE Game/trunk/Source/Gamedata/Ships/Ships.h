@@ -83,7 +83,6 @@ public:
 	const CShips::const_iterator& CurrentShip() const;
 	// Funktion liefert die Anzahl der Schiffe in der Flotte
 	int GetFleetSize() const { return m_Fleet.GetSize(); }
-	int index_of(const CShipMap::const_iterator& position) const;
 	const CShip& Leader() const { return m_Leader; }
 	CShip& Leader() { return m_Leader; }
 	const CShipMap& Fleet() const { return m_Fleet; }

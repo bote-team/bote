@@ -1395,20 +1395,28 @@ BOOLEAN CIntelCalc::ExecuteMilitarySabotage(CMajor* pRace, CMajor* pEnemyRace, C
 			CShips* ship = NULL;
 			// überprüfen, ob die jeweilige Station oder das jeweilige Schiff auch noch im System vorhanden ist
 			CArray<CPoint> allShips;	// x für Schiffsposition im Feld, y für Schiffsposition in der Flotte
+			int i_index = 0;
 			for(CShipMap::const_iterator i = m_pDoc->m_ShipArray.begin(); i != m_pDoc->m_ShipArray.end(); ++i)
+			{
 				if (i->second.GetKO() == report->GetKO() && i->second.GetOwnerOfShip() != report->GetOwner())
 				{
 					// besitzt dieses Schiff eine Flotte, so könnte sich unser Schiff auch in der Flotte befinden
 					if (i->second.HasFleet())
 					{
+						int j_index = 0;
 						for(CShips::const_iterator j = m_pDoc->m_ShipArray.begin();
 								j != m_pDoc->m_ShipArray.end(); ++j)
+						{
 							if (j->second.GetID() == report->GetID())
-								allShips.Add(CPoint(m_pDoc->m_ShipArray.index_of(i), m_pDoc->m_ShipArray.index_of(j)));
+								allShips.Add(CPoint(i_index, j_index));
+							++j_index;
+						}
 					}
 					if (i->second.GetID() == report->GetID())
-						allShips.Add(CPoint(m_pDoc->m_ShipArray.index_of(i),-1));	// -1 als y Wert bedeutet, dass dieses Schiff in keiner Flotte vorkommt
+						allShips.Add(CPoint(i_index,-1));	// -1 als y Wert bedeutet, dass dieses Schiff in keiner Flotte vorkommt
 				}
+				++i_index;
+			}
 			// aus allen möglichen Schiffen, welche die ID unseres Reports und im richtigen Sektor sind eins zufällig aussuchen
 			CPoint n = CPoint(-1,0);
 			if (allShips.GetSize() > NULL)
@@ -1416,10 +1424,11 @@ BOOLEAN CIntelCalc::ExecuteMilitarySabotage(CMajor* pRace, CMajor* pEnemyRace, C
 				int random = rand()%allShips.GetSize();
 				n = allShips.GetAt(random);
 				// ist das Schiff in keiner Flotte sondern direkt im Feld zu finden
+				CShips& s = m_pDoc->m_ShipArray.GetAt(n.x);
 				if (n.y == -1)
-					ship = &m_pDoc->m_ShipArray.GetAt(n.x);
+					ship = &s;
 				else
-					ship = m_pDoc->m_ShipArray.GetAt(n.x).GetShipFromFleet(n.y);
+					ship = s.GetShipFromFleet(n.y);
 			}
 			// wurde kein Schiff mehr in diesem Sektor gefunden, sei es da es zerstört wurde oder jetzt in einem anderen
 			// Sektor ist, kann es auch nicht mehr zerstört werden.
