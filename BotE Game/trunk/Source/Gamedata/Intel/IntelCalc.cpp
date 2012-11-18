@@ -1520,12 +1520,12 @@ BOOLEAN CIntelCalc::ExecuteMilitarySabotage(CMajor* pRace, CMajor* pEnemyRace, C
 					m_pDoc->GetCurrentRound(), CResourceManager::GetString("SABOTAGE"), CResourceManager::GetString("DESTROYED"));
 				if (n.y == -1)		// nicht in Flotte
 				{
-					m_pDoc->RemoveShip(m_pDoc->m_ShipArray.find(n.x));
+					m_pDoc->RemoveShip(m_pDoc->m_ShipArray.iterator_at(n.x));
 				}
 				else	// Schiff ist in Flotte
 				{
-					m_pDoc->m_ShipArray.GetAt(n.x).RemoveShipFromFleet(
-						m_pDoc->m_ShipArray.GetAt(n.x).find(n.y));
+					CShips& s = m_pDoc->m_ShipArray.GetAt(n.x);
+					s.RemoveShipFromFleet(s.iterator_at(n.y));
 				}
 				if (report)
 				{
