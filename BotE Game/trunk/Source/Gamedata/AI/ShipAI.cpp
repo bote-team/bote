@@ -550,7 +550,7 @@ void CShipAI::DoMakeFleet(CShips* pShip, int nIndex)
 			||(pShip->GetShipType() == SHIP_TYPE::COLONYSHIP && i->second.GetShipType() == SHIP_TYPE::COLONYSHIP && i->second.GetCurrentOrder() < SHIP_ORDER::COLONIZE))
 		{
 			pShip->AddShipToFleet(i->second);
-			m_pDoc->m_ShipArray.RemoveAt(i);
+			m_pDoc->m_ShipArray.EraseAt(i);
 			increment = false;
 		}
 	}

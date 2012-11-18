@@ -245,7 +245,7 @@ void CShipMap::SerializeEndOfRoundData(CArchive& ar, const CString& sMajorID) {
 		ar >> count;
 		for(CShipMap::iterator i = begin(); i != end();) {
 			if (i->second.GetOwnerOfShip() == sMajorID) {
-				RemoveAt(i);
+				EraseAt(i);
 				continue;
 			}
 			++i;
@@ -281,7 +281,7 @@ void CShipMap::SerializeNextRoundData(CArchive& ar, const CPoint& ptCurrentComba
 		// alle Schiffe aus dem Kampfsektor entfernen
 		for(CShipMap::iterator i = begin(); i != end();) {
 			if (i->second.GetKO() == ptCurrentCombatSector) {
-				RemoveAt(i);
+				EraseAt(i);
 				continue;
 			}
 			++i;

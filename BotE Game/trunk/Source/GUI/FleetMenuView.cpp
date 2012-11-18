@@ -395,7 +395,7 @@ void CFleetMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 				fleetship->second.AddShipToFleet(i->second);
 				// Wenn wir das Schiff da hinzugefügt haben, dann müssen wir das aus der normalen Schiffsliste
 				// rausnehmen, damit es nicht zweimal im Spiel vorkommt
-				pDoc->m_ShipArray.RemoveAt(i);
+				pDoc->m_ShipArray.EraseAt(i);
 				// Wenn wir so Schiffe hinzufügen Ansicht auf Seite 1 stellen und markiertes Schiff ist
 				// das Anführerschiff
 				pDoc->SetShipInFleet(fleetship->second.end());

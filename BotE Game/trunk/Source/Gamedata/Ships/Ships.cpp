@@ -135,7 +135,7 @@ void CShips::RemoveShipFromFleet(CShips::iterator& ship)
 	//		m_Leader.GetShipName());
 	//	MYTRACE("ships")(MT::LEVEL_INFO, s);
 	//}
-	m_Fleet.RemoveAt(ship);
+	m_Fleet.EraseAt(ship);
 	if(!HasFleet())
 		Reset();
 }

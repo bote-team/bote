@@ -2177,7 +2177,7 @@ void CBotf2Doc::RemoveShip(CShipMap::iterator& ship)
 		const CShips& new_fleetship = ship->second.GiveFleetToFleetsFirstShip();
 		m_ShipArray.Add(new_fleetship);
 	}
-	m_ShipArray.RemoveAt(ship);
+	m_ShipArray.EraseAt(ship);
 }
 
 /// Funktion beachtet die erforschten Spezialforschungen einer Rasse und verbessert die
@@ -2991,7 +2991,7 @@ void CBotf2Doc::CalcSystemAttack()
 							// Alle Schiffe der Minorrace entfernen
 							for(CShipMap::iterator j = m_ShipArray.begin(); j != m_ShipArray.end();) {
 								if (j->second.GetOwnerOfShip() == pMinor->GetRaceID()) {
-									m_ShipArray.RemoveAt(j);
+									m_ShipArray.EraseAt(j);
 									continue;
 								}
 								++j;
@@ -4402,7 +4402,7 @@ void CBotf2Doc::CalcShipOrders()
 			}
 
 			y->second.SetCurrentOrder(SHIP_ORDER::AVOID);
-			m_ShipArray.RemoveAt(y);
+			m_ShipArray.EraseAt(y);
 			increment = false;
 			continue;	// continue, damit wir am Ende der Schleife nicht sagen, dass ein Schiff im Sektor ist
 		}
@@ -4596,7 +4596,7 @@ void CBotf2Doc::CalcShipOrders()
 		{
 			if (vRemoveableOutposts[i] == y->second.GetShipName())
 			{
-				m_ShipArray.RemoveAt(y);
+				m_ShipArray.EraseAt(y);
 				break;
 			}
 			++y;
@@ -5458,7 +5458,7 @@ void CBotf2Doc::CalcEndDataForNextRound()
 					pMajor->GetShipHistory()->ModifyShip(&j->second.Leader(),
 								GetSector(j->second.GetKO().x, j->second.GetKO().y).GetName(TRUE), m_iRound,
 								CResourceManager::GetString("UNKNOWN"), CResourceManager::GetString("DESTROYED"));
-					m_ShipArray.RemoveAt(j);
+					m_ShipArray.EraseAt(j);
 				}
 				else
 					++j;
@@ -5759,7 +5759,7 @@ void CBotf2Doc::CalcRandomAlienEntities()
 
 								// Raider in Gruppe stecken und Befehle gleich mit übernehmen
 								pShip->second.AddShipToFleet(pFleetShip->second);
-								m_ShipArray.RemoveAt(pFleetShip);
+								m_ShipArray.EraseAt(pFleetShip);
 																
 								nCount--;
 							}

@@ -810,7 +810,7 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 						break;
 					}
 					assert(next_current_ship != to_erase);
-					pDoc->m_ShipArray.RemoveAt(to_erase);
+					pDoc->m_ShipArray.EraseAt(to_erase);
 					pDoc->SetCurrentShip(next_current_ship);
 
 					Invalidate(FALSE);
