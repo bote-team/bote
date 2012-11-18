@@ -5255,14 +5255,14 @@ void CBotf2Doc::CalcShipEffects()
 
 void CBotf2Doc::CalcContactClientWork(CMajor& Major, const CRace& ContactedRace) {
 	const network::RACE client = m_pRaceCtrl->GetMappedClientID(Major.GetRaceID());
-	const network::RACE contacted_client = m_pRaceCtrl->GetMappedClientID(ContactedRace.GetRaceID());
 	m_iSelectedView[client] = EMPIRE_VIEW;
 	if(!Major.IsHumanPlayer())
 		return;
 	// Audiovorstellung der kennengelernten race
-	SNDMGR_MESSAGEENTRY entry = {SNDMGR_MSG_ALIENCONTACT, contacted_client, 1, 1.0f};
+	SNDMGR_MESSAGEENTRY entry = {SNDMGR_MSG_ALIENCONTACT, client, 1, 1.0f};
 	if(ContactedRace.IsMajor()) {
 		entry.nMessage = SNDMGR_MSG_FIRSTCONTACT;
+		entry.nRace = m_pRaceCtrl->GetMappedClientID(ContactedRace.GetRaceID());
 		entry.nPriority = 2;
 	}
 	m_SoundMessages[client].Add(entry);
