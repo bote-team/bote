@@ -480,8 +480,9 @@ void CShips::DrawShip(Gdiplus::Graphics* g, CGraphicPool* pGraphicPool, const CP
 	bool bOwnerUnknown, bool bDrawFleet, const Gdiplus::Color& clrNormal,
 	const Gdiplus::Color& clrMark, const Gdiplus::Font& font) const {
 
+	const bool draw_troop_symbol = bDrawFleet ? FleetHasTroops() : m_Leader.HasTroops();
 	m_Leader.DrawShip(g, pGraphicPool, pt, bIsMarked, bOwnerUnknown, bDrawFleet && HasFleet(),
-		clrNormal,clrMark, font, FleetHasTroops(), GetFleetShipType(), GetFleetSize());
+		clrNormal,clrMark, font, draw_troop_symbol, GetFleetShipType(), GetFleetSize());
 }
 
 void CShips::Repair(BOOL bAtShipPort, bool bFasterShieldRecharge) {
