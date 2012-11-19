@@ -718,13 +718,13 @@ void CGalaxyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 					if (s.ShouldDrawShip(*pMajor, it->first))
 						{
 							if(it->first == pMajor->GetRaceID()) {
-								for(CShipMap::const_iterator i = pDoc->m_ShipArray.begin();
-										i != pDoc->m_ShipArray.end(); ++i) {
+								for(CShipMap::const_iterator i = pDoc->m_ShipMap.begin();
+										i != pDoc->m_ShipMap.end(); ++i) {
 									const CShips& ship = i->second;
 									const CPoint& point = ship.GetKO();
 									if(sector == Sector(point.x, point.y)) {
 										m_PreviouslyJumpedToShip = RememberedShip(
-											pDoc->m_ShipArray.index_of(i), ship.GetShipName());
+											pDoc->m_ShipMap.index_of(i), ship.GetShipName());
 										break;
 									}
 								}
@@ -1314,7 +1314,7 @@ void CGalaxyMenuView::SearchNextIdleShipAndJumpToIt(CBotf2Doc* pDoc, SHIP_ORDER:
 	if (!pMajor)
 		return;
 
-	const int size = pDoc->m_ShipArray.GetSize();
+	const int size = pDoc->m_ShipMap.GetSize();
 	if(size <= 0)
 		return;
 
@@ -1324,7 +1324,7 @@ void CGalaxyMenuView::SearchNextIdleShipAndJumpToIt(CBotf2Doc* pDoc, SHIP_ORDER:
 	CShips* perhaps_previous_ship = NULL;//this variable is perhaps/supposedly redundant to previous_ship
 	if(m_PreviouslyJumpedToShip.index < size)
 	{
-		perhaps_previous_ship = &pDoc->m_ShipArray.GetAt(m_PreviouslyJumpedToShip.index);
+		perhaps_previous_ship = &pDoc->m_ShipMap.GetAt(m_PreviouslyJumpedToShip.index);
 		if(perhaps_previous_ship->GetOwnerOfShip()
 				== pMajor->GetRaceID()
 				&& Sector(perhaps_previous_ship->GetKO())
@@ -1344,7 +1344,7 @@ void CGalaxyMenuView::SearchNextIdleShipAndJumpToIt(CBotf2Doc* pDoc, SHIP_ORDER:
 		++i;
 		if(i >= size)
 			i = 0;
-		const CShips& ship = pDoc->m_ShipArray.GetAt(i);
+		const CShips& ship = pDoc->m_ShipMap.GetAt(i);
 		if(pMajor->GetRaceID() != ship.GetOwnerOfShip())
 			if(i == stop_at)
 				break;
@@ -1365,7 +1365,7 @@ void CGalaxyMenuView::SearchNextIdleShipAndJumpToIt(CBotf2Doc* pDoc, SHIP_ORDER:
 			m_PreviouslyJumpedToShip = RememberedShip(i, ship.GetShipName());
 			pMajor->GetStarmap()->Select(sector);// sets orange rectangle in galaxy view
 			pDoc->SetKO(sector.x,sector.y);//neccessary for that the ship is selected for SHIP_BOTTOM_VIEW
-			pDoc->SetCurrentShip(pDoc->m_ShipArray.iterator_at(i));
+			pDoc->SetCurrentShip(pDoc->m_ShipMap.iterator_at(i));
 
 			CShipBottomView::SetShowStation(false);
 			pDoc->GetMainFrame()->SelectBottomView(SHIP_BOTTOM_VIEW);

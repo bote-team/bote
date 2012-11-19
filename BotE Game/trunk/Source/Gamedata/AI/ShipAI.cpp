@@ -60,7 +60,7 @@ void CShipAI::CalculateShipOrders(CSectorAI* SectorAI)
 	// danach einen möglichen Bombardierungssektor finden
 	CalcBombardSector();
 
-	for(CShipMap::iterator i = m_pDoc->m_ShipArray.begin(); i != m_pDoc->m_ShipArray.end(); ++i)
+	for(CShipMap::iterator i = m_pDoc->m_ShipMap.begin(); i != m_pDoc->m_ShipMap.end(); ++i)
 	{
 		CShips* pShip	= &i->second;
 		const CString& sOwner	= pShip->GetOwnerOfShip();
@@ -437,7 +437,7 @@ bool CShipAI::DoBombardSystem(CShips* pShip)
 
 		int nShipValue = 0;
 
-		for(CShipMap::iterator i = m_pDoc->m_ShipArray.begin(); i != m_pDoc->m_ShipArray.end(); ++i)
+		for(CShipMap::iterator i = m_pDoc->m_ShipMap.begin(); i != m_pDoc->m_ShipMap.end(); ++i)
 		{
 			if (i->second.GetOwnerOfShip() != pShip->GetOwnerOfShip())
 				continue;
@@ -507,7 +507,7 @@ void CShipAI::DoMakeFleet(const CShipMap::iterator& pShip)
 		if(increment)
 			++i;
 		increment = true;
-		if(i == m_pDoc->m_ShipArray.end())
+		if(i == m_pDoc->m_ShipMap.end())
 			break;
 
 		// Schiffe müssen von der selben Rasse sein
@@ -544,7 +544,7 @@ void CShipAI::DoMakeFleet(const CShipMap::iterator& pShip)
 			||(pShip->second.GetShipType() == SHIP_TYPE::COLONYSHIP && i->second.GetShipType() == SHIP_TYPE::COLONYSHIP && i->second.GetCurrentOrder() < SHIP_ORDER::COLONIZE))
 		{
 			pShip->second.AddShipToFleet(i->second);
-			m_pDoc->m_ShipArray.EraseAt(i);
+			m_pDoc->m_ShipMap.EraseAt(i);
 			increment = false;
 		}
 	}

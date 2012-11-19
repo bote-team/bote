@@ -147,7 +147,7 @@ void CStatistics::GetDemographicsMilitary(const CString& sRaceID, int& nPlace, f
 		mMap[it->first] = 0.0f;
 
 	// Es werden alle Schiffe aller Rassen betrachtet
-	for(CShipMap::const_iterator i = pDoc->m_ShipArray.begin(); i != pDoc->m_ShipArray.end(); ++i)
+	for(CShipMap::const_iterator i = pDoc->m_ShipMap.begin(); i != pDoc->m_ShipMap.end(); ++i)
 	{
 		const CShips* pShip = &i->second;
 		// Stationen und Alienschiffe werden nicht mit einbezogen

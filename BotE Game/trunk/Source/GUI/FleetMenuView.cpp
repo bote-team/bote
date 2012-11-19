@@ -380,7 +380,7 @@ void CFleetMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 	if (whichRect > 0 && whichRect < 4)
 	{
 		const CPoint& ko = pDoc->FleetShip()->second.GetKO();
-		for(CShipMap::iterator i = pDoc->m_ShipArray.begin(); i != pDoc->m_ShipArray.end();) {
+		for(CShipMap::iterator i = pDoc->m_ShipMap.begin(); i != pDoc->m_ShipMap.end();) {
 			const CShipMap::iterator& fleetship = pDoc->FleetShip();
 			if (i->second.GetOwnerOfShip() != fleetship->second.GetOwnerOfShip() || i->second.GetKO() != ko || i->second.IsStation()) {
 				++i;
@@ -395,7 +395,7 @@ void CFleetMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 				fleetship->second.AddShipToFleet(i->second);
 				// Wenn wir das Schiff da hinzugefügt haben, dann müssen wir das aus der normalen Schiffsliste
 				// rausnehmen, damit es nicht zweimal im Spiel vorkommt
-				pDoc->m_ShipArray.EraseAt(i);
+				pDoc->m_ShipMap.EraseAt(i);
 				// Wenn wir so Schiffe hinzufügen Ansicht auf Seite 1 stellen und markiertes Schiff ist
 				// das Anführerschiff
 				pDoc->SetShipInFleet(fleetship->second.end());
@@ -421,7 +421,7 @@ void CFleetMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 				|| whichRect == 6)
 			{
 				// Das Schiff welches wir aus der Flotte nehmen stecken wir wieder in das normale Schiffsarray
-				pDoc->m_ShipArray.Add(i->second);
+				pDoc->m_ShipMap.Add(i->second);
 				fleetship->second.RemoveShipFromFleet(i);
 				pDoc->SetShipInFleet(fleetship->second.end());
 				continue;
@@ -459,7 +459,7 @@ void CFleetMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		{
 			CShips::iterator j = fleetship->second.iterator_at(i-1);
 			// Das Schiff welches wir aus der Flotte nehmen stecken wir wieder in das normale Schiffsarray
-			pDoc->m_ShipArray.Add(j->second);
+			pDoc->m_ShipMap.Add(j->second);
 			fleetship->second.RemoveShipFromFleet(j);
 			//we set the marked ship to the ship which was following the removed one,
 			//or to the leading ship in case there's none left (in which case j comes back
@@ -478,7 +478,7 @@ void CFleetMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		else if (i == 0 && m_iFleetPage == 1)
 		{
 			const CShips& new_fleetship = fleetship->second.GiveFleetToFleetsFirstShip();
-			const CShipMap::iterator it = pDoc->m_ShipArray.Add(new_fleetship);
+			const CShipMap::iterator it = pDoc->m_ShipMap.Add(new_fleetship);
 
 			pDoc->SetCurrentShip(it);
 			pDoc->SetFleetShip(it);

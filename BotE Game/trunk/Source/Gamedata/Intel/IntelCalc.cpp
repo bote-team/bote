@@ -775,7 +775,7 @@ BOOLEAN CIntelCalc::ExecuteMilitarySpy(CMajor* pRace, CMajor* pEnemyRace, CMajor
 		CArray<CShips*> ships;
 		CArray<CShips*> stations;
 		// Felder mit allen zu spionierenden Schiffe und Stationen anlegen
-		for(CShipMap::iterator i = m_pDoc->m_ShipArray.begin(); i != m_pDoc->m_ShipArray.end(); ++i)
+		for(CShipMap::iterator i = m_pDoc->m_ShipMap.begin(); i != m_pDoc->m_ShipMap.end(); ++i)
 			if (i->second.GetOwnerOfShip() == pEnemyRace->GetRaceID())
 			{
 				if (i->second.IsStation())
@@ -1396,7 +1396,7 @@ BOOLEAN CIntelCalc::ExecuteMilitarySabotage(CMajor* pRace, CMajor* pEnemyRace, C
 			// überprüfen, ob die jeweilige Station oder das jeweilige Schiff auch noch im System vorhanden ist
 			CArray<CPoint> allShips;	// x für Schiffsposition im Feld, y für Schiffsposition in der Flotte
 			int i_index = 0;
-			for(CShipMap::const_iterator i = m_pDoc->m_ShipArray.begin(); i != m_pDoc->m_ShipArray.end(); ++i)
+			for(CShipMap::const_iterator i = m_pDoc->m_ShipMap.begin(); i != m_pDoc->m_ShipMap.end(); ++i)
 			{
 				if (i->second.GetKO() == report->GetKO() && i->second.GetOwnerOfShip() != report->GetOwner())
 				{
@@ -1404,8 +1404,8 @@ BOOLEAN CIntelCalc::ExecuteMilitarySabotage(CMajor* pRace, CMajor* pEnemyRace, C
 					if (i->second.HasFleet())
 					{
 						int j_index = 0;
-						for(CShips::const_iterator j = m_pDoc->m_ShipArray.begin();
-								j != m_pDoc->m_ShipArray.end(); ++j)
+						for(CShips::const_iterator j = m_pDoc->m_ShipMap.begin();
+								j != m_pDoc->m_ShipMap.end(); ++j)
 						{
 							if (j->second.GetID() == report->GetID())
 								allShips.Add(CPoint(i_index, j_index));
@@ -1424,7 +1424,7 @@ BOOLEAN CIntelCalc::ExecuteMilitarySabotage(CMajor* pRace, CMajor* pEnemyRace, C
 				int random = rand()%allShips.GetSize();
 				n = allShips.GetAt(random);
 				// ist das Schiff in keiner Flotte sondern direkt im Feld zu finden
-				CShips& s = m_pDoc->m_ShipArray.GetAt(n.x);
+				CShips& s = m_pDoc->m_ShipMap.GetAt(n.x);
 				if (n.y == -1)
 					ship = &s;
 				else
@@ -1484,15 +1484,15 @@ BOOLEAN CIntelCalc::ExecuteMilitarySabotage(CMajor* pRace, CMajor* pEnemyRace, C
 					{
 						const CShips& new_fleetship = ship->GiveFleetToFleetsFirstShip();
 						// neues Flottenschiff dem Array hinzufügen
-						m_pDoc->m_ShipArray.Add(new_fleetship);
+						m_pDoc->m_ShipMap.Add(new_fleetship);
 						// Schiff nochmal neu holen, da der Vektor verändert wurde und so sich auch der Zeiger ändern kann
-						ship = &m_pDoc->m_ShipArray.GetAt(n.x);
+						ship = &m_pDoc->m_ShipMap.GetAt(n.x);
 					}
 				}
 				else	// Schiff ist in Flotte
 				{
-					m_pDoc->m_ShipArray.Add(*ship);
-					CShips& ship = m_pDoc->m_ShipArray.GetAt(n.x);
+					m_pDoc->m_ShipMap.Add(*ship);
+					CShips& ship = m_pDoc->m_ShipMap.GetAt(n.x);
 					ship.RemoveShipFromFleet(ship.iterator_at(n.y));
 				}
 				if (report)
@@ -1520,11 +1520,11 @@ BOOLEAN CIntelCalc::ExecuteMilitarySabotage(CMajor* pRace, CMajor* pEnemyRace, C
 					m_pDoc->GetCurrentRound(), CResourceManager::GetString("SABOTAGE"), CResourceManager::GetString("DESTROYED"));
 				if (n.y == -1)		// nicht in Flotte
 				{
-					m_pDoc->RemoveShip(m_pDoc->m_ShipArray.iterator_at(n.x));
+					m_pDoc->RemoveShip(m_pDoc->m_ShipMap.iterator_at(n.x));
 				}
 				else	// Schiff ist in Flotte
 				{
-					CShips& s = m_pDoc->m_ShipArray.GetAt(n.x);
+					CShips& s = m_pDoc->m_ShipMap.GetAt(n.x);
 					s.RemoveShipFromFleet(s.iterator_at(n.y));
 				}
 				if (report)

@@ -51,7 +51,7 @@ protected: // Nur aus Serialisierung erzeugen
 
 	CArray<CTroopInfo> m_TroopInfo;		// In diesem Feld werden alle Informationen zu den Truppen gespeichert
 	ShipInfoArray m_ShipInfoArray;		// dynamisches Feld, in dem die ganzen Informationen zu den Schiffen gespeichert sind
-	CShipMap m_ShipArray;				// dynamisches Feld, in das die ganzen Schiffe gespeichert werden
+	CShipMap m_ShipMap;				// dynamisches Feld, in das die ganzen Schiffe gespeichert werden
 	BuildingInfoArray BuildingInfo;		// alle Gebäudeinfos zu allen Gebäuden im Spiel
 	CGlobalBuildings m_GlobalBuildings;	// alle gebauten Gebäude aller Rassen im Spiel
 
@@ -140,10 +140,10 @@ public:
 	float GetDifficultyLevel(void) const {return m_fDifficultyLevel;}
 
 	const CShipMap::iterator& CurrentShip() const {
-		return m_ShipArray.CurrentShip();
+		return m_ShipMap.CurrentShip();
 	}
 	const CShipMap::iterator& FleetShip() const {
-		return m_ShipArray.FleetShip();
+		return m_ShipMap.FleetShip();
 	}
 
 	const CPoint& GetKO(void) const {return m_ptKO;}

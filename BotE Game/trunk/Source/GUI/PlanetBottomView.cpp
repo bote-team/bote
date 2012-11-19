@@ -401,7 +401,7 @@ void CPlanetBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 					// den Terraformingbefehl zurücknehmen, wenn kein anderes Schiff diesen Planeten mehr terraform
 					if (static_cast<short>(i) != nOldTerraformingPlanet && nOldTerraformingPlanet != -1)
 					{
-						for(CShipMap::const_iterator y = pDoc->m_ShipArray.begin(); y != pDoc->m_ShipArray.end(); ++y)
+						for(CShipMap::const_iterator y = pDoc->m_ShipMap.begin(); y != pDoc->m_ShipMap.end(); ++y)
 							if (y->second.GetKO() == pDoc->GetKO() && y->second.GetTerraformingPlanet() == nOldTerraformingPlanet)
 							{
 								pDoc->CurrentSector().GetPlanet(nOldTerraformingPlanet)->SetIsTerraforming(TRUE);

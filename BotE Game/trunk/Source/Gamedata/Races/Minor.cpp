@@ -211,7 +211,7 @@ void CMinor::PerhapsBuildShip(CBotf2Doc* pDoc)
 				{
 					// Wahrscheinlichkeit berechnen, ob das Schiff gebaut wird
 					int nNumber = 1;
-					for(CShipMap::const_iterator j = pDoc->m_ShipArray.begin(); j != pDoc->m_ShipArray.end(); ++j)
+					for(CShipMap::const_iterator j = pDoc->m_ShipMap.begin(); j != pDoc->m_ShipMap.end(); ++j)
 					{
 						const CShips* pShip = &j->second;
 						if (pShip->GetOwnerOfShip() == m_sID && pShip->GetShipClass() == pShipInfo->GetShipClass())

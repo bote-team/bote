@@ -137,7 +137,7 @@ void CShipBottomView::OnDraw(CDC* dc)
 	{
 		USHORT column = 0;
 		USHORT row = 0;
-		CShipMap::iterator oneShip = pDoc->m_ShipArray.begin();
+		CShipMap::iterator oneShip = pDoc->m_ShipMap.begin();
 		if (!CGalaxyMenuView::IsMoveShip())
 			m_vShipRects.clear();
 
@@ -147,7 +147,7 @@ void CShipBottomView::OnDraw(CDC* dc)
 
 		USHORT counter = 0;
 
-		for(CShipMap::iterator i = pDoc->m_ShipArray.begin(); i != pDoc->m_ShipArray.end(); ++i)
+		for(CShipMap::iterator i = pDoc->m_ShipMap.begin(); i != pDoc->m_ShipMap.end(); ++i)
 		{
 			CShips* pShip = &i->second;
 			if (pDoc->GetKO() != pShip->GetKO())
@@ -799,7 +799,7 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 					CShipMap::iterator next_current_ship = fleetship;
 					CShipMap::iterator it = current_ship;
 					++it;
-					while(it != pDoc->m_ShipArray.end()) {
+					while(it != pDoc->m_ShipMap.end()) {
 						if(fleetship->second.GetKO() != it->second.GetKO()
 								|| fleetship->second.GetOwnerOfShip() != it->second.GetOwnerOfShip()
 								|| it->second.IsStation()) {
@@ -810,7 +810,7 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 						break;
 					}
 					assert(next_current_ship != to_erase);
-					pDoc->m_ShipArray.EraseAt(to_erase);
+					pDoc->m_ShipMap.EraseAt(to_erase);
 					pDoc->SetCurrentShip(next_current_ship);
 
 					Invalidate(FALSE);
@@ -898,7 +898,7 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 				{
 					// Das ganze Schiffsarray und auch die Flotten durchgehen, wenn wir ein altes Flagschiff finden, diesem den
 					// Titel wegnehmen
-					for (CShipMap::iterator n = pDoc->m_ShipArray.begin(); n != pDoc->m_ShipArray.end(); ++n)
+					for (CShipMap::iterator n = pDoc->m_ShipMap.begin(); n != pDoc->m_ShipMap.end(); ++n)
 						if (n->second.GetOwnerOfShip() == pDoc->CurrentShip()->second.GetOwnerOfShip())
 						{
 							if (n->second.GetCurrentOrder() == SHIP_ORDER::ASSIGN_FLAGSHIP)
@@ -999,7 +999,7 @@ void CShipBottomView::OnMouseMove(UINT nFlags, CPoint point)
 	for(std::vector<std::pair<CRect, CShips*>>::const_iterator i = m_vShipRects.begin(); i != m_vShipRects.end(); ++i) {
 		if (!i->first.PtInRect(point))
 			continue;
-		for(CShipMap::iterator j = pDoc->m_ShipArray.begin(); j != pDoc->m_ShipArray.end(); ++j) {
+		for(CShipMap::iterator j = pDoc->m_ShipMap.begin(); j != pDoc->m_ShipMap.end(); ++j) {
 			if(&j->second != i->second)
 				continue;
 			pDoc->SetCurrentShip(j);
@@ -1142,8 +1142,8 @@ CString CShipBottomView::CreateTooltip(void)
 //		USHORT counter = 0;
 //		USHORT row = 0;
 //		USHORT column = 0;
-//		for (int i = 0; i < pDoc->m_ShipArray.GetSize(); i++) {
-//			const CShip* const pShip = &pDoc->m_ShipArray.GetAt(i);
+//		for (int i = 0; i < pDoc->m_ShipMap.GetSize(); i++) {
+//			const CShip* const pShip = &pDoc->m_ShipMap.GetAt(i);
 //			const CPoint& active_sector = pDoc->GetKO();
 //			if(active_sector != pShip->GetKO())
 //				continue;
