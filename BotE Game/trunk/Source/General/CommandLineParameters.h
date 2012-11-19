@@ -16,6 +16,7 @@ private:
 	//or be the only ones that speak (true) ?
 	bool m_bSeeAllOfMap; //true: komplette Map und alle Majorrassen sind sichtbar
 	int m_nAutoTurns; // number of turns automaticly terminated, -1 if option is disabled
+	bool m_bTest; // should tests run before startup
 
 	void ParseLogDomainParamArgs(const std::string& args);
 
@@ -44,6 +45,9 @@ public:
 	}
 	const int GetAutoTurns() const {
 		return m_nAutoTurns;
+	}
+	bool GetTest() const {
+		return m_bTest;
 	}
 
 	//called for each parameter passed in the comand line

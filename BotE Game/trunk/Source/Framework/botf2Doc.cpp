@@ -21,6 +21,7 @@
 #include "System\AttackSystem.h"
 #include "Intel\IntelCalc.h"
 #include "Sanity.h"
+#include "Test.h"
 
 #include "AI\AIPrios.h"
 #include "AI\SectorAI.h"
@@ -923,6 +924,11 @@ void CBotf2Doc::PrepareData()
 		s.Format("Größtes System ist %s mit %lf Bevölkerung\nin Sektor %d:%d",m_Sectors.at(poi.x+(poi.y)*STARMAP_SECTORS_HCOUNT).GetName(),habis,poi.x,poi.y);
 		AfxMessageBox(s);
 		*/
+
+		if(clp->GetTest()) {
+			const CTest* const test = CTest::GetInstance(*this);
+			test->Run();
+		}
 	}
 	// wenn geladen wird
 	else
