@@ -10,6 +10,11 @@
 
 #include <cassert>
 
+//@file
+// sanity checks of game data which are executed at runtime
+// combines nicely with the --autoturn command line parameter
+
+
 //These debugging functions check that all ships which don't move have target CPoint(-1, -1) set
 //instead of their current coordinates. Later on, the places that handle the case of
 //(target coords)==(current coords) can be removed (filled with assert(false)).
@@ -129,18 +134,18 @@ void CSanity::SanityCheckSectorAndSystem(const CSector& sector, const CSystem& s
 	assert(pMajor);
 }
 
-void CSanity::ShipInfo(const CArray<CShip, CShip>& shiparray, int index, const CString& indexname) {
-	if(!MT::CMyTrace::IsLoggingEnabledFor("shipindices"))
-		return;
-	CString s;
-	s.Format("%s: %i", indexname, index);
-	const int size = shiparray.GetSize();
-	if(0 <= index && index < size) {
-		const CShip& ship = shiparray.GetAt(index);
-		const CPoint& p = ship.GetKO();
-		CString sector;
-		sector.Format("%c%i",(char)(p.y+97),p.x+1);
-		s.Format("%s; %s; %s", s, ship.GetShipName(), sector);
-	}
-	MYTRACE_CHECKED("shipindices")(MT::LEVEL_INFO, s);
-}
+//void CSanity::ShipInfo(const CArray<CShip, CShip>& shiparray, int index, const CString& indexname) {
+//	if(!MT::CMyTrace::IsLoggingEnabledFor("shipindices"))
+//		return;
+//	CString s;
+//	s.Format("%s: %i", indexname, index);
+//	const int size = shiparray.GetSize();
+//	if(0 <= index && index < size) {
+//		const CShip& ship = shiparray.GetAt(index);
+//		const CPoint& p = ship.GetKO();
+//		CString sector;
+//		sector.Format("%c%i",(char)(p.y+97),p.x+1);
+//		s.Format("%s; %s; %s", s, ship.GetShipName(), sector);
+//	}
+//	MYTRACE_CHECKED("shipindices")(MT::LEVEL_INFO, s);
+//}

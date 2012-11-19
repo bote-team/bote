@@ -3517,7 +3517,9 @@ void CBotf2Doc::CalcNewRoundData()
 	// durchgegangen sein muﬂ.
 	for(std::vector<CSector>::iterator sector = m_Sectors.begin(); sector != m_Sectors.end(); ++sector) {
 		CSystem& system = GetSystemForSector(*sector);
+#ifdef DEVELOPMENT_VERSION
 		CSanity::SanityCheckSectorAndSystem(*sector, system, *this);
+#endif
 		const CString& system_owner = system.GetOwnerOfSystem();
 		if (sector->GetSunSystem() && system_owner != "")
 		{
@@ -3721,7 +3723,9 @@ void CBotf2Doc::CalcShipOrders()
 		if(y == m_ShipArray.end())
 			break;
 
+#ifdef DEVELOPMENT_VERSION
 		CSanity::SanityCheckFleet(y->second);
+#endif
 
 		// Hier wird ¸berpr¸ft, ob der Systemattack-Befehl noch g¸ltig ist
 		// Alle Schiffe, welche einen Systemangriffsbefehl haben ¸berpr¸fen, ob dieser Befehl noch g¸ltig ist
@@ -4635,8 +4639,9 @@ void CBotf2Doc::CalcShipMovement()
 	for(CShipMap::iterator y = m_ShipArray.begin(); y != m_ShipArray.end(); ++y)
 	{
 		CShips* pShip = &y->second;
-		//this call is expensive (about n*log(n) in the ship array length; TODO comment out)
+#ifdef DEVELOPMENT_VERSION
 		CSanity::CheckShipUniqueness(*pShip, already_encountered_ships_for_sanity_check);
+#endif
 
 		// Pr¸fen, dass ein Terraformbefehl noch g¸ltig ist
 		if (pShip->GetCurrentOrder() == SHIP_ORDER::TERRAFORM)

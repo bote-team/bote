@@ -8,6 +8,10 @@ class CBotf2Doc;
 
 #include <set>
 
+//@file
+// sanity checks of game data which are executed at runtime
+// combines nicely with the --autoturn command line parameter
+
 
 class CSanity
 {
@@ -22,7 +26,7 @@ class CSanity
 		const CSector& sector,
 		const CSystem& system,
 		const CBotf2Doc& doc);
-	static void ShipInfo(const CArray<CShip, CShip>& shiparray, int index, const CString& indexname);
+	//static void ShipInfo(const CArray<CShip, CShip>& shiparray, int index, const CString& indexname);
 	static void CheckShipUniqueness(const CShips& ship, std::set<CString>& already_encountered);
 
 
