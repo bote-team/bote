@@ -368,7 +368,7 @@ void CPlanetBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 	for (UINT i = 0; i < m_vPlanetRects.size(); i++)
 		if (m_vPlanetRects[i].PtInRect(point))
 		{
-			CSmallInfoView::SetPlanetInfo(true);
+			CSmallInfoView::SetDisplayMode(CSmallInfoView::DISPLAY_MODE_PLANET_INFO);
 			CSmallInfoView::SetPlanet(pDoc->GetSector(KO.x, KO.y).GetPlanet(i));
 			pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
 			break;
@@ -394,7 +394,7 @@ void CPlanetBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 				{
 					CGalaxyMenuView::SetMoveShip(FALSE);
 					CShipBottomView::SetShowStation(false);
-					CSmallInfoView::SetShipInfo(true);
+					CSmallInfoView::SetDisplayMode(CSmallInfoView::DISPLAY_MODE_SHIP_BOTTEM_VIEW);
 					pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
 					pDoc->CurrentShip()->second.SetTerraformingPlanet(i);
 					pDoc->CurrentSector().GetPlanet(i)->SetIsTerraforming(TRUE);
@@ -438,7 +438,7 @@ void CPlanetBottomView::OnMouseMove(UINT nFlags, CPoint point)
 			if (pPlanet != CSmallInfoView::GetPlanet())
 			{
 				CSmallInfoView::SetPlanet(pPlanet);
-				CSmallInfoView::SetPlanetStats(true);
+				CSmallInfoView::SetDisplayMode(CSmallInfoView::DISPLAY_MODE_PLANET_STATS);
 				pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
 			}
 			break;

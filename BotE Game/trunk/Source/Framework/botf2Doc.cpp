@@ -731,17 +731,17 @@ void CBotf2Doc::SetCurrentShip(const CShipMap::iterator& position)
 {
 	m_ShipMap.SetCurrentShip(position);
 	dynamic_cast<CGalaxyMenuView*>(GetMainFrame()->GetView(RUNTIME_CLASS(CGalaxyMenuView)))->SetNewShipPath();
-	CSmallInfoView::SetShipDisplayMode(CSmallInfoView::SHIP_DISPLAY_MODE_SHIP_BOTTEM_VIEW);
+	CSmallInfoView::SetDisplayMode(CSmallInfoView::DISPLAY_MODE_SHIP_BOTTEM_VIEW);
 }
 void CBotf2Doc::SetFleetShip(const CShipMap::iterator& position)
 {
 	m_ShipMap.SetFleetShip(position);
-	CSmallInfoView::SetShipDisplayMode(CSmallInfoView::SHIP_DISPLAY_MODE_SHIP_BOTTEM_VIEW);
+	CSmallInfoView::SetDisplayMode(CSmallInfoView::DISPLAY_MODE_SHIP_BOTTEM_VIEW);
 }
 void CBotf2Doc::SetShipInFleet(const CShipMap::iterator& position)
 {
 	FleetShip()->second.SetCurrentShip(position);
-	CSmallInfoView::SetShipDisplayMode(CSmallInfoView::SHIP_DISPLAY_MODE_FLEET_VIEW);
+	CSmallInfoView::SetDisplayMode(CSmallInfoView::DISPLAY_MODE_FLEET_MENU_VIEW);
 }
 
 /// Funktion lädt für die ausgewählte Spielerrasse alle Grafiken für die Views.
@@ -5677,7 +5677,7 @@ void CBotf2Doc::CalcEndDataForNextRound()
 	}
 
 	// Bestimmte Views zurücksetzen
-	CSmallInfoView::SetShipInfo(false);
+	CSmallInfoView::SetDisplayMode(CSmallInfoView::DISPLAY_MODE_ICON);
 	for (int i = network::RACE_1; i < network::RACE_ALL; i++)
 		if (m_iSelectedView[i] == FLEET_VIEW)
 			m_iSelectedView[i] = GALAXY_VIEW;

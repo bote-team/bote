@@ -22,13 +22,8 @@ static char THIS_FILE[] = __FILE__;
 
 /////////////////////////////////////////////////////////////////////////////
 // CSmallInfoView
-
-BOOLEAN CSmallInfoView::m_bShowShipInfo = FALSE;
-BOOLEAN CSmallInfoView::m_bShowPlanetInfo = FALSE;
-BOOLEAN CSmallInfoView::m_bShowPlanetStats = FALSE;
 CPlanet* CSmallInfoView::m_pPlanet = NULL;
-CSmallInfoView::SHIP_DISPLAY_MODE CSmallInfoView::m_ShipDisplayMode = 
-	CSmallInfoView::SHIP_DISPLAY_MODE_SHIP_BOTTEM_VIEW;
+CSmallInfoView::DISPLAY_MODE CSmallInfoView::m_DisplayMode = CSmallInfoView::DISPLAY_MODE_ICON;
 
 IMPLEMENT_DYNCREATE(CSmallInfoView, CView)
 
@@ -101,12 +96,13 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 	SolidBrush fontBrush(Color::White);
 
 	////////////// Überprüfen, ob in der CSmallInfoView Planeten angezeigt werden //////////////////////
-	if (pDoc->GetMainFrame()->GetActiveView(1, 1) == PLANET_BOTTOM_VIEW && m_pPlanet != NULL && (m_bShowPlanetStats || m_bShowPlanetInfo))
+	if (pDoc->GetMainFrame()->GetActiveView(1, 1) == PLANET_BOTTOM_VIEW && m_pPlanet != NULL
+		&& (m_DisplayMode == DISPLAY_MODE_PLANET_STATS || m_DisplayMode == DISPLAY_MODE_PLANET_INFO))
 	{
 		this->KillTimer(1);
 		m_nTimer = 0;
 		// Überprüfen ob Statistik zu Planet angezeigt werden kann, sprich Maus muß drüber gehalten werden
-		if (m_bShowPlanetStats)
+		if (m_DisplayMode == DISPLAY_MODE_PLANET_STATS)
 		{
 			// gibt es eine spezielle Grafik für den Planeten, so wird versucht diese zu laden
 			Bitmap* planet = NULL;
@@ -245,7 +241,7 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 		}
 
 		// Überprüfen, ob auf den Planeten geklickt wurde und dann Informationen über Klasse anzeigen
-		else if (m_bShowPlanetInfo)
+		else if (m_DisplayMode == DISPLAY_MODE_PLANET_INFO)
 		{
 			char PlanetClass = m_pPlanet->GetClass();
 
@@ -286,7 +282,8 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 	////////////// Überprüfen, ob in der CSmallInfoView Planeten angezeigt werden, hier zu ENDE //////////////////////
 
 	////////////// Überprüfen, ob in der CSmallInfoView Schiffe angezeigt werden /////////////////////////////////////
-	else if (pDoc->GetMainFrame()->GetActiveView(1, 1) == SHIP_BOTTOM_VIEW && m_bShowShipInfo)
+	else if (pDoc->GetMainFrame()->GetActiveView(1, 1) == SHIP_BOTTOM_VIEW
+		&& m_DisplayMode == DISPLAY_MODE_SHIP_BOTTEM_VIEW || m_DisplayMode == DISPLAY_MODE_FLEET_MENU_VIEW)
 	{
 		this->KillTimer(1);
 		m_nTimer = 0;
@@ -410,7 +407,7 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 			s = CResourceManager::GetString("UNKNOWN_TARGET");
 		if (TargetKO.x != -1 && pShip->second.GetOwnerOfShip() == pMajor->GetRaceID())
 		{
-			if(m_ShipDisplayMode == SHIP_DISPLAY_MODE_SHIP_BOTTEM_VIEW)
+			if(m_DisplayMode == DISPLAY_MODE_SHIP_BOTTEM_VIEW)
 				assert(pShip == pDoc->CurrentShip());
 			else//(m_ShipDisplayMode == SHIP_DISPLAY_MODE_FLEET_VIEW)
 			{
@@ -519,18 +516,19 @@ void CSmallInfoView::OnInitialUpdate()
 	m_TotalSize.cy = 249;
 }
 
-void CSmallInfoView::SetShipDisplayMode(CSmallInfoView::SHIP_DISPLAY_MODE mode) {
-	m_ShipDisplayMode = mode;
+void CSmallInfoView::SetDisplayMode(CSmallInfoView::DISPLAY_MODE mode) {
+	m_DisplayMode = mode;
 }
 
 const CShipMap::const_iterator& CSmallInfoView::GetShip(const CBotf2Doc& doc)
 {
-	if(m_ShipDisplayMode == CSmallInfoView::SHIP_DISPLAY_MODE_FLEET_VIEW) {
+	if(m_DisplayMode == CSmallInfoView::DISPLAY_MODE_FLEET_MENU_VIEW) {
 		const CShipMap::const_iterator& fleetship = doc.FleetShip();
 		if(fleetship->second.LeaderIsCurrent())
 			return fleetship;
 		return fleetship->second.CurrentShip();
 	}
+	assert(m_DisplayMode == DISPLAY_MODE_SHIP_BOTTEM_VIEW);
 	return doc.CurrentShip();
 }
 

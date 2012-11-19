@@ -407,7 +407,7 @@ void CFleetMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		}
 		Invalidate();
 		pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
-		CSmallInfoView::SetShipInfo(true);
+		CSmallInfoView::SetDisplayMode(CSmallInfoView::DISPLAY_MODE_FLEET_MENU_VIEW);
 		pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CShipBottomView));
 		return;
 	}
@@ -430,7 +430,7 @@ void CFleetMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		}
 		Invalidate();
 		pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CShipBottomView));
-		CSmallInfoView::SetShipInfo(true);
+		CSmallInfoView::SetDisplayMode(CSmallInfoView::DISPLAY_MODE_FLEET_MENU_VIEW);
 		pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
 	}
 	float column = ((float)(point.x - 287) / 250);
@@ -471,7 +471,7 @@ void CFleetMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			// Wenn wir alle Schiffe aus der Flotte entfernt haben
 			Invalidate();
 			pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CShipBottomView));
-			CSmallInfoView::SetShipInfo(true);
+			CSmallInfoView::SetDisplayMode(CSmallInfoView::DISPLAY_MODE_FLEET_MENU_VIEW);
 			pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
 		}
 		// Wenn es das Schiff ist, welches die Flotte besitzt
@@ -487,7 +487,7 @@ void CFleetMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 
 			Invalidate();
 			pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CShipBottomView));
-			CSmallInfoView::SetShipInfo(true);
+			CSmallInfoView::SetDisplayMode(CSmallInfoView::DISPLAY_MODE_FLEET_MENU_VIEW);
 			pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
 		}
 	}
@@ -547,7 +547,7 @@ void CFleetMenuView::OnRButtonDown(UINT nFlags, CPoint point)
 	pDoc->SetCurrentShip(pDoc->FleetShip());
 	pDoc->GetMainFrame()->SelectMainView(GALAXY_VIEW, pMajor->GetRaceID());
 	pDoc->GetMainFrame()->SelectBottomView(SHIP_BOTTOM_VIEW);
-	CSmallInfoView::SetShipInfo(true);
+	CSmallInfoView::SetDisplayMode(CSmallInfoView::DISPLAY_MODE_SHIP_BOTTEM_VIEW);
 	pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
 
 	CMainBaseView::OnRButtonDown(nFlags, point);

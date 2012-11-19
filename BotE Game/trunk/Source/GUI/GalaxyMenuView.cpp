@@ -696,9 +696,7 @@ void CGalaxyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 	{
 		// angeklickten Sektor ermitteln, anschließend markieren
 		struct::Sector sector = pMajor->GetStarmap()->GetClickedSector(pt);
-		CSmallInfoView::SetShipInfo(false);
-		CSmallInfoView::SetPlanetInfo(false);
-		CSmallInfoView::SetPlanetStats(false);
+		CSmallInfoView::SetDisplayMode(CSmallInfoView::DISPLAY_MODE_ICON);
 		pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
 
 		if (sector != struct::Sector(-1,-1) && !m_bShipMove && m_bDrawTradeRoute == FALSE && m_bDrawResourceRoute == FALSE)
@@ -833,7 +831,7 @@ void CGalaxyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		{
 			CShips& ship = pDoc->CurrentShip()->second;
 			ship.SetTargetKO(target == ship.GetKO() ? CPoint(-1, -1) : target, 0);
-			CSmallInfoView::SetShipInfo(true);
+			CSmallInfoView::SetDisplayMode(CSmallInfoView::DISPLAY_MODE_SHIP_BOTTEM_VIEW);
 			SetMoveShip(FALSE);
 			pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
 			m_nRange = 0;
@@ -1009,7 +1007,7 @@ void CGalaxyMenuView::OnRButtonDown(UINT nFlags, CPoint point)
 	if (m_bShipMove)
 	{
 		SetMoveShip(FALSE);
-		CSmallInfoView::SetShipInfo(true);
+		CSmallInfoView::SetDisplayMode(CSmallInfoView::DISPLAY_MODE_SHIP_BOTTEM_VIEW);
 		pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
 		m_nRange = 0;
 		Invalidate();
@@ -1371,7 +1369,7 @@ void CGalaxyMenuView::SearchNextIdleShipAndJumpToIt(CBotf2Doc* pDoc, SHIP_ORDER:
 			pDoc->GetMainFrame()->SelectBottomView(SHIP_BOTTOM_VIEW);
 			pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CShipBottomView));//What's this doing ? Neccessary/sensible ?
 
-			CSmallInfoView::SetShipInfo(true);
+			CSmallInfoView::SetDisplayMode(CSmallInfoView::DISPLAY_MODE_SHIP_BOTTEM_VIEW);
 			pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CSmallInfoView));//And this ?
 
 			Invalidate();//And this ?

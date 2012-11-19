@@ -23,10 +23,13 @@
 class CSmallInfoView : public CView
 {
 public:
-	enum SHIP_DISPLAY_MODE
+	enum DISPLAY_MODE
 	{
-		SHIP_DISPLAY_MODE_SHIP_BOTTEM_VIEW,
-		SHIP_DISPLAY_MODE_FLEET_VIEW
+		DISPLAY_MODE_SHIP_BOTTEM_VIEW,//sollen Schiffsinformationen angezeigt werden (that ship is in SHIP_BOTTEM_VIEW)
+		DISPLAY_MODE_FLEET_MENU_VIEW,//sollen Schiffsinformationen angezeigt werden (that ship is in FLEET_MENU_VIEW)
+		DISPLAY_MODE_PLANET_INFO,//< sollen Planeteninformationen angezeigt werden
+		DISPLAY_MODE_PLANET_STATS,//< sollen Planetenstatistiken angezeigt werden
+		DISPLAY_MODE_ICON//otherwise, show the major race's icon
 	};
 	//
 protected:
@@ -36,31 +39,18 @@ protected:
 
 // Attribute
 	CSize m_TotalSize;					///< Größe der View in logischen Koordinaten
-	static BOOLEAN m_bShowShipInfo;		///< sollen Schiffsinformationen angezeigt werden
-	static BOOLEAN m_bShowPlanetInfo;	///< sollen Planeteninformationen angezeigt werden
-	static BOOLEAN m_bShowPlanetStats;	///< sollen Planetenstatistiken angezeigt werden
 	static CPlanet* m_pPlanet;			///< Planet über den Informationen bzw. Statistiken angezeigt werden sollen
 	int	m_nTimer;						///< Variable welche per Timerbefehl hochgezählt wird
 	bool m_bAnimatedIcon;				///< soll das Rassensymbol animiert werden
-	static CSmallInfoView::SHIP_DISPLAY_MODE m_ShipDisplayMode;
+	static CSmallInfoView::DISPLAY_MODE m_DisplayMode;
 
 public:
-	static void SetShipDisplayMode(CSmallInfoView::SHIP_DISPLAY_MODE mode);
+
+	//Funktion legt fest, which informations are to be displayed
+	static void SetDisplayMode(CSmallInfoView::DISPLAY_MODE mode);
 
 	/// Funktion führt Aufgaben aus, welche zu jeder neuen Runde von den Views ausgeführt werden müssen.
 	void OnNewRound(void) {};
-
-	/// Funktion legt fest, ob Schiffsinformationen angezeigt werden sollen
-	/// @param is Wahrheitswert
-	static void SetShipInfo(BOOLEAN is) {m_bShowShipInfo = is; if (is) m_bShowPlanetInfo = m_bShowPlanetStats = false;}
-
-	/// Funktion legt fest, ob Planeteninformationen angezeigt werden sollen
-	/// @param is Wahrheitswert
-	static void SetPlanetInfo(BOOLEAN is) {m_bShowPlanetInfo = is; if (is) m_bShowShipInfo = m_bShowPlanetStats = false;}
-
-	/// Funktion legt fest, ob Planetenstatistiken angezeigt werden sollen
-	/// @param is Wahrheitswert
-	static void SetPlanetStats(BOOLEAN is) {m_bShowPlanetStats = is; if (is) m_bShowShipInfo = m_bShowPlanetInfo = false;}
 
 	/// Funktion legt den anzuzeigenden Planeten fest.
 	/// @param planet Zeiger auf den anzuzeigenden Planeten

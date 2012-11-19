@@ -246,7 +246,7 @@ void CShipBottomView::OnDraw(CDC* dc)
 				this->SetTimer(1,100,NULL);
 				pDoc->SetCurrentShip(oneShip);
 				CGalaxyMenuView::SetMoveShip(TRUE);
-				CSmallInfoView::SetShipInfo(true);
+				CSmallInfoView::SetDisplayMode(CSmallInfoView::DISPLAY_MODE_SHIP_BOTTEM_VIEW);
 				pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
 				m_iWhichMainShipOrderButton = -1;
 				pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CGalaxyMenuView));
@@ -759,7 +759,7 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 
 	if (m_RectForTheShip.PtInRect(point) && pDoc->CurrentShip()->second.GetOwnerOfShip() == pMajor->GetRaceID())
 	{
-		CSmallInfoView::SetShipInfo(true);
+		CSmallInfoView::SetDisplayMode(CSmallInfoView::DISPLAY_MODE_SHIP_BOTTEM_VIEW);
 		pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
 		// Wenn wir in der MainView nicht im Flottenmenü sind
 		if (pDoc->GetMainFrame()->GetActiveView(0, 1) != FLEET_VIEW)
@@ -946,7 +946,7 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 					else if (nOrder == SHIP_ORDER::BUILD_STARBASE)
 						CSoundManager::GetInstance()->PlaySound(SNDMGR_MSG_STARBASE_CONSTRUCT, SNDMGR_PRIO_HIGH, 1.0f, client);
 					CGalaxyMenuView::SetMoveShip(FALSE);
-					CSmallInfoView::SetShipInfo(true);
+					CSmallInfoView::SetDisplayMode(CSmallInfoView::DISPLAY_MODE_SHIP_BOTTEM_VIEW);
 					pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
 				}
 				Invalidate();
@@ -1003,7 +1003,7 @@ void CShipBottomView::OnMouseMove(UINT nFlags, CPoint point)
 			if(&j->second != i->second)
 				continue;
 			pDoc->SetCurrentShip(j);
-			CSmallInfoView::SetShipInfo(true);
+			CSmallInfoView::SetDisplayMode(CSmallInfoView::DISPLAY_MODE_SHIP_BOTTEM_VIEW);
 			pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
 			m_iWhichMainShipOrderButton = -1;
 			break;
@@ -1047,7 +1047,7 @@ void CShipBottomView::OnRButtonDown(UINT nFlags, CPoint point)
 			Invalidate();
 			pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CGalaxyMenuView));
 		}
-		CSmallInfoView::SetShipInfo(true);
+		CSmallInfoView::SetDisplayMode(CSmallInfoView::DISPLAY_MODE_SHIP_BOTTEM_VIEW);
 		pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
 	}
 
