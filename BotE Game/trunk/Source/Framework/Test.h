@@ -14,7 +14,7 @@ class CTest
 	void Run() const;
 
 
-	void CTest::TestShipMap() const;
+	void TestShipMap() const;
 
 	const CBotf2Doc& m_Doc;
 };

@@ -4633,7 +4633,9 @@ void CBotf2Doc::CalcShipMovement()
 		pMajor->GetStarmap()->SynchronizeWithMap(m_Sectors, &races);
 	}
 
+#ifdef DEVELOPMENT_VERSION
 	std::set<CString> already_encountered_ships_for_sanity_check;
+#endif
 	// Hier kommt die Schiffsbewegung (also keine anderen Befehle werden hier noch ausgewertet, lediglich wird überprüft,
 	// dass manche Befehle noch ihre Gültigkeit haben
 	for(CShipMap::iterator y = m_ShipMap.begin(); y != m_ShipMap.end(); ++y)
