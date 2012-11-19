@@ -5866,46 +5866,41 @@ void CBotf2Doc::CalcAlienShipEffects()
 			if (GetSector(co.x, co.y).GetIsShipInSector() && rand()%3 == 0)
 			{
 				// alle Schiffe im Sektor zu Seuchenschiffen machen
-				for(CShipMap::const_iterator y = m_ShipArray.begin(); y != m_ShipArray.end(); ++y)
+				for(CShipMap::iterator y = m_ShipArray.begin(); y != m_ShipArray.end(); ++y)
 				{
-					const CShips* pOtherShip = &y->second;
 					// Schiff im gleichen Sektor?
-					if (pOtherShip->GetKO() != co)
-						continue;
-
 					// keine anderen Alienschiffe
-					if (pOtherShip->IsAlien())
-						continue;
-
 					// keine Außenposten und Sternenbasen
-					if (pOtherShip->IsStation())
+					if (y->second.GetKO() != co || y->second.IsAlien() || y->second.IsStation())
 						continue;
+					std::vector<CShips*> vShips;
+					vShips.push_back(&y->second);
+					vShips.reserve(y->second.GetFleetSize());
+					for(CShips::iterator i = y->second.begin(); i != y->second.end(); ++i)
+						vShips.push_back(&i->second);
 
-					CShipMap vShips;
-					vShips.Add(*pOtherShip);
-					vShips.Append(pOtherShip->Fleet());
-
-					for(CShipMap::iterator i = vShips.begin(); i != vShips.end(); ++i)
+					for(unsigned i = 0; i < vShips.size(); ++i)
 					{
+						CShips* pShip = vShips.at(i);
 						// Schiffe mit Rückzugsbefehl werden nie vom Virus befallen
-						if (i->second.GetCombatTactic() == COMBAT_TACTIC::CT_RETREAT)
+						if (pShip->GetCombatTactic() == COMBAT_TACTIC::CT_RETREAT)
 							continue;
 
-						i->second.SetOwnerOfShip(pAlien->GetRaceID());
-						i->second.SetShipType(SHIP_TYPE::ALIEN);
-						i->second.SetTargetKO(CPoint(-1, -1), 0);
-						i->second.SetCurrentOrder(SHIP_ORDER::ATTACK);
-						i->second.SetTerraformingPlanet(-1);
-						i->second.SetIsShipFlagShip(FALSE);
+						pShip->SetOwnerOfShip(pAlien->GetRaceID());
+						pShip->SetShipType(SHIP_TYPE::ALIEN);
+						pShip->SetTargetKO(CPoint(-1, -1), 0);
+						pShip->SetCurrentOrder(SHIP_ORDER::ATTACK);
+						pShip->SetTerraformingPlanet(-1);
+						pShip->SetIsShipFlagShip(FALSE);
 
 						// für jedes Schiff eine Meldung über den Verlust machen
 
 						// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
-						if (CMajor* pShipOwner = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(i->second.GetOwnerOfShip())))
+						if (CMajor* pShipOwner = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(pShip->GetOwnerOfShip())))
 						{
-							AddToLostShipHistory(&i->second.Leader(), CResourceManager::GetString("COMBAT"), CResourceManager::GetString("MISSED"));
+							AddToLostShipHistory(&pShip->Leader(), CResourceManager::GetString("COMBAT"), CResourceManager::GetString("MISSED"));
 							CString s;
-							s.Format("%s", CResourceManager::GetString("DESTROYED_SHIPS_IN_COMBAT",0,i->second.GetShipName()));
+							s.Format("%s", CResourceManager::GetString("DESTROYED_SHIPS_IN_COMBAT",0,pShip->GetShipName()));
 							CMessage message;
 							message.GenerateMessage(s, MESSAGE_TYPE::MILITARY, "", 0, 0);
 							pShipOwner->GetEmpire()->AddMessage(message);
