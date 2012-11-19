@@ -13,5 +13,8 @@ class CTest
 	static const CTest* const GetInstance(const CBotf2Doc& doc);
 	void Run() const;
 
+
+	void CTest::TestShipMap() const;
+
 	const CBotf2Doc& m_Doc;
 };
