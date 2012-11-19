@@ -71,15 +71,26 @@ CShipMap::iterator CShipMap::find(unsigned key) {
 	return m_Ships.find(key);
 }
 
+static bool advance_by(int& advance, int size) {
+	assert(0 <= advance && advance <= size);
+	if(advance >= size/2) {
+		advance = advance - size;
+		return true;
+	}
+	else
+		return false;
+}
 CShipMap::const_iterator CShipMap::iterator_at(int index) const {
-	assert(0 <= index && index <= GetSize());
 	CShipMap::const_iterator i = begin();
+	if(advance_by(index, GetSize()))
+		i = end();
 	std::advance(i, index);
 	return i;
 }
 CShipMap::iterator CShipMap::iterator_at(int index) {
-	assert(0 <= index && index <= GetSize());
 	CShipMap::iterator i = begin();
+	if(advance_by(index, GetSize()))
+		i = end();
 	std::advance(i, index);
 	return i;
 }
