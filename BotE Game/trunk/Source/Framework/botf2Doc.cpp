@@ -4418,49 +4418,27 @@ void CBotf2Doc::CalcShipOrders()
 		}
 
 		// Wenn wir ein Schiff zum Flagschiff ernennen wollen (nur ein Schiff pro Imperium kann ein Flagschiff sein!)
-		else if (y->second.GetCurrentOrder() == SHIP_ORDER::ASSIGN_FLAGSHIP && !y->second.HasFleet())
+		else if (y->second.GetCurrentOrder() == SHIP_ORDER::ASSIGN_FLAGSHIP)
 		{
+			assert(!y->second.HasFleet());
 			CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(y->second.GetOwnerOfShip()));
-			ASSERT(pMajor);
-			network::RACE client = m_pRaceCtrl->GetMappedClientID(pMajor->GetRaceID());
+			assert(pMajor);
+			const network::RACE client = m_pRaceCtrl->GetMappedClientID(pMajor->GetRaceID());
 
 			// Das ganze Schiffsarray und auch die Flotten durchgehen, wenn wir ein altes Flagschiff finden, diesem den
 			// Titel wegnehmen
 			for(CShipMap::iterator n = m_ShipMap.begin(); n != m_ShipMap.end(); ++n)
 			{
-				if (n->second.GetOwnerOfShip() == y->second.GetOwnerOfShip())
-				{
-					if (n->second.GetIsShipFlagShip() == TRUE)
-					{
-						n->second.SetIsShipFlagShip(FALSE);
-						break;
-					}
-					// überprüfen ob ein Flagschiff in einer Flotte ist
-					else if (n->second.HasFleet())
-					{
-						bool bFoundFlagShip = false;
-						for(CShips::iterator m = n->second.begin(); m != n->second.end(); ++m)
-						{
-							if (m->second.GetIsShipFlagShip() == TRUE)
-							{
-								m->second.SetIsShipFlagShip(FALSE);
-								bFoundFlagShip = true;
-								break;
-							}
-						}
-						if (bFoundFlagShip)
-							break;
-					}
-				}
+				if (n->second.GetOwnerOfShip() != y->second.GetOwnerOfShip())
+					continue;
+				n->second.UnassignFlagship();
 			}
 			// Jetzt das neue Schiff zum Flagschiff ernennen
 			y->second.SetIsShipFlagShip(TRUE);
-			if (y->second.IsNonCombat())
-				y->second.SetCurrentOrder(SHIP_ORDER::AVOID);
-			else
-				y->second.SetCurrentOrder(SHIP_ORDER::ATTACK);
+			y->second.SetCurrentOrderAccordingToType();
 			// Nachricht generieren, dass ein neues Schiff zum Flagschiff ernannt wurde
-			CString s = CResourceManager::GetString("ASSIGN_FLAGSHIP_MESSAGE",FALSE,y->second.GetShipName(),y->second.GetShipTypeAsString());
+			const CString& s = CResourceManager::GetString("ASSIGN_FLAGSHIP_MESSAGE",FALSE,
+				y->second.GetShipName(),y->second.GetShipTypeAsString());
 			CMessage message;
 			message.GenerateMessage(s,MESSAGE_TYPE::MILITARY,"",pSector->GetKO(),FALSE);
 			pMajor->GetEmpire()->AddMessage(message);
