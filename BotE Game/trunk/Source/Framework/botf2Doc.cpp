@@ -3727,40 +3727,39 @@ void CBotf2Doc::CalcShipOrders()
 		CSanity::SanityCheckFleet(y->second);
 #endif
 
-		// Hier wird überprüft, ob der Systemattack-Befehl noch gültig ist
-		// Alle Schiffe, welche einen Systemangriffsbefehl haben überprüfen, ob dieser Befehl noch gültig ist
 		CSector* pSector = &GetSector(y->second.GetKO().x, y->second.GetKO().y);
   		CSystem* pSystem = &GetSystem(y->second.GetKO().x, y->second.GetKO().y);
+
 		if (y->second.GetCurrentOrder() == SHIP_ORDER::ATTACK)
 			y->second.SetCombatTactic(COMBAT_TACTIC::CT_ATTACK);
 		else if (y->second.GetCurrentOrder() == SHIP_ORDER::AVOID)
 			y->second.SetCombatTactic(COMBAT_TACTIC::CT_AVOID);
+
+		// Hier wird überprüft, ob der Systemattack-Befehl noch gültig ist
+		// Alle Schiffe, welche einen Systemangriffsbefehl haben überprüfen, ob dieser Befehl noch gültig ist
 		if (y->second.GetCurrentOrder() == SHIP_ORDER::ATTACK_SYSTEM)
 		{
-			if (pSector->GetSunSystem())
+			assert(pSector->GetSunSystem());
+			// Wenn die Bevölkerung komplett vernichtet wurde
+			if (pSystem->GetHabitants() == 0.0f)
+				y->second.SetCurrentOrderAccordingToType();
+			// Wenn das System der angreifenden Rasse gehört
+			else if (pSystem->GetOwnerOfSystem() == y->second.GetOwnerOfShip())
+				y->second.SetCurrentOrderAccordingToType();
+			// Wenn eine Rasse in dem System lebt
+			else if (!pSector->GetOwnerOfSector().IsEmpty()
+				&& pSector->GetOwnerOfSector() != y->second.GetOwnerOfShip())
 			{
-				// Wenn die Bevölkerung komplett vernichtet wurde
-				if (pSystem->GetHabitants() == 0.0f)
-					y->second.SetCurrentOrder(SHIP_ORDER::ATTACK);
-				// Wenn das System der angreifenden Rasse gehört
-				else if (pSystem->GetOwnerOfSystem() == y->second.GetOwnerOfShip())
-					y->second.SetCurrentOrder(SHIP_ORDER::ATTACK);
-				// Wenn eine Rasse in dem System lebt
-				else if (pSector->GetOwnerOfSector() != "" && pSector->GetOwnerOfSector() != y->second.GetOwnerOfShip())
-				{
-					CRace* pRace = m_pRaceCtrl->GetRace(pSector->GetOwnerOfSector());
-					if (pRace != NULL && pRace->GetAgreement(y->second.GetOwnerOfShip()) != DIPLOMATIC_AGREEMENT::WAR)
-						y->second.SetCurrentOrder(SHIP_ORDER::ATTACK);
-				}
+				CRace* pRace = m_pRaceCtrl->GetRace(pSector->GetOwnerOfSector());
+				assert(pRace);
+				if (pRace->GetAgreement(y->second.GetOwnerOfShip()) != DIPLOMATIC_AGREEMENT::WAR)
+					y->second.SetCurrentOrderAccordingToType();
 			}
-			else
-				y->second.SetCurrentOrder(SHIP_ORDER::ATTACK);
 		}
 
-		// wenn der Befehl "Terraform" ist und kein Planet ausgew?hlt ist, dann Befehl wieder auf "AVOID"
-		// setzen
+		// wenn der Befehl "Terraform" ist und kein Planet ausgew?hlt ist, dann Befehl wegnehmen
 		if (y->second.GetCurrentOrder() == SHIP_ORDER::TERRAFORM && y->second.GetTerraformingPlanet() == -1)
-			y->second.SetCurrentOrder(SHIP_ORDER::AVOID);
+			y->second.UnsetCurrentOrder();
 
 		// Haben wir eine Flotte, den aktuellen Befehl an alle Schiffe in der Flotte weitergeben
 		if (y->second.HasFleet())
