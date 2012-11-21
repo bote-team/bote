@@ -46,6 +46,6 @@ private:
 	/// Feld aller benutzten Schiffsnamen
 	map<CString, vector<CString> > m_mStillAvailableNames;
 
-	/// Zählvariable, welche die Buchstabenbennung am Ende vom Schiffsnamen vornimmt. Zu Beginn auf 'A' gesetzt.
+	/// Zählvariable, welche die Buchstabenbennung am Ende vom Schiffsnamen vornimmt. Zu Beginn auf '' gesetzt.
 	map<CString, unsigned> m_mCounter;
 };

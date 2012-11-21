@@ -138,7 +138,7 @@ void CGenShipName::Init(CBotf2Doc* pDoc)
 	{
 		CString sID = it->first;
 		// für jede Rasse dem Counter festlegen
-		m_mCounter[sID] = 0;		// 65 == ASCII-Wert für 'A'; hier eins weniger
+		m_mCounter[sID] = 0;		// 65 == ASCII-Wert für 'A'
 
 		// Varibale vom Typ CStdioFile
 		CStdioFile file;
