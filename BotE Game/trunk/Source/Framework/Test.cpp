@@ -3,6 +3,7 @@
 
 #include "botf2Doc.h"
 #include "Ships/Ships.h"
+#include "Races/RaceController.h"
 
 #include <cassert>
 
@@ -22,6 +23,43 @@ const CTest* const CTest::GetInstance(const CBotf2Doc& doc) {
 
 void CTest::Run() const {
 	TestShipMap();
+	TestGenShipname();
+}
+
+void CTest::TestGenShipname() const {
+	CGenShipName gsn(m_Doc.m_GenShipName);
+
+	//check uniqueness of generated shipnames
+	const std::map<CString, CRace*>& races = *m_Doc.m_pRaceCtrl->GetRaces();
+	CString race;
+	for(int j = 0; j < 10; ++j)
+	{
+		const unsigned at = rand()%races.size();
+		unsigned index = 0;
+		for(std::map<CString, CRace*>::const_iterator i = races.begin(); i != races.end(); ++i)
+		{
+			if(at != index) {
+				++index;
+				continue;
+			}
+			race = i->first;
+			break;
+		}
+		std::set<CString> seen;
+		std::vector<CString> seen_v;
+		for(unsigned i = 0; i < 10000; ++i)
+		{
+			const CString& name = gsn.GenerateShipName(race, false);
+			if(seen.find(name) != seen.end()) {
+				CString s;
+				s.Format("repeated name: %s", name);
+				MYTRACE("test_genshipname")(MT::LEVEL_ERROR, s);
+				break;
+			}
+			seen.insert(name);
+			seen_v.push_back(name);
+		}
+	}
 }
 
 void CTest::TestShipMap() const {

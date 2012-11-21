@@ -14,6 +14,7 @@ class CTest
 	void Run() const;
 
 
+	void TestGenShipname() const;
 	void TestShipMap() const;
 
 	const CBotf2Doc& m_Doc;
