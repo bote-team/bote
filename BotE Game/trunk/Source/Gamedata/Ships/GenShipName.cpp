@@ -22,7 +22,7 @@ CGenShipName::~CGenShipName()
 }
 CGenShipName::CGenShipName(const CGenShipName& o) :
 	m_mShipNames(o.m_mShipNames),
-	m_mUsedNames(o.m_mUsedNames),
+	m_mStillAvailableNames(o.m_mStillAvailableNames),
 	m_mCounter(o.m_mCounter)
 {
 }
@@ -47,8 +47,8 @@ void CGenShipName::Serialize(CArchive &ar)
 				ar << it->second[i];
 		}
 
-		ar << m_mUsedNames.size();
-		for (map<CString, vector<CString> >::iterator it = m_mUsedNames.begin(); it != m_mUsedNames.end(); ++it)
+		ar << m_mStillAvailableNames.size();
+		for (map<CString, vector<CString> >::iterator it = m_mStillAvailableNames.begin(); it != m_mStillAvailableNames.end(); ++it)
 		{
 			ar << it->first;
 			// nun den Vektor speichern
@@ -58,14 +58,14 @@ void CGenShipName::Serialize(CArchive &ar)
 		}
 
 		ar << m_mCounter.size();
-		for (map<CString, USHORT>::const_iterator it = m_mCounter.begin(); it != m_mCounter.end(); ++it)
+		for (map<CString, unsigned>::const_iterator it = m_mCounter.begin(); it != m_mCounter.end(); ++it)
 			ar << it->first << it->second;
 	}
 	// wenn geladen wird
 	else if (ar.IsLoading())
 	{
 		m_mShipNames.clear();
-		m_mUsedNames.clear();
+		m_mStillAvailableNames.clear();
 		m_mCounter.clear();
 
 		size_t mapSize = 0;
@@ -105,7 +105,7 @@ void CGenShipName::Serialize(CArchive &ar)
 				value.push_back(s);
 			}
 
-			m_mUsedNames[key] = value;
+			m_mStillAvailableNames[key] = value;
 		}
 
 		mapSize = 0;
@@ -113,7 +113,7 @@ void CGenShipName::Serialize(CArchive &ar)
 		for (size_t i = 0; i < mapSize; i++)
 		{
 			CString key;
-			USHORT value;
+			unsigned value;
 			ar >> key;
 			ar >> value;
 			m_mCounter[key] = value;
@@ -127,7 +127,7 @@ void CGenShipName::Init(CBotf2Doc* pDoc)
 	ASSERT(pDoc);
 
 	m_mShipNames.clear();
-	m_mUsedNames.clear();
+	m_mStillAvailableNames.clear();
 	m_mCounter.clear();
 
 	// nun alle Rassen durchgehen
@@ -138,7 +138,7 @@ void CGenShipName::Init(CBotf2Doc* pDoc)
 	{
 		CString sID = it->first;
 		// für jede Rasse dem Counter festlegen
-		m_mCounter[sID] = 64;		// 65 == ASCII-Wert für 'A'; hier eins weniger
+		m_mCounter[sID] = 0;		// 65 == ASCII-Wert für 'A'; hier eins weniger
 
 		// Varibale vom Typ CStdioFile
 		CStdioFile file;
@@ -149,8 +149,10 @@ void CGenShipName::Init(CBotf2Doc* pDoc)
 		{
 			// auf sInput wird die jeweilige Zeile eingelesen
 			CString sInput;
-			while (file.ReadString(sInput))
+			while (file.ReadString(sInput)) {
 				m_mShipNames[sID].push_back(sInput);
+				m_mStillAvailableNames[sID].push_back(sInput);
+			}
 			// Datei schließen
 			file.Close();
 		}
@@ -161,45 +163,33 @@ void CGenShipName::Init(CBotf2Doc* pDoc)
 /// und ein Parameter, welcher angibt ob es sich um eine Station handelt <code>station</code> übergeben.
 CString CGenShipName::GenerateShipName(const CString& sRaceID, BOOLEAN station)
 {
-	if (m_mShipNames[sRaceID].size() == 0)
-	{
-		m_mShipNames[sRaceID].clear();
-		for (UINT i = 0; i < m_mUsedNames[sRaceID].size(); i++)
-			m_mShipNames[sRaceID].push_back(m_mUsedNames[sRaceID].at(i));
-
-		m_mUsedNames[sRaceID].clear();
-
+	std::vector<CString>& mStillAvailableNames = m_mStillAvailableNames[sRaceID];
+	const std::vector<CString>& mShipNames = m_mShipNames[sRaceID];
+	if(mStillAvailableNames.empty()) {
 		m_mCounter[sRaceID] += 1;
-		// Wenn der ASCII Wert vom Z erreicht wurde, so fängt es automatisch wieder mit A an
-		if (m_mCounter[sRaceID] > 90)	// 90 entspricht Z
-			m_mCounter[sRaceID] = 65;	// 65 entspricht A
-		else if (m_mCounter[sRaceID] < 65)
-			m_mCounter[sRaceID] = 65;
-
-		// wenn keine Namen existieren
-		if (m_mShipNames[sRaceID].size() == 0)
-		{
-			CString sName;
-			sName.Format("%s %c", sRaceID, (char)m_mCounter[sRaceID]);
-			return sName;
-		}
+		if(!mShipNames.empty())
+			mStillAvailableNames = mShipNames;
 	}
 
-	int random = rand()%m_mShipNames[sRaceID].size();
-	CString sName;
-
-	if (!station)
-	{
-		if (m_mCounter[sRaceID] > 64)
-			sName.Format("%s %c",m_mShipNames[sRaceID].at(random), (char)m_mCounter[sRaceID]);
+	const unsigned counter = m_mCounter[sRaceID];
+	CString sLetter = "";
+	if(1 <= counter) {
+		if(counter <= 26)
+			sLetter.Format("%c", 64 + counter);//65 == A, 90 == Z
 		else
-			sName.Format("%s",m_mShipNames[sRaceID].at(random));
+			sLetter.Format("%u", counter);
 	}
-	else
-		sName.Format("%s Station", m_mShipNames[sRaceID].at(random));
 
-	m_mUsedNames[sRaceID].push_back(m_mShipNames[sRaceID].at(random));
-	m_mShipNames[sRaceID].erase(m_mShipNames[sRaceID].begin() + random);
+	CString name = sRaceID;
+	if(!mStillAvailableNames.empty()) {
+		const unsigned random = rand() % mStillAvailableNames.size();
+		name.Format("%s", mStillAvailableNames.at(random));
+		mStillAvailableNames.erase(mStillAvailableNames.begin() + random);
+	}
+	if(!sLetter.IsEmpty())
+		name.Format("%s %s", name, sLetter);
+	if(station)
+		name.Format("%s Station", name);
 
-	return sName;
+	return name;
 }
