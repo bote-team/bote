@@ -18,7 +18,6 @@ private:
 	int m_nAutoTurns; // number of turns automaticly terminated, -1 if option is disabled
 	bool m_bTest; // should tests run before startup
 
-	void ParseLogDomainParamArgs(const std::string& args);
 
 	CCommandLineParameters(void);
 	CCommandLineParameters(const CCommandLineParameters& o);

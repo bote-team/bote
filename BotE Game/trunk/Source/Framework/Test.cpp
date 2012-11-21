@@ -22,8 +22,10 @@ const CTest* const CTest::GetInstance(const CBotf2Doc& doc) {
 }
 
 void CTest::Run() const {
-	TestShipMap();
-	TestGenShipname();
+	if(MT::CMyTrace::IsLoggingEnabledFor("shipmap"))
+		TestShipMap();
+	if(MT::CMyTrace::IsLoggingEnabledFor("genshipname"))
+		TestGenShipname();
 }
 
 void CTest::TestGenShipname() const {
@@ -53,7 +55,7 @@ void CTest::TestGenShipname() const {
 			if(seen.find(name) != seen.end()) {
 				CString s;
 				s.Format("repeated name: %s", name);
-				MYTRACE("test_genshipname")(MT::LEVEL_ERROR, s);
+				MYTRACE("genshipname")(MT::LEVEL_ERROR, s);
 				break;
 			}
 			seen.insert(name);
@@ -71,9 +73,9 @@ void CTest::TestShipMap() const {
 	//////////////////////////////////////////////////////////////////////
 	//special ships should be at the beginning
 	if(shipmap.CurrentShip() != shipmap.begin())
-		MYTRACE("test_shipmap")(MT::LEVEL_ERROR, "CurrentShip not at begin()");
+		MYTRACE("shipmap")(MT::LEVEL_ERROR, "CurrentShip not at begin()");
 	if(shipmap.FleetShip() != shipmap.begin())
-		MYTRACE("test_shipmap")(MT::LEVEL_ERROR, "FleetShip not at begin()");
+		MYTRACE("shipmap")(MT::LEVEL_ERROR, "FleetShip not at begin()");
 
 	//////////////////////////////////////////////////////////////////////
 	// iterator_at
@@ -82,11 +84,11 @@ void CTest::TestShipMap() const {
 	//check iterator_at(index) against at(key)
 	const CShipMap::const_iterator& ci = shipmap.iterator_at(0);
 	if(shipmap.at(0).GetShipName() != ci->second.GetShipName())
-		MYTRACE("test_shipmap")(MT::LEVEL_ERROR, "iterator at index 0 should point to ship with key 0");
+		MYTRACE("shipmap")(MT::LEVEL_ERROR, "iterator at index 0 should point to ship with key 0");
 
 	const CShipMap::const_iterator& ci2 = shipmap.iterator_at(m_Doc.m_ShipMap.GetUpperBound());
 	if(shipmap.at(m_Doc.m_ShipMap.GetUpperBound()).GetShipName() != ci2->second.GetShipName())
-		MYTRACE("test_shipmap")(MT::LEVEL_ERROR, "iterator at max index should point to ship with key max index");
+		MYTRACE("shipmap")(MT::LEVEL_ERROR, "iterator at max index should point to ship with key max index");
 
 	//check iterator_at(index) against index_of()
 	//should allow getting an end() iterator
@@ -97,7 +99,7 @@ void CTest::TestShipMap() const {
 			++i;
 			continue;
 		}
-		MYTRACE("test_shipmap")(MT::LEVEL_ERROR, "i != shipmap.iterator_at(shipmap.index_of(i)");
+		MYTRACE("shipmap")(MT::LEVEL_ERROR, "i != shipmap.iterator_at(shipmap.index_of(i)");
 		if(i == shipmap.end())
 			break;
 		++i;
@@ -109,14 +111,14 @@ void CTest::TestShipMap() const {
 
 	shipmap = CShipMap();
 	if(shipmap.end() != shipmap.begin())
-		MYTRACE("test_shipmap")(MT::LEVEL_ERROR, "shipmap.end() != shipmap.begin()");
+		MYTRACE("shipmap")(MT::LEVEL_ERROR, "shipmap.end() != shipmap.begin()");
 
 	const CShipMap::const_iterator& i4 = shipmap.iterator_at(0);
 	if(i4 != shipmap.begin())
-		MYTRACE("test_shipmap")(MT::LEVEL_ERROR, "i4 != shipmap.begin()");
+		MYTRACE("shipmap")(MT::LEVEL_ERROR, "i4 != shipmap.begin()");
 	const CShipMap::const_iterator& i5 = shipmap.iterator_at(0);
 	if(i5 != shipmap.end())
-		MYTRACE("test_shipmap")(MT::LEVEL_ERROR, "i5 != shipmap.end()");
+		MYTRACE("shipmap")(MT::LEVEL_ERROR, "i5 != shipmap.end()");
 
 	//////////////////////////////////////////////////////////////////////
 	// one element
@@ -126,10 +128,10 @@ void CTest::TestShipMap() const {
 
 	const CShips& ship = shipmap.GetAt(0);
 	if(&ship != &shipmap.begin()->second)
-		MYTRACE("test_shipmap")(MT::LEVEL_ERROR, "&ship != &shipmap.begin()->second");
+		MYTRACE("shipmap")(MT::LEVEL_ERROR, "&ship != &shipmap.begin()->second");
 	const CShipMap::const_iterator& i6 = shipmap.iterator_at(1);
 	if(i6 != shipmap.end())
-		MYTRACE("test_shipmap")(MT::LEVEL_ERROR, "i6 != shipmap.end()");
+		MYTRACE("shipmap")(MT::LEVEL_ERROR, "i6 != shipmap.end()");
 	if(&shipmap.CurrentShip()->second != &shipmap.begin()->second)
-		MYTRACE("test_shipmap")(MT::LEVEL_ERROR, "&shipmap.CurrentShip()->second != &shipmap.begin()->second");
+		MYTRACE("shipmap")(MT::LEVEL_ERROR, "&shipmap.CurrentShip()->second != &shipmap.begin()->second");
 }

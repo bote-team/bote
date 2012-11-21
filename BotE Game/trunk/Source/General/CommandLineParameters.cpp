@@ -21,19 +21,19 @@ CCommandLineParameters* CCommandLineParameters::GetInstance() {
 	return &instance;
 }
 
-void CCommandLineParameters::ParseLogDomainParamArgs(const std::string& args) {
+static void ParseParamArgs(const std::string& args, std::set<const std::string>& result) {
 	std::string::const_iterator start = args.begin();
 	std::string::const_iterator end = args.begin();
 	while(end != args.end()) {
 		if(*end == ',') {
-			m_LogDomains.insert(std::string(start, end));
+			result.insert(std::string(start, end));
 			++end;
 			start = end;
 		}
 		else
 			++end;
 	}
-	m_LogDomains.insert(std::string(start, end));
+	result.insert(std::string(start, end));
 }
 
 void CCommandLineParameters::ParseParam(const char* pszParam, BOOL /*bFlag*/, BOOL /*bLast*/)
@@ -66,7 +66,7 @@ void CCommandLineParameters::ParseParam(const char* pszParam, BOOL /*bFlag*/, BO
 	}
 	else if(strcmp(parameter.c_str(), "-log-domains") == 0) {
 		if(!args.empty())
-			ParseLogDomainParamArgs(args);
+			ParseParamArgs(args, m_LogDomains);
 	}
 	else if(strcmp(parameter.c_str(), "-passive-domains") == 0) {
 		if(strcmp(args.c_str(), "no") == 0 || strcmp(args.c_str(), "false") == 0)
@@ -85,9 +85,12 @@ void CCommandLineParameters::ParseParam(const char* pszParam, BOOL /*bFlag*/, BO
 			m_nAutoTurns = atoi(args.c_str());
 	}
 	else if(strcmp(parameter.c_str(), "-test") == 0) {
-		if(strcmp(args.c_str(), "no") == 0 || strcmp(args.c_str(), "false") == 0)
-			m_bTest = false;
+		m_bTest = true;
+		if(args.empty()) {
+			m_LogDomains.insert("shipmap");
+			m_LogDomains.insert("genshipname");
+		}
 		else
-			m_bTest = true;
+			ParseParamArgs(args, m_LogDomains);
 	}
 }
