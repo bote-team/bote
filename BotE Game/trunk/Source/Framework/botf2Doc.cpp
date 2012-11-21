@@ -5721,19 +5721,19 @@ void CBotf2Doc::CalcRandomAlienEntities()
 				{
 					CShipMap::iterator pShip = BuildShip(pShipInfo->GetID(), p, pAlien->GetRaceID());
 					// unterschiedliche Aliens unterschieden und Schiffseigenschaften festlegen
-					if (pAlien->GetRaceID() == "Ionisierendes Gaswesen")
+					if (pAlien->GetRaceID() == IONISIERENDES_GASWESEN)
 					{
 						pShip->second.SetCurrentOrder(SHIP_ORDER::AVOID);
 					}
-					else if (pAlien->GetRaceID() == "Gaballianer")
+					else if (pAlien->GetRaceID() == GABALLIANER_SEUCHENSCHIFF)
 					{
 						pShip->second.SetCurrentOrder(SHIP_ORDER::ATTACK);
 					}
-					else if (pAlien->GetRaceID() == "Blizzard-Plasmawesen")
+					else if (pAlien->GetRaceID() == BLIZZARD_PLASMAWESEN)
 					{
 						pShip->second.SetCurrentOrder(SHIP_ORDER::ATTACK);
 					}
-					else if (pAlien->GetRaceID() == "Morlock-Raider")
+					else if (pAlien->GetRaceID() == MORLOCK_RAIDER)
 					{
 						pShip->second.SetCurrentOrder(SHIP_ORDER::ATTACK);
 						// zufällig gleich mehrere Raider bauen. Umso höher der technische Durchschnitt
@@ -5785,7 +5785,7 @@ void CBotf2Doc::CalcAlienShipEffects()
 		}
 
 		// verschiedene Alienrassen unterscheiden
-		if (pAlien->GetRaceID() == "Ionisierendes Gaswesen")
+		if (pAlien->GetRaceID() == IONISIERENDES_GASWESEN)
 		{
 			CString sSystemOwner = GetSystem(co.x, co.y).GetOwnerOfSystem();
 			CMajor* pOwner = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(sSystemOwner));
@@ -5813,7 +5813,7 @@ void CBotf2Doc::CalcAlienShipEffects()
 				}
 			}
 		}
-		else if (pAlien->GetRaceID() == "Gaballianer")
+		else if (pAlien->GetRaceID() == GABALLIANER_SEUCHENSCHIFF)
 		{
 			CString sSystemOwner = GetSystem(co.x, co.y).GetOwnerOfSystem();
 			if (CMajor* pOwner = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(sSystemOwner)))
@@ -5888,7 +5888,7 @@ void CBotf2Doc::CalcAlienShipEffects()
 				}
 			}
 		}
-		else if (pAlien->GetRaceID() == "Blizzard-Plasmawesen")
+		else if (pAlien->GetRaceID() == BLIZZARD_PLASMAWESEN)
 		{
 			CString sSystemOwner = GetSystem(co.x, co.y).GetOwnerOfSystem();
 			CMajor* pOwner = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(sSystemOwner));
@@ -5916,7 +5916,7 @@ void CBotf2Doc::CalcAlienShipEffects()
 				}
 			}
 		}
-		else if (pAlien->GetRaceID() == "Morlock-Raider")
+		else if (pAlien->GetRaceID() == MORLOCK_RAIDER)
 		{
 			// Creditproduktion auf 0 stellen
 			CSystem* pSystem = &GetSystem(co.x, co.y);

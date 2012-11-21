@@ -161,6 +161,12 @@ namespace RACE_PROPERTY
 	};
 }
 
+// ------------- Namen der Weltraummonster (Aliens) ----------------------------
+#define IONISIERENDES_GASWESEN		"Ionisierendes Gaswesen"
+#define GABALLIANER_SEUCHENSCHIFF	"Gaballianer"
+#define BLIZZARD_PLASMAWESEN		"Blizzard-Plasmawesen"
+#define MORLOCK_RAIDER				"Morlock-Raider"
+
 // ------------- Planeteneigenschaften -----------------------------------------
 // Zonen
 namespace PLANET_ZONE
@@ -365,6 +371,7 @@ namespace WORKER
 }
 
 // ------------- System   ------------------------------------------------------
+
 // ------------- Handel ----------------------------------------------------
 #define TRADEROUTEHAB		20	// aller wieviel Bevölkerung gibt es eine Handelsroute
 #define NOTRIL				12	// Number of Trade Routes in List
