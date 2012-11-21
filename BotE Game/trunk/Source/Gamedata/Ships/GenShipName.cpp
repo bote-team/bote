@@ -20,6 +20,12 @@ CGenShipName::CGenShipName()
 CGenShipName::~CGenShipName()
 {
 }
+CGenShipName::CGenShipName(const CGenShipName& o) :
+	m_mShipNames(o.m_mShipNames),
+	m_mUsedNames(o.m_mUsedNames),
+	m_mCounter(o.m_mCounter)
+{
+}
 
 ///////////////////////////////////////////////////////////////////////
 // Speichern / Laden

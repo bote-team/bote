@@ -24,6 +24,7 @@ public:
 
 	/// ctor
 	CGenShipName();
+	CGenShipName(const CGenShipName& o);
 
 	/// dtor
 	virtual ~CGenShipName();
