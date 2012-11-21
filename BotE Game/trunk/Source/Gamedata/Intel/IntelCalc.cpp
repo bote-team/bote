@@ -3,6 +3,8 @@
 #include "Botf2Doc.h"
 #include "Races\RaceController.h"
 #include "Ships/Ships.h"
+#include "IOData.h"
+#include "General/ResourceManager.h"
 
 //////////////////////////////////////////////////////////////////////
 // Konstruktion/Destruktion

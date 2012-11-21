@@ -11,6 +11,7 @@
 #include "HTMLStringBuilder.h"
 #include "RoundRect.h"
 #include "Graphic\memdc.h"
+#include "General/ResourceManager.h"
 
 short CSystemMenuView::m_iClickedOn = 0;
 BYTE CSystemMenuView::m_byResourceRouteRes = TITAN;

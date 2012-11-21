@@ -6,6 +6,7 @@
 #include "TradeBottomView.h"
 #include "Races\Major.h"
 #include "Graphic\memdc.h"
+#include "General/ResourceManager.h"
 
 // CTradeBottomView
 

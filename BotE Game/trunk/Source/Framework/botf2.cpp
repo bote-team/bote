@@ -6,6 +6,7 @@
 #include "MainFrm.h"
 #include "botf2Doc.h"
 #include "SettingsDlg.h"
+#include "IOData.h"
 
 #ifdef VLD
 #include "vld.h"

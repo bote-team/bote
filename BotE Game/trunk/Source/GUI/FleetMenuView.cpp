@@ -12,6 +12,7 @@
 #include "HTMLStringBuilder.h"
 #include "Graphic\memdc.h"
 #include "Ships/Ships.h"
+#include "General/ResourceManager.h"
 
 #include <cassert>
 

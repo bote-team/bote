@@ -6,6 +6,7 @@
 #include "AI\DiplomacyAI.h"
 #include "AI\MajorAI.h"
 #include "HTMLStringBuilder.h"
+#include "General/ResourceManager.h"
 
 #include <cassert>
 

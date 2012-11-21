@@ -2,6 +2,8 @@
 
 #include "Botf2Doc.h"
 
+class CIntelligence;
+
 class CNewRoundDataCalculator
 {
 private:

@@ -4,25 +4,24 @@
 #pragma once
 //#include "vld.h"
 
-#include "Ships\GenShipName.h"
-#include "General\Statistics.h"
-#include "Races\VictoryObserver.h"
-#include "Remanager.h"
-#include "System\GlobalBuildings.h"
-#include "PeerData.h"
-#include "SoundManager.h"
-#include "IOData.h"
-#include <vector>
-#include "Ships/ShipMap.h"
 
-// forward declaration
-class CMainFrame;
-class CNetworkHandler;
-class CSector;
-class CSystem;
-class CGraphicPool;
+#include "Galaxy/Sector.h"
+#include "General/Statistics.h"
+#include "Races/VictoryObserver.h"
+#include "Remanager.h"
+#include "SoundManager.h"
+#include "Ships/GenShipName.h"
+#include "Ships/ShipInfo.h"
+#include "Ships/ShipMap.h"
+#include "System/BuildingInfo.h"
+#include "System/GlobalBuildings.h"
+#include "System/System.h"
+
+class CShip;
+class CTroopInfo;
 class CRaceController;
-class CMajor;
+class CNetworkHandler;
+class CMainFrame;
 class CSectorAI;
 class CAIPrios;
 

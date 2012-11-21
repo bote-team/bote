@@ -3,6 +3,7 @@
 #include "Botf2Doc.h"
 #include "Races\RaceController.h"
 #include "Races\GenDiploMessage.h"
+#include "General/ResourceManager.h"
 #include <algorithm>
 #include <cassert>
 

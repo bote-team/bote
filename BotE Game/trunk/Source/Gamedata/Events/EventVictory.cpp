@@ -5,6 +5,8 @@
 #include "Botf2Doc.h"
 #include "Races\RaceController.h"
 #include "IniLoader.h"
+#include "IOData.h"
+#include "General/ResourceManager.h"
 
 IMPLEMENT_SERIAL (CEventVictory, CObject, 1)
 

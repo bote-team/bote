@@ -8,6 +8,7 @@
 #include "ShipDesignBottomView.h"
 #include "Races\RaceController.h"
 #include "Graphic\memdc.h"
+#include "General/ResourceManager.h"
 
 IMPLEMENT_DYNCREATE(CShipDesignMenuView, CMainBaseView)
 

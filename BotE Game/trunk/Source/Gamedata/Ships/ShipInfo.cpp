@@ -5,6 +5,7 @@
 #include "stdafx.h"
 #include "ShipInfo.h"
 #include "Races\Empire.h"
+#include "General/ResourceManager.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE

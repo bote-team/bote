@@ -14,6 +14,7 @@
 #include "Graphic\memdc.h"
 #include "MainFrm.h"
 #include "Ships/Ships.h"
+#include "General/ResourceManager.h"
 
 #include <cassert>
 

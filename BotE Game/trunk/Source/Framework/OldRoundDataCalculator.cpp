@@ -2,6 +2,7 @@
 #include "OldRoundDataCalculator.h"
 
 #include "Races/RaceController.h"
+#include "General/ResourceManager.h"
 #include <cassert>
 
 

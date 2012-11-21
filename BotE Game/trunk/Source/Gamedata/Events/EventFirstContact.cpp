@@ -5,6 +5,7 @@
 #include "Botf2Doc.h"
 #include "Races\RaceController.h"
 #include "HTMLStringBuilder.h"
+#include "General/ResourceManager.h"
 
 IMPLEMENT_SERIAL (CEventFirstContact, CObject, 1)
 

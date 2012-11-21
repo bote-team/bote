@@ -3,6 +3,8 @@
 #include "Ships/Ships.h"
 
 #include "Ships/ShipMap.h"
+#include "General/ResourceManager.h"
+#include "Galaxy/Sector.h"
 
 //////////////////////////////////////////////////////////////////////
 // Konstruktion/Destruktion

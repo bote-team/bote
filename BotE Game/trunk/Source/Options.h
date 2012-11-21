@@ -9,7 +9,6 @@
 
 //#pragma warning(disable: 4204)
 
-#include "General\ResourceManager.h"
 #include "General\mytrace.h"
 
 /// Versionsnummer des Dokuments; es können nur Spielstände geladen werden, die diese Versionsnummer

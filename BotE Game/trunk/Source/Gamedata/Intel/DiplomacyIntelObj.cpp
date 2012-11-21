@@ -2,6 +2,8 @@
 #include "DiplomacyIntelObj.h"
 #include "Botf2Doc.h"
 #include "Races\RaceController.h"
+#include "IOData.h"
+#include "General/ResourceManager.h"
 
 IMPLEMENT_SERIAL (CDiplomacyIntelObj, CObject, 1)
 

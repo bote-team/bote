@@ -12,6 +12,7 @@
 #include "BotEClient.h"
 #include "Races\RaceController.h"
 #include "IniLoader.h"
+#include "General/ResourceManager.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

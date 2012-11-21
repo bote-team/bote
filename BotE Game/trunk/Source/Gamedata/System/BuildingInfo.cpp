@@ -4,6 +4,7 @@
 
 #include "stdafx.h"
 #include "BuildingInfo.h"
+#include "General/ResourceManager.h"
 
 IMPLEMENT_SERIAL (CBuildingInfo, CObject, 1)
 //////////////////////////////////////////////////////////////////////

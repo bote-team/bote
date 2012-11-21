@@ -14,6 +14,7 @@
 #include "MenuChooseView.h"
 #include "Races\RaceController.h"
 #include "Graphic\memdc.h"
+#include "General/ResourceManager.h"
 
 // CEmpireMenuView
 

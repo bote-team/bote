@@ -20,6 +20,7 @@
 #include "ImageStone/ImageStone.h"
 #include "Graphic\memdc.h"
 #include "Ships/Ships.h"
+#include "General/ResourceManager.h"
 
 BOOLEAN CGalaxyMenuView::m_bDrawTradeRoute = FALSE;
 CTradeRoute CGalaxyMenuView::m_TradeRoute;

@@ -27,8 +27,8 @@
 #include "BeamWeapons.h"
 #include "Shield.h"
 #include "Hull.h"
-#include "..\Races\Starmap.h"
-#include "..\Troops\TroopInfo.h"
+#include "Races/Starmap.h"
+#include "Troops/TroopInfo.h"
 
 // forward declaration
 class CGraphicPool;

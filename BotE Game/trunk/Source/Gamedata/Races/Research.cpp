@@ -4,6 +4,7 @@
 
 #include "stdafx.h"
 #include "Research.h"
+#include "General/ResourceManager.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE

@@ -10,6 +10,7 @@
 #include "Botf2Doc.h"
 #include "Races\RaceController.h"
 #include "Anomaly.h"
+#include "General/ResourceManager.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE

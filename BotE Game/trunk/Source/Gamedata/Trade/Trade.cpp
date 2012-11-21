@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "Trade.h"
 #include "Races\Major.h"
+#include "General/ResourceManager.h"
+#include "Galaxy/Sector.h"
 
 IMPLEMENT_SERIAL (CTrade, CObject, 1)
 // statische Variable initialisieren

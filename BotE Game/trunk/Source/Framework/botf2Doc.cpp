@@ -14,6 +14,8 @@
 #include "MainFrm.h"
 #include "IniLoader.h"
 #include "ImageStone/ImageStone.h"
+#include "IOData.h"
+#include "General/ResourceManager.h"
 
 #include "Races\RaceController.h"
 #include "Races\DiplomacyController.h"

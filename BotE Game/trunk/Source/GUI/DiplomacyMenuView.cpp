@@ -11,6 +11,7 @@
 #include "Graphic\memdc.h"
 #include <algorithm>
 #include "HTMLStringBuilder.h"
+#include "General/ResourceManager.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

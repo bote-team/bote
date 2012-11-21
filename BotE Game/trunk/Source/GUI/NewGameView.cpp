@@ -8,6 +8,7 @@
 #include "botf2.h"
 #include "Botf2Doc.h"
 #include "MainFrm.h"
+#include "General/ResourceManager.h"
 
 #include "Graphic\memdc.h"
 #include "GraphicPool.h"

@@ -4,6 +4,7 @@
 #include "botf2.h"
 #include "Botf2Doc.h"
 #include "Races\RaceController.h"
+#include "General/ResourceManager.h"
 
 IMPLEMENT_SERIAL (CEventScreen, CObject, 1)
 

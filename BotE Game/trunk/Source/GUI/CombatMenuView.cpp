@@ -11,6 +11,7 @@
 #include "Graphic\memdc.h"
 #include "HTMLStringBuilder.h"
 #include "Ships/Ships.h"
+#include "General/ResourceManager.h"
 // CCombatMenuView
 
 IMPLEMENT_DYNCREATE(CCombatMenuView, CMainBaseView)

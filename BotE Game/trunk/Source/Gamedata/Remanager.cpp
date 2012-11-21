@@ -9,6 +9,7 @@
 #include "Events/EventRandom.h"
 #include "Gamedata/General/Message.h"
 #include "Ships/Ships.h"
+#include "General/ResourceManager.h"
 
 #include <cassert>
 

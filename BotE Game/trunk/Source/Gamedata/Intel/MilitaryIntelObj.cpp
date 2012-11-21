@@ -2,6 +2,8 @@
 #include "MilitaryIntelObj.h"
 #include "Botf2Doc.h"
 #include "Races\RaceController.h"
+#include "IOData.h"
+#include "General/ResourceManager.h"
 
 IMPLEMENT_SERIAL (CMilitaryIntelObj, CObject, 1)
 

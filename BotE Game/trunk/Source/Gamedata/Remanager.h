@@ -1,7 +1,8 @@
 #pragma once
-#include "Races/Major.h"
 
 class CShipMap;
+class CMajor;
+class CMinor;
 
 enum GLOBALEVENTTYPE
 {

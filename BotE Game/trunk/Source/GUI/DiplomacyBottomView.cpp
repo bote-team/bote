@@ -6,6 +6,7 @@
 #include "DiplomacyBottomView.h"
 #include "Races\RaceController.h"
 #include "Graphic\memdc.h"
+#include "General/ResourceManager.h"
 
 // CDiplomacyBottomView
 

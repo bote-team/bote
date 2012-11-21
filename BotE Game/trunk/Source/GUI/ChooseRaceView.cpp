@@ -8,6 +8,7 @@
 #include "Botf2Doc.h"
 #include "MainFrm.h"
 #include "Races/RaceController.h"
+#include "General/ResourceManager.h"
 
 #include "BotEServer.h"
 #include "LANServer.h"

@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Major.h"
 #include "AI\MajorAI.h"
+#include "General/ResourceManager.h"
 #include <algorithm>
 
 #include <cassert>

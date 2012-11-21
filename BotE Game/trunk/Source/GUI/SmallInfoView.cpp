@@ -11,6 +11,7 @@
 #include "Races\RaceController.h"
 #include "Iniloader.h"
 #include "Ships/Ships.h"
+#include "General/ResourceManager.h"
 #include <cassert>
 
 

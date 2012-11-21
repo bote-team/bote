@@ -6,6 +6,8 @@
 #include "Races/RaceController.h"
 #include <cassert>
 #include "Ships/Ships.h"
+#include "General/ResourceManager.h"
+#include "Galaxy/Sector.h"
 
 IMPLEMENT_SERIAL (CAnomaly, CObject, 1)
 //////////////////////////////////////////////////////////////////////

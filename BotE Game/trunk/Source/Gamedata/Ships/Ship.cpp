@@ -9,6 +9,7 @@
 #include "GraphicPool.h"
 #include "Races/race.h"
 #include "Races/major.h"
+#include "General/ResourceManager.h"
 
 #include <cassert>
 

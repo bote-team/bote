@@ -10,6 +10,7 @@
 
 #include "LANServer.h"
 #include "Botf2Doc.h"
+#include "General/ResourceManager.h"
 
 // CChooseRacePage dialog
 

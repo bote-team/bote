@@ -9,6 +9,7 @@
 #include "ShipBottomView.h"
 #include "Graphic\memdc.h"
 #include "Ships/Ships.h"
+#include "General/ResourceManager.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

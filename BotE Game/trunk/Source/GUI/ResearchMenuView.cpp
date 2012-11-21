@@ -9,6 +9,7 @@
 #include "Races\RaceController.h"
 #include "Graphic\memdc.h"
 #include "HTMLStringBuilder.h"
+#include "General/ResourceManager.h"
 
 // CResearchMenuView
 

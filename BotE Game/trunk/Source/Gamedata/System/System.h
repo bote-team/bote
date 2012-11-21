@@ -15,18 +15,19 @@
 #if _MSC_VER > 1000
 #pragma once
 #endif // _MSC_VER > 1000
-#include "..\Galaxy\Sector.h"
+
 #include "Worker.h"
 #include "AssemblyList.h"
 #include "SystemProd.h"
-#include "GlobalBuildings.h"
-#include "Trade\TradeRoute.h"
+#include "Trade/TradeRoute.h"
 #include "array_sort.h"
 
 // forward declaration
 class CMajor;
 class CMinor;
 class CBotf2Doc;
+class CPlanet;
+class CGlobalBuildings;
 
 class CSystem : public CObject
 {

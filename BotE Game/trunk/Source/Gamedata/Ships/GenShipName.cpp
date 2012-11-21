@@ -7,6 +7,7 @@
 #include "Botf2.h"
 #include "Botf2Doc.h"
 #include "Races\RaceController.h"
+#include "IOData.h"
 
 IMPLEMENT_SERIAL (CGenShipName, CObject, 1)
 //////////////////////////////////////////////////////////////////////

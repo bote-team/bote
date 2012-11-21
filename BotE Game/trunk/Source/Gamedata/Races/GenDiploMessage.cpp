@@ -6,6 +6,8 @@
 #include "botf2.h"
 #include "Botf2Doc.h"
 #include "RaceController.h"
+#include "IOData.h"
+#include "General/ResourceManager.h"
 #include <vector>
 
 //////////////////////////////////////////////////////////////////////

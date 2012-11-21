@@ -6,6 +6,7 @@
 #include "AI\MinorAI.h"
 #include "HTMLStringBuilder.h"
 #include "Ships/Ships.h"
+#include "General/ResourceManager.h"
 
 IMPLEMENT_SERIAL (CMinor, CRace, 1)
 

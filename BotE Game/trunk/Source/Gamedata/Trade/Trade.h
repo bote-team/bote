@@ -8,14 +8,15 @@
 #pragma once
 #include "afx.h"
 #include "Options.h"
-#include "System\System.h"
-#include "Galaxy\Sector.h"
 #include "Trade\TradeHistory.h"
 #include <map>
+#include <vector>
 
 using namespace std;
 // forward declaration
 class CMajor;
+class CSystem;
+class CSector;
 
 struct TradeStruct {
 	USHORT res;

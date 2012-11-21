@@ -18,6 +18,7 @@
 #include "SoundManager.h"
 #include "IniLoader.h"
 #include "HTMLStringBuilder.h"
+#include "General/ResourceManager.h"
 
 #include "LANClient.h"
 #include "LANServer.h"

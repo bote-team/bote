@@ -3,6 +3,7 @@
 //////////////////////////////////////////////////////////////////////
 #include "stdafx.h"
 #include "Message.h"
+#include "General/ResourceManager.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE

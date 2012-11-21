@@ -5,6 +5,7 @@
 #include "botf2.h"
 #include "Botf2Doc.h"
 #include "Ships/Ships.h"
+#include "General/ResourceManager.h"
 
 #include <cassert>
 
