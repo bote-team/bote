@@ -95,7 +95,7 @@ bool CTradeRoute::CheckTradeRoute(const CPoint& pFrom, const CPoint& pDest, CBot
 	// wurde der Zielsektor durch uns gescannt
 	if (!pDestSector->GetScanned(sOwner))
 		return false;
-	
+
 	// zu allererst das Credits berechnen
 	float habitants = pDestSector->GetCurrentHabitants();
 	// wenn keine Leute in dem System leben, so gibt es auch keine Handelsroute.

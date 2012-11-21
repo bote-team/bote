@@ -69,7 +69,7 @@ void CEventMenuView::OnDraw(CDC* dc)
 
 	g.ReleaseHDC(pDC->GetSafeHdc());
 
-	
+
 	// TEST-OPTION (only for Debug)
 	// Automatisch bis zu einer gewissen Runde durchzuklicken falls per Startparamter aktiviert
 	// Eventscreen gleich wieder schlieﬂen
@@ -84,7 +84,7 @@ void CEventMenuView::OnDraw(CDC* dc)
 				CloseScreen(eventScreen);
 			}
 		}
-	}	
+	}
 }
 
 // CEventMenuView diagnostics

@@ -2061,7 +2061,7 @@ void CSystemMenuView::DrawSystemProduction(Graphics* g)
 			// Wenn unser System blockiert wird so gelten die Ressourcenrouten nicht
 			if (pDoc->GetSystem(ko.x, ko.y).GetBlockade() > NULL)
 				continue;
-			
+
 			for (int i = 0; i < pDoc->GetSystem(ko.x, ko.y).GetResourceRoutes()->GetSize(); i++)
 			{
 				CPoint ptTarget = pDoc->GetSystem(ko.x, ko.y).GetResourceRoutes()->GetAt(i).GetKO();
@@ -2071,7 +2071,7 @@ void CSystemMenuView::DrawSystemProduction(Graphics* g)
 					// Wenn das Startsystem blockiert wird, so kann die Ressourcenroute ebenfalls nicht benutzt werden
 					if (pDoc->GetSystem(ptTarget.x, ptTarget.y).GetBlockade() > NULL)
 						continue;
-					
+
 					BYTE res = pDoc->GetSystem(ko.x, ko.y).GetResourceRoutes()->GetAt(i).GetResource();
 					resFromRoutes[res] += pDoc->GetSystem(ko.x, ko.y).GetResourceStore(res);
 				}

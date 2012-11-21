@@ -143,11 +143,11 @@ void CCombatMenuView::OnDraw(CDC* dc)
 		{
 			pDoc->m_bRoundEndPressed = true;
 			// Befehl festlegen
-			pDoc->m_nCombatOrder = COMBAT_ORDER::AUTOCOMBAT;			
+			pDoc->m_nCombatOrder = COMBAT_ORDER::AUTOCOMBAT;
 			client.EndOfRound(pDoc);
 		}
 	}
-	
+
 	// TODO: add draw code here
 	CMyMemDC pDC(dc);
 	CRect client;

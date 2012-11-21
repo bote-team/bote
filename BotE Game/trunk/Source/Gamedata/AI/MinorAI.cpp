@@ -306,7 +306,7 @@ bool CMinorAI::MakeOffer(CString& sRaceID, CDiplomacyInfo& info)
 						if (nAgreement < DIPLOMATIC_AGREEMENT::FRIENDSHIP)
 							nOffer = DIPLOMATIC_AGREEMENT::FRIENDSHIP;
 					}
-					
+
 					// Wenn nicht Krieg und auch nicht Freundschaft angeboten wurde (z.B. Handelsvertrag),
 					// dann kein Angebot machen
 					if (nOffer != DIPLOMATIC_AGREEMENT::WAR && nOffer != DIPLOMATIC_AGREEMENT::FRIENDSHIP)

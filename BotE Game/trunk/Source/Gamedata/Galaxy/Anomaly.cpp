@@ -284,7 +284,7 @@ void CAnomaly::CalcShipEffects(CShips* pShip) const
 	{
 		// Schiff zerstört
 		// hat das Schiff eine Flotte, so jedes Schiff in der Flotte beachten
-		for (CShips::iterator i = pShip->begin(); i != pShip->end(); ++i) 
+		for (CShips::iterator i = pShip->begin(); i != pShip->end(); ++i)
 				i->second.GetHull()->SetCurrentHull(i->second.GetHull()->GetCurrentHull() * (-1));
 		// Schiff selbst
 		pShip->GetHull()->SetCurrentHull(pShip->GetHull()->GetCurrentHull() * (-1), true);
@@ -293,7 +293,7 @@ void CAnomaly::CalcShipEffects(CShips* pShip) const
 	{
 		// teilweise Hüllenschaden machen (unabhängig von Schilden)
 		// hat das Schiff eine Flotte, so jedes Schiff in der Flotte beachten
-		for (CShips::iterator i = pShip->begin(); i != pShip->end(); ++i) 
+		for (CShips::iterator i = pShip->begin(); i != pShip->end(); ++i)
 				MakeHullDmg(50, 50, &i->second);
 		// Schiff selbst
 		MakeHullDmg(50, 50, pShip);
@@ -301,7 +301,7 @@ void CAnomaly::CalcShipEffects(CShips* pShip) const
 	else if (m_byType == IONSTORM)
 	{
 		// Verlust aller Crewerfahrung bei Ionensturm
-		for (CShips::iterator i = pShip->begin(); i != pShip->end(); ++i) 
+		for (CShips::iterator i = pShip->begin(); i != pShip->end(); ++i)
 				i->second.SetCrewExperiance(i->second.GetCrewExperience() * (-1));
 		// Schiff selbst
 		pShip->SetCrewExperiance(pShip->GetCrewExperience() * (-1));

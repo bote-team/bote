@@ -162,7 +162,7 @@ CShip & CShip::operator=(const CShip & rhs)
 	m_nSpecial[0] = rhs.m_nSpecial[0];
 	m_nSpecial[1] = rhs.m_nSpecial[1];
 	m_nCombatTactic = rhs.m_nCombatTactic;
-	
+
 	return *this;
 }
 

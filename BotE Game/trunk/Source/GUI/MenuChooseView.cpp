@@ -81,7 +81,7 @@ void CMenuChooseView::OnDraw(CDC* pDC)
 			CSoundManager::GetInstance()->StopMessages(TRUE);
 			client.EndOfRound(pDoc);
 		}
-	}		
+	}
 
 	CRect r(0, 0, m_TotalSize.cx, m_TotalSize.cy);
 

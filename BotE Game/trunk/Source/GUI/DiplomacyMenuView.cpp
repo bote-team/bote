@@ -1074,7 +1074,7 @@ void CDiplomacyMenuView::DrawDiplomacyInfoMenue(Graphics* g, const CString& sWhi
 
 		g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), rect, &fontFormat, &fontBrush);
 	}
-	
+
 	rect.Y += 25;
 
 	Gdiplus::Color color(normalColor);

@@ -432,7 +432,7 @@ void CTransportMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		return;
 
 	// Wenn wir in der Transportansicht sind (brauchen auch nur Klicks überprüfen, wenn das Schiff Lagerraum hat)
-	
+
 	CShips* ship = &pDoc->CurrentShip()->second;
 	if (ship == NULL || ship->GetOwnerOfShip() != pMajor->GetRaceID() || ship->GetStorageRoom() == 0)
 		return;

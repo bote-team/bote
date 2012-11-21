@@ -136,8 +136,8 @@ void CShips::RemoveShipFromFleet(CShips::iterator& ship)
 		Reset();
 }
 
-void CShips::Reset(void) { 
-	m_Fleet.Reset(); 
+void CShips::Reset(void) {
+	m_Fleet.Reset();
 	m_bLeaderIsCurrent = true;
 }
 
@@ -212,15 +212,15 @@ bool CShips::UnassignFlagship() {
 	return false;
 }
 
-void CShips::SetCloak(bool apply_to_fleet) { 
+void CShips::SetCloak(bool apply_to_fleet) {
 	m_Leader.SetCloak();
 	if(apply_to_fleet)
 		for(CShips::iterator i = begin(); i != end(); ++i)
 			i->second.SetCloak();
 }
 
-void CShips::UnsetCurrentOrder(bool apply_to_fleet) { 
-	m_Leader.UnsetCurrentOrder(); 
+void CShips::UnsetCurrentOrder(bool apply_to_fleet) {
+	m_Leader.UnsetCurrentOrder();
 	if(apply_to_fleet)
 		for(CShips::iterator i = begin(); i != end(); ++i)
 			i->second.UnsetCurrentOrder();

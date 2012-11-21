@@ -588,14 +588,14 @@ void CBotf2Doc::SerializeEndOfRoundData(CArchive &ar, network::RACE race)
 				if (GetSector(x, y).GetSunSystem() && GetSystem(x, y).GetOwnerOfSystem() == pPlayer->GetRaceID())
 					vSystems.push_back(CPoint(x, y));
 			}
-		}		
+		}
 		ar << vSystems.size();
 		for (size_t i = 0; i < vSystems.size(); i++)
 		{
 			ar << vSystems[i];
 			GetSystem(vSystems[i].x, vSystems[i].y).Serialize(ar);
 		}
-		
+
 		network::RACE client = m_pRaceCtrl->GetMappedClientID(pPlayer->GetRaceID());
 		pPlayer->Serialize(ar);
 		// aktuelle View mit zum Server senden
@@ -1203,7 +1203,7 @@ void CBotf2Doc::GenerateGalaxy()
 			minorRaceProb = 0;
 		if (sunSystemProb > 0)
 			GetSector(x, y).GenerateSector(sunSystemProb, minorRaceProb);
-		
+
 		// Wenn keine Minorrace in dem System generiert wurde
 		if (!GetSector(x, y).GetMinorRace())
 		{
@@ -1259,7 +1259,7 @@ void CBotf2Doc::GenerateGalaxy()
 				}
 			}
 		}
-	}	
+	}
 
 	// nun können alle nicht verwendeten Minors entfernt werden
 	vector<CString> vDelMinors;
@@ -5701,7 +5701,7 @@ void CBotf2Doc::CalcRandomAlienEntities()
 			// nur ca. aller 20 + Techmodifikator Runden kommt das Alienschiff ins Spiel
 			if (rand()%(20 + nMod) != 0)
 				continue;
-			
+
 			// zufälligen Sektor am Rand der Map ermitteln
 			while (true)
 			{
@@ -5742,7 +5742,7 @@ void CBotf2Doc::CalcRandomAlienEntities()
 						{
 							int nCount = rand()%(nMod + 1);
 							while (nCount > 0)
-							{	
+							{
 								// Erst das Schiff bauen
 								CShipMap::iterator pFleetShip = BuildShip(pShipInfo->GetID(), p,
 									pAlien->GetRaceID());
@@ -5750,7 +5750,7 @@ void CBotf2Doc::CalcRandomAlienEntities()
 								// Raider in Gruppe stecken und Befehle gleich mit übernehmen
 								pShip->second.AddShipToFleet(pFleetShip->second);
 								m_ShipMap.EraseAt(pFleetShip);
-																
+
 								nCount--;
 							}
 						}
@@ -5934,7 +5934,7 @@ void CBotf2Doc::CalcAlienShipEffects()
 			// vorherigen Raider.
 			if (nCreditProd <= 0)
 				continue;
-			
+
 			pSystem->GetProduction()->DisableCreditsProduction();
 
 			// Nachricht und Event einfügen

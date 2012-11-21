@@ -338,7 +338,7 @@ public:
 	/// @param bIsMarked Ist das Schiff aktuell markiert
 	/// @param bOwnerUnknown Ist der Besitzer unbekannt
 	/// @param bDrawFleet Sollen Flotteninformationen angezeigt werden, falls das Schiff eine Flotte anführt
-	/// This parameter is/should supposedly be true if this function is called from shipbottomview (where ship 
+	/// This parameter is/should supposedly be true if this function is called from shipbottomview (where ship
 	/// groups are shown as grouped) and false if called from elsewhere (where the ships in a group are shown
 	//	alone)
 	/// @param clrNormal Schriftfarbe
