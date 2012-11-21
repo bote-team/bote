@@ -1430,7 +1430,7 @@ BOOLEAN CIntelCalc::ExecuteMilitarySabotage(CMajor* pRace, CMajor* pEnemyRace, C
 				if (n.y == -1)
 					ship = &s;
 				else
-					ship = s.GetShipFromFleet(n.y);
+					ship = &s.iterator_at(n.y)->second;
 			}
 			// wurde kein Schiff mehr in diesem Sektor gefunden, sei es da es zerstört wurde oder jetzt in einem anderen
 			// Sektor ist, kann es auch nicht mehr zerstört werden.

@@ -484,7 +484,7 @@ void CTransportMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 								break;
 						}
 						if (isFleet && j < number-1)
-							ship = pDoc->CurrentShip()->second.GetShipFromFleet(j);
+							ship = &pDoc->CurrentShip()->second.iterator_at(j)->second;
 					}
 					return;
 				}
@@ -534,7 +534,7 @@ void CTransportMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 						if (m_iTransportStorageQuantity == NULL)
 							break;
 						if (isFleet && j < number-1)
-							ship = pDoc->CurrentShip()->second.GetShipFromFleet(j);
+							ship = &pDoc->CurrentShip()->second.iterator_at(j)->second;
 					}
 					m_iTransportStorageQuantity = oldQuantity;
 					Invalidate(FALSE);
@@ -581,7 +581,7 @@ void CTransportMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 									break;
 							}
 							if (isFleet && j < number-1)
-								ship = pDoc->CurrentShip()->second.GetShipFromFleet(j);
+								ship = &pDoc->CurrentShip()->second.iterator_at(j)->second;
 						}
 					}
 					return;
@@ -621,7 +621,7 @@ void CTransportMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 						if (transportedRes == NULL)
 							break;
 						if (isFleet && j < number-1)
-							ship = pDoc->CurrentShip()->second.GetShipFromFleet(j);
+							ship = &pDoc->CurrentShip()->second.iterator_at(j)->second;
 					}
 					m_iTransportStorageQuantity = oldQuantity;
 					Invalidate(FALSE);

@@ -16,36 +16,6 @@ static char THIS_FILE[]=__FILE__;
 //IMPLEMENT_SERIAL (CShips, CObject, 1)
 
 //////////////////////////////////////////////////////////////////////
-// iterators
-//////////////////////////////////////////////////////////////////////
-CShips::const_iterator CShips::begin() const {
-	return m_Fleet.begin();
-}
-CShips::const_iterator CShips::end() const {
-	return m_Fleet.end();
-}
-CShips::iterator CShips::begin() {
-	return m_Fleet.begin();
-}
-CShips::iterator CShips::end() {
-	return m_Fleet.end();
-}
-
-CShips::const_iterator CShips::find(int index) const {
-	return m_Fleet.find(index);
-}
-CShips::iterator CShips::find(int index) {
-	return m_Fleet.find(index);
-}
-
-CShips::const_iterator CShips::iterator_at(int index) const{
-	return m_Fleet.iterator_at(index);
-}
-CShips::iterator CShips::iterator_at(int index) {
-	return m_Fleet.iterator_at(index);
-}
-
-//////////////////////////////////////////////////////////////////////
 // Konstruktion/Destruktion
 //////////////////////////////////////////////////////////////////////
 
@@ -106,6 +76,36 @@ void CShips::Serialize(CArchive &ar)
 
 	m_Leader.Serialize(ar);
 	m_Fleet.Serialize(ar);
+}
+
+//////////////////////////////////////////////////////////////////////
+// iterators
+//////////////////////////////////////////////////////////////////////
+CShips::const_iterator CShips::begin() const {
+	return m_Fleet.begin();
+}
+CShips::const_iterator CShips::end() const {
+	return m_Fleet.end();
+}
+CShips::iterator CShips::begin() {
+	return m_Fleet.begin();
+}
+CShips::iterator CShips::end() {
+	return m_Fleet.end();
+}
+
+CShips::const_iterator CShips::find(unsigned key) const {
+	return m_Fleet.find(key);
+}
+CShips::iterator CShips::find(unsigned key) {
+	return m_Fleet.find(key);
+}
+
+CShips::const_iterator CShips::iterator_at(int index) const{
+	return m_Fleet.iterator_at(index);
+}
+CShips::iterator CShips::iterator_at(int index) {
+	return m_Fleet.iterator_at(index);
 }
 
 //////////////////////////////////////////////////////////////////////

@@ -40,21 +40,8 @@ public:
 	//DECLARE_SERIAL (CShips)
 
 	//////////////////////////////////////////////////////////////////////
-	// iterators
+	// Konstruktion/Destruktion
 	//////////////////////////////////////////////////////////////////////
-	typedef CShipMap::const_iterator const_iterator;
-	const_iterator begin() const;
-	const_iterator end() const;
-
-	typedef CShipMap::iterator iterator;
-	iterator begin();
-	iterator end();
-
-	const_iterator find(int index) const;
-	iterator find(int index);
-
-	const_iterator iterator_at(int index) const;
-	iterator iterator_at(int index);
 
 	// Standardkonstruktor
 	CShips();
@@ -62,7 +49,6 @@ public:
 
 	// Destruktor
 	virtual ~CShips();
-
 
 	// Kopierkonstruktor
 	CShips(const CShips& o);
@@ -74,12 +60,26 @@ public:
 	void Serialize(CArchive &ar);
 
 	//////////////////////////////////////////////////////////////////////
+	// iterators
+	//////////////////////////////////////////////////////////////////////
+	typedef CShipMap::const_iterator const_iterator;
+	const_iterator begin() const;
+	const_iterator end() const;
+
+	typedef CShipMap::iterator iterator;
+	iterator begin();
+	iterator end();
+
+	const_iterator find(unsigned key) const;
+	iterator find(unsigned key);
+
+	const_iterator iterator_at(int index) const;
+	iterator iterator_at(int index);
+
+	//////////////////////////////////////////////////////////////////////
 	// getting
 	//////////////////////////////////////////////////////////////////////
 
-	//// Funktion gibt einen Zeiger auf ein Schiff aus der Flotte zurück
-	CShips* GetShipFromFleet(int n) { return &m_Fleet.GetAt(n); }
-	const CShips* GetShipFromFleet(int n) const { return &m_Fleet.GetAt(n); }
 	const CShips::const_iterator& CurrentShip() const;
 	// Funktion liefert die Anzahl der Schiffe in der Flotte
 	int GetFleetSize() const { return m_Fleet.GetSize(); }
