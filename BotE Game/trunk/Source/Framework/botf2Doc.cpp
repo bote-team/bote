@@ -5867,25 +5867,24 @@ void CBotf2Doc::CalcAlienShipEffects()
 						if (pShip->GetCombatTactic() == COMBAT_TACTIC::CT_RETREAT)
 							continue;
 
-						pShip->SetOwnerOfShip(pAlien->GetRaceID());
 						pShip->SetShipType(SHIP_TYPE::ALIEN);
 						pShip->SetTargetKO(CPoint(-1, -1), 0);
 						pShip->SetCurrentOrder(SHIP_ORDER::ATTACK);
 						pShip->SetTerraformingPlanet(-1);
 						pShip->SetIsShipFlagShip(FALSE);
 
+						CMajor* pShipOwner = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(pShip->GetOwnerOfShip()));
+						assert(pShipOwner);
 						// für jedes Schiff eine Meldung über den Verlust machen
-
 						// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
-						if (CMajor* pShipOwner = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(pShip->GetOwnerOfShip())))
-						{
-							AddToLostShipHistory(&pShip->Leader(), CResourceManager::GetString("COMBAT"), CResourceManager::GetString("MISSED"));
-							CString s;
-							s.Format("%s", CResourceManager::GetString("DESTROYED_SHIPS_IN_COMBAT",0,pShip->GetShipName()));
-							CMessage message;
-							message.GenerateMessage(s, MESSAGE_TYPE::MILITARY, "", 0, 0);
-							pShipOwner->GetEmpire()->AddMessage(message);
-						}
+						AddToLostShipHistory(&pShip->Leader(), CResourceManager::GetString("COMBAT"), CResourceManager::GetString("MISSED"));
+						CString s;
+						s.Format("%s", CResourceManager::GetString("DESTROYED_SHIPS_IN_COMBAT",0,pShip->GetShipName()));
+						CMessage message;
+						message.GenerateMessage(s, MESSAGE_TYPE::MILITARY, "", 0, 0);
+						pShipOwner->GetEmpire()->AddMessage(message);
+						//actually change the owner last, to make the above calls work correctly
+						pShip->SetOwnerOfShip(pAlien->GetRaceID());
 					}
 				}
 			}
