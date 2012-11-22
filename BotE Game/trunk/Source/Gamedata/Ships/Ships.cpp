@@ -499,7 +499,7 @@ void CShips::DrawShip(Gdiplus::Graphics* g, CGraphicPool* pGraphicPool, const CP
 void CShips::Repair(BOOL bAtShipPort, bool bFasterShieldRecharge) {
 	for(CShips::iterator i = begin(); i != end(); ++i)
 		i->second.Repair(bAtShipPort, bFasterShieldRecharge);
-
+	m_Leader.Repair(bAtShipPort, bFasterShieldRecharge);
 	if(m_Leader.GetCurrentOrder() == SHIP_ORDER::REPAIR && (!NeedsRepair() || !bAtShipPort))
 		m_Leader.UnsetCurrentOrder();
 }
