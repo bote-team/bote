@@ -352,8 +352,6 @@ void CFleetMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 	assert(pDoc);
 	if (!pDoc->m_bDataReceived)
 		return;
-	CMajor* pMajor = m_pPlayersRace;
-	assert(pMajor);
 	CalcLogicalPoint(point);
 	// Wenn wir in der Flottenansicht sind
 	CRect r;
@@ -374,7 +372,7 @@ void CFleetMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		return;
 	}
 	// Fremde Flotten können nicht bearbeitet werden
-	assert(pDoc->FleetShip()->second.GetOwnerOfShip() == pMajor->GetRaceID());
+	assert(pDoc->FleetShip()->second.GetOwnerOfShip() == m_pPlayersRace->GetRaceID());
 	// Auf welches Rechteck haben wir geklickt (gleiche Klasse oder gleichen Typ oder alle hinzufügen?)
 	const unsigned whichRect = CheckClickedButtonRect(point);
 	// Wenn wir auf irgendeinen der Buttons geklickt haben um Schiffe hinzuzufügen

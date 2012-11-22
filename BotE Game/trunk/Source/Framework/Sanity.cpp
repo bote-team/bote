@@ -130,9 +130,12 @@ void CSanity::SanityCheckSectorAndSystem(const CSector& sector, const CSystem& s
 	}
 	const CRace* pRace = RaceCtrl.GetRace(sOwnerOfSector);
 	assert(pRace->IsMajor());
+#pragma warning(push)
+#pragma warning(disable:4189)
 	const CMajor* pMajor = dynamic_cast<const CMajor*>(pRace);
 	assert(pMajor);
 }
+#pragma warning(pop)
 
 //void CSanity::ShipInfo(const CArray<CShip, CShip>& shiparray, int index, const CString& indexname) {
 //	if(!MT::CMyTrace::IsLoggingEnabledFor("shipindices"))
