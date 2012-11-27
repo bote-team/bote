@@ -117,6 +117,13 @@ const CShips::const_iterator& CShips::CurrentShip() const {
 	return m_Fleet.CurrentShip();
 }
 
+const CShips& CShips::at(unsigned key) const {
+	return m_Fleet.at(key);
+}
+CShips& CShips::at(unsigned key) {
+	return m_Fleet.at(key);
+}
+
 //////////////////////////////////////////////////////////////////////
 // setting
 //////////////////////////////////////////////////////////////////////

@@ -76,6 +76,14 @@ public:
 	const_iterator iterator_at(int index) const;
 	iterator iterator_at(int index);
 
+	//get the CShips from the fleet of this CShips with the given key
+	//complexity: logarithmic
+	const CShips& at(unsigned key) const;
+
+	//get the CShips from the fleet of this CShips with the given key
+	//complexity: logarithmic
+	CShips& at(unsigned key);
+
 	//////////////////////////////////////////////////////////////////////
 	// getting
 	//////////////////////////////////////////////////////////////////////
@@ -86,7 +94,7 @@ public:
 	const CShip& Leader() const { return m_Leader; }
 	CShip& Leader() { return m_Leader; }
 	const CShipMap& Fleet() const { return m_Fleet; }
-	unsigned Key() { return m_Key; }
+	unsigned Key() const { return m_Key; }
 
 
 		//////////////////////////////////////////////////////////////////////
