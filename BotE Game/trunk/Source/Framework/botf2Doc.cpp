@@ -4804,6 +4804,8 @@ void CBotf2Doc::OnShipDestroyedByAnomaly(const CShips& ship) {
 	CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(ship.GetOwnerOfShip()));
 	assert(pMajor);
 	const CPoint& co = ship.GetKO();
+	if(!GetSector(co.x, co.y).GetAnomaly())
+		return;
 	const CString& anomaly = GetSector(co.x, co.y).GetAnomaly()
 		->GetMapName(co);
 	// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
