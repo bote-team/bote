@@ -169,17 +169,6 @@ void CShipMap::EraseAt(CShipMap::iterator& index) {
 // getting elements
 //////////////////////////////////////////////////////////////////////
 
-//TODO reduce amount and calls to these, complexity linear
-
-const CShips& CShipMap::GetAt(int index) const {
-	assert(index < GetSize());
-	return iterator_at(index)->second;
-}
-CShips& CShipMap::GetAt(int index) {
-	assert(index < GetSize());
-	return iterator_at(index)->second;
-}
-
 const CShips& CShipMap::at(unsigned key) const {
 	const CShipMap::const_iterator i = find(key);
 	assert(i != end());
@@ -205,16 +194,21 @@ bool CShipMap::empty() const {
 	return m_Ships.empty();
 }
 
-int CShipMap::index_of(const CShipMap::const_iterator& position) const {
-	return std::distance(begin(), position);
-}
-
 //////////////////////////////////////////////////////////////////////
 // private functions
 //////////////////////////////////////////////////////////////////////
 
 unsigned CShipMap::NextKey() {
 	return m_NextKey++;
+}
+
+int CShipMap::index_of(const CShipMap::const_iterator& position) const {
+	return std::distance(begin(), position);
+}
+
+const CShips& CShipMap::GetAt(int index) const {
+	assert(index < GetSize());
+	return iterator_at(index)->second;
 }
 
 //////////////////////////////////////////////////////////////////////

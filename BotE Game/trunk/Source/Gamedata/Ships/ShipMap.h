@@ -90,14 +90,12 @@ public:
 //////////////////////////////////////////////////////////////////////
 // getting elements
 //////////////////////////////////////////////////////////////////////
-	
+
+private:
 	//get CShips at the given array-like index
 	//complexity: linear, avoid usage
 	const CShips& GetAt(int index) const;
-
-	//get CShips at the given array-like index
-	//complexity: linear, avoid usage
-	CShips& GetAt(int index);
+public:
 
 	//get the CShips with the given key
 	//complexity: logarithmic
@@ -119,10 +117,17 @@ public:
 
 	bool empty() const;
 
+private:
+	//don't make this public please, as it runs with O(shipmap size)
+	//use the ship's key in the map instead
+	friend class CTest;//In that class is the only call to index_of(), which we need to
+	//test iterator_at against it.
+
 	//get array-index of the given iterator
 	//complexity: linear, avoid usage; use the m_Key member of the CShips class
 	//to get and remember a CShips object in this shipmap
 	int index_of(const CShipMap::const_iterator& position) const;
+public:
 
 //////////////////////////////////////////////////////////////////////
 // Serialisierungsfunktionen
