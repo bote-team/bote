@@ -723,7 +723,7 @@ void CGalaxyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 									const CPoint& point = ship.GetKO();
 									if(sector == Sector(point.x, point.y)) {
 										m_PreviouslyJumpedToShip = RememberedShip(
-											pDoc->m_ShipMap.index_of(i), ship.GetShipName());
+											ship.GetShipName(), i->first);
 										break;
 									}
 								}
@@ -1308,77 +1308,73 @@ void CGalaxyMenuView::HandleShipHotkeys(const UINT nChar, CBotf2Doc* pDoc)
 
 void CGalaxyMenuView::SearchNextIdleShipAndJumpToIt(CBotf2Doc* pDoc, SHIP_ORDER::Typ order)
 {
-	CMajor const* pMajor = m_pPlayersRace;
-	ASSERT(pMajor);
-	if (!pMajor)
+	assert(m_pPlayersRace);
+	if(pDoc->m_ShipMap.empty())
 		return;
 
-	const int size = pDoc->m_ShipMap.GetSize();
-	if(size <= 0)
-		return;
-
-	int start_at = -1;
-	int stop_at = size - 1;
-	CShips* previous_ship = NULL;
-	CShips* perhaps_previous_ship = NULL;//this variable is perhaps/supposedly redundant to previous_ship
-	if(m_PreviouslyJumpedToShip.index < size)
+	CShipMap::iterator start_at = pDoc->m_ShipMap.begin();
+	CShipMap::const_iterator stop_at = pDoc->m_ShipMap.end();
+	CShipMap::iterator previous_ship = pDoc->m_ShipMap.find(m_PreviouslyJumpedToShip.key);
+	if(previous_ship != pDoc->m_ShipMap.end())
 	{
-		perhaps_previous_ship = &pDoc->m_ShipMap.GetAt(m_PreviouslyJumpedToShip.index);
-		if(perhaps_previous_ship->GetOwnerOfShip()
-				== pMajor->GetRaceID()
-				&& Sector(perhaps_previous_ship->GetKO())
-				== pMajor->GetStarmap()->GetSelection()
-				&& perhaps_previous_ship->GetShipName()
-				== m_PreviouslyJumpedToShip.name)
+		if(previous_ship->second.GetOwnerOfShip() == m_pPlayersRace->GetRaceID()
+				&& Sector(previous_ship->second.GetKO()) == m_pPlayersRace->GetStarmap()->GetSelection()
+				&& previous_ship->second.GetShipName() == m_PreviouslyJumpedToShip.name)
 		{
 			//the previously jumped to ship is still valid
-			start_at = m_PreviouslyJumpedToShip.index;
-			stop_at = m_PreviouslyJumpedToShip.index;
-			previous_ship = perhaps_previous_ship;
+			start_at = previous_ship;
+			stop_at = previous_ship;
 		}
+		else
+			previous_ship = pDoc->m_ShipMap.end();
 	}
-
-	int i = start_at;
-	for(;;) {
+	bool found = false;
+	for(CShipMap::iterator i = start_at;;) {
 		++i;
-		if(i >= size)
-			i = 0;
-		const CShips& ship = pDoc->m_ShipMap.GetAt(i);
-		if(pMajor->GetRaceID() != ship.GetOwnerOfShip())
+		if(i == pDoc->m_ShipMap.end()) {
 			if(i == stop_at)
 				break;
-			else
-				continue;
-		const CPoint& coords = ship.GetKO();
-		const Sector& sector = Sector(coords.x, coords.y);
-
-		if(ship.HasNothingToDo()) {
-			if(previous_ship && order != SHIP_ORDER::NONE) {
-				previous_ship->SetCurrentOrder(order);
-				assert(order == SHIP_ORDER::WAIT_SHIP_ORDER || order == SHIP_ORDER::SENTRY_SHIP_ORDER);
-				//In case the previous ship was selected via mouse instead via hotkey, which
-				//checks whether there's a target != -1,-1 set, it can be a ship which still
-				//has a valid target, but still would get order sentry or wait
-				previous_ship->SetTargetKO(CPoint(-1, -1), 0, true);
-			}
-			m_PreviouslyJumpedToShip = RememberedShip(i, ship.GetShipName());
-			pMajor->GetStarmap()->Select(sector);// sets orange rectangle in galaxy view
-			pDoc->SetKO(sector.x,sector.y);//neccessary for that the ship is selected for SHIP_BOTTOM_VIEW
-			pDoc->SetCurrentShip(pDoc->m_ShipMap.iterator_at(i));
-
-			CShipBottomView::SetShowStation(false);
-			pDoc->GetMainFrame()->SelectBottomView(SHIP_BOTTOM_VIEW);
-			pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CShipBottomView));//What's this doing ? Neccessary/sensible ?
-
-			CSmallInfoView::SetDisplayMode(CSmallInfoView::DISPLAY_MODE_SHIP_BOTTEM_VIEW);
-			pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CSmallInfoView));//And this ?
-
-			Invalidate();//And this ?
-			break;
+			i = pDoc->m_ShipMap.begin();
 		}
+		const CShips& ship = i->second;
+		if(m_pPlayersRace->GetRaceID() == ship.GetOwnerOfShip()) {
+			const CPoint& coords = ship.GetKO();
+			const Sector& sector = Sector(coords.x, coords.y);
 
+			if(ship.HasNothingToDo()) {
+				if(previous_ship != pDoc->m_ShipMap.end() && order != SHIP_ORDER::NONE) {
+					previous_ship->second.SetCurrentOrder(order);
+					assert(order == SHIP_ORDER::WAIT_SHIP_ORDER || order == SHIP_ORDER::SENTRY_SHIP_ORDER);
+					//In case the previous ship was selected via mouse instead via hotkey, which
+					//checks whether there's a target != -1,-1 set, it can be a ship which still
+					//has a valid target, but still would get order sentry or wait
+					previous_ship->second.SetTargetKO(CPoint(-1, -1), 0, true);
+				}
+				m_PreviouslyJumpedToShip = RememberedShip(ship.GetShipName(), ship.Key());
+				m_pPlayersRace->GetStarmap()->Select(sector);// sets orange rectangle in galaxy view
+				pDoc->SetKO(sector.x,sector.y);//neccessary for that the ship is selected for SHIP_BOTTOM_VIEW
+				pDoc->SetCurrentShip(i);
+
+				CShipBottomView::SetShowStation(false);
+				pDoc->GetMainFrame()->SelectBottomView(SHIP_BOTTOM_VIEW);
+				pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CShipBottomView));//What's this doing ? Neccessary/sensible ?
+
+				CSmallInfoView::SetDisplayMode(CSmallInfoView::DISPLAY_MODE_SHIP_BOTTEM_VIEW);
+				pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CSmallInfoView));//And this ?
+
+				Invalidate();//And this ?
+				if(i != stop_at)
+					found = true;
+				break;
+			}
+		}
 		if(i == stop_at)
 			break;
+	}
+	if(!found) {
+		CSmallInfoView::SetDisplayMode(CSmallInfoView::DISPLAY_MODE_ICON);
+		pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
+		Invalidate();
 	}
 }
 

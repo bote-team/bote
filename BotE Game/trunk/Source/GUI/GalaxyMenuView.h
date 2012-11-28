@@ -159,13 +159,13 @@ private:
 
 	 //remember the ship in shiparray which was jumped to by last press of n or spacebar
 	struct RememberedShip {
-		RememberedShip() : index(0), name("") {}
-		RememberedShip(int _index, CString _name) : index(_index), name(_name) {}
-		int index;
+		RememberedShip() : name(""), key(0) {}
+		RememberedShip(CString _name, unsigned _key) : name(_name), key(_key) {}
+		unsigned key;
 		CString name;
 
 		RememberedShip& operator=(const RememberedShip &other) {
-			index = other.index; name = other.name; return *this;
+			name = other.name; key = other.key; return *this;
 		}
 	};
 	RememberedShip m_PreviouslyJumpedToShip;
