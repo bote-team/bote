@@ -401,17 +401,10 @@ void CSystemMenuView::DrawBuildMenue(Graphics* g)
 			fontBrush.SetColor(color2);
 		}
 
-		// handelt es sich um ein Update?
-		if (m_vBuildlist[i] < 0)
-		{
-			s = CResourceManager::GetString("UPGRADING", FALSE, pDoc->GetBuildingName(abs(m_vBuildlist[i])));
-		}
-		// handelt es sich um ein Gebäude?
-		else if (m_vBuildlist[i] < 10000)
-		{
-			s = pDoc->GetBuildingName(abs(m_vBuildlist[i]));
+		// Gebäude oder Update können ein Symbol haben
+		if (m_vBuildlist[i] < 10000) {
 			CBuildingInfo* pInfo = &pDoc->GetBuildingInfo(abs(m_vBuildlist[i]));
-			if (pInfo->GetWorker() == false && pInfo->GetNeverReady() == false)
+			if (pInfo->GetNeverReady() == false)
 			{
 				Bitmap* graphic = NULL;
 				if (pInfo->GetFoodProd() > 0 || pInfo->GetFoodBoni() > 0)
@@ -424,11 +417,34 @@ void CSystemMenuView::DrawBuildMenue(Graphics* g)
 					graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\securitySmall.bop");
 				else if (pInfo->GetFPProd() > 0 || pInfo->GetResearchBoni() > 0)
 					graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\researchSmall.bop");
+				else if (pInfo->GetTitanProd() > 0 || pInfo->GetTitanBoni() > 0)
+					graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\titanSmall.bop");
+				else if (pInfo->GetDeuteriumProd() > 0 || pInfo->GetDeuteriumBoni() > 0)
+					graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\deuteriumSmall.bop");
+				else if (pInfo->GetDuraniumProd() > 0 || pInfo->GetDuraniumBoni() > 0)
+					graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\duraniumSmall.bop");
+				else if (pInfo->GetCrystalProd() > 0 || pInfo->GetCrystalBoni() > 0)
+					graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\crystalSmall.bop");
+				else if (pInfo->GetIridiumProd() > 0 || pInfo->GetIridiumBoni() > 0)
+					graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\iridiumSmall.bop");
+				else if (pInfo->GetDeritiumProd() > 0 || pInfo->GetDeritiumBoni() > 0)
+					graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\Deritium.bop");
 				else if (pInfo->GetCredits() > 0 || pInfo->GetCreditsBoni() > 0)
 					graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\creditsSmall.bop");
 				if (graphic)
 					g->DrawImage(graphic, 355, y-21, 20, 16);
 			}
+		}
+
+		// handelt es sich um ein Update?
+		if (m_vBuildlist[i] < 0)
+		{
+			s = CResourceManager::GetString("UPGRADING", FALSE, pDoc->GetBuildingName(abs(m_vBuildlist[i])));
+		}
+		// handelt es sich um ein Gebäude?
+		else if (m_vBuildlist[i] < 10000)
+		{
+			s = pDoc->GetBuildingName(abs(m_vBuildlist[i]));
 		}
 		// handelt es sich um ein Schiff
 		else if (m_vBuildlist[i] < 20000)
