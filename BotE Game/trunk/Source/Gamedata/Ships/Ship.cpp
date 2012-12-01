@@ -3,6 +3,8 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
+#include "botf2.h"
+#include "Botf2Doc.h"
 #include "Ship.h"
 #include "Galaxy\Sector.h"
 #include "HTMLStringBuilder.h"
@@ -1048,6 +1050,29 @@ CString CShip::GetTooltip(const FleetInfoForGetTooltip* const info)
 	return sTip;
 }
 
+void CShip::DrawOrderTerraform(Gdiplus::Graphics* g, CGraphicPool* pGraphicPool, const CPoint& pt) const {
+	CBotf2Doc* pDoc = ((CBotf2App*)AfxGetApp())->GetDocument();
+	ASSERT(pDoc);
+
+	if (pDoc->m_bDataReceived) {
+		CSector sec = pDoc->GetSector(GetKO().x, GetKO().y);
+		CString s = sec.GetPlanet(GetTerraformingPlanet())->GetPlanetGraphicFile();
+		Bitmap* graphic = pGraphicPool->GetGDIGraphic(s);
+
+		// Planeten zeichnen, der gerade terraformt wird
+		if( graphic )
+			g->DrawImage(graphic, pt.x + 85, pt.y + 60, 15, 15);
+	}
+}
+
+void CShip::DrawOrderColonize(Gdiplus::Graphics* g, CGraphicPool* pGraphicPool, const CPoint& pt) const {
+	Bitmap* graphic = pGraphicPool->GetGDIGraphic("Other\\populationSmall.bop");
+
+	// Planeten zeichnen, der gerade terraformt wird
+	if( graphic )
+		g->DrawImage(graphic, pt.x + 85, pt.y + 60, 15, 15);
+}
+
 void CShip::DrawShip(Gdiplus::Graphics* g, CGraphicPool* pGraphicPool, const CPoint& pt, bool bIsMarked,
 		bool bOwnerUnknown, bool bDrawFleet, const Gdiplus::Color& clrNormal,
 		const Gdiplus::Color& clrMark, const Gdiplus::Font& font, bool bDrawTroopSymbol,
@@ -1158,6 +1183,12 @@ void CShip::DrawShip(Gdiplus::Graphics* g, CGraphicPool* pGraphicPool, const CPo
 			graphic = pGraphicPool->GetGDIGraphic("Other\\cloakedSmall.bop");
 			if (graphic)
 				g->DrawImage(graphic, pt.x + 37, pt.y + 55, graphic->GetWidth(), graphic->GetHeight());
+		}
+
+		if( m_iCurrentOrder == SHIP_ORDER::TERRAFORM ) {
+			DrawOrderTerraform(g, pGraphicPool, pt);
+		} else if( m_iCurrentOrder == SHIP_ORDER::COLONIZE ) {
+			DrawOrderColonize(g, pGraphicPool, pt);
 		}
 
 		// normale Infos zum Schiff sollen angezeigt werden

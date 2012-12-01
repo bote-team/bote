@@ -85,6 +85,9 @@ public:
 	/// Grafik und der Planetenklasse generiert.
 	CString GetGraphicFile() const;
 
+	/// Gibt den endgültigen Grafikpfad, ob individuell oder mittels GetGraphicFile, zurück
+	CString GetPlanetGraphicFile() const;
+
 	// zum Schreiben der Membervariablen
 	void SetSize(PLANT_SIZE::Typ Size) {m_iSize = Size;}
 	void SetMaxHabitant(float MaxHabitant) {m_dMaxHabitant = MaxHabitant;}

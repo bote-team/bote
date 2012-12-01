@@ -286,6 +286,9 @@ protected:
 	CString m_strShipDescription;		// Die Beschreibung des Schiffes
 	CString m_strShipClass;				// Der Name der Schiffsklasse
 
+	void DrawOrderTerraform(Gdiplus::Graphics* g, CGraphicPool* pGraphicPool, const CPoint& pt) const;
+	void DrawOrderColonize(Gdiplus::Graphics* g, CGraphicPool* pGraphicPool, const CPoint& pt) const;
+
 private:
 	CString m_sOwnerOfShip;				// Besitzer des Schiffes
 	CPoint m_KO;						// Koordinate des Schiffes im Raum (welcher Sector?)

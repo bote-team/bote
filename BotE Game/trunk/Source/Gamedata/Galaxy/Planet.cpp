@@ -131,18 +131,19 @@ void CPlanet::Serialize(CArchive &ar)
 /// Grafik und der Planetenklasse generiert.
 CString CPlanet::GetGraphicFile() const
 {
-	if (m_iGraphicType < 10)	// führende NULL beachten
-	{
-		CString fileName;
-		fileName.Format("Planets\\class%c0%d.bop", m_cClass, m_iGraphicType);
-		return fileName;
-	}
+	CString fileName;
+	fileName.Format("Planets\\class%c%02d.bop", m_cClass, m_iGraphicType);
+	return fileName;
+}
+
+CString CPlanet::GetPlanetGraphicFile() const
+{
+	CString fileName;
+	if(m_bHasIndividualGraphic)
+		fileName = "Planets\\" + m_strName + ".bop";
 	else
-	{
-		CString fileName;
-		fileName.Format("Planets\\class%c%d.bop", m_cClass, m_iGraphicType);
-		return fileName;
-	}
+		fileName = GetGraphicFile();
+	return fileName;
 }
 
 /// Funktion erzeugt einen Planeten.
@@ -361,12 +362,7 @@ void CPlanet::DrawPlanet(Graphics &g, const CRect& rect, CGraphicPool* graphicPo
 	ASSERT(graphicPool);
 
 	Bitmap* planet = NULL;
-	if(m_bHasIndividualGraphic)
-		planet = graphicPool->GetGDIGraphic("Planets\\" + m_strName + ".bop");
-
-	// Konnte keine spezielle Planetengrafik gefunden werden, so wird eine zufällige Grafik ausgewählt
-	if (planet == NULL)
-		planet = graphicPool->GetGDIGraphic(GetGraphicFile());
+	planet = graphicPool->GetGDIGraphic(GetPlanetGraphicFile());
 
 	if (planet)
 		g.DrawImage(planet, rect.left, rect.top, rect.Width(), rect.Height());
