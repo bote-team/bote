@@ -3926,7 +3926,7 @@ Solarzellen verwerten die Energie hochintensiver Sonnenstrahlung, wie sie an den
 Solar Panels harness the power of solar rays which are extremely intense on desert worlds.
 0
 con_b36.bop
-2
+1
 29
 0
 0
@@ -3977,7 +3977,7 @@ con_b36.bop
 0
 0
 0
-25
+50
 0
 0
 0
@@ -4066,7 +4066,7 @@ Windturbinen erzeugen aus den ständigen Stürmen über unfruchtbaren Planeten wert
 Wind Turbines harness the power of the mighty windstorms roaring across barren worlds.
 0
 con_b34.bop
-2
+1
 30
 0
 0
@@ -4117,7 +4117,7 @@ con_b34.bop
 0
 0
 0
-50
+100
 0
 0
 0
@@ -4206,7 +4206,7 @@ Geysire und stille Vulkane geoaktiver Planeten sind die Quelle hochwertiger ther
 Geothermal Plants harness the power of a planet's core emitting its heat at various hot spots over its geologically active and thin surface.
 0
 con_b35.bop
-2
+1
 31
 0
 0
@@ -4257,7 +4257,7 @@ con_b35.bop
 0
 0
 0
-75
+150
 0
 0
 0
@@ -4397,7 +4397,7 @@ con_b33.bop
 0
 0
 0
-100
+200
 0
 0
 0
@@ -4537,7 +4537,7 @@ con_b38.bop
 0
 0
 0
-150
+250
 0
 0
 0
@@ -20497,7 +20497,7 @@ con_b36.bop
 0
 0
 0
-25
+50
 0
 0
 0
@@ -20637,7 +20637,7 @@ con_b34.bop
 0
 0
 0
-50
+100
 0
 0
 0
@@ -20777,7 +20777,7 @@ con_b35.bop
 0
 0
 0
-75
+150
 0
 0
 0
@@ -20917,7 +20917,7 @@ han_b33.bop
 0
 0
 0
-100
+200
 0
 0
 0
@@ -21057,7 +21057,7 @@ con_b38.bop
 0
 0
 0
-150
+250
 0
 0
 0
@@ -37997,7 +37997,7 @@ con_b36.bop
 0
 0
 0
-25
+50
 0
 0
 0
@@ -38137,7 +38137,7 @@ con_b34.bop
 0
 0
 0
-50
+100
 0
 0
 0
@@ -38277,7 +38277,7 @@ con_b35.bop
 0
 0
 0
-75
+150
 0
 0
 0
@@ -38417,7 +38417,7 @@ kha_b33.bop
 0
 0
 0
-100
+200
 0
 0
 0
@@ -38557,7 +38557,7 @@ con_b38.bop
 0
 0
 0
-150
+250
 0
 0
 0
@@ -54377,7 +54377,7 @@ con_b36.bop
 0
 0
 0
-25
+50
 0
 0
 0
@@ -54517,7 +54517,7 @@ rot_b34.bop
 0
 0
 0
-50
+100
 0
 0
 0
@@ -54657,7 +54657,7 @@ con_b35.bop
 0
 0
 0
-75
+150
 0
 0
 0
@@ -54797,7 +54797,7 @@ rot_b33.bop
 0
 0
 0
-100
+200
 0
 0
 0
@@ -54937,7 +54937,7 @@ con_b38.bop
 0
 0
 0
-150
+250
 0
 0
 0
@@ -71037,7 +71037,7 @@ con_b36.bop
 0
 0
 0
-25
+50
 0
 0
 0
@@ -71177,7 +71177,7 @@ car_b33.bop
 0
 0
 0
-50
+100
 0
 0
 0
@@ -71317,7 +71317,7 @@ con_b35.bop
 0
 0
 0
-75
+150
 0
 0
 0
@@ -71457,7 +71457,7 @@ car_b32.bop
 0
 0
 0
-100
+200
 0
 0
 0
@@ -71597,7 +71597,7 @@ con_b38.bop
 0
 0
 0
-150
+250
 0
 0
 0
@@ -87417,7 +87417,7 @@ ome_b36.bop
 0
 0
 0
-25
+50
 0
 0
 0
@@ -87557,7 +87557,7 @@ ome_b33.bop
 0
 0
 0
-50
+100
 0
 0
 0
@@ -87697,7 +87697,7 @@ ome_b35.bop
 0
 0
 0
-75
+150
 0
 0
 0
@@ -87837,7 +87837,7 @@ ome_b32.bop
 0
 0
 0
-100
+200
 0
 0
 0
@@ -87977,7 +87977,7 @@ ome_b38.bop
 0
 0
 0
-150
+250
 0
 0
 0
