@@ -193,8 +193,6 @@ bool CRoundButtonStyle::DrawMasks(CDC* _pDC)
 	double		fRadHigh;
 	// Power of Highlight
 	double		fPowHigh;
-	// Size of single Edge
-	int			nSizeEdge = 0;
 
 	/************************************************************************/
 	/* Load Infos of Style                                                  */
@@ -218,8 +216,10 @@ bool CRoundButtonStyle::DrawMasks(CDC* _pDC)
 	// Calculate Radius of Inner Border
 	fRadInner = __min(fRadOuter, __max(0.0f, fRadOuter * (1.0f - fRatioBorder)));
 
+	// Size of single Edge
+	//int nSizeEdge = 0;
 	// Calculate Size of an Edge
-	nSizeEdge = (int)ceil(fRadOuter + fSizeAA / 2.0);
+	int nSizeEdge = (int)ceil(fRadOuter + fSizeAA / 2.0);
 
 	// Store Size of Mask in global var
 	m_tBtnSize.SetSize(nSizeEdge, nSizeEdge);

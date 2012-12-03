@@ -249,17 +249,13 @@ void CPPDrawManager::AlphaChannelBitBlt(HDC hDestDC, int nDestX, int nDestY, DWO
 
 HBITMAP CPPDrawManager::CreateImageEffect(HBITMAP hBitmap, DWORD dwWidth, DWORD dwHeight, DWORD dwEffect, BOOL bUseMask /* = TRUE */, COLORREF clrMask /* = RGB(255, 0, 255) */, COLORREF clrMono /* = RGB(255, 255, 255) */)
 {
-	HBITMAP hOldSrcBmp = NULL;
 	HBITMAP hOldResBmp = NULL;
-	HDC hMainDC = NULL;
-	HDC hSrcDC = NULL;
-	HDC hResDC = NULL;
 
-	hMainDC = ::GetDC(NULL);
-	hSrcDC = ::CreateCompatibleDC(hMainDC);
-	hResDC = ::CreateCompatibleDC(hMainDC);
+	HDC hMainDC = ::GetDC(NULL);
+	HDC hSrcDC = ::CreateCompatibleDC(hMainDC);
+	HDC hResDC = ::CreateCompatibleDC(hMainDC);
 
-	hOldSrcBmp = (HBITMAP)::SelectObject(hSrcDC, hBitmap);
+	HBITMAP hOldSrcBmp = (HBITMAP)::SelectObject(hSrcDC, hBitmap);
 
 	LPBITMAPINFO lpbi;
 
