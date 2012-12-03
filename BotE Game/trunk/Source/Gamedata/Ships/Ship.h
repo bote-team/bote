@@ -261,6 +261,10 @@ public:
 		const Gdiplus::Color& clrMark, const Gdiplus::Font& font, bool bDrawTroopSymbol,
 		short FleetShipType, int FleetSize) const;
 
+private:
+	void DrawOrderTerraform(Gdiplus::Graphics* g, CGraphicPool* pGraphicPool, const CPoint& pt) const;
+	void DrawOrderColonize(Gdiplus::Graphics* g, CGraphicPool* pGraphicPool, const CPoint& pt) const;
+
 protected:
 	CHull	m_Hull;												// die Hülle des Schiffes
 	CShield m_Shield;											// die Schilde des Schiffes
@@ -285,9 +289,6 @@ protected:
 	CString m_strShipName;				// Der Name des Schiffes
 	CString m_strShipDescription;		// Die Beschreibung des Schiffes
 	CString m_strShipClass;				// Der Name der Schiffsklasse
-
-	void DrawOrderTerraform(Gdiplus::Graphics* g, CGraphicPool* pGraphicPool, const CPoint& pt) const;
-	void DrawOrderColonize(Gdiplus::Graphics* g, CGraphicPool* pGraphicPool, const CPoint& pt) const;
 
 private:
 	CString m_sOwnerOfShip;				// Besitzer des Schiffes
