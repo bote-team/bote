@@ -1723,7 +1723,7 @@ BOOLEAN CIntelCalc::ExecuteDiplomacySabotage(CMajor* pRace, CMajor* pEnemyRace, 
 				// falls nur computergesteuerte Rassen an der Aktion beteiligt sind, so wird die Beziehung nur um ein
 				// Viertel verschlechtert. Liegt ganz einfach daran, dass sich die Computergegner nicht alle immer
 				// untereinadner plattmachen
-				if (pRace->IsHumanPlayer() == false && pEnemyRace->IsHumanPlayer() == false	&& pMajor->IsHumanPlayer() == false)
+				if (pRace->AHumanPlays() == false && pEnemyRace->AHumanPlays() == false	&& pMajor->AHumanPlays() == false)
 					relationSub /= 4;
 				pEnemyRace->SetRelation(pMajor->GetRaceID(), relationSub);
 				pMajor->SetRelation(pEnemyRace->GetRaceID(), relationSub);

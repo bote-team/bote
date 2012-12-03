@@ -78,9 +78,9 @@ void CCombatAI::ApplyCombatOrders(const CArray<CShips*>& vInvolvedShips, const m
 
 				CRace* pRace2 = iter->second;
 				// Beziehung der anderes Rasse zu uns
-				if (!pRace2->IsMajor() || (pRace2->IsMajor() && ((CMajor*)pRace2)->IsHumanPlayer() == false))
+				if (!pRace2->IsMajor() || (pRace2->IsMajor() && ((CMajor*)pRace2)->AHumanPlays() == false))
 					nMinRelation = min(nMinRelation, pRace2->GetRelation(pRace1->GetRaceID()));
-				else if (!pRace1->IsMajor() || (pRace1->IsMajor() && ((CMajor*)pRace1)->IsHumanPlayer() == false))
+				else if (!pRace1->IsMajor() || (pRace1->IsMajor() && ((CMajor*)pRace1)->AHumanPlays() == false))
 					nMinRelation = min(nMinRelation, pRace1->GetRelation(pRace2->GetRaceID()));
 			}
 		}

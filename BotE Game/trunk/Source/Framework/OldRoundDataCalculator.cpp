@@ -24,7 +24,7 @@ void COldRoundDataCalculator::CreditsDestructionMoral(CMajor* pMajor, CSystem& s
 	// spielt es der Computer, so bekommt er etwas mehr Credits
 	CSystemProd* prod = system.GetProduction();
 	CEmpire* pEmpire = pMajor->GetEmpire();
-	if (!pMajor->IsHumanPlayer())
+	if (!pMajor->AHumanPlays())
 		pEmpire->SetCredits(static_cast<int>(prod->GetCreditsProd() / fDifficultyLevel));
 	else
 		pEmpire->SetCredits(prod->GetCreditsProd());

@@ -79,6 +79,10 @@ public:
 	/// @return <code>true</code> wenn von einem menschlichen Spieler, ansonsten <code>false</code>
 	bool IsHumanPlayer(void) const {return m_bPlayer;}
 
+	//in addition to that this major belongs to a human player, consider whether autoturns is active
+	//if yes, let the ai us play
+	bool AHumanPlays() const;
+
 	/// Funktion legt fest, ob die Rasse von einem menschlichen Spieler oder vom Computer gespielt wird.
 	/// @param bHumanPlaner ja/nein
 	void SetHumanPlayer(bool bHumanPlayer) {m_bPlayer = bHumanPlayer;}

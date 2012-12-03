@@ -428,7 +428,7 @@ void CDiplomacyController::ReceiveToMajor(CBotf2Doc* pDoc, CMajor* pToMajor, CDi
 	if (pInfo->m_nSendRound == pDoc->GetCurrentRound() - 2)
 	{
 		// Nur wenn der Computer die Rasse spielt
-		if (!pToMajor->IsHumanPlayer())
+		if (!pToMajor->AHumanPlays())
 			pToMajor->ReactOnOfferAI(pInfo);
 
 		// Antwort der Majorrace erzeugen
@@ -646,7 +646,7 @@ void CDiplomacyController::ReceiveToMajor(CBotf2Doc* pDoc, CMajor* pToMajor, CDi
 						// Beziehungsverschlechterung bei Ablehnung, hier wird ein bissl vom Computer gecheated.
 						// Wenn ein Computer von einem anderen Computer die Forderung ablehnt, dann wird die Beziehung
 						// nicht ganz so stark verschlechtert als wenn ein Mensch die Forderung des Computers ablehnt
-						if (pFromMajor->IsHumanPlayer() == false)
+						if (pFromMajor->AHumanPlays() == false)
 							pFromMajor->SetRelation(pToMajor->GetRaceID(), (short)((-rand()%DIPLOMATIC_AGREEMENT::REQUEST)/5));
 						else
 							pFromMajor->SetRelation(pToMajor->GetRaceID(), -rand()%DIPLOMATIC_AGREEMENT::REQUEST);
@@ -661,7 +661,7 @@ void CDiplomacyController::ReceiveToMajor(CBotf2Doc* pDoc, CMajor* pToMajor, CDi
 						// Beziehungsverschlechterung bei Ablehnung, hier wird ein bissl vom Computer gecheated.
 						// Wenn ein Computer von einem anderen Computer die Forderung ablehnt, dann wird die Beziehung
 						// nicht ganz so stark verschlechtert als wenn ein Mensch die Forderung des Computers ablehnt
-						if (pFromMajor->IsHumanPlayer() == false)
+						if (pFromMajor->AHumanPlays() == false)
 							pFromMajor->SetRelation(pToMajor->GetRaceID(), (short)((-rand()%DIPLOMATIC_AGREEMENT::REQUEST)/10));
 						else
 							pFromMajor->SetRelation(pToMajor->GetRaceID(), (short)((-rand()%DIPLOMATIC_AGREEMENT::REQUEST)/2));

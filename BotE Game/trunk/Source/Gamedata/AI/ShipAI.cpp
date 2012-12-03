@@ -71,7 +71,7 @@ void CShipAI::CalculateShipOrders(CSectorAI* SectorAI)
 			continue;
 
 		// gilt nicht für menschliche Spieler
-		if (pOwner->IsHumanPlayer())
+		if (pOwner->AHumanPlays())
 			continue;
 
 		// Flotte versuchen zu erstellen

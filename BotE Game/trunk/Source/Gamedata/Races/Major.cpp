@@ -3,6 +3,8 @@
 #include "AI\MajorAI.h"
 #include "General/ResourceManager.h"
 #include <algorithm>
+#include "botf2.h"
+#include "Botf2Doc.h"
 
 #include <cassert>
 
@@ -473,4 +475,14 @@ void CMajor::Contact(const CRace& Race, const CPoint& p) {
 	m_Empire.GetEventMessages()->Add(
 		new CEventFirstContact(m_sID, Race.GetRaceID()));
 
+}
+
+bool CMajor::AHumanPlays() const {
+	if(!IsHumanPlayer())
+		return false;
+	const CBotf2App& app = dynamic_cast<CBotf2App&>(*AfxGetApp());
+	const CBotf2Doc& doc = *app.GetDocument();
+	const CCommandLineParameters& clp = *app.GetCommandLineParameters();
+
+	return doc.GetCurrentRound() > clp.GetAutoTurns();
 }

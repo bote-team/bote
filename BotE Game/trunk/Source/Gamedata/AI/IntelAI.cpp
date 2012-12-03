@@ -66,7 +66,7 @@ void CIntelAI::CalcIntelligence(CBotf2Doc* pDoc)
 	// es sich dabei um eine Sabotageaktion handelte
 	std::map<CString, int> badReports;
 	for (std::map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
-		if (it->second->IsHumanPlayer() == false)
+		if (it->second->AHumanPlays() == false)
 		{
 			CIntelligence* pIntel = it->second->GetEmpire()->GetIntelligence();
 			for (int l = 0; l < pIntel->GetIntelReports()->GetNumberOfReports(); l++)
@@ -85,7 +85,7 @@ void CIntelAI::CalcIntelligence(CBotf2Doc* pDoc)
 	// vergeheimdiensteln. Ab hier kommt die KI für den Geheimdienst richtig ins Spiel.
 	for (std::map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 	{
-		if (it->second->IsHumanPlayer() == false)
+		if (it->second->AHumanPlays() == false)
 		{
 			CIntelligence* pIntel = it->second->GetEmpire()->GetIntelligence();
 			// wenn in den letzten 5 Runden Geheimdienstberichte mit uns als Ziel vorliegen, so wird die innere

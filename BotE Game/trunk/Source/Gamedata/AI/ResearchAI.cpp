@@ -27,7 +27,7 @@ void CResearchAI::Calc(CBotf2Doc* pDoc)
 	{
 		CMajor* pMajor = it->second;
 		// für menschliche Spieler wird die KI nichts tun
-		if (!pMajor || pMajor->IsHumanPlayer())
+		if (!pMajor || pMajor->AHumanPlays())
 			continue;
 
 		double dTechLevel = pMajor->GetEmpire()->GetResearch()->GetBioTech() +

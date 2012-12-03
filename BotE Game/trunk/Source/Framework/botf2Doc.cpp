@@ -2407,7 +2407,7 @@ void CBotf2Doc::GenerateStarmap(const CString& sOnlyForRaceID)
 			continue;
 
 		CMajor* pMajor = it->second;
-		if (!pMajor->IsHumanPlayer())
+		if (!pMajor->AHumanPlays())
 			pMajor->GetStarmap()->SetBadAIBaseSectors(m_Sectors, it->first);
 	}
 }
@@ -3467,7 +3467,7 @@ void CBotf2Doc::CalcOldRoundData()
 
 			// KI Anpassungen (KI bekommt zufälig etwas Deritium geschenkt)
 			int diliAdd = COldRoundDataCalculator::DeritiumForTheAI(
-				pMajor->IsHumanPlayer(), *sector, system, m_fDifficultyLevel);
+				pMajor->AHumanPlays(), *sector, system, m_fDifficultyLevel);
 			// Das Lager berechnen
 			const BOOLEAN bIsRebellion = system.CalculateStorages(pEmpire->GetResearch()->GetResearchInfo(), diliAdd);
 			// Wenn wir true zurückbekommen, dann hat sich das System losgesagt
@@ -3487,7 +3487,7 @@ void CBotf2Doc::CalcOldRoundData()
 			if (system.CheckEnergyBuildings(&this->BuildingInfo))
 				calc.SystemMessage(*sector, pMajor, "BUILDING_TURN_OFF", MESSAGE_TYPE::SOMETHING, 2);
 			// Die Bauaufträge in dem System berechnen. Außerdem wird hier auch die System-KI ausgeführt.
-			if (!pMajor->IsHumanPlayer() || system.GetAutoBuild())
+			if (!pMajor->AHumanPlays() || system.GetAutoBuild())
 			{
 				CSystemAI* SAI = new CSystemAI(this);
 				SAI->ExecuteSystemAI(sector->GetKO());
@@ -5017,7 +5017,7 @@ void CBotf2Doc::CalcShipCombat()
 				if (it->first != itt->first && winner[itt->first] == 1)
 				{
 					CMajor* pMajorWin = itt->second;
-					if (pMajorWin->IsHumanPlayer() == false)
+					if (pMajorWin->AHumanPlays() == false)
 						it->second->SetRelation(pMajorWin->GetRaceID(), -(rand()%4));
 					else
 						it->second->SetRelation(pMajorWin->GetRaceID(), -(rand()%6 + 5));
