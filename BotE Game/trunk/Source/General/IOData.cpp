@@ -47,13 +47,11 @@ CIOData* CIOData::GetInstance(void)
 /// @return Pfad zur BotE.exe Datei
 CString CIOData::GetBotEAppPath(void) const
 {
-	CString sPath = "";
-
 	// absoluten Pfad ermitteln
 	char fullPath[_MAX_PATH];
 	_fullpath(fullPath, "", _MAX_PATH);
 
-	sPath = fullPath;
+	CString sPath(fullPath);
 #ifdef DEVELOPMENT_VERSION
 	sPath += "\\game";
 #endif

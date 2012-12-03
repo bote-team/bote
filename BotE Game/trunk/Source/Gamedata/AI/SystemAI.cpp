@@ -273,7 +273,6 @@ void CSystemAI::CalcPriorities()
 			if (!MakeEntryInAssemblyList(id))
 			// konnte kein Update in die Bauliste gesetzt werden, so wird hier nochmal versucht ein Schiff zu bauen
 			{
-				id = 0;
 				BOOLEAN chooseCombatship = FALSE;
 				BOOLEAN chooseColoship   = FALSE;
 				BOOLEAN chooseTransport  = FALSE;

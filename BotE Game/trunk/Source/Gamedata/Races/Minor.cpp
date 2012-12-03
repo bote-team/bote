@@ -583,8 +583,7 @@ CString CMinor::GetTooltip(void) const
 	sTip += CHTMLStringBuilder::GetHTMLStringNewLine();
 
 	// Technischen Fortschritt anzeigen
-	CString sProgress = "";
-	sProgress = CResourceManager::GetString("TECHNICAL_PROGRESS");
+	CString sProgress(CResourceManager::GetString("TECHNICAL_PROGRESS"));
 	sProgress = CHTMLStringBuilder::GetHTMLColor(sProgress, _T("silver"));
 	sProgress = CHTMLStringBuilder::GetHTMLHeader(sProgress, _T("h4"));
 	sProgress += CHTMLStringBuilder::GetHTMLStringNewLine();
@@ -608,8 +607,7 @@ CString CMinor::GetTooltip(void) const
 	sProgress += CHTMLStringBuilder::GetHTMLStringNewLine();
 
 	// Bestechlichkeit anzeigen
-	CString sCor = "";
-	sCor = CResourceManager::GetString("CORRUPTIBILITY");
+	CString sCor(CResourceManager::GetString("CORRUPTIBILITY"));
 	sCor = CHTMLStringBuilder::GetHTMLColor(sCor, _T("silver"));
 	sCor = CHTMLStringBuilder::GetHTMLHeader(sCor, _T("h4"));
 	sCor += CHTMLStringBuilder::GetHTMLStringNewLine();

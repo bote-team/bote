@@ -361,8 +361,7 @@ void CPlanet::DrawPlanet(Graphics &g, const CRect& rect, CGraphicPool* graphicPo
 
 	ASSERT(graphicPool);
 
-	Bitmap* planet = NULL;
-	planet = graphicPool->GetGDIGraphic(GetPlanetGraphicFile());
+	Bitmap* planet = graphicPool->GetGDIGraphic(GetPlanetGraphicFile());
 
 	if (planet)
 		g.DrawImage(planet, rect.left, rect.top, rect.Width(), rect.Height());
@@ -383,8 +382,7 @@ void CPlanet::DrawPlanet(Graphics &g, const CRect& rect, CGraphicPool* graphicPo
 		// Gitternetz zeichnen
 		if (planet)
 		{
-			Bitmap* sphere = NULL;
-			sphere = graphicPool->GetGDIGraphic("Planets\\TerraformSphere.bop");
+			Bitmap* sphere = graphicPool->GetGDIGraphic("Planets\\TerraformSphere.bop");
 			if (sphere)
 				g.DrawImage(sphere, rect.left, rect.top, rect.Width(), rect.Height());
 		}

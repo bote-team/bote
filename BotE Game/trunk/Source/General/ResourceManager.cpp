@@ -63,8 +63,7 @@ CString CResourceManager::GetString(const CString& key, BOOLEAN forceBigStarting
 	if (subString1 != "")
 	{
 		// hier ein bisl umständlich, aber sonst würde er alle "§" Zeichen ersetzen
-		int pos = -1;
-		pos = returnString.FindOneOf("§");
+		int pos = returnString.FindOneOf("§");
 		if (pos != -1)
 		{
 			returnString.Delete(pos);

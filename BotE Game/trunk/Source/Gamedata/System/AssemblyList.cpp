@@ -588,7 +588,6 @@ void CAssemblyList::CalculateBuildCosts(USHORT resPrices[5])
 {
 	if (m_iNeededIndustryInAssemblyList[0] > 1)
 	{
-		m_iBuildCosts = 0;
 		// Baukosten sind nun von den Kursen am Markt abhängig. Da die Preise am Markt für
 		// 1000 Einheiten gelten wird hier durch 1000 geteilt. Die Preise vom Markt sind die,
 		// welche wir am Anfang der Runde an unserer Börse hatten. Damit ist es nicht möglich die
