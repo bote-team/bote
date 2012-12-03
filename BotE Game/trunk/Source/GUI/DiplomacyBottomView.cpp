@@ -69,13 +69,11 @@ void CDiplomacyBottomView::OnDraw(CDC* dc)
 	CRect rect;
 	rect.SetRect(0,0,m_TotalSize.cx,m_TotalSize.cy);
 
-	Bitmap* graphic = NULL;
-
 	CString sPrefix = pMajor->GetPrefix();
 	Color color;
 	color.SetFromCOLORREF(pMajor->GetDesign()->m_clrGalaxySectorText);
 	fontBrush.SetColor(color);
-	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "diplomacyV3.boj");
+	Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "diplomacyV3.boj");
 
 	// Grafik zeichnen
 	if (graphic)

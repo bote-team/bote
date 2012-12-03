@@ -663,8 +663,7 @@ void CCombatMenuView::DrawCombatOrderMenue(Graphics* g)
 	DrawGDIButtons(g, &m_CombatTacticButtons, -1, Gdiplus::Font(CComBSTR(fontName), fontSize), btnBrush);
 	DrawGDIButtons(g, &m_CombatOrderButtons, -1, Gdiplus::Font(CComBSTR(fontName), fontSize), btnBrush);
 	// Grafik des Taktiksymbols zentriert über den Taktikbuttons zeichnen
-	Bitmap* graphic = NULL;
-	graphic	= pDoc->GetGraphicPool()->GetGDIGraphic("Other\\tactic_attack.bop");
+	Bitmap* graphic	= pDoc->GetGraphicPool()->GetGDIGraphic("Other\\tactic_attack.bop");
 	if (graphic)
 		g->DrawImage(graphic, 460, 80, 40, 40);
 	graphic	= pDoc->GetGraphicPool()->GetGDIGraphic("Other\\tactic_avoid.bop");

@@ -154,7 +154,6 @@ void CPlanetBottomView::OnDraw(CDC* dc)
 		}
 		else if (pDoc->GetSector(KO.x, KO.y).GetAnomaly())
 		{
-			graphic = NULL;;
 			graphic = pDoc->GetGraphicPool()->GetGDIGraphic("MapStars\\" + pDoc->GetSector(KO.x, KO.y).GetAnomaly()->GetImageFileName());
 
 			if (graphic)

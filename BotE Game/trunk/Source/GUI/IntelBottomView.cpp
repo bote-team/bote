@@ -63,13 +63,12 @@ void CIntelBottomView::OnDraw(CDC* dc)
 	Gdiplus::REAL fontSize = 0.0;
 	StringFormat fontFormat;
 	SolidBrush fontBrush(Color::White);
-	Bitmap* graphic = NULL;
 
 	Color color;
 	color.SetFromCOLORREF(pMajor->GetDesign()->m_clrGalaxySectorText);
 
 	fontBrush.SetColor(color);
-	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + pMajor->GetPrefix() + "diplomacyV3.boj");
+	Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + pMajor->GetPrefix() + "diplomacyV3.boj");
 
 	// Grafik zeichnen
 	if (graphic)

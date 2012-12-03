@@ -120,9 +120,8 @@ void CMenuChooseView::OnDraw(CDC* pDC)
 	markColor.SetFromCOLORREF(pMajor->GetDesign()->m_clrListMarkTextColor);
 
 	// Grafiken zeichnen
-	Bitmap* graphic = NULL;
 	CString prefix = pMajor->GetPrefix();
-	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + prefix + "menuV2.bop");
+	Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + prefix + "menuV2.bop");
 	if (graphic)
 		g->DrawImage(graphic, 0, 0, 200, 750);
 

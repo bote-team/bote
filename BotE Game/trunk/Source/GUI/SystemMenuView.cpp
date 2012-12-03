@@ -634,7 +634,6 @@ void CSystemMenuView::DrawBuildMenue(Graphics* g)
 			file.Format("Ships\\%s.bop",pDoc->m_ShipInfoArray.GetAt(RunningNumber-10000).GetShipClass());
 		else if (m_iWhichSubMenu == 2 && pDoc->GetSystem(p.x, p.y).GetBuildableTroops()->GetSize() > 0)	// sind im Kasernenuntermenü
 			file.Format("Troops\\%s",pDoc->m_TroopInfo.GetAt(RunningNumber-20000).GetGraphicFileName());
-		graphic = NULL;
 		graphic = pDoc->GetGraphicPool()->GetGDIGraphic(file);
 		if (graphic == NULL)
 		{
@@ -652,7 +651,6 @@ void CSystemMenuView::DrawBuildMenue(Graphics* g)
 		}
 	}
 
-	graphic = NULL;
 	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\" + pMajor->GetPrefix() + "button_small.bop");
 	Color btnColor;
 	CFontLoader::GetGDIFontColor(pMajor, 1, btnColor);
@@ -1134,9 +1132,8 @@ void CSystemMenuView::DrawWorkersMenue(Graphics* g)
 
 	// Hier noch die Gesamt- und freien Arbeiter unten in der Mitte zeichnen
 	unsigned short width = 0;
-	unsigned short size = 0;
 	unsigned short worker = pDoc->GetSystem(p.x,p.y).GetNumberOfWorkbuildings(WORKER::ALL_WORKER,0,NULL);
-	size = worker;
+	unsigned short size = worker;
 	if (size != 0)
 		width = (unsigned short)200/size;
 	if (width > 10)

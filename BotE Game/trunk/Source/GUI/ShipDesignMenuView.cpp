@@ -296,7 +296,6 @@ void CShipDesignMenuView::DrawShipDesignMenue(Graphics* g)
 		// zuerst überprüfen wir die Beamwaffen, wir können den Typ der Beamwaffe verändern, wenn wir mindst. ein anderes
 		// Schiff des Imperiums finden, welches DIESE Beamwaffe mit einem höheren Typ oder einem niedrigeren Typ besitzt
 
-		graphic = NULL;
 		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\" + pMajor->GetPrefix() + "button_small.bop");
 		Color btnColor;
 		CFontLoader::GetGDIFontColor(pMajor, 1, btnColor);

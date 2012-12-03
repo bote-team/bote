@@ -247,8 +247,7 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 			char PlanetClass = m_pPlanet->GetClass();
 
 			// gibt es eine spezielle Grafik für den Planeten, so wird versucht diese zu laden
-			Bitmap* planet = NULL;
-			planet = pDoc->GetGraphicPool()->GetGDIGraphic("Planets\\" + m_pPlanet->GetPlanetName()+".bop");
+			Bitmap* planet = pDoc->GetGraphicPool()->GetGDIGraphic("Planets\\" + m_pPlanet->GetPlanetName()+".bop");
 			// ansonsten wird die zufällige Planetengrafik geladen
 			if (planet == NULL)
 				planet = pDoc->GetGraphicPool()->GetGDIGraphic(m_pPlanet->GetGraphicFile());
@@ -314,9 +313,8 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 		// ist der Besitzer des Schiffes bekannt
 		if (bUnknown)
 		{
-			Bitmap* shipGraphic = NULL;
 			s = _T("Ships\\Unknown.bop");
-			shipGraphic = pDoc->GetGraphicPool()->GetGDIGraphic(s);
+			Bitmap* shipGraphic = pDoc->GetGraphicPool()->GetGDIGraphic(s);
 			if (shipGraphic == NULL)
 				shipGraphic = pDoc->GetGraphicPool()->GetGDIGraphic("Ships\\ImageMissing.bop");
 			if (shipGraphic)
@@ -331,9 +329,8 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 		else if (!pShip->second.HasFleet() || pShip->second.LeaderIsCurrent())
 		{
 			// Schiffsgrafik etwas größer anzeigen
-			Bitmap* shipGraphic = NULL;
 			s.Format("Ships\\%s.bop", pShip->second.GetShipClass());
-			shipGraphic = pDoc->GetGraphicPool()->GetGDIGraphic(s);
+			Bitmap* shipGraphic = pDoc->GetGraphicPool()->GetGDIGraphic(s);
 			if (shipGraphic == NULL)
 				shipGraphic = pDoc->GetGraphicPool()->GetGDIGraphic("Ships\\ImageMissing.bop");
 			if (shipGraphic)
@@ -491,8 +488,7 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 		// Wenn keine Informationen zu einem Planeten angezeigt werden sollen, dann das Rassensymbol einblenden
 		CString path;
 		path.Format("Symbols\\%s.bop", pMajor->GetRaceID());
-		Bitmap* logo = NULL;
-		logo = pDoc->GetGraphicPool()->GetGDIGraphic(path);
+		Bitmap* logo = pDoc->GetGraphicPool()->GetGDIGraphic(path);
 		if (logo)
 		{
 			int nAlpha = m_nTimer;

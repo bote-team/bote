@@ -1226,7 +1226,6 @@ void CEmpireMenuView::DrawSunSystem(Gdiplus::Graphics *g, const CPoint& ptKO, in
 	for (int i = 0; i < pDoc->GetSector(ptKO.x, ptKO.y).GetNumberOfPlanets(); i++)
 	{
 		CPlanet* pPlanet = pDoc->GetSector(ptKO.x, ptKO.y).GetPlanet(i);
-		graphic = NULL;
 		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Planets\\" + pPlanet->GetPlanetName() + ".bop");
 		if (graphic == NULL)
 			graphic = pDoc->GetGraphicPool()->GetGDIGraphic(pPlanet->GetGraphicFile());

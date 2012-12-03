@@ -80,11 +80,9 @@ void CTradeBottomView::OnDraw(CDC* dc)
 	r.SetRect(0,0,m_TotalSize.cx,m_TotalSize.cy);
 	CString s;
 
-	Bitmap* graphic = NULL;
-
 	CString sPrefix = pMajor->GetPrefix();
 	// rassenspezifische Schriftart und Style wählen
-	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "tradeV3.boj");
+	Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "tradeV3.boj");
 
 	// Grafik zeichnen
 	if (graphic)

@@ -1078,8 +1078,7 @@ CString CResearchMenuView::CreateTooltip(void)
 			}
 
 	// neue Gebäude zeichnen
-	CString sBuildings = "";
-	sBuildings = CResourceManager::GetString("RESEARCHEVENT_NEWBUILDINGS");
+	CString sBuildings(CResourceManager::GetString("RESEARCHEVENT_NEWBUILDINGS"));
 	sBuildings = CHTMLStringBuilder::GetHTMLColor(sBuildings, _T("silver"));
 	sBuildings = CHTMLStringBuilder::GetHTMLHeader(sBuildings, _T("h3"));
 	sBuildings += CHTMLStringBuilder::GetHTMLStringNewLine();

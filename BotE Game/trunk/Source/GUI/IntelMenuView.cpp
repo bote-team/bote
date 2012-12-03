@@ -383,8 +383,7 @@ void CIntelMenuView::DrawIntelSpyMenu(Graphics* g)
 		s = CResourceManager::GetString("AGGRESSIVENESS")+":";
 		g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(200,140,190,30), &fontFormat, &fontBrush);
 
-		Bitmap* graphic = NULL;
-		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\" + pMajor->GetPrefix() + "button_small.bop");
+		Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\" + pMajor->GetPrefix() + "button_small.bop");
 		Color btnColor;
 		CFontLoader::GetGDIFontColor(pMajor, 1, btnColor);
 		SolidBrush btnBrush(btnColor);
@@ -563,8 +562,7 @@ void CIntelMenuView::DrawIntelSabotageMenu(Graphics* g)
 		s = CResourceManager::GetString("AGGRESSIVENESS")+":";
 		g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(200,140,190,30), &fontFormat, &fontBrush);
 
-		Bitmap* graphic = NULL;
-		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\" + pMajor->GetPrefix() + "button_small.bop");
+		Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\" + pMajor->GetPrefix() + "button_small.bop");
 		Color btnColor;
 		CFontLoader::GetGDIFontColor(pMajor, 1, btnColor);
 		SolidBrush btnBrush(btnColor);
@@ -979,8 +977,7 @@ void CIntelMenuView::DrawIntelAttackMenu(Graphics* g)
 	}
 
 
-	Bitmap* graphic = NULL;
-	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\" + pMajor->GetPrefix() + "button_small.bop");
+	Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\" + pMajor->GetPrefix() + "button_small.bop");
 	Color btnColor;
 	CFontLoader::GetGDIFontColor(pMajor, 1, btnColor);
 	SolidBrush btnBrush(btnColor);
