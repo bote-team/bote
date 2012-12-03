@@ -58,7 +58,7 @@ private:
 	/// @param pShip Zeiger des Schiffes
 	/// @param bCamouflage <code>true</code> für Tarnen, <code>false</code> für Enttarnen
 	/// @return <code>true</code> wenn der Befehl gegeben wurde
-	bool DoCamouflage(CShips* pShip, bool bCamouflage = true);
+	static bool DoCamouflage(CShips* pShip, bool bCamouflage = true);
 
 	/// Funktion erteilt einen Außenpostenbaubefehl, sofern dies auch möglich ist.
 	/// @param pShip Zeiger des Schiffes

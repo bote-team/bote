@@ -88,7 +88,7 @@ private:
 	/// @param isSpy <code>TRUE</code> wenn Spionageaktion, <code>FALSE</code> wenn Sabotageaktion
 	/// @param type Typ der Aktion -> Wirtschaft == 0, Forschung == 1, Militär == 2, Diplomatie == 3
 	/// @param isAttempt wenn es sich um einen Anschlag handelt, dann muss der Wert <code>TRUE</code> sein
-	void DeleteConsumedPoints(CMajor* pOurRace, CMajor* pEnemyRace, BOOLEAN isSpy, BYTE type, BOOLEAN isAttempt);
+	static void DeleteConsumedPoints(CMajor* pOurRace, CMajor* pEnemyRace, BOOLEAN isSpy, BYTE type, BOOLEAN isAttempt);
 
 	/// Funktion ruft die jeweilige Unterfunktion auf, welche eine Geheimdienstaktion schlussendlich ausführt.
 	/// @param pOurRace unsere Rasse
@@ -177,7 +177,7 @@ private:
 
 	/// Funktion gibt die aktuell komplett generierten inneren Sicherheitspunkte eines Imperiums zurück.
 	/// @param pEnemyRace Rasse von der man die inneren Sicherheitspunkte haben möchte
-	UINT GetCompleteInnerSecPoints(CMajor* pEnemyRace);
+	static UINT GetCompleteInnerSecPoints(CMajor* pEnemyRace);
 
 	// Attribute
 	CBotf2Doc* m_pDoc;			///< Zeiger auf das Dokument

@@ -153,7 +153,7 @@ bool CIniLoader::WriteValue(const CString& sSection, const CString& sKey, const 
 // private Funktionen
 //////////////////////////////////////////////////////////////////////
 ///Diese Funktion wandelt ein Wort, wie z.B. On oder True in einen Wahrheitswert um.
-int CIniLoader::StringToInt(const CString& sValue) const
+int CIniLoader::StringToInt(const CString& sValue)
 {
 	CString sTemp = sValue;
 	sTemp.MakeUpper();

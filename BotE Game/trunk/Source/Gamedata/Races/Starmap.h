@@ -197,11 +197,11 @@ public:
 	 * Ermittelt die Koordinaten eines angeklickten Sektors. <code>pt</code> gibt die ungezoomten Mauskoordinaten
 	 * bezüglich der linken oberen Ecke der gesamten Starmap an.
 	 */
-	Sector GetClickedSector(const CPoint& pt) const;
+	static Sector GetClickedSector(const CPoint& pt);
 	/**
 	 * Liefert die Koordinaten der linken oberen Ecke des angegebenen Sektors.
 	 */
-	CPoint GetSectorCoords(const Sector& sector) const;
+	static CPoint GetSectorCoords(const Sector& sector);
 
 	/**
 	 * Wählt den angegebenen Sektor aus. Bei Angabe von (-1, -1) hat diese Methode keine Wirkung. Zum Entfernen der

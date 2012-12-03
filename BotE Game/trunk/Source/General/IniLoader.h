@@ -61,7 +61,7 @@ private:
 	/**
 	 * Diese Funktion wandelt ein Wort, wie z.B. On oder True in einen Wahrheitswert um.
 	 */
-	int StringToInt(const CString& sValue) const;
+	static int StringToInt(const CString& sValue);
 
 	/**
 	 * Diese Funktion gibt den zum <code>key</code> gehörenden Eintrag aus der ini-Datei zurück.

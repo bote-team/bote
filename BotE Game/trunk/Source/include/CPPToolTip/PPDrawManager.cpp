@@ -32,7 +32,7 @@ CPPDrawManager::~CPPDrawManager()
 
 }
 
-void CPPDrawManager::GetSizeOfIcon(HICON hIcon, LPSIZE pSize) const
+void CPPDrawManager::GetSizeOfIcon(HICON hIcon, LPSIZE pSize)
 {
 	pSize->cx = 0;
 	pSize->cy = 0;
@@ -54,7 +54,7 @@ void CPPDrawManager::GetSizeOfIcon(HICON hIcon, LPSIZE pSize) const
 	} //if
 } //End GetSizeOfIcon
 
-void CPPDrawManager::GetSizeOfBitmap(HBITMAP hBitmap, LPSIZE pSize) const
+void CPPDrawManager::GetSizeOfBitmap(HBITMAP hBitmap, LPSIZE pSize)
 {
 	pSize->cx = 0;
 	pSize->cy = 0;

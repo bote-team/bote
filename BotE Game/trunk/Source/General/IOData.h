@@ -67,9 +67,9 @@ private:
 	// private Funktionen
 	/// Funktion ermittelt den Pfad zur BotE.exe Datei.
 	/// @return Pfad zur BotE.exe Datei
-	CString GetBotEAppPath(void) const;
+	static CString GetBotEAppPath(void);
 
 	/// Funktion ermittelt den Pfad zum Ordner "Eigene Dateien".
 	/// @return Pfad zum Ordner "Eigene Dateien"
-	CString GetUserDataPath(void) const;
+	static CString GetUserDataPath(void);
 };

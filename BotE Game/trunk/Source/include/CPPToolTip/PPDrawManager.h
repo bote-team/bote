@@ -127,23 +127,23 @@ public:
 	void  DrawLine(HDC hDC, int xStart, int yStart, int xEnd, int yEnd, COLORREF color, int nStyle = PEN_SOLID, int nSize = 1) const;
 	void  DrawRectangle(HDC hDC, LPRECT lpRect, COLORREF crLight, COLORREF crDark, int nStyle = PEN_SOLID, int nSize = 1);
 	void  DrawRectangle(HDC hDC, int left, int top, int right, int bottom, COLORREF crLight, COLORREF crDark, int nStyle = PEN_SOLID, int nSize = 1);
-	void  GetSizeOfIcon(HICON hIcon, LPSIZE pSize) const;
-	void  GetSizeOfBitmap(HBITMAP hBitmap, LPSIZE pSize) const;
+	static void  GetSizeOfIcon(HICON hIcon, LPSIZE pSize);
+	static void  GetSizeOfBitmap(HBITMAP hBitmap, LPSIZE pSize);
 
-	void  AlphaBitBlt(HDC hDestDC, int nDestX, int nDestY, DWORD dwWidth, DWORD dwHeight, HDC hSrcDC, int nSrcX, int nSrcY, int percent = 100);
-	void  AlphaChannelBitBlt(HDC hDestDC, int nDestX, int nDestY, DWORD dwWidth, DWORD dwHeight, HDC hSrcDC, int nSrcX, int nSrcY);
+	static void  AlphaBitBlt(HDC hDestDC, int nDestX, int nDestY, DWORD dwWidth, DWORD dwHeight, HDC hSrcDC, int nSrcX, int nSrcY, int percent = 100);
+	static void  AlphaChannelBitBlt(HDC hDestDC, int nDestX, int nDestY, DWORD dwWidth, DWORD dwHeight, HDC hSrcDC, int nSrcX, int nSrcY);
 	void  DrawShadow(HDC hDestDC, int nDestX, int nDestY, DWORD dwWidth, DWORD dwHeight, HBITMAP hMask, BOOL bGradient = FALSE, DWORD dwDepthX = PPDRAWMANAGER_SHADOW_XOFFSET, DWORD dwDepthY = PPDRAWMANAGER_SHADOW_YOFFSET);
 	void  MaskToDepth(HDC hDC, DWORD dwWidth, DWORD dwHeight, HBITMAP hMask, double * pDepth, BOOL bGradient = FALSE, DWORD dwDepthX = PPDRAWMANAGER_SHADOW_XOFFSET, DWORD dwDepthY = PPDRAWMANAGER_SHADOW_YOFFSET);
-	void  DarkenByDepth(HDC hDC, int x, int y, DWORD dwWidth, DWORD dwHeight, double * pDepth);
+	static void  DarkenByDepth(HDC hDC, int x, int y, DWORD dwWidth, DWORD dwHeight, double * pDepth);
 
-	void  SmoothMaskImage(const int ImageWidth,
+	static void  SmoothMaskImage(const int ImageWidth,
 				    const int ImageHeight,
                     const COLORREF* const pInitImg,
 			        const int KerWidth,
 			        const int KerHeight,
 					double* const pResImg_R = NULL);
 
-	void GetPartialSums(const double* const pM,
+	static void GetPartialSums(const double* const pM,
 					unsigned int nMRows,
 					unsigned int nMCols,
 					unsigned int nPartRows,
@@ -183,18 +183,18 @@ public:
 
 	HBITMAP CreateImageEffect(HBITMAP hBitmap, DWORD dwWidth, DWORD dwHeight, DWORD dwEffect, BOOL bUseMask = TRUE, COLORREF clrMask = RGB(255, 0, 255), COLORREF clrMono = RGB(255, 255, 255));
 
-	COLORREF GrayMirrorColor(COLORREF clrColor);
-	COLORREF GrayColor(COLORREF clrColor);
-	COLORREF DarkenColor(COLORREF clrColor, double darken);
-	COLORREF LightenColor(COLORREF clrColor, double lighten);
-	COLORREF InvertColor(COLORREF clrColor);
-	COLORREF PixelAlpha (COLORREF clrSrc, double src_darken, COLORREF clrDest, double dest_darken);
+	static COLORREF GrayMirrorColor(COLORREF clrColor);
+	static COLORREF GrayColor(COLORREF clrColor);
+	static COLORREF DarkenColor(COLORREF clrColor, double darken);
+	static COLORREF LightenColor(COLORREF clrColor, double lighten);
+	static COLORREF InvertColor(COLORREF clrColor);
+	static COLORREF PixelAlpha (COLORREF clrSrc, double src_darken, COLORREF clrDest, double dest_darken);
 
 	HICON StretchIcon(HICON hIcon, DWORD dwWidth, DWORD dwHeight);
 
 	void FillEffect(HDC hDC, DWORD dwEffect, LPCRECT lpRect, COLORREF clrBegin, COLORREF clrMid = 0, COLORREF clrEnd = 0,  BYTE granularity = 0, BYTE coloring = 0);
-	void FillGradient(HDC hDC, LPCRECT lpRect, COLORREF colorStart, COLORREF colorFinish, BOOL bHorz = TRUE);
-	void MultipleCopy(HDC hDestDC, int nDestX, int nDestY, DWORD dwDestWidth, DWORD dwDestHeight, HDC hSrcDC, int nSrcX, int nSrcY, DWORD dwSrcWidth, DWORD dwSrcHeight);
+	static void FillGradient(HDC hDC, LPCRECT lpRect, COLORREF colorStart, COLORREF colorFinish, BOOL bHorz = TRUE);
+	static void MultipleCopy(HDC hDestDC, int nDestX, int nDestY, DWORD dwDestWidth, DWORD dwDestHeight, HDC hSrcDC, int nSrcX, int nSrcY, DWORD dwSrcWidth, DWORD dwSrcHeight);
 #ifdef USE_SHADE
 	void SetShade(LPCRECT lpRect, UINT shadeID = 0, BYTE granularity = 8, BYTE coloring = 0, COLORREF hicr = 0, COLORREF midcr = 0, COLORREF locr = 0);
 	CCeXDib m_dNormal/*,m_dh,m_dv*/;

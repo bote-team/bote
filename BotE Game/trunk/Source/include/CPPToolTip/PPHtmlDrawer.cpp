@@ -215,7 +215,7 @@ HBITMAP CPPHtmlDrawer::GetBitmapFromDll(DWORD dwID, LPCTSTR lpszPathDll /* = NUL
 	return hBitmap;
 }
 
-CPPString CPPHtmlDrawer::GetStringFromResource(DWORD dwID) const
+CPPString CPPHtmlDrawer::GetStringFromResource(DWORD dwID)
 {
 	if (0 == dwID) return _T("");
 
@@ -299,7 +299,7 @@ CPPString CPPHtmlDrawer::GetStringFromDll(DWORD dwID, LPCTSTR lpszPathDll /* = N
 //
 // Format prompt string:  long prompt \n short prompt \n disable prompt
 ////////////////////////////////////////////////////////////
-CPPString CPPHtmlDrawer::GetResCommandPrompt(UINT nID, UINT nNumParam /* = 0 */) const
+CPPString CPPHtmlDrawer::GetResCommandPrompt(UINT nID, UINT nNumParam /* = 0 */)
 {
 	CPPString str = GetStringFromResource(nID);
 	if (!str.IsEmpty())

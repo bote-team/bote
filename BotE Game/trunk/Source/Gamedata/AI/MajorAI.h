@@ -47,7 +47,7 @@ protected:
 	/// @return <code>ACCEPTED</code> für Annahme
 	///			<code>DECLINED</code> für Ablehnung
 	///			<code>NOT_REACTED</code> für keine Reaktion
-	ANSWER_STATUS::Typ ReactOnMinorOffer(const CDiplomacyInfo& info);
+	static ANSWER_STATUS::Typ ReactOnMinorOffer(const CDiplomacyInfo& info);
 
 	/// Diese Funktion berechnet, wie eine computergesteuerte Rasse, auf ein Angebot eines Majors reagiert.
 	/// @param info Information des diplomatischen Angebots

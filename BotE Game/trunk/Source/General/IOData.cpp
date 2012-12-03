@@ -45,7 +45,7 @@ CIOData* CIOData::GetInstance(void)
 //////////////////////////////////////////////////////////////////////
 /// Funktion ermittelt den Pfad zur BotE.exe Datei.
 /// @return Pfad zur BotE.exe Datei
-CString CIOData::GetBotEAppPath(void) const
+CString CIOData::GetBotEAppPath(void)
 {
 	// absoluten Pfad ermitteln
 	char fullPath[_MAX_PATH];
@@ -62,7 +62,7 @@ CString CIOData::GetBotEAppPath(void) const
 
 /// Funktion ermittelt den Pfad zum Ordner "Eigene Dateien".
 /// @return Pfad zum Ordner "Eigene Dateien"
-CString CIOData::GetUserDataPath(void) const
+CString CIOData::GetUserDataPath(void)
 {
 	CString sPath = "";
 

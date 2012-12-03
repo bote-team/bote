@@ -24,5 +24,5 @@ public:
 	/// Diese Funktion führt die Berechnungen für die künstliche Intelligenz bei der Zuteilung der
 	/// Forschungspunkte aus.
 	/// @param pDoc Zeiger auf das Dokument
-	void Calc(CBotf2Doc* pDoc);
+	static void Calc(CBotf2Doc* pDoc);
 };

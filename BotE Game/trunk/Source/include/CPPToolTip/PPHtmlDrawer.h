@@ -130,7 +130,7 @@ public:
 	//Shadow of the image
 	void SetImageShadow(int nOffsetX, int nOffsetY, BYTE nDarkenPercent = 50, BOOL bGradient = TRUE, int nDepthX = 7, int nDepthY = 7);
 
-	CPPString GetResCommandPrompt(UINT nID, UINT nNumParam = 0) const;
+	static CPPString GetResCommandPrompt(UINT nID, UINT nNumParam = 0);
 
 	//Functions for the styles
 	void SetTextStyle(LPCTSTR lpszStyleName, LPCTSTR lpszStyleValue);
@@ -511,7 +511,7 @@ protected:
 	HBITMAP GetBitmapFromResources(DWORD dwID) const; //Load a bitmap from the app resources
 	HBITMAP GetBitmapFromFile(LPCTSTR lpszPath) const; //Load a bitmap from the file
 	HBITMAP GetBitmapFromDll(DWORD dwID, LPCTSTR lpszPathDll = NULL) const; //Load a bitmap from the dll resources
-	CPPString GetStringFromResource(DWORD dwID) const; //Load a string from the app resources
+	static CPPString GetStringFromResource(DWORD dwID); //Load a string from the app resources
 	CPPString GetStringFromDll(DWORD dwID, LPCTSTR lpszPathDll = NULL) const; //Load a string from the dll resources
 
 	//The drawing methods
@@ -528,25 +528,25 @@ protected:
 	void SetDefaultCursor();
 	LPLOGFONT GetSystemToolTipFont() const; //Gets the system logfont
 
-	CPPString SearchNextTag(CPPString & str, CPPString & strTag, int & nIndex); //Search next tag
-	BOOL SearchTag(CPPString & str, int & nIndex, CPPString strTag); //Search begin of the specified tag
+	static CPPString SearchNextTag(CPPString & str, CPPString & strTag, int & nIndex); //Search next tag
+	static BOOL SearchTag(CPPString & str, int & nIndex, CPPString strTag); //Search begin of the specified tag
 
-	CPPString GetTagBody(CPPString & str, int & nIndex); //Gets a name of tag and the parameters of tag
-	CPPString SplitTag(CPPString & sTag); //Split a tag to the tag's name and parameters
-	CPPString GetNextProperty(CPPString & str, int & nIndex, CPPString & sProp); //Gets next property
+	static CPPString GetTagBody(CPPString & str, int & nIndex); //Gets a name of tag and the parameters of tag
+	static CPPString SplitTag(CPPString & sTag); //Split a tag to the tag's name and parameters
+	static CPPString GetNextProperty(CPPString & str, int & nIndex, CPPString & sProp); //Gets next property
 
 
-	CPPString SearchPropertyOfTag(CPPString & str, int & nIndex); //Search a name or a property of a tag
+	static CPPString SearchPropertyOfTag(CPPString & str, int & nIndex); //Search a name or a property of a tag
 	SIZE  AnalyseCellParam(CPPString & sTag, _STRUCT_CHANGESTYLE & cs, BOOL bTable);
 	void  AnalyseImageParam(CPPString & strTag, _STRUCT_IMAGE & si);
-	BOOL  IsImageWithShadow(_STRUCT_IMAGE & si);
+	static BOOL  IsImageWithShadow(_STRUCT_IMAGE & si);
 
 	//Functions for hyperlink
 	int PtInHyperlink(LPPOINT lpPoint) const;
 	void JumpToHyperlink(int nLink);
 	void StoreHyperlinkArea(int left, int top, int right, int bottom);
 	HINSTANCE GotoURL(LPCTSTR url, int showcmd = SW_SHOW);
-	LONG GetRegKey(HKEY key, LPCTSTR subkey, LPTSTR retdata);
+	static LONG GetRegKey(HKEY key, LPCTSTR subkey, LPTSTR retdata);
 
 	//Functions for notify
 	void CallbackOnClickHyperlink(LPCTSTR sLink);
@@ -564,21 +564,21 @@ protected:
 	void SelectNewHtmlStyle(LPCTSTR lpszNameStyle, STRUCT_CHANGESTYLE & cs);
 
 	SIZE  GetTableDimensions(CPPString & sTable); //Gets dimensions of the table
-	void  SearchEndOfTable(CPPString & str, int & nIndex); //Searching end of the table
-	void  SearchEndOfRow(CPPString & str, int & nIndex); //Searching end of the row
-	void  SearchEndOfCell(CPPString & str, int & nIndex); //Searching end of the cell
+	static void  SearchEndOfTable(CPPString & str, int & nIndex); //Searching end of the table
+	static void  SearchEndOfRow(CPPString & str, int & nIndex); //Searching end of the row
+	static void  SearchEndOfCell(CPPString & str, int & nIndex); //Searching end of the cell
 
 	//Functions for the map of the styles
 	void SetTableOfColors();
 	void SetColorName(LPCTSTR lpszColorName, COLORREF color);
 	COLORREF GetColorByName(LPCTSTR lpszColorName, COLORREF crDefColor = RGB(0, 0, 0));
 
-	BOOL GetIndexNextAlphaNum(CPPString & str, int & nIndex, BOOL bArithmetic = FALSE);
-	BOOL GetBeginParameter(CPPString & str, int & nIndex, TCHAR chSeparator = _T(':'));
-	TCHAR GetIndexNextChars(CPPString & str, int & nIndex, CPPString strChars);
-	TCHAR GetIndexNextNoChars(CPPString & str, int & nIndex, CPPString strChars);
+	static BOOL GetIndexNextAlphaNum(CPPString & str, int & nIndex, BOOL bArithmetic = FALSE);
+	static BOOL GetBeginParameter(CPPString & str, int & nIndex, TCHAR chSeparator = _T(':'));
+	static TCHAR GetIndexNextChars(CPPString & str, int & nIndex, CPPString strChars);
+	static TCHAR GetIndexNextNoChars(CPPString & str, int & nIndex, CPPString strChars);
 	CPPString GetParameterString(CPPString & str, int & nIndex, TCHAR chBeginParam = _T(':'), CPPString strSeparators = _T(";"));
-	CPPString GetNameOfTag(CPPString & str, int & nIndex);
+	static CPPString GetNameOfTag(CPPString & str, int & nIndex);
 	CPPString GetWordWrap(CPPString & str, int nMaxSize, int & nRealSize);
 
 	//Functions for the map of the styles
@@ -588,30 +588,30 @@ protected:
 
 	//Functions for analyzing parameters
 	void SetDefaultStyles(_STRUCT_CHANGESTYLE & cs);
-	BOOL GetStyleFontStyle(CPPString & str, BOOL bDefault);
-	int  GetStyleFontWeight(CPPString & str, int nDefault);
-	int  GetStyleHorzAlign(CPPString & str, int nDefault);
-	int  GetStyleVertAlign(CPPString & str, int nDefault);
+	static BOOL GetStyleFontStyle(CPPString & str, BOOL bDefault);
+	static int  GetStyleFontWeight(CPPString & str, int nDefault);
+	static int  GetStyleHorzAlign(CPPString & str, int nDefault);
+	static int  GetStyleVertAlign(CPPString & str, int nDefault);
 	COLORREF GetStyleColor(CPPString & str, COLORREF crDefault);
-	int  GetStyleTextTransform(CPPString & str, int nDefault);
-	CPPString GetStyleString(CPPString str, CPPString strDefault);
+	static int  GetStyleTextTransform(CPPString & str, int nDefault);
+	static CPPString GetStyleString(CPPString str, CPPString strDefault);
 	void GetStyleFontShortForm(CPPString & str);
 	UINT GetStyleImageShortForm(CPPString & str) const;
 	int GetStyleBkgndEffect(CPPString & str, int nDefault);
 
-	void StyleTextDecoration(CPPString & str, _STRUCT_CHANGESTYLE & cs);
+	static void StyleTextDecoration(CPPString & str, _STRUCT_CHANGESTYLE & cs);
 	int StyleBorderWidth(CPPString & str, int Default);
-	int StyleBorder(CPPString & str, int nDefault);
+	static int StyleBorder(CPPString & str, int nDefault);
 
 	//Get
 	int GetLengthUnit(CPPString & str, int nDefault, BOOL bFont = FALSE);
-	BOOL IsPercentableValue(CPPString & str);
+	static BOOL IsPercentableValue(CPPString & str);
 	int GetTableWidth(CPPString & str, int nClientWidth, int nMinWidth, BOOL bSet = FALSE);
 
 	//Drawing
 	void DrawBackgroundImage(HDC hDC, int nDestX, int nDestY, int nWidth, int nHeight, CPPString strNameImage);
 
-	int GetCountOfChars(CPPString str, TCHAR tchar = _T(' ')); //Gets counts of chars
+	static int GetCountOfChars(CPPString str, TCHAR tchar = _T(' ')); //Gets counts of chars
 };
 
 #endif //_PPHTMLDRAWER_H_

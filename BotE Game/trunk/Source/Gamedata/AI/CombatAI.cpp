@@ -19,7 +19,7 @@ CCombatAI::~CCombatAI(void)
 //////////////////////////////////////////////////////////////////////
 // sonstige Funktionen
 //////////////////////////////////////////////////////////////////////
-bool CCombatAI::CalcCombatTactics(const CArray<CShips*>& vInvolvedShips, const map<CString, CRace*>* pmRaces, map<CString, COMBAT_ORDER::Typ>& mCombatOrders, const CAnomaly* pAnomaly) const
+bool CCombatAI::CalcCombatTactics(const CArray<CShips*>& vInvolvedShips, const map<CString, CRace*>* pmRaces, map<CString, COMBAT_ORDER::Typ>& mCombatOrders, const CAnomaly* pAnomaly)
 {
 	// allgemeinen Kampfbefehl für alle beteiligten KI Rassen einstellen
 	ApplyCombatOrders(vInvolvedShips, pmRaces, mCombatOrders, pAnomaly);
@@ -46,7 +46,7 @@ bool CCombatAI::CalcCombatTactics(const CArray<CShips*>& vInvolvedShips, const m
 //////////////////////////////////////////////////////////////////////
 // private Funktionen
 //////////////////////////////////////////////////////////////////////
-void CCombatAI::ApplyCombatOrders(const CArray<CShips*>& vInvolvedShips, const map<CString, CRace*>* pmRaces, map<CString, COMBAT_ORDER::Typ>& mCombatOrders, const CAnomaly* pAnomaly) const
+void CCombatAI::ApplyCombatOrders(const CArray<CShips*>& vInvolvedShips, const map<CString, CRace*>* pmRaces, map<CString, COMBAT_ORDER::Typ>& mCombatOrders, const CAnomaly* pAnomaly)
 {
 	// beteiligte Rassen
 	set<CString> sInvolvedRaces;
@@ -144,7 +144,7 @@ void CCombatAI::ApplyCombatOrders(const CArray<CShips*>& vInvolvedShips, const m
 	}
 }
 
-void CCombatAI::ApplyShipTactics(const CArray<CShips*>& vInvolvedShips, map<CString, COMBAT_ORDER::Typ>& mCombatOrders) const
+void CCombatAI::ApplyShipTactics(const CArray<CShips*>& vInvolvedShips, map<CString, COMBAT_ORDER::Typ>& mCombatOrders)
 {
 	// eingestellte Befehle an die Schiffe übergeben
 	for (int i = 0; i < vInvolvedShips.GetSize(); i++)

@@ -217,7 +217,7 @@ namespace MT
 		};
 
 		/* Printout message into file */
-		void __cdecl printMessageV(FILE *pFile,  CString &strFmt, va_list args) const
+		static void __cdecl printMessageV(FILE *pFile,  CString &strFmt, va_list args)
 		{
 			if(!pFile) return;
 			CString strMsg;

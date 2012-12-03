@@ -128,7 +128,7 @@ unsigned char CStarmap::GetRangeMapValue(char x, char y)
 	return m_RangeMap.range[y * m_RangeMap.w + x];
 }
 
-Sector CStarmap::GetClickedSector(const CPoint &pt) const
+Sector CStarmap::GetClickedSector(const CPoint &pt)
 {
 	Sector result;
 	result.x = result.y = -1;
@@ -158,7 +158,7 @@ void CStarmap::Deselect()
 	m_Selection.x = m_Selection.y = -1;
 }
 
-CPoint CStarmap::GetSectorCoords(const Sector& sector) const
+CPoint CStarmap::GetSectorCoords(const Sector& sector)
 {
 	assert(sector.on_map());
 	return CPoint(sector.x * STARMAP_SECTOR_WIDTH, sector.y * STARMAP_SECTOR_HEIGHT);
