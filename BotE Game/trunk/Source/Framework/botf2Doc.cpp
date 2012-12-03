@@ -2651,10 +2651,9 @@ void CBotf2Doc::CalcSystemAttack()
 						pMinor->SetSubjugated(false);
 						// Eventnachricht an den, der das System verloren hat (erobertes Minorracesystem wieder verloren)
 						CString param = GetSector(p.x, p.y).GetName();
-						CString eventText = "";
 
 						CMajor* def = dynamic_cast<CMajor*>(defender);
-						eventText = def->GetMoralObserver()->AddEvent(17, def->GetRaceMoralNumber(), param);
+						CString eventText(def->GetMoralObserver()->AddEvent(17, def->GetRaceMoralNumber(), param));
 						// Eventnachricht hinzufügen
 						if (!eventText.IsEmpty())
 						{
@@ -2702,8 +2701,7 @@ void CBotf2Doc::CalcSystemAttack()
 							GetSector(p.x, p.y).SetTakenSector(FALSE);
 							CString param = GetSector(p.x, p.y).GetName();
 							// Eventnachricht an den Eroberer (unser ehemaliges System wieder zurückerobert)
-							CString eventText = "";
-							eventText = pMajor->GetMoralObserver()->AddEvent(14, pMajor->GetRaceMoralNumber(), param);
+							CString eventText(pMajor->GetMoralObserver()->AddEvent(14, pMajor->GetRaceMoralNumber(), param));
 							// Eventnachricht hinzufügen
 							if (!eventText.IsEmpty())
 							{
@@ -2743,8 +2741,7 @@ void CBotf2Doc::CalcSystemAttack()
 							CMajor* pDefenderMajor = dynamic_cast<CMajor*>(defender);
 							// Eventnachricht an den ehemaligen Heimatsystembesitzer (Heimatsystem verloren)
 							CString param = GetSector(p.x, p.y).GetName();
-							CString eventText = "";
-							eventText = pDefenderMajor->GetMoralObserver()->AddEvent(15, pDefenderMajor->GetRaceMoralNumber(), param);
+							CString eventText(pDefenderMajor->GetMoralObserver()->AddEvent(15, pDefenderMajor->GetRaceMoralNumber(), param));
 							// Eventnachricht hinzufügen
 							if (!eventText.IsEmpty())
 							{
@@ -2758,7 +2755,6 @@ void CBotf2Doc::CalcSystemAttack()
 								}
 							}
 							// Eventnachricht an den Eroberer (System erobert)
-							eventText = "";
 							eventText = pMajor->GetMoralObserver()->AddEvent(11, pMajor->GetRaceMoralNumber(), param);
 							// Eventnachricht hinzufügen
 							if (!eventText.IsEmpty())
@@ -2836,7 +2832,7 @@ void CBotf2Doc::CalcSystemAttack()
 							if (GetSystem(p.x, p.y).GetMoral() < 50)
 								GetSystem(p.x, p.y).SetMoral(50 - GetSystem(p.x, p.y).GetMoral());
 
-							CString eventText = "";
+							CString eventText;
 							// Eventnachricht an den ehemaligen Besitzer (eigenes System verloren)
 
 							//We later were dereferencing defender anyway; after casting to CMajor.
@@ -2864,7 +2860,6 @@ void CBotf2Doc::CalcSystemAttack()
 							}
 
 							// Eventnachricht an den Eroberer (System erobert)
-							eventText = "";
 							eventText = pMajor->GetMoralObserver()->AddEvent(11, pMajor->GetRaceMoralNumber(), param);
 							// Eventnachricht hinzufügen
 							if (!eventText.IsEmpty())
@@ -3333,8 +3328,7 @@ void CBotf2Doc::CalcResearch()
 		CMajor* pMajor = it->second;
 
 		pMajor->GetEmpire()->GetResearch()->SetResearchBoni(researchBoni[it->first].nBoni);
-		CString *news = 0;
-		news = pMajor->GetEmpire()->GetResearch()->CalculateResearch(pMajor->GetEmpire()->GetFP());
+		const CString* news = pMajor->GetEmpire()->GetResearch()->CalculateResearch(pMajor->GetEmpire()->GetFP());
 		network::RACE client = m_pRaceCtrl->GetMappedClientID(pMajor->GetRaceID());
 
 		for (int j = 0; j < 8; j++)		// aktuell 8 verschiedene Nachrichten mgl, siehe CResearch Klasse
