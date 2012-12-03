@@ -277,23 +277,25 @@ BOOL CSoundManager::PlaySound(SNDMGR_VALUE nSound, SNDMGR_PRIO nPriority, float 
 
 	// wenn ein Sound von zuvor noch läuft, Priorität prüfen
 	int nPrio = (nPriority == SNDMGR_PRIO_HIGH) ? PRIORITY_SOUND_HIGH : PRIORITY_SOUND_NORMAL;
-	bool bIsPlaying = false;
-	if (m_pSoundChannel) m_pSoundChannel->isPlaying(&bIsPlaying);
-	if (bIsPlaying)
-	{
-		int nChannelPrio = 128;
-		m_nLastResult = m_pSoundChannel->getPriority(&nChannelPrio);
-		if (m_nLastResult == FMOD_OK)
+	if (m_pSoundChannel) {
+		bool bIsPlaying = false;
+		m_pSoundChannel->isPlaying(&bIsPlaying);
+		if (bIsPlaying)
 		{
-			// abbrechen, wenn geringere Priorität (entspricht größerem Wert);
-			// bei gleicher oder höherer Priorität nichts tun und damit fortsetzen
-			if (nPrio > nChannelPrio) return TRUE;
-		}
-		else if (m_nLastResult != FMOD_ERR_INVALID_HANDLE)
-			return FALSE;
+			int nChannelPrio = 128;
+			m_nLastResult = m_pSoundChannel->getPriority(&nChannelPrio);
+			if (m_nLastResult == FMOD_OK)
+			{
+				// abbrechen, wenn geringere Priorität (entspricht größerem Wert);
+				// bei gleicher oder höherer Priorität nichts tun und damit fortsetzen
+				if (nPrio > nChannelPrio) return TRUE;
+			}
+			else if (m_nLastResult != FMOD_ERR_INVALID_HANDLE)
+				return FALSE;
 
-		// FMOD_ERR_INVALID_HANDLE: Sound zuvor wurde schon fertig abgespielt, in diesem Fall
-		// nicht abbrechen
+			// FMOD_ERR_INVALID_HANDLE: Sound zuvor wurde schon fertig abgespielt, in diesem Fall
+			// nicht abbrechen
+		}
 	}
 
 	// Sound laden bzw. Handle ermitteln, falls schon geladen
