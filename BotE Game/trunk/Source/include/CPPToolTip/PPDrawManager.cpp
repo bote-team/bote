@@ -1376,6 +1376,7 @@ void CPPDrawManager::GetPartialSums(const double* const pM,
 			s += *it5 - *it6;//cout<<s<<endl;
 			*pResIt = s;
 			pResIt += nResMCols;
+			pResIt;//work around cppcheck false positive
 			it5 += nRowsPartSumsMCols;
 			it6 += nRowsPartSumsMCols;
 		} //for

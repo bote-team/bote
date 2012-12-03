@@ -1158,6 +1158,7 @@ SIZE CPPHtmlDrawer::DrawHtmlTable (CPPString & sTable, LPCRECT lpRect)
 					int nStep = nDelta / nNotFixedColumns;
 					cur_table.width [pos] += nStep;
 					nDelta -= nStep;
+					nDelta;//work around cppcheck false positive
 					nNotFixedColumns--;
 					nWidthTable += nStep;
 				} //if
