@@ -15,7 +15,6 @@
 #if _MSC_VER > 1000
 #pragma once
 #endif // _MSC_VER > 1000
-typedef unsigned short  USHORT;
 
 class CShield : public CObject
 {
