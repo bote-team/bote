@@ -127,12 +127,12 @@ HDIB CCeXDib::Create(DWORD dwWidth, DWORD dwHeight, WORD wBitCount)
     return m_hDib; // Return handle to the DIB
 } // End of Create
 
-DWORD CCeXDib::GetSize()
+DWORD CCeXDib::GetSize() const
 {
 	return m_bi.biSize + m_bi.biSizeImage + GetPaletteSize();
 } // End of GetSize
 
-DWORD CCeXDib::GetPaletteSize()
+DWORD CCeXDib::GetPaletteSize() const
 {
 	return (m_wColors * sizeof(RGBQUAD));
 } // End of GetPaletteSize
@@ -145,22 +145,22 @@ LPBYTE CCeXDib::GetBits()
 	return NULL;
 } // End of GetBits
 
-DWORD CCeXDib::GetWidth()
+DWORD CCeXDib::GetWidth() const
 {
 	return m_bi.biWidth;
 } // End of GetWidth
 
-DWORD CCeXDib::GetHeight()
+DWORD CCeXDib::GetHeight() const
 {
 	return m_bi.biHeight;
 } // End of GetHeight
 
-DWORD CCeXDib::GetLineWidth()
+DWORD CCeXDib::GetLineWidth() const
 {
 	return m_dwLineWidth;
 } // End of GetLineWidth
 
-void CCeXDib::BlendPalette(COLORREF crColor, DWORD dwPerc)
+void CCeXDib::BlendPalette(COLORREF crColor, DWORD dwPerc) const
 {
 	if (m_hDib == NULL || m_wColors == 0)
 		return;
@@ -208,12 +208,12 @@ void CCeXDib::Clone(CCeXDib* src)
 		memcpy(m_hDib, src->m_hDib, GetSize());
 } // End of Clone
 
-WORD CCeXDib::GetBitCount()
+WORD CCeXDib::GetBitCount() const
 {
 	return m_bi.biBitCount;
 } // End of GetBitCount
 
-void CCeXDib::SetPaletteIndex(BYTE byIdx, BYTE byR, BYTE byG, BYTE byB)
+void CCeXDib::SetPaletteIndex(BYTE byIdx, BYTE byR, BYTE byG, BYTE byB) const
 {
 	if (m_hDib && m_wColors)
 	{
@@ -315,7 +315,7 @@ RGBQUAD CCeXDib::RGB2RGBQUAD(COLORREF cr)
 	return c;
 } // End of RGB2RGBQUAD
 
-WORD CCeXDib::GetNumColors()
+WORD CCeXDib::GetNumColors() const
 {
 	return m_wColors;
 } // End of GetNumColors

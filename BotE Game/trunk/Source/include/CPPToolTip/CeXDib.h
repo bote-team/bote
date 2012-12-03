@@ -64,23 +64,23 @@ public:
 	void Clear(BYTE byVal = 0);
 
 	void SetGrayPalette();
-	void SetPaletteIndex(BYTE byIdx, BYTE byR, BYTE byG, BYTE byB);
+	void SetPaletteIndex(BYTE byIdx, BYTE byR, BYTE byG, BYTE byB) const;
 	void SetPixelIndex(DWORD dwX, DWORD dwY, BYTE byI);
-	void BlendPalette(COLORREF crColor, DWORD dwPerc);
+	void BlendPalette(COLORREF crColor, DWORD dwPerc) const;
 
-	WORD GetBitCount();
-	DWORD GetLineWidth();
-	DWORD GetWidth();
-	DWORD GetHeight();
-	WORD GetNumColors();
+	WORD GetBitCount() const;
+	DWORD GetLineWidth() const;
+	DWORD GetWidth() const;
+	DWORD GetHeight() const;
+	WORD GetNumColors() const;
 
 	BOOL WriteBMP(LPCTSTR bmpFileName);
 
 private:
 	void FreeResources();
 
-	DWORD GetPaletteSize();
-	DWORD GetSize();
+	DWORD GetPaletteSize() const;
+	DWORD GetSize() const;
 
 	RGBQUAD RGB2RGBQUAD(COLORREF cr);
 

@@ -22,15 +22,15 @@ public:
     void Set (T v[3])
       { x=v[0]; y=v[1]; z=v[2]; };
 
-    operator T*()                             // T * CONVERSION
-      { return (T *)&x; }
+    //operator T*()                             // T * CONVERSION
+    //  { return (T *)&x; }
     operator const T*() const                 // CONST T * CONVERSION
       { return &x; }
 
-    int operator == (const vec3& A)              // COMPARISON (==)
+    int operator == (const vec3& A) const              // COMPARISON (==)
       { return (x==A.x && y==A.y && z==A.z); }
 
-	int operator != (const vec3& A)              // COMPARISON (!=)
+	int operator != (const vec3& A) const              // COMPARISON (!=)
       { return (x!=A.x || y!=A.y || z!=A.z); }
 
     vec3& operator = (const vec3& A)            // ASSIGNMENT (=)
@@ -89,7 +89,7 @@ public:
       { T L = Length();                       // CALCULATE LENGTH
         if (L>0) { x/=L; y/=L; z/=L; } };     // DIV COMPONENTS BY LENGTH
 
-    void UpdateMinMax(vec3 &Min, vec3 &Max)
+    void UpdateMinMax(vec3 &Min, vec3 &Max) const
     {
       if (x<Min.x) Min.x=x; else if (x>Max.x) Max.x=x;
       if (y<Min.y) Min.y=y; else if (y>Max.y) Max.y=y;
@@ -102,7 +102,7 @@ public:
 		return C.Length();
 	}
 
-	bool IsNull()
+	bool IsNull() const
 	{
 		return (x == 0 && y == 0 && z == 0);
 	}

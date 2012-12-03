@@ -299,7 +299,7 @@ CPPString CPPHtmlDrawer::GetStringFromDll(DWORD dwID, LPCTSTR lpszPathDll /* = N
 //
 // Format prompt string:  long prompt \n short prompt \n disable prompt
 ////////////////////////////////////////////////////////////
-CPPString CPPHtmlDrawer::GetResCommandPrompt(UINT nID, UINT nNumParam /* = 0 */)
+CPPString CPPHtmlDrawer::GetResCommandPrompt(UINT nID, UINT nNumParam /* = 0 */) const
 {
 	CPPString str = GetStringFromResource(nID);
 	if (!str.IsEmpty())
@@ -714,11 +714,11 @@ LPLOGFONT CPPHtmlDrawer::GetSystemToolTipFont() const
 //  Out: -1 - hyperlink not found
 //       index of the hyperlink
 ////////////////////////////////////////////
-int CPPHtmlDrawer::PtInHyperlink(LPPOINT lpPoint)
+int CPPHtmlDrawer::PtInHyperlink(LPPOINT lpPoint) const
 {
 	for (UINT i = 0; i < m_arrLinks.size(); ++i)
 	{
-		STRUCT_HYPERLINK & link = m_arrLinks [i];
+		const STRUCT_HYPERLINK & link = m_arrLinks [i];
 		if ((link.rcArea.left <= lpPoint->x) && (link.rcArea.right >= lpPoint->x) &&
 			(link.rcArea.top <= lpPoint->y) && (link.rcArea.bottom >= lpPoint->y))
 			return i;
@@ -2968,7 +2968,7 @@ int CPPHtmlDrawer::InitNewLine(int x)
 	return x;
 } //End of InitNewLine
 
-void CPPHtmlDrawer::Tag_Tabulation(LPPOINT lpPoint, int nNum)
+void CPPHtmlDrawer::Tag_Tabulation(LPPOINT lpPoint, int nNum) const
 {
 	//Tabulation
 	if (!nNum)
@@ -3399,7 +3399,7 @@ void CPPHtmlDrawer::SetCssStyles(LPCTSTR lpszCssString /* = NULL */)
 	} //if
 } //End SetCssStyles
 
-LPCTSTR CPPHtmlDrawer::GetCssStyles()
+LPCTSTR CPPHtmlDrawer::GetCssStyles() const
 {
 	return (LPCTSTR)m_strCssStyles;
 } //End GetCssStyles
@@ -4718,7 +4718,7 @@ void CPPHtmlDrawer::GetStyleFontShortForm(CPPString & str)
 } //End GetStyleFontShortForm
 
 //Get font style value
-UINT CPPHtmlDrawer::GetStyleImageShortForm(CPPString & str)
+UINT CPPHtmlDrawer::GetStyleImageShortForm(CPPString & str) const
 {
 	UINT uStyle = 0; //Original image
 

@@ -130,13 +130,13 @@ public:
 	//Shadow of the image
 	void SetImageShadow(int nOffsetX, int nOffsetY, BYTE nDarkenPercent = 50, BOOL bGradient = TRUE, int nDepthX = 7, int nDepthY = 7);
 
-	CPPString GetResCommandPrompt(UINT nID, UINT nNumParam = 0);
+	CPPString GetResCommandPrompt(UINT nID, UINT nNumParam = 0) const;
 
 	//Functions for the styles
 	void SetTextStyle(LPCTSTR lpszStyleName, LPCTSTR lpszStyleValue);
 	void SetCssStyles(LPCTSTR lpszCssString = NULL); //Sets the CSS styles
 	void SetCssStyles(DWORD dwIdCssString, LPCTSTR lpszPathDll = NULL); //Sets the CSS styles
-	LPCTSTR GetCssStyles(); //Returns the current CSS styles
+	LPCTSTR GetCssStyles() const; //Returns the current CSS styles
 
 	void OnLButtonDown(LPPOINT lpClient);
 	BOOL OnSetCursor(LPPOINT lpClient);
@@ -156,7 +156,7 @@ public:
 	void SetResourceDll(HINSTANCE hInstDll = NULL); //Sets the handle of the loaded resource's DLL
 
 	void SetMaxWidth(int nWidth = 0) {m_nMaxWidth = nWidth;}; //Sets the maximum width of the output window.
-	int  GetMaxWidth() {return m_nMaxWidth;}; //Gets the maximum width of the output window.
+	int  GetMaxWidth() const {return m_nMaxWidth;}; //Gets the maximum width of the output window.
 //	void EnableTextWrap(BOOL bEnable = TRUE){
 //		m_bIsTextWrapEnabled = bEnable;};
 //	BOOL IsTextWrapEnabled() {return m_bIsTextWrapEnabled;};
@@ -542,7 +542,7 @@ protected:
 	BOOL  IsImageWithShadow(_STRUCT_IMAGE & si);
 
 	//Functions for hyperlink
-	int PtInHyperlink(LPPOINT lpPoint);
+	int PtInHyperlink(LPPOINT lpPoint) const;
 	void JumpToHyperlink(int nLink);
 	void StoreHyperlinkArea(int left, int top, int right, int bottom);
 	HINSTANCE GotoURL(LPCTSTR url, int showcmd = SW_SHOW);
@@ -558,7 +558,7 @@ protected:
 	void UpdateContext();
 	BOOL StoreRestoreStyle(BOOL bRestore);
 	void Tag_NewLine(LPPOINT lpPoint, int nNum, LPSIZE lpSize);
-	void Tag_Tabulation(LPPOINT lpPoint, int nNum);
+	void Tag_Tabulation(LPPOINT lpPoint, int nNum) const;
 	int  InitNewLine(int x);
 
 	void SelectNewHtmlStyle(LPCTSTR lpszNameStyle, STRUCT_CHANGESTYLE & cs);
@@ -596,7 +596,7 @@ protected:
 	int  GetStyleTextTransform(CPPString & str, int nDefault);
 	CPPString GetStyleString(CPPString str, CPPString strDefault);
 	void GetStyleFontShortForm(CPPString & str);
-	UINT GetStyleImageShortForm(CPPString & str);
+	UINT GetStyleImageShortForm(CPPString & str) const;
 	int GetStyleBkgndEffect(CPPString & str, int nDefault);
 
 	void StyleTextDecoration(CPPString & str, _STRUCT_CHANGESTYLE & cs);
