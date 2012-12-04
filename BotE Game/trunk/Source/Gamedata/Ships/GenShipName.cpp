@@ -9,6 +9,9 @@
 #include "Races\RaceController.h"
 #include "IOData.h"
 
+#include <sstream>
+#include <cassert>
+
 IMPLEMENT_SERIAL (CGenShipName, CObject, 1)
 //////////////////////////////////////////////////////////////////////
 // Konstruktion/Destruktion
@@ -160,6 +163,13 @@ void CGenShipName::Init(CBotf2Doc* pDoc)
 	}
 }
 
+static std::string CStringToStdString(const CString& cs) {
+	return std::string(static_cast<LPCTSTR>(cs));
+}
+static CString StdStringToCString(const std::string& s) {
+	return CString(s.c_str());
+}
+
 /// Diese Funktion generiert einen einmaligen Schiffsnamen. Als Parameter werden dafür die Rasse <code>sRaceID</code>
 /// und ein Parameter, welcher angibt ob es sich um eine Station handelt <code>station</code> übergeben.
 CString CGenShipName::GenerateShipName(const CString& sRaceID, BOOLEAN station)
@@ -173,24 +183,28 @@ CString CGenShipName::GenerateShipName(const CString& sRaceID, BOOLEAN station)
 	}
 
 	const unsigned counter = m_mCounter[sRaceID];
-	CString sLetter = "";
+	char letter[10] = "";
 	if(1 <= counter) {
+		int result = 0;
 		if(counter <= 26)
-			sLetter.Format("%c", 64 + counter);//65 == A, 90 == Z
+			result = _snprintf(letter, 10, " %c", 64 + counter);//65 == A, 90 == Z
 		else
-			sLetter.Format("%u", counter);
+			result = _snprintf(letter, 10, " %u", counter);
+		assert(result > 0);
 	}
-
-	CString name = sRaceID;
-	if(!mStillAvailableNames.empty()) {
+	std::stringstream name;
+	if(mStillAvailableNames.empty())
+		name << CStringToStdString(sRaceID);
+	else {
 		const unsigned random = rand() % mStillAvailableNames.size();
-		name.Format("%s", mStillAvailableNames.at(random));
+		name << CStringToStdString(mStillAvailableNames.at(random));
 		mStillAvailableNames.erase(mStillAvailableNames.begin() + random);
 	}
-	if(!sLetter.IsEmpty())
-		name.Format("%s %s", name, sLetter);
+	assert(name);
+	name << letter;
+	assert(name);
 	if(station)
-		name.Format("%s Station", name);
-
-	return name;
+		name << " Station";
+	assert(name);
+	return StdStringToCString(name.str());
 }
