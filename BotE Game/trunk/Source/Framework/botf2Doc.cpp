@@ -4795,8 +4795,6 @@ void CBotf2Doc::CheckShipsDestroyedByAnomaly() {
 }
 void CBotf2Doc::OnShipDestroyedByAnomaly(const CShips& ship) {
 	// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
-	CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(ship.GetOwnerOfShip()));
-	assert(pMajor);
 	const CPoint& co = ship.GetKO();
 	if(!GetSector(co.x, co.y).GetAnomaly())
 		return;
@@ -4810,11 +4808,22 @@ void CBotf2Doc::OnShipDestroyedByAnomaly(const CShips& ship) {
 	CString s = CResourceManager::GetString("ANOMALY_SHIP_LOST", FALSE, sShip, anomaly);
 	CMessage message;
 	message.GenerateMessage(s, MESSAGE_TYPE::MILITARY, "", 0, 0);
-	pMajor->GetEmpire()->AddMessage(message);
-	if (pMajor->IsHumanPlayer())
-	{
-		network::RACE client = m_pRaceCtrl->GetMappedClientID(pMajor->GetRaceID());
-		m_iSelectedView[client] = EMPIRE_VIEW;
+	CRace* pRace = m_pRaceCtrl->GetRace(ship.GetOwnerOfShip());
+	assert(pRace);
+	//TODO: If a minor is forced to retreat, and happens to retreat to an anomaly,
+	//its ships are slowly destructed since it doesn't move.
+	//Forbidding to retreat to anomalies is no good idea, as it would cause probs in case that
+	//all sectors around the current one are anomalies.
+	//So this should probably best be fixed by making minors able to move their ships
+	//(which is on the TODO list anyway).
+	if(pRace->IsMajor()) {
+		CMajor* pMajor = dynamic_cast<CMajor*>(pRace);
+		pMajor->GetEmpire()->AddMessage(message);
+		if (pMajor->IsHumanPlayer())
+		{
+			network::RACE client = m_pRaceCtrl->GetMappedClientID(pMajor->GetRaceID());
+			m_iSelectedView[client] = EMPIRE_VIEW;
+		}
 	}
 }
 /////END: HELPER FUNCTIONS FOR void CBotf2Doc::CalcShipMovement()
