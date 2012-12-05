@@ -118,6 +118,15 @@ public:
 	UINT GetIridiumStore() const {return m_iIridiumStore;}
 	UINT GetDeritiumStore() const {return m_iDeritiumStore;}
 
+	// Funktionen geben die jeweiligen maximalen Lagerinhalte zurück
+	long GetFoodStoreMax() const {return MAX_FOOD_STORE;}
+	UINT GetTitanStoreMax() const {return MAX_RES_STORE;}
+	UINT GetDeuteriumStoreMax() const {return MAX_RES_STORE;}
+	UINT GetDuraniumStoreMax() const {return MAX_RES_STORE;}
+	UINT GetCrystalStoreMax() const {return MAX_RES_STORE;}
+	UINT GetIridiumStoreMax() const {return MAX_RES_STORE;}
+	UINT GetDeritiumStoreMax() const {return MAX_RES_STORE;}
+
 	// Funktion gibt den Lagerinhalt der Ressource zurück, die an die Funktion übergeben wurde.
 	UINT GetResourceStore(USHORT res) const;
 

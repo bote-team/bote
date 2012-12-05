@@ -525,6 +525,12 @@ Labor unit management in
 Yield
 [FREE_WORKERS]
 free labor units
+[WORKERS_ACTIVE]
+(§ active)
+[SYSTEM_STORAGE_INFO]
+System storage § of §
+[SYSTEM_STORAGE_INFO_PERCENT]
+, §% full
 
 // structure overview menu
 [BUILDING_OVERVIEW_MENUE]

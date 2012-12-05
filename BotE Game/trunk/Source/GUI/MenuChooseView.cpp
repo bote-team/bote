@@ -207,8 +207,43 @@ void CMenuChooseView::OnDraw(CDC* pDC)
 	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.left+30, 190, m_TotalSize.cx-60, 25), &fontFormat, &fontBrush);
 
 	fontFormat.SetAlignment(StringAlignmentNear);
-	s.Format("%s: %d",CResourceManager::GetString("NEWS"), pMajor->GetEmpire()->GetMessages()->GetSize());
+	s.Format("%s:",CResourceManager::GetString("NEWS"));
 	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.left+30, 240, m_TotalSize.cx-60, 25), &fontFormat, &fontBrush);
+	fontFormat.SetAlignment(StringAlignmentFar);
+	s.Format("%d",pMajor->GetEmpire()->GetMessages()->GetSize());
+	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.left+30, 240, m_TotalSize.cx-60, 25), &fontFormat, &fontBrush);
+
+	// Bewertung Gesamt anzeigen
+	float fMark = 0.0f;
+	int nPlace = 1;
+	float fValue, fAverage, fFirst, fLast;
+	CString sRaceID = pMajor->GetRaceID();
+	CStatistics *cs = pDoc->GetStatistics();
+
+	cs->GetDemographicsBSP(sRaceID, nPlace, fValue, fAverage, fFirst, fLast);
+	fMark += (float)(nPlace);
+
+	cs->GetDemographicsProductivity(sRaceID, nPlace, fValue, fAverage, fFirst, fLast);
+	fMark += (float)(nPlace);
+
+	cs->GetDemographicsMilitary(sRaceID, nPlace, fValue, fAverage, fFirst, fLast);
+	fMark += (float)(nPlace);
+
+	cs->GetDemographicsResearch(sRaceID, nPlace, fValue, fAverage, fFirst, fLast);
+	fMark += (float)(nPlace);
+
+	cs->GetDemographicsMoral(sRaceID, nPlace, fValue, fAverage, fFirst, fLast);
+	fMark += (float)(nPlace);
+
+	fMark /= 5;
+	s.Format("%s:",CResourceManager::GetString("RATING"));
+	fontFormat.SetAlignment(StringAlignmentNear);
+	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.left+30, 290, m_TotalSize.cx-60, 25), &fontFormat, &fontBrush);
+
+	fontFormat.SetAlignment(StringAlignmentFar);
+	s.Format("%.1lf",fMark);
+	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.left+30, 290, m_TotalSize.cx-60, 25), &fontFormat, &fontBrush);
+
 
 	// Sternzeit anzeigen
 	fontBrush.SetColor(color);

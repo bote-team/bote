@@ -851,6 +851,7 @@ void CSystemMenuView::DrawWorkersMenue(Graphics* g)
 
 	CString fontName = "";
 	Gdiplus::REAL fontSize = 0.0;
+	CSystem sys = pDoc->GetSystem(p.x,p.y);
 
 	// Rassenspezifische Schriftart auswählen
 	CFontLoader::CreateGDIFont(pMajor, 2, fontName, fontSize);
@@ -894,10 +895,10 @@ void CSystemMenuView::DrawWorkersMenue(Graphics* g)
 		for (int i = WORKER::FOOD_WORKER; i <= WORKER::RESEARCH_WORKER; i++)
 		{
 			WORKER::Typ nWorker = (WORKER::Typ)i;
-			number[i] = pDoc->GetSystem(p.x,p.y).GetNumberOfWorkbuildings(nWorker,0,NULL);
+			number[i] = sys.GetNumberOfWorkbuildings(nWorker,0,NULL);
 			if (number[i] > greatestNumber)
 				greatestNumber = number[i];
-			online[i] = pDoc->GetSystem(p.x,p.y).GetWorker(nWorker);
+			online[i] = sys.GetWorker(nWorker);
 			// Die Rechtecke der Arbeiterbalken erstmal löschen
 			for (int j = 0; j < 200; j++)
 				Timber[i][j].SetRect(0,0,0,0);
@@ -915,7 +916,7 @@ void CSystemMenuView::DrawWorkersMenue(Graphics* g)
 		// Den Balken zeichnen
 		for (int i = WORKER::FOOD_WORKER; i <= WORKER::RESEARCH_WORKER; i++)
 		{
-			for (int j = 0; j < number[i]; j++)
+			for (int j = 0; j < number[i]*7; j++)
 			{
 				Color timberColor;
 				// Fragen ob die Gebäude noch online sind
@@ -945,7 +946,7 @@ void CSystemMenuView::DrawWorkersMenue(Graphics* g)
 		{
 			CString name = "";
 			WORKER::Typ nWorker = (WORKER::Typ)i;
-			USHORT tmp = pDoc->GetSystem(p.x,p.y).GetNumberOfWorkbuildings(nWorker, 1, &pDoc->BuildingInfo);
+			USHORT tmp = sys.GetNumberOfWorkbuildings(nWorker, 1, &pDoc->BuildingInfo);
 			if (tmp != 0)
 			{
 				// Bild des jeweiligen Gebäudes zeichnen
@@ -959,37 +960,42 @@ void CSystemMenuView::DrawWorkersMenue(Graphics* g)
 					g->DrawImage(graphic, 50, i * 95 + 100, 100, 75);
 					graphic = NULL;
 				}
-				name = pDoc->GetBuildingName(tmp);
-				name.Format("%d x %s",number[i],name);
+
+				if( online[i] < number[i] ) {
+					name.Format("%d",online[i]);
+					CString wa = CResourceManager::GetString("WORKERS_ACTIVE",FALSE,name);
+					name.Format("%d x %s %s",number[i],pDoc->GetBuildingName(tmp),wa);
+				} else {
+					name.Format("%d x %s",number[i],pDoc->GetBuildingName(tmp));
+				}
+
 				CString yield = CResourceManager::GetString("YIELD");
 				fontFormat.SetAlignment(StringAlignmentNear);
 				g->DrawString(CComBSTR(name), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(220, 90 + i * 95, 380, 25), &fontFormat, &fontBrush);
 
-				if (i == 0)
-				{
-					name.Format("%s: %d %s",yield, pDoc->GetSystem(p.x,p.y).GetProduction()->GetMaxFoodProd(), CResourceManager::GetString("FOOD"));
-					g->DrawString(CComBSTR(name), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(220, 150 + i * 95, 480, 25), &fontFormat, &fontBrush);
+				CSystemProd *prod = sys.GetProduction();
+
+				switch(i) {
+					default:
+					case WORKER::FOOD_WORKER:		name.Format("%s: %d %s",yield, prod->GetMaxFoodProd(),	CResourceManager::GetString("FOOD"));		break;
+					case WORKER::INDUSTRY_WORKER:	name.Format("%s: %d %s",yield, prod->GetIndustryProd(),	CResourceManager::GetString("INDUSTRY"));	break;
+					case WORKER::ENERGY_WORKER:		name.Format("%s: %d %s",yield, prod->GetMaxEnergyProd(),CResourceManager::GetString("ENERGY"));		break;
+					case WORKER::SECURITY_WORKER:	name.Format("%s: %d %s",yield, prod->GetSecurityProd(),	CResourceManager::GetString("SECURITY"));	break;
+					case WORKER::RESEARCH_WORKER:	name.Format("%s: %d %s",yield, prod->GetResearchProd(),	CResourceManager::GetString("RESEARCH"));	break;
 				}
-				else if (i == 1)
-				{
-					name.Format("%s: %d %s",yield, pDoc->GetSystem(p.x,p.y).GetProduction()->GetIndustryProd(), CResourceManager::GetString("INDUSTRY"));
-					g->DrawString(CComBSTR(name), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(220, 150 + i * 95, 480, 25), &fontFormat, &fontBrush);
+
+				if( i == WORKER::FOOD_WORKER ) {
+					CString scmax, scstore;
+					scstore.Format("%d", sys.GetFoodStore());
+					scmax.Format("%d", sys.GetFoodStoreMax());
+
+					CString sysstorage = CResourceManager::GetString("SYSTEM_STORAGE_INFO",FALSE,scstore, scmax );
+					scstore.Format("%d",(sys.GetFoodStore() * 100 / sys.GetFoodStoreMax()));
+					sysstorage.Format("%s%s", sysstorage, CResourceManager::GetString("SYSTEM_STORAGE_INFO_PERCENT",FALSE,scstore));
+					name.Format("%s, %s",name, sysstorage);
 				}
-				else if (i == 2)
-				{
-					name.Format("%s: %d %s",yield, pDoc->GetSystem(p.x,p.y).GetProduction()->GetMaxEnergyProd(), CResourceManager::GetString("ENERGY"));
-					g->DrawString(CComBSTR(name), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(220, 150 + i * 95, 480, 25), &fontFormat, &fontBrush);
-				}
-				else if (i == 3)
-				{
-					name.Format("%s: %d %s",yield, pDoc->GetSystem(p.x,p.y).GetProduction()->GetSecurityProd(), CResourceManager::GetString("SECURITY"));
-					g->DrawString(CComBSTR(name), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(220, 150 + i * 95, 480, 25), &fontFormat, &fontBrush);
-				}
-				else if (i == 4)
-				{
-					name.Format("%s: %d %s",yield, pDoc->GetSystem(p.x,p.y).GetProduction()->GetResearchProd(), CResourceManager::GetString("RESEARCH"));
-					g->DrawString(CComBSTR(name), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(220, 150 + i * 95, 480, 25), &fontFormat, &fontBrush);
-				}
+
+				g->DrawString(CComBSTR(name), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(220, 150 + i * 95, 480, 25), &fontFormat, &fontBrush);
 			}
 		}
 
@@ -1019,10 +1025,10 @@ void CSystemMenuView::DrawWorkersMenue(Graphics* g)
 		for (int i = WORKER::FOOD_WORKER; i <= WORKER::RESEARCH_WORKER; i++)
 		{
 			WORKER::Typ nWorker = (WORKER::Typ)(i+5);
-			number[i] = pDoc->GetSystem(p.x,p.y).GetNumberOfWorkbuildings(nWorker,0,NULL);
+			number[i] = sys.GetNumberOfWorkbuildings(nWorker,0,NULL);
 			if (number[i] > greatestNumber)
 				greatestNumber = number[i];
-			online[i] = pDoc->GetSystem(p.x,p.y).GetWorker(nWorker);
+			online[i] = sys.GetWorker(nWorker);
 			// Die Rechtecke der Arbeiterbalken erstmal löschen
 			for (int j = 0; j < 200; j++)
 				Timber[i][j].SetRect(0,0,0,0);
@@ -1070,7 +1076,7 @@ void CSystemMenuView::DrawWorkersMenue(Graphics* g)
 		{
 			WORKER::Typ nWorker = (WORKER::Typ)(i+5);
 			CString name = "";
-			USHORT tmp = pDoc->GetSystem(p.x,p.y).GetNumberOfWorkbuildings(nWorker,1,&pDoc->BuildingInfo);
+			USHORT tmp = sys.GetNumberOfWorkbuildings(nWorker,1,&pDoc->BuildingInfo);
 			if (tmp != 0)
 			{
 				// Bild des jeweiligen Gebäudes zeichnen
@@ -1084,37 +1090,43 @@ void CSystemMenuView::DrawWorkersMenue(Graphics* g)
 					g->DrawImage(graphic, 50, i * 95 + 100, 100, 75);
 					graphic = NULL;
 				}
-				name = pDoc->GetBuildingName(tmp);
-				name.Format("%d x %s",number[i],name);
-				CString yield = CResourceManager::GetString("YIELD");
+				// Name als Helper für die Aktive-Gebäude-Zahl verwenden
+				if( online[i] < number[i] ) {
+					name.Format("%d",online[i]);
+					CString wa = CResourceManager::GetString("WORKERS_ACTIVE",FALSE,name);
+					name.Format("%d x %s %s",number[i],pDoc->GetBuildingName(tmp),wa);
+				} else {
+					name.Format("%d x %s",number[i],pDoc->GetBuildingName(tmp));
+				}
+
 				fontFormat.SetAlignment(StringAlignmentNear);
 				g->DrawString(CComBSTR(name), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(220, 90 + i * 95, 380, 25), &fontFormat, &fontBrush);
 
-				if (i == 0)
-				{
-					name.Format("%s: %d %s",yield, pDoc->GetSystem(p.x,p.y).GetProduction()->GetTitanProd(), CResourceManager::GetString("TITAN"));
-					g->DrawString(CComBSTR(name), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(220, 150 + i * 95, 480, 25), &fontFormat, &fontBrush);
+				CString yield = CResourceManager::GetString("YIELD");
+				CSystemProd *prod = sys.GetProduction();
+
+				int cprod, cstore, cmax;
+				CString resname;
+
+				switch(i) {
+					default:
+					case 0: cprod = prod->GetTitanProd(); cmax = sys.GetTitanStoreMax(); cstore = sys.GetTitanStore(); resname = "TITAN"; break;
+					case 1: cprod = prod->GetDeuteriumProd(); cmax = sys.GetDeuteriumStoreMax(); cstore = sys.GetDeuteriumStore(); resname = "DEUTERIUM"; break;
+					case 2: cprod = prod->GetDuraniumProd(); cmax = sys.GetDuraniumStoreMax(); cstore = sys.GetDuraniumStore(); resname = "DURANIUM"; break;
+					case 3: cprod = prod->GetCrystalProd(); cmax = sys.GetCrystalStoreMax(); cstore = sys.GetCrystalStore(); resname = "CRYSTAL"; break;
+					case 4: cprod = prod->GetIridiumProd(); cmax = sys.GetIridiumStoreMax(); cstore = sys.GetIridiumStore(); resname = "IRIDIUM"; break;
 				}
-				else if (i == 1)
-				{
-					name.Format("%s: %d %s",yield, pDoc->GetSystem(p.x,p.y).GetProduction()->GetDeuteriumProd(), CResourceManager::GetString("DEUTERIUM"));
-					g->DrawString(CComBSTR(name), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(220, 150 + i * 95, 480, 25), &fontFormat, &fontBrush);
-				}
-				else if (i == 2)
-				{
-					name.Format("%s: %d %s",yield, pDoc->GetSystem(p.x,p.y).GetProduction()->GetDuraniumProd(), CResourceManager::GetString("DURANIUM"));
-					g->DrawString(CComBSTR(name), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(220, 150 + i * 95, 480, 25), &fontFormat, &fontBrush);
-				}
-				else if (i == 3)
-				{
-					name.Format("%s: %d %s",yield, pDoc->GetSystem(p.x,p.y).GetProduction()->GetCrystalProd(), CResourceManager::GetString("CRYSTAL"));
-					g->DrawString(CComBSTR(name), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(220, 150 + i * 95, 480, 25), &fontFormat, &fontBrush);
-				}
-				else if (i == 4)
-				{
-					name.Format("%s: %d %s",yield, pDoc->GetSystem(p.x,p.y).GetProduction()->GetIridiumProd(), CResourceManager::GetString("IRIDIUM"));
-					g->DrawString(CComBSTR(name), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(220, 150 + i * 95, 480, 25), &fontFormat, &fontBrush);
-				}
+
+				CString scmax, scstore;
+				scstore.Format("%d", cstore);
+				scmax.Format("%d", cmax);
+
+				CString sysstorage = CResourceManager::GetString("SYSTEM_STORAGE_INFO",FALSE,scstore, scmax );
+				scstore.Format("%d",(cstore * 100 / cmax));
+				sysstorage.Format("%s%s", sysstorage, CResourceManager::GetString("SYSTEM_STORAGE_INFO_PERCENT",FALSE,scstore));
+				name.Format("%s: %d %s, %s",yield, cprod, CResourceManager::GetString(resname), sysstorage);
+
+				g->DrawString(CComBSTR(name), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(220, 150 + i * 95, 480, 25), &fontFormat, &fontBrush);
 			}
 		}
 
@@ -1132,7 +1144,7 @@ void CSystemMenuView::DrawWorkersMenue(Graphics* g)
 
 	// Hier noch die Gesamt- und freien Arbeiter unten in der Mitte zeichnen
 	unsigned short width = 0;
-	unsigned short worker = pDoc->GetSystem(p.x,p.y).GetNumberOfWorkbuildings(WORKER::ALL_WORKER,0,NULL);
+	unsigned short worker = sys.GetNumberOfWorkbuildings(WORKER::ALL_WORKER,0,NULL);
 	unsigned short size = worker;
 	if (size != 0)
 		width = (unsigned short)200/size;
@@ -1145,7 +1157,7 @@ void CSystemMenuView::DrawWorkersMenue(Graphics* g)
 	for (int i = 0; i < worker; i++)
 	{
 		Color timberColor;
-		if (i < pDoc->GetSystem(p.x,p.y).GetWorker(WORKER::FREE_WORKER))
+		if (i < sys.GetWorker(WORKER::FREE_WORKER))
 		{
 			// Helle Farbe wenn sie Online sind
 			short color = i*4;
@@ -1165,7 +1177,7 @@ void CSystemMenuView::DrawWorkersMenue(Graphics* g)
 
 	// freie Arbeiter über dem Balken zeichnen
 	fontBrush.SetColor(normalColor);
-	s.Format("%s %d/%d",CResourceManager::GetString("FREE_WORKERS"), pDoc->GetSystem(p.x, p.y).GetWorker(WORKER::FREE_WORKER), pDoc->GetSystem(p.x, p.y).GetWorker(WORKER::ALL_WORKER));
+	s.Format("%s %d/%d",CResourceManager::GetString("FREE_WORKERS"), sys.GetWorker(WORKER::FREE_WORKER), sys.GetWorker(WORKER::ALL_WORKER));
 	fontFormat.SetAlignment(StringAlignmentNear);
 	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(220,575,380,25), &fontFormat, &fontBrush);
 

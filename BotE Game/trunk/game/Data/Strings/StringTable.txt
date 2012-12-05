@@ -525,6 +525,12 @@ Arbeiterzuweisung in
 Ertrag
 [FREE_WORKERS]
 freie Arbeiter
+[WORKERS_ACTIVE]
+(§ aktiv)
+[SYSTEM_STORAGE_INFO]
+Systemlager § von §
+[SYSTEM_STORAGE_INFO_PERCENT]
+, §% voll
 
 // Gebäudeübersichtsmenü
 [BUILDING_OVERVIEW_MENUE]
