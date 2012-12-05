@@ -443,10 +443,12 @@ void CShip::ApplyTraining(int XP, bool veteran) {
 		SetCrewExperiance(XP * 2);
 }
 
-void CShip::SetCloak() {
-	if(GetStealthPower() < 4)
+void CShip::SetCloak(bool bCloakOn) {
+	if(GetStealthPower() < 4) {
+		assert(!m_bCloakOn);
 		return;
-	m_bCloakOn = !m_bCloakOn;
+	}
+	m_bCloakOn = bCloakOn;
 }
 
 /// Diese Funktion berechnet die Schiffserfahrung in einer neuen Runde. Außer Erfahrung im Kampf, diese werden nach einem

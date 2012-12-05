@@ -189,7 +189,7 @@ public:
 		void SetScanRange(BYTE ScanRange) { m_Leader.SetScanRange(ScanRange); }
 		void SetCrewExperiance(int nAdd) { m_Leader.SetCrewExperiance(nAdd); }
 		void SetStealthPower(BYTE StealthPower) { m_Leader.SetStealthPower(StealthPower); }
-		void SetCloak(bool apply_to_fleet = false);
+		void SetCloak(bool bCloakOn);
 		void SetStorageRoom(USHORT StorageRoom) { m_Leader.SetStorageRoom(StorageRoom); }
 		void SetLoadedResources(USHORT add, BYTE res) { m_Leader.SetLoadedResources(add, res); }
 		void SetColonizePoints(BYTE ColonizePoints) { m_Leader.SetColonizePoints(ColonizePoints); }

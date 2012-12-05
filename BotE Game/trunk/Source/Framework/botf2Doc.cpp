@@ -4455,28 +4455,7 @@ void CBotf2Doc::CalcShipOrders()
 		{
 			//TODO magic number, bad
 			assert(y->second.GetStealthPower() >= 4);
-			y->second.SetCloak(true);
-
-			//TODO This code should not be needed, since SetCloak above applies to the fleet as well.
-			//Let's see whether Rotharian KI has problems to bombard..
-
-			// Wenn das Schiff eine Flotte anführt, checken ob der Tarnenbefehl noch G?ltigkeit hat. Wenn ja, dann
-			// alle Schiffe in der Flotte tarnen
-			//if (y->second.GetCloak() == TRUE)
-			//	if (y->second.HasFleet())
-			//		if (y->second.CheckOrder(SHIP_ORDER::CLOAK) == TRUE)
-			//			for (int x = 0; x < y->second.GetFleetSize(); x++)
-			//				if (y->second.GetShipFromFleet(x)->GetCloak() == FALSE)
-			//					y->second.GetShipFromFleet(x)->SetCloak();
-
-			// Wenn das Schiff enttarnt wurde, dann alle Schiffe in der Flotte entarnen. Dies sollte nicht häufig vorkommen. Selbst
-			// kann man es so nicht einstellen, aber die KI enttarnt so die Schiffe in der Flotte
-			//if (y->second.GetCloak() == FALSE)
-			//	if (y->second.HasFleet())
-			//		for (int x = 0; x < y->second.GetFleetSize(); x++)
-			//			if (y->second.GetShipFromFleet(x)->GetCloak() == TRUE)
-			//				y->second.GetShipFromFleet(x)->SetCloak();
-
+			y->second.SetCloak(!y->second.GetCloak());
 			y->second.UnsetCurrentOrder(true);
 		}
 		// Blockadebefehl

@@ -219,11 +219,10 @@ bool CShips::UnassignFlagship() {
 	return false;
 }
 
-void CShips::SetCloak(bool apply_to_fleet) {
-	m_Leader.SetCloak();
-	if(apply_to_fleet)
-		for(CShips::iterator i = begin(); i != end(); ++i)
-			i->second.SetCloak();
+void CShips::SetCloak(bool bCloakOn) {
+	m_Leader.SetCloak(bCloakOn);
+	for(CShips::iterator i = begin(); i != end(); ++i)
+		i->second.SetCloak(bCloakOn);
 }
 
 void CShips::UnsetCurrentOrder(bool apply_to_fleet) {

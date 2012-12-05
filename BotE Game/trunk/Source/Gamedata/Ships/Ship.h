@@ -132,7 +132,7 @@ public:
 	void SetScanPower(USHORT ScanPower) {m_iScanPower = ScanPower;}
 	void SetScanRange(BYTE ScanRange) {m_iScanRange = ScanRange;}
 	void SetStealthPower(BYTE StealthPower) {m_iStealthPower = StealthPower;}
-	void SetCloak();
+	void SetCloak(bool bCloakOn);
 	void SetStorageRoom(USHORT StorageRoom) {m_iStorageRoom = StorageRoom;}
 	void SetLoadedResources(USHORT add, BYTE res) {m_iLoadedResources[res] += add;}
 	void SetColonizePoints(BYTE ColonizePoints) {m_iColonizePoints = ColonizePoints;}
