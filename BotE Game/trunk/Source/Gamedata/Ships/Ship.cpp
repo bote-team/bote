@@ -355,11 +355,8 @@ CString CShip::GetCurrentOrderAsString() const
 	{
 	case SHIP_ORDER::AVOID: order = CResourceManager::GetString("AVOID_ORDER"); break;
 	case SHIP_ORDER::ATTACK: order = CResourceManager::GetString("ATTACK_ORDER"); break;
-	case SHIP_ORDER::CLOAK:
-		if (m_bCloakOn)
-			order = CResourceManager::GetString("DECLOAK_ORDER");
-		else
-			order = CResourceManager::GetString("CLOAK_ORDER"); break;
+	case SHIP_ORDER::ENCLOAK: order = CResourceManager::GetString("CLOAK_ORDER"); break;
+	case SHIP_ORDER::DECLOAK: order = CResourceManager::GetString("DECLOAK_ORDER"); break;
 	case SHIP_ORDER::ATTACK_SYSTEM: order = CResourceManager::GetString("ATTACK_SYSTEM_ORDER"); break;
 	case SHIP_ORDER::RAID_SYSTEM: order = CResourceManager::GetString("RAID_SYSTEM_ORDER"); break;
 	case SHIP_ORDER::BLOCKADE_SYSTEM: order = CResourceManager::GetString("BLOCKADE_SYSTEM_ORDER"); break;
@@ -741,7 +738,8 @@ bool CShip::CanHaveOrder(SHIP_ORDER::Typ order) const {
 		case SHIP_ORDER::REPAIR:
 		case SHIP_ORDER::ASSIGN_FLAGSHIP:
 			return true;
-		case SHIP_ORDER::CLOAK: 
+		case SHIP_ORDER::ENCLOAK: 
+		case SHIP_ORDER::DECLOAK:
 			return GetStealthPower() >= 4;
 		case SHIP_ORDER::COLONIZE:
 		case SHIP_ORDER::TERRAFORM:

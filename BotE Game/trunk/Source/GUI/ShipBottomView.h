@@ -60,6 +60,7 @@ private:
 	CPoint m_LastKO;							///< Hilfsvariable, die den zuletzt angeklickten Sektor sich merkt
 	BOOLEAN m_bShowNextButton;
 	Bitmap* m_pShipOrderButton;					///< kleiner Button für die Schiffbefehle
+	//m_ShipOrders: note that ENCLOAK and DECLOAK at present share the same button space
 	CRect m_ShipOrders[SHIP_ORDER::REPAIR + 1];			///< die ganzen Rechtecke für die Schiffsbefehlsbuttons
 	CRect m_MainShipOrders[3];					///< die 3 Hauptbuttons für die Schiffsbefehle
 	short m_iTimeCounter;

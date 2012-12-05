@@ -33,8 +33,8 @@ static void CheckShipTargetCoordinates(const CShip& ship)
 	const CPoint& co = ship.GetKO();
 	const CPoint& tco = ship.GetTargetKO();
 	//orders which match the fact that the ship has a target != CPoint(-1, -1) set
-	if(order == SHIP_ORDER::AVOID || order == SHIP_ORDER::ATTACK || order == SHIP_ORDER::CLOAK
-		|| order == SHIP_ORDER::ASSIGN_FLAGSHIP) {
+	if(order == SHIP_ORDER::AVOID || order == SHIP_ORDER::ATTACK || order == SHIP_ORDER::ENCLOAK
+		|| order == SHIP_ORDER::DECLOAK || order == SHIP_ORDER::ASSIGN_FLAGSHIP) {
 		//It still should be an actual target and not the ship's coordinates
 		if(tco != co)
 			return;

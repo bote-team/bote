@@ -426,7 +426,7 @@ bool CShipAI::DoBombardSystem(CShips* pShip)
 		if (!pShip->CanHaveOrder(SHIP_ORDER::ATTACK_SYSTEM))
 		{
 			// Schiff enttarnen
-			pShip->SetCurrentOrder(SHIP_ORDER::CLOAK);
+			pShip->SetCurrentOrder(SHIP_ORDER::DECLOAK);
 			return true;
 		}
 
@@ -486,7 +486,7 @@ bool CShipAI::DoCamouflage(CShips* pShip, bool bCamouflage/* = true*/)
 	// Nur wenn das Schiff sich tarnen kann und nicht gerade dabei ist ein System zu bombardieren soll es sich tarnen
 	if (pShip->GetStealthPower() > 3 && pShip->GetCurrentOrder() != SHIP_ORDER::ATTACK_SYSTEM)
 	{
-		pShip->SetCurrentOrder(SHIP_ORDER::CLOAK);
+		pShip->SetCurrentOrder(bCamouflage ? SHIP_ORDER::ENCLOAK : SHIP_ORDER::DECLOAK);
 		return true;
 	}
 

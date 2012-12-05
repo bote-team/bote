@@ -370,14 +370,14 @@ void CShipBottomView::OnDraw(CDC* dc)
 			// tarnen kann)
 			if (m_iTimeCounter > (3 + counter) && m_iWhichMainShipOrderButton == 0 &&
 				// Ab hier check wegen Flotten
-				pDoc->CurrentShip()->second.CanHaveOrder(SHIP_ORDER::CLOAK))
+				pDoc->CurrentShip()->second.CanHaveOrder(SHIP_ORDER::ENCLOAK))
 			{
 				g.DrawImage(m_pShipOrderButton, r.right-245, r.top+70+counter*35, 120, 30);
 				if (pDoc->CurrentShip()->second.GetCloak())
 					s = CResourceManager::GetString("BTN_DECLOAK");
 				else
 					s = CResourceManager::GetString("BTN_CLOAK");
-				m_ShipOrders[SHIP_ORDER::CLOAK].SetRect(r.right-245,r.top+70+counter*35,r.right-125,r.top+100+counter*35);
+				m_ShipOrders[SHIP_ORDER::ENCLOAK].SetRect(r.right-245,r.top+70+counter*35,r.right-125,r.top+100+counter*35);
 				g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.right-245,r.top+70+counter*35,120,30), &fontFormat, &fontBrush);
 				counter++;
 			}
@@ -866,7 +866,7 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 				SHIP_ORDER::Typ nOrder = (SHIP_ORDER::Typ)i;
 				short nOldTerraformingPlanet = pDoc->CurrentShip()->second.GetTerraformingPlanet();
 				// Bei manchen Befehlen müssen wir einen möglichen Zielkurs wieder zurücknehmen.
-				if (nOrder != SHIP_ORDER::AVOID && nOrder != SHIP_ORDER::ATTACK && nOrder != SHIP_ORDER::CLOAK && nOrder != SHIP_ORDER::ASSIGN_FLAGSHIP && nOrder != SHIP_ORDER::CREATE_FLEET && nOrder != SHIP_ORDER::TRANSPORT)
+				if (nOrder != SHIP_ORDER::AVOID && nOrder != SHIP_ORDER::ATTACK && nOrder != SHIP_ORDER::ENCLOAK && nOrder != SHIP_ORDER::DECLOAK && nOrder != SHIP_ORDER::ASSIGN_FLAGSHIP && nOrder != SHIP_ORDER::CREATE_FLEET && nOrder != SHIP_ORDER::TRANSPORT)
 					pDoc->CurrentShip()->second.SetTargetKO(CPoint(-1, -1), 0);
 				// Wenn wir eine Flotte bilden wollen (Schiffe gruppieren), dann in der MainView die Flottenansicht zeigen
 				if (nOrder == SHIP_ORDER::CREATE_FLEET)
@@ -906,6 +906,12 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 				{
 					pDoc->GetMainFrame()->SelectMainView(10, pMajor->GetRaceID());	// Transportansicht in der MainView anzeigen
 					pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CTransportMenuView));
+				}
+				else if (nOrder == SHIP_ORDER::ENCLOAK)
+				{
+					pDoc->CurrentShip()->second.SetCurrentOrder(
+							pDoc->CurrentShip()->second.GetCloak() ? SHIP_ORDER::DECLOAK : SHIP_ORDER::ENCLOAK
+						);
 				}
 				// ansonsten ganz normal den Befehl geben
 				else

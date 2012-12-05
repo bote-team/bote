@@ -303,7 +303,7 @@ namespace SHIP_ORDER
 		NONE				= -1,
 		AVOID               = 0,
 		ATTACK              = 1,
-		CLOAK               = 2,
+		ENCLOAK             = 2,
 		ATTACK_SYSTEM       = 3,
 		RAID_SYSTEM         = 4,
 		BLOCKADE_SYSTEM		= 5,
@@ -319,7 +319,8 @@ namespace SHIP_ORDER
 		TRAIN_SHIP			= 15,
 		WAIT_SHIP_ORDER		= 16,
 		SENTRY_SHIP_ORDER	= 17,
-		REPAIR				= 18
+		REPAIR				= 18,
+		DECLOAK				= 19
 	};
 }
 

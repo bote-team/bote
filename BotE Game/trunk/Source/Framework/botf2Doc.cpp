@@ -4436,11 +4436,18 @@ void CBotf2Doc::CalcShipOrders()
 				y->second.ApplyTraining(XP);
 			}
 		}
-		else if (y->second.GetCurrentOrder() == SHIP_ORDER::CLOAK)
+		else if (y->second.GetCurrentOrder() == SHIP_ORDER::ENCLOAK)
 		{
 			//TODO magic number, bad
 			assert(y->second.GetStealthPower() >= 4);
-			y->second.SetCloak(!y->second.GetCloak());
+			y->second.SetCloak(true);
+			y->second.UnsetCurrentOrder();
+		}
+		else if (y->second.GetCurrentOrder() == SHIP_ORDER::DECLOAK)
+		{
+			//TODO magic number, bad
+			assert(y->second.GetStealthPower() >= 4);
+			y->second.SetCloak(false);
 			y->second.UnsetCurrentOrder();
 		}
 		// Blockadebefehl
