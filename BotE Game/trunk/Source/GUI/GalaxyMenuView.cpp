@@ -831,7 +831,7 @@ void CGalaxyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			|| target == pDoc->CurrentShip()->second.GetKO()))
 		{
 			CShips& ship = pDoc->CurrentShip()->second;
-			ship.SetTargetKO(target == ship.GetKO() ? CPoint(-1, -1) : target, 0);
+			ship.SetTargetKO(target == ship.GetKO() ? CPoint(-1, -1) : target);
 			CSmallInfoView::SetDisplayMode(CSmallInfoView::DISPLAY_MODE_SHIP_BOTTEM_VIEW);
 			SetMoveShip(FALSE);
 			pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
@@ -1348,7 +1348,7 @@ void CGalaxyMenuView::SearchNextIdleShipAndJumpToIt(CBotf2Doc* pDoc, SHIP_ORDER:
 					//In case the previous ship was selected via mouse instead via hotkey, which
 					//checks whether there's a target != -1,-1 set, it can be a ship which still
 					//has a valid target, but still would get order sentry or wait
-					previous_ship->second.SetTargetKO(CPoint(-1, -1), 0, true);
+					previous_ship->second.SetTargetKO(CPoint(-1, -1), true);
 				}
 				m_PreviouslyJumpedToShip = RememberedShip(ship.GetShipName(), ship.Key());
 				m_pPlayersRace->GetStarmap()->Select(sector);// sets orange rectangle in galaxy view

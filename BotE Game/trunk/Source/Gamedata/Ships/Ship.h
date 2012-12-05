@@ -82,7 +82,7 @@ public:
 
 	USHORT GetID() const {return m_iID;}
 	CPoint GetKO() const {return m_KO;}
-	CPoint GetTargetKO() const {return m_TargetKO[0];}
+	CPoint GetTargetKO() const {return m_TargetKO;}
 	CArray<Sector>* GetPath() {return &m_Path;}
 	const CArray<Sector>* GetPath() const {return &m_Path;}
 	const CString& GetOwnerOfShip(void) const {return m_sOwnerOfShip;}
@@ -121,7 +121,7 @@ public:
 	// zum Schreiben der Membervariablen
 	void SetID(USHORT ID) {m_iID = ID+10000;}
 	void SetKO(int x, int y) {m_KO = CPoint(x, y);}
-	void SetTargetKO(const CPoint& TargetKO, int Index, const bool simple_setter = false);
+	void SetTargetKO(const CPoint& TargetKO, const bool simple_setter = false);
 	void SetOwnerOfShip(const CString& sOwnerOfShip) {m_sOwnerOfShip = sOwnerOfShip;}
 	void SetMaintenanceCosts(USHORT MaintenanceCosts) {m_iMaintenanceCosts = MaintenanceCosts;}
 	void SetShipType(SHIP_TYPE::Typ nShipType) {m_iShipType = nShipType;}
@@ -302,7 +302,7 @@ private:
 	SHIP_ORDER::Typ m_iCurrentOrder;	// Aktueller Befehl des Schiffes, nutze dazu enum
 	CString m_sOwnerOfShip;				// Besitzer des Schiffes
 	CPoint m_KO;						// Koordinate des Schiffes im Raum (welcher Sector?)
-	CPoint m_TargetKO[4];				// Der Zielkurs des Schiffes
+	CPoint m_TargetKO;					// Der Zielkurs des Schiffes
 	CArray<Sector> m_Path;				// Der Kurs des Schiffes zum Ziel
 	bool m_bCloakOn;					// ist die Tarnung eingeschaltet
 	short m_nTerraformingPlanet;		// Nummer des Planeten der kolonisiert werden soll

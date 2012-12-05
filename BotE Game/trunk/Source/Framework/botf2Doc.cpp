@@ -2167,8 +2167,7 @@ CShipMap::iterator CBotf2Doc::BuildShip(int nID, const CPoint& KO, const CString
 	// Spezialforschungsboni dem Schiff hinzufügen
 	AddSpecialResearchBoniToShip(&ship.Leader(), pMajor);
 
-	for (int i = 0; i < 4; i++)
-		ship.SetTargetKO(CPoint(-1,-1), i, true);
+	ship.SetTargetKO(CPoint(-1,-1), true);
 	ship.SetTerraformingPlanet(-1);
 
 	pMajor->GetShipHistory()->AddShip(&ship.Leader(), GetSector(KO.x, KO.y).GetName(), m_iRound);
@@ -4630,7 +4629,7 @@ void CBotf2Doc::CalcShipMovement()
 					if (GetSector(targetKO.x, targetKO.y).GetAnomaly())
 						continue;
 
-					pShip->SetTargetKO(CPoint(targetKO.x, targetKO.y), 0);
+					pShip->SetTargetKO(CPoint(targetKO.x, targetKO.y));
 					break;
 				}
 			}
@@ -4689,7 +4688,7 @@ void CBotf2Doc::CalcShipMovement()
 				if (nextKO == targetKO)
 				{
 					pShip->GetPath()->RemoveAll();
-					pShip->SetTargetKO(CPoint(-1,-1), 0);
+					pShip->SetTargetKO(CPoint(-1,-1));
 				}
 				if (pRace != NULL && pRace->IsMajor() && !(this->GetSector(nextKO.x,nextKO.y).GetFullKnown(pShip->GetOwnerOfShip()))) //Berechnet Zufalls entdeckung in dem Sector den das Schiff anfliegt
 					m_RandomEventManager.CalcExploreEvent(CPoint((int)nextKO.x,(int)nextKO.y),dynamic_cast<CMajor*>(pRace),&m_ShipMap);
@@ -5836,7 +5835,7 @@ void CBotf2Doc::CalcAlienShipEffects()
 							continue;
 
 						pShip->SetShipType(SHIP_TYPE::ALIEN);
-						pShip->SetTargetKO(CPoint(-1, -1), 0);
+						pShip->SetTargetKO(CPoint(-1, -1));
 						pShip->SetCurrentOrder(SHIP_ORDER::ATTACK);
 						pShip->SetTerraformingPlanet(-1);
 						pShip->SetIsShipFlagShip(FALSE);

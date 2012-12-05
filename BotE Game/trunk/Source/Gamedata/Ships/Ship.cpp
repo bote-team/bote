@@ -36,12 +36,9 @@ CShip::CShip() :
 	m_iStealthPower(0),
 	m_iStorageRoom(0),
 	m_iColonizePoints(0),
-	m_iStationBuildPoints(0)
+	m_iStationBuildPoints(0),
+	m_TargetKO(-1, -1)
 {
-	unsigned length = sizeof(m_TargetKO) / sizeof(m_TargetKO[0]);
-	for(unsigned i = 0; i < length; ++i) {
-		m_TargetKO[i] = CPoint(-1, -1);
-	}
 	m_iCrewExperiance = 0;
 	m_nTerraformingPlanet = -1;
 	m_bIsFlagShip = FALSE;
@@ -68,7 +65,8 @@ CShip::CShip(const CShip & rhs) :
 	m_KO(rhs.m_KO),
 	m_sOwnerOfShip(rhs.m_sOwnerOfShip),
 	m_strShipName(rhs.m_strShipName),
-	m_strShipClass(rhs.m_strShipClass)
+	m_strShipClass(rhs.m_strShipClass),
+	m_TargetKO(rhs.m_TargetKO)
 {
 	m_TorpedoWeapons.RemoveAll();
 	for (int i = 0; i < rhs.m_TorpedoWeapons.GetSize(); i++)
@@ -84,8 +82,6 @@ CShip::CShip(const CShip & rhs) :
 		m_Troops.Add(rhs.m_Troops.GetAt(i));
 
 	m_iID = rhs.m_iID;
-	for (int i=0;i<4;i++)
-		m_TargetKO[i] = rhs.m_TargetKO[i];
 	m_iMaintenanceCosts = rhs.m_iMaintenanceCosts;
 	m_iShipType = rhs.m_iShipType;
 	m_nShipSize = rhs.m_nShipSize;
@@ -137,8 +133,7 @@ CShip & CShip::operator=(const CShip & rhs)
 
 	m_iID = rhs.m_iID;
 	m_KO = rhs.m_KO;
-	for (int i=0;i<4;i++)
-		m_TargetKO[i] = rhs.m_TargetKO[i];
+	m_TargetKO = rhs.m_TargetKO;
 	m_sOwnerOfShip = rhs.m_sOwnerOfShip;
 	m_iMaintenanceCosts = rhs.m_iMaintenanceCosts;
 	m_iShipType = rhs.m_iShipType;
@@ -184,8 +179,7 @@ void CShip::Serialize(CArchive &ar)
 	{
 		ar << m_iID;
 		ar << m_KO;
-		for (int i = 0; i < 4; i++)
-			ar << m_TargetKO[i];
+		ar << m_TargetKO;
 		ar << m_sOwnerOfShip;
 		ar << m_iMaintenanceCosts;
 		ar << m_iShipType;
@@ -229,8 +223,7 @@ void CShip::Serialize(CArchive &ar)
 		int number = 0;
 		ar >> m_iID;
 		ar >> m_KO;
-		for (int i = 0; i < 4; i++)
-			ar >> m_TargetKO[i];
+		ar >> m_TargetKO;
 		ar >> m_sOwnerOfShip;
 		ar >> m_iMaintenanceCosts;
 		int nType;
@@ -401,12 +394,10 @@ CString CShip::GetCombatTacticAsString() const
 CString CShip::GetCurrentTargetAsString() const
 {
 	CString target;
-	if (m_TargetKO[0].x == -1)
-		target = "-";
-	else if (m_TargetKO[0].x == GetKO().x && m_TargetKO[0].y == GetKO().y )
+	if (m_TargetKO == CPoint(-1, -1))
 		target = "-";
 	else
-		target.Format("%c%i", (char)(m_TargetKO[0].y+97),m_TargetKO[0].x+1);
+		target.Format("%c%i", (char)(m_TargetKO.y+97),m_TargetKO.x+1);
 	return target;
 }
 
@@ -421,7 +412,7 @@ void CShip::AdoptOrdersFrom(const CShip& ship)
 		m_iCurrentOrder = order;
 	m_nCombatTactic = ship.GetCombatTactic();
 	m_KO = ship.GetKO();
-	m_TargetKO[0] = ship.GetTargetKO();
+	m_TargetKO = ship.GetTargetKO();
 	//den Terraformingplaneten neu setzen
 	m_nTerraformingPlanet = ship.GetTerraformingPlanet();
 }
@@ -494,9 +485,9 @@ Für den Erfahrungsgewinn gibt es mehrere Möglichkeiten:
 	SetCrewExperiance(expAdd);
 }
 
-void CShip::SetTargetKO(const CPoint& TargetKO, int Index, const bool simple_setter)
+void CShip::SetTargetKO(const CPoint& TargetKO, const bool simple_setter)
 {
-	m_TargetKO[Index] = TargetKO;
+	m_TargetKO = TargetKO;
 	if(simple_setter)
 		return;
 	UnsetCurrentOrder();
@@ -724,7 +715,7 @@ bool CShip::HasSpecial(SHIP_SPECIAL::Typ nAbility) const
 
 bool CShip::HasNothingToDo() const {
 	return (m_iCurrentOrder == SHIP_ORDER::AVOID || m_iCurrentOrder == SHIP_ORDER::ATTACK)
-		&& m_TargetKO[0] == CPoint(-1, -1) && m_iSpeed != 0;
+		&& m_TargetKO == CPoint(-1, -1) && m_iSpeed != 0;
 }
 
 bool CShip::NeedsRepair() const {
@@ -1300,7 +1291,7 @@ void CShip::Retreat(const CPoint& ptRetreatSector)
 	{
 		m_KO = ptRetreatSector;
 		// aktuell eingestellten Kurs löschen (nicht dass das Schiff wieder in den Gefahrensektor fliegt)
-		m_TargetKO[0] = CPoint(-1, -1);
+		m_TargetKO = CPoint(-1, -1);
 	}
 	// Schiff auf Meiden/Angriff stellen entsprechend seinem Typ
 	SetCurrentOrderAccordingToType();

@@ -200,7 +200,7 @@ public:
 		void SetCombatTactic(COMBAT_TACTIC::Typ nTactic);
 
 		//more complex setting
-		void SetTargetKO(const CPoint& TargetKO, int Index, const bool simple_setter = false);
+		void SetTargetKO(const CPoint& TargetKO, const bool simple_setter = false);
 		//Sets this ship's m_iCurrentOrder to AVOID if it's a civil ship and to ATTACK otherwise.
 		void SetCurrentOrderAccordingToType();
 		//Sets this ship's m_nCombatTactic to AVOID if it's a civil ship and to ATTACK otherwise.

@@ -219,10 +219,10 @@ void CShips::SetCloak(bool bCloakOn) {
 		i->second.SetCloak(bCloakOn);
 }
 
-void CShips::SetTargetKO(const CPoint& TargetKO, int Index, const bool simple_setter) {
-	m_Leader.SetTargetKO(TargetKO, Index, simple_setter);
+void CShips::SetTargetKO(const CPoint& TargetKO, const bool simple_setter) {
+	m_Leader.SetTargetKO(TargetKO, simple_setter);
 	for(CShips::iterator i = begin(); i != end(); ++i)
-		i->second.SetTargetKO(TargetKO, Index, simple_setter);
+		i->second.SetTargetKO(TargetKO, simple_setter);
 }
 
 void CShips::SetCombatTactic(COMBAT_TACTIC::Typ nTactic) {
