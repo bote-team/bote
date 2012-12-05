@@ -2508,8 +2508,7 @@ void CBotf2Doc::CalcSystemAttack()
 				}
 
 			// nur wenn das Schiff und Schiffe in der Flotte ungetarnt sind
-			if (ship.GetCloak() == TRUE || (ship.HasFleet() && ship.CheckOrder(SHIP_ORDER::ATTACK_SYSTEM) == FALSE))
-			{
+			if(!ship.CanHaveOrder(SHIP_ORDER::ATTACK_SYSTEM)) {
 				ship.SetCurrentOrder(SHIP_ORDER::ATTACK);
 				okay = FALSE;
 			}

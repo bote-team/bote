@@ -423,7 +423,7 @@ bool CShipAI::DoBombardSystem(CShips* pShip)
 		pShip->SetTargetKO(CPoint(-1, -1), 0);
 
 		// Wenn das Schiff bzw. Schiffe aus der Flotte getarnt sind, dann müssen diese erst enttarnt werden
-		if (pShip->GetCloak() || (pShip->HasFleet() && pShip->CheckOrder(SHIP_ORDER::ATTACK_SYSTEM) == FALSE))
+		if (!pShip->CanHaveOrder(SHIP_ORDER::ATTACK_SYSTEM))
 		{
 			// Schiff enttarnen
 			pShip->SetCurrentOrder(SHIP_ORDER::CLOAK);

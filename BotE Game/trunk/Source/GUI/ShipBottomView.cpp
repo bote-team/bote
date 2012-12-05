@@ -369,11 +369,8 @@ void CShipBottomView::OnDraw(CDC* dc)
 			// tarnen (hier beachten wenn es eine Flotte ist, dort schauen ob sich jedes Schiff in der Flotte auch
 			// tarnen kann)
 			if (m_iTimeCounter > (3 + counter) && m_iWhichMainShipOrderButton == 0 &&
-				// Ab hier check wegen Flotten, darum wirds lang
-				((!pDoc->CurrentShip()->second.HasFleet()
-				&& pDoc->CurrentShip()->second.GetStealthPower() > 3)
-				|| (pDoc->CurrentShip()->second.HasFleet()
-				&& pDoc->CurrentShip()->second.CheckOrder(SHIP_ORDER::CLOAK) == TRUE)))
+				// Ab hier check wegen Flotten
+				pDoc->CurrentShip()->second.CanHaveOrder(SHIP_ORDER::CLOAK))
 			{
 				g.DrawImage(m_pShipOrderButton, r.right-245, r.top+70+counter*35, 120, 30);
 				if (pDoc->CurrentShip()->second.GetCloak())
@@ -402,11 +399,8 @@ void CShipBottomView::OnDraw(CDC* dc)
 						|| pDoc->CurrentSystem().GetOwnerOfSystem() == "" && pDoc->CurrentSector().GetMinorRace() == FALSE)
 					{
 						// nur wenn die Schiffe ungetarnt sind kˆnnen sie Bombardieren
-						// Ab hier check wegen Flotten, darum wirds lang
-						if ((!pDoc->CurrentShip()->second.HasFleet()
-							&& pDoc->CurrentShip()->second.GetCloak() == FALSE)
-							|| (pDoc->CurrentShip()->second.HasFleet()
-							&& pDoc->CurrentShip()->second.CheckOrder(SHIP_ORDER::ATTACK_SYSTEM) == TRUE))
+						// Ab hier check wegen Flotten
+						if (pDoc->CurrentShip()->second.CanHaveOrder(SHIP_ORDER::ATTACK_SYSTEM))
 						{
 							g.DrawImage(m_pShipOrderButton, r.right-245, r.top+70, 120, 30);
 							s = CResourceManager::GetString("BTN_ATTACK_SYSTEM");
@@ -428,11 +422,8 @@ void CShipBottomView::OnDraw(CDC* dc)
 			}
 */			// Systemblockade
 			if (m_iTimeCounter > (3 + counter) && m_iWhichMainShipOrderButton == 1 &&
-				// Ab hier check wegen Flotten, darum wirds lang
-				((!pDoc->CurrentShip()->second.HasFleet()
-				&& pDoc->CurrentShip()->second.HasSpecial(SHIP_SPECIAL::BLOCKADESHIP))
-				|| (pDoc->CurrentShip()->second.HasFleet()
-				&& pDoc->CurrentShip()->second.CheckOrder(SHIP_ORDER::BLOCKADE_SYSTEM) == TRUE)))
+				// Ab hier check wegen Flotten
+				pDoc->CurrentShip()->second.CanHaveOrder(SHIP_ORDER::BLOCKADE_SYSTEM))
 			{
 				// ‹berpr¸fen ob man eine Blockade im System ¸berhaupt errichten kann
 				// Wenn das System nicht der Rasse gehˆrt, der auch das Schiff gehˆrt
@@ -512,11 +503,8 @@ void CShipBottomView::OnDraw(CDC* dc)
 			// der Flotte auch kolonisieren kann)
 			if (m_iTimeCounter > 3 && m_iWhichMainShipOrderButton == 2 &&
 				pDoc->CurrentShip()->second.GetCurrentOrder() != SHIP_ORDER::COLONIZE &&
-				// Ab hier check wegen Flotten, darum wirds lang
-				((!pDoc->CurrentShip()->second.HasFleet()
-				&& pDoc->CurrentShip()->second.GetColonizePoints() > 0)
-				|| (pDoc->CurrentShip()->second.HasFleet()
-				&& pDoc->CurrentShip()->second.CheckOrder(SHIP_ORDER::COLONIZE) == TRUE)))
+				// Ab hier check wegen Flotten
+				pDoc->CurrentShip()->second.CanHaveOrder(SHIP_ORDER::COLONIZE))
 			{
 				// Wenn das System uns bzw. niemanden gehˆrt kˆnnen wir nur kolonisieren
 				if (pDoc->CurrentSector().GetOwnerOfSector() == ""
@@ -536,12 +524,8 @@ void CShipBottomView::OnDraw(CDC* dc)
 			// Terraforming (hier beachten wenn es eine Flotte ist, dort schauen ob auch jedes Schiff in
 			// der Flotte auch terraformen kann)
 			if (m_iTimeCounter > (3 + counter) && m_iWhichMainShipOrderButton == 2 &&
-				//pDoc->CurrentShip().GetCurrentOrder() != TERRAFORM &&
-				// Ab hier check wegen Flotten, darum wirds lang
-				((!pDoc->CurrentShip()->second.HasFleet()
-				&& pDoc->CurrentShip()->second.GetColonizePoints() > 0)
-				|| (pDoc->CurrentShip()->second.HasFleet()
-				&& pDoc->CurrentShip()->second.CheckOrder(SHIP_ORDER::TERRAFORM) == TRUE)))
+				// Ab hier check wegen Flotten
+				pDoc->CurrentShip()->second.CanHaveOrder(SHIP_ORDER::TERRAFORM))
 
 			{
 				for (int l = 0; l < pDoc->CurrentSector().GetNumberOfPlanets(); l++)
@@ -563,10 +547,7 @@ void CShipBottomView::OnDraw(CDC* dc)
 				pDoc->CurrentShip()->second.GetCurrentOrder() != SHIP_ORDER::BUILD_STARBASE &&
 				// Ab hier check wegen Flotten, darum wirds lang (m¸ssen nur einen der Befehle (egal ob Outpost oder
 				// Starbase gebaut werden soll) ¸bergeben, weil wenn das eine geht, geht auch das andere
-				((!pDoc->CurrentShip()->second.HasFleet()
-				&& pDoc->CurrentShip()->second.GetStationBuildPoints() > 0)
-				|| (pDoc->CurrentShip()->second.HasFleet()
-				&& pDoc->CurrentShip()->second.CheckOrder(SHIP_ORDER::BUILD_OUTPOST) == TRUE)))
+				pDoc->CurrentShip()->second.CanHaveOrder(SHIP_ORDER::BUILD_OUTPOST))
 			{
 				CPoint ShipKO = pDoc->GetKO();
 				// hier schauen, ob ich in der Schiffsinfoliste schon einen Auﬂenposten habe den ich bauen kann, wenn in dem

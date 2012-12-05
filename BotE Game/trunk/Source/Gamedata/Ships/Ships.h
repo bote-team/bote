@@ -275,10 +275,9 @@ public:
 	//@return false if yes
 	bool NeedsRepair() const;
 
-	//// Diese Funktion liefert TRUE wenn die Flotte den "order" ausführen kann. Als Schiffszeiger muß das Schiff
-	//// übergeben werden, welches die Flotte beinhaltet. Kann die Flotte den Befehl nicht befolgen liefert die
-	//// Funktion FALSE zurück
-	BOOLEAN CheckOrder(SHIP_ORDER::Typ nOrder) const;
+	//// Diese Funktion liefert true wenn die Flotte den "order" ausführen kann.
+	//// Kann die Flotte den Befehl nicht befolgen liefert die Funktion false zurück
+	bool CanHaveOrder(SHIP_ORDER::Typ order) const;
 
 	////Do all ships in this fleet have the given tactic ?
 	bool AllOnTactic(COMBAT_TACTIC::Typ tactic) const;

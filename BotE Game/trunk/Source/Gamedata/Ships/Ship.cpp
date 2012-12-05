@@ -724,6 +724,41 @@ bool CShip::IsVeteran() const {
 	return GetExpLevel() >= 4;
 }
 
+bool CShip::CanHaveOrder(SHIP_ORDER::Typ order) const {
+	switch(order) {
+		case SHIP_ORDER::AVOID:
+		case SHIP_ORDER::ATTACK:
+		case SHIP_ORDER::DESTROY_SHIP:
+		case SHIP_ORDER::CREATE_FLEET:
+		case SHIP_ORDER::FOLLOW_SHIP:
+		case SHIP_ORDER::TRAIN_SHIP:
+		case SHIP_ORDER::WAIT_SHIP_ORDER:
+		case SHIP_ORDER::SENTRY_SHIP_ORDER:
+		case SHIP_ORDER::REPAIR:
+		case SHIP_ORDER::ASSIGN_FLAGSHIP:
+			return true;
+		case SHIP_ORDER::CLOAK: 
+			return GetStealthPower() >= 4;
+		case SHIP_ORDER::COLONIZE:
+		case SHIP_ORDER::TERRAFORM:
+			return GetColonizePoints() >= 1;
+		case SHIP_ORDER::BUILD_OUTPOST:
+		case SHIP_ORDER::BUILD_STARBASE:
+			return GetStationBuildPoints() >= 1;
+		case SHIP_ORDER::BLOCKADE_SYSTEM:
+			return HasSpecial(SHIP_SPECIAL::BLOCKADESHIP);
+		case SHIP_ORDER::ATTACK_SYSTEM:
+			return !GetCloak();
+		case SHIP_ORDER::TRANSPORT:
+			return GetStorageRoom() >= 1;
+		case SHIP_ORDER::RAID_SYSTEM:
+			return HasSpecial(SHIP_SPECIAL::RAIDER);
+		default://SHIP_ORDER::NONE and possibly added commands
+			assert(false);
+	}
+	return false;
+}
+
 //////////////////////////////////////////////////////////////////////
 // other functions
 //////////////////////////////////////////////////////////////////////

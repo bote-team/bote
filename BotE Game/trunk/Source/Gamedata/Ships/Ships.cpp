@@ -312,121 +312,18 @@ BYTE CShips::GetFleetStealthPower(const CShip* ship) const
 // bool statements about this fleet or the ship leading it, should be const
 //////////////////////////////////////////////////////////////////////
 
-// Diese Funktion liefert TRUE wenn die Flotte den "order" ausführen kann. Als Schiffszeiger muß das Schiff
-// übergeben werden, welches die Flotte beinhaltet. Kann die Flotte den Befehl nicht befolgen liefert die
-// Funktion FALSE zurück
-BOOLEAN CShips::CheckOrder(SHIP_ORDER::Typ nOrder) const
-{
-//
-//	Schiffsbefehle
-//	AVOID               0
-//	ATTACK              1
-//	CLOAK               2
-//	ATTACK_SYSTEM       3
-//	RAID_SYSTEM         4
-//	BLOCKADE_SYSTEM		5
-//	DESTROY_SHIP        6
-//	COLONIZE            7
-//	TERRAFORM           8
-//	BUILD_OUTPOST       9
-//	BUILD_STARBASE		10
-//	ASSIGN_FLAGSHIP     11
-//	CREATE_FLEET        12
-//	TRANSPORT			13
-//	FOLLOW_SHIP			14
-//	TRAIN_SHIP			15
-//	WAIT_SHIP_ORDER		16
-//	SENTRY_SHIP_ORDER	17
-//	REPAIR				18
-//
-	// AVOID, ATTACK, RAID_SYSTEM, DESTROY_SHIP, CREATE_FLEET, FOLLOW_SHIP, TRAIN_SHIP, WAIT_SHIP_ORDER, SENTRY_SHIP_ORDER, REPAIR
-	// können wenn möglich immer von jedem Schiff ausgeführt werden. Deshalb können wir hier immer
-	// ein TRUE zurückgeben bzw. es ist erst gar nicht nötig die "CheckOrder" Funktion aufzurufen
-	if (nOrder == SHIP_ORDER::AVOID || nOrder == SHIP_ORDER::ATTACK || nOrder == SHIP_ORDER::RAID_SYSTEM || nOrder == SHIP_ORDER::DESTROY_SHIP
-		|| nOrder == SHIP_ORDER::CREATE_FLEET || nOrder == SHIP_ORDER::FOLLOW_SHIP || nOrder == SHIP_ORDER::TRAIN_SHIP
-		|| nOrder == SHIP_ORDER::WAIT_SHIP_ORDER || nOrder == SHIP_ORDER::SENTRY_SHIP_ORDER
-		|| nOrder == SHIP_ORDER::REPAIR)
-		return TRUE;
-
-	// ASSIGN_FLAGSHIP und TRANSPORT können nicht als Befehl an eine Flotte gegeben werden, daher wird hier
-	// ein FALSE zurückgegeben
-	else if (nOrder == SHIP_ORDER::ASSIGN_FLAGSHIP || nOrder == SHIP_ORDER::TRANSPORT)
-		return FALSE;
-
-	// bei den restlichen Befehlen müssen wir einige Berechnungen anstellen.
-	else
+//// Diese Funktion liefert true wenn die Flotte den "order" ausführen kann.
+//// Kann die Flotte den Befehl nicht befolgen liefert die Funktion false zurück
+bool CShips::CanHaveOrder(SHIP_ORDER::Typ order) const {
+	if(HasFleet())
 	{
-		// Tarnen können wir die gesamte Flotte nur, wenn in ihr auch nur Schiffe vorkommen, die die Tarn-
-		// fähigkeit besitzen
-		if (nOrder == SHIP_ORDER::CLOAK)
-		{
-			if (m_Leader.GetStealthPower() < 4)
-				return FALSE;
-			for(CShips::const_iterator i = begin(); i != end(); ++i)
-			{
-				if (i->second.GetStealthPower() < 4)
-					return FALSE;
-			}
-			// Haben wir bis jetzt kein FALSE zurückgegeben kann sich jedes Schiff in der Flotte tarnen
-			// und wir können ein TRUE zurückgeben
-			return TRUE;
-		}
-		// Wenn der Befehl kolonisieren oder terraformen lautet kann das die gesamte Flotte nur, wenn jedes
-		// Schiff in der Flotte "ColonizePoints" beitzt
-		else if (nOrder == SHIP_ORDER::COLONIZE || nOrder == SHIP_ORDER::TERRAFORM)
-		{
-			if (m_Leader.GetColonizePoints() < 1)
-				return FALSE;
-			for(CShips::const_iterator i = begin(); i != end(); ++i)
-			{
-				if (i->second.GetColonizePoints() < 1)
-					return FALSE;
-			}
-			// Haben wir bis jetzt kein FALSE zurückgegeben besitzt jedes Schiff in der Flotte "ColonizePoints"
-			// und wir können ein TRUE zurückgeben
-			return TRUE;
-		}
-		// Wenn der Befehl Außenposten oder Sternbasis bauen lautet kann das die gesamte Flotte nur, wenn jedes
-		// Schiff in der Flotte "StationBuildPoints" beitzt
-		else if (nOrder == SHIP_ORDER::BUILD_OUTPOST || nOrder == SHIP_ORDER::BUILD_STARBASE)
-		{
-			if (m_Leader.GetStationBuildPoints() < 1)
-				return FALSE;
-			for(CShips::const_iterator i = begin(); i != end(); ++i)
-			{
-				if (i->second.GetStationBuildPoints() < 1)
-					return FALSE;
-			}
-			// Haben wir bis jetzt kein FALSE zurückgegeben besitzt jedes Schiff in der Flotte "StationBuildPoints"
-			// und wir können ein TRUE zurückgeben
-			return TRUE;
-		}
-		// Bei einem Blockadebefehl müssen alle Schiffe in der Flotte die Eigenschaft "Blockadeschiff" besitzen
-		else if (nOrder == SHIP_ORDER::BLOCKADE_SYSTEM)
-		{
-			if (!m_Leader.HasSpecial(SHIP_SPECIAL::BLOCKADESHIP))
-				return FALSE;
-			for(CShips::const_iterator i = begin(); i != end(); ++i)
-			{
-				if (!i->second.HasSpecial(SHIP_SPECIAL::BLOCKADESHIP))
-					return FALSE;
-			}
-			return TRUE;
-		}
-		// Bei einem Systemangriff müssen alle Schiffe in der Flotte ungetarnt sein
-		else if (nOrder == SHIP_ORDER::ATTACK_SYSTEM)
-		{
-			if (m_Leader.GetCloak())
-				return FALSE;
-			for(CShips::const_iterator i = begin(); i != end(); ++i)
-			{
-				if (i->second.GetCloak())
-					return FALSE;
-			}
-			return TRUE;
-		}
+		if (order == SHIP_ORDER::ASSIGN_FLAGSHIP)
+			return false;
+		for(CShips::const_iterator i = m_Fleet.begin(); i != m_Fleet.end(); ++i)
+			if(!i->second.CanHaveOrder(order))
+				return false;
 	}
-	return FALSE;
+	return m_Leader.CanHaveOrder(order);
 }
 
 bool CShips::AllOnTactic(COMBAT_TACTIC::Typ tactic) const {

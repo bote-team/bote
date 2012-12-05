@@ -225,6 +225,9 @@ public:
 	//experience >= 4 ?
 	bool IsVeteran() const;
 
+	//Is this ship allowed to have the order order according to its type and physical capabilities ?
+	bool CanHaveOrder(SHIP_ORDER::Typ order) const;
+
 	//////////////////////////////////////////////////////////////////////
 	// other functions
 	//////////////////////////////////////////////////////////////////////
