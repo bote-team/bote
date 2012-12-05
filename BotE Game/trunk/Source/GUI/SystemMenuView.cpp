@@ -916,7 +916,7 @@ void CSystemMenuView::DrawWorkersMenue(Graphics* g)
 		// Den Balken zeichnen
 		for (int i = WORKER::FOOD_WORKER; i <= WORKER::RESEARCH_WORKER; i++)
 		{
-			for (int j = 0; j < number[i]*7; j++)
+			for (int j = 0; j < number[i]; j++)
 			{
 				Color timberColor;
 				// Fragen ob die Gebäude noch online sind
