@@ -72,7 +72,7 @@ public:
 
 	//appends the passed CShipMap at the end of this shiparray
 	//@param other: the CShipMap to append
-	void Append(const CShipMap& other);
+	void Append(const CShipMap& other, const CShips* const adopt_orders_from = NULL);
 
 //////////////////////////////////////////////////////////////////////
 // removing elements

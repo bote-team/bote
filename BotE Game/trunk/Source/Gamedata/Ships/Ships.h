@@ -146,17 +146,13 @@ public:
 	// setting
 	//////////////////////////////////////////////////////////////////////
 
-	// Funktion übernimmt die Befehle des hier als Zeiger übergebenen Schiffsobjektes an alle Mitglieder der Flotte
-	//Affects the fleet only.
-	void AdoptCurrentOrders(const CShip* ship);
+	void AdoptOrdersFrom(const CShips& ship);
 	/*
 	 * Adds the given CShips to this CShips' fleet and propagates this CShips' leader's orders to the given
 	 * CShips' leader and fleet (both are in this CShips' fleet now).
 	**/
 	void AddShipToFleet(CShips& fleet);
 	void SetCurrentShip(const CShips::iterator& position);
-	//propagates this CShip's leading ship's orders to this CShip's fleet
-	void PropagateOrdersToFleet();
 	// Funktion um ein Schiff aus der Flotte zu entfernen.
 	void RemoveShipFromFleet(CShips::iterator& ship);
 	//// Funktion löscht die gesamte Flotte
@@ -177,7 +173,7 @@ public:
 		// zum Schreiben der Membervariablen
 		//simple setting
 		void SetID(USHORT ID) { m_Leader.SetID(ID);}
-		void SetKO(int x, int y) { m_Leader.SetKO(x, y);}
+		void SetKO(int x, int y);
 		void SetOwnerOfShip(const CString& sOwnerOfShip) { m_Leader.SetOwnerOfShip(sOwnerOfShip); }
 		void SetMaintenanceCosts(USHORT MaintenanceCosts) { m_Leader.SetMaintenanceCosts(MaintenanceCosts); }
 		void SetShipType(SHIP_TYPE::Typ nShipType) { m_Leader.SetShipType(nShipType); }
@@ -194,25 +190,23 @@ public:
 		void SetLoadedResources(USHORT add, BYTE res) { m_Leader.SetLoadedResources(add, res); }
 		void SetColonizePoints(BYTE ColonizePoints) { m_Leader.SetColonizePoints(ColonizePoints); }
 		void SetStationBuildPoints(BYTE StationBuildPoints) { m_Leader.SetStationBuildPoints(StationBuildPoints); }
-		void SetCurrentOrder(SHIP_ORDER::Typ nCurrentOrder) { m_Leader.SetCurrentOrder(nCurrentOrder); }
+		void SetCurrentOrder(SHIP_ORDER::Typ nCurrentOrder);
 		void SetSpecial(int n, SHIP_SPECIAL::Typ nAbility) { m_Leader.SetSpecial(n, nAbility); }
-		void SetTerraformingPlanet(short planetNumber) { m_Leader.SetTerraformingPlanet(planetNumber); }
+		void SetTerraformingPlanet(short planetNumber);
 		void SetShipName(const CString& ShipName) { m_Leader.SetShipName(ShipName); }
 		void SetShipDescription(const CString& ShipDescription) { m_Leader.SetShipDescription(ShipDescription); }
 		void SetShipClass(const CString& ShipClass) { m_Leader.SetShipClass(ShipClass); }
 		void SetIsShipFlagShip(bool bIs) { m_Leader.SetIsShipFlagShip(bIs); }
-		void SetCombatTactic(COMBAT_TACTIC::Typ nTactic) { m_Leader.SetCombatTactic(nTactic); }
+		void SetCombatTactic(COMBAT_TACTIC::Typ nTactic);
 
 		//more complex setting
-		void SetTargetKO(const CPoint& TargetKO, int Index, const bool simple_setter = false) {
-			m_Leader.SetTargetKO(TargetKO, Index, simple_setter);
-		}
+		void SetTargetKO(const CPoint& TargetKO, int Index, const bool simple_setter = false);
 		//Sets this ship's m_iCurrentOrder to AVOID if it's a civil ship and to ATTACK otherwise.
-		void SetCurrentOrderAccordingToType() { m_Leader.SetCurrentOrderAccordingToType(); }
+		void SetCurrentOrderAccordingToType();
 		//Sets this ship's m_nCombatTactic to AVOID if it's a civil ship and to ATTACK otherwise.
-		void SetCombatTacticAccordingToType() { m_Leader.SetCombatTacticAccordingToType(); }
+		void SetCombatTacticAccordingToType();
 		//Sets the current order according to m_nCombatTactic
-		void UnsetCurrentOrder(bool apply_to_fleet = false);
+		void UnsetCurrentOrder();
 
 	//////////////////////////////////////////////////////////////////////
 	// calculated stements about this fleet (should be const functions, non-bool returning)

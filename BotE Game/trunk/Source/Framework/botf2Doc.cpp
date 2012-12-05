@@ -2509,7 +2509,7 @@ void CBotf2Doc::CalcSystemAttack()
 
 			// nur wenn das Schiff und Schiffe in der Flotte ungetarnt sind
 			if(!ship.CanHaveOrder(SHIP_ORDER::ATTACK_SYSTEM)) {
-				ship.SetCurrentOrder(SHIP_ORDER::ATTACK);
+				ship.UnsetCurrentOrder();
 				okay = FALSE;
 			}
 
@@ -3756,10 +3756,6 @@ void CBotf2Doc::CalcShipOrders()
 		if (y->second.GetCurrentOrder() == SHIP_ORDER::TERRAFORM && y->second.GetTerraformingPlanet() == -1)
 			y->second.UnsetCurrentOrder();
 
-		// Haben wir eine Flotte, den aktuellen Befehl an alle Schiffe in der Flotte weitergeben
-		if (y->second.HasFleet())
-			y->second.PropagateOrdersToFleet();
-
 		 // Planet soll kolonisiert werden
 		if (y->second.GetCurrentOrder() == SHIP_ORDER::COLONIZE)
 		{
@@ -3824,8 +3820,6 @@ void CBotf2Doc::CalcShipOrders()
 					{
 						y->second.SetCurrentOrder(SHIP_ORDER::AVOID);
 						y->second.SetTerraformingPlanet(-1);
-						if (y->second.HasFleet())
-							y->second.PropagateOrdersToFleet();
 						continue;
 					}
 				}
@@ -3843,8 +3837,6 @@ void CBotf2Doc::CalcShipOrders()
 					{
 						y->second.SetCurrentOrder(SHIP_ORDER::AVOID);
 						y->second.SetTerraformingPlanet(-1);
-						if (y->second.HasFleet())
-							y->second.PropagateOrdersToFleet();
 						continue;
 					}
 				}
@@ -3905,8 +3897,6 @@ void CBotf2Doc::CalcShipOrders()
 				// Schiff entfernen
 				y->second.SetCurrentOrder(SHIP_ORDER::AVOID);
 				y->second.SetTerraformingPlanet(-1);
-				if (y->second.HasFleet())
-					y->second.PropagateOrdersToFleet();
 				RemoveShip(y);
 				increment = false;
 				continue;
@@ -3955,8 +3945,6 @@ void CBotf2Doc::CalcShipOrders()
 			{
 				y->second.SetCurrentOrder(SHIP_ORDER::AVOID);
 				y->second.SetTerraformingPlanet(-1);
-				if (y->second.HasFleet())
-					y->second.PropagateOrdersToFleet();
 			}
 			// Wenn das Schiff eine Flotte anf?hrt, dann k?nnen auch die Schiffe in der Flotte ihre Terraformpunkte mit
 			// einbringen
@@ -3973,7 +3961,6 @@ void CBotf2Doc::CalcShipOrders()
 						{
 							y->second.SetCurrentOrder(SHIP_ORDER::AVOID);
 							y->second.SetTerraformingPlanet(-1);
-							y->second.PropagateOrdersToFleet();
 							// Nachricht generieren, dass Terraforming abgeschlossen wurde
 							CString s = CResourceManager::GetString("TERRAFORMING_FINISHED",FALSE,pSector->GetName());
 							CMessage message;
@@ -3999,7 +3986,6 @@ void CBotf2Doc::CalcShipOrders()
 					{
 						y->second.SetCurrentOrder(SHIP_ORDER::AVOID);
 						y->second.SetTerraformingPlanet(-1);
-						y->second.PropagateOrdersToFleet();
 						break;
 					}
 				}//for (CShips::const_iterator x = y->second.begin(); x != y->second.end(); ++x)
@@ -4118,7 +4104,7 @@ void CBotf2Doc::CalcShipOrders()
 									y->second.RemoveShipFromFleet(x);
 									BuildShip(id, pSector->GetKO(), y->second.GetOwnerOfShip());
 									// Wenn hier ein Au?enposten gebaut wurde den Befehl f?r die Flotte auf Meiden stellen
-									y->second.SetCurrentOrder(SHIP_ORDER::AVOID);
+									y->second.UnsetCurrentOrder();
 									break;
 								}
 								else
@@ -4162,7 +4148,7 @@ void CBotf2Doc::CalcShipOrders()
 							BuildShip(id, pSector->GetKO(), y->second.GetOwnerOfShip());
 
 							// Wenn hier ein Aussenposten gebaut wurde den Befehl für die Flotte auf Meiden stellen
-							y->second.SetCurrentOrder(SHIP_ORDER::AVOID);
+							y->second.UnsetCurrentOrder();
 							RemoveShip(y);
 							increment = false;
 							continue;
@@ -4170,10 +4156,10 @@ void CBotf2Doc::CalcShipOrders()
 					}
 				}
 				else
-					y->second.SetCurrentOrder(SHIP_ORDER::AVOID);
+					y->second.UnsetCurrentOrder();
 			}
 			else
-				y->second.SetCurrentOrder(SHIP_ORDER::AVOID);
+				y->second.UnsetCurrentOrder();
 		}
 		// hier wird eine Sternbasis gebaut
 		else if (y->second.GetCurrentOrder() == SHIP_ORDER::BUILD_STARBASE)	// es soll eine Sternbasis gebaut werden
@@ -4283,7 +4269,7 @@ void CBotf2Doc::CalcShipOrders()
 											break;
 										}
 									// Wenn hier eine Station gebaut wurde den Befehl für die Flotte auf Meiden stellen
-									y->second.SetCurrentOrder(SHIP_ORDER::AVOID);
+									y->second.UnsetCurrentOrder();
 									break;
 								}
 								else
@@ -4327,7 +4313,7 @@ void CBotf2Doc::CalcShipOrders()
 							// Sternbasis bauen
 							BuildShip(id, pSector->GetKO(), y->second.GetOwnerOfShip());
 							// Wenn hier eine Station gebaut wurde den Befehl für die Flotte auf Meiden stellen
-							y->second.SetCurrentOrder(SHIP_ORDER::AVOID);
+							y->second.UnsetCurrentOrder();
 							RemoveShip(y);
 							increment = false;
 
@@ -4345,10 +4331,10 @@ void CBotf2Doc::CalcShipOrders()
 					}
 				}
 				else
-					y->second.SetCurrentOrder(SHIP_ORDER::AVOID);
+					y->second.UnsetCurrentOrder();
 			}
 			else
-				y->second.SetCurrentOrder(SHIP_ORDER::AVOID);
+				y->second.UnsetCurrentOrder();
 		}
 		// Wenn wir das Schiff abracken/zerst?ren/demontieren wollen
 		else if (y->second.GetCurrentOrder() == SHIP_ORDER::DESTROY_SHIP)	// das Schiff wird demontiert
@@ -4405,7 +4391,6 @@ void CBotf2Doc::CalcShipOrders()
 				pSector->SetStarbase(FALSE, y->second.GetOwnerOfShip());
 			}
 
-			y->second.SetCurrentOrder(SHIP_ORDER::AVOID);
 			m_ShipMap.EraseAt(y);
 			increment = false;
 			continue;	// continue, damit wir am Ende der Schleife nicht sagen, dass ein Schiff im Sektor ist
@@ -4456,7 +4441,7 @@ void CBotf2Doc::CalcShipOrders()
 			//TODO magic number, bad
 			assert(y->second.GetStealthPower() >= 4);
 			y->second.SetCloak(!y->second.GetCloak());
-			y->second.UnsetCurrentOrder(true);
+			y->second.UnsetCurrentOrder();
 		}
 		// Blockadebefehl
 		else if (y->second.GetCurrentOrder() == SHIP_ORDER::BLOCKADE_SYSTEM)
@@ -4497,11 +4482,7 @@ void CBotf2Doc::CalcShipOrders()
 				}
 			// kann der Blockadebefehl nicht mehr ausgeführt werden, so wird der Befehl automatisch gelöscht
 			if (!blockadeStillActive)
-			{
 				y->second.SetCurrentOrder(SHIP_ORDER::ATTACK);
-				if (y->second.HasFleet())
-					y->second.PropagateOrdersToFleet();
-			}
 			// wird das System schlussendlich blockiert, so produzieren die Handelsrouten kein Credits mehr
 			if (pSystem->GetBlockade() > NULL)
 			{
@@ -4727,9 +4708,6 @@ void CBotf2Doc::CalcShipMovement()
 		//If we declared war and are on a shipport of the former friend, the ship is repaired,
 		//and a possible repair command isn't unset though it can no longer be set by the player this turn then.
 		pShip->Repair(GetSector(pShip->GetKO().x, pShip->GetKO().y).GetShipPort(pShip->GetOwnerOfShip()), bFasterShieldRecharge);
-		// Befehle an alle Schiffe in der Flotte weitergeben
-		if (pShip->HasFleet())
-			pShip->PropagateOrdersToFleet();
 
 		// wenn eine Anomalie vorhanden, deren m?gliche Auswirkungen auf das Schiff berechnen
 		if (GetSector(pShip->GetKO().x, pShip->GetKO().y).GetAnomaly())

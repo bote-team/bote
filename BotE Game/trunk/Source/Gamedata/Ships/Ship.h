@@ -275,7 +275,6 @@ protected:
 	CArray<CBeamWeapons,CBeamWeapons>		m_BeamWeapons;		// die Beamfirebewaffnung des Schiffes
 
 	USHORT m_iID;						// ID des Schiffes
-	SHIP_ORDER::Typ m_iCurrentOrder;	// Aktueller Befehl des Schiffes, nutze dazu enum
 	USHORT m_iMaintenanceCosts;			// Unterhaltskosten des Schiffes pro Runde
 	SHIP_TYPE::Typ m_iShipType;			// Schiffstype, siehe Options.h
 	SHIP_SIZE::Typ m_nShipSize;			// Die Größe des Schiffes
@@ -294,6 +293,7 @@ protected:
 	CString m_strShipClass;				// Der Name der Schiffsklasse
 
 private:
+	SHIP_ORDER::Typ m_iCurrentOrder;	// Aktueller Befehl des Schiffes, nutze dazu enum
 	CString m_sOwnerOfShip;				// Besitzer des Schiffes
 	CPoint m_KO;						// Koordinate des Schiffes im Raum (welcher Sector?)
 	CPoint m_TargetKO[4];				// Der Zielkurs des Schiffes

@@ -128,6 +128,12 @@ CShips& CShips::at(unsigned key) {
 // setting
 //////////////////////////////////////////////////////////////////////
 
+void CShips::SetKO(int x, int y) {
+	m_Leader.SetKO(x, y);
+	for(CShips::iterator i = begin(); i != end(); ++i)
+		i->second.SetKO(x, y);
+}
+
 //removes the element pointed to by the passed iterator from this fleet
 //@param index: will be updated and point to the new position of the element which followed the erased one
 void CShips::RemoveShipFromFleet(CShips::iterator& ship)
@@ -149,10 +155,11 @@ void CShips::Reset(void) {
 }
 
 // Funktion übernimmt die Befehle des hier als Zeiger übergebenen Schiffsobjektes an alle Mitglieder der Flotte
-void CShips::AdoptCurrentOrders(const CShip* ship)
+void CShips::AdoptOrdersFrom(const CShips& ship)
 {
+	m_Leader.AdoptOrdersFrom(ship.Leader());
 	for(CShips::iterator i = begin(); i != end(); ++i) {
-		i->second.m_Leader.AdoptOrdersFrom(*ship);
+		i->second.AdoptOrdersFrom(ship);
 	}
 }
 
@@ -172,8 +179,7 @@ void CShips::AddShipToFleet(CShips& fleet) {
 				m_Leader.GetShipName());
 			MYTRACE("ships")(MT::LEVEL_INFO, s);
 		}
-		m_Fleet.Append(fleet.m_Fleet);
-		PropagateOrdersToFleet();
+		m_Fleet.Append(fleet.m_Fleet, this);
 		fleet.Reset();
 	}
 }
@@ -187,11 +193,6 @@ void CShips::SetCurrentShip(const CShips::iterator& position)
 	}
 	m_bLeaderIsCurrent = false;
 	m_Fleet.SetCurrentShip(position);
-}
-
-void CShips::PropagateOrdersToFleet()
-{
-	AdoptCurrentOrders(&m_Leader);
 }
 
 void CShips::ApplyTraining(int XP) {
@@ -225,11 +226,46 @@ void CShips::SetCloak(bool bCloakOn) {
 		i->second.SetCloak(bCloakOn);
 }
 
-void CShips::UnsetCurrentOrder(bool apply_to_fleet) {
+void CShips::SetTargetKO(const CPoint& TargetKO, int Index, const bool simple_setter) {
+	m_Leader.SetTargetKO(TargetKO, Index, simple_setter);
+	for(CShips::iterator i = begin(); i != end(); ++i)
+		i->second.SetTargetKO(TargetKO, Index, simple_setter);
+}
+
+void CShips::SetCombatTactic(COMBAT_TACTIC::Typ nTactic) {
+	m_Leader.SetCombatTactic(nTactic);
+	for(CShips::iterator i = begin(); i != end(); ++i)
+		i->second.SetCombatTactic(nTactic);
+}
+
+void CShips::SetTerraformingPlanet(short planetNumber) { 
+	m_Leader.SetTerraformingPlanet(planetNumber); 
+	for(CShips::iterator i = begin(); i != end(); ++i)
+		i->second.SetTerraformingPlanet(planetNumber);
+}
+
+void CShips::SetCurrentOrder(SHIP_ORDER::Typ nCurrentOrder) {
+	m_Leader.SetCurrentOrder(nCurrentOrder);
+	for(CShips::iterator i = begin(); i != end(); ++i)
+		i->second.SetCurrentOrder(nCurrentOrder);
+}
+
+void CShips::SetCurrentOrderAccordingToType() {
+	m_Leader.SetCurrentOrderAccordingToType();
+	for(CShips::iterator i = begin(); i != end(); ++i)
+		i->second.SetCurrentOrderAccordingToType();
+}
+
+void CShips::SetCombatTacticAccordingToType() {
+	m_Leader.SetCombatTacticAccordingToType();
+	for(CShips::iterator i = begin(); i != end(); ++i)
+		i->second.SetCombatTacticAccordingToType();
+}
+
+void CShips::UnsetCurrentOrder() {
 	m_Leader.UnsetCurrentOrder();
-	if(apply_to_fleet)
-		for(CShips::iterator i = begin(); i != end(); ++i)
-			i->second.UnsetCurrentOrder();
+	for(CShips::iterator i = begin(); i != end(); ++i)
+		i->second.UnsetCurrentOrder();
 }
 
 //////////////////////////////////////////////////////////////////////
