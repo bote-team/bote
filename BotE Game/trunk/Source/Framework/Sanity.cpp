@@ -77,6 +77,15 @@ static void SanityCheckShip(const CShip& ship)
 			co.x, co.y);
 		Notify(s);
 	}
+	if(!ship.CanHaveOrder(ship.GetCurrentOrder())) {
+		CString s;
+		s.Format("The %s from %s at (%u, %u) has order %s which it should not be allowed to have!",
+			ship.GetCurrentOrderAsString(),
+			ship.GetShipName(),
+			ship.GetOwnerOfShip(),
+			co.x, co.y);
+		Notify(s);
+	}
 }
 
 void CSanity::SanityCheckFleet(const CShips& ship)
