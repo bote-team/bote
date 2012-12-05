@@ -205,19 +205,12 @@ void CShips::ApplyTraining(int XP) {
 		i->second.m_Leader.ApplyTraining(XP, veteran);
 }
 
-bool CShips::UnassignFlagship() {
-	// überprüfen ob ein Flagschiff in einer Flotte ist
-	for(CShips::iterator i = begin(); i != end(); ++i)
-	{
-		if(i->second.UnassignFlagship())
-			return true;;
+bool CShips::UnassignFlagship(CShip::UNASSIGN_FLAGSHIP_MODE mode) {
+	for(CShips::iterator i = begin(); i != end(); ++i) {
+		if(i->second.UnassignFlagship(mode))
+			return true;
 	}
-	if (m_Leader.GetIsShipFlagShip())
-	{
-		m_Leader.SetIsShipFlagShip(FALSE);
-		return true;
-	}
-	return false;
+	return m_Leader.UnassignFlagship(mode);
 }
 
 void CShips::SetCloak(bool bCloakOn) {

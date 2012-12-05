@@ -882,24 +882,9 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 					// Titel wegnehmen
 					for (CShipMap::iterator n = pDoc->m_ShipMap.begin(); n != pDoc->m_ShipMap.end(); ++n)
 						if (n->second.GetOwnerOfShip() == pDoc->CurrentShip()->second.GetOwnerOfShip())
-						{
-							if (n->second.GetCurrentOrder() == SHIP_ORDER::ASSIGN_FLAGSHIP)
-							{
-								n->second.SetCurrentOrder(SHIP_ORDER::ATTACK);
+							if(n->second.UnassignFlagship(CShip::UNASSIGN_FLAGSHIP_MODE_ORDER))
 								break;
-							}
-							// überprüfen ob ein Flagschiff in einer Flotte ist
-							else if (n->second.HasFleet())
-							{
-								for (CShips::iterator m = n->second.begin(); m != n->second.end(); ++m)
-									if (m->second.GetCurrentOrder() == SHIP_ORDER::ASSIGN_FLAGSHIP)
-									{
-										m->second.SetCurrentOrder(SHIP_ORDER::ATTACK);
-										break;
-									}
-							}
-						}
-						pDoc->CurrentShip()->second.SetCurrentOrder(SHIP_ORDER::ASSIGN_FLAGSHIP);
+					pDoc->CurrentShip()->second.SetCurrentOrder(SHIP_ORDER::ASSIGN_FLAGSHIP);
 				}
 				// Bei einem Transportbefehl muss in der MainView auch die Transportansicht angeblendet werden
 				else if (nOrder == SHIP_ORDER::TRANSPORT)

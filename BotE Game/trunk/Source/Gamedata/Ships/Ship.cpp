@@ -440,6 +440,20 @@ void CShip::ApplyTraining(int XP, bool veteran) {
 		SetCrewExperiance(XP * 2);
 }
 
+bool CShip::UnassignFlagship(UNASSIGN_FLAGSHIP_MODE mode) {
+	if(mode == UNASSIGN_FLAGSHIP_MODE_STATUS) {
+		const bool is = GetIsShipFlagShip();
+		SetIsShipFlagShip(false);
+		return is;
+	}
+	assert(mode == UNASSIGN_FLAGSHIP_MODE_ORDER);
+	if(m_iCurrentOrder == SHIP_ORDER::ASSIGN_FLAGSHIP) {
+		UnsetCurrentOrder();
+		return true;
+	}
+	return false;
+}
+
 void CShip::SetCloak(bool bCloakOn) {
 	if(GetStealthPower() < 4) {
 		assert(!m_bCloakOn);

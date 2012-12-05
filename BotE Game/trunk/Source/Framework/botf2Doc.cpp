@@ -4410,7 +4410,7 @@ void CBotf2Doc::CalcShipOrders()
 			{
 				if (n->second.GetOwnerOfShip() != y->second.GetOwnerOfShip())
 					continue;
-				n->second.UnassignFlagship();
+				n->second.UnassignFlagship(CShip::UNASSIGN_FLAGSHIP_MODE_STATUS);
 			}
 			// Jetzt das neue Schiff zum Flagschiff ernennen
 			y->second.SetIsShipFlagShip(TRUE);
