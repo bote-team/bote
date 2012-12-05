@@ -419,7 +419,9 @@ CString CShip::GetCurrentTargetAsString() const
 
 void CShip::AdoptOrdersFrom(const CShip& ship)
 {
-	m_iCurrentOrder = ship.GetCurrentOrder();
+	SHIP_ORDER::Typ order = ship.GetCurrentOrder();
+	if(CanHaveOrder(order) && order != SHIP_ORDER::ASSIGN_FLAGSHIP)
+		m_iCurrentOrder = order;
 	m_nCombatTactic = ship.GetCombatTactic();
 	m_KO = ship.GetKO();
 	m_TargetKO[0] = ship.GetTargetKO();
