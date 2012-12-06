@@ -485,13 +485,34 @@ Für den Erfahrungsgewinn gibt es mehrere Möglichkeiten:
 	SetCrewExperiance(expAdd);
 }
 
+//when setting a ship target, some running orders need to be unset if they're active
+//this function calculates whether that's needed
+static bool ShouldUnsetOrder(SHIP_ORDER::Typ order) {
+	switch(order) {
+		case SHIP_ORDER::ATTACK_SYSTEM:
+		case SHIP_ORDER::BLOCKADE_SYSTEM:
+		case SHIP_ORDER::COLONIZE:
+		case SHIP_ORDER::TERRAFORM:
+		case SHIP_ORDER::BUILD_OUTPOST:
+		case SHIP_ORDER::BUILD_STARBASE:
+		case SHIP_ORDER::TRAIN_SHIP:
+		case SHIP_ORDER::WAIT_SHIP_ORDER:
+		case SHIP_ORDER::SENTRY_SHIP_ORDER:
+		case SHIP_ORDER::REPAIR:
+			return true;
+	}
+	return false;
+}
+
 void CShip::SetTargetKO(const CPoint& TargetKO, const bool simple_setter)
 {
 	m_TargetKO = TargetKO;
 	if(simple_setter)
 		return;
-	UnsetCurrentOrder();
-	m_nTerraformingPlanet = -1;
+	if(TargetKO != CPoint(-1, -1) && ShouldUnsetOrder(m_iCurrentOrder)) {
+		UnsetCurrentOrder();
+		m_nTerraformingPlanet = -1;
+	}
 }
 
 void CShip::SetCurrentOrderAccordingToType() {
