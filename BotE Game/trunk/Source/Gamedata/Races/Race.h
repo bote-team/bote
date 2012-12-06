@@ -14,6 +14,8 @@
 #include "Options.h"
 #include "AI\DiplomacyAI.h"
 
+class CShip;
+
 using namespace std;
 
 enum RaceProberties
@@ -199,6 +201,9 @@ public:
 
 	bool CanBeContactedBy(const CString& sRaceID) const;
 	virtual void Contact(const CRace& Race, const CPoint& p);
+
+	virtual void AddToLostShipHistory(const CShip& Ship, const CString& sEvent, const CString& sStatus,
+		const CBotf2Doc& doc, unsigned short round);
 
 	/// Funktion zum Setzen von Spezialeigenschaften der Rasse.
 	/// @param ability Spezialeigenschaft

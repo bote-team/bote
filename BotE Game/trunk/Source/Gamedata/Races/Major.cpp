@@ -486,3 +486,10 @@ bool CMajor::AHumanPlays() const {
 
 	return doc.GetCurrentRound() > clp.GetAutoTurns();
 }
+
+void CMajor::AddToLostShipHistory(const CShip& Ship, const CString& sEvent,
+	const CString& sStatus, const CBotf2Doc& doc, unsigned short round)
+{
+	const CPoint& co = Ship.GetKO();
+	m_ShipHistory.ModifyShip(&Ship, doc.GetSector(co.x, co.y).GetName(TRUE), round, sEvent, sStatus);
+}

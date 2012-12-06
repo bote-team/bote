@@ -115,6 +115,12 @@ public:
 
 	virtual void Contact(const CRace& Race, const CPoint& p);
 
+	/// Funktion fügt ein Schiff zur Liste der verlorenen Schiffe in der Schiffshistory ein.
+	/// @param sEvent Ereignis warum Schiff weg/zerstört/verschwunden ist
+	/// @param sStatus Status des Schiffes (meist zerstört)
+	virtual void AddToLostShipHistory(const CShip& Ship, const CString& sEvent, const CString& sStatus,
+		const CBotf2Doc& doc, unsigned short round);
+
 	/// Funktion gibt zurück, ob die Hauptrasse einen Verteidigungspakt mit einer anderen Hauptrasse
 	/// aufrechterhält.
 	/// @param pRaceID Rassen-ID der anderen Hauptrasse

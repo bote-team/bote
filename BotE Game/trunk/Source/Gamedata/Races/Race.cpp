@@ -488,3 +488,8 @@ void CRace::Contact(const CRace& Race, const CPoint& /*p*/) {
 	assert(!IsRaceContacted(sContactedRaceID));
 	SetIsRaceContacted(sContactedRaceID, true);
 }
+
+void CRace::AddToLostShipHistory(const CShip& /*Ship*/, const CString& /*sEvent*/, const CString& /*sStatus*/,
+	const CBotf2Doc& /*doc*/, unsigned short /*round*/)
+{
+}

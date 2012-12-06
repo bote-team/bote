@@ -230,11 +230,6 @@ public:
 	/// @param pShipOwner Zeiger auf den Besitzer des Schiffes
 	void AddSpecialResearchBoniToShip(CShip* pShip, CMajor* pShipOwner) const;
 
-	/// Funktion fügt ein Schiff zur Liste der verlorenen Schiffe in der Schiffshistory ein.
-	/// @param sEvent Ereignis warum Schiff weg/zerstört/verschwunden ist
-	/// @param sStatus Status des Schiffes (meist zerstört)
-	void AddToLostShipHistory(const CShip* pShip, const CString& sEvent, const CString& sStatus);
-
 	/// Funktion generiert die Starmaps, so wie sie nach Rundenberechnung auch angezeigt werden können.
 	/// @param sOnlyForRaceID wenn dieser Wert gesetzt, wird die Starmap nur für diese Rasse neu berechnet
 	void GenerateStarmap(const CString& sOnlyForRaceID = "");
