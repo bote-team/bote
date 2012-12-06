@@ -238,6 +238,13 @@ public:
 	//Is this ship allowed to have the order order according to its type and physical capabilities ?
 	bool CanHaveOrder(SHIP_ORDER::Typ order, bool require_new) const;
 
+private:
+	bool CanTakeOverOrder(SHIP_ORDER::Typ order) const {
+		//ASSIGN_FLAGSHIP is always unique to a single ship
+		return CanHaveOrder(order, true) && order != SHIP_ORDER::ASSIGN_FLAGSHIP;
+	}
+public:
+
 	//////////////////////////////////////////////////////////////////////
 	// other functions
 	//////////////////////////////////////////////////////////////////////
@@ -253,6 +260,7 @@ public:
 			bool bDeactivatedShipScanner, bool bBetterScanner, bool fleetship);
 
 	CString SanityCheckUniqueness(std::set<CString>& already_encountered) const;
+	bool SanityCheckOrdersConsistency(const CShip& with) const;
 
 	/// Funktion erstellt eine Tooltipinfo vom Schiff
 	/// @param info wenn dieser Parameter nicht NULL ist dann werden Informationen über die angeführte Flotte angezeigt, sonst nur über das Schiff

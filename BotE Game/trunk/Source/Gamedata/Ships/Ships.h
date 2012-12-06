@@ -329,6 +329,7 @@ public:
 	void CalcExp() { m_Leader.CalcExp(); };
 
 	CString SanityCheckUniqueness(std::set<CString>& already_encountered) const;
+	bool SanityCheckOrdersConsistency() const;
 
 	////uses this CShips's fleet's first ship to make a leading ship, which has the remaining ships of this CShips's
 	////fleet as its fleet, and returns the new CShips

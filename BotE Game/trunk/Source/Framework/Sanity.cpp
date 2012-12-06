@@ -95,6 +95,8 @@ void CSanity::SanityCheckFleet(const CShips& ship)
 		assert(!i->second.HasFleet());
 		SanityCheckShip(i->second.Leader());
 	}
+	if(!ship.SanityCheckOrdersConsistency())
+		Notify("inconsistent orders!");
 }
 
 void CSanity::CheckShipUniqueness(const CShips& ship, std::set<CString>& already_encountered) {

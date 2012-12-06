@@ -408,7 +408,7 @@ CString CShip::GetCurrentTargetAsString() const
 void CShip::AdoptOrdersFrom(const CShip& ship)
 {
 	SHIP_ORDER::Typ order = ship.GetCurrentOrder();
-	if(CanHaveOrder(order, true) && order != SHIP_ORDER::ASSIGN_FLAGSHIP)
+	if(CanTakeOverOrder(order))
 		m_iCurrentOrder = order;
 	m_nCombatTactic = ship.GetCombatTactic();
 	m_KO = ship.GetKO();
@@ -1388,4 +1388,14 @@ CString CShip::SanityCheckUniqueness(std::set<CString>& already_encountered) con
 		return CString();
 	}
 	return m_strShipName;
+}
+
+bool CShip::SanityCheckOrdersConsistency(const CShip& with) const {
+	if(CanTakeOverOrder(with.m_iCurrentOrder))
+		if(m_iCurrentOrder != with.m_iCurrentOrder)
+			return false;
+	return m_nCombatTactic == with.m_nCombatTactic
+		&& m_KO == with.m_KO
+		&& m_TargetKO == with.m_TargetKO
+		&& m_nTerraformingPlanet == with.m_nTerraformingPlanet;
 }
