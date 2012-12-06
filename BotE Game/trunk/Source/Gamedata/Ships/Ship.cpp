@@ -408,7 +408,7 @@ CString CShip::GetCurrentTargetAsString() const
 void CShip::AdoptOrdersFrom(const CShip& ship)
 {
 	SHIP_ORDER::Typ order = ship.GetCurrentOrder();
-	if(CanHaveOrder(order) && order != SHIP_ORDER::ASSIGN_FLAGSHIP)
+	if(CanHaveOrder(order, true) && order != SHIP_ORDER::ASSIGN_FLAGSHIP)
 		m_iCurrentOrder = order;
 	m_nCombatTactic = ship.GetCombatTactic();
 	m_KO = ship.GetKO();
@@ -730,7 +730,9 @@ bool CShip::IsVeteran() const {
 	return GetExpLevel() >= 4;
 }
 
-bool CShip::CanHaveOrder(SHIP_ORDER::Typ order) const {
+bool CShip::CanHaveOrder(SHIP_ORDER::Typ order, bool require_new) const {
+	if(require_new && m_iCurrentOrder == order)
+		return false;
 	switch(order) {
 		case SHIP_ORDER::AVOID:
 		case SHIP_ORDER::ATTACK:
@@ -740,9 +742,11 @@ bool CShip::CanHaveOrder(SHIP_ORDER::Typ order) const {
 		case SHIP_ORDER::TRAIN_SHIP:
 		case SHIP_ORDER::WAIT_SHIP_ORDER:
 		case SHIP_ORDER::SENTRY_SHIP_ORDER:
-		case SHIP_ORDER::REPAIR:
-		case SHIP_ORDER::ASSIGN_FLAGSHIP:
 			return true;
+		case SHIP_ORDER::REPAIR:
+			return NeedsRepair();
+		case SHIP_ORDER::ASSIGN_FLAGSHIP:
+			return !m_bIsFlagShip;
 		case SHIP_ORDER::ENCLOAK: 
 		case SHIP_ORDER::DECLOAK:
 			return GetStealthPower() >= 4;
@@ -750,8 +754,9 @@ bool CShip::CanHaveOrder(SHIP_ORDER::Typ order) const {
 		case SHIP_ORDER::TERRAFORM:
 			return GetColonizePoints() >= 1;
 		case SHIP_ORDER::BUILD_OUTPOST:
+			return m_iStationBuildPoints >= 1 && m_iCurrentOrder != SHIP_ORDER::BUILD_STARBASE;
 		case SHIP_ORDER::BUILD_STARBASE:
-			return GetStationBuildPoints() >= 1;
+			return m_iStationBuildPoints >= 1 && m_iCurrentOrder != SHIP_ORDER::BUILD_OUTPOST;
 		case SHIP_ORDER::BLOCKADE_SYSTEM:
 			return HasSpecial(SHIP_SPECIAL::BLOCKADESHIP);
 		case SHIP_ORDER::ATTACK_SYSTEM:

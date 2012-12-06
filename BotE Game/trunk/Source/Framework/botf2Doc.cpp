@@ -2507,7 +2507,7 @@ void CBotf2Doc::CalcSystemAttack()
 				}
 
 			// nur wenn das Schiff und Schiffe in der Flotte ungetarnt sind
-			if(!ship.CanHaveOrder(SHIP_ORDER::ATTACK_SYSTEM)) {
+			if(!ship.CanHaveOrder(SHIP_ORDER::ATTACK_SYSTEM, false)) {
 				ship.UnsetCurrentOrder();
 				okay = FALSE;
 			}

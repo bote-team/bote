@@ -271,7 +271,7 @@ public:
 
 	//// Diese Funktion liefert true wenn die Flotte den "order" ausführen kann.
 	//// Kann die Flotte den Befehl nicht befolgen liefert die Funktion false zurück
-	bool CanHaveOrder(SHIP_ORDER::Typ order) const;
+	bool CanHaveOrder(SHIP_ORDER::Typ order, bool require_new, bool require_all_can = true) const;
 
 	////Do all ships in this fleet have the given tactic ?
 	bool AllOnTactic(COMBAT_TACTIC::Typ tactic) const;

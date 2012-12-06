@@ -67,6 +67,24 @@ void CShipBottomView::OnNewRound()
 
 // CShipBottomView drawing
 
+static bool ShipCanHaveOrder(const CShips& ships, SHIP_ORDER::Typ order,
+		const CSector* sector = NULL, const CSystem* system = NULL) {
+	switch(order) {
+		case SHIP_ORDER::TRAIN_SHIP:
+			return sector->GetSunSystem() && system->GetOwnerOfSystem() == ships.GetOwnerOfShip()
+				&& system->GetProduction()->GetShipTraining() > 0;
+		case SHIP_ORDER::REPAIR:
+			return ships.CanHaveOrder(SHIP_ORDER::REPAIR, true, false)
+				&& sector->GetShipPort(ships.GetOwnerOfShip());
+		case SHIP_ORDER::TRANSPORT:
+			return ships.CanHaveOrder(order, true, false);
+		case SHIP_ORDER::ENCLOAK:
+		case SHIP_ORDER::TERRAFORM:
+			return ships.CanHaveOrder(order, false);
+	}
+	return ships.CanHaveOrder(order, true);
+}
+
 void CShipBottomView::OnDraw(CDC* dc)
 {
 	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
@@ -325,7 +343,7 @@ void CShipBottomView::OnDraw(CDC* dc)
 
 		// angreifen
 		if (m_iTimeCounter > 3 && m_iWhichMainShipOrderButton == 0 &&
-			pDoc->CurrentShip()->second.GetCurrentOrder() == SHIP_ORDER::AVOID)
+			ShipCanHaveOrder(pDoc->CurrentShip()->second, SHIP_ORDER::ATTACK))
 		{
 			g.DrawImage(m_pShipOrderButton, r.right-245, r.top+70, 120, 30);
 			m_ShipOrders[SHIP_ORDER::ATTACK].SetRect(r.right-245,r.top+70,r.right-125,r.top+100);
@@ -334,7 +352,7 @@ void CShipBottomView::OnDraw(CDC* dc)
 		}
 		// meiden
 		else if (m_iTimeCounter > 3 && m_iWhichMainShipOrderButton == 0 &&
-			pDoc->CurrentShip()->second.GetCurrentOrder() > SHIP_ORDER::AVOID)
+			ShipCanHaveOrder(pDoc->CurrentShip()->second, SHIP_ORDER::AVOID))
 		{
 			g.DrawImage(m_pShipOrderButton, r.right-245, r.top+70, 120, 30);
 			m_ShipOrders[SHIP_ORDER::AVOID].SetRect(r.right-245,r.top+70,r.right-125,r.top+100);
@@ -356,9 +374,8 @@ void CShipBottomView::OnDraw(CDC* dc)
 			if (m_iTimeCounter > (3 + counter) && m_iWhichMainShipOrderButton == 0)
 			{
 				// Wenn in dem System die Möglichkeit des Schiffstrainings besteht
-				if (pDoc->CurrentSector().GetSunSystem() == TRUE &&
-					pDoc->CurrentSystem().GetOwnerOfSystem() == pDoc->CurrentShip()->second.GetOwnerOfShip() &&
-					pDoc->CurrentSystem().GetProduction()->GetShipTraining() > 0)
+				if (ShipCanHaveOrder(pDoc->CurrentShip()->second, SHIP_ORDER::TRAIN_SHIP,
+					&pDoc->CurrentSector(), &pDoc->CurrentSystem()))
 				{
 					g.DrawImage(m_pShipOrderButton, r.right-245, r.top+70+counter*35, 120, 30);
 					m_ShipOrders[SHIP_ORDER::TRAIN_SHIP].SetRect(r.right-245,r.top+70+counter*35,r.right-125,r.top+100+counter*35);
@@ -370,7 +387,7 @@ void CShipBottomView::OnDraw(CDC* dc)
 			// tarnen kann)
 			if (m_iTimeCounter > (3 + counter) && m_iWhichMainShipOrderButton == 0 &&
 				// Ab hier check wegen Flotten
-				pDoc->CurrentShip()->second.CanHaveOrder(SHIP_ORDER::ENCLOAK))
+				ShipCanHaveOrder(pDoc->CurrentShip()->second, SHIP_ORDER::ENCLOAK))
 			{
 				g.DrawImage(m_pShipOrderButton, r.right-245, r.top+70+counter*35, 120, 30);
 				if (pDoc->CurrentShip()->second.GetCloak())
@@ -400,7 +417,7 @@ void CShipBottomView::OnDraw(CDC* dc)
 					{
 						// nur wenn die Schiffe ungetarnt sind können sie Bombardieren
 						// Ab hier check wegen Flotten
-						if (pDoc->CurrentShip()->second.CanHaveOrder(SHIP_ORDER::ATTACK_SYSTEM))
+						if (ShipCanHaveOrder(pDoc->CurrentShip()->second, SHIP_ORDER::ATTACK_SYSTEM))
 						{
 							g.DrawImage(m_pShipOrderButton, r.right-245, r.top+70, 120, 30);
 							s = CResourceManager::GetString("BTN_ATTACK_SYSTEM");
@@ -423,7 +440,7 @@ void CShipBottomView::OnDraw(CDC* dc)
 */			// Systemblockade
 			if (m_iTimeCounter > (3 + counter) && m_iWhichMainShipOrderButton == 1 &&
 				// Ab hier check wegen Flotten
-				pDoc->CurrentShip()->second.CanHaveOrder(SHIP_ORDER::BLOCKADE_SYSTEM))
+				ShipCanHaveOrder(pDoc->CurrentShip()->second, SHIP_ORDER::BLOCKADE_SYSTEM))
 			{
 				// Überprüfen ob man eine Blockade im System überhaupt errichten kann
 				// Wenn das System nicht der Rasse gehört, der auch das Schiff gehört
@@ -440,9 +457,7 @@ void CShipBottomView::OnDraw(CDC* dc)
 			}
 			// Flagschiffernennung, geht nur wenn es keine Flotte ist
 			if (m_iTimeCounter > (3 + counter) && m_iWhichMainShipOrderButton == 1
-				&& !pDoc->CurrentShip()->second.HasFleet()
-				&& pDoc->CurrentShip()->second.GetCurrentOrder() != SHIP_ORDER::ASSIGN_FLAGSHIP
-				&& pDoc->CurrentShip()->second.GetIsShipFlagShip() != TRUE)
+				&& ShipCanHaveOrder(pDoc->CurrentShip()->second, SHIP_ORDER::ASSIGN_FLAGSHIP))
 			{
 				g.DrawImage(m_pShipOrderButton, r.right-245, r.top+70+counter*35, 120, 30);
 				s = CResourceManager::GetString("BTN_ASSIGN_FLAGSHIP");
@@ -452,8 +467,7 @@ void CShipBottomView::OnDraw(CDC* dc)
 			}
 			// Warten
 			if (m_iTimeCounter > (3 + counter) && m_iWhichMainShipOrderButton == 1
-				&& pDoc->CurrentShip()->second.GetCurrentOrder()
-					!= SHIP_ORDER::WAIT_SHIP_ORDER)
+				&& ShipCanHaveOrder(pDoc->CurrentShip()->second, SHIP_ORDER::WAIT_SHIP_ORDER))
 			{
 				g.DrawImage(m_pShipOrderButton, r.right-245, r.top+70+counter*35, 120, 30);
 				s = CResourceManager::GetString("BTN_WAIT_SHIP_ORDER");
@@ -463,8 +477,7 @@ void CShipBottomView::OnDraw(CDC* dc)
 			}
 			// Wache
 			if (m_iTimeCounter > (3 + counter) && m_iWhichMainShipOrderButton == 1
-				&& pDoc->CurrentShip()->second.GetCurrentOrder()
-				!= SHIP_ORDER::SENTRY_SHIP_ORDER)
+				&& ShipCanHaveOrder(pDoc->CurrentShip()->second, SHIP_ORDER::SENTRY_SHIP_ORDER))
 			{
 				g.DrawImage(m_pShipOrderButton, r.right-245, r.top+70+counter*35, 120, 30);
 				s = CResourceManager::GetString("BTN_SENTRY_SHIP_ORDER");
@@ -477,10 +490,13 @@ void CShipBottomView::OnDraw(CDC* dc)
 			// 1) the ship or any of the ships in its fleet are actually damaged.
 			// 2) we (or an allied race) have a ship port in this sector.
 			if (m_iTimeCounter > (3 + counter) && m_iWhichMainShipOrderButton == 1 &&
-				pDoc->CurrentShip()->second.GetCurrentOrder() != SHIP_ORDER::REPAIR &&
-				pDoc->CurrentShip()->second.NeedsRepair() &&
-				pDoc->GetSector(pDoc->CurrentShip()->second.GetKO().x, pDoc->CurrentShip()->second.GetKO().y).GetShipPort(
-				pDoc->CurrentShip()->second.GetOwnerOfShip()))
+				ShipCanHaveOrder(pDoc->CurrentShip()->second, SHIP_ORDER::REPAIR,
+					&pDoc->GetSector(
+						pDoc->CurrentShip()->second.GetKO().x,
+						pDoc->CurrentShip()->second.GetKO().y
+					)
+				)
+			)
 			{
 				g.DrawImage(m_pShipOrderButton, r.right-245, r.top+70+counter*35, 120, 30);
 				s = CResourceManager::GetString("BTN_REPAIR_SHIP");
@@ -502,9 +518,8 @@ void CShipBottomView::OnDraw(CDC* dc)
 			// Kolonisierung (hier beachten wenn es eine Flotte ist, dort schauen ob auch jedes Schiff in
 			// der Flotte auch kolonisieren kann)
 			if (m_iTimeCounter > 3 && m_iWhichMainShipOrderButton == 2 &&
-				pDoc->CurrentShip()->second.GetCurrentOrder() != SHIP_ORDER::COLONIZE &&
 				// Ab hier check wegen Flotten
-				pDoc->CurrentShip()->second.CanHaveOrder(SHIP_ORDER::COLONIZE))
+				ShipCanHaveOrder(pDoc->CurrentShip()->second, SHIP_ORDER::COLONIZE))
 			{
 				// Wenn das System uns bzw. niemanden gehört können wir nur kolonisieren
 				if (pDoc->CurrentSector().GetOwnerOfSector() == ""
@@ -525,7 +540,7 @@ void CShipBottomView::OnDraw(CDC* dc)
 			// der Flotte auch terraformen kann)
 			if (m_iTimeCounter > (3 + counter) && m_iWhichMainShipOrderButton == 2 &&
 				// Ab hier check wegen Flotten
-				pDoc->CurrentShip()->second.CanHaveOrder(SHIP_ORDER::TERRAFORM))
+				ShipCanHaveOrder(pDoc->CurrentShip()->second, SHIP_ORDER::TERRAFORM))
 
 			{
 				for (int l = 0; l < pDoc->CurrentSector().GetNumberOfPlanets(); l++)
@@ -543,11 +558,9 @@ void CShipBottomView::OnDraw(CDC* dc)
 			// Außenposten/Sternbasis bauen (hier beachten wenn es eine Flotte ist, dort schauen ob auch jedes
 			// Schiff in der Flotte Stationen bauen kann)
 			if (m_iTimeCounter > (3 + counter) && m_iWhichMainShipOrderButton == 2 &&
-				pDoc->CurrentShip()->second.GetCurrentOrder() != SHIP_ORDER::BUILD_OUTPOST &&
-				pDoc->CurrentShip()->second.GetCurrentOrder() != SHIP_ORDER::BUILD_STARBASE &&
 				// Ab hier check wegen Flotten, darum wirds lang (müssen nur einen der Befehle (egal ob Outpost oder
 				// Starbase gebaut werden soll) übergeben, weil wenn das eine geht, geht auch das andere
-				pDoc->CurrentShip()->second.CanHaveOrder(SHIP_ORDER::BUILD_OUTPOST))
+				ShipCanHaveOrder(pDoc->CurrentShip()->second, SHIP_ORDER::BUILD_OUTPOST))
 			{
 				CPoint ShipKO = pDoc->GetKO();
 				// hier schauen, ob ich in der Schiffsinfoliste schon einen Außenposten habe den ich bauen kann, wenn in dem
@@ -596,7 +609,7 @@ void CShipBottomView::OnDraw(CDC* dc)
 			}
 			// Transport
 			if (m_iTimeCounter > (3 + counter) && m_iWhichMainShipOrderButton == 2 &&
-				pDoc->CurrentShip()->second.GetStorageRoom() > 0)
+				ShipCanHaveOrder(pDoc->CurrentShip()->second, SHIP_ORDER::TRANSPORT))
 			{
 				g.DrawImage(m_pShipOrderButton, r.right-245, r.top+140-counter*35, 120, 30);
 				s = CResourceManager::GetString("BTN_TRANSPORT");
@@ -607,7 +620,7 @@ void CShipBottomView::OnDraw(CDC* dc)
 		}
 		// Schiff abwracken/zerstören
 		if (m_iTimeCounter > (3 + counter) && m_iWhichMainShipOrderButton == 2 &&
-			pDoc->CurrentShip()->second.GetCurrentOrder() != SHIP_ORDER::DESTROY_SHIP)
+			ShipCanHaveOrder(pDoc->CurrentShip()->second, SHIP_ORDER::DESTROY_SHIP))
 		{
 			g.DrawImage(m_pShipOrderButton, r.right-245, r.top+140-counter*35, 120, 30);
 			s = CResourceManager::GetString("BTN_DESTROY_SHIP");

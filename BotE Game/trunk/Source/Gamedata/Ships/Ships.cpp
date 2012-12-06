@@ -342,16 +342,21 @@ BYTE CShips::GetFleetStealthPower(const CShip* ship) const
 
 //// Diese Funktion liefert true wenn die Flotte den "order" ausführen kann.
 //// Kann die Flotte den Befehl nicht befolgen liefert die Funktion false zurück
-bool CShips::CanHaveOrder(SHIP_ORDER::Typ order) const {
+bool CShips::CanHaveOrder(SHIP_ORDER::Typ order, bool require_new, bool require_all_can) const {
 	if(HasFleet())
 	{
 		if (order == SHIP_ORDER::ASSIGN_FLAGSHIP)
 			return false;
-		for(CShips::const_iterator i = m_Fleet.begin(); i != m_Fleet.end(); ++i)
-			if(!i->second.CanHaveOrder(order))
-				return false;
+		if(require_all_can)
+			for(CShips::const_iterator i = m_Fleet.begin(); i != m_Fleet.end(); ++i)
+				if(!i->second.CanHaveOrder(order, require_new, true))
+					return false;
+		else
+			for(CShips::const_iterator i = m_Fleet.begin(); i != m_Fleet.end(); ++i)
+				if(i->second.CanHaveOrder(order, require_new, false))
+					return true;
 	}
-	return m_Leader.CanHaveOrder(order);
+	return m_Leader.CanHaveOrder(order, require_new);
 }
 
 bool CShips::AllOnTactic(COMBAT_TACTIC::Typ tactic) const {
