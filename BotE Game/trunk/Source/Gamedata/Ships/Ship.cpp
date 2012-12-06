@@ -394,7 +394,7 @@ CString CShip::GetCombatTacticAsString() const
 CString CShip::GetCurrentTargetAsString() const
 {
 	CString target;
-	if (m_TargetKO == CPoint(-1, -1))
+	if (!HasTarget())
 		target = "-";
 	else
 		target.Format("%c%i", (char)(m_TargetKO.y+97),m_TargetKO.x+1);
@@ -736,7 +736,7 @@ bool CShip::HasSpecial(SHIP_SPECIAL::Typ nAbility) const
 
 bool CShip::HasNothingToDo() const {
 	return (m_iCurrentOrder == SHIP_ORDER::AVOID || m_iCurrentOrder == SHIP_ORDER::ATTACK)
-		&& m_TargetKO == CPoint(-1, -1) && m_iSpeed != 0;
+		&& !HasTarget() && m_iSpeed != 0;
 }
 
 bool CShip::NeedsRepair() const {

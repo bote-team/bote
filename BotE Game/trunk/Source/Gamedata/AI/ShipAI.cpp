@@ -179,7 +179,7 @@ void CShipAI::CalculateShipOrders(CSectorAI* SectorAI)
 			{
 				// nur Truppentransporter oder andere Schiffe ohne Ziel fliegen zu diesem Punkt, niemals aber
 				// Kolonieschiffe
-				if (pShip->GetShipType() == SHIP_TYPE::TRANSPORTER	|| (pShip->GetShipType() != SHIP_TYPE::COLONYSHIP && pShip->GetTargetKO() == pShip->GetKO()))
+				if (pShip->GetShipType() == SHIP_TYPE::TRANSPORTER	|| (pShip->GetShipType() != SHIP_TYPE::COLONYSHIP && !pShip->HasTarget()))
 				{
 					CPoint ko(m_pSectorAI->GetStationBuildSector(sOwner).position.x, m_pSectorAI->GetStationBuildSector(sOwner).position.y);
 					// Wenn Gefahr der anderen Rassen kleiner als die der meinen ist

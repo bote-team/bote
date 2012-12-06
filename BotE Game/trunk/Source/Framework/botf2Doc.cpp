@@ -4610,8 +4610,9 @@ void CBotf2Doc::CalcShipMovement()
 		Sector targetKO((char)pShip->GetTargetKO().x,(char)pShip->GetTargetKO().y);
 		Sector nextKO(-1,-1);
 
-		if (shipKO == targetKO)
-			targetKO = Sector(-1,-1);
+		assert(shipKO.on_map());
+		//no target set by targetKO == current coords is no longer allowed
+		assert(shipKO != targetKO);
 
 		// Weltraummonster gesondert behandeln
 		if (pShip->IsAlien())

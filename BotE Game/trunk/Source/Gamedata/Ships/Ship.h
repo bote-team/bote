@@ -213,6 +213,10 @@ public:
 	}
 	bool HasTroops() const { return !GetTransportedTroops()->IsEmpty(); }
 
+	bool HasTarget() const {
+		return m_TargetKO.x != -1 && m_TargetKO.y != -1;
+	}
+
 	//Is this ship in need for a player command input in this round ?
 	//Does not cover "self-renewing" orders without a turn limit
 	//such as ATTACK_SYSTEM; player is expected to look after such

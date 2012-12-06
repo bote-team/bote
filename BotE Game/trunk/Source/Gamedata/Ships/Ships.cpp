@@ -394,6 +394,11 @@ bool CShips::HasVeteran() const {
 	return m_Leader.IsVeteran();
 }
 
+bool CShips::HasTarget() const {
+	//targets should always be the same among the leader and fleet of a Chips
+	return m_Leader.HasTarget();
+}
+
 //////////////////////////////////////////////////////////////////////
 // other functions
 //////////////////////////////////////////////////////////////////////
