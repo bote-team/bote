@@ -170,8 +170,8 @@ void CShips::AddShipToFleet(CShips& fleet) {
 			m_Leader.GetShipName());
 		MYTRACE("ships")(MT::LEVEL_INFO, s);
 	}
-	CShip leader = fleet.m_Leader;
-	leader.AdoptOrdersFrom(m_Leader);
+	assert(fleet.GetOwnerOfShip() == GetOwnerOfShip());
+	fleet.AdoptOrdersFrom(m_Leader);
 	m_Fleet.Add(fleet.m_Leader);
 	if(fleet.HasFleet()) {
 		if(MT::CMyTrace::IsLoggingEnabledFor("ships")) {
