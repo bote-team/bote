@@ -153,7 +153,7 @@ public:
 	 * Adds the given CShips to this CShips' fleet and propagates this CShips' leader's orders to the given
 	 * CShips' leader and fleet (both are in this CShips' fleet now).
 	**/
-	void AddShipToFleet(CShips& fleet);
+	void AddShipToFleet(const CShips& fleet);
 	void SetCurrentShip(const CShips::iterator& position);
 	// Funktion um ein Schiff aus der Flotte zu entfernen.
 	void RemoveShipFromFleet(CShips::iterator& ship);

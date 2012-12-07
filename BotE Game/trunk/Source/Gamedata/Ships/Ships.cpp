@@ -181,7 +181,7 @@ void CShips::AdoptOrdersFrom(const CShips& ship)
 	}
 }
 
-void CShips::AddShipToFleet(CShips& fleet) {
+void CShips::AddShipToFleet(const CShips& fleet) {
 	CString s;
 	if(MT::CMyTrace::IsLoggingEnabledFor("ships")) {
 		s.Format("CShips: adding ship with leader %s to fleet of %s", fleet.m_Leader.GetShipName(),
@@ -197,8 +197,8 @@ void CShips::AddShipToFleet(CShips& fleet) {
 				m_Leader.GetShipName());
 			MYTRACE("ships")(MT::LEVEL_INFO, s);
 		}
-		m_Fleet.Append(fleet.m_Fleet, this);
-		fleet.Reset();
+		m_Fleet.Append(i->second.m_Fleet, this);
+		i->second.Reset();
 	}
 }
 
