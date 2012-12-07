@@ -493,3 +493,20 @@ void CRace::AddToLostShipHistory(const CShip& /*Ship*/, const CString& /*sEvent*
 	const CBotf2Doc& /*doc*/, unsigned short /*round*/)
 {
 }
+
+void CRace::LostFlagShip(const CString& /*name*/)
+{
+}
+
+void CRace::LostStation(SHIP_TYPE::Typ /*type*/)
+{
+}
+void CRace::LostShipToAnomaly(const CShip& /*ship*/, const CString& /*anomaly*/)
+{
+	//TODO: If a minor is forced to retreat, and happens to retreat to an anomaly,
+	//its ships are slowly destructed since it doesn't move.
+	//Forbidding to retreat to anomalies is no good idea, as it would cause probs in case that
+	//all sectors around the current one are anomalies.
+	//So this should probably best be fixed by making minors able to move their ships
+	//(which is on the TODO list anyway).
+}

@@ -34,6 +34,8 @@
 #include "Ship.h"
 #include "ShipMap.h"
 
+class CBotf2Doc;
+
 class CShips/* : public CObject*/
 {
 public:
@@ -155,6 +157,12 @@ public:
 	void SetCurrentShip(const CShips::iterator& position);
 	// Funktion um ein Schiff aus der Flotte zu entfernen.
 	void RemoveShipFromFleet(CShips::iterator& ship);
+
+	//strip this CShips from destroyed ships
+	//@ return true in case the leading ship is still alive, false in case the leader is dead and
+	//possibly ships in the fleet remain
+	bool RemoveDestroyed(CRace& owner, const CBotf2Doc& doc, unsigned short round, const CString& sEvent,
+		const CString& sStatus, CStringArray* destroyedShips = NULL, const CString& anomaly = "");
 	//// Funktion löscht die gesamte Flotte
 	void Reset(void);
 

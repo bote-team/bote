@@ -3186,35 +3186,13 @@ void CBotf2Doc::CalcSystemAttack()
 		for(CShipMap::iterator i = m_ShipMap.begin(); i != m_ShipMap.end();)
 		{
 			CRace* race = m_pRaceCtrl->GetRace(i->second.GetOwnerOfShip());
-			// Wenn das Schiff eine Flotte hatte, dann erstmal nur die Schiffe in der Flotte beachten
-			// Wenn davon welche zerstört wurden diese aus der Flotte nehmen
-			if (i->second.HasFleet())
-			{
-				for (CShips::iterator x = i->second.begin(); x != i->second.end();)
-				{
-					if(x->second.GetHull()->GetCurrentHull() >= 1)
-					{
-						++x;
-						continue;
-					}
-					// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
-					race->AddToLostShipHistory(x->second.Leader(),
-						CResourceManager::GetString("SYSTEMATTACK"), CResourceManager::GetString("DESTROYED"),
-						*this, m_iRound);
-					// Schiff entfernen
-					i->second.RemoveShipFromFleet(x);
-				}
-			}
-			// Wenn das Schiff selbst zerstört wurde
-			if (i->second.GetHull()->GetCurrentHull() < 1)
-			{
-				// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
-				race->AddToLostShipHistory(i->second.Leader(), CResourceManager::GetString("SYSTEMATTACK"), CResourceManager::GetString("DESTROYED"), *this, m_iRound);
-				// Schiff entfernen
-				RemoveShip(i);
-			}
-			else
+			assert(race);
+			if(i->second.RemoveDestroyed(*race, *this, m_iRound, CResourceManager::GetString("SYSTEMATTACK"),
+					CResourceManager::GetString("DESTROYED"))) {
 				++i;
+				continue;
+			}
+			RemoveShip(i);
 		}
 }
 
@@ -4728,59 +4706,20 @@ void CBotf2Doc::CheckShipsDestroyedByAnomaly() {
 	// prüfen ob irgendwelche Schiffe durch eine Anomalie zerstört wurden
 	for(CShipMap::iterator i = m_ShipMap.begin(); i != m_ShipMap.end();)
 	{
-		// Wenn das Schiff eine Flotte hatte, dann erstmal nur die Schiffe in der Flotte beachten
-		// Wenn davon welche zerstört wurden diese aus der Flotte nehmen
-		for(CShips::iterator x = i->second.begin(); x != i->second.end();)
-		{
-			if (x->second.GetHull()->GetCurrentHull() > 1)
-			{
-				++x;
-				continue;
-			}
-			OnShipDestroyedByAnomaly(i->second);
-			i->second.RemoveShipFromFleet(x);
-		}
-		// Wenn das Schiff selbst zerstört wurde
-		if (i->second.GetHull()->GetCurrentHull() > 1)
-		{
+		const CPoint& co = i->second.GetKO();
+		if(!GetSector(co.x, co.y).GetAnomaly()) {
 			++i;
 			continue;
 		}
-		OnShipDestroyedByAnomaly(i->second);
-		RemoveShip(i);
-	}
-}
-void CBotf2Doc::OnShipDestroyedByAnomaly(const CShips& ship) {
-	// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
-	const CPoint& co = ship.GetKO();
-	if(!GetSector(co.x, co.y).GetAnomaly())
-		return;
-	const CString& anomaly = GetSector(co.x, co.y).GetAnomaly()
-		->GetMapName(co);
-	// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
-	CRace* pRace = m_pRaceCtrl->GetRace(ship.GetOwnerOfShip());
-	pRace->AddToLostShipHistory(ship.Leader(), anomaly, CResourceManager::GetString("DESTROYED"), *this, m_iRound);
-
-	CString sShip;
-	sShip.Format("%s (%s)", ship.GetShipName(), ship.GetShipTypeAsString());
-	CString s = CResourceManager::GetString("ANOMALY_SHIP_LOST", FALSE, sShip, anomaly);
-	CMessage message;
-	message.GenerateMessage(s, MESSAGE_TYPE::MILITARY, "", 0, 0);
-	assert(pRace);
-	//TODO: If a minor is forced to retreat, and happens to retreat to an anomaly,
-	//its ships are slowly destructed since it doesn't move.
-	//Forbidding to retreat to anomalies is no good idea, as it would cause probs in case that
-	//all sectors around the current one are anomalies.
-	//So this should probably best be fixed by making minors able to move their ships
-	//(which is on the TODO list anyway).
-	if(pRace->IsMajor()) {
-		CMajor* pMajor = dynamic_cast<CMajor*>(pRace);
-		pMajor->GetEmpire()->AddMessage(message);
-		if (pMajor->IsHumanPlayer())
-		{
-			network::RACE client = m_pRaceCtrl->GetMappedClientID(pMajor->GetRaceID());
-			m_iSelectedView[client] = EMPIRE_VIEW;
+		const CString& anomaly = GetSector(co.x, co.y).GetAnomaly()
+			->GetMapName(co);
+		CRace* pRace = m_pRaceCtrl->GetRace(i->second.GetOwnerOfShip());
+		if(i->second.RemoveDestroyed(*pRace, *this, m_iRound, anomaly,
+				CResourceManager::GetString("DESTROYED"), NULL, anomaly)) {
+			++i;
+			continue;
 		}
+		RemoveShip(i);
 	}
 }
 /////END: HELPER FUNCTIONS FOR void CBotf2Doc::CalcShipMovement()
@@ -5010,73 +4949,12 @@ void CBotf2Doc::CalcShipCombat()
 		}
 		CRace* pOwner = m_pRaceCtrl->GetRace(i->second.GetOwnerOfShip());
 		assert(pOwner);
-		// Wenn das Schiff eine Flotte hatte, dann erstmal nur die Schiffe in der Flotte beachten
-		// Wenn davon welche zerstört wurden diese aus der Flotte nehmen
-		for(CShips::iterator x = i->second.begin(); x != i->second.end();) {
-			if (x->second.GetHull()->GetCurrentHull() >= 1) {
-				++x;
-				continue;
-			}
-			// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
-			pOwner->AddToLostShipHistory(x->second.Leader(), CResourceManager::GetString("COMBAT"), CResourceManager::GetString("DESTROYED"), *this, m_iRound);
-			destroyedShips.Add(x->second.GetShipName()+" ("+x->second.GetShipTypeAsString()+")");
-
-			// Wenn es das Flagschiff war, so ein Event über dessen Verlust hinzufügen
-			if (x->second.GetIsShipFlagShip())
-			{
-				if (pOwner->IsMajor())
-				{
-					CMajor* pMajor = dynamic_cast<CMajor*>(pOwner);
-					CString eventText = pMajor->GetMoralObserver()->AddEvent(7, pMajor->GetRaceMoralNumber(), x->second.GetShipName());
-					CMessage message;
-					message.GenerateMessage(eventText, MESSAGE_TYPE::MILITARY, "", 0, 0);
-					pMajor->GetEmpire()->AddMessage(message);
-				}
-			}
-
-			i->second.RemoveShipFromFleet(x);
-		}
-
-		// Wenn das Schiff selbst zerstört wurde
-		if (i->second.GetHull()->GetCurrentHull() < 1)
-		{
-			// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
-			pOwner->AddToLostShipHistory(i->second.Leader(), CResourceManager::GetString("COMBAT"), CResourceManager::GetString("DESTROYED"), *this, m_iRound);
-			destroyedShips.Add(i->second.GetShipName()+" ("+i->second.GetShipTypeAsString()+")");
-			// Wenn es das Flagschiff war, so ein Event über dessen Verlust hinzufügen
-			if (i->second.GetIsShipFlagShip())
-			{
-				CRace* pOwner = m_pRaceCtrl->GetRace(i->second.GetOwnerOfShip());
-				if (pOwner && pOwner->IsMajor())
-				{
-					CMajor* pMajor = dynamic_cast<CMajor*>(pOwner);
-					CString eventText = pMajor->GetMoralObserver()->AddEvent(7, pMajor->GetRaceMoralNumber(), i->second.GetShipName());
-					CMessage message;
-					message.GenerateMessage(eventText, MESSAGE_TYPE::MILITARY, "", 0, 0);
-					pMajor->GetEmpire()->AddMessage(message);
-				}
-			}
-			// Wenn es ein Außenposten oder Sternbasis war, so ein Event über dessen Verlust hinzufügen
-			if (i->second.IsStation())
-			{
-				CRace* pOwner = m_pRaceCtrl->GetRace(i->second.GetOwnerOfShip());
-				if (pOwner && pOwner->IsMajor())
-				{
-					CMajor* pMajor = dynamic_cast<CMajor*>(pOwner);
-					CString eventText;
-					if (i->second.GetShipType() == SHIP_TYPE::OUTPOST)
-						eventText = pMajor->GetMoralObserver()->AddEvent(8, pMajor->GetRaceMoralNumber());
-					else
-						eventText = pMajor->GetMoralObserver()->AddEvent(9, pMajor->GetRaceMoralNumber());
-					CMessage message;
-					message.GenerateMessage(eventText, MESSAGE_TYPE::MILITARY, "", 0, 0);
-					pMajor->GetEmpire()->AddMessage(message);
-				}
-			}
-			RemoveShip(i);
+		if(i->second.RemoveDestroyed(*pOwner, *this, m_iRound, CResourceManager::GetString("COMBAT"),
+			CResourceManager::GetString("DESTROYED"), &destroyedShips)) {
+			++i;
 			continue;
 		}
-		++i;
+		RemoveShip(i);
 	}
 
 	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)

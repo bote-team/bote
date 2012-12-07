@@ -5,6 +5,7 @@
 #include <algorithm>
 #include "botf2.h"
 #include "Botf2Doc.h"
+#include "RaceController.h"
 
 #include <cassert>
 
@@ -492,4 +493,39 @@ void CMajor::AddToLostShipHistory(const CShip& Ship, const CString& sEvent,
 {
 	const CPoint& co = Ship.GetKO();
 	m_ShipHistory.ModifyShip(&Ship, doc.GetSector(co.x, co.y).GetName(TRUE), round, sEvent, sStatus);
+}
+
+void CMajor::LostFlagShip(const CShip& ship)
+{
+	const CString& eventText = m_MoralObserver.AddEvent(7, GetRaceMoralNumber(), ship.GetShipName());
+	CMessage message;
+	message.GenerateMessage(eventText, MESSAGE_TYPE::MILITARY, "", ship.GetKO(), false);
+	m_Empire.AddMessage(message);
+}
+
+void CMajor::LostStation(SHIP_TYPE::Typ type)
+{
+	CString eventText(m_MoralObserver.AddEvent(9, GetRaceMoralNumber()));
+	if (type == SHIP_TYPE::OUTPOST)
+		eventText = m_MoralObserver.AddEvent(8, GetRaceMoralNumber());
+	CMessage message;
+	message.GenerateMessage(eventText, MESSAGE_TYPE::MILITARY, "", 0, 0);
+	m_Empire.AddMessage(message);
+}
+
+void CMajor::LostShipToAnomaly(const CShip& ship, const CString& anomaly)
+{
+	CString sShip;
+	sShip.Format("%s (%s, %s)", ship.GetShipName(), ship.GetShipTypeAsString(), ship.GetShipClass());
+	const CString& s = CResourceManager::GetString("ANOMALY_SHIP_LOST", FALSE, sShip, anomaly);
+	CMessage message;
+	message.GenerateMessage(s, MESSAGE_TYPE::MILITARY, "", 0, 0);
+	m_Empire.AddMessage(message);
+	if (IsHumanPlayer())
+	{
+		CBotf2App& app = dynamic_cast<CBotf2App&>(*AfxGetApp());
+		CBotf2Doc& doc = *app.GetDocument();
+		network::RACE client = doc.m_pRaceCtrl->GetMappedClientID(GetRaceID());
+		doc.m_iSelectedView[client] = EMPIRE_VIEW;
+	}
 }

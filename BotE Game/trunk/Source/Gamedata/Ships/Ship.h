@@ -33,6 +33,7 @@
 // forward declaration
 class CGraphicPool;
 class CRace;
+class CBotf2Doc;
 
 /// Klasse beschreibt ein Schiff in BotE
 class CShip : public CObject
@@ -155,6 +156,9 @@ public:
 	//Sets the current oder according to m_nCombatTactic
 	void UnsetCurrentOrder();
 
+	bool RemoveDestroyed(CRace& owner, const CBotf2Doc& doc, unsigned short round, const CString& sEvent,
+		const CString& sStatus, CStringArray* destroyedShips, const CString& anomaly = "");
+
 	/// Diese Funktion berechnet die Schiffserfahrung in einer neuen Runde. Außer Erfahrung im Kampf, diese werden nach einem
 	/// Kampf direkt verteilt.
 	void CalcExp();
@@ -244,6 +248,10 @@ private:
 		return CanHaveOrder(order, true) && order != SHIP_ORDER::ASSIGN_FLAGSHIP;
 	}
 public:
+
+	bool IsAlive() const {
+		return m_Hull.GetCurrentHull() >= 1;
+	}
 
 	//////////////////////////////////////////////////////////////////////
 	// other functions

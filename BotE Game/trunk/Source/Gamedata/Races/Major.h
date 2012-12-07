@@ -121,6 +121,10 @@ public:
 	virtual void AddToLostShipHistory(const CShip& Ship, const CString& sEvent, const CString& sStatus,
 		const CBotf2Doc& doc, unsigned short round);
 
+	virtual void LostFlagShip(const CShip& ship);
+	virtual void LostStation(SHIP_TYPE::Typ type);
+	virtual void LostShipToAnomaly(const CShip& ship, const CString& anomaly);
+
 	/// Funktion gibt zurück, ob die Hauptrasse einen Verteidigungspakt mit einer anderen Hauptrasse
 	/// aufrechterhält.
 	/// @param pRaceID Rassen-ID der anderen Hauptrasse

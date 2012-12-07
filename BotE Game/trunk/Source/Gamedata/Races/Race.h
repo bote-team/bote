@@ -205,6 +205,10 @@ public:
 	virtual void AddToLostShipHistory(const CShip& Ship, const CString& sEvent, const CString& sStatus,
 		const CBotf2Doc& doc, unsigned short round);
 
+	virtual void LostFlagShip(const CString& name);
+	virtual void LostStation(SHIP_TYPE::Typ type);
+	virtual void LostShipToAnomaly(const CShip& ship, const CString& anomaly);
+
 	/// Funktion zum Setzen von Spezialeigenschaften der Rasse.
 	/// @param ability Spezialeigenschaft
 	/// @param is <code>true</code> oder <code>false</code>

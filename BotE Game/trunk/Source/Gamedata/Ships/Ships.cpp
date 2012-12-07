@@ -4,6 +4,8 @@
 
 #include "stdafx.h"
 #include "Ships.h"
+#include "Races/race.h"
+#include "ResourceManager.h"
 
 #include <cassert>
 
@@ -147,6 +149,22 @@ void CShips::RemoveShipFromFleet(CShips::iterator& ship)
 	m_Fleet.EraseAt(ship);
 	if(!HasFleet())
 		Reset();
+}
+
+bool CShips::RemoveDestroyed(CRace& owner, const CBotf2Doc& doc, unsigned short round,
+		const CString& sEvent, const CString& sStatus, CStringArray* destroyedShips, const CString& anomaly) {
+	// Wenn das Schiff eine Flotte hatte, dann erstmal nur die Schiffe in der Flotte beachten
+	// Wenn davon welche zerstört wurden diese aus der Flotte nehmen
+	for(CShips::iterator i = begin(); i != end();) {
+		if(i->second.RemoveDestroyed(owner, doc, round, sEvent, sStatus, destroyedShips, anomaly)) {
+			++i;
+			continue;
+		}
+		RemoveShipFromFleet(i);
+	}
+	// Wenn das Schiff selbst zerstört wurde
+	// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
+	return m_Leader.RemoveDestroyed(owner, doc, round, sEvent, sStatus, destroyedShips, anomaly);
 }
 
 void CShips::Reset(void) {

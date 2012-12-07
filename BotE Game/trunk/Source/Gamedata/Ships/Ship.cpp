@@ -540,6 +540,25 @@ void CShip::UnsetCurrentOrder() {
 	}
 }
 
+bool CShip::RemoveDestroyed(CRace& owner, const CBotf2Doc& doc, unsigned short round, const CString& sEvent,			const CString& sStatus, CStringArray* destroyedShips, const CString& anomaly) {
+
+	if(IsAlive())
+		return true;
+	// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
+	owner.AddToLostShipHistory(*this, sEvent, sStatus, doc, round);
+	if(destroyedShips)
+		destroyedShips->Add(m_strShipName + " (" + GetShipTypeAsString() + ", " + m_strShipClass + ")");
+	if(m_bIsFlagShip)
+		owner.LostFlagShip(m_strShipName);
+	if(IsStation())
+		owner.LostStation(m_iShipType);
+	if(!anomaly.IsEmpty()) {
+		owner.LostShipToAnomaly(*this, anomaly);
+	}
+
+	return false;
+}
+
 //////////////////////////////////////////////////////////////////////
 // calculated stements about this ship (should be const functions, non-bool returning)
 //////////////////////////////////////////////////////////////////////
