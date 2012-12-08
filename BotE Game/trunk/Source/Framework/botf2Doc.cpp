@@ -86,7 +86,7 @@ CBotf2Doc::CBotf2Doc() :
 
 	//Init MT with single log file
 	CString sLogPath = CIOData::GetInstance()->GetLogPath();
-	const CCommandLineParameters* const clp = dynamic_cast<CBotf2App*>(AfxGetApp())->GetCommandLineParameters();
+	const CCommandLineParameters* const clp = resources::pClp;
 	const std::set<const std::string>& domains = clp->LogDomains();
 	MT::CMyTrace::Init(sLogPath,
 		domains.empty() ? std::set<const std::string>(MT::DEFAULT_LOG_DOMAINS,
@@ -867,7 +867,7 @@ void CBotf2Doc::PrepareData()
 		}
 
 		// ALPHA6 DEBUG alle Rassen untereinander bekanntgeben
-		const CCommandLineParameters* const clp = dynamic_cast<CBotf2App*>(AfxGetApp())->GetCommandLineParameters();
+		const CCommandLineParameters* const clp = resources::pClp;
 		if(clp->SeeAllOfMap()) {
 			map<CString, CRace*>* pmRaces = m_pRaceCtrl->GetRaces();
 			for (map<CString, CRace*>::iterator it = pmRaces->begin(); it != pmRaces->end(); ++it)

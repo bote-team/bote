@@ -73,7 +73,7 @@ void CMenuChooseView::OnDraw(CDC* pDC)
 
 	// TEST-OPTION (only for Debug)
 	// automatisch bis zu einer gewissen Runde durchzuklicken falls per Startparamter aktiviert
-	if (const CCommandLineParameters* const clp = dynamic_cast<CBotf2App*>(AfxGetApp())->GetCommandLineParameters())
+	if (const CCommandLineParameters* const clp = resources::pClp)
 	{
 		int nAutoTurns = clp->GetAutoTurns();
 		if (!pDoc->m_bRoundEndPressed && pDoc->GetCurrentRound() < nAutoTurns)

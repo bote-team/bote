@@ -925,7 +925,7 @@ void CSector::IncrementNumberOfShips(const CString& race) {
 /// Diese Funktion gibt die Scanpower zurück, die die Majorrace <code>Race</code> in diesem Sektor hat.
 short CSector::GetScanPower(const CString& sRace, bool bWith_ships) const
 {
-	const CCommandLineParameters* const clp = dynamic_cast<CBotf2App*>(AfxGetApp())->GetCommandLineParameters();
+	const CCommandLineParameters* const clp = resources::pClp;
 	if(clp->SeeAllOfMap())
 		return 200;
 

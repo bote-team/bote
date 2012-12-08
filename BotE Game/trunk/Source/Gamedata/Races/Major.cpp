@@ -483,7 +483,7 @@ bool CMajor::AHumanPlays() const {
 		return false;
 	const CBotf2App& app = dynamic_cast<CBotf2App&>(*AfxGetApp());
 	const CBotf2Doc& doc = *app.GetDocument();
-	const CCommandLineParameters& clp = *app.GetCommandLineParameters();
+	const CCommandLineParameters& clp = *resources::pClp;
 
 	return doc.GetCurrentRound() > clp.GetAutoTurns();
 }

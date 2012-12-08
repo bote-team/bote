@@ -5,5 +5,5 @@
 namespace resources {
 
 	CBotf2Doc* pDoc = NULL;
-	CCommandLineParameters* pClp = NULL;
+	const CCommandLineParameters* pClp = NULL;
 }

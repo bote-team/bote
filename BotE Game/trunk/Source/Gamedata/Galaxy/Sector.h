@@ -15,6 +15,7 @@
 #include <set>
 #include <vector>
 
+#include "resources.h"
 #include "CommandLineParameters.h"
 #include "botf2.h"
 
@@ -102,7 +103,7 @@ public:
 	/// <code>Race</code> gescannt wurde.
 	bool GetScanned(const CString& sRace) const
 	{
-		const CCommandLineParameters* const clp = dynamic_cast<CBotf2App*>(AfxGetApp())->GetCommandLineParameters();
+		const CCommandLineParameters* const clp = resources::pClp;
 		if(clp->SeeAllOfMap())
 			return true;
 
@@ -116,7 +117,7 @@ public:
 	/// Majorrace <code>Race</code> bekannt ist.
 	bool GetKnown(const CString& sRace) const
 	{
-		const CCommandLineParameters* const clp = dynamic_cast<CBotf2App*>(AfxGetApp())->GetCommandLineParameters();
+		const CCommandLineParameters* const clp = resources::pClp;
 		if(clp->SeeAllOfMap())
 			return true;
 
@@ -130,7 +131,7 @@ public:
 	/// den kompletten Sektor (inkl. der Planeten) kennt.
 	bool GetFullKnown(const CString& sRace) const
 	{
-		const CCommandLineParameters* const clp = dynamic_cast<CBotf2App*>(AfxGetApp())->GetCommandLineParameters();
+		const CCommandLineParameters* const clp = resources::pClp;
 		if(clp->SeeAllOfMap())
 			return true;
 
@@ -142,7 +143,7 @@ public:
 
 	const DISCOVER_STATUS GetDiscoverStatus(const CString& sRace) const
 	{
-		const CCommandLineParameters* const clp = dynamic_cast<CBotf2App*>(AfxGetApp())->GetCommandLineParameters();
+		const CCommandLineParameters* const clp = resources::pClp;
 		if(clp->SeeAllOfMap())
 			return DISCOVER_STATUS_FULL_KNOWN;
 

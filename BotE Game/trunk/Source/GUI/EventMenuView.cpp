@@ -73,7 +73,7 @@ void CEventMenuView::OnDraw(CDC* dc)
 	// TEST-OPTION (only for Debug)
 	// Automatisch bis zu einer gewissen Runde durchzuklicken falls per Startparamter aktiviert
 	// Eventscreen gleich wieder schlieﬂen
-	if (const CCommandLineParameters* const clp = dynamic_cast<CBotf2App*>(AfxGetApp())->GetCommandLineParameters())
+	if (const CCommandLineParameters* const clp = resources::pClp)
 	{
 		int nAutoTurns = clp->GetAutoTurns();
 		if (!pDoc->m_bRoundEndPressed && pDoc->GetCurrentRound() < nAutoTurns)

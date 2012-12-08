@@ -112,8 +112,7 @@ CBotf2App::CBotf2App() :
 	// ZU ERLEDIGEN: Hier Code zur Konstruktion einfügen
 	// Alle wichtigen Initialisierungen in InitInstance platzieren
 	m_pChatDlg = NULL;
-	m_pclp = CCommandLineParameters::GetInstance();
-	ParseCommandLine(*m_pclp);
+	ParseCommandLine(*CCommandLineParameters::GetInstance());
 }
 
 CBotf2App::~CBotf2App()

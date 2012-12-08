@@ -7,5 +7,5 @@ class CCommandLineParameters;
 namespace resources {
 
 	extern CBotf2Doc* pDoc;
-	extern CCommandLineParameters* pClp;
+	extern const CCommandLineParameters* pClp;
 }
