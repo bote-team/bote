@@ -295,8 +295,6 @@ void CStartMenuView::OnBnClickedMultiplayer()
 void CStartMenuView::OnBnClickedCreateMP()
 {
 	// Umschalten zur Spiel starten Ansicht
-	CBotf2Doc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
 	resources::pMainFrame->SelectMainView(NEWGAME_VIEW);
 	m_pNewGameView->SetMode(MODE_SERVER);
 
@@ -306,8 +304,6 @@ void CStartMenuView::OnBnClickedCreateMP()
 void CStartMenuView::OnBnClickedJoinMP()
 {
 	// Umschalten zur Spiel starten Ansicht
-	CBotf2Doc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
 	resources::pMainFrame->SelectMainView(NEWGAME_VIEW);
 	m_pNewGameView->SetMode(MODE_CLIENT);
 

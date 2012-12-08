@@ -154,8 +154,6 @@ void CSystemMenuView::OnInitialUpdate()
 	CMainBaseView::OnInitialUpdate();
 
 	// TODO: Add your specialized code here and/or call the base class
-	CBotf2Doc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
 
 	// Baumenürechtecke
 	m_iClickedOn = 0;

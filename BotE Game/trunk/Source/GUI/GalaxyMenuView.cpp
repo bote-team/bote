@@ -505,8 +505,6 @@ void CGalaxyMenuView::OnDraw(CDC* dc)
 void CGalaxyMenuView::OnInitialUpdate()
 {
 	// ZU ERLEDIGEN: Gesamte Größe dieser Ansicht berechnen
-	CBotf2Doc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
 
 	// Cursor aus Ressource laden
     HCURSOR m_hCur = AfxGetApp()->LoadCursor(IDC_CURSOR);

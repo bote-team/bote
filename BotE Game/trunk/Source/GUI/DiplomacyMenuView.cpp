@@ -198,8 +198,6 @@ void CDiplomacyMenuView::OnInitialUpdate()
 	CMainBaseView::OnInitialUpdate();
 
 	// TODO: Add your specialized code here and/or call the base class
-	CBotf2Doc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
 
 	// Diplomatieansicht
 	m_bySubMenu = 0;

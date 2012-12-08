@@ -101,8 +101,6 @@ void CResearchMenuView::OnInitialUpdate()
 	CMainBaseView::OnInitialUpdate();
 
 	// TODO: Add your specialized code here and/or call the base class
-	CBotf2Doc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
 
 	// Zuweisungsbalken in der Forschungsübersicht
 	// Die Koodinaten der Rechtecke für die ganzen Buttons

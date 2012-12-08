@@ -56,8 +56,6 @@ void CBottomBaseView::OnInitialUpdate()
 	CView::OnInitialUpdate();
 
 	// TODO: Add your specialized code here and/or call the base class
-	CBotf2Doc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
 
 /*	CString sID = pDoc->GetPlayersRaceID();
 	m_pPlayersRace = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(sID));
