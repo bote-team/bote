@@ -174,14 +174,13 @@ void CCombatMenuView::OnDraw(CDC* dc)
 	m_vInvolvedShips.RemoveAll();
 	for(CShipMap::iterator i = pDoc->m_ShipMap.begin(); i != pDoc->m_ShipMap.end(); ++i)
 	{
-		CShips* pShip = &i->second;
-		if (pShip->GetKO() != pDoc->m_ptCurrentCombatSector)
+		if (i->second.GetKO() != pDoc->m_ptCurrentCombatSector)
 			continue;
 
-		m_vInvolvedShips.Add(pShip);
+		m_vInvolvedShips.Add(&i->second);
 		// Wenn das Schiff eine Flotte anführt, dann auch die Zeiger auf die Schiffe in der Flotte reingeben
 
-		for(CShips::iterator j =  pShip->begin(); j !=  pShip->end(); ++j)
+		for(CShips::iterator j =  i->second.begin(); j !=  i->second.end(); ++j)
 			m_vInvolvedShips.Add(&j->second);
 	}
 

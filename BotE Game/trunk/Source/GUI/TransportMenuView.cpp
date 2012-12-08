@@ -197,11 +197,11 @@ void CTransportMenuView::DrawTransportMenue(Graphics* g)
 	fontBrush.SetColor(normalColor);
 
 	// Inhalte des system- und globalen Lagers zeichnen
-	CShips* ship = &pDoc->CurrentShip()->second;
+	const CShipMap::const_iterator& ship = pDoc->CurrentShip();
 	for (int i = TITAN; i <= DERITIUM; i++)
 	{
-		int res = ship->GetLoadedResources(i);
-		for(CShips::const_iterator j = ship->begin(); j != ship->end(); ++j)
+		int res = ship->second.GetLoadedResources(i);
+		for(CShips::const_iterator j = ship->second.begin(); j != ship->second.end(); ++j)
 			res += j->second.GetLoadedResources(i);
 		// Lagerinhalt im Schiff zeichnen
 		fontFormat.SetAlignment(StringAlignmentFar);
@@ -217,19 +217,19 @@ void CTransportMenuView::DrawTransportMenue(Graphics* g)
 		}
 	}
 	// verfügbaren Lagerraum im Schiff zeichnen:
-	int usedStorage = ship->GetUsedStorageRoom(&pDoc->m_TroopInfo);
-	int storageRoom = ship->GetStorageRoom();
-	int troopNumber = ship->GetTransportedTroops()->GetSize();
+	int usedStorage = ship->second.GetUsedStorageRoom(&pDoc->m_TroopInfo);
+	int storageRoom = ship->second.GetStorageRoom();
+	int troopNumber = ship->second.GetTransportedTroops()->GetSize();
 
-	for(CShips::const_iterator j = ship->begin(); j != ship->end(); ++j)
+	for(CShips::const_iterator j = ship->second.begin(); j != ship->second.end(); ++j)
 	{
 		usedStorage += j->second.GetUsedStorageRoom(&pDoc->m_TroopInfo);
 		storageRoom += j->second.GetStorageRoom();
 		troopNumber += j->second.GetTransportedTroops()->GetSize();
 	}
-/*	for (int i = 0; i < ship->GetTransportedTroops()->GetSize(); i++)
+/*	for (int i = 0; i < ship->second.GetTransportedTroops()->GetSize(); i++)
 	{
-		BYTE id = ship->GetTransportedTroops()->GetAt(i).GetID();
+		BYTE id = ship->second.GetTransportedTroops()->GetAt(i).GetID();
 		usedStorage += pDoc->m_TroopInfo.GetAt(id).GetSize();
 	}
 */
@@ -257,7 +257,7 @@ void CTransportMenuView::DrawTransportMenue(Graphics* g)
 	// Name der aktuell ausgewählten Truppe im System und auf dem Schiff zeichnen
 	if (m_byTroopNumberInSystem >= pDoc->GetSystem(p.x, p.y).GetTroops()->GetSize())
 		m_byTroopNumberInSystem = 0;
-	if (m_byTroopNumberInShip >= ship->GetTransportedTroops()->GetSize())
+	if (m_byTroopNumberInShip >= ship->second.GetTransportedTroops()->GetSize())
 		m_byTroopNumberInShip = 0;
 
 	// Truppenbeschreibung auf der linken Seite, also die im System anzeigen
@@ -312,9 +312,9 @@ void CTransportMenuView::DrawTransportMenue(Graphics* g)
 	}
 	// Truppenbeschreibung auf der rechten Seite, also die im Schiff anzeigen
 	//pDC->Rectangle(850,270,1050,700);
-	if (ship->GetTransportedTroops()->GetSize() > 0 && !ship->HasFleet())
+	if (ship->second.GetTransportedTroops()->GetSize() > 0 && !ship->second.HasFleet())
 	{
-		BYTE id = ship->GetTransportedTroops()->GetAt(m_byTroopNumberInShip).GetID();
+		BYTE id = ship->second.GetTransportedTroops()->GetAt(m_byTroopNumberInShip).GetID();
 		// ein paar Daten zur ausgewählten Einheit werden rechts angezeigt
 		fontBrush.SetColor(markColor);
 		fontFormat.SetAlignment(StringAlignmentCenter);
@@ -323,11 +323,11 @@ void CTransportMenuView::DrawTransportMenue(Graphics* g)
 
 		fontBrush.SetColor(normalColor);
 		fontFormat.SetAlignment(StringAlignmentNear);
-		s.Format("%s: %d",CResourceManager::GetString("OPOWER"), ship->GetTransportedTroops()->GetAt(m_byTroopNumberInShip).GetOffense());
+		s.Format("%s: %d",CResourceManager::GetString("OPOWER"), ship->second.GetTransportedTroops()->GetAt(m_byTroopNumberInShip).GetOffense());
 		g->DrawString(CComBSTR(s), -1, &font, RectF(865,310,185,30), &fontFormat, &fontBrush);
-		s.Format("%s: %d",CResourceManager::GetString("DPOWER"), ship->GetTransportedTroops()->GetAt(m_byTroopNumberInShip).GetDefense());
+		s.Format("%s: %d",CResourceManager::GetString("DPOWER"), ship->second.GetTransportedTroops()->GetAt(m_byTroopNumberInShip).GetDefense());
 		g->DrawString(CComBSTR(s), -1, &font, RectF(865,340,185,30), &fontFormat, &fontBrush);
-		s.Format("%s: %d",CResourceManager::GetString("EXPERIANCE"), ship->GetTransportedTroops()->GetAt(m_byTroopNumberInShip).GetExperiance());
+		s.Format("%s: %d",CResourceManager::GetString("EXPERIANCE"), ship->second.GetTransportedTroops()->GetAt(m_byTroopNumberInShip).GetExperiance());
 		g->DrawString(CComBSTR(s), -1, &font, RectF(865,370,185,30), &fontFormat, &fontBrush);
 		s.Format("%s: %d",CResourceManager::GetString("PLACE"),pDoc->m_TroopInfo.GetAt(id).GetSize());
 		g->DrawString(CComBSTR(s), -1, &font, RectF(865,400,185,30), &fontFormat, &fontBrush);
@@ -387,7 +387,7 @@ void CTransportMenuView::DrawTransportMenue(Graphics* g)
 			g->DrawString(CComBSTR(s), -1, &font, RectF(290,670,120,30), &fontFormat, &btnBrush);
 		}
 		// Vor-Button rechts
-		if (ship->GetTransportedTroops()->GetSize() && !ship->HasFleet())
+		if (ship->second.GetTransportedTroops()->GetSize() && !ship->second.HasFleet())
 		{
 			if (graphic)
 				g->DrawImage(graphic, 665,670,120,30);
@@ -395,7 +395,7 @@ void CTransportMenuView::DrawTransportMenue(Graphics* g)
 			g->DrawString(CComBSTR(s), -1, &font, RectF(665,670,120,30), &fontFormat, &btnBrush);
 		}
 	}
-	else if (ship->GetTransportedTroops()->GetSize() && !ship->HasFleet())
+	else if (ship->second.GetTransportedTroops()->GetSize() && !ship->second.HasFleet())
 	{
 		// Vor-Button rechts
 		if (graphic)
@@ -434,22 +434,22 @@ void CTransportMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 
 	// Wenn wir in der Transportansicht sind (brauchen auch nur Klicks überprüfen, wenn das Schiff Lagerraum hat)
 
-	CShips* ship = &pDoc->CurrentShip()->second;
-	if (ship == NULL || ship->GetOwnerOfShip() != pMajor->GetRaceID() || ship->GetStorageRoom() == 0)
+	CShipMap::iterator ship = pDoc->CurrentShip();
+	if (ship->second.GetOwnerOfShip() != pMajor->GetRaceID() || ship->second.GetStorageRoom() == 0)
 		return;
 
 	CalcLogicalPoint(point);
 
 	CPoint p = pDoc->GetKO();
 	CString systemOwner = pDoc->GetSystem(p.x, p.y).GetOwnerOfSystem();
-	CString shipOwner   = ship->GetOwnerOfShip();
+	CString shipOwner   = ship->second.GetOwnerOfShip();
 
 	BOOLEAN isFleet = FALSE;
 	int number = 1;
-	if (ship->HasFleet())
+	if (ship->second.HasFleet())
 	{
 		isFleet = TRUE;
-		number += ship->GetFleetSize();
+		number += ship->second.GetFleetSize();
 	}
 
 	// Buttons um Ressourcen zu verschieben
@@ -469,10 +469,10 @@ void CTransportMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 					{
 						while (nQuantity > 0)
 						{
-							if (ship->GetTransportedTroops()->GetSize() > 0)
+							if (ship->second.GetTransportedTroops()->GetSize() > 0)
 							{
-								pDoc->GetSystem(p.x, p.y).GetTroops()->Add(ship->GetTransportedTroops()->GetAt(m_byTroopNumberInShip));
-								ship->GetTransportedTroops()->RemoveAt(m_byTroopNumberInShip);
+								pDoc->GetSystem(p.x, p.y).GetTroops()->Add(ship->second.GetTransportedTroops()->GetAt(m_byTroopNumberInShip));
+								ship->second.GetTransportedTroops()->RemoveAt(m_byTroopNumberInShip);
 								if (m_byTroopNumberInShip > 0)
 									m_byTroopNumberInShip--;
 								m_byTroopNumberInSystem = pDoc->GetSystem(p.x, p.y).GetTroops()->GetUpperBound();
@@ -484,7 +484,7 @@ void CTransportMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 								break;
 						}
 						if (isFleet && j < number-1)
-							ship = &pDoc->CurrentShip()->second.iterator_at(j)->second;
+							ship = pDoc->CurrentShip()->second.iterator_at(j);
 					}
 					return;
 				}
@@ -518,23 +518,23 @@ void CTransportMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 					for (int j = 0; j < number; j++)
 					{
 						// wenn mehr Ressourcen auf dem Schiff vorhanden sind als verschoben werden
-						if (ship->GetLoadedResources(i) >= m_iTransportStorageQuantity)
+						if (ship->second.GetLoadedResources(i) >= m_iTransportStorageQuantity)
 						{
 							pDoc->GetSystem(p.x, p.y).SetResourceStore(i, m_iTransportStorageQuantity);
-							ship->SetLoadedResources(-m_iTransportStorageQuantity, i);
+							ship->second.SetLoadedResources(-m_iTransportStorageQuantity, i);
 							m_iTransportStorageQuantity = 0;
 						}
 						// wenn man mehr verschieben wollen als auf dem Schiff vorhanden sind
 						else
 						{
-							m_iTransportStorageQuantity -= ship->GetLoadedResources(i);
-							pDoc->GetSystem(p.x, p.y).SetResourceStore(i, ship->GetLoadedResources(i));
-							ship->SetLoadedResources(-ship->GetLoadedResources(i), i);
+							m_iTransportStorageQuantity -= ship->second.GetLoadedResources(i);
+							pDoc->GetSystem(p.x, p.y).SetResourceStore(i, ship->second.GetLoadedResources(i));
+							ship->second.SetLoadedResources(-ship->second.GetLoadedResources(i), i);
 						}
 						if (m_iTransportStorageQuantity == NULL)
 							break;
 						if (isFleet && j < number-1)
-							ship = &pDoc->CurrentShip()->second.iterator_at(j)->second;
+							ship = pDoc->CurrentShip()->second.iterator_at(j);
 					}
 					m_iTransportStorageQuantity = oldQuantity;
 					Invalidate(FALSE);
@@ -561,16 +561,16 @@ void CTransportMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 							{
 								BYTE id = pDoc->GetSystem(p.x, p.y).GetTroops()->GetAt(m_byTroopNumberInSystem).GetID();
 								// durch Truppen und Ressourcen auf Schiff
-								usedStorage = ship->GetUsedStorageRoom(&pDoc->m_TroopInfo);
+								usedStorage = ship->second.GetUsedStorageRoom(&pDoc->m_TroopInfo);
 								// dazu der benötigte Platz durch die Truppe, welche hinzukommen soll
 								usedStorage += pDoc->m_TroopInfo.GetAt(id).GetSize();
-								if (usedStorage <= ship->GetStorageRoom())
+								if (usedStorage <= ship->second.GetStorageRoom())
 								{
-									ship->GetTransportedTroops()->Add(pDoc->GetSystem(p.x, p.y).GetTroops()->GetAt(m_byTroopNumberInSystem));
+									ship->second.GetTransportedTroops()->Add(pDoc->GetSystem(p.x, p.y).GetTroops()->GetAt(m_byTroopNumberInSystem));
 									pDoc->GetSystem(p.x, p.y).GetTroops()->RemoveAt(m_byTroopNumberInSystem);
 									if (m_byTroopNumberInSystem > 0)
 										m_byTroopNumberInSystem--;
-									m_byTroopNumberInShip = ship->GetTransportedTroops()->GetUpperBound();
+									m_byTroopNumberInShip = ship->second.GetTransportedTroops()->GetUpperBound();
 									Invalidate(FALSE);
 									pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CShipBottomView));
 									nQuantity--;
@@ -581,7 +581,7 @@ void CTransportMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 									break;
 							}
 							if (isFleet && j < number-1)
-								ship = &pDoc->CurrentShip()->second.iterator_at(j)->second;
+								ship = pDoc->CurrentShip()->second.iterator_at(j);
 						}
 					}
 					return;
@@ -599,9 +599,9 @@ void CTransportMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 					for (int j = 0; j < number; j++)
 					{
 						m_iTransportStorageQuantity = oldQuantity;
-						usedStorage = ship->GetUsedStorageRoom(&pDoc->m_TroopInfo);
-						if (m_iTransportStorageQuantity*multi > ship->GetStorageRoom() - usedStorage)
-							m_iTransportStorageQuantity = (ship->GetStorageRoom() - usedStorage) / multi;
+						usedStorage = ship->second.GetUsedStorageRoom(&pDoc->m_TroopInfo);
+						if (m_iTransportStorageQuantity*multi > ship->second.GetStorageRoom() - usedStorage)
+							m_iTransportStorageQuantity = (ship->second.GetStorageRoom() - usedStorage) / multi;
 						if (m_iTransportStorageQuantity > transportedRes)
 							m_iTransportStorageQuantity = transportedRes;
 						// wenn im System mehr Ressourcen vorhanden sind, als man verschieben möchte
@@ -609,19 +609,19 @@ void CTransportMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 						{
 							transportedRes -= m_iTransportStorageQuantity;
 							pDoc->GetSystem(p.x, p.y).SetResourceStore(i, -m_iTransportStorageQuantity);
-							ship->SetLoadedResources(m_iTransportStorageQuantity, i);
+							ship->second.SetLoadedResources(m_iTransportStorageQuantity, i);
 						}
 						// wenn im System weniger Ressourcen vorhanden sind, als man aufs Schiff verschieben möchte
 						else
 						{
 							transportedRes -= pDoc->GetSystem(p.x, p.y).GetResourceStore(i);
-							ship->SetLoadedResources(pDoc->GetSystem(p.x, p.y).GetResourceStore(i), i);
+							ship->second.SetLoadedResources(pDoc->GetSystem(p.x, p.y).GetResourceStore(i), i);
 							pDoc->GetSystem(p.x, p.y).SetResourceStore(i, -(int)pDoc->GetSystem(p.x, p.y).GetResourceStore(i));
 						}
 						if (transportedRes == NULL)
 							break;
 						if (isFleet && j < number-1)
-							ship = &pDoc->CurrentShip()->second.iterator_at(j)->second;
+							ship = pDoc->CurrentShip()->second.iterator_at(j);
 					}
 					m_iTransportStorageQuantity = oldQuantity;
 					Invalidate(FALSE);
@@ -652,14 +652,14 @@ void CTransportMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		}
 		// Vor-Button rechts
 		else if (CRect(665,670,785,700).PtInRect(point) &&
-			ship->GetTransportedTroops()->GetSize() > 0 && !ship->HasFleet())
+			ship->second.GetTransportedTroops()->GetSize() > 0 && !ship->second.HasFleet())
 		{
 			m_byTroopNumberInShip++;
 			Invalidate(FALSE);
 		}
 	}
 	else if (CRect(665,670,785,700).PtInRect(point) &&
-		ship->GetTransportedTroops()->GetSize() > 0 && !ship->HasFleet())
+		ship->second.GetTransportedTroops()->GetSize() > 0 && !ship->second.HasFleet())
 	{
 		// Vor-Button rechts
 		m_byTroopNumberInShip++;
@@ -733,13 +733,13 @@ void CTransportMenuView::OnMouseMove(UINT nFlags, CPoint point)
 	ASSERT(pMajor);
 
 	// Wenn wir in der Transportansicht sind (brauchen auch nur Klicks überprüfen, wenn das Schiff Lagerraum hat)
-	const CShips* const ship = &pDoc->CurrentShip()->second;
-	if (ship == NULL || ship->GetOwnerOfShip() != pMajor->GetRaceID() || ship->GetStorageRoom() == 0)
+	const CShips::const_iterator& ship = pDoc->CurrentShip();
+	if (ship->second.GetOwnerOfShip() != pMajor->GetRaceID() || ship->second.GetStorageRoom() == 0)
 		return;
 
 	CPoint p = pDoc->GetKO();
 	CString systemOwner = pDoc->GetSystem(p.x, p.y).GetOwnerOfSystem();
-	CString shipOwner   = ship->GetOwnerOfShip();
+	CString shipOwner   = ship->second.GetOwnerOfShip();
 
 	if (systemOwner == shipOwner)
 	{

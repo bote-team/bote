@@ -444,15 +444,15 @@ void CGalaxyMenuView::OnDraw(CDC* dc)
 
 		// Anzahl der benötigten Runden in letztes Feld des Weges zeichnen
 		//CPoint last = pMajor->GetStarmap()->GetSectorCoords(path[path.GetUpperBound()]);
-		CShips& current_ship = pDoc->CurrentShip()->second;
-		CPoint last = pMajor->GetStarmap()->GetSectorCoords(current_ship.GetPath()->GetAt(
-			current_ship.GetPath()->GetUpperBound()));
+		const CShipMap::const_iterator& current_ship = pDoc->CurrentShip();
+		CPoint last = pMajor->GetStarmap()->GetSectorCoords(current_ship->second.GetPath()->GetAt(
+			current_ship->second.GetPath()->GetUpperBound()));
 		CString s;
 		// Wenn das Schiff keine Flotte anführt
 		if (!pDoc->CurrentShip()->second.HasFleet())
-			s.Format("%.0f",ceil((float)current_ship.GetPath()->GetSize() / (float)current_ship.GetSpeed()));
+			s.Format("%.0f",ceil((float)current_ship->second.GetPath()->GetSize() / (float)current_ship->second.GetSpeed()));
 		else
-			s.Format("%.0f",ceil((float)current_ship.GetPath()->GetSize() / (float)pDoc->CurrentShip()->second.GetFleetSpeed(&pDoc->CurrentShip()->second.Leader())));
+			s.Format("%.0f",ceil((float)current_ship->second.GetPath()->GetSize() / (float)pDoc->CurrentShip()->second.GetFleetSpeed(&pDoc->CurrentShip()->second.Leader())));
 		pDC->SetTextColor(RGB(255,255,255));
 		pDC->TextOut(last.x+STARMAP_SECTOR_WIDTH/2+6, last.y+STARMAP_SECTOR_HEIGHT/2-8, s);
 
@@ -719,11 +719,10 @@ void CGalaxyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 							if(it->first == pMajor->GetRaceID()) {
 								for(CShipMap::const_iterator i = pDoc->m_ShipMap.begin();
 										i != pDoc->m_ShipMap.end(); ++i) {
-									const CShips& ship = i->second;
-									const CPoint& point = ship.GetKO();
+									const CPoint& point = i->second.GetKO();
 									if(sector == Sector(point.x, point.y)) {
 										m_PreviouslyJumpedToShip = RememberedShip(
-											ship.GetShipName(), i->first);
+											i->second.GetShipName(), i->first);
 										break;
 									}
 								}
@@ -830,8 +829,8 @@ void CGalaxyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		if (m_bShipMove && (pDoc->CurrentShip()->second.GetPath()->GetSize()
 			|| target == pDoc->CurrentShip()->second.GetKO()))
 		{
-			CShips& ship = pDoc->CurrentShip()->second;
-			ship.SetTargetKO(target == ship.GetKO() ? CPoint(-1, -1) : target);
+			const CShipMap::iterator& ship = pDoc->CurrentShip();
+			ship->second.SetTargetKO(target == ship->second.GetKO() ? CPoint(-1, -1) : target);
 			CSmallInfoView::SetDisplayMode(CSmallInfoView::DISPLAY_MODE_SHIP_BOTTEM_VIEW);
 			SetMoveShip(FALSE);
 			pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
@@ -1336,12 +1335,11 @@ void CGalaxyMenuView::SearchNextIdleShipAndJumpToIt(CBotf2Doc* pDoc, SHIP_ORDER:
 				break;
 			i = pDoc->m_ShipMap.begin();
 		}
-		const CShips& ship = i->second;
-		if(m_pPlayersRace->GetRaceID() == ship.GetOwnerOfShip()) {
-			const CPoint& coords = ship.GetKO();
+		if(m_pPlayersRace->GetRaceID() == i->second.GetOwnerOfShip()) {
+			const CPoint& coords = i->second.GetKO();
 			const Sector& sector = Sector(coords.x, coords.y);
 
-			if(ship.HasNothingToDo()) {
+			if(i->second.HasNothingToDo()) {
 				if(previous_ship != pDoc->m_ShipMap.end() && order != SHIP_ORDER::NONE) {
 					previous_ship->second.SetCurrentOrder(order);
 					assert(order == SHIP_ORDER::WAIT_SHIP_ORDER || order == SHIP_ORDER::SENTRY_SHIP_ORDER);
@@ -1350,7 +1348,7 @@ void CGalaxyMenuView::SearchNextIdleShipAndJumpToIt(CBotf2Doc* pDoc, SHIP_ORDER:
 					//has a valid target, but still would get order sentry or wait
 					previous_ship->second.SetTargetKO(CPoint(-1, -1), true);
 				}
-				m_PreviouslyJumpedToShip = RememberedShip(ship.GetShipName(), ship.Key());
+				m_PreviouslyJumpedToShip = RememberedShip(i->second.GetShipName(), i->second.Key());
 				m_pPlayersRace->GetStarmap()->Select(sector);// sets orange rectangle in galaxy view
 				pDoc->SetKO(sector.x,sector.y);//neccessary for that the ship is selected for SHIP_BOTTOM_VIEW
 				pDoc->SetCurrentShip(i);

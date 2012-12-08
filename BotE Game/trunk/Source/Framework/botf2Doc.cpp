@@ -534,9 +534,8 @@ void CBotf2Doc::SerializeNextRoundData(CArchive &ar)
 
 		// Ausgehend vom Pfad des Schiffes den Sektoren mitteilen, das durch sie ein Schiff fliegt
 		for(CShipMap::const_iterator y = m_ShipMap.begin(); y != m_ShipMap.end(); ++y) {
-			const CShips& ship = y->second;
-			if (ship.GetOwnerOfShip() == pPlayer->GetRaceID()) {
-				const CArray<Sector>& path = *ship.GetPath();
+			if (y->second.GetOwnerOfShip() == pPlayer->GetRaceID()) {
+				const CArray<Sector>& path = *y->second.GetPath();
 				for (int i = 0; i < path.GetSize(); i++)
 					GetSector(path.GetAt(i).x, path.GetAt(i).y).AddShipPathPoints(1);
 			}
@@ -1286,10 +1285,9 @@ static bool HumanPlayerInCombat(const CShipMap& ships, const CPoint& CurrentComb
 
 	for(CShipMap::const_iterator i = ships.begin(); i != ships.end(); ++i)
 	{
-		const CShips* pShip = &i->second;
-		if (pShip->GetKO() != CurrentCombatSector)
+		if (i->second.GetKO() != CurrentCombatSector)
 			continue;
-		const std::map<CString, CMajor*>::const_iterator major = majors.find(pShip->GetOwnerOfShip());
+		const std::map<CString, CMajor*>::const_iterator major = majors.find(i->second.GetOwnerOfShip());
 		if (major != majors.end() && major->second->IsHumanPlayer())
 			return true;
 	}
@@ -2150,12 +2148,11 @@ CShipMap::iterator CBotf2Doc::BuildShip(int nID, const CPoint& KO, const CString
 
 	CString sOwner = sOwnerID;
 	const CShipMap::iterator it = m_ShipMap.Add(static_cast<CShip&>(m_ShipInfoArray.GetAt(nID)));
-	CShips& ship = it->second;
-	ship.SetOwnerOfShip(sOwner);
-	ship.SetKO(KO.x, KO.y);
+	it->second.SetOwnerOfShip(sOwner);
+	it->second.SetKO(KO.x, KO.y);
 
 	// Schiffsnamen vergeben
-	ship.SetShipName(m_GenShipName.GenerateShipName(sOwner, ship.IsStation()));
+	it->second.SetShipName(m_GenShipName.GenerateShipName(sOwner, it->second.IsStation()));
 
 	// den Rest nur machen, wenn das Schiff durch eine Majorrace gebaut wurde
 	if (!pOwner->IsMajor())
@@ -2165,12 +2162,12 @@ CShipMap::iterator CBotf2Doc::BuildShip(int nID, const CPoint& KO, const CString
 	ASSERT(pMajor);
 
 	// Spezialforschungsboni dem Schiff hinzufügen
-	AddSpecialResearchBoniToShip(&ship.Leader(), pMajor);
+	AddSpecialResearchBoniToShip(&it->second.Leader(), pMajor);
 
-	ship.SetTargetKO(CPoint(-1,-1), true);
-	ship.SetTerraformingPlanet(-1);
+	it->second.SetTargetKO(CPoint(-1,-1), true);
+	it->second.SetTerraformingPlanet(-1);
 
-	pMajor->GetShipHistory()->AddShip(&ship.Leader(), GetSector(KO.x, KO.y).GetName(), m_iRound);
+	pMajor->GetShipHistory()->AddShip(&it->second.Leader(), GetSector(KO.x, KO.y).GetName(), m_iRound);
 	return it;
 }
 
@@ -2485,28 +2482,27 @@ void CBotf2Doc::CalcSystemAttack()
 	CArray<CPoint> fightInSystem;
 	for(CShipMap::iterator y = m_ShipMap.begin(); y != m_ShipMap.end(); ++y)
 	{
-		CShips& ship = y->second;
-		if (ship.GetCurrentOrder() == SHIP_ORDER::ATTACK_SYSTEM)
+		if (y->second.GetCurrentOrder() == SHIP_ORDER::ATTACK_SYSTEM)
 		{
 			BOOLEAN okay = TRUE;
 			// Checken dass in diesem System nicht schon ein Angriff durchgeführt wurde
 			for (int x = 0; x < fightInSystem.GetSize(); x++)
-				if (fightInSystem.GetAt(x) == ship.GetKO())
+				if (fightInSystem.GetAt(x) == y->second.GetKO())
 				{
 					okay = FALSE;
 					break;
 				}
 
 			// nur wenn das Schiff und Schiffe in der Flotte ungetarnt sind
-			if(!ship.CanHaveOrder(SHIP_ORDER::ATTACK_SYSTEM, false)) {
-				ship.UnsetCurrentOrder();
+			if(!y->second.CanHaveOrder(SHIP_ORDER::ATTACK_SYSTEM, false)) {
+				y->second.UnsetCurrentOrder();
 				okay = FALSE;
 			}
 
 			// wenn in dem System noch kein Angriff durchgeführt wurde kann angegriffen werden
 			if (okay)
 			{
-				CPoint p = ship.GetKO();
+				CPoint p = y->second.GetKO();
 				// Besitzer des Systems (hier Sector wegen Minors) vor dem Systemangriff
 				CString sDefender = GetSector(p.x, p.y).GetOwnerOfSector();
 				// Angreifer bzw. neuer Besitzer des Systems nach dem Angriff
@@ -4550,36 +4546,35 @@ void CBotf2Doc::CalcShipMovement()
 	// dass manche Befehle noch ihre Gültigkeit haben
 	for(CShipMap::iterator y = m_ShipMap.begin(); y != m_ShipMap.end(); ++y)
 	{
-		CShips* pShip = &y->second;
 #ifdef DEVELOPMENT_VERSION
-		CSanity::CheckShipUniqueness(*pShip, already_encountered_ships_for_sanity_check);
+		CSanity::CheckShipUniqueness(y->second, already_encountered_ships_for_sanity_check);
 #endif
 
 		// Prüfen, dass ein Terraformbefehl noch gültig ist
-		if (pShip->GetCurrentOrder() == SHIP_ORDER::TERRAFORM)
+		if (y->second.GetCurrentOrder() == SHIP_ORDER::TERRAFORM)
 		{
-			CPoint p = pShip->GetKO();
-			if (GetSector(pShip->GetKO().x, pShip->GetKO().y).GetPlanet(pShip->GetTerraformingPlanet())->GetTerraformed() == TRUE)
+			CPoint p = y->second.GetKO();
+			if (GetSector(y->second.GetKO().x, y->second.GetKO().y).GetPlanet(y->second.GetTerraformingPlanet())->GetTerraformed() == TRUE)
 			{
-				pShip->SetCurrentOrder(SHIP_ORDER::AVOID);
-				pShip->SetTerraformingPlanet(-1);
+				y->second.SetCurrentOrder(SHIP_ORDER::AVOID);
+				y->second.SetTerraformingPlanet(-1);
 			}
 		}
 		// Prüfen, dass ein Aussenpostenbaubefehl noch gültig ist
-		else if (pShip->GetCurrentOrder() == SHIP_ORDER::BUILD_OUTPOST)
+		else if (y->second.GetCurrentOrder() == SHIP_ORDER::BUILD_OUTPOST)
 		{
-			if (GetSector(pShip->GetKO().x, pShip->GetKO().y).GetOutpost(pShip->GetOwnerOfShip()) == TRUE)
-				pShip->SetCurrentOrder(SHIP_ORDER::AVOID);
+			if (GetSector(y->second.GetKO().x, y->second.GetKO().y).GetOutpost(y->second.GetOwnerOfShip()) == TRUE)
+				y->second.SetCurrentOrder(SHIP_ORDER::AVOID);
 		}
 		// Prüfen, dass ein Sternbasenbaubefehl noch gültig ist
-		else if (pShip->GetCurrentOrder() == SHIP_ORDER::BUILD_STARBASE)
+		else if (y->second.GetCurrentOrder() == SHIP_ORDER::BUILD_STARBASE)
 		{
-			if (GetSector(pShip->GetKO().x, pShip->GetKO().y).GetStarbase(pShip->GetOwnerOfShip()) == TRUE)
-				pShip->SetCurrentOrder(SHIP_ORDER::AVOID);
+			if (GetSector(y->second.GetKO().x, y->second.GetKO().y).GetStarbase(y->second.GetOwnerOfShip()) == TRUE)
+				y->second.SetCurrentOrder(SHIP_ORDER::AVOID);
 		}
 		// weiter mit Schiffsbewegung
-		Sector shipKO((char)pShip->GetKO().x,(char)pShip->GetKO().y);
-		Sector targetKO((char)pShip->GetTargetKO().x,(char)pShip->GetTargetKO().y);
+		Sector shipKO((char)y->second.GetKO().x,(char)y->second.GetKO().y);
+		Sector targetKO((char)y->second.GetTargetKO().x,(char)y->second.GetTargetKO().y);
 		Sector nextKO(-1,-1);
 
 		assert(shipKO.on_map());
@@ -4587,7 +4582,7 @@ void CBotf2Doc::CalcShipMovement()
 		assert(shipKO != targetKO);
 
 		// Weltraummonster gesondert behandeln
-		if (pShip->IsAlien())
+		if (y->second.IsAlien())
 		{
 			// wenn bei einem Weltraummonster kein Ziel vorhanden ist, dann wird zufüllig ein neues generiert
 			if (targetKO.x == -1)
@@ -4602,7 +4597,7 @@ void CBotf2Doc::CalcShipMovement()
 					if (GetSector(targetKO.x, targetKO.y).GetAnomaly())
 						continue;
 
-					pShip->SetTargetKO(CPoint(targetKO.x, targetKO.y));
+					y->second.SetTargetKO(CPoint(targetKO.x, targetKO.y));
 					break;
 				}
 			}
@@ -4618,58 +4613,58 @@ void CBotf2Doc::CalcShipMovement()
 			char range;
 			char speed;
 			// Unterscheiden, ob das Schiff eine Flotte anführt oder nicht
-			if (pShip->HasFleet())
+			if (y->second.HasFleet())
 			{
-				range = (char)(3 - pShip->GetFleetRange(&pShip->Leader()));
-				speed = (char)(pShip->GetFleetSpeed(&pShip->Leader()));
+				range = (char)(3 - y->second.GetFleetRange(&y->second.Leader()));
+				speed = (char)(y->second.GetFleetSpeed(&y->second.Leader()));
 			}
 			else
 			{
-				range = (char)(3 - pShip->GetRange());
-				speed = (char)(pShip->GetSpeed());
+				range = (char)(3 - y->second.GetRange());
+				speed = (char)(y->second.GetSpeed());
 			}
 
 			CRace* pRace = NULL;
 
 			// Weltraummonster gesondert behandeln
-			if (pShip->IsAlien())
+			if (y->second.IsAlien())
 			{
 				CStarmap* pStarmap = new CStarmap(0);
 				pStarmap->SetFullRangeMap();
 
 				// Anomalien werden schon beachtet, da dies eine statische Variable ist und in NextRound() schon
 				// berechnet wurde.
-				nextKO = pStarmap->CalcPath(shipKO,targetKO,range,speed,*pShip->GetPath());
+				nextKO = pStarmap->CalcPath(shipKO,targetKO,range,speed,*y->second.GetPath());
 
 				delete pStarmap;
 				pStarmap = NULL;
 			}
 			else
 			{
-				pRace = m_pRaceCtrl->GetRace(pShip->GetOwnerOfShip());
+				pRace = m_pRaceCtrl->GetRace(y->second.GetOwnerOfShip());
 				if (pRace != NULL && pRace->IsMajor())
 				{
-					nextKO = dynamic_cast<CMajor*>(pRace)->GetStarmap()->CalcPath(shipKO,targetKO,range,speed,*pShip->GetPath());
+					nextKO = dynamic_cast<CMajor*>(pRace)->GetStarmap()->CalcPath(shipKO,targetKO,range,speed,*y->second.GetPath());
 				}
 			}
 
 			// Ziel zum Anfliegen vorhanden
 			if (nextKO != Sector(-1,-1))
 			{
-				pShip->SetKO(nextKO.x, nextKO.y);
+				y->second.SetKO(nextKO.x, nextKO.y);
 				// Die Anzahl speed ersten Felder in Pfad des Schiffes l?schen
 				if (nextKO == targetKO)
 				{
-					pShip->GetPath()->RemoveAll();
-					pShip->SetTargetKO(CPoint(-1,-1));
+					y->second.GetPath()->RemoveAll();
+					y->second.SetTargetKO(CPoint(-1,-1));
 				}
-				if (pRace != NULL && pRace->IsMajor() && !(this->GetSector(nextKO.x,nextKO.y).GetFullKnown(pShip->GetOwnerOfShip()))) //Berechnet Zufalls entdeckung in dem Sector den das Schiff anfliegt
+				if (pRace != NULL && pRace->IsMajor() && !(this->GetSector(nextKO.x,nextKO.y).GetFullKnown(y->second.GetOwnerOfShip()))) //Berechnet Zufalls entdeckung in dem Sector den das Schiff anfliegt
 					m_RandomEventManager.CalcExploreEvent(CPoint((int)nextKO.x,(int)nextKO.y),dynamic_cast<CMajor*>(pRace),&m_ShipMap);
 
 				int high = speed;
-				while (high > 0 && high < pShip->GetPath()->GetSize())
+				while (high > 0 && high < y->second.GetPath()->GetSize())
 				{
-					pShip->GetPath()->RemoveAt(0);
+					y->second.GetPath()->RemoveAt(0);
 					high--;
 				}
 			}
@@ -4677,8 +4672,8 @@ void CBotf2Doc::CalcShipMovement()
 
 		// Gibt es eine Anomalie, wodurch die Schilde schneller aufgeladen werden
 		bool bFasterShieldRecharge = false;
-		if (GetSector(pShip->GetKO().x, pShip->GetKO().y).GetAnomaly())
-			if (GetSector(pShip->GetKO().x, pShip->GetKO().y).GetAnomaly()->GetType() == BINEBULA)
+		if (GetSector(y->second.GetKO().x, y->second.GetKO().y).GetAnomaly())
+			if (GetSector(y->second.GetKO().x, y->second.GetKO().y).GetAnomaly()->GetType() == BINEBULA)
 				bFasterShieldRecharge = true;
 
 		// Nach der Bewegung, aber noch vor einem möglichen Kampf werden die Schilde nach ihrem Typ wieder aufgeladen,
@@ -4686,12 +4681,12 @@ void CBotf2Doc::CalcShipMovement()
 		//FIXME: The shipports are not yet updated for changes due to diplomacy at this spot.
 		//If we declared war and are on a shipport of the former friend, the ship is repaired,
 		//and a possible repair command isn't unset though it can no longer be set by the player this turn then.
-		pShip->Repair(GetSector(pShip->GetKO().x, pShip->GetKO().y).GetShipPort(pShip->GetOwnerOfShip()), bFasterShieldRecharge);
+		y->second.Repair(GetSector(y->second.GetKO().x, y->second.GetKO().y).GetShipPort(y->second.GetOwnerOfShip()), bFasterShieldRecharge);
 
 		// wenn eine Anomalie vorhanden, deren m?gliche Auswirkungen auf das Schiff berechnen
-		if (GetSector(pShip->GetKO().x, pShip->GetKO().y).GetAnomaly())
+		if (GetSector(y->second.GetKO().x, y->second.GetKO().y).GetAnomaly())
 		{
-			GetSector(pShip->GetKO().x, pShip->GetKO().y).GetAnomaly()->CalcShipEffects(pShip);
+			GetSector(y->second.GetKO().x, y->second.GetKO().y).GetAnomaly()->CalcShipEffects(&y->second);
 			bAnomaly = true;
 		}
 	}
@@ -4735,23 +4730,21 @@ bool CBotf2Doc::IsShipCombat()
 	// vertrag haben, dann kommt es in diesem Sektor zum Kampf
 	for(CShipMap::const_iterator y = m_ShipMap.begin(); y != m_ShipMap.end(); ++y)
 	{
-		const CShips* pShip = &y->second;
-		const CPoint& p = pShip->GetKO();
+		const CPoint& p = y->second.GetKO();
 		const CString& sector = GetSector(p.x, p.y).GetName(TRUE);
 		// Wenn unser Schiff auf Angreifen gestellt ist
 		// Wenn in dem Sektor des Schiffes schon ein Kampf stattgefunden hat, dann findet hier keiner mehr statt
-		if (pShip->GetCombatTactic() != COMBAT_TACTIC::CT_ATTACK
+		if (y->second.GetCombatTactic() != COMBAT_TACTIC::CT_ATTACK
 			|| m_sCombatSectors.find(sector) != m_sCombatSectors.end())
 			continue;
 		// Wenn noch kein Kampf in dem Sektor stattfand, dann kommt es möglicherweise hier zum Kampf
 		for(CShipMap::const_iterator i = m_ShipMap.begin(); i != m_ShipMap.end(); ++i)
 		{
-			const CShips* pOtherShip = &i->second;
-			const CString& sOwner1 = pShip->GetOwnerOfShip();
-			const CString& sOwner2 = pOtherShip->GetOwnerOfShip();
+			const CString& sOwner1 = y->second.GetOwnerOfShip();
+			const CString& sOwner2 = i->second.GetOwnerOfShip();
 			// nur weiter, wenn das Schiff nicht unserer Rasse gehört
 			// und wenn das Schiff sich im gleichen Sektor befindet
-			if (sOwner2 == sOwner1 || pOtherShip->GetKO() != p)
+			if (sOwner2 == sOwner1 || i->second.GetKO() != p)
 				continue;
 			const CRace* pRace1 = m_pRaceCtrl->GetRace(sOwner1);
 			const CRace* pRace2 = m_pRaceCtrl->GetRace(sOwner2);
@@ -4786,15 +4779,14 @@ void CBotf2Doc::CalcShipCombat()
 	// Jetzt gehen wir nochmal alle Sektoren durch und schauen ob ein Schiff im Kampfsektor ist
 	for(CShipMap::iterator i = m_ShipMap.begin(); i != m_ShipMap.end(); ++i)
 	{
-		CShips* pShip = &i->second;
-		if (pShip->GetKO() != m_ptCurrentCombatSector)
+		if (i->second.GetKO() != m_ptCurrentCombatSector)
 			continue;
 
-		vInvolvedShips.Add(pShip);
+		vInvolvedShips.Add(&i->second);
 
 		// Wenn das Schiff eine Flotte anführt, dann auch die Zeiger auf die Schiffe in der Flotte reingeben
-		if (pShip->HasFleet())
-			for (CShips::iterator j = pShip->begin(); j != pShip->end(); ++j)
+		if (i->second.HasFleet())
+			for (CShips::iterator j = i->second.begin(); j != i->second.end(); ++j)
 				vInvolvedShips.Add(&j->second);
 		// CHECK WW:
 		// folgendes Zeug kann weg, wenn der Kampf vor der Systemberechnung dramkommt
@@ -4975,15 +4967,14 @@ void CBotf2Doc::CalcShipCombat()
 	// allen Schiffen mit Rückzugsbfehl den aktuellen Befehl zurücknehmen
 	for(CShipMap::iterator i = m_ShipMap.begin(); i != m_ShipMap.end(); ++i)
 	{
-		CShips* pShip = &i->second;
 		// Hat das Schiff den Rückzugsbefehl
-		if (pShip->GetCombatTactic() == COMBAT_TACTIC::CT_RETREAT)
+		if (i->second.GetCombatTactic() == COMBAT_TACTIC::CT_RETREAT)
 		{
 			// Schiff auf Meiden stellen
-			pShip->SetCurrentOrderAccordingToType();
+			i->second.SetCurrentOrderAccordingToType();
 
 			// womögicher Terraformplanet oder Stationsbau zurücknehmen
-			pShip->SetTerraformingPlanet(-1);
+			i->second.SetTerraformingPlanet(-1);
 		}
 	}
 }
@@ -5048,10 +5039,9 @@ void CBotf2Doc::CalcShipEffects()
 	// Nach einem möglichen Kampf, aber natürlich auch generell die Schiffe und Stationen den Sektoren bekanntgeben
 	for(CShipMap::iterator y = m_ShipMap.begin(); y != m_ShipMap.end(); ++y)
 	{
-		CShips& ship = y->second;
-		const CString sRace = ship.GetOwnerOfShip();
+		const CString& sRace = y->second.GetOwnerOfShip();
 		CRace* pRace = m_pRaceCtrl->GetRace(sRace);
-		const CPoint& p = ship.GetKO();
+		const CPoint& p = y->second.GetKO();
 		CSector& sector = GetSector(p.x, p.y);
 
 		// Anomalien beachten
@@ -5063,14 +5053,14 @@ void CBotf2Doc::CalcShipEffects()
 			bBetterScanner = anomaly->GetType() == QUASAR;
 		}
 
-		ship.CalcEffects(sector, pRace, bDeactivatedShipScanner, bBetterScanner);
+		y->second.CalcEffects(sector, pRace, bDeactivatedShipScanner, bBetterScanner);
 		// Dem Sektor nochmal bekanntgeben, dass in ihm eine Sternbasis oder ein Außenposten steht. Weil wenn im Kampf
 		// eine Station teilnahm, dann haben wir den Shipport in dem Sektor vorläufig entfernt. Es kann ja passieren,
 		// dass die Station zerstört wird. Haben wir jetzt aber immernoch eine Station, dann bleibt der Shipport dort auch
 		// bestehen
-		if (ship.IsStation()) {
+		if (y->second.IsStation()) {
 			sector.SetShipPort(TRUE, sRace);
-			const SHIP_TYPE::Typ ship_type = ship.GetShipType();
+			const SHIP_TYPE::Typ ship_type = y->second.GetShipType();
 			if (ship_type == SHIP_TYPE::OUTPOST)
 				sector.SetOutpost(TRUE, sRace);
 			else
@@ -5146,13 +5136,12 @@ void CBotf2Doc::CalcContactNewRaces()
 {
 	for(CShipMap::const_iterator y = m_ShipMap.begin(); y != m_ShipMap.end(); ++y)
 	{
-		const CShips* pShip = &y->second;
-		const CString& sRace = pShip->GetOwnerOfShip();
+		const CString& sRace = y->second.GetOwnerOfShip();
 		CRace* pRace = m_pRaceCtrl->GetRace(sRace);
 		// kann die Rasse andere Rassen kennenlernen?
 		if(pRace->HasSpecialAbility(SPECIAL_NO_DIPLOMACY))
 			continue;
-		const CPoint& p = pShip->GetKO();
+		const CPoint& p = y->second.GetKO();
 		const CSector& sector = GetSector(p.x, p.y);
 		const CString& sOwnerOfSector = sector.GetOwnerOfSector();
 		CalcContactShipToMajorShip(*pRace, sector, p);

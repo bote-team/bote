@@ -149,12 +149,11 @@ void CStatistics::GetDemographicsMilitary(const CString& sRaceID, int& nPlace, f
 	// Es werden alle Schiffe aller Rassen betrachtet
 	for(CShipMap::const_iterator i = pDoc->m_ShipMap.begin(); i != pDoc->m_ShipMap.end(); ++i)
 	{
-		const CShips* pShip = &i->second;
 		// Stationen und Alienschiffe werden nicht mit einbezogen
-		if (!pShip->IsStation() && !pShip->IsAlien())
-			mMap[pShip->GetOwnerOfShip()] += pShip->GetCompleteOffensivePower() + pShip->GetCompleteOffensivePower() / 2;
+		if (!i->second.IsStation() && !i->second.IsAlien())
+			mMap[i->second.GetOwnerOfShip()] += i->second.GetCompleteOffensivePower() + i->second.GetCompleteOffensivePower() / 2;
 		// Schiffe in der Flotte beachten
-		for(CShips::const_iterator j = pShip->begin(); j != pShip->end(); ++j)
+		for(CShips::const_iterator j = i->second.begin(); j != i->second.end(); ++j)
 			if (!j->second.IsStation() && !j->second.IsAlien())
 				mMap[j->second.GetOwnerOfShip()] += j->second.GetCompleteOffensivePower() + j->second.GetCompleteOffensivePower() / 2;
 	}
