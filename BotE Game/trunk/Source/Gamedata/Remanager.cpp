@@ -28,7 +28,7 @@ CReManager::~CReManager(void)
 //such as population already being at minimum.
 void CReManager::CalcEvents(CMajor* pRace)
 {
-	CBotf2Doc const* pDoc = dynamic_cast<CBotf2App*>(AfxGetApp())->GetDocument();
+	CBotf2Doc const* pDoc = resources::pDoc;
 	const unsigned event_type = rand() % 3;
 	if(event_type == GLOBALEVENTSYSTEM)//system affecting event
 	{

@@ -36,9 +36,6 @@ public:
 	/// Destruktor
 	virtual ~CBotf2App();
 
-	/// Funktion gibt einen Zeiger auf das zugehörige Dokument der SDI Anwendung zurück.
-	CBotf2Doc* GetDocument() const;
-
 	/// Funktion gibt einen Zeiger auf den ChatDialog zurück.
 	CChatDlg* GetChatDlg() {return m_pChatDlg;}
 

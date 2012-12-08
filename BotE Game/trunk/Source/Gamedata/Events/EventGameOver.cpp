@@ -27,8 +27,6 @@ void CEventGameOver::Create(void)
 	if (m_pBGImage != NULL)
 		return;
 
-	ASSERT(((CBotf2App*)AfxGetApp())->GetDocument());
-
 	/*network::RACE client = pDoc->GetRaceCtrl()->GetMappedClientID(m_sRace);*/
 
 	CIniLoader* pIni = CIniLoader::GetInstance();

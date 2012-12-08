@@ -162,7 +162,7 @@ CDiplomacyAI::CDiplomacyAI(CRace* pRace) : m_pRace(pRace)
 {
 	ASSERT(m_pRace);
 
-	m_pDoc = ((CBotf2App*)AfxGetApp())->GetDocument();
+	m_pDoc = resources::pDoc;
 	ASSERT(m_pDoc);
 }
 

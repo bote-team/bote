@@ -186,7 +186,7 @@ BOOL CBotf2App::InitInstance()
 	m_pMainWnd->ShowWindow(SW_SHOWMAXIMIZED);
 
 	// Chatdialog erzeugen
-	m_pChatDlg = new CChatDlg(GetDocument());
+	m_pChatDlg = new CChatDlg(resources::pDoc);
 	m_pChatDlg->Create(IDD_CHATDLG);
 
 	return TRUE;
@@ -222,23 +222,6 @@ void CBotf2App::ShowChatDlg(WPARAM, LPARAM)
 	m_pChatDlg->ShowWindow(SW_SHOW);
 }
 
-CBotf2Doc* CBotf2App::GetDocument() const
-{
-	POSITION pos = GetFirstDocTemplatePosition();
-	while (pos)
-	{
-		CDocTemplate *docTemplate = GetNextDocTemplate(pos);
-		POSITION docpos = docTemplate->GetFirstDocPosition();
-		while (docpos)
-		{
-			CDocument *pDoc = docTemplate->GetNextDoc(docpos);
-			if (pDoc->IsKindOf(RUNTIME_CLASS(CBotf2Doc)))
-				return dynamic_cast<CBotf2Doc*>(pDoc);
-		}
-	}
-	return NULL;
-}
-
 void CBotf2App::OnChat()
 {
 	// TODO: Fügen Sie hier Ihren Befehlsbehandlungscode ein.
@@ -258,7 +241,7 @@ void CBotf2App::OnSettings()
 	// TODO: Fügen Sie hier Ihren Befehlsbehandlungscode ein.
 	CSettingsDlg dlg(true);
 	if (dlg.DoModal() == IDOK)
-		this->GetDocument()->ResetIniSettings();
+		resources::pDoc->ResetIniSettings();
 }
 
 void CBotf2App::OnOpenManual()
