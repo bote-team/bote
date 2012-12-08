@@ -488,9 +488,10 @@ bool CMajor::AHumanPlays() const {
 }
 
 void CMajor::AddToLostShipHistory(const CShip& Ship, const CString& sEvent,
-	const CString& sStatus, const CBotf2Doc& doc, unsigned short round)
+	const CString& sStatus, unsigned short round)
 {
 	const CPoint& co = Ship.GetKO();
+	const CBotf2Doc& doc = *resources::pDoc;
 	m_ShipHistory.ModifyShip(&Ship, doc.GetSector(co.x, co.y).GetName(TRUE), round, sEvent, sStatus);
 }
 

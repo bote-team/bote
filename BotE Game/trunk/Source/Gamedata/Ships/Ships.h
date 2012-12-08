@@ -161,7 +161,7 @@ public:
 	//strip this CShips from destroyed ships
 	//@ return true in case the leading ship is still alive, false in case the leader is dead and
 	//possibly ships in the fleet remain
-	bool RemoveDestroyed(CRace& owner, const CBotf2Doc& doc, unsigned short round, const CString& sEvent,
+	bool RemoveDestroyed(CRace& owner, unsigned short round, const CString& sEvent,
 		const CString& sStatus, CStringArray* destroyedShips = NULL, const CString& anomaly = "");
 	//// Funktion löscht die gesamte Flotte
 	void Reset(void);

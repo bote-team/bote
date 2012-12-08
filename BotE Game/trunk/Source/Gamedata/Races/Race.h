@@ -202,8 +202,8 @@ public:
 	bool CanBeContactedBy(const CString& sRaceID) const;
 	virtual void Contact(const CRace& Race, const CPoint& p);
 
-	virtual void AddToLostShipHistory(const CShip& Ship, const CString& sEvent, const CString& sStatus,
-		const CBotf2Doc& doc, unsigned short round);
+	virtual void AddToLostShipHistory(const CShip& Ship, const CString& sEvent,
+		const CString& sStatus, unsigned short round);
 
 	virtual void LostFlagShip(const CString& name);
 	virtual void LostStation(SHIP_TYPE::Typ type);

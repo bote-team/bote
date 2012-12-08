@@ -118,8 +118,8 @@ public:
 	/// Funktion fügt ein Schiff zur Liste der verlorenen Schiffe in der Schiffshistory ein.
 	/// @param sEvent Ereignis warum Schiff weg/zerstört/verschwunden ist
 	/// @param sStatus Status des Schiffes (meist zerstört)
-	virtual void AddToLostShipHistory(const CShip& Ship, const CString& sEvent, const CString& sStatus,
-		const CBotf2Doc& doc, unsigned short round);
+	virtual void AddToLostShipHistory(const CShip& Ship, const CString& sEvent,
+		const CString& sStatus, unsigned short round);
 
 	virtual void LostFlagShip(const CShip& ship);
 	virtual void LostStation(SHIP_TYPE::Typ type);

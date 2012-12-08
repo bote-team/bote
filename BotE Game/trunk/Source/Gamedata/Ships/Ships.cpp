@@ -151,12 +151,12 @@ void CShips::RemoveShipFromFleet(CShips::iterator& ship)
 		Reset();
 }
 
-bool CShips::RemoveDestroyed(CRace& owner, const CBotf2Doc& doc, unsigned short round,
+bool CShips::RemoveDestroyed(CRace& owner, unsigned short round,
 		const CString& sEvent, const CString& sStatus, CStringArray* destroyedShips, const CString& anomaly) {
 	// Wenn das Schiff eine Flotte hatte, dann erstmal nur die Schiffe in der Flotte beachten
 	// Wenn davon welche zerstört wurden diese aus der Flotte nehmen
 	for(CShips::iterator i = begin(); i != end();) {
-		if(i->second.RemoveDestroyed(owner, doc, round, sEvent, sStatus, destroyedShips, anomaly)) {
+		if(i->second.RemoveDestroyed(owner, round, sEvent, sStatus, destroyedShips, anomaly)) {
 			++i;
 			continue;
 		}
@@ -164,7 +164,7 @@ bool CShips::RemoveDestroyed(CRace& owner, const CBotf2Doc& doc, unsigned short 
 	}
 	// Wenn das Schiff selbst zerstört wurde
 	// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
-	return m_Leader.RemoveDestroyed(owner, doc, round, sEvent, sStatus, destroyedShips, anomaly);
+	return m_Leader.RemoveDestroyed(owner, round, sEvent, sStatus, destroyedShips, anomaly);
 }
 
 void CShips::Reset(void) {

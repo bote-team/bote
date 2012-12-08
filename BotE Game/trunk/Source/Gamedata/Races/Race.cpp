@@ -490,7 +490,7 @@ void CRace::Contact(const CRace& Race, const CPoint& /*p*/) {
 }
 
 void CRace::AddToLostShipHistory(const CShip& /*Ship*/, const CString& /*sEvent*/, const CString& /*sStatus*/,
-	const CBotf2Doc& /*doc*/, unsigned short /*round*/)
+	unsigned short /*round*/)
 {
 }
 

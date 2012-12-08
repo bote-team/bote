@@ -156,7 +156,7 @@ public:
 	//Sets the current oder according to m_nCombatTactic
 	void UnsetCurrentOrder();
 
-	bool RemoveDestroyed(CRace& owner, const CBotf2Doc& doc, unsigned short round, const CString& sEvent,
+	bool RemoveDestroyed(CRace& owner, unsigned short round, const CString& sEvent,
 		const CString& sStatus, CStringArray* destroyedShips, const CString& anomaly = "");
 
 	/// Diese Funktion berechnet die Schiffserfahrung in einer neuen Runde. Auﬂer Erfahrung im Kampf, diese werden nach einem
