@@ -89,7 +89,7 @@ public:
 	const CString& GetOwnerOfShip(void) const {return m_sOwnerOfShip;}
 	USHORT GetMaintenanceCosts() const {return m_iMaintenanceCosts;}
 	unsigned GetStealthGrade() const {return m_iStealthGrade;}
-	bool GetCloak() const {return m_bCloakOn;}
+	bool GetCloak() const;
 	SHIP_TYPE::Typ GetShipType() const {return m_iShipType;}
 	SHIP_SIZE::Typ GetShipSize() const {return m_nShipSize;}
 	BYTE GetManeuverability() const {return m_byManeuverability;}
@@ -201,6 +201,8 @@ public:
 	BYTE GetExpLevel() const;
 
 	USHORT GetUsedStorageRoom(const CArray<CTroopInfo>* troopInfo) const;
+
+	unsigned GetStealthPower() const;
 
 	//////////////////////////////////////////////////////////////////////
 	// bool statements about this ship

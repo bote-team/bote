@@ -234,9 +234,8 @@ public:
 	//// des Schiffsobjektes, welches die Flotte besitzt
 	short GetFleetShipType() const;
 
-	//// Funktion berechnet die minimale Stealthpower der Flotte. Der Parameter der hier übergeben werden sollte
-	//// ist der this-Zeiger bzw. die Adresse des Schiffsobjektes, welches die Flotte besitzt
-	BYTE GetFleetStealthPower(const CShip* ship = NULL) const;
+	//// Funktion berechnet die minimale Stealthpower der Flotte.
+	unsigned GetStealthPower() const;
 
 		//////////////////////////////////////////////////////////////////////
 		// LEADER ACCESS

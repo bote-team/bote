@@ -327,30 +327,15 @@ short CShips::GetFleetShipType() const
 
 // Funktion berechnet die minimale Stealthpower der Flotte. Der Parameter der hier übergeben werden sollte
 // ist der this-Zeiger bzw. die Adresse des Schiffsobjektes, welches die Flotte besitzt
-BYTE CShips::GetFleetStealthPower(const CShip* ship) const
+unsigned CShips::GetStealthPower() const
 {
-	BYTE stealthPower = MAXBYTE;
-	if (ship != NULL)
-	{
-		stealthPower = ship->GetStealthGrade() * 20;
-		if (ship->GetStealthGrade() > 3 && ship->GetCloak() == false)
-			stealthPower = 3 * 20;
-	}
-	if (stealthPower == 0)
-		return 0;
-
+	unsigned stealthPower = m_Leader.GetStealthPower();
 	for(CShips::const_iterator i = begin(); i != end(); ++i)
 	{
 		if (stealthPower == 0)
 			return 0;
-
-		BYTE fleetStealthPower = i->second.GetStealthGrade() * 20;
-		if (i->second.GetStealthGrade() > 3  && !i->second.GetCloak())
-			fleetStealthPower = 3 * 20;
-		if (fleetStealthPower < stealthPower)
-			stealthPower = fleetStealthPower;
+		stealthPower = min(stealthPower, i->second.GetStealthPower());
 	}
-
 	return stealthPower;
 }
 

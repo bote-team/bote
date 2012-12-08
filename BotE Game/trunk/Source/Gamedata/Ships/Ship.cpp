@@ -401,6 +401,12 @@ CString CShip::GetCurrentTargetAsString() const
 	return target;
 }
 
+bool CShip::GetCloak() const {
+	if(m_bCloakOn)
+		assert(CanCloak());
+	return m_bCloakOn;
+}
+
 //////////////////////////////////////////////////////////////////////
 // setting
 //////////////////////////////////////////////////////////////////////
@@ -710,6 +716,13 @@ USHORT CShip::GetUsedStorageRoom(const CArray<CTroopInfo>* troopInfo) const
 			usedStorage += this->GetLoadedResources(i);
 	}
 	return usedStorage;
+}
+
+unsigned CShip::GetStealthPower() const {
+	unsigned level = m_iStealthGrade;
+	if(!GetCloak())
+		level = min(level, 3);
+	return level * 20;
 }
 
 /// Funktion gibt das Erfahrungslevel des Schiffes zurück. Damit sind nicht die genauen Erfahrungspunkte gemeint, sondern das erreichte

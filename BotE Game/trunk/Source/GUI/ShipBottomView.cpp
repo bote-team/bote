@@ -179,17 +179,7 @@ void CShipBottomView::OnDraw(CDC* dc)
 				continue;
 
 			// Schiffe mit zu guter Stealthpower werden hier nicht angezeigt.
-			USHORT stealthPower = MAXBYTE;
-			if (!pShip->HasFleet())
-			{
-				stealthPower = pShip->GetStealthGrade() * 20;
-				if (pShip->GetStealthGrade() > 3 && pShip->GetCloak() == FALSE)
-					stealthPower = 3 * 20;
-			}
-			else
-			{
-				stealthPower = pShip->GetFleetStealthPower(&pShip->Leader());
-			}
+			const USHORT stealthPower = pShip->GetStealthPower();
 
 			if (pShip->GetOwnerOfShip() != pMajor->GetRaceID())
 				if(pDoc->CurrentSector().GetScanPower(pMajor->GetRaceID()) < stealthPower
