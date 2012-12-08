@@ -75,7 +75,7 @@ void CEventScreen::Create(void)
 	if (m_pBGImage->GetLastStatus() != Ok)
 		return;
 
-	CBotf2Doc* pDoc = ((CBotf2App*)AfxGetApp())->GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	// alle Buttons in der View anlegen und Grafiken laden

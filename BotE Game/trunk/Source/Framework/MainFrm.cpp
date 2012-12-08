@@ -308,7 +308,7 @@ void CMainFrame::SelectMainView(USHORT whichView, const CString& sRace)
 	if (sRace.IsEmpty())
 		return;
 
-	CBotf2Doc* pDoc = dynamic_cast<CBotf2App*>(AfxGetApp())->GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	if (pDoc->GetPlayersRaceID() == sRace)
@@ -473,7 +473,7 @@ LRESULT CMainFrame::UpdateViews(WPARAM /*wParam*/, LPARAM /*lParam*/)
 {
 	MYTRACE("general")(MT::LEVEL_INFO, "Getting Message to UpdateViews...");
 
-	CBotf2Doc* pDoc = dynamic_cast<CBotf2App*>(AfxGetApp())->GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	// Views ihre Arbeiten zu jeder neuen Runde machen lassen
@@ -487,7 +487,7 @@ LRESULT CMainFrame::ShowCombatView(WPARAM /*wParam*/, LPARAM /*lParam*/)
 {
 	MYTRACE("general")(MT::LEVEL_INFO, "Getting Message to Show CombatView...");
 
-	CBotf2Doc* pDoc = dynamic_cast<CBotf2App*>(AfxGetApp())->GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	// Combat View anzeigen
@@ -514,7 +514,7 @@ LRESULT CMainFrame::InitViews(WPARAM /*wParam*/, LPARAM /*lParam*/)
 {
 	MYTRACE("general")(MT::LEVEL_INFO, "Getting Message to InitViews...");
 
-	CBotf2Doc* pDoc = dynamic_cast<CBotf2App*>(AfxGetApp())->GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	// alle rassenabhängigen Grafiken in jeder View laden
@@ -552,7 +552,7 @@ void CMainFrame::NotifyCPPTooltip( NMHDR* pNMHDR, LRESULT* result )
 	*result = 0;
 	NM_PPTOOLTIP_DISPLAY * pNotify = (NM_PPTOOLTIP_DISPLAY*)pNMHDR;
 
-	CBotf2Doc* pDoc = dynamic_cast<CBotf2App*>(AfxGetApp())->GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 	if (pDoc->m_bDataReceived)
 	{

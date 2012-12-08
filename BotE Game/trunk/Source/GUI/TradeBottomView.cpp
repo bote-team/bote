@@ -39,7 +39,7 @@ END_MESSAGE_MAP()
 
 void CTradeBottomView::OnDraw(CDC* dc)
 {
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	if (!pDoc->m_bDataReceived)
@@ -270,7 +270,7 @@ BOOL CTradeBottomView::OnEraseBkgnd(CDC* /*pDC*/)
 void CTradeBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	if (!pDoc->m_bDataReceived)

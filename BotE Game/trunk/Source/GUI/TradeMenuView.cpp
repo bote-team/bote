@@ -51,7 +51,7 @@ CTradeMenuView::~CTradeMenuView()
 // CTradeMenuView drawing
 void CTradeMenuView::OnDraw(CDC* dc)
 {
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	if (!pDoc->m_bDataReceived)
@@ -133,7 +133,7 @@ void CTradeMenuView::OnInitialUpdate()
 /// Funktion lädt die rassenspezifischen Grafiken.
 void CTradeMenuView::LoadRaceGraphics()
 {
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	CMajor* pMajor = m_pPlayersRace;
@@ -168,7 +168,7 @@ BOOL CTradeMenuView::OnEraseBkgnd(CDC* /*pDC*/)
 /////////////////////////////////////////////////////////////////////////////////////////
 void CTradeMenuView::DrawGlobalTradeMenue(Graphics* g)
 {
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	CMajor* pMajor = m_pPlayersRace;
@@ -317,7 +317,7 @@ void CTradeMenuView::DrawGlobalTradeMenue(Graphics* g)
 /////////////////////////////////////////////////////////////////////////////////////////
 void CTradeMenuView::DrawMonopolMenue(Graphics* g)
 {
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	CMajor* pMajor = m_pPlayersRace;
@@ -472,7 +472,7 @@ void CTradeMenuView::DrawMonopolMenue(Graphics* g)
 /////////////////////////////////////////////////////////////////////////////////////////
 void CTradeMenuView::DrawTradeTransferMenue(Graphics* g)
 {
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	CMajor* pMajor = m_pPlayersRace;
@@ -597,7 +597,7 @@ void CTradeMenuView::DrawTradeMainButtons(Graphics* g, CMajor* pMajor)
 void CTradeMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	if (!pDoc->m_bDataReceived)
@@ -701,7 +701,7 @@ void CTradeMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 void CTradeMenuView::OnMouseMove(UINT nFlags, CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	if (!pDoc->m_bDataReceived)
@@ -717,7 +717,7 @@ void CTradeMenuView::OnMouseMove(UINT nFlags, CPoint point)
 void CTradeMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 {
 	// TODO: Add your message handler code here and/or call default
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	// nur wenn nicht im Monopolmenü

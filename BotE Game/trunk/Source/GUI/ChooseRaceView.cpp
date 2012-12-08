@@ -75,7 +75,7 @@ void CChooseRaceView::OnDraw(CDC* dc)
 		return;
 
 	// TODO: Fügen Sie hier Ihren spezialisierten Code ein, und/oder rufen Sie die Basisklasse auf.
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	CMyMemDC pDC(dc);
@@ -185,7 +185,7 @@ void CChooseRaceView::OnInitialUpdate()
 	CFormView::OnInitialUpdate();
 
 	// TODO: Fügen Sie hier Ihren spezialisierten Code ein, und/oder rufen Sie die Basisklasse auf.
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	m_pBkgndImg = pDoc->GetGraphicPool()->GetGDIGraphic("Events\\Startmenu.boj");
@@ -452,7 +452,7 @@ void CChooseRaceView::OnBnStartGameClicked()
 	if (!m_bIsServer)
 		return;
 
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 	if (!pDoc)
 		return;
@@ -481,7 +481,7 @@ void CChooseRaceView::OnBnStartGameClicked()
 
 void CChooseRaceView::OnBnCancelClicked()
 {
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 	if (!pDoc)
 		return;

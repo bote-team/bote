@@ -60,7 +60,7 @@ CMenuChooseView::~CMenuChooseView()
 void CMenuChooseView::OnDraw(CDC* pDC)
 {
 	// ZU ERLEDIGEN: Code zum Zeichnen hier einfügen
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	if (!pDoc->m_bDataReceived)
@@ -274,7 +274,7 @@ void CMenuChooseView::OnInitialUpdate()
 /// Funktion lädt die rassenspezifischen Grafiken.
 void  CMenuChooseView::LoadRaceGraphics()
 {
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	CString sID = pDoc->GetPlayersRaceID();
@@ -333,7 +333,7 @@ void CMenuChooseView::OnLButtonDown(UINT nFlags, CPoint point)
 void CMenuChooseView::OnLButtonUp(UINT nFlags, CPoint point)
 {
 	// TODO: Code für die Behandlungsroutine für Nachrichten hier einfügen und/oder Standard aufrufen
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	if (!pDoc->m_bDataReceived)
@@ -428,7 +428,7 @@ void CMenuChooseView::OnLButtonUp(UINT nFlags, CPoint point)
 void CMenuChooseView::OnMouseMove(UINT nFlags, CPoint point)
 {
 	// TODO: Fügen Sie hier Ihren Meldungsbehandlungscode ein, und/oder benutzen Sie den Standard.
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	if (!pDoc->m_bDataReceived)

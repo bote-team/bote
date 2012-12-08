@@ -56,7 +56,7 @@ void CBottomBaseView::OnInitialUpdate()
 	CView::OnInitialUpdate();
 
 	// TODO: Add your specialized code here and/or call the base class
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 /*	CString sID = pDoc->GetPlayersRaceID();

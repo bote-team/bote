@@ -271,7 +271,7 @@ void CRace::SetAgreement(const CString& sOtherRace, DIPLOMATIC_AGREEMENT::Typ nN
 /// Funktion lässt die Diplomatie-KI der Rasse Angebote an andere Rassen erstellen.
 void CRace::MakeOffersAI(void)
 {
-	CBotf2Doc* pDoc = ((CBotf2App*)AfxGetApp())->GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	// Alle zuletzt gemachten Angebote die älter als 2 Runden sind löschen

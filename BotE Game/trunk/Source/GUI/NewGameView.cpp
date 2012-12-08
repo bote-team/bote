@@ -169,7 +169,7 @@ void CNewGameView::OnInitialUpdate()
 	CFormView::OnInitialUpdate();
 
 	// TODO: Fügen Sie hier Ihren spezialisierten Code ein, und/oder rufen Sie die Basisklasse auf.
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	m_pBkgndImg = pDoc->GetGraphicPool()->GetGDIGraphic("Events\\Startmenu.boj");
@@ -378,7 +378,7 @@ void CNewGameView::LoadGame(const CString& sPath)
 	if (CheckValues())
 	{
 		// Datei laden
-		CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+		CBotf2Doc* pDoc = resources::pDoc;
 		ASSERT(pDoc);
 
 		if (!pDoc->OnOpenDocument(m_sFileName))
@@ -559,7 +559,7 @@ void CNewGameView::OnBnClickedNext()
 
 void CNewGameView::OnBnClickedBack()
 {
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 	if (!pDoc)
 		return;
@@ -570,7 +570,7 @@ void CNewGameView::OnBnClickedBack()
 void CNewGameView::ShowChooseRaceView(bool bIsServer) const
 {
 	// Umschalten zur Rassenauswahlansicht
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 	if (!pDoc)
 		return;

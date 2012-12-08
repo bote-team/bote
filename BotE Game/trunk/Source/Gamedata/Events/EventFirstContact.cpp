@@ -56,7 +56,7 @@ void CEventFirstContact::Draw(Graphics* g, CGraphicPool* graphicPool) const
 	if (m_sRaceID == "")
 		return;
 
-	CBotf2Doc* pDoc = ((CBotf2App*)AfxGetApp())->GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 	CRace* pContactedRace = pDoc->GetRaceCtrl()->GetRace(m_sRaceID);
 	if (!pContactedRace)
@@ -271,7 +271,7 @@ void CEventFirstContact::Draw(Graphics* g, CGraphicPool* graphicPool) const
 /// @return	der erstellte Tooltip-Text
 CString CEventFirstContact::GetTooltip(const CPoint &pt) const
 {
-	CBotf2Doc* pDoc = ((CBotf2App*)AfxGetApp())->GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 	CRace* pContactedRace = pDoc->GetRaceCtrl()->GetRace(m_sRaceID);
 	if (!pContactedRace)

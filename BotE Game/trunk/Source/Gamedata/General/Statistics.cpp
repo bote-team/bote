@@ -86,7 +86,7 @@ void CStatistics::CalcStats(CBotf2Doc* pDoc)
 /// @param [out] fLast schlechtester Wert
 void CStatistics::GetDemographicsBSP(const CString& sRaceID, int& nPlace, float& fValue, float& fAverage, float& fFirst, float& fLast) const
 {
-	CBotf2Doc* pDoc = ((CBotf2App*)AfxGetApp())->GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	std::map<CString, float> mMap;
@@ -108,7 +108,7 @@ void CStatistics::GetDemographicsBSP(const CString& sRaceID, int& nPlace, float&
 /// @param [out] fLast schlechtester Wert
 void CStatistics::GetDemographicsProductivity(const CString& sRaceID, int& nPlace, float& fValue, float& fAverage, float& fFirst, float& fLast) const
 {
-	CBotf2Doc* pDoc = ((CBotf2App*)AfxGetApp())->GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	std::map<CString, float> mMap;
@@ -136,7 +136,7 @@ void CStatistics::GetDemographicsProductivity(const CString& sRaceID, int& nPlac
 /// @param [out] fLast schlechtester Wert
 void CStatistics::GetDemographicsMilitary(const CString& sRaceID, int& nPlace, float& fValue, float& fAverage, float& fFirst, float& fLast) const
 {
-	CBotf2Doc* pDoc = ((CBotf2App*)AfxGetApp())->GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	std::map<CString, float> mMap;
@@ -170,7 +170,7 @@ void CStatistics::GetDemographicsMilitary(const CString& sRaceID, int& nPlace, f
 /// @param [out] fLast schlechtester Wert
 void CStatistics::GetDemographicsResearch(const CString& sRaceID, int& nPlace, float& fValue, float& fAverage, float& fFirst, float& fLast) const
 {
-	CBotf2Doc* pDoc = ((CBotf2App*)AfxGetApp())->GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	std::map<CString, float> mMap;
@@ -192,7 +192,7 @@ void CStatistics::GetDemographicsResearch(const CString& sRaceID, int& nPlace, f
 /// @param [out] fLast schlechtester Wert
 void CStatistics::GetDemographicsMoral(const CString& sRaceID, int& nPlace, float& fValue, float& fAverage, float& fFirst, float& fLast) const
 {
-	CBotf2Doc* pDoc = ((CBotf2App*)AfxGetApp())->GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	std::map<CString, float> mMap;
@@ -249,7 +249,7 @@ int CStatistics::GetGamePoints(const CString& sRaceID, int nCurrentRound, float 
 /// @param [out] lSystems Liste in welche die Koordinaten der Topsysteme abgelegt werden.
 void CStatistics::GetTopSystems(int nLimit, std::list<CPoint>& lSystems) const
 {
-	CBotf2Doc* pDoc = ((CBotf2App*)AfxGetApp())->GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	lSystems.clear();

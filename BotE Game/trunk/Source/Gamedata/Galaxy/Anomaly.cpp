@@ -320,7 +320,7 @@ void CAnomaly::CalcShipEffects(CShips* pShip) const
 			}
 		// Schiff selbst
 		UINT nMaxShield = pShip->GetShield()->GetMaxShield() * 1.23;
-		CBotf2Doc* pDoc = ((CBotf2App*)AfxGetApp())->GetDocument();
+		CBotf2Doc* pDoc = resources::pDoc;
 		ASSERT(pDoc);
 		// maximal die doppelte Anzahl der Schildstärke können erreicht werden
 		UINT nMaxShieldValue = pDoc->GetShipInfos()->GetAt(pShip->GetID() - 10000).GetShield()->GetMaxShield() * 2;
@@ -351,7 +351,7 @@ void CAnomaly::ReduceScanPower(const CPoint &pt) const
 {
 	if (m_byType == BLACKHOLE || m_byType == RADIOPULSAR || m_byType == XRAYPULSAR || m_byType == MAGNETAR)
 	{
-		CBotf2Doc* pDoc = dynamic_cast<CBotf2App*>(AfxGetApp())->GetDocument();
+		CBotf2Doc* pDoc = resources::pDoc;
 		assert(pDoc);
 
 		// Scanstärke verringern
@@ -367,7 +367,7 @@ void CAnomaly::ReduceScanPower(const CPoint &pt) const
 
 void CAnomaly::PerhabsStrand(CShips* pShip) const
 {
-	CBotf2Doc* pDoc = ((CBotf2App*)AfxGetApp())->GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	// Antriebstech der Schiffes ermitteln

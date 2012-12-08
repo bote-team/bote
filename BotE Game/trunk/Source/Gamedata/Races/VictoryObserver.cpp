@@ -249,7 +249,7 @@ int CVictoryObserver::GetBestVictoryValue(VICTORYTYPE nType) const
 
 int CVictoryObserver::GetNeededVictoryValue(VICTORYTYPE nType) const
 {
-	CBotf2Doc* pDoc = ((CBotf2App*)AfxGetApp())->GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	// aktuelle Runde
@@ -302,7 +302,7 @@ int CVictoryObserver::GetNeededVictoryValue(VICTORYTYPE nType) const
 
 void CVictoryObserver::Observe(void)
 {
-	CBotf2Doc* pDoc = ((CBotf2App*)AfxGetApp())->GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	//////////////////////////////////////////////////////////////////////

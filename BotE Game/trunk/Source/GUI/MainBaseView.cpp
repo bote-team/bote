@@ -68,7 +68,7 @@ void CMainBaseView::OnInitialUpdate()
 void CMainBaseView::OnPrepareDC(CDC* pDC, CPrintInfo* pInfo)
 {
 	// TODO: Add your specialized code here and/or call the base class
-/*	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+/*	CBotf2Doc* pDoc = resources::pDoc;
 
 	CRect client;
 	GetClientRect(&client);
@@ -94,7 +94,7 @@ BOOL CMainBaseView::OnEraseBkgnd(CDC* /*pDC*/)
 
 void CMainBaseView::DrawGDIButtons(Graphics* g, CArray<CMyButton*>* buttonArray, int counter, Gdiplus::Font &font, Gdiplus::SolidBrush &fontBrush)
 {
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	// Wenn wir im jeweiligen Menü sind, prüfen, ob der dazugehörige Button auch inaktiv ist.

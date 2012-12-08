@@ -88,7 +88,7 @@ BOOL CGalaxyMenuView::PreCreateWindow(CREATESTRUCT& cs)
 
 void CGalaxyMenuView::OnNewRound()
 {
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT_VALID(pDoc);
 
 	CMajor* pPlayer = m_pPlayersRace;
@@ -126,7 +126,7 @@ void CGalaxyMenuView::OnNewRound()
 // CGalaxyMenuView Zeichnen
 void CGalaxyMenuView::OnDraw(CDC* dc)
 {
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT_VALID(pDoc);
 
 	if (!pDoc->m_bDataReceived)
@@ -505,7 +505,7 @@ void CGalaxyMenuView::OnDraw(CDC* dc)
 void CGalaxyMenuView::OnInitialUpdate()
 {
 	// ZU ERLEDIGEN: Gesamte Größe dieser Ansicht berechnen
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	// Cursor aus Ressource laden
@@ -544,7 +544,7 @@ void CGalaxyMenuView::OnInitialUpdate()
 BOOL CGalaxyMenuView::OnScroll(UINT nScrollCode, UINT nPos, BOOL bDoScroll)
 {
 	// TODO: Add your specialized code here and/or call the base class
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	if (!pDoc->m_bDataReceived)
@@ -558,7 +558,7 @@ BOOL CGalaxyMenuView::OnScroll(UINT nScrollCode, UINT nPos, BOOL bDoScroll)
 BOOL CGalaxyMenuView::OnScrollBy(CSize sizeScroll, BOOL bDoScroll)
 {
 	// TODO: Add your specialized code here and/or call the base class
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	if (!pDoc->m_bDataReceived)
@@ -576,7 +576,7 @@ void CGalaxyMenuView::OnUpdate(CView* /*pSender*/, LPARAM /*lHint*/, CObject* /*
 {
 	// TODO: Add your specialized code here and/or call the base class
 	// ScrollSizes auf Gesamtgröße inkl. Zoom setzen
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	if (!pDoc->m_bDataReceived)
@@ -674,7 +674,7 @@ void CGalaxyMenuView::UnZoom(CPoint *pPoint) const
 void CGalaxyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO: Code für die Behandlungsroutine für Nachrichten hier einfügen und/oder Standard aufrufen
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	if (!pDoc->m_bDataReceived)
@@ -875,7 +875,7 @@ BOOL CGalaxyMenuView::OnEraseBkgnd(CDC* /*pDC*/)
 BOOL CGalaxyMenuView::OnMouseWheel(UINT nFlags, short zDelta, CPoint point)
 {
 	// TODO: Code für die Behandlungsroutine für Nachrichten hier einfügen und/oder Standard aufrufen
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	if (!pDoc->m_bDataReceived)
@@ -963,7 +963,7 @@ BOOL CGalaxyMenuView::OnMouseWheel(UINT nFlags, short zDelta, CPoint point)
 void CGalaxyMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 {
 	// TODO: Code für die Behandlungsroutine für Nachrichten hier einfügen und/oder Standard aufrufen
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	if (!pDoc->m_bDataReceived)
@@ -1001,7 +1001,7 @@ void CGalaxyMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 void CGalaxyMenuView::OnRButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO: Code für die Behandlungsroutine für Nachrichten hier einfügen und/oder Standard aufrufen
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 
 	//Wenn wir das Befehlgeben eines Schiffes abbrechen wollen
 	if (m_bShipMove)
@@ -1032,7 +1032,7 @@ void CGalaxyMenuView::OnRButtonDown(UINT nFlags, CPoint point)
 void CGalaxyMenuView::OnMouseMove(UINT nFlags, CPoint point)
 {
 	// TODO: Code für die Behandlungsroutine für Nachrichten hier einfügen und/oder Standard aufrufen
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	if (!pDoc->m_bDataReceived)
@@ -1170,7 +1170,7 @@ void CGalaxyMenuView::OnMouseMove(UINT nFlags, CPoint point)
 void CGalaxyMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 {
 	// TODO: Code für die Behandlungsroutine für Nachrichten hier einfügen und/oder Standard aufrufen
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	if (!pDoc->m_bDataReceived)
@@ -1393,14 +1393,14 @@ int CGalaxyMenuView::GetRangeBorder(const unsigned char range1, const unsigned c
 
 void CGalaxyMenuView::SetNewShipPath()
 {
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	m_oldPath.RemoveAll();
 	m_oldPath.Copy(*pDoc->CurrentShip()->second.GetPath());
 }
 
 void CGalaxyMenuView::GenerateGalaxyMap()
 {
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	CMajor* pMajor = m_pPlayersRace;
@@ -1629,7 +1629,7 @@ void CGalaxyMenuView::ScrollToSector(const CPoint& pt)
 /// @return	der erstellte Tooltip-Text
 CString CGalaxyMenuView::CreateTooltip(void)
 {
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	if (!pDoc->m_bDataReceived)

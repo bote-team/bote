@@ -52,7 +52,7 @@ END_MESSAGE_MAP()
 
 void CSmallInfoView::OnDraw(CDC* pDC)
 {
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	if (!pDoc->m_bDataReceived)

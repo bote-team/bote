@@ -169,7 +169,7 @@ void CStartMenuView::OnInitialUpdate()
 	CFormView::OnInitialUpdate();
 
 	// TODO: Fügen Sie hier Ihren spezialisierten Code ein, und/oder rufen Sie die Basisklasse auf.
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	m_pBkgndImg = pDoc->GetGraphicPool()->GetGDIGraphic("Events\\Startmenu.boj");
@@ -295,7 +295,7 @@ void CStartMenuView::OnBnClickedMultiplayer()
 void CStartMenuView::OnBnClickedCreateMP()
 {
 	// Umschalten zur Spiel starten Ansicht
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 	pDoc->GetMainFrame()->SelectMainView(NEWGAME_VIEW);
 	m_pNewGameView->SetMode(MODE_SERVER);
@@ -306,7 +306,7 @@ void CStartMenuView::OnBnClickedCreateMP()
 void CStartMenuView::OnBnClickedJoinMP()
 {
 	// Umschalten zur Spiel starten Ansicht
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 	pDoc->GetMainFrame()->SelectMainView(NEWGAME_VIEW);
 	m_pNewGameView->SetMode(MODE_CLIENT);
@@ -384,7 +384,7 @@ void CStartMenuView::OnClientDisconnected()
 	// zur ersten Seite zurückkehren
 	if (!m_pChooseRaceView->IsServer())
 	{
-		CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+		CBotf2Doc* pDoc = resources::pDoc;
 		if (!pDoc->m_bDontExit)
 		{
 			MessageBox(CResourceManager::GetString("SERVERERROR1"), CResourceManager::GetString("ERROR"), MB_ICONEXCLAMATION | MB_OK);
@@ -403,7 +403,7 @@ void CStartMenuView::OnBeginGame(network::CBeginGame *pMsg)
 	// Client: der Server hat das Spiel begonnen
 	// bei Clients, auf denen nicht der Server läuft, von selbst auf die nächste Page wechseln
 
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 	if (!pDoc)
 		return;

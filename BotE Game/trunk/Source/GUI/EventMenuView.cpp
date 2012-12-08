@@ -34,7 +34,7 @@ END_MESSAGE_MAP()
 void CEventMenuView::OnDraw(CDC* dc)
 {
 	SetFocus();
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	if (!pDoc->m_bDataReceived)
@@ -111,7 +111,7 @@ void CEventMenuView::OnInitialUpdate()
 	CMainBaseView::OnInitialUpdate();
 
 	// TODO: Add your specialized code here and/or call the base class
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 
 	m_TotalSize = CSize(1280, 1024);
 
@@ -134,7 +134,7 @@ BOOL CEventMenuView::OnEraseBkgnd(CDC* /*pDC*/)
 void CEventMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	if (!pDoc->m_bDataReceived)
@@ -162,7 +162,7 @@ void CEventMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 void CEventMenuView::OnMouseMove(UINT nFlags, CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	if (!pDoc->m_bDataReceived)
@@ -185,7 +185,7 @@ void CEventMenuView::OnMouseMove(UINT nFlags, CPoint point)
 void CEventMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 {
 	// TODO: Add your message handler code here and/or call default
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	if (!pDoc->m_bDataReceived)
@@ -209,7 +209,7 @@ void CEventMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 /// Funktion schließt das derzeit angezeigte Event.
 void CEventMenuView::CloseScreen(CEventScreen* eventScreen)
 {
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	if (!pDoc->m_bDataReceived)
@@ -241,7 +241,7 @@ void CEventMenuView::CloseScreen(CEventScreen* eventScreen)
 /// @return	der erstellte Tooltip-Text
 CString CEventMenuView::CreateTooltip(void)
 {
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	if (!pDoc->m_bDataReceived)

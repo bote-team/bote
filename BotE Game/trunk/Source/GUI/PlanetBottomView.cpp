@@ -39,7 +39,7 @@ END_MESSAGE_MAP()
 
 void CPlanetBottomView::OnDraw(CDC* dc)
 {
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	if (!pDoc->m_bDataReceived)
@@ -353,7 +353,7 @@ BOOL CPlanetBottomView::OnEraseBkgnd(CDC* /*pDC*/)
 void CPlanetBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	if (!pDoc->m_bDataReceived)
@@ -425,7 +425,7 @@ void CPlanetBottomView::OnMouseMove(UINT nFlags, CPoint point)
 	if (m_vPlanetRects.empty())
 		return;
 
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	CalcLogicalPoint(point);
@@ -451,7 +451,7 @@ void CPlanetBottomView::OnMouseMove(UINT nFlags, CPoint point)
 /// @return	der erstellte Tooltip-Text
 CString CPlanetBottomView::CreateTooltip(void)
 {
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	CPoint KO = pDoc->GetKO();
 
 	if (!pDoc->m_bDataReceived)

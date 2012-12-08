@@ -931,7 +931,7 @@ short CSector::GetScanPower(const CString& sRace, bool bWith_ships) const
 
 	unsigned scan_power_due_to_ship_number = 0;
 	if(bWith_ships) {
-		const CBotf2Doc* pDoc = dynamic_cast<CBotf2App*>(AfxGetApp())->GetDocument();
+		const CBotf2Doc* pDoc = resources::pDoc;
 		const CRaceController* pCtrl = pDoc->GetRaceCtrl();
 		const CRace* pRace = pCtrl->GetRace(sRace);
 		for(std::map<CString, unsigned>::const_iterator it = m_mNumbersOfShips.begin(); it != m_mNumbersOfShips.end(); ++ it) {
@@ -976,7 +976,7 @@ void CSector::PutScannedSquare(unsigned range, const int power,
 			for (int j = -intrange; j <= intrange; ++j) {
 				const int y = m_KO.y + j;
 				if(0 <= y && y < STARMAP_SECTORS_VCOUNT) {
-					CBotf2Doc* pDoc = dynamic_cast<CBotf2App*>(AfxGetApp())->GetDocument();
+					CBotf2Doc* pDoc = resources::pDoc;
 					CSector& scanned_sector = pDoc->GetSector(x, y);
 					// Teiler für die Scanstärke berechnen
 					int div = max(abs(i), abs(j));

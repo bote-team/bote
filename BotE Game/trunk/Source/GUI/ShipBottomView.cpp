@@ -87,7 +87,7 @@ static bool ShipCanHaveOrder(const CShips& ships, SHIP_ORDER::Typ order,
 
 void CShipBottomView::OnDraw(CDC* dc)
 {
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	if (!pDoc->m_bDataReceived)
@@ -706,7 +706,7 @@ void CShipBottomView::OnInitialUpdate()
 	CBottomBaseView::OnInitialUpdate();
 
 	// TODO: Add your specialized code here and/or call the base class
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	m_LastKO = pDoc->GetKO();
@@ -741,7 +741,7 @@ BOOL CShipBottomView::OnEraseBkgnd(CDC* /*pDC*/)
 void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
-	CBotf2Doc* pDoc = dynamic_cast<CBotf2Doc*>(GetDocument());
+	CBotf2Doc* pDoc = resources::pDoc;
 	assert(pDoc);
 
 	if (!pDoc->m_bDataReceived)
@@ -946,7 +946,7 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 void CShipBottomView::OnLButtonDblClk(UINT nFlags, CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	if (!pDoc->m_bDataReceived)
@@ -978,7 +978,7 @@ void CShipBottomView::OnMouseMove(UINT nFlags, CPoint point)
 {
 	if (CGalaxyMenuView::IsMoveShip())
 		return;
-	CBotf2Doc* pDoc = dynamic_cast<CBotf2Doc*>(GetDocument());
+	CBotf2Doc* pDoc = resources::pDoc;
 	assert(pDoc);
 	CalcLogicalPoint(point);
 	// wurde die Maus über ein Schiff gehalten
@@ -1008,7 +1008,7 @@ void CShipBottomView::OnMouseMove(UINT nFlags, CPoint point)
 void CShipBottomView::OnRButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	if (!pDoc->m_bDataReceived)
@@ -1056,7 +1056,7 @@ void CShipBottomView::OnTimer(UINT_PTR nIDEvent)
 /// @return	der erstellte Tooltip-Text
 CString CShipBottomView::CreateTooltip(void)
 {
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	if (!pDoc->m_bDataReceived)

@@ -481,8 +481,7 @@ void CMajor::Contact(const CRace& Race, const CPoint& p) {
 bool CMajor::AHumanPlays() const {
 	if(!IsHumanPlayer())
 		return false;
-	const CBotf2App& app = dynamic_cast<CBotf2App&>(*AfxGetApp());
-	const CBotf2Doc& doc = *app.GetDocument();
+	const CBotf2Doc& doc = *resources::pDoc;
 	const CCommandLineParameters& clp = *resources::pClp;
 
 	return doc.GetCurrentRound() > clp.GetAutoTurns();
@@ -523,8 +522,7 @@ void CMajor::LostShipToAnomaly(const CShip& ship, const CString& anomaly)
 	m_Empire.AddMessage(message);
 	if (IsHumanPlayer())
 	{
-		CBotf2App& app = dynamic_cast<CBotf2App&>(*AfxGetApp());
-		CBotf2Doc& doc = *app.GetDocument();
+		CBotf2Doc& doc = *resources::pDoc;
 		network::RACE client = doc.m_pRaceCtrl->GetMappedClientID(GetRaceID());
 		doc.m_iSelectedView[client] = EMPIRE_VIEW;
 	}

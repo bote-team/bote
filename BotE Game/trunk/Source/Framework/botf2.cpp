@@ -203,7 +203,7 @@ int CBotf2App::ExitInstance()
 // CBotf2App-Nachrichtenbehandlungsroutinen
 void CBotf2App::InitViews(WPARAM, LPARAM)
 {
-	CBotf2Doc* pDoc = GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	pDoc->LoadViewGraphics();
@@ -211,7 +211,7 @@ void CBotf2App::InitViews(WPARAM, LPARAM)
 
 void CBotf2App::UpdateViews(WPARAM, LPARAM)
 {
-	CBotf2Doc* pDoc = GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	pDoc->DoViewWorkOnNewRound();

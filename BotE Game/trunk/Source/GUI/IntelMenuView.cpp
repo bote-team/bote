@@ -70,7 +70,7 @@ void CIntelMenuView::OnNewRound()
 
 void CIntelMenuView::OnDraw(CDC* dc)
 {
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	if (!pDoc->m_bDataReceived)
@@ -150,7 +150,7 @@ void CIntelMenuView::OnInitialUpdate()
 /// Funktion lädt die rassenspezifischen Grafiken.
 void CIntelMenuView::LoadRaceGraphics()
 {
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	CMajor* pMajor = m_pPlayersRace;
@@ -187,7 +187,7 @@ void CIntelMenuView::OnPrepareDC(CDC* pDC, CPrintInfo* pInfo)
 /////////////////////////////////////////////////////////////////////////////////////////
 void CIntelMenuView::DrawIntelAssignmentMenu(Graphics* g)
 {
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	CMajor* pMajor = m_pPlayersRace;
@@ -327,7 +327,7 @@ void CIntelMenuView::DrawIntelAssignmentMenu(Graphics* g)
 
 void CIntelMenuView::DrawIntelSpyMenu(Graphics* g)
 {
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	CMajor* pMajor = m_pPlayersRace;
@@ -506,7 +506,7 @@ void CIntelMenuView::DrawIntelSpyMenu(Graphics* g)
 
 void CIntelMenuView::DrawIntelSabotageMenu(Graphics* g)
 {
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	CMajor* pMajor = m_pPlayersRace;
@@ -685,7 +685,7 @@ void CIntelMenuView::DrawIntelSabotageMenu(Graphics* g)
 
 void CIntelMenuView::DrawIntelReportsMenu(Graphics* g)
 {
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	CMajor* pMajor = m_pPlayersRace;
@@ -817,7 +817,7 @@ void CIntelMenuView::DrawIntelReportsMenu(Graphics* g)
 
 void CIntelMenuView::DrawIntelAttackMenu(Graphics* g)
 {
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	CMajor* pMajor = m_pPlayersRace;
@@ -1021,7 +1021,7 @@ void CIntelMenuView::DrawIntelAttackMenu(Graphics* g)
 
 void CIntelMenuView::DrawIntelInfoMenu(Graphics* g)
 {
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	CMajor* pMajor = m_pPlayersRace;
@@ -1156,7 +1156,7 @@ void CIntelMenuView::DrawIntelInfoMenu(Graphics* g)
 
 void CIntelMenuView::DrawRaceLogosInIntelView(Graphics* g, BOOLEAN highlightPlayersRace)
 {
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	CMajor* pMajor = m_pPlayersRace;
@@ -1326,7 +1326,7 @@ void CIntelMenuView::DrawIntelMainButtons(Graphics* g, CMajor* pMajor)
 void CIntelMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	if (!pDoc->m_bDataReceived)
@@ -1703,7 +1703,7 @@ void CIntelMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 void CIntelMenuView::OnMouseMove(UINT nFlags, CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	if (!pDoc->m_bDataReceived)
@@ -1719,7 +1719,7 @@ void CIntelMenuView::OnMouseMove(UINT nFlags, CPoint point)
 BOOL CIntelMenuView::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 {
 	// TODO: Add your message handler code here and/or call default
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	if (!pDoc->m_bDataReceived)
@@ -1817,7 +1817,7 @@ BOOL CIntelMenuView::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 void CIntelMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 {
 	// TODO: Add your message handler code here and/or call default
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	if (!pDoc->m_bDataReceived)

@@ -86,7 +86,7 @@ CDiplomacyMenuView::~CDiplomacyMenuView()
 
 void CDiplomacyMenuView::OnNewRound()
 {
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	pPlayer = m_pPlayersRace;
@@ -139,7 +139,7 @@ void CDiplomacyMenuView::OnNewRound()
 // CDiplomacyMenuView drawing
 void CDiplomacyMenuView::OnDraw(CDC* dc)
 {
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	if (!pDoc->m_bDataReceived)
@@ -198,7 +198,7 @@ void CDiplomacyMenuView::OnInitialUpdate()
 	CMainBaseView::OnInitialUpdate();
 
 	// TODO: Add your specialized code here and/or call the base class
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	// Diplomatieansicht
@@ -212,7 +212,7 @@ void CDiplomacyMenuView::OnInitialUpdate()
 /// Funktion lädt die rassenspezifischen Grafiken.
 void CDiplomacyMenuView::LoadRaceGraphics()
 {
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	CMajor* pPlayer = m_pPlayersRace;
@@ -247,7 +247,7 @@ BOOL CDiplomacyMenuView::OnEraseBkgnd(CDC* /*pDC*/)
 /////////////////////////////////////////////////////////////////////////////////////////
 void CDiplomacyMenuView::DrawDiplomacyMenue(Graphics* g)
 {
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	CMajor* pPlayer = m_pPlayersRace;
@@ -634,7 +634,7 @@ void CDiplomacyMenuView::DrawDiplomacyMenue(Graphics* g)
 
 void CDiplomacyMenuView::DrawRaceDiplomacyMenue(Graphics* g)
 {
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	CMajor* pPlayer = m_pPlayersRace;
@@ -995,7 +995,7 @@ void CDiplomacyMenuView::DrawRaceDiplomacyMenue(Graphics* g)
 
 void CDiplomacyMenuView::DrawDiplomacyInfoMenue(Graphics* g, const CString& sWhichRace)
 {
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	CMajor* pPlayer = m_pPlayersRace;
@@ -1183,7 +1183,7 @@ void CDiplomacyMenuView::DrawDiplomacyInfoMenue(Graphics* g, const CString& sWhi
 
 void CDiplomacyMenuView::DrawDiplomacyOfferMenue(Graphics* g, const CString& sWhichRace)
 {
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	CMajor* pPlayer = m_pPlayersRace;
@@ -1471,7 +1471,7 @@ void CDiplomacyMenuView::DrawDiplomacyButtons(Graphics* g, CMajor* pMajor, CArra
 
 CString CDiplomacyMenuView::PrintDiplomacyStatus(const CString& sOurRace, const CString& sRace, Gdiplus::Color& color)
 {
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	CMajor* pOurRace = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(sOurRace));
@@ -1558,7 +1558,7 @@ CString CDiplomacyMenuView::PrintDiplomacyStatus(const CString& sOurRace, const 
 
 void CDiplomacyMenuView::TakeOrGetbackResLat(bool bTake)
 {
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	CMajor* pPlayer = m_pPlayersRace;
@@ -1625,7 +1625,7 @@ void CDiplomacyMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 void CDiplomacyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	if (!pDoc->m_bDataReceived)
@@ -2178,7 +2178,7 @@ void CDiplomacyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 void CDiplomacyMenuView::OnMouseMove(UINT nFlags, CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	if (!pDoc->m_bDataReceived)
@@ -2208,7 +2208,7 @@ BOOL CDiplomacyMenuView::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 {
 	// TODO: Add your message handler code here and/or call default
 
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	if (!pDoc->m_bDataReceived)
@@ -2284,7 +2284,7 @@ BOOL CDiplomacyMenuView::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 void CDiplomacyMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 {
 	// TODO: Add your message handler code here and/or call default
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	if (!pDoc->m_bDataReceived)
@@ -2460,7 +2460,7 @@ void CDiplomacyMenuView::OnRButtonDown(UINT nFlags, CPoint point)
 	// Wenn wir in der Angebotsansicht sind, überprüfen, auf welchen Angebotsbutton wir gedrückt haben
 	if (m_bySubMenu == 1 && m_sClickedOnRace != "")
 	{
-		CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+		CBotf2Doc* pDoc = resources::pDoc;
 		ASSERT(pDoc);
 
 		if (!pDoc->m_bDataReceived)
@@ -2539,7 +2539,7 @@ void CDiplomacyMenuView::OnRButtonDown(UINT nFlags, CPoint point)
 /// @return	der erstellte Tooltip-Text
 CString CDiplomacyMenuView::CreateTooltip(void)
 {
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	if (!pDoc->m_bDataReceived)

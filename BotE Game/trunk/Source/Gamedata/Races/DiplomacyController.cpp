@@ -27,7 +27,7 @@ CDiplomacyController::~CDiplomacyController(void)
 /// Funktion zum Versenden von diplomatischen Angeboten
 void CDiplomacyController::Send(void)
 {
-	CBotf2Doc* pDoc = ((CBotf2App*)AfxGetApp())->GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	std::map<CString, CRace*>* races = pDoc->GetRaceCtrl()->GetRaces();
@@ -84,7 +84,7 @@ void CDiplomacyController::Send(void)
 /// Funktion zum Empfangen und Bearbeiten eines diplomatischen Angebots.
 void CDiplomacyController::Receive(void)
 {
-	CBotf2Doc* pDoc = ((CBotf2App*)AfxGetApp())->GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	std::map<CString, CRace*>* races = pDoc->GetRaceCtrl()->GetRaces();
@@ -1269,7 +1269,7 @@ void CDiplomacyController::DeclareWar(CRace* pFromRace, CRace* pEnemy, CDiplomac
 			else
 			{
 				// Nachricht und Kriegserklärung wegen unserem Bündnispartner
-				CBotf2Doc* pDoc = ((CBotf2App*)AfxGetApp())->GetDocument();
+				CBotf2Doc* pDoc = resources::pDoc;
 				ASSERT(pDoc);
 				CRace* pPartner = pDoc->GetRaceCtrl()->GetRace(pInfo->m_sWarPartner);
 				if (!pPartner)

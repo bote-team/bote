@@ -286,7 +286,7 @@ void CSystem::Serialize(CArchive &ar)
 
 int CSystem::GetNeededRoundsToCompleteProject(int nID)
 {
-	CBotf2Doc* pDoc = ((CBotf2App*)AfxGetApp())->GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	int nRounds = 0;
@@ -2106,7 +2106,7 @@ void CSystem::RemoveSpecialRaceBuildings(const BuildingInfoArray* pvBuildingInfo
 // in diesem kolonisiert haben.
 void CSystem::BuildBuildingsAfterColonization(CSector *sector, BuildingInfoArray *buildingInfo, USHORT colonizationPoints)
 {
-	CBotf2Doc* pDoc = ((CBotf2App*)AfxGetApp())->GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	CMajor* pMajor = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(sector->GetOwnerOfSector()));

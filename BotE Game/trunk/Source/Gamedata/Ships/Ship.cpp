@@ -1138,7 +1138,7 @@ CString CShip::GetTooltip(const FleetInfoForGetTooltip* const info)
 }
 
 void CShip::DrawOrderTerraform(Gdiplus::Graphics* g, CGraphicPool* pGraphicPool, const CPoint& pt) const {
-	CBotf2Doc* pDoc = ((CBotf2App*)AfxGetApp())->GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	if (pDoc->m_bDataReceived) {

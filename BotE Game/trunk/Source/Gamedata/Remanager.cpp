@@ -71,7 +71,7 @@ void CReManager::CalcEvents(CMajor* pRace)
 
 bool CReManager::SystemEvent(const CPoint &ko, CMajor* pRace)
 {
-	CBotf2Doc* pDoc = ((CBotf2App*)AfxGetApp())->GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 	//ko= Systemkoordinate
 	CString messagetext;//Nachrichtentext
@@ -170,7 +170,7 @@ void CReManager::CalcExploreEvent(const CPoint &ko, CMajor *pRace, CShipMap* shi
 	if(rand() % 99 >= static_cast<int>(m_uiGlobalProb))
 		return; //Es findet kein Ereignis statt
 
-	CBotf2Doc* pDoc = ((CBotf2App*)AfxGetApp())->GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 	//ko=Koordinate wo es passiert, pRace = die Rasse der es passiert
 	int eventnumber=rand()%2;

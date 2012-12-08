@@ -90,7 +90,7 @@ void CSystemMenuView::OnNewRound()
 
 void CSystemMenuView::OnDraw(CDC* dc)
 {
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	if (!pDoc->m_bDataReceived)
@@ -154,7 +154,7 @@ void CSystemMenuView::OnInitialUpdate()
 	CMainBaseView::OnInitialUpdate();
 
 	// TODO: Add your specialized code here and/or call the base class
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	// Baumenürechtecke
@@ -194,7 +194,7 @@ void CSystemMenuView::OnInitialUpdate()
 /// Funktion lädt die rassenspezifischen Grafiken.
 void CSystemMenuView::LoadRaceGraphics()
 {
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	CMajor* pMajor = m_pPlayersRace;
@@ -224,7 +224,7 @@ void CSystemMenuView::OnXButtonDown(UINT nFlags, UINT nButton, CPoint point)
 	// Die Symbole _WIN32_WINNT und WINVER müssen >= 0x0500 sein.
 	// TODO: Fügen Sie hier Ihren Meldungsbehandlungscode ein, und/oder benutzen Sie den Standard.
 
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	if (!pDoc->m_bDataReceived)
@@ -282,7 +282,7 @@ BOOL CSystemMenuView::OnEraseBkgnd(CDC* /*pDC*/)
 // Funktion zum Zeichnen der Baumenüansicht
 void CSystemMenuView::DrawBuildMenue(Graphics* g)
 {
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	CMajor* pMajor = m_pPlayersRace;
@@ -838,7 +838,7 @@ void CSystemMenuView::DrawBuildMenue(Graphics* g)
 /////////////////////////////////////////////////////////////////////////////////////////
 void CSystemMenuView::DrawWorkersMenue(Graphics* g)
 {
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	CMajor* pMajor = m_pPlayersRace;
@@ -1202,7 +1202,7 @@ void CSystemMenuView::DrawBuildingsOverviewMenue(Graphics* g)
 	// Das Feld der ganzen Gebäude muß aufsteigend nach der RunningNumber sortiert sein.
 	// Ansonsten funktioniert der Algorithmus hier nicht mehr.
 	// Sortiert wird das Feld in der CalculateNumberOfWorkBuildings() Funktion der CSystem Klasse.
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	CMajor* pMajor = m_pPlayersRace;
@@ -1364,7 +1364,7 @@ void CSystemMenuView::DrawBuildingsOverviewMenue(Graphics* g)
 /////////////////////////////////////////////////////////////////////////////////////////
 void CSystemMenuView::DrawEnergyMenue(Gdiplus::Graphics *g)
 {
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	CMajor* pMajor = m_pPlayersRace;
@@ -1532,7 +1532,7 @@ void CSystemMenuView::DrawEnergyMenue(Gdiplus::Graphics *g)
 /////////////////////////////////////////////////////////////////////////////////////////
 void CSystemMenuView::DrawSystemTradeMenue(Graphics* g)
 {
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	CMajor* pMajor = m_pPlayersRace;
@@ -1792,7 +1792,7 @@ void CSystemMenuView::DrawButtonsUnderSystemView(Graphics* g)
 void CSystemMenuView::DrawBuildList(Graphics* g)
 {
 	// Hier die Einträge in der Bauliste
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	CMajor* pMajor = m_pPlayersRace;
@@ -1943,7 +1943,7 @@ void CSystemMenuView::DrawBuildList(Graphics* g)
 /////////////////////////////////////////////////////////////////////////////////////////
 void CSystemMenuView::DrawSystemProduction(Graphics* g)
 {
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	CMajor* pMajor = m_pPlayersRace;
@@ -2183,7 +2183,7 @@ void CSystemMenuView::DrawBuildingProduction(Graphics* g)
 	if (m_iClickedOn >= m_vBuildlist.GetSize())
 		return;
 
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	CMajor* pMajor = m_pPlayersRace;
@@ -2954,7 +2954,7 @@ void CSystemMenuView::DrawBuildingProduction(Graphics* g)
 void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	if (!pDoc->m_bDataReceived)
@@ -3555,7 +3555,7 @@ void CSystemMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 	// Doppelklick weiterleiten
 	CSystemMenuView::OnLButtonDown(nFlags, point);
 
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	if (!pDoc->m_bDataReceived)
@@ -3746,7 +3746,7 @@ void CSystemMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 void CSystemMenuView::OnRButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	if (!pDoc->m_bDataReceived)
@@ -3780,7 +3780,7 @@ void CSystemMenuView::OnRButtonDown(UINT nFlags, CPoint point)
 void CSystemMenuView::OnMouseMove(UINT nFlags, CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	if (!pDoc->m_bDataReceived)
@@ -3799,7 +3799,7 @@ void CSystemMenuView::OnMouseMove(UINT nFlags, CPoint point)
 void CSystemMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 {
 	// TODO: Add your message handler code here and/or call default
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	if (!pDoc->m_bDataReceived)
@@ -3964,7 +3964,7 @@ CString CSystemMenuView::CreateTooltip(void)
 	if (m_bySubMenu != 0 && m_bySubMenu != 2 && m_bySubMenu != 3)
 		return "";
 
-	CBotf2Doc* pDoc = (CBotf2Doc*)GetDocument();
+	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	if (!pDoc->m_bDataReceived)
