@@ -2082,7 +2082,7 @@ void CBotf2Doc::ReadShipInfosFromFile()
 				ShipInfo.SetRange((SHIP_RANGE::Typ)atoi(data[29]));
 				ShipInfo.SetScanPower(atoi(data[30]));
 				ShipInfo.SetScanRange(atoi(data[31]));
-				ShipInfo.SetStealthPower(atoi(data[32]));
+				ShipInfo.SetStealthGrade(atoi(data[32]));
 				ShipInfo.SetStorageRoom(atoi(data[33]));
 				ShipInfo.SetColonizePoints(atoi(data[34]));
 				ShipInfo.SetStationBuildPoints(atoi(data[35]));
@@ -4411,14 +4411,14 @@ void CBotf2Doc::CalcShipOrders()
 		else if (y->second.GetCurrentOrder() == SHIP_ORDER::ENCLOAK)
 		{
 			//TODO magic number, bad
-			assert(y->second.GetStealthPower() >= 4);
+			assert(y->second.CanCloak(true));
 			y->second.SetCloak(true);
 			y->second.UnsetCurrentOrder();
 		}
 		else if (y->second.GetCurrentOrder() == SHIP_ORDER::DECLOAK)
 		{
 			//TODO magic number, bad
-			assert(y->second.GetStealthPower() >= 4);
+			assert(y->second.CanCloak(true));
 			y->second.SetCloak(false);
 			y->second.UnsetCurrentOrder();
 		}

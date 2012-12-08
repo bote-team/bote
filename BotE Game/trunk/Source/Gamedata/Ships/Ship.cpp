@@ -33,7 +33,7 @@ CShip::CShip() :
 	m_iSpeed(0),
 	m_iScanPower(0),
 	m_iScanRange(0),
-	m_iStealthPower(0),
+	m_iStealthGrade(0),
 	m_iStorageRoom(0),
 	m_iColonizePoints(0),
 	m_iStationBuildPoints(0),
@@ -91,7 +91,7 @@ CShip::CShip(const CShip & rhs) :
 	m_iScanPower = rhs.m_iScanPower;
 	m_iScanRange = rhs.m_iScanRange;
 	m_iCrewExperiance = rhs.m_iCrewExperiance;
-	m_iStealthPower = rhs.m_iStealthPower;
+	m_iStealthGrade = rhs.m_iStealthGrade;
 	m_bCloakOn = rhs.m_bCloakOn;
 	m_iStorageRoom = rhs.m_iStorageRoom;
 	for (int i = TITAN; i <= DERITIUM; i++)
@@ -144,7 +144,7 @@ CShip & CShip::operator=(const CShip & rhs)
 	m_iScanPower = rhs.m_iScanPower;
 	m_iScanRange = rhs.m_iScanRange;
 	m_iCrewExperiance = rhs.m_iCrewExperiance;
-	m_iStealthPower = rhs.m_iStealthPower;
+	m_iStealthGrade = rhs.m_iStealthGrade;
 	m_bCloakOn = rhs.m_bCloakOn;
 	m_iStorageRoom = rhs.m_iStorageRoom;
 	for (int i = TITAN; i <= DERITIUM; i++)
@@ -190,7 +190,7 @@ void CShip::Serialize(CArchive &ar)
 		ar << m_iScanPower;
 		ar << m_iScanRange;
 		ar << m_iCrewExperiance;
-		ar << m_iStealthPower;
+		ar << m_iStealthGrade;
 		ar << m_bCloakOn;
 		ar << m_iStorageRoom;
 		for (int i = TITAN; i <= DERITIUM; i++)
@@ -240,7 +240,7 @@ void CShip::Serialize(CArchive &ar)
 		ar >> m_iScanPower;
 		ar >> m_iScanRange;
 		ar >> m_iCrewExperiance;
-		ar >> m_iStealthPower;
+		ar >> m_iStealthGrade;
 		ar >> m_bCloakOn;
 		ar >> m_iStorageRoom;
 		for (int i = TITAN; i <= DERITIUM; i++)
@@ -446,7 +446,7 @@ bool CShip::UnassignFlagship(UNASSIGN_FLAGSHIP_MODE mode) {
 }
 
 void CShip::SetCloak(bool bCloakOn) {
-	if(GetStealthPower() < 4) {
+	if(!CanCloak()) {
 		assert(!m_bCloakOn);
 		return;
 	}
@@ -789,7 +789,7 @@ bool CShip::CanHaveOrder(SHIP_ORDER::Typ order, bool require_new) const {
 			return !m_bIsFlagShip;
 		case SHIP_ORDER::ENCLOAK: 
 		case SHIP_ORDER::DECLOAK:
-			return GetStealthPower() >= 4;
+			return CanCloak();
 		case SHIP_ORDER::COLONIZE:
 		case SHIP_ORDER::TERRAFORM:
 			return GetColonizePoints() >= 1;
@@ -809,6 +809,10 @@ bool CShip::CanHaveOrder(SHIP_ORDER::Typ order, bool require_new) const {
 			assert(false);
 	}
 	return false;
+}
+
+bool CShip::CanCloak() const {
+	return m_iStealthGrade >= 4;
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -1118,7 +1122,7 @@ CString CShip::GetTooltip(const FleetInfoForGetTooltip* const info)
 		sSpecials += CResourceManager::GetString("ABLATIVE_ARMOR") + "\n";
 	if  (pHull->GetPolarisation())
 		sSpecials += CResourceManager::GetString("HULLPOLARISATION") + "\n";
-	if (GetStealthPower() > 3)
+	if (CanCloak())
 		sSpecials += CResourceManager::GetString("CAN_CLOAK") + "\n";
 	if (sSpecials.IsEmpty())
 		sSpecials = CResourceManager::GetString("NONE") + "\n";;
@@ -1365,7 +1369,7 @@ void CShip::CalcEffectsForSingleShip(CSector& sector, CRace* pRace,
 		// Im Sektor die NeededScanPower setzen, die wir brauchen um dort Schiffe zu sehen. Wir sehen ja keine getarnten
 		// Schiffe, wenn wir dort nicht eine ausreichend hohe Scanpower haben. Ab Stealthstufe 4 muss das Schiff getarnt
 		// sein, ansonsten gilt dort nur Stufe 3.
-		short stealthPower = GetStealthPower();
+		short stealthPower = m_iStealthGrade;
 		if(!GetCloak() && stealthPower > 3)
 			stealthPower = 3;
 		const short NeededScanPower = stealthPower * 20;

@@ -88,7 +88,7 @@ public:
 	const CArray<Sector>* GetPath() const {return &m_Path;}
 	const CString& GetOwnerOfShip(void) const {return m_sOwnerOfShip;}
 	USHORT GetMaintenanceCosts() const {return m_iMaintenanceCosts;}
-	BYTE GetStealthPower() const {return m_iStealthPower;}
+	unsigned GetStealthGrade() const {return m_iStealthGrade;}
 	bool GetCloak() const {return m_bCloakOn;}
 	SHIP_TYPE::Typ GetShipType() const {return m_iShipType;}
 	SHIP_SIZE::Typ GetShipSize() const {return m_nShipSize;}
@@ -132,7 +132,7 @@ public:
 	void SetRange(SHIP_RANGE::Typ Range) {m_iRange = Range;}
 	void SetScanPower(USHORT ScanPower) {m_iScanPower = ScanPower;}
 	void SetScanRange(BYTE ScanRange) {m_iScanRange = ScanRange;}
-	void SetStealthPower(BYTE StealthPower) {m_iStealthPower = StealthPower;}
+	void SetStealthGrade(unsigned StealthGrade) {m_iStealthGrade = StealthGrade;}
 	void SetCloak(bool bCloakOn);
 	void SetStorageRoom(USHORT StorageRoom) {m_iStorageRoom = StorageRoom;}
 	void SetLoadedResources(USHORT add, BYTE res) {m_iLoadedResources[res] += add;}
@@ -242,6 +242,8 @@ public:
 	//Is this ship allowed to have the order order according to its type and physical capabilities ?
 	bool CanHaveOrder(SHIP_ORDER::Typ order, bool require_new) const;
 
+	bool CanCloak() const;
+
 private:
 	bool CanTakeOverOrder(SHIP_ORDER::Typ order) const {
 		//ASSIGN_FLAGSHIP is always unique to a single ship
@@ -309,7 +311,6 @@ protected:
 	SHIP_RANGE::Typ m_iRange;			// Reichweite des Schiffes
 	USHORT m_iScanPower;				// Scankraft des Schiffes
 	BYTE m_iScanRange;					// Die Reichweite der Scanner
-	BYTE m_iStealthPower;				// Tarnstärke des Schiffes: 0 = keine Tarnung, 1 = bissl ...
 	USHORT m_iStorageRoom;				// Laderaum des Schiffes
 	BYTE m_iColonizePoints;				// Kolonisierungs/Terraform-Punkte -> Dauer
 	BYTE m_iStationBuildPoints;			// Außenposten/Stations-baupunkte -> Dauer
@@ -319,6 +320,7 @@ protected:
 	CString m_strShipClass;				// Der Name der Schiffsklasse
 
 private:
+	unsigned m_iStealthGrade;			// Tarnstärke des Schiffes: 0 = keine Tarnung, 1 = bissl ...
 	SHIP_ORDER::Typ m_iCurrentOrder;	// Aktueller Befehl des Schiffes, nutze dazu enum
 	CString m_sOwnerOfShip;				// Besitzer des Schiffes
 	CPoint m_KO;						// Koordinate des Schiffes im Raum (welcher Sector?)

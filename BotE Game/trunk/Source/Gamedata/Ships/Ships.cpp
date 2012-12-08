@@ -332,8 +332,8 @@ BYTE CShips::GetFleetStealthPower(const CShip* ship) const
 	BYTE stealthPower = MAXBYTE;
 	if (ship != NULL)
 	{
-		stealthPower = ship->GetStealthPower() * 20;
-		if (ship->GetStealthPower() > 3 && ship->GetCloak() == false)
+		stealthPower = ship->GetStealthGrade() * 20;
+		if (ship->GetStealthGrade() > 3 && ship->GetCloak() == false)
 			stealthPower = 3 * 20;
 	}
 	if (stealthPower == 0)
@@ -344,8 +344,8 @@ BYTE CShips::GetFleetStealthPower(const CShip* ship) const
 		if (stealthPower == 0)
 			return 0;
 
-		BYTE fleetStealthPower = i->second.GetStealthPower() * 20;
-		if (i->second.GetStealthPower() > 3  && !i->second.GetCloak())
+		BYTE fleetStealthPower = i->second.GetStealthGrade() * 20;
+		if (i->second.GetStealthGrade() > 3  && !i->second.GetCloak())
 			fleetStealthPower = 3 * 20;
 		if (fleetStealthPower < stealthPower)
 			stealthPower = fleetStealthPower;
@@ -415,6 +415,15 @@ bool CShips::HasVeteran() const {
 bool CShips::HasTarget() const {
 	//targets should always be the same among the leader and fleet of a Chips
 	return m_Leader.HasTarget();
+}
+
+bool CShips::CanCloak(bool consider_fleet) const {
+	if(consider_fleet) {
+		for(CShips::const_iterator j = begin(); j != end(); ++j)
+			if(!j->second.CanCloak(consider_fleet))
+				return false;
+	}
+	return m_Leader.CanCloak();
 }
 
 //////////////////////////////////////////////////////////////////////

@@ -493,7 +493,7 @@ void CShipInfo::DrawShipInformation(Graphics* g, CRect rect, Gdiplus::Font* font
 			s += CResourceManager::GetString("ABLATIVE_ARMOR")+" \n";
 		if (m_Hull.GetPolarisation())
 			s += CResourceManager::GetString("HULLPOLARISATION")+" \n";
-		if (m_iStealthPower > 3)
+		if (CanCloak())
 			s += CResourceManager::GetString("CAN_CLOAK")+" \n";
 		if (s.IsEmpty())
 			s = CResourceManager::GetString("NONE")+" \n";;

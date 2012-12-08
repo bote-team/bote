@@ -240,7 +240,7 @@ void CCombat::CalculateCombat(std::map<CString, BYTE>& winner)
 			if (m_CS.GetAt(i)->m_pTarget != NULL && m_CS.GetAt(i)->m_pTarget->m_byCloak > 0)
 			{
 				// Ziel für alle sichtbar machen
-				if (m_CS.GetAt(i)->m_pShip->GetScanPower() > m_CS.GetAt(i)->m_pTarget->m_pShip->GetStealthPower() * 20)
+				if (m_CS.GetAt(i)->m_pShip->GetScanPower() > m_CS.GetAt(i)->m_pTarget->m_pShip->GetStealthGrade() * 20)
 					m_CS.GetAt(i)->m_pTarget->m_bShootCloaked = TRUE;
 				// Ziel wegnehmen
 				else
@@ -474,7 +474,7 @@ bool CCombat::SetTarget(int i)
 			m_CS.ElementAt(i)->m_Fire.phaserIsShooting = FALSE;
 		}
 		// Wenn das Ziel getarnt ist, dann müssen wir eine ausreichend hohe Scanpower haben oder können das Ziel nicht aufschalten
-		else if (pShip->GetScanPower() > targetShip->m_pShip->GetStealthPower() * 20)
+		else if (pShip->GetScanPower() > targetShip->m_pShip->GetStealthGrade() * 20)
 		{
 			// Wenn wir es aufschalten könnten, dann setzen sagen wir einfach, dass das gegnerische Schiff schon gefeuert hätte
 			// somit verliert es nach einer random-Zeit die Tarnung und alle unsere Schiffe können gleichzeitig angreifen. Dadurch

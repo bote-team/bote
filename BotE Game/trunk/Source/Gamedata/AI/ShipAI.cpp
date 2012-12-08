@@ -483,7 +483,7 @@ bool CShipAI::DoCamouflage(CShips* pShip, bool bCamouflage/* = true*/)
 		return false;
 
 	// Nur wenn das Schiff sich tarnen kann und nicht gerade dabei ist ein System zu bombardieren soll es sich tarnen
-	if (pShip->GetStealthPower() > 3 && pShip->GetCurrentOrder() != SHIP_ORDER::ATTACK_SYSTEM)
+	if (pShip->CanCloak(false) && pShip->GetCurrentOrder() != SHIP_ORDER::ATTACK_SYSTEM)
 	{
 		pShip->SetCurrentOrder(bCamouflage ? SHIP_ORDER::ENCLOAK : SHIP_ORDER::DECLOAK);
 		return true;
@@ -534,7 +534,7 @@ void CShipAI::DoMakeFleet(const CShipMap::iterator& pShip)
 			continue;
 
 		// wenn sich das Führungsschiff tarnen kann, dann muss das hinzuzufügende Schiff sich auch tarnen können
-		if ((pShip->second.GetStealthPower() > 3 && i->second.GetStealthPower() <= 3) || (pShip->second.GetStealthPower() <= 3 && i->second.GetStealthPower() > 3))
+		if(pShip->second.CanCloak(false) != i->second.CanCloak(false))
 			continue;
 
 		// es muss sich bei beiden Schiffen um Kriegsschiffe handeln oder bei beiden Schiffen um Transporter oder bei beiden Schiffen um Kolonieschiffe

@@ -119,7 +119,7 @@ public:
 		const CArray<Sector>* GetPath() const {return m_Leader.GetPath();}
 		const CString& GetOwnerOfShip(void) const {return m_Leader.GetOwnerOfShip();}
 		USHORT GetMaintenanceCosts() const {return m_Leader.GetMaintenanceCosts();}
-		BYTE GetStealthPower() const {return m_Leader.GetStealthPower(); }
+		BYTE GetStealthGrade() const {return m_Leader.GetStealthGrade(); }
 		bool GetCloak() const {return m_Leader.GetCloak(); }
 		SHIP_TYPE::Typ GetShipType() const {return m_Leader.GetShipType(); }
 		SHIP_SIZE::Typ GetShipSize() const {return m_Leader.GetShipSize(); }
@@ -192,7 +192,7 @@ public:
 		void SetScanPower(USHORT ScanPower) { m_Leader.SetScanPower(ScanPower); }
 		void SetScanRange(BYTE ScanRange) { m_Leader.SetScanRange(ScanRange); }
 		void SetCrewExperiance(int nAdd) { m_Leader.SetCrewExperiance(nAdd); }
-		void SetStealthPower(BYTE StealthPower) { m_Leader.SetStealthPower(StealthPower); }
+		void SetStealthGrade(unsigned StealthGrade) { m_Leader.SetStealthGrade(StealthGrade); }
 		void SetCloak(bool bCloakOn);
 		void SetStorageRoom(USHORT StorageRoom) { m_Leader.SetStorageRoom(StorageRoom); }
 		void SetLoadedResources(USHORT add, BYTE res) { m_Leader.SetLoadedResources(add, res); }
@@ -293,6 +293,8 @@ public:
 	bool HasVeteran() const;
 
 	bool HasTarget() const;
+
+	bool CanCloak(bool consider_fleet) const;
 
 		//////////////////////////////////////////////////////////////////////
 		// LEADER ACCESS

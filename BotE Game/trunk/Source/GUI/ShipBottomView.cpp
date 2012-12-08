@@ -182,8 +182,8 @@ void CShipBottomView::OnDraw(CDC* dc)
 			USHORT stealthPower = MAXBYTE;
 			if (!pShip->HasFleet())
 			{
-				stealthPower = pShip->GetStealthPower() * 20;
-				if (pShip->GetStealthPower() > 3 && pShip->GetCloak() == FALSE)
+				stealthPower = pShip->GetStealthGrade() * 20;
+				if (pShip->GetStealthGrade() > 3 && pShip->GetCloak() == FALSE)
 					stealthPower = 3 * 20;
 			}
 			else
