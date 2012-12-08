@@ -306,6 +306,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\Source\Framework\Resources.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\Source\Framework\Sanity.cpp"
 					>
 				</File>
@@ -1192,6 +1196,10 @@
 				</File>
 				<File
 					RelativePath=".\Source\Framework\OldRoundDataCalculator.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Source\Framework\Resources.h"
 					>
 				</File>
 				<File

@@ -2,6 +2,7 @@
 //
 
 #include "stdafx.h"
+#include "resources.h"
 #include "botf2.h"
 #include "botf2Doc.h"
 #include "LZMA_BotE.h"
@@ -81,6 +82,8 @@ CBotf2Doc::CBotf2Doc() :
 	m_iShowWhichTechInView3(0),
 	m_nCombatOrder(COMBAT_ORDER::NONE)
 {
+	resources::pDoc = this;
+
 	//Init MT with single log file
 	CString sLogPath = CIOData::GetInstance()->GetLogPath();
 	const CCommandLineParameters* const clp = dynamic_cast<CBotf2App*>(AfxGetApp())->GetCommandLineParameters();
@@ -109,6 +112,8 @@ CBotf2Doc::CBotf2Doc() :
 
 CBotf2Doc::~CBotf2Doc()
 {
+	resources::pDoc = NULL;
+
 	if (m_pGraphicPool)
 		delete m_pGraphicPool;
 	if (m_pRaceCtrl)

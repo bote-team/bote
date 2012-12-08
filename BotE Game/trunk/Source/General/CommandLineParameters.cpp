@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "CommandLineParameters.h"
+#include "resources.h"
 
 CCommandLineParameters::CCommandLineParameters(void) :
 	m_nLogLevel(MT::LEVEL_INFO),
@@ -10,10 +11,12 @@ CCommandLineParameters::CCommandLineParameters(void) :
 	m_nAutoTurns(-1),
 	m_bTest(false)
 {
+	resources::pClp = this;
 }
 
 CCommandLineParameters::~CCommandLineParameters(void)
 {
+	resources::pClp = NULL;
 }
 
 CCommandLineParameters* CCommandLineParameters::GetInstance() {
