@@ -260,15 +260,15 @@ void CShipBottomView::OnDraw(CDC* dc)
 			&& oneShip->second.GetOwnerOfShip() == pMajor->GetRaceID())
 		{
 			// Wenn wenn wir auf der Galaxiekarte sind
-			if (pDoc->GetMainFrame()->GetActiveView(0, 1) == GALAXY_VIEW)
+			if (resources::pMainFrame->GetActiveView(0, 1) == GALAXY_VIEW)
 			{
 				this->SetTimer(1,100,NULL);
 				pDoc->SetCurrentShip(oneShip);
 				CGalaxyMenuView::SetMoveShip(TRUE);
 				CSmallInfoView::SetDisplayMode(CSmallInfoView::DISPLAY_MODE_SHIP_BOTTEM_VIEW);
-				pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
+				resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
 				m_iWhichMainShipOrderButton = -1;
-				pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CGalaxyMenuView));
+				resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CGalaxyMenuView));
 			}
 		}
 
@@ -755,14 +755,14 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 	if (m_RectForTheShip.PtInRect(point) && pDoc->CurrentShip()->second.GetOwnerOfShip() == pMajor->GetRaceID())
 	{
 		CSmallInfoView::SetDisplayMode(CSmallInfoView::DISPLAY_MODE_SHIP_BOTTEM_VIEW);
-		pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
+		resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
 		// Wenn wir in der MainView nicht im Flottenmenü sind
-		if (pDoc->GetMainFrame()->GetActiveView(0, 1) != FLEET_VIEW)
+		if (resources::pMainFrame->GetActiveView(0, 1) != FLEET_VIEW)
 		{
 			CGalaxyMenuView::SetMoveShip(TRUE);
 			this->SetTimer(1,100,NULL);
 			Invalidate(FALSE);
-			pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CGalaxyMenuView));
+			resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CGalaxyMenuView));
 		}
 		// Wenn wir in der MainView im Flottenmenü sind, dann stecken wir das angeklickte Schiff in die
 		// gerade angezeigte Flotte
@@ -809,7 +809,7 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 					pDoc->SetCurrentShip(next_current_ship);
 
 					Invalidate(FALSE);
-					pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CFleetMenuView));
+					resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CFleetMenuView));
 					return;
 				}
 			}
@@ -826,7 +826,7 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 		if (next.PtInRect(point))
 		{
 			CGalaxyMenuView::SetMoveShip(FALSE);
-			pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
+			resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
 			m_iPage++;
 			Invalidate(FALSE);
 		}
@@ -838,7 +838,7 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 		if (back.PtInRect(point))
 		{
 			CGalaxyMenuView::SetMoveShip(FALSE);
-			pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
+			resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
 			m_iPage--;
 			Invalidate(FALSE);
 		}
@@ -885,7 +885,7 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 				if (nOrder == SHIP_ORDER::CREATE_FLEET)
 				{
 					pDoc->SetFleetShip(pDoc->CurrentShip()); // Dieses Schiff soll die Flotte beinhalten
-					pDoc->GetMainFrame()->SelectMainView(FLEET_VIEW, pMajor->GetRaceID());		// Flottenansicht in der MainView anzeigen
+					resources::pMainFrame->SelectMainView(FLEET_VIEW, pMajor->GetRaceID());		// Flottenansicht in der MainView anzeigen
 				}
 				// wenn wir ein Schiff zum Flagschiff ernennen wollen müssen wir schauen das diesen Befehl kein anderes
 				// Schiff des Imperiums hat, wenn ja dann diesen Befehl löschen
@@ -902,8 +902,8 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 				// Bei einem Transportbefehl muss in der MainView auch die Transportansicht angeblendet werden
 				else if (nOrder == SHIP_ORDER::TRANSPORT)
 				{
-					pDoc->GetMainFrame()->SelectMainView(10, pMajor->GetRaceID());	// Transportansicht in der MainView anzeigen
-					pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CTransportMenuView));
+					resources::pMainFrame->SelectMainView(10, pMajor->GetRaceID());	// Transportansicht in der MainView anzeigen
+					resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CTransportMenuView));
 				}
 				else if (nOrder == SHIP_ORDER::ENCLOAK)
 				{
@@ -919,8 +919,8 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 				if (nOrder == SHIP_ORDER::TERRAFORM)
 				{
 					pDoc->CurrentShip()->second.SetTerraformingPlanet(nOldTerraformingPlanet);
-					pDoc->GetMainFrame()->SelectBottomView(PLANET_BOTTOM_VIEW);
-					pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CPlanetBottomView));
+					resources::pMainFrame->SelectBottomView(PLANET_BOTTOM_VIEW);
+					resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CPlanetBottomView));
 					CSoundManager::GetInstance()->PlaySound(SNDMGR_MSG_TERRAFORM_SELECT, SNDMGR_PRIO_HIGH, 1.0f, client);
 				}
 				else
@@ -933,7 +933,7 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 						CSoundManager::GetInstance()->PlaySound(SNDMGR_MSG_STARBASE_CONSTRUCT, SNDMGR_PRIO_HIGH, 1.0f, client);
 					CGalaxyMenuView::SetMoveShip(FALSE);
 					CSmallInfoView::SetDisplayMode(CSmallInfoView::DISPLAY_MODE_SHIP_BOTTEM_VIEW);
-					pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
+					resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
 				}
 				Invalidate();
 				break;
@@ -952,7 +952,7 @@ void CShipBottomView::OnLButtonDblClk(UINT nFlags, CPoint point)
 	if (!pDoc->m_bDataReceived)
 		return;
 
-	if (pDoc->GetMainFrame()->GetActiveView(0, 1) == FLEET_VIEW)
+	if (resources::pMainFrame->GetActiveView(0, 1) == FLEET_VIEW)
 		return;
 
 	CalcLogicalPoint(point);
@@ -968,7 +968,7 @@ void CShipBottomView::OnLButtonDblClk(UINT nFlags, CPoint point)
 		this->KillTimer(1);
 		m_iTimeCounter = 0;
 		pDoc->SetFleetShip(pDoc->CurrentShip()); // Dieses Schiff soll die Flotte beinhalten
-		pDoc->GetMainFrame()->SelectMainView(FLEET_VIEW, pMajor->GetRaceID());	// Flottenansicht in der MainView anzeigen
+		resources::pMainFrame->SelectMainView(FLEET_VIEW, pMajor->GetRaceID());	// Flottenansicht in der MainView anzeigen
 	}
 
 	CBottomBaseView::OnLButtonDblClk(nFlags, point);
@@ -990,7 +990,7 @@ void CShipBottomView::OnMouseMove(UINT nFlags, CPoint point)
 				continue;
 			pDoc->SetCurrentShip(j);
 			CSmallInfoView::SetDisplayMode(CSmallInfoView::DISPLAY_MODE_SHIP_BOTTEM_VIEW);
-			pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
+			resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
 			m_iWhichMainShipOrderButton = -1;
 			break;
 		}
@@ -1019,7 +1019,7 @@ void CShipBottomView::OnRButtonDown(UINT nFlags, CPoint point)
 	if (CGalaxyMenuView::IsMoveShip() == TRUE)
 	{
 		CGalaxyMenuView::SetMoveShip(FALSE);
-		if (pDoc->GetMainFrame()->GetActiveView(1, 1) == PLANET_BOTTOM_VIEW)	// Wenn wir kolon oder terraformen abbrechen wollen, zurück zum Schiffsmenü
+		if (resources::pMainFrame->GetActiveView(1, 1) == PLANET_BOTTOM_VIEW)	// Wenn wir kolon oder terraformen abbrechen wollen, zurück zum Schiffsmenü
 		{
 			pDoc->CurrentShip()->second.SetCurrentOrder(SHIP_ORDER::AVOID);
 			m_bShowStation = false;
@@ -1031,10 +1031,10 @@ void CShipBottomView::OnRButtonDown(UINT nFlags, CPoint point)
 			CalcDeviceRect(r);
 			//InvalidateRect(r, FALSE);
 			Invalidate();
-			pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CGalaxyMenuView));
+			resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CGalaxyMenuView));
 		}
 		CSmallInfoView::SetDisplayMode(CSmallInfoView::DISPLAY_MODE_SHIP_BOTTEM_VIEW);
-		pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
+		resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
 	}
 
 	CBottomBaseView::OnRButtonDown(nFlags, point);

@@ -136,7 +136,7 @@ void CMenuChooseView::OnDraw(CDC* pDC)
 	// müssen das machen, da wir auch mittels Doppelklick auf den Sektor in die Systemansicht gelangen können
 	// oder in die Forschungs oder Imperiumsansicht
 	for (int j = 0; j < m_Buttons.GetSize(); j++)
-		if (pDoc->GetMainFrame()->GetActiveView(0, 1) == j+1 && m_Buttons.GetAt(j)->GetState() != 2)
+		if (resources::pMainFrame->GetActiveView(0, 1) == j+1 && m_Buttons.GetAt(j)->GetState() != 2)
 		{
 			for (int i = 0; i < m_Buttons.GetSize(); i++)
 				if (m_Buttons.GetAt(i)->GetState() == 2)
@@ -378,7 +378,7 @@ void CMenuChooseView::OnLButtonUp(UINT nFlags, CPoint point)
 		}
 	// Galaxiebutton
 	if (button == 0)
-		pDoc->GetMainFrame()->SelectMainView(GALAXY_VIEW, pMajor->GetRaceID());
+		resources::pMainFrame->SelectMainView(GALAXY_VIEW, pMajor->GetRaceID());
 	// Systembutton
 	else if (button == 1)
 	{
@@ -402,26 +402,26 @@ void CMenuChooseView::OnLButtonUp(UINT nFlags, CPoint point)
 		if (pDoc->CurrentSystem().GetOwnerOfSystem() == pMajor->GetRaceID() &&
 			pDoc->CurrentSector().GetSunSystem() == TRUE)
 		{
-			pDoc->GetMainFrame()->SelectMainView(SYSTEM_VIEW, pMajor->GetRaceID());
-			pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CPlanetBottomView));
+			resources::pMainFrame->SelectMainView(SYSTEM_VIEW, pMajor->GetRaceID());
+			resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CPlanetBottomView));
 			m_LastSystem = pDoc->GetKO();
 		}
 	}
 	// Forschungsbutton
 	else if (button == 2)
-		pDoc->GetMainFrame()->SelectMainView(RESEARCH_VIEW, pMajor->GetRaceID());
+		resources::pMainFrame->SelectMainView(RESEARCH_VIEW, pMajor->GetRaceID());
 	// Geheimdienstbutton
 	else if (button == 3)
-		pDoc->GetMainFrame()->SelectMainView(INTEL_VIEW, pMajor->GetRaceID());
+		resources::pMainFrame->SelectMainView(INTEL_VIEW, pMajor->GetRaceID());
 	// Diplomatiebutton
 	else if (button == 4)
-		pDoc->GetMainFrame()->SelectMainView(DIPLOMACY_VIEW, pMajor->GetRaceID());
+		resources::pMainFrame->SelectMainView(DIPLOMACY_VIEW, pMajor->GetRaceID());
 	// Handelsbutton
 	else if (button == 5)
-		pDoc->GetMainFrame()->SelectMainView(TRADE_VIEW, pMajor->GetRaceID());
+		resources::pMainFrame->SelectMainView(TRADE_VIEW, pMajor->GetRaceID());
 	// Imperiumsbutton
 	else if (button == 6)
-		pDoc->GetMainFrame()->SelectMainView(EMPIRE_VIEW, pMajor->GetRaceID());
+		resources::pMainFrame->SelectMainView(EMPIRE_VIEW, pMajor->GetRaceID());
 	CView::OnLButtonUp(nFlags, point);
 }
 

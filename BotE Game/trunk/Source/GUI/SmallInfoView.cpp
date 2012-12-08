@@ -97,7 +97,7 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 	SolidBrush fontBrush(Color::White);
 
 	////////////// Überprüfen, ob in der CSmallInfoView Planeten angezeigt werden //////////////////////
-	if (pDoc->GetMainFrame()->GetActiveView(1, 1) == PLANET_BOTTOM_VIEW && m_pPlanet != NULL
+	if (resources::pMainFrame->GetActiveView(1, 1) == PLANET_BOTTOM_VIEW && m_pPlanet != NULL
 		&& (m_DisplayMode == DISPLAY_MODE_PLANET_STATS || m_DisplayMode == DISPLAY_MODE_PLANET_INFO))
 	{
 		this->KillTimer(1);
@@ -282,7 +282,7 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 	////////////// Überprüfen, ob in der CSmallInfoView Planeten angezeigt werden, hier zu ENDE //////////////////////
 
 	////////////// Überprüfen, ob in der CSmallInfoView Schiffe angezeigt werden /////////////////////////////////////
-	else if (pDoc->GetMainFrame()->GetActiveView(1, 1) == SHIP_BOTTOM_VIEW
+	else if (resources::pMainFrame->GetActiveView(1, 1) == SHIP_BOTTOM_VIEW
 		&& m_DisplayMode == DISPLAY_MODE_SHIP_BOTTEM_VIEW || m_DisplayMode == DISPLAY_MODE_FLEET_MENU_VIEW)
 	{
 		this->KillTimer(1);

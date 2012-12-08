@@ -206,7 +206,7 @@ void CDiplomacyMenuView::OnInitialUpdate()
 	m_bSortRaceList = false;
 
 	// View bei den Tooltipps anmelden
-	pDoc->GetMainFrame()->AddToTooltip(this);
+	resources::pMainFrame->AddToTooltip(this);
 }
 
 /// Funktion lädt die rassenspezifischen Grafiken.
@@ -629,7 +629,7 @@ void CDiplomacyMenuView::DrawDiplomacyMenue(Graphics* g)
 		s = CResourceManager::GetString("DIPLOMACY_MENUE_RECEIPTS");
 	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,10,m_TotalSize.cx, 50), &fontFormat, &fontBrush);
 
-	pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CDiplomacyBottomView));
+	resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CDiplomacyBottomView));
 }
 
 void CDiplomacyMenuView::DrawRaceDiplomacyMenue(Graphics* g)
@@ -2112,7 +2112,7 @@ void CDiplomacyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 
 				// angebotenes Credits und Ressourcen aus den Lagern nehmen
 				this->TakeOrGetbackResLat(true);
-				pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
+				resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
 				Invalidate();
 				return;
 			}
@@ -2122,7 +2122,7 @@ void CDiplomacyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			{
 				// angebotenes Credits und Ressourcen wieder zurück ins Lager geben
 				this->TakeOrGetbackResLat(false);
-				pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
+				resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
 				// Angebot aus dem Feld entfernen
 				for (UINT i = 0; i < pPlayer->GetOutgoingDiplomacyNews()->size(); i++)
 				{
@@ -2151,7 +2151,7 @@ void CDiplomacyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			if (m_OutgoingInfo.m_nType == DIPLOMATIC_AGREEMENT::REQUEST)
 			{
 				this->TakeOrGetbackResLat(true);
-				pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
+				resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
 			}
 			Invalidate();
 		}
@@ -2165,7 +2165,7 @@ void CDiplomacyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			if (m_OutgoingInfo.m_nType == DIPLOMATIC_AGREEMENT::REQUEST && m_OutgoingInfo.m_nAnswerStatus == ANSWER_STATUS::ACCEPTED)
 			{
 				this->TakeOrGetbackResLat(false);
-				pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
+				resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
 			}
 			m_pIncomingInfo->m_nAnswerStatus = ANSWER_STATUS::DECLINED;
 			Invalidate();

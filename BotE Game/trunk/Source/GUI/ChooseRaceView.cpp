@@ -499,7 +499,7 @@ void CChooseRaceView::OnBnCancelClicked()
 		server.Stop();
 	}
 
-	pDoc->GetMainFrame()->SelectMainView(START_VIEW);
+	resources::pMainFrame->SelectMainView(START_VIEW);
 }
 
 void CChooseRaceView::AddChatMsg(const CString& name, const CString& msg)

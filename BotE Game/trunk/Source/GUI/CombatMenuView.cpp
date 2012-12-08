@@ -228,14 +228,13 @@ void CCombatMenuView::OnInitialUpdate()
 	CMainBaseView::OnInitialUpdate();
 
 	// TODO: Add your specialized code here and/or call the base class
-	CBotf2Doc* pDoc = resources::pDoc;
 
 	m_TotalSize = CSize(1280, 1024);
 
 	m_bInOrderMenu = false;
 
 	// View bei den Tooltipps anmelden
-	pDoc->GetMainFrame()->AddToTooltip(this);
+	resources::pMainFrame->AddToTooltip(this);
 }
 
 /// Funktion lädt die rassenspezifischen Grafiken.

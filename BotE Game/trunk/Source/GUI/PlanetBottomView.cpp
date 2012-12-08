@@ -370,7 +370,7 @@ void CPlanetBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 		{
 			CSmallInfoView::SetDisplayMode(CSmallInfoView::DISPLAY_MODE_PLANET_INFO);
 			CSmallInfoView::SetPlanet(pDoc->GetSector(KO.x, KO.y).GetPlanet(i));
-			pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
+			resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
 			break;
 		}
 	// Wenn wir die Planeten sehen und haben ein Schiff gewählt welches einen Planeten kolonisieren bzw. terraformen
@@ -395,7 +395,7 @@ void CPlanetBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 					CGalaxyMenuView::SetMoveShip(FALSE);
 					CShipBottomView::SetShowStation(false);
 					CSmallInfoView::SetDisplayMode(CSmallInfoView::DISPLAY_MODE_SHIP_BOTTEM_VIEW);
-					pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
+					resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
 					pDoc->CurrentShip()->second.SetTerraformingPlanet(i);
 					pDoc->CurrentSector().GetPlanet(i)->SetIsTerraforming(TRUE);
 					// den Terraformingbefehl zurücknehmen, wenn kein anderes Schiff diesen Planeten mehr terraform
@@ -439,7 +439,7 @@ void CPlanetBottomView::OnMouseMove(UINT nFlags, CPoint point)
 			{
 				CSmallInfoView::SetPlanet(pPlanet);
 				CSmallInfoView::SetDisplayMode(CSmallInfoView::DISPLAY_MODE_PLANET_STATS);
-				pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
+				resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
 			}
 			break;
 		}

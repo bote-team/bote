@@ -653,7 +653,7 @@ void CTradeMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 					pMajor->GetEmpire()->SetCredits(-costs);
 					CSoundManager::GetInstance()->PlaySound(SNDMGR_SOUND_SHIPTARGET);
 					Invalidate(FALSE);
-					pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
+					resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
 				}
 				return;
 			}
@@ -684,7 +684,7 @@ void CTradeMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 					pMajor->GetTrade()->SetMonopolBuying(i,m_dMonopolCosts[i]);
 					pMajor->GetEmpire()->SetCredits((long)-m_dMonopolCosts[i]);
 					Invalidate(FALSE);
-					pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
+					resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
 				}
 				break;
 			}

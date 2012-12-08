@@ -244,7 +244,7 @@ void CShipDesignMenuView::DrawShipDesignMenue(Graphics* g)
 							if (pDoc->m_iShowWhichShipInfoInView3 != i)
 							{
 								pDoc->m_iShowWhichShipInfoInView3 = i;
-								pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CShipDesignBottomView));
+								resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CShipDesignBottomView));
 							}
 							// Markierung worauf wir geklickt haben
 							g->FillRectangle(&SolidBrush(Color(50,200,200,200)), RectF(15,120+j*25,183,25));

@@ -1347,7 +1347,7 @@ void CIntelMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		// Wenn wir ins Anschlagsmenü gehen, dann den aktiven Bericht auf keinen setzen
 		if (temp == 5)
 			pMajor->GetEmpire()->GetIntelligence()->GetIntelReports()->SetActiveReport(-1);
-		pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CIntelBottomView));
+		resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CIntelBottomView));
 		return;
 	}
 
@@ -1637,7 +1637,7 @@ void CIntelMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 					pMajor->GetEmpire()->GetIntelligence()->GetIntelReports()->SetActiveReport(j + add);
 					m_iOldClickedIntelReport = 20-(j)%21;
 					Invalidate(FALSE);
-					pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CIntelBottomView));
+					resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CIntelBottomView));
 					break;
 				}
 			j++;
@@ -1689,7 +1689,7 @@ void CIntelMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 						pMajor->GetEmpire()->GetIntelligence()->GetIntelReports()->SetActiveReport(j + add);
 						m_iOldClickedIntelReport = 10-(j)%11;
 						Invalidate(FALSE);
-						pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CIntelBottomView));
+						resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CIntelBottomView));
 						break;
 					}
 				j++;
@@ -1742,7 +1742,7 @@ BOOL CIntelMenuView::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 					m_iOldClickedIntelReport--;
 				pIntel->GetIntelReports()->SetActiveReport(pIntel->GetIntelReports()->GetActiveReport() + 1);
 				Invalidate(FALSE);
-				pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CIntelBottomView));
+				resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CIntelBottomView));
 			}
 		}
 		else if (zDelta > 0)
@@ -1753,7 +1753,7 @@ BOOL CIntelMenuView::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 					m_iOldClickedIntelReport++;
 				pIntel->GetIntelReports()->SetActiveReport(pIntel->GetIntelReports()->GetActiveReport() - 1);
 				Invalidate(FALSE);
-				pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CIntelBottomView));
+				resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CIntelBottomView));
 			}
 		}
 	}
@@ -1776,7 +1776,7 @@ BOOL CIntelMenuView::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 					m_iOldClickedIntelReport--;
 				pIntel->GetIntelReports()->SetActiveReport(pIntel->GetIntelReports()->GetActiveReport() + 1);
 				Invalidate(FALSE);
-				pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CIntelBottomView));
+				resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CIntelBottomView));
 			}
 		}
 		else if (zDelta > 0)
@@ -1787,7 +1787,7 @@ BOOL CIntelMenuView::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 					m_iOldClickedIntelReport++;
 				pIntel->GetIntelReports()->SetActiveReport(pIntel->GetIntelReports()->GetActiveReport() - 1);
 				Invalidate(FALSE);
-				pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CIntelBottomView));
+				resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CIntelBottomView));
 			}
 		}
 	}
@@ -1841,7 +1841,7 @@ void CIntelMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 					m_iOldClickedIntelReport--;
 				pIntel->GetIntelReports()->SetActiveReport(pIntel->GetIntelReports()->GetActiveReport() + 1);
 				Invalidate(FALSE);
-				pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CIntelBottomView));
+				resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CIntelBottomView));
 			}
 		}
 		else if (nChar == VK_UP)
@@ -1852,7 +1852,7 @@ void CIntelMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 					m_iOldClickedIntelReport++;
 				pIntel->GetIntelReports()->SetActiveReport(pIntel->GetIntelReports()->GetActiveReport() - 1);
 				Invalidate(FALSE);
-				pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CIntelBottomView));
+				resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CIntelBottomView));
 			}
 		}
 	}
@@ -1875,7 +1875,7 @@ void CIntelMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 					m_iOldClickedIntelReport--;
 				pIntel->GetIntelReports()->SetActiveReport(pIntel->GetIntelReports()->GetActiveReport() + 1);
 				Invalidate(FALSE);
-				pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CIntelBottomView));
+				resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CIntelBottomView));
 			}
 		}
 		else if (nChar == VK_UP)
@@ -1886,7 +1886,7 @@ void CIntelMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 					m_iOldClickedIntelReport++;
 				pIntel->GetIntelReports()->SetActiveReport(pIntel->GetIntelReports()->GetActiveReport() - 1);
 				Invalidate(FALSE);
-				pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CIntelBottomView));
+				resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CIntelBottomView));
 			}
 		}
 	}

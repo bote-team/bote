@@ -188,7 +188,7 @@ void CSystemMenuView::OnInitialUpdate()
 	m_iGlobalStoreageQuantity = 1;
 
 	// View bei den Tooltipps anmelden
-	pDoc->GetMainFrame()->AddToTooltip(this);
+	resources::pMainFrame->AddToTooltip(this);
 }
 
 /// Funktion lädt die rassenspezifischen Grafiken.
@@ -3074,7 +3074,7 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 				pMajor->GetTrade()->BuyRessource(CRYSTAL,pDoc->GetSystem(p.x, p.y).GetAssemblyList()->GetNeededCrystalInAssemblyList(0),p,pMajor->GetEmpire()->GetCredits(),1);
 				pMajor->GetTrade()->BuyRessource(IRIDIUM,pDoc->GetSystem(p.x, p.y).GetAssemblyList()->GetNeededIridiumInAssemblyList(0),p,pMajor->GetEmpire()->GetCredits(),1);
 
-				pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
+				resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
 				m_bClickedOnBuyButton = FALSE;
 				Invalidate();
 				return;
@@ -3138,7 +3138,7 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 				for (int j = TITAN; j <= IRIDIUM; j++)
 					pMajor->GetTrade()->SellRessource(j, pDoc->GetSystem(p.x, p.y).GetAssemblyList()->GetNeededResourceInAssemblyList(0, j), p, 1);
 				pDoc->GetSystem(p.x, p.y).GetAssemblyList()->SetWasBuildingBought(FALSE);
-				pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
+				resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
 			}
 			pDoc->GetSystem(p.x, p.y).GetAssemblyList()->ClearAssemblyList(p, pDoc->m_Systems);
 			// Nach ClearAssemblyList müssen wir die Funktion CalculateVariables() aufrufen
@@ -3433,16 +3433,16 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		{
 			CGalaxyMenuView::IsDrawTradeRoute(TRUE);
 			CGalaxyMenuView::GetDrawnTradeRoute()->GenerateTradeRoute(pDoc->GetKO());
-			pDoc->GetMainFrame()->SelectMainView(GALAXY_VIEW, pMajor->GetRaceID());
-			pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
+			resources::pMainFrame->SelectMainView(GALAXY_VIEW, pMajor->GetRaceID());
+			resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
 		}
 		// Button zum Anlegen einer Ressourcenroute
 		else if (CRect(360,600,480,630).PtInRect(point))
 		{
 			CGalaxyMenuView::IsDrawResourceRoute(TRUE);
 			CGalaxyMenuView::GetDrawnResourceRoute()->GenerateResourceRoute(pDoc->GetKO(), m_byResourceRouteRes);
-			pDoc->GetMainFrame()->SelectMainView(GALAXY_VIEW, pMajor->GetRaceID());
-			pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
+			resources::pMainFrame->SelectMainView(GALAXY_VIEW, pMajor->GetRaceID());
+			resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
 		}
 		// Button zum Ändern der Ressource einer Ressourcenroute
 		else if (CRect(360,640,480,670).PtInRect(point))
@@ -3686,7 +3686,7 @@ void CSystemMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 					for (int j = TITAN; j <= IRIDIUM; j++)
 						pMajor->GetTrade()->SellRessource(j, pDoc->GetSystem(p.x, p.y).GetAssemblyList()->GetNeededResourceInAssemblyList(0, j), p, 1);
 					pDoc->GetSystem(p.x, p.y).GetAssemblyList()->SetWasBuildingBought(FALSE);
-					pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
+					resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
 				}
 				pDoc->GetSystem(p.x, p.y).GetAssemblyList()->ClearAssemblyList(p, pDoc->m_Systems);
 				// Nach ClearAssemblyList müssen wir die Funktion CalculateVariables() aufrufen

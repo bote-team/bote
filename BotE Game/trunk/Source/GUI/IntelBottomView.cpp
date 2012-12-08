@@ -78,7 +78,7 @@ void CIntelBottomView::OnDraw(CDC* dc)
 	}
 
 	// Nur in bestimmten Submenüs werden in der View3 Berichte angezeigt
-	BYTE curIntelSubMenu = pDoc->GetMainFrame()->GetSubMenu(RUNTIME_CLASS(CIntelMenuView));
+	BYTE curIntelSubMenu = resources::pMainFrame->GetSubMenu(RUNTIME_CLASS(CIntelMenuView));
 	if (curIntelSubMenu == 4 || curIntelSubMenu == 5)
 	{
 		CRect r;

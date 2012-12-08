@@ -1803,11 +1803,11 @@ void CEmpireMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 							if (pDoc->GetSystem(p.x,p.y).GetOwnerOfSystem() == pMajor->GetRaceID())
 							{
 								pDoc->SetKO(p.x,p.y);
-								pDoc->GetMainFrame()->SetSubMenu(RUNTIME_CLASS(CSystemMenuView), pMajor->GetEmpire()->GetMessages()->GetAt(i).GetFlag());
-								pDoc->GetMainFrame()->SelectMainView(SYSTEM_VIEW, pMajor->GetRaceID());
-								pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CPlanetBottomView));
+								resources::pMainFrame->SetSubMenu(RUNTIME_CLASS(CSystemMenuView), pMajor->GetEmpire()->GetMessages()->GetAt(i).GetFlag());
+								resources::pMainFrame->SelectMainView(SYSTEM_VIEW, pMajor->GetRaceID());
+								resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CPlanetBottomView));
 								CGalaxyMenuView::SetMoveShip(FALSE);
-								pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
+								resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
 							}
 						}
 						else if (pMajor->GetEmpire()->GetMessages()->GetAt(i).GetMessageType() == MESSAGE_TYPE::MILITARY)
@@ -1818,35 +1818,35 @@ void CEmpireMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 								if (pDoc->GetSystem(p.x,p.y).GetOwnerOfSystem() == pMajor->GetRaceID())
 								{
 									pDoc->SetKO(p.x,p.y);
-									pDoc->GetMainFrame()->SetSubMenu(RUNTIME_CLASS(CSystemMenuView), 0);
-									pDoc->GetMainFrame()->SelectMainView(SYSTEM_VIEW, pMajor->GetRaceID());
+									resources::pMainFrame->SetSubMenu(RUNTIME_CLASS(CSystemMenuView), 0);
+									resources::pMainFrame->SelectMainView(SYSTEM_VIEW, pMajor->GetRaceID());
 									CGalaxyMenuView::SetMoveShip(FALSE);
-									pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CPlanetBottomView));
-									pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
+									resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CPlanetBottomView));
+									resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
 								}
 							}
 						}
 						else if (pMajor->GetEmpire()->GetMessages()->GetAt(i).GetMessageType() == MESSAGE_TYPE::RESEARCH)
 						{
-							pDoc->GetMainFrame()->SelectMainView(RESEARCH_VIEW, pMajor->GetRaceID());
-							pDoc->GetMainFrame()->SetSubMenu(RUNTIME_CLASS(CResearchMenuView), pMajor->GetEmpire()->GetMessages()->GetAt(i).GetFlag());
+							resources::pMainFrame->SelectMainView(RESEARCH_VIEW, pMajor->GetRaceID());
+							resources::pMainFrame->SetSubMenu(RUNTIME_CLASS(CResearchMenuView), pMajor->GetEmpire()->GetMessages()->GetAt(i).GetFlag());
 							Invalidate();
-							pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
+							resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
 						}
 						else if (pMajor->GetEmpire()->GetMessages()->GetAt(i).GetMessageType() == MESSAGE_TYPE::SECURITY)
 						{
-							pDoc->GetMainFrame()->SelectMainView(INTEL_VIEW, pMajor->GetRaceID());
-							pDoc->GetMainFrame()->SetSubMenu(RUNTIME_CLASS(CIntelMenuView), pMajor->GetEmpire()->GetMessages()->GetAt(i).GetFlag());
+							resources::pMainFrame->SelectMainView(INTEL_VIEW, pMajor->GetRaceID());
+							resources::pMainFrame->SetSubMenu(RUNTIME_CLASS(CIntelMenuView), pMajor->GetEmpire()->GetMessages()->GetAt(i).GetFlag());
 							Invalidate();
-							pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
+							resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
 						}
 						else if (pMajor->GetEmpire()->GetMessages()->GetAt(i).GetMessageType() == MESSAGE_TYPE::DIPLOMACY)
 						{
-							pDoc->GetMainFrame()->SelectMainView(DIPLOMACY_VIEW, pMajor->GetRaceID());
+							resources::pMainFrame->SelectMainView(DIPLOMACY_VIEW, pMajor->GetRaceID());
 							// bei Angeboten an uns direkt in das Eingangmenü schalten
-							pDoc->GetMainFrame()->SetSubMenu(RUNTIME_CLASS(CDiplomacyMenuView), pMajor->GetEmpire()->GetMessages()->GetAt(i).GetFlag());
+							resources::pMainFrame->SetSubMenu(RUNTIME_CLASS(CDiplomacyMenuView), pMajor->GetEmpire()->GetMessages()->GetAt(i).GetFlag());
 							Invalidate();
-							pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
+							resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
 						}
 						break;
 					}
@@ -1862,10 +1862,10 @@ void CEmpireMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 		{
 			CPoint ko = pMajor->GetEmpire()->GetSystemList()->GetAt(m_iClickedSystem).ko;
 			pDoc->SetKO(ko.x, ko.y);
-			pDoc->GetMainFrame()->SelectMainView(SYSTEM_VIEW, pMajor->GetRaceID());
+			resources::pMainFrame->SelectMainView(SYSTEM_VIEW, pMajor->GetRaceID());
 			CSystemMenuView::SetMarkedBuildListEntry(0);
 			Invalidate(FALSE);
-			pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
+			resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
 			return;
 		}
 	}
@@ -1888,14 +1888,14 @@ void CEmpireMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 							break;
 						}
 
-				CGalaxyMenuView* pView = dynamic_cast<CGalaxyMenuView*>(pDoc->GetMainFrame()->GetView(RUNTIME_CLASS(CGalaxyMenuView)));
+				CGalaxyMenuView* pView = dynamic_cast<CGalaxyMenuView*>(resources::pMainFrame->GetView(RUNTIME_CLASS(CGalaxyMenuView)));
 				if (pView && pt != CPoint(-1,-1))
 				{
 					pDoc->SetKO(pt.x, pt.y);
 					pView->ScrollToSector(pt);
-					pDoc->GetMainFrame()->SelectMainView(GALAXY_VIEW, pMajor->GetRaceID());
+					resources::pMainFrame->SelectMainView(GALAXY_VIEW, pMajor->GetRaceID());
 					Invalidate(FALSE);
-					pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
+					resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
 					return;
 				}
 			}

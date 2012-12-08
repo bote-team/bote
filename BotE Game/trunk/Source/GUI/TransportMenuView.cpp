@@ -477,7 +477,7 @@ void CTransportMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 									m_byTroopNumberInShip--;
 								m_byTroopNumberInSystem = pDoc->GetSystem(p.x, p.y).GetTroops()->GetUpperBound();
 								Invalidate(FALSE);
-								pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CShipBottomView));
+								resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CShipBottomView));
 								nQuantity--;
 							}
 							else
@@ -572,7 +572,7 @@ void CTransportMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 										m_byTroopNumberInSystem--;
 									m_byTroopNumberInShip = ship->second.GetTransportedTroops()->GetUpperBound();
 									Invalidate(FALSE);
-									pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CShipBottomView));
+									resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CShipBottomView));
 									nQuantity--;
 									if (pDoc->GetSystem(p.x, p.y).GetTroops()->GetSize() == 0)
 										return;
@@ -715,7 +715,7 @@ void CTransportMenuView::OnRButtonDown(UINT nFlags, CPoint point)
 	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
 
-	pDoc->GetMainFrame()->SelectMainView(GALAXY_VIEW, pMajor->GetRaceID());
+	resources::pMainFrame->SelectMainView(GALAXY_VIEW, pMajor->GetRaceID());
 
 	CMainBaseView::OnRButtonDown(nFlags, point);
 }

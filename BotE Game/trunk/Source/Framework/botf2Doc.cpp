@@ -729,14 +729,14 @@ void CBotf2Doc::SetKO(int x, int y)
 	m_ptKO = CPoint(x, y);
 	CSmallInfoView::SetPlanet(NULL);
 
-	if (GetMainFrame()->GetActiveView(1, 1) == PLANET_BOTTOM_VIEW)
-		GetMainFrame()->InvalidateView(RUNTIME_CLASS(CPlanetBottomView));
+	if (resources::pMainFrame->GetActiveView(1, 1) == PLANET_BOTTOM_VIEW)
+		resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CPlanetBottomView));
 }
 
 void CBotf2Doc::SetCurrentShip(const CShipMap::iterator& position)
 {
 	m_ShipMap.SetCurrentShip(position);
-	dynamic_cast<CGalaxyMenuView*>(GetMainFrame()->GetView(RUNTIME_CLASS(CGalaxyMenuView)))->SetNewShipPath();
+	dynamic_cast<CGalaxyMenuView*>(resources::pMainFrame->GetView(RUNTIME_CLASS(CGalaxyMenuView)))->SetNewShipPath();
 	CSmallInfoView::SetDisplayMode(CSmallInfoView::DISPLAY_MODE_SHIP_BOTTEM_VIEW);
 }
 void CBotf2Doc::SetFleetShip(const CShipMap::iterator& position)
@@ -763,7 +763,7 @@ void CBotf2Doc::LoadViewGraphics(void)
 	CMenuChooseView::SetPlayersRace(pPlayersRace);
 
 	// Views die rassenspezifischen Grafiken laden lassen
-	std::map<CWnd *, UINT>* views = &GetMainFrame()->GetSplitterWindow()->views;
+	std::map<CWnd *, UINT>* views = &resources::pMainFrame->GetSplitterWindow()->views;
 	for (std::map<CWnd *, UINT>::iterator it = views->begin(); it != views->end(); ++it)
 	{
 		if (it->second == GALAXY_VIEW)
@@ -790,7 +790,7 @@ void CBotf2Doc::LoadViewGraphics(void)
 	if (m_iSelectedView[client] == 0)
 	{
 		// zum Schluss die Galxieview auswählen (nicht eher, da gibts manchmal Probleme beim Scrollen ganz nach rechts)
-		GetMainFrame()->SelectMainView(GALAXY_VIEW, pPlayersRace->GetRaceID());
+		resources::pMainFrame->SelectMainView(GALAXY_VIEW, pPlayersRace->GetRaceID());
 	}
 }
 
@@ -806,7 +806,7 @@ void CBotf2Doc::DoViewWorkOnNewRound()
 	CMenuChooseView::SetPlayersRace(pPlayersRace);
 
 	// Views ihre Arbeiten zu Beginn einer neuen Runde durchführen lassen
-	std::map<CWnd *, UINT>* views = &GetMainFrame()->GetSplitterWindow()->views;
+	std::map<CWnd *, UINT>* views = &resources::pMainFrame->GetSplitterWindow()->views;
 	for (std::map<CWnd *, UINT>::iterator it = views->begin(); it != views->end(); ++it)
 	{
 		if (it->second == GALAXY_VIEW)
@@ -823,13 +823,13 @@ void CBotf2Doc::DoViewWorkOnNewRound()
 	// Wenn EventScreens für den Spieler vorhanden sind, so werden diese angezeigt.
 	if (pPlayersRace->GetEmpire()->GetEventMessages()->GetSize() > 0)
 	{
-		GetMainFrame()->FullScreenMainView(true);
-		GetMainFrame()->SelectMainView(EVENT_VIEW, pPlayersRace->GetRaceID());
+		resources::pMainFrame->FullScreenMainView(true);
+		resources::pMainFrame->SelectMainView(EVENT_VIEW, pPlayersRace->GetRaceID());
 	}
 	else
 	{
-		GetMainFrame()->FullScreenMainView(false);
-		GetMainFrame()->SelectMainView(m_iSelectedView[client], pPlayersRace->GetRaceID());
+		resources::pMainFrame->FullScreenMainView(false);
+		resources::pMainFrame->SelectMainView(m_iSelectedView[client], pPlayersRace->GetRaceID());
 		m_iSelectedView[client] = 0;
 	}
 
@@ -5974,10 +5974,6 @@ void CBotf2Doc::AllocateSectorsAndSystems()
 	m_Sectors.resize(size);
 	m_Systems.resize(size);
  }
-
-CMainFrame* CBotf2Doc::GetMainFrame(void) const {
-	return dynamic_cast<CMainFrame*>(AfxGetApp()->GetMainWnd());
-}
 
 void CBotf2Doc::RandomSeed(const int* OnlyIfDifferentThan) {
 	const CIniLoader* pIni = CIniLoader::GetInstance();

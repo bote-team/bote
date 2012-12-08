@@ -118,7 +118,7 @@ void CFleetMenuView::OnInitialUpdate()
 	m_bShowBackButton = FALSE;
 
 	// View bei den Tooltipps anmelden
-	pDoc->GetMainFrame()->AddToTooltip(this);
+	resources::pMainFrame->AddToTooltip(this);
 }
 
 /// Funktion lädt die rassenspezifischen Grafiken.
@@ -405,9 +405,9 @@ void CFleetMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			++i;
 		}
 		Invalidate();
-		pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
+		resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
 		CSmallInfoView::SetDisplayMode(CSmallInfoView::DISPLAY_MODE_FLEET_MENU_VIEW);
-		pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CShipBottomView));
+		resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CShipBottomView));
 		return;
 	}
 	// Wenn wir auf einen der Buttons geklickt haben um Schiffe zu entfernen
@@ -428,9 +428,9 @@ void CFleetMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			++i;
 		}
 		Invalidate();
-		pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CShipBottomView));
+		resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CShipBottomView));
 		CSmallInfoView::SetDisplayMode(CSmallInfoView::DISPLAY_MODE_FLEET_MENU_VIEW);
-		pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
+		resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
 	}
 	float column = ((float)(point.x - 287) / 250);
 	if (column < 0)
@@ -469,9 +469,9 @@ void CFleetMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 				m_iFleetPage--;
 			// Wenn wir alle Schiffe aus der Flotte entfernt haben
 			Invalidate();
-			pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CShipBottomView));
+			resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CShipBottomView));
 			CSmallInfoView::SetDisplayMode(CSmallInfoView::DISPLAY_MODE_FLEET_MENU_VIEW);
-			pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
+			resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
 		}
 		// Wenn es das Schiff ist, welches die Flotte besitzt
 		else if (i == 0 && m_iFleetPage == 1)
@@ -485,9 +485,9 @@ void CFleetMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			pDoc->SetShipInFleet(it->second.end());
 
 			Invalidate();
-			pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CShipBottomView));
+			resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CShipBottomView));
 			CSmallInfoView::SetDisplayMode(CSmallInfoView::DISPLAY_MODE_FLEET_MENU_VIEW);
-			pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
+			resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
 		}
 	}
 
@@ -507,16 +507,16 @@ void CFleetMenuView::OnMouseMove(UINT nFlags, CPoint point)
 			continue;
 		if(i->second == &pDoc->FleetShip()->second) {
 			pDoc->SetShipInFleet(pDoc->FleetShip()->second.end());
-			pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
-			pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CFleetMenuView));
+			resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
+			resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CFleetMenuView));
 		}
 		else
 			for (CShips::iterator j = pDoc->FleetShip()->second.begin(); j != pDoc->FleetShip()->second.end(); ++j) {
 				if (&j->second != i->second)
 					continue;
 				pDoc->SetShipInFleet(j);
-				pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
-				pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CFleetMenuView));
+				resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
+				resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CFleetMenuView));
 				break;
 			}
 
@@ -544,10 +544,10 @@ void CFleetMenuView::OnRButtonDown(UINT nFlags, CPoint point)
 	// Das hier alles nur machen, wenn wir in der Flotten-Ansicht sind
 	CGalaxyMenuView::SetMoveShip(FALSE);
 	pDoc->SetCurrentShip(pDoc->FleetShip());
-	pDoc->GetMainFrame()->SelectMainView(GALAXY_VIEW, pMajor->GetRaceID());
-	pDoc->GetMainFrame()->SelectBottomView(SHIP_BOTTOM_VIEW);
+	resources::pMainFrame->SelectMainView(GALAXY_VIEW, pMajor->GetRaceID());
+	resources::pMainFrame->SelectBottomView(SHIP_BOTTOM_VIEW);
 	CSmallInfoView::SetDisplayMode(CSmallInfoView::DISPLAY_MODE_SHIP_BOTTEM_VIEW);
-	pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
+	resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
 
 	CMainBaseView::OnRButtonDown(nFlags, point);
 }

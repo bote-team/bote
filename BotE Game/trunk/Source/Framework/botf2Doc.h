@@ -124,10 +124,6 @@ public:
 	/// Funktion liefert einen Zeiger auf den GraphicPool für BotE.
 	CGraphicPool* GetGraphicPool(void) {return m_pGraphicPool;}
 
-	/// Funktion gibt einen Zeiger auf das Rahmenfenster (CMainFrame) zurück.
-	/// @return Rahmenfenster MainFrame
-	CMainFrame* GetMainFrame(void) const;
-
 	/// Funktion liest die Ini-Datei neu ein und legt die Werte neu fest.
 	void ResetIniSettings(void);
 

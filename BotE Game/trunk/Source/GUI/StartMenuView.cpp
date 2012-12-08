@@ -175,14 +175,14 @@ void CStartMenuView::OnInitialUpdate()
 	m_pBkgndImg = pDoc->GetGraphicPool()->GetGDIGraphic("Events\\Startmenu.boj");
 	ASSERT(m_pBkgndImg);
 
-	m_pChooseRaceView = dynamic_cast<CChooseRaceView*>(pDoc->GetMainFrame()->GetView(RUNTIME_CLASS(CChooseRaceView)));
+	m_pChooseRaceView = dynamic_cast<CChooseRaceView*>(resources::pMainFrame->GetView(RUNTIME_CLASS(CChooseRaceView)));
 	ASSERT(m_pChooseRaceView);
 
-	m_pNewGameView = dynamic_cast<CNewGameView*>(pDoc->GetMainFrame()->GetView(RUNTIME_CLASS(CNewGameView)));
+	m_pNewGameView = dynamic_cast<CNewGameView*>(resources::pMainFrame->GetView(RUNTIME_CLASS(CNewGameView)));
 	ASSERT(m_pNewGameView);
 
 	// Immer im Vollbild anzeigen
-	pDoc->GetMainFrame()->FullScreenMainView(true);
+	resources::pMainFrame->FullScreenMainView(true);
 
 	m_TotalSize = CSize(1280, 1024);
 
@@ -244,20 +244,20 @@ void CStartMenuView::OnInitialUpdate()
 
 	// Für Tooltips registrieren
 	CString sTooltip = CHTMLStringBuilder::GetHTMLColor(CResourceManager::GetString("NEWGAMETT"), _T("silver"));
-	pDoc->GetMainFrame()->AddToTooltip(GetDlgItem(NEWGAME), sTooltip);
+	resources::pMainFrame->AddToTooltip(GetDlgItem(NEWGAME), sTooltip);
 	sTooltip = CHTMLStringBuilder::GetHTMLColor(CResourceManager::GetString("MULTIPLAYERTT"), _T("silver"));
-	pDoc->GetMainFrame()->AddToTooltip(GetDlgItem(MULTIPLAYER), sTooltip);
+	resources::pMainFrame->AddToTooltip(GetDlgItem(MULTIPLAYER), sTooltip);
 	sTooltip = CHTMLStringBuilder::GetHTMLColor(CResourceManager::GetString("LOADGAMETT"), _T("silver"));
-	pDoc->GetMainFrame()->AddToTooltip(GetDlgItem(LOADGAME), sTooltip);
+	resources::pMainFrame->AddToTooltip(GetDlgItem(LOADGAME), sTooltip);
 	sTooltip = CHTMLStringBuilder::GetHTMLColor(CResourceManager::GetString("SETTINGSTT"), _T("silver"));
-	pDoc->GetMainFrame()->AddToTooltip(GetDlgItem(OPTIONS), sTooltip);
+	resources::pMainFrame->AddToTooltip(GetDlgItem(OPTIONS), sTooltip);
 	sTooltip = CHTMLStringBuilder::GetHTMLColor(CResourceManager::GetString("LEAVETT"), _T("silver"));
-	pDoc->GetMainFrame()->AddToTooltip(GetDlgItem(EXITGAME), sTooltip);
+	resources::pMainFrame->AddToTooltip(GetDlgItem(EXITGAME), sTooltip);
 
 	sTooltip = CHTMLStringBuilder::GetHTMLColor(CResourceManager::GetString("CREATEGAMETT"), _T("silver"));
-	pDoc->GetMainFrame()->AddToTooltip(GetDlgItem(MP_CREATE), sTooltip);
+	resources::pMainFrame->AddToTooltip(GetDlgItem(MP_CREATE), sTooltip);
 	sTooltip = CHTMLStringBuilder::GetHTMLColor(CResourceManager::GetString("JOINGAMETT"), _T("silver"));
-	pDoc->GetMainFrame()->AddToTooltip(GetDlgItem(MP_JOIN), sTooltip);
+	resources::pMainFrame->AddToTooltip(GetDlgItem(MP_JOIN), sTooltip);
 
 	this->SetTimer(1,4000,NULL);
 }
@@ -297,7 +297,7 @@ void CStartMenuView::OnBnClickedCreateMP()
 	// Umschalten zur Spiel starten Ansicht
 	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
-	pDoc->GetMainFrame()->SelectMainView(NEWGAME_VIEW);
+	resources::pMainFrame->SelectMainView(NEWGAME_VIEW);
 	m_pNewGameView->SetMode(MODE_SERVER);
 
 	ShowMPButtons(false);
@@ -308,7 +308,7 @@ void CStartMenuView::OnBnClickedJoinMP()
 	// Umschalten zur Spiel starten Ansicht
 	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
-	pDoc->GetMainFrame()->SelectMainView(NEWGAME_VIEW);
+	resources::pMainFrame->SelectMainView(NEWGAME_VIEW);
 	m_pNewGameView->SetMode(MODE_CLIENT);
 
 	ShowMPButtons(false);
@@ -388,7 +388,7 @@ void CStartMenuView::OnClientDisconnected()
 		if (!pDoc->m_bDontExit)
 		{
 			MessageBox(CResourceManager::GetString("SERVERERROR1"), CResourceManager::GetString("ERROR"), MB_ICONEXCLAMATION | MB_OK);
-			pDoc->GetMainFrame()->SelectMainView(CHOOSERACE_VIEW);
+			resources::pMainFrame->SelectMainView(CHOOSERACE_VIEW);
 		}
 		else
 		{

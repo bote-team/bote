@@ -111,12 +111,11 @@ void CEventMenuView::OnInitialUpdate()
 	CMainBaseView::OnInitialUpdate();
 
 	// TODO: Add your specialized code here and/or call the base class
-	CBotf2Doc* pDoc = resources::pDoc;
 
 	m_TotalSize = CSize(1280, 1024);
 
 	// View bei den Tooltipps anmelden
-	pDoc->GetMainFrame()->AddToTooltip(this);
+	resources::pMainFrame->AddToTooltip(this);
 }
 
 void CEventMenuView::OnPrepareDC(CDC* pDC, CPrintInfo* pInfo)
@@ -228,9 +227,9 @@ void CEventMenuView::CloseScreen(CEventScreen* eventScreen)
 	{
 		network::RACE client = pDoc->GetRaceCtrl()->GetMappedClientID(pMajor->GetRaceID());
 
-		pDoc->GetMainFrame()->FullScreenMainView(false);
+		resources::pMainFrame->FullScreenMainView(false);
 		pDoc->m_iSelectedView[client] = EMPIRE_VIEW;
-		pDoc->GetMainFrame()->SelectMainView(pDoc->m_iSelectedView[client], pMajor->GetRaceID());
+		resources::pMainFrame->SelectMainView(pDoc->m_iSelectedView[client], pMajor->GetRaceID());
 		pDoc->m_iSelectedView[client] = 0;
 	}
 	else

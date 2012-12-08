@@ -536,7 +536,7 @@ void CGalaxyMenuView::OnInitialUpdate()
 		m_pPlayersRace->GetStarmap()->Select(Sector(pt.x, pt.y));
 	*/
 
-	pDoc->GetMainFrame()->AddToTooltip(this);
+	resources::pMainFrame->AddToTooltip(this);
 
 	CScrollView::OnInitialUpdate();
 }
@@ -698,7 +698,7 @@ void CGalaxyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		// angeklickten Sektor ermitteln, anschließend markieren
 		struct::Sector sector = pMajor->GetStarmap()->GetClickedSector(pt);
 		CSmallInfoView::SetDisplayMode(CSmallInfoView::DISPLAY_MODE_ICON);
-		pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
+		resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
 
 		if (sector != struct::Sector(-1,-1) && !m_bShipMove && m_bDrawTradeRoute == FALSE && m_bDrawResourceRoute == FALSE)
 		{
@@ -728,8 +728,8 @@ void CGalaxyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 								}
 							}
 							CShipBottomView::SetShowStation(false);
-							pDoc->GetMainFrame()->SelectBottomView(SHIP_BOTTOM_VIEW);
-							pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CShipBottomView));
+							resources::pMainFrame->SelectBottomView(SHIP_BOTTOM_VIEW);
+							resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CShipBottomView));
 							break;
 						}
 			}
@@ -751,15 +751,15 @@ void CGalaxyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 				if (bShowStation)
 				{
 					CShipBottomView::SetShowStation(true);
-					pDoc->GetMainFrame()->SelectBottomView(SHIP_BOTTOM_VIEW);
-					pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CShipBottomView));
+					resources::pMainFrame->SelectBottomView(SHIP_BOTTOM_VIEW);
+					resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CShipBottomView));
 				}
 			}
 			else
 			{
 				// Planetenansicht in View3 des angeklickten Sektors zeigen
-				pDoc->GetMainFrame()->SelectBottomView(PLANET_BOTTOM_VIEW);
-				pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CPlanetBottomView));
+				resources::pMainFrame->SelectBottomView(PLANET_BOTTOM_VIEW);
+				resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CPlanetBottomView));
 			}
 
 			// View muss neu gezeichnet werden
@@ -833,7 +833,7 @@ void CGalaxyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			ship->second.SetTargetKO(target == ship->second.GetKO() ? CPoint(-1, -1) : target);
 			CSmallInfoView::SetDisplayMode(CSmallInfoView::DISPLAY_MODE_SHIP_BOTTEM_VIEW);
 			SetMoveShip(FALSE);
-			pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
+			resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
 			m_nRange = 0;
 			CSoundManager::GetInstance()->PlaySound(SNDMGR_SOUND_SHIPTARGET);
 			// alte Flugdaten aus den Sektoren löschen
@@ -991,8 +991,8 @@ void CGalaxyMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 				// falls ein Schiff markiert war wird dieses abgewählt
 				SetMoveShip(FALSE);
 				pDoc->SetKO(sector.x,sector.y);
-				pDoc->GetMainFrame()->SelectMainView(SYSTEM_VIEW, pMajor->GetRaceID());
-				pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
+				resources::pMainFrame->SelectMainView(SYSTEM_VIEW, pMajor->GetRaceID());
+				resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
 			}
 	}
 	CScrollView::OnLButtonDblClk(nFlags, point);
@@ -1001,14 +1001,13 @@ void CGalaxyMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 void CGalaxyMenuView::OnRButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO: Code für die Behandlungsroutine für Nachrichten hier einfügen und/oder Standard aufrufen
-	CBotf2Doc* pDoc = resources::pDoc;
 
 	//Wenn wir das Befehlgeben eines Schiffes abbrechen wollen
 	if (m_bShipMove)
 	{
 		SetMoveShip(FALSE);
 		CSmallInfoView::SetDisplayMode(CSmallInfoView::DISPLAY_MODE_SHIP_BOTTEM_VIEW);
-		pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
+		resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
 		m_nRange = 0;
 		Invalidate();
 		return;
@@ -1354,11 +1353,11 @@ void CGalaxyMenuView::SearchNextIdleShipAndJumpToIt(CBotf2Doc* pDoc, SHIP_ORDER:
 				pDoc->SetCurrentShip(i);
 
 				CShipBottomView::SetShowStation(false);
-				pDoc->GetMainFrame()->SelectBottomView(SHIP_BOTTOM_VIEW);
-				pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CShipBottomView));//What's this doing ? Neccessary/sensible ?
+				resources::pMainFrame->SelectBottomView(SHIP_BOTTOM_VIEW);
+				resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CShipBottomView));//What's this doing ? Neccessary/sensible ?
 
 				CSmallInfoView::SetDisplayMode(CSmallInfoView::DISPLAY_MODE_SHIP_BOTTEM_VIEW);
-				pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CSmallInfoView));//And this ?
+				resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CSmallInfoView));//And this ?
 
 				Invalidate();//And this ?
 				if(i != stop_at)
@@ -1371,7 +1370,7 @@ void CGalaxyMenuView::SearchNextIdleShipAndJumpToIt(CBotf2Doc* pDoc, SHIP_ORDER:
 	}
 	if(!found) {
 		CSmallInfoView::SetDisplayMode(CSmallInfoView::DISPLAY_MODE_ICON);
-		pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
+		resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
 		Invalidate();
 	}
 }

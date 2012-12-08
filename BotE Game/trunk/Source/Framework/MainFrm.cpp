@@ -71,10 +71,12 @@ static UINT indicators[] =
 CMainFrame::CMainFrame()
 {
 	// ZU ERLEDIGEN: Hier Code zur Member-Initialisierung einfügen
+	resources::pMainFrame = this;
 }
 
 CMainFrame::~CMainFrame()
 {
+	resources::pMainFrame = NULL;
 }
 
 int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)

@@ -132,7 +132,7 @@ void CResearchMenuView::OnInitialUpdate()
 	m_bySubMenu = 0;
 
 	// View bei den Tooltipps anmelden
-	pDoc->GetMainFrame()->AddToTooltip(this);
+	resources::pMainFrame->AddToTooltip(this);
 }
 
 /// Funktion lädt die rassenspezifischen Grafiken.
@@ -774,7 +774,7 @@ void CResearchMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		// Haben wir auf den Schiffsdesign Button geklickt
 		if (m_bySubMenu == 2)
 		{
-			pDoc->GetMainFrame()->SelectMainView(9, pMajor->GetRaceID());	// Schiffsdesignansicht zeichnen
+			resources::pMainFrame->SelectMainView(9, pMajor->GetRaceID());	// Schiffsdesignansicht zeichnen
 			Invalidate(FALSE);
 			m_bySubMenu = 0;
 			return;
@@ -878,32 +878,32 @@ void CResearchMenuView::OnMouseMove(UINT nFlags, CPoint point)
 		if (pDoc->m_iShowWhichTechInView3 != 0 && CRect(10,80,260,380).PtInRect(point))
 		{
 			pDoc->m_iShowWhichTechInView3 = 0;
-			pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CResearchBottomView));
+			resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CResearchBottomView));
 		}
 		else if (pDoc->m_iShowWhichTechInView3 != 1 && CRect(270,80,520,380).PtInRect(point))
 		{
 			pDoc->m_iShowWhichTechInView3 = 1;
-			pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CResearchBottomView));
+			resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CResearchBottomView));
 		}
 		else if (pDoc->m_iShowWhichTechInView3 != 2 && CRect(530,80,780,380).PtInRect(point))
 		{
 			pDoc->m_iShowWhichTechInView3 = 2;
-			pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CResearchBottomView));
+			resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CResearchBottomView));
 		}
 		else if (pDoc->m_iShowWhichTechInView3 != 3 && CRect(270,425,520,725).PtInRect(point))
 		{
 			pDoc->m_iShowWhichTechInView3 = 3;
-			pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CResearchBottomView));
+			resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CResearchBottomView));
 		}
 		else if (pDoc->m_iShowWhichTechInView3 != 4 && CRect(10,425,260,725).PtInRect(point))
 		{
 			pDoc->m_iShowWhichTechInView3 = 4;
-			pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CResearchBottomView));
+			resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CResearchBottomView));
 		}
 		else if (pDoc->m_iShowWhichTechInView3 != 5 && CRect(530,425,780,725).PtInRect(point))
 		{
 			pDoc->m_iShowWhichTechInView3 = 5;
-			pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CResearchBottomView));
+			resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CResearchBottomView));
 		}
 	}
 	else if (m_bySubMenu == 1)
@@ -915,7 +915,7 @@ void CResearchMenuView::OnMouseMove(UINT nFlags, CPoint point)
 			if (pMajor->GetEmpire()->GetResearch()->GetUniqueReady() == FALSE)
 			{
 				pDoc->m_iShowWhichTechInView3 = 6;
-				pDoc->GetMainFrame()->InvalidateView(RUNTIME_CLASS(CResearchBottomView));
+				resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CResearchBottomView));
 			}
 		}
 	}
