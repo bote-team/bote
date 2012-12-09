@@ -195,7 +195,10 @@ public:
 
 	/// Diese Funktion gibt einen Wahrheitswert zurück, der sagt, ob von irgendwem eine Station in diesem
 	/// Sektor ist
-	BOOLEAN GetIsStationInSector(void) const {return !m_bOutpost.empty() || !m_bStarbase.empty();}
+	BOOLEAN GetIsStationInSector(void) const {return HasOutpost() || HasStarbase();}
+
+	bool HasOutpost() const { return !m_bOutpost.empty(); }
+	bool HasStarbase() const { return !m_bStarbase.empty(); }
 
 	/// Diese Funktion gibt einen Wahrheitswert zurück, der sagt, ob die Majorrace <code>Race</code>
 	/// gerade eine Station in diesem Sektor baut.
@@ -205,6 +208,9 @@ public:
 			return true;
 		return false;
 	}
+
+	//is station buildable in this sector by race according to whatever station exists ?
+	bool IsStationBuildable(SHIP_TYPE::Typ station, const CString& race) const;
 
 	/// Diese Funktion gibt die Scanpower zurück, die die Majorrace <code>Race</code> in diesem Sektor hat.
 	short GetScanPower(const CString& sRace, bool bWith_ships = true) const;

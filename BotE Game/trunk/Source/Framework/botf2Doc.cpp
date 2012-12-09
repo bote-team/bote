@@ -4018,18 +4018,8 @@ void CBotf2Doc::CalcShipOrders()
 			// Station fertig wurde, k?nnen wir diese dort auch errichten
 			if (id != -1)
 			{
-				BOOL buildable = TRUE;
 				map<CString, CMajor*>* pmMajors = m_pRaceCtrl->GetMajors();
-				for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
-				{
-					if (pSector->GetOutpost(it->first) == TRUE ||
-					   (pSector->GetOutpost(it->first) == FALSE && pSector->GetStarbase(it->first) == TRUE))
-					{
-						buildable = FALSE;
-						break;
-					}
-				}
-				if (buildable == TRUE)
+				if (pSector->IsStationBuildable(SHIP_TYPE::OUTPOST, pMajor->GetRaceID()))
 				{
 					// Wenn wir also an einer Station gerade bauen -> Variable auf TRUE setzen
 					pSector->SetIsStationBuilding(TRUE, y->second.GetOwnerOfShip());
@@ -4172,18 +4162,8 @@ void CBotf2Doc::CalcShipOrders()
 			// Station fertig wurde, können wir diese dort auch errichten
 			if (id != -1)
 			{
-				BOOL buildable = TRUE;
 				map<CString, CMajor*>* pmMajors = m_pRaceCtrl->GetMajors();
-				for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
-				{
-					if (pSector->GetStarbase(it->first) == TRUE
-						|| (pSector->GetOutpost(it->first) == TRUE && it->first != y->second.GetOwnerOfShip()))
-					{
-						buildable = FALSE;
-						break;
-					}
-				}
-				if (buildable == TRUE)
+				if (pSector->IsStationBuildable(SHIP_TYPE::STARBASE, pMajor->GetRaceID()))
 				{
 					// Wenn wir also an einer Station gerade bauen -> Variable auf TRUE setzen
 					pSector->SetIsStationBuilding(TRUE, y->second.GetOwnerOfShip());

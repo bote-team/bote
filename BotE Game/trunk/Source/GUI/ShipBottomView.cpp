@@ -322,7 +322,7 @@ void CShipBottomView::DrawColonyshipOrders(short &counter) {
 }
 
 void CShipBottomView::DrawTransportshipOrders(short &counter) {
-	CSector csec = m_dc.pDoc->CurrentSector();
+	const CSector& csec = m_dc.pDoc->CurrentSector();
 	CShips pShip = m_dc.pDoc->CurrentShip()->second;
 	CMajor* pMajor = m_pPlayersRace;
 	CRect r(m_dc.r);
@@ -338,10 +338,7 @@ void CShipBottomView::DrawTransportshipOrders(short &counter) {
 		// hier schauen, ob ich in der Schiffsinfoliste schon einen Außenposten habe den ich bauen kann, wenn in dem
 		// Sector noch kein Außenposten steht und ob ich diesen in dem Sector überhaupt bauen kann. Das geht nur
 		// wenn der Sektor mir oder niemanden gehört
-		if (csec.GetOutpost(pShip.GetOwnerOfShip()) == FALSE
-			&& csec.GetStarbase(pShip.GetOwnerOfShip()) == FALSE
-			&& (csec.GetOwnerOfSector() == ""
-			|| csec.GetOwnerOfSector() == pShip.GetOwnerOfShip()))
+		if(csec.IsStationBuildable(SHIP_TYPE::OUTPOST, pShip.GetOwnerOfShip()))
 		{
 			// Hier überprüfen, ob ich einen Außenposten technologisch überhaupt bauen kann
 			for (int l = 0; l < m_dc.pDoc->m_ShipInfoArray.GetSize(); l++)
@@ -356,9 +353,7 @@ void CShipBottomView::DrawTransportshipOrders(short &counter) {
 					}
 		}
 		// Wenn hier schon ein Außenposten steht, können wir vielleicht auch eine Sternbasis bauen
-		else if (csec.GetOutpost(pShip.GetOwnerOfShip()) == TRUE
-			&& csec.GetStarbase(pShip.GetOwnerOfShip()) == FALSE
-			&& csec.GetOwnerOfSector() == pShip.GetOwnerOfShip())
+		else if (csec.IsStationBuildable(SHIP_TYPE::STARBASE, pShip.GetOwnerOfShip()))
 		{
 			// Hier überprüfen, ob ich eine Sternbasis technologisch überhaupt bauen kann
 			for (int l = 0; l < m_dc.pDoc->m_ShipInfoArray.GetSize(); l++)

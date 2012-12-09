@@ -12,6 +12,8 @@
 #include "Anomaly.h"
 #include "General/ResourceManager.h"
 
+#include <cassert>
+
 #ifdef _DEBUG
 #undef THIS_FILE
 static char THIS_FILE[]=__FILE__;
@@ -998,4 +1000,23 @@ void CSector::PutScannedSquare(unsigned range, const int power,
 			}//for (int j = -range; j <= range; ++j)
 		}//if(0 <= x && x < STARMAP_SECTORS_HCOUNT)
 	}//for (int i = -range; i <= range; ++i)
+}
+
+static bool StationBuildContinuable(const CString& race, const CSector& sector) {
+	const CString& owner = sector.GetOwnerOfSector();
+	return owner.IsEmpty() || owner == race || sector.GetIsStationBuilding(race);
+}
+
+bool CSector::IsStationBuildable(SHIP_TYPE::Typ station, const CString& race) const {
+	if(HasStarbase())
+		return false;
+	if(station == SHIP_TYPE::OUTPOST) {
+		if(HasOutpost())
+			return false;
+		return StationBuildContinuable(race, *this);
+	}
+	assert(station == SHIP_TYPE::STARBASE);
+	if(!GetOutpost(race))
+		return false;
+	return StationBuildContinuable(race, *this);
 }
