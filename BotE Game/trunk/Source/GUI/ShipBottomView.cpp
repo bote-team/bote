@@ -19,7 +19,7 @@
 #include <cassert>
 
 #ifdef _DEBUG
-#define new DEBUG_NEW
+// #define new DEBUG_NEW
 #undef THIS_FILE
 static char THIS_FILE[] = __FILE__;
 #endif
@@ -85,55 +85,37 @@ static bool ShipCanHaveOrder(const CShips& ships, SHIP_ORDER::Typ order,
 	return ships.CanHaveOrder(order, true);
 }
 
-void CShipBottomView::OnDraw(CDC* dc)
-{
-	CBotf2Doc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
-
-	if (!pDoc->m_bDataReceived)
-		return;
-
-	CMajor* pMajor = m_pPlayersRace;
-	ASSERT(pMajor);
-	if (!pMajor)
-		return;
-	// TODO: add draw code here
-
-	// Doublebuffering wird initialisiert
-	CMyMemDC pDC(dc);
+void CShipBottomView::SetupDrawing() {
 	CRect client;
 	GetClientRect(&client);
 
-	// Graphicsobjekt, in welches gezeichnet wird anlegen
-	Graphics g(pDC->GetSafeHdc());
+	m_dc.fontName = "";
+	m_dc.fontSize = 0.0;
 
 	/*g.SetSmoothingMode(SmoothingModeHighSpeed);
 	g.SetInterpolationMode(InterpolationModeLowQuality);
 	g.SetPixelOffsetMode(PixelOffsetModeHighSpeed);
 	g.SetCompositingQuality(CompositingQualityHighSpeed);*/
-	g.SetSmoothingMode(SmoothingModeHighQuality);
-	g.SetInterpolationMode(InterpolationModeLowQuality);
-	g.SetPixelOffsetMode(PixelOffsetModeHighSpeed);
-	g.SetCompositingQuality(CompositingQualityHighSpeed);
-	g.ScaleTransform((REAL)client.Width() / (REAL)m_TotalSize.cx, (REAL)client.Height() / (REAL)m_TotalSize.cy);
-	g.Clear(Color::Black);
 
-	CString fontName = "";
-	Gdiplus::REAL fontSize = 0.0;
+	m_dc.g->SetSmoothingMode(SmoothingModeHighQuality);
+	m_dc.g->SetInterpolationMode(InterpolationModeLowQuality);
+	m_dc.g->SetPixelOffsetMode(PixelOffsetModeHighSpeed);
+	m_dc.g->SetCompositingQuality(CompositingQualityHighSpeed);
+	m_dc.g->ScaleTransform((REAL)client.Width() / (REAL)m_TotalSize.cx, (REAL)client.Height() / (REAL)m_TotalSize.cy);
+	m_dc.g->Clear(Color::Black);
+
 	// Rassenspezifische Schriftart auswählen
-	CFontLoader::CreateGDIFont(pMajor, 2, fontName, fontSize);
+	CFontLoader::CreateGDIFont(m_pPlayersRace, 2, m_dc.fontName, m_dc.fontSize);
+	CFontLoader::GetGDIFontColor(m_pPlayersRace, 3, m_dc.normalColor);
+	
+	m_dc.fontBrush = new SolidBrush(m_dc.normalColor);
 
-	StringFormat fontFormat;
-	Gdiplus::Color normalColor;
-	CFontLoader::GetGDIFontColor(pMajor, 3, normalColor);
-	SolidBrush fontBrush(normalColor);
+	m_dc.r.SetRect(0, 0, m_TotalSize.cx, m_TotalSize.cy);
 
-	CRect r;
-	r.SetRect(0, 0, m_TotalSize.cx, m_TotalSize.cy);
-
-	if (m_LastKO != pDoc->GetKO())
+	// Angezeigten Sektor, aktuelle Seite und dergleichen initialisieren
+	if (m_LastKO != m_dc.pDoc->GetKO())
 	{
-		m_LastKO = pDoc->GetKO();
+		m_LastKO = m_dc.pDoc->GetKO();
 		m_rLastMarkedRect = CRect(0,0,0,0);
 		m_RectForTheShip = CRect(0,0,0,0);
 		m_iPage = 1;
@@ -143,358 +125,380 @@ void CShipBottomView::OnDraw(CDC* dc)
 		// Ebenfalls bei der Anzeige einer Station immer auf die erste Seite springen
 		m_iPage = 1;
 	}
+}
 
-	// Galaxie im Hintergrund zeichnen
-	CString sPrefix = pMajor->GetPrefix();
-	Bitmap* background = pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "galaxyV3.bop");
-	if (background)
-		g.DrawImage(background, 0, 0, 1075, 249);
+// Achtung: r.right = Breite, r.bottom = Höhe!
+void CShipBottomView::DrawImage( CString resName, CRect r ) {
+	Bitmap* bmp = m_dc.gp->GetGDIGraphic(resName);
+	if (bmp)
+		m_dc.g->DrawImage(bmp, r.left, r.top, r.Width(), r.Height());
+}
 
-	CString s;
-	// Bis jetzt nur eine Anzeige bis max. 9 Schiffe
-	if (m_iTimeCounter == 0)
+void CShipBottomView::DrawSmallButton( CString resString, CPoint coords, int shiporder ) {
+	m_dc.fontBrush->SetColor(this->GetFontColorForSmallButton());
+	m_dc.fontFormat.SetAlignment(StringAlignmentCenter);
+	m_dc.fontFormat.SetLineAlignment(StringAlignmentCenter);
+	m_dc.fontFormat.SetFormatFlags(StringFormatFlagsNoWrap);
+
+	m_dc.g->DrawImage(m_pShipOrderButton, coords.x, coords.y, 120, 30);
+	m_dc.g->DrawString(CComBSTR(CResourceManager::GetString(resString)), -1, &Gdiplus::Font(CComBSTR(m_dc.fontName), m_dc.fontSize), RectF(coords.x,coords.y,120,30), &m_dc.fontFormat, m_dc.fontBrush);
+
+	if( shiporder != -1 ) {
+		m_ShipOrders[shiporder].SetRect(coords.x,coords.y,coords.x + 120,coords.y + 30);
+	}
+}
+
+bool CShipBottomView::CheckDisplayShip(CShips *pShip, CSector *csec ) {
+	if (m_LastKO != pShip->GetKO())
+		return false;
+
+	const BOOL is_base = pShip->IsStation();
+	// Wenn eine Station angezeigt werden soll, dann muss der Typ von einer Station sein
+	// Wenn keine Station angezeigt werden soll, dann darf der Typ nicht von einer Station sein
+	if (m_bShowStation != is_base)
+		return false;
+
+	// Schiffe mit zu guter Stealthpower werden hier nicht angezeigt.
+	const USHORT stealthPower = pShip->GetStealthPower();
+
+	CString rid = m_pPlayersRace->GetRaceID();
+	if (   pShip->GetOwnerOfShip() != rid				// Schiff gehört anderer Rasse als der aktuellen
+		&& csec->GetScanPower(rid) < stealthPower		// Scanpower im Sektor ist kleiner stealthpower des Schiffs
+		&& m_pPlayersRace->GetAgreement(pShip->GetOwnerOfShip()) < DIPLOMATIC_AGREEMENT::AFFILIATION) // Diplomatie ist kleiner "Affiliation"
+			return false;
+	return true;
+}
+
+void CShipBottomView::DrawShipContent() {
+	CRect r(0, 0, m_TotalSize.cx, m_TotalSize.cy);
+	USHORT column = 0;
+	USHORT row = 0;
+	CMajor* pMajor = m_pPlayersRace;
+	CShipMap::iterator oneShip = m_dc.pDoc->m_ShipMap.begin();
+	Gdiplus::Color markColor;
+	Gdiplus::Font font(CComBSTR(m_dc.fontName), m_dc.fontSize);
+	USHORT counter = 0;
+	CShips* pShip;
+
+	if (!CGalaxyMenuView::IsMoveShip())
+		m_vShipRects.clear();
+
+	markColor.SetFromCOLORREF(pMajor->GetDesign()->m_clrListMarkTextColor);
+	CSector csec = m_dc.pDoc->CurrentSector();
+
+	for(CShipMap::iterator i = m_dc.pDoc->m_ShipMap.begin(); i != m_dc.pDoc->m_ShipMap.end(); ++i)
 	{
-		USHORT column = 0;
-		USHORT row = 0;
-		CShipMap::iterator oneShip = pDoc->m_ShipMap.begin();
-		if (!CGalaxyMenuView::IsMoveShip())
-			m_vShipRects.clear();
+		pShip = &i->second;
+		if( !CheckDisplayShip( pShip, &csec ) )
+			continue;
 
-		Gdiplus::Color markColor;
-		markColor.SetFromCOLORREF(pMajor->GetDesign()->m_clrListMarkTextColor);
-		Gdiplus::Font font(CComBSTR(fontName), fontSize);
-
-		USHORT counter = 0;
-
-		for(CShipMap::iterator i = pDoc->m_ShipMap.begin(); i != pDoc->m_ShipMap.end(); ++i)
+		// mehrere Spalten anlegen, falls mehr als 3 Schiffe in dem System sind
+		if (counter != 0 && counter%3 == 0)
 		{
-			CShips* pShip = &i->second;
-			if (pDoc->GetKO() != pShip->GetKO())
-				continue;
+			column++;
+			row = 0;
+		}
+		// Wenn wir eine Seite vollhaben
+		if (counter%9 == 0)
+			column = 0;
 
-			const BOOL is_base = pShip->IsStation();
-			// Wenn eine Station angezeigt werden soll, dann muss der Typ von einer Station sein
-			// Wenn keine Station angezeigt werden soll, dann darf der Typ nicht von einer Station sein
-			if (m_bShowStation != is_base)
-				continue;
+		if (counter < m_iPage*9 && counter >= (m_iPage-1)*9)
+		{
+			CPoint pt(250 * column, 65 * row);
+			m_vShipRects.push_back(pair<CRect, CShips*>(CRect(pt.x, pt.y + 20, pt.x + 250, pt.y + 85), pShip));
+		}
 
-			// Schiffe mit zu guter Stealthpower werden hier nicht angezeigt.
-			const USHORT stealthPower = pShip->GetStealthPower();
-
-			if (pShip->GetOwnerOfShip() != pMajor->GetRaceID())
-				if(pDoc->CurrentSector().GetScanPower(pMajor->GetRaceID()) < stealthPower
-					&& pMajor->GetAgreement(pShip->GetOwnerOfShip()) < DIPLOMATIC_AGREEMENT::AFFILIATION)
-					continue;
-
-			// mehrere Spalten anlegen, falls mehr als 3 Schiffe in dem System sind
-			if (counter != 0 && counter%3 == 0)
+		// großes Bild der Station zeichnen
+		if (m_bShowStation)
+		{
+			map<CString, CMajor*>* pmMajors = m_dc.pDoc->GetRaceCtrl()->GetMajors();
+			for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 			{
-				column++;
-				row = 0;
-			}
-			// Wenn wir eine Seite vollhaben
-			if (counter%9 == 0)
-				column = 0;
-
-			if (counter < m_iPage*9 && counter >= (m_iPage-1)*9)
-			{
-				// Kennen wir den Besizter des Schiffes?
-				bool bUnknown = (pMajor->GetRaceID() != pShip->GetOwnerOfShip() && pMajor->IsRaceContacted(pShip->GetOwnerOfShip()) == false);
-				if (bUnknown)
+				if (m_dc.pDoc->CurrentSector().GetOutpost(it->first) || m_dc.pDoc->CurrentSector().GetStarbase(it->first))
 				{
-					// Wenn kein diplomatischer Kontakt möglich ist, wird das Schiff immer angezeigt
-					CRace* pShipOwner = pDoc->GetRaceCtrl()->GetRace(pShip->GetOwnerOfShip());
-					if (pShipOwner)
-						bUnknown = !pShipOwner->HasSpecialAbility(SPECIAL_NO_DIPLOMACY);
-				}
-
-				// ist das Schiff gerade markiert?
-				bool bMarked = (pShip == &pDoc->CurrentShip()->second);
-				CPoint pt(250 * column, 65 * row);
-				pShip->DrawShip(&g, pDoc->GetGraphicPool(), pt, bMarked, bUnknown, TRUE, normalColor, markColor, font);
-				m_vShipRects.push_back(pair<CRect, CShips*>(CRect(pt.x, pt.y + 20, pt.x + 250, pt.y + 85), pShip));
-			}
-
-			// großes Bild der Station zeichnen
-			if (m_bShowStation)
-			{
-				map<CString, CMajor*>* pmMajors = pDoc->GetRaceCtrl()->GetMajors();
-				for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
-				{
-					if (pDoc->CurrentSector().GetOutpost(it->first) || pDoc->CurrentSector().GetStarbase(it->first))
+					// gehört uns die Station oder kennen wir die andere Rasse
+					if (pMajor->GetRaceID() == pShip->GetOwnerOfShip() || pMajor->IsRaceContacted(pShip->GetOwnerOfShip()))
 					{
-						// gehört uns die Station oder kennen wir die andere Rasse
-						if (pMajor->GetRaceID() == pShip->GetOwnerOfShip() || pMajor->IsRaceContacted(pShip->GetOwnerOfShip()))
-						{
-							s.Format("Other\\" + it->second->GetPrefix() + "Starbase.bop");
-							Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic(s);
-							if (graphic)
-								g.DrawImage(graphic, 550, 20, 235, 200);
-							break;
-						}
+						DrawImage("Other\\" + it->second->GetPrefix() + "Starbase.bop", CRect(CPoint(550,20),CSize(235,200)));
+						break;
 					}
 				}
-				break;
 			}
-
-			row++;
-			counter++;
-			oneShip = i;
-
-			if (counter > m_iPage*9)
-				break;
+			break;
 		}
 
-		// Wenn nur ein Schiff in dem System ist, so wird es automatisch ausgewählt
-		if (counter == 1 && !m_bShowStation && oneShip->second.GetCurrentOrder() <= SHIP_ORDER::ATTACK
-			&& oneShip->second.GetOwnerOfShip() == pMajor->GetRaceID())
-		{
-			// Wenn wenn wir auf der Galaxiekarte sind
-			if (resources::pMainFrame->GetActiveView(0, 1) == GALAXY_VIEW)
-			{
-				this->SetTimer(1,100,NULL);
-				pDoc->SetCurrentShip(oneShip);
-				CGalaxyMenuView::SetMoveShip(TRUE);
-				CSmallInfoView::SetDisplayMode(CSmallInfoView::DISPLAY_MODE_SHIP_BOTTEM_VIEW);
-				resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
-				m_iWhichMainShipOrderButton = -1;
-				resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CGalaxyMenuView));
-			}
-		}
+		row++;
+		counter++;
+		oneShip = i;
 
-		// Die Buttons für vor und zurück darstellen, wenn wir mehr als 9 Schiffe in dem Sektor sehen
-		fontBrush.SetColor(this->GetFontColorForSmallButton());
-		fontFormat.SetAlignment(StringAlignmentCenter);
-		fontFormat.SetLineAlignment(StringAlignmentCenter);
-		fontFormat.SetFormatFlags(StringFormatFlagsNoWrap);
-		m_bShowNextButton = FALSE;
-		if (counter > 9 && counter > m_iPage*9)
+		if (counter > m_iPage*9)
+			break;
+	}
+
+	// Wenn nur ein Schiff in dem System ist, so wird es automatisch ausgewählt
+	if (counter == 1 && !m_bShowStation && oneShip->second.GetCurrentOrder() <= SHIP_ORDER::ATTACK
+		&& oneShip->second.GetOwnerOfShip() == pMajor->GetRaceID())
+	{
+		// Wenn wenn wir auf der Galaxiekarte sind
+		if (resources::pMainFrame->GetActiveView(0, 1) == GALAXY_VIEW)
 		{
-			m_bShowNextButton = TRUE;
-			g.DrawImage(m_pShipOrderButton, r.right-120, r.top+210, 120, 30);
-			g.DrawString(CComBSTR(CResourceManager::GetString("BTN_NEXT")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.right-120,r.top+210,120,30), &fontFormat, &fontBrush);
-		}
-		// back-Button
-		if (m_iPage > 1)
-		{
-			g.DrawImage(m_pShipOrderButton, r.right-120, r.top, 120, 30);
-			g.DrawString(CComBSTR(CResourceManager::GetString("BTN_BACK")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.right-120,r.top,120,30), &fontFormat, &fontBrush);
+			this->SetTimer(1,100,NULL);
+			m_dc.pDoc->SetCurrentShip(oneShip);
+			CGalaxyMenuView::SetMoveShip(TRUE);
+			CSmallInfoView::SetDisplayMode(CSmallInfoView::DISPLAY_MODE_SHIP_BOTTEM_VIEW);
+			resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
+			m_iWhichMainShipOrderButton = -1;
+			resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CGalaxyMenuView));
 		}
 	}
 
-	// Die ganzen Befehlsbuttons für die Schiffe anzeigen
-	if (CGalaxyMenuView::IsMoveShip() == TRUE &&
-		pDoc->CurrentShip()->second.GetOwnerOfShip() == pMajor->GetRaceID())
+	// Schiffe jetzt auch zeichnen
+	for(std::vector<std::pair<CRect, CShips*>>::const_iterator itdraw = m_vShipRects.begin(); itdraw != m_vShipRects.end(); ++itdraw) {
+		pShip = itdraw->second;
+		
+		// Kennen wir den Besizter des Schiffes?
+		bool bUnknown = (pMajor->GetRaceID() != pShip->GetOwnerOfShip() && pMajor->IsRaceContacted(pShip->GetOwnerOfShip()) == false);
+		if (bUnknown)
+		{
+			// Wenn kein diplomatischer Kontakt möglich ist, wird das Schiff immer angezeigt
+			CRace* pShipOwner = m_dc.pDoc->GetRaceCtrl()->GetRace(pShip->GetOwnerOfShip());
+			if (pShipOwner)
+				bUnknown = !pShipOwner->HasSpecialAbility(SPECIAL_NO_DIPLOMACY);
+		}
+		CRect loc = itdraw->first;
+		// ist das Schiff gerade markiert?
+		bool bMarked = (pShip == &m_dc.pDoc->CurrentShip()->second);
+		pShip->DrawShip(m_dc.g, m_dc.gp, CPoint(loc.left,loc.top-20), bMarked, bUnknown, TRUE, m_dc.normalColor, markColor, font);
+	}
+
+	// Die Buttons für vor und zurück darstellen, wenn wir mehr als 9 Schiffe in dem Sektor sehen
+	m_bShowNextButton = FALSE;
+	if (counter > 9 && counter > m_iPage*9)
 	{
-		BYTE researchLevels[6] =
-		{
-			pMajor->GetEmpire()->GetResearch()->GetBioTech(),
-			pMajor->GetEmpire()->GetResearch()->GetEnergyTech(),
-			pMajor->GetEmpire()->GetResearch()->GetCompTech(),
-			pMajor->GetEmpire()->GetResearch()->GetPropulsionTech(),
-			pMajor->GetEmpire()->GetResearch()->GetConstructionTech(),
-			pMajor->GetEmpire()->GetResearch()->GetWeaponTech()
-		};
+		m_bShowNextButton = TRUE;
+		DrawSmallButton(CResourceManager::GetString("BTN_NEXT"), CPoint(r.right-120, r.top+210));
+	}
+	// back-Button
+	if (m_iPage > 1)
+	{
+		DrawSmallButton(CResourceManager::GetString("BTN_BACK"), CPoint(r.right-120, r.top));
+	}
+}
 
-		fontBrush.SetColor(this->GetFontColorForSmallButton());
-		fontFormat.SetAlignment(StringAlignmentCenter);
-		fontFormat.SetLineAlignment(StringAlignmentCenter);
-		fontFormat.SetFormatFlags(StringFormatFlagsNoWrap);
+void CShipBottomView::DrawColonyshipOrders(short &counter) {
+	CSector csec = m_dc.pDoc->CurrentSector();
+	CShips pShip = m_dc.pDoc->CurrentShip()->second;
+	CRect r(m_dc.r);
 
-		short counter = 0;	// Zähler der die Anzahl der einzelnen Unterbuttons zählt
-		CRect rect;
-		// Taktik
-		if (m_iTimeCounter > 0)
-		{
-			g.DrawImage(m_pShipOrderButton, r.right-120, r.top+70, 120, 30);
-			g.DrawString(CComBSTR(CResourceManager::GetString("BTN_TACTIC")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.right-120,r.top+70,120,30), &fontFormat, &fontBrush);
-		}
-		// Befehl
-		if (m_iTimeCounter > 1)
-		{
-			g.DrawImage(m_pShipOrderButton, r.right-120, r.top+105, 120, 30);
-			g.DrawString(CComBSTR(CResourceManager::GetString("BTN_ORDER")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.right-120,r.top+105,120,30), &fontFormat, &fontBrush);
-		}
-		// Aktion
-		if (m_iTimeCounter > 2)
-		{
-			g.DrawImage(m_pShipOrderButton, r.right-120, r.top+140, 120, 30);
-			g.DrawString(CComBSTR(CResourceManager::GetString("BTN_ACTION")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.right-120,r.top+140,120,30), &fontFormat, &fontBrush);
-			if (m_iWhichMainShipOrderButton == -1)
-			{
-				this->KillTimer(1);
-				m_iTimeCounter = 0;
-			}
-		}
-		// Alle Rechtecke für die Buttons der Schiffsbefehle erstmal auf NULL setzen, damit wir nicht draufklicken
-		// können. Wir dürfen ja nur auf Buttons klicken können, die wir auch sehen
-		for (int j = 0; j <= SHIP_ORDER::REPAIR; j++)
-			m_ShipOrders[j].SetRect(0,0,0,0);
-
-		// angreifen
-		if (m_iTimeCounter > 3 && m_iWhichMainShipOrderButton == 0 &&
-			ShipCanHaveOrder(pDoc->CurrentShip()->second, SHIP_ORDER::ATTACK))
-		{
-			g.DrawImage(m_pShipOrderButton, r.right-245, r.top+70, 120, 30);
-			m_ShipOrders[SHIP_ORDER::ATTACK].SetRect(r.right-245,r.top+70,r.right-125,r.top+100);
-			g.DrawString(CComBSTR(CResourceManager::GetString("BTN_ATTACK")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.right-245,r.top+70,120,30), &fontFormat, &fontBrush);
-			counter++;
-		}
-		// meiden
-		else if (m_iTimeCounter > 3 && m_iWhichMainShipOrderButton == 0 &&
-			ShipCanHaveOrder(pDoc->CurrentShip()->second, SHIP_ORDER::AVOID))
-		{
-			g.DrawImage(m_pShipOrderButton, r.right-245, r.top+70, 120, 30);
-			m_ShipOrders[SHIP_ORDER::AVOID].SetRect(r.right-245,r.top+70,r.right-125,r.top+100);
-			g.DrawString(CComBSTR(CResourceManager::GetString("BTN_AVOID")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.right-245,r.top+70,120,30), &fontFormat, &fontBrush);
-			counter++;
-		}
-		// folgende Befehle gehen alle nur, wenn es keine Station ist
-		if (!pDoc->CurrentShip()->second.IsStation())
-		{
-			// gruppieren
-			if (m_iTimeCounter > (3 + counter) && m_iWhichMainShipOrderButton == 0)
-			{
-				g.DrawImage(m_pShipOrderButton, r.right-245, r.top+70+counter*35, 120, 30);
-				m_ShipOrders[SHIP_ORDER::CREATE_FLEET].SetRect(r.right-245,r.top+70+counter*35,r.right-125,r.top+100+counter*35);
-				g.DrawString(CComBSTR(CResourceManager::GetString("BTN_CREATE_FLEET")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.right-245,r.top+70+counter*35,120,30), &fontFormat, &fontBrush);
-				counter++;
-			}
-			// trainieren
-			if (m_iTimeCounter > (3 + counter) && m_iWhichMainShipOrderButton == 0)
-			{
-				// Wenn in dem System die Möglichkeit des Schiffstrainings besteht
-				if (ShipCanHaveOrder(pDoc->CurrentShip()->second, SHIP_ORDER::TRAIN_SHIP,
-					&pDoc->CurrentSector(), &pDoc->CurrentSystem()))
+	// Kolonisierung (hier beachten wenn es eine Flotte ist, dort schauen ob auch jedes Schiff in
+	// der Flotte auch kolonisieren kann)
+	if (m_iTimeCounter > 3 && ShipCanHaveOrder(pShip, SHIP_ORDER::COLONIZE))
+	{
+		// Wenn das System uns bzw. niemanden gehört können wir nur kolonisieren
+		if (csec.GetOwnerOfSector() == "" || csec.GetOwnerOfSector() == pShip.GetOwnerOfShip())
+			for (int l = 0; l < csec.GetNumberOfPlanets(); l++)
+				if (csec.GetPlanet(l)->GetTerraformed() == TRUE
+					&& csec.GetPlanet(l)->GetCurrentHabitant() == 0.0f)
 				{
-					g.DrawImage(m_pShipOrderButton, r.right-245, r.top+70+counter*35, 120, 30);
-					m_ShipOrders[SHIP_ORDER::TRAIN_SHIP].SetRect(r.right-245,r.top+70+counter*35,r.right-125,r.top+100+counter*35);
-					g.DrawString(CComBSTR(CResourceManager::GetString("BTN_TRAIN_SHIP")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.right-245,r.top+70+counter*35,120,30), &fontFormat, &fontBrush);
+					DrawSmallButton("BTN_COLONIZE",CPoint(r.right-245, r.top+140),SHIP_ORDER::COLONIZE);
 					counter++;
+					break;
 				}
-			}
-			// tarnen (hier beachten wenn es eine Flotte ist, dort schauen ob sich jedes Schiff in der Flotte auch
-			// tarnen kann)
-			if (m_iTimeCounter > (3 + counter) && m_iWhichMainShipOrderButton == 0 &&
-				// Ab hier check wegen Flotten
-				ShipCanHaveOrder(pDoc->CurrentShip()->second, SHIP_ORDER::ENCLOAK))
-			{
-				g.DrawImage(m_pShipOrderButton, r.right-245, r.top+70+counter*35, 120, 30);
-				if (pDoc->CurrentShip()->second.GetCloak())
-					s = CResourceManager::GetString("BTN_DECLOAK");
-				else
-					s = CResourceManager::GetString("BTN_CLOAK");
-				m_ShipOrders[SHIP_ORDER::ENCLOAK].SetRect(r.right-245,r.top+70+counter*35,r.right-125,r.top+100+counter*35);
-				g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.right-245,r.top+70+counter*35,120,30), &fontFormat, &fontBrush);
-				counter++;
-			}
-			// Systemangriff
-			if (m_iTimeCounter > 3 && m_iWhichMainShipOrderButton == 1)
-			{
-				// Wenn im Sektor ein Sonnensystem ist
-				if (pDoc->CurrentSector().GetSunSystem() == TRUE &&
-					// Wenn im System noch Bevölkerung vorhanden ist
-					pDoc->CurrentSector().GetCurrentHabitants() > 0.0f &&
-					// Wenn das System nicht der Rasse gehört, der auch das Schiff gehört
-					pDoc->CurrentSystem().GetOwnerOfSystem() != pDoc->CurrentShip()->second.GetOwnerOfShip())
-				{
-					CRace* pOwnerOfSector = pDoc->GetRaceCtrl()->GetRace(pDoc->CurrentSector().GetOwnerOfSector());
+	}
+	// Terraforming (hier beachten wenn es eine Flotte ist, dort schauen ob auch jedes Schiff in
+	// der Flotte auch terraformen kann)
+	if (m_iTimeCounter > (3 + counter) && ShipCanHaveOrder(pShip, SHIP_ORDER::TERRAFORM))
 
-					// Wenn im System eine Rasse lebt und wir mit ihr im Krieg sind
-					if (pOwnerOfSector != NULL && pMajor->GetAgreement(pOwnerOfSector->GetRaceID()) == DIPLOMATIC_AGREEMENT::WAR
-					// Wenn das System niemanden mehr gehört, aber noch Bevölkerung drauf lebt (z.B. durch Rebellion)
-						|| pDoc->CurrentSystem().GetOwnerOfSystem() == "" && pDoc->CurrentSector().GetMinorRace() == FALSE)
+	{
+		for (int l = 0; l < csec.GetNumberOfPlanets(); l++)
+			if (csec.GetPlanet(l)->GetHabitable() == TRUE &&
+				csec.GetPlanet(l)->GetTerraformed() == FALSE)
+			{
+				DrawSmallButton("BTN_TERRAFORM",CPoint(r.right-245, r.top+140-counter*35),SHIP_ORDER::TERRAFORM);
+				counter++;
+				break;
+			}
+	}
+}
+
+void CShipBottomView::DrawTransportshipOrders(short &counter) {
+	CSector csec = m_dc.pDoc->CurrentSector();
+	CShips pShip = m_dc.pDoc->CurrentShip()->second;
+	CMajor* pMajor = m_pPlayersRace;
+	CRect r(m_dc.r);
+
+	// Außenposten/Sternbasis bauen (hier beachten wenn es eine Flotte ist, dort schauen ob auch jedes
+	// Schiff in der Flotte Stationen bauen kann)
+	if (m_iTimeCounter > (3 + counter) && 
+		// Ab hier check wegen Flotten, darum wirds lang (müssen nur einen der Befehle (egal ob Outpost oder
+		// Starbase gebaut werden soll) übergeben, weil wenn das eine geht, geht auch das andere
+		ShipCanHaveOrder(pShip, SHIP_ORDER::BUILD_OUTPOST))
+	{
+		CPoint ShipKO = m_dc.pDoc->GetKO();
+		// hier schauen, ob ich in der Schiffsinfoliste schon einen Außenposten habe den ich bauen kann, wenn in dem
+		// Sector noch kein Außenposten steht und ob ich diesen in dem Sector überhaupt bauen kann. Das geht nur
+		// wenn der Sektor mir oder niemanden gehört
+		if (csec.GetOutpost(pShip.GetOwnerOfShip()) == FALSE
+			&& csec.GetStarbase(pShip.GetOwnerOfShip()) == FALSE
+			&& (csec.GetOwnerOfSector() == ""
+			|| csec.GetOwnerOfSector() == pShip.GetOwnerOfShip()))
+		{
+			// Hier überprüfen, ob ich einen Außenposten technologisch überhaupt bauen kann
+			for (int l = 0; l < m_dc.pDoc->m_ShipInfoArray.GetSize(); l++)
+				if (m_dc.pDoc->m_ShipInfoArray.GetAt(l).GetRace() == pMajor->GetRaceShipNumber()
+					&& m_dc.pDoc->m_ShipInfoArray.GetAt(l).GetShipType() == SHIP_TYPE::OUTPOST
+					&& m_dc.pDoc->m_ShipInfoArray.GetAt(l).IsThisShipBuildableNow(m_dc.researchLevels))
 					{
-						// nur wenn die Schiffe ungetarnt sind können sie Bombardieren
-						// Ab hier check wegen Flotten
-						if (ShipCanHaveOrder(pDoc->CurrentShip()->second, SHIP_ORDER::ATTACK_SYSTEM))
-						{
-							g.DrawImage(m_pShipOrderButton, r.right-245, r.top+70, 120, 30);
-							s = CResourceManager::GetString("BTN_ATTACK_SYSTEM");
-							m_ShipOrders[SHIP_ORDER::ATTACK_SYSTEM].SetRect(r.right-245,r.top+70,r.right-125,r.top+100);
-							g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.right-245,r.top+70,120,30), &fontFormat, &fontBrush);
-							counter++;
-						}
+						// Wenn ja dann Schaltfläche zum Außenpostenbau einblenden
+						DrawSmallButton("BTN_BUILD_OUTPOST",CPoint(r.right-245, r.top+140-counter*35),SHIP_ORDER::BUILD_OUTPOST);
+						counter++;
+						break;
 					}
-				}
-			}
-/*			// Systemüberfall
-			if (m_iTimeCounter > (3 + counter) && m_iWhichMainShipOrderButton == 1)
+		}
+		// Wenn hier schon ein Außenposten steht, können wir vielleicht auch eine Sternbasis bauen
+		else if (csec.GetOutpost(pShip.GetOwnerOfShip()) == TRUE
+			&& csec.GetStarbase(pShip.GetOwnerOfShip()) == FALSE
+			&& csec.GetOwnerOfSector() == pShip.GetOwnerOfShip())
+		{
+			// Hier überprüfen, ob ich eine Sternbasis technologisch überhaupt bauen kann
+			for (int l = 0; l < m_dc.pDoc->m_ShipInfoArray.GetSize(); l++)
+				if (m_dc.pDoc->m_ShipInfoArray.GetAt(l).GetRace() == pMajor->GetRaceShipNumber()
+					&& m_dc.pDoc->m_ShipInfoArray.GetAt(l).GetShipType() == SHIP_TYPE::STARBASE
+					&& m_dc.pDoc->m_ShipInfoArray.GetAt(l).IsThisShipBuildableNow(m_dc.researchLevels))
+					{
+						// Wenn ja dann Schaltfläche zum Sternenbasisbau einblenden
+						DrawSmallButton("BTN_BUILD_STARBASE",CPoint(r.right-245, r.top+140-counter*35),SHIP_ORDER::BUILD_STARBASE);
+						counter++;
+						break;
+					}
+		}
+	}
+	// Transport
+	if (m_iTimeCounter > (3 + counter) && 
+		ShipCanHaveOrder(pShip, SHIP_ORDER::TRANSPORT))
+	{
+		DrawSmallButton("BTN_TRANSPORT",CPoint(r.right-245, r.top+140-counter*35),SHIP_ORDER::TRANSPORT);
+		counter++;
+	}
+}
+
+void CShipBottomView::DrawMaincommandMenu() {
+	CRect r(m_dc.r);
+	// Taktik
+	if (m_iTimeCounter > 0)
+	{
+		DrawSmallButton("BTN_TACTIC", CPoint(r.right-120, r.top+70));
+	}
+	// Befehl
+	if (m_iTimeCounter > 1)
+	{
+		DrawSmallButton("BTN_ORDER", CPoint(r.right-120, r.top+105));
+	}
+	// Aktion
+	if (m_iTimeCounter > 2)
+	{
+		DrawSmallButton("BTN_ACTION", CPoint(r.right-120, r.top+140));
+		if (m_iWhichMainShipOrderButton == -1)
+		{
+			this->KillTimer(1);
+			m_iTimeCounter = 0;
+		}
+	}
+}
+
+short CShipBottomView::DrawTacticsMenu() {
+	CShips pShip = m_dc.pDoc->CurrentShip()->second;
+	CRect r(m_dc.r);
+	short counter = 0;
+	CSector csec = m_dc.pDoc->CurrentSector();
+
+	// angreifen
+	if (m_iTimeCounter > 3 && ShipCanHaveOrder(pShip, SHIP_ORDER::ATTACK))
+	{
+		DrawSmallButton("BTN_ATTACK",CPoint(r.right-245, r.top+70),SHIP_ORDER::ATTACK);
+		counter++;
+	}
+	// meiden
+	else if (m_iTimeCounter > 3 && ShipCanHaveOrder(pShip, SHIP_ORDER::AVOID))
+	{
+		DrawSmallButton("BTN_AVOID",CPoint(r.right-245, r.top+70),SHIP_ORDER::AVOID);
+		counter++;
+	}
+	// folgende Befehle gehen alle nur, wenn es keine Station ist
+	if (!pShip.IsStation())
+	{
+		// gruppieren
+		if (m_iTimeCounter > (3 + counter))
+		{
+			DrawSmallButton("BTN_CREATE_FLEET",CPoint(r.right-245, r.top+70+counter*35),SHIP_ORDER::CREATE_FLEET);
+			counter++;
+		}
+		// trainieren
+		if (m_iTimeCounter > (3 + counter) && ShipCanHaveOrder(pShip, SHIP_ORDER::TRAIN_SHIP, &csec, &m_dc.pDoc->CurrentSystem()))
+		{
+			DrawSmallButton("BTN_TRAIN_SHIP",CPoint(r.right-245, r.top+70+counter*35),SHIP_ORDER::TRAIN_SHIP);
+			counter++;
+		}
+		// tarnen (hier beachten wenn es eine Flotte ist, dort schauen ob sich jedes Schiff in der Flotte auch
+		// tarnen kann)
+		if (m_iTimeCounter > (3 + counter) && ShipCanHaveOrder(pShip, SHIP_ORDER::ENCLOAK))
+		{
+			CString s;
+			if (pShip.GetCloak())
+				s = "BTN_DECLOAK";
+			else
+				s = "BTN_CLOAK";
+			DrawSmallButton(s,CPoint(r.right-245, r.top+70+counter*35),SHIP_ORDER::ENCLOAK);
+			counter++;
+		}
+	}
+	return counter;
+}
+
+short CShipBottomView::DrawOrdersMenu() {
+	CShips pShip = m_dc.pDoc->CurrentShip()->second;
+	CRect r(m_dc.r);
+	CMajor* pMajor = m_pPlayersRace;
+	CSector csec = m_dc.pDoc->CurrentSector();
+	short counter = 0;
+
+	// Systemangriff
+	if (m_iTimeCounter > 3)
+	{
+		// Wenn im Sektor ein Sonnensystem ist
+		if (csec.GetSunSystem() == TRUE &&
+			// Wenn im System noch Bevölkerung vorhanden ist
+			csec.GetCurrentHabitants() > 0.0f &&
+			// Wenn das System nicht der Rasse gehört, der auch das Schiff gehört
+			m_dc.pDoc->CurrentSystem().GetOwnerOfSystem() != pShip.GetOwnerOfShip())
+		{
+			CRace* pOwnerOfSector = m_dc.pDoc->GetRaceCtrl()->GetRace(csec.GetOwnerOfSector());
+
+			// Wenn im System eine Rasse lebt und wir mit ihr im Krieg sind
+			if (pOwnerOfSector != NULL && pMajor->GetAgreement(pOwnerOfSector->GetRaceID()) == DIPLOMATIC_AGREEMENT::WAR
+			// Wenn das System niemanden mehr gehört, aber noch Bevölkerung drauf lebt (z.B. durch Rebellion)
+				|| m_dc.pDoc->CurrentSystem().GetOwnerOfSystem() == "" && csec.GetMinorRace() == FALSE)
 			{
-				pDC->BitBlt(r.right-245,r.top+70+counter*35,120,30,&mdc,0,0,SRCCOPY);
-				s = CResourceManager::GetString("BTN_RAID_SYSTEM");
-				m_ShipOrders[RAID_SYSTEM].SetRect(r.right-245,r.top+70+counter*35,r.right-125,r.top+100+counter*35);
-				pDC->DrawText(s, m_ShipOrders[RAID_SYSTEM],DT_CENTER | DT_SINGLELINE | DT_VCENTER);
-				counter++;
-			}
-*/			// Systemblockade
-			if (m_iTimeCounter > (3 + counter) && m_iWhichMainShipOrderButton == 1 &&
+				// nur wenn die Schiffe ungetarnt sind können sie Bombardieren
 				// Ab hier check wegen Flotten
-				ShipCanHaveOrder(pDoc->CurrentShip()->second, SHIP_ORDER::BLOCKADE_SYSTEM))
-			{
-				// Überprüfen ob man eine Blockade im System überhaupt errichten kann
-				// Wenn das System nicht der Rasse gehört, der auch das Schiff gehört
-				CRace* pOwnerOfSystem = pDoc->GetRaceCtrl()->GetRace(pDoc->CurrentSystem().GetOwnerOfSystem());
-				if (pOwnerOfSystem != NULL && pOwnerOfSystem->GetRaceID() != pDoc->CurrentShip()->second.GetOwnerOfShip()
-					&& pMajor->GetAgreement(pOwnerOfSystem->GetRaceID()) < DIPLOMATIC_AGREEMENT::FRIENDSHIP)
+				if (ShipCanHaveOrder(pShip, SHIP_ORDER::ATTACK_SYSTEM))
 				{
-					g.DrawImage(m_pShipOrderButton, r.right-245, r.top+70+counter*35, 120, 30);
-					s = CResourceManager::GetString("BTN_BLOCKADE_SYSTEM");
-					m_ShipOrders[SHIP_ORDER::BLOCKADE_SYSTEM].SetRect(r.right-245,r.top+70+counter*35,r.right-125,r.top+100+counter*35);
-					g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.right-245,r.top+70+counter*35,120,30), &fontFormat, &fontBrush);
+					DrawSmallButton("BTN_ATTACK_SYSTEM",CPoint(r.right-245, r.top+70),SHIP_ORDER::ATTACK_SYSTEM);
 					counter++;
 				}
 			}
-			// Flagschiffernennung, geht nur wenn es keine Flotte ist
-			if (m_iTimeCounter > (3 + counter) && m_iWhichMainShipOrderButton == 1
-				&& ShipCanHaveOrder(pDoc->CurrentShip()->second, SHIP_ORDER::ASSIGN_FLAGSHIP))
-			{
-				g.DrawImage(m_pShipOrderButton, r.right-245, r.top+70+counter*35, 120, 30);
-				s = CResourceManager::GetString("BTN_ASSIGN_FLAGSHIP");
-				m_ShipOrders[SHIP_ORDER::ASSIGN_FLAGSHIP].SetRect(r.right-245,r.top+70+counter*35,r.right-125,r.top+100+counter*35);
-				g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.right-245,r.top+70+counter*35,120,30), &fontFormat, &fontBrush);
-				counter++;
-			}
-			// Warten
-			if (m_iTimeCounter > (3 + counter) && m_iWhichMainShipOrderButton == 1
-				&& ShipCanHaveOrder(pDoc->CurrentShip()->second, SHIP_ORDER::WAIT_SHIP_ORDER))
-			{
-				g.DrawImage(m_pShipOrderButton, r.right-245, r.top+70+counter*35, 120, 30);
-				s = CResourceManager::GetString("BTN_WAIT_SHIP_ORDER");
-				m_ShipOrders[SHIP_ORDER::WAIT_SHIP_ORDER].SetRect(r.right-245,r.top+70+counter*35,r.right-125,r.top+100+counter*35);
-				g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.right-245,r.top+70+counter*35,120,30), &fontFormat, &fontBrush);
-				counter++;
-			}
-			// Wache
-			if (m_iTimeCounter > (3 + counter) && m_iWhichMainShipOrderButton == 1
-				&& ShipCanHaveOrder(pDoc->CurrentShip()->second, SHIP_ORDER::SENTRY_SHIP_ORDER))
-			{
-				g.DrawImage(m_pShipOrderButton, r.right-245, r.top+70+counter*35, 120, 30);
-				s = CResourceManager::GetString("BTN_SENTRY_SHIP_ORDER");
-				m_ShipOrders[SHIP_ORDER::SENTRY_SHIP_ORDER].SetRect(r.right-245,r.top+70+counter*35,r.right-125,r.top+100+counter*35);
-				g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.right-245,r.top+70+counter*35,120,30), &fontFormat, &fontBrush);
-				counter++;
-			}
-			// Repairing
-			// Only possible if
-			// 1) the ship or any of the ships in its fleet are actually damaged.
-			// 2) we (or an allied race) have a ship port in this sector.
-			if (m_iTimeCounter > (3 + counter) && m_iWhichMainShipOrderButton == 1 &&
-				ShipCanHaveOrder(pDoc->CurrentShip()->second, SHIP_ORDER::REPAIR,
-					&pDoc->GetSector(
-						pDoc->CurrentShip()->second.GetKO().x,
-						pDoc->CurrentShip()->second.GetKO().y
-					)
-				)
-			)
-			{
-				g.DrawImage(m_pShipOrderButton, r.right-245, r.top+70+counter*35, 120, 30);
-				s = CResourceManager::GetString("BTN_REPAIR_SHIP");
-				m_ShipOrders[SHIP_ORDER::REPAIR].SetRect(r.right-245,r.top+70+counter*35,r.right-125,r.top+100+counter*35);
-				g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.right-245,r.top+70+counter*35,120,30), &fontFormat, &fontBrush);
-				counter++;
-			}
-
+		}
+	}
+/*			// Systemüberfall
+	if (m_iTimeCounter > (3 + counter) && m_iWhichMainShipOrderButton == 1)
+	{
+		pDC->BitBlt(r.right-245,r.top+70+counter*35,120,30,&mdc,0,0,SRCCOPY);
+		s = CResourceManager::GetString("BTN_RAID_SYSTEM");
+		m_ShipOrders[RAID_SYSTEM].SetRect(r.right-245,r.top+70+counter*35,r.right-125,r.top+100+counter*35);
+		pDC->DrawText(s, m_ShipOrders[RAID_SYSTEM],DT_CENTER | DT_SINGLELINE | DT_VCENTER);
+		counter++;
+	}
+*/
 /*					// einem anderen Schiff folgen
 			if (m_iTimeCounter > (3 + counter) && m_iWhichMainShipOrderButton == 1)
 			{
@@ -505,159 +509,195 @@ void CShipBottomView::OnDraw(CDC* dc)
 				counter++;
 			}
 */
-			// Kolonisierung (hier beachten wenn es eine Flotte ist, dort schauen ob auch jedes Schiff in
-			// der Flotte auch kolonisieren kann)
-			if (m_iTimeCounter > 3 && m_iWhichMainShipOrderButton == 2 &&
-				// Ab hier check wegen Flotten
-				ShipCanHaveOrder(pDoc->CurrentShip()->second, SHIP_ORDER::COLONIZE))
-			{
-				// Wenn das System uns bzw. niemanden gehört können wir nur kolonisieren
-				if (pDoc->CurrentSector().GetOwnerOfSector() == ""
-					|| pDoc->CurrentSector().GetOwnerOfSector() == pDoc->CurrentShip()->second.GetOwnerOfShip())
-					for (int l = 0; l < pDoc->CurrentSector().GetNumberOfPlanets(); l++)
-						if (pDoc->CurrentSector().GetPlanet(l)->GetTerraformed() == TRUE
-							&& pDoc->CurrentSector().GetPlanet(l)->GetCurrentHabitant() == 0.0f)
-						{
-							g.DrawImage(m_pShipOrderButton, r.right-245, r.top+140, 120, 30);
-							s = CResourceManager::GetString("BTN_COLONIZE");
-							m_ShipOrders[SHIP_ORDER::COLONIZE].SetRect(r.right-245,r.top+140,r.right-125,r.top+170);
-							g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.right-245,r.top+140,120,30), &fontFormat, &fontBrush);
-							counter++;
-							break;
-						}
-			}
-			// Terraforming (hier beachten wenn es eine Flotte ist, dort schauen ob auch jedes Schiff in
-			// der Flotte auch terraformen kann)
-			if (m_iTimeCounter > (3 + counter) && m_iWhichMainShipOrderButton == 2 &&
-				// Ab hier check wegen Flotten
-				ShipCanHaveOrder(pDoc->CurrentShip()->second, SHIP_ORDER::TERRAFORM))
-
-			{
-				for (int l = 0; l < pDoc->CurrentSector().GetNumberOfPlanets(); l++)
-					if (pDoc->CurrentSector().GetPlanet(l)->GetHabitable() == TRUE &&
-						pDoc->CurrentSector().GetPlanet(l)->GetTerraformed() == FALSE)
-					{
-						g.DrawImage(m_pShipOrderButton, r.right-245, r.top+140-counter*35, 120, 30);
-						s = CResourceManager::GetString("BTN_TERRAFORM");
-						m_ShipOrders[SHIP_ORDER::TERRAFORM].SetRect(r.right-245,r.top+140-counter*35,r.right-125,r.top+170-counter*35);
-						g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.right-245,r.top+140-counter*35,120,30), &fontFormat, &fontBrush);
-						counter++;
-						break;
-					}
-			}
-			// Außenposten/Sternbasis bauen (hier beachten wenn es eine Flotte ist, dort schauen ob auch jedes
-			// Schiff in der Flotte Stationen bauen kann)
-			if (m_iTimeCounter > (3 + counter) && m_iWhichMainShipOrderButton == 2 &&
-				// Ab hier check wegen Flotten, darum wirds lang (müssen nur einen der Befehle (egal ob Outpost oder
-				// Starbase gebaut werden soll) übergeben, weil wenn das eine geht, geht auch das andere
-				ShipCanHaveOrder(pDoc->CurrentShip()->second, SHIP_ORDER::BUILD_OUTPOST))
-			{
-				CPoint ShipKO = pDoc->GetKO();
-				// hier schauen, ob ich in der Schiffsinfoliste schon einen Außenposten habe den ich bauen kann, wenn in dem
-				// Sector noch kein Außenposten steht und ob ich diesen in dem Sector überhaupt bauen kann. Das geht nur
-				// wenn der Sektor mir oder niemanden gehört
-				if (pDoc->CurrentSector().GetOutpost(pDoc->CurrentShip()->second.GetOwnerOfShip()) == FALSE
-					&& pDoc->CurrentSector().GetStarbase(pDoc->CurrentShip()->second.GetOwnerOfShip()) == FALSE
-					&& (pDoc->CurrentSector().GetOwnerOfSector() == ""
-					|| pDoc->CurrentSector().GetOwnerOfSector() == pDoc->CurrentShip()->second.GetOwnerOfShip()))
-				{
-					// Hier überprüfen, ob ich einen Außenposten technologisch überhaupt bauen kann
-					for (int l = 0; l < pDoc->m_ShipInfoArray.GetSize(); l++)
-						if (pDoc->m_ShipInfoArray.GetAt(l).GetRace() == pMajor->GetRaceShipNumber()
-							&& pDoc->m_ShipInfoArray.GetAt(l).GetShipType() == SHIP_TYPE::OUTPOST
-							&& pDoc->m_ShipInfoArray.GetAt(l).IsThisShipBuildableNow(researchLevels))
-							{
-								// Wenn ja dann Schaltfläche zum Außenpostenbau einblenden
-								g.DrawImage(m_pShipOrderButton, r.right-245, r.top+140-counter*35, 120, 30);
-								s = CResourceManager::GetString("BTN_BUILD_OUTPOST");
-								m_ShipOrders[SHIP_ORDER::BUILD_OUTPOST].SetRect(r.right-245,r.top+140-counter*35,r.right-125,r.top+170-counter*35);
-								g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.right-245,r.top+140-counter*35,120,30), &fontFormat, &fontBrush);
-								counter++;
-								break;
-							}
-				}
-				// Wenn hier schon ein Außenposten steht, können wir vielleicht auch eine Sternbasis bauen
-				else if (pDoc->CurrentSector().GetOutpost(pDoc->CurrentShip()->second.GetOwnerOfShip()) == TRUE
-					&& pDoc->CurrentSector().GetStarbase(pDoc->CurrentShip()->second.GetOwnerOfShip()) == FALSE
-					&& pDoc->CurrentSector().GetOwnerOfSector() == pDoc->CurrentShip()->second.GetOwnerOfShip())
-				{
-					// Hier überprüfen, ob ich eine Sternbasis technologisch überhaupt bauen kann
-					for (int l = 0; l < pDoc->m_ShipInfoArray.GetSize(); l++)
-						if (pDoc->m_ShipInfoArray.GetAt(l).GetRace() == pMajor->GetRaceShipNumber()
-							&& pDoc->m_ShipInfoArray.GetAt(l).GetShipType() == SHIP_TYPE::STARBASE
-							&& pDoc->m_ShipInfoArray.GetAt(l).IsThisShipBuildableNow(researchLevels))
-							{
-								// Wenn ja dann Schaltfläche zum Außenpostenbau einblenden
-								g.DrawImage(m_pShipOrderButton, r.right-245, r.top+140-counter*35, 120, 30);
-								s = CResourceManager::GetString("BTN_BUILD_STARBASE");
-								m_ShipOrders[SHIP_ORDER::BUILD_STARBASE].SetRect(r.right-245,r.top+140-counter*35,r.right-125,r.top+170-counter*35);
-								g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.right-245,r.top+140-counter*35,120,30), &fontFormat, &fontBrush);
-								counter++;
-								break;
-							}
-				}
-			}
-			// Transport
-			if (m_iTimeCounter > (3 + counter) && m_iWhichMainShipOrderButton == 2 &&
-				ShipCanHaveOrder(pDoc->CurrentShip()->second, SHIP_ORDER::TRANSPORT))
-			{
-				g.DrawImage(m_pShipOrderButton, r.right-245, r.top+140-counter*35, 120, 30);
-				s = CResourceManager::GetString("BTN_TRANSPORT");
-				m_ShipOrders[SHIP_ORDER::TRANSPORT].SetRect(r.right-245,r.top+140-counter*35,r.right-125,r.top+170-counter*35);
-				g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.right-245,r.top+140-counter*35,120,30), &fontFormat, &fontBrush);
-				counter++;
-			}
-		}
-		// Schiff abwracken/zerstören
-		if (m_iTimeCounter > (3 + counter) && m_iWhichMainShipOrderButton == 2 &&
-			ShipCanHaveOrder(pDoc->CurrentShip()->second, SHIP_ORDER::DESTROY_SHIP))
+	// Systemblockade
+	if (m_iTimeCounter > (3 + counter) && ShipCanHaveOrder(pShip, SHIP_ORDER::BLOCKADE_SYSTEM))
+	{
+		// Überprüfen ob man eine Blockade im System überhaupt errichten kann
+		// Wenn das System nicht der Rasse gehört, der auch das Schiff gehört
+		CRace* pOwnerOfSystem = m_dc.pDoc->GetRaceCtrl()->GetRace(m_dc.pDoc->CurrentSystem().GetOwnerOfSystem());
+		if (pOwnerOfSystem != NULL && pOwnerOfSystem->GetRaceID() != pShip.GetOwnerOfShip()
+			&& pMajor->GetAgreement(pOwnerOfSystem->GetRaceID()) < DIPLOMATIC_AGREEMENT::FRIENDSHIP)
 		{
-			g.DrawImage(m_pShipOrderButton, r.right-245, r.top+140-counter*35, 120, 30);
-			s = CResourceManager::GetString("BTN_DESTROY_SHIP");
-			m_ShipOrders[SHIP_ORDER::DESTROY_SHIP].SetRect(r.right-245,r.top+140-counter*35,r.right-125,r.top+170-counter*35);
-			g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.right-245,r.top+140-counter*35,120,30), &fontFormat, &fontBrush);
+			DrawSmallButton("BTN_BLOCKADE_SYSTEM",CPoint(r.right-245, r.top+70+counter*35),SHIP_ORDER::BLOCKADE_SYSTEM);
 			counter++;
 		}
-		if (m_iTimeCounter >= (4 + counter))
-		{
-			this->KillTimer(1);
-			m_iTimeCounter = 0;
-		}
 	}
+	// Flagschiffernennung, geht nur wenn es keine Flotte ist
+	if (m_iTimeCounter > (3 + counter) && m_iWhichMainShipOrderButton == 1
+		&& ShipCanHaveOrder(m_dc.pDoc->CurrentShip()->second, SHIP_ORDER::ASSIGN_FLAGSHIP))
+	{
+		DrawSmallButton("BTN_ASSIGN_FLAGSHIP",CPoint(r.right-245, r.top+70+counter*35),SHIP_ORDER::ASSIGN_FLAGSHIP);
+		counter++;
+	}
+	// Warten
+	if (m_iTimeCounter > (3 + counter) && m_iWhichMainShipOrderButton == 1
+		&& ShipCanHaveOrder(m_dc.pDoc->CurrentShip()->second, SHIP_ORDER::WAIT_SHIP_ORDER))
+	{
+		DrawSmallButton("BTN_WAIT_SHIP_ORDER",CPoint(r.right-245, r.top+70+counter*35),SHIP_ORDER::WAIT_SHIP_ORDER);
+		counter++;
+	}
+	// Wache
+	if (m_iTimeCounter > (3 + counter) && m_iWhichMainShipOrderButton == 1
+		&& ShipCanHaveOrder(m_dc.pDoc->CurrentShip()->second, SHIP_ORDER::SENTRY_SHIP_ORDER))
+	{
+		DrawSmallButton("BTN_SENTRY_SHIP_ORDER",CPoint(r.right-245, r.top+70+counter*35),SHIP_ORDER::SENTRY_SHIP_ORDER);
+		counter++;
+	}
+	// Repairing
+	// Only possible if
+	// 1) the ship or any of the ships in its fleet are actually damaged.
+	// 2) we (or an allied race) have a ship port in this sector.
+	if (m_iTimeCounter > (3 + counter) && 
+		ShipCanHaveOrder(pShip, SHIP_ORDER::REPAIR,
+			&m_dc.pDoc->GetSector(
+				pShip.GetKO().x,
+				pShip.GetKO().y
+			)
+		)
+	)
+	{
+		DrawSmallButton("BTN_REPAIR_SHIP",CPoint(r.right-245, r.top+70+counter*35),SHIP_ORDER::REPAIR);
+		counter++;
+	}
+	return counter;
+}
+
+short CShipBottomView::DrawActionsMenu(bool isStation) {
+
+	short counter = 0;
+	if( !isStation ) {
+		DrawColonyshipOrders(counter);
+		DrawTransportshipOrders(counter);
+	}
+	// Schiff abwracken/zerstören
+	if (m_iTimeCounter > (3 + counter) && ShipCanHaveOrder(m_dc.pDoc->CurrentShip()->second, SHIP_ORDER::DESTROY_SHIP))
+	{
+		DrawSmallButton("BTN_DESTROY_SHIP",CPoint(m_dc.r.right-245, m_dc.r.top+140-counter*35),SHIP_ORDER::DESTROY_SHIP);
+		counter++;
+	}
+
+	return counter;
+}
+
+void CShipBottomView::DrawStationData() {
+	CMajor* pMajor = m_pPlayersRace;
+	CSector csec = m_dc.pDoc->CurrentSector();
+	BYTE count = 0;
 
 	// Wenn wir in dem Sektor gerade einen Außenposten bauen, dann prozentualen Fortschritt anzeigen.
 	// Es kann auch passieren, das mehrere Rassen gleichzeitig dort einen Außenposten bauen, dann müssen wir
 	// von jeder der Rasse den Fortschritt beim Stationsbau angeben
+	map<CString, CMajor*>* pmMajors = m_dc.pDoc->GetRaceCtrl()->GetMajors();
+	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
+		if (csec.GetIsStationBuilding(it->first) == TRUE)
+		{
+			CString station;
+			if (csec.GetOutpost(it->first) == FALSE)
+				station = CResourceManager::GetString("OUTPOST");
+			else
+				station = CResourceManager::GetString("STARBASE");
+			m_dc.fontBrush->SetColor(Color(170,170,170));
+			CString percent;
+			percent.Format("%d",((csec.GetStartStationPoints(it->first)
+				- csec.GetNeededStationPoints(it->first)) * 100
+				/ csec.GetStartStationPoints(it->first)));
+
+			CString sRaceName;
+			if (pMajor == it->second || pMajor->IsRaceContacted(it->first))
+				sRaceName = it->second->GetRaceName();
+			else
+				sRaceName = CResourceManager::GetString("UNKNOWN");
+
+			CString s = station + CResourceManager::GetString("STATION_BUILDING", FALSE, sRaceName, percent);
+			m_dc.fontFormat.SetAlignment(StringAlignmentCenter);
+			m_dc.fontFormat.SetLineAlignment(StringAlignmentCenter);
+			m_dc.g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(m_dc.fontName), m_dc.fontSize), PointF(250, 30+count*25), &m_dc.fontFormat, m_dc.fontBrush);
+			count++;
+		}
+}
+
+void CShipBottomView::DrawMenu() {
+	CMajor* pMajor = m_pPlayersRace;
+
+	CResearch *res = pMajor->GetEmpire()->GetResearch();
+	m_dc.researchLevels[0] = res->GetBioTech();
+	m_dc.researchLevels[1] = res->GetEnergyTech();
+	m_dc.researchLevels[2] = res->GetCompTech();
+	m_dc.researchLevels[3] = res->GetPropulsionTech();
+	m_dc.researchLevels[4] = res->GetConstructionTech();
+	m_dc.researchLevels[5] = res->GetWeaponTech();
+	
+	bool isStation = (m_dc.pDoc->CurrentShip()->second.IsStation());
+	CRect rect;
+
+	// Alle Rechtecke für die Buttons der Schiffsbefehle erstmal auf NULL setzen, damit wir nicht draufklicken
+	// können. Wir dürfen ja nur auf Buttons klicken können, die wir auch sehen
+	for (int j = 0; j <= SHIP_ORDER::REPAIR; j++)
+		m_ShipOrders[j].SetRect(0,0,0,0);
+
+	DrawMaincommandMenu();
+
+	short counter = 0;
+	if( m_iWhichMainShipOrderButton == 0 )
+		counter = DrawTacticsMenu();
+	else if( m_iWhichMainShipOrderButton == 1 && !isStation )
+		counter = DrawOrdersMenu();
+	else if( m_iWhichMainShipOrderButton == 2 )
+		counter = DrawActionsMenu(isStation);
+
+	if (m_iTimeCounter >= (4 + counter))
+	{
+		this->KillTimer(1);
+		m_iTimeCounter = 0;
+	}
+}
+
+void CShipBottomView::OnDraw(CDC* dc)
+{
+	m_dc.pDoc = resources::pDoc;
+	ASSERT(m_dc.pDoc);
+
+	if (!m_dc.pDoc->m_bDataReceived)
+		return;
+
+	// Update Graphicpool Link
+
+	m_dc.gp = m_dc.pDoc->GetGraphicPool();
+
+	CMajor* pMajor = m_pPlayersRace;
+	ASSERT(pMajor);
+	if (!pMajor)
+		return;
+	// TODO: add draw code here
+
+	// Doublebuffering wird initialisiert
+	CMyMemDC pDC(dc);
+	// Graphicsobjekt, in welches gezeichnet wird anlegen
+	m_dc.g = new Graphics(pDC.GetSafeHdc());
+
+	SetupDrawing();
+
+	// Galaxie im Hintergrund zeichnen
+	DrawImage( "Backgrounds\\" + pMajor->GetPrefix() + "galaxyV3.bop", CRect(CPoint(0,0),CSize(1075,249)) );
+	CSector csec = m_dc.pDoc->CurrentSector();
+
+	CString s;
+	// Bis jetzt nur eine Anzeige bis max. 9 Schiffe
+	if (m_iTimeCounter == 0)
+	{
+		DrawShipContent();
+	}
+
+	// Die ganzen Befehlsbuttons für die Schiffe anzeigen
+	if (CGalaxyMenuView::IsMoveShip() == TRUE &&
+		m_dc.pDoc->CurrentShip()->second.GetOwnerOfShip() == pMajor->GetRaceID())
+	{
+		DrawMenu();
+	}
+
 	if (m_bShowStation)	// Stationsansicht
 	{
-		BYTE count = 0;
-		map<CString, CMajor*>* pmMajors = pDoc->GetRaceCtrl()->GetMajors();
-		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
-			if (pDoc->CurrentSector().GetIsStationBuilding(it->first) == TRUE)
-			{
-				CString station;
-				if (pDoc->CurrentSector().GetOutpost(it->first) == FALSE)
-					station = CResourceManager::GetString("OUTPOST");
-				else
-					station = CResourceManager::GetString("STARBASE");
-				fontBrush.SetColor(Color(170,170,170));
-				CString percent;
-				percent.Format("%d",((pDoc->CurrentSector().GetStartStationPoints(it->first)
-					- pDoc->CurrentSector().GetNeededStationPoints(it->first)) * 100
-					/ pDoc->CurrentSector().GetStartStationPoints(it->first)));
-
-				CString sRaceName;
-				if (pMajor == it->second || pMajor->IsRaceContacted(it->first))
-					sRaceName = it->second->GetRaceName();
-				else
-					sRaceName = CResourceManager::GetString("UNKNOWN");
-
-				s = station + CResourceManager::GetString("STATION_BUILDING", FALSE, sRaceName, percent);
-				fontFormat.SetAlignment(StringAlignmentCenter);
-				fontFormat.SetLineAlignment(StringAlignmentCenter);
-				g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), PointF(250, 30+count*25), &fontFormat, &fontBrush);
-				count++;
-			}
+		DrawStationData();
 	}
 
 	// Wenn wir dem Schiff einen neuen Befehl geben, ohne das die Buttons über den Timer vollständig gezeichnet wurden
@@ -669,7 +709,12 @@ void CShipBottomView::OnDraw(CDC* dc)
 		m_iTimeCounter =0;
 	}
 
-	g.ReleaseHDC(pDC->GetSafeHdc());
+	m_dc.g->ReleaseHDC(pDC->GetSafeHdc());
+
+	delete m_dc.fontBrush;
+	delete m_dc.g;
+
+	m_dc.pDoc = NULL;
 }
 
 // CShipBottomView diagnostics
@@ -1101,7 +1146,7 @@ CString CShipBottomView::CreateTooltip(void)
 //int CShipBottomView::GetMouseOverShip(CPoint& pt)
 //{
 //	// TODO: Add your message handler code here and/or call default
-//	const CBotf2Doc* const pDoc = (CBotf2Doc*)GetDocument();
+//	const CBotf2Doc* const pDoc = resources::pDoc;
 //	ASSERT(pDoc);
 //
 //	if (!pDoc->m_bDataReceived)

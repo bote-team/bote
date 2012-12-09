@@ -80,7 +80,7 @@ extern double STARMAP_ZOOM_MAX;//			2	///< maximaler Zoom-Faktor
 #define ROMULAN				4
 #define CARDASSIAN			5
 #define DOMINION			6
-#define UNKNOWN				7
+#define UNKNOWNRACE			7
 #define MINORNUMBER			MAXBYTE
 
 

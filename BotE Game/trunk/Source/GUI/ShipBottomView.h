@@ -10,6 +10,19 @@
 
 // CShipBottomView view
 
+struct stDrawingContext {
+	Graphics *g;
+	CGraphicPool *gp;
+	CBotf2Doc* pDoc;
+	CRect r;
+	CString fontName;
+	SolidBrush *fontBrush;
+	StringFormat fontFormat;
+	Gdiplus::REAL fontSize;
+	Gdiplus::Color normalColor;
+	BYTE researchLevels[6];
+};
+
 class CShipBottomView : public CBottomBaseView
 {
 	DECLARE_DYNCREATE(CShipBottomView)
@@ -69,6 +82,28 @@ private:
 
 	vector<pair<CRect, CShips*> > m_vShipRects;	///< alle angezeigten Schiffe mit ihren Rechtecken zu draufklicken
 	CRect m_rLastMarkedRect;					///< zuletzt markiertes Rechteck
+
+	// OnDraw Helper Functions
+	stDrawingContext m_dc;
+
+	bool CheckDisplayShip(CShips *pShip, CSector *csec );
+	void DrawShipContent();
+	
+	void DrawMaincommandMenu();
+	short DrawTacticsMenu();
+	short DrawOrdersMenu();
+	short DrawActionsMenu(bool isStation);
+
+	void DrawStationData();
+	void DrawMenu();
+
+	void DrawColonyshipOrders(short &counter);
+	void DrawTransportshipOrders(short &counter);
+
+	void DrawImage( CString resName, CRect r );
+	void DrawSmallButton( CString resString, CPoint coords, int shiporder = -1 );
+	void SetupDrawing();
+
 
 protected:
 	DECLARE_MESSAGE_MAP()

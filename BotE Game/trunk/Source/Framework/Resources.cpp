@@ -6,5 +6,5 @@ namespace resources {
 
 	CBotf2Doc* pDoc = NULL;
 	const CCommandLineParameters* pClp = NULL;
-	extern CMainFrame* pMainFrame = NULL;
+	CMainFrame* pMainFrame = NULL;
 }

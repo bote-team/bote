@@ -2054,7 +2054,7 @@ void CBotf2Doc::ReadShipInfosFromFile()
 				ShipInfo.SetRace(atoi(data[0]));
 				// ALPHA5	-> Alle Minorraceschiffe haben im Editor noch die Nummer UNKNOWN.
 				//			-> diese Schiffe werden nun auf die MINORNUMBER gesetzt
-				if (ShipInfo.GetRace() == UNKNOWN)
+				if (ShipInfo.GetRace() == UNKNOWNRACE)
 					ShipInfo.SetRace(MINORNUMBER);
 				ShipInfo.SetID(j);
 				ShipInfo.SetShipClass(data[1]);
