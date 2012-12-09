@@ -4039,7 +4039,7 @@ void CBotf2Doc::CalcShipOrders()
 								if (pSector->GetOutpost(y->second.GetOwnerOfShip()) == FALSE
 									&& pSector->GetStarbase(y->second.GetOwnerOfShip()) == FALSE)
 								{
-									pSector->SetOutpost(TRUE, y->second.GetOwnerOfShip());
+									pSector->SetOutpost(y->second.GetOwnerOfShip());
 									pSector->SetOwnerOfSector(y->second.GetOwnerOfShip());
 									pSector->SetScanned(y->second.GetOwnerOfShip());
 									pSector->SetOwned(TRUE);
@@ -4083,7 +4083,7 @@ void CBotf2Doc::CalcShipOrders()
 						if (pSector->GetOutpost(y->second.GetOwnerOfShip()) == FALSE
 							&& pSector->GetStarbase(y->second.GetOwnerOfShip()) == FALSE)
 						{
-							pSector->SetOutpost(TRUE,y->second.GetOwnerOfShip());
+							pSector->SetOutpost(y->second.GetOwnerOfShip());
 							pSector->SetOwnerOfSector(y->second.GetOwnerOfShip());
 							pSector->SetScanned(y->second.GetOwnerOfShip());
 							pSector->SetOwned(TRUE);
@@ -4183,8 +4183,8 @@ void CBotf2Doc::CalcShipOrders()
 								if (pSector->GetOutpost(y->second.GetOwnerOfShip()) == TRUE
 									&& pSector->GetStarbase(y->second.GetOwnerOfShip()) == FALSE)
 								{
-									pSector->SetOutpost(FALSE,y->second.GetOwnerOfShip());
-									pSector->SetStarbase(TRUE,y->second.GetOwnerOfShip());
+									pSector->UnsetOutpost(y->second.GetOwnerOfShip());
+									pSector->SetStarbase(y->second.GetOwnerOfShip());
 									pSector->SetOwnerOfSector(y->second.GetOwnerOfShip());
 									pSector->SetScanned(y->second.GetOwnerOfShip());
 									pSector->SetOwned(TRUE);
@@ -4238,8 +4238,8 @@ void CBotf2Doc::CalcShipOrders()
 						if (pSector->GetOutpost(y->second.GetOwnerOfShip()) == TRUE
 							&& pSector->GetStarbase(y->second.GetOwnerOfShip()) == FALSE)
 						{
-							pSector->SetOutpost(FALSE,y->second.GetOwnerOfShip());
-							pSector->SetStarbase(TRUE,y->second.GetOwnerOfShip());
+							pSector->UnsetOutpost(y->second.GetOwnerOfShip());
+							pSector->SetStarbase(y->second.GetOwnerOfShip());
 							pSector->SetOwnerOfSector(y->second.GetOwnerOfShip());
 							pSector->SetScanned(y->second.GetOwnerOfShip());
 							pSector->SetOwned(TRUE);
@@ -4339,8 +4339,8 @@ void CBotf2Doc::CalcShipOrders()
 			// Wenn es ein Au?enposten oder eine Sternbasis ist, dann dem Sektor bekanntgeben, dass in ihm keine Station mehr ist
 			if (y->second.IsStation())
 			{
-				pSector->SetOutpost(FALSE, y->second.GetOwnerOfShip());
-				pSector->SetStarbase(FALSE, y->second.GetOwnerOfShip());
+				pSector->UnsetOutpost(y->second.GetOwnerOfShip());
+				pSector->UnsetStarbase(y->second.GetOwnerOfShip());
 			}
 
 			m_ShipMap.EraseAt(y);
@@ -5047,9 +5047,9 @@ void CBotf2Doc::CalcShipEffects()
 			sector.SetShipPort(TRUE, sRace);
 			const SHIP_TYPE::Typ ship_type = y->second.GetShipType();
 			if (ship_type == SHIP_TYPE::OUTPOST)
-				sector.SetOutpost(TRUE, sRace);
+				sector.SetOutpost(sRace);
 			else
-				sector.SetStarbase(TRUE, sRace);
+				sector.SetStarbase(sRace);
 		}
 		else {
 			// Dem Sektor bekanntgeben, dass in ihm ein Schiff ist
@@ -5285,10 +5285,10 @@ void CBotf2Doc::CalcEndDataForNextRound()
 					se->SetColonyOwner("");
 				// in allen Sektoren alle Schiffe aus den Sektoren nehmen
 				se->SetIsStationBuilding(false, ID);
-				se->SetOutpost(false, ID);
+				se->UnsetOutpost(ID);
 				se->SetOwnerOfShip(false, ID);
 				se->SetShipPort(false, ID);
-				se->SetStarbase(false, ID);
+				se->UnsetStarbase(ID);
 			}
 
 			// Wenn es ein menschlicher Spieler ist, so bekommt er den Eventscreen für die Niederlage angezeigt

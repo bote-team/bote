@@ -164,20 +164,16 @@ public:
 
 	/// Diese Funktion gibt einen Wahrheitswert zurück, der sagt, ob die Majorrace <code>Race</code>
 	/// einen Aussenposten in diesem Sektor besitzt.
-	BOOLEAN GetOutpost(const CString& sRace) const
+	bool GetOutpost(const CString& sRace) const
 	{
-		if (m_bOutpost.find(sRace) != m_bOutpost.end())
-			return true;
-		return false;
+		return m_Outpost == sRace;
 	}
 
 	/// Diese Funktion gibt einen Wahrheitswert zurück, der sagt, ob die Majorrace <code>Race</code>
 	/// eine Sternbasis in diesem Sektor besitzt.
-	BOOLEAN GetStarbase(const CString& sRace) const
+	bool GetStarbase(const CString& sRace) const
 	{
-		if (m_bStarbase.find(sRace) != m_bStarbase.end())
-			return true;
-		return false;
+		return m_Starbase == sRace;
 	}
 
 	/// Diese Funktion gibt einen Wahrheitswert zurück, der sagt, ob die Rasse <code>Race</code> ein
@@ -197,8 +193,8 @@ public:
 	/// Sektor ist
 	BOOLEAN GetIsStationInSector(void) const {return HasOutpost() || HasStarbase();}
 
-	bool HasOutpost() const { return !m_bOutpost.empty(); }
-	bool HasStarbase() const { return !m_bStarbase.empty(); }
+	bool HasOutpost() const { return !m_Outpost.IsEmpty(); }
+	bool HasStarbase() const { return !m_Starbase.IsEmpty(); }
 
 	/// Diese Funktion gibt einen Wahrheitswert zurück, der sagt, ob die Majorrace <code>Race</code>
 	/// gerade eine Station in diesem Sektor baut.
@@ -323,21 +319,25 @@ public:
 	}
 
 	/// Diese Funktion legt fest, ob die Majorrace <code>Race</code> einen Aussenposten in diesem Sektor unterhält.
-	void SetOutpost(BOOLEAN is, const CString& Race)
+	void SetOutpost(const CString& Race)
 	{
-		if (is)
-			m_bOutpost.insert(Race);
-		else
-			m_bOutpost.erase(Race);
+		m_Outpost = Race;
+	}
+	void UnsetOutpost(const CString& Race)
+	{
+		if(m_Outpost == Race)
+			m_Outpost.Empty();
 	}
 
 	/// Diese Funktion legt fest, ob die Majorrace <code>Race</code> eine Sternbasis in diesem Sektor unterhält.
-	void SetStarbase(BOOLEAN is, const CString& Race)
+	void SetStarbase(const CString& Race)
 	{
-		if (is)
-			m_bStarbase.insert(Race);
-		else
-			m_bStarbase.erase(Race);
+		m_Starbase = Race;
+	}
+	void UnsetStarbase(const CString& Race)
+	{
+		if(m_Starbase == Race)
+			m_Starbase.Empty();
 	}
 
 	/// Funktion legt fest, ob die Majorrace <code>Race</code> ein oder auch mehrer Schiffe in diesem Sektor hat.
@@ -498,10 +498,10 @@ private:
 	set<CString> m_bShipPort;
 
 	/// Besitzt die jeweilige Rasse in dem Sektor einen Außenposten?
-	set<CString> m_bOutpost;
+	CString m_Outpost;
 
 	/// Besitzt die jeweilige Rasse in dem Sektor eine Sternbasis?
-	set<CString> m_bStarbase;
+	CString m_Starbase;
 
 	/// Hat eine Majorrace ein Schiff in diesem Sektor?
 	set<CString> m_bWhoIsOwnerOfShip;

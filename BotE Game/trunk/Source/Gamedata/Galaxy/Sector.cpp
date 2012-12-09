@@ -42,8 +42,8 @@ CSector::CSector(const CSector& other) :
 	m_sColonyOwner(other.m_sColonyOwner),
 	m_Status(other.m_Status),
 	m_bShipPort(other.m_bShipPort),
-	m_bOutpost(other.m_bOutpost),
-	m_bStarbase(other.m_bStarbase),
+	m_Outpost(other.m_Outpost),
+	m_Starbase(other.m_Starbase),
 	m_bWhoIsOwnerOfShip(other.m_bWhoIsOwnerOfShip),
 	m_mNumbersOfShips(other.m_mNumbersOfShips),
 	m_bIsStationBuild(other.m_bIsStationBuild),
@@ -68,8 +68,8 @@ CSector& CSector::operator=(const CSector& other){
 	m_sColonyOwner = other.m_sColonyOwner;
 	m_Status = other.m_Status;
 	m_bShipPort = other.m_bShipPort;
-	m_bOutpost = other.m_bOutpost;
-	m_bStarbase = other.m_bStarbase;
+	m_Outpost = other.m_Outpost;
+	m_Starbase = other.m_Starbase;
 	m_bWhoIsOwnerOfShip = other.m_bWhoIsOwnerOfShip;
 	m_mNumbersOfShips = other.m_mNumbersOfShips;
 	m_bIsStationBuild = other.m_bIsStationBuild;
@@ -117,12 +117,8 @@ void CSector::Serialize(CArchive &ar)
 		ar << m_bShipPort.size();
 		for (set<CString>::const_iterator it = m_bShipPort.begin(); it != m_bShipPort.end(); ++it)
 			ar << *it;
-		ar << m_bOutpost.size();
-		for (set<CString>::const_iterator it = m_bOutpost.begin(); it != m_bOutpost.end(); ++it)
-			ar << *it;
-		ar << m_bStarbase.size();
-		for (set<CString>::const_iterator it = m_bStarbase.begin(); it != m_bStarbase.end(); ++it)
-			ar << *it;
+		ar << m_Outpost;
+		ar << m_Starbase;
 		ar << m_bIsStationBuild.size();
 		for (set<CString>::const_iterator it = m_bIsStationBuild.begin(); it != m_bIsStationBuild.end(); ++it)
 			ar << *it;
@@ -190,24 +186,10 @@ void CSector::Serialize(CArchive &ar)
 			ar >> value;
 			m_bShipPort.insert(value);
 		}
-		m_bOutpost.clear();
-		mapSize = 0;
-		ar >> mapSize;
-		for (size_t i = 0; i < mapSize; i++)
-		{
-			CString value;
-			ar >> value;
-			m_bOutpost.insert(value);
-		}
-		m_bStarbase.clear();
-		mapSize = 0;
-		ar >> mapSize;
-		for (size_t i = 0; i < mapSize; i++)
-		{
-			CString value;
-			ar >> value;
-			m_bStarbase.insert(value);
-		}
+		m_Outpost.Empty();
+		ar >> m_Outpost;
+		m_Starbase.Empty();
+		ar >> m_Starbase;
 		m_bIsStationBuild.clear();
 		mapSize = 0;
 		ar >> mapSize;
@@ -687,8 +669,8 @@ void CSector::ClearAllPoints()
 	m_iNeededScanPower.clear();
 	m_iScanPower.clear();
 	// Sagen das erstmal kein Außenposten und keine Sternbasis in dem Sektor steht
-	m_bOutpost.clear();
-	m_bStarbase.clear();
+	m_Outpost.Empty();
+	m_Starbase.Empty();
 	m_bShipPort.clear();
 }
 
@@ -710,17 +692,16 @@ void CSector::CalculateOwner(const CString& sSystemOwner)
 	else if (m_sOwnerOfSector != "" && sSystemOwner == "" && this->GetMinorRace() == TRUE)
 		return;
 
-	for (set<CString>::const_iterator it = m_bOutpost.begin(); it != m_bOutpost.end(); ++it)
+	if(!m_Outpost.IsEmpty())
 	{
 		SetOwned(TRUE);
-		m_sOwnerOfSector = *it;
+		m_sOwnerOfSector = m_Outpost;
 		return;
 	}
-
-	for (set<CString>::const_iterator it = m_bStarbase.begin(); it != m_bStarbase.end(); ++it)
+	if(!m_Starbase.IsEmpty())
 	{
 		SetOwned(TRUE);
-		m_sOwnerOfSector = *it;
+		m_sOwnerOfSector = m_Starbase;
 		return;
 	}
 
@@ -763,8 +744,8 @@ void CSector::Reset()
 	m_bShipPort.clear();
 	m_bWhoIsOwnerOfShip.clear();
 	m_mNumbersOfShips.clear();
-	m_bOutpost.clear();
-	m_bStarbase.clear();
+	m_Outpost.Empty();
+	m_Starbase.Empty();
 	m_bIsStationBuild.clear();
 	m_iStartStationPoints.clear();
 	m_iNeededStationPoints.clear();
