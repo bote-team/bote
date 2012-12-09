@@ -2223,7 +2223,7 @@ Letzter Platz
 [AVERAGE]
 Durchschnitt
 [RATING]
-Bewertung
+Gesamtwertung
 
 [DEMOGRAPHY_MENUE]
 Demografie
