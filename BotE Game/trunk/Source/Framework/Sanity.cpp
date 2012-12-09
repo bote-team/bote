@@ -111,6 +111,7 @@ void CSanity::CheckShipUniqueness(const CShips& ship, std::set<CString>& already
 void CSanity::SanityCheckSectorAndSystem(const CSector& sector, const CSystem& system, const CBotf2Doc& doc)
 {
 	CString s;
+	assert(!sector.HasOutpost() || ! sector.HasStarbase());
 	if(!sector.GetSunSystem())
 		return;
 	const CString& sOwnerOfSystem = system.GetOwnerOfSystem();
