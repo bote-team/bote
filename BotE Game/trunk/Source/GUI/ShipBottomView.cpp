@@ -34,7 +34,8 @@ CShipBottomView::CShipBottomView() :
 	m_bShowNextButton(FALSE),
 	m_iTimeCounter(0),
 	m_iWhichMainShipOrderButton(-1),
-	m_LastKO(-1, -1)
+	m_LastKO(-1, -1),
+	m_dc()
 {
 	m_pShipOrderButton = NULL;
 }

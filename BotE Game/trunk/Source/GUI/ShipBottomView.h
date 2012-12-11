@@ -11,6 +11,11 @@
 // CShipBottomView view
 
 struct stDrawingContext {
+	stDrawingContext() : g(NULL), gp(NULL), pDoc(NULL), r(0, 0, 0, 0), fontName(""), fontBrush(NULL),
+		fontFormat(), fontSize(0), normalColor(0, 0, 0)
+	{
+		memset(researchLevels, 1, sizeof(researchLevels));
+	}
 	Graphics *g;
 	CGraphicPool *gp;
 	CBotf2Doc* pDoc;
