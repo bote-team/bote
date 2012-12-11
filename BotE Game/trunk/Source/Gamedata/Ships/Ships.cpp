@@ -350,10 +350,11 @@ bool CShips::CanHaveOrder(SHIP_ORDER::Typ order, bool require_new, bool require_
 	{
 		if (order == SHIP_ORDER::ASSIGN_FLAGSHIP)
 			return false;
-		if(require_all_can)
+		if(require_all_can) {
 			for(CShips::const_iterator i = m_Fleet.begin(); i != m_Fleet.end(); ++i)
 				if(!i->second.CanHaveOrder(order, require_new, true))
 					return false;
+		}
 		else
 			for(CShips::const_iterator i = m_Fleet.begin(); i != m_Fleet.end(); ++i)
 				if(i->second.CanHaveOrder(order, require_new, false))
