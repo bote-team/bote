@@ -3675,10 +3675,6 @@ void CBotf2Doc::CalcTrade()
 /// Diese Funktion berechnet die Schiffsbefehle. Der Systemangriffsbefehl ist davon ausgenommen.
 void CBotf2Doc::CalcShipOrders()
 {
-	// Array beinhaltet die Aussenposten, welche nach dem Bau einer Sternbasis aus dem Feld verschwinden m?ssen.
-	// Diese können nicht direkt in der Schleife entfernt werden, da sonst beim der nächsten Iteration die Schleife nicht mehr hinhaut.
-	std::vector<CString> vRemoveableOutposts;
-
 	// Hier kommt die Auswertung der Schiffsbefehle
 	bool increment = false;
 	for(CShipMap::iterator y = m_ShipMap.begin();;)
@@ -4172,12 +4168,13 @@ void CBotf2Doc::CalcShipOrders()
 									this->BuildShip(id, pSector->GetKO(), y->second.GetOwnerOfShip());
 									// Wenn wir jetzt die Sternbasis gebaut haben, dann müssen wir den alten Aussenposten aus der
 									// Schiffsliste nehmen
-									for(CShipMap::const_iterator k = m_ShipMap.begin(); k != m_ShipMap.end(); ++k)
+									for(CShipMap::iterator k = m_ShipMap.begin(); k != m_ShipMap.end(); ++k)
 										if (k->second.GetShipType() == SHIP_TYPE::OUTPOST && k->second.GetKO() == pSector->GetKO())
 										{
 											// ebenfalls muss der Au?enposten aus der Shiphistory der aktuellen Schiffe entfernt werden
 											pMajor->GetShipHistory()->RemoveShip(&k->second.Leader());
-											vRemoveableOutposts.push_back(k->second.GetShipName());
+											assert(k != y);
+											m_ShipMap.EraseAt(k);
 											break;
 										}
 									// Wenn hier eine Station gebaut wurde den Befehl für die Flotte auf Meiden stellen
@@ -4230,12 +4227,13 @@ void CBotf2Doc::CalcShipOrders()
 							increment = false;
 
 							// Wenn die Sternbasis gebaut haben, dann den alten Au?enposten aus der Schiffsliste nehmen
-							for(CShipMap::const_iterator k = m_ShipMap.begin(); k != m_ShipMap.end(); ++k)
+							for(CShipMap::iterator k = m_ShipMap.begin(); k != m_ShipMap.end(); ++k)
 								if (k->second.GetShipType() == SHIP_TYPE::OUTPOST && k->second.GetKO() == pSector->GetKO())
 								{
 									// ebenfalls muss der Au?enposten aus der Shiphistory der aktuellen Schiffe entfernt werden
 									pMajor->GetShipHistory()->RemoveShip(&k->second.Leader());
-									vRemoveableOutposts.push_back(k->second.GetShipName());
+									assert(k != y);
+									m_ShipMap.EraseAt(k);
 									break;
 								}
 							continue;
@@ -4447,20 +4445,6 @@ void CBotf2Doc::CalcShipOrders()
 		if (y->second.IsStation())
 		{
 			pSector->SetShipPort(TRUE, y->second.GetOwnerOfShip());
-		}
-	}
-
-	// jetzt alle durch einen Sternbasisbau verschwundenen Aussenposten aus dem Feld entfernen
-	for (unsigned int i = 0; i < vRemoveableOutposts.size(); i++)
-	{
-		for(CShipMap::iterator y = m_ShipMap.begin(); y != m_ShipMap.end();)
-		{
-			if (vRemoveableOutposts[i] == y->second.GetShipName())
-			{
-				m_ShipMap.EraseAt(y);
-				break;
-			}
-			++y;
 		}
 	}
 }
