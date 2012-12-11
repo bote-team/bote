@@ -15,6 +15,7 @@
 #include "Ships/Ships.h"
 #include "General/ResourceManager.h"
 
+#include <cassert>
 
 // CPlanetBottomView
 
@@ -377,11 +378,6 @@ void CPlanetBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 	// soll müssen wir hier den Planeten anklicken können
 	if (CGalaxyMenuView::IsMoveShip() == TRUE)
 	{
-		short nOldTerraformingPlanet = pDoc->CurrentShip()->second.GetTerraformingPlanet();
-		if (nOldTerraformingPlanet != -1)
-			pDoc->CurrentSector().GetPlanet(nOldTerraformingPlanet)->SetIsTerraforming(FALSE);
-
-		pDoc->CurrentShip()->second.SetTerraformingPlanet(-1);
 		// Haben wir auf einen Planeten geklickt
 		for (UINT i = 0; i < m_vPlanetRects.size(); i++)
 			if (m_vPlanetRects[i].PtInRect(point))
@@ -389,22 +385,24 @@ void CPlanetBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 				// Lange Abfrage hie notwendig, weil bei Kolonisierung brauchen wir nen geterraformten Planeten und
 				// beim Terraforming nen bewohnbaren noch nicht geterraformten Planeten
 				if (pDoc->CurrentSector().GetPlanet(i)->GetTerraformed() == FALSE
-					&& pDoc->CurrentSector().GetPlanet(i)->GetHabitable() == TRUE
-					&& pDoc->CurrentShip()->second.GetCurrentOrder() == SHIP_ORDER::TERRAFORM)
+					&& pDoc->CurrentSector().GetPlanet(i)->GetHabitable() == TRUE)
 				{
 					CGalaxyMenuView::SetMoveShip(FALSE);
 					CShipBottomView::SetShowStation(false);
 					CSmallInfoView::SetDisplayMode(CSmallInfoView::DISPLAY_MODE_SHIP_BOTTEM_VIEW);
 					resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
-					pDoc->CurrentShip()->second.SetTerraformingPlanet(i);
-					pDoc->CurrentSector().GetPlanet(i)->SetIsTerraforming(TRUE);
-					// den Terraformingbefehl zurücknehmen, wenn kein anderes Schiff diesen Planeten mehr terraform
-					if (static_cast<short>(i) != nOldTerraformingPlanet && nOldTerraformingPlanet != -1)
+					const int old_terraformed = pDoc->CurrentShip()->second.GetTerraform();
+					if(old_terraformed != -1)
+						pDoc->CurrentSector().GetPlanet(old_terraformed)->SetIsTerraforming(FALSE);
+					assert(pDoc->CurrentShip()->second.GetKO() == pDoc->GetKO());
+					pDoc->CurrentShip()->second.SetTerraform(i);
+					//reset old planet to being terraformed in case there's at least another ship terraforming it
+					if (static_cast<short>(i) != old_terraformed && old_terraformed != -1)
 					{
 						for(CShipMap::const_iterator y = pDoc->m_ShipMap.begin(); y != pDoc->m_ShipMap.end(); ++y)
-							if (y->second.GetKO() == pDoc->GetKO() && y->second.GetTerraformingPlanet() == nOldTerraformingPlanet)
+							if (y->second.GetKO() == pDoc->GetKO() && y->second.GetTerraform() == old_terraformed)
 							{
-								pDoc->CurrentSector().GetPlanet(nOldTerraformingPlanet)->SetIsTerraforming(TRUE);
+								pDoc->CurrentSector().GetPlanet(old_terraformed)->SetIsTerraforming(TRUE);
 								break;
 							}
 					}

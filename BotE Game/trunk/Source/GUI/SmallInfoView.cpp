@@ -467,10 +467,11 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 			s.Format("%s: %s",CResourceManager::GetString("COMBAT_BEHAVIOR"), pShip->second.GetCombatTacticAsString());
 			g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,190,r.right,50), &fontFormat, &fontBrush);
 			// Name des Planeten ermitteln, welche gerade geterraformt wird
-			if (pShip->second.GetCurrentOrder() == SHIP_ORDER::TERRAFORM && pShip->second.GetTerraformingPlanet() != -1)
+			if (pShip->second.GetCurrentOrder() == SHIP_ORDER::TERRAFORM)
 			{
-				if (static_cast<int>(pDoc->GetSector(pShip->second.GetKO().x, pShip->second.GetKO().y).GetPlanets().size()) > pShip->second.GetTerraformingPlanet())
-					s.Format("%s: %s\n%s",CResourceManager::GetString("ORDER"), pShip->second.GetCurrentOrderAsString(), pDoc->GetSector(pShip->second.GetKO().x, pShip->second.GetKO().y).GetPlanet(pShip->second.GetTerraformingPlanet())->GetPlanetName());
+				assert(pShip->second.GetTerraform() != -1);
+				if (static_cast<int>(pDoc->GetSector(pShip->second.GetKO().x, pShip->second.GetKO().y).GetPlanets().size()) > pShip->second.GetTerraform())
+					s.Format("%s: %s\n%s",CResourceManager::GetString("ORDER"), pShip->second.GetCurrentOrderAsString(), pDoc->GetSector(pShip->second.GetKO().x, pShip->second.GetKO().y).GetPlanet(pShip->second.GetTerraform())->GetPlanetName());
 			}
 			else
 				s.Format("%s: %s",CResourceManager::GetString("ORDER"), pShip->second.GetCurrentOrderAsString());

@@ -904,7 +904,6 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 			if (m_ShipOrders[i].PtInRect(point))
 			{
 				SHIP_ORDER::Typ nOrder = (SHIP_ORDER::Typ)i;
-				short nOldTerraformingPlanet = pDoc->CurrentShip()->second.GetTerraformingPlanet();
 				// Bei manchen Befehlen müssen wir einen möglichen Zielkurs wieder zurücknehmen.
 				if (nOrder != SHIP_ORDER::AVOID && nOrder != SHIP_ORDER::ATTACK && nOrder != SHIP_ORDER::ENCLOAK && nOrder != SHIP_ORDER::DECLOAK && nOrder != SHIP_ORDER::ASSIGN_FLAGSHIP && nOrder != SHIP_ORDER::CREATE_FLEET && nOrder != SHIP_ORDER::TRANSPORT)
 					pDoc->CurrentShip()->second.SetTargetKO(CPoint(-1, -1), 0);
@@ -938,6 +937,9 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 							pDoc->CurrentShip()->second.GetCloak() ? SHIP_ORDER::DECLOAK : SHIP_ORDER::ENCLOAK
 						);
 				}
+				else if (nOrder == SHIP_ORDER::TERRAFORM) {
+					//command is given when clicked on planet
+				}
 				// ansonsten ganz normal den Befehl geben
 				else
 					pDoc->CurrentShip()->second.SetCurrentOrder(nOrder);
@@ -945,7 +947,6 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 				// bei Terraforming wird die Planetenansicht eingeblendet
 				if (nOrder == SHIP_ORDER::TERRAFORM)
 				{
-					pDoc->CurrentShip()->second.SetTerraformingPlanet(nOldTerraformingPlanet);
 					resources::pMainFrame->SelectBottomView(PLANET_BOTTOM_VIEW);
 					resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CPlanetBottomView));
 					CSoundManager::GetInstance()->PlaySound(SNDMGR_MSG_TERRAFORM_SELECT, SNDMGR_PRIO_HIGH, 1.0f, client);

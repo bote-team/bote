@@ -2169,9 +2169,6 @@ CShipMap::iterator CBotf2Doc::BuildShip(int nID, const CPoint& KO, const CString
 	// Spezialforschungsboni dem Schiff hinzufügen
 	AddSpecialResearchBoniToShip(&it->second.Leader(), pMajor);
 
-	it->second.SetTargetKO(CPoint(-1,-1), true);
-	it->second.SetTerraformingPlanet(-1);
-
 	pMajor->GetShipHistory()->AddShip(&it->second.Leader(), GetSector(KO.x, KO.y).GetName(), m_iRound);
 	return it;
 }
@@ -3719,10 +3716,6 @@ void CBotf2Doc::CalcShipOrders()
 			}
 		}
 
-		// wenn der Befehl "Terraform" ist und kein Planet ausgew?hlt ist, dann Befehl wegnehmen
-		if (y->second.GetCurrentOrder() == SHIP_ORDER::TERRAFORM && y->second.GetTerraformingPlanet() == -1)
-			y->second.UnsetCurrentOrder();
-
 		 // Planet soll kolonisiert werden
 		if (y->second.GetCurrentOrder() == SHIP_ORDER::COLONIZE)
 		{
@@ -3734,7 +3727,8 @@ void CBotf2Doc::CalcShipOrders()
 				// Wenn keine Nummer eines Planeten zum Kolonisieren angegeben ist, dann werden alle geterraformten
 				// Planeten kolonisiert. Dazu wird die Bevölkerung, welche bei der Kolonisierung auf das System kommt
 				// auf die einzelnen Planeten gleichmäßig aufgeteilt.
-				if (y->second.GetTerraformingPlanet() == -1)
+				assert(y->second.GetTerraform() == -1);
+				if (y->second.GetTerraform() == -1)
 				{
 					BYTE terraformedPlanets = 0;
 					for (int i = 0; i < pSector->GetNumberOfPlanets(); i++)
@@ -3786,24 +3780,25 @@ void CBotf2Doc::CalcShipOrders()
 					else
 					{
 						y->second.SetCurrentOrder(SHIP_ORDER::AVOID);
-						y->second.SetTerraformingPlanet(-1);
+						y->second.SetTerraform(-1);
 						continue;
 					}
 				}
 				else
 				{
-					if (pSector->GetPlanet(y->second.GetTerraformingPlanet())->GetColonized() == FALSE
-						&& pSector->GetPlanet(y->second.GetTerraformingPlanet())->GetTerraformed() == TRUE)
+					assert(false);
+					if (pSector->GetPlanet(y->second.GetTerraform())->GetColonized() == FALSE
+						&& pSector->GetPlanet(y->second.GetTerraform())->GetTerraformed() == TRUE)
 					{
-						if (startHabitants > pSector->GetPlanet(y->second.GetTerraformingPlanet())->GetMaxHabitant())
-							startHabitants = pSector->GetPlanet(y->second.GetTerraformingPlanet())->GetMaxHabitant();
-						pSector->GetPlanet(y->second.GetTerraformingPlanet())->SetCurrentHabitant(startHabitants);
-						pSector->GetPlanet(y->second.GetTerraformingPlanet())->SetColonisized(TRUE);
+						if (startHabitants > pSector->GetPlanet(y->second.GetTerraform())->GetMaxHabitant())
+							startHabitants = pSector->GetPlanet(y->second.GetTerraform())->GetMaxHabitant();
+						pSector->GetPlanet(y->second.GetTerraform())->SetCurrentHabitant(startHabitants);
+						pSector->GetPlanet(y->second.GetTerraform())->SetColonisized(TRUE);
 					}
 					else
 					{
 						y->second.SetCurrentOrder(SHIP_ORDER::AVOID);
-						y->second.SetTerraformingPlanet(-1);
+						y->second.SetTerraform(-1);
 						continue;
 					}
 				}
@@ -3864,7 +3859,7 @@ void CBotf2Doc::CalcShipOrders()
 					m_iRound);
 				// Schiff entfernen
 				y->second.SetCurrentOrder(SHIP_ORDER::AVOID);
-				y->second.SetTerraformingPlanet(-1);
+				y->second.SetTerraform(-1);
 				RemoveShip(y);
 				increment = false;
 				continue;
@@ -3872,23 +3867,24 @@ void CBotf2Doc::CalcShipOrders()
 			else
 			{
 				y->second.SetCurrentOrder(SHIP_ORDER::AVOID);
-				y->second.SetTerraformingPlanet(-1);
+				y->second.SetTerraform(-1);
 			}
 		}
 		// hier wird ein Planet geterraformed
-		else if (y->second.GetCurrentOrder() == SHIP_ORDER::TERRAFORM && y->second.GetTerraformingPlanet() != -1)	// Planet soll terraformed werden
+		else if (y->second.GetCurrentOrder() == SHIP_ORDER::TERRAFORM)
 		{
+			assert(y->second.GetTerraform() != -1);
 			CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(y->second.GetOwnerOfShip()));
 			ASSERT(pMajor);
 			network::RACE client = m_pRaceCtrl->GetMappedClientID(pMajor->GetRaceID());
 
-			if (pSector->GetPlanet(y->second.GetTerraformingPlanet())->GetTerraformed() == FALSE)
+			if (pSector->GetPlanet(y->second.GetTerraform())->GetTerraformed() == FALSE)
 			{
-				if (pSector->GetPlanet(y->second.GetTerraformingPlanet())->SetNeededTerraformPoints(y->second.GetColonizePoints()))
+				if (pSector->GetPlanet(y->second.GetTerraform())->SetNeededTerraformPoints(y->second.GetColonizePoints()))
 				{
 					// Hier wurde ein Planet erfolgreich geterraformt
 					y->second.SetCurrentOrder(SHIP_ORDER::AVOID);
-					y->second.SetTerraformingPlanet(-1);
+					y->second.SetTerraform(-1);
 					// Nachricht generieren, dass Terraforming abgeschlossen wurde
 					CString s = CResourceManager::GetString("TERRAFORMING_FINISHED",FALSE,pSector->GetName());
 					CMessage message;
@@ -3911,24 +3907,23 @@ void CBotf2Doc::CalcShipOrders()
 			}
 			else	// wenn der Plani aus irgendeinen Grund schon geterraformed ist
 			{
-				y->second.SetCurrentOrder(SHIP_ORDER::AVOID);
-				y->second.SetTerraformingPlanet(-1);
+				y->second.SetTerraform(-1);
 			}
 			// Wenn das Schiff eine Flotte anf?hrt, dann k?nnen auch die Schiffe in der Flotte ihre Terraformpunkte mit
 			// einbringen
-			if (y->second.HasFleet() && y->second.GetTerraformingPlanet() != -1)
+			if (y->second.HasFleet() && y->second.GetTerraform() != -1)
 			{
 				unsigned colonize_points_sum = y->second.GetColonizePoints();
 				for (CShips::const_iterator x = y->second.begin(); x != y->second.end(); ++x)
 				{
-					if (pSector->GetPlanet(y->second.GetTerraformingPlanet())->GetTerraformed() == FALSE)
+					if (pSector->GetPlanet(y->second.GetTerraform())->GetTerraformed() == FALSE)
 					{
 						const unsigned colonize_points = x->second.GetColonizePoints();
 						colonize_points_sum += colonize_points;
-						if (pSector->GetPlanet(x->second.GetTerraformingPlanet())->SetNeededTerraformPoints(colonize_points))
+						if (pSector->GetPlanet(x->second.GetTerraform())->SetNeededTerraformPoints(colonize_points))
 						{
 							y->second.SetCurrentOrder(SHIP_ORDER::AVOID);
-							y->second.SetTerraformingPlanet(-1);
+							y->second.SetTerraform(-1);
 							// Nachricht generieren, dass Terraforming abgeschlossen wurde
 							CString s = CResourceManager::GetString("TERRAFORMING_FINISHED",FALSE,pSector->GetName());
 							CMessage message;
@@ -3953,14 +3948,14 @@ void CBotf2Doc::CalcShipOrders()
 					else	// wenn der Plani aus irgendeinen Grund schon geterraformed ist
 					{
 						y->second.SetCurrentOrder(SHIP_ORDER::AVOID);
-						y->second.SetTerraformingPlanet(-1);
+						y->second.SetTerraform(-1);
 						break;
 					}
 				}//for (CShips::const_iterator x = y->second.begin(); x != y->second.end(); ++x)
 				//Gib eine Warnung aus falls Kolonisierungspunkte verschwendet werden würden.
 				//Es ist hoffentlich nicht möglich, dass ein Schiff einer Schiffsgruppe einen anderen Planeten
 				//terraformt als das die Gruppe anführende Schiff...
-				const unsigned terraforming_planet = y->second.GetTerraformingPlanet();
+				const unsigned terraforming_planet = y->second.GetTerraform();
 				if (terraforming_planet != -1)//wird immernoch geterraformt ?
 				{
 					const unsigned needed_terraform_points = pSector->GetPlanet(terraforming_planet)->GetNeededTerraformPoints();
@@ -4482,12 +4477,9 @@ void CBotf2Doc::CalcShipMovement()
 		// Prüfen, dass ein Terraformbefehl noch gültig ist
 		if (y->second.GetCurrentOrder() == SHIP_ORDER::TERRAFORM)
 		{
-			CPoint p = y->second.GetKO();
-			if (GetSector(y->second.GetKO().x, y->second.GetKO().y).GetPlanet(y->second.GetTerraformingPlanet())->GetTerraformed() == TRUE)
-			{
-				y->second.SetCurrentOrder(SHIP_ORDER::AVOID);
-				y->second.SetTerraformingPlanet(-1);
-			}
+			const CPoint& p = y->second.GetKO();
+			if (GetSector(p.x, p.y).GetPlanet(y->second.GetTerraform())->GetTerraformed())
+				y->second.SetTerraform(-1);
 		}
 		// Prüfen, dass ein Aussenpostenbaubefehl noch gültig ist
 		else if (y->second.GetCurrentOrder() == SHIP_ORDER::BUILD_OUTPOST)
@@ -4903,7 +4895,7 @@ void CBotf2Doc::CalcShipCombat()
 			i->second.SetCurrentOrderAccordingToType();
 
 			// womögicher Terraformplanet oder Stationsbau zurücknehmen
-			i->second.SetTerraformingPlanet(-1);
+			i->second.SetTerraform(-1);
 		}
 	}
 }
@@ -5629,7 +5621,7 @@ void CBotf2Doc::CalcAlienShipEffects()
 						pShip->SetShipType(SHIP_TYPE::ALIEN);
 						pShip->SetTargetKO(CPoint(-1, -1));
 						pShip->SetCurrentOrder(SHIP_ORDER::ATTACK);
-						pShip->SetTerraformingPlanet(-1);
+						pShip->SetTerraform(-1);
 						pShip->SetIsShipFlagShip(FALSE);
 
 						CMajor* pShipOwner = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(pShip->GetOwnerOfShip()));

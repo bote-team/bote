@@ -95,7 +95,7 @@ void CShipAI::CalculateShipOrders(CSectorAI* SectorAI)
 				if (m_pDoc->GetSector(ptKO.x, ptKO.y).GetOwnerOfSector() != "" && m_pDoc->GetSector(ptKO.x, ptKO.y).GetOwnerOfSector() != sOwner)
 				{
 					// Terraforming abbrechen
-					i->second.SetTerraformingPlanet(-1);
+					i->second.SetTerraform(-1);
 					i->second.SetCurrentOrder(SHIP_ORDER::AVOID);
 				}
 			}
@@ -269,8 +269,8 @@ bool CShipAI::DoTerraform(CShips* pShip)
 	{
 		// Hier muss als erstes ein möglicher neuer Kurs gelöscht werden
 		pShip->SetTargetKO(CPoint(-1, -1));
-		pShip->SetTerraformingPlanet(nPlanet);
-		pShip->SetCurrentOrder(SHIP_ORDER::TERRAFORM);
+		pShip->SetTerraform(nPlanet);
+
 		return true;
 	}
 

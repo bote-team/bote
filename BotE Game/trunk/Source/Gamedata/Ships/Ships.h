@@ -131,7 +131,7 @@ public:
 		BYTE GetColonizePoints() const {return m_Leader.GetColonizePoints(); }
 		BYTE GetStationBuildPoints() const {return m_Leader.GetStationBuildPoints(); }
 		SHIP_ORDER::Typ GetCurrentOrder() const {return m_Leader.GetCurrentOrder(); }
-		short GetTerraformingPlanet() const {return m_Leader.GetTerraformingPlanet(); }
+		short GetTerraform() const {return m_Leader.GetTerraform(); }
 		const CString& GetShipName() const {return m_Leader.GetShipName(); }
 		const CString& GetShipClass() const {return m_Leader.GetShipClass(); }
 		const CString& GetShipDescription() const {return m_Leader.GetShipDescription(); }
@@ -200,7 +200,7 @@ public:
 		void SetStationBuildPoints(BYTE StationBuildPoints) { m_Leader.SetStationBuildPoints(StationBuildPoints); }
 		void SetCurrentOrder(SHIP_ORDER::Typ nCurrentOrder);
 		void SetSpecial(int n, SHIP_SPECIAL::Typ nAbility) { m_Leader.SetSpecial(n, nAbility); }
-		void SetTerraformingPlanet(short planetNumber);
+		void SetTerraform(short planetNumber = -1);
 		void SetShipName(const CString& ShipName) { m_Leader.SetShipName(ShipName); }
 		void SetShipDescription(const CString& ShipDescription) { m_Leader.SetShipDescription(ShipDescription); }
 		void SetShipClass(const CString& ShipClass) { m_Leader.SetShipClass(ShipClass); }

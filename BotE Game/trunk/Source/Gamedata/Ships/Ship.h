@@ -100,7 +100,7 @@ public:
 	BYTE GetColonizePoints() const {return m_iColonizePoints;}
 	BYTE GetStationBuildPoints() const {return m_iStationBuildPoints;}
 	SHIP_ORDER::Typ GetCurrentOrder() const {return m_iCurrentOrder;}
-	short GetTerraformingPlanet() const {return m_nTerraformingPlanet;}
+	short GetTerraform() const {return m_nTerraformingPlanet;}
 	const CString& GetShipName() const {return m_strShipName;}
 	const CString& GetShipClass() const {return m_strShipClass;}
 	const CString& GetShipDescription() const {return m_strShipDescription;}
@@ -138,9 +138,9 @@ public:
 	void SetLoadedResources(USHORT add, BYTE res) {m_iLoadedResources[res] += add;}
 	void SetColonizePoints(BYTE ColonizePoints) {m_iColonizePoints = ColonizePoints;}
 	void SetStationBuildPoints(BYTE StationBuildPoints) {m_iStationBuildPoints = StationBuildPoints;}
-	void SetCurrentOrder(SHIP_ORDER::Typ nCurrentOrder) {m_iCurrentOrder = nCurrentOrder;}
+	void SetCurrentOrder(SHIP_ORDER::Typ nCurrentOrder);
 	void SetSpecial(int n, SHIP_SPECIAL::Typ nAbility) {m_nSpecial[n] = nAbility;}
-	void SetTerraformingPlanet(short planetNumber) {m_nTerraformingPlanet = planetNumber;}
+	void SetTerraform(short planetNumber = -1);
 	void SetShipName(const CString& ShipName) {m_strShipName = ShipName;}
 	void SetShipDescription(const CString& ShipDescription) {m_strShipDescription = ShipDescription;}
 	void SetShipClass(const CString& ShipClass) {m_strShipClass = ShipClass;}
@@ -329,7 +329,7 @@ private:
 	CPoint m_TargetKO;					// Der Zielkurs des Schiffes
 	CArray<Sector> m_Path;				// Der Kurs des Schiffes zum Ziel
 	bool m_bCloakOn;					// ist die Tarnung eingeschaltet
-	short m_nTerraformingPlanet;		// Nummer des Planeten der kolonisiert werden soll
+	short m_nTerraformingPlanet;		// Nummer des Planeten der terraformt wird
 	bool m_bIsFlagShip;					// Ist dieses Schiff ein Flagschiff (es kann immer nur ein Schiff eines Imperiums Flagschiff sein)
 	USHORT m_iCrewExperiance;			// Crewerfahrung des Schiffes
 	// Laderaum

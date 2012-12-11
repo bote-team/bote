@@ -414,13 +414,14 @@ bool CShip::GetCloak() const {
 void CShip::AdoptOrdersFrom(const CShip& ship)
 {
 	SHIP_ORDER::Typ order = ship.GetCurrentOrder();
+	//den Terraformingplaneten neu setzen
+	if(order == SHIP_ORDER::TERRAFORM && CanHaveOrder(SHIP_ORDER::TERRAFORM, false))
+		SetTerraform(ship.m_nTerraformingPlanet);
 	if(CanTakeOverOrder(order))
 		m_iCurrentOrder = order;
 	m_nCombatTactic = ship.GetCombatTactic();
 	m_KO = ship.GetKO();
 	m_TargetKO = ship.GetTargetKO();
-	//den Terraformingplaneten neu setzen
-	m_nTerraformingPlanet = ship.GetTerraformingPlanet();
 }
 
 void CShip::SetCrewExperiance(int nAdd)
@@ -516,13 +517,20 @@ void CShip::SetTargetKO(const CPoint& TargetKO, const bool simple_setter)
 	if(simple_setter)
 		return;
 	if(TargetKO != CPoint(-1, -1) && ShouldUnsetOrder(m_iCurrentOrder)) {
+		SetTerraform(-1);
 		UnsetCurrentOrder();
-		m_nTerraformingPlanet = -1;
 	}
 }
 
 void CShip::SetCurrentOrderAccordingToType() {
 	m_iCurrentOrder = IsNonCombat() ? SHIP_ORDER::AVOID : SHIP_ORDER::ATTACK;
+}
+
+void CShip::SetCurrentOrder(SHIP_ORDER::Typ nCurrentOrder) {
+	assert(nCurrentOrder != SHIP_ORDER::TERRAFORM);
+	if(m_iCurrentOrder == SHIP_ORDER::TERRAFORM)
+		SetTerraform(-1);
+	m_iCurrentOrder = nCurrentOrder;
 }
 
 void CShip::SetCombatTacticAccordingToType() {
@@ -563,6 +571,25 @@ bool CShip::RemoveDestroyed(CRace& owner, unsigned short round, const CString& s
 	}
 
 	return false;
+}
+
+void CShip::SetTerraform(short planetNumber) {
+	if(planetNumber == -1) {
+		if(m_iCurrentOrder == SHIP_ORDER::TERRAFORM)
+		{
+			assert(m_nTerraformingPlanet != -1);
+			resources::pDoc->GetSector(m_KO.x, m_KO.y).GetPlanet(m_nTerraformingPlanet)->SetIsTerraforming(false);
+			UnsetCurrentOrder();
+		}
+	}
+	else
+	{
+		if(m_iCurrentOrder == SHIP_ORDER::TERRAFORM)
+			resources::pDoc->GetSector(m_KO.x, m_KO.y).GetPlanet(m_nTerraformingPlanet)->SetIsTerraforming(false);
+		m_iCurrentOrder = SHIP_ORDER::TERRAFORM;
+		resources::pDoc->GetSector(m_KO.x, m_KO.y).GetPlanet(planetNumber)->SetIsTerraforming(true);
+	}
+	m_nTerraformingPlanet = planetNumber;
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -1160,7 +1187,7 @@ void CShip::DrawOrderTerraform(Gdiplus::Graphics* g, CGraphicPool* pGraphicPool,
 
 	if (pDoc->m_bDataReceived) {
 		CSector sec = pDoc->GetSector(GetKO().x, GetKO().y);
-		CString s = sec.GetPlanet(GetTerraformingPlanet())->GetPlanetGraphicFile();
+		CString s = sec.GetPlanet(GetTerraform())->GetPlanetGraphicFile();
 		Bitmap* graphic = pGraphicPool->GetGDIGraphic(s);
 
 		// Planeten zeichnen, der gerade terraformt wird
@@ -1360,7 +1387,7 @@ void CShip::Retreat(const CPoint& ptRetreatSector)
 	// Rückzugsbefehl zurücknehmen
 	SetCombatTacticAccordingToType();
 	// womögicher Terraformplanet oder Stationsbau zurücknehmen
-	m_nTerraformingPlanet = -1;
+	SetTerraform(-1);
 }
 
 //most of the stuff from CalcShipEffects() for either a ship from the shiparray or a ship of its fleet
@@ -1396,14 +1423,13 @@ void CShip::CalcEffectsForSingleShip(CSector& sector, CRace* pRace,
 			sector.SetIsStationBuilding(TRUE, sRace);
 		// Wenn das Schiff gerade Terraform, so dies dem Planeten mitteilen
 		else if (current_order == SHIP_ORDER::TERRAFORM) {
-			const short nPlanet = GetTerraformingPlanet();
+			const short nPlanet = GetTerraform();
 			std::vector<CPlanet>& planets = sector.GetPlanets();
-			if (nPlanet != -1 && nPlanet < static_cast<int>(planets.size()))
+			assert(-1 <= nPlanet && nPlanet < static_cast<int>(planets.size()));
+			if (nPlanet != -1)
 				planets.at(nPlanet).SetIsTerraforming(TRUE);
-			else {
-				SetTerraformingPlanet(-1);
-				SetCurrentOrder(SHIP_ORDER::AVOID);
-			}
+			else
+				SetTerraform(-1);
 		}
 	}
 	if (major) {

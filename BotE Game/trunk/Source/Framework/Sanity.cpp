@@ -58,14 +58,15 @@ static void SanityCheckShip(const CShip& ship)
 	CheckShipTargetCoordinates(ship);
 
 	const CPoint& co = ship.GetKO();
-	if(ship.GetTerraformingPlanet() != -1 && ship.GetCurrentOrder() != SHIP_ORDER::TERRAFORM)
+	if(ship.GetTerraform() != -1 && ship.GetCurrentOrder() != SHIP_ORDER::TERRAFORM
+		|| ship.GetTerraform() == -1 && ship.GetCurrentOrder() == SHIP_ORDER::TERRAFORM)
 	{
 		CString s;
 		s.Format("The %s from %s at (%u, %u) has m_nTerraformingPlanet %i set but current order is %s.",
 			ship.GetShipName(),
 			ship.GetOwnerOfShip(),
 			co.x, co.y,
-			ship.GetTerraformingPlanet(),
+			ship.GetTerraform(),
 			ship.GetCurrentOrderAsString());
 		Notify(s);
 	}
