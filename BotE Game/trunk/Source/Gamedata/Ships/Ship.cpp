@@ -810,8 +810,17 @@ bool CShip::IsVeteran() const {
 	return GetExpLevel() >= 4;
 }
 
+static bool CheckNew(SHIP_ORDER::Typ order, SHIP_ORDER::Typ co, COMBAT_TACTIC::Typ ct) {
+	if(order == SHIP_ORDER::AVOID)
+		return co != SHIP_ORDER::AVOID && ct != COMBAT_TACTIC::CT_AVOID;
+	else if (order == SHIP_ORDER::ATTACK) {
+		return co != SHIP_ORDER::ATTACK && ct != COMBAT_TACTIC::CT_ATTACK;
+	}
+	return co != order;
+}
+
 bool CShip::CanHaveOrder(SHIP_ORDER::Typ order, bool require_new) const {
-	if(require_new && m_iCurrentOrder == order)
+	if(require_new && !CheckNew(order, m_iCurrentOrder, m_nCombatTactic))
 		return false;
 	switch(order) {
 		case SHIP_ORDER::AVOID:
