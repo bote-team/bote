@@ -343,30 +343,26 @@ void CShipBottomView::DrawTransportshipOrders(short &counter) {
 		{
 			// Hier überprüfen, ob ich einen Außenposten technologisch überhaupt bauen kann
 			for (int l = 0; l < m_dc.pDoc->m_ShipInfoArray.GetSize(); l++)
-				if (m_dc.pDoc->m_ShipInfoArray.GetAt(l).GetRace() == pMajor->GetRaceShipNumber()
-					&& m_dc.pDoc->m_ShipInfoArray.GetAt(l).GetShipType() == SHIP_TYPE::OUTPOST
-					&& m_dc.pDoc->m_ShipInfoArray.GetAt(l).IsThisShipBuildableNow(m_dc.researchLevels))
-					{
-						// Wenn ja dann Schaltfläche zum Außenpostenbau einblenden
-						DrawSmallButton("BTN_BUILD_OUTPOST",CPoint(r.right-245, r.top+140-counter*35),SHIP_ORDER::BUILD_OUTPOST);
-						counter++;
-						break;
-					}
+				if(pMajor->CanBuildShip(SHIP_TYPE::OUTPOST, m_dc.researchLevels, m_dc.pDoc->m_ShipInfoArray.GetAt(l)))
+				{
+					// Wenn ja dann Schaltfläche zum Außenpostenbau einblenden
+					DrawSmallButton("BTN_BUILD_OUTPOST",CPoint(r.right-245, r.top+140-counter*35),SHIP_ORDER::BUILD_OUTPOST);
+					counter++;
+					break;
+				}
 		}
 		// Wenn hier schon ein Außenposten steht, können wir vielleicht auch eine Sternbasis bauen
 		else if (csec.IsStationBuildable(SHIP_TYPE::STARBASE, pShip.GetOwnerOfShip()))
 		{
 			// Hier überprüfen, ob ich eine Sternbasis technologisch überhaupt bauen kann
 			for (int l = 0; l < m_dc.pDoc->m_ShipInfoArray.GetSize(); l++)
-				if (m_dc.pDoc->m_ShipInfoArray.GetAt(l).GetRace() == pMajor->GetRaceShipNumber()
-					&& m_dc.pDoc->m_ShipInfoArray.GetAt(l).GetShipType() == SHIP_TYPE::STARBASE
-					&& m_dc.pDoc->m_ShipInfoArray.GetAt(l).IsThisShipBuildableNow(m_dc.researchLevels))
-					{
-						// Wenn ja dann Schaltfläche zum Sternenbasisbau einblenden
-						DrawSmallButton("BTN_BUILD_STARBASE",CPoint(r.right-245, r.top+140-counter*35),SHIP_ORDER::BUILD_STARBASE);
-						counter++;
-						break;
-					}
+				if(pMajor->CanBuildShip(SHIP_TYPE::STARBASE, m_dc.researchLevels, m_dc.pDoc->m_ShipInfoArray.GetAt(l)))
+				{
+					// Wenn ja dann Schaltfläche zum Sternenbasisbau einblenden
+					DrawSmallButton("BTN_BUILD_STARBASE",CPoint(r.right-245, r.top+140-counter*35),SHIP_ORDER::BUILD_STARBASE);
+					counter++;
+					break;
+				}
 		}
 	}
 	// Transport

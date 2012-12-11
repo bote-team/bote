@@ -487,7 +487,7 @@ int CSystemAI::ChooseShip(int prio, BOOLEAN chooseCombatship, BOOLEAN chooseColo
 		return 0;
 
 	const CResearch& research = *dynamic_cast<CMajor*>(pRace)->GetEmpire()->GetResearch();
-	BYTE researchLevels[6] =
+	const BYTE researchLevels[6] =
 	{
 
 		research.GetBioTech(),
@@ -504,9 +504,8 @@ int CSystemAI::ChooseShip(int prio, BOOLEAN chooseCombatship, BOOLEAN chooseColo
 		// ID des Schiffes suchen
 		for (int j = 0; j < m_pDoc->m_ShipInfoArray.GetSize(); j++)
 			// passt die Schiffsnummer zur Rassennummer
-			if (m_pDoc->m_ShipInfoArray.GetAt(j).GetRace() == pRace->GetRaceShipNumber()
-				&& m_pDoc->m_ShipInfoArray.GetAt(j).GetShipType() == SHIP_TYPE::COLONYSHIP
-				&& m_pDoc->m_ShipInfoArray.GetAt(j).IsThisShipBuildableNow(researchLevels))
+			if(dynamic_cast<CMajor*>(pRace)->CanBuildShip(SHIP_TYPE::COLONYSHIP,
+				researchLevels, m_pDoc->m_ShipInfoArray.GetAt(j)))
 			{
 				int id = m_pDoc->m_ShipInfoArray.GetAt(j).GetID();
 				for (int i = 0; i < m_pDoc->GetSystem(ko.x, ko.y).GetBuildableShips()->GetSize(); i++)
@@ -525,9 +524,8 @@ int CSystemAI::ChooseShip(int prio, BOOLEAN chooseCombatship, BOOLEAN chooseColo
 		// ID des Schiffes suchen
 		for (int j = 0; j < m_pDoc->m_ShipInfoArray.GetSize(); j++)
 			// passt die Schiffsnummer zur Rassennummer
-			if (m_pDoc->m_ShipInfoArray.GetAt(j).GetRace() == pRace->GetRaceShipNumber()
-				&& m_pDoc->m_ShipInfoArray.GetAt(j).GetShipType() == SHIP_TYPE::TRANSPORTER
-				&& m_pDoc->m_ShipInfoArray.GetAt(j).IsThisShipBuildableNow(researchLevels))
+			if(dynamic_cast<CMajor*>(pRace)->CanBuildShip(SHIP_TYPE::TRANSPORTER,
+				researchLevels, m_pDoc->m_ShipInfoArray.GetAt(j)))
 			{
 				int id = m_pDoc->m_ShipInfoArray.GetAt(j).GetID();
 				for (int i = 0; i < m_pDoc->GetSystem(ko.x, ko.y).GetBuildableShips()->GetSize(); i++)

@@ -83,6 +83,13 @@ public:
 	//if yes, let the ai us play
 	bool AHumanPlays() const;
 
+	bool CanBuildShip(SHIP_TYPE::Typ type,const BYTE researchLevels[6], const CShipInfo& info) const;
+
+	//returns the ID of the ship in the shipinfoarray, which matches the given type and which
+	//this major can build according to its current tech levels
+	//@return -1 if none found
+	short BestBuildableVariant(SHIP_TYPE::Typ type, const CArray<CShipInfo, CShipInfo>& shipinfoarray) const;
+
 	/// Funktion legt fest, ob die Rasse von einem menschlichen Spieler oder vom Computer gespielt wird.
 	/// @param bHumanPlaner ja/nein
 	void SetHumanPlayer(bool bHumanPlayer) {m_bPlayer = bHumanPlayer;}

@@ -3993,27 +3993,7 @@ void CBotf2Doc::CalcShipOrders()
 			// Wenn wir in dem Sektor noch keinen Au?enposten und noch keine Sternbasis stehen haben
 			if (pSector->GetOutpost(y->second.GetOwnerOfShip()) == FALSE
 				&& pSector->GetStarbase(y->second.GetOwnerOfShip()) == FALSE)
-			{
-				USHORT costs = 0;
-				const BYTE researchLevels[6] =
-				{
-					pMajor->GetEmpire()->GetResearch()->GetBioTech(),
-					pMajor->GetEmpire()->GetResearch()->GetEnergyTech(),
-					pMajor->GetEmpire()->GetResearch()->GetCompTech(),
-					pMajor->GetEmpire()->GetResearch()->GetPropulsionTech(),
-					pMajor->GetEmpire()->GetResearch()->GetConstructionTech(),
-					pMajor->GetEmpire()->GetResearch()->GetWeaponTech()
-				};
-				for (int l = 0; l < m_ShipInfoArray.GetSize(); l++)
-					if (m_ShipInfoArray.GetAt(l).GetRace() == pMajor->GetRaceShipNumber()
-						&& m_ShipInfoArray.GetAt(l).GetShipType() == SHIP_TYPE::OUTPOST
-						&& m_ShipInfoArray.GetAt(l).GetBaseIndustry() > costs
-						&& m_ShipInfoArray.GetAt(l).IsThisShipBuildableNow(researchLevels))
-						{
-							costs = m_ShipInfoArray.GetAt(l).GetBaseIndustry();
-							id = m_ShipInfoArray.GetAt(l).GetID();
-						}
-			}
+					id = pMajor->BestBuildableVariant(SHIP_TYPE::OUTPOST, m_ShipInfoArray);
 			// Wenn wir eine baubare Station gefunden haben und in dem Sektor nicht gerade eine andere (durch andere Rasse)
 			// Station fertig wurde, k?nnen wir diese dort auch errichten
 			if (id != -1)
@@ -4137,27 +4117,7 @@ void CBotf2Doc::CalcShipOrders()
 			short id = -1;
 			if (pSector->GetOutpost(y->second.GetOwnerOfShip()) == TRUE
 				&& pSector->GetStarbase(y->second.GetOwnerOfShip()) == FALSE)
-			{
-				USHORT costs = 0;
-				const BYTE researchLevels[6] =
-				{
-					pMajor->GetEmpire()->GetResearch()->GetBioTech(),
-					pMajor->GetEmpire()->GetResearch()->GetEnergyTech(),
-					pMajor->GetEmpire()->GetResearch()->GetCompTech(),
-					pMajor->GetEmpire()->GetResearch()->GetPropulsionTech(),
-					pMajor->GetEmpire()->GetResearch()->GetConstructionTech(),
-					pMajor->GetEmpire()->GetResearch()->GetWeaponTech()
-				};
-				for (int l = 0; l < m_ShipInfoArray.GetSize(); l++)
-					if (m_ShipInfoArray.GetAt(l).GetRace() == pMajor->GetRaceShipNumber()
-						&& m_ShipInfoArray.GetAt(l).GetShipType() == SHIP_TYPE::STARBASE
-						&& m_ShipInfoArray.GetAt(l).GetBaseIndustry() > costs
-						&& m_ShipInfoArray.GetAt(l).IsThisShipBuildableNow(researchLevels))
-						{
-							costs = m_ShipInfoArray.GetAt(l).GetBaseIndustry();
-							id = m_ShipInfoArray.GetAt(l).GetID();
-						}
-			}
+					id = pMajor->BestBuildableVariant(SHIP_TYPE::STARBASE, m_ShipInfoArray);
 			// Wenn wir eine baubare Station gefunden haben und in dem Sektor nicht gerade eine andere (durch andere Rasse)
 			// Station fertig wurde, können wir diese dort auch errichten
 			if (id != -1)

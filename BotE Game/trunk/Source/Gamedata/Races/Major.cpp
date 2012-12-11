@@ -528,3 +528,34 @@ void CMajor::LostShipToAnomaly(const CShip& ship, const CString& anomaly)
 		doc.m_iSelectedView[client] = EMPIRE_VIEW;
 	}
 }
+
+bool CMajor::CanBuildShip(SHIP_TYPE::Typ type,const BYTE researchLevels[6], const CShipInfo& info) const {
+	return info.GetRace() == GetRaceShipNumber()
+		&& info.GetShipType() == type && info.IsThisShipBuildableNow(researchLevels);
+}
+
+short CMajor::BestBuildableVariant(SHIP_TYPE::Typ type, const CArray<CShipInfo, CShipInfo>& shipinfoarray) const
+{
+	short id = -1;
+	USHORT costs = 0;
+	const CResearch& rs = *m_Empire.GetResearch();
+	const BYTE researchLevels[6] =
+	{
+		rs.GetBioTech(),
+		rs.GetEnergyTech(),
+		rs.GetCompTech(),
+		rs.GetPropulsionTech(),
+		rs.GetConstructionTech(),
+		rs.GetWeaponTech()
+	};
+	for (int l = 0; l < shipinfoarray.GetSize(); l++)
+	{
+		const CShipInfo& info = shipinfoarray.GetAt(l);
+		if (CanBuildShip(type, researchLevels, info) && info.GetBaseIndustry() > costs)
+			{
+				costs = info.GetBaseIndustry();
+				id = info.GetID();
+			}
+	}
+	return id;
+}

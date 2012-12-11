@@ -93,6 +93,7 @@ public:
 
 	/// Funktion gibt einen Zeiger auf das Forschungsobjekt des Imperiums zurück.
 	CResearch* GetResearch(void) {return &m_Research;}
+	const CResearch* GetResearch(void) const {return &m_Research;}
 
 	/// Funktion gibt einen Zeiger auf das Geheimdienstobjekt des Imperiums zurück.
 	CIntelligence* GetIntelligence(void) {return &m_Intelligence;}
