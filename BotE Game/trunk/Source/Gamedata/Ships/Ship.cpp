@@ -811,10 +811,15 @@ bool CShip::IsVeteran() const {
 }
 
 static bool CheckNew(SHIP_ORDER::Typ order, SHIP_ORDER::Typ co, COMBAT_TACTIC::Typ ct) {
-	if(order == SHIP_ORDER::AVOID)
-		return co != SHIP_ORDER::AVOID && ct != COMBAT_TACTIC::CT_AVOID;
+	if(order == SHIP_ORDER::AVOID) {
+		if(co == SHIP_ORDER::ATTACK)
+			return true;
+		return ct != COMBAT_TACTIC::CT_AVOID;
+	}
 	else if (order == SHIP_ORDER::ATTACK) {
-		return co != SHIP_ORDER::ATTACK && ct != COMBAT_TACTIC::CT_ATTACK;
+		if(co == SHIP_ORDER::AVOID)
+			return true;
+		return ct != COMBAT_TACTIC::CT_ATTACK;
 	}
 	return co != order;
 }
