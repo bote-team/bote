@@ -3916,6 +3916,11 @@ void CBotf2Doc::CalcShipOrders()
 				unsigned colonize_points_sum = y->second.GetColonizePoints();
 				for (CShips::const_iterator x = y->second.begin(); x != y->second.end(); ++x)
 				{
+					//if a ship in a fleet isn't able to take over this command, it should have terraforming_planet=-1
+					if(x->second.GetCurrentOrder() != SHIP_ORDER::TERRAFORM) {
+						assert(x->second.GetTerraform() == -1);
+						continue;
+					}
 					if (pSector->GetPlanet(y->second.GetTerraform())->GetTerraformed() == FALSE)
 					{
 						const unsigned colonize_points = x->second.GetColonizePoints();
