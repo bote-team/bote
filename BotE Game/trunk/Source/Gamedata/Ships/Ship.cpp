@@ -1465,8 +1465,10 @@ bool CShip::SanityCheckOrdersConsistency(const CShip& with) const {
 	if(CanTakeOverOrder(with.m_iCurrentOrder))
 		if(m_iCurrentOrder != with.m_iCurrentOrder)
 			return false;
+	if(with.m_iCurrentOrder == SHIP_ORDER::TERRAFORM && CanHaveOrder(SHIP_ORDER::TERRAFORM, true))
+		if(m_nTerraformingPlanet != with.m_nTerraformingPlanet)
+			return false;
 	return m_nCombatTactic == with.m_nCombatTactic
 		&& m_KO == with.m_KO
-		&& m_TargetKO == with.m_TargetKO
-		&& m_nTerraformingPlanet == with.m_nTerraformingPlanet;
+		&& m_TargetKO == with.m_TargetKO;
 }
