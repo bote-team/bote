@@ -82,7 +82,13 @@ private:
 	CRect m_ShipOrders[SHIP_ORDER::REPAIR + 1];			///< die ganzen Rechtecke für die Schiffsbefehlsbuttons
 	CRect m_MainShipOrders[3];					///< die 3 Hauptbuttons für die Schiffsbefehle
 	short m_iTimeCounter;
-	short m_iWhichMainShipOrderButton;			///< welchen Hauptschiffsbefehlsbutton haben wir gedrückt
+	enum MAIN_BUTTON {
+		MAIN_BUTTON_NONE,
+		MAIN_BUTTON_TACTICS,
+		MAIN_BUTTON_ORDERS,
+		MAIN_BUTTON_ACTIONS
+	};
+	MAIN_BUTTON m_iWhichMainShipOrderButton;			///< welchen Hauptschiffsbefehlsbutton haben wir gedrückt
 	static BOOLEAN m_bShowStation;
 
 	vector<pair<CRect, CShips*> > m_vShipRects;	///< alle angezeigten Schiffe mit ihren Rechtecken zu draufklicken
