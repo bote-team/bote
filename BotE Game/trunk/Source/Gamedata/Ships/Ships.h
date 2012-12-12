@@ -148,7 +148,9 @@ public:
 	// setting
 	//////////////////////////////////////////////////////////////////////
 
+private:
 	void AdoptOrdersFrom(const CShips& ship);
+public:
 	/*
 	 * Adds the given CShips to this CShips' fleet and propagates this CShips' leader's orders to the given
 	 * CShips' leader and fleet (both are in this CShips' fleet now).

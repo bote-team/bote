@@ -75,7 +75,7 @@ static bool ShipCanHaveOrder(const CShips& ships, SHIP_ORDER::Typ order,
 			return sector->GetSunSystem() && system->GetOwnerOfSystem() == ships.GetOwnerOfShip()
 				&& system->GetProduction()->GetShipTraining() > 0;
 		case SHIP_ORDER::REPAIR:
-			return ships.CanHaveOrder(SHIP_ORDER::REPAIR, true, false)
+			return ships.CanHaveOrder(SHIP_ORDER::REPAIR, true)
 				&& sector->GetShipPort(ships.GetOwnerOfShip());
 		case SHIP_ORDER::TRANSPORT:
 			return ships.CanHaveOrder(order, true, false);

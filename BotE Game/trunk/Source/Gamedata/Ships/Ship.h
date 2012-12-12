@@ -155,6 +155,9 @@ public:
 	void SetCombatTacticAccordingToType();
 	//Sets the current oder according to m_nCombatTactic
 	void UnsetCurrentOrder();
+private:
+	void UnsetTerraform();
+public:
 
 	bool RemoveDestroyed(CRace& owner, unsigned short round, const CString& sEvent,
 		const CString& sStatus, CStringArray* destroyedShips, const CString& anomaly = "");
@@ -246,11 +249,6 @@ public:
 
 	bool CanCloak() const;
 
-private:
-	bool CanTakeOverOrder(SHIP_ORDER::Typ order) const {
-		//ASSIGN_FLAGSHIP is always unique to a single ship
-		return CanHaveOrder(order, true) && order != SHIP_ORDER::ASSIGN_FLAGSHIP;
-	}
 public:
 
 	bool IsAlive() const {

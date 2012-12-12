@@ -414,11 +414,10 @@ bool CShip::GetCloak() const {
 void CShip::AdoptOrdersFrom(const CShip& ship)
 {
 	SHIP_ORDER::Typ order = ship.GetCurrentOrder();
+	assert(order != SHIP_ORDER::ASSIGN_FLAGSHIP && CanHaveOrder(order, false));
 	//den Terraformingplaneten neu setzen
-	if(order == SHIP_ORDER::TERRAFORM && CanHaveOrder(SHIP_ORDER::TERRAFORM, false))
-		SetTerraform(ship.m_nTerraformingPlanet);
-	if(CanTakeOverOrder(order))
-		m_iCurrentOrder = order;
+	SetTerraform(ship.m_nTerraformingPlanet);
+	m_iCurrentOrder = order;
 	m_nCombatTactic = ship.GetCombatTactic();
 	m_KO = ship.GetKO();
 	m_TargetKO = ship.GetTargetKO();
@@ -538,6 +537,7 @@ void CShip::SetCombatTacticAccordingToType() {
 }
 
 void CShip::UnsetCurrentOrder() {
+	UnsetTerraform();
 	switch(m_nCombatTactic) {
 		case COMBAT_TACTIC::CT_ATTACK:
 			m_iCurrentOrder = SHIP_ORDER::ATTACK;
@@ -573,14 +573,18 @@ bool CShip::RemoveDestroyed(CRace& owner, unsigned short round, const CString& s
 	return false;
 }
 
+void CShip::UnsetTerraform() {
+	if(m_iCurrentOrder == SHIP_ORDER::TERRAFORM) {
+		assert(m_nTerraformingPlanet != -1);
+		resources::pDoc->GetSector(m_KO.x, m_KO.y).GetPlanet(m_nTerraformingPlanet)->SetIsTerraforming(false);
+	}
+	m_nTerraformingPlanet = -1;
+}
+
 void CShip::SetTerraform(short planetNumber) {
 	if(planetNumber == -1) {
 		if(m_iCurrentOrder == SHIP_ORDER::TERRAFORM)
-		{
-			assert(m_nTerraformingPlanet != -1);
-			resources::pDoc->GetSector(m_KO.x, m_KO.y).GetPlanet(m_nTerraformingPlanet)->SetIsTerraforming(false);
 			UnsetCurrentOrder();
-		}
 	}
 	else
 	{
@@ -1468,13 +1472,10 @@ CString CShip::SanityCheckUniqueness(std::set<CString>& already_encountered) con
 }
 
 bool CShip::SanityCheckOrdersConsistency(const CShip& with) const {
-	if(CanTakeOverOrder(with.m_iCurrentOrder))
-		if(m_iCurrentOrder != with.m_iCurrentOrder)
-			return false;
-	if(with.m_iCurrentOrder == SHIP_ORDER::TERRAFORM && CanHaveOrder(SHIP_ORDER::TERRAFORM, true))
-		if(m_nTerraformingPlanet != with.m_nTerraformingPlanet)
-			return false;
-	return m_nCombatTactic == with.m_nCombatTactic
+	assert(CanHaveOrder(with.m_iCurrentOrder, false));
+	return m_iCurrentOrder == with.m_iCurrentOrder
+		&& m_nCombatTactic == with.m_nCombatTactic
 		&& m_KO == with.m_KO
-		&& m_TargetKO == with.m_TargetKO;
+		&& m_TargetKO == with.m_TargetKO
+		&& m_nTerraformingPlanet == with.m_nTerraformingPlanet;
 }

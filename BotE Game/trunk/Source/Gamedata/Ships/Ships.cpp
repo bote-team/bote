@@ -190,6 +190,9 @@ void CShips::AddShipToFleet(const CShips& fleet) {
 	}
 	assert(fleet.GetOwnerOfShip() == GetOwnerOfShip());
 	const CShipMap::iterator i = m_Fleet.Add(fleet);
+	const SHIP_ORDER::Typ order = GetCurrentOrder();
+	if(order == SHIP_ORDER::ASSIGN_FLAGSHIP || !i->second.CanHaveOrder(order, false))
+		UnsetCurrentOrder();
 	i->second.AdoptOrdersFrom(*this);
 	if(fleet.HasFleet()) {
 		if(MT::CMyTrace::IsLoggingEnabledFor("ships")) {
@@ -352,7 +355,7 @@ bool CShips::CanHaveOrder(SHIP_ORDER::Typ order, bool require_new, bool require_
 			return false;
 		if(require_all_can) {
 			for(CShips::const_iterator i = m_Fleet.begin(); i != m_Fleet.end(); ++i)
-				if(!i->second.CanHaveOrder(order, require_new, true))
+				if(!i->second.CanHaveOrder(order, require_new))
 					return false;
 		}
 		else
