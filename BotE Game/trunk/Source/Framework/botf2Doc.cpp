@@ -4348,14 +4348,12 @@ void CBotf2Doc::CalcShipOrders()
 		}
 		else if (y->second.GetCurrentOrder() == SHIP_ORDER::ENCLOAK)
 		{
-			//TODO magic number, bad
 			assert(y->second.CanCloak(true));
 			y->second.SetCloak(true);
 			y->second.UnsetCurrentOrder();
 		}
 		else if (y->second.GetCurrentOrder() == SHIP_ORDER::DECLOAK)
 		{
-			//TODO magic number, bad
 			assert(y->second.CanCloak(true));
 			y->second.SetCloak(false);
 			y->second.UnsetCurrentOrder();
