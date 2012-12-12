@@ -124,17 +124,14 @@ CShipMap::iterator CShipMap::Add(const CShips& ship) {
 	return result;
 }
 
-void CShipMap::Append(const CShipMap& other, const CShips* const adopt_orders_from) {
+void CShipMap::Append(const CShipMap& other) {
 	//if(MT::CMyTrace::IsLoggingEnabledFor("ships")) {
 	//	CString s;
 	//	s.Format("\nCShipMap: appending shiparray:\n%s\n", other.ToString());
 	//	MYTRACE("ships")(MT::LEVEL_INFO, s);
 	//}
-	for(CShipMap::const_iterator i = other.begin(); i != other.end(); ++i) {
-		const CShipMap::iterator added = Add(i->second);
-		if(adopt_orders_from)
-			added->second.AdoptOrdersFrom(*adopt_orders_from);
-	}
+	for(CShipMap::const_iterator i = other.begin(); i != other.end(); ++i)
+		Add(i->second);
 }
 
 //////////////////////////////////////////////////////////////////////

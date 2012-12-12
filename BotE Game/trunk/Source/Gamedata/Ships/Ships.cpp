@@ -197,7 +197,7 @@ void CShips::AddShipToFleet(const CShips& fleet) {
 				m_Leader.GetShipName());
 			MYTRACE("ships")(MT::LEVEL_INFO, s);
 		}
-		m_Fleet.Append(i->second.m_Fleet, this);
+		m_Fleet.Append(i->second.m_Fleet);
 		i->second.Reset();
 	}
 }
