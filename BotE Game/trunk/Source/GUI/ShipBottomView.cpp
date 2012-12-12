@@ -79,7 +79,6 @@ static bool ShipCanHaveOrder(const CShips& ships, SHIP_ORDER::Typ order,
 				&& sector->GetShipPort(ships.GetOwnerOfShip());
 		case SHIP_ORDER::TRANSPORT:
 			return ships.CanHaveOrder(order, true, false);
-		case SHIP_ORDER::ENCLOAK:
 		case SHIP_ORDER::TERRAFORM:
 			return ships.CanHaveOrder(order, false);
 	}
@@ -435,12 +434,12 @@ short CShipBottomView::DrawTacticsMenu() {
 		// tarnen kann)
 		if (m_iTimeCounter > (MAIN_BUTTON_ACTIONS + counter) && ShipCanHaveOrder(pShip, SHIP_ORDER::ENCLOAK))
 		{
-			CString s;
-			if (pShip.GetCloak())
-				s = "BTN_DECLOAK";
-			else
-				s = "BTN_CLOAK";
-			DrawSmallButton(s,CPoint(r.right-245, r.top+70+counter*35),SHIP_ORDER::ENCLOAK);
+			DrawSmallButton("BTN_CLOAK",CPoint(r.right-245, r.top+70+counter*35),SHIP_ORDER::ENCLOAK);
+			counter++;
+		}
+		if (m_iTimeCounter > (MAIN_BUTTON_ACTIONS + counter) && ShipCanHaveOrder(pShip, SHIP_ORDER::DECLOAK))
+		{
+			DrawSmallButton("BTN_DECLOAK",CPoint(r.right-245, r.top+70+counter*35),SHIP_ORDER::DECLOAK);
 			counter++;
 		}
 	}
@@ -624,7 +623,7 @@ void CShipBottomView::DrawMenu() {
 
 	// Alle Rechtecke für die Buttons der Schiffsbefehle erstmal auf NULL setzen, damit wir nicht draufklicken
 	// können. Wir dürfen ja nur auf Buttons klicken können, die wir auch sehen
-	for (int j = 0; j <= SHIP_ORDER::REPAIR; j++)
+	for (int j = 0; j <= SHIP_ORDER::DECLOAK; j++)
 		m_ShipOrders[j].SetRect(0,0,0,0);
 
 	DrawMaincommandMenu();
@@ -740,7 +739,7 @@ void CShipBottomView::OnInitialUpdate()
 	m_iPage = 1;
 	m_iTimeCounter = 0;
 	m_bShowNextButton = FALSE;
-	for (int i = 0; i <= SHIP_ORDER::REPAIR; i++)
+	for (int i = 0; i <= SHIP_ORDER::DECLOAK; i++)
 		m_ShipOrders[i].SetRect(0,0,0,0);
 	m_iWhichMainShipOrderButton = MAIN_BUTTON_NONE;
 }
@@ -900,7 +899,7 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 		}
 		// Ab jetzt die kleinen Buttons für die einzelnen genauen Schiffsbefehle
 		network::RACE client = pDoc->GetRaceCtrl()->GetMappedClientID(pMajor->GetRaceID());
-		for (int i = SHIP_ORDER::AVOID; i <= SHIP_ORDER::REPAIR; i++)
+		for (int i = SHIP_ORDER::AVOID; i <= SHIP_ORDER::DECLOAK; i++)
 			if (m_ShipOrders[i].PtInRect(point))
 			{
 				SHIP_ORDER::Typ nOrder = (SHIP_ORDER::Typ)i;
@@ -930,12 +929,6 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 				{
 					resources::pMainFrame->SelectMainView(10, pMajor->GetRaceID());	// Transportansicht in der MainView anzeigen
 					resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CTransportMenuView));
-				}
-				else if (nOrder == SHIP_ORDER::ENCLOAK)
-				{
-					pDoc->CurrentShip()->second.SetCurrentOrder(
-							pDoc->CurrentShip()->second.GetCloak() ? SHIP_ORDER::DECLOAK : SHIP_ORDER::ENCLOAK
-						);
 				}
 				else if (nOrder == SHIP_ORDER::TERRAFORM) {
 					//command is given when clicked on planet

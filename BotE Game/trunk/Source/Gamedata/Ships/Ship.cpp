@@ -841,9 +841,10 @@ bool CShip::CanHaveOrder(SHIP_ORDER::Typ order, bool require_new) const {
 			return NeedsRepair();
 		case SHIP_ORDER::ASSIGN_FLAGSHIP:
 			return !m_bIsFlagShip;
-		case SHIP_ORDER::ENCLOAK: 
+		case SHIP_ORDER::ENCLOAK:
+			return CanCloak() && !m_bCloakOn;
 		case SHIP_ORDER::DECLOAK:
-			return CanCloak();
+			return m_bCloakOn;
 		case SHIP_ORDER::COLONIZE:
 		case SHIP_ORDER::TERRAFORM:
 			return GetColonizePoints() >= 1;
