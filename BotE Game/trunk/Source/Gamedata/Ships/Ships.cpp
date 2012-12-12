@@ -454,12 +454,33 @@ void CShips::DrawShip(Gdiplus::Graphics* g, CGraphicPool* pGraphicPool, const CP
 		clrNormal,clrMark, font, draw_troop_symbol, GetFleetShipType(), GetFleetSize());
 }
 
-void CShips::Repair(BOOL bAtShipPort, bool bFasterShieldRecharge) {
-	for(CShips::iterator i = begin(); i != end(); ++i)
-		i->second.Repair(bAtShipPort, bFasterShieldRecharge);
+void CShips::TraditionalRepair(BOOL bAtShipPort, bool bFasterShieldRecharge) {
 	m_Leader.Repair(bAtShipPort, bFasterShieldRecharge);
-	if(m_Leader.GetCurrentOrder() == SHIP_ORDER::REPAIR && (!NeedsRepair() || !bAtShipPort))
+	for(CShips::iterator i = begin(); i != end(); ++i)
+		i->second.TraditionalRepair(bAtShipPort, bFasterShieldRecharge);
+}
+
+void CShips::RepairCommand(BOOL bAtShipPort, bool bFasterShieldRecharge, CShipMap& ships) {
+	assert(GetCurrentOrder() == SHIP_ORDER::REPAIR);
+	if(!bAtShipPort) {
+		UnsetCurrentOrder();
+		return;
+	}
+	for(CShips::iterator i = begin(); i != end();) {
+		i->second.RepairCommand(bAtShipPort, bFasterShieldRecharge, ships);
+		if(!i->second.NeedsRepair()) {
+			ships.Add(i->second);
+			RemoveShipFromFleet(i);
+			continue;
+		}
+		++i;
+	}
+	m_Leader.Repair(bAtShipPort, bFasterShieldRecharge);
+	if(!m_Leader.NeedsRepair()) {
 		m_Leader.UnsetCurrentOrder();
+		if(HasFleet())
+			ships.Add(GiveFleetToFleetsFirstShip());
+	}
 }
 
 void CShips::RetreatFleet(const CPoint& RetreatSector) {

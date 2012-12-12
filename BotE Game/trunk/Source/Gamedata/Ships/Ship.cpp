@@ -803,7 +803,7 @@ bool CShip::HasNothingToDo() const {
 }
 
 bool CShip::NeedsRepair() const {
-	return m_Hull.GetCurrentHull() < m_Hull.GetMaxHull();
+	return m_Hull.GetCurrentHull() < m_Hull.GetMaxHull() || m_Shield.GetCurrentShield() < m_Shield.GetMaxShield();
 }
 
 bool CShip::IsNonCombat() const {

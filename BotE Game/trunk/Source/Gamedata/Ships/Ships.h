@@ -326,7 +326,9 @@ public:
 	CString GetTooltip(bool bShowFleet = true);
 
 	//Execute a 1-turn shield (always) and hull (if bAtShipPort == TRUE) repairing step
-	void Repair(BOOL bAtShipPort, bool bFasterShieldRecharge);
+	void TraditionalRepair(BOOL bAtShipPort, bool bFasterShieldRecharge);
+	void RepairCommand(BOOL bAtShipPort, bool bFasterShieldRecharge, CShipMap& ships);
+
 
 	//Perform actions to retreat this ship to the given sector.
 	void Retreat(const CPoint& ptRetreatSector) { m_Leader.Retreat(ptRetreatSector); };

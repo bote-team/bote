@@ -4469,6 +4469,7 @@ void CBotf2Doc::CalcShipMovement()
 #ifdef DEVELOPMENT_VERSION
 	std::set<CString> already_encountered_ships_for_sanity_check;
 #endif
+	CShipMap repaired_ships;
 	// Hier kommt die Schiffsbewegung (also keine anderen Befehle werden hier noch ausgewertet, lediglich wird überprüft,
 	// dass manche Befehle noch ihre Gültigkeit haben
 	for(CShipMap::iterator y = m_ShipMap.begin(); y != m_ShipMap.end(); ++y)
@@ -4605,7 +4606,13 @@ void CBotf2Doc::CalcShipMovement()
 		//FIXME: The shipports are not yet updated for changes due to diplomacy at this spot.
 		//If we declared war and are on a shipport of the former friend, the ship is repaired,
 		//and a possible repair command isn't unset though it can no longer be set by the player this turn then.
-		y->second.Repair(GetSector(y->second.GetKO().x, y->second.GetKO().y).GetShipPort(y->second.GetOwnerOfShip()), bFasterShieldRecharge);
+		const CPoint& co = y->second.GetKO();
+		const CSector& sector = GetSector(co.x, co.y);
+		const bool port = sector.GetShipPort(y->second.GetOwnerOfShip());
+		if(y->second.GetCurrentOrder() == SHIP_ORDER::REPAIR)
+			y->second.RepairCommand(port, bFasterShieldRecharge, repaired_ships);
+		else
+			y->second.TraditionalRepair(port, bFasterShieldRecharge);
 
 		// wenn eine Anomalie vorhanden, deren m?gliche Auswirkungen auf das Schiff berechnen
 		if (GetSector(y->second.GetKO().x, y->second.GetKO().y).GetAnomaly())
@@ -4614,7 +4621,7 @@ void CBotf2Doc::CalcShipMovement()
 			bAnomaly = true;
 		}
 	}
-
+	m_ShipMap.Append(repaired_ships);
 
 	if (!bAnomaly)
 		return;
