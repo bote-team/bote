@@ -35,9 +35,16 @@ CShipBottomView::CShipBottomView() :
 	m_iTimeCounter(0),
 	m_iWhichMainShipOrderButton(MAIN_BUTTON_NONE),
 	m_LastKO(-1, -1),
-	m_dc()
+	m_dc(),
+	bw(120),
+	bh(30),
+	bd(5),
+	bt(70),
+	bb(bt + (MAIN_BUTTON_ACTIONS -1) * (bh + bd) + bh)
 {
 	m_pShipOrderButton = NULL;
+	m_vMainShipOrders.reserve(MAIN_BUTTON_ACTIONS);
+	m_vSecondaryShipOrders.resize(SHIP_ORDER::DECLOAK + 1);
 }
 
 CShipBottomView::~CShipBottomView()
@@ -125,6 +132,7 @@ void CShipBottomView::SetupDrawing() {
 		// Ebenfalls bei der Anzeige einer Station immer auf die erste Seite springen
 		m_iPage = 1;
 	}
+	SetUpMainButtons();
 }
 
 // Achtung: r.right = Breite, r.bottom = Höhe!
@@ -134,17 +142,17 @@ void CShipBottomView::DrawImage( CString resName, CRect r ) {
 		m_dc.g->DrawImage(bmp, r.left, r.top, r.Width(), r.Height());
 }
 
-void CShipBottomView::DrawSmallButton( CString resString, CPoint coords, int shiporder ) {
+void CShipBottomView::DrawSmallButton( const CString& resString, const CPoint& coords, SHIP_ORDER::Typ shiporder ) {
 	m_dc.fontBrush->SetColor(this->GetFontColorForSmallButton());
 	m_dc.fontFormat.SetAlignment(StringAlignmentCenter);
 	m_dc.fontFormat.SetLineAlignment(StringAlignmentCenter);
 	m_dc.fontFormat.SetFormatFlags(StringFormatFlagsNoWrap);
 
-	m_dc.g->DrawImage(m_pShipOrderButton, coords.x, coords.y, 120, 30);
-	m_dc.g->DrawString(CComBSTR(CResourceManager::GetString(resString)), -1, &Gdiplus::Font(CComBSTR(m_dc.fontName), m_dc.fontSize), RectF(coords.x,coords.y,120,30), &m_dc.fontFormat, m_dc.fontBrush);
+	m_dc.g->DrawImage(m_pShipOrderButton, coords.x, coords.y, bw, bh);
+	m_dc.g->DrawString(CComBSTR(CResourceManager::GetString(resString)), -1, &Gdiplus::Font(CComBSTR(m_dc.fontName), m_dc.fontSize), RectF(coords.x,coords.y,bw,bh), &m_dc.fontFormat, m_dc.fontBrush);
 
-	if( shiporder != -1 ) {
-		m_ShipOrders[shiporder].SetRect(coords.x,coords.y,coords.x + 120,coords.y + 30);
+	if( shiporder != SHIP_ORDER::NONE ) {
+		m_vSecondaryShipOrders.at(shiporder).rect.SetRect(coords.x,coords.y,coords.x + bw,coords.y + bh);
 	}
 }
 
@@ -276,13 +284,19 @@ void CShipBottomView::DrawShipContent() {
 	if (counter > 9 && counter > m_iPage*9)
 	{
 		m_bShowNextButton = TRUE;
-		DrawSmallButton(CResourceManager::GetString("BTN_NEXT"), CPoint(r.right-120, r.top+210));
+		DrawSmallButton(CResourceManager::GetString("BTN_NEXT"), CPoint(r.right-bw, r.top+210));
 	}
 	// back-Button
 	if (m_iPage > 1)
 	{
-		DrawSmallButton(CResourceManager::GetString("BTN_BACK"), CPoint(r.right-120, r.top));
+		DrawSmallButton(CResourceManager::GetString("BTN_BACK"), CPoint(r.right-bw, r.top));
 	}
+}
+
+CPoint CShipBottomView::CalcSecondaryButtonTopLeft(short counter, bool top_down) const {
+	const unsigned y = top_down ? bt + counter * (bh + bd)
+		: bb - counter * (bh + bd) - bh;
+	return CPoint(m_dc.r.right - (bw *2 + bd), y);
 }
 
 void CShipBottomView::DrawColonyshipOrders(short &counter) {
@@ -300,7 +314,7 @@ void CShipBottomView::DrawColonyshipOrders(short &counter) {
 				if (csec.GetPlanet(l)->GetTerraformed() == TRUE
 					&& csec.GetPlanet(l)->GetCurrentHabitant() == 0.0f)
 				{
-					DrawSmallButton("BTN_COLONIZE",CPoint(r.right-245, r.top+140),SHIP_ORDER::COLONIZE);
+					DrawSmallButton("BTN_COLONIZE", CalcSecondaryButtonTopLeft(counter, false), SHIP_ORDER::COLONIZE);
 					counter++;
 					break;
 				}
@@ -314,7 +328,7 @@ void CShipBottomView::DrawColonyshipOrders(short &counter) {
 			if (csec.GetPlanet(l)->GetHabitable() == TRUE &&
 				csec.GetPlanet(l)->GetTerraformed() == FALSE)
 			{
-				DrawSmallButton("BTN_TERRAFORM",CPoint(r.right-245, r.top+140-counter*35),SHIP_ORDER::TERRAFORM);
+				DrawSmallButton("BTN_TERRAFORM",CalcSecondaryButtonTopLeft(counter, false), SHIP_ORDER::TERRAFORM);
 				counter++;
 				break;
 			}
@@ -345,7 +359,7 @@ void CShipBottomView::DrawTransportshipOrders(short &counter) {
 				if(pMajor->CanBuildShip(SHIP_TYPE::OUTPOST, m_dc.researchLevels, m_dc.pDoc->m_ShipInfoArray.GetAt(l)))
 				{
 					// Wenn ja dann Schaltfläche zum Außenpostenbau einblenden
-					DrawSmallButton("BTN_BUILD_OUTPOST",CPoint(r.right-245, r.top+140-counter*35),SHIP_ORDER::BUILD_OUTPOST);
+					DrawSmallButton("BTN_BUILD_OUTPOST",CalcSecondaryButtonTopLeft(counter, false),SHIP_ORDER::BUILD_OUTPOST);
 					counter++;
 					break;
 				}
@@ -358,7 +372,7 @@ void CShipBottomView::DrawTransportshipOrders(short &counter) {
 				if(pMajor->CanBuildShip(SHIP_TYPE::STARBASE, m_dc.researchLevels, m_dc.pDoc->m_ShipInfoArray.GetAt(l)))
 				{
 					// Wenn ja dann Schaltfläche zum Sternenbasisbau einblenden
-					DrawSmallButton("BTN_BUILD_STARBASE",CPoint(r.right-245, r.top+140-counter*35),SHIP_ORDER::BUILD_STARBASE);
+					DrawSmallButton("BTN_BUILD_STARBASE",CalcSecondaryButtonTopLeft(counter, false),SHIP_ORDER::BUILD_STARBASE);
 					counter++;
 					break;
 				}
@@ -368,32 +382,41 @@ void CShipBottomView::DrawTransportshipOrders(short &counter) {
 	if (m_iTimeCounter > (MAIN_BUTTON_ACTIONS + counter) && 
 		ShipCanHaveOrder(pShip, SHIP_ORDER::TRANSPORT))
 	{
-		DrawSmallButton("BTN_TRANSPORT",CPoint(r.right-245, r.top+140-counter*35),SHIP_ORDER::TRANSPORT);
+		DrawSmallButton("BTN_TRANSPORT", CalcSecondaryButtonTopLeft(counter, false),SHIP_ORDER::TRANSPORT);
 		counter++;
 	}
 }
 
+void CShipBottomView::SetUpMainButtons() {
+	m_vMainShipOrders.clear();
+	const CRect& r = m_dc.r;
+	unsigned top = r.top + bt;
+	unsigned bottom = bt + bh;
+	const unsigned left = r.right-bw;
+	const unsigned shift = bh + bd;
+	for(int i = MAIN_BUTTON_TACTICS; i <= MAIN_BUTTON_ACTIONS; ++i) {
+		m_vMainShipOrders.push_back(MainButtonInfo(static_cast<MAIN_BUTTON>(i), CRect(left, top, r.right, bottom)));
+		top += shift;
+		bottom += shift;
+	}
+	assert(m_vMainShipOrders.size() == MAIN_BUTTON_ACTIONS);
+}
+
 void CShipBottomView::DrawMaincommandMenu() {
-	CRect r(m_dc.r);
 	// Taktik
-	if (m_iTimeCounter > MAIN_BUTTON_NONE)
-	{
-		DrawSmallButton("BTN_TACTIC", CPoint(r.right-120, r.top+70));
-	}
 	// Befehl
-	if (m_iTimeCounter > MAIN_BUTTON_TACTICS)
-	{
-		DrawSmallButton("BTN_ORDER", CPoint(r.right-120, r.top+105));
-	}
 	// Aktion
-	if (m_iTimeCounter > MAIN_BUTTON_ORDERS)
+	for(std::vector<const MainButtonInfo>::const_iterator i = m_vMainShipOrders.begin();
+			i != m_vMainShipOrders.end(); ++i)
 	{
-		DrawSmallButton("BTN_ACTION", CPoint(r.right-120, r.top+140));
-		if (m_iWhichMainShipOrderButton == MAIN_BUTTON_NONE)
-		{
-			this->KillTimer(1);
-			m_iTimeCounter = 0;
-		}
+		if(m_iTimeCounter < i->which)
+			continue;
+		DrawSmallButton(i->String(), CPoint(i->rect.left, i->rect.top));
+	}
+	if (m_iTimeCounter >= MAIN_BUTTON_ACTIONS && m_iWhichMainShipOrderButton == MAIN_BUTTON_NONE)
+	{
+		this->KillTimer(1);
+		m_iTimeCounter = 0;
 	}
 }
 
@@ -406,13 +429,13 @@ short CShipBottomView::DrawTacticsMenu() {
 	// angreifen
 	if (m_iTimeCounter > MAIN_BUTTON_ACTIONS && ShipCanHaveOrder(pShip, SHIP_ORDER::ATTACK))
 	{
-		DrawSmallButton("BTN_ATTACK",CPoint(r.right-245, r.top+70),SHIP_ORDER::ATTACK);
+		DrawSmallButton("BTN_ATTACK", CalcSecondaryButtonTopLeft(counter),SHIP_ORDER::ATTACK);
 		counter++;
 	}
 	// meiden
 	else if (m_iTimeCounter > MAIN_BUTTON_ACTIONS && ShipCanHaveOrder(pShip, SHIP_ORDER::AVOID))
 	{
-		DrawSmallButton("BTN_AVOID",CPoint(r.right-245, r.top+70),SHIP_ORDER::AVOID);
+		DrawSmallButton("BTN_AVOID",CalcSecondaryButtonTopLeft(counter),SHIP_ORDER::AVOID);
 		counter++;
 	}
 	// folgende Befehle gehen alle nur, wenn es keine Station ist
@@ -421,25 +444,25 @@ short CShipBottomView::DrawTacticsMenu() {
 		// gruppieren
 		if (m_iTimeCounter > (MAIN_BUTTON_ACTIONS + counter))
 		{
-			DrawSmallButton("BTN_CREATE_FLEET",CPoint(r.right-245, r.top+70+counter*35),SHIP_ORDER::CREATE_FLEET);
+			DrawSmallButton("BTN_CREATE_FLEET",CalcSecondaryButtonTopLeft(counter),SHIP_ORDER::CREATE_FLEET);
 			counter++;
 		}
 		// trainieren
 		if (m_iTimeCounter > (MAIN_BUTTON_ACTIONS + counter) && ShipCanHaveOrder(pShip, SHIP_ORDER::TRAIN_SHIP, &csec, &m_dc.pDoc->CurrentSystem()))
 		{
-			DrawSmallButton("BTN_TRAIN_SHIP",CPoint(r.right-245, r.top+70+counter*35),SHIP_ORDER::TRAIN_SHIP);
+			DrawSmallButton("BTN_TRAIN_SHIP",CalcSecondaryButtonTopLeft(counter),SHIP_ORDER::TRAIN_SHIP);
 			counter++;
 		}
 		// tarnen (hier beachten wenn es eine Flotte ist, dort schauen ob sich jedes Schiff in der Flotte auch
 		// tarnen kann)
 		if (m_iTimeCounter > (MAIN_BUTTON_ACTIONS + counter) && ShipCanHaveOrder(pShip, SHIP_ORDER::ENCLOAK))
 		{
-			DrawSmallButton("BTN_CLOAK",CPoint(r.right-245, r.top+70+counter*35),SHIP_ORDER::ENCLOAK);
+			DrawSmallButton("BTN_CLOAK",CalcSecondaryButtonTopLeft(counter),SHIP_ORDER::ENCLOAK);
 			counter++;
 		}
 		if (m_iTimeCounter > (MAIN_BUTTON_ACTIONS + counter) && ShipCanHaveOrder(pShip, SHIP_ORDER::DECLOAK))
 		{
-			DrawSmallButton("BTN_DECLOAK",CPoint(r.right-245, r.top+70+counter*35),SHIP_ORDER::DECLOAK);
+			DrawSmallButton("BTN_DECLOAK",CalcSecondaryButtonTopLeft(counter),SHIP_ORDER::DECLOAK);
 			counter++;
 		}
 	}
@@ -474,32 +497,13 @@ short CShipBottomView::DrawOrdersMenu() {
 				// Ab hier check wegen Flotten
 				if (ShipCanHaveOrder(pShip, SHIP_ORDER::ATTACK_SYSTEM))
 				{
-					DrawSmallButton("BTN_ATTACK_SYSTEM",CPoint(r.right-245, r.top+70),SHIP_ORDER::ATTACK_SYSTEM);
+					DrawSmallButton("BTN_ATTACK_SYSTEM",CalcSecondaryButtonTopLeft(counter),SHIP_ORDER::ATTACK_SYSTEM);
 					counter++;
 				}
 			}
 		}
 	}
-/*			// Systemüberfall
-	if (m_iTimeCounter > (3 + counter) && m_iWhichMainShipOrderButton == 1)
-	{
-		pDC->BitBlt(r.right-245,r.top+70+counter*35,120,30,&mdc,0,0,SRCCOPY);
-		s = CResourceManager::GetString("BTN_RAID_SYSTEM");
-		m_ShipOrders[RAID_SYSTEM].SetRect(r.right-245,r.top+70+counter*35,r.right-125,r.top+100+counter*35);
-		pDC->DrawText(s, m_ShipOrders[RAID_SYSTEM],DT_CENTER | DT_SINGLELINE | DT_VCENTER);
-		counter++;
-	}
-*/
-/*					// einem anderen Schiff folgen
-			if (m_iTimeCounter > (3 + counter) && m_iWhichMainShipOrderButton == 1)
-			{
-				pDC->BitBlt(r.right-245,r.top+70+counter*35,120,30,&mdc,0,0,SRCCOPY);
-				s = CResourceManager::GetString("BTN_FOLLOW_SHIP");
-				m_ShipOrders[FOLLOW_SHIP].SetRect(r.right-245,r.top+70+counter*35,r.right-125,r.top+100+counter*35);
-				pDC->DrawText(s,m_ShipOrders[FOLLOW_SHIP],DT_CENTER | DT_SINGLELINE | DT_VCENTER);
-				counter++;
-			}
-*/
+
 	// Systemblockade
 	if (m_iTimeCounter > (MAIN_BUTTON_ACTIONS + counter) && ShipCanHaveOrder(pShip, SHIP_ORDER::BLOCKADE_SYSTEM))
 	{
@@ -509,7 +513,7 @@ short CShipBottomView::DrawOrdersMenu() {
 		if (pOwnerOfSystem != NULL && pOwnerOfSystem->GetRaceID() != pShip.GetOwnerOfShip()
 			&& pMajor->GetAgreement(pOwnerOfSystem->GetRaceID()) < DIPLOMATIC_AGREEMENT::FRIENDSHIP)
 		{
-			DrawSmallButton("BTN_BLOCKADE_SYSTEM",CPoint(r.right-245, r.top+70+counter*35),SHIP_ORDER::BLOCKADE_SYSTEM);
+			DrawSmallButton("BTN_BLOCKADE_SYSTEM",CalcSecondaryButtonTopLeft(counter),SHIP_ORDER::BLOCKADE_SYSTEM);
 			counter++;
 		}
 	}
@@ -517,21 +521,21 @@ short CShipBottomView::DrawOrdersMenu() {
 	if (m_iTimeCounter > (MAIN_BUTTON_ACTIONS + counter) && m_iWhichMainShipOrderButton == MAIN_BUTTON_ORDERS
 		&& ShipCanHaveOrder(m_dc.pDoc->CurrentShip()->second, SHIP_ORDER::ASSIGN_FLAGSHIP))
 	{
-		DrawSmallButton("BTN_ASSIGN_FLAGSHIP",CPoint(r.right-245, r.top+70+counter*35),SHIP_ORDER::ASSIGN_FLAGSHIP);
+		DrawSmallButton("BTN_ASSIGN_FLAGSHIP",CalcSecondaryButtonTopLeft(counter),SHIP_ORDER::ASSIGN_FLAGSHIP);
 		counter++;
 	}
 	// Warten
 	if (m_iTimeCounter > (MAIN_BUTTON_ACTIONS + counter) && m_iWhichMainShipOrderButton == MAIN_BUTTON_ORDERS
 		&& ShipCanHaveOrder(m_dc.pDoc->CurrentShip()->second, SHIP_ORDER::WAIT_SHIP_ORDER))
 	{
-		DrawSmallButton("BTN_WAIT_SHIP_ORDER",CPoint(r.right-245, r.top+70+counter*35),SHIP_ORDER::WAIT_SHIP_ORDER);
+		DrawSmallButton("BTN_WAIT_SHIP_ORDER",CalcSecondaryButtonTopLeft(counter),SHIP_ORDER::WAIT_SHIP_ORDER);
 		counter++;
 	}
 	// Wache
 	if (m_iTimeCounter > (MAIN_BUTTON_ACTIONS + counter) && m_iWhichMainShipOrderButton == MAIN_BUTTON_ORDERS
 		&& ShipCanHaveOrder(m_dc.pDoc->CurrentShip()->second, SHIP_ORDER::SENTRY_SHIP_ORDER))
 	{
-		DrawSmallButton("BTN_SENTRY_SHIP_ORDER",CPoint(r.right-245, r.top+70+counter*35),SHIP_ORDER::SENTRY_SHIP_ORDER);
+		DrawSmallButton("BTN_SENTRY_SHIP_ORDER",CalcSecondaryButtonTopLeft(counter),SHIP_ORDER::SENTRY_SHIP_ORDER);
 		counter++;
 	}
 	// Repairing
@@ -547,7 +551,7 @@ short CShipBottomView::DrawOrdersMenu() {
 		)
 	)
 	{
-		DrawSmallButton("BTN_REPAIR_SHIP",CPoint(r.right-245, r.top+70+counter*35),SHIP_ORDER::REPAIR);
+		DrawSmallButton("BTN_REPAIR_SHIP",CalcSecondaryButtonTopLeft(counter),SHIP_ORDER::REPAIR);
 		counter++;
 	}
 	return counter;
@@ -563,7 +567,7 @@ short CShipBottomView::DrawActionsMenu(bool isStation) {
 	// Schiff abwracken/zerstören
 	if (m_iTimeCounter > (MAIN_BUTTON_ACTIONS + counter) && ShipCanHaveOrder(m_dc.pDoc->CurrentShip()->second, SHIP_ORDER::DESTROY_SHIP))
 	{
-		DrawSmallButton("BTN_DESTROY_SHIP",CPoint(m_dc.r.right-245, m_dc.r.top+140-counter*35),SHIP_ORDER::DESTROY_SHIP);
+		DrawSmallButton("BTN_DESTROY_SHIP",CalcSecondaryButtonTopLeft(counter, false),SHIP_ORDER::DESTROY_SHIP);
 		counter++;
 	}
 
@@ -624,7 +628,7 @@ void CShipBottomView::DrawMenu() {
 	// Alle Rechtecke für die Buttons der Schiffsbefehle erstmal auf NULL setzen, damit wir nicht draufklicken
 	// können. Wir dürfen ja nur auf Buttons klicken können, die wir auch sehen
 	for (int j = 0; j <= SHIP_ORDER::DECLOAK; j++)
-		m_ShipOrders[j].SetRect(0,0,0,0);
+		m_vSecondaryShipOrders.at(j).rect.SetRect(0,0,0,0);
 
 	DrawMaincommandMenu();
 
@@ -739,8 +743,6 @@ void CShipBottomView::OnInitialUpdate()
 	m_iPage = 1;
 	m_iTimeCounter = 0;
 	m_bShowNextButton = FALSE;
-	for (int i = 0; i <= SHIP_ORDER::DECLOAK; i++)
-		m_ShipOrders[i].SetRect(0,0,0,0);
 	m_iWhichMainShipOrderButton = MAIN_BUTTON_NONE;
 }
 
@@ -848,7 +850,7 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 	if (m_bShowNextButton == TRUE)
 	{
 		CRect next;
-		next.SetRect(r.right-120,r.top+210,r.right,r.top+240);
+		next.SetRect(r.right-bw,r.top+210,r.right,r.top+240);
 		if (next.PtInRect(point))
 		{
 			CGalaxyMenuView::SetMoveShip(FALSE);
@@ -860,7 +862,7 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 	if (m_iPage > 1)	// haben wir auf den "back-button" geklickt
 	{
 		CRect back;
-		back.SetRect(r.right-120,r.top,r.right,r.top+30);
+		back.SetRect(r.right-bw,r.top,r.right,r.top+bh);
 		if (back.PtInRect(point))
 		{
 			CGalaxyMenuView::SetMoveShip(FALSE);
@@ -872,37 +874,22 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 	// Überprüfen, auf welchen Schiffsoberbefehle-Button ich geklickt habe
 	if (CGalaxyMenuView::IsMoveShip() == TRUE)
 	{
-		CRect rect;
-		// Taktik
-		rect.SetRect(r.right-120,r.top+70,r.right,r.top+100);
-		if (rect.PtInRect(point))
+		for(std::vector<const MainButtonInfo>::const_iterator i = m_vMainShipOrders.begin();
+			i != m_vMainShipOrders.end(); ++i)
 		{
-			m_iWhichMainShipOrderButton = MAIN_BUTTON_TACTICS;
+			if(!i->rect.PtInRect(point))
+				continue;
+			m_iWhichMainShipOrderButton = i->which;
 			m_iTimeCounter = MAIN_BUTTON_ACTIONS;
-			this->SetTimer(1,100,NULL);
-		}
-		// Befehl
-		rect.SetRect(r.right-120,r.top+105,r.right,r.top+135);
-		if (rect.PtInRect(point))
-		{
-			m_iWhichMainShipOrderButton = MAIN_BUTTON_ORDERS;
-			m_iTimeCounter = MAIN_BUTTON_ACTIONS;
-			this->SetTimer(1,100,NULL);
-		}
-		// Aktion
-		rect.SetRect(r.right-120,r.top+140,r.right,r.top+170);
-		if (rect.PtInRect(point))
-		{
-			m_iWhichMainShipOrderButton = MAIN_BUTTON_ACTIONS;
-			m_iTimeCounter = MAIN_BUTTON_ACTIONS;
-			this->SetTimer(1,100,NULL);
+			SetTimer(1,100,NULL);
 		}
 		// Ab jetzt die kleinen Buttons für die einzelnen genauen Schiffsbefehle
 		network::RACE client = pDoc->GetRaceCtrl()->GetMappedClientID(pMajor->GetRaceID());
-		for (int i = SHIP_ORDER::AVOID; i <= SHIP_ORDER::DECLOAK; i++)
-			if (m_ShipOrders[i].PtInRect(point))
+		for(std::vector<SecondaryButtonInfo>::const_iterator i = m_vSecondaryShipOrders.begin();
+				i != m_vSecondaryShipOrders.end(); ++i)
+			if (i->rect.PtInRect(point))
 			{
-				SHIP_ORDER::Typ nOrder = (SHIP_ORDER::Typ)i;
+				SHIP_ORDER::Typ nOrder = static_cast<SHIP_ORDER::Typ>(i - m_vSecondaryShipOrders.begin());
 				// Bei manchen Befehlen müssen wir einen möglichen Zielkurs wieder zurücknehmen.
 				if (nOrder != SHIP_ORDER::AVOID && nOrder != SHIP_ORDER::ATTACK && nOrder != SHIP_ORDER::ENCLOAK && nOrder != SHIP_ORDER::DECLOAK && nOrder != SHIP_ORDER::ASSIGN_FLAGSHIP && nOrder != SHIP_ORDER::CREATE_FLEET && nOrder != SHIP_ORDER::TRANSPORT)
 					pDoc->CurrentShip()->second.SetTargetKO(CPoint(-1, -1), 0);
