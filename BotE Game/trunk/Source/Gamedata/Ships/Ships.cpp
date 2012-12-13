@@ -510,5 +510,5 @@ bool CShips::SanityCheckOrdersConsistency() const {
 	for(CShips::const_iterator i = begin(); i != end(); ++i)
 		if(!i->second.m_Leader.SanityCheckOrdersConsistency(m_Leader))
 			return false;
-	return true;;
+	return m_Leader.SanityCheckOrdersConsistency(m_Leader);
 }
