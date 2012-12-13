@@ -284,12 +284,12 @@ void CShipBottomView::DrawShipContent() {
 	if (counter > 9 && counter > m_iPage*9)
 	{
 		m_bShowNextButton = TRUE;
-		DrawSmallButton(CResourceManager::GetString("BTN_NEXT"), CPoint(r.right-bw, r.top+210));
+		DrawSmallButton("BTN_NEXT", CPoint(r.right-bw, r.top+210));
 	}
 	// back-Button
 	if (m_iPage > 1)
 	{
-		DrawSmallButton(CResourceManager::GetString("BTN_BACK"), CPoint(r.right-bw, r.top));
+		DrawSmallButton("BTN_BACK", CPoint(r.right-bw, r.top));
 	}
 }
 
