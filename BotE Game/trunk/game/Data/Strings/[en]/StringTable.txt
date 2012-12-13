@@ -186,12 +186,12 @@ Current
 Lost
 
 // ship order buttons
-[BTN_TACTIC]
-Tactics
-[BTN_ORDER]
-Orders
-[BTN_ACTION]
-Actions
+[BTN_MULTI_TURN_ORDER]
+Multi turn order
+[BTN_SINGLE_TURN_ORDER]
+Single turn order
+[BTN_IMMEDIATE_ORDER]
+Immediate order
 [BTN_AVOID]
 Avoid
 [BTN_ATTACK]

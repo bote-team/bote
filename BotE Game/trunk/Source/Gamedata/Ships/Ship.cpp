@@ -820,17 +820,18 @@ bool CShip::CanHaveOrder(SHIP_ORDER::Typ order, bool require_new) const {
 		case SHIP_ORDER::AVOID:
 		case SHIP_ORDER::ATTACK:
 		case SHIP_ORDER::DESTROY_SHIP:
-		case SHIP_ORDER::CREATE_FLEET:
 		case SHIP_ORDER::FOLLOW_SHIP:
-		case SHIP_ORDER::TRAIN_SHIP:
-		case SHIP_ORDER::WAIT_SHIP_ORDER:
-		case SHIP_ORDER::SENTRY_SHIP_ORDER:
 		case SHIP_ORDER::CANCEL:
 			return true;
+		case SHIP_ORDER::WAIT_SHIP_ORDER:
+		case SHIP_ORDER::SENTRY_SHIP_ORDER:
+		case SHIP_ORDER::TRAIN_SHIP:
+		case SHIP_ORDER::CREATE_FLEET:
+			return !IsStation();
 		case SHIP_ORDER::REPAIR:
 			return NeedsRepair();
 		case SHIP_ORDER::ASSIGN_FLAGSHIP:
-			return !m_bIsFlagShip;
+			return !m_bIsFlagShip && !IsStation();
 		case SHIP_ORDER::ENCLOAK:
 			return CanCloak() && !m_bCloakOn;
 		case SHIP_ORDER::DECLOAK:
@@ -845,7 +846,7 @@ bool CShip::CanHaveOrder(SHIP_ORDER::Typ order, bool require_new) const {
 		case SHIP_ORDER::BLOCKADE_SYSTEM:
 			return HasSpecial(SHIP_SPECIAL::BLOCKADESHIP);
 		case SHIP_ORDER::ATTACK_SYSTEM:
-			return !GetCloak();
+			return !GetCloak() && !IsStation();
 		case SHIP_ORDER::TRANSPORT:
 			return GetStorageRoom() >= 1;
 		case SHIP_ORDER::RAID_SYSTEM:
@@ -857,7 +858,7 @@ bool CShip::CanHaveOrder(SHIP_ORDER::Typ order, bool require_new) const {
 }
 
 bool CShip::CanCloak() const {
-	return m_iStealthGrade >= 4;
+	return m_iStealthGrade >= 4 && !IsStation();
 }
 
 //////////////////////////////////////////////////////////////////////

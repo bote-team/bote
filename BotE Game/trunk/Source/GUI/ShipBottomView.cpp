@@ -299,94 +299,6 @@ CPoint CShipBottomView::CalcSecondaryButtonTopLeft(short counter, bool top_down)
 	return CPoint(m_dc.r.right - (bw *2 + bd), y);
 }
 
-void CShipBottomView::DrawColonyshipOrders(short &counter) {
-	CSector csec = m_dc.pDoc->CurrentSector();
-	CShips pShip = m_dc.pDoc->CurrentShip()->second;
-	CRect r(m_dc.r);
-
-	// Kolonisierung (hier beachten wenn es eine Flotte ist, dort schauen ob auch jedes Schiff in
-	// der Flotte auch kolonisieren kann)
-	if (m_iTimeCounter > MAIN_BUTTON_CANCEL && ShipCanHaveOrder(pShip, SHIP_ORDER::COLONIZE))
-	{
-		// Wenn das System uns bzw. niemanden gehört können wir nur kolonisieren
-		if (csec.GetOwnerOfSector() == "" || csec.GetOwnerOfSector() == pShip.GetOwnerOfShip())
-			for (int l = 0; l < csec.GetNumberOfPlanets(); l++)
-				if (csec.GetPlanet(l)->GetTerraformed() == TRUE
-					&& csec.GetPlanet(l)->GetCurrentHabitant() == 0.0f)
-				{
-					DrawSmallButton("BTN_COLONIZE", CalcSecondaryButtonTopLeft(counter, false), SHIP_ORDER::COLONIZE);
-					counter++;
-					break;
-				}
-	}
-	// Terraforming (hier beachten wenn es eine Flotte ist, dort schauen ob auch jedes Schiff in
-	// der Flotte auch terraformen kann)
-	if (m_iTimeCounter > (MAIN_BUTTON_CANCEL + counter) && ShipCanHaveOrder(pShip, SHIP_ORDER::TERRAFORM))
-
-	{
-		for (int l = 0; l < csec.GetNumberOfPlanets(); l++)
-			if (csec.GetPlanet(l)->GetHabitable() == TRUE &&
-				csec.GetPlanet(l)->GetTerraformed() == FALSE)
-			{
-				DrawSmallButton("BTN_TERRAFORM",CalcSecondaryButtonTopLeft(counter, false), SHIP_ORDER::TERRAFORM);
-				counter++;
-				break;
-			}
-	}
-}
-
-void CShipBottomView::DrawTransportshipOrders(short &counter) {
-	const CSector& csec = m_dc.pDoc->CurrentSector();
-	CShips pShip = m_dc.pDoc->CurrentShip()->second;
-	CMajor* pMajor = m_pPlayersRace;
-	CRect r(m_dc.r);
-
-	// Außenposten/Sternbasis bauen (hier beachten wenn es eine Flotte ist, dort schauen ob auch jedes
-	// Schiff in der Flotte Stationen bauen kann)
-	if (m_iTimeCounter > (MAIN_BUTTON_CANCEL + counter) && 
-		// Ab hier check wegen Flotten, darum wirds lang (müssen nur einen der Befehle (egal ob Outpost oder
-		// Starbase gebaut werden soll) übergeben, weil wenn das eine geht, geht auch das andere
-		ShipCanHaveOrder(pShip, SHIP_ORDER::BUILD_OUTPOST))
-	{
-		CPoint ShipKO = m_dc.pDoc->GetKO();
-		// hier schauen, ob ich in der Schiffsinfoliste schon einen Außenposten habe den ich bauen kann, wenn in dem
-		// Sector noch kein Außenposten steht und ob ich diesen in dem Sector überhaupt bauen kann. Das geht nur
-		// wenn der Sektor mir oder niemanden gehört
-		if(csec.IsStationBuildable(SHIP_TYPE::OUTPOST, pShip.GetOwnerOfShip()))
-		{
-			// Hier überprüfen, ob ich einen Außenposten technologisch überhaupt bauen kann
-			for (int l = 0; l < m_dc.pDoc->m_ShipInfoArray.GetSize(); l++)
-				if(pMajor->CanBuildShip(SHIP_TYPE::OUTPOST, m_dc.researchLevels, m_dc.pDoc->m_ShipInfoArray.GetAt(l)))
-				{
-					// Wenn ja dann Schaltfläche zum Außenpostenbau einblenden
-					DrawSmallButton("BTN_BUILD_OUTPOST",CalcSecondaryButtonTopLeft(counter, false),SHIP_ORDER::BUILD_OUTPOST);
-					counter++;
-					break;
-				}
-		}
-		// Wenn hier schon ein Außenposten steht, können wir vielleicht auch eine Sternbasis bauen
-		else if (csec.IsStationBuildable(SHIP_TYPE::STARBASE, pShip.GetOwnerOfShip()))
-		{
-			// Hier überprüfen, ob ich eine Sternbasis technologisch überhaupt bauen kann
-			for (int l = 0; l < m_dc.pDoc->m_ShipInfoArray.GetSize(); l++)
-				if(pMajor->CanBuildShip(SHIP_TYPE::STARBASE, m_dc.researchLevels, m_dc.pDoc->m_ShipInfoArray.GetAt(l)))
-				{
-					// Wenn ja dann Schaltfläche zum Sternenbasisbau einblenden
-					DrawSmallButton("BTN_BUILD_STARBASE",CalcSecondaryButtonTopLeft(counter, false),SHIP_ORDER::BUILD_STARBASE);
-					counter++;
-					break;
-				}
-		}
-	}
-	// Transport
-	if (m_iTimeCounter > (MAIN_BUTTON_CANCEL + counter) && 
-		ShipCanHaveOrder(pShip, SHIP_ORDER::TRANSPORT))
-	{
-		DrawSmallButton("BTN_TRANSPORT", CalcSecondaryButtonTopLeft(counter, false),SHIP_ORDER::TRANSPORT);
-		counter++;
-	}
-}
-
 void CShipBottomView::SetUpMainButtons() {
 	m_vMainShipOrders.clear();
 	const CRect& r = m_dc.r;
@@ -403,9 +315,6 @@ void CShipBottomView::SetUpMainButtons() {
 }
 
 void CShipBottomView::DrawMaincommandMenu() {
-	// Taktik
-	// Befehl
-	// Aktion
 	for(std::vector<const MainButtonInfo>::const_iterator i = m_vMainShipOrders.begin();
 			i != m_vMainShipOrders.end(); ++i)
 	{
@@ -421,17 +330,21 @@ void CShipBottomView::DrawMaincommandMenu() {
 	}
 }
 
+bool CShipBottomView::TimeDoDraw(short counter) const {
+	return m_iTimeCounter > (MAIN_BUTTON_CANCEL + counter);
+}
+
 short CShipBottomView::DrawCombatMenu() {
 	const CShips& pShip = m_dc.pDoc->CurrentShip()->second;
 	short counter = 0;
 	// angreifen
-	if (m_iTimeCounter > MAIN_BUTTON_CANCEL && ShipCanHaveOrder(pShip, SHIP_ORDER::ATTACK))
+	if (TimeDoDraw(counter) && ShipCanHaveOrder(pShip, SHIP_ORDER::ATTACK))
 	{
 		DrawSmallButton("BTN_ATTACK", CalcSecondaryButtonTopLeft(counter), SHIP_ORDER::ATTACK);
 		counter++;
 	}
 	// meiden
-	else if (m_iTimeCounter > MAIN_BUTTON_CANCEL && ShipCanHaveOrder(pShip, SHIP_ORDER::AVOID))
+	else if (TimeDoDraw(counter) && ShipCanHaveOrder(pShip, SHIP_ORDER::AVOID))
 	{
 		DrawSmallButton("BTN_AVOID",CalcSecondaryButtonTopLeft(counter), SHIP_ORDER::AVOID);
 		counter++;
@@ -439,52 +352,30 @@ short CShipBottomView::DrawCombatMenu() {
 	return counter;
 }
 
-short CShipBottomView::DrawTacticsMenu() {
-	CShips pShip = m_dc.pDoc->CurrentShip()->second;
-	CRect r(m_dc.r);
+short CShipBottomView::DrawMultiTurnOrderMenu() {
+	const CShips& pShip = m_dc.pDoc->CurrentShip()->second;
+	const CRect r(m_dc.r);
 	short counter = 0;
-	CSector csec = m_dc.pDoc->CurrentSector();
+	CSector& csec = m_dc.pDoc->CurrentSector();
+	const CMajor* pMajor = m_pPlayersRace;
 
-	// folgende Befehle gehen alle nur, wenn es keine Station ist
-	if (!pShip.IsStation())
+	//maximum orders in this cathegory:
+	//5; in an own system with training, a terraformable planet, a damaged ship
+
+	// Wache
+	if (TimeDoDraw(counter) && ShipCanHaveOrder(m_dc.pDoc->CurrentShip()->second, SHIP_ORDER::SENTRY_SHIP_ORDER))
 	{
-		// gruppieren
-		if (m_iTimeCounter > (MAIN_BUTTON_CANCEL + counter))
-		{
-			DrawSmallButton("BTN_CREATE_FLEET",CalcSecondaryButtonTopLeft(counter),SHIP_ORDER::CREATE_FLEET);
-			counter++;
-		}
-		// trainieren
-		if (m_iTimeCounter > (MAIN_BUTTON_CANCEL + counter) && ShipCanHaveOrder(pShip, SHIP_ORDER::TRAIN_SHIP, &csec, &m_dc.pDoc->CurrentSystem()))
-		{
-			DrawSmallButton("BTN_TRAIN_SHIP",CalcSecondaryButtonTopLeft(counter),SHIP_ORDER::TRAIN_SHIP);
-			counter++;
-		}
-		// tarnen (hier beachten wenn es eine Flotte ist, dort schauen ob sich jedes Schiff in der Flotte auch
-		// tarnen kann)
-		if (m_iTimeCounter > (MAIN_BUTTON_CANCEL + counter) && ShipCanHaveOrder(pShip, SHIP_ORDER::ENCLOAK))
-		{
-			DrawSmallButton("BTN_CLOAK",CalcSecondaryButtonTopLeft(counter),SHIP_ORDER::ENCLOAK);
-			counter++;
-		}
-		if (m_iTimeCounter > (MAIN_BUTTON_CANCEL + counter) && ShipCanHaveOrder(pShip, SHIP_ORDER::DECLOAK))
-		{
-			DrawSmallButton("BTN_DECLOAK",CalcSecondaryButtonTopLeft(counter),SHIP_ORDER::DECLOAK);
-			counter++;
-		}
+		DrawSmallButton("BTN_SENTRY_SHIP_ORDER",CalcSecondaryButtonTopLeft(counter),SHIP_ORDER::SENTRY_SHIP_ORDER);
+		counter++;
 	}
-	return counter;
-}
-
-short CShipBottomView::DrawOrdersMenu() {
-	CShips pShip = m_dc.pDoc->CurrentShip()->second;
-	CRect r(m_dc.r);
-	CMajor* pMajor = m_pPlayersRace;
-	CSector csec = m_dc.pDoc->CurrentSector();
-	short counter = 0;
-
+	// trainieren
+	if (TimeDoDraw(counter) && ShipCanHaveOrder(pShip, SHIP_ORDER::TRAIN_SHIP, &csec, &m_dc.pDoc->CurrentSystem()))
+	{
+		DrawSmallButton("BTN_TRAIN_SHIP",CalcSecondaryButtonTopLeft(counter),SHIP_ORDER::TRAIN_SHIP);
+		counter++;
+	}
 	// Systemangriff
-	if (m_iTimeCounter > MAIN_BUTTON_CANCEL)
+	if (TimeDoDraw(counter) && ShipCanHaveOrder(pShip, SHIP_ORDER::ATTACK_SYSTEM))
 	{
 		// Wenn im Sektor ein Sonnensystem ist
 		if (csec.GetSunSystem() == TRUE &&
@@ -510,9 +401,8 @@ short CShipBottomView::DrawOrdersMenu() {
 			}
 		}
 	}
-
 	// Systemblockade
-	if (m_iTimeCounter > (MAIN_BUTTON_CANCEL + counter) && ShipCanHaveOrder(pShip, SHIP_ORDER::BLOCKADE_SYSTEM))
+	if (TimeDoDraw(counter) && ShipCanHaveOrder(pShip, SHIP_ORDER::BLOCKADE_SYSTEM))
 	{
 		// Überprüfen ob man eine Blockade im System überhaupt errichten kann
 		// Wenn das System nicht der Rasse gehört, der auch das Schiff gehört
@@ -524,33 +414,60 @@ short CShipBottomView::DrawOrdersMenu() {
 			counter++;
 		}
 	}
-	// Flagschiffernennung, geht nur wenn es keine Flotte ist
-	if (m_iTimeCounter > (MAIN_BUTTON_CANCEL + counter) && m_iWhichMainShipOrderButton == MAIN_BUTTON_ORDERS
-		&& ShipCanHaveOrder(m_dc.pDoc->CurrentShip()->second, SHIP_ORDER::ASSIGN_FLAGSHIP))
+	// Terraforming (hier beachten wenn es eine Flotte ist, dort schauen ob auch jedes Schiff in
+	// der Flotte auch terraformen kann)
+	if (TimeDoDraw(counter) && ShipCanHaveOrder(pShip, SHIP_ORDER::TERRAFORM))
 	{
-		DrawSmallButton("BTN_ASSIGN_FLAGSHIP",CalcSecondaryButtonTopLeft(counter),SHIP_ORDER::ASSIGN_FLAGSHIP);
-		counter++;
+		for (int l = 0; l < csec.GetNumberOfPlanets(); l++)
+			if (csec.GetPlanet(l)->GetHabitable() == TRUE &&
+				csec.GetPlanet(l)->GetTerraformed() == FALSE)
+			{
+				DrawSmallButton("BTN_TERRAFORM",CalcSecondaryButtonTopLeft(counter), SHIP_ORDER::TERRAFORM);
+				counter++;
+				break;
+			}
 	}
-	// Warten
-	if (m_iTimeCounter > (MAIN_BUTTON_CANCEL + counter) && m_iWhichMainShipOrderButton == MAIN_BUTTON_ORDERS
-		&& ShipCanHaveOrder(m_dc.pDoc->CurrentShip()->second, SHIP_ORDER::WAIT_SHIP_ORDER))
+	// Außenposten/Sternbasis bauen (hier beachten wenn es eine Flotte ist, dort schauen ob auch jedes
+	// Schiff in der Flotte Stationen bauen kann)
+	// (müssen nur einen der Befehle (egal ob Outpost oder
+	// Starbase gebaut werden soll) übergeben, weil wenn das eine geht, geht auch das andere
+	if (TimeDoDraw(counter) && ShipCanHaveOrder(pShip, SHIP_ORDER::BUILD_OUTPOST))
 	{
-		DrawSmallButton("BTN_WAIT_SHIP_ORDER",CalcSecondaryButtonTopLeft(counter),SHIP_ORDER::WAIT_SHIP_ORDER);
-		counter++;
-	}
-	// Wache
-	if (m_iTimeCounter > (MAIN_BUTTON_CANCEL + counter) && m_iWhichMainShipOrderButton == MAIN_BUTTON_ORDERS
-		&& ShipCanHaveOrder(m_dc.pDoc->CurrentShip()->second, SHIP_ORDER::SENTRY_SHIP_ORDER))
-	{
-		DrawSmallButton("BTN_SENTRY_SHIP_ORDER",CalcSecondaryButtonTopLeft(counter),SHIP_ORDER::SENTRY_SHIP_ORDER);
-		counter++;
+		CPoint ShipKO = m_dc.pDoc->GetKO();
+		// hier schauen, ob ich in der Schiffsinfoliste schon einen Außenposten habe den ich bauen kann, wenn in dem
+		// Sector noch kein Außenposten steht und ob ich diesen in dem Sector überhaupt bauen kann. Das geht nur
+		// wenn der Sektor mir oder niemanden gehört
+		if(csec.IsStationBuildable(SHIP_TYPE::OUTPOST, pShip.GetOwnerOfShip()))
+		{
+			// Hier überprüfen, ob ich einen Außenposten technologisch überhaupt bauen kann
+			for (int l = 0; l < m_dc.pDoc->m_ShipInfoArray.GetSize(); l++)
+				if(pMajor->CanBuildShip(SHIP_TYPE::OUTPOST, m_dc.researchLevels, m_dc.pDoc->m_ShipInfoArray.GetAt(l)))
+				{
+					// Wenn ja dann Schaltfläche zum Außenpostenbau einblenden
+					DrawSmallButton("BTN_BUILD_OUTPOST",CalcSecondaryButtonTopLeft(counter),SHIP_ORDER::BUILD_OUTPOST);
+					counter++;
+					break;
+				}
+		}
+		// Wenn hier schon ein Außenposten steht, können wir vielleicht auch eine Sternbasis bauen
+		else if (csec.IsStationBuildable(SHIP_TYPE::STARBASE, pShip.GetOwnerOfShip()))
+		{
+			// Hier überprüfen, ob ich eine Sternbasis technologisch überhaupt bauen kann
+			for (int l = 0; l < m_dc.pDoc->m_ShipInfoArray.GetSize(); l++)
+				if(pMajor->CanBuildShip(SHIP_TYPE::STARBASE, m_dc.researchLevels, m_dc.pDoc->m_ShipInfoArray.GetAt(l)))
+				{
+					// Wenn ja dann Schaltfläche zum Sternenbasisbau einblenden
+					DrawSmallButton("BTN_BUILD_STARBASE",CalcSecondaryButtonTopLeft(counter),SHIP_ORDER::BUILD_STARBASE);
+					counter++;
+					break;
+				}
+		}
 	}
 	// Repairing
 	// Only possible if
 	// 1) the ship or any of the ships in its fleet are actually damaged.
 	// 2) we (or an allied race) have a ship port in this sector.
-	if (m_iTimeCounter > (MAIN_BUTTON_CANCEL + counter) && 
-		ShipCanHaveOrder(pShip, SHIP_ORDER::REPAIR,
+	if (TimeDoDraw(counter) && ShipCanHaveOrder(pShip, SHIP_ORDER::REPAIR,
 			&m_dc.pDoc->GetSector(
 				pShip.GetKO().x,
 				pShip.GetKO().y
@@ -564,20 +481,80 @@ short CShipBottomView::DrawOrdersMenu() {
 	return counter;
 }
 
-short CShipBottomView::DrawActionsMenu(bool isStation) {
-
+short CShipBottomView::DrawSingleTurnOrderMenu() {
+	const CShips& pShip = m_dc.pDoc->CurrentShip()->second;
+	const CRect r(m_dc.r);
+	CSector& csec = m_dc.pDoc->CurrentSector();
 	short counter = 0;
-	if( !isStation ) {
-		DrawColonyshipOrders(counter);
-		DrawTransportshipOrders(counter);
-	}
-	// Schiff abwracken/zerstören
-	if (m_iTimeCounter > (MAIN_BUTTON_CANCEL + counter) && ShipCanHaveOrder(m_dc.pDoc->CurrentShip()->second, SHIP_ORDER::DESTROY_SHIP))
+
+	//maximum orders in this category: 5; in an own system with a colonizable planet, a coloship, a cloakable ship
+
+	// Flagschiffernennung, geht nur wenn es keine Flotte ist
+	if (TimeDoDraw(counter) && ShipCanHaveOrder(m_dc.pDoc->CurrentShip()->second, SHIP_ORDER::ASSIGN_FLAGSHIP))
 	{
-		DrawSmallButton("BTN_DESTROY_SHIP",CalcSecondaryButtonTopLeft(counter, false),SHIP_ORDER::DESTROY_SHIP);
+		DrawSmallButton("BTN_ASSIGN_FLAGSHIP",CalcSecondaryButtonTopLeft(counter),SHIP_ORDER::ASSIGN_FLAGSHIP);
 		counter++;
 	}
+	// Warten
+	if (TimeDoDraw(counter) && ShipCanHaveOrder(m_dc.pDoc->CurrentShip()->second, SHIP_ORDER::WAIT_SHIP_ORDER))
+	{
+		DrawSmallButton("BTN_WAIT_SHIP_ORDER",CalcSecondaryButtonTopLeft(counter),SHIP_ORDER::WAIT_SHIP_ORDER);
+		counter++;
+	}
+	// Schiff abwracken/zerstören
+	if (TimeDoDraw(counter) && ShipCanHaveOrder(m_dc.pDoc->CurrentShip()->second, SHIP_ORDER::DESTROY_SHIP))
+	{
+		DrawSmallButton("BTN_DESTROY_SHIP",CalcSecondaryButtonTopLeft(counter),SHIP_ORDER::DESTROY_SHIP);
+		counter++;
+	}
+	// tarnen (hier beachten wenn es eine Flotte ist, dort schauen ob sich jedes Schiff in der Flotte auch
+	// tarnen kann)
+	if (TimeDoDraw(counter) && ShipCanHaveOrder(pShip, SHIP_ORDER::ENCLOAK))
+	{
+		DrawSmallButton("BTN_CLOAK",CalcSecondaryButtonTopLeft(counter),SHIP_ORDER::ENCLOAK);
+		counter++;
+	}
+	if (TimeDoDraw(counter) && ShipCanHaveOrder(pShip, SHIP_ORDER::DECLOAK))
+	{
+		DrawSmallButton("BTN_DECLOAK",CalcSecondaryButtonTopLeft(counter),SHIP_ORDER::DECLOAK);
+		counter++;
+	}
+	// Kolonisierung (hier beachten wenn es eine Flotte ist, dort schauen ob auch jedes Schiff in
+	// der Flotte auch kolonisieren kann)
+	if (TimeDoDraw(counter) && ShipCanHaveOrder(pShip, SHIP_ORDER::COLONIZE))
+	{
+		// Wenn das System uns bzw. niemanden gehört können wir nur kolonisieren
+		if (csec.GetOwnerOfSector() == "" || csec.GetOwnerOfSector() == pShip.GetOwnerOfShip())
+			for (int l = 0; l < csec.GetNumberOfPlanets(); l++)
+				if (csec.GetPlanet(l)->GetTerraformed() == TRUE
+					&& csec.GetPlanet(l)->GetCurrentHabitant() == 0.0f)
+				{
+					DrawSmallButton("BTN_COLONIZE", CalcSecondaryButtonTopLeft(counter), SHIP_ORDER::COLONIZE);
+					counter++;
+					break;
+				}
+	}
+	return counter;
+}
 
+short CShipBottomView::DrawImmediateOrderMenu() {
+
+	short counter = 0;
+	const CShips& pShip = m_dc.pDoc->CurrentShip()->second;
+	const CRect r(m_dc.r);
+
+	// gruppieren
+	if (TimeDoDraw(counter) && ShipCanHaveOrder(pShip, SHIP_ORDER::CREATE_FLEET))
+	{
+		DrawSmallButton("BTN_CREATE_FLEET",CalcSecondaryButtonTopLeft(counter, false),SHIP_ORDER::CREATE_FLEET);
+		counter++;
+	}
+	// Transport
+	if (TimeDoDraw(counter) && ShipCanHaveOrder(pShip, SHIP_ORDER::TRANSPORT))
+	{
+		DrawSmallButton("BTN_TRANSPORT", CalcSecondaryButtonTopLeft(counter, false),SHIP_ORDER::TRANSPORT);
+		counter++;
+	}
 	return counter;
 }
 
@@ -629,7 +606,6 @@ void CShipBottomView::DrawMenu() {
 	m_dc.researchLevels[4] = res->GetConstructionTech();
 	m_dc.researchLevels[5] = res->GetWeaponTech();
 	
-	bool isStation = (m_dc.pDoc->CurrentShip()->second.IsStation());
 	CRect rect;
 
 	// Alle Rechtecke für die Buttons der Schiffsbefehle erstmal auf NULL setzen, damit wir nicht draufklicken
@@ -640,16 +616,16 @@ void CShipBottomView::DrawMenu() {
 	DrawMaincommandMenu();
 
 	short counter = 0;
-	if( m_iWhichMainShipOrderButton == MAIN_BUTTON_TACTICS )
-		counter = DrawTacticsMenu();
-	else if( m_iWhichMainShipOrderButton == MAIN_BUTTON_ORDERS && !isStation )
-		counter = DrawOrdersMenu();
-	else if( m_iWhichMainShipOrderButton == MAIN_BUTTON_ACTIONS )
-		counter = DrawActionsMenu(isStation);
-	else if( m_iWhichMainShipOrderButton == MAIN_BUTTON_COMBAT_BEHAVIOR )
+	if( m_iWhichMainShipOrderButton == MAIN_BUTTON_COMBAT_BEHAVIOR )
 		counter = DrawCombatMenu();
+	if( m_iWhichMainShipOrderButton == MAIN_BUTTON_MULTI_TURN_ORDER )
+		counter = DrawMultiTurnOrderMenu();
+	else if( m_iWhichMainShipOrderButton == MAIN_BUTTON_SINGLE_TURN_ORDER)
+		counter = DrawSingleTurnOrderMenu();
+	else if( m_iWhichMainShipOrderButton == MAIN_BUTTON_IMMEDIATE_ORDER )
+		counter = DrawImmediateOrderMenu();
 
-	if (m_iTimeCounter > (MAIN_BUTTON_CANCEL + counter))
+	if (TimeDoDraw(counter))
 	{
 		this->KillTimer(1);
 		m_iTimeCounter = 0;
@@ -704,6 +680,8 @@ void CShipBottomView::OnDraw(CDC* dc)
 		DrawStationData();
 	}
 
+	//TODO: instead of the magic number 10, what should be here ?
+	//probably something like MAIN_BUTTON_CANCEL + SHIP_ORDER::CANCEL ? (maximum values from those enums)
 	// Wenn wir dem Schiff einen neuen Befehl geben, ohne das die Buttons über den Timer vollständig gezeichnet wurden
 	// verschwindet das Schiff in der Anzeige, da der TimeCounter nicht wieder auf NULL gesetzt wird. Dies machen
 	// wir hier manuell, falls dieser Fall eintritt

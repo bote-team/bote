@@ -71,9 +71,9 @@ private:
 	enum MAIN_BUTTON {
 		MAIN_BUTTON_NONE,
 		MAIN_BUTTON_COMBAT_BEHAVIOR,
-		MAIN_BUTTON_TACTICS,
-		MAIN_BUTTON_ORDERS,
-		MAIN_BUTTON_ACTIONS,
+		MAIN_BUTTON_MULTI_TURN_ORDER,
+		MAIN_BUTTON_SINGLE_TURN_ORDER,
+		MAIN_BUTTON_IMMEDIATE_ORDER,
 		MAIN_BUTTON_CANCEL
 	};
 	// Funktionen
@@ -140,9 +140,9 @@ private:
 		CString String() const {
 			switch(which) {
 				case MAIN_BUTTON_COMBAT_BEHAVIOR: return "COMBAT_BEHAVIOR";
-				case MAIN_BUTTON_TACTICS: return "BTN_TACTIC";
-				case MAIN_BUTTON_ORDERS: return "BTN_ORDER";
-				case MAIN_BUTTON_ACTIONS: return "BTN_ACTION";
+				case MAIN_BUTTON_MULTI_TURN_ORDER: return "BTN_MULTI_TURN_ORDER";
+				case MAIN_BUTTON_SINGLE_TURN_ORDER: return "BTN_SINGLE_TURN_ORDER";
+				case MAIN_BUTTON_IMMEDIATE_ORDER: return "BTN_IMMEDIATE_ORDER";
 				case MAIN_BUTTON_CANCEL: return "BTN_CANCEL";
 				default:
 					assert(false);
@@ -167,18 +167,17 @@ private:
 	bool CheckDisplayShip(CShips *pShip, CSector *csec );
 	void DrawShipContent();
 	
+	bool TimeDoDraw(short counter) const;
 	void DrawMaincommandMenu();
 	short DrawCombatMenu();
-	short DrawTacticsMenu();
-	short DrawOrdersMenu();
-	short DrawActionsMenu(bool isStation);
+	short DrawMultiTurnOrderMenu();
+	short DrawSingleTurnOrderMenu();
+	short DrawImmediateOrderMenu();
 
 	void DrawStationData();
 	void DrawMenu();
 
 	CPoint CalcSecondaryButtonTopLeft(short counter, bool top_down = true) const;
-	void DrawColonyshipOrders(short &counter);
-	void DrawTransportshipOrders(short &counter);
 
 	void DrawImage( CString resName, CRect r );
 	void DrawSmallButton( const CString& resString, const CPoint& coords, SHIP_ORDER::Typ shiporder = SHIP_ORDER::NONE );

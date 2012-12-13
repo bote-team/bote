@@ -186,12 +186,12 @@ Jetzige
 Verloren
 
 // Schiffsbefehlsbuttons
-[BTN_TACTIC]
-Taktik
-[BTN_ORDER]
-Befehl
-[BTN_ACTION]
-Aktion
+[BTN_MULTI_TURN_ORDER]
+Mehrrundenbefehl
+[BTN_SINGLE_TURN_ORDER]
+Einrundenbefehl
+[BTN_IMMEDIATE_ORDER]
+Sofortbefehl
 [BTN_AVOID]
 Meiden
 [BTN_ATTACK]
