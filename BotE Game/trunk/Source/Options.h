@@ -320,7 +320,8 @@ namespace SHIP_ORDER
 		WAIT_SHIP_ORDER		= 16,
 		SENTRY_SHIP_ORDER	= 17,
 		REPAIR				= 18,
-		DECLOAK				= 19
+		DECLOAK				= 19,
+		CANCEL				= 20
 	};
 }
 

@@ -840,6 +840,7 @@ bool CShip::CanHaveOrder(SHIP_ORDER::Typ order, bool require_new) const {
 		case SHIP_ORDER::TRAIN_SHIP:
 		case SHIP_ORDER::WAIT_SHIP_ORDER:
 		case SHIP_ORDER::SENTRY_SHIP_ORDER:
+		case SHIP_ORDER::CANCEL:
 			return true;
 		case SHIP_ORDER::REPAIR:
 			return NeedsRepair();

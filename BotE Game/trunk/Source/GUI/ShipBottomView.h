@@ -70,9 +70,11 @@ public:
 private:
 	enum MAIN_BUTTON {
 		MAIN_BUTTON_NONE,
+		MAIN_BUTTON_COMBAT_BEHAVIOR,
 		MAIN_BUTTON_TACTICS,
 		MAIN_BUTTON_ORDERS,
-		MAIN_BUTTON_ACTIONS
+		MAIN_BUTTON_ACTIONS,
+		MAIN_BUTTON_CANCEL
 	};
 	// Funktionen
 	/// Funktion ermittelt die Nummer des Schiffes im Array, über welches die Maus bewegt wurde.
@@ -137,12 +139,11 @@ private:
 			{};
 		CString String() const {
 			switch(which) {
-				case MAIN_BUTTON_TACTICS:
-					return "BTN_TACTIC";
-				case MAIN_BUTTON_ORDERS:
-					return "BTN_ORDER";
-				case MAIN_BUTTON_ACTIONS:
-					return "BTN_ACTION";
+				case MAIN_BUTTON_COMBAT_BEHAVIOR: return "COMBAT_BEHAVIOR";
+				case MAIN_BUTTON_TACTICS: return "BTN_TACTIC";
+				case MAIN_BUTTON_ORDERS: return "BTN_ORDER";
+				case MAIN_BUTTON_ACTIONS: return "BTN_ACTION";
+				case MAIN_BUTTON_CANCEL: return "BTN_CANCEL";
 				default:
 					assert(false);
 			}
@@ -167,6 +168,7 @@ private:
 	void DrawShipContent();
 	
 	void DrawMaincommandMenu();
+	short DrawCombatMenu();
 	short DrawTacticsMenu();
 	short DrawOrdersMenu();
 	short DrawActionsMenu(bool isStation);
