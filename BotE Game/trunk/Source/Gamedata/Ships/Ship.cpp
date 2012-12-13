@@ -1459,10 +1459,11 @@ CString CShip::SanityCheckUniqueness(std::set<CString>& already_encountered) con
 }
 
 bool CShip::SanityCheckOrdersConsistency(const CShip& with) const {
-	assert(m_iCurrentOrder != SHIP_ORDER::ATTACK
-		&& m_iCurrentOrder != SHIP_ORDER::AVOID
-		&& with.m_iCurrentOrder != SHIP_ORDER::ATTACK
-		&& with.m_iCurrentOrder != SHIP_ORDER::AVOID);
+	if(m_iCurrentOrder == SHIP_ORDER::ATTACK
+		|| m_iCurrentOrder == SHIP_ORDER::AVOID
+		|| with.m_iCurrentOrder == SHIP_ORDER::ATTACK
+		|| with.m_iCurrentOrder == SHIP_ORDER::AVOID)
+		return false;
 	assert(CanHaveOrder(with.m_iCurrentOrder, false));
 	return m_iCurrentOrder == with.m_iCurrentOrder
 		&& m_nCombatTactic == with.m_nCombatTactic
