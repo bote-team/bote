@@ -1241,6 +1241,8 @@ Warten
 Stationieren
 [REPAIR_SHIP_ORDER]
 Reparieren
+[NO_SHIP_ORDER]
+Nichts
 
 // Schiffstypen, Einzahl
 [TRANSPORTER]

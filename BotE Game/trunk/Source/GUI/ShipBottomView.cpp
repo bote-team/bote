@@ -244,7 +244,7 @@ void CShipBottomView::DrawShipContent() {
 	}
 
 	// Wenn nur ein Schiff in dem System ist, so wird es automatisch ausgewählt
-	if (counter == 1 && !m_bShowStation && oneShip->second.GetCurrentOrder() <= SHIP_ORDER::ATTACK
+	if (counter == 1 && !m_bShowStation /*&& oneShip->second.GetCurrentOrder() <= SHIP_ORDER::ATTACK*/
 		&& oneShip->second.GetOwnerOfShip() == pMajor->GetRaceID())
 	{
 		// Wenn wenn wir auf der Galaxiekarte sind
@@ -903,7 +903,7 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 				SHIP_ORDER::Typ nOrder = static_cast<SHIP_ORDER::Typ>(i - m_vSecondaryShipOrders.begin());
 				// Bei manchen Befehlen müssen wir einen möglichen Zielkurs wieder zurücknehmen.
 				if (nOrder != SHIP_ORDER::AVOID && nOrder != SHIP_ORDER::ATTACK && nOrder != SHIP_ORDER::ENCLOAK && nOrder != SHIP_ORDER::DECLOAK && nOrder != SHIP_ORDER::ASSIGN_FLAGSHIP && nOrder != SHIP_ORDER::CREATE_FLEET && nOrder != SHIP_ORDER::TRANSPORT)
-					pDoc->CurrentShip()->second.SetTargetKO(CPoint(-1, -1), 0);
+					pDoc->CurrentShip()->second.SetTargetKO(CPoint(-1, -1));
 				// Wenn wir eine Flotte bilden wollen (Schiffe gruppieren), dann in der MainView die Flottenansicht zeigen
 				if (nOrder == SHIP_ORDER::CREATE_FLEET)
 				{
@@ -1045,7 +1045,8 @@ void CShipBottomView::OnRButtonDown(UINT nFlags, CPoint point)
 		CGalaxyMenuView::SetMoveShip(FALSE);
 		if (resources::pMainFrame->GetActiveView(1, 1) == PLANET_BOTTOM_VIEW)	// Wenn wir kolon oder terraformen abbrechen wollen, zurück zum Schiffsmenü
 		{
-			pDoc->CurrentShip()->second.SetCurrentOrder(SHIP_ORDER::AVOID);
+			pDoc->CurrentShip()->second.UnsetCurrentOrder();
+			pDoc->CurrentShip()->second.SetCombatTactic(COMBAT_TACTIC::CT_AVOID);
 			m_bShowStation = false;
 			Invalidate();
 		}

@@ -3689,11 +3689,6 @@ void CBotf2Doc::CalcShipOrders()
 		CSector* pSector = &GetSector(y->second.GetKO().x, y->second.GetKO().y);
   		CSystem* pSystem = &GetSystem(y->second.GetKO().x, y->second.GetKO().y);
 
-		if (y->second.GetCurrentOrder() == SHIP_ORDER::ATTACK)
-			y->second.SetCombatTactic(COMBAT_TACTIC::CT_ATTACK);
-		else if (y->second.GetCurrentOrder() == SHIP_ORDER::AVOID)
-			y->second.SetCombatTactic(COMBAT_TACTIC::CT_AVOID);
-
 		// Hier wird überprüft, ob der Systemattack-Befehl noch gültig ist
 		// Alle Schiffe, welche einen Systemangriffsbefehl haben überprüfen, ob dieser Befehl noch gültig ist
 		if (y->second.GetCurrentOrder() == SHIP_ORDER::ATTACK_SYSTEM)
@@ -3779,8 +3774,7 @@ void CBotf2Doc::CalcShipOrders()
 					}
 					else
 					{
-						y->second.SetCurrentOrder(SHIP_ORDER::AVOID);
-						y->second.SetTerraform(-1);
+						y->second.UnsetCurrentOrder();
 						continue;
 					}
 				}
@@ -3797,8 +3791,7 @@ void CBotf2Doc::CalcShipOrders()
 					}
 					else
 					{
-						y->second.SetCurrentOrder(SHIP_ORDER::AVOID);
-						y->second.SetTerraform(-1);
+						y->second.UnsetCurrentOrder();
 						continue;
 					}
 				}
@@ -3858,16 +3851,14 @@ void CBotf2Doc::CalcShipOrders()
 				pMajor->AddToLostShipHistory(y->second.Leader(), s, CResourceManager::GetString("DESTROYED"),
 					m_iRound);
 				// Schiff entfernen
-				y->second.SetCurrentOrder(SHIP_ORDER::AVOID);
-				y->second.SetTerraform(-1);
+				y->second.UnsetCurrentOrder();
 				RemoveShip(y);
 				increment = false;
 				continue;
 			}
 			else
 			{
-				y->second.SetCurrentOrder(SHIP_ORDER::AVOID);
-				y->second.SetTerraform(-1);
+				y->second.UnsetCurrentOrder();
 			}
 		}
 		// hier wird ein Planet geterraformed
@@ -3883,8 +3874,7 @@ void CBotf2Doc::CalcShipOrders()
 				if (pSector->GetPlanet(y->second.GetTerraform())->SetNeededTerraformPoints(y->second.GetColonizePoints()))
 				{
 					// Hier wurde ein Planet erfolgreich geterraformt
-					y->second.SetCurrentOrder(SHIP_ORDER::AVOID);
-					y->second.SetTerraform(-1);
+					y->second.UnsetCurrentOrder();
 					// Nachricht generieren, dass Terraforming abgeschlossen wurde
 					CString s = CResourceManager::GetString("TERRAFORMING_FINISHED",FALSE,pSector->GetName());
 					CMessage message;
@@ -3927,8 +3917,7 @@ void CBotf2Doc::CalcShipOrders()
 						colonize_points_sum += colonize_points;
 						if (pSector->GetPlanet(x->second.GetTerraform())->SetNeededTerraformPoints(colonize_points))
 						{
-							y->second.SetCurrentOrder(SHIP_ORDER::AVOID);
-							y->second.SetTerraform(-1);
+							y->second.UnsetCurrentOrder();
 							// Nachricht generieren, dass Terraforming abgeschlossen wurde
 							CString s = CResourceManager::GetString("TERRAFORMING_FINISHED",FALSE,pSector->GetName());
 							CMessage message;
@@ -3952,8 +3941,7 @@ void CBotf2Doc::CalcShipOrders()
 					}
 					else	// wenn der Plani aus irgendeinen Grund schon geterraformed ist
 					{
-						y->second.SetCurrentOrder(SHIP_ORDER::AVOID);
-						y->second.SetTerraform(-1);
+						y->second.UnsetCurrentOrder();
 						break;
 					}
 				}//for (CShips::const_iterator x = y->second.begin(); x != y->second.end(); ++x)
@@ -4397,7 +4385,7 @@ void CBotf2Doc::CalcShipOrders()
 				}
 			// kann der Blockadebefehl nicht mehr ausgeführt werden, so wird der Befehl automatisch gelöscht
 			if (!blockadeStillActive)
-				y->second.SetCurrentOrder(SHIP_ORDER::ATTACK);
+				y->second.UnsetCurrentOrder();
 			// wird das System schlussendlich blockiert, so produzieren die Handelsrouten kein Credits mehr
 			if (pSystem->GetBlockade() > NULL)
 			{
@@ -4489,13 +4477,13 @@ void CBotf2Doc::CalcShipMovement()
 		else if (y->second.GetCurrentOrder() == SHIP_ORDER::BUILD_OUTPOST)
 		{
 			if (GetSector(y->second.GetKO().x, y->second.GetKO().y).GetOutpost(y->second.GetOwnerOfShip()) == TRUE)
-				y->second.SetCurrentOrder(SHIP_ORDER::AVOID);
+				y->second.UnsetCurrentOrder();
 		}
 		// Prüfen, dass ein Sternbasenbaubefehl noch gültig ist
 		else if (y->second.GetCurrentOrder() == SHIP_ORDER::BUILD_STARBASE)
 		{
 			if (GetSector(y->second.GetKO().x, y->second.GetKO().y).GetStarbase(y->second.GetOwnerOfShip()) == TRUE)
-				y->second.SetCurrentOrder(SHIP_ORDER::AVOID);
+				y->second.UnsetCurrentOrder();
 		}
 		// weiter mit Schiffsbewegung
 		Sector shipKO((char)y->second.GetKO().x,(char)y->second.GetKO().y);
@@ -5486,19 +5474,19 @@ void CBotf2Doc::CalcRandomAlienEntities()
 					// unterschiedliche Aliens unterschieden und Schiffseigenschaften festlegen
 					if (pAlien->GetRaceID() == IONISIERENDES_GASWESEN)
 					{
-						pShip->second.SetCurrentOrder(SHIP_ORDER::AVOID);
+						pShip->second.SetCombatTactic(COMBAT_TACTIC::CT_AVOID);
 					}
 					else if (pAlien->GetRaceID() == GABALLIANER_SEUCHENSCHIFF)
 					{
-						pShip->second.SetCurrentOrder(SHIP_ORDER::ATTACK);
+						pShip->second.SetCombatTactic(COMBAT_TACTIC::CT_ATTACK);
 					}
 					else if (pAlien->GetRaceID() == BLIZZARD_PLASMAWESEN)
 					{
-						pShip->second.SetCurrentOrder(SHIP_ORDER::ATTACK);
+						pShip->second.SetCombatTactic(COMBAT_TACTIC::CT_ATTACK);
 					}
 					else if (pAlien->GetRaceID() == MORLOCK_RAIDER)
 					{
-						pShip->second.SetCurrentOrder(SHIP_ORDER::ATTACK);
+						pShip->second.SetCombatTactic(COMBAT_TACTIC::CT_ATTACK);
 						// zufällig gleich mehrere Raider bauen. Umso höher der technische Durchschnitt
 						// in der Galaxie ist, desto mehr Raider kommen auf dem System ins Spiel.
 						if (nMod > 0)
@@ -5630,8 +5618,8 @@ void CBotf2Doc::CalcAlienShipEffects()
 
 						pShip->SetShipType(SHIP_TYPE::ALIEN);
 						pShip->SetTargetKO(CPoint(-1, -1));
-						pShip->SetCurrentOrder(SHIP_ORDER::ATTACK);
-						pShip->SetTerraform(-1);
+						pShip->UnsetCurrentOrder();
+						pShip->SetCombatTactic(COMBAT_TACTIC::CT_ATTACK);
 						pShip->SetIsShipFlagShip(FALSE);
 
 						CMajor* pShipOwner = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(pShip->GetOwnerOfShip()));

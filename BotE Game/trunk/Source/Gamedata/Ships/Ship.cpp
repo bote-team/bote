@@ -47,7 +47,7 @@ CShip::CShip() :
 		m_iLoadedResources[i] = 0;
 	m_bCloakOn = false;
 	m_iShipType = SHIP_TYPE::PROBE;
-	m_iCurrentOrder = SHIP_ORDER::ATTACK;
+	m_iCurrentOrder = SHIP_ORDER::NONE;
 	m_nCombatTactic = COMBAT_TACTIC::CT_ATTACK;
 }
 
@@ -366,7 +366,8 @@ CString CShip::GetCurrentOrderAsString() const
 	case SHIP_ORDER::WAIT_SHIP_ORDER: order = CResourceManager::GetString("WAIT_SHIP_ORDER"); break;
 	case SHIP_ORDER::SENTRY_SHIP_ORDER: order = CResourceManager::GetString("SENTRY_SHIP_ORDER"); break;
 	case SHIP_ORDER::REPAIR: order = CResourceManager::GetString("REPAIR_SHIP_ORDER"); break;
-	default: order = "nothing"; break;
+	case SHIP_ORDER::NONE: order = CResourceManager::GetString("NO_SHIP_ORDER"); break;
+	default: assert(false); break;
 	}
 	return order;
 }
@@ -522,11 +523,14 @@ void CShip::SetTargetKO(const CPoint& TargetKO, const bool simple_setter)
 }
 
 void CShip::SetCurrentOrderAccordingToType() {
-	m_iCurrentOrder = IsNonCombat() ? SHIP_ORDER::AVOID : SHIP_ORDER::ATTACK;
+	UnsetCurrentOrder();
+	SetCombatTacticAccordingToType();
 }
 
 void CShip::SetCurrentOrder(SHIP_ORDER::Typ nCurrentOrder) {
-	assert(nCurrentOrder != SHIP_ORDER::TERRAFORM);
+	assert(nCurrentOrder != SHIP_ORDER::TERRAFORM
+		&& nCurrentOrder != SHIP_ORDER::ATTACK
+		&& nCurrentOrder != SHIP_ORDER::AVOID);
 	if(m_iCurrentOrder == SHIP_ORDER::TERRAFORM)
 		SetTerraform(-1);
 	m_iCurrentOrder = nCurrentOrder;
@@ -538,20 +542,7 @@ void CShip::SetCombatTacticAccordingToType() {
 
 void CShip::UnsetCurrentOrder() {
 	UnsetTerraform();
-	switch(m_nCombatTactic) {
-		case COMBAT_TACTIC::CT_ATTACK:
-			m_iCurrentOrder = SHIP_ORDER::ATTACK;
-		break;
-		case COMBAT_TACTIC::CT_AVOID:
-			m_iCurrentOrder = SHIP_ORDER::AVOID;
-		break;
-		case COMBAT_TACTIC::CT_RETREAT:
-			m_iCurrentOrder = SHIP_ORDER::AVOID;
-		break;
-		default:
-			assert(false);
-		break;
-	}
+	m_iCurrentOrder = SHIP_ORDER::NONE;
 }
 
 bool CShip::RemoveDestroyed(CRace& owner, unsigned short round, const CString& sEvent, const CString& sStatus, CStringArray* destroyedShips, const CString& anomaly) {
@@ -798,8 +789,7 @@ bool CShip::HasSpecial(SHIP_SPECIAL::Typ nAbility) const
 }
 
 bool CShip::HasNothingToDo() const {
-	return (m_iCurrentOrder == SHIP_ORDER::AVOID || m_iCurrentOrder == SHIP_ORDER::ATTACK)
-		&& !HasTarget() && m_iSpeed != 0;
+	return m_iCurrentOrder == SHIP_ORDER::NONE && !HasTarget() && m_iSpeed != 0;
 }
 
 bool CShip::NeedsRepair() const {
@@ -815,16 +805,10 @@ bool CShip::IsVeteran() const {
 }
 
 static bool CheckNew(SHIP_ORDER::Typ order, SHIP_ORDER::Typ co, COMBAT_TACTIC::Typ ct) {
-	if(order == SHIP_ORDER::AVOID) {
-		if(co == SHIP_ORDER::ATTACK)
-			return true;
+	if(order == SHIP_ORDER::AVOID)
 		return ct != COMBAT_TACTIC::CT_AVOID;
-	}
-	else if (order == SHIP_ORDER::ATTACK) {
-		if(co == SHIP_ORDER::AVOID)
-			return true;
+	else if (order == SHIP_ORDER::ATTACK)
 		return ct != COMBAT_TACTIC::CT_ATTACK;
-	}
 	return co != order;
 }
 
@@ -832,6 +816,7 @@ bool CShip::CanHaveOrder(SHIP_ORDER::Typ order, bool require_new) const {
 	if(require_new && !CheckNew(order, m_iCurrentOrder, m_nCombatTactic))
 		return false;
 	switch(order) {
+		case SHIP_ORDER::NONE:
 		case SHIP_ORDER::AVOID:
 		case SHIP_ORDER::ATTACK:
 		case SHIP_ORDER::DESTROY_SHIP:
@@ -865,7 +850,7 @@ bool CShip::CanHaveOrder(SHIP_ORDER::Typ order, bool require_new) const {
 			return GetStorageRoom() >= 1;
 		case SHIP_ORDER::RAID_SYSTEM:
 			return HasSpecial(SHIP_SPECIAL::RAIDER);
-		default://SHIP_ORDER::NONE and possibly added commands
+		default: //possibly added commands
 			assert(false);
 	}
 	return false;

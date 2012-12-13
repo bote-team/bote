@@ -226,7 +226,10 @@ void CMinor::PerhapsBuildShip(CBotf2Doc* pDoc)
 							&& !IsRaceProperty(RACE_PROPERTY::WARLIKE)
 							&& !IsRaceProperty(RACE_PROPERTY::SNEAKY)
 							&& !IsRaceProperty(RACE_PROPERTY::SECRET))
-							ship->second.SetCurrentOrder(SHIP_ORDER::AVOID);
+						{
+							ship->second.UnsetCurrentOrder();
+							ship->second.SetCombatTactic(COMBAT_TACTIC::CT_AVOID);
+						}
 						return;
 					}
 				}

@@ -1453,7 +1453,8 @@ BOOLEAN CIntelCalc::ExecuteMilitarySabotage(CMajor* pRace, CMajor* pEnemyRace, C
 				// neuen Besitzer hinzufügen
 				ship->SetOwnerOfShip(pRace->GetRaceID());
 				ship->SetIsShipFlagShip(FALSE);
-				ship->SetCurrentOrder(SHIP_ORDER::AVOID);
+				ship->UnsetCurrentOrder();
+				ship->SetCombatTactic(COMBAT_TACTIC::CT_AVOID);
 				// gestohlenes Schiff zum nächsten eigenen System verschieben
 				CPoint oldKO = ship->GetKO();
 				CPoint newKO = ship->GetKO();

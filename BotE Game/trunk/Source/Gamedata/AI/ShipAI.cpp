@@ -95,8 +95,8 @@ void CShipAI::CalculateShipOrders(CSectorAI* SectorAI)
 				if (m_pDoc->GetSector(ptKO.x, ptKO.y).GetOwnerOfSector() != "" && m_pDoc->GetSector(ptKO.x, ptKO.y).GetOwnerOfSector() != sOwner)
 				{
 					// Terraforming abbrechen
-					i->second.SetTerraform(-1);
-					i->second.SetCurrentOrder(SHIP_ORDER::AVOID);
+					i->second.UnsetCurrentOrder();
+					i->second.SetCombatTactic(COMBAT_TACTIC::CT_AVOID);
 				}
 			}
 
