@@ -17,17 +17,22 @@ class CSanity
 {
 	private:
 		CSanity(void);
+		bool notified;
 	public:
+		static CSanity* CSanity::GetInstance();
 		~CSanity(void);
 
 
-	static void SanityCheckFleet(const CShips& ship);
-	static void SanityCheckSectorAndSystem(
+	void SanityCheckFleet(const CShips& ship);
+	void SanityCheckSectorAndSystem(
 		const CSector& sector,
 		const CSystem& system,
 		const CBotf2Doc& doc);
 	//static void ShipInfo(const CArray<CShip, CShip>& shiparray, int index, const CString& indexname);
-	static void CheckShipUniqueness(const CShips& ship, std::set<CString>& already_encountered);
-
+	void CheckShipUniqueness(const CShips& ship, std::set<CString>& already_encountered);
+private:
+	void SanityCheckShip(const CShip& ship);
+	void CheckShipTargetCoordinates(const CShip& ship);
+	void Notify(const CString& s, bool bPopup = true);
 
 };

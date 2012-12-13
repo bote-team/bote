@@ -3481,7 +3481,7 @@ void CBotf2Doc::CalcNewRoundData()
 	for(std::vector<CSector>::iterator sector = m_Sectors.begin(); sector != m_Sectors.end(); ++sector) {
 		CSystem& system = GetSystemForSector(*sector);
 #ifdef DEVELOPMENT_VERSION
-		CSanity::SanityCheckSectorAndSystem(*sector, system, *this);
+		CSanity::GetInstance()->SanityCheckSectorAndSystem(*sector, system, *this);
 #endif
 		const CString& system_owner = system.GetOwnerOfSystem();
 		if (sector->GetSunSystem() && system_owner != "")
@@ -3683,7 +3683,7 @@ void CBotf2Doc::CalcShipOrders()
 			break;
 
 #ifdef DEVELOPMENT_VERSION
-		CSanity::SanityCheckFleet(y->second);
+		CSanity::GetInstance()->SanityCheckFleet(y->second);
 #endif
 
 		CSector* pSector = &GetSector(y->second.GetKO().x, y->second.GetKO().y);
@@ -4463,7 +4463,7 @@ void CBotf2Doc::CalcShipMovement()
 	for(CShipMap::iterator y = m_ShipMap.begin(); y != m_ShipMap.end(); ++y)
 	{
 #ifdef DEVELOPMENT_VERSION
-		CSanity::CheckShipUniqueness(y->second, already_encountered_ships_for_sanity_check);
+		CSanity::GetInstance()->CheckShipUniqueness(y->second, already_encountered_ships_for_sanity_check);
 #endif
 
 		// Prüfen, dass ein Terraformbefehl noch gültig ist

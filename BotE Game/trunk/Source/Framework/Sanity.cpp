@@ -14,20 +14,29 @@
 // sanity checks of game data which are executed at runtime
 // combines nicely with the --autoturn command line parameter
 
+CSanity::CSanity(void) : notified(false) {}
+CSanity::~CSanity(void) {};
+
+CSanity* CSanity::GetInstance() {
+	static CSanity instance;
+	return &instance;
+}
 
 //These debugging functions check that all ships which don't move have target CPoint(-1, -1) set
 //instead of their current coordinates. Later on, the places that handle the case of
 //(target coords)==(current coords) can be removed (filled with assert(false)).
 
-static void Notify(const CString& s, bool bPopup = true) {
+void CSanity::Notify(const CString& s, bool bPopup) {
 	CString sMessage;
 	sMessage.Format("%s This is a bug, please report.", s);
 	MYTRACE("general")(MT::LEVEL_WARNING, sMessage);
-	if(bPopup)
+	if(bPopup && !notified) {
+		notified = true;
 		AfxMessageBox(sMessage);
+	}
 }
 
-static void CheckShipTargetCoordinates(const CShip& ship)
+void CSanity::CheckShipTargetCoordinates(const CShip& ship)
 {
 	SHIP_ORDER::Typ order = ship.GetCurrentOrder();
 	const CPoint& co = ship.GetKO();
@@ -52,7 +61,7 @@ static void CheckShipTargetCoordinates(const CShip& ship)
 	}
 }
 
-static void SanityCheckShip(const CShip& ship)
+void CSanity::SanityCheckShip(const CShip& ship)
 {
 	CheckShipTargetCoordinates(ship);
 
