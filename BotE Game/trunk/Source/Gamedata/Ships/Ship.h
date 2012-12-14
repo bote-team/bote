@@ -172,6 +172,7 @@ public:
 	void SetCrewExperiance(int nAdd);
 
 	void ApplyTraining(int xp, bool veteran);
+	bool ApplyIonstormEffects();
 
 	enum UNASSIGN_FLAGSHIP_MODE { UNASSIGN_FLAGSHIP_MODE_STATUS, UNASSIGN_FLAGSHIP_MODE_ORDER };
 
@@ -207,9 +208,13 @@ public:
 
 	unsigned GetStealthPower() const;
 
+	unsigned GetMaxMaxShield() const;
+
 	//////////////////////////////////////////////////////////////////////
 	// bool statements about this ship
 	//////////////////////////////////////////////////////////////////////
+
+	bool IonstormCanImproveShields() const;
 
 	//is this a civil ship (colony, transport, probe)
 	bool IsNonCombat() const;

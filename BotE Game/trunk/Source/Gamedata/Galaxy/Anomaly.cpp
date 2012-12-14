@@ -301,36 +301,7 @@ void CAnomaly::CalcShipEffects(CShips* pShip) const
 		MakeHullDmg(50, 50, pShip);
 	}
 	else if (m_byType == IONSTORM)
-	{
-		// Verlust aller Crewerfahrung bei Ionensturm
-		for (CShips::iterator i = pShip->begin(); i != pShip->end(); ++i)
-				i->second.SetCrewExperiance(i->second.GetCrewExperience() * (-1));
-		// Schiff selbst
-		pShip->SetCrewExperiance(pShip->GetCrewExperience() * (-1));
-
-		// maximale Schildkapazität um 3% erhöhen
-		// hat das Schiff eine Flotte, so jedes Schiff in der Flotte beachten
-		for (CShips::iterator i = pShip->begin(); i != pShip->end(); ++i)
-			{
-				UINT nMaxShield = i->second.GetShield()->GetMaxShield() * 1.03;
-				BYTE nShieldType = i->second.GetShield()->GetShieldType();
-				BOOLEAN bRegenerative = i->second.GetShield()->GetRegenerative();
-
-				i->second.GetShield()->ModifyShield(nMaxShield, nShieldType, bRegenerative);
-			}
-		// Schiff selbst
-		UINT nMaxShield = pShip->GetShield()->GetMaxShield() * 1.23;
-		CBotf2Doc* pDoc = resources::pDoc;
-		ASSERT(pDoc);
-		// maximal die doppelte Anzahl der Schildstärke können erreicht werden
-		UINT nMaxShieldValue = pDoc->GetShipInfos()->GetAt(pShip->GetID() - 10000).GetShield()->GetMaxShield() * 2;
-		nMaxShield = min(nMaxShield, nMaxShieldValue);
-
-		BYTE nShieldType = pShip->GetShield()->GetShieldType();
-		BOOLEAN bRegenerative = pShip->GetShield()->GetRegenerative();
-
-		pShip->GetShield()->ModifyShield(nMaxShield, nShieldType, bRegenerative);
-	}
+		pShip->ApplyIonstormEffects();
 }
 
 void CAnomaly::MakeShieldDmg(int nMinDmgValue, int nMaxDmgPercent, CShips* pShip) const

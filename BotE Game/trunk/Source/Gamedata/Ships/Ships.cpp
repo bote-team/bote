@@ -226,6 +226,23 @@ void CShips::ApplyTraining(int XP) {
 		i->second.m_Leader.ApplyTraining(XP, veteran);
 }
 
+bool CShips::ApplyIonstormEffects() {
+	//conveniantly set the ship back to idle in case we can not improve further
+	//doesn't work for fleets however, since that would require removing the finished ships from the fleet
+	//to keep orders consistent, so unset the order for all once the first ship can no longer improve
+	bool improvement_finished = false;
+	if(m_Leader.ApplyIonstormEffects() && GetCurrentOrder() == SHIP_ORDER::IMPROVE_SHIELDS) {
+		UnsetCurrentOrder();
+		improvement_finished = true;
+	}
+	for(CShips::iterator i = begin(); i != end(); ++i)
+		if(i->second.ApplyIonstormEffects() && GetCurrentOrder() == SHIP_ORDER::IMPROVE_SHIELDS) {
+			UnsetCurrentOrder();
+			improvement_finished = true;
+		}
+	return improvement_finished;
+}
+
 bool CShips::UnassignFlagship(CShip::UNASSIGN_FLAGSHIP_MODE mode) {
 	for(CShips::iterator i = begin(); i != end(); ++i) {
 		if(i->second.UnassignFlagship(mode))

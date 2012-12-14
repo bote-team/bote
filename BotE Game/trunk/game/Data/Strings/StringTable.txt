@@ -1241,6 +1241,8 @@ Warten
 Stationieren
 [REPAIR_SHIP_ORDER]
 Reparieren
+[IMPROVE_SHIELDS_SHIP_ORDER]
+Schilde verbessern
 [NO_SHIP_ORDER]
 Nichts
 

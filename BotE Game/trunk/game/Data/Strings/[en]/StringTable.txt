@@ -1241,6 +1241,8 @@ Wait
 Sentry
 [REPAIR_SHIP_ORDER]
 Repair
+[IMPROVE_SHIELDS_SHIP_ORDER]
+Improve shields
 [NO_SHIP_ORDER]
 Nothing
 

@@ -366,6 +366,7 @@ CString CShip::GetCurrentOrderAsString() const
 	case SHIP_ORDER::WAIT_SHIP_ORDER: order = CResourceManager::GetString("WAIT_SHIP_ORDER"); break;
 	case SHIP_ORDER::SENTRY_SHIP_ORDER: order = CResourceManager::GetString("SENTRY_SHIP_ORDER"); break;
 	case SHIP_ORDER::REPAIR: order = CResourceManager::GetString("REPAIR_SHIP_ORDER"); break;
+	case SHIP_ORDER::IMPROVE_SHIELDS: order = CResourceManager::GetString("IMPROVE_SHIELDS_SHIP_ORDER"); break;
 	case SHIP_ORDER::NONE: order = CResourceManager::GetString("NO_SHIP_ORDER"); break;
 	default: assert(false); break;
 	}
@@ -436,6 +437,25 @@ void CShip::ApplyTraining(int XP, bool veteran) {
 		SetCrewExperiance(XP);
 	else
 		SetCrewExperiance(XP * 2);
+}
+
+bool CShip::ApplyIonstormEffects() {
+	// Verlust aller Crewerfahrung bei Ionensturm
+	m_iCrewExperiance = 0;
+	// maximale Schildkapazität um 3% erhöhen
+	// maximal die doppelte Anzahl der Schildstärke können erreicht werden
+	const unsigned max_max_shield = GetMaxMaxShield();
+	const unsigned old_max_shield = m_Shield.GetMaxShield();
+	if(old_max_shield >= max_max_shield)
+		return true;
+	unsigned new_max_shield = old_max_shield * 1.03;
+	bool improvement_finished = false;
+	if(new_max_shield > max_max_shield) {
+		new_max_shield = max_max_shield;
+		improvement_finished = true;
+	}
+	m_Shield.ModifyShield(new_max_shield, m_Shield.GetShieldType(), m_Shield.GetRegenerative());
+	return improvement_finished;
 }
 
 bool CShip::UnassignFlagship(UNASSIGN_FLAGSHIP_MODE mode) {
@@ -776,9 +796,17 @@ BYTE CShip::GetExpLevel() const
 		return 6;
 }
 
+unsigned CShip::GetMaxMaxShield() const {
+	return resources::pDoc->GetShipInfos()->GetAt(m_iID - 10000).GetShield()->GetMaxShield() * 2;
+}
+
 //////////////////////////////////////////////////////////////////////
 // bool statements about this ship
 //////////////////////////////////////////////////////////////////////
+
+bool CShip::IonstormCanImproveShields() const {
+	return GetMaxMaxShield() > m_Shield.GetMaxShield();
+}
 
 bool CShip::HasSpecial(SHIP_SPECIAL::Typ nAbility) const
 {
@@ -823,6 +851,8 @@ bool CShip::CanHaveOrder(SHIP_ORDER::Typ order, bool require_new) const {
 		case SHIP_ORDER::FOLLOW_SHIP:
 		case SHIP_ORDER::CANCEL:
 			return true;
+		case SHIP_ORDER::IMPROVE_SHIELDS:
+			return IonstormCanImproveShields();
 		case SHIP_ORDER::WAIT_SHIP_ORDER:
 		case SHIP_ORDER::SENTRY_SHIP_ORDER:
 		case SHIP_ORDER::TRAIN_SHIP:

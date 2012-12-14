@@ -15,6 +15,7 @@
 #include "MainFrm.h"
 #include "Ships/Ships.h"
 #include "General/ResourceManager.h"
+#include "Galaxy/Anomaly.h"
 
 #include <cassert>
 
@@ -44,7 +45,7 @@ CShipBottomView::CShipBottomView() :
 {
 	m_pShipOrderButton = NULL;
 	m_vMainShipOrders.reserve(MAIN_BUTTON_CANCEL);
-	m_vSecondaryShipOrders.resize(SHIP_ORDER::CANCEL + 1);
+	m_vSecondaryShipOrders.resize(SHIP_ORDER::IMPROVE_SHIELDS + 1);
 }
 
 CShipBottomView::~CShipBottomView()
@@ -88,6 +89,9 @@ static bool ShipCanHaveOrder(const CShips& ships, SHIP_ORDER::Typ order,
 			return ships.CanHaveOrder(order, true, false);
 		case SHIP_ORDER::TERRAFORM:
 			return ships.CanHaveOrder(order, false);
+		case SHIP_ORDER::IMPROVE_SHIELDS:
+			return ships.CanHaveOrder(order, true) && sector->GetAnomaly() && sector->GetAnomaly()
+				->GetType() == IONSTORM;
 	}
 	return ships.CanHaveOrder(order, true);
 }
@@ -462,6 +466,14 @@ short CShipBottomView::DrawMultiTurnOrderMenu() {
 					break;
 				}
 		}
+	}
+	// shield improvement
+	// Only possible if we are at an ionstorm and we haven't yet reached the max max shields
+	if (TimeDoDraw(counter) && ShipCanHaveOrder(pShip, SHIP_ORDER::IMPROVE_SHIELDS,
+			&m_dc.pDoc->GetSector(pShip.GetKO().x, pShip.GetKO().y)))
+	{
+		DrawSmallButton("IMPROVE_SHIELDS_SHIP_ORDER",CalcSecondaryButtonTopLeft(counter),SHIP_ORDER::IMPROVE_SHIELDS);
+		counter++;
 	}
 	// Repairing
 	// Only possible if

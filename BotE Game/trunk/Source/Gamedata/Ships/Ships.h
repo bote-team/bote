@@ -171,6 +171,8 @@ public:
 	//Affects leader and fleet
 	void ApplyTraining(int XP);
 
+	bool ApplyIonstormEffects();
+
 	//remove any possible flagship status of the leader and the fleet in this CShips
 	//@return was it found and removed (process terminates, as only one flagship can exist)
 	bool UnassignFlagship(CShip::UNASSIGN_FLAGSHIP_MODE mode);

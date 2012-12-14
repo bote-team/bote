@@ -321,7 +321,8 @@ namespace SHIP_ORDER
 		SENTRY_SHIP_ORDER	= 17,
 		REPAIR				= 18,
 		DECLOAK				= 19,
-		CANCEL				= 20
+		CANCEL				= 20,
+		IMPROVE_SHIELDS		= 21
 	};
 }
 
