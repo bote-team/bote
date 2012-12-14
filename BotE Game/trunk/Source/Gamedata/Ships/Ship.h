@@ -149,7 +149,6 @@ public:
 
 	//more complex setting
 
-	//Sets this ship's m_iCurrentOrder to AVOID if it's a civil ship and to ATTACK otherwise.
 	void SetCurrentOrderAccordingToType();
 	//Sets this ship's m_nCombatTactic to AVOID if it's a civil ship and to ATTACK otherwise.
 	void SetCombatTacticAccordingToType();
