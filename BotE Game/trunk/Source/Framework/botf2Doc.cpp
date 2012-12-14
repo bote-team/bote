@@ -4882,20 +4882,6 @@ void CBotf2Doc::CalcShipCombat()
 				pMajor->GetEmpire()->AddMessage(message);
 			}
 	}
-
-	// allen Schiffen mit Rückzugsbfehl den aktuellen Befehl zurücknehmen
-	for(CShipMap::iterator i = m_ShipMap.begin(); i != m_ShipMap.end(); ++i)
-	{
-		// Hat das Schiff den Rückzugsbefehl
-		if (i->second.GetCombatTactic() == COMBAT_TACTIC::CT_RETREAT)
-		{
-			// Schiff auf Meiden stellen
-			i->second.SetCurrentOrderAccordingToType();
-
-			// womögicher Terraformplanet oder Stationsbau zurücknehmen
-			i->second.SetTerraform(-1);
-		}
-	}
 }
 
 /////BEGIN: HELPER FUNCTIONS FOR void CBotf2Doc::CalcShipEffects()

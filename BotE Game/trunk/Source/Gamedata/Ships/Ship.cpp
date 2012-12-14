@@ -1418,12 +1418,10 @@ void CShip::Retreat(const CPoint& ptRetreatSector)
 		// aktuell eingestellten Kurs löschen (nicht dass das Schiff wieder in den Gefahrensektor fliegt)
 		m_TargetKO = CPoint(-1, -1);
 	}
-	// Schiff auf Meiden/Angriff stellen entsprechend seinem Typ
-	SetCurrentOrderAccordingToType();
+	// womögicher Terraformplanet oder Stationsbau zurücknehmen
+	UnsetCurrentOrder();
 	// Rückzugsbefehl zurücknehmen
 	SetCombatTacticAccordingToType();
-	// womögicher Terraformplanet oder Stationsbau zurücknehmen
-	SetTerraform(-1);
 }
 
 //most of the stuff from CalcShipEffects() for either a ship from the shiparray or a ship of its fleet
