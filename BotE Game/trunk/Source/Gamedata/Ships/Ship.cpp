@@ -1411,6 +1411,10 @@ void CShip::Repair(BOOL bAtShipPort, bool bFasterShieldRecharge) {
 
 void CShip::Retreat(const CPoint& ptRetreatSector)
 {
+	// womögicher Terraformplanet oder Stationsbau zurücknehmen
+	UnsetCurrentOrder();
+	// Rückzugsbefehl zurücknehmen
+	SetCombatTacticAccordingToType();
 	// Kann das Schiff überhaupt fliegen?
 	if (m_iSpeed > 0)
 	{
@@ -1418,10 +1422,6 @@ void CShip::Retreat(const CPoint& ptRetreatSector)
 		// aktuell eingestellten Kurs löschen (nicht dass das Schiff wieder in den Gefahrensektor fliegt)
 		m_TargetKO = CPoint(-1, -1);
 	}
-	// womögicher Terraformplanet oder Stationsbau zurücknehmen
-	UnsetCurrentOrder();
-	// Rückzugsbefehl zurücknehmen
-	SetCombatTacticAccordingToType();
 }
 
 //most of the stuff from CalcShipEffects() for either a ship from the shiparray or a ship of its fleet
