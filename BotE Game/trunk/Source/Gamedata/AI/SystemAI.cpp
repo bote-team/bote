@@ -635,25 +635,26 @@ BOOLEAN CSystemAI::MakeEntryInAssemblyList(short id)
 /// Diese Funktion besetzt die Gebäude mit Arbeitern.
 void CSystemAI::AssignWorkers()
 {
-	CPoint ko = m_KO;
+	const CPoint& ko = m_KO;
+	CSystem& system = m_pDoc->GetSystem(ko.x, ko.y);
 	// Nahrungsversorgung wird zu allererst beachtet. Es wird immer solange besetzt, bis man eine positive Produktion
 	// erreicht hat. Hat man zu Beginn schon eine positive Produktion, so wird versucht das Minimum der benötgten
 	// Besetzung zu finden.
-	while (m_pDoc->GetSystem(ko.x, ko.y).GetProduction()->GetFoodProd() > 5)
+	while (system.GetProduction()->GetFoodProd() > 5)
 	{
-		if (m_pDoc->GetSystem(ko.x, ko.y).GetWorker(WORKER::FOOD_WORKER) == 0)
+		if (system.GetWorker(WORKER::FOOD_WORKER) == 0)
 			break;
-		m_pDoc->GetSystem(ko.x, ko.y).GetWorker()->DekrementWorker(WORKER::FOOD_WORKER);
+		system.GetWorker()->DekrementWorker(WORKER::FOOD_WORKER);
 		CalcProd();
 	}
 
-	while (m_pDoc->GetSystem(ko.x, ko.y).GetProduction()->GetFoodProd() < 0)
+	while (system.GetProduction()->GetFoodProd() < 0)
 	{
-		if (m_pDoc->GetSystem(ko.x, ko.y).GetWorker(WORKER::FREE_WORKER) > 0)
+		if (system.GetWorker(WORKER::FREE_WORKER) > 0)
 		{
-			if (m_pDoc->GetSystem(ko.x, ko.y).GetWorker(WORKER::FOOD_WORKER) >= m_pDoc->GetSystem(ko.x, ko.y).GetNumberOfWorkbuildings(WORKER::FOOD_WORKER, 0, NULL))
+			if (system.GetWorker(WORKER::FOOD_WORKER) >= system.GetNumberOfWorkbuildings(WORKER::FOOD_WORKER, 0, NULL))
 				break;
-			m_pDoc->GetSystem(ko.x, ko.y).GetWorker()->InkrementWorker(WORKER::FOOD_WORKER);
+			system.GetWorker()->InkrementWorker(WORKER::FOOD_WORKER);
 			CalcProd();
 		}
 		else
@@ -667,34 +668,34 @@ void CSystemAI::AssignWorkers()
 	// gerade reicht die Gebäude zu betreiben, welche Strom benötigen.
 	int neededEnergy = 0;
 	int usedEnergy = 0;
-	for (int i = 0; i < m_pDoc->GetSystem(ko.x, ko.y).GetAllBuildings()->GetSize(); i++)
+	for (int i = 0; i < system.GetAllBuildings()->GetSize(); i++)
 	{
-		const CBuildingInfo *buildingInfo = &m_pDoc->BuildingInfo.GetAt(m_pDoc->GetSystem(ko.x, ko.y).GetAllBuildings()->GetAt(i).GetRunningNumber() - 1);
+		const CBuildingInfo *buildingInfo = &m_pDoc->BuildingInfo.GetAt(system.GetAllBuildings()->GetAt(i).GetRunningNumber() - 1);
 		if (buildingInfo->GetNeededEnergy() > 0)
 		{
 			neededEnergy += buildingInfo->GetNeededEnergy();
-			if (!m_pDoc->GetSystem(ko.x, ko.y).GetAllBuildings()->GetAt(i).GetIsBuildingOnline())
-				if ((m_pDoc->GetSystem(ko.x, ko.y).GetProduction()->GetEnergyProd() - usedEnergy) >= buildingInfo->GetNeededEnergy())
+			if (!system.GetAllBuildings()->GetAt(i).GetIsBuildingOnline())
+				if ((system.GetProduction()->GetEnergyProd() - usedEnergy) >= buildingInfo->GetNeededEnergy())
 				{
-					m_pDoc->GetSystem(ko.x, ko.y).SetIsBuildingOnline(i, TRUE);
+					system.SetIsBuildingOnline(i, TRUE);
 					usedEnergy += buildingInfo->GetNeededEnergy();
 				}
 		}
 	}
-	while (m_pDoc->GetSystem(ko.x, ko.y).GetProduction()->GetMaxEnergyProd() > (neededEnergy + 15))
+	while (system.GetProduction()->GetMaxEnergyProd() > (neededEnergy + 15))
 	{
-		if (m_pDoc->GetSystem(ko.x, ko.y).GetWorker(WORKER::ENERGY_WORKER) == 0)
+		if (system.GetWorker(WORKER::ENERGY_WORKER) == 0)
 			break;
-		m_pDoc->GetSystem(ko.x, ko.y).GetWorker()->DekrementWorker(WORKER::ENERGY_WORKER);
+		system.GetWorker()->DekrementWorker(WORKER::ENERGY_WORKER);
 		CalcProd();
 	}
-	while (m_pDoc->GetSystem(ko.x, ko.y).GetProduction()->GetMaxEnergyProd() < neededEnergy)
+	while (system.GetProduction()->GetMaxEnergyProd() < neededEnergy)
 	{
-		if (m_pDoc->GetSystem(ko.x, ko.y).GetWorker(WORKER::FREE_WORKER) > 0)
+		if (system.GetWorker(WORKER::FREE_WORKER) > 0)
 		{
-			if (m_pDoc->GetSystem(ko.x, ko.y).GetWorker(WORKER::ENERGY_WORKER) >= m_pDoc->GetSystem(ko.x, ko.y).GetNumberOfWorkbuildings(WORKER::ENERGY_WORKER, 0, NULL))
+			if (system.GetWorker(WORKER::ENERGY_WORKER) >= system.GetNumberOfWorkbuildings(WORKER::ENERGY_WORKER, 0, NULL))
 				break;
-			m_pDoc->GetSystem(ko.x, ko.y).GetWorker()->InkrementWorker(WORKER::ENERGY_WORKER);
+			system.GetWorker()->InkrementWorker(WORKER::ENERGY_WORKER);
 			CalcProd();
 		}
 		else
@@ -716,7 +717,7 @@ void CSystemAI::AssignWorkers()
 			if (nWorker != WORKER::ENERGY_WORKER)
 			{
 				allPrio += m_iPriorities[nWorker];
-				m_pDoc->GetSystem(ko.x, ko.y).GetWorker()->SetWorker(nWorker, 0);
+				system.GetWorker()->SetWorker(nWorker, 0);
 			}
 		}
 
@@ -737,15 +738,15 @@ void CSystemAI::AssignWorkers()
 			WORKER::Typ nWorker = (WORKER::Typ)i;
 			if (nWorker != WORKER::ENERGY_WORKER)
 			{
-				m_pDoc->GetSystem(ko.x, ko.y).GetWorker()->CalculateFreeWorkers();
-				USHORT freeWorkers = m_pDoc->GetSystem(ko.x, ko.y).GetWorker(WORKER::FREE_WORKER);
+				system.GetWorker()->CalculateFreeWorkers();
+				USHORT freeWorkers = system.GetWorker(WORKER::FREE_WORKER);
 				int workers = (freeWorkers * percentage[nWorker]) / 100;
 				for (int j = 0; j < workers; j++)
 				{
-					if (m_pDoc->GetSystem(ko.x, ko.y).GetNumberOfWorkbuildings(nWorker,0,NULL) > m_pDoc->GetSystem(ko.x, ko.y).GetWorker(nWorker))
+					if (system.GetNumberOfWorkbuildings(nWorker,0,NULL) > system.GetWorker(nWorker))
 					{
-						m_pDoc->GetSystem(ko.x, ko.y).GetWorker()->InkrementWorker(nWorker);
-						if (m_pDoc->GetSystem(ko.x, ko.y).GetWorker(nWorker) == m_pDoc->GetSystem(ko.x, ko.y).GetNumberOfWorkbuildings(nWorker, 0, NULL))
+						system.GetWorker()->InkrementWorker(nWorker);
+						if (system.GetWorker(nWorker) == system.GetNumberOfWorkbuildings(nWorker, 0, NULL))
 							break;
 					}
 				}
@@ -755,22 +756,22 @@ void CSystemAI::AssignWorkers()
 
 	// Wenn etwas in der Bauliste steht, dann werden alle Arbeiter entfernt (außer bei Nahrung und Energie). Weiterhin
 	// wird bei der Arbeiterbesetzung bei der Industrie begonnen.
-	if (m_pDoc->GetSystem(ko.x, ko.y).GetAssemblyList()->GetAssemblyListEntry(0) != 0)
+	if (system.GetAssemblyList()->GetAssemblyListEntry(0) != 0)
 	{
-		if (m_pDoc->GetSystem(ko.x, ko.y).GetWorker(WORKER::FREE_WORKER) > 0)
-			while (m_pDoc->GetSystem(ko.x, ko.y).GetNumberOfWorkbuildings(WORKER::INDUSTRY_WORKER,0,NULL) > m_pDoc->GetSystem(ko.x, ko.y).GetWorker(WORKER::INDUSTRY_WORKER))
+		if (system.GetWorker(WORKER::FREE_WORKER) > 0)
+			while (system.GetNumberOfWorkbuildings(WORKER::INDUSTRY_WORKER,0,NULL) > system.GetWorker(WORKER::INDUSTRY_WORKER))
 			{
-				m_pDoc->GetSystem(ko.x, ko.y).GetWorker()->InkrementWorker(WORKER::INDUSTRY_WORKER);
-				m_pDoc->GetSystem(ko.x, ko.y).GetWorker()->CalculateFreeWorkers();
-				if (m_pDoc->GetSystem(ko.x, ko.y).GetWorker(WORKER::FREE_WORKER) == 0)
+				system.GetWorker()->InkrementWorker(WORKER::INDUSTRY_WORKER);
+				system.GetWorker()->CalculateFreeWorkers();
+				if (system.GetWorker(WORKER::FREE_WORKER) == 0)
 					break;
 			}
 	}
 	// Wenn nichts in der Bauliste steht, dann werden die Industriearbeiter erstmal komplett entfernt
 	else
 	{
-		m_pDoc->GetSystem(ko.x, ko.y).GetWorker()->SetWorker(WORKER::INDUSTRY_WORKER, 0);
-		m_pDoc->GetSystem(ko.x, ko.y).GetWorker()->CalculateFreeWorkers();
+		system.GetWorker()->SetWorker(WORKER::INDUSTRY_WORKER, 0);
+		system.GetWorker()->CalculateFreeWorkers();
 	}
 
 	// Jetzt werden zufällig noch freie Arbeiter auf die restlichen Gebäude verteilt. Es werden aber keine Arbeiter mehr
@@ -780,31 +781,31 @@ void CSystemAI::AssignWorkers()
 	for (int i = WORKER::SECURITY_WORKER; i <= WORKER::IRIDIUM_WORKER; i++)
 	{
 		WORKER::Typ nWorker = (WORKER::Typ)i;
-		numberOfWorkBuildings += m_pDoc->GetSystem(ko.x, ko.y).GetNumberOfWorkbuildings(nWorker,0,NULL);
-		workers += m_pDoc->GetSystem(ko.x, ko.y).GetWorker(nWorker);
+		numberOfWorkBuildings += system.GetNumberOfWorkbuildings(nWorker,0,NULL);
+		workers += system.GetWorker(nWorker);
 	}
 
-	while (m_pDoc->GetSystem(ko.x, ko.y).GetWorker(WORKER::FREE_WORKER) > 0 && workers < numberOfWorkBuildings)
+	while (system.GetWorker(WORKER::FREE_WORKER) > 0 && workers < numberOfWorkBuildings)
 	{
 		// Zufälligen Arbeiter zwischen Geheimdienst- und Iridiumarbeiter wählen
 		WORKER::Typ nWorker = (WORKER::Typ)(rand()%WORKER::ALL_WORKER);
 		// Alle Arbeiter werden mit einer zufälligen Anzahl besetzt
-		if (m_pDoc->GetSystem(ko.x, ko.y).GetNumberOfWorkbuildings(nWorker,0,NULL) > m_pDoc->GetSystem(ko.x, ko.y).GetWorker(nWorker))
+		if (system.GetNumberOfWorkbuildings(nWorker,0,NULL) > system.GetWorker(nWorker))
 		{
 			workers++;
-			m_pDoc->GetSystem(ko.x, ko.y).GetWorker()->InkrementWorker(nWorker);
-			m_pDoc->GetSystem(ko.x, ko.y).GetWorker()->CalculateFreeWorkers();
+			system.GetWorker()->InkrementWorker(nWorker);
+			system.GetWorker()->CalculateFreeWorkers();
 		}
 	}
 
 	// Sind jetzt immernoch ein paar freie Arbeiter übrig, dann wird versucht diese auf die Industriegebäude zu verteilen.
 	// Denn dadruch bekommen wir bei Handelswaren mehr Credits.
-	while (m_pDoc->GetSystem(ko.x, ko.y).GetWorker(WORKER::FREE_WORKER) > 0)
+	while (system.GetWorker(WORKER::FREE_WORKER) > 0)
 	{
-		if (m_pDoc->GetSystem(ko.x, ko.y).GetNumberOfWorkbuildings(WORKER::INDUSTRY_WORKER,0,NULL) > m_pDoc->GetSystem(ko.x, ko.y).GetWorker(WORKER::INDUSTRY_WORKER))
+		if (system.GetNumberOfWorkbuildings(WORKER::INDUSTRY_WORKER,0,NULL) > system.GetWorker(WORKER::INDUSTRY_WORKER))
 		{
-			m_pDoc->GetSystem(ko.x, ko.y).GetWorker()->InkrementWorker(WORKER::INDUSTRY_WORKER);
-			m_pDoc->GetSystem(ko.x, ko.y).GetWorker()->CalculateFreeWorkers();
+			system.GetWorker()->InkrementWorker(WORKER::INDUSTRY_WORKER);
+			system.GetWorker()->CalculateFreeWorkers();
 		}
 		else
 			break;
