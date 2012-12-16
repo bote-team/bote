@@ -11,6 +11,7 @@
 // forward declaration
 class CBotf2Doc;
 class CMajor;
+class CBuildingInfo;
 class CSystemAI
 {
 public:
@@ -31,6 +32,9 @@ private:
 
 	/// Diese Funktion legt die Prioritäten an, mit welcher ein bestimmtes Arbeitergebäude gebaut werden soll.
 	void CalcPriorities();
+
+
+	bool CheckMoral(const CBuildingInfo& bi, bool build) const;
 
 	/// Diese Funktion wählt ein zu bauendes Gebäude aus der Liste der baubaren Gebäude. Es werden nur Gebäude
 	/// ausgewählt, welche in die Prioritätenliste passen. Der Rückgabewert ist die ID des Bauauftrages.

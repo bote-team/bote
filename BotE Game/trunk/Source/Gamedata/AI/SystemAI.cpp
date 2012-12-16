@@ -320,6 +320,22 @@ void CSystemAI::CalcPriorities()
 		MYTRACE("ai")(MT::LEVEL_INFO, "CSystemAI::CalcPriorities(): Could not create buildcontract in system '%s'\n", m_pDoc->GetSector(ko.x, ko.y).GetName());
 }
 
+bool CSystemAI::CheckMoral(const CBuildingInfo& bi, bool build) const {
+	//yes, there is a minor with such useless building...
+	if(bi.GetMoralProdEmpire() < 0)
+		return false;
+	const short mp = bi.GetMoralProd();
+	if(mp >= 0)
+		return true;
+	// I would usually only build, if I could still maintain moral +5 in this system
+	// don't know empire wide moral prod, usually at least +1
+	const CSystem& s = m_pDoc->GetSystem(m_KO.x, m_KO.y);
+	if(build)
+		return 2 <= s.GetProduction()->GetMoralProd() + mp;
+	//in practice, AI will take minus moral buildings online very seldom, and that's better
+	return s.GetMoral() > 173;
+}
+
 /// Diese Funktion wählt ein zu bauendes Gebäude aus der Liste der baubaren Gebäude. Es werden nur Gebäude
 /// ausgewählt, welche in die Prioritätenliste passen. Der Rückgabewert ist die ID des Bauauftrages.
 /// Wird <code>0</code> zurückgegeben, so wurde kein Gebäude gefunden, welches in das Anforderungsprofil passt.
@@ -364,7 +380,7 @@ int CSystemAI::ChooseBuilding()
 		{
 			int id = m_pDoc->GetSystem(ko.x, ko.y).GetBuildableBuildings()->GetAt(i);
 			// ist der Moralmalus des Gebäudes größer unserer Moralproduktion, so wird das Gebäude nicht gebaut
-			if (m_pDoc->GetBuildingInfo(id).GetMoralProd() < NULL && abs(m_pDoc->GetBuildingInfo(id).GetMoralProd()) >= m_pDoc->GetSystem(ko.x, ko.y).GetProduction()->GetMoralProd())
+			if (!CheckMoral(m_pDoc->GetBuildingInfo(id), true))
 				continue;
 			// finden wir hier eine Werft, so wird versucht die Werft jetzt zu bauen
 			if (m_pDoc->GetBuildingInfo(id).GetShipYard())
@@ -673,13 +689,17 @@ void CSystemAI::AssignWorkers()
 		const CBuildingInfo *buildingInfo = &m_pDoc->BuildingInfo.GetAt(system.GetAllBuildings()->GetAt(i).GetRunningNumber() - 1);
 		if (buildingInfo->GetNeededEnergy() > 0)
 		{
-			neededEnergy += buildingInfo->GetNeededEnergy();
-			if (!system.GetAllBuildings()->GetAt(i).GetIsBuildingOnline())
-				if ((system.GetProduction()->GetEnergyProd() - usedEnergy) >= buildingInfo->GetNeededEnergy())
-				{
-					system.SetIsBuildingOnline(i, TRUE);
-					usedEnergy += buildingInfo->GetNeededEnergy();
-				}
+			if(CheckMoral(*buildingInfo, false)) {
+				neededEnergy += buildingInfo->GetNeededEnergy();
+				if (!system.GetAllBuildings()->GetAt(i).GetIsBuildingOnline())
+					if ((system.GetProduction()->GetEnergyProd() - usedEnergy) >= buildingInfo->GetNeededEnergy())
+					{
+						system.SetIsBuildingOnline(i, TRUE);
+						usedEnergy += buildingInfo->GetNeededEnergy();
+					}
+			}
+			else
+				system.SetIsBuildingOnline(i, FALSE);
 		}
 	}
 	while (system.GetProduction()->GetMaxEnergyProd() > (neededEnergy + 15))
