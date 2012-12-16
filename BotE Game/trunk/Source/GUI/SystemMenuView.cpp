@@ -971,7 +971,7 @@ void CSystemMenuView::DrawWorkersMenue(Graphics* g)
 				fontFormat.SetAlignment(StringAlignmentNear);
 				g->DrawString(CComBSTR(name), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(220, 90 + i * 95, 380, 25), &fontFormat, &fontBrush);
 
-				CSystemProd *prod = sys.GetProduction();
+				const CSystemProd *prod = sys.GetProduction();
 
 				switch(i) {
 					default:
@@ -1101,7 +1101,7 @@ void CSystemMenuView::DrawWorkersMenue(Graphics* g)
 				g->DrawString(CComBSTR(name), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(220, 90 + i * 95, 380, 25), &fontFormat, &fontBrush);
 
 				CString yield = CResourceManager::GetString("YIELD");
-				CSystemProd *prod = sys.GetProduction();
+				const CSystemProd *prod = sys.GetProduction();
 
 				int cprod, cstore, cmax;
 				CString resname;
