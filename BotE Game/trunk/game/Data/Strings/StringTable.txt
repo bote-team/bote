@@ -1928,7 +1928,7 @@ Die zivile Bevölkerung des § Systems ist wegen unserer Bombardierung geschockt u
 [BOMBARDEVENT_TEXT_DEFENDER_MAJOR1]
 Die zivile Bevölkerung des § Systems ist wegen der feindlichen Bombardierung geschockt und fordert das Ende der Gewalt.
 [BOMBARDEVENT_TEXT_DEFENDER_MAJOR2]
-Die Bombardierung des § Systems schadet unserer Wirtschaft. Händler das die Regierung dagegen etwas unternimmt. 
+Die Bombardierung des § Systems schadet unserer Wirtschaft. Händler fordern, dass die Regierung dagegen etwas unternimmt.
 [BOMBARDEVENT_TEXT_DEFENDER_MAJOR3]
 Die Bombardierung des § Systems ist eine Beleidigung unserer Ehre. Die Krieger wollen sich dem Gegner Mann gegen Mann stellen. 
 [BOMBARDEVENT_TEXT_DEFENDER_MAJOR4]
