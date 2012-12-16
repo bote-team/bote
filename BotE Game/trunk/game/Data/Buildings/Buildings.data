@@ -1,7 +1,7 @@
 1
 1
 Primitive Farm
-Tech14MOD Primitive Farm
+Primitive Farm
 Landwirtschaft nach Plan ist eine der frühesten Errungenschaften jeder intelligenten Rasse. Farmen ermöglichen die kontrollierte, natürliche Herstellung verschiedener essbarer Pflanzen und geben Anreiz, Nahrungsmittel für größere Bevölkerungen zu erzeugen, so dass alle durch die Arbeit von wenigen ernährt werden. 
 Planned agriculture is one of the earliest achievements of any sentient race. Farms allow for natural production of various edible plants to be controlled and increased to produce food for larger populations, so that all can be fed by the work of a few.
 1
@@ -7980,7 +7980,7 @@ con_5766.bop
 0
 58
 1
- Titan Boost Methoden
+Titan Boost Methoden
 Titanium Boost Facilities
 Durch den Einsatz neuartiger Fracking-Methoden wird die Rohstoffgewinnung erheblich gesteigert. Allerdings führt diese neue Methode zu erheblichen Gesundheits- und Umweltbeeinträchtigungen, gegen die das Volk protestiert. Deshalb wurde entschieden, Fracking nur in Welten zuzulassen, die für die Rohstoffverteilung systemrelevant sind.
 By the use of new fracking methods commodities winning gets an excellent boost. But this new method has a strong health and environmental impact and people protest against it. So it was decided to use it only on distributional system-relevant planets.
@@ -7988,8 +7988,8 @@ By the use of new fracking methods commodities winning gets an excellent boost. 
 con_5768.bop
 0
 0
-0
-0
+1
+58
 0
 0
 0
@@ -8047,7 +8047,7 @@ con_5768.bop
 0
 0
 0
-2
+-2
 0
 0
 0
@@ -13528,13 +13528,13 @@ con_b101.bop
 0
 0
 0
-10
+2
 0
 0
 0
 0
-20
-20
+4
+4
 0
 0
 0
@@ -16521,7 +16521,7 @@ han_b123.bop
 119
 2
 Primitiver Markt
-Tech14MOD Primitive Market
+Primitive Market
 Landwirtschaft nach Plan ist eine der frühesten Errungenschaften jeder intelligenten Rasse. Farmen ermöglichen die kontrollierte, natürliche Herstellung verschiedener essbarer Pflanzen und geben Anreiz, Nahrungsmittel für größere Bevölkerungen zu erzeugen, so dass alle durch die Arbeit von wenigen ernährt werden. 
 Planned agriculture is one of the earliest achievements of any sentient race. Farms allow for the natural production of various edible plants to be controlled and increased to produce food for larger populations, so that all can be fed by the work of a few.
 1
@@ -30468,13 +30468,13 @@ han_b102.bop
 0
 0
 0
-10
+2
 0
 0
 0
 0
-20
-20
+4
+4
 0
 0
 0
@@ -34021,7 +34021,7 @@ han_b123.bop
 244
 3
 Primitiver Jagdgrund
-Tech14MOD Primitive Farm
+Primitive Farm
 Landwirtschaft nach Plan ist eine der frühesten Errungenschaften jeder intelligenten Rasse. Farmen ermöglichen die kontrollierte, natürliche Herstellung verschiedener essbarer Pflanzen und geben Anreiz, Nahrungsmittel für größere Bevölkerungen zu erzeugen, so dass alle durch die Arbeit von wenigen ernährt werden. 
 Planned agriculture is one of the earliest achievements of any sentient race. Farms allow for natural production of various edible plants to be controlled and increased to produce food for larger populations, so that all can be fed by the work of a few.
 1
@@ -47548,13 +47548,13 @@ kha_b101.bop
 0
 0
 0
-10
+2
 0
 0
 0
 0
-20
-20
+4
+4
 0
 0
 0
@@ -50541,7 +50541,7 @@ han_b123.bop
 362
 4
 Primitive Organikfabrik
-Tech14MOD Primitive Organic Factory
+Primitive Organic Factory
 Landwirtschaft nach Plan ist eine der frühesten Errungenschaften jeder intelligenten Rasse. Farmen ermöglichen die kontrollierte, natürliche Herstellung verschiedener essbarer Pflanzen und geben Anreiz, Nahrungsmittel für größere Bevölkerungen zu erzeugen, so dass alle durch die Arbeit von wenigen ernährt werden. 
 Planned agriculture is one of the earliest achievements of any sentient race. Farms allow for natural production of various edible plants to be controlled and increased to produce food for larger populations, so that all can be fed by the work of a few.
 1
@@ -64208,13 +64208,13 @@ rot_b102.bop
 0
 0
 0
-10
+2
 0
 0
 0
 0
-20
-20
+4
+4
 0
 0
 0
@@ -67201,7 +67201,7 @@ han_b123.bop
 481
 5
 Primitive Hydroponische Farm
-Tech14MOD Primitive Farm
+Primitive Farm
 Landwirtschaft nach Plan ist eine der frühesten Errungenschaften jeder intelligenten Rasse. Farmen ermöglichen die kontrollierte, natürliche Herstellung verschiedener essbarer Pflanzen und geben Anreiz, Nahrungsmittel für größere Bevölkerungen zu erzeugen, so dass alle durch die Arbeit von wenigen ernährt werden. 
 Planned agriculture is one of the earliest achievements of any sentient race. Farms allow for natural production of various edible plants to be controlled and increased to produce food for larger populations, so that all can be fed by the work of a few.
 1
@@ -80728,13 +80728,13 @@ car_b101.bop
 0
 0
 0
-10
+2
 0
 0
 0
 0
-20
-20
+4
+4
 0
 0
 0
@@ -83861,7 +83861,7 @@ han_b123.bop
 600
 6
 Primitive Tetroin-Raffinerie
-Tech14MOD Primitive Tetroin Refinery
+Primitive Tetroin Refinery
 Tetroin-4c ist für eine stabile Symbiose zwischen Symbiont und Wirt notwendig, da es die Ausscheidungssekrete des Symbionten chemisch auflöst und leicht berauschend sowie anabolisch stimulierend wirkt.
 The primitive Tetroin plantation allows for the natural production of various edible plants to be controlled and augmented in order to produce Tetroin for larger Rok'Hanar populations, so that all can be fed by the work of a few loyal Da'Unas.
 1
@@ -97108,13 +97108,13 @@ ome_b100.bop
 0
 0
 0
-10
+2
 0
 0
 0
 0
-20
-20
+4
+4
 0
 0
 0
