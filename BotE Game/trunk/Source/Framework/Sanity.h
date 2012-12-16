@@ -19,7 +19,7 @@ class CSanity
 		CSanity(void);
 		bool notified;
 	public:
-		static CSanity* CSanity::GetInstance();
+		static CSanity* GetInstance();
 		~CSanity(void);
 
 
