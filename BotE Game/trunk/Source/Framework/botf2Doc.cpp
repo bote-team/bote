@@ -4211,8 +4211,6 @@ void CBotf2Doc::CalcShipOrders()
 							BuildShip(id, pSector->GetKO(), y->second.GetOwnerOfShip());
 							// Wenn hier eine Station gebaut wurde den Befehl für die Flotte auf Meiden stellen
 							y->second.UnsetCurrentOrder();
-							RemoveShip(y);
-							increment = false;
 
 							// Wenn die Sternbasis gebaut haben, dann den alten Au?enposten aus der Schiffsliste nehmen
 							for(CShipMap::iterator k = m_ShipMap.begin(); k != m_ShipMap.end(); ++k)
@@ -4224,6 +4222,8 @@ void CBotf2Doc::CalcShipOrders()
 									m_ShipMap.EraseAt(k);
 									break;
 								}
+							RemoveShip(y);
+							increment = false;
 							continue;
 						}
 					}
