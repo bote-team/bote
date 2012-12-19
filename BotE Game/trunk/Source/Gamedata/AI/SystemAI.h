@@ -27,6 +27,11 @@ public:
 	void ExecuteSystemAI(CPoint ko);
 
 private:
+	//AI does not know how to use troops. Most of the time they are only harmfull (reduce moral, maintenance costs).
+	//So just remove any start troops.
+	//A human would pack them into a transporter and use it up to build an outpost.
+	void KillTroops();
+
 	/// Diese Funktion kauft unter Umständen den aktuellen Bauauftrag. Somit kommt der Ausbaue schneller voran.
 	void PerhapsBuy();
 

@@ -46,6 +46,7 @@ void CSystemAI::ExecuteSystemAI(CPoint ko)
 		return;
 
 	m_KO = ko;
+	KillTroops();
 	PerhapsBuy();
 	CalcPriorities();
 	AssignWorkers();
@@ -56,6 +57,12 @@ void CSystemAI::ExecuteSystemAI(CPoint ko)
 //////////////////////////////////////////////////////////////////////
 // private Funktionen
 //////////////////////////////////////////////////////////////////////
+void CSystemAI::KillTroops() {
+	CSystem& system = m_pDoc->GetSystem(m_KO.x, m_KO.y);
+	CArray<CTroop>& troops = *system.GetTroops();
+	troops.RemoveAll();
+}
+
 /// Diese Funktion kauft unter Umständen den aktuellen Bauauftrag. Somit kommt der Ausbaue schneller voran.
 void CSystemAI::PerhapsBuy()
 {
