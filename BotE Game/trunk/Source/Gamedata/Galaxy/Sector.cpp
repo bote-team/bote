@@ -11,6 +11,7 @@
 #include "Races\RaceController.h"
 #include "Anomaly.h"
 #include "General/ResourceManager.h"
+#include "Ships/ships.h"
 
 #include <cassert>
 
@@ -1000,4 +1001,26 @@ bool CSector::IsStationBuildable(SHIP_TYPE::Typ station, const CString& race) co
 	if(!GetOutpost(race))
 		return false;
 	return StationBuildContinuable(race, *this);
+}
+
+void CSector::RecalcPlanetsTerraformingStatus() {
+	const CShipMap& sm = resources::pDoc->m_ShipMap;
+	std::set<unsigned> terraformable;
+	//unset terraforming status for all planets
+	for(std::vector<CPlanet>::iterator i = m_Planets.begin(); i != m_Planets.end(); ++i) {
+		i->SetIsTerraforming(FALSE);
+		if(i->GetHabitable() && !i->GetTerraformed())
+			terraformable.insert(i - m_Planets.begin());
+	}
+	//reset it for those which are actually terraformed at present
+	for(CShipMap::const_iterator i = sm.begin(); i != sm.end(); ++i) {
+		if(terraformable.empty())
+			break;
+		if(i->second.GetKO() != m_KO || i->second.GetCurrentOrder() != SHIP_ORDER::TERRAFORM)
+			continue;
+		const unsigned planet = i->second.GetTerraform();
+		m_Planets.at(planet).SetIsTerraforming(TRUE);
+		unsigned erased = terraformable.erase(planet);
+		assert(erased == 1);
+	}
 }

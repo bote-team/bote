@@ -561,8 +561,11 @@ void CShip::SetCombatTacticAccordingToType() {
 }
 
 void CShip::UnsetCurrentOrder() {
-	UnsetTerraform();
+	m_nTerraformingPlanet = -1;
+	const bool was_terraform = m_iCurrentOrder == SHIP_ORDER::TERRAFORM;
 	m_iCurrentOrder = SHIP_ORDER::NONE;
+	if(was_terraform)
+		resources::pDoc->GetSector(m_KO.x, m_KO.y).RecalcPlanetsTerraformingStatus();
 }
 
 bool CShip::RemoveDestroyed(CRace& owner, unsigned short round, const CString& sEvent, const CString& sStatus, CStringArray* destroyedShips, const CString& anomaly) {
@@ -584,27 +587,15 @@ bool CShip::RemoveDestroyed(CRace& owner, unsigned short round, const CString& s
 	return false;
 }
 
-void CShip::UnsetTerraform() {
-	if(m_iCurrentOrder == SHIP_ORDER::TERRAFORM) {
-		assert(m_nTerraformingPlanet != -1);
-		resources::pDoc->GetSector(m_KO.x, m_KO.y).GetPlanet(m_nTerraformingPlanet)->SetIsTerraforming(false);
-	}
-	m_nTerraformingPlanet = -1;
-}
-
 void CShip::SetTerraform(short planetNumber) {
 	if(planetNumber == -1) {
 		if(m_iCurrentOrder == SHIP_ORDER::TERRAFORM)
-			UnsetCurrentOrder();
+			m_iCurrentOrder = SHIP_ORDER::NONE;
 	}
 	else
-	{
-		if(m_iCurrentOrder == SHIP_ORDER::TERRAFORM)
-			resources::pDoc->GetSector(m_KO.x, m_KO.y).GetPlanet(m_nTerraformingPlanet)->SetIsTerraforming(false);
 		m_iCurrentOrder = SHIP_ORDER::TERRAFORM;
-		resources::pDoc->GetSector(m_KO.x, m_KO.y).GetPlanet(planetNumber)->SetIsTerraforming(true);
-	}
 	m_nTerraformingPlanet = planetNumber;
+	resources::pDoc->GetSector(m_KO.x, m_KO.y).RecalcPlanetsTerraformingStatus();
 }
 
 //////////////////////////////////////////////////////////////////////

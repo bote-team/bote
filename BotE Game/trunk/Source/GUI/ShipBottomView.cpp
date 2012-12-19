@@ -831,9 +831,13 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 						next_current_ship = it;
 						break;
 					}
+					const bool was_terraform = to_erase->second.GetCurrentOrder() == SHIP_ORDER::TERRAFORM;
 					assert(next_current_ship != to_erase);
 					pDoc->m_ShipMap.EraseAt(to_erase);
 					pDoc->SetCurrentShip(next_current_ship);
+					const CPoint& co = next_current_ship->second.GetKO();
+					if(was_terraform)
+						pDoc->GetSector(co.x, co.y).RecalcPlanetsTerraformingStatus();
 
 					Invalidate(FALSE);
 					resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CFleetMenuView));

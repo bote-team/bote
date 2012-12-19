@@ -391,21 +391,8 @@ void CPlanetBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 					CShipBottomView::SetShowStation(false);
 					CSmallInfoView::SetDisplayMode(CSmallInfoView::DISPLAY_MODE_SHIP_BOTTEM_VIEW);
 					resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
-					const int old_terraformed = pDoc->CurrentShip()->second.GetTerraform();
-					if(old_terraformed != -1)
-						pDoc->CurrentSector().GetPlanet(old_terraformed)->SetIsTerraforming(FALSE);
 					assert(pDoc->CurrentShip()->second.GetKO() == pDoc->GetKO());
 					pDoc->CurrentShip()->second.SetTerraform(i);
-					//reset old planet to being terraformed in case there's at least another ship terraforming it
-					if (static_cast<short>(i) != old_terraformed && old_terraformed != -1)
-					{
-						for(CShipMap::const_iterator y = pDoc->m_ShipMap.begin(); y != pDoc->m_ShipMap.end(); ++y)
-							if (y->second.GetKO() == pDoc->GetKO() && y->second.GetTerraform() == old_terraformed)
-							{
-								pDoc->CurrentSector().GetPlanet(old_terraformed)->SetIsTerraforming(TRUE);
-								break;
-							}
-					}
 
 					Invalidate();
 				}

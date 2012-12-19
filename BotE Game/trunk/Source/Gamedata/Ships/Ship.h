@@ -154,9 +154,6 @@ public:
 	void SetCombatTacticAccordingToType();
 	//Sets the current oder according to m_nCombatTactic
 	void UnsetCurrentOrder();
-private:
-	void UnsetTerraform();
-public:
 
 	bool RemoveDestroyed(CRace& owner, unsigned short round, const CString& sEvent,
 		const CString& sStatus, CStringArray* destroyedShips, const CString& anomaly = "");
