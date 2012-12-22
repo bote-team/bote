@@ -1020,7 +1020,10 @@ void CSector::RecalcPlanetsTerraformingStatus() {
 			continue;
 		const unsigned planet = i->second.GetTerraform();
 		m_Planets.at(planet).SetIsTerraforming(TRUE);
+#pragma warning(push)
+#pragma warning(disable: 4189)
 		unsigned erased = terraformable.erase(planet);
 		assert(erased == 1);
 	}
 }
+#pragma warning(pop)
