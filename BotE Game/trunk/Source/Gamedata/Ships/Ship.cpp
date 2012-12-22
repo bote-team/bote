@@ -628,12 +628,20 @@ UINT CShip::GetCompleteOffensivePower(bool bBeams/* = true*/, bool bTorpedos/* =
 					UINT tempBeamDmg = (UINT)m_BeamWeapons.GetAt(i).GetBeamPower()
 								* m_BeamWeapons.GetAt(i).GetBeamNumber()
 								* m_BeamWeapons.GetAt(i).GetShootNumber();
+
+					// Wenn kein Schaden direkt auf die Hülle geht, weil der Schaden zu klein ist, um einen
+					// prozentualen Anteil zu haben, dann den Beamschaden halbieren (nur wenn nicht immer schildbrechend)
+					bool bHalfDmg = m_BeamWeapons.GetAt(i).GetBeamPower() * DAMAGE_TO_HULL < 1;
+
 					// besondere Beamfähigkeiten erhöhen den BeamDmg um einen selbst gewählten Mulitplikator
 					// der dadurch erhaltende Schaden entspricht nicht dem wirklichen Schaden!
 					if (m_BeamWeapons.GetAt(i).GetPiercing())
 						tempBeamDmg = (UINT)(tempBeamDmg * 1.5);
 					if (m_BeamWeapons.GetAt(i).GetModulating())
 						tempBeamDmg *= 3;
+					else if (bHalfDmg)
+						tempBeamDmg /= 2;
+					
 					beamDmg += tempBeamDmg;
 				}
 				counter--;
@@ -653,6 +661,11 @@ UINT CShip::GetCompleteOffensivePower(bool bBeams/* = true*/, bool bTorpedos/* =
 										m_TorpedoWeapons.GetAt(i).GetNumber() * 100 *
 										m_TorpedoWeapons.GetAt(i).GetNumberOfTupes() /
 										m_TorpedoWeapons.GetAt(i).GetTupeFirerate());
+
+			// Wenn kein Schaden direkt auf die Hülle geht, weil der Schaden zu klein ist, um einen
+			// prozentualen Anteil zu haben, dann den Torpedoschaden halbieren (nur wenn nicht immer schildbrechend)
+			bool bHalfDmg = m_TorpedoWeapons.GetAt(i).GetTorpedoPower() * DAMAGE_TO_HULL < 1;
+
 			// besondere Torpedofähigkeiten erhöhen den Torpedoschaden um einen selbst gewählten Mulitplikator
 			// der dadurch erhaltende Schaden entspricht nicht dem wirklichen Schaden!
 			BYTE type = m_TorpedoWeapons.GetAt(i).GetTorpedoType();
@@ -668,6 +681,10 @@ UINT CShip::GetCompleteOffensivePower(bool bBeams/* = true*/, bool bTorpedos/* =
 				tempTorpedoDmg = (UINT)(tempTorpedoDmg * 2);
 			if (CTorpedoInfo::GetReduceManeuver(type))
 				tempTorpedoDmg = (UINT)(tempTorpedoDmg * 1.1);
+
+			if (bHalfDmg && !CTorpedoInfo::GetIgnoreAllShields(type))
+				tempTorpedoDmg /= 2;
+			
 			torpedoDmg += tempTorpedoDmg;
 		}
 	}
@@ -767,7 +784,7 @@ BYTE CShip::GetExpLevel() const
 	// Greenhorn
 	if (exp < 250)
 		return 0;
-	// Angänger
+	// Anfänger
 	else if (exp < 500)
 		return 1;
 	// Normal
