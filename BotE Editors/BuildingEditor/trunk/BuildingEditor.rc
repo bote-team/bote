@@ -78,8 +78,8 @@ STYLE DS_SETFONT | WS_CHILD | WS_SYSMENU
 FONT 8, "MS Sans Serif", 0, 0, 0x0
 BEGIN
     ICON            IDR_MAINFRAME,IDC_STATIC,11,17,20,20
-    LTEXT           "BuildingEditor Version 1.2",IDC_STATIC,40,10,119,8,SS_NOPREFIX
-    LTEXT           "Copyright by Sir Pustekuchen\n(C) 2009",IDC_STATIC,40,25,119,23
+    LTEXT           "BuildingEditor Version 1.2.1",IDC_STATIC,40,10,119,8,SS_NOPREFIX
+    LTEXT           "Copyright by Sir Pustekuchen\n(C) 2009-2013",IDC_STATIC,40,25,119,23
 END
 
 IDD_BUILDINGEDITOR_DIALOG DIALOGEX 0, 0, 573, 305
@@ -102,7 +102,7 @@ BEGIN
     PUSHBUTTON      "DOWN",IDC_MOVEDOWN,7,284,42,14
     COMBOBOX        IDC_LANGUAGE,498,7,68,33,CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
     CONTROL         "",IDC_TAB1,"SysTabControl32",0x0,130,7,366,275
-    LTEXT           "Building Editor for BotE Alpha5 Version",IDC_STATIC,369,290,127,8
+    LTEXT           "Building Editor for Birth of the Empires",IDC_STATIC,369,290,127,8
 END
 
 IDD_INFODLG DIALOGEX 0, 0, 356, 245
