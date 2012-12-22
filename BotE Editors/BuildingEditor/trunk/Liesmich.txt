@@ -1,8 +1,10 @@
-@BuildingEditor for Bote
+@BuildingEditor for Birth of the Empires
 
 @author:	Sir Pustekuchen
 @date:		2006-04-06
-@last change:	2008-03-31
+@last change:	2012-12-22
+
+@see also: http://birth-of-the-empires.de/wiki/index.php/Building_Editor
 
 
 -------------------------------------------------------------------------
@@ -22,7 +24,7 @@ Wichtige allgemeine Informationen:
 
 - Die meisten Produktionswerte dürfen ausschließlich positive Werte annehmen.
   Eine Aussnahme stellt dabei die Nahrungsproduktion, Moralproduktion im System,
-  Moralproduktion imperienweit und die Latinumproduktion dar. Diese dürfen auch
+  Moralproduktion imperienweit und die Credits-Produktion dar. Diese dürfen auch
   negative Produktionswerte annehmen. Der Editor sollte bei Eingabe von Daten diese
   auf Richtigkeit überprüfen.
 
@@ -47,7 +49,7 @@ Wichtige Informationen zur Bedienung:
   ist dennoch, dass alle Änderungen, die an einem Gebäude gemacht werden temporär auch
   gespeichert werden, wenn/obwohl man ein anderes Gebäude aus der Liste auswählt.
   Geht man auf ein zuvor modifiziertes Gebäude zurück, so sind diese Änderungen
-  immernoch vorhanden. Lädt man aber die Daten erneut, dann sind diese Änderungen 
+  immer noch vorhanden. Lädt man aber die Daten erneut, dann sind diese Änderungen
   selbstverständlich rückgängig gemacht. Erst ein Speichern schreibt diese Daten
   konsistent in die Datei.
 
@@ -76,6 +78,6 @@ Wichtige Informationen zur Bedienung:
 
 
 Bei Fragen zu einzelnen Werten bitte im Internet nachschauen.
-www.birth-of-the-empires.de.vu
+www.birth-of-the-empires.de
 
 Alle gefunden Bugs bitte auch im Bugbereich des Forums von BotE melden.
