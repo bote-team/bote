@@ -36,6 +36,10 @@ public:
 	/// Funktion lädt die rassenspezifischen Grafiken.
 	virtual void LoadRaceGraphics();
 
+	///	Funktion erstellt zur aktuellen Mouse-Position einen HTML Tooltip
+	/// @return	der erstellte Tooltip-Text
+	virtual CString CreateTooltip(void);
+
 private:
 	// Funktionen
 	/// Funkion legt alle Buttons für die Geheimdienstansichten an.
@@ -47,9 +51,9 @@ private:
 
 	/// Funktion überprüft ob das in der Designansicht angeklickte Schiff in einem unserer Systeme gerade gebaut wird
 	/// Man benötigt diesen Check da man keine Schiffe ändern kann, welche gerade gebaut werden.
-	/// @param n Index des zu prüfenden Schiffes aus der Schiffsliste
+	/// @param pShipInfo Zeiger des zu prüfenden Schiffes aus der Schiffsliste
 	/// @return CString mit dem Namen des Systems, wird das Schiff nirgends gebaut ist der String leer
-	CString CheckIfShipIsBuilding(int n) const;
+	CString CheckIfShipIsBuilding(const CShipInfo* pShipInfo) const;
 
 	// Attribute
 
@@ -66,19 +70,17 @@ private:
 	USHORT m_iTorpedoWeaponNumber;		// Nummer der Torpedowaffe
 	BOOLEAN m_bFoundBetterBeam;			// Gibt es einen besseren Beamtyp
 	BOOLEAN m_bFoundWorseBeam;			// Gibt es einen schlechteren Beamtyp
+	CShipInfo* m_pShownShip;			// derzeit angezeigtes Schiff
 
 protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	virtual void OnInitialUpdate();
-public:
 	virtual void OnPrepareDC(CDC* pDC, CPrintInfo* pInfo = NULL);
-public:
 	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
-public:
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
-public:
 	afx_msg BOOL OnMouseWheel(UINT nFlags, short zDelta, CPoint pt);
+	afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
 };
 
 
