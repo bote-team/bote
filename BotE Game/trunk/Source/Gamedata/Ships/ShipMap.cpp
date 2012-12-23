@@ -19,7 +19,7 @@ CShipMap::CShipMap(void) :
 
 CShipMap::~CShipMap(void)
 {
-	Reset();
+	Reset(true);
 }
 
 CShipMap::CShipMap(const CShipMap& o) :
@@ -29,8 +29,8 @@ CShipMap::CShipMap(const CShipMap& o) :
 	m_CurrentShip = begin();
 	m_FleetShip = begin();
 	if(!o.empty()) {
-		m_CurrentShip = find(o.CurrentShip()->second.Key());
-		m_FleetShip = find(o.FleetShip()->second.Key());
+		m_CurrentShip = find(o.CurrentShip()->second->Key());
+		m_FleetShip = find(o.FleetShip()->second->Key());
 	}
 }
 
@@ -44,8 +44,8 @@ CShipMap& CShipMap::operator=(const CShipMap& o)
 	m_CurrentShip = begin();
 	m_FleetShip = begin();
 	if(!o.empty()) {
-		m_CurrentShip = find(o.CurrentShip()->second.Key());
-		m_FleetShip = find(o.FleetShip()->second.Key());
+		m_CurrentShip = find(o.CurrentShip()->second->Key());
+		m_FleetShip = find(o.FleetShip()->second->Key());
 	}
 	return *this;
 }
@@ -103,7 +103,7 @@ CShipMap::iterator CShipMap::iterator_at(int index) {
 // adding elements
 //////////////////////////////////////////////////////////////////////
 
-CShipMap::iterator CShipMap::Add(const CShips& ship) {
+CShipMap::iterator CShipMap::Add(CShips* ship) {
 	//if(MT::CMyTrace::IsLoggingEnabledFor("ships")) {
 	//	CString s;
 	//	s.Format("CShipMap: adding ship %s", ship.GetShipName());
@@ -118,7 +118,7 @@ CShipMap::iterator CShipMap::Add(const CShips& ship) {
 		m_FleetShip = result;
 	}
 	CShipMap::iterator temp = result;
-	result->second.SetKey(key);
+	result->second->SetKey(key);
 	++temp;
 	assert(temp == end());
 	return result;
@@ -138,31 +138,42 @@ void CShipMap::Append(const CShipMap& other) {
 // removing elements
 //////////////////////////////////////////////////////////////////////
 
-void CShipMap::Reset() {
+void CShipMap::Reset(bool destroy) {
+	if(destroy)
+		for(CShipMap::iterator i = begin(); i != end(); ++i) {
+			assert(i->second);
+			delete i->second;
+			i->second = NULL;
+		}
 	m_Ships.clear();
 	m_NextKey = 0;
 	m_CurrentShip = begin();
 	m_FleetShip = begin();
 }
-void CShipMap::EraseAt(CShipMap::iterator& index) {
+void CShipMap::EraseAt(CShipMap::iterator& index, bool destroy) {
 	//if(MT::CMyTrace::IsLoggingEnabledFor("ships")) {
 	//	CString s;
-	//	s.Format("CShipMap: removing ship %s", index->second.GetShipName());
+	//	s.Format("CShipMap: removing ship %s", index->second->GetShipName());
 	//	MYTRACE("ships")(MT::LEVEL_INFO, s);
 	//}
 	assert(!empty() && index != end());
 	//need to copy the iterator, because it can come from a reference to m_CurrentShip (or m_FleetShip),
 	//meaning updating m_CurrentShip/m_FleetShip would change it as well
-	const CShipMap::const_iterator to_erase = index;
+	const CShipMap::iterator to_erase = index;
 	UpdateSpecialShip(m_CurrentShip, to_erase);
 	UpdateSpecialShip(m_FleetShip, to_erase);
 	//now only prevent the passed iterator from becoming invalid via incrementing,
 	//if the above two calls didn't already update it
 	if(to_erase == index)
 		++index;
+	if(destroy) {
+		assert(to_erase->second);
+		delete to_erase->second;
+		to_erase->second = NULL;
+	}
 	m_Ships.erase(to_erase);
 	if(empty())
-		Reset();
+		Reset(true);
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -172,12 +183,12 @@ void CShipMap::EraseAt(CShipMap::iterator& index) {
 const CShips& CShipMap::at(unsigned key) const {
 	const CShipMap::const_iterator i = find(key);
 	assert(i != end());
-	return i->second;
+	return *i->second;
 }
 CShips& CShipMap::at(unsigned key) {
 	CShipMap::iterator i = find(key);
 	assert(i != end());
-	return i->second;
+	return *i->second;
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -208,7 +219,7 @@ int CShipMap::index_of(const CShipMap::const_iterator& position) const {
 
 const CShips& CShipMap::GetAt(int index) const {
 	assert(index < GetSize());
-	return iterator_at(index)->second;
+	return *iterator_at(index)->second;
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -219,7 +230,7 @@ void CShipMap::Serialize(CArchive& ar) {
 	if(ar.IsStoring()) {
 		ar << GetSize();
 		for(CShipMap::iterator i = begin(); i != end(); ++i)
-			i->second.Serialize(ar);
+			i->second->Serialize(ar);
 	}
 	else if(ar.IsLoading()) {
 		int size;
@@ -229,11 +240,11 @@ void CShipMap::Serialize(CArchive& ar) {
 		//with the CString members of the ship class in their Serialize functions above.
 		//Thus, call the destructors of all the current elements explicitely and manually.
 		//(This comment was appropriate for std::vector)
-		Reset();
+		Reset(true);
 		for(int i = 0; i < size; ++i)
 		{
-			CShips ship;
-			ship.Serialize(ar);
+			CShips* ship = new CShips();
+			ship->Serialize(ar);
 			Add(ship);
 		}
 	}
@@ -243,28 +254,30 @@ void CShipMap::Serialize(CArchive& ar) {
 
 void CShipMap::SerializeEndOfRoundData(CArchive& ar, const CString& sMajorID) {
 	if(ar.IsStoring()) {
-		CShipMap ships;
+		std::vector<CShips*> ships;
 		for(CShipMap::const_iterator i = begin(); i != end(); ++i)
-			if (i->second.GetOwnerOfShip() == sMajorID)
-				ships.Add(i->second);
-		ships.Serialize(ar);
+			if (i->second->GetOwnerOfShip() == sMajorID)
+				ships.push_back(i->second);
+		ar << ships.size();
+		for(std::vector<CShips*>::iterator i = ships.begin(); i != ships.end(); ++i)
+			(*i)->Serialize(ar);
 	}
 	else if(ar.IsLoading()) {
 		int count = 0;
 		ar >> count;
 		for(CShipMap::iterator i = begin(); i != end();) {
-			if (i->second.GetOwnerOfShip() == sMajorID) {
-				EraseAt(i);
+			if (i->second->GetOwnerOfShip() == sMajorID) {
+				EraseAt(i, true);
 				continue;
 			}
 			++i;
 		}
 		const int newsize = GetSize() + count;
 		for (int i = GetSize(); i < newsize; ++i) {
-			CShips ship;
-			ship.Serialize(ar);
+			CShips* ship = new CShips();
+			ship->Serialize(ar);
 			const CShipMap::iterator j = Add(ship);
-			assert(j->second.GetOwnerOfShip() == sMajorID);
+			assert(j->second->GetOwnerOfShip() == sMajorID);
 		}
 	}
 	else
@@ -275,13 +288,13 @@ void CShipMap::SerializeNextRoundData(CArchive& ar, const CPoint& ptCurrentComba
 	if(ar.IsStoring()) {
 		int nCount = 0;
 		for(CShipMap::const_iterator i = begin(); i != end(); ++i)
-			if (i->second.GetKO() == ptCurrentCombatSector)
+			if (i->second->GetKO() == ptCurrentCombatSector)
 				nCount++;
 		ar << nCount;
 		// nur Schiffe aus diesem Sektor senden
 		for(CShipMap::iterator i = begin(); i != end(); ++i)
-			if (i->second.GetKO() == ptCurrentCombatSector)
-				i->second.Serialize(ar);
+			if (i->second->GetKO() == ptCurrentCombatSector)
+				i->second->Serialize(ar);
 	}
 	else if(ar.IsLoading()) {
 		// Es werden nur Schiffe aus dem aktuellen Kampfsektor empfangen
@@ -289,8 +302,8 @@ void CShipMap::SerializeNextRoundData(CArchive& ar, const CPoint& ptCurrentComba
 		ar >> count;
 		// alle Schiffe aus dem Kampfsektor entfernen
 		for(CShipMap::iterator i = begin(); i != end();) {
-			if (i->second.GetKO() == ptCurrentCombatSector) {
-				EraseAt(i);
+			if (i->second->GetKO() == ptCurrentCombatSector) {
+				EraseAt(i, true);
 				continue;
 			}
 			++i;
@@ -298,10 +311,10 @@ void CShipMap::SerializeNextRoundData(CArchive& ar, const CPoint& ptCurrentComba
 		// empfangene Schiffe wieder hinzufügen
 		const int newsize = GetSize() + count;
 		for (int i = GetSize(); i < newsize; ++i) {
-			CShips ship;
-			ship.Serialize(ar);
+			CShips* ship = new CShips();
+			ship->Serialize(ar);
 			const CShipMap::iterator j = Add(ship);
-			assert(j->second.GetKO() == ptCurrentCombatSector);
+			assert(j->second->GetKO() == ptCurrentCombatSector);
 		}
 	}
 	else

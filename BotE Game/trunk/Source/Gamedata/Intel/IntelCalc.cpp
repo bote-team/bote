@@ -780,12 +780,12 @@ BOOLEAN CIntelCalc::ExecuteMilitarySpy(CMajor* pRace, CMajor* pEnemyRace, CMajor
 		CArray<CShips*> stations;
 		// Felder mit allen zu spionierenden Schiffe und Stationen anlegen
 		for(CShipMap::iterator i = m_pDoc->m_ShipMap.begin(); i != m_pDoc->m_ShipMap.end(); ++i)
-			if (i->second.GetOwnerOfShip() == pEnemyRace->GetRaceID())
+			if (i->second->GetOwnerOfShip() == pEnemyRace->GetRaceID())
 			{
-				if (i->second.IsStation())
-					stations.Add(&i->second);
+				if (i->second->IsStation())
+					stations.Add(i->second);
 				else
-					ships.Add(&i->second);
+					ships.Add(i->second);
 			}
 		CMilitaryIntelObj* report = NULL;
 		// wenn Stationen vorhanden sind zu 33% dort spionieren
@@ -1401,19 +1401,19 @@ BOOLEAN CIntelCalc::ExecuteMilitarySabotage(CMajor* pRace, CMajor* pEnemyRace, C
 			std::vector<CPoint> allShips;//x: ship key in global shipmap; y: ship key within another ship's fleet
 			for(CShipMap::const_iterator i = m_pDoc->m_ShipMap.begin(); i != m_pDoc->m_ShipMap.end(); ++i)
 			{
-				if (i->second.GetKO() == report->GetKO() && i->second.GetOwnerOfShip() != report->GetOwner())
+				if (i->second->GetKO() == report->GetKO() && i->second->GetOwnerOfShip() != report->GetOwner())
 				{
 					// besitzt dieses Schiff eine Flotte, so könnte sich unser Schiff auch in der Flotte befinden
-					if (i->second.HasFleet())
+					if (i->second->HasFleet())
 					{
-						for(CShips::const_iterator j = i->second.begin(); j != i->second.end(); ++j)
+						for(CShips::const_iterator j = i->second->begin(); j != i->second->end(); ++j)
 						{
-							if (j->second.GetID() == report->GetID())
-								allShips.push_back(CPoint(i->second.Key(), j->second.Key()));
+							if (j->second->GetID() == report->GetID())
+								allShips.push_back(CPoint(i->second->Key(), j->second->Key()));
 						}
 					}
-					if (i->second.GetID() == report->GetID())
-						allShips.push_back(CPoint(i->second.Key(),-1));	// -1 als y Wert bedeutet, dass dieses Schiff in keiner Flotte vorkommt
+					if (i->second->GetID() == report->GetID())
+						allShips.push_back(CPoint(i->second->Key(),-1));	// -1 als y Wert bedeutet, dass dieses Schiff in keiner Flotte vorkommt
 				}
 			}
 			// aus allen möglichen Schiffen, welche die ID unseres Reports und im richtigen Sektor sind eins zufällig aussuchen
@@ -1482,7 +1482,7 @@ BOOLEAN CIntelCalc::ExecuteMilitarySabotage(CMajor* pRace, CMajor* pEnemyRace, C
 					// Wenn das Schiff eine Flotte besaß, so geht die Flotte auf das erste Schiff in der Flotte über
 					if (ship->HasFleet())
 					{
-						const CShips& new_fleetship = ship->GiveFleetToFleetsFirstShip();
+						CShips* new_fleetship = ship->GiveFleetToFleetsFirstShip();
 						// neues Flottenschiff dem Array hinzufügen
 						m_pDoc->m_ShipMap.Add(new_fleetship);
 						// Schiff nochmal neu holen, da der Vektor verändert wurde und so sich auch der Zeiger ändern kann
@@ -1491,11 +1491,11 @@ BOOLEAN CIntelCalc::ExecuteMilitarySabotage(CMajor* pRace, CMajor* pEnemyRace, C
 				}
 				else	// Schiff ist in Flotte
 				{
-					m_pDoc->m_ShipMap.Add(*ship);
+					m_pDoc->m_ShipMap.Add(ship);
 					CShips& old_leader = m_pDoc->m_ShipMap.at(n.x);
 					CShips::iterator stolen_ship = old_leader.find(n.y);
 					assert(stolen_ship != old_leader.end());
-					old_leader.RemoveShipFromFleet(stolen_ship);
+					old_leader.RemoveShipFromFleet(stolen_ship, false);
 				}
 				if (report)
 				{
@@ -1531,7 +1531,7 @@ BOOLEAN CIntelCalc::ExecuteMilitarySabotage(CMajor* pRace, CMajor* pEnemyRace, C
 					CShips& s = m_pDoc->m_ShipMap.at(n.x);
 					CShips::iterator destroyed_ship = s.find(n.y);
 					assert(destroyed_ship != s.end());
-					s.RemoveShipFromFleet(destroyed_ship);
+					s.RemoveShipFromFleet(destroyed_ship, false);
 				}
 				if (report)
 				{

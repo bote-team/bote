@@ -187,9 +187,9 @@ void CReManager::CalcExploreEvent(const CPoint &ko, CMajor *pRace, CShipMap* shi
 	{
 		for(CShipMap::iterator i = ships->begin(); i != ships->end(); ++i)
 		{
-			if(i->second.GetOwnerOfShip()==pRace->GetRaceID()&&i->second.GetKO()==ko)  {
+			if(i->second->GetOwnerOfShip()==pRace->GetRaceID()&&i->second->GetKO()==ko)  {
 				const int additional_experience = rand() % 401 + 50;
-				i->second.SetCrewExperiance(additional_experience);
+				i->second->SetCrewExperiance(additional_experience);
 			}
 
 		}

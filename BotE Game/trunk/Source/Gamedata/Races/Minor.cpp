@@ -214,7 +214,7 @@ void CMinor::PerhapsBuildShip(CBotf2Doc* pDoc)
 					int nNumber = 1;
 					for(CShipMap::const_iterator j = pDoc->m_ShipMap.begin(); j != pDoc->m_ShipMap.end(); ++j)
 					{
-						if (j->second.GetOwnerOfShip() == m_sID && j->second.GetShipClass() == pShipInfo->GetShipClass())
+						if (j->second->GetOwnerOfShip() == m_sID && j->second->GetShipClass() == pShipInfo->GetShipClass())
 							nNumber++;
 					}
 					nNumber *= 5;
@@ -227,8 +227,8 @@ void CMinor::PerhapsBuildShip(CBotf2Doc* pDoc)
 							&& !IsRaceProperty(RACE_PROPERTY::SNEAKY)
 							&& !IsRaceProperty(RACE_PROPERTY::SECRET))
 						{
-							ship->second.UnsetCurrentOrder();
-							ship->second.SetCombatTactic(COMBAT_TACTIC::CT_AVOID);
+							ship->second->UnsetCurrentOrder();
+							ship->second->SetCombatTactic(COMBAT_TACTIC::CT_AVOID);
 						}
 						return;
 					}

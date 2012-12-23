@@ -1016,9 +1016,9 @@ void CSector::RecalcPlanetsTerraformingStatus() {
 	for(CShipMap::const_iterator i = sm.begin(); i != sm.end(); ++i) {
 		if(terraformable.empty())
 			break;
-		if(i->second.GetKO() != m_KO || i->second.GetCurrentOrder() != SHIP_ORDER::TERRAFORM)
+		if(i->second->GetKO() != m_KO || i->second->GetCurrentOrder() != SHIP_ORDER::TERRAFORM)
 			continue;
-		const unsigned planet = i->second.GetTerraform();
+		const unsigned planet = i->second->GetTerraform();
 		CPlanet& p = m_Planets.at(planet);
 		assert(p.GetHabitable());
 		//It is allowed to terraform the same planet with 2+ independent ships

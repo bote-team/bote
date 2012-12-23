@@ -155,10 +155,10 @@ public:
 	 * Adds the given CShips to this CShips' fleet and propagates this CShips' leader's orders to the given
 	 * CShips' leader and fleet (both are in this CShips' fleet now).
 	**/
-	void AddShipToFleet(const CShips& fleet);
+	void AddShipToFleet(CShips* fleet);
 	void SetCurrentShip(const CShips::iterator& position);
 	// Funktion um ein Schiff aus der Flotte zu entfernen.
-	void RemoveShipFromFleet(CShips::iterator& ship);
+	void RemoveShipFromFleet(CShips::iterator& ship, bool destroy);
 
 	//strip this CShips from destroyed ships
 	//@ return true in case the leading ship is still alive, false in case the leader is dead and
@@ -166,7 +166,7 @@ public:
 	bool RemoveDestroyed(CRace& owner, unsigned short round, const CString& sEvent,
 		const CString& sStatus, CStringArray* destroyedShips = NULL, const CString& anomaly = "");
 	//// Funktion löscht die gesamte Flotte
-	void Reset(void);
+	void Reset(bool destroy);
 
 	//Affects leader and fleet
 	void ApplyTraining(int XP);
@@ -348,7 +348,7 @@ public:
 
 	////uses this CShips's fleet's first ship to make a leading ship, which has the remaining ships of this CShips's
 	////fleet as its fleet, and returns the new CShips
-	CShips GiveFleetToFleetsFirstShip();
+	CShips* GiveFleetToFleetsFirstShip();
 
 	/// Funktion zum Zeichnen des Schiffes in der Schiffsansicht.
 	/// @param g Zeiger auf Zeichenkontext

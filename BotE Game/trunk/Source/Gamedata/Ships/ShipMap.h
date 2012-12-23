@@ -30,11 +30,11 @@ public:
 // iterators
 //////////////////////////////////////////////////////////////////////
 
-	typedef std::map<unsigned, CShips>::const_iterator const_iterator;
+	typedef std::map<unsigned, CShips*>::const_iterator const_iterator;
 	const_iterator begin() const;
 	const_iterator end() const;
 
-	typedef std::map<unsigned, CShips>::iterator iterator;
+	typedef std::map<unsigned, CShips*>::iterator iterator;
 	iterator begin();
 	iterator end();
 
@@ -68,7 +68,7 @@ public:
 	//@param ship: the ship to add
 	//@return an iterator to the newly inserted element
 	//complexity: constant
-	iterator Add(const CShips& ship);
+	iterator Add(CShips* ship);
 
 	//appends the passed CShipMap at the end of this shiparray
 	//@param other: the CShipMap to append
@@ -78,14 +78,14 @@ public:
 // removing elements
 //////////////////////////////////////////////////////////////////////
 
-	void Reset();
+	void Reset(bool destroy);
 
 	//removes the element pointed to by the passed iterator from this shipmap
 	//@param index: will be updated and point to the new position of the element which followed the erased one
 	//The shipmap must not be empty before erasing.
 	//In case it is afterwards, it is reset as if it was freshly constructed.
 	//complexity: constant
-	void EraseAt(CShipMap::iterator& index);
+	void EraseAt(CShipMap::iterator& index, bool destroy);
 
 //////////////////////////////////////////////////////////////////////
 // getting elements
@@ -172,7 +172,7 @@ private:
 
 	unsigned NextKey();
 
-	std::map<unsigned, CShips> m_Ships;// internal container with the CShips
+	std::map<unsigned, CShips*> m_Ships;// internal container with the CShips
 	unsigned m_NextKey;// used to give newly added CShips their keys
 	//This counter is incremented each time a ships is added, and only resetted when the shipmap is completely
 	//empty, when loading a savegame and at turn change.

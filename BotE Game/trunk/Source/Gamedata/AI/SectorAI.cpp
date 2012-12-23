@@ -45,10 +45,10 @@ void CSectorAI::CalculateDangers()
 {
 	for(CShipMap::const_iterator i =  m_pDoc->m_ShipMap.begin(); i !=  m_pDoc->m_ShipMap.end(); ++i)
 	{
-		AddDanger(&i->second);
+		AddDanger(i->second);
 		// Führt das Schiff eine Flotte an, so muss dies alles auch für die Schiffe in der Flotte getan werden
-		for(CShips::const_iterator j =  i->second.begin(); j !=  i->second.end(); ++j)
-			AddDanger(&j->second);
+		for(CShips::const_iterator j =  i->second->begin(); j !=  i->second->end(); ++j)
+			AddDanger(j->second);
 	}
 }
 

@@ -178,11 +178,11 @@ void CDiplomacyController::CalcDiplomacyFallouts(CBotf2Doc* pDoc)
 				// alle Schiffe der Minor gehen nun an den Major
 				for(CShipMap::iterator i = pDoc->m_ShipMap.begin(); i != pDoc->m_ShipMap.end(); ++i)
 				{
-					if (i->second.GetOwnerOfShip() == pMinor->GetRaceID())
+					if (i->second->GetOwnerOfShip() == pMinor->GetRaceID())
 					{
-						i->second.SetOwnerOfShip(pMajor->GetRaceID());
+						i->second->SetOwnerOfShip(pMajor->GetRaceID());
 						// Schiff in die Shiphistory stecken
-						pMajor->GetShipHistory()->AddShip(&i->second.Leader(), pDoc->GetSector(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).GetName(true), pDoc->GetCurrentRound());
+						pMajor->GetShipHistory()->AddShip(&i->second->Leader(), pDoc->GetSector(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).GetName(true), pDoc->GetCurrentRound());
 					}
 				}
 			}

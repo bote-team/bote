@@ -391,8 +391,8 @@ void CPlanetBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 					CShipBottomView::SetShowStation(false);
 					CSmallInfoView::SetDisplayMode(CSmallInfoView::DISPLAY_MODE_SHIP_BOTTEM_VIEW);
 					resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
-					assert(pDoc->CurrentShip()->second.GetKO() == pDoc->GetKO());
-					pDoc->CurrentShip()->second.SetTerraform(i);
+					assert(pDoc->CurrentShip()->second->GetKO() == pDoc->GetKO());
+					pDoc->CurrentShip()->second->SetTerraform(i);
 
 					Invalidate();
 				}

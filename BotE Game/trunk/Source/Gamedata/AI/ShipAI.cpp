@@ -62,7 +62,7 @@ void CShipAI::CalculateShipOrders(CSectorAI* SectorAI)
 
 	for(CShipMap::iterator i = m_pDoc->m_ShipMap.begin(); i != m_pDoc->m_ShipMap.end(); ++i)
 	{
-		const CString& sOwner	= i->second.GetOwnerOfShip();
+		const CString& sOwner	= i->second->GetOwnerOfShip();
 		CMajor* pOwner	= dynamic_cast<CMajor*>(m_pDoc->GetRaceCtrl()->GetRace(sOwner));
 
 		// gilt erstmal nur für Majors
@@ -77,44 +77,44 @@ void CShipAI::CalculateShipOrders(CSectorAI* SectorAI)
 		DoMakeFleet(i);
 
 		// Vielleicht haben unsere Schiffe ein Ziel, welches sie angreifen müssen/können
-		if (DoAttackMove(&i->second, pOwner))
+		if (DoAttackMove(i->second, pOwner))
 		{
-			DoCamouflage(&i->second);
+			DoCamouflage(i->second);
 			continue;
 		}
 
 		// haben Kolonieschiffe einen Sektor zum Terraformen als Ziel, welcher kurz zuvor aber von einer
 		// anderen Rasse weggeschnappt wurde, so wird ihr Kurs gelöscht
-		if (i->second.GetShipType() == SHIP_TYPE::COLONYSHIP)
+		if (i->second->GetShipType() == SHIP_TYPE::COLONYSHIP)
 		{
-			CPoint ptKO = i->second.GetKO();
+			CPoint ptKO = i->second->GetKO();
 			// hat das Kolonieschiff den Befehl zum Terraformen, so wird dieser rückgängig gemacht, wenn der Sektor
 			// schon einer anderen Rasse gehört
-			if (i->second.GetCurrentOrder() == SHIP_ORDER::TERRAFORM)
+			if (i->second->GetCurrentOrder() == SHIP_ORDER::TERRAFORM)
 			{
 				if (m_pDoc->GetSector(ptKO.x, ptKO.y).GetOwnerOfSector() != "" && m_pDoc->GetSector(ptKO.x, ptKO.y).GetOwnerOfSector() != sOwner)
 				{
 					// Terraforming abbrechen
-					i->second.UnsetCurrentOrder();
-					i->second.SetCombatTactic(COMBAT_TACTIC::CT_AVOID);
+					i->second->UnsetCurrentOrder();
+					i->second->SetCombatTactic(COMBAT_TACTIC::CT_AVOID);
 				}
 			}
 
-			CPoint ptTarget = i->second.GetTargetKO();
+			CPoint ptTarget = i->second->GetTargetKO();
 			// nur wenn der Sektor noch niemandem gehört bzw. uns selbst ist, sollen Planeten terraformt werden
 			if (ptTarget != CPoint(-1,-1) && m_pDoc->GetSector(ptTarget.x, ptTarget.y).GetOwnerOfSector() != "" && m_pDoc->GetSector(ptTarget.x, ptTarget.y).GetOwnerOfSector() != sOwner)
 			{
 				// nicht weiter fliegen und Kurs löschen
-				i->second.SetTargetKO(CPoint(-1, -1));
-				i->second.GetPath()->RemoveAll();
+				i->second->SetTargetKO(CPoint(-1, -1));
+				i->second->GetPath()->RemoveAll();
 			}
 		}
 
 		// exisitiert kein aktueller Kurs, so wird dieser hier versucht dem Schiff zu erteilen
-		if (i->second.GetPath()->GetSize() == 0)
+		if (i->second->GetPath()->GetSize() == 0)
 		{
 			// Scouts und Kriegsschiffe fliegen zuerst einmal zu den Minorracesystemen
-			if (i->second.GetShipType() > SHIP_TYPE::COLONYSHIP)
+			if (i->second->GetShipType() > SHIP_TYPE::COLONYSHIP)
 			{
 				// Zeiger auf Vektor mit Minorracessektoren holen
 				vector<CPoint>* vMinorraceSectors = m_pSectorAI->GetMinorraceSectors(sOwner);
@@ -127,12 +127,12 @@ void CShipAI::CalculateShipOrders(CSectorAI* SectorAI)
 					CPoint ko = vMinorraceSectors->at(j);
 					// Wenn Gefahr der anderen Rassen kleiner als die der meinen ist
 					if (m_pSectorAI->GetCompleteDanger(sOwner, ko) == NULL ||
-						(m_pSectorAI->GetCompleteDanger(sOwner, ko) <= m_pSectorAI->GetDangerOnlyFromCombatShips(sOwner, i->second.GetKO())))
-						if (pOwner->GetStarmap()->GetRange(ko) <= i->second.GetRange())
+						(m_pSectorAI->GetCompleteDanger(sOwner, ko) <= m_pSectorAI->GetDangerOnlyFromCombatShips(sOwner, i->second->GetKO())))
+						if (pOwner->GetStarmap()->GetRange(ko) <= i->second->GetRange())
 						{
 							// Zielkoordinate für das Schiff setzen
-							i->second.SetTargetKO(ko);
-							MYTRACE("shipai")(MT::LEVEL_INFO, "Race %s: Ship to Minor: %s (%s) - Target: %d,%d\n",sOwner, i->second.GetShipName(), i->second.GetShipTypeAsString(), ko.x,ko.y);
+							i->second->SetTargetKO(ko);
+							MYTRACE("shipai")(MT::LEVEL_INFO, "Race %s: Ship to Minor: %s (%s) - Target: %d,%d\n",sOwner, i->second->GetShipName(), i->second->GetShipTypeAsString(), ko.x,ko.y);
 							vMinorraceSectors->erase(vMinorraceSectors->begin() + j--);
 							bSet = true;
 							break;
@@ -141,14 +141,14 @@ void CShipAI::CalculateShipOrders(CSectorAI* SectorAI)
 
 				if (bSet)
 				{
-					DoCamouflage(&i->second);
+					DoCamouflage(i->second);
 					continue;
 				}
 			}
 
 			// Kolonieschiffe zum Terraformen schicken. Andere Schiffe fliegen manchmal auch dort hin, wenn
 			// sie gerade keinen anderen Flugauftrag haben.
-			if (i->second.GetShipType() >= SHIP_TYPE::COLONYSHIP && i->second.GetCurrentOrder() != SHIP_ORDER::TERRAFORM)
+			if (i->second->GetShipType() >= SHIP_TYPE::COLONYSHIP && i->second->GetCurrentOrder() != SHIP_ORDER::TERRAFORM)
 			{
 				// Zeiger auf Vektor mit Terraformsektoren holen
 				vector<CSectorAI::SectorToTerraform>* vSectorsToTerrform = m_pSectorAI->GetSectorsToTerraform(sOwner);
@@ -157,55 +157,55 @@ void CShipAI::CalculateShipOrders(CSectorAI* SectorAI)
 				{
 					CPoint ko = vSectorsToTerrform->at(j).p;
 					// Wenn das Kolonieschiff schon auf einem Sektor für unser Terraforming steht, so fliegt es nicht weiter
-					if (i->second.GetShipType() == SHIP_TYPE::COLONYSHIP && i->second.GetKO() == ko)
+					if (i->second->GetShipType() == SHIP_TYPE::COLONYSHIP && i->second->GetKO() == ko)
 						break;
 
 					// Wenn Gefahr der anderen Rassen kleiner als die der meinen ist
-					if (m_pSectorAI->GetCompleteDanger(sOwner, ko) == NULL || (m_pSectorAI->GetCompleteDanger(sOwner, ko) < m_pSectorAI->GetDanger(sOwner, i->second.GetKO())))
+					if (m_pSectorAI->GetCompleteDanger(sOwner, ko) == NULL || (m_pSectorAI->GetCompleteDanger(sOwner, ko) < m_pSectorAI->GetDanger(sOwner, i->second->GetKO())))
 					{
-						if (pOwner->GetStarmap()->GetRange(ko) <= i->second.GetRange())
+						if (pOwner->GetStarmap()->GetRange(ko) <= i->second->GetRange())
 						{
 							// Zielkoordinate für das Schiff setzen
-							i->second.SetTargetKO(ko == i->second.GetKO() ? CPoint(-1, -1) : ko);
-							MYTRACE("shipai")(MT::LEVEL_INFO, "Race %s: Ship %s (%s) has terraforming target: %d,%d\n",sOwner, i->second.GetShipName(), i->second.GetShipTypeAsString(), ko.x,ko.y);
+							i->second->SetTargetKO(ko == i->second->GetKO() ? CPoint(-1, -1) : ko);
+							MYTRACE("shipai")(MT::LEVEL_INFO, "Race %s: Ship %s (%s) has terraforming target: %d,%d\n",sOwner, i->second->GetShipName(), i->second->GetShipTypeAsString(), ko.x,ko.y);
 							break;
 						}
 					}
 				}
 			}
 			// Truppentransporter zu einem möglichen Sektor fliegen lassen um dort einen Außenposten bauen zu können
-			if (m_pSectorAI->GetStationBuildSector(sOwner).points > MINBASEPOINTS && i->second.GetCurrentOrder() != SHIP_ORDER::BUILD_OUTPOST)
+			if (m_pSectorAI->GetStationBuildSector(sOwner).points > MINBASEPOINTS && i->second->GetCurrentOrder() != SHIP_ORDER::BUILD_OUTPOST)
 			{
 				// nur Truppentransporter oder andere Schiffe ohne Ziel fliegen zu diesem Punkt, niemals aber
 				// Kolonieschiffe
-				if (i->second.GetShipType() == SHIP_TYPE::TRANSPORTER	|| (i->second.GetShipType() != SHIP_TYPE::COLONYSHIP && !i->second.HasTarget()))
+				if (i->second->GetShipType() == SHIP_TYPE::TRANSPORTER	|| (i->second->GetShipType() != SHIP_TYPE::COLONYSHIP && !i->second->HasTarget()))
 				{
 					CPoint ko(m_pSectorAI->GetStationBuildSector(sOwner).position.x, m_pSectorAI->GetStationBuildSector(sOwner).position.y);
 					// Wenn Gefahr der anderen Rassen kleiner als die der meinen ist
-					if (m_pSectorAI->GetCompleteDanger(sOwner, ko) == 0 || (m_pSectorAI->GetCompleteDanger(sOwner, ko) < m_pSectorAI->GetDanger(sOwner, i->second.GetKO())))
+					if (m_pSectorAI->GetCompleteDanger(sOwner, ko) == 0 || (m_pSectorAI->GetCompleteDanger(sOwner, ko) < m_pSectorAI->GetDanger(sOwner, i->second->GetKO())))
 					{
-						if (pOwner->GetStarmap()->GetRange(ko) <= i->second.GetRange())
+						if (pOwner->GetStarmap()->GetRange(ko) <= i->second->GetRange())
 						{
 							// Zielkoordinate für das Schiff setzen
-							i->second.SetTargetKO(ko == i->second.GetKO() ? CPoint(-1, -1) : ko);
-							MYTRACE("shipai")(MT::LEVEL_INFO, "Race %s: Ship %s (%s) has stationbuild target: %d,%d\n",sOwner, i->second.GetShipName(), i->second.GetShipTypeAsString(), ko.x,ko.y);
+							i->second->SetTargetKO(ko == i->second->GetKO() ? CPoint(-1, -1) : ko);
+							MYTRACE("shipai")(MT::LEVEL_INFO, "Race %s: Ship %s (%s) has stationbuild target: %d,%d\n",sOwner, i->second->GetShipName(), i->second->GetShipTypeAsString(), ko.x,ko.y);
 						}
 					}
 				}
 			}
 
-			DoCamouflage(&i->second);
-			if (m_pDoc->GetSector(i->second.GetKO().x, i->second.GetKO().y).GetSunSystem())
+			DoCamouflage(i->second);
+			if (m_pDoc->GetSector(i->second->GetKO().x, i->second->GetKO().y).GetSunSystem())
 			{
-				if (!DoTerraform(&i->second))
-					DoColonize(&i->second);
+				if (!DoTerraform(i->second))
+					DoColonize(i->second);
 			}
 
-			DoStationBuild(&i->second);
+			DoStationBuild(i->second);
 		}
 		else
 		{
-			DoCamouflage(&i->second);
+			DoCamouflage(i->second);
 		}
 	}
 }
@@ -438,15 +438,15 @@ bool CShipAI::DoBombardSystem(CShips* pShip)
 
 		for(CShipMap::iterator i = m_pDoc->m_ShipMap.begin(); i != m_pDoc->m_ShipMap.end(); ++i)
 		{
-			if (i->second.GetOwnerOfShip() != pShip->GetOwnerOfShip())
+			if (i->second->GetOwnerOfShip() != pShip->GetOwnerOfShip())
 				continue;
 
-			if (i->second.GetKO() != pShip->GetKO())
+			if (i->second->GetKO() != pShip->GetKO())
 				continue;
 
-			nShipValue += i->second.GetHull()->GetCurrentHull();
-			for (CShips::iterator m = i->second.begin(); m != i->second.end(); ++m)
-				nShipValue += m->second.GetHull()->GetCurrentHull();
+			nShipValue += i->second->GetHull()->GetCurrentHull();
+			for (CShips::iterator m = i->second->begin(); m != i->second->end(); ++m)
+				nShipValue += m->second->GetHull()->GetCurrentHull();
 
 			if (nShipValue > nShipDefend)
 				break;
@@ -496,7 +496,7 @@ bool CShipAI::DoCamouflage(CShips* pShip, bool bCamouflage/* = true*/)
 /// So muss der ungefähre Schiffstyp übereinstimmen (Combat <-> NonCombat) sowie die Reichweite des Schiffes.
 void CShipAI::DoMakeFleet(const CShipMap::iterator& pShip)
 {
-	if (pShip->second.IsStation())
+	if (pShip->second->IsStation())
 		return;
 
 	bool increment = true;
@@ -510,40 +510,40 @@ void CShipAI::DoMakeFleet(const CShipMap::iterator& pShip)
 			break;
 
 		// Schiffe müssen von der selben Rasse sein
-		if (pShip->second.GetOwnerOfShip() != i->second.GetOwnerOfShip())
+		if (pShip->second->GetOwnerOfShip() != i->second->GetOwnerOfShip())
 			continue;
 
 		// Schiffe müssen sich im selben Sektor befinden
-		if (pShip->second.GetKO() != i->second.GetKO())
+		if (pShip->second->GetKO() != i->second->GetKO())
 			continue;
 
 		// beide Schiffe müssen die selbe Reichweite haben
-		if (pShip->second.GetRange() != i->second.GetRange())
+		if (pShip->second->GetRange() != i->second->GetRange())
 			continue;
 
 		// das hinzuzufügende Schiff darf kein Außenposten oder Sternbasis sein
-		if (i->second.IsStation())
+		if (i->second->IsStation())
 			continue;
 
 		// das hinzuzufügende Schiff darf kein individuelles Ziel haben
-		if (i->second.GetPath()->GetSize() > 0)
+		if (i->second->GetPath()->GetSize() > 0)
 			continue;
 
 		// der Tarnstatus muss gleich sein (also keine getarnten und ungetarnte Schiffe in eine Flotte)
-		if (pShip->second.GetCloak() != i->second.GetCloak())
+		if (pShip->second->GetCloak() != i->second->GetCloak())
 			continue;
 
 		// wenn sich das Führungsschiff tarnen kann, dann muss das hinzuzufügende Schiff sich auch tarnen können
-		if(pShip->second.CanCloak(false) != i->second.CanCloak(false))
+		if(pShip->second->CanCloak(false) != i->second->CanCloak(false))
 			continue;
 
 		// es muss sich bei beiden Schiffen um Kriegsschiffe handeln oder bei beiden Schiffen um Transporter oder bei beiden Schiffen um Kolonieschiffe
-		if ((!pShip->second.IsNonCombat() && !i->second.IsNonCombat())
-			||(pShip->second.GetShipType() == SHIP_TYPE::TRANSPORTER && i->second.GetShipType() == SHIP_TYPE::TRANSPORTER && i->second.GetCurrentOrder() < SHIP_ORDER::BUILD_OUTPOST)
-			||(pShip->second.GetShipType() == SHIP_TYPE::COLONYSHIP && i->second.GetShipType() == SHIP_TYPE::COLONYSHIP && i->second.GetCurrentOrder() < SHIP_ORDER::COLONIZE))
+		if ((!pShip->second->IsNonCombat() && !i->second->IsNonCombat())
+			||(pShip->second->GetShipType() == SHIP_TYPE::TRANSPORTER && i->second->GetShipType() == SHIP_TYPE::TRANSPORTER && i->second->GetCurrentOrder() < SHIP_ORDER::BUILD_OUTPOST)
+			||(pShip->second->GetShipType() == SHIP_TYPE::COLONYSHIP && i->second->GetShipType() == SHIP_TYPE::COLONYSHIP && i->second->GetCurrentOrder() < SHIP_ORDER::COLONIZE))
 		{
-			pShip->second.AddShipToFleet(i->second);
-			m_pDoc->m_ShipMap.EraseAt(i);
+			pShip->second->AddShipToFleet(i->second);
+			m_pDoc->m_ShipMap.EraseAt(i, false);
 			increment = false;
 		}
 	}

@@ -300,12 +300,12 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 		CString s;
 
 		const CShipMap::const_iterator& pShip = GetShip(*pDoc);
-		bool bUnknown = (pMajor->GetRaceID() != pShip->second.GetOwnerOfShip()
-			&& pMajor->IsRaceContacted(pShip->second.GetOwnerOfShip()) == false);
+		bool bUnknown = (pMajor->GetRaceID() != pShip->second->GetOwnerOfShip()
+			&& pMajor->IsRaceContacted(pShip->second->GetOwnerOfShip()) == false);
 		if (bUnknown)
 		{
 			// Wenn kein diplomatischer Kontakt möglich ist, wird das Schiff immer angezeigt
-			CRace* pShipOwner = pDoc->GetRaceCtrl()->GetRace(pShip->second.GetOwnerOfShip());
+			CRace* pShipOwner = pDoc->GetRaceCtrl()->GetRace(pShip->second->GetOwnerOfShip());
 			if (pShipOwner)
 				bUnknown = !pShipOwner->HasSpecialAbility(SPECIAL_NO_DIPLOMACY);
 		}
@@ -326,10 +326,10 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 			}
 		}
 		// Wenn wir ein einzelnes Schiff anzeigen und nicht eine Flotte
-		else if (!pShip->second.HasFleet() || pShip->second.LeaderIsCurrent())
+		else if (!pShip->second->HasFleet() || pShip->second->LeaderIsCurrent())
 		{
 			// Schiffsgrafik etwas größer anzeigen
-			s.Format("Ships\\%s.bop", pShip->second.GetShipClass());
+			s.Format("Ships\\%s.bop", pShip->second->GetShipClass());
 			Bitmap* shipGraphic = pDoc->GetGraphicPool()->GetGDIGraphic(s);
 			if (shipGraphic == NULL)
 				shipGraphic = pDoc->GetGraphicPool()->GetGDIGraphic("Ships\\ImageMissing.bop");
@@ -341,36 +341,36 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 				g->FillRectangle(&brush, 0, 50, 200, 150);
 			}
 
-			if (pShip->second.GetRange() == SHIP_RANGE::SHORT)
+			if (pShip->second->GetRange() == SHIP_RANGE::SHORT)
 				Range = CResourceManager::GetString("SHORT");
-			else if (pShip->second.GetRange() == SHIP_RANGE::MIDDLE)
+			else if (pShip->second->GetRange() == SHIP_RANGE::MIDDLE)
 				Range = CResourceManager::GetString("MIDDLE");
-			else if (pShip->second.GetRange() == SHIP_RANGE::LONG)
+			else if (pShip->second->GetRange() == SHIP_RANGE::LONG)
 				Range = CResourceManager::GetString("LONG");
 
-			s.Format("%s",pShip->second.GetShipName());
+			s.Format("%s",pShip->second->GetShipName());
 			g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,0,r.right,45), &fontFormat, &fontBrush);
 
 			fontBrush.SetColor(color);
-			s.Format("%s: %s",CResourceManager::GetString("TYPE"),	pShip->second.GetShipTypeAsString(FALSE));
+			s.Format("%s: %s",CResourceManager::GetString("TYPE"),	pShip->second->GetShipTypeAsString(FALSE));
 			g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,0,r.right,85), &fontFormat, &fontBrush);
 
-			s.Format("%s: %i / %i",CResourceManager::GetString("HULL"), pShip->second.GetHull()->GetCurrentHull(),pShip->second.GetHull()->GetMaxHull());
+			s.Format("%s: %i / %i",CResourceManager::GetString("HULL"), pShip->second->GetHull()->GetCurrentHull(),pShip->second->GetHull()->GetMaxHull());
 			g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,0,r.right,105), &fontFormat, &fontBrush);
 
-			s.Format("%s: %i / %i",CResourceManager::GetString("SHIELDS"), pShip->second.GetShield()->GetCurrentShield(),pShip->second.GetShield()->GetMaxShield());
+			s.Format("%s: %i / %i",CResourceManager::GetString("SHIELDS"), pShip->second->GetShield()->GetCurrentShield(),pShip->second->GetShield()->GetMaxShield());
 			g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,0,r.right,125), &fontFormat, &fontBrush);
 
 			s.Format("%s: %s",CResourceManager::GetString("RANGE"), Range);
 			g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,0,r.right,145), &fontFormat, &fontBrush);
 
-			s.Format("%s: %i",CResourceManager::GetString("SPEED"), pShip->second.GetSpeed());
+			s.Format("%s: %i",CResourceManager::GetString("SPEED"), pShip->second->GetSpeed());
 			g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,0,r.right,165), &fontFormat, &fontBrush);
 		}
 		// Wenn wir Infomationen zur Flotte anzeigen
 		else
 		{
-			short range = pShip->second.GetFleetRange(&pDoc->CurrentShip()->second.Leader());
+			short range = pShip->second->GetFleetRange(&pDoc->CurrentShip()->second->Leader());
 			if (range == 0)
 				Range = CResourceManager::GetString("SHORT");
 			else if (range == 1)
@@ -379,15 +379,15 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 				Range = CResourceManager::GetString("LONG");
 			r.SetRect(0,0,m_TotalSize.cx,m_TotalSize.cy);
 
-			s.Format("%d %s",pShip->second.GetFleetSize()+1,
+			s.Format("%d %s",pShip->second->GetFleetSize()+1,
 				CResourceManager::GetString("SHIPS"));
 			g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,0,r.right,45), &fontFormat, &fontBrush);
 
 			fontBrush.SetColor(color);
 
-			if (pShip->second.GetFleetShipType() != -1)
+			if (pShip->second->GetFleetShipType() != -1)
 				s.Format("%s: %s",CResourceManager::GetString("TYPE"),
-				pShip->second.GetShipTypeAsString(TRUE));
+				pShip->second->GetShipTypeAsString(TRUE));
 			else
 				s = CResourceManager::GetString("MIXED_FLEET");
 			g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,0,r.right,85), &fontFormat, &fontBrush);
@@ -396,42 +396,42 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 			g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,0,r.right,105), &fontFormat, &fontBrush);
 
 			s.Format("%s: %d",CResourceManager::GetString("SPEED"),
-				pShip->second.GetFleetSpeed(&pDoc->CurrentShip()->second.Leader()));
+				pShip->second->GetFleetSpeed(&pDoc->CurrentShip()->second->Leader()));
 			g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,0,r.right,125), &fontFormat, &fontBrush);
 		}
 
-		CPoint TargetKO = pShip->second.GetTargetKO();
-		if (TargetKO.x == -1 && pShip->second.GetOwnerOfShip() != pMajor->GetRaceID())
+		CPoint TargetKO = pShip->second->GetTargetKO();
+		if (TargetKO.x == -1 && pShip->second->GetOwnerOfShip() != pMajor->GetRaceID())
 			s = CResourceManager::GetString("UNKNOWN_TARGET");
-		if (TargetKO.x != -1 && pShip->second.GetOwnerOfShip() == pMajor->GetRaceID())
+		if (TargetKO.x != -1 && pShip->second->GetOwnerOfShip() == pMajor->GetRaceID())
 		{
 			if(m_DisplayMode == DISPLAY_MODE_SHIP_BOTTEM_VIEW)
 				assert(pShip == pDoc->CurrentShip());
 			else//(m_ShipDisplayMode == SHIP_DISPLAY_MODE_FLEET_VIEW)
 			{
 				const CShips::const_iterator& fleetship = pDoc->FleetShip();
-				if(fleetship->second.LeaderIsCurrent())
+				if(fleetship->second->LeaderIsCurrent())
 					assert(pShip == pDoc->FleetShip());
 				else
-					assert(pShip == fleetship->second.CurrentShip());
+					assert(pShip == fleetship->second->CurrentShip());
 			}
 
 			short range = 0;
 			short speed = 0;
 			// Wenn das Schiff keine Flotte anführt
-			if (!pShip->second.HasFleet())
+			if (!pShip->second->HasFleet())
 			{
-				range = 3 - pShip->second.GetRange();
-				speed = pShip->second.GetSpeed();
+				range = 3 - pShip->second->GetRange();
+				speed = pShip->second->GetSpeed();
 			}
 			else
 			{
-				range = 3-pShip->second.GetFleetRange(&pShip->second.Leader());
-				speed = pShip->second.GetFleetSpeed(&pShip->second.Leader());
+				range = 3-pShip->second->GetFleetRange(&pShip->second->Leader());
+				speed = pShip->second->GetFleetSpeed(&pShip->second->Leader());
 			}
 			CArray<Sector> path;
-			Sector position(pShip->second.GetKO().x, pShip->second.GetKO().y);
-			Sector target(pShip->second.GetTargetKO().x, pShip->second.GetTargetKO().y);
+			Sector position(pShip->second->GetKO().x, pShip->second->GetKO().y);
+			Sector target(pShip->second->GetTargetKO().x, pShip->second->GetTargetKO().y);
 			pMajor->GetStarmap()->CalcPath(position, target, range, speed, path);
 			short rounds = 0;
 			if (speed > 0)
@@ -441,13 +441,13 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 			else
 				s.Format("%s: %c%i (%d %s)", CResourceManager::GetString("TARGET"), (char)(TargetKO.y+97),TargetKO.x+1, rounds, CResourceManager::GetString("ROUND"));
 		}
-		if (TargetKO.x == -1 && pShip->second.GetOwnerOfShip() == pMajor->GetRaceID())
+		if (TargetKO.x == -1 && pShip->second->GetOwnerOfShip() == pMajor->GetRaceID())
 			s = CResourceManager::GetString("NO_TARGET");
-		if (TargetKO.x != -1 && pShip->second.GetOwnerOfShip() != pMajor->GetRaceID())
+		if (TargetKO.x != -1 && pShip->second->GetOwnerOfShip() != pMajor->GetRaceID())
 			s = CResourceManager::GetString("UNKNOWN_TARGET");
-		if (TargetKO.x == pShip->second.GetKO().x &&
-			TargetKO.y == pShip->second.GetKO().y &&
-			pShip->second.GetOwnerOfShip() == pMajor->GetRaceID())
+		if (TargetKO.x == pShip->second->GetKO().x &&
+			TargetKO.y == pShip->second->GetKO().y &&
+			pShip->second->GetOwnerOfShip() == pMajor->GetRaceID())
 			s = CResourceManager::GetString("NO_TARGET");
 		if (CGalaxyMenuView::IsMoveShip() == TRUE)
 		{
@@ -456,7 +456,7 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 		}
 		g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,0,r.right,185), &fontFormat, &fontBrush);
 		// bei eigenem Schiff aktuellen Befehl zeichnen
-		if (pShip->second.GetOwnerOfShip() == pMajor->GetRaceID())
+		if (pShip->second->GetOwnerOfShip() == pMajor->GetRaceID())
 		{
 			pDC->SetTextColor(CFontLoader::GetFontColor(pMajor, 4));
 			CFontLoader::GetGDIFontColor(pMajor, 4, color);
@@ -464,17 +464,17 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 			fontFormat.SetAlignment(StringAlignmentCenter);
 			fontFormat.SetLineAlignment(StringAlignmentNear);
 			fontFormat.SetFormatFlags(!StringFormatFlagsNoWrap);
-			s.Format("%s: %s",CResourceManager::GetString("COMBAT_BEHAVIOR"), pShip->second.GetCombatTacticAsString());
+			s.Format("%s: %s",CResourceManager::GetString("COMBAT_BEHAVIOR"), pShip->second->GetCombatTacticAsString());
 			g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,190,r.right,50), &fontFormat, &fontBrush);
 			// Name des Planeten ermitteln, welche gerade geterraformt wird
-			if (pShip->second.GetCurrentOrder() == SHIP_ORDER::TERRAFORM)
+			if (pShip->second->GetCurrentOrder() == SHIP_ORDER::TERRAFORM)
 			{
-				assert(pShip->second.GetTerraform() != -1);
-				if (static_cast<int>(pDoc->GetSector(pShip->second.GetKO().x, pShip->second.GetKO().y).GetPlanets().size()) > pShip->second.GetTerraform())
-					s.Format("%s: %s\n%s",CResourceManager::GetString("ORDER"), pShip->second.GetCurrentOrderAsString(), pDoc->GetSector(pShip->second.GetKO().x, pShip->second.GetKO().y).GetPlanet(pShip->second.GetTerraform())->GetPlanetName());
+				assert(pShip->second->GetTerraform() != -1);
+				if (static_cast<int>(pDoc->GetSector(pShip->second->GetKO().x, pShip->second->GetKO().y).GetPlanets().size()) > pShip->second->GetTerraform())
+					s.Format("%s: %s\n%s",CResourceManager::GetString("ORDER"), pShip->second->GetCurrentOrderAsString(), pDoc->GetSector(pShip->second->GetKO().x, pShip->second->GetKO().y).GetPlanet(pShip->second->GetTerraform())->GetPlanetName());
 			}
 			else
-				s.Format("%s: %s",CResourceManager::GetString("ORDER"), pShip->second.GetCurrentOrderAsString());
+				s.Format("%s: %s",CResourceManager::GetString("ORDER"), pShip->second->GetCurrentOrderAsString());
 			g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,210,r.right,50), &fontFormat, &fontBrush);
 		}
 	}
@@ -522,9 +522,9 @@ const CShipMap::const_iterator& CSmallInfoView::GetShip(const CBotf2Doc& doc)
 {
 	if(m_DisplayMode == CSmallInfoView::DISPLAY_MODE_FLEET_MENU_VIEW) {
 		const CShipMap::const_iterator& fleetship = doc.FleetShip();
-		if(fleetship->second.LeaderIsCurrent())
+		if(fleetship->second->LeaderIsCurrent())
 			return fleetship;
-		return fleetship->second.CurrentShip();
+		return fleetship->second->CurrentShip();
 	}
 	assert(m_DisplayMode == DISPLAY_MODE_SHIP_BOTTEM_VIEW);
 	return doc.CurrentShip();

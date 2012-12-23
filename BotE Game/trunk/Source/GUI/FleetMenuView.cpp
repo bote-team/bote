@@ -199,11 +199,11 @@ void CFleetMenuView::DrawFleetMenue(Graphics* g)
 	fontBrush.SetColor(normalColor);
 
 	const CShipMap::iterator& pShip = pDoc->FleetShip();
-	bool bUnknown = (pMajor->GetRaceID() != pShip->second.GetOwnerOfShip() && pMajor->IsRaceContacted(pShip->second.GetOwnerOfShip()) == false);
+	bool bUnknown = (pMajor->GetRaceID() != pShip->second->GetOwnerOfShip() && pMajor->IsRaceContacted(pShip->second->GetOwnerOfShip()) == false);
 	if (bUnknown)
 	{
 		// Wenn kein diplomatischer Kontakt möglich ist, wird das Schiff immer angezeigt
-		CRace* pShipOwner = pDoc->GetRaceCtrl()->GetRace(pShip->second.GetOwnerOfShip());
+		CRace* pShipOwner = pDoc->GetRaceCtrl()->GetRace(pShip->second->GetOwnerOfShip());
 		if (pShipOwner)
 			bUnknown = !pShipOwner->HasSpecialAbility(SPECIAL_NO_DIPLOMACY);
 	}
@@ -211,10 +211,10 @@ void CFleetMenuView::DrawFleetMenue(Graphics* g)
 	if (!bUnknown)
 	{
 		// der gleichen Klasse hinzufügen
-		s.Format("%s-%s", pShip->second.GetShipClass(),CResourceManager::GetString("CLASS"));
+		s.Format("%s-%s", pShip->second->GetShipClass(),CResourceManager::GetString("CLASS"));
 		g->DrawString(CComBSTR(s), -1, &font, RectF(0,220,250,30), &fontFormat, &fontBrush);
 		// des gleichen Types hinzufügen
-		s.Format("%s %s",CResourceManager::GetString("TYPE"), pShip->second.GetShipTypeAsString());
+		s.Format("%s %s",CResourceManager::GetString("TYPE"), pShip->second->GetShipTypeAsString());
 		g->DrawString(CComBSTR(s), -1, &font, RectF(0,270,250,30), &fontFormat, &fontBrush);
 		// alle Schiffe hinzufügen
 		s = CResourceManager::GetString("ALL_SHIPS");
@@ -231,10 +231,10 @@ void CFleetMenuView::DrawFleetMenue(Graphics* g)
 	if (!bUnknown)
 	{
 		// fremder Klassen entfernen
-		s.Format("%s %s-%s",CResourceManager::GetString("NOT"),	pShip->second.GetShipClass(),CResourceManager::GetString("CLASS"));
+		s.Format("%s %s-%s",CResourceManager::GetString("NOT"),	pShip->second->GetShipClass(),CResourceManager::GetString("CLASS"));
 		g->DrawString(CComBSTR(s), -1, &font, RectF(0,480,250,30), &fontFormat, &fontBrush);
 		// fremden Types entfernen
-		s.Format("%s %s %s",CResourceManager::GetString("NOT"),CResourceManager::GetString("TYPE"),	pShip->second.GetShipTypeAsString());
+		s.Format("%s %s %s",CResourceManager::GetString("NOT"),CResourceManager::GetString("TYPE"),	pShip->second->GetShipTypeAsString());
 		g->DrawString(CComBSTR(s), -1, &font, RectF(0,530,250,30), &fontFormat, &fontBrush);
 		// alle Schiffe entfernen
 		s = CResourceManager::GetString("ALL_SHIPS");
@@ -248,16 +248,16 @@ void CFleetMenuView::DrawFleetMenue(Graphics* g)
 	// Erstmal das Schiff anzeigen, welches die Flotte beinhaltet (nur auf erster Seite!)
 	if (m_iFleetPage == 1)
 	{
-		bool bMarked = pShip->second.LeaderIsCurrent();
+		bool bMarked = pShip->second->LeaderIsCurrent();
 		CPoint pt(250 * column, 65 * row + 60);
-		pShip->second.DrawShip(g, pDoc->GetGraphicPool(), pt, bMarked, bUnknown, FALSE, normalColor, markColor, font);
-		m_vShipRects.push_back(pair<CRect, CShips*>(CRect(pt.x, pt.y + 20, pt.x + 250, pt.y + 85), &pShip->second));
+		pShip->second->DrawShip(g, pDoc->GetGraphicPool(), pt, bMarked, bUnknown, FALSE, normalColor, markColor, font);
+		m_vShipRects.push_back(pair<CRect, CShips*>(CRect(pt.x, pt.y + 20, pt.x + 250, pt.y + 85), pShip->second));
 	}
 	counter++;
 	row++;
 
 	// Wenn das Schiff eine Flotte anführt, dann Schiffe in dieser Flotte anzeigen
-	for (CShips::iterator i = pShip->second.begin(); i != pShip->second.end(); ++i)
+	for (CShips::iterator i = pShip->second->begin(); i != pShip->second->end(); ++i)
 	{
 		// mehrere Spalten anlegen, falls mehr Schiffe in dem System sind
 		if (counter != 0 && counter%9 == 0)
@@ -270,10 +270,10 @@ void CFleetMenuView::DrawFleetMenue(Graphics* g)
 			column = 1;
 		if (counter < m_iFleetPage*18 && counter >= (m_iFleetPage-1)*18)
 		{
-			bool bMarked = !pShip->second.LeaderIsCurrent() && pShip->second.CurrentShip() == i;
+			bool bMarked = !pShip->second->LeaderIsCurrent() && pShip->second->CurrentShip() == i;
 			CPoint pt(250 * column, 65 * row + 60);
-			i->second.DrawShip(g, pDoc->GetGraphicPool(), pt, bMarked, bUnknown, FALSE, normalColor, markColor, font);
-			m_vShipRects.push_back(pair<CRect, CShips*>(CRect(pt.x, pt.y + 20, pt.x + 250, pt.y + 85), &i->second));
+			i->second->DrawShip(g, pDoc->GetGraphicPool(), pt, bMarked, bUnknown, FALSE, normalColor, markColor, font);
+			m_vShipRects.push_back(pair<CRect, CShips*>(CRect(pt.x, pt.y + 20, pt.x + 250, pt.y + 85), i->second));
 		}
 		row++;
 		counter++;
@@ -370,32 +370,32 @@ void CFleetMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		return;
 	}
 	// Fremde Flotten können nicht bearbeitet werden
-	assert(pDoc->FleetShip()->second.GetOwnerOfShip() == m_pPlayersRace->GetRaceID());
+	assert(pDoc->FleetShip()->second->GetOwnerOfShip() == m_pPlayersRace->GetRaceID());
 	// Auf welches Rechteck haben wir geklickt (gleiche Klasse oder gleichen Typ oder alle hinzufügen?)
 	const unsigned whichRect = CheckClickedButtonRect(point);
 	// Wenn wir auf irgendeinen der Buttons geklickt haben um Schiffe hinzuzufügen
 	if (whichRect > 0 && whichRect < 4)
 	{
-		const CPoint& ko = pDoc->FleetShip()->second.GetKO();
+		const CPoint& ko = pDoc->FleetShip()->second->GetKO();
 		for(CShipMap::iterator i = pDoc->m_ShipMap.begin(); i != pDoc->m_ShipMap.end();) {
 			const CShipMap::iterator& fleetship = pDoc->FleetShip();
-			if (i->second.GetOwnerOfShip() != fleetship->second.GetOwnerOfShip() || i->second.GetKO() != ko || i->second.IsStation()) {
+			if (i->second->GetOwnerOfShip() != fleetship->second->GetOwnerOfShip() || i->second->GetKO() != ko || i->second->IsStation()) {
 				++i;
 				continue;
 			}
-			if (((whichRect == 1 && i->second.GetShipClass() == fleetship->second.GetShipClass())
-					|| (whichRect == 2 && i->second.GetShipType() == fleetship->second.GetShipType()) || whichRect == 3)
-				&& (&i->second != &fleetship->second && !i->second.HasFleet()))
+			if (((whichRect == 1 && i->second->GetShipClass() == fleetship->second->GetShipClass())
+					|| (whichRect == 2 && i->second->GetShipType() == fleetship->second->GetShipType()) || whichRect == 3)
+				&& (&i->second != &fleetship->second && !i->second->HasFleet()))
 			{
 				// Jetzt fügen wir der Flotte das angeklickte Schiff hinzu, wenn es nicht das Schiff selbst ist,
 				// welches die Flotte anführt und wenn es selbst keine Flotte besitzt
-				fleetship->second.AddShipToFleet(i->second);
+				fleetship->second->AddShipToFleet(i->second);
 				// Wenn wir das Schiff da hinzugefügt haben, dann müssen wir das aus der normalen Schiffsliste
 				// rausnehmen, damit es nicht zweimal im Spiel vorkommt
-				pDoc->m_ShipMap.EraseAt(i);
+				pDoc->m_ShipMap.EraseAt(i, false);
 				// Wenn wir so Schiffe hinzufügen Ansicht auf Seite 1 stellen und markiertes Schiff ist
 				// das Anführerschiff
-				pDoc->SetShipInFleet(fleetship->second.end());
+				pDoc->SetShipInFleet(fleetship->second->end());
 				m_iFleetPage = 1;
 				continue;//increment only when not removing, since when removing the iterator already
 				//points to the next element
@@ -412,15 +412,15 @@ void CFleetMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 	else if (whichRect > 3)
 	{
 		const CShipMap::iterator& fleetship = pDoc->FleetShip();
-		for(CShips::iterator i = fleetship->second.begin(); i != fleetship->second.end();) {
-			if ((whichRect == 4 && fleetship->second.GetShipClass() != i->second.GetShipClass())
-				|| (whichRect == 5 && fleetship->second.GetShipType() != i->second.GetShipType())
+		for(CShips::iterator i = fleetship->second->begin(); i != fleetship->second->end();) {
+			if ((whichRect == 4 && fleetship->second->GetShipClass() != i->second->GetShipClass())
+				|| (whichRect == 5 && fleetship->second->GetShipType() != i->second->GetShipType())
 				|| whichRect == 6)
 			{
 				// Das Schiff welches wir aus der Flotte nehmen stecken wir wieder in das normale Schiffsarray
 				pDoc->m_ShipMap.Add(i->second);
-				fleetship->second.RemoveShipFromFleet(i);
-				pDoc->SetShipInFleet(fleetship->second.end());
+				fleetship->second->RemoveShipFromFleet(i, false);
+				pDoc->SetShipInFleet(fleetship->second->end());
 				continue;
 			}
 			++i;
@@ -449,21 +449,21 @@ void CFleetMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 	// besitzt. Dann übernimmt das nächste Schiff die Flotte
 	//i == 0 : the ship which possesses the fleet (at the top)
 	const CShipMap::iterator& fleetship = pDoc->FleetShip();
-	if (fleetship->second.HasFleet() && i <= fleetship->second.GetFleetSize())
+	if (fleetship->second->HasFleet() && i <= fleetship->second->GetFleetSize())
 	{
 		// Wenn es nicht das Schiff ist welches die Flotte besitzt
 		if (m_iFleetPage > 1 || (i != 0 && m_iFleetPage == 1))
 		{
-			CShips::iterator j = fleetship->second.iterator_at(i-1);
+			CShips::iterator j = fleetship->second->iterator_at(i-1);
 			// Das Schiff welches wir aus der Flotte nehmen stecken wir wieder in das normale Schiffsarray
 			pDoc->m_ShipMap.Add(j->second);
-			fleetship->second.RemoveShipFromFleet(j);
+			fleetship->second->RemoveShipFromFleet(j, false);
 			//we set the marked ship to the ship which was following the removed one,
 			//or to the leading ship in case there's none left (in which case j comes back
 			//as the end iterator)
 			pDoc->SetShipInFleet(j);
 			// Wenn wir gerade das erste Schiff auf der nächsten Seite entfernt haben, dann eine Seite zurück
-			if (m_iFleetPage > 1 && i == (m_iFleetPage-1)*18 && pDoc->FleetShip()->second.GetFleetSize() == i-1)
+			if (m_iFleetPage > 1 && i == (m_iFleetPage-1)*18 && pDoc->FleetShip()->second->GetFleetSize() == i-1)
 				m_iFleetPage--;
 			// Wenn wir alle Schiffe aus der Flotte entfernt haben
 			Invalidate();
@@ -474,13 +474,13 @@ void CFleetMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		// Wenn es das Schiff ist, welches die Flotte besitzt
 		else if (i == 0 && m_iFleetPage == 1)
 		{
-			const CShips& new_fleetship = fleetship->second.GiveFleetToFleetsFirstShip();
+			CShips* new_fleetship = fleetship->second->GiveFleetToFleetsFirstShip();
 			const CShipMap::iterator it = pDoc->m_ShipMap.Add(new_fleetship);
 
 			pDoc->SetCurrentShip(it);
 			pDoc->SetFleetShip(it);
 			//set the current ship to the new leader (which was the ship following the old leader)
-			pDoc->SetShipInFleet(it->second.end());
+			pDoc->SetShipInFleet(it->second->end());
 
 			Invalidate();
 			resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CShipBottomView));
@@ -503,14 +503,14 @@ void CFleetMenuView::OnMouseMove(UINT nFlags, CPoint point)
 	for(std::vector<std::pair<CRect, CShips*>>::const_iterator i = m_vShipRects.begin(); i != m_vShipRects.end(); ++i) {
 		if (!i->first.PtInRect(point))
 			continue;
-		if(i->second == &pDoc->FleetShip()->second) {
-			pDoc->SetShipInFleet(pDoc->FleetShip()->second.end());
+		if(i->second == pDoc->FleetShip()->second) {
+			pDoc->SetShipInFleet(pDoc->FleetShip()->second->end());
 			resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
 			resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CFleetMenuView));
 		}
 		else
-			for (CShips::iterator j = pDoc->FleetShip()->second.begin(); j != pDoc->FleetShip()->second.end(); ++j) {
-				if (&j->second != i->second)
+			for (CShips::iterator j = pDoc->FleetShip()->second->begin(); j != pDoc->FleetShip()->second->end(); ++j) {
+				if (j->second != i->second)
 					continue;
 				pDoc->SetShipInFleet(j);
 				resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
