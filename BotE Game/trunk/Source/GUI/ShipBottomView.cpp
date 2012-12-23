@@ -118,7 +118,7 @@ void CShipBottomView::SetupDrawing() {
 	// Rassenspezifische Schriftart auswählen
 	CFontLoader::CreateGDIFont(m_pPlayersRace, 2, m_dc.fontName, m_dc.fontSize);
 	CFontLoader::GetGDIFontColor(m_pPlayersRace, 3, m_dc.normalColor);
-	
+
 	m_dc.fontBrush = new SolidBrush(m_dc.normalColor);
 
 	m_dc.r.SetRect(0, 0, m_TotalSize.cx, m_TotalSize.cy);
@@ -267,7 +267,7 @@ void CShipBottomView::DrawShipContent() {
 	// Schiffe jetzt auch zeichnen
 	for(std::vector<std::pair<CRect, CShips*>>::const_iterator itdraw = m_vShipRects.begin(); itdraw != m_vShipRects.end(); ++itdraw) {
 		pShip = itdraw->second;
-		
+
 		// Kennen wir den Besizter des Schiffes?
 		bool bUnknown = (pMajor->GetRaceID() != pShip->GetOwnerOfShip() && pMajor->IsRaceContacted(pShip->GetOwnerOfShip()) == false);
 		if (bUnknown)
@@ -617,7 +617,7 @@ void CShipBottomView::DrawMenu() {
 	m_dc.researchLevels[3] = res->GetPropulsionTech();
 	m_dc.researchLevels[4] = res->GetConstructionTech();
 	m_dc.researchLevels[5] = res->GetWeaponTech();
-	
+
 	CRect rect;
 
 	// Alle Rechtecke für die Buttons der Schiffsbefehle erstmal auf NULL setzen, damit wir nicht draufklicken

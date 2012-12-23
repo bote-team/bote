@@ -269,7 +269,7 @@ void CShips::SetCombatTactic(COMBAT_TACTIC::Typ nTactic) {
 		i->second->SetCombatTactic(nTactic);
 }
 
-void CShips::SetTerraform(short planetNumber) { 
+void CShips::SetTerraform(short planetNumber) {
 	m_Leader.SetTerraform(planetNumber);
 	for(CShips::iterator i = begin(); i != end(); ++i)
 		i->second->SetTerraform(planetNumber);

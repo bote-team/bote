@@ -641,7 +641,7 @@ UINT CShip::GetCompleteOffensivePower(bool bBeams/* = true*/, bool bTorpedos/* =
 						tempBeamDmg *= 3;
 					else if (bHalfDmg)
 						tempBeamDmg /= 2;
-					
+
 					beamDmg += tempBeamDmg;
 				}
 				counter--;
@@ -684,7 +684,7 @@ UINT CShip::GetCompleteOffensivePower(bool bBeams/* = true*/, bool bTorpedos/* =
 
 			if (bHalfDmg && !CTorpedoInfo::GetIgnoreAllShields(type))
 				tempTorpedoDmg /= 2;
-			
+
 			torpedoDmg += tempTorpedoDmg;
 		}
 	}

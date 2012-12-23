@@ -145,7 +145,7 @@ public:
 
 	//special purpose serialization function
 	void SerializeEndOfRoundData(CArchive& ar, const CString& sMajorID);
-	
+
 	//special purpose serialization function
 	void SerializeNextRoundData(CArchive& ar, const CPoint& ptCurrentCombatSector);
 

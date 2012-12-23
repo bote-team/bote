@@ -246,7 +246,7 @@ void CShipDesignMenuView::DrawShipDesignMenue(Graphics* g)
 							m_iClickedOnShip = j;
 							if (oldClickedShip == -1)
 								oldClickedShip = j;
-							
+
 							m_pShownShip = &pDoc->m_ShipInfoArray.GetAt(i);
 							// Infos in View 3 aktualisieren
 							if (pDoc->m_iShowWhichShipInfoInView3 != i)
@@ -460,7 +460,7 @@ void CShipDesignMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 	short j = 0;
 	short counter = m_iClickedOnShip - 23 + m_iOldClickedOnShip;
 	short add = 0;
-	
+
 	BYTE researchLevels[6] =
 	{
 		pMajor->GetEmpire()->GetResearch()->GetBioTech(),
@@ -857,7 +857,7 @@ CString CShipDesignMenuView::CheckIfShipIsBuilding(const CShipInfo* pShipInfo) c
 				for (int i = 0; i < ALE; i++)
 					if (pDoc->GetSystem(x,y).GetAssemblyList()->GetAssemblyListEntry(i) == ID)
 						return pDoc->GetSector(x,y).GetName();
-	
+
 	return "";
 }
 

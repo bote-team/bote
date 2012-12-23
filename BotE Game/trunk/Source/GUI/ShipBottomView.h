@@ -134,8 +134,8 @@ private:
 
 	struct MainButtonInfo {
 		MainButtonInfo() : which(MAIN_BUTTON_NONE), rect(0, 0, 0, 0) {};
-		MainButtonInfo(MAIN_BUTTON which_, const CRect& rect_) : 
-			which(which_), rect(rect_) 
+		MainButtonInfo(MAIN_BUTTON which_, const CRect& rect_) :
+			which(which_), rect(rect_)
 			{};
 		CString String() const {
 			switch(which) {
@@ -166,7 +166,7 @@ private:
 
 	bool CheckDisplayShip(CShips *pShip, CSector *csec );
 	void DrawShipContent();
-	
+
 	bool TimeDoDraw(short counter) const;
 	void DrawMaincommandMenu();
 	short DrawCombatMenu();
