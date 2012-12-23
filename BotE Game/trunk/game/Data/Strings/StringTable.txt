@@ -2181,7 +2181,7 @@ Maximale Schildstärke erhöht sich um 3% pro Runde, Verlust der kompletten Crewer
 [BINEBULA_GAME]
 Schildregeneration um 100% erhöht
 [TORIONGASNEBULA_GAME]
-Schilde sind im Kampf deaktiviert, Torpedowaffen sind im Kampf deaktiviert
+Schilde und Torpedowaffen sind im Kampf deaktiviert
 [NEUTRONSTAR_GAME]
 Schildschäden und möglicher Hüllenbruch, Ausfall der Scanner
 [RADIOPULSAR_GAME]
