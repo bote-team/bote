@@ -3656,12 +3656,16 @@ void CSystemMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 					// alles zurückbekommen
 					long getBackRes = pDoc->GetSystem(p.x, p.y).GetAssemblyList()->GetNeededResourceInAssemblyList(0, j);
 					for (int k = 0; k < pMajor->GetEmpire()->GetSystemList()->GetSize(); k++)
+					{
 						if (pMajor->GetEmpire()->GetSystemList()->GetAt(k).ko != p)
 						{
 							CPoint ko = pMajor->GetEmpire()->GetSystemList()->GetAt(k).ko;
 							for (int l = 0; l < pDoc->GetSystem(ko.x, ko.y).GetResourceRoutes()->GetSize(); l++)
+							{
 								if (pDoc->GetSystem(ko.x, ko.y).GetResourceRoutes()->GetAt(l).GetKO() == p)
+								{
 									if (pDoc->GetSystem(ko.x, ko.y).GetResourceRoutes()->GetAt(l).GetResource() == j)
+									{
 										if (pDoc->GetSystem(ko.x, ko.y).GetResourceRoutes()->GetAt(l).GetPercent() > 0)
 										{
 											// sind wir soweit, dann geht ein prozentualer Anteil zurück in das
@@ -3672,7 +3676,12 @@ void CSystemMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 											pDoc->GetSystem(ko.x, ko.y).SetResourceStore(j, back);
 											getBackRes -= back;
 										}
+									}
+								}
+							}
 						}
+					}
+
 					pDoc->GetSystem(p.x, p.y).SetResourceStore(j, getBackRes);
 				}
 				// Wenn wir was gekauft hatten, dann bekommen wir die Kaufkosten zurück
@@ -3689,34 +3698,18 @@ void CSystemMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 				pDoc->GetSystem(p.x, p.y).GetAssemblyList()->ClearAssemblyList(p, pDoc->m_Systems);
 				// Nach ClearAssemblyList müssen wir die Funktion CalculateVariables() aufrufen
 				pDoc->GetSystem(p.x, p.y).CalculateVariables(&pDoc->BuildingInfo, pMajor->GetEmpire()->GetResearch()->GetResearchInfo(),pDoc->GetSector(p.x, p.y).GetPlanets(), pMajor, CTrade::GetMonopolOwner());
-				// Baulistencheck machen, wenn wir kein Schiff reingesetzt haben.
-				// Den Check nur machen, wenn wir ein Update oder ein Gebäude welches eine Maxanzahl voraussetzt
-				// hinzufügen wollen
-				if (RunningNumber < 10000 && pDoc->GetBuildingInfo(RunningNumber).GetMaxInEmpire() > 0)
-				{
-					// Wir müssen die GlobalBuilding Variable ändern, weil sich mittlerweile ja solch ein Gebäude
-					// weniger in der Bauliste befindet. Nicht aber wenn es ein Upgrade ist.
-					pDoc->m_GlobalBuildings.DeleteGlobalBuilding(pMajor->GetRaceID(), RunningNumber);
-					// Wenn es nur einmal pro Imperium baubar war, dann Assemblylistcheck in jedem unserer Systeme
-					// durchführen
-					for (int y = 0 ; y < STARMAP_SECTORS_VCOUNT; y++)
-						for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-							if (pDoc->GetSystem(x,y).GetOwnerOfSystem() == pMajor->GetRaceID())
-								pDoc->GetSystem(x,y).AssemblyListCheck(&pDoc->BuildingInfo,&pDoc->m_GlobalBuildings);
-				}
-				// sonst den Baulistencheck nur in dem aktuellen System durchführen
-				else if (nAssemblyListEntry < 0 || (RunningNumber < 10000 && pDoc->GetBuildingInfo(RunningNumber).GetMaxInSystem().Number > 0))
-					pDoc->GetSystem(p.x, p.y).AssemblyListCheck(&pDoc->BuildingInfo,&pDoc->m_GlobalBuildings);
 			}
-			// Die restlichen Einträge
-			// seperat, weil wir die Bauliste anders löschen müssen und auch keine RES zurückbekommen müssen
+			// Die restlichen Einträge seperat, weil wir die Bauliste anders löschen müssen und auch keine RES zurückbekommen müssen
 			else
 			{
 				pDoc->GetSystem(p.x, p.y).GetAssemblyList()->AdjustAssemblyList(i);
-				// Baulistencheck machen, wenn wir kein Schiff reingesetzt haben.
-				// Den Check nur machen, wenn wir ein Update oder ein Gebäude welches eine Maxanzahl voraussetzt
-				// hinzufügen wollen
-				if (RunningNumber < 10000 && pDoc->GetBuildingInfo(RunningNumber).GetMaxInEmpire() > 0)
+			}
+
+			// Wurde ein Gebäude oder ein Update aus der Bauliste genommen? (kein Schiff und keine Truppen)
+			if (RunningNumber < 10000)
+			{
+				// Baulistencheck in jedem System machen, wenn das Gebäude oder Update die Eigenschaft "MaxInEmpire" besitzt
+				if (pDoc->GetBuildingInfo(RunningNumber).GetMaxInEmpire() > 0)
 				{
 					// Wir müssen die GlobalBuilding Variable ändern, weil sich mittlerweile ja solch ein Gebäude
 					// weniger in der Bauliste befindet. Nicht aber wenn es ein Upgrade ist.
@@ -3728,9 +3721,11 @@ void CSystemMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 							if (pDoc->GetSystem(x,y).GetOwnerOfSystem() == pMajor->GetRaceID())
 								pDoc->GetSystem(x,y).AssemblyListCheck(&pDoc->BuildingInfo,&pDoc->m_GlobalBuildings);
 				}
-				// sonst den Baulistencheck nur in dem aktuellen System durchführen
-				else if (RunningNumber < 10000 && pDoc->GetBuildingInfo(RunningNumber).GetMaxInSystem().Number > 0)
+				// Baulistencheck im aktuellen System machen, wenn ein Update oder ein Gebäude mit MaxInSystem entfernt wurde
+				else if (nAssemblyListEntry < 0 || pDoc->GetBuildingInfo(RunningNumber).GetMaxInSystem().Number > 0)
+				{
 					pDoc->GetSystem(p.x, p.y).AssemblyListCheck(&pDoc->BuildingInfo,&pDoc->m_GlobalBuildings);
+				}
 			}
 
 			Invalidate(FALSE);
