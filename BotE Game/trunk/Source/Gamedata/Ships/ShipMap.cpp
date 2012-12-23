@@ -23,9 +23,12 @@ CShipMap::~CShipMap(void)
 }
 
 CShipMap::CShipMap(const CShipMap& o) :
-	m_Ships(o.m_Ships),
 	m_NextKey(o.m_NextKey)
 {
+	for(CShipMap::const_iterator i = o.begin(); i != o.end(); ++i) {
+		CShips* s = new CShips(*i->second);
+		m_Ships.insert(end(), std::make_pair(i->first, s));
+	}
 	m_CurrentShip = begin();
 	m_FleetShip = begin();
 	if(!o.empty()) {
@@ -39,13 +42,17 @@ CShipMap& CShipMap::operator=(const CShipMap& o)
 	if(this == &o)
 		return *this;
 
-	m_Ships = o.m_Ships;
+	Reset(true);
 	m_NextKey = o.m_NextKey;
+	for(CShipMap::const_iterator i = o.begin(); i != o.end(); ++i) {
+		CShips* s = new CShips(*i->second);
+		m_Ships.insert(end(), std::make_pair(i->first, s));
+	}
 	m_CurrentShip = begin();
 	m_FleetShip = begin();
 	if(!o.empty()) {
-		m_CurrentShip = find(o.CurrentShip()->second->Key());
-		m_FleetShip = find(o.FleetShip()->second->Key());
+		m_CurrentShip = find(o.CurrentShip()->first);
+		m_FleetShip = find(o.FleetShip()->first);
 	}
 	return *this;
 }
