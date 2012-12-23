@@ -977,7 +977,7 @@ Ablehnung des Bestechungsversuches
 [MIN_ACCEPT_OFFER]
 schliessen § mit § ab
 [MIN_DECLINE_OFFER]
-Die § haben unseren § abgelehnt
+Die § haben unser Angebot: § abgelehnt
 [WE_DECLINE_MIN_OFFER]
 Wir haben § der § abgelehnt
 [OUR_MIN_OFFER]
