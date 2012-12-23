@@ -78,10 +78,18 @@ public:
 // removing elements
 //////////////////////////////////////////////////////////////////////
 
+	//@param destroy: Needs to be true in case the erased ships are removed from the game at all.
+	//On the other hand, needs to be false in case these ships are just moved into or out of
+	//a fleet and thus the memory where they are allocated must not be deleted.
+	//If in doubt, better take false. Wrong false should cause a memory leak, wrong true dangling pointers.
 	void Reset(bool destroy);
 
 	//removes the element pointed to by the passed iterator from this shipmap
 	//@param index: will be updated and point to the new position of the element which followed the erased one
+	//@param destroy: Needs to be true in case the erased ship is removed from the game at all because it is
+	//destroyed. On the other hand, needs to be false in case the removed ship is just moved into or out of
+	//a fleet and thus the memory where it's allocated must not be deleted.
+	//If in doubt, better take false. Wrong false should cause a memory leak, wrong true a dangling ship pointer.
 	//The shipmap must not be empty before erasing.
 	//In case it is afterwards, it is reset as if it was freshly constructed.
 	//complexity: constant
