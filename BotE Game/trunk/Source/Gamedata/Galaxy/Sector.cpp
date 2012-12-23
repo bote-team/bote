@@ -1019,7 +1019,12 @@ void CSector::RecalcPlanetsTerraformingStatus() {
 		if(i->second.GetKO() != m_KO || i->second.GetCurrentOrder() != SHIP_ORDER::TERRAFORM)
 			continue;
 		const unsigned planet = i->second.GetTerraform();
-		m_Planets.at(planet).SetIsTerraforming(TRUE);
+		CPlanet& p = m_Planets.at(planet);
+		assert(p.GetHabitable());
+		//It is allowed to terraform the same planet with 2+ independent ships
+		if(p.GetIsTerraforming() || p.GetTerraformed())
+			continue;
+		p.SetIsTerraforming(TRUE);
 #pragma warning(push)
 #pragma warning(disable: 4189)
 		unsigned erased = terraformable.erase(planet);
