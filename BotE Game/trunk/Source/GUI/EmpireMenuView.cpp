@@ -1802,19 +1802,25 @@ void CEmpireMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 							CPoint p = pMajor->GetEmpire()->GetMessages()->GetAt(i).GetKO();
 							if (pDoc->GetSystem(p.x,p.y).GetOwnerOfSystem() == pMajor->GetRaceID())
 							{
-								pDoc->SetKO(p.x,p.y);
+								pDoc->SetKO(p.x,p.y);								
 								resources::pMainFrame->SetSubMenu(RUNTIME_CLASS(CSystemMenuView), pMajor->GetEmpire()->GetMessages()->GetAt(i).GetFlag());
 								resources::pMainFrame->SelectMainView(SYSTEM_VIEW, pMajor->GetRaceID());
 								resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CPlanetBottomView));
 								CGalaxyMenuView::SetMoveShip(FALSE);
 								resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
 							}
+
+							// Wenn eine Koordinate angegeben ist, dann die Galaxiemap darauf zentrieren
+							CGalaxyMenuView* pView = dynamic_cast<CGalaxyMenuView*>(resources::pMainFrame->GetView(RUNTIME_CLASS(CGalaxyMenuView)));
+							if (pView && p != CPoint(-1,-1))
+								pView->ScrollToSector(p);
 						}
 						else if (pMajor->GetEmpire()->GetMessages()->GetAt(i).GetMessageType() == MESSAGE_TYPE::MILITARY)
 						{
-							if (pMajor->GetEmpire()->GetMessages()->GetAt(i).GetFlag() == FALSE)
+							CPoint p = pMajor->GetEmpire()->GetMessages()->GetAt(i).GetKO();
+							// Systemansicht anzeigen
+							if (pMajor->GetEmpire()->GetMessages()->GetAt(i).GetFlag() == 1)
 							{
-								CPoint p = pMajor->GetEmpire()->GetMessages()->GetAt(i).GetKO();
 								if (pDoc->GetSystem(p.x,p.y).GetOwnerOfSystem() == pMajor->GetRaceID())
 								{
 									pDoc->SetKO(p.x,p.y);
@@ -1825,19 +1831,27 @@ void CEmpireMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 									resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
 								}
 							}
+							// Galaxiekarte anzeigen
+							else
+							{
+								resources::pMainFrame->SelectMainView(GALAXY_VIEW, pMajor->GetRaceID());
+							}
+
+							// Wenn eine Koordinate angegeben ist, dann die Galaxiemap darauf zentrieren
+							CGalaxyMenuView* pView = dynamic_cast<CGalaxyMenuView*>(resources::pMainFrame->GetView(RUNTIME_CLASS(CGalaxyMenuView)));
+							if (pView && p != CPoint(-1,-1))
+								pView->ScrollToSector(p);
 						}
 						else if (pMajor->GetEmpire()->GetMessages()->GetAt(i).GetMessageType() == MESSAGE_TYPE::RESEARCH)
 						{
 							resources::pMainFrame->SelectMainView(RESEARCH_VIEW, pMajor->GetRaceID());
 							resources::pMainFrame->SetSubMenu(RUNTIME_CLASS(CResearchMenuView), pMajor->GetEmpire()->GetMessages()->GetAt(i).GetFlag());
-							Invalidate();
 							resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
 						}
 						else if (pMajor->GetEmpire()->GetMessages()->GetAt(i).GetMessageType() == MESSAGE_TYPE::SECURITY)
 						{
 							resources::pMainFrame->SelectMainView(INTEL_VIEW, pMajor->GetRaceID());
 							resources::pMainFrame->SetSubMenu(RUNTIME_CLASS(CIntelMenuView), pMajor->GetEmpire()->GetMessages()->GetAt(i).GetFlag());
-							Invalidate();
 							resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
 						}
 						else if (pMajor->GetEmpire()->GetMessages()->GetAt(i).GetMessageType() == MESSAGE_TYPE::DIPLOMACY)
@@ -1845,9 +1859,9 @@ void CEmpireMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 							resources::pMainFrame->SelectMainView(DIPLOMACY_VIEW, pMajor->GetRaceID());
 							// bei Angeboten an uns direkt in das Eingangmenü schalten
 							resources::pMainFrame->SetSubMenu(RUNTIME_CLASS(CDiplomacyMenuView), pMajor->GetEmpire()->GetMessages()->GetAt(i).GetFlag());
-							Invalidate();
 							resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
 						}
+
 						break;
 					}
 				j++;
@@ -1894,7 +1908,6 @@ void CEmpireMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 					pDoc->SetKO(pt.x, pt.y);
 					pView->ScrollToSector(pt);
 					resources::pMainFrame->SelectMainView(GALAXY_VIEW, pMajor->GetRaceID());
-					Invalidate(FALSE);
 					resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
 					return;
 				}

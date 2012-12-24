@@ -470,7 +470,7 @@ void CMajor::Contact(const CRace& Race, const CPoint& p) {
 		sKey = "GET_CONTACT_TO_MAJOR";
 	s = CResourceManager::GetString(sKey,FALSE, Race.GetRaceName(),sect);
 	CMessage message;
-	message.GenerateMessage(s,MESSAGE_TYPE::DIPLOMACY,"",0,FALSE);
+	message.GenerateMessage(s,MESSAGE_TYPE::DIPLOMACY,"",p,FALSE);
 	m_Empire.AddMessage(message);
 	// Eventscreen einfügen
 	m_Empire.GetEventMessages()->Add(
@@ -509,7 +509,7 @@ void CMajor::LostStation(SHIP_TYPE::Typ type)
 	if (type == SHIP_TYPE::OUTPOST)
 		eventText = m_MoralObserver.AddEvent(8, GetRaceMoralNumber());
 	CMessage message;
-	message.GenerateMessage(eventText, MESSAGE_TYPE::MILITARY, "", 0, 0);
+	message.GenerateMessage(eventText, MESSAGE_TYPE::MILITARY, "", CPoint(-1,-1), 0);
 	m_Empire.AddMessage(message);
 }
 
@@ -519,7 +519,7 @@ void CMajor::LostShipToAnomaly(const CShip& ship, const CString& anomaly)
 	sShip.Format("%s (%s, %s)", ship.GetShipName(), ship.GetShipTypeAsString(), ship.GetShipClass());
 	const CString& s = CResourceManager::GetString("ANOMALY_SHIP_LOST", FALSE, sShip, anomaly);
 	CMessage message;
-	message.GenerateMessage(s, MESSAGE_TYPE::MILITARY, "", 0, 0);
+	message.GenerateMessage(s, MESSAGE_TYPE::MILITARY, "", ship.GetKO(), 0);
 	m_Empire.AddMessage(message);
 	if (IsHumanPlayer())
 	{

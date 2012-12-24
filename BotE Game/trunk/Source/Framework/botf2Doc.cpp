@@ -2660,7 +2660,7 @@ void CBotf2Doc::CalcSystemAttack()
 						if (!eventText.IsEmpty())
 						{
 							CMessage message;
-							message.GenerateMessage(eventText, MESSAGE_TYPE::MILITARY, param, p, 0);
+							message.GenerateMessage(eventText, MESSAGE_TYPE::MILITARY, param, p, 0, 1);
 							pMajor->GetEmpire()->AddMessage(message);
 							if (pMajor->IsHumanPlayer())
 							{
@@ -4792,11 +4792,11 @@ void CBotf2Doc::CalcShipCombat()
 			network::RACE client = m_pRaceCtrl->GetMappedClientID(pMajor->GetRaceID());
 
 			CMessage message;
-			message.GenerateMessage(CResourceManager::GetString("WIN_COMBAT", false, sSectorName), MESSAGE_TYPE::MILITARY, "", NULL, FALSE);
+			message.GenerateMessage(CResourceManager::GetString("WIN_COMBAT", false, sSectorName), MESSAGE_TYPE::MILITARY, "", p, FALSE);
 			pMajor->GetEmpire()->AddMessage(message);
 			// win a minor battle
 			CString eventText = pMajor->GetMoralObserver()->AddEvent(3, pMajor->GetRaceMoralNumber());
-			message.GenerateMessage(eventText, MESSAGE_TYPE::MILITARY, "", 0, 0);
+			message.GenerateMessage(eventText, MESSAGE_TYPE::MILITARY, "", p, 0);
 			pMajor->GetEmpire()->AddMessage(message);
 			if (pMajor->IsHumanPlayer())
 				m_iSelectedView[client] = EMPIRE_VIEW;
@@ -4811,11 +4811,11 @@ void CBotf2Doc::CalcShipCombat()
 				network::RACE client = m_pRaceCtrl->GetMappedClientID(pMajor->GetRaceID());
 
 				CMessage message;
-				message.GenerateMessage(CResourceManager::GetString("LOSE_COMBAT", false, sSectorName), MESSAGE_TYPE::MILITARY, "", 0,0);
+				message.GenerateMessage(CResourceManager::GetString("LOSE_COMBAT", false, sSectorName), MESSAGE_TYPE::MILITARY, "", p,0);
 				pMajor->GetEmpire()->AddMessage(message);
 				// lose a minorbattle
 				CString eventText = pMajor->GetMoralObserver()->AddEvent(6, pMajor->GetRaceMoralNumber());
-				message.GenerateMessage(eventText, MESSAGE_TYPE::MILITARY, "", 0, 0);
+				message.GenerateMessage(eventText, MESSAGE_TYPE::MILITARY, "", p, 0);
 				pMajor->GetEmpire()->AddMessage(message);
 				if (pMajor->IsHumanPlayer())
 					m_iSelectedView[client] = EMPIRE_VIEW;
@@ -4842,7 +4842,7 @@ void CBotf2Doc::CalcShipCombat()
 			network::RACE client = m_pRaceCtrl->GetMappedClientID(pMajor->GetRaceID());
 
 			CMessage message;
-			message.GenerateMessage(CResourceManager::GetString("DRAW_COMBAT", false, sSectorName), MESSAGE_TYPE::MILITARY, "", 0,0);
+			message.GenerateMessage(CResourceManager::GetString("DRAW_COMBAT", false, sSectorName), MESSAGE_TYPE::MILITARY, "", p,0);
 			pMajor->GetEmpire()->AddMessage(message);
 			if (pMajor->IsHumanPlayer())
 				m_iSelectedView[client] = EMPIRE_VIEW;
@@ -4878,7 +4878,7 @@ void CBotf2Doc::CalcShipCombat()
 				CString s;
 				s.Format("%s", CResourceManager::GetString("DESTROYED_SHIPS_IN_COMBAT",0,destroyedShips[j]));
 				CMessage message;
-				message.GenerateMessage(s, MESSAGE_TYPE::MILITARY, "", 0, 0);
+				message.GenerateMessage(s, MESSAGE_TYPE::MILITARY, "", p, 0);
 				pMajor->GetEmpire()->AddMessage(message);
 			}
 	}
@@ -5616,7 +5616,7 @@ void CBotf2Doc::CalcAlienShipEffects()
 						CString s;
 						s.Format("%s", CResourceManager::GetString("DESTROYED_SHIPS_IN_COMBAT",0,pShip->GetShipName()));
 						CMessage message;
-						message.GenerateMessage(s, MESSAGE_TYPE::MILITARY, "", 0, 0);
+						message.GenerateMessage(s, MESSAGE_TYPE::MILITARY, "", pShip->GetKO(), 0);
 						pShipOwner->GetEmpire()->AddMessage(message);
 						//actually change the owner last, to make the above calls work correctly
 						pShip->SetOwnerOfShip(pAlien->GetRaceID());
