@@ -341,11 +341,11 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 				g->FillRectangle(&brush, 0, 50, 200, 150);
 			}
 
-			if (pShip->second->GetRange() == SHIP_RANGE::SHORT)
+			if (pShip->second->GetRange(false) == SHIP_RANGE::SHORT)
 				Range = CResourceManager::GetString("SHORT");
-			else if (pShip->second->GetRange() == SHIP_RANGE::MIDDLE)
+			else if (pShip->second->GetRange(false) == SHIP_RANGE::MIDDLE)
 				Range = CResourceManager::GetString("MIDDLE");
-			else if (pShip->second->GetRange() == SHIP_RANGE::LONG)
+			else if (pShip->second->GetRange(false) == SHIP_RANGE::LONG)
 				Range = CResourceManager::GetString("LONG");
 
 			s.Format("%s",pShip->second->GetShipName());
@@ -364,19 +364,19 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 			s.Format("%s: %s",CResourceManager::GetString("RANGE"), Range);
 			g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,0,r.right,145), &fontFormat, &fontBrush);
 
-			s.Format("%s: %i",CResourceManager::GetString("SPEED"), pShip->second->GetSpeed());
+			s.Format("%s: %i",CResourceManager::GetString("SPEED"), pShip->second->GetSpeed(false));
 			g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,0,r.right,165), &fontFormat, &fontBrush);
 		}
 		// Wenn wir Infomationen zur Flotte anzeigen
 		else
 		{
 			assert(pShip == pDoc->CurrentShip());
-			short range = pShip->second->GetFleetRange();
-			if (range == 0)
+			SHIP_RANGE::Typ range = pShip->second->GetRange(true);
+			if (range == SHIP_RANGE::SHORT)
 				Range = CResourceManager::GetString("SHORT");
-			else if (range == 1)
+			else if (range == SHIP_RANGE::MIDDLE)
 				Range = CResourceManager::GetString("MIDDLE");
-			else if (range == 2)
+			else if (range == SHIP_RANGE::LONG)
 				Range = CResourceManager::GetString("LONG");
 			r.SetRect(0,0,m_TotalSize.cx,m_TotalSize.cy);
 
@@ -397,7 +397,7 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 			g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,0,r.right,105), &fontFormat, &fontBrush);
 
 			s.Format("%s: %d",CResourceManager::GetString("SPEED"),
-				pShip->second->GetFleetSpeed());
+				pShip->second->GetSpeed(true));
 			g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,0,r.right,125), &fontFormat, &fontBrush);
 		}
 
@@ -416,20 +416,8 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 				else
 					assert(pShip == fleetship->second->CurrentShip());
 			}
-
-			short range = 0;
-			short speed = 0;
-			// Wenn das Schiff keine Flotte anführt
-			if (!pShip->second->HasFleet())
-			{
-				range = 3 - pShip->second->GetRange();
-				speed = pShip->second->GetSpeed();
-			}
-			else
-			{
-				range = 3-pShip->second->GetFleetRange();
-				speed = pShip->second->GetFleetSpeed();
-			}
+			short range = 3-pShip->second->GetRange(true);
+			short speed = pShip->second->GetSpeed(true);
 			CArray<Sector> path;
 			Sector position(pShip->second->GetKO().x, pShip->second->GetKO().y);
 			Sector target(pShip->second->GetTargetKO().x, pShip->second->GetTargetKO().y);

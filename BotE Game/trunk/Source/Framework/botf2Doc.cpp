@@ -2270,13 +2270,13 @@ void CBotf2Doc::AddSpecialResearchBoniToShip(CShips* pShip, CMajor* pShipOwner) 
 		// erhoehte Reichweite für Schiffe mit zuvor kurzer Reichweite
 		if (pInfo->GetResearchComplex(RESEARCH_COMPLEX::GENERAL_SHIP_TECHNOLOGY)->GetFieldStatus(1) == RESEARCH_STATUS::RESEARCHED)
 		{
-			if (pShip->GetRange() == SHIP_RANGE::SHORT)
+			if (pShip->GetRange(false) == SHIP_RANGE::SHORT)
 				pShip->SetRange((SHIP_RANGE::Typ)(pInfo->GetResearchComplex(RESEARCH_COMPLEX::GENERAL_SHIP_TECHNOLOGY)->GetBonus(1)));
 		}
 		// erhoehte Geschwindigkeit für Schiffe mit Geschwindigkeit 1
 		else if (pInfo->GetResearchComplex(RESEARCH_COMPLEX::GENERAL_SHIP_TECHNOLOGY)->GetFieldStatus(2) == RESEARCH_STATUS::RESEARCHED)
 		{
-			if (pShip->GetSpeed() == 1)
+			if (pShip->GetSpeed(false) == 1)
 				pShip->SetSpeed((BYTE)(pInfo->GetResearchComplex(RESEARCH_COMPLEX::GENERAL_SHIP_TECHNOLOGY)->GetBonus(2)));
 		}
 	}
@@ -4514,19 +4514,8 @@ void CBotf2Doc::CalcShipMovement()
 
 		if (targetKO.x != -1)
 		{
-			char range;
-			char speed;
-			// Unterscheiden, ob das Schiff eine Flotte anführt oder nicht
-			if (y->second->HasFleet())
-			{
-				range = (char)(3 - y->second->GetFleetRange());
-				speed = (char)(y->second->GetFleetSpeed());
-			}
-			else
-			{
-				range = (char)(3 - y->second->GetRange());
-				speed = (char)(y->second->GetSpeed());
-			}
+			const unsigned range = 3 - y->second->GetRange(true);
+			const unsigned speed = y->second->GetSpeed(true);
 
 			CRace* pRace = NULL;
 
@@ -4903,7 +4892,7 @@ void CBotf2Doc::CalcShipRetreat() {
 			continue;
 		// sind alle Schiffe in einer Flotte im Rückzug, so kann die ganze Flotte
 		// in den Rückzugssektor
-		const bool bCompleteFleetRetreat = ship->second->GetFleetSpeed() > 0
+		const bool bCompleteFleetRetreat = ship->second->GetSpeed(true) > 0
 			&& ship->second->AllOnTactic(COMBAT_TACTIC::CT_RETREAT);
 
 		// haben alle Schiffe in der Flotte den Rückzugsbefehl oder hat das Schiff keine Flotte

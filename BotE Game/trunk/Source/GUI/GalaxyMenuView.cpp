@@ -280,13 +280,7 @@ void CGalaxyMenuView::OnDraw(CDC* dc)
 	}
 	// Wenn wir ein Schiff bewegen wollen
 	if (m_bShipMove)
-	{
-		// Wenn das Schiff keine Flotte anführt
-		if (!pDoc->CurrentShip()->second->HasFleet())
-			m_nRange = 3-pDoc->CurrentShip()->second->GetRange();
-		else
-			m_nRange = 3-pDoc->CurrentShip()->second->GetFleetRange();
-	}
+		m_nRange = 3-pDoc->CurrentShip()->second->GetRange(true);
 	else
 		m_nRange = SM_RANGE_SPACE;
 	// für jeden Sektor die Linie rechts und unten zeichnen; (j, i) ist der aktuell betrachtete Sektor,
@@ -450,9 +444,9 @@ void CGalaxyMenuView::OnDraw(CDC* dc)
 		CString s;
 		// Wenn das Schiff keine Flotte anführt
 		if (!pDoc->CurrentShip()->second->HasFleet())
-			s.Format("%.0f",ceil((float)current_ship->second->GetPath()->GetSize() / (float)current_ship->second->GetSpeed()));
+			s.Format("%.0f",ceil((float)current_ship->second->GetPath()->GetSize() / (float)current_ship->second->GetSpeed(false)));
 		else
-			s.Format("%.0f",ceil((float)current_ship->second->GetPath()->GetSize() / (float)pDoc->CurrentShip()->second->GetFleetSpeed()));
+			s.Format("%.0f",ceil((float)current_ship->second->GetPath()->GetSize() / (float)pDoc->CurrentShip()->second->GetSpeed(true)));
 		pDC->SetTextColor(RGB(255,255,255));
 		pDC->TextOut(last.x+STARMAP_SECTOR_WIDTH/2+6, last.y+STARMAP_SECTOR_HEIGHT/2-8, s);
 
@@ -1062,9 +1056,9 @@ void CGalaxyMenuView::OnMouseMove(UINT nFlags, CPoint point)
 			char speed = 0;
 			// Wenn das Schiff keine Flotte anführt
 			if (!pDoc->CurrentShip()->second->HasFleet())
-				speed = (char)(pDoc->CurrentShip()->second->GetSpeed());
+				speed = (char)(pDoc->CurrentShip()->second->GetSpeed(false));
 			else
-				speed = (char)(pDoc->CurrentShip()->second->GetFleetSpeed());
+				speed = (char)(pDoc->CurrentShip()->second->GetSpeed(true));
 
 			struct::Sector result = pMajor->GetStarmap()->CalcPath(pMajor->GetStarmap()->GetSelection(), target, m_nRange, speed, *pDoc->CurrentShip()->second->GetPath());
 

@@ -128,7 +128,7 @@ void CShipAI::CalculateShipOrders(CSectorAI* SectorAI)
 					// Wenn Gefahr der anderen Rassen kleiner als die der meinen ist
 					if (m_pSectorAI->GetCompleteDanger(sOwner, ko) == NULL ||
 						(m_pSectorAI->GetCompleteDanger(sOwner, ko) <= m_pSectorAI->GetDangerOnlyFromCombatShips(sOwner, i->second->GetKO())))
-						if (pOwner->GetStarmap()->GetRange(ko) <= i->second->GetRange())
+						if (pOwner->GetStarmap()->GetRange(ko) <= i->second->GetRange(false))
 						{
 							// Zielkoordinate für das Schiff setzen
 							i->second->SetTargetKO(ko);
@@ -163,7 +163,7 @@ void CShipAI::CalculateShipOrders(CSectorAI* SectorAI)
 					// Wenn Gefahr der anderen Rassen kleiner als die der meinen ist
 					if (m_pSectorAI->GetCompleteDanger(sOwner, ko) == NULL || (m_pSectorAI->GetCompleteDanger(sOwner, ko) < m_pSectorAI->GetDanger(sOwner, i->second->GetKO())))
 					{
-						if (pOwner->GetStarmap()->GetRange(ko) <= i->second->GetRange())
+						if (pOwner->GetStarmap()->GetRange(ko) <= i->second->GetRange(false))
 						{
 							// Zielkoordinate für das Schiff setzen
 							i->second->SetTargetKO(ko == i->second->GetKO() ? CPoint(-1, -1) : ko);
@@ -184,7 +184,7 @@ void CShipAI::CalculateShipOrders(CSectorAI* SectorAI)
 					// Wenn Gefahr der anderen Rassen kleiner als die der meinen ist
 					if (m_pSectorAI->GetCompleteDanger(sOwner, ko) == 0 || (m_pSectorAI->GetCompleteDanger(sOwner, ko) < m_pSectorAI->GetDanger(sOwner, i->second->GetKO())))
 					{
-						if (pOwner->GetStarmap()->GetRange(ko) <= i->second->GetRange())
+						if (pOwner->GetStarmap()->GetRange(ko) <= i->second->GetRange(false))
 						{
 							// Zielkoordinate für das Schiff setzen
 							i->second->SetTargetKO(ko == i->second->GetKO() ? CPoint(-1, -1) : ko);
@@ -348,7 +348,7 @@ bool CShipAI::DoAttackMove(CShips* pShip, const CMajor* pMajor)
 		if (nOurDanger > m_pSectorAI->GetCompleteDanger(sRace, m_BombardSector[sRace]))
 		{
 			// hier überprüfen, ob der Sektor erreicht werden kann
-			if (pMajor->GetStarmap()->GetRange(m_BombardSector[sRace]) <= pShip->GetRange())
+			if (pMajor->GetStarmap()->GetRange(m_BombardSector[sRace]) <= pShip->GetRange(false))
 			{
 				pShip->SetTargetKO(m_BombardSector[sRace] == pShip->GetKO() ? CPoint(-1, -1) : m_BombardSector[sRace]);
 				MYTRACE("shipai")(MT::LEVEL_INFO, "Race %s: BOMBARDTARGET in sector: %d/%d\n",sRace,m_BombardSector[sRace].x,m_BombardSector[sRace].y);
@@ -375,7 +375,7 @@ bool CShipAI::DoAttackMove(CShips* pShip, const CMajor* pMajor)
 		if (bAttack)
 		{
 			// hier noch überprüfen, ob der Sektor erreicht werden kann
-			if (pMajor->GetStarmap()->GetRange(m_AttackSector[sRace]) <= pShip->GetRange())
+			if (pMajor->GetStarmap()->GetRange(m_AttackSector[sRace]) <= pShip->GetRange(false))
 			{
 				pShip->SetTargetKO(m_AttackSector[sRace] == pShip->GetKO() ? CPoint(-1, -1) : m_AttackSector[sRace]);
 				if(MT::CMyTrace::IsLoggingEnabledFor("shipai"))
@@ -394,7 +394,7 @@ bool CShipAI::DoAttackMove(CShips* pShip, const CMajor* pMajor)
 		{
 			CPoint p = m_pSectorAI->GetHighestShipDanger(sRace);
 			// hier noch überprüfen, ob der Sektor erreicht werden kann
-			if (pMajor->GetStarmap()->GetRange(p) <= pShip->GetRange())
+			if (pMajor->GetStarmap()->GetRange(p) <= pShip->GetRange(false))
 			{
 				pShip->SetTargetKO(p == pShip->GetKO() ? CPoint(-1, -1) : p);
 				MYTRACE("shipai")(MT::LEVEL_INFO, "Race %s: COLLECT ships in sector: %d/%d\n", sRace,p.x,p.y);
@@ -518,7 +518,7 @@ void CShipAI::DoMakeFleet(const CShipMap::iterator& pShip)
 			continue;
 
 		// beide Schiffe müssen die selbe Reichweite haben
-		if (pShip->second->GetRange() != i->second->GetRange())
+		if (pShip->second->GetRange(false) != i->second->GetRange(false))
 			continue;
 
 		// das hinzuzufügende Schiff darf kein Außenposten oder Sternbasis sein

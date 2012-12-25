@@ -122,8 +122,6 @@ public:
 		SHIP_TYPE::Typ GetShipType() const {return m_Leader.GetShipType(); }
 		SHIP_SIZE::Typ GetShipSize() const {return m_Leader.GetShipSize(); }
 		BYTE GetManeuverability() const {return m_Leader.GetManeuverability(); }
-		SHIP_RANGE::Typ GetRange() const {return m_Leader.GetRange(); }
-		unsigned GetSpeed() const {return m_Leader.GetSpeed(); }
 		USHORT GetScanPower() const {return m_Leader.GetScanPower(); }
 		BYTE GetScanRange() const {return m_Leader.GetScanRange(); }
 		BYTE GetColonizePoints() const {return m_Leader.GetColonizePoints(); }
@@ -223,10 +221,10 @@ public:
 	//////////////////////////////////////////////////////////////////////
 
 	//// Funktion berechnet die Geschwindigkeit der Flotte.
-	unsigned GetFleetSpeed() const;
+	unsigned GetSpeed(bool consider_fleet) const;
 
 	//// Funktion berechnet die Reichweite der Flotte.
-	SHIP_RANGE::Typ GetFleetRange() const;
+	SHIP_RANGE::Typ GetRange(bool consider_fleet) const;
 
 	//// Funktion berechnet den Schiffstyp der Flotte. Wenn hier nur der selbe Schiffstyp in der Flotte vorkommt,
 	//// dann gibt die Funktion diesen Schiffstyp zurück. Wenn verschiedene Schiffstypen in der Flotte vorkommen,

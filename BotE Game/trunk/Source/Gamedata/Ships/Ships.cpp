@@ -302,23 +302,28 @@ void CShips::UnsetCurrentOrder() {
 //////////////////////////////////////////////////////////////////////
 
 // Funktion berechnet die Geschwindigkeit der Flotte.
-unsigned CShips::GetFleetSpeed() const
+unsigned CShips::GetSpeed(bool consider_fleet) const
 {
 	unsigned speed = m_Leader.GetSpeed();
+	//The bool parameter is probably not needed, but can't check the logic of all the calls atm.
+	if(!consider_fleet)
+		return speed;
 	for(CShips::const_iterator i = begin(); i != end(); ++i)
-		speed = min(i->second->GetSpeed(), speed);
+		speed = min(i->second->GetSpeed(true), speed);
 	//@todo this assert can probably be removed after enough testing (atm @r78019)
 	assert(speed != 127);
 	return speed;
 }
 
 // Funktion berechnet die Reichweite der Flotte.
-SHIP_RANGE::Typ CShips::GetFleetRange() const
+SHIP_RANGE::Typ CShips::GetRange(bool consider_fleet) const
 {
 	SHIP_RANGE::Typ nRange = min(m_Leader.GetRange(), SHIP_RANGE::LONG);
-
+	//The bool parameter is probably not needed, but can't check the logic of all the calls atm.
+	if(!consider_fleet)
+		return nRange;
 	for(CShips::const_iterator i = begin(); i != end(); ++i)
-		nRange = min(i->second->GetRange(), nRange);
+		nRange = min(i->second->GetRange(true), nRange);
 
 	return nRange;
 }
@@ -448,7 +453,7 @@ CString CShips::GetTooltip(bool bShowFleet)
 {
 	if(bShowFleet && HasFleet())
 		return m_Leader.GetTooltip(&CShip::FleetInfoForGetTooltip(
-			GetFleetShipType(), GetFleetRange(), GetFleetSpeed())
+			GetFleetShipType(), GetRange(true), GetSpeed(true))
 		);
 	return m_Leader.GetTooltip();
 }
