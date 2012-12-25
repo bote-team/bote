@@ -9,6 +9,7 @@
 #include "Races\RaceController.h"
 #include "Graphic\memdc.h"
 #include "General/ResourceManager.h"
+#include "Ships/Ships.h"
 
 IMPLEMENT_DYNCREATE(CShipDesignMenuView, CMainBaseView)
 
@@ -892,7 +893,7 @@ CString CShipDesignMenuView::CreateTooltip(void)
 	if (CRect(388, 90, 388 + 200, 90 + 150).PtInRect(pt))
 	{
 		// Schiff erzeugen und Spezialforschungen einbeziehen
-		CShip ship = pDoc->m_ShipInfoArray[m_pShownShip->GetID() - 10000];
+		CShips ship(pDoc->m_ShipInfoArray[m_pShownShip->GetID() - 10000]);
 		pDoc->AddSpecialResearchBoniToShip(&ship, m_pPlayersRace);
 		return ship.GetTooltip();
 	}

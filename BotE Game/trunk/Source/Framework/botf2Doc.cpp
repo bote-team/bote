@@ -2152,7 +2152,7 @@ CShipMap::iterator CBotf2Doc::BuildShip(int nID, const CPoint& KO, const CString
 	nID -= 10000;
 
 	CString sOwner = sOwnerID;
-	const CShipMap::iterator it = m_ShipMap.Add(new CShips(static_cast<CShip&>(m_ShipInfoArray.GetAt(nID))));
+	const CShipMap::iterator it = m_ShipMap.Add(new CShips(m_ShipInfoArray.GetAt(nID)));
 	it->second->SetOwnerOfShip(sOwner);
 	it->second->SetKO(KO.x, KO.y);
 
@@ -2167,7 +2167,7 @@ CShipMap::iterator CBotf2Doc::BuildShip(int nID, const CPoint& KO, const CString
 	ASSERT(pMajor);
 
 	// Spezialforschungsboni dem Schiff hinzufügen
-	AddSpecialResearchBoniToShip(&it->second->Leader(), pMajor);
+	AddSpecialResearchBoniToShip(it->second, pMajor);
 
 	pMajor->GetShipHistory()->AddShip(&it->second->Leader(), GetSector(KO.x, KO.y).GetName(), m_iRound);
 	return it;
@@ -2190,7 +2190,7 @@ void CBotf2Doc::RemoveShip(CShipMap::iterator& ship)
 /// Eigenschaften der übergebenen Schiffes.
 /// @param pShip Schiff welches durch Spezialforschungen eventuell verbessert wird
 /// @param pShipOwner Zeiger auf den Besitzer des Schiffes
-void CBotf2Doc::AddSpecialResearchBoniToShip(CShip* pShip, CMajor* pShipOwner) const
+void CBotf2Doc::AddSpecialResearchBoniToShip(CShips* pShip, CMajor* pShipOwner) const
 {
 	if (!pShip || !pShipOwner)
 		return;

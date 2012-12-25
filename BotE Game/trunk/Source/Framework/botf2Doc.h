@@ -17,7 +17,6 @@
 #include "System/GlobalBuildings.h"
 #include "System/System.h"
 
-class CShip;
 class CTroopInfo;
 class CRaceController;
 class CNetworkHandler;
@@ -224,7 +223,7 @@ public:
 	/// Eigenschaften der übergebenen Schiffes.
 	/// @param pShip Schiff welches durch Spezialforschungen eventuell verbessert wird
 	/// @param pShipOwner Zeiger auf den Besitzer des Schiffes
-	void AddSpecialResearchBoniToShip(CShip* pShip, CMajor* pShipOwner) const;
+	void AddSpecialResearchBoniToShip(CShips* pShip, CMajor* pShipOwner) const;
 
 	/// Funktion generiert die Starmaps, so wie sie nach Rundenberechnung auch angezeigt werden können.
 	/// @param sOnlyForRaceID wenn dieser Wert gesetzt, wird die Starmap nur für diese Rasse neu berechnet

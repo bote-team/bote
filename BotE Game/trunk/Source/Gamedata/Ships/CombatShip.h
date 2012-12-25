@@ -6,9 +6,9 @@
  *
  */
 #pragma once
-#include "Ship.h"
 #include "Torpedo.h"
 #include <deque>
+#include <list>
 
 /// Eine Struktur für die Zeit wann wieder Beam- und Torpedowaffen abgefeuert werden können.
 /// Da Folgende gilt glaube nicht mehr!
@@ -20,6 +20,9 @@ struct ShootTime
 	CArray<BYTE,BYTE> torpedo;		///< Gibt an wann wir wieder die Torpedowaffe abfeuern können
 	BOOLEAN phaserIsShooting;		///< Feuert ein Phaser gerade?
 };
+
+class CShips;
+class CFireArc;
 
 class CCombatShip :	public CObject
 {
@@ -131,7 +134,7 @@ private:
 	// Attribute
 
 	/// Zeiger auf das Schiff, welches hier im Kampf ist
-	CShip*	m_pShip;
+	CShips*	m_pShip;
 
 	/// Aktuelle Position (Koordinate im Raum) des Schiffes
 	vec3i m_KO;

@@ -12,6 +12,7 @@
 #include "RoundRect.h"
 #include "Graphic\memdc.h"
 #include "General/ResourceManager.h"
+#include "Ships/Ships.h"
 
 short CSystemMenuView::m_iClickedOn = 0;
 BYTE CSystemMenuView::m_byResourceRouteRes = TITAN;
@@ -4035,7 +4036,7 @@ CString CSystemMenuView::CreateTooltip(void)
 		else if (nID < 20000)
 		{
 			// Schiff erzeugen und Spezialforschungen einbeziehen
-			CShip ship = pDoc->m_ShipInfoArray[nID - 10000];
+			CShips ship(pDoc->m_ShipInfoArray[nID - 10000]);
 			pDoc->AddSpecialResearchBoniToShip(&ship, m_pPlayersRace);
 			return ship.GetTooltip();
 		}

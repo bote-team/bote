@@ -94,7 +94,6 @@ public:
 	// Funktion liefert die Anzahl der Schiffe in der Flotte
 	int GetFleetSize() const { return m_Fleet.GetSize(); }
 	const CShip& Leader() const { return m_Leader; }
-	CShip& Leader() { return m_Leader; }
 	const CShipMap& Fleet() const { return m_Fleet; }
 	unsigned Key() const { return m_Key; }
 

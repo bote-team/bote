@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "CombatShip.h"
+#include "Ships.h"
 
 //////////////////////////////////////////////////////////////////////
 // Konstruktion/Destruktion

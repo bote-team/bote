@@ -72,7 +72,7 @@ void CCombat::SetInvolvedShips(CArray<CShips*>* pShips, std::map<CString, CRace*
 		for (int i = 0; i < pShips->GetSize(); i++)
 		{
 			CCombatShip* cs = new CCombatShip();;
-			cs->m_pShip = &pShips->GetAt(i)->Leader();
+			cs->m_pShip = pShips->GetAt(i);
 			cs->m_byManeuverability = pShips->GetAt(i)->GetManeuverability();
 			cs->m_KO.x = 0;
 			cs->m_KO.y = 0;
@@ -451,7 +451,7 @@ void CCombat::CalculateCombat(std::map<CString, BYTE>& winner)
 // zugewiesen gibt die Funktion TRUE zurück, findet sich kein Ziel mehr gibt die Funktion FALSE zurück.
 bool CCombat::SetTarget(int i)
 {
-	CShip* pShip = m_CS.GetAt(i)->m_pShip;
+	CShips* pShip = m_CS.GetAt(i)->m_pShip;
 	CString sOwner = pShip->GetOwnerOfShip();
 	ASSERT(m_CS.GetAt(i)->m_pTarget == NULL);
 

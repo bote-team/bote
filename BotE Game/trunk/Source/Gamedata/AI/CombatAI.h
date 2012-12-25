@@ -13,7 +13,6 @@
 using namespace std;
 
 // forward declaration
-class CShip;
 class CShips;
 class CRace;
 class CAnomaly;

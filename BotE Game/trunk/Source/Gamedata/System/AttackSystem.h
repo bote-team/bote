@@ -12,6 +12,7 @@
 #include <map>
 
 class CShipMap;
+class CShips;
 
 using namespace std;
 
@@ -68,7 +69,7 @@ private:
 	// Attribute
 
 	/// Dieses dynamische Feld beinhaltet alle Schiffe die an dem Systemangriff beteiligt sind.
-	CArray<CShip*> m_pShips;
+	CArray<CShips*> m_pShips;
 
 	/// Dieses dynamische Feld beinhaltet alle Truppen, die das System angreifen. Diese mussten
 	/// mittels Schiffen herbeigebracht wurden sein.
