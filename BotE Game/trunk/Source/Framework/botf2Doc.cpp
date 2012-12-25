@@ -3993,53 +3993,50 @@ void CBotf2Doc::CalcShipOrders()
 						pSector->SetStartStationPoints(m_ShipInfoArray.GetAt((id-10000)).GetBaseIndustry(),y->second->GetOwnerOfShip());
 					// Wenn das Schiff eine Flotte anf?hrt, dann erstmal die Au?enpostenbaupunkte der Schiffe in der Flotte
 					// beachten und gegebenfalls das Schiff aus der Flotte entfernen
-					if (y->second->HasFleet())
+					for(CShipMap::iterator x = y->second->begin(); x != y->second->end();)
 					{
-						for(CShipMap::iterator x = y->second->begin(); x != y->second->end();)
+						if (pSector->SetNeededStationPoints(x->second->GetStationBuildPoints(),y->second->GetOwnerOfShip()))
 						{
-							if (pSector->SetNeededStationPoints(x->second->GetStationBuildPoints(),y->second->GetOwnerOfShip()))
+							// Station ist fertig, also bauen (wurde durch ein Schiff in der Flotte fertiggestellt)
+							if (pSector->GetOutpost(y->second->GetOwnerOfShip()) == FALSE
+								&& pSector->GetStarbase(y->second->GetOwnerOfShip()) == FALSE)
 							{
-								// Station ist fertig, also bauen (wurde durch ein Schiff in der Flotte fertiggestellt)
-								if (pSector->GetOutpost(y->second->GetOwnerOfShip()) == FALSE
-									&& pSector->GetStarbase(y->second->GetOwnerOfShip()) == FALSE)
+								pSector->SetOutpost(y->second->GetOwnerOfShip());
+								pSector->SetOwnerOfSector(y->second->GetOwnerOfShip());
+								pSector->SetScanned(y->second->GetOwnerOfShip());
+								pSector->SetOwned(TRUE);
+								pSector->SetShipPort(TRUE,y->second->GetOwnerOfShip());
+								// Nachricht generieren, dass der Aussenpostenbau abgeschlossen wurde
+								CMessage message;
+								message.GenerateMessage(CResourceManager::GetString("OUTPOST_FINISHED"),MESSAGE_TYPE::MILITARY,"",pSector->GetKO(),FALSE);
+								pMajor->GetEmpire()->AddMessage(message);
+								// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
+								pMajor->AddToLostShipHistory(*x->second, CResourceManager::GetString("OUTPOST_CONSTRUCTION"), CResourceManager::GetString("DESTROYED"), m_iRound);
+								if (pMajor->IsHumanPlayer())
 								{
-									pSector->SetOutpost(y->second->GetOwnerOfShip());
-									pSector->SetOwnerOfSector(y->second->GetOwnerOfShip());
-									pSector->SetScanned(y->second->GetOwnerOfShip());
-									pSector->SetOwned(TRUE);
-									pSector->SetShipPort(TRUE,y->second->GetOwnerOfShip());
-									// Nachricht generieren, dass der Aussenpostenbau abgeschlossen wurde
-									CMessage message;
-									message.GenerateMessage(CResourceManager::GetString("OUTPOST_FINISHED"),MESSAGE_TYPE::MILITARY,"",pSector->GetKO(),FALSE);
-									pMajor->GetEmpire()->AddMessage(message);
-									// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
-									pMajor->AddToLostShipHistory(*x->second, CResourceManager::GetString("OUTPOST_CONSTRUCTION"), CResourceManager::GetString("DESTROYED"), m_iRound);
-									if (pMajor->IsHumanPlayer())
-									{
-										SNDMGR_MESSAGEENTRY entry = {SNDMGR_MSG_OUTPOST_READY, client, 0, 1.0f};
-										m_SoundMessages[client].Add(entry);
-										m_iSelectedView[client] = EMPIRE_VIEW;
-									}
-									// Wenn eine Station fertig wurde für alle Rassen die Punkte wieder canceln
-									for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
-									{
-										pSector->SetIsStationBuilding(FALSE, it->first);
-										pSector->SetStartStationPoints(0, it->first);
-									}
-									// Das Schiff, welches die Station fertiggestellt hat aus der Flotte entfernen
-									y->second->RemoveShipFromFleet(x, true);
-									BuildShip(id, pSector->GetKO(), y->second->GetOwnerOfShip());
-									// Wenn hier ein Au?enposten gebaut wurde den Befehl f?r die Flotte auf Meiden stellen
-									y->second->UnsetCurrentOrder();
-									break;
+									SNDMGR_MESSAGEENTRY entry = {SNDMGR_MSG_OUTPOST_READY, client, 0, 1.0f};
+									m_SoundMessages[client].Add(entry);
+									m_iSelectedView[client] = EMPIRE_VIEW;
 								}
-								else
-									++x;
+								// Wenn eine Station fertig wurde für alle Rassen die Punkte wieder canceln
+								for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
+								{
+									pSector->SetIsStationBuilding(FALSE, it->first);
+									pSector->SetStartStationPoints(0, it->first);
+								}
+								// Das Schiff, welches die Station fertiggestellt hat aus der Flotte entfernen
+								y->second->RemoveShipFromFleet(x, true);
+								BuildShip(id, pSector->GetKO(), y->second->GetOwnerOfShip());
+								// Wenn hier ein Au?enposten gebaut wurde den Befehl f?r die Flotte auf Meiden stellen
+								y->second->UnsetCurrentOrder();
+								break;
 							}
 							else
 								++x;
-						}//for(CShipMap::iterator x = y->second->begin(); x != y->second->end();)
-					}
+						}
+						else
+							++x;
+					}//for(CShipMap::iterator x = y->second->begin(); x != y->second->end();)
 					if (pSector->GetIsStationBuilding(y->second->GetOwnerOfShip()) == TRUE
 						&& pSector->SetNeededStationPoints(y->second->GetStationBuildPoints(),y->second->GetOwnerOfShip()))
 					{
@@ -4117,64 +4114,61 @@ void CBotf2Doc::CalcShipOrders()
 						pSector->SetStartStationPoints(m_ShipInfoArray.GetAt(id-10000).GetBaseIndustry(),y->second->GetOwnerOfShip());
 					// Wenn das Schiff eine Flotte anf?hrt, dann erstmal die Au?enpostenbaupunkte der Schiffe in der Flotte
 					// beachten und gegebenfalls das Schiff aus der Flotte entfernen
-					if (y->second->HasFleet())
+					for(CShipMap::iterator x = y->second->begin(); x != y->second->end();)
 					{
-						for(CShipMap::iterator x = y->second->begin(); x != y->second->end();)
+						if (pSector->SetNeededStationPoints(x->second->GetStationBuildPoints(),y->second->GetOwnerOfShip()))
 						{
-							if (pSector->SetNeededStationPoints(x->second->GetStationBuildPoints(),y->second->GetOwnerOfShip()))
+							// Station ist fertig, also bauen (wurde durch ein Schiff in der Flotte fertiggestellt)
+							if (pSector->GetOutpost(y->second->GetOwnerOfShip()) == TRUE
+								&& pSector->GetStarbase(y->second->GetOwnerOfShip()) == FALSE)
 							{
-								// Station ist fertig, also bauen (wurde durch ein Schiff in der Flotte fertiggestellt)
-								if (pSector->GetOutpost(y->second->GetOwnerOfShip()) == TRUE
-									&& pSector->GetStarbase(y->second->GetOwnerOfShip()) == FALSE)
+								pSector->UnsetOutpost(y->second->GetOwnerOfShip());
+								pSector->SetStarbase(y->second->GetOwnerOfShip());
+								pSector->SetOwnerOfSector(y->second->GetOwnerOfShip());
+								pSector->SetScanned(y->second->GetOwnerOfShip());
+								pSector->SetOwned(TRUE);
+								pSector->SetShipPort(TRUE,y->second->GetOwnerOfShip());
+								// Nachricht generieren, dass der Sternbasisbau abgeschlossen wurde
+								CMessage message;
+								message.GenerateMessage(CResourceManager::GetString("STARBASE_FINISHED"),MESSAGE_TYPE::MILITARY,"",pSector->GetKO(),FALSE);
+								pMajor->GetEmpire()->AddMessage(message);
+								// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
+								pMajor->AddToLostShipHistory(*x->second, CResourceManager::GetString("STARBASE_CONSTRUCTION"), CResourceManager::GetString("DESTROYED"), m_iRound);
+								if (pMajor->IsHumanPlayer())
 								{
-									pSector->UnsetOutpost(y->second->GetOwnerOfShip());
-									pSector->SetStarbase(y->second->GetOwnerOfShip());
-									pSector->SetOwnerOfSector(y->second->GetOwnerOfShip());
-									pSector->SetScanned(y->second->GetOwnerOfShip());
-									pSector->SetOwned(TRUE);
-									pSector->SetShipPort(TRUE,y->second->GetOwnerOfShip());
-									// Nachricht generieren, dass der Sternbasisbau abgeschlossen wurde
-									CMessage message;
-									message.GenerateMessage(CResourceManager::GetString("STARBASE_FINISHED"),MESSAGE_TYPE::MILITARY,"",pSector->GetKO(),FALSE);
-									pMajor->GetEmpire()->AddMessage(message);
-									// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
-									pMajor->AddToLostShipHistory(*x->second, CResourceManager::GetString("STARBASE_CONSTRUCTION"), CResourceManager::GetString("DESTROYED"), m_iRound);
-									if (pMajor->IsHumanPlayer())
-									{
-										SNDMGR_MESSAGEENTRY entry = {SNDMGR_MSG_STARBASE_READY, client, 0, 1.0f};
-										m_SoundMessages[client].Add(entry);
-										m_iSelectedView[client] = EMPIRE_VIEW;
-									}
-									// Wenn eine Station fertig wurde für alle Rassen die Punkte wieder canceln
-									for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
-									{
-										pSector->SetIsStationBuilding(FALSE, it->first);
-										pSector->SetStartStationPoints(0, it->first);
-									}
-									// Das Schiff, welches die Station fertiggestellt hat aus der Flotte entfernen
-									y->second->RemoveShipFromFleet(x, true);
-									this->BuildShip(id, pSector->GetKO(), y->second->GetOwnerOfShip());
-									// Wenn wir jetzt die Sternbasis gebaut haben, dann müssen wir den alten Aussenposten aus der
-									// Schiffsliste nehmen
-									for(CShipMap::iterator k = m_ShipMap.begin(); k != m_ShipMap.end(); ++k)
-										if (k->second->GetShipType() == SHIP_TYPE::OUTPOST && k->second->GetKO() == pSector->GetKO())
-										{
-											// ebenfalls muss der Au?enposten aus der Shiphistory der aktuellen Schiffe entfernt werden
-											pMajor->GetShipHistory()->RemoveShip(k->second);
-											assert(k != y);
-											m_ShipMap.EraseAt(k, true);
-											break;
-										}
-									// Wenn hier eine Station gebaut wurde den Befehl für die Flotte auf Meiden stellen
-									y->second->UnsetCurrentOrder();
-									break;
+									SNDMGR_MESSAGEENTRY entry = {SNDMGR_MSG_STARBASE_READY, client, 0, 1.0f};
+									m_SoundMessages[client].Add(entry);
+									m_iSelectedView[client] = EMPIRE_VIEW;
 								}
-								else
-									++x;
+								// Wenn eine Station fertig wurde für alle Rassen die Punkte wieder canceln
+								for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
+								{
+									pSector->SetIsStationBuilding(FALSE, it->first);
+									pSector->SetStartStationPoints(0, it->first);
+								}
+								// Das Schiff, welches die Station fertiggestellt hat aus der Flotte entfernen
+								y->second->RemoveShipFromFleet(x, true);
+								this->BuildShip(id, pSector->GetKO(), y->second->GetOwnerOfShip());
+								// Wenn wir jetzt die Sternbasis gebaut haben, dann müssen wir den alten Aussenposten aus der
+								// Schiffsliste nehmen
+								for(CShipMap::iterator k = m_ShipMap.begin(); k != m_ShipMap.end(); ++k)
+									if (k->second->GetShipType() == SHIP_TYPE::OUTPOST && k->second->GetKO() == pSector->GetKO())
+									{
+										// ebenfalls muss der Au?enposten aus der Shiphistory der aktuellen Schiffe entfernt werden
+										pMajor->GetShipHistory()->RemoveShip(k->second);
+										assert(k != y);
+										m_ShipMap.EraseAt(k, true);
+										break;
+									}
+								// Wenn hier eine Station gebaut wurde den Befehl für die Flotte auf Meiden stellen
+								y->second->UnsetCurrentOrder();
+								break;
 							}
 							else
 								++x;
 						}
+						else
+							++x;
 					}
 					if (pSector->GetIsStationBuilding(y->second->GetOwnerOfShip()) == TRUE
 						&& pSector->SetNeededStationPoints(y->second->GetStationBuildPoints(),y->second->GetOwnerOfShip()))
@@ -4260,26 +4254,23 @@ void CBotf2Doc::CalcShipOrders()
 			pMajor->GetShipHistory()->ModifyShip(y->second, pSector->GetName(TRUE), m_iRound, CResourceManager::GetString("DISASSEMBLY"),	CResourceManager::GetString("DESTROYED"));
 
 			// Wenn das Schiff eine Flotte anf?hrt, dann auch die Schiffe in der Flotte demontieren
-			if (y->second->HasFleet())
+			for(CShips::const_iterator x = y->second->begin(); x != y->second->end(); ++x)
 			{
-				for(CShips::const_iterator x = y->second->begin(); x != y->second->end(); ++x)
+				if (pSystem->GetOwnerOfSystem() == y->second->GetOwnerOfShip())
 				{
-					if (pSystem->GetOwnerOfSystem() == y->second->GetOwnerOfShip())
-					{
-						USHORT proz = rand()%26 + 50;	// Wert zwischen 50 und 75 ausw?hlen
-						// Wenn in dem System Gebäude stehen, wodurch der Prozentsatz erhöht wird, dann hier addieren
-						proz += pSystem->GetProduction()->GetShipRecycling();
-						USHORT id = x->second->GetID() - 10000;
-						pSystem->SetTitanStore((int)(m_ShipInfoArray.GetAt(id).GetNeededTitan() * proz / 100));
-						pSystem->SetDeuteriumStore((int)(m_ShipInfoArray.GetAt(id).GetNeededDeuterium() * proz / 100));
-						pSystem->SetDuraniumStore((int)(m_ShipInfoArray.GetAt(id).GetNeededDuranium() * proz / 100));
-						pSystem->SetCrystalStore((int)(m_ShipInfoArray.GetAt(id).GetNeededCrystal() * proz / 100));
-						pSystem->SetIridiumStore((int)(m_ShipInfoArray.GetAt(id).GetNeededIridium() * proz / 100));
-						pMajor->GetEmpire()->SetCredits((int)(m_ShipInfoArray.GetAt(id).GetNeededIndustry() * proz / 100));
-					}
-					// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
-					pMajor->GetShipHistory()->ModifyShip(x->second, pSector->GetName(TRUE), m_iRound, CResourceManager::GetString("DISASSEMBLY"), CResourceManager::GetString("DESTROYED"));
+					USHORT proz = rand()%26 + 50;	// Wert zwischen 50 und 75 ausw?hlen
+					// Wenn in dem System Gebäude stehen, wodurch der Prozentsatz erhöht wird, dann hier addieren
+					proz += pSystem->GetProduction()->GetShipRecycling();
+					USHORT id = x->second->GetID() - 10000;
+					pSystem->SetTitanStore((int)(m_ShipInfoArray.GetAt(id).GetNeededTitan() * proz / 100));
+					pSystem->SetDeuteriumStore((int)(m_ShipInfoArray.GetAt(id).GetNeededDeuterium() * proz / 100));
+					pSystem->SetDuraniumStore((int)(m_ShipInfoArray.GetAt(id).GetNeededDuranium() * proz / 100));
+					pSystem->SetCrystalStore((int)(m_ShipInfoArray.GetAt(id).GetNeededCrystal() * proz / 100));
+					pSystem->SetIridiumStore((int)(m_ShipInfoArray.GetAt(id).GetNeededIridium() * proz / 100));
+					pMajor->GetEmpire()->SetCredits((int)(m_ShipInfoArray.GetAt(id).GetNeededIndustry() * proz / 100));
 				}
+				// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
+				pMajor->GetShipHistory()->ModifyShip(x->second, pSector->GetName(TRUE), m_iRound, CResourceManager::GetString("DISASSEMBLY"), CResourceManager::GetString("DESTROYED"));
 			}
 
 			// Wenn es ein Au?enposten oder eine Sternbasis ist, dann dem Sektor bekanntgeben, dass in ihm keine Station mehr ist
@@ -4704,9 +4695,8 @@ void CBotf2Doc::CalcShipCombat()
 		vInvolvedShips.Add(i->second);
 
 		// Wenn das Schiff eine Flotte anführt, dann auch die Zeiger auf die Schiffe in der Flotte reingeben
-		if (i->second->HasFleet())
-			for (CShips::iterator j = i->second->begin(); j != i->second->end(); ++j)
-				vInvolvedShips.Add(j->second);
+		for (CShips::iterator j = i->second->begin(); j != i->second->end(); ++j)
+			vInvolvedShips.Add(j->second);
 		// CHECK WW:
 		// folgendes Zeug kann weg, wenn der Kampf vor der Systemberechnung dramkommt
 

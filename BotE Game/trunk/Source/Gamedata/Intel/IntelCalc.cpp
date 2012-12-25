@@ -1404,13 +1404,10 @@ BOOLEAN CIntelCalc::ExecuteMilitarySabotage(CMajor* pRace, CMajor* pEnemyRace, C
 				if (i->second->GetKO() == report->GetKO() && i->second->GetOwnerOfShip() != report->GetOwner())
 				{
 					// besitzt dieses Schiff eine Flotte, so könnte sich unser Schiff auch in der Flotte befinden
-					if (i->second->HasFleet())
+					for(CShips::const_iterator j = i->second->begin(); j != i->second->end(); ++j)
 					{
-						for(CShips::const_iterator j = i->second->begin(); j != i->second->end(); ++j)
-						{
-							if (j->second->GetID() == report->GetID())
-								allShips.push_back(CPoint(i->second->Key(), j->second->Key()));
-						}
+						if (j->second->GetID() == report->GetID())
+							allShips.push_back(CPoint(i->second->Key(), j->second->Key()));
 					}
 					if (i->second->GetID() == report->GetID())
 						allShips.push_back(CPoint(i->second->Key(),-1));	// -1 als y Wert bedeutet, dass dieses Schiff in keiner Flotte vorkommt

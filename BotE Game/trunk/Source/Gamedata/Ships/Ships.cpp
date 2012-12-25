@@ -220,8 +220,6 @@ void CShips::ApplyTraining(int XP) {
 	const bool veteran = HasVeteran();
 	m_Leader.ApplyTraining(XP, veteran);
 	// Wenn das Schiff eine Flotte anführt, Schiffstraining auf alle Schiffe in der Flotte anwenden
-	if(!HasFleet())
-		return;
 	for(CShips::iterator i = begin(); i != end(); ++i)
 		i->second->m_Leader.ApplyTraining(XP, veteran);
 }
