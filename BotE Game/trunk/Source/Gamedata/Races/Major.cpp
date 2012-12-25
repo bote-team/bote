@@ -6,6 +6,7 @@
 #include "botf2.h"
 #include "Botf2Doc.h"
 #include "RaceController.h"
+#include "Ships/Ships.h"
 
 #include <cassert>
 
@@ -487,7 +488,7 @@ bool CMajor::AHumanPlays() const {
 	return doc.GetCurrentRound() > clp.GetAutoTurns();
 }
 
-void CMajor::AddToLostShipHistory(const CShip& Ship, const CString& sEvent,
+void CMajor::AddToLostShipHistory(const CShips& Ship, const CString& sEvent,
 	const CString& sStatus, unsigned short round)
 {
 	const CPoint& co = Ship.GetKO();
@@ -513,7 +514,7 @@ void CMajor::LostStation(SHIP_TYPE::Typ type)
 	m_Empire.AddMessage(message);
 }
 
-void CMajor::LostShipToAnomaly(const CShip& ship, const CString& anomaly)
+void CMajor::LostShipToAnomaly(const CShips& ship, const CString& anomaly)
 {
 	CString sShip;
 	sShip.Format("%s (%s, %s)", ship.GetShipName(), ship.GetShipTypeAsString(), ship.GetShipClass());

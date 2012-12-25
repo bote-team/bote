@@ -175,7 +175,7 @@ void CShips::Reset(bool destroy) {
 // Funktion übernimmt die Befehle des hier als Zeiger übergebenen Schiffsobjektes an alle Mitglieder der Flotte
 void CShips::AdoptOrdersFrom(const CShips& ship)
 {
-	m_Leader.AdoptOrdersFrom(ship.Leader());
+	m_Leader.AdoptOrdersFrom(ship.m_Leader);
 	for(CShips::iterator i = begin(); i != end(); ++i) {
 		i->second->AdoptOrdersFrom(ship);
 	}
@@ -303,28 +303,21 @@ void CShips::UnsetCurrentOrder() {
 // calculated stements about this fleet (should be const functions, non-bool returning)
 //////////////////////////////////////////////////////////////////////
 
-// Funktion berechnet die Geschwindigkeit der Flotte. Der Parameter der hier übergeben werden sollte
-// ist der this-Zeiger des Schiffsobjektes, welches die Flotte besitzt
-unsigned CShips::GetFleetSpeed(const CShip* ship) const
+// Funktion berechnet die Geschwindigkeit der Flotte.
+unsigned CShips::GetFleetSpeed() const
 {
-	BYTE speed = 127;
-	if (ship != NULL)
-		speed = ship->GetSpeed();
+	unsigned speed = m_Leader.GetSpeed();
 	for(CShips::const_iterator i = begin(); i != end(); ++i)
-		if(i->second->GetSpeed() < speed)
-			speed = i->second->GetSpeed();
-	if (speed == 127)
-		speed = 0;
+		speed = min(i->second->GetSpeed(), speed);
+	//@todo this assert can probably be removed after enough testing (atm @r78019)
+	assert(speed != 127);
 	return speed;
 }
 
-// Funktion berechnet die Reichweite der Flotte. Der Parameter der hier übergeben werden sollte
-// ist der this-Zeiger des Schiffsobjektes, welches die Flotte besitzt
-SHIP_RANGE::Typ CShips::GetFleetRange(const CShip* pShip) const
+// Funktion berechnet die Reichweite der Flotte.
+SHIP_RANGE::Typ CShips::GetFleetRange() const
 {
-	SHIP_RANGE::Typ nRange = SHIP_RANGE::LONG;
-	if (pShip)
-		nRange = min(pShip->GetRange(), nRange);
+	SHIP_RANGE::Typ nRange = min(m_Leader.GetRange(), SHIP_RANGE::LONG);
 
 	for(CShips::const_iterator i = begin(); i != end(); ++i)
 		nRange = min(i->second->GetRange(), nRange);
@@ -457,7 +450,7 @@ CString CShips::GetTooltip(bool bShowFleet)
 {
 	if(bShowFleet && HasFleet())
 		return m_Leader.GetTooltip(&CShip::FleetInfoForGetTooltip(
-			GetFleetShipType(), GetFleetRange(&m_Leader), GetFleetSpeed(&m_Leader))
+			GetFleetShipType(), GetFleetRange(), GetFleetSpeed())
 		);
 	return m_Leader.GetTooltip();
 }

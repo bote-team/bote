@@ -14,7 +14,7 @@
 #include "Options.h"
 #include "AI\DiplomacyAI.h"
 
-class CShip;
+class CShips;
 
 using namespace std;
 
@@ -202,12 +202,12 @@ public:
 	bool CanBeContactedBy(const CString& sRaceID) const;
 	virtual void Contact(const CRace& Race, const CPoint& p);
 
-	virtual void AddToLostShipHistory(const CShip& Ship, const CString& sEvent,
+	virtual void AddToLostShipHistory(const CShips& Ship, const CString& sEvent,
 		const CString& sStatus, unsigned short round);
 
 	virtual void LostFlagShip(const CString& name);
 	virtual void LostStation(SHIP_TYPE::Typ type);
-	virtual void LostShipToAnomaly(const CShip& ship, const CString& anomaly);
+	virtual void LostShipToAnomaly(const CShips& ship, const CString& anomaly);
 
 	/// Funktion zum Setzen von Spezialeigenschaften der Rasse.
 	/// @param ability Spezialeigenschaft

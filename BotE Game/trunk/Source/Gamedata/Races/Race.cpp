@@ -489,7 +489,7 @@ void CRace::Contact(const CRace& Race, const CPoint& /*p*/) {
 	SetIsRaceContacted(sContactedRaceID, true);
 }
 
-void CRace::AddToLostShipHistory(const CShip& /*Ship*/, const CString& /*sEvent*/, const CString& /*sStatus*/,
+void CRace::AddToLostShipHistory(const CShips& /*Ship*/, const CString& /*sEvent*/, const CString& /*sStatus*/,
 	unsigned short /*round*/)
 {
 }
@@ -501,7 +501,7 @@ void CRace::LostFlagShip(const CString& /*name*/)
 void CRace::LostStation(SHIP_TYPE::Typ /*type*/)
 {
 }
-void CRace::LostShipToAnomaly(const CShip& /*ship*/, const CString& /*anomaly*/)
+void CRace::LostShipToAnomaly(const CShips& /*ship*/, const CString& /*anomaly*/)
 {
 	//TODO: If a minor is forced to retreat, and happens to retreat to an anomaly,
 	//its ships are slowly destructed since it doesn't move.

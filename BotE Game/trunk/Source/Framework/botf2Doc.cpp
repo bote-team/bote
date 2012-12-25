@@ -2169,7 +2169,7 @@ CShipMap::iterator CBotf2Doc::BuildShip(int nID, const CPoint& KO, const CString
 	// Spezialforschungsboni dem Schiff hinzufügen
 	AddSpecialResearchBoniToShip(it->second, pMajor);
 
-	pMajor->GetShipHistory()->AddShip(&it->second->Leader(), GetSector(KO.x, KO.y).GetName(), m_iRound);
+	pMajor->GetShipHistory()->AddShip(it->second, GetSector(KO.x, KO.y).GetName(), m_iRound);
 	return it;
 }
 
@@ -3848,7 +3848,7 @@ void CBotf2Doc::CalcShipOrders()
 
 				// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
 				s.Format("%s %s",CResourceManager::GetString("COLONIZATION"), pSector->GetName());
-				pMajor->AddToLostShipHistory(y->second->Leader(), s, CResourceManager::GetString("DESTROYED"),
+				pMajor->AddToLostShipHistory(*y->second, s, CResourceManager::GetString("DESTROYED"),
 					m_iRound);
 				// Schiff entfernen
 				y->second->UnsetCurrentOrder();
@@ -4013,7 +4013,7 @@ void CBotf2Doc::CalcShipOrders()
 									message.GenerateMessage(CResourceManager::GetString("OUTPOST_FINISHED"),MESSAGE_TYPE::MILITARY,"",pSector->GetKO(),FALSE);
 									pMajor->GetEmpire()->AddMessage(message);
 									// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
-									pMajor->AddToLostShipHistory(x->second->Leader(), CResourceManager::GetString("OUTPOST_CONSTRUCTION"), CResourceManager::GetString("DESTROYED"), m_iRound);
+									pMajor->AddToLostShipHistory(*x->second, CResourceManager::GetString("OUTPOST_CONSTRUCTION"), CResourceManager::GetString("DESTROYED"), m_iRound);
 									if (pMajor->IsHumanPlayer())
 									{
 										SNDMGR_MESSAGEENTRY entry = {SNDMGR_MSG_OUTPOST_READY, client, 0, 1.0f};
@@ -4057,7 +4057,7 @@ void CBotf2Doc::CalcShipOrders()
 							message.GenerateMessage(CResourceManager::GetString("OUTPOST_FINISHED"),MESSAGE_TYPE::MILITARY,"",pSector->GetKO(),FALSE);
 							pMajor->GetEmpire()->AddMessage(message);
 							// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
-							pMajor->AddToLostShipHistory(y->second->Leader(), CResourceManager::GetString("OUTPOST_CONSTRUCTION"), CResourceManager::GetString("DESTROYED"), m_iRound);
+							pMajor->AddToLostShipHistory(*y->second, CResourceManager::GetString("OUTPOST_CONSTRUCTION"), CResourceManager::GetString("DESTROYED"), m_iRound);
 							if (pMajor->IsHumanPlayer())
 							{
 								SNDMGR_MESSAGEENTRY entry = {SNDMGR_MSG_OUTPOST_READY, client, 0, 1.0f};
@@ -4138,7 +4138,7 @@ void CBotf2Doc::CalcShipOrders()
 									message.GenerateMessage(CResourceManager::GetString("STARBASE_FINISHED"),MESSAGE_TYPE::MILITARY,"",pSector->GetKO(),FALSE);
 									pMajor->GetEmpire()->AddMessage(message);
 									// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
-									pMajor->AddToLostShipHistory(x->second->Leader(), CResourceManager::GetString("STARBASE_CONSTRUCTION"), CResourceManager::GetString("DESTROYED"), m_iRound);
+									pMajor->AddToLostShipHistory(*x->second, CResourceManager::GetString("STARBASE_CONSTRUCTION"), CResourceManager::GetString("DESTROYED"), m_iRound);
 									if (pMajor->IsHumanPlayer())
 									{
 										SNDMGR_MESSAGEENTRY entry = {SNDMGR_MSG_STARBASE_READY, client, 0, 1.0f};
@@ -4160,7 +4160,7 @@ void CBotf2Doc::CalcShipOrders()
 										if (k->second->GetShipType() == SHIP_TYPE::OUTPOST && k->second->GetKO() == pSector->GetKO())
 										{
 											// ebenfalls muss der Au?enposten aus der Shiphistory der aktuellen Schiffe entfernt werden
-											pMajor->GetShipHistory()->RemoveShip(&k->second->Leader());
+											pMajor->GetShipHistory()->RemoveShip(k->second);
 											assert(k != y);
 											m_ShipMap.EraseAt(k, true);
 											break;
@@ -4194,7 +4194,7 @@ void CBotf2Doc::CalcShipOrders()
 							message.GenerateMessage(CResourceManager::GetString("STARBASE_FINISHED"),MESSAGE_TYPE::MILITARY,"",pSector->GetKO(),FALSE);
 							pMajor->GetEmpire()->AddMessage(message);
 							// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
-							pMajor->AddToLostShipHistory(y->second->Leader(), CResourceManager::GetString("STARBASE_CONSTRUCTION"), CResourceManager::GetString("DESTROYED"), m_iRound);
+							pMajor->AddToLostShipHistory(*y->second, CResourceManager::GetString("STARBASE_CONSTRUCTION"), CResourceManager::GetString("DESTROYED"), m_iRound);
 							if (pMajor->IsHumanPlayer())
 							{
 								SNDMGR_MESSAGEENTRY entry = {SNDMGR_MSG_STARBASE_READY, client, 0, 1.0f};
@@ -4217,7 +4217,7 @@ void CBotf2Doc::CalcShipOrders()
 								if (k->second->GetShipType() == SHIP_TYPE::OUTPOST && k->second->GetKO() == pSector->GetKO())
 								{
 									// ebenfalls muss der Au?enposten aus der Shiphistory der aktuellen Schiffe entfernt werden
-									pMajor->GetShipHistory()->RemoveShip(&k->second->Leader());
+									pMajor->GetShipHistory()->RemoveShip(k->second);
 									assert(k != y);
 									m_ShipMap.EraseAt(k, true);
 									break;
@@ -4257,7 +4257,7 @@ void CBotf2Doc::CalcShipOrders()
 				pMajor->GetEmpire()->SetCredits((int)(m_ShipInfoArray.GetAt(id).GetNeededIndustry() * proz / 100));
 			}
 			// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
-			pMajor->GetShipHistory()->ModifyShip(&y->second->Leader(), pSector->GetName(TRUE), m_iRound, CResourceManager::GetString("DISASSEMBLY"),	CResourceManager::GetString("DESTROYED"));
+			pMajor->GetShipHistory()->ModifyShip(y->second, pSector->GetName(TRUE), m_iRound, CResourceManager::GetString("DISASSEMBLY"),	CResourceManager::GetString("DESTROYED"));
 
 			// Wenn das Schiff eine Flotte anf?hrt, dann auch die Schiffe in der Flotte demontieren
 			if (y->second->HasFleet())
@@ -4278,7 +4278,7 @@ void CBotf2Doc::CalcShipOrders()
 						pMajor->GetEmpire()->SetCredits((int)(m_ShipInfoArray.GetAt(id).GetNeededIndustry() * proz / 100));
 					}
 					// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
-					pMajor->GetShipHistory()->ModifyShip(&x->second->Leader(), pSector->GetName(TRUE), m_iRound, CResourceManager::GetString("DISASSEMBLY"), CResourceManager::GetString("DESTROYED"));
+					pMajor->GetShipHistory()->ModifyShip(x->second, pSector->GetName(TRUE), m_iRound, CResourceManager::GetString("DISASSEMBLY"), CResourceManager::GetString("DESTROYED"));
 				}
 			}
 
@@ -4528,8 +4528,8 @@ void CBotf2Doc::CalcShipMovement()
 			// Unterscheiden, ob das Schiff eine Flotte anführt oder nicht
 			if (y->second->HasFleet())
 			{
-				range = (char)(3 - y->second->GetFleetRange(&y->second->Leader()));
-				speed = (char)(y->second->GetFleetSpeed(&y->second->Leader()));
+				range = (char)(3 - y->second->GetFleetRange());
+				speed = (char)(y->second->GetFleetSpeed());
 			}
 			else
 			{
@@ -4913,7 +4913,7 @@ void CBotf2Doc::CalcShipRetreat() {
 			continue;
 		// sind alle Schiffe in einer Flotte im Rückzug, so kann die ganze Flotte
 		// in den Rückzugssektor
-		const bool bCompleteFleetRetreat = ship->second->GetFleetSpeed(&ship->second->Leader()) > 0
+		const bool bCompleteFleetRetreat = ship->second->GetFleetSpeed() > 0
 			&& ship->second->AllOnTactic(COMBAT_TACTIC::CT_RETREAT);
 
 		// haben alle Schiffe in der Flotte den Rückzugsbefehl oder hat das Schiff keine Flotte
@@ -5182,7 +5182,7 @@ void CBotf2Doc::CalcEndDataForNextRound()
 				if (j->second->GetOwnerOfShip() == pMajor->GetRaceID())
 				{
 					// Alle noch "lebenden" Schiffe aus der Schiffshistory ebenfalls als zerstört ansehen
-					pMajor->GetShipHistory()->ModifyShip(&j->second->Leader(),
+					pMajor->GetShipHistory()->ModifyShip(j->second,
 								GetSector(j->second->GetKO().x, j->second->GetKO().y).GetName(TRUE), m_iRound,
 								CResourceManager::GetString("UNKNOWN"), CResourceManager::GetString("DESTROYED"));
 					m_ShipMap.EraseAt(j, true);
@@ -5612,7 +5612,7 @@ void CBotf2Doc::CalcAlienShipEffects()
 						assert(pShipOwner);
 						// für jedes Schiff eine Meldung über den Verlust machen
 						// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
-						pShipOwner->AddToLostShipHistory(pShip->Leader(), CResourceManager::GetString("COMBAT"), CResourceManager::GetString("MISSED"), m_iRound);
+						pShipOwner->AddToLostShipHistory(*pShip, CResourceManager::GetString("COMBAT"), CResourceManager::GetString("MISSED"), m_iRound);
 						CString s;
 						s.Format("%s", CResourceManager::GetString("DESTROYED_SHIPS_IN_COMBAT",0,pShip->GetShipName()));
 						CMessage message;

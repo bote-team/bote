@@ -125,12 +125,12 @@ public:
 	/// Funktion fügt ein Schiff zur Liste der verlorenen Schiffe in der Schiffshistory ein.
 	/// @param sEvent Ereignis warum Schiff weg/zerstört/verschwunden ist
 	/// @param sStatus Status des Schiffes (meist zerstört)
-	virtual void AddToLostShipHistory(const CShip& Ship, const CString& sEvent,
+	virtual void AddToLostShipHistory(const CShips& Ship, const CString& sEvent,
 		const CString& sStatus, unsigned short round);
 
 	virtual void LostFlagShip(const CShip& ship);
 	virtual void LostStation(SHIP_TYPE::Typ type);
-	virtual void LostShipToAnomaly(const CShip& ship, const CString& anomaly);
+	virtual void LostShipToAnomaly(const CShips& ship, const CString& anomaly);
 
 	/// Funktion gibt zurück, ob die Hauptrasse einen Verteidigungspakt mit einer anderen Hauptrasse
 	/// aufrechterhält.

@@ -93,7 +93,6 @@ public:
 	const CShips::const_iterator& CurrentShip() const;
 	// Funktion liefert die Anzahl der Schiffe in der Flotte
 	int GetFleetSize() const { return m_Fleet.GetSize(); }
-	const CShip& Leader() const { return m_Leader; }
 	const CShipMap& Fleet() const { return m_Fleet; }
 	unsigned Key() const { return m_Key; }
 
@@ -124,7 +123,7 @@ public:
 		SHIP_SIZE::Typ GetShipSize() const {return m_Leader.GetShipSize(); }
 		BYTE GetManeuverability() const {return m_Leader.GetManeuverability(); }
 		SHIP_RANGE::Typ GetRange() const {return m_Leader.GetRange(); }
-		BYTE GetSpeed() const {return m_Leader.GetSpeed(); }
+		unsigned GetSpeed() const {return m_Leader.GetSpeed(); }
 		USHORT GetScanPower() const {return m_Leader.GetScanPower(); }
 		BYTE GetScanRange() const {return m_Leader.GetScanRange(); }
 		BYTE GetColonizePoints() const {return m_Leader.GetColonizePoints(); }
@@ -190,7 +189,7 @@ public:
 		void SetShipType(SHIP_TYPE::Typ nShipType) { m_Leader.SetShipType(nShipType); }
 		void SetShipSize(SHIP_SIZE::Typ nSize) { m_Leader.SetShipSize(nSize); }
 		void SetManeuverability(BYTE value) { m_Leader.SetManeuverability(value); }
-		void SetSpeed(BYTE Speed) { m_Leader.SetSpeed(Speed); }
+		void SetSpeed(unsigned Speed) { m_Leader.SetSpeed(Speed); }
 		void SetRange(SHIP_RANGE::Typ Range) { m_Leader.SetRange(Range); }
 		void SetScanPower(USHORT ScanPower) { m_Leader.SetScanPower(ScanPower); }
 		void SetScanRange(BYTE ScanRange) { m_Leader.SetScanRange(ScanRange); }
@@ -223,13 +222,11 @@ public:
 	// calculated stements about this fleet (should be const functions, non-bool returning)
 	//////////////////////////////////////////////////////////////////////
 
-	//// Funktion berechnet die Geschwindigkeit der Flotte. Der Parameter der hier übergeben werden sollte
-	//// ist der this-Zeiger bzw. die Adresse des Schiffsobjektes, welches die Flotte besitzt
-	unsigned GetFleetSpeed(const CShip* pShip = NULL) const;
+	//// Funktion berechnet die Geschwindigkeit der Flotte.
+	unsigned GetFleetSpeed() const;
 
-	//// Funktion berechnet die Reichweite der Flotte. Der Parameter der hier übergeben werden sollte
-	//// ist der this-Zeiger bzw. die Adresse des Schiffsobjektes, welches die Flotte besitzt
-	SHIP_RANGE::Typ GetFleetRange(const CShip* ship = NULL) const;
+	//// Funktion berechnet die Reichweite der Flotte.
+	SHIP_RANGE::Typ GetFleetRange() const;
 
 	//// Funktion berechnet den Schiffstyp der Flotte. Wenn hier nur der selbe Schiffstyp in der Flotte vorkommt,
 	//// dann gibt die Funktion diesen Schiffstyp zurück. Wenn verschiedene Schiffstypen in der Flotte vorkommen,

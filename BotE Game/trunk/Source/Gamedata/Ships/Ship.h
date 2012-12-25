@@ -94,7 +94,7 @@ public:
 	SHIP_SIZE::Typ GetShipSize() const {return m_nShipSize;}
 	BYTE GetManeuverability() const {return m_byManeuverability;}
 	SHIP_RANGE::Typ GetRange() const {return m_iRange;}
-	BYTE GetSpeed() const {return m_iSpeed;}
+	unsigned GetSpeed() const {return m_iSpeed;}
 	USHORT GetScanPower() const {return m_iScanPower;}
 	BYTE GetScanRange() const {return m_iScanRange;}
 	BYTE GetColonizePoints() const {return m_iColonizePoints;}
@@ -128,7 +128,7 @@ public:
 	void SetShipType(SHIP_TYPE::Typ nShipType) {m_iShipType = nShipType;}
 	void SetShipSize(SHIP_SIZE::Typ nSize) {m_nShipSize = nSize;}
 	void SetManeuverability(BYTE value) {m_byManeuverability = value;}
-	void SetSpeed(BYTE Speed) {m_iSpeed = Speed;}
+	void SetSpeed(unsigned Speed) {m_iSpeed = Speed;}
 	void SetRange(SHIP_RANGE::Typ Range) {m_iRange = Range;}
 	void SetScanPower(USHORT ScanPower) {m_iScanPower = ScanPower;}
 	void SetScanRange(BYTE ScanRange) {m_iScanRange = ScanRange;}
@@ -308,7 +308,7 @@ protected:
 	SHIP_TYPE::Typ m_iShipType;			// Schiffstype, siehe Options.h
 	SHIP_SIZE::Typ m_nShipSize;			// Die Größe des Schiffes
 	BYTE m_byManeuverability;			// Die Manövriebarkeit des Schiffes im Kampf
-	BYTE m_iSpeed;						// Geschwindigkeit des Schiffes in der CMenuChooseView
+	unsigned m_iSpeed;						// Geschwindigkeit des Schiffes in der CMenuChooseView
 	SHIP_RANGE::Typ m_iRange;			// Reichweite des Schiffes
 	USHORT m_iScanPower;				// Scankraft des Schiffes
 	BYTE m_iScanRange;					// Die Reichweite der Scanner

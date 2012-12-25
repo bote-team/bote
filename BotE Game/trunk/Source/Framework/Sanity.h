@@ -1,7 +1,6 @@
 #pragma once
 
 class CShips;
-class CShip;
 class CSector;
 class CSystem;
 class CBotf2Doc;
@@ -31,8 +30,8 @@ class CSanity
 	//static void ShipInfo(const CArray<CShip, CShip>& shiparray, int index, const CString& indexname);
 	void CheckShipUniqueness(const CShips& ship, std::set<CString>& already_encountered);
 private:
-	void SanityCheckShip(const CShip& ship);
-	void CheckShipTargetCoordinates(const CShip& ship);
+	void SanityCheckShip(const CShips& ship);
+	void CheckShipTargetCoordinates(const CShips& ship);
 	void Notify(const CString& s, bool bPopup = true);
 
 };

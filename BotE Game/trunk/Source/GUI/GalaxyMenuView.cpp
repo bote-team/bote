@@ -285,7 +285,7 @@ void CGalaxyMenuView::OnDraw(CDC* dc)
 		if (!pDoc->CurrentShip()->second->HasFleet())
 			m_nRange = 3-pDoc->CurrentShip()->second->GetRange();
 		else
-			m_nRange = 3-pDoc->CurrentShip()->second->GetFleetRange(&pDoc->CurrentShip()->second->Leader());
+			m_nRange = 3-pDoc->CurrentShip()->second->GetFleetRange();
 	}
 	else
 		m_nRange = SM_RANGE_SPACE;
@@ -452,7 +452,7 @@ void CGalaxyMenuView::OnDraw(CDC* dc)
 		if (!pDoc->CurrentShip()->second->HasFleet())
 			s.Format("%.0f",ceil((float)current_ship->second->GetPath()->GetSize() / (float)current_ship->second->GetSpeed()));
 		else
-			s.Format("%.0f",ceil((float)current_ship->second->GetPath()->GetSize() / (float)pDoc->CurrentShip()->second->GetFleetSpeed(&pDoc->CurrentShip()->second->Leader())));
+			s.Format("%.0f",ceil((float)current_ship->second->GetPath()->GetSize() / (float)pDoc->CurrentShip()->second->GetFleetSpeed()));
 		pDC->SetTextColor(RGB(255,255,255));
 		pDC->TextOut(last.x+STARMAP_SECTOR_WIDTH/2+6, last.y+STARMAP_SECTOR_HEIGHT/2-8, s);
 
@@ -1064,7 +1064,7 @@ void CGalaxyMenuView::OnMouseMove(UINT nFlags, CPoint point)
 			if (!pDoc->CurrentShip()->second->HasFleet())
 				speed = (char)(pDoc->CurrentShip()->second->GetSpeed());
 			else
-				speed = (char)(pDoc->CurrentShip()->second->GetFleetSpeed(&pDoc->CurrentShip()->second->Leader()));
+				speed = (char)(pDoc->CurrentShip()->second->GetFleetSpeed());
 
 			struct::Sector result = pMajor->GetStarmap()->CalcPath(pMajor->GetStarmap()->GetSelection(), target, m_nRange, speed, *pDoc->CurrentShip()->second->GetPath());
 

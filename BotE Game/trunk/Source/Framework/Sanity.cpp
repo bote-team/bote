@@ -36,7 +36,7 @@ void CSanity::Notify(const CString& s, bool bPopup) {
 	}
 }
 
-void CSanity::CheckShipTargetCoordinates(const CShip& ship)
+void CSanity::CheckShipTargetCoordinates(const CShips& ship)
 {
 	SHIP_ORDER::Typ order = ship.GetCurrentOrder();
 	const CPoint& co = ship.GetKO();
@@ -61,7 +61,7 @@ void CSanity::CheckShipTargetCoordinates(const CShip& ship)
 	}
 }
 
-void CSanity::SanityCheckShip(const CShip& ship)
+void CSanity::SanityCheckShip(const CShips& ship)
 {
 	CheckShipTargetCoordinates(ship);
 
@@ -99,10 +99,10 @@ void CSanity::SanityCheckShip(const CShip& ship)
 
 void CSanity::SanityCheckFleet(const CShips& ship)
 {
-	SanityCheckShip(ship.Leader());
+	SanityCheckShip(ship);
 	for(CShips::const_iterator i = ship.begin(); i != ship.end(); ++i) {
 		assert(!i->second->HasFleet());
-		SanityCheckShip(i->second->Leader());
+		SanityCheckShip(*i->second);
 	}
 	if(!ship.SanityCheckOrdersConsistency())
 		Notify("inconsistent orders!");

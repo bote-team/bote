@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "ShipHistory.h"
 
-#include "Ships/ship.h"
+#include "Ships/Ships.h"
 
 IMPLEMENT_SERIAL (CShipHistory, CObject, 1)
 
@@ -95,7 +95,7 @@ void CShipHistory::Serialize(CArchive &ar)
 /// dabei automatisch gemacht. Es wird ebenfalls überprüft, dass dieses Schiff nicht schon hinzugefügt wurde.
 /// Zusätzlich müssen als Parameter noch der Name des Systems übergeben werden, in dem das Schiff gebaut wurde,
 /// sowie die aktuelle Runde.
-void CShipHistory::AddShip(const CShip* ship, const CString& buildsector, short round)
+void CShipHistory::AddShip(const CShips* ship, const CString& buildsector, short round)
 {
 	// Überprüfen, das dieses Schiff nicht schon in der Liste der Schiffe vorhanden ist
 	for (int i = 0; i < m_ShipHistory.GetSize(); i++)
@@ -128,7 +128,7 @@ void CShipHistory::AddShip(const CShip* ship, const CString& buildsector, short 
 /// für den Parameter <code>destroyType<code> die Art der Zerstörung als CString übergeben. Außerdem wird der neue
 /// Status des Schiffes im Parameter <code>status<code> übergeben, z.B. zerstört, vermisst usw.
 /// Konnte das Schiff modifiziert werden, so gibt die Funktion <code>true</code> zurück, sonst <code>false</code>
-bool CShipHistory::ModifyShip(const CShip* ship, const CString& sector, short destroyRound, const CString& destroyType, const CString& status)
+bool CShipHistory::ModifyShip(const CShips* ship, const CString& sector, short destroyRound, const CString& destroyType, const CString& status)
 {
 	for (int i = 0; i < m_ShipHistory.GetSize(); i++)
 	{
@@ -159,7 +159,7 @@ bool CShipHistory::ModifyShip(const CShip* ship, const CString& sector, short de
 }
 
 /// Funktion entfernt ein bestimmtes Schiff aus der Schiffshistory.
-void CShipHistory::RemoveShip(const CShip* ship)
+void CShipHistory::RemoveShip(const CShips* ship)
 {
 	for (int i = 0; i < m_ShipHistory.GetSize(); i++)
 		if (m_ShipHistory.GetAt(i).m_strShipName == ship->GetShipName())

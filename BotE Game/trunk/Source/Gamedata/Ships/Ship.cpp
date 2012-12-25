@@ -12,6 +12,7 @@
 #include "Races/race.h"
 #include "Races/major.h"
 #include "General/ResourceManager.h"
+#include "Ships/Ships.h"
 
 #include <cassert>
 
@@ -185,7 +186,7 @@ void CShip::Serialize(CArchive &ar)
 		ar << m_iShipType;
 		ar << m_nShipSize;
 		ar << m_byManeuverability;
-		ar << m_iSpeed;
+		ar << (BYTE)(m_iSpeed);
 		ar << m_iRange;
 		ar << m_iScanPower;
 		ar << m_iScanRange;
@@ -233,7 +234,9 @@ void CShip::Serialize(CArchive &ar)
 		ar >> nSize;
 		m_nShipSize = (SHIP_SIZE::Typ)nSize;
 		ar >> m_byManeuverability;
-		ar >> m_iSpeed;
+		BYTE speed;
+		ar >> speed;
+		m_iSpeed = static_cast<unsigned>(speed);
 		int nRange;
 		ar >> nRange;
 		m_iRange = (SHIP_RANGE::Typ)nRange;
@@ -573,7 +576,7 @@ bool CShip::RemoveDestroyed(CRace& owner, unsigned short round, const CString& s
 	if(IsAlive())
 		return true;
 	// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
-	owner.AddToLostShipHistory(*this, sEvent, sStatus, round);
+	owner.AddToLostShipHistory(CShips(*this), sEvent, sStatus, round);
 	if(destroyedShips)
 		destroyedShips->Add(m_strShipName + " (" + GetShipTypeAsString() + ", " + m_strShipClass + ")");
 	if(m_bIsFlagShip)
@@ -581,7 +584,7 @@ bool CShip::RemoveDestroyed(CRace& owner, unsigned short round, const CString& s
 	if(IsStation())
 		owner.LostStation(m_iShipType);
 	if(!anomaly.IsEmpty()) {
-		owner.LostShipToAnomaly(*this, anomaly);
+		owner.LostShipToAnomaly(CShips(*this), anomaly);
 	}
 
 	return false;
@@ -1479,7 +1482,7 @@ void CShip::CalcEffectsForSingleShip(CSector& sector, CRace* pRace,
 		// Schiffunterstützungkosten dem jeweiligen Imperium hinzufügen.
 		pMajor->GetEmpire()->AddShipCosts(GetMaintenanceCosts());
 		// die Schiffe in der Flotte beim modifizieren der Schiffslisten der einzelnen Imperien beachten
-		pMajor->GetShipHistory()->ModifyShip(this, sector.GetName(TRUE));
+		pMajor->GetShipHistory()->ModifyShip(&CShips(*this), sector.GetName(TRUE));
 	}
 	// Erfahrungspunkte der Schiffe anpassen
 	CalcExp();

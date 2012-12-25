@@ -8,7 +8,7 @@
 #pragma once
 #include "afx.h"
 #include "array_sort.h"
-class CShip;
+class CShips;
 
 /// Deklaration einer Struktur zum Speichern aller relevanten Daten
 struct CShipHistoryStruct {
@@ -95,7 +95,7 @@ public:
 	 * Zusätzlich müssen als Parameter noch der Name des Systems übergeben werden, in dem das Schiff gebaut wurde,
 	 * sowie die aktuelle Runde.
 	 */
-	void AddShip(const CShip* ship, const CString& buildsector, short round);
+	void AddShip(const CShips* ship, const CString& buildsector, short round);
 
 	/**
 	 * Funktion modifiziert den Eintrag in dem Feld <code>m_ShipHistory<code>. Dabei wird das Schiff übergeben, dessen
@@ -105,11 +105,11 @@ public:
 	 * Status des Schiffes im Parameter <code>status<code> übergeben, z.B. zerstört, vermisst usw.
 	 * Konnte das Schiff modifiziert werden, so gibt die Funktion <code>true</code> zurück, sonst <code>false</code>
 	 */
-	bool ModifyShip(const CShip* ship, const CString& sector, short destroyRound = 0, const CString& destroyType = "", const CString& status = "");
+	bool ModifyShip(const CShips* ship, const CString& sector, short destroyRound = 0, const CString& destroyType = "", const CString& status = "");
 
 	/// Funktion entfernt ein bestimmtes Schiff aus der Schiffshistory.
 	/// @param ship Zeiger auf das zu entfernende Schiff.
-	void RemoveShip(const CShip* ship);
+	void RemoveShip(const CShips* ship);
 
 	/**
 	 * Funktion gibt einen Zeiger auf ein CShipHistory Objekt zurück, und zwar das, welches an <code>i<code>-ter

@@ -182,7 +182,7 @@ void CDiplomacyController::CalcDiplomacyFallouts(CBotf2Doc* pDoc)
 					{
 						i->second->SetOwnerOfShip(pMajor->GetRaceID());
 						// Schiff in die Shiphistory stecken
-						pMajor->GetShipHistory()->AddShip(&i->second->Leader(), pDoc->GetSector(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).GetName(true), pDoc->GetCurrentRound());
+						pMajor->GetShipHistory()->AddShip(i->second, pDoc->GetSector(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).GetName(true), pDoc->GetCurrentRound());
 					}
 				}
 			}

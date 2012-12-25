@@ -370,7 +370,8 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 		// Wenn wir Infomationen zur Flotte anzeigen
 		else
 		{
-			short range = pShip->second->GetFleetRange(&pDoc->CurrentShip()->second->Leader());
+			assert(pShip == pDoc->CurrentShip());
+			short range = pShip->second->GetFleetRange();
 			if (range == 0)
 				Range = CResourceManager::GetString("SHORT");
 			else if (range == 1)
@@ -396,7 +397,7 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 			g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,0,r.right,105), &fontFormat, &fontBrush);
 
 			s.Format("%s: %d",CResourceManager::GetString("SPEED"),
-				pShip->second->GetFleetSpeed(&pDoc->CurrentShip()->second->Leader()));
+				pShip->second->GetFleetSpeed());
 			g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,0,r.right,125), &fontFormat, &fontBrush);
 		}
 
@@ -426,8 +427,8 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 			}
 			else
 			{
-				range = 3-pShip->second->GetFleetRange(&pShip->second->Leader());
-				speed = pShip->second->GetFleetSpeed(&pShip->second->Leader());
+				range = 3-pShip->second->GetFleetRange();
+				speed = pShip->second->GetFleetSpeed();
 			}
 			CArray<Sector> path;
 			Sector position(pShip->second->GetKO().x, pShip->second->GetKO().y);
