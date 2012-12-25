@@ -135,6 +135,7 @@ public:
 		CString GetCurrentOrderAsString() const { return m_Leader.GetCurrentOrderAsString(); }
 		CString GetCombatTacticAsString() const { return m_Leader.GetCombatTacticAsString(); }
 		CString GetCurrentTargetAsString() const { return m_Leader.GetCurrentTargetAsString(); }
+		CString GetRangeAsString() const;
 		bool GetIsShipFlagShip() const {return m_Leader.GetIsShipFlagShip(); }
 		USHORT GetCrewExperience() const {return m_Leader.GetCrewExperience(); }
 		USHORT GetStorageRoom() const {return m_Leader.GetStorageRoom(); }

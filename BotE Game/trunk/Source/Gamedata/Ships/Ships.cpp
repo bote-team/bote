@@ -126,6 +126,17 @@ CShips& CShips::at(unsigned key) {
 	return m_Fleet.at(key);
 }
 
+CString CShips::GetRangeAsString() const {
+	const SHIP_RANGE::Typ range = GetRange(true);
+	switch(range) {
+		case SHIP_RANGE::SHORT: return CResourceManager::GetString("SHORT");
+		case SHIP_RANGE::MIDDLE: return CResourceManager::GetString("MIDDLE");
+		case SHIP_RANGE::LONG: return CResourceManager::GetString("LONG");
+	}
+	assert(false);
+	return "";
+}
+
 //////////////////////////////////////////////////////////////////////
 // setting
 //////////////////////////////////////////////////////////////////////

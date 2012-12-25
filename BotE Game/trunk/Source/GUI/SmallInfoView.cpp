@@ -340,13 +340,7 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 				Gdiplus::SolidBrush brush(Gdiplus::Color(175, 0, 0, 0));
 				g->FillRectangle(&brush, 0, 50, 200, 150);
 			}
-
-			if (pShip->second->GetRange(false) == SHIP_RANGE::SHORT)
-				Range = CResourceManager::GetString("SHORT");
-			else if (pShip->second->GetRange(false) == SHIP_RANGE::MIDDLE)
-				Range = CResourceManager::GetString("MIDDLE");
-			else if (pShip->second->GetRange(false) == SHIP_RANGE::LONG)
-				Range = CResourceManager::GetString("LONG");
+			Range = pShip->second->GetRangeAsString();
 
 			s.Format("%s",pShip->second->GetShipName());
 			g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,0,r.right,45), &fontFormat, &fontBrush);
@@ -371,13 +365,7 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 		else
 		{
 			assert(pShip == pDoc->CurrentShip());
-			SHIP_RANGE::Typ range = pShip->second->GetRange(true);
-			if (range == SHIP_RANGE::SHORT)
-				Range = CResourceManager::GetString("SHORT");
-			else if (range == SHIP_RANGE::MIDDLE)
-				Range = CResourceManager::GetString("MIDDLE");
-			else if (range == SHIP_RANGE::LONG)
-				Range = CResourceManager::GetString("LONG");
+			Range = pShip->second->GetRangeAsString();
 			r.SetRect(0,0,m_TotalSize.cx,m_TotalSize.cy);
 
 			s.Format("%d %s",pShip->second->GetFleetSize()+1,
