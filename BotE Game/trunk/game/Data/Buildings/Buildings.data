@@ -7067,7 +7067,7 @@ con_b55.bop
 0
 0
 0
-0
+1
 0
 0
 0
@@ -7207,7 +7207,7 @@ con_b56.bop
 0
 0
 0
-0
+1
 0
 0
 0
@@ -12870,7 +12870,7 @@ con_b97.bop
 335
 454
 572
-688
+689
 0
 0
 0
@@ -12922,10 +12922,10 @@ con_9899.bop
 0
 0
 0
+1
 0
-0
-0
-0
+1
+1
 0
 250
 25
@@ -13010,7 +13010,7 @@ con_9899.bop
 336
 455
 573
-689
+690
 0
 0
 0
@@ -13150,7 +13150,7 @@ con_9899.bop
 337
 456
 574
-690
+691
 0
 0
 0
@@ -13290,7 +13290,7 @@ con_b100.bop
 338
 457
 575
-691
+692
 0
 0
 0
@@ -13430,7 +13430,7 @@ con_b101.bop
 339
 458
 576
-693
+694
 0
 0
 0
@@ -13570,7 +13570,7 @@ con_b101.bop
 340
 459
 577
-694
+695
 0
 0
 0
@@ -13710,7 +13710,7 @@ con_b102.bop
 341
 460
 578
-695
+696
 0
 0
 0
@@ -13850,7 +13850,7 @@ con_b103.bop
 342
 461
 579
-696
+697
 0
 0
 0
@@ -13990,7 +13990,7 @@ con_b104.bop
 343
 462
 580
-697
+698
 0
 0
 0
@@ -14130,7 +14130,7 @@ con_b105.bop
 344
 463
 582
-698
+699
 0
 0
 0
@@ -14270,7 +14270,7 @@ con_106b.bop
 345
 464
 583
-699
+700
 0
 0
 0
@@ -14410,7 +14410,7 @@ con_106b.bop
 346
 465
 584
-700
+701
 0
 0
 0
@@ -14550,7 +14550,7 @@ con_106b.bop
 347
 466
 585
-701
+702
 0
 0
 0
@@ -14690,7 +14690,7 @@ con_106b.bop
 348
 467
 586
-702
+703
 0
 0
 0
@@ -14830,7 +14830,7 @@ con_110b.bop
 349
 468
 587
-703
+704
 0
 0
 0
@@ -14970,7 +14970,7 @@ con_110b.bop
 350
 469
 588
-704
+705
 0
 0
 0
@@ -15110,7 +15110,7 @@ con_110b.bop
 351
 470
 589
-705
+706
 0
 0
 0
@@ -15250,7 +15250,7 @@ con_110b.bop
 352
 471
 590
-706
+707
 0
 0
 0
@@ -15390,7 +15390,7 @@ con_b113.bop
 353
 472
 591
-707
+708
 0
 0
 0
@@ -15530,7 +15530,7 @@ con_114b.bop
 354
 473
 592
-708
+709
 0
 0
 0
@@ -15670,7 +15670,7 @@ con_114b.bop
 355
 474
 593
-709
+710
 0
 0
 0
@@ -15810,7 +15810,7 @@ con_114b.bop
 356
 475
 594
-710
+711
 0
 0
 0
@@ -15950,7 +15950,7 @@ con_114b.bop
 357
 476
 595
-711
+712
 0
 0
 0
@@ -16090,7 +16090,7 @@ con_b117.bop
 358
 477
 596
-712
+713
 0
 0
 0
@@ -16230,7 +16230,7 @@ con_b118.bop
 359
 478
 597
-713
+714
 0
 0
 0
@@ -16370,7 +16370,7 @@ con_b91.bop
 360
 479
 598
-714
+715
 0
 0
 0
@@ -16510,7 +16510,7 @@ han_b123.bop
 361
 480
 599
-715
+716
 0
 0
 0
@@ -29443,7 +29443,7 @@ han_b97.bop
 0
 0
 0
-44
+4
 0
 0
 0
@@ -29670,7 +29670,7 @@ han_b98.bop
 335
 454
 572
-688
+689
 0
 0
 0
@@ -29722,10 +29722,10 @@ han_99b1.bop
 0
 0
 0
+1
 0
-0
-0
-0
+1
+1
 0
 200
 25
@@ -29810,7 +29810,7 @@ han_99b1.bop
 336
 455
 573
-689
+690
 0
 0
 0
@@ -29950,7 +29950,7 @@ han_99b1.bop
 337
 456
 574
-690
+691
 0
 0
 0
@@ -30090,7 +30090,7 @@ han_b101.bop
 338
 457
 575
-691
+692
 0
 0
 0
@@ -30370,7 +30370,7 @@ han_b102.bop
 339
 458
 576
-693
+694
 0
 0
 0
@@ -30510,7 +30510,7 @@ han_b102.bop
 340
 459
 577
-694
+695
 0
 0
 0
@@ -30650,7 +30650,7 @@ han_b103.bop
 341
 460
 578
-695
+696
 0
 0
 0
@@ -30790,7 +30790,7 @@ han_b104.bop
 342
 461
 579
-696
+697
 0
 0
 0
@@ -30930,7 +30930,7 @@ han_b105.bop
 343
 462
 580
-697
+698
 0
 0
 0
@@ -31070,7 +31070,7 @@ con_b105.bop
 344
 463
 582
-698
+699
 0
 0
 0
@@ -31210,7 +31210,7 @@ han_107b.bop
 345
 464
 583
-699
+700
 0
 0
 0
@@ -31350,7 +31350,7 @@ han_107b.bop
 346
 465
 584
-700
+701
 0
 0
 0
@@ -31490,7 +31490,7 @@ han_107b.bop
 347
 466
 585
-701
+702
 0
 0
 0
@@ -31542,13 +31542,13 @@ han_107b.bop
 0
 0
 0
-10
+14
 0
 0
 0
 0
 2500
-50
+200
 1953
 1265
 977
@@ -31630,7 +31630,7 @@ han_107b.bop
 348
 467
 586
-702
+703
 0
 0
 0
@@ -31770,7 +31770,7 @@ han_111b.bop
 349
 468
 587
-703
+704
 0
 0
 0
@@ -31910,7 +31910,7 @@ han_111b.bop
 350
 469
 588
-704
+705
 0
 0
 0
@@ -32050,7 +32050,7 @@ han_111b.bop
 351
 470
 589
-705
+706
 0
 0
 0
@@ -32190,7 +32190,7 @@ han_111b.bop
 352
 471
 590
-706
+707
 0
 0
 0
@@ -32330,7 +32330,7 @@ han_111b.bop
 353
 472
 591
-707
+708
 0
 0
 0
@@ -32470,7 +32470,7 @@ con_114b.bop
 354
 473
 592
-708
+709
 0
 0
 0
@@ -32610,7 +32610,7 @@ con_114b.bop
 355
 474
 593
-709
+710
 0
 0
 0
@@ -32750,7 +32750,7 @@ con_114b.bop
 356
 475
 594
-710
+711
 0
 0
 0
@@ -32890,7 +32890,7 @@ con_114b.bop
 357
 476
 595
-711
+712
 0
 0
 0
@@ -33590,7 +33590,7 @@ han_b122.bop
 358
 477
 596
-712
+713
 0
 0
 0
@@ -33730,7 +33730,7 @@ han_b123.bop
 359
 478
 597
-713
+714
 0
 0
 0
@@ -33870,7 +33870,7 @@ con_b91.bop
 360
 479
 598
-714
+715
 0
 0
 0
@@ -34010,7 +34010,7 @@ han_b123.bop
 361
 480
 599
-715
+716
 0
 0
 0
@@ -46890,7 +46890,7 @@ kha_9799.bop
 0
 454
 572
-688
+689
 0
 0
 0
@@ -46942,10 +46942,10 @@ kha_9799.bop
 0
 0
 0
+1
 0
-0
-0
-0
+1
+1
 0
 700
 25
@@ -47030,7 +47030,7 @@ kha_9799.bop
 0
 455
 573
-689
+690
 0
 0
 0
@@ -47170,7 +47170,7 @@ kha_9799.bop
 0
 456
 574
-690
+691
 0
 0
 0
@@ -47310,7 +47310,7 @@ kha_b100.bop
 0
 457
 575
-691
+692
 0
 0
 0
@@ -47450,7 +47450,7 @@ kha_b101.bop
 0
 458
 576
-693
+694
 0
 0
 0
@@ -47590,7 +47590,7 @@ kha_b101.bop
 0
 459
 577
-694
+695
 0
 0
 0
@@ -47730,7 +47730,7 @@ con_b102.bop
 0
 460
 578
-695
+696
 0
 0
 0
@@ -47870,7 +47870,7 @@ con_b103.bop
 0
 461
 579
-696
+697
 0
 0
 0
@@ -48010,7 +48010,7 @@ con_b104.bop
 0
 462
 580
-697
+698
 0
 0
 0
@@ -48150,7 +48150,7 @@ con_b105.bop
 0
 463
 582
-698
+699
 0
 0
 0
@@ -48290,7 +48290,7 @@ kha_106b.bop
 0
 464
 583
-699
+700
 0
 0
 0
@@ -48430,7 +48430,7 @@ kha_106b.bop
 0
 465
 584
-700
+701
 0
 0
 0
@@ -48570,7 +48570,7 @@ kha_106b.bop
 0
 466
 585
-701
+702
 0
 0
 0
@@ -48626,7 +48626,7 @@ kha_106b.bop
 0
 0
 0
-14
+0
 5000
 150
 1953
@@ -48710,7 +48710,7 @@ kha_106b.bop
 0
 467
 586
-702
+703
 0
 0
 0
@@ -48850,7 +48850,7 @@ kha_110b.bop
 0
 468
 587
-703
+704
 0
 0
 0
@@ -48990,7 +48990,7 @@ kha_110b.bop
 0
 469
 588
-704
+705
 0
 0
 0
@@ -49130,7 +49130,7 @@ kha_110b.bop
 0
 470
 589
-705
+706
 0
 0
 0
@@ -49270,7 +49270,7 @@ kha_110b.bop
 0
 471
 590
-706
+707
 0
 0
 0
@@ -49410,7 +49410,7 @@ kha_b113.bop
 0
 472
 591
-707
+708
 0
 0
 0
@@ -49550,7 +49550,7 @@ kha_114b.bop
 0
 473
 592
-708
+709
 0
 0
 0
@@ -49690,7 +49690,7 @@ kha_114b.bop
 0
 474
 593
-709
+710
 0
 0
 0
@@ -49830,7 +49830,7 @@ kha_114b.bop
 0
 475
 594
-710
+711
 0
 0
 0
@@ -49970,7 +49970,7 @@ kha_b116.bop
 0
 476
 595
-711
+712
 0
 0
 0
@@ -50110,7 +50110,7 @@ kha_b117.bop
 0
 477
 596
-712
+713
 0
 0
 0
@@ -50250,7 +50250,7 @@ kha_b118.bop
 0
 478
 597
-713
+714
 0
 0
 0
@@ -50390,7 +50390,7 @@ con_b91.bop
 0
 479
 598
-714
+715
 0
 0
 0
@@ -50530,7 +50530,7 @@ han_b123.bop
 0
 480
 599
-715
+716
 0
 0
 0
@@ -63550,7 +63550,7 @@ rot_98b1.bop
 335
 0
 572
-688
+689
 0
 0
 0
@@ -63602,10 +63602,10 @@ rot_98b1.bop
 0
 0
 0
+1
 0
-0
-0
-0
+1
+1
 0
 400
 25
@@ -63690,7 +63690,7 @@ rot_98b1.bop
 336
 0
 573
-689
+690
 0
 0
 0
@@ -63830,7 +63830,7 @@ rot_98b1.bop
 337
 0
 574
-690
+691
 0
 0
 0
@@ -63970,7 +63970,7 @@ rot_98b1.bop
 338
 0
 575
-691
+692
 0
 0
 0
@@ -64110,7 +64110,7 @@ rot_b102.bop
 339
 0
 576
-693
+694
 0
 0
 0
@@ -64250,7 +64250,7 @@ rot_b102.bop
 340
 0
 577
-694
+695
 0
 0
 0
@@ -64390,7 +64390,7 @@ rot_b103.bop
 341
 0
 578
-695
+696
 0
 0
 0
@@ -64530,7 +64530,7 @@ rot_b104.bop
 342
 0
 579
-696
+697
 0
 0
 0
@@ -64670,7 +64670,7 @@ rot_b105.bop
 343
 0
 580
-697
+698
 0
 0
 0
@@ -64810,7 +64810,7 @@ con_b105.bop
 344
 0
 582
-698
+699
 0
 0
 0
@@ -64950,7 +64950,7 @@ rot_107b.bop
 345
 0
 583
-699
+700
 0
 0
 0
@@ -65090,7 +65090,7 @@ rot_107b.bop
 346
 0
 584
-700
+701
 0
 0
 0
@@ -65230,7 +65230,7 @@ rot_107b.bop
 347
 0
 585
-701
+702
 0
 0
 0
@@ -65370,7 +65370,7 @@ rot_107b.bop
 348
 0
 586
-702
+703
 0
 0
 0
@@ -65510,7 +65510,7 @@ rot_111b.bop
 349
 0
 587
-703
+704
 0
 0
 0
@@ -65650,7 +65650,7 @@ rot_111b.bop
 350
 0
 588
-704
+705
 0
 0
 0
@@ -65790,7 +65790,7 @@ rot_111b.bop
 351
 0
 589
-705
+706
 0
 0
 0
@@ -65930,7 +65930,7 @@ rot_111b.bop
 352
 0
 590
-706
+707
 0
 0
 0
@@ -66070,7 +66070,7 @@ rot_b114.bop
 353
 0
 591
-707
+708
 0
 0
 0
@@ -66210,7 +66210,7 @@ con_114b.bop
 354
 0
 592
-708
+709
 0
 0
 0
@@ -66350,7 +66350,7 @@ con_114b.bop
 355
 0
 593
-709
+710
 0
 0
 0
@@ -66490,7 +66490,7 @@ con_114b.bop
 356
 0
 594
-710
+711
 0
 0
 0
@@ -66630,7 +66630,7 @@ con_114b.bop
 357
 0
 595
-711
+712
 0
 0
 0
@@ -66770,7 +66770,7 @@ rot_b118.bop
 358
 0
 596
-712
+713
 0
 0
 0
@@ -66910,7 +66910,7 @@ rot_b119.bop
 359
 0
 597
-713
+714
 0
 0
 0
@@ -67050,7 +67050,7 @@ con_b91.bop
 360
 0
 598
-714
+715
 0
 0
 0
@@ -67190,7 +67190,7 @@ han_b123.bop
 361
 0
 599
-715
+716
 0
 0
 0
@@ -80070,7 +80070,7 @@ car_b97.bop
 335
 454
 0
-688
+689
 0
 0
 0
@@ -80122,10 +80122,10 @@ car_b98.bop
 0
 0
 0
+1
 0
-0
-0
-0
+1
+1
 0
 500
 25
@@ -80210,7 +80210,7 @@ car_b98.bop
 336
 455
 0
-689
+690
 0
 0
 0
@@ -80350,7 +80350,7 @@ car_b99.bop
 337
 456
 0
-690
+691
 0
 0
 0
@@ -80490,7 +80490,7 @@ car_b100.bop
 338
 457
 0
-691
+692
 0
 0
 0
@@ -80630,7 +80630,7 @@ car_b101.bop
 339
 458
 0
-693
+694
 0
 0
 0
@@ -80770,7 +80770,7 @@ car_b101.bop
 340
 459
 0
-694
+695
 0
 0
 0
@@ -80910,7 +80910,7 @@ con_b102.bop
 341
 460
 0
-695
+696
 0
 0
 0
@@ -81050,7 +81050,7 @@ con_b103.bop
 342
 461
 0
-696
+697
 0
 0
 0
@@ -81190,7 +81190,7 @@ con_b104.bop
 343
 462
 0
-697
+698
 0
 0
 0
@@ -81470,7 +81470,7 @@ car_b106.bop
 344
 463
 0
-698
+699
 0
 0
 0
@@ -81610,7 +81610,7 @@ car_107b.bop
 345
 464
 0
-699
+700
 0
 0
 0
@@ -81750,7 +81750,7 @@ car_107b.bop
 346
 465
 0
-700
+701
 0
 0
 0
@@ -81890,7 +81890,7 @@ car_107b.bop
 347
 466
 0
-701
+702
 0
 0
 0
@@ -82030,7 +82030,7 @@ car_107b.bop
 348
 467
 0
-702
+703
 0
 0
 0
@@ -82170,7 +82170,7 @@ car_b111.bop
 349
 468
 0
-703
+704
 0
 0
 0
@@ -82310,7 +82310,7 @@ car_b112.bop
 350
 469
 0
-704
+705
 0
 0
 0
@@ -82450,7 +82450,7 @@ car_b113.bop
 351
 470
 0
-705
+706
 0
 0
 0
@@ -82590,7 +82590,7 @@ car_b113.bop
 352
 471
 0
-706
+707
 0
 0
 0
@@ -82730,7 +82730,7 @@ car_b114.bop
 353
 472
 0
-707
+708
 0
 0
 0
@@ -82870,7 +82870,7 @@ con_114b.bop
 354
 473
 0
-708
+709
 0
 0
 0
@@ -83010,7 +83010,7 @@ con_114b.bop
 355
 474
 0
-709
+710
 0
 0
 0
@@ -83150,7 +83150,7 @@ con_114b.bop
 356
 475
 0
-710
+711
 0
 0
 0
@@ -83290,7 +83290,7 @@ con_114b.bop
 357
 476
 0
-711
+712
 0
 0
 0
@@ -83430,7 +83430,7 @@ car_b118.bop
 358
 477
 0
-712
+713
 0
 0
 0
@@ -83570,7 +83570,7 @@ car_b119.bop
 359
 478
 0
-713
+714
 0
 0
 0
@@ -83710,7 +83710,7 @@ con_b91.bop
 360
 479
 0
-714
+715
 0
 0
 0
@@ -83850,7 +83850,7 @@ han_b123.bop
 361
 480
 0
-715
+716
 0
 0
 0
@@ -84881,7 +84881,7 @@ ome_b11.bop
 0
 0
 0
-14
+114
 0
 0
 0
@@ -95687,8 +95687,8 @@ ome_b92.bop
 0
 0
 0
-1
 0
+1
 0
 0
 0
@@ -96180,6 +96180,146 @@ ome_b95.bop
 0
 688
 6
+Tetroin-4c-Veredelunganlage
+Tetroin-4c Processing Plant
+Diese Anlage destilliert das Tetroin-4c zur ein höheren Konzentration und befreit es von unreinen Stoffen. Dadurch werden die Wirte leistungsfähiger und ihre Loyalität steigt aufgrund Ihrer Tetroin-Sucht weiter an. Bei der Destillation entsteht ein chemisches Abfallprodukt, welches an andere Rassen als Anästhetikum verkauft wird.
+This plant distills Tetroin-4c to a higher concentration and frees it from impure substances. Thus hosts get more powerful and their loyality increases due to their Tetroin addiction. A chemical waste product remaining from this way of destillation is sold to other breeds as an anesthetic.
+0
+ome_b96.bop
+1
+688
+0
+0
+0
+0
+0
+0
+
+10
+0
+0
+0
+0
+0
+0
+0
+1
+0
+1
+1
+1
+0
+0
+1
+1
+1
+1
+1
+1
+1
+1
+0
+0
+0
+1
+1
+0
+0
+0
+0
+800
+45
+500
+0
+0
+0
+0
+0
+40
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+40
+1
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+689
+6
 Omega-Raumdock
 Omega Alliance Spacedock
 Omega-Raumdocks sind Einrichtungen für Bau, Reparatur und Betankung von kleinen Sternenschiffen.  Wenn genügend Deritium vorhanden ist, können diese Docks soviele Schiffe bauen, wie sich die Omega-Allianz leisten kann. Zudem erweitern solche Raumdocks die Reichweite der Allianzflotte.
@@ -96187,7 +96327,7 @@ The Omega Alliance Spacedock is an orbital facility for the construction, repair
 0
 ome_9699.bop
 1
-688
+689
 0
 0
 0
@@ -96318,7 +96458,7 @@ ome_9699.bop
 0
 0
 0
-689
+690
 6
 Typ 1 Omega-Schiffswerft
 Type 1 Omega Alliance Shipyard
@@ -96327,7 +96467,7 @@ The Type 1 Omega Alliance shipyard is an orbital facility for starship construct
 1
 ome_9699.bop
 1
-689
+690
 0
 0
 0
@@ -96362,10 +96502,10 @@ ome_9699.bop
 0
 0
 0
+1
 0
-0
-0
-0
+1
+1
 0
 500
 25
@@ -96458,7 +96598,7 @@ ome_9699.bop
 0
 0
 0
-690
+691
 6
 Typ 2 Omega-Schiffswerft
 Type 2 Omega Alliance Shipyard
@@ -96467,7 +96607,7 @@ The Type 2 Omega Alliance shipyard is an orbital facility for starship construct
 1
 ome_9699.bop
 1
-690
+691
 0
 0
 0
@@ -96581,7 +96721,7 @@ ome_9699.bop
 0
 0
 0
-689
+690
 0
 0
 0
@@ -96598,7 +96738,7 @@ ome_9699.bop
 0
 0
 0
-691
+692
 6
 Omega Super-Werft
 Advanced Omega Alliance Shipyard
@@ -96609,7 +96749,7 @@ ome_9699.bop
 0
 0
 1
-691
+692
 1
 0
 0
@@ -96721,7 +96861,7 @@ ome_9699.bop
 0
 0
 0
-690
+691
 0
 0
 0
@@ -96738,7 +96878,7 @@ ome_9699.bop
 0
 0
 0
-692
+693
 6
 Omega Heimatwerft
 Omega Homeyard
@@ -96749,7 +96889,7 @@ ome_9699.bop
 0
 0
 1
-692
+693
 1
 0
 0
@@ -96861,7 +97001,7 @@ ome_9699.bop
 0
 0
 0
-691
+692
 0
 0
 0
@@ -96878,7 +97018,7 @@ ome_9699.bop
 0
 0
 0
-693
+694
 6
 Da'unor Zuchtkomplex
 Rok'Hanar Breeding Complex
@@ -96887,7 +97027,7 @@ In the Rok'Hanar Breeding Complexes, the best armed forces of the Omega Alliance
 1
 ome_b100.bop
 1
-693
+694
 0
 0
 0
@@ -97018,7 +97158,7 @@ ome_b100.bop
 0
 0
 0
-694
+695
 6
 Da'unor Zuchtkomplex 2
 Rok'Hanar Breeding Complex 2
@@ -97027,7 +97167,7 @@ In the Rok'Hanar Breeding Complexes genetical engineering of Omega Alliance arme
 0
 ome_b100.bop
 1
-694
+695
 0
 0
 0
@@ -97141,7 +97281,7 @@ ome_b100.bop
 0
 0
 0
-693
+694
 1
 0
 0
@@ -97158,7 +97298,7 @@ ome_b100.bop
 0
 0
 0
-695
+696
 6
 Kontinuum-Scanner
 Continuum Scanner
@@ -97167,7 +97307,7 @@ Continuum fields create a continuum halo around a ship which is detectable from 
 1
 con_b102.bop
 1
-695
+696
 0
 0
 0
@@ -97298,7 +97438,7 @@ con_b102.bop
 0
 0
 0
-696
+697
 6
 Kontinuum-Horchposten
 Listening Post
@@ -97307,7 +97447,7 @@ The continuum distortion caused by continuum fields is confined to a few select 
 1
 con_b103.bop
 1
-696
+697
 0
 0
 0
@@ -97421,7 +97561,7 @@ con_b103.bop
 0
 0
 0
-695
+696
 0
 0
 0
@@ -97438,7 +97578,7 @@ con_b103.bop
 0
 0
 0
-697
+698
 6
 Isolinearer-Scanner
 Isolinear Scanner
@@ -97447,7 +97587,7 @@ Isolinear optical chips enable immediate virtual access to enormous amounts of d
 0
 con_b104.bop
 1
-697
+698
 0
 0
 0
@@ -97561,7 +97701,7 @@ con_b104.bop
 0
 0
 0
-696
+697
 0
 0
 0
@@ -97578,7 +97718,7 @@ con_b104.bop
 0
 0
 0
-698
+699
 6
 Bunkernetzwerk
 Bunker Network
@@ -97587,7 +97727,7 @@ Scattering hardened bunkers throughout the solar system creates a ready-made gue
 0
 ome_b105.bop
 1
-698
+699
 0
 0
 0
@@ -97718,7 +97858,7 @@ ome_b105.bop
 0
 0
 0
-699
+700
 6
 Typ 1 Schildgenerator
 Type 1 Shield Generator
@@ -97727,7 +97867,7 @@ The populated areas of an entire system can be protected using the same shield t
 1
 ome_105b.bop
 1
-699
+700
 0
 0
 0
@@ -97858,7 +97998,7 @@ ome_105b.bop
 0
 0
 0
-700
+701
 6
 Typ 2 Schildgenerator
 Type 2 Shield Generator
@@ -97867,7 +98007,7 @@ The populated areas of an entire system can be protected using the same shield t
 1
 ome_105b.bop
 1
-700
+701
 0
 0
 0
@@ -97981,7 +98121,7 @@ ome_105b.bop
 0
 0
 0
-699
+700
 0
 0
 0
@@ -97998,7 +98138,7 @@ ome_105b.bop
 0
 0
 0
-701
+702
 6
 Typ 3 Schildgenerator
 Type 3 Shield Generator
@@ -98007,7 +98147,7 @@ The populated areas of an entire system can be protected using the same shield t
 1
 ome_105b.bop
 1
-701
+702
 0
 0
 0
@@ -98121,7 +98261,7 @@ ome_105b.bop
 0
 0
 0
-700
+701
 0
 0
 0
@@ -98138,7 +98278,7 @@ ome_105b.bop
 0
 0
 0
-702
+703
 6
 Typ 4 Schildgenerator
 Type 4 Shield Generator
@@ -98147,7 +98287,7 @@ The populated areas of an entire system can be protected using the same shield t
 0
 ome_105b.bop
 1
-702
+703
 0
 0
 0
@@ -98261,7 +98401,7 @@ ome_105b.bop
 0
 0
 0
-701
+702
 0
 0
 0
@@ -98278,7 +98418,7 @@ ome_105b.bop
 0
 0
 0
-703
+704
 6
 Typ 1 Orbitalgeschütz
 Type 1 Orbital Battery
@@ -98287,7 +98427,7 @@ A standard orbital battery for planetary defense.
 1
 ome_109b.bop
 3
-703
+704
 0
 0
 0
@@ -98418,7 +98558,7 @@ ome_109b.bop
 0
 0
 0
-704
+705
 6
 Typ 2 Orbitalgeschütz
 Type 2 Orbital Battery
@@ -98427,7 +98567,7 @@ A double-gunned orbital platform for planetary defense.
 1
 ome_109b.bop
 3
-704
+705
 0
 0
 0
@@ -98541,7 +98681,7 @@ ome_109b.bop
 0
 0
 0
-703
+704
 0
 0
 0
@@ -98558,7 +98698,7 @@ ome_109b.bop
 0
 0
 0
-705
+706
 6
 Typ 3 Orbitalgeschütz
 Type 3 Orbital Battery
@@ -98567,7 +98707,7 @@ A double-gunned orbital battery with a torpedo launcher mounted for stronger pla
 1
 ome_109b.bop
 3
-705
+706
 0
 0
 0
@@ -98681,7 +98821,7 @@ ome_109b.bop
 0
 0
 0
-704
+705
 0
 0
 0
@@ -98698,7 +98838,7 @@ ome_109b.bop
 0
 0
 0
-706
+707
 6
 Typ 4 Orbitalgeschütz
 Type 4 Orbital Battery
@@ -98707,7 +98847,7 @@ An improved double-gunned orbital battery with a torpedo launcher mounted for st
 0
 ome_109b.bop
 3
-706
+707
 0
 0
 0
@@ -98821,7 +98961,7 @@ ome_109b.bop
 0
 0
 0
-705
+706
 0
 0
 0
@@ -98838,7 +98978,7 @@ ome_109b.bop
 0
 0
 0
-707
+708
 6
 Orbitales Verteidigungsnetzwerk
 Orbital Defense Network
@@ -98847,7 +98987,7 @@ This heavily armed orbital battery network can take out whole fleets.
 0
 ome_109b.bop
 1
-707
+708
 0
 0
 0
@@ -98978,7 +99118,7 @@ ome_109b.bop
 0
 0
 0
-708
+709
 6
 Typ 1 Minenfeld
 Type 1 Minefield
@@ -98987,7 +99127,7 @@ A small-scale minefield to secure a perimeter around planetary systems.
 1
 ome_113b.bop
 3
-708
+709
 0
 0
 0
@@ -99118,7 +99258,7 @@ ome_113b.bop
 0
 0
 0
-709
+710
 6
 Typ 2 Minenfeld
 Type 2 Minefield
@@ -99127,7 +99267,7 @@ A larger minefield located at the first planetary defense perimeter.
 1
 ome_113b.bop
 3
-709
+710
 0
 0
 0
@@ -99241,7 +99381,7 @@ ome_113b.bop
 0
 0
 0
-708
+709
 0
 0
 0
@@ -99258,7 +99398,7 @@ ome_113b.bop
 0
 0
 0
-710
+711
 6
 Typ 3 Minenfeld
 Type 3 Minefield
@@ -99267,7 +99407,7 @@ This minefield is closer distributed for planetary defense.
 1
 ome_113b.bop
 3
-710
+711
 0
 0
 0
@@ -99381,7 +99521,7 @@ ome_113b.bop
 0
 0
 0
-709
+710
 0
 0
 0
@@ -99398,7 +99538,7 @@ ome_113b.bop
 0
 0
 0
-711
+712
 6
 Selbstreplizierendes Minenfeld
 Self-Replicating Minefield
@@ -99407,7 +99547,7 @@ This minefield consists of self-replicating mines which are most deadly to anyon
 0
 ome_113b.bop
 1
-711
+712
 0
 0
 0
@@ -99521,7 +99661,7 @@ ome_113b.bop
 0
 0
 0
-710
+711
 0
 0
 0
@@ -99538,7 +99678,7 @@ ome_113b.bop
 0
 0
 0
-712
+713
 6
 Kommunikationsnetzwerk
 Communications Grid
@@ -99547,7 +99687,7 @@ This communications network prevents other Empires from influencing the minor ra
 0
 ome_b116.bop
 1
-712
+713
 0
 0
 0
@@ -99678,7 +99818,7 @@ ome_b116.bop
 0
 0
 0
-713
+714
 6
 Tetroin-Zugabe
 Tetroin-Bonus
@@ -99687,7 +99827,7 @@ Even the most addicted society occasionally develops protests and demonstrations
 0
 ome_b117.bop
 1
-713
+714
 0
 0
 0
@@ -99818,7 +99958,7 @@ ome_b117.bop
 0
 0
 0
-714
+715
 6
 Deritium-Handel
 Deritium Trading
@@ -99827,7 +99967,7 @@ Deritium is a prized commodity, not only for ships of the empire. The trade of i
 0
 con_b91.bop
 1
-714
+715
 0
 0
 0
@@ -99958,7 +100098,7 @@ con_b91.bop
 0
 0
 0
-715
+716
 6
 Zwangssteuern
 Super Taxes
@@ -99967,7 +100107,7 @@ To get through a temporary lack of finance super taxes get levy. Of course popul
 0
 han_b123.bop
 1
-715
+716
 0
 0
 0
@@ -100098,7 +100238,7 @@ han_b123.bop
 0
 0
 0
-716
+717
 0
 Ausstellungshalle
 Exhibition Hall
@@ -100107,7 +100247,7 @@ The Zuringlian Exhibition Hall is the primary display gallery in their capital, 
 0
 zur_b.bop
 1
-716
+717
 0
 0
 0
@@ -100238,7 +100378,7 @@ Zuring
 0
 0
 0
-717
+718
 0
 Forschungsbunker
 Research bunker
@@ -100247,7 +100387,7 @@ With the government order to withdraw safely underground because of the damage b
 0
 zho_b.bop
 1
-717
+718
 0
 0
 0
@@ -100378,7 +100518,7 @@ Zhordan
 0
 0
 0
-718
+719
 0
 Militärakademie
 Military Academy
@@ -100387,7 +100527,7 @@ The Zetarian reputation for tactical genius is well earned. Their expertise, com
 0
 zet_b0.bop
 1
-718
+719
 0
 0
 0
@@ -100518,7 +100658,7 @@ Zetar
 0
 0
 0
-719
+720
 0
 Zetar Demontage-Orbitalfabrik
 Zetarian Orbital Scrap Yard
@@ -100527,7 +100667,7 @@ Beyond the capacity of a regular Scrap Yard, the Zetarians, experts in such mana
 0
 zet_b1.bop
 1
-719
+720
 0
 0
 0
@@ -100658,7 +100798,7 @@ Zetar
 0
 0
 0
-720
+721
 0
 Technologisches Institut
 Zarovian Institute of Technology
@@ -100667,7 +100807,7 @@ The Zarovians have made some significant advances in research and study, particu
 0
 zar_b0.bop
 1
-720
+721
 0
 0
 0
@@ -100798,7 +100938,7 @@ Zarovia
 0
 0
 0
-721
+722
 0
 Deritium-Kläranlage
 Deritium Sewage Plant
@@ -100807,7 +100947,7 @@ Zarovian physiology allows for natural production of deritium through common exc
 0
 zar_b1.bop
 1
-721
+722
 0
 0
 0
@@ -100938,7 +101078,7 @@ Zarovia
 0
 0
 0
-722
+723
 0
 Yimandar Geheimdienst
 Intelligence Service
@@ -100947,7 +101087,7 @@ The Yimandar are well-known traders of information. The Intelligence Service wou
 0
 yim_b.bop
 1
-722
+723
 0
 0
 0
@@ -101078,7 +101218,7 @@ Yimanda
 0
 0
 0
-723
+724
 0
 Subneuronalnetzwerk
 Subneural Network
@@ -101087,7 +101227,7 @@ The Yaroborte Subneural Network combines the computational power of all the proc
 0
 yar_b.bop
 1
-723
+724
 0
 0
 0
@@ -101218,7 +101358,7 @@ Yarobor
 0
 0
 0
-724
+725
 0
 Paradieszonen
 Paradise Regions
@@ -101227,7 +101367,7 @@ The Xyretians possess marvelous landscapes which puts the mind of every Xyretian
 0
 xyr_b0.bop
 1
-724
+725
 0
 0
 0
@@ -101358,7 +101498,7 @@ Xyret
 0
 0
 0
-725
+726
 0
 Perikarptreibhäuser
 Pericarp Hothouses
@@ -101367,7 +101507,7 @@ Xyretians are experts in the field of organic life sciences. Hothouses equipped 
 0
 xyr_b1.bop
 1
-725
+726
 0
 0
 0
@@ -101498,7 +101638,7 @@ Xyret
 0
 0
 0
-726
+727
 0
 Xibren Lotterie
 Xibren Lottery
@@ -101507,7 +101647,7 @@ The Xibren are among the most unusual alien civilizations in the known galaxy. T
 0
 xib_b.bop
 1
-726
+727
 0
 0
 0
@@ -101638,7 +101778,7 @@ Xiborg
 0
 0
 0
-727
+728
 0
 Xeggenbinge
 Xegge Sinkhole
@@ -101647,7 +101787,7 @@ The Xegge sinkhole is a large subterrestrial city complex bordering an equally l
 0
 xeg_b.bop
 1
-727
+728
 0
 0
 0
@@ -101778,7 +101918,7 @@ Xeggen
 0
 0
 0
-728
+729
 0
 Xanthonenmakler
 Xanthonian Landlords
@@ -101787,7 +101927,7 @@ Xanthonian Landlords rank as the richest in the whole quadrant. Nowadays they al
 0
 xan_b.bop
 1
-728
+729
 0
 0
 0
@@ -101918,7 +102058,7 @@ Xanthon
 0
 0
 0
-729
+730
 0
 Wollonen-Vertreter
 Wollon Representatives
@@ -101927,7 +102067,7 @@ Wollon representatives seemingly embrace the whole quadrant with all their skin 
 0
 wol_b.bop
 1
-729
+730
 0
 0
 0
@@ -102058,7 +102198,7 @@ Wollon
 0
 0
 0
-730
+731
 0
 Wissenskontingent
 Science Academy
@@ -102067,7 +102207,7 @@ The logic of Vulmar philosophy lends itself easily to scientific reasoning. As a
 0
 vul_b0.bop
 1
-730
+731
 0
 0
 0
@@ -102198,7 +102338,7 @@ Vulmar
 0
 0
 0
-731
+732
 0
 Antriebstestgelände
 Propulsion Laboratory
@@ -102207,7 +102347,7 @@ When our early pioneers were still using rockets with solid propellants, Vulmar 
 0
 vul_b1.bop
 1
-731
+732
 0
 0
 0
@@ -102338,7 +102478,7 @@ Vulmar
 0
 0
 0
-732
+733
 0
 Psychotropisches Labor
 Psychotropic Lab
@@ -102347,7 +102487,7 @@ Vorian mind alteration techniques would be a useful tool to aid intelligence eff
 0
 vor_b.bop
 1
-732
+733
 0
 0
 0
@@ -102478,7 +102618,7 @@ Voria
 0
 0
 0
-733
+734
 0
 Optotronik-Handelssystem
 Vorgorian Trade System
@@ -102487,7 +102627,7 @@ The Vorgorian trade system is based on advanced realtime algorithms and also off
 0
 vorg_b.bop
 1
-733
+734
 0
 0
 0
@@ -102618,7 +102758,7 @@ Vorgor
 0
 0
 0
-734
+735
 0
 Clan-Forschungszentrum
 Clan Research Center
@@ -102627,7 +102767,7 @@ The Vikarmon scientific institution is second to none in the quadrant. It would 
 0
 vik_b.bop
 1
-734
+735
 0
 0
 0
@@ -102758,7 +102898,7 @@ Vikarmo
 0
 0
 0
-735
+736
 0
 Sanktum der Ausstrahlung
 Sanctum of Emanation
@@ -102767,7 +102907,7 @@ Membership of any race guarantees that indigenous culture and tradition are main
 0
 vie_b.bop
 1
-735
+736
 0
 0
 0
@@ -102898,7 +103038,7 @@ Viebar
 0
 0
 0
-736
+737
 0
 Liquiddatenbank
 Liquid Databank
@@ -102907,7 +103047,7 @@ The gathered lore in the Vaults on Ventrakan are surprisingly concise, and yet a
 0
 ven_b.bop
 1
-736
+737
 0
 0
 0
@@ -103038,7 +103178,7 @@ Ventrakan
 0
 0
 0
-737
+738
 0
 Kriegspiel-Arena
 Wargames Arena
@@ -103047,7 +103187,7 @@ The Vawdor Wargames Arena is not only a general training facility for fledgling 
 0
 vaw_b.bop
 1
-737
+738
 0
 0
 0
@@ -103178,7 +103318,7 @@ Vawdor
 0
 0
 0
-738
+739
 0
 Geheimes Gedankenarchiv
 Secret Thought Archive
@@ -103187,7 +103327,7 @@ The Urenglian Secret Thought Archive has great potential as an intelligence-gath
 0
 ure_b.bop
 1
-738
+739
 0
 0
 0
@@ -103318,7 +103458,7 @@ Urenger
 0
 0
 0
-739
+740
 0
 Forschungskomitee
 Research Committee
@@ -103327,7 +103467,7 @@ Tuc scientists have managed to attract loads of cheap external scientific staff 
 0
 tuc_b0.bop
 1
-739
+740
 0
 0
 0
@@ -103458,7 +103598,7 @@ Tuc
 0
 0
 0
-740
+741
 0
 Demonstrationsshows
 Demonstration Shows
@@ -103467,7 +103607,7 @@ Tuc scientists and the general public frequently use the weekly science demonstr
 0
 tuc_b1.bop
 1
-740
+741
 0
 0
 0
@@ -103598,7 +103738,7 @@ Tuc
 0
 0
 0
-741
+742
 0
 Schattenmeister
 Shadow Agents
@@ -103607,7 +103747,7 @@ Torgon Shadow Agents are skillful, strong-willed and adept saboteurs. Through th
 0
 tor_b.bop
 1
-741
+742
 0
 0
 0
@@ -103738,7 +103878,7 @@ Torgon
 0
 0
 0
-742
+743
 0
 Tarndrohneneinsatz
 Cloaked Drones
@@ -103747,7 +103887,7 @@ By means of cloaked drones public policy is established in Tohm, however under t
 0
 toh_b.bop
 1
-742
+743
 0
 0
 0
@@ -103878,7 +104018,7 @@ Tohm
 0
 0
 0
-743
+744
 0
 Automorphiezentrum
 Automorphic Center
@@ -103887,7 +104027,7 @@ Thremdomas are masters of morphology and the construction of a single center for
 0
 thr_b0.bop
 1
-743
+744
 0
 0
 0
@@ -104018,7 +104158,7 @@ Remdomas
 0
 0
 0
-744
+745
 0
 Thremdomas-Vereinigung
 Thremdoman Assembly
@@ -104027,7 +104167,7 @@ The Thremdoman Assembly has been one particular alien faction that has thrived o
 0
 thr_b1.bop
 1
-744
+745
 0
 0
 0
@@ -104158,7 +104298,7 @@ Remdomas
 0
 0
 0
-745
+746
 0
 Heilorden
 Templan Healing Order
@@ -104167,7 +104307,7 @@ We can assist the Templans with their own medical dilemma by taking a different 
 0
 tem_b0.bop
 1
-745
+746
 0
 0
 0
@@ -104298,7 +104438,7 @@ Templar
 0
 0
 0
-746
+747
 0
 Burgbefestigung
 Castle Fortifications
@@ -104307,7 +104447,7 @@ The Templans have fought off invaders before. With slight reinforcements their e
 0
 tem_b1.bop
 3
-746
+747
 0
 0
 0
@@ -104438,7 +104578,7 @@ Templar
 0
 0
 0
-747
+748
 0
 Techniker-Vereinigung
 Engineering Union
@@ -104447,7 +104587,7 @@ This body of engineers and specialists would be a prized asset for economists an
 0
 tary_b0.bop
 1
-747
+748
 0
 0
 0
@@ -104578,7 +104718,7 @@ Tarokyte
 0
 0
 0
-748
+749
 0
 Tarokytische Werftverbesserung
 Tarokyte Shipyard Improvements
@@ -104587,7 +104727,7 @@ The Tarokytes are advanced in all areas of engineering, and their potential indu
 0
 tary_b1.bop
 1
-748
+749
 0
 0
 0
@@ -104718,7 +104858,7 @@ Tarokyte
 0
 0
 0
-749
+750
 0
 Tarokuri Labor
 Tarokuri Lab
@@ -104727,7 +104867,7 @@ The Tarokuri have never had a single energy crisis in their whole history. This 
 0
 taru_b.bop
 1
-749
+750
 0
 0
 0
@@ -104858,7 +104998,7 @@ Tarokur
 0
 0
 0
-750
+751
 0
 Mythologie Datenbank
 Mythology Databank
@@ -104867,7 +105007,7 @@ The myths that form the Tarokohen culture and society are old stories from the d
 0
 taro_b0.bop
 1
-750
+751
 0
 0
 0
@@ -104998,7 +105138,7 @@ Taroko
 0
 0
 0
-751
+752
 0
 Taroks Monument
 Tarok's Monument
@@ -105007,7 +105147,7 @@ The tales of the heroic deeds of the iconic Tarok are the cornerstone of Tarokoh
 0
 taro_b1.bop
 1
-751
+752
 0
 0
 0
@@ -105138,7 +105278,7 @@ Taroko
 0
 0
 0
-752
+753
 0
 Tarokianischer Sicherheitstrupp
 Tarokian Investigation Group
@@ -105147,7 +105287,7 @@ The Tarokians may be willing to share their knowledge and abilities and provide 
 0
 tari_b.bop
 1
-752
+753
 0
 0
 0
@@ -105278,7 +105418,7 @@ Tarokia
 0
 0
 0
-753
+754
 0
 Tarokesenressort
 Inter-Species Commune
@@ -105287,7 +105427,7 @@ Overseen by skilled Taroke mediators, the Commune is a friendly resort in the Ta
 0
 tare_b.bop
 1
-753
+754
 0
 0
 0
@@ -105418,7 +105558,7 @@ Taroke
 0
 0
 0
-754
+755
 0
 Verteidigungs-Netzwerk
 Clan Guard
@@ -105427,7 +105567,7 @@ The Tarok Clan Guard is the primary body that represent Tarok's military forces.
 0
 tar_b.bop
 1
-754
+755
 0
 0
 0
@@ -105558,7 +105698,7 @@ Tarok
 0
 0
 0
-755
+756
 0
 Familienfiskus
 Family Fiscus
@@ -105567,7 +105707,7 @@ The family fiscus is a credit bank account of hoarded family wealth garnered fro
 0
 tal_b.bop
 1
-755
+756
 0
 0
 0
@@ -105698,7 +105838,7 @@ Taltrade
 0
 0
 0
-756
+757
 0
 Modernes Waffenlabor
 Advanced Weapon Lab
@@ -105707,7 +105847,7 @@ The Tacmacs have combined their Biotech research with weapons, resulting in new 
 0
 tac_b.bop
 1
-756
+757
 0
 0
 0
@@ -105838,7 +105978,7 @@ Tacmac
 0
 0
 0
-757
+758
 0
 Metaphasenlabor
 Metaphysics Lab
@@ -105847,7 +105987,7 @@ Ta'ichu like to conduct research that other people would not participate in open
 0
 tai_b.bop
 1
-757
+758
 0
 0
 0
@@ -105978,7 +106118,7 @@ Ta'ichu
 0
 0
 0
-758
+759
 0
 Zellstoff-Datenbank
 Pulp Databank
@@ -105987,7 +106127,7 @@ The T'arada have a great metabolism and immune system. In the pulp databank, all
 0
 tara_b.bop
 1
-758
+759
 0
 0
 0
@@ -106118,7 +106258,7 @@ T'arada
 0
 0
 0
-759
+760
 0
 Organik Laboratorium
 Organics Lab
@@ -106127,7 +106267,7 @@ If Sytaplet physiology is as easy-to-decode as many researchers assume, it may b
 0
 syt_b.bop
 1
-759
+760
 0
 0
 0
@@ -106258,7 +106398,7 @@ Sytapel
 0
 0
 0
-760
+761
 0
 Grenzforschungsnetzwerk
 Energy Study Network
@@ -106267,7 +106407,7 @@ On this platform, the most brilliant and ingenious minds of the Storgor meet tog
 0
 sto_b.bop
 1
-760
+761
 0
 0
 0
@@ -106398,7 +106538,7 @@ Storgor
 0
 0
 0
-761
+762
 0
 Skalatia Grand-Prix
 Skalatia Grand Prix
@@ -106407,7 +106547,7 @@ The Skalatia Grand-Prix is a yearly non-stop race for the crown of motorsports a
 0
 ska_b0.bop
 1
-761
+762
 0
 0
 0
@@ -106538,7 +106678,7 @@ Skalatia
 0
 0
 0
-762
+763
 0
 Geologische Archive
 Geological Survey
@@ -106547,7 +106687,7 @@ The current world of the Skalatians may not be the most hospitable place, but be
 0
 ska_b1.bop
 1
-762
+763
 0
 0
 0
@@ -106678,7 +106818,7 @@ Skalatia
 0
 0
 0
-763
+764
 0
 Zentralbibliothek
 Knowledge Library
@@ -106687,7 +106827,7 @@ The vaults of the Sjapamarain Library are vast and deep, even though the data wi
 0
 sja_b0.bop
 1
-763
+764
 0
 0
 0
@@ -106818,7 +106958,7 @@ Sjapa
 0
 0
 0
-764
+765
 0
 Energieverdoppler
 Stationary Energy Duplexer
@@ -106827,7 +106967,7 @@ The Sjapamarain possess a remarkable technology called a stationary energy duple
 0
 sja_b1.bop
 1
-764
+765
 0
 0
 0
@@ -106958,7 +107098,7 @@ Sjapa
 0
 0
 0
-765
+766
 0
 Tempel von Sevar
 Temples of Sevar
@@ -106967,7 +107107,7 @@ Daily visits to temples of Sevar purge the souls of believers from the demanding
 0
 sev_b.bop
 1
-765
+766
 0
 0
 0
@@ -107098,7 +107238,7 @@ Sevar
 0
 0
 0
-766
+767
 0
 Musterungsbasis
 Mustering Base
@@ -107107,7 +107247,7 @@ The animosity between the Aqindoan and the Scytorians is legendary, and is so pe
 0
 scy_b0.bop
 1
-766
+767
 0
 0
 0
@@ -107238,7 +107378,7 @@ Scytoria
 0
 0
 0
-767
+768
 0
 Somatotropisches Institut
 Somatotropic Institute
@@ -107247,7 +107387,7 @@ Highly advanced growth hormones assist the speeding up of training of new soldie
 0
 scy_b1.bop
 1
-767
+768
 0
 0
 0
@@ -107378,7 +107518,7 @@ Scytoria
 0
 0
 0
-768
+769
 0
 Langzeit-Simulatoren
 Long-term Simulators
@@ -107387,7 +107527,7 @@ Ruria's answer to research and experimentation is an advanced computer simulatio
 0
 rur_b.bop
 3
-768
+769
 0
 0
 0
@@ -107518,7 +107658,7 @@ Ruria
 0
 0
 0
-769
+770
 0
 Vergnügungsparzellen
 Riejson Pleasure Apartments
@@ -107527,7 +107667,7 @@ The Riejson Pleasure Apartments are holiday residences for many powerful represe
 0
 rie_b.bop
 1
-769
+770
 0
 0
 0
@@ -107658,7 +107798,7 @@ Riejsa
 0
 0
 0
-770
+771
 0
 Schule der taktischen Aufklärung
 School of Reconnaissance
@@ -107667,7 +107807,7 @@ Due to their particuliar hardship in surviving the hostile conditions on their h
 0
 rem_b.bop
 1
-770
+771
 0
 0
 0
@@ -107798,7 +107938,7 @@ Remri
 0
 0
 0
-771
+772
 0
 Eingliederungsbehörde
 Phorath Security Bureau
@@ -107807,7 +107947,7 @@ The vigilant government agencies of the Phorath are determined to use every pote
 0
 pho_b0.bop
 1
-771
+772
 0
 0
 0
@@ -107938,7 +108078,7 @@ Lamphora
 0
 0
 0
-772
+773
 0
 Scansysteme
 Surveillance System
@@ -107947,7 +108087,7 @@ These arrays are scattered throughout the Lamphora system, and further relays li
 0
 pho_b1.bop
 1
-772
+773
 0
 0
 0
@@ -108078,7 +108218,7 @@ Lamphora
 0
 0
 0
-773
+774
 0
 Notgesetzgebung
 Emergency Legislation
@@ -108087,7 +108227,7 @@ The emergency legislation binds every citizen to fulfill compulsory labor and is
 0
 phi_b.bop
 1
-773
+774
 0
 0
 0
@@ -108218,7 +108358,7 @@ Phiori
 0
 0
 0
-774
+775
 0
 Wellenmustererkennungstraining
 Wave Pattern Recognition Training
@@ -108227,7 +108367,7 @@ All objects, including living beings, possess certain wave patterns which they s
 0
 pam_b0.bop
 1
-774
+775
 0
 0
 0
@@ -108358,7 +108498,7 @@ Pambuka
 0
 0
 0
-775
+776
 0
 Pambuka-Todesschwadron
 Death Squadron
@@ -108367,7 +108507,7 @@ The specially-trained Pambuka Death squadrons are groups of 2 or 3 members and a
 0
 pam_b1.bop
 1
-775
+776
 0
 0
 0
@@ -108498,7 +108638,7 @@ Pambuka
 0
 0
 0
-776
+777
 0
 Sammelstelle
 Collection Archive
@@ -108507,7 +108647,7 @@ The Palan search for all kinds of things and usable technology. Occasionally, th
 0
 pal_b.bop
 1
-776
+777
 0
 0
 0
@@ -108638,7 +108778,7 @@ Palan
 0
 0
 0
-777
+778
 0
 Rehabilitationklinik
 Rehab Centers
@@ -108647,7 +108787,7 @@ The Ornaran people are now crying out for help. These rehabilitation clinics wil
 0
 oss_b.bop
 1
-777
+778
 0
 0
 0
@@ -108778,7 +108918,7 @@ Osset
 0
 0
 0
-778
+779
 0
 Spionagecluster
 Spy Cluster
@@ -108787,7 +108927,7 @@ The Spy cluster is a conglomeration of merchants, smugglers, thieves and intelli
 0
 orl_b.bop
 1
-778
+779
 0
 0
 0
@@ -108918,7 +109058,7 @@ Orl
 0
 0
 0
-779
+780
 0
 Clannetzwerk
 Clan Network
@@ -108927,7 +109067,7 @@ The Clan network of the Okotai has a long tradition and lets the population take
 0
 oko_b0.bop
 1
-779
+780
 0
 0
 0
@@ -109058,7 +109198,7 @@ Okotai
 0
 0
 0
-780
+781
 0
 Phytopathische Farmen
 Phytopathic Farms
@@ -109067,7 +109207,7 @@ Okotai can mix dream states with reality and are capable of virtually talking to
 0
 oko_b1.bop
 1
-780
+781
 0
 0
 0
@@ -109198,7 +109338,7 @@ Okotai
 0
 0
 0
-781
+782
 0
 Sabotage-Spezialeinheiten
 Special-Ops Branch
@@ -109207,7 +109347,7 @@ The Nynjan Special-ops branch concentrates its efforts on infiltrating enemy shi
 0
 nyn_b.bop
 1
-781
+782
 0
 0
 0
@@ -109338,7 +109478,7 @@ Nynjan
 0
 0
 0
-782
+783
 0
 Holorobot-Projektoren
 Holo-Robotic Projector
@@ -109347,7 +109487,7 @@ The Nuumbar have the means to be an industrial powerhouse for the whole quadrant
 0
 nuu_b.bop
 1
-782
+783
 0
 0
 0
@@ -109478,7 +109618,7 @@ Nuumbar
 0
 0
 0
-783
+784
 0
 hEMP-Waffenforschung
 EMP Weapon Research
@@ -109487,7 +109627,7 @@ The Nundosa live in a post-apocalyptic doomsday scenario and offer an ideal rese
 0
 nun_b.bop
 1
-783
+784
 0
 0
 0
@@ -109618,7 +109758,7 @@ Nundosa
 0
 0
 0
-784
+785
 0
 Replikator-Rasterfeld
 Replicator Grid
@@ -109627,7 +109767,7 @@ The Replicator Grid combines transporter technology and industrial replicators t
 0
 nor_b0.bop
 1
-784
+785
 0
 0
 0
@@ -109758,7 +109898,7 @@ Nordana
 0
 0
 0
-785
+786
 0
 Nora-Nora Dom
 Nora-Nora Dome
@@ -109767,7 +109907,7 @@ The martial art of Nora-Nora is a phenomenally lucrative interplanetary and inte
 0
 nor_b1.bop
 1
-785
+786
 0
 0
 0
@@ -109898,7 +110038,7 @@ Nordana
 0
 0
 0
-786
+787
 0
 Astronomisches Überwachungssystem
 Astrophysics Survey
@@ -109907,7 +110047,7 @@ To counter the threat of asteroid strikes the Nezaka have developed a highly sop
 0
 nez_b0.bop
 1
-786
+787
 0
 0
 0
@@ -110038,7 +110178,7 @@ Nezaka
 0
 0
 0
-787
+788
 0
 Orbitalhandelsplattform
 Orbital Trade Stations
@@ -110047,7 +110187,7 @@ The Nezaka already sustain an active trade link, which is efficiently facilitate
 0
 nez_b1.bop
 1
-787
+788
 0
 0
 0
@@ -110178,7 +110318,7 @@ Nezaka
 0
 0
 0
-788
+789
 0
 Tempel von Nesateria
 Temple of Nesateria
@@ -110187,7 +110327,7 @@ The Temple of Nesateria gives the people a place to worship and reflect, and eng
 0
 nes_b.bop
 1
-788
+789
 0
 0
 0
@@ -110318,7 +110458,7 @@ Nesateria
 0
 0
 0
-789
+790
 0
 Nacha'ri Hauptquartier
 Nacha'ri Headquarters
@@ -110327,7 +110467,7 @@ Nacha'urr is full of young warriors, eager to take on the world and show their s
 0
 nac_b.bop
 1
-789
+790
 0
 0
 0
@@ -110458,7 +110598,7 @@ Nacharr
 0
 0
 0
-790
+791
 0
 Forschungskomplex
 Research Complex
@@ -110467,7 +110607,7 @@ The technology of Murnea's core reactor, and its power source, is the key to the
 0
 mur_b0.bop
 1
-790
+791
 0
 0
 0
@@ -110598,7 +110738,7 @@ Murnea
 0
 0
 0
-791
+792
 0
 Energiezellen
 Energy Cells
@@ -110607,7 +110747,7 @@ Installing additional energy cells at a variety of different depths in the plane
 0
 mur_b1.bop
 5
-791
+792
 0
 0
 0
@@ -110738,7 +110878,7 @@ Murnea
 0
 0
 0
-792
+793
 0
 Mozwar-Verteidigungsanlagen
 Mozwar Defence Force
@@ -110747,7 +110887,7 @@ The Mozwar Defence Force possesses a large and powerful fighting force with larg
 0
 moz_b0.bop
 1
-792
+793
 0
 0
 0
@@ -110878,7 +111018,7 @@ Mozwar
 0
 0
 0
-793
+794
 0
 Sklavenlager
 Mozwar Slave Camps
@@ -110887,7 +111027,7 @@ Any conquered system is usually enslaved and forcibly exploited. Despite the inh
 0
 moz_b1.bop
 1
-793
+794
 0
 0
 0
@@ -111018,7 +111158,7 @@ Mozwar
 0
 0
 0
-794
+795
 0
 Monument der Befreiung
 Monument of Liberation
@@ -111027,7 +111167,7 @@ The price of pacifism is high, but to the Miryads the psychological rewards are 
 0
 miry_b.bop
 1
-794
+795
 0
 0
 0
@@ -111158,7 +111298,7 @@ Miryad
 0
 0
 0
-795
+796
 0
 Genetisches Forschungslabor
 Genetic Research Lab
@@ -111167,7 +111307,7 @@ The Miramar have an advanced biological model with which to base their research 
 0
 mir_b.bop
 1
-795
+796
 0
 0
 0
@@ -111298,7 +111438,7 @@ Miramar
 0
 0
 0
-796
+797
 0
 Minali-Farm
 Minali Farm
@@ -111307,7 +111447,7 @@ Due to Minali tradition and physical constitution, every old man and woman contr
 0
 min_b0.bop
 1
-796
+797
 0
 0
 0
@@ -111438,7 +111578,7 @@ Minali
 0
 0
 0
-797
+798
 0
 Stätte der Gelehrsamkeit
 Seat of Learning
@@ -111447,7 +111587,7 @@ The enthusiastic Minali race, although primitive, has a thirst for knowledge, an
 0
 min_b1.bop
 1
-797
+798
 0
 0
 0
@@ -111578,7 +111718,7 @@ Minali
 0
 0
 0
-798
+799
 0
 Internes Forschungsmodul
 Internal Research Module
@@ -111587,7 +111727,7 @@ The application of temporally stable computer cores on Merdian will secure all r
 0
 mer_b.bop
 1
-798
+799
 0
 0
 0
@@ -111718,7 +111858,7 @@ Merdian
 0
 0
 0
-799
+800
 0
 Schmuggler-Kartell
 Smuggling Cartel
@@ -111727,7 +111867,7 @@ The Cartel is at its most productive when autonomously run. However this 'offici
 0
 mar_b.bop
 1
-799
+800
 0
 0
 0
@@ -111858,7 +111998,7 @@ Mardus
 0
 0
 0
-800
+801
 0
 Antimaterie-Stromgenerator
 Anti-matter Generators
@@ -111867,7 +112007,7 @@ Energy research is a critical priority in solving many of the Malodan's industri
 0
 mal_b0.bop
 3
-800
+801
 0
 0
 0
@@ -111998,7 +112138,7 @@ Malodan
 0
 0
 0
-801
+802
 0
 Grosse Recylinganlage
 Heavy Recycling Plant
@@ -112007,7 +112147,7 @@ A recycling program could be implemented on the Malodan homeworld to better faci
 0
 mal_b1.bop
 1
-801
+802
 0
 0
 0
@@ -112138,7 +112278,7 @@ Malodan
 0
 0
 0
-802
+803
 0
 Transportzentrum
 Transport Center
@@ -112147,7 +112287,7 @@ With a rapid and highly efficient turnaround, the Malodan Transport Center expor
 0
 mal_b2.bop
 1
-802
+803
 0
 0
 0
@@ -112278,7 +112418,7 @@ Malodan
 0
 0
 0
-803
+804
 0
 Malodan Schieber
 Malodan Traffickers
@@ -112287,7 +112427,7 @@ The Malodan homeworld controls the exchange rate for many goods throughout the q
 0
 mal_b3.bop
 1
-803
+804
 0
 0
 0
@@ -112418,7 +112558,7 @@ Malodan
 0
 0
 0
-804
+805
 0
 Motorenlabors
 Motor Lab
@@ -112427,7 +112567,7 @@ Malingorr ingenuity led them to ever deeper layers of their rich deposits. This 
 0
 mali_b0.bop
 1
-804
+805
 0
 0
 0
@@ -112558,7 +112698,7 @@ Malingorr
 0
 0
 0
-805
+806
 0
 Minenbaukonzessionen
 Mining Concessions
@@ -112567,7 +112707,7 @@ The Malingorr have vast deposits of every conceivable type of resource. We will 
 0
 mali_b1.bop
 1
-805
+806
 0
 0
 0
@@ -112698,7 +112838,7 @@ Malingorr
 0
 0
 0
-806
+807
 0
 Handelsroutennetz
 Merchant's Network
@@ -112707,7 +112847,7 @@ With the Lukarian Merchants network we are able to exploit the more obscure trad
 0
 luk_b.bop
 1
-806
+807
 0
 0
 0
@@ -112838,7 +112978,7 @@ Lukaria
 0
 0
 0
-807
+808
 0
 Fluxkompensatoreinheit
 Flux Compensator Unit
@@ -112847,7 +112987,7 @@ Protection against the deadly weather phenomenons on Lokonor is of the highest p
 0
 lok_b.bop
 1
-807
+808
 0
 0
 0
@@ -112978,7 +113118,7 @@ Lokonor
 0
 0
 0
-808
+809
 0
 Grubennetzwerk
 Mining Network
@@ -112987,7 +113127,7 @@ The Lisitan Mining network specializes in all kinds of raw materials. Through Li
 0
 lis_b.bop
 1
-808
+809
 0
 0
 0
@@ -113118,7 +113258,7 @@ Lisita
 0
 0
 0
-809
+810
 0
 Raumhafenbehörde
 Levan Spaceport Authority
@@ -113127,7 +113267,7 @@ Under the diligence and guidance of the Spaceport Authority, our officers would 
 0
 lev_b.bop
 1
-809
+810
 0
 0
 0
@@ -113258,7 +113398,7 @@ Leva
 0
 0
 0
-810
+811
 0
 Glaubenskrieger
 Religious Fanatics
@@ -113267,7 +113407,7 @@ The call to religious war is an effective tool of power and control over the med
 0
 kyr_b.bop
 1
-810
+811
 0
 0
 0
@@ -113398,7 +113538,7 @@ Kyri
 0
 0
 0
-811
+812
 0
 Tempel von Kryomar
 Temple of Kryomar
@@ -113407,7 +113547,7 @@ The Temple of Kryomar is a sacred place where the most important issues and deba
 0
 kry_b.bop
 1
-811
+812
 0
 0
 0
@@ -113538,7 +113678,7 @@ Kryomar
 0
 0
 0
-812
+813
 0
 Erzschmiedehallen
 Blacksmith Halls
@@ -113547,7 +113687,7 @@ Krepraan is strategically placed, and the blacksmith halls there are a key struc
 0
 kre_b0.bop
 1
-812
+813
 0
 0
 0
@@ -113678,7 +113818,7 @@ Krepraan
 0
 0
 0
-813
+814
 0
 Hallen der Diplomatie
 Hall of Diplomacy
@@ -113687,7 +113827,7 @@ With the Hall of Diplomacy social and diplomatic scholars will profit greatly.
 0
 kre_b1.bop
 1
-813
+814
 0
 0
 0
@@ -113818,7 +113958,7 @@ Krepraan
 0
 0
 0
-814
+815
 0
 Bewaffnete Einheiten
 Armed Forces
@@ -113827,7 +113967,7 @@ The Armed Forces seeks to put Kraetumir anger and aggression to good use, by sec
 0
 kra_b.bop
 1
-814
+815
 0
 0
 0
@@ -113958,7 +114098,7 @@ Kraetumir
 0
 0
 0
-815
+816
 0
 Blockwartbüro
 Block Leader Bureau
@@ -113967,7 +114107,7 @@ The Klaanirer are no inviting species. All their lives they torture themselves a
 0
 kla_b.bop
 1
-815
+816
 0
 0
 0
@@ -114098,7 +114238,7 @@ Klaanir
 0
 0
 0
-816
+817
 0
 Heilerforum
 Healer's Forum
@@ -114107,7 +114247,7 @@ The cult about elixirs on Keraune take on an epic scale. This forum will support
 0
 ker_b0.bop
 1
-816
+817
 0
 0
 0
@@ -114238,7 +114378,7 @@ Keraune
 0
 0
 0
-817
+818
 0
 Frühwarnorbitalanlage
 Early Warning Scanner
@@ -114247,7 +114387,7 @@ Their Mysticism devised many advanced innovations, one of them an Early Warning 
 0
 ker_b1.bop
 1
-817
+818
 0
 0
 0
@@ -114378,7 +114518,7 @@ Keraune
 0
 0
 0
-818
+819
 0
 Zeughaus
 Kelnor Armory
@@ -114387,7 +114527,7 @@ The research data for their advanced bioweapons lies deep underground in the cap
 0
 kel_b.bop
 1
-818
+819
 0
 0
 0
@@ -114518,7 +114658,7 @@ Kelnor
 0
 0
 0
-819
+820
 0
 Karorr Werfterneuerung
 Karorr shipyard upgrade
@@ -114527,7 +114667,7 @@ The Karorr may not possess the native technology for advanced ships, but they do
 0
 kar_b0.bop
 1
-819
+820
 0
 0
 0
@@ -114658,7 +114798,7 @@ Karorr
 0
 0
 0
-820
+821
 0
 Karorr Verteidigungsstellung
 Karorr Defence Perimeter
@@ -114667,7 +114807,7 @@ Various Karorr maintain guard posts in strategic hotspots around the temporal mi
 0
 kar_b1.bop
 1
-820
+821
 0
 0
 0
@@ -114798,7 +114938,7 @@ Karorr
 0
 0
 0
-821
+822
 0
 Illegaler Handel
 Illegal Trade
@@ -114807,7 +114947,7 @@ Piracy on Kanorr and many affected surrounding systems is out of control. Stolen
 0
 kan_b.bop
 1
-821
+822
 0
 0
 0
@@ -114938,7 +115078,7 @@ Kanorr
 0
 0
 0
-822
+823
 0
 Antimaterie-Geheimbund
 Anti-matter Guild
@@ -114947,7 +115087,7 @@ The Kaetrophos Anti-matter Guild combines the latest cutting-edge techniques in 
 0
 kae_b.bop
 1
-822
+823
 0
 0
 0
@@ -115078,7 +115218,7 @@ Kaetrophos
 0
 0
 0
-823
+824
 0
 Schmerz-Zentrum
 Distress Center
@@ -115087,7 +115227,7 @@ Janaians love pain. As strange as that is, it gets even stranger. Pain is equiva
 0
 jan_b.bop
 1
-823
+824
 0
 0
 0
@@ -115218,7 +115358,7 @@ Janai
 0
 0
 0
-824
+825
 0
 Kultureller Austausch
 Irdan Cultural Interchange
@@ -115227,7 +115367,7 @@ The Irdan Cultural Interchange seeks to cross-examine all facets of cultural div
 0
 ird_b.bop
 1
-824
+825
 0
 0
 0
@@ -115358,7 +115498,7 @@ Irdan
 0
 0
 0
-825
+826
 0
 Erzförderung
 Ore Extraction
@@ -115367,7 +115507,7 @@ The Ore Extraction on Hungoma spans the equatorial habitation zone, where the cl
 0
 hun_b.bop
 1
-825
+826
 0
 0
 0
@@ -115498,7 +115638,7 @@ Hungoma
 0
 0
 0
-826
+827
 0
 Hiro'akken Handelsflotten
 Hiro'akk Comms Network
@@ -115507,7 +115647,7 @@ The Hiro'akk know the necessity of an advanced interregional trade network. Afte
 0
 hir_b0.bop
 1
-826
+827
 0
 0
 0
@@ -115638,7 +115778,7 @@ Hiro'akka
 0
 0
 0
-827
+828
 0
 Hiro'akken Armada
 Hiro'akk Hunter Camp
@@ -115647,7 +115787,7 @@ The skills and perceptive acuity of Hiro'akk offer excellent training opportunit
 0
 hir_b1.bop
 3
-827
+828
 0
 0
 0
@@ -115778,7 +115918,7 @@ Hiro'akka
 0
 0
 0
-828
+829
 0
 Deritiumveredelung
 Deritium Improvement Process
@@ -115787,7 +115927,7 @@ The Herakletian deritium improvement process is a gain for engine research labs 
 0
 her_b.bop
 1
-828
+829
 0
 0
 0
@@ -115918,7 +116058,7 @@ Herakles
 0
 0
 0
-829
+830
 0
 Marodeurwerft
 Hazeti Raiders Shipyard
@@ -115927,7 +116067,7 @@ Hazet Raiding ships are highly efficient at tracking their targets and achieving
 0
 haz_b.bop
 1
-829
+830
 0
 0
 0
@@ -116058,7 +116198,7 @@ Hazet
 0
 0
 0
-830
+831
 0
 Deritium-Abbaugenehmigung
 Deritium Mining License
@@ -116067,7 +116207,7 @@ Although deritium represents the lifesaving essence of the Hanchac food supply, 
 0
 han_b.bop
 1
-830
+831
 0
 0
 0
@@ -116198,7 +116338,7 @@ Hanchac
 0
 0
 0
-831
+832
 0
 Hakonisches Heer
 Hakonian Military
@@ -116207,7 +116347,7 @@ The Hakonian military still employs many training facilities, bunkers, and munit
 0
 hak_b.bop
 1
-831
+832
 0
 0
 0
@@ -116338,7 +116478,7 @@ Hakon
 0
 0
 0
-832
+833
 0
 Goboqon-Versammlung
 Goboqon Concord
@@ -116347,7 +116487,7 @@ The gifted members of the Goboqon Concord embody the peaceful tolerance and beau
 0
 gob_b.bop
 1
-832
+833
 0
 0
 0
@@ -116478,7 +116618,7 @@ Goboqon
 0
 0
 0
-833
+834
 0
 Arbeitsdienst
 Fatigue Duty
@@ -116487,7 +116627,7 @@ The old readiness of the Giradorn to work hard in unpaid service is not forgotte
 0
 gir_b0.bop
 1
-833
+834
 0
 0
 0
@@ -116618,7 +116758,7 @@ Girador
 0
 0
 0
-834
+835
 0
 Ex-Zwangsarbeiter-Netzwerk
 Expatriate Forced-Labor Network
@@ -116627,7 +116767,7 @@ For years the Giradorn have been downtrodden and transported against their will 
 0
 gir_b1.bop
 1
-834
+835
 0
 0
 0
@@ -116758,7 +116898,7 @@ Girador
 0
 0
 0
-835
+836
 0
 Kultisten
 Cultists
@@ -116767,7 +116907,7 @@ Falloran cultists move as shadows in the night, and they move at the bidding of 
 0
 fal_b.bop
 1
-835
+836
 0
 0
 0
@@ -116898,7 +117038,7 @@ Fallum
 0
 0
 0
-836
+837
 0
 Kommunikationsarchiv
 Exomerian Study Group
@@ -116907,7 +117047,7 @@ Of particular interest to the Exomerians are non-vocal communication methods amo
 0
 exo_b.bop
 1
-836
+837
 0
 0
 0
@@ -117038,7 +117178,7 @@ Exomer
 0
 0
 0
-837
+838
 0
 Sternseherkonferenz
 Astrologer's Conference
@@ -117047,7 +117187,7 @@ The atlas of astrology on Eptir is the holy bible of Eptirel astrology and a com
 0
 ept_b.bop
 1
-837
+838
 0
 0
 0
@@ -117178,7 +117318,7 @@ Eptir
 0
 0
 0
-838
+839
 0
 Interstellare Handelskette
 Interplanetary Trade Chain
@@ -117187,7 +117327,7 @@ The Interplanetary Trade chain on Ener maintains a tight control on all incoming
 0
 ene_b.bop
 1
-838
+839
 0
 0
 0
@@ -117318,7 +117458,7 @@ Ener
 0
 0
 0
-839
+840
 0
 Kinderland
 Children's Paradise
@@ -117327,7 +117467,7 @@ Adventures, fun, action and play are abundant in the children's paradise on Elay
 0
 ela_b.bop
 1
-839
+840
 0
 0
 0
@@ -117458,7 +117598,7 @@ Elay
 0
 0
 0
-840
+841
 0
 Einar Abhörnetz
 Einar Agents
@@ -117467,7 +117607,7 @@ Einar agents can naturally exchange telepathic communication without any detecta
 0
 ein_b.bop
 1
-840
+841
 0
 0
 0
@@ -117598,7 +117738,7 @@ Einar
 0
 0
 0
-841
+842
 0
 Freizeitpark
 Palace of Ehlen
@@ -117607,7 +117747,7 @@ All manner of pleasures are available on the Ehlen homeworld, for the Eelee have
 0
 ehl_b.bop
 1
-841
+842
 0
 0
 0
@@ -117738,7 +117878,7 @@ Ehlen
 0
 0
 0
-842
+843
 0
 Deritium-Mine
 Deritium Mine
@@ -117747,7 +117887,7 @@ Droglith has a vast reserve of deritium. This state-of-the-art facility will ens
 0
 dro_b0.bop
 1
-842
+843
 0
 0
 0
@@ -117878,7 +118018,7 @@ Droglith
 0
 0
 0
-843
+844
 0
 Bergbauabkommen
 Mining Authorization
@@ -117887,7 +118027,7 @@ Our experts will try to convince Droglith mountain people to let us mine mineral
 0
 dro_b1.bop
 1
-843
+844
 0
 0
 0
@@ -118018,7 +118158,7 @@ Droglith
 0
 0
 0
-844
+845
 0
 Spezialmanufakturen
 Special Manufacturies
@@ -118027,7 +118167,7 @@ In nearly every garage and storage room on the planet, a Drizz is working on a b
 0
 dri_b0.bop
 1
-844
+845
 0
 0
 0
@@ -118158,7 +118298,7 @@ Drizz
 0
 0
 0
-845
+846
 0
 Drizzi Kartell
 Drizzi Cartel
@@ -118167,7 +118307,7 @@ Our control of the Drizzi Cartel may incur the wrath of some of their current tr
 0
 dri_b1.bop
 1
-845
+846
 0
 0
 0
@@ -118298,7 +118438,7 @@ Drizz
 0
 0
 0
-846
+847
 0
 Technologiearchiv
 Technology Archive
@@ -118307,7 +118447,7 @@ The Dougtaeks have arranged and organized all their acquired knowledge and techn
 0
 dou_b.bop
 1
-846
+847
 0
 0
 0
@@ -118438,7 +118578,7 @@ Dougtaek
 0
 0
 0
-847
+848
 0
 Inspektionshallen
 Inspection Patrol HQ
@@ -118447,7 +118587,7 @@ The Inspection Patrol oversees all areas of starship form, function and maintena
 0
 des_b0.bop
 1
-847
+848
 0
 0
 0
@@ -118578,7 +118718,7 @@ Deshant
 0
 0
 0
-848
+849
 0
 Dasha-Feiertage
 Dasha Festive Period
@@ -118587,7 +118727,7 @@ The Dasha festive period serves as the time reminiscent of the long-gone ages of
 0
 des_b1.bop
 1
-848
+849
 0
 0
 0
@@ -118718,7 +118858,7 @@ Deshant
 0
 0
 0
-849
+850
 0
 Militärakademie
 Military Academy
@@ -118727,7 +118867,7 @@ In this facility military instructors are prepared for their decade-long duties 
 0
 der_b.bop
 1
-849
+850
 0
 0
 0
@@ -118858,7 +118998,7 @@ Derit
 0
 0
 0
-850
+851
 0
 Delarianische Wächter
 Delarian Bodyguards
@@ -118867,7 +119007,7 @@ The Internal Affairs division will benefit greatly from Delarian experiences in 
 0
 del_b.bop
 1
-850
+851
 0
 0
 0
@@ -118998,7 +119138,7 @@ Delari
 0
 0
 0
-851
+852
 0
 Corvellianische Werft
 Corvellian Shipyard
@@ -119007,7 +119147,7 @@ The Corvellian shipyard may be crude and outdated by our standards, but they run
 0
 cor_b.bop
 1
-851
+852
 0
 0
 0
@@ -119138,7 +119278,7 @@ Corvellia
 0
 0
 0
-852
+853
 0
 Deritium-Abbaulizenz
 Deritium Mining Concessions
@@ -119147,7 +119287,7 @@ Membership of the Chewark ensures exclusive rights to their vast deritium reserv
 0
 che_b0.bop
 1
-852
+853
 0
 0
 0
@@ -119278,7 +119418,7 @@ Chewark
 0
 0
 0
-853
+854
 0
 Chewark Werftanlagen
 Chewark Shipyard
@@ -119287,7 +119427,7 @@ The Chewark Shipyard is a super-scale orbital fabrication plant, specializing in
 0
 che_b1.bop
 1
-853
+854
 0
 0
 0
@@ -119418,7 +119558,7 @@ Chewark
 0
 0
 0
-854
+855
 0
 Chamorer Armee
 Chamora Army
@@ -119427,7 +119567,7 @@ Despite many reform programs, the Chamorer still need to fight. This division of
 0
 cha_b0.bop
 1
-854
+855
 0
 0
 0
@@ -119558,7 +119698,7 @@ Chamora
 0
 0
 0
-855
+856
 0
 Industrie-Programm
 Factory Program
@@ -119567,7 +119707,7 @@ The installation of a Factory program will give the Chamorer much needed focus a
 0
 cha_b1.bop
 1
-855
+856
 0
 0
 0
@@ -119698,7 +119838,7 @@ Chamora
 0
 0
 0
-856
+857
 0
 Mineral-Reservoir
 Mineral Reserve
@@ -119707,7 +119847,7 @@ The minerals of Canovek are diverse and rich in quantity, and will greatly aid t
 0
 can_b0.bop
 1
-856
+857
 0
 0
 0
@@ -119838,7 +119978,7 @@ Canovek
 0
 0
 0
-857
+858
 0
 Elariwettkämpfe
 Elari Championships
@@ -119847,7 +119987,7 @@ The killing of an Elarus-Mammoth means an entry card into the higher castes on C
 0
 can_b1.bop
 1
-857
+858
 0
 0
 0
@@ -119978,7 +120118,7 @@ Canovek
 0
 0
 0
-858
+859
 0
 Forschungsbasis
 Research Station
@@ -119987,7 +120127,7 @@ Most Callanec are working in research somehow. To work in such a prestigious ins
 0
 cal_b.bop
 1
-858
+859
 0
 0
 0
@@ -120118,7 +120258,7 @@ Callanec
 0
 0
 0
-859
+860
 0
 Gedankenscans
 Thought Scans
@@ -120127,7 +120267,7 @@ Due to their tragic history the most recent legislation of the Cain allows for t
 0
 cai_b.bop
 1
-859
+860
 0
 0
 0
@@ -120258,7 +120398,7 @@ Cain
 0
 0
 0
-860
+861
 0
 Planetarer Computer
 Planetary Computer
@@ -120267,7 +120407,7 @@ The Bytolians are virtually dependent on their technology, and therefore constan
 0
 byt_b.bop
 1
-860
+861
 0
 0
 0
@@ -120398,7 +120538,7 @@ Bytolia
 0
 0
 0
-861
+862
 0
 Bretarianische Handelswege
 Bretarian Trading Lanes
@@ -120407,7 +120547,7 @@ If the Bretarian freighter fleet is upgraded and refitted, the economy will reco
 0
 bre_b.bop
 1
-861
+862
 0
 0
 0
@@ -120538,7 +120678,7 @@ Bretaria
 0
 0
 0
-862
+863
 0
 Brane Waffenzentrum
 Brane Weapons Center
@@ -120547,7 +120687,7 @@ The Brane are particularly interested in weapons research. The Brane Weapon Cent
 0
 bra_b.bop
 1
-862
+863
 0
 0
 0
@@ -120678,7 +120818,7 @@ Brane
 0
 0
 0
-863
+864
 0
 Bergbaukommission
 Mining Commission
@@ -120687,7 +120827,7 @@ The Brac are forced to live underground and draw on their once very advanced dri
 0
 brac_b.bop
 1
-863
+864
 0
 0
 0
@@ -120818,7 +120958,7 @@ Brac
 0
 0
 0
-864
+865
 0
 Botha-Nachrichtendienst
 Bothasiori Intelligence
@@ -120827,7 +120967,7 @@ The Bothasiori use their shapeshifting abilities to infiltrate foreign worlds an
 0
 bot_b.bop
 1
-864
+865
 0
 0
 0
@@ -120958,7 +121098,7 @@ Botha
 0
 0
 0
-865
+866
 0
 Deritium Förderanlage
 Deritium Extraction Rig
@@ -120967,7 +121107,7 @@ The Bosniac Dilithium Extraction Rig is a deep-core drilling facility. Targeting
 0
 bos_b0.bop
 3
-865
+866
 0
 0
 0
@@ -121098,7 +121238,7 @@ Bosnic
 0
 0
 0
-866
+867
 0
 Handels-Syndikat
 Trading Syndicate
@@ -121107,7 +121247,7 @@ The Bosniac Trading Syndicate is the operating arm of their merchant shipping fl
 0
 bos_b1.bop
 3
-866
+867
 0
 0
 0
@@ -121238,7 +121378,7 @@ Bosnic
 0
 0
 0
-867
+868
 0
 Interstellare Wirtschaftsgemeinschaft
 Intergalactic Trade Union
@@ -121247,7 +121387,7 @@ The Boneran Trade Union oversees the trafficking in the trade lanes between Bone
 0
 bon_b0.bop
 1
-867
+868
 0
 0
 0
@@ -121378,7 +121518,7 @@ Bonerus
 0
 0
 0
-868
+869
 0
 Zahlstation
 Toll Booths
@@ -121387,7 +121527,7 @@ Transport of goods through their controlled territory requires customs duty whic
 0
 bon_b1.bop
 1
-868
+869
 0
 0
 0
@@ -121397,7 +121537,7 @@ bon_b1.bop
 Bonerus
 0
 1
-867
+868
 0
 0
 0
@@ -121518,7 +121658,7 @@ Bonerus
 0
 0
 0
-869
+870
 0
 Gravitonquellen-Analysestation
 Gravitonic Research Station
@@ -121527,7 +121667,7 @@ With the construction of further, more secure and stable orbital research statio
 0
 bit_b.bop
 1
-869
+870
 0
 0
 0
@@ -121658,7 +121798,7 @@ Bitoria
 0
 0
 0
-870
+871
 0
 Berater-Akademie
 Counselling Academy
@@ -121667,7 +121807,7 @@ Graduates of the Berut Counselling Academy have honed their empathic abilities a
 0
 ber_b0.bop
 1
-870
+871
 0
 0
 0
@@ -121798,7 +121938,7 @@ Berut
 0
 0
 0
-871
+872
 0
 Diplomatisches Korps
 Diplomatic Corps
@@ -121807,7 +121947,7 @@ The Berut Diplomatic Corps gathers the most accomplished diplomats and mediators
 0
 ber_b1.bop
 1
-871
+872
 0
 0
 0
@@ -121938,7 +122078,7 @@ Berut
 0
 0
 0
-872
+873
 0
 Kraft- und Fitnessprogramme
 Vigor and Vitality Programs
@@ -121947,7 +122087,7 @@ Bentans are well-trained and handsome people with the genetic advantage of being
 0
 ben_b0.bop
 1
-872
+873
 0
 0
 0
@@ -122078,7 +122218,7 @@ Bent
 0
 0
 0
-873
+874
 0
 Systemanalyse-Vereinigung
 Systems Analysts Union
@@ -122087,7 +122227,7 @@ The Systems Analysts Union excels at perfecting and harmonizing starship systems
 0
 ben_b1.bop
 1
-873
+874
 0
 0
 0
@@ -122218,7 +122358,7 @@ Bent
 0
 0
 0
-874
+875
 0
 Exportstoppverbot
 Export Ban
@@ -122227,7 +122367,7 @@ Trade of Belamarian grazite is under severe restrictions and comparable with dru
 0
 bel_b.bop
 1
-874
+875
 0
 0
 0
@@ -122358,7 +122498,7 @@ Belamar
 0
 0
 0
-875
+876
 0
 Industrieller Fortschritt
 Industrial Forges
@@ -122367,7 +122507,7 @@ The Baon's first step to expansion and advancement is industry. These forges wil
 0
 bao_b.bop
 1
-875
+876
 0
 0
 0
@@ -122498,7 +122638,7 @@ Baon
 0
 0
 0
-876
+877
 0
 Nativer Sprachcode
 Native Language Code
@@ -122507,7 +122647,7 @@ Their music chants are underlaid with mathematically complex algorithms and can 
 0
 baob_b.bop
 1
-876
+877
 0
 0
 0
@@ -122638,7 +122778,7 @@ Cereg-barach
 0
 0
 0
-877
+878
 0
 Bandoleri Handelsregister
 Bandoleri Trade Register
@@ -122647,7 +122787,7 @@ The Bandoleri Trade Register is full of bizarre and abusive acts of commerce fro
 0
 ban_b.bop
 1
-877
+878
 0
 0
 0
@@ -122778,7 +122918,7 @@ Bandoleri
 0
 0
 0
-878
+879
 0
 Baflidentheater
 Baflide Theatre
@@ -122787,7 +122927,7 @@ Baflides are an amusing people, and the value of their non-stop high-quality com
 0
 baf_b0.bop
 1
-878
+879
 0
 0
 0
@@ -122918,7 +123058,7 @@ Baflid
 0
 0
 0
-879
+880
 0
 Halluzinationsprojektor
 Hallucination Projectors
@@ -122927,7 +123067,7 @@ Despite their guileless appearance, Baflides have the gift to momentarily inflic
 0
 baf_b1.bop
 2
-879
+880
 0
 0
 0
@@ -123058,7 +123198,7 @@ Baflid
 0
 0
 0
-880
+881
 0
 Sturmtruppenkontingente
 Stormtroopers
@@ -123067,7 +123207,7 @@ The legendary Ba'a stormtrooper battallions are a welcome addition to our specia
 0
 baa_b.bop
 1
-880
+881
 0
 0
 0
@@ -123198,7 +123338,7 @@ Ba'a
 0
 0
 0
-881
+882
 0
 Mechfabriken
 Mech Facilities
@@ -123207,7 +123347,7 @@ The B'omar Mech construction facilities would greatly enhance starship developme
 0
 bwa_b.bop
 1
-881
+882
 0
 0
 0
@@ -123338,7 +123478,7 @@ B'war
 0
 0
 0
-882
+883
 0
 Werftenkomplex
 Azoran Shipyard
@@ -123347,7 +123487,7 @@ The Shipyards of Azora are huge space-borne manufacturing facilities. The Azoran
 0
 azo_b.bop
 1
-882
+883
 0
 0
 0
@@ -123478,7 +123618,7 @@ Azora
 0
 0
 0
-883
+884
 0
 Computerkern-Testlabors
 Computer Core Testlabs
@@ -123487,7 +123627,7 @@ These computer core test lab facilities are a place of pure minituarization yet 
 0
 ath_b.bop
 1
-883
+884
 0
 0
 0
@@ -123618,7 +123758,7 @@ Athari
 0
 0
 0
-884
+885
 0
 Schaukampfarenen
 Show Fights
@@ -123627,7 +123767,7 @@ Caught in a dystopic society in which bitterness and depression prevail, the bac
 0
 asz_b.bop
 1
-884
+885
 0
 0
 0
@@ -123758,7 +123898,7 @@ Aszreth
 0
 0
 0
-885
+886
 0
 Götter Visualisierung
 Deities Visualization
@@ -123767,7 +123907,7 @@ If we can provide them with enough anti-deuterium and stable generators, the Ard
 0
 ard_b0.bop
 1
-885
+886
 0
 0
 0
@@ -123898,7 +124038,7 @@ Ardor
 0
 0
 0
-886
+887
 0
 Fraktalanalyse
 Fractal Analysis
@@ -123907,7 +124047,7 @@ Ardren would not be very amused if we tried to biologically analyze their fracta
 0
 ard_b1.bop
 1
-886
+887
 0
 0
 0
@@ -124038,7 +124178,7 @@ Ardor
 0
 0
 0
-887
+888
 0
 Kulturelle Stiftung
 Cultural Foundation
@@ -124047,7 +124187,7 @@ The Cultural Foundation offers exchange opportunities amongst diplomats, scholar
 0
 arc_b.bop
 1
-887
+888
 0
 0
 0
@@ -124178,7 +124318,7 @@ Arcasa
 0
 0
 0
-888
+889
 0
 Nahrungsfiltratoren
 Food Filtration
@@ -124187,7 +124327,7 @@ The Aqindoan food needs are not very rich or diverse and can be optimized throug
 0
 aqi_b0.bop
 1
-888
+889
 0
 0
 0
@@ -124318,7 +124458,7 @@ Aqindoan
 0
 0
 0
-889
+890
 0
 Musterungsbasis
 Mustering Base
@@ -124327,7 +124467,7 @@ The Aqindoan Mustering Base keeps many of the citizens occupied in preparation f
 0
 aqi_b1.bop
 1
-889
+890
 0
 0
 0
@@ -124458,7 +124598,7 @@ Aqindoan
 0
 0
 0
-890
+891
 0
 Antromel Ernteeinheit
 Antromel Harvesting Unit
@@ -124467,7 +124607,7 @@ The Antromel are indeed of artificial origin, however master the cultivation of 
 0
 ant_b.bop
 1
-890
+891
 0
 0
 0
@@ -124598,7 +124738,7 @@ Antromel
 0
 0
 0
-891
+892
 0
 Raumfahrergilde
 Spacefarers Guild
@@ -124607,7 +124747,7 @@ The Ankaran Spacefaring Guild will be a great boon for any scientific body. Adva
 0
 ank_b.bop
 1
-891
+892
 0
 0
 0
@@ -124738,7 +124878,7 @@ Ankara
 0
 0
 0
-892
+893
 0
 Bioschild Experimente
 Bio-shield Experiments
@@ -124747,7 +124887,7 @@ With some luck we should be able to discover the techniques behind the very inte
 0
 ang_b.bop
 1
-892
+893
 0
 0
 0
@@ -124878,7 +125018,7 @@ Angolia
 0
 0
 0
-893
+894
 0
 Andromedaphalanx
 Andromeda Phalanx
@@ -124887,7 +125027,7 @@ The Andromedans already blundered in underestimating the learning abilities of t
 0
 and_b0.bop
 1
-893
+894
 0
 0
 0
@@ -125018,7 +125158,7 @@ Andromeda
 0
 0
 0
-894
+895
 0
 Rekrutierungsbüro
 Recruiting Station
@@ -125027,7 +125167,7 @@ Ever devoted to the cause, and enthusiastic to fight for their people, the Andro
 0
 and_b1.bop
 1
-894
+895
 0
 0
 0
@@ -125158,7 +125298,7 @@ Andromeda
 0
 0
 0
-895
+896
 0
 Aleubitische Widerstandsbewegung
 Aleubite Resistance Movement
@@ -125167,7 +125307,7 @@ Underground bases are located throughout all major urban centres, and from here 
 0
 ale_b.bop
 1
-895
+896
 0
 0
 0
@@ -125298,7 +125438,7 @@ Aleub
 0
 0
 0
-896
+897
 0
 Xenoarchäologische Musterwelten
 Xeno-Archaeologic Sample Worlds
@@ -125307,7 +125447,7 @@ The Alemnian love of archaeology can be tapped with the installation of these re
 0
 alem_b.bop
 1
-896
+897
 0
 0
 0
@@ -125438,7 +125578,7 @@ Alemni
 0
 0
 0
-897
+898
 0
 Tidalhemmer
 Tidal Dams
@@ -125447,7 +125587,7 @@ Aldari's planetary shield consists of a carbon armor over the top of the planet-
 0
 ald_b.bop
 1
-897
+898
 0
 0
 0
@@ -125578,7 +125718,7 @@ Aldari
 0
 0
 0
-898
+899
 0
 Schulen
 Schools
@@ -125587,7 +125727,7 @@ The Aihlinn live in intellectual poverty. We must help these poor beings and giv
 0
 aih_b.bop
 1
-898
+899
 0
 0
 0
@@ -125718,7 +125858,7 @@ Aihlinn
 0
 0
 0
-899
+900
 0
 Adryl Rituale
 Adryl Ritual
@@ -125727,7 +125867,7 @@ We can try to modify the complex, hand-calculated computations during their ritu
 0
 adr_b.bop
 2
-899
+900
 0
 0
 0
@@ -125858,7 +125998,7 @@ Adryl
 0
 0
 0
-900
+901
 0
 Adamanenschule
 Adaman School
@@ -125867,7 +126007,7 @@ Every Adaman with a valid trade and flight license is trained in this facility i
 0
 ada_b.bop
 1
-900
+901
 0
 0
 0
