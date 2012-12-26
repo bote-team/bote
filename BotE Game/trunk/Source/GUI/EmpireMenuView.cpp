@@ -1160,7 +1160,7 @@ void CEmpireMenuView::DrawEmpireTop5Menue(Gdiplus::Graphics *g)
 		}
 		else
 		{
-			s.Format("%s %d: Unbekannt", CResourceManager::GetString("PLACE"), nCount + 1);
+			s.Format("%s %d: %s", CResourceManager::GetString("PLACE"), nCount + 1, CResourceManager::GetString("UNKNOWN"));
 			g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(150, 135 + 110 * nCount, m_TotalSize.cx - 250, 25), &fontFormat, &fontBrush);
 		}
 
