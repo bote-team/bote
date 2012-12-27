@@ -187,9 +187,9 @@ Verloren
 
 // Schiffsbefehlsbuttons
 [BTN_MULTI_TURN_ORDER]
-Mehrrundenbefehl
+Mehrrundenb.
 [BTN_SINGLE_TURN_ORDER]
-Einrundenbefehl
+Einrundenbef.
 [BTN_IMMEDIATE_ORDER]
 Sofortbefehl
 [BTN_AVOID]
