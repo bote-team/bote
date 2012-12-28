@@ -403,8 +403,8 @@ void CTradeMenuView::DrawMonopolMenue(Graphics* g)
 			// Die Monopolkosten sind die gesamten Einwohner aller Systeme unserer und uns bekannter Rassen mal die Nummer
 			// des Rohstoffes mal 15. Gehört jemand schon das Monopol und wir wollen das Wegkaufen, dann müssen wir
 			// den doppelten Preis bezahlen
-			for (int y = 0; y < 20; y++)
-				for (int x = 0; x < 30; x++)
+			for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
+				for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
 					if (pDoc->GetSystem(x, y).GetOwnerOfSystem() != "" && (pDoc->GetSystem(x, y).GetOwnerOfSystem() == pMajor->GetRaceID() || pMajor->IsRaceContacted(pDoc->GetSystem(x, y).GetOwnerOfSystem()) == TRUE))
 						m_dMonopolCosts[i] += pDoc->GetSystem(x, y).GetHabitants();
 			// Wenn wir das Monopol schon besitzen oder es in der Runde schon gekauft haben
