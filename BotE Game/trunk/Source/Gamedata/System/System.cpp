@@ -1524,19 +1524,19 @@ void CSystem::CalculateBuildableShips(CBotf2Doc* pDoc, const CPoint& p)
 				&& !pShipInfo->IsStation())
 			{
 				// Forschungsstufen checken
-				if (pResearch->GetBioTech() <  pShipInfo->GetBioTech())
+				BYTE researchLevels[6] =
+				{
+					pResearch->GetBioTech(),
+					pResearch->GetEnergyTech(),
+					pResearch->GetCompTech(),
+					pResearch->GetPropulsionTech(),
+					pResearch->GetConstructionTech(),
+					pResearch->GetWeaponTech()
+				};
+				
+				if (!pShipInfo->IsThisShipBuildableNow(researchLevels))
 					continue;
-				if (pResearch->GetEnergyTech() < pShipInfo->GetEnergyTech())
-					continue;
-				if (pResearch->GetCompTech() < pShipInfo->GetComputerTech())
-					continue;
-				if (pResearch->GetPropulsionTech() < pShipInfo->GetPropulsionTech())
-					continue;
-				if (pResearch->GetConstructionTech() < pShipInfo->GetConstructionTech())
-					continue;
-				if (pResearch->GetWeaponTech() < pShipInfo->GetWeaponTech())
-					continue;
-
+				
 				// Wenn durch dieses Schiff ein anderes Schiff veraltet ist (nur wenn es technologisch baubar ist)
 				if (pShipInfo->GetObsoleteShipClass() != "")
 				{
