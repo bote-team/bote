@@ -140,10 +140,15 @@ void CShipBottomView::SetupDrawing() {
 }
 
 // Achtung: r.right = Breite, r.bottom = Hˆhe!
-void CShipBottomView::DrawImage( CString resName, CRect r ) {
-	Bitmap* bmp = m_dc.gp->GetGDIGraphic(resName);
-	if (bmp)
-		m_dc.g->DrawImage(bmp, r.left, r.top, r.Width(), r.Height());
+bool CShipBottomView::DrawImage( const CString& resName, const CRect& r ) const
+{
+	if (Bitmap* bmp = m_dc.gp->GetGDIGraphic(resName))
+	{
+		if (m_dc.g->DrawImage(bmp, r.left, r.top, r.Width(), r.Height()) == Gdiplus::Ok)
+			return true;
+	}
+
+	return false;		
 }
 
 void CShipBottomView::DrawSmallButton( const CString& resString, const CPoint& coords, SHIP_ORDER::Typ shiporder ) {
@@ -223,19 +228,25 @@ void CShipBottomView::DrawShipContent() {
 		// groﬂes Bild der Station zeichnen
 		if (m_bShowStation)
 		{
-			map<CString, CMajor*>* pmMajors = m_dc.pDoc->GetRaceCtrl()->GetMajors();
-			for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
+			if (m_dc.pDoc->CurrentSector().GetIsStationInSector())
 			{
-				if (m_dc.pDoc->CurrentSector().GetOutpost(it->first) || m_dc.pDoc->CurrentSector().GetStarbase(it->first))
+				// gehˆrt uns die Station oder kennen wir die andere Rasse
+				if (pMajor->GetRaceID() == pShip->GetOwnerOfShip() || pMajor->IsRaceContacted(pShip->GetOwnerOfShip()))
 				{
-					// gehˆrt uns die Station oder kennen wir die andere Rasse
-					if (pMajor->GetRaceID() == pShip->GetOwnerOfShip() || pMajor->IsRaceContacted(pShip->GetOwnerOfShip()))
+					// Major holen, welcher die Station besitzt
+					if (CMajor* pStationOwner = dynamic_cast<CMajor*>(m_dc.pDoc->GetRaceCtrl()->GetRace(pShip->GetOwnerOfShip())))
 					{
-						DrawImage("Other\\" + it->second->GetPrefix() + "Starbase.bop", CRect(CPoint(550,20),CSize(235,200)));
-						break;
+						// schˆnerer Grafik der Station des Majors groﬂ anzeigen
+						DrawImage("Other\\" + pStationOwner->GetPrefix() + "Starbase.bop", CRect(CPoint(550,20),CSize(235,200)));
+					}
+					else
+					{
+						// z.B. handelt es sich um den Ehlenen-Besch¸tzer, dann die Stationsgrafik etwas grˆﬂer anzeigen
+						DrawImage("Ships\\" + pShip->GetShipClass() + ".bop", CRect(CPoint(550,30),CSize(235,175)));
 					}
 				}
 			}
+
 			break;
 		}
 

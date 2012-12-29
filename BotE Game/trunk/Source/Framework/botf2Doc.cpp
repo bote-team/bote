@@ -1549,6 +1549,21 @@ void CBotf2Doc::ApplyShipsAtStartup()
 		AfxMessageBox("ERROR! Could not open file \"StartShips.data\"...");
 	// Datei schließen
 	file.Close();
+
+	// Nehmen die Ehlenen am Spiel teil, so den Ehlenen-Beschützer (Station) in deren System bauen
+	if (CMinor* pEhlen = dynamic_cast<CMinor*>(GetRaceCtrl()->GetRace("EHLEN")))
+	{
+		// Schiff Ehlenen-Beschützer suchen (blöd das hier Sprachunabhängigkeit bei der ID existiert)
+		for (int i = 0; i < m_ShipInfoArray.GetSize(); i++)
+		{
+			CShipInfo* pShipInfo = &m_ShipInfoArray.GetAt(i);
+			if (pShipInfo->GetOnlyInSystem() != pEhlen->GetHomesystemName())
+				continue;
+
+			BuildShip(m_ShipInfoArray.GetAt(i).GetID(), pEhlen->GetRaceKO(), pEhlen->GetRaceID());
+			break;
+		}
+	}
 }
 
 
@@ -3974,7 +3989,7 @@ void CBotf2Doc::CalcShipOrders()
 			// jetzt müssen wir die Schiffsinfos durchgehen und schauen, welche Station wir technologisch bauen könnten.
 			// hier wird vereinfacht angenommen, das an teurerer Aussenposten auch ein besserer ist
 			short id = -1;
-			// Wenn wir in dem Sektor noch keinen Au?enposten und noch keine Sternbasis stehen haben
+			// Wenn wir in dem Sektor noch keinen Außenposten und noch keine Sternbasis stehen haben
 			if (pSector->GetOutpost(y->second->GetOwnerOfShip()) == FALSE
 				&& pSector->GetStarbase(y->second->GetOwnerOfShip()) == FALSE)
 					id = pMajor->BestBuildableVariant(SHIP_TYPE::OUTPOST, m_ShipInfoArray);

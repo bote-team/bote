@@ -176,10 +176,14 @@ void CDiplomacyController::CalcDiplomacyFallouts(CBotf2Doc* pDoc)
 				// Gebäude so weit wie möglich mit Arbeitern besetzen
 				pDoc->GetSystem(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).SetWorkersIntoBuildings();
 				// alle Schiffe der Minor gehen nun an den Major
-				for(CShipMap::iterator i = pDoc->m_ShipMap.begin(); i != pDoc->m_ShipMap.end(); ++i)
+				for (CShipMap::iterator i = pDoc->m_ShipMap.begin(); i != pDoc->m_ShipMap.end(); ++i)
 				{
 					if (i->second->GetOwnerOfShip() == pMinor->GetRaceID())
 					{
+						// Der Ehlenen Beschützer geht niemals an den Major
+						if (pMinor->GetRaceID() == "EHLEN" && i->second->GetShipType() == SHIP_TYPE::STARBASE)
+							continue;
+
 						i->second->SetOwnerOfShip(pMajor->GetRaceID());
 						// Schiff in die Shiphistory stecken
 						pMajor->GetShipHistory()->AddShip(i->second, pDoc->GetSector(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).GetName(true), pDoc->GetCurrentRound());
@@ -859,10 +863,10 @@ void CDiplomacyController::ReceiveToMajor(CBotf2Doc* pDoc, CMajor* pToMajor, CDi
 					switch (pInfo->m_nType)
 					{
 						case DIPLOMATIC_AGREEMENT::TRADE:		sAgreement = CResourceManager::GetString("TRADE_AGREEMENT"); break;
-						case DIPLOMATIC_AGREEMENT::FRIENDSHIP:sAgreement = CResourceManager::GetString("FRIENDSHIP"); break;
-						case DIPLOMATIC_AGREEMENT::COOPERATION:			sAgreement = CResourceManager::GetString("COOPERATION"); break;
-						case DIPLOMATIC_AGREEMENT::AFFILIATION:			sAgreement = CResourceManager::GetString("AFFILIATION"); break;
-						case DIPLOMATIC_AGREEMENT::MEMBERSHIP:			sAgreement = CResourceManager::GetString("MEMBERSHIP"); break;
+						case DIPLOMATIC_AGREEMENT::FRIENDSHIP:	sAgreement = CResourceManager::GetString("FRIENDSHIP"); break;
+						case DIPLOMATIC_AGREEMENT::COOPERATION:	sAgreement = CResourceManager::GetString("COOPERATION"); break;
+						case DIPLOMATIC_AGREEMENT::AFFILIATION:	sAgreement = CResourceManager::GetString("AFFILIATION"); break;
+						case DIPLOMATIC_AGREEMENT::MEMBERSHIP:	sAgreement = CResourceManager::GetString("MEMBERSHIP"); break;
 					}
 					CString s = CResourceManager::GetString("WE_DECLINE_MIN_OFFER", FALSE, sAgreement, pFromRace->GetRaceName());
 					message.GenerateMessage(s, MESSAGE_TYPE::DIPLOMACY, "", 0, 0);
@@ -1001,10 +1005,10 @@ void CDiplomacyController::SendToMinor(CBotf2Doc* pDoc, CMinor* pToMinor, CDiplo
 			switch(pInfo->m_nType)
 			{
 			case DIPLOMATIC_AGREEMENT::TRADE:		{sAgreement = CResourceManager::GetString("TRADE_AGREEMENT_WITH_ARTICLE");	break;}
-			case DIPLOMATIC_AGREEMENT::FRIENDSHIP:{sAgreement = CResourceManager::GetString("FRIENDSHIP_WITH_ARTICLE");		break;}
-			case DIPLOMATIC_AGREEMENT::COOPERATION:			{sAgreement = CResourceManager::GetString("COOPERATION_WITH_ARTICLE");		break;}
-			case DIPLOMATIC_AGREEMENT::AFFILIATION:			{sAgreement = CResourceManager::GetString("AFFILIATION_WITH_ARTICLE");		break;}
-			case DIPLOMATIC_AGREEMENT::MEMBERSHIP:			{sAgreement = CResourceManager::GetString("MEMBERSHIP_WITH_ARTICLE");		break;}
+			case DIPLOMATIC_AGREEMENT::FRIENDSHIP:	{sAgreement = CResourceManager::GetString("FRIENDSHIP_WITH_ARTICLE");		break;}
+			case DIPLOMATIC_AGREEMENT::COOPERATION:	{sAgreement = CResourceManager::GetString("COOPERATION_WITH_ARTICLE");		break;}
+			case DIPLOMATIC_AGREEMENT::AFFILIATION:	{sAgreement = CResourceManager::GetString("AFFILIATION_WITH_ARTICLE");		break;}
+			case DIPLOMATIC_AGREEMENT::MEMBERSHIP:	{sAgreement = CResourceManager::GetString("MEMBERSHIP_WITH_ARTICLE");		break;}
 			}
 			s = sEmpireName + " " + CResourceManager::GetString("OUR_MIN_OFFER", FALSE, pToMinor->GetRaceName(), sAgreement);
 		}
@@ -1116,10 +1120,10 @@ void CDiplomacyController::ReceiveToMinor(CBotf2Doc* pDoc, CMinor* pToMinor, CDi
 					switch (pInfo->m_nType)
 					{
 						case DIPLOMATIC_AGREEMENT::TRADE:		sAgreement = CResourceManager::GetString("TRADE_AGREEMENT"); break;
-						case DIPLOMATIC_AGREEMENT::FRIENDSHIP:sAgreement = CResourceManager::GetString("FRIENDSHIP"); break;
-						case DIPLOMATIC_AGREEMENT::COOPERATION:			sAgreement = CResourceManager::GetString("COOPERATION"); break;
-						case DIPLOMATIC_AGREEMENT::AFFILIATION:			sAgreement = CResourceManager::GetString("AFFILIATION"); break;
-						case DIPLOMATIC_AGREEMENT::MEMBERSHIP:			sAgreement = CResourceManager::GetString("MEMBERSHIP"); break;
+						case DIPLOMATIC_AGREEMENT::FRIENDSHIP:	sAgreement = CResourceManager::GetString("FRIENDSHIP"); break;
+						case DIPLOMATIC_AGREEMENT::COOPERATION:	sAgreement = CResourceManager::GetString("COOPERATION"); break;
+						case DIPLOMATIC_AGREEMENT::AFFILIATION:	sAgreement = CResourceManager::GetString("AFFILIATION"); break;
+						case DIPLOMATIC_AGREEMENT::MEMBERSHIP:	sAgreement = CResourceManager::GetString("MEMBERSHIP"); break;
 					}
 
 					s = CResourceManager::GetString("MIN_DECLINE_OFFER", FALSE, pToMinor->GetRaceName(), sAgreement);

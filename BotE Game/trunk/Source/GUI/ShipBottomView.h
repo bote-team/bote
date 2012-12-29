@@ -179,7 +179,7 @@ private:
 
 	CPoint CalcSecondaryButtonTopLeft(short counter, bool top_down = true) const;
 
-	void DrawImage( CString resName, CRect r );
+	bool DrawImage( const CString& resName, const CRect& r ) const;
 	void DrawSmallButton( const CString& resString, const CPoint& coords, SHIP_ORDER::Typ shiporder = SHIP_ORDER::NONE );
 	void SetupDrawing();
 

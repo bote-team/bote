@@ -399,9 +399,9 @@ void CMinor::CheckDiplomaticConsistence(CBotf2Doc* pDoc)
 			{
 			case DIPLOMATIC_AGREEMENT::TRADE: {s = CResourceManager::GetString("CANCEL_TRADE_AGREEMENT", FALSE, m_sName);	break;}
 			case DIPLOMATIC_AGREEMENT::FRIENDSHIP: {s = CResourceManager::GetString("CANCEL_FRIENDSHIP", FALSE, m_sName);	break;}
-			case DIPLOMATIC_AGREEMENT::COOPERATION: {s = CResourceManager::GetString("CANCEL_COOPERATION", FALSE, m_sName);			break;}
-			case DIPLOMATIC_AGREEMENT::AFFILIATION: {s = CResourceManager::GetString("CANCEL_AFFILIATION", FALSE, m_sName);			break;}
-			case DIPLOMATIC_AGREEMENT::MEMBERSHIP: {s = CResourceManager::GetString("CANCEL_MEMBERSHIP", FALSE, m_sName);				break;}
+			case DIPLOMATIC_AGREEMENT::COOPERATION: {s = CResourceManager::GetString("CANCEL_COOPERATION", FALSE, m_sName);	break;}
+			case DIPLOMATIC_AGREEMENT::AFFILIATION: {s = CResourceManager::GetString("CANCEL_AFFILIATION", FALSE, m_sName);	break;}
+			case DIPLOMATIC_AGREEMENT::MEMBERSHIP: {s = CResourceManager::GetString("CANCEL_MEMBERSHIP", FALSE, m_sName);	break;}
 			}
 			// Krieg bleibt weiterhin bestehen
 			if (nAgreement != DIPLOMATIC_AGREEMENT::WAR)
