@@ -41,7 +41,7 @@ CIniLoader::CIniLoader(void)
 
 		WriteValue("Control", "SHOWSCROLLBARS", "OFF");
 		WriteValue("Control", "INVERTMOUSE", "OFF");
-		WriteValue("Control", "HIDEMENUBAR", "ON");
+		WriteValue("Control", "HIDEMENUBAR", "OFF");
 
 		WriteValue("Special", "VERSION", VERSION_INFORMATION);
 		WriteValue("Special", "RANDOMSEED", "-1");
