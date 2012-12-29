@@ -550,6 +550,9 @@ void CSystem::SetOwnerOfSystem(const CString& sOwnerOfSystem)
 	m_TradeRoutes.RemoveAll();
 	m_ResourceRoutes.RemoveAll();
 
+	// Alle Truppen entfernen
+	m_Troops.RemoveAll();
+
 	// Bauliste hart löschen
 	m_AssemblyList.Reset();
 }
@@ -670,7 +673,7 @@ void CSystem::SetBuildingDestroy(int RunningNumber, BOOLEAN add)
 BOOLEAN CSystem::SetHabitants(double habitants)
 {
 	m_dHabitants = habitants;
-
+	
 	if (((USHORT)m_dHabitants / TRADEROUTEHAB) > m_byMaxTradeRoutesFromHab)
 	{
 		m_byMaxTradeRoutesFromHab++;

@@ -2629,7 +2629,7 @@ void CBotf2Doc::CalcSystemAttack()
 					// Wenn das System einer Minorrace gehört, eingenommen wurde und somit befreit wird
 					else if (GetSector(p.x, p.y).GetMinorRace() == TRUE && GetSector(p.x, p.y).GetTakenSector() == TRUE && defender != NULL && defender->IsMajor())
 					{
-						// Die Beziehung zur der Majorrace, die das System vorher besaß verschlechtert sich
+						// Die Beziehung zur Majorrace, die das System vorher besaß verschlechtert sich
 						defender->SetRelation(attacker, -rand()%50);
 						// Die Beziehung zu der Minorrace verbessert sich auf Seiten des Retters
 						CMinor* pMinor = m_pRaceCtrl->GetMinorRace(GetSector(p.x, p.y).GetName());
@@ -3800,7 +3800,7 @@ void CBotf2Doc::CalcShipOrders()
 				ASSERT(pMajor);
 				network::RACE client = m_pRaceCtrl->GetMappedClientID(pMajor->GetRaceID());
 
-				// Gebäude bauen, wenn wir das System zum ersten Mal kolonisieren, sprich das System noch niemanden geh?rt
+				// Gebäude bauen, wenn wir das System zum ersten Mal kolonisieren, sprich das System noch niemanden gehört
 				if (pSystem->GetOwnerOfSystem() == "")
 				{
 					// Sector- und Systemwerte ändern

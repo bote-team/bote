@@ -115,10 +115,12 @@ BOOLEAN CAttackSystem::Calculate()
 	if (m_pTroops.GetSize() > 0 && m_pSystem->GetHabitants() > 0.0f)
 	{
 		// Das System wurde erobert. Truppen aus dem Transporter werden in dem System stationiert
+		m_pSector->SetOwned(TRUE);
+		m_pSystem->SetOwnerOfSystem(m_pTroops.GetAt(0)->GetOwner());
+		// jetzt die Truppen dem System hinzufügen
 		for (int i = 0; i < m_pTroops.GetSize(); i++)
 			m_pSystem->AddTroop(m_pTroops.GetAt(i));
-		m_pSystem->SetOwnerOfSystem(m_pTroops.GetAt(0)->GetOwner());
-		m_pSector->SetOwned(TRUE);
+		
 		// Alle Truppen von den Transportern löschen, da diese jetzt im System sind
 		for (int i = 0; i < m_pShips.GetSize(); i++)
 			for (int j = 0; j < m_pShips.GetAt(i)->GetTransportedTroops()->GetSize();)
