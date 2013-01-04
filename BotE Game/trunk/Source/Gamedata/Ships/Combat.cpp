@@ -464,7 +464,7 @@ bool CCombat::SetTarget(int i)
 		int random = rand()%m_mEnemies[sOwner].size();
 		CCombatShip* targetShip = m_mEnemies[sOwner].at(random);
 
-		if (targetShip->m_pShip->GetHull()->GetCurrentHull() < 1)
+		if (!targetShip->m_pShip->IsAlive())
 			AfxMessageBox("ERROR in Combat SetTarget");
 
 		// ist das Schiff nicht (mehr) getarnt
@@ -513,10 +513,16 @@ bool CCombat::CheckShipStayInCombat(int i)
 	CCombatShip* pCombatShip = m_CS[i];
 
 	bool bIsAlive = true;
-	if (pCombatShip->m_pShip->GetHull()->GetCurrentHull() < 1)
+	if (!pCombatShip->m_pShip->IsAlive())
+	{
 		bIsAlive = false;
+		// Merken wer das Schiff zerstört hat (nur wenn es noch nicht aufgenommen wurde)		
+		m_mKilledShips[pCombatShip->m_sKilledByRace].insert(pCombatShip->m_pShip);
+	}
 	else if (pCombatShip->m_pShip->GetCombatTactic() == COMBAT_TACTIC::CT_RETREAT && pCombatShip->m_byRetreatCounter == 0 && pCombatShip->m_lRoute.empty())
+	{
 		bIsAlive = false;
+	}
 
 	// Bevor wir zur nächsten Position fliegen schauen ob das Schiff noch am Leben ist
 	// Wenn nicht, dann aus dem Feld m_CS nehmen
@@ -552,6 +558,15 @@ bool CCombat::CheckShipStayInCombat(int i)
 	}
 
 	return true;
+}
+
+const std::set<CShips*>* CCombat::GetKilledShipsByRace(const CString& sRaceID) const
+{
+	std::map<CString, std::set<CShips*> >::const_iterator it = m_mKilledShips.find(sRaceID);
+	if (it == m_mKilledShips.end())
+		return NULL;
+
+	return &(it->second);
 }
 
 // Funktion zum Berechnen der groben prozentualen Siegchance einer Rasse. Die Siegchance liegt zwischen 0 und 1.
@@ -657,6 +672,7 @@ void CCombat::Reset()
 {
 	m_mInvolvedRaces.clear();
 	m_mEnemies.clear();
+	m_mKilledShips.clear();
 
 	for (int i = 0; i < m_InvolvedShips.GetSize(); i++)
 		delete m_InvolvedShips.GetAt(i);

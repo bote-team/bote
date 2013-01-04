@@ -88,6 +88,7 @@ BOOLEAN CTorpedo::Fly(CArray<CCombatShip*,CCombatShip*>* CS)
 	int	minDistance = -1;
 	short shipNumber = -1;
 	for (int i = 0; i < CS->GetSize(); i++)
+	{
 		if (m_sOwner != CS->GetAt(i)->m_pShip->GetOwnerOfShip() && CS->GetAt(i)->m_pShip->GetHull()->GetCurrentHull() > 0)
 		{
 			vec3i t;
@@ -114,6 +115,8 @@ BOOLEAN CTorpedo::Fly(CArray<CCombatShip*,CCombatShip*>* CS)
 						shipNumber = i;
 					}
 		}
+	}
+
 	// Wenn jetzt die minimale Distanz kleiner gleich der TORPEDOSPEED ist, dann gibts nen Einschlag
 	if (minDistance <= TORPEDOSPEED && shipNumber != -1)
 	{
@@ -222,6 +225,10 @@ void CTorpedo::MakeDamage(CCombatShip* CS)
 //		CS->m_pShip->GetHull()->GetCurrentHull(), torpedoDamage);
 //	//AfxMessageBox(dam);
 //	MYTRACE("general")(MT::LEVEL_INFO, dam);
+
+	// Merken welche Rasse das Schiff schlussendlich zerstört hat
+	if (!CS->m_pShip->IsAlive())
+		CS->m_sKilledByRace = m_sOwner;
 }
 
 // Diese private Funktion setzt den Torpedo auf den nächsten Punkt seiner Flugbahn. Diese Funktion nur aufrufen,

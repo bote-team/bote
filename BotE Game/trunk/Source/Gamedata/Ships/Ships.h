@@ -104,6 +104,7 @@ public:
 		bool LeaderIsCurrent() const { return m_bLeaderIsCurrent; }
 		CHull* GetHull(void) {return m_Leader.GetHull();}
 		const CHull* GetHull(void) const {return m_Leader.GetHull();}
+		bool IsAlive() const {return m_Leader.IsAlive();}
 		CShield* GetShield(void) {return m_Leader.GetShield();}
 		const CShield* GetShield(void) const {return m_Leader.GetShield();}
 		CArray<CTorpedoWeapons, CTorpedoWeapons>* GetTorpedoWeapons(void) {return m_Leader.GetTorpedoWeapons();}
@@ -160,8 +161,8 @@ public:
 	//strip this CShips from destroyed ships
 	//@ return true in case the leading ship is still alive, false in case the leader is dead and
 	//possibly ships in the fleet remain
-	bool RemoveDestroyed(CRace& owner, unsigned short round, const CString& sEvent,
-		const CString& sStatus, CStringArray* destroyedShips = NULL, const CString& anomaly = "");
+	bool RemoveDestroyed(CRace& owner, unsigned short round, const CString& sEvent,	const CString& sStatus, CStringArray* destroyedShips = NULL, const CString& anomaly = "");
+	
 	//// Funktion löscht die gesamte Flotte
 	void Reset(bool destroy);
 

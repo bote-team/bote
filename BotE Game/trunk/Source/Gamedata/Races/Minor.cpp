@@ -710,7 +710,7 @@ void CMinor::CreateAlienEntities(const CStringArray& saInfo, int& nPos)
 	// grafische Attribute
 	m_sGraphicFile		= saInfo[nPos++];				// Name der zugehörigen Grafikdatei
 	m_iTechnologicalProgress = atoi(saInfo[nPos++]);
-	m_RaceType			= RACE_TYPE_MINOR;						// Rassentyp (Major, Medior, Minor)
+	m_RaceType			= RACE_TYPE_MINOR;				// Rassentyp (Major, Medior, Minor)
 
 	// mehrere Rasseneigenschaften sind durch Komma getrennt
 	CString sRaceProperties = saInfo[nPos++];

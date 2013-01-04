@@ -63,6 +63,11 @@ public:
 	void CalculateCombat(std::map<CString, BYTE>& winner);
 
 	/**
+	* Diese Funktion gibt alle durch eine bestimme Rasse zerstörten Schiffe zurück.
+	*/
+	const std::set<CShips*>* GetKilledShipsByRace(const CString& sRaceID) const;
+
+	/**
 	* Funktion zum Berechnen der groben prozentualen Siegchance einer Rasse. Die Siegchance liegt zwischen 0 und 1.
 	*/
 	static double GetWinningChance(const CRace* pOurRace, const CArray<CShips*>& vInvolvedShips, const std::map<CString, CRace*>* pmRaces, std::set<const CRace*>& sFriends, std::set<const CRace*>& sEnemies, const CAnomaly* pAnomaly);
@@ -108,8 +113,11 @@ private:
 	/// Speichert die Nummer der beteiligten Rassen.
 	std::set<CString> m_mInvolvedRaces;
 
-	/// Speichert des Feld der Hauptrassen im Spiel.
+	/// Speichert des Feld aller Rassen im Spiel.
 	std::map<CString, CRace*>* m_mRaces;
+
+	/// Map speichert alle Schiffe, welche von einer Rasse im Kampf zerstört wurden.
+	std::map<CString, std::set<CShips*> > m_mKilledShips;
 
 	/**
 	* Diese Funktion versucht dem i-ten Schiff im Feld <code>m_CS<code> ein Ziel zu geben. Wird dem Schiff ein Ziel

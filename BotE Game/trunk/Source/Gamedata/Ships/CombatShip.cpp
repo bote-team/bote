@@ -16,6 +16,7 @@ CCombatShip::CCombatShip(void)
 	m_byReCloak = FALSE;
 	m_bShootCloaked = FALSE;
 	m_byRetreatCounter = rand()%50 + 100;
+	m_sKilledByRace = "";
 
 	// Auswirkungen durch Anomalien
 	m_bCanUseShields = TRUE;
@@ -702,9 +703,13 @@ void CCombatShip::FireBeam(int beamWeapon, int distance, BYTE boni)
 	//CString dam;
 	//dam.Format("Beamschaden auf Schiff: %s neues Schild: %d Hülle: %d restlicher Beamschaden: %d",	m_pTarget->m_pShip->GetShipClass(), m_pTarget->m_pShip->GetShield()->GetCurrentShield(), m_pTarget->m_pShip->GetHull()->GetCurrentHull(), beamDamage);
 	//AfxMessageBox(dam);
+
+	// Merken welche Rasse das Schiff schlussendlich zerstört hat
+	if (!m_pTarget->m_pShip->IsAlive())
+		m_pTarget->m_sKilledByRace = m_pShip->GetOwnerOfShip();
 }
 
-// Diese Funktion berechnet die Trefferwahrscheinlichkeit des Beams und fügt dem Feindschiff wenn möglich Schaden zu.
+// Diese Funktion feuert einen Torpedo auf das feindliche Schiff.
 // @param CT Feld der Torpedos im Kampf
 // @param beamWeapon Nummer der Beamwaffe
 // @param targetKO Zielkoordinate des Torpedos

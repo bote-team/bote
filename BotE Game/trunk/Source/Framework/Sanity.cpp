@@ -78,7 +78,7 @@ void CSanity::SanityCheckShip(const CShips& ship)
 			ship.GetCurrentOrderAsString());
 		Notify(s);
 	}
-	if(ship.GetHull()->GetCurrentHull() < 1) {
+	if(!ship.IsAlive()) {
 		CString s;
 		s.Format("The %s from %s at (%u, %u) has hull < 1 but wasn't removed!",
 			ship.GetShipName(),

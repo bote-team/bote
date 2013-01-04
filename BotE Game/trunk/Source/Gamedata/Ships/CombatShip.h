@@ -118,7 +118,7 @@ private:
 	/// @param boni Bonus durch Schiffseigenschaften
 	void FireBeam(int beamWeapon, int distance, BYTE boni);
 
-	/// Diese Funktion berechnet die Trefferwahrscheinlichkeit des Beams und fügt dem Feindschiff wenn möglich Schaden zu.
+	/// Diese Funktion feuert einen Torpedo auf das feindliche Schiff.
 	/// @param pCT Feld der Torpedos im Kampf
 	/// @param beamWeapon Nummer der Beamwaffe
 	/// @param targetKO Zielkoordinate des Torpedos
@@ -183,6 +183,9 @@ private:
 
 	/// Beim Rückzugbefehl muss dieser Counter runtergezählt sein
 	BYTE m_byRetreatCounter;
+
+	/// ID der Rasse, welche das Schiff im Kampf zerstört hat (leer wenn nicht zerstört)
+	CString m_sKilledByRace;
 };
 
 typedef CArray<CCombatShip,CCombatShip> CombatShips;
