@@ -4843,22 +4843,54 @@ void CBotf2Doc::CalcShipCombat()
 		}
 	}
 
+	// Bevor die Schiffe zerstört werden, prüfen wieviel Schiffe durch einen Boseaner (Alien) zerstört wurden.
+	// Um diese Anzahl mehr werden neue Boseaner ins Spiel gebracht.
+	if (const set<CShips*>* psetKilledShips = Combat.GetKilledShipsByRace(BOSEANER))
+	{
+		int nCount = psetKilledShips->size();
+		if (nCount > 0)
+		{
+			int nBoseanerShipInfoID = -1;
+			for (int i = 0; i < m_ShipInfoArray.GetSize(); i++)
+			{
+				CShipInfo* pShipInfo = &m_ShipInfoArray.GetAt(i);
+				if (!pShipInfo->IsAlien())
+					continue;
+
+				if (pShipInfo->GetOnlyInSystem() != BOSEANER)
+					continue;
+				
+				nBoseanerShipInfoID = pShipInfo->GetID();
+				break;
+			}
+		
+			if (nBoseanerShipInfoID != -1)
+			{
+				for (int i = 0; i < nCount; i++)
+					BuildShip(nBoseanerShipInfoID, m_ptCurrentCombatSector, BOSEANER);
+			}
+		}
+	}
+
 	// Nach einem Kampf muß ich das Feld der Schiffe durchgehen und alle Schiffe aus diesem nehmen, die
 	// keine Hülle mehr besitzen. Aufpassen muß ich dabei, wenn das Schiff eine Flotte anführte
 	CStringArray destroyedShips;
 	for(CShipMap::iterator i = m_ShipMap.begin(); i != m_ShipMap.end();)
 	{
-		if (i->second->GetKO() != m_ptCurrentCombatSector) {
+		if (i->second->GetKO() != m_ptCurrentCombatSector)
+		{
 			++i;
 			continue;
 		}
+
 		CRace* pOwner = m_pRaceCtrl->GetRace(i->second->GetOwnerOfShip());
 		assert(pOwner);
-		if(i->second->RemoveDestroyed(*pOwner, m_iRound, CResourceManager::GetString("COMBAT"),
-			CResourceManager::GetString("DESTROYED"), &destroyedShips)) {
+		if (i->second->RemoveDestroyed(*pOwner, m_iRound, CResourceManager::GetString("COMBAT"),	CResourceManager::GetString("DESTROYED"), &destroyedShips))
+		{
 			++i;
 			continue;
 		}
+
 		RemoveShip(i);
 	}
 
@@ -4867,6 +4899,7 @@ void CBotf2Doc::CalcShipCombat()
 		CMajor* pMajor = it->second;
 		// Hat die Rasse an dem Kampf teilgenommen, also gewonnen oder verloren oder unentschieden
 		if (winner[it->first] != 0)
+		{
 			for (int j = 0; j < destroyedShips.GetSize(); j++)
 			{
 				CString s;
@@ -4875,7 +4908,8 @@ void CBotf2Doc::CalcShipCombat()
 				message.GenerateMessage(s, MESSAGE_TYPE::MILITARY, "", p, 0);
 				pMajor->GetEmpire()->AddMessage(message);
 			}
-	}
+		}
+	}	
 }
 
 /////BEGIN: HELPER FUNCTIONS FOR void CBotf2Doc::CalcShipEffects()
@@ -5486,6 +5520,10 @@ void CBotf2Doc::CalcRandomAlienEntities()
 							}
 						}
 					}
+					else if (pAlien->GetRaceID() == BOSEANER)
+					{
+						pShip->second->SetCombatTactic(COMBAT_TACTIC::CT_AVOID);
+					}
 
 					break;
 				}
@@ -5682,6 +5720,13 @@ void CBotf2Doc::CalcAlienShipEffects()
 				network::RACE client = m_pRaceCtrl->GetMappedClientID(pOwner->GetRaceID());
 				m_iSelectedView[client] = EMPIRE_VIEW;
 			}
+		}
+		else if (pAlien->GetRaceID() == BOSEANER)
+		{
+			// zufällig die anfangs auf Meiden gestellten Boseaner auf Angreifen stellen
+			// Sie sind auf der Suche nach Nahrung ;-)
+			if (rand()%10 == 0)
+				ship->second->SetCombatTactic(COMBAT_TACTIC::CT_ATTACK);
 		}
 	}
 }

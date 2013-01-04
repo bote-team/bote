@@ -165,7 +165,8 @@ namespace RACE_PROPERTY
 #define GABALLIANER_SEUCHENSCHIFF	"Gaballianer"
 #define BLIZZARD_PLASMAWESEN		"Blizzard-Plasmawesen"
 #define MORLOCK_RAIDER				"Morlock-Raider"
-#define EELEN_GUARD					"Ehlenen-Beschützer"
+#define EELEN_GUARD					"Ehlen"
+#define BOSEANER					"Boseaner"
 
 // ------------- Planeteneigenschaften -----------------------------------------
 // Zonen
