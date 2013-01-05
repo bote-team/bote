@@ -1,25 +1,25 @@
 0.81
-Ionisierendes Gaswesen:
-Ionisierendes Gaswesen
-Diese seltsame Lebensform ist relativ ungefährlich und wehrt sich nur, wenn sie Reize in Form z.B. von Laserstrahlen von außen bekommt, aber auch beim Streifen von Planeten, was zu gravierenden Wetterphänomenen und Naturkatastrophen führen kann.
+Ionizing Gas Entity:
+Ionizing Gas Entity
+This strange life form is relatively harmless and only defends itself when it is irritated e.g. with LASER beams. But it also reacts when it comes in touch with a planet, which can result in severe weather phenomena and natural disasters.
 Ionisierendes Gaswesen.bop
 0
 8
 2
 1
 0
-Gaballianer:
-Gaballianer
-Das unbewaffnete Seuchenschiff trägt ein multiresistentes vakuumübertragbares Virus im gesamten Schiff, womit sie alles, was mit ihnen in Kontakt kommt, infizieren und kontaminieren. Schiffe, die ihnen zu nahe kommen, gelangen unter die Kontrolle der Gaballianer, die selbst unter der Kontrolle des Virus stehen. Sie suchen eine dauerhafte Bleibe.
+Gaballian:
+Gaballian
+The unarmed plague ship carries a virus which is multiresistant and transmissible in vacuum. Everything which comes in contact with the virus will be infected and contaminated. Ships which get too close to them will fall under control of the Gaballians, which are themselves under control of the virus. They are searching for a permanent home.
 Gaballianer.bop
 0
 11
 2
 1
 0
-Blizzard-Plasmawesen:
-Blizzard-Plasmawesen
-Dieses Wesen ist sehr aggressiv und entlädt sich gerne an gleich welchen Oberflächen und zerstört dadurch laut Gerüchten sogar ganze Planeten.
+Blizzard-Plasma-Entity:
+Blizzard-Plasma-Entity
+This very aggressive entity likes to discharge on whatever surface. It is rumoured that it can destroy entire planets.
 Blizzard-Plasmawesen.bop
 0
 11
@@ -28,16 +28,16 @@ Blizzard-Plasmawesen.bop
 0
 Morlock-Raider:
 Morlock-Raider
-Der Raider besitzt eine starke Hülle, feuert seinen ebenso starken Laser aber erst nach etlichen Kampfrunden ab durch die lange Wiederaufladezeit.
+The Raider is protected by a strung hull, but due to its long recharge time it fires its equally strong layer only after a few battle rounds.
 Morlock-Raider.bop
 0
 1
 4
 1
 4
-Boseaner:
-Boseaner
-Diese kleinen Lebewesen sind relativ friedlich solange sie nicht auf Nahrungssuche sind oder attackiert werden. Sie besitzen starke Schilde und können gegnerische Schiffe verdauen. Sie vermehren sich dadurch pro zerstörtem Schiff um einen neuen Boseaner vom selben Typ, aus dem es geboren wird.
+Boseans:
+Boseans
+These small creatures are relatively peaceful as long as they are not foraging or under attack. They possess strong shields and can digest hostile ships. In this way they are multiplying, giving birth to a new Bosean of the same type as the destroyed ship.
 Boseaner.bop
 0
 3
