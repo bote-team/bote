@@ -167,6 +167,7 @@ namespace RACE_PROPERTY
 #define MORLOCK_RAIDER				"Morlock-Raider"
 #define EELEN_GUARD					"Ehlen"
 #define BOSEANER					"Boseaner"
+#define KAMPFSTATION				"Kampfstation"
 
 // ------------- Planeteneigenschaften -----------------------------------------
 // Zonen

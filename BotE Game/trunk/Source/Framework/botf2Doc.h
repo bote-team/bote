@@ -356,11 +356,15 @@ protected:
 	/// Diese Funktion überprüft, ob neue Rassen kennengelernt wurden.
 	void CalcContactNewRaces();
 
+	/// Funktion berechnet die Auswirkungen wenn eine Minorrace eleminiert wurde und somit aus dem Spiel ausscheidet.
+	/// @param pMinor Minorrace welche aus dem Spiel ausscheidet
+	void CalcEffectsMinorEleminated(CMinor* pMinor);
+
 	/// Funktion berechnet, ob zufällig Alienschiffe ins Spiel kommen.
 	void CalcRandomAlienEntities();
 
 	/// Funktion berechnet Auswirkungen von Alienschiffe auf Systeme, über denen sie sich befinden.
-	void CalcAlienShipEffects();
+	void CalcAlienShipEffects();	
 
 	/// Funktion generiert die Galaxiemap inkl. der ganzen Systeme und Planeten zu Beginn eines neuen Spiels.
 	void GenerateGalaxy();

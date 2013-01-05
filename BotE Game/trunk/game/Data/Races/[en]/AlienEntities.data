@@ -1,5 +1,5 @@
 0.81
-Ionizing Gas Entity:
+Ionisierendes Gaswesen:
 Ionizing Gas Entity
 This strange life form is relatively harmless and only defends itself when it is irritated e.g. with LASER beams. But it also reacts when it comes in touch with a planet, which can result in severe weather phenomena and natural disasters.
 Ionisierendes Gaswesen.bop
@@ -8,7 +8,7 @@ Ionisierendes Gaswesen.bop
 2
 1
 0
-Gaballian:
+Gaballianer:
 Gaballian
 The unarmed plague ship carries a virus which is multiresistant and transmissible in vacuum. Everything which comes in contact with the virus will be infected and contaminated. Ships which get too close to them will fall under control of the Gaballians, which are themselves under control of the virus. They are searching for a permanent home.
 Gaballianer.bop
@@ -17,7 +17,7 @@ Gaballianer.bop
 2
 1
 0
-Blizzard-Plasma-Entity:
+Blizzard-Plasmawesen:
 Blizzard-Plasma-Entity
 This very aggressive entity likes to discharge on whatever surface. It is rumoured that it can destroy entire planets.
 Blizzard-Plasmawesen.bop
@@ -35,12 +35,21 @@ Morlock-Raider.bop
 4
 1
 4
-Boseans:
+Boseaner:
 Boseans
 These small creatures are relatively peaceful as long as they are not foraging or under attack. They possess strong shields and can digest hostile ships. In this way they are multiplying, giving birth to a new Bosean of the same type as the destroyed ship.
 Boseaner.bop
 0
 3
 2
+1
+0
+Kampfstation:
+Battlestation
+This fully-automated toll station belongs to a long-gone race and secured trading lines and tax incomes. It is capable to fly around like a ship and demands resources in return for safe passage. Otherwise it opens fire or teleports the ship out of the sector.
+Kampfstation.bop
+0
+1
+4
 1
 0

@@ -1564,6 +1564,35 @@ void CBotf2Doc::ApplyShipsAtStartup()
 			break;
 		}
 	}
+
+	// Die Kampfstation zufällig in irgendeinem unbewohnten Sektor auf der Galaxiekarte platzieren
+	do
+	{
+		CPoint p(rand()%STARMAP_SECTORS_HCOUNT, rand()%STARMAP_SECTORS_VCOUNT);
+		if (GetSector(p.x, p.y).GetOwnerOfSector() != "")
+			continue;
+
+		if (GetSector(p.x, p.y).GetMinorRace())
+			continue;
+
+		if (GetSector(p.x, p.y).GetAnomaly())
+			continue;
+		
+		for (int i = 0; i < m_ShipInfoArray.GetSize(); i++)
+		{
+			CShipInfo* pShipInfo = &m_ShipInfoArray.GetAt(i);
+			if (pShipInfo->GetOnlyInSystem() != KAMPFSTATION)
+				continue;
+
+			// Kampfstation platzieren und abbrechen
+			BuildShip(m_ShipInfoArray.GetAt(i).GetID(), p, KAMPFSTATION);
+			break;
+		}
+
+		// Sektor war okay
+		break;
+
+	} while (true);
 }
 
 
@@ -2922,8 +2951,6 @@ void CBotf2Doc::CalcSystemAttack()
 				// Wurde nur bombardiert, nicht erobert
 				else
 				{
-					CString param = GetSector(p.x, p.y).GetName();
-					CString eventText = "";
 					for (set<CString>::const_iterator it = attackers.begin(); it != attackers.end(); ++it)
 					{
 						CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(*it));
@@ -2933,6 +2960,7 @@ void CBotf2Doc::CalcSystemAttack()
 						if (defender != NULL && defender->GetRaceID() != pMajor->GetRaceID())
 							defender->SetRelation(pMajor->GetRaceID(), -rand()%10);
 					}
+					
 					// Wenn die Bevölkerung des Systems auf NULL geschrumpft ist, dann ist dieses System verloren
 					if (GetSystem(p.x, p.y).GetHabitants() <= 0.000001f)
 					{
@@ -2940,81 +2968,44 @@ void CBotf2Doc::CalcSystemAttack()
 						// aus dem Spiel verschwunden. Alle Einträge in der Diplomatie müssen daher gelöscht werden
 						if (GetSector(p.x, p.y).GetMinorRace())
 						{
-							CMinor* pMinor = m_pRaceCtrl->GetMinorRace(GetSector(p.x, p.y).GetName());
-							ASSERT(pMinor);
-							GetSector(p.x, p.y).SetMinorRace(FALSE);
-
-							pMinor->GetIncomingDiplomacyNews()->clear();
-							pMinor->GetOutgoingDiplomacyNews()->clear();
-							map<CString, CMajor*>* pmMajors = m_pRaceCtrl->GetMajors();
-							for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
+							if (CMinor* pMinor = m_pRaceCtrl->GetMinorRace(GetSector(p.x, p.y).GetName()))
 							{
-								// ausgehende Nachrichten löschen
-								for (UINT i = 0; i < it->second->GetOutgoingDiplomacyNews()->size(); i++)
-									if (it->second->GetOutgoingDiplomacyNews()->at(i).m_sFromRace == pMinor->GetRaceID()
-										|| it->second->GetOutgoingDiplomacyNews()->at(i).m_sToRace == pMinor->GetRaceID())
-										it->second->GetOutgoingDiplomacyNews()->erase(it->second->GetOutgoingDiplomacyNews()->begin() + i--);
-								// eingehende Nachrichten löschen
-								for (UINT i = 0; i < it->second->GetIncomingDiplomacyNews()->size(); i++)
-									if (it->second->GetIncomingDiplomacyNews()->at(i).m_sFromRace == pMinor->GetRaceID()
-										|| it->second->GetIncomingDiplomacyNews()->at(i).m_sToRace == pMinor->GetRaceID())
-										it->second->GetIncomingDiplomacyNews()->erase(it->second->GetIncomingDiplomacyNews()->begin() + i--);
+								// Alle Effekte, Events usw. wegen der Auslöschung der Minorrace verarbeiten
+								CalcEffectsMinorEleminated(pMinor);
 
-								// An alle Majors die die Minor kennen die Nachricht schicken, dass diese vernichtet wurde
 								// Eventnachricht: #21	Eliminate a Minor Race Entirely
-								if (attackers.find(it->first) != attackers.end())
+								for (set<CString>::const_iterator it = attackers.begin(); it != attackers.end(); ++it)
 								{
+									CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(*it));
+									ASSERT(pMajor);
+
 									CString param = pMinor->GetRaceName();
-									CString eventText = it->second->GetMoralObserver()->AddEvent(21, it->second->GetRaceMoralNumber(), param);
+									CString eventText = pMajor->GetMoralObserver()->AddEvent(21, pMajor->GetRaceMoralNumber(), param);
 									CMessage message;
 									message.GenerateMessage(eventText, MESSAGE_TYPE::MILITARY, param, p, 0);
-									it->second->GetEmpire()->AddMessage(message);
+									pMajor->GetEmpire()->AddMessage(message);
 								}
 
-								// alle anderen Majorrassen, die diese Minor kannten, bekommen eine Nachricht über deren Vernichtung
-								if (pMinor->IsRaceContacted(it->first))
-								{
-									CString news = CResourceManager::GetString("ELIMINATE_MINOR", FALSE, pMinor->GetRaceName());
-									CMessage message;
-									message.GenerateMessage(news, MESSAGE_TYPE::SOMETHING, "", 0, 0);
-									it->second->GetEmpire()->AddMessage(message);
-									if (it->second->IsHumanPlayer())
-									{
-										// Event über die Rassenauslöschung einfügen
-										CEventRaceKilled* eventScreen = new CEventRaceKilled(it->first, pMinor->GetRaceID(), pMinor->GetRaceName(), pMinor->GetGraphicFileName());
-										it->second->GetEmpire()->GetEventMessages()->Add(eventScreen);
-
-										network::RACE client = m_pRaceCtrl->GetMappedClientID(it->first);
-										m_iSelectedView[client] = EMPIRE_VIEW;
-									}
-								}
-								// alle Majors durchgehen und die vernichtete Minor aus deren Maps entfernen
-								CMajor* pMajor = it->second;
-								pMajor->SetIsRaceContacted(pMinor->GetRaceID(), false);
-								pMajor->SetAgreement(pMinor->GetRaceID(), DIPLOMATIC_AGREEMENT::NONE);
+								// Rasse zum Löschen vormerken
+								sKilledMinors.insert(pMinor->GetRaceID());
 							}
-							// Alle Schiffe der Minorrace entfernen
-							for(CShipMap::iterator j = m_ShipMap.begin(); j != m_ShipMap.end();) {
-								if (j->second->GetOwnerOfShip() == pMinor->GetRaceID()) {
-									m_ShipMap.EraseAt(j, true);
-									continue;
-								}
-								++j;
+							else
+							{
+								ASSERT(FALSE);
+								GetSector(p.x, p.y).SetMinorRace(false);
 							}
-
-							// Rasse zum löschen vormerken
-							sKilledMinors.insert(pMinor->GetRaceID());
 						}
 						// Bei einer Majorrace verringert sich nur die Anzahl der Systeme (auch konnte dies das
 						// Minorracesystem von oben gewesen sein, hier verliert es aber die betroffene Majorrace)
 						if (defender != NULL && defender->IsMajor() && attackSystem->IsDefenderNotAttacker(defender->GetRaceID(), &attackers))
 						{
 							CMajor* pDefenderMajor = dynamic_cast<CMajor*>(defender);
-							eventText = "";
+							
+							CString eventText = "";
+							CString param = GetSector(p.x, p.y).GetName();
 							if (GetSector(p.x, p.y).GetName() == pDefenderMajor->GetHomesystemName())
 							{
 								// Eventnachricht an den ehemaligen Heimatsystembesitzer (Heimatsystem verloren)
-								param = GetSector(p.x, p.y).GetName();
 								eventText = pDefenderMajor->GetMoralObserver()->AddEvent(15, pDefenderMajor->GetRaceMoralNumber(), param);
 							}
 							else
@@ -3022,6 +3013,7 @@ void CBotf2Doc::CalcSystemAttack()
 								// Eventnachricht an den ehemaligen Besitzer (eigenes System verloren)
 								eventText = pDefenderMajor->GetMoralObserver()->AddEvent(16, pDefenderMajor->GetRaceMoralNumber(), param);
 							}
+							
 							// Eventnachricht hinzufügen
 							if (!eventText.IsEmpty())
 							{
@@ -3035,6 +3027,7 @@ void CBotf2Doc::CalcSystemAttack()
 								}
 							}
 						}
+
 						GetSystem(p.x, p.y).SetOwnerOfSystem("");
 						GetSector(p.x, p.y).SetOwnerOfSector("");
 						GetSector(p.x, p.y).SetColonyOwner("");
@@ -3080,12 +3073,14 @@ void CBotf2Doc::CalcSystemAttack()
 						// Eventnachrichten nicht jedesmal, sondern nur wenn Gebäude vernichtet wurden oder
 						// mindst. 3% der Bevölkerung vernichtet wurden
 						if (attackSystem->GetDestroyedBuildings() > 0 || attackSystem->GetKilledPop() >= GetSystem(p.x, p.y).GetHabitants() * 0.03)
-						{
+						{							
+							CString param = GetSector(p.x, p.y).GetName();
 							for (set<CString>::const_iterator it = attackers.begin(); it != attackers.end(); ++it)
 							{
 								CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(*it));
 								ASSERT(pMajor);
 
+								CString eventText = "";
 								// Wenn das System nicht durch eine Rebellion verloren ging, sondern noch irgendwem gehört
 								if (defender != NULL)
 									eventText = pMajor->GetMoralObserver()->AddEvent(19, pMajor->GetRaceMoralNumber(), param);
@@ -3105,15 +3100,23 @@ void CBotf2Doc::CalcSystemAttack()
 									}
 								}
 							}
+							
 							// Eventnachricht über Bombardierung für Verteidiger erstellen und hinzufügen
 							if (defender != NULL && defender->IsMajor() && attackSystem->IsDefenderNotAttacker(defender->GetRaceID(), &attackers))
 							{
 								CMajor* pDefenderMajor = dynamic_cast<CMajor*>(defender);
-								eventText = pDefenderMajor->GetMoralObserver()->AddEvent(22, pDefenderMajor->GetRaceMoralNumber(), param);
-								if (pDefenderMajor->IsHumanPlayer())
+								CString eventText = pDefenderMajor->GetMoralObserver()->AddEvent(22, pDefenderMajor->GetRaceMoralNumber(), param);
+								// Eventnachricht hinzufügen
+								if (!eventText.IsEmpty())
 								{
-									network::RACE client = m_pRaceCtrl->GetMappedClientID(defender->GetRaceID());
-									m_iSelectedView[client] = EMPIRE_VIEW;
+									CMessage message;
+									message.GenerateMessage(eventText, MESSAGE_TYPE::MILITARY, param, p, 0);
+									pDefenderMajor->GetEmpire()->AddMessage(message);								
+									if (pDefenderMajor->IsHumanPlayer())
+									{
+										network::RACE client = m_pRaceCtrl->GetMappedClientID(defender->GetRaceID());
+										m_iSelectedView[client] = EMPIRE_VIEW;
+									}
 								}
 							}
 						}
@@ -4500,8 +4503,8 @@ void CBotf2Doc::CalcShipMovement()
 		//no target set by targetKO == current coords is no longer allowed
 		assert(shipKO != targetKO);
 
-		// Weltraummonster gesondert behandeln
-		if (y->second->IsAlien())
+		// Weltraummonster gesondert behandeln (Geschwindigkeit der Flotte sollte egal sein, nur das Alien muss fliegen können)
+		if (y->second->IsAlien() && y->second->GetSpeed(true) > 0)
 		{
 			// wenn bei einem Weltraummonster kein Ziel vorhanden ist, dann wird zufüllig ein neues generiert
 			if (targetKO.x == -1)
@@ -5103,6 +5106,86 @@ void CBotf2Doc::CalcContactNewRaces()
 	}//for (int y = 0; y < m_ShipMap.GetSize(); y++)
 }
 
+/// Funktion berechnet die Auswirkungen wenn eine Minorrace eleminiert wurde und somit aus dem Spiel ausscheidet.
+/// @param pMinor Minorrace welche aus dem Spiel ausscheidet
+void CBotf2Doc::CalcEffectsMinorEleminated(CMinor* pMinor)
+{
+	if (!pMinor)
+	{
+		ASSERT(pMinor);
+		return;
+	}
+
+	if (!pMinor->IsAlienRace())
+		GetSector(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).SetMinorRace(false);
+	
+	// Diplomatie/Nachrichten entfernen
+	pMinor->GetIncomingDiplomacyNews()->clear();
+	pMinor->GetOutgoingDiplomacyNews()->clear();
+	
+	map<CString, CMajor*>* pmMajors = m_pRaceCtrl->GetMajors();
+	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
+	{
+		CMajor* pMajor = it->second;
+		if (!pMajor)
+			continue;
+
+		// ausgehende Nachrichten löschen
+		for (UINT i = 0; i < pMajor->GetOutgoingDiplomacyNews()->size(); i++)
+		{
+			if (pMajor->GetOutgoingDiplomacyNews()->at(i).m_sFromRace == pMinor->GetRaceID()
+				|| pMajor->GetOutgoingDiplomacyNews()->at(i).m_sToRace == pMinor->GetRaceID())
+				it->second->GetOutgoingDiplomacyNews()->erase(pMajor->GetOutgoingDiplomacyNews()->begin() + i--);
+		}
+
+		// eingehende Nachrichten löschen
+		for (UINT i = 0; i < pMajor->GetIncomingDiplomacyNews()->size(); i++)
+		{
+			if (pMajor->GetIncomingDiplomacyNews()->at(i).m_sFromRace == pMinor->GetRaceID()
+				|| pMajor->GetIncomingDiplomacyNews()->at(i).m_sToRace == pMinor->GetRaceID())
+				pMajor->GetIncomingDiplomacyNews()->erase(pMajor->GetIncomingDiplomacyNews()->begin() + i--);
+		}
+
+		// An alle Majors die die Minor kennen die Nachricht schicken, dass diese vernichtet wurde
+		if (pMinor->IsRaceContacted(pMajor->GetRaceID()))
+		{
+			CString news = CResourceManager::GetString("ELIMINATE_MINOR", FALSE, pMinor->GetRaceName());
+			CMessage message;
+			if (pMinor->IsAlienRace())
+				message.GenerateMessage(news, MESSAGE_TYPE::SOMETHING, "", 0, 0);
+			else
+				message.GenerateMessage(news, MESSAGE_TYPE::SOMETHING, GetSector(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).GetName(), pMinor->GetRaceKO(), 0);
+			
+			pMajor->GetEmpire()->AddMessage(message);
+			if (pMajor->IsHumanPlayer())
+			{
+				// Event über die Rassenauslöschung einfügen
+				CEventRaceKilled* eventScreen = new CEventRaceKilled(it->first, pMinor->GetRaceID(), pMinor->GetRaceName(), pMinor->GetGraphicFileName());
+				pMajor->GetEmpire()->GetEventMessages()->Add(eventScreen);
+
+				network::RACE client = m_pRaceCtrl->GetMappedClientID(it->first);
+				m_iSelectedView[client] = EMPIRE_VIEW;
+			}
+		}
+		
+		// die vernichtete Minor auf unbekannt schalten und alle Verträge entfernen	
+		pMajor->SetIsRaceContacted(pMinor->GetRaceID(), false);
+		pMajor->SetAgreement(pMinor->GetRaceID(), DIPLOMATIC_AGREEMENT::NONE);
+	}
+
+	// zuletzt noch alle Schiffe der Minorrace entfernen
+	for (CShipMap::iterator i = m_ShipMap.begin(); i != m_ShipMap.end(); )
+	{
+		if (i->second->GetOwnerOfShip() == pMinor->GetRaceID())
+		{
+			m_ShipMap.EraseAt(i, true);
+			continue;
+		}
+
+		++i;
+	}
+}
+
 /// Diese Funktion führt allgemeine Berechnung durch, die immer zum Ende der NextRound-Calculation stattfinden müssen.
 void CBotf2Doc::CalcEndDataForNextRound()
 {
@@ -5449,6 +5532,10 @@ void CBotf2Doc::CalcRandomAlienEntities()
 				continue;
 			}
 
+			// Keine Alien-Kampfstation erneut bauen
+			if (pAlien->GetRaceID() == KAMPFSTATION)
+				continue;
+
 			// Prüfen ob das Alienschiff zum Galaxieweiten technologischen Fortschritt passt
 			// Alienschiff das höhere Voraussetzungen als der technologische Fortschritt hat
 			// kommt nicht ins Spiel. Ältere Alienschiffe, die viel geringer als der Fortschritt
@@ -5535,15 +5622,11 @@ void CBotf2Doc::CalcRandomAlienEntities()
 /// Funktion berechnet Auswirkungen von Alienschiffe auf Systeme, über denen sie sich befinden.
 void CBotf2Doc::CalcAlienShipEffects()
 {
-	//for (int i = 0; i < m_ShipMap.GetSize(); i++)
-	for(CShipMap::const_iterator ship = m_ShipMap.begin(); ship != m_ShipMap.end(); ++ship)
+	bool bBattleStationIngame = false;	// merkt sich ob die Kampfstation noch im Spiel ist
+
+	for (CShipMap::const_iterator ship = m_ShipMap.begin(); ship != m_ShipMap.end(); ++ship)
 	{
 		if (!ship->second->IsAlien())
-			continue;
-		const CPoint& co = ship->second->GetKO();
-
-		// Aliens mit Rückzugsbefehl machen nix
-		if (ship->second->GetCombatTactic() == COMBAT_TACTIC::CT_RETREAT)
 			continue;
 
 		CMinor* pAlien = dynamic_cast<CMinor*>(m_pRaceCtrl->GetRace(ship->second->GetOwnerOfShip()));
@@ -5553,9 +5636,15 @@ void CBotf2Doc::CalcAlienShipEffects()
 			continue;
 		}
 
+		const CPoint& co = ship->second->GetKO();
+		
 		// verschiedene Alienrassen unterscheiden
 		if (pAlien->GetRaceID() == IONISIERENDES_GASWESEN)
 		{
+			// Aliens mit Rückzugsbefehl machen nix
+			if (ship->second->GetCombatTactic() == COMBAT_TACTIC::CT_RETREAT)
+				continue;
+
 			CString sSystemOwner = GetSystem(co.x, co.y).GetOwnerOfSystem();
 			CMajor* pOwner = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(sSystemOwner));
 			if (!pOwner)
@@ -5584,6 +5673,10 @@ void CBotf2Doc::CalcAlienShipEffects()
 		}
 		else if (pAlien->GetRaceID() == GABALLIANER_SEUCHENSCHIFF)
 		{
+			// Aliens mit Rückzugsbefehl machen nix
+			if (ship->second->GetCombatTactic() == COMBAT_TACTIC::CT_RETREAT)
+				continue;
+
 			CString sSystemOwner = GetSystem(co.x, co.y).GetOwnerOfSystem();
 			if (CMajor* pOwner = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(sSystemOwner)))
 			{
@@ -5658,6 +5751,10 @@ void CBotf2Doc::CalcAlienShipEffects()
 		}
 		else if (pAlien->GetRaceID() == BLIZZARD_PLASMAWESEN)
 		{
+			// Aliens mit Rückzugsbefehl machen nix
+			if (ship->second->GetCombatTactic() == COMBAT_TACTIC::CT_RETREAT)
+				continue;
+
 			CString sSystemOwner = GetSystem(co.x, co.y).GetOwnerOfSystem();
 			CMajor* pOwner = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(sSystemOwner));
 			if (!pOwner)
@@ -5686,6 +5783,10 @@ void CBotf2Doc::CalcAlienShipEffects()
 		}
 		else if (pAlien->GetRaceID() == MORLOCK_RAIDER)
 		{
+			// Aliens mit Rückzugsbefehl machen nix
+			if (ship->second->GetCombatTactic() == COMBAT_TACTIC::CT_RETREAT)
+				continue;
+
 			// Creditproduktion auf 0 stellen
 			CSystem* pSystem = &GetSystem(co.x, co.y);
 			CMajor* pOwner = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(pSystem->GetOwnerOfSystem()));
@@ -5727,6 +5828,21 @@ void CBotf2Doc::CalcAlienShipEffects()
 			// Sie sind auf der Suche nach Nahrung ;-)
 			if (rand()%10 == 0)
 				ship->second->SetCombatTactic(COMBAT_TACTIC::CT_ATTACK);
+		}
+		else if (pAlien->GetRaceID() == KAMPFSTATION)
+		{
+			bBattleStationIngame = true;
+		}
+	}
+
+	// Wurde die Kampfstation vernichtet und die Alienrasse "Kampfstation" gibt es noch, dann Nachticht
+	// über deren Vernichtung erstellen
+	if (!bBattleStationIngame)
+	{
+		if (CMinor* pBattleStation = dynamic_cast<CMinor*>(m_pRaceCtrl->GetRace(KAMPFSTATION)))
+		{
+			CalcEffectsMinorEleminated(pBattleStation);
+			m_pRaceCtrl->RemoveRace(pBattleStation->GetRaceID());
 		}
 	}
 }
