@@ -16,7 +16,7 @@ CCombatShip::CCombatShip(void)
 	m_byReCloak = FALSE;
 	m_bShootCloaked = FALSE;
 	m_byRetreatCounter = rand()%50 + 100;
-	m_sKilledByRace = "";
+	m_pKilledByShip = NULL;
 
 	// Auswirkungen durch Anomalien
 	m_bCanUseShields = TRUE;
@@ -706,7 +706,7 @@ void CCombatShip::FireBeam(int beamWeapon, int distance, BYTE boni)
 
 	// Merken welche Rasse das Schiff schlussendlich zerstört hat
 	if (!m_pTarget->m_pShip->IsAlive())
-		m_pTarget->m_sKilledByRace = m_pShip->GetOwnerOfShip();
+		m_pTarget->m_pKilledByShip = m_pShip;
 }
 
 // Diese Funktion feuert einen Torpedo auf das feindliche Schiff.
@@ -726,7 +726,7 @@ UINT CCombatShip::FireTorpedo(std::list<CTorpedo*>* pCT, int torpedoWeapon, cons
 	torpedo->m_KO = m_KO;
 	torpedo->m_iPower = (m_pShip->GetTorpedoWeapons()->GetAt(torpedoWeapon).GetTorpedoPower() * (m_iModifier + boni) / 100);
 	torpedo->m_byType = m_pShip->GetTorpedoWeapons()->GetAt(torpedoWeapon).GetTorpedoType();
-	torpedo->m_sOwner = m_pShip->GetOwnerOfShip();
+	torpedo->m_pShipFiredTorpedo = m_pShip;
 	torpedo->m_byManeuverability = this->m_byManeuverability;
 	torpedo->m_iModi = GetCrewExperienceModi() + m_pShip->GetTorpedoWeapons()->GetAt(torpedoWeapon).GetAccuracy() + boni;
 	// Torpedo dem Torpdofeld hinzufügen

@@ -184,8 +184,8 @@ private:
 	/// Beim Rückzugbefehl muss dieser Counter runtergezählt sein
 	BYTE m_byRetreatCounter;
 
-	/// ID der Rasse, welche das Schiff im Kampf zerstört hat (leer wenn nicht zerstört)
-	CString m_sKilledByRace;
+	/// Zeiger auf das Schiff, welches dieses Schiff im Kampf zerstört hat (leer wenn nicht zerstört)
+	CShips* m_pKilledByShip;
 };
 
 typedef CArray<CCombatShip,CCombatShip> CombatShips;

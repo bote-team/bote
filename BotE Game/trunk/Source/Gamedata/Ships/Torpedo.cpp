@@ -35,7 +35,7 @@ CTorpedo::CTorpedo(const CTorpedo &rhs)
 	m_iDistance = rhs.m_iDistance;
 	m_iPower = rhs.m_iPower;
 	m_byType = rhs.m_byType;
-	m_sOwner = rhs.m_sOwner;
+	m_pShipFiredTorpedo = rhs.m_pShipFiredTorpedo;
 	m_iModi = rhs.m_iModi;
 	m_byManeuverability = rhs.m_byManeuverability;
 }
@@ -57,7 +57,7 @@ CTorpedo & CTorpedo::operator=(const CTorpedo & rhs)
 	m_iDistance = rhs.m_iDistance;
 	m_iPower = rhs.m_iPower;
 	m_byType = rhs.m_byType;
-	m_sOwner = rhs.m_sOwner;
+	m_pShipFiredTorpedo = rhs.m_pShipFiredTorpedo;
 	m_iModi = rhs.m_iModi;
 	m_byManeuverability = rhs.m_byManeuverability;
 	return *this;
@@ -89,7 +89,7 @@ BOOLEAN CTorpedo::Fly(CArray<CCombatShip*,CCombatShip*>* CS)
 	short shipNumber = -1;
 	for (int i = 0; i < CS->GetSize(); i++)
 	{
-		if (m_sOwner != CS->GetAt(i)->m_pShip->GetOwnerOfShip() && CS->GetAt(i)->m_pShip->GetHull()->GetCurrentHull() > 0)
+		if (m_pShipFiredTorpedo->GetOwnerOfShip() != CS->GetAt(i)->m_pShip->GetOwnerOfShip() && CS->GetAt(i)->m_pShip->IsAlive())
 		{
 			vec3i t;
 			if (c.x != 0)
@@ -228,7 +228,7 @@ void CTorpedo::MakeDamage(CCombatShip* CS)
 
 	// Merken welche Rasse das Schiff schlussendlich zerstört hat
 	if (!CS->m_pShip->IsAlive())
-		CS->m_sKilledByRace = m_sOwner;
+		CS->m_pKilledByShip = m_pShipFiredTorpedo;
 }
 
 // Diese private Funktion setzt den Torpedo auf den nächsten Punkt seiner Flugbahn. Diese Funktion nur aufrufen,

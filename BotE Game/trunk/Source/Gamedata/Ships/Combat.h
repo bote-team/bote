@@ -36,7 +36,7 @@ public:
 	* <code>ships<code>. Diese Schiffe werden dann am Kampf teilnehmen. Kommt es zu einem Kampf, so muß
 	* diese Funktion zu allererst aufgerufen werden.
 	*/
-	void SetInvolvedShips(CArray<CShips*>* pvShips, std::map<CString, CRace*>* pmRaces, const CAnomaly* pAnomaly);
+	void SetInvolvedShips(const CArray<CShips*>* pvShips, std::map<CString, CRace*>* pmRaces, const CAnomaly* pAnomaly);
 
 	/**
 	* Diese Funktion setzt die gewählte Schiffsformation der Rasse <code>race<code> fest.
@@ -65,7 +65,7 @@ public:
 	/**
 	* Diese Funktion gibt alle durch eine bestimme Rasse zerstörten Schiffe zurück.
 	*/
-	const std::set<CShips*>* GetKilledShipsByRace(const CString& sRaceID) const;
+	const std::map<CShips*, std::set<const CShips*> >* GetKilledShipsInfos() const { return &m_mKilledShips; }
 
 	/**
 	* Funktion zum Berechnen der groben prozentualen Siegchance einer Rasse. Die Siegchance liegt zwischen 0 und 1.
@@ -116,8 +116,8 @@ private:
 	/// Speichert des Feld aller Rassen im Spiel.
 	std::map<CString, CRace*>* m_mRaces;
 
-	/// Map speichert alle Schiffe, welche von einer Rasse im Kampf zerstört wurden.
-	std::map<CString, std::set<CShips*> > m_mKilledShips;
+	/// Map speichert welches Schiff welche Schiffe zerstört hat
+	std::map<CShips*, std::set<const CShips*> > m_mKilledShips;
 
 	/**
 	* Diese Funktion versucht dem i-ten Schiff im Feld <code>m_CS<code> ein Ziel zu geben. Wird dem Schiff ein Ziel

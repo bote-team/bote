@@ -8,7 +8,10 @@
 #pragma once
 #include "Vec3.h"
 
+// forward declaration
 class CCombatShip;
+class CShips;
+
 class CTorpedo : public CObject
 {
 	friend class CCombatShip;
@@ -55,8 +58,8 @@ private:
 	/// Der Torepdotyp
 	BYTE m_byType;
 
-	/// Welche Rasse hat den Torpedo abgefeuert. Also wer ist der Besitzer des Torpedos
-	CString m_sOwner;
+	/// Welche Schiff hat den Torpedo abgefeuert.
+	CShips* m_pShipFiredTorpedo;
 
 	/// Die Manövriebarkeit des Schiffes, welches den Torepdo abgefeuert hat
 	BYTE m_byManeuverability;

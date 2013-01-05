@@ -43,7 +43,7 @@ CCombat::~CCombat(void)
 // Diese Funktion verlangt beim Aufruf einen Zeiger auf ein Feld, welches Zeiger auf Schiffe beinhaltet
 // <code>ships<code>. Diese Schiffe werden dann am Kampf teilnehmen. Kommt es zu einem Kampf, so muﬂ
 // diese Funktion zu allererst aufgerufen werden.
-void CCombat::SetInvolvedShips(CArray<CShips*>* pShips, std::map<CString, CRace*>* pmRaces, const CAnomaly* pAnomaly)
+void CCombat::SetInvolvedShips(const CArray<CShips*>* pShips, std::map<CString, CRace*>* pmRaces, const CAnomaly* pAnomaly)
 {
 	Reset();
 	ASSERT(pmRaces);
@@ -517,7 +517,7 @@ bool CCombat::CheckShipStayInCombat(int i)
 	{
 		bIsAlive = false;
 		// Merken wer das Schiff zerstˆrt hat (nur wenn es noch nicht aufgenommen wurde)		
-		m_mKilledShips[pCombatShip->m_sKilledByRace].insert(pCombatShip->m_pShip);
+		m_mKilledShips[pCombatShip->m_pKilledByShip].insert(pCombatShip->m_pShip);
 	}
 	else if (pCombatShip->m_pShip->GetCombatTactic() == COMBAT_TACTIC::CT_RETREAT && pCombatShip->m_byRetreatCounter == 0 && pCombatShip->m_lRoute.empty())
 	{
@@ -558,15 +558,6 @@ bool CCombat::CheckShipStayInCombat(int i)
 	}
 
 	return true;
-}
-
-const std::set<CShips*>* CCombat::GetKilledShipsByRace(const CString& sRaceID) const
-{
-	std::map<CString, std::set<CShips*> >::const_iterator it = m_mKilledShips.find(sRaceID);
-	if (it == m_mKilledShips.end())
-		return NULL;
-
-	return &(it->second);
 }
 
 // Funktion zum Berechnen der groben prozentualen Siegchance einer Rasse. Die Siegchance liegt zwischen 0 und 1.

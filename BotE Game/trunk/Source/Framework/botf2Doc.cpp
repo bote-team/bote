@@ -4704,22 +4704,6 @@ void CBotf2Doc::CalcShipCombat()
 		// Wenn das Schiff eine Flotte anführt, dann auch die Zeiger auf die Schiffe in der Flotte reingeben
 		for (CShips::iterator j = i->second->begin(); j != i->second->end(); ++j)
 			vInvolvedShips.Add(j->second);
-		// CHECK WW:
-		// folgendes Zeug kann weg, wenn der Kampf vor der Systemberechnung dramkommt
-
-		// Haben wir einen Outpost oder eine Starbase hinzugefügt, dann entfernen wir erstmal
-		// die Auswirkungen dieser Stationen. Diese werden später wieder hinzugefügt, falls
-		// die Station nicht zerstört wurde.
-		/*if (pShip->GetShipType() == OUTPOST || pShip->GetShipType() == STARBASE)
-		{
-			GetSector(p.x, p.y).SetShipPort(FALSE, pShip->GetOwnerOfShip());
-			GetSector(p.x, p.y).SetOutpost(FALSE,  pShip->GetOwnerOfShip());
-			GetSector(p.x, p.y).SetStarbase(FALSE, pShip->GetOwnerOfShip());
-		}
-		// Haben wir aber in diesem Sektor ein System mit aktiver Werft stehen, dann fügen
-		// wir den ShipPort aber gleich jetzt wieder hinzu
-		if (GetSystem(p.x, p.y).GetProduction()->GetShipYard() == TRUE && GetSystem(p.x, p.y).GetOwnerOfSystem() == pShip->GetOwnerOfShip())
-			GetSector(p.x, p.y).SetShipPort(TRUE, pShip->GetOwnerOfShip());*/
 	}
 
 	// es sollten immer Schiffe im Array sein, sonst hätte in diesem Sektor kein Kampf stattfinden dürfen
@@ -4848,29 +4832,28 @@ void CBotf2Doc::CalcShipCombat()
 
 	// Bevor die Schiffe zerstört werden, prüfen wieviel Schiffe durch einen Boseaner (Alien) zerstört wurden.
 	// Um diese Anzahl mehr werden neue Boseaner ins Spiel gebracht.
-	if (const set<CShips*>* psetKilledShips = Combat.GetKilledShipsByRace(BOSEANER))
+	if (const map<CShips*, std::set<const CShips*> >* pmKilledShips = Combat.GetKilledShipsInfos())
 	{
-		int nCount = psetKilledShips->size();
-		if (nCount > 0)
+		for (map<CShips*, std::set<const CShips*> >::const_iterator it = pmKilledShips->begin(); it != pmKilledShips->end(); ++it)
 		{
-			int nBoseanerShipInfoID = -1;
-			for (int i = 0; i < m_ShipInfoArray.GetSize(); i++)
-			{
-				CShipInfo* pShipInfo = &m_ShipInfoArray.GetAt(i);
-				if (!pShipInfo->IsAlien())
-					continue;
+			CShips* pBoseaner = it->first;
+			if (!pBoseaner || pBoseaner->GetOwnerOfShip() != BOSEANER || !pBoseaner->IsAlive())
+				continue;
 
-				if (pShipInfo->GetOnlyInSystem() != BOSEANER)
-					continue;
-				
-				nBoseanerShipInfoID = pShipInfo->GetID();
-				break;
-			}
-		
-			if (nBoseanerShipInfoID != -1)
+			int nCount = it->second.size();
+			for (int i = 0; i < nCount; i++)
 			{
-				for (int i = 0; i < nCount; i++)
-					BuildShip(nBoseanerShipInfoID, m_ptCurrentCombatSector, BOSEANER);
+				BuildShip(pBoseaner->GetID(), m_ptCurrentCombatSector, pBoseaner->GetOwnerOfShip());
+				/*
+				// Code funktioniert erst, wenn ich weiß wie man Schiffe in eine Flotte steckt, wobei pBoseaner selbst in einer Flotte ist...
+				// Erst das Schiff bauen
+				CShipMap::iterator pFleetShip = BuildShip(pBoseaner->GetID(), m_ptCurrentCombatSector, pBoseaner->GetOwnerOfShip());
+
+				// neuen Boseaner in Gruppe stecken und Befehle gleich mit übernehmen
+				AfxMessageBox("Added " + pFleetShip->second->GetShipName() + " to Boseaner " + pBoseaner->GetShipName());
+				pBoseaner->AddShipToFleet(pFleetShip->second);
+				m_ShipMap.EraseAt(pFleetShip, false);
+				*/
 			}
 		}
 	}
