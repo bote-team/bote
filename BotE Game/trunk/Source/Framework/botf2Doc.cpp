@@ -4841,19 +4841,24 @@ void CBotf2Doc::CalcShipCombat()
 				continue;
 
 			int nCount = it->second.size();
+			if (nCount <= 0)
+				continue;
+
+			// Das Führungsschiff der Flotte vom Boseaner in der Schiffsmap suchen. Es kann sein das
+			// der Boseaner selbst das Führungsschiff ist oder in einer Flotte steckt.
+			CShips* pLeader = m_ShipMap.GetLeader(pBoseaner);
+			if (!pLeader)
+				continue;
+				
 			for (int i = 0; i < nCount; i++)
 			{
-				BuildShip(pBoseaner->GetID(), m_ptCurrentCombatSector, pBoseaner->GetOwnerOfShip());
-				/*
-				// Code funktioniert erst, wenn ich weiß wie man Schiffe in eine Flotte steckt, wobei pBoseaner selbst in einer Flotte ist...
 				// Erst das Schiff bauen
-				CShipMap::iterator pFleetShip = BuildShip(pBoseaner->GetID(), m_ptCurrentCombatSector, pBoseaner->GetOwnerOfShip());
+				CShipMap::iterator pNewShip = BuildShip(pBoseaner->GetID(), m_ptCurrentCombatSector, pBoseaner->GetOwnerOfShip());
 
 				// neuen Boseaner in Gruppe stecken und Befehle gleich mit übernehmen
-				AfxMessageBox("Added " + pFleetShip->second->GetShipName() + " to Boseaner " + pBoseaner->GetShipName());
-				pBoseaner->AddShipToFleet(pFleetShip->second);
-				m_ShipMap.EraseAt(pFleetShip, false);
-				*/
+				AfxMessageBox("Added " + pNewShip->second->GetShipName() + " to Boseaner " + pLeader->GetShipName());
+				pLeader->AddShipToFleet(pNewShip->second);
+				m_ShipMap.EraseAt(pNewShip, false);
 			}
 		}
 	}
