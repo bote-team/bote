@@ -367,6 +367,30 @@ const CShipMap::iterator& CShipMap::FleetShip() const {
 	return m_FleetShip;
 }
 
+//get leader
+CShips* CShipMap::GetLeader(const CShips* pShip) const
+{
+	for (CShipMap::const_iterator i = begin(); i != end(); ++i)
+	{
+		// Schiff ist selbst Führer einer Flotte oder hat keine Flotte
+		if (i->second == pShip)
+			return i->second;
+
+		// Schiff ist in einer Flotte (nur prüfen wenn der Flottenführer auch von der gleichen Rasse ist)
+		if (i->second->GetOwnerOfShip() != pShip->GetOwnerOfShip())
+			continue;
+
+		for (CShips::const_iterator j = i->second->begin(); j != i->second->end(); ++j)
+		{
+			if (j->second == pShip)
+				return i->second;
+		}
+	}
+	
+	assert(false);
+	return NULL;	
+}
+
 //updating
 
 void CShipMap::UpdateSpecialShip(CShipMap::iterator& ship, const CShipMap::const_iterator& to_erase) {

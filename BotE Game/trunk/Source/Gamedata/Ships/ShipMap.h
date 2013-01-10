@@ -169,6 +169,9 @@ public:
 	//which can make your code buggy.
 	const CShipMap::iterator& FleetShip() const;
 
+	//Get leader (of fleet) of given ship (it can be the ship itself)
+	CShips* GetLeader(const CShips* pShip) const;
+
 private:
 	void UpdateSpecialShip(CShipMap::iterator& ship, const CShipMap::const_iterator& to_erase);
 
