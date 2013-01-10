@@ -4848,7 +4848,10 @@ void CBotf2Doc::CalcShipCombat()
 			// der Boseaner selbst das Führungsschiff ist oder in einer Flotte steckt.
 			CShips* pLeader = m_ShipMap.GetLeader(pBoseaner);
 			if (!pLeader)
+			{
+				AfxMessageBox("Error: Found no leader ship of Bosean.\nPlease make a bug-report");
 				continue;
+			}
 				
 			for (int i = 0; i < nCount; i++)
 			{
@@ -4856,7 +4859,6 @@ void CBotf2Doc::CalcShipCombat()
 				CShipMap::iterator pNewShip = BuildShip(pBoseaner->GetID(), m_ptCurrentCombatSector, pBoseaner->GetOwnerOfShip());
 
 				// neuen Boseaner in Gruppe stecken und Befehle gleich mit übernehmen
-				AfxMessageBox("Added " + pNewShip->second->GetShipName() + " to Boseaner " + pLeader->GetShipName());
 				pLeader->AddShipToFleet(pNewShip->second);
 				m_ShipMap.EraseAt(pNewShip, false);
 			}
