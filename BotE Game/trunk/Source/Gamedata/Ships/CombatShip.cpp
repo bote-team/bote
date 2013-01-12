@@ -314,7 +314,7 @@ CPoint CCombatShip::AttackEnemyWithBeam(const CPoint& beamStart)
 
 // Diese Funktion führt einen Torpedoangriff gegen das Ziel durch, welches in der Variablen <code>m_pTarget</code>
 // gespeichert ist
-CPoint CCombatShip::AttackEnemyWithTorpedo(/*std::list<CTorpedo*>* pCT,*/ const CPoint& torpedoStart)
+CPoint CCombatShip::AttackEnemyWithTorpedo(std::list<CTorpedo*>* pCT, const CPoint& torpedoStart)
 {
 	// Wenn wir ein Ziel aufgeschaltet haben
 	if (m_pTarget != NULL)
@@ -329,10 +329,10 @@ CPoint CCombatShip::AttackEnemyWithTorpedo(/*std::list<CTorpedo*>* pCT,*/ const 
 		if (distance >= 3)
 		{
 			// Bonus durch Schiffsspezialeigenschaften besorgen
-			//BYTE boni = GetAccBoniFromSpecials();
+			BYTE boni = GetAccBoniFromSpecials();
 
 			// voraussichtlicher Gesamtschaden dieser Torpedoattacke
-			//UINT damage = 0;
+			UINT damage = 0;
 			// Anzahl der verschieden Launcher durchgehen
 			for (int i = torpedoStart.x; i < m_pShip->GetTorpedoWeapons()->GetSize(); i++)
 			{
@@ -378,7 +378,7 @@ CPoint CCombatShip::AttackEnemyWithTorpedo(/*std::list<CTorpedo*>* pCT,*/ const 
 								//if (damage > ((m_pTarget->m_pShip->GetShield()->GetCurrentShield()
 								//	+ m_pTarget->m_pShip->GetHull()->GetCurrentHull()) * 1.5))
 								//	return CPoint(i,n);
-								//damage += FireTorpedo(pCT, i, targetKO, boni);
+								damage += FireTorpedo(pCT, i, targetKO, boni);
 							}
 
 							//CString s;

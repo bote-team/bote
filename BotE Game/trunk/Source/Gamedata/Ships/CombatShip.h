@@ -86,7 +86,7 @@ public:
 	* mit 2 Variablen. Die erste Variable gibt die Nummer der Art des Launchers im Feld an, die zweite
 	* die Nummer der Anzahl dieses Launchers.
 	*/
-	CPoint AttackEnemyWithTorpedo(/*std::list<CTorpedo*>* pCT,*/ const CPoint& torpedoStart);
+	CPoint AttackEnemyWithTorpedo(std::list<CTorpedo*>* pCT, const CPoint& torpedoStart);
 
 	/**
 	* Diese Funktion gibt den Modifikator, den wir durch die Crewerfahrung erhalten zurück

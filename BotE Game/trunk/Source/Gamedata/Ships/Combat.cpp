@@ -316,7 +316,7 @@ void CCombat::CalculateCombat(std::map<CString, BYTE>& winner)
 					value.x = value.y = 0;
 					// Schleife ähnlich wie oben bei Beamangriff durchgehen
 					do {
-						value =	m_CS.ElementAt(i)->AttackEnemyWithTorpedo(/*&m_CT,*/ value);
+						value =	m_CS.ElementAt(i)->AttackEnemyWithTorpedo(&m_CT, value);
 						// Wenn wir einen Wert ungleich -1 zurückbekommen, dann haben wir genug Torpedos auf das
 						// gegnerische Schiff abgefeuert, so das es vermutlich zerstört werden würde. Somit suchen
 						// wir uns ein neues Ziel.
