@@ -235,7 +235,7 @@ public:
 	/**
 	 * Schaltet die komplette Map frei, so dass überall mit kurzer Reichweite hingeflogen werden kann
 	 */
-	void SetFullRangeMap(int nRange = SM_RANGE_NEAR);
+	void SetFullRangeMap(int nRange = SM_RANGE_NEAR, const std::vector<Sector>& vExceptions = std::vector<Sector>());
 
 	/**
 	 * Gleicht die komplette Rangemap mit der Galaxiemap ab. Gebiete, welche einer Rasse gehören mit der wir einen

@@ -4529,6 +4529,13 @@ void CBotf2Doc::CalcShipMovement()
 					if (GetSector(targetKO.x, targetKO.y).GetAnomaly())
 						continue;
 
+					// Rammschiffe fliegen nur im freien Raum oder in Sektoren mit grünen Sonnen
+					if (y->second->GetOwnerOfShip() == RAMMSCHIFF)
+					{
+						if (GetSector(targetKO.x, targetKO.y).GetSunSystem() && GetSector(targetKO.x, targetKO.y).GetSunColor() != 1)
+							continue;						
+					}
+				
 					y->second->SetTargetKO(CPoint(targetKO.x, targetKO.y));
 					break;
 				}
@@ -4551,7 +4558,19 @@ void CBotf2Doc::CalcShipMovement()
 			if (y->second->IsAlien())
 			{
 				CStarmap* pStarmap = new CStarmap(0);
-				pStarmap->SetFullRangeMap();
+				vector<Sector> vExceptions;
+				// Rammschiffe fliegen nur im freien Raum oder in Sektoren mit grünen Sonnen
+				if (y->second->GetOwnerOfShip() == RAMMSCHIFF)
+				{
+					for (std::vector<CSector>::iterator sector = m_Sectors.begin(); sector != m_Sectors.end(); ++sector)
+					{
+						// Ausnahmen hinzufügen, wenn es sich um ein Sonnensystem mit nicht grüner Sonne handelt
+						if (sector->GetSunSystem() && sector->GetSunColor() != 1)
+							vExceptions.push_back(Sector(sector->GetKO()));
+					}
+				}
+
+				pStarmap->SetFullRangeMap(SM_RANGE_NEAR, vExceptions);
 
 				// Anomalien werden schon beachtet, da dies eine statische Variable ist und in NextRound() schon
 				// berechnet wurde.
@@ -5556,8 +5575,15 @@ void CBotf2Doc::CalcRandomAlienEntities()
 			BYTE byAvgShipTech = (pShipInfo->GetBioTech() + pShipInfo->GetEnergyTech() + pShipInfo->GetComputerTech() + pShipInfo->GetConstructionTech() + pShipInfo->GetPropulsionTech() + pShipInfo->GetWeaponTech()) / 6;
 			int nMod = max(byAvgTechLevel - byAvgShipTech, 0) * 5;
 
-			// nur ca. aller 20 + Techmodifikator Runden kommt das Alienschiff ins Spiel
-			if (rand()%(20 + nMod) != 0)
+			// nur ca. aller X + Techmodifikator Runden kommt das Alienschiff ins Spiel
+			// X ist abhängig von der Galaxiegröße. Pro Sektor gibt es eine Wahrscheinlichkeit von 0.01%, das in diesem
+			// ein Alien entsteht. Umso mehr Sektoren es gibt, desto höher ist die Gesamtwahrscheinlichkeit.
+			// Ist die Galaxie kleiner, so kommen weniger Aliens ins Spiel, ist sie größer, kommen mehr Aliens ins Spiel.
+			int nValue = STARMAP_SECTORS_HCOUNT * STARMAP_SECTORS_VCOUNT;
+			// Pro Techlevel verringert sich die virtuelle Anzahl der Sektoren um 25% -> geringere Wahrscheinlichkeit
+			nValue /= ((nMod * 4 + 100.0) / 100.0);
+			float fSteuerParameter = 1.25f;	// Hiermit kann man leicht die Wahrscheinlichkeit steuern, aktuell 25% niedriger!
+			if (rand()%((int)(10000 * fSteuerParameter)) > nValue)
 				continue;
 
 			// zufälligen Sektor am Rand der Map ermitteln
@@ -5624,6 +5650,29 @@ void CBotf2Doc::CalcRandomAlienEntities()
 					else if (pAlien->GetRaceID() == MIDWAY_ZEITREISENDE)
 					{
 						pShip->second->SetCombatTactic(COMBAT_TACTIC::CT_AVOID);
+					}
+					else if (pAlien->GetRaceID() == RAMMSCHIFF)
+					{
+						pShip->second->SetCombatTactic(COMBAT_TACTIC::CT_ATTACK);
+						// zufällig gleich mehrere Rammschiffe bauen. Umso höher der technische Durchschnitt
+						// in der Galaxie ist, desto mehr Rammschiffe kommen auf dem System ins Spiel.
+						if (nMod > 0)
+						{
+							// viele Rammschiffe bauen, (daher hier mal 2)
+							int nCount = rand()%(nMod * 2 + 1);
+							while (nCount > 0)
+							{
+								// Erst das Schiff bauen
+								CShipMap::iterator pFleetShip = BuildShip(pShipInfo->GetID(), p,
+									pAlien->GetRaceID());
+
+								// Rammschiff in Gruppe stecken und Befehle gleich mit übernehmen
+								pShip->second->AddShipToFleet(pFleetShip->second);
+								m_ShipMap.EraseAt(pFleetShip, false);
+
+								nCount--;
+							}
+						}
 					}
 
 					break;
