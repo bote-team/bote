@@ -2526,7 +2526,7 @@ void CBotf2Doc::CalcSystemAttack()
 	// Berechnung aus der Liste entfernt
 	set<CString> sKilledMinors;
 	CArray<CPoint> fightInSystem;
-	for(CShipMap::iterator y = m_ShipMap.begin(); y != m_ShipMap.end(); ++y)
+	for (CShipMap::iterator y = m_ShipMap.begin(); y != m_ShipMap.end(); ++y)
 	{
 		if (y->second->GetCurrentOrder() == SHIP_ORDER::ATTACK_SYSTEM)
 		{
@@ -2553,13 +2553,15 @@ void CBotf2Doc::CalcSystemAttack()
 				CString sDefender = GetSector(p.x, p.y).GetOwnerOfSector();
 				// Angreifer bzw. neuer Besitzer des Systems nach dem Angriff
 				set<CString> attackers;
-				for(CShipMap::const_iterator i = m_ShipMap.begin(); i != m_ShipMap.end(); ++i)
+				for (CShipMap::const_iterator i = m_ShipMap.begin(); i != m_ShipMap.end(); ++i)
+				{
 					if (i->second->GetKO() == p && i->second->GetCurrentOrder() == SHIP_ORDER::ATTACK_SYSTEM)
 					{
 						const CString& sOwner = i->second->GetOwnerOfShip();
-						if (!sOwner.IsEmpty() && m_pRaceCtrl->GetRace(sOwner)->IsMajor())
+						if (!sOwner.IsEmpty())
 							attackers.insert(sOwner);
 					}
+				}
 
 				CAttackSystem* attackSystem = new CAttackSystem();
 
@@ -2954,7 +2956,8 @@ void CBotf2Doc::CalcSystemAttack()
 					for (set<CString>::const_iterator it = attackers.begin(); it != attackers.end(); ++it)
 					{
 						CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(*it));
-						ASSERT(pMajor);
+						if (!pMajor)
+							continue;
 
 						// Erstmal die Beziehung zu der Rasse verschlechtern, der das System gehört
 						if (defender != NULL && defender->GetRaceID() != pMajor->GetRaceID())
@@ -2977,8 +2980,9 @@ void CBotf2Doc::CalcSystemAttack()
 								for (set<CString>::const_iterator it = attackers.begin(); it != attackers.end(); ++it)
 								{
 									CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(*it));
-									ASSERT(pMajor);
-
+									if (!pMajor)
+										continue;
+									
 									CString param = pMinor->GetRaceName();
 									CString eventText = pMajor->GetMoralObserver()->AddEvent(21, pMajor->GetRaceMoralNumber(), param);
 									CMessage message;
@@ -3042,8 +3046,9 @@ void CBotf2Doc::CalcSystemAttack()
 							for (set<CString>::const_iterator it = attackers.begin(); it != attackers.end(); ++it)
 							{
 								CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(*it));
-								ASSERT(pMajor);
-
+								if (!pMajor)
+									continue;
+								
 								// Anzahl der noch verbleibenden Systeme berechnen
 								pDefenderMajor->GetEmpire()->GenerateSystemList(m_Systems, m_Sectors);
 								// hat der Verteidiger keine Systeme mehr, so bekommt der neue Besitzer den Bonus
@@ -3078,8 +3083,9 @@ void CBotf2Doc::CalcSystemAttack()
 							for (set<CString>::const_iterator it = attackers.begin(); it != attackers.end(); ++it)
 							{
 								CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(*it));
-								ASSERT(pMajor);
-
+								if (!pMajor)
+									continue;
+								
 								CString eventText = "";
 								// Wenn das System nicht durch eine Rebellion verloren ging, sondern noch irgendwem gehört
 								if (defender != NULL)
@@ -3126,8 +3132,9 @@ void CBotf2Doc::CalcSystemAttack()
 					for (set<CString>::const_iterator it = attackers.begin(); it != attackers.end(); ++it)
 					{
 						CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(*it));
-						ASSERT(pMajor);
-
+						if (!pMajor)
+							continue;
+						
 						// reine Bombardierung
 						if (pMajor->IsHumanPlayer())
 						{
@@ -3161,8 +3168,9 @@ void CBotf2Doc::CalcSystemAttack()
 					for (set<CString>::const_iterator it = attackers.begin(); it != attackers.end(); ++it)
 					{
 						CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(*it));
-						ASSERT(pMajor);
-
+						if (!pMajor)
+							continue;
+						
 						CMessage message;
 						message.GenerateMessage(attackSystem->GetNews()->GetAt(i), MESSAGE_TYPE::MILITARY, GetSector(p.x, p.y).GetName(), p, 0);
 						pMajor->GetEmpire()->AddMessage(message);
@@ -3724,7 +3732,9 @@ void CBotf2Doc::CalcShipOrders()
 			{
 				CRace* pRace = m_pRaceCtrl->GetRace(pSector->GetOwnerOfSector());
 				assert(pRace);
-				if (pRace->GetAgreement(y->second->GetOwnerOfShip()) != DIPLOMATIC_AGREEMENT::WAR)
+				CRace* pShipOwner = m_pRaceCtrl->GetRace(y->second->GetOwnerOfShip());
+				assert(pShipOwner);
+				if (pRace->GetAgreement(pShipOwner->GetRaceID()) != DIPLOMATIC_AGREEMENT::WAR && !pShipOwner->HasSpecialAbility(SPECIAL_NO_DIPLOMACY))
 					y->second->SetCurrentOrderAccordingToType();
 			}
 		}
@@ -4855,6 +4865,12 @@ void CBotf2Doc::CalcShipCombat()
 				
 			for (int i = 0; i < nCount; i++)
 			{
+				// Es gibt eine schwierigkeitsgradabhängige Wahrscheinlichkeit, dass tatsächlich ein neuer Boseaner daraus entsteht.
+				// BABY: 10%, EASY: 15%, NORMAL: 30%, HARD: 45%, IMPOSSIBLE: 75%
+				int nProb = 15 / m_fDifficultyLevel;
+				if (rand()%100 >= nProb)
+					continue;
+
 				// Erst das Schiff bauen
 				CShipMap::iterator pNewShip = BuildShip(pBoseaner->GetID(), m_ptCurrentCombatSector, pBoseaner->GetOwnerOfShip());
 
@@ -5601,6 +5617,14 @@ void CBotf2Doc::CalcRandomAlienEntities()
 					{
 						pShip->second->SetCombatTactic(COMBAT_TACTIC::CT_AVOID);
 					}
+					else if (pAlien->GetRaceID() == KRYONITWESEN)
+					{
+						pShip->second->SetCombatTactic(COMBAT_TACTIC::CT_ATTACK);
+					}
+					else if (pAlien->GetRaceID() == MIDWAY_ZEITREISENDE)
+					{
+						pShip->second->SetCombatTactic(COMBAT_TACTIC::CT_AVOID);
+					}
 
 					break;
 				}
@@ -5822,6 +5846,25 @@ void CBotf2Doc::CalcAlienShipEffects()
 		else if (pAlien->GetRaceID() == KAMPFSTATION)
 		{
 			bBattleStationIngame = true;
+		}
+		else if (pAlien->GetRaceID() == MIDWAY_ZEITREISENDE)
+		{
+			// Aliens mit Rückzugsbefehl machen nix
+			if (ship->second->GetCombatTactic() == COMBAT_TACTIC::CT_RETREAT)
+				continue;
+
+			// Befindet sich das Midway Schlachtschiff über einem System von einem Major,
+			// so wird dieses im Kriegsfall bombardiert. Ansonsten verringert sich die Beziehung mit
+			// jeder Runde. Umso länger das Midway-Schlachtschiff über einem System steht, umso
+			// wahrscheinlicher ist es, dass Krieg erklärt wird (nur den Midways helfen indem man Credits
+			// übergibt kann dagegen helfen).
+			CSystem* pSystem = &GetSystem(co.x, co.y);
+			CMajor* pOwner = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(pSystem->GetOwnerOfSystem()));
+			assert(pOwner->IsMajor());
+			if (pOwner->GetAgreement(pAlien->GetRaceID()) == DIPLOMATIC_AGREEMENT::WAR)
+				ship->second->SetCurrentOrder(SHIP_ORDER::ATTACK_SYSTEM);
+			else
+				pAlien->SetRelation(pOwner->GetRaceID(), -rand()%20);
 		}
 	}
 

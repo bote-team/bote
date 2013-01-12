@@ -30,7 +30,7 @@ Morlock-Raider:
 Morlock-Raider
 The Raider is protected by a strung hull, but due to its long recharge time it fires its equally strong layer only after a few battle rounds.
 Morlock-Raider.bop
-0
+2
 1
 4
 1
@@ -48,8 +48,26 @@ Kampfstation:
 Battlestation
 This fully-automated toll station belongs to a long-gone race and secured trading lines and tax incomes. It is capable to fly around like a ship and demands resources in return for safe passage. Otherwise it opens fire or teleports the ship out of the sector.
 Kampfstation.bop
-0
+2
 1
 4
 1
 0
+Kryonitwesen:
+Kryonit Entity
+Kryonit is a supraconducting material which these entities seem to consist of. It allows high-energetic shieldbreaking discharges and guarantees for an excellent shielding against all kinds of weapons. Its hull is relatively weak but it can extract external hull energy for its own shields. Kryonit is usually unstable and technologies to use it have not been found yet.
+Kryonitwesen.bop
+0
+11
+2
+1
+0
+Midway-Zeitreisende:
+Midway Time Travellers
+On the Midway time travellers from the future are desperately trying to get back into their own time using every opportunity they get neglecting possible temporal consequences. They are disrupting whole planets for their time experiments on sun surfaces which can possibly lead to induced super novae.
+Midway-Schlachtschiff.bop
+4
+6
+4
+1
+2

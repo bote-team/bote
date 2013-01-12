@@ -168,6 +168,8 @@ namespace RACE_PROPERTY
 #define EELEN_GUARD					"Ehlen"
 #define BOSEANER					"Boseaner"
 #define KAMPFSTATION				"Kampfstation"
+#define KRYONITWESEN				"Kryonitwesen"
+#define MIDWAY_ZEITREISENDE			"Midway-Zeitreisende"
 
 // ------------- Planeteneigenschaften -----------------------------------------
 // Zonen
