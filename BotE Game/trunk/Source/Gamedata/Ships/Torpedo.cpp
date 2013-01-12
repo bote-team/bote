@@ -11,7 +11,8 @@ CTorpedo::CTorpedo(void) :
 	m_iPower(0),
 	m_byType(0),
 	m_byManeuverability(0),
-	m_iModi(0)
+	m_iModi(0),
+	m_pShipFiredTorpedo(NULL)
 {
 	m_iDistance = 0;
 }
