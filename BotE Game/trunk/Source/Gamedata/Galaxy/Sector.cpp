@@ -849,10 +849,10 @@ void CSector::DrawShipSymbolInSector(Graphics *g, CBotf2Doc* pDoc, CMajor* pPlay
 	{
 		if (ShouldDrawShip(*pPlayer, it->first))
 		{
-			// kann keine Diplomatie aufgenommen werden, dann das Alien Symbol zeichnen
-			if (pPlayer != it->second && it->second->HasSpecialAbility(SPECIAL_NO_DIPLOMACY))
+			// handelt es sich um ein Alienschiff?
+			if (pPlayer != it->second && it->second->IsAlienRace())
 				sFilePath = sAppPath + "Graphics\\Symbols\\Entity.bop";
-			// ist der besitzer des Schiffes unbekannt, dann Fragezeichen zeichnen
+			// ist der Besitzer des Schiffes unbekannt, dann Fragezeichen zeichnen
 			else if (pPlayer != it->second && pPlayer->IsRaceContacted(it->first) == false)
 				sFilePath = sAppPath + "Graphics\\Symbols\\Unknown.bop";
 			// sonst das Rassensymbol zeichnen
@@ -875,7 +875,7 @@ void CSector::DrawShipSymbolInSector(Graphics *g, CBotf2Doc* pDoc, CMajor* pPlay
 		if (ShouldDrawOutpost(*pPlayer, it->first))
 		{
 			// kann keine Diplomatie aufgenommen werden, dann das Alien Symbol zeichnen
-			if (pPlayer != it->second && it->second->HasSpecialAbility(SPECIAL_NO_DIPLOMACY))
+			if (pPlayer != it->second && it->second->IsAlienRace())
 				sFilePath = sAppPath + "Graphics\\Symbols\\Entity.bop";
 			// ist der besitzer des Schiffes unbekannt, dann Fragezeichen zeichnen
 			else if (pPlayer != it->second && pPlayer->IsRaceContacted(it->first) == false)

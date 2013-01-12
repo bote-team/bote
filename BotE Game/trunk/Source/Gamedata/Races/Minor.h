@@ -138,10 +138,6 @@ public:
 	/// @param nPos Referenz auf Position im Array, ab wann die Informationen gelten
 	void CreateAlienEntities(const CStringArray& saInfo, int& nPos);
 
-	/// Funktion gibt zurück, ob es sich um eine Alienrasse (kein Heimatsystem) handelt
-	/// @return <code>true</code> wenn es eine Alienrasse ist, sonst <code>false</code>
-	bool IsAlienRace() const { return m_sHomeSystem == ""; }
-
 	// Is this minor race member to the major race with given ID, or to any major in case of an empty ID ?
 	bool IsMemberTo(const CString& MajorID = "") const;
 
