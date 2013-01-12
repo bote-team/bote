@@ -332,7 +332,7 @@ CPoint CCombatShip::AttackEnemyWithTorpedo(std::list<CTorpedo*>* pCT, const CPoi
 			BYTE boni = GetAccBoniFromSpecials();
 
 			// voraussichtlicher Gesamtschaden dieser Torpedoattacke
-			UINT damage = 0;
+			//UINT damage = 0;
 			// Anzahl der verschieden Launcher durchgehen
 			for (int i = torpedoStart.x; i < m_pShip->GetTorpedoWeapons()->GetSize(); i++)
 			{
@@ -378,7 +378,7 @@ CPoint CCombatShip::AttackEnemyWithTorpedo(std::list<CTorpedo*>* pCT, const CPoi
 								//if (damage > ((m_pTarget->m_pShip->GetShield()->GetCurrentShield()
 								//	+ m_pTarget->m_pShip->GetHull()->GetCurrentHull()) * 1.5))
 								//	return CPoint(i,n);
-								damage += FireTorpedo(pCT, i, targetKO, boni);
+								/*damage +=*/ FireTorpedo(pCT, i, targetKO, boni);
 							}
 
 							//CString s;
