@@ -1936,7 +1936,7 @@ Swarm population in the § system is flushed by the bombardment and demands outsi
 [BOMBARDEVENT_TEXT_DEFENDER_MAJOR5]
 Work force in the § system is crippled by the bombardment and demands free access to their work stations.
 [BOMBARDEVENT_TEXT_DEFENDER_MAJOR6]
-The § system Vi is displeased by the bombardment and demands immediate reinforcements.
+The § system is displeased by the bombardment and demands immediate reinforcements.
 
 [INVASIONSUCCESSEVENT_HEADLINE]
 Successful invasion in § system

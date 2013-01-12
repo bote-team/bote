@@ -1936,7 +1936,7 @@ Die zivile Bevölkerung des § Systems ist wegen der feindlichen Bombardierung ges
 [BOMBARDEVENT_TEXT_DEFENDER_MAJOR5]
 Unsere Fabriken im § System werden durch die Bombardierung geschädigt. Wir sollten Verstärkung schicken.
 [BOMBARDEVENT_TEXT_DEFENDER_MAJOR6]
-Die § System Vi ist entsetzt über die feindliche Bombardierung und fordert Verstärkung an.
+Das § System ist entsetzt über die feindliche Bombardierung und fordert Verstärkung an.
 
 [INVASIONSUCCESSEVENT_HEADLINE]
 Erfolgreiche Invasion im § System
