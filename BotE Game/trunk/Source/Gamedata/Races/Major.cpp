@@ -110,7 +110,16 @@ void CMajor::Serialize(CArchive &ar)
 			delete m_pDiplomacyAI;
 			m_pDiplomacyAI = NULL;
 		}
+		
+		// Diplomatie neu anlegen
 		m_pDiplomacyAI = new CMajorAI(this);
+		// Starmap löschen (wird neu generiert)
+		if (m_pStarmap)
+		{
+			m_pStarmap->ClearAll();
+			delete m_pStarmap;
+		}
+		m_pStarmap = NULL;
 	}
 
 	// Objekt welches gestalterische Informationen zur Rasse beinhaltet
@@ -123,7 +132,7 @@ void CMajor::Serialize(CArchive &ar)
 
 	// Observer-Objekte
 	m_WeaponObserver.Serialize(ar);			// beobachtet die baubaren Waffen für Schiffe. Wird benötigt wenn wir Schiffe designen wollen
-	m_MoralObserver.Serialize(ar);			// Moralevents serialisieren
+	m_MoralObserver.Serialize(ar);			// Moralevents serialisieren	
 }
 
 //////////////////////////////////////////////////////////////////////

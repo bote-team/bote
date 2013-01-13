@@ -71,36 +71,23 @@ void CMenuChooseView::OnDraw(CDC* pDC)
 	if (!pMajor)
 		return;
 
-	// TEST-OPTION (only for Debug)
-	// automatisch bis zu einer gewissen Runde durchzuklicken falls per Startparamter aktiviert
-	if (const CCommandLineParameters* const clp = resources::pClp)
-	{
-		int nAutoTurns = clp->GetAutoTurns();
-		if (!pDoc->m_bRoundEndPressed && pDoc->GetCurrentRound() < nAutoTurns)
-		{
-			pDoc->m_bRoundEndPressed = true;
-			CSoundManager::GetInstance()->StopMessages(TRUE);
-			client.EndOfRound(pDoc);
-		}
-	}
-
 	CRect r(0, 0, m_TotalSize.cx, m_TotalSize.cy);
 
 	// Doublebuffering wird initialisiert
-	CRect client;
-	GetClientRect(&client);
+	CRect clientRect;
+	GetClientRect(&clientRect);
 	Graphics doubleBuffer(pDC->GetSafeHdc());
 	doubleBuffer.SetSmoothingMode(SmoothingModeHighQuality);
 	doubleBuffer.SetInterpolationMode(InterpolationModeHighQualityBicubic);
 	doubleBuffer.SetPixelOffsetMode(PixelOffsetModeHighQuality);
 
 	// Graphicsobjekt, in welches gezeichnet wird anlegen
-	Bitmap bmp(client.Width(), client.Height());
+	Bitmap bmp(clientRect.Width(), clientRect.Height());
 	Graphics* g = Graphics::FromImage(&bmp);
 	g->SetSmoothingMode(SmoothingModeHighQuality);
 	g->SetInterpolationMode(InterpolationModeHighQualityBicubic);
 	g->SetPixelOffsetMode(PixelOffsetModeHighQuality);
-	g->ScaleTransform((REAL)client.Width() / (REAL)m_TotalSize.cx, (REAL)client.Height() / (REAL)m_TotalSize.cy);
+	g->ScaleTransform((REAL)clientRect.Width() / (REAL)m_TotalSize.cx, (REAL)clientRect.Height() / (REAL)m_TotalSize.cy);
 	g->Clear(Color::Black);
 
 	CString fontName = "";
@@ -252,8 +239,21 @@ void CMenuChooseView::OnDraw(CDC* pDC)
 	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.left+20, r.bottom-65, m_TotalSize.cx-40, 25), &fontFormat, &fontBrush);
 	//********************************************************************************
 
-	doubleBuffer.DrawImage(&bmp, client.left, client.top, client.right, client.bottom);
+	doubleBuffer.DrawImage(&bmp, clientRect.left, clientRect.top, clientRect.right, clientRect.bottom);
 	delete g;
+
+	// TEST-OPTION (only for Debug)
+	// automatisch bis zu einer gewissen Runde durchzuklicken falls per Startparamter aktiviert
+	if (const CCommandLineParameters* const clp = resources::pClp)
+	{
+		int nAutoTurns = clp->GetAutoTurns();
+		if (!pDoc->m_bRoundEndPressed && pDoc->GetCurrentRound() < nAutoTurns)
+		{
+			pDoc->m_bRoundEndPressed = true;
+			CSoundManager::GetInstance()->StopMessages(TRUE);
+			client.EndOfRound(pDoc);
+		}
+	}
 }
 
 void CMenuChooseView::OnInitialUpdate()
