@@ -5675,6 +5675,14 @@ void CBotf2Doc::CalcRandomAlienEntities()
 							}
 						}
 					}
+					else if (pAlien->GetRaceID() == ISOTOPOSPHAERISCHES_WESEN)
+					{
+						// 50% auf Meiden, zu 50% auf angreifen
+						if (rand()%2 == 0)
+							pShip->second->SetCombatTactic(COMBAT_TACTIC::CT_ATTACK);
+						else
+							pShip->second->SetCombatTactic(COMBAT_TACTIC::CT_AVOID);
+					}
 
 					break;
 				}
@@ -5915,6 +5923,93 @@ void CBotf2Doc::CalcAlienShipEffects()
 				ship->second->SetCurrentOrder(SHIP_ORDER::ATTACK_SYSTEM);
 			else
 				pAlien->SetRelation(pOwner->GetRaceID(), -rand()%20);
+		}
+		else if (pAlien->GetRaceID() == ISOTOPOSPHAERISCHES_WESEN)
+		{
+			// Aliens mit Rückzugsbefehl machen nix
+			if (ship->second->GetCombatTactic() == COMBAT_TACTIC::CT_RETREAT)
+				continue;
+
+			// Zu 20% teleportiert sich das Isotoposphärische Wesen an einen zufälligen Ort der Galaxie (nicht auf Anomalien).
+			// Befinden sich Schiffe im selben Sektor, so werden diese mitgerissen.
+			if (rand()%5 == 0)
+			{
+				// irgend ein zufülliges neues Ziel generieren, welches nicht auf einer Anomalie endet
+				while (true)
+				{
+					CPoint ptTarget = CPoint(rand()%STARMAP_SECTORS_HCOUNT, rand()%STARMAP_SECTORS_VCOUNT);
+					if (ptTarget == ship->second->GetKO())
+						continue;
+
+					if (GetSector(ptTarget.x, ptTarget.y).GetAnomaly())
+						continue;
+
+					// Alle Schiffe in diesem Sektor werden mit teleportiert (außer andere Aliens)
+					for (CShipMap::const_iterator shipInSector = m_ShipMap.begin(); shipInSector != m_ShipMap.end(); ++shipInSector)
+					{
+						if (shipInSector->second->GetKO() != ship->second->GetKO())
+							continue;
+
+						if (shipInSector->second->IsAlien())
+							continue;
+
+						if (shipInSector->second->IsStation())
+							continue;
+
+						if (shipInSector->second->GetCombatTactic() == COMBAT_TACTIC::CT_RETREAT)
+							continue;
+
+						if (shipInSector->second == ship->second)
+							continue;
+
+						// erst alle Befehle rückgängig machen
+						shipInSector->second->UnsetCurrentOrder();
+
+						// dann das Ziel entfernen
+						shipInSector->second->SetTargetKO(CPoint(-1, -1));
+						shipInSector->second->GetPath()->RemoveAll();
+
+						// dann aktuelle Koordinate setzen
+						shipInSector->second->SetKO(ptTarget.x, ptTarget.y);
+					}
+
+					// Isotoposphärisches Wesen selbst teleportieren
+					ship->second->SetTargetKO(CPoint(-1, -1));
+					ship->second->GetPath()->RemoveAll();
+					ship->second->SetKO(ptTarget.x, ptTarget.y);
+
+					break;
+				}
+
+				// weiter nicht gleich die Energie lahmlagen
+				continue;
+			}
+
+			// Wenn über einem System von einem Major, dann die Energie auf 0 setzen
+			CString sSystemOwner = GetSystem(co.x, co.y).GetOwnerOfSystem();
+			if (CMajor* pOwner = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(sSystemOwner)))
+			{
+				// Energie im System auf 0 setzen
+				GetSystem(co.x, co.y).SetDisabledProduction(WORKER::ENERGY_WORKER);
+
+				// Wenn Energie vorhanden war, dann die Nachricht bringen über Energieausfall
+				if (GetSystem(co.x, co.y).GetProduction()->GetMaxEnergyProd() > 0)
+				{
+					// Nachricht und Event einfügen
+					CString s = CResourceManager::GetString("EVENT_ISOTOPOSPHAERISCHES_WESEN", FALSE, GetSector(co.x, co.y).GetName());
+					CMessage message;
+					message.GenerateMessage(s, MESSAGE_TYPE::SOMETHING, GetSector(co.x, co.y).GetName(), co, 0);
+					pOwner->GetEmpire()->AddMessage(message);
+					if (pOwner->IsHumanPlayer())
+					{
+						CEventAlienEntity* eventScreen = new CEventAlienEntity(pOwner->GetRaceID(), pAlien->GetRaceID(), pAlien->GetRaceName(), s);
+						pOwner->GetEmpire()->GetEventMessages()->Add(eventScreen);
+
+						network::RACE client = m_pRaceCtrl->GetMappedClientID(pOwner->GetRaceID());
+						m_iSelectedView[client] = EMPIRE_VIEW;
+					}
+				}
+			}			
 		}
 	}
 

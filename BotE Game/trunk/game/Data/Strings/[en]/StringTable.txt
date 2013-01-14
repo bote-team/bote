@@ -2572,10 +2572,12 @@ technical progress
 new technology allows:
 
 [EVENT_IONISIERENDES_GASWESEN]
-By an ionizing cloud being the complete energy supply in § system was disabled
+Through a Gas Entity being the complete energy supply in § system was disabled
 [EVENT_GABALLIANER_SEUCHENSCHIFF]
 By a Gaballian plague ship the complete food supply in § system was disabled
 [EVENT_BLIZZARD_PLASMAWESEN]
-Through a blizzard plasma being the entire energy supply in § system was disabled
+Through a Blizzard-Plasma Entity being the entire energy supply in § system was disabled
 [EVENT_MORLOCK_RAIDER]
 By an attack of Morlock-Raider § Credits were stolen in § system
+[EVENT_ISOTOPOSPHAERISCHES_WESEN]
+Through a Isotopospheric Entity being the complete energy supply in § system was disabled

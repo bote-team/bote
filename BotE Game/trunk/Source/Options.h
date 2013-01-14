@@ -171,6 +171,7 @@ namespace RACE_PROPERTY
 #define KRYONITWESEN				"Kryonitwesen"
 #define MIDWAY_ZEITREISENDE			"Midway-Zeitreisende"
 #define ANAEROBE_MAKROBE			"Anaerobe Makrobe"
+#define ISOTOPOSPHAERISCHES_WESEN	"Isotoposphärisches Wesen"
 
 // ------------- Planeteneigenschaften -----------------------------------------
 // Zonen

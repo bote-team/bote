@@ -2579,3 +2579,5 @@ Durch ein Gaballianisches Seuchenschiff wurde die komplette Nahrungsversorgung i
 Durch ein Blizzard Plasmawesen wurde die komplette Energieversorgung im § System lahmgelegt
 [EVENT_MORLOCK_RAIDER]
 Durch einen Überfall der Morlock-Raider wurden § Credits im § System gestohlen
+[EVENT_ISOTOPOSPHAERISCHES_WESEN]
+Durch ein Isotoposphärisches Wesen wurde die komplette Energieversorgung im § System lahmgelegt
