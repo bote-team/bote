@@ -170,7 +170,7 @@ namespace RACE_PROPERTY
 #define KAMPFSTATION				"Kampfstation"
 #define KRYONITWESEN				"Kryonitwesen"
 #define MIDWAY_ZEITREISENDE			"Midway-Zeitreisende"
-#define RAMMSCHIFF					"Rammschiff"
+#define ANAEROBE_MAKROBE			"Anaerobe Makrobe"
 
 // ------------- Planeteneigenschaften -----------------------------------------
 // Zonen

@@ -4529,8 +4529,8 @@ void CBotf2Doc::CalcShipMovement()
 					if (GetSector(targetKO.x, targetKO.y).GetAnomaly())
 						continue;
 
-					// Rammschiffe fliegen nur im freien Raum oder in Sektoren mit grünen Sonnen
-					if (y->second->GetOwnerOfShip() == RAMMSCHIFF)
+					// Anaerobe Makroben fliegen nur im freien Raum oder in Sektoren mit grünen Sonnen
+					if (y->second->GetOwnerOfShip() == ANAEROBE_MAKROBE)
 					{
 						if (GetSector(targetKO.x, targetKO.y).GetSunSystem() && GetSector(targetKO.x, targetKO.y).GetSunColor() != 1)
 							continue;						
@@ -4559,13 +4559,14 @@ void CBotf2Doc::CalcShipMovement()
 			{
 				CStarmap* pStarmap = new CStarmap(0);
 				vector<Sector> vExceptions;
-				// Rammschiffe fliegen nur im freien Raum oder in Sektoren mit grünen Sonnen
-				if (y->second->GetOwnerOfShip() == RAMMSCHIFF)
+				// Anaerobe Makroben fliegen nur im freien Raum oder in Sektoren mit grünen Sonnen
+				if (y->second->GetOwnerOfShip() == ANAEROBE_MAKROBE)
 				{
 					for (std::vector<CSector>::iterator sector = m_Sectors.begin(); sector != m_Sectors.end(); ++sector)
 					{
 						// Ausnahmen hinzufügen, wenn es sich um ein Sonnensystem mit nicht grüner Sonne handelt
-						if (sector->GetSunSystem() && sector->GetSunColor() != 1)
+						// und es nicht der aktuelle Ort ist (wegfliegen soll immer möglich sein)
+						if (sector->GetSunSystem() && sector->GetSunColor() != 1 && sector->GetKO() != y->second->GetKO())
 							vExceptions.push_back(Sector(sector->GetKO()));
 					}
 				}
@@ -5651,14 +5652,14 @@ void CBotf2Doc::CalcRandomAlienEntities()
 					{
 						pShip->second->SetCombatTactic(COMBAT_TACTIC::CT_AVOID);
 					}
-					else if (pAlien->GetRaceID() == RAMMSCHIFF)
+					else if (pAlien->GetRaceID() == ANAEROBE_MAKROBE)
 					{
 						pShip->second->SetCombatTactic(COMBAT_TACTIC::CT_ATTACK);
-						// zufällig gleich mehrere Rammschiffe bauen. Umso höher der technische Durchschnitt
-						// in der Galaxie ist, desto mehr Rammschiffe kommen auf dem System ins Spiel.
+						// zufällig gleich mehrere Anaerobe Makroben bauen. Umso höher der technische Durchschnitt
+						// in der Galaxie ist, desto mehr Anaerobe Makroben kommen auf dem System ins Spiel.
 						if (nMod > 0)
 						{
-							// viele Rammschiffe bauen, (daher hier mal 2)
+							// viele Anaerobe Makroben bauen, (daher hier mal 2)
 							int nCount = rand()%(nMod * 2 + 1);
 							while (nCount > 0)
 							{
@@ -5666,7 +5667,7 @@ void CBotf2Doc::CalcRandomAlienEntities()
 								CShipMap::iterator pFleetShip = BuildShip(pShipInfo->GetID(), p,
 									pAlien->GetRaceID());
 
-								// Rammschiff in Gruppe stecken und Befehle gleich mit übernehmen
+								// Anaerobe Makroben in Gruppe stecken und Befehle gleich mit übernehmen
 								pShip->second->AddShipToFleet(pFleetShip->second);
 								m_ShipMap.EraseAt(pFleetShip, false);
 
