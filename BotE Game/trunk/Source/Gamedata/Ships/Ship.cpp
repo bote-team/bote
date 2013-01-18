@@ -529,6 +529,7 @@ static bool ShouldUnsetOrder(SHIP_ORDER::Typ order) {
 		case SHIP_ORDER::WAIT_SHIP_ORDER:
 		case SHIP_ORDER::SENTRY_SHIP_ORDER:
 		case SHIP_ORDER::REPAIR:
+		case SHIP_ORDER::IMPROVE_SHIELDS:
 			return true;
 	}
 	return false;
