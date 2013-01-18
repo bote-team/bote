@@ -581,7 +581,7 @@ bool CShip::RemoveDestroyed(CRace& owner, unsigned short round, const CString& s
 	if(destroyedShips)
 		destroyedShips->Add(m_strShipName + " (" + GetShipTypeAsString() + ", " + m_strShipClass + ")");
 	if(m_bIsFlagShip)
-		owner.LostFlagShip(m_strShipName);
+		owner.LostFlagShip(*this);
 	if(IsStation())
 		owner.LostStation(m_iShipType);
 	if(!anomaly.IsEmpty()) {

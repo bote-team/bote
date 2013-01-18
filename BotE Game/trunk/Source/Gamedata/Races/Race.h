@@ -15,6 +15,7 @@
 #include "AI\DiplomacyAI.h"
 
 class CShips;
+class CShip;
 
 using namespace std;
 
@@ -209,7 +210,7 @@ public:
 	virtual void AddToLostShipHistory(const CShips& Ship, const CString& sEvent,
 		const CString& sStatus, unsigned short round);
 
-	virtual void LostFlagShip(const CString& name);
+	virtual void LostFlagShip(const CShip& ship);
 	virtual void LostStation(SHIP_TYPE::Typ type);
 	virtual void LostShipToAnomaly(const CShips& ship, const CString& anomaly);
 

@@ -494,7 +494,7 @@ void CRace::AddToLostShipHistory(const CShips& /*Ship*/, const CString& /*sEvent
 {
 }
 
-void CRace::LostFlagShip(const CString& /*name*/)
+void CRace::LostFlagShip(const CShip& /*ship*/)
 {
 }
 
