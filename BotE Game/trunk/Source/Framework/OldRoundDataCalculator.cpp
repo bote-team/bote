@@ -58,34 +58,36 @@ int COldRoundDataCalculator::DeritiumForTheAI(bool human, const CSector& /*secto
 	return diliAdd;
 }
 
-void COldRoundDataCalculator::ExecuteRebellion(CSector& sector, CSystem& system, CMajor* pMajor) const {
+void COldRoundDataCalculator::ExecuteRebellion(CSector& sector, CSystem& system, CMajor* pMajor) const
+{
 	CEmpire* pEmpire = pMajor->GetEmpire();
 	const CPoint& co = sector.GetKO();
 	const CString& sectorname = sector.GetName();
 	const CRaceController* pRaceCtrl = m_pDoc->GetRaceCtrl();
-	sector.SetOwned(FALSE);
-	sector.SetShipPort(FALSE, pMajor->GetRaceID());
 
+	// Nachricht über Rebellion erstellen
 	CString news = CResourceManager::GetString("REBELLION_IN_SYSTEM", FALSE, sectorname);
 	CMessage message;
 	message.GenerateMessage(news, MESSAGE_TYPE::SOMETHING, "", co, FALSE);
 	pEmpire->AddMessage(message);
-
-	// zusätzliche Eventnachricht (Lose a System to Rebellion #18) wegen der Moral an das Imperium
-	message.GenerateMessage(pMajor->GetMoralObserver()->AddEvent(18, pMajor->GetRaceMoralNumber(), sectorname), MESSAGE_TYPE::SOMETHING, "", co, FALSE);
-	pEmpire->AddMessage(message);
-
-	if (pMajor->IsHumanPlayer()) {
+	if (pMajor->IsHumanPlayer())
+	{
 		const network::RACE client = pRaceCtrl->GetMappedClientID(pMajor->GetRaceID());
 		m_pDoc->m_iSelectedView[client] = EMPIRE_VIEW;
 	}
 
-	if (sector.GetMinorRace()) {
+	// zusätzliche Eventnachricht (Lose a System to Rebellion #18) wegen der Moral an das Imperium
+	message.GenerateMessage(pMajor->GetMoralObserver()->AddEvent(18, pMajor->GetRaceMoralNumber(), sectorname), MESSAGE_TYPE::SOMETHING, "", co, FALSE);
+	pEmpire->AddMessage(message);
+	
+	if (sector.GetMinorRace())
+	{
 		CMinor* pMinor = pRaceCtrl->GetMinorRace(sectorname);
 		assert(pMinor);
 		sector.SetOwnerOfSector(pMinor->GetRaceID());
 
-		if (sector.GetTakenSector() == FALSE) {
+		if (sector.GetTakenSector() == FALSE)
+		{
 			pMinor->SetAgreement(pMajor->GetRaceID(), DIPLOMATIC_AGREEMENT::NONE);
 			pMajor->SetAgreement(pMinor->GetRaceID(), DIPLOMATIC_AGREEMENT::NONE);
 
@@ -95,14 +97,21 @@ void COldRoundDataCalculator::ExecuteRebellion(CSector& sector, CSystem& system,
 			message.GenerateMessage(news, MESSAGE_TYPE::DIPLOMACY, "", co, FALSE);
 			pEmpire->AddMessage(message);
 		}
-	} else {
-		sector.SetOwnerOfSector("");
-		system.SetOwnerOfSystem("");
-		sector.SetTakenSector(FALSE);
 	}
+	else
+	{
+		sector.SetOwnerOfSector("");		
+	}
+
+	// wichtige Variablen zurücksetzen
+	sector.SetOwned(FALSE);
+	sector.SetTakenSector(FALSE);	
+	sector.SetShipPort(FALSE, pMajor->GetRaceID());
+	system.SetOwnerOfSystem("");	
 }
 
-void COldRoundDataCalculator::ExecuteFamine(CSector& sector, CSystem& system, CMajor* pMajor) const {
+void COldRoundDataCalculator::ExecuteFamine(CSector& sector, CSystem& system, CMajor* pMajor) const
+{
 	const CPoint& co = sector.GetKO();
 	CEmpire* pEmpire = pMajor->GetEmpire();
 	sector.LetPlanetsShrink((float)(system.GetFoodStore()) * 0.01f);
@@ -115,7 +124,8 @@ void COldRoundDataCalculator::ExecuteFamine(CSector& sector, CSystem& system, CM
 	CMessage message;
 	message.GenerateMessage(news, MESSAGE_TYPE::SOMETHING, "", co, FALSE, 1);
 	pEmpire->AddMessage(message);
-	if (pMajor->IsHumanPlayer()) {
+	if (pMajor->IsHumanPlayer())
+	{
 		const network::RACE client = m_pDoc->m_pRaceCtrl->GetMappedClientID(pMajor->GetRaceID());
 		m_pDoc->m_iSelectedView[client] = EMPIRE_VIEW;
 	}

@@ -3436,58 +3436,80 @@ void CBotf2Doc::CalcOldRoundData()
 	m_GlobalBuildings.Reset();
 	ClearAllPoints(m_pRaceCtrl->GetMajors());
 
-	for(std::vector<CSector>::iterator sector = m_Sectors.begin(); sector != m_Sectors.end(); ++sector) {
+	for (std::vector<CSector>::iterator sector = m_Sectors.begin(); sector != m_Sectors.end(); ++sector)
+	{
 		CSystem& system = GetSystemForSector(*sector);
 		// Mögliche Is? Variablen für Terraforming und Stationbau erstmal auf FALSE setzen
 		sector->ClearAllPoints();
-		if(!sector->GetSunSystem()) continue;// Wenn im Sektor ein Sonnensystem existiert
-		const CString& system_owner = system.GetOwnerOfSystem();
-		if(system_owner == "")
-			sector->LetPlanetsGrowth();// Planetenwachstum für andere Sektoren durchführen
-		else {
-			CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(system_owner));
-			assert(pMajor);
-			CEmpire* pEmpire = pMajor->GetEmpire();
-			// Jetzt das produzierte Credits im System dem jeweiligen Imperium geben
-			COldRoundDataCalculator::CreditsDestructionMoral(pMajor, system,
-				this->BuildingInfo, m_fDifficultyLevel);
 
-			// KI Anpassungen (KI bekommt zufälig etwas Deritium geschenkt)
-			int diliAdd = COldRoundDataCalculator::DeritiumForTheAI(
-				pMajor->AHumanPlays(), *sector, system, m_fDifficultyLevel);
-			// Das Lager berechnen
-			const BOOLEAN bIsRebellion = system.CalculateStorages(pEmpire->GetResearch()->GetResearchInfo(), diliAdd);
-			// Wenn wir true zurückbekommen, dann hat sich das System losgesagt
-			if (bIsRebellion)
-				calc.ExecuteRebellion(*sector, system, pMajor);
-			// Hier mit einbeziehen, wenn die Bevölkerung an Nahrungsmangel stirbt
-			if (system.GetFoodStore() < 0)
-				calc.ExecuteFamine(*sector, system, pMajor);
-			 else
-				// Planetenwachstum für Spielerrassen durchführen
-				sector->LetPlanetsGrowth();
+		// Wenn im Sektor ein Sonnensystem existiert
+		if (!sector->GetSunSystem())
+			continue;
+			
+		if (system.GetOwnerOfSystem() == "")
+		{
+			// Planetenwachstum in jedem Sektor durchführen
+			sector->LetPlanetsGrowth();
+			continue;
+		}
+			
+		CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(system.GetOwnerOfSystem()));
+		assert(pMajor);
+		if (!pMajor)
+			continue;
+		
+		// Jetzt das produzierte Credits im System dem jeweiligen Imperium geben, Gebäude abreisen, Moral im System berechnen
+		COldRoundDataCalculator::CreditsDestructionMoral(pMajor, system, this->BuildingInfo, m_fDifficultyLevel);
+
+		// KI Anpassungen (KI bekommt zufälig etwas Deritium geschenkt)
+		int diliAdd = COldRoundDataCalculator::DeritiumForTheAI(pMajor->AHumanPlays(), *sector, system, m_fDifficultyLevel);
+		
+		// Das Lager berechnen
+		const BOOLEAN bIsRebellion = system.CalculateStorages(pMajor->GetEmpire()->GetResearch()->GetResearchInfo(), diliAdd);
+		// Wenn true zurückkommt, dann hat sich das System losgesagt
+		if (bIsRebellion)
+			calc.ExecuteRebellion(*sector, system, pMajor);
+		
+		// Hier mit einbeziehen, wenn die Bevölkerung an Nahrungsmangel stirbt
+		if (system.GetFoodStore() < 0)
+		{
+			calc.ExecuteFamine(*sector, system, pMajor);
+		}
+		else
+		{
+			// Planetenwachstum für Hauptrassen durchführen
+			sector->LetPlanetsGrowth();
+		}
+	
+		// Wenn es keine Rebellion gab, dann Bau und KI im System berechnen
+		if (!bIsRebellion)
+		{
+			assert(system.GetOwnerOfSystem() != "");
 			calc.HandlePopulationEffects(*sector, system, pMajor);
-			system.CalculateVariables(&this->BuildingInfo, pEmpire->GetResearch()->GetResearchInfo(), sector->GetPlanets(), pMajor, CTrade::GetMonopolOwner());
+			system.CalculateVariables(&this->BuildingInfo, pMajor->GetEmpire()->GetResearch()->GetResearchInfo(), sector->GetPlanets(), pMajor, CTrade::GetMonopolOwner());
 
 			// hier könnte die Energie durch Weltraummonster weggenommen werden!
 			// Gebäude die Energie benötigen checken
 			if (system.CheckEnergyBuildings(&this->BuildingInfo))
 				calc.SystemMessage(*sector, pMajor, "BUILDING_TURN_OFF", MESSAGE_TYPE::SOMETHING, 2);
+			
 			// Die Bauaufträge in dem System berechnen. Außerdem wird hier auch die System-KI ausgeführt.
 			if (!pMajor->AHumanPlays() || system.GetAutoBuild())
 			{
-				CSystemAI* SAI = new CSystemAI(this);
-				SAI->ExecuteSystemAI(sector->GetKO());
-				delete SAI;
+				CSystemAI SAI(this);
+				SAI.ExecuteSystemAI(sector->GetKO());
 			}
+
 			calc.Build(*sector, system, pMajor, this->BuildingInfo);
 			// Anzahl aller Farmen, Bauhöfe usw. im System berechnen
 			system.CalculateNumberOfWorkbuildings(&this->BuildingInfo);
 			// freie Arbeiter den Gebäuden zuweisen
 			system.SetWorkersIntoBuildings();
-		}//if(system_owner == "")
+		}
+	
+		// Globale Gebäude (X mal pro Imperium baubar) hinzufügen
 		UpdateGlobalBuildings(system);
-	}//for(std::vector<CSector>::const_iterator sector = m_Sectors.begin(); sector != m_Sectors.end(); ++sector)
+	}
 }
 
 /// Diese Funktion berechnet die Produktion der Systeme, was in den Baulisten gebaut werden soll und sonstige
