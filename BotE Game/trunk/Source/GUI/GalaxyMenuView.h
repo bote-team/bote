@@ -37,6 +37,7 @@ protected: // Nur aus Serialisierung erzeugen
 	bool m_bUpdateOnly;
 	CPoint m_ptViewOrigin;			///< oberer linker Punkt der View, wenn Hintergrund zentriert wird (bei sehr weitem Rauszoom)
 	CPoint m_ptOldMousePos;
+	CPoint m_ptScrollToSector;		///< Sektor zu dem beim Zeichnen zuerst gescrollt werden soll
 
 	// Hier Variablen, wenn wir eine Handelroute ziehen wollen
 	static BOOLEAN m_bDrawTradeRoute;		///< sollen wir bei MouseMove die Handelroute zeigen
@@ -67,6 +68,10 @@ protected: // Nur aus Serialisierung erzeugen
 
 	/// Funktion generiert die visuelle Galaxiekarte. Muss bei jeder neuen Runde neu aufgerugen werden.
 	void GenerateGalaxyMap(void);
+
+	/// Funktion scrollt zur angegebenen Position in der Galaxiemap.
+	/// @param pt Koordinate, zu welcher gescrollt werden soll.
+	void CenterOnScrollSector();
 
 public:
 	/// Funktion führt Aufgaben aus, welche zu jeder neuen Runde von der View ausgeführt werden müssen.
@@ -108,7 +113,7 @@ public:
 
 	/// Funktion scrollt zur angegebenen Position in der Galaxiemap.
 	/// @param pt Koordinate, zu welcher gescrollt werden soll.
-	void ScrollToSector(const CPoint& pt);
+	void ScrollToSector(const CPoint& pt) { m_ptScrollToSector = pt; }
 
 	// Operationen
 public:

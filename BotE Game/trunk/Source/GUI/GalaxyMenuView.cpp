@@ -55,7 +55,8 @@ CGalaxyMenuView::CGalaxyMenuView() :
 	m_fZoom(STARMAP_ZOOM_INITIAL),
 	m_nRange(SM_RANGE_SPACE),
 	m_ptViewOrigin(0, 0),
-	m_ptOldMousePos(0, 0)
+	m_ptOldMousePos(0, 0),
+	m_ptScrollToSector(-1, -1)
 {
 	// ZU ERLEDIGEN: Hier Code zur Konstruktion einfügen
 	m_pGalaxyBackground = NULL;
@@ -104,21 +105,23 @@ void CGalaxyMenuView::OnNewRound()
 	m_bDrawTradeRoute = FALSE;
 	m_bDrawResourceRoute = FALSE;
 	m_bUpdateOnly = false;
+	//m_ptScrollToSector = CPoint(-1, -1);
 	m_PreviouslyJumpedToShip = RememberedShip();
 
 	if (m_bScrollToHome)
 	{
+		/*
 		CSize size;
 		size.cx = (LONG)(STARMAP_TOTALWIDTH * m_fZoom);
 		size.cy = (LONG)(STARMAP_TOTALHEIGHT * m_fZoom);
 		SetScrollSizes(MM_TEXT, size);
 
-		CPoint homePos = pDoc->GetRaceKO(m_pPlayersRace->GetRaceID());
-
-		ScrollToSector(homePos);
-
+		//CPoint homePos = pDoc->GetRaceKO(m_pPlayersRace->GetRaceID());*/
+		
+		ScrollToSector(pDoc->GetRaceKO(m_pPlayersRace->GetRaceID()));
 		m_bScrollToHome = false;
 	}
+
 	Invalidate();
 }
 
@@ -139,6 +142,14 @@ void CGalaxyMenuView::OnDraw(CDC* dc)
 
 	if (!m_pGalaxyBackground)
 		return;
+
+	if (m_ptScrollToSector != CPoint(-1, -1))
+	{
+		CenterOnScrollSector();
+		m_ptScrollToSector = CPoint(-1, -1);
+		Invalidate();
+		return;
+	}
 
 	// ZU ERLEDIGEN: Hier Code zum Zeichnen der ursprünglichen Daten hinzufügen
 	this->SetFocus();
@@ -1589,11 +1600,14 @@ void CGalaxyMenuView::GenerateGalaxyMap()
 
 /// Funktion scrollt zur angegebenen Position in der Galaxiemap.
 /// @param pt Koordinate, zu welcher gescrollt werden soll.
-void CGalaxyMenuView::ScrollToSector(const CPoint& pt)
+void CGalaxyMenuView::CenterOnScrollSector()
 {
+	if (m_ptScrollToSector == CPoint(-1, -1))
+		return;
+
 	// Punkt der Koordinate auf dem Bildschirm berechnen
-	double x = (double)pt.x * (double)STARMAP_SECTOR_WIDTH;
-	double y = (double)pt.y * (double)STARMAP_SECTOR_HEIGHT;
+	double x = (double)m_ptScrollToSector.x * (double)STARMAP_SECTOR_WIDTH;
+	double y = (double)m_ptScrollToSector.y * (double)STARMAP_SECTOR_HEIGHT;
 
 	// Scrollpunkt oben links ermitteln (Sektor wäre immer oben links zu sehen)
 	CPoint scrollPos(x, y);
@@ -1614,7 +1628,7 @@ void CGalaxyMenuView::ScrollToSector(const CPoint& pt)
 	SetScrollPos(SB_VERT, scrollPos.y, false);
 
 	// Sektor markieren
-	m_pPlayersRace->GetStarmap()->m_Selection = Sector(pt.x, pt.y);
+	m_pPlayersRace->GetStarmap()->m_Selection = Sector(m_ptScrollToSector.x, m_ptScrollToSector.y);
 }
 
 ///	Funktion erstellt zur aktuellen Mouse-Position einen HTML Tooltip
