@@ -71,9 +71,9 @@ private:
 	enum MAIN_BUTTON {
 		MAIN_BUTTON_NONE,
 		MAIN_BUTTON_COMBAT_BEHAVIOR,
-		MAIN_BUTTON_MULTI_TURN_ORDER,
-		MAIN_BUTTON_SINGLE_TURN_ORDER,
 		MAIN_BUTTON_IMMEDIATE_ORDER,
+		MAIN_BUTTON_SINGLE_TURN_ORDER,
+		MAIN_BUTTON_MULTI_TURN_ORDER,
 		MAIN_BUTTON_CANCEL
 	};
 	// Funktionen
@@ -140,9 +140,9 @@ private:
 		CString String() const {
 			switch(which) {
 				case MAIN_BUTTON_COMBAT_BEHAVIOR: return "COMBAT_BEHAVIOR";
-				case MAIN_BUTTON_MULTI_TURN_ORDER: return "BTN_MULTI_TURN_ORDER";
-				case MAIN_BUTTON_SINGLE_TURN_ORDER: return "BTN_SINGLE_TURN_ORDER";
 				case MAIN_BUTTON_IMMEDIATE_ORDER: return "BTN_IMMEDIATE_ORDER";
+				case MAIN_BUTTON_SINGLE_TURN_ORDER: return "BTN_SINGLE_TURN_ORDER";
+				case MAIN_BUTTON_MULTI_TURN_ORDER: return "BTN_MULTI_TURN_ORDER";
 				case MAIN_BUTTON_CANCEL: return "BTN_CANCEL";
 				default:
 					assert(false);
@@ -170,9 +170,9 @@ private:
 	bool TimeDoDraw(short counter) const;
 	void DrawMaincommandMenu();
 	short DrawCombatMenu();
-	short DrawMultiTurnOrderMenu();
-	short DrawSingleTurnOrderMenu();
 	short DrawImmediateOrderMenu();
+	short DrawSingleTurnOrderMenu();
+	short DrawMultiTurnOrderMenu();
 
 	void DrawStationData();
 	void DrawMenu();

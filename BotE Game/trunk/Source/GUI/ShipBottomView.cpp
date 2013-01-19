@@ -374,19 +374,21 @@ short CShipBottomView::DrawMultiTurnOrderMenu() {
 	CSector& csec = m_dc.pDoc->CurrentSector();
 	const CMajor* pMajor = m_pPlayersRace;
 
+	const bool top_down = false;
+
 	//maximum orders in this cathegory:
 	//5; in an own system with training, a terraformable planet, a damaged ship
 
 	// Wache
 	if (TimeDoDraw(counter) && ShipCanHaveOrder(*m_dc.pDoc->CurrentShip()->second, SHIP_ORDER::SENTRY_SHIP_ORDER))
 	{
-		DrawSmallButton("BTN_SENTRY_SHIP_ORDER",CalcSecondaryButtonTopLeft(counter),SHIP_ORDER::SENTRY_SHIP_ORDER);
+		DrawSmallButton("BTN_SENTRY_SHIP_ORDER",CalcSecondaryButtonTopLeft(counter, top_down),SHIP_ORDER::SENTRY_SHIP_ORDER);
 		counter++;
 	}
 	// trainieren
 	if (TimeDoDraw(counter) && ShipCanHaveOrder(pShip, SHIP_ORDER::TRAIN_SHIP, &csec, &m_dc.pDoc->CurrentSystem()))
 	{
-		DrawSmallButton("BTN_TRAIN_SHIP",CalcSecondaryButtonTopLeft(counter),SHIP_ORDER::TRAIN_SHIP);
+		DrawSmallButton("BTN_TRAIN_SHIP",CalcSecondaryButtonTopLeft(counter, top_down),SHIP_ORDER::TRAIN_SHIP);
 		counter++;
 	}
 	// Systemangriff
@@ -410,7 +412,7 @@ short CShipBottomView::DrawMultiTurnOrderMenu() {
 				// Ab hier check wegen Flotten
 				if (ShipCanHaveOrder(pShip, SHIP_ORDER::ATTACK_SYSTEM))
 				{
-					DrawSmallButton("BTN_ATTACK_SYSTEM",CalcSecondaryButtonTopLeft(counter),SHIP_ORDER::ATTACK_SYSTEM);
+					DrawSmallButton("BTN_ATTACK_SYSTEM",CalcSecondaryButtonTopLeft(counter, top_down),SHIP_ORDER::ATTACK_SYSTEM);
 					counter++;
 				}
 			}
@@ -425,7 +427,7 @@ short CShipBottomView::DrawMultiTurnOrderMenu() {
 		if (pOwnerOfSystem != NULL && pOwnerOfSystem->GetRaceID() != pShip.GetOwnerOfShip()
 			&& pMajor->GetAgreement(pOwnerOfSystem->GetRaceID()) < DIPLOMATIC_AGREEMENT::FRIENDSHIP)
 		{
-			DrawSmallButton("BTN_BLOCKADE_SYSTEM",CalcSecondaryButtonTopLeft(counter),SHIP_ORDER::BLOCKADE_SYSTEM);
+			DrawSmallButton("BTN_BLOCKADE_SYSTEM",CalcSecondaryButtonTopLeft(counter, top_down),SHIP_ORDER::BLOCKADE_SYSTEM);
 			counter++;
 		}
 	}
@@ -437,7 +439,7 @@ short CShipBottomView::DrawMultiTurnOrderMenu() {
 			if (csec.GetPlanet(l)->GetHabitable() == TRUE &&
 				csec.GetPlanet(l)->GetTerraformed() == FALSE)
 			{
-				DrawSmallButton("BTN_TERRAFORM",CalcSecondaryButtonTopLeft(counter), SHIP_ORDER::TERRAFORM);
+				DrawSmallButton("BTN_TERRAFORM",CalcSecondaryButtonTopLeft(counter, top_down), SHIP_ORDER::TERRAFORM);
 				counter++;
 				break;
 			}
@@ -459,7 +461,7 @@ short CShipBottomView::DrawMultiTurnOrderMenu() {
 				if(pMajor->CanBuildShip(SHIP_TYPE::OUTPOST, m_dc.researchLevels, m_dc.pDoc->m_ShipInfoArray.GetAt(l)))
 				{
 					// Wenn ja dann Schaltfläche zum Außenpostenbau einblenden
-					DrawSmallButton("BTN_BUILD_OUTPOST",CalcSecondaryButtonTopLeft(counter),SHIP_ORDER::BUILD_OUTPOST);
+					DrawSmallButton("BTN_BUILD_OUTPOST",CalcSecondaryButtonTopLeft(counter, top_down),SHIP_ORDER::BUILD_OUTPOST);
 					counter++;
 					break;
 				}
@@ -472,7 +474,7 @@ short CShipBottomView::DrawMultiTurnOrderMenu() {
 				if(pMajor->CanBuildShip(SHIP_TYPE::STARBASE, m_dc.researchLevels, m_dc.pDoc->m_ShipInfoArray.GetAt(l)))
 				{
 					// Wenn ja dann Schaltfläche zum Sternenbasisbau einblenden
-					DrawSmallButton("BTN_BUILD_STARBASE",CalcSecondaryButtonTopLeft(counter),SHIP_ORDER::BUILD_STARBASE);
+					DrawSmallButton("BTN_BUILD_STARBASE",CalcSecondaryButtonTopLeft(counter, top_down),SHIP_ORDER::BUILD_STARBASE);
 					counter++;
 					break;
 				}
@@ -483,7 +485,7 @@ short CShipBottomView::DrawMultiTurnOrderMenu() {
 	if (TimeDoDraw(counter) && ShipCanHaveOrder(pShip, SHIP_ORDER::IMPROVE_SHIELDS,
 			&m_dc.pDoc->GetSector(pShip.GetKO().x, pShip.GetKO().y)))
 	{
-		DrawSmallButton("IMPROVE_SHIELDS_SHIP_ORDER",CalcSecondaryButtonTopLeft(counter),SHIP_ORDER::IMPROVE_SHIELDS);
+		DrawSmallButton("IMPROVE_SHIELDS_SHIP_ORDER",CalcSecondaryButtonTopLeft(counter, top_down),SHIP_ORDER::IMPROVE_SHIELDS);
 		counter++;
 	}
 	// Repairing
@@ -498,7 +500,7 @@ short CShipBottomView::DrawMultiTurnOrderMenu() {
 		)
 	)
 	{
-		DrawSmallButton("BTN_REPAIR_SHIP",CalcSecondaryButtonTopLeft(counter),SHIP_ORDER::REPAIR);
+		DrawSmallButton("BTN_REPAIR_SHIP",CalcSecondaryButtonTopLeft(counter, top_down),SHIP_ORDER::REPAIR);
 		counter++;
 	}
 	return counter;
@@ -569,13 +571,13 @@ short CShipBottomView::DrawImmediateOrderMenu() {
 	// gruppieren
 	if (TimeDoDraw(counter) && ShipCanHaveOrder(pShip, SHIP_ORDER::CREATE_FLEET))
 	{
-		DrawSmallButton("BTN_CREATE_FLEET",CalcSecondaryButtonTopLeft(counter, false),SHIP_ORDER::CREATE_FLEET);
+		DrawSmallButton("BTN_CREATE_FLEET",CalcSecondaryButtonTopLeft(counter),SHIP_ORDER::CREATE_FLEET);
 		counter++;
 	}
 	// Transport
 	if (TimeDoDraw(counter) && ShipCanHaveOrder(pShip, SHIP_ORDER::TRANSPORT))
 	{
-		DrawSmallButton("BTN_TRANSPORT", CalcSecondaryButtonTopLeft(counter, false),SHIP_ORDER::TRANSPORT);
+		DrawSmallButton("BTN_TRANSPORT", CalcSecondaryButtonTopLeft(counter),SHIP_ORDER::TRANSPORT);
 		counter++;
 	}
 	return counter;
@@ -641,12 +643,12 @@ void CShipBottomView::DrawMenu() {
 	short counter = 0;
 	if( m_iWhichMainShipOrderButton == MAIN_BUTTON_COMBAT_BEHAVIOR )
 		counter = DrawCombatMenu();
-	if( m_iWhichMainShipOrderButton == MAIN_BUTTON_MULTI_TURN_ORDER )
-		counter = DrawMultiTurnOrderMenu();
-	else if( m_iWhichMainShipOrderButton == MAIN_BUTTON_SINGLE_TURN_ORDER)
-		counter = DrawSingleTurnOrderMenu();
 	else if( m_iWhichMainShipOrderButton == MAIN_BUTTON_IMMEDIATE_ORDER )
 		counter = DrawImmediateOrderMenu();
+	else if( m_iWhichMainShipOrderButton == MAIN_BUTTON_SINGLE_TURN_ORDER)
+		counter = DrawSingleTurnOrderMenu();
+	if( m_iWhichMainShipOrderButton == MAIN_BUTTON_MULTI_TURN_ORDER )
+		counter = DrawMultiTurnOrderMenu();
 
 	if (TimeDoDraw(counter))
 	{
