@@ -1591,28 +1591,29 @@ void CGalaxyMenuView::GenerateGalaxyMap()
 /// @param pt Koordinate, zu welcher gescrollt werden soll.
 void CGalaxyMenuView::ScrollToSector(const CPoint& pt)
 {
-	double x = (double)pt.x / (double)STARMAP_SECTORS_HCOUNT;
-	double y = (double)pt.y / (double)STARMAP_SECTORS_VCOUNT;
+	// Punkt der Koordinate auf dem Bildschirm berechnen
+	double x = (double)pt.x * (double)STARMAP_SECTOR_WIDTH;
+	double y = (double)pt.y * (double)STARMAP_SECTOR_HEIGHT;
 
-	/*
-	if (pt.x < STARMAP_SECTORS_HCOUNT / 2)
-		x = min(0, x - (double)pt.x * (double)STARMAP_SECTOR_WIDTH / 2.0 / m_fZoom);
-	else if (pt.x > STARMAP_SECTORS_HCOUNT / 2)
-		x = max(1.0, x + (double)pt.x * (double)STARMAP_SECTOR_WIDTH / 2.0 / m_fZoom);
+	// Scrollpunkt oben links ermitteln (Sektor wäre immer oben links zu sehen)
+	CPoint scrollPos(x, y);
+	Zoom(&scrollPos);
 
-	if (pt.y < STARMAP_SECTORS_VCOUNT / 2)
-		y = min(0, y - (double)pt.y * (double)STARMAP_SECTOR_HEIGHT / 2.0 / m_fZoom);
-	else if (pt.y > STARMAP_SECTORS_VCOUNT / 2)
-		y = max(1.0, y + (double)pt.y * (double)STARMAP_SECTOR_HEIGHT / 2.0 / m_fZoom);
-	*/
+	// Scrollpunkt zentrieren (Sektor soll in der Mitte des Bildschirms angezeigt werden)
+	CRect client;
+	GetClientRect(&client);
+	scrollPos.x -= client.Width() / 2;
+	scrollPos.y -= client.Height() / 2;
 
-	CPoint scrollPos;
-	scrollPos.x = x * GetScrollLimit(SB_HORZ);
-	scrollPos.y = y * GetScrollLimit(SB_VERT);
+	// maximalen Scroll beachten
+	scrollPos.x = min(scrollPos.x, STARMAP_TOTALWIDTH * m_fZoom - client.Width());
+	scrollPos.y = min(scrollPos.y, STARMAP_TOTALHEIGHT * m_fZoom - client.Height());
 
+	// Scrollen
 	SetScrollPos(SB_HORZ, scrollPos.x, false);
 	SetScrollPos(SB_VERT, scrollPos.y, false);
 
+	// Sektor markieren
 	m_pPlayersRace->GetStarmap()->m_Selection = Sector(pt.x, pt.y);
 }
 
