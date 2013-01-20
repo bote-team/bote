@@ -862,12 +862,12 @@ bool CShip::CanHaveOrder(SHIP_ORDER::Typ order, bool require_new) const {
 		case SHIP_ORDER::DESTROY_SHIP:
 		case SHIP_ORDER::FOLLOW_SHIP:
 		case SHIP_ORDER::CANCEL:
+		case SHIP_ORDER::TRAIN_SHIP:
 			return true;
 		case SHIP_ORDER::IMPROVE_SHIELDS:
 			return IonstormCanImproveShields();
 		case SHIP_ORDER::WAIT_SHIP_ORDER:
 		case SHIP_ORDER::SENTRY_SHIP_ORDER:
-		case SHIP_ORDER::TRAIN_SHIP:
 		case SHIP_ORDER::CREATE_FLEET:
 			return !IsStation();
 		case SHIP_ORDER::REPAIR:
