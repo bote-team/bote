@@ -67,4 +67,9 @@ BuildLogRelease76964.htm
 BuildLogDEBUG76964.htm
 DevBotE_r76964-seeall.bat
 DevBotE_r76969-seeall.bat
+</Value></Property><Property><Name>svn:ignore</Name><Value>Debug
+Release
+*.ncb
+*.suo
+*.user
 </Value></Property></Properties></ItemProperties>

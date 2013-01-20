@@ -23,6 +23,7 @@
 #include "Ships\Combat.h"
 #include "System\AttackSystem.h"
 #include "Intel\IntelCalc.h"
+#include "Remanager.h"
 #include "Sanity.h"
 #include "Test.h"
 
@@ -1428,11 +1429,11 @@ void CBotf2Doc::NextRound()
 			pMinor->PerhapsBuildShip(this);
 		}
 	}
-	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)//Random Events berechenn
-	{
-		CMajor* pMajor = it->second;
-		m_RandomEventManager.CalcEvents(pMajor);
-	};
+	
+	// Zufallsereignisse berechnen
+	CReManager* pRandomEventManager = CReManager::GetInstance();
+	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
+		pRandomEventManager->CalcEvents(it->second);	
 
 	this->CalcSystemAttack();
 	this->CalcIntelligence();
@@ -1456,6 +1457,9 @@ void CBotf2Doc::NextRound()
 	this->CalcShipEffects();
 	this->CalcNewRoundData();
 	this->CalcTrade();
+	
+	// Zufallsereignis Hüllenvirus berechnen
+	pRandomEventManager->CalcShipEvents();
 
 	this->CalcEndDataForNextRound();
 
@@ -1550,51 +1554,66 @@ void CBotf2Doc::ApplyShipsAtStartup()
 	// Datei schließen
 	file.Close();
 
-	// Nehmen die Ehlenen am Spiel teil, so den Ehlenen-Beschützer (Station) in deren System bauen
-	if (CMinor* pEhlen = dynamic_cast<CMinor*>(GetRaceCtrl()->GetRace("EHLEN")))
+	CIniLoader* pIni = CIniLoader::GetInstance();
+	ASSERT(pIni);
+	if (pIni && pIni->ReadValueDefault("Special", "ALIENENTITIES", true))
 	{
-		// Schiff Ehlenen-Beschützer suchen (blöd das hier Sprachunabhängigkeit bei der ID existiert)
-		for (int i = 0; i < m_ShipInfoArray.GetSize(); i++)
+		// Nehmen die Ehlenen am Spiel teil, so den Ehlenen-Beschützer (Station) in deren System bauen
+		if (CMinor* pEhlen = dynamic_cast<CMinor*>(GetRaceCtrl()->GetRace("EHLEN")))
 		{
-			CShipInfo* pShipInfo = &m_ShipInfoArray.GetAt(i);
-			if (pShipInfo->GetOnlyInSystem() != pEhlen->GetHomesystemName())
+			// Schiff Ehlenen-Beschützer suchen (blöd das hier Sprachunabhängigkeit bei der ID existiert)
+			for (int i = 0; i < m_ShipInfoArray.GetSize(); i++)
+			{
+				CShipInfo* pShipInfo = &m_ShipInfoArray.GetAt(i);
+				if (pShipInfo->GetOnlyInSystem() != pEhlen->GetHomesystemName())
+					continue;
+
+				BuildShip(m_ShipInfoArray.GetAt(i).GetID(), pEhlen->GetRaceKO(), pEhlen->GetRaceID());
+				break;
+			}
+		}
+
+		// Die Kampfstation zufällig in irgendeinem unbewohnten Sonnensystem auf der Galaxiekarte platzieren
+		int nDeadloopCounter = 0;
+		do
+		{
+			// Endlosschleife vermeiden
+			if (++nDeadloopCounter > 1000000)
+			{
+				AfxMessageBox("Info: It was not possible to generate the Battlestation, because no free sunsystem is ingame!");
+				break;
+			}
+
+			CPoint p(rand()%STARMAP_SECTORS_HCOUNT, rand()%STARMAP_SECTORS_VCOUNT);
+			if (!GetSector(p.x, p.y).GetSunSystem())
 				continue;
 
-			BuildShip(m_ShipInfoArray.GetAt(i).GetID(), pEhlen->GetRaceKO(), pEhlen->GetRaceID());
+			if (GetSector(p.x, p.y).GetOwnerOfSector() != "")
+				continue;
+
+			if (GetSector(p.x, p.y).GetMinorRace())
+				continue;
+
+			if (GetSector(p.x, p.y).GetAnomaly())
+				continue;
+			
+			for (int i = 0; i < m_ShipInfoArray.GetSize(); i++)
+			{
+				CShipInfo* pShipInfo = &m_ShipInfoArray.GetAt(i);
+				if (pShipInfo->GetOnlyInSystem() != KAMPFSTATION)
+					continue;
+
+				// Kampfstation platzieren und abbrechen
+				BuildShip(m_ShipInfoArray.GetAt(i).GetID(), p, KAMPFSTATION);
+				break;
+			}
+
+			// Sektor war okay
 			break;
-		}
+
+		} while (true);
 	}
-
-	// Die Kampfstation zufällig in irgendeinem unbewohnten Sektor auf der Galaxiekarte platzieren
-	do
-	{
-		CPoint p(rand()%STARMAP_SECTORS_HCOUNT, rand()%STARMAP_SECTORS_VCOUNT);
-		if (GetSector(p.x, p.y).GetOwnerOfSector() != "")
-			continue;
-
-		if (GetSector(p.x, p.y).GetMinorRace())
-			continue;
-
-		if (GetSector(p.x, p.y).GetAnomaly())
-			continue;
-		
-		for (int i = 0; i < m_ShipInfoArray.GetSize(); i++)
-		{
-			CShipInfo* pShipInfo = &m_ShipInfoArray.GetAt(i);
-			if (pShipInfo->GetOnlyInSystem() != KAMPFSTATION)
-				continue;
-
-			// Kampfstation platzieren und abbrechen
-			BuildShip(m_ShipInfoArray.GetAt(i).GetID(), p, KAMPFSTATION);
-			break;
-		}
-
-		// Sektor war okay
-		break;
-
-	} while (true);
 }
-
 
 void CBotf2Doc::ApplyTroopsAtStartup()
 {
@@ -4615,14 +4634,19 @@ void CBotf2Doc::CalcShipMovement()
 			if (nextKO != Sector(-1,-1))
 			{
 				y->second->SetKO(nextKO.x, nextKO.y);
-				// Die Anzahl speed ersten Felder in Pfad des Schiffes l?schen
+				// Die Anzahl speed ersten Felder in Pfad des Schiffes löschen
 				if (nextKO == targetKO)
 				{
 					y->second->GetPath()->RemoveAll();
 					y->second->SetTargetKO(CPoint(-1,-1));
 				}
-				if (pRace != NULL && pRace->IsMajor() && !(this->GetSector(nextKO.x,nextKO.y).GetFullKnown(y->second->GetOwnerOfShip()))) //Berechnet Zufalls entdeckung in dem Sector den das Schiff anfliegt
-					m_RandomEventManager.CalcExploreEvent(CPoint((int)nextKO.x,(int)nextKO.y),dynamic_cast<CMajor*>(pRace),&m_ShipMap);
+				
+				// Berechnet Zufallsentdeckung in dem Sektor den das Schiff anfliegt
+				if (pRace != NULL && pRace->IsMajor() && !(this->GetSector(nextKO.x,nextKO.y).GetFullKnown(y->second->GetOwnerOfShip())))
+				{
+					CReManager* pRandomEventManager = CReManager::GetInstance();
+					pRandomEventManager->CalcExploreEvent(CPoint((int)nextKO.x,(int)nextKO.y),dynamic_cast<CMajor*>(pRace),&m_ShipMap);
+				}
 
 				int high = speed;
 				while (high > 0 && high < y->second->GetPath()->GetSize())
@@ -5561,7 +5585,7 @@ void CBotf2Doc::CalcEndDataForNextRound()
 void CBotf2Doc::CalcRandomAlienEntities()
 {
 	const CIniLoader* pIni = CIniLoader::GetInstance();
-	if(!pIni->ReadValueDefault("Special", "GENERATE_ALIEN_ENTITIES", true))
+	if (!pIni->ReadValueDefault("Special", "ALIENENTITIES", true))
 		return;
 
 	// Aliens zufällig ins Spiel bringen
@@ -5605,7 +5629,7 @@ void CBotf2Doc::CalcRandomAlienEntities()
 			int nValue = STARMAP_SECTORS_HCOUNT * STARMAP_SECTORS_VCOUNT;
 			// Pro Techlevel verringert sich die virtuelle Anzahl der Sektoren um 25% -> geringere Wahrscheinlichkeit
 			nValue /= ((nMod * 4 + 100.0) / 100.0);
-			float fSteuerParameter = 1.25f;	// Hiermit kann man leicht die Wahrscheinlichkeit steuern, aktuell 25% niedriger!
+			float fSteuerParameter = 1.50f;	// Hiermit kann man leicht die Wahrscheinlichkeit steuern, aktuell 50% niedriger!
 			if (rand()%((int)(10000 * fSteuerParameter)) > nValue)
 				continue;
 

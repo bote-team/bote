@@ -2376,6 +2376,8 @@ In sector § an extremely interesting alien technology was discovered
 In sector § alien technology has been discovered which promotes our research in all areas
 [EVENTSHIPXP]
 During the exploration of §, the crew gained extra experience
+[EVENTHULLVIRUS]
+Hull-Virus infested all ships in sector §
 
 // Troops
 [MAJOR1_TROOP1_NAME]

@@ -19,6 +19,7 @@
 #include "Events\EventRaceKilled.h"
 #include "Events\EventVictory.h"
 #include "Events\EventAlienEntity.h"
+#include "Events\EventRandom.h"
 
 /**
  * Struktur, die die wichtigsten Informationen eines Systems aufnehmen kann. Dies wird benötigt, wenn wir in einer

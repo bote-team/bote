@@ -2376,6 +2376,8 @@ Im Sektor § wurde äußerst interessante Alientechnologie entdeckt
 Im Sektor § wurde Alientechnologie entdeckt, die unsere Forschung in allen Gebieten voranbringt
 [EVENTSHIPXP]
 Beim Erkunden von § hat die Crew viel Erfahrung gesammelt
+[EVENTHULLVIRUS]
+Hüllenvirus in Sektor § hat Schiffe befallen
 
 // Truppen
 [MAJOR1_TROOP1_NAME]

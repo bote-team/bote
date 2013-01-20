@@ -468,24 +468,25 @@ void CMajor::CreateStarmap(void)
 	m_pStarmap = new CStarmap(!m_bPlayer, 3 - SHIP_RANGE::MIDDLE);
 }
 
-void CMajor::Contact(const CRace& Race, const CPoint& p) {
+void CMajor::Contact(const CRace& Race, const CPoint& p)
+{
 	CRace::Contact(Race, p);
+	
 	// Nachricht generieren, dass wir eine andere Rasse kennengelernt haben
-	CString s;
-	CString sect;
-	sect.Format("%c%i",(char)(p.y+97),p.x+1);
+	CString sSectorKO;
+	sSectorKO.Format("%c%i",(char)(p.y+97),p.x+1);
+	
 	//message to the involved major
-	CString sKey("GET_CONTACT_TO_MINOR");
-	if(Race.IsMajor())
-		sKey = "GET_CONTACT_TO_MAJOR";
-	s = CResourceManager::GetString(sKey,FALSE, Race.GetRaceName(),sect);
+	CString sKey = Race.IsMajor() ? "GET_CONTACT_TO_MAJOR" : "GET_CONTACT_TO_MINOR";
+	CString sMsg = CResourceManager::GetString(sKey,FALSE, Race.GetRaceName(),sSectorKO);
+	
 	CMessage message;
-	message.GenerateMessage(s,MESSAGE_TYPE::DIPLOMACY,"",p,FALSE);
+	message.GenerateMessage(sMsg, MESSAGE_TYPE::DIPLOMACY, "", p, FALSE);
 	m_Empire.AddMessage(message);
+	
 	// Eventscreen einfügen
-	m_Empire.GetEventMessages()->Add(
-		new CEventFirstContact(m_sID, Race.GetRaceID()));
-
+	if (IsHumanPlayer())
+		m_Empire.GetEventMessages()->Add(new CEventFirstContact(m_sID, Race.GetRaceID()));
 }
 
 bool CMajor::AHumanPlays() const {

@@ -8,7 +8,6 @@
 #include "Galaxy/Sector.h"
 #include "General/Statistics.h"
 #include "Races/VictoryObserver.h"
-#include "Remanager.h"
 #include "SoundManager.h"
 #include "Ships/GenShipName.h"
 #include "Ships/ShipInfo.h"
@@ -69,8 +68,6 @@ protected: // Nur aus Serialisierung erzeugen
 	CAIPrios*		 m_pAIPrios;		///< zusätzliche Priotitäten, welche für die System-KI-Berechnung benötigt werden
 
 	CVictoryObserver m_VictoryObserver;	///< Überwachung der Siegbedingungen
-
-	CReManager m_RandomEventManager;    ///< Berechnet Random Events
 
 public:
 	// Operationen
