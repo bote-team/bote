@@ -370,7 +370,10 @@ void CFleetMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		return;
 	}
 	// Fremde Flotten können nicht bearbeitet werden
-	assert(pDoc->FleetShip()->second->GetOwnerOfShip() == m_pPlayersRace->GetRaceID());
+	// It is possible to view the content of a foreign fleet by double-clicking onto it in ship bottom view...
+	// However, we of course don't want someone else to modify our fleets.
+	if(pDoc->FleetShip()->second->GetOwnerOfShip() != m_pPlayersRace->GetRaceID())
+		return;
 	// Auf welches Rechteck haben wir geklickt (gleiche Klasse oder gleichen Typ oder alle hinzufügen?)
 	const unsigned whichRect = CheckClickedButtonRect(point);
 	// Wenn wir auf irgendeinen der Buttons geklickt haben um Schiffe hinzuzufügen
