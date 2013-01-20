@@ -38,6 +38,7 @@ CIniLoader::CIniLoader(void)
 		WriteValue("Video", "ANIMATEDICON", "ON");
 		WriteValue("Video", "SHOWMINIMAP", "ON");
 		WriteValue("Video", "TOOLTIPDELAY", "750");
+		WriteValue("Video", "SHOWRANDOMEVENTPICTURES", "ON");
 
 		WriteValue("Control", "SHOWSCROLLBARS", "OFF");
 		WriteValue("Control", "INVERTMOUSE", "OFF");
@@ -51,7 +52,8 @@ CIniLoader::CIniLoader(void)
 		WriteValue("Special", "GENERATIONMODE", "0");
 		WriteValue("Special", "MAPSIZEV", "20");
 		WriteValue("Special", "MAPSIZEH", "30");
-		WriteValue("Special", "GENERATE_ALIEN_ENTITIES", "ON");
+		WriteValue("Special", "ALIENENTITIES", "ON");
+		WriteValue("Special", "RANDOMEVENTS", "ON");
 
 		WriteValue("Victory_Conditions", "Elimination", "ON");
 		WriteValue("Victory_Conditions", "Diplomacy", "OFF");

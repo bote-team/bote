@@ -49,6 +49,7 @@ private:
 	BOOL m_bShowTraderoutes;
 	BOOL m_bAnimatedIcon;
 	BOOL m_bShowMiniMap;
+	BOOL m_bShowRandomEventPictures;
 	CSliderCtrl m_ctrlTooltipDelay;
 
 	// Control
@@ -63,6 +64,8 @@ private:
 	CSliderCtrl m_ctrlAnomalyDensity;
 	CComboBox m_comboGalaxysize;
 	CComboBox m_comboGalaxyshape;
+	BOOL m_bAlienEntities;
+	BOOL m_bRandomEvents;
 
 	// Victory Conditions
 	BOOL m_bVCElimination;

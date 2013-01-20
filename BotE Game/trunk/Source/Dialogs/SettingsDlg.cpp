@@ -22,6 +22,7 @@ CSettingsDlg::CSettingsDlg(bool bDisableNonWorking/* = false*/, CWnd* pParent /*
 	, m_bAnimatedIcon(FALSE)
 	, m_bShowMiniMap(TRUE)
 	, m_bShowScrollBars(FALSE)
+	, m_bShowRandomEventPictures(TRUE)
 	, m_bInvertMouse(FALSE)
 	, m_bHideMenu(FALSE)
 	, m_bVCElimination(FALSE)
@@ -30,6 +31,8 @@ CSettingsDlg::CSettingsDlg(bool bDisableNonWorking/* = false*/, CWnd* pParent /*
 	, m_bVCResearch(FALSE)
 	, m_bVCCombat(FALSE)
 	, m_bVCSabotage(FALSE)
+	, m_bAlienEntities(TRUE)
+	, m_bRandomEvents(TRUE)
 {
 }
 
@@ -65,6 +68,9 @@ void CSettingsDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_CHECK_VC_RESEARCH, m_bVCResearch);
 	DDX_Check(pDX, IDC_CHECK_VC_COMBAT, m_bVCCombat);
 	DDX_Check(pDX, IDC_CHECK_VC_SABOTAGE, m_bVCSabotage);
+	DDX_Check(pDX, IDC_CHECK_SHOWRANDOMEVENTPICTURES, m_bShowRandomEventPictures);
+	DDX_Check(pDX, IDC_CHECK_ALIENENTITIES, m_bAlienEntities);
+	DDX_Check(pDX, IDC_CHECK_RANDOMEVENTS, m_bRandomEvents);
 }
 
 
@@ -97,7 +103,7 @@ BOOL CSettingsDlg::OnInitDialog()
 	ASSERT(pIni);
 
 	// General
-	bool bAutosave;
+	bool bAutosave = true;
 	if (!pIni->ReadValue("General", "AUTOSAVE", bAutosave))
 		ASSERT(false);
 	m_bAutoave = bAutosave;
@@ -166,65 +172,70 @@ BOOL CSettingsDlg::OnInitDialog()
 
 
 	// Audio
-	bool bHardwareSound;
+	bool bHardwareSound = true;
 	if (!pIni->ReadValue("Audio", "HARDWARESOUND", bHardwareSound))
 		ASSERT(false);
 	m_bHardwaresound = bHardwareSound;
 
-	bool bSound;
+	bool bSound = true;
 	if (!pIni->ReadValue("Audio", "SOUND", bSound))
 		ASSERT(false);
 	m_bSound = bSound;
 
-	bool bMusic;
+	bool bMusic = true;
 	if (!pIni->ReadValue("Audio", "MUSIC", bMusic))
 		ASSERT(false);
 	m_bMusic = bMusic;
 
-	float fMusicVolume;
+	float fMusicVolume = 0.3f;
 	if (!pIni->ReadValue("Audio", "MUSICVOLUME", fMusicVolume))
 		ASSERT(false);
 	m_ctrlMusicvolume.SetPos(fMusicVolume * 100);
 
 	// Video
-	bool bShowTraderoutes;
+	bool bShowTraderoutes = true;
 	if (!pIni->ReadValue("Video", "SHOWTRADEROUTES", bShowTraderoutes))
 		ASSERT(false);
 	m_bShowTraderoutes = bShowTraderoutes;
 
-	bool bAnimatedIcon;
+	bool bAnimatedIcon = true;
 	if (!pIni->ReadValue("Video", "ANIMATEDICON", bAnimatedIcon))
 		ASSERT(false);
 	m_bAnimatedIcon = bAnimatedIcon;
 
-	bool bShowMiniMap;
+	bool bShowMiniMap = true;
 	if (!pIni->ReadValue("Video", "SHOWMINIMAP", bShowMiniMap))
 		ASSERT(false);
 	m_bShowMiniMap = bShowMiniMap;
 
-	int nTooltipDelay;
+	bool bShowRandomEventPictures = true;
+	if (!pIni->ReadValue("Video", "SHOWRANDOMEVENTPICTURES", bShowRandomEventPictures))
+		ASSERT(false);
+	m_bShowRandomEventPictures = bShowRandomEventPictures;
+
+	int nTooltipDelay = 750;
 	if (!pIni->ReadValue("Video", "TOOLTIPDELAY", nTooltipDelay))
 		ASSERT(false);
 	m_ctrlTooltipDelay.SetPos(nTooltipDelay);
 
 	// Control
-	bool bShowScrollbars;
+	bool bShowScrollbars = false;
 	if (!pIni->ReadValue("Control", "SHOWSCROLLBARS", bShowScrollbars))
 		ASSERT(false);
 	m_bShowScrollBars = bShowScrollbars;
 
-	bool bInvertMouse;
+	bool bInvertMouse = false;
 	if (!pIni->ReadValue("Control", "INVERTMOUSE", bInvertMouse))
 		ASSERT(false);
 	m_bInvertMouse = bInvertMouse;
 
-	bool bHideMenu;
+	bool bHideMenu = false;
 	if (!pIni->ReadValue("Control", "HIDEMENUBAR", bHideMenu))
 		ASSERT(false);
 	m_bHideMenu = bHideMenu;
 
 	// Special (Ingame)
-	int nRandomSeed;
+	int nRandomSeed = -1;
 	if (!pIni->ReadValue("Special", "RANDOMSEED", nRandomSeed))
 		ASSERT(false);
 	if (nRandomSeed < -1)
@@ -233,48 +244,58 @@ BOOL CSettingsDlg::OnInitDialog()
 	sRandomSeed.Format("%d", nRandomSeed);
 	m_edtRandomSeed.SetWindowText(sRandomSeed);
 
-	int nStarDensity;
+	int nStarDensity = 35;
 	if (!pIni->ReadValue("Special", "STARDENSITY", nStarDensity))
 		ASSERT(false);
 	m_ctrlStarDensity.SetPos(nStarDensity);
 
-	int nMinorDensity;
+	int nMinorDensity = 30;
 	if (!pIni->ReadValue("Special", "MINORDENSITY", nMinorDensity))
 		ASSERT(false);
 	m_ctrlMinorDensity.SetPos(nMinorDensity);
 
-	int nAnomalyDensity;
+	int nAnomalyDensity = 9;
 	if (!pIni->ReadValue("Special", "ANOMALYDENSITY", nAnomalyDensity))
 		ASSERT(false);
 	m_ctrlAnomalyDensity.SetPos(nAnomalyDensity);
 
+	bool bAlienEntities = true;
+	if (!pIni->ReadValue("Special", "ALIENENTITIES", bAlienEntities))
+		ASSERT(false);
+	m_bAlienEntities = bAlienEntities;
+
+	bool bRandomEvents = true;
+	if (!pIni->ReadValue("Special", "RANDOMEVENTS", bRandomEvents))
+		ASSERT(false);
+	m_bRandomEvents = bRandomEvents;
+
 	// Victory Conditions
-	bool bVCElimination;
+	bool bVCElimination = true;
 	if (!pIni->ReadValue("Victory_Conditions", "Elimination", bVCElimination))
 		ASSERT(false);
 	m_bVCElimination = bVCElimination;
 
-	bool bVCDiplomacy;
+	bool bVCDiplomacy = false;
 	if (!pIni->ReadValue("Victory_Conditions", "Diplomacy", bVCDiplomacy))
 		ASSERT(false);
 	m_bVCDiplomacy = bVCDiplomacy;
 
-	bool bVCConquest;
+	bool bVCConquest = false;
 	if (!pIni->ReadValue("Victory_Conditions", "Conquest", bVCConquest))
 		ASSERT(false);
 	m_bVCConquest = bVCConquest;
 
-	bool bVCResearch;
+	bool bVCResearch = false;
 	if (!pIni->ReadValue("Victory_Conditions", "Research", bVCResearch))
 		ASSERT(false);
 	m_bVCResearch = bVCResearch;
 
-	bool bVCCombat;
+	bool bVCCombat = false;
 	if (!pIni->ReadValue("Victory_Conditions", "Combat", bVCCombat))
 		ASSERT(false);
 	m_bVCCombat = bVCCombat;
 
-	bool bVCSabotage;
+	bool bVCSabotage = false;
 	if (!pIni->ReadValue("Victory_Conditions", "Sabotage", bVCSabotage))
 		ASSERT(false);
 	m_bVCSabotage = bVCSabotage;
@@ -318,6 +339,12 @@ BOOL CSettingsDlg::OnInitDialog()
 		pWnd = GetDlgItem(IDC_EDIT_RANDOMSEED);
 		if (pWnd)
 			pWnd->EnableWindow(FALSE);
+		pWnd = GetDlgItem(IDC_CHECK_ALIENENTITIES);
+		if (pWnd)
+			pWnd->EnableWindow(FALSE);
+		pWnd = GetDlgItem(IDC_CHECK_RANDOMEVENTS);
+		if (pWnd)
+			pWnd->EnableWindow(FALSE);
 	}
 
 	UpdateData(false);
@@ -358,6 +385,8 @@ void CSettingsDlg::OnOK()
 	pIni->WriteValue("Video", "ANIMATEDICON", s);
 	m_bShowMiniMap == TRUE ? s = "ON" : s = "OFF";
 	pIni->WriteValue("Video", "SHOWMINIMAP", s);
+	m_bShowRandomEventPictures == TRUE ? s = "ON" : s = "OFF";
+	pIni->WriteValue("Video", "SHOWRANDOMEVENTPICTURES", s);
 	s.Format("%d", m_ctrlTooltipDelay.GetPos());
 	pIni->WriteValue("Video", "TOOLTIPDELAY", s);
 
@@ -378,9 +407,13 @@ void CSettingsDlg::OnOK()
 	pIni->WriteValue("Special", "MINORDENSITY", s);
 	s.Format("%d", m_ctrlAnomalyDensity.GetPos());
 	pIni->WriteValue("Special", "ANOMALYDENSITY", s);
+	m_bAlienEntities == TRUE ? s = "ON" : s = "OFF";
+	pIni->WriteValue("Special", "ALIENENTITIES", s);
+	m_bRandomEvents == TRUE ? s = "ON" : s = "OFF";
+	pIni->WriteValue("Special", "RANDOMEVENTS", s);
 	s.Format("%d", m_comboGalaxyshape.GetCurSel());
 	pIni->WriteValue("Special", "GENERATIONMODE", s);
-
+	
 	//Galaxysize
 	int choosen=m_comboGalaxysize.GetCurSel();
 	if(choosen==0)
@@ -450,5 +483,3 @@ void CSettingsDlg::OnNMCustomdrawSliderDifficulty(NMHDR* /*pNMHDR*/, LRESULT *pR
 		pCtrl->SetWindowText(m_sDifficulty);
 	*pResult = 0;
 }
-
-

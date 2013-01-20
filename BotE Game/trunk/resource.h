@@ -73,7 +73,6 @@
 #define IDC_LOGO                        1037
 #define ID_SHOWOPTIONSDLG               1037
 #define IDC_LBL_HOSTIP                  1038
-#define IDC_CUSTOM1                     1038
 #define IDC_LBL_FILENAME                1039
 #define IDC_CHECK_AUTOSAVE              1039
 #define IDC_LBL_DESCRIPTION             1040
@@ -92,7 +91,6 @@
 #define IDC_EDIT_RANDOMSEED             1051
 #define IDC_SLIDER_STARDENSITY          1052
 #define IDC_SLIDER_MINORDENSITY         1053
-#define IDC_STATIC_USERNAME             1053
 #define IDC_CHECK_HIDEMENUBAR           1054
 #define IDC_SLIDER_ANOMALYDENSITY       1055
 #define IDC_CHECK_VC_ELIMINATION        1056
@@ -101,15 +99,15 @@
 #define IDC_CHECK_VC_RESEARCH           1059
 #define IDC_CHECK_VC_COMBAT             1060
 #define IDC_CHECK_VC_SABOTAGE           1061
-#define IDC_CHECK_ANIMATEDICON2         1062
 #define IDC_CHECK_SHOWMINIMAP           1062
-#define IDC_EDIT1                       1063
 #define IDC_GENMODEEDIT                 1063
 #define IDC_GENMODE                     1064
 #define IDC_COMBOGALAXYSIZE             1065
-#define IDC_COMBO2                      1066
 #define IDC_COMBOGALAXYSHAPE            1066
 #define IDC_STATIC_FOUND_BOTE_SERVERS   1067
+#define IDC_CHECK_RANDOMEVENTS          1068
+#define IDC_CHECK_ALIENENTITIES         1069
+#define IDC_CHECK_SHOWRANDOMEVENTPICTURES 1070
 #define ID_OPTIONEN                     32773
 #define ID_INFORMATION                  32774
 #define ID_DATENBANK                    32775
@@ -135,7 +133,7 @@
 #define _APS_3D_CONTROLS                     1
 #define _APS_NEXT_RESOURCE_VALUE        190
 #define _APS_NEXT_COMMAND_VALUE         32790
-#define _APS_NEXT_CONTROL_VALUE         1068
+#define _APS_NEXT_CONTROL_VALUE         1071
 #define _APS_NEXT_SYMED_VALUE           107
 #endif
 #endif
