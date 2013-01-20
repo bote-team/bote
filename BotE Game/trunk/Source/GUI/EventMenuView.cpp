@@ -8,6 +8,7 @@
 #include "EventMenuView.h"
 #include "Races\RaceController.h"
 #include "Graphic\memdc.h"
+#include "IniLoader.h"
 // CEventMenuView
 
 IMPLEMENT_DYNCREATE(CEventMenuView, CMainBaseView)
@@ -65,6 +66,14 @@ void CEventMenuView::OnDraw(CDC* dc)
 		CEventScreen* eventScreen = dynamic_cast<CEventScreen*>(pMajor->GetEmpire()->GetEventMessages()->GetAt(0));
 		eventScreen->Create();
 		eventScreen->Draw(&g, pDoc->GetGraphicPool());
+		// Handelt es sich um ein Event zu einem Zufallsereignis?
+		if (CEventRandom* pRandomEventScreen = dynamic_cast<CEventRandom*>(eventScreen))
+		{
+			// Dieses sofort schließen, wenn es nicht angezeigt werden soll
+			if (CIniLoader* pIni = CIniLoader::GetInstance())
+				if (!pIni->ReadValueDefault("Video", "SHOWRANDOMEVENTPICTURES", true))
+					CloseScreen(eventScreen);
+		}
 	}
 
 	g.ReleaseHDC(pDC->GetSafeHdc());
