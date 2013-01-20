@@ -206,7 +206,8 @@ void CShips::AddShipToFleet(CShips* fleet) {
 	assert(fleet->GetOwnerOfShip() == GetOwnerOfShip());
 	const CShipMap::iterator i = m_Fleet.Add(fleet);
 	const SHIP_ORDER::Typ order = GetCurrentOrder();
-	if(order == SHIP_ORDER::ASSIGN_FLAGSHIP || !i->second->CanHaveOrder(order, false))
+	assert(order != SHIP_ORDER::ASSIGN_FLAGSHIP);
+	if(!i->second->CanHaveOrder(order, false))
 		UnsetCurrentOrder();
 	i->second->AdoptOrdersFrom(*this);
 	if(fleet->HasFleet()) {
@@ -256,12 +257,12 @@ bool CShips::ApplyIonstormEffects() {
 	return improvement_finished;
 }
 
-bool CShips::UnassignFlagship(CShip::UNASSIGN_FLAGSHIP_MODE mode) {
+bool CShips::UnassignFlagship() {
 	for(CShips::iterator i = begin(); i != end(); ++i) {
-		if(i->second->UnassignFlagship(mode))
+		if(i->second->UnassignFlagship())
 			return true;
 	}
-	return m_Leader.UnassignFlagship(mode);
+	return m_Leader.UnassignFlagship();
 }
 
 void CShips::SetCloak(bool bCloakOn) {

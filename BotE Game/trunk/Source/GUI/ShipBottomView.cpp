@@ -513,13 +513,6 @@ short CShipBottomView::DrawSingleTurnOrderMenu() {
 	short counter = 0;
 
 	//maximum orders in this category: 5; in an own system with a colonizable planet, a coloship, a cloakable ship
-
-	// Flagschiffernennung, geht nur wenn es keine Flotte ist
-	if (TimeDoDraw(counter) && ShipCanHaveOrder(*m_dc.pDoc->CurrentShip()->second, SHIP_ORDER::ASSIGN_FLAGSHIP))
-	{
-		DrawSmallButton("BTN_ASSIGN_FLAGSHIP",CalcSecondaryButtonTopLeft(counter),SHIP_ORDER::ASSIGN_FLAGSHIP);
-		counter++;
-	}
 	// Warten
 	if (TimeDoDraw(counter) && ShipCanHaveOrder(*m_dc.pDoc->CurrentShip()->second, SHIP_ORDER::WAIT_SHIP_ORDER))
 	{
@@ -578,6 +571,12 @@ short CShipBottomView::DrawImmediateOrderMenu() {
 	if (TimeDoDraw(counter) && ShipCanHaveOrder(pShip, SHIP_ORDER::TRANSPORT))
 	{
 		DrawSmallButton("BTN_TRANSPORT", CalcSecondaryButtonTopLeft(counter),SHIP_ORDER::TRANSPORT);
+		counter++;
+	}
+	// Flagschiffernennung, geht nur wenn es keine Flotte ist
+	if (TimeDoDraw(counter) && ShipCanHaveOrder(*m_dc.pDoc->CurrentShip()->second, SHIP_ORDER::ASSIGN_FLAGSHIP))
+	{
+		DrawSmallButton("BTN_ASSIGN_FLAGSHIP",CalcSecondaryButtonTopLeft(counter),SHIP_ORDER::ASSIGN_FLAGSHIP);
 		counter++;
 	}
 	return counter;
@@ -917,17 +916,19 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 					pDoc->SetFleetShip(pDoc->CurrentShip()); // Dieses Schiff soll die Flotte beinhalten
 					resources::pMainFrame->SelectMainView(FLEET_VIEW, pMajor->GetRaceID());		// Flottenansicht in der MainView anzeigen
 				}
-				// wenn wir ein Schiff zum Flagschiff ernennen wollen müssen wir schauen das diesen Befehl kein anderes
-				// Schiff des Imperiums hat, wenn ja dann diesen Befehl löschen
 				else if (nOrder == SHIP_ORDER::ASSIGN_FLAGSHIP)
 				{
-					// Das ganze Schiffsarray und auch die Flotten durchgehen, wenn wir ein altes Flagschiff finden, diesem den
-					// Titel wegnehmen
-					for (CShipMap::iterator n = pDoc->m_ShipMap.begin(); n != pDoc->m_ShipMap.end(); ++n)
-						if (n->second->GetOwnerOfShip() == pDoc->CurrentShip()->second->GetOwnerOfShip())
-							if(n->second->UnassignFlagship(CShip::UNASSIGN_FLAGSHIP_MODE_ORDER))
-								break;
-					pDoc->CurrentShip()->second->SetCurrentOrder(SHIP_ORDER::ASSIGN_FLAGSHIP);
+					const CShipMap::const_iterator& current_ship = pDoc->CurrentShip();
+					assert(!current_ship->second->HasFleet());
+					// Das ganze Schiffsarray und auch die Flotten durchgehen, wenn wir ein altes Flagschiff						//finden, diesem den Titel wegnehmen
+					for(CShipMap::iterator n = pDoc->m_ShipMap.begin(); n != pDoc->m_ShipMap.end(); ++n)
+					{
+						if (n->second->GetOwnerOfShip() != current_ship->second->GetOwnerOfShip())
+							continue;
+						n->second->UnassignFlagship();
+					}
+					// Jetzt das neue Schiff zum Flagschiff ernennen
+					current_ship->second->SetIsShipFlagShip(TRUE);
 				}
 				// Bei einem Transportbefehl muss in der MainView auch die Transportansicht angeblendet werden
 				else if (nOrder == SHIP_ORDER::TRANSPORT)
@@ -938,8 +939,10 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 				else if (nOrder == SHIP_ORDER::TERRAFORM) {
 					//command is given when clicked on planet
 				}
-				else if (nOrder == SHIP_ORDER::CANCEL)
+				else if (nOrder == SHIP_ORDER::CANCEL) {
 					pDoc->CurrentShip()->second->UnsetCurrentOrder();
+					pDoc->CurrentShip()->second->SetIsShipFlagShip(false);
+				}
 				else if (nOrder == SHIP_ORDER::ATTACK)
 					pDoc->CurrentShip()->second->SetCombatTactic(COMBAT_TACTIC::CT_ATTACK);
 				else if (nOrder == SHIP_ORDER::AVOID)

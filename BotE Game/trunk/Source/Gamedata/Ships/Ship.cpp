@@ -461,18 +461,10 @@ bool CShip::ApplyIonstormEffects() {
 	return improvement_finished;
 }
 
-bool CShip::UnassignFlagship(UNASSIGN_FLAGSHIP_MODE mode) {
-	if(mode == UNASSIGN_FLAGSHIP_MODE_STATUS) {
-		const bool is = GetIsShipFlagShip();
-		SetIsShipFlagShip(false);
-		return is;
-	}
-	assert(mode == UNASSIGN_FLAGSHIP_MODE_ORDER);
-	if(m_iCurrentOrder == SHIP_ORDER::ASSIGN_FLAGSHIP) {
-		UnsetCurrentOrder();
-		return true;
-	}
-	return false;
+bool CShip::UnassignFlagship() {
+	const bool is = GetIsShipFlagShip();
+	SetIsShipFlagShip(false);
+	return is;
 }
 
 void CShip::SetCloak(bool bCloakOn) {
@@ -554,7 +546,8 @@ void CShip::SetCurrentOrderAccordingToType() {
 void CShip::SetCurrentOrder(SHIP_ORDER::Typ nCurrentOrder) {
 	assert(nCurrentOrder != SHIP_ORDER::TERRAFORM
 		&& nCurrentOrder != SHIP_ORDER::ATTACK
-		&& nCurrentOrder != SHIP_ORDER::AVOID);
+		&& nCurrentOrder != SHIP_ORDER::AVOID
+		&& nCurrentOrder != SHIP_ORDER::ASSIGN_FLAGSHIP);
 	if(m_iCurrentOrder == SHIP_ORDER::TERRAFORM)
 		SetTerraform(-1);
 	m_iCurrentOrder = nCurrentOrder;
@@ -1499,10 +1492,14 @@ CString CShip::SanityCheckUniqueness(std::set<CString>& already_encountered) con
 }
 
 bool CShip::SanityCheckOrdersConsistency(const CShip& with) const {
+	//These orders are no longer allowed to be set;
+	//they are executed immediately instead of at turn change
 	if(m_iCurrentOrder == SHIP_ORDER::ATTACK
 		|| m_iCurrentOrder == SHIP_ORDER::AVOID
+		|| m_iCurrentOrder == SHIP_ORDER::ASSIGN_FLAGSHIP
 		|| with.m_iCurrentOrder == SHIP_ORDER::ATTACK
-		|| with.m_iCurrentOrder == SHIP_ORDER::AVOID)
+		|| with.m_iCurrentOrder == SHIP_ORDER::AVOID
+		|| with.m_iCurrentOrder == SHIP_ORDER::ASSIGN_FLAGSHIP)
 		return false;
 	assert(CanHaveOrder(with.m_iCurrentOrder, false));
 	return m_iCurrentOrder == with.m_iCurrentOrder

@@ -170,11 +170,9 @@ public:
 	void ApplyTraining(int xp, bool veteran);
 	bool ApplyIonstormEffects();
 
-	enum UNASSIGN_FLAGSHIP_MODE { UNASSIGN_FLAGSHIP_MODE_STATUS, UNASSIGN_FLAGSHIP_MODE_ORDER };
-
 	//take away flagship title or assign flagship order
 	//@return whether it was taken away
-	bool UnassignFlagship(UNASSIGN_FLAGSHIP_MODE mode);
+	bool UnassignFlagship();
 
 	//////////////////////////////////////////////////////////////////////
 	// calculated stements about this ship (should be const functions, non-bool returning)

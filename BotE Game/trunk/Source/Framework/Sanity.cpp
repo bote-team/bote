@@ -42,7 +42,7 @@ void CSanity::CheckShipTargetCoordinates(const CShips& ship)
 	const CPoint& co = ship.GetKO();
 	const CPoint& tco = ship.GetTargetKO();
 	//orders which match the fact that the ship has a target != CPoint(-1, -1) set
-	if(order == SHIP_ORDER::NONE || order == SHIP_ORDER::ENCLOAK || order == SHIP_ORDER::DECLOAK || order == SHIP_ORDER::ASSIGN_FLAGSHIP || order == SHIP_ORDER::DESTROY_SHIP) {
+	if(order == SHIP_ORDER::NONE || order == SHIP_ORDER::ENCLOAK || order == SHIP_ORDER::DECLOAK || order == SHIP_ORDER::DESTROY_SHIP) {
 		//It still should be an actual target and not the ship's coordinates
 		if(tco != co)
 			return;

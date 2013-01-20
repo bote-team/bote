@@ -4357,30 +4357,8 @@ void CBotf2Doc::CalcShipOrders()
 		// Wenn wir ein Schiff zum Flagschiff ernennen wollen (nur ein Schiff pro Imperium kann ein Flagschiff sein!)
 		else if (y->second->GetCurrentOrder() == SHIP_ORDER::ASSIGN_FLAGSHIP)
 		{
-			assert(!y->second->HasFleet());
-			CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(y->second->GetOwnerOfShip()));
-			assert(pMajor);
-			const network::RACE client = m_pRaceCtrl->GetMappedClientID(pMajor->GetRaceID());
-
-			// Das ganze Schiffsarray und auch die Flotten durchgehen, wenn wir ein altes Flagschiff finden, diesem den
-			// Titel wegnehmen
-			for(CShipMap::iterator n = m_ShipMap.begin(); n != m_ShipMap.end(); ++n)
-			{
-				if (n->second->GetOwnerOfShip() != y->second->GetOwnerOfShip())
-					continue;
-				n->second->UnassignFlagship(CShip::UNASSIGN_FLAGSHIP_MODE_STATUS);
-			}
-			// Jetzt das neue Schiff zum Flagschiff ernennen
-			y->second->SetIsShipFlagShip(TRUE);
-			y->second->SetCurrentOrderAccordingToType();
-			// Nachricht generieren, dass ein neues Schiff zum Flagschiff ernannt wurde
-			const CString& s = CResourceManager::GetString("ASSIGN_FLAGSHIP_MESSAGE",FALSE,
-				y->second->GetShipName(),y->second->GetShipTypeAsString());
-			CMessage message;
-			message.GenerateMessage(s,MESSAGE_TYPE::MILITARY,"",pSector->GetKO(),FALSE);
-			pMajor->GetEmpire()->AddMessage(message);
-			if (pMajor->IsHumanPlayer())
-				m_iSelectedView[client] = EMPIRE_VIEW;
+			//SHIP_ORDER::ASSIGN_FLAGSHIP is executed immediately now as opposed to at turn change
+			assert(false);
 		}
 		else if (y->second->GetCurrentOrder() == SHIP_ORDER::TRAIN_SHIP)
 		{
