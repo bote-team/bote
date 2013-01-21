@@ -5943,12 +5943,13 @@ void CBotf2Doc::CalcAlienShipEffects()
 			// wahrscheinlicher ist es, dass Krieg erklärt wird (nur den Midways helfen indem man Credits
 			// übergibt kann dagegen helfen).
 			CSystem* pSystem = &GetSystem(co.x, co.y);
-			CMajor* pOwner = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(pSystem->GetOwnerOfSystem()));
-			assert(pOwner->IsMajor());
-			if (pOwner->GetAgreement(pAlien->GetRaceID()) == DIPLOMATIC_AGREEMENT::WAR)
-				ship->second->SetCurrentOrder(SHIP_ORDER::ATTACK_SYSTEM);
-			else
-				pAlien->SetRelation(pOwner->GetRaceID(), -rand()%20);
+			if (CMajor* pOwner = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(pSystem->GetOwnerOfSystem())))
+			{
+				if (pOwner->GetAgreement(pAlien->GetRaceID()) == DIPLOMATIC_AGREEMENT::WAR)
+					ship->second->SetCurrentOrder(SHIP_ORDER::ATTACK_SYSTEM);
+				else
+					pAlien->SetRelation(pOwner->GetRaceID(), -rand()%20);
+			}			
 		}
 		else if (pAlien->GetRaceID() == ISOTOPOSPHAERISCHES_WESEN)
 		{
