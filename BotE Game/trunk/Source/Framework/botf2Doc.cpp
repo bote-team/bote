@@ -806,6 +806,11 @@ void CBotf2Doc::DoViewWorkOnNewRound()
 	CBottomBaseView::SetPlayersRace(pPlayersRace);
 	CMenuChooseView::SetPlayersRace(pPlayersRace);
 
+	// alle angezeigten Views neu zeichnen lassen
+	// (nicht ans Ende der Funktion packen, das gibt Probleme mit dem Scrollen in der Galaxieansicht,
+	// deren OnUpdate() muss vor dem View-Wechsel aufgerufen werden.)
+	UpdateAllViews(NULL);
+
 	// Views ihre Arbeiten zu Beginn einer neuen Runde durchführen lassen
 	std::map<CWnd *, UINT>* views = &resources::pMainFrame->GetSplitterWindow()->views;
 	for (std::map<CWnd *, UINT>::iterator it = views->begin(); it != views->end(); ++it)
@@ -837,9 +842,6 @@ void CBotf2Doc::DoViewWorkOnNewRound()
 	// wurde Rundenende geklickt zurücksetzen
 	m_bRoundEndPressed = false;
 	m_bDataReceived = true;
-
-	// alle angezeigten Views neu zeichnen lassen
-	UpdateAllViews(NULL);
 }
 
 // Generiert ein neues Spiel

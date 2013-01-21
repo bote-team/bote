@@ -110,19 +110,9 @@ void CGalaxyMenuView::OnNewRound()
 
 	if (m_bScrollToHome)
 	{
-		/*
-		CSize size;
-		size.cx = (LONG)(STARMAP_TOTALWIDTH * m_fZoom);
-		size.cy = (LONG)(STARMAP_TOTALHEIGHT * m_fZoom);
-		SetScrollSizes(MM_TEXT, size);
-
-		//CPoint homePos = pDoc->GetRaceKO(m_pPlayersRace->GetRaceID());*/
-		
 		ScrollToSector(pDoc->GetRaceKO(m_pPlayersRace->GetRaceID()));
 		m_bScrollToHome = false;
 	}
-
-	Invalidate();
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -547,28 +537,12 @@ void CGalaxyMenuView::OnInitialUpdate()
 BOOL CGalaxyMenuView::OnScroll(UINT nScrollCode, UINT nPos, BOOL bDoScroll)
 {
 	// TODO: Add your specialized code here and/or call the base class
-	CBotf2Doc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
-
-	if (!pDoc->m_bDataReceived)
-		return FALSE;
-	if (m_pPlayersRace == NULL)
-		return FALSE;
-
 	return CScrollView::OnScroll(nScrollCode, nPos, bDoScroll);
 }
 
 BOOL CGalaxyMenuView::OnScrollBy(CSize sizeScroll, BOOL bDoScroll)
 {
 	// TODO: Add your specialized code here and/or call the base class
-	CBotf2Doc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
-
-	if (!pDoc->m_bDataReceived)
-		return FALSE;
-	if (m_pPlayersRace == NULL)
-		return FALSE;
-
 	CRect client;
 	GetClientRect(&client);
 	InvalidateRect(&client, FALSE);
@@ -578,20 +552,18 @@ BOOL CGalaxyMenuView::OnScrollBy(CSize sizeScroll, BOOL bDoScroll)
 void CGalaxyMenuView::OnUpdate(CView* /*pSender*/, LPARAM /*lHint*/, CObject* /*pHint*/)
 {
 	// TODO: Add your specialized code here and/or call the base class
+	
 	// ScrollSizes auf Gesamtgröße inkl. Zoom setzen
-	CBotf2Doc* pDoc = resources::pDoc;
-	ASSERT(pDoc);
-
-	if (!pDoc->m_bDataReceived)
-		return;
-
 	CSize size;
 	size.cx = (LONG)(STARMAP_TOTALWIDTH * m_fZoom);
 	size.cy = (LONG)(STARMAP_TOTALHEIGHT * m_fZoom);
 	bool bShowScrollBars = false;
 	CIniLoader::GetInstance()->ReadValue("Control", "SHOWSCROLLBARS", bShowScrollBars);
 	if (bShowScrollBars)
+	{
+		Invalidate(FALSE);	// komisches flackern verhindern
 		SetScrollSizes(MM_TEXT, size);
+	}
 	else
 	{
 		SetScrollRange(SB_HORZ, 0, size.cx, false);
@@ -898,6 +870,9 @@ BOOL CGalaxyMenuView::OnMouseWheel(UINT nFlags, short zDelta, CPoint point)
 	pt += GetScrollPosition() - m_ptViewOrigin;
 	UnZoom(&pt);
 	struct::Sector sector = pMajor->GetStarmap()->GetClickedSector(pt);
+	// kein Zoom durchführen, wenn außerhalb des Galaxiegegrenzen gezoomt wurde
+	if (sector.x == -1 || sector.y == -1)
+		return CScrollView::OnMouseWheel(nFlags, zDelta, point);
 
 	// alten Zoom-Faktor merken
 	double oldZoom = m_fZoom;
@@ -915,49 +890,38 @@ BOOL CGalaxyMenuView::OnMouseWheel(UINT nFlags, short zDelta, CPoint point)
 	{
 		// ScrollPosition so anpassen, dass sich nach dem Zoomen wieder der Sektor unter dem Mauscursor
 		// befindet, der vor dem Zoomen schon unter der Maus war
-		if (sector.x > -1 && sector.y > -1)
-		{
-			bool bShowScrollBars = false;
-			CIniLoader::GetInstance()->ReadValue("Control", "SHOWSCROLLBARS", bShowScrollBars);
-			if (bShowScrollBars)
-				Invalidate(TRUE);
-			OnUpdate(this, 0, NULL); // Anpassen der ScrollSizes
+		
+		// Anpassen der ScrollSizes
+		OnUpdate(this, 0, NULL);
 
-			// (neue) gezoomte Koordinaten des Sektors (Mittelpunkt) ermitteln
-			CPoint pt = pMajor->GetStarmap()->GetSectorCoords(sector);
-			pt += CPoint(STARMAP_SECTOR_WIDTH >> 1, STARMAP_SECTOR_HEIGHT >> 1);
-			Zoom(&pt);
+		// (neue) gezoomte Koordinaten des Sektors (Mittelpunkt) ermitteln
+		CPoint pt = pMajor->GetStarmap()->GetSectorCoords(sector);
+		pt += CPoint(STARMAP_SECTOR_WIDTH >> 1, STARMAP_SECTOR_HEIGHT >> 1);
+		Zoom(&pt);
 
-			// ScrollPosition ermitteln
-			pt -= point;
+		// ScrollPosition ermitteln
+		pt -= point;
 
-			// Verschiebung so anpassen, dass die Starmap nicht mitten in der View endet
-			// @TODO Sind die Größe des Fensters und der minimale Zoom-Faktor so abgestimmt, dass die gezoomte
-			// Starmap nie kleiner als das Fenster wird, sind diese Schritte überflüssig; später evtl. entfernen
-			CRect client;
-			GetClientRect(&client);
+		// Verschiebung so anpassen, dass die Starmap nicht mitten in der View endet
+		// @TODO Sind die Größe des Fensters und der minimale Zoom-Faktor so abgestimmt, dass die gezoomte
+		// Starmap nie kleiner als das Fenster wird, sind diese Schritte überflüssig; später evtl. entfernen
+		CRect client;
+		GetClientRect(&client);
 
-			CPoint ptmax(STARMAP_TOTALWIDTH, STARMAP_TOTALHEIGHT);
-			Zoom(&ptmax);
-			ptmax -= client.BottomRight();
+		CPoint ptmax(STARMAP_TOTALWIDTH, STARMAP_TOTALHEIGHT);
+		Zoom(&ptmax);
+		ptmax -= client.BottomRight();
 
-			if (pt.x > ptmax.x) pt.x = ptmax.x;
-			if (pt.y > ptmax.y) pt.y = ptmax.y;
-			if (pt.x < 0) pt.x = 0;
-			if (pt.y < 0) pt.y = 0;
-			// @TODO END //
+		if (pt.x > ptmax.x) pt.x = ptmax.x;
+		if (pt.y > ptmax.y) pt.y = ptmax.y;
+		if (pt.x < 0) pt.x = 0;
+		if (pt.y < 0) pt.y = 0;
+		// @TODO END //
 
-			// ScrollPosition setzen
-			if (bShowScrollBars)
-				ScrollToPosition(pt);
-			else
-			{
-				SetScrollPos(SB_HORZ, pt.x, false);
-				SetScrollPos(SB_VERT, pt.y, false);
-				Invalidate(TRUE);
-			}
-
-		}
+		// ScrollPosition setzen
+		SetScrollPos(SB_HORZ, pt.x, false);
+		SetScrollPos(SB_VERT, pt.y, false);
+		Invalidate(TRUE);
 	}
 
 	return CScrollView::OnMouseWheel(nFlags, zDelta, point);
@@ -1183,9 +1147,6 @@ void CGalaxyMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 	CPoint position = GetScrollPosition();
 	CPoint oldPosition = position;
 
-	bool bShowScrollBars = false;
-	CIniLoader::GetInstance()->ReadValue("Control", "SHOWSCROLLBARS", bShowScrollBars);
-
 	if (nChar == VK_UP)
 	{
 		position.y -= 25 * m_fZoom;
@@ -1221,10 +1182,11 @@ void CGalaxyMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 		// wenn sich der Zoom-Faktor geändert hat
 		if (m_fZoom != oldZoom)
 		{
-			if (bShowScrollBars)
-				Invalidate();
-			OnUpdate(this, 0, NULL); // Anpassen der ScrollSizes
+			// Anpassen der ScrollSizes
+			OnUpdate(this, 0, NULL);
 		}
+
+		return;
 	}
 	else if (nChar == VK_PRIOR)
 	{
@@ -1241,10 +1203,11 @@ void CGalaxyMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 		// wenn sich der Zoom-Faktor geändert hat
 		if (m_fZoom != oldZoom)
 		{
-			if (bShowScrollBars)
-				Invalidate();
-			OnUpdate(this, 0, NULL); // Anpassen der ScrollSizes
+			// Anpassen der ScrollSizes
+			OnUpdate(this, 0, NULL);
 		}
+
+		return;
 	}
 
 	if (oldPosition != position)
@@ -1262,6 +1225,8 @@ void CGalaxyMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 			SetScrollPos(SB_VERT, position.y, false);
 			Invalidate(TRUE);
 		}
+
+		return;
 	}
 
 /*	// Cheat zum Forschung erhöhen
@@ -1282,6 +1247,7 @@ void CGalaxyMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 	if (nChar == 'C')
 	{
 		AfxGetApp()->PostThreadMessage(WM_SHOWCHATDLG, 0, 0);
+		return;
 	}
 
 	HandleShipHotkeys(nChar, pDoc);
