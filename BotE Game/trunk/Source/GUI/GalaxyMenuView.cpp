@@ -249,7 +249,7 @@ void CGalaxyMenuView::OnDraw(CDC* dc)
 	// Rechner nichts mehr, deswegen wird immer das ganze Gitter gezeichnet
 	pDC->SetBkMode(TRANSPARENT);
 	CPen	gridPen(PS_SOLID, 0, RGB(0,0,0));			// Gitternetz
-	CPen	scanPen(PS_DOT, 0, RGB(100,100,100));		// gescanntes Gitternetz
+	CPen	scanPen(PS_DOT, 0, RGB(130,130,130));		// gescanntes Gitternetz
 	CPen	nearPen(PS_SOLID, 1, RGB(0, 200, 0)),		// kurze Entfernung
 			middlePen(PS_SOLID, 1, RGB(200, 200, 0)),	// mittlere Entfernung
 			farPen(PS_SOLID, 1, RGB(200, 0, 0));		// groﬂe Entfernung
