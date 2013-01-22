@@ -120,7 +120,7 @@ BOOLEAN CAttackSystem::Calculate()
 		// jetzt die Truppen dem System hinzufügen
 		for (int i = 0; i < m_pTroops.GetSize(); i++)
 			m_pSystem->AddTroop(m_pTroops.GetAt(i));
-		
+
 		// Alle Truppen von den Transportern löschen, da diese jetzt im System sind
 		for (int i = 0; i < m_pShips.GetSize(); i++)
 			for (int j = 0; j < m_pShips.GetAt(i)->GetTransportedTroops()->GetSize();)

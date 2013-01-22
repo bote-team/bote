@@ -673,7 +673,7 @@ void CSystem::SetBuildingDestroy(int RunningNumber, BOOLEAN add)
 BOOLEAN CSystem::SetHabitants(double habitants)
 {
 	m_dHabitants = habitants;
-	
+
 	if (((USHORT)m_dHabitants / TRADEROUTEHAB) > m_byMaxTradeRoutesFromHab)
 	{
 		m_byMaxTradeRoutesFromHab++;
@@ -1533,10 +1533,10 @@ void CSystem::CalculateBuildableShips(CBotf2Doc* pDoc, const CPoint& p)
 					pResearch->GetConstructionTech(),
 					pResearch->GetWeaponTech()
 				};
-				
+
 				if (!pShipInfo->IsThisShipBuildableNow(researchLevels))
 					continue;
-				
+
 				// Wenn durch dieses Schiff ein anderes Schiff veraltet ist (nur wenn es technologisch baubar ist)
 				if (pShipInfo->GetObsoleteShipClass() != "")
 				{

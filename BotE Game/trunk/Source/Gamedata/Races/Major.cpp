@@ -110,7 +110,7 @@ void CMajor::Serialize(CArchive &ar)
 			delete m_pDiplomacyAI;
 			m_pDiplomacyAI = NULL;
 		}
-		
+
 		// Diplomatie neu anlegen
 		m_pDiplomacyAI = new CMajorAI(this);
 		// Starmap löschen (wird neu generiert)
@@ -132,7 +132,7 @@ void CMajor::Serialize(CArchive &ar)
 
 	// Observer-Objekte
 	m_WeaponObserver.Serialize(ar);			// beobachtet die baubaren Waffen für Schiffe. Wird benötigt wenn wir Schiffe designen wollen
-	m_MoralObserver.Serialize(ar);			// Moralevents serialisieren	
+	m_MoralObserver.Serialize(ar);			// Moralevents serialisieren
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -471,19 +471,19 @@ void CMajor::CreateStarmap(void)
 void CMajor::Contact(const CRace& Race, const CPoint& p)
 {
 	CRace::Contact(Race, p);
-	
+
 	// Nachricht generieren, dass wir eine andere Rasse kennengelernt haben
 	CString sSectorKO;
 	sSectorKO.Format("%c%i",(char)(p.y+97),p.x+1);
-	
+
 	//message to the involved major
 	CString sKey = Race.IsMajor() ? "GET_CONTACT_TO_MAJOR" : "GET_CONTACT_TO_MINOR";
 	CString sMsg = CResourceManager::GetString(sKey,FALSE, Race.GetRaceName(),sSectorKO);
-	
+
 	CMessage message;
 	message.GenerateMessage(sMsg, MESSAGE_TYPE::DIPLOMACY, "", p, FALSE);
 	m_Empire.AddMessage(message);
-	
+
 	// Eventscreen einfügen
 	if (IsHumanPlayer())
 		m_Empire.GetEventMessages()->Add(new CEventFirstContact(m_sID, Race.GetRaceID()));

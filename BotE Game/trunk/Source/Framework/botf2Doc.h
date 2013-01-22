@@ -361,7 +361,7 @@ protected:
 	void CalcRandomAlienEntities();
 
 	/// Funktion berechnet Auswirkungen von Alienschiffe auf Systeme, über denen sie sich befinden.
-	void CalcAlienShipEffects();	
+	void CalcAlienShipEffects();
 
 	/// Funktion generiert die Galaxiemap inkl. der ganzen Systeme und Planeten zu Beginn eines neuen Spiels.
 	void GenerateGalaxy();

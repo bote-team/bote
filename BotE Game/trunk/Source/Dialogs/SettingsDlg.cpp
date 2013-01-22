@@ -413,7 +413,7 @@ void CSettingsDlg::OnOK()
 	pIni->WriteValue("Special", "RANDOMEVENTS", s);
 	s.Format("%d", m_comboGalaxyshape.GetCurSel());
 	pIni->WriteValue("Special", "GENERATIONMODE", s);
-	
+
 	//Galaxysize
 	int choosen=m_comboGalaxysize.GetCurSel();
 	if(choosen==0)

@@ -41,7 +41,7 @@ public:
 	/// Funktion liefert die einzige Instanz dieser Klasse (Singleton).
 	/// @return Instanz dieser Klasse
 	static CReManager* GetInstance(void);
-	
+
 	/// Liest aus der Ini-Datei, ob Zufallsereignisse aktiviert sind
 	/// @return <code>true</code> wenn Zufallsereignisse aktiviert, sonst <code>false</code>
 	bool IsActivated() const { return m_bIsActivated; }

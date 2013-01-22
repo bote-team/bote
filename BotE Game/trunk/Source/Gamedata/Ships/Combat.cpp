@@ -516,7 +516,7 @@ bool CCombat::CheckShipStayInCombat(int i)
 	if (!pCombatShip->m_pShip->IsAlive())
 	{
 		bIsAlive = false;
-		// Merken wer das Schiff zerstört hat (nur wenn es noch nicht aufgenommen wurde)		
+		// Merken wer das Schiff zerstört hat (nur wenn es noch nicht aufgenommen wurde)
 		m_mKilledShips[pCombatShip->m_pKilledByShip].insert(pCombatShip->m_pShip);
 	}
 	else if (pCombatShip->m_pShip->GetCombatTactic() == COMBAT_TACTIC::CT_RETREAT && pCombatShip->m_byRetreatCounter == 0 && pCombatShip->m_lRoute.empty())

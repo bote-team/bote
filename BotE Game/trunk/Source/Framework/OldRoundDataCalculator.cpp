@@ -79,7 +79,7 @@ void COldRoundDataCalculator::ExecuteRebellion(CSector& sector, CSystem& system,
 	// zusätzliche Eventnachricht (Lose a System to Rebellion #18) wegen der Moral an das Imperium
 	message.GenerateMessage(pMajor->GetMoralObserver()->AddEvent(18, pMajor->GetRaceMoralNumber(), sectorname), MESSAGE_TYPE::SOMETHING, "", co, FALSE);
 	pEmpire->AddMessage(message);
-	
+
 	if (sector.GetMinorRace())
 	{
 		CMinor* pMinor = pRaceCtrl->GetMinorRace(sectorname);
@@ -100,14 +100,14 @@ void COldRoundDataCalculator::ExecuteRebellion(CSector& sector, CSystem& system,
 	}
 	else
 	{
-		sector.SetOwnerOfSector("");		
+		sector.SetOwnerOfSector("");
 	}
 
 	// wichtige Variablen zurücksetzen
 	sector.SetOwned(FALSE);
-	sector.SetTakenSector(FALSE);	
+	sector.SetTakenSector(FALSE);
 	sector.SetShipPort(FALSE, pMajor->GetRaceID());
-	system.SetOwnerOfSystem("");	
+	system.SetOwnerOfSystem("");
 }
 
 void COldRoundDataCalculator::ExecuteFamine(CSector& sector, CSystem& system, CMajor* pMajor) const

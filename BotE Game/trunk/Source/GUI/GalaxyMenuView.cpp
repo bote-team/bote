@@ -552,7 +552,7 @@ BOOL CGalaxyMenuView::OnScrollBy(CSize sizeScroll, BOOL bDoScroll)
 void CGalaxyMenuView::OnUpdate(CView* /*pSender*/, LPARAM /*lHint*/, CObject* /*pHint*/)
 {
 	// TODO: Add your specialized code here and/or call the base class
-	
+
 	// ScrollSizes auf Gesamtgröße inkl. Zoom setzen
 	CSize size;
 	size.cx = (LONG)(STARMAP_TOTALWIDTH * m_fZoom);
@@ -890,7 +890,7 @@ BOOL CGalaxyMenuView::OnMouseWheel(UINT nFlags, short zDelta, CPoint point)
 	{
 		// ScrollPosition so anpassen, dass sich nach dem Zoomen wieder der Sektor unter dem Mauscursor
 		// befindet, der vor dem Zoomen schon unter der Maus war
-		
+
 		// Anpassen der ScrollSizes
 		OnUpdate(this, 0, NULL);
 

@@ -148,7 +148,7 @@ bool CShipBottomView::DrawImage( const CString& resName, const CRect& r ) const
 			return true;
 	}
 
-	return false;		
+	return false;
 }
 
 void CShipBottomView::DrawSmallButton( const CString& resString, const CPoint& coords, SHIP_ORDER::Typ shiporder ) {

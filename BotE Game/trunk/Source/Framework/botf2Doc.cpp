@@ -1431,11 +1431,11 @@ void CBotf2Doc::NextRound()
 			pMinor->PerhapsBuildShip(this);
 		}
 	}
-	
+
 	// Zufallsereignisse berechnen
 	CReManager* pRandomEventManager = CReManager::GetInstance();
 	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
-		pRandomEventManager->CalcEvents(it->second);	
+		pRandomEventManager->CalcEvents(it->second);
 
 	this->CalcSystemAttack();
 	this->CalcIntelligence();
@@ -1459,7 +1459,7 @@ void CBotf2Doc::NextRound()
 	this->CalcShipEffects();
 	this->CalcNewRoundData();
 	this->CalcTrade();
-	
+
 	// Zufallsereignis Hüllenvirus berechnen
 	pRandomEventManager->CalcShipEvents();
 
@@ -1598,7 +1598,7 @@ void CBotf2Doc::ApplyShipsAtStartup()
 
 			if (GetSector(p.x, p.y).GetAnomaly())
 				continue;
-			
+
 			for (int i = 0; i < m_ShipInfoArray.GetSize(); i++)
 			{
 				CShipInfo* pShipInfo = &m_ShipInfoArray.GetAt(i);
@@ -2984,7 +2984,7 @@ void CBotf2Doc::CalcSystemAttack()
 						if (defender != NULL && defender->GetRaceID() != pMajor->GetRaceID())
 							defender->SetRelation(pMajor->GetRaceID(), -rand()%10);
 					}
-					
+
 					// Wenn die Bevölkerung des Systems auf NULL geschrumpft ist, dann ist dieses System verloren
 					if (GetSystem(p.x, p.y).GetHabitants() <= 0.000001f)
 					{
@@ -3003,7 +3003,7 @@ void CBotf2Doc::CalcSystemAttack()
 									CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(*it));
 									if (!pMajor)
 										continue;
-									
+
 									CString param = pMinor->GetRaceName();
 									CString eventText = pMajor->GetMoralObserver()->AddEvent(21, pMajor->GetRaceMoralNumber(), param);
 									CMessage message;
@@ -3025,7 +3025,7 @@ void CBotf2Doc::CalcSystemAttack()
 						if (defender != NULL && defender->IsMajor() && attackSystem->IsDefenderNotAttacker(defender->GetRaceID(), &attackers))
 						{
 							CMajor* pDefenderMajor = dynamic_cast<CMajor*>(defender);
-							
+
 							CString eventText = "";
 							CString param = GetSector(p.x, p.y).GetName();
 							if (GetSector(p.x, p.y).GetName() == pDefenderMajor->GetHomesystemName())
@@ -3038,7 +3038,7 @@ void CBotf2Doc::CalcSystemAttack()
 								// Eventnachricht an den ehemaligen Besitzer (eigenes System verloren)
 								eventText = pDefenderMajor->GetMoralObserver()->AddEvent(16, pDefenderMajor->GetRaceMoralNumber(), param);
 							}
-							
+
 							// Eventnachricht hinzufügen
 							if (!eventText.IsEmpty())
 							{
@@ -3069,7 +3069,7 @@ void CBotf2Doc::CalcSystemAttack()
 								CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(*it));
 								if (!pMajor)
 									continue;
-								
+
 								// Anzahl der noch verbleibenden Systeme berechnen
 								pDefenderMajor->GetEmpire()->GenerateSystemList(m_Systems, m_Sectors);
 								// hat der Verteidiger keine Systeme mehr, so bekommt der neue Besitzer den Bonus
@@ -3099,14 +3099,14 @@ void CBotf2Doc::CalcSystemAttack()
 						// Eventnachrichten nicht jedesmal, sondern nur wenn Gebäude vernichtet wurden oder
 						// mindst. 3% der Bevölkerung vernichtet wurden
 						if (attackSystem->GetDestroyedBuildings() > 0 || attackSystem->GetKilledPop() >= GetSystem(p.x, p.y).GetHabitants() * 0.03)
-						{							
+						{
 							CString param = GetSector(p.x, p.y).GetName();
 							for (set<CString>::const_iterator it = attackers.begin(); it != attackers.end(); ++it)
 							{
 								CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(*it));
 								if (!pMajor)
 									continue;
-								
+
 								CString eventText = "";
 								// Wenn das System nicht durch eine Rebellion verloren ging, sondern noch irgendwem gehört
 								if (defender != NULL)
@@ -3127,7 +3127,7 @@ void CBotf2Doc::CalcSystemAttack()
 									}
 								}
 							}
-							
+
 							// Eventnachricht über Bombardierung für Verteidiger erstellen und hinzufügen
 							if (defender != NULL && defender->IsMajor() && attackSystem->IsDefenderNotAttacker(defender->GetRaceID(), &attackers))
 							{
@@ -3138,7 +3138,7 @@ void CBotf2Doc::CalcSystemAttack()
 								{
 									CMessage message;
 									message.GenerateMessage(eventText, MESSAGE_TYPE::MILITARY, param, p, 0);
-									pDefenderMajor->GetEmpire()->AddMessage(message);								
+									pDefenderMajor->GetEmpire()->AddMessage(message);
 									if (pDefenderMajor->IsHumanPlayer())
 									{
 										network::RACE client = m_pRaceCtrl->GetMappedClientID(defender->GetRaceID());
@@ -3155,7 +3155,7 @@ void CBotf2Doc::CalcSystemAttack()
 						CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(*it));
 						if (!pMajor)
 							continue;
-						
+
 						// reine Bombardierung
 						if (pMajor->IsHumanPlayer())
 						{
@@ -3191,7 +3191,7 @@ void CBotf2Doc::CalcSystemAttack()
 						CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(*it));
 						if (!pMajor)
 							continue;
-						
+
 						CMessage message;
 						message.GenerateMessage(attackSystem->GetNews()->GetAt(i), MESSAGE_TYPE::MILITARY, GetSector(p.x, p.y).GetName(), p, 0);
 						pMajor->GetEmpire()->AddMessage(message);
@@ -3466,31 +3466,31 @@ void CBotf2Doc::CalcOldRoundData()
 		// Wenn im Sektor ein Sonnensystem existiert
 		if (!sector->GetSunSystem())
 			continue;
-			
+
 		if (system.GetOwnerOfSystem() == "")
 		{
 			// Planetenwachstum in jedem Sektor durchführen
 			sector->LetPlanetsGrowth();
 			continue;
 		}
-			
+
 		CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(system.GetOwnerOfSystem()));
 		assert(pMajor);
 		if (!pMajor)
 			continue;
-		
+
 		// Jetzt das produzierte Credits im System dem jeweiligen Imperium geben, Gebäude abreisen, Moral im System berechnen
 		COldRoundDataCalculator::CreditsDestructionMoral(pMajor, system, this->BuildingInfo, m_fDifficultyLevel);
 
 		// KI Anpassungen (KI bekommt zufälig etwas Deritium geschenkt)
 		int diliAdd = COldRoundDataCalculator::DeritiumForTheAI(pMajor->AHumanPlays(), *sector, system, m_fDifficultyLevel);
-		
+
 		// Das Lager berechnen
 		const BOOLEAN bIsRebellion = system.CalculateStorages(pMajor->GetEmpire()->GetResearch()->GetResearchInfo(), diliAdd);
 		// Wenn true zurückkommt, dann hat sich das System losgesagt
 		if (bIsRebellion)
 			calc.ExecuteRebellion(*sector, system, pMajor);
-		
+
 		// Hier mit einbeziehen, wenn die Bevölkerung an Nahrungsmangel stirbt
 		if (system.GetFoodStore() < 0)
 		{
@@ -3501,7 +3501,7 @@ void CBotf2Doc::CalcOldRoundData()
 			// Planetenwachstum für Hauptrassen durchführen
 			sector->LetPlanetsGrowth();
 		}
-	
+
 		// Wenn es keine Rebellion gab, dann Bau und KI im System berechnen
 		if (!bIsRebellion)
 		{
@@ -3513,7 +3513,7 @@ void CBotf2Doc::CalcOldRoundData()
 			// Gebäude die Energie benötigen checken
 			if (system.CheckEnergyBuildings(&this->BuildingInfo))
 				calc.SystemMessage(*sector, pMajor, "BUILDING_TURN_OFF", MESSAGE_TYPE::SOMETHING, 2);
-			
+
 			// Die Bauaufträge in dem System berechnen. Außerdem wird hier auch die System-KI ausgeführt.
 			if (!pMajor->AHumanPlays() || system.GetAutoBuild())
 			{
@@ -3527,7 +3527,7 @@ void CBotf2Doc::CalcOldRoundData()
 			// freie Arbeiter den Gebäuden zuweisen
 			system.SetWorkersIntoBuildings();
 		}
-	
+
 		// Globale Gebäude (X mal pro Imperium baubar) hinzufügen
 		UpdateGlobalBuildings(system);
 	}
@@ -4554,9 +4554,9 @@ void CBotf2Doc::CalcShipMovement()
 					if (y->second->GetOwnerOfShip() == ANAEROBE_MAKROBE)
 					{
 						if (GetSector(targetKO.x, targetKO.y).GetSunSystem() && GetSector(targetKO.x, targetKO.y).GetSunColor() != 1)
-							continue;						
+							continue;
 					}
-				
+
 					y->second->SetTargetKO(CPoint(targetKO.x, targetKO.y));
 					break;
 				}
@@ -4620,7 +4620,7 @@ void CBotf2Doc::CalcShipMovement()
 					y->second->GetPath()->RemoveAll();
 					y->second->SetTargetKO(CPoint(-1,-1));
 				}
-				
+
 				// Berechnet Zufallsentdeckung in dem Sektor den das Schiff anfliegt
 				if (pRace != NULL && pRace->IsMajor() && !(this->GetSector(nextKO.x,nextKO.y).GetFullKnown(y->second->GetOwnerOfShip())))
 				{
@@ -4908,7 +4908,7 @@ void CBotf2Doc::CalcShipCombat()
 				AfxMessageBox("Error: Found no leader ship of Bosean.\nPlease make a bug-report");
 				continue;
 			}
-				
+
 			for (int i = 0; i < nCount; i++)
 			{
 				// Es gibt eine schwierigkeitsgradabhängige Wahrscheinlichkeit, dass tatsächlich ein neuer Boseaner daraus entsteht.
@@ -4964,7 +4964,7 @@ void CBotf2Doc::CalcShipCombat()
 				pMajor->GetEmpire()->AddMessage(message);
 			}
 		}
-	}	
+	}
 }
 
 /////BEGIN: HELPER FUNCTIONS FOR void CBotf2Doc::CalcShipEffects()
@@ -5170,11 +5170,11 @@ void CBotf2Doc::CalcEffectsMinorEleminated(CMinor* pMinor)
 
 	if (!pMinor->IsAlienRace())
 		GetSector(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).SetMinorRace(false);
-	
+
 	// Diplomatie/Nachrichten entfernen
 	pMinor->GetIncomingDiplomacyNews()->clear();
 	pMinor->GetOutgoingDiplomacyNews()->clear();
-	
+
 	map<CString, CMajor*>* pmMajors = m_pRaceCtrl->GetMajors();
 	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 	{
@@ -5207,7 +5207,7 @@ void CBotf2Doc::CalcEffectsMinorEleminated(CMinor* pMinor)
 				message.GenerateMessage(news, MESSAGE_TYPE::SOMETHING, "", 0, 0);
 			else
 				message.GenerateMessage(news, MESSAGE_TYPE::SOMETHING, GetSector(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).GetName(), pMinor->GetRaceKO(), 0);
-			
+
 			pMajor->GetEmpire()->AddMessage(message);
 			if (pMajor->IsHumanPlayer())
 			{
@@ -5219,8 +5219,8 @@ void CBotf2Doc::CalcEffectsMinorEleminated(CMinor* pMinor)
 				m_iSelectedView[client] = EMPIRE_VIEW;
 			}
 		}
-		
-		// die vernichtete Minor auf unbekannt schalten und alle Verträge entfernen	
+
+		// die vernichtete Minor auf unbekannt schalten und alle Verträge entfernen
 		pMajor->SetIsRaceContacted(pMinor->GetRaceID(), false);
 		pMajor->SetAgreement(pMinor->GetRaceID(), DIPLOMATIC_AGREEMENT::NONE);
 	}
@@ -5735,7 +5735,7 @@ void CBotf2Doc::CalcAlienShipEffects()
 		}
 
 		const CPoint& co = ship->second->GetKO();
-		
+
 		// verschiedene Alienrassen unterscheiden
 		if (pAlien->GetRaceID() == IONISIERENDES_GASWESEN)
 		{
@@ -5949,7 +5949,7 @@ void CBotf2Doc::CalcAlienShipEffects()
 					ship->second->SetCurrentOrder(SHIP_ORDER::ATTACK_SYSTEM);
 				else
 					pAlien->SetRelation(pOwner->GetRaceID(), -rand()%20);
-			}			
+			}
 		}
 		else if (pAlien->GetRaceID() == ISOTOPOSPHAERISCHES_WESEN)
 		{
@@ -6036,7 +6036,7 @@ void CBotf2Doc::CalcAlienShipEffects()
 						m_iSelectedView[client] = EMPIRE_VIEW;
 					}
 				}
-			}			
+			}
 		}
 	}
 

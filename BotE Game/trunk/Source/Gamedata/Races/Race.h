@@ -104,7 +104,7 @@ public:
 	bool IsMinor() const {
 		return m_RaceType == RACE_TYPE_MINOR;
 	}
-	
+
 	/// Funktion gibt zurück, ob es sich um eine Alienrasse (kein Heimatsystem) handelt
 	/// @return <code>true</code> wenn es eine Alienrasse ist, sonst <code>false</code>
 	bool IsAlienRace() const { return m_sHomeSystem == ""; }

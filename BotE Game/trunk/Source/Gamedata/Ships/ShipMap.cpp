@@ -387,9 +387,9 @@ CShips* CShipMap::GetLeader(const CShips* pShip) const
 				return i->second;
 		}
 	}
-	
+
 	assert(false);
-	return NULL;	
+	return NULL;
 }
 
 //updating

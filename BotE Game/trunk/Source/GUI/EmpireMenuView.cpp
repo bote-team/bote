@@ -1802,7 +1802,7 @@ void CEmpireMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 							CPoint p = pMajor->GetEmpire()->GetMessages()->GetAt(i).GetKO();
 							if (pDoc->GetSystem(p.x,p.y).GetOwnerOfSystem() == pMajor->GetRaceID())
 							{
-								pDoc->SetKO(p.x,p.y);								
+								pDoc->SetKO(p.x,p.y);
 								resources::pMainFrame->SetSubMenu(RUNTIME_CLASS(CSystemMenuView), pMajor->GetEmpire()->GetMessages()->GetAt(i).GetFlag());
 								resources::pMainFrame->SelectMainView(SYSTEM_VIEW, pMajor->GetRaceID());
 								resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CPlanetBottomView));
