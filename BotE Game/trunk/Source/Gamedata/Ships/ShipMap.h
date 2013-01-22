@@ -21,7 +21,7 @@ public:
 // Konstruktion/Destruktion
 //////////////////////////////////////////////////////////////////////
 
-	CShipMap(void);
+	CShipMap(bool bDestroyWhenDestructed = true);
 	virtual ~CShipMap(void);
 	CShipMap(const CShipMap& o);
 	CShipMap& operator=(const CShipMap& o);
@@ -187,6 +187,10 @@ private:
 	unsigned m_NextKey;// used to give newly added CShips their keys
 	//This counter is incremented each time a ships is added, and only resetted when the shipmap is completely
 	//empty, when loading a savegame and at turn change.
+	bool m_bDestroyWhenDestructed;// Once that this shipmap is destructed, should it delete the memory allocated
+	//to the ships it (still) contains ?
+	//Set this to false in case this shipmap is a local variable and you want to reuse the ships it contains
+	//later on.
 
 	CShipMap::iterator m_CurrentShip;// Hilfsvariable, mit der auf ein spezielles Schiff im Array zugekriffen werden kann
 	CShipMap::iterator m_FleetShip;// Das Schiff welches sozusagen die Flotte anführt

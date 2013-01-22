@@ -4497,7 +4497,7 @@ void CBotf2Doc::CalcShipMovement()
 #ifdef DEVELOPMENT_VERSION
 	std::set<CString> already_encountered_ships_for_sanity_check;
 #endif
-	CShipMap repaired_ships;
+	CShipMap repaired_ships(false);
 	// Hier kommt die Schiffsbewegung (also keine anderen Befehle werden hier noch ausgewertet, lediglich wird überprüft,
 	// dass manche Befehle noch ihre Gültigkeit haben
 	for(CShipMap::iterator y = m_ShipMap.begin(); y != m_ShipMap.end(); ++y)

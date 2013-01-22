@@ -9,9 +9,10 @@
 // Konstruktion/Destruktion
 //////////////////////////////////////////////////////////////////////
 
-CShipMap::CShipMap(void) :
+CShipMap::CShipMap(bool bDestroyWhenDestructed) :
 	m_Ships(),
-	m_NextKey(0)
+	m_NextKey(0),
+	m_bDestroyWhenDestructed(bDestroyWhenDestructed)
 {
 	m_CurrentShip = begin();
 	m_FleetShip = begin();
@@ -19,7 +20,7 @@ CShipMap::CShipMap(void) :
 
 CShipMap::~CShipMap(void)
 {
-	Reset(true);
+	Reset(m_bDestroyWhenDestructed);
 }
 
 CShipMap::CShipMap(const CShipMap& o) :
