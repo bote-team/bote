@@ -187,11 +187,11 @@ Lost
 
 // ship order buttons
 [BTN_MULTI_TURN_ORDER]
-Multi turn order
+Multi turn
 [BTN_SINGLE_TURN_ORDER]
-Single turn order
+Single turn
 [BTN_IMMEDIATE_ORDER]
-Immediate order
+Immediate
 [BTN_AVOID]
 Avoid
 [BTN_ATTACK]
