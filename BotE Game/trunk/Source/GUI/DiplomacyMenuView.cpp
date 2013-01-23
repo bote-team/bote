@@ -21,18 +21,40 @@ static char THIS_FILE[] = __FILE__;
 
 CMajor* pPlayer;//Böser globaler Zeiger der nötig ist um große Verrenkungen wegen sort und Memberfunktionen zu Vermeiden
 
-/// Funktion zum Vergleichen zweier Rassen
-bool CmpRaces(const CRace* pRace1, const CRace* pRace2)
+/// Funktion zum Vergleichen zweier Rassen nach deren Namen (Zuerst Majors, dann Minors, dann sonstige)
+bool CompareRaceName(const CRace* pRace1, const CRace* pRace2)
 {
-	if(pRace1->IsMajor()&&pRace2->IsMinor()) return true;
-	if(pRace2->IsMajor()&&pRace1->IsMinor()) return false;
+	if (pRace1->IsMajor() && !pRace2->IsMajor())
+		return true;
+
+	if (!pRace1->IsMajor() && pRace2->IsMajor())
+		return false;
+	
+	if (!pRace1->IsAlienRace() && pRace2->IsAlienRace())
+		return true;
+
+	if (!pRace2->IsAlienRace() && pRace1->IsAlienRace())
+		return false;
+
 	return pRace1->GetRaceName() < pRace2->GetRaceName();
 }
 
-//Soriert Rassen nach Vertrag
-bool CmpRaces2(const CRace* pRace1, const CRace* pRace2)
+/// Funktion soriert Rassen nach Wertigkeit des Vertrages
+bool ComareRaceAgreement(const CRace* pRace1, const CRace* pRace2)
 {
-	return pPlayer->GetAgreement(pRace1->GetRaceID())<pPlayer->GetAgreement(pRace2->GetRaceID());
+	if (pRace1->IsMinor() && ((CMinor*)pRace1)->GetSubjugated() && pRace2->IsMinor() && ((CMinor*)pRace2)->GetSubjugated())
+		return pRace1->GetRaceName() < pRace2->GetRaceName();
+
+	if (pRace1->IsMinor() && ((CMinor*)pRace1)->GetSubjugated())
+		return true;
+
+	if (pRace2->IsMinor() && ((CMinor*)pRace2)->GetSubjugated())
+		return false;
+
+	if (pPlayer->GetAgreement(pRace1->GetRaceID()) == pPlayer->GetAgreement(pRace2->GetRaceID()))
+		return pRace1->GetRaceName() < pRace2->GetRaceName();
+
+	return pPlayer->GetAgreement(pRace1->GetRaceID()) < pPlayer->GetAgreement(pRace2->GetRaceID());
 }
 
 // CDiplomacyMenuView
@@ -116,13 +138,13 @@ void CDiplomacyMenuView::OnNewRound()
 	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 		if (pPlayer->IsRaceContacted(it->first) && it->second->GetEmpire()->GetNumberOfSystems() > 0)
 			vMajors.push_back(it->second);
-	std::sort(vMajors.begin(), vMajors.end(), CmpRaces);
+	std::sort(vMajors.begin(), vMajors.end(), CompareRaceName);
 
 	map<CString, CMinor*>* pmMinors = pDoc->GetRaceCtrl()->GetMinors();
 	for (map<CString, CMinor*>::const_iterator it = pmMinors->begin(); it != pmMinors->end(); ++it)
 		if (pPlayer->IsRaceContacted(it->first))
 			vMinors.push_back(it->second);
-	std::sort(vMinors.begin(), vMinors.end(), CmpRaces);
+	std::sort(vMinors.begin(), vMinors.end(), CompareRaceName);
 	
 	m_vRaceList.clear();
 	m_vRaceList.insert(m_vRaceList.end(), vMajors.begin(), vMajors.end());
@@ -136,7 +158,7 @@ void CDiplomacyMenuView::OnNewRound()
 
 	// Falls nach Vertrag sortiert werden soll, dann Liste jetzt sortieren
 	if (m_bSortRaceList)
-		std::sort(m_vRaceList.begin(), m_vRaceList.end(),CmpRaces2);
+		std::sort(m_vRaceList.begin(), m_vRaceList.end(),ComareRaceAgreement);
 }
 
 // CDiplomacyMenuView drawing
@@ -721,11 +743,24 @@ void CDiplomacyMenuView::DrawRaceDiplomacyMenue(Graphics* g)
 			if (nVecPos-- > 21)
 				continue;
 			CRace* pRace = *it;
-			if(m_bSortRaceList==false&&pRace->IsMinor())//Linie zwischen Minors und Majors
-			{
-				if(it-m_vRaceList.begin()>0&&m_vRaceList.at(it-m_vRaceList.begin()-1)->IsMajor()) g->DrawLine(&Gdiplus::Pen(penColor), 8, 100+count*25, 150, 100+count*25);
-			}
 
+			// Linie zwischen Minors und Majors und Alien
+			if (!m_bSortRaceList && it != m_vRaceList.begin())
+			{
+				vector<CRace*>::iterator itPrev = it;
+				--itPrev;
+
+				if (pRace->IsAlienRace())
+				{
+					if (it != m_vRaceList.begin() && !(*itPrev)->IsAlienRace())
+						g->DrawLine(&Gdiplus::Pen(penColor), 8, 100+count*25, 150, 100+count*25);
+				}
+				else if (pRace->IsMinor())
+				{
+					if (it != m_vRaceList.begin() && !(*itPrev)->IsMinor())
+						g->DrawLine(&Gdiplus::Pen(penColor), 8, 100+count*25, 150, 100+count*25);
+				}
+			}
 
 			RectF rect(20,100+count*25,130,25);
 			// Haben wir auf die Rasse geklickt haben, dann Farbe ändern und jeweiliges Untermenü aufrufen
@@ -1765,8 +1800,10 @@ void CDiplomacyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 	if (rect.PtInRect(point))
 	{
 		m_bSortRaceList=!m_bSortRaceList;
-		if(m_bSortRaceList) std::sort(m_vRaceList.begin(), m_vRaceList.end(),CmpRaces2);
-		else std::sort(m_vRaceList.begin(), m_vRaceList.end(),CmpRaces);
+		if (m_bSortRaceList)
+			std::sort(m_vRaceList.begin(), m_vRaceList.end(),ComareRaceAgreement);
+		else
+			std::sort(m_vRaceList.begin(), m_vRaceList.end(),CompareRaceName);
 		Invalidate();
 		return;
 	}
