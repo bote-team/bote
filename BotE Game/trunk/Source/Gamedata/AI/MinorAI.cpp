@@ -654,12 +654,12 @@ bool CMinorAI::TryCorruption(const CDiplomacyInfo& info)
 		{
 			pCorruptedMajor->SetAgreement(pMinor->GetRaceID(), DIPLOMATIC_AGREEMENT::NONE);
 			pMinor->SetAgreement(info.m_sCorruptedRace, DIPLOMATIC_AGREEMENT::NONE);
-			message.GenerateMessage(sText, MESSAGE_TYPE::DIPLOMACY, "", 0, 0);
+			message.GenerateMessage(sText, MESSAGE_TYPE::DIPLOMACY);
 			pCorruptedMajor->GetEmpire()->AddMessage(message);
 		}
 		// Nachricht über Erfolg bei Bestecherrasse erzeugen
 		sText = CResourceManager::GetString("CORRUPTION_SUCCESS", FALSE, pMinor->m_sName);
-		message.GenerateMessage(sText, MESSAGE_TYPE::DIPLOMACY, "", 0, 0);
+		message.GenerateMessage(sText, MESSAGE_TYPE::DIPLOMACY);
 		pFromMajor->GetEmpire()->AddMessage(message);
 		return true;
 	}
@@ -676,12 +676,12 @@ bool CMinorAI::TryCorruption(const CDiplomacyInfo& info)
 			s.SetAt(0, sUpper.MakeUpper().GetAt(0));
 
 			sText = CResourceManager::GetString("TRYED_CORRUPTION", FALSE, s, pMinor->m_sName);
-			message.GenerateMessage(sText, MESSAGE_TYPE::DIPLOMACY, "", 0, 0);
+			message.GenerateMessage(sText, MESSAGE_TYPE::DIPLOMACY);
 			pCorruptedMajor->GetEmpire()->AddMessage(message);
 		}
 
 		sText = CResourceManager::GetString("CORRUPTION_FAILED", FALSE, pMinor->m_sName);
-		message.GenerateMessage(sText, MESSAGE_TYPE::DIPLOMACY, "", 0, 0);
+		message.GenerateMessage(sText, MESSAGE_TYPE::DIPLOMACY);
 		pFromMajor->GetEmpire()->AddMessage(message);
 		return false;
 	}

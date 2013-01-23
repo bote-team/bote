@@ -234,7 +234,7 @@ void CTrade::CalculateTradeActions(CMajor* pMajor, std::vector<CSystem>& systems
 						CString s;
 						s.Format("%d %s",sum[x][y][i],resName);
 						CMessage message;
-						message.GenerateMessage(CResourceManager::GetString("GET_RESOURCES",0,s,sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetName()), MESSAGE_TYPE::ECONOMY, "", sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetKO(), FALSE);
+						message.GenerateMessage(CResourceManager::GetString("GET_RESOURCES",0,s,sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetName()), MESSAGE_TYPE::ECONOMY, "", sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetKO());
 						pMajor->GetEmpire()->AddMessage(message);
 					}
 }

@@ -56,7 +56,7 @@ static void EmitLostRouteMessage(unsigned deletedRoutes, const CString& single_k
 		news = CResourceManager::GetString(multi_key,FALSE,lost,sectorname);
 	}
 	CMessage message;
-	message.GenerateMessage(news, MESSAGE_TYPE::ECONOMY, "", co, FALSE, 4);
+	message.GenerateMessage(news, MESSAGE_TYPE::ECONOMY, "", co, false, 4);
 	pEmpire->AddMessage(message);
 }
 

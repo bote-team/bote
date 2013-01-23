@@ -68,7 +68,7 @@ void COldRoundDataCalculator::ExecuteRebellion(CSector& sector, CSystem& system,
 	// Nachricht über Rebellion erstellen
 	CString news = CResourceManager::GetString("REBELLION_IN_SYSTEM", FALSE, sectorname);
 	CMessage message;
-	message.GenerateMessage(news, MESSAGE_TYPE::SOMETHING, "", co, FALSE);
+	message.GenerateMessage(news, MESSAGE_TYPE::SOMETHING, "", co);
 	pEmpire->AddMessage(message);
 	if (pMajor->IsHumanPlayer())
 	{
@@ -77,7 +77,7 @@ void COldRoundDataCalculator::ExecuteRebellion(CSector& sector, CSystem& system,
 	}
 
 	// zusätzliche Eventnachricht (Lose a System to Rebellion #18) wegen der Moral an das Imperium
-	message.GenerateMessage(pMajor->GetMoralObserver()->AddEvent(18, pMajor->GetRaceMoralNumber(), sectorname), MESSAGE_TYPE::SOMETHING, "", co, FALSE);
+	message.GenerateMessage(pMajor->GetMoralObserver()->AddEvent(18, pMajor->GetRaceMoralNumber(), sectorname), MESSAGE_TYPE::SOMETHING, "", co);
 	pEmpire->AddMessage(message);
 
 	if (sector.GetMinorRace())
@@ -94,7 +94,7 @@ void COldRoundDataCalculator::ExecuteRebellion(CSector& sector, CSystem& system,
 			pMinor->SetRelation(pMajor->GetRaceID(), (-(rand()%50+20)));
 			news = CResourceManager::GetString("MINOR_CANCELS_MEMBERSHIP", FALSE, pMinor->GetRaceName());
 			CMessage message;
-			message.GenerateMessage(news, MESSAGE_TYPE::DIPLOMACY, "", co, FALSE);
+			message.GenerateMessage(news, MESSAGE_TYPE::DIPLOMACY, "", co);
 			pEmpire->AddMessage(message);
 		}
 	}
@@ -122,7 +122,7 @@ void COldRoundDataCalculator::ExecuteFamine(CSector& sector, CSystem& system, CM
 
 	CString news = CResourceManager::GetString("FAMINE", FALSE, sector.GetName());
 	CMessage message;
-	message.GenerateMessage(news, MESSAGE_TYPE::SOMETHING, "", co, FALSE, 1);
+	message.GenerateMessage(news, MESSAGE_TYPE::SOMETHING, "", co, false, 1);
 	pEmpire->AddMessage(message);
 	if (pMajor->IsHumanPlayer())
 	{
@@ -135,7 +135,7 @@ void COldRoundDataCalculator::SystemMessage(const CSector& sector, CMajor* pMajo
 		MESSAGE_TYPE::Typ message_typ, BYTE byFlag) const {
 	const CString& news = CResourceManager::GetString(key, FALSE, sector.GetName());
 	CMessage message;
-	message.GenerateMessage(news, message_typ, "", sector.GetKO(), FALSE, byFlag);
+	message.GenerateMessage(news, message_typ, "", sector.GetKO(), false, byFlag);
 	pMajor->GetEmpire()->AddMessage(message);
 	if (pMajor->IsHumanPlayer()) {
 		const network::RACE client = m_pDoc->m_pRaceCtrl->GetMappedClientID(pMajor->GetRaceID());
@@ -164,7 +164,7 @@ static void MilitaryMessage(const CSector& sector, CMajor* pMajor, const CString
 	const CString& s = CResourceManager::GetString(key,FALSE,
 		object_name,sector.GetName());
 	CMessage message;
-	message.GenerateMessage(s,MESSAGE_TYPE::MILITARY,sector.GetName(),sector.GetKO(),FALSE);
+	message.GenerateMessage(s,MESSAGE_TYPE::MILITARY,sector.GetName(),sector.GetKO());
 	pMajor->GetEmpire()->AddMessage(message);
 }
 
@@ -177,7 +177,7 @@ void COldRoundDataCalculator::FinishBuild(const int to_build, const CSector& sec
 	{
 		// Die Nachricht, dass neues Gebäude fertig ist mit allen Daten generieren
 		CMessage message;
-		message.GenerateMessage(BuildingInfo[list-1].GetBuildingName(), MESSAGE_TYPE::ECONOMY, sector.GetName(), co, FALSE);
+		message.GenerateMessage(BuildingInfo[list-1].GetBuildingName(), MESSAGE_TYPE::ECONOMY, sector.GetName(), co);
 		pMajor->GetEmpire()->AddMessage(message);
 		// Gebäude bauen
 		m_pDoc->BuildBuilding(list, co);
@@ -195,7 +195,7 @@ void COldRoundDataCalculator::FinishBuild(const int to_build, const CSector& sec
 		list *= (-1);
 		// Die Nachricht, dass neues Gebäudeupdate fertig wurde, mit allen Daten generieren
 		CMessage message;
-		message.GenerateMessage(BuildingInfo[list-1].GetBuildingName(),MESSAGE_TYPE::ECONOMY,sector.GetName(),co,TRUE);
+		message.GenerateMessage(BuildingInfo[list-1].GetBuildingName(),MESSAGE_TYPE::ECONOMY,sector.GetName(),co,true);
 		pMajor->GetEmpire()->AddMessage(message);
 		// Vorgänger von "list" holen
 		// Gebäude mit RunningNumbner == pre werden durch UpdateBuilding() gelöscht und

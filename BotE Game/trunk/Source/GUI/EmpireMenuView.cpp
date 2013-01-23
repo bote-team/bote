@@ -1800,47 +1800,51 @@ void CEmpireMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 							pMajor->GetEmpire()->GetMessages()->GetAt(i).GetMessageType() == MESSAGE_TYPE::SOMETHING)
 						{
 							CPoint p = pMajor->GetEmpire()->GetMessages()->GetAt(i).GetKO();
-							if (pDoc->GetSystem(p.x,p.y).GetOwnerOfSystem() == pMajor->GetRaceID())
-							{
-								pDoc->SetKO(p.x,p.y);
-								resources::pMainFrame->SetSubMenu(RUNTIME_CLASS(CSystemMenuView), pMajor->GetEmpire()->GetMessages()->GetAt(i).GetFlag());
-								resources::pMainFrame->SelectMainView(SYSTEM_VIEW, pMajor->GetRaceID());
-								resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CPlanetBottomView));
-								CGalaxyMenuView::SetMoveShip(FALSE);
-								resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
-							}
-
-							// Wenn eine Koordinate angegeben ist, dann die Galaxiemap darauf zentrieren
-							CGalaxyMenuView* pView = dynamic_cast<CGalaxyMenuView*>(resources::pMainFrame->GetView(RUNTIME_CLASS(CGalaxyMenuView)));
-							if (pView && p != CPoint(-1,-1))
-								pView->ScrollToSector(p);
-						}
-						else if (pMajor->GetEmpire()->GetMessages()->GetAt(i).GetMessageType() == MESSAGE_TYPE::MILITARY)
-						{
-							CPoint p = pMajor->GetEmpire()->GetMessages()->GetAt(i).GetKO();
-							// Systemansicht anzeigen
-							if (pMajor->GetEmpire()->GetMessages()->GetAt(i).GetFlag() == 1)
+							if (p != CPoint(-1, -1))
 							{
 								if (pDoc->GetSystem(p.x,p.y).GetOwnerOfSystem() == pMajor->GetRaceID())
 								{
 									pDoc->SetKO(p.x,p.y);
-									resources::pMainFrame->SetSubMenu(RUNTIME_CLASS(CSystemMenuView), 0);
+									resources::pMainFrame->SetSubMenu(RUNTIME_CLASS(CSystemMenuView), pMajor->GetEmpire()->GetMessages()->GetAt(i).GetFlag());
 									resources::pMainFrame->SelectMainView(SYSTEM_VIEW, pMajor->GetRaceID());
-									CGalaxyMenuView::SetMoveShip(FALSE);
 									resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CPlanetBottomView));
+									CGalaxyMenuView::SetMoveShip(FALSE);
 									resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
-								}
+								}							
+								
+								// Im Hintergrund System auf der Galaxiemap zentrieren
+								if (CGalaxyMenuView* pView = dynamic_cast<CGalaxyMenuView*>(resources::pMainFrame->GetView(RUNTIME_CLASS(CGalaxyMenuView))))
+									pView->ScrollToSector(p);
 							}
-							// Galaxiekarte anzeigen
-							else
+						}
+						else if (pMajor->GetEmpire()->GetMessages()->GetAt(i).GetMessageType() == MESSAGE_TYPE::MILITARY)
+						{
+							CPoint p = pMajor->GetEmpire()->GetMessages()->GetAt(i).GetKO();
+							if (p != CPoint(-1, -1))
 							{
-								resources::pMainFrame->SelectMainView(GALAXY_VIEW, pMajor->GetRaceID());
-							}
+								// Systemansicht anzeigen
+								if (pMajor->GetEmpire()->GetMessages()->GetAt(i).GetFlag() == 1)
+								{
+									if (pDoc->GetSystem(p.x,p.y).GetOwnerOfSystem() == pMajor->GetRaceID())
+									{
+										pDoc->SetKO(p.x,p.y);
+										resources::pMainFrame->SetSubMenu(RUNTIME_CLASS(CSystemMenuView), 0);
+										resources::pMainFrame->SelectMainView(SYSTEM_VIEW, pMajor->GetRaceID());
+										CGalaxyMenuView::SetMoveShip(FALSE);
+										resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CPlanetBottomView));
+										resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
+									}
+								}
+								// Galaxiekarte anzeigen
+								else
+								{
+									resources::pMainFrame->SelectMainView(GALAXY_VIEW, pMajor->GetRaceID());
+								}
 
-							// Wenn eine Koordinate angegeben ist, dann die Galaxiemap darauf zentrieren
-							CGalaxyMenuView* pView = dynamic_cast<CGalaxyMenuView*>(resources::pMainFrame->GetView(RUNTIME_CLASS(CGalaxyMenuView)));
-							if (pView && p != CPoint(-1,-1))
-								pView->ScrollToSector(p);
+								// Wenn eine Koordinate angegeben ist, dann die Galaxiemap darauf zentrieren
+								if (CGalaxyMenuView* pView = dynamic_cast<CGalaxyMenuView*>(resources::pMainFrame->GetView(RUNTIME_CLASS(CGalaxyMenuView))))
+									pView->ScrollToSector(p);
+							}
 						}
 						else if (pMajor->GetEmpire()->GetMessages()->GetAt(i).GetMessageType() == MESSAGE_TYPE::RESEARCH)
 						{

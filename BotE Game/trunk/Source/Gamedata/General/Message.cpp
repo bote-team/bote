@@ -85,10 +85,10 @@ void CMessage::Serialize(CArchive &ar)
 //////////////////////////////////////////////////////////////////////
 // sonstige Funktionen
 //////////////////////////////////////////////////////////////////////
-void CMessage::GenerateMessage(const CString& sMessage, MESSAGE_TYPE::Typ nMessageType, const CString& sSystemName, const CPoint& SystemKO, bool bUpdate, BYTE byFlag)
+void CMessage::GenerateMessage(const CString& sMessage, MESSAGE_TYPE::Typ nMessageType, const CString& sSystemName /* = "" */, const CPoint& ptKO /* = CPoint(-1, -1) */, bool bUpdate /*= false*/, BYTE byFlag /*= 0*/)
 {
 	m_nMessageType = nMessageType;
-	m_KO = SystemKO;
+	m_KO = ptKO;
 	m_byFlag = byFlag;	// wird häufig benutzt, um die Message mit einem Menü zu verbinden
 	switch (nMessageType)
 	{
@@ -125,4 +125,9 @@ void CMessage::GenerateMessage(const CString& sMessage, MESSAGE_TYPE::Typ nMessa
 			m_strMessage.Format(sMessage);
 		}
 	}
+}
+
+void CMessage::GenerateMessage(const CString& sMessage, MESSAGE_TYPE::Typ nMessageType, BYTE byFlag)
+{
+	GenerateMessage(sMessage, nMessageType, "", CPoint(-1, -1), false, byFlag);
 }

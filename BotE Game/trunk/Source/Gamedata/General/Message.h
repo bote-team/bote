@@ -47,7 +47,8 @@ public:
 	const CString& GetMessageString(void) const {return m_strMessage;}
 
 	// sonstige Funktionen
-	void GenerateMessage(const CString& sMessage, MESSAGE_TYPE::Typ nMessageType, const CString& sSystemName, const CPoint& SystemKO, bool bUpdate, BYTE byFlag = 0);
+	void GenerateMessage(const CString& sMessage, MESSAGE_TYPE::Typ nMessageType, const CString& sSystemName = "", const CPoint& ptKO = CPoint(-1 ,-1), bool bUpdate = false, BYTE byFlag = 0);
+	void GenerateMessage(const CString& sMessage, MESSAGE_TYPE::Typ nMessageType, BYTE byFlag);
 
 private:
 	CString	m_strMessage;

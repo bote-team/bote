@@ -167,7 +167,7 @@ bool CReManager::SystemEvent(const CPoint &ko, CMajor* pRace)
 	if(bSuccess && !sMsgText.IsEmpty())
 	{
 		CMessage message;
-		message.GenerateMessage(sMsgText,MESSAGE_TYPE::SOMETHING,"",ko,FALSE,0);//Nachricht über Randomevent erstellen
+		message.GenerateMessage(sMsgText,MESSAGE_TYPE::SOMETHING,"",ko);//Nachricht über Randomevent erstellen
 		pRace->GetEmpire()->AddMessage(message);
 
 		if (pRace->IsHumanPlayer())
@@ -185,7 +185,7 @@ void CReManager::GlobalEventResearch(CMajor *pRace)
 	pRace->GetEmpire()->AddFP((int)(pRace->GetEmpire()->GetFP()));
 
 	CMessage message;
-	message.GenerateMessage(messagetext,MESSAGE_TYPE::RESEARCH,"",NULL,FALSE,0);//Nachricht für Randomevent erstellen
+	message.GenerateMessage(messagetext,MESSAGE_TYPE::RESEARCH);//Nachricht für Randomevent erstellen
 	pRace->GetEmpire()->AddMessage(message);
 
 	if (pRace->IsHumanPlayer())
@@ -206,7 +206,7 @@ void CReManager::GlobalEventMinor(CMajor* pRace, CMinor* pMinor)
 	pMinor->SetRelation(pRace->GetRaceID(), (rand() % 101) - pMinor->GetRelation(pRace->GetRaceID()));
 	CString messagetext=CResourceManager::GetString("GLOBALEVENTMINOR",false,pMinor->GetRaceName());
 	CMessage message;
-	message.GenerateMessage(messagetext,MESSAGE_TYPE::DIPLOMACY,"",NULL,FALSE,0);//Nachricht für Randomevent erstellen
+	message.GenerateMessage(messagetext,MESSAGE_TYPE::DIPLOMACY);//Nachricht für Randomevent erstellen
 	pRace->GetEmpire()->AddMessage(message);
 }
 
@@ -264,7 +264,7 @@ void CReManager::CalcExploreEvent(const CPoint &ko, CMajor *pRace, CShipMap* shi
 	if (!sMessageText.IsEmpty())
 	{
 		CMessage message;
-		message.GenerateMessage(sMessageText,typ,"",ko,FALSE,0);//Nachricht erstellen
+		message.GenerateMessage(sMessageText,typ,"",ko);//Nachricht erstellen
 		pRace->GetEmpire()->AddMessage(message);
 
 		if (pRace->IsHumanPlayer())
@@ -334,7 +334,7 @@ void CReManager::CalcShipEvents() const
 
 				CString sMessageText = CResourceManager::GetString("EVENTHULLVIRUS", false, sSectorName);
 				CMessage message;
-				message.GenerateMessage(sMessageText,MESSAGE_TYPE::MILITARY,pSector->GetName(),pSector->GetKO(),FALSE,0);
+				message.GenerateMessage(sMessageText,MESSAGE_TYPE::MILITARY,pSector->GetName(),pSector->GetKO());
 				pMajor->GetEmpire()->AddMessage(message);
 
 				if (pMajor->IsHumanPlayer())

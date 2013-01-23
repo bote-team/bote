@@ -273,7 +273,7 @@ bool CMajor::DecrementAgreementsDuration(map<CString, CMajor*>* pmMajors)
 
 			CString s = CResourceManager::GetString("CONTRACT_ENDED", FALSE, sAgreement, sRace);
 			CMessage message;
-			message.GenerateMessage(s, MESSAGE_TYPE::DIPLOMACY, "", 0, FALSE);
+			message.GenerateMessage(s, MESSAGE_TYPE::DIPLOMACY);
 			this->GetEmpire()->AddMessage(message);
 			vDelAgrs.push_back(it->first);
 		}
@@ -310,7 +310,7 @@ bool CMajor::DecrementAgreementsDuration(map<CString, CMajor*>* pmMajors)
 
 			CString s = CResourceManager::GetString("DEFENCE_PACT_ENDED", FALSE, sRace);
 			CMessage message;
-			message.GenerateMessage(s, MESSAGE_TYPE::DIPLOMACY, "", 0, FALSE);
+			message.GenerateMessage(s, MESSAGE_TYPE::DIPLOMACY);
 			this->GetEmpire()->AddMessage(message);
 			vDelAgrs.push_back(*it);
 			it = m_vDefencePact.erase(it++);
@@ -481,7 +481,7 @@ void CMajor::Contact(const CRace& Race, const CPoint& p)
 	CString sMsg = CResourceManager::GetString(sKey,FALSE, Race.GetRaceName(),sSectorKO);
 
 	CMessage message;
-	message.GenerateMessage(sMsg, MESSAGE_TYPE::DIPLOMACY, "", p, FALSE);
+	message.GenerateMessage(sMsg, MESSAGE_TYPE::DIPLOMACY, "", p);
 	m_Empire.AddMessage(message);
 
 	// Eventscreen einfügen
@@ -510,7 +510,7 @@ void CMajor::LostFlagShip(const CShip& ship)
 {
 	const CString& eventText = m_MoralObserver.AddEvent(7, GetRaceMoralNumber(), ship.GetShipName());
 	CMessage message;
-	message.GenerateMessage(eventText, MESSAGE_TYPE::MILITARY, "", ship.GetKO(), false);
+	message.GenerateMessage(eventText, MESSAGE_TYPE::MILITARY, "", ship.GetKO());
 	m_Empire.AddMessage(message);
 }
 
@@ -520,7 +520,7 @@ void CMajor::LostStation(SHIP_TYPE::Typ type)
 	if (type == SHIP_TYPE::OUTPOST)
 		eventText = m_MoralObserver.AddEvent(8, GetRaceMoralNumber());
 	CMessage message;
-	message.GenerateMessage(eventText, MESSAGE_TYPE::MILITARY, "", CPoint(-1,-1), 0);
+	message.GenerateMessage(eventText, MESSAGE_TYPE::MILITARY);
 	m_Empire.AddMessage(message);
 }
 
@@ -530,7 +530,7 @@ void CMajor::LostShipToAnomaly(const CShips& ship, const CString& anomaly)
 	sShip.Format("%s (%s, %s)", ship.GetShipName(), ship.GetShipTypeAsString(), ship.GetShipClass());
 	const CString& s = CResourceManager::GetString("ANOMALY_SHIP_LOST", FALSE, sShip, anomaly);
 	CMessage message;
-	message.GenerateMessage(s, MESSAGE_TYPE::MILITARY, "", ship.GetKO(), 0);
+	message.GenerateMessage(s, MESSAGE_TYPE::MILITARY, "", ship.GetKO());
 	m_Empire.AddMessage(message);
 	if (IsHumanPlayer())
 	{
