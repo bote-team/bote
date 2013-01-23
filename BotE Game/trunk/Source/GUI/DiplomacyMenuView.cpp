@@ -123,8 +123,7 @@ void CDiplomacyMenuView::OnNewRound()
 		if (pPlayer->IsRaceContacted(it->first))
 			vMinors.push_back(it->second);
 	std::sort(vMinors.begin(), vMinors.end(), CmpRaces);
-	m_bSortRaceList=false;
-
+	
 	m_vRaceList.clear();
 	m_vRaceList.insert(m_vRaceList.end(), vMajors.begin(), vMajors.end());
 	m_vRaceList.insert(m_vRaceList.end(), vMinors.begin(), vMinors.end());
@@ -134,6 +133,10 @@ void CDiplomacyMenuView::OnNewRound()
 		for (UINT i = 0; i < pPlayer->GetIncomingDiplomacyNews()->size(); i++)
 			if (pPlayer->GetIncomingDiplomacyNews()->at(i).m_sFromRace == (*it)->GetRaceID())
 				m_vIncomeList.push_back(&pPlayer->GetIncomingDiplomacyNews()->at(i));
+
+	// Falls nach Vertrag sortiert werden soll, dann Liste jetzt sortieren
+	if (m_bSortRaceList)
+		std::sort(m_vRaceList.begin(), m_vRaceList.end(),CmpRaces2);
 }
 
 // CDiplomacyMenuView drawing
