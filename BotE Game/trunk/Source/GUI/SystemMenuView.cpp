@@ -991,7 +991,7 @@ void CSystemMenuView::DrawWorkersMenue(Graphics* g)
 					CString sysstorage = CResourceManager::GetString("SYSTEM_STORAGE_INFO",FALSE,scstore, scmax );
 					scstore.Format("%d",(sys.GetFoodStore() * 100 / sys.GetFoodStoreMax()));
 					sysstorage.Format("%s%s", sysstorage, CResourceManager::GetString("SYSTEM_STORAGE_INFO_PERCENT",FALSE,scstore));
-					name.Format("%s, %s",name, sysstorage);
+					name += ", " + sysstorage;
 				}
 
 				g->DrawString(CComBSTR(name), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(220, 150 + i * 95, 480, 25), &fontFormat, &fontBrush);
