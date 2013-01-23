@@ -379,14 +379,20 @@ void CDiplomacyMenuView::DrawDiplomacyMenue(Graphics* g)
 					// einen Kriegspakt anbieten
 					if (!bAlienDiplomacy && pPlayer->GetAgreement(m_sClickedOnRace) != DIPLOMATIC_AGREEMENT::WAR && m_OutgoingInfo.m_nType != DIPLOMATIC_AGREEMENT::WARPACT)
 					{
+						bool bFoundEnemy = false;
 						map<CString, CMajor*>* pmMajors = pDoc->GetRaceCtrl()->GetMajors();
 						for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
+						{
 							if (it->first != pPlayer->GetRaceID() && it->first != m_sClickedOnRace && pRace->GetAgreement(it->first) != DIPLOMATIC_AGREEMENT::WAR && pPlayer->IsRaceContacted(it->first) && pRace->IsRaceContacted(it->first))
 							{
+								bFoundEnemy = true;
 								if (button->GetState() != 1)
 									button->SetState(0);
 								break;
 							}
+						}
+						if (!bFoundEnemy)
+							button->SetState(2);
 					}
 					else
 						button->SetState(2);
