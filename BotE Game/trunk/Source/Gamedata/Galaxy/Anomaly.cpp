@@ -204,7 +204,7 @@ double CAnomaly::GetWaySearchWeight(void) const
 	// Nebel
 	case RADIONEBULA:		return 5.0;
 	case METNEBULA:			return 0.0;
-	case DEUTNEBULA:		return 0.0;
+	case DEUTNEBULA:		return 5.0;
 	case IONSTORM:			return 5.0;
 	case BINEBULA:			return 0.0;
 	case TORIONGASNEBULA:	return 0.0;
