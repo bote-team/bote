@@ -4071,12 +4071,18 @@ void CBotf2Doc::CalcShipOrders()
 							// Station ist fertig, also bauen (wurde durch ein Schiff in der Flotte fertiggestellt)
 							if (pSector->GetOutpost(y->second->GetOwnerOfShip()) == FALSE
 								&& pSector->GetStarbase(y->second->GetOwnerOfShip()) == FALSE)
-							{
+							{	
 								pSector->SetOutpost(y->second->GetOwnerOfShip());
-								pSector->SetOwnerOfSector(y->second->GetOwnerOfShip());
 								pSector->SetScanned(y->second->GetOwnerOfShip());
-								pSector->SetOwned(TRUE);
 								pSector->SetShipPort(TRUE,y->second->GetOwnerOfShip());
+								
+								// Nur wenn der Sektor uns selbst gehört oder niemanden gehört und keine Minorrace darin lebt
+								if (pSector->GetOwnerOfSector() == y->second->GetOwnerOfShip() || (!pSector->GetOwned() && !pSector->GetMinorRace()))
+								{
+									pSector->SetOwned(TRUE);
+									pSector->SetOwnerOfSector(y->second->GetOwnerOfShip());
+								}
+																
 								// Nachricht generieren, dass der Aussenpostenbau abgeschlossen wurde
 								CMessage message;
 								message.GenerateMessage(CResourceManager::GetString("OUTPOST_FINISHED"),MESSAGE_TYPE::MILITARY,"",pSector->GetKO());
@@ -4115,11 +4121,17 @@ void CBotf2Doc::CalcShipOrders()
 						if (pSector->GetOutpost(y->second->GetOwnerOfShip()) == FALSE
 							&& pSector->GetStarbase(y->second->GetOwnerOfShip()) == FALSE)
 						{
-							pSector->SetOutpost(y->second->GetOwnerOfShip());
-							pSector->SetOwnerOfSector(y->second->GetOwnerOfShip());
+							pSector->SetOutpost(y->second->GetOwnerOfShip());							
 							pSector->SetScanned(y->second->GetOwnerOfShip());
-							pSector->SetOwned(TRUE);
 							pSector->SetShipPort(TRUE,y->second->GetOwnerOfShip());
+
+							// Nur wenn der Sektor uns selbst gehört oder niemanden gehört und keine Minorrace darin lebt
+							if (pSector->GetOwnerOfSector() == y->second->GetOwnerOfShip() || (!pSector->GetOwned() && !pSector->GetMinorRace()))
+							{
+								pSector->SetOwned(TRUE);
+								pSector->SetOwnerOfSector(y->second->GetOwnerOfShip());
+							}
+
 							// Nachricht generieren, dass der Aussenpostenbau abgeschlossen wurde
 							CMessage message;
 							message.GenerateMessage(CResourceManager::GetString("OUTPOST_FINISHED"),MESSAGE_TYPE::MILITARY,"",pSector->GetKO());
@@ -4195,10 +4207,16 @@ void CBotf2Doc::CalcShipOrders()
 							{
 								pSector->UnsetOutpost(y->second->GetOwnerOfShip());
 								pSector->SetStarbase(y->second->GetOwnerOfShip());
-								pSector->SetOwnerOfSector(y->second->GetOwnerOfShip());
 								pSector->SetScanned(y->second->GetOwnerOfShip());
-								pSector->SetOwned(TRUE);
 								pSector->SetShipPort(TRUE,y->second->GetOwnerOfShip());
+								
+								// Nur wenn der Sektor uns selbst gehört oder niemanden gehört und keine Minorrace darin lebt
+								if (pSector->GetOwnerOfSector() == y->second->GetOwnerOfShip() || (!pSector->GetOwned() && !pSector->GetMinorRace()))
+								{
+									pSector->SetOwned(TRUE);
+									pSector->SetOwnerOfSector(y->second->GetOwnerOfShip());
+								}
+
 								// Nachricht generieren, dass der Sternbasisbau abgeschlossen wurde
 								CMessage message;
 								message.GenerateMessage(CResourceManager::GetString("STARBASE_FINISHED"),MESSAGE_TYPE::MILITARY,"",pSector->GetKO());
@@ -4250,10 +4268,16 @@ void CBotf2Doc::CalcShipOrders()
 						{
 							pSector->UnsetOutpost(y->second->GetOwnerOfShip());
 							pSector->SetStarbase(y->second->GetOwnerOfShip());
-							pSector->SetOwnerOfSector(y->second->GetOwnerOfShip());
-							pSector->SetScanned(y->second->GetOwnerOfShip());
-							pSector->SetOwned(TRUE);
+							pSector->SetScanned(y->second->GetOwnerOfShip());							
 							pSector->SetShipPort(TRUE,y->second->GetOwnerOfShip());
+
+							// Nur wenn der Sektor uns selbst gehört oder niemanden gehört und keine Minorrace darin lebt
+							if (pSector->GetOwnerOfSector() == y->second->GetOwnerOfShip() || (!pSector->GetOwned() && !pSector->GetMinorRace()))
+							{
+								pSector->SetOwned(TRUE);
+								pSector->SetOwnerOfSector(y->second->GetOwnerOfShip());
+							}
+
 							// Nachricht generieren, dass der Sternbasisbau abgeschlossen wurde
 							CMessage message;
 							message.GenerateMessage(CResourceManager::GetString("STARBASE_FINISHED"),MESSAGE_TYPE::MILITARY,"",pSector->GetKO());
