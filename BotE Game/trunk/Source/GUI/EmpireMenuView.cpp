@@ -428,7 +428,9 @@ void CEmpireMenuView::DrawEmpireSystemMenue(Graphics* g)
 					s = CResourceManager::GetString("REBELLIOUS");
 					fontBrush.SetColor(Color(255,0,0));
 				}
-				s.Format("%s (%d)",s,pDoc->GetSystem(KO.x,KO.y).GetMoral());//Wert hinzufügen
+				CString moral;
+				moral.Format(" (%d)", pDoc->GetSystem(KO.x,KO.y).GetMoral());//Wert hinzufügen
+				s += moral;
 				g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(270,140+j*25,130,25), &fontFormat, &fontBrush);
 
 				// Nahrungsproduktion anzeigen
