@@ -1104,12 +1104,16 @@ void CDiplomacyMenuView::DrawDiplomacyInfoMenue(Graphics* g, const CString& sWhi
 			{
 				if(pDoc->GetSector(x,y).GetName()==s&&pDoc->GetSector(x,y).GetKnown(pPlayer->GetRaceID()))
 				{
-					s.Format("%s (%c%i)", s,(char)y+97,x+1);
+					CString coords;
+					coords.Format(" (%c%i)", (char)y+97,x+1);
+					s += coords;
 					break;
 				}
 				else if(pDoc->GetSector(x,y).GetName()==s&&!pDoc->GetSector(x,y).GetKnown(pPlayer->GetRaceID()))
 				{
-					s.Format("%s (%s)",s,CResourceManager::GetString("UNKNOWN"));
+					CString coords;
+					coords.Format(" (%s)", CResourceManager::GetString("UNKNOWN"));
+					s += coords;
 					break;
 				}
 			}
