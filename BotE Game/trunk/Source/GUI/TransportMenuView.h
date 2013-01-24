@@ -29,6 +29,9 @@ public:
 #endif
 
 public:
+	/// Funktion führt Aufgaben aus, welche zu jeder neuen Runde von den Views ausgeführt werden müssen.
+	virtual void OnNewRound(void);
+
 	/// Funktion lädt die rassenspezifischen Grafiken.
 	virtual void LoadRaceGraphics();
 
@@ -50,9 +53,11 @@ private:
 	CArray<CMyButton*> m_TransportButtons;	///< die Buttons zum Ändern der Mengen im im Transportmenü
 
 	// Hier die Variablen, wenn wir in der Transportansicht sind
-	BYTE m_byTroopNumberInSystem;		// Nummer der Truppe im Feld der Truppen im System
-	BYTE m_byTroopNumberInShip;			// Nummer der Truppe im Feld der Truppen im Schiff
-	USHORT m_iTransportStorageQuantity;	// Wieviel Ressourcen werden pro Klick verschoben
+	int m_nActiveTroopInSystem;			///< Nummer der Truppe im Feld der Truppen im System
+	int m_nActiveTroopInShip;			///< Nummer der Truppe im Feld der Truppen im Schiff
+	USHORT m_iTransportStorageQuantity;	///< Wieviel Ressourcen werden pro Klick verschoben
+	CPoint m_ptLastSector;				///< Koordinate des letzten angezeigten Sektors
+	vector<pair<CShips*, CTroop*> > m_vShipTroops; ///< Vektor mit allen Truppen auf den Schiffen
 
 protected:
 	DECLARE_MESSAGE_MAP()
