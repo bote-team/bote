@@ -990,7 +990,7 @@ void CSystemMenuView::DrawWorkersMenue(Graphics* g)
 
 					CString sysstorage = CResourceManager::GetString("SYSTEM_STORAGE_INFO",FALSE,scstore, scmax );
 					scstore.Format("%d",(sys.GetFoodStore() * 100 / sys.GetFoodStoreMax()));
-					sysstorage.Format("%s%s", sysstorage, CResourceManager::GetString("SYSTEM_STORAGE_INFO_PERCENT",FALSE,scstore));
+					sysstorage += CResourceManager::GetString("SYSTEM_STORAGE_INFO_PERCENT",FALSE,scstore);
 					name += ", " + sysstorage;
 				}
 
