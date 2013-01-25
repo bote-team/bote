@@ -113,6 +113,10 @@ void CGalaxyMenuView::OnNewRound()
 		ScrollToSector(pDoc->GetRaceKO(m_pPlayersRace->GetRaceID()));
 		m_bScrollToHome = false;
 	}
+
+	// Ohne diesen Befehl wird die Galaxieansicht zum Beginn einer neuen Runde
+	// nicht immer neu gezeichnet -> daher einfach drinlassen
+	Invalidate(FALSE);
 }
 
 /////////////////////////////////////////////////////////////////////////////
