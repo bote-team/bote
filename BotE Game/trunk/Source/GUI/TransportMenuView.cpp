@@ -335,7 +335,7 @@ void CTransportMenuView::DrawTransportMenue(Graphics* g)
 
 	// Truppenbeschreibung auf der rechten Seite, also die im Schiff anzeigen
 	//pDC->Rectangle(850,270,1050,700);
-	if (m_vShipTroops.size() > 0)
+	if (!m_vShipTroops.empty())
 	{
 		if (m_nActiveTroopInShip == -1 || m_nActiveTroopInShip >= (int)m_vShipTroops.size())
 			m_nActiveTroopInShip = 0;
