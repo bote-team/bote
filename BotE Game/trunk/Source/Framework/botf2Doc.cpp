@@ -5633,7 +5633,7 @@ void CBotf2Doc::CalcRandomAlienEntities()
 			int nValue = STARMAP_SECTORS_HCOUNT * STARMAP_SECTORS_VCOUNT;
 			// Pro Techlevel verringert sich die virtuelle Anzahl der Sektoren um 25% -> geringere Wahrscheinlichkeit
 			nValue /= ((nMod * 4 + 100.0) / 100.0);
-			float fSteuerParameter = 1.50f;	// Hiermit kann man leicht die Wahrscheinlichkeit steuern, aktuell 50% niedriger!
+			float fSteuerParameter = 3.00f;	// Hiermit kann man leicht die Wahrscheinlichkeit steuern, aktuell 3mal niedriger!
 			if (rand()%((int)(10000 * fSteuerParameter)) > nValue)
 				continue;
 
@@ -5825,8 +5825,8 @@ void CBotf2Doc::CalcAlienShipEffects()
 				}
 			}
 
-			// befinden sich Schiffe in diesem Sektor, so werden diese ebenfalls zu Seuchenschiffen (33%)
-			if (GetSector(co.x, co.y).GetIsShipInSector() && rand()%3 == 0)
+			// befinden sich Schiffe in diesem Sektor, so werden diese ebenfalls zu Seuchenschiffen (50%)
+			if (GetSector(co.x, co.y).GetIsShipInSector() && rand()%2 == 0)
 			{
 				// alle Schiffe im Sektor zu Seuchenschiffen machen
 				for(CShipMap::iterator y = m_ShipMap.begin(); y != m_ShipMap.end(); ++y)
@@ -5981,9 +5981,9 @@ void CBotf2Doc::CalcAlienShipEffects()
 			if (ship->second->GetCombatTactic() == COMBAT_TACTIC::CT_RETREAT)
 				continue;
 
-			// Zu 20% teleportiert sich das Isotoposphärische Wesen an einen zufälligen Ort der Galaxie (nicht auf Anomalien).
+			// Zu 25% teleportiert sich das Isotoposphärische Wesen an einen zufälligen Ort der Galaxie (nicht auf Anomalien).
 			// Befinden sich Schiffe im selben Sektor, so werden diese mitgerissen.
-			if (rand()%5 == 0)
+			if (rand()%4 == 0)
 			{
 				// irgend ein zufülliges neues Ziel generieren, welches nicht auf einer Anomalie endet
 				while (true)

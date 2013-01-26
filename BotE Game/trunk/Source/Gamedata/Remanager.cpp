@@ -15,9 +15,9 @@
 #include <cassert>
 
 CReManager::CReManager(void) :
-	m_uiGlobalProb(3),
-	m_uiProbPerSystem(10),
-	m_uiProbPerMinor(10)
+	m_uiGlobalProb(2),
+	m_uiProbPerSystem(7),
+	m_uiProbPerMinor(7)
 {
 	m_bIsActivated = true;
 	if (CIniLoader* pIni = CIniLoader::GetInstance())
@@ -288,8 +288,8 @@ void CReManager::CalcShipEvents() const
 	{
 		for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
 		{
-			// 0.75% Wahrscheinlichkeit für einen Hüllenvirus pro Sektor
-			if (rand()%133 != 0)
+			// 0.1% Wahrscheinlichkeit für einen Hüllenvirus pro Sektor
+			if (rand()%1000 != 0)
 				continue;
 
 			// gibt es keine Schiffe im Sektor, dann macht ein Hüllenvirus auch nichts
