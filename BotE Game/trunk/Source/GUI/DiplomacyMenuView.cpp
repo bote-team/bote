@@ -687,10 +687,14 @@ void CDiplomacyMenuView::DrawRaceDiplomacyMenue(Graphics* g)
 	int count = 0;
 
 	Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\" + pPlayer->GetPrefix() + "button_small.bop");//SortButton zeichnen
-	if(graphic) g->DrawImage(graphic, 22, 70, 80, 30);
-	if(!m_bSortRaceList) s.Format("%s","A-Z");
-	else s=CResourceManager::GetString("SORT2");
-	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(22,70,80,30), &fontFormat, &fontBrush);
+	if(graphic)
+		g->DrawImage(graphic, 40, 70, 80, 30);
+	
+	if (!m_bSortRaceList)
+		s.Format("%s","A-Z");
+	else
+		s=CResourceManager::GetString("SORT2");
+	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(40,70,80,30), &fontFormat, &fontBrush);
 
 	CFontLoader::GetGDIFontColor(pPlayer, 3, normalColor);
 	fontBrush.SetColor(normalColor);
@@ -1800,7 +1804,7 @@ void CDiplomacyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		}
 	}
 
-	rect.SetRect(22,70,102,100);
+	rect.SetRect(40,70,120,100);
 	if (rect.PtInRect(point))
 	{
 		m_bSortRaceList=!m_bSortRaceList;
