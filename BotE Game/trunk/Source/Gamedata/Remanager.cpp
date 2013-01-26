@@ -157,7 +157,7 @@ bool CReManager::SystemEvent(const CPoint &ko, CMajor* pRace)
 					network::RACE client = pDoc->GetRaceCtrl()->GetMappedClientID(pRace->GetRaceID());
 					pDoc->m_iSelectedView[client] = EMPIRE_VIEW;
 
-					CEventRandom* EmpireEvent=new CEventRandom(pRace->GetRaceID(),"demographic",CResourceManager::GetString("SYSTEMEVENTPLANETDEMOGRAPHICTITLE"),CResourceManager::GetString("SYSTEMEVENTPLANETDEMOGRAPHICLONG",false,planets.at(planet).GetPlanetName()));
+					CEventRandom* EmpireEvent=new CEventRandom(pRace->GetRaceID(),"demographic",CResourceManager::GetString("SYSTEMEVENTPLANETDEMOGRAPHICTITLE"),sMsgText);
 					pRace->GetEmpire()->GetEventMessages()->Add(EmpireEvent);
 				}
 			}
