@@ -225,7 +225,7 @@ public:
 
 	// Funktion lˆscht alle Geb‰ude, die die ¸bergebene RunningNumber haben und gibt deren Anzahl zur¸ck.
 	// -> Danach muﬂ AddBuilding() mit dem Nachfolger gleich der Anzahl aufgerufen werden.
-	int UpdateBuildings(int RunningNumber);
+	int UpdateBuildings(int nRunningNumber, int nNeededEnergy);
 
 	// Funktion reiﬂt alle Geb‰ude ab, die in der Variable m_BuildingDestroy stehen. Funktion wird in der Doc
 	// bei NextRound() aufgerufen.

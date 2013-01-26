@@ -875,7 +875,7 @@ void CSystem::CalculateVariables(BuildingInfoArray* buildingInfos, CResearchInfo
 			tmpDuraniumBoni		+= buildingInfo->GetDuraniumBoni() + tmpAllRessourcesBoni;
 			tmpCrystalBoni		+= buildingInfo->GetCrystalBoni() + tmpAllRessourcesBoni;
 			tmpIridiumBoni		+= buildingInfo->GetIridiumBoni() + tmpAllRessourcesBoni;
-			tmpDeritiumBoni	+= buildingInfo->GetDeritiumBoni();
+			tmpDeritiumBoni		+= buildingInfo->GetDeritiumBoni();
 			tmpCreditsBoni		+= buildingInfo->GetCreditsBoni();
 		}
 	}
@@ -1084,16 +1084,22 @@ BOOLEAN CSystem::CalculateStorages(CResearchInfo* researchInfo, int diliAdd)
 
 // Funktion löscht alle Gebäude, die die übergebene RunningNumber haben und gibt deren Anzahl zurück.
 // -> Danach muß AddBuilding() mit dem Nachfolger gleich der Anzahl aufgerufen werden.
-int CSystem::UpdateBuildings(int RunningNumber)
+int CSystem::UpdateBuildings(int nRunningNumber, int nNeededEnergy)
 {
-	int counter = 0;
+	int nCount = 0;
 	for (int i = 0; i < m_Buildings.GetSize(); i++)
-		if (m_Buildings.GetAt(i).GetRunningNumber() == RunningNumber)
+		if (m_Buildings.GetAt(i).GetRunningNumber() == nRunningNumber)
 		{
+			// Wenn das Gebäude online war, dann Energie freigeben
+			if (nNeededEnergy > 0 && m_Buildings.GetAt(i).GetIsBuildingOnline())
+				m_Production.m_iEnergyProd += nNeededEnergy;
+
+			// Gebäude aus der Liste löschen
 			m_Buildings.RemoveAt(i--);
-			counter++;
+			nCount++;
 		}
-	return counter;
+
+	return nCount;
 }
 
 // Funktion reißt alle Gebäude ab, die in der Variable m_BuildingDestroy stehen. Funktion wird in der Doc
@@ -1680,51 +1686,58 @@ void CSystem::CalculateEmpireWideMoralProd(const BuildingInfoArray *buildingInfo
 // Funktion setzt das letzte Gebäude, welches gebaut wurde online, sofern dies möglich ist.
 int CSystem::SetNewBuildingOnline(const BuildingInfoArray *buildingInfos)
 {
-	unsigned short CheckValue = 0;
-	unsigned short lastBuilding = m_Buildings.GetUpperBound();
+	// 0: dann konnte das Gebäude in Betrieb genommen werden
+	// 1: dann fehlen Arbeiter
+	// 2: dann fehlt Energie im System
 
-	const CBuildingInfo *buildingInfo = &buildingInfos->GetAt(m_Buildings.GetAt(lastBuilding).GetRunningNumber() - 1);
+	unsigned short nLastBuilding = m_Buildings.GetUpperBound();
+	// Ist das Gebäude schon online
+	if (m_Buildings.GetAt(nLastBuilding).GetIsBuildingOnline())
+		return 0;
 
-	if (m_Workers.GetWorker(WORKER::FREE_WORKER) > 0 && buildingInfo->GetWorker() == TRUE)
+	const CBuildingInfo *pBuildingInfo = &buildingInfos->GetAt(m_Buildings.GetAt(nLastBuilding).GetRunningNumber() - 1);
+
+	// Gebäude braucht Arbeiter, aber keine sind frei
+	if (pBuildingInfo->GetWorker() == TRUE && m_Workers.GetWorker(WORKER::FREE_WORKER) == 0)
+		return 1;
+
+	// Gebäude braucht Energie, aber nicht genügend vorhanden
+	if (pBuildingInfo->GetNeededEnergy() > m_Production.m_iEnergyProd)
+		return 2;
+	
+	// Arbeiter reduzieren
+	if (pBuildingInfo->GetWorker() == TRUE)
 	{
-		if (buildingInfo->GetFoodProd() > 0)
+		if (pBuildingInfo->GetFoodProd() > 0)
 			m_Workers.InkrementWorker(WORKER::FOOD_WORKER);
-		if (buildingInfo->GetIPProd() > 0)
+		else if (pBuildingInfo->GetIPProd() > 0)
 			m_Workers.InkrementWorker(WORKER::INDUSTRY_WORKER);
-		if (buildingInfo->GetEnergyProd() > 0)
+		else if (pBuildingInfo->GetEnergyProd() > 0)
 			m_Workers.InkrementWorker(WORKER::ENERGY_WORKER);
-		if (buildingInfo->GetSPProd() > 0)
+		else if (pBuildingInfo->GetSPProd() > 0)
 			m_Workers.InkrementWorker(WORKER::SECURITY_WORKER);
-		if (buildingInfo->GetFPProd() > 0)
+		else if (pBuildingInfo->GetFPProd() > 0)
 			m_Workers.InkrementWorker(WORKER::RESEARCH_WORKER);
-		if (buildingInfo->GetTitanProd() > 0)
+		else if (pBuildingInfo->GetTitanProd() > 0)
 			m_Workers.InkrementWorker(WORKER::TITAN_WORKER);
-		if (buildingInfo->GetDeuteriumProd() > 0)
+		else if (pBuildingInfo->GetDeuteriumProd() > 0)
 			m_Workers.InkrementWorker(WORKER::DEUTERIUM_WORKER);
-		if (buildingInfo->GetDuraniumProd() > 0)
+		else if (pBuildingInfo->GetDuraniumProd() > 0)
 			m_Workers.InkrementWorker(WORKER::DURANIUM_WORKER);
-		if (buildingInfo->GetCrystalProd() > 0)
+		else if (pBuildingInfo->GetCrystalProd() > 0)
 			m_Workers.InkrementWorker(WORKER::CRYSTAL_WORKER);
-		if (buildingInfo->GetIridiumProd() > 0)
+		else if (pBuildingInfo->GetIridiumProd() > 0)
 			m_Workers.InkrementWorker(WORKER::IRIDIUM_WORKER);
-	}
-	else if (m_Buildings.GetAt(lastBuilding).GetIsBuildingOnline())
-		CheckValue = 0;
-	else
-		CheckValue = 1;
-	if (buildingInfo->GetNeededEnergy() > 0)
-	{
-		if (buildingInfo->GetNeededEnergy() <= m_Production.m_iEnergyProd)
-		{
-			m_Buildings.ElementAt(lastBuilding).SetIsBuildingOnline(TRUE);
-			CheckValue = 0;
-		}
 		else
-			CheckValue = 2;
+			ASSERT(FALSE);
 	}
-	return CheckValue;	// Wenn CheckValue == 0, dann konnte das Gebäude in Betrieb genommen werden
-						// Wenn CheckValue == 1, dann fehlen Arbeiter
-						// Wenn CheckValue == 2, dann fehlt Energie im System
+	
+	// Energie von der Produktion abziehen
+	m_Production.m_iEnergyProd -= pBuildingInfo->GetNeededEnergy();
+			
+	// Gebäude online setzen
+	m_Buildings.ElementAt(nLastBuilding).SetIsBuildingOnline(TRUE);
+	return 0;
 }
 
 // Funktion überprüft Gebäude die Energie benötigen und schaltet diese gegebenfalls ab,

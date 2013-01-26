@@ -3363,10 +3363,13 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 					if (m_EnergyList.GetAt(i).status == 0)
 					{
 						if (pDoc->GetSystem(p.x,p.y).GetProduction()->GetEnergyProd() >= buildingInfo->GetNeededEnergy())
-							pDoc->GetSystem(p.x, p.y).SetIsBuildingOnline(m_EnergyList.GetAt(i).index, 1);
+							pDoc->GetSystem(p.x, p.y).SetIsBuildingOnline(m_EnergyList.GetAt(i).index, TRUE);
 					}
 					else
-						pDoc->GetSystem(p.x, p.y).SetIsBuildingOnline(m_EnergyList.GetAt(i).index, 0);
+					{
+						pDoc->GetSystem(p.x, p.y).SetIsBuildingOnline(m_EnergyList.GetAt(i).index, FALSE);
+					}
+
 					// FP und SP aus dem System von den Gesamten FP des Imnperiums abziehen
 					pMajor->GetEmpire()->AddFP(-(pDoc->GetSystem(p.x,p.y).GetProduction()->GetResearchProd()));
 					pMajor->GetEmpire()->AddSP(-(pDoc->GetSystem(p.x,p.y).GetProduction()->GetSecurityProd()));

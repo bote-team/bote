@@ -184,7 +184,7 @@ void COldRoundDataCalculator::FinishBuild(const int to_build, const CSector& sec
 		// und Gebäude (welches letztes im Feld) ist auch gleich online setzen, wenn
 		// genügend Arbeiter da sind
 		unsigned short CheckValue = system.SetNewBuildingOnline(&BuildingInfo);
-		// Nachricht generierenm das das Gebäude nicht online genommen werden konnte
+		// Nachricht generieren das das Gebäude nicht online genommen werden konnte
 		if (CheckValue == 1)
 			SystemMessage(sector, pMajor, "NOT_ENOUGH_WORKER", MESSAGE_TYPE::SOMETHING, 1);
 		else if (CheckValue == 2)
@@ -198,16 +198,20 @@ void COldRoundDataCalculator::FinishBuild(const int to_build, const CSector& sec
 		message.GenerateMessage(BuildingInfo[list-1].GetBuildingName(),MESSAGE_TYPE::ECONOMY,sector.GetName(),co,true);
 		pMajor->GetEmpire()->AddMessage(message);
 		// Vorgänger von "list" holen
-		// Gebäude mit RunningNumbner == pre werden durch UpdateBuilding() gelöscht und
+		// Gebäude mit RunningNumbner == nPredecessorID werden durch UpdateBuilding() gelöscht und
 		// deren Anzahl wird zurückgegeben.
-		USHORT pre = BuildingInfo[list-1].GetPredecessorID();
-		int NumberOfNewBuildings = system.UpdateBuildings(pre);
+		USHORT nPredecessorID = BuildingInfo[list-1].GetPredecessorID();
+		ASSERT(nPredecessorID > 0);
+		const CBuildingInfo* pPredecessorBuilding = &(BuildingInfo[nPredecessorID - 1]);
+		ASSERT(pPredecessorBuilding->GetRunningNumber() == nPredecessorID);
+		int nNumberOfNewBuildings = system.UpdateBuildings(nPredecessorID, pPredecessorBuilding->GetNeededEnergy());
 		// So, nun bauen wir so viel mal das nächste
-		for (int z = 0; z < NumberOfNewBuildings; z++)
+		for (int z = 0; z < nNumberOfNewBuildings; z++)
 		{
-			m_pDoc->BuildBuilding(list,co);
+			m_pDoc->BuildBuilding(list,co);			
+
 			// falls das geupgradete Gebäude Energie benötigt wird versucht es gleich online zu setzen
-			if (m_pDoc->GetBuildingInfo(list).GetNeededEnergy() > NULL && system.SetNewBuildingOnline(&BuildingInfo) == 2)
+			if (m_pDoc->GetBuildingInfo(list).GetNeededEnergy() > 0 && system.SetNewBuildingOnline(&BuildingInfo) == 2)
 				SystemMessage(sector, pMajor, "NOT_ENOUGH_ENERGY", MESSAGE_TYPE::SOMETHING, 2);
 		}
 	}
