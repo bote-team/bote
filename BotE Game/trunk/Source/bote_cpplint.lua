@@ -43,23 +43,34 @@ end
 
 for index, filenamestring in ipairs(files(currentdir, allowed_types)) do
 	local file = io.open(filenamestring, "rb")
+
+	--check for CString variables passed to their own .Format calls
 	local line_number = 1
+	local var = ""
+	local statement = ""
 	for line in file:lines() do
-		local s, e = string.find(line, "%.Format%(")
+		statement = statement .. line
+		local s, e = string.find(statement, "%.Format%(")
 		if s then
-			local var_start = string.find(line,"[^%s]")
-			local var = string.sub(line, var_start, s - 1)
-			local args_s, args_e = string.find(line, "%b()", e - 1)
-			if args_s and args_e then
-				local args = string.sub(line, args_s, args_e)
-				local evil = string.find(args, " " .. var .. ",")
-				evil = evil or string.find(args, "," .. var .. ",")
+			local var_start = string.find(statement,"[^%s]")
+			var = string.sub(statement, var_start, s - 1)
+			local args_s, args_e = string.find(statement, "%b()", e)
+			if args_s and args_e and args_s == e then
+				local args = string.sub(statement, args_s, args_e)
+				local evil = string.find(statement, "[%,]*[%s]+" .. var .. ",")
+				evil = evil or string.find(statement, "," .. var .. ",")
 				if evil then
-					print(filenamestring .. ": " .. line_number .. ": CString passed to its own format call")
+					print(filenamestring .. ": " .. line_number .. ": CString passed to its own .Format call; this is undefined behavior, use += instead")
 				end
+				statement = ""
 			end
+		else
+			statement = ""
 		end
 		line_number = line_number + 1
 	end
+	assert(statement == "")
+
+
 	file:close()
 end
