@@ -5126,8 +5126,8 @@ void CBotf2Doc::CalcContactMinor(CMajor& Major, const CSector& sector, const CPo
 	CMinor* pMinor = m_pRaceCtrl->GetMinorRace(sector.GetName());
 	assert(pMinor);
 	// kann der Sektorbesitzer andere Rassen kennenlernen?
-	if (pMinor->CanBeContactedBy(Major.GetRaceID()) && !pMinor->GetSubjugated())
-		// die Rasse ist noch nicht bekannt und nicht unterworfen
+	if (pMinor->CanBeContactedBy(Major.GetRaceID()))
+		// die Rasse ist noch nicht bekannt
 		CalcContactCommutative(Major, *pMinor, p);
 }
 
