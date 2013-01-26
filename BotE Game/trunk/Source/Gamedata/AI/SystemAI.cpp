@@ -660,6 +660,7 @@ void CSystemAI::AssignWorkers()
 {
 	const CPoint& ko = m_KO;
 	CSystem& system = m_pDoc->GetSystem(ko.x, ko.y);
+
 	// Nahrungsversorgung wird zu allererst beachtet. Es wird immer solange besetzt, bis man eine positive Produktion
 	// erreicht hat. Hat man zu Beginn schon eine positive Produktion, so wird versucht das Minimum der benötgten
 	// Besetzung zu finden.
@@ -687,6 +688,7 @@ void CSystemAI::AssignWorkers()
 				break;
 		}
 	}
+
 	// Das nächstwichtige ist die Energieversorgung der Gebäude. Wir müssen soviel Energie produzieren, dass es
 	// gerade reicht die Gebäude zu betreiben, welche Strom benötigen.
 	int neededEnergy = 0;
@@ -696,17 +698,21 @@ void CSystemAI::AssignWorkers()
 		const CBuildingInfo *buildingInfo = &m_pDoc->BuildingInfo.GetAt(system.GetAllBuildings()->GetAt(i).GetRunningNumber() - 1);
 		if (buildingInfo->GetNeededEnergy() > 0)
 		{
-			if(CheckMoral(*buildingInfo, false)) {
+			if (CheckMoral(*buildingInfo, false))
+			{
 				neededEnergy += buildingInfo->GetNeededEnergy();
 				if (!system.GetAllBuildings()->GetAt(i).GetIsBuildingOnline())
-					if ((system.GetProduction()->GetEnergyProd() - usedEnergy) >= buildingInfo->GetNeededEnergy())
+					if (system.GetProduction()->GetEnergyProd() >= buildingInfo->GetNeededEnergy() + usedEnergy)
 					{
 						system.SetIsBuildingOnline(i, TRUE);
 						usedEnergy += buildingInfo->GetNeededEnergy();
 					}
 			}
 			else
+			{
+				// gebäude abschalten wenn gegen Moral
 				system.SetIsBuildingOnline(i, FALSE);
+			}
 		}
 	}
 	while (system.GetProduction()->GetMaxEnergyProd() > (neededEnergy + 15))
@@ -1028,7 +1034,7 @@ void CSystemAI::CalcProd()
 	// Die Boni auf die einzelnen Produktionen berechnen
 	short tmpFoodBoni		= m_pMajor->GetEmpire()->GetResearch()->GetBioTech() * TECHPRODBONUS;
 	short tmpIndustryBoni	= m_pMajor->GetEmpire()->GetResearch()->GetConstructionTech() * TECHPRODBONUS;
-	short tmpEnergyBoni		= m_pMajor->GetEmpire()->GetResearch()->GetEnergyTechBoni() * TECHPRODBONUS;
+	short tmpEnergyBoni		= m_pMajor->GetEmpire()->GetResearch()->GetEnergyTech() * TECHPRODBONUS;
 
 	short neededEnergy = 0;
 	for (int i = 0; i < nNumberOfBuildings; i++)
