@@ -70,7 +70,17 @@ for index, filenamestring in ipairs(files(currentdir, allowed_types)) do
 		line_number = line_number + 1
 	end
 	assert(statement == "")
+	--reset file pointer to beginning
+	file:seek("set")
 
+	--look for calls to CString::AllocSysString which are likely to cause a memory leak
+	local line_number = 1
+	for line in file:lines() do
+		if string.find(line, "%.AllocSysString") then
+			print(filenamestring .. ": " .. line_number .. ": call to CString::AllocSysString; this allocates memory which needs to be freed, use CComBSTR(...) instead")
+		end
+		line_number = line_number + 1
+	end
 
 	file:close()
 end
