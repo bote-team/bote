@@ -530,6 +530,10 @@ static bool ShouldUnsetOrder(SHIP_ORDER::Typ order) {
 void CShip::SetTargetKO(const CPoint& TargetKO, const bool simple_setter)
 {
 	m_TargetKO = TargetKO;
+	// Wenn kein Ziel mehr vorhanden, dann den Pfad löschen
+	if (!HasTarget())
+		m_Path.RemoveAll();
+
 	if(simple_setter)
 		return;
 	if(TargetKO != CPoint(-1, -1) && ShouldUnsetOrder(m_iCurrentOrder)) {

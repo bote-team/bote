@@ -47,8 +47,7 @@ protected: // Nur aus Serialisierung erzeugen
 	static CResourceRoute m_ResourceRoute;	///< die Ressourcenroute, die wir auf der Galaxiemap ziehen können
 	// Hier Variablen für die Schiffsbewegung
 	static BOOLEAN m_bShipMove;				///< soll ein Schiff auf der Map bewegt werden (Kurs geben)
-	CArray<Sector> m_oldPath;				///< alter Pfad eines Schiffes, welcher auf der Map angezeigt wird
-
+	
 	/// Funktion zum Festlegen der Spielerrasse in der View
 	/// @pPlayer Zeiger auf Spielerrasse
 	static void SetPlayersRace(CMajor* pPlayer) {m_pPlayersRace = pPlayer;}
@@ -76,10 +75,6 @@ protected: // Nur aus Serialisierung erzeugen
 public:
 	/// Funktion führt Aufgaben aus, welche zu jeder neuen Runde von der View ausgeführt werden müssen.
 	void OnNewRound();
-
-	/// Funktion legt den visuellen Pfad für Schiffe fest.
-	/// legt den Pfad des neu angewählten Schiffes auf der Map fest und löscht den alten Pfad.
-	void SetNewShipPath();
 
 	/// Funktion legt fest, ob eine anzulegende Ressourcenroute gerade gezeichnet werden soll. Dies wird zum manuellen
 	/// Anlegen der Ressourcenrouten benötigt.

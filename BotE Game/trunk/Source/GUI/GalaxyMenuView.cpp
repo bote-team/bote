@@ -105,7 +105,6 @@ void CGalaxyMenuView::OnNewRound()
 	m_bDrawTradeRoute = FALSE;
 	m_bDrawResourceRoute = FALSE;
 	m_bUpdateOnly = false;
-	//m_ptScrollToSector = CPoint(-1, -1);
 	m_PreviouslyJumpedToShip = RememberedShip();
 
 	if (m_bScrollToHome)
@@ -288,23 +287,12 @@ void CGalaxyMenuView::OnDraw(CDC* dc)
 		m_nRange = 3-pDoc->CurrentShip()->second->GetRange(true);
 	else
 		m_nRange = SM_RANGE_SPACE;
+	
 	// für jeden Sektor die Linie rechts und unten zeichnen; (j, i) ist der aktuell betrachtete Sektor,
 	// (x, y) sind die Koordinaten dessen linker oberer Ecke
-
 	for (int i = 0, y = 0; i < STARMAP_SECTORS_VCOUNT; i++, y += STARMAP_SECTOR_HEIGHT)
 		for (int j = 0, x = 0; j < STARMAP_SECTORS_HCOUNT; j++, x += STARMAP_SECTOR_WIDTH)
 		{
-			// Flugweg der Schiffe zeichnen
-			if (pDoc->GetSector(j, i).GetShipPathPoints() > 0)
-			{
-				COLORREF color = RGB(255,255,255);
-				CBrush brush(color);
-				CPen pen(PS_SOLID, 0, color);
-				pDC->SelectObject(&brush);
-				pDC->SelectObject(&pen);
-				pDC->Ellipse(x+STARMAP_SECTOR_WIDTH/2-4,y+STARMAP_SECTOR_HEIGHT/2-4,x+STARMAP_SECTOR_WIDTH/2+4,y+STARMAP_SECTOR_HEIGHT/2+4);
-			}
-
 			/* // nur für Debug-Zwecke
 			if (m_nRange)
 			{
@@ -424,7 +412,47 @@ void CGalaxyMenuView::OnDraw(CDC* dc)
 		}
 #endif
 
-	// ------
+	// Flugrouten der Schiffe ermitteln
+	set<pair<int, int> > setPathKOs;
+	for (CShipMap::const_iterator ship = pDoc->m_ShipMap.begin(); ship != pDoc->m_ShipMap.end(); ++ship)
+	{
+		if (ship->second->GetOwnerOfShip() != pMajor->GetRaceID())
+			continue;
+
+		if (m_nRange && ship == pDoc->CurrentShip())
+			continue;
+
+		if (!ship->second->HasTarget())
+			continue;
+
+		// (Performance) nur neu berechnen, wenn Ziel und letzter Pfadeintrag nicht identisch
+		if (ship->second->GetPath()->IsEmpty() || ship->second->GetPath()->GetAt(ship->second->GetPath()->GetUpperBound()) != Sector(ship->second->GetTargetKO()))
+		{
+			char speed = (char)(ship->second->GetSpeed(ship->second->HasFleet()));
+			char range = (char)(ship->second->GetRange(ship->second->HasFleet()));
+			pMajor->GetStarmap()->CalcPath(ship->second->GetKO(), ship->second->GetTargetKO(), 3 - range, speed, *ship->second->GetPath());
+		}
+
+		const CArray<Sector>* pPath = ship->second->GetPath();
+		for (int i = 0; i < pPath->GetSize(); i++)
+			setPathKOs.insert(make_pair(pPath->GetAt(i).x, pPath->GetAt(i).y));
+	}
+
+	// Flugrouten zeichnen
+	if (!setPathKOs.empty())
+	{
+		COLORREF color = RGB(255,255,255);
+		CBrush brush(color);
+		CPen pen(PS_SOLID, 0, color);
+		pDC->SelectObject(&brush);
+		pDC->SelectObject(&pen);
+		for (set<pair<int, int> >::const_iterator it = setPathKOs.begin(); it != setPathKOs.end(); ++it)
+		{
+			CPoint pt = pMajor->GetStarmap()->GetSectorCoords(Sector(it->first, it->second));
+			pDC->Ellipse(pt.x+STARMAP_SECTOR_WIDTH/2-4,pt.y+STARMAP_SECTOR_HEIGHT/2-4,pt.x+STARMAP_SECTOR_WIDTH/2+4,pt.y+STARMAP_SECTOR_HEIGHT/2+4);
+		}
+	}
+	
 	// wenn gerade ein Ziel gewählt wird, den berechneten Weg zeichnen
 	if (m_nRange && pDoc->CurrentShip()->second->GetPath()->GetSize())
 	{
@@ -442,26 +470,13 @@ void CGalaxyMenuView::OnDraw(CDC* dc)
 		}
 
 		// Anzahl der benötigten Runden in letztes Feld des Weges zeichnen
-		//CPoint last = pMajor->GetStarmap()->GetSectorCoords(path[path.GetUpperBound()]);
-		const CShipMap::const_iterator& current_ship = pDoc->CurrentShip();
-		CPoint last = pMajor->GetStarmap()->GetSectorCoords(current_ship->second->GetPath()->GetAt(
-			current_ship->second->GetPath()->GetUpperBound()));
+		CPoint ptLast = pMajor->GetStarmap()->GetSectorCoords(pDoc->CurrentShip()->second->GetPath()->GetAt(pDoc->CurrentShip()->second->GetPath()->GetUpperBound()));
 		CString s;
-		// Wenn das Schiff keine Flotte anführt
-		if (!pDoc->CurrentShip()->second->HasFleet())
-			s.Format("%.0f",ceil((float)current_ship->second->GetPath()->GetSize() / (float)current_ship->second->GetSpeed(false)));
-		else
-			s.Format("%.0f",ceil((float)current_ship->second->GetPath()->GetSize() / (float)pDoc->CurrentShip()->second->GetSpeed(true)));
+		s.Format("%.0f",ceil((float)pDoc->CurrentShip()->second->GetPath()->GetSize() / (float)pDoc->CurrentShip()->second->GetSpeed(pDoc->CurrentShip()->second->HasFleet())));
 		pDC->SetTextColor(RGB(255,255,255));
-		pDC->TextOut(last.x+STARMAP_SECTOR_WIDTH/2+6, last.y+STARMAP_SECTOR_HEIGHT/2-8, s);
-
-		/**/ // Debug: Länge des Weges ausgeben
-/*		CString s;
-		s.Format("%d ", path.GetSize());
-		pDC->SetTextColor(RGB(255, 255, 255));
-		pDC->TextOut(10, 10, s);
-		/**/
+		pDC->TextOut(ptLast.x+STARMAP_SECTOR_WIDTH/2+6, ptLast.y+STARMAP_SECTOR_HEIGHT/2-8, s);
 	}
+
 	pDC->SelectObject(pOldPen);
 
 	// Font für Sektornamen holen
@@ -814,15 +829,7 @@ void CGalaxyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			SetMoveShip(FALSE);
 			resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
 			m_nRange = 0;
-			CSoundManager::GetInstance()->PlaySound(SNDMGR_SOUND_SHIPTARGET);
-			// alte Flugdaten aus den Sektoren löschen
-			for (int i = 0; i < m_oldPath.GetSize(); i++)
-				pDoc->GetSector(m_oldPath.GetAt(i).x, m_oldPath.GetAt(i).y).AddShipPathPoints(-1);
-			m_oldPath.RemoveAll();
-			// Die Flugkoordinaten des Schiffes den Sektoren mitteilen, damit sie die Flugroute des Schiffes
-			// immer anzeigen können, auch wenn kein Schiff ausgewählt ist
-			for (int i = 0; i < pDoc->CurrentShip()->second->GetPath()->GetSize(); i++)
-				pDoc->GetSector(pDoc->CurrentShip()->second->GetPath()->GetAt(i).x, pDoc->CurrentShip()->second->GetPath()->GetAt(i).y).AddShipPathPoints(1);
+			CSoundManager::GetInstance()->PlaySound(SNDMGR_SOUND_SHIPTARGET);			
 			Invalidate();
 		}
 		else
@@ -972,6 +979,11 @@ void CGalaxyMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 void CGalaxyMenuView::OnRButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO: Code für die Behandlungsroutine für Nachrichten hier einfügen und/oder Standard aufrufen
+	CBotf2Doc* pDoc = resources::pDoc;
+	ASSERT(pDoc);
+
+	if (!pDoc->m_bDataReceived)
+		return;
 
 	//Wenn wir das Befehlgeben eines Schiffes abbrechen wollen
 	if (m_bShipMove)
@@ -1032,17 +1044,12 @@ void CGalaxyMenuView::OnMouseMove(UINT nFlags, CPoint point)
 		if (PT_IN_RECT(target, 0, 0, STARMAP_SECTORS_HCOUNT, STARMAP_SECTORS_VCOUNT))
 		{
 			// Weg berechnen, neu zeichnen
-			char speed = 0;
-			// Wenn das Schiff keine Flotte anführt
-			if (!pDoc->CurrentShip()->second->HasFleet())
-				speed = (char)(pDoc->CurrentShip()->second->GetSpeed(false));
-			else
-				speed = (char)(pDoc->CurrentShip()->second->GetSpeed(true));
-
+			char speed = (char)(pDoc->CurrentShip()->second->GetSpeed(pDoc->CurrentShip()->second->HasFleet()));
 			struct::Sector result = pMajor->GetStarmap()->CalcPath(pMajor->GetStarmap()->GetSelection(), target, m_nRange, speed, *pDoc->CurrentShip()->second->GetPath());
 
 			if (target != shipKO && target != oldtarget)
 				Invalidate();
+			
 			oldtarget = target;
 		}
 	}
@@ -1361,13 +1368,6 @@ int CGalaxyMenuView::GetRangeBorder(const unsigned char range1, const unsigned c
 	}
 	else
 		return SM_RANGE_SPACE;
-}
-
-void CGalaxyMenuView::SetNewShipPath()
-{
-	CBotf2Doc* pDoc = resources::pDoc;
-	m_oldPath.RemoveAll();
-	m_oldPath.Copy(*pDoc->CurrentShip()->second->GetPath());
 }
 
 void CGalaxyMenuView::GenerateGalaxyMap()

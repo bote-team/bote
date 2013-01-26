@@ -258,23 +258,6 @@ void CShipBottomView::DrawShipContent() {
 			break;
 	}
 
-	// Wenn nur ein Schiff in dem System ist, so wird es automatisch ausgewählt
-	if (counter == 1 && !m_bShowStation /*&& oneShip->second->GetCurrentOrder() <= SHIP_ORDER::ATTACK*/
-		&& oneShip->second->GetOwnerOfShip() == pMajor->GetRaceID())
-	{
-		// Wenn wenn wir auf der Galaxiekarte sind
-		if (resources::pMainFrame->GetActiveView(0, 1) == GALAXY_VIEW)
-		{
-			this->SetTimer(1,100,NULL);
-			m_dc.pDoc->SetCurrentShip(oneShip);
-			CGalaxyMenuView::SetMoveShip(TRUE);
-			CSmallInfoView::SetDisplayMode(CSmallInfoView::DISPLAY_MODE_SHIP_BOTTEM_VIEW);
-			resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
-			m_iWhichMainShipOrderButton = MAIN_BUTTON_NONE;
-			resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CGalaxyMenuView));
-		}
-	}
-
 	// Schiffe jetzt auch zeichnen
 	for(std::vector<std::pair<CRect, CShips*>>::const_iterator itdraw = m_vShipRects.begin(); itdraw != m_vShipRects.end(); ++itdraw) {
 		pShip = itdraw->second;
@@ -305,6 +288,31 @@ void CShipBottomView::DrawShipContent() {
 	if (m_iPage > 1)
 	{
 		DrawSmallButton("BTN_BACK", CPoint(r.right-bw, r.top));
+	}
+
+	// Wenn nur ein Schiff in dem System ist, so wird es automatisch ausgewählt
+	if (counter == 1 && !m_bShowStation	&& oneShip->second->GetOwnerOfShip() == pMajor->GetRaceID())
+	{
+		// Wenn wenn wir auf der Galaxiekarte sind
+		if (resources::pMainFrame->GetActiveView(0, 1) == GALAXY_VIEW)
+		{
+			SHIP_ORDER::Typ nOrder = oneShip->second->GetCurrentOrder();
+			bool bDirectMove = true;
+			if (nOrder != SHIP_ORDER::NONE && nOrder != SHIP_ORDER::AVOID && nOrder != SHIP_ORDER::ATTACK && nOrder != SHIP_ORDER::ENCLOAK && nOrder != SHIP_ORDER::DECLOAK && nOrder != SHIP_ORDER::ASSIGN_FLAGSHIP && nOrder != SHIP_ORDER::CREATE_FLEET && nOrder != SHIP_ORDER::TRANSPORT)
+				bDirectMove = false;
+			
+			if (bDirectMove)
+			{
+				CGalaxyMenuView::SetMoveShip(TRUE);
+
+				this->SetTimer(1,100,NULL);
+				m_dc.pDoc->SetCurrentShip(oneShip);
+				CSmallInfoView::SetDisplayMode(CSmallInfoView::DISPLAY_MODE_SHIP_BOTTEM_VIEW);
+				resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
+				m_iWhichMainShipOrderButton = MAIN_BUTTON_NONE;
+				resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CGalaxyMenuView));
+			}
+		}
 	}
 }
 
@@ -908,8 +916,12 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 			{
 				SHIP_ORDER::Typ nOrder = static_cast<SHIP_ORDER::Typ>(i - m_vSecondaryShipOrders.begin());
 				// Bei manchen Befehlen müssen wir einen möglichen Zielkurs wieder zurücknehmen.
-				if (nOrder != SHIP_ORDER::AVOID && nOrder != SHIP_ORDER::ATTACK && nOrder != SHIP_ORDER::ENCLOAK && nOrder != SHIP_ORDER::DECLOAK && nOrder != SHIP_ORDER::ASSIGN_FLAGSHIP && nOrder != SHIP_ORDER::CREATE_FLEET && nOrder != SHIP_ORDER::TRANSPORT)
+				if (nOrder != SHIP_ORDER::NONE && nOrder != SHIP_ORDER::AVOID && nOrder != SHIP_ORDER::ATTACK && nOrder != SHIP_ORDER::ENCLOAK && nOrder != SHIP_ORDER::DECLOAK && nOrder != SHIP_ORDER::ASSIGN_FLAGSHIP && nOrder != SHIP_ORDER::CREATE_FLEET && nOrder != SHIP_ORDER::TRANSPORT)
+				{
 					pDoc->CurrentShip()->second->SetTargetKO(CPoint(-1, -1));
+					resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CGalaxyMenuView));
+				}
+				
 				// Wenn wir eine Flotte bilden wollen (Schiffe gruppieren), dann in der MainView die Flottenansicht zeigen
 				if (nOrder == SHIP_ORDER::CREATE_FLEET)
 				{
@@ -1012,6 +1024,7 @@ void CShipBottomView::OnMouseMove(UINT nFlags, CPoint point)
 {
 	if (CGalaxyMenuView::IsMoveShip())
 		return;
+	
 	CBotf2Doc* pDoc = resources::pDoc;
 	assert(pDoc);
 	CalcLogicalPoint(point);
@@ -1048,9 +1061,7 @@ void CShipBottomView::OnRButtonDown(UINT nFlags, CPoint point)
 	if (!pDoc->m_bDataReceived)
 		return;
 
-	CalcLogicalPoint(point);
-
-	if (CGalaxyMenuView::IsMoveShip() == TRUE)
+	if (CGalaxyMenuView::IsMoveShip())
 	{
 		CGalaxyMenuView::SetMoveShip(FALSE);
 		if (resources::pMainFrame->GetActiveView(1, 1) == PLANET_BOTTOM_VIEW)	// Wenn wir kolon oder terraformen abbrechen wollen, zurück zum Schiffsmenü
@@ -1068,6 +1079,7 @@ void CShipBottomView::OnRButtonDown(UINT nFlags, CPoint point)
 			Invalidate();
 			resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CGalaxyMenuView));
 		}
+		
 		CSmallInfoView::SetDisplayMode(CSmallInfoView::DISPLAY_MODE_SHIP_BOTTEM_VIEW);
 		resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
 	}

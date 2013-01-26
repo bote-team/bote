@@ -268,10 +268,7 @@ public:
 	/// Diese Funktion berechnet die vorhandenen Rohstoffe der Planeten im Sektor. Übergebn wird dafür ein Feld für
 	/// die Ressourcen <code>res</code>.
 	void GetAvailableResources(BOOLEAN bResources[DERITIUM + 1], BOOLEAN bOnlyColonized = true);
-
-	/// Diese Funktion gibt die Schiffspfadpunkte zurück.
-	short GetShipPathPoints() const {return m_iShipPathPoints;}
-
+	
 // zum Schreiben der Membervariablen
 	/// Diese Funktion setzt die Koordinaten des Sektors und übernimmt dabei die beiden Koordinatenwerte.
 	void SetKO(int x, int y) {m_KO = CPoint(x,y);}
@@ -420,11 +417,7 @@ public:
 	/// Diese Funktion addiert Besitzerpunkte <code>ownerPoints</code> zu den Punkten des Besitzers <code>owner</owner>
 	/// dazu.
 	void AddOwnerPoints(BYTE ownerPoints, const CString& sOwner) {m_byOwnerPoints[sOwner] += ownerPoints;}
-
-	/// Diese Funktion addiert den übergebenen Wert <code>value</code> zu den Schiffspfadpunkten, anhand derer man
-	/// erkennen kann, ob ein Schiff in dieser Runde durch diesen Sektor fliegt.
-	void AddShipPathPoints(short value) {m_iShipPathPoints += value;}
-
+	
 // sonstige Funktionen
 
 	/**
@@ -536,9 +529,6 @@ private:
 
 	/// Die Feld mit den einzelnen Planeten in dem Sektor
 	std::vector<CPlanet> m_Planets;
-
-	/// Diese Variable wird hochgezählt, wenn ein Schiffspfad durch diesen Sektor geht. Muss nicht serialisiert werden.
-	short m_iShipPathPoints;
 
 	/// Mögliche Anomalie in dem Sektor (NULL wenn keine vorhanden)
 	CAnomaly* m_pAnomaly;

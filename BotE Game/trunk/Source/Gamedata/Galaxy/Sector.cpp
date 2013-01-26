@@ -29,7 +29,6 @@ IMPLEMENT_SERIAL (CSector, CObject, 1)
 CSector::CSector(void) :
 	m_Attributes(0),
 	m_bySunColor(0),
-	m_iShipPathPoints(0),
 	m_KO(-1, -1)
 {
 	m_pAnomaly = NULL;
@@ -54,11 +53,9 @@ CSector::CSector(const CSector& other) :
 	m_iStartStationPoints(other.m_iStartStationPoints),
 	m_bySunColor(other.m_bySunColor),
 	m_byOwnerPoints(other.m_byOwnerPoints),
-	m_Planets(other.m_Planets),
-	m_iShipPathPoints(other.m_iShipPathPoints)
+	m_Planets(other.m_Planets)	
 {
 	m_pAnomaly=NULL;
-
 };
 
 CSector& CSector::operator=(const CSector& other){
@@ -81,7 +78,6 @@ CSector& CSector::operator=(const CSector& other){
 	m_bySunColor = other.m_bySunColor;
 	m_byOwnerPoints = other.m_byOwnerPoints;
 	m_Planets = other.m_Planets;
-	m_iShipPathPoints = other.m_iShipPathPoints;
 	m_pAnomaly = other.m_pAnomaly;
 
 	return *this;
@@ -306,8 +302,6 @@ void CSector::Serialize(CArchive &ar)
 			}
 			ar >> m_pAnomaly;
 		}
-
-		m_iShipPathPoints = 0;
 	}
 }
 
@@ -662,8 +656,6 @@ void CSector::ClearAllPoints()
 	}
 	m_bIsStationBuild.clear();
 
-	m_iShipPathPoints = 0;
-
 	m_bWhoIsOwnerOfShip.clear();
 	m_mNumbersOfShips.clear();
 	// Die benötigte Scanpower um Schiffe sehen zu können wieder auf NULL setzen
@@ -755,7 +747,6 @@ void CSector::Reset()
 	m_sOwnerOfSector = "";
 	m_sColonyOwner = "";
 	m_strSectorName = "";
-	m_iShipPathPoints = 0;
 	m_Planets.clear();
 
 	if (m_pAnomaly)

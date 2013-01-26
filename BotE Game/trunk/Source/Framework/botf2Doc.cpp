@@ -537,15 +537,7 @@ void CBotf2Doc::SerializeNextRoundData(CArchive &ar)
 		}
 
 		network::RACE client = m_pRaceCtrl->GetMappedClientID(pPlayer->GetRaceID());
-
-		// Ausgehend vom Pfad des Schiffes den Sektoren mitteilen, das durch sie ein Schiff fliegt
-		for(CShipMap::const_iterator y = m_ShipMap.begin(); y != m_ShipMap.end(); ++y) {
-			if (y->second->GetOwnerOfShip() == pPlayer->GetRaceID()) {
-				const CArray<Sector>& path = *y->second->GetPath();
-				for (int i = 0; i < path.GetSize(); i++)
-					GetSector(path.GetAt(i).x, path.GetAt(i).y).AddShipPathPoints(1);
-			}
-		}
+		
 		// Sprachmeldungen an den Soundmanager schicken
 		CSoundManager* pSoundManager = CSoundManager::GetInstance();
 		ASSERT(pSoundManager);
@@ -737,7 +729,6 @@ void CBotf2Doc::SetKO(int x, int y)
 void CBotf2Doc::SetCurrentShip(const CShipMap::iterator& position)
 {
 	m_ShipMap.SetCurrentShip(position);
-	dynamic_cast<CGalaxyMenuView*>(resources::pMainFrame->GetView(RUNTIME_CLASS(CGalaxyMenuView)))->SetNewShipPath();
 	CSmallInfoView::SetDisplayMode(CSmallInfoView::DISPLAY_MODE_SHIP_BOTTEM_VIEW);
 }
 void CBotf2Doc::SetFleetShip(const CShipMap::iterator& position)
