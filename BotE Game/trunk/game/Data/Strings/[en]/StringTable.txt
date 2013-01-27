@@ -2035,7 +2035,7 @@ pacifistic
 [SNEAKY]
 sneaky
 [SOLOING]
-maverick
+isolationist
 [HOSTILE]
 hostile
 

@@ -2035,7 +2035,7 @@ pazifistisch
 [SNEAKY]
 hinterhältig
 [SOLOING]
-Alleingeher
+isolationistisch
 [HOSTILE]
 feindlich
 
