@@ -233,25 +233,15 @@ void CTransportMenuView::DrawTransportMenue(Graphics* g)
 	// verfügbaren Lagerraum im Schiff zeichnen:
 	int usedStorage = ship->second->GetUsedStorageRoom(&pDoc->m_TroopInfo);
 	int storageRoom = ship->second->GetStorageRoom();
-	int troopNumber = 0;
-	m_vShipTroops.clear();
-	for (int i = 0; i < ship->second->GetTransportedTroops()->GetSize(); i++)
-	{
-		m_vShipTroops.push_back(make_pair(ship->second, &(ship->second->GetTransportedTroops()->GetAt(i))));
-		troopNumber++;
-	}
-
 	// Lagerraum der Schiffe in der Flotte beachten
 	for (CShips::const_iterator it = ship->second->begin(); it != ship->second->end(); ++it)
 	{
 		usedStorage += it->second->GetUsedStorageRoom(&pDoc->m_TroopInfo);
 		storageRoom += it->second->GetStorageRoom();
-		for (int i = 0; i < it->second->GetTransportedTroops()->GetSize(); i++)
-		{
-			m_vShipTroops.push_back(make_pair(it->second, &(it->second->GetTransportedTroops()->GetAt(i))));
-			troopNumber++;
-		}
 	}
+	
+	// Truppen aus Schiffen sammeln
+	CreateTransportedTroopsVector();
 
 	fontFormat.SetAlignment(StringAlignmentCenter);
 	s.Format("%s: %d", CResourceManager::GetString("AVAILABLE"), storageRoom - usedStorage);
@@ -259,7 +249,7 @@ void CTransportMenuView::DrawTransportMenue(Graphics* g)
 
 	// Truppen im System und im Schiff zeichnen
 	fontFormat.SetAlignment(StringAlignmentFar);
-	s.Format("%d", troopNumber);
+	s.Format("%d", m_vShipTroops.size());
 	g->DrawString(CComBSTR(s), -1, &font, RectF(0,560,725,60), &fontFormat, &fontBrush);
 
 	if (systemOwner == shipOwner)
@@ -527,10 +517,11 @@ void CTransportMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 
 						// Truppe ins System stecken						
 						pDoc->GetSystem(p.x, p.y).GetTroops()->Add(*pTroop);
+						m_nActiveTroopInSystem = pDoc->GetSystem(p.x, p.y).GetTroops()->GetUpperBound();
 						// Danach auf Schiff entfernen (Zeiger wird ungültig)
 						pShip->GetTransportedTroops()->RemoveAt(nPos);
-						// Eintrag im Hilfsvektor löschen
-						m_vShipTroops.erase(m_vShipTroops.begin() + m_nActiveTroopInShip);
+						// weil alle Zeiger ungültig geworden sind, den Vektor neu erstellen
+						CreateTransportedTroopsVector();
 						if (m_vShipTroops.empty())
 						{
 							m_nActiveTroopInShip = -1;
@@ -633,7 +624,7 @@ void CTransportMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 									pDoc->GetSystem(p.x, p.y).GetTroops()->RemoveAt(m_nActiveTroopInSystem);
 									if (m_nActiveTroopInSystem > 0)
 										m_nActiveTroopInSystem--;
-									m_nActiveTroopInShip = ship->second->GetTransportedTroops()->GetUpperBound();
+									m_nActiveTroopInShip++;
 									Invalidate(FALSE);
 									resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CShipBottomView));
 									nQuantity--;
@@ -814,4 +805,20 @@ void CTransportMenuView::OnMouseMove(UINT nFlags, CPoint point)
 	}
 
 	CMainBaseView::OnMouseMove(nFlags, point);
+}
+
+void CTransportMenuView::CreateTransportedTroopsVector()
+{
+	CBotf2Doc* pDoc = resources::pDoc;
+	ASSERT(pDoc);
+
+	const CShipMap::const_iterator& ship = pDoc->CurrentShip();
+
+	m_vShipTroops.clear();
+	for (int i = 0; i < ship->second->GetTransportedTroops()->GetSize(); i++)
+		m_vShipTroops.push_back(make_pair(ship->second, &(ship->second->GetTransportedTroops()->GetAt(i))));
+	
+	for (CShips::const_iterator it = ship->second->begin(); it != ship->second->end(); ++it)
+		for (int i = 0; i < it->second->GetTransportedTroops()->GetSize(); i++)
+			m_vShipTroops.push_back(make_pair(it->second, &(it->second->GetTransportedTroops()->GetAt(i))));
 }

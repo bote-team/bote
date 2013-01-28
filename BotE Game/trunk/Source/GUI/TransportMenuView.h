@@ -44,6 +44,9 @@ private:
 	/// @param g Zeiger auf GDI+ Grafikobjekt
 	void DrawTransportMenue(Graphics* g);
 
+	/// Funktion erstellt einen Vektor mit den transportierten Truppen
+	void CreateTransportedTroopsVector();
+
 	// Attribute
 
 	// Grafiken
