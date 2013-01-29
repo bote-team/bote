@@ -11,6 +11,7 @@
 #include "EmpireMenuView.h"
 #include "GalaxyMenuView.h"
 #include "PlanetBottomView.h"
+#include "ShipBottomView.h"
 #include "MenuChooseView.h"
 #include "Races\RaceController.h"
 #include "Graphic\memdc.h"
@@ -1804,38 +1805,17 @@ void CEmpireMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 							CPoint p = pMajor->GetEmpire()->GetMessages()->GetAt(i).GetKO();
 							if (p != CPoint(-1, -1))
 							{
-								if (pDoc->GetSystem(p.x,p.y).GetOwnerOfSystem() == pMajor->GetRaceID())
-								{
-									pDoc->SetKO(p.x,p.y);
-									resources::pMainFrame->SetSubMenu(RUNTIME_CLASS(CSystemMenuView), pMajor->GetEmpire()->GetMessages()->GetAt(i).GetFlag());
-									resources::pMainFrame->SelectMainView(SYSTEM_VIEW, pMajor->GetRaceID());
-									resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CPlanetBottomView));
-									CGalaxyMenuView::SetMoveShip(FALSE);
-									resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
-								}							
-								
-								// Im Hintergrund System auf der Galaxiemap zentrieren
+								pDoc->SetKO(p.x,p.y);
+								CGalaxyMenuView::SetMoveShip(FALSE);
+								// Wenn eine Koordinate angegeben ist, dann die Galaxiemap darauf zentrieren
 								if (CGalaxyMenuView* pView = dynamic_cast<CGalaxyMenuView*>(resources::pMainFrame->GetView(RUNTIME_CLASS(CGalaxyMenuView))))
 									pView->ScrollToSector(p);
-							}
-						}
-						else if (pMajor->GetEmpire()->GetMessages()->GetAt(i).GetMessageType() == MESSAGE_TYPE::MILITARY)
-						{
-							CPoint p = pMajor->GetEmpire()->GetMessages()->GetAt(i).GetKO();
-							if (p != CPoint(-1, -1))
-							{
+
 								// Systemansicht anzeigen
-								if (pMajor->GetEmpire()->GetMessages()->GetAt(i).GetFlag() == 1)
+								if (pDoc->GetSystem(p.x,p.y).GetOwnerOfSystem() == pMajor->GetRaceID())
 								{
-									if (pDoc->GetSystem(p.x,p.y).GetOwnerOfSystem() == pMajor->GetRaceID())
-									{
-										pDoc->SetKO(p.x,p.y);
-										resources::pMainFrame->SetSubMenu(RUNTIME_CLASS(CSystemMenuView), 0);
-										resources::pMainFrame->SelectMainView(SYSTEM_VIEW, pMajor->GetRaceID());
-										CGalaxyMenuView::SetMoveShip(FALSE);
-										resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CPlanetBottomView));
-										resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
-									}
+									resources::pMainFrame->SelectMainView(SYSTEM_VIEW, pMajor->GetRaceID());
+									resources::pMainFrame->SetSubMenu(RUNTIME_CLASS(CSystemMenuView), pMajor->GetEmpire()->GetMessages()->GetAt(i).GetFlag());
 								}
 								// Galaxiekarte anzeigen
 								else
@@ -1843,9 +1823,47 @@ void CEmpireMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 									resources::pMainFrame->SelectMainView(GALAXY_VIEW, pMajor->GetRaceID());
 								}
 
+								resources::pMainFrame->SelectBottomView(PLANET_BOTTOM_VIEW);
+								resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CPlanetBottomView));
+								resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CMenuChooseView));								
+							}
+						}
+						else if (pMajor->GetEmpire()->GetMessages()->GetAt(i).GetMessageType() == MESSAGE_TYPE::MILITARY)
+						{
+							CPoint p = pMajor->GetEmpire()->GetMessages()->GetAt(i).GetKO();
+							if (p != CPoint(-1, -1))
+							{
+								pDoc->SetKO(p.x,p.y);
+								CGalaxyMenuView::SetMoveShip(FALSE);
 								// Wenn eine Koordinate angegeben ist, dann die Galaxiemap darauf zentrieren
 								if (CGalaxyMenuView* pView = dynamic_cast<CGalaxyMenuView*>(resources::pMainFrame->GetView(RUNTIME_CLASS(CGalaxyMenuView))))
 									pView->ScrollToSector(p);
+
+								// Systemansicht anzeigen
+								if (pMajor->GetEmpire()->GetMessages()->GetAt(i).GetFlag() == 1 && pDoc->GetSystem(p.x,p.y).GetOwnerOfSystem() == pMajor->GetRaceID())
+								{								
+									resources::pMainFrame->SelectMainView(SYSTEM_VIEW, pMajor->GetRaceID());
+									resources::pMainFrame->SetSubMenu(RUNTIME_CLASS(CSystemMenuView), 0);
+								}
+								// Galaxiekarte anzeigen
+								else
+								{
+									resources::pMainFrame->SelectMainView(GALAXY_VIEW, pMajor->GetRaceID());
+								}
+
+								// Befinden sich Schiffe im System, dann Schiffsansicht zeigen, sonst Planetenansicht
+								if (pDoc->GetSector(p.x, p.y).GetIsShipInSector())
+								{
+									resources::pMainFrame->SelectBottomView(SHIP_BOTTOM_VIEW);
+									resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CShipBottomView));
+								}
+								else
+								{
+									resources::pMainFrame->SelectBottomView(PLANET_BOTTOM_VIEW);
+									resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CPlanetBottomView));
+								}
+								
+								resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
 							}
 						}
 						else if (pMajor->GetEmpire()->GetMessages()->GetAt(i).GetMessageType() == MESSAGE_TYPE::RESEARCH)
