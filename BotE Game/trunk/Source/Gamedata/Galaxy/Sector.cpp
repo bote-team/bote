@@ -53,7 +53,7 @@ CSector::CSector(const CSector& other) :
 	m_iStartStationPoints(other.m_iStartStationPoints),
 	m_bySunColor(other.m_bySunColor),
 	m_byOwnerPoints(other.m_byOwnerPoints),
-	m_Planets(other.m_Planets)	
+	m_Planets(other.m_Planets)
 {
 	m_pAnomaly=NULL;
 };

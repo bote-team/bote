@@ -287,7 +287,7 @@ void CGalaxyMenuView::OnDraw(CDC* dc)
 		m_nRange = 3-pDoc->CurrentShip()->second->GetRange(true);
 	else
 		m_nRange = SM_RANGE_SPACE;
-	
+
 	// für jeden Sektor die Linie rechts und unten zeichnen; (j, i) ist der aktuell betrachtete Sektor,
 	// (x, y) sind die Koordinaten dessen linker oberer Ecke
 	for (int i = 0, y = 0; i < STARMAP_SECTORS_VCOUNT; i++, y += STARMAP_SECTOR_HEIGHT)
@@ -452,7 +452,7 @@ void CGalaxyMenuView::OnDraw(CDC* dc)
 			pDC->Ellipse(pt.x+STARMAP_SECTOR_WIDTH/2-4,pt.y+STARMAP_SECTOR_HEIGHT/2-4,pt.x+STARMAP_SECTOR_WIDTH/2+4,pt.y+STARMAP_SECTOR_HEIGHT/2+4);
 		}
 	}
-	
+
 	// wenn gerade ein Ziel gewählt wird, den berechneten Weg zeichnen
 	if (m_nRange && pDoc->CurrentShip()->second->GetPath()->GetSize())
 	{
@@ -829,7 +829,7 @@ void CGalaxyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			SetMoveShip(FALSE);
 			resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
 			m_nRange = 0;
-			CSoundManager::GetInstance()->PlaySound(SNDMGR_SOUND_SHIPTARGET);			
+			CSoundManager::GetInstance()->PlaySound(SNDMGR_SOUND_SHIPTARGET);
 			Invalidate();
 		}
 		else
@@ -1049,7 +1049,7 @@ void CGalaxyMenuView::OnMouseMove(UINT nFlags, CPoint point)
 
 			if (target != shipKO && target != oldtarget)
 				Invalidate();
-			
+
 			oldtarget = target;
 		}
 	}

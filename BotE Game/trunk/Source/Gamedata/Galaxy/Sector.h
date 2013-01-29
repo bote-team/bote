@@ -268,7 +268,7 @@ public:
 	/// Diese Funktion berechnet die vorhandenen Rohstoffe der Planeten im Sektor. Übergebn wird dafür ein Feld für
 	/// die Ressourcen <code>res</code>.
 	void GetAvailableResources(BOOLEAN bResources[DERITIUM + 1], BOOLEAN bOnlyColonized = true);
-	
+
 // zum Schreiben der Membervariablen
 	/// Diese Funktion setzt die Koordinaten des Sektors und übernimmt dabei die beiden Koordinatenwerte.
 	void SetKO(int x, int y) {m_KO = CPoint(x,y);}
@@ -417,7 +417,7 @@ public:
 	/// Diese Funktion addiert Besitzerpunkte <code>ownerPoints</code> zu den Punkten des Besitzers <code>owner</owner>
 	/// dazu.
 	void AddOwnerPoints(BYTE ownerPoints, const CString& sOwner) {m_byOwnerPoints[sOwner] += ownerPoints;}
-	
+
 // sonstige Funktionen
 
 	/**

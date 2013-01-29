@@ -286,7 +286,7 @@ void CStartMenuView::OnBnClickedNewGame()
 	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 	pDoc->m_bGameLoaded = false;
-	
+
 	m_pNewGameView->SetMode(MODE_SERVER);
 	m_pNewGameView->StartServer(false);
 }

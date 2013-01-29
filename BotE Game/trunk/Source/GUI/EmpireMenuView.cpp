@@ -1825,7 +1825,7 @@ void CEmpireMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 
 								resources::pMainFrame->SelectBottomView(PLANET_BOTTOM_VIEW);
 								resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CPlanetBottomView));
-								resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CMenuChooseView));								
+								resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
 							}
 						}
 						else if (pMajor->GetEmpire()->GetMessages()->GetAt(i).GetMessageType() == MESSAGE_TYPE::MILITARY)
@@ -1841,7 +1841,7 @@ void CEmpireMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 
 								// Systemansicht anzeigen
 								if (pMajor->GetEmpire()->GetMessages()->GetAt(i).GetFlag() == 1 && pDoc->GetSystem(p.x,p.y).GetOwnerOfSystem() == pMajor->GetRaceID())
-								{								
+								{
 									resources::pMainFrame->SelectMainView(SYSTEM_VIEW, pMajor->GetRaceID());
 									resources::pMainFrame->SetSubMenu(RUNTIME_CLASS(CSystemMenuView), 0);
 								}
@@ -1862,7 +1862,7 @@ void CEmpireMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 									resources::pMainFrame->SelectBottomView(PLANET_BOTTOM_VIEW);
 									resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CPlanetBottomView));
 								}
-								
+
 								resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
 							}
 						}

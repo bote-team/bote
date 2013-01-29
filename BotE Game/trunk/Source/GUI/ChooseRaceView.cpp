@@ -383,7 +383,7 @@ void CChooseRaceView::EnableRaceButtons()
 			if (!pRace || pRace->GetEmpire()->GetNumberOfSystems() == 0)
 				server.SetPlayByServer(race, TRUE, TRUE);
 		}
-		
+
 		if (client.IsPlayer(race) && !client.IsPlayedByServer(race))
 		{
 			m_nPlayerCount++;

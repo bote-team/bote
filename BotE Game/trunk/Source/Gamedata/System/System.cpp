@@ -1704,7 +1704,7 @@ int CSystem::SetNewBuildingOnline(const BuildingInfoArray *buildingInfos)
 	// Gebäude braucht Energie, aber nicht genügend vorhanden
 	if (pBuildingInfo->GetNeededEnergy() > m_Production.m_iEnergyProd)
 		return 2;
-	
+
 	// Arbeiter reduzieren
 	if (pBuildingInfo->GetWorker() == TRUE)
 	{
@@ -1731,10 +1731,10 @@ int CSystem::SetNewBuildingOnline(const BuildingInfoArray *buildingInfos)
 		else
 			ASSERT(FALSE);
 	}
-	
+
 	// Energie von der Produktion abziehen
 	m_Production.m_iEnergyProd -= pBuildingInfo->GetNeededEnergy();
-			
+
 	// Gebäude online setzen
 	m_Buildings.ElementAt(nLastBuilding).SetIsBuildingOnline(TRUE);
 	return 0;

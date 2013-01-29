@@ -167,7 +167,7 @@ void CTransportMenuView::DrawTransportMenue(Graphics* g)
 		m_nActiveTroopInSystem = -1;
 		m_vShipTroops.clear();
 	}
-	
+
 	CString fontName = "";
 	Gdiplus::REAL fontSize = 0.0;
 
@@ -239,7 +239,7 @@ void CTransportMenuView::DrawTransportMenue(Graphics* g)
 		usedStorage += it->second->GetUsedStorageRoom(&pDoc->m_TroopInfo);
 		storageRoom += it->second->GetStorageRoom();
 	}
-	
+
 	// Truppen aus Schiffen sammeln
 	CreateTransportedTroopsVector();
 
@@ -263,10 +263,10 @@ void CTransportMenuView::DrawTransportMenue(Graphics* g)
 		fontFormat.SetAlignment(StringAlignmentNear);
 		g->DrawString(CComBSTR(s), -1, &font, RectF(350,560,725,60), &fontFormat, &fontBrush);
 	}
-	
+
 	//////////////////////////////////////////////////////////////////////////
 	// Name der aktuell ausgewählten Truppe im System und auf dem Schiff zeichnen
-	
+
 	// Truppenbeschreibung auf der linken Seite, also die im System anzeigen
 	//pDC->Rectangle(25,270,225,700);
 	fontFormat.SetTrimming(StringTrimmingEllipsisCharacter);
@@ -419,7 +419,7 @@ void CTransportMenuView::DrawTransportMenue(Graphics* g)
 		// Vor-Button rechts
 		if (graphic)
 			g->DrawImage(graphic, 665,670,120,30);
-		
+
 		s = CResourceManager::GetString("BTN_NEXT");
 		g->DrawString(CComBSTR(s), -1, &font, RectF(665,670,120,30), &fontFormat, &btnBrush);
 	}
@@ -515,7 +515,7 @@ void CTransportMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 							break;
 						}
 
-						// Truppe ins System stecken						
+						// Truppe ins System stecken
 						pDoc->GetSystem(p.x, p.y).GetTroops()->Add(*pTroop);
 						m_nActiveTroopInSystem = pDoc->GetSystem(p.x, p.y).GetTroops()->GetUpperBound();
 						// Danach auf Schiff entfernen (Zeiger wird ungültig)
@@ -530,7 +530,7 @@ void CTransportMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 
 						// Vorgänger aufschalten
 						m_nActiveTroopInShip = max(m_nActiveTroopInShip - 1, 0);
-						
+
 						nQuantity--;
 					}
 
@@ -602,7 +602,7 @@ void CTransportMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 				{
 					// keine Truppen im System
 					if (m_nActiveTroopInSystem == -1)
-						return;					
+						return;
 
 					int nQuantity = m_iTransportStorageQuantity;
 					// checken das noch genügend Lagerraum im Schiff vorhanden ist
@@ -817,7 +817,7 @@ void CTransportMenuView::CreateTransportedTroopsVector()
 	m_vShipTroops.clear();
 	for (int i = 0; i < ship->second->GetTransportedTroops()->GetSize(); i++)
 		m_vShipTroops.push_back(make_pair(ship->second, &(ship->second->GetTransportedTroops()->GetAt(i))));
-	
+
 	for (CShips::const_iterator it = ship->second->begin(); it != ship->second->end(); ++it)
 		for (int i = 0; i < it->second->GetTransportedTroops()->GetSize(); i++)
 			m_vShipTroops.push_back(make_pair(it->second, &(it->second->GetTransportedTroops()->GetAt(i))));

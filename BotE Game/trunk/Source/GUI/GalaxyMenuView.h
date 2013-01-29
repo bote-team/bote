@@ -47,7 +47,7 @@ protected: // Nur aus Serialisierung erzeugen
 	static CResourceRoute m_ResourceRoute;	///< die Ressourcenroute, die wir auf der Galaxiemap ziehen können
 	// Hier Variablen für die Schiffsbewegung
 	static BOOLEAN m_bShipMove;				///< soll ein Schiff auf der Map bewegt werden (Kurs geben)
-	
+
 	/// Funktion zum Festlegen der Spielerrasse in der View
 	/// @pPlayer Zeiger auf Spielerrasse
 	static void SetPlayersRace(CMajor* pPlayer) {m_pPlayersRace = pPlayer;}

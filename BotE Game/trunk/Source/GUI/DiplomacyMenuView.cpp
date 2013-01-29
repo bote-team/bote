@@ -29,7 +29,7 @@ bool CompareRaceName(const CRace* pRace1, const CRace* pRace2)
 
 	if (!pRace1->IsMajor() && pRace2->IsMajor())
 		return false;
-	
+
 	if (!pRace1->IsAlienRace() && pRace2->IsAlienRace())
 		return true;
 
@@ -145,7 +145,7 @@ void CDiplomacyMenuView::OnNewRound()
 		if (pPlayer->IsRaceContacted(it->first))
 			vMinors.push_back(it->second);
 	std::sort(vMinors.begin(), vMinors.end(), CompareRaceName);
-	
+
 	m_vRaceList.clear();
 	m_vRaceList.insert(m_vRaceList.end(), vMajors.begin(), vMajors.end());
 	m_vRaceList.insert(m_vRaceList.end(), vMinors.begin(), vMinors.end());
@@ -689,7 +689,7 @@ void CDiplomacyMenuView::DrawRaceDiplomacyMenue(Graphics* g)
 	Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\" + pPlayer->GetPrefix() + "button_small.bop");//SortButton zeichnen
 	if(graphic)
 		g->DrawImage(graphic, 40, 70, 80, 30);
-	
+
 	if (!m_bSortRaceList)
 		s.Format("%s","A-Z");
 	else

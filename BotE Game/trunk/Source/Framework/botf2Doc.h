@@ -262,7 +262,7 @@ public:
 	/// @return Zeiger auf Majorrace-Rassenobjekt
 	CString GetPlayersRaceID(void) const;
 
-	
+
 	// neu für Kampf
 	set<CString> m_sCombatSectors;		///< Sektoren in denen diese Runde schon ein Kampf stattgefunden hat
 

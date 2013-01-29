@@ -208,7 +208,7 @@ void COldRoundDataCalculator::FinishBuild(const int to_build, const CSector& sec
 		// So, nun bauen wir so viel mal das nächste
 		for (int z = 0; z < nNumberOfNewBuildings; z++)
 		{
-			m_pDoc->BuildBuilding(list,co);			
+			m_pDoc->BuildBuilding(list,co);
 
 			// falls das geupgradete Gebäude Energie benötigt wird versucht es gleich online zu setzen
 			if (m_pDoc->GetBuildingInfo(list).GetNeededEnergy() > 0 && system.SetNewBuildingOnline(&BuildingInfo) == 2)

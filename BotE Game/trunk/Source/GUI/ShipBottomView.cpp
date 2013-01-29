@@ -134,7 +134,7 @@ void CShipBottomView::SetupDrawing() {
 		KillTimer(1);
 		m_iTimeCounter = 0;
 	}
-	
+
 	if (m_bShowStation)
 	{
 		// Ebenfalls bei der Anzeige einer Station immer auf die erste Seite springen
@@ -304,7 +304,7 @@ void CShipBottomView::DrawShipContent() {
 			bool bDirectMove = true;
 			if (nOrder != SHIP_ORDER::NONE && nOrder != SHIP_ORDER::AVOID && nOrder != SHIP_ORDER::ATTACK && nOrder != SHIP_ORDER::ENCLOAK && nOrder != SHIP_ORDER::DECLOAK && nOrder != SHIP_ORDER::ASSIGN_FLAGSHIP && nOrder != SHIP_ORDER::CREATE_FLEET && nOrder != SHIP_ORDER::TRANSPORT)
 				bDirectMove = false;
-			
+
 			if (bDirectMove)
 			{
 				CGalaxyMenuView::SetMoveShip(TRUE);
@@ -925,7 +925,7 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 					pDoc->CurrentShip()->second->SetTargetKO(CPoint(-1, -1));
 					resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CGalaxyMenuView));
 				}
-				
+
 				// Wenn wir eine Flotte bilden wollen (Schiffe gruppieren), dann in der MainView die Flottenansicht zeigen
 				if (nOrder == SHIP_ORDER::CREATE_FLEET)
 				{
@@ -1028,7 +1028,7 @@ void CShipBottomView::OnMouseMove(UINT nFlags, CPoint point)
 {
 	if (CGalaxyMenuView::IsMoveShip())
 		return;
-	
+
 	CBotf2Doc* pDoc = resources::pDoc;
 	assert(pDoc);
 	CalcLogicalPoint(point);
@@ -1083,7 +1083,7 @@ void CShipBottomView::OnRButtonDown(UINT nFlags, CPoint point)
 			Invalidate();
 			resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CGalaxyMenuView));
 		}
-		
+
 		CSmallInfoView::SetDisplayMode(CSmallInfoView::DISPLAY_MODE_SHIP_BOTTEM_VIEW);
 		resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
 	}
