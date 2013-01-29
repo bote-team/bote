@@ -69,7 +69,6 @@ protected: // Nur aus Serialisierung erzeugen
 	void GenerateGalaxyMap(void);
 
 	/// Funktion scrollt zur angegebenen Position in der Galaxiemap.
-	/// @param pt Koordinate, zu welcher gescrollt werden soll.
 	void CenterOnScrollSector();
 
 public:

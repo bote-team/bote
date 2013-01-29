@@ -130,8 +130,12 @@ void CShipBottomView::SetupDrawing() {
 		m_rLastMarkedRect = CRect(0,0,0,0);
 		m_RectForTheShip = CRect(0,0,0,0);
 		m_iPage = 1;
+
+		KillTimer(1);
+		m_iTimeCounter = 0;
 	}
-	else if (m_bShowStation)
+	
+	if (m_bShowStation)
 	{
 		// Ebenfalls bei der Anzeige einer Station immer auf die erste Seite springen
 		m_iPage = 1;
@@ -720,7 +724,7 @@ void CShipBottomView::OnDraw(CDC* dc)
 	if (m_iTimeCounter > 10)
 	{
 		KillTimer(1);
-		m_iTimeCounter =0;
+		m_iTimeCounter = 0;
 	}
 
 	m_dc.g->ReleaseHDC(pDC->GetSafeHdc());

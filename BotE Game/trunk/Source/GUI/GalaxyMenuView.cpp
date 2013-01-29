@@ -1331,6 +1331,7 @@ void CGalaxyMenuView::SearchNextIdleShipAndJumpToIt(CBotf2Doc* pDoc, SHIP_ORDER:
 				m_pPlayersRace->GetStarmap()->Select(sector);// sets orange rectangle in galaxy view
 				pDoc->SetKO(sector.x,sector.y);//neccessary for that the ship is selected for SHIP_BOTTOM_VIEW
 				pDoc->SetCurrentShip(i);
+				ScrollToSector(coords);
 
 				CShipBottomView::SetShowStation(false);
 				resources::pMainFrame->SelectBottomView(SHIP_BOTTOM_VIEW);
@@ -1339,7 +1340,7 @@ void CGalaxyMenuView::SearchNextIdleShipAndJumpToIt(CBotf2Doc* pDoc, SHIP_ORDER:
 				CSmallInfoView::SetDisplayMode(CSmallInfoView::DISPLAY_MODE_SHIP_BOTTEM_VIEW);
 				resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CSmallInfoView));//And this ?
 
-				Invalidate();//And this ?
+				Invalidate(FALSE);//And this ?
 				if(i != stop_at)
 					found = true;
 				break;
@@ -1351,7 +1352,7 @@ void CGalaxyMenuView::SearchNextIdleShipAndJumpToIt(CBotf2Doc* pDoc, SHIP_ORDER:
 	if(!found) {
 		CSmallInfoView::SetDisplayMode(CSmallInfoView::DISPLAY_MODE_ICON);
 		resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
-		Invalidate();
+		Invalidate(FALSE);
 	}
 }
 
@@ -1569,7 +1570,6 @@ void CGalaxyMenuView::GenerateGalaxyMap()
 }
 
 /// Funktion scrollt zur angegebenen Position in der Galaxiemap.
-/// @param pt Koordinate, zu welcher gescrollt werden soll.
 void CGalaxyMenuView::CenterOnScrollSector()
 {
 	if (m_ptScrollToSector == CPoint(-1, -1))
