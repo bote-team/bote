@@ -315,7 +315,7 @@ void CNewGameView::SetButtonStyle(CRoundButton2* pBtn)
 
 	// Change Color
 	tColor.m_tEnabled	= RGB(255, 255, 255);
-	tColor.m_tClicked	= RGB(0x00, 0xAF, 0x00);
+	tColor.m_tClicked	= RGB(50, 50, 50);
 	tColor.m_tPressed	= RGB(50, 50, 50);
 
 	// Set Text-Color

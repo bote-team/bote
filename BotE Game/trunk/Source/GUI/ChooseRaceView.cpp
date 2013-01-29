@@ -346,7 +346,7 @@ void CChooseRaceView::SetButtonStyle(CRoundButton2* pBtn, double dFontHeight)
 
 	// Change Color
 	tColor.m_tEnabled	= RGB(255, 255, 255);
-	tColor.m_tClicked	= RGB(0, 0, 0);
+	tColor.m_tClicked	= RGB(50, 50, 50);
 	tColor.m_tPressed	= RGB(50, 50, 50);
 
 	// Set Text-Color
@@ -357,6 +357,9 @@ void CChooseRaceView::SetButtonStyle(CRoundButton2* pBtn, double dFontHeight)
 
 void CChooseRaceView::EnableRaceButtons()
 {
+	CBotf2Doc* pDoc = resources::pDoc;
+	ASSERT(pDoc);
+
 	m_nPlayerCount = 0;
 
 	// Buttons aktivieren/deaktivieren, aus-/abwählen, Anzahl der Spieler zählen
@@ -368,7 +371,20 @@ void CChooseRaceView::EnableRaceButtons()
 			continue;
 
 		network::RACE race = (network::RACE)(pButton->GetDlgCtrlID());
-		if (client.IsPlayer(race))
+
+		// Wenn ein Spiel geladen wurde und es sich hier um den Server handelt, dann
+		// für ausgelöschte Rassen einstellen, dass diese vom Server gespielt werden.
+		// Somit können sie nicht mehr von Spielern ausgewählt werden.
+		if (pDoc->m_bGameLoaded && m_bIsServer && !server.IsPlayedByServer(race))
+		{
+			CString sRaceID = pDoc->GetRaceCtrl()->GetMappedRaceID(race);
+			CMajor* pRace = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(sRaceID));
+			// Beim Neustart hat jede Rasse 1 System (die Variable wird so schon per Reset gesetzt)
+			if (!pRace || pRace->GetEmpire()->GetNumberOfSystems() == 0)
+				server.SetPlayByServer(race, TRUE, TRUE);
+		}
+		
+		if (client.IsPlayer(race) && !client.IsPlayedByServer(race))
 		{
 			m_nPlayerCount++;
 			pButton->EnableWindow(race == client.GetClientRace());
@@ -376,6 +392,13 @@ void CChooseRaceView::EnableRaceButtons()
 			it->second = client.GetUserName(race);
 			if (it->second.IsEmpty())
 				it->second = "?";
+		}
+		else if (client.IsPlayedByServer(race))
+		{
+			// Wenn Rasse nach Laden schon ausgelöscht, dann kann sie nicht mehr angewählt werden
+			pButton->EnableWindow(FALSE);
+			pButton->SetCheck(TRUE);
+			it->second = CResourceManager::GetString("ELIMINATED");
 		}
 		else
 		{

@@ -33,6 +33,8 @@ Das Spiel beenden und Birth of the Empires verlassen
 Ein neues Multiplayerspiel eröffnen
 [JOINGAMETT]
 Einem bestehenden Multiplayerspiel beitreten
+[ELIMINATED]
+ausgelöscht
 
 [WARNING]
 Warnung

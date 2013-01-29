@@ -78,14 +78,9 @@ void CEventVictory::Create(void)
 
 void CEventVictory::Close(void)
 {
-	client.Disconnect();
-	Sleep(2000);
-
 	CBotf2Doc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
-	pDoc->SetModifiedFlag(FALSE);
-
-	PostMessage(AfxGetApp()->GetMainWnd()->GetSafeHwnd(), WM_CLOSE, NULL, NULL);
+	pDoc->GameOver();
 }
 
 void CEventVictory::Draw(Graphics* g, CGraphicPool* graphicPool) const

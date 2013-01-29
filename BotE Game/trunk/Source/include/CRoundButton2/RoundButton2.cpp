@@ -505,7 +505,8 @@ void CRoundButton2::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 BEGIN_MESSAGE_MAP(CRoundButton2, CButton)
 ON_WM_LBUTTONUP()
 ON_WM_MOUSEMOVE()
-ON_WM_CAPTURECHANGED()
+ON_WM_ERASEBKGND()
+//ON_WM_CAPTURECHANGED()
 END_MESSAGE_MAP()
 
 void CRoundButton2::OnLButtonUp(UINT nFlags, CPoint point)
@@ -574,4 +575,11 @@ void CRoundButton2::OnCaptureChanged(CWnd *pWnd)
 	}
 
 	CButton::OnCaptureChanged(pWnd);
+}
+
+BOOL CRoundButton2::OnEraseBkgnd(CDC* /*pDC*/)
+{
+	// TODO: Fügen Sie hier Ihren Meldungsbehandlungscode ein, und/oder benutzen Sie den Standard.
+	return FALSE;
+	//return CFormView::OnEraseBkgnd(pDC);
 }

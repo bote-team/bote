@@ -283,6 +283,10 @@ void CStartMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 
 void CStartMenuView::OnBnClickedNewGame()
 {
+	CBotf2Doc* pDoc = resources::pDoc;
+	ASSERT(pDoc);
+	pDoc->m_bGameLoaded = false;
+	
 	m_pNewGameView->SetMode(MODE_SERVER);
 	m_pNewGameView->StartServer(false);
 }
@@ -460,7 +464,7 @@ void CStartMenuView::SetButtonStyle(CRoundButton2* pBtn)
 
 	// Change Color
 	tColor.m_tEnabled	= RGB(255, 255, 255);
-	tColor.m_tClicked	= RGB(0x00, 0xAF, 0x00);
+	tColor.m_tClicked	= RGB(50, 50, 50);
 	tColor.m_tPressed	= RGB(50, 50, 50);
 
 	// Set Text-Color

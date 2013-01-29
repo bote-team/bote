@@ -65,7 +65,7 @@ public:
 	bool GetHotButton() { return m_bIsHotButton; };
 
 	//! Change Check-Status of Button
-	void SetCheck(bool _bIsChecked) { m_bIsChecked = _bIsChecked; Invalidate(); };
+	void SetCheck(bool _bIsChecked) { m_bIsChecked = _bIsChecked; }// Invalidate(); };
 	//! Get Current Check-Status of Button
 	bool GetCheck() { return m_bIsChecked; };
 
@@ -135,4 +135,5 @@ private:
 	CRoundButtonStyle* m_ptRoundButtonStyle;
 public:
 	afx_msg void OnCaptureChanged(CWnd *pWnd);
+	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
 };

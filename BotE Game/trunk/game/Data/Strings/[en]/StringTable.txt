@@ -33,6 +33,8 @@ Exit the Game
 Create a new multiplayer match
 [JOINGAMETT]
 Join an existing mutiplayer match
+[ELIMINATED]
+eliminated
 
 [WARNING]
 Warning

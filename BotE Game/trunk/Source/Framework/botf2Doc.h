@@ -117,6 +117,9 @@ public:
 	/// Standarddestruktor
 	virtual ~CBotf2Doc(void);
 
+	/// Funktion schließt die Verbindung zum Server und beendet Bote.
+	void GameOver();
+
 	/// Funktion liefert einen Zeiger auf den GraphicPool für BotE.
 	CGraphicPool* GetGraphicPool(void) {return m_pGraphicPool;}
 
@@ -259,8 +262,7 @@ public:
 	/// @return Zeiger auf Majorrace-Rassenobjekt
 	CString GetPlayersRaceID(void) const;
 
-	bool m_bGameOver;	///< ist das Spiel
-
+	
 	// neu für Kampf
 	set<CString> m_sCombatSectors;		///< Sektoren in denen diese Runde schon ein Kampf stattgefunden hat
 

@@ -72,7 +72,6 @@ CBotf2Doc::CBotf2Doc() :
 	m_bDataReceived(false),
 	m_bDontExit(false),
 	m_bGameLoaded(false),
-	m_bGameOver(false),
 	m_bNewGame(true),
 	m_bRoundEndPressed(false),
 	m_fDifficultyLevel(1.0f),
@@ -185,6 +184,19 @@ BOOL CBotf2Doc::OnNewDocument()
 		m_iSelectedView[i] = START_VIEW;
 
 	return TRUE;
+}
+
+/// Funktion schließt die Verbindung zum Server und beendet Bote.
+void CBotf2Doc::GameOver()
+{
+	// vom Server trennen
+	client.Disconnect();
+	Sleep(2000);
+
+	SetModifiedFlag(FALSE);
+
+	// Spiel verlassen
+	PostMessage(AfxGetApp()->GetMainWnd()->GetSafeHwnd(), WM_CLOSE, NULL, NULL);
 }
 
 /// Funktion gibt die Rassen-ID der lokalen Spielerrasse zurück.
@@ -525,14 +537,13 @@ void CBotf2Doc::SerializeNextRoundData(CArchive &ar)
 		CSmallInfoView::SetPlanet(NULL);
 		//GenerateStarmap();
 
-		m_bGameOver = false;
 		CMajor* pPlayer = GetPlayersRace();
 		// bekommt der Client hier keine Spielerrasse zurück, so ist er ausgeschieden
 		ASSERT(pPlayer);
 		if (pPlayer == NULL)
 		{
 			AfxMessageBox("Fatal Error ... exit game now");
-			m_bGameOver = true;
+			GameOver();
 			return;
 		}
 
