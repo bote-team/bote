@@ -123,12 +123,16 @@ BOOLEAN CAttackSystem::Calculate()
 
 		// Alle Truppen von den Transportern löschen, da diese jetzt im System sind
 		for (int i = 0; i < m_pShips.GetSize(); i++)
+		{
+			//unset system attack command
+			m_pShips.GetAt(i)->UnsetCurrentOrder();
 			for (int j = 0; j < m_pShips.GetAt(i)->GetTransportedTroops()->GetSize();)
 			{
 				if (m_pShips.GetAt(i)->GetTransportedTroops()->GetAt(j).GetOffense() == NULL)
 					killedTroopsInTransport++;
 				m_pShips.GetAt(i)->GetTransportedTroops()->RemoveAt(j);
 			}
+		}
 		if (killedTroopsInTransport > 0)
 		{
 			CString n; n.Format("%d",killedTroopsInTransport);
