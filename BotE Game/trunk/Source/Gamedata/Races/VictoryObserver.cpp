@@ -324,7 +324,14 @@ void CVictoryObserver::Observe(void)
 		if (m_nRivalsLeft == GetNeededVictoryValue(VICTORYTYPE_ELIMINATION))
 		{
 			m_bIsVictory	= true;
-			m_sVictoryRace	= pDoc->GetRaceCtrl()->GetMajors()->begin()->first;
+			// Die ausgelöschte Rasse ist meist noch in der Map, von daher noch richtig prüfen, wer ein System hat
+			for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
+				if (it->second->GetEmpire()->GetNumberOfSystems() > 0)
+				{
+					m_sVictoryRace = it->first;
+					break;
+				}
+
 			m_nVictoryType	= VICTORYTYPE_ELIMINATION;
 			return;
 		}

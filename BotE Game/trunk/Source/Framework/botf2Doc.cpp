@@ -5413,6 +5413,9 @@ void CBotf2Doc::CalcEndDataForNextRound()
 	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 	{
 		CMajor* pMajor = it->second;
+		if (pMajor->GetEmpire()->GetNumberOfSystems() == 0)
+			continue;
+
 		// Moralveränderungen aufgrund möglicher Ereignisse berechnen. Erst nach der Schiffsbewegung und allem anderen
 		pMajor->GetMoralObserver()->CalculateEvents(m_Systems, pMajor->GetRaceID(), pMajor->GetRaceMoralNumber());
 		///// HIER DIE BONI DURCH SPEZIALFORSCHUNG //////
@@ -5447,6 +5450,9 @@ void CBotf2Doc::CalcEndDataForNextRound()
 
 	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 	{
+		if (it->second->GetEmpire()->GetNumberOfSystems() == 0)
+			continue;
+
 		CString sID = it->first;
 		for (int y = 0 ; y < STARMAP_SECTORS_VCOUNT; y++)
 		{
@@ -5522,6 +5528,8 @@ void CBotf2Doc::CalcEndDataForNextRound()
 	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 	{
 		CMajor* pMajor = it->second;
+		if (pMajor->GetEmpire()->GetNumberOfSystems() == 0)
+			continue;
 
 		BYTE researchLevels[6] =
 		{
