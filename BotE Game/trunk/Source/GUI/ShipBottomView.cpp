@@ -262,8 +262,23 @@ void CShipBottomView::DrawShipContent() {
 			break;
 	}
 
+	// Befindet sich die Ansicht noch auf einer zu großen Seite, dann diese automatisch soweit
+	// zurücksetzen, bis wieder Schiffe sichtbar sind
+	bool bInvalidateAgain = false;
+	while (m_iPage > 1 && counter <= (m_iPage - 1) * 9)
+	{
+		bInvalidateAgain = true;
+		m_iPage--;
+	}
+	if (bInvalidateAgain)
+	{
+		Invalidate(FALSE);
+		return;
+	}
+
 	// Schiffe jetzt auch zeichnen
-	for(std::vector<std::pair<CRect, CShips*>>::const_iterator itdraw = m_vShipRects.begin(); itdraw != m_vShipRects.end(); ++itdraw) {
+	for(std::vector<std::pair<CRect, CShips*>>::const_iterator itdraw = m_vShipRects.begin(); itdraw != m_vShipRects.end(); ++itdraw)
+	{
 		pShip = itdraw->second;
 
 		// Kennen wir den Besizter des Schiffes?
@@ -279,19 +294,6 @@ void CShipBottomView::DrawShipContent() {
 		// ist das Schiff gerade markiert?
 		bool bMarked = (pShip == m_dc.pDoc->CurrentShip()->second);
 		pShip->DrawShip(m_dc.g, m_dc.gp, CPoint(loc.left,loc.top-20), bMarked, bUnknown, TRUE, m_dc.normalColor, markColor, font);
-	}
-
-	// Die Buttons für vor und zurück darstellen, wenn wir mehr als 9 Schiffe in dem Sektor sehen
-	m_bShowNextButton = FALSE;
-	if (counter > 9 && counter > m_iPage*9)
-	{
-		m_bShowNextButton = TRUE;
-		DrawSmallButton("BTN_NEXT", CPoint(r.right-bw, r.top+210));
-	}
-	// back-Button
-	if (m_iPage > 1)
-	{
-		DrawSmallButton("BTN_BACK", CPoint(r.right-bw, r.top));
 	}
 
 	// Wenn nur ein Schiff in dem System ist, so wird es automatisch ausgewählt
@@ -317,6 +319,19 @@ void CShipBottomView::DrawShipContent() {
 				resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CGalaxyMenuView));
 			}
 		}
+	}
+	
+	// Die Buttons für vor und zurück darstellen, wenn wir mehr als 9 Schiffe in dem Sektor sehen
+	m_bShowNextButton = FALSE;
+	if (counter > 9 && counter > m_iPage*9)
+	{
+		m_bShowNextButton = TRUE;
+		DrawSmallButton("BTN_NEXT", CPoint(r.right-bw, r.bottom-bh));
+	}
+	// back-Button
+	if (m_iPage > 1)
+	{
+		DrawSmallButton("BTN_BACK", CPoint(r.right-bw, r.top));
 	}
 }
 
@@ -695,9 +710,7 @@ void CShipBottomView::OnDraw(CDC* dc)
 
 	// Galaxie im Hintergrund zeichnen
 	DrawImage( "Backgrounds\\" + pMajor->GetPrefix() + "galaxyV3.bop", CRect(CPoint(0,0),CSize(1075,249)) );
-	CSector csec = m_dc.pDoc->CurrentSector();
 
-	CString s;
 	// Bis jetzt nur eine Anzeige bis max. 9 Schiffe
 	if (m_iTimeCounter == 0)
 	{
@@ -705,13 +718,13 @@ void CShipBottomView::OnDraw(CDC* dc)
 	}
 
 	// Die ganzen Befehlsbuttons für die Schiffe anzeigen
-	if (CGalaxyMenuView::IsMoveShip() == TRUE &&
-		m_dc.pDoc->CurrentShip()->second->GetOwnerOfShip() == pMajor->GetRaceID())
+	if (CGalaxyMenuView::IsMoveShip() == TRUE && m_dc.pDoc->CurrentShip()->second->GetOwnerOfShip() == pMajor->GetRaceID())
 	{
 		DrawMenu();
 	}
 
-	if (m_bShowStation)	// Stationsansicht
+	// Stationsansicht
+	if (m_bShowStation)
 	{
 		DrawStationData();
 	}
@@ -863,8 +876,8 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 					if(was_terraform)
 						pDoc->GetSector(co.x, co.y).RecalcPlanetsTerraformingStatus();
 
-					Invalidate(FALSE);
 					resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CFleetMenuView));
+					Invalidate(FALSE);
 					return;
 				}
 			}
@@ -877,7 +890,7 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 	if (m_bShowNextButton == TRUE)
 	{
 		CRect next;
-		next.SetRect(r.right-bw,r.top+210,r.right,r.top+240);
+		next.SetRect(r.right-bw,r.bottom-bh,r.right,r.bottom);
 		if (next.PtInRect(point))
 		{
 			CGalaxyMenuView::SetMoveShip(FALSE);
@@ -1019,6 +1032,7 @@ void CShipBottomView::OnLButtonDblClk(UINT nFlags, CPoint point)
 		m_iTimeCounter = 0;
 		pDoc->SetFleetShip(pDoc->CurrentShip()); // Dieses Schiff soll die Flotte beinhalten
 		resources::pMainFrame->SelectMainView(FLEET_VIEW, pMajor->GetRaceID());	// Flottenansicht in der MainView anzeigen
+		Invalidate(FALSE);
 	}
 
 	CBottomBaseView::OnLButtonDblClk(nFlags, point);
@@ -1068,19 +1082,18 @@ void CShipBottomView::OnRButtonDown(UINT nFlags, CPoint point)
 	if (CGalaxyMenuView::IsMoveShip())
 	{
 		CGalaxyMenuView::SetMoveShip(FALSE);
+		this->KillTimer(1);
+		m_iTimeCounter = 0;
 		if (resources::pMainFrame->GetActiveView(1, 1) == PLANET_BOTTOM_VIEW)	// Wenn wir kolon oder terraformen abbrechen wollen, zurück zum Schiffsmenü
 		{
 			pDoc->CurrentShip()->second->UnsetCurrentOrder();
 			pDoc->CurrentShip()->second->SetCombatTactic(COMBAT_TACTIC::CT_AVOID);
 			m_bShowStation = false;
-			Invalidate();
+			Invalidate(FALSE);
 		}
 		else // wenn wir schon im Schiffsmenü sind, dann brauchen wir nur die Befehlsbutton neu zeichnen
 		{
-			CRect r(809,30,1069,208);
-			CalcDeviceRect(r);
-			//InvalidateRect(r, FALSE);
-			Invalidate();
+			Invalidate(FALSE);
 			resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CGalaxyMenuView));
 		}
 

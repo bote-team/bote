@@ -109,7 +109,9 @@ void CGalaxyMenuView::OnNewRound()
 
 	if (m_bScrollToHome)
 	{
-		ScrollToSector(pDoc->GetRaceKO(m_pPlayersRace->GetRaceID()));
+		CPoint pRaceKO = pDoc->GetRaceKO(m_pPlayersRace->GetRaceID());
+		pDoc->SetKO(pRaceKO.x, pRaceKO.y);	// damit in der BottomView auch das System angezeigt wird
+		ScrollToSector(pRaceKO);
 		m_bScrollToHome = false;
 	}
 
