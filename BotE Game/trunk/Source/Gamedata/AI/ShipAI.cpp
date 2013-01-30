@@ -62,6 +62,10 @@ void CShipAI::CalculateShipOrders(CSectorAI* SectorAI)
 
 	for(CShipMap::iterator i = m_pDoc->m_ShipMap.begin(); i != m_pDoc->m_ShipMap.end(); ++i)
 	{
+		if(i->second->IsAlien()) {
+			CalculateAlienShipOrders(*i->second);
+			continue;
+		}
 		const CString& sOwner	= i->second->GetOwnerOfShip();
 		CMajor* pOwner	= dynamic_cast<CMajor*>(m_pDoc->GetRaceCtrl()->GetRace(sOwner));
 
@@ -213,6 +217,24 @@ void CShipAI::CalculateShipOrders(CSectorAI* SectorAI)
 //////////////////////////////////////////////////////////////////////
 // private Funktionen
 //////////////////////////////////////////////////////////////////////
+void CShipAI::CalculateAlienShipOrders(CShips& ship)
+{
+	if(ship.GetOwnerOfShip() == MIDWAY_ZEITREISENDE)
+	{
+		const CPoint& co = ship.GetKO();
+		const CSector& sector = m_pDoc->GetSector(co.x, co.y);
+		if(sector.GetSunSystem())
+		{
+			const CSystem& system = m_pDoc->GetSystemForSector(sector);
+			const CRace* owner = m_pDoc->GetRaceCtrl()->GetRace(system.GetOwnerOfSystem());
+			if(owner && owner->GetAgreement(MIDWAY_ZEITREISENDE) == DIPLOMATIC_AGREEMENT::WAR)
+				ship.SetCurrentOrder(SHIP_ORDER::ATTACK_SYSTEM);
+		}
+		else
+			ship.UnsetCurrentOrder();
+	}
+}
+
 /// Funktion erteilt einen Terraformbefehl, sofern dies auch möglich ist.
 /// @param pShip Zeiger des Schiffes
 /// @return <code>true</code> wenn ein Terraformbefehl gegeben werden könnte

@@ -5979,10 +5979,9 @@ void CBotf2Doc::CalcAlienShipEffects()
 			CSystem* pSystem = &GetSystem(co.x, co.y);
 			if (CMajor* pOwner = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(pSystem->GetOwnerOfSystem())))
 			{
-				if (pOwner->GetAgreement(pAlien->GetRaceID()) == DIPLOMATIC_AGREEMENT::WAR)
-					ship->second->SetCurrentOrder(SHIP_ORDER::ATTACK_SYSTEM);
-				else
+				if (pOwner->GetAgreement(pAlien->GetRaceID()) != DIPLOMATIC_AGREEMENT::WAR)
 					pAlien->SetRelation(pOwner->GetRaceID(), -rand()%20);
+				//In the case of war, we set current order ATTACK_SYSTEM in CShipAI
 			}
 		}
 		else if (pAlien->GetRaceID() == ISOTOPOSPHAERISCHES_WESEN)

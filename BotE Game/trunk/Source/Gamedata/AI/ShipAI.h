@@ -31,6 +31,9 @@ public:
 	void CalculateShipOrders(CSectorAI* SectorAI);
 
 private:
+	//gives ship orders to alien ships
+	void CalculateAlienShipOrders(CShips& ship);
+
 	/// Funktion erteilt einen Terraformbefehl, sofern dies auch möglich ist.
 	/// @param pShip Zeiger des Schiffes
 	/// @return <code>true</code> wenn ein Terraformbefehl gegeben werden könnte
