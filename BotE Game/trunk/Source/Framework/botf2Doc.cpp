@@ -4563,8 +4563,9 @@ void CBotf2Doc::CalcShipMovement()
 		// Weltraummonster gesondert behandeln (Geschwindigkeit der Flotte sollte egal sein, nur das Alien muss fliegen können)
 		if (y->second->IsAlien() && y->second->GetSpeed(true) > 0)
 		{
-			// wenn bei einem Weltraummonster kein Ziel vorhanden ist, dann wird zufüllig ein neues generiert
-			if (targetKO.x == -1)
+			// wenn bei einem Weltraummonster kein Ziel vorhanden ist und es aktuell auch nichts macht,
+			// dann wird zufüllig ein neues generiert
+			if (y->second->HasNothingToDo())
 			{
 				// irgend ein zufülliges neues Ziel generieren, welches nicht auf einer Anomalie endet
 				while (true)
@@ -5980,8 +5981,13 @@ void CBotf2Doc::CalcAlienShipEffects()
 			if (CMajor* pOwner = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(pSystem->GetOwnerOfSystem())))
 			{
 				if (pOwner->GetAgreement(pAlien->GetRaceID()) != DIPLOMATIC_AGREEMENT::WAR)
+				{
 					pAlien->SetRelation(pOwner->GetRaceID(), -rand()%20);
-				//In the case of war, we set current order ATTACK_SYSTEM in CShipAI
+				}
+				else
+				{
+					// In the case of war, we set current order ATTACK_SYSTEM in CShipAI
+				}
 			}
 		}
 		else if (pAlien->GetRaceID() == ISOTOPOSPHAERISCHES_WESEN)

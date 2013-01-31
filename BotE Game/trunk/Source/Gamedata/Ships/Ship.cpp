@@ -826,7 +826,7 @@ bool CShip::HasSpecial(SHIP_SPECIAL::Typ nAbility) const
 }
 
 bool CShip::HasNothingToDo() const {
-	return m_iCurrentOrder == SHIP_ORDER::NONE && !HasTarget() && m_iSpeed != 0;
+	return m_iCurrentOrder == SHIP_ORDER::NONE && !HasTarget() && !IsStation();
 }
 
 bool CShip::NeedsRepair() const {

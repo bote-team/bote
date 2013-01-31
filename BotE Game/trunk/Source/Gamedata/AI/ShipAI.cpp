@@ -219,19 +219,32 @@ void CShipAI::CalculateShipOrders(CSectorAI* SectorAI)
 //////////////////////////////////////////////////////////////////////
 void CShipAI::CalculateAlienShipOrders(CShips& ship)
 {
-	if(ship.GetOwnerOfShip() == MIDWAY_ZEITREISENDE)
+	if (ship.GetOwnerOfShip() == MIDWAY_ZEITREISENDE)
 	{
 		const CPoint& co = ship.GetKO();
 		const CSector& sector = m_pDoc->GetSector(co.x, co.y);
-		if(sector.GetSunSystem())
+		if (sector.GetSunSystem())
 		{
 			const CSystem& system = m_pDoc->GetSystemForSector(sector);
 			const CRace* owner = m_pDoc->GetRaceCtrl()->GetRace(system.GetOwnerOfSystem());
-			if(owner && owner->GetAgreement(MIDWAY_ZEITREISENDE) == DIPLOMATIC_AGREEMENT::WAR)
-				ship.SetCurrentOrder(SHIP_ORDER::ATTACK_SYSTEM);
+			if (owner && owner->IsMajor() && owner->GetAgreement(MIDWAY_ZEITREISENDE) == DIPLOMATIC_AGREEMENT::WAR)
+			{
+				// Damit irgendwann auch einmal der Angriffsbegehl zurückgenommen wird und das Midwayschiff nicht
+				// ewig ein und dasselbe System bombardiert, hier etwas Zufall (80% wird bombardiert)
+				if (ship.GetCurrentOrder() != SHIP_ORDER::ATTACK_SYSTEM || rand()%100 > 20)
+				{
+					// evtl. vorhandenen Zielkurs rückgängig machen
+					ship.SetTargetKO(CPoint(-1, -1));
+					// Angriffsbefehl geben und fertig
+					ship.SetCurrentOrder(SHIP_ORDER::ATTACK_SYSTEM);
+					return;
+				}
+			}
 		}
-		else
-			ship.UnsetCurrentOrder();
+
+		// in allen anderen Fällen keinen Systemangriffsbefehl geben bzw. diesen zurücksetzen
+		ship.UnsetCurrentOrder();
+		return;
 	}
 }
 
