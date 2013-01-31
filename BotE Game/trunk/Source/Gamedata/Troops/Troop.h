@@ -9,7 +9,7 @@
 #include "afx.h"
 #include "Options.h"
 
-class CTroop :	public CObject
+class CTroop : public CObject
 {
 public:
 	DECLARE_SERIAL (CTroop)

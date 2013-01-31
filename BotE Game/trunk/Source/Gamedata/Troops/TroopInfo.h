@@ -8,7 +8,7 @@
 #pragma once
 #include "troop.h"
 
-class CTroopInfo :	public CTroop
+class CTroopInfo : public CTroop
 {
 public:
 	/// Konstruktor
@@ -102,6 +102,10 @@ public:
 	/// @param researchLevels Forschungsstufen der Rasse
 	/// @return Wahrheitswert
 	bool IsThisTroopBuildableNow(const BYTE reserachLevels[6]) const;
+
+	/// Funktion erstellt eine Tooltipinfo zur Truppe
+	/// @return	der erstellte Tooltip-Text
+	CString GetTooltip() const;
 
 private:
 	/// Der Name der Einheit

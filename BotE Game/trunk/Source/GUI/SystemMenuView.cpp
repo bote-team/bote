@@ -4043,6 +4043,11 @@ CString CSystemMenuView::CreateTooltip(void)
 			pDoc->AddSpecialResearchBoniToShip(&ship, m_pPlayersRace);
 			return ship.GetTooltip();
 		}
+		// Truppe
+		else
+		{
+			return pDoc->m_TroopInfo.GetAt(nID - 20000).GetTooltip();
+		}
 	}
 
 	return "";

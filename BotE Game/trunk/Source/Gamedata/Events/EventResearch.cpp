@@ -346,5 +346,12 @@ CString CEventResearch::GetTooltip(const CPoint &pt) const
 			return (*it)->GetTooltip();
 		nCount++;
 	}
+	for (vector<CTroopInfo*>::const_iterator it = m_vNewTroops.begin(); it != m_vNewTroops.end(); ++it)
+	{
+		if (CRect(15 + nCount * 165, 820, 15 + nCount * 165 + 150, 970).PtInRect(pt))
+			return (*it)->GetTooltip();
+		nCount++;
+	}
+
 	return "";
 }

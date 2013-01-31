@@ -115,6 +115,9 @@ void CTransportMenuView::OnInitialUpdate()
 
 	// Transportansicht
 	m_iTransportStorageQuantity = 1;
+
+	// View bei den Tooltipps anmelden
+	resources::pMainFrame->AddToTooltip(this);
 }
 
 /// Funktion lädt die rassenspezifischen Grafiken.
@@ -622,8 +625,7 @@ void CTransportMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 								{
 									ship->second->GetTransportedTroops()->Add(pDoc->GetSystem(p.x, p.y).GetTroops()->GetAt(m_nActiveTroopInSystem));
 									pDoc->GetSystem(p.x, p.y).GetTroops()->RemoveAt(m_nActiveTroopInSystem);
-									if (m_nActiveTroopInSystem > 0)
-										m_nActiveTroopInSystem--;
+									m_nActiveTroopInSystem--;
 									m_nActiveTroopInShip++;
 									Invalidate(FALSE);
 									resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CShipBottomView));
@@ -821,4 +823,37 @@ void CTransportMenuView::CreateTransportedTroopsVector()
 	for (CShips::const_iterator it = ship->second->begin(); it != ship->second->end(); ++it)
 		for (int i = 0; i < it->second->GetTransportedTroops()->GetSize(); i++)
 			m_vShipTroops.push_back(make_pair(it->second, &(it->second->GetTransportedTroops()->GetAt(i))));
+}
+
+///	Funktion erstellt zur aktuellen Mouse-Position einen HTML Tooltip
+/// @return	der erstellte Tooltip-Text
+CString CTransportMenuView::CreateTooltip(void)
+{
+	CBotf2Doc* pDoc = resources::pDoc;
+	ASSERT(pDoc);
+
+	if (!pDoc->m_bDataReceived)
+		return "";
+
+	// Wo sind wir
+	CPoint pt;
+	GetCursorPos(&pt);
+	ScreenToClient(&pt);
+	CalcLogicalPoint(pt);
+
+	if (m_nActiveTroopInSystem != -1 && CRect(25, 95, 225, 245).PtInRect(pt))
+	{
+		CPoint p = pDoc->GetKO();
+		BYTE id = pDoc->GetSystem(p.x, p.y).GetTroops()->GetAt(m_nActiveTroopInSystem).GetID();
+		return pDoc->m_TroopInfo.GetAt(id).GetTooltip();
+	}
+
+	if (m_nActiveTroopInShip != -1 && CRect(850, 95, 1050, 245).PtInRect(pt))
+	{
+		CTroop* pTroop = m_vShipTroops[m_nActiveTroopInShip].second;
+		BYTE id = pTroop->GetID();
+		return pDoc->m_TroopInfo.GetAt(id).GetTooltip();
+	}	
+
+	return "";
 }

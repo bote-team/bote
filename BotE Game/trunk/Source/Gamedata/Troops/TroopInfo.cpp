@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "TroopInfo.h"
+#include "HTMLStringBuilder.h"
+#include "General/ResourceManager.h"
 
 //////////////////////////////////////////////////////////////////////
 // Konstruktion/Destruktion
@@ -95,12 +97,13 @@ void CTroopInfo::Serialize(CArchive &ar)
 	}
 }
 
-
-
+//////////////////////////////////////////////////////////////////////
+// other functions
+//////////////////////////////////////////////////////////////////////
 
 /// Funktion gibt zurück, ob die Truppe mit der aktuellen Forschung einer Rasse baubar ist.
-	/// @param researchLevels Forschungsstufen der Rasse
-	/// @return Wahrheitswert
+/// @param researchLevels Forschungsstufen der Rasse
+/// @return Wahrheitswert
 bool CTroopInfo::IsThisTroopBuildableNow(const BYTE reserachLevels[6]) const
 {
 	// zuerstmal die Forschungsstufen checken
@@ -110,3 +113,49 @@ bool CTroopInfo::IsThisTroopBuildableNow(const BYTE reserachLevels[6]) const
 	return true;
 }
 
+/// Funktion erstellt eine Tooltipinfo zur Truppe
+/// @return	der erstellte Tooltip-Text
+CString CTroopInfo::GetTooltip() const
+{
+	CString sName = GetName();
+	sName = CHTMLStringBuilder::GetHTMLColor(sName);
+	sName = CHTMLStringBuilder::GetHTMLHeader(sName, _T("h3"));
+	sName = CHTMLStringBuilder::GetHTMLCenter(sName);
+	sName += CHTMLStringBuilder::GetHTMLStringNewLine();
+	sName += CHTMLStringBuilder::GetHTMLStringNewLine();
+		
+	CString sValues = "";
+	CString s;
+	s.Format("%s: %d",CResourceManager::GetString("OPOWER"), GetOffense());
+	sValues += s;
+	sValues += CHTMLStringBuilder::GetHTMLStringNewLine();
+	s.Format("%s: %d",CResourceManager::GetString("DPOWER"), GetDefense());
+	sValues += s;
+	sValues += CHTMLStringBuilder::GetHTMLStringNewLine();
+	s.Format("%s: %d",CResourceManager::GetString("MORALVALUE"), GetMoralValue());
+	sValues += s;
+	sValues += CHTMLStringBuilder::GetHTMLStringNewLine();
+	s.Format("%s: %d",CResourceManager::GetString("PLACE"), GetSize());
+	sValues += s;
+	// Unterhaltskosten noch nicht anzeigen, da diese aktuell nicht beachtet werden
+	//sValues += CHTMLStringBuilder::GetHTMLStringNewLine();
+	//s.Format("%s: %d",CResourceManager::GetString("MAINTENANCE_COSTS"), GetMaintenanceCosts());
+	//sValues += s;
+	// Erfahrung nicht anzeigen, da bei den Tooltips aktuell immer auf das Infoobjekt gegangen wird und dieses nie Erfahrung hat
+	//sValues += CHTMLStringBuilder::GetHTMLStringNewLine();
+	//s.Format("%s: %d",CResourceManager::GetString("EXPERIANCE"),GetExperiance());
+	//sValues += s;
+	sValues = CHTMLStringBuilder::GetHTMLColor(sValues);
+	sValues = CHTMLStringBuilder::GetHTMLHeader(sValues, _T("h5"));
+	sValues += CHTMLStringBuilder::GetHTMLStringNewLine();
+	sValues += CHTMLStringBuilder::GetHTMLStringNewLine();
+	sValues += CHTMLStringBuilder::GetHTMLStringHorzLine();
+	sValues += CHTMLStringBuilder::GetHTMLStringNewLine();
+
+	CString sDesc = GetDescription();
+	sDesc = CHTMLStringBuilder::GetHTMLColor(sDesc, _T("silver"));
+	sDesc = CHTMLStringBuilder::GetHTMLHeader(sDesc, _T("h5"));
+		
+	CString sTip = sName + sValues + sDesc;
+	return sTip;
+}
