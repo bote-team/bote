@@ -2880,43 +2880,55 @@ void CBotf2Doc::CalcSystemAttack()
 								}
 							}
 
-							// Sektor gilt ab jetzt als erobert.
-							GetSector(p.x, p.y).SetTakenSector(TRUE);
-							// Moral in diesem System verschlechtert sich um rand()%25+10 Punkte
-							GetSystem(p.x, p.y).SetMoral(-rand()%25-10);
+							// Nur wenn es einen Verteidiger gab
+							if (defender)
+							{
+								// Sektor gilt ab jetzt als erobert
+								GetSector(p.x, p.y).SetTakenSector(TRUE);
+								// Moral in diesem System verschlechtert sich um rand()%25+10 Punkte
+								GetSystem(p.x, p.y).SetMoral(-rand()%25-10);
+							}
+							else
+							{
+								// Der Fall kein eintreten, wenn ein rebelliertes System oder ein System
+								// eines ausgelöschten Majors erobert wurde!
+
+								// Sektor gilt nicht als erobert
+								GetSector(p.x, p.y).SetTakenSector(FALSE);
+								// Der Angreifer gilt nun als Koloniebesitzer
+								GetSector(p.x, p.y).SetColonyOwner(attacker);
+							}							
+							
 							// ist die Moral unter 50, so wird sie auf 50 gesetzt
 							if (GetSystem(p.x, p.y).GetMoral() < 50)
 								GetSystem(p.x, p.y).SetMoral(50 - GetSystem(p.x, p.y).GetMoral());
 
-							CString eventText;
 							// Eventnachricht an den ehemaligen Besitzer (eigenes System verloren)
-
-							//We later were dereferencing defender anyway; after casting to CMajor.
-							//Not sure whether defender should be allowed to be NULL here.
-							assert(defender);
-							if (defender->GetRaceID() != attacker && defender->IsMajor()) {
-								CMajor* pDefenderMajor = dynamic_cast<CMajor*>(defender);
-								eventText = pDefenderMajor->GetMoralObserver()->AddEvent(16, pDefenderMajor->GetRaceMoralNumber(), param);
-							}
-							// Eventnachricht hinzufügen
-							if (!eventText.IsEmpty())
+							// Achtung: Defender kann auch NULL sein, wenn z.B. ein rebelliertes System erobert wurde
+							// oder ein System eines vernichteten Majors!
+							if (defender != NULL && defender->GetRaceID() != attacker && defender->IsMajor())
 							{
-								CMessage message;
-								message.GenerateMessage(eventText, MESSAGE_TYPE::MILITARY, param, p);
-								//defender seems to be of type MAJOR here for sure ?
-								assert(defender->IsMajor());
 								CMajor* pDefenderMajor = dynamic_cast<CMajor*>(defender);
 								assert(pDefenderMajor);
-								pDefenderMajor->GetEmpire()->AddMessage(message);
-								if (pDefenderMajor->IsHumanPlayer())
+								CString eventText = pDefenderMajor->GetMoralObserver()->AddEvent(16, pDefenderMajor->GetRaceMoralNumber(), param);
+							
+								// Eventnachricht hinzufügen
+								if (!eventText.IsEmpty())
 								{
-									network::RACE client = m_pRaceCtrl->GetMappedClientID(defender->GetRaceID());
-									m_iSelectedView[client] = EMPIRE_VIEW;
+									CMessage message;
+									message.GenerateMessage(eventText, MESSAGE_TYPE::MILITARY, param, p);
+									CMajor* pDefenderMajor = dynamic_cast<CMajor*>(defender);
+									pDefenderMajor->GetEmpire()->AddMessage(message);
+									if (pDefenderMajor->IsHumanPlayer())
+									{
+										network::RACE client = m_pRaceCtrl->GetMappedClientID(defender->GetRaceID());
+										m_iSelectedView[client] = EMPIRE_VIEW;
+									}
 								}
 							}
 
 							// Eventnachricht an den Eroberer (System erobert)
-							eventText = pMajor->GetMoralObserver()->AddEvent(11, pMajor->GetRaceMoralNumber(), param);
+							CString eventText = pMajor->GetMoralObserver()->AddEvent(11, pMajor->GetRaceMoralNumber(), param);
 							// Eventnachricht hinzufügen
 							if (!eventText.IsEmpty())
 							{
@@ -3766,14 +3778,13 @@ void CBotf2Doc::CalcShipOrders()
 		{
 			assert(pSector->GetSunSystem());
 			// Wenn die Bevölkerung komplett vernichtet wurde
-			if (pSystem->GetHabitants() == 0.0f)
+			if (pSystem->GetHabitants() <= 0.000001)
 				y->second->SetCurrentOrderAccordingToType();
 			// Wenn das System der angreifenden Rasse gehört
 			else if (pSystem->GetOwnerOfSystem() == y->second->GetOwnerOfShip())
 				y->second->SetCurrentOrderAccordingToType();
 			// Wenn eine Rasse in dem System lebt
-			else if (!pSector->GetOwnerOfSector().IsEmpty()
-				&& pSector->GetOwnerOfSector() != y->second->GetOwnerOfShip())
+			else if (!pSector->GetOwnerOfSector().IsEmpty()	&& pSector->GetOwnerOfSector() != y->second->GetOwnerOfShip())
 			{
 				CRace* pRace = m_pRaceCtrl->GetRace(pSector->GetOwnerOfSector());
 				assert(pRace);
@@ -5391,8 +5402,10 @@ void CBotf2Doc::CalcEndDataForNextRound()
 					se->SetOwned(false);
 					se->SetTakenSector(false);
 				}
-				if (se->GetColonyOwner() == ID)
-					se->SetColonyOwner("");
+				// Den ersten Besitzer als Historie merken. Diese Variable nicht zurücksetzen!
+				// Sonst würde dieses System nicht mehr serialisiert werden, da es ja niemandem mehr gehört...
+				// se->SetColonyOwner(""); 
+				
 				// in allen Sektoren alle Schiffe aus den Sektoren nehmen
 				se->SetIsStationBuilding(false, ID);
 				se->UnsetOutpost(ID);
