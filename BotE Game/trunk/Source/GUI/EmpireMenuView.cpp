@@ -1991,6 +1991,7 @@ void CEmpireMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 			pMajor->GetEmpire()->GetMessages()->RemoveAt(m_iClickedNews);
 			if (m_iClickedNews == pMajor->GetEmpire()->GetMessages()->GetSize())
 				m_iClickedNews--;
+			resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
 			Invalidate(FALSE);
 			return;
 		}
