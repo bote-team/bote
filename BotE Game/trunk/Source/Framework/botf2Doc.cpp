@@ -5657,7 +5657,7 @@ void CBotf2Doc::CalcRandomAlienEntities()
 			int nValue = STARMAP_SECTORS_HCOUNT * STARMAP_SECTORS_VCOUNT;
 			// Pro Techlevel verringert sich die virtuelle Anzahl der Sektoren um 25% -> geringere Wahrscheinlichkeit
 			nValue /= ((nMod * 4 + 100.0) / 100.0);
-			float fSteuerParameter = 3.00f;	// Hiermit kann man leicht die Wahrscheinlichkeit steuern, aktuell 3mal niedriger!
+			float fSteuerParameter = 5.00f;	// Hiermit kann man leicht die Wahrscheinlichkeit steuern, aktuell 5mal niedriger!
 			if (rand()%((int)(10000 * fSteuerParameter)) > nValue)
 				continue;
 
