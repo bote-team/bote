@@ -84,7 +84,7 @@ void CTrade::Serialize(CArchive &ar)
 // Funktion kauft die Anzahl der jeweiligen Ressource für das System und fügt den Auftrag in das Array
 // m_TradeActions ein. Danach berechnet sie den Preis der Ressource nach dem Kauf. Steuern
 // werden hier noch nicht in den Preis mit einbezogen.
-int CTrade::BuyRessource(USHORT res, ULONG number, CPoint system, long empires_credits, BOOL flag)
+int CTrade::BuyRessource(USHORT res, ULONG number, CPoint system, long empires_credits, bool bNotAtMarket /* = false */)
 {
 	USHORT oldResPrice = m_iRessourcePrice[res];
 	TradeStruct ts;
@@ -92,34 +92,39 @@ int CTrade::BuyRessource(USHORT res, ULONG number, CPoint system, long empires_c
 	ts.number	= number;
 	ts.system   = system;
 	ts.price	= 0;
+	
 	// Alle 100 gekauften Einheiten erhöht sich der Preis an unserer Börse
 	for (int i = 0; i < ceil((float)(number / 100)); i++)
 	{
-		// Wenn flag == 1, dann den Ressourcenpreis von Beginn der Runde nehmen und verändern, weil wenn Bauaufträge
+		// Wenn bNotAtMarket == true, dann den Ressourcenpreis von Beginn der Runde nehmen und verändern, weil wenn Bauaufträge
 		// gekauft werden sollen diese Kosten nicht abhängig von den aktuellen Preisen an der Börse sein, sondern
 		// abhängig von den Preisen, wie sie zu Rundenbeginn waren. Mehrfaches Kaufen erhöht aber trotzdem die Kaufkosten.
-		if (flag == 1)
+		if (bNotAtMarket)
 		{
-			ts.price	+= (int)((m_iRessourcePriceAtRoundStart[res] * number) / 1000);
-			m_iRessourcePriceAtRoundStart[res] += ((res+1)*5);
+			ts.price += (int)((m_iRessourcePriceAtRoundStart[res] * number) / 1000);
 		}
 		else
-			ts.price	+= (int)((m_iRessourcePrice[res] * number) / 1000);
+		{
+			ts.price += (int)((m_iRessourcePrice[res] * number) / 1000);
+		}
+
 		// Preiserhöhung pro 100 Einheiten ist (1+Ressourcennummer) * 5
 		m_iRessourcePrice[res] += ((res+1)*5);
 	}
 	if ((int)ceil((float)(number / 100)) != 0)
 		ts.price /=  (int)ceil((float)(number / 100));
-	// Nur bei flag == 0 wird die Aktion ins Feld geschrieben, sonst werden nur die neuen Preise an der Börse berechnet
+	// Nur bei bNotAtMarket == false wird die Aktion ins Feld geschrieben, sonst werden nur die neuen Preise an der Börse berechnet
 	// und die Steuern in das Feld m_iTaxes geschrieben
-	if (flag == 1)
+	if (bNotAtMarket)
 	{
 		m_iTaxes[res] += (int)(ts.price * m_fTax) - ts.price;
 		return 0;
 	}
+	
 	// Falls der Preis bei NULL liegt setzten wir den auf 1 (kostenlos gibts hier nix ;-) )
 	if (ts.price == NULL)
 		ts.price = 1;
+	
 	// Jetzt überprüfen ob wir das Credits auch aufbringen können, wenn wir etwas kaufen, wenn es nicht klappt, dann
 	// geben wir eine NULL zurück und setzen den Preis der Ressource wieder auf den alten
 	if ((int)ceil(ts.price * m_fTax) > empires_credits)
@@ -127,6 +132,7 @@ int CTrade::BuyRessource(USHORT res, ULONG number, CPoint system, long empires_c
 		m_iRessourcePrice[res] = oldResPrice;
 		return 0;
 	}
+	
 	m_TradeActions.Add(ts);
 	return (int)ceil(ts.price * m_fTax);
 }
@@ -134,45 +140,47 @@ int CTrade::BuyRessource(USHORT res, ULONG number, CPoint system, long empires_c
 // Funktion verkauft die Anzahl der jeweiligen Ressource aus dem System und fügt den Auftrag in das Array
 // m_TradeActions ein. Danach berechnet sie den Preis der Ressource nach dem Verkauf. Steuern
 // werden hier noch nicht in den Preis mit einbezogen.
-void CTrade::SellRessource(USHORT res, ULONG number, CPoint system, BOOL flag)
+void CTrade::SellRessource(USHORT res, ULONG number, CPoint system, bool bNotAtMarket /* = false */)
 {
 	TradeStruct ts;
 	ts.res		= res;
 	ts.number	= number;
 	ts.system   = system;
 	ts.price	= 0;
+	
 	// Alle 100 verkauften Einheiten verringert sich der Preis an unserer Börse
 	for (int i = 0; i < ceil((float)(number / 100)); i++)
 	{
-		// Wenn flag == 1, dann den Ressourcenpreis von Beginn der Runde nehmen und verändern, weil wenn Bauaufträge
+		// Wenn bNotAtMarket == true, dann den Ressourcenpreis von Beginn der Runde nehmen und verändern, weil wenn Bauaufträge
 		// gekauft werden sollen diese Kosten nicht abhängig von den aktuellen Preisen an der Börse sein, sondern
 		// abhängig von den Preisen, wie sie zu Rundenbeginn waren. Mehrfaches Kaufen erhöht aber trotzdem die Kaufkosten.
-		if (flag == 1)
+		if (bNotAtMarket)
 		{
-			ts.price	-= (int)((m_iRessourcePriceAtRoundStart[res] * number) / 1000);
-			// Preisverringerung pro 100 Einheiten ist (1+Ressourcennummer) * 10
-			if ((res+1)*10 > m_iRessourcePriceAtRoundStart[res])
-				m_iRessourcePriceAtRoundStart[res] = 1;
-			else
-				m_iRessourcePriceAtRoundStart[res] -= ((res+1)*10);
+			ts.price -= (int)((m_iRessourcePriceAtRoundStart[res] * number) / 1000);
 		}
 		else
-			ts.price	-= (int)((m_iRessourcePrice[res] * number) / 1000);
+		{
+			ts.price -= (int)((m_iRessourcePrice[res] * number) / 1000);
+		}
+		
 		// Preisverringerung pro 100 Einheiten ist (1+Ressourcennummer) * 10
 		if ((res+1)*10 > m_iRessourcePrice[res])
 			m_iRessourcePrice[res] = 1;
 		else
 			m_iRessourcePrice[res] -= ((res+1)*10);
 	}
+
 	if ((int)ceil((float)(number / 100)) != 0)
 		ts.price /=  (int)ceil((float)(number / 100));
-	// Nur bei flag == 0 wird die Aktion ins Feld geschrieben, sonst werden nur die neuen Preise an der Börse berechnet
+	
+	// Nur bei bNotAtMarket == false wird die Aktion ins Feld geschrieben, sonst werden nur die neuen Preise an der Börse berechnet
 	// und die Steuern in das Feld m_iTaxes geschrieben
-	if (flag == 1)
+	if (bNotAtMarket)
 	{
 		m_iTaxes[res] += (int)(ts.price * m_fTax) - ts.price;
 		return;
 	}
+	
 	// Falls der Preis bei NULL liegt setzten wir den auf 1 (kostenlos gibts hier nix ;-) )
 	if (ts.price == NULL)
 		ts.price = -1;

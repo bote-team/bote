@@ -96,15 +96,15 @@ public:
 	// Funktion kauft die Anzahl der jeweiligen Ressource für das System und fügt den Auftrag in das Array
 	// m_TradeActions ein. Danach berechnet sie den Preis der Ressource nach dem Kauf. Steuern
 	// werden hier noch nicht in den Preis mit einbezogen. Der Preis inkl. Steuern wird zurückgegeben.
-	// Falls flag == 1, dann wird nix in das Feld m_TradeActions geschrieben. Nur die Preisauswirkungen des Kaufes
+	// Falls bNotAtMarket == true, dann wird nix in das Feld m_TradeActions geschrieben. Nur die Preisauswirkungen des Kaufes
 	// auf die Börse werden beachtet
-	int BuyRessource(USHORT res, ULONG number, CPoint system, long empires_credits, BOOL flag = 0);
+	int BuyRessource(USHORT res, ULONG number, CPoint system, long empires_credits, bool bNotAtMarket = false);
 
 	// Funktion verkauft die Anzahl der jeweiligen Ressource aus dem System und fügt den Auftrag in das Array
 	// m_TradeActions ein. Danach berechnet sie den Preis der Ressource nach dem Verkauf. Steuern
-	// werden hier noch nicht in den Preis mit einbezogen. Falls flag == 1, dann wird nix in das Feld m_TradeActions
+	// werden hier noch nicht in den Preis mit einbezogen. Falls bNotAtMarket == true, dann wird nix in das Feld m_TradeActions
 	// geschrieben. Nur die Preisauswirkungen des Verkaufes auf die Börse werden beachtet
-	void SellRessource(USHORT res, ULONG number, CPoint system, BOOL flag = 0);
+	void SellRessource(USHORT res, ULONG number, CPoint system, bool bNotAtMarket = false);
 
 	// Funktion berechnet die ganzen Handelsaktionen, lagert also Ressourcen ein oder gibt das Credits, welches
 	// wir durch den Verkauf bekommen haben an das jeweilige Imperium

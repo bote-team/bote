@@ -3067,11 +3067,11 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 				pMajor->GetEmpire()->SetCredits(-costs);
 				// Die Preise an der Börse anpassen, da wir ja bestimmte Mengen Ressourcen gekauft haben
 				// Achtung, hier flag == 1 setzen bei Aufruf der Funktion BuyRessource!!!!
-				pMajor->GetTrade()->BuyRessource(TITAN,pDoc->GetSystem(p.x, p.y).GetAssemblyList()->GetNeededTitanInAssemblyList(0),p,pMajor->GetEmpire()->GetCredits(),1);
-				pMajor->GetTrade()->BuyRessource(DEUTERIUM,pDoc->GetSystem(p.x, p.y).GetAssemblyList()->GetNeededDeuteriumInAssemblyList(0),p,pMajor->GetEmpire()->GetCredits(),1);
-				pMajor->GetTrade()->BuyRessource(DURANIUM,pDoc->GetSystem(p.x, p.y).GetAssemblyList()->GetNeededDuraniumInAssemblyList(0),p,pMajor->GetEmpire()->GetCredits(),1);
-				pMajor->GetTrade()->BuyRessource(CRYSTAL,pDoc->GetSystem(p.x, p.y).GetAssemblyList()->GetNeededCrystalInAssemblyList(0),p,pMajor->GetEmpire()->GetCredits(),1);
-				pMajor->GetTrade()->BuyRessource(IRIDIUM,pDoc->GetSystem(p.x, p.y).GetAssemblyList()->GetNeededIridiumInAssemblyList(0),p,pMajor->GetEmpire()->GetCredits(),1);
+				pMajor->GetTrade()->BuyRessource(TITAN,pDoc->GetSystem(p.x, p.y).GetAssemblyList()->GetNeededTitanInAssemblyList(0),p,pMajor->GetEmpire()->GetCredits(),true);
+				pMajor->GetTrade()->BuyRessource(DEUTERIUM,pDoc->GetSystem(p.x, p.y).GetAssemblyList()->GetNeededDeuteriumInAssemblyList(0),p,pMajor->GetEmpire()->GetCredits(),true);
+				pMajor->GetTrade()->BuyRessource(DURANIUM,pDoc->GetSystem(p.x, p.y).GetAssemblyList()->GetNeededDuraniumInAssemblyList(0),p,pMajor->GetEmpire()->GetCredits(),true);
+				pMajor->GetTrade()->BuyRessource(CRYSTAL,pDoc->GetSystem(p.x, p.y).GetAssemblyList()->GetNeededCrystalInAssemblyList(0),p,pMajor->GetEmpire()->GetCredits(),true);
+				pMajor->GetTrade()->BuyRessource(IRIDIUM,pDoc->GetSystem(p.x, p.y).GetAssemblyList()->GetNeededIridiumInAssemblyList(0),p,pMajor->GetEmpire()->GetCredits(),true);
 
 				resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
 				m_bClickedOnBuyButton = FALSE;
@@ -3112,18 +3112,17 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 						CPoint ko = pMajor->GetEmpire()->GetSystemList()->GetAt(k).ko;
 						for (int l = 0; l < pDoc->GetSystem(ko.x, ko.y).GetResourceRoutes()->GetSize(); l++)
 							if (pDoc->GetSystem(ko.x, ko.y).GetResourceRoutes()->GetAt(l).GetKO() == p)
-								if (pDoc->GetSystem(ko.x, ko.y).GetResourceRoutes()->GetAt(l).GetKO() == p)
-									if (pDoc->GetSystem(ko.x, ko.y).GetResourceRoutes()->GetAt(l).GetResource() == j)
-										if (pDoc->GetSystem(ko.x, ko.y).GetResourceRoutes()->GetAt(l).GetPercent() > 0)
-										{
-											// sind wir soweit, dann geht ein prozentualer Anteil zurück in das
-											// Startsystem der Ressourcenroute
-											int back = pDoc->GetSystem(p.x, p.y).GetAssemblyList()->GetNeededResourceInAssemblyList(0, j)
-												* pDoc->GetSystem(ko.x, ko.y).GetResourceRoutes()->GetAt(l).GetPercent() / 100;
-											ASSERT(back >= 0);
-											pDoc->GetSystem(ko.x, ko.y).SetResourceStore(j, back);
-											getBackRes -= back;
-										}
+								if (pDoc->GetSystem(ko.x, ko.y).GetResourceRoutes()->GetAt(l).GetResource() == j)
+									if (pDoc->GetSystem(ko.x, ko.y).GetResourceRoutes()->GetAt(l).GetPercent() > 0)
+									{
+										// sind wir soweit, dann geht ein prozentualer Anteil zurück in das
+										// Startsystem der Ressourcenroute
+										int back = pDoc->GetSystem(p.x, p.y).GetAssemblyList()->GetNeededResourceInAssemblyList(0, j)
+											* pDoc->GetSystem(ko.x, ko.y).GetResourceRoutes()->GetAt(l).GetPercent() / 100;
+										ASSERT(back >= 0);
+										pDoc->GetSystem(ko.x, ko.y).SetResourceStore(j, back);
+										getBackRes -= back;
+									}
 					}
 				pDoc->GetSystem(p.x, p.y).SetResourceStore(j, getBackRes);
 			}
@@ -3133,9 +3132,9 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			{
 				pMajor->GetEmpire()->SetCredits(pDoc->GetSystem(p.x,p.y).GetAssemblyList()->GetBuildCosts());
 				// Die Preise an der Börse anpassen, da wir ja bestimmte Mengen Ressourcen gekauft haben
-				// Achtung, hier flag == 1 setzen bei Aufruf der Funktion BuyRessource!!!!
+				// Achtung, hier bNotAtMarket == true setzen bei Aufruf der Funktion BuyRessource!!!!
 				for (int j = TITAN; j <= IRIDIUM; j++)
-					pMajor->GetTrade()->SellRessource(j, pDoc->GetSystem(p.x, p.y).GetAssemblyList()->GetNeededResourceInAssemblyList(0, j), p, 1);
+					pMajor->GetTrade()->SellRessource(j, pDoc->GetSystem(p.x, p.y).GetAssemblyList()->GetNeededResourceInAssemblyList(0, j) * 2, p, true);
 				pDoc->GetSystem(p.x, p.y).GetAssemblyList()->SetWasBuildingBought(FALSE);
 				resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
 			}
@@ -3648,6 +3647,7 @@ void CSystemMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 		if (rect.PtInRect(point))
 		{
 			m_bClickedOnBuyButton = FALSE;
+			m_bClickedOnDeleteButton = FALSE;
 			int RunningNumber = abs(nAssemblyListEntry);
 
 			// Nur beim 0-ten Eintrag in der Bauliste, also der, der oben steht
@@ -3693,9 +3693,9 @@ void CSystemMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 				{
 					pMajor->GetEmpire()->SetCredits(pDoc->GetSystem(p.x, p.y).GetAssemblyList()->GetBuildCosts());
 					// Die Preise an der Börse anpassen, da wir ja bestimmte Mengen Ressourcen gekauft haben
-					// Achtung, hier flag == 1 setzen bei Aufruf der Funktion BuyRessource!!!!
+					// Achtung, hier bNotAtMarket == true setzen bei Aufruf der Funktion BuyRessource!!!!
 					for (int j = TITAN; j <= IRIDIUM; j++)
-						pMajor->GetTrade()->SellRessource(j, pDoc->GetSystem(p.x, p.y).GetAssemblyList()->GetNeededResourceInAssemblyList(0, j), p, 1);
+						pMajor->GetTrade()->SellRessource(j, pDoc->GetSystem(p.x, p.y).GetAssemblyList()->GetNeededResourceInAssemblyList(0, j), p, true);
 					pDoc->GetSystem(p.x, p.y).GetAssemblyList()->SetWasBuildingBought(FALSE);
 					resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
 				}

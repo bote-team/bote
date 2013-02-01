@@ -125,11 +125,11 @@ void CSystemAI::PerhapsBuy()
 				m_pMajor->GetEmpire()->SetCredits(-costs);
 				// Die Preise an der Börse anpassen, da wir ja bestimmte Mengen Ressourcen gekauft haben
 				// Achtung, hier flag == 1 setzen bei Aufruf der Funktion BuyRessource!!!!
-				m_pMajor->GetTrade()->BuyRessource(TITAN,	 system.GetAssemblyList()->GetNeededTitanInAssemblyList(0),p,m_pMajor->GetEmpire()->GetCredits(),1);
-				m_pMajor->GetTrade()->BuyRessource(DEUTERIUM,system.GetAssemblyList()->GetNeededDeuteriumInAssemblyList(0),p,m_pMajor->GetEmpire()->GetCredits(),1);
-				m_pMajor->GetTrade()->BuyRessource(DURANIUM, system.GetAssemblyList()->GetNeededDuraniumInAssemblyList(0),p,m_pMajor->GetEmpire()->GetCredits(),1);
-				m_pMajor->GetTrade()->BuyRessource(CRYSTAL,  system.GetAssemblyList()->GetNeededCrystalInAssemblyList(0),p,m_pMajor->GetEmpire()->GetCredits(),1);
-				m_pMajor->GetTrade()->BuyRessource(IRIDIUM,  system.GetAssemblyList()->GetNeededIridiumInAssemblyList(0),p,m_pMajor->GetEmpire()->GetCredits(),1);
+				m_pMajor->GetTrade()->BuyRessource(TITAN,	 system.GetAssemblyList()->GetNeededTitanInAssemblyList(0),p,m_pMajor->GetEmpire()->GetCredits(),true);
+				m_pMajor->GetTrade()->BuyRessource(DEUTERIUM,system.GetAssemblyList()->GetNeededDeuteriumInAssemblyList(0),p,m_pMajor->GetEmpire()->GetCredits(),true);
+				m_pMajor->GetTrade()->BuyRessource(DURANIUM, system.GetAssemblyList()->GetNeededDuraniumInAssemblyList(0),p,m_pMajor->GetEmpire()->GetCredits(),true);
+				m_pMajor->GetTrade()->BuyRessource(CRYSTAL,  system.GetAssemblyList()->GetNeededCrystalInAssemblyList(0),p,m_pMajor->GetEmpire()->GetCredits(),true);
+				m_pMajor->GetTrade()->BuyRessource(IRIDIUM,  system.GetAssemblyList()->GetNeededIridiumInAssemblyList(0),p,m_pMajor->GetEmpire()->GetCredits(),true);
 			}
 		}
 	}
