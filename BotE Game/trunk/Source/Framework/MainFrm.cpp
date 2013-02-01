@@ -505,8 +505,6 @@ LRESULT CMainFrame::ShowCombatView(WPARAM /*wParam*/, LPARAM /*lParam*/)
 	CCombatMenuView* pView = ((CCombatMenuView*)GetView(RUNTIME_CLASS(CCombatMenuView)));
 	pView->OnNewRound();
 
-	pDoc->UpdateAllViews(NULL);
-
 	MYTRACE("general")(MT::LEVEL_INFO, "Showing CombatView\n");
 
 	return TRUE;

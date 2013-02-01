@@ -240,10 +240,10 @@ void CGalaxyMenuView::OnDraw(CDC* dc)
 	CSize size(STARMAP_TOTALWIDTH, STARMAP_TOTALHEIGHT);
 	Zoom(&size);
 	pDC->SetViewportExt(size);
+	SetScrollSizes(MM_TEXT, size);
 
 	m_ptViewOrigin = CPoint(posX, posY);
 	CPoint ptOrg(posX - GetScrollPosition().x, posY - GetScrollPosition().y);
-	//pDC->SetViewportOrg(-GetScrollPosition());
 	pDC->SetViewportOrg(ptOrg);
 	// die Koordinaten der folgenden Zeichenoperationen werden automatisch gezoomt
 
