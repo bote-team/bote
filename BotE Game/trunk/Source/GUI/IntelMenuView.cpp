@@ -853,26 +853,25 @@ void CIntelMenuView::DrawIntelAttackMenu(Graphics* g)
 	CIntelligence* pIntel = pMajor->GetEmpire()->GetIntelligence();
 	// Es gehen nur 10 Berichte auf die Seite, deshalb muss abgebrochen werden
 	// wenn noch kein Bericht angeklickt wurde, es aber Berichte gibt, dann den ersten Bericht in der Reihe markieren
-	int numberOfReports = 0;
 	if (pIntel->GetIntelReports()->GetActiveReport() == -1)
 	{
 		for (int i = 0; i < pIntel->GetIntelReports()->GetNumberOfReports(); i++)
 		{
 			CIntelObject* intelObj = pIntel->GetIntelReports()->GetReport(i);
 			if (intelObj->GetIsSpy() == TRUE && intelObj->GetEnemy() != pMajor->GetRaceID() && intelObj->GetRound() > pDoc->GetCurrentRound() - 10)
-				numberOfReports++;
-		}
-		if (numberOfReports > 0)
-		{
-			pIntel->GetIntelReports()->SetActiveReport(0);
-			m_iOldClickedIntelReport = 0;
+			{
+				pIntel->GetIntelReports()->SetActiveReport(0);
+				m_iOldClickedIntelReport = 0;
+				break;
+			}
 		}
 	}
+
 	int j = 0;
+	int numberOfReports = 0;
 	short counter = pIntel->GetIntelReports()->GetActiveReport() - 10 + m_iOldClickedIntelReport;
-	//short oldClickedNews = pIntel->GetIntelReports()->GetActiveReport();
-	numberOfReports = 0;
-	short activeReport = 0;
+	short oldClickedReport = pIntel->GetIntelReports()->GetActiveReport();
+	
 	for (int i = 0; i < pIntel->GetIntelReports()->GetNumberOfReports(); i++)
 	{
 		CIntelObject* intelObj = pIntel->GetIntelReports()->GetReport(i);
@@ -890,9 +889,6 @@ void CIntelMenuView::DrawIntelAttackMenu(Graphics* g)
 				// Die News markieren
 				if (j == pIntel->GetIntelReports()->GetActiveReport())
 				{
-					activeReport = i;
-				//	s.Format("aktiver Report: %d\n", activeReport);
-				//	AfxMessageBox(s + *intelObj->GetOwnerDesc() + "\n\n" + *intelObj->GetEnemyDesc());
 					// Markierung worauf wir geklickt haben
 					g->FillRectangle(&SolidBrush(Color(100,200,200,200)), RectF(100,140+j*25,875,25));
 					g->DrawLine(&pen, 100, 140+j*25, 975, 140+j*25);
@@ -929,8 +925,7 @@ void CIntelMenuView::DrawIntelAttackMenu(Graphics* g)
 			}
 		}
 	}
-//	pIntel->GetIntelReports()->SetActiveReport(oldClickedNews);
-	pIntel->GetIntelReports()->SetActiveReport(activeReport);
+	pIntel->GetIntelReports()->SetActiveReport(oldClickedReport);
 
 	// Beschreibung und Auswahlmöglichkeiten zeichnen
 	fontFormat.SetAlignment(StringAlignmentCenter);
