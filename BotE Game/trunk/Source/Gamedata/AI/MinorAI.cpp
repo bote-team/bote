@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "MinorAI.h"
-#include "Botf2Doc.h"
+#include "BotEDoc.h"
 #include "Races\RaceController.h"
 #include "Races\GenDiploMessage.h"
 #include "General/ResourceManager.h"

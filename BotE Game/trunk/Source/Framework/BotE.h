@@ -1,5 +1,5 @@
 /*
- *   Copyright (C)2004-2011 Sir Pustekuchen
+ *   Copyright (C)2004-2013 Sir Pustekuchen
  *
  *   Author   :  Sir Pustekuchen
  *   Home     :  http://birth-of-the-empires.de
@@ -20,9 +20,9 @@
 #define WM_SHOWCHATDLG	(WM_APP+13)
 
 /////////////////////////////////////////////////////////////////////////////
-// CBotf2App:
-// Siehe botf2.cpp für die Implementierung dieser Klasse
-class CBotf2App : public CWinApp
+// CBotEApp:
+// Siehe BotE.cpp für die Implementierung dieser Klasse
+class CBotEApp : public CWinApp
 {
 private:
 	CChatDlg *m_pChatDlg;
@@ -31,10 +31,10 @@ private:
 
 public:
 	/// Konstruktor
-	CBotf2App();
+	CBotEApp();
 
 	/// Destruktor
-	virtual ~CBotf2App();
+	virtual ~CBotEApp();
 
 	/// Funktion gibt einen Zeiger auf den ChatDialog zurück.
 	CChatDlg* GetChatDlg() {return m_pChatDlg;}

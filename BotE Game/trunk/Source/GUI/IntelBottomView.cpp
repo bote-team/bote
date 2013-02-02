@@ -2,7 +2,7 @@
 //
 
 #include "stdafx.h"
-#include "botf2.h"
+#include "BotE.h"
 #include "MainFrm.h"
 #include "IntelBottomView.h"
 #include "IntelMenuView.h"
@@ -32,7 +32,7 @@ END_MESSAGE_MAP()
 
 void CIntelBottomView::OnDraw(CDC* dc)
 {
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	if (!pDoc->m_bDataReceived)

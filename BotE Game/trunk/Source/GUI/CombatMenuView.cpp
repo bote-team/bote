@@ -2,8 +2,8 @@
 //
 
 #include "stdafx.h"
-#include "botf2.h"
-#include "Botf2Doc.h"
+#include "BotE.h"
+#include "BotEDoc.h"
 #include "MainFrm.h"
 #include "CombatMenuView.h"
 #include "Races\RaceController.h"
@@ -124,7 +124,7 @@ void CCombatMenuView::OnNewRound()
 void CCombatMenuView::OnDraw(CDC* dc)
 {
 	SetFocus();
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	if (!pDoc->m_bDataReceived)
@@ -240,7 +240,7 @@ void CCombatMenuView::OnInitialUpdate()
 /// Funktion lädt die rassenspezifischen Grafiken.
 void CCombatMenuView::LoadRaceGraphics()
 {
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	CMajor* pMajor = m_pPlayersRace;
@@ -271,7 +271,7 @@ BOOL CCombatMenuView::OnEraseBkgnd(CDC* /*pDC*/)
 /////////////////////////////////////////////////////////////////////////////////////////
 void CCombatMenuView::DrawCombatDecisionMenue(Graphics* g)
 {
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	CMajor* pMajor = m_pPlayersRace;
@@ -428,7 +428,7 @@ void CCombatMenuView::DrawCombatDecisionMenue(Graphics* g)
 
 void CCombatMenuView::DrawCombatInfoMenue(Graphics* g)
 {
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	CMajor* pMajor = m_pPlayersRace;
@@ -479,7 +479,7 @@ void CCombatMenuView::DrawCombatOrderMenue(Graphics* g)
 {
 	m_vShipRects.clear();
 
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	CMajor* pMajor = m_pPlayersRace;
@@ -688,7 +688,7 @@ void CCombatMenuView::DrawCombatOrderMenue(Graphics* g)
 void CCombatMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	if (!pDoc->m_bDataReceived)
@@ -844,7 +844,7 @@ void CCombatMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 void CCombatMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	if (!pDoc->m_bDataReceived)
@@ -941,7 +941,7 @@ void CCombatMenuView::OnRButtonDown(UINT nFlags, CPoint point)
 		return;
 
 	// TODO: Add your message handler code here and/or call default
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	if (!pDoc->m_bDataReceived)
@@ -990,7 +990,7 @@ void CCombatMenuView::OnRButtonDown(UINT nFlags, CPoint point)
 void CCombatMenuView::OnMouseMove(UINT nFlags, CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	if (!pDoc->m_bDataReceived)
@@ -1044,7 +1044,7 @@ void CCombatMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 /// @return	der erstellte Tooltip-Text
 CString CCombatMenuView::CreateTooltip(void)
 {
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	if (!pDoc->m_bDataReceived)
@@ -1109,7 +1109,7 @@ CString CCombatMenuView::CreateTooltip(void)
 
 void CCombatMenuView::CreateButtons()
 {
-	ASSERT((CBotf2Doc*)GetDocument());
+	ASSERT((CBotEDoc*)GetDocument());
 
 	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);

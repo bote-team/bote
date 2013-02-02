@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "IntelInfo.h"
-#include "Botf2Doc.h"
+#include "BotEDoc.h"
 #include "Races\RaceController.h"
 
 #include "EcoIntelObj.h"
@@ -24,7 +24,7 @@ CIntelInfo::~CIntelInfo(void)
 // sonstige Funktionen
 //////////////////////////////////////////////////////////////////////
 /// Funktion ermittelt alle Geheimdienstinformationen für den Besitzer dieses Objektes.
-void CIntelInfo::CalcIntelInfo(CBotf2Doc* pDoc, CMajor* pOurRace)
+void CIntelInfo::CalcIntelInfo(CBotEDoc* pDoc, CMajor* pOurRace)
 {
 	// Nur berechnen, wenn noch nicht zuvor berechnet wurde
 	if (m_bCalculated)

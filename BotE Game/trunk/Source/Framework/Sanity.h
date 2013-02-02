@@ -3,7 +3,7 @@
 class CShips;
 class CSector;
 class CSystem;
-class CBotf2Doc;
+class CBotEDoc;
 
 #include <set>
 
@@ -26,7 +26,7 @@ class CSanity
 	void SanityCheckSectorAndSystem(
 		const CSector& sector,
 		const CSystem& system,
-		const CBotf2Doc& doc);
+		const CBotEDoc& doc);
 	//static void ShipInfo(const CArray<CShip, CShip>& shiparray, int index, const CString& indexname);
 	void CheckShipUniqueness(const CShips& ship, std::set<CString>& already_encountered);
 private:

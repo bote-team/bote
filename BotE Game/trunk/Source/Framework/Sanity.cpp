@@ -4,7 +4,7 @@
 #include "Galaxy/Sector.h"
 #include "System/System.h"
 #include "Races/race.h"
-#include "Botf2Doc.h"
+#include "BotEDoc.h"
 #include "Races/RaceController.h"
 #include "Ships/Ships.h"
 
@@ -117,7 +117,7 @@ void CSanity::CheckShipUniqueness(const CShips& ship, std::set<CString>& already
 	Notify(s);
 }
 
-void CSanity::SanityCheckSectorAndSystem(const CSector& sector, const CSystem& system, const CBotf2Doc& doc)
+void CSanity::SanityCheckSectorAndSystem(const CSector& sector, const CSystem& system, const CBotEDoc& doc)
 {
 	CString s;
 	assert(!sector.HasOutpost() || ! sector.HasStarbase());

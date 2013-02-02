@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Botf2Doc.h"
+#include "BotEDoc.h"
 
 class CIntelligence;
 
@@ -11,7 +11,7 @@ private:
 public:
 	~CNewRoundDataCalculator(void);
 
-	CNewRoundDataCalculator(CBotf2Doc* pDoc);
+	CNewRoundDataCalculator(CBotEDoc* pDoc);
 
 
 	static void GetIntelligenceBoniFromSpecialTechsAndSetThem(const std::map<CString, CMajor*>* pmMajors);
@@ -36,5 +36,5 @@ public:
 	void CalcPreLoop();
 
 private:
-	CBotf2Doc* m_pDoc;
+	CBotEDoc* m_pDoc;
 };

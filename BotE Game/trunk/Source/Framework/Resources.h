@@ -1,13 +1,13 @@
 #pragma once
 
 
-class CBotf2Doc;
+class CBotEDoc;
 class CCommandLineParameters;
 class CMainFrame;
 
 namespace resources {
 
-	extern CBotf2Doc* pDoc;
+	extern CBotEDoc* pDoc;
 	extern const CCommandLineParameters* pClp;
 	extern CMainFrame* pMainFrame;
 }

@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "EventBombardment.h"
 #include "FontLoader.h"
-#include "botf2.h"
-#include "Botf2Doc.h"
+#include "BotE.h"
+#include "BotEDoc.h"
 #include "Races\RaceController.h"
 
 IMPLEMENT_SERIAL (CEventBombardment, CObject, 1)
@@ -50,7 +50,7 @@ void CEventBombardment::Draw(Graphics* g, CGraphicPool* graphicPool) const
 	StringFormat fontFormat;
 	SolidBrush fontBrush(Color::White);
 
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	CMajor* pMajor = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(m_sRace));

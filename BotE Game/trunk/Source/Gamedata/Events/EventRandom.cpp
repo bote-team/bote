@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "EventRandom.h"
 #include "FontLoader.h"
-#include "botf2.h"
-#include "Botf2Doc.h"
+#include "BotE.h"
+#include "BotEDoc.h"
 #include "Races\RaceController.h"
 
 IMPLEMENT_SERIAL (CEventRandom, CObject, 1)
@@ -51,7 +51,7 @@ void CEventRandom::Draw(Graphics* g, CGraphicPool* graphicPool) const//to do
 	StringFormat fontFormat;
 	SolidBrush fontBrush(Color::White);
 
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	CMajor* pMajor = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(m_sRace));

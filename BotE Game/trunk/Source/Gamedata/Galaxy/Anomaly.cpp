@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "Anomaly.h"
 #include "IOData.h"
-#include "botf2.h"
-#include "Botf2Doc.h"
+#include "BotE.h"
+#include "BotEDoc.h"
 #include "Races/RaceController.h"
 #include <cassert>
 #include "Ships/Ships.h"
@@ -322,7 +322,7 @@ void CAnomaly::ReduceScanPower(const CPoint &pt) const
 {
 	if (m_byType == BLACKHOLE || m_byType == RADIOPULSAR || m_byType == XRAYPULSAR || m_byType == MAGNETAR)
 	{
-		CBotf2Doc* pDoc = resources::pDoc;
+		CBotEDoc* pDoc = resources::pDoc;
 		assert(pDoc);
 
 		// Scanstärke verringern
@@ -338,7 +338,7 @@ void CAnomaly::ReduceScanPower(const CPoint &pt) const
 
 void CAnomaly::PerhabsStrand(CShips* pShip) const
 {
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	// Antriebstech der Schiffes ermitteln

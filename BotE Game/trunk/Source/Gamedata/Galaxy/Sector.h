@@ -1,5 +1,5 @@
 /*
- *   Copyright (C)2004-2011 Sir Pustekuchen
+ *   Copyright (C)2004-2013 Sir Pustekuchen
  *
  *   Author   :  Sir Pustekuchen
  *   Home     :  http://birth-of-the-empires.de
@@ -17,12 +17,12 @@
 
 #include "resources.h"
 #include "CommandLineParameters.h"
-#include "botf2.h"
+#include "BotE.h"
 
 using namespace std;
 
 // forward declaration
-class CBotf2Doc;
+class CBotEDoc;
 class CMajor;
 class CAnomaly;
 class CRace;
@@ -459,7 +459,7 @@ public:
 
 // Zeichenfunktionen für diese Klasse
 	/// Diese Funktion zeichnet den Namen des Sektors.
-	void DrawSectorsName(CDC *pDC, CBotf2Doc* pDoc, CMajor* pPlayer);
+	void DrawSectorsName(CDC *pDC, CBotEDoc* pDoc, CMajor* pPlayer);
 
 	//Should any their_race_id's ship in this sector be visible to our_race ?
 	//not for outposts/starbases
@@ -468,7 +468,7 @@ public:
 	//only for outposts/starbases
 	bool ShouldDrawOutpost(const CMajor& our_race, const CString& their_race_id) const;
 	/// Diese Funktion zeichnet die entsprechenden Schiffssymbole in den Sektor
-	void DrawShipSymbolInSector(Graphics *g, CBotf2Doc* pDoc, CMajor* pPlayer);
+	void DrawShipSymbolInSector(Graphics *g, CBotEDoc* pDoc, CMajor* pPlayer);
 
 private:
 	/// Die Koordinate des Sektors auf der Map

@@ -1,5 +1,5 @@
 /*
- *   Copyright (C)2004-2011 Sir Pustekuchen
+ *   Copyright (C)2004-2013 Sir Pustekuchen
  *
  *   Author   :  Sir Pustekuchen
  *   Home     :  http://birth-of-the-empires.de
@@ -15,7 +15,7 @@
 using namespace std;
 
 // forwar declaration
-class CBotf2Doc;
+class CBotEDoc;
 
 class CGenShipName : public CObject
 {
@@ -33,7 +33,7 @@ public:
 	virtual void Serialize(CArchive &ar);
 
 	/// Funktion zum einmaligen Einlesen der ganzen Schiffsnamen.
-	void Init(CBotf2Doc* pDoc);
+	void Init(CBotEDoc* pDoc);
 
 	/// Diese Funktion generiert einen einmaligen Schiffsnamen. Als Parameter werden dafür die Rasse <code>sRaceID</code>
 	/// und ein Parameter, welcher angibt ob es sich um eine Station handelt <code>station</code> übergeben.

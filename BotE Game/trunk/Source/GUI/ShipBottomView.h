@@ -1,5 +1,5 @@
 /*
- *   Copyright (C)2004-2011 Sir Pustekuchen
+ *   Copyright (C)2004-2013 Sir Pustekuchen
  *
  *   Author   :  Sir Pustekuchen
  *   Home     :  http://birth-of-the-empires.de
@@ -20,7 +20,7 @@ struct stDrawingContext {
 	}
 	Graphics *g;
 	CGraphicPool *gp;
-	CBotf2Doc* pDoc;
+	CBotEDoc* pDoc;
 	CRect r;
 	CString fontName;
 	SolidBrush *fontBrush;

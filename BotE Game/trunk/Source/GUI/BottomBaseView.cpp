@@ -2,7 +2,7 @@
 //
 
 #include "stdafx.h"
-#include "botf2.h"
+#include "BotE.h"
 #include "MainFrm.h"
 #include "BottomBaseView.h"
 #include "Races\RaceController.h"
@@ -77,7 +77,7 @@ BOOL CBottomBaseView::OnEraseBkgnd(CDC* /*pDC*/)
 
 Gdiplus::Color CBottomBaseView::GetFontColorForSmallButton(void)
 {
-	ASSERT((CBotf2Doc*)GetDocument());
+	ASSERT((CBotEDoc*)GetDocument());
 
 	CMajor* pPlayer = m_pPlayersRace;
 	ASSERT(pPlayer);

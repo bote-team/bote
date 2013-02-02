@@ -1,5 +1,5 @@
 /*
- *   Copyright (C)2004-2011 Sir Pustekuchen
+ *   Copyright (C)2004-2013 Sir Pustekuchen
  *
  *   Author   :  Sir Pustekuchen
  *   Home     :  http://birth-of-the-empires.de
@@ -10,13 +10,13 @@
 
 
 // CChatDlg-Dialogfeld
-class CBotf2Doc;
+class CBotEDoc;
 class CChatDlg : public CDialog
 {
 	DECLARE_DYNAMIC(CChatDlg)
 
 public:
-	CChatDlg(CBotf2Doc *pDoc, CWnd* pParent = NULL);   // Standardkonstruktor
+	CChatDlg(CBotEDoc *pDoc, CWnd* pParent = NULL);   // Standardkonstruktor
 	virtual ~CChatDlg();
 
 	/// Nimmt einen String entgegen, welcher danach im Chat angezeigt werden kann.
@@ -33,6 +33,6 @@ public:
 	afx_msg void OnBnClickedSend();
 
 private:
-	CBotf2Doc *m_pDoc;
+	CBotEDoc *m_pDoc;
 	afx_msg void OnBnClickedClose();
 };

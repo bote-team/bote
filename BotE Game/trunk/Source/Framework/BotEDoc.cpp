@@ -1,10 +1,10 @@
-// botf2Doc.cpp : Implementierung der Klasse CBotf2Doc
+// BotEDoc.cpp : Implementierung der Klasse CBotEDoc
 //
 
 #include "stdafx.h"
 #include "resources.h"
-#include "botf2.h"
-#include "botf2Doc.h"
+#include "BotE.h"
+#include "BotEDoc.h"
 #include "LZMA_BotE.h"
 #include "GalaxyMenuView.h"
 #include "SmallInfoView.h"
@@ -47,25 +47,25 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 /////////////////////////////////////////////////////////////////////////////
-// CBotf2Doc
+// CBotEDoc
 
-IMPLEMENT_DYNCREATE(CBotf2Doc, CDocument)
+IMPLEMENT_DYNCREATE(CBotEDoc, CDocument)
 
-BEGIN_MESSAGE_MAP(CBotf2Doc, CDocument)
-	//{{AFX_MSG_MAP(CBotf2Doc)
+BEGIN_MESSAGE_MAP(CBotEDoc, CDocument)
+	//{{AFX_MSG_MAP(CBotEDoc)
 		// HINWEIS - Hier werden Mapping-Makros vom Klassen-Assistenten eingefügt und entfernt.
 		//    Innerhalb dieser generierten Quelltextabschnitte NICHTS VERÄNDERN!
 	//}}AFX_MSG_MAP
-	ON_UPDATE_COMMAND_UI(ID_FILE_NEW, &CBotf2Doc::OnUpdateFileNew)
-	ON_UPDATE_COMMAND_UI(ID_FILE_OPEN, &CBotf2Doc::OnUpdateFileOpen)
+	ON_UPDATE_COMMAND_UI(ID_FILE_NEW, &CBotEDoc::OnUpdateFileNew)
+	ON_UPDATE_COMMAND_UI(ID_FILE_OPEN, &CBotEDoc::OnUpdateFileOpen)
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
-// CBotf2Doc Konstruktion/Destruktion
+// CBotEDoc Konstruktion/Destruktion
 
 #pragma warning(push)
 #pragma warning (disable:4351)
-CBotf2Doc::CBotf2Doc() :
+CBotEDoc::CBotEDoc() :
 	m_ptKO(0, 0),
 	m_ptCurrentCombatSector(-1, -1),
 	m_bCombatCalc(false),
@@ -110,7 +110,7 @@ CBotf2Doc::CBotf2Doc() :
 }
 #pragma warning(pop)
 
-CBotf2Doc::~CBotf2Doc()
+CBotEDoc::~CBotEDoc()
 {
 	resources::pDoc = NULL;
 
@@ -154,7 +154,7 @@ CBotf2Doc::~CBotf2Doc()
 	MYTRACE_DEINIT;
 }
 
-BOOL CBotf2Doc::OnNewDocument()
+BOOL CBotEDoc::OnNewDocument()
 {
 	if (!CDocument::OnNewDocument())
 		return FALSE;
@@ -187,7 +187,7 @@ BOOL CBotf2Doc::OnNewDocument()
 }
 
 /// Funktion schließt die Verbindung zum Server und beendet Bote.
-void CBotf2Doc::GameOver()
+void CBotEDoc::GameOver()
 {
 	// vom Server trennen
 	client.Disconnect();
@@ -201,14 +201,14 @@ void CBotf2Doc::GameOver()
 
 /// Funktion gibt die Rassen-ID der lokalen Spielerrasse zurück.
 /// @return Zeiger auf Majorrace-Rassenobjekt
-CString CBotf2Doc::GetPlayersRaceID(void) const
+CString CBotEDoc::GetPlayersRaceID(void) const
 {
 	return m_pRaceCtrl->GetMappedRaceID((network::RACE)client.GetClientRace());
 }
 
 /// Funktion gibt die Rassen-ID der lokalen Spielerrasse zurück.
 /// @return Zeiger auf Majorrace-Rassenobjekt
-CMajor* CBotf2Doc::GetPlayersRace(void) const
+CMajor* CBotEDoc::GetPlayersRace(void) const
 {
 	// zuerst muss eine Netzwerknummer, also RACE1 bis RACE6 (1-6)
 	// auf eine bestimmte Rassen-ID gemappt werden. Dies ist dann
@@ -220,9 +220,9 @@ CMajor* CBotf2Doc::GetPlayersRace(void) const
 }
 
 /////////////////////////////////////////////////////////////////////////////
-// CBotf2Doc Serialisierung
+// CBotEDoc Serialisierung
 
-void CBotf2Doc::Serialize(CArchive& ar)
+void CBotEDoc::Serialize(CArchive& ar)
 {
 	if (ar.IsStoring())
 	{
@@ -351,7 +351,7 @@ void CBotf2Doc::Serialize(CArchive& ar)
 	m_VictoryObserver.Serialize(ar);
 }
 
-void CBotf2Doc::SerializeSectorsAndSystems(CArchive& ar)
+void CBotEDoc::SerializeSectorsAndSystems(CArchive& ar)
 {
 	for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
 	{
@@ -374,7 +374,7 @@ void CBotf2Doc::SerializeSectorsAndSystems(CArchive& ar)
 }
 
 /// Serialisiert die Daten, welche am Anfang des Spiels einmal gesendet werden müssen.
-void CBotf2Doc::SerializeBeginGameData(CArchive& ar)
+void CBotEDoc::SerializeBeginGameData(CArchive& ar)
 {
 	m_bDataReceived = false;
 	// senden auf Serverseite
@@ -436,7 +436,7 @@ void CBotf2Doc::SerializeBeginGameData(CArchive& ar)
 	CMoralObserver::SerializeStatics(ar);
 }
 
-void CBotf2Doc::SerializeNextRoundData(CArchive &ar)
+void CBotEDoc::SerializeNextRoundData(CArchive &ar)
 {
 	m_bDataReceived = false;
 	// Daten der nächsten Runde serialisieren; auf Server-Seite senden, auf Client-Seite empfangen
@@ -567,7 +567,7 @@ void CBotf2Doc::SerializeNextRoundData(CArchive &ar)
 	MYTRACE("general")(MT::LEVEL_INFO, "... serialization of NextRoundData succesfull\n");
 }
 
-void CBotf2Doc::SerializeEndOfRoundData(CArchive &ar, network::RACE race)
+void CBotEDoc::SerializeEndOfRoundData(CArchive &ar, network::RACE race)
 {
 	if (ar.IsStoring())
 	{
@@ -659,7 +659,7 @@ void CBotf2Doc::SerializeEndOfRoundData(CArchive &ar, network::RACE race)
 }
 
 /// Funktion liest die Ini-Datei neu ein und legt die Werte neu fest.
-void CBotf2Doc::ResetIniSettings(void)
+void CBotEDoc::ResetIniSettings(void)
 {
 	CIniLoader* pIni = CIniLoader::GetInstance();
 	ASSERT(pIni);
@@ -720,7 +720,7 @@ void CBotf2Doc::ResetIniSettings(void)
 /// Funktion gibt die Koordinate des Hauptsystems einer Majorrace zurück.
 /// @param sMajor Rassen-ID
 /// @return Koordinate auf der Galaxiemap
-CPoint CBotf2Doc::GetRaceKO(const CString& sMajorID) const
+CPoint CBotEDoc::GetRaceKO(const CString& sMajorID) const
 {
 	const std::map<CString, std::pair<int, int>>::const_iterator race = m_mRaceKO.find(sMajorID);
 	if (race == m_mRaceKO.end())
@@ -728,7 +728,7 @@ CPoint CBotf2Doc::GetRaceKO(const CString& sMajorID) const
 	return CPoint(race->second.first, race->second.second);
 }
 
-void CBotf2Doc::SetKO(int x, int y)
+void CBotEDoc::SetKO(int x, int y)
 {
 	m_ptKO = CPoint(x, y);
 	CSmallInfoView::SetPlanet(NULL);
@@ -737,24 +737,24 @@ void CBotf2Doc::SetKO(int x, int y)
 		resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CPlanetBottomView));
 }
 
-void CBotf2Doc::SetCurrentShip(const CShipMap::iterator& position)
+void CBotEDoc::SetCurrentShip(const CShipMap::iterator& position)
 {
 	m_ShipMap.SetCurrentShip(position);
 	CSmallInfoView::SetDisplayMode(CSmallInfoView::DISPLAY_MODE_SHIP_BOTTEM_VIEW);
 }
-void CBotf2Doc::SetFleetShip(const CShipMap::iterator& position)
+void CBotEDoc::SetFleetShip(const CShipMap::iterator& position)
 {
 	m_ShipMap.SetFleetShip(position);
 	CSmallInfoView::SetDisplayMode(CSmallInfoView::DISPLAY_MODE_SHIP_BOTTEM_VIEW);
 }
-void CBotf2Doc::SetShipInFleet(const CShipMap::iterator& position)
+void CBotEDoc::SetShipInFleet(const CShipMap::iterator& position)
 {
 	FleetShip()->second->SetCurrentShip(position);
 	CSmallInfoView::SetDisplayMode(CSmallInfoView::DISPLAY_MODE_FLEET_MENU_VIEW);
 }
 
 /// Funktion lädt für die ausgewählte Spielerrasse alle Grafiken für die Views.
-void CBotf2Doc::LoadViewGraphics(void)
+void CBotEDoc::LoadViewGraphics(void)
 {
 	CMajor* pPlayersRace = GetPlayersRace();
 	ASSERT(pPlayersRace);
@@ -797,7 +797,7 @@ void CBotf2Doc::LoadViewGraphics(void)
 	}
 }
 
-void CBotf2Doc::DoViewWorkOnNewRound()
+void CBotEDoc::DoViewWorkOnNewRound()
 {
 	// Playersrace in Views festlegen
 	CMajor* pPlayersRace = GetPlayersRace();
@@ -847,7 +847,7 @@ void CBotf2Doc::DoViewWorkOnNewRound()
 }
 
 // Generiert ein neues Spiel
-void CBotf2Doc::PrepareData()
+void CBotEDoc::PrepareData()
 {
 	MYTRACE("general")(MT::LEVEL_INFO, "Begin preparing game data...\n");
 
@@ -856,7 +856,7 @@ void CBotf2Doc::PrepareData()
 		// neue Majors anlegen
 		if (!m_pRaceCtrl->Init())
 		{
-			AfxMessageBox("CBotf2Doc::PrepareData(): Could not initiate races!");
+			AfxMessageBox("CBotEDoc::PrepareData(): Could not initiate races!");
 			exit(1);
 		}
 		// Spieler den Majors zuweisen
@@ -959,7 +959,7 @@ void CBotf2Doc::PrepareData()
 }
 
 /// Funktion generiert die Galaxiemap inkl. der ganzen Systeme und Planeten zu Beginn eines neuen Spiels.
-void CBotf2Doc::GenerateGalaxy()
+void CBotEDoc::GenerateGalaxy()
 {
 	///////////////////////////////////////////////////////////////////////
 	// Galaxiengröße festlegen
@@ -1240,7 +1240,7 @@ void CBotf2Doc::GenerateGalaxy()
 				CMinor* pMinor = m_pRaceCtrl->GetMinorRace(GetSector(x, y).GetName());
 				if (!pMinor)
 				{
-					AfxMessageBox("Error in function CBotf2Doc::GenerateGalaxy(): Could not create Minorrace");
+					AfxMessageBox("Error in function CBotEDoc::GenerateGalaxy(): Could not create Minorrace");
 				}
 				else
 				{
@@ -1305,7 +1305,7 @@ static bool HumanPlayerInCombat(const CShipMap& ships, const CPoint& CurrentComb
 }
 //END: helper functions for NextRound()
 ////////////////////////////////////////////////
-void CBotf2Doc::NextRound()
+void CBotEDoc::NextRound()
 {
 	// gibt es für diese Runde Sektoren in welchen ein Kampf stattfand
 	bool bCombatInCurrentRound = !m_sCombatSectors.empty();
@@ -1487,7 +1487,7 @@ void CBotf2Doc::NextRound()
 	MYTRACE("general")(MT::LEVEL_INFO, "\nNEXT ROUND calculation successfull\n", GetCurrentRound());
 }
 
-void CBotf2Doc::ApplyShipsAtStartup()
+void CBotEDoc::ApplyShipsAtStartup()
 {
 	// Name des zu öffnenden Files
 	CString fileName= CIOData::GetInstance()->GetAppPath() + "Data\\Ships\\StartShips.data";
@@ -1619,7 +1619,7 @@ void CBotf2Doc::ApplyShipsAtStartup()
 	}
 }
 
-void CBotf2Doc::ApplyTroopsAtStartup()
+void CBotEDoc::ApplyTroopsAtStartup()
 {
 	CString fileName = CIOData::GetInstance()->GetAppPath() + "Data\\Troops\\StartTroops.data";
 	CStdioFile file;
@@ -1668,7 +1668,7 @@ void CBotf2Doc::ApplyTroopsAtStartup()
 
 
 
-void CBotf2Doc::ApplyBuildingsAtStartup()
+void CBotEDoc::ApplyBuildingsAtStartup()
 {
 	// Name des zu öffnenden Files
 	CString fileName = CIOData::GetInstance()->GetAppPath() + "Data\\Buildings\\StartBuildings.data";
@@ -1809,7 +1809,7 @@ void CBotf2Doc::ApplyBuildingsAtStartup()
 	}
 }
 
-void CBotf2Doc::ReadTroopInfosFromFile()
+void CBotEDoc::ReadTroopInfosFromFile()
 {
 //Neu: Truppen werden aus Datei gelesen
 	CString fileName = CIOData::GetInstance()->GetAppPath() + "Data\\Troops\\Troops.data";
@@ -1849,7 +1849,7 @@ void CBotf2Doc::ReadTroopInfosFromFile()
 }
 
 
-void CBotf2Doc::ReadBuildingInfosFromFile()
+void CBotEDoc::ReadBuildingInfosFromFile()
 {
 	for (int i = 0; i < BuildingInfo.GetSize(); )
 		BuildingInfo.RemoveAt(i);
@@ -2047,7 +2047,7 @@ void CBotf2Doc::ReadBuildingInfosFromFile()
 
 // Funktion ließt aus der Datei die Informationen zu allen Schiffen ein und speichert diese im dynamischen Feld
 // später können wir ingame diese Informationen ändern und uns unsere eigenen Schiffchen bauen
-void CBotf2Doc::ReadShipInfosFromFile()
+void CBotEDoc::ReadShipInfosFromFile()
 {
 	CShipInfo ShipInfo;
 	int i = 0;
@@ -2198,7 +2198,7 @@ void CBotf2Doc::ReadShipInfosFromFile()
 }
 
 // Später noch hinzufügen, dass auch andere Rassen bauen können
-void CBotf2Doc::BuildBuilding(USHORT id, const CPoint& KO)
+void CBotEDoc::BuildBuilding(USHORT id, const CPoint& KO)
 {
 	CBuilding building(id);
 	BOOLEAN isOnline = this->GetBuildingInfo(id).GetAllwaysOnline();
@@ -2206,7 +2206,7 @@ void CBotf2Doc::BuildBuilding(USHORT id, const CPoint& KO)
 	GetSystem(KO.x, KO.y).AddNewBuilding(building);
 }
 
-CShipMap::iterator CBotf2Doc::BuildShip(int nID, const CPoint& KO, const CString& sOwnerID)
+CShipMap::iterator CBotEDoc::BuildShip(int nID, const CPoint& KO, const CString& sOwnerID)
 {
 	CRace* pOwner = m_pRaceCtrl->GetRace(sOwnerID);
 	if (!pOwner)
@@ -2243,7 +2243,7 @@ CShipMap::iterator CBotf2Doc::BuildShip(int nID, const CPoint& KO, const CString
 /// Funktion zum Löschen des Schiffes aus dem Schiffsarray.
 /// @param ship Iterator des Schiffes im Array
 /// iterator is updated to the new position of the element following the deleted one
-void CBotf2Doc::RemoveShip(CShipMap::iterator& ship)
+void CBotEDoc::RemoveShip(CShipMap::iterator& ship)
 {
 	if (ship->second->HasFleet())
 	{
@@ -2257,7 +2257,7 @@ void CBotf2Doc::RemoveShip(CShipMap::iterator& ship)
 /// Eigenschaften der übergebenen Schiffes.
 /// @param pShip Schiff welches durch Spezialforschungen eventuell verbessert wird
 /// @param pShipOwner Zeiger auf den Besitzer des Schiffes
-void CBotf2Doc::AddSpecialResearchBoniToShip(CShips* pShip, CMajor* pShipOwner) const
+void CBotEDoc::AddSpecialResearchBoniToShip(CShips* pShip, CMajor* pShipOwner) const
 {
 	if (!pShip || !pShipOwner)
 		return;
@@ -2365,7 +2365,7 @@ void CBotf2Doc::AddSpecialResearchBoniToShip(CShips* pShip, CMajor* pShipOwner) 
 }
 
 /// Die Truppe mit der ID <code>ID</code> wird im System mit der Koordinate <code>ko</code> gebaut.
-void CBotf2Doc::BuildTroop(BYTE ID, CPoint ko)
+void CBotEDoc::BuildTroop(BYTE ID, CPoint ko)
 {
 	// Mal Testweise paar Truppen anlegen
 	GetSystem(ko.x, ko.y).AddTroop((CTroop*)&m_TroopInfo.GetAt(ID));
@@ -2398,7 +2398,7 @@ void CBotf2Doc::BuildTroop(BYTE ID, CPoint ko)
 }
 
 // Funktion generiert die Starmaps, so wie sie nach Rundenberechnung auch angezeigt werden können.
-void CBotf2Doc::GenerateStarmap(const CString& sOnlyForRaceID)
+void CBotEDoc::GenerateStarmap(const CString& sOnlyForRaceID)
 {
 	map<CString, CMajor*>* pmMajors = m_pRaceCtrl->GetMajors();
 	// Starmaps aller Majors löschen und neu anlegen
@@ -2469,22 +2469,22 @@ void CBotf2Doc::GenerateStarmap(const CString& sOnlyForRaceID)
 }
 
 /////////////////////////////////////////////////////////////////////////////
-// CBotf2Doc Diagnose
+// CBotEDoc Diagnose
 
 #ifdef _DEBUG
-void CBotf2Doc::AssertValid() const
+void CBotEDoc::AssertValid() const
 {
 	CDocument::AssertValid();
 }
 
-void CBotf2Doc::Dump(CDumpContext& dc) const
+void CBotEDoc::Dump(CDumpContext& dc) const
 {
 	CDocument::Dump(dc);
 }
 #endif //_DEBUG
 
 /////////////////////////////////////////////////////////////////////////////
-// CBotf2Doc Befehle
+// CBotEDoc Befehle
 
 /////////////////////////////////////////////////////////////////////////////
 // private Funktionen
@@ -2492,7 +2492,7 @@ void CBotf2Doc::Dump(CDumpContext& dc) const
 
 /// Diese Funktion führt allgemeine Berechnung durch, die immer zu Beginn der NextRound-Calculation stattfinden
 /// müssen. So werden z.B. alte Nachrichten gelöscht, die Statistiken berechnet usw..
-void CBotf2Doc::CalcPreDataForNextRound()
+void CBotEDoc::CalcPreDataForNextRound()
 {
 	m_iRound++;
 
@@ -2542,7 +2542,7 @@ void CBotf2Doc::CalcPreDataForNextRound()
 }
 
 /// Diese Funktion berechnet den kompletten Systemangriff.
-void CBotf2Doc::CalcSystemAttack()
+void CBotEDoc::CalcSystemAttack()
 {
 	// Systemangriff durchführen
 	// Set mit allen Minors, welche während eines Systemangriffs vernichtet wurden. Diese werden am Ende der
@@ -3256,7 +3256,7 @@ void CBotf2Doc::CalcSystemAttack()
 }
 
 /// Diese Funktion berechnet alles im Zusammenhang mit dem Geheimdienst.
-void CBotf2Doc::CalcIntelligence()
+void CBotEDoc::CalcIntelligence()
 {
 	// der Geheimdienst muss vor der Forschung abgehandelt werden, da es durch Geheimdienstaktionen dazu kommen kann,
 	// dass aktuell produzierte Forschungspunkte gestohlen werden. Diese werden dem Opfer abgezogen und dem Akteur
@@ -3338,7 +3338,7 @@ void CBotf2Doc::CalcIntelligence()
 }
 
 /// Diese Funktion berechnet die Forschung eines Imperiums
-void CBotf2Doc::CalcResearch()
+void CBotEDoc::CalcResearch()
 {
 	// Forschungsboni, die die Systeme machen holen. Wir benötigen diese dann für die CalculateResearch Funktion
 	std::map<CString, CSystemProd::RESEARCHBONI> researchBoni;
@@ -3406,7 +3406,7 @@ void CBotf2Doc::CalcResearch()
 
 /// Diese Funktion berechnet die Auswirkungen von diplomatischen Angeboten und ob Minorraces Angebote an
 /// Majorraces abgeben.
-void CBotf2Doc::CalcDiplomacy()
+void CBotEDoc::CalcDiplomacy()
 {
 	using namespace network;
 
@@ -3440,7 +3440,7 @@ static void ClearAllPoints(const std::map<CString, CMajor*>* pmMajors) {
 		it->second->GetEmpire()->ClearAllPoints();
 	}
 }
-void CBotf2Doc::UpdateGlobalBuildings(const CSystem& system) {
+void CBotEDoc::UpdateGlobalBuildings(const CSystem& system) {
 	// Jedes Sonnensystem wird durchgegangen und alle Gebäude des Systems werden in die Variable
 	// m_GlobalBuildings geschrieben. Damit wissen welche Gebäude in der Galaxie stehen. Benötigt wird
 	// dies z.B. um zu Überprüfen, ob max. X Gebäude einer bestimmten ID in einem Imperium stehen.
@@ -3465,7 +3465,7 @@ void CBotf2Doc::UpdateGlobalBuildings(const CSystem& system) {
 ////////////////////////////////////////////////
 /// Diese Funktion berechnet das Planetenwachstum, die Aufträge in der Bauliste und sonstige Einstellungen aus der
 /// alten Runde.
-void CBotf2Doc::CalcOldRoundData()
+void CBotEDoc::CalcOldRoundData()
 {
 	COldRoundDataCalculator calc(this);
 	m_GlobalBuildings.Reset();
@@ -3549,7 +3549,7 @@ void CBotf2Doc::CalcOldRoundData()
 
 /// Diese Funktion berechnet die Produktion der Systeme, was in den Baulisten gebaut werden soll und sonstige
 /// Daten für die neue Runde.
-void CBotf2Doc::CalcNewRoundData()
+void CBotEDoc::CalcNewRoundData()
 {
 	CNewRoundDataCalculator new_round_data_calc(this);
 
@@ -3610,14 +3610,14 @@ void CBotf2Doc::CalcNewRoundData()
 }
 
 /// Diese Funktion berechnet die kompletten Handelsaktivitäten.
-void CBotf2Doc::CalcTrade()
+void CBotEDoc::CalcTrade()
 {
 	// Hier berechnen wir alle Handelsaktionen
 	USHORT taxMoney[] = {0,0,0,0,0};	// alle Steuern auf eine Ressource
 
 	map<CString, CMajor*>* pmMajors = m_pRaceCtrl->GetMajors();
 	if (pmMajors->empty())
-		AfxMessageBox("Error in CBotf2Doc::CalcTrade(): Could not get any major from race controller!");
+		AfxMessageBox("Error in CBotEDoc::CalcTrade(): Could not get any major from race controller!");
 
 	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 	{
@@ -3753,7 +3753,7 @@ void CBotf2Doc::CalcTrade()
 }
 
 /// Diese Funktion berechnet die Schiffsbefehle. Der Systemangriffsbefehl ist davon ausgenommen.
-void CBotf2Doc::CalcShipOrders()
+void CBotEDoc::CalcShipOrders()
 {
 	// Hier kommt die Auswertung der Schiffsbefehle
 	bool increment = false;
@@ -4513,7 +4513,7 @@ void CBotf2Doc::CalcShipOrders()
 }
 
 /// Diese Funktion berechnet die Schiffsbewegung und noch weitere kleine Sachen im Zusammenhang mit Schiffen.
-void CBotf2Doc::CalcShipMovement()
+void CBotEDoc::CalcShipMovement()
 {
 	// CHECK WW: Das kann theoretisch weg, die Diplomatie wird erst nach der Bewegung berechnet
 	// Jetzt die Starmap abgleichen, das wir nicht auf Gebiete fliegen können, wenn wir einen NAP mit einer Rasse haben
@@ -4707,8 +4707,8 @@ void CBotf2Doc::CalcShipMovement()
 		return;
 	CheckShipsDestroyedByAnomaly();
 }
-/////BEGIN: HELPER FUNCTIONS FOR void CBotf2Doc::CalcShipMovement()
-void CBotf2Doc::CheckShipsDestroyedByAnomaly() {
+/////BEGIN: HELPER FUNCTIONS FOR void CBotEDoc::CalcShipMovement()
+void CBotEDoc::CheckShipsDestroyedByAnomaly() {
 	// prüfen ob irgendwelche Schiffe durch eine Anomalie zerstört wurden
 	for(CShipMap::iterator i = m_ShipMap.begin(); i != m_ShipMap.end();)
 	{
@@ -4728,11 +4728,11 @@ void CBotf2Doc::CheckShipsDestroyedByAnomaly() {
 		RemoveShip(i);
 	}
 }
-/////END: HELPER FUNCTIONS FOR void CBotf2Doc::CalcShipMovement()
+/////END: HELPER FUNCTIONS FOR void CBotEDoc::CalcShipMovement()
 
 /// Funktion überprüft, ob irgendwo ein Schiffskampf stattfindet. Wenn ja und es sind menschliche Spieler beteiligt,
 /// so werden ihnen alle jeweils beteiligten Schiffe geschickt, so dass sie dort Befehle geben können.
-bool CBotf2Doc::IsShipCombat()
+bool CBotEDoc::IsShipCombat()
 {
 	m_bCombatCalc = false;
 
@@ -4779,7 +4779,7 @@ bool CBotf2Doc::IsShipCombat()
 }
 
 /// Diese Funktion berechnet einen möglichen Weltraumkampf und dessen Auswirkungen.
-void CBotf2Doc::CalcShipCombat()
+void CBotEDoc::CalcShipCombat()
 {
 	if (!m_bCombatCalc)
 		return;
@@ -5005,8 +5005,8 @@ void CBotf2Doc::CalcShipCombat()
 	}
 }
 
-/////BEGIN: HELPER FUNCTIONS FOR void CBotf2Doc::CalcShipEffects()
-void CBotf2Doc::CalcShipRetreat() {
+/////BEGIN: HELPER FUNCTIONS FOR void CBotEDoc::CalcShipEffects()
+void CBotEDoc::CalcShipRetreat() {
 	// Schiffe mit Rückzugsbefehl auf ein Feld neben dem aktuellen Feld setzen
 	for(CShipMap::iterator ship = m_ShipMap.begin(); ship != m_ShipMap.end(); ++ship) {
 		const CString& ship_owner = ship->second->GetOwnerOfShip();
@@ -5054,11 +5054,11 @@ void CBotf2Doc::CalcShipRetreat() {
 	}//	for (int i = 0; i < m_ShipMap.GetSize(); i++)
 	m_mShipRetreatSectors.clear();
 }
-/////END: HELPER FUNCTIONS FOR void CBotf2Doc::CalcShipEffects()
+/////END: HELPER FUNCTIONS FOR void CBotEDoc::CalcShipEffects()
 
 /// Diese Funktion berechnet die Auswirkungen von Schiffen und Stationen auf der Karte. So werden hier z.B. Sektoren
 /// gescannt, Rassen kennengelernt und die Schiffe den Sektoren bekanntgegeben.
-void CBotf2Doc::CalcShipEffects()
+void CBotEDoc::CalcShipEffects()
 {
 	CalcShipRetreat();
 
@@ -5100,9 +5100,9 @@ void CBotf2Doc::CalcShipEffects()
 }
 
 ///////////////////////////////////////////////////////////////////////
-/////BEGINN: HELPER FUNCTIONS FOR void CBotf2Doc::CalcContactNewRaces()
+/////BEGINN: HELPER FUNCTIONS FOR void CBotEDoc::CalcContactNewRaces()
 
-void CBotf2Doc::CalcContactClientWork(CMajor& Major, const CRace& ContactedRace) {
+void CBotEDoc::CalcContactClientWork(CMajor& Major, const CRace& ContactedRace) {
 	const network::RACE client = m_pRaceCtrl->GetMappedClientID(Major.GetRaceID());
 	m_iSelectedView[client] = EMPIRE_VIEW;
 	if(!Major.IsHumanPlayer())
@@ -5117,7 +5117,7 @@ void CBotf2Doc::CalcContactClientWork(CMajor& Major, const CRace& ContactedRace)
 	m_SoundMessages[client].Add(entry);
 }
 
-void CBotf2Doc::CalcContactShipToMajorShip(CRace& Race, const CSector& sector, const CPoint& p) {
+void CBotEDoc::CalcContactShipToMajorShip(CRace& Race, const CSector& sector, const CPoint& p) {
 	// treffen mit einem Schiff eines anderen Majors
 	// wenn zwei Schiffe verschiedener Rasse in diesem Sektor stationiert sind, so können sich die Besitzer auch kennenlernen
 	const std::map<CString, CMajor*>& mMajors = *m_pRaceCtrl->GetMajors();
@@ -5132,7 +5132,7 @@ void CBotf2Doc::CalcContactShipToMajorShip(CRace& Race, const CSector& sector, c
 	}
 }
 
-void CBotf2Doc::CalcContactCommutative(CMajor& Major,
+void CBotEDoc::CalcContactCommutative(CMajor& Major,
 	CRace& ContactedRace, const CPoint& p) {
 
 	Major.Contact(ContactedRace, p);
@@ -5142,7 +5142,7 @@ void CBotf2Doc::CalcContactCommutative(CMajor& Major,
 		CalcContactClientWork(dynamic_cast<CMajor&>(ContactedRace), Major);
 }
 
-void CBotf2Doc::CalcContactMinor(CMajor& Major, const CSector& sector, const CPoint& p) {
+void CBotEDoc::CalcContactMinor(CMajor& Major, const CSector& sector, const CPoint& p) {
 	if(!sector.GetMinorRace())
 		return;
 	// in dem Sektor lebt eine Minorrace
@@ -5154,11 +5154,11 @@ void CBotf2Doc::CalcContactMinor(CMajor& Major, const CSector& sector, const CPo
 		CalcContactCommutative(Major, *pMinor, p);
 }
 
-/////END: HELPER FUNCTIONS FOR void CBotf2Doc::CalcContactNewRaces()
+/////END: HELPER FUNCTIONS FOR void CBotEDoc::CalcContactNewRaces()
 ///////////////////////////////////////////////////////////////////////
 
 /// Diese Funktion überprüft, ob neue Rassen kennengelernt wurden.
-void CBotf2Doc::CalcContactNewRaces()
+void CBotEDoc::CalcContactNewRaces()
 {
 	for(CShipMap::const_iterator y = m_ShipMap.begin(); y != m_ShipMap.end(); ++y)
 	{
@@ -5198,7 +5198,7 @@ void CBotf2Doc::CalcContactNewRaces()
 
 /// Funktion berechnet die Auswirkungen wenn eine Minorrace eleminiert wurde und somit aus dem Spiel ausscheidet.
 /// @param pMinor Minorrace welche aus dem Spiel ausscheidet
-void CBotf2Doc::CalcEffectsMinorEleminated(CMinor* pMinor)
+void CBotEDoc::CalcEffectsMinorEleminated(CMinor* pMinor)
 {
 	if (!pMinor)
 	{
@@ -5277,7 +5277,7 @@ void CBotf2Doc::CalcEffectsMinorEleminated(CMinor* pMinor)
 }
 
 /// Diese Funktion führt allgemeine Berechnung durch, die immer zum Ende der NextRound-Calculation stattfinden müssen.
-void CBotf2Doc::CalcEndDataForNextRound()
+void CBotEDoc::CalcEndDataForNextRound()
 {
 	// Nachdem Außenposten und Sternbasen auch den Sektoren wieder bekanntgegeben wurden, können wir die Besitzerpunkte
 	// für die Sektoren berechnen.
@@ -5610,7 +5610,7 @@ void CBotf2Doc::CalcEndDataForNextRound()
 }
 
 /// Funktion berechnet, ob zufällig Alienschiffe ins Spiel kommen.
-void CBotf2Doc::CalcRandomAlienEntities()
+void CBotEDoc::CalcRandomAlienEntities()
 {
 	const CIniLoader* pIni = CIniLoader::GetInstance();
 	if (!pIni->ReadValueDefault("Special", "ALIENENTITIES", true))
@@ -5766,7 +5766,7 @@ void CBotf2Doc::CalcRandomAlienEntities()
 }
 
 /// Funktion berechnet Auswirkungen von Alienschiffe auf Systeme, über denen sie sich befinden.
-void CBotf2Doc::CalcAlienShipEffects()
+void CBotEDoc::CalcAlienShipEffects()
 {
 	bool bBattleStationIngame = false;	// merkt sich ob die Kampfstation noch im Spiel ist
 
@@ -6104,19 +6104,19 @@ void CBotf2Doc::CalcAlienShipEffects()
 	}
 }
 
-void CBotf2Doc::OnUpdateFileNew(CCmdUI *pCmdUI)
+void CBotEDoc::OnUpdateFileNew(CCmdUI *pCmdUI)
 {
 	// TODO: Fügen Sie hier Ihren Befehlsaktualisierungs-UI-Behandlungscode ein.
 	pCmdUI->Enable(FALSE);
 }
 
-void CBotf2Doc::OnUpdateFileOpen(CCmdUI *pCmdUI)
+void CBotEDoc::OnUpdateFileOpen(CCmdUI *pCmdUI)
 {
 	// TODO: Fügen Sie hier Ihren Befehlsaktualisierungs-UI-Behandlungscode ein.
 	pCmdUI->Enable(FALSE);
 }
 
-BOOL CBotf2Doc::OnOpenDocument(LPCTSTR lpszPathName)
+BOOL CBotEDoc::OnOpenDocument(LPCTSTR lpszPathName)
 {
 //	return __super::OnOpenDocument(lpszPathName);
 
@@ -6208,7 +6208,7 @@ error:
 	return FALSE;
 }
 
-BOOL CBotf2Doc::OnSaveDocument(LPCTSTR lpszPathName)
+BOOL CBotEDoc::OnSaveDocument(LPCTSTR lpszPathName)
 {
 //	return __super::OnSaveDocument(lpszPathName);
 
@@ -6277,7 +6277,7 @@ BOOL CBotf2Doc::OnSaveDocument(LPCTSTR lpszPathName)
 	return TRUE;
 }
 
-void CBotf2Doc::AllocateSectorsAndSystems()
+void CBotEDoc::AllocateSectorsAndSystems()
 {
 	STARMAP_TOTALWIDTH = STARMAP_SECTORS_HCOUNT * STARMAP_SECTOR_WIDTH;
 	STARMAP_TOTALHEIGHT = STARMAP_SECTORS_VCOUNT * STARMAP_SECTOR_HEIGHT;
@@ -6287,7 +6287,7 @@ void CBotf2Doc::AllocateSectorsAndSystems()
 	m_Systems.resize(size);
  }
 
-void CBotf2Doc::RandomSeed(const int* OnlyIfDifferentThan) {
+void CBotEDoc::RandomSeed(const int* OnlyIfDifferentThan) {
 	const CIniLoader* pIni = CIniLoader::GetInstance();
 	int nSeed = pIni->ReadValueDefault("Special", "RANDOMSEED", -1);
 	if(OnlyIfDifferentThan && *OnlyIfDifferentThan == nSeed)

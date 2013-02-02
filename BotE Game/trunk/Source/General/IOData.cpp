@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "IOData.h"
-#include "botf2.h"
+#include "BotE.h"
 #include "resources.h"
 #include "CommandLineParameters.h"
 

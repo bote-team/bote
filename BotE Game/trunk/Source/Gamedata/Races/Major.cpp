@@ -3,8 +3,8 @@
 #include "AI\MajorAI.h"
 #include "General/ResourceManager.h"
 #include <algorithm>
-#include "botf2.h"
-#include "Botf2Doc.h"
+#include "BotE.h"
+#include "BotEDoc.h"
 #include "RaceController.h"
 #include "Ships/Ships.h"
 
@@ -492,7 +492,7 @@ void CMajor::Contact(const CRace& Race, const CPoint& p)
 bool CMajor::AHumanPlays() const {
 	if(!IsHumanPlayer())
 		return false;
-	const CBotf2Doc& doc = *resources::pDoc;
+	const CBotEDoc& doc = *resources::pDoc;
 	const CCommandLineParameters& clp = *resources::pClp;
 
 	return doc.GetCurrentRound() > clp.GetAutoTurns();
@@ -502,7 +502,7 @@ void CMajor::AddToLostShipHistory(const CShips& Ship, const CString& sEvent,
 	const CString& sStatus, unsigned short round)
 {
 	const CPoint& co = Ship.GetKO();
-	const CBotf2Doc& doc = *resources::pDoc;
+	const CBotEDoc& doc = *resources::pDoc;
 	m_ShipHistory.ModifyShip(&Ship, doc.GetSector(co.x, co.y).GetName(TRUE), round, sEvent, sStatus);
 }
 
@@ -534,7 +534,7 @@ void CMajor::LostShipToAnomaly(const CShips& ship, const CString& anomaly)
 	m_Empire.AddMessage(message);
 	if (IsHumanPlayer())
 	{
-		CBotf2Doc& doc = *resources::pDoc;
+		CBotEDoc& doc = *resources::pDoc;
 		network::RACE client = doc.m_pRaceCtrl->GetMappedClientID(GetRaceID());
 		doc.m_iSelectedView[client] = EMPIRE_VIEW;
 	}

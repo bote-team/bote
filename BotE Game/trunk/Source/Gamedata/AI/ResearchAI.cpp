@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "ResearchAI.h"
-#include "Botf2Doc.h"
+#include "BotEDoc.h"
 #include "Races\RaceController.h"
 
 CResearchAI::CResearchAI(void)
@@ -11,7 +11,7 @@ CResearchAI::~CResearchAI(void)
 {
 }
 
-void CResearchAI::Calc(CBotf2Doc* pDoc)
+void CResearchAI::Calc(CBotEDoc* pDoc)
 {
 	ASSERT(pDoc);
 

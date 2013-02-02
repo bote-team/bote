@@ -1,5 +1,5 @@
 /*
- *   Copyright (C)2004-2011 Sir Pustekuchen
+ *   Copyright (C)2004-2013 Sir Pustekuchen
  *
  *   Author   :  Sir Pustekuchen
  *   Home     :  http://birth-of-the-empires.de
@@ -10,7 +10,7 @@
 #include "IntelAI.h"
 #include <map>
 
-class CBotf2Doc;
+class CBotEDoc;
 class CSectorAI;
 
 using namespace std;
@@ -22,7 +22,7 @@ class CAIPrios
 {
 public:
 	/// Konstruktor
-	CAIPrios(CBotf2Doc* pDoc);
+	CAIPrios(CBotEDoc* pDoc);
 
 	/// Destruktor
 	~CAIPrios(void);
@@ -76,7 +76,7 @@ private:
 	CIntelAI m_IntelAI;
 
 	/// Ein Zeiger auf das Document.
-	CBotf2Doc* m_pDoc;
+	CBotEDoc* m_pDoc;
 };
 
 /*

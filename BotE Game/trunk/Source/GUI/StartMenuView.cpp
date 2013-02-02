@@ -8,7 +8,7 @@
 #include "ChooseRaceView.h"
 #include "NewGameView.h"
 
-#include "Botf2Doc.h"
+#include "BotEDoc.h"
 #include "MainFrm.h"
 #include "IniLoader.h"
 #include "SettingsDlg.h"
@@ -100,7 +100,7 @@ void CStartMenuView::Dump(CDumpContext& dc) const
 void CStartMenuView::OnDraw(CDC* dc)
 {
 	// TODO: Fügen Sie hier Ihren spezialisierten Code ein, und/oder rufen Sie die Basisklasse auf.
-	ASSERT((CBotf2Doc*)GetDocument());
+	ASSERT((CBotEDoc*)GetDocument());
 
 	CMyMemDC pDC(dc);
 	CRect client;
@@ -169,7 +169,7 @@ void CStartMenuView::OnInitialUpdate()
 	CFormView::OnInitialUpdate();
 
 	// TODO: Fügen Sie hier Ihren spezialisierten Code ein, und/oder rufen Sie die Basisklasse auf.
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	m_pBkgndImg = pDoc->GetGraphicPool()->GetGDIGraphic("Events\\Startmenu.boj");
@@ -283,7 +283,7 @@ void CStartMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 
 void CStartMenuView::OnBnClickedNewGame()
 {
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 	pDoc->m_bGameLoaded = false;
 
@@ -335,7 +335,7 @@ void CStartMenuView::OnBnClickedOptions()
 
 	CSettingsDlg dlg;
 	if (dlg.DoModal() == IDOK)
-		CBotf2Doc::RandomSeed(&nOldSeed);
+		CBotEDoc::RandomSeed(&nOldSeed);
 }
 
 void CStartMenuView::OnBnClickedExit()
@@ -384,7 +384,7 @@ void CStartMenuView::OnClientDisconnected()
 	// zur ersten Seite zurückkehren
 	if (!m_pChooseRaceView->IsServer())
 	{
-		CBotf2Doc* pDoc = resources::pDoc;
+		CBotEDoc* pDoc = resources::pDoc;
 		if (!pDoc->m_bDontExit)
 		{
 			MessageBox(CResourceManager::GetString("SERVERERROR1"), CResourceManager::GetString("ERROR"), MB_ICONEXCLAMATION | MB_OK);
@@ -403,7 +403,7 @@ void CStartMenuView::OnBeginGame(network::CBeginGame *pMsg)
 	// Client: der Server hat das Spiel begonnen
 	// bei Clients, auf denen nicht der Server läuft, von selbst auf die nächste Page wechseln
 
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 	if (!pDoc)
 		return;

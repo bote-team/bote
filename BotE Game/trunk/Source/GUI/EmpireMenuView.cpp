@@ -2,7 +2,7 @@
 //
 
 #include "stdafx.h"
-#include "botf2.h"
+#include "BotE.h"
 #include "MainFrm.h"
 #include "SystemMenuView.h"
 #include "ResearchMenuView.h"
@@ -80,7 +80,7 @@ END_MESSAGE_MAP()
 
 void CEmpireMenuView::OnNewRound()
 {
-	ASSERT((CBotf2Doc*)GetDocument());
+	ASSERT((CBotEDoc*)GetDocument());
 
 	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
@@ -103,7 +103,7 @@ void CEmpireMenuView::OnNewRound()
 // CEmpireMenuView drawing
 void CEmpireMenuView::OnDraw(CDC* dc)
 {
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	if (!pDoc->m_bDataReceived)
@@ -158,7 +158,7 @@ void CEmpireMenuView::OnInitialUpdate()
 /// Funktion lädt die rassenspezifischen Grafiken.
 void CEmpireMenuView::LoadRaceGraphics()
 {
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	CMajor* pMajor = m_pPlayersRace;
@@ -195,7 +195,7 @@ BOOL CEmpireMenuView::OnEraseBkgnd(CDC* /*pDC*/)
 /////////////////////////////////////////////////////////////////////////////////////////
 void CEmpireMenuView::DrawEmpireNewsMenue(Graphics* g)
 {
-	ASSERT((CBotf2Doc*)GetDocument());
+	ASSERT((CBotEDoc*)GetDocument());
 
 	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
@@ -305,7 +305,7 @@ void CEmpireMenuView::DrawEmpireNewsMenue(Graphics* g)
 /////////////////////////////////////////////////////////////////////////////////////////
 void CEmpireMenuView::DrawEmpireSystemMenue(Graphics* g)
 {
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	CMajor* pMajor = m_pPlayersRace;
@@ -702,7 +702,7 @@ void CEmpireMenuView::DrawEmpireSystemMenue(Graphics* g)
 /////////////////////////////////////////////////////////////////////////////////////////
 void CEmpireMenuView::DrawEmpireShipMenue(Graphics* g)
 {
-	ASSERT((CBotf2Doc*)GetDocument());
+	ASSERT((CBotEDoc*)GetDocument());
 
 	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
@@ -895,7 +895,7 @@ void CEmpireMenuView::DrawEmpireShipMenue(Graphics* g)
 
 void CEmpireMenuView::DrawEmpireDemographicsMenue(Gdiplus::Graphics *g)
 {
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	CMajor* pMajor = m_pPlayersRace;
@@ -1104,7 +1104,7 @@ void CEmpireMenuView::DrawEmpireDemographicsMenue(Gdiplus::Graphics *g)
 
 void CEmpireMenuView::DrawEmpireTop5Menue(Gdiplus::Graphics *g)
 {
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	CMajor* pMajor = m_pPlayersRace;
@@ -1193,7 +1193,7 @@ void CEmpireMenuView::DrawEmpireTop5Menue(Gdiplus::Graphics *g)
 
 void CEmpireMenuView::DrawSunSystem(Gdiplus::Graphics *g, const CPoint& ptKO, int nPos)
 {
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	int nPosX = m_TotalSize.cx - 300;
@@ -1247,7 +1247,7 @@ void CEmpireMenuView::DrawSunSystem(Gdiplus::Graphics *g, const CPoint& ptKO, in
 
 void CEmpireMenuView::DrawEmpireVictoryMenue(Gdiplus::Graphics *g)
 {
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	CMajor* pMajor = m_pPlayersRace;
@@ -1420,7 +1420,7 @@ void CEmpireMenuView::Dump(CDumpContext& dc) const
 void CEmpireMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	if (!pDoc->m_bDataReceived)
@@ -1666,7 +1666,7 @@ void CEmpireMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 BOOL CEmpireMenuView::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 {
 	// TODO: Add your message handler code here and/or call default
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	if (!pDoc->m_bDataReceived)
@@ -1763,7 +1763,7 @@ BOOL CEmpireMenuView::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 void CEmpireMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	if (!pDoc->m_bDataReceived)
@@ -1945,7 +1945,7 @@ void CEmpireMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 void CEmpireMenuView::OnMouseMove(UINT nFlags, CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	if (!pDoc->m_bDataReceived)
@@ -1971,7 +1971,7 @@ void CEmpireMenuView::OnMouseMove(UINT nFlags, CPoint point)
 void CEmpireMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 {
 	// TODO: Add your message handler code here and/or call default
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	if (!pDoc->m_bDataReceived)
@@ -2091,7 +2091,7 @@ void CEmpireMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 
 void CEmpireMenuView::CreateButtons()
 {
-	ASSERT((CBotf2Doc*)GetDocument());
+	ASSERT((CBotEDoc*)GetDocument());
 
 	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);

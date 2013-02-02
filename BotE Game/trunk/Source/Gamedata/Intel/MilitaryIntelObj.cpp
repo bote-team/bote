@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "MilitaryIntelObj.h"
-#include "Botf2Doc.h"
+#include "BotEDoc.h"
 #include "Races\RaceController.h"
 #include "IOData.h"
 #include "General/ResourceManager.h"
@@ -81,7 +81,7 @@ void CMilitaryIntelObj::Serialize(CArchive &ar)
 //////////////////////////////////////////////////////////////////////
 /// Funktion generiert einen Text, welcher eine Geheimdiestaktion beschreibt, für den Auslöser bzw. das Opfer
 /// dieser Aktion.
-void CMilitaryIntelObj::CreateText(CBotf2Doc* pDoc, BYTE n, const CString& param)
+void CMilitaryIntelObj::CreateText(CBotEDoc* pDoc, BYTE n, const CString& param)
 {
 	CString csInput;													// auf csInput wird die jeweilige Zeile gespeichert
 	CString fileName;

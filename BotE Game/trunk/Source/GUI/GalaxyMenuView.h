@@ -1,12 +1,12 @@
 /*
- *   Copyright (C)2004-2011 Sir Pustekuchen
+ *   Copyright (C)2004-2013 Sir Pustekuchen
  *
  *   Author   :  Sir Pustekuchen
  *   Home     :  http://birth-of-the-empires.de
  *
  */
 #pragma once
-#include "Botf2Doc.h"
+#include "BotEDoc.h"
 
 /*
 Wird GDI Plus benutzt, so müssen noch weitere Anpassungen am Code vorgenommen werden,
@@ -153,8 +153,8 @@ protected:
 	virtual BOOL OnScrollBy(CSize sizeScroll, BOOL bDoScroll = TRUE);
 
 private:
-	void HandleShipHotkeys(const UINT nChar, CBotf2Doc* pDoc);
-	void SearchNextIdleShipAndJumpToIt(CBotf2Doc* pDoc, SHIP_ORDER::Typ order);
+	void HandleShipHotkeys(const UINT nChar, CBotEDoc* pDoc);
+	void SearchNextIdleShipAndJumpToIt(CBotEDoc* pDoc, SHIP_ORDER::Typ order);
 
 	 //remember the ship in shiparray which was jumped to by last press of n or spacebar
 	struct RememberedShip {

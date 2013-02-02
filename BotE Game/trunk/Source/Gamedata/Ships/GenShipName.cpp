@@ -4,8 +4,8 @@
 
 #include "stdafx.h"
 #include "GenShipName.h"
-#include "Botf2.h"
-#include "Botf2Doc.h"
+#include "BotE.h"
+#include "BotEDoc.h"
 #include "Races\RaceController.h"
 #include "IOData.h"
 
@@ -126,7 +126,7 @@ void CGenShipName::Serialize(CArchive &ar)
 }
 
 /// Funktion zum einmaligen Einlesen der ganzen Schiffsnamen.
-void CGenShipName::Init(CBotf2Doc* pDoc)
+void CGenShipName::Init(CBotEDoc* pDoc)
 {
 	ASSERT(pDoc);
 

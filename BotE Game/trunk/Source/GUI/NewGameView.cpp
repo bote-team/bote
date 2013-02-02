@@ -5,8 +5,8 @@
 #include "resource.h"
 #include "NewGameView.h"
 #include "ChooseRaceView.h"
-#include "botf2.h"
-#include "Botf2Doc.h"
+#include "BotE.h"
+#include "BotEDoc.h"
 #include "MainFrm.h"
 #include "General/ResourceManager.h"
 
@@ -81,7 +81,7 @@ void CNewGameView::Dump(CDumpContext& dc) const
 void CNewGameView::OnDraw(CDC* dc)
 {
 	// TODO: Fügen Sie hier Ihren spezialisierten Code ein, und/oder rufen Sie die Basisklasse auf.
-	ASSERT((CBotf2Doc*)GetDocument());
+	ASSERT((CBotEDoc*)GetDocument());
 
 	CMyMemDC pDC(dc);
 	CRect clientRect;
@@ -169,7 +169,7 @@ void CNewGameView::OnInitialUpdate()
 	CFormView::OnInitialUpdate();
 
 	// TODO: Fügen Sie hier Ihren spezialisierten Code ein, und/oder rufen Sie die Basisklasse auf.
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	m_pBkgndImg = pDoc->GetGraphicPool()->GetGDIGraphic("Events\\Startmenu.boj");
@@ -378,7 +378,7 @@ void CNewGameView::LoadGame(const CString& sPath)
 	if (CheckValues())
 	{
 		// Datei laden
-		CBotf2Doc* pDoc = resources::pDoc;
+		CBotEDoc* pDoc = resources::pDoc;
 		ASSERT(pDoc);
 
 		if (!pDoc->OnOpenDocument(m_sFileName))
@@ -559,7 +559,7 @@ void CNewGameView::OnBnClickedNext()
 
 void CNewGameView::OnBnClickedBack()
 {
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 	if (!pDoc)
 		return;

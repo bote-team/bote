@@ -1,5 +1,5 @@
 /*
- *   Copyright (C)2004-2011 Sir Pustekuchen
+ *   Copyright (C)2004-2013 Sir Pustekuchen
  *
  *   Author   :  Sir Pustekuchen
  *   Home     :  http://birth-of-the-empires.de
@@ -25,7 +25,7 @@
 	x- ResponsibleRace darf nicht die selbe wie das Opfer einer Geheimdienstaktion sein. Dann immer unbekannt.
 	x- Schwierigkeitsgrad bei ini-Befehl
 	- Wenn Anordnung der Geheimdienstbuttons geändern werden sollte, dann auch checken zu Beginn der OnLeftButtonDown()
-	  und in CBotf2Doc -> GetShowIntelReportsInView3()
+	  und in CBotEDoc -> GetShowIntelReportsInView3()
 	- Bei Kriegspaktannahme noch den MoralOberserver wegen Krieggserklärung aufrufen
 	- Rücknahme der zu 75% immer erfolgreichen Geheimdienstaktionen, Intelgebäude zu Beginn, bekannte Majors
 */
@@ -40,14 +40,14 @@
  */
 
 // forward declaration
-class CBotf2Doc;
+class CBotEDoc;
 class CMajor;
 
 class CIntelCalc
 {
 public:
 	/// Konstruktor
-	CIntelCalc(CBotf2Doc* pDoc);
+	CIntelCalc(CBotEDoc* pDoc);
 
 	/// Destruktor
 	~CIntelCalc(void);
@@ -180,5 +180,5 @@ private:
 	static UINT GetCompleteInnerSecPoints(CMajor* pEnemyRace);
 
 	// Attribute
-	CBotf2Doc* m_pDoc;			///< Zeiger auf das Dokument
+	CBotEDoc* m_pDoc;			///< Zeiger auf das Dokument
 };

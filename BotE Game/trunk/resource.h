@@ -1,6 +1,6 @@
 //{{NO_DEPENDENCIES}}
 // Microsoft Visual C++ generated include file.
-// Used by botf2.rc
+// Used by BotE.rc
 //
 #define IDD_ABOUTBOX                    100
 #define CG_IDS_SOCKETS_INIT_FAILED      102
@@ -9,7 +9,7 @@
 #define IDD_CHOOSERACEVIEW              105
 #define IDD_NEWGAMEVIEW                 106
 #define IDR_MAINFRAME                   128
-#define IDR_BOTF2TYPE                   129
+#define IDR_BOTETYPE					129
 #define IDD_NEWGAME                     129
 #define IDD_CHOOSERACE                  130
 #define IDD_DIALOG1                     131

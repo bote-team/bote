@@ -1,5 +1,5 @@
 /*
- *   Copyright (C)2004-2011 Sir Pustekuchen
+ *   Copyright (C)2004-2013 Sir Pustekuchen
  *
  *   Author   :  Sir Pustekuchen
  *   Home     :  http://birth-of-the-empires.de
@@ -13,7 +13,7 @@
 using namespace std;
 
 // forward declaration
-class CBotf2Doc;
+class CBotEDoc;
 class CSectorAI;
 class CMajor;
 class CShips;
@@ -22,7 +22,7 @@ class CShipAI
 {
 public:
 	/// Konstruktor
-	CShipAI(CBotf2Doc* pDoc);
+	CShipAI(CBotEDoc* pDoc);
 
 	/// Destruktor
 	~CShipAI(void);
@@ -82,7 +82,7 @@ private:
 	void CalcBombardSector(void);
 
 	/// Ein Zeiger auf das Document.
-	CBotf2Doc* m_pDoc;
+	CBotEDoc* m_pDoc;
 
 	/// Ein Zeiger auf das SectorAI-Objekt
 	CSectorAI* m_pSectorAI;

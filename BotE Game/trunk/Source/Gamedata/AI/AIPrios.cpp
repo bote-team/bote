@@ -1,13 +1,13 @@
 #include "stdafx.h"
 #include "AIPrios.h"
-#include "Botf2Doc.h"
+#include "BotEDoc.h"
 #include "SectorAI.h"
 #include "Races\RaceController.h"
 
 //////////////////////////////////////////////////////////////////////
 // Konstruktion/Destruktion
 //////////////////////////////////////////////////////////////////////
-CAIPrios::CAIPrios(CBotf2Doc* pDoc)
+CAIPrios::CAIPrios(CBotEDoc* pDoc)
 {
 	ASSERT(pDoc);
 	m_pDoc = pDoc;

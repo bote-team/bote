@@ -1,5 +1,5 @@
 /*
- *   Copyright (C)2004-2011 Sir Pustekuchen
+ *   Copyright (C)2004-2013 Sir Pustekuchen
  *
  *   Author   :  Sir Pustekuchen
  *   Home     :  http://birth-of-the-empires.de
@@ -9,14 +9,14 @@
 #include "Options.h"
 
 // forward declaration
-class CBotf2Doc;
+class CBotEDoc;
 class CMajor;
 class CBuildingInfo;
 class CSystemAI
 {
 public:
 	/// Konstruktor
-	CSystemAI(CBotf2Doc* pDoc);
+	CSystemAI(CBotEDoc* pDoc);
 
 	/// Destruktor
 	~CSystemAI(void);
@@ -123,7 +123,7 @@ private:
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	/// Ein Zeiger auf das Document.
-	CBotf2Doc* m_pDoc;
+	CBotEDoc* m_pDoc;
 
 	/// Die Koordinate des Systems, in welchem gerade die KI-Berechnungen durchgeführt werden sollen
 	CPoint m_KO;

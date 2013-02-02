@@ -1,5 +1,5 @@
 /*
- *   Copyright (C)2004-2011 Sir Pustekuchen
+ *   Copyright (C)2004-2013 Sir Pustekuchen
  *
  *   Author   :  Sir Pustekuchen
  *   Home     :  http://birth-of-the-empires.de
@@ -68,7 +68,7 @@ public:
 	/// @param pDoc Zeiger auf das Dokument
 	/// @param n Nummer der verschiedenen Textmöglichkeiten, im Normalfall <code>NULL</code>
 	/// @param param Hier kann die Rasse übergeben werden, von der das Opfer denkt angegriffen worden zu sein
-	void CreateText(CBotf2Doc* pDoc, BYTE n, const CString& param);
+	void CreateText(CBotEDoc* pDoc, BYTE n, const CString& param);
 
 private:
 	// Attribute

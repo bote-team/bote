@@ -3,8 +3,8 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
-#include "botf2.h"
-#include "Botf2Doc.h"
+#include "BotE.h"
+#include "BotEDoc.h"
 #include "Ship.h"
 #include "Galaxy\Sector.h"
 #include "HTMLStringBuilder.h"
@@ -1227,7 +1227,7 @@ CString CShip::GetTooltip(const FleetInfoForGetTooltip* const info)
 }
 
 void CShip::DrawOrderTerraform(Gdiplus::Graphics* g, CGraphicPool* pGraphicPool, const CPoint& pt) const {
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	if (pDoc->m_bDataReceived) {

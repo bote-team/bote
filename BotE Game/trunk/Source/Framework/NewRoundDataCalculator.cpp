@@ -14,7 +14,7 @@ CNewRoundDataCalculator::~CNewRoundDataCalculator(void)
 {
 }
 
-CNewRoundDataCalculator::CNewRoundDataCalculator(CBotf2Doc* pDoc)
+CNewRoundDataCalculator::CNewRoundDataCalculator(CBotEDoc* pDoc)
 {
 	m_pDoc = pDoc;
 }

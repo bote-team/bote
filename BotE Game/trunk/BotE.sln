@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BotE", "botf2.vcproj", "{5A569755-0BE5-4E97-9318-FA8BA42C4F03}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BotE", "BotE.vcproj", "{5A569755-0BE5-4E97-9318-FA8BA42C4F03}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +21,5 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		AMDCaProjectFile = F:\C++\Projekte\BotE Projekt\BotE Source\SVN\Bote\CodeAnalyst\botf2.caw
 	EndGlobalSection
 EndGlobal

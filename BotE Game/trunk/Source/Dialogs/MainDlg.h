@@ -1,5 +1,5 @@
 /*
- *   Copyright (C)2004-2011 Sir Pustekuchen
+ *   Copyright (C)2004-2013 Sir Pustekuchen
  *
  *   Author   :  Sir Pustekuchen
  *   Home     :  http://birth-of-the-empires.de
@@ -16,7 +16,7 @@ class CMainDlg;
 #include "PeerData.h"
 #include "BotEServer.h"
 #include "BotEClient.h"
-class CBotf2Doc;
+class CBotEDoc;
 // CMainDlg
 
 /**
@@ -34,14 +34,14 @@ private:
 	CNewGamePage *m_pNewGame;
 	CChooseRacePage *m_pChooseRace;
 //	CPlayGamePage *m_pPlayGame;
-	CBotf2Doc *m_pDoc;
+	CBotEDoc *m_pDoc;
 
 public:
-	CMainDlg(CBotf2Doc* pDoc);
+	CMainDlg(CBotEDoc* pDoc);
 	virtual ~CMainDlg();
 
-	CBotf2Doc *GetServerDocument() {return m_pDoc;}
-	CBotf2Doc *GetClientDocument() {return m_pDoc;}
+	CBotEDoc *GetServerDocument() {return m_pDoc;}
+	CBotEDoc *GetClientDocument() {return m_pDoc;}
 
 protected:
 	DECLARE_MESSAGE_MAP()

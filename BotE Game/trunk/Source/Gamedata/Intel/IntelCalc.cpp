@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "IntelCalc.h"
-#include "Botf2Doc.h"
+#include "BotEDoc.h"
 #include "Races\RaceController.h"
 #include "Ships/Ships.h"
 #include "IOData.h"
@@ -11,7 +11,7 @@
 //////////////////////////////////////////////////////////////////////
 // Konstruktion/Destruktion
 //////////////////////////////////////////////////////////////////////
-CIntelCalc::CIntelCalc(CBotf2Doc* pDoc)
+CIntelCalc::CIntelCalc(CBotEDoc* pDoc)
 {
 	ASSERT(pDoc);
 	m_pDoc = pDoc;

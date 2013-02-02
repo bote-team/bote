@@ -1,5 +1,5 @@
 /*
- *   Copyright (C)2004-2011 Sir Pustekuchen
+ *   Copyright (C)2004-2013 Sir Pustekuchen
  *
  *   Author   :  Sir Pustekuchen
  *   Home     :  http://birth-of-the-empires.de
@@ -61,7 +61,7 @@ public:
 	static const CPlanet* GetPlanet(void) { return m_pPlanet; }
 
 private:
-	const CShipMap::const_iterator& GetShip(const CBotf2Doc& doc);
+	const CShipMap::const_iterator& GetShip(const CBotEDoc& doc);
 protected:
 
 // Überschreibungen

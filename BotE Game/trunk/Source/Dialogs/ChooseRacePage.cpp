@@ -2,14 +2,14 @@
 //
 
 #include "stdafx.h"
-#include "Botf2.h"
+#include "BotE.h"
 #include "ChooseRacePage.h"
 
 #include "BotEClient.h"
 #include "BotEServer.h"
 
 #include "LANServer.h"
-#include "Botf2Doc.h"
+#include "BotEDoc.h"
 #include "General/ResourceManager.h"
 
 // CChooseRacePage dialog

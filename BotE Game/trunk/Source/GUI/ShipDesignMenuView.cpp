@@ -2,7 +2,7 @@
 //
 
 #include "stdafx.h"
-#include "botf2.h"
+#include "BotE.h"
 #include "MainFrm.h"
 #include "ShipDesignMenuView.h"
 #include "ShipDesignBottomView.h"
@@ -52,7 +52,7 @@ void CShipDesignMenuView::OnNewRound()
 
 void CShipDesignMenuView::OnDraw(CDC* dc)
 {
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	if (!pDoc->m_bDataReceived)
@@ -121,7 +121,7 @@ void CShipDesignMenuView::OnInitialUpdate()
 /// Funktion lädt die rassenspezifischen Grafiken.
 void CShipDesignMenuView::LoadRaceGraphics()
 {
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	CMajor* pMajor = m_pPlayersRace;
@@ -151,7 +151,7 @@ BOOL CShipDesignMenuView::OnEraseBkgnd(CDC* /*pDC*/)
 /////////////////////////////////////////////////////////////////////////////////////////
 void CShipDesignMenuView::DrawShipDesignMenue(Graphics* g)
 {
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	CMajor* pMajor = m_pPlayersRace;
@@ -440,7 +440,7 @@ void CShipDesignMenuView::DrawShipDesignMenue(Graphics* g)
 void CShipDesignMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	if (!pDoc->m_bDataReceived)
@@ -790,7 +790,7 @@ BOOL CShipDesignMenuView::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 void CShipDesignMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 {
 	// TODO: Add your message handler code here and/or call default
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	if (!pDoc->m_bDataReceived)
@@ -842,7 +842,7 @@ CString CShipDesignMenuView::CheckIfShipIsBuilding(const CShipInfo* pShipInfo) c
 	if (!pShipInfo)
 		return "";
 
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	CMajor* pMajor = m_pPlayersRace;
@@ -864,7 +864,7 @@ CString CShipDesignMenuView::CheckIfShipIsBuilding(const CShipInfo* pShipInfo) c
 
 void CShipDesignMenuView::CreateButtons()
 {
-	ASSERT((CBotf2Doc*)GetDocument());
+	ASSERT((CBotEDoc*)GetDocument());
 
 	ASSERT(m_pPlayersRace);
 
@@ -878,7 +878,7 @@ CString CShipDesignMenuView::CreateTooltip(void)
 	if (!m_pShownShip)
 		return "";
 
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	if (!pDoc->m_bDataReceived)

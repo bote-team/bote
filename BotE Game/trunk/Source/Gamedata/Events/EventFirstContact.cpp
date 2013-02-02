@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "EventFirstContact.h"
 #include "FontLoader.h"
-#include "botf2.h"
-#include "Botf2Doc.h"
+#include "BotE.h"
+#include "BotEDoc.h"
 #include "Races\RaceController.h"
 #include "HTMLStringBuilder.h"
 #include "General/ResourceManager.h"
@@ -56,7 +56,7 @@ void CEventFirstContact::Draw(Graphics* g, CGraphicPool* graphicPool) const
 	if (m_sRaceID == "")
 		return;
 
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 	CRace* pContactedRace = pDoc->GetRaceCtrl()->GetRace(m_sRaceID);
 	if (!pContactedRace)
@@ -271,7 +271,7 @@ void CEventFirstContact::Draw(Graphics* g, CGraphicPool* graphicPool) const
 /// @return	der erstellte Tooltip-Text
 CString CEventFirstContact::GetTooltip(const CPoint &pt) const
 {
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 	CRace* pContactedRace = pDoc->GetRaceCtrl()->GetRace(m_sRaceID);
 	if (!pContactedRace)

@@ -4,7 +4,7 @@
 
 #include "stdafx.h"
 #include "Starmap.h"
-#include "botf2Doc.h"
+#include "BotEDoc.h"
 #include "Galaxy\Sector.h"
 #include "Galaxy\Anomaly.h"
 #include <math.h>

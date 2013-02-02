@@ -4,8 +4,8 @@
 #include "stdafx.h"
 #include "resource.h"
 #include "ChooseRaceView.h"
-#include "botf2.h"
-#include "Botf2Doc.h"
+#include "BotE.h"
+#include "BotEDoc.h"
 #include "MainFrm.h"
 #include "Races/RaceController.h"
 #include "General/ResourceManager.h"
@@ -75,7 +75,7 @@ void CChooseRaceView::OnDraw(CDC* dc)
 		return;
 
 	// TODO: Fügen Sie hier Ihren spezialisierten Code ein, und/oder rufen Sie die Basisklasse auf.
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	CMyMemDC pDC(dc);
@@ -185,7 +185,7 @@ void CChooseRaceView::OnInitialUpdate()
 	CFormView::OnInitialUpdate();
 
 	// TODO: Fügen Sie hier Ihren spezialisierten Code ein, und/oder rufen Sie die Basisklasse auf.
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	m_pBkgndImg = pDoc->GetGraphicPool()->GetGDIGraphic("Events\\Startmenu.boj");
@@ -357,7 +357,7 @@ void CChooseRaceView::SetButtonStyle(CRoundButton2* pBtn, double dFontHeight)
 
 void CChooseRaceView::EnableRaceButtons()
 {
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	m_nPlayerCount = 0;
@@ -475,7 +475,7 @@ void CChooseRaceView::OnBnStartGameClicked()
 	if (!m_bIsServer)
 		return;
 
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 	if (!pDoc)
 		return;
@@ -504,7 +504,7 @@ void CChooseRaceView::OnBnStartGameClicked()
 
 void CChooseRaceView::OnBnCancelClicked()
 {
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 	if (!pDoc)
 		return;

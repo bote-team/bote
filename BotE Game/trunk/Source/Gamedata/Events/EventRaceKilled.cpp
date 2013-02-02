@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "EventRaceKilled.h"
 #include "FontLoader.h"
-#include "botf2.h"
-#include "Botf2Doc.h"
+#include "BotE.h"
+#include "BotEDoc.h"
 #include "Races\RaceController.h"
 #include "General/ResourceManager.h"
 
@@ -52,7 +52,7 @@ void CEventRaceKilled::Draw(Graphics* g, CGraphicPool* graphicPool) const
 	StringFormat fontFormat;
 	SolidBrush fontBrush(Color::White);
 
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	CMajor* pMajor = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(m_sRace));

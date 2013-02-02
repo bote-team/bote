@@ -1,4 +1,4 @@
-// botf2Doc.h : Schnittstelle der Klasse CBotf2Doc
+// BotEDoc.h : Schnittstelle der Klasse CBotEDoc
 //
 /////////////////////////////////////////////////////////////////////////////
 #pragma once
@@ -23,10 +23,10 @@ class CMainFrame;
 class CSectorAI;
 class CAIPrios;
 
-class CBotf2Doc : public CDocument, public network::CPeerData
+class CBotEDoc : public CDocument, public network::CPeerData
 {
 protected: // Nur aus Serialisierung erzeugen
-	DECLARE_DYNCREATE(CBotf2Doc)
+	DECLARE_DYNCREATE(CBotEDoc)
 
 	// Attribute
 	CGraphicPool *m_pGraphicPool;		///< Objekt verwaltet Grafiken für BotE
@@ -74,7 +74,7 @@ public:
 public:
 	// Überladungen
 	// Vom Klassenassistenten generierte Überladungen virtueller Funktionen
-	//{{AFX_VIRTUAL(CBotf2Doc)
+	//{{AFX_VIRTUAL(CBotEDoc)
 public:
 	virtual BOOL OnNewDocument();
 	virtual void Serialize(CArchive& ar);
@@ -112,10 +112,10 @@ public:
 
 	// Implementierung
 	/// Standardkonstruktor
-	CBotf2Doc(void);
+	CBotEDoc(void);
 
 	/// Standarddestruktor
-	virtual ~CBotf2Doc(void);
+	virtual ~CBotEDoc(void);
 
 	/// Funktion schließt die Verbindung zum Server und beendet Bote.
 	void GameOver();
@@ -326,9 +326,9 @@ protected:
 
 	/// Diese Funktion berechnet die Schiffsbewegung und noch weitere kleine Sachen im Zusammenhang mit Schiffen.
 	void CalcShipMovement();
-	/////BEGIN: HELPER FUNCTIONS FOR void CBotf2Doc::CalcShipMovement()
+	/////BEGIN: HELPER FUNCTIONS FOR void CBotEDoc::CalcShipMovement()
 	void CheckShipsDestroyedByAnomaly();
-	/////END: HELPER FUNCTIONS FOR void CBotf2Doc::CalcShipMovement()
+	/////END: HELPER FUNCTIONS FOR void CBotEDoc::CalcShipMovement()
 
 	bool IsShipCombat();
 
@@ -379,7 +379,7 @@ private:
 
 	// Generierte Message-Map-Funktionen
 protected:
-	//{{AFX_MSG(CBotf2Doc)
+	//{{AFX_MSG(CBotEDoc)
 	// HINWEIS - An dieser Stelle werden Member-Funktionen vom Klassen-Assistenten eingefügt und entfernt.
 	//    Innerhalb dieser generierten Quelltextabschnitte NICHTS VERÄNDERN!
 	//}}AFX_MSG

@@ -1,5 +1,5 @@
 /*
- *   Copyright (C)2004-2011 Sir Pustekuchen
+ *   Copyright (C)2004-2013 Sir Pustekuchen
  *
  *   Author   :  Sir Pustekuchen
  *   Home     :  http://birth-of-the-empires.de
@@ -21,7 +21,7 @@ public:
 	/// Destruktor
 	~CTroopInfo(void);
 
-	// Serialisierungsfunktion; nötig für CBotf2Doc::SerializeBeginGameData
+	// Serialisierungsfunktion; nötig für CBotEDoc::SerializeBeginGameData
 	virtual void Serialize(CArchive &ar);
 
 	// Zugriffsfunktionen zum Lesen der Membervariablen

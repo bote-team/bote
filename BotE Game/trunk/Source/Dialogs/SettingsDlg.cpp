@@ -2,7 +2,7 @@
 //
 
 #include "stdafx.h"
-#include "botf2.h"
+#include "BotE.h"
 #include "SettingsDlg.h"
 #include "IniLoader.h"
 

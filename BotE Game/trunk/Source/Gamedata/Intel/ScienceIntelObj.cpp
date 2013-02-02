@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "ScienceIntelObj.h"
-#include "Botf2Doc.h"
+#include "BotEDoc.h"
 #include "Races\RaceController.h"
 #include "IOData.h"
 #include "General/ResourceManager.h"
@@ -115,7 +115,7 @@ void CScienceIntelObj::Serialize(CArchive &ar)
 //////////////////////////////////////////////////////////////////////
 /// Funktion generiert einen Text, welcher eine Geheimdiestaktion beschreibt, für den Auslöser bzw. das Opfer
 /// dieser Aktion.
-void CScienceIntelObj::CreateText(CBotf2Doc* pDoc, BYTE n, const CString& param)
+void CScienceIntelObj::CreateText(CBotEDoc* pDoc, BYTE n, const CString& param)
 {
 	CString csInput;													// auf csInput wird die jeweilige Zeile gespeichert
 	CString fileName;

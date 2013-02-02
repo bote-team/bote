@@ -629,7 +629,7 @@ void CMoralObserver::InitMoralMatrix()
 	file.Close();
 
 /*
-	fileName = *((CBotf2App*)AfxGetApp())->GetPath() + "Data\\Other\\MoralEventsTest.txt";
+	fileName = *((CBotEApp*)AfxGetApp())->GetPath() + "Data\\Other\\MoralEventsTest.txt";
 	if (file.Open(fileName, CFile::modeCreate | CFile::modeWrite | CFile::typeText))
 	{
 		for (int j = 0; j < EVENTNUMBER; j++)

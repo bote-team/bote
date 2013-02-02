@@ -2,7 +2,7 @@
 //
 
 #include "stdafx.h"
-#include "Botf2.h"
+#include "BotE.h"
 #include "IniLoader.h"
 #include "NewGamePage.h"
 #include "SearchServersDlg.h"
@@ -15,7 +15,7 @@
 #include "LANServer.h"
 
 #include "Lmcons.h"
-#include "Botf2Doc.h"
+#include "BotEDoc.h"
 #include "SettingsDlg.h"
 
 // CNewGamePage dialog
@@ -419,5 +419,5 @@ void CNewGamePage::OnBnClickedShowoptionsdlg()
 
 	CSettingsDlg dlg;
 	if (dlg.DoModal() == IDOK)
-		CBotf2Doc::RandomSeed(&nOldSeed);
+		CBotEDoc::RandomSeed(&nOldSeed);
 }

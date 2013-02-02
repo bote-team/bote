@@ -2,8 +2,8 @@
 #include "DiplomacyController.h"
 #include "RaceController.h"
 #include "GenDiploMessage.h"
-#include "botf2.h"
-#include "Botf2Doc.h"
+#include "BotE.h"
+#include "BotEDoc.h"
 #include "Ships/Ships.h"
 #include "General/ResourceManager.h"
 
@@ -27,7 +27,7 @@ CDiplomacyController::~CDiplomacyController(void)
 /// Funktion zum Versenden von diplomatischen Angeboten
 void CDiplomacyController::Send(void)
 {
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	std::map<CString, CRace*>* races = pDoc->GetRaceCtrl()->GetRaces();
@@ -84,7 +84,7 @@ void CDiplomacyController::Send(void)
 /// Funktion zum Empfangen und Bearbeiten eines diplomatischen Angebots.
 void CDiplomacyController::Receive(void)
 {
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	std::map<CString, CRace*>* races = pDoc->GetRaceCtrl()->GetRaces();
@@ -136,7 +136,7 @@ void CDiplomacyController::Receive(void)
 /// Sie sollte nach <func>Receive</func> aufgerufen werden.
 /// Stellt die Funktion Probleme fest, so werden diese automatisch behoben.
 /// @param pDoc Zeiger auf das Dokument
-void CDiplomacyController::CalcDiplomacyFallouts(CBotf2Doc* pDoc)
+void CDiplomacyController::CalcDiplomacyFallouts(CBotEDoc* pDoc)
 {
 	map<CString, CMajor*>* pmMajors = pDoc->GetRaceCtrl()->GetMajors();
 	map<CString, CMinor*>* pmMinors = pDoc->GetRaceCtrl()->GetMinors();
@@ -228,7 +228,7 @@ void CDiplomacyController::CalcDiplomacyFallouts(CBotf2Doc* pDoc)
 /// @param pDoc Zeiger auf das Dokument
 /// @param pToMajor Zeiger auf die Empfängerrasse
 /// @param pInfo Zeiger auf aktuelles Diplomatieobjekt
-void CDiplomacyController::SendToMajor(CBotf2Doc* pDoc, CMajor* pToMajor, CDiplomacyInfo* pInfo)
+void CDiplomacyController::SendToMajor(CBotEDoc* pDoc, CMajor* pToMajor, CDiplomacyInfo* pInfo)
 {
 	// nur Reaktion beim diplomatischen Angebot
 	if (pInfo->m_nFlag != DIPLOMACY_OFFER)
@@ -391,7 +391,7 @@ void CDiplomacyController::SendToMajor(CBotf2Doc* pDoc, CMajor* pToMajor, CDiplo
 /// @param pDoc Zeiger auf das Dokument
 /// @param pToMajor Zeiger auf die Empfängerrasse
 /// @param pInfo Zeiger auf aktuelles Diplomatieobjekt
-void CDiplomacyController::ReceiveToMajor(CBotf2Doc* pDoc, CMajor* pToMajor, CDiplomacyInfo* pInfo)
+void CDiplomacyController::ReceiveToMajor(CBotEDoc* pDoc, CMajor* pToMajor, CDiplomacyInfo* pInfo)
 {
 	// nur Reaktion beim diplomatischen Angebot
 	if (pInfo->m_nFlag != DIPLOMACY_OFFER)
@@ -881,7 +881,7 @@ void CDiplomacyController::ReceiveToMajor(CBotf2Doc* pDoc, CMajor* pToMajor, CDi
 /// @param pDoc Zeiger auf das Dokument
 /// @param pToMinor Zeiger auf die Empfängerrasse
 /// @param pInfo Zeiger auf aktuelles Diplomatieobjekt
-void CDiplomacyController::SendToMinor(CBotf2Doc* pDoc, CMinor* pToMinor, CDiplomacyInfo* pInfo)
+void CDiplomacyController::SendToMinor(CBotEDoc* pDoc, CMinor* pToMinor, CDiplomacyInfo* pInfo)
 {
 	// nur Reaktion beim diplomatischen Angebot
 	if (pInfo->m_nFlag != DIPLOMACY_OFFER)
@@ -1025,7 +1025,7 @@ void CDiplomacyController::SendToMinor(CBotf2Doc* pDoc, CMinor* pToMinor, CDiplo
 /// @param pDoc Zeiger auf das Dokument
 /// @param pToMajor Zeiger auf die Empfängerrasse
 /// @param pInfo Zeiger auf aktuelles Diplomatieobjekt
-void CDiplomacyController::ReceiveToMinor(CBotf2Doc* pDoc, CMinor* pToMinor, CDiplomacyInfo* pInfo)
+void CDiplomacyController::ReceiveToMinor(CBotEDoc* pDoc, CMinor* pToMinor, CDiplomacyInfo* pInfo)
 {
 	// nur Reaktion beim diplomatischen Angebot
 	if (pInfo->m_nFlag != DIPLOMACY_OFFER)
@@ -1154,7 +1154,7 @@ void CDiplomacyController::ReceiveToMinor(CBotf2Doc* pDoc, CMinor* pToMinor, CDi
 /// @param pFromMajor Zeiger auf die kriegserklärende Majorrace
 /// @param pToRace Zeiger auf die Rasse, welcher der Krieg erklärt wurde
 /// @return Feld mit allen betroffenen Rassen, denen auch der Krieg erklärt werden muss
-std::vector<CString> CDiplomacyController::GetEnemiesFromContract(CBotf2Doc* pDoc, CMajor* pFromMajor, CRace* pToRace)
+std::vector<CString> CDiplomacyController::GetEnemiesFromContract(CBotEDoc* pDoc, CMajor* pFromMajor, CRace* pToRace)
 {
 	std::vector<CString> vEnemies;
 	// Wenn wir jemanden den Krieg erklären und dieser Jemand ein Bündnis oder einen
@@ -1273,7 +1273,7 @@ void CDiplomacyController::DeclareWar(CRace* pFromRace, CRace* pEnemy, CDiplomac
 			else
 			{
 				// Nachricht und Kriegserklärung wegen unserem Bündnispartner
-				CBotf2Doc* pDoc = resources::pDoc;
+				CBotEDoc* pDoc = resources::pDoc;
 				ASSERT(pDoc);
 				CRace* pPartner = pDoc->GetRaceCtrl()->GetRace(pInfo->m_sWarPartner);
 				if (!pPartner)

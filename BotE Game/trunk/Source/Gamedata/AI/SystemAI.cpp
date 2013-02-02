@@ -1,13 +1,13 @@
 #include "stdafx.h"
 #include "SystemAI.h"
-#include "Botf2Doc.h"
+#include "BotEDoc.h"
 #include "Races\RaceController.h"
 #include "AIPrios.h"
 
 //////////////////////////////////////////////////////////////////////
 // Konstruktion/Destruktion
 //////////////////////////////////////////////////////////////////////
-CSystemAI::CSystemAI(CBotf2Doc* pDoc) : m_pMajor()
+CSystemAI::CSystemAI(CBotEDoc* pDoc) : m_pMajor()
 {
 	ASSERT(pDoc);
 	m_pDoc = pDoc;

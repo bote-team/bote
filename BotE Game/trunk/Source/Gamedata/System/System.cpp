@@ -4,8 +4,8 @@
 
 #include "stdafx.h"
 #include "System.h"
-#include "botf2.h"
-#include "Botf2Doc.h"
+#include "BotE.h"
+#include "BotEDoc.h"
 #include "Races\RaceController.h"
 
 #ifdef _DEBUG
@@ -286,7 +286,7 @@ void CSystem::Serialize(CArchive &ar)
 
 int CSystem::GetNeededRoundsToCompleteProject(int nID)
 {
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	int nRounds = 0;
@@ -1496,7 +1496,7 @@ BOOLEAN CSystem::AssemblyListCheck(BuildingInfoArray* buildingInfo, CGlobalBuild
 }
 
 // Funktion berechnet die baubaren Schiffe in dem System.
-void CSystem::CalculateBuildableShips(CBotf2Doc* pDoc, const CPoint& p)
+void CSystem::CalculateBuildableShips(CBotEDoc* pDoc, const CPoint& p)
 {
 	ASSERT(pDoc);
 	m_BuildableShips.RemoveAll();
@@ -2122,7 +2122,7 @@ void CSystem::RemoveSpecialRaceBuildings(const BuildingInfoArray* pvBuildingInfo
 // in diesem kolonisiert haben.
 void CSystem::BuildBuildingsAfterColonization(CSector *sector, BuildingInfoArray *buildingInfo, USHORT colonizationPoints)
 {
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	CMajor* pMajor = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(sector->GetOwnerOfSector()));
@@ -2393,7 +2393,7 @@ BYTE CSystem::CheckTradeRoutes(CResearchInfo* researchInfo)
 	return number;
 }
 
-unsigned CSystem::CheckTradeRoutesDiplomacy(CBotf2Doc& pDoc, const CPoint& ko) {
+unsigned CSystem::CheckTradeRoutesDiplomacy(CBotEDoc& pDoc, const CPoint& ko) {
 	unsigned deletedTradeRoutes = 0;
 	for (int i = 0; i < m_TradeRoutes.GetSize(); i++)
 	{
@@ -2493,7 +2493,7 @@ BYTE CSystem::CheckResourceRoutes(CResearchInfo* researchInfo)
 	return number;
 }
 
-unsigned CSystem::CheckResourceRoutesExistence(CBotf2Doc& pDoc) {
+unsigned CSystem::CheckResourceRoutesExistence(CBotEDoc& pDoc) {
 	unsigned deletedResourceRoutes = 0;
 	// checken ob das System noch der Rasse gehört, welcher auch das Startsystem der Route gehört
 	for (int i = 0; i < m_ResourceRoutes.GetSize(); i++)

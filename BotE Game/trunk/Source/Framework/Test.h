@@ -1,21 +1,21 @@
 #pragma once
 
-class CBotf2Doc;
+class CBotEDoc;
 
 class CTest
 {
 	private:
 		CTest(void);
-		CTest(const CBotf2Doc& doc);
+		CTest(const CBotEDoc& doc);
 	public:
 		~CTest(void);
 
-	static const CTest* const GetInstance(const CBotf2Doc& doc);
+	static const CTest* const GetInstance(const CBotEDoc& doc);
 	void Run() const;
 
 
 	void TestGenShipname() const;
 	void TestShipMap() const;
 
-	const CBotf2Doc& m_Doc;
+	const CBotEDoc& m_Doc;
 };

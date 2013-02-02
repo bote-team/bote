@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "EventGameOver.h"
 #include "FontLoader.h"
-#include "botf2.h"
-#include "Botf2Doc.h"
+#include "BotE.h"
+#include "BotEDoc.h"
 #include "Races\RaceController.h"
 #include "IniLoader.h"
 #include "IOData.h"
@@ -46,7 +46,7 @@ void CEventGameOver::Create(void)
 
 void CEventGameOver::Close(void)
 {
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 	pDoc->GameOver();
 }
@@ -60,7 +60,7 @@ void CEventGameOver::Draw(Graphics* g, CGraphicPool* graphicPool) const
 	StringFormat fontFormat;
 	SolidBrush fontBrush(Color::White);
 
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	CMajor* pMajor = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(m_sRace));

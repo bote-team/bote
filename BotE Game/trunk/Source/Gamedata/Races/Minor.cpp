@@ -2,7 +2,7 @@
 #include "RaceController.h"
 #include "Major.h"
 #include "Minor.h"
-#include "Botf2Doc.h"
+#include "BotEDoc.h"
 #include "AI\MinorAI.h"
 #include "HTMLStringBuilder.h"
 #include "Ships/Ships.h"
@@ -124,7 +124,7 @@ void CMinor::SetAcceptancePoints(const CString& sRaceID, short nAdd)
 /// kolonisieren.
 /// @param pDoc Zeiger auf das Dokument
 /// @return <code>true</code> wenn ein neuer Planet kolonisiert wurde, ansonsten <code>false</code>
-bool CMinor::PerhapsExtend(CBotf2Doc* pDoc)
+bool CMinor::PerhapsExtend(CBotEDoc* pDoc)
 {
 	ASSERT(pDoc);
 
@@ -179,7 +179,7 @@ bool CMinor::PerhapsExtend(CBotf2Doc* pDoc)
 
 /// Diese Funktion lässt die Minorrace vielleicht ein Schiff bauen
 /// @param pDoc Zeiger auf das Dokument
-void CMinor::PerhapsBuildShip(CBotf2Doc* pDoc)
+void CMinor::PerhapsBuildShip(CBotEDoc* pDoc)
 {
 	ASSERT(pDoc);
 
@@ -242,7 +242,7 @@ void CMinor::PerhapsBuildShip(CBotf2Doc* pDoc)
 /// Umso mehr Punkte sie hat, umso schwerer wird es für andere Majorraces diese Rasse durch Geschenke
 /// zu beeinflussen
 /// @param pDoc Zeiger auf das Dokument
-void CMinor::CalcAcceptancePoints(CBotf2Doc* pDoc)
+void CMinor::CalcAcceptancePoints(CBotEDoc* pDoc)
 {
 	ASSERT(pDoc);
 
@@ -285,7 +285,7 @@ void CMinor::CalcAcceptancePoints(CBotf2Doc* pDoc)
 /// Minorrace verbraucht werden. Wenn die Minorrace die Möglichkeit hat, den jeweiligen Rohstoff
 /// selbst abzubauen, damm ist der Verbrauch natürlich geringer.
 /// @param pDoc Zeiger auf das Dokument
-void CMinor::ConsumeResources(CBotf2Doc* pDoc)
+void CMinor::ConsumeResources(CBotEDoc* pDoc)
 {
 	ASSERT(pDoc);
 
@@ -340,7 +340,7 @@ void CMinor::ConsumeResources(CBotf2Doc* pDoc)
 /// @param sMajorID MajorraceID, von welcher das Angebot stammt
 /// @param nType angebotener Vertrag
 /// @return <code>true</code> wenn das Angebot theoretisch angenommen werden könnte, ansonsten <code>false</code>
-bool CMinor::CanAcceptOffer(CBotf2Doc* pDoc, const CString& sMajorID, short nType) const
+bool CMinor::CanAcceptOffer(CBotEDoc* pDoc, const CString& sMajorID, short nType) const
 {
 	ASSERT(pDoc);
 
@@ -377,7 +377,7 @@ bool CMinor::CanAcceptOffer(CBotf2Doc* pDoc, const CString& sMajorID, short nTyp
 /// Funktion checkt die diplomatische Konsistenz und generiert bei Kündigungen auch die entsprechende Nachricht
 /// für das entsprechende Imperium der Majorrace.
 /// @param pDoc Zeiger auf das Dokument
-void CMinor::CheckDiplomaticConsistence(CBotf2Doc* pDoc)
+void CMinor::CheckDiplomaticConsistence(CBotEDoc* pDoc)
 {
 	ASSERT(pDoc);
 
@@ -513,7 +513,7 @@ void CMinor::CheckDiplomaticConsistence(CBotf2Doc* pDoc)
 
 /// Funktion überprüft die Beziehungen zu den Hauptrassen. Wenn diese zuweit vom Vertrag abweicht könnte gekündigt werden.
 /// @param pDoc Zeiger auf das Dokument
-void CMinor::PerhapsCancelAgreement(CBotf2Doc* pDoc)
+void CMinor::PerhapsCancelAgreement(CBotEDoc* pDoc)
 {
 	ASSERT(pDoc);
 

@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "SectorAI.h"
-#include "Botf2Doc.h"
+#include "BotEDoc.h"
 #include "Races\RaceController.h"
 #include "Galaxy\Anomaly.h"
 #include "Ships/Ships.h"
@@ -9,7 +9,7 @@
 //////////////////////////////////////////////////////////////////////
 // Konstruktion/Destruktion
 //////////////////////////////////////////////////////////////////////
-CSectorAI::CSectorAI(CBotf2Doc* pDoc)
+CSectorAI::CSectorAI(CBotEDoc* pDoc)
 {
 	ASSERT(pDoc);
 	m_pDoc = pDoc;

@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "ShipAI.h"
-#include "Botf2Doc.h"
+#include "BotEDoc.h"
 #include "SectorAI.h"
 #include "Races\RaceController.h"
 #include "Ships/Ships.h"
@@ -10,7 +10,7 @@
 //////////////////////////////////////////////////////////////////////
 // Konstruktion/Destruktion
 //////////////////////////////////////////////////////////////////////
-CShipAI::CShipAI(CBotf2Doc* pDoc) : m_pSectorAI()
+CShipAI::CShipAI(CBotEDoc* pDoc) : m_pSectorAI()
 {
 	ASSERT(pDoc);
 	m_pDoc = pDoc;

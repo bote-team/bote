@@ -2,9 +2,9 @@
 //
 
 #include "stdafx.h"
-#include "Botf2.h"
+#include "BotE.h"
 #include "MainDlg.h"
-#include "Botf2Doc.h"
+#include "BotEDoc.h"
 #include "LANClient.h"
 #include "LANServer.h"
 
@@ -17,7 +17,7 @@ END_MESSAGE_MAP()
 
 // CMainDlg
 
-CMainDlg::CMainDlg(CBotf2Doc *pDoc)
+CMainDlg::CMainDlg(CBotEDoc *pDoc)
 {
 	m_pDoc = pDoc;
 	ASSERT(m_pDoc);

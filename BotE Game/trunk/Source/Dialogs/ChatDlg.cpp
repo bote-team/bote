@@ -2,16 +2,16 @@
 //
 
 #include "stdafx.h"
-#include "botf2.h"
+#include "BotE.h"
 #include "ChatDlg.h"
-#include "Botf2Doc.h"
+#include "BotEDoc.h"
 
 
 // CChatDlg-Dialogfeld
 
 IMPLEMENT_DYNAMIC(CChatDlg, CDialog)
 
-CChatDlg::CChatDlg(CBotf2Doc *pDoc, CWnd* pParent /*=NULL*/)
+CChatDlg::CChatDlg(CBotEDoc *pDoc, CWnd* pParent /*=NULL*/)
 	: CDialog(CChatDlg::IDD, pParent), m_pDoc(pDoc)
 {
 	ASSERT(pDoc);

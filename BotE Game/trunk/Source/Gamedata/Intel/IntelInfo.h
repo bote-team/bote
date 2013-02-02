@@ -1,5 +1,5 @@
 /*
- *   Copyright (C)2004-2011 Sir Pustekuchen
+ *   Copyright (C)2004-2013 Sir Pustekuchen
  *
  *   Author   :  Sir Pustekuchen
  *   Home     :  http://birth-of-the-empires.de
@@ -13,7 +13,7 @@
 using namespace std;
 
 // forward declaration
-class CBotf2Doc;
+class CBotEDoc;
 class CMajor;
 
 /**
@@ -59,7 +59,7 @@ public:
 	/// Funktion ermittelt alle Geheimdienstinformationen für den Besitzer dieses Objektes.
 	/// @param pDoc Zeiger auf das Dokument
 	/// @param pOurRace Besitzer dieses Objektes
-	void CalcIntelInfo(CBotf2Doc* pDoc, CMajor* pOurRace);
+	void CalcIntelInfo(CBotEDoc* pDoc, CMajor* pOurRace);
 
 	/// Resetfunktion für das CIntelInfo Objekt.
 	void Reset();

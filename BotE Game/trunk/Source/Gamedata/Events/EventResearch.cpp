@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "EventResearch.h"
 #include "FontLoader.h"
-#include "botf2.h"
-#include "Botf2Doc.h"
+#include "BotE.h"
+#include "BotEDoc.h"
 #include "Races\RaceController.h"
 #include "HTMLStringBuilder.h"
 #include "General/ResourceManager.h"
@@ -53,7 +53,7 @@ void CEventResearch::Create(void)
 {
 	CEventScreen::Create();
 
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	CMajor* pMajor = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(m_sRace));
@@ -164,7 +164,7 @@ void CEventResearch::Draw(Graphics* g, CGraphicPool* graphicPool) const
 	StringFormat fontFormat;
 	SolidBrush fontBrush(Color::White);
 
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	CMajor* pMajor = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(m_sRace));

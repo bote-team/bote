@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "NetworkHandler.h"
-#include "Botf2.h"
+#include "BotE.h"
 
-CNetworkHandler::CNetworkHandler(CBotf2Doc *pDoc) : m_pDoc(pDoc)
+CNetworkHandler::CNetworkHandler(CBotEDoc *pDoc) : m_pDoc(pDoc)
 {
 	ASSERT(pDoc);
 }
@@ -54,7 +54,7 @@ void CNetworkHandler::OnNextRound(network::CNextRound *pMsg)
 
 	// wurde schon ein Fenster erstellt, so wird die Nachricht der Aktualisierung an das Hauptfenster
 	// geschickt
-	CWnd* pWnd = ((CBotf2App*)AfxGetApp())->GetMainWnd();
+	CWnd* pWnd = ((CBotEApp*)AfxGetApp())->GetMainWnd();
 	if (pWnd)
 		pWnd->PostMessage(nMsg, 0, 0);
 	// gibt es noch kein Fenster (direkt beim Spielstart bzw. Laden), so geht die Message
@@ -92,7 +92,7 @@ void CNetworkHandler::OnChatMsg(network::CChatMsg *pMsg)
 {
 	if (m_pDoc->m_bDataReceived)
 	{
-		((CBotf2App*)AfxGetApp())->GetChatDlg()->AddChatMsg(pMsg->GetSenderName(), pMsg->GetMessage());
+		((CBotEApp*)AfxGetApp())->GetChatDlg()->AddChatMsg(pMsg->GetSenderName(), pMsg->GetMessage());
 		AfxGetApp()->PostThreadMessage(WM_SHOWCHATDLG, 0, 0);
 	}
 }

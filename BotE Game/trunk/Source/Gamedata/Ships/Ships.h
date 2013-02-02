@@ -1,5 +1,5 @@
 /*
- *   Copyright (C)2004-2011 Sir Pustekuchen
+ *   Copyright (C)2004-2013 Sir Pustekuchen
  *
  *   Author   :  Sir Pustekuchen
  *   Home     :  http://birth-of-the-empires.de
@@ -34,7 +34,7 @@
 #include "Ship.h"
 #include "ShipMap.h"
 
-class CBotf2Doc;
+class CBotEDoc;
 
 class CShips/* : public CObject*/
 {

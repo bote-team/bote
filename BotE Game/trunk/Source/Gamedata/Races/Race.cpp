@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Race.h"
-#include "botf2.h"
-#include "Botf2Doc.h"
+#include "BotE.h"
+#include "BotEDoc.h"
 #include "RaceController.h"
 #include "AI\DiplomacyAI.h"
 #include "AI\MajorAI.h"
@@ -271,7 +271,7 @@ void CRace::SetAgreement(const CString& sOtherRace, DIPLOMATIC_AGREEMENT::Typ nN
 /// Funktion lässt die Diplomatie-KI der Rasse Angebote an andere Rassen erstellen.
 void CRace::MakeOffersAI(void)
 {
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	// Alle zuletzt gemachten Angebote die älter als 2 Runden sind löschen

@@ -1,5 +1,5 @@
 /*
- *   Copyright (C)2004-2011 Sir Pustekuchen
+ *   Copyright (C)2004-2013 Sir Pustekuchen
  *
  *   Author   :  Sir Pustekuchen
  *   Home     :  http://birth-of-the-empires.de
@@ -15,7 +15,7 @@
 #include "Options.h"
 
 // forward declaration
-class CBotf2Doc;
+class CBotEDoc;
 
 class CStatistics : public CObject
 {
@@ -48,7 +48,7 @@ public:
 	// zum Schreiben der Membervariablen
 	/// Funktion zum Berechnen aller Statistiken.
 	/// @param pDoc Zeiger auf das Dokument
-	void CalcStats(CBotf2Doc* pDoc);
+	void CalcStats(CBotEDoc* pDoc);
 
 	/// Funktion ermittelt die Demographiewerte einer bestimmten Rasse.
 	/// @param sRaceID gewünschte Rasse
@@ -115,19 +115,19 @@ private:
 
 	/// Funktion zum Berechnen des universumweiten Techdurchschnittlevels.
 	/// @param pDoc Zeiger auf das Dokument
-	void CalcAverageTechLevel(CBotf2Doc* pDoc);
+	void CalcAverageTechLevel(CBotEDoc* pDoc);
 
 	/// Funktion zum Berechnen der durchschnittlichen Befüllung der Ressourcenlager.
 	/// @param pDoc Zeiger auf das Dokument
-	void CalcAverageResourceStorages(CBotf2Doc* pDoc);
+	void CalcAverageResourceStorages(CBotEDoc* pDoc);
 
 	/// Funktion zum Berechnen der gesamten militärischen Schiffsstärken aller Rassen.
 	/// @param pDoc Zeiger auf das Dokument
-	void CalcShipPowers(CBotf2Doc* pDoc);
+	void CalcShipPowers(CBotEDoc* pDoc);
 
 	/// Funktion zum Berechnen des Militärs aller Rassen.
 	/// @param pDoc Zeiger auf das Dokument
-	void CalcMilitary(CBotf2Doc* pDoc);
+	void CalcMilitary(CBotEDoc* pDoc);
 
 	/// Funktion berechnet die einzelnen Demographiewerte.
 	/// @param sRaceID ID der gewünschten Rasse

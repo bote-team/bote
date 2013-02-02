@@ -2,7 +2,7 @@
 //
 
 #include "stdafx.h"
-#include "botf2.h"
+#include "BotE.h"
 #include "DiplomacyBottomView.h"
 #include "Races\RaceController.h"
 #include "Graphic\memdc.h"
@@ -33,7 +33,7 @@ END_MESSAGE_MAP()
 
 void CDiplomacyBottomView::OnDraw(CDC* dc)
 {
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	if (!pDoc->m_bDataReceived)

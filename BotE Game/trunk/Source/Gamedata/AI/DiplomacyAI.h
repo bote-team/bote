@@ -1,5 +1,5 @@
 /*
- *   Copyright (C)2004-2011 Sir Pustekuchen
+ *   Copyright (C)2004-2013 Sir Pustekuchen
  *
  *   Author   :  Sir Pustekuchen
  *   Home     :  http://birth-of-the-empires.de
@@ -58,7 +58,7 @@ public:
 	CString		m_sWarPartner;					///< Krieg aufgrund Diplomatiepartner
 };
 
-class CBotf2Doc;
+class CBotEDoc;
 class CRace;
 /// Abstrakte Klasse stellt Methoden bereit, durch welche Rassen auf diplomatische Angebote reagieren sowie
 /// selbstständig diplomatische Angebote machen.
@@ -94,6 +94,6 @@ protected:
 	virtual void ReactOnDowry(const CDiplomacyInfo& info) = 0;
 
 	// Attribute
-	CBotf2Doc*	m_pDoc;				///< Zeiger auf das Dokument
+	CBotEDoc*	m_pDoc;				///< Zeiger auf das Dokument
 	CRace*		m_pRace;			///< Zeiger auf die Rasse, zu welcher das Diplomatie-KI Objekt gehört
 };

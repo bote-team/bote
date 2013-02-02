@@ -1,10 +1,10 @@
-// botf2.cpp : Legt das Klassenverhalten für die Anwendung fest.
+// BotE.cpp : Legt das Klassenverhalten für die Anwendung fest.
 //
 
 #include "stdafx.h"
-#include "botf2.h"
+#include "BotE.h"
 #include "MainFrm.h"
-#include "botf2Doc.h"
+#include "BotEDoc.h"
 #include "SettingsDlg.h"
 #include "IOData.h"
 
@@ -81,29 +81,29 @@ void CAboutDlg::OnBnClickedOk()
 }
 
 /////////////////////////////////////////////////////////////////////////////
-// CBotf2App
+// CBotEApp
 
-BEGIN_MESSAGE_MAP(CBotf2App, CWinApp)
-	//{{AFX_MSG_MAP(CBotf2App)
+BEGIN_MESSAGE_MAP(CBotEApp, CWinApp)
+	//{{AFX_MSG_MAP(CBotEApp)
 	ON_COMMAND(ID_APP_ABOUT, OnAppAbout)
 	ON_COMMAND(ID_FILE_NEW, CWinApp::OnFileNew)
 	ON_COMMAND(ID_FILE_OPEN, CWinApp::OnFileOpen)
-	ON_COMMAND(ID_OPTIONEN, &CBotf2App::OnSettings)
-	ON_COMMAND(ID_CHAT, &CBotf2App::OnChat)
-	ON_COMMAND(ID_HELP_MANUAL, &CBotf2App::OnOpenManual)
-	ON_COMMAND(ID_HELP_WIKI, &CBotf2App::OnHelpWiki)
-	ON_COMMAND(ID_HELP_README, &CBotf2App::OnOpenReadme)
-	ON_COMMAND(ID_HELP_CREDITS, &CBotf2App::OnOpenCredits)
+	ON_COMMAND(ID_OPTIONEN, &CBotEApp::OnSettings)
+	ON_COMMAND(ID_CHAT, &CBotEApp::OnChat)
+	ON_COMMAND(ID_HELP_MANUAL, &CBotEApp::OnOpenManual)
+	ON_COMMAND(ID_HELP_WIKI, &CBotEApp::OnHelpWiki)
+	ON_COMMAND(ID_HELP_README, &CBotEApp::OnOpenReadme)
+	ON_COMMAND(ID_HELP_CREDITS, &CBotEApp::OnOpenCredits)
 
-	ON_THREAD_MESSAGE(WM_INITVIEWS, CBotf2App::InitViews)
-	ON_THREAD_MESSAGE(WM_UPDATEVIEWS, CBotf2App::UpdateViews)
-	ON_THREAD_MESSAGE(WM_SHOWCHATDLG, CBotf2App::ShowChatDlg)
+	ON_THREAD_MESSAGE(WM_INITVIEWS, CBotEApp::InitViews)
+	ON_THREAD_MESSAGE(WM_UPDATEVIEWS, CBotEApp::UpdateViews)
+	ON_THREAD_MESSAGE(WM_SHOWCHATDLG, CBotEApp::ShowChatDlg)
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
-// CBotf2App Konstruktion
+// CBotEApp Konstruktion
 
-CBotf2App::CBotf2App() :
+CBotEApp::CBotEApp() :
 	gdiplusToken()
 {
 #ifdef VLD
@@ -115,21 +115,21 @@ CBotf2App::CBotf2App() :
 	ParseCommandLine(*CCommandLineParameters::GetInstance());
 }
 
-CBotf2App::~CBotf2App()
+CBotEApp::~CBotEApp()
 {
 	if (m_pChatDlg)
 		delete m_pChatDlg;
 }
 
 /////////////////////////////////////////////////////////////////////////////
-// Das einzige CBotf2App-Objekt
+// Das einzige CBotEApp-Objekt
 
-CBotf2App theApp;
+CBotEApp theApp;
 
 /////////////////////////////////////////////////////////////////////////////
-// CBotf2App Initialisierung
+// CBotEApp Initialisierung
 
-BOOL CBotf2App::InitInstance()
+BOOL CBotEApp::InitInstance()
 {
 	CWinApp::InitInstance();
 	GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);
@@ -167,7 +167,7 @@ BOOL CBotf2App::InitInstance()
 	CSingleDocTemplate* pDocTemplate;
 	pDocTemplate = new CSingleDocTemplate(
 		IDR_MAINFRAME,
-		RUNTIME_CLASS(CBotf2Doc),
+		RUNTIME_CLASS(CBotEDoc),
 		RUNTIME_CLASS(CMainFrame),       // Haupt-SDI-Rahmenfenster
 		NULL);
 
@@ -192,7 +192,7 @@ BOOL CBotf2App::InitInstance()
 	return TRUE;
 }
 
-int CBotf2App::ExitInstance()
+int CBotEApp::ExitInstance()
 {
 	// TODO: Add your specialized code here and/or call the base class
 	GdiplusShutdown(gdiplusToken);
@@ -200,43 +200,43 @@ int CBotf2App::ExitInstance()
 }
 
 /////////////////////////////////////////////////////////////////////////////
-// CBotf2App-Nachrichtenbehandlungsroutinen
-void CBotf2App::InitViews(WPARAM, LPARAM)
+// CBotEApp-Nachrichtenbehandlungsroutinen
+void CBotEApp::InitViews(WPARAM, LPARAM)
 {
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	pDoc->LoadViewGraphics();
 }
 
-void CBotf2App::UpdateViews(WPARAM, LPARAM)
+void CBotEApp::UpdateViews(WPARAM, LPARAM)
 {
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	pDoc->DoViewWorkOnNewRound();
 }
 
-void CBotf2App::ShowChatDlg(WPARAM, LPARAM)
+void CBotEApp::ShowChatDlg(WPARAM, LPARAM)
 {
 	m_pChatDlg->ShowWindow(SW_SHOW);
 }
 
-void CBotf2App::OnChat()
+void CBotEApp::OnChat()
 {
 	// TODO: Fügen Sie hier Ihren Befehlsbehandlungscode ein.
 	this->PostThreadMessage(WM_SHOWCHATDLG, 0, 0);
 }
 
 // Anwendungsbefehl zum Ausführen des Dialogfelds
-void CBotf2App::OnAppAbout()
+void CBotEApp::OnAppAbout()
 {
 	CAboutDlg aboutDlg;
 	aboutDlg.DoModal();
 }
 
 // Funktion zum Anzeigen des Einstellungsdialoges
-void CBotf2App::OnSettings()
+void CBotEApp::OnSettings()
 {
 	// TODO: Fügen Sie hier Ihren Befehlsbehandlungscode ein.
 	CSettingsDlg dlg(true);
@@ -244,7 +244,7 @@ void CBotf2App::OnSettings()
 		resources::pDoc->ResetIniSettings();
 }
 
-void CBotf2App::OnOpenManual()
+void CBotEApp::OnOpenManual()
 {
 	// TODO: Add your command handler code here
 	CString sFile = CIOData::GetInstance()->GetManualPath();
@@ -258,7 +258,7 @@ void CBotf2App::OnOpenManual()
 
 }
 
-void CBotf2App::OnHelpWiki()
+void CBotEApp::OnHelpWiki()
 {
 	// TODO: Fügen Sie hier Ihren Befehlsbehandlungscode ein.
 	CString sFile =  "http://www.wiki.birth-of-the-empires.de";
@@ -271,7 +271,7 @@ void CBotf2App::OnHelpWiki()
         SW_SHOW);
 }
 
-void CBotf2App::OnOpenReadme()
+void CBotEApp::OnOpenReadme()
 {
 	// TODO: Add your command handler code here
 	CString sFile = CIOData::GetInstance()->GetAppPath() + "Liesmich.txt";
@@ -284,7 +284,7 @@ void CBotf2App::OnOpenReadme()
         SW_SHOW);
 }
 
-void CBotf2App::OnOpenCredits()
+void CBotEApp::OnOpenCredits()
 {
 	// TODO: Add your command handler code here
 	CString sFile = CIOData::GetInstance()->GetAppPath() + "\\Graphics\\Buildings\\CreditsBuildings.txt";

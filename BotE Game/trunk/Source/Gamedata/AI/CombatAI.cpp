@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "CombatAI.h"
-#include "Botf2Doc.h"
+#include "BotEDoc.h"
 #include "Races/RaceController.h"
 #include "Ships/Combat.h"
 #include "Ships/Ships.h"

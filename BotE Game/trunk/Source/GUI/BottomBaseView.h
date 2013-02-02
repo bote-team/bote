@@ -1,5 +1,5 @@
 /*
- *   Copyright (C)2004-2011 Sir Pustekuchen
+ *   Copyright (C)2004-2013 Sir Pustekuchen
  *
  *   Author   :  Sir Pustekuchen
  *   Home     :  http://birth-of-the-empires.de
@@ -8,7 +8,7 @@
 #pragma once
 #include "FontLoader.h"
 #include "OverlayBanner.h"
-#include "Botf2Doc.h"
+#include "BotEDoc.h"
 
 // CBottomBaseView view
 

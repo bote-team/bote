@@ -3,8 +3,8 @@
 //////////////////////////////////////////////////////////////////////
 #include "StdAfx.h"
 #include "GenDiploMessage.h"
-#include "botf2.h"
-#include "Botf2Doc.h"
+#include "BotE.h"
+#include "BotEDoc.h"
 #include "RaceController.h"
 #include "IOData.h"
 #include "General/ResourceManager.h"
@@ -122,7 +122,7 @@ bool CGenDiploMessage::GenerateMajorOffer(CDiplomacyInfo& info)
 			sHeadline = CResourceManager::GetString("WAR_PACT_OFFER");
 			sOffer = read[8];
 
-			CBotf2Doc* pDoc = resources::pDoc;
+			CBotEDoc* pDoc = resources::pDoc;
 			ASSERT(pDoc);
 
 			CMajor* pMajor = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(info.m_sWarpactEnemy));
@@ -452,7 +452,7 @@ bool CGenDiploMessage::GenerateMajorAnswer(CDiplomacyInfo& info)
 bool CGenDiploMessage::GenerateMinorOffer(CDiplomacyInfo& info)
 {
 	// Dokument holen
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	CRace* pRace = pDoc->GetRaceCtrl()->GetRace(info.m_sFromRace);
@@ -574,7 +574,7 @@ bool CGenDiploMessage::GenerateMinorOffer(CDiplomacyInfo& info)
 bool CGenDiploMessage::GenerateMinorAnswer(CDiplomacyInfo& info)
 {
 	// Dokument holen
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	CRace* pRace = pDoc->GetRaceCtrl()->GetRace(info.m_sToRace);

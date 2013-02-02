@@ -2,8 +2,8 @@
 //
 
 #include "stdafx.h"
-#include "botf2.h"
-#include "Botf2Doc.h"
+#include "BotE.h"
+#include "BotEDoc.h"
 #include "MainFrm.h"
 #include "EventMenuView.h"
 #include "Races\RaceController.h"
@@ -35,7 +35,7 @@ END_MESSAGE_MAP()
 void CEventMenuView::OnDraw(CDC* dc)
 {
 	SetFocus();
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	if (!pDoc->m_bDataReceived)
@@ -142,7 +142,7 @@ BOOL CEventMenuView::OnEraseBkgnd(CDC* /*pDC*/)
 void CEventMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	if (!pDoc->m_bDataReceived)
@@ -170,7 +170,7 @@ void CEventMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 void CEventMenuView::OnMouseMove(UINT nFlags, CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	if (!pDoc->m_bDataReceived)
@@ -193,7 +193,7 @@ void CEventMenuView::OnMouseMove(UINT nFlags, CPoint point)
 void CEventMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 {
 	// TODO: Add your message handler code here and/or call default
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	if (!pDoc->m_bDataReceived)
@@ -217,7 +217,7 @@ void CEventMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 /// Funktion schließt das derzeit angezeigte Event.
 void CEventMenuView::CloseScreen(CEventScreen* eventScreen)
 {
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	if (!pDoc->m_bDataReceived)
@@ -249,7 +249,7 @@ void CEventMenuView::CloseScreen(CEventScreen* eventScreen)
 /// @return	der erstellte Tooltip-Text
 CString CEventMenuView::CreateTooltip(void)
 {
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	if (!pDoc->m_bDataReceived)

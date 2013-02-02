@@ -1,5 +1,5 @@
 /*
- *   Copyright (C)2004-2011 Sir Pustekuchen
+ *   Copyright (C)2004-2013 Sir Pustekuchen
  *
  *   Author   :  Sir Pustekuchen
  *   Home     :  http://birth-of-the-empires.de
@@ -13,7 +13,7 @@
  * Diese Klasse beinhaltet bestimmte Prioritäten, welche im Zusammenhang des Geheimdienstes stehen. Zusätzlich finden
  * hier die Berechnungen der KI für den Geheimdienst statt.
  */
-class CBotf2Doc;
+class CBotEDoc;
 class CIntelAI
 {
 public:
@@ -31,7 +31,7 @@ public:
 	// sonstige Funktionen
 	/// Funktion berechnet den Umgang mit dem Geheimdienst für die KI. Sie trifft Zuteilungen für die einzelnen Rassen.
 	/// @param pDoc Zeiger auf das Dokument
-	void CalcIntelligence(CBotf2Doc* pDoc);
+	void CalcIntelligence(CBotEDoc* pDoc);
 
 	/// Resetfunktion für ein CIntelAI-Objekt.
 	void Reset(void);

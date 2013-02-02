@@ -2,7 +2,7 @@
 //
 
 #include "stdafx.h"
-#include "botf2.h"
+#include "BotE.h"
 #include "MainBaseView.h"
 #include "Races\RaceController.h"
 
@@ -55,7 +55,7 @@ void CMainBaseView::OnInitialUpdate()
 {
 	CView::OnInitialUpdate();
 
-	ASSERT((CBotf2Doc*)GetDocument());
+	ASSERT((CBotEDoc*)GetDocument());
 
 /*	CString sID = pDoc->GetPlayersRaceID();
 	m_pPlayersRace = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(sID));
@@ -68,7 +68,7 @@ void CMainBaseView::OnInitialUpdate()
 void CMainBaseView::OnPrepareDC(CDC* pDC, CPrintInfo* pInfo)
 {
 	// TODO: Add your specialized code here and/or call the base class
-/*	CBotf2Doc* pDoc = resources::pDoc;
+/*	CBotEDoc* pDoc = resources::pDoc;
 
 	CRect client;
 	GetClientRect(&client);
@@ -94,7 +94,7 @@ BOOL CMainBaseView::OnEraseBkgnd(CDC* /*pDC*/)
 
 void CMainBaseView::DrawGDIButtons(Graphics* g, CArray<CMyButton*>* buttonArray, int counter, Gdiplus::Font &font, Gdiplus::SolidBrush &fontBrush)
 {
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	// Wenn wir im jeweiligen Menü sind, prüfen, ob der dazugehörige Button auch inaktiv ist.
@@ -114,7 +114,7 @@ void CMainBaseView::DrawGDIButtons(Graphics* g, CArray<CMyButton*>* buttonArray,
 
 void CMainBaseView::ButtonReactOnMouseOver(const CPoint &point, CArray<CMyButton*>* buttonArray)
 {
-	ASSERT((CBotf2Doc*)GetDocument());
+	ASSERT((CBotEDoc*)GetDocument());
 
 	for (int i = 0; i < buttonArray->GetSize(); i++)
 	{

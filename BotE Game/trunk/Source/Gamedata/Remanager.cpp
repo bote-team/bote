@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Remanager.h"
-#include "botf2.h"
-#include "Botf2Doc.h"
+#include "BotE.h"
+#include "BotEDoc.h"
 #include "Races/Major.h"
 #include "Races/Minor.h"
 #include "Races/RaceController.h"
@@ -47,7 +47,7 @@ void CReManager::CalcEvents(CMajor* pRace)
 	if (!IsActivated())
 		return;
 
-	CBotf2Doc const* pDoc = resources::pDoc;
+	CBotEDoc const* pDoc = resources::pDoc;
 	const unsigned event_type = rand() % 3;
 	if(event_type == GLOBALEVENTSYSTEM)//system affecting event
 	{
@@ -90,7 +90,7 @@ void CReManager::CalcEvents(CMajor* pRace)
 
 bool CReManager::SystemEvent(const CPoint &ko, CMajor* pRace)
 {
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 	//ko= Systemkoordinate
 	CString sMsgText;//Nachrichtentext
@@ -190,7 +190,7 @@ void CReManager::GlobalEventResearch(CMajor *pRace)
 
 	if (pRace->IsHumanPlayer())
 	{
-		CBotf2Doc* pDoc = resources::pDoc;
+		CBotEDoc* pDoc = resources::pDoc;
 		ASSERT(pDoc);
 
 		network::RACE client = pDoc->GetRaceCtrl()->GetMappedClientID(pRace->GetRaceID());
@@ -218,7 +218,7 @@ void CReManager::CalcExploreEvent(const CPoint &ko, CMajor *pRace, CShipMap* shi
 	if(rand() % 99 >= static_cast<int>(m_uiGlobalProb))
 		return; //Es findet kein Ereignis statt
 
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	//ko=Koordinate wo es passiert, pRace = die Rasse der es passiert
@@ -280,7 +280,7 @@ void CReManager::CalcShipEvents() const
 	if (!IsActivated())
 		return;
 
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	// Hüllenvirus

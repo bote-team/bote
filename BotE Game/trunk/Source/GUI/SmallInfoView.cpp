@@ -2,10 +2,10 @@
 //
 
 #include "stdafx.h"
-#include "botf2.h"
+#include "BotE.h"
 #include "SmallInfoView.h"
 #include "GalaxyMenuView.h"
-#include "Botf2Doc.h"
+#include "BotEDoc.h"
 #include "MainFrm.h"
 #include "Galaxy\Planet.h"
 #include "Races\RaceController.h"
@@ -52,7 +52,7 @@ END_MESSAGE_MAP()
 
 void CSmallInfoView::OnDraw(CDC* pDC)
 {
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	if (!pDoc->m_bDataReceived)
@@ -495,7 +495,7 @@ void CSmallInfoView::SetDisplayMode(CSmallInfoView::DISPLAY_MODE mode) {
 	m_DisplayMode = mode;
 }
 
-const CShipMap::const_iterator& CSmallInfoView::GetShip(const CBotf2Doc& doc)
+const CShipMap::const_iterator& CSmallInfoView::GetShip(const CBotEDoc& doc)
 {
 	if(m_DisplayMode == CSmallInfoView::DISPLAY_MODE_FLEET_MENU_VIEW) {
 		const CShipMap::const_iterator& fleetship = doc.FleetShip();

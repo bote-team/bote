@@ -1,5 +1,5 @@
 /*
- *   Copyright (C)2004-2011 Sir Pustekuchen
+ *   Copyright (C)2004-2013 Sir Pustekuchen
  *
  *   Author   :  Sir Pustekuchen
  *   Home     :  http://birth-of-the-empires.de
@@ -25,7 +25,7 @@
 // forward declaration
 class CMajor;
 class CMinor;
-class CBotf2Doc;
+class CBotEDoc;
 class CPlanet;
 class CGlobalBuildings;
 
@@ -236,7 +236,7 @@ public:
 	void CalculateBuildableBuildings(CSector* sector, BuildingInfoArray* buildingInfo, CMajor* pMajor, CGlobalBuildings* globals);
 
 	// Funktion berechnet die baubaren Schiffe in dem System.
-	void CalculateBuildableShips(CBotf2Doc* pDoc, const CPoint& p);
+	void CalculateBuildableShips(CBotEDoc* pDoc, const CPoint& p);
 
 	// Diese Funktion berechnet die baubaren Truppen in diesem System
 	void CalculateBuildableTroops(const CArray<CTroopInfo>* troopInfos, const CResearch *research);
@@ -296,7 +296,7 @@ public:
 	BYTE CheckTradeRoutes(CResearchInfo* researchInfo);
 	// Calculates diplomacy-related effects of and to this system's trade routes.
 	// @return number of deleted trade routes
-	unsigned CheckTradeRoutesDiplomacy(CBotf2Doc& pDoc, const CPoint& ko);
+	unsigned CheckTradeRoutesDiplomacy(CBotEDoc& pDoc, const CPoint& ko);
 
 	/// Funktion generiert eine neue Ressourcenroute. Wenn die Funktion <code>TRUE</code> zurückgibt, dann konnte die
 	/// Ressourcenroute erfolgreich angelegt werden. Als Parameter wird dabei die Koordinate <code>dest</code> des
@@ -310,7 +310,7 @@ public:
 	// Checks this system's resource routes for whether the target system is still part of the empire this system
 	// belongs to.
 	// @return number of deleted resource routes
-	unsigned CheckResourceRoutesExistence(CBotf2Doc& pDoc);
+	unsigned CheckResourceRoutesExistence(CBotEDoc& pDoc);
 
 	/// Diese Funktion fügt eine neue Truppe <code>troop</code> dem System hinzu.
 	void AddTroop(const CTroop* troop) {m_Troops.Add(*troop);}

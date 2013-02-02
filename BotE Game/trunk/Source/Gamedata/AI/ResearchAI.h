@@ -1,5 +1,5 @@
 /*
- *   Copyright (C)2004-2011 Sir Pustekuchen
+ *   Copyright (C)2004-2013 Sir Pustekuchen
  *
  *   Author   :  Sir Pustekuchen
  *   Home     :  http://birth-of-the-empires.de
@@ -10,7 +10,7 @@
 #include "Options.h"
 
 // forward declaration
-class CBotf2Doc;
+class CBotEDoc;
 
 class CResearchAI
 {
@@ -24,5 +24,5 @@ public:
 	/// Diese Funktion führt die Berechnungen für die künstliche Intelligenz bei der Zuteilung der
 	/// Forschungspunkte aus.
 	/// @param pDoc Zeiger auf das Dokument
-	static void Calc(CBotf2Doc* pDoc);
+	static void Calc(CBotEDoc* pDoc);
 };

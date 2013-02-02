@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "TradeRoute.h"
-#include "Botf2Doc.h"
+#include "BotEDoc.h"
 #include "Races\RaceController.h"
 #include <cassert>
 
@@ -84,7 +84,7 @@ USHORT CTradeRoute::GetCredits(short boni) const
 /// Funktion überprüft, ob die Handelsroute noch Bestand haben darf und setzt die Credits, welche
 /// diese Handelsroute fabriziert. Dabei werden noch keinerlei Boni auf die Creditsproduktion angerechnet.
 /// Die Funktion gibt einen Wahrheitswert zurück, der sagt, ob die Handelsroute noch Bestand haben darf.
-bool CTradeRoute::CheckTradeRoute(const CPoint& pFrom, const CPoint& pDest, CBotf2Doc* pDoc)
+bool CTradeRoute::CheckTradeRoute(const CPoint& pFrom, const CPoint& pDest, CBotEDoc* pDoc)
 {
 	ASSERT(pDoc);
 
@@ -136,7 +136,7 @@ bool CTradeRoute::CheckTradeRoute(const CPoint& pFrom, const CPoint& pDest, CBot
 /// Diese Funktion verbessert manchmal die Beziehung zu der Minorrace, die in dem betroffenem Sektor lebt.
 /// Als Parameter wird hierfür die Ausgangskoordinate der Handerlsroute, die Zielkoordinate <code>pDest</code>
 /// und ein Zeiger auf das Dokument <code>pDoc</code> übergeben.
-void CTradeRoute::PerhapsChangeRelationship(const CPoint& pFrom, const CPoint& pDest, CBotf2Doc* pDoc)
+void CTradeRoute::PerhapsChangeRelationship(const CPoint& pFrom, const CPoint& pDest, CBotEDoc* pDoc)
 {
 	ASSERT(pDoc);
 

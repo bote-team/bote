@@ -1,5 +1,5 @@
 /*
- *   Copyright (C)2004-2011 Sir Pustekuchen
+ *   Copyright (C)2004-2013 Sir Pustekuchen
  *
  *   Author   :  Sir Pustekuchen
  *   Home     :  http://birth-of-the-empires.de
@@ -10,7 +10,7 @@
 #include "Race.h"
 
 // forward declaration
-class CBotf2Doc;
+class CBotEDoc;
 
 /// Klasse zur Abstraktion einer Minorrace
 class CMinor : public CRace
@@ -92,39 +92,39 @@ public:
 	/// in ihrem System kolonisieren.
 	/// @param pDoc Zeiger auf das Dokument
 	/// @return <code>true</code> wenn ein neuer Planet kolonisiert wurde, ansonsten <code>false</code>
-	bool PerhapsExtend(CBotf2Doc* pDoc);
+	bool PerhapsExtend(CBotEDoc* pDoc);
 
 	/// Diese Funktion lässt die Minorrace vielleicht ein Schiff bauen
 	/// @param pDoc Zeiger auf das Dokument
-	void PerhapsBuildShip(CBotf2Doc* pDoc);
+	void PerhapsBuildShip(CBotEDoc* pDoc);
 
 	/// Funktion berechnet wieviele Beziehungspunkte eine Majorrace für längere Beziehungsdauer bekommt.
 	/// Umso mehr Punkte sie hat, umso schwerer wird es für andere Majorraces diese Rasse durch Geschenke
 	/// zu beeinflussen
 	/// @param pDoc Zeiger auf das Dokument
-	void CalcAcceptancePoints(CBotf2Doc* pDoc);
+	void CalcAcceptancePoints(CBotEDoc* pDoc);
 
 	/// Funktion berechnet, wieviel Rohstoffe pro Runde (also bei jedem NextRound() aufrufen) von der
 	/// Minorrace verbraucht werden. Wenn die Minorrace die Möglichkeit hat, den jeweiligen Rohstoff
 	/// selbst abzubauen, damm ist der Verbrauch natürlich geringer.
 	/// @param pDoc Zeiger auf das Dokument
-	void ConsumeResources(CBotf2Doc* pDoc);
+	void ConsumeResources(CBotEDoc* pDoc);
 
 	/// Funktion überprüft, ob die Minorrace das Angebot aufgrund anderer Verträge überhaupt annehmen kann.
 	/// @param pDoc Zeiger auf das Dokument
 	/// @param sMajorID MajorraceID, von welcher das Angebot stammt
 	/// @param nType angebotener Vertrag
 	/// @return <code>true</code> wenn das Angebot theoretisch angenommen werden könnte, ansonsten <code>false</code>
-	bool CanAcceptOffer(CBotf2Doc* pDoc, const CString& sMajorID, short nType) const;
+	bool CanAcceptOffer(CBotEDoc* pDoc, const CString& sMajorID, short nType) const;
 
 	/// Funktion checkt die diplomatische Konsistenz und generiert bei Kündigungen auch die entsprechende Nachricht
 	/// für das entsprechende Imperium der Majorrace.
 	/// @param pDoc Zeiger auf das Dokument
-	void CheckDiplomaticConsistence(CBotf2Doc* pDoc);
+	void CheckDiplomaticConsistence(CBotEDoc* pDoc);
 
 	/// Funktion überprüft die Beziehungen zu den Hauptrassen. Wenn diese zuweit vom Vertrag abweicht könnte gekündigt werden.
 	/// @param pDoc Zeiger auf das Dokument
-	void PerhapsCancelAgreement(CBotf2Doc* pDoc);
+	void PerhapsCancelAgreement(CBotEDoc* pDoc);
 
 	/// Funktion zum erstellen einer Rasse.
 	/// Die Funktion liest einen entsprechenden Eintrag aus einer data Datei.

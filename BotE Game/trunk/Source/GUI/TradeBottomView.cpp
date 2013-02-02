@@ -39,7 +39,7 @@ END_MESSAGE_MAP()
 
 void CTradeBottomView::OnDraw(CDC* dc)
 {
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	if (!pDoc->m_bDataReceived)
@@ -250,7 +250,7 @@ void CTradeBottomView::OnInitialUpdate()
 /// Funktion lädt die rassenspezifischen Grafiken.
 void CTradeBottomView::LoadRaceGraphics()
 {
-	ASSERT((CBotf2Doc*)GetDocument());
+	ASSERT((CBotEDoc*)GetDocument());
 
 	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
@@ -270,7 +270,7 @@ BOOL CTradeBottomView::OnEraseBkgnd(CDC* /*pDC*/)
 void CTradeBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	if (!pDoc->m_bDataReceived)

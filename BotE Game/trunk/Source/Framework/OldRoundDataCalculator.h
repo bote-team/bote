@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Botf2Doc.h"
+#include "BotEDoc.h"
 
 class COldRoundDataCalculator
 {
@@ -9,7 +9,7 @@ private:
 public:
 	~COldRoundDataCalculator(void);
 
-	COldRoundDataCalculator(CBotf2Doc* pDoc);
+	COldRoundDataCalculator(CBotEDoc* pDoc);
 
 
 	static void CreditsDestructionMoral(CMajor* pMajor, CSystem& system,
@@ -26,5 +26,5 @@ private:
 	void FinishBuild(const int to_build, const CSector& sector, CSystem& system, CMajor* pMajor,
 		const CArray<CBuildingInfo,CBuildingInfo>& BuildingInfo) const;
 private:
-	CBotf2Doc* m_pDoc;
+	CBotEDoc* m_pDoc;
 };

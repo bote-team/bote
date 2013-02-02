@@ -14,7 +14,7 @@ COldRoundDataCalculator::~COldRoundDataCalculator(void)
 {
 }
 
-COldRoundDataCalculator::COldRoundDataCalculator(CBotf2Doc* pDoc)
+COldRoundDataCalculator::COldRoundDataCalculator(CBotEDoc* pDoc)
 {
 	m_pDoc = pDoc;
 }

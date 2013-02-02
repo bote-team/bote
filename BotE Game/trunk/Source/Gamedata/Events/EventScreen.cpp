@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "EventScreen.h"
 #include "IOData.h"
-#include "botf2.h"
-#include "Botf2Doc.h"
+#include "BotE.h"
+#include "BotEDoc.h"
 #include "Races\RaceController.h"
 #include "General/ResourceManager.h"
 
@@ -75,7 +75,7 @@ void CEventScreen::Create(void)
 	if (m_pBGImage->GetLastStatus() != Ok)
 		return;
 
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	// alle Buttons in der View anlegen und Grafiken laden

@@ -2,7 +2,7 @@
 //
 
 #include "stdafx.h"
-#include "botf2.h"
+#include "BotE.h"
 #include "MainFrm.h"
 #include "ResearchMenuView.h"
 #include "ResearchBottomView.h"
@@ -46,7 +46,7 @@ END_MESSAGE_MAP()
 
 void CResearchMenuView::OnDraw(CDC* dc)
 {
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	if (!pDoc->m_bDataReceived)
@@ -136,7 +136,7 @@ void CResearchMenuView::OnInitialUpdate()
 /// Funktion lädt die rassenspezifischen Grafiken.
 void CResearchMenuView::LoadRaceGraphics()
 {
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	CMajor* pMajor = m_pPlayersRace;
@@ -169,7 +169,7 @@ BOOL CResearchMenuView::OnEraseBkgnd(CDC* /*pDC*/)
 /////////////////////////////////////////////////////////////////////////////////////////
 void CResearchMenuView::DrawResearchMenue(Graphics* g)
 {
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	CMajor* pMajor = m_pPlayersRace;
@@ -426,7 +426,7 @@ void CResearchMenuView::DrawResearchMenue(Graphics* g)
 /////////////////////////////////////////////////////////////////////////////////////////
 void CResearchMenuView::DrawUniqueResearchMenue(Graphics* g)
 {
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	CMajor* pMajor = m_pPlayersRace;
@@ -750,7 +750,7 @@ void CResearchMenuView::DrawUniqueResearchMenue(Graphics* g)
 void CResearchMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	if (!pDoc->m_bDataReceived)
@@ -862,7 +862,7 @@ void CResearchMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 void CResearchMenuView::OnMouseMove(UINT nFlags, CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	if (!pDoc->m_bDataReceived)
@@ -924,7 +924,7 @@ void CResearchMenuView::OnMouseMove(UINT nFlags, CPoint point)
 void CResearchMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 {
 	// TODO: Add your message handler code here and/or call default
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	if (!pDoc->m_bDataReceived)
@@ -954,7 +954,7 @@ void CResearchMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 
 void CResearchMenuView::CreateButtons()
 {
-	ASSERT((CBotf2Doc*)GetDocument());
+	ASSERT((CBotEDoc*)GetDocument());
 
 	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
@@ -979,7 +979,7 @@ CString CResearchMenuView::CreateTooltip(void)
 	if (m_bySubMenu != 0)
 		return "";
 
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	if (!pDoc->m_bDataReceived)

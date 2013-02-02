@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "VictoryObserver.h"
-#include "botf2.h"
-#include "Botf2Doc.h"
+#include "BotE.h"
+#include "BotEDoc.h"
 #include "Races/RaceController.h"
 #include "IniLoader.h"
 #include <algorithm>
@@ -249,7 +249,7 @@ int CVictoryObserver::GetBestVictoryValue(VICTORYTYPE nType) const
 
 int CVictoryObserver::GetNeededVictoryValue(VICTORYTYPE nType) const
 {
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	// aktuelle Runde
@@ -302,7 +302,7 @@ int CVictoryObserver::GetNeededVictoryValue(VICTORYTYPE nType) const
 
 void CVictoryObserver::Observe(void)
 {
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	//////////////////////////////////////////////////////////////////////

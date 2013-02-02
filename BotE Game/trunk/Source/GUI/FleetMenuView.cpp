@@ -2,7 +2,7 @@
 //
 
 #include "stdafx.h"
-#include "botf2.h"
+#include "BotE.h"
 #include "MainFrm.h"
 #include "GalaxyMenuView.h"
 #include "FleetMenuView.h"
@@ -58,7 +58,7 @@ void CFleetMenuView::OnNewRound()
 void CFleetMenuView::OnDraw(CDC* dc)
 {
 	// TODO: add draw code here
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	if (!pDoc->m_bDataReceived)
@@ -122,7 +122,7 @@ void CFleetMenuView::OnInitialUpdate()
 /// Funktion lädt die rassenspezifischen Grafiken.
 void CFleetMenuView::LoadRaceGraphics()
 {
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	CMajor* pMajor = m_pPlayersRace;
@@ -156,7 +156,7 @@ void CFleetMenuView::DrawFleetMenue(Graphics* g)
 {
 	m_vShipRects.clear();
 
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	CMajor* pMajor = m_pPlayersRace;
@@ -346,7 +346,7 @@ static unsigned CheckClickedButtonRect(const CPoint& point) {
 //END: HELEPRS FOR CFleetMenuView::OnLButtonDown
 void CFleetMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 {
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	assert(pDoc);
 	if (!pDoc->m_bDataReceived)
 		return;
@@ -497,7 +497,7 @@ void CFleetMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 
 void CFleetMenuView::OnMouseMove(UINT nFlags, CPoint point)
 {
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	assert(pDoc);
 	if (!pDoc->m_bDataReceived)
 		return;
@@ -534,7 +534,7 @@ void CFleetMenuView::OnMouseMove(UINT nFlags, CPoint point)
 void CFleetMenuView::OnRButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	CMajor* pMajor = m_pPlayersRace;
@@ -563,7 +563,7 @@ void CFleetMenuView::CreateButtons()
 /// @return	der erstellte Tooltip-Text
 CString CFleetMenuView::CreateTooltip(void)
 {
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	if (!pDoc->m_bDataReceived)

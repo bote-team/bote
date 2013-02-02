@@ -1,5 +1,5 @@
 /*
- *   Copyright (C)2004-2011 Sir Pustekuchen
+ *   Copyright (C)2004-2013 Sir Pustekuchen
  *
  *   Author   :  Sir Pustekuchen
  *   Home     :  http://birth-of-the-empires.de
@@ -7,16 +7,16 @@
  */
 #pragma once
 
-#include "Botf2Doc.h"
+#include "BotEDoc.h"
 #include "BotEServer.h"
 #include "BotEClient.h"
 
 class CNetworkHandler : public network::CServerListener, public network::CClientListener
 {
-	CBotf2Doc *m_pDoc;
+	CBotEDoc *m_pDoc;
 
 public:
-	CNetworkHandler(CBotf2Doc *pDoc);
+	CNetworkHandler(CBotEDoc *pDoc);
 	~CNetworkHandler();
 
 	virtual void OnServerSocketError(int nError) {MessageBox(AfxGetMainWnd()->GetSafeHwnd(),network::GetWSAErrorMsg(nError),"Server_Error",MB_ICONEXCLAMATION | MB_OK);}

@@ -1,11 +1,11 @@
-// botf2View.cpp : Implementierung der Klasse CGalaxyMenuView
+// BotEView.cpp : Implementierung der Klasse CGalaxyMenuView
 //
 
 #include "stdafx.h"
 #include "IOData.h"
 
-#include "botf2.h"
-#include "botf2Doc.h"
+#include "BotE.h"
+#include "BotEDoc.h"
 #include "MainFrm.h"
 #include "GalaxyMenuView.h"
 #include "SystemMenuView.h"
@@ -89,7 +89,7 @@ BOOL CGalaxyMenuView::PreCreateWindow(CREATESTRUCT& cs)
 
 void CGalaxyMenuView::OnNewRound()
 {
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT_VALID(pDoc);
 
 	CMajor* pPlayer = m_pPlayersRace;
@@ -124,7 +124,7 @@ void CGalaxyMenuView::OnNewRound()
 // CGalaxyMenuView Zeichnen
 void CGalaxyMenuView::OnDraw(CDC* dc)
 {
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT_VALID(pDoc);
 
 	if (!pDoc->m_bDataReceived)
@@ -670,7 +670,7 @@ void CGalaxyMenuView::UnZoom(CPoint *pPoint) const
 void CGalaxyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO: Code für die Behandlungsroutine für Nachrichten hier einfügen und/oder Standard aufrufen
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	if (!pDoc->m_bDataReceived)
@@ -863,7 +863,7 @@ BOOL CGalaxyMenuView::OnEraseBkgnd(CDC* /*pDC*/)
 BOOL CGalaxyMenuView::OnMouseWheel(UINT nFlags, short zDelta, CPoint point)
 {
 	// TODO: Code für die Behandlungsroutine für Nachrichten hier einfügen und/oder Standard aufrufen
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	if (!pDoc->m_bDataReceived)
@@ -943,7 +943,7 @@ BOOL CGalaxyMenuView::OnMouseWheel(UINT nFlags, short zDelta, CPoint point)
 void CGalaxyMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 {
 	// TODO: Code für die Behandlungsroutine für Nachrichten hier einfügen und/oder Standard aufrufen
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	if (!pDoc->m_bDataReceived)
@@ -981,7 +981,7 @@ void CGalaxyMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 void CGalaxyMenuView::OnRButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO: Code für die Behandlungsroutine für Nachrichten hier einfügen und/oder Standard aufrufen
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	if (!pDoc->m_bDataReceived)
@@ -1016,7 +1016,7 @@ void CGalaxyMenuView::OnRButtonDown(UINT nFlags, CPoint point)
 void CGalaxyMenuView::OnMouseMove(UINT nFlags, CPoint point)
 {
 	// TODO: Code für die Behandlungsroutine für Nachrichten hier einfügen und/oder Standard aufrufen
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	if (!pDoc->m_bDataReceived)
@@ -1149,7 +1149,7 @@ void CGalaxyMenuView::OnMouseMove(UINT nFlags, CPoint point)
 void CGalaxyMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 {
 	// TODO: Code für die Behandlungsroutine für Nachrichten hier einfügen und/oder Standard aufrufen
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	if (!pDoc->m_bDataReceived)
@@ -1268,7 +1268,7 @@ void CGalaxyMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 	CScrollView::OnKeyDown(nChar, nRepCnt, nFlags);
 }
 
-void CGalaxyMenuView::HandleShipHotkeys(const UINT nChar, CBotf2Doc* pDoc)
+void CGalaxyMenuView::HandleShipHotkeys(const UINT nChar, CBotEDoc* pDoc)
 {
 	if(m_bShipMove) {
 		m_bShipMove = FALSE;
@@ -1286,7 +1286,7 @@ void CGalaxyMenuView::HandleShipHotkeys(const UINT nChar, CBotf2Doc* pDoc)
 	}
 }
 
-void CGalaxyMenuView::SearchNextIdleShipAndJumpToIt(CBotf2Doc* pDoc, SHIP_ORDER::Typ order)
+void CGalaxyMenuView::SearchNextIdleShipAndJumpToIt(CBotEDoc* pDoc, SHIP_ORDER::Typ order)
 {
 	assert(m_pPlayersRace);
 	if(pDoc->m_ShipMap.empty())
@@ -1375,7 +1375,7 @@ int CGalaxyMenuView::GetRangeBorder(const unsigned char range1, const unsigned c
 
 void CGalaxyMenuView::GenerateGalaxyMap()
 {
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	CMajor* pMajor = m_pPlayersRace;
@@ -1607,7 +1607,7 @@ void CGalaxyMenuView::CenterOnScrollSector()
 /// @return	der erstellte Tooltip-Text
 CString CGalaxyMenuView::CreateTooltip(void)
 {
-	CBotf2Doc* pDoc = resources::pDoc;
+	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
 	if (!pDoc->m_bDataReceived)

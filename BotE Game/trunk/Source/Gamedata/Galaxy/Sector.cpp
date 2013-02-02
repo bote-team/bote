@@ -7,7 +7,7 @@
 #include "IOData.h"
 #include "GenSectorName.h"
 #include "FontLoader.h"
-#include "Botf2Doc.h"
+#include "BotEDoc.h"
 #include "Races\RaceController.h"
 #include "Anomaly.h"
 #include "General/ResourceManager.h"
@@ -760,7 +760,7 @@ void CSector::Reset()
 // Zeichenfunktionen
 ////////////////////////////////////////////////////////////////
 /// Diese Funktion zeichnet den Namen des Sektors.
-void CSector::DrawSectorsName(CDC *pDC, CBotf2Doc* pDoc, CMajor* pPlayer)
+void CSector::DrawSectorsName(CDC *pDC, CBotEDoc* pDoc, CMajor* pPlayer)
 {
 	// befindet sich kein Sonnensystem oder keine Anomalie im Sektor
 	if (!GetSunSystem() && !GetAnomaly())
@@ -817,7 +817,7 @@ bool CSector::ShouldDrawOutpost(const CMajor& our_race, const CString& their_rac
 }
 
 /// Diese Funktion zeichnet die entsprechenden Schiffssymbole in den Sektor
-void CSector::DrawShipSymbolInSector(Graphics *g, CBotf2Doc* pDoc, CMajor* pPlayer)
+void CSector::DrawShipSymbolInSector(Graphics *g, CBotEDoc* pDoc, CMajor* pPlayer)
 {
 	ASSERT(g);
 	ASSERT(pDoc);
@@ -906,7 +906,7 @@ short CSector::GetScanPower(const CString& sRace, bool bWith_ships) const
 
 	unsigned scan_power_due_to_ship_number = 0;
 	if(bWith_ships) {
-		const CBotf2Doc* pDoc = resources::pDoc;
+		const CBotEDoc* pDoc = resources::pDoc;
 		const CRaceController* pCtrl = pDoc->GetRaceCtrl();
 		const CRace* pRace = pCtrl->GetRace(sRace);
 		for(std::map<CString, unsigned>::const_iterator it = m_mNumbersOfShips.begin(); it != m_mNumbersOfShips.end(); ++ it) {
@@ -951,7 +951,7 @@ void CSector::PutScannedSquare(unsigned range, const int power,
 			for (int j = -intrange; j <= intrange; ++j) {
 				const int y = m_KO.y + j;
 				if(0 <= y && y < STARMAP_SECTORS_VCOUNT) {
-					CBotf2Doc* pDoc = resources::pDoc;
+					CBotEDoc* pDoc = resources::pDoc;
 					CSector& scanned_sector = pDoc->GetSector(x, y);
 					// Teiler für die Scanstärke berechnen
 					int div = max(abs(i), abs(j));

@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "IntelAI.h"
-#include "Botf2Doc.h"
+#include "BotEDoc.h"
 #include "Races\RaceController.h"
 
 //////////////////////////////////////////////////////////////////////
@@ -19,7 +19,7 @@ CIntelAI::~CIntelAI(void)
 // sonstige Funktionen
 //////////////////////////////////////////////////////////////////////
 /// Funktion berechnet den Umgang mit dem Geheimdienst für die KI. Sie trifft Zuteilungen für die einzelnen Rassen.
-void CIntelAI::CalcIntelligence(CBotf2Doc* pDoc)
+void CIntelAI::CalcIntelligence(CBotEDoc* pDoc)
 {
 	ASSERT(pDoc);
 
