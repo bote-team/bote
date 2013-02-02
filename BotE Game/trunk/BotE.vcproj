@@ -50,6 +50,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
 				Optimization="0"
 				AdditionalIncludeDirectories=".;Source;Source\include;Source\Graphic;Source\Gamedata;Source\Dialogs;Source\Framework;Source\GUI;Source\General;Source\include\foundation;Source\include\LZMA;Source\include\network;Source\include\sound;Source\include\CPPToolTip"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS"
@@ -152,6 +153,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
 				Optimization="3"
 				InlineFunctionExpansion="1"
 				FavorSizeOrSpeed="1"
@@ -256,6 +258,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
 				Optimization="2"
 				InlineFunctionExpansion="1"
 				FavorSizeOrSpeed="1"
