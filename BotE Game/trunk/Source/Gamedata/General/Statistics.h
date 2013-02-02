@@ -12,7 +12,7 @@
 
 #include <map>
 #include <list>
-#include "Options.h"
+#include "Constants.h"
 
 // forward declaration
 class CBotEDoc;

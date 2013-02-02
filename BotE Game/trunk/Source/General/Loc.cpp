@@ -1,21 +1,21 @@
 #include "stdafx.h"
-#include "ResourceManager.h"
+#include "Loc.h"
 #include "IOData.h"
 
 
 // statische Variable initialisieren
-CMapStringToString CResourceManager::m_StringTable;
+CMapStringToString CLoc::m_StringTable;
 
-CResourceManager::CResourceManager(void)
+CLoc::CLoc(void)
 {
 }
 
-CResourceManager::~CResourceManager(void)
+CLoc::~CLoc(void)
 {
 }
 
-/// Funktion initiert die Klasse CResourceManager. Sie muss zu Beginn aufgerufen werden
-void CResourceManager::Init(void)
+/// Funktion initiert die Klasse CLoc. Sie muss zu Beginn aufgerufen werden
+void CLoc::Init(void)
 {
 	// Name des zu öffnenden Files
 	CString fileName = CIOData::GetInstance()->GetAppPath() + "Data\\Strings\\StringTable.txt";
@@ -53,7 +53,7 @@ void CResourceManager::Init(void)
 }
 
 /// Funktion gibt einen String zurück, der in einer StringTable steht.
-CString CResourceManager::GetString(const CString& key, BOOLEAN forceBigStarting, const CString& subString1, const CString& subString2)
+CString CLoc::GetString(const CString& key, BOOLEAN forceBigStarting, const CString& subString1, const CString& subString2)
 {
 	CString returnString;
 	if (!m_StringTable.Lookup(key, returnString))
@@ -81,7 +81,7 @@ CString CResourceManager::GetString(const CString& key, BOOLEAN forceBigStarting
 }
 
 /*
-CString CResourceManager::Text(LPCTSTR lpszKeyFormat, ...)
+CString CLoc::Text(LPCTSTR lpszKeyFormat, ...)
 {
 	CString value;
 	if (!m_StringTable.Lookup(lpszKeyFormat, value))

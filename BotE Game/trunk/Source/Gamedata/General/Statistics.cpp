@@ -347,7 +347,7 @@ void CStatistics::CalcAverageTechLevel(CBotEDoc* pDoc)
 	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 	{
 		CEmpire* empire = it->second->GetEmpire();
-		if (empire->GetNumberOfSystems() > 0)
+		if (empire->CountSystems() > 0)
 		{
 			m_byAverageTechLevel += empire->GetResearch()->GetBioTech();
 			m_byAverageTechLevel += empire->GetResearch()->GetEnergyTech();
@@ -375,7 +375,7 @@ void CStatistics::CalcAverageResourceStorages(CBotEDoc* pDoc)
 		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 		{
 			CEmpire* empire = it->second->GetEmpire();
-			if (empire->GetNumberOfSystems() > 0)
+			if (empire->CountSystems() > 0)
 			{
 				m_nAverageResourceStorages[i] += empire->GetStorage()[i];
 				nRaces++;

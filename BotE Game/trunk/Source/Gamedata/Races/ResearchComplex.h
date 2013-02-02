@@ -7,7 +7,7 @@
  */
 
 #pragma once
-#include "Options.h"
+#include "Constants.h"
 
 class CResearchComplex : public CObject
 {

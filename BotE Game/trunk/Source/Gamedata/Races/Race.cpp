@@ -6,7 +6,7 @@
 #include "AI\DiplomacyAI.h"
 #include "AI\MajorAI.h"
 #include "HTMLStringBuilder.h"
-#include "General/ResourceManager.h"
+#include "General/Loc.h"
 
 #include <cassert>
 
@@ -435,31 +435,31 @@ CString CRace::GetTooltip(void) const
 	// Eigenschaften anzeigen
 	vector<CString> sProperties;
 	if (IsRaceProperty(RACE_PROPERTY::FINANCIAL))
-		sProperties.push_back(CResourceManager::GetString("FINANCIAL"));
+		sProperties.push_back(CLoc::GetString("FINANCIAL"));
 	if (IsRaceProperty(RACE_PROPERTY::WARLIKE))
-		sProperties.push_back(CResourceManager::GetString("WARLIKE"));
+		sProperties.push_back(CLoc::GetString("WARLIKE"));
 	if (IsRaceProperty(RACE_PROPERTY::AGRARIAN))
-		sProperties.push_back(CResourceManager::GetString("AGRARIAN"));
+		sProperties.push_back(CLoc::GetString("AGRARIAN"));
 	if (IsRaceProperty(RACE_PROPERTY::INDUSTRIAL))
-		sProperties.push_back(CResourceManager::GetString("INDUSTRIAL"));
+		sProperties.push_back(CLoc::GetString("INDUSTRIAL"));
 	if (IsRaceProperty(RACE_PROPERTY::SECRET))
-		sProperties.push_back(CResourceManager::GetString("SECRET"));
+		sProperties.push_back(CLoc::GetString("SECRET"));
 	if (IsRaceProperty(RACE_PROPERTY::SCIENTIFIC))
-		sProperties.push_back(CResourceManager::GetString("SCIENTIFIC"));
+		sProperties.push_back(CLoc::GetString("SCIENTIFIC"));
 	if (IsRaceProperty(RACE_PROPERTY::PRODUCER))
-		sProperties.push_back(CResourceManager::GetString("PRODUCER"));
+		sProperties.push_back(CLoc::GetString("PRODUCER"));
 	if (IsRaceProperty(RACE_PROPERTY::PACIFIST))
-		sProperties.push_back(CResourceManager::GetString("PACIFIST"));
+		sProperties.push_back(CLoc::GetString("PACIFIST"));
 	if (IsRaceProperty(RACE_PROPERTY::SNEAKY))
-		sProperties.push_back(CResourceManager::GetString("SNEAKY"));
+		sProperties.push_back(CLoc::GetString("SNEAKY"));
 	if (IsRaceProperty(RACE_PROPERTY::SOLOING))
-		sProperties.push_back(CResourceManager::GetString("SOLOING"));
+		sProperties.push_back(CLoc::GetString("SOLOING"));
 	if (IsRaceProperty(RACE_PROPERTY::HOSTILE))
-		sProperties.push_back(CResourceManager::GetString("HOSTILE"));
+		sProperties.push_back(CLoc::GetString("HOSTILE"));
 	if (sProperties.empty())
-		sProperties.push_back(CResourceManager::GetString("NONE"));
+		sProperties.push_back(CLoc::GetString("NONE"));
 
-	CString sProb = CResourceManager::GetString("PROPERTIES");
+	CString sProb = CLoc::GetString("PROPERTIES");
 	sProb = CHTMLStringBuilder::GetHTMLColor(sProb, _T("silver"));
 	sProb = CHTMLStringBuilder::GetHTMLHeader(sProb, _T("h4"));
 	sProb += CHTMLStringBuilder::GetHTMLStringNewLine();

@@ -4,7 +4,7 @@
 #include "BotE.h"
 #include "BotEDoc.h"
 #include "Races\RaceController.h"
-#include "General/ResourceManager.h"
+#include "General/Loc.h"
 
 IMPLEMENT_SERIAL (CEventRaceKilled, CObject, 1)
 
@@ -79,11 +79,11 @@ void CEventRaceKilled::Draw(Graphics* g, CGraphicPool* graphicPool) const
 	CFontLoader::GetGDIFontColor(pMajor, 3, color);
 	fontBrush.SetColor(color);
 
-	CString s = CResourceManager::GetString("IMPORTANT_NEWS");
+	CString s = CLoc::GetString("IMPORTANT_NEWS");
 	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,0,1280,96), &fontFormat, &fontBrush);
 
 	fontFormat.SetAlignment(StringAlignmentNear);
-	s = CResourceManager::GetString("RACE_ELIMINATED", FALSE, m_sKilledRaceName);
+	s = CLoc::GetString("RACE_ELIMINATED", FALSE, m_sKilledRaceName);
 	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(375, 400, 800, 300), &fontFormat, &fontBrush);
 
 	// Buttons zeichnen

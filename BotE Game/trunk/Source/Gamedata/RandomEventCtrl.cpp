@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "Remanager.h"
+#include "RandomEventCtrl.h"
 #include "BotE.h"
 #include "BotEDoc.h"
 #include "Races/Major.h"
@@ -7,14 +7,14 @@
 #include "Races/RaceController.h"
 #include "Galaxy/planet.h"
 #include "Events/EventRandom.h"
-#include "Gamedata/General/Message.h"
+#include "General/EmpireNews.h"
 #include "Ships/Ships.h"
-#include "General/ResourceManager.h"
+#include "General/Loc.h"
 #include "IniLoader.h"
 
 #include <cassert>
 
-CReManager::CReManager(void) :
+CRandomEventCtrl::CRandomEventCtrl(void) :
 	m_uiGlobalProb(2),
 	m_uiProbPerSystem(7),
 	m_uiProbPerMinor(7)
@@ -24,7 +24,7 @@ CReManager::CReManager(void) :
 		m_bIsActivated = pIni->ReadValueDefault("Special", "RANDOMEVENTS", true);
 }
 
-CReManager::~CReManager(void)
+CRandomEventCtrl::~CRandomEventCtrl(void)
 {
 }
 
@@ -33,16 +33,16 @@ CReManager::~CReManager(void)
 //////////////////////////////////////////////////////////////////////
 /// Funktion liefert die einzige Instanz dieser Klasse (Singleton).
 /// @return Instanz dieser Klasse
-CReManager* CReManager::GetInstance(void)
+CRandomEventCtrl* CRandomEventCtrl::GetInstance(void)
 {
-	static CReManager instance;
+	static CRandomEventCtrl instance;
 	return &instance;
 }
 
 //In this function, calculate whether an event fails or succeeds due to given probabilities.
 //Functions executed in succession only decide whether an event fails due to constraints
 //such as population already being at minimum.
-void CReManager::CalcEvents(CMajor* pRace)
+void CRandomEventCtrl::CalcEvents(CMajor* pRace)
 {
 	if (!IsActivated())
 		return;
@@ -88,7 +88,7 @@ void CReManager::CalcEvents(CMajor* pRace)
 	}
 }
 
-bool CReManager::SystemEvent(const CPoint &ko, CMajor* pRace)
+bool CRandomEventCtrl::SystemEvent(const CPoint &ko, CMajor* pRace)
 {
 	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
@@ -99,12 +99,12 @@ bool CReManager::SystemEvent(const CPoint &ko, CMajor* pRace)
 
 	if(nEventNumber==SYSTEMEVENTMORALBOOST)//If abfrage mit allen möglichen Randomevents; evtl. hier bedingungen einfügen
 	{
-		sMsgText=CResourceManager::GetString("SYSTEMEVENTMORALBOOST",false,pDoc->GetSector(ko.x, ko.y).GetName());
+		sMsgText=CLoc::GetString("SYSTEMEVENTMORALBOOST",false,pDoc->GetSector(ko.x, ko.y).GetName());
 		pDoc->GetSystem(ko.x, ko.y).SetMoral(10);
 	}
 	else if(nEventNumber==SYSTEMEVENTMORALMALUS)
 	{
-		sMsgText=CResourceManager::GetString("SYSTEMEVENTMORALMALUS",false,pDoc->GetSector(ko.x, ko.y).GetName());
+		sMsgText=CLoc::GetString("SYSTEMEVENTMORALMALUS",false,pDoc->GetSector(ko.x, ko.y).GetName());
 		pDoc->GetSystem(ko.x, ko.y).SetMoral(-10);
 	}
 	else if(nEventNumber==SYSTEMEVENTPLANETMOVEMENT)//Planetenveränderung
@@ -124,7 +124,7 @@ bool CReManager::SystemEvent(const CPoint &ko, CMajor* pRace)
 			vPlanets.at(nPlanet).SetMaxHabitant(new_habitants);
 			CString habitants_change_string;
 			habitants_change_string.Format("%.3f", habitants_change);
-			sMsgText=CResourceManager::GetString("SYSTEMEVENTPLANETMOVEMENT",false,vPlanets.at(nPlanet).GetPlanetName(), habitants_change_string);
+			sMsgText=CLoc::GetString("SYSTEMEVENTPLANETMOVEMENT",false,vPlanets.at(nPlanet).GetPlanetName(), habitants_change_string);
 		}
 	}
 	else if(nEventNumber==SYSTEMEVENTDEMOGRAPHIC)
@@ -150,15 +150,15 @@ bool CReManager::SystemEvent(const CPoint &ko, CMajor* pRace)
 				planets.at(planet).SetCurrentHabitant(new_habitants);
 				CString habitants_change_string;
 				habitants_change_string.Format("%.3f", habitants_change * -1);
-				sMsgText=CResourceManager::GetString("SYSTEMEVENTPLANETDEMOGRAPHICLONG",false,planets.at(planet).GetPlanetName(), habitants_change_string);
+				sMsgText=CLoc::GetString("SYSTEMEVENTPLANETDEMOGRAPHICLONG",false,planets.at(planet).GetPlanetName(), habitants_change_string);
 
 				if (pRace->IsHumanPlayer())
 				{
 					network::RACE client = pDoc->GetRaceCtrl()->GetMappedClientID(pRace->GetRaceID());
 					pDoc->m_iSelectedView[client] = EMPIRE_VIEW;
 
-					CEventRandom* EmpireEvent=new CEventRandom(pRace->GetRaceID(),"demographic",CResourceManager::GetString("SYSTEMEVENTPLANETDEMOGRAPHICTITLE"),sMsgText);
-					pRace->GetEmpire()->GetEventMessages()->Add(EmpireEvent);
+					CEventRandom* EmpireEvent=new CEventRandom(pRace->GetRaceID(),"demographic",CLoc::GetString("SYSTEMEVENTPLANETDEMOGRAPHICTITLE"),sMsgText);
+					pRace->GetEmpire()->GetEvents()->Add(EmpireEvent);
 				}
 			}
 		}
@@ -166,9 +166,9 @@ bool CReManager::SystemEvent(const CPoint &ko, CMajor* pRace)
 
 	if(bSuccess && !sMsgText.IsEmpty())
 	{
-		CMessage message;
-		message.GenerateMessage(sMsgText,MESSAGE_TYPE::SOMETHING,"",ko);//Nachricht über Randomevent erstellen
-		pRace->GetEmpire()->AddMessage(message);
+		CEmpireNews message;
+		message.CreateNews(sMsgText,EMPIRE_NEWS_TYPE::SOMETHING,"",ko);//Nachricht über Randomevent erstellen
+		pRace->GetEmpire()->AddMsg(message);
 
 		if (pRace->IsHumanPlayer())
 		{
@@ -179,14 +179,14 @@ bool CReManager::SystemEvent(const CPoint &ko, CMajor* pRace)
 	return bSuccess;
 }
 
-void CReManager::GlobalEventResearch(CMajor *pRace)
+void CRandomEventCtrl::GlobalEventResearch(CMajor *pRace)
 {
-	CString messagetext=CResourceManager::GetString("GLOBALEVENTRESEARCH");
+	CString messagetext=CLoc::GetString("GLOBALEVENTRESEARCH");
 	pRace->GetEmpire()->AddFP((int)(pRace->GetEmpire()->GetFP()));
 
-	CMessage message;
-	message.GenerateMessage(messagetext,MESSAGE_TYPE::RESEARCH);//Nachricht für Randomevent erstellen
-	pRace->GetEmpire()->AddMessage(message);
+	CEmpireNews message;
+	message.CreateNews(messagetext,EMPIRE_NEWS_TYPE::RESEARCH);//Nachricht für Randomevent erstellen
+	pRace->GetEmpire()->AddMsg(message);
 
 	if (pRace->IsHumanPlayer())
 	{
@@ -196,21 +196,21 @@ void CReManager::GlobalEventResearch(CMajor *pRace)
 		network::RACE client = pDoc->GetRaceCtrl()->GetMappedClientID(pRace->GetRaceID());
 		pDoc->m_iSelectedView[client] = EMPIRE_VIEW;
 
-		CEventRandom* EmpireEvent=new CEventRandom(pRace->GetRaceID(),"Breakthrough",CResourceManager::GetString("BREAKTHROUGH"),CResourceManager::GetString("GLOBALEVENTRESEARCH"));
-		pRace->GetEmpire()->GetEventMessages()->Add(EmpireEvent);
+		CEventRandom* EmpireEvent=new CEventRandom(pRace->GetRaceID(),"Breakthrough",CLoc::GetString("BREAKTHROUGH"),CLoc::GetString("GLOBALEVENTRESEARCH"));
+		pRace->GetEmpire()->GetEvents()->Add(EmpireEvent);
 	}
 }
 
-void CReManager::GlobalEventMinor(CMajor* pRace, CMinor* pMinor)
+void CRandomEventCtrl::GlobalEventMinor(CMajor* pRace, CMinor* pMinor)
 {
 	pMinor->SetRelation(pRace->GetRaceID(), (rand() % 101) - pMinor->GetRelation(pRace->GetRaceID()));
-	CString messagetext=CResourceManager::GetString("GLOBALEVENTMINOR",false,pMinor->GetRaceName());
-	CMessage message;
-	message.GenerateMessage(messagetext,MESSAGE_TYPE::DIPLOMACY);//Nachricht für Randomevent erstellen
-	pRace->GetEmpire()->AddMessage(message);
+	CString messagetext=CLoc::GetString("GLOBALEVENTMINOR",false,pMinor->GetRaceName());
+	CEmpireNews message;
+	message.CreateNews(messagetext,EMPIRE_NEWS_TYPE::DIPLOMACY);//Nachricht für Randomevent erstellen
+	pRace->GetEmpire()->AddMsg(message);
 }
 
-void CReManager::CalcExploreEvent(const CPoint &ko, CMajor *pRace, CShipMap* ships)
+void CRandomEventCtrl::CalcExploreEvent(const CPoint &ko, CMajor *pRace, CShipMap* ships)
 {
 	if (!IsActivated())
 		return;
@@ -224,7 +224,7 @@ void CReManager::CalcExploreEvent(const CPoint &ko, CMajor *pRace, CShipMap* shi
 	//ko=Koordinate wo es passiert, pRace = die Rasse der es passiert
 	int eventnumber=rand()%2;
 	CString sMessageText = "";
-	MESSAGE_TYPE::Typ typ = MESSAGE_TYPE::NO_TYPE;
+	EMPIRE_NEWS_TYPE::Typ typ = EMPIRE_NEWS_TYPE::NO_TYPE;
 
 	if (eventnumber == ALIENTEC)
 	{
@@ -237,13 +237,13 @@ void CReManager::CalcExploreEvent(const CPoint &ko, CMajor *pRace, CShipMap* shi
 		if (sSectorName.IsEmpty())
 			sSectorName.Format("%c%i", (char)(ko.y+97), ko.x + 1);
 
-		sMessageText = CResourceManager::GetString("ALIENTEC",false,sSectorName);
-		typ = MESSAGE_TYPE::RESEARCH;
+		sMessageText = CLoc::GetString("ALIENTEC",false,sSectorName);
+		typ = EMPIRE_NEWS_TYPE::RESEARCH;
 
 		if (pRace->IsHumanPlayer())
 		{
-			CEventRandom* EmpireEvent=new CEventRandom(pRace->GetRaceID(),"alientech",CResourceManager::GetString("ALIENTECHEADLINE"),CResourceManager::GetString("ALIENTECLONG",false,sSectorName));
-			pRace->GetEmpire()->GetEventMessages()->Add(EmpireEvent);
+			CEventRandom* EmpireEvent=new CEventRandom(pRace->GetRaceID(),"alientech",CLoc::GetString("ALIENTECHEADLINE"),CLoc::GetString("ALIENTECLONG",false,sSectorName));
+			pRace->GetEmpire()->GetEvents()->Add(EmpireEvent);
 		}
 	}
 	else if(eventnumber == EVENTSHIPXP)
@@ -257,15 +257,15 @@ void CReManager::CalcExploreEvent(const CPoint &ko, CMajor *pRace, CShipMap* shi
 			}
 		}
 
-		sMessageText = CResourceManager::GetString("EVENTSHIPXP",false,pDoc->GetSector(ko.x, ko.y).GetName(true));
-		typ = MESSAGE_TYPE::MILITARY;
+		sMessageText = CLoc::GetString("EVENTSHIPXP",false,pDoc->GetSector(ko.x, ko.y).GetName(true));
+		typ = EMPIRE_NEWS_TYPE::MILITARY;
 	}
 
 	if (!sMessageText.IsEmpty())
 	{
-		CMessage message;
-		message.GenerateMessage(sMessageText,typ,"",ko);//Nachricht erstellen
-		pRace->GetEmpire()->AddMessage(message);
+		CEmpireNews message;
+		message.CreateNews(sMessageText,typ,"",ko);//Nachricht erstellen
+		pRace->GetEmpire()->AddMsg(message);
 
 		if (pRace->IsHumanPlayer())
 		{
@@ -275,7 +275,7 @@ void CReManager::CalcExploreEvent(const CPoint &ko, CMajor *pRace, CShipMap* shi
 	}
 }
 
-void CReManager::CalcShipEvents() const
+void CRandomEventCtrl::CalcShipEvents() const
 {
 	if (!IsActivated())
 		return;
@@ -332,10 +332,10 @@ void CReManager::CalcShipEvents() const
 				if (sSectorName.IsEmpty())
 					sSectorName.Format("%c%i", (char)(pSector->GetKO().y+97), pSector->GetKO().x + 1);
 
-				CString sMessageText = CResourceManager::GetString("EVENTHULLVIRUS", false, sSectorName);
-				CMessage message;
-				message.GenerateMessage(sMessageText,MESSAGE_TYPE::MILITARY,pSector->GetName(),pSector->GetKO());
-				pMajor->GetEmpire()->AddMessage(message);
+				CString sMessageText = CLoc::GetString("EVENTHULLVIRUS", false, sSectorName);
+				CEmpireNews message;
+				message.CreateNews(sMessageText,EMPIRE_NEWS_TYPE::MILITARY,pSector->GetName(),pSector->GetKO());
+				pMajor->GetEmpire()->AddMsg(message);
 
 				if (pMajor->IsHumanPlayer())
 				{
@@ -343,7 +343,7 @@ void CReManager::CalcShipEvents() const
 					pDoc->m_iSelectedView[client] = EMPIRE_VIEW;
 
 					CEventRandom* EmpireEvent = new CEventRandom(pMajor->GetRaceID(), "HullVirus", sMessageText, "");
-					pMajor->GetEmpire()->GetEventMessages()->Add(EmpireEvent);
+					pMajor->GetEmpire()->GetEvents()->Add(EmpireEvent);
 				}
 			}
 		}

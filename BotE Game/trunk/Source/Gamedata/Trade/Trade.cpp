@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Trade.h"
 #include "Races\Major.h"
-#include "General/ResourceManager.h"
+#include "General/Loc.h"
 #include "Galaxy/Sector.h"
 
 IMPLEMENT_SERIAL (CTrade, CObject, 1)
@@ -233,17 +233,17 @@ void CTrade::CalculateTradeActions(CMajor* pMajor, std::vector<CSystem>& systems
 						CString resName;
 						switch(i)
 						{
-						case TITAN: resName = CResourceManager::GetString("TITAN"); break;
-						case DEUTERIUM: resName = CResourceManager::GetString("DEUTERIUM"); break;
-						case DURANIUM: resName = CResourceManager::GetString("DURANIUM"); break;
-						case CRYSTAL: resName = CResourceManager::GetString("CRYSTAL"); break;
-						case IRIDIUM: resName = CResourceManager::GetString("IRIDIUM"); break;
+						case TITAN: resName = CLoc::GetString("TITAN"); break;
+						case DEUTERIUM: resName = CLoc::GetString("DEUTERIUM"); break;
+						case DURANIUM: resName = CLoc::GetString("DURANIUM"); break;
+						case CRYSTAL: resName = CLoc::GetString("CRYSTAL"); break;
+						case IRIDIUM: resName = CLoc::GetString("IRIDIUM"); break;
 						}
 						CString s;
 						s.Format("%d %s",sum[x][y][i],resName);
-						CMessage message;
-						message.GenerateMessage(CResourceManager::GetString("GET_RESOURCES",0,s,sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetName()), MESSAGE_TYPE::ECONOMY, "", sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetKO());
-						pMajor->GetEmpire()->AddMessage(message);
+						CEmpireNews message;
+						message.CreateNews(CLoc::GetString("GET_RESOURCES",0,s,sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetName()), EMPIRE_NEWS_TYPE::ECONOMY, "", sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetKO());
+						pMajor->GetEmpire()->AddMsg(message);
 					}
 }
 

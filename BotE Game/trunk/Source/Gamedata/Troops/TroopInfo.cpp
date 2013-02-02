@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "TroopInfo.h"
 #include "HTMLStringBuilder.h"
-#include "General/ResourceManager.h"
+#include "General/Loc.h"
 
 //////////////////////////////////////////////////////////////////////
 // Konstruktion/Destruktion
@@ -126,24 +126,24 @@ CString CTroopInfo::GetTooltip() const
 		
 	CString sValues = "";
 	CString s;
-	s.Format("%s: %d",CResourceManager::GetString("OPOWER"), GetOffense());
+	s.Format("%s: %d",CLoc::GetString("OPOWER"), GetOffense());
 	sValues += s;
 	sValues += CHTMLStringBuilder::GetHTMLStringNewLine();
-	s.Format("%s: %d",CResourceManager::GetString("DPOWER"), GetDefense());
+	s.Format("%s: %d",CLoc::GetString("DPOWER"), GetDefense());
 	sValues += s;
 	sValues += CHTMLStringBuilder::GetHTMLStringNewLine();
-	s.Format("%s: %d",CResourceManager::GetString("MORALVALUE"), GetMoralValue());
+	s.Format("%s: %d",CLoc::GetString("MORALVALUE"), GetMoralValue());
 	sValues += s;
 	sValues += CHTMLStringBuilder::GetHTMLStringNewLine();
-	s.Format("%s: %d",CResourceManager::GetString("PLACE"), GetSize());
+	s.Format("%s: %d",CLoc::GetString("PLACE"), GetSize());
 	sValues += s;
 	// Unterhaltskosten noch nicht anzeigen, da diese aktuell nicht beachtet werden
 	//sValues += CHTMLStringBuilder::GetHTMLStringNewLine();
-	//s.Format("%s: %d",CResourceManager::GetString("MAINTENANCE_COSTS"), GetMaintenanceCosts());
+	//s.Format("%s: %d",CLoc::GetString("MAINTENANCE_COSTS"), GetMaintenanceCosts());
 	//sValues += s;
 	// Erfahrung nicht anzeigen, da bei den Tooltips aktuell immer auf das Infoobjekt gegangen wird und dieses nie Erfahrung hat
 	//sValues += CHTMLStringBuilder::GetHTMLStringNewLine();
-	//s.Format("%s: %d",CResourceManager::GetString("EXPERIANCE"),GetExperiance());
+	//s.Format("%s: %d",CLoc::GetString("EXPERIANCE"),GetExperiance());
 	//sValues += s;
 	sValues = CHTMLStringBuilder::GetHTMLColor(sValues);
 	sValues = CHTMLStringBuilder::GetHTMLHeader(sValues, _T("h5"));

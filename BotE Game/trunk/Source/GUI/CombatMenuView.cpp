@@ -11,7 +11,7 @@
 #include "Graphic\memdc.h"
 #include "HTMLStringBuilder.h"
 #include "Ships/Ships.h"
-#include "General/ResourceManager.h"
+#include "General/Loc.h"
 // CCombatMenuView
 
 IMPLEMENT_DYNCREATE(CCombatMenuView, CMainBaseView)
@@ -116,7 +116,7 @@ void CCombatMenuView::OnNewRound()
 	m_nShipType = -1;
 
 	if (m_ShipTypeButton.GetSize())
-		m_ShipTypeButton[0]->SetText(CResourceManager::GetString("ALL_SHIPS"));
+		m_ShipTypeButton[0]->SetText(CLoc::GetString("ALL_SHIPS"));
 }
 
 // CEventMenuView drawing
@@ -355,11 +355,11 @@ void CCombatMenuView::DrawCombatDecisionMenue(Graphics* g)
 	CFontLoader::CreateGDIFont(pMajor, 5, fontName, fontSize);
 	fontSize *= 1.5;
 	fontBrush.SetColor(normalColor);
-	g->DrawString(CComBSTR(CResourceManager::GetString("AGAINST")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,325,m_TotalSize.cx,100), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(CLoc::GetString("AGAINST")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,325,m_TotalSize.cx,100), &fontFormat, &fontBrush);
 
 	// Gewinnchance zeichnen
 	CString s;
-	s.Format("%s: %.0lf%%", CResourceManager::GetString("WINNING_CHANCE"), m_dWinningChance * 100);
+	s.Format("%s: %.0lf%%", CLoc::GetString("WINNING_CHANCE"), m_dWinningChance * 100);
 	bool bFlipHand = false;
 	if (m_dWinningChance < 0.4)
 	{
@@ -420,9 +420,9 @@ void CCombatMenuView::DrawCombatDecisionMenue(Graphics* g)
 	fontBrush.SetColor(normalColor);
 
 	if (pDoc->GetSector(p.x, p.y).GetKnown(pMajor->GetRaceID()))
-		s.Format("%s %s", CResourceManager::GetString("COMBAT_IN_SECTOR"), pDoc->GetSector(p.x, p.y).GetName(TRUE));
+		s.Format("%s %s", CLoc::GetString("COMBAT_IN_SECTOR"), pDoc->GetSector(p.x, p.y).GetName(TRUE));
 	else
-		s.Format("%s %c%i", CResourceManager::GetString("COMBAT_IN_SECTOR"), (char)(p.y+97), p.x + 1);
+		s.Format("%s %c%i", CLoc::GetString("COMBAT_IN_SECTOR"), (char)(p.y+97), p.x + 1);
 	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,10,m_TotalSize.cx, 50), &fontFormat, &fontBrush);
 }
 
@@ -457,13 +457,13 @@ void CCombatMenuView::DrawCombatInfoMenue(Graphics* g)
 	// größte Schriftart laden
 	CFontLoader::CreateGDIFont(pMajor, 5, fontName, fontSize);
 	CString s;
-	s.Format("%s ...", CResourceManager::GetString("PLEASE_WAIT"));
+	s.Format("%s ...", CLoc::GetString("PLEASE_WAIT"));
 	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,m_TotalSize.cy / 2,m_TotalSize.cx,m_TotalSize.cy / 2), &fontFormat, &fontBrush);
 	fontSize *= 1.5;
 	if (pDoc->m_bRoundEndPressed)
-		g->DrawString(CComBSTR(CResourceManager::GetString("COMBATCALCULATION_IS_RUNNING")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,0,m_TotalSize.cx,m_TotalSize.cy), &fontFormat, &fontBrush);
+		g->DrawString(CComBSTR(CLoc::GetString("COMBATCALCULATION_IS_RUNNING")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,0,m_TotalSize.cx,m_TotalSize.cy), &fontFormat, &fontBrush);
 	else
-		g->DrawString(CComBSTR(CResourceManager::GetString("OTHER_PLAYERS_IN_COMBAT")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,0,m_TotalSize.cx,m_TotalSize.cy), &fontFormat, &fontBrush);
+		g->DrawString(CComBSTR(CLoc::GetString("OTHER_PLAYERS_IN_COMBAT")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,0,m_TotalSize.cx,m_TotalSize.cy), &fontFormat, &fontBrush);
 
 	if (!pDoc->m_bRoundEndPressed)
 	{
@@ -621,15 +621,15 @@ void CCombatMenuView::DrawCombatOrderMenue(Graphics* g)
 
 	// Beschreibungstext hinzufügen
 	CString s;
-	s = CResourceManager::GetString("CHOOSE_TACTIC_DESC1") + "\n" + CResourceManager::GetString("CHOOSE_TACTIC_DESC2") + "\n" + CResourceManager::GetString("CHOOSE_TACTIC_DESC3");
+	s = CLoc::GetString("CHOOSE_TACTIC_DESC1") + "\n" + CLoc::GetString("CHOOSE_TACTIC_DESC2") + "\n" + CLoc::GetString("CHOOSE_TACTIC_DESC3");
 	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0, 170, m_TotalSize.cx, 75), &fontFormat, &fontBrush);
-	s = CResourceManager::GetString("SHOWN_SHIPTYPES");
+	s = CLoc::GetString("SHOWN_SHIPTYPES");
 	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0, 255, m_TotalSize.cx, 25), &fontFormat, &fontBrush);
 
 	// größte Schriftart laden und VS in der Mitte zeichnen
 	CFontLoader::CreateGDIFont(pMajor, 5, fontName, fontSize);
 	fontSize *= 2.0;
-	g->DrawString(CComBSTR(CResourceManager::GetString("VS")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,65,m_TotalSize.cx,m_TotalSize.cy), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(CLoc::GetString("VS")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,65,m_TotalSize.cx,m_TotalSize.cy), &fontFormat, &fontBrush);
 
 	// Schriftart für kleine Buttons laden
 	CFontLoader::CreateGDIFont(pMajor, 2, fontName, fontSize);
@@ -639,8 +639,8 @@ void CCombatMenuView::DrawCombatOrderMenue(Graphics* g)
 	markColor.SetFromCOLORREF(pMajor->GetDesign()->m_clrListMarkTextColor);
 	fontBrush.SetColor(markColor);
 
-	g->DrawString(CComBSTR(CResourceManager::GetString("FRIENDLY_SHIPS")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(50,255,480,25), &fontFormat, &fontBrush);
-	g->DrawString(CComBSTR(CResourceManager::GetString("ENEMY_SHIPS")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(750,255,480,25), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(CLoc::GetString("FRIENDLY_SHIPS")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(50,255,480,25), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(CLoc::GetString("ENEMY_SHIPS")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(750,255,480,25), &fontFormat, &fontBrush);
 
 	// Schriftfarbe wählen
 	Gdiplus::Color btnColor;
@@ -679,9 +679,9 @@ void CCombatMenuView::DrawCombatOrderMenue(Graphics* g)
 	fontBrush.SetColor(normalColor);
 
 	if (pDoc->GetSector(p.x, p.y).GetKnown(pMajor->GetRaceID()))
-		s.Format("%s %s", CResourceManager::GetString("COMBAT_IN_SECTOR"), pDoc->GetSector(p.x, p.y).GetName(TRUE));
+		s.Format("%s %s", CLoc::GetString("COMBAT_IN_SECTOR"), pDoc->GetSector(p.x, p.y).GetName(TRUE));
 	else
-		s.Format("%s %c%i", CResourceManager::GetString("COMBAT_IN_SECTOR"), (char)(p.y+97), p.x + 1);
+		s.Format("%s %c%i", CLoc::GetString("COMBAT_IN_SECTOR"), (char)(p.y+97), p.x + 1);
 	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,10,m_TotalSize.cx, 50), &fontFormat, &fontBrush);
 }
 
@@ -781,7 +781,7 @@ void CCombatMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			m_nShipType++;
 			if (m_nShipType > SHIP_TYPE::ALIEN - 1)
 				m_nShipType = -1;
-			CString s = CResourceManager::GetString("ALL_SHIPS");
+			CString s = CLoc::GetString("ALL_SHIPS");
 			if (m_nShipType != -1)
 			{
 				CShip temp;
@@ -963,7 +963,7 @@ void CCombatMenuView::OnRButtonDown(UINT nFlags, CPoint point)
 		m_nShipType--;
 		if (m_nShipType < -1)
 			m_nShipType = SHIP_TYPE::ALIEN - 1;
-		CString s = CResourceManager::GetString("ALL_SHIPS");
+		CString s = CLoc::GetString("ALL_SHIPS");
 		if (m_nShipType != -1)
 		{
 			CShip temp;
@@ -1121,25 +1121,25 @@ void CCombatMenuView::CreateButtons()
 	CString fileI = "Other\\" + sPrefix + "buttoni.bop";
 	CString fileA = "Other\\" + sPrefix + "buttona.bop";
 	// Buttons in der Kampfentscheidungsansicht
-	m_CombatDecisionButtons.Add(new CMyButton(CPoint(320,950), CSize(160,40), CResourceManager::GetString("BTN_DETAILS"),  fileN, fileI, fileA));
-	m_CombatDecisionButtons.Add(new CMyButton(CPoint(480,950), CSize(160,40), CResourceManager::GetString("BTN_HAILING"),  fileN, fileI, fileA));
-	m_CombatDecisionButtons.Add(new CMyButton(CPoint(640,950), CSize(160,40), CResourceManager::GetString("BTN_RETREAT"),  fileN, fileI, fileA));
-	m_CombatDecisionButtons.Add(new CMyButton(CPoint(800,950), CSize(160,40), CResourceManager::GetString("BTN_AUTOCOMBAT"),  fileN, fileI, fileA));
+	m_CombatDecisionButtons.Add(new CMyButton(CPoint(320,950), CSize(160,40), CLoc::GetString("BTN_DETAILS"),  fileN, fileI, fileA));
+	m_CombatDecisionButtons.Add(new CMyButton(CPoint(480,950), CSize(160,40), CLoc::GetString("BTN_HAILING"),  fileN, fileI, fileA));
+	m_CombatDecisionButtons.Add(new CMyButton(CPoint(640,950), CSize(160,40), CLoc::GetString("BTN_RETREAT"),  fileN, fileI, fileA));
+	m_CombatDecisionButtons.Add(new CMyButton(CPoint(800,950), CSize(160,40), CLoc::GetString("BTN_AUTOCOMBAT"),  fileN, fileI, fileA));
 	// Buttons in der Befehlsmenüansicht
-	m_CombatTacticButtons.Add(new CMyButton(CPoint(400,125), CSize(160,40), CResourceManager::GetString("BTN_ATTACK"),  fileN, fileI, fileA));
-	m_CombatTacticButtons.Add(new CMyButton(CPoint(560,125), CSize(160,40), CResourceManager::GetString("BTN_AVOID"),  fileN, fileI, fileA));
-	m_CombatTacticButtons.Add(new CMyButton(CPoint(720,125), CSize(160,40), CResourceManager::GetString("BTN_RETREAT"),  fileN, fileI, fileA));
+	m_CombatTacticButtons.Add(new CMyButton(CPoint(400,125), CSize(160,40), CLoc::GetString("BTN_ATTACK"),  fileN, fileI, fileA));
+	m_CombatTacticButtons.Add(new CMyButton(CPoint(560,125), CSize(160,40), CLoc::GetString("BTN_AVOID"),  fileN, fileI, fileA));
+	m_CombatTacticButtons.Add(new CMyButton(CPoint(720,125), CSize(160,40), CLoc::GetString("BTN_RETREAT"),  fileN, fileI, fileA));
 
-	m_CombatOrderButtons.Add(new CMyButton(CPoint(480,950), CSize(160,40), CResourceManager::GetString("BTN_BACK"),  fileN, fileI, fileA));
-	m_CombatOrderButtons.Add(new CMyButton(CPoint(640,950), CSize(160,40), CResourceManager::GetString("BTN_READY"),  fileN, fileI, fileA));
+	m_CombatOrderButtons.Add(new CMyButton(CPoint(480,950), CSize(160,40), CLoc::GetString("BTN_BACK"),  fileN, fileI, fileA));
+	m_CombatOrderButtons.Add(new CMyButton(CPoint(640,950), CSize(160,40), CLoc::GetString("BTN_READY"),  fileN, fileI, fileA));
 
 	// kleine Buttons in der Befehlsansicht
-	m_FriendShipsCursor.Add(new CMyButton(CPoint(200,885), CSize(90,30), CResourceManager::GetString("BTN_BACK"),  fileN, fileI, fileA));
-	m_FriendShipsCursor.Add(new CMyButton(CPoint(290,885), CSize(90,30), CResourceManager::GetString("BTN_FURTHER"),  fileN, fileI, fileA));
-	m_EnemyShipsCursor.Add(new CMyButton(CPoint(900,885), CSize(90,30), CResourceManager::GetString("BTN_BACK"),  fileN, fileI, fileA));
-	m_EnemyShipsCursor.Add(new CMyButton(CPoint(990,885), CSize(90,30), CResourceManager::GetString("BTN_FURTHER"),  fileN, fileI, fileA));
+	m_FriendShipsCursor.Add(new CMyButton(CPoint(200,885), CSize(90,30), CLoc::GetString("BTN_BACK"),  fileN, fileI, fileA));
+	m_FriendShipsCursor.Add(new CMyButton(CPoint(290,885), CSize(90,30), CLoc::GetString("BTN_FURTHER"),  fileN, fileI, fileA));
+	m_EnemyShipsCursor.Add(new CMyButton(CPoint(900,885), CSize(90,30), CLoc::GetString("BTN_BACK"),  fileN, fileI, fileA));
+	m_EnemyShipsCursor.Add(new CMyButton(CPoint(990,885), CSize(90,30), CLoc::GetString("BTN_FURTHER"),  fileN, fileI, fileA));
 
 	// Button zum Umschalten der Schiffstypen
-	m_ShipTypeButton.Add(new CMyButton(CPoint(580,285), CSize(120,30), CResourceManager::GetString("ALL_SHIPS"),  fileN, fileI, fileA));
+	m_ShipTypeButton.Add(new CMyButton(CPoint(580,285), CSize(120,30), CLoc::GetString("ALL_SHIPS"),  fileN, fileI, fileA));
 }
 

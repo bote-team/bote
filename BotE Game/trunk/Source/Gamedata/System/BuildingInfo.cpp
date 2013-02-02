@@ -4,7 +4,7 @@
 
 #include "stdafx.h"
 #include "BuildingInfo.h"
-#include "General/ResourceManager.h"
+#include "General/Loc.h"
 
 IMPLEMENT_SERIAL (CBuildingInfo, CObject, 1)
 //////////////////////////////////////////////////////////////////////
@@ -683,191 +683,191 @@ CString CBuildingInfo::GetProductionAsString(USHORT number) const
 {
 	CString s = "";
 	if (this->GetFoodProd() > 0)
-		s.AppendFormat("%s: %i\n",CResourceManager::GetString("FOOD"), this->GetFoodProd() * number);
+		s.AppendFormat("%s: %i\n",CLoc::GetString("FOOD"), this->GetFoodProd() * number);
 	if (this->GetIPProd() > 0)
-		s.AppendFormat("%s: %i\n",CResourceManager::GetString("INDUSTRY"), this->GetIPProd() * number);
+		s.AppendFormat("%s: %i\n",CLoc::GetString("INDUSTRY"), this->GetIPProd() * number);
 	if (this->GetEnergyProd() > 0)
-		s.AppendFormat("%s: %i\n",CResourceManager::GetString("ENERGY"), this->GetEnergyProd() * number);
+		s.AppendFormat("%s: %i\n",CLoc::GetString("ENERGY"), this->GetEnergyProd() * number);
 	if (this->GetSPProd() > 0)
-		s.AppendFormat("%s: %i\n",CResourceManager::GetString("SECURITY"), this->GetSPProd() * number);
+		s.AppendFormat("%s: %i\n",CLoc::GetString("SECURITY"), this->GetSPProd() * number);
 	if (this->GetFPProd() > 0)
-		s.AppendFormat("%s: %i\n",CResourceManager::GetString("RESEARCH"), this->GetFPProd() * number);
+		s.AppendFormat("%s: %i\n",CLoc::GetString("RESEARCH"), this->GetFPProd() * number);
 	if (this->GetTitanProd() > 0)
-		s.AppendFormat("%s: %i\n",CResourceManager::GetString("TITAN"), this->GetTitanProd() * number);
+		s.AppendFormat("%s: %i\n",CLoc::GetString("TITAN"), this->GetTitanProd() * number);
 	if (this->GetDeuteriumProd() > 0)
-		s.AppendFormat("%s: %i\n",CResourceManager::GetString("DEUTERIUM"), this->GetDeuteriumProd() * number);
+		s.AppendFormat("%s: %i\n",CLoc::GetString("DEUTERIUM"), this->GetDeuteriumProd() * number);
 	if (this->GetDuraniumProd() > 0)
-		s.AppendFormat("%s: %i\n",CResourceManager::GetString("DURANIUM"), this->GetDuraniumProd() * number);
+		s.AppendFormat("%s: %i\n",CLoc::GetString("DURANIUM"), this->GetDuraniumProd() * number);
 	if (this->GetCrystalProd() > 0)
-		s.AppendFormat("%s: %i\n",CResourceManager::GetString("CRYSTAL"), this->GetCrystalProd() * number);
+		s.AppendFormat("%s: %i\n",CLoc::GetString("CRYSTAL"), this->GetCrystalProd() * number);
 	if (this->GetIridiumProd() > 0)
-		s.AppendFormat("%s: %i\n",CResourceManager::GetString("IRIDIUM"), this->GetIridiumProd() * number);
+		s.AppendFormat("%s: %i\n",CLoc::GetString("IRIDIUM"), this->GetIridiumProd() * number);
 	if (this->GetDeritiumProd() > 0)
-		s.AppendFormat("%s: %i\n",CResourceManager::GetString("DERITIUM"), this->GetDeritiumProd() * number);
+		s.AppendFormat("%s: %i\n",CLoc::GetString("DERITIUM"), this->GetDeritiumProd() * number);
 	if (this->GetCredits() != 0)
-		s.AppendFormat("%s: %i\n",CResourceManager::GetString("CREDITS"), this->GetCredits() * number);
+		s.AppendFormat("%s: %i\n",CLoc::GetString("CREDITS"), this->GetCredits() * number);
 	if (this->GetMoralProd() != 0)
-		s.AppendFormat("%s: %i\n",CResourceManager::GetString("MORAL"), this->GetMoralProd() * number);
+		s.AppendFormat("%s: %i\n",CLoc::GetString("MORAL"), this->GetMoralProd() * number);
 	if (this->GetMoralProdEmpire() != 0)
-		s.AppendFormat("%s: %i\n",CResourceManager::GetString("MORAL_EMPIREWIDE"), this->GetMoralProdEmpire() * number);
+		s.AppendFormat("%s: %i\n",CLoc::GetString("MORAL_EMPIREWIDE"), this->GetMoralProdEmpire() * number);
 
 	// Ab hier die Boni
 	if (this->GetFoodBoni() != 0)
-		s.AppendFormat("%s: %i%%\n",CResourceManager::GetString("FOOD_BONUS"), this->GetFoodBoni() * number);
+		s.AppendFormat("%s: %i%%\n",CLoc::GetString("FOOD_BONUS"), this->GetFoodBoni() * number);
 	if (this->GetIndustryBoni() != 0)
-		s.AppendFormat("%s: %i%%\n",CResourceManager::GetString("INDUSTRY_BONUS"), this->GetIndustryBoni() * number);
+		s.AppendFormat("%s: %i%%\n",CLoc::GetString("INDUSTRY_BONUS"), this->GetIndustryBoni() * number);
 	if (this->GetEnergyBoni() != 0)
-		s.AppendFormat("%s: %i%%\n",CResourceManager::GetString("ENERGY_BONUS"), this->GetEnergyBoni() * number);
+		s.AppendFormat("%s: %i%%\n",CLoc::GetString("ENERGY_BONUS"), this->GetEnergyBoni() * number);
 	if (this->GetSecurityBoni() != 0)
-		s.AppendFormat("%s: %i%%\n",CResourceManager::GetString("SECURITY_BONUS"), this->GetSecurityBoni() * number);
+		s.AppendFormat("%s: %i%%\n",CLoc::GetString("SECURITY_BONUS"), this->GetSecurityBoni() * number);
 	if (this->GetResearchBoni() != 0)
-		s.AppendFormat("%s: %i%%\n",CResourceManager::GetString("RESEARCH_BONUS"), this->GetResearchBoni() * number);
+		s.AppendFormat("%s: %i%%\n",CLoc::GetString("RESEARCH_BONUS"), this->GetResearchBoni() * number);
 	if (this->GetTitanBoni() != 0)
-		s.AppendFormat("%s: %i%%\n",CResourceManager::GetString("TITAN_BONUS"), this->GetTitanBoni() * number);
+		s.AppendFormat("%s: %i%%\n",CLoc::GetString("TITAN_BONUS"), this->GetTitanBoni() * number);
 	if (this->GetDeuteriumBoni() != 0)
-		s.AppendFormat("%s: %i%%\n",CResourceManager::GetString("DEUTERIUM_BONUS"), this->GetDeuteriumBoni() * number);
+		s.AppendFormat("%s: %i%%\n",CLoc::GetString("DEUTERIUM_BONUS"), this->GetDeuteriumBoni() * number);
 	if (this->GetDuraniumBoni() != 0)
-		s.AppendFormat("%s: %i%%\n",CResourceManager::GetString("DURANIUM_BONUS"), this->GetDuraniumBoni() * number);
+		s.AppendFormat("%s: %i%%\n",CLoc::GetString("DURANIUM_BONUS"), this->GetDuraniumBoni() * number);
 	if (this->GetCrystalBoni() != 0)
-		s.AppendFormat("%s: %i%%\n",CResourceManager::GetString("CRYSTAL_BONUS"), this->GetCrystalBoni() * number);
+		s.AppendFormat("%s: %i%%\n",CLoc::GetString("CRYSTAL_BONUS"), this->GetCrystalBoni() * number);
 	if (this->GetIridiumBoni() != 0)
-		s.AppendFormat("%s: %i%%\n",CResourceManager::GetString("IRIDIUM_BONUS"), this->GetIridiumBoni() * number);
+		s.AppendFormat("%s: %i%%\n",CLoc::GetString("IRIDIUM_BONUS"), this->GetIridiumBoni() * number);
 	if (this->GetDeritiumBoni() != 0)
-		s.AppendFormat("%s: %i%%\n",CResourceManager::GetString("DERITIUM_BONUS"), this->GetDeritiumBoni() * number);
+		s.AppendFormat("%s: %i%%\n",CLoc::GetString("DERITIUM_BONUS"), this->GetDeritiumBoni() * number);
 	if (this->GetAllRessourcesBoni() != 0)
-		s.AppendFormat("%s: %i%%\n",CResourceManager::GetString("BONUS_TO_ALL_RES"), this->GetAllRessourcesBoni() * number);
+		s.AppendFormat("%s: %i%%\n",CLoc::GetString("BONUS_TO_ALL_RES"), this->GetAllRessourcesBoni() * number);
 	if (this->GetCreditsBoni() != 0)
-		s.AppendFormat("%s: %i%%\n",CResourceManager::GetString("CREDITS_BONUS"), this->GetCreditsBoni() * number);
+		s.AppendFormat("%s: %i%%\n",CLoc::GetString("CREDITS_BONUS"), this->GetCreditsBoni() * number);
 
 	// Wenn alle Forschungsboni belegt sind, sprich Bonus auf alles
 	if (this->GetBioTechBoni() != 0 && this->GetBioTechBoni() == this->GetEnergyTechBoni() && this->GetBioTechBoni() == this->GetCompTechBoni()
 		&& this->GetBioTechBoni() == this->GetPropulsionTechBoni() && this->GetBioTechBoni() == this->GetConstructionTechBoni()
 		&& this->GetBioTechBoni() == this->GetWeaponTechBoni())
-		s.AppendFormat("%s: %i%%\n",CResourceManager::GetString("TECHNIC_BONUS"), this->GetBioTechBoni() * number);
+		s.AppendFormat("%s: %i%%\n",CLoc::GetString("TECHNIC_BONUS"), this->GetBioTechBoni() * number);
 	else // bei einzelnen Gebieten
 	{
 		if (this->GetBioTechBoni() > 0)
-			s.AppendFormat("%s: %i%%\n",CResourceManager::GetString("BIOTECH_BONUS"), this->GetBioTechBoni() * number);
+			s.AppendFormat("%s: %i%%\n",CLoc::GetString("BIOTECH_BONUS"), this->GetBioTechBoni() * number);
 		if (this->GetEnergyTechBoni() > 0)
-			s.AppendFormat("%s: %i%%\n",CResourceManager::GetString("ENERGYTECH_BONUS"), this->GetEnergyTechBoni() * number);
+			s.AppendFormat("%s: %i%%\n",CLoc::GetString("ENERGYTECH_BONUS"), this->GetEnergyTechBoni() * number);
 		if (this->GetCompTechBoni() > 0)
-			s.AppendFormat("%s: %i%%\n",CResourceManager::GetString("COMPUTERTECH_BONUS"), this->GetCompTechBoni() * number);
+			s.AppendFormat("%s: %i%%\n",CLoc::GetString("COMPUTERTECH_BONUS"), this->GetCompTechBoni() * number);
 		if (this->GetPropulsionTechBoni() > 0)
-			s.AppendFormat("%s: %i%%\n",CResourceManager::GetString("PROPULSIONTECH_BONUS"), this->GetPropulsionTechBoni() * number);
+			s.AppendFormat("%s: %i%%\n",CLoc::GetString("PROPULSIONTECH_BONUS"), this->GetPropulsionTechBoni() * number);
 		if (this->GetConstructionTechBoni() > 0)
-			s.AppendFormat("%s: %i%%\n",CResourceManager::GetString("CONSTRUCTIONTECH_BONUS"), this->GetConstructionTechBoni() * number);
+			s.AppendFormat("%s: %i%%\n",CLoc::GetString("CONSTRUCTIONTECH_BONUS"), this->GetConstructionTechBoni() * number);
 		if (this->GetWeaponTechBoni() > 0)
-			s.AppendFormat("%s: %i%%\n",CResourceManager::GetString("WEAPONTECH_BONUS"), this->GetWeaponTechBoni() * number);
+			s.AppendFormat("%s: %i%%\n",CLoc::GetString("WEAPONTECH_BONUS"), this->GetWeaponTechBoni() * number);
 	}
 	// Wenn alle Geheimdienstdinger belegt sind -> Geheimdienst auf alles
 	if (this->GetInnerSecurityBoni() != 0 && this->GetInnerSecurityBoni() == this->GetEconomySpyBoni()
 		&& this->GetInnerSecurityBoni() ==	this->GetEconomySabotageBoni() && this->GetInnerSecurityBoni() == this->GetResearchSpyBoni()
 		&& this->GetInnerSecurityBoni() == this->GetResearchSabotageBoni() && this->GetInnerSecurityBoni() == this->GetMilitarySpyBoni()
 		&& this->GetInnerSecurityBoni() == this->GetMilitarySabotageBoni())
-		s.AppendFormat("%s: %i%%\n",CResourceManager::GetString("COMPLETE_SECURITY_BONUS"), this->GetInnerSecurityBoni() * number);
+		s.AppendFormat("%s: %i%%\n",CLoc::GetString("COMPLETE_SECURITY_BONUS"), this->GetInnerSecurityBoni() * number);
 	else
 	{
 		if (this->GetEconomySpyBoni() != 0 && this->GetEconomySpyBoni() == this->GetResearchSpyBoni()
 			&& this->GetEconomySpyBoni() == this->GetMilitarySpyBoni())
-			s.AppendFormat("%s: %i%%\n",CResourceManager::GetString("SPY_BONUS"), this->GetEconomySpyBoni() * number);
+			s.AppendFormat("%s: %i%%\n",CLoc::GetString("SPY_BONUS"), this->GetEconomySpyBoni() * number);
 		else
 		{
 			if (this->GetEconomySpyBoni() != 0)
-				s.AppendFormat("%s: %i%%\n",CResourceManager::GetString("ECONOMY_SPY_BONUS"), this->GetEconomySpyBoni() * number);
+				s.AppendFormat("%s: %i%%\n",CLoc::GetString("ECONOMY_SPY_BONUS"), this->GetEconomySpyBoni() * number);
 			if (this->GetResearchSpyBoni() != 0)
-				s.AppendFormat("%s: %i%%\n",CResourceManager::GetString("RESEARCH_SPY_BONUS"), this->GetResearchSpyBoni() * number);
+				s.AppendFormat("%s: %i%%\n",CLoc::GetString("RESEARCH_SPY_BONUS"), this->GetResearchSpyBoni() * number);
 			if (this->GetMilitarySpyBoni() != 0)
-				s.AppendFormat("%s: %i%%",CResourceManager::GetString("MILITARY_SPY_BONUS"), this->GetMilitarySpyBoni() * number);
+				s.AppendFormat("%s: %i%%",CLoc::GetString("MILITARY_SPY_BONUS"), this->GetMilitarySpyBoni() * number);
 		}
 		if (this->GetEconomySabotageBoni() != 0 && this->GetEconomySabotageBoni() == this->GetResearchSabotageBoni()
 			&& this->GetEconomySabotageBoni() == this->GetMilitarySabotageBoni())
-			s.AppendFormat("%s: %i%%\n",CResourceManager::GetString("SABOTAGE_BONUS"), this->GetEconomySabotageBoni() * number);
+			s.AppendFormat("%s: %i%%\n",CLoc::GetString("SABOTAGE_BONUS"), this->GetEconomySabotageBoni() * number);
 		else
 		{
 			if (this->GetEconomySabotageBoni() != 0)
-				s.AppendFormat("%s: %i%%\n",CResourceManager::GetString("ECONOMY_SABOTAGE_BONUS"), this->GetEconomySabotageBoni() * number);
+				s.AppendFormat("%s: %i%%\n",CLoc::GetString("ECONOMY_SABOTAGE_BONUS"), this->GetEconomySabotageBoni() * number);
 			if (this->GetResearchSabotageBoni() != 0)
-				s.AppendFormat("%s: %i%%\n",CResourceManager::GetString("RESEARCH_SABOTAGE_BONUS"), this->GetResearchSabotageBoni() * number);
+				s.AppendFormat("%s: %i%%\n",CLoc::GetString("RESEARCH_SABOTAGE_BONUS"), this->GetResearchSabotageBoni() * number);
 			if (this->GetMilitarySabotageBoni() != 0)
-				s.AppendFormat("%s: %i%%\n",CResourceManager::GetString("MILITARY_SABOTAGE_BONUS"), this->GetMilitarySabotageBoni() * number);
+				s.AppendFormat("%s: %i%%\n",CLoc::GetString("MILITARY_SABOTAGE_BONUS"), this->GetMilitarySabotageBoni() * number);
 		}
 		if (this->GetInnerSecurityBoni() != 0)
-			s.AppendFormat("%s: %i%%\n",CResourceManager::GetString("INNER_SECURITY_BONUS"), this->GetInnerSecurityBoni() * number);
+			s.AppendFormat("%s: %i%%\n",CLoc::GetString("INNER_SECURITY_BONUS"), this->GetInnerSecurityBoni() * number);
 	}
 	// Ab hier zusätzliche Eigenschaften des Gebäudes
 	if (this->GetShipYard() == TRUE)
 	{
-		s.AppendFormat("%s\n",CResourceManager::GetString("SHIPYARD"));
+		s.AppendFormat("%s\n",CLoc::GetString("SHIPYARD"));
 		CString ss;
 		switch (this->GetMaxBuildableShipSize())
 		{
-			case 0: ss = CResourceManager::GetString("SMALL"); break;
-			case 1: ss = CResourceManager::GetString("MIDDLE"); break;
-			case 2: ss = CResourceManager::GetString("BIG"); break;
-			case 3: ss = CResourceManager::GetString("HUGE"); break;
-			default: ss = CResourceManager::GetString("HUGE");
+			case 0: ss = CLoc::GetString("SMALL"); break;
+			case 1: ss = CLoc::GetString("MIDDLE"); break;
+			case 2: ss = CLoc::GetString("BIG"); break;
+			case 3: ss = CLoc::GetString("HUGE"); break;
+			default: ss = CLoc::GetString("HUGE");
 		}
-		s.AppendFormat("%s: %s\n",CResourceManager::GetString("MAX_SHIPSIZE"), ss);
+		s.AppendFormat("%s: %s\n",CLoc::GetString("MAX_SHIPSIZE"), ss);
 	}
 	if (this->GetShipYardSpeed() != 0)
-		s.AppendFormat("%s: %i%%\n",CResourceManager::GetString("SHIPYARD_EFFICIENCY"), this->GetShipYardSpeed());
+		s.AppendFormat("%s: %i%%\n",CLoc::GetString("SHIPYARD_EFFICIENCY"), this->GetShipYardSpeed());
 	if (this->GetBarrack() == TRUE)
-		s.AppendFormat("%s\n",CResourceManager::GetString("BARRACK"));
+		s.AppendFormat("%s\n",CLoc::GetString("BARRACK"));
 	if (this->GetBarrackSpeed() != 0)
-		s.AppendFormat("%s: %i%%\n",CResourceManager::GetString("BARRACK_EFFICIENCY"), this->GetBarrackSpeed());
+		s.AppendFormat("%s: %i%%\n",CLoc::GetString("BARRACK_EFFICIENCY"), this->GetBarrackSpeed());
 	if (this->GetShieldPower() != 0)
-		s.AppendFormat("%s: %i\n",CResourceManager::GetString("SHIELDPOWER"), this->GetShieldPower() * number);
+		s.AppendFormat("%s: %i\n",CLoc::GetString("SHIELDPOWER"), this->GetShieldPower() * number);
 	if (this->GetShieldPowerBoni() != 0)
-		s.AppendFormat("%s: %i%%\n",CResourceManager::GetString("SHIELDPOWER_BONUS"), this->GetShieldPowerBoni() * number);
+		s.AppendFormat("%s: %i%%\n",CLoc::GetString("SHIELDPOWER_BONUS"), this->GetShieldPowerBoni() * number);
 	if (this->GetShipDefend() != 0)
-		s.AppendFormat("%s: %i\n",CResourceManager::GetString("SHIPDEFEND"), this->GetShipDefend() * number);
+		s.AppendFormat("%s: %i\n",CLoc::GetString("SHIPDEFEND"), this->GetShipDefend() * number);
 	if (this->GetShipDefendBoni() != 0)
-		s.AppendFormat("%s: %i%%\n",CResourceManager::GetString("SHIPDEFEND_BONUS"), this->GetShipDefendBoni() * number);
+		s.AppendFormat("%s: %i%%\n",CLoc::GetString("SHIPDEFEND_BONUS"), this->GetShipDefendBoni() * number);
 	if (this->GetGroundDefend() != 0)
-		s.AppendFormat("%s: %i\n",CResourceManager::GetString("GROUNDDEFEND"), this->GetGroundDefend() * number);
+		s.AppendFormat("%s: %i\n",CLoc::GetString("GROUNDDEFEND"), this->GetGroundDefend() * number);
 	if (this->GetGroundDefendBoni() != 0)
-		s.AppendFormat("%s: %i%%\n",CResourceManager::GetString("GROUNDDEFEND_BONUS"), this->GetGroundDefendBoni() * number);
+		s.AppendFormat("%s: %i%%\n",CLoc::GetString("GROUNDDEFEND_BONUS"), this->GetGroundDefendBoni() * number);
 	if (this->GetScanPower() != 0)
-		s.AppendFormat("%s: %i\n",CResourceManager::GetString("SCANPOWER"), this->GetScanPower() * number);
+		s.AppendFormat("%s: %i\n",CLoc::GetString("SCANPOWER"), this->GetScanPower() * number);
 	if (this->GetScanPowerBoni() != 0)
-		s.AppendFormat("%s: %i%%\n",CResourceManager::GetString("SCANPOWER_BONUS"), this->GetScanPowerBoni() * number);
+		s.AppendFormat("%s: %i%%\n",CLoc::GetString("SCANPOWER_BONUS"), this->GetScanPowerBoni() * number);
 	if (this->GetScanRange() != 0)
-		s.AppendFormat("%s: %i\n",CResourceManager::GetString("SCANRANGE"), this->GetScanRange() * number);
+		s.AppendFormat("%s: %i\n",CLoc::GetString("SCANRANGE"), this->GetScanRange() * number);
 	if (this->GetScanRangeBoni() != 0)
-		s.AppendFormat("%s: %i%%\n",CResourceManager::GetString("SCANRANGE_BONUS"), this->GetScanRangeBoni() * number);
+		s.AppendFormat("%s: %i%%\n",CLoc::GetString("SCANRANGE_BONUS"), this->GetScanRangeBoni() * number);
 	if (this->GetShipTraining() != 0)
-		s.AppendFormat("%s: %i\n",CResourceManager::GetString("SHIPTRAINING"), this->GetShipTraining() * number);
+		s.AppendFormat("%s: %i\n",CLoc::GetString("SHIPTRAINING"), this->GetShipTraining() * number);
 	if (this->GetTroopTraining() != 0)
-		s.AppendFormat("%s: %i\n",CResourceManager::GetString("TROOPTRAINING"), this->GetTroopTraining() * number);
+		s.AppendFormat("%s: %i\n",CLoc::GetString("TROOPTRAINING"), this->GetTroopTraining() * number);
 	if (this->GetResistance() != 0)
-		s.AppendFormat("%s: %i\n",CResourceManager::GetString("RESISTANCE"), this->GetResistance() * number);
+		s.AppendFormat("%s: %i\n",CLoc::GetString("RESISTANCE"), this->GetResistance() * number);
 	if (this->GetAddedTradeRoutes() != 0)
-		s.AppendFormat("%s: %i\n",CResourceManager::GetString("ADDED_TRADEROUTES"), this->GetAddedTradeRoutes() * number);
+		s.AppendFormat("%s: %i\n",CLoc::GetString("ADDED_TRADEROUTES"), this->GetAddedTradeRoutes() * number);
 	if (this->GetIncomeOnTradeRoutes() != 0)
-		s.AppendFormat("%s: %i%%\n",CResourceManager::GetString("INCOME_ON_TRADEROUTES"), this->GetIncomeOnTradeRoutes() * number);
+		s.AppendFormat("%s: %i%%\n",CLoc::GetString("INCOME_ON_TRADEROUTES"), this->GetIncomeOnTradeRoutes() * number);
 	if (this->GetShipRecycling() != 0)
-		s.AppendFormat("%s: %i%%\n",CResourceManager::GetString("SHIPRECYCLING"), this->GetShipRecycling() * number);
+		s.AppendFormat("%s: %i%%\n",CLoc::GetString("SHIPRECYCLING"), this->GetShipRecycling() * number);
 	if (this->GetBuildingBuildSpeed() != 0)
-		s.AppendFormat("%s: %i%%\n",CResourceManager::GetString("BUILDING_BUILDSPEED"), this->GetBuildingBuildSpeed() * number);
+		s.AppendFormat("%s: %i%%\n",CLoc::GetString("BUILDING_BUILDSPEED"), this->GetBuildingBuildSpeed() * number);
 	if (this->GetUpdateBuildSpeed() != 0)
-		s.AppendFormat("%s: %i%%\n",CResourceManager::GetString("UPGRADE_BUILDSPEED"), this->GetUpdateBuildSpeed() * number);
+		s.AppendFormat("%s: %i%%\n",CLoc::GetString("UPGRADE_BUILDSPEED"), this->GetUpdateBuildSpeed() * number);
 	if (this->GetShipBuildSpeed() != 0)
-		s.AppendFormat("%s: %i%%\n",CResourceManager::GetString("SHIP_BUILDSPEED"), this->GetShipBuildSpeed() * number);
+		s.AppendFormat("%s: %i%%\n",CLoc::GetString("SHIP_BUILDSPEED"), this->GetShipBuildSpeed() * number);
 	if (this->GetTroopBuildSpeed() != 0)
-		s.AppendFormat("%s: %i%%\n",CResourceManager::GetString("TROOP_BUILDSPEED"), this->GetTroopBuildSpeed() * number);
+		s.AppendFormat("%s: %i%%\n",CLoc::GetString("TROOP_BUILDSPEED"), this->GetTroopBuildSpeed() * number);
 
 	if (this->GetResourceDistributor(TITAN))
-		s.AppendFormat("%s - %s\n", CResourceManager::GetString("RESOURCE_DISTRIBUTOR"), CResourceManager::GetString("TITAN"));
+		s.AppendFormat("%s - %s\n", CLoc::GetString("RESOURCE_DISTRIBUTOR"), CLoc::GetString("TITAN"));
 	if (this->GetResourceDistributor(DEUTERIUM))
-		s.AppendFormat("%s - %s\n", CResourceManager::GetString("RESOURCE_DISTRIBUTOR"), CResourceManager::GetString("DEUTERIUM"));
+		s.AppendFormat("%s - %s\n", CLoc::GetString("RESOURCE_DISTRIBUTOR"), CLoc::GetString("DEUTERIUM"));
 	if (this->GetResourceDistributor(DURANIUM))
-		s.AppendFormat("%s - %s\n", CResourceManager::GetString("RESOURCE_DISTRIBUTOR"), CResourceManager::GetString("DURANIUM"));
+		s.AppendFormat("%s - %s\n", CLoc::GetString("RESOURCE_DISTRIBUTOR"), CLoc::GetString("DURANIUM"));
 	if (this->GetResourceDistributor(CRYSTAL))
-		s.AppendFormat("%s - %s\n", CResourceManager::GetString("RESOURCE_DISTRIBUTOR"), CResourceManager::GetString("CRYSTAL"));
+		s.AppendFormat("%s - %s\n", CLoc::GetString("RESOURCE_DISTRIBUTOR"), CLoc::GetString("CRYSTAL"));
 	if (this->GetResourceDistributor(IRIDIUM))
-		s.AppendFormat("%s - %s\n", CResourceManager::GetString("RESOURCE_DISTRIBUTOR"), CResourceManager::GetString("IRIDIUM"));
+		s.AppendFormat("%s - %s\n", CLoc::GetString("RESOURCE_DISTRIBUTOR"), CLoc::GetString("IRIDIUM"));
 	if (this->GetResourceDistributor(DERITIUM))
-		s.AppendFormat("%s - %s\n", CResourceManager::GetString("RESOURCE_DISTRIBUTOR"), CResourceManager::GetString("DERITIUM"));
+		s.AppendFormat("%s - %s\n", CLoc::GetString("RESOURCE_DISTRIBUTOR"), CLoc::GetString("DERITIUM"));
 
 	return s;
 }

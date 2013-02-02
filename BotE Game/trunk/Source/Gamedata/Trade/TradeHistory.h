@@ -8,7 +8,7 @@
 #pragma once
 #include "afx.h"
 #include "afxtempl.h"
-#include "Options.h"
+#include "Constants.h"
 
 class CTradeHistory : public CObject
 {

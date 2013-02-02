@@ -1,9 +1,9 @@
-// Message.cpp: Implementierung der Klasse CMessage.
+// EmpireNews.cpp: Implementierung der Klasse CEmpireNews.
 //
 //////////////////////////////////////////////////////////////////////
 #include "stdafx.h"
-#include "Message.h"
-#include "General/ResourceManager.h"
+#include "EmpireNews.h"
+#include "General/Loc.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -11,22 +11,22 @@ static char THIS_FILE[]=__FILE__;
 #define new DEBUG_NEW
 #endif
 
-IMPLEMENT_SERIAL (CMessage, CObject, 1)
+IMPLEMENT_SERIAL (CEmpireNews, CObject, 1)
 
 //////////////////////////////////////////////////////////////////////
 // Konstruktion/Destruktion
 //////////////////////////////////////////////////////////////////////
 
-CMessage::CMessage()
+CEmpireNews::CEmpireNews()
 {
-	m_strMessage = "";
-	m_nMessageType = MESSAGE_TYPE::NO_TYPE;
-	m_KO.x = 0;
-	m_KO.y = 0;
+	m_sText = "";
+	m_nType = EMPIRE_NEWS_TYPE::NO_TYPE;
+	m_ptKO.x = 0;
+	m_ptKO.y = 0;
 	m_byFlag = 0;
 }
 
-CMessage::~CMessage()
+CEmpireNews::~CEmpireNews()
 {
 
 }
@@ -34,24 +34,24 @@ CMessage::~CMessage()
 //////////////////////////////////////////////////////////////////////
 // Kopierkonstruktor
 //////////////////////////////////////////////////////////////////////
-CMessage::CMessage(const CMessage & rhs)
+CEmpireNews::CEmpireNews(const CEmpireNews & rhs)
 {
-	m_strMessage = rhs.m_strMessage;
-	m_nMessageType = rhs.m_nMessageType;
-	m_KO = rhs.m_KO;
+	m_sText = rhs.m_sText;
+	m_nType = rhs.m_nType;
+	m_ptKO = rhs.m_ptKO;
 	m_byFlag = rhs.m_byFlag;
 }
 
 //////////////////////////////////////////////////////////////////////
 // Zuweisungsoperator
 //////////////////////////////////////////////////////////////////////
-CMessage & CMessage::operator=(const CMessage & rhs)
+CEmpireNews & CEmpireNews::operator=(const CEmpireNews & rhs)
 {
 	if (this == &rhs)
 		return *this;
-	m_strMessage = rhs.m_strMessage;
-	m_nMessageType = rhs.m_nMessageType;
-	m_KO = rhs.m_KO;
+	m_sText = rhs.m_sText;
+	m_nType = rhs.m_nType;
+	m_ptKO = rhs.m_ptKO;
 	m_byFlag = rhs.m_byFlag;
 	return *this;
 }
@@ -59,25 +59,25 @@ CMessage & CMessage::operator=(const CMessage & rhs)
 ///////////////////////////////////////////////////////////////////////
 // Speichern / Laden
 ///////////////////////////////////////////////////////////////////////
-void CMessage::Serialize(CArchive &ar)
+void CEmpireNews::Serialize(CArchive &ar)
 {
 	CObject::Serialize(ar);
 	// wenn gespeichert wird
 	if (ar.IsStoring())
 	{
-		ar << m_strMessage;
-		ar << m_nMessageType;
-		ar << m_KO;
+		ar << m_sText;
+		ar << m_nType;
+		ar << m_ptKO;
 		ar << m_byFlag;
 	}
 	// wenn geladen wird
 	if (ar.IsLoading())
 	{
-		ar >> m_strMessage;
+		ar >> m_sText;
 		int nType;
 		ar >> nType;
-		m_nMessageType = (MESSAGE_TYPE::Typ)nType;
-		ar >> m_KO;
+		m_nType = (EMPIRE_NEWS_TYPE::Typ)nType;
+		ar >> m_ptKO;
 		ar >> m_byFlag;
 	}
 }
@@ -85,49 +85,49 @@ void CMessage::Serialize(CArchive &ar)
 //////////////////////////////////////////////////////////////////////
 // sonstige Funktionen
 //////////////////////////////////////////////////////////////////////
-void CMessage::GenerateMessage(const CString& sMessage, MESSAGE_TYPE::Typ nMessageType, const CString& sSystemName /* = "" */, const CPoint& ptKO /* = CPoint(-1, -1) */, bool bUpdate /*= false*/, BYTE byFlag /*= 0*/)
+void CEmpireNews::CreateNews(const CString& sMessage, EMPIRE_NEWS_TYPE::Typ nMessageType, const CString& sSystemName /* = "" */, const CPoint& ptKO /* = CPoint(-1, -1) */, bool bUpdate /*= false*/, BYTE byFlag /*= 0*/)
 {
-	m_nMessageType = nMessageType;
-	m_KO = ptKO;
+	m_nType = nMessageType;
+	m_ptKO = ptKO;
 	m_byFlag = byFlag;	// wird häufig benutzt, um die Message mit einem Menü zu verbinden
 	switch (nMessageType)
 	{
-	case MESSAGE_TYPE::ECONOMY:
+	case EMPIRE_NEWS_TYPE::ECONOMY:
 		{
 			if (!sSystemName.IsEmpty())
 			{
 				if (!bUpdate)
-					m_strMessage = CResourceManager::GetString("BUILDING_FINISH", FALSE, sMessage, sSystemName);
+					m_sText = CLoc::GetString("BUILDING_FINISH", FALSE, sMessage, sSystemName);
 				else
-					m_strMessage = CResourceManager::GetString("UPGRADE_FINISH", FALSE, sMessage, sSystemName);
+					m_sText = CLoc::GetString("UPGRADE_FINISH", FALSE, sMessage, sSystemName);
 			}
 			else
-				m_strMessage.Format(sMessage);
+				m_sText.Format(sMessage);
 			break;
 		}
-	case MESSAGE_TYPE::SOMETHING:
+	case EMPIRE_NEWS_TYPE::SOMETHING:
 		{
-			m_strMessage.Format(sMessage);
+			m_sText.Format(sMessage);
 			break;
 		}
-	case MESSAGE_TYPE::RESEARCH:
+	case EMPIRE_NEWS_TYPE::RESEARCH:
 		{
-			m_strMessage.Format(sMessage);
+			m_sText.Format(sMessage);
 			break;
 		}
-	case MESSAGE_TYPE::DIPLOMACY:
+	case EMPIRE_NEWS_TYPE::DIPLOMACY:
 		{
-			m_strMessage.Format(sMessage);
+			m_sText.Format(sMessage);
 			break;
 		}
 	default:
 		{
-			m_strMessage.Format(sMessage);
+			m_sText.Format(sMessage);
 		}
 	}
 }
 
-void CMessage::GenerateMessage(const CString& sMessage, MESSAGE_TYPE::Typ nMessageType, BYTE byFlag)
+void CEmpireNews::CreateNews(const CString& sMessage, EMPIRE_NEWS_TYPE::Typ nMessageType, BYTE byFlag)
 {
-	GenerateMessage(sMessage, nMessageType, "", CPoint(-1, -1), false, byFlag);
+	CreateNews(sMessage, nMessageType, "", CPoint(-1, -1), false, byFlag);
 }

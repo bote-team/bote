@@ -111,7 +111,7 @@ void CIntelAI::CalcIntelligence(CBotEDoc* pDoc)
 				{
 					// zufällig wird hier eine bekannte andere Rasse als ResponsibleRace ausgewählt
 					pIntel->SetResponsibleRace(it->first);	// erstmal uns wieder auf die ResponsibleRace setzen
-					if (jt->second->GetEmpire()->GetNumberOfSystems() > 0 && rand()%3 == NULL)
+					if (jt->second->GetEmpire()->CountSystems() > 0 && rand()%3 == NULL)
 					{
 						pIntel->SetResponsibleRace(jt->first);
 						break;

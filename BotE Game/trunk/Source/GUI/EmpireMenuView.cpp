@@ -15,7 +15,7 @@
 #include "MenuChooseView.h"
 #include "Races\RaceController.h"
 #include "Graphic\memdc.h"
-#include "General/ResourceManager.h"
+#include "General/Loc.h"
 
 // CEmpireMenuView
 
@@ -91,7 +91,7 @@ void CEmpireMenuView::OnNewRound()
 	c_arraysort<CArray<CShipHistoryStruct,CShipHistoryStruct>,CShipHistoryStruct>(*(pMajor->GetShipHistory()->GetShipHistoryArray()),CShipHistoryStruct::sort_by_shipname);
 
 	m_iSubMenu = EMPIREVIEW_NEWS;
-	m_iWhichNewsButtonIsPressed = MESSAGE_TYPE::NO_TYPE;
+	m_iWhichNewsButtonIsPressed = EMPIRE_NEWS_TYPE::NO_TYPE;
 	m_iClickedNews = -1;
 	m_iClickedSystem = -1;
 	m_iClickedShip = -1;
@@ -146,7 +146,7 @@ void CEmpireMenuView::OnInitialUpdate()
 
 	// TODO: Add your specialized code here and/or call the base class
 	m_iSubMenu = EMPIREVIEW_NEWS;
-	m_iWhichNewsButtonIsPressed = MESSAGE_TYPE::NO_TYPE;
+	m_iWhichNewsButtonIsPressed = EMPIRE_NEWS_TYPE::NO_TYPE;
 	m_iClickedNews = -1;
 	m_iClickedSystem = -1;
 	m_iClickedShip = -1;
@@ -230,7 +230,7 @@ void CEmpireMenuView::DrawEmpireNewsMenue(Graphics* g)
 
 	// Es gehen nur 21 Einträge auf die Seite, deshalb muss abgebrochen werden
 	// Wenn noch keine News angeklickt wurde, es aber News gibt, dann die erste in der Reihe markieren
-	if (m_iClickedNews == -1 && pMajor->GetEmpire()->GetMessages()->GetSize() > 0)
+	if (m_iClickedNews == -1 && pMajor->GetEmpire()->GetMsgs()->GetSize() > 0)
 	{
 		m_iClickedNews = 0;
 		m_iOldClickedNews = 0;
@@ -238,10 +238,10 @@ void CEmpireMenuView::DrawEmpireNewsMenue(Graphics* g)
 	int j = 0;
 	short counter = m_iClickedNews - 20 + m_iOldClickedNews;
 	short oldClickedNews = m_iClickedNews;
-	for (int i = 0; i < pMajor->GetEmpire()->GetMessages()->GetSize(); i++)
+	for (int i = 0; i < pMajor->GetEmpire()->GetMsgs()->GetSize(); i++)
 		// nur Nachrichten anzeigen, dessen Typ wir auch gewählt haben
-		if (m_iWhichNewsButtonIsPressed == pMajor->GetEmpire()->GetMessages()->GetAt(i).GetMessageType() ||
-			m_iWhichNewsButtonIsPressed == MESSAGE_TYPE::NO_TYPE)
+		if (m_iWhichNewsButtonIsPressed == pMajor->GetEmpire()->GetMsgs()->GetAt(i).GetType() ||
+			m_iWhichNewsButtonIsPressed == EMPIRE_NEWS_TYPE::NO_TYPE)
 		{
 			if (counter > 0)
 			{
@@ -262,17 +262,17 @@ void CEmpireMenuView::DrawEmpireNewsMenue(Graphics* g)
 				}
 				else
 				{
-					switch (pMajor->GetEmpire()->GetMessages()->GetAt(i).GetMessageType())
+					switch (pMajor->GetEmpire()->GetMsgs()->GetAt(i).GetType())
 					{
-						case MESSAGE_TYPE::ECONOMY:  fontBrush.SetColor(Color(0,150,0));	break;
-						case MESSAGE_TYPE::RESEARCH: fontBrush.SetColor(Color(50,75,255));	break;
-						case MESSAGE_TYPE::SECURITY: fontBrush.SetColor(Color(155,25,255));	break;
-						case MESSAGE_TYPE::DIPLOMACY:fontBrush.SetColor(Color(255,220,0));	break;
-						case MESSAGE_TYPE::MILITARY: fontBrush.SetColor(Color(255,0,0));	break;
+						case EMPIRE_NEWS_TYPE::ECONOMY:  fontBrush.SetColor(Color(0,150,0));	break;
+						case EMPIRE_NEWS_TYPE::RESEARCH: fontBrush.SetColor(Color(50,75,255));	break;
+						case EMPIRE_NEWS_TYPE::SECURITY: fontBrush.SetColor(Color(155,25,255));	break;
+						case EMPIRE_NEWS_TYPE::DIPLOMACY:fontBrush.SetColor(Color(255,220,0));	break;
+						case EMPIRE_NEWS_TYPE::MILITARY: fontBrush.SetColor(Color(255,0,0));	break;
 						default: fontBrush.SetColor(normalColor);
 					}
 				}
-				s = pMajor->GetEmpire()->GetMessages()->GetAt(i).GetMessageString();
+				s = pMajor->GetEmpire()->GetMsgs()->GetAt(i).GetText();
 				g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(100,140+j*25,875,25), &fontFormat, &fontBrush);
 				j++;
 			}
@@ -296,7 +296,7 @@ void CEmpireMenuView::DrawEmpireNewsMenue(Graphics* g)
 	// Schriftfarbe wählen
 	CFontLoader::GetGDIFontColor(pMajor, 3, normalColor);
 	fontBrush.SetColor(normalColor);
-	s = CResourceManager::GetString("NEWS_MENUE");
+	s = CLoc::GetString("NEWS_MENUE");
 	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,10,m_TotalSize.cx, 50), &fontFormat, &fontBrush);
 }
 
@@ -391,42 +391,42 @@ void CEmpireMenuView::DrawEmpireSystemMenue(Graphics* g)
 				*/
 				if (pDoc->GetSystem(KO.x,KO.y).GetMoral() > 174)
 				{
-					s = CResourceManager::GetString("FANATIC");
+					s = CLoc::GetString("FANATIC");
 					fontBrush.SetColor(Color(0,250,0));
 				}
 				else if (pDoc->GetSystem(KO.x,KO.y).GetMoral() > 154)
 				{
-					s = CResourceManager::GetString("LOYAL");
+					s = CLoc::GetString("LOYAL");
 					fontBrush.SetColor(Color(20,150,20));
 				}
 				else if (pDoc->GetSystem(KO.x,KO.y).GetMoral() > 130)
 				{
-					s = CResourceManager::GetString("PLEASED");
+					s = CLoc::GetString("PLEASED");
 					fontBrush.SetColor(Color(20,150,100));
 				}
 				else if (pDoc->GetSystem(KO.x,KO.y).GetMoral() > 99)
 				{
-					s = CResourceManager::GetString("SATISFIED");
+					s = CLoc::GetString("SATISFIED");
 					fontBrush.SetColor(Color(150,150,200));
 				}
 				else if (pDoc->GetSystem(KO.x,KO.y).GetMoral() > 75)
 				{
-					s = CResourceManager::GetString("APATHETIC");
+					s = CLoc::GetString("APATHETIC");
 					fontBrush.SetColor(Color(160,160,160));
 				}
 				else if (pDoc->GetSystem(KO.x,KO.y).GetMoral() > 49)
 				{
-					s = CResourceManager::GetString("ANGRY");
+					s = CLoc::GetString("ANGRY");
 					fontBrush.SetColor(Color(200,100,50));
 				}
 				else if (pDoc->GetSystem(KO.x,KO.y).GetMoral() > 29)
 				{
-					s = CResourceManager::GetString("FURIOUS");
+					s = CLoc::GetString("FURIOUS");
 					fontBrush.SetColor(Color(210,80,50));
 				}
 				else
 				{
-					s = CResourceManager::GetString("REBELLIOUS");
+					s = CLoc::GetString("REBELLIOUS");
 					fontBrush.SetColor(Color(255,0,0));
 				}
 				CString moral;
@@ -475,12 +475,12 @@ void CEmpireMenuView::DrawEmpireSystemMenue(Graphics* g)
 						RoundToBuild = (int)ceil((float)(pDoc->GetSystem(KO.x, KO.y).GetAssemblyList()->GetNeededIndustryInAssemblyList(0))/((float)ip
 							* (100+pDoc->GetSystem(KO.x, KO.y).GetProduction()->GetBuildingBuildSpeed())/100));
 						if (RoundToBuild > 1)
-							s.Format("%s (%d %s)",pDoc->GetBuildingName(id),RoundToBuild,CResourceManager::GetString("ROUNDS"));
+							s.Format("%s (%d %s)",pDoc->GetBuildingName(id),RoundToBuild,CLoc::GetString("ROUNDS"));
 						else
-							s.Format("%s (%d %s)",pDoc->GetBuildingName(id),RoundToBuild,CResourceManager::GetString("ROUND"));
+							s.Format("%s (%d %s)",pDoc->GetBuildingName(id),RoundToBuild,CLoc::GetString("ROUND"));
 					}
 					else
-						s.Format("%s (? %s)",pDoc->GetBuildingName(id),CResourceManager::GetString("ROUNDS"));
+						s.Format("%s (? %s)",pDoc->GetBuildingName(id),CLoc::GetString("ROUNDS"));
 				}
 				else if (id >= 10000 && id < 20000)
 				{
@@ -490,15 +490,15 @@ void CEmpireMenuView::DrawEmpireSystemMenue(Graphics* g)
 								/((float)ip * pDoc->GetSystem(KO.x, KO.y).GetProduction()->GetShipYardEfficiency() / 100
 									* (100+pDoc->GetSystem(KO.x, KO.y).GetProduction()->GetShipBuildSpeed())/100));
 						if (RoundToBuild > 1)
-							s.Format("%s-%s (%d %s)",pDoc->m_ShipInfoArray.GetAt(id-10000).GetShipClass(),CResourceManager::GetString("CLASS"),
-							RoundToBuild,CResourceManager::GetString("ROUNDS"));
+							s.Format("%s-%s (%d %s)",pDoc->m_ShipInfoArray.GetAt(id-10000).GetShipClass(),CLoc::GetString("CLASS"),
+							RoundToBuild,CLoc::GetString("ROUNDS"));
 						else
-							s.Format("%s-%s (%d %s)",pDoc->m_ShipInfoArray.GetAt(id-10000).GetShipClass(),CResourceManager::GetString("CLASS"),
-							RoundToBuild,CResourceManager::GetString("ROUND"));
+							s.Format("%s-%s (%d %s)",pDoc->m_ShipInfoArray.GetAt(id-10000).GetShipClass(),CLoc::GetString("CLASS"),
+							RoundToBuild,CLoc::GetString("ROUND"));
 					}
 					else
-						s.Format("%s-%s (? %s)",pDoc->m_ShipInfoArray.GetAt(id-10000).GetShipClass(),CResourceManager::GetString("CLASS"),
-						CResourceManager::GetString("ROUNDS"));
+						s.Format("%s-%s (? %s)",pDoc->m_ShipInfoArray.GetAt(id-10000).GetShipClass(),CLoc::GetString("CLASS"),
+						CLoc::GetString("ROUNDS"));
 				}
 				else if (id >= 20000)
 				{
@@ -508,12 +508,12 @@ void CEmpireMenuView::DrawEmpireSystemMenue(Graphics* g)
 								/((float)ip * pDoc->GetSystem(KO.x, KO.y).GetProduction()->GetBarrackEfficiency() / 100
 									* (100+pDoc->GetSystem(KO.x, KO.y).GetProduction()->GetTroopBuildSpeed())/100));
 						if (RoundToBuild > 1)
-							s.Format("%s (%d %s)",pDoc->m_TroopInfo.GetAt(id-20000).GetName(),RoundToBuild,CResourceManager::GetString("ROUNDS"));
+							s.Format("%s (%d %s)",pDoc->m_TroopInfo.GetAt(id-20000).GetName(),RoundToBuild,CLoc::GetString("ROUNDS"));
 						else
-							s.Format("%s (%d %s)",pDoc->m_TroopInfo.GetAt(id-20000).GetName(),RoundToBuild,CResourceManager::GetString("ROUND"));
+							s.Format("%s (%d %s)",pDoc->m_TroopInfo.GetAt(id-20000).GetName(),RoundToBuild,CLoc::GetString("ROUND"));
 					}
 					else
-						s.Format("%s (? %s)",pDoc->m_TroopInfo.GetAt(id-20000).GetName(),CResourceManager::GetString("ROUNDS"));
+						s.Format("%s (? %s)",pDoc->m_TroopInfo.GetAt(id-20000).GetName(),CLoc::GetString("ROUNDS"));
 				}
 				else if (id < 0)
 				{
@@ -522,18 +522,18 @@ void CEmpireMenuView::DrawEmpireSystemMenue(Graphics* g)
 						RoundToBuild = (int)ceil((float)(pDoc->GetSystem(KO.x, KO.y).GetAssemblyList()->GetNeededIndustryInAssemblyList(0))/((float)ip
 							* (100+pDoc->GetSystem(KO.x, KO.y).GetProduction()->GetUpdateBuildSpeed())/100));
 						if (RoundToBuild > 1)
-							s.Format("Upgrade %s (%d %s)",pDoc->GetBuildingName(-id),RoundToBuild,CResourceManager::GetString("ROUNDS"));
+							s.Format("Upgrade %s (%d %s)",pDoc->GetBuildingName(-id),RoundToBuild,CLoc::GetString("ROUNDS"));
 						else
-							s.Format("Upgrade %s (%d %s)",pDoc->GetBuildingName(-id),RoundToBuild,CResourceManager::GetString("ROUND"));
+							s.Format("Upgrade %s (%d %s)",pDoc->GetBuildingName(-id),RoundToBuild,CLoc::GetString("ROUND"));
 					}
 					else
-						s.Format("Upgrade %s (? %s)",pDoc->GetBuildingName(-id),CResourceManager::GetString("ROUNDS"));
+						s.Format("Upgrade %s (? %s)",pDoc->GetBuildingName(-id),CLoc::GetString("ROUNDS"));
 				}
 				if (id > 0 && id < 10000 && pDoc->GetBuildingInfo(id).GetNeverReady())
-					s.Format("%s (%s)",pDoc->GetBuildingName(id),CResourceManager::GetString("RUNS"));
+					s.Format("%s (%s)",pDoc->GetBuildingName(id),CLoc::GetString("RUNS"));
 				if (pDoc->GetSystem(KO.x, KO.y).GetAutoBuild())
 				{
-					s.Insert(0, CResourceManager::GetString("AUTOBUILD") + ": ");
+					s.Insert(0, CLoc::GetString("AUTOBUILD") + ": ");
 					fontBrush.SetColor(Color::Red);
 				}
 
@@ -657,33 +657,33 @@ void CEmpireMenuView::DrawEmpireSystemMenue(Graphics* g)
 	fontBrush.SetColor(markColor);
 	Gdiplus::Font font(CComBSTR(fontName), fontSize);
 	fontFormat.SetTrimming(StringTrimmingEllipsisCharacter);
-	g->DrawString(CComBSTR(CResourceManager::GetString("SECTOR")), -1, &font, RectF(50,110,80,30), &fontFormat, &fontBrush);
-	g->DrawString(CComBSTR(CResourceManager::GetString("NAME")), -1, &font, RectF(130,110,140,30), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(CLoc::GetString("SECTOR")), -1, &font, RectF(50,110,80,30), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(CLoc::GetString("NAME")), -1, &font, RectF(130,110,140,30), &fontFormat, &fontBrush);
 	if (m_iSystemSubMenue == EMPIREVIEW_SYSTEMS_NORMAL)
 	{
-		g->DrawString(CComBSTR(CResourceManager::GetString("MORAL")), -1, &font, RectF(270,110,130,30), &fontFormat, &fontBrush);
-		g->DrawString(CComBSTR(CResourceManager::GetString("FOOD")), -1, &font, RectF(400,110,80,30), &fontFormat, &fontBrush);
-		g->DrawString(CComBSTR(CResourceManager::GetString("STORAGE")), -1, &font, RectF(480,110,100,30), &fontFormat, &fontBrush);
-		g->DrawString(CComBSTR(CResourceManager::GetString("INDUSTRY")), -1, &font, RectF(580,110,100,30), &fontFormat, &fontBrush);
-		g->DrawString(CComBSTR(CResourceManager::GetString("CREDITS")), -1, &font, RectF(680,110,100,30), &fontFormat, &fontBrush);
-		g->DrawString(CComBSTR(CResourceManager::GetString("JOB")), -1, &font, RectF(780,110,345,30), &fontFormat, &fontBrush);
+		g->DrawString(CComBSTR(CLoc::GetString("MORAL")), -1, &font, RectF(270,110,130,30), &fontFormat, &fontBrush);
+		g->DrawString(CComBSTR(CLoc::GetString("FOOD")), -1, &font, RectF(400,110,80,30), &fontFormat, &fontBrush);
+		g->DrawString(CComBSTR(CLoc::GetString("STORAGE")), -1, &font, RectF(480,110,100,30), &fontFormat, &fontBrush);
+		g->DrawString(CComBSTR(CLoc::GetString("INDUSTRY")), -1, &font, RectF(580,110,100,30), &fontFormat, &fontBrush);
+		g->DrawString(CComBSTR(CLoc::GetString("CREDITS")), -1, &font, RectF(680,110,100,30), &fontFormat, &fontBrush);
+		g->DrawString(CComBSTR(CLoc::GetString("JOB")), -1, &font, RectF(780,110,345,30), &fontFormat, &fontBrush);
 	}
 	else if (m_iSystemSubMenue == EMPIREVIEW_SYSTEMS_RESOURCE)
 	{
-		g->DrawString(CComBSTR(CResourceManager::GetString("TITAN")), -1, &font, RectF(270,110,120,30), &fontFormat, &fontBrush);
-		g->DrawString(CComBSTR(CResourceManager::GetString("DEUTERIUM")), -1, &font, RectF(390,110,120,30), &fontFormat, &fontBrush);
-		g->DrawString(CComBSTR(CResourceManager::GetString("DURANIUM")), -1, &font, RectF(510,110,120,30), &fontFormat, &fontBrush);
-		g->DrawString(CComBSTR(CResourceManager::GetString("CRYSTAL")), -1, &font, RectF(630,110,120,30), &fontFormat, &fontBrush);
-		g->DrawString(CComBSTR(CResourceManager::GetString("IRIDIUM")), -1, &font, RectF(750,110,120,30), &fontFormat, &fontBrush);
-		g->DrawString(CComBSTR(CResourceManager::GetString("DERITIUM")), -1, &font, RectF(870,110,120,30), &fontFormat, &fontBrush);
+		g->DrawString(CComBSTR(CLoc::GetString("TITAN")), -1, &font, RectF(270,110,120,30), &fontFormat, &fontBrush);
+		g->DrawString(CComBSTR(CLoc::GetString("DEUTERIUM")), -1, &font, RectF(390,110,120,30), &fontFormat, &fontBrush);
+		g->DrawString(CComBSTR(CLoc::GetString("DURANIUM")), -1, &font, RectF(510,110,120,30), &fontFormat, &fontBrush);
+		g->DrawString(CComBSTR(CLoc::GetString("CRYSTAL")), -1, &font, RectF(630,110,120,30), &fontFormat, &fontBrush);
+		g->DrawString(CComBSTR(CLoc::GetString("IRIDIUM")), -1, &font, RectF(750,110,120,30), &fontFormat, &fontBrush);
+		g->DrawString(CComBSTR(CLoc::GetString("DERITIUM")), -1, &font, RectF(870,110,120,30), &fontFormat, &fontBrush);
 	}
 	else if (m_iSystemSubMenue == EMPIREVIEW_SYSTEMS_DEFENCE)
 	{
-		g->DrawString(CComBSTR(CResourceManager::GetString("TROOPS")), -1, &font, RectF(270,110,100,30), &fontFormat, &fontBrush);
-		g->DrawString(CComBSTR(CResourceManager::GetString("SHIELDPOWER")), -1, &font, RectF(370,110,150,30), &fontFormat, &fontBrush);
-		g->DrawString(CComBSTR(CResourceManager::GetString("SHIPDEFEND")), -1, &font, RectF(520,110,150,30), &fontFormat, &fontBrush);
-		g->DrawString(CComBSTR(CResourceManager::GetString("GROUNDDEFEND")), -1, &font, RectF(670,110,150,30), &fontFormat, &fontBrush);
-		g->DrawString(CComBSTR(CResourceManager::GetString("SCANPOWER")), -1, &font, RectF(820,110,150,30), &fontFormat, &fontBrush);
+		g->DrawString(CComBSTR(CLoc::GetString("TROOPS")), -1, &font, RectF(270,110,100,30), &fontFormat, &fontBrush);
+		g->DrawString(CComBSTR(CLoc::GetString("SHIELDPOWER")), -1, &font, RectF(370,110,150,30), &fontFormat, &fontBrush);
+		g->DrawString(CComBSTR(CLoc::GetString("SHIPDEFEND")), -1, &font, RectF(520,110,150,30), &fontFormat, &fontBrush);
+		g->DrawString(CComBSTR(CLoc::GetString("GROUNDDEFEND")), -1, &font, RectF(670,110,150,30), &fontFormat, &fontBrush);
+		g->DrawString(CComBSTR(CLoc::GetString("SCANPOWER")), -1, &font, RectF(820,110,150,30), &fontFormat, &fontBrush);
 	}
 	fontFormat.SetTrimming(StringTrimmingNone);
 	fontFormat.SetAlignment(StringAlignmentCenter);
@@ -693,7 +693,7 @@ void CEmpireMenuView::DrawEmpireSystemMenue(Graphics* g)
 	// Schriftfarbe wählen
 	CFontLoader::GetGDIFontColor(pMajor, 3, normalColor);
 	fontBrush.SetColor(normalColor);
-	s = CResourceManager::GetString("SYSTEM_OVERVIEW_MENUE");
+	s = CLoc::GetString("SYSTEM_OVERVIEW_MENUE");
 	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,10,m_TotalSize.cx, 50), &fontFormat, &fontBrush);
 }
 
@@ -855,31 +855,31 @@ void CEmpireMenuView::DrawEmpireShipMenue(Graphics* g)
 	// Tabellenüberschriften zeichnen
 	fontBrush.SetColor(markColor);
 	Gdiplus::Font font(CComBSTR(fontName), fontSize);
-	g->DrawString(CComBSTR(CResourceManager::GetString("NAME")), -1, &font, RectF(50,110,175,30), &fontFormat, &fontBrush);
-	g->DrawString(CComBSTR(CResourceManager::GetString("TYPE")), -1, &font, RectF(225,110,150,30), &fontFormat, &fontBrush);
-	g->DrawString(CComBSTR(CResourceManager::GetString("CLASS")), -1, &font, RectF(375,110,120,30), &fontFormat, &fontBrush);
-	g->DrawString(CComBSTR(CResourceManager::GetString("SYSTEM")), -1, &font, RectF(560,110,115,30), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(CLoc::GetString("NAME")), -1, &font, RectF(50,110,175,30), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(CLoc::GetString("TYPE")), -1, &font, RectF(225,110,150,30), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(CLoc::GetString("CLASS")), -1, &font, RectF(375,110,120,30), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(CLoc::GetString("SYSTEM")), -1, &font, RectF(560,110,115,30), &fontFormat, &fontBrush);
 	if (m_bShowAliveShips)
 	{
-		g->DrawString(CComBSTR(CResourceManager::GetString("CONSTRUCT")), -1, &font, RectF(495,110,65,30), &fontFormat, &fontBrush);
-		g->DrawString(CComBSTR(CResourceManager::GetString("CURRENT_PLACE")), -1, &font, RectF(675,110,115,30), &fontFormat, &fontBrush);
-		g->DrawString(CComBSTR(CResourceManager::GetString("EXPERIANCE_SHORT")), -1, &font, RectF(790,110,60,30), &fontFormat, &fontBrush);
-		g->DrawString(CComBSTR(CResourceManager::GetString("STATUS")), -1, &font, RectF(835,110,175,30), &fontFormat, &fontBrush);
-		g->DrawString(CComBSTR(CResourceManager::GetString("TARGET")), -1, &font, RectF(915,110,175,30), &fontFormat, &fontBrush);
+		g->DrawString(CComBSTR(CLoc::GetString("CONSTRUCT")), -1, &font, RectF(495,110,65,30), &fontFormat, &fontBrush);
+		g->DrawString(CComBSTR(CLoc::GetString("CURRENT_PLACE")), -1, &font, RectF(675,110,115,30), &fontFormat, &fontBrush);
+		g->DrawString(CComBSTR(CLoc::GetString("EXPERIANCE_SHORT")), -1, &font, RectF(790,110,60,30), &fontFormat, &fontBrush);
+		g->DrawString(CComBSTR(CLoc::GetString("STATUS")), -1, &font, RectF(835,110,175,30), &fontFormat, &fontBrush);
+		g->DrawString(CComBSTR(CLoc::GetString("TARGET")), -1, &font, RectF(915,110,175,30), &fontFormat, &fontBrush);
 	}
 	else
 	{
-		g->DrawString(CComBSTR(CResourceManager::GetString("LOST")), -1, &font, RectF(495,110,65,30), &fontFormat, &fontBrush);
-		g->DrawString(CComBSTR(CResourceManager::GetString("EVENT")), -1, &font, RectF(675,110,115,30), &fontFormat, &fontBrush);
-		g->DrawString(CComBSTR(CResourceManager::GetString("STATUS")), -1, &font, RectF(850,110,175,30), &fontFormat, &fontBrush);
+		g->DrawString(CComBSTR(CLoc::GetString("LOST")), -1, &font, RectF(495,110,65,30), &fontFormat, &fontBrush);
+		g->DrawString(CComBSTR(CLoc::GetString("EVENT")), -1, &font, RectF(675,110,115,30), &fontFormat, &fontBrush);
+		g->DrawString(CComBSTR(CLoc::GetString("STATUS")), -1, &font, RectF(850,110,175,30), &fontFormat, &fontBrush);
 	}
 	CFontLoader::GetGDIFontColor(pMajor, 4, normalColor);
 	fontBrush.SetColor(normalColor);
 
-	s.Format("%s: %d",CResourceManager::GetString("SHIPS_TOTAL"),numberLive);
+	s.Format("%s: %d",CLoc::GetString("SHIPS_TOTAL"),numberLive);
 	g->DrawString(CComBSTR(s), -1, &font, RectF(280,70,300,40), &fontFormat, &fontBrush);
 
-	s.Format("%s: %d",CResourceManager::GetString("SHIPS_LOST"),numberDead);
+	s.Format("%s: %d",CLoc::GetString("SHIPS_LOST"),numberDead);
 	g->DrawString(CComBSTR(s), -1, &font, RectF(675,70,350,40), &fontFormat, &fontBrush);
 
 	// "Übersicht aller Schiffe" oben in der Mitte zeichnen
@@ -889,7 +889,7 @@ void CEmpireMenuView::DrawEmpireShipMenue(Graphics* g)
 	// Schriftfarbe wählen
 	CFontLoader::GetGDIFontColor(pMajor, 3, normalColor);
 	fontBrush.SetColor(normalColor);
-	s = CResourceManager::GetString("SHIP_OVERVIEW_MENUE");
+	s = CLoc::GetString("SHIP_OVERVIEW_MENUE");
 	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,10,m_TotalSize.cx, 50), &fontFormat, &fontBrush);
 }
 
@@ -930,11 +930,11 @@ void CEmpireMenuView::DrawEmpireDemographicsMenue(Gdiplus::Graphics *g)
 	// Tabellenüberschriften zeichnen
 	fontBrush.SetColor(markColor);
 	fontFormat.SetAlignment(StringAlignmentNear);
-	g->DrawString(CComBSTR(CResourceManager::GetString("DEMO_BSP")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(165,250,165,25), &fontFormat, &fontBrush);
-	g->DrawString(CComBSTR(CResourceManager::GetString("DEMO_PRODUCTIVITY")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(165,320,165,25), &fontFormat, &fontBrush);
-	g->DrawString(CComBSTR(CResourceManager::GetString("DEMO_MILITARY")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(165,390,165,25), &fontFormat, &fontBrush);
-	g->DrawString(CComBSTR(CResourceManager::GetString("DEMO_SCIENCE")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(165,460,165,25), &fontFormat, &fontBrush);
-	g->DrawString(CComBSTR(CResourceManager::GetString("DEMO_HAPPINESS")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(165,530,165,25), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(CLoc::GetString("DEMO_BSP")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(165,250,165,25), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(CLoc::GetString("DEMO_PRODUCTIVITY")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(165,320,165,25), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(CLoc::GetString("DEMO_MILITARY")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(165,390,165,25), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(CLoc::GetString("DEMO_SCIENCE")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(165,460,165,25), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(CLoc::GetString("DEMO_HAPPINESS")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(165,530,165,25), &fontFormat, &fontBrush);
 
 	// Pokalgrafiken laden
 	Bitmap* trophy1 = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\trophy1.bop");
@@ -1064,18 +1064,18 @@ void CEmpireMenuView::DrawEmpireDemographicsMenue(Gdiplus::Graphics *g)
 	Gdiplus::Font font(CComBSTR(fontName), fontSize);
 	fontFormat.SetTrimming(StringTrimmingEllipsisCharacter);
 	fontFormat.SetAlignment(StringAlignmentCenter);
-	g->DrawString(CComBSTR(CResourceManager::GetString("RANK")), -1, &font, RectF(330,195,70,30), &fontFormat, &fontBrush);
-	g->DrawString(CComBSTR(CResourceManager::GetString("VALUE")), -1, &font, RectF(400,195,125,30), &fontFormat, &fontBrush);
-	g->DrawString(CComBSTR(CResourceManager::GetString("FIRST_RANK")), -1, &font, RectF(525,195,125,30), &fontFormat, &fontBrush);
-	g->DrawString(CComBSTR(CResourceManager::GetString("AVERAGE")), -1, &font, RectF(650,195,125,30), &fontFormat, &fontBrush);
-	g->DrawString(CComBSTR(CResourceManager::GetString("LAST_RANK")), -1, &font, RectF(775,195,125,30), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(CLoc::GetString("RANK")), -1, &font, RectF(330,195,70,30), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(CLoc::GetString("VALUE")), -1, &font, RectF(400,195,125,30), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(CLoc::GetString("FIRST_RANK")), -1, &font, RectF(525,195,125,30), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(CLoc::GetString("AVERAGE")), -1, &font, RectF(650,195,125,30), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(CLoc::GetString("LAST_RANK")), -1, &font, RectF(775,195,125,30), &fontFormat, &fontBrush);
 
 	// "Demografie" oben in der Mitte zeichnen
 	// Rassenspezifische Schriftart auswählen
 	CFontLoader::CreateGDIFont(pMajor, 5, fontName, fontSize);
 	// Punktestand/Note oben in der Mitte groß zeichnen
 	fMark /= 5;
-	s.Format("%s: %.1lf", CResourceManager::GetString("RATING"), fMark);
+	s.Format("%s: %.1lf", CLoc::GetString("RATING"), fMark);
 	g->DrawString(CComBSTR(s), -1, &font, RectF(0,65,m_TotalSize.cx,50), &fontFormat, &fontBrush);
 
 	// Pokal für Gesamtbewertung zeichnen
@@ -1098,7 +1098,7 @@ void CEmpireMenuView::DrawEmpireDemographicsMenue(Gdiplus::Graphics *g)
 	// Schriftfarbe wählen
 	CFontLoader::GetGDIFontColor(pMajor, 3, normalColor);
 	fontBrush.SetColor(normalColor);
-	s = CResourceManager::GetString("DEMOGRAPHY_MENUE");
+	s = CLoc::GetString("DEMOGRAPHY_MENUE");
 	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,10,m_TotalSize.cx, 50), &fontFormat, &fontBrush);
 }
 
@@ -1145,7 +1145,7 @@ void CEmpireMenuView::DrawEmpireTop5Menue(Gdiplus::Graphics *g)
 			// Planeten zeichnen
 			DrawSunSystem(g, *it, 110 + 110 * nCount);
 
-			s.Format("%s %d: %s", CResourceManager::GetString("PLACE"), nCount + 1, pSector->GetName());
+			s.Format("%s %d: %s", CLoc::GetString("PLACE"), nCount + 1, pSector->GetName());
 			g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(150, 135 + 110 * nCount, m_TotalSize.cx - 250, 25), &fontFormat, &fontBrush);
 			// Besitzerimperium zeichnen
 			if (pMajor->IsRaceContacted(pSector->GetOwnerOfSector()) || pMajor->GetRaceID() == pSector->GetOwnerOfSector())
@@ -1163,7 +1163,7 @@ void CEmpireMenuView::DrawEmpireTop5Menue(Gdiplus::Graphics *g)
 		}
 		else
 		{
-			s.Format("%s %d: %s", CResourceManager::GetString("PLACE"), nCount + 1, CResourceManager::GetString("UNKNOWN"));
+			s.Format("%s %d: %s", CLoc::GetString("PLACE"), nCount + 1, CLoc::GetString("UNKNOWN"));
 			g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(150, 135 + 110 * nCount, m_TotalSize.cx - 250, 25), &fontFormat, &fontBrush);
 		}
 
@@ -1187,7 +1187,7 @@ void CEmpireMenuView::DrawEmpireTop5Menue(Gdiplus::Graphics *g)
 	// Schriftfarbe wählen
 	CFontLoader::GetGDIFontColor(pMajor, 3, normalColor);
 	fontBrush.SetColor(normalColor);
-	s = CResourceManager::GetString("TOP5SYSTEMS_MENUE");
+	s = CLoc::GetString("TOP5SYSTEMS_MENUE");
 	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,10,m_TotalSize.cx, 50), &fontFormat, &fontBrush);
 }
 
@@ -1281,101 +1281,101 @@ void CEmpireMenuView::DrawEmpireVictoryMenue(Gdiplus::Graphics *g)
 	fontFormat.SetAlignment(StringAlignmentNear);
 	CFontLoader::CreateGDIFont(pMajor, 3, fontName, fontSize);
 	// Kategorie "Auslöschung"
-	g->DrawString(CComBSTR(CResourceManager::GetString("VC_ELIMINATION")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(165,175,250,25), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(CLoc::GetString("VC_ELIMINATION")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(165,175,250,25), &fontFormat, &fontBrush);
 	// Kategorie "Diplomatie"
-	g->DrawString(CComBSTR(CResourceManager::GetString("VC_DIPLOMACY")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(165,250,250,25), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(CLoc::GetString("VC_DIPLOMACY")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(165,250,250,25), &fontFormat, &fontBrush);
 	// Kategorie "Eroberung"
-	g->DrawString(CComBSTR(CResourceManager::GetString("VC_CONQUEST")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(165,325,250,25), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(CLoc::GetString("VC_CONQUEST")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(165,325,250,25), &fontFormat, &fontBrush);
 	// Kategorie "Forschung"
-	g->DrawString(CComBSTR(CResourceManager::GetString("VC_RESEARCH")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(165,400,250,25), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(CLoc::GetString("VC_RESEARCH")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(165,400,250,25), &fontFormat, &fontBrush);
 	// Kategorie "Siege"
-	g->DrawString(CComBSTR(CResourceManager::GetString("VC_COMBAT")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(165,475,250,25), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(CLoc::GetString("VC_COMBAT")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(165,475,250,25), &fontFormat, &fontBrush);
 	// Kategorie "Geheimdienst"
-	g->DrawString(CComBSTR(CResourceManager::GetString("VC_SECURITY")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(165,550,250,25), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(CLoc::GetString("VC_SECURITY")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(165,550,250,25), &fontFormat, &fontBrush);
 
 	fontBrush.SetColor(normalColor);
 	CFontLoader::CreateGDIFont(pMajor, 2, fontName, fontSize);
 	// Kategorie "Auslöschung"
 	if (pDoc->m_VictoryObserver.IsVictoryCondition(VICTORYTYPE_ELIMINATION))
 	{
-		g->DrawString(CComBSTR(CResourceManager::GetString("ELIMINATE_ALL_RIVALS")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(165,200,250,25), &fontFormat, &fontBrush);
-		g->DrawString(CComBSTR(CResourceManager::GetString("RIVALS_LEFT")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(465,200,250,25), &fontFormat, &fontBrush);
+		g->DrawString(CComBSTR(CLoc::GetString("ELIMINATE_ALL_RIVALS")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(165,200,250,25), &fontFormat, &fontBrush);
+		g->DrawString(CComBSTR(CLoc::GetString("RIVALS_LEFT")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(465,200,250,25), &fontFormat, &fontBrush);
 		s.Format("%d", pDoc->m_VictoryObserver.GetRivalsLeft());
 		g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(625,200,250,25), &fontFormat, &fontBrush);
 	}
 	else
-		g->DrawString(CComBSTR(CResourceManager::GetString("DEACTIVATED")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(165,200,250,25), &fontFormat, &fontBrush);
+		g->DrawString(CComBSTR(CLoc::GetString("DEACTIVATED")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(165,200,250,25), &fontFormat, &fontBrush);
 
 	// Kategorie "Diplomatie"
 	if (pDoc->m_VictoryObserver.IsVictoryCondition(VICTORYTYPE_DIPLOMACY))
 	{
-		s.Format("%d %s", pDoc->m_VictoryObserver.GetNeededVictoryValue(VICTORYTYPE_DIPLOMACY), CResourceManager::GetString("SIGNED_HIGH_AGREEMENTS"));
+		s.Format("%d %s", pDoc->m_VictoryObserver.GetNeededVictoryValue(VICTORYTYPE_DIPLOMACY), CLoc::GetString("SIGNED_HIGH_AGREEMENTS"));
 		g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(165,275,250,25), &fontFormat, &fontBrush);
-		g->DrawString(CComBSTR(CResourceManager::GetString("WE:")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(465,275,250,25), &fontFormat, &fontBrush);
+		g->DrawString(CComBSTR(CLoc::GetString("WE:")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(465,275,250,25), &fontFormat, &fontBrush);
 		s.Format("%d", pDoc->m_VictoryObserver.GetVictoryStatus(pMajor->GetRaceID(), VICTORYTYPE_DIPLOMACY));
 		g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(625,275,250,25), &fontFormat, &fontBrush);
-		g->DrawString(CComBSTR(CResourceManager::GetString("BEST:")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(750,275,250,25), &fontFormat, &fontBrush);
+		g->DrawString(CComBSTR(CLoc::GetString("BEST:")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(750,275,250,25), &fontFormat, &fontBrush);
 		s.Format("%d", pDoc->m_VictoryObserver.GetBestVictoryValue(VICTORYTYPE_DIPLOMACY));
 		g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(850,275,250,25), &fontFormat, &fontBrush);
 	}
 	else
-		g->DrawString(CComBSTR(CResourceManager::GetString("DEACTIVATED")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(165,275,250,25), &fontFormat, &fontBrush);
+		g->DrawString(CComBSTR(CLoc::GetString("DEACTIVATED")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(165,275,250,25), &fontFormat, &fontBrush);
 	// Kategorie "Eroberung"
 	if (pDoc->m_VictoryObserver.IsVictoryCondition(VICTORYTYPE_CONQUEST))
 	{
-		s.Format("%d %s", pDoc->m_VictoryObserver.GetNeededVictoryValue(VICTORYTYPE_CONQUEST), CResourceManager::GetString("CONQUERED_SYSTEMS"));
+		s.Format("%d %s", pDoc->m_VictoryObserver.GetNeededVictoryValue(VICTORYTYPE_CONQUEST), CLoc::GetString("CONQUERED_SYSTEMS"));
 		g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(165,350,250,25), &fontFormat, &fontBrush);
-		g->DrawString(CComBSTR(CResourceManager::GetString("WE:")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(465,350,250,25), &fontFormat, &fontBrush);
+		g->DrawString(CComBSTR(CLoc::GetString("WE:")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(465,350,250,25), &fontFormat, &fontBrush);
 		s.Format("%d", pDoc->m_VictoryObserver.GetVictoryStatus(pMajor->GetRaceID(), VICTORYTYPE_CONQUEST));
 		g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(625,350,250,25), &fontFormat, &fontBrush);
-		g->DrawString(CComBSTR(CResourceManager::GetString("BEST:")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(750,350,250,25), &fontFormat, &fontBrush);
+		g->DrawString(CComBSTR(CLoc::GetString("BEST:")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(750,350,250,25), &fontFormat, &fontBrush);
 		s.Format("%d", pDoc->m_VictoryObserver.GetBestVictoryValue(VICTORYTYPE_CONQUEST));
 		g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(850,350,250,25), &fontFormat, &fontBrush);
 	}
 	else
-		g->DrawString(CComBSTR(CResourceManager::GetString("DEACTIVATED")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(165,350,250,25), &fontFormat, &fontBrush);
+		g->DrawString(CComBSTR(CLoc::GetString("DEACTIVATED")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(165,350,250,25), &fontFormat, &fontBrush);
 	// Kategorie "Forschung"
 	if (pDoc->m_VictoryObserver.IsVictoryCondition(VICTORYTYPE_RESEARCH))
 	{
-		s.Format("%d %s", pDoc->m_VictoryObserver.GetNeededVictoryValue(VICTORYTYPE_RESEARCH), CResourceManager::GetString("RESEARCHED_SPECIALS"));
+		s.Format("%d %s", pDoc->m_VictoryObserver.GetNeededVictoryValue(VICTORYTYPE_RESEARCH), CLoc::GetString("RESEARCHED_SPECIALS"));
 		g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(165,425,250,25), &fontFormat, &fontBrush);
-		g->DrawString(CComBSTR(CResourceManager::GetString("WE:")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(465,425,250,25), &fontFormat, &fontBrush);
+		g->DrawString(CComBSTR(CLoc::GetString("WE:")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(465,425,250,25), &fontFormat, &fontBrush);
 		s.Format("%d", pDoc->m_VictoryObserver.GetVictoryStatus(pMajor->GetRaceID(), VICTORYTYPE_RESEARCH));
 		g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(625,425,250,25), &fontFormat, &fontBrush);
-		g->DrawString(CComBSTR(CResourceManager::GetString("BEST:")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(750,425,250,25), &fontFormat, &fontBrush);
+		g->DrawString(CComBSTR(CLoc::GetString("BEST:")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(750,425,250,25), &fontFormat, &fontBrush);
 		s.Format("%d", pDoc->m_VictoryObserver.GetBestVictoryValue(VICTORYTYPE_RESEARCH));
 		g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(850,425,250,25), &fontFormat, &fontBrush);
 	}
 	else
-		g->DrawString(CComBSTR(CResourceManager::GetString("DEACTIVATED")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(165,425,250,25), &fontFormat, &fontBrush);
+		g->DrawString(CComBSTR(CLoc::GetString("DEACTIVATED")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(165,425,250,25), &fontFormat, &fontBrush);
 	// Kategorie "Siege"
 	if (pDoc->m_VictoryObserver.IsVictoryCondition(VICTORYTYPE_COMBATWINS))
 	{
-		s.Format("%d %s", pDoc->m_VictoryObserver.GetNeededVictoryValue(VICTORYTYPE_COMBATWINS), CResourceManager::GetString("REACHED_COMBAT_WINNINGS"));
+		s.Format("%d %s", pDoc->m_VictoryObserver.GetNeededVictoryValue(VICTORYTYPE_COMBATWINS), CLoc::GetString("REACHED_COMBAT_WINNINGS"));
 		g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(165,500,250,25), &fontFormat, &fontBrush);
-		g->DrawString(CComBSTR(CResourceManager::GetString("WE:")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(465,500,250,25), &fontFormat, &fontBrush);
+		g->DrawString(CComBSTR(CLoc::GetString("WE:")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(465,500,250,25), &fontFormat, &fontBrush);
 		s.Format("%d", pDoc->m_VictoryObserver.GetVictoryStatus(pMajor->GetRaceID(), VICTORYTYPE_COMBATWINS));
 		g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(625,500,250,25), &fontFormat, &fontBrush);
-		g->DrawString(CComBSTR(CResourceManager::GetString("BEST:")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(750,500,250,25), &fontFormat, &fontBrush);
+		g->DrawString(CComBSTR(CLoc::GetString("BEST:")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(750,500,250,25), &fontFormat, &fontBrush);
 		s.Format("%d", pDoc->m_VictoryObserver.GetBestVictoryValue(VICTORYTYPE_COMBATWINS));
 		g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(850,500,250,25), &fontFormat, &fontBrush);
 	}
 	else
-		g->DrawString(CComBSTR(CResourceManager::GetString("DEACTIVATED")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(165,500,250,25), &fontFormat, &fontBrush);
+		g->DrawString(CComBSTR(CLoc::GetString("DEACTIVATED")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(165,500,250,25), &fontFormat, &fontBrush);
 	// Kategorie "Geheimdienst"
 	if (pDoc->m_VictoryObserver.IsVictoryCondition(VICTORYTYPE_SABOTAGE))
 	{
-		s.Format("%d %s", pDoc->m_VictoryObserver.GetNeededVictoryValue(VICTORYTYPE_SABOTAGE), CResourceManager::GetString("SUCCESSFULL_SABOTAGE_ACTIONS"));
+		s.Format("%d %s", pDoc->m_VictoryObserver.GetNeededVictoryValue(VICTORYTYPE_SABOTAGE), CLoc::GetString("SUCCESSFULL_SABOTAGE_ACTIONS"));
 		g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(165,575,250,25), &fontFormat, &fontBrush);
-		g->DrawString(CComBSTR(CResourceManager::GetString("WE:")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(465,575,250,25), &fontFormat, &fontBrush);
+		g->DrawString(CComBSTR(CLoc::GetString("WE:")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(465,575,250,25), &fontFormat, &fontBrush);
 		s.Format("%d", pDoc->m_VictoryObserver.GetVictoryStatus(pMajor->GetRaceID(), VICTORYTYPE_SABOTAGE));
 		g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(625,575,250,25), &fontFormat, &fontBrush);
-		g->DrawString(CComBSTR(CResourceManager::GetString("BEST:")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(750,575,250,25), &fontFormat, &fontBrush);
+		g->DrawString(CComBSTR(CLoc::GetString("BEST:")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(750,575,250,25), &fontFormat, &fontBrush);
 		s.Format("%d", pDoc->m_VictoryObserver.GetBestVictoryValue(VICTORYTYPE_SABOTAGE));
 		g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(850,575,250,25), &fontFormat, &fontBrush);
 	}
 	else
-		g->DrawString(CComBSTR(CResourceManager::GetString("DEACTIVATED")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(165,575,250,25), &fontFormat, &fontBrush);
+		g->DrawString(CComBSTR(CLoc::GetString("DEACTIVATED")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(165,575,250,25), &fontFormat, &fontBrush);
 
 	// Buttons am unteren Bildrand zeichnen, womit wir die Menüs umschalten können
 	// Schriftart für große Buttons laden
@@ -1394,7 +1394,7 @@ void CEmpireMenuView::DrawEmpireVictoryMenue(Gdiplus::Graphics *g)
 	// Schriftfarbe wählen
 	CFontLoader::GetGDIFontColor(pMajor, 3, normalColor);
 	fontBrush.SetColor(normalColor);
-	s = CResourceManager::GetString("VICTORY_CONDITIONS_MENUE");
+	s = CLoc::GetString("VICTORY_CONDITIONS_MENUE");
 	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,10,m_TotalSize.cx, 50), &fontFormat, &fontBrush);
 }
 
@@ -1448,7 +1448,7 @@ void CEmpireMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		int temp = m_iWhichNewsButtonIsPressed;
 		if (ButtonReactOnLeftClick(point, &m_EmpireNewsFilterButtons, temp))
 		{
-			m_iWhichNewsButtonIsPressed = (MESSAGE_TYPE::Typ)temp;
+			m_iWhichNewsButtonIsPressed = (EMPIRE_NEWS_TYPE::Typ)temp;
 			return;
 		}
 
@@ -1458,9 +1458,9 @@ void CEmpireMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		unsigned short j = 0;
 		short counter = m_iClickedNews - 20 + m_iOldClickedNews;
 		short add = 0;
-		for (int i = 0; i < pMajor->GetEmpire()->GetMessages()->GetSize(); i++)
-			if (m_iWhichNewsButtonIsPressed == pMajor->GetEmpire()->GetMessages()->GetAt(i).GetMessageType()
-				|| m_iWhichNewsButtonIsPressed == MESSAGE_TYPE::NO_TYPE)
+		for (int i = 0; i < pMajor->GetEmpire()->GetMsgs()->GetSize(); i++)
+			if (m_iWhichNewsButtonIsPressed == pMajor->GetEmpire()->GetMsgs()->GetAt(i).GetType()
+				|| m_iWhichNewsButtonIsPressed == EMPIRE_NEWS_TYPE::NO_TYPE)
 			{
 				if (counter > 0)
 				{
@@ -1683,9 +1683,9 @@ BOOL CEmpireMenuView::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 	{
 		int maxNews = 0;
 		// nur Nachrichten anzeigen, dessen Typ wir auch gewählt haben
-		for (int i = 0; i < pMajor->GetEmpire()->GetMessages()->GetSize(); i++)
-			if (m_iWhichNewsButtonIsPressed == pMajor->GetEmpire()->GetMessages()->GetAt(i).GetMessageType() ||
-				m_iWhichNewsButtonIsPressed == MESSAGE_TYPE::NO_TYPE)
+		for (int i = 0; i < pMajor->GetEmpire()->GetMsgs()->GetSize(); i++)
+			if (m_iWhichNewsButtonIsPressed == pMajor->GetEmpire()->GetMsgs()->GetAt(i).GetType() ||
+				m_iWhichNewsButtonIsPressed == EMPIRE_NEWS_TYPE::NO_TYPE)
 				maxNews++;
 		if (zDelta < 0)
 		{
@@ -1785,9 +1785,9 @@ void CEmpireMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 		int j = 0;
 		short counter = m_iClickedNews - 20 + m_iOldClickedNews;
 		short add = 0;
-		for (int i = 0; i < pMajor->GetEmpire()->GetMessages()->GetSize(); i++)
-			if (m_iWhichNewsButtonIsPressed == pMajor->GetEmpire()->GetMessages()->GetAt(i).GetMessageType() ||
-					m_iWhichNewsButtonIsPressed == MESSAGE_TYPE::NO_TYPE)
+		for (int i = 0; i < pMajor->GetEmpire()->GetMsgs()->GetSize(); i++)
+			if (m_iWhichNewsButtonIsPressed == pMajor->GetEmpire()->GetMsgs()->GetAt(i).GetType() ||
+					m_iWhichNewsButtonIsPressed == EMPIRE_NEWS_TYPE::NO_TYPE)
 			{
 				if (counter > 0)
 				{
@@ -1799,10 +1799,10 @@ void CEmpireMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 				{
 					if (CRect(r.left+100,r.top+140+j*25,r.right-100,r.top+165+j*25).PtInRect(point))
 					{
-						if (pMajor->GetEmpire()->GetMessages()->GetAt(i).GetMessageType() == MESSAGE_TYPE::ECONOMY ||
-							pMajor->GetEmpire()->GetMessages()->GetAt(i).GetMessageType() == MESSAGE_TYPE::SOMETHING)
+						if (pMajor->GetEmpire()->GetMsgs()->GetAt(i).GetType() == EMPIRE_NEWS_TYPE::ECONOMY ||
+							pMajor->GetEmpire()->GetMsgs()->GetAt(i).GetType() == EMPIRE_NEWS_TYPE::SOMETHING)
 						{
-							CPoint p = pMajor->GetEmpire()->GetMessages()->GetAt(i).GetKO();
+							CPoint p = pMajor->GetEmpire()->GetMsgs()->GetAt(i).GetKO();
 							if (p != CPoint(-1, -1))
 							{
 								pDoc->SetKO(p.x,p.y);
@@ -1815,7 +1815,7 @@ void CEmpireMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 								if (pDoc->GetSystem(p.x,p.y).GetOwnerOfSystem() == pMajor->GetRaceID())
 								{
 									resources::pMainFrame->SelectMainView(SYSTEM_VIEW, pMajor->GetRaceID());
-									resources::pMainFrame->SetSubMenu(RUNTIME_CLASS(CSystemMenuView), pMajor->GetEmpire()->GetMessages()->GetAt(i).GetFlag());
+									resources::pMainFrame->SetSubMenu(RUNTIME_CLASS(CSystemMenuView), pMajor->GetEmpire()->GetMsgs()->GetAt(i).GetFlag());
 								}
 								// Galaxiekarte anzeigen
 								else
@@ -1828,9 +1828,9 @@ void CEmpireMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 								resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
 							}
 						}
-						else if (pMajor->GetEmpire()->GetMessages()->GetAt(i).GetMessageType() == MESSAGE_TYPE::MILITARY)
+						else if (pMajor->GetEmpire()->GetMsgs()->GetAt(i).GetType() == EMPIRE_NEWS_TYPE::MILITARY)
 						{
-							CPoint p = pMajor->GetEmpire()->GetMessages()->GetAt(i).GetKO();
+							CPoint p = pMajor->GetEmpire()->GetMsgs()->GetAt(i).GetKO();
 							if (p != CPoint(-1, -1))
 							{
 								pDoc->SetKO(p.x,p.y);
@@ -1840,7 +1840,7 @@ void CEmpireMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 									pView->ScrollToSector(p);
 
 								// Systemansicht anzeigen
-								if (pMajor->GetEmpire()->GetMessages()->GetAt(i).GetFlag() == 1 && pDoc->GetSystem(p.x,p.y).GetOwnerOfSystem() == pMajor->GetRaceID())
+								if (pMajor->GetEmpire()->GetMsgs()->GetAt(i).GetFlag() == 1 && pDoc->GetSystem(p.x,p.y).GetOwnerOfSystem() == pMajor->GetRaceID())
 								{
 									resources::pMainFrame->SelectMainView(SYSTEM_VIEW, pMajor->GetRaceID());
 									resources::pMainFrame->SetSubMenu(RUNTIME_CLASS(CSystemMenuView), 0);
@@ -1866,23 +1866,23 @@ void CEmpireMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 								resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
 							}
 						}
-						else if (pMajor->GetEmpire()->GetMessages()->GetAt(i).GetMessageType() == MESSAGE_TYPE::RESEARCH)
+						else if (pMajor->GetEmpire()->GetMsgs()->GetAt(i).GetType() == EMPIRE_NEWS_TYPE::RESEARCH)
 						{
 							resources::pMainFrame->SelectMainView(RESEARCH_VIEW, pMajor->GetRaceID());
-							resources::pMainFrame->SetSubMenu(RUNTIME_CLASS(CResearchMenuView), pMajor->GetEmpire()->GetMessages()->GetAt(i).GetFlag());
+							resources::pMainFrame->SetSubMenu(RUNTIME_CLASS(CResearchMenuView), pMajor->GetEmpire()->GetMsgs()->GetAt(i).GetFlag());
 							resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
 						}
-						else if (pMajor->GetEmpire()->GetMessages()->GetAt(i).GetMessageType() == MESSAGE_TYPE::SECURITY)
+						else if (pMajor->GetEmpire()->GetMsgs()->GetAt(i).GetType() == EMPIRE_NEWS_TYPE::SECURITY)
 						{
 							resources::pMainFrame->SelectMainView(INTEL_VIEW, pMajor->GetRaceID());
-							resources::pMainFrame->SetSubMenu(RUNTIME_CLASS(CIntelMenuView), pMajor->GetEmpire()->GetMessages()->GetAt(i).GetFlag());
+							resources::pMainFrame->SetSubMenu(RUNTIME_CLASS(CIntelMenuView), pMajor->GetEmpire()->GetMsgs()->GetAt(i).GetFlag());
 							resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
 						}
-						else if (pMajor->GetEmpire()->GetMessages()->GetAt(i).GetMessageType() == MESSAGE_TYPE::DIPLOMACY)
+						else if (pMajor->GetEmpire()->GetMsgs()->GetAt(i).GetType() == EMPIRE_NEWS_TYPE::DIPLOMACY)
 						{
 							resources::pMainFrame->SelectMainView(DIPLOMACY_VIEW, pMajor->GetRaceID());
 							// bei Angeboten an uns direkt in das Eingangmenü schalten
-							resources::pMainFrame->SetSubMenu(RUNTIME_CLASS(CDiplomacyMenuView), pMajor->GetEmpire()->GetMessages()->GetAt(i).GetFlag());
+							resources::pMainFrame->SetSubMenu(RUNTIME_CLASS(CDiplomacyMenuView), pMajor->GetEmpire()->GetMsgs()->GetAt(i).GetFlag());
 							resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
 						}
 
@@ -1986,10 +1986,10 @@ void CEmpireMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 	if (m_iSubMenu == EMPIREVIEW_NEWS)
 	{
 		// Wenn wir auf eine News ausgewählt haben, können wir diese durch Betätigen der Entf-Taste löschen
-		if (m_iClickedNews != -1 && nChar == VK_DELETE && m_iWhichNewsButtonIsPressed == MESSAGE_TYPE::NO_TYPE)
+		if (m_iClickedNews != -1 && nChar == VK_DELETE && m_iWhichNewsButtonIsPressed == EMPIRE_NEWS_TYPE::NO_TYPE)
 		{
-			pMajor->GetEmpire()->GetMessages()->RemoveAt(m_iClickedNews);
-			if (m_iClickedNews == pMajor->GetEmpire()->GetMessages()->GetSize())
+			pMajor->GetEmpire()->GetMsgs()->RemoveAt(m_iClickedNews);
+			if (m_iClickedNews == pMajor->GetEmpire()->GetMsgs()->GetSize())
 				m_iClickedNews--;
 			resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
 			Invalidate(FALSE);
@@ -1998,9 +1998,9 @@ void CEmpireMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 
 		int maxNews = 0;
 		// nur Nachrichten anzeigen, dessen Typ wir auch gewählt haben
-		for (int i = 0; i < pMajor->GetEmpire()->GetMessages()->GetSize(); i++)
-			if (m_iWhichNewsButtonIsPressed == pMajor->GetEmpire()->GetMessages()->GetAt(i).GetMessageType() ||
-				m_iWhichNewsButtonIsPressed == MESSAGE_TYPE::NO_TYPE)
+		for (int i = 0; i < pMajor->GetEmpire()->GetMsgs()->GetSize(); i++)
+			if (m_iWhichNewsButtonIsPressed == pMajor->GetEmpire()->GetMsgs()->GetAt(i).GetType() ||
+				m_iWhichNewsButtonIsPressed == EMPIRE_NEWS_TYPE::NO_TYPE)
 				maxNews++;
 		if (nChar == VK_DOWN)
 		{
@@ -2103,21 +2103,21 @@ void CEmpireMenuView::CreateButtons()
 	CString fileI = "Other\\" + sPrefix + "buttoni.bop";
 	CString fileA = "Other\\" + sPrefix + "buttona.bop";
 	// Buttons in der Imperiumansicht
-	m_EmpireNewsFilterButtons.Add(new CMyButton(CPoint(57,70), CSize(160,40), CResourceManager::GetString("BTN_ALL"),  fileN, fileI, fileA));
-	m_EmpireNewsFilterButtons.Add(new CMyButton(CPoint(217,70), CSize(160,40), CResourceManager::GetString("BTN_ECONOMY"),  fileN, fileI, fileA));
-	m_EmpireNewsFilterButtons.Add(new CMyButton(CPoint(377,70), CSize(160,40), CResourceManager::GetString("BTN_RESEARCH"),  fileN, fileI, fileA));
-	m_EmpireNewsFilterButtons.Add(new CMyButton(CPoint(537,70), CSize(160,40), CResourceManager::GetString("BTN_SECURITY"),  fileN, fileI, fileA));
-	m_EmpireNewsFilterButtons.Add(new CMyButton(CPoint(697,70), CSize(160,40), CResourceManager::GetString("BTN_DIPLOMACY"),  fileN, fileI, fileA));
-	m_EmpireNewsFilterButtons.Add(new CMyButton(CPoint(857,70), CSize(160,40), CResourceManager::GetString("BTN_MILITARY"),  fileN, fileI, fileA));
-	m_EmpireNewsButtons.Add(new CMyButton(CPoint(10,690), CSize(160,40), CResourceManager::GetString("BTN_EVENTS"),  fileN, fileI, fileA));
-	m_EmpireNewsButtons.Add(new CMyButton(CPoint(180,690), CSize(160,40), CResourceManager::GetString("BTN_SYSTEMS"),  fileN, fileI, fileA));
-	m_EmpireNewsButtons.Add(new CMyButton(CPoint(350,690), CSize(160,40), CResourceManager::GetString("BTN_SHIPS"),  fileN, fileI, fileA));
-	m_EmpireNewsButtons.Add(new CMyButton(CPoint(520,690), CSize(160,40), CResourceManager::GetString("BTN_DEMOGRAPHY"),  fileN, fileI, fileA));
-	m_EmpireNewsButtons.Add(new CMyButton(CPoint(690,690), CSize(160,40), CResourceManager::GetString("BTN_TOP5SYSTEMS"),  fileN, fileI, fileA));
-	m_EmpireNewsButtons.Add(new CMyButton(CPoint(860,690), CSize(160,40), CResourceManager::GetString("BTN_VICTORIES"),  fileN, fileI, fileA));
-	m_EmpireSystemFilterButtons.Add(new CMyButton(CPoint(60,70), CSize(160,40), CResourceManager::GetString("BTN_PRODUCTION"),  fileN, fileI, fileA));
-	m_EmpireSystemFilterButtons.Add(new CMyButton(CPoint(220,70), CSize(160,40), CResourceManager::GetString("BTN_RESOURCES"),  fileN, fileI, fileA));
-	m_EmpireSystemFilterButtons.Add(new CMyButton(CPoint(380,70), CSize(160,40), CResourceManager::GetString("BTN_DEFENCE"),  fileN, fileI, fileA));
-	m_EmpireShipsFilterButtons.Add(new CMyButton(CPoint(96,70), CSize(160,40), CResourceManager::GetString("BTN_CURRENTS"),  fileN, fileI, fileA));
-	m_EmpireShipsFilterButtons.Add(new CMyButton(CPoint(495,70), CSize(160,40), CResourceManager::GetString("BTN_LOST"),  fileN, fileI, fileA));
+	m_EmpireNewsFilterButtons.Add(new CMyButton(CPoint(57,70), CSize(160,40), CLoc::GetString("BTN_ALL"),  fileN, fileI, fileA));
+	m_EmpireNewsFilterButtons.Add(new CMyButton(CPoint(217,70), CSize(160,40), CLoc::GetString("BTN_ECONOMY"),  fileN, fileI, fileA));
+	m_EmpireNewsFilterButtons.Add(new CMyButton(CPoint(377,70), CSize(160,40), CLoc::GetString("BTN_RESEARCH"),  fileN, fileI, fileA));
+	m_EmpireNewsFilterButtons.Add(new CMyButton(CPoint(537,70), CSize(160,40), CLoc::GetString("BTN_SECURITY"),  fileN, fileI, fileA));
+	m_EmpireNewsFilterButtons.Add(new CMyButton(CPoint(697,70), CSize(160,40), CLoc::GetString("BTN_DIPLOMACY"),  fileN, fileI, fileA));
+	m_EmpireNewsFilterButtons.Add(new CMyButton(CPoint(857,70), CSize(160,40), CLoc::GetString("BTN_MILITARY"),  fileN, fileI, fileA));
+	m_EmpireNewsButtons.Add(new CMyButton(CPoint(10,690), CSize(160,40), CLoc::GetString("BTN_EVENTS"),  fileN, fileI, fileA));
+	m_EmpireNewsButtons.Add(new CMyButton(CPoint(180,690), CSize(160,40), CLoc::GetString("BTN_SYSTEMS"),  fileN, fileI, fileA));
+	m_EmpireNewsButtons.Add(new CMyButton(CPoint(350,690), CSize(160,40), CLoc::GetString("BTN_SHIPS"),  fileN, fileI, fileA));
+	m_EmpireNewsButtons.Add(new CMyButton(CPoint(520,690), CSize(160,40), CLoc::GetString("BTN_DEMOGRAPHY"),  fileN, fileI, fileA));
+	m_EmpireNewsButtons.Add(new CMyButton(CPoint(690,690), CSize(160,40), CLoc::GetString("BTN_TOP5SYSTEMS"),  fileN, fileI, fileA));
+	m_EmpireNewsButtons.Add(new CMyButton(CPoint(860,690), CSize(160,40), CLoc::GetString("BTN_VICTORIES"),  fileN, fileI, fileA));
+	m_EmpireSystemFilterButtons.Add(new CMyButton(CPoint(60,70), CSize(160,40), CLoc::GetString("BTN_PRODUCTION"),  fileN, fileI, fileA));
+	m_EmpireSystemFilterButtons.Add(new CMyButton(CPoint(220,70), CSize(160,40), CLoc::GetString("BTN_RESOURCES"),  fileN, fileI, fileA));
+	m_EmpireSystemFilterButtons.Add(new CMyButton(CPoint(380,70), CSize(160,40), CLoc::GetString("BTN_DEFENCE"),  fileN, fileI, fileA));
+	m_EmpireShipsFilterButtons.Add(new CMyButton(CPoint(96,70), CSize(160,40), CLoc::GetString("BTN_CURRENTS"),  fileN, fileI, fileA));
+	m_EmpireShipsFilterButtons.Add(new CMyButton(CPoint(495,70), CSize(160,40), CLoc::GetString("BTN_LOST"),  fileN, fileI, fileA));
 }

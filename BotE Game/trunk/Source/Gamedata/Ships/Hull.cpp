@@ -3,7 +3,7 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
-#include "Options.h"
+#include "Constants.h"
 #include "Hull.h"
 
 #ifdef _DEBUG

@@ -14,7 +14,7 @@
 #include "Graphic\memdc.h"
 #include "MainFrm.h"
 #include "Ships/Ships.h"
-#include "General/ResourceManager.h"
+#include "General/Loc.h"
 #include "Galaxy/Anomaly.h"
 
 #include <cassert>
@@ -162,7 +162,7 @@ void CShipBottomView::DrawSmallButton( const CString& resString, const CPoint& c
 	m_dc.fontFormat.SetFormatFlags(StringFormatFlagsNoWrap);
 
 	m_dc.g->DrawImage(m_pShipOrderButton, coords.x, coords.y, bw, bh);
-	m_dc.g->DrawString(CComBSTR(CResourceManager::GetString(resString)), -1, &Gdiplus::Font(CComBSTR(m_dc.fontName), m_dc.fontSize), RectF(coords.x,coords.y,bw,bh), &m_dc.fontFormat, m_dc.fontBrush);
+	m_dc.g->DrawString(CComBSTR(CLoc::GetString(resString)), -1, &Gdiplus::Font(CComBSTR(m_dc.fontName), m_dc.fontSize), RectF(coords.x,coords.y,bw,bh), &m_dc.fontFormat, m_dc.fontBrush);
 
 	if( shiporder != SHIP_ORDER::NONE ) {
 		m_vSecondaryShipOrders.at(shiporder).rect.SetRect(coords.x,coords.y,coords.x + bw,coords.y + bh);
@@ -623,9 +623,9 @@ void CShipBottomView::DrawStationData() {
 		{
 			CString station;
 			if (csec.GetOutpost(it->first) == FALSE)
-				station = CResourceManager::GetString("OUTPOST");
+				station = CLoc::GetString("OUTPOST");
 			else
-				station = CResourceManager::GetString("STARBASE");
+				station = CLoc::GetString("STARBASE");
 			m_dc.fontBrush->SetColor(Color(170,170,170));
 			CString percent;
 			percent.Format("%d",((csec.GetStartStationPoints(it->first)
@@ -636,9 +636,9 @@ void CShipBottomView::DrawStationData() {
 			if (pMajor == it->second || pMajor->IsRaceContacted(it->first))
 				sRaceName = it->second->GetRaceName();
 			else
-				sRaceName = CResourceManager::GetString("UNKNOWN");
+				sRaceName = CLoc::GetString("UNKNOWN");
 
-			CString s = station + CResourceManager::GetString("STATION_BUILDING", FALSE, sRaceName, percent);
+			CString s = station + CLoc::GetString("STATION_BUILDING", FALSE, sRaceName, percent);
 			m_dc.fontFormat.SetAlignment(StringAlignmentCenter);
 			m_dc.fontFormat.SetLineAlignment(StringAlignmentCenter);
 			m_dc.g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(m_dc.fontName), m_dc.fontSize), PointF(250, 30+count*25), &m_dc.fontFormat, m_dc.fontBrush);
@@ -1158,7 +1158,7 @@ CString CShipBottomView::CreateTooltip(void)
 
 		if (!bNoDiplomacy && pMajor->IsRaceContacted(pShip->GetOwnerOfShip()) == false)
 		{
-			CString s = CResourceManager::GetString("UNKNOWN");
+			CString s = CLoc::GetString("UNKNOWN");
 			s = CHTMLStringBuilder::GetHTMLColor(s);
 			s = CHTMLStringBuilder::GetHTMLHeader(s, _T("h4"));
 			s = CHTMLStringBuilder::GetHTMLCenter(s);

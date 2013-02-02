@@ -5,7 +5,7 @@
 #include "stdafx.h"
 #include "Ships.h"
 #include "Races/race.h"
-#include "ResourceManager.h"
+#include "Loc.h"
 
 #include <cassert>
 
@@ -129,9 +129,9 @@ CShips& CShips::at(unsigned key) {
 CString CShips::GetRangeAsString() const {
 	const SHIP_RANGE::Typ range = GetRange(true);
 	switch(range) {
-		case SHIP_RANGE::SHORT: return CResourceManager::GetString("SHORT");
-		case SHIP_RANGE::MIDDLE: return CResourceManager::GetString("MIDDLE");
-		case SHIP_RANGE::LONG: return CResourceManager::GetString("LONG");
+		case SHIP_RANGE::SHORT: return CLoc::GetString("SHORT");
+		case SHIP_RANGE::MIDDLE: return CLoc::GetString("MIDDLE");
+		case SHIP_RANGE::LONG: return CLoc::GetString("LONG");
 	}
 	assert(false);
 	return "";

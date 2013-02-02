@@ -6,7 +6,7 @@
 #include "ShipDesignBottomView.h"
 #include "Races\RaceController.h"
 #include "Graphic\memdc.h"
-#include "General/ResourceManager.h"
+#include "General/Loc.h"
 
 // CShipDesignBottomView
 
@@ -85,8 +85,8 @@ void CShipDesignBottomView::OnDraw(CDC* dc)
 	fontFormat.SetLineAlignment(StringAlignmentNear);
 	fontFormat.SetFormatFlags(StringFormatFlagsNoWrap);
 	CString s;
-	s.Format("%s %s %s-%s", pDoc->m_ShipInfoArray.GetAt(pDoc->m_iShowWhichShipInfoInView3).GetShipTypeAsString(), CResourceManager::GetString("MASC_ARTICLE"),
-		pDoc->m_ShipInfoArray.GetAt(pDoc->m_iShowWhichShipInfoInView3).GetShipClass(), CResourceManager::GetString("CLASS"));
+	s.Format("%s %s %s-%s", pDoc->m_ShipInfoArray.GetAt(pDoc->m_iShowWhichShipInfoInView3).GetShipTypeAsString(), CLoc::GetString("MASC_ARTICLE"),
+		pDoc->m_ShipInfoArray.GetAt(pDoc->m_iShowWhichShipInfoInView3).GetShipClass(), CLoc::GetString("CLASS"));
 	g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(40, 30, rect.right - 90, rect.bottom - 30), &fontFormat, &fontBrush);
 
 	CFontLoader::CreateGDIFont(pMajor, 2, fontName, fontSize);

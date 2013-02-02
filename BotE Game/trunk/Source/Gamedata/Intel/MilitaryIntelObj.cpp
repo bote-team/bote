@@ -3,7 +3,7 @@
 #include "BotEDoc.h"
 #include "Races\RaceController.h"
 #include "IOData.h"
-#include "General/ResourceManager.h"
+#include "General/Loc.h"
 
 IMPLEMENT_SERIAL (CMilitaryIntelObj, CObject, 1)
 
@@ -133,16 +133,16 @@ void CMilitaryIntelObj::CreateText(CBotEDoc* pDoc, BYTE n, const CString& param)
 								// zwischen Schiff und Station unterscheiden
 								if (pDoc->m_ShipInfoArray[m_nID - 10000].GetShipType() == SHIP_TYPE::OUTPOST)
 									s.Format("%s-%s %s", pDoc->m_ShipInfoArray.GetAt(m_nID - 10000).GetShipClass(),
-										CResourceManager::GetString("CLASS"), CResourceManager::GetString("OUTPOST"));
+										CLoc::GetString("CLASS"), CLoc::GetString("OUTPOST"));
 								else if (pDoc->m_ShipInfoArray[m_nID - 10000].GetShipType() == SHIP_TYPE::STARBASE)
 									s.Format("%s-%s %s", pDoc->m_ShipInfoArray.GetAt(m_nID - 10000).GetShipClass(),
-										CResourceManager::GetString("CLASS"), CResourceManager::GetString("STARBASE"));
+										CLoc::GetString("CLASS"), CLoc::GetString("STARBASE"));
 								else
 								{
 									if (m_nNumber == 1)
-										s.Format("%s-%s %s", pDoc->m_ShipInfoArray.GetAt(m_nID - 10000).GetShipClass(), CResourceManager::GetString("CLASS"), CResourceManager::GetString("SHIP"));
+										s.Format("%s-%s %s", pDoc->m_ShipInfoArray.GetAt(m_nID - 10000).GetShipClass(), CLoc::GetString("CLASS"), CLoc::GetString("SHIP"));
 									else
-										s = CResourceManager::GetString("SHIPS");
+										s = CLoc::GetString("SHIPS");
 								}
 								csInput.Replace("$ship$", s);
 							}
@@ -151,7 +151,7 @@ void CMilitaryIntelObj::CreateText(CBotEDoc* pDoc, BYTE n, const CString& param)
 								if (m_nNumber == 1)
 									s = pDoc->m_TroopInfo.GetAt(m_nID - 20000).GetName();
 								else
-									s = CResourceManager::GetString("TROOPS");
+									s = CLoc::GetString("TROOPS");
 								csInput.Replace("$troop$", s);
 							}
 						}
@@ -218,16 +218,16 @@ void CMilitaryIntelObj::CreateText(CBotEDoc* pDoc, BYTE n, const CString& param)
 									// zwischen Schiff und Station unterscheiden
 									if (pDoc->m_ShipInfoArray[m_nID - 10000].GetShipType() == SHIP_TYPE::OUTPOST)
 										s.Format("%s-%s %s", pDoc->m_ShipInfoArray.GetAt(m_nID - 10000).GetShipClass(),
-											CResourceManager::GetString("CLASS"), CResourceManager::GetString("OUTPOST"));
+											CLoc::GetString("CLASS"), CLoc::GetString("OUTPOST"));
 									else if (pDoc->m_ShipInfoArray[m_nID - 10000].GetShipType() == SHIP_TYPE::STARBASE)
 										s.Format("%s-%s %s", pDoc->m_ShipInfoArray.GetAt(m_nID - 10000).GetShipClass(),
-											CResourceManager::GetString("CLASS"), CResourceManager::GetString("STARBASE"));
+											CLoc::GetString("CLASS"), CLoc::GetString("STARBASE"));
 									else
 									{
 										if (m_nNumber == 1)
-											s.Format("%s-%s %s", pDoc->m_ShipInfoArray.GetAt(m_nID - 10000).GetShipClass(), CResourceManager::GetString("CLASS"), CResourceManager::GetString("SHIP"));
+											s.Format("%s-%s %s", pDoc->m_ShipInfoArray.GetAt(m_nID - 10000).GetShipClass(), CLoc::GetString("CLASS"), CLoc::GetString("SHIP"));
 										else
-											s = CResourceManager::GetString("SHIPS");
+											s = CLoc::GetString("SHIPS");
 									}
 									csInput.Replace("$ship$", s);
 								}
@@ -236,7 +236,7 @@ void CMilitaryIntelObj::CreateText(CBotEDoc* pDoc, BYTE n, const CString& param)
 									if (m_nNumber == 1)
 										s = pDoc->m_TroopInfo.GetAt(m_nID - 20000).GetName();
 									else
-										s = CResourceManager::GetString("TROOPS");
+										s = CLoc::GetString("TROOPS");
 									csInput.Replace("$troop$", s);
 								}
 							}
@@ -252,11 +252,11 @@ void CMilitaryIntelObj::CreateText(CBotEDoc* pDoc, BYTE n, const CString& param)
 								if (pParam)
 								{
 									s = pParam->GetEmpireNameWithArticle();
-									csInput = CResourceManager::GetString("KNOW_RESPONSIBLE_SABOTAGERACE", FALSE, s);
+									csInput = CLoc::GetString("KNOW_RESPONSIBLE_SABOTAGERACE", FALSE, s);
 								}
 							}
 							else
-								csInput = CResourceManager::GetString("DO_NOT_KNOW_RESPONSIBLE_RACE");
+								csInput = CLoc::GetString("DO_NOT_KNOW_RESPONSIBLE_RACE");
 							m_strEnemyDesc += " "+csInput;
 							break;
 						}

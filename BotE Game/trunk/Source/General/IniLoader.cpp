@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "IniLoader.h"
-#include "Options.h"
+#include "Constants.h"
 #include "IOData.h"
 
 #ifdef _DEBUG

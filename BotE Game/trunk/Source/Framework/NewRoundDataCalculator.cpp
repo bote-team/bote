@@ -2,7 +2,7 @@
 #include "NewRoundDataCalculator.h"
 
 #include "Races/RaceController.h"
-#include "General/ResourceManager.h"
+#include "General/Loc.h"
 
 #include <cassert>
 
@@ -49,15 +49,15 @@ static void EmitLostRouteMessage(unsigned deletedRoutes, const CString& single_k
 		const CString& sectorname, const CPoint& co, CEmpire* pEmpire) {
 	CString news;
 	if (deletedRoutes == 1)
-		news = CResourceManager::GetString(single_key,FALSE,sectorname);
+		news = CLoc::GetString(single_key,FALSE,sectorname);
 	else
 	{
 		CString lost; lost.Format("%u",deletedRoutes);
-		news = CResourceManager::GetString(multi_key,FALSE,lost,sectorname);
+		news = CLoc::GetString(multi_key,FALSE,lost,sectorname);
 	}
-	CMessage message;
-	message.GenerateMessage(news, MESSAGE_TYPE::ECONOMY, "", co, false, 4);
-	pEmpire->AddMessage(message);
+	CEmpireNews message;
+	message.CreateNews(news, EMPIRE_NEWS_TYPE::ECONOMY, "", co, false, 4);
+	pEmpire->AddMsg(message);
 }
 
 void CNewRoundDataCalculator::CheckRoutes(const CSector& sector, CSystem& system, CMajor* pMajor) {

@@ -4,7 +4,7 @@
 
 #include "stdafx.h"
 #include "Research.h"
-#include "General/ResourceManager.h"
+#include "General/Loc.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -629,7 +629,7 @@ CString* CResearch::CalculateResearch(ULONG FP)
 	if (rand()%100+1 <= (float)(pow((m_lBioFP / ResearchInfo.GetBio(m_iBioTech)), 10) * 100))
 //	if (m_lBioFP >= ResearchInfo.GetBio(m_iBioTech))
 	{
-		m_strMessage[0] = CResourceManager::GetString("BIO_FINISHED");
+		m_strMessage[0] = CLoc::GetString("BIO_FINISHED");
 		m_iBioTech++;
 		m_lBioFP = 0;
 		ResearchInfo.SetTechInfos(0, m_iBioTech+1);
@@ -637,7 +637,7 @@ CString* CResearch::CalculateResearch(ULONG FP)
 	if (rand()%100+1 <= (float)(pow((m_lEnergyFP / ResearchInfo.GetEnergy(m_iEnergyTech)), 10) * 100))
 //	if (m_lEnergyFP >= ResearchInfo.GetEnergy(m_iEnergyTech))
 	{
-		m_strMessage[1] = CResourceManager::GetString("ENERGY_FINISHED");
+		m_strMessage[1] = CLoc::GetString("ENERGY_FINISHED");
 		m_iEnergyTech++;
 		m_lEnergyFP = 0;
 		ResearchInfo.SetTechInfos(1, m_iEnergyTech+1);
@@ -645,7 +645,7 @@ CString* CResearch::CalculateResearch(ULONG FP)
 	if (rand()%100+1 <= (float)(pow((m_lComputerFP / ResearchInfo.GetComp(m_iCompTech)), 10) * 100))
 //	if (m_lComputerFP >= ResearchInfo.GetComp(m_iCompTech))
 	{
-		m_strMessage[2] = CResourceManager::GetString("COMPUTER_FINISHED");
+		m_strMessage[2] = CLoc::GetString("COMPUTER_FINISHED");
 		m_iCompTech++;
 		m_lComputerFP = 0;
 		ResearchInfo.SetTechInfos(2, m_iCompTech+1);
@@ -653,7 +653,7 @@ CString* CResearch::CalculateResearch(ULONG FP)
 	if (rand()%100+1 <= (float)(pow((m_lPropulsionFP / ResearchInfo.GetPropulsion(m_iPropulsionTech)), 10) * 100))
 //	if (m_lPropulsionFP >= ResearchInfo.GetPropulsion(m_iPropulsionTech))
 	{
-		m_strMessage[3] = CResourceManager::GetString("PROPULSION_FINISHED");
+		m_strMessage[3] = CLoc::GetString("PROPULSION_FINISHED");
 		m_iPropulsionTech++;
 		m_lPropulsionFP = 0;
 		ResearchInfo.SetTechInfos(3, m_iPropulsionTech+1);
@@ -661,7 +661,7 @@ CString* CResearch::CalculateResearch(ULONG FP)
 	if (rand()%100+1 <= (float)(pow((m_lConstructionFP / ResearchInfo.GetConstruction(m_iConstructionTech)), 10) * 100))
 //	if (m_lConstructionFP >= ResearchInfo.GetConstruction(m_iConstructionTech))
 	{
-		m_strMessage[4] = CResourceManager::GetString("CONSTRUCTION_FINISHED");
+		m_strMessage[4] = CLoc::GetString("CONSTRUCTION_FINISHED");
 		m_iConstructionTech++;
 		m_lConstructionFP = 0;
 		ResearchInfo.SetTechInfos(4, m_iConstructionTech+1);
@@ -669,7 +669,7 @@ CString* CResearch::CalculateResearch(ULONG FP)
 	if (rand()%100+1 <= (float)(pow((m_lWeaponFP / ResearchInfo.GetWeapon(m_iWeaponTech)), 10) * 100))
 //	if (m_lWeaponFP >= ResearchInfo.GetWeapon(m_iWeaponTech))
 	{
-		m_strMessage[5] = CResourceManager::GetString("WEAPON_FINISHED");
+		m_strMessage[5] = CLoc::GetString("WEAPON_FINISHED");
 		m_iWeaponTech++;
 		m_lWeaponFP = 0;
 		ResearchInfo.SetTechInfos(5, m_iWeaponTech+1);
@@ -702,7 +702,7 @@ CString* CResearch::CalculateResearch(ULONG FP)
 		m_bUniqueLocked = FALSE;
 		SetPercentage(6,0);
 		m_iNumberOfUnique++;
-		m_strMessage[6] = CResourceManager::GetString("SPECIAL_FINISHED");
+		m_strMessage[6] = CLoc::GetString("SPECIAL_FINISHED");
 		m_bUniqueReady = TRUE;
 
 		// Wenn wir den Komplex "Forschung" erforscht haben, die Boni hier gleich berechnen, weil diese
@@ -738,7 +738,7 @@ CString* CResearch::CalculateResearch(ULONG FP)
 			m_bUniqueReady = FALSE;
 			m_iUniqueTech++;
 			ResearchInfo.ChooseUniqueResearch();
-			m_strMessage[7] = CResourceManager::GetString("SPECIAL_READY");
+			m_strMessage[7] = CLoc::GetString("SPECIAL_READY");
 		}
 	}
 	return m_strMessage;

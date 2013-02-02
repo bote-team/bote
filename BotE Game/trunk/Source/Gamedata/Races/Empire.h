@@ -6,7 +6,7 @@
  *
  */
 #pragma once
-#include "General\Message.h"
+#include "General\EmpireNews.h"
 #include "Research.h"
 #include "Intel\Intelligence.h"
 #include "System\GlobalStorage.h"
@@ -56,7 +56,7 @@ public:
 	// Zugriffsfunktionen
 	// zum Lesen der Membervariablen
 	/// Funktion gibt die Anzahl der Systeme des Imperiums zurück.
-	BYTE GetNumberOfSystems() const {return m_byNumberOfSystems;}
+	BYTE CountSystems() const {return m_byNumberOfSystems;}
 
 	/// Funktion gibt einen Zeiger auf die Liste der zum Imperium gehörenden Systeme zurück.
 	CArray<SystemViewStruct>* GetSystemList() {return &m_SystemList;}
@@ -86,11 +86,11 @@ public:
 	const UINT* GetStorage() const {return m_lResourceStorages;}
 
 	/// Funktion gibt einen Zeiger auf alle Nachrichten an das Imperium zurück.
-	MessageArray* GetMessages() {return &m_Messages;}
+	EmpiresNews* GetMsgs() {return &m_vMessages;}
 
 	/// Funktion gibt einen Zeiger auf das Feld mit den Eventnachrichten für das Imperium zurück.
 	/// @return Pointer auf <code>CObArray</code>
-	CObArray* GetEventMessages() {return &m_EventMessages;}
+	CObArray* GetEvents() {return &m_Events;}
 
 	/// Funktion gibt einen Zeiger auf das Forschungsobjekt des Imperiums zurück.
 	CResearch* GetResearch(void) {return &m_Research;}
@@ -149,7 +149,7 @@ public:
 
 	/// Funktion fügt eine übergebene Nachricht dem Nachrichtenfeld des Imperiums hinzu.
 	/// @param message Nachricht
-	void AddMessage(const CMessage &message) {m_Messages.Add(message);}
+	void AddMsg(const CEmpireNews &msg) {m_vMessages.Add(msg);}
 
 	// Sonstige Funktionen
 	/// Resetfunktion für das CEmpire-Objekt.
@@ -184,9 +184,9 @@ private:
 
 	BYTE m_byNumberOfSystems;		///< Anzahl Systeme des Imperiums
 
-	MessageArray m_Messages;		///< alle Nachrichten an das Imperium
+	EmpiresNews m_vMessages;			///< alle Nachrichten an das Imperium
 
-	CObArray m_EventMessages;		///< alle Events für das Imperium
+	CObArray m_Events;				///< alle Events für das Imperium
 
 	CResearch m_Research;			///< die Forschung des Imperiums
 

@@ -6,7 +6,7 @@
  *
  */
 #pragma once
-#include "Options.h"
+#include "Constants.h"
 #include "MyButton.h"
 
 using namespace Gdiplus;

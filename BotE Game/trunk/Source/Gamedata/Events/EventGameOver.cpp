@@ -6,7 +6,7 @@
 #include "Races\RaceController.h"
 #include "IniLoader.h"
 #include "IOData.h"
-#include "General/ResourceManager.h"
+#include "General/Loc.h"
 
 IMPLEMENT_SERIAL (CEventGameOver, CObject, 1)
 
@@ -75,10 +75,10 @@ void CEventGameOver::Draw(Graphics* g, CGraphicPool* graphicPool) const
 	CFontLoader::GetGDIFontColor(pMajor, 3, color);
 	fontBrush.SetColor(color);
 
-	CString s = CResourceManager::GetString("GAMEOVER");
+	CString s = CLoc::GetString("GAMEOVER");
 	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize * 2.5f), RectF(0, 0, 1280, 1024 / 3.0f), &fontFormat, &fontBrush);
 	fontFormat.SetAlignment(StringAlignmentNear);
-	s = CResourceManager::GetString("WE_LOST") + "\n" + CResourceManager::GetString("OUR_EMPIRES_IS_ELIMINATED");
+	s = CLoc::GetString("WE_LOST") + "\n" + CLoc::GetString("OUR_EMPIRES_IS_ELIMINATED");
 	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(75, 1024 / 1.5f - 50, 1280 / 2, 1024 / 3 - 50), &fontFormat, &fontBrush);
 
 	// Buttons zeichnen

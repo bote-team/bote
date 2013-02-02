@@ -22,7 +22,7 @@
 #if _MSC_VER > 1000
 #pragma once
 #endif // _MSC_VER > 1000
-#include "Options.h"
+#include "Constants.h"
 #include "TorpedoWeapons.h"
 #include "BeamWeapons.h"
 #include "Shield.h"

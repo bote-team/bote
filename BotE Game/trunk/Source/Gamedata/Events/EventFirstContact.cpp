@@ -5,7 +5,7 @@
 #include "BotEDoc.h"
 #include "Races\RaceController.h"
 #include "HTMLStringBuilder.h"
-#include "General/ResourceManager.h"
+#include "General/Loc.h"
 
 IMPLEMENT_SERIAL (CEventFirstContact, CObject, 1)
 
@@ -81,14 +81,14 @@ void CEventFirstContact::Draw(Graphics* g, CGraphicPool* graphicPool) const
 	fontBrush.SetColor(color);
 
 	// Überschrift zeichnen
-	s = CResourceManager::GetString("FIRSTCONTACTEVENT_HEADLINE");
+	s = CLoc::GetString("FIRSTCONTACTEVENT_HEADLINE");
 	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(730,500,540,75), &fontFormat, &fontBrush);
 
 	CFontLoader::CreateGDIFont(pMajor, 4, fontName, fontSize);
 	fontFormat.SetAlignment(StringAlignmentCenter);
 	fontFormat.SetLineAlignment(StringAlignmentNear);
 	fontFormat.SetFormatFlags(!StringFormatFlagsNoWrap);
-	s = CResourceManager::GetString("FIRSTCONTACTEVENT_TEXT", FALSE, pContactedRace->GetRaceName());
+	s = CLoc::GetString("FIRSTCONTACTEVENT_TEXT", FALSE, pContactedRace->GetRaceName());
 	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(800,610,470,100), &fontFormat, &fontBrush);
 
 	// Bild der Rasse zeichnen
@@ -107,36 +107,36 @@ void CEventFirstContact::Draw(Graphics* g, CGraphicPool* graphicPool) const
 	Gdiplus::Color markColor;
 	markColor.SetFromCOLORREF(pMajor->GetDesign()->m_clrListMarkTextColor);
 	fontBrush.SetColor(markColor);
-	s = CResourceManager::GetString("PROPERTIES");
+	s = CLoc::GetString("PROPERTIES");
 	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(730,140,540,75), &fontFormat, &fontBrush);
 
 	CFontLoader::CreateGDIFont(pMajor, 3, fontName, fontSize);
 	fontBrush.SetColor(color);
 	vector<CString> sProperties;
 	if (pContactedRace->IsRaceProperty(RACE_PROPERTY::FINANCIAL))
-		sProperties.push_back(CResourceManager::GetString("FINANCIAL"));
+		sProperties.push_back(CLoc::GetString("FINANCIAL"));
 	if (pContactedRace->IsRaceProperty(RACE_PROPERTY::WARLIKE))
-		sProperties.push_back(CResourceManager::GetString("WARLIKE"));
+		sProperties.push_back(CLoc::GetString("WARLIKE"));
 	if (pContactedRace->IsRaceProperty(RACE_PROPERTY::AGRARIAN))
-		sProperties.push_back(CResourceManager::GetString("AGRARIAN"));
+		sProperties.push_back(CLoc::GetString("AGRARIAN"));
 	if (pContactedRace->IsRaceProperty(RACE_PROPERTY::INDUSTRIAL))
-		sProperties.push_back(CResourceManager::GetString("INDUSTRIAL"));
+		sProperties.push_back(CLoc::GetString("INDUSTRIAL"));
 	if (pContactedRace->IsRaceProperty(RACE_PROPERTY::SECRET))
-		sProperties.push_back(CResourceManager::GetString("SECRET"));
+		sProperties.push_back(CLoc::GetString("SECRET"));
 	if (pContactedRace->IsRaceProperty(RACE_PROPERTY::SCIENTIFIC))
-		sProperties.push_back(CResourceManager::GetString("SCIENTIFIC"));
+		sProperties.push_back(CLoc::GetString("SCIENTIFIC"));
 	if (pContactedRace->IsRaceProperty(RACE_PROPERTY::PRODUCER))
-		sProperties.push_back(CResourceManager::GetString("PRODUCER"));
+		sProperties.push_back(CLoc::GetString("PRODUCER"));
 	if (pContactedRace->IsRaceProperty(RACE_PROPERTY::PACIFIST))
-		sProperties.push_back(CResourceManager::GetString("PACIFIST"));
+		sProperties.push_back(CLoc::GetString("PACIFIST"));
 	if (pContactedRace->IsRaceProperty(RACE_PROPERTY::SNEAKY))
-		sProperties.push_back(CResourceManager::GetString("SNEAKY"));
+		sProperties.push_back(CLoc::GetString("SNEAKY"));
 	if (pContactedRace->IsRaceProperty(RACE_PROPERTY::SOLOING))
-		sProperties.push_back(CResourceManager::GetString("SOLOING"));
+		sProperties.push_back(CLoc::GetString("SOLOING"));
 	if (pContactedRace->IsRaceProperty(RACE_PROPERTY::HOSTILE))
-		sProperties.push_back(CResourceManager::GetString("HOSTILE"));
+		sProperties.push_back(CLoc::GetString("HOSTILE"));
 	if (sProperties.empty())
-		sProperties.push_back(CResourceManager::GetString("NONE"));
+		sProperties.push_back(CLoc::GetString("NONE"));
 
 	for (UINT i = 0; i < sProperties.size(); i++)
 		g->DrawString(CComBSTR(sProperties[i]), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(730,210 + i*30,540,30), &fontFormat, &fontBrush);
@@ -163,11 +163,11 @@ void CEventFirstContact::Draw(Graphics* g, CGraphicPool* graphicPool) const
 		{
 			switch (pMinor->GetTechnologicalProgress())
 			{
-			case 0: sProgress = CResourceManager::GetString("VERY_UNDERDEVELOPED");	break;
-			case 1: sProgress = CResourceManager::GetString("UNDERDEVELOPED");		break;
-			case 2: sProgress = CResourceManager::GetString("NORMAL_DEVELOPED");	break;
-			case 3: sProgress = CResourceManager::GetString("DEVELOPED");			break;
-			case 4: sProgress = CResourceManager::GetString("VERY_DEVELOPED");		break;
+			case 0: sProgress = CLoc::GetString("VERY_UNDERDEVELOPED");	break;
+			case 1: sProgress = CLoc::GetString("UNDERDEVELOPED");		break;
+			case 2: sProgress = CLoc::GetString("NORMAL_DEVELOPED");	break;
+			case 3: sProgress = CLoc::GetString("DEVELOPED");			break;
+			case 4: sProgress = CLoc::GetString("VERY_DEVELOPED");		break;
 			}
 		}
 	}
@@ -193,26 +193,26 @@ void CEventFirstContact::Draw(Graphics* g, CGraphicPool* graphicPool) const
 		// ist der Durchschnitt nur um einen halben Techlevel verschieden, so wird ein "normal entwickelt angezeigt
 		double dDiff = dOurLevel - dTheirLevel;
 		if (fabs(dDiff) <= 0.5)
-			sProgress = CResourceManager::GetString("NORMAL_DEVELOPED");
+			sProgress = CLoc::GetString("NORMAL_DEVELOPED");
 		// ist die getroffene Rasse technologisch hinter uns?
 		else if (dDiff > 0.0)
 		{
 			// ist der Durchschnitt der getroffenen Rasse zwei Techlevels hinter dem unseren, so gilt sie als sehr rückständig
 			if (dDiff >= 2.0)
-				sProgress = CResourceManager::GetString("VERY_UNDERDEVELOPED");
+				sProgress = CLoc::GetString("VERY_UNDERDEVELOPED");
 			// sonst als rückständig
 			else
-				sProgress = CResourceManager::GetString("UNDERDEVELOPED");
+				sProgress = CLoc::GetString("UNDERDEVELOPED");
 		}
 		// ist die getroffene Rasse technologisch fortschrittlicher als wir?
 		else
 		{
 			// ist der Durchschnitt der getroffenen Rasse zwei Techlevels vor dem unseren, so gilt sie als sehr fortschrittlich
 			if (dDiff <= -2.0)
-				sProgress = CResourceManager::GetString("VERY_DEVELOPED");
+				sProgress = CLoc::GetString("VERY_DEVELOPED");
 			// sonst als fortschrittlich
 			else
-				sProgress = CResourceManager::GetString("DEVELOPED");
+				sProgress = CLoc::GetString("DEVELOPED");
 		}
 	}
 
@@ -253,7 +253,7 @@ void CEventFirstContact::Draw(Graphics* g, CGraphicPool* graphicPool) const
 						graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Ships\\ImageMissing.bop");
 					if (graphic)
 						g->DrawImage(graphic, 15 + nCount * 165, 810, 150, 113);
-					s = pDoc->m_ShipInfoArray[i].GetShipClass() + "-" + CResourceManager::GetString("CLASS") + " (" + pDoc->m_ShipInfoArray[i].GetShipTypeAsString() + ")";
+					s = pDoc->m_ShipInfoArray[i].GetShipClass() + "-" + CLoc::GetString("CLASS") + " (" + pDoc->m_ShipInfoArray[i].GetShipTypeAsString() + ")";
 					g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(nCount * 165, 935, 180, 50), &fontFormat, &fontBrush);
 					nCount++;
 				}

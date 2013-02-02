@@ -5,7 +5,7 @@
 #include "BotEDoc.h"
 #include "Races\RaceController.h"
 #include "HTMLStringBuilder.h"
-#include "General/ResourceManager.h"
+#include "General/Loc.h"
 
 IMPLEMENT_SERIAL (CEventResearch, CObject, 1)
 
@@ -244,7 +244,7 @@ void CEventResearch::Draw(Graphics* g, CGraphicPool* graphicPool) const
 			graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Ships\\ImageMissing.bop");
 		if (graphic)
 			g->DrawImage(graphic, 15 + nCount * 165, 815, 150, 113);
-		s = (*it)->GetShipClass() + "-" + CResourceManager::GetString("CLASS") + " (" + (*it)->GetShipTypeAsString() + ")";
+		s = (*it)->GetShipClass() + "-" + CLoc::GetString("CLASS") + " (" + (*it)->GetShipTypeAsString() + ")";
 		g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(nCount * 165, 933, 180, 50), &fontFormat, &fontBrush);
 		nCount++;
 	}
@@ -261,11 +261,11 @@ void CEventResearch::Draw(Graphics* g, CGraphicPool* graphicPool) const
 	}
 
 	fontBrush.SetColor(markColor);
-	s = CResourceManager::GetString("RESEARCHEVENT_NEWBUILDINGS");
+	s = CLoc::GetString("RESEARCHEVENT_NEWBUILDINGS");
 	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0, 405, 1280, 20), &fontFormat, &fontBrush);
-	s = CResourceManager::GetString("RESEARCHEVENT_NEWUPGRADES");
+	s = CLoc::GetString("RESEARCHEVENT_NEWUPGRADES");
 	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0, 595, 1280, 20), &fontFormat, &fontBrush);
-	s = CResourceManager::GetString("RESEARCHEVENT_NEWSHIPS_AND_TROOPS");
+	s = CLoc::GetString("RESEARCHEVENT_NEWSHIPS_AND_TROOPS");
 	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0, 790, 1280, 20), &fontFormat, &fontBrush);
 
 	// Buttons zeichnen

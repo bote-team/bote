@@ -12,7 +12,7 @@
 #include "BotEClient.h"
 #include "Races\RaceController.h"
 #include "IniLoader.h"
-#include "General/ResourceManager.h"
+#include "General/Loc.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -140,7 +140,7 @@ void CMenuChooseView::OnDraw(CDC* pDC)
 	fontBrush.SetColor(markColor);
 
 	// Die aktuelle Runde darstellen, schauen ob schon gedrückt oder nicht
-	s.Format("%s %i",CResourceManager::GetString("ROUND"), pDoc->GetCurrentRound());
+	s.Format("%s %i",CLoc::GetString("ROUND"), pDoc->GetCurrentRound());
 	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.left+20, 50, m_TotalSize.cx-40, 30), &fontFormat, &fontBrush);
 
 	CFontLoader::CreateGDIFont(pMajor, 2, fontName, fontSize);
@@ -148,13 +148,13 @@ void CMenuChooseView::OnDraw(CDC* pDC)
 	fontFormat.SetAlignment(StringAlignmentNear);
 	fontBrush.SetColor(color);
 
-	s.Format("%s:",CResourceManager::GetString("CREDITS"), pMajor->GetEmpire()->GetCredits());
+	s.Format("%s:",CLoc::GetString("CREDITS"), pMajor->GetEmpire()->GetCredits());
 	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.left+30, 90, m_TotalSize.cx-60, 25), &fontFormat, &fontBrush);
 	s.Format("%i",pMajor->GetEmpire()->GetCredits());
 	fontFormat.SetAlignment(StringAlignmentFar);
 	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.left+30, 90, m_TotalSize.cx-60, 25), &fontFormat, &fontBrush);
 
-	s.Format("%s:",CResourceManager::GetString("CHANGE"));
+	s.Format("%s:",CLoc::GetString("CHANGE"));
 	fontFormat.SetAlignment(StringAlignmentNear);
 	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.left+30, 115, m_TotalSize.cx-60, 25), &fontFormat, &fontBrush);
 	fontFormat.SetAlignment(StringAlignmentFar);
@@ -171,12 +171,12 @@ void CMenuChooseView::OnDraw(CDC* pDC)
 		g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.left+30, 115, m_TotalSize.cx-60, 25), &fontFormat, &fontBrush);
 	}
 	fontBrush.SetColor(markColor);
-	s = CResourceManager::GetString("SHIPS");
+	s = CLoc::GetString("SHIPS");
 	fontFormat.SetAlignment(StringAlignmentCenter);
 	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.left+30, 140, m_TotalSize.cx-60, 25), &fontFormat, &fontBrush);
 
 	fontBrush.SetColor(color);
-	s.Format("%s:",CResourceManager::GetString("SHIPCOSTS"));
+	s.Format("%s:",CLoc::GetString("SHIPCOSTS"));
 	fontFormat.SetAlignment(StringAlignmentNear);
 	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.left+30, 165, m_TotalSize.cx-60, 25), &fontFormat, &fontBrush);
 	fontFormat.SetAlignment(StringAlignmentFar);
@@ -186,7 +186,7 @@ void CMenuChooseView::OnDraw(CDC* pDC)
 	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.left+30, 165, m_TotalSize.cx-60, 25), &fontFormat, &fontBrush);
 
 	fontBrush.SetColor(color);
-	s.Format("%s:",CResourceManager::GetString("POPSUPPORT"));
+	s.Format("%s:",CLoc::GetString("POPSUPPORT"));
 	fontFormat.SetAlignment(StringAlignmentNear);
 	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.left+30, 190, m_TotalSize.cx-60, 25), &fontFormat, &fontBrush);
 	fontFormat.SetAlignment(StringAlignmentFar);
@@ -194,10 +194,10 @@ void CMenuChooseView::OnDraw(CDC* pDC)
 	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.left+30, 190, m_TotalSize.cx-60, 25), &fontFormat, &fontBrush);
 
 	fontFormat.SetAlignment(StringAlignmentNear);
-	s.Format("%s:",CResourceManager::GetString("NEWS"));
+	s.Format("%s:",CLoc::GetString("NEWS"));
 	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.left+30, 240, m_TotalSize.cx-60, 25), &fontFormat, &fontBrush);
 	fontFormat.SetAlignment(StringAlignmentFar);
-	s.Format("%d",pMajor->GetEmpire()->GetMessages()->GetSize());
+	s.Format("%d",pMajor->GetEmpire()->GetMsgs()->GetSize());
 	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.left+30, 240, m_TotalSize.cx-60, 25), &fontFormat, &fontBrush);
 
 	// Bewertung Gesamt anzeigen
@@ -223,7 +223,7 @@ void CMenuChooseView::OnDraw(CDC* pDC)
 	fMark += (float)(nPlace);
 
 	fMark /= 5;
-	s.Format("%s:",CResourceManager::GetString("RATING"));
+	s.Format("%s:",CLoc::GetString("RATING"));
 	fontFormat.SetAlignment(StringAlignmentNear);
 	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.left+30, 290, m_TotalSize.cx-60, 25), &fontFormat, &fontBrush);
 
@@ -235,7 +235,7 @@ void CMenuChooseView::OnDraw(CDC* pDC)
 	// Sternzeit anzeigen
 	fontBrush.SetColor(color);
 	fontFormat.SetAlignment(StringAlignmentCenter);
-	s.Format("%s: %.1lf",CResourceManager::GetString("STARDATE"), pDoc->m_fStardate);
+	s.Format("%s: %.1lf",CLoc::GetString("STARDATE"), pDoc->m_fStardate);
 	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.left+20, r.bottom-65, m_TotalSize.cx-40, 25), &fontFormat, &fontBrush);
 	//********************************************************************************
 
@@ -287,18 +287,18 @@ void  CMenuChooseView::LoadRaceGraphics()
 	CString fileN = "Other\\" + sPrefix + "button.bop";
 	CString fileI = "Other\\" + sPrefix + "buttoni.bop";
 	CString fileA = "Other\\" + sPrefix + "buttona.bop";
-	m_Buttons.Add(new CMyButton(CPoint(20,360), CSize(160,40), CResourceManager::GetString("BTN_GALAXY"), fileN, fileI, fileA));
-	m_Buttons.Add(new CMyButton(CPoint(20,405), CSize(160,40), CResourceManager::GetString("BTN_SYSTEM"), fileN, fileI, fileA));
-	m_Buttons.Add(new CMyButton(CPoint(20,450), CSize(160,40), CResourceManager::GetString("BTN_RESEARCH"), fileN, fileI, fileA));
-	m_Buttons.Add(new CMyButton(CPoint(20,495), CSize(160,40), CResourceManager::GetString("BTN_SECURITY"), fileN, fileI, fileA));
-	m_Buttons.Add(new CMyButton(CPoint(20,540), CSize(160,40), CResourceManager::GetString("BTN_DIPLOMACY"), fileN, fileI, fileA));
-	m_Buttons.Add(new CMyButton(CPoint(20,585), CSize(160,40), CResourceManager::GetString("BTN_TRADE"), fileN, fileI, fileA));
-	m_Buttons.Add(new CMyButton(CPoint(20,630), CSize(160,40), CResourceManager::GetString("BTN_EMPIRE"), fileN, fileI, fileA));
+	m_Buttons.Add(new CMyButton(CPoint(20,360), CSize(160,40), CLoc::GetString("BTN_GALAXY"), fileN, fileI, fileA));
+	m_Buttons.Add(new CMyButton(CPoint(20,405), CSize(160,40), CLoc::GetString("BTN_SYSTEM"), fileN, fileI, fileA));
+	m_Buttons.Add(new CMyButton(CPoint(20,450), CSize(160,40), CLoc::GetString("BTN_RESEARCH"), fileN, fileI, fileA));
+	m_Buttons.Add(new CMyButton(CPoint(20,495), CSize(160,40), CLoc::GetString("BTN_SECURITY"), fileN, fileI, fileA));
+	m_Buttons.Add(new CMyButton(CPoint(20,540), CSize(160,40), CLoc::GetString("BTN_DIPLOMACY"), fileN, fileI, fileA));
+	m_Buttons.Add(new CMyButton(CPoint(20,585), CSize(160,40), CLoc::GetString("BTN_TRADE"), fileN, fileI, fileA));
+	m_Buttons.Add(new CMyButton(CPoint(20,630), CSize(160,40), CLoc::GetString("BTN_EMPIRE"), fileN, fileI, fileA));
 	// Rundenendebutton
 	fileN = "Other\\" + sPrefix + "button_roundend.bop";
 	fileI = "Other\\" + sPrefix + "button_roundendi.bop";
 	fileA = "Other\\" + sPrefix + "button_roundenda.bop";
-	m_RoundEnd = new CMyButton(CPoint(20,5), CSize(160,40), CResourceManager::GetString("BTN_ROUNDEND"), fileN, fileI, fileA);
+	m_RoundEnd = new CMyButton(CPoint(20,5), CSize(160,40), CLoc::GetString("BTN_ROUNDEND"), fileN, fileI, fileA);
 }
 
 BOOL CMenuChooseView::OnEraseBkgnd(CDC* /*pDC*/)

@@ -6,7 +6,7 @@
 #include "AI\MinorAI.h"
 #include "HTMLStringBuilder.h"
 #include "Ships/Ships.h"
-#include "General/ResourceManager.h"
+#include "General/Loc.h"
 
 IMPLEMENT_SERIAL (CMinor, CRace, 1)
 
@@ -397,11 +397,11 @@ void CMinor::CheckDiplomaticConsistence(CBotEDoc* pDoc)
 			CString s = "";
 			switch (nAgreement)
 			{
-			case DIPLOMATIC_AGREEMENT::TRADE: {s = CResourceManager::GetString("CANCEL_TRADE_AGREEMENT", FALSE, m_sName);	break;}
-			case DIPLOMATIC_AGREEMENT::FRIENDSHIP: {s = CResourceManager::GetString("CANCEL_FRIENDSHIP", FALSE, m_sName);	break;}
-			case DIPLOMATIC_AGREEMENT::COOPERATION: {s = CResourceManager::GetString("CANCEL_COOPERATION", FALSE, m_sName);	break;}
-			case DIPLOMATIC_AGREEMENT::AFFILIATION: {s = CResourceManager::GetString("CANCEL_AFFILIATION", FALSE, m_sName);	break;}
-			case DIPLOMATIC_AGREEMENT::MEMBERSHIP: {s = CResourceManager::GetString("CANCEL_MEMBERSHIP", FALSE, m_sName);	break;}
+			case DIPLOMATIC_AGREEMENT::TRADE: {s = CLoc::GetString("CANCEL_TRADE_AGREEMENT", FALSE, m_sName);	break;}
+			case DIPLOMATIC_AGREEMENT::FRIENDSHIP: {s = CLoc::GetString("CANCEL_FRIENDSHIP", FALSE, m_sName);	break;}
+			case DIPLOMATIC_AGREEMENT::COOPERATION: {s = CLoc::GetString("CANCEL_COOPERATION", FALSE, m_sName);	break;}
+			case DIPLOMATIC_AGREEMENT::AFFILIATION: {s = CLoc::GetString("CANCEL_AFFILIATION", FALSE, m_sName);	break;}
+			case DIPLOMATIC_AGREEMENT::MEMBERSHIP: {s = CLoc::GetString("CANCEL_MEMBERSHIP", FALSE, m_sName);	break;}
 			}
 			// Krieg bleibt weiterhin bestehen
 			if (nAgreement != DIPLOMATIC_AGREEMENT::WAR)
@@ -412,9 +412,9 @@ void CMinor::CheckDiplomaticConsistence(CBotEDoc* pDoc)
 				pMajor->SetAgreement(m_sID, DIPLOMATIC_AGREEMENT::NONE);
 				if (!s.IsEmpty())
 				{
-					CMessage message;
-					message.GenerateMessage(s, MESSAGE_TYPE::DIPLOMACY);
-					pMajor->GetEmpire()->AddMessage(message);
+					CEmpireNews message;
+					message.CreateNews(s, EMPIRE_NEWS_TYPE::DIPLOMACY);
+					pMajor->GetEmpire()->AddMsg(message);
 				}
 			}
 		}
@@ -432,15 +432,15 @@ void CMinor::CheckDiplomaticConsistence(CBotEDoc* pDoc)
 				CString s = "";
 
 				if (nAgreement == DIPLOMATIC_AGREEMENT::TRADE)
-					s = CResourceManager::GetString("CANCEL_TRADE_AGREEMENT", FALSE, m_sName);
+					s = CLoc::GetString("CANCEL_TRADE_AGREEMENT", FALSE, m_sName);
 				else if (nAgreement == DIPLOMATIC_AGREEMENT::FRIENDSHIP)
-					s = CResourceManager::GetString("CANCEL_FRIENDSHIP", FALSE, m_sName);
+					s = CLoc::GetString("CANCEL_FRIENDSHIP", FALSE, m_sName);
 				else if (nAgreement == DIPLOMATIC_AGREEMENT::COOPERATION)
-					s = CResourceManager::GetString("CANCEL_COOPERATION", FALSE, m_sName);
+					s = CLoc::GetString("CANCEL_COOPERATION", FALSE, m_sName);
 				else if (nAgreement == DIPLOMATIC_AGREEMENT::AFFILIATION)
-					s = CResourceManager::GetString("CANCEL_AFFILIATION", FALSE, m_sName);
+					s = CLoc::GetString("CANCEL_AFFILIATION", FALSE, m_sName);
 				else if (nAgreement == DIPLOMATIC_AGREEMENT::MEMBERSHIP)
-					s = CResourceManager::GetString("CANCEL_MEMBERSHIP", FALSE, m_sName);
+					s = CLoc::GetString("CANCEL_MEMBERSHIP", FALSE, m_sName);
 
 				if (!s.IsEmpty())
 				{
@@ -448,9 +448,9 @@ void CMinor::CheckDiplomaticConsistence(CBotEDoc* pDoc)
 					SetAgreement(itt->first, DIPLOMATIC_AGREEMENT::NONE);
 					CMajor* pMajor = itt->second;
 					pMajor->SetAgreement(m_sID, DIPLOMATIC_AGREEMENT::NONE);
-					CMessage message;
-					message.GenerateMessage(s, MESSAGE_TYPE::DIPLOMACY);
-					pMajor->GetEmpire()->AddMessage(message);
+					CEmpireNews message;
+					message.CreateNews(s, EMPIRE_NEWS_TYPE::DIPLOMACY);
+					pMajor->GetEmpire()->AddMsg(message);
 				}
 			}
 		}
@@ -465,11 +465,11 @@ void CMinor::CheckDiplomaticConsistence(CBotEDoc* pDoc)
 				CString s = "";
 
 				if (nAgreement == DIPLOMATIC_AGREEMENT::FRIENDSHIP)
-					s = CResourceManager::GetString("CANCEL_FRIENDSHIP", FALSE, m_sName);
+					s = CLoc::GetString("CANCEL_FRIENDSHIP", FALSE, m_sName);
 				else if (nAgreement == DIPLOMATIC_AGREEMENT::COOPERATION)
-					s = CResourceManager::GetString("CANCEL_COOPERATION", FALSE, m_sName);
+					s = CLoc::GetString("CANCEL_COOPERATION", FALSE, m_sName);
 				else if (nAgreement == DIPLOMATIC_AGREEMENT::AFFILIATION)
-					s = CResourceManager::GetString("CANCEL_AFFILIATION", FALSE, m_sName);
+					s = CLoc::GetString("CANCEL_AFFILIATION", FALSE, m_sName);
 
 				if (!s.IsEmpty())
 				{
@@ -477,9 +477,9 @@ void CMinor::CheckDiplomaticConsistence(CBotEDoc* pDoc)
 					SetAgreement(itt->first, DIPLOMATIC_AGREEMENT::NONE);
 					CMajor* pMajor = itt->second;
 					pMajor->SetAgreement(m_sID, DIPLOMATIC_AGREEMENT::NONE);
-					CMessage message;
-					message.GenerateMessage(s, MESSAGE_TYPE::DIPLOMACY);
-					pMajor->GetEmpire()->AddMessage(message);
+					CEmpireNews message;
+					message.CreateNews(s, EMPIRE_NEWS_TYPE::DIPLOMACY);
+					pMajor->GetEmpire()->AddMsg(message);
 				}
 			}
 		}
@@ -494,7 +494,7 @@ void CMinor::CheckDiplomaticConsistence(CBotEDoc* pDoc)
 				CString s = "";
 
 				if (nAgreement == DIPLOMATIC_AGREEMENT::COOPERATION)
-					s = CResourceManager::GetString("CANCEL_COOPERATION", FALSE, m_sName);
+					s = CLoc::GetString("CANCEL_COOPERATION", FALSE, m_sName);
 
 				if (!s.IsEmpty())
 				{
@@ -502,9 +502,9 @@ void CMinor::CheckDiplomaticConsistence(CBotEDoc* pDoc)
 					SetAgreement(itt->first, DIPLOMATIC_AGREEMENT::NONE);
 					CMajor* pMajor = itt->second;
 					pMajor->SetAgreement(m_sID, DIPLOMATIC_AGREEMENT::NONE);
-					CMessage message;
-					message.GenerateMessage(s, MESSAGE_TYPE::DIPLOMACY);
-					pMajor->GetEmpire()->AddMessage(message);
+					CEmpireNews message;
+					message.CreateNews(s, EMPIRE_NEWS_TYPE::DIPLOMACY);
+					pMajor->GetEmpire()->AddMsg(message);
 				}
 			}
 		}
@@ -539,27 +539,27 @@ void CMinor::PerhapsCancelAgreement(CBotEDoc* pDoc)
 			{
 			case DIPLOMATIC_AGREEMENT::TRADE:
 			{
-				sText = CResourceManager::GetString("CANCEL_TRADE_AGREEMENT", FALSE, m_sName);
+				sText = CLoc::GetString("CANCEL_TRADE_AGREEMENT", FALSE, m_sName);
 				break;
 			}
 			case DIPLOMATIC_AGREEMENT::FRIENDSHIP:
 			{
-				sText = CResourceManager::GetString("CANCEL_FRIENDSHIP", FALSE, m_sName);
+				sText = CLoc::GetString("CANCEL_FRIENDSHIP", FALSE, m_sName);
 				break;
 			}
 			case DIPLOMATIC_AGREEMENT::COOPERATION:
 			{
-				sText = CResourceManager::GetString("CANCEL_COOPERATION", FALSE, m_sName);
+				sText = CLoc::GetString("CANCEL_COOPERATION", FALSE, m_sName);
 				break;
 			}
 			case DIPLOMATIC_AGREEMENT::AFFILIATION:
 			{
-				sText = CResourceManager::GetString("CANCEL_AFFILIATION", FALSE, m_sName);
+				sText = CLoc::GetString("CANCEL_AFFILIATION", FALSE, m_sName);
 				break;
 			}
 			case DIPLOMATIC_AGREEMENT::MEMBERSHIP:
 			{
-				sText = CResourceManager::GetString("CANCEL_MEMBERSHIP", FALSE, m_sName);
+				sText = CLoc::GetString("CANCEL_MEMBERSHIP", FALSE, m_sName);
 				break;
 			}
 			}
@@ -569,9 +569,9 @@ void CMinor::PerhapsCancelAgreement(CBotEDoc* pDoc)
 				CMajor* pMajor = it->second;
 				pMajor->SetAgreement(m_sID, DIPLOMATIC_AGREEMENT::NONE);
 				SetAgreement(it->first, DIPLOMATIC_AGREEMENT::NONE);
-				CMessage message;
-				message.GenerateMessage(sText, MESSAGE_TYPE::DIPLOMACY);
-				pMajor->GetEmpire()->AddMessage(message);
+				CEmpireNews message;
+				message.CreateNews(sText, EMPIRE_NEWS_TYPE::DIPLOMACY);
+				pMajor->GetEmpire()->AddMsg(message);
 			}
 		}
 	}
@@ -585,7 +585,7 @@ CString CMinor::GetTooltip(void) const
 	sTip += CHTMLStringBuilder::GetHTMLStringNewLine();
 
 	// Technischen Fortschritt anzeigen
-	CString sProgress(CResourceManager::GetString("TECHNICAL_PROGRESS"));
+	CString sProgress(CLoc::GetString("TECHNICAL_PROGRESS"));
 	sProgress = CHTMLStringBuilder::GetHTMLColor(sProgress, _T("silver"));
 	sProgress = CHTMLStringBuilder::GetHTMLHeader(sProgress, _T("h4"));
 	sProgress += CHTMLStringBuilder::GetHTMLStringNewLine();
@@ -595,11 +595,11 @@ CString CMinor::GetTooltip(void) const
 	CString s = "";
 	switch (GetTechnologicalProgress())
 	{
-	case 0: s = CResourceManager::GetString("VERY_UNDERDEVELOPED");	break;
-	case 1: s = CResourceManager::GetString("UNDERDEVELOPED");		break;
-	case 2: s = CResourceManager::GetString("NORMAL_DEVELOPED");	break;
-	case 3: s = CResourceManager::GetString("DEVELOPED");			break;
-	case 4: s = CResourceManager::GetString("VERY_DEVELOPED");		break;
+	case 0: s = CLoc::GetString("VERY_UNDERDEVELOPED");	break;
+	case 1: s = CLoc::GetString("UNDERDEVELOPED");		break;
+	case 2: s = CLoc::GetString("NORMAL_DEVELOPED");	break;
+	case 3: s = CLoc::GetString("DEVELOPED");			break;
+	case 4: s = CLoc::GetString("VERY_DEVELOPED");		break;
 	}
 
 	s = CHTMLStringBuilder::GetHTMLColor(s);
@@ -609,7 +609,7 @@ CString CMinor::GetTooltip(void) const
 	sProgress += CHTMLStringBuilder::GetHTMLStringNewLine();
 
 	// Bestechlichkeit anzeigen
-	CString sCor(CResourceManager::GetString("CORRUPTIBILITY"));
+	CString sCor(CLoc::GetString("CORRUPTIBILITY"));
 	sCor = CHTMLStringBuilder::GetHTMLColor(sCor, _T("silver"));
 	sCor = CHTMLStringBuilder::GetHTMLHeader(sCor, _T("h4"));
 	sCor += CHTMLStringBuilder::GetHTMLStringNewLine();
@@ -619,11 +619,11 @@ CString CMinor::GetTooltip(void) const
 	s = "";
 	switch (GetCorruptibility())
 	{
-	case 0: s = CResourceManager::GetString("VERY_LOW_CORRUPTIBILITY");	break;
-	case 1: s = CResourceManager::GetString("LOW_CORRUPTIBILITY");		break;
-	case 2: s = CResourceManager::GetString("NORMAL_CORRUPTIBILITY");	break;
-	case 3: s = CResourceManager::GetString("HIGH_CORRUPTIBILITY");		break;
-	case 4: s = CResourceManager::GetString("VERY_HIGH_CORRUPTIBILITY");break;
+	case 0: s = CLoc::GetString("VERY_LOW_CORRUPTIBILITY");	break;
+	case 1: s = CLoc::GetString("LOW_CORRUPTIBILITY");		break;
+	case 2: s = CLoc::GetString("NORMAL_CORRUPTIBILITY");	break;
+	case 3: s = CLoc::GetString("HIGH_CORRUPTIBILITY");		break;
+	case 4: s = CLoc::GetString("VERY_HIGH_CORRUPTIBILITY");break;
 	}
 	s = CHTMLStringBuilder::GetHTMLColor(s);
 	s = CHTMLStringBuilder::GetHTMLHeader(s, _T("h5"));

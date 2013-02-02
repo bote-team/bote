@@ -2697,7 +2697,7 @@ BOOLEAN CSystem::CheckGeneralConditions(CBuildingInfo* building, CSector* sector
 	mindts. X Gebäude von ID im Imperium
 */
 	// benötigte Anzahl eigener Systeme
-	if (building->GetNeededSystems() > pMajor->GetEmpire()->GetNumberOfSystems())
+	if (building->GetNeededSystems() > pMajor->GetEmpire()->CountSystems())
 		return FALSE;
 	// Nur Heimatplanet checken
 	if (building->GetOnlyHomePlanet())

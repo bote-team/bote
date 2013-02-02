@@ -7,7 +7,7 @@
  */
 #pragma once
 #include "afx.h"
-#include "Options.h"
+#include "Constants.h"
 #include "BuildingInfo.h"
 #include "Ships\ShipInfo.h"
 #include "Troops\TroopInfo.h"

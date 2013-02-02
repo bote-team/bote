@@ -4,7 +4,7 @@
 #include "Races\RaceController.h"
 #include "Ships/Ships.h"
 #include "IOData.h"
-#include "General/ResourceManager.h"
+#include "General/Loc.h"
 
 #include <cassert>
 
@@ -265,7 +265,7 @@ void CIntelCalc::ReduceDepotPoints(CMajor* pRace, int perc)
 			// Wenn die Rasse kein Systeme mehr besitzt, also ausgelöscht wurde, so verschwinden alle
 			// angesammelten Geheimdienstpunkte
 			int oldPerc = perc;
-			if (it->second->GetEmpire()->GetNumberOfSystems() == NULL)
+			if (it->second->GetEmpire()->CountSystems() == NULL)
 				perc = 100;
 			// Depot der Spionagepunkte
 			diff = pIntel->GetSPStorage(0,it->first) * perc / 100;
@@ -1445,7 +1445,7 @@ BOOLEAN CIntelCalc::ExecuteMilitarySabotage(CMajor* pRace, CMajor* pEnemyRace, C
 				report = new CMilitaryIntelObj(pRace->GetRaceID(), pEnemyRace->GetRaceID(), m_pDoc->GetCurrentRound(), FALSE, ship->GetKO(), ship->GetID(), 1, FALSE, TRUE, FALSE);
 				// die Station aus der ShipHistory der aktuellen Schiffe entfernen und den zerstörten Schiffen hinzufügen
 				pEnemyRace->GetShipHistory()->ModifyShip(ship, m_pDoc->GetSector(ship->GetKO().x, ship->GetKO().y).GetName(TRUE),
-					m_pDoc->GetCurrentRound(), CResourceManager::GetString("SABOTAGE"), CResourceManager::GetString("MISSED"));
+					m_pDoc->GetCurrentRound(), CLoc::GetString("SABOTAGE"), CLoc::GetString("MISSED"));
 
 				// neuen Besitzer hinzufügen
 				ship->SetOwnerOfShip(pRace->GetRaceID());
@@ -1516,7 +1516,7 @@ BOOLEAN CIntelCalc::ExecuteMilitarySabotage(CMajor* pRace, CMajor* pEnemyRace, C
 				report = new CMilitaryIntelObj(pRace->GetRaceID(), pEnemyRace->GetRaceID(), m_pDoc->GetCurrentRound(), FALSE, ship->GetKO(), ship->GetID(), 1, FALSE, TRUE, FALSE);
 				// die Station aus der ShipHistory der aktuellen Schiffe entfernen und den zerstörten Schiffen hinzufügen
 				pEnemyRace->GetShipHistory()->ModifyShip(ship, m_pDoc->GetSector(ship->GetKO().x, ship->GetKO().y).GetName(TRUE),
-					m_pDoc->GetCurrentRound(), CResourceManager::GetString("SABOTAGE"), CResourceManager::GetString("DESTROYED"));
+					m_pDoc->GetCurrentRound(), CLoc::GetString("SABOTAGE"), CLoc::GetString("DESTROYED"));
 				if (n.y == -1)		// nicht in Flotte
 				{
 					CShips::iterator destroyed_ship = m_pDoc->m_ShipMap.find(n.x);

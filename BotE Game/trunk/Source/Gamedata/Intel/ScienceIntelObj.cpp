@@ -3,7 +3,7 @@
 #include "BotEDoc.h"
 #include "Races\RaceController.h"
 #include "IOData.h"
-#include "General/ResourceManager.h"
+#include "General/Loc.h"
 
 IMPLEMENT_SERIAL (CScienceIntelObj, CObject, 1)
 
@@ -169,12 +169,12 @@ void CScienceIntelObj::CreateText(CBotEDoc* pDoc, BYTE n, const CString& param)
 						{
 							switch (m_nTechType)
 							{
-							case 0: s = CResourceManager::GetString("BIOTECH"); break;
-							case 1: s = CResourceManager::GetString("ENERGYTECH"); break;
-							case 2: s = CResourceManager::GetString("COMPUTERTECH"); break;
-							case 3: s = CResourceManager::GetString("CONSTRUCTIONTECH"); break;
-							case 4: s = CResourceManager::GetString("PROPULSIONTECH"); break;
-							case 5: s = CResourceManager::GetString("WEAPONTECH"); break;
+							case 0: s = CLoc::GetString("BIOTECH"); break;
+							case 1: s = CLoc::GetString("ENERGYTECH"); break;
+							case 2: s = CLoc::GetString("COMPUTERTECH"); break;
+							case 3: s = CLoc::GetString("CONSTRUCTIONTECH"); break;
+							case 4: s = CLoc::GetString("PROPULSIONTECH"); break;
+							case 5: s = CLoc::GetString("WEAPONTECH"); break;
 							}
 							csInput.Replace("$techtype$", s);
 							s.Format("%d", m_nTechlevel);
@@ -249,12 +249,12 @@ void CScienceIntelObj::CreateText(CBotEDoc* pDoc, BYTE n, const CString& param)
 							{
 								switch (m_nTechType)
 								{
-								case 0: s = CResourceManager::GetString("BIOTECH"); break;
-								case 1: s = CResourceManager::GetString("ENERGYTECH"); break;
-								case 2: s = CResourceManager::GetString("COMPUTERTECH"); break;
-								case 3: s = CResourceManager::GetString("CONSTRUCTIONTECH"); break;
-								case 4: s = CResourceManager::GetString("PROPULSIONTECH"); break;
-								case 5: s = CResourceManager::GetString("WEAPONTECH"); break;
+								case 0: s = CLoc::GetString("BIOTECH"); break;
+								case 1: s = CLoc::GetString("ENERGYTECH"); break;
+								case 2: s = CLoc::GetString("COMPUTERTECH"); break;
+								case 3: s = CLoc::GetString("CONSTRUCTIONTECH"); break;
+								case 4: s = CLoc::GetString("PROPULSIONTECH"); break;
+								case 5: s = CLoc::GetString("WEAPONTECH"); break;
 								}
 								csInput.Replace("$techtype$", s);
 								s.Format("%d", m_nTechlevel);
@@ -280,11 +280,11 @@ void CScienceIntelObj::CreateText(CBotEDoc* pDoc, BYTE n, const CString& param)
 								if (pParam)
 								{
 									s = pParam->GetEmpireNameWithArticle();
-									csInput = CResourceManager::GetString("KNOW_RESPONSIBLE_SABOTAGERACE", FALSE, s);
+									csInput = CLoc::GetString("KNOW_RESPONSIBLE_SABOTAGERACE", FALSE, s);
 								}
 							}
 							else
-								csInput = CResourceManager::GetString("DO_NOT_KNOW_RESPONSIBLE_RACE");
+								csInput = CLoc::GetString("DO_NOT_KNOW_RESPONSIBLE_RACE");
 							m_strEnemyDesc += " "+csInput;
 							break;
 						}

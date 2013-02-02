@@ -37,7 +37,7 @@
 // bewohnbar sind:    C,F,G,H,K,L,M,N,O,P,Q,R	= 12
 
 #pragma once
-#include "Options.h"
+#include "Constants.h"
 
 // forward declaration
 class CGraphicPool;

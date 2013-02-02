@@ -3,7 +3,7 @@
 #include "Ships/Ships.h"
 
 #include "Ships/ShipMap.h"
-#include "General/ResourceManager.h"
+#include "General/Loc.h"
 #include "Galaxy/Sector.h"
 
 //////////////////////////////////////////////////////////////////////
@@ -89,7 +89,7 @@ BOOLEAN CAttackSystem::Calculate()
 	{
 		CString n;
 		n.Format("%.3lf", m_fKilledPop);
-		m_strNews.Add(CResourceManager::GetString("KILLED_POP_BY_SYSTEMATTACK",0,n,m_pSector->GetName()));
+		m_strNews.Add(CLoc::GetString("KILLED_POP_BY_SYSTEMATTACK",0,n,m_pSector->GetName()));
 	}
 	// verlorene Truppen berechnen
 	USHORT killedTroopsInTransport = 0;
@@ -97,7 +97,7 @@ BOOLEAN CAttackSystem::Calculate()
 	if (killedTroopsInSystem > 0)
 	{
 		CString n; n.Format("%d",killedTroopsInSystem);
-		m_strNews.Add(CResourceManager::GetString("KILLED_TROOPS_IN_SYSTEM",0,n,m_pSector->GetName()));
+		m_strNews.Add(CLoc::GetString("KILLED_TROOPS_IN_SYSTEM",0,n,m_pSector->GetName()));
 	}
 	// Erfahrung der Schiffe berechnen
 	// (Bevölkerungsverlust in Mrd.) * 100 + aktive shipdefence EP.
@@ -136,10 +136,10 @@ BOOLEAN CAttackSystem::Calculate()
 		if (killedTroopsInTransport > 0)
 		{
 			CString n; n.Format("%d",killedTroopsInTransport);
-			m_strNews.Add(CResourceManager::GetString("KILLED_TROOPS_IN_TRANSPORTS",0,n,m_pSector->GetName()));
+			m_strNews.Add(CLoc::GetString("KILLED_TROOPS_IN_TRANSPORTS",0,n,m_pSector->GetName()));
 		}
 		if (m_bTroopsInvolved)
-			m_strNews.InsertAt(0,CResourceManager::GetString("INVASION_SUCCESSFUL",0,m_pSector->GetName()));
+			m_strNews.InsertAt(0,CLoc::GetString("INVASION_SUCCESSFUL",0,m_pSector->GetName()));
 		return TRUE;
 	}
 	// das System wurde bombardiert bzw. die ganze Bevölkerung vernichtet
@@ -157,14 +157,14 @@ BOOLEAN CAttackSystem::Calculate()
 		if (killedTroopsInTransport > 0)
 		{
 			CString n; n.Format("%d",killedTroopsInTransport);
-			m_strNews.Add(CResourceManager::GetString("KILLED_TROOPS_IN_TRANSPORTS",0,n,m_pSector->GetName()));
+			m_strNews.Add(CLoc::GetString("KILLED_TROOPS_IN_TRANSPORTS",0,n,m_pSector->GetName()));
 		}
 		if (m_bTroopsInvolved == TRUE && m_pSystem->GetHabitants() > 0.0f)
-			m_strNews.InsertAt(0,CResourceManager::GetString("INVASION_FAILED",0,m_pSector->GetName()));
+			m_strNews.InsertAt(0,CLoc::GetString("INVASION_FAILED",0,m_pSector->GetName()));
 		else if (m_bTroopsInvolved == FALSE && m_pSystem->GetHabitants() > 0.0f)
-			m_strNews.InsertAt(0,CResourceManager::GetString("SYSTEM_BOMBED",0,m_pSector->GetName()));
+			m_strNews.InsertAt(0,CLoc::GetString("SYSTEM_BOMBED",0,m_pSector->GetName()));
 		else
-			m_strNews.InsertAt(0,CResourceManager::GetString("ALL_LIFE_DIED",0,m_pSector->GetName()));
+			m_strNews.InsertAt(0,CLoc::GetString("ALL_LIFE_DIED",0,m_pSector->GetName()));
 		return FALSE;
 	}
 }
@@ -224,11 +224,11 @@ void CAttackSystem::CalculateShipDefence()
 		}
 	}
 	if (killedShips == 0)
-		m_strNews.Add(CResourceManager::GetString("NO_ATTACKING_SHIPS_KILLED",0,m_pSector->GetName()));
+		m_strNews.Add(CLoc::GetString("NO_ATTACKING_SHIPS_KILLED",0,m_pSector->GetName()));
 	else
 	{
 		CString n; n.Format("%d",killedShips);
-		m_strNews.Add(CResourceManager::GetString("ATTACKING_SHIPS_KILLED",0,n,m_pSector->GetName()));
+		m_strNews.Add(CLoc::GetString("ATTACKING_SHIPS_KILLED",0,n,m_pSector->GetName()));
 	}
 /*	CString s;
 	s.Format("Anzahl der angreifenden Truppen: %d",m_pTroops.GetSize());
@@ -267,7 +267,7 @@ void CAttackSystem::CalculateBombAttack()
 
 	// Nachricht das Schilde den Schaden im System verringert haben
 	if (shield > 0)
-		m_strNews.Add(CResourceManager::GetString("SHIELDS_SAVED_LIFE",0,m_pSector->GetName()));
+		m_strNews.Add(CLoc::GetString("SHIELDS_SAVED_LIFE",0,m_pSector->GetName()));
 
 /*	CString s;
 	s.Format("Torpedoschaden im System: %i",torpedoDamage);
@@ -310,7 +310,7 @@ void CAttackSystem::CalculateBombAttack()
 		{
 			CString n;
 			n.Format("%d", m_iDestroyedBuildings);
-			m_strNews.Add(CResourceManager::GetString("DESTROYED_BUILDINGS_BY_SYSTEMATTACK",0,n,m_pSector->GetName()));
+			m_strNews.Add(CLoc::GetString("DESTROYED_BUILDINGS_BY_SYSTEMATTACK",0,n,m_pSector->GetName()));
 		}
 	}
 }

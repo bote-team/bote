@@ -25,22 +25,22 @@ enum EXPLOREEVENTTYPE
 };
 
 /// Singleton-Klasse zum Berechnen der Random Events (Random Event Manager)
-class CReManager : public CObject
+class CRandomEventCtrl : public CObject
 {
 private:
 	/// Konstruktor private, damit man sich keine Instanzen holen kann.
-	CReManager(void);
+	CRandomEventCtrl(void);
 
 	/// Den Kopierkonstruktor schützen um zu vermeiden, dass das Objekt unbeabsichtigt kopiert wird.
-	CReManager(const CReManager& cc);
+	CRandomEventCtrl(const CRandomEventCtrl& cc);
 
 public:
 	/// Standarddestruktor
-	~CReManager(void);
+	~CRandomEventCtrl(void);
 
 	/// Funktion liefert die einzige Instanz dieser Klasse (Singleton).
 	/// @return Instanz dieser Klasse
-	static CReManager* GetInstance(void);
+	static CRandomEventCtrl* GetInstance(void);
 
 	/// Liest aus der Ini-Datei, ob Zufallsereignisse aktiviert sind
 	/// @return <code>true</code> wenn Zufallsereignisse aktiviert, sonst <code>false</code>

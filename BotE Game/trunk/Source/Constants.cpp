@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "Options.h"
+#include "Constants.h"
 
 const int STARMAP_SECTOR_WIDTH	= 80;	///< Breite eines Sektors in Pixel bei 100% Zoom
 const int STARMAP_SECTOR_HEIGHT	= 80;	///< Höhe eines Sektors in Pixel bei 100% Zoom

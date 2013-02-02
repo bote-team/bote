@@ -19,7 +19,7 @@ public:
 	void ExecuteFamine(CSector& sector, CSystem& system, CMajor* pMajor) const;
 	void HandlePopulationEffects(const CSector& sector, CSystem& system, CMajor* pMajor) const;
 	void SystemMessage(const CSector& sector, CMajor* pMajor, const CString& key,
-		MESSAGE_TYPE::Typ message_typ, BYTE byFlag) const;
+		EMPIRE_NEWS_TYPE::Typ message_typ, BYTE byFlag) const;
 	void Build(const CSector& sector, CSystem& system, CMajor* pMajor, const CArray<CBuildingInfo,CBuildingInfo>& BuildingInfo) const;
 
 private:

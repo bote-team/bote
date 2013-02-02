@@ -11,7 +11,7 @@
 #include "Races\RaceController.h"
 #include "Iniloader.h"
 #include "Ships/Ships.h"
-#include "General/ResourceManager.h"
+#include "General/Loc.h"
 #include <cassert>
 
 
@@ -136,20 +136,20 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 			fontBrush.SetColor(color);
 
 			CString s;
-			s.Format("%s: %s",CResourceManager::GetString("NAME"), m_pPlanet->GetPlanetName());
+			s.Format("%s: %s",CLoc::GetString("NAME"), m_pPlanet->GetPlanetName());
 			g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,0,r.right,55), &fontFormat, &fontBrush);
-			s.Format("%s: %c",CResourceManager::GetString("CLASS"), m_pPlanet->GetClass());
+			s.Format("%s: %c",CLoc::GetString("CLASS"), m_pPlanet->GetClass());
 			g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,0,r.right,75), &fontFormat, &fontBrush);
-			s.Format("%s: %.3lf %s",CResourceManager::GetString("MAX_HABITANTS"), m_pPlanet->GetMaxHabitant(), CResourceManager::GetString("MRD"));
+			s.Format("%s: %.3lf %s",CLoc::GetString("MAX_HABITANTS"), m_pPlanet->GetMaxHabitant(), CLoc::GetString("MRD"));
 			g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,0,r.right,95), &fontFormat, &fontBrush);
-			s.Format("%s: %.3lf %s",CResourceManager::GetString("CURRENT_HABITANTS"), m_pPlanet->GetCurrentHabitant(), CResourceManager::GetString("MRD"));
+			s.Format("%s: %.3lf %s",CLoc::GetString("CURRENT_HABITANTS"), m_pPlanet->GetCurrentHabitant(), CLoc::GetString("MRD"));
 			g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,0,r.right,115), &fontFormat, &fontBrush);
-			s.Format("%s: %.2lf %% ",CResourceManager::GetString("GROWTH"), m_pPlanet->GetPlanetGrowth());
+			s.Format("%s: %.2lf %% ",CLoc::GetString("GROWTH"), m_pPlanet->GetPlanetGrowth());
 			g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,0,r.right,135), &fontFormat, &fontBrush);
 			if (m_pPlanet->GetNeededTerraformPoints() > 0)
 			{
-				s.Format("%s: %d %s",CResourceManager::GetString("TERRAFORM_ORDER"),
-					m_pPlanet->GetNeededTerraformPoints(), CResourceManager::GetString("POINTS_SHORT"));
+				s.Format("%s: %d %s",CLoc::GetString("TERRAFORM_ORDER"),
+					m_pPlanet->GetNeededTerraformPoints(), CLoc::GetString("POINTS_SHORT"));
 				g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,0,r.right,155), &fontFormat, &fontBrush);
 			}
 			// Die auf dem Planeten vorhanden Rohstoffe anzeigen
@@ -160,7 +160,7 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 			fontFormat.SetLineAlignment(StringAlignmentCenter);
 			if (m_pPlanet->GetHabitable())
 			{
-				s = CResourceManager::GetString("EXISTING_RES") + ":";
+				s = CLoc::GetString("EXISTING_RES") + ":";
 				g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,165,r.right,25), &fontFormat, &fontBrush);
 			}
 
@@ -198,37 +198,37 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 			/*
 			s.Format("");
 			if (PlanetClass == 'C')
-				s = CResourceManager::GetString("EXISTING_RES")+":\n"+
-				CResourceManager::GetString("TITAN")+", "+CResourceManager::GetString("IRIDIUM");
+				s = CLoc::GetString("EXISTING_RES")+":\n"+
+				CLoc::GetString("TITAN")+", "+CLoc::GetString("IRIDIUM");
 			else if (PlanetClass == 'F')
-				s = CResourceManager::GetString("EXISTING_RES")+":\n"+
-				CResourceManager::GetString("TITAN")+", "+CResourceManager::GetString("DURANIUM");
+				s = CLoc::GetString("EXISTING_RES")+":\n"+
+				CLoc::GetString("TITAN")+", "+CLoc::GetString("DURANIUM");
 			else if (PlanetClass == 'G')
-				s = CResourceManager::GetString("EXISTING_RES")+":\n"+
-				CResourceManager::GetString("TITAN")+", "+CResourceManager::GetString("DURANIUM")+", "+CResourceManager::GetString("CRYSTAL");
+				s = CLoc::GetString("EXISTING_RES")+":\n"+
+				CLoc::GetString("TITAN")+", "+CLoc::GetString("DURANIUM")+", "+CLoc::GetString("CRYSTAL");
 			else if (PlanetClass == 'H')
-				s = CResourceManager::GetString("EXISTING_RES")+":\n"+CResourceManager::GetString("IRIDIUM");
+				s = CLoc::GetString("EXISTING_RES")+":\n"+CLoc::GetString("IRIDIUM");
 			else if (PlanetClass == 'K')
-				s = CResourceManager::GetString("EXISTING_RES")+":\n"+
-				CResourceManager::GetString("TITAN")+", "+CResourceManager::GetString("DURANIUM");
+				s = CLoc::GetString("EXISTING_RES")+":\n"+
+				CLoc::GetString("TITAN")+", "+CLoc::GetString("DURANIUM");
 			else if (PlanetClass == 'L')
-				s = CResourceManager::GetString("EXISTING_RES")+":\n"+
-				CResourceManager::GetString("TITAN")+", "+CResourceManager::GetString("DEUTERIUM");
+				s = CLoc::GetString("EXISTING_RES")+":\n"+
+				CLoc::GetString("TITAN")+", "+CLoc::GetString("DEUTERIUM");
 			else if (PlanetClass == 'M')
-				s = CResourceManager::GetString("EXISTING_RES")+":\n"+
-				CResourceManager::GetString("TITAN")+", "+CResourceManager::GetString("DEUTERIUM")+", "+
-				CResourceManager::GetString("DURANIUM")+", "+CResourceManager::GetString("CRYSTAL")+", "+CResourceManager::GetString("IRIDIUM");
+				s = CLoc::GetString("EXISTING_RES")+":\n"+
+				CLoc::GetString("TITAN")+", "+CLoc::GetString("DEUTERIUM")+", "+
+				CLoc::GetString("DURANIUM")+", "+CLoc::GetString("CRYSTAL")+", "+CLoc::GetString("IRIDIUM");
 			else if (PlanetClass == 'N')
-				s = CResourceManager::GetString("EXISTING_RES")+":\n"+CResourceManager::GetString("DEUTERIUM");
+				s = CLoc::GetString("EXISTING_RES")+":\n"+CLoc::GetString("DEUTERIUM");
 			else if (PlanetClass == 'O')
-			s = CResourceManager::GetString("EXISTING_RES")+":\n"+CResourceManager::GetString("DEUTERIUM");
+			s = CLoc::GetString("EXISTING_RES")+":\n"+CLoc::GetString("DEUTERIUM");
 			else if (PlanetClass == 'P')
-				s = CResourceManager::GetString("EXISTING_RES")+":\n"+
-				CResourceManager::GetString("TITAN")+", "+CResourceManager::GetString("CRYSTAL")+", "+CResourceManager::GetString("IRIDIUM");
+				s = CLoc::GetString("EXISTING_RES")+":\n"+
+				CLoc::GetString("TITAN")+", "+CLoc::GetString("CRYSTAL")+", "+CLoc::GetString("IRIDIUM");
 			else if (PlanetClass == 'Q')
-				s = CResourceManager::GetString("EXISTING_RES")+":\n"+CResourceManager::GetString("CRYSTAL");
+				s = CLoc::GetString("EXISTING_RES")+":\n"+CLoc::GetString("CRYSTAL");
 			else if (PlanetClass == 'R')
-				s = CResourceManager::GetString("EXISTING_RES")+":\n"+CResourceManager::GetString("DURANIUM");
+				s = CLoc::GetString("EXISTING_RES")+":\n"+CLoc::GetString("DURANIUM");
 
 			fontFormat.SetAlignment(StringAlignmentCenter);
 			fontFormat.SetLineAlignment(StringAlignmentCenter);
@@ -346,19 +346,19 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 			g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,0,r.right,45), &fontFormat, &fontBrush);
 
 			fontBrush.SetColor(color);
-			s.Format("%s: %s",CResourceManager::GetString("TYPE"),	pShip->second->GetShipTypeAsString(FALSE));
+			s.Format("%s: %s",CLoc::GetString("TYPE"),	pShip->second->GetShipTypeAsString(FALSE));
 			g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,0,r.right,85), &fontFormat, &fontBrush);
 
-			s.Format("%s: %i / %i",CResourceManager::GetString("HULL"), pShip->second->GetHull()->GetCurrentHull(),pShip->second->GetHull()->GetMaxHull());
+			s.Format("%s: %i / %i",CLoc::GetString("HULL"), pShip->second->GetHull()->GetCurrentHull(),pShip->second->GetHull()->GetMaxHull());
 			g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,0,r.right,105), &fontFormat, &fontBrush);
 
-			s.Format("%s: %i / %i",CResourceManager::GetString("SHIELDS"), pShip->second->GetShield()->GetCurrentShield(),pShip->second->GetShield()->GetMaxShield());
+			s.Format("%s: %i / %i",CLoc::GetString("SHIELDS"), pShip->second->GetShield()->GetCurrentShield(),pShip->second->GetShield()->GetMaxShield());
 			g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,0,r.right,125), &fontFormat, &fontBrush);
 
-			s.Format("%s: %s",CResourceManager::GetString("RANGE"), Range);
+			s.Format("%s: %s",CLoc::GetString("RANGE"), Range);
 			g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,0,r.right,145), &fontFormat, &fontBrush);
 
-			s.Format("%s: %i",CResourceManager::GetString("SPEED"), pShip->second->GetSpeed(false));
+			s.Format("%s: %i",CLoc::GetString("SPEED"), pShip->second->GetSpeed(false));
 			g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,0,r.right,165), &fontFormat, &fontBrush);
 		}
 		// Wenn wir Infomationen zur Flotte anzeigen
@@ -369,29 +369,29 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 			r.SetRect(0,0,m_TotalSize.cx,m_TotalSize.cy);
 
 			s.Format("%d %s",pShip->second->GetFleetSize()+1,
-				CResourceManager::GetString("SHIPS"));
+				CLoc::GetString("SHIPS"));
 			g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,0,r.right,45), &fontFormat, &fontBrush);
 
 			fontBrush.SetColor(color);
 
 			if (pShip->second->GetFleetShipType() != -1)
-				s.Format("%s: %s",CResourceManager::GetString("TYPE"),
+				s.Format("%s: %s",CLoc::GetString("TYPE"),
 				pShip->second->GetShipTypeAsString(TRUE));
 			else
-				s = CResourceManager::GetString("MIXED_FLEET");
+				s = CLoc::GetString("MIXED_FLEET");
 			g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,0,r.right,85), &fontFormat, &fontBrush);
 
-			s.Format("%s: %s",CResourceManager::GetString("RANGE"), Range);
+			s.Format("%s: %s",CLoc::GetString("RANGE"), Range);
 			g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,0,r.right,105), &fontFormat, &fontBrush);
 
-			s.Format("%s: %d",CResourceManager::GetString("SPEED"),
+			s.Format("%s: %d",CLoc::GetString("SPEED"),
 				pShip->second->GetSpeed(true));
 			g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,0,r.right,125), &fontFormat, &fontBrush);
 		}
 
 		CPoint TargetKO = pShip->second->GetTargetKO();
 		if (TargetKO.x == -1 && pShip->second->GetOwnerOfShip() != pMajor->GetRaceID())
-			s = CResourceManager::GetString("UNKNOWN_TARGET");
+			s = CLoc::GetString("UNKNOWN_TARGET");
 		if (TargetKO.x != -1 && pShip->second->GetOwnerOfShip() == pMajor->GetRaceID())
 		{
 			if(m_DisplayMode == DISPLAY_MODE_SHIP_BOTTEM_VIEW)
@@ -414,22 +414,22 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 			if (speed > 0)
 				rounds = ceil((float)path.GetSize() / (float)speed);
 			if (rounds > 1)
-				s.Format("%s: %c%i (%d %s)", CResourceManager::GetString("TARGET"), (char)(TargetKO.y+97),TargetKO.x+1, rounds, CResourceManager::GetString("ROUNDS"));
+				s.Format("%s: %c%i (%d %s)", CLoc::GetString("TARGET"), (char)(TargetKO.y+97),TargetKO.x+1, rounds, CLoc::GetString("ROUNDS"));
 			else
-				s.Format("%s: %c%i (%d %s)", CResourceManager::GetString("TARGET"), (char)(TargetKO.y+97),TargetKO.x+1, rounds, CResourceManager::GetString("ROUND"));
+				s.Format("%s: %c%i (%d %s)", CLoc::GetString("TARGET"), (char)(TargetKO.y+97),TargetKO.x+1, rounds, CLoc::GetString("ROUND"));
 		}
 		if (TargetKO.x == -1 && pShip->second->GetOwnerOfShip() == pMajor->GetRaceID())
-			s = CResourceManager::GetString("NO_TARGET");
+			s = CLoc::GetString("NO_TARGET");
 		if (TargetKO.x != -1 && pShip->second->GetOwnerOfShip() != pMajor->GetRaceID())
-			s = CResourceManager::GetString("UNKNOWN_TARGET");
+			s = CLoc::GetString("UNKNOWN_TARGET");
 		if (TargetKO.x == pShip->second->GetKO().x &&
 			TargetKO.y == pShip->second->GetKO().y &&
 			pShip->second->GetOwnerOfShip() == pMajor->GetRaceID())
-			s = CResourceManager::GetString("NO_TARGET");
+			s = CLoc::GetString("NO_TARGET");
 		if (CGalaxyMenuView::IsMoveShip() == TRUE)
 		{
 			fontBrush.SetColor(Color(0,225,0));
-			s.Format("--- %s ---", CResourceManager::GetString("SET_MOVEMENT_TARGET").MakeUpper());
+			s.Format("--- %s ---", CLoc::GetString("SET_MOVEMENT_TARGET").MakeUpper());
 		}
 		g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,0,r.right,185), &fontFormat, &fontBrush);
 		// bei eigenem Schiff aktuellen Befehl zeichnen
@@ -441,17 +441,17 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 			fontFormat.SetAlignment(StringAlignmentCenter);
 			fontFormat.SetLineAlignment(StringAlignmentNear);
 			fontFormat.SetFormatFlags(!StringFormatFlagsNoWrap);
-			s.Format("%s: %s",CResourceManager::GetString("COMBAT_BEHAVIOR"), pShip->second->GetCombatTacticAsString());
+			s.Format("%s: %s",CLoc::GetString("COMBAT_BEHAVIOR"), pShip->second->GetCombatTacticAsString());
 			g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,190,r.right,50), &fontFormat, &fontBrush);
 			// Name des Planeten ermitteln, welche gerade geterraformt wird
 			if (pShip->second->GetCurrentOrder() == SHIP_ORDER::TERRAFORM)
 			{
 				assert(pShip->second->GetTerraform() != -1);
 				if (static_cast<int>(pDoc->GetSector(pShip->second->GetKO().x, pShip->second->GetKO().y).GetPlanets().size()) > pShip->second->GetTerraform())
-					s.Format("%s: %s\n%s",CResourceManager::GetString("ORDER"), pShip->second->GetCurrentOrderAsString(), pDoc->GetSector(pShip->second->GetKO().x, pShip->second->GetKO().y).GetPlanet(pShip->second->GetTerraform())->GetPlanetName());
+					s.Format("%s: %s\n%s",CLoc::GetString("ORDER"), pShip->second->GetCurrentOrderAsString(), pDoc->GetSector(pShip->second->GetKO().x, pShip->second->GetKO().y).GetPlanet(pShip->second->GetTerraform())->GetPlanetName());
 			}
 			else
-				s.Format("%s: %s",CResourceManager::GetString("ORDER"), pShip->second->GetCurrentOrderAsString());
+				s.Format("%s: %s",CLoc::GetString("ORDER"), pShip->second->GetCurrentOrderAsString());
 			g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,210,r.right,50), &fontFormat, &fontBrush);
 		}
 	}
@@ -530,7 +530,7 @@ const CString CSmallInfoView::CheckPlanetClassForInfo(char PlanetClass) // Funkt
 {
 	CString s;
 	s.Format("CLASS_%c_INFO", PlanetClass);
-	return CResourceManager::GetString(s);
+	return CLoc::GetString(s);
 }
 
 
@@ -539,7 +539,7 @@ const CString CSmallInfoView::CheckPlanetClassForInfoHead(char PlanetClass) // F
 	CString s;
 	s.Format("CLASS_%c_TYPE", PlanetClass);
 	CString s2;
-	s2.Format("%s %c - %s",CResourceManager::GetString("CLASS"), PlanetClass, CResourceManager::GetString(s));
+	s2.Format("%s %c - %s",CLoc::GetString("CLASS"), PlanetClass, CLoc::GetString(s));
 	return s2;
 }
 

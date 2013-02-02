@@ -6,7 +6,7 @@
 #include "DiplomacyBottomView.h"
 #include "Races\RaceController.h"
 #include "Graphic\memdc.h"
-#include "General/ResourceManager.h"
+#include "General/Loc.h"
 
 // CDiplomacyBottomView
 
@@ -89,7 +89,7 @@ void CDiplomacyBottomView::OnDraw(CDC* dc)
 	g.DrawString(CComBSTR(m_strHeadLine), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(40, 30, rect.right, rect.bottom), &fontFormat, &fontBrush);
 
 	if (m_strText.IsEmpty())
-		g.DrawString(CComBSTR(CResourceManager::GetString("NO_DIPLOMATIC_NEWS")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(40, 30, rect.right, rect.bottom), &fontFormat, &fontBrush);
+		g.DrawString(CComBSTR(CLoc::GetString("NO_DIPLOMATIC_NEWS")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(40, 30, rect.right, rect.bottom), &fontFormat, &fontBrush);
 	m_strHeadLine = "";
 
 	CFontLoader::CreateGDIFont(pMajor, 2, fontName, fontSize);

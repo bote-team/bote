@@ -11,7 +11,7 @@
 #include "GraphicPool.h"
 #include "Races/race.h"
 #include "Races/major.h"
-#include "General/ResourceManager.h"
+#include "General/Loc.h"
 #include "Ships/Ships.h"
 
 #include <cassert>
@@ -301,42 +301,42 @@ CString CShip::GetShipTypeAsString(BOOL plural) const
 	{
 		switch (m_iShipType)
 		{
-		case SHIP_TYPE::TRANSPORTER: shipType = CResourceManager::GetString("TRANSPORTER"); break;
-		case SHIP_TYPE::COLONYSHIP: shipType = CResourceManager::GetString("COLONIZESHIP"); break;
-		case SHIP_TYPE::PROBE: shipType = CResourceManager::GetString("PROBE"); break;
-		case SHIP_TYPE::SCOUT: shipType = CResourceManager::GetString("SCOUT"); break;
-		case SHIP_TYPE::FIGHTER: shipType = CResourceManager::GetString("FIGHTER"); break;
-		case SHIP_TYPE::FRIGATE: shipType = CResourceManager::GetString("FRIGATE"); break;
-		case SHIP_TYPE::DESTROYER: shipType = CResourceManager::GetString("DESTROYER"); break;
-		case SHIP_TYPE::CRUISER: shipType = CResourceManager::GetString("CRUISER"); break;
-		case SHIP_TYPE::HEAVY_DESTROYER: shipType = CResourceManager::GetString("HEAVY_DESTROYER"); break;
-		case SHIP_TYPE::HEAVY_CRUISER: shipType = CResourceManager::GetString("HEAVY_CRUISER"); break;
-		case SHIP_TYPE::BATTLESHIP: shipType = CResourceManager::GetString("BATTLESHIP"); break;
-		case SHIP_TYPE::DREADNOUGHT: shipType = CResourceManager::GetString("DREADNOUGHT"); break;
-		case SHIP_TYPE::OUTPOST: shipType = CResourceManager::GetString("OUTPOST"); break;
-		case SHIP_TYPE::STARBASE: shipType = CResourceManager::GetString("STARBASE"); break;
-		case SHIP_TYPE::ALIEN: shipType = CResourceManager::GetString("ALIEN"); break;
+		case SHIP_TYPE::TRANSPORTER: shipType = CLoc::GetString("TRANSPORTER"); break;
+		case SHIP_TYPE::COLONYSHIP: shipType = CLoc::GetString("COLONIZESHIP"); break;
+		case SHIP_TYPE::PROBE: shipType = CLoc::GetString("PROBE"); break;
+		case SHIP_TYPE::SCOUT: shipType = CLoc::GetString("SCOUT"); break;
+		case SHIP_TYPE::FIGHTER: shipType = CLoc::GetString("FIGHTER"); break;
+		case SHIP_TYPE::FRIGATE: shipType = CLoc::GetString("FRIGATE"); break;
+		case SHIP_TYPE::DESTROYER: shipType = CLoc::GetString("DESTROYER"); break;
+		case SHIP_TYPE::CRUISER: shipType = CLoc::GetString("CRUISER"); break;
+		case SHIP_TYPE::HEAVY_DESTROYER: shipType = CLoc::GetString("HEAVY_DESTROYER"); break;
+		case SHIP_TYPE::HEAVY_CRUISER: shipType = CLoc::GetString("HEAVY_CRUISER"); break;
+		case SHIP_TYPE::BATTLESHIP: shipType = CLoc::GetString("BATTLESHIP"); break;
+		case SHIP_TYPE::DREADNOUGHT: shipType = CLoc::GetString("DREADNOUGHT"); break;
+		case SHIP_TYPE::OUTPOST: shipType = CLoc::GetString("OUTPOST"); break;
+		case SHIP_TYPE::STARBASE: shipType = CLoc::GetString("STARBASE"); break;
+		case SHIP_TYPE::ALIEN: shipType = CLoc::GetString("ALIEN"); break;
 		}
 	}
 	else
 	{
 		switch (m_iShipType)
 		{
-		case SHIP_TYPE::TRANSPORTER: shipType = CResourceManager::GetString("TRANSPORTERS"); break;
-		case SHIP_TYPE::COLONYSHIP: shipType = CResourceManager::GetString("COLONIZESHIPS"); break;
-		case SHIP_TYPE::PROBE: shipType = CResourceManager::GetString("PROBES"); break;
-		case SHIP_TYPE::SCOUT: shipType = CResourceManager::GetString("SCOUTS"); break;
-		case SHIP_TYPE::FIGHTER: shipType = CResourceManager::GetString("FIGHTERS"); break;
-		case SHIP_TYPE::FRIGATE: shipType = CResourceManager::GetString("FRIGATES"); break;
-		case SHIP_TYPE::DESTROYER: shipType = CResourceManager::GetString("DESTROYERS"); break;
-		case SHIP_TYPE::CRUISER: shipType = CResourceManager::GetString("CRUISERS"); break;
-		case SHIP_TYPE::HEAVY_DESTROYER: shipType = CResourceManager::GetString("HEAVY_DESTROYERS"); break;
-		case SHIP_TYPE::HEAVY_CRUISER: shipType = CResourceManager::GetString("HEAVY_CRUISERS"); break;
-		case SHIP_TYPE::BATTLESHIP: shipType = CResourceManager::GetString("BATTLESHIPS"); break;
-		case SHIP_TYPE::DREADNOUGHT: shipType = CResourceManager::GetString("DREADNOUGHTS"); break;
-		case SHIP_TYPE::OUTPOST: shipType = CResourceManager::GetString("OUTPOSTS"); break;
-		case SHIP_TYPE::STARBASE: shipType = CResourceManager::GetString("STARBASES"); break;
-		case SHIP_TYPE::ALIEN: shipType = CResourceManager::GetString("ALIENS"); break;
+		case SHIP_TYPE::TRANSPORTER: shipType = CLoc::GetString("TRANSPORTERS"); break;
+		case SHIP_TYPE::COLONYSHIP: shipType = CLoc::GetString("COLONIZESHIPS"); break;
+		case SHIP_TYPE::PROBE: shipType = CLoc::GetString("PROBES"); break;
+		case SHIP_TYPE::SCOUT: shipType = CLoc::GetString("SCOUTS"); break;
+		case SHIP_TYPE::FIGHTER: shipType = CLoc::GetString("FIGHTERS"); break;
+		case SHIP_TYPE::FRIGATE: shipType = CLoc::GetString("FRIGATES"); break;
+		case SHIP_TYPE::DESTROYER: shipType = CLoc::GetString("DESTROYERS"); break;
+		case SHIP_TYPE::CRUISER: shipType = CLoc::GetString("CRUISERS"); break;
+		case SHIP_TYPE::HEAVY_DESTROYER: shipType = CLoc::GetString("HEAVY_DESTROYERS"); break;
+		case SHIP_TYPE::HEAVY_CRUISER: shipType = CLoc::GetString("HEAVY_CRUISERS"); break;
+		case SHIP_TYPE::BATTLESHIP: shipType = CLoc::GetString("BATTLESHIPS"); break;
+		case SHIP_TYPE::DREADNOUGHT: shipType = CLoc::GetString("DREADNOUGHTS"); break;
+		case SHIP_TYPE::OUTPOST: shipType = CLoc::GetString("OUTPOSTS"); break;
+		case SHIP_TYPE::STARBASE: shipType = CLoc::GetString("STARBASES"); break;
+		case SHIP_TYPE::ALIEN: shipType = CLoc::GetString("ALIENS"); break;
 		}
 	}
 
@@ -349,28 +349,28 @@ CString CShip::GetCurrentOrderAsString() const
 	CString order;
 	switch (m_iCurrentOrder)
 	{
-	case SHIP_ORDER::AVOID: order = CResourceManager::GetString("AVOID_ORDER"); break;
-	case SHIP_ORDER::ATTACK: order = CResourceManager::GetString("ATTACK_ORDER"); break;
-	case SHIP_ORDER::ENCLOAK: order = CResourceManager::GetString("CLOAK_ORDER"); break;
-	case SHIP_ORDER::DECLOAK: order = CResourceManager::GetString("DECLOAK_ORDER"); break;
-	case SHIP_ORDER::ATTACK_SYSTEM: order = CResourceManager::GetString("ATTACK_SYSTEM_ORDER"); break;
-	case SHIP_ORDER::RAID_SYSTEM: order = CResourceManager::GetString("RAID_SYSTEM_ORDER"); break;
-	case SHIP_ORDER::BLOCKADE_SYSTEM: order = CResourceManager::GetString("BLOCKADE_SYSTEM_ORDER"); break;
-	case SHIP_ORDER::DESTROY_SHIP: order = CResourceManager::GetString("DESTROY_SHIP_ORDER"); break;
-	case SHIP_ORDER::COLONIZE: order = CResourceManager::GetString("COLONIZE_ORDER"); break;
-	case SHIP_ORDER::TERRAFORM: order = CResourceManager::GetString("TERRAFORM_ORDER"); break;
-	case SHIP_ORDER::BUILD_OUTPOST: order = CResourceManager::GetString("BUILD_OUTPOST_ORDER"); break;
-	case SHIP_ORDER::BUILD_STARBASE: order = CResourceManager::GetString("BUILD_STARBASE_ORDER"); break;
-	case SHIP_ORDER::ASSIGN_FLAGSHIP: order = CResourceManager::GetString("ASSIGN_FLAGSHIP_ORDER"); break;
-	case SHIP_ORDER::CREATE_FLEET: order = CResourceManager::GetString("CREATE_FLEET_ORDER"); break;
-	case SHIP_ORDER::TRANSPORT: order = CResourceManager::GetString("TRANSPORT_ORDER"); break;
-	case SHIP_ORDER::FOLLOW_SHIP: order = CResourceManager::GetString("FOLLOW_SHIP_ORDER"); break;
-	case SHIP_ORDER::TRAIN_SHIP: order = CResourceManager::GetString("TRAIN_SHIP_ORDER"); break;
-	case SHIP_ORDER::WAIT_SHIP_ORDER: order = CResourceManager::GetString("WAIT_SHIP_ORDER"); break;
-	case SHIP_ORDER::SENTRY_SHIP_ORDER: order = CResourceManager::GetString("SENTRY_SHIP_ORDER"); break;
-	case SHIP_ORDER::REPAIR: order = CResourceManager::GetString("REPAIR_SHIP_ORDER"); break;
-	case SHIP_ORDER::IMPROVE_SHIELDS: order = CResourceManager::GetString("IMPROVE_SHIELDS_SHIP_ORDER"); break;
-	case SHIP_ORDER::NONE: order = CResourceManager::GetString("NO_SHIP_ORDER"); break;
+	case SHIP_ORDER::AVOID: order = CLoc::GetString("AVOID_ORDER"); break;
+	case SHIP_ORDER::ATTACK: order = CLoc::GetString("ATTACK_ORDER"); break;
+	case SHIP_ORDER::ENCLOAK: order = CLoc::GetString("CLOAK_ORDER"); break;
+	case SHIP_ORDER::DECLOAK: order = CLoc::GetString("DECLOAK_ORDER"); break;
+	case SHIP_ORDER::ATTACK_SYSTEM: order = CLoc::GetString("ATTACK_SYSTEM_ORDER"); break;
+	case SHIP_ORDER::RAID_SYSTEM: order = CLoc::GetString("RAID_SYSTEM_ORDER"); break;
+	case SHIP_ORDER::BLOCKADE_SYSTEM: order = CLoc::GetString("BLOCKADE_SYSTEM_ORDER"); break;
+	case SHIP_ORDER::DESTROY_SHIP: order = CLoc::GetString("DESTROY_SHIP_ORDER"); break;
+	case SHIP_ORDER::COLONIZE: order = CLoc::GetString("COLONIZE_ORDER"); break;
+	case SHIP_ORDER::TERRAFORM: order = CLoc::GetString("TERRAFORM_ORDER"); break;
+	case SHIP_ORDER::BUILD_OUTPOST: order = CLoc::GetString("BUILD_OUTPOST_ORDER"); break;
+	case SHIP_ORDER::BUILD_STARBASE: order = CLoc::GetString("BUILD_STARBASE_ORDER"); break;
+	case SHIP_ORDER::ASSIGN_FLAGSHIP: order = CLoc::GetString("ASSIGN_FLAGSHIP_ORDER"); break;
+	case SHIP_ORDER::CREATE_FLEET: order = CLoc::GetString("CREATE_FLEET_ORDER"); break;
+	case SHIP_ORDER::TRANSPORT: order = CLoc::GetString("TRANSPORT_ORDER"); break;
+	case SHIP_ORDER::FOLLOW_SHIP: order = CLoc::GetString("FOLLOW_SHIP_ORDER"); break;
+	case SHIP_ORDER::TRAIN_SHIP: order = CLoc::GetString("TRAIN_SHIP_ORDER"); break;
+	case SHIP_ORDER::WAIT_SHIP_ORDER: order = CLoc::GetString("WAIT_SHIP_ORDER"); break;
+	case SHIP_ORDER::SENTRY_SHIP_ORDER: order = CLoc::GetString("SENTRY_SHIP_ORDER"); break;
+	case SHIP_ORDER::REPAIR: order = CLoc::GetString("REPAIR_SHIP_ORDER"); break;
+	case SHIP_ORDER::IMPROVE_SHIELDS: order = CLoc::GetString("IMPROVE_SHIELDS_SHIP_ORDER"); break;
+	case SHIP_ORDER::NONE: order = CLoc::GetString("NO_SHIP_ORDER"); break;
 	default: assert(false); break;
 	}
 	return order;
@@ -383,10 +383,10 @@ CString CShip::GetCombatTacticAsString() const
 	switch (m_nCombatTactic)
 	{
 		case COMBAT_TACTIC::CT_AVOID:
-			tactic = CResourceManager::GetString("AVOID_ORDER");
+			tactic = CLoc::GetString("AVOID_ORDER");
 		break;
 		case COMBAT_TACTIC::CT_ATTACK:
-			tactic = CResourceManager::GetString("ATTACK_ORDER");
+			tactic = CLoc::GetString("ATTACK_ORDER");
 		break;
 		default:
 			assert(false);
@@ -919,7 +919,7 @@ CString CShip::GetTooltip(const FleetInfoForGetTooltip* const info)
 				sName.Delete(0,4);
 			if (sName.GetLength() > 2 && sName.ReverseFind(' ') == sName.GetLength() - 2)
 				sName.Delete(sName.GetLength() - 2, 2);
-			sName.Append(" " + CResourceManager::GetString("GROUP"));
+			sName.Append(" " + CLoc::GetString("GROUP"));
 		}
 		sName = CHTMLStringBuilder::GetHTMLColor(sName);
 		sName = CHTMLStringBuilder::GetHTMLHeader(sName, _T("h3"));
@@ -929,7 +929,7 @@ CString CShip::GetTooltip(const FleetInfoForGetTooltip* const info)
 
 	CString sType;
 	if (info && info->FleetShipType == -1)
-		sType = _T("(") + CResourceManager::GetString("MIXED_FLEET") + _T(")");
+		sType = _T("(") + CLoc::GetString("MIXED_FLEET") + _T(")");
 	else if (info)
 		sType = _T("(") + GetShipTypeAsString(TRUE) + _T(")");
 	else
@@ -941,7 +941,7 @@ CString CShip::GetTooltip(const FleetInfoForGetTooltip* const info)
 
 	// Größenklasse und Unterhalt anzeigen
 	CString sCosts = "0";
-	sCosts.Format("%s: %d    %s: %d", CResourceManager::GetString("SHIPSIZE"), GetShipSize(), CResourceManager::GetString("SHIPCOSTS"), GetMaintenanceCosts());
+	sCosts.Format("%s: %d    %s: %d", CLoc::GetString("SHIPSIZE"), GetShipSize(), CLoc::GetString("SHIPCOSTS"), GetMaintenanceCosts());
 	sCosts = CHTMLStringBuilder::GetHTMLColor(sCosts);
 	sCosts = CHTMLStringBuilder::GetHTMLHeader(sCosts, _T("h5"));
 	sCosts = CHTMLStringBuilder::GetHTMLCenter(sCosts);
@@ -950,7 +950,7 @@ CString CShip::GetTooltip(const FleetInfoForGetTooltip* const info)
 	// Bewegung anzeigen
 	CString sMovementHead = "";
 	sMovementHead += CHTMLStringBuilder::GetHTMLStringNewLine();
-	sMovementHead += CResourceManager::GetString("MOVEMENT");
+	sMovementHead += CLoc::GetString("MOVEMENT");
 	sMovementHead = CHTMLStringBuilder::GetHTMLColor(sMovementHead, _T("silver"));
 	sMovementHead = CHTMLStringBuilder::GetHTMLHeader(sMovementHead, _T("h4"));
 	sMovementHead = CHTMLStringBuilder::GetHTMLCenter(sMovementHead);
@@ -958,22 +958,22 @@ CString CShip::GetTooltip(const FleetInfoForGetTooltip* const info)
 	sMovementHead += CHTMLStringBuilder::GetHTMLStringHorzLine();
 	sMovementHead += CHTMLStringBuilder::GetHTMLStringNewLine();
 
-	CString sMovement = CResourceManager::GetString("RANGE") + _T(": ");
+	CString sMovement = CLoc::GetString("RANGE") + _T(": ");
 	SHIP_RANGE::Typ nRange = GetRange();
 	if (info)
 		nRange = info->FleetRange;
 	if (nRange == SHIP_RANGE::SHORT)
-		sMovement += CResourceManager::GetString("SHORT");
+		sMovement += CLoc::GetString("SHORT");
 	else if (nRange == SHIP_RANGE::MIDDLE)
-		sMovement += CResourceManager::GetString("MIDDLE");
+		sMovement += CLoc::GetString("MIDDLE");
 	else if (nRange == SHIP_RANGE::LONG)
-		sMovement += CResourceManager::GetString("LONG");
+		sMovement += CLoc::GetString("LONG");
 	sMovement += CHTMLStringBuilder::GetHTMLStringNewLine();
 	CString sSpeed;
 	BYTE bySpeed = GetSpeed();
 	if (info)
 		bySpeed = info->FleetSpeed;
-	sSpeed.Format("%s: %d\n", CResourceManager::GetString("SPEED"), bySpeed);
+	sSpeed.Format("%s: %d\n", CLoc::GetString("SPEED"), bySpeed);
 	sMovement += sSpeed;
 
 	// wenn es eine Flotte ist keine weiteren Infos anzeigen
@@ -985,19 +985,19 @@ CString CShip::GetTooltip(const FleetInfoForGetTooltip* const info)
 		return sName + sType + sMovementHead + sMovement;
 	}
 
-	sMovement += CResourceManager::GetString("MANEUVERABILITY") + _T(": ");
+	sMovement += CLoc::GetString("MANEUVERABILITY") + _T(": ");
 	switch (GetManeuverability())
 	{
-	case 9:	sMovement += CResourceManager::GetString("PHENOMENAL");	break;
-	case 8:	sMovement += CResourceManager::GetString("EXCELLENT");	break;
-	case 7:	sMovement += CResourceManager::GetString("VERYGOOD");	break;
-	case 6:	sMovement += CResourceManager::GetString("GOOD");		break;
-	case 5:	sMovement += CResourceManager::GetString("NORMAL");		break;
-	case 4:	sMovement += CResourceManager::GetString("ADEQUATE");	break;
-	case 3:	sMovement += CResourceManager::GetString("BAD");		break;
-	case 2:	sMovement += CResourceManager::GetString("VERYBAD");	break;
-	case 1:	sMovement += CResourceManager::GetString("MISERABLE");	break;
-	default:sMovement += CResourceManager::GetString("NONE");
+	case 9:	sMovement += CLoc::GetString("PHENOMENAL");	break;
+	case 8:	sMovement += CLoc::GetString("EXCELLENT");	break;
+	case 7:	sMovement += CLoc::GetString("VERYGOOD");	break;
+	case 6:	sMovement += CLoc::GetString("GOOD");		break;
+	case 5:	sMovement += CLoc::GetString("NORMAL");		break;
+	case 4:	sMovement += CLoc::GetString("ADEQUATE");	break;
+	case 3:	sMovement += CLoc::GetString("BAD");		break;
+	case 2:	sMovement += CLoc::GetString("VERYBAD");	break;
+	case 1:	sMovement += CLoc::GetString("MISERABLE");	break;
+	default:sMovement += CLoc::GetString("NONE");
 	}
 	sMovement = CHTMLStringBuilder::GetHTMLColor(sMovement);
 	sMovement = CHTMLStringBuilder::GetHTMLHeader(sMovement, _T("h5"));
@@ -1012,7 +1012,7 @@ CString CShip::GetTooltip(const FleetInfoForGetTooltip* const info)
 	{
 		CBeamWeapons* pBeam = &(GetBeamWeapons()->GetAt(i));
 		CString s;
-		s.Format("%s %d %s", CResourceManager::GetString("TYPE"), pBeam->GetBeamType(), pBeam->GetBeamName());
+		s.Format("%s %d %s", CLoc::GetString("TYPE"), pBeam->GetBeamType(), pBeam->GetBeamName());
 		// Waffen typenrein sammeln
 		mBeamWeapons[s] += pBeam->GetBeamNumber();
 
@@ -1037,14 +1037,14 @@ CString CShip::GetTooltip(const FleetInfoForGetTooltip* const info)
 	}
 
 	if (sBeams.IsEmpty())
-		sBeams = CResourceManager::GetString("NONE") + "\n";
+		sBeams = CLoc::GetString("NONE") + "\n";
 	sBeams = CHTMLStringBuilder::GetHTMLColor(sBeams);
 	sBeams = CHTMLStringBuilder::GetHTMLHeader(sBeams, _T("h5"));
 	sBeams = CHTMLStringBuilder::GetHTMLCenter(sBeams);
 	sBeams += CHTMLStringBuilder::GetHTMLStringNewLine();
 
 	CString sBeamWeaponHead;
-	sBeamWeaponHead.Format("%s (%s: %d)", CResourceManager::GetString("BEAMWEAPONS"), CResourceManager::GetString("DAMAGE"), nOverallDmg);
+	sBeamWeaponHead.Format("%s (%s: %d)", CLoc::GetString("BEAMWEAPONS"), CLoc::GetString("DAMAGE"), nOverallDmg);
 	sBeamWeaponHead = CHTMLStringBuilder::GetHTMLColor(sBeamWeaponHead, _T("silver"));
 	sBeamWeaponHead = CHTMLStringBuilder::GetHTMLHeader(sBeamWeaponHead, _T("h4"));
 	sBeamWeaponHead = CHTMLStringBuilder::GetHTMLCenter(sBeamWeaponHead);
@@ -1072,13 +1072,13 @@ CString CShip::GetTooltip(const FleetInfoForGetTooltip* const info)
 	}
 
 	if (sTorps.IsEmpty())
-		sTorps = CResourceManager::GetString("NONE") + "\n";
+		sTorps = CLoc::GetString("NONE") + "\n";
 	sTorps = CHTMLStringBuilder::GetHTMLColor(sTorps);
 	sTorps = CHTMLStringBuilder::GetHTMLHeader(sTorps, _T("h5"));
 	sTorps = CHTMLStringBuilder::GetHTMLCenter(sTorps);
 	sTorps += CHTMLStringBuilder::GetHTMLStringNewLine();
 	CString sTupeWeaponHead;
-	sTupeWeaponHead.Format("%s (%s: %d)", CResourceManager::GetString("TORPEDOWEAPONS"), CResourceManager::GetString("DAMAGE"), nOverallDmg);
+	sTupeWeaponHead.Format("%s (%s: %d)", CLoc::GetString("TORPEDOWEAPONS"), CLoc::GetString("DAMAGE"), nOverallDmg);
 	sTupeWeaponHead = CHTMLStringBuilder::GetHTMLColor(sTupeWeaponHead, _T("silver"));
 	sTupeWeaponHead = CHTMLStringBuilder::GetHTMLHeader(sTupeWeaponHead, _T("h4"));
 	sTupeWeaponHead = CHTMLStringBuilder::GetHTMLCenter(sTupeWeaponHead);
@@ -1086,7 +1086,7 @@ CString CShip::GetTooltip(const FleetInfoForGetTooltip* const info)
 	sTupeWeaponHead += CHTMLStringBuilder::GetHTMLStringHorzLine();
 	sTupeWeaponHead += CHTMLStringBuilder::GetHTMLStringNewLine();
 
-	CString sDefensiveHead = CResourceManager::GetString("SHIELDS")+" "+CResourceManager::GetString("AND")+" "+CResourceManager::GetString("HULL");
+	CString sDefensiveHead = CLoc::GetString("SHIELDS")+" "+CLoc::GetString("AND")+" "+CLoc::GetString("HULL");
 	sDefensiveHead = CHTMLStringBuilder::GetHTMLColor(sDefensiveHead, _T("silver"));
 	sDefensiveHead = CHTMLStringBuilder::GetHTMLHeader(sDefensiveHead, _T("h4"));
 	sDefensiveHead = CHTMLStringBuilder::GetHTMLCenter(sDefensiveHead);
@@ -1096,7 +1096,7 @@ CString CShip::GetTooltip(const FleetInfoForGetTooltip* const info)
 
 	CShield* pShield = GetShield();
 	CString sShield;
-	sShield.Format("%s %d %s: %s %d/%d", CResourceManager::GetString("TYPE"), pShield->GetShieldType(), CResourceManager::GetString("SHIELDS"), CResourceManager::GetString("CAPACITY"), (UINT)pShield->GetCurrentShield(), (UINT)pShield->GetMaxShield());
+	sShield.Format("%s %d %s: %s %d/%d", CLoc::GetString("TYPE"), pShield->GetShieldType(), CLoc::GetString("SHIELDS"), CLoc::GetString("CAPACITY"), (UINT)pShield->GetCurrentShield(), (UINT)pShield->GetMaxShield());
 	sShield = CHTMLStringBuilder::GetHTMLColor(sShield);
 	sShield = CHTMLStringBuilder::GetHTMLHeader(sShield, _T("h5"));
 	sShield = CHTMLStringBuilder::GetHTMLCenter(sShield);
@@ -1106,16 +1106,16 @@ CString CShip::GetTooltip(const FleetInfoForGetTooltip* const info)
 	CString sMaterial;
 	switch (pHull->GetHullMaterial())
 	{
-	case TITAN:		sMaterial = CResourceManager::GetString("TITAN");	 break;
-	case DURANIUM:	sMaterial = CResourceManager::GetString("DURANIUM"); break;
-	case IRIDIUM:	sMaterial = CResourceManager::GetString("IRIDIUM");	 break;
+	case TITAN:		sMaterial = CLoc::GetString("TITAN");	 break;
+	case DURANIUM:	sMaterial = CLoc::GetString("DURANIUM"); break;
+	case IRIDIUM:	sMaterial = CLoc::GetString("IRIDIUM");	 break;
 	default:		sMaterial = "";
 	}
 	CString sHull;
 	if (pHull->GetDoubleHull() == TRUE)
-		sHull.Format("%s%s: %s %d/%d", sMaterial, CResourceManager::GetString("DOUBLE_HULL_ARMOUR"), CResourceManager::GetString("INTEGRITY"), (int)pHull->GetCurrentHull(), (int)pHull->GetMaxHull());
+		sHull.Format("%s%s: %s %d/%d", sMaterial, CLoc::GetString("DOUBLE_HULL_ARMOUR"), CLoc::GetString("INTEGRITY"), (int)pHull->GetCurrentHull(), (int)pHull->GetMaxHull());
 	else
-		sHull.Format("%s%s: %s %d/%d", sMaterial, CResourceManager::GetString("HULL_ARMOR"), CResourceManager::GetString("INTEGRITY"), (int)pHull->GetCurrentHull(), (int)pHull->GetMaxHull());
+		sHull.Format("%s%s: %s %d/%d", sMaterial, CLoc::GetString("HULL_ARMOR"), CLoc::GetString("INTEGRITY"), (int)pHull->GetCurrentHull(), (int)pHull->GetMaxHull());
 	sHull = CHTMLStringBuilder::GetHTMLColor(sHull);
 	sHull = CHTMLStringBuilder::GetHTMLHeader(sHull, _T("h5"));
 	sHull = CHTMLStringBuilder::GetHTMLCenter(sHull);
@@ -1124,7 +1124,7 @@ CString CShip::GetTooltip(const FleetInfoForGetTooltip* const info)
 
 
 	// Manövrierbarkeit anzeigen
-	CString sManeuverHead = CResourceManager::GetString("MANEUVERABILITY");
+	CString sManeuverHead = CLoc::GetString("MANEUVERABILITY");
 	sManeuverHead = CHTMLStringBuilder::GetHTMLColor(sManeuverHead, _T("silver"));
 	sManeuverHead = CHTMLStringBuilder::GetHTMLHeader(sManeuverHead, _T("h4"));
 	sManeuverHead = CHTMLStringBuilder::GetHTMLCenter(sManeuverHead);
@@ -1135,16 +1135,16 @@ CString CShip::GetTooltip(const FleetInfoForGetTooltip* const info)
 	CString sManeuver;
 	switch (GetManeuverability())
 	{
-	case 9:	sManeuver = CResourceManager::GetString("PHENOMENAL");	break;
-	case 8:	sManeuver = CResourceManager::GetString("EXCELLENT");	break;
-	case 7:	sManeuver = CResourceManager::GetString("VERYGOOD");	break;
-	case 6:	sManeuver = CResourceManager::GetString("GOOD");		break;
-	case 5:	sManeuver = CResourceManager::GetString("NORMAL");		break;
-	case 4:	sManeuver = CResourceManager::GetString("ADEQUATE");	break;
-	case 3:	sManeuver = CResourceManager::GetString("BAD");			break;
-	case 2:	sManeuver = CResourceManager::GetString("VERYBAD");		break;
-	case 1:	sManeuver = CResourceManager::GetString("MISERABLE");	break;
-	default:sManeuver = CResourceManager::GetString("NONE");
+	case 9:	sManeuver = CLoc::GetString("PHENOMENAL");	break;
+	case 8:	sManeuver = CLoc::GetString("EXCELLENT");	break;
+	case 7:	sManeuver = CLoc::GetString("VERYGOOD");	break;
+	case 6:	sManeuver = CLoc::GetString("GOOD");		break;
+	case 5:	sManeuver = CLoc::GetString("NORMAL");		break;
+	case 4:	sManeuver = CLoc::GetString("ADEQUATE");	break;
+	case 3:	sManeuver = CLoc::GetString("BAD");			break;
+	case 2:	sManeuver = CLoc::GetString("VERYBAD");		break;
+	case 1:	sManeuver = CLoc::GetString("MISERABLE");	break;
+	default:sManeuver = CLoc::GetString("NONE");
 	}
 	sManeuver = CHTMLStringBuilder::GetHTMLColor(sManeuver);
 	sManeuver = CHTMLStringBuilder::GetHTMLHeader(sManeuver, _T("h5"));
@@ -1153,7 +1153,7 @@ CString CShip::GetTooltip(const FleetInfoForGetTooltip* const info)
 	sManeuver += CHTMLStringBuilder::GetHTMLStringNewLine();
 
 	// Scan anzeigen
-	CString sScanHead = CResourceManager::GetString("SENSORS");
+	CString sScanHead = CLoc::GetString("SENSORS");
 	sScanHead = CHTMLStringBuilder::GetHTMLColor(sScanHead, _T("silver"));
 	sScanHead = CHTMLStringBuilder::GetHTMLHeader(sScanHead, _T("h4"));
 	sScanHead = CHTMLStringBuilder::GetHTMLCenter(sScanHead);
@@ -1162,13 +1162,13 @@ CString CShip::GetTooltip(const FleetInfoForGetTooltip* const info)
 	sScanHead += CHTMLStringBuilder::GetHTMLStringNewLine();
 
 	CString sScan;
-	sScan.Format("%s: %d", CResourceManager::GetString("SCANRANGE"), GetScanRange());
+	sScan.Format("%s: %d", CLoc::GetString("SCANRANGE"), GetScanRange());
 	sScan = CHTMLStringBuilder::GetHTMLColor(sScan);
 	sScan = CHTMLStringBuilder::GetHTMLHeader(sScan, _T("h5"));
 	sScan = CHTMLStringBuilder::GetHTMLCenter(sScan);
 	sScan += CHTMLStringBuilder::GetHTMLStringNewLine();
 	CString sScanpower;
-	sScanpower.Format("%s: %d", CResourceManager::GetString("SCANPOWER"), GetScanPower());
+	sScanpower.Format("%s: %d", CLoc::GetString("SCANPOWER"), GetScanPower());
 	sScanpower = CHTMLStringBuilder::GetHTMLColor(sScanpower);
 	sScanpower = CHTMLStringBuilder::GetHTMLHeader(sScanpower, _T("h5"));
 	sScanpower = CHTMLStringBuilder::GetHTMLCenter(sScanpower);
@@ -1176,7 +1176,7 @@ CString CShip::GetTooltip(const FleetInfoForGetTooltip* const info)
 	sScanpower += CHTMLStringBuilder::GetHTMLStringNewLine();
 
 	// Spezialfähigkeiten anzeigen
-	CString sSpecialsHead = CResourceManager::GetString("SPECIAL_ABILITIES");
+	CString sSpecialsHead = CLoc::GetString("SPECIAL_ABILITIES");
 	sSpecialsHead = CHTMLStringBuilder::GetHTMLColor(sSpecialsHead, _T("silver"));
 	sSpecialsHead = CHTMLStringBuilder::GetHTMLHeader(sSpecialsHead, _T("h4"));
 	sSpecialsHead = CHTMLStringBuilder::GetHTMLCenter(sSpecialsHead);
@@ -1186,31 +1186,31 @@ CString CShip::GetTooltip(const FleetInfoForGetTooltip* const info)
 
 	CString sSpecials;
 	if (HasSpecial(SHIP_SPECIAL::ASSULTSHIP))
-		sSpecials += CResourceManager::GetString("ASSAULTSHIP") + "\n";
+		sSpecials += CLoc::GetString("ASSAULTSHIP") + "\n";
 	if (HasSpecial(SHIP_SPECIAL::BLOCKADESHIP))
-		sSpecials += CResourceManager::GetString("BLOCKADESHIP") + "\n";
+		sSpecials += CLoc::GetString("BLOCKADESHIP") + "\n";
 	if (HasSpecial(SHIP_SPECIAL::COMMANDSHIP))
-		sSpecials += CResourceManager::GetString("COMMANDSHIP") + "\n";
+		sSpecials += CLoc::GetString("COMMANDSHIP") + "\n";
 	if (HasSpecial(SHIP_SPECIAL::DOGFIGHTER))
-		sSpecials += CResourceManager::GetString("DOGFIGHTER") + "\n";
+		sSpecials += CLoc::GetString("DOGFIGHTER") + "\n";
 	if (HasSpecial(SHIP_SPECIAL::DOGKILLER))
-		sSpecials += CResourceManager::GetString("DOGKILLER") + "\n";
+		sSpecials += CLoc::GetString("DOGKILLER") + "\n";
 	if (HasSpecial(SHIP_SPECIAL::PATROLSHIP))
-		sSpecials += CResourceManager::GetString("PATROLSHIP") + "\n";
+		sSpecials += CLoc::GetString("PATROLSHIP") + "\n";
 	if (HasSpecial(SHIP_SPECIAL::RAIDER))
-		sSpecials += CResourceManager::GetString("RAIDER") + "\n";
+		sSpecials += CLoc::GetString("RAIDER") + "\n";
 	if (HasSpecial(SHIP_SPECIAL::SCIENCEVESSEL))
-		sSpecials += CResourceManager::GetString("SCIENCESHIP") + "\n";
+		sSpecials += CLoc::GetString("SCIENCESHIP") + "\n";
 	if (pShield->GetRegenerative())
-		sSpecials += CResourceManager::GetString("REGENERATIVE_SHIELDS") + "\n";
+		sSpecials += CLoc::GetString("REGENERATIVE_SHIELDS") + "\n";
 	if (pHull->GetAblative())
-		sSpecials += CResourceManager::GetString("ABLATIVE_ARMOR") + "\n";
+		sSpecials += CLoc::GetString("ABLATIVE_ARMOR") + "\n";
 	if  (pHull->GetPolarisation())
-		sSpecials += CResourceManager::GetString("HULLPOLARISATION") + "\n";
+		sSpecials += CLoc::GetString("HULLPOLARISATION") + "\n";
 	if (CanCloak())
-		sSpecials += CResourceManager::GetString("CAN_CLOAK") + "\n";
+		sSpecials += CLoc::GetString("CAN_CLOAK") + "\n";
 	if (sSpecials.IsEmpty())
-		sSpecials = CResourceManager::GetString("NONE") + "\n";;
+		sSpecials = CLoc::GetString("NONE") + "\n";;
 	sSpecials = CHTMLStringBuilder::GetHTMLColor(sSpecials);
 	sSpecials = CHTMLStringBuilder::GetHTMLHeader(sSpecials, _T("h5"));
 	sSpecials = CHTMLStringBuilder::GetHTMLCenter(sSpecials);
@@ -1373,7 +1373,7 @@ void CShip::DrawShip(Gdiplus::Graphics* g, CGraphicPool* pGraphicPool, const CPo
 			if (!IsAlien())
 			{
 				g->DrawString(CComBSTR(m_strShipName), -1, &font, PointF((REAL)pt.x + 120, (REAL)pt.y + 37), &fontFormat, &fontBrush);
-				s = m_strShipClass + "-" + CResourceManager::GetString("CLASS");
+				s = m_strShipClass + "-" + CLoc::GetString("CLASS");
 				g->DrawString(CComBSTR(s), -1, &font, PointF((REAL)pt.x + 120, (REAL)pt.y + 57), &fontFormat, &fontBrush);
 			}
 			else
@@ -1391,12 +1391,12 @@ void CShip::DrawShip(Gdiplus::Graphics* g, CGraphicPool* pGraphicPool, const CPo
 			if (s.GetLength() > 2 && s.ReverseFind(' ') == s.GetLength() - 2)
 				s.Delete(s.GetLength() - 2, 2);
 
-			s.Append(" " + CResourceManager::GetString("GROUP"));
+			s.Append(" " + CLoc::GetString("GROUP"));
 			// Hier jetzt Namen und Schiffstype zur Flotte
 			g->DrawString(CComBSTR(s), -1, &font, PointF((REAL)pt.x + 120, (REAL)pt.y + 37), &fontFormat, &fontBrush);
 
 			if (FleetShipType == -1)
-				g->DrawString(CComBSTR(CResourceManager::GetString("MIXED_FLEET")), -1, &font, PointF((REAL)pt.x + 120, (REAL)pt.y + 57), &fontFormat, &fontBrush);
+				g->DrawString(CComBSTR(CLoc::GetString("MIXED_FLEET")), -1, &font, PointF((REAL)pt.x + 120, (REAL)pt.y + 57), &fontFormat, &fontBrush);
 			else
 				g->DrawString(CComBSTR(this->GetShipTypeAsString(TRUE)), -1, &font, PointF((REAL)pt.x + 120, (REAL)pt.y + 57), &fontFormat, &fontBrush);
 		}

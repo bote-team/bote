@@ -13,7 +13,7 @@
 #include "Galaxy\Anomaly.h"
 #include "Graphic\memdc.h"
 #include "Ships/Ships.h"
-#include "General/ResourceManager.h"
+#include "General/Loc.h"
 
 #include <cassert>
 
@@ -185,18 +185,18 @@ void CPlanetBottomView::OnDraw(CDC* dc)
 	if (pDoc->GetSector(KO.x, KO.y).GetAnomaly() && pDoc->GetSector(KO.x, KO.y).GetScanned(pMajor->GetRaceID()))
 		s.Format("%s", pDoc->GetSector(KO.x, KO.y).GetAnomaly()->GetMapName(KO));
 	else
-		s.Format("%s %c%i",CResourceManager::GetString("SECTOR"),(char)(KO.y+97),KO.x+1);
+		s.Format("%s %c%i",CLoc::GetString("SECTOR"),(char)(KO.y+97),KO.x+1);
 	g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), PointF(40,25), &fontFormat, &fontBrush);
 
 	if (pDoc->GetSector(KO.x, KO.y).GetScanned(pMajor->GetRaceID()) == FALSE)
 	{
-		s = CResourceManager::GetString("UNKNOWN");
+		s = CLoc::GetString("UNKNOWN");
 		g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), PointF(40,47), &fontFormat, &fontBrush);
 	}
 	else if (pDoc->GetSector(KO.x, KO.y).GetSunSystem() == TRUE && pDoc->GetSector(KO.x, KO.y).GetKnown(pMajor->GetRaceID()) == TRUE)
 	{
 		// vorhandene Rohstoffe auf allen Planeten zeichnen
-		s = CResourceManager::GetString("EXISTING_RES") + ":";
+		s = CLoc::GetString("EXISTING_RES") + ":";
 		g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), PointF(735,228), &fontFormat, &fontBrush);
 		RectF boundingBox;
 		g.MeasureString(CComBSTR(s), s.GetLength(), &Gdiplus::Font(CComBSTR(fontName), fontSize), PointF(735, 228), &fontFormat, &boundingBox);
@@ -231,13 +231,13 @@ void CPlanetBottomView::OnDraw(CDC* dc)
 			}
 		}
 
-		s.Format("%s: %s",CResourceManager::GetString("SYSTEM"), pDoc->GetSector(KO.x, KO.y).GetName());
+		s.Format("%s: %s",CLoc::GetString("SYSTEM"), pDoc->GetSector(KO.x, KO.y).GetName());
 		g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), PointF(40,47), &fontFormat, &fontBrush);
 		if (pDoc->GetSector(KO.x, KO.y).GetFullKnown(pMajor->GetRaceID()))
 		{
-			s.Format("%s: %.3lf %s",CResourceManager::GetString("MAX_HABITANTS"), maxHabitants, CResourceManager::GetString("MRD"));
+			s.Format("%s: %.3lf %s",CLoc::GetString("MAX_HABITANTS"), maxHabitants, CLoc::GetString("MRD"));
 			g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), PointF(40,180), &fontFormat, &fontBrush);
-			s.Format("%s: %.3lf %s",CResourceManager::GetString("CURRENT_HABITANTS"), currentHabitants, CResourceManager::GetString("MRD"));
+			s.Format("%s: %.3lf %s",CLoc::GetString("CURRENT_HABITANTS"), currentHabitants, CLoc::GetString("MRD"));
 			g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), PointF(40,202), &fontFormat, &fontBrush);
 			graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\popmaxSmall.bop");
 			if (graphic)
@@ -272,7 +272,7 @@ void CPlanetBottomView::OnDraw(CDC* dc)
 	{
 		// Rassenspezifische Schrift auswählen
 		CFontLoader::CreateGDIFont(pMajor, 1, fontName, fontSize);
-		s.Format("%s: %i%%",CResourceManager::GetString("SCANPOWER"), pDoc->GetSector(KO.x, KO.y).GetScanPower(pMajor->GetRaceID()));
+		s.Format("%s: %i%%",CLoc::GetString("SCANPOWER"), pDoc->GetSector(KO.x, KO.y).GetScanPower(pMajor->GetRaceID()));
 		if (pDoc->GetSector(KO.x, KO.y).GetScanPower(pMajor->GetRaceID()) >= 75)
 			fontBrush.SetColor(Color(0,245,0));
 		else if (pDoc->GetSector(KO.x, KO.y).GetScanPower(pMajor->GetRaceID()) >= 50)
@@ -314,7 +314,7 @@ void CPlanetBottomView::OnDraw(CDC* dc)
 			CFontLoader::CreateGDIFont(pMajor, 3, fontName, fontSize);
 			CSize viewSize(m_TotalSize.cx - 160, m_TotalSize.cy - 120);
 			s.Format("%d", pDoc->GetSystem(KO.x, KO.y).GetBlockade());
-			COverlayBanner* banner = new COverlayBanner(CPoint(80,60), viewSize, CResourceManager::GetString("SYSTEM_IS_BLOCKED", FALSE, s), RGB(200,0,0));
+			COverlayBanner* banner = new COverlayBanner(CPoint(80,60), viewSize, CLoc::GetString("SYSTEM_IS_BLOCKED", FALSE, s), RGB(200,0,0));
 			banner->SetBorderWidth(1);
 			Gdiplus::Font font(CComBSTR(fontName), fontSize);
 			banner->Draw(&g, &font);
@@ -505,13 +505,13 @@ CString CPlanetBottomView::CreateTooltip(void)
 			CString sSunColor;
 			switch (pDoc->GetSector(KO.x, KO.y).GetSunColor())
 			{
-			case 0: sSunColor = CResourceManager::GetString("BLUE_STAR");	break;
-			case 1: sSunColor = CResourceManager::GetString("GREEN_STAR");	break;
-			case 2: sSunColor = CResourceManager::GetString("ORANGE_STAR");	break;
-			case 3: sSunColor = CResourceManager::GetString("RED_STAR");	break;
-			case 4: sSunColor = CResourceManager::GetString("VIOLET_STAR");	break;
-			case 5: sSunColor = CResourceManager::GetString("WHITE_STAR");	break;
-			case 6: sSunColor = CResourceManager::GetString("YELLOW_STAR");	break;
+			case 0: sSunColor = CLoc::GetString("BLUE_STAR");	break;
+			case 1: sSunColor = CLoc::GetString("GREEN_STAR");	break;
+			case 2: sSunColor = CLoc::GetString("ORANGE_STAR");	break;
+			case 3: sSunColor = CLoc::GetString("RED_STAR");	break;
+			case 4: sSunColor = CLoc::GetString("VIOLET_STAR");	break;
+			case 5: sSunColor = CLoc::GetString("WHITE_STAR");	break;
+			case 6: sSunColor = CLoc::GetString("YELLOW_STAR");	break;
 			}
 			sSunColor = CHTMLStringBuilder::GetHTMLColor(sSunColor);
 			sSunColor = CHTMLStringBuilder::GetHTMLHeader(sSunColor);
@@ -522,13 +522,13 @@ CString CPlanetBottomView::CreateTooltip(void)
 			CString sSunDesc;
 			switch (pDoc->GetSector(KO.x, KO.y).GetSunColor())
 			{
-			case 0: sSunDesc = CResourceManager::GetString("BLUE_STAR_DESC");	break;
-			case 1: sSunDesc = CResourceManager::GetString("GREEN_STAR_DESC");	break;
-			case 2: sSunDesc = CResourceManager::GetString("ORANGE_STAR_DESC");	break;
-			case 3: sSunDesc = CResourceManager::GetString("RED_STAR_DESC");	break;
-			case 4: sSunDesc = CResourceManager::GetString("VIOLET_STAR_DESC");	break;
-			case 5: sSunDesc = CResourceManager::GetString("WHITE_STAR_DESC");	break;
-			case 6: sSunDesc = CResourceManager::GetString("YELLOW_STAR_DESC");	break;
+			case 0: sSunDesc = CLoc::GetString("BLUE_STAR_DESC");	break;
+			case 1: sSunDesc = CLoc::GetString("GREEN_STAR_DESC");	break;
+			case 2: sSunDesc = CLoc::GetString("ORANGE_STAR_DESC");	break;
+			case 3: sSunDesc = CLoc::GetString("RED_STAR_DESC");	break;
+			case 4: sSunDesc = CLoc::GetString("VIOLET_STAR_DESC");	break;
+			case 5: sSunDesc = CLoc::GetString("WHITE_STAR_DESC");	break;
+			case 6: sSunDesc = CLoc::GetString("YELLOW_STAR_DESC");	break;
 			}
 			sSunDesc = CHTMLStringBuilder::GetHTMLColor(sSunDesc);
 			sSunDesc = CHTMLStringBuilder::GetHTMLHeader(sSunDesc, _T("h5"));
@@ -542,7 +542,7 @@ CString CPlanetBottomView::CreateTooltip(void)
 			sSunDesc += CHTMLStringBuilder::GetHTMLStringHorzLine();
 			sSunDesc += CHTMLStringBuilder::GetHTMLStringNewLine();
 
-			CString sSystemBoni = CHTMLStringBuilder::GetHTMLColor(CResourceManager::GetString("BONI_IN_SYSTEM"), _T("silver"));
+			CString sSystemBoni = CHTMLStringBuilder::GetHTMLColor(CLoc::GetString("BONI_IN_SYSTEM"), _T("silver"));
 			sSystemBoni = CHTMLStringBuilder::GetHTMLHeader(sSystemBoni, _T("h4"));
 			sSystemBoni = CHTMLStringBuilder::GetHTMLCenter(sSystemBoni);
 			sSystemBoni += CHTMLStringBuilder::GetHTMLStringNewLine();
@@ -564,13 +564,13 @@ CString CPlanetBottomView::CreateTooltip(void)
 					CString sBoni;
 					switch(j)
 					{
-						case TITAN:		sBoni = CResourceManager::GetString("TITAN_BONUS");		break;
-						case DEUTERIUM: sBoni = CResourceManager::GetString("DEUTERIUM_BONUS"); break;
-						case DURANIUM:	sBoni = CResourceManager::GetString("DURANIUM_BONUS");	break;
-						case CRYSTAL:	sBoni = CResourceManager::GetString("CRYSTAL_BONUS");	break;
-						case IRIDIUM:	sBoni = CResourceManager::GetString("IRIDIUM_BONUS");	break;
-						case 6:			sBoni = CResourceManager::GetString("FOOD_BONUS");		break;
-						case 7:			sBoni = CResourceManager::GetString("ENERGY_BONUS");	break;
+						case TITAN:		sBoni = CLoc::GetString("TITAN_BONUS");		break;
+						case DEUTERIUM: sBoni = CLoc::GetString("DEUTERIUM_BONUS"); break;
+						case DURANIUM:	sBoni = CLoc::GetString("DURANIUM_BONUS");	break;
+						case CRYSTAL:	sBoni = CLoc::GetString("CRYSTAL_BONUS");	break;
+						case IRIDIUM:	sBoni = CLoc::GetString("IRIDIUM_BONUS");	break;
+						case 6:			sBoni = CLoc::GetString("FOOD_BONUS");		break;
+						case 7:			sBoni = CLoc::GetString("ENERGY_BONUS");	break;
 					}
 
 					CString sBonus;
@@ -606,7 +606,7 @@ CString CPlanetBottomView::CreateTooltip(void)
 
 				CString s;
 				s.Format("CLASS_%c_TYPE", pPlanet->GetClass());
-				s = CHTMLStringBuilder::GetHTMLColor(_T("(") + CResourceManager::GetString(s) + _T(")"), _T("silver"));
+				s = CHTMLStringBuilder::GetHTMLColor(_T("(") + CLoc::GetString(s) + _T(")"), _T("silver"));
 				s = CHTMLStringBuilder::GetHTMLHeader(s, _T("h4"));
 				s = CHTMLStringBuilder::GetHTMLCenter(s);
 				s += CHTMLStringBuilder::GetHTMLStringNewLine();
@@ -614,7 +614,7 @@ CString CPlanetBottomView::CreateTooltip(void)
 				sTip += s;
 
 				s.Format("CLASS_%c_INFO", pPlanet->GetClass());
-				s = CHTMLStringBuilder::GetHTMLColor(CResourceManager::GetString(s));
+				s = CHTMLStringBuilder::GetHTMLColor(CLoc::GetString(s));
 				s = CHTMLStringBuilder::GetHTMLHeader(s, _T("h5"));
 				sTip += s;
 				return sTip;
@@ -648,17 +648,17 @@ CString CPlanetBottomView::CreateTooltip(void)
 								CString sBoni;
 								switch(j)
 								{
-									case TITAN:		sBoni = CResourceManager::GetString("TITAN_BONUS"); break;
-									case DEUTERIUM: sBoni = CResourceManager::GetString("DEUTERIUM_BONUS"); break;
-									case DURANIUM:	sBoni = CResourceManager::GetString("DURANIUM_BONUS"); break;
-									case CRYSTAL:	sBoni = CResourceManager::GetString("CRYSTAL_BONUS"); break;
-									case IRIDIUM:	sBoni = CResourceManager::GetString("IRIDIUM_BONUS"); break;
+									case TITAN:		sBoni = CLoc::GetString("TITAN_BONUS"); break;
+									case DEUTERIUM: sBoni = CLoc::GetString("DEUTERIUM_BONUS"); break;
+									case DURANIUM:	sBoni = CLoc::GetString("DURANIUM_BONUS"); break;
+									case CRYSTAL:	sBoni = CLoc::GetString("CRYSTAL_BONUS"); break;
+									case IRIDIUM:	sBoni = CLoc::GetString("IRIDIUM_BONUS"); break;
 									case DERITIUM:
-										sBoni = CHTMLStringBuilder::GetHTMLColor(CResourceManager::GetString("DERITIUM") + " " + CResourceManager::GetString("EXISTING"));
+										sBoni = CHTMLStringBuilder::GetHTMLColor(CLoc::GetString("DERITIUM") + " " + CLoc::GetString("EXISTING"));
 										sBoni = CHTMLStringBuilder::GetHTMLHeader(sBoni, _T("h5"));
 										return CHTMLStringBuilder::GetHTMLCenter(sBoni);
-									case 6:			sBoni = CResourceManager::GetString("FOOD_BONUS"); break;
-									case 7:			sBoni = CResourceManager::GetString("ENERGY_BONUS"); break;
+									case 6:			sBoni = CLoc::GetString("FOOD_BONUS"); break;
+									case 7:			sBoni = CLoc::GetString("ENERGY_BONUS"); break;
 								}
 								CString sTip;
 								sTip.Format("%d%% %s",(pPlanet->GetSize() + 1) * 25, sBoni);

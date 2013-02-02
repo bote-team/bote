@@ -72,4 +72,11 @@ Release
 *.ncb
 *.suo
 *.user
+</Value></Property><Property><Name>svn:ignore</Name><Value>Debug
+Release
+*.ncb
+*.suo
+*.user
+*.aps
+*.vcproj
 </Value></Property></Properties></ItemProperties>

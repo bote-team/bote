@@ -91,7 +91,7 @@ private:
 	// Hier die Rechtecke und Variablen, die wir benötigen wenn wir in der Nachrichten und Informationsansicht sind
 	USHORT m_iSubMenu;						// in welchem Untermenü der Informationsansicht sind wir
 	USHORT m_iSystemSubMenue;				// Untermenü in der Systemansicht (normal, Ressourcen, Verteidigung)
-	MESSAGE_TYPE::Typ m_iWhichNewsButtonIsPressed;	// wollen wir nur eine bestimme Nachtichtenart anzeigen lassen, z.b. Forschung
+	EMPIRE_NEWS_TYPE::Typ m_iWhichNewsButtonIsPressed;	// wollen wir nur eine bestimme Nachtichtenart anzeigen lassen, z.b. Forschung
 	short  m_iClickedNews;					// auf welche Nachticht oder Information in der Liste wurde geklickt
 	short  m_iOldClickedNews;				// auf welche Nachricht wurde vorher geklickt, braucht man als Modifikator
 	short  m_iClickedSystem;				// auf welches System wurde in der Liste geklickt, welches wurde markiert

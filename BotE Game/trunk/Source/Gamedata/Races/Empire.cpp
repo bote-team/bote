@@ -48,9 +48,9 @@ void CEmpire::Serialize(CArchive &ar)
 		for (int i = 0; i <= DERITIUM; i++)
 			ar << m_lResourceStorages[i];
 		ar << m_sEmpireID;
-		ar << m_Messages.GetSize();
-		for (int i = 0; i < m_Messages.GetSize(); i++)
-			m_Messages.GetAt(i).Serialize(ar);
+		ar << m_vMessages.GetSize();
+		for (int i = 0; i < m_vMessages.GetSize(); i++)
+			m_vMessages.GetAt(i).Serialize(ar);
 	}
 	// wenn geladen wird
 	if (ar.IsLoading())
@@ -67,12 +67,12 @@ void CEmpire::Serialize(CArchive &ar)
 			ar >> m_lResourceStorages[i];
 		ar >> m_sEmpireID;
 		ar >> number;
-		m_Messages.SetSize(number);
+		m_vMessages.SetSize(number);
 		for (int i = 0; i < number; i++)
-			m_Messages.GetAt(i).Serialize(ar);
+			m_vMessages.GetAt(i).Serialize(ar);
 	}
 
-	m_EventMessages.Serialize(ar);
+	m_Events.Serialize(ar);
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -113,10 +113,10 @@ void CEmpire::ClearAllPoints(void)
 /// Funktion löscht alle Nachrichten und Antworten an das Imperiums.
 void CEmpire::ClearMessagesAndEvents(void)
 {
-	m_Messages.RemoveAll();
-	for (int i = 0; i < m_EventMessages.GetSize(); i++)
-		delete m_EventMessages.GetAt(i);
-	m_EventMessages.RemoveAll();
+	m_vMessages.RemoveAll();
+	for (int i = 0; i < m_Events.GetSize(); i++)
+		delete m_Events.GetAt(i);
+	m_Events.RemoveAll();
 }
 
 void CEmpire::Reset(void)

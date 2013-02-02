@@ -3,7 +3,7 @@
 #include "BotEDoc.h"
 #include "Races\RaceController.h"
 #include "IOData.h"
-#include "General/ResourceManager.h"
+#include "General/Loc.h"
 
 IMPLEMENT_SERIAL (CDiplomacyIntelObj, CObject, 1)
 
@@ -142,15 +142,15 @@ void CDiplomacyIntelObj::CreateText(CBotEDoc* pDoc, BYTE n, const CString& param
 							}
 							switch (m_nAgreement)
 							{
-							case DIPLOMATIC_AGREEMENT::DEFENCEPACT:		{s = CResourceManager::GetString("DEFENCE_PACT_WITH_ARTICLE"); break;}
-							case DIPLOMATIC_AGREEMENT::WAR:				{s = CResourceManager::GetString("WAR_WITH_ARTICLE"); break;}
-							case DIPLOMATIC_AGREEMENT::NONE:			{s = CResourceManager::GetString("NO_AGREEMENT"); break;}
-							case DIPLOMATIC_AGREEMENT::NAP:				{s = CResourceManager::GetString("NON_AGGRESSION_WITH_ARTICLE"); break;}
-							case DIPLOMATIC_AGREEMENT::TRADE:			{s = CResourceManager::GetString("TRADE_AGREEMENT_WITH_ARTICLE"); break;}
-							case DIPLOMATIC_AGREEMENT::FRIENDSHIP:		{s = CResourceManager::GetString("FRIENDSHIP_WITH_ARTICLE"); break;}
-							case DIPLOMATIC_AGREEMENT::COOPERATION:		{s = CResourceManager::GetString("COOPERATION_WITH_ARTICLE"); break;}
-							case DIPLOMATIC_AGREEMENT::AFFILIATION:		{s = CResourceManager::GetString("AFFILIATION_WITH_ARTICLE"); break;}
-							case DIPLOMATIC_AGREEMENT::MEMBERSHIP:		{s = CResourceManager::GetString("MEMBERSHIP_WITH_ARTICLE"); break;}
+							case DIPLOMATIC_AGREEMENT::DEFENCEPACT:		{s = CLoc::GetString("DEFENCE_PACT_WITH_ARTICLE"); break;}
+							case DIPLOMATIC_AGREEMENT::WAR:				{s = CLoc::GetString("WAR_WITH_ARTICLE"); break;}
+							case DIPLOMATIC_AGREEMENT::NONE:			{s = CLoc::GetString("NO_AGREEMENT"); break;}
+							case DIPLOMATIC_AGREEMENT::NAP:				{s = CLoc::GetString("NON_AGGRESSION_WITH_ARTICLE"); break;}
+							case DIPLOMATIC_AGREEMENT::TRADE:			{s = CLoc::GetString("TRADE_AGREEMENT_WITH_ARTICLE"); break;}
+							case DIPLOMATIC_AGREEMENT::FRIENDSHIP:		{s = CLoc::GetString("FRIENDSHIP_WITH_ARTICLE"); break;}
+							case DIPLOMATIC_AGREEMENT::COOPERATION:		{s = CLoc::GetString("COOPERATION_WITH_ARTICLE"); break;}
+							case DIPLOMATIC_AGREEMENT::AFFILIATION:		{s = CLoc::GetString("AFFILIATION_WITH_ARTICLE"); break;}
+							case DIPLOMATIC_AGREEMENT::MEMBERSHIP:		{s = CLoc::GetString("MEMBERSHIP_WITH_ARTICLE"); break;}
 							default: s = "";
 							}
 							csInput.Replace("$agreement$", s);
@@ -169,10 +169,10 @@ void CDiplomacyIntelObj::CreateText(CBotEDoc* pDoc, BYTE n, const CString& param
 								else
 								{
 									if (m_nDuration == NULL)
-										csInput.Replace("$duration$", CResourceManager::GetString("UNLIMITED"));
+										csInput.Replace("$duration$", CLoc::GetString("UNLIMITED"));
 									else
 									{
-										s.Format("%d %s", m_nDuration, CResourceManager::GetString("ROUNDS"));
+										s.Format("%d %s", m_nDuration, CLoc::GetString("ROUNDS"));
 										csInput.Replace("$duration$", s);
 									}
 								}
@@ -195,20 +195,20 @@ void CDiplomacyIntelObj::CreateText(CBotEDoc* pDoc, BYTE n, const CString& param
 									s = pMajor->GetEmpireNameWithArticle();
 							}
 							else if (m_MinorRaceKO != CPoint(-1,-1))
-								s = CResourceManager::GetString("FEMALE_ARTICLE")+" " + pDoc->GetRaceCtrl()->GetMinorRace(pDoc->GetSector(m_MinorRaceKO.x, m_MinorRaceKO.y).GetName())->GetRaceName();
+								s = CLoc::GetString("FEMALE_ARTICLE")+" " + pDoc->GetRaceCtrl()->GetMinorRace(pDoc->GetSector(m_MinorRaceKO.x, m_MinorRaceKO.y).GetName())->GetRaceName();
 							csInput.Replace("$major$", s);
 
-							if (m_nRelationship < 5) s = CResourceManager::GetString("HATEFUL");
-							else if (m_nRelationship < 15) s = CResourceManager::GetString("FURIOUS");
-							else if (m_nRelationship < 25) s = CResourceManager::GetString("HOSTILE");
-							else if (m_nRelationship < 35) s = CResourceManager::GetString("ANGRY");
-							else if (m_nRelationship < 45) s = CResourceManager::GetString("NOT_COOPERATIVE");
-							else if (m_nRelationship < 55) s = CResourceManager::GetString("NEUTRAL");
-							else if (m_nRelationship < 65) s = CResourceManager::GetString("COOPERATIVE");
-							else if (m_nRelationship < 75) s = CResourceManager::GetString("FRIENDLY");
-							else if (m_nRelationship < 85) s = CResourceManager::GetString("OPTIMISTIC");
-							else if (m_nRelationship < 95) s = CResourceManager::GetString("ENTHUSED");
-							else s = CResourceManager::GetString("DEVOTED");
+							if (m_nRelationship < 5) s = CLoc::GetString("HATEFUL");
+							else if (m_nRelationship < 15) s = CLoc::GetString("FURIOUS");
+							else if (m_nRelationship < 25) s = CLoc::GetString("HOSTILE");
+							else if (m_nRelationship < 35) s = CLoc::GetString("ANGRY");
+							else if (m_nRelationship < 45) s = CLoc::GetString("NOT_COOPERATIVE");
+							else if (m_nRelationship < 55) s = CLoc::GetString("NEUTRAL");
+							else if (m_nRelationship < 65) s = CLoc::GetString("COOPERATIVE");
+							else if (m_nRelationship < 75) s = CLoc::GetString("FRIENDLY");
+							else if (m_nRelationship < 85) s = CLoc::GetString("OPTIMISTIC");
+							else if (m_nRelationship < 95) s = CLoc::GetString("ENTHUSED");
+							else s = CLoc::GetString("DEVOTED");
 							csInput.Replace("$relation$", s);
 
 							if (m_MinorRaceKO != CPoint(-1,-1))
@@ -286,11 +286,11 @@ void CDiplomacyIntelObj::CreateText(CBotEDoc* pDoc, BYTE n, const CString& param
 								if (pParam)
 								{
 									s = pParam->GetEmpireNameWithArticle();
-									csInput = CResourceManager::GetString("KNOW_RESPONSIBLE_SABOTAGERACE", FALSE, s);
+									csInput = CLoc::GetString("KNOW_RESPONSIBLE_SABOTAGERACE", FALSE, s);
 								}
 							}
 							else
-								csInput = CResourceManager::GetString("DO_NOT_KNOW_RESPONSIBLE_RACE");
+								csInput = CLoc::GetString("DO_NOT_KNOW_RESPONSIBLE_RACE");
 							m_strEnemyDesc += " "+csInput;
 							break;
 						}

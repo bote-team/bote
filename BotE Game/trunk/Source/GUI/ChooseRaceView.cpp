@@ -8,7 +8,7 @@
 #include "BotEDoc.h"
 #include "MainFrm.h"
 #include "Races/RaceController.h"
-#include "General/ResourceManager.h"
+#include "General/Loc.h"
 
 #include "BotEServer.h"
 #include "LANServer.h"
@@ -112,11 +112,11 @@ void CChooseRaceView::OnDraw(CDC* dc)
 	// Rassenauswahl schreiben
 	format.SetAlignment(StringAlignmentCenter);
 	format.SetLineAlignment(StringAlignmentNear);
-	CString sChooseRace = CResourceManager::GetString("CHOOSEEMPIRE");
+	CString sChooseRace = CLoc::GetString("CHOOSEEMPIRE");
 	g.DrawString(CComBSTR(sChooseRace), -1, &font, RectF(75, 235, 350, 25), &format, &SolidBrush(Color::WhiteSmoke));
 
 	// Chat schreiben
-	CString sChat = CResourceManager::GetString("CHAT");
+	CString sChat = CLoc::GetString("CHAT");
 	g.DrawString(CComBSTR(sChat), -1, &font, RectF(75, 675, 350, 25), &format, &SolidBrush(Color::WhiteSmoke));
 
 
@@ -242,8 +242,8 @@ void CChooseRaceView::OnInitialUpdate()
 	m_edtChatMsg.Create(WS_CHILD|WS_VISIBLE|ES_AUTOVSCROLL|ES_AUTOHSCROLL|ES_LEFT|ES_MULTILINE|ES_WANTRETURN|WS_BORDER, CRect(), this, IDC_MSG);
 
 	// Buttons für Spiel starten und Cancel
-	m_btStartGame.Create(CResourceManager::GetString("STARTGAME"), WS_CHILD|WS_VISIBLE|BS_PUSHLIKE, CRect(), this, BTN_STARTGEAME);
-	m_btCancel.Create(CResourceManager::GetString("BTN_BACK"), WS_CHILD|WS_VISIBLE|BS_PUSHLIKE, CRect(), this, BTN_CANCEL);
+	m_btStartGame.Create(CLoc::GetString("STARTGAME"), WS_CHILD|WS_VISIBLE|BS_PUSHLIKE, CRect(), this, BTN_STARTGEAME);
+	m_btCancel.Create(CLoc::GetString("BTN_BACK"), WS_CHILD|WS_VISIBLE|BS_PUSHLIKE, CRect(), this, BTN_CANCEL);
 
 	EnableRaceButtons();
 }
@@ -380,7 +380,7 @@ void CChooseRaceView::EnableRaceButtons()
 			CString sRaceID = pDoc->GetRaceCtrl()->GetMappedRaceID(race);
 			CMajor* pRace = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(sRaceID));
 			// Beim Neustart hat jede Rasse 1 System (die Variable wird so schon per Reset gesetzt)
-			if (!pRace || pRace->GetEmpire()->GetNumberOfSystems() == 0)
+			if (!pRace || pRace->GetEmpire()->CountSystems() == 0)
 				server.SetPlayByServer(race, TRUE, TRUE);
 		}
 
@@ -398,7 +398,7 @@ void CChooseRaceView::EnableRaceButtons()
 			// Wenn Rasse nach Laden schon ausgelöscht, dann kann sie nicht mehr angewählt werden
 			pButton->EnableWindow(FALSE);
 			pButton->SetCheck(TRUE);
-			it->second = CResourceManager::GetString("ELIMINATED");
+			it->second = CLoc::GetString("ELIMINATED");
 		}
 		else
 		{

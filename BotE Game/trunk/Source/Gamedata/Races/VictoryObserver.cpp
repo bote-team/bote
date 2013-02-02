@@ -314,7 +314,7 @@ void CVictoryObserver::Observe(void)
 		int nMajorsAlive = 0;
 		map<CString, CMajor*>* pmMajors	= pDoc->GetRaceCtrl()->GetMajors();
 		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
-			if (it->second->GetEmpire()->GetNumberOfSystems())
+			if (it->second->GetEmpire()->CountSystems())
 				nMajorsAlive++;
 		MYTRACE("general")(MT::LEVEL_INFO, "nMajorsAlive: %i", nMajorsAlive);
 		// eigene Rasse abziehen
@@ -326,7 +326,7 @@ void CVictoryObserver::Observe(void)
 			m_bIsVictory	= true;
 			// Die ausgelöschte Rasse ist meist noch in der Map, von daher noch richtig prüfen, wer ein System hat
 			for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
-				if (it->second->GetEmpire()->GetNumberOfSystems() > 0)
+				if (it->second->GetEmpire()->CountSystems() > 0)
 				{
 					m_sVictoryRace = it->first;
 					break;

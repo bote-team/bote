@@ -91,7 +91,7 @@ extern double STARMAP_ZOOM_MAX;//			2	///< maximaler Zoom-Faktor
 #define ALE					8	// AssemblyListEntries
 
 // ------------- Message-Types -------------------------------------------------
-namespace MESSAGE_TYPE
+namespace EMPIRE_NEWS_TYPE
 {
 	enum Typ
 	{

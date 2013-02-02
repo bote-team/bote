@@ -6,7 +6,7 @@
 #include "Races\RaceController.h"
 #include "IniLoader.h"
 #include "IOData.h"
-#include "General/ResourceManager.h"
+#include "General/Loc.h"
 
 IMPLEMENT_SERIAL (CEventVictory, CObject, 1)
 
@@ -110,21 +110,21 @@ void CEventVictory::Draw(Graphics* g, CGraphicPool* graphicPool) const
 	CString sType = "";
 	switch (m_nType)
 	{
-	case VICTORYTYPE_ELIMINATION:	sType = CResourceManager::GetString("VC_ELIMINATION");	break;
-	case VICTORYTYPE_DIPLOMACY:		sType = CResourceManager::GetString("VC_DIPLOMACY");	break;
-	case VICTORYTYPE_CONQUEST:		sType = CResourceManager::GetString("VC_CONQUEST");		break;
-	case VICTORYTYPE_RESEARCH:		sType = CResourceManager::GetString("VC_RESEARCH");		break;
-	case VICTORYTYPE_COMBATWINS:	sType = CResourceManager::GetString("VC_COMBAT");		break;
-	case VICTORYTYPE_SABOTAGE:		sType = CResourceManager::GetString("VC_SECURITY");		break;
+	case VICTORYTYPE_ELIMINATION:	sType = CLoc::GetString("VC_ELIMINATION");	break;
+	case VICTORYTYPE_DIPLOMACY:		sType = CLoc::GetString("VC_DIPLOMACY");	break;
+	case VICTORYTYPE_CONQUEST:		sType = CLoc::GetString("VC_CONQUEST");		break;
+	case VICTORYTYPE_RESEARCH:		sType = CLoc::GetString("VC_RESEARCH");		break;
+	case VICTORYTYPE_COMBATWINS:	sType = CLoc::GetString("VC_COMBAT");		break;
+	case VICTORYTYPE_SABOTAGE:		sType = CLoc::GetString("VC_SECURITY");		break;
 	}
 
 	if (m_sRace == m_sWinnerRace)
 	{
-		CString s = CResourceManager::GetString("VICTORY");
+		CString s = CLoc::GetString("VICTORY");
 		g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize * 2.5f), RectF(0, 0, 1280, 1024 / 3.0f), &fontFormat, &fontBrush);
 
 		CFontLoader::CreateGDIFont(pMajor, 3, fontName, fontSize);
-		s = CResourceManager::GetString("CONGRATULATIONS");
+		s = CLoc::GetString("CONGRATULATIONS");
 		g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize * 1.5), RectF(0, 75, 1280, 1024 / 3 + 75), &fontFormat, &fontBrush);
 
 		fontFormat.SetAlignment(StringAlignmentNear);
@@ -134,19 +134,19 @@ void CEventVictory::Draw(Graphics* g, CGraphicPool* graphicPool) const
 		nGamePoints *= 2;
 
 		CString sStarDate;
-		sStarDate.Format("%s: %.1lf", CResourceManager::GetString("STARDATE"), pDoc->m_fStardate);
+		sStarDate.Format("%s: %.1lf", CLoc::GetString("STARDATE"), pDoc->m_fStardate);
 		s.Format("%s:\n\n%s\n\n%s\n%s\n\n%s %d",
-			CResourceManager::GetString("LOGBOOK_ENTRY"),
+			CLoc::GetString("LOGBOOK_ENTRY"),
 			sStarDate,
-			CResourceManager::GetString("WE_REACHED_VICTORY_IN_TYPE", FALSE, sType),
-			CResourceManager::GetString("BIRTH_OF_THE_EMPIRE_END"),
-			CResourceManager::GetString("REACHED_GAMEPOINTS"),
+			CLoc::GetString("WE_REACHED_VICTORY_IN_TYPE", FALSE, sType),
+			CLoc::GetString("BIRTH_OF_THE_EMPIRE_END"),
+			CLoc::GetString("REACHED_GAMEPOINTS"),
 			nGamePoints);
 		g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(75, 1024 / 1.5f - 75, 1280 - 75, 1024 / 3 - 75), &fontFormat, &fontBrush);
 	}
 	else
 	{
-		CString s = CResourceManager::GetString("DEFEAT");
+		CString s = CLoc::GetString("DEFEAT");
 		g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize * 2.5f), RectF(0, 0, 1280, 1024 / 3.0f), &fontFormat, &fontBrush);
 
 		CFontLoader::CreateGDIFont(pMajor, 3, fontName, fontSize);
@@ -164,8 +164,8 @@ void CEventVictory::Draw(Graphics* g, CGraphicPool* graphicPool) const
 
 		int nGamePoints = pDoc->GetStatistics()->GetGamePoints(m_sRace, pDoc->GetCurrentRound(), pDoc->GetDifficultyLevel());
 		s.Format("%s\n\n\n%s %d",
-			CResourceManager::GetString("OTHER_REACHED_VICTORY_IN_TYPE", FALSE, sRaceName, sType),
-			CResourceManager::GetString("REACHED_GAMEPOINTS"),
+			CLoc::GetString("OTHER_REACHED_VICTORY_IN_TYPE", FALSE, sRaceName, sType),
+			CLoc::GetString("REACHED_GAMEPOINTS"),
 			nGamePoints);
 		g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(75, 1024 / 1.5f - 75, 1280 - 75, 1024 / 3 - 75), &fontFormat, &fontBrush);
 	}

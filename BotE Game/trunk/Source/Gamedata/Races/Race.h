@@ -11,7 +11,7 @@
 #include <map>
 #include <vector>
 #include <set>
-#include "Options.h"
+#include "Constants.h"
 #include "AI\DiplomacyAI.h"
 
 class CShips;

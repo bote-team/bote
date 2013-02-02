@@ -20,7 +20,7 @@
 #include "ImageStone/ImageStone.h"
 #include "Graphic\memdc.h"
 #include "Ships/Ships.h"
-#include "General/ResourceManager.h"
+#include "General/Loc.h"
 
 BOOLEAN CGalaxyMenuView::m_bDrawTradeRoute = FALSE;
 CTradeRoute CGalaxyMenuView::m_TradeRoute;
@@ -1632,11 +1632,11 @@ CString CGalaxyMenuView::CreateTooltip(void)
 		CSector* pSector = &(pDoc->GetSector(ko.x, ko.y));
 		CString sTip;
 		if (pSector->GetScanned(pMajor->GetRaceID()) == FALSE)
-			sTip = CResourceManager::GetString("UNKNOWN");
+			sTip = CLoc::GetString("UNKNOWN");
 		else if (pSector->GetAnomaly())
 			sTip.Format("%s", pSector->GetAnomaly()->GetMapName(CPoint(ko.x,ko.y)));
 		else if (pSector->GetKnown(pMajor->GetRaceID()) == FALSE)
-			sTip.Format("%s %c%i", CResourceManager::GetString("SECTOR"),(char)(ko.y+97), ko.x+1);
+			sTip.Format("%s %c%i", CLoc::GetString("SECTOR"),(char)(ko.y+97), ko.x+1);
 		else
 			sTip = pDoc->GetSector(ko.x, ko.y).GetName(true);
 

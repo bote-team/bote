@@ -3,7 +3,7 @@
 #include "BotEDoc.h"
 #include "Races\RaceController.h"
 #include "Races\GenDiploMessage.h"
-#include "General/ResourceManager.h"
+#include "General/Loc.h"
 #include <algorithm>
 #include <cassert>
 
@@ -624,49 +624,49 @@ bool CMinorAI::TryCorruption(const CDiplomacyInfo& info)
 		{
 		case DIPLOMATIC_AGREEMENT::TRADE:
 		{
-			sText = CResourceManager::GetString("CANCEL_TRADE_AGREEMENT", FALSE, pMinor->m_sName);
+			sText = CLoc::GetString("CANCEL_TRADE_AGREEMENT", FALSE, pMinor->m_sName);
 			break;
 		}
 		case DIPLOMATIC_AGREEMENT::FRIENDSHIP:
 		{
-			sText = CResourceManager::GetString("CANCEL_FRIENDSHIP", FALSE, pMinor->m_sName);
+			sText = CLoc::GetString("CANCEL_FRIENDSHIP", FALSE, pMinor->m_sName);
 			break;
 		}
 		case DIPLOMATIC_AGREEMENT::COOPERATION:
 		{
-			sText = CResourceManager::GetString("CANCEL_COOPERATION", FALSE, pMinor->m_sName);
+			sText = CLoc::GetString("CANCEL_COOPERATION", FALSE, pMinor->m_sName);
 			break;
 		}
 		case DIPLOMATIC_AGREEMENT::AFFILIATION:
 		{
-			sText = CResourceManager::GetString("CANCEL_AFFILIATION", FALSE, pMinor->m_sName);
+			sText = CLoc::GetString("CANCEL_AFFILIATION", FALSE, pMinor->m_sName);
 			break;
 		}
 		case DIPLOMATIC_AGREEMENT::MEMBERSHIP:
 		{
-			sText = CResourceManager::GetString("CANCEL_MEMBERSHIP", FALSE, pMinor->m_sName);
+			sText = CLoc::GetString("CANCEL_MEMBERSHIP", FALSE, pMinor->m_sName);
 			break;
 		}
 		}
 
-		CMessage message;
+		CEmpireNews message;
 		if (!sText.IsEmpty())
 		{
 			pCorruptedMajor->SetAgreement(pMinor->GetRaceID(), DIPLOMATIC_AGREEMENT::NONE);
 			pMinor->SetAgreement(info.m_sCorruptedRace, DIPLOMATIC_AGREEMENT::NONE);
-			message.GenerateMessage(sText, MESSAGE_TYPE::DIPLOMACY);
-			pCorruptedMajor->GetEmpire()->AddMessage(message);
+			message.CreateNews(sText, EMPIRE_NEWS_TYPE::DIPLOMACY);
+			pCorruptedMajor->GetEmpire()->AddMsg(message);
 		}
 		// Nachricht über Erfolg bei Bestecherrasse erzeugen
-		sText = CResourceManager::GetString("CORRUPTION_SUCCESS", FALSE, pMinor->m_sName);
-		message.GenerateMessage(sText, MESSAGE_TYPE::DIPLOMACY);
-		pFromMajor->GetEmpire()->AddMessage(message);
+		sText = CLoc::GetString("CORRUPTION_SUCCESS", FALSE, pMinor->m_sName);
+		message.CreateNews(sText, EMPIRE_NEWS_TYPE::DIPLOMACY);
+		pFromMajor->GetEmpire()->AddMsg(message);
 		return true;
 	}
 	else
 	{	// Die Bestechnung war nicht erfolgreich
 		CString sText;
-		CMessage message;
+		CEmpireNews message;
 		// nicht immer bekommt die corruptedRace die Nachricht, sondern nur wenn siehe "if"
 		if (nValue < nRelationCorruptedMajor - 10)
 		{
@@ -675,14 +675,14 @@ bool CMinorAI::TryCorruption(const CDiplomacyInfo& info)
 			CString sUpper = (CString)s.GetAt(0);
 			s.SetAt(0, sUpper.MakeUpper().GetAt(0));
 
-			sText = CResourceManager::GetString("TRYED_CORRUPTION", FALSE, s, pMinor->m_sName);
-			message.GenerateMessage(sText, MESSAGE_TYPE::DIPLOMACY);
-			pCorruptedMajor->GetEmpire()->AddMessage(message);
+			sText = CLoc::GetString("TRYED_CORRUPTION", FALSE, s, pMinor->m_sName);
+			message.CreateNews(sText, EMPIRE_NEWS_TYPE::DIPLOMACY);
+			pCorruptedMajor->GetEmpire()->AddMsg(message);
 		}
 
-		sText = CResourceManager::GetString("CORRUPTION_FAILED", FALSE, pMinor->m_sName);
-		message.GenerateMessage(sText, MESSAGE_TYPE::DIPLOMACY);
-		pFromMajor->GetEmpire()->AddMessage(message);
+		sText = CLoc::GetString("CORRUPTION_FAILED", FALSE, pMinor->m_sName);
+		message.CreateNews(sText, EMPIRE_NEWS_TYPE::DIPLOMACY);
+		pFromMajor->GetEmpire()->AddMsg(message);
 		return false;
 	}
 }

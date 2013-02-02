@@ -3,7 +3,7 @@
 #include "BotEDoc.h"
 #include "Races\RaceController.h"
 #include "IOData.h"
-#include "General/ResourceManager.h"
+#include "General/Loc.h"
 
 IMPLEMENT_SERIAL (CEcoIntelObj, CObject, 1)
 
@@ -200,11 +200,11 @@ void CEcoIntelObj::CreateText(CBotEDoc* pDoc, BYTE n, const CString& param)
 								if (pParam)
 								{
 									s = pParam->GetEmpireNameWithArticle();
-									csInput = CResourceManager::GetString("KNOW_RESPONSIBLE_SABOTAGERACE", FALSE, s);
+									csInput = CLoc::GetString("KNOW_RESPONSIBLE_SABOTAGERACE", FALSE, s);
 								}
 							}
 							else
-								csInput = CResourceManager::GetString("DO_NOT_KNOW_RESPONSIBLE_RACE");
+								csInput = CLoc::GetString("DO_NOT_KNOW_RESPONSIBLE_RACE");
 							m_strEnemyDesc += " "+csInput;
 							break;
 						}

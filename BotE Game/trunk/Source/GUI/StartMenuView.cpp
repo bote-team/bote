@@ -18,7 +18,7 @@
 #include "SoundManager.h"
 #include "IniLoader.h"
 #include "HTMLStringBuilder.h"
-#include "General/ResourceManager.h"
+#include "General/Loc.h"
 
 #include "LANClient.h"
 #include "LANServer.h"
@@ -124,7 +124,7 @@ void CStartMenuView::OnDraw(CDC* dc)
 		format.SetAlignment(StringAlignmentCenter);
 		format.SetLineAlignment(StringAlignmentCenter);
 
-		CString s= CResourceManager::GetString("PRESENTEDBY")+"\n\n"+CResourceManager::GetString("PRESENTED");
+		CString s= CLoc::GetString("PRESENTEDBY")+"\n\n"+CLoc::GetString("PRESENTED");
 		g.DrawString(CComBSTR(s), -1, &font, RectF(0, 0, m_TotalSize.cx, m_TotalSize.cy), &format, &SolidBrush(Color::WhiteSmoke));
 
 		g.ReleaseHDC(pDC->GetSafeHdc());
@@ -157,7 +157,7 @@ void CStartMenuView::OnDraw(CDC* dc)
 		format.SetLineAlignment(StringAlignmentCenter);
 
 		Color clr2(max(0, 255 - m_nTimeCounter * 1.2), 245,245,245);
-		CString s= CResourceManager::GetString("PRESENTEDBY")+"\n\n"+CResourceManager::GetString("PRESENTED");
+		CString s= CLoc::GetString("PRESENTEDBY")+"\n\n"+CLoc::GetString("PRESENTED");
 		g.DrawString(CComBSTR(s), -1, &font, RectF(0, 0, m_TotalSize.cx, m_TotalSize.cy), &format, &SolidBrush(clr2));
 	}
 
@@ -223,14 +223,14 @@ void CStartMenuView::OnInitialUpdate()
 	m_tButtonStyle.SetButtonStyle(&tStyle);
 
 	// Create a push button.
-	m_btNewGame.Create(_T(CResourceManager::GetString("NEWGAME")), WS_CHILD|BS_PUSHBUTTON|WS_DISABLED, CRect(nXPos, nYPos, nXPos + nButtonSizeX, nYPos + nButtonSizeY), this, NEWGAME);
-	m_btMultiplayer.Create(_T(CResourceManager::GetString("MULTIPLAYER")), WS_CHILD|BS_PUSHBUTTON|WS_DISABLED, CRect(nXPos, nYPos + nGab + nButtonSizeY, nXPos + nButtonSizeX, nYPos + nGab + nButtonSizeY + nButtonSizeY), this, MULTIPLAYER);
-	m_btLoadGame.Create(_T(CResourceManager::GetString("LOADGAME")), WS_CHILD|BS_PUSHBUTTON|WS_DISABLED, CRect(nXPos, nYPos + (nGab + nButtonSizeY) * 2, nXPos + nButtonSizeX, nYPos + (nGab + nButtonSizeY) * 2 + nButtonSizeY), this, LOADGAME);
-	m_btOptions.Create(_T(CResourceManager::GetString("SETTINGS")), WS_CHILD|BS_PUSHBUTTON|WS_DISABLED, CRect(nXPos, nYPos + (nGab + nButtonSizeY) * 3, nXPos + nButtonSizeX, nYPos + (nGab + nButtonSizeY) * 3 + nButtonSizeY), this, OPTIONS);
-	m_btExit.Create(_T(CResourceManager::GetString("LEAVE")), WS_CHILD|BS_PUSHBUTTON|WS_DISABLED, CRect(nXPos, nYPos + (nGab + nButtonSizeY) * 4, nXPos + nButtonSizeX, nYPos + (nGab + nButtonSizeY) * 4 + nButtonSizeY), this, EXITGAME);
+	m_btNewGame.Create(_T(CLoc::GetString("NEWGAME")), WS_CHILD|BS_PUSHBUTTON|WS_DISABLED, CRect(nXPos, nYPos, nXPos + nButtonSizeX, nYPos + nButtonSizeY), this, NEWGAME);
+	m_btMultiplayer.Create(_T(CLoc::GetString("MULTIPLAYER")), WS_CHILD|BS_PUSHBUTTON|WS_DISABLED, CRect(nXPos, nYPos + nGab + nButtonSizeY, nXPos + nButtonSizeX, nYPos + nGab + nButtonSizeY + nButtonSizeY), this, MULTIPLAYER);
+	m_btLoadGame.Create(_T(CLoc::GetString("LOADGAME")), WS_CHILD|BS_PUSHBUTTON|WS_DISABLED, CRect(nXPos, nYPos + (nGab + nButtonSizeY) * 2, nXPos + nButtonSizeX, nYPos + (nGab + nButtonSizeY) * 2 + nButtonSizeY), this, LOADGAME);
+	m_btOptions.Create(_T(CLoc::GetString("SETTINGS")), WS_CHILD|BS_PUSHBUTTON|WS_DISABLED, CRect(nXPos, nYPos + (nGab + nButtonSizeY) * 3, nXPos + nButtonSizeX, nYPos + (nGab + nButtonSizeY) * 3 + nButtonSizeY), this, OPTIONS);
+	m_btExit.Create(_T(CLoc::GetString("LEAVE")), WS_CHILD|BS_PUSHBUTTON|WS_DISABLED, CRect(nXPos, nYPos + (nGab + nButtonSizeY) * 4, nXPos + nButtonSizeX, nYPos + (nGab + nButtonSizeY) * 4 + nButtonSizeY), this, EXITGAME);
 
-	m_btMPServer.Create(_T(CResourceManager::GetString("CREATEGAME")), WS_CHILD|BS_PUSHBUTTON|WS_DISABLED, CRect(nXPos, nYPos + (nGab + nButtonSizeY) * 1, nXPos + nButtonSizeX, nYPos + (nGab + nButtonSizeY) * 1 + nButtonSizeY), this, MP_CREATE);
-	m_btMPClient.Create(_T(CResourceManager::GetString("JOINGAME")), WS_CHILD|BS_PUSHBUTTON|WS_DISABLED, CRect(nXPos, nYPos + (nGab + nButtonSizeY) * 2, nXPos + nButtonSizeX, nYPos + (nGab + nButtonSizeY) * 2 + nButtonSizeY), this, MP_JOIN);
+	m_btMPServer.Create(_T(CLoc::GetString("CREATEGAME")), WS_CHILD|BS_PUSHBUTTON|WS_DISABLED, CRect(nXPos, nYPos + (nGab + nButtonSizeY) * 1, nXPos + nButtonSizeX, nYPos + (nGab + nButtonSizeY) * 1 + nButtonSizeY), this, MP_CREATE);
+	m_btMPClient.Create(_T(CLoc::GetString("JOINGAME")), WS_CHILD|BS_PUSHBUTTON|WS_DISABLED, CRect(nXPos, nYPos + (nGab + nButtonSizeY) * 2, nXPos + nButtonSizeX, nYPos + (nGab + nButtonSizeY) * 2 + nButtonSizeY), this, MP_JOIN);
 
 	// Buttonstyle zuweisen
 	for (int i = NEWGAME; i <= MP_CREATE; i++)
@@ -243,20 +243,20 @@ void CStartMenuView::OnInitialUpdate()
 	}
 
 	// Für Tooltips registrieren
-	CString sTooltip = CHTMLStringBuilder::GetHTMLColor(CResourceManager::GetString("NEWGAMETT"), _T("silver"));
+	CString sTooltip = CHTMLStringBuilder::GetHTMLColor(CLoc::GetString("NEWGAMETT"), _T("silver"));
 	resources::pMainFrame->AddToTooltip(GetDlgItem(NEWGAME), sTooltip);
-	sTooltip = CHTMLStringBuilder::GetHTMLColor(CResourceManager::GetString("MULTIPLAYERTT"), _T("silver"));
+	sTooltip = CHTMLStringBuilder::GetHTMLColor(CLoc::GetString("MULTIPLAYERTT"), _T("silver"));
 	resources::pMainFrame->AddToTooltip(GetDlgItem(MULTIPLAYER), sTooltip);
-	sTooltip = CHTMLStringBuilder::GetHTMLColor(CResourceManager::GetString("LOADGAMETT"), _T("silver"));
+	sTooltip = CHTMLStringBuilder::GetHTMLColor(CLoc::GetString("LOADGAMETT"), _T("silver"));
 	resources::pMainFrame->AddToTooltip(GetDlgItem(LOADGAME), sTooltip);
-	sTooltip = CHTMLStringBuilder::GetHTMLColor(CResourceManager::GetString("SETTINGSTT"), _T("silver"));
+	sTooltip = CHTMLStringBuilder::GetHTMLColor(CLoc::GetString("SETTINGSTT"), _T("silver"));
 	resources::pMainFrame->AddToTooltip(GetDlgItem(OPTIONS), sTooltip);
-	sTooltip = CHTMLStringBuilder::GetHTMLColor(CResourceManager::GetString("LEAVETT"), _T("silver"));
+	sTooltip = CHTMLStringBuilder::GetHTMLColor(CLoc::GetString("LEAVETT"), _T("silver"));
 	resources::pMainFrame->AddToTooltip(GetDlgItem(EXITGAME), sTooltip);
 
-	sTooltip = CHTMLStringBuilder::GetHTMLColor(CResourceManager::GetString("CREATEGAMETT"), _T("silver"));
+	sTooltip = CHTMLStringBuilder::GetHTMLColor(CLoc::GetString("CREATEGAMETT"), _T("silver"));
 	resources::pMainFrame->AddToTooltip(GetDlgItem(MP_CREATE), sTooltip);
-	sTooltip = CHTMLStringBuilder::GetHTMLColor(CResourceManager::GetString("JOINGAMETT"), _T("silver"));
+	sTooltip = CHTMLStringBuilder::GetHTMLColor(CLoc::GetString("JOINGAMETT"), _T("silver"));
 	resources::pMainFrame->AddToTooltip(GetDlgItem(MP_JOIN), sTooltip);
 
 	this->SetTimer(1,4000,NULL);
@@ -387,12 +387,12 @@ void CStartMenuView::OnClientDisconnected()
 		CBotEDoc* pDoc = resources::pDoc;
 		if (!pDoc->m_bDontExit)
 		{
-			MessageBox(CResourceManager::GetString("SERVERERROR1"), CResourceManager::GetString("ERROR"), MB_ICONEXCLAMATION | MB_OK);
+			MessageBox(CLoc::GetString("SERVERERROR1"), CLoc::GetString("ERROR"), MB_ICONEXCLAMATION | MB_OK);
 			resources::pMainFrame->SelectMainView(CHOOSERACE_VIEW);
 		}
 		else
 		{
-			MessageBox(CResourceManager::GetString("SERVERERROR2"), CResourceManager::GetString("ERROR"), MB_ICONEXCLAMATION | MB_OK);
+			MessageBox(CLoc::GetString("SERVERERROR2"), CLoc::GetString("ERROR"), MB_ICONEXCLAMATION | MB_OK);
 			AfxGetApp()->GetMainWnd()->PostMessage(WM_CLOSE);
 		}
 	}

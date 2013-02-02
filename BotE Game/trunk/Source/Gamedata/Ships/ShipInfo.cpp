@@ -5,7 +5,7 @@
 #include "stdafx.h"
 #include "ShipInfo.h"
 #include "Races\Empire.h"
-#include "General/ResourceManager.h"
+#include "General/Loc.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -302,8 +302,8 @@ void CShipInfo::DrawShipInformation(Graphics* g, CRect rect, Gdiplus::Font* font
 
 	// Größe, Unterhalt und Reichweite anzeigen
 	r.SetRect(rect.left,rect.top+36,rect.right,rect.top+56);
-	CString speed = CResourceManager::GetString("SPEED");
-	CString range = CResourceManager::GetString("RANGE");
+	CString speed = CLoc::GetString("SPEED");
+	CString range = CLoc::GetString("RANGE");
 	SHIP_RANGE::Typ tmpRange = m_iRange;
 	BYTE tmpSpeed = m_iSpeed;
 	if (research->GetResearchInfo()->GetResearchComplex(RESEARCH_COMPLEX::GENERAL_SHIP_TECHNOLOGY)->GetFieldStatus(1) == RESEARCH_STATUS::RESEARCHED)
@@ -319,22 +319,22 @@ void CShipInfo::DrawShipInformation(Graphics* g, CRect rect, Gdiplus::Font* font
 
 	if (rect.Width() >= 501)
 	{
-		CString Size = CResourceManager::GetString("SHIPSIZE");
-		CString sMaintenance = CResourceManager::GetString("SHIPCOSTS");
+		CString Size = CLoc::GetString("SHIPSIZE");
+		CString sMaintenance = CLoc::GetString("SHIPCOSTS");
 		switch (tmpRange)
 		{
-		case SHIP_RANGE::SHORT: s.Format("%s: %d  -  %s: %d  -  %s: %d  -  %s: %s",Size, m_nShipSize, sMaintenance, m_iMaintenanceCosts, speed, tmpSpeed, range, CResourceManager::GetString("SHORT"));break;
-		case SHIP_RANGE::MIDDLE: s.Format("%s: %d  -  %s: %d  -  %s: %d  -  %s: %s",Size, m_nShipSize, sMaintenance, m_iMaintenanceCosts, speed, tmpSpeed, range, CResourceManager::GetString("MIDDLE")); break;
-		case SHIP_RANGE::LONG: s.Format("%s: %d  -  %s: %d  -  %s: %d  -  %s: %s",Size, m_nShipSize, sMaintenance, m_iMaintenanceCosts, speed, tmpSpeed, range, CResourceManager::GetString("LONG")); break;
+		case SHIP_RANGE::SHORT: s.Format("%s: %d  -  %s: %d  -  %s: %d  -  %s: %s",Size, m_nShipSize, sMaintenance, m_iMaintenanceCosts, speed, tmpSpeed, range, CLoc::GetString("SHORT"));break;
+		case SHIP_RANGE::MIDDLE: s.Format("%s: %d  -  %s: %d  -  %s: %d  -  %s: %s",Size, m_nShipSize, sMaintenance, m_iMaintenanceCosts, speed, tmpSpeed, range, CLoc::GetString("MIDDLE")); break;
+		case SHIP_RANGE::LONG: s.Format("%s: %d  -  %s: %d  -  %s: %d  -  %s: %s",Size, m_nShipSize, sMaintenance, m_iMaintenanceCosts, speed, tmpSpeed, range, CLoc::GetString("LONG")); break;
 		}
 	}
 	else
 	{
 		switch (tmpRange)
 		{
-		case SHIP_RANGE::SHORT: s.Format("%s: %d  -  %s: %s",speed, tmpSpeed, range, CResourceManager::GetString("SHORT"));break;
-		case SHIP_RANGE::MIDDLE: s.Format("%s: %d  -  %s: %s",speed, tmpSpeed, range, CResourceManager::GetString("MIDDLE")); break;
-		case SHIP_RANGE::LONG: s.Format("%s: %d  -  %s: %s",speed, tmpSpeed, range, CResourceManager::GetString("LONG")); break;
+		case SHIP_RANGE::SHORT: s.Format("%s: %d  -  %s: %s",speed, tmpSpeed, range, CLoc::GetString("SHORT"));break;
+		case SHIP_RANGE::MIDDLE: s.Format("%s: %d  -  %s: %s",speed, tmpSpeed, range, CLoc::GetString("MIDDLE")); break;
+		case SHIP_RANGE::LONG: s.Format("%s: %d  -  %s: %s",speed, tmpSpeed, range, CLoc::GetString("LONG")); break;
 		}
 	}
 
@@ -343,13 +343,13 @@ void CShipInfo::DrawShipInformation(Graphics* g, CRect rect, Gdiplus::Font* font
 	fontBrush.SetColor(clrMark);
 
 	r.SetRect(rect.left,rect.top+62,rect.right,rect.top+84);
-	s = CResourceManager::GetString("ARMAMENT");
+	s = CLoc::GetString("ARMAMENT");
 	g->DrawString(CComBSTR(s), -1, font, RectF((REAL)r.left, (REAL)r.top, (REAL)r.Width(), (REAL)r.Height()), &fontFormat, &fontBrush);
 	// Waffen typenrein sammeln
 	std::map<CString, int> mBeamWeapons;
 	for (int i = 0; i < m_BeamWeapons.GetSize(); i++)
 	{
-		s.Format("%s %d %s", CResourceManager::GetString("TYPE"), m_BeamWeapons.GetAt(i).GetBeamType(),m_BeamWeapons.GetAt(i).GetBeamName());
+		s.Format("%s %d %s", CLoc::GetString("TYPE"), m_BeamWeapons.GetAt(i).GetBeamType(),m_BeamWeapons.GetAt(i).GetBeamName());
 		mBeamWeapons[s] += m_BeamWeapons.GetAt(i).GetBeamNumber();
 	}
 
@@ -380,7 +380,7 @@ void CShipInfo::DrawShipInformation(Graphics* g, CRect rect, Gdiplus::Font* font
 	}
 
 	if (sWeapons == "")
-		sWeapons = CResourceManager::GetString("NONE");
+		sWeapons = CLoc::GetString("NONE");
 	r.SetRect(rect.left,rect.top+84,rect.right,rect.top+143);
 	fontBrush.SetColor(clrNormal);
 	fontFormat.SetFormatFlags(!StringFormatFlagsNoWrap);
@@ -392,7 +392,7 @@ void CShipInfo::DrawShipInformation(Graphics* g, CRect rect, Gdiplus::Font* font
 	if (rect.Width() > 500)
 		sub = 20;
 	r.SetRect(rect.left,rect.top+143-sub,rect.right,rect.top+165-sub);
-	s = CResourceManager::GetString("SHIELDS")+" "+CResourceManager::GetString("AND")+" "+CResourceManager::GetString("HULL");
+	s = CLoc::GetString("SHIELDS")+" "+CLoc::GetString("AND")+" "+CLoc::GetString("HULL");
 	fontFormat.SetFormatFlags(StringFormatFlagsNoWrap);
 	fontBrush.SetColor(clrMark);
 	g->DrawString(CComBSTR(s), -1, font, RectF((REAL)r.left, (REAL)r.top, (REAL)r.Width(), (REAL)r.Height()), &fontFormat, &fontBrush);
@@ -402,17 +402,17 @@ void CShipInfo::DrawShipInformation(Graphics* g, CRect rect, Gdiplus::Font* font
 	if (research->GetResearchInfo()->GetResearchComplex(RESEARCH_COMPLEX::CONSTRUCTION_TECHNOLOGY)->GetFieldStatus(1) == RESEARCH_STATUS::RESEARCHED)
 		shieldBoni += (float)(research->GetResearchInfo()->GetResearchComplex(RESEARCH_COMPLEX::CONSTRUCTION_TECHNOLOGY)->GetBonus(1)) / 100;
 
-	s.Format("%s %d %s: %s %d",CResourceManager::GetString("TYPE"),m_Shield.GetShieldType(),
-		CResourceManager::GetString("SHIELDS"), CResourceManager::GetString("CAPACITY"), (UINT)(m_Shield.GetMaxShield() * shieldBoni));
+	s.Format("%s %d %s: %s %d",CLoc::GetString("TYPE"),m_Shield.GetShieldType(),
+		CLoc::GetString("SHIELDS"), CLoc::GetString("CAPACITY"), (UINT)(m_Shield.GetMaxShield() * shieldBoni));
 	fontBrush.SetColor(clrNormal);
 	g->DrawString(CComBSTR(s), -1, font, RectF((REAL)r.left, (REAL)r.top, (REAL)r.Width(), (REAL)r.Height()), &fontFormat, &fontBrush);
 	r.SetRect(rect.left,rect.top+185-sub,rect.right,rect.top+225-sub);
 	CString material;
 	switch (m_Hull.GetHullMaterial())
 	{
-	case TITAN: material = CResourceManager::GetString("TITAN");; break;
-	case DURANIUM: material = CResourceManager::GetString("DURANIUM");; break;
-	case IRIDIUM: material = CResourceManager::GetString("IRIDIUM");; break;
+	case TITAN: material = CLoc::GetString("TITAN");; break;
+	case DURANIUM: material = CLoc::GetString("DURANIUM");; break;
+	case IRIDIUM: material = CLoc::GetString("IRIDIUM");; break;
 	default: material = "";
 	}
 	float hullBoni = 1.0f;
@@ -420,11 +420,11 @@ void CShipInfo::DrawShipInformation(Graphics* g, CRect rect, Gdiplus::Font* font
 		hullBoni += (float)(research->GetResearchInfo()->GetResearchComplex(RESEARCH_COMPLEX::CONSTRUCTION_TECHNOLOGY)->GetBonus(2)) / 100;
 
 	if (m_Hull.GetDoubleHull() == TRUE)
-		s.Format("%s%s: %s %d",material, CResourceManager::GetString("DOUBLE_HULL_ARMOUR"),
-			CResourceManager::GetString("INTEGRITY"), (int)(m_Hull.GetMaxHull()*hullBoni));
+		s.Format("%s%s: %s %d",material, CLoc::GetString("DOUBLE_HULL_ARMOUR"),
+			CLoc::GetString("INTEGRITY"), (int)(m_Hull.GetMaxHull()*hullBoni));
 	else
-		s.Format("%s%s: %s %d",material, CResourceManager::GetString("HULL_ARMOR"),
-			CResourceManager::GetString("INTEGRITY"), (int)(m_Hull.GetMaxHull()*hullBoni));
+		s.Format("%s%s: %s %d",material, CLoc::GetString("HULL_ARMOR"),
+			CLoc::GetString("INTEGRITY"), (int)(m_Hull.GetMaxHull()*hullBoni));
 	fontFormat.SetFormatFlags(StringFormatFlagsNoWrap);
 	g->DrawString(CComBSTR(s), -1, font, RectF((REAL)r.left, (REAL)r.top, (REAL)r.Width(), (REAL)r.Height()), &fontFormat, &fontBrush);
 
@@ -433,19 +433,19 @@ void CShipInfo::DrawShipInformation(Graphics* g, CRect rect, Gdiplus::Font* font
 		// Manövrierbarkeit anzeigen
 		fontBrush.SetColor(clrMark);
 		r.SetRect(rect.left,rect.top+266,rect.right,rect.top+288);
-		g->DrawString(CComBSTR(CResourceManager::GetString("MANEUVERABILITY")), -1, font, RectF((REAL)r.left, (REAL)r.top, (REAL)r.Width(), (REAL)r.Height()), &fontFormat, &fontBrush);
+		g->DrawString(CComBSTR(CLoc::GetString("MANEUVERABILITY")), -1, font, RectF((REAL)r.left, (REAL)r.top, (REAL)r.Width(), (REAL)r.Height()), &fontFormat, &fontBrush);
 		switch (m_byManeuverability)
 		{
-		case 9: s = CResourceManager::GetString("PHENOMENAL");	break;
-		case 8:	s = CResourceManager::GetString("EXCELLENT");	break;
-		case 7:	s = CResourceManager::GetString("VERYGOOD");	break;
-		case 6:	s = CResourceManager::GetString("GOOD");		break;
-		case 5:	s = CResourceManager::GetString("NORMAL");		break;
-		case 4:	s = CResourceManager::GetString("ADEQUATE");	break;
-		case 3:	s = CResourceManager::GetString("BAD");			break;
-		case 2:	s = CResourceManager::GetString("VERYBAD");		break;
-		case 1:	s = CResourceManager::GetString("MISERABLE");	break;
-		default:s = CResourceManager::GetString("NONE");
+		case 9: s = CLoc::GetString("PHENOMENAL");	break;
+		case 8:	s = CLoc::GetString("EXCELLENT");	break;
+		case 7:	s = CLoc::GetString("VERYGOOD");	break;
+		case 6:	s = CLoc::GetString("GOOD");		break;
+		case 5:	s = CLoc::GetString("NORMAL");		break;
+		case 4:	s = CLoc::GetString("ADEQUATE");	break;
+		case 3:	s = CLoc::GetString("BAD");			break;
+		case 2:	s = CLoc::GetString("VERYBAD");		break;
+		case 1:	s = CLoc::GetString("MISERABLE");	break;
+		default:s = CLoc::GetString("NONE");
 		}
 		fontBrush.SetColor(clrNormal);
 		r.SetRect(rect.left,rect.top+288,rect.right,rect.top+308);
@@ -454,10 +454,10 @@ void CShipInfo::DrawShipInformation(Graphics* g, CRect rect, Gdiplus::Font* font
 		// Scan anzeigen
 		fontBrush.SetColor(clrMark);
 		r.SetRect(rect.left,rect.top+311,rect.right,rect.top+333);
-		g->DrawString(CComBSTR(CResourceManager::GetString("SENSORS")), -1, font, RectF((REAL)r.left, (REAL)r.top, (REAL)r.Width(), (REAL)r.Height()), &fontFormat, &fontBrush);
+		g->DrawString(CComBSTR(CLoc::GetString("SENSORS")), -1, font, RectF((REAL)r.left, (REAL)r.top, (REAL)r.Width(), (REAL)r.Height()), &fontFormat, &fontBrush);
 		r.SetRect(rect.left,rect.top+333,rect.right,rect.top+353);
-		CString Scanrange = CResourceManager::GetString("SCANRANGE");
-		CString Scanpower = CResourceManager::GetString("SCANPOWER");
+		CString Scanrange = CLoc::GetString("SCANRANGE");
+		CString Scanpower = CLoc::GetString("SCANPOWER");
 		BYTE ScanRange = m_iScanRange;
 		USHORT ScanPower = m_iScanPower;
 		s.Format("%s: %d  -  %s: %d",Scanrange, ScanRange, Scanpower, ScanPower);
@@ -468,35 +468,35 @@ void CShipInfo::DrawShipInformation(Graphics* g, CRect rect, Gdiplus::Font* font
 		// Spezialfähigkeiten anzeigen
 		fontBrush.SetColor(clrMark);
 		r.SetRect(rect.left,rect.top+356,rect.right,rect.top+378);
-		g->DrawString(CComBSTR(CResourceManager::GetString("SPECIAL_ABILITIES")), -1, font, RectF((REAL)r.left, (REAL)r.top, (REAL)r.Width(), (REAL)r.Height()), &fontFormat, &fontBrush);
+		g->DrawString(CComBSTR(CLoc::GetString("SPECIAL_ABILITIES")), -1, font, RectF((REAL)r.left, (REAL)r.top, (REAL)r.Width(), (REAL)r.Height()), &fontFormat, &fontBrush);
 		s = "";
 		fontBrush.SetColor(clrNormal);
 		if (HasSpecial(SHIP_SPECIAL::ASSULTSHIP))
-			s += CResourceManager::GetString("ASSAULTSHIP")+" \n";
+			s += CLoc::GetString("ASSAULTSHIP")+" \n";
 		if (HasSpecial(SHIP_SPECIAL::BLOCKADESHIP))
-			s += CResourceManager::GetString("BLOCKADESHIP")+" \n";
+			s += CLoc::GetString("BLOCKADESHIP")+" \n";
 		if (HasSpecial(SHIP_SPECIAL::COMMANDSHIP))
-			s += CResourceManager::GetString("COMMANDSHIP")+" \n";
+			s += CLoc::GetString("COMMANDSHIP")+" \n";
 		if (HasSpecial(SHIP_SPECIAL::DOGFIGHTER))
-			s += CResourceManager::GetString("DOGFIGHTER")+" \n";
+			s += CLoc::GetString("DOGFIGHTER")+" \n";
 		if (HasSpecial(SHIP_SPECIAL::DOGKILLER))
-			s += CResourceManager::GetString("DOGKILLER")+" \n";
+			s += CLoc::GetString("DOGKILLER")+" \n";
 		if (HasSpecial(SHIP_SPECIAL::PATROLSHIP))
-			s += CResourceManager::GetString("PATROLSHIP")+" \n";
+			s += CLoc::GetString("PATROLSHIP")+" \n";
 		if (HasSpecial(SHIP_SPECIAL::RAIDER))
-			s += CResourceManager::GetString("RAIDER")+" \n";
+			s += CLoc::GetString("RAIDER")+" \n";
 		if (HasSpecial(SHIP_SPECIAL::SCIENCEVESSEL))
-			s += CResourceManager::GetString("SCIENCESHIP")+" \n";
+			s += CLoc::GetString("SCIENCESHIP")+" \n";
 		if (m_Shield.GetRegenerative())
-			s += CResourceManager::GetString("REGENERATIVE_SHIELDS")+" \n";
+			s += CLoc::GetString("REGENERATIVE_SHIELDS")+" \n";
 		if (m_Hull.GetAblative())
-			s += CResourceManager::GetString("ABLATIVE_ARMOR")+" \n";
+			s += CLoc::GetString("ABLATIVE_ARMOR")+" \n";
 		if (m_Hull.GetPolarisation())
-			s += CResourceManager::GetString("HULLPOLARISATION")+" \n";
+			s += CLoc::GetString("HULLPOLARISATION")+" \n";
 		if (CanCloak())
-			s += CResourceManager::GetString("CAN_CLOAK")+" \n";
+			s += CLoc::GetString("CAN_CLOAK")+" \n";
 		if (s.IsEmpty())
-			s = CResourceManager::GetString("NONE")+" \n";;
+			s = CLoc::GetString("NONE")+" \n";;
 		r.SetRect(rect.left,rect.top+378,rect.right,rect.top+478);
 		fontBrush.SetColor(clrNormal);
 		fontFormat.SetFormatFlags(!StringFormatFlagsNoWrap);

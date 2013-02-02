@@ -6,7 +6,7 @@
 #include "TradeBottomView.h"
 #include "Races\Major.h"
 #include "Graphic\memdc.h"
-#include "General/ResourceManager.h"
+#include "General/Loc.h"
 
 // CTradeBottomView
 
@@ -95,11 +95,11 @@ void CTradeBottomView::OnDraw(CDC* dc)
 	Gdiplus::Color resColor;
 	switch(m_iWhichRessource)
 	{
-	case TITAN: resName = CResourceManager::GetString("TITAN");			resColor.SetFromCOLORREF(RGB(186,186,186)); break;
-	case DEUTERIUM: resName = CResourceManager::GetString("DEUTERIUM"); resColor.SetFromCOLORREF(RGB(255,81,90)); break;
-	case DURANIUM: resName = CResourceManager::GetString("DURANIUM");	resColor.SetFromCOLORREF(RGB(132,198,127)); break;
-	case CRYSTAL: resName = CResourceManager::GetString("CRYSTAL");		resColor.SetFromCOLORREF(RGB(153,227,255)); break;
-	case IRIDIUM: resName = CResourceManager::GetString("IRIDIUM");		resColor.SetFromCOLORREF(RGB(255,189,76)); break;
+	case TITAN: resName = CLoc::GetString("TITAN");			resColor.SetFromCOLORREF(RGB(186,186,186)); break;
+	case DEUTERIUM: resName = CLoc::GetString("DEUTERIUM"); resColor.SetFromCOLORREF(RGB(255,81,90)); break;
+	case DURANIUM: resName = CLoc::GetString("DURANIUM");	resColor.SetFromCOLORREF(RGB(132,198,127)); break;
+	case CRYSTAL: resName = CLoc::GetString("CRYSTAL");		resColor.SetFromCOLORREF(RGB(153,227,255)); break;
+	case IRIDIUM: resName = CLoc::GetString("IRIDIUM");		resColor.SetFromCOLORREF(RGB(255,189,76)); break;
 	}
 
 	USHORT start;
@@ -159,7 +159,7 @@ void CTradeBottomView::OnDraw(CDC* dc)
 	fontFormat.SetLineAlignment(StringAlignmentCenter);
 
 	// Maximal, Minimal und Durchschnittspreis links anzeigen
-	g.DrawString(CComBSTR(CResourceManager::GetString("MIN_PRICE")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(40, 60, 180, 25), &fontFormat, &fontBrush);
+	g.DrawString(CComBSTR(CLoc::GetString("MIN_PRICE")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(40, 60, 180, 25), &fontFormat, &fontBrush);
 	if (pHistory->GetMinPrice(m_iWhichRessource) / 10 == 0)
 		s.Format("1");
 	else
@@ -167,7 +167,7 @@ void CTradeBottomView::OnDraw(CDC* dc)
 	fontFormat.SetAlignment(StringAlignmentFar);
 	g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(40, 60, 200, 25), &fontFormat, &fontBrush);
 	fontFormat.SetAlignment(StringAlignmentNear);
-	g.DrawString(CComBSTR(CResourceManager::GetString("MAX_PRICE")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(40, 90, 180, 25), &fontFormat, &fontBrush);
+	g.DrawString(CComBSTR(CLoc::GetString("MAX_PRICE")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(40, 90, 180, 25), &fontFormat, &fontBrush);
 	if (pHistory->GetMaxPrice(m_iWhichRessource) / 10 == 0)
 		s.Format("1");
 	else
@@ -175,7 +175,7 @@ void CTradeBottomView::OnDraw(CDC* dc)
 	fontFormat.SetAlignment(StringAlignmentFar);
 	g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(40, 90, 200, 25), &fontFormat, &fontBrush);
 	fontFormat.SetAlignment(StringAlignmentNear);
-	g.DrawString(CComBSTR(CResourceManager::GetString("AVERAGE_PRICE")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(40, 120, 180, 25), &fontFormat, &fontBrush);
+	g.DrawString(CComBSTR(CLoc::GetString("AVERAGE_PRICE")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(40, 120, 180, 25), &fontFormat, &fontBrush);
 	if (pHistory->GetAveragePrice(m_iWhichRessource) / 10 == 0)
 		s.Format("1");
 	else
@@ -192,14 +192,14 @@ void CTradeBottomView::OnDraw(CDC* dc)
 	fontBrush.SetColor(this->GetFontColorForSmallButton());
 	for (int i = TITAN; i <= IRIDIUM; i++)
 		g.DrawImage(m_pSmallButton, r.right-120, 50+i*32, 120, 30);
-	g.DrawString(CComBSTR(CResourceManager::GetString("TITAN")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.right-120, 50, 120, 30), &fontFormat, &fontBrush);
-	g.DrawString(CComBSTR(CResourceManager::GetString("DEUTERIUM")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.right-120, 82, 120, 30), &fontFormat, &fontBrush);
-	g.DrawString(CComBSTR(CResourceManager::GetString("DURANIUM")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.right-120, 114, 120, 30), &fontFormat, &fontBrush);
-	g.DrawString(CComBSTR(CResourceManager::GetString("CRYSTAL")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.right-120, 146, 120, 30), &fontFormat, &fontBrush);
-	g.DrawString(CComBSTR(CResourceManager::GetString("IRIDIUM")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.right-120, 178, 120, 30), &fontFormat, &fontBrush);
+	g.DrawString(CComBSTR(CLoc::GetString("TITAN")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.right-120, 50, 120, 30), &fontFormat, &fontBrush);
+	g.DrawString(CComBSTR(CLoc::GetString("DEUTERIUM")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.right-120, 82, 120, 30), &fontFormat, &fontBrush);
+	g.DrawString(CComBSTR(CLoc::GetString("DURANIUM")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.right-120, 114, 120, 30), &fontFormat, &fontBrush);
+	g.DrawString(CComBSTR(CLoc::GetString("CRYSTAL")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.right-120, 146, 120, 30), &fontFormat, &fontBrush);
+	g.DrawString(CComBSTR(CLoc::GetString("IRIDIUM")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.right-120, 178, 120, 30), &fontFormat, &fontBrush);
 
 	g.DrawImage(m_pSmallButton, 80, 160, 120, 30);
-	s.Format("%d %s",m_iNumberOfHistoryRounds, CResourceManager::GetString("ROUNDS"));
+	s.Format("%d %s",m_iNumberOfHistoryRounds, CLoc::GetString("ROUNDS"));
 	g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(80, 160, 120, 30), &fontFormat, &fontBrush);
 
 	// Wenn das System blockiert wird, ein OverlayBanner über die Ansicht gelegt.
@@ -208,7 +208,7 @@ void CTradeBottomView::OnDraw(CDC* dc)
 		CFontLoader::CreateGDIFont(pMajor, 3, fontName, fontSize);
 		CSize viewSize(m_TotalSize.cx - 160, m_TotalSize.cy - 120);
 		s.Format("%d", pDoc->CurrentSystem().GetBlockade());
-		COverlayBanner* banner = new COverlayBanner(CPoint(80,60), viewSize, CResourceManager::GetString("SYSTEM_IS_BLOCKED", FALSE, s), RGB(200,0,0));
+		COverlayBanner* banner = new COverlayBanner(CPoint(80,60), viewSize, CLoc::GetString("SYSTEM_IS_BLOCKED", FALSE, s), RGB(200,0,0));
 		banner->SetBorderWidth(1);
 		Gdiplus::Font font(CComBSTR(fontName), fontSize);
 		banner->Draw(&g, &font);

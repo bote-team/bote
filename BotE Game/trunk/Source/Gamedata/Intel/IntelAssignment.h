@@ -7,7 +7,7 @@
  */
 #pragma once
 #include "afx.h"
-#include "Options.h"
+#include "Constants.h"
 #include <map>
 
 /**

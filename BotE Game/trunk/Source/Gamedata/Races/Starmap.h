@@ -15,7 +15,7 @@
 // nur zu Demozwecken, sollte auskommentiert werden!
 // #define DEBUG_AI_BASE_DEMO
 
-#include "Options.h"
+#include "Constants.h"
 #include "SortedList.h"
 #include <list>
 #include <set>

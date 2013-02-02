@@ -6,25 +6,24 @@
  *
  */
 #pragma once
-#include "afx.h"
 
-class CResourceManager : public CObject
+class CLoc
 {
 public:
-	/// Kostruktor
-	CResourceManager(void);
+	/// Konstruktor
+	CLoc(void);
 
 	/// Destruktor
-	~CResourceManager(void);
+	~CLoc(void);
 
-	/// Funktion initiert die Klasse CResourceManager. Sie muss zu Beginn aufgerufen werden
+	/// Funktion initiert die Klasse CLoc. Sie muss zu Beginn aufgerufen werden
 	static void Init(void);
 
 	/// Funktion gibt einen String zurück, der in einer StringTable steht.
 	static CString GetString(const CString& key, BOOLEAN forceBigStarting = FALSE, const CString& subString1 = "", const CString& subString2 = "");
 
 	/*
-	/// Funktion gibt einen String aus der StrinTable zurück. Dieser String kann ähnlich der printf Funktion
+	/// Funktion gibt einen String aus der StringTable zurück. Dieser String kann ähnlich der printf Funktion
 	/// auch gleich formatiert werden.
 	/// @param lpszKeyFormat Schlüssel
 	/// @param ... dynamische Anzahl mit einzufügenden Strings

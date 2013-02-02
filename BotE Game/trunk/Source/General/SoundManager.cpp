@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "SoundManager.h"
-#include "ResourceManager.h"
+#include "Loc.h"
 #include "IOData.h"
 #include <algorithm>
 
@@ -38,20 +38,20 @@ std::string CSoundManager::GetPathName(SNDMGR_VALUE nSound, network::RACE nRace)
 	switch (nSound)
 	{
 	// Hintergrundmusik
-	case SNDMGR_MUSIC_FED:	msg = CIOData::GetInstance()->GetAppPath() + "Sounds\\" + CResourceManager::GetString("RACE1_PREFIX") + "music.ogg"; return msg;
-	case SNDMGR_MUSIC_FER:	msg = CIOData::GetInstance()->GetAppPath() + "Sounds\\" + CResourceManager::GetString("RACE2_PREFIX") + "music.ogg"; return msg;
-	case SNDMGR_MUSIC_KLI:	msg = CIOData::GetInstance()->GetAppPath() + "Sounds\\" + CResourceManager::GetString("RACE3_PREFIX") + "music.ogg"; return msg;
-	case SNDMGR_MUSIC_ROM:	msg = CIOData::GetInstance()->GetAppPath() + "Sounds\\" + CResourceManager::GetString("RACE4_PREFIX") + "music.ogg"; return msg;
-	case SNDMGR_MUSIC_CAR:	msg = CIOData::GetInstance()->GetAppPath() + "Sounds\\" + CResourceManager::GetString("RACE5_PREFIX") + "music.ogg"; return msg;
-	case SNDMGR_MUSIC_DOM:	msg = CIOData::GetInstance()->GetAppPath() + "Sounds\\" + CResourceManager::GetString("RACE6_PREFIX") + "music.ogg"; return msg;
+	case SNDMGR_MUSIC_FED:	msg = CIOData::GetInstance()->GetAppPath() + "Sounds\\" + CLoc::GetString("RACE1_PREFIX") + "music.ogg"; return msg;
+	case SNDMGR_MUSIC_FER:	msg = CIOData::GetInstance()->GetAppPath() + "Sounds\\" + CLoc::GetString("RACE2_PREFIX") + "music.ogg"; return msg;
+	case SNDMGR_MUSIC_KLI:	msg = CIOData::GetInstance()->GetAppPath() + "Sounds\\" + CLoc::GetString("RACE3_PREFIX") + "music.ogg"; return msg;
+	case SNDMGR_MUSIC_ROM:	msg = CIOData::GetInstance()->GetAppPath() + "Sounds\\" + CLoc::GetString("RACE4_PREFIX") + "music.ogg"; return msg;
+	case SNDMGR_MUSIC_CAR:	msg = CIOData::GetInstance()->GetAppPath() + "Sounds\\" + CLoc::GetString("RACE5_PREFIX") + "music.ogg"; return msg;
+	case SNDMGR_MUSIC_DOM:	msg = CIOData::GetInstance()->GetAppPath() + "Sounds\\" + CLoc::GetString("RACE6_PREFIX") + "music.ogg"; return msg;
 
 	// Rassenauswahl
-	case SNDMGR_VOICE_FED_RACESELECT:	msg = CIOData::GetInstance()->GetAppPath() + "Sounds\\" + CResourceManager::GetString("RACE1_PREFIX") + "raceSelect.ogg"; return msg;
-	case SNDMGR_VOICE_FER_RACESELECT:	msg = CIOData::GetInstance()->GetAppPath() + "Sounds\\" + CResourceManager::GetString("RACE2_PREFIX") + "raceSelect.ogg"; return msg;
-	case SNDMGR_VOICE_KLI_RACESELECT:	msg = CIOData::GetInstance()->GetAppPath() + "Sounds\\" + CResourceManager::GetString("RACE3_PREFIX") + "raceSelect.ogg"; return msg;
-	case SNDMGR_VOICE_ROM_RACESELECT:	msg = CIOData::GetInstance()->GetAppPath() + "Sounds\\" + CResourceManager::GetString("RACE4_PREFIX") + "raceSelect.ogg"; return msg;
-	case SNDMGR_VOICE_CAR_RACESELECT:	msg = CIOData::GetInstance()->GetAppPath() + "Sounds\\" + CResourceManager::GetString("RACE5_PREFIX") + "raceSelect.ogg"; return msg;
-	case SNDMGR_VOICE_DOM_RACESELECT:	msg = CIOData::GetInstance()->GetAppPath() + "Sounds\\" + CResourceManager::GetString("RACE6_PREFIX") + "raceSelect.ogg"; return msg;
+	case SNDMGR_VOICE_FED_RACESELECT:	msg = CIOData::GetInstance()->GetAppPath() + "Sounds\\" + CLoc::GetString("RACE1_PREFIX") + "raceSelect.ogg"; return msg;
+	case SNDMGR_VOICE_FER_RACESELECT:	msg = CIOData::GetInstance()->GetAppPath() + "Sounds\\" + CLoc::GetString("RACE2_PREFIX") + "raceSelect.ogg"; return msg;
+	case SNDMGR_VOICE_KLI_RACESELECT:	msg = CIOData::GetInstance()->GetAppPath() + "Sounds\\" + CLoc::GetString("RACE3_PREFIX") + "raceSelect.ogg"; return msg;
+	case SNDMGR_VOICE_ROM_RACESELECT:	msg = CIOData::GetInstance()->GetAppPath() + "Sounds\\" + CLoc::GetString("RACE4_PREFIX") + "raceSelect.ogg"; return msg;
+	case SNDMGR_VOICE_CAR_RACESELECT:	msg = CIOData::GetInstance()->GetAppPath() + "Sounds\\" + CLoc::GetString("RACE5_PREFIX") + "raceSelect.ogg"; return msg;
+	case SNDMGR_VOICE_DOM_RACESELECT:	msg = CIOData::GetInstance()->GetAppPath() + "Sounds\\" + CLoc::GetString("RACE6_PREFIX") + "raceSelect.ogg"; return msg;
 
 	// Oberflächengeräusche
 	case SNDMGR_SOUND_MAINMENU:			return (std::string)CIOData::GetInstance()->GetAppPath() + "Sounds\\MouseOver.ogg";
@@ -87,12 +87,12 @@ std::string CSoundManager::GetPathName(SNDMGR_VALUE nSound, network::RACE nRace)
 	if (nRace >= RACE_FIRST && nRace < RACE_LAST)
 	{
 		std::string prefixes[] = {
-			CResourceManager::GetString("RACE1_PREFIX"),
-			CResourceManager::GetString("RACE2_PREFIX"),
-			CResourceManager::GetString("RACE3_PREFIX"),
-			CResourceManager::GetString("RACE4_PREFIX"),
-			CResourceManager::GetString("RACE5_PREFIX"),
-			CResourceManager::GetString("RACE6_PREFIX")
+			CLoc::GetString("RACE1_PREFIX"),
+			CLoc::GetString("RACE2_PREFIX"),
+			CLoc::GetString("RACE3_PREFIX"),
+			CLoc::GetString("RACE4_PREFIX"),
+			CLoc::GetString("RACE5_PREFIX"),
+			CLoc::GetString("RACE6_PREFIX")
 		};
 		prefix = prefixes[nRace-1];
 	}

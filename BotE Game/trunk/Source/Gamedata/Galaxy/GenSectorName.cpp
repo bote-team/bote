@@ -5,7 +5,7 @@
 #include "stdafx.h"
 #include "IOData.h"
 #include "GenSectorName.h"
-#include "ResourceManager.h"
+#include "Loc.h"
 #include <set>
 
 #ifdef _DEBUG
@@ -89,7 +89,7 @@ CString CGenSectorName::GetNextRandomSectorName(const CPoint& ptKO, bool& bMinor
 	}
 
 	// Standardname zurückgeben
-	sName.Format("%s %c%i", CResourceManager::GetString("SECTOR"), (char)(ptKO.y+97), ptKO.x + 1);
+	sName.Format("%s %c%i", CLoc::GetString("SECTOR"), (char)(ptKO.y+97), ptKO.x + 1);
 	return sName;
 }
 

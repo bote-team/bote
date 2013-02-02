@@ -10,7 +10,7 @@
 #include "BotEDoc.h"
 #include "Races\RaceController.h"
 #include "Anomaly.h"
-#include "General/ResourceManager.h"
+#include "General/Loc.h"
 #include "Ships/ships.h"
 
 #include <cassert>
@@ -322,7 +322,7 @@ CString CSector::GetName(BOOLEAN longName) const
 		else
 		{
 			CString s;
-			s.Format("%s %c%i", CResourceManager::GetString("SECTOR"), (char)(m_KO.y+97), m_KO.x + 1);
+			s.Format("%s %c%i", CLoc::GetString("SECTOR"), (char)(m_KO.y+97), m_KO.x + 1);
 			return s;
 		}
 	}

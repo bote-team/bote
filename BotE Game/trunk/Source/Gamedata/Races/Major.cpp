@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Major.h"
 #include "AI\MajorAI.h"
-#include "General/ResourceManager.h"
+#include "General/Loc.h"
 #include <algorithm>
 #include "BotE.h"
 #include "BotEDoc.h"
@@ -259,11 +259,11 @@ bool CMajor::DecrementAgreementsDuration(map<CString, CMajor*>* pmMajors)
 			CString sAgreement;
 			switch (this->GetAgreement(it->first))
 			{
-			case DIPLOMATIC_AGREEMENT::TRADE:		{sAgreement = CResourceManager::GetString("TRADE_AGREEMENT"); break;}
-			case DIPLOMATIC_AGREEMENT::FRIENDSHIP:	{sAgreement = CResourceManager::GetString("FRIENDSHIP"); break;}
-			case DIPLOMATIC_AGREEMENT::COOPERATION:	{sAgreement = CResourceManager::GetString("COOPERATION"); break;}
-			case DIPLOMATIC_AGREEMENT::AFFILIATION:	{sAgreement = CResourceManager::GetString("AFFILIATION"); break;}
-			case DIPLOMATIC_AGREEMENT::NAP:			{sAgreement = CResourceManager::GetString("NON_AGGRESSION"); break;}
+			case DIPLOMATIC_AGREEMENT::TRADE:		{sAgreement = CLoc::GetString("TRADE_AGREEMENT"); break;}
+			case DIPLOMATIC_AGREEMENT::FRIENDSHIP:	{sAgreement = CLoc::GetString("FRIENDSHIP"); break;}
+			case DIPLOMATIC_AGREEMENT::COOPERATION:	{sAgreement = CLoc::GetString("COOPERATION"); break;}
+			case DIPLOMATIC_AGREEMENT::AFFILIATION:	{sAgreement = CLoc::GetString("AFFILIATION"); break;}
+			case DIPLOMATIC_AGREEMENT::NAP:			{sAgreement = CLoc::GetString("NON_AGGRESSION"); break;}
 			}
 
 			CString sRace = "";
@@ -271,10 +271,10 @@ bool CMajor::DecrementAgreementsDuration(map<CString, CMajor*>* pmMajors)
 			if (pMajor)
 				sRace = pMajor->m_sEmpireWithAssignedArticle;
 
-			CString s = CResourceManager::GetString("CONTRACT_ENDED", FALSE, sAgreement, sRace);
-			CMessage message;
-			message.GenerateMessage(s, MESSAGE_TYPE::DIPLOMACY);
-			this->GetEmpire()->AddMessage(message);
+			CString s = CLoc::GetString("CONTRACT_ENDED", FALSE, sAgreement, sRace);
+			CEmpireNews message;
+			message.CreateNews(s, EMPIRE_NEWS_TYPE::DIPLOMACY);
+			this->GetEmpire()->AddMsg(message);
 			vDelAgrs.push_back(it->first);
 		}
 	}
@@ -308,10 +308,10 @@ bool CMajor::DecrementAgreementsDuration(map<CString, CMajor*>* pmMajors)
 			if (pMajor)
 				sRace = pMajor->m_sEmpireWithAssignedArticle;
 
-			CString s = CResourceManager::GetString("DEFENCE_PACT_ENDED", FALSE, sRace);
-			CMessage message;
-			message.GenerateMessage(s, MESSAGE_TYPE::DIPLOMACY);
-			this->GetEmpire()->AddMessage(message);
+			CString s = CLoc::GetString("DEFENCE_PACT_ENDED", FALSE, sRace);
+			CEmpireNews message;
+			message.CreateNews(s, EMPIRE_NEWS_TYPE::DIPLOMACY);
+			this->GetEmpire()->AddMsg(message);
 			vDelAgrs.push_back(*it);
 			it = m_vDefencePact.erase(it++);
 			continue;
@@ -478,15 +478,15 @@ void CMajor::Contact(const CRace& Race, const CPoint& p)
 
 	//message to the involved major
 	CString sKey = Race.IsMajor() ? "GET_CONTACT_TO_MAJOR" : "GET_CONTACT_TO_MINOR";
-	CString sMsg = CResourceManager::GetString(sKey,FALSE, Race.GetRaceName(),sSectorKO);
+	CString sMsg = CLoc::GetString(sKey,FALSE, Race.GetRaceName(),sSectorKO);
 
-	CMessage message;
-	message.GenerateMessage(sMsg, MESSAGE_TYPE::DIPLOMACY, "", p);
-	m_Empire.AddMessage(message);
+	CEmpireNews message;
+	message.CreateNews(sMsg, EMPIRE_NEWS_TYPE::DIPLOMACY, "", p);
+	m_Empire.AddMsg(message);
 
 	// Eventscreen einfügen
 	if (IsHumanPlayer())
-		m_Empire.GetEventMessages()->Add(new CEventFirstContact(m_sID, Race.GetRaceID()));
+		m_Empire.GetEvents()->Add(new CEventFirstContact(m_sID, Race.GetRaceID()));
 }
 
 bool CMajor::AHumanPlays() const {
@@ -509,9 +509,9 @@ void CMajor::AddToLostShipHistory(const CShips& Ship, const CString& sEvent,
 void CMajor::LostFlagShip(const CShip& ship)
 {
 	const CString& eventText = m_MoralObserver.AddEvent(7, GetRaceMoralNumber(), ship.GetShipName());
-	CMessage message;
-	message.GenerateMessage(eventText, MESSAGE_TYPE::MILITARY, "", ship.GetKO());
-	m_Empire.AddMessage(message);
+	CEmpireNews message;
+	message.CreateNews(eventText, EMPIRE_NEWS_TYPE::MILITARY, "", ship.GetKO());
+	m_Empire.AddMsg(message);
 }
 
 void CMajor::LostStation(SHIP_TYPE::Typ type)
@@ -519,19 +519,19 @@ void CMajor::LostStation(SHIP_TYPE::Typ type)
 	CString eventText(m_MoralObserver.AddEvent(9, GetRaceMoralNumber()));
 	if (type == SHIP_TYPE::OUTPOST)
 		eventText = m_MoralObserver.AddEvent(8, GetRaceMoralNumber());
-	CMessage message;
-	message.GenerateMessage(eventText, MESSAGE_TYPE::MILITARY);
-	m_Empire.AddMessage(message);
+	CEmpireNews message;
+	message.CreateNews(eventText, EMPIRE_NEWS_TYPE::MILITARY);
+	m_Empire.AddMsg(message);
 }
 
 void CMajor::LostShipToAnomaly(const CShips& ship, const CString& anomaly)
 {
 	CString sShip;
 	sShip.Format("%s (%s, %s)", ship.GetShipName(), ship.GetShipTypeAsString(), ship.GetShipClass());
-	const CString& s = CResourceManager::GetString("ANOMALY_SHIP_LOST", FALSE, sShip, anomaly);
-	CMessage message;
-	message.GenerateMessage(s, MESSAGE_TYPE::MILITARY, "", ship.GetKO());
-	m_Empire.AddMessage(message);
+	const CString& s = CLoc::GetString("ANOMALY_SHIP_LOST", FALSE, sShip, anomaly);
+	CEmpireNews message;
+	message.CreateNews(s, EMPIRE_NEWS_TYPE::MILITARY, "", ship.GetKO());
+	m_Empire.AddMsg(message);
 	if (IsHumanPlayer())
 	{
 		CBotEDoc& doc = *resources::pDoc;

@@ -10,7 +10,7 @@
 
 #include "LANServer.h"
 #include "BotEDoc.h"
-#include "General/ResourceManager.h"
+#include "General/Loc.h"
 
 // CChooseRacePage dialog
 
@@ -60,12 +60,12 @@ BOOL CChooseRacePage::OnInitDialog()
 		CString empireName;
 		switch (race)
 		{
-		case network::RACE_1:	empireName = CResourceManager::GetString("RACE1_EMPIRE"); break;
-		case network::RACE_2:	empireName = CResourceManager::GetString("RACE2_EMPIRE"); break;
-		case network::RACE_3:	empireName = CResourceManager::GetString("RACE3_EMPIRE"); break;
-		case network::RACE_4:	empireName = CResourceManager::GetString("RACE4_EMPIRE"); break;
-		case network::RACE_5:	empireName = CResourceManager::GetString("RACE5_EMPIRE"); break;
-		case network::RACE_6:	empireName = CResourceManager::GetString("RACE6_EMPIRE"); break;
+		case network::RACE_1:	empireName = CLoc::GetString("RACE1_EMPIRE"); break;
+		case network::RACE_2:	empireName = CLoc::GetString("RACE2_EMPIRE"); break;
+		case network::RACE_3:	empireName = CLoc::GetString("RACE3_EMPIRE"); break;
+		case network::RACE_4:	empireName = CLoc::GetString("RACE4_EMPIRE"); break;
+		case network::RACE_5:	empireName = CLoc::GetString("RACE5_EMPIRE"); break;
+		case network::RACE_6:	empireName = CLoc::GetString("RACE6_EMPIRE"); break;
 		}
 		SetDlgItemTextA(ids[nRace], empireName);
 	}

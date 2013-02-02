@@ -2,7 +2,7 @@
 #include "OldRoundDataCalculator.h"
 
 #include "Races/RaceController.h"
-#include "General/ResourceManager.h"
+#include "General/Loc.h"
 #include <cassert>
 
 
@@ -66,10 +66,10 @@ void COldRoundDataCalculator::ExecuteRebellion(CSector& sector, CSystem& system,
 	const CRaceController* pRaceCtrl = m_pDoc->GetRaceCtrl();
 
 	// Nachricht über Rebellion erstellen
-	CString news = CResourceManager::GetString("REBELLION_IN_SYSTEM", FALSE, sectorname);
-	CMessage message;
-	message.GenerateMessage(news, MESSAGE_TYPE::SOMETHING, "", co);
-	pEmpire->AddMessage(message);
+	CString news = CLoc::GetString("REBELLION_IN_SYSTEM", FALSE, sectorname);
+	CEmpireNews message;
+	message.CreateNews(news, EMPIRE_NEWS_TYPE::SOMETHING, "", co);
+	pEmpire->AddMsg(message);
 	if (pMajor->IsHumanPlayer())
 	{
 		const network::RACE client = pRaceCtrl->GetMappedClientID(pMajor->GetRaceID());
@@ -77,8 +77,8 @@ void COldRoundDataCalculator::ExecuteRebellion(CSector& sector, CSystem& system,
 	}
 
 	// zusätzliche Eventnachricht (Lose a System to Rebellion #18) wegen der Moral an das Imperium
-	message.GenerateMessage(pMajor->GetMoralObserver()->AddEvent(18, pMajor->GetRaceMoralNumber(), sectorname), MESSAGE_TYPE::SOMETHING, "", co);
-	pEmpire->AddMessage(message);
+	message.CreateNews(pMajor->GetMoralObserver()->AddEvent(18, pMajor->GetRaceMoralNumber(), sectorname), EMPIRE_NEWS_TYPE::SOMETHING, "", co);
+	pEmpire->AddMsg(message);
 
 	if (sector.GetMinorRace())
 	{
@@ -92,10 +92,10 @@ void COldRoundDataCalculator::ExecuteRebellion(CSector& sector, CSystem& system,
 			pMajor->SetAgreement(pMinor->GetRaceID(), DIPLOMATIC_AGREEMENT::NONE);
 
 			pMinor->SetRelation(pMajor->GetRaceID(), (-(rand()%50+20)));
-			news = CResourceManager::GetString("MINOR_CANCELS_MEMBERSHIP", FALSE, pMinor->GetRaceName());
-			CMessage message;
-			message.GenerateMessage(news, MESSAGE_TYPE::DIPLOMACY, "", co);
-			pEmpire->AddMessage(message);
+			news = CLoc::GetString("MINOR_CANCELS_MEMBERSHIP", FALSE, pMinor->GetRaceName());
+			CEmpireNews message;
+			message.CreateNews(news, EMPIRE_NEWS_TYPE::DIPLOMACY, "", co);
+			pEmpire->AddMsg(message);
 		}
 	}
 	else
@@ -120,10 +120,10 @@ void COldRoundDataCalculator::ExecuteFamine(CSector& sector, CSystem& system, CM
 		system.SetMoral((short)(system.GetFoodStore() / (system.GetHabitants() + 1))); // +1, wegen Division durch NULL umgehen
 	system.SetFoodStore(0);
 
-	CString news = CResourceManager::GetString("FAMINE", FALSE, sector.GetName());
-	CMessage message;
-	message.GenerateMessage(news, MESSAGE_TYPE::SOMETHING, "", co, false, 1);
-	pEmpire->AddMessage(message);
+	CString news = CLoc::GetString("FAMINE", FALSE, sector.GetName());
+	CEmpireNews message;
+	message.CreateNews(news, EMPIRE_NEWS_TYPE::SOMETHING, "", co, false, 1);
+	pEmpire->AddMsg(message);
 	if (pMajor->IsHumanPlayer())
 	{
 		const network::RACE client = m_pDoc->m_pRaceCtrl->GetMappedClientID(pMajor->GetRaceID());
@@ -132,11 +132,11 @@ void COldRoundDataCalculator::ExecuteFamine(CSector& sector, CSystem& system, CM
 }
 
 void COldRoundDataCalculator::SystemMessage(const CSector& sector, CMajor* pMajor, const CString& key,
-		MESSAGE_TYPE::Typ message_typ, BYTE byFlag) const {
-	const CString& news = CResourceManager::GetString(key, FALSE, sector.GetName());
-	CMessage message;
-	message.GenerateMessage(news, message_typ, "", sector.GetKO(), false, byFlag);
-	pMajor->GetEmpire()->AddMessage(message);
+		EMPIRE_NEWS_TYPE::Typ message_typ, BYTE byFlag) const {
+	const CString& news = CLoc::GetString(key, FALSE, sector.GetName());
+	CEmpireNews message;
+	message.CreateNews(news, message_typ, "", sector.GetKO(), false, byFlag);
+	pMajor->GetEmpire()->AddMsg(message);
 	if (pMajor->IsHumanPlayer()) {
 		const network::RACE client = m_pDoc->m_pRaceCtrl->GetMappedClientID(pMajor->GetRaceID());
 		m_pDoc->m_iSelectedView[client] = EMPIRE_VIEW;
@@ -155,17 +155,17 @@ void COldRoundDataCalculator::HandlePopulationEffects(const CSector& sector, CSy
 		// Hier die Boni durch die Uniqueforschung "Handel" -> mindestens eine Handelsroute
 		bool bMinOneRoute = pEmpire->GetResearch()->GetResearchInfo()->GetResearchComplex(RESEARCH_COMPLEX::TRADE)->GetFieldStatus(3) == RESEARCH_STATUS::RESEARCHED;
 		if (bMinOneRoute == false || (bMinOneRoute == true && (int)(system.GetHabitants() / TRADEROUTEHAB) > 1))
-			SystemMessage(sector, pMajor, "ENOUGH_HABITANTS_FOR_NEW_TRADEROUTE", MESSAGE_TYPE::ECONOMY, 4);
+			SystemMessage(sector, pMajor, "ENOUGH_HABITANTS_FOR_NEW_TRADEROUTE", EMPIRE_NEWS_TYPE::ECONOMY, 4);
 	}
 }
 
 static void MilitaryMessage(const CSector& sector, CMajor* pMajor, const CString& key,
 		const CString& object_name) {
-	const CString& s = CResourceManager::GetString(key,FALSE,
+	const CString& s = CLoc::GetString(key,FALSE,
 		object_name,sector.GetName());
-	CMessage message;
-	message.GenerateMessage(s,MESSAGE_TYPE::MILITARY,sector.GetName(),sector.GetKO());
-	pMajor->GetEmpire()->AddMessage(message);
+	CEmpireNews message;
+	message.CreateNews(s,EMPIRE_NEWS_TYPE::MILITARY,sector.GetName(),sector.GetKO());
+	pMajor->GetEmpire()->AddMsg(message);
 }
 
 void COldRoundDataCalculator::FinishBuild(const int to_build, const CSector& sector, CSystem& system,
@@ -176,9 +176,9 @@ void COldRoundDataCalculator::FinishBuild(const int to_build, const CSector& sec
 	if (list > 0 && list < 10000 && !BuildingInfo[list-1].GetNeverReady())	// Es wird ein Gebäude gebaut
 	{
 		// Die Nachricht, dass neues Gebäude fertig ist mit allen Daten generieren
-		CMessage message;
-		message.GenerateMessage(BuildingInfo[list-1].GetBuildingName(), MESSAGE_TYPE::ECONOMY, sector.GetName(), co);
-		pMajor->GetEmpire()->AddMessage(message);
+		CEmpireNews message;
+		message.CreateNews(BuildingInfo[list-1].GetBuildingName(), EMPIRE_NEWS_TYPE::ECONOMY, sector.GetName(), co);
+		pMajor->GetEmpire()->AddMsg(message);
 		// Gebäude bauen
 		m_pDoc->BuildBuilding(list, co);
 		// und Gebäude (welches letztes im Feld) ist auch gleich online setzen, wenn
@@ -186,17 +186,17 @@ void COldRoundDataCalculator::FinishBuild(const int to_build, const CSector& sec
 		unsigned short CheckValue = system.SetNewBuildingOnline(&BuildingInfo);
 		// Nachricht generieren das das Gebäude nicht online genommen werden konnte
 		if (CheckValue == 1)
-			SystemMessage(sector, pMajor, "NOT_ENOUGH_WORKER", MESSAGE_TYPE::SOMETHING, 1);
+			SystemMessage(sector, pMajor, "NOT_ENOUGH_WORKER", EMPIRE_NEWS_TYPE::SOMETHING, 1);
 		else if (CheckValue == 2)
-			SystemMessage(sector, pMajor, "NOT_ENOUGH_ENERGY", MESSAGE_TYPE::SOMETHING, 2);
+			SystemMessage(sector, pMajor, "NOT_ENOUGH_ENERGY", EMPIRE_NEWS_TYPE::SOMETHING, 2);
 	}
 	else if (list < 0)	// Es wird ein Update gemacht
 	{
 		list *= (-1);
 		// Die Nachricht, dass neues Gebäudeupdate fertig wurde, mit allen Daten generieren
-		CMessage message;
-		message.GenerateMessage(BuildingInfo[list-1].GetBuildingName(),MESSAGE_TYPE::ECONOMY,sector.GetName(),co,true);
-		pMajor->GetEmpire()->AddMessage(message);
+		CEmpireNews message;
+		message.CreateNews(BuildingInfo[list-1].GetBuildingName(),EMPIRE_NEWS_TYPE::ECONOMY,sector.GetName(),co,true);
+		pMajor->GetEmpire()->AddMsg(message);
 		// Vorgänger von "list" holen
 		// Gebäude mit RunningNumbner == nPredecessorID werden durch UpdateBuilding() gelöscht und
 		// deren Anzahl wird zurückgegeben.
@@ -212,7 +212,7 @@ void COldRoundDataCalculator::FinishBuild(const int to_build, const CSector& sec
 
 			// falls das geupgradete Gebäude Energie benötigt wird versucht es gleich online zu setzen
 			if (m_pDoc->GetBuildingInfo(list).GetNeededEnergy() > 0 && system.SetNewBuildingOnline(&BuildingInfo) == 2)
-				SystemMessage(sector, pMajor, "NOT_ENOUGH_ENERGY", MESSAGE_TYPE::SOMETHING, 2);
+				SystemMessage(sector, pMajor, "NOT_ENOUGH_ENERGY", EMPIRE_NEWS_TYPE::SOMETHING, 2);
 		}
 	}
 	else if (list >= 10000 && list < 20000)	// Es wird ein Schiff gebaut
@@ -261,7 +261,7 @@ void COldRoundDataCalculator::Build(const CSector& sector, CSystem& system, CMaj
 			assembly_list->ClearAssemblyList(sector.GetKO(), m_pDoc->m_Systems);
 			// Wenn die Bauliste nach dem letzten gebauten Gebäude leer ist, eine Nachricht generieren
 			if (assembly_list->GetAssemblyListEntry(0) == 0)
-				SystemMessage(sector, pMajor, "EMPTY_BUILDLIST", MESSAGE_TYPE::SOMETHING, 0);
+				SystemMessage(sector, pMajor, "EMPTY_BUILDLIST", EMPIRE_NEWS_TYPE::SOMETHING, 0);
 		}
 		assembly_list->CalculateNeededRessourcesForUpdate(&BuildingInfo, system.GetAllBuildings(), pMajor->GetEmpire()->GetResearch()->GetResearchInfo());
 	}

@@ -915,7 +915,7 @@ bool CMajorAI::MakeMajorOffer(CString& sRaceID, CDiplomacyInfo& info)
 					// Sicherheitsabfrage:
 					// exisitiert der Kriegspaktgegner noch?
 					CMajor* pPartner = dynamic_cast<CMajor*>(m_pDoc->GetRaceCtrl()->GetRace(sWarpactPartner));
-					if (pPartner && pPartner->GetEmpire()->GetNumberOfSystems() > 0)
+					if (pPartner && pPartner->GetEmpire()->CountSystems() > 0)
 					{
 						info.m_sWarpactEnemy = sRaceID;
 						// Nun ändert sich die Rassen-ID, an die das Angebot geht. Es geht keine direkte
@@ -1204,7 +1204,7 @@ bool CMajorAI::GiveDowry(CDiplomacyInfo& info)
 	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 	{
 		CMajor* pMajor = it->second;
-		if (pMajor && pMajor->GetEmpire()->GetNumberOfSystems() > 0)
+		if (pMajor && pMajor->GetEmpire()->CountSystems() > 0)
 		{
 			nCredits += pMajor->GetEmpire()->GetCredits();
 			counter++;
@@ -1326,7 +1326,7 @@ bool CMajorAI::ClaimRequest(CDiplomacyInfo& info)
 	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 	{
 		CMajor* pMajor = it->second;
-		if (pMajor && pMajor->GetEmpire()->GetNumberOfSystems() > 0)
+		if (pMajor && pMajor->GetEmpire()->CountSystems() > 0)
 		{
 			nCredits += pMajor->GetEmpire()->GetCredits();
 			counter++;

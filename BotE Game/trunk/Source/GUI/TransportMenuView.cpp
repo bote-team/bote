@@ -9,7 +9,7 @@
 #include "ShipBottomView.h"
 #include "Graphic\memdc.h"
 #include "Ships/Ships.h"
-#include "General/ResourceManager.h"
+#include "General/Loc.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -200,17 +200,17 @@ void CTransportMenuView::DrawTransportMenue(Graphics* g)
 
 	Gdiplus::Font font(CComBSTR(fontName), fontSize);
 	if (systemOwner == shipOwner)
-		g->DrawString(CComBSTR(CResourceManager::GetString("SYSTEM_STORAGE")), -1, &font, RectF(200,80,338,25), &fontFormat, &fontBrush);
+		g->DrawString(CComBSTR(CLoc::GetString("SYSTEM_STORAGE")), -1, &font, RectF(200,80,338,25), &fontFormat, &fontBrush);
 
-	g->DrawString(CComBSTR(CResourceManager::GetString("SHIP_STORAGE")), -1, &font, RectF(538,80,338,25), &fontFormat, &fontBrush);
-	g->DrawString(CComBSTR(CResourceManager::GetString("TITAN")), -1, &font, RectF(0,120,1075,60), &fontFormat, &fontBrush);
-	g->DrawString(CComBSTR(CResourceManager::GetString("DEUTERIUM")), -1, &font, RectF(0,180,1075,60), &fontFormat, &fontBrush);
-	g->DrawString(CComBSTR(CResourceManager::GetString("DURANIUM")), -1, &font, RectF(0,240,1075,60), &fontFormat, &fontBrush);
-	g->DrawString(CComBSTR(CResourceManager::GetString("CRYSTAL")), -1, &font, RectF(0,300,1075,60), &fontFormat, &fontBrush);
-	g->DrawString(CComBSTR(CResourceManager::GetString("IRIDIUM")), -1, &font, RectF(0,360,1075,60), &fontFormat, &fontBrush);
-	g->DrawString(CComBSTR(CResourceManager::GetString("DERITIUM")), -1, &font, RectF(0,420,1075,60), &fontFormat, &fontBrush);
-	g->DrawString(CComBSTR(CResourceManager::GetString("TROOPS")), -1, &font, RectF(0,560,1075,60), &fontFormat, &fontBrush);
-	g->DrawString(CComBSTR(CResourceManager::GetString("SELECTED")), -1, &font, RectF(0,620,1075,60), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(CLoc::GetString("SHIP_STORAGE")), -1, &font, RectF(538,80,338,25), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(CLoc::GetString("TITAN")), -1, &font, RectF(0,120,1075,60), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(CLoc::GetString("DEUTERIUM")), -1, &font, RectF(0,180,1075,60), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(CLoc::GetString("DURANIUM")), -1, &font, RectF(0,240,1075,60), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(CLoc::GetString("CRYSTAL")), -1, &font, RectF(0,300,1075,60), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(CLoc::GetString("IRIDIUM")), -1, &font, RectF(0,360,1075,60), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(CLoc::GetString("DERITIUM")), -1, &font, RectF(0,420,1075,60), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(CLoc::GetString("TROOPS")), -1, &font, RectF(0,560,1075,60), &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(CLoc::GetString("SELECTED")), -1, &font, RectF(0,620,1075,60), &fontFormat, &fontBrush);
 	fontBrush.SetColor(normalColor);
 
 	// Inhalte des system- und globalen Lagers zeichnen
@@ -247,7 +247,7 @@ void CTransportMenuView::DrawTransportMenue(Graphics* g)
 	CreateTransportedTroopsVector();
 
 	fontFormat.SetAlignment(StringAlignmentCenter);
-	s.Format("%s: %d", CResourceManager::GetString("AVAILABLE"), storageRoom - usedStorage);
+	s.Format("%s: %d", CLoc::GetString("AVAILABLE"), storageRoom - usedStorage);
 	g->DrawString(CComBSTR(s), -1, &font, RectF(600,490,225,30), &fontFormat, &fontBrush);
 
 	// Truppen im System und im Schiff zeichnen
@@ -287,15 +287,15 @@ void CTransportMenuView::DrawTransportMenue(Graphics* g)
 
 		fontBrush.SetColor(normalColor);
 		fontFormat.SetAlignment(StringAlignmentNear);
-		s.Format("%s: %d",CResourceManager::GetString("OPOWER"),pDoc->GetSystem(p.x, p.y).GetTroops()->GetAt(m_nActiveTroopInSystem).GetOffense());
+		s.Format("%s: %d",CLoc::GetString("OPOWER"),pDoc->GetSystem(p.x, p.y).GetTroops()->GetAt(m_nActiveTroopInSystem).GetOffense());
 		g->DrawString(CComBSTR(s), -1, &font, RectF(40,310,185,30), &fontFormat, &fontBrush);
-		s.Format("%s: %d",CResourceManager::GetString("DPOWER"),pDoc->GetSystem(p.x, p.y).GetTroops()->GetAt(m_nActiveTroopInSystem).GetDefense());
+		s.Format("%s: %d",CLoc::GetString("DPOWER"),pDoc->GetSystem(p.x, p.y).GetTroops()->GetAt(m_nActiveTroopInSystem).GetDefense());
 		g->DrawString(CComBSTR(s), -1, &font, RectF(40,340,185,30), &fontFormat, &fontBrush);
-		s.Format("%s: %d",CResourceManager::GetString("EXPERIANCE"),pDoc->GetSystem(p.x, p.y).GetTroops()->GetAt(m_nActiveTroopInSystem).GetExperiance());
+		s.Format("%s: %d",CLoc::GetString("EXPERIANCE"),pDoc->GetSystem(p.x, p.y).GetTroops()->GetAt(m_nActiveTroopInSystem).GetExperiance());
 		g->DrawString(CComBSTR(s), -1, &font, RectF(40,370,185,30), &fontFormat, &fontBrush);
-		s.Format("%s: %d",CResourceManager::GetString("PLACE"),pDoc->m_TroopInfo.GetAt(id).GetSize());
+		s.Format("%s: %d",CLoc::GetString("PLACE"),pDoc->m_TroopInfo.GetAt(id).GetSize());
 		g->DrawString(CComBSTR(s), -1, &font, RectF(40,400,185,30), &fontFormat, &fontBrush);
-		s.Format("%s: %d",CResourceManager::GetString("MORALVALUE"),pDoc->m_TroopInfo.GetAt(id).GetMoralValue());
+		s.Format("%s: %d",CLoc::GetString("MORALVALUE"),pDoc->m_TroopInfo.GetAt(id).GetMoralValue());
 		g->DrawString(CComBSTR(s), -1, &font, RectF(40,430,185,30), &fontFormat, &fontBrush);
 
 		fontFormat.SetLineAlignment(StringAlignmentNear);
@@ -317,7 +317,7 @@ void CTransportMenuView::DrawTransportMenue(Graphics* g)
 	}
 	else
 	{
-		s = CResourceManager::GetString("NONE")+" "+CResourceManager::GetString("SELECTED");
+		s = CLoc::GetString("NONE")+" "+CLoc::GetString("SELECTED");
 	}
 
 	if (systemOwner == shipOwner)
@@ -343,15 +343,15 @@ void CTransportMenuView::DrawTransportMenue(Graphics* g)
 
 		fontBrush.SetColor(normalColor);
 		fontFormat.SetAlignment(StringAlignmentNear);
-		s.Format("%s: %d",CResourceManager::GetString("OPOWER"), pTroop->GetOffense());
+		s.Format("%s: %d",CLoc::GetString("OPOWER"), pTroop->GetOffense());
 		g->DrawString(CComBSTR(s), -1, &font, RectF(865,310,185,30), &fontFormat, &fontBrush);
-		s.Format("%s: %d",CResourceManager::GetString("DPOWER"), pTroop->GetDefense());
+		s.Format("%s: %d",CLoc::GetString("DPOWER"), pTroop->GetDefense());
 		g->DrawString(CComBSTR(s), -1, &font, RectF(865,340,185,30), &fontFormat, &fontBrush);
-		s.Format("%s: %d",CResourceManager::GetString("EXPERIANCE"), pTroop->GetExperiance());
+		s.Format("%s: %d",CLoc::GetString("EXPERIANCE"), pTroop->GetExperiance());
 		g->DrawString(CComBSTR(s), -1, &font, RectF(865,370,185,30), &fontFormat, &fontBrush);
-		s.Format("%s: %d",CResourceManager::GetString("PLACE"),pDoc->m_TroopInfo.GetAt(id).GetSize());
+		s.Format("%s: %d",CLoc::GetString("PLACE"),pDoc->m_TroopInfo.GetAt(id).GetSize());
 		g->DrawString(CComBSTR(s), -1, &font, RectF(865,400,185,30), &fontFormat, &fontBrush);
-		s.Format("%s: %d",CResourceManager::GetString("MORALVALUE"),pDoc->m_TroopInfo.GetAt(id).GetMoralValue());
+		s.Format("%s: %d",CLoc::GetString("MORALVALUE"),pDoc->m_TroopInfo.GetAt(id).GetMoralValue());
 		g->DrawString(CComBSTR(s), -1, &font, RectF(865,430,185,30), &fontFormat, &fontBrush);
 
 		fontFormat.SetLineAlignment(StringAlignmentNear);
@@ -373,7 +373,7 @@ void CTransportMenuView::DrawTransportMenue(Graphics* g)
 	}
 	else
 	{
-		s = CResourceManager::GetString("NONE")+" "+CResourceManager::GetString("SELECTED");
+		s = CLoc::GetString("NONE")+" "+CLoc::GetString("SELECTED");
 	}
 
 	fontFormat.SetAlignment(StringAlignmentFar);
@@ -391,7 +391,7 @@ void CTransportMenuView::DrawTransportMenue(Graphics* g)
 	if (systemOwner == shipOwner)
 	{
 		fontFormat.SetAlignment(StringAlignmentFar);
-		s = CResourceManager::GetString("MULTIPLIER");
+		s = CLoc::GetString("MULTIPLIER");
 		g->DrawString(CComBSTR(s), -1, &font, RectF(0,490,457,30), &fontFormat, &fontBrush);
 
 		if (graphic)
@@ -405,7 +405,7 @@ void CTransportMenuView::DrawTransportMenue(Graphics* g)
 		{
 			if (graphic)
 				g->DrawImage(graphic, 290,670,120,30);
-			s = CResourceManager::GetString("BTN_NEXT");
+			s = CLoc::GetString("BTN_NEXT");
 			g->DrawString(CComBSTR(s), -1, &font, RectF(290,670,120,30), &fontFormat, &btnBrush);
 		}
 		// Vor-Button rechts
@@ -413,7 +413,7 @@ void CTransportMenuView::DrawTransportMenue(Graphics* g)
 		{
 			if (graphic)
 				g->DrawImage(graphic, 665,670,120,30);
-			s = CResourceManager::GetString("BTN_NEXT");
+			s = CLoc::GetString("BTN_NEXT");
 			g->DrawString(CComBSTR(s), -1, &font, RectF(665,670,120,30), &fontFormat, &btnBrush);
 		}
 	}
@@ -423,7 +423,7 @@ void CTransportMenuView::DrawTransportMenue(Graphics* g)
 		if (graphic)
 			g->DrawImage(graphic, 665,670,120,30);
 
-		s = CResourceManager::GetString("BTN_NEXT");
+		s = CLoc::GetString("BTN_NEXT");
 		g->DrawString(CComBSTR(s), -1, &font, RectF(665,670,120,30), &fontFormat, &btnBrush);
 	}
 
@@ -436,9 +436,9 @@ void CTransportMenuView::DrawTransportMenue(Graphics* g)
 	fontBrush.SetColor(normalColor);
 	// Transport auf "Systemname" mit größerer Schrift in der Mitte zeichnen
 	if (systemOwner == shipOwner)
-		s = CResourceManager::GetString("TRANSPORT_MENUE")+" "+pDoc->GetSector(p.x,p.y).GetName();
+		s = CLoc::GetString("TRANSPORT_MENUE")+" "+pDoc->GetSector(p.x,p.y).GetName();
 	else
-		s = CResourceManager::GetString("TRANSPORT_MENUE")+" "+CResourceManager::GetString("SHIP");
+		s = CLoc::GetString("TRANSPORT_MENUE")+" "+CLoc::GetString("SHIP");
 	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,10,m_TotalSize.cx, 50), &fontFormat, &fontBrush);
 }
 

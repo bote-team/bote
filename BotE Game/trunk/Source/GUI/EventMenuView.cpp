@@ -61,9 +61,9 @@ void CEventMenuView::OnDraw(CDC* dc)
 	g.SetCompositingQuality(CompositingQualityHighSpeed);
 	g.ScaleTransform((REAL)client.Width() / (REAL)m_TotalSize.cx, (REAL)client.Height() / (REAL)m_TotalSize.cy);
 
-	if (pMajor->GetEmpire()->GetEventMessages()->GetSize())
+	if (pMajor->GetEmpire()->GetEvents()->GetSize())
 	{
-		CEventScreen* eventScreen = dynamic_cast<CEventScreen*>(pMajor->GetEmpire()->GetEventMessages()->GetAt(0));
+		CEventScreen* eventScreen = dynamic_cast<CEventScreen*>(pMajor->GetEmpire()->GetEvents()->GetAt(0));
 		eventScreen->Create();
 		eventScreen->Draw(&g, pDoc->GetGraphicPool());
 		// Handelt es sich um ein Event zu einem Zufallsereignis?
@@ -87,9 +87,9 @@ void CEventMenuView::OnDraw(CDC* dc)
 		int nAutoTurns = clp->GetAutoTurns();
 		if (!pDoc->m_bRoundEndPressed && pDoc->GetCurrentRound() < nAutoTurns)
 		{
-			if (pMajor->GetEmpire()->GetEventMessages()->GetSize())
+			if (pMajor->GetEmpire()->GetEvents()->GetSize())
 			{
-				CEventScreen* eventScreen = dynamic_cast<CEventScreen*>(pMajor->GetEmpire()->GetEventMessages()->GetAt(0));
+				CEventScreen* eventScreen = dynamic_cast<CEventScreen*>(pMajor->GetEmpire()->GetEvents()->GetAt(0));
 				CloseScreen(eventScreen);
 			}
 		}
@@ -153,9 +153,9 @@ void CEventMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 	if (!pMajor)
 		return;
 
-	if (pMajor->GetEmpire()->GetEventMessages()->GetSize())
+	if (pMajor->GetEmpire()->GetEvents()->GetSize())
 	{
-		CEventScreen* eventScreen = dynamic_cast<CEventScreen*>(pMajor->GetEmpire()->GetEventMessages()->GetAt(0));
+		CEventScreen* eventScreen = dynamic_cast<CEventScreen*>(pMajor->GetEmpire()->GetEvents()->GetAt(0));
 		CalcLogicalPoint(point);
 		int counter = -1;
 		ButtonReactOnLeftClick(point, eventScreen->GetButtons(), counter);
@@ -181,9 +181,9 @@ void CEventMenuView::OnMouseMove(UINT nFlags, CPoint point)
 	if (!pMajor)
 		return;
 
-	if (pMajor->GetEmpire()->GetEventMessages()->GetSize())
+	if (pMajor->GetEmpire()->GetEvents()->GetSize())
 	{
-		CEventScreen* eventScreen = dynamic_cast<CEventScreen*>(pMajor->GetEmpire()->GetEventMessages()->GetAt(0));
+		CEventScreen* eventScreen = dynamic_cast<CEventScreen*>(pMajor->GetEmpire()->GetEvents()->GetAt(0));
 		CalcLogicalPoint(point);
 		ButtonReactOnMouseOver(point, eventScreen->GetButtons());
 	}
@@ -205,9 +205,9 @@ void CEventMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 		return;
 
 	if (nChar == VK_RETURN || nChar == VK_ESCAPE)
-		if (pMajor->GetEmpire()->GetEventMessages()->GetSize())
+		if (pMajor->GetEmpire()->GetEvents()->GetSize())
 		{
-			CEventScreen* eventScreen = dynamic_cast<CEventScreen*>(pMajor->GetEmpire()->GetEventMessages()->GetAt(0));
+			CEventScreen* eventScreen = dynamic_cast<CEventScreen*>(pMajor->GetEmpire()->GetEvents()->GetAt(0));
 			CloseScreen(eventScreen);
 		}
 
@@ -230,9 +230,9 @@ void CEventMenuView::CloseScreen(CEventScreen* eventScreen)
 
 	eventScreen->Close();
 	delete eventScreen;
-	pMajor->GetEmpire()->GetEventMessages()->RemoveAt(0);
+	pMajor->GetEmpire()->GetEvents()->RemoveAt(0);
 
-	if (pMajor->GetEmpire()->GetEventMessages()->GetSize() == 0)
+	if (pMajor->GetEmpire()->GetEvents()->GetSize() == 0)
 	{
 		network::RACE client = pDoc->GetRaceCtrl()->GetMappedClientID(pMajor->GetRaceID());
 
@@ -260,7 +260,7 @@ CString CEventMenuView::CreateTooltip(void)
 	if (!pMajor)
 		return "";
 
-	if (pMajor->GetEmpire()->GetEventMessages()->GetSize())
+	if (pMajor->GetEmpire()->GetEvents()->GetSize())
 	{
 		// Wo sind wir
 		CPoint pt;
@@ -268,7 +268,7 @@ CString CEventMenuView::CreateTooltip(void)
 		ScreenToClient(&pt);
 		CalcLogicalPoint(pt);
 
-		CEventScreen* eventScreen = dynamic_cast<CEventScreen*>(pMajor->GetEmpire()->GetEventMessages()->GetAt(0));
+		CEventScreen* eventScreen = dynamic_cast<CEventScreen*>(pMajor->GetEmpire()->GetEvents()->GetAt(0));
 		return eventScreen->GetTooltip(pt);
 	}
 

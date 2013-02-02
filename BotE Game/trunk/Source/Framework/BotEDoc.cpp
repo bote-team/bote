@@ -16,14 +16,14 @@
 #include "IniLoader.h"
 #include "ImageStone/ImageStone.h"
 #include "IOData.h"
-#include "General/ResourceManager.h"
+#include "General/Loc.h"
 
 #include "Races\RaceController.h"
 #include "Races\DiplomacyController.h"
 #include "Ships\Combat.h"
 #include "System\AttackSystem.h"
 #include "Intel\IntelCalc.h"
-#include "Remanager.h"
+#include "RandomEventCtrl.h"
 #include "Sanity.h"
 #include "Test.h"
 
@@ -95,7 +95,7 @@ CBotEDoc::CBotEDoc() :
 	MT::CMyTrace::SetLevel(clp->LogLevel());
 
 	// ZU ERLEDIGEN: Hier Code für One-Time-Konstruktion einfügen
-	CResourceManager::Init();
+	CLoc::Init();
 
 	m_pGraphicPool = new CGraphicPool(CIOData::GetInstance()->GetAppPath() + "Graphics\\");
 
@@ -829,7 +829,7 @@ void CBotEDoc::DoViewWorkOnNewRound()
 
 	// anzuzeigende View in neuer Runde auswählen
 	// Wenn EventScreens für den Spieler vorhanden sind, so werden diese angezeigt.
-	if (pPlayersRace->GetEmpire()->GetEventMessages()->GetSize() > 0)
+	if (pPlayersRace->GetEmpire()->GetEvents()->GetSize() > 0)
 	{
 		resources::pMainFrame->FullScreenMainView(true);
 		resources::pMainFrame->SelectMainView(EVENT_VIEW, pPlayersRace->GetRaceID());
@@ -1327,7 +1327,7 @@ void CBotEDoc::NextRound()
 		vector<CString> vDelMajors;
 		map<CString, CMajor*>* pmMajors = m_pRaceCtrl->GetMajors();
 		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
-			if (it->second->GetEmpire()->GetNumberOfSystems() == 0)
+			if (it->second->GetEmpire()->CountSystems() == 0)
 				vDelMajors.push_back(it->first);
 		for (UINT i = 0; i < vDelMajors.size(); i++)
 		{
@@ -1435,9 +1435,9 @@ void CBotEDoc::NextRound()
 	}
 
 	// Zufallsereignisse berechnen
-	CReManager* pRandomEventManager = CReManager::GetInstance();
+	CRandomEventCtrl* pRandomEventCtrl = CRandomEventCtrl::GetInstance();
 	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
-		pRandomEventManager->CalcEvents(it->second);
+		pRandomEventCtrl->CalcEvents(it->second);
 
 	this->CalcSystemAttack();
 	this->CalcIntelligence();
@@ -1463,7 +1463,7 @@ void CBotEDoc::NextRound()
 	this->CalcTrade();
 
 	// Zufallsereignis Hüllenvirus berechnen
-	pRandomEventManager->CalcShipEvents();
+	pRandomEventCtrl->CalcShipEvents();
 
 	this->CalcEndDataForNextRound();
 
@@ -1833,7 +1833,7 @@ void CBotEDoc::ReadTroopInfosFromFile()
 				i = 0;
 				BYTE techs[6]={atoi(data[7]),atoi(data[8]),atoi(data[9]),atoi(data[10]),atoi(data[11]),atoi(data[12])};
 				USHORT res[5] = {atoi(data[13]),atoi(data[14]),atoi(data[15]),atoi(data[16]),atoi(data[17])};
-				troopInfo = new CTroopInfo(CResourceManager::GetString(data[1]), CResourceManager::GetString(data[2]),data[3],atoi(data[4]),atoi(data[5]),atoi(data[6]),techs,res,atoi(data[18]),atoi(data[19]),data[0].GetString(),atoi(data[20]),atoi(data[21]));
+				troopInfo = new CTroopInfo(CLoc::GetString(data[1]), CLoc::GetString(data[2]),data[3],atoi(data[4]),atoi(data[5]),atoi(data[6]),techs,res,atoi(data[18]),atoi(data[19]),data[0].GetString(),atoi(data[20]),atoi(data[21]));
 				m_TroopInfo.Add(*troopInfo);
 				delete troopInfo;
 			}
@@ -2670,9 +2670,9 @@ void CBotEDoc::CalcSystemAttack()
 							// An alle Majors die die Minor kennen die Nachricht schicken, dass diese unterworfen wurde
 							if (it->second->IsRaceContacted(pMinor->GetRaceID()))
 							{
-								CMessage message;
-								message.GenerateMessage(CResourceManager::GetString("MINOR_SUBJUGATED", FALSE, pMinor->GetRaceName()), MESSAGE_TYPE::MILITARY, param, p);
-								it->second->GetEmpire()->AddMessage(message);
+								CEmpireNews message;
+								message.CreateNews(CLoc::GetString("MINOR_SUBJUGATED", FALSE, pMinor->GetRaceName()), EMPIRE_NEWS_TYPE::MILITARY, param, p);
+								it->second->GetEmpire()->AddMsg(message);
 								if (it->second->IsHumanPlayer())
 								{
 									network::RACE client = m_pRaceCtrl->GetMappedClientID(it->first);
@@ -2685,9 +2685,9 @@ void CBotEDoc::CalcSystemAttack()
 						// Eventnachricht hinzufügen
 						if (!eventText.IsEmpty())
 						{
-							CMessage message;
-							message.GenerateMessage(eventText, MESSAGE_TYPE::MILITARY, param, p, 0, 1);
-							pMajor->GetEmpire()->AddMessage(message);
+							CEmpireNews message;
+							message.CreateNews(eventText, EMPIRE_NEWS_TYPE::MILITARY, param, p, 0, 1);
+							pMajor->GetEmpire()->AddMsg(message);
 							if (pMajor->IsHumanPlayer())
 							{
 								network::RACE client = m_pRaceCtrl->GetMappedClientID(attacker);
@@ -2713,9 +2713,9 @@ void CBotEDoc::CalcSystemAttack()
 						// Eventnachricht hinzufügen
 						if (!eventText.IsEmpty())
 						{
-							CMessage message;
-							message.GenerateMessage(eventText, MESSAGE_TYPE::MILITARY, param, p);
-							def->GetEmpire()->AddMessage(message);
+							CEmpireNews message;
+							message.CreateNews(eventText, EMPIRE_NEWS_TYPE::MILITARY, param, p);
+							def->GetEmpire()->AddMsg(message);
 							if (def->IsHumanPlayer())
 							{
 								network::RACE client = m_pRaceCtrl->GetMappedClientID(defender->GetRaceID());
@@ -2728,9 +2728,9 @@ void CBotEDoc::CalcSystemAttack()
 						// Eventnachricht hinzufügen
 						if (!eventText.IsEmpty())
 						{
-							CMessage message;
-							message.GenerateMessage(eventText, MESSAGE_TYPE::MILITARY, param, p, 0, 1);
-							pMajor->GetEmpire()->AddMessage(message);
+							CEmpireNews message;
+							message.CreateNews(eventText, EMPIRE_NEWS_TYPE::MILITARY, param, p, 0, 1);
+							pMajor->GetEmpire()->AddMsg(message);
 							if (pMajor->IsHumanPlayer())
 							{
 								network::RACE client = m_pRaceCtrl->GetMappedClientID(attacker);
@@ -2761,9 +2761,9 @@ void CBotEDoc::CalcSystemAttack()
 							// Eventnachricht hinzufügen
 							if (!eventText.IsEmpty())
 							{
-								CMessage message;
-								message.GenerateMessage(eventText, MESSAGE_TYPE::MILITARY, param, p, 0, 1);
-								pMajor->GetEmpire()->AddMessage(message);
+								CEmpireNews message;
+								message.CreateNews(eventText, EMPIRE_NEWS_TYPE::MILITARY, param, p, 0, 1);
+								pMajor->GetEmpire()->AddMsg(message);
 								if (pMajor->IsHumanPlayer())
 								{
 									network::RACE client = m_pRaceCtrl->GetMappedClientID(attacker);
@@ -2778,9 +2778,9 @@ void CBotEDoc::CalcSystemAttack()
 								// Eventnachricht hinzufügen
 								if (!eventText.IsEmpty())
 								{
-									CMessage message;
-									message.GenerateMessage(eventText, MESSAGE_TYPE::MILITARY, param, p);
-									pDefenderMajor->GetEmpire()->AddMessage(message);
+									CEmpireNews message;
+									message.CreateNews(eventText, EMPIRE_NEWS_TYPE::MILITARY, param, p);
+									pDefenderMajor->GetEmpire()->AddMsg(message);
 									if (pDefenderMajor->IsHumanPlayer())
 									{
 										network::RACE client = m_pRaceCtrl->GetMappedClientID(defender->GetRaceID());
@@ -2801,9 +2801,9 @@ void CBotEDoc::CalcSystemAttack()
 							// Eventnachricht hinzufügen
 							if (!eventText.IsEmpty())
 							{
-								CMessage message;
-								message.GenerateMessage(eventText, MESSAGE_TYPE::MILITARY, param, p);
-								pDefenderMajor->GetEmpire()->AddMessage(message);
+								CEmpireNews message;
+								message.CreateNews(eventText, EMPIRE_NEWS_TYPE::MILITARY, param, p);
+								pDefenderMajor->GetEmpire()->AddMsg(message);
 								if (pDefenderMajor->IsHumanPlayer())
 								{
 										network::RACE client = m_pRaceCtrl->GetMappedClientID(defender->GetRaceID());
@@ -2815,9 +2815,9 @@ void CBotEDoc::CalcSystemAttack()
 							// Eventnachricht hinzufügen
 							if (!eventText.IsEmpty())
 							{
-								CMessage message;
-								message.GenerateMessage(eventText, MESSAGE_TYPE::MILITARY, param, p, 0, 1);
-								pMajor->GetEmpire()->AddMessage(message);
+								CEmpireNews message;
+								message.CreateNews(eventText, EMPIRE_NEWS_TYPE::MILITARY, param, p, 0, 1);
+								pMajor->GetEmpire()->AddMsg(message);
 								if (pMajor->IsHumanPlayer())
 								{
 									network::RACE client = m_pRaceCtrl->GetMappedClientID(attacker);
@@ -2868,9 +2868,9 @@ void CBotEDoc::CalcSystemAttack()
 									// An alle Majors die die Minor kennen die Nachricht schicken, dass diese unterworden wurde
 									if (it->second->IsRaceContacted(pMinor->GetRaceID()))
 									{
-										CMessage message;
-										message.GenerateMessage(CResourceManager::GetString("MINOR_SUBJUGATED", FALSE, pMinor->GetRaceName()), MESSAGE_TYPE::MILITARY, param, p);
-										it->second->GetEmpire()->AddMessage(message);
+										CEmpireNews message;
+										message.CreateNews(CLoc::GetString("MINOR_SUBJUGATED", FALSE, pMinor->GetRaceName()), EMPIRE_NEWS_TYPE::MILITARY, param, p);
+										it->second->GetEmpire()->AddMsg(message);
 										if (it->second->IsHumanPlayer())
 										{
 											network::RACE client = m_pRaceCtrl->GetMappedClientID(it->first);
@@ -2915,10 +2915,10 @@ void CBotEDoc::CalcSystemAttack()
 								// Eventnachricht hinzufügen
 								if (!eventText.IsEmpty())
 								{
-									CMessage message;
-									message.GenerateMessage(eventText, MESSAGE_TYPE::MILITARY, param, p);
+									CEmpireNews message;
+									message.CreateNews(eventText, EMPIRE_NEWS_TYPE::MILITARY, param, p);
 									CMajor* pDefenderMajor = dynamic_cast<CMajor*>(defender);
-									pDefenderMajor->GetEmpire()->AddMessage(message);
+									pDefenderMajor->GetEmpire()->AddMsg(message);
 									if (pDefenderMajor->IsHumanPlayer())
 									{
 										network::RACE client = m_pRaceCtrl->GetMappedClientID(defender->GetRaceID());
@@ -2932,9 +2932,9 @@ void CBotEDoc::CalcSystemAttack()
 							// Eventnachricht hinzufügen
 							if (!eventText.IsEmpty())
 							{
-								CMessage message;
-								message.GenerateMessage(eventText, MESSAGE_TYPE::MILITARY, param, p, 0, 1);
-								pMajor->GetEmpire()->AddMessage(message);
+								CEmpireNews message;
+								message.CreateNews(eventText, EMPIRE_NEWS_TYPE::MILITARY, param, p, 0, 1);
+								pMajor->GetEmpire()->AddMsg(message);
 								if (pMajor->IsHumanPlayer())
 								{
 									network::RACE client = m_pRaceCtrl->GetMappedClientID(attacker);
@@ -2965,9 +2965,9 @@ void CBotEDoc::CalcSystemAttack()
 							// Eventnachricht hinzufügen
 							if (!eventText.IsEmpty())
 							{
-								CMessage message;
-								message.GenerateMessage(eventText, MESSAGE_TYPE::MILITARY, param, p, 0, 1);
-								pMajor->GetEmpire()->AddMessage(message);
+								CEmpireNews message;
+								message.CreateNews(eventText, EMPIRE_NEWS_TYPE::MILITARY, param, p, 0, 1);
+								pMajor->GetEmpire()->AddMsg(message);
 								if (pMajor->IsHumanPlayer())
 								{
 									network::RACE client = m_pRaceCtrl->GetMappedClientID(attacker);
@@ -2979,11 +2979,11 @@ void CBotEDoc::CalcSystemAttack()
 
 					// erfolgreiches Invasionsevent für den Angreifer einfügen (sollte immer ein Major sein)
 					if (!attacker.IsEmpty() && pMajor && pMajor->IsHumanPlayer())
-						pMajor->GetEmpire()->GetEventMessages()->Add(new CEventBombardment(attacker, "InvasionSuccess", CResourceManager::GetString("INVASIONSUCCESSEVENT_HEADLINE", FALSE, GetSector(p.x, p.y).GetName()), CResourceManager::GetString("INVASIONSUCCESSEVENT_TEXT_" + pMajor->GetRaceID(), FALSE, GetSector(p.x, p.y).GetName())));
+						pMajor->GetEmpire()->GetEvents()->Add(new CEventBombardment(attacker, "InvasionSuccess", CLoc::GetString("INVASIONSUCCESSEVENT_HEADLINE", FALSE, GetSector(p.x, p.y).GetName()), CLoc::GetString("INVASIONSUCCESSEVENT_TEXT_" + pMajor->GetRaceID(), FALSE, GetSector(p.x, p.y).GetName())));
 
 					// Invasionsevent für den Verteidiger einfügen
 					if (defender != NULL && defender->IsMajor() && dynamic_cast<CMajor*>(defender)->IsHumanPlayer() && attackSystem->IsDefenderNotAttacker(sDefender, &attackers))
-						dynamic_cast<CMajor*>(defender)->GetEmpire()->GetEventMessages()->Add(new CEventBombardment(sDefender, "InvasionSuccess", CResourceManager::GetString("INVASIONSUCCESSEVENT_HEADLINE", FALSE, GetSector(p.x, p.y).GetName()), CResourceManager::GetString("INVASIONSUCCESSEVENT_TEXT_" + defender->GetRaceID(), FALSE, GetSector(p.x, p.y).GetName())));
+						dynamic_cast<CMajor*>(defender)->GetEmpire()->GetEvents()->Add(new CEventBombardment(sDefender, "InvasionSuccess", CLoc::GetString("INVASIONSUCCESSEVENT_HEADLINE", FALSE, GetSector(p.x, p.y).GetName()), CLoc::GetString("INVASIONSUCCESSEVENT_TEXT_" + defender->GetRaceID(), FALSE, GetSector(p.x, p.y).GetName())));
 				}
 				// Wurde nur bombardiert, nicht erobert
 				else
@@ -3020,9 +3020,9 @@ void CBotEDoc::CalcSystemAttack()
 
 									CString param = pMinor->GetRaceName();
 									CString eventText = pMajor->GetMoralObserver()->AddEvent(21, pMajor->GetRaceMoralNumber(), param);
-									CMessage message;
-									message.GenerateMessage(eventText, MESSAGE_TYPE::MILITARY, param, p);
-									pMajor->GetEmpire()->AddMessage(message);
+									CEmpireNews message;
+									message.CreateNews(eventText, EMPIRE_NEWS_TYPE::MILITARY, param, p);
+									pMajor->GetEmpire()->AddMsg(message);
 								}
 
 								// Rasse zum Löschen vormerken
@@ -3056,9 +3056,9 @@ void CBotEDoc::CalcSystemAttack()
 							// Eventnachricht hinzufügen
 							if (!eventText.IsEmpty())
 							{
-								CMessage message;
-								message.GenerateMessage(eventText, MESSAGE_TYPE::MILITARY, param, p);
-								pDefenderMajor->GetEmpire()->AddMessage(message);
+								CEmpireNews message;
+								message.CreateNews(eventText, EMPIRE_NEWS_TYPE::MILITARY, param, p);
+								pDefenderMajor->GetEmpire()->AddMsg(message);
 								if (pDefenderMajor->IsHumanPlayer())
 								{
 									network::RACE client = m_pRaceCtrl->GetMappedClientID(defender->GetRaceID());
@@ -3094,9 +3094,9 @@ void CBotEDoc::CalcSystemAttack()
 									// Eventnachricht hinzufügen
 									if (!sEventText.IsEmpty())
 									{
-										CMessage message;
-										message.GenerateMessage(sEventText, MESSAGE_TYPE::MILITARY, sParam, p, 0, 1);
-										pMajor->GetEmpire()->AddMessage(message);
+										CEmpireNews message;
+										message.CreateNews(sEventText, EMPIRE_NEWS_TYPE::MILITARY, sParam, p, 0, 1);
+										pMajor->GetEmpire()->AddMsg(message);
 										if (pMajor->IsHumanPlayer())
 										{
 											network::RACE client = m_pRaceCtrl->GetMappedClientID(pMajor->GetRaceID());
@@ -3131,9 +3131,9 @@ void CBotEDoc::CalcSystemAttack()
 								// Eventnachricht für Agressor hinzufügen
 								if (!eventText.IsEmpty())
 								{
-									CMessage message;
-									message.GenerateMessage(eventText, MESSAGE_TYPE::MILITARY, param, p);
-									pMajor->GetEmpire()->AddMessage(message);
+									CEmpireNews message;
+									message.CreateNews(eventText, EMPIRE_NEWS_TYPE::MILITARY, param, p);
+									pMajor->GetEmpire()->AddMsg(message);
 									if (pMajor->IsHumanPlayer())
 									{
 										network::RACE client = m_pRaceCtrl->GetMappedClientID(pMajor->GetRaceID());
@@ -3150,9 +3150,9 @@ void CBotEDoc::CalcSystemAttack()
 								// Eventnachricht hinzufügen
 								if (!eventText.IsEmpty())
 								{
-									CMessage message;
-									message.GenerateMessage(eventText, MESSAGE_TYPE::MILITARY, param, p);
-									pDefenderMajor->GetEmpire()->AddMessage(message);
+									CEmpireNews message;
+									message.CreateNews(eventText, EMPIRE_NEWS_TYPE::MILITARY, param, p);
+									pDefenderMajor->GetEmpire()->AddMsg(message);
 									if (pDefenderMajor->IsHumanPlayer())
 									{
 										network::RACE client = m_pRaceCtrl->GetMappedClientID(defender->GetRaceID());
@@ -3174,10 +3174,10 @@ void CBotEDoc::CalcSystemAttack()
 						if (pMajor->IsHumanPlayer())
 						{
 							if (!attackSystem->IsTroopsInvolved())
-								pMajor->GetEmpire()->GetEventMessages()->Add(new CEventBombardment(pMajor->GetRaceID(), "Bombardment", CResourceManager::GetString("BOMBARDEVENT_HEADLINE", FALSE, GetSector(p.x, p.y).GetName()), CResourceManager::GetString("BOMBARDEVENT_TEXT_AGRESSOR_" + pMajor->GetRaceID(), FALSE, GetSector(p.x, p.y).GetName())));
+								pMajor->GetEmpire()->GetEvents()->Add(new CEventBombardment(pMajor->GetRaceID(), "Bombardment", CLoc::GetString("BOMBARDEVENT_HEADLINE", FALSE, GetSector(p.x, p.y).GetName()), CLoc::GetString("BOMBARDEVENT_TEXT_AGRESSOR_" + pMajor->GetRaceID(), FALSE, GetSector(p.x, p.y).GetName())));
 							// gescheitere Invasion
 							else if (GetSystem(p.x, p.y).GetHabitants() > 0.000001f)
-								pMajor->GetEmpire()->GetEventMessages()->Add(new CEventBombardment(pMajor->GetRaceID(), "InvasionFailed", CResourceManager::GetString("INVASIONFAILUREEVENT_HEADLINE", FALSE, GetSector(p.x, p.y).GetName()), CResourceManager::GetString("INVASIONFAILUREEVENT_TEXT_" + pMajor->GetRaceID(), FALSE, GetSector(p.x, p.y).GetName())));
+								pMajor->GetEmpire()->GetEvents()->Add(new CEventBombardment(pMajor->GetRaceID(), "InvasionFailed", CLoc::GetString("INVASIONFAILUREEVENT_HEADLINE", FALSE, GetSector(p.x, p.y).GetName()), CLoc::GetString("INVASIONFAILUREEVENT_TEXT_" + pMajor->GetRaceID(), FALSE, GetSector(p.x, p.y).GetName())));
 						}
 
 					}
@@ -3189,10 +3189,10 @@ void CBotEDoc::CalcSystemAttack()
 						{
 							// reine Bombardierung
 							if (!attackSystem->IsTroopsInvolved())
-								pDefenderMajor->GetEmpire()->GetEventMessages()->Add(new CEventBombardment(defender->GetRaceID(), "Bombardment", CResourceManager::GetString("BOMBARDEVENT_HEADLINE", FALSE, GetSector(p.x, p.y).GetName()), CResourceManager::GetString("BOMBARDEVENT_TEXT_DEFENDER_" + defender->GetRaceID(), FALSE, GetSector(p.x, p.y).GetName())));
+								pDefenderMajor->GetEmpire()->GetEvents()->Add(new CEventBombardment(defender->GetRaceID(), "Bombardment", CLoc::GetString("BOMBARDEVENT_HEADLINE", FALSE, GetSector(p.x, p.y).GetName()), CLoc::GetString("BOMBARDEVENT_TEXT_DEFENDER_" + defender->GetRaceID(), FALSE, GetSector(p.x, p.y).GetName())));
 							// gescheitere Invasion
 							else if (GetSystem(p.x, p.y).GetHabitants() > 0.000001f)
-								pDefenderMajor->GetEmpire()->GetEventMessages()->Add(new CEventBombardment(defender->GetRaceID(), "InvasionFailed", CResourceManager::GetString("INVASIONFAILUREEVENT_HEADLINE", FALSE, GetSector(p.x, p.y).GetName()), CResourceManager::GetString("INVASIONFAILUREEVENT_TEXT_" + defender->GetRaceID(), FALSE, GetSector(p.x, p.y).GetName())));
+								pDefenderMajor->GetEmpire()->GetEvents()->Add(new CEventBombardment(defender->GetRaceID(), "InvasionFailed", CLoc::GetString("INVASIONFAILUREEVENT_HEADLINE", FALSE, GetSector(p.x, p.y).GetName()), CLoc::GetString("INVASIONFAILUREEVENT_TEXT_" + defender->GetRaceID(), FALSE, GetSector(p.x, p.y).GetName())));
 						}
 					}
 				}
@@ -3206,9 +3206,9 @@ void CBotEDoc::CalcSystemAttack()
 						if (!pMajor)
 							continue;
 
-						CMessage message;
-						message.GenerateMessage(attackSystem->GetNews()->GetAt(i), MESSAGE_TYPE::MILITARY, GetSector(p.x, p.y).GetName(), p);
-						pMajor->GetEmpire()->AddMessage(message);
+						CEmpireNews message;
+						message.CreateNews(attackSystem->GetNews()->GetAt(i), EMPIRE_NEWS_TYPE::MILITARY, GetSector(p.x, p.y).GetName(), p);
+						pMajor->GetEmpire()->AddMsg(message);
 						if (pMajor->IsHumanPlayer())
 						{
 							network::RACE client = m_pRaceCtrl->GetMappedClientID(pMajor->GetRaceID());
@@ -3218,9 +3218,9 @@ void CBotEDoc::CalcSystemAttack()
 					if (defender != NULL && defender->IsMajor() && attackSystem->IsDefenderNotAttacker(defender->GetRaceID(), &attackers))
 					{
 						CMajor* pDefenderMajor = dynamic_cast<CMajor*>(defender);
-						CMessage message;
-						message.GenerateMessage(attackSystem->GetNews()->GetAt(i), MESSAGE_TYPE::MILITARY, GetSector(p.x, p.y).GetName(), p);
-						pDefenderMajor->GetEmpire()->AddMessage(message);
+						CEmpireNews message;
+						message.CreateNews(attackSystem->GetNews()->GetAt(i), EMPIRE_NEWS_TYPE::MILITARY, GetSector(p.x, p.y).GetName(), p);
+						pDefenderMajor->GetEmpire()->AddMsg(message);
 						if (pDefenderMajor->IsHumanPlayer())
 						{
 							network::RACE client = m_pRaceCtrl->GetMappedClientID(defender->GetRaceID());
@@ -3246,8 +3246,8 @@ void CBotEDoc::CalcSystemAttack()
 		{
 			CRace* race = m_pRaceCtrl->GetRace(i->second->GetOwnerOfShip());
 			assert(race);
-			if(i->second->RemoveDestroyed(*race, m_iRound, CResourceManager::GetString("SYSTEMATTACK"),
-					CResourceManager::GetString("DESTROYED"))) {
+			if(i->second->RemoveDestroyed(*race, m_iRound, CLoc::GetString("SYSTEMATTACK"),
+					CLoc::GetString("DESTROYED"))) {
 				++i;
 				continue;
 			}
@@ -3286,9 +3286,9 @@ void CBotEDoc::CalcIntelligence()
 				// die Sortierung der Geheimdienstberichte
 				pIntel->GetIntelReports()->SortAllReports();
 
-				CMessage message;
-				message.GenerateMessage(CResourceManager::GetString("WE_HAVE_NEW_INTELREPORTS"), MESSAGE_TYPE::SECURITY, 4);
-				it->second->GetEmpire()->AddMessage(message);
+				CEmpireNews message;
+				message.CreateNews(CLoc::GetString("WE_HAVE_NEW_INTELREPORTS"), EMPIRE_NEWS_TYPE::SECURITY, 4);
+				it->second->GetEmpire()->AddMsg(message);
 
 				network::RACE client = m_pRaceCtrl->GetMappedClientID(it->first);
 				SNDMGR_MESSAGEENTRY entry = {SNDMGR_MSG_INTELNEWS, client, 0, 1.0f};
@@ -3315,8 +3315,8 @@ void CBotEDoc::CalcIntelligence()
 						// Eventnachricht hinzufügen
 						if (!eventText.IsEmpty())
 						{
-							message.GenerateMessage(eventText, MESSAGE_TYPE::SECURITY, 4);
-							it->second->GetEmpire()->AddMessage(message);
+							message.CreateNews(eventText, EMPIRE_NEWS_TYPE::SECURITY, 4);
+							it->second->GetEmpire()->AddMsg(message);
 						}
 					}
 					if (addSpy && addSab)
@@ -3364,7 +3364,7 @@ void CBotEDoc::CalcResearch()
 			// Wenn irgendwas erforscht wurde, wir also eine Nachricht erstellen wollen
 			if (news[j] != "")
 			{
-				CMessage message;
+				CEmpireNews message;
 
 				// flag setzen, wenn wir eine Spezialforschung erforschen dürfen
 				if (j == 7)
@@ -3376,7 +3376,7 @@ void CBotEDoc::CalcResearch()
 						m_SoundMessages[client].Add(entry);
 						m_iSelectedView[client] = EMPIRE_VIEW;
 					}
-					message.GenerateMessage(news[j], MESSAGE_TYPE::RESEARCH, 1);
+					message.CreateNews(news[j], EMPIRE_NEWS_TYPE::RESEARCH, 1);
 				}
 				else
 				{
@@ -3389,12 +3389,12 @@ void CBotEDoc::CalcResearch()
 						// Eventscreen für Forschung erstellen
 						// gilt nur für die sechs normalen Forschungen
 						if (j < 6)
-							pMajor->GetEmpire()->GetEventMessages()->Add(new CEventResearch(pMajor->GetRaceID(), CResourceManager::GetString("RESEARCHEVENT_HEADLINE"), j));
+							pMajor->GetEmpire()->GetEvents()->Add(new CEventResearch(pMajor->GetRaceID(), CLoc::GetString("RESEARCHEVENT_HEADLINE"), j));
 					}
-					message.GenerateMessage(news[j], MESSAGE_TYPE::RESEARCH);
+					message.CreateNews(news[j], EMPIRE_NEWS_TYPE::RESEARCH);
 				}
 
-				pMajor->GetEmpire()->AddMessage(message);
+				pMajor->GetEmpire()->AddMsg(message);
 			}
 		}
 	}
@@ -3526,7 +3526,7 @@ void CBotEDoc::CalcOldRoundData()
 			// hier könnte die Energie durch Weltraummonster weggenommen werden!
 			// Gebäude die Energie benötigen checken
 			if (system.CheckEnergyBuildings(&this->BuildingInfo))
-				calc.SystemMessage(*sector, pMajor, "BUILDING_TURN_OFF", MESSAGE_TYPE::SOMETHING, 2);
+				calc.SystemMessage(*sector, pMajor, "BUILDING_TURN_OFF", EMPIRE_NEWS_TYPE::SOMETHING, 2);
 
 			// Die Bauaufträge in dem System berechnen. Außerdem wird hier auch die System-KI ausgeführt.
 			if (!pMajor->AHumanPlays() || system.GetAutoBuild())
@@ -3647,11 +3647,11 @@ void CBotEDoc::CalcTrade()
 		CString resName;
 		switch(i)
 		{
-		case TITAN:		resName = CResourceManager::GetString("TITAN");		break;
-		case DEUTERIUM: resName = CResourceManager::GetString("DEUTERIUM");	break;
-		case DURANIUM:	resName = CResourceManager::GetString("DURANIUM");	break;
-		case CRYSTAL:	resName = CResourceManager::GetString("CRYSTAL");	break;
-		case IRIDIUM:	resName = CResourceManager::GetString("IRIDIUM");	break;
+		case TITAN:		resName = CLoc::GetString("TITAN");		break;
+		case DEUTERIUM: resName = CLoc::GetString("DEUTERIUM");	break;
+		case DURANIUM:	resName = CLoc::GetString("DURANIUM");	break;
+		case CRYSTAL:	resName = CLoc::GetString("CRYSTAL");	break;
+		case IRIDIUM:	resName = CLoc::GetString("IRIDIUM");	break;
 		}
 
 		if (CTrade::GetMonopolOwner(i).IsEmpty() == false)
@@ -3695,17 +3695,17 @@ void CBotEDoc::CalcTrade()
 			{
 				pMajor->GetEmpire()->SetCredits((long)pMajor->GetTrade()->GetMonopolBuying()[i]);
 				// Nachricht generieren, dass wir es nicht geschafft haben ein Monopol zu kaufen
-				sNews = CResourceManager::GetString("WE_DONT_GET_MONOPOLY",FALSE,resName);
+				sNews = CLoc::GetString("WE_DONT_GET_MONOPOLY",FALSE,resName);
 			}
 			// Nachricht an unser Imperium, dass wir ein Monopol erlangt haben
 			else if (pMajor->GetRaceID() == sMonopolRace)
-				sNews = CResourceManager::GetString("WE_GET_MONOPOLY",FALSE,resName);
+				sNews = CLoc::GetString("WE_GET_MONOPOLY",FALSE,resName);
 
 			if (!sNews.IsEmpty())
 			{
-				CMessage message;
-				message.GenerateMessage(sNews,MESSAGE_TYPE::SOMETHING);
-				pMajor->GetEmpire()->AddMessage(message);
+				CEmpireNews message;
+				message.CreateNews(sNews,EMPIRE_NEWS_TYPE::SOMETHING);
+				pMajor->GetEmpire()->AddMsg(message);
 				if (pMajor->IsHumanPlayer())
 				{
 					network::RACE clientID = m_pRaceCtrl->GetMappedClientID(pMajor->GetRaceID());
@@ -3721,14 +3721,14 @@ void CBotEDoc::CalcTrade()
 				CMajor* pMonopolRace = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(sMonopolRace));
 				ASSERT(pMonopolRace);
 
-				CString sRace = CResourceManager::GetString("UNKNOWN");
+				CString sRace = CLoc::GetString("UNKNOWN");
 				if (pMajor->IsRaceContacted(sMonopolRace))
 					sRace = pMonopolRace->GetRaceNameWithArticle();
 
-				CString news = CResourceManager::GetString("SOMEBODY_GET_MONOPOLY",TRUE,sRace,resName);
-				CMessage message;
-				message.GenerateMessage(news,MESSAGE_TYPE::SOMETHING);
-				pMajor->GetEmpire()->AddMessage(message);
+				CString news = CLoc::GetString("SOMEBODY_GET_MONOPOLY",TRUE,sRace,resName);
+				CEmpireNews message;
+				message.CreateNews(news,EMPIRE_NEWS_TYPE::SOMETHING);
+				pMajor->GetEmpire()->AddMsg(message);
 				if (pMajor->IsHumanPlayer())
 				{
 					network::RACE clientID = m_pRaceCtrl->GetMappedClientID(pMajor->GetRaceID());
@@ -3895,22 +3895,22 @@ void CBotEDoc::CalcShipOrders()
 					// Gebäude nach einer Kolonisierung bauen
 					pSystem->BuildBuildingsAfterColonization(pSector,&BuildingInfo,y->second->GetColonizePoints());
 					// Nachricht an das Imperium senden, das ein System neu kolonisiert wurde
-					s = CResourceManager::GetString("FOUND_COLONY_MESSAGE",FALSE,pSector->GetName());
-					CMessage message;
-					message.GenerateMessage(s,MESSAGE_TYPE::SOMETHING,pSector->GetName(),pSector->GetKO());
-					pMajor->GetEmpire()->AddMessage(message);
+					s = CLoc::GetString("FOUND_COLONY_MESSAGE",FALSE,pSector->GetName());
+					CEmpireNews message;
+					message.CreateNews(s,EMPIRE_NEWS_TYPE::SOMETHING,pSector->GetName(),pSector->GetKO());
+					pMajor->GetEmpire()->AddMsg(message);
 
 					// zusätzliche Eventnachricht (Colonize a system #12) wegen der Moral an das Imperium
-					message.GenerateMessage(pMajor->GetMoralObserver()->AddEvent(12, pMajor->GetRaceMoralNumber(), pSector->GetName()), MESSAGE_TYPE::SOMETHING, "", pSector->GetKO());
-					pMajor->GetEmpire()->AddMessage(message);
+					message.CreateNews(pMajor->GetMoralObserver()->AddEvent(12, pMajor->GetRaceMoralNumber(), pSector->GetName()), EMPIRE_NEWS_TYPE::SOMETHING, "", pSector->GetKO());
+					pMajor->GetEmpire()->AddMsg(message);
 					if (pMajor->IsHumanPlayer())
 					{
 						SNDMGR_MESSAGEENTRY entry = {SNDMGR_MSG_CLAIMSYSTEM, client, 0, 1.0f};
 						m_SoundMessages[client].Add(entry);
 						m_iSelectedView[client] = EMPIRE_VIEW;
 
-						CEventColonization* eventScreen = new CEventColonization(pMajor->GetRaceID(), CResourceManager::GetString("COLOEVENT_HEADLINE", FALSE, pSector->GetName()), CResourceManager::GetString("COLOEVENT_TEXT_" + pMajor->GetRaceID(), FALSE, pSector->GetName()));
-						pMajor->GetEmpire()->GetEventMessages()->Add(eventScreen);
+						CEventColonization* eventScreen = new CEventColonization(pMajor->GetRaceID(), CLoc::GetString("COLOEVENT_HEADLINE", FALSE, pSector->GetName()), CLoc::GetString("COLOEVENT_TEXT_" + pMajor->GetRaceID(), FALSE, pSector->GetName()));
+						pMajor->GetEmpire()->GetEvents()->Add(eventScreen);
 						s.Format("Added Colonization-Eventscreen for Race %s in System %s", pMajor->GetRaceName(), pSector->GetName());
 						MYTRACE("general")(MT::LEVEL_INFO, s);
 					}
@@ -3918,10 +3918,10 @@ void CBotEDoc::CalcShipOrders()
 				else
 				{
 					// Nachricht an das Imperium senden, das ein Planet kolonisiert wurde
-					s = CResourceManager::GetString("NEW_PLANET_COLONIZED",FALSE,pSector->GetName());
-					CMessage message;
-					message.GenerateMessage(s,MESSAGE_TYPE::SOMETHING,pSector->GetName(),pSector->GetKO());
-					pMajor->GetEmpire()->AddMessage(message);
+					s = CLoc::GetString("NEW_PLANET_COLONIZED",FALSE,pSector->GetName());
+					CEmpireNews message;
+					message.CreateNews(s,EMPIRE_NEWS_TYPE::SOMETHING,pSector->GetName(),pSector->GetKO());
+					pMajor->GetEmpire()->AddMsg(message);
 					if (pMajor->IsHumanPlayer())
 						m_iSelectedView[client] = EMPIRE_VIEW;
 				}
@@ -3931,8 +3931,8 @@ void CBotEDoc::CalcShipOrders()
 				pSystem->CalculateVariables(&this->BuildingInfo, pMajor->GetEmpire()->GetResearch()->GetResearchInfo(), pSector->GetPlanets(), pMajor, CTrade::GetMonopolOwner());
 
 				// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
-				s.Format("%s %s",CResourceManager::GetString("COLONIZATION"), pSector->GetName());
-				pMajor->AddToLostShipHistory(*y->second, s, CResourceManager::GetString("DESTROYED"),
+				s.Format("%s %s",CLoc::GetString("COLONIZATION"), pSector->GetName());
+				pMajor->AddToLostShipHistory(*y->second, s, CLoc::GetString("DESTROYED"),
 					m_iRound);
 				// Schiff entfernen
 				y->second->UnsetCurrentOrder();
@@ -3960,10 +3960,10 @@ void CBotEDoc::CalcShipOrders()
 					// Hier wurde ein Planet erfolgreich geterraformt
 					y->second->UnsetCurrentOrder();
 					// Nachricht generieren, dass Terraforming abgeschlossen wurde
-					CString s = CResourceManager::GetString("TERRAFORMING_FINISHED",FALSE,pSector->GetName());
-					CMessage message;
-					message.GenerateMessage(s,MESSAGE_TYPE::SOMETHING,pSector->GetName(),pSector->GetKO());
-					pMajor->GetEmpire()->AddMessage(message);
+					CString s = CLoc::GetString("TERRAFORMING_FINISHED",FALSE,pSector->GetName());
+					CEmpireNews message;
+					message.CreateNews(s,EMPIRE_NEWS_TYPE::SOMETHING,pSector->GetName(),pSector->GetKO());
+					pMajor->GetEmpire()->AddMsg(message);
 					if (pMajor->IsHumanPlayer())
 					{
 						SNDMGR_MESSAGEENTRY entry = {SNDMGR_MSG_TERRAFORM_COMPLETE, client, 0, 1.0f};
@@ -4003,10 +4003,10 @@ void CBotEDoc::CalcShipOrders()
 						{
 							y->second->UnsetCurrentOrder();
 							// Nachricht generieren, dass Terraforming abgeschlossen wurde
-							CString s = CResourceManager::GetString("TERRAFORMING_FINISHED",FALSE,pSector->GetName());
-							CMessage message;
-							message.GenerateMessage(s,MESSAGE_TYPE::SOMETHING,pSector->GetName(),pSector->GetKO());
-							pMajor->GetEmpire()->AddMessage(message);
+							CString s = CLoc::GetString("TERRAFORMING_FINISHED",FALSE,pSector->GetName());
+							CEmpireNews message;
+							message.CreateNews(s,EMPIRE_NEWS_TYPE::SOMETHING,pSector->GetName(),pSector->GetKO());
+							pMajor->GetEmpire()->AddMsg(message);
 							if (pMajor->IsHumanPlayer())
 							{
 								SNDMGR_MESSAGEENTRY entry = {SNDMGR_MSG_TERRAFORM_COMPLETE, client, 0, 1.0f};
@@ -4040,10 +4040,10 @@ void CBotEDoc::CalcShipOrders()
 					{
 						CString s;
 						s.Format("%u", colonize_points_sum - needed_terraform_points);
-						s = CResourceManager::GetString("TERRAFORMING_POINTS_WASTED",FALSE,pSector->GetName(), s);
-						CMessage message;
-						message.GenerateMessage(s,MESSAGE_TYPE::SOMETHING,pSector->GetName(),pSector->GetKO());
-						pMajor->GetEmpire()->AddMessage(message);
+						s = CLoc::GetString("TERRAFORMING_POINTS_WASTED",FALSE,pSector->GetName(), s);
+						CEmpireNews message;
+						message.CreateNews(s,EMPIRE_NEWS_TYPE::SOMETHING,pSector->GetName(),pSector->GetKO());
+						pMajor->GetEmpire()->AddMsg(message);
 					}
 				}
 			}
@@ -4097,11 +4097,11 @@ void CBotEDoc::CalcShipOrders()
 								}
 
 								// Nachricht generieren, dass der Aussenpostenbau abgeschlossen wurde
-								CMessage message;
-								message.GenerateMessage(CResourceManager::GetString("OUTPOST_FINISHED"),MESSAGE_TYPE::MILITARY,"",pSector->GetKO());
-								pMajor->GetEmpire()->AddMessage(message);
+								CEmpireNews message;
+								message.CreateNews(CLoc::GetString("OUTPOST_FINISHED"),EMPIRE_NEWS_TYPE::MILITARY,"",pSector->GetKO());
+								pMajor->GetEmpire()->AddMsg(message);
 								// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
-								pMajor->AddToLostShipHistory(*x->second, CResourceManager::GetString("OUTPOST_CONSTRUCTION"), CResourceManager::GetString("DESTROYED"), m_iRound);
+								pMajor->AddToLostShipHistory(*x->second, CLoc::GetString("OUTPOST_CONSTRUCTION"), CLoc::GetString("DESTROYED"), m_iRound);
 								if (pMajor->IsHumanPlayer())
 								{
 									SNDMGR_MESSAGEENTRY entry = {SNDMGR_MSG_OUTPOST_READY, client, 0, 1.0f};
@@ -4146,11 +4146,11 @@ void CBotEDoc::CalcShipOrders()
 							}
 
 							// Nachricht generieren, dass der Aussenpostenbau abgeschlossen wurde
-							CMessage message;
-							message.GenerateMessage(CResourceManager::GetString("OUTPOST_FINISHED"),MESSAGE_TYPE::MILITARY,"",pSector->GetKO());
-							pMajor->GetEmpire()->AddMessage(message);
+							CEmpireNews message;
+							message.CreateNews(CLoc::GetString("OUTPOST_FINISHED"),EMPIRE_NEWS_TYPE::MILITARY,"",pSector->GetKO());
+							pMajor->GetEmpire()->AddMsg(message);
 							// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
-							pMajor->AddToLostShipHistory(*y->second, CResourceManager::GetString("OUTPOST_CONSTRUCTION"), CResourceManager::GetString("DESTROYED"), m_iRound);
+							pMajor->AddToLostShipHistory(*y->second, CLoc::GetString("OUTPOST_CONSTRUCTION"), CLoc::GetString("DESTROYED"), m_iRound);
 							if (pMajor->IsHumanPlayer())
 							{
 								SNDMGR_MESSAGEENTRY entry = {SNDMGR_MSG_OUTPOST_READY, client, 0, 1.0f};
@@ -4231,11 +4231,11 @@ void CBotEDoc::CalcShipOrders()
 								}
 
 								// Nachricht generieren, dass der Sternbasisbau abgeschlossen wurde
-								CMessage message;
-								message.GenerateMessage(CResourceManager::GetString("STARBASE_FINISHED"),MESSAGE_TYPE::MILITARY,"",pSector->GetKO());
-								pMajor->GetEmpire()->AddMessage(message);
+								CEmpireNews message;
+								message.CreateNews(CLoc::GetString("STARBASE_FINISHED"),EMPIRE_NEWS_TYPE::MILITARY,"",pSector->GetKO());
+								pMajor->GetEmpire()->AddMsg(message);
 								// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
-								pMajor->AddToLostShipHistory(*x->second, CResourceManager::GetString("STARBASE_CONSTRUCTION"), CResourceManager::GetString("DESTROYED"), m_iRound);
+								pMajor->AddToLostShipHistory(*x->second, CLoc::GetString("STARBASE_CONSTRUCTION"), CLoc::GetString("DESTROYED"), m_iRound);
 								if (pMajor->IsHumanPlayer())
 								{
 									SNDMGR_MESSAGEENTRY entry = {SNDMGR_MSG_STARBASE_READY, client, 0, 1.0f};
@@ -4292,11 +4292,11 @@ void CBotEDoc::CalcShipOrders()
 							}
 
 							// Nachricht generieren, dass der Sternbasisbau abgeschlossen wurde
-							CMessage message;
-							message.GenerateMessage(CResourceManager::GetString("STARBASE_FINISHED"),MESSAGE_TYPE::MILITARY,"",pSector->GetKO());
-							pMajor->GetEmpire()->AddMessage(message);
+							CEmpireNews message;
+							message.CreateNews(CLoc::GetString("STARBASE_FINISHED"),EMPIRE_NEWS_TYPE::MILITARY,"",pSector->GetKO());
+							pMajor->GetEmpire()->AddMsg(message);
 							// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
-							pMajor->AddToLostShipHistory(*y->second, CResourceManager::GetString("STARBASE_CONSTRUCTION"), CResourceManager::GetString("DESTROYED"), m_iRound);
+							pMajor->AddToLostShipHistory(*y->second, CLoc::GetString("STARBASE_CONSTRUCTION"), CLoc::GetString("DESTROYED"), m_iRound);
 							if (pMajor->IsHumanPlayer())
 							{
 								SNDMGR_MESSAGEENTRY entry = {SNDMGR_MSG_STARBASE_READY, client, 0, 1.0f};
@@ -4359,7 +4359,7 @@ void CBotEDoc::CalcShipOrders()
 				pMajor->GetEmpire()->SetCredits((int)(m_ShipInfoArray.GetAt(id).GetNeededIndustry() * proz / 100));
 			}
 			// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
-			pMajor->GetShipHistory()->ModifyShip(y->second, pSector->GetName(TRUE), m_iRound, CResourceManager::GetString("DISASSEMBLY"),	CResourceManager::GetString("DESTROYED"));
+			pMajor->GetShipHistory()->ModifyShip(y->second, pSector->GetName(TRUE), m_iRound, CLoc::GetString("DISASSEMBLY"),	CLoc::GetString("DESTROYED"));
 
 			// Wenn das Schiff eine Flotte anf?hrt, dann auch die Schiffe in der Flotte demontieren
 			for(CShips::const_iterator x = y->second->begin(); x != y->second->end(); ++x)
@@ -4378,7 +4378,7 @@ void CBotEDoc::CalcShipOrders()
 					pMajor->GetEmpire()->SetCredits((int)(m_ShipInfoArray.GetAt(id).GetNeededIndustry() * proz / 100));
 				}
 				// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
-				pMajor->GetShipHistory()->ModifyShip(x->second, pSector->GetName(TRUE), m_iRound, CResourceManager::GetString("DISASSEMBLY"), CResourceManager::GetString("DESTROYED"));
+				pMajor->GetShipHistory()->ModifyShip(x->second, pSector->GetName(TRUE), m_iRound, CLoc::GetString("DISASSEMBLY"), CLoc::GetString("DESTROYED"));
 			}
 
 			// Wenn es ein Au?enposten oder eine Sternbasis ist, dann dem Sektor bekanntgeben, dass in ihm keine Station mehr ist
@@ -4475,8 +4475,8 @@ void CBotEDoc::CalcShipOrders()
 				CMajor* pShipOwnerMajor = NULL;
 				if (pShipOwner != NULL && pShipOwner->IsMajor() && (pShipOwnerMajor = dynamic_cast<CMajor*>(pShipOwner))->IsHumanPlayer())
 				{
-					CEventBlockade* eventScreen = new CEventBlockade(y->second->GetOwnerOfShip(), CResourceManager::GetString("BLOCKADEEVENT_HEADLINE", FALSE, pSector->GetName()), CResourceManager::GetString("BLOCKADEEVENT_TEXT_" + pShipOwner->GetRaceID(), FALSE, pSector->GetName()));
-					pShipOwnerMajor->GetEmpire()->GetEventMessages()->Add(eventScreen);
+					CEventBlockade* eventScreen = new CEventBlockade(y->second->GetOwnerOfShip(), CLoc::GetString("BLOCKADEEVENT_HEADLINE", FALSE, pSector->GetName()), CLoc::GetString("BLOCKADEEVENT_TEXT_" + pShipOwner->GetRaceID(), FALSE, pSector->GetName()));
+					pShipOwnerMajor->GetEmpire()->GetEvents()->Add(eventScreen);
 				}
 				if (pSystem->GetOwnerOfSystem() != "")
 				{
@@ -4484,8 +4484,8 @@ void CBotEDoc::CalcShipOrders()
 					CMajor* pSystemOwnerMajor = NULL;
 					if (pSystemOwner != NULL && pSystemOwner->IsMajor() && (pSystemOwnerMajor = dynamic_cast<CMajor*>(pSystemOwner))->IsHumanPlayer())
 					{
-						CEventBlockade* eventScreen = new CEventBlockade(pSystem->GetOwnerOfSystem(), CResourceManager::GetString("BLOCKADEEVENT_HEADLINE", FALSE, pSector->GetName()), CResourceManager::GetString("BLOCKADEEVENT_TEXT_" + pSystemOwner->GetRaceID(), FALSE, pSector->GetName()));
-						pSystemOwnerMajor->GetEmpire()->GetEventMessages()->Add(eventScreen);
+						CEventBlockade* eventScreen = new CEventBlockade(pSystem->GetOwnerOfSystem(), CLoc::GetString("BLOCKADEEVENT_HEADLINE", FALSE, pSector->GetName()), CLoc::GetString("BLOCKADEEVENT_TEXT_" + pSystemOwner->GetRaceID(), FALSE, pSector->GetName()));
+						pSystemOwnerMajor->GetEmpire()->GetEvents()->Add(eventScreen);
 					}
 				}
 			}
@@ -4662,8 +4662,8 @@ void CBotEDoc::CalcShipMovement()
 				// Berechnet Zufallsentdeckung in dem Sektor den das Schiff anfliegt
 				if (pRace != NULL && pRace->IsMajor() && !(this->GetSector(nextKO.x,nextKO.y).GetFullKnown(y->second->GetOwnerOfShip())))
 				{
-					CReManager* pRandomEventManager = CReManager::GetInstance();
-					pRandomEventManager->CalcExploreEvent(CPoint((int)nextKO.x,(int)nextKO.y),dynamic_cast<CMajor*>(pRace),&m_ShipMap);
+					CRandomEventCtrl* pRandomEventCtrl = CRandomEventCtrl::GetInstance();
+					pRandomEventCtrl->CalcExploreEvent(CPoint((int)nextKO.x,(int)nextKO.y),dynamic_cast<CMajor*>(pRace),&m_ShipMap);
 				}
 
 				int high = speed;
@@ -4721,7 +4721,7 @@ void CBotEDoc::CheckShipsDestroyedByAnomaly() {
 			->GetMapName(co);
 		CRace* pRace = m_pRaceCtrl->GetRace(i->second->GetOwnerOfShip());
 		if(i->second->RemoveDestroyed(*pRace, m_iRound, anomaly,
-				CResourceManager::GetString("DESTROYED"), NULL, anomaly)) {
+				CLoc::GetString("DESTROYED"), NULL, anomaly)) {
 			++i;
 			continue;
 		}
@@ -4854,7 +4854,7 @@ void CBotEDoc::CalcShipCombat()
 		if (GetSector(p.x, p.y).GetKnown(it->first))
 			sSectorName = GetSector(p.x, p.y).GetName(true);
 		else
-			sSectorName.Format("%s %c%i", CResourceManager::GetString("SECTOR"), (char)(p.y+97), p.x + 1);
+			sSectorName.Format("%s %c%i", CLoc::GetString("SECTOR"), (char)(p.y+97), p.x + 1);
 
 		// gewonnen
 		if (winner[it->first] == 1 && it->second->IsMajor())
@@ -4866,13 +4866,13 @@ void CBotEDoc::CalcShipCombat()
 			ASSERT(pMajor);
 			network::RACE client = m_pRaceCtrl->GetMappedClientID(pMajor->GetRaceID());
 
-			CMessage message;
-			message.GenerateMessage(CResourceManager::GetString("WIN_COMBAT", false, sSectorName), MESSAGE_TYPE::MILITARY, "", p);
-			pMajor->GetEmpire()->AddMessage(message);
+			CEmpireNews message;
+			message.CreateNews(CLoc::GetString("WIN_COMBAT", false, sSectorName), EMPIRE_NEWS_TYPE::MILITARY, "", p);
+			pMajor->GetEmpire()->AddMsg(message);
 			// win a minor battle
 			CString eventText = pMajor->GetMoralObserver()->AddEvent(3, pMajor->GetRaceMoralNumber());
-			message.GenerateMessage(eventText, MESSAGE_TYPE::MILITARY, "", p);
-			pMajor->GetEmpire()->AddMessage(message);
+			message.CreateNews(eventText, EMPIRE_NEWS_TYPE::MILITARY, "", p);
+			pMajor->GetEmpire()->AddMsg(message);
 			if (pMajor->IsHumanPlayer())
 				m_iSelectedView[client] = EMPIRE_VIEW;
 		}
@@ -4885,13 +4885,13 @@ void CBotEDoc::CalcShipCombat()
 				ASSERT(pMajor);
 				network::RACE client = m_pRaceCtrl->GetMappedClientID(pMajor->GetRaceID());
 
-				CMessage message;
-				message.GenerateMessage(CResourceManager::GetString("LOSE_COMBAT", false, sSectorName), MESSAGE_TYPE::MILITARY, "", p);
-				pMajor->GetEmpire()->AddMessage(message);
+				CEmpireNews message;
+				message.CreateNews(CLoc::GetString("LOSE_COMBAT", false, sSectorName), EMPIRE_NEWS_TYPE::MILITARY, "", p);
+				pMajor->GetEmpire()->AddMsg(message);
 				// lose a minorbattle
 				CString eventText = pMajor->GetMoralObserver()->AddEvent(6, pMajor->GetRaceMoralNumber());
-				message.GenerateMessage(eventText, MESSAGE_TYPE::MILITARY, "", p);
-				pMajor->GetEmpire()->AddMessage(message);
+				message.CreateNews(eventText, EMPIRE_NEWS_TYPE::MILITARY, "", p);
+				pMajor->GetEmpire()->AddMsg(message);
 				if (pMajor->IsHumanPlayer())
 					m_iSelectedView[client] = EMPIRE_VIEW;
 			}
@@ -4916,9 +4916,9 @@ void CBotEDoc::CalcShipCombat()
 			ASSERT(pMajor);
 			network::RACE client = m_pRaceCtrl->GetMappedClientID(pMajor->GetRaceID());
 
-			CMessage message;
-			message.GenerateMessage(CResourceManager::GetString("DRAW_COMBAT", false, sSectorName), MESSAGE_TYPE::MILITARY, "", p);
-			pMajor->GetEmpire()->AddMessage(message);
+			CEmpireNews message;
+			message.CreateNews(CLoc::GetString("DRAW_COMBAT", false, sSectorName), EMPIRE_NEWS_TYPE::MILITARY, "", p);
+			pMajor->GetEmpire()->AddMsg(message);
 			if (pMajor->IsHumanPlayer())
 				m_iSelectedView[client] = EMPIRE_VIEW;
 		}
@@ -4978,7 +4978,7 @@ void CBotEDoc::CalcShipCombat()
 
 		CRace* pOwner = m_pRaceCtrl->GetRace(i->second->GetOwnerOfShip());
 		assert(pOwner);
-		if (i->second->RemoveDestroyed(*pOwner, m_iRound, CResourceManager::GetString("COMBAT"),	CResourceManager::GetString("DESTROYED"), &destroyedShips))
+		if (i->second->RemoveDestroyed(*pOwner, m_iRound, CLoc::GetString("COMBAT"),	CLoc::GetString("DESTROYED"), &destroyedShips))
 		{
 			++i;
 			continue;
@@ -4996,10 +4996,10 @@ void CBotEDoc::CalcShipCombat()
 			for (int j = 0; j < destroyedShips.GetSize(); j++)
 			{
 				CString s;
-				s.Format("%s", CResourceManager::GetString("DESTROYED_SHIPS_IN_COMBAT",0,destroyedShips[j]));
-				CMessage message;
-				message.GenerateMessage(s, MESSAGE_TYPE::MILITARY, "", p);
-				pMajor->GetEmpire()->AddMessage(message);
+				s.Format("%s", CLoc::GetString("DESTROYED_SHIPS_IN_COMBAT",0,destroyedShips[j]));
+				CEmpireNews message;
+				message.CreateNews(s, EMPIRE_NEWS_TYPE::MILITARY, "", p);
+				pMajor->GetEmpire()->AddMsg(message);
 			}
 		}
 	}
@@ -5239,19 +5239,19 @@ void CBotEDoc::CalcEffectsMinorEleminated(CMinor* pMinor)
 		// An alle Majors die die Minor kennen die Nachricht schicken, dass diese vernichtet wurde
 		if (pMinor->IsRaceContacted(pMajor->GetRaceID()))
 		{
-			CString news = CResourceManager::GetString("ELIMINATE_MINOR", FALSE, pMinor->GetRaceName());
-			CMessage message;
+			CString news = CLoc::GetString("ELIMINATE_MINOR", FALSE, pMinor->GetRaceName());
+			CEmpireNews message;
 			if (pMinor->IsAlienRace())
-				message.GenerateMessage(news, MESSAGE_TYPE::SOMETHING);
+				message.CreateNews(news, EMPIRE_NEWS_TYPE::SOMETHING);
 			else
-				message.GenerateMessage(news, MESSAGE_TYPE::SOMETHING, GetSector(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).GetName(), pMinor->GetRaceKO());
+				message.CreateNews(news, EMPIRE_NEWS_TYPE::SOMETHING, GetSector(pMinor->GetRaceKO().x, pMinor->GetRaceKO().y).GetName(), pMinor->GetRaceKO());
 
-			pMajor->GetEmpire()->AddMessage(message);
+			pMajor->GetEmpire()->AddMsg(message);
 			if (pMajor->IsHumanPlayer())
 			{
 				// Event über die Rassenauslöschung einfügen
 				CEventRaceKilled* eventScreen = new CEventRaceKilled(it->first, pMinor->GetRaceID(), pMinor->GetRaceName(), pMinor->GetGraphicFileName());
-				pMajor->GetEmpire()->GetEventMessages()->Add(eventScreen);
+				pMajor->GetEmpire()->GetEvents()->Add(eventScreen);
 
 				network::RACE client = m_pRaceCtrl->GetMappedClientID(it->first);
 				m_iSelectedView[client] = EMPIRE_VIEW;
@@ -5292,7 +5292,7 @@ void CBotEDoc::CalcEndDataForNextRound()
 
 		// Wenn das Imperium keine Systeme mehr besitzt, so wird es für alle anderen Rassen auf unbekannt gestellt.
 		// Scheidet somit aus dem Spiel aus
-		if (pMajor->GetEmpire()->GetNumberOfSystems() == 0)
+		if (pMajor->GetEmpire()->CountSystems() == 0)
 		{
 			// Allen anderen bekannten Imperien die Nachricht zukommen lassen, dass die Rasse vernichtet wurde
 			for (map<CString, CMajor*>::const_iterator itt = pmMajors->begin(); itt != pmMajors->end(); ++itt)
@@ -5303,15 +5303,15 @@ void CBotEDoc::CalcEndDataForNextRound()
 				if (itt->second->IsRaceContacted(pMajor->GetRaceID()))
 				{
 					// Nachricht über Rassenauslöschung (hier die gleiche wie bei Minorauslöschung
-					CString news = CResourceManager::GetString("ELIMINATE_MINOR", FALSE, pMajor->GetRaceName());
-					CMessage message;
-					message.GenerateMessage(news, MESSAGE_TYPE::SOMETHING);
-					itt->second->GetEmpire()->AddMessage(message);
+					CString news = CLoc::GetString("ELIMINATE_MINOR", FALSE, pMajor->GetRaceName());
+					CEmpireNews message;
+					message.CreateNews(news, EMPIRE_NEWS_TYPE::SOMETHING);
+					itt->second->GetEmpire()->AddMsg(message);
 					if (itt->second->IsHumanPlayer())
 					{
 						// Event über die Rassenauslöschung einfügen
 						CEventRaceKilled* eventScreen = new CEventRaceKilled(itt->first, pMajor->GetRaceID(), pMajor->GetRaceName(), pMajor->GetGraphicFileName());
-						itt->second->GetEmpire()->GetEventMessages()->Add(eventScreen);
+						itt->second->GetEmpire()->GetEvents()->Add(eventScreen);
 
 						network::RACE client = m_pRaceCtrl->GetMappedClientID(itt->first);
 						m_iSelectedView[client] = EMPIRE_VIEW;
@@ -5320,11 +5320,11 @@ void CBotEDoc::CalcEndDataForNextRound()
 			}
 
 			// Alle Nachrichten und Events löschen
-			for (int i = 0; i < pMajor->GetEmpire()->GetEventMessages()->GetSize(); i++)
-				delete pMajor->GetEmpire()->GetEventMessages()->GetAt(i);
+			for (int i = 0; i < pMajor->GetEmpire()->GetEvents()->GetSize(); i++)
+				delete pMajor->GetEmpire()->GetEvents()->GetAt(i);
 
-			pMajor->GetEmpire()->GetEventMessages()->RemoveAll();
-			pMajor->GetEmpire()->GetMessages()->RemoveAll();
+			pMajor->GetEmpire()->GetEvents()->RemoveAll();
+			pMajor->GetEmpire()->GetMsgs()->RemoveAll();
 			network::RACE client = m_pRaceCtrl->GetMappedClientID(pMajor->GetRaceID());
 			m_SoundMessages[client].RemoveAll();
 
@@ -5385,7 +5385,7 @@ void CBotEDoc::CalcEndDataForNextRound()
 					// Alle noch "lebenden" Schiffe aus der Schiffshistory ebenfalls als zerstört ansehen
 					pMajor->GetShipHistory()->ModifyShip(j->second,
 								GetSector(j->second->GetKO().x, j->second->GetKO().y).GetName(TRUE), m_iRound,
-								CResourceManager::GetString("UNKNOWN"), CResourceManager::GetString("DESTROYED"));
+								CLoc::GetString("UNKNOWN"), CLoc::GetString("DESTROYED"));
 					m_ShipMap.EraseAt(j, true);
 				}
 				else
@@ -5419,7 +5419,7 @@ void CBotEDoc::CalcEndDataForNextRound()
 			{
 				// einen neuen (und auch einzigen Event) einfügen
 				CEventGameOver* eventScreen = new CEventGameOver(pMajor->GetRaceID());
-				pMajor->GetEmpire()->GetEventMessages()->Add(eventScreen);
+				pMajor->GetEmpire()->GetEvents()->Add(eventScreen);
 			}
 		}
 	}
@@ -5427,7 +5427,7 @@ void CBotEDoc::CalcEndDataForNextRound()
 	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 	{
 		CMajor* pMajor = it->second;
-		if (pMajor->GetEmpire()->GetNumberOfSystems() == 0)
+		if (pMajor->GetEmpire()->CountSystems() == 0)
 			continue;
 
 		// Moralveränderungen aufgrund möglicher Ereignisse berechnen. Erst nach der Schiffsbewegung und allem anderen
@@ -5438,14 +5438,14 @@ void CBotEDoc::CalcEndDataForNextRound()
 			pMajor->GetEmpire()->GetGlobalStorage()->SetLosing(pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetResearchComplex(RESEARCH_COMPLEX::STORAGE_AND_TRANSPORT)->GetBonus(2));
 		// Ressourcentransfers im globalen Lager vornehmen
 		pMajor->GetEmpire()->GetGlobalStorage()->Calculate(m_Systems);
-		pMajor->GetEmpire()->GetGlobalStorage()->SetMaxTakenRessources(1000 * pMajor->GetEmpire()->GetNumberOfSystems());
+		pMajor->GetEmpire()->GetGlobalStorage()->SetMaxTakenRessources(1000 * pMajor->GetEmpire()->CountSystems());
 		// Befindet sich irgendeine Ressource im globalen Lager, bekommt der Spieler eine Imperiumsmeldung
 		if (pMajor->GetEmpire()->GetGlobalStorage()->IsFilled())
 		{
-			CString s = CResourceManager::GetString("RESOURCES_IN_GLOBAL_STORAGE");
-			CMessage message;
-			message.GenerateMessage(s, MESSAGE_TYPE::ECONOMY, 4);
-			pMajor->GetEmpire()->AddMessage(message);
+			CString s = CLoc::GetString("RESOURCES_IN_GLOBAL_STORAGE");
+			CEmpireNews message;
+			message.CreateNews(s, EMPIRE_NEWS_TYPE::ECONOMY, 4);
+			pMajor->GetEmpire()->AddMsg(message);
 			if (pMajor->IsHumanPlayer())
 			{
 				network::RACE client = m_pRaceCtrl->GetMappedClientID(pMajor->GetRaceID());
@@ -5464,7 +5464,7 @@ void CBotEDoc::CalcEndDataForNextRound()
 
 	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 	{
-		if (it->second->GetEmpire()->GetNumberOfSystems() == 0)
+		if (it->second->GetEmpire()->CountSystems() == 0)
 			continue;
 
 		CString sID = it->first;
@@ -5542,7 +5542,7 @@ void CBotEDoc::CalcEndDataForNextRound()
 	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 	{
 		CMajor* pMajor = it->second;
-		if (pMajor->GetEmpire()->GetNumberOfSystems() == 0)
+		if (pMajor->GetEmpire()->CountSystems() == 0)
 			continue;
 
 		BYTE researchLevels[6] =
@@ -5578,11 +5578,11 @@ void CBotEDoc::CalcEndDataForNextRound()
 		{
 			CMajor* pMajor = it->second;
 			// Alle Nachrichten und Events löschen
-			for (int i = 0; i < pMajor->GetEmpire()->GetEventMessages()->GetSize(); i++)
-				delete pMajor->GetEmpire()->GetEventMessages()->GetAt(i);
+			for (int i = 0; i < pMajor->GetEmpire()->GetEvents()->GetSize(); i++)
+				delete pMajor->GetEmpire()->GetEvents()->GetAt(i);
 
-			pMajor->GetEmpire()->GetEventMessages()->RemoveAll();
-			pMajor->GetEmpire()->GetMessages()->RemoveAll();
+			pMajor->GetEmpire()->GetEvents()->RemoveAll();
+			pMajor->GetEmpire()->GetMsgs()->RemoveAll();
 			network::RACE client = m_pRaceCtrl->GetMappedClientID(pMajor->GetRaceID());
 			m_SoundMessages[client].RemoveAll();
 
@@ -5596,7 +5596,7 @@ void CBotEDoc::CalcEndDataForNextRound()
 				else
 					sImageName = "GameOver";
 				CEventVictory* eventScreen = new CEventVictory(pMajor->GetRaceID(), m_VictoryObserver.GetVictoryRace(), (int)m_VictoryObserver.GetVictoryType(), sImageName);
-				pMajor->GetEmpire()->GetEventMessages()->Add(eventScreen);
+				pMajor->GetEmpire()->GetEvents()->Add(eventScreen);
 			}
 		}
 	}
@@ -5803,14 +5803,14 @@ void CBotEDoc::CalcAlienShipEffects()
 			if (GetSystem(co.x, co.y).GetProduction()->GetMaxEnergyProd() > 0)
 			{
 				// Nachricht und Event einfügen
-				CString s = CResourceManager::GetString("EVENT_IONISIERENDES_GASWESEN", FALSE, GetSector(co.x, co.y).GetName());
-				CMessage message;
-				message.GenerateMessage(s, MESSAGE_TYPE::SOMETHING, GetSector(co.x, co.y).GetName(), co);
-				pOwner->GetEmpire()->AddMessage(message);
+				CString s = CLoc::GetString("EVENT_IONISIERENDES_GASWESEN", FALSE, GetSector(co.x, co.y).GetName());
+				CEmpireNews message;
+				message.CreateNews(s, EMPIRE_NEWS_TYPE::SOMETHING, GetSector(co.x, co.y).GetName(), co);
+				pOwner->GetEmpire()->AddMsg(message);
 				if (pOwner->IsHumanPlayer())
 				{
 					CEventAlienEntity* eventScreen = new CEventAlienEntity(pOwner->GetRaceID(), pAlien->GetRaceID(), pAlien->GetRaceName(), s);
-					pOwner->GetEmpire()->GetEventMessages()->Add(eventScreen);
+					pOwner->GetEmpire()->GetEvents()->Add(eventScreen);
 
 					network::RACE client = m_pRaceCtrl->GetMappedClientID(pOwner->GetRaceID());
 					m_iSelectedView[client] = EMPIRE_VIEW;
@@ -5834,14 +5834,14 @@ void CBotEDoc::CalcAlienShipEffects()
 				if (GetSystem(co.x, co.y).GetProduction()->GetMaxFoodProd() > 0 || GetSystem(co.x, co.y).GetFoodStore() > 0)
 				{
 					// Nachricht und Event einfügen
-					CString s = CResourceManager::GetString("EVENT_GABALLIANER_SEUCHENSCHIFF", FALSE, GetSector(co.x, co.y).GetName());
-					CMessage message;
-					message.GenerateMessage(s, MESSAGE_TYPE::SOMETHING, GetSector(co.x, co.y).GetName(), co);
-					pOwner->GetEmpire()->AddMessage(message);
+					CString s = CLoc::GetString("EVENT_GABALLIANER_SEUCHENSCHIFF", FALSE, GetSector(co.x, co.y).GetName());
+					CEmpireNews message;
+					message.CreateNews(s, EMPIRE_NEWS_TYPE::SOMETHING, GetSector(co.x, co.y).GetName(), co);
+					pOwner->GetEmpire()->AddMsg(message);
 					if (pOwner->IsHumanPlayer())
 					{
 						CEventAlienEntity* eventScreen = new CEventAlienEntity(pOwner->GetRaceID(), pAlien->GetRaceID(), pAlien->GetRaceName(), s);
-						pOwner->GetEmpire()->GetEventMessages()->Add(eventScreen);
+						pOwner->GetEmpire()->GetEvents()->Add(eventScreen);
 
 						network::RACE client = m_pRaceCtrl->GetMappedClientID(pOwner->GetRaceID());
 						m_iSelectedView[client] = EMPIRE_VIEW;
@@ -5883,12 +5883,12 @@ void CBotEDoc::CalcAlienShipEffects()
 						assert(pShipOwner);
 						// für jedes Schiff eine Meldung über den Verlust machen
 						// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
-						pShipOwner->AddToLostShipHistory(*pShip, CResourceManager::GetString("COMBAT"), CResourceManager::GetString("MISSED"), m_iRound);
+						pShipOwner->AddToLostShipHistory(*pShip, CLoc::GetString("COMBAT"), CLoc::GetString("MISSED"), m_iRound);
 						CString s;
-						s.Format("%s", CResourceManager::GetString("DESTROYED_SHIPS_IN_COMBAT",0,pShip->GetShipName()));
-						CMessage message;
-						message.GenerateMessage(s, MESSAGE_TYPE::MILITARY, "", pShip->GetKO());
-						pShipOwner->GetEmpire()->AddMessage(message);
+						s.Format("%s", CLoc::GetString("DESTROYED_SHIPS_IN_COMBAT",0,pShip->GetShipName()));
+						CEmpireNews message;
+						message.CreateNews(s, EMPIRE_NEWS_TYPE::MILITARY, "", pShip->GetKO());
+						pShipOwner->GetEmpire()->AddMsg(message);
 						//actually change the owner last, to make the above calls work correctly
 						pShip->SetOwnerOfShip(pAlien->GetRaceID());
 					}
@@ -5913,14 +5913,14 @@ void CBotEDoc::CalcAlienShipEffects()
 			if (GetSystem(co.x, co.y).GetProduction()->GetMaxEnergyProd() > 0)
 			{
 				// Nachricht und Event einfügen
-				CString s = CResourceManager::GetString("EVENT_BLIZZARD_PLASMAWESEN", FALSE, GetSector(co.x, co.y).GetName());
-				CMessage message;
-				message.GenerateMessage(s, MESSAGE_TYPE::SOMETHING, GetSector(co.x, co.y).GetName(), co);
-				pOwner->GetEmpire()->AddMessage(message);
+				CString s = CLoc::GetString("EVENT_BLIZZARD_PLASMAWESEN", FALSE, GetSector(co.x, co.y).GetName());
+				CEmpireNews message;
+				message.CreateNews(s, EMPIRE_NEWS_TYPE::SOMETHING, GetSector(co.x, co.y).GetName(), co);
+				pOwner->GetEmpire()->AddMsg(message);
 				if (pOwner->IsHumanPlayer())
 				{
 					CEventAlienEntity* eventScreen = new CEventAlienEntity(pOwner->GetRaceID(), pAlien->GetRaceID(), pAlien->GetRaceName(), s);
-					pOwner->GetEmpire()->GetEventMessages()->Add(eventScreen);
+					pOwner->GetEmpire()->GetEvents()->Add(eventScreen);
 
 					network::RACE client = m_pRaceCtrl->GetMappedClientID(pOwner->GetRaceID());
 					m_iSelectedView[client] = EMPIRE_VIEW;
@@ -5955,14 +5955,14 @@ void CBotEDoc::CalcAlienShipEffects()
 			// Nachricht und Event einfügen
 			CString sCredits = "";
 			sCredits.Format("%d", nCreditProd);
-			CString s = CResourceManager::GetString("EVENT_MORLOCK_RAIDER", FALSE, sCredits, GetSector(co.x, co.y).GetName());
-			CMessage message;
-			message.GenerateMessage(s, MESSAGE_TYPE::SOMETHING, GetSector(co.x, co.y).GetName(), co);
-			pOwner->GetEmpire()->AddMessage(message);
+			CString s = CLoc::GetString("EVENT_MORLOCK_RAIDER", FALSE, sCredits, GetSector(co.x, co.y).GetName());
+			CEmpireNews message;
+			message.CreateNews(s, EMPIRE_NEWS_TYPE::SOMETHING, GetSector(co.x, co.y).GetName(), co);
+			pOwner->GetEmpire()->AddMsg(message);
 			if (pOwner->IsHumanPlayer())
 			{
 				CEventAlienEntity* eventScreen = new CEventAlienEntity(pOwner->GetRaceID(), pAlien->GetRaceID(), pAlien->GetRaceName(), s);
-				pOwner->GetEmpire()->GetEventMessages()->Add(eventScreen);
+				pOwner->GetEmpire()->GetEvents()->Add(eventScreen);
 
 				network::RACE client = m_pRaceCtrl->GetMappedClientID(pOwner->GetRaceID());
 				m_iSelectedView[client] = EMPIRE_VIEW;
@@ -6075,14 +6075,14 @@ void CBotEDoc::CalcAlienShipEffects()
 				if (GetSystem(co.x, co.y).GetProduction()->GetMaxEnergyProd() > 0)
 				{
 					// Nachricht und Event einfügen
-					CString s = CResourceManager::GetString("EVENT_ISOTOPOSPHAERISCHES_WESEN", FALSE, GetSector(co.x, co.y).GetName());
-					CMessage message;
-					message.GenerateMessage(s, MESSAGE_TYPE::SOMETHING, GetSector(co.x, co.y).GetName(), co);
-					pOwner->GetEmpire()->AddMessage(message);
+					CString s = CLoc::GetString("EVENT_ISOTOPOSPHAERISCHES_WESEN", FALSE, GetSector(co.x, co.y).GetName());
+					CEmpireNews message;
+					message.CreateNews(s, EMPIRE_NEWS_TYPE::SOMETHING, GetSector(co.x, co.y).GetName(), co);
+					pOwner->GetEmpire()->AddMsg(message);
 					if (pOwner->IsHumanPlayer())
 					{
 						CEventAlienEntity* eventScreen = new CEventAlienEntity(pOwner->GetRaceID(), pAlien->GetRaceID(), pAlien->GetRaceName(), s);
-						pOwner->GetEmpire()->GetEventMessages()->Add(eventScreen);
+						pOwner->GetEmpire()->GetEvents()->Add(eventScreen);
 
 						network::RACE client = m_pRaceCtrl->GetMappedClientID(pOwner->GetRaceID());
 						m_iSelectedView[client] = EMPIRE_VIEW;

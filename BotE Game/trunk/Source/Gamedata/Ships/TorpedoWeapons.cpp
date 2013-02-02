@@ -4,7 +4,7 @@
 
 #include "stdafx.h"
 #include "TorpedoWeapons.h"
-#include "Options.h"
+#include "Constants.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE

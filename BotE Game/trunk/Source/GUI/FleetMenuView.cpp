@@ -12,7 +12,7 @@
 #include "HTMLStringBuilder.h"
 #include "Graphic\memdc.h"
 #include "Ships/Ships.h"
-#include "General/ResourceManager.h"
+#include "General/Loc.h"
 
 #include <cassert>
 
@@ -192,7 +192,7 @@ void CFleetMenuView::DrawFleetMenue(Graphics* g)
 	// Hier die Buttons einzeigen, mit denen wir alle Schiffe im Sektor, Schiffe der gleichen Klasse oder
 	// Schiffe des gleichen Types hinzufügen bzw. entfernen können
 	fontBrush.SetColor(penColor);
-	CString s = CResourceManager::GetString("WHAT_SHIPS_TO_FLEET");
+	CString s = CLoc::GetString("WHAT_SHIPS_TO_FLEET");
 	fontFormat.SetFormatFlags(!StringFormatFlagsNoWrap);
 	g->DrawString(CComBSTR(s), -1, &font, RectF(20,140,210,75), &fontFormat, &fontBrush);
 	fontFormat.SetFormatFlags(StringFormatFlagsNoWrap);
@@ -211,18 +211,18 @@ void CFleetMenuView::DrawFleetMenue(Graphics* g)
 	if (!bUnknown)
 	{
 		// der gleichen Klasse hinzufügen
-		s.Format("%s-%s", pShip->second->GetShipClass(),CResourceManager::GetString("CLASS"));
+		s.Format("%s-%s", pShip->second->GetShipClass(),CLoc::GetString("CLASS"));
 		g->DrawString(CComBSTR(s), -1, &font, RectF(0,220,250,30), &fontFormat, &fontBrush);
 		// des gleichen Types hinzufügen
-		s.Format("%s %s",CResourceManager::GetString("TYPE"), pShip->second->GetShipTypeAsString());
+		s.Format("%s %s",CLoc::GetString("TYPE"), pShip->second->GetShipTypeAsString());
 		g->DrawString(CComBSTR(s), -1, &font, RectF(0,270,250,30), &fontFormat, &fontBrush);
 		// alle Schiffe hinzufügen
-		s = CResourceManager::GetString("ALL_SHIPS");
+		s = CLoc::GetString("ALL_SHIPS");
 		g->DrawString(CComBSTR(s), -1, &font, RectF(0,320,250,30), &fontFormat, &fontBrush);
 	}
 
 	fontBrush.SetColor(penColor);
-	s = CResourceManager::GetString("WHAT_SHIPS_FROM_FLEET");
+	s = CLoc::GetString("WHAT_SHIPS_FROM_FLEET");
 	fontFormat.SetFormatFlags(!StringFormatFlagsNoWrap);
 	g->DrawString(CComBSTR(s), -1, &font, RectF(20,400,210,75), &fontFormat, &fontBrush);
 	fontFormat.SetFormatFlags(StringFormatFlagsNoWrap);
@@ -231,13 +231,13 @@ void CFleetMenuView::DrawFleetMenue(Graphics* g)
 	if (!bUnknown)
 	{
 		// fremder Klassen entfernen
-		s.Format("%s %s-%s",CResourceManager::GetString("NOT"),	pShip->second->GetShipClass(),CResourceManager::GetString("CLASS"));
+		s.Format("%s %s-%s",CLoc::GetString("NOT"),	pShip->second->GetShipClass(),CLoc::GetString("CLASS"));
 		g->DrawString(CComBSTR(s), -1, &font, RectF(0,480,250,30), &fontFormat, &fontBrush);
 		// fremden Types entfernen
-		s.Format("%s %s %s",CResourceManager::GetString("NOT"),CResourceManager::GetString("TYPE"),	pShip->second->GetShipTypeAsString());
+		s.Format("%s %s %s",CLoc::GetString("NOT"),CLoc::GetString("TYPE"),	pShip->second->GetShipTypeAsString());
 		g->DrawString(CComBSTR(s), -1, &font, RectF(0,530,250,30), &fontFormat, &fontBrush);
 		// alle Schiffe entfernen
-		s = CResourceManager::GetString("ALL_SHIPS");
+		s = CLoc::GetString("ALL_SHIPS");
 		g->DrawString(CComBSTR(s), -1, &font, RectF(0,580,250,30), &fontFormat, &fontBrush);
 	}
 
@@ -294,7 +294,7 @@ void CFleetMenuView::DrawFleetMenue(Graphics* g)
 		m_bShowNextButton = TRUE;
 		if (graphic)
 			g->DrawImage(graphic, 540, 680, 120 ,30);
-		s = CResourceManager::GetString("BTN_NEXT");
+		s = CLoc::GetString("BTN_NEXT");
 		g->DrawString(CComBSTR(s), -1, &font, RectF(540, 680, 120, 30), &fontFormat, &btnBrush);
 	}
 	// back-Button
@@ -305,7 +305,7 @@ void CFleetMenuView::DrawFleetMenue(Graphics* g)
 
 		if (graphic)
 			g->DrawImage(graphic, 286, 680, 120 ,30);
-		s = CResourceManager::GetString("BTN_BACK");
+		s = CLoc::GetString("BTN_BACK");
 		g->DrawString(CComBSTR(s), -1, &font, RectF(286, 680, 120, 30), &fontFormat, &btnBrush);
 	}
 
@@ -315,7 +315,7 @@ void CFleetMenuView::DrawFleetMenue(Graphics* g)
 	// Schriftfarbe wählen
 	CFontLoader::GetGDIFontColor(pMajor, 3, normalColor);
 	fontBrush.SetColor(normalColor);
-	s = CResourceManager::GetString("FLEET_MENUE");
+	s = CLoc::GetString("FLEET_MENUE");
 	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,10,m_TotalSize.cx,60), &fontFormat, &fontBrush);
 }
 
@@ -602,7 +602,7 @@ CString CFleetMenuView::CreateTooltip(void)
 	// ist der Besitzer des Schiffes unbekannt?
 	if (bUnknown)
 	{
-		CString s = CResourceManager::GetString("UNKNOWN");
+		CString s = CLoc::GetString("UNKNOWN");
 		s = CHTMLStringBuilder::GetHTMLColor(s);
 		s = CHTMLStringBuilder::GetHTMLHeader(s, _T("h4"));
 		s = CHTMLStringBuilder::GetHTMLCenter(s);

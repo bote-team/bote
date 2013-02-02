@@ -9,7 +9,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Options.h"
+#include "Constants.h"
 
 class CBuilding : CObject
 {

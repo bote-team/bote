@@ -6,7 +6,7 @@
 #include "Races/RaceController.h"
 #include <cassert>
 #include "Ships/Ships.h"
-#include "General/ResourceManager.h"
+#include "General/Loc.h"
 #include "Galaxy/Sector.h"
 
 IMPLEMENT_SERIAL (CAnomaly, CObject, 1)
@@ -116,24 +116,24 @@ CString CAnomaly::GetMapName(const CPoint &pt) const
 	switch (m_byType)
 	{
 	// Nebel
-	case RADIONEBULA:		sName = CResourceManager::GetString("RADIONEBULA");		break;
-	case METNEBULA:			sName = CResourceManager::GetString("METNEBULA");		break;
-	case DEUTNEBULA:		sName = CResourceManager::GetString("DEUTNEBULA");		break;
-	case IONSTORM:			sName = CResourceManager::GetString("IONSTORM");		break;
-	case BINEBULA:			sName = CResourceManager::GetString("BINEBULA");		break;
-	case TORIONGASNEBULA:	sName = CResourceManager::GetString("TORIONGASNEBULA");break;
+	case RADIONEBULA:		sName = CLoc::GetString("RADIONEBULA");		break;
+	case METNEBULA:			sName = CLoc::GetString("METNEBULA");		break;
+	case DEUTNEBULA:		sName = CLoc::GetString("DEUTNEBULA");		break;
+	case IONSTORM:			sName = CLoc::GetString("IONSTORM");		break;
+	case BINEBULA:			sName = CLoc::GetString("BINEBULA");		break;
+	case TORIONGASNEBULA:	sName = CLoc::GetString("TORIONGASNEBULA");break;
 	// Neutronensterne
-	case NEUTRONSTAR:		sName = CResourceManager::GetString("NEUTRONSTAR");		break;
-	case RADIOPULSAR:		sName = CResourceManager::GetString("RADIOPULSAR");		break;
-	case XRAYPULSAR:		sName = CResourceManager::GetString("XRAYPULSAR");		break;
-	case MAGNETAR:			sName = CResourceManager::GetString("MAGNETAR");		break;
+	case NEUTRONSTAR:		sName = CLoc::GetString("NEUTRONSTAR");		break;
+	case RADIOPULSAR:		sName = CLoc::GetString("RADIOPULSAR");		break;
+	case XRAYPULSAR:		sName = CLoc::GetString("XRAYPULSAR");		break;
+	case MAGNETAR:			sName = CLoc::GetString("MAGNETAR");		break;
 	// Verzerrungen
-	case GRAVDISTORTION:	sName = CResourceManager::GetString("GRAVDISTORTION");	break;
-	case CONTINUUMRIP:		sName = CResourceManager::GetString("CONTINUUMRIP");	break;
-	case BLACKHOLE:			sName = CResourceManager::GetString("BLACKHOLE");		break;
+	case GRAVDISTORTION:	sName = CLoc::GetString("GRAVDISTORTION");	break;
+	case CONTINUUMRIP:		sName = CLoc::GetString("CONTINUUMRIP");	break;
+	case BLACKHOLE:			sName = CLoc::GetString("BLACKHOLE");		break;
 	// sonstiges
-	case QUASAR:			sName = CResourceManager::GetString("QUASAR");			break;
-	case WORMHOLE:			sName = CResourceManager::GetString("WORMHOLE");		break;
+	case QUASAR:			sName = CLoc::GetString("QUASAR");			break;
+	case WORMHOLE:			sName = CLoc::GetString("WORMHOLE");		break;
 	}
 
 	CString s;
@@ -146,24 +146,24 @@ CString CAnomaly::GetPhysicalDescription() const
 	switch (m_byType)
 	{
 	// Nebel
-	case RADIONEBULA:		return CResourceManager::GetString("RADIONEBULA_DESC");
-	case METNEBULA:			return CResourceManager::GetString("METNEBULA_DESC");
-	case DEUTNEBULA:		return CResourceManager::GetString("DEUTNEBULA_DESC");
-	case IONSTORM:			return CResourceManager::GetString("IONSTORM_DESC");
-	case BINEBULA:			return CResourceManager::GetString("BINEBULA_DESC");
-	case TORIONGASNEBULA:	return CResourceManager::GetString("TORIONGASNEBULA_DESC");
+	case RADIONEBULA:		return CLoc::GetString("RADIONEBULA_DESC");
+	case METNEBULA:			return CLoc::GetString("METNEBULA_DESC");
+	case DEUTNEBULA:		return CLoc::GetString("DEUTNEBULA_DESC");
+	case IONSTORM:			return CLoc::GetString("IONSTORM_DESC");
+	case BINEBULA:			return CLoc::GetString("BINEBULA_DESC");
+	case TORIONGASNEBULA:	return CLoc::GetString("TORIONGASNEBULA_DESC");
 	// Neutronensterne
-	case NEUTRONSTAR:		return CResourceManager::GetString("NEUTRONSTAR_DESC");
-	case RADIOPULSAR:		return CResourceManager::GetString("RADIOPULSAR_DESC");
-	case XRAYPULSAR:		return CResourceManager::GetString("XRAYPULSAR_DESC");
-	case MAGNETAR:			return CResourceManager::GetString("MAGNETAR_DESC");
+	case NEUTRONSTAR:		return CLoc::GetString("NEUTRONSTAR_DESC");
+	case RADIOPULSAR:		return CLoc::GetString("RADIOPULSAR_DESC");
+	case XRAYPULSAR:		return CLoc::GetString("XRAYPULSAR_DESC");
+	case MAGNETAR:			return CLoc::GetString("MAGNETAR_DESC");
 	// Verzerrungen
-	case GRAVDISTORTION:	return CResourceManager::GetString("GRAVDISTORTION_DESC");
-	case CONTINUUMRIP:		return CResourceManager::GetString("CONTINUUMRIP_DESC");
-	case BLACKHOLE:			return CResourceManager::GetString("BLACKHOLE_DESC");
+	case GRAVDISTORTION:	return CLoc::GetString("GRAVDISTORTION_DESC");
+	case CONTINUUMRIP:		return CLoc::GetString("CONTINUUMRIP_DESC");
+	case BLACKHOLE:			return CLoc::GetString("BLACKHOLE_DESC");
 	// sonstiges
-	case QUASAR:			return CResourceManager::GetString("QUASAR_DESC");
-	case WORMHOLE:			return CResourceManager::GetString("WORMHOLE_DESC");
+	case QUASAR:			return CLoc::GetString("QUASAR_DESC");
+	case WORMHOLE:			return CLoc::GetString("WORMHOLE_DESC");
 	}
 
 	return _T("");
@@ -174,24 +174,24 @@ CString CAnomaly::GetGameplayDescription(void) const
 	switch (m_byType)
 	{
 	// Nebel
-	case RADIONEBULA:		return CResourceManager::GetString("RADIONEBULA_GAME");
-	case METNEBULA:			return CResourceManager::GetString("METNEBULA_GAME");
-	case DEUTNEBULA:		return CResourceManager::GetString("DEUTNEBULA_GAME");
-	case IONSTORM:			return CResourceManager::GetString("IONSTORM_GAME");
-	case BINEBULA:			return CResourceManager::GetString("BINEBULA_GAME");
-	case TORIONGASNEBULA:	return CResourceManager::GetString("TORIONGASNEBULA_GAME");
+	case RADIONEBULA:		return CLoc::GetString("RADIONEBULA_GAME");
+	case METNEBULA:			return CLoc::GetString("METNEBULA_GAME");
+	case DEUTNEBULA:		return CLoc::GetString("DEUTNEBULA_GAME");
+	case IONSTORM:			return CLoc::GetString("IONSTORM_GAME");
+	case BINEBULA:			return CLoc::GetString("BINEBULA_GAME");
+	case TORIONGASNEBULA:	return CLoc::GetString("TORIONGASNEBULA_GAME");
 	// Neutronensterne
-	case NEUTRONSTAR:		return CResourceManager::GetString("NEUTRONSTAR_GAME");
-	case RADIOPULSAR:		return CResourceManager::GetString("RADIOPULSAR_GAME");
-	case XRAYPULSAR:		return CResourceManager::GetString("XRAYPULSAR_GAME");
-	case MAGNETAR:			return CResourceManager::GetString("MAGNETAR_GAME");
+	case NEUTRONSTAR:		return CLoc::GetString("NEUTRONSTAR_GAME");
+	case RADIOPULSAR:		return CLoc::GetString("RADIOPULSAR_GAME");
+	case XRAYPULSAR:		return CLoc::GetString("XRAYPULSAR_GAME");
+	case MAGNETAR:			return CLoc::GetString("MAGNETAR_GAME");
 	// Verzerrungen
-	case GRAVDISTORTION:	return CResourceManager::GetString("GRAVDISTORTION_GAME");
-	case CONTINUUMRIP:		return CResourceManager::GetString("CONTINUUMRIP_GAME");
-	case BLACKHOLE:			return CResourceManager::GetString("BLACKHOLE_GAME");
+	case GRAVDISTORTION:	return CLoc::GetString("GRAVDISTORTION_GAME");
+	case CONTINUUMRIP:		return CLoc::GetString("CONTINUUMRIP_GAME");
+	case BLACKHOLE:			return CLoc::GetString("BLACKHOLE_GAME");
 	// sonstiges
-	case QUASAR:			return CResourceManager::GetString("QUASAR_GAME");
-	case WORMHOLE:			return CResourceManager::GetString("WORMHOLE_GAME");
+	case QUASAR:			return CLoc::GetString("QUASAR_GAME");
+	case WORMHOLE:			return CLoc::GetString("WORMHOLE_GAME");
 	}
 
 	return _T("");

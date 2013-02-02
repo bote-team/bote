@@ -8,7 +8,7 @@
 #include "IntelMenuView.h"
 #include "Races\RaceController.h"
 #include "Graphic\memdc.h"
-#include "General/ResourceManager.h"
+#include "General/Loc.h"
 
 // CIntelBottomView
 
@@ -93,9 +93,9 @@ void CIntelBottomView::OnDraw(CDC* dc)
 			CIntelObject* report = pMajor->GetEmpire()->GetIntelligence()->GetIntelReports()->GetReport(n);
 			CString s;
 			if (report->GetIsSpy())
-				s = CResourceManager::GetString("SPY");
+				s = CLoc::GetString("SPY");
 			else
-				s = CResourceManager::GetString("SABOTAGE");
+				s = CLoc::GetString("SABOTAGE");
 			g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(40, 40, r.right-100, r.bottom-20), &fontFormat, &fontBrush);
 
 			CFontLoader::CreateGDIFont(pMajor, 2, fontName, fontSize);

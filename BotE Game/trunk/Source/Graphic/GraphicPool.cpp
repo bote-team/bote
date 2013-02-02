@@ -1,6 +1,6 @@
 #include "StdAfx.h"
 #include "GraphicPool.h"
-#include "Options.h"
+#include "Constants.h"
 #include "ImageStone/ImageStone.h"
 
 #define TRACE_GRAPHICLOAD MYTRACE("graphicload")
