@@ -868,52 +868,56 @@ void CResearchMenuView::OnMouseMove(UINT nFlags, CPoint point)
 	if (!pDoc->m_bDataReceived)
 		return;
 
-	CalcLogicalPoint(point);
+	CResearchBottomView* pView = dynamic_cast<CResearchBottomView*>(resources::pMainFrame->GetView(RUNTIME_CLASS(CResearchBottomView)));
+	if (!pView)
+		return;
+
+	CalcLogicalPoint(point);	
 
 	ButtonReactOnMouseOver(point, &m_ResearchMainButtons);
 	if (m_bySubMenu == 0)
 	{
-		if (pDoc->m_iShowWhichTechInView3 != 0 && CRect(10,80,260,380).PtInRect(point))
+		if (pView->GetCurrentTech() != 0 && CRect(10,80,260,380).PtInRect(point))
 		{
-			pDoc->m_iShowWhichTechInView3 = 0;
-			resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CResearchBottomView));
+			pView->SetCurrentTech(0);
+			pView->Invalidate(FALSE);
 		}
-		else if (pDoc->m_iShowWhichTechInView3 != 1 && CRect(270,80,520,380).PtInRect(point))
+		else if (pView->GetCurrentTech() != 1 && CRect(270,80,520,380).PtInRect(point))
 		{
-			pDoc->m_iShowWhichTechInView3 = 1;
-			resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CResearchBottomView));
+			pView->SetCurrentTech(1);
+			pView->Invalidate(FALSE);
 		}
-		else if (pDoc->m_iShowWhichTechInView3 != 2 && CRect(530,80,780,380).PtInRect(point))
+		else if (pView->GetCurrentTech() != 2 && CRect(530,80,780,380).PtInRect(point))
 		{
-			pDoc->m_iShowWhichTechInView3 = 2;
-			resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CResearchBottomView));
+			pView->SetCurrentTech(2);
+			pView->Invalidate(FALSE);
 		}
-		else if (pDoc->m_iShowWhichTechInView3 != 3 && CRect(270,425,520,725).PtInRect(point))
+		else if (pView->GetCurrentTech() != 3 && CRect(270,425,520,725).PtInRect(point))
 		{
-			pDoc->m_iShowWhichTechInView3 = 3;
-			resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CResearchBottomView));
+			pView->SetCurrentTech(3);
+			pView->Invalidate(FALSE);
 		}
-		else if (pDoc->m_iShowWhichTechInView3 != 4 && CRect(10,425,260,725).PtInRect(point))
+		else if (pView->GetCurrentTech() != 4 && CRect(10,425,260,725).PtInRect(point))
 		{
-			pDoc->m_iShowWhichTechInView3 = 4;
-			resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CResearchBottomView));
+			pView->SetCurrentTech(4);
+			pView->Invalidate(FALSE);
 		}
-		else if (pDoc->m_iShowWhichTechInView3 != 5 && CRect(530,425,780,725).PtInRect(point))
+		else if (pView->GetCurrentTech() != 5 && CRect(530,425,780,725).PtInRect(point))
 		{
-			pDoc->m_iShowWhichTechInView3 = 5;
-			resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CResearchBottomView));
+			pView->SetCurrentTech(5);
+			pView->Invalidate(FALSE);
 		}
 	}
 	else if (m_bySubMenu == 1)
 	{
-		if (pDoc->m_iShowWhichTechInView3 != 6)
+		if (pView->GetCurrentTech() != 6)
 		{
 			CMajor* pMajor = m_pPlayersRace;
 			ASSERT(pMajor);
 			if (pMajor->GetEmpire()->GetResearch()->GetUniqueReady() == FALSE)
 			{
-				pDoc->m_iShowWhichTechInView3 = 6;
-				resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CResearchBottomView));
+				pView->SetCurrentTech(6);
+				pView->Invalidate(FALSE);
 			}
 		}
 	}

@@ -27,6 +27,17 @@ public:
 #endif
 #endif
 
+	/// Funktion gibt die Nummer der angezeigten Schiffsinfo zurück.
+	/// @return Nummer der angezeigten Schiffsinfo
+	int GetCurrentShipInfo() const { return m_nCurrentShipInfo; }
+
+	/// Funktion legt fest, zu welchem Schiff die Informationen angezeigt werden
+	/// @param nShipInfo Nummer der Schiffsinfo
+	void SetCurrentShipInfo(int nShipInfo) { m_nCurrentShipInfo = nShipInfo; }
+
+private:
+	int m_nCurrentShipInfo;	///< Welche Schiffsinfo soll angezeigt werden
+
 protected:
 	DECLARE_MESSAGE_MAP()
 public:

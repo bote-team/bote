@@ -78,8 +78,6 @@ CBotEDoc::CBotEDoc() :
 	m_fStardate(121000.0f),
 	m_iRound(1),
 	m_iSelectedView(),
-	m_iShowWhichShipInfoInView3(0),
-	m_iShowWhichTechInView3(0),
 	m_nCombatOrder(COMBAT_ORDER::NONE)
 {
 	resources::pDoc = this;
@@ -178,8 +176,6 @@ BOOL CBotEDoc::OnNewDocument()
 	// Standardwerte setzen
 	m_ptKO = CPoint(0,0);
 	m_bRoundEndPressed			= false;
-	m_iShowWhichTechInView3		= 0;
-	m_iShowWhichShipInfoInView3 = 0;
 	for (int i = network::RACE_1; i < network::RACE_ALL; i++)
 		m_iSelectedView[i] = START_VIEW;
 

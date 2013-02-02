@@ -249,16 +249,21 @@ void CShipDesignMenuView::DrawShipDesignMenue(Graphics* g)
 								oldClickedShip = j;
 
 							m_pShownShip = &pDoc->m_ShipInfoArray.GetAt(i);
-							// Infos in View 3 aktualisieren
-							if (pDoc->m_iShowWhichShipInfoInView3 != i)
-							{
-								pDoc->m_iShowWhichShipInfoInView3 = i;
-								resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CShipDesignBottomView));
-							}
+							
 							// Markierung worauf wir geklickt haben
 							g->FillRectangle(&SolidBrush(Color(50,200,200,200)), RectF(15,120+j*25,183,25));
 							g->DrawLine(&Gdiplus::Pen(penColor), 15, 120+j*25, 198, 120+j*25);
 							g->DrawLine(&Gdiplus::Pen(penColor), 15, 145+j*25, 198, 145+j*25);
+
+							// Infos in unteren Schiffsdesignansicht aktualisieren
+							if (CShipDesignBottomView* pView = dynamic_cast<CShipDesignBottomView*>(resources::pMainFrame->GetView(RUNTIME_CLASS(CShipDesignBottomView))))
+							{
+								if (pView->GetCurrentShipInfo() != i)
+								{
+									pView->SetCurrentShipInfo(i);
+									pView->Invalidate(FALSE);
+								}
+							}
 						}
 						CString s = pDoc->m_ShipInfoArray.GetAt(i).GetShipClass();
 						g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(25, 120 + j * 25, 175, 25), &fontFormat, &fontBrush);

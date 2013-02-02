@@ -35,14 +35,8 @@ protected: // Nur aus Serialisierung erzeugen
 	float m_fStardate;					///< Startrek Sternzeit
 	CPoint m_ptKO;						///< Koordinaten des aktuell angeklickten Sektors
 
-	BYTE m_iShowWhichTechInView3;		///< Welche Tech soll in View3 angezeigt werden?
-	short m_iShowWhichShipInfoInView3;	///< Welche Schiffsinfo soll in View 3 angezeigt werden
-
 	std::vector<CSector> m_Sectors;
 	std::vector<CSystem> m_Systems;
-
-	//CSector** m_Sector/*[STARMAP_SECTORS_HCOUNT][STARMAP_SECTORS_VCOUNT]*/;	///< Matrix von Sektoren der Klasse CSector anlegen
-	//CSystem** m_System/*[STARMAP_SECTORS_HCOUNT][STARMAP_SECTORS_VCOUNT]*/;	///< auf jeden Sektor ein potentielles System anlegen
 
 	CGenShipName m_GenShipName;			///< Variable, die alle möglichen Schiffsnamen beinhaltet
 
@@ -389,4 +383,3 @@ public:
 	afx_msg void OnUpdateFileOpen(CCmdUI *pCmdUI);
 };
 
-/////////////////////////////////////////////////////////////////////////////

@@ -13,7 +13,7 @@ IMPLEMENT_DYNCREATE(CResearchBottomView, CBottomBaseView)
 
 CResearchBottomView::CResearchBottomView()
 {
-
+	m_nCurrentTech = 0;
 }
 
 CResearchBottomView::~CResearchBottomView()
@@ -70,8 +70,8 @@ void CResearchBottomView::OnDraw(CDC* dc)
 	Bitmap* graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Backgrounds\\" + sPrefix + "researchV3.boj");
 
 	// gibt es keine Spezialforschung zur Auswahl, so wird auf Standardanzeige umgestellt
-	if (pDoc->m_iShowWhichTechInView3 == 6 && pMajor->GetEmpire()->GetResearch()->GetUniqueReady() == TRUE)
-		pDoc->m_iShowWhichTechInView3 = 0;
+	if (m_nCurrentTech == 6 && pMajor->GetEmpire()->GetResearch()->GetUniqueReady() == TRUE)
+		m_nCurrentTech = 0;
 
 	// Grafik zeichnen
 	if (graphic)
@@ -79,7 +79,7 @@ void CResearchBottomView::OnDraw(CDC* dc)
 		g.DrawImage(graphic, 0, 0, 1075, 249);
 		graphic = NULL;
 	}
-	switch(pDoc->m_iShowWhichTechInView3)
+	switch(m_nCurrentTech)
 	{
 	case 0:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Research\\biotech.bop"); break;
 	case 1:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Research\\energytech.bop"); break;
@@ -101,8 +101,8 @@ void CResearchBottomView::OnDraw(CDC* dc)
 	fontFormat.SetFormatFlags(StringFormatFlagsNoWrap);
 
 	CString s;
-	if (pDoc->m_iShowWhichTechInView3 != 6)
-		s = pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetTechName(pDoc->m_iShowWhichTechInView3);
+	if (m_nCurrentTech != 6)
+		s = pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetTechName(m_nCurrentTech);
 	else
 		s = pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetCurrentResearchComplex()->GetComplexName();
 	g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(40, 30, rect.right-325, rect.bottom), &fontFormat, &fontBrush);
@@ -110,8 +110,8 @@ void CResearchBottomView::OnDraw(CDC* dc)
 	CFontLoader::CreateGDIFont(pMajor, 2, fontName, fontSize);
 	fontBrush.SetColor(Color(200,200,250));
 	fontFormat.SetFormatFlags(!StringFormatFlagsNoWrap);
-	if (pDoc->m_iShowWhichTechInView3 != 6)
-		s = pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetTechDescription(pDoc->m_iShowWhichTechInView3);
+	if (m_nCurrentTech != 6)
+		s = pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetTechDescription(m_nCurrentTech);
 	else
 		s = pMajor->GetEmpire()->GetResearch()->GetResearchInfo()->GetCurrentResearchComplex()->GetComplexDescription();
 	g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(40, 100, rect.right-325, rect.bottom), &fontFormat, &fontBrush);
