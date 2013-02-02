@@ -1356,7 +1356,7 @@ Target: unknown
 [ORDER]
 Order
 [COMBAT_BEHAVIOR]
-Combat behavior
+Combat order
 [SET_MOVEMENT_TARGET]
 Set movement target
 ////////////////////////// SHIPS END //////////////////////////////////
