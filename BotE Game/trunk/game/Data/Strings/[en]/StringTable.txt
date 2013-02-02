@@ -20,9 +20,9 @@ Create a Game
 [JOINGAME]
 Join a Game
 [NEWGAMETT]
-Start a new singleplayer match
+Start a new singleplayer game
 [MULTIPLAYERTT]
-Create or join a multiplayer match
+Create or join a multiplayer game
 [LOADGAMETT]
 Load a saved game
 [SETTINGSTT]
@@ -30,9 +30,9 @@ Change the gamesettings
 [LEAVETT]
 Exit the Game
 [CREATEGAMETT]
-Create a new multiplayer match
+Create a new multiplayer game
 [JOINGAMETT]
-Join an existing mutiplayer match
+Join an existing mutiplayer game
 [ELIMINATED]
 eliminated
 

@@ -22,7 +22,7 @@ Spiel beitreten
 [NEWGAMETT]
 Neues Einzelspieler-Spiel starten
 [MULTIPLAYERTT]
-Ein Multiplayerspiel erröffnen oder einem Multiplayerspiel beitreten
+Ein Multiplayer-Spiel eröffnen oder einem Multiplayer-Spiel beitreten
 [LOADGAMETT]
 Ein gespeichertes Spiel laden
 [SETTINGSTT]
@@ -30,9 +30,9 @@ Spieleinstellungen ändern
 [LEAVETT]
 Das Spiel beenden und Birth of the Empires verlassen
 [CREATEGAMETT]
-Ein neues Multiplayerspiel eröffnen
+Ein neues Multiplayer-Spiel eröffnen
 [JOINGAMETT]
-Einem bestehenden Multiplayerspiel beitreten
+Einem bestehenden Multiplayer-Spiel beitreten
 [ELIMINATED]
 ausgelöscht
 
