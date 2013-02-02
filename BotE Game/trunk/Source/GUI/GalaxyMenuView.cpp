@@ -240,7 +240,9 @@ void CGalaxyMenuView::OnDraw(CDC* dc)
 	CSize size(STARMAP_TOTALWIDTH, STARMAP_TOTALHEIGHT);
 	Zoom(&size);
 	pDC->SetViewportExt(size);
-	SetScrollSizes(MM_TEXT, size);
+	
+	if (CIniLoader::GetInstance()->ReadValueDefault("Control", "SHOWSCROLLBARS", true))
+		SetScrollSizes(MM_TEXT, size);
 
 	m_ptViewOrigin = CPoint(posX, posY);
 	CPoint ptOrg(posX - GetScrollPosition().x, posY - GetScrollPosition().y);
