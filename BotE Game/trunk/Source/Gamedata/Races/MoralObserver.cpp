@@ -4,8 +4,8 @@
 
 IMPLEMENT_SERIAL (CMoralObserver, CObject, 1)
 // statische Variable initialisieren
-short CMoralObserver::m_iMoralMatrix[][DOMINION] = {0};
-CString CMoralObserver::m_strTextMatrix[][DOMINION] = {""};
+short CMoralObserver::m_iMoralMatrix[][MAJOR6] = {0};
+CString CMoralObserver::m_strTextMatrix[][MAJOR6] = {""};
 
 //////////////////////////////////////////////////////////////////////
 // Konstruktion/Destruktion
@@ -45,7 +45,7 @@ void CMoralObserver::SerializeStatics(CArchive &ar)
 	if (ar.IsStoring())
 	{
 		for (int i = 0; i < EVENTNUMBER; i++)
-			for (int j = 0; j < DOMINION; j++)
+			for (int j = 0; j < MAJOR6; j++)
 			{
 				ar << m_iMoralMatrix[i][j];
 				ar << m_strTextMatrix[i][j];
@@ -55,7 +55,7 @@ void CMoralObserver::SerializeStatics(CArchive &ar)
 	if (ar.IsLoading())
 	{
 		for (int i = 0; i < EVENTNUMBER; i++)
-			for (int j = 0; j < DOMINION; j++)
+			for (int j = 0; j < MAJOR6; j++)
 			{
 				ar >> m_iMoralMatrix[i][j];
 				ar >> m_strTextMatrix[i][j];
@@ -152,7 +152,7 @@ void CMoralObserver::CalculateEvents(std::vector<CSystem>& systems, const CStrin
 #59 Successful espionage							0	0	0	1	1	1		-> eingebaut
 #60 Successful sabotage								0	0	-1	2	2	1		-> eingebaut
 *//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/*	short moralMatrix[][DOMINION] = {
+/*	short moralMatrix[][MAJOR6] = {
 		50,	50,	50,	50,	50,	50,		// #0	Eliminate an Empire
 		5,	5,	7,	6,	4,	5,
 		3,	3,	5,	4,	2,	2,
@@ -233,7 +233,7 @@ void CMoralObserver::CalculateEvents(std::vector<CSystem>& systems, const CStrin
 /// auch ein Textstring <code>param</code> übergeben werden, der in bestimmte Nachrichten eingebaut wird.
 CString CMoralObserver::GenerateText(unsigned short Event, BYTE major, const CString& param) const
 {
-/*	CString textMatrix[][DOMINION] = {
+/*	CString textMatrix[][MAJOR6] = {
 	// #0	Eliminate an Empire
 		"","","","","","",
 	// #1	Win a Major Battle
@@ -584,7 +584,7 @@ void CMoralObserver::InitMoralMatrix()
 			input.Delete(0, pos + 1);
 			input.Trim();
 			pos = 0;
-			for (int j = 0; j <= DOMINION; j++)
+			for (int j = 0; j <= MAJOR6; j++)
 			{
 				CString value = input.Tokenize("\t", pos);
 				m_iMoralMatrix[i][j] = atoi(value);
@@ -637,7 +637,7 @@ void CMoralObserver::InitMoralMatrix()
 			CString s;
 			s.Format("#%d\n", j);
 			file.WriteString(s);
-			for (int k = 0; k < DOMINION; k++)
+			for (int k = 0; k < MAJOR6; k++)
 				file.WriteString(m_strTextMatrix[j][k] + "\n");
 		}
 	}

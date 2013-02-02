@@ -523,7 +523,7 @@ void CBotEDoc::SerializeNextRoundData(CArchive &ar)
 
 	m_pRaceCtrl->Serialize(ar);
 
-	for (int i = HUMAN; i <= DOMINION; i++)
+	for (int i = MAJOR1; i <= MAJOR6; i++)
 		m_SoundMessages[i].Serialize(ar);
 
 
@@ -2003,7 +2003,7 @@ void CBotEDoc::ReadBuildingInfosFromFile()
 				info.SetWorker(atoi(data[125]));
 				info.SetNeverReady(atoi(data[126]));
 				info.SetEquivalent(0,0);		// niemand-index immer auf NULL setzen
-				for (int p = HUMAN; p <= DOMINION; p++)
+				for (int p = MAJOR1; p <= MAJOR6; p++)
 					info.SetEquivalent(p,atoi(data[126+p]));
 				for (int res = TITAN; res <= DERITIUM; res++)
 					info.SetResourceDistributor(res, atoi(data[133+res]));

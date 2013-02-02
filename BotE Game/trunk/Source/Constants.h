@@ -74,12 +74,12 @@ extern double STARMAP_ZOOM_MAX;//			2	///< maximaler Zoom-Faktor
 
 // ------------- Spielerrassen -------------------------------------------------
 #define NOBODY				0
-#define HUMAN				1
-#define FERENGI				2
-#define KLINGON				3
-#define ROMULAN				4
-#define CARDASSIAN			5
-#define DOMINION			6
+#define MAJOR1				1
+#define MAJOR2				2
+#define MAJOR3				3
+#define MAJOR4				4
+#define MAJOR5				5
+#define MAJOR6				6
 #define UNKNOWNRACE			7
 #define MINORNUMBER			MAXBYTE
 
