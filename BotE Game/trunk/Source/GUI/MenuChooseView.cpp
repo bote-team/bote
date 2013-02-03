@@ -33,11 +33,15 @@ BEGIN_MESSAGE_MAP(CMenuChooseView, CView)
 	ON_WM_ERASEBKGND()
 	ON_WM_LBUTTONUP()
 	ON_WM_MOUSEMOVE()
+	ON_WM_MOUSELEAVE()
 	//}}AFX_MSG_MAP	
 END_MESSAGE_MAP()
 
 CMenuChooseView::CMenuChooseView() :
-	m_LastSystem(-1, -1)
+	m_LastSystem(-1,-1),
+	m_bKnowOtherMajors(false),
+	m_bKnowOtherRaces(false),
+	m_fMark(0.0f)
 {
 	m_RoundEnd = NULL;
 }
@@ -52,6 +56,58 @@ CMenuChooseView::~CMenuChooseView()
 	m_Buttons.RemoveAll();
 	if (m_RoundEnd)
 		delete m_RoundEnd;
+}
+
+void CMenuChooseView::OnNewRound()
+{
+	CBotEDoc* pDoc = resources::pDoc;
+	ASSERT_VALID(pDoc);
+
+	CMajor* pMajor = m_pPlayersRace;
+	ASSERT(pMajor);
+	if (!pMajor)
+		return;
+
+	m_bKnowOtherMajors = false;
+	m_bKnowOtherRaces = false;
+	map<CString, CRace*>* pmRaces = pDoc->GetRaceCtrl()->GetRaces();
+	for (map<CString, CRace*>::const_iterator it = pmRaces->begin(); it != pmRaces->end(); ++it)
+	{
+		if (it->second->IsMajor() && it->first != pMajor->GetRaceID() && pMajor->IsRaceContacted(it->first))
+		{
+			m_bKnowOtherMajors = true;
+			m_bKnowOtherRaces = true;
+			break;
+		}
+		else if (!m_bKnowOtherRaces && it->first != pMajor->GetRaceID() && pMajor->IsRaceContacted(it->first))
+		{
+			m_bKnowOtherRaces = true;
+		}
+	}
+
+	// Bewertung Gesamt berechnen
+	m_fMark = 0.0f;
+	int nPlace = 1;
+	float fValue, fAverage, fFirst, fLast;
+	CString sRaceID = pMajor->GetRaceID();
+	CStatistics *cs = pDoc->GetStatistics();
+
+	cs->GetDemographicsBSP(sRaceID, nPlace, fValue, fAverage, fFirst, fLast);
+	m_fMark += (float)(nPlace);
+
+	cs->GetDemographicsProductivity(sRaceID, nPlace, fValue, fAverage, fFirst, fLast);
+	m_fMark += (float)(nPlace);
+
+	cs->GetDemographicsMilitary(sRaceID, nPlace, fValue, fAverage, fFirst, fLast);
+	m_fMark += (float)(nPlace);
+
+	cs->GetDemographicsResearch(sRaceID, nPlace, fValue, fAverage, fFirst, fLast);
+	m_fMark += (float)(nPlace);
+
+	cs->GetDemographicsMoral(sRaceID, nPlace, fValue, fAverage, fFirst, fLast);
+	m_fMark += (float)(nPlace);
+
+	m_fMark /= 5.0f;
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -123,46 +179,25 @@ void CMenuChooseView::OnDraw(CDC* pDC)
 	// Wenn wir im Systemmenü sind, prüfen, ob der dazugehörige Button auch inaktiv ist.
 	// müssen das machen, da wir auch mittels Doppelklick auf den Sektor in die Systemansicht gelangen können
 	// oder in die Forschungs oder Imperiumsansicht
-	for (int j = 0; j < m_Buttons.GetSize(); j++)
-	{
-		if (resources::pMainFrame->GetActiveView(0, 1) == j + 1 && m_Buttons.GetAt(j)->GetState() != BUTTON_STATE::DEACTIVATED)
-		{
-			for (int i = 0; i < m_Buttons.GetSize(); i++)
-				if (m_Buttons.GetAt(i)->GetState() == BUTTON_STATE::DEACTIVATED)
-					m_Buttons.GetAt(i)->SetState(BUTTON_STATE::NORMAL);
+	for (int i = 0; i < m_Buttons.GetSize(); i++)
+		if (m_Buttons.GetAt(i)->GetState() == BUTTON_STATE::DEACTIVATED)
+			m_Buttons.GetAt(i)->SetState(BUTTON_STATE::NORMAL);
 
-			m_Buttons.GetAt(j)->SetState(BUTTON_STATE::DEACTIVATED);
-		}
-	}
-
+	int nActiveMainView = resources::pMainFrame->GetActiveView(0, 1);
+	if (nActiveMainView >= GALAXY_VIEW && nActiveMainView <= EMPIRE_VIEW)
+		m_Buttons.GetAt(nActiveMainView - 1)->SetState(BUTTON_STATE::DEACTIVATED);
+		
 	// Geheimdienstbutton deaktivieren, solange keine anderen Majors bekannt sind
 	// Diplomatiebutton deaktivieren, solange gar keine anderen Rassen bekannt sind
-	bool bKnowOtherMajors = false;
-	bool bKnowOtherRaces = false;
-	map<CString, CRace*>* pmRaces = pDoc->GetRaceCtrl()->GetRaces();
-	for (map<CString, CRace*>::const_iterator it = pmRaces->begin(); it != pmRaces->end(); ++it)
-	{
-		if (it->second->IsMajor() && it->first != pMajor->GetRaceID() && pMajor->IsRaceContacted(it->first))
-		{
-			bKnowOtherMajors = true;
-			bKnowOtherRaces = true;
-			break;
-		}
-		else if (!bKnowOtherRaces && it->first != pMajor->GetRaceID() && pMajor->IsRaceContacted(it->first))
-		{
-			bKnowOtherRaces = true;
-		}
-	}
+	if (!m_bKnowOtherRaces)
+		m_Buttons.GetAt(DIPLOMACY_VIEW - 1)->SetState(BUTTON_STATE::DEACTIVATED);
+	else if (m_Buttons.GetAt(DIPLOMACY_VIEW - 1)->GetState() != BUTTON_STATE::DEACTIVATED)
+		m_Buttons.GetAt(DIPLOMACY_VIEW - 1)->SetState(BUTTON_STATE::NORMAL);
 
-	if (!bKnowOtherRaces)
-		m_Buttons.GetAt(4)->SetState(BUTTON_STATE::DEACTIVATED);
-	else if (m_Buttons.GetAt(4)->GetState() != BUTTON_STATE::DEACTIVATED)
-		m_Buttons.GetAt(4)->SetState(BUTTON_STATE::NORMAL);
-
-	if (!bKnowOtherMajors)
-		m_Buttons.GetAt(3)->SetState(BUTTON_STATE::DEACTIVATED);
-	else if (m_Buttons.GetAt(3)->GetState() != BUTTON_STATE::DEACTIVATED)
-		m_Buttons.GetAt(3)->SetState(BUTTON_STATE::NORMAL);
+	if (!m_bKnowOtherMajors)
+		m_Buttons.GetAt(INTEL_VIEW - 1)->SetState(BUTTON_STATE::DEACTIVATED);
+	else if (m_Buttons.GetAt(INTEL_VIEW - 1)->GetState() != BUTTON_STATE::DEACTIVATED)
+		m_Buttons.GetAt(INTEL_VIEW - 1)->SetState(BUTTON_STATE::NORMAL);
 
 	// Buttons zeichnen
 	for (int i = 0; i < m_Buttons.GetSize(); i++)
@@ -235,36 +270,13 @@ void CMenuChooseView::OnDraw(CDC* pDC)
 	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.left+30, 240, m_TotalSize.cx-60, 25), &fontFormat, &fontBrush);
 
 	// Bewertung Gesamt anzeigen
-	float fMark = 0.0f;
-	int nPlace = 1;
-	float fValue, fAverage, fFirst, fLast;
-	CString sRaceID = pMajor->GetRaceID();
-	CStatistics *cs = pDoc->GetStatistics();
-
-	cs->GetDemographicsBSP(sRaceID, nPlace, fValue, fAverage, fFirst, fLast);
-	fMark += (float)(nPlace);
-
-	cs->GetDemographicsProductivity(sRaceID, nPlace, fValue, fAverage, fFirst, fLast);
-	fMark += (float)(nPlace);
-
-	cs->GetDemographicsMilitary(sRaceID, nPlace, fValue, fAverage, fFirst, fLast);
-	fMark += (float)(nPlace);
-
-	cs->GetDemographicsResearch(sRaceID, nPlace, fValue, fAverage, fFirst, fLast);
-	fMark += (float)(nPlace);
-
-	cs->GetDemographicsMoral(sRaceID, nPlace, fValue, fAverage, fFirst, fLast);
-	fMark += (float)(nPlace);
-
-	fMark /= 5;
 	s.Format("%s:",CLoc::GetString("RATING"));
 	fontFormat.SetAlignment(StringAlignmentNear);
 	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.left+30, 290, m_TotalSize.cx-60, 25), &fontFormat, &fontBrush);
 
 	fontFormat.SetAlignment(StringAlignmentFar);
-	s.Format("%.1lf",fMark);
+	s.Format("%.1lf",m_fMark);
 	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.left+30, 290, m_TotalSize.cx-60, 25), &fontFormat, &fontBrush);
-
 
 	// Sternzeit anzeigen
 	fontBrush.SetColor(color);
@@ -468,6 +480,15 @@ void CMenuChooseView::OnLButtonUp(UINT nFlags, CPoint point)
 void CMenuChooseView::OnMouseMove(UINT nFlags, CPoint point)
 {
 	// TODO: Fügen Sie hier Ihren Meldungsbehandlungscode ein, und/oder benutzen Sie den Standard.
+	
+	// MouseTracking aufsetzen (damit wir mitbekommen, wann die Maus die View verlässt)
+	TRACKMOUSEEVENT strMEvent;
+	strMEvent.cbSize = sizeof(strMEvent);
+	strMEvent.dwFlags = TME_LEAVE;
+	strMEvent.hwndTrack = *this;
+	strMEvent.dwHoverTime = HOVER_DEFAULT;
+	::_TrackMouseEvent(&strMEvent);
+
 	CBotEDoc* pDoc = resources::pDoc;
 	ASSERT(pDoc);
 
@@ -497,7 +518,7 @@ void CMenuChooseView::OnMouseMove(UINT nFlags, CPoint point)
 	CalcLogicalPoint(point);
 
 	// Rundenendebutton
-	if (m_RoundEnd->GetState() != BUTTON_STATE::DEACTIVATED)
+	if (!pDoc->m_bRoundEndPressed && m_RoundEnd->GetState() != BUTTON_STATE::DEACTIVATED)
 	{
 		if (m_RoundEnd->ClickedOnButton(point))
 		{
@@ -536,15 +557,28 @@ void CMenuChooseView::OnMouseMove(UINT nFlags, CPoint point)
 				InvalidateRect(r, FALSE);
 			}
 		}
-		else
-			if (m_Buttons.GetAt(i)->Deactivate())
-			{
-				CRect r = m_Buttons.GetAt(i)->GetRect();
-				CalcDeviceRect(r);
-				InvalidateRect(r, FALSE);
-			}
+		else if (m_Buttons.GetAt(i)->Deactivate())
+		{
+			CRect r = m_Buttons.GetAt(i)->GetRect();
+			CalcDeviceRect(r);
+			InvalidateRect(r, FALSE);
+		}
 	}
+
 	CView::OnMouseMove(nFlags, point);
+}
+
+void CMenuChooseView::OnMouseLeave()
+{
+	// TODO: Fügen Sie hier Ihren Meldungsbehandlungscode ein, und/oder benutzen Sie den Standard.
+	
+	// aktiverte Buttons auf normal setzen
+	for (int i = 0; i < m_Buttons.GetSize(); i++)
+		m_Buttons.GetAt(i)->Deactivate();
+	
+	Invalidate(FALSE);
+
+	__super::OnMouseLeave();
 }
 
 void CMenuChooseView::CalcLogicalPoint(CPoint &point)

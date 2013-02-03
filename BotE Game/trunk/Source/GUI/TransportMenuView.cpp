@@ -5,6 +5,7 @@
 #include "BotE.h"
 #include "MainFrm.h"
 #include "TransportMenuView.h"
+#include "MenuChooseView.h"
 #include "Races\RaceController.h"
 #include "ShipBottomView.h"
 #include "Graphic\memdc.h"
@@ -776,6 +777,7 @@ void CTransportMenuView::OnRButtonDown(UINT nFlags, CPoint point)
 	ASSERT(pMajor);
 
 	resources::pMainFrame->SelectMainView(GALAXY_VIEW, pMajor->GetRaceID());
+	resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
 
 	CMainBaseView::OnRButtonDown(nFlags, point);
 }

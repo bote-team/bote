@@ -820,6 +820,8 @@ void CBotEDoc::DoViewWorkOnNewRound()
 			((CMainBaseView*)(it->first))->OnNewRound();
 		else if (IS_BOTTOM_VIEW(it->second))
 			((CBottomBaseView*)(it->first))->OnNewRound();
+		else if (it->second == MENUCHOOSE_VIEW)
+			((CMenuChooseView*)(it->first))->OnNewRound();
 	}
 
 	network::RACE client = m_pRaceCtrl->GetMappedClientID(pPlayersRace->GetRaceID());

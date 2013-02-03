@@ -9,6 +9,7 @@
 #include "ShipBottomView.h"
 #include "PlanetBottomView.h"
 #include "SmallInfoView.h"
+#include "MenuChooseView.h"
 #include "Races\RaceController.h"
 #include "HTMLStringBuilder.h"
 #include "Graphic\memdc.h"
@@ -944,6 +945,7 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 				{
 					pDoc->SetFleetShip(pDoc->CurrentShip()); // Dieses Schiff soll die Flotte beinhalten
 					resources::pMainFrame->SelectMainView(FLEET_VIEW, pMajor->GetRaceID());		// Flottenansicht in der MainView anzeigen
+					resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
 				}
 				else if (nOrder == SHIP_ORDER::ASSIGN_FLAGSHIP)
 				{
@@ -962,8 +964,8 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 				// Bei einem Transportbefehl muss in der MainView auch die Transportansicht angeblendet werden
 				else if (nOrder == SHIP_ORDER::TRANSPORT)
 				{
-					resources::pMainFrame->SelectMainView(10, pMajor->GetRaceID());	// Transportansicht in der MainView anzeigen
-					resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CTransportMenuView));
+					resources::pMainFrame->SelectMainView(TRANSPORT_VIEW, pMajor->GetRaceID());	// Transportansicht in der MainView anzeigen
+					resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
 				}
 				else if (nOrder == SHIP_ORDER::TERRAFORM) {
 					//command is given when clicked on planet
@@ -1032,6 +1034,7 @@ void CShipBottomView::OnLButtonDblClk(UINT nFlags, CPoint point)
 		m_iTimeCounter = 0;
 		pDoc->SetFleetShip(pDoc->CurrentShip()); // Dieses Schiff soll die Flotte beinhalten
 		resources::pMainFrame->SelectMainView(FLEET_VIEW, pMajor->GetRaceID());	// Flottenansicht in der MainView anzeigen
+		resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
 		Invalidate(FALSE);
 	}
 

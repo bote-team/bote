@@ -33,6 +33,9 @@ protected:
 	
 // Operationen
 public:
+	/// Funktion führt Aufgaben aus, welche zu jeder neuen Runde von der View ausgeführt werden müssen.
+	void OnNewRound();
+
 	/// Funktion lädt die rassenspezifischen Grafiken.
 	void LoadRaceGraphics();
 
@@ -59,6 +62,11 @@ protected:
 	virtual void Dump(CDumpContext& dc) const;
 #endif
 
+private:
+	bool m_bKnowOtherMajors;	///< Sind andere Majors bekannt?
+	bool m_bKnowOtherRaces;		///< Sind andere Rassen bekannt?
+	float m_fMark;				///< Bewertung des Spielers
+
 	// Generierte Nachrichtenzuordnungsfunktionen
 protected:
 	//{{AFX_MSG(CMenuChooseView)
@@ -66,6 +74,7 @@ protected:
 	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
 	afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
 	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
+	afx_msg void OnMouseLeave();
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()	
 };

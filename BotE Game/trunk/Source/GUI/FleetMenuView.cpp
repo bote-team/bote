@@ -8,6 +8,7 @@
 #include "FleetMenuView.h"
 #include "ShipBottomView.h"
 #include "SmallInfoView.h"
+#include "MenuChooseView.h"
 #include "Races\RaceController.h"
 #include "HTMLStringBuilder.h"
 #include "Graphic\memdc.h"
@@ -549,6 +550,7 @@ void CFleetMenuView::OnRButtonDown(UINT nFlags, CPoint point)
 	resources::pMainFrame->SelectBottomView(SHIP_BOTTOM_VIEW);
 	CSmallInfoView::SetDisplayMode(CSmallInfoView::DISPLAY_MODE_SHIP_BOTTEM_VIEW);
 	resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
+	resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
 
 	CMainBaseView::OnRButtonDown(nFlags, point);
 }
