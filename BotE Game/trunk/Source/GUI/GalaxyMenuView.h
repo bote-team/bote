@@ -22,22 +22,24 @@ protected: // Nur aus Serialisierung erzeugen
 	CGalaxyMenuView();
 	DECLARE_DYNCREATE(CGalaxyMenuView)
 
-	CSize m_TotalSize;				///< Größe der View in logischen Koordinaten
-	BOOLEAN m_bScrollToHome;		///< soll zum Heimatsektor zu Beginn der Runde gescrollt werden
+	CSize m_TotalSize;					///< Größe der View in logischen Koordinaten
+	BOOLEAN m_bScrollToHome;			///< soll zum Heimatsektor zu Beginn der Runde gescrollt werden
 
-	static CMajor* m_pPlayersRace;	///< Spielerrasse
+	static CMajor* m_pPlayersRace;		///< Spielerrasse
 
-	Bitmap* m_pGalaxyBackground;	///< Zeiger auf Hintergrundbild-Objekt
-	Bitmap* m_pThumbnail;
+	Bitmap* m_pGalaxyGraphic;	///< zu Beginn einmal geladene Galaxie
+	Bitmap* m_pGalaxyBackground;		///< Zeiger auf den bearbeiteten Hintergrund mit allen Informationen
+	Bitmap* m_pThumbnail;				///< Bitmap für Minimap
+	map<CString, Bitmap*> m_mOwnerMark;	///< Map mit Bitmaps für Sektormarkierung (Rassenzugehörigkeit)
+	Bitmap* m_vStars[7];				///< Grafiken für die Sterne
 
-	double m_fZoom;					///< aktueller Zoom-Faktor
+	double m_fZoom;						///< aktueller Zoom-Faktor
 	int m_nRange;
 	Sector oldtarget;
 	Sector m_oldSelection;
-	bool m_bUpdateOnly;
-	CPoint m_ptViewOrigin;			///< oberer linker Punkt der View, wenn Hintergrund zentriert wird (bei sehr weitem Rauszoom)
+	CPoint m_ptViewOrigin;				///< oberer linker Punkt der View, wenn Hintergrund zentriert wird (bei sehr weitem Rauszoom)
 	CPoint m_ptOldMousePos;
-	CPoint m_ptScrollToSector;		///< Sektor zu dem beim Zeichnen zuerst gescrollt werden soll
+	CPoint m_ptScrollToSector;			///< Sektor zu dem beim Zeichnen zuerst gescrollt werden soll
 
 	// Hier Variablen, wenn wir eine Handelroute ziehen wollen
 	static BOOLEAN m_bDrawTradeRoute;		///< sollen wir bei MouseMove die Handelroute zeigen
@@ -74,6 +76,9 @@ protected: // Nur aus Serialisierung erzeugen
 public:
 	/// Funktion führt Aufgaben aus, welche zu jeder neuen Runde von der View ausgeführt werden müssen.
 	void OnNewRound();
+
+	/// Funktion lädt die rassenspezifischen Grafiken.
+	void LoadRaceGraphics();
 
 	/// Funktion legt fest, ob eine anzulegende Ressourcenroute gerade gezeichnet werden soll. Dies wird zum manuellen
 	/// Anlegen der Ressourcenrouten benötigt.

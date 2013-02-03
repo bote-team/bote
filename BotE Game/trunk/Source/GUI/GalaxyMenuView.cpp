@@ -59,14 +59,19 @@ CGalaxyMenuView::CGalaxyMenuView() :
 	m_ptScrollToSector(-1, -1)
 {
 	// ZU ERLEDIGEN: Hier Code zur Konstruktion einfügen
+	m_pGalaxyGraphic = NULL;
 	m_pGalaxyBackground = NULL;
 	m_pThumbnail = NULL;
-	m_bUpdateOnly = false;
 }
 
 CGalaxyMenuView::~CGalaxyMenuView()
 {
-	// Hintergrundbild freigeben
+	// Hintergrundbilder freigeben
+	if (m_pGalaxyGraphic)
+	{
+		delete m_pGalaxyGraphic;
+		m_pGalaxyGraphic = NULL;
+	}
 	if (m_pGalaxyBackground)
 	{
 		delete m_pGalaxyBackground;
@@ -76,6 +81,24 @@ CGalaxyMenuView::~CGalaxyMenuView()
 	{
 		delete m_pThumbnail;
 		m_pThumbnail = NULL;
+	}
+
+	// Sektormarkierungen freigeben
+	for (map<CString, Bitmap*>::iterator it = m_mOwnerMark.begin(); it != m_mOwnerMark.end(); ++it)
+	{
+		delete it->second;
+		it->second = NULL;
+	}
+	m_mOwnerMark.clear();
+
+	// Sterne freigeben
+	for (int i = 0; i < 7; i++)
+	{
+		if (m_vStars[i])
+		{
+			delete m_vStars[i];
+			m_vStars[i] = NULL;
+		}
 	}
 }
 
@@ -104,7 +127,6 @@ void CGalaxyMenuView::OnNewRound()
 	m_bShipMove	= FALSE;
 	m_bDrawTradeRoute = FALSE;
 	m_bDrawResourceRoute = FALSE;
-	m_bUpdateOnly = false;
 	m_PreviouslyJumpedToShip = RememberedShip();
 
 	if (m_bScrollToHome)
@@ -161,6 +183,16 @@ void CGalaxyMenuView::OnDraw(CDC* dc)
 	// Graphicsobjekt, in welches gezeichnet wird anlegen
 	Graphics g(pDC.GetSafeHdc());
 
+	g.SetCompositingMode( CompositingModeSourceCopy );
+	g.SetCompositingQuality( CompositingQualityHighSpeed );
+	g.SetInterpolationMode( InterpolationModeDefault );
+	g.SetPixelOffsetMode( PixelOffsetModeNone );
+	g.SetSmoothingMode( SmoothingModeNone );
+	// Note: TextRenderingHintClearTypeGridFit looks real crap
+	//       if we're drawing onto a transparent object
+	//       but now we're not... anyhow, this is OK:
+	g.SetTextRenderingHint( TextRenderingHintAntiAliasGridFit );
+
 	CPoint pt = GetScrollPosition();
 
 	REAL picWidth  = (REAL)m_pGalaxyBackground->GetWidth() * m_fZoom;
@@ -201,6 +233,7 @@ void CGalaxyMenuView::OnDraw(CDC* dc)
 	CIniLoader::GetInstance()->ReadValue("VIDEO", "SHOWMINIMAP", bShowMiniMap);
 	if (bShowMiniMap)
 	{
+		g.SetCompositingMode( CompositingModeSourceOver );
 		REAL yThumbPos = (REAL)((pt.y + client.bottom - m_pThumbnail->GetHeight() - 15));
 		// wenn das System in der unteren rechten Hälfte ist, dann wird das Thumbnail oben rechts gezeichnet
 		CPoint pRaceKO = pDoc->GetRaceKO(pMajor->GetRaceID());
@@ -211,7 +244,6 @@ void CGalaxyMenuView::OnDraw(CDC* dc)
 			yThumbPos, (REAL)m_pThumbnail->GetWidth(), (REAL)m_pThumbnail->GetHeight());
 
 		g.DrawImage(m_pThumbnail, thumbRect);
-
 		COLORREF clrColor = pMajor->GetDesign()->m_clrSector;
 		Color color(50, GetRValue(clrColor), GetGValue(clrColor), GetBValue(clrColor));
 
@@ -228,8 +260,8 @@ void CGalaxyMenuView::OnDraw(CDC* dc)
 		color.SetValue(Color::MakeARGB(200, GetRValue(clrColor), GetGValue(clrColor), GetBValue(clrColor)));
 		g.DrawRectangle(&Pen(color, 1.0), thumbSelection);
 		// weiße Umrandung zeichnen
-		//color.SetFromCOLORREF(clrColor);
 		g.DrawRectangle(&Pen(Color(200,255,255,255), 1.5), thumbRect.X - 1, thumbRect.Y - 1, thumbRect.Width + 2, thumbRect.Height + 2);
+		g.SetCompositingMode( CompositingModeSourceCopy );
 	}
 
 //////////////////////////////////////////////////////////////
@@ -541,20 +573,107 @@ void CGalaxyMenuView::OnInitialUpdate()
 	m_bShipMove	= FALSE;
 	m_bScrollToHome = TRUE;
 
-	/*
-	CString sID = pDoc->GetPlayersRaceID();
-	m_pPlayersRace = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(sID));
-	ASSERT(m_pPlayersRace);
-
-	CPoint pt = pDoc->GetRaceKO(m_pPlayersRace->GetRaceID());
-	pDoc->SetKO(pt.x, pt.y);
-	if (m_pPlayersRace->GetStarmap())
-		m_pPlayersRace->GetStarmap()->Select(Sector(pt.x, pt.y));
-	*/
-
 	resources::pMainFrame->AddToTooltip(this);
 
 	CScrollView::OnInitialUpdate();
+}
+
+/// Funktion lädt die rassenspezifischen Grafiken.
+void CGalaxyMenuView::LoadRaceGraphics()
+{
+	CBotEDoc* pDoc = resources::pDoc;
+	ASSERT(pDoc);
+
+	CMajor* pMajor = m_pPlayersRace;
+	ASSERT(pMajor);
+
+	CString sAppPath = CIOData::GetInstance()->GetAppPath();
+	CString prefix = pMajor->GetPrefix();
+	CString filePath = sAppPath + "Graphics\\Galaxies\\" + prefix + "galaxy.boj";
+
+	// Galaxiegrafik laden
+	m_pGalaxyGraphic = Bitmap::FromFile(CComBSTR(filePath));
+	if (m_pGalaxyGraphic->GetLastStatus() != Ok)
+	{
+		delete m_pGalaxyGraphic;
+		m_pGalaxyGraphic = NULL;
+		MYTRACE("graphicload")(MT::LEVEL_WARNING, "CGalaxyMenuView::GenerateGalaxy(): Could not load galaxy background");
+		AfxMessageBox("Could not load galaxy background\n\n" + filePath);
+		return;
+	}
+
+	// Grafik zuschneiden
+	FCObjImage img;
+	FCWin32::GDIPlus_LoadBitmap(*m_pGalaxyGraphic, img);
+	// Bild entsprechend vergrößern. Dabei Seitenverhältnisse beibehalten
+	if (STARMAP_TOTALWIDTH-img.Width()*STARMAP_TOTALHEIGHT/img.Height()<0)
+		img.Stretch_Smooth(img.Width()*STARMAP_TOTALHEIGHT/img.Height(), STARMAP_TOTALHEIGHT);
+	else
+		img.Stretch_Smooth(STARMAP_TOTALWIDTH, img.Height()*STARMAP_TOTALWIDTH/img.Width());
+
+	assert(m_pGalaxyGraphic && m_pGalaxyGraphic->GetLastStatus() == Ok);
+	delete m_pGalaxyGraphic;
+	m_pGalaxyGraphic = FCWin32::GDIPlus_CreateBitmap(img);
+
+	//////////////////////////////////////////////////////////////////////////
+	// Grafiken für Sektormarkierungen dynamisch generieren
+	map<CString, CMajor*>* pmMajors = pDoc->GetRaceCtrl()->GetMajors();
+	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
+	{
+		Color clr;
+		clr.SetFromCOLORREF(it->second->GetDesign()->m_clrSector);
+		Color color(100, clr.GetR(), clr.GetG(), clr.GetB());
+
+		// hier wurde der R Wert mit dem B Wert getauscht, da die Funktion SetPixelData sonst nicht stimmt.
+		// color = RGB(GetBValue(color), GetGValue(color), GetRValue(color));
+
+		// Bitmap generieren
+		m_mOwnerMark[it->first] = new Gdiplus::Bitmap(STARMAP_SECTOR_WIDTH, STARMAP_SECTOR_HEIGHT, PixelFormat32bppPARGB);
+		if (m_mOwnerMark[it->first])
+			for (int y = 0; y < STARMAP_SECTOR_HEIGHT; y++)
+				for (int x = 0; x < STARMAP_SECTOR_WIDTH; x++)
+					m_mOwnerMark[it->first]->SetPixel(x, y, color);
+	}
+
+	// Farbe für Minors hinzufügen
+	CString sMinorID = "__MINOR__";
+	m_mOwnerMark[sMinorID] = new Bitmap(STARMAP_SECTOR_WIDTH, STARMAP_SECTOR_HEIGHT, PixelFormat32bppPARGB);
+	if (m_mOwnerMark[sMinorID])
+		for (int y = 0; y < STARMAP_SECTOR_HEIGHT; y++)
+			for (int x = 0; x < STARMAP_SECTOR_WIDTH; x++)
+				m_mOwnerMark[sMinorID]->SetPixel(x, y, Color(100,200,200,200));
+
+	// Farbe für Nebel des Krieges hinzuzufügen
+	CString sFogOfWarID = "__FOG_OF_WAR__";
+	m_mOwnerMark[sFogOfWarID] = new Bitmap(STARMAP_SECTOR_WIDTH, STARMAP_SECTOR_HEIGHT, PixelFormat32bppPARGB);
+	if (m_mOwnerMark[sFogOfWarID])
+		for (int y = 0; y < STARMAP_SECTOR_HEIGHT; y++)
+			for (int x = 0; x < STARMAP_SECTOR_WIDTH; x++)
+				m_mOwnerMark[sFogOfWarID]->SetPixel(x, y, Color(160,0,0,0));
+
+	//////////////////////////////////////////////////////////////////////////
+	// Sonnengrafiken einmalig laden
+	filePath = sAppPath + "Graphics\\MapStars\\star_blue.bop";
+	m_vStars[0] = Bitmap::FromFile(CComBSTR(filePath));
+	filePath = sAppPath + "Graphics\\MapStars\\star_green.bop";
+	m_vStars[1] = Bitmap::FromFile(CComBSTR(filePath));
+	filePath = sAppPath + "Graphics\\MapStars\\star_orange.bop";
+	m_vStars[2] = Bitmap::FromFile(CComBSTR(filePath));
+	filePath = sAppPath + "Graphics\\MapStars\\star_red.bop";
+	m_vStars[3] = Bitmap::FromFile(CComBSTR(filePath));
+	filePath = sAppPath + "Graphics\\MapStars\\star_violet.bop";
+	m_vStars[4] = Bitmap::FromFile(CComBSTR(filePath));
+	filePath = sAppPath + "Graphics\\MapStars\\star_white.bop";
+	m_vStars[5] = Bitmap::FromFile(CComBSTR(filePath));
+	filePath = sAppPath + "Graphics\\MapStars\\star_yellow.bop";
+	m_vStars[6] = Bitmap::FromFile(CComBSTR(filePath));
+
+	if (MT::CMyTrace::IsLoggingEnabledFor("graphicload"))
+	{
+		for (int i = 0; i < 7; i++)
+			if (!m_vStars[i] || m_vStars[i]->GetLastStatus() != Ok)
+				MYTRACE_CHECKED("graphicload")(MT::LEVEL_WARNING, "CGalaxyMenuView::GenerateGalaxy(): Could not load a star graphic");
+	}
 }
 
 BOOL CGalaxyMenuView::OnScroll(UINT nScrollCode, UINT nPos, BOOL bDoScroll)
@@ -761,7 +880,6 @@ void CGalaxyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			}
 
 			// View muss neu gezeichnet werden
-			m_bUpdateOnly = TRUE;
 			Invalidate();
 		}
 		// Wenn wir eine Handelsroute festlegen wollen
@@ -1382,114 +1500,37 @@ void CGalaxyMenuView::GenerateGalaxyMap()
 
 	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
-	// Galaxiehintergrundbild laden
+	
+	if (!m_pGalaxyGraphic)
+	{
+		ASSERT(m_pGalaxyGraphic);
+		return;
+	}
+
+	// Galaxiehintergrundbild verwenden und mit Informationen versehen
 	if (m_pGalaxyBackground)
 	{
 		delete m_pGalaxyBackground;
 		m_pGalaxyBackground = NULL;
 	}
 
-	CString sAppPath = CIOData::GetInstance()->GetAppPath();
-	CString prefix = pMajor->GetPrefix();
-	CString filePath = sAppPath + "Graphics\\Galaxies\\" + prefix + "galaxy.boj";
-
-	m_pGalaxyBackground = Bitmap::FromFile(CComBSTR(filePath));
-
-	if (m_pGalaxyBackground->GetLastStatus() != Ok)
-	{
-		delete m_pGalaxyBackground;
-		m_pGalaxyBackground = NULL;
-		MYTRACE("graphicload")(MT::LEVEL_WARNING, "CGalaxyMenuView::GenerateGalaxy(): Could not load galaxy background");
-		AfxMessageBox("Could not load galaxy background\n\n" + filePath);
-		return;
-	}
-
-	// Mal die Sterne direkt in die Map setzen, neues Bild erzeugen
-	Bitmap *stars[7] = {NULL, NULL, NULL, NULL, NULL, NULL, NULL};
-	filePath = sAppPath + "Graphics\\MapStars\\star_blue.bop";
-	stars[0] = Bitmap::FromFile(CComBSTR(filePath));
-	filePath = sAppPath + "Graphics\\MapStars\\star_green.bop";
-	stars[1] = Bitmap::FromFile(CComBSTR(filePath));
-	filePath = sAppPath + "Graphics\\MapStars\\star_orange.bop";
-	stars[2] = Bitmap::FromFile(CComBSTR(filePath));
-	filePath = sAppPath + "Graphics\\MapStars\\star_red.bop";
-	stars[3] = Bitmap::FromFile(CComBSTR(filePath));
-	filePath = sAppPath + "Graphics\\MapStars\\star_violet.bop";
-	stars[4] = Bitmap::FromFile(CComBSTR(filePath));
-	filePath = sAppPath + "Graphics\\MapStars\\star_white.bop";
-	stars[5] = Bitmap::FromFile(CComBSTR(filePath));
-	filePath = sAppPath + "Graphics\\MapStars\\star_yellow.bop";
-	stars[6] = Bitmap::FromFile(CComBSTR(filePath));
-
-	if(MT::CMyTrace::IsLoggingEnabledFor("graphicload")) {
-		for (int i = 0; i < 7; i++)
-			if (!stars[i] || stars[i]->GetLastStatus() != Ok)
-				MYTRACE_CHECKED("graphicload")(MT::LEVEL_WARNING, "CGalaxyMenuView::GenerateGalaxy(): Could not load a star graphic");
-	}
-
-	map<CString, Bitmap*> ownerMark;
-
-	map<CString, CMajor*>* pmMajors = pDoc->GetRaceCtrl()->GetMajors();
-	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
-	{
-		Color clr;
-		clr.SetFromCOLORREF(it->second->GetDesign()->m_clrSector);
-		Color color(100, clr.GetR(), clr.GetG(), clr.GetB());
-
-		// hier wurde der R Wert mit dem B Wert getauscht, da die Funktion SetPixelData sonst nicht stimmt.
-		// color = RGB(GetBValue(color), GetGValue(color), GetRValue(color));
-
-		// Bitmap generieren
-		ownerMark[it->first] = new Gdiplus::Bitmap(STARMAP_SECTOR_WIDTH, STARMAP_SECTOR_HEIGHT, PixelFormat32bppPARGB);
-		if (ownerMark[it->first])
-			for (int y = 0; y < STARMAP_SECTOR_HEIGHT; y++)
-				for (int x = 0; x < STARMAP_SECTOR_WIDTH; x++)
-					ownerMark[it->first]->SetPixel(x, y, color);
-	}
-
-	// Farbe für Minors hinzufügen
-	CString sMinorID = "__MINOR__";
-	ownerMark[sMinorID] = new Bitmap(STARMAP_SECTOR_WIDTH, STARMAP_SECTOR_HEIGHT, PixelFormat32bppPARGB);
-	if (ownerMark[sMinorID])
-		for (int y = 0; y < STARMAP_SECTOR_HEIGHT; y++)
-			for (int x = 0; x < STARMAP_SECTOR_WIDTH; x++)
-				ownerMark[sMinorID]->SetPixel(x, y, Color(100,200,200,200));
-
-	// Farbe für Nebel des Krieges hinzuzufügen
-	CString sFogOfWarID = "__FOG_OF_WAR__";
-	ownerMark[sFogOfWarID] = new Bitmap(STARMAP_SECTOR_WIDTH, STARMAP_SECTOR_HEIGHT, PixelFormat32bppPARGB);
-	if (ownerMark[sFogOfWarID])
-		for (int y = 0; y < STARMAP_SECTOR_HEIGHT; y++)
-			for (int x = 0; x < STARMAP_SECTOR_WIDTH; x++)
-				ownerMark[sFogOfWarID]->SetPixel(x, y, Color(160,0,0,0));
-
-	FCObjImage img;
-	FCWin32::GDIPlus_LoadBitmap(*m_pGalaxyBackground, img);
-	//Bild entsprechend vergrößern. Dabei Seitenverhältnisse beibehalten
-	if(STARMAP_TOTALWIDTH-img.Width()*STARMAP_TOTALHEIGHT/img.Height()<0)
-		img.Stretch_Smooth(img.Width()*STARMAP_TOTALHEIGHT/img.Height(), STARMAP_TOTALHEIGHT);
-	else
-		img.Stretch_Smooth(STARMAP_TOTALWIDTH, img.Height()*STARMAP_TOTALWIDTH/img.Width());
-
+	// Kopie der Galaxiegrafik machen und bearbeiten
+	m_pGalaxyBackground = m_pGalaxyGraphic->Clone(0,0,STARMAP_TOTALWIDTH,STARMAP_TOTALHEIGHT,m_pGalaxyGraphic->GetPixelFormat());
 	assert(m_pGalaxyBackground && m_pGalaxyBackground->GetLastStatus() == Ok);
-	delete m_pGalaxyBackground;
-	m_pGalaxyBackground = FCWin32::GDIPlus_CreateBitmap(img);
-
-	//Bild zuschneiden
-	Bitmap* cut_galaxy_background = m_pGalaxyBackground->Clone(0,0,STARMAP_TOTALWIDTH,STARMAP_TOTALHEIGHT,m_pGalaxyBackground->GetPixelFormat());
-	assert(m_pGalaxyBackground && m_pGalaxyBackground->GetLastStatus() == Ok);
-	delete m_pGalaxyBackground;
-	m_pGalaxyBackground = cut_galaxy_background;
-	assert(cut_galaxy_background && cut_galaxy_background->GetLastStatus() == Ok);
-	//no delete cut_galaxy_background here, since m_pGalaxyBackground points to cut_galaxy_background's memory now
-	cut_galaxy_background = NULL;
-	assert(m_pGalaxyBackground && m_pGalaxyBackground->GetLastStatus() == Ok);
-
+	
 	Graphics* g = Graphics::FromImage(m_pGalaxyBackground);
-	g->SetSmoothingMode(SmoothingModeHighQuality);
-	g->SetInterpolationMode(InterpolationModeHighQualityBicubic);
-	g->SetPixelOffsetMode(PixelOffsetModeHighQuality);
+	//g->SetSmoothingMode(SmoothingModeHighQuality);
+	//g->SetInterpolationMode(InterpolationModeHighQualityBicubic);
+	//g->SetPixelOffsetMode(PixelOffsetModeHighQuality);
 
+	g->SetCompositingMode( CompositingModeSourceOver );  // 'Over for tranparency
+	g->SetCompositingQuality( CompositingQualityHighSpeed );
+	g->SetPixelOffsetMode( PixelOffsetModeHighSpeed );
+	g->SetSmoothingMode( SmoothingModeHighSpeed );
+	g->SetInterpolationMode( InterpolationModeHighQuality );
+
+	CString sMinorID = "__MINOR__";
+	CString sFogOfWarID = "__FOG_OF_WAR__";
 
 	for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
 		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
@@ -1498,24 +1539,24 @@ void CGalaxyMenuView::GenerateGalaxyMap()
 			if (pDoc->GetSector(x,y).GetOwned() && pDoc->GetSector(x,y).GetScanned(pMajor->GetRaceID())
 				&& pMajor->IsRaceContacted(pDoc->GetSector(x,y).GetOwnerOfSector()) || pDoc->GetSector(x,y).GetOwnerOfSector() == pMajor->GetRaceID())
 			{
-				g->DrawImage(ownerMark[pDoc->GetSector(x,y).GetOwnerOfSector()], pt.x, pt.y, STARMAP_SECTOR_WIDTH, STARMAP_SECTOR_HEIGHT);
+				g->DrawImage(m_mOwnerMark[pDoc->GetSector(x,y).GetOwnerOfSector()], pt.x, pt.y, STARMAP_SECTOR_WIDTH, STARMAP_SECTOR_HEIGHT);
 			}
 			// Wurde der Sektor noch nicht gescannt, sprich ist noch Nebel des Krieges da?
 			else if (!pDoc->GetSector(x,y).GetScanned(pMajor->GetRaceID()) && !pDoc->GetSector(x,y).GetKnown(pMajor->GetRaceID()))
 			{
-				g->DrawImage(ownerMark[sFogOfWarID], pt.x, pt.y, STARMAP_SECTOR_WIDTH, STARMAP_SECTOR_HEIGHT);
+				g->DrawImage(m_mOwnerMark[sFogOfWarID], pt.x, pt.y, STARMAP_SECTOR_WIDTH, STARMAP_SECTOR_HEIGHT);
 			}
 			// lebt eine Minorrace darauf und der Sektor ist uns bekannt, gehört aber noch niemanden
 			else if (pDoc->GetSector(x,y).GetMinorRace() && !pDoc->GetSector(x,y).GetOwned() && pDoc->GetSector(x,y).GetKnown(pMajor->GetRaceID()))
 			{
-				g->DrawImage(ownerMark[sMinorID], pt.x, pt.y, STARMAP_SECTOR_WIDTH, STARMAP_SECTOR_HEIGHT);
+				g->DrawImage(m_mOwnerMark[sMinorID], pt.x, pt.y, STARMAP_SECTOR_WIDTH, STARMAP_SECTOR_HEIGHT);
 			}
 			// Sonne bzw. Anomalie zeichnen
 			if (pDoc->GetSector(x,y).GetScanned(pMajor->GetRaceID()))
 			{
 				if (pDoc->GetSector(x,y).GetSunSystem())
 				{
-					g->DrawImage(stars[pDoc->GetSector(x,y).GetSunColor()], pt.x, pt.y, STARMAP_SECTOR_WIDTH, STARMAP_SECTOR_HEIGHT);
+					g->DrawImage(m_vStars[pDoc->GetSector(x,y).GetSunColor()], pt.x, pt.y, STARMAP_SECTOR_WIDTH, STARMAP_SECTOR_HEIGHT);
 				}
 				else if (pDoc->GetSector(x,y).GetAnomaly())
 				{
@@ -1528,21 +1569,7 @@ void CGalaxyMenuView::GenerateGalaxyMap()
 
 	delete g;
 	g = NULL;
-
-	// Thumbnail generieren
-	if (m_pThumbnail)
-	{
-		delete m_pThumbnail;
-		m_pThumbnail = NULL;
-	}
-
-	//this code is solely since the img2.SetAlphaChannelValue(120); call below asserts due to the 24 bit depth
-	Bitmap* thirty_two_bit_galaxy_background = m_pGalaxyBackground->Clone(0, 0, m_pGalaxyBackground->GetWidth(), m_pGalaxyBackground->GetHeight(), PixelFormat32bppPARGB);
-	delete m_pGalaxyBackground;
-	m_pGalaxyBackground = thirty_two_bit_galaxy_background;
-	//no delete thirty_two_bit_galaxy_background!
-	thirty_two_bit_galaxy_background = NULL;
-
+	
 #ifdef SAVE_GALAXYIMAGE
 	FCObjImage img_to_save;
 	FCWin32::GDIPlus_LoadBitmap(*m_pGalaxyBackground, img_to_save);
@@ -1551,26 +1578,24 @@ void CGalaxyMenuView::GenerateGalaxyMap()
 	img_to_save.Save("C://"+name+".bmp");
 #endif
 
+	// Thumbnail generieren
+	if (m_pThumbnail)
+	{
+		delete m_pThumbnail;
+		m_pThumbnail = NULL;
+	}
+
 	CSize thumbSize(150, STARMAP_TOTALHEIGHT * 150 / STARMAP_TOTALWIDTH);
-	if(STARMAP_TOTALWIDTH<STARMAP_TOTALHEIGHT) thumbSize.SetSize(STARMAP_TOTALWIDTH*150/STARMAP_TOTALHEIGHT,150);//wenn es eine hohe Karte ist wird anders skaliert
+	//wenn es eine hohe Karte ist wird anders skaliert
+	if (STARMAP_TOTALWIDTH < STARMAP_TOTALHEIGHT)
+		thumbSize.SetSize(STARMAP_TOTALWIDTH*150/STARMAP_TOTALHEIGHT,150);
 
-	FCObjImage img2;
-	FCWin32::GDIPlus_LoadBitmap(*m_pGalaxyBackground, img2);
-	img2.Stretch_Smooth(thumbSize.cx, thumbSize.cy);
-	img2.SetAlphaChannelValue(120);
-	m_pThumbnail = FCWin32::GDIPlus_CreateBitmap(img2);
-
-	// aufräumen
-	for (map<CString, Bitmap*>::const_iterator it = ownerMark.begin(); it != ownerMark.end(); ++it)
-		delete it->second;
-	ownerMark.clear();
-
-	for (int i = 0; i < 7; i++)
-		if (stars[i])
-		{
-			delete stars[i];
-			stars[i] = NULL;
-		}
+	FCObjImage img;
+	FCWin32::GDIPlus_LoadBitmap(*m_pGalaxyBackground, img);
+	img.Stretch_Smooth(thumbSize.cx, thumbSize.cy);
+	img.ConvertTo32Bit();
+	img.SetAlphaChannelValue(120);
+	m_pThumbnail = FCWin32::GDIPlus_CreateBitmap(img);
 }
 
 /// Funktion scrollt zur angegebenen Position in der Galaxiemap.

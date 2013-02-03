@@ -767,7 +767,7 @@ void CBotEDoc::LoadViewGraphics(void)
 	for (std::map<CWnd *, UINT>::iterator it = views->begin(); it != views->end(); ++it)
 	{
 		if (it->second == GALAXY_VIEW)
-			continue;
+			((CGalaxyMenuView*)(it->first))->LoadRaceGraphics();
 		else if (it->second == MENUCHOOSE_VIEW)
 			((CMenuChooseView*)(it->first))->LoadRaceGraphics();
 		else if (IS_MAIN_VIEW(it->second))
