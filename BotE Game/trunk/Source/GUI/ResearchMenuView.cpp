@@ -873,7 +873,7 @@ void CResearchMenuView::OnMouseMove(UINT nFlags, CPoint point)
 	if (!pView)
 		return;
 
-	CalcLogicalPoint(point);	
+	CalcLogicalPoint(point);
 
 	ButtonReactOnMouseOver(point, &m_ResearchMainButtons);
 	if (m_bySubMenu == 0)

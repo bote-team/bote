@@ -250,7 +250,7 @@ void CShipDesignMenuView::DrawShipDesignMenue(Graphics* g)
 								oldClickedShip = j;
 
 							m_pShownShip = &pDoc->m_ShipInfoArray.GetAt(i);
-							
+
 							// Markierung worauf wir geklickt haben
 							g->FillRectangle(&SolidBrush(Color(50,200,200,200)), RectF(15,120+j*25,183,25));
 							g->DrawLine(&Gdiplus::Pen(penColor), 15, 120+j*25, 198, 120+j*25);

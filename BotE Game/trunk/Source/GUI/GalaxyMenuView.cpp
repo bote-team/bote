@@ -273,7 +273,7 @@ void CGalaxyMenuView::OnDraw(CDC* dc)
 	CSize size(STARMAP_TOTALWIDTH, STARMAP_TOTALHEIGHT);
 	Zoom(&size);
 	pDC->SetViewportExt(size);
-	
+
 	if (CIniLoader::GetInstance()->ReadValueDefault("Control", "SHOWSCROLLBARS", true))
 		SetScrollSizes(MM_TEXT, size);
 
@@ -1501,7 +1501,7 @@ void CGalaxyMenuView::GenerateGalaxyMap()
 
 	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
-	
+
 	if (!m_pGalaxyGraphic)
 	{
 		ASSERT(m_pGalaxyGraphic);
@@ -1518,7 +1518,7 @@ void CGalaxyMenuView::GenerateGalaxyMap()
 	// Kopie der Galaxiegrafik machen und bearbeiten
 	m_pGalaxyBackground = m_pGalaxyGraphic->Clone(0,0,STARMAP_TOTALWIDTH,STARMAP_TOTALHEIGHT,m_pGalaxyGraphic->GetPixelFormat());
 	assert(m_pGalaxyBackground && m_pGalaxyBackground->GetLastStatus() == Ok);
-	
+
 	Graphics* g = Graphics::FromImage(m_pGalaxyBackground);
 	//g->SetSmoothingMode(SmoothingModeHighQuality);
 	//g->SetInterpolationMode(InterpolationModeHighQualityBicubic);
@@ -1570,7 +1570,7 @@ void CGalaxyMenuView::GenerateGalaxyMap()
 
 	delete g;
 	g = NULL;
-	
+
 #ifdef SAVE_GALAXYIMAGE
 	FCObjImage img_to_save;
 	FCWin32::GDIPlus_LoadBitmap(*m_pGalaxyBackground, img_to_save);

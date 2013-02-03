@@ -92,7 +92,7 @@ int CTrade::BuyRessource(USHORT res, ULONG number, CPoint system, long empires_c
 	ts.number	= number;
 	ts.system   = system;
 	ts.price	= 0;
-	
+
 	// Alle 100 gekauften Einheiten erhöht sich der Preis an unserer Börse
 	for (int i = 0; i < ceil((float)(number / 100)); i++)
 	{
@@ -120,11 +120,11 @@ int CTrade::BuyRessource(USHORT res, ULONG number, CPoint system, long empires_c
 		m_iTaxes[res] += (int)(ts.price * m_fTax) - ts.price;
 		return 0;
 	}
-	
+
 	// Falls der Preis bei NULL liegt setzten wir den auf 1 (kostenlos gibts hier nix ;-) )
 	if (ts.price == NULL)
 		ts.price = 1;
-	
+
 	// Jetzt überprüfen ob wir das Credits auch aufbringen können, wenn wir etwas kaufen, wenn es nicht klappt, dann
 	// geben wir eine NULL zurück und setzen den Preis der Ressource wieder auf den alten
 	if ((int)ceil(ts.price * m_fTax) > empires_credits)
@@ -132,7 +132,7 @@ int CTrade::BuyRessource(USHORT res, ULONG number, CPoint system, long empires_c
 		m_iRessourcePrice[res] = oldResPrice;
 		return 0;
 	}
-	
+
 	m_TradeActions.Add(ts);
 	return (int)ceil(ts.price * m_fTax);
 }
@@ -147,7 +147,7 @@ void CTrade::SellRessource(USHORT res, ULONG number, CPoint system, bool bNotAtM
 	ts.number	= number;
 	ts.system   = system;
 	ts.price	= 0;
-	
+
 	// Alle 100 verkauften Einheiten verringert sich der Preis an unserer Börse
 	for (int i = 0; i < ceil((float)(number / 100)); i++)
 	{
@@ -162,7 +162,7 @@ void CTrade::SellRessource(USHORT res, ULONG number, CPoint system, bool bNotAtM
 		{
 			ts.price -= (int)((m_iRessourcePrice[res] * number) / 1000);
 		}
-		
+
 		// Preisverringerung pro 100 Einheiten ist (1+Ressourcennummer) * 10
 		if ((res+1)*10 > m_iRessourcePrice[res])
 			m_iRessourcePrice[res] = 1;
@@ -172,7 +172,7 @@ void CTrade::SellRessource(USHORT res, ULONG number, CPoint system, bool bNotAtM
 
 	if ((int)ceil((float)(number / 100)) != 0)
 		ts.price /=  (int)ceil((float)(number / 100));
-	
+
 	// Nur bei bNotAtMarket == false wird die Aktion ins Feld geschrieben, sonst werden nur die neuen Preise an der Börse berechnet
 	// und die Steuern in das Feld m_iTaxes geschrieben
 	if (bNotAtMarket)
@@ -180,7 +180,7 @@ void CTrade::SellRessource(USHORT res, ULONG number, CPoint system, bool bNotAtM
 		m_iTaxes[res] += (int)(ts.price * m_fTax) - ts.price;
 		return;
 	}
-	
+
 	// Falls der Preis bei NULL liegt setzten wir den auf 1 (kostenlos gibts hier nix ;-) )
 	if (ts.price == NULL)
 		ts.price = -1;

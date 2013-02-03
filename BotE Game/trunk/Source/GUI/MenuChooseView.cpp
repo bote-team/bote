@@ -34,7 +34,7 @@ BEGIN_MESSAGE_MAP(CMenuChooseView, CView)
 	ON_WM_LBUTTONUP()
 	ON_WM_MOUSEMOVE()
 	ON_WM_MOUSELEAVE()
-	//}}AFX_MSG_MAP	
+	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 CMenuChooseView::CMenuChooseView() :
@@ -186,7 +186,7 @@ void CMenuChooseView::OnDraw(CDC* pDC)
 	int nActiveMainView = resources::pMainFrame->GetActiveView(0, 1);
 	if (nActiveMainView >= GALAXY_VIEW && nActiveMainView <= EMPIRE_VIEW)
 		m_Buttons.GetAt(nActiveMainView - 1)->SetState(BUTTON_STATE::DEACTIVATED);
-		
+
 	// Geheimdienstbutton deaktivieren, solange keine anderen Majors bekannt sind
 	// Diplomatiebutton deaktivieren, solange gar keine anderen Rassen bekannt sind
 	if (!m_bKnowOtherRaces)
@@ -402,7 +402,7 @@ void CMenuChooseView::OnLButtonUp(UINT nFlags, CPoint point)
 		CSoundManager::GetInstance()->StopMessages(TRUE);
 		client.EndOfRound(pDoc);
 	}
-	
+
 	short button = -1;
 	for (int i = 0; i < m_Buttons.GetSize(); i++)
 		if (m_Buttons.GetAt(i)->GetState() != BUTTON_STATE::DEACTIVATED && m_Buttons.GetAt(i)->ClickedOnButton(point))
@@ -480,7 +480,7 @@ void CMenuChooseView::OnLButtonUp(UINT nFlags, CPoint point)
 void CMenuChooseView::OnMouseMove(UINT nFlags, CPoint point)
 {
 	// TODO: Fügen Sie hier Ihren Meldungsbehandlungscode ein, und/oder benutzen Sie den Standard.
-	
+
 	// MouseTracking aufsetzen (damit wir mitbekommen, wann die Maus die View verlässt)
 	TRACKMOUSEEVENT strMEvent;
 	strMEvent.cbSize = sizeof(strMEvent);
@@ -571,11 +571,11 @@ void CMenuChooseView::OnMouseMove(UINT nFlags, CPoint point)
 void CMenuChooseView::OnMouseLeave()
 {
 	// TODO: Fügen Sie hier Ihren Meldungsbehandlungscode ein, und/oder benutzen Sie den Standard.
-	
+
 	// aktiverte Buttons auf normal setzen
 	for (int i = 0; i < m_Buttons.GetSize(); i++)
 		m_Buttons.GetAt(i)->Deactivate();
-	
+
 	Invalidate(FALSE);
 
 	__super::OnMouseLeave();

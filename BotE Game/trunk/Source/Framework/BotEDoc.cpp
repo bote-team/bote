@@ -2896,8 +2896,8 @@ void CBotEDoc::CalcSystemAttack()
 								GetSector(p.x, p.y).SetTakenSector(FALSE);
 								// Der Angreifer gilt nun als Koloniebesitzer
 								GetSector(p.x, p.y).SetColonyOwner(attacker);
-							}							
-							
+							}
+
 							// ist die Moral unter 50, so wird sie auf 50 gesetzt
 							if (GetSystem(p.x, p.y).GetMoral() < 50)
 								GetSystem(p.x, p.y).SetMoral(50 - GetSystem(p.x, p.y).GetMoral());
@@ -2910,7 +2910,7 @@ void CBotEDoc::CalcSystemAttack()
 								CMajor* pDefenderMajor = dynamic_cast<CMajor*>(defender);
 								assert(pDefenderMajor);
 								CString eventText = pDefenderMajor->GetMoralObserver()->AddEvent(16, pDefenderMajor->GetRaceMoralNumber(), param);
-							
+
 								// Eventnachricht hinzufügen
 								if (!eventText.IsEmpty())
 								{
@@ -5403,8 +5403,8 @@ void CBotEDoc::CalcEndDataForNextRound()
 				}
 				// Den ersten Besitzer als Historie merken. Diese Variable nicht zurücksetzen!
 				// Sonst würde dieses System nicht mehr serialisiert werden, da es ja niemandem mehr gehört...
-				// se->SetColonyOwner(""); 
-				
+				// se->SetColonyOwner("");
+
 				// in allen Sektoren alle Schiffe aus den Sektoren nehmen
 				se->SetIsStationBuilding(false, ID);
 				se->UnsetOutpost(ID);

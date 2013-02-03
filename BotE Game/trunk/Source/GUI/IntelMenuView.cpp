@@ -872,7 +872,7 @@ void CIntelMenuView::DrawIntelAttackMenu(Graphics* g)
 	int numberOfReports = 0;
 	short counter = pIntel->GetIntelReports()->GetActiveReport() - 10 + m_iOldClickedIntelReport;
 	short oldClickedReport = pIntel->GetIntelReports()->GetActiveReport();
-	
+
 	for (int i = 0; i < pIntel->GetIntelReports()->GetNumberOfReports(); i++)
 	{
 		CIntelObject* intelObj = pIntel->GetIntelReports()->GetReport(i);

@@ -123,7 +123,7 @@ CString CTroopInfo::GetTooltip() const
 	sName = CHTMLStringBuilder::GetHTMLCenter(sName);
 	sName += CHTMLStringBuilder::GetHTMLStringNewLine();
 	sName += CHTMLStringBuilder::GetHTMLStringNewLine();
-		
+
 	CString sValues = "";
 	CString s;
 	s.Format("%s: %d",CLoc::GetString("OPOWER"), GetOffense());
@@ -155,7 +155,7 @@ CString CTroopInfo::GetTooltip() const
 	CString sDesc = GetDescription();
 	sDesc = CHTMLStringBuilder::GetHTMLColor(sDesc, _T("silver"));
 	sDesc = CHTMLStringBuilder::GetHTMLHeader(sDesc, _T("h5"));
-		
+
 	CString sTip = sName + sValues + sDesc;
 	return sTip;
 }

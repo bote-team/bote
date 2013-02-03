@@ -30,7 +30,7 @@ protected:
 	CMyButton *m_RoundEnd;			///< der Rundenende Button
 	CSize m_TotalSize;				///< Größe der View in logischen Koordinaten
 	static CMajor* m_pPlayersRace;	///< Zeiger auf Spielerrasse
-	
+
 // Operationen
 public:
 	/// Funktion führt Aufgaben aus, welche zu jeder neuen Runde von der View ausgeführt werden müssen.
@@ -76,7 +76,7 @@ protected:
 	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
 	afx_msg void OnMouseLeave();
 	//}}AFX_MSG
-	DECLARE_MESSAGE_MAP()	
+	DECLARE_MESSAGE_MAP()
 };
 
 /////////////////////////////////////////////////////////////////////////////

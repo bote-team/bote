@@ -856,7 +856,7 @@ CString CTransportMenuView::CreateTooltip(void)
 		CTroop* pTroop = m_vShipTroops[m_nActiveTroopInShip].second;
 		BYTE id = pTroop->GetID();
 		return pDoc->m_TroopInfo.GetAt(id).GetTooltip();
-	}	
+	}
 
 	return "";
 }

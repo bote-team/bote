@@ -321,7 +321,7 @@ void CShipBottomView::DrawShipContent() {
 			}
 		}
 	}
-	
+
 	// Die Buttons für vor und zurück darstellen, wenn wir mehr als 9 Schiffe in dem Sektor sehen
 	m_bShowNextButton = FALSE;
 	if (counter > 9 && counter > m_iPage*9)

@@ -30,7 +30,7 @@ public:
 	/// Funktion gibt die Nummer des angezeigten Techgebietes zurück.
 	/// @return Nummer des angezeigten Techgebietes
 	int GetCurrentTech() const { return m_nCurrentTech; }
-	
+
 	/// Funktion legt fest, zu welchem Techgebiet die Informationen angezeigt werden
 	/// @param nTech Nummer des Techgebiets
 	void SetCurrentTech(int nTech) { m_nCurrentTech = nTech; }
