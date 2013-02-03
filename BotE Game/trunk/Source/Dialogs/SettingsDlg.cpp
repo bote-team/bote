@@ -159,11 +159,11 @@ BOOL CSettingsDlg::OnInitDialog()
 	}
 
 	//Galaxyshape
-	m_comboGalaxyshape.AddString("CLASSIC");
-	m_comboGalaxyshape.AddString("PATTERN1");
-	m_comboGalaxyshape.AddString("PATTERN2");
-	m_comboGalaxyshape.AddString("PATTERN3");
-	m_comboGalaxyshape.AddString("PATTERN4");
+	m_comboGalaxyshape.AddString("irregular");
+	m_comboGalaxyshape.AddString("elliptic");
+	m_comboGalaxyshape.AddString("spiral");
+	m_comboGalaxyshape.AddString("ring");
+	m_comboGalaxyshape.AddString("lenticular");
     int genMode=0;
 	pIni->ReadValue("Special", "GENERATIONMODE", genMode);
 	m_comboGalaxyshape.SetCurSel(genMode);

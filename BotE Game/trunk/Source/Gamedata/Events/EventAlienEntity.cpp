@@ -4,6 +4,7 @@
 #include "BotE.h"
 #include "BotEDoc.h"
 #include "Races\RaceController.h"
+#include "GraphicPool.h"
 
 IMPLEMENT_SERIAL (CEventAlienEntity, CObject, 1)
 

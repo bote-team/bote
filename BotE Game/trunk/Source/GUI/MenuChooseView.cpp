@@ -13,6 +13,7 @@
 #include "Races\RaceController.h"
 #include "IniLoader.h"
 #include "General/Loc.h"
+#include "GraphicPool.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -31,9 +32,8 @@ BEGIN_MESSAGE_MAP(CMenuChooseView, CView)
 	ON_WM_LBUTTONDOWN()
 	ON_WM_ERASEBKGND()
 	ON_WM_LBUTTONUP()
-	//}}AFX_MSG_MAP
 	ON_WM_MOUSEMOVE()
-	ON_WM_RBUTTONUP()
+	//}}AFX_MSG_MAP	
 END_MESSAGE_MAP()
 
 CMenuChooseView::CMenuChooseView() :
@@ -115,22 +115,56 @@ void CMenuChooseView::OnDraw(CDC* pDC)
 	// Buttons zeichnen
 	// Den Rundenendebutton
 	if (pDoc->m_bRoundEndPressed)
-		m_RoundEnd->SetState(2);
-	else if (m_RoundEnd->GetState() != 1)
-		m_RoundEnd->SetState(0);
+		m_RoundEnd->SetState(BUTTON_STATE::DEACTIVATED);
+	else if (m_RoundEnd->GetState() != BUTTON_STATE::ACTIVATED)
+		m_RoundEnd->SetState(BUTTON_STATE::NORMAL);
 	m_RoundEnd->DrawButton(*g, pDoc->GetGraphicPool(), Gdiplus::Font(CComBSTR(fontName), fontSize), fontBrush);
+
 	// Wenn wir im Systemmenü sind, prüfen, ob der dazugehörige Button auch inaktiv ist.
 	// müssen das machen, da wir auch mittels Doppelklick auf den Sektor in die Systemansicht gelangen können
 	// oder in die Forschungs oder Imperiumsansicht
 	for (int j = 0; j < m_Buttons.GetSize(); j++)
-		if (resources::pMainFrame->GetActiveView(0, 1) == j+1 && m_Buttons.GetAt(j)->GetState() != 2)
+	{
+		if (resources::pMainFrame->GetActiveView(0, 1) == j + 1 && m_Buttons.GetAt(j)->GetState() != BUTTON_STATE::DEACTIVATED)
 		{
 			for (int i = 0; i < m_Buttons.GetSize(); i++)
-				if (m_Buttons.GetAt(i)->GetState() == 2)
-					m_Buttons.GetAt(i)->SetState(0);
-			m_Buttons.GetAt(j)->SetState(2);
+				if (m_Buttons.GetAt(i)->GetState() == BUTTON_STATE::DEACTIVATED)
+					m_Buttons.GetAt(i)->SetState(BUTTON_STATE::NORMAL);
+
+			m_Buttons.GetAt(j)->SetState(BUTTON_STATE::DEACTIVATED);
+		}
+	}
+
+	// Geheimdienstbutton deaktivieren, solange keine anderen Majors bekannt sind
+	// Diplomatiebutton deaktivieren, solange gar keine anderen Rassen bekannt sind
+	bool bKnowOtherMajors = false;
+	bool bKnowOtherRaces = false;
+	map<CString, CRace*>* pmRaces = pDoc->GetRaceCtrl()->GetRaces();
+	for (map<CString, CRace*>::const_iterator it = pmRaces->begin(); it != pmRaces->end(); ++it)
+	{
+		if (it->second->IsMajor() && it->first != pMajor->GetRaceID() && pMajor->IsRaceContacted(it->first))
+		{
+			bKnowOtherMajors = true;
+			bKnowOtherRaces = true;
 			break;
 		}
+		else if (!bKnowOtherRaces && it->first != pMajor->GetRaceID() && pMajor->IsRaceContacted(it->first))
+		{
+			bKnowOtherRaces = true;
+		}
+	}
+
+	if (!bKnowOtherRaces)
+		m_Buttons.GetAt(4)->SetState(BUTTON_STATE::DEACTIVATED);
+	else if (m_Buttons.GetAt(4)->GetState() != BUTTON_STATE::DEACTIVATED)
+		m_Buttons.GetAt(4)->SetState(BUTTON_STATE::NORMAL);
+
+	if (!bKnowOtherMajors)
+		m_Buttons.GetAt(3)->SetState(BUTTON_STATE::DEACTIVATED);
+	else if (m_Buttons.GetAt(3)->GetState() != BUTTON_STATE::DEACTIVATED)
+		m_Buttons.GetAt(3)->SetState(BUTTON_STATE::NORMAL);
+
+	// Buttons zeichnen
 	for (int i = 0; i < m_Buttons.GetSize(); i++)
 		m_Buttons.GetAt(i)->DrawButton(*g, pDoc->GetGraphicPool(), Gdiplus::Font(CComBSTR(fontName), fontSize), fontBrush);
 
@@ -347,7 +381,7 @@ void CMenuChooseView::OnLButtonUp(UINT nFlags, CPoint point)
 	CalcLogicalPoint(point);
 	CGalaxyMenuView::SetMoveShip(FALSE);
 
-	if (m_RoundEnd->ClickedOnButton(point) && !pDoc->m_bRoundEndPressed)
+	if (!pDoc->m_bRoundEndPressed && m_RoundEnd->GetState() != BUTTON_STATE::DEACTIVATED && m_RoundEnd->ClickedOnButton(point))
 	{
 		pDoc->m_bRoundEndPressed = true;
 		CRect r = m_RoundEnd->GetRect();
@@ -356,21 +390,22 @@ void CMenuChooseView::OnLButtonUp(UINT nFlags, CPoint point)
 		CSoundManager::GetInstance()->StopMessages(TRUE);
 		client.EndOfRound(pDoc);
 	}
+	
 	short button = -1;
 	for (int i = 0; i < m_Buttons.GetSize(); i++)
-		if (m_Buttons.GetAt(i)->ClickedOnButton(point))
+		if (m_Buttons.GetAt(i)->GetState() != BUTTON_STATE::DEACTIVATED && m_Buttons.GetAt(i)->ClickedOnButton(point))
 		{
 			button = i;
 			// Button auf inaktiv schalten, anderen inaktiven Button auf normal schalten
 			for (int j = 0; j < m_Buttons.GetSize(); j++)
-				if (m_Buttons.GetAt(j)->GetState() == 2)
+				if (m_Buttons.GetAt(j)->GetState() == BUTTON_STATE::DEACTIVATED)
 				{
-					m_Buttons.GetAt(j)->SetState(0);
+					m_Buttons.GetAt(j)->SetState(BUTTON_STATE::NORMAL);
 					CRect r = m_Buttons.GetAt(j)->GetRect();
 					CalcDeviceRect(r);
 					InvalidateRect(r, FALSE);
 				}
-			m_Buttons.GetAt(i)->SetState(2);
+			m_Buttons.GetAt(i)->SetState(BUTTON_STATE::DEACTIVATED);
 			CRect r = m_Buttons.GetAt(i)->GetRect();
 			CalcDeviceRect(r);
 			InvalidateRect(r, FALSE);
@@ -462,26 +497,35 @@ void CMenuChooseView::OnMouseMove(UINT nFlags, CPoint point)
 	CalcLogicalPoint(point);
 
 	// Rundenendebutton
-	if (m_RoundEnd->ClickedOnButton(point))
+	if (m_RoundEnd->GetState() != BUTTON_STATE::DEACTIVATED)
 	{
-		if (m_RoundEnd->Activate())
+		if (m_RoundEnd->ClickedOnButton(point))
 		{
-			CSoundManager::GetInstance()->PlaySound(SNDMGR_SOUND_MAINMENU);
-			CRect r = m_RoundEnd->GetRect();
-			CalcDeviceRect(r);
-			InvalidateRect(r, FALSE);
+			if (m_RoundEnd->Activate())
+			{
+				CSoundManager::GetInstance()->PlaySound(SNDMGR_SOUND_MAINMENU);
+				CRect r = m_RoundEnd->GetRect();
+				CalcDeviceRect(r);
+				InvalidateRect(r, FALSE);
+			}
+		}
+		else
+		{
+			if (m_RoundEnd->Deactivate())
+			{
+				CRect r = m_RoundEnd->GetRect();
+				CalcDeviceRect(r);
+				InvalidateRect(r, FALSE);
+			}
 		}
 	}
-	else
-		if (m_RoundEnd->Deactivate())
-		{
-			CRect r = m_RoundEnd->GetRect();
-			CalcDeviceRect(r);
-			InvalidateRect(r, FALSE);
-		}
-// restlichen Buttons
+
+	// restlichen Buttons
 	for (int i = 0; i < m_Buttons.GetSize(); i++)
 	{
+		if (m_Buttons.GetAt(i)->GetState() == BUTTON_STATE::DEACTIVATED)
+			continue;
+
 		if (m_Buttons.GetAt(i)->ClickedOnButton(point))
 		{
 			if (m_Buttons.GetAt(i)->Activate())
@@ -525,10 +569,4 @@ void CMenuChooseView::CalcDeviceRect(CRect &rect)
 	p2.x *= (float)client.Width() / (float)m_TotalSize.cx;
 	p2.y *= (float)client.Height() / (float)m_TotalSize.cy;
 	rect.SetRect(p1, p2);
-}
-
-void CMenuChooseView::OnRButtonUp(UINT nFlags, CPoint point)
-{
-	// TODO: Add your message handler code here and/or call default
-	CView::OnRButtonUp(nFlags, point);
 }

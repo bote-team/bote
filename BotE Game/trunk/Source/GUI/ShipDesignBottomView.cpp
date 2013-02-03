@@ -7,6 +7,7 @@
 #include "Races\RaceController.h"
 #include "Graphic\memdc.h"
 #include "General/Loc.h"
+#include "GraphicPool.h"
 
 // CShipDesignBottomView
 

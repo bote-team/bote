@@ -28,14 +28,20 @@ public:
 	// Funktionen
 	/// Funktion liefert einen Zeiger auf eine Grafik.
 	/// @param name Name der Grafik.
-	CBitmap* GetGraphic(const CString &name);
-
 	Bitmap* GetGDIGraphic(const CString &name);
+
+	/*
+	// <obsolete>
+	/// Funktion liefert einen Zeiger auf eine Grafik.
+	/// @param name Name der Grafik.
+	CBitmap* GetGraphic(const CString &name);
+	*/
 
 private:
 	// Attribute
+	// <obsolete>
 	/// Map welche zu einem Grafiknamen die passende Grafik bereithält.
-	CMap<CString, LPCSTR, CBitmap*, CBitmap*> m_Graphics;
+	//CMap<CString, LPCSTR, CBitmap*, CBitmap*> m_Graphics;
 
 	/// Map welche zu einem Grafiknamen die passende Grafik bereithält.
 	CMap<CString, LPCSTR, Bitmap*, Bitmap*> m_GDIGraphics;

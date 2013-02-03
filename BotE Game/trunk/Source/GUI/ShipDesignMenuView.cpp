@@ -10,6 +10,7 @@
 #include "Graphic\memdc.h"
 #include "General/Loc.h"
 #include "Ships/Ships.h"
+#include "GraphicPool.h"
 
 IMPLEMENT_DYNCREATE(CShipDesignMenuView, CMainBaseView)
 

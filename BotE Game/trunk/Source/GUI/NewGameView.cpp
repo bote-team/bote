@@ -85,7 +85,7 @@ void CNewGameView::OnDraw(CDC* dc)
 
 	CMyMemDC pDC(dc);
 	CRect clientRect;
-	GetClientRect(&clientRect);
+	GetWindowRect(&clientRect);
 
 	double dSizeModX = m_TotalSize.cx / (double)clientRect.Width();
 	double dSizeModY = m_TotalSize.cy / (double)clientRect.Height();
@@ -156,9 +156,9 @@ void CNewGameView::OnDraw(CDC* dc)
 	format.SetAlignment(StringAlignmentFar);
 	format.SetLineAlignment(StringAlignmentFar);
 
-	CString sVersion = "Birth of the Empires Pre-Alpha7 V";
+	CString sVersion = "Birth of the Empires Alpha7 RC V";
 	sVersion += VERSION_INFORMATION;
-	sVersion += "\n© by Sir Pustekuchen 2012";
+	sVersion += "\n© by Sir Pustekuchen 2013";
 	g.DrawString(CComBSTR(sVersion), -1, &font2, RectF(0, 0, m_TotalSize.cx, m_TotalSize.cy), &format, &SolidBrush(Color::WhiteSmoke));
 
 	g.ReleaseHDC(pDC->GetSafeHdc());

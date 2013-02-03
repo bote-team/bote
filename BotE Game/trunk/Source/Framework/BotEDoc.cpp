@@ -17,6 +17,7 @@
 #include "ImageStone/ImageStone.h"
 #include "IOData.h"
 #include "General/Loc.h"
+#include "GraphicPool.h"
 
 #include "Races\RaceController.h"
 #include "Races\DiplomacyController.h"
@@ -997,11 +998,11 @@ void CBotEDoc::GenerateGalaxy()
 	{
 		CString sAppPath = CIOData::GetInstance()->GetAppPath();
 		CString filePath = "";
-		filePath.Format("%sGraphics\\Galaxies\\pattern%d.boj",sAppPath,nGenerationMode);
+		filePath.Format("%sGraphics\\Galaxies\\shapes\\pattern%d.boj",sAppPath,nGenerationMode);
 		std::auto_ptr<Bitmap> GalaxyPattern(Bitmap::FromFile(CComBSTR(filePath)));
 		if (GalaxyPattern.get() == NULL)
 		{
-			sAppPath.Format("pattern%d.boj not found! using standart pattern", nGenerationMode);
+			sAppPath.Format("pattern%d.boj not found! using standard pattern", nGenerationMode);
 			AfxMessageBox(sAppPath);
 
 		}

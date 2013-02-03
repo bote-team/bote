@@ -10,6 +10,7 @@
 #include "Graphic\memdc.h"
 #include "HTMLStringBuilder.h"
 #include "General/Loc.h"
+#include "GraphicPool.h"
 
 // CResearchMenuView
 

@@ -12,6 +12,8 @@
 #include "HTMLStringBuilder.h"
 #include "Ships/Ships.h"
 #include "General/Loc.h"
+#include "GraphicPool.h"
+
 // CCombatMenuView
 
 IMPLEMENT_DYNCREATE(CCombatMenuView, CMainBaseView)
@@ -87,22 +89,22 @@ void CCombatMenuView::OnNewRound()
 {
 	// angeklickten Button zurücksetzen
 	for (int i = 0; i < m_CombatDecisionButtons.GetSize(); i++)
-		m_CombatDecisionButtons[i]->SetState(0);
+		m_CombatDecisionButtons[i]->SetState(BUTTON_STATE::NORMAL);
 
 	for (int i = 0; i < m_CombatTacticButtons.GetSize(); i++)
-		m_CombatTacticButtons[i]->SetState(0);
+		m_CombatTacticButtons[i]->SetState(BUTTON_STATE::NORMAL);
 	// ersten Button aktivieren
 	if (m_CombatTacticButtons.GetSize())
-		m_CombatTacticButtons[0]->SetState(2);
+		m_CombatTacticButtons[0]->SetState(BUTTON_STATE::DEACTIVATED);
 
 	for (int i = 0; i < m_CombatOrderButtons.GetSize(); i++)
-		m_CombatOrderButtons[i]->SetState(0);
+		m_CombatOrderButtons[i]->SetState(BUTTON_STATE::NORMAL);
 
 	// kleine Buttons deaktivieren
 	for (int i = 0; i < m_FriendShipsCursor.GetSize(); i++)
-		m_FriendShipsCursor[i]->SetState(2);
+		m_FriendShipsCursor[i]->SetState(BUTTON_STATE::DEACTIVATED);
 	for (int i = 0; i < m_EnemyShipsCursor.GetSize(); i++)
-		m_EnemyShipsCursor[i]->SetState(2);
+		m_EnemyShipsCursor[i]->SetState(BUTTON_STATE::DEACTIVATED);
 
 	m_bInOrderMenu = false;
 	m_vInvolvedShips.RemoveAll();
@@ -533,8 +535,8 @@ void CCombatMenuView::DrawCombatOrderMenue(Graphics* g)
 		if (nCol == 2)
 		{
 			// Button für Weiter aktivieren
-			if (m_FriendShipsCursor[1]->GetState() == 2)
-				m_FriendShipsCursor[1]->SetState(0);
+			if (m_FriendShipsCursor[1]->GetState() == BUTTON_STATE::DEACTIVATED)
+				m_FriendShipsCursor[1]->SetState(BUTTON_STATE::NORMAL);
 			break;
 		}
 
@@ -569,8 +571,8 @@ void CCombatMenuView::DrawCombatOrderMenue(Graphics* g)
 	if (m_nPageFriends > 0)
 	{
 		// Button für zurück einblenden
-		if (m_FriendShipsCursor[0]->GetState() == 2)
-			m_FriendShipsCursor[0]->SetState(0);
+		if (m_FriendShipsCursor[0]->GetState() == BUTTON_STATE::DEACTIVATED)
+			m_FriendShipsCursor[0]->SetState(BUTTON_STATE::NORMAL);
 	}
 
 	nRow = 0;
@@ -594,8 +596,8 @@ void CCombatMenuView::DrawCombatOrderMenue(Graphics* g)
 		if (nCol == 2)
 		{
 			// Button für Weiter aktivieren
-			if (m_EnemyShipsCursor[1]->GetState() == 2)
-				m_EnemyShipsCursor[1]->SetState(0);
+			if (m_EnemyShipsCursor[1]->GetState() == BUTTON_STATE::DEACTIVATED)
+				m_EnemyShipsCursor[1]->SetState(BUTTON_STATE::NORMAL);
 			break;
 		}
 
@@ -615,8 +617,8 @@ void CCombatMenuView::DrawCombatOrderMenue(Graphics* g)
 	if (m_nPageEnemies > 0)
 	{
 		// Button für zurück einblenden
-		if (m_EnemyShipsCursor[0]->GetState() == 2)
-			m_EnemyShipsCursor[0]->SetState(0);
+		if (m_EnemyShipsCursor[0]->GetState() == BUTTON_STATE::DEACTIVATED)
+			m_EnemyShipsCursor[0]->SetState(BUTTON_STATE::NORMAL);
 	}
 
 	// Beschreibungstext hinzufügen
@@ -715,7 +717,7 @@ void CCombatMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 				m_bInOrderMenu = true;
 				Invalidate();
 				for (int i = 0; i < m_CombatDecisionButtons.GetSize(); i++)
-					m_CombatDecisionButtons[i]->SetState(0);
+					m_CombatDecisionButtons[i]->SetState(BUTTON_STATE::NORMAL);
 			}
 			else
 			{
@@ -743,7 +745,7 @@ void CCombatMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 				m_bInOrderMenu = false;
 				Invalidate();
 				for (int i = 0; i < m_CombatOrderButtons.GetSize(); i++)
-					m_CombatOrderButtons[i]->SetState(0);
+					m_CombatOrderButtons[i]->SetState(BUTTON_STATE::NORMAL);
 			}
 			else
 			{
@@ -794,9 +796,9 @@ void CCombatMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			m_nPageEnemies = 0;
 			// kleine Buttons deaktivieren
 			for (int i = 0; i < m_FriendShipsCursor.GetSize(); i++)
-				m_FriendShipsCursor[i]->SetState(2);
+				m_FriendShipsCursor[i]->SetState(BUTTON_STATE::DEACTIVATED);
 			for (int i = 0; i < m_EnemyShipsCursor.GetSize(); i++)
-				m_EnemyShipsCursor[i]->SetState(2);
+				m_EnemyShipsCursor[i]->SetState(BUTTON_STATE::DEACTIVATED);
 
 			Invalidate();
 			return;
@@ -815,7 +817,7 @@ void CCombatMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 				// aktuell eingestellt Befehl an das Schiff übergeben
 				int nOrder = -1;
 				for (int j = 0; j < m_CombatTacticButtons.GetSize(); j++)
-					if (m_CombatTacticButtons[j]->GetState() == 2)
+					if (m_CombatTacticButtons[j]->GetState() == BUTTON_STATE::DEACTIVATED)
 					{
 						nOrder = j;
 						break;
@@ -911,7 +913,7 @@ void CCombatMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 				// aktuell eingestellt Befehl an das Schiff übergeben
 				int nOrder = -1;
 				for (int j = 0; j < m_CombatTacticButtons.GetSize(); j++)
-					if (m_CombatTacticButtons[j]->GetState() == 2)
+					if (m_CombatTacticButtons[j]->GetState() == BUTTON_STATE::DEACTIVATED)
 					{
 						nOrder = j;
 						break;
@@ -976,9 +978,9 @@ void CCombatMenuView::OnRButtonDown(UINT nFlags, CPoint point)
 		m_nPageEnemies = 0;
 		// kleine Buttons deaktivieren
 		for (int i = 0; i < m_FriendShipsCursor.GetSize(); i++)
-			m_FriendShipsCursor[i]->SetState(2);
+			m_FriendShipsCursor[i]->SetState(BUTTON_STATE::DEACTIVATED);
 		for (int i = 0; i < m_EnemyShipsCursor.GetSize(); i++)
-			m_EnemyShipsCursor[i]->SetState(2);
+			m_EnemyShipsCursor[i]->SetState(BUTTON_STATE::DEACTIVATED);
 
 		Invalidate();
 		return;

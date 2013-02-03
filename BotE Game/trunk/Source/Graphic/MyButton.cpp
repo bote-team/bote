@@ -1,14 +1,15 @@
 #include "StdAfx.h"
 #include "MyButton.h"
 #include "mytrace.h"
+#include "GraphicPool.h"
 
 //////////////////////////////////////////////////////////////////////
 // Konstruktion/Destruktion
 //////////////////////////////////////////////////////////////////////
 CMyButton::CMyButton(CPoint point, CSize size, const CString& text, const CString& normGraphicName,
-					 const CString& inactiveGraphicName, const CString& activeGraphicName) : m_KO(point), m_Size(size),
-					 m_strText(text), m_strNormal(normGraphicName), m_strInactive(inactiveGraphicName),
-					 m_strActive(activeGraphicName), m_byStatus(0)
+					 const CString& inactiveGraphicName, const CString& activeGraphicName) : m_ptKO(point), m_szSize(size),
+					 m_sText(text), m_sNormal(normGraphicName), m_sInactive(inactiveGraphicName),
+					 m_sActive(activeGraphicName), m_nStatus(BUTTON_STATE::NORMAL)
 {
 }
 
@@ -19,61 +20,61 @@ CMyButton::~CMyButton()
 //////////////////////////////////////////////////////////////////////
 // sonstige Funktionen
 //////////////////////////////////////////////////////////////////////
-BOOLEAN CMyButton::ClickedOnButton(const CPoint& pt)
+bool CMyButton::ClickedOnButton(const CPoint& pt) const
 {
-	return CRect(m_KO.x, m_KO.y, m_KO.x+m_Size.cx, m_KO.y+m_Size.cy).PtInRect(pt);
+	return (CRect(m_ptKO.x, m_ptKO.y, m_ptKO.x+m_szSize.cx, m_ptKO.y+m_szSize.cy).PtInRect(pt) == TRUE);
 }
 
-void CMyButton::DrawButton(Gdiplus::Graphics &g, CGraphicPool* graphicPool, Gdiplus::Font &font, Gdiplus::SolidBrush &brush)
+void CMyButton::DrawButton(Gdiplus::Graphics &g, CGraphicPool* graphicPool, Gdiplus::Font &font, Gdiplus::SolidBrush &brush) const
 {
 	ASSERT(graphicPool);
 
-	Bitmap* graphic = NULL;
 	CString sFile;
-	switch (m_byStatus)
+	switch (m_nStatus)
 	{
-	case 0:  sFile = m_strNormal; break;
-	case 1:  sFile = m_strActive; break;
-	default: sFile = m_strInactive;
+	case 0:  sFile = m_sNormal; break;
+	case 1:  sFile = m_sActive; break;
+	default: sFile = m_sInactive;
 	}
 
-	graphic = graphicPool->GetGDIGraphic(sFile);
-	if (graphic)
+	if (Bitmap* pGraphic = graphicPool->GetGDIGraphic(sFile))
 	{
 		// Buttongrafik zeichnen
-		g.DrawImage(graphic, m_KO.x, m_KO.y, m_Size.cx, m_Size.cy);
+		g.DrawImage(pGraphic, m_ptKO.x, m_ptKO.y, m_szSize.cx, m_szSize.cy);
 		// Text auf dem Button zeichnen
-		if (m_strText != "")
+		if (m_sText != "")
 		{
 			Gdiplus::StringFormat fontFormat;
 			fontFormat.SetAlignment(StringAlignmentCenter);
 			fontFormat.SetLineAlignment(StringAlignmentCenter);
 			fontFormat.SetFormatFlags(StringFormatFlagsNoWrap);
-			g.DrawString(CComBSTR(m_strText), -1, &font, RectF((REAL)m_KO.x, (REAL)m_KO.y + 2, (REAL)m_Size.cx, (REAL)m_Size.cy), &fontFormat, &brush);
+			g.DrawString(CComBSTR(m_sText), -1, &font, RectF((REAL)m_ptKO.x, (REAL)m_ptKO.y + 2, (REAL)m_szSize.cx, (REAL)m_szSize.cy), &fontFormat, &brush);
 		}
 	}
 	else
+	{
 		MYTRACE("general")(MT::LEVEL_WARNING, "Could not load buttongraphic" + sFile + "\n");
+	}
 }
 
-BOOLEAN CMyButton::Activate()
+bool CMyButton::Activate()
 {
 	// nicht deaktiviert
-	if (m_byStatus == 0)
+	if (m_nStatus == BUTTON_STATE::NORMAL)
 	{
-		m_byStatus = 1;
-		return TRUE;
+		m_nStatus = BUTTON_STATE::ACTIVATED;
+		return true;
 	}
-	return FALSE;
+	return false;
 }
 
-BOOLEAN CMyButton::Deactivate()
+bool CMyButton::Deactivate()
 {
 	// nicht deaktiviert
-	if (m_byStatus == 1)
+	if (m_nStatus == BUTTON_STATE::ACTIVATED)
 	{
-		m_byStatus = 0;
-		return TRUE;
+		m_nStatus = BUTTON_STATE::NORMAL;
+		return true;
 	}
-	return FALSE;
+	return false;
 }

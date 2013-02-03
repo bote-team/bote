@@ -10,6 +10,7 @@
 #include "Graphic\memdc.h"
 #include "Ships/Ships.h"
 #include "General/Loc.h"
+#include "GraphicPool.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

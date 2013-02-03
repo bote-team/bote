@@ -16,7 +16,7 @@
 #include "Ships/Ships.h"
 #include "General/Loc.h"
 #include "Galaxy/Anomaly.h"
-
+#include "GraphicPool.h"
 #include <cassert>
 
 #ifdef _DEBUG

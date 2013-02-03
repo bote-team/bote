@@ -6,6 +6,7 @@
 #include "ResearchBottomView.h"
 #include "Races\RaceController.h"
 #include "Graphic\memdc.h"
+#include "GraphicPool.h"
 
 // CResearchBottomView
 

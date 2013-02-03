@@ -6,7 +6,19 @@
  *
  */
 #pragma once
-#include "GraphicPool.h"
+
+// forward declaration
+class CGraphicPool;
+
+namespace BUTTON_STATE
+{
+	enum Typ
+	{
+		NORMAL = 0,
+		ACTIVATED = 1,
+		DEACTIVATED = 2
+	};
+}
 
 /**
  * Buttonklasse welche verschiedene Zustände eines Buttons darstellen kann. Gleichzeitig bietet diese Klasse
@@ -15,7 +27,7 @@
  * @author Sir Pustekuchen
  * @version 0.0.2
  */
-class CMyButton : public CObject
+class CMyButton
 {
 public:
 	/// Konstruktor mit kompletter Parameterübergabe.
@@ -33,47 +45,47 @@ public:
 
 	// Zugriffsfunktionen
 	/// Funktion gibt den aktuellen Zustand des Buttons zurück.
-	BYTE GetState() const {return m_byStatus;}
+	BUTTON_STATE::Typ GetState() const {return m_nStatus;}
 
 	/// Funktion gibt das benötigte Rechteck des Buttons zurück.
-	CRect GetRect() const {return CRect(m_KO.x, m_KO.y, m_KO.x+m_Size.cx, m_KO.y+m_Size.cy);}
+	CRect GetRect() const {return CRect(m_ptKO.x, m_ptKO.y, m_ptKO.x+m_szSize.cx, m_ptKO.y+m_szSize.cy);}
 
 	/// Funktion gibt den Text des Buttons zurück
-	const CString& GetText() const {return m_strText;}
+	const CString& GetText() const {return m_sText;}
 
 	/// Funktion setzt den Status/Zustand des Buttons.
 	/// @param newState neuer Status für den Button (0 -> normal, 1 -> aktiviert, sonst deaktiviert)
-	void SetState(BYTE newState) {m_byStatus = newState;}
+	void SetState(BUTTON_STATE::Typ newState) {m_nStatus = newState;}
 
 	/// Funktion ändert den Text auf dem Button.
 	/// @param text Text auf dem Button
-	void SetText(const CString& text) {m_strText = text;}
+	void SetText(const CString& text) {m_sText = text;}
 
 	// Funktionen
 	/// Funktion überprüft, ob der übergebene Punkt (z.B. Mausklick) in dem Feld des Buttons liegt.
 	/// @param pt der zur überprüfende Punkt
-	BOOLEAN ClickedOnButton(const CPoint& pt);
+	bool ClickedOnButton(const CPoint& pt) const;
 
 	/// Diese Funktion zeichnet den Button in den übergebenen Gerätekontext.
 	/// @param g Referenz auf Graphics Objekt
 	/// @param graphicPool Zeiger auf die Sammlung aller Grafiken
 	/// @param font Referenz auf zu benutzende Schrift
 	/// @param brush Referenz auf Farbepinsel für Font (Schriftfarbe)
-	void DrawButton(Gdiplus::Graphics &g, CGraphicPool* graphicPool, Gdiplus::Font &font, Gdiplus::SolidBrush &brush);
+	void DrawButton(Gdiplus::Graphics &g, CGraphicPool* graphicPool, Gdiplus::Font &font, Gdiplus::SolidBrush &brush) const;
 
 	/// Funktion aktiviert den Button. Wenn dieser inaktiv ist, kann er nicht aktiviert werden.
-	BOOLEAN Activate();
+	bool Activate();
 
 	/// Funktion deaktiviert den Button. Dieser kehrt dann zu seinem alten Zustand zurück.
-	BOOLEAN Deactivate();
+	bool Deactivate();
 
 private:
 	// Attribute
-	BYTE m_byStatus;				///< Der Status des Buttons, also ob normal, inaktiv oder aktiv.
-	CString m_strText;				///< Der Text auf dem Button.
-	const CPoint m_KO;				///< Koordinate der linken oberen Ecke des Buttons.
-	const CSize m_Size;				///< Die Größe in x und y Richtung des Buttons.
-	const CString m_strNormal;		///< Die Grafik für den Button im normalen Zustand.
-	const CString m_strInactive;	///< Die Grafik für den Button im deaktivierten Zustand.
-	const CString m_strActive;		///< Die Grafik für den Button im aktivierten Zustand.
+	BUTTON_STATE::Typ m_nStatus;	///< Der Status des Buttons, also ob normal, inaktiv oder aktiv.
+	CString m_sText;				///< Der Text auf dem Button.
+	const CPoint m_ptKO;			///< Koordinate der linken oberen Ecke des Buttons.
+	const CSize m_szSize;			///< Die Größe in x und y Richtung des Buttons.
+	const CString m_sNormal;		///< Die Grafik für den Button im normalen Zustand.
+	const CString m_sInactive;		///< Die Grafik für den Button im deaktivierten Zustand.
+	const CString m_sActive;		///< Die Grafik für den Button im aktivierten Zustand.
 };

@@ -5,6 +5,7 @@
 #include "BotEDoc.h"
 #include "Races\RaceController.h"
 #include "General/Loc.h"
+#include "GraphicPool.h"
 
 IMPLEMENT_SERIAL (CEventRaceKilled, CObject, 1)
 

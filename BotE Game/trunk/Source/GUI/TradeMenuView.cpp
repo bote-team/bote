@@ -9,6 +9,7 @@
 #include "Races\RaceController.h"
 #include "Graphic\memdc.h"
 #include "General/Loc.h"
+#include "GraphicPool.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

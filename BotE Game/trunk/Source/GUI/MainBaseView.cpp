@@ -99,12 +99,12 @@ void CMainBaseView::DrawGDIButtons(Graphics* g, CArray<CMyButton*>* buttonArray,
 
 	// Wenn wir im jeweiligen Menü sind, prüfen, ob der dazugehörige Button auch inaktiv ist.
 	for (int j = 0; j < buttonArray->GetSize(); j++)
-		if (counter == j && buttonArray->GetAt(j)->GetState() != 2)
+		if (counter == j && buttonArray->GetAt(j)->GetState() != BUTTON_STATE::DEACTIVATED)
 		{
 			for (int i = 0; i < buttonArray->GetSize(); i++)
-				if (buttonArray->GetAt(i)->GetState() == 2)
-					buttonArray->GetAt(i)->SetState(0);
-			buttonArray->GetAt(j)->SetState(2);
+				if (buttonArray->GetAt(i)->GetState() == BUTTON_STATE::DEACTIVATED)
+					buttonArray->GetAt(i)->SetState(BUTTON_STATE::NORMAL);
+			buttonArray->GetAt(j)->SetState(BUTTON_STATE::DEACTIVATED);
 			break;
 		}
 	// Buttons zeichnen
@@ -145,30 +145,30 @@ BOOLEAN CMainBaseView::ButtonReactOnLeftClick(const CPoint &point, CArray<CMyBut
 		if (buttonArray->GetAt(i)->ClickedOnButton(point))
 		{
 			// Wenn der Button schon deaktiviert ist, dann kann er nicht angeklickt werden
-			if (buttonArray->GetAt(i)->GetState() == 2)
+			if (buttonArray->GetAt(i)->GetState() == BUTTON_STATE::DEACTIVATED)
 				return FALSE;
 			button = i;
 			if (!onlyActivate)
 			{
 				// Button auf inaktiv schalten, anderen inaktiven Button auf normal schalten
 				for (int j = 0; j < buttonArray->GetSize(); j++)
-					if (buttonArray->GetAt(j)->GetState() == 2)
+					if (buttonArray->GetAt(j)->GetState() == BUTTON_STATE::DEACTIVATED)
 					{
-						buttonArray->GetAt(j)->SetState(0);
+						buttonArray->GetAt(j)->SetState(BUTTON_STATE::NORMAL);
 						break;
 					}
-				buttonArray->GetAt(i)->SetState(2);
+				buttonArray->GetAt(i)->SetState(BUTTON_STATE::DEACTIVATED);
 			}
 			else
 			{
 				// Button auf aktiv schalten, anderen aktiven Button auf normal schalten
 				for (int j = 0; j < buttonArray->GetSize(); j++)
-					if (buttonArray->GetAt(j)->GetState() == 1)
+					if (buttonArray->GetAt(j)->GetState() == BUTTON_STATE::ACTIVATED)
 					{
-						buttonArray->GetAt(j)->SetState(0);
+						buttonArray->GetAt(j)->SetState(BUTTON_STATE::NORMAL);
 						break;
 					}
-					buttonArray->GetAt(i)->SetState(1);
+					buttonArray->GetAt(i)->SetState(BUTTON_STATE::ACTIVATED);
 			}
 			counter = button;
 			if (invalidate)

@@ -13,6 +13,7 @@
 #include "Graphic\memdc.h"
 #include "General/Loc.h"
 #include "Ships/Ships.h"
+#include "GraphicPool.h"
 
 short CSystemMenuView::m_iClickedOn = 0;
 BYTE CSystemMenuView::m_byResourceRouteRes = TITAN;

@@ -136,9 +136,9 @@ FONT 10, "Segoe UI", 400, 0, 0x0
 BEGIN
     ICON            IDR_MAINFRAME,IDC_STATIC,7,7,20,20,0,WS_EX_TRANSPARENT
     LTEXT           "Birth of the Empires",IDC_STATIC,42,7,126,18,SS_NOPREFIX
-    LTEXT           "Copyright by Sir Pustekuchen (C)2004-2012\nContent by Malle et al. 2007-2012",IDC_STATIC,42,31,152,17
+    LTEXT           "Copyright by Sir Pustekuchen (C)2004-2013\nContent by Malle et al. 2007-2013",IDC_STATIC,42,31,152,17
     DEFPUSHBUTTON   "OK",IDOK,154,7,54,10,WS_GROUP
-    LTEXT           "Version 0.81 Alpha 6.1",IDC_STATIC,42,23,151,8
+    LTEXT           "Version 0.81 Alpha 7 RC",IDC_STATIC,42,23,151,8
 END
 
 IDR_MAINFRAME DIALOG  0, 0, 330, 16

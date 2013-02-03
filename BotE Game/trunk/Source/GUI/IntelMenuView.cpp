@@ -9,6 +9,7 @@
 #include "Races\RaceController.h"
 #include "Graphic\memdc.h"
 #include "General/Loc.h"
+#include "GraphicPool.h"
 
 // CIntelMenuView
 #ifdef _DEBUG
