@@ -62,6 +62,7 @@ CGalaxyMenuView::CGalaxyMenuView() :
 	m_pGalaxyGraphic = NULL;
 	m_pGalaxyBackground = NULL;
 	m_pThumbnail = NULL;
+	memset(m_vStars, NULL, sizeof(m_vStars));
 }
 
 CGalaxyMenuView::~CGalaxyMenuView()
