@@ -35,9 +35,12 @@ public:
 	/// Funktion zum einmaligen Einlesen der ganzen Schiffsnamen.
 	void Init(CBotEDoc* pDoc);
 
-	/// Diese Funktion generiert einen einmaligen Schiffsnamen. Als Parameter werden dafür die Rasse <code>sRaceID</code>
-	/// und ein Parameter, welcher angibt ob es sich um eine Station handelt <code>station</code> übergeben.
-	CString GenerateShipName(const CString& sRaceID, BOOLEAN station);
+	/// Diese Funktion generiert einen einmaligen Schiffsnamen.
+	/// @param sRaceID ID der Rasse, um nach einem Schiffsnamen aus einer ...ShipNames.data Datei zu suchen
+	/// @param sRaceName Rassenname mit Postfix (wird verwendet, wenn kein zugehörige ShipNames.data Datei vorhanden ist)
+	/// @param bIsStation Gibt an, ob es sich um eine Station handelt
+	/// return Schiffs- bzw. Staionsname (sollte einmalig sein!)
+	CString GenerateShipName(const CString& sRaceID, const CString &sRaceName, bool bIsStation);
 
 private:
 	/// Feld aller Schiffsnamen

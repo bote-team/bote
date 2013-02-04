@@ -170,15 +170,19 @@ static CString StdStringToCString(const std::string& s) {
 	return CString(s.c_str());
 }
 
-/// Diese Funktion generiert einen einmaligen Schiffsnamen. Als Parameter werden dafür die Rasse <code>sRaceID</code>
-/// und ein Parameter, welcher angibt ob es sich um eine Station handelt <code>station</code> übergeben.
-CString CGenShipName::GenerateShipName(const CString& sRaceID, BOOLEAN station)
+/// Diese Funktion generiert einen einmaligen Schiffsnamen.
+/// @param sRaceID ID der Rasse, um nach einem Schiffsnamen aus einer ...ShipNames.data Datei zu suchen
+/// @param sRaceName Rassenname mit Postfix (wird verwendet, wenn kein zugehörige ShipNames.data Datei vorhanden ist)
+/// @param bIsStation Gibt an, ob es sich um eine Station handelt
+/// return Schiffs- bzw. Staionsname (sollte einmalig sein!)
+CString CGenShipName::GenerateShipName(const CString& sRaceID, const CString &sRaceName, bool bIsStation)
 {
 	std::vector<CString>& mStillAvailableNames = m_mStillAvailableNames[sRaceID];
 	const std::vector<CString>& mShipNames = m_mShipNames[sRaceID];
-	if(mStillAvailableNames.empty()) {
+	if (mStillAvailableNames.empty())
+	{
 		m_mCounter[sRaceID] += 1;
-		if(!mShipNames.empty())
+		if (!mShipNames.empty())
 			mStillAvailableNames = mShipNames;
 	}
 
@@ -192,18 +196,23 @@ CString CGenShipName::GenerateShipName(const CString& sRaceID, BOOLEAN station)
 			result = _snprintf(letter, 10, " %u", counter);
 		assert(result > 0);
 	}
+	
 	std::stringstream name;
-	if(mStillAvailableNames.empty())
-		name << CStringToStdString(sRaceID);
-	else {
+	if (mStillAvailableNames.empty())
+	{
+		name << CStringToStdString(sRaceName);
+	}
+	else
+	{
 		const unsigned random = rand() % mStillAvailableNames.size();
 		name << CStringToStdString(mStillAvailableNames.at(random));
 		mStillAvailableNames.erase(mStillAvailableNames.begin() + random);
 	}
+	
 	assert(name);
 	name << letter;
 	assert(name);
-	if(station)
+	if (bIsStation)
 		name << " Station";
 	assert(name);
 	return StdStringToCString(name.str());

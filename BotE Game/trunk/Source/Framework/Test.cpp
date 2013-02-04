@@ -33,7 +33,8 @@ void CTest::TestGenShipname() const {
 
 	//check uniqueness of generated shipnames
 	const std::map<CString, CRace*>& races = *m_Doc.m_pRaceCtrl->GetRaces();
-	CString race;
+	CString sRaceID = "";
+	CString sRaceName = "";
 	for(int j = 0; j < 10; ++j)
 	{
 		const unsigned at = rand()%races.size();
@@ -44,14 +45,16 @@ void CTest::TestGenShipname() const {
 				++index;
 				continue;
 			}
-			race = i->first;
+			sRaceID = i->second->GetRaceID();
+			sRaceName = i->second->GetRaceName();
 			break;
 		}
+		
 		std::set<CString> seen;
 		std::vector<CString> seen_v;
 		for(unsigned i = 0; i < 10000; ++i)
 		{
-			const CString& name = gsn.GenerateShipName(race, false);
+			const CString& name = gsn.GenerateShipName(sRaceID, sRaceName, false);
 			if(seen.find(name) != seen.end()) {
 				CString s;
 				s.Format("repeated name: %s", name);

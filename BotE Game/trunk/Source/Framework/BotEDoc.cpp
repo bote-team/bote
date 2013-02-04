@@ -2217,13 +2217,12 @@ CShipMap::iterator CBotEDoc::BuildShip(int nID, const CPoint& KO, const CString&
 	ASSERT(nID >= 10000);
 	nID -= 10000;
 
-	CString sOwner = sOwnerID;
 	const CShipMap::iterator it = m_ShipMap.Add(new CShips(m_ShipInfoArray.GetAt(nID)));
-	it->second->SetOwnerOfShip(sOwner);
+	it->second->SetOwnerOfShip(pOwner->GetRaceID());
 	it->second->SetKO(KO.x, KO.y);
 
 	// Schiffsnamen vergeben
-	it->second->SetShipName(m_GenShipName.GenerateShipName(sOwner, it->second->IsStation()));
+	it->second->SetShipName(m_GenShipName.GenerateShipName(pOwner->GetRaceID(), pOwner->GetRaceName(), it->second->IsStation()));
 
 	// den Rest nur machen, wenn das Schiff durch eine Majorrace gebaut wurde
 	if (!pOwner->IsMajor())
