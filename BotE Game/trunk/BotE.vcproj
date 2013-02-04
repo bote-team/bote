@@ -4,7 +4,7 @@
 	Version="9,00"
 	Name="BotE"
 	ProjectGUID="{5A569755-0BE5-4E97-9318-FA8BA42C4F03}"
-	RootNamespace="botf2"
+	RootNamespace="BotE"
 	Keyword="MFCProj"
 	TargetFrameworkVersion="131072"
 	>
@@ -45,7 +45,7 @@
 				MkTypLibCompatible="true"
 				SuppressStartupBanner="true"
 				TargetEnvironment="1"
-				TypeLibraryName=".\Debug/botf2.tlb"
+				TypeLibraryName=".\Debug/BotE.tlb"
 				HeaderFileName=""
 			/>
 			<Tool
@@ -61,11 +61,11 @@
 				OpenMP="false"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="stdafx.h"
-				PrecompiledHeaderFile=".\.\Debug/botf2.pch"
+				PrecompiledHeaderFile=".\.\Debug/BotE.pch"
 				AssemblerListingLocation=".\Debug/"
 				ObjectFile=".\Debug/"
 				ProgramDataBaseFileName=".\Debug/"
-				BrowseInformation="1"
+				BrowseInformation="0"
 				WarningLevel="4"
 				SuppressStartupBanner="true"
 				DebugInformationFormat="4"
@@ -90,7 +90,7 @@
 				AdditionalLibraryDirectories="&quot;lib-debug&quot;"
 				IgnoreDefaultLibraryNames="libcmt.lib"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile=".\Debug/botf2.pdb"
+				ProgramDatabaseFile=".\Debug/BotE.pdb"
 				SubSystem="2"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
@@ -107,7 +107,7 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
-				OutputFile=".\Debug/botf2.bsc"
+				OutputFile=".\Debug/BotE.bsc"
 			/>
 			<Tool
 				Name="VCFxCopTool"
@@ -148,7 +148,7 @@
 				MkTypLibCompatible="true"
 				SuppressStartupBanner="true"
 				TargetEnvironment="1"
-				TypeLibraryName=".\Release/botf2.tlb"
+				TypeLibraryName=".\Release/BotE.tlb"
 				HeaderFileName=""
 			/>
 			<Tool
@@ -167,10 +167,11 @@
 				OpenMP="false"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="stdafx.h"
-				PrecompiledHeaderFile=".\.\Release/botf2.pch"
+				PrecompiledHeaderFile=".\.\Release/BotE.pch"
 				AssemblerListingLocation=".\Release/"
 				ObjectFile=".\Release/"
 				ProgramDataBaseFileName=".\Release/"
+				BrowseInformation="0"
 				WarningLevel="4"
 				SuppressStartupBanner="true"
 			/>
@@ -194,7 +195,7 @@
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories=".\lib-release"
 				IgnoreDefaultLibraryNames=""
-				ProgramDatabaseFile=".\Release/botf2.pdb"
+				ProgramDatabaseFile=".\Release/BotE.pdb"
 				SubSystem="2"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
@@ -212,7 +213,7 @@
 			<Tool
 				Name="VCBscMakeTool"
 				SuppressStartupBanner="true"
-				OutputFile=".\Release/botf2.bsc"
+				OutputFile=".\Release/BotE.bsc"
 			/>
 			<Tool
 				Name="VCFxCopTool"
@@ -253,7 +254,7 @@
 				MkTypLibCompatible="true"
 				SuppressStartupBanner="true"
 				TargetEnvironment="1"
-				TypeLibraryName=".\Release/botf2.tlb"
+				TypeLibraryName=".\Release/BotE.tlb"
 				HeaderFileName=""
 			/>
 			<Tool
@@ -273,10 +274,11 @@
 				OpenMP="false"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="stdafx.h"
-				PrecompiledHeaderFile=".\.\Release/botf2.pch"
+				PrecompiledHeaderFile=".\.\Release/BotE.pch"
 				AssemblerListingLocation=".\Release/"
 				ObjectFile=".\Release/"
 				ProgramDataBaseFileName=".\Release/"
+				BrowseInformation="0"
 				WarningLevel="4"
 				SuppressStartupBanner="true"
 				DebugInformationFormat="3"
@@ -302,7 +304,7 @@
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories=".\lib-release"
 				IgnoreDefaultLibraryNames=""
-				ProgramDatabaseFile=".\Release/botf2.pdb"
+				ProgramDatabaseFile=".\Release/BotE.pdb"
 				SubSystem="2"
 				LinkTimeCodeGeneration="0"
 				RandomizedBaseAddress="1"
@@ -321,7 +323,7 @@
 			<Tool
 				Name="VCBscMakeTool"
 				SuppressStartupBanner="true"
-				OutputFile=".\Release/botf2.bsc"
+				OutputFile=".\Release/BotE.bsc"
 			/>
 			<Tool
 				Name="VCFxCopTool"
