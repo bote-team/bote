@@ -29,18 +29,18 @@ kha_troop6.bop (size=16.500): kha_troop6 by Dennis0078 (http://birth-of-the-empi
 kha_troop7.bop (size=16.604): kha_troop7 by Dennis0078 (http://birth-of-the-empires.de/phpBB3/memberlist.php?mode=viewprofile&u=3180)
 
 MajorRace4:
-rot_troop1.bop (size=35.939): Gears of War 5C by Andrew Kincaid (http://redfishimagery.com/)
+rot_troop1.bop (size=74.858): by Till Maginot (http://blog.maginot.eu)
 rot_troop2.bop (size=11.290): rot_troop2 by Dennis0078 (http://birth-of-the-empires.de/phpBB3/memberlist.php?mode=viewprofile&u=3180)
 rot_troop3.bop (size=26.867): rot_troop3 by Dennis0078 (http://birth-of-the-empires.de/phpBB3/memberlist.php?mode=viewprofile&u=3180)
 rot_troop4.bop (size=27.813): rot_troop4 by Dennis0078 (http://birth-of-the-empires.de/phpBB3/memberlist.php?mode=viewprofile&u=3180)
 rot_troop5.bop (size=23.020): rot_troop5 by Dennis0078 (http://birth-of-the-empires.de/phpBB3/memberlist.php?mode=viewprofile&u=3180)
 rot_troop6.bop (size=32.152): rot_troop6 by Dennis0078 (http://birth-of-the-empires.de/phpBB3/memberlist.php?mode=viewprofile&u=3180)
 rot_troop7.bop (size=20.755): Attack Helicopter by FeroxX-Gosu (http://feroxx-gosu.deviantart.com)
-rot_troop8.bop (size=61.643): by Till Maginot (http://blog.maginot.eu)
+rot_troop8.bop (size=37.205): Gears of War 5C by Andrew Kincaid (http://redfishimagery.com/)
 
 MajorRace5:
-car_troop1.bop (size=10.591): 050 by Taehoon Oh (http://www.taehoonoh.com/)
-car_troop2.bop (size=41.019): Grav tank bryce by Aaron (sharecg.com)
+car_troop1.bop (size=31.148): 050 by Taehoon Oh (http://www.taehoonoh.com/)
+car_troop2.bop (size=43.472): Grav tank bryce by Aaron (sharecg.com)
 car_troop3.bop (size=30.735): car_troop3 by Dennis0078 (http://birth-of-the-empires.de/phpBB3/memberlist.php?mode=viewprofile&u=3180)
 car_troop4.bop (size=24.789): Robots by Keith Thompson (http://keithwormwood.deviantart.com)
 car_troop5.bop (size=29.933): Robots by Keith Thompson (http://keithwormwood.deviantart.com)
@@ -49,10 +49,10 @@ car_troop7.bop (size=23.856): car_troop7 by Dennis0078 (http://birth-of-the-empi
 
 MajorRace6:
 ome_troop1.bop (size=34.559): Pulse Rifle.jpg by Arild Anfinnsen (http://www.arildwiro.com/)
-ome_troop2.bop (size=24.122): #blue rifle#####################################
-ome_troop3.bop (size=36.745): t1ea by magicmot (http://birth-of-the-empires.de/phpBB3/memberlist.php?mode=viewprofile&u=1463)
-ome_troop4.bop (size=31.772): t1he by magicmot (http://birth-of-the-empires.de/phpBB3/memberlist.php?mode=viewprofile&u=1463)
-ome_troop5.bop (size=33.554): t1ro by magicmot (http://birth-of-the-empires.de/phpBB3/memberlist.php?mode=viewprofile&u=1463)
+ome_troop2.bop (size=22.848): #blue rifle#####################################
+ome_troop3.bop (size=26.289): t1ea by magicmot (http://birth-of-the-empires.de/phpBB3/memberlist.php?mode=viewprofile&u=1463)
+ome_troop4.bop (size=28.297): t1he by magicmot (http://birth-of-the-empires.de/phpBB3/memberlist.php?mode=viewprofile&u=1463)
+ome_troop5.bop (size=27.376): t1ro by magicmot (http://birth-of-the-empires.de/phpBB3/memberlist.php?mode=viewprofile&u=1463)
 ome_troop6.bop (size=18.393): Black by Kandzaemon (http://kandzaemon.deviantart.com/)
 
 
