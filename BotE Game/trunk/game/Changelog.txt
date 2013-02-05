@@ -1,5 +1,57 @@
-BOTE - Changelog
-Januar 2004 - April 2011
+BotE - Changelog
+Januar 2004 - Februar 2013
+www.birth-of-the-empires.de
+
+
+V0.81 -> V0.90 (Alpha 7)
+- viele kleine Änderungen und Ergänzungen
+- viele BUGs bereinigt
+
+neue Features:
+- neue Startscreens
+- Sechste und damit letzte MajorRasse spielbar
+- mehrere Truppen je MajorRasse
+- neue Funktionen, in GameSettings einstellbar
+-- alle Aliens mit Funktion implementiert
+-- Zufalls-Events implementiert
+-- Galaxie Size wählbar
+-- Galaxie Form wählbar
+- MajorPlanets.data (Planeten für Majors voreinstellbar)
+- einige Hotkeys für Schiffe, vorallem um unbeschäftige Schiffe zu finden -> verbessert Handling
+- neue Schiffsbefehle (z.B. Reparieren, Blockade)
+- Ionensturm: neuer Schiffsbefehl "Schilde verbessern" (stationiert ein Schiff im Ionensturm, bis Schilde auf maximum sind und setzt es erst dann auf unbeschäftigt)
+- Truppen-Tooltip
+- Symbolanzeige bei Kolonieschiffen für Terraformen und Kolonisieren
+- neues Omega-Gebäude: Tetroin-4c-Veredelunganlage
+
+GUI-Änderungen:
+- Arbeiterzuweisung: Anzeige der aktiven Arbeiter über den Kästchen
+- Arbeiterzuweisung: Anzeige des Systemlagers inkl. % unter den Kästchen
+- Gesamtwertung: Anzeige aus der Vorrunde im NaviCon
+- Schiffsdesign: Tooltip bei Mouseover über Schiffsbild
+- Schiffsdesign: Scrolling mit Pfeiltasten auf/ab durch Schiffsliste
+- Diplomatie: Rassen sortierbar und farbig
+- mehr Symbole in der Bauauswahlliste
+- Schiffsbefehlsmenü neu strukturiert
+- Schiffsbefehl und Kampfverhalten wird getrennt angezeigt
+
+Änderungen:
+- Terraner-Schiffe ausgewechselt
+- Shiplist überarbeitet (Unterhaltskosten, Speed 1 nur für Anfangsschiffe, Tech bis 14)
+- Außenposten umbenannt nach Outpost (leichteres Matching der Shiplist.data)
+- Rok'Hanar-Schiffe umbenannt nach Da'unor (leichteres Matching der Shiplist.data)
+- Systemangriff kann auch zur Befreiung führen (noch kein eigener Schiffsbefehl implementiert)
+- Schiffsbefehl Flaggschiff nun als Sofortbefehl und (neu) aufhebbar
+- Änderung in Bewertung, wenn Schiff weniger als Schaden 10 auf Hülle macht (Siegchance, Baukosten)
+- Buildings.data überarbeitet (weniger häufige Gebäude-Stufen, dafür bis Tech14)
+- Doppelklick-Sprünge optimiert (Doppelklick auf Nachrichten springt dorthin, was man braucht und -neu- markiert in der Karte den betroffenen Sektor)
+- Bündnis-Auswirkungen gestärkt
+- Code teilweise überarbeitet
+
+KI:
+- KI erforscht nun auch Spezialforschungen
+- KI demontiert eigene Truppen, weil es damit nicht umgehen kann und Truppen auch negative Effekte haben
+
 
 V0.8 -> V0.81 (Alpha 6.1)
 GUI-Änderungen:
@@ -55,6 +107,7 @@ Daten:
 Code-intern:
 - Berechnung der Schiffstärkenberechnung (offensiv und defensiv) angepasst
 - Reihenfolge der Bearbeitung der Nachrichten im Diplomatiesystem komplett umgestellt
+
 
 V0.72 -> V0.8 (Alpha 6)
 neue Ansichten und Events:
@@ -149,6 +202,7 @@ Daten:
 - Rechtschreibfehler behoben
 - Alien-Schiffe in Shiplist eingefügt (ingame noch keine Beachtung)
 - kleines Duranium- und Energieicon farblich angepasst
+
 
 V0.71 -> V0.72
 - Optionsialog um bequem ini Einstellungen zu ändern
