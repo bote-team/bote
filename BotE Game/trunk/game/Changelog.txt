@@ -4,27 +4,26 @@ www.birth-of-the-empires.de
 
 
 V0.81 -> V0.90 (Alpha 7)
-- viele kleine Änderungen und Ergänzungen
+Allgemeines
+- sehr viele kleine Änderungen und Ergänzungen zur Verbesserung des Spielgefühls
+- generelles Look&Feel verbessert
+- Stabilität erhöht
+- Programmcode teilweise stark überarbeitet bzw. neu programmiert
 - viele BUGs bereinigt
 
 neue Features:
-- neue Startscreens
-- Sechste und damit letzte MajorRasse spielbar
-- mehrere Truppen je MajorRasse
-- neue Funktionen, in GameSettings einstellbar
--- alle Aliens mit Funktion implementiert
--- Zufalls-Events implementiert
--- Galaxie Size wählbar
--- Galaxie Form wählbar
-- MajorPlanets.data (Planeten für Majors voreinstellbar)
+- Sechste und damit letzte Hauptrasse (Omega-Allianz) spielbar
+- Aliens (Weltraummonster) implementiert
+- Zufallsereignisse implementiert
+- neue Spielfunktionen im Optionsdialog einstellbar
+- Galaxiegröße und -form vor Spielstart wählbar
+- mehrere Truppen je Hauptrasse
 - einige Hotkeys für Schiffe, vorallem um unbeschäftige Schiffe zu finden -> verbessert Handling
 - neue Schiffsbefehle (z.B. Reparieren, Blockade)
 - Ionensturm: neuer Schiffsbefehl "Schilde verbessern" (stationiert ein Schiff im Ionensturm, bis Schilde auf maximum sind und setzt es erst dann auf unbeschäftigt)
-- Truppen-Tooltip
-- Symbolanzeige bei Kolonieschiffen für Terraformen und Kolonisieren
-- neues Omega-Gebäude: Tetroin-4c-Veredelunganlage
 
 GUI-Änderungen:
+- komplett neuer Startbildschirm (ersetzt den alten Dialog)
 - Arbeiterzuweisung: Anzeige der aktiven Arbeiter über den Kästchen
 - Arbeiterzuweisung: Anzeige des Systemlagers inkl. % unter den Kästchen
 - Gesamtwertung: Anzeige aus der Vorrunde im NaviCon
@@ -34,23 +33,27 @@ GUI-Änderungen:
 - mehr Symbole in der Bauauswahlliste
 - Schiffsbefehlsmenü neu strukturiert
 - Schiffsbefehl und Kampfverhalten wird getrennt angezeigt
+- Truppen-Tooltip
+- Symbolanzeige bei Kolonieschiffen für Terraformen und Kolonisieren
 
 Änderungen:
-- Terraner-Schiffe ausgewechselt
-- Shiplist überarbeitet (Unterhaltskosten, Speed 1 nur für Anfangsschiffe, Tech bis 14)
-- Außenposten umbenannt nach Outpost (leichteres Matching der Shiplist.data)
-- Rok'Hanar-Schiffe umbenannt nach Da'unor (leichteres Matching der Shiplist.data)
 - Systemangriff kann auch zur Befreiung führen (noch kein eigener Schiffsbefehl implementiert)
 - Schiffsbefehl Flaggschiff nun als Sofortbefehl und (neu) aufhebbar
 - Änderung in Bewertung, wenn Schiff weniger als Schaden 10 auf Hülle macht (Siegchance, Baukosten)
-- Buildings.data überarbeitet (weniger häufige Gebäude-Stufen, dafür bis Tech14)
 - Doppelklick-Sprünge optimiert (Doppelklick auf Nachrichten springt dorthin, was man braucht und -neu- markiert in der Karte den betroffenen Sektor)
 - Bündnis-Auswirkungen gestärkt
-- Code teilweise überarbeitet
 
 KI:
-- KI erforscht nun auch Spezialforschungen
 - KI demontiert eigene Truppen, weil es damit nicht umgehen kann und Truppen auch negative Effekte haben
+
+Daten:
+- Grafiken der Terraner-Schiffe ausgewechselt
+- Shiplist überarbeitet (Unterhaltskosten, Speed 1 nur für Anfangsschiffe, Tech bis 14)
+- Außenposten umbenannt nach Outpost (leichteres Matching der Shiplist.data)
+- Rok'Hanar-Schiffe umbenannt nach Da'unor (leichteres Matching der Shiplist.data)
+- Buildings.data überarbeitet (weniger häufige Gebäude-Stufen, dafür bis Tech14)
+- neues Omega-Gebäude: Tetroin-4c-Veredelunganlage
+- MajorPlanets.data (Planeten für Majors voreinstellbar)
 
 
 V0.8 -> V0.81 (Alpha 6.1)
