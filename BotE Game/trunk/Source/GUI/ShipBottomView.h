@@ -89,7 +89,6 @@ private:
 	const unsigned bb; //for vertical position for drawing "from bottom up"
 
 	// Attribute
-	CRect m_RectForTheShip;						///< Das Rechteck für das Schiff worüber wir die Maus bewegt haben
 	USHORT m_iPage;								///< bei mehr als 9 Schiffen können wir auf die nächste Seite wechseln
 	CPoint m_LastKO;							///< Hilfsvariable, die den zuletzt angeklickten Sektor sich merkt
 	BOOLEAN m_bShowNextButton;
@@ -152,21 +151,18 @@ private:
 		MAIN_BUTTON which;
 		CRect rect;
 	};
-	std::vector<const MainButtonInfo> m_vMainShipOrders;		//die Hauptbuttons für die Schiffsbefehle
-	void SetUpMainButtons();
+
+	std::vector<const MainButtonInfo> m_vMainShipOrders;	///< die Hauptbuttons für die Schiffsbefehle
 	short m_iTimeCounter;
-	MAIN_BUTTON m_iWhichMainShipOrderButton;			///< welchen Hauptschiffsbefehlsbutton haben wir gedrückt
+	MAIN_BUTTON m_iWhichMainShipOrderButton;				///< welchen Hauptschiffsbefehlsbutton haben wir gedrückt
 	static BOOLEAN m_bShowStation;
-
-	vector<pair<CRect, CShips*> > m_vShipRects;	///< alle angezeigten Schiffe mit ihren Rechtecken zu draufklicken
-	CRect m_rLastMarkedRect;					///< zuletzt markiertes Rechteck
-
+	vector<pair<CRect, CShips*> > m_vShipRects;				///< alle angezeigten Schiffe mit ihren Rechtecken zu draufklicken
+	
 	// OnDraw Helper Functions
 	stDrawingContext m_dc;
 
 	bool CheckDisplayShip(CShips *pShip, CSector *csec );
 	void DrawShipContent();
-
 	bool TimeDoDraw(short counter) const;
 	void DrawMaincommandMenu();
 	short DrawCombatMenu();
@@ -182,7 +178,7 @@ private:
 	bool DrawImage( const CString& resName, const CRect& r ) const;
 	void DrawSmallButton( const CString& resString, const CPoint& coords, SHIP_ORDER::Typ shiporder = SHIP_ORDER::NONE );
 	void SetupDrawing();
-
+	void SetupMainButtons();
 
 protected:
 	DECLARE_MESSAGE_MAP()

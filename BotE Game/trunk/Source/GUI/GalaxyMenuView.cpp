@@ -810,7 +810,6 @@ void CGalaxyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 	pt += GetScrollPosition() - m_ptViewOrigin;
 	UnZoom(&pt);
 
-
 	if (!m_nRange)
 	{
 		// angeklickten Sektor ermitteln, anschließend markieren
@@ -824,6 +823,7 @@ void CGalaxyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			m_oldSelection = pMajor->GetStarmap()->GetSelection();
 			pMajor->GetStarmap()->Select(sector);
 
+			bool bShowPlanetBottomView = true;
 			// Wenn in dem Sektor ein Schiff ist und wir den Punkt in der oberen rechten Ecke anklicken,
 			// dann sollen die Schiffe in der View3 angezeigt werden
 			CPoint modulo(pt.x%STARMAP_SECTOR_WIDTH, pt.y%STARMAP_SECTOR_HEIGHT);
@@ -833,23 +833,26 @@ void CGalaxyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 				const CSector& s = pDoc->GetSector(sector.x, sector.y);
 				for (map<CString, CRace*>::const_iterator it = pmRaces->begin(); it != pmRaces->end(); ++it)
 					if (s.ShouldDrawShip(*pMajor, it->first))
+					{
+						if (it->first == pMajor->GetRaceID())
 						{
-							if(it->first == pMajor->GetRaceID()) {
-								for(CShipMap::const_iterator i = pDoc->m_ShipMap.begin();
-										i != pDoc->m_ShipMap.end(); ++i) {
-									const CPoint& point = i->second->GetKO();
-									if(sector == Sector(point.x, point.y)) {
-										m_PreviouslyJumpedToShip = RememberedShip(
-											i->second->GetShipName(), i->first);
-										break;
-									}
+							for(CShipMap::const_iterator i = pDoc->m_ShipMap.begin(); i != pDoc->m_ShipMap.end(); ++i)
+							{
+								const CPoint& point = i->second->GetKO();
+								if(sector == Sector(point.x, point.y))
+								{
+									m_PreviouslyJumpedToShip = RememberedShip(i->second->GetShipName(), i->first);
+									break;
 								}
 							}
-							CShipBottomView::SetShowStation(false);
-							resources::pMainFrame->SelectBottomView(SHIP_BOTTOM_VIEW);
-							resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CShipBottomView));
-							break;
 						}
+
+						bShowPlanetBottomView = false;
+						CShipBottomView::SetShowStation(false);
+						resources::pMainFrame->SelectBottomView(SHIP_BOTTOM_VIEW);
+						resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CShipBottomView));
+						break;
+					}
 			}
 			// Wenn in dem Sektor eine Station steht oder noch gebaut wird, dann Stationsansicht in View3 zeigen,
 			// wenn wir unten rechts hingeklickt haben
@@ -868,12 +871,14 @@ void CGalaxyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 				// Station anzeigen?
 				if (bShowStation)
 				{
+					bShowPlanetBottomView = false;
 					CShipBottomView::SetShowStation(true);
 					resources::pMainFrame->SelectBottomView(SHIP_BOTTOM_VIEW);
 					resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CShipBottomView));
 				}
 			}
-			else
+			
+			if (bShowPlanetBottomView)
 			{
 				// Planetenansicht in View3 des angeklickten Sektors zeigen
 				resources::pMainFrame->SelectBottomView(PLANET_BOTTOM_VIEW);
@@ -881,7 +886,7 @@ void CGalaxyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 			}
 
 			// View muss neu gezeichnet werden
-			Invalidate();
+			Invalidate(FALSE);
 		}
 		// Wenn wir eine Handelsroute festlegen wollen
 		else if (sector != struct::Sector(-1,-1) && m_bDrawTradeRoute == TRUE)
@@ -1108,12 +1113,14 @@ void CGalaxyMenuView::OnRButtonDown(UINT nFlags, CPoint point)
 	if (!pDoc->m_bDataReceived)
 		return;
 
-	//Wenn wir das Befehlgeben eines Schiffes abbrechen wollen
+	// Wenn wir das Befehlgeben eines Schiffes abbrechen wollen
 	if (m_bShipMove)
 	{
+		pDoc->CurrentShip()->second->GetPath()->RemoveAll();
 		SetMoveShip(FALSE);
 		CSmallInfoView::SetDisplayMode(CSmallInfoView::DISPLAY_MODE_SHIP_BOTTEM_VIEW);
 		resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
+		resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CShipBottomView));
 		m_nRange = 0;
 		Invalidate();
 		return;

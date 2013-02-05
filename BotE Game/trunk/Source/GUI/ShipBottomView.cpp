@@ -71,8 +71,6 @@ void CShipBottomView::OnNewRound()
 {
 	m_iPage = 1;
 	m_vShipRects.clear();
-	m_rLastMarkedRect = CRect(0,0,0,0);
-	m_RectForTheShip = CRect(0,0,0,0);
 }
 
 // CShipBottomView drawing
@@ -128,9 +126,8 @@ void CShipBottomView::SetupDrawing() {
 	if (m_LastKO != m_dc.pDoc->GetKO())
 	{
 		m_LastKO = m_dc.pDoc->GetKO();
-		m_rLastMarkedRect = CRect(0,0,0,0);
-		m_RectForTheShip = CRect(0,0,0,0);
 		m_iPage = 1;
+		m_vShipRects.clear();
 
 		KillTimer(1);
 		m_iTimeCounter = 0;
@@ -141,7 +138,8 @@ void CShipBottomView::SetupDrawing() {
 		// Ebenfalls bei der Anzeige einer Station immer auf die erste Seite springen
 		m_iPage = 1;
 	}
-	SetUpMainButtons();
+
+	SetupMainButtons();
 }
 
 // Achtung: r.right = Breite, r.bottom = Höhe!
@@ -191,7 +189,8 @@ bool CShipBottomView::CheckDisplayShip(CShips *pShip, CSector *csec ) {
 	return true;
 }
 
-void CShipBottomView::DrawShipContent() {
+void CShipBottomView::DrawShipContent()
+{
 	CRect r(0, 0, m_TotalSize.cx, m_TotalSize.cy);
 	USHORT column = 0;
 	USHORT row = 0;
@@ -202,16 +201,15 @@ void CShipBottomView::DrawShipContent() {
 	USHORT counter = 0;
 	CShips* pShip;
 
-	if (!CGalaxyMenuView::IsMoveShip())
-		m_vShipRects.clear();
+	m_vShipRects.clear();
 
 	markColor.SetFromCOLORREF(pMajor->GetDesign()->m_clrListMarkTextColor);
 	CSector csec = m_dc.pDoc->CurrentSector();
 
-	for(CShipMap::iterator i = m_dc.pDoc->m_ShipMap.begin(); i != m_dc.pDoc->m_ShipMap.end(); ++i)
+	for (CShipMap::iterator i = m_dc.pDoc->m_ShipMap.begin(); i != m_dc.pDoc->m_ShipMap.end(); ++i)
 	{
 		pShip = i->second;
-		if( !CheckDisplayShip( pShip, &csec ) )
+		if (!CheckDisplayShip( pShip, &csec ) )
 			continue;
 
 		// mehrere Spalten anlegen, falls mehr als 3 Schiffe in dem System sind
@@ -298,7 +296,9 @@ void CShipBottomView::DrawShipContent() {
 	}
 
 	// Wenn nur ein Schiff in dem System ist, so wird es automatisch ausgewählt
-	if (counter == 1 && !m_bShowStation	&& oneShip->second->GetOwnerOfShip() == pMajor->GetRaceID())
+	// Nicht automatisch machen, wenn zuvor genau das gleiche CurrentShip angewählt war. Dann könnte man
+	// in der Galaxieansicht nicht mehr mit Rechts abbrechen, da das Schiff gleich wieder angewählt wird.
+	if (counter == 1 && !m_bShowStation	&& oneShip->second->GetOwnerOfShip() == pMajor->GetRaceID() && oneShip->second != m_dc.pDoc->CurrentShip()->second)
 	{
 		// Wenn wenn wir auf der Galaxiekarte sind
 		if (resources::pMainFrame->GetActiveView(0, 1) == GALAXY_VIEW)
@@ -342,7 +342,7 @@ CPoint CShipBottomView::CalcSecondaryButtonTopLeft(short counter, bool top_down)
 	return CPoint(m_dc.r.right - (bw *2 + bd), y);
 }
 
-void CShipBottomView::SetUpMainButtons() {
+void CShipBottomView::SetupMainButtons() {
 	m_vMainShipOrders.clear();
 	const CRect& r = m_dc.r;
 	unsigned top = r.top + bt;
@@ -692,14 +692,15 @@ void CShipBottomView::OnDraw(CDC* dc)
 	if (!m_dc.pDoc->m_bDataReceived)
 		return;
 
-	// Update Graphicpool Link
-
-	m_dc.gp = m_dc.pDoc->GetGraphicPool();
-
 	CMajor* pMajor = m_pPlayersRace;
 	ASSERT(pMajor);
 	if (!pMajor)
 		return;
+
+	// Update Graphicpool Link
+	m_dc.gp = m_dc.pDoc->GetGraphicPool();
+
+	
 	// TODO: add draw code here
 
 	// Doublebuffering wird initialisiert
@@ -710,7 +711,7 @@ void CShipBottomView::OnDraw(CDC* dc)
 	SetupDrawing();
 
 	// Galaxie im Hintergrund zeichnen
-	DrawImage( "Backgrounds\\" + pMajor->GetPrefix() + "galaxyV3.bop", CRect(CPoint(0,0),CSize(1075,249)) );
+	DrawImage("Backgrounds\\" + pMajor->GetPrefix() + "galaxyV3.bop", CRect(CPoint(0,0),CSize(1075,249)));
 
 	// Bis jetzt nur eine Anzeige bis max. 9 Schiffe
 	if (m_iTimeCounter == 0)
@@ -745,7 +746,6 @@ void CShipBottomView::OnDraw(CDC* dc)
 
 	delete m_dc.fontBrush;
 	delete m_dc.g;
-
 	m_dc.pDoc = NULL;
 }
 
@@ -817,73 +817,117 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 
 	CalcLogicalPoint(point);
 
-	if (m_RectForTheShip.PtInRect(point) && pDoc->CurrentShip()->second->GetOwnerOfShip() == pMajor->GetRaceID())
+	//////////////////////////////////////////////////////////////////////////
+	// Klick auf Schiff prüfen
+
+	// wurde die Maus über ein Schiff gehalten
+	for (std::vector<std::pair<CRect, CShips*>>::const_iterator i = m_vShipRects.begin(); i != m_vShipRects.end(); ++i)
 	{
-		CSmallInfoView::SetDisplayMode(CSmallInfoView::DISPLAY_MODE_SHIP_BOTTEM_VIEW);
-		resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
-		// Wenn wir in der MainView nicht im Flottenmenü sind
-		if (resources::pMainFrame->GetActiveView(0, 1) != FLEET_VIEW)
+		if (!i->first.PtInRect(point))
+			continue;
+	
+		// Wurde das aktuelle Schiff angeklickt?
+		if (pDoc->CurrentShip()->second == i->second)
 		{
-			CGalaxyMenuView::SetMoveShip(TRUE);
-			this->SetTimer(1,100,NULL);
-			Invalidate(FALSE);
-			resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CGalaxyMenuView));
-		}
-		// Wenn wir in der MainView im Flottenmenü sind, dann stecken wir das angeklickte Schiff in die
-		// gerade angezeigte Flotte
-		// Fremde Flotten können nicht bearbeitet werden
-		else
-		{
+			// Nicht machen, wenn es nicht unser eigenes Schiff ist
+			if (pDoc->CurrentShip()->second->GetOwnerOfShip() != pMajor->GetRaceID())
+				return;
+
+			// Wenn wir in der MainView nicht im Flottenmenü sind
+			if (resources::pMainFrame->GetActiveView(0, 1) != FLEET_VIEW)
+			{
+				CGalaxyMenuView::SetMoveShip(TRUE);
+				this->SetTimer(1,100,NULL);
+				resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CGalaxyMenuView));
+				return;
+			}
+			
+			// Wenn wir in der MainView im Flottenmenü sind
+			
+			// Dann stecken das angeklickte Schiff in die gerade angezeigte Flotte stecken
+			// Fremde Flotten können nicht bearbeitet werden
 			const CShipMap::iterator& fleetship = pDoc->FleetShip();
 			assert(fleetship->second->GetOwnerOfShip() == pMajor->GetRaceID());
 			const CShipMap::iterator& current_ship = pDoc->CurrentShip();
 			// Jetzt fügen wir der Flotte das angeklickte Schiff hinzu, wenn es nicht das Schiff selbst ist,
 			// welches die Flotte anführt
-			if (fleetship != current_ship)
-			{
-				assert(fleetship->second->GetKO() == current_ship->second->GetKO());
-				// sicherheitshalber wird hier nochmal überprüft, dass keine Station hinzugefügt werden kann und
-				// das sich das Schiff auch im gleichen Sektor befindet
-				if (fleetship->second->GetOwnerOfShip() == current_ship->second->GetOwnerOfShip()
-					&& !current_ship->second->IsStation())
-				{
-					// Wenn das Schiff welches wir hinzufügen wollen selbst eine Flotte besizt, so müssen
-					// wir diese Flotte natürlich auch noch hinzufügen
-					//this is done in CShips::AddShipToFleet
-					fleetship->second->AddShipToFleet(current_ship->second);
-					// Wenn wir das Schiff da hinzugefügt haben, dann müssen wir das aus der normalen Schiffsliste
-					// rausnehmen, damit es nicht zweimal im Spiel vorkommt
-					CShipMap::iterator to_erase = current_ship;
-					//set the current ship to the next ship following the removed one of the same race in the
-					//same sector which must not be a station, or to the fleetship in case there's none
-					CShipMap::iterator next_current_ship = fleetship;
-					CShipMap::iterator it = current_ship;
-					++it;
-					while(it != pDoc->m_ShipMap.end()) {
-						if(fleetship->second->GetKO() != it->second->GetKO()
-								|| fleetship->second->GetOwnerOfShip() != it->second->GetOwnerOfShip()
-								|| it->second->IsStation()) {
-							++it;
-							continue;
-						}
-						next_current_ship = it;
-						break;
-					}
-					const bool was_terraform = to_erase->second->GetCurrentOrder() == SHIP_ORDER::TERRAFORM;
-					assert(next_current_ship != to_erase);
-					pDoc->m_ShipMap.EraseAt(to_erase, false);
-					pDoc->SetCurrentShip(next_current_ship);
-					const CPoint& co = next_current_ship->second->GetKO();
-					if(was_terraform)
-						pDoc->GetSector(co.x, co.y).RecalcPlanetsTerraformingStatus();
+			if (fleetship == current_ship)
+				return;
 
-					resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CFleetMenuView));
-					Invalidate(FALSE);
-					return;
+			assert(fleetship->second->GetKO() == current_ship->second->GetKO());
+			// sicherheitshalber wird hier nochmal überprüft, dass keine Station hinzugefügt werden kann und
+			// das sich das Schiff auch im gleichen Sektor befindet
+			if (fleetship->second->GetOwnerOfShip() == current_ship->second->GetOwnerOfShip() && !current_ship->second->IsStation())
+			{
+				// Wenn das Schiff welches wir hinzufügen wollen selbst eine Flotte besizt, so müssen
+				// wir diese Flotte natürlich auch noch hinzufügen
+				//this is done in CShips::AddShipToFleet
+				fleetship->second->AddShipToFleet(current_ship->second);
+				// Wenn wir das Schiff da hinzugefügt haben, dann müssen wir das aus der normalen Schiffsliste
+				// rausnehmen, damit es nicht zweimal im Spiel vorkommt
+				CShipMap::iterator to_erase = current_ship;
+				//set the current ship to the next ship following the removed one of the same race in the
+				//same sector which must not be a station, or to the fleetship in case there's none
+				CShipMap::iterator next_current_ship = fleetship;
+				CShipMap::iterator it = current_ship;
+				++it;
+				while(it != pDoc->m_ShipMap.end())
+				{
+					if(fleetship->second->GetKO() != it->second->GetKO()
+							|| fleetship->second->GetOwnerOfShip() != it->second->GetOwnerOfShip()
+							|| it->second->IsStation())
+					{
+						++it;
+						continue;
+					}
+
+					next_current_ship = it;
+					break;
 				}
+				
+				const bool was_terraform = to_erase->second->GetCurrentOrder() == SHIP_ORDER::TERRAFORM;
+				assert(next_current_ship != to_erase);
+				pDoc->m_ShipMap.EraseAt(to_erase, false);
+				pDoc->SetCurrentShip(next_current_ship);
+				const CPoint& co = next_current_ship->second->GetKO();
+				if (was_terraform)
+					pDoc->GetSector(co.x, co.y).RecalcPlanetsTerraformingStatus();
+
+				resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CFleetMenuView));
+				Invalidate(FALSE);
 			}
+
+			// fertig
+			return;
+		}
+		// Schiff als aktuelles Schiff setzen
+		else
+		{
+			// Iterator des aktuellen Schiffes in Schiffsmap suchen
+			for (CShipMap::iterator j = pDoc->m_ShipMap.begin(); j != pDoc->m_ShipMap.end(); ++j)
+			{
+				if (j->second != i->second)
+					continue;
+
+				KillTimer(1);
+				m_iTimeCounter = 0;
+
+				pDoc->SetCurrentShip(j);
+				CSmallInfoView::SetDisplayMode(CSmallInfoView::DISPLAY_MODE_SHIP_BOTTEM_VIEW);
+				resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
+				m_iWhichMainShipOrderButton = MAIN_BUTTON_NONE;
+				CGalaxyMenuView::SetMoveShip(TRUE);
+				this->SetTimer(1,100,NULL);
+				resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CGalaxyMenuView));
+				Invalidate(FALSE);
+			}
+
+			return;
 		}
 	}
+
+	//////////////////////////////////////////////////////////////////////////
+	// Klick auf Buttons prüfen
 
 	// Überprüfen ob wir auf den "Next"-Button geklickt haben, falls wir mehr als 9 Schiffe in dem Sektor haben
 	CRect r;
@@ -915,21 +959,23 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 	// Überprüfen, auf welchen Schiffsoberbefehle-Button ich geklickt habe
 	if (CGalaxyMenuView::IsMoveShip() == TRUE)
 	{
-		for(std::vector<const MainButtonInfo>::const_iterator i = m_vMainShipOrders.begin();
-			i != m_vMainShipOrders.end(); ++i)
+		for(std::vector<const MainButtonInfo>::const_iterator i = m_vMainShipOrders.begin(); i != m_vMainShipOrders.end(); ++i)
 		{
-			if(!i->rect.PtInRect(point))
+			if (!i->rect.PtInRect(point))
 				continue;
-			if(i->which != MAIN_BUTTON_CANCEL) {
+			
+			if (i->which != MAIN_BUTTON_CANCEL)
+			{
 				m_iWhichMainShipOrderButton = i->which;
 				m_iTimeCounter = MAIN_BUTTON_CANCEL;
 				SetTimer(1,100,NULL);
+				return;
 			}
 		}
+
 		// Ab jetzt die kleinen Buttons für die einzelnen genauen Schiffsbefehle
 		network::RACE client = pDoc->GetRaceCtrl()->GetMappedClientID(pMajor->GetRaceID());
-		for(std::vector<SecondaryButtonInfo>::const_iterator i = m_vSecondaryShipOrders.begin();
-				i != m_vSecondaryShipOrders.end(); ++i)
+		for(std::vector<SecondaryButtonInfo>::const_iterator i = m_vSecondaryShipOrders.begin(); i != m_vSecondaryShipOrders.end(); ++i)
 			if (i->rect.PtInRect(point))
 			{
 				SHIP_ORDER::Typ nOrder = static_cast<SHIP_ORDER::Typ>(i - m_vSecondaryShipOrders.begin());
@@ -1000,7 +1046,8 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 					CSmallInfoView::SetDisplayMode(CSmallInfoView::DISPLAY_MODE_SHIP_BOTTEM_VIEW);
 					resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
 				}
-				Invalidate();
+
+				Invalidate(FALSE);
 				break;
 			}
 	}
@@ -1017,16 +1064,29 @@ void CShipBottomView::OnLButtonDblClk(UINT nFlags, CPoint point)
 	if (!pDoc->m_bDataReceived)
 		return;
 
+	// keinen Doppelklick zulassen wenn in der Flottenansicht
 	if (resources::pMainFrame->GetActiveView(0, 1) == FLEET_VIEW)
+		return;
+
+	CMajor* pMajor = m_pPlayersRace;
+	ASSERT(pMajor);
+	if (!pMajor)
 		return;
 
 	CalcLogicalPoint(point);
 
-	if (m_RectForTheShip.PtInRect(point))
+	// wurde die Maus über ein Schiff gehalten
+	for (std::vector<std::pair<CRect, CShips*>>::const_iterator i = m_vShipRects.begin(); i != m_vShipRects.end(); ++i)
 	{
-		CMajor* pMajor = m_pPlayersRace;
-		ASSERT(pMajor);
-		if (!pMajor)
+		if (!i->first.PtInRect(point))
+			continue;
+
+		// handelt es sich um eine Station, dann kein Flottenmenü anzeigen
+		if (i->second->IsStation())
+			return;
+
+		// handelt es sich nur um ein nicht eigenes Schiff (keine Flotte), dann ebenfalls kein Flottenmenü anzeigen
+		if (i->second->GetFleetSize() == 0 && i->second->GetOwnerOfShip() != pMajor->GetRaceID())
 			return;
 
 		CGalaxyMenuView::SetMoveShip(FALSE);
@@ -1036,6 +1096,7 @@ void CShipBottomView::OnLButtonDblClk(UINT nFlags, CPoint point)
 		resources::pMainFrame->SelectMainView(FLEET_VIEW, pMajor->GetRaceID());	// Flottenansicht in der MainView anzeigen
 		resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
 		Invalidate(FALSE);
+		return;
 	}
 
 	CBottomBaseView::OnLButtonDblClk(nFlags, point);
@@ -1049,27 +1110,32 @@ void CShipBottomView::OnMouseMove(UINT nFlags, CPoint point)
 	CBotEDoc* pDoc = resources::pDoc;
 	assert(pDoc);
 	CalcLogicalPoint(point);
+	
 	// wurde die Maus über ein Schiff gehalten
-	for(std::vector<std::pair<CRect, CShips*>>::const_iterator i = m_vShipRects.begin(); i != m_vShipRects.end(); ++i) {
+	for (std::vector<std::pair<CRect, CShips*>>::const_iterator i = m_vShipRects.begin(); i != m_vShipRects.end(); ++i)
+	{
 		if (!i->first.PtInRect(point))
 			continue;
-		for(CShipMap::iterator j = pDoc->m_ShipMap.begin(); j != pDoc->m_ShipMap.end(); ++j) {
-			if(j->second != i->second)
+
+		// handelt es sich um das aktuelle Schiff, dann braucht nichts mehr gemacht werden
+		if (i->second == pDoc->CurrentShip()->second)
+			return;
+		
+		// Iterator des aktuellen Schiffes in Schiffsmap suchen
+		for (CShipMap::iterator j = pDoc->m_ShipMap.begin(); j != pDoc->m_ShipMap.end(); ++j)
+		{
+			if (j->second != i->second)
 				continue;
+			
 			pDoc->SetCurrentShip(j);
 			CSmallInfoView::SetDisplayMode(CSmallInfoView::DISPLAY_MODE_SHIP_BOTTEM_VIEW);
 			resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
 			m_iWhichMainShipOrderButton = MAIN_BUTTON_NONE;
-			break;
+			Invalidate(FALSE);
+			return;
 		}
-		m_RectForTheShip = i->first;
-		InvalidateRect(m_rLastMarkedRect, FALSE);
-		CRect r = i->first;
-		CalcDeviceRect(r);
-		m_rLastMarkedRect = r;
-		InvalidateRect(r, FALSE);
-		return;
 	}
+
 	CBottomBaseView::OnMouseMove(nFlags, point);
 }
 
