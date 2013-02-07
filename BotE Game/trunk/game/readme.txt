@@ -75,7 +75,7 @@ Now you should be able to hear sound effects.
      this context. 
 
 §3 - BotE source code is under "Microsoft Reciprocal License (Ms-RL)"
-	 license.
+     license.
 
 §4 - Changes to the source code are permitted as long as my person is 
      mentioned as the author of the project (see §2) and the 

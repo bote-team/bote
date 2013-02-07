@@ -12,9 +12,8 @@ Copyright
      copyright holders. Their Terms of Use are fully applied here in
      this context. 
 
-§3 - It is not permitted to use the source code and/or parts of 
-     the source code for other projects and/or distribute it. 
-     Exceptions need permission of the copyright holders. 
+§3 - BotE source code is under "Microsoft Reciprocal License (Ms-RL)"
+     license.
 
 §4 - Changes to the source code are permitted as long as my person is 
      mentioned as the author of the project (see §2) and the 
@@ -76,7 +75,7 @@ used in BotE.
 FMOD Sound System, copyright © Firelight Technologies Pty, Ltd., 
 1994-2010
 
-© 2004-2011 Sir Pustekuchen
+© 2004-2013 Sir Pustekuchen
 
 -------------------------------------------------------------------
 

@@ -73,7 +73,7 @@ fmodex.dll Datei.
      die Bedingungen der jeweiligen Rechteinhaber beachtet werden.
 
 §3 - Der BotE-Quellcode steht unter der "Microsoft Reciprocal License (Ms-RL)"
-	 Lizenz.
+     Lizenz.
 
 §4 - Änderungen am Quellcode sind erlaubt, sofern meine Person
      als Urheber des Projekts mit angegeben wird (siehe §2) und

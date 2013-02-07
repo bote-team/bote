@@ -697,6 +697,12 @@ void CShipBottomView::OnDraw(CDC* dc)
 	if (!pMajor)
 		return;
 
+	if (!CGalaxyMenuView::IsMoveShip())
+	{
+		KillTimer(1);
+		m_iTimeCounter = 0;
+	}
+
 	// Update Graphicpool Link
 	m_dc.gp = m_dc.pDoc->GetGraphicPool();
 

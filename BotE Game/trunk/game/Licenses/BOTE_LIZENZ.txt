@@ -11,10 +11,8 @@ Urheberrecht
      die Rechte besitzen, ist davon ausgeschlossen. Hier müssen
      die Bedingungen der jeweiligen Rechteinhaber beachtet werden.
 
-§3 - Es ist nicht erlaubt, den Quellcode bzw. Teile des Quellcodes
-     für andere Projekte zu verwenden bzw. diesen zu verbreiten.
-     Ausnahmen können nach Absprache mit den Urheberrechteinhabern
-     vereinbart werden.
+§3 - Der BotE-Quellcode steht unter der "Microsoft Reciprocal License (Ms-RL)"
+     Lizenz.
 
 §4 - Änderungen am Quellcode sind erlaubt, sofern meine Person
      als Urheber des Projekts mit angegeben wird (siehe §2) und
@@ -63,7 +61,7 @@ verwendet.
 FMOD Sound System, copyright © Firelight Technologies Pty, Ltd.,
 1994-2010
 
-© 2004-2011 Sir Pustekuchen
+© 2004-2013 Sir Pustekuchen
 
 
 --------------------------------------------------------------------
