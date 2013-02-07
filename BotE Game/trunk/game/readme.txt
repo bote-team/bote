@@ -1,5 +1,5 @@
-Welcome to BIRTH OF THE EMPIRES [Alpha 6.1]
-version: 0.81
+Welcome to BIRTH OF THE EMPIRES [Alpha 7]
+version: 0.9
 
 -------------------------------------------------------------------
 +                    BIRTH OF THE EMPIRES                         +
@@ -23,8 +23,7 @@ Hello
 
 The current version reflects the current progress of the project.
 Features of the current version may be changed in the final
-version. There are a lot of planned features that are not
-implemented, yet. For improvement suggestions I am very grateful.
+version. For improvement suggestions we are am very grateful.
 If you find a bug, please let us know. In the following text, 
 this project/application will be abbreviated by "BotE".
 
@@ -38,9 +37,9 @@ the BotE-crew
 
 CPU with at least 1 GHz
 at least 256 MB RAM
-170 MB of free diskspace
+200 MB of free diskspace
 Soundcard
-WindowsXP(tm), Windows Vista(tm), Windows 7(tm) operating system
+WindowsXP(tm), Windows Vista(tm), Windows 7(tm), Windows 8(tm) operating system
 or Linux with WINE
 
 -------------------------------------------------------------------
@@ -75,9 +74,8 @@ Now you should be able to hear sound effects.
      copyright holders. Their Terms of Use are fully applied here in
      this context. 
 
-§3 - It is not permitted to use the source code and/or parts of 
-     the source code for other projects and/or distribute it. 
-     Exceptions need permission of the copyright holders. 
+§3 - BotE source code is under "Microsoft Reciprocal License (Ms-RL)"
+	 license.
 
 §4 - Changes to the source code are permitted as long as my person is 
      mentioned as the author of the project (see §2) and the 
@@ -139,7 +137,7 @@ used in BotE.
 FMOD Sound System, copyright © Firelight Technologies Pty, Ltd., 
 1994-2010
 
-© 2004-2011 Sir Pustekuchen
+© 2004-2013 Sir Pustekuchen
 
 -------------------------------------------------------------------
 
@@ -172,21 +170,20 @@ Idea:
 Programming:
   Sir Pustekuchen
   CBot
+  Anonymissimus
+  Revisor
+  chrisfirefox
+  plotnik01
 
-Design:
+Design & Graphics:
   Sir Pustekuchen
   Malle
   Zunder
+  magicmot
   nemesis5
   pd
-
-Graphics:
-  Zunder
-  Malle
-  Sir Pustekuchen
-  nemesis5
-  YOT-Project
   rainer
+  YOT-Project
   other contributors (see further down below)
 
 Text:
@@ -199,18 +196,23 @@ Text:
   master130686
   Grammaton Cleric
   Kyle Katarn73
-  grammaton
+  rainer
+  Amun
 
 Data:
   Sir Pustekuchen
+  rainer
   Scav
   Malle
   Alamar
 
-Balancing:
-  Mentat
-  Scav
+Balancing & Testing:
+  master130686
+  Dennis0078
+  Andi47
+  Grammaton Cleric
   Sir Pustekuchen
+  rainer
 
 Music:
   Eric James
@@ -227,26 +229,22 @@ Voices:
   Krista Flanagan
   Mike Strobel
 
-English Translation
+English Translation:
   Malle
   Matress of Evil
   denzil85
 
-Testing
-  Alabor
-  master130686
-  Rautzebautze
-  Grammaton Cleric
-  Dennis0078
-  
-
-Manual (german)
+Manual (german):
   Gottesanbeter
   rainer
   Xenox
   Malle
   Sir Pustekuchen
 
+Wiki:
+  rainer
+  Dennis0078
+  Amun
 
 ---------------------------------------------------
 | special thanks go to the following persons      |
@@ -666,4 +664,4 @@ Some race descriptions:	Jerron http://www.annor.de and http://www.weltenbastler.
 
 --------------------------------------------------------------------
 
-Copyright by Sir Pustekuchen ©2004-2011
+Copyright by Sir Pustekuchen ©2004-2013
