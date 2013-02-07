@@ -13,9 +13,12 @@
 
 /// Versionsnummer des Dokuments; es können nur Spielstände geladen werden, die diese Versionsnummer
 /// haben.
-#define DOCUMENT_VERSION			9		///< Alpha 6 Version
-#define VERSION						0.81	///< benötigte Version in Datafiles
-#define VERSION_INFORMATION			"0.81"	///< anzuzeigende Versionsinformation
+#define DOCUMENT_VERSION			10		///< Alpha 7 Version
+#define VERSION						0.9		///< benötigte Version in Datafiles
+#define VERSION_INFORMATION			"0.9"	///< anzuzeigende Versionsinformation
+
+// Konsistenzchecks ein/ausschalten (nicht für Release!)
+#define CONSISTENCY_CHECKS					///< anschalten wenn Konsistenzchecks durchgeführt werden sollen
 
 // --- Feste Größen der Starmap ------------------------------------------------
 extern int STARMAP_SECTORS_HCOUNT;		///< Anzahl der Sektoren horizontal
@@ -29,7 +32,7 @@ extern int STARMAP_TOTALHEIGHT	;//		1600	///< Gesamthöhe bei 100% (= 20 * 40)
 
 
 #define STARMAP_ZOOM_MIN			.3		///< minimaler Zoom-Faktor
-extern double STARMAP_ZOOM_MAX;//			2	///< maximaler Zoom-Faktor
+extern double STARMAP_ZOOM_MAX;				///< maximaler Zoom-Faktor
 #define STARMAP_ZOOM_STEP			.05		///< Änderung des Zoom-Faktors beim Drehen des Scrollrades
 #define STARMAP_ZOOM_INITIAL		1.0		///< Zoom-Faktor zu Beginn
 

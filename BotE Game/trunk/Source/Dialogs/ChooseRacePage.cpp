@@ -215,14 +215,6 @@ void CChooseRacePage::EnableRaceButtons()
 			pButton->SetCheck(FALSE);
 		}
 
-		////////////////////////////////////////////
-		// Alpha5 Bedingung
-#ifndef DEVELOPMENT_VERSION
-		if (nRace != 0 && nRace != 1 && nRace != 2 && nRace != 3 && nRace != 4)
-			pButton->EnableWindow(FALSE);
-#endif
-		////////////////////////////////////////////
-
 		if (client.GetUserName(race) != "")
 			SetDlgItemText(names[nRace], "(" + client.GetUserName(race) + ")");
 		else

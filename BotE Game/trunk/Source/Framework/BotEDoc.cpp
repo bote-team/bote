@@ -3561,7 +3561,7 @@ void CBotEDoc::CalcNewRoundData()
 	// durchgegangen sein muﬂ.
 	for(std::vector<CSector>::iterator sector = m_Sectors.begin(); sector != m_Sectors.end(); ++sector) {
 		CSystem& system = GetSystemForSector(*sector);
-#ifdef DEVELOPMENT_VERSION
+#ifdef CONSISTENCY_CHECKS
 		CSanity::GetInstance()->SanityCheckSectorAndSystem(*sector, system, *this);
 #endif
 		const CString& system_owner = system.GetOwnerOfSystem();
@@ -3763,7 +3763,7 @@ void CBotEDoc::CalcShipOrders()
 		if(y == m_ShipMap.end())
 			break;
 
-#ifdef DEVELOPMENT_VERSION
+#ifdef CONSISTENCY_CHECKS
 		CSanity::GetInstance()->SanityCheckFleet(*y->second);
 #endif
 
@@ -4529,7 +4529,7 @@ void CBotEDoc::CalcShipMovement()
 		pMajor->GetStarmap()->SynchronizeWithMap(m_Sectors, &races);
 	}
 
-#ifdef DEVELOPMENT_VERSION
+#ifdef CONSISTENCY_CHECKS
 	std::set<CString> already_encountered_ships_for_sanity_check;
 #endif
 	CShipMap repaired_ships(false);
@@ -4537,7 +4537,7 @@ void CBotEDoc::CalcShipMovement()
 	// dass manche Befehle noch ihre G¸ltigkeit haben
 	for(CShipMap::iterator y = m_ShipMap.begin(); y != m_ShipMap.end(); ++y)
 	{
-#ifdef DEVELOPMENT_VERSION
+#ifdef CONSISTENCY_CHECKS
 		CSanity::GetInstance()->CheckShipUniqueness(*y->second, already_encountered_ships_for_sanity_check);
 #endif
 
