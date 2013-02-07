@@ -1398,18 +1398,22 @@ void CGalaxyMenuView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 
 void CGalaxyMenuView::HandleShipHotkeys(const UINT nChar, CBotEDoc* pDoc)
 {
-	if(m_bShipMove) {
+	if (nChar == 'N')
+	{
 		m_bShipMove = FALSE;
 		m_nRange = 0;
-	}
-
-	if(nChar == 'N') {
 		SearchNextIdleShipAndJumpToIt(pDoc, SHIP_ORDER::NONE);
 	}
-	else if(nChar == VK_SPACE) {
+	else if(nChar == VK_SPACE)
+	{
+		m_bShipMove = FALSE;
+		m_nRange = 0;
 		SearchNextIdleShipAndJumpToIt(pDoc, SHIP_ORDER::WAIT_SHIP_ORDER);
 	}
-	else if(nChar == 'S') {
+	else if(nChar == 'S')
+	{
+		m_bShipMove = FALSE;
+		m_nRange = 0;
 		SearchNextIdleShipAndJumpToIt(pDoc, SHIP_ORDER::SENTRY_SHIP_ORDER);
 	}
 }

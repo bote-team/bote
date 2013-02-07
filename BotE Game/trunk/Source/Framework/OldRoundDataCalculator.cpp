@@ -146,7 +146,7 @@ void COldRoundDataCalculator::SystemMessage(const CSector& sector, CMajor* pMajo
 void COldRoundDataCalculator::HandlePopulationEffects(const CSector& sector, CSystem& system, CMajor* pMajor) const {
 	const float fCurrentHabitants = sector.GetCurrentHabitants();
 	CEmpire* pEmpire = pMajor->GetEmpire();
-	pEmpire->AddPopSupportCosts((USHORT)fCurrentHabitants * POPSUPPORT_MULTI);
+	pEmpire->AddPopSupportCosts((UINT)fCurrentHabitants * POPSUPPORT_MULTI);
 	// Funktion gibt TRUE zurück, wenn wir durch die Bevölkerung eine neue Handelsroute anlegen können
 	if (system.SetHabitants(fCurrentHabitants))
 	{

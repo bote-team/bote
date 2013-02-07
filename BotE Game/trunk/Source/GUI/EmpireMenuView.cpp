@@ -87,7 +87,7 @@ void CEmpireMenuView::OnNewRound()
 	ASSERT(pMajor);
 
 	// Sortierung der Systemliste nach dem Namen der Systeme
-	c_arraysort<CArray<SystemViewStruct>,SystemViewStruct>(*pMajor->GetEmpire()->GetSystemList(), sort_asc);
+	c_arraysort<CArray<EMPIRE_SYSTEMS>,EMPIRE_SYSTEMS>(*pMajor->GetEmpire()->GetSystemList(), sort_asc);
 	// Sortierung der Schiffshistory nach dem Namen der Schiffe
 	c_arraysort<CArray<CShipHistoryStruct,CShipHistoryStruct>,CShipHistoryStruct>(*(pMajor->GetShipHistory()->GetShipHistoryArray()),CShipHistoryStruct::sort_by_shipname);
 

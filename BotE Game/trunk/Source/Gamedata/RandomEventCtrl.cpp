@@ -53,7 +53,7 @@ void CRandomEventCtrl::CalcEvents(CMajor* pRace)
 	{
 		//Calculate whether such event happens. The more systems we have, the more
 		//likely it is that one of them is affected.
-		CArray<SystemViewStruct> const* systems = pRace->GetEmpire()->GetSystemList();
+		CArray<EMPIRE_SYSTEMS> const* systems = pRace->GetEmpire()->GetSystemList();
 		const unsigned size = systems->GetSize();
 		const int prob = min(m_uiProbPerSystem * size, 1000);
 		if(rand() % 999 >= prob)

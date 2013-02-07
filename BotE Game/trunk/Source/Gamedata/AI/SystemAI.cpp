@@ -951,7 +951,7 @@ int CSystemAI::GetShipBuildPrios(BOOLEAN &chooseCombatship, BOOLEAN &chooseColos
 			if (random > min)
 			{
 				// Schiffsbevölkerungsunterstützungskosten - Schiffsunterstützungskosten
-				long shipCosts = pMajor->GetEmpire()->GetPopSupportCosts() - pMajor->GetEmpire()->GetShipCosts();
+				int shipCosts = pMajor->GetEmpire()->GetPopSupportCosts() - pMajor->GetEmpire()->GetShipCosts();
 				// würde man durch die Schiffe negatives Credits machen und dies wäre höher als 5% des gesamten Creditsbestandes, dann wird kein Schiff gebaut!
 				if (shipCosts < 0 && abs(shipCosts) > (long)(pMajor->GetEmpire()->GetCredits() * 0.05))
 				{

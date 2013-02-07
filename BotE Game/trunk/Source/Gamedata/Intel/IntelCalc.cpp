@@ -265,7 +265,7 @@ void CIntelCalc::ReduceDepotPoints(CMajor* pRace, int perc)
 			// Wenn die Rasse kein Systeme mehr besitzt, also ausgelöscht wurde, so verschwinden alle
 			// angesammelten Geheimdienstpunkte
 			int oldPerc = perc;
-			if (it->second->GetEmpire()->CountSystems() == NULL)
+			if (it->second->GetEmpire()->CountSystems() == 0)
 				perc = 100;
 			// Depot der Spionagepunkte
 			diff = pIntel->GetSPStorage(0,it->first) * perc / 100;

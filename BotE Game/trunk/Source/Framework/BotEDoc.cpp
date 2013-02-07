@@ -1752,7 +1752,7 @@ void CBotEDoc::ApplyBuildingsAtStartup()
 					pMajor->GetEmpire()->AddSP(currentPoints);
 					// Schiffsunterstützungskosten eintragen
 					float fCurrentHabitants = sector->GetCurrentHabitants();
-					pMajor->GetEmpire()->AddPopSupportCosts((USHORT)fCurrentHabitants * POPSUPPORT_MULTI);
+					pMajor->GetEmpire()->AddPopSupportCosts((UINT)fCurrentHabitants * POPSUPPORT_MULTI);
 				}
 			}
 			for (int i = 0; i < system.GetAllBuildings()->GetSize(); i++)
@@ -5452,8 +5452,8 @@ void CBotEDoc::CalcEndDataForNextRound()
 		}
 
 		// Schiffskosten berechnen
-		int popSupport = pMajor->GetEmpire()->GetPopSupportCosts();
-		int shipCosts  = pMajor->GetEmpire()->GetShipCosts();
+		UINT popSupport = pMajor->GetEmpire()->GetPopSupportCosts();
+		UINT shipCosts  = pMajor->GetEmpire()->GetShipCosts();
 
 		int costs = popSupport - shipCosts;
 		if (costs < 0)

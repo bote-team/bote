@@ -387,7 +387,7 @@ void CVictoryObserver::Observe(void)
 			int nValue = 0;
 			for (int i = 0; i < pMajor->GetEmpire()->GetSystemList()->GetSize(); i++)
 			{
-				const SystemViewStruct* pInfo = &pMajor->GetEmpire()->GetSystemList()->GetAt(i);
+				const EMPIRE_SYSTEMS* pInfo = &pMajor->GetEmpire()->GetSystemList()->GetAt(i);
 				if (pDoc->GetSector(pInfo->ko.x, pInfo->ko.y).GetTakenSector())
 					nValue++;
 			}

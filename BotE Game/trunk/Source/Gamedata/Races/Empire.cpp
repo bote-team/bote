@@ -23,7 +23,6 @@ CEmpire::CEmpire()
 }
 CEmpire::~CEmpire()
 {
-	Reset();
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -39,7 +38,7 @@ void CEmpire::Serialize(CArchive &ar)
 	// wenn gespeichert wird
 	if (ar.IsStoring())
 	{
-		ar << m_byNumberOfSystems;
+		ar << m_nNumberOfSystems;
 		ar << m_iCredits;
 		ar << m_iCreditsChange;
 		ar << m_iShipCosts;
@@ -57,7 +56,7 @@ void CEmpire::Serialize(CArchive &ar)
 	{
 		ClearMessagesAndEvents();
 		int number = 0;
-		ar >> m_byNumberOfSystems;
+		ar >> m_nNumberOfSystems;
 		ar >> m_iCredits;
 		ar >> m_iCreditsChange;
 		ar >> m_iShipCosts;
@@ -87,7 +86,7 @@ void CEmpire::GenerateSystemList(const std::vector<CSystem>& systems, const std:
 		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++) {
 			const unsigned index = vertical_pos + x;
 			if (systems.at(index).GetOwnerOfSystem() == m_sEmpireID)
-				m_SystemList.Add(SystemViewStruct(sectors.at(index).GetName(), CPoint(x,y)));
+				m_SystemList.Add(EMPIRE_SYSTEMS(sectors.at(index).GetName(), CPoint(x,y)));
 		}
 	}
 }
@@ -95,8 +94,8 @@ void CEmpire::GenerateSystemList(const std::vector<CSystem>& systems, const std:
 /// Funktion addiert die übergebene Anzahl an Forschungspunkten zu den Forschungspunkten des Imperiums.
 void CEmpire::AddFP(int add)
 {
-	if (((long)m_lFP + add) < NULL)
-		m_lFP = NULL;
+	if (((long)m_lFP + add) < 0)
+		m_lFP = 0;
 	else
 		m_lFP += add;
 }
@@ -121,7 +120,7 @@ void CEmpire::ClearMessagesAndEvents(void)
 
 void CEmpire::Reset(void)
 {
-	m_byNumberOfSystems = 1;
+	m_nNumberOfSystems = 1;
 	m_sEmpireID = "";
 	m_iCredits = 1000;
 	m_iCreditsChange = 0;
