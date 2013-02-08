@@ -627,7 +627,7 @@ void CTransportMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 								{
 									ship->second->GetTransportedTroops()->Add(pDoc->GetSystem(p.x, p.y).GetTroops()->GetAt(m_nActiveTroopInSystem));
 									pDoc->GetSystem(p.x, p.y).GetTroops()->RemoveAt(m_nActiveTroopInSystem);
-									m_nActiveTroopInSystem--;
+									m_nActiveTroopInSystem = max(0, m_nActiveTroopInSystem - 1);
 									m_nActiveTroopInShip++;
 									Invalidate(FALSE);
 									resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CShipBottomView));
