@@ -1,5 +1,61 @@
-BOTE - Changelog
-January 2004 - April 2011
+BotE - Changelog
+Januar 2004 - Februar 2013
+www.birth-of-the-empires.de
+
+
+V0.81 -> V0.90 (Alpha 7)
+Generally:
+- a great many little changes and additions to improve playing sense
+- general look-and-feel improved
+- stabitiliy improved
+- source code in parts strong revised or completely new programmed
+- many bug fixes in the code
+
+New features:
+- sixth and thereby last major race (Omega Alliance) playable
+- Aliens (alien entities) implemented
+- random events implemented
+- new game functions selectable in the options dialog
+- galaxy size and shape pre-adjustable at starting game
+- more different troops each major race
+- some hotkeys für ships, especially to find idle ships -> improves handling
+- some new ship commands (e.g. Repair, Blockade)
+- Ion Storm: new ship command "improve shields" (stations a ships in an Ion Storm as long as it isn't yet at maximum improved shields, then sets it idle)
+
+GUI Changes:
+- completely new start screens (old dialog replaced)
+- labor unit management: display of active workers above worker boxes
+- labor unit management: display of system storage and % under worker boxes
+- Overall rating (result from last turn) displayed in NaviCon
+- ship design screen: ship tooltip when user moves mouse over ship image
+- ship design screen: implemented scrolling with keyboard keys (up & down)
+- diplomacy: races sortable and status displayed coloured
+- more symbols in build select list
+- ship command menue: new structured
+- ship command and combat order now displayed separately
+- troops-tooltip implemented
+- symbol is displayed if colony ships terraforming or colonizing
+
+Changes:
+- system attack perhaps leads to liberation (no seperate ship command implemented yet)
+- ship command Flagship now as immediate order and (new) cancel is available
+- change in rating ships making less than 10 damage to hull (winning chance and build costs)
+- double click effects optimized (double clicks onto news are doing jumps to reasonable screens and -new- in galaxy map affected sector is marked
+- affiliation impacts starched
+
+AI:
+- AI kills any own troops because it doesn't know how to use them and otherwise troops might have negative impact
+
+Data:
+- images of Terrans ships exchanged
+- Shiplist over-reworked (maintenance costs, speed 1 only beginner ships, now up to tech 14)
+- only German shiplist: Außenposten renamed into Outpost (easier matching of Shiplist.data)
+- Rok'Hanar-Ships renamed into Da'unor (easier matching of Shiplist.data)
+- Buildings.data over-worked (upgrades less frequently, but up to tech 14)
+- new Omega Alliance building: Tetroin-4c Processing Plant
+- new Terrans building: Titan Boost Facilities
+- MajorPlanets.data (planets of major race systems pre-adjustable)
+
 
 V0.8 -> V0.81 (Alpha 6.1)
 GUI Changes:
@@ -76,7 +132,7 @@ new features:
 - presentation, Tooltips, AI attention implemented for space anomalies 
 - frequency of space anomalies via the options dialog and command set Ini 
 - Implements various victory conditions 
-- For victory in Optionsialog and ini file set 
+- For victory in options dialog and ini file set
 - While the game does not disable more changeable options in the Options dialog 
 - Wireframe sphere around graphics on terraforming planets 
 - Display of the exact moral change in the behind the Moral Event Impieriumsnachrichtenübersicht 
