@@ -597,13 +597,15 @@ Event screens:
 		Fehlgeschlagene Invasion
 		Erfolgreiche Invasion
 	eRe4s3r http://ere4s3r.deviantart.com/
-		Kampfmenühintergrund
+                AlienEntity
+                Kampfmenühintergrund
 		Gameover (wenn verloren)
-		Majorrace ausgelöscht
+                Befall mit Hüllenvirus
+		Eine Rasse wurde ausgelöscht
 	matiiii http://matiiii.deviantart.com/art/Space-art-resource-psd-68887393
 		Siegevent (am Ende des Spiels)
 	NASA http://mt360.files.wordpress.com/2008/11/larger-hubble-image.jpg
-		Forschungsevent
+		Forschungserfolg
 	
 
 

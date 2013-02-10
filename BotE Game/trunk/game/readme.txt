@@ -611,17 +611,19 @@ Event screens:
 	Steve Kilby: http://wittswallpapers.com/Kilby/kilby.html
 		Blockade
 		Bombardment
-		First contact with an alien race - event
+		First contact with an another race
 		Failed invasion
 		Successful invasion
 	eRe4s3r http://ere4s3r.deviantart.com/
+                AlienEntity
 		Combat menu background
 		Gameover (when you lose a game)
-		Extinction of a major race - event
+                HullVirus
+		Extinction of a race
 	matiiii http://matiiii.deviantart.com/art/Space-art-resource-psd-68887393
 		Victory (when you win a game)
 	NASA http://mt360.files.wordpress.com/2008/11/larger-hubble-image.jpg
-		Research event
+		Research success
 
 
 Galaxy backgrounds:
