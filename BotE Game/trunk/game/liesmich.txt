@@ -641,6 +641,10 @@ Symbole und Minigrafiken:
   Kleine Ressourcen-Icons: 
 	nemesis5
 	YoT-project
+  Forschungssymbole:
+        nemesis5
+        voxelgeek
+        siehe separate Creditsdatei im Ordner ../Graphics/Research/
   Daumen-hoch Clipart im Kampfmenü:
 	egore http://www.openclipart.org/user-detail/egore
   Taktiksymbole im Kampfmenü:

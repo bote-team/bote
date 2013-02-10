@@ -659,6 +659,10 @@ Symbols and other small graphics:
   Small resources icons: 
 	nemesis5
 	YoT-project
+  Research symbols:
+        nemesis5
+        voxelgeek
+        see also separate credits file in folder ../Graphics/Research/
   Thumbs-up clipart in combat menu:
 	egore http://www.openclipart.org/user-detail/egore
   Tactics icons in combat menu:
