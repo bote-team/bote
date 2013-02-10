@@ -65,6 +65,10 @@ public:
 	/// @return <code>TRUE</code> wenn Verteidiger ungleich allen Angreifern, ansonsten <code>FALSE</code>
 	BOOLEAN IsDefenderNotAttacker(const CString& sDefender, const set<CString>* attacker) const;
 
+	/// Funktion gibt zurück, ob im System ein Angriff tatsächlich stattfinden kann
+	/// @return Schiffe sind am Angriff beteiligt
+	bool IsAttack() const { return !m_pShips.IsEmpty(); }
+
 private:
 	// Attribute
 

@@ -1611,7 +1611,7 @@ void CBotEDoc::ApplyShipsAtStartup()
 				break;
 			}
 
-			// Sektor war okay
+			// Sektor war bAttackSystem
 			break;
 
 		} while (true);
@@ -2551,131 +2551,273 @@ void CBotEDoc::CalcSystemAttack()
 	{
 		if (y->second->GetCurrentOrder() == SHIP_ORDER::ATTACK_SYSTEM)
 		{
-			BOOLEAN okay = TRUE;
+			bool bAttackSystem = true;
 			// Checken dass in diesem System nicht schon ein Angriff durchgeführt wurde
 			for (int x = 0; x < fightInSystem.GetSize(); x++)
 				if (fightInSystem.GetAt(x) == y->second->GetKO())
 				{
-					okay = FALSE;
+					bAttackSystem = false;
 					break;
 				}
 
 			// nur wenn das Schiff und Schiffe in der Flotte ungetarnt sind
-			if(!y->second->CanHaveOrder(SHIP_ORDER::ATTACK_SYSTEM, false)) {
+			if (!y->second->CanHaveOrder(SHIP_ORDER::ATTACK_SYSTEM, false))
+			{
 				y->second->UnsetCurrentOrder();
-				okay = FALSE;
+				bAttackSystem = false;
 			}
 
 			// wenn in dem System noch kein Angriff durchgeführt wurde kann angegriffen werden
-			if (okay)
+			if (!bAttackSystem)
+				continue;
+
+			CPoint p = y->second->GetKO();
+			// Besitzer des Systems (hier Sector wegen Minors) vor dem Systemangriff
+			CString sDefender = GetSector(p.x, p.y).GetOwnerOfSector();
+			// Angreifer bzw. neuer Besitzer des Systems nach dem Angriff
+			set<CString> attackers;
+			for (CShipMap::const_iterator i = m_ShipMap.begin(); i != m_ShipMap.end(); ++i)
 			{
-				CPoint p = y->second->GetKO();
-				// Besitzer des Systems (hier Sector wegen Minors) vor dem Systemangriff
-				CString sDefender = GetSector(p.x, p.y).GetOwnerOfSector();
-				// Angreifer bzw. neuer Besitzer des Systems nach dem Angriff
-				set<CString> attackers;
-				for (CShipMap::const_iterator i = m_ShipMap.begin(); i != m_ShipMap.end(); ++i)
+				if (i->second->GetKO() == p && i->second->GetCurrentOrder() == SHIP_ORDER::ATTACK_SYSTEM)
 				{
-					if (i->second->GetKO() == p && i->second->GetCurrentOrder() == SHIP_ORDER::ATTACK_SYSTEM)
+					const CString& sOwner = i->second->GetOwnerOfShip();
+					if (!sOwner.IsEmpty())
+						attackers.insert(sOwner);
+				}
+			}
+
+			CAttackSystem* pSystemAttack = new CAttackSystem();
+
+			CRace* defender = NULL;
+			if (!sDefender.IsEmpty())
+				defender = m_pRaceCtrl->GetRace(sDefender);
+			// Wenn eine Minorrace in dem System lebt und dieser nicht schon erobert wurde
+			if (defender && defender->IsMinor() && GetSector(p.x, p.y).GetTakenSector() == FALSE)
+			{
+				pSystemAttack->Init(defender, &GetSystem(p.x, p.y), &m_ShipMap, &GetSector(p.x, p.y), &this->BuildingInfo, CTrade::GetMonopolOwner());
+			}
+			// Wenn eine Majorrace in dem System lebt
+			else if (defender && defender->IsMajor() && pSystemAttack->IsDefenderNotAttacker(sDefender, &attackers))
+			{
+				pSystemAttack->Init(defender, &GetSystem(p.x, p.y), &m_ShipMap, &GetSector(p.x, p.y), &this->BuildingInfo, CTrade::GetMonopolOwner());
+			}
+			// Wenn niemand mehr in dem System lebt, z.B. durch Rebellion
+			else
+			{
+				pSystemAttack->Init(NULL, &GetSystem(p.x, p.y), &m_ShipMap, &GetSector(p.x, p.y), &this->BuildingInfo, CTrade::GetMonopolOwner());
+			}
+
+			// keine Schiffe sind am Angriff beteiligt -> z.B. alle im Sektor sind am Rückzug
+			if (!pSystemAttack->IsAttack())
+			{
+				delete pSystemAttack;
+				pSystemAttack = NULL;
+				fightInSystem.Add(p);
+				continue;
+			}
+
+			// Ein Systemangriff verringert die Moral in allen Systemen, die von uns schon erobert wurden und zuvor
+			// der Majorrace gehörten, deren System hier angegriffen wird
+			if (!sDefender.IsEmpty())
+				for (int j = 0 ; j < STARMAP_SECTORS_VCOUNT; j++)
+					for (int i = 0; i < STARMAP_SECTORS_HCOUNT; i++)
+						if (GetSector(i, j).GetTakenSector() == TRUE && GetSector(i, j).GetColonyOwner() == sDefender
+							&& pSystemAttack->IsDefenderNotAttacker(sDefender, &attackers))
+							GetSystem(i, j).SetMoral(-rand()%5);
+
+			// Wurde das System mit Truppen erobert, so wechselt es den Besitzer
+			if (pSystemAttack->Calculate())
+			{
+				CString attacker = GetSystem(p.x, p.y).GetOwnerOfSystem();
+				CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(attacker));
+				ASSERT(pMajor);
+				//* Der Besitzer des Systems wurde in der Calculate() Funktion schon auf den neuen Besitzer
+				//* umgestellt. Der Besitzer des Sektors ist aber noch der alte, wird hier dann auf einen
+				//* eventuell neuen Besitzer umgestellt.
+
+				// Wenn in dem System eine Minorrace beheimatet ist und das System nicht vorher schon von jemand
+				// anderem militärisch erobert wurde oder die Minorace bei einem anderen Imperium schon vermitgliedelt
+				// wurde, dann muss diese zuerst die Gebäude bauen
+				if (GetSector(p.x, p.y).GetMinorRace() == TRUE && GetSector(p.x, p.y).GetTakenSector() == FALSE && defender != NULL && defender->IsMinor())
+				{
+					CMinor* pMinor = dynamic_cast<CMinor*>(defender);
+					ASSERT(pMinor);
+					pMinor->SetSubjugated(true);
+					// Wenn das System noch keiner Majorrace gehört, dann Gebäude bauen
+					GetSystem(p.x, p.y).BuildBuildingsForMinorRace(&GetSector(p.x, p.y), &BuildingInfo, m_Statistics.GetAverageTechLevel(), pMinor);
+					// Sektor gilt ab jetzt als erobert.
+					GetSector(p.x, p.y).SetTakenSector(TRUE);
+					GetSector(p.x, p.y).SetOwned(TRUE);
+					GetSector(p.x, p.y).SetOwnerOfSector(attacker);
+					// Beziehung zu dieser Minorrace verschlechtert sich auf 0 Punkte
+					pMinor->SetRelation(attacker, -100);
+					// Moral in diesem System verschlechtert sich um rand()%25+10 Punkte
+					GetSystem(p.x, p.y).SetMoral(-rand()%25-10);
+					// ist die Moral unter 50, so wird sie auf 50 gesetzt
+					if (GetSystem(p.x, p.y).GetMoral() < 50)
+						GetSystem(p.x, p.y).SetMoral(50 - GetSystem(p.x, p.y).GetMoral());
+					CString param = GetSector(p.x, p.y).GetName();
+					CString eventText = "";
+
+					// Alle diplomatischen Nachrichten der Minorrace aus den Feldern löschen und an der Minorrace
+					// bekannte Imperien die Nachricht der Unterwerfung senden
+					pMinor->GetIncomingDiplomacyNews()->clear();
+					pMinor->GetOutgoingDiplomacyNews()->clear();
+					map<CString, CMajor*>* pmMajors = m_pRaceCtrl->GetMajors();
+					for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 					{
-						const CString& sOwner = i->second->GetOwnerOfShip();
-						if (!sOwner.IsEmpty())
-							attackers.insert(sOwner);
+						// ausgehende Nachrichten löschen
+						for (UINT i = 0; i < it->second->GetOutgoingDiplomacyNews()->size(); i++)
+							if (it->second->GetOutgoingDiplomacyNews()->at(i).m_sFromRace == pMinor->GetRaceID()
+								|| it->second->GetOutgoingDiplomacyNews()->at(i).m_sToRace == pMinor->GetRaceID())
+								it->second->GetOutgoingDiplomacyNews()->erase(it->second->GetOutgoingDiplomacyNews()->begin() + i--);
+						// eingehende Nachrichten löschen
+						for (UINT i = 0; i < it->second->GetIncomingDiplomacyNews()->size(); i++)
+							if (it->second->GetIncomingDiplomacyNews()->at(i).m_sFromRace == pMinor->GetRaceID()
+								|| it->second->GetIncomingDiplomacyNews()->at(i).m_sToRace == pMinor->GetRaceID())
+								it->second->GetIncomingDiplomacyNews()->erase(it->second->GetIncomingDiplomacyNews()->begin() + i--);
+
+						// An alle Majors die die Minor kennen die Nachricht schicken, dass diese unterworfen wurde
+						if (it->second->IsRaceContacted(pMinor->GetRaceID()))
+						{
+							CEmpireNews message;
+							message.CreateNews(CLoc::GetString("MINOR_SUBJUGATED", FALSE, pMinor->GetRaceName()), EMPIRE_NEWS_TYPE::MILITARY, param, p);
+							it->second->GetEmpire()->AddMsg(message);
+							if (it->second->IsHumanPlayer())
+							{
+								network::RACE client = m_pRaceCtrl->GetMappedClientID(it->first);
+								m_iSelectedView[client] = EMPIRE_VIEW;
+							}
+						}
+					}
+					// Eventnachricht an den Eroberer (System erobert)
+					eventText = pMajor->GetMoralObserver()->AddEvent(11, pMajor->GetRaceMoralNumber(), param);
+					// Eventnachricht hinzufügen
+					if (!eventText.IsEmpty())
+					{
+						CEmpireNews message;
+						message.CreateNews(eventText, EMPIRE_NEWS_TYPE::MILITARY, param, p, 0, 1);
+						pMajor->GetEmpire()->AddMsg(message);
+						if (pMajor->IsHumanPlayer())
+						{
+							network::RACE client = m_pRaceCtrl->GetMappedClientID(attacker);
+							m_iSelectedView[client] = EMPIRE_VIEW;
+						}
 					}
 				}
-
-				CAttackSystem* attackSystem = new CAttackSystem();
-
-				CRace* defender = NULL;
-				if (!sDefender.IsEmpty())
-					defender = m_pRaceCtrl->GetRace(sDefender);
-				// Wenn eine Minorrace in dem System lebt und dieser nicht schon erobert wurde
-				if (defender && defender->IsMinor() && GetSector(p.x, p.y).GetTakenSector() == FALSE)
+				// Wenn das System einer Minorrace gehört, eingenommen wurde und somit befreit wird
+				else if (GetSector(p.x, p.y).GetMinorRace() == TRUE && GetSector(p.x, p.y).GetTakenSector() == TRUE && defender != NULL && defender->IsMajor())
 				{
-					attackSystem->Init(defender, &GetSystem(p.x, p.y), &m_ShipMap, &GetSector(p.x, p.y), &this->BuildingInfo, CTrade::GetMonopolOwner());
+					// Die Beziehung zur Majorrace, die das System vorher besaß verschlechtert sich
+					defender->SetRelation(attacker, -rand()%50);
+					// Die Beziehung zu der Minorrace verbessert sich auf Seiten des Retters
+					CMinor* pMinor = m_pRaceCtrl->GetMinorRace(GetSector(p.x, p.y).GetName());
+					ASSERT(pMinor);
+					pMinor->SetRelation(attacker, rand()%50);
+					pMinor->SetSubjugated(false);
+					// Eventnachricht an den, der das System verloren hat (erobertes Minorracesystem wieder verloren)
+					CString param = GetSector(p.x, p.y).GetName();
+
+					CMajor* def = dynamic_cast<CMajor*>(defender);
+					CString eventText(def->GetMoralObserver()->AddEvent(17, def->GetRaceMoralNumber(), param));
+					// Eventnachricht hinzufügen
+					if (!eventText.IsEmpty())
+					{
+						CEmpireNews message;
+						message.CreateNews(eventText, EMPIRE_NEWS_TYPE::MILITARY, param, p);
+						def->GetEmpire()->AddMsg(message);
+						if (def->IsHumanPlayer())
+						{
+							network::RACE client = m_pRaceCtrl->GetMappedClientID(defender->GetRaceID());
+							m_iSelectedView[client] = EMPIRE_VIEW;
+						}
+					}
+					// Eventnachricht an den Eroberer (Minorracesystem befreit)
+					param = pMinor->GetRaceName();
+					eventText = pMajor->GetMoralObserver()->AddEvent(13, pMajor->GetRaceMoralNumber(), param);
+					// Eventnachricht hinzufügen
+					if (!eventText.IsEmpty())
+					{
+						CEmpireNews message;
+						message.CreateNews(eventText, EMPIRE_NEWS_TYPE::MILITARY, param, p, 0, 1);
+						pMajor->GetEmpire()->AddMsg(message);
+						if (pMajor->IsHumanPlayer())
+						{
+							network::RACE client = m_pRaceCtrl->GetMappedClientID(attacker);
+							m_iSelectedView[client] = EMPIRE_VIEW;
+						}
+					}
+					// Sektor gilt ab jetzt als nicht mehr erobert.
+					GetSector(p.x, p.y).SetTakenSector(FALSE);
+					GetSector(p.x, p.y).SetOwned(FALSE);
+					GetSector(p.x, p.y).SetOwnerOfSector(pMinor->GetRaceID());
+					GetSystem(p.x, p.y).SetOwnerOfSystem("");
+					// Moral in dem System um rand()%50+25 erhöhen
+					GetSystem(p.x, p.y).SetMoral(rand()%50+25);
 				}
-				// Wenn eine Majorrace in dem System lebt
-				else if (defender && defender->IsMajor() && attackSystem->IsDefenderNotAttacker(sDefender, &attackers))
-				{
-					attackSystem->Init(defender, &GetSystem(p.x, p.y), &m_ShipMap, &GetSector(p.x, p.y), &this->BuildingInfo, CTrade::GetMonopolOwner());
-				}
-				// Wenn niemand mehr in dem System lebt, z.B. durch Rebellion
+				// Eine andere Majorrace besaß das System
 				else
 				{
-					attackSystem->Init(NULL, &GetSystem(p.x, p.y), &m_ShipMap, &GetSector(p.x, p.y), &this->BuildingInfo, CTrade::GetMonopolOwner());
-				}
-				// Ein Systemangriff verringert die Moral in allen Systemen, die von uns schon erobert wurden und zuvor
-				// der Majorrace gehörten, deren System hier angegriffen wird
-				if (!sDefender.IsEmpty())
-					for (int j = 0 ; j < STARMAP_SECTORS_VCOUNT; j++)
-						for (int i = 0; i < STARMAP_SECTORS_HCOUNT; i++)
-							if (GetSector(i, j).GetTakenSector() == TRUE && GetSector(i, j).GetColonyOwner() == sDefender
-								&& attackSystem->IsDefenderNotAttacker(sDefender, &attackers))
-								GetSystem(i, j).SetMoral(-rand()%5);
-
-				// Wurde das System mit Truppen erobert, so wechselt es den Besitzer
-				if (attackSystem->Calculate())
-				{
-					CString attacker = GetSystem(p.x, p.y).GetOwnerOfSystem();
-					CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(attacker));
-					ASSERT(pMajor);
-					//* Der Besitzer des Systems wurde in der Calculate() Funktion schon auf den neuen Besitzer
-					//* umgestellt. Der Besitzer des Sektors ist aber noch der alte, wird hier dann auf einen
-					//* eventuell neuen Besitzer umgestellt.
-
-					// Wenn in dem System eine Minorrace beheimatet ist und das System nicht vorher schon von jemand
-					// anderem militärisch erobert wurde oder die Minorace bei einem anderen Imperium schon vermitgliedelt
-					// wurde, dann muss diese zuerst die Gebäude bauen
-					if (GetSector(p.x, p.y).GetMinorRace() == TRUE && GetSector(p.x, p.y).GetTakenSector() == FALSE && defender != NULL && defender->IsMinor())
+					// Beziehung zum ehemaligen Besitzer verschlechtert sich
+					if (defender != NULL && defender->GetRaceID() != attacker)
+						defender->SetRelation(attacker, -rand()%50);
+					// Wenn das System zurückerobert wird, dann gilt es als befreit
+					if (GetSector(p.x, p.y).GetColonyOwner() == attacker)
 					{
-						CMinor* pMinor = dynamic_cast<CMinor*>(defender);
-						ASSERT(pMinor);
-						pMinor->SetSubjugated(true);
-						// Wenn das System noch keiner Majorrace gehört, dann Gebäude bauen
-						GetSystem(p.x, p.y).BuildBuildingsForMinorRace(&GetSector(p.x, p.y), &BuildingInfo, m_Statistics.GetAverageTechLevel(), pMinor);
-						// Sektor gilt ab jetzt als erobert.
-						GetSector(p.x, p.y).SetTakenSector(TRUE);
-						GetSector(p.x, p.y).SetOwned(TRUE);
-						GetSector(p.x, p.y).SetOwnerOfSector(attacker);
-						// Beziehung zu dieser Minorrace verschlechtert sich auf 0 Punkte
-						pMinor->SetRelation(attacker, -100);
-						// Moral in diesem System verschlechtert sich um rand()%25+10 Punkte
-						GetSystem(p.x, p.y).SetMoral(-rand()%25-10);
-						// ist die Moral unter 50, so wird sie auf 50 gesetzt
-						if (GetSystem(p.x, p.y).GetMoral() < 50)
-							GetSystem(p.x, p.y).SetMoral(50 - GetSystem(p.x, p.y).GetMoral());
+						GetSector(p.x, p.y).SetTakenSector(FALSE);
 						CString param = GetSector(p.x, p.y).GetName();
-						CString eventText = "";
-
-						// Alle diplomatischen Nachrichten der Minorrace aus den Feldern löschen und an der Minorrace
-						// bekannte Imperien die Nachricht der Unterwerfung senden
-						pMinor->GetIncomingDiplomacyNews()->clear();
-						pMinor->GetOutgoingDiplomacyNews()->clear();
-						map<CString, CMajor*>* pmMajors = m_pRaceCtrl->GetMajors();
-						for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
+						// Eventnachricht an den Eroberer (unser ehemaliges System wieder zurückerobert)
+						CString eventText(pMajor->GetMoralObserver()->AddEvent(14, pMajor->GetRaceMoralNumber(), param));
+						// Eventnachricht hinzufügen
+						if (!eventText.IsEmpty())
 						{
-							// ausgehende Nachrichten löschen
-							for (UINT i = 0; i < it->second->GetOutgoingDiplomacyNews()->size(); i++)
-								if (it->second->GetOutgoingDiplomacyNews()->at(i).m_sFromRace == pMinor->GetRaceID()
-									|| it->second->GetOutgoingDiplomacyNews()->at(i).m_sToRace == pMinor->GetRaceID())
-									it->second->GetOutgoingDiplomacyNews()->erase(it->second->GetOutgoingDiplomacyNews()->begin() + i--);
-							// eingehende Nachrichten löschen
-							for (UINT i = 0; i < it->second->GetIncomingDiplomacyNews()->size(); i++)
-								if (it->second->GetIncomingDiplomacyNews()->at(i).m_sFromRace == pMinor->GetRaceID()
-									|| it->second->GetIncomingDiplomacyNews()->at(i).m_sToRace == pMinor->GetRaceID())
-									it->second->GetIncomingDiplomacyNews()->erase(it->second->GetIncomingDiplomacyNews()->begin() + i--);
-
-							// An alle Majors die die Minor kennen die Nachricht schicken, dass diese unterworfen wurde
-							if (it->second->IsRaceContacted(pMinor->GetRaceID()))
+							CEmpireNews message;
+							message.CreateNews(eventText, EMPIRE_NEWS_TYPE::MILITARY, param, p, 0, 1);
+							pMajor->GetEmpire()->AddMsg(message);
+							if (pMajor->IsHumanPlayer())
+							{
+								network::RACE client = m_pRaceCtrl->GetMappedClientID(attacker);
+								m_iSelectedView[client] = EMPIRE_VIEW;
+							}
+						}
+						if (defender != NULL && defender->GetRaceID() != attacker && defender->IsMajor())
+						{
+							CMajor* pDefenderMajor = dynamic_cast<CMajor*>(defender);
+							// Eventnachricht an den, der das System verloren hat (unser erobertes System verloren)
+							eventText = pDefenderMajor->GetMoralObserver()->AddEvent(17, pDefenderMajor->GetRaceMoralNumber(), param);
+							// Eventnachricht hinzufügen
+							if (!eventText.IsEmpty())
 							{
 								CEmpireNews message;
-								message.CreateNews(CLoc::GetString("MINOR_SUBJUGATED", FALSE, pMinor->GetRaceName()), EMPIRE_NEWS_TYPE::MILITARY, param, p);
-								it->second->GetEmpire()->AddMsg(message);
-								if (it->second->IsHumanPlayer())
+								message.CreateNews(eventText, EMPIRE_NEWS_TYPE::MILITARY, param, p);
+								pDefenderMajor->GetEmpire()->AddMsg(message);
+								if (pDefenderMajor->IsHumanPlayer())
 								{
-									network::RACE client = m_pRaceCtrl->GetMappedClientID(it->first);
+									network::RACE client = m_pRaceCtrl->GetMappedClientID(defender->GetRaceID());
 									m_iSelectedView[client] = EMPIRE_VIEW;
 								}
+							}
+						}
+						// Moral in dem System um rand()%25+10 erhöhen
+						GetSystem(p.x, p.y).SetMoral(rand()%25+10);
+					}
+					// Handelte es sich dabei um das Heimatsystem einer Rasse
+					else if (defender != NULL && defender->IsMajor() && GetSector(p.x, p.y).GetOwnerOfSector() == defender->GetRaceID() && GetSector(p.x, p.y).GetName() == dynamic_cast<CMajor*>(defender)->GetHomesystemName())
+					{
+						CMajor* pDefenderMajor = dynamic_cast<CMajor*>(defender);
+						// Eventnachricht an den ehemaligen Heimatsystembesitzer (Heimatsystem verloren)
+						CString param = GetSector(p.x, p.y).GetName();
+						CString eventText(pDefenderMajor->GetMoralObserver()->AddEvent(15, pDefenderMajor->GetRaceMoralNumber(), param));
+						// Eventnachricht hinzufügen
+						if (!eventText.IsEmpty())
+						{
+							CEmpireNews message;
+							message.CreateNews(eventText, EMPIRE_NEWS_TYPE::MILITARY, param, p);
+							pDefenderMajor->GetEmpire()->AddMsg(message);
+							if (pDefenderMajor->IsHumanPlayer())
+							{
+									network::RACE client = m_pRaceCtrl->GetMappedClientID(defender->GetRaceID());
+									m_iSelectedView[client] = EMPIRE_VIEW;
 							}
 						}
 						// Eventnachricht an den Eroberer (System erobert)
@@ -2692,37 +2834,111 @@ void CBotEDoc::CalcSystemAttack()
 								m_iSelectedView[client] = EMPIRE_VIEW;
 							}
 						}
+						// Sektor gilt ab jetzt als erobert.
+						GetSector(p.x, p.y).SetTakenSector(TRUE);
+						// Moral in diesem System verschlechtert sich um rand()%25+10 Punkte
+						GetSystem(p.x, p.y).SetMoral(-rand()%25-10);
+						// ist die Moral unter 50, so wird sie auf 50 gesetzt
+						if (GetSystem(p.x, p.y).GetMoral() < 50)
+							GetSystem(p.x, p.y).SetMoral(50 - GetSystem(p.x, p.y).GetMoral());
 					}
-					// Wenn das System einer Minorrace gehört, eingenommen wurde und somit befreit wird
-					else if (GetSector(p.x, p.y).GetMinorRace() == TRUE && GetSector(p.x, p.y).GetTakenSector() == TRUE && defender != NULL && defender->IsMajor())
+					// wurde das System erobert und obere Bedingungen traten nicht ein
+					else
 					{
-						// Die Beziehung zur Majorrace, die das System vorher besaß verschlechtert sich
-						defender->SetRelation(attacker, -rand()%50);
-						// Die Beziehung zu der Minorrace verbessert sich auf Seiten des Retters
-						CMinor* pMinor = m_pRaceCtrl->GetMinorRace(GetSector(p.x, p.y).GetName());
-						ASSERT(pMinor);
-						pMinor->SetRelation(attacker, rand()%50);
-						pMinor->SetSubjugated(false);
-						// Eventnachricht an den, der das System verloren hat (erobertes Minorracesystem wieder verloren)
 						CString param = GetSector(p.x, p.y).GetName();
-
-						CMajor* def = dynamic_cast<CMajor*>(defender);
-						CString eventText(def->GetMoralObserver()->AddEvent(17, def->GetRaceMoralNumber(), param));
-						// Eventnachricht hinzufügen
-						if (!eventText.IsEmpty())
+						// Hat eine andere Majorrace die Minorrace vermitgliedelt, so unterwerfen wir auch diese Minorrace
+						if (GetSector(p.x, p.y).GetMinorRace())
 						{
-							CEmpireNews message;
-							message.CreateNews(eventText, EMPIRE_NEWS_TYPE::MILITARY, param, p);
-							def->GetEmpire()->AddMsg(message);
-							if (def->IsHumanPlayer())
+							CMinor* pMinor = m_pRaceCtrl->GetMinorRace(GetSector(p.x, p.y).GetName());
+							ASSERT(pMinor);
+							pMinor->SetSubjugated(true);
+							// Beziehung zu dieser Minorrace verschlechtert sich auf 0 Punkte
+							pMinor->SetRelation(attacker, -100);
+
+							CString param = GetSector(p.x, p.y).GetName();
+
+							// Alle diplomatischen Nachrichten der Minorrace aus den Feldern löschen und an der Minorrace
+							// bekannte Imperien die Nachricht der Unterwerfung senden
+							pMinor->GetIncomingDiplomacyNews()->clear();
+							pMinor->GetOutgoingDiplomacyNews()->clear();
+							map<CString, CMajor*>* pmMajors = m_pRaceCtrl->GetMajors();
+							for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 							{
-								network::RACE client = m_pRaceCtrl->GetMappedClientID(defender->GetRaceID());
-								m_iSelectedView[client] = EMPIRE_VIEW;
+								// ausgehende Nachrichten löschen
+								for (UINT i = 0; i < it->second->GetOutgoingDiplomacyNews()->size(); i++)
+									if (it->second->GetOutgoingDiplomacyNews()->at(i).m_sFromRace == pMinor->GetRaceID()
+										|| it->second->GetOutgoingDiplomacyNews()->at(i).m_sToRace == pMinor->GetRaceID())
+										it->second->GetOutgoingDiplomacyNews()->erase(it->second->GetOutgoingDiplomacyNews()->begin() + i--);
+								// eingehende Nachrichten löschen
+								for (UINT i = 0; i < it->second->GetIncomingDiplomacyNews()->size(); i++)
+									if (it->second->GetIncomingDiplomacyNews()->at(i).m_sFromRace == pMinor->GetRaceID()
+										|| it->second->GetIncomingDiplomacyNews()->at(i).m_sToRace == pMinor->GetRaceID())
+										it->second->GetIncomingDiplomacyNews()->erase(it->second->GetIncomingDiplomacyNews()->begin() + i--);
+
+								// An alle Majors die die Minor kennen die Nachricht schicken, dass diese unterworden wurde
+								if (it->second->IsRaceContacted(pMinor->GetRaceID()))
+								{
+									CEmpireNews message;
+									message.CreateNews(CLoc::GetString("MINOR_SUBJUGATED", FALSE, pMinor->GetRaceName()), EMPIRE_NEWS_TYPE::MILITARY, param, p);
+									it->second->GetEmpire()->AddMsg(message);
+									if (it->second->IsHumanPlayer())
+									{
+										network::RACE client = m_pRaceCtrl->GetMappedClientID(it->first);
+										m_iSelectedView[client] = EMPIRE_VIEW;
+									}
+								}
 							}
 						}
-						// Eventnachricht an den Eroberer (Minorracesystem befreit)
-						param = pMinor->GetRaceName();
-						eventText = pMajor->GetMoralObserver()->AddEvent(13, pMajor->GetRaceMoralNumber(), param);
+
+						// Nur wenn es einen Verteidiger gab
+						if (defender)
+						{
+							// Sektor gilt ab jetzt als erobert
+							GetSector(p.x, p.y).SetTakenSector(TRUE);
+							// Moral in diesem System verschlechtert sich um rand()%25+10 Punkte
+							GetSystem(p.x, p.y).SetMoral(-rand()%25-10);
+						}
+						else
+						{
+							// Der Fall kein eintreten, wenn ein rebelliertes System oder ein System
+							// eines ausgelöschten Majors erobert wurde!
+
+							// Sektor gilt nicht als erobert
+							GetSector(p.x, p.y).SetTakenSector(FALSE);
+							// Der Angreifer gilt nun als Koloniebesitzer
+							GetSector(p.x, p.y).SetColonyOwner(attacker);
+						}
+
+						// ist die Moral unter 50, so wird sie auf 50 gesetzt
+						if (GetSystem(p.x, p.y).GetMoral() < 50)
+							GetSystem(p.x, p.y).SetMoral(50 - GetSystem(p.x, p.y).GetMoral());
+
+						// Eventnachricht an den ehemaligen Besitzer (eigenes System verloren)
+						// Achtung: Defender kann auch NULL sein, wenn z.B. ein rebelliertes System erobert wurde
+						// oder ein System eines vernichteten Majors!
+						if (defender != NULL && defender->GetRaceID() != attacker && defender->IsMajor())
+						{
+							CMajor* pDefenderMajor = dynamic_cast<CMajor*>(defender);
+							assert(pDefenderMajor);
+							CString eventText = pDefenderMajor->GetMoralObserver()->AddEvent(16, pDefenderMajor->GetRaceMoralNumber(), param);
+
+							// Eventnachricht hinzufügen
+							if (!eventText.IsEmpty())
+							{
+								CEmpireNews message;
+								message.CreateNews(eventText, EMPIRE_NEWS_TYPE::MILITARY, param, p);
+								CMajor* pDefenderMajor = dynamic_cast<CMajor*>(defender);
+								pDefenderMajor->GetEmpire()->AddMsg(message);
+								if (pDefenderMajor->IsHumanPlayer())
+								{
+									network::RACE client = m_pRaceCtrl->GetMappedClientID(defender->GetRaceID());
+									m_iSelectedView[client] = EMPIRE_VIEW;
+								}
+							}
+						}
+
+						// Eventnachricht an den Eroberer (System erobert)
+						CString eventText = pMajor->GetMoralObserver()->AddEvent(11, pMajor->GetRaceMoralNumber(), param);
 						// Eventnachricht hinzufügen
 						if (!eventText.IsEmpty())
 						{
@@ -2735,322 +2951,212 @@ void CBotEDoc::CalcSystemAttack()
 								m_iSelectedView[client] = EMPIRE_VIEW;
 							}
 						}
-						// Sektor gilt ab jetzt als nicht mehr erobert.
-						GetSector(p.x, p.y).SetTakenSector(FALSE);
-						GetSector(p.x, p.y).SetOwned(FALSE);
-						GetSector(p.x, p.y).SetOwnerOfSector(pMinor->GetRaceID());
-						GetSystem(p.x, p.y).SetOwnerOfSystem("");
-						// Moral in dem System um rand()%50+25 erhöhen
-						GetSystem(p.x, p.y).SetMoral(rand()%50+25);
 					}
-					// Eine andere Majorrace besaß das System
-					else
+					GetSector(p.x, p.y).SetOwnerOfSector(attacker);
+				}
+				// Gebäude die nach Eroberung automatisch zerstört werden
+				GetSystem(p.x, p.y).RemoveSpecialRaceBuildings(&this->BuildingInfo);
+				// Variablen berechnen und Gebäude besetzen
+				GetSystem(p.x, p.y).CalculateNumberOfWorkbuildings(&this->BuildingInfo);
+				GetSystem(p.x, p.y).SetWorkersIntoBuildings();
+
+				// war der Verteidiger eine Majorrace und wurde sie durch die Eroberung komplett ausgelöscht,
+				// so bekommt der Eroberer einen kräftigen Moralschub
+				if (defender != NULL && defender->IsMajor() && !attacker.IsEmpty() && pMajor && pSystemAttack->IsDefenderNotAttacker(sDefender, &attackers))
+				{
+					CMajor* pDefenderMajor = dynamic_cast<CMajor*>(defender);
+					// Anzahl der noch verbleibenden Systeme berechnen
+					pDefenderMajor->GetEmpire()->GenerateSystemList(m_Systems, m_Sectors);
+					// hat der Verteidiger keine Systeme mehr, so bekommt der neue Besitzer den Bonus
+					if (pDefenderMajor->GetEmpire()->GetSystemList()->GetSize() == 0)
 					{
-						// Beziehung zum ehemaligen Besitzer verschlechtert sich
-						if (defender != NULL && defender->GetRaceID() != attacker)
-							defender->SetRelation(attacker, -rand()%50);
-						// Wenn das System zurückerobert wird, dann gilt es als befreit
-						if (GetSector(p.x, p.y).GetColonyOwner() == attacker)
+						CString param = pDefenderMajor->GetRaceName();
+						CString eventText = pMajor->GetMoralObserver()->AddEvent(0, pMajor->GetRaceMoralNumber(), param);
+						// Eventnachricht hinzufügen
+						if (!eventText.IsEmpty())
 						{
-							GetSector(p.x, p.y).SetTakenSector(FALSE);
-							CString param = GetSector(p.x, p.y).GetName();
-							// Eventnachricht an den Eroberer (unser ehemaliges System wieder zurückerobert)
-							CString eventText(pMajor->GetMoralObserver()->AddEvent(14, pMajor->GetRaceMoralNumber(), param));
-							// Eventnachricht hinzufügen
-							if (!eventText.IsEmpty())
+							CEmpireNews message;
+							message.CreateNews(eventText, EMPIRE_NEWS_TYPE::MILITARY, param, p, 0, 1);
+							pMajor->GetEmpire()->AddMsg(message);
+							if (pMajor->IsHumanPlayer())
 							{
-								CEmpireNews message;
-								message.CreateNews(eventText, EMPIRE_NEWS_TYPE::MILITARY, param, p, 0, 1);
-								pMajor->GetEmpire()->AddMsg(message);
-								if (pMajor->IsHumanPlayer())
-								{
-									network::RACE client = m_pRaceCtrl->GetMappedClientID(attacker);
-									m_iSelectedView[client] = EMPIRE_VIEW;
-								}
+								network::RACE client = m_pRaceCtrl->GetMappedClientID(attacker);
+								m_iSelectedView[client] = EMPIRE_VIEW;
 							}
-							if (defender != NULL && defender->GetRaceID() != attacker && defender->IsMajor())
+						}
+					}
+				}
+
+				// erfolgreiches Invasionsevent für den Angreifer einfügen (sollte immer ein Major sein)
+				if (!attacker.IsEmpty() && pMajor && pMajor->IsHumanPlayer())
+					pMajor->GetEmpire()->GetEvents()->Add(new CEventBombardment(attacker, "InvasionSuccess", CLoc::GetString("INVASIONSUCCESSEVENT_HEADLINE", FALSE, GetSector(p.x, p.y).GetName()), CLoc::GetString("INVASIONSUCCESSEVENT_TEXT_" + pMajor->GetRaceID(), FALSE, GetSector(p.x, p.y).GetName())));
+
+				// Invasionsevent für den Verteidiger einfügen
+				if (defender != NULL && defender->IsMajor() && dynamic_cast<CMajor*>(defender)->IsHumanPlayer() && pSystemAttack->IsDefenderNotAttacker(sDefender, &attackers))
+					dynamic_cast<CMajor*>(defender)->GetEmpire()->GetEvents()->Add(new CEventBombardment(sDefender, "InvasionSuccess", CLoc::GetString("INVASIONSUCCESSEVENT_HEADLINE", FALSE, GetSector(p.x, p.y).GetName()), CLoc::GetString("INVASIONSUCCESSEVENT_TEXT_" + defender->GetRaceID(), FALSE, GetSector(p.x, p.y).GetName())));
+			}
+			// Wurde nur bombardiert, nicht erobert
+			else
+			{
+				for (set<CString>::const_iterator it = attackers.begin(); it != attackers.end(); ++it)
+				{
+					CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(*it));
+					if (!pMajor)
+						continue;
+
+					// Erstmal die Beziehung zu der Rasse verschlechtern, der das System gehört
+					if (defender != NULL && defender->GetRaceID() != pMajor->GetRaceID())
+						defender->SetRelation(pMajor->GetRaceID(), -rand()%10);
+				}
+
+				// Wenn die Bevölkerung des Systems auf NULL geschrumpft ist, dann ist dieses System verloren
+				if (GetSystem(p.x, p.y).GetHabitants() <= 0.000001f)
+				{
+					// Bei einer Minorrace wird es komplizierter. Wenn diese keine Systeme mehr hat, dann ist diese
+					// aus dem Spiel verschwunden. Alle Einträge in der Diplomatie müssen daher gelöscht werden
+					if (GetSector(p.x, p.y).GetMinorRace())
+					{
+						if (CMinor* pMinor = m_pRaceCtrl->GetMinorRace(GetSector(p.x, p.y).GetName()))
+						{
+							// Alle Effekte, Events usw. wegen der Auslöschung der Minorrace verarbeiten
+							CalcEffectsMinorEleminated(pMinor);
+
+							// Eventnachricht: #21	Eliminate a Minor Race Entirely
+							for (set<CString>::const_iterator it = attackers.begin(); it != attackers.end(); ++it)
 							{
-								CMajor* pDefenderMajor = dynamic_cast<CMajor*>(defender);
-								// Eventnachricht an den, der das System verloren hat (unser erobertes System verloren)
-								eventText = pDefenderMajor->GetMoralObserver()->AddEvent(17, pDefenderMajor->GetRaceMoralNumber(), param);
+								CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(*it));
+								if (!pMajor)
+									continue;
+
+								CString param = pMinor->GetRaceName();
+								CString eventText = pMajor->GetMoralObserver()->AddEvent(21, pMajor->GetRaceMoralNumber(), param);
+								CEmpireNews message;
+								message.CreateNews(eventText, EMPIRE_NEWS_TYPE::MILITARY, param, p);
+								pMajor->GetEmpire()->AddMsg(message);
+							}
+
+							// Rasse zum Löschen vormerken
+							sKilledMinors.insert(pMinor->GetRaceID());
+						}
+						else
+						{
+							ASSERT(FALSE);
+							GetSector(p.x, p.y).SetMinorRace(false);
+						}
+					}
+					// Bei einer Majorrace verringert sich nur die Anzahl der Systeme (auch konnte dies das
+					// Minorracesystem von oben gewesen sein, hier verliert es aber die betroffene Majorrace)
+					if (defender != NULL && defender->IsMajor() && pSystemAttack->IsDefenderNotAttacker(defender->GetRaceID(), &attackers))
+					{
+						CMajor* pDefenderMajor = dynamic_cast<CMajor*>(defender);
+
+						CString eventText = "";
+						CString param = GetSector(p.x, p.y).GetName();
+						if (GetSector(p.x, p.y).GetName() == pDefenderMajor->GetHomesystemName())
+						{
+							// Eventnachricht an den ehemaligen Heimatsystembesitzer (Heimatsystem verloren)
+							eventText = pDefenderMajor->GetMoralObserver()->AddEvent(15, pDefenderMajor->GetRaceMoralNumber(), param);
+						}
+						else
+						{
+							// Eventnachricht an den ehemaligen Besitzer (eigenes System verloren)
+							eventText = pDefenderMajor->GetMoralObserver()->AddEvent(16, pDefenderMajor->GetRaceMoralNumber(), param);
+						}
+
+						// Eventnachricht hinzufügen
+						if (!eventText.IsEmpty())
+						{
+							CEmpireNews message;
+							message.CreateNews(eventText, EMPIRE_NEWS_TYPE::MILITARY, param, p);
+							pDefenderMajor->GetEmpire()->AddMsg(message);
+							if (pDefenderMajor->IsHumanPlayer())
+							{
+								network::RACE client = m_pRaceCtrl->GetMappedClientID(defender->GetRaceID());
+								m_iSelectedView[client] = EMPIRE_VIEW;
+							}
+						}
+					}
+
+					GetSystem(p.x, p.y).SetOwnerOfSystem("");
+					GetSector(p.x, p.y).SetOwnerOfSector("");
+					GetSector(p.x, p.y).SetColonyOwner("");
+					GetSector(p.x, p.y).SetTakenSector(FALSE);
+					GetSector(p.x, p.y).SetOwned(FALSE);
+
+					// war der Verteidiger eine Majorrace und wurde sie durch den Verlust des Systems komplett ausgelöscht,
+					// so bekommt der Eroberer einen kräftigen Moralschub
+					if (defender != NULL && defender->IsMajor() && pSystemAttack->IsDefenderNotAttacker(defender->GetRaceID(), &attackers))
+					{
+						CMajor* pDefenderMajor = dynamic_cast<CMajor*>(defender);
+						for (set<CString>::const_iterator it = attackers.begin(); it != attackers.end(); ++it)
+						{
+							CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(*it));
+							if (!pMajor)
+								continue;
+
+							// Anzahl der noch verbleibenden Systeme berechnen
+							pDefenderMajor->GetEmpire()->GenerateSystemList(m_Systems, m_Sectors);
+							// hat der Verteidiger keine Systeme mehr, so bekommt der neue Besitzer den Bonus
+							if (pDefenderMajor->GetEmpire()->GetSystemList()->IsEmpty())
+							{
+								CString sParam		= pDefenderMajor->GetRaceName();
+								CString sEventText	= pMajor->GetMoralObserver()->AddEvent(0, pMajor->GetRaceMoralNumber(), sParam);
 								// Eventnachricht hinzufügen
-								if (!eventText.IsEmpty())
+								if (!sEventText.IsEmpty())
 								{
 									CEmpireNews message;
-									message.CreateNews(eventText, EMPIRE_NEWS_TYPE::MILITARY, param, p);
-									pDefenderMajor->GetEmpire()->AddMsg(message);
-									if (pDefenderMajor->IsHumanPlayer())
+									message.CreateNews(sEventText, EMPIRE_NEWS_TYPE::MILITARY, sParam, p, 0, 1);
+									pMajor->GetEmpire()->AddMsg(message);
+									if (pMajor->IsHumanPlayer())
 									{
-										network::RACE client = m_pRaceCtrl->GetMappedClientID(defender->GetRaceID());
+										network::RACE client = m_pRaceCtrl->GetMappedClientID(pMajor->GetRaceID());
 										m_iSelectedView[client] = EMPIRE_VIEW;
 									}
 								}
 							}
-							// Moral in dem System um rand()%25+10 erhöhen
-							GetSystem(p.x, p.y).SetMoral(rand()%25+10);
 						}
-						// Handelte es sich dabei um das Heimatsystem einer Rasse
-						else if (defender != NULL && defender->IsMajor() && GetSector(p.x, p.y).GetOwnerOfSector() == defender->GetRaceID() && GetSector(p.x, p.y).GetName() == dynamic_cast<CMajor*>(defender)->GetHomesystemName())
+					}
+				}
+				// Bombardierung hat die Rasse nicht komplett ausgelöscht
+				else
+				{
+					// Eventnachrichten nicht jedesmal, sondern nur wenn Gebäude vernichtet wurden oder
+					// mindst. 3% der Bevölkerung vernichtet wurden
+					if (pSystemAttack->GetDestroyedBuildings() > 0 || pSystemAttack->GetKilledPop() >= GetSystem(p.x, p.y).GetHabitants() * 0.03)
+					{
+						CString param = GetSector(p.x, p.y).GetName();
+						for (set<CString>::const_iterator it = attackers.begin(); it != attackers.end(); ++it)
 						{
-							CMajor* pDefenderMajor = dynamic_cast<CMajor*>(defender);
-							// Eventnachricht an den ehemaligen Heimatsystembesitzer (Heimatsystem verloren)
-							CString param = GetSector(p.x, p.y).GetName();
-							CString eventText(pDefenderMajor->GetMoralObserver()->AddEvent(15, pDefenderMajor->GetRaceMoralNumber(), param));
-							// Eventnachricht hinzufügen
+							CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(*it));
+							if (!pMajor)
+								continue;
+
+							CString eventText = "";
+							// Wenn das System nicht durch eine Rebellion verloren ging, sondern noch irgendwem gehört
+							if (defender != NULL)
+								eventText = pMajor->GetMoralObserver()->AddEvent(19, pMajor->GetRaceMoralNumber(), param);
+							// Wenn das System mal uns gehört hatte und durch eine Rebellion verloren ging
+							else if (GetSector(p.x, p.y).GetColonyOwner() == pMajor->GetRaceID() && defender == NULL)
+								eventText = pMajor->GetMoralObserver()->AddEvent(20, pMajor->GetRaceMoralNumber(), param);
+							// Eventnachricht für Agressor hinzufügen
 							if (!eventText.IsEmpty())
 							{
 								CEmpireNews message;
 								message.CreateNews(eventText, EMPIRE_NEWS_TYPE::MILITARY, param, p);
-								pDefenderMajor->GetEmpire()->AddMsg(message);
-								if (pDefenderMajor->IsHumanPlayer())
-								{
-										network::RACE client = m_pRaceCtrl->GetMappedClientID(defender->GetRaceID());
-										m_iSelectedView[client] = EMPIRE_VIEW;
-								}
-							}
-							// Eventnachricht an den Eroberer (System erobert)
-							eventText = pMajor->GetMoralObserver()->AddEvent(11, pMajor->GetRaceMoralNumber(), param);
-							// Eventnachricht hinzufügen
-							if (!eventText.IsEmpty())
-							{
-								CEmpireNews message;
-								message.CreateNews(eventText, EMPIRE_NEWS_TYPE::MILITARY, param, p, 0, 1);
 								pMajor->GetEmpire()->AddMsg(message);
 								if (pMajor->IsHumanPlayer())
 								{
-									network::RACE client = m_pRaceCtrl->GetMappedClientID(attacker);
-									m_iSelectedView[client] = EMPIRE_VIEW;
-								}
-							}
-							// Sektor gilt ab jetzt als erobert.
-							GetSector(p.x, p.y).SetTakenSector(TRUE);
-							// Moral in diesem System verschlechtert sich um rand()%25+10 Punkte
-							GetSystem(p.x, p.y).SetMoral(-rand()%25-10);
-							// ist die Moral unter 50, so wird sie auf 50 gesetzt
-							if (GetSystem(p.x, p.y).GetMoral() < 50)
-								GetSystem(p.x, p.y).SetMoral(50 - GetSystem(p.x, p.y).GetMoral());
-						}
-						// wurde das System erobert und obere Bedingungen traten nicht ein
-						else
-						{
-							CString param = GetSector(p.x, p.y).GetName();
-							// Hat eine andere Majorrace die Minorrace vermitgliedelt, so unterwerfen wir auch diese Minorrace
-							if (GetSector(p.x, p.y).GetMinorRace())
-							{
-								CMinor* pMinor = m_pRaceCtrl->GetMinorRace(GetSector(p.x, p.y).GetName());
-								ASSERT(pMinor);
-								pMinor->SetSubjugated(true);
-								// Beziehung zu dieser Minorrace verschlechtert sich auf 0 Punkte
-								pMinor->SetRelation(attacker, -100);
-
-								CString param = GetSector(p.x, p.y).GetName();
-
-								// Alle diplomatischen Nachrichten der Minorrace aus den Feldern löschen und an der Minorrace
-								// bekannte Imperien die Nachricht der Unterwerfung senden
-								pMinor->GetIncomingDiplomacyNews()->clear();
-								pMinor->GetOutgoingDiplomacyNews()->clear();
-								map<CString, CMajor*>* pmMajors = m_pRaceCtrl->GetMajors();
-								for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
-								{
-									// ausgehende Nachrichten löschen
-									for (UINT i = 0; i < it->second->GetOutgoingDiplomacyNews()->size(); i++)
-										if (it->second->GetOutgoingDiplomacyNews()->at(i).m_sFromRace == pMinor->GetRaceID()
-											|| it->second->GetOutgoingDiplomacyNews()->at(i).m_sToRace == pMinor->GetRaceID())
-											it->second->GetOutgoingDiplomacyNews()->erase(it->second->GetOutgoingDiplomacyNews()->begin() + i--);
-									// eingehende Nachrichten löschen
-									for (UINT i = 0; i < it->second->GetIncomingDiplomacyNews()->size(); i++)
-										if (it->second->GetIncomingDiplomacyNews()->at(i).m_sFromRace == pMinor->GetRaceID()
-											|| it->second->GetIncomingDiplomacyNews()->at(i).m_sToRace == pMinor->GetRaceID())
-											it->second->GetIncomingDiplomacyNews()->erase(it->second->GetIncomingDiplomacyNews()->begin() + i--);
-
-									// An alle Majors die die Minor kennen die Nachricht schicken, dass diese unterworden wurde
-									if (it->second->IsRaceContacted(pMinor->GetRaceID()))
-									{
-										CEmpireNews message;
-										message.CreateNews(CLoc::GetString("MINOR_SUBJUGATED", FALSE, pMinor->GetRaceName()), EMPIRE_NEWS_TYPE::MILITARY, param, p);
-										it->second->GetEmpire()->AddMsg(message);
-										if (it->second->IsHumanPlayer())
-										{
-											network::RACE client = m_pRaceCtrl->GetMappedClientID(it->first);
-											m_iSelectedView[client] = EMPIRE_VIEW;
-										}
-									}
-								}
-							}
-
-							// Nur wenn es einen Verteidiger gab
-							if (defender)
-							{
-								// Sektor gilt ab jetzt als erobert
-								GetSector(p.x, p.y).SetTakenSector(TRUE);
-								// Moral in diesem System verschlechtert sich um rand()%25+10 Punkte
-								GetSystem(p.x, p.y).SetMoral(-rand()%25-10);
-							}
-							else
-							{
-								// Der Fall kein eintreten, wenn ein rebelliertes System oder ein System
-								// eines ausgelöschten Majors erobert wurde!
-
-								// Sektor gilt nicht als erobert
-								GetSector(p.x, p.y).SetTakenSector(FALSE);
-								// Der Angreifer gilt nun als Koloniebesitzer
-								GetSector(p.x, p.y).SetColonyOwner(attacker);
-							}
-
-							// ist die Moral unter 50, so wird sie auf 50 gesetzt
-							if (GetSystem(p.x, p.y).GetMoral() < 50)
-								GetSystem(p.x, p.y).SetMoral(50 - GetSystem(p.x, p.y).GetMoral());
-
-							// Eventnachricht an den ehemaligen Besitzer (eigenes System verloren)
-							// Achtung: Defender kann auch NULL sein, wenn z.B. ein rebelliertes System erobert wurde
-							// oder ein System eines vernichteten Majors!
-							if (defender != NULL && defender->GetRaceID() != attacker && defender->IsMajor())
-							{
-								CMajor* pDefenderMajor = dynamic_cast<CMajor*>(defender);
-								assert(pDefenderMajor);
-								CString eventText = pDefenderMajor->GetMoralObserver()->AddEvent(16, pDefenderMajor->GetRaceMoralNumber(), param);
-
-								// Eventnachricht hinzufügen
-								if (!eventText.IsEmpty())
-								{
-									CEmpireNews message;
-									message.CreateNews(eventText, EMPIRE_NEWS_TYPE::MILITARY, param, p);
-									CMajor* pDefenderMajor = dynamic_cast<CMajor*>(defender);
-									pDefenderMajor->GetEmpire()->AddMsg(message);
-									if (pDefenderMajor->IsHumanPlayer())
-									{
-										network::RACE client = m_pRaceCtrl->GetMappedClientID(defender->GetRaceID());
-										m_iSelectedView[client] = EMPIRE_VIEW;
-									}
-								}
-							}
-
-							// Eventnachricht an den Eroberer (System erobert)
-							CString eventText = pMajor->GetMoralObserver()->AddEvent(11, pMajor->GetRaceMoralNumber(), param);
-							// Eventnachricht hinzufügen
-							if (!eventText.IsEmpty())
-							{
-								CEmpireNews message;
-								message.CreateNews(eventText, EMPIRE_NEWS_TYPE::MILITARY, param, p, 0, 1);
-								pMajor->GetEmpire()->AddMsg(message);
-								if (pMajor->IsHumanPlayer())
-								{
-									network::RACE client = m_pRaceCtrl->GetMappedClientID(attacker);
+									network::RACE client = m_pRaceCtrl->GetMappedClientID(pMajor->GetRaceID());
 									m_iSelectedView[client] = EMPIRE_VIEW;
 								}
 							}
 						}
-						GetSector(p.x, p.y).SetOwnerOfSector(attacker);
-					}
-					// Gebäude die nach Eroberung automatisch zerstört werden
-					GetSystem(p.x, p.y).RemoveSpecialRaceBuildings(&this->BuildingInfo);
-					// Variablen berechnen und Gebäude besetzen
-					GetSystem(p.x, p.y).CalculateNumberOfWorkbuildings(&this->BuildingInfo);
-					GetSystem(p.x, p.y).SetWorkersIntoBuildings();
 
-					// war der Verteidiger eine Majorrace und wurde sie durch die Eroberung komplett ausgelöscht,
-					// so bekommt der Eroberer einen kräftigen Moralschub
-					if (defender != NULL && defender->IsMajor() && !attacker.IsEmpty() && pMajor && attackSystem->IsDefenderNotAttacker(sDefender, &attackers))
-					{
-						CMajor* pDefenderMajor = dynamic_cast<CMajor*>(defender);
-						// Anzahl der noch verbleibenden Systeme berechnen
-						pDefenderMajor->GetEmpire()->GenerateSystemList(m_Systems, m_Sectors);
-						// hat der Verteidiger keine Systeme mehr, so bekommt der neue Besitzer den Bonus
-						if (pDefenderMajor->GetEmpire()->GetSystemList()->GetSize() == 0)
-						{
-							CString param = pDefenderMajor->GetRaceName();
-							CString eventText = pMajor->GetMoralObserver()->AddEvent(0, pMajor->GetRaceMoralNumber(), param);
-							// Eventnachricht hinzufügen
-							if (!eventText.IsEmpty())
-							{
-								CEmpireNews message;
-								message.CreateNews(eventText, EMPIRE_NEWS_TYPE::MILITARY, param, p, 0, 1);
-								pMajor->GetEmpire()->AddMsg(message);
-								if (pMajor->IsHumanPlayer())
-								{
-									network::RACE client = m_pRaceCtrl->GetMappedClientID(attacker);
-									m_iSelectedView[client] = EMPIRE_VIEW;
-								}
-							}
-						}
-					}
-
-					// erfolgreiches Invasionsevent für den Angreifer einfügen (sollte immer ein Major sein)
-					if (!attacker.IsEmpty() && pMajor && pMajor->IsHumanPlayer())
-						pMajor->GetEmpire()->GetEvents()->Add(new CEventBombardment(attacker, "InvasionSuccess", CLoc::GetString("INVASIONSUCCESSEVENT_HEADLINE", FALSE, GetSector(p.x, p.y).GetName()), CLoc::GetString("INVASIONSUCCESSEVENT_TEXT_" + pMajor->GetRaceID(), FALSE, GetSector(p.x, p.y).GetName())));
-
-					// Invasionsevent für den Verteidiger einfügen
-					if (defender != NULL && defender->IsMajor() && dynamic_cast<CMajor*>(defender)->IsHumanPlayer() && attackSystem->IsDefenderNotAttacker(sDefender, &attackers))
-						dynamic_cast<CMajor*>(defender)->GetEmpire()->GetEvents()->Add(new CEventBombardment(sDefender, "InvasionSuccess", CLoc::GetString("INVASIONSUCCESSEVENT_HEADLINE", FALSE, GetSector(p.x, p.y).GetName()), CLoc::GetString("INVASIONSUCCESSEVENT_TEXT_" + defender->GetRaceID(), FALSE, GetSector(p.x, p.y).GetName())));
-				}
-				// Wurde nur bombardiert, nicht erobert
-				else
-				{
-					for (set<CString>::const_iterator it = attackers.begin(); it != attackers.end(); ++it)
-					{
-						CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(*it));
-						if (!pMajor)
-							continue;
-
-						// Erstmal die Beziehung zu der Rasse verschlechtern, der das System gehört
-						if (defender != NULL && defender->GetRaceID() != pMajor->GetRaceID())
-							defender->SetRelation(pMajor->GetRaceID(), -rand()%10);
-					}
-
-					// Wenn die Bevölkerung des Systems auf NULL geschrumpft ist, dann ist dieses System verloren
-					if (GetSystem(p.x, p.y).GetHabitants() <= 0.000001f)
-					{
-						// Bei einer Minorrace wird es komplizierter. Wenn diese keine Systeme mehr hat, dann ist diese
-						// aus dem Spiel verschwunden. Alle Einträge in der Diplomatie müssen daher gelöscht werden
-						if (GetSector(p.x, p.y).GetMinorRace())
-						{
-							if (CMinor* pMinor = m_pRaceCtrl->GetMinorRace(GetSector(p.x, p.y).GetName()))
-							{
-								// Alle Effekte, Events usw. wegen der Auslöschung der Minorrace verarbeiten
-								CalcEffectsMinorEleminated(pMinor);
-
-								// Eventnachricht: #21	Eliminate a Minor Race Entirely
-								for (set<CString>::const_iterator it = attackers.begin(); it != attackers.end(); ++it)
-								{
-									CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(*it));
-									if (!pMajor)
-										continue;
-
-									CString param = pMinor->GetRaceName();
-									CString eventText = pMajor->GetMoralObserver()->AddEvent(21, pMajor->GetRaceMoralNumber(), param);
-									CEmpireNews message;
-									message.CreateNews(eventText, EMPIRE_NEWS_TYPE::MILITARY, param, p);
-									pMajor->GetEmpire()->AddMsg(message);
-								}
-
-								// Rasse zum Löschen vormerken
-								sKilledMinors.insert(pMinor->GetRaceID());
-							}
-							else
-							{
-								ASSERT(FALSE);
-								GetSector(p.x, p.y).SetMinorRace(false);
-							}
-						}
-						// Bei einer Majorrace verringert sich nur die Anzahl der Systeme (auch konnte dies das
-						// Minorracesystem von oben gewesen sein, hier verliert es aber die betroffene Majorrace)
-						if (defender != NULL && defender->IsMajor() && attackSystem->IsDefenderNotAttacker(defender->GetRaceID(), &attackers))
+						// Eventnachricht über Bombardierung für Verteidiger erstellen und hinzufügen
+						if (defender != NULL && defender->IsMajor() && pSystemAttack->IsDefenderNotAttacker(defender->GetRaceID(), &attackers))
 						{
 							CMajor* pDefenderMajor = dynamic_cast<CMajor*>(defender);
-
-							CString eventText = "";
-							CString param = GetSector(p.x, p.y).GetName();
-							if (GetSector(p.x, p.y).GetName() == pDefenderMajor->GetHomesystemName())
-							{
-								// Eventnachricht an den ehemaligen Heimatsystembesitzer (Heimatsystem verloren)
-								eventText = pDefenderMajor->GetMoralObserver()->AddEvent(15, pDefenderMajor->GetRaceMoralNumber(), param);
-							}
-							else
-							{
-								// Eventnachricht an den ehemaligen Besitzer (eigenes System verloren)
-								eventText = pDefenderMajor->GetMoralObserver()->AddEvent(16, pDefenderMajor->GetRaceMoralNumber(), param);
-							}
-
+							CString eventText = pDefenderMajor->GetMoralObserver()->AddEvent(22, pDefenderMajor->GetRaceMoralNumber(), param);
 							// Eventnachricht hinzufügen
 							if (!eventText.IsEmpty())
 							{
@@ -3064,172 +3170,79 @@ void CBotEDoc::CalcSystemAttack()
 								}
 							}
 						}
-
-						GetSystem(p.x, p.y).SetOwnerOfSystem("");
-						GetSector(p.x, p.y).SetOwnerOfSector("");
-						GetSector(p.x, p.y).SetColonyOwner("");
-						GetSector(p.x, p.y).SetTakenSector(FALSE);
-						GetSector(p.x, p.y).SetOwned(FALSE);
-
-						// war der Verteidiger eine Majorrace und wurde sie durch den Verlust des Systems komplett ausgelöscht,
-						// so bekommt der Eroberer einen kräftigen Moralschub
-						if (defender != NULL && defender->IsMajor() && attackSystem->IsDefenderNotAttacker(defender->GetRaceID(), &attackers))
-						{
-							CMajor* pDefenderMajor = dynamic_cast<CMajor*>(defender);
-							for (set<CString>::const_iterator it = attackers.begin(); it != attackers.end(); ++it)
-							{
-								CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(*it));
-								if (!pMajor)
-									continue;
-
-								// Anzahl der noch verbleibenden Systeme berechnen
-								pDefenderMajor->GetEmpire()->GenerateSystemList(m_Systems, m_Sectors);
-								// hat der Verteidiger keine Systeme mehr, so bekommt der neue Besitzer den Bonus
-								if (pDefenderMajor->GetEmpire()->GetSystemList()->IsEmpty())
-								{
-									CString sParam		= pDefenderMajor->GetRaceName();
-									CString sEventText	= pMajor->GetMoralObserver()->AddEvent(0, pMajor->GetRaceMoralNumber(), sParam);
-									// Eventnachricht hinzufügen
-									if (!sEventText.IsEmpty())
-									{
-										CEmpireNews message;
-										message.CreateNews(sEventText, EMPIRE_NEWS_TYPE::MILITARY, sParam, p, 0, 1);
-										pMajor->GetEmpire()->AddMsg(message);
-										if (pMajor->IsHumanPlayer())
-										{
-											network::RACE client = m_pRaceCtrl->GetMappedClientID(pMajor->GetRaceID());
-											m_iSelectedView[client] = EMPIRE_VIEW;
-										}
-									}
-								}
-							}
-						}
-					}
-					// Bombardierung hat die Rasse nicht komplett ausgelöscht
-					else
-					{
-						// Eventnachrichten nicht jedesmal, sondern nur wenn Gebäude vernichtet wurden oder
-						// mindst. 3% der Bevölkerung vernichtet wurden
-						if (attackSystem->GetDestroyedBuildings() > 0 || attackSystem->GetKilledPop() >= GetSystem(p.x, p.y).GetHabitants() * 0.03)
-						{
-							CString param = GetSector(p.x, p.y).GetName();
-							for (set<CString>::const_iterator it = attackers.begin(); it != attackers.end(); ++it)
-							{
-								CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(*it));
-								if (!pMajor)
-									continue;
-
-								CString eventText = "";
-								// Wenn das System nicht durch eine Rebellion verloren ging, sondern noch irgendwem gehört
-								if (defender != NULL)
-									eventText = pMajor->GetMoralObserver()->AddEvent(19, pMajor->GetRaceMoralNumber(), param);
-								// Wenn das System mal uns gehört hatte und durch eine Rebellion verloren ging
-								else if (GetSector(p.x, p.y).GetColonyOwner() == pMajor->GetRaceID() && defender == NULL)
-									eventText = pMajor->GetMoralObserver()->AddEvent(20, pMajor->GetRaceMoralNumber(), param);
-								// Eventnachricht für Agressor hinzufügen
-								if (!eventText.IsEmpty())
-								{
-									CEmpireNews message;
-									message.CreateNews(eventText, EMPIRE_NEWS_TYPE::MILITARY, param, p);
-									pMajor->GetEmpire()->AddMsg(message);
-									if (pMajor->IsHumanPlayer())
-									{
-										network::RACE client = m_pRaceCtrl->GetMappedClientID(pMajor->GetRaceID());
-										m_iSelectedView[client] = EMPIRE_VIEW;
-									}
-								}
-							}
-
-							// Eventnachricht über Bombardierung für Verteidiger erstellen und hinzufügen
-							if (defender != NULL && defender->IsMajor() && attackSystem->IsDefenderNotAttacker(defender->GetRaceID(), &attackers))
-							{
-								CMajor* pDefenderMajor = dynamic_cast<CMajor*>(defender);
-								CString eventText = pDefenderMajor->GetMoralObserver()->AddEvent(22, pDefenderMajor->GetRaceMoralNumber(), param);
-								// Eventnachricht hinzufügen
-								if (!eventText.IsEmpty())
-								{
-									CEmpireNews message;
-									message.CreateNews(eventText, EMPIRE_NEWS_TYPE::MILITARY, param, p);
-									pDefenderMajor->GetEmpire()->AddMsg(message);
-									if (pDefenderMajor->IsHumanPlayer())
-									{
-										network::RACE client = m_pRaceCtrl->GetMappedClientID(defender->GetRaceID());
-										m_iSelectedView[client] = EMPIRE_VIEW;
-									}
-								}
-							}
-						}
-					}
-					// Eventgrafiken hinzufügen
-					// für den/die Angreifer
-					for (set<CString>::const_iterator it = attackers.begin(); it != attackers.end(); ++it)
-					{
-						CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(*it));
-						if (!pMajor)
-							continue;
-
-						// reine Bombardierung
-						if (pMajor->IsHumanPlayer())
-						{
-							if (!attackSystem->IsTroopsInvolved())
-								pMajor->GetEmpire()->GetEvents()->Add(new CEventBombardment(pMajor->GetRaceID(), "Bombardment", CLoc::GetString("BOMBARDEVENT_HEADLINE", FALSE, GetSector(p.x, p.y).GetName()), CLoc::GetString("BOMBARDEVENT_TEXT_AGRESSOR_" + pMajor->GetRaceID(), FALSE, GetSector(p.x, p.y).GetName())));
-							// gescheitere Invasion
-							else if (GetSystem(p.x, p.y).GetHabitants() > 0.000001f)
-								pMajor->GetEmpire()->GetEvents()->Add(new CEventBombardment(pMajor->GetRaceID(), "InvasionFailed", CLoc::GetString("INVASIONFAILUREEVENT_HEADLINE", FALSE, GetSector(p.x, p.y).GetName()), CLoc::GetString("INVASIONFAILUREEVENT_TEXT_" + pMajor->GetRaceID(), FALSE, GetSector(p.x, p.y).GetName())));
-						}
-
-					}
-					// für den Verteidiger
-					if (defender != NULL && defender->IsMajor() && attackSystem->IsDefenderNotAttacker(defender->GetRaceID(), &attackers))
-					{
-						CMajor* pDefenderMajor = dynamic_cast<CMajor*>(defender);
-						if (pDefenderMajor->IsHumanPlayer())
-						{
-							// reine Bombardierung
-							if (!attackSystem->IsTroopsInvolved())
-								pDefenderMajor->GetEmpire()->GetEvents()->Add(new CEventBombardment(defender->GetRaceID(), "Bombardment", CLoc::GetString("BOMBARDEVENT_HEADLINE", FALSE, GetSector(p.x, p.y).GetName()), CLoc::GetString("BOMBARDEVENT_TEXT_DEFENDER_" + defender->GetRaceID(), FALSE, GetSector(p.x, p.y).GetName())));
-							// gescheitere Invasion
-							else if (GetSystem(p.x, p.y).GetHabitants() > 0.000001f)
-								pDefenderMajor->GetEmpire()->GetEvents()->Add(new CEventBombardment(defender->GetRaceID(), "InvasionFailed", CLoc::GetString("INVASIONFAILUREEVENT_HEADLINE", FALSE, GetSector(p.x, p.y).GetName()), CLoc::GetString("INVASIONFAILUREEVENT_TEXT_" + defender->GetRaceID(), FALSE, GetSector(p.x, p.y).GetName())));
-						}
 					}
 				}
-
-				// Nachrichten hinzufügen
-				for (int i = 0; i < attackSystem->GetNews()->GetSize(); )
+				// Eventgrafiken hinzufügen
+				// für den/die Angreifer
+				for (set<CString>::const_iterator it = attackers.begin(); it != attackers.end(); ++it)
 				{
-					for (set<CString>::const_iterator it = attackers.begin(); it != attackers.end(); ++it)
-					{
-						CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(*it));
-						if (!pMajor)
-							continue;
+					CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(*it));
+					if (!pMajor)
+						continue;
 
-						CEmpireNews message;
-						message.CreateNews(attackSystem->GetNews()->GetAt(i), EMPIRE_NEWS_TYPE::MILITARY, GetSector(p.x, p.y).GetName(), p);
-						pMajor->GetEmpire()->AddMsg(message);
-						if (pMajor->IsHumanPlayer())
-						{
-							network::RACE client = m_pRaceCtrl->GetMappedClientID(pMajor->GetRaceID());
-							m_iSelectedView[client] = EMPIRE_VIEW;
-						}
-					}
-					if (defender != NULL && defender->IsMajor() && attackSystem->IsDefenderNotAttacker(defender->GetRaceID(), &attackers))
+					// reine Bombardierung
+					if (pMajor->IsHumanPlayer())
 					{
-						CMajor* pDefenderMajor = dynamic_cast<CMajor*>(defender);
-						CEmpireNews message;
-						message.CreateNews(attackSystem->GetNews()->GetAt(i), EMPIRE_NEWS_TYPE::MILITARY, GetSector(p.x, p.y).GetName(), p);
-						pDefenderMajor->GetEmpire()->AddMsg(message);
-						if (pDefenderMajor->IsHumanPlayer())
-						{
-							network::RACE client = m_pRaceCtrl->GetMappedClientID(defender->GetRaceID());
-							m_iSelectedView[client] = EMPIRE_VIEW;
-						}
+						if (!pSystemAttack->IsTroopsInvolved())
+							pMajor->GetEmpire()->GetEvents()->Add(new CEventBombardment(pMajor->GetRaceID(), "Bombardment", CLoc::GetString("BOMBARDEVENT_HEADLINE", FALSE, GetSector(p.x, p.y).GetName()), CLoc::GetString("BOMBARDEVENT_TEXT_AGRESSOR_" + pMajor->GetRaceID(), FALSE, GetSector(p.x, p.y).GetName())));
+						// gescheitere Invasion
+						else if (GetSystem(p.x, p.y).GetHabitants() > 0.000001f)
+							pMajor->GetEmpire()->GetEvents()->Add(new CEventBombardment(pMajor->GetRaceID(), "InvasionFailed", CLoc::GetString("INVASIONFAILUREEVENT_HEADLINE", FALSE, GetSector(p.x, p.y).GetName()), CLoc::GetString("INVASIONFAILUREEVENT_TEXT_" + pMajor->GetRaceID(), FALSE, GetSector(p.x, p.y).GetName())));
 					}
-					attackSystem->GetNews()->RemoveAt(i);
+
 				}
-				delete attackSystem;
-				fightInSystem.Add(p);
+				// für den Verteidiger
+				if (defender != NULL && defender->IsMajor() && pSystemAttack->IsDefenderNotAttacker(defender->GetRaceID(), &attackers))
+				{
+					CMajor* pDefenderMajor = dynamic_cast<CMajor*>(defender);
+					if (pDefenderMajor->IsHumanPlayer())
+					{
+						// reine Bombardierung
+						if (!pSystemAttack->IsTroopsInvolved())
+							pDefenderMajor->GetEmpire()->GetEvents()->Add(new CEventBombardment(defender->GetRaceID(), "Bombardment", CLoc::GetString("BOMBARDEVENT_HEADLINE", FALSE, GetSector(p.x, p.y).GetName()), CLoc::GetString("BOMBARDEVENT_TEXT_DEFENDER_" + defender->GetRaceID(), FALSE, GetSector(p.x, p.y).GetName())));
+						// gescheitere Invasion
+						else if (GetSystem(p.x, p.y).GetHabitants() > 0.000001f)
+							pDefenderMajor->GetEmpire()->GetEvents()->Add(new CEventBombardment(defender->GetRaceID(), "InvasionFailed", CLoc::GetString("INVASIONFAILUREEVENT_HEADLINE", FALSE, GetSector(p.x, p.y).GetName()), CLoc::GetString("INVASIONFAILUREEVENT_TEXT_" + defender->GetRaceID(), FALSE, GetSector(p.x, p.y).GetName())));
+					}
+				}
 			}
+
+			// Nachrichten hinzufügen
+			for (int i = 0; i < pSystemAttack->GetNews()->GetSize(); )
+			{
+				for (set<CString>::const_iterator it = attackers.begin(); it != attackers.end(); ++it)
+				{
+					CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(*it));
+					if (!pMajor)
+						continue;
+
+					CEmpireNews message;
+					message.CreateNews(pSystemAttack->GetNews()->GetAt(i), EMPIRE_NEWS_TYPE::MILITARY, GetSector(p.x, p.y).GetName(), p);
+					pMajor->GetEmpire()->AddMsg(message);
+					if (pMajor->IsHumanPlayer())
+					{
+						network::RACE client = m_pRaceCtrl->GetMappedClientID(pMajor->GetRaceID());
+						m_iSelectedView[client] = EMPIRE_VIEW;
+					}
+				}
+				if (defender != NULL && defender->IsMajor() && pSystemAttack->IsDefenderNotAttacker(defender->GetRaceID(), &attackers))
+				{
+					CMajor* pDefenderMajor = dynamic_cast<CMajor*>(defender);
+					CEmpireNews message;
+					message.CreateNews(pSystemAttack->GetNews()->GetAt(i), EMPIRE_NEWS_TYPE::MILITARY, GetSector(p.x, p.y).GetName(), p);
+					pDefenderMajor->GetEmpire()->AddMsg(message);
+					if (pDefenderMajor->IsHumanPlayer())
+					{
+						network::RACE client = m_pRaceCtrl->GetMappedClientID(defender->GetRaceID());
+						m_iSelectedView[client] = EMPIRE_VIEW;
+					}
+				}
+				pSystemAttack->GetNews()->RemoveAt(i);
+			}
+			
+			delete pSystemAttack;
+			pSystemAttack = NULL;
+			fightInSystem.Add(p);
 		}
 	}
 

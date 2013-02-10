@@ -51,12 +51,18 @@ void CAttackSystem::Init(CRace* pDefender, CSystem* system, CShipMap* ships, CSe
 	m_fKilledPop = 0.0;
 	m_iDestroyedBuildings = 0;
 
-	for(CShipMap::iterator i = ships->begin(); i != ships->end(); ++i)
+	m_pShips.RemoveAll();
+
+	for (CShipMap::iterator i = ships->begin(); i != ships->end(); ++i)
 		if (i->second->GetKO() == m_KO && i->second->GetCurrentOrder() == SHIP_ORDER::ATTACK_SYSTEM)
 		{
-			m_pShips.Add(i->second);
+			// Schiffe mit Rückzugsbefehl nehmen nicht am Systemangriff teil
+			if (i->second->GetCombatTactic() != COMBAT_TACTIC::CT_RETREAT)
+				m_pShips.Add(i->second);
+			
 			// Wenn das Schiff eine Flotte besitzt, diese Schiffe auch dem Feld hinzufügen
-			for(CShips::iterator j = i->second->begin(); j != i->second->end(); ++j)
+			for (CShips::iterator j = i->second->begin(); j != i->second->end(); ++j)
+				if (j->second->GetCombatTactic() != COMBAT_TACTIC::CT_RETREAT)
 					m_pShips.Add(j->second);
 		}
 }
