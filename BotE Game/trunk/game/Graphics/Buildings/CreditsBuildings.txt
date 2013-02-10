@@ -190,7 +190,7 @@ hun_b: Dieter Ludmann
 ImageMissing: 
 ird_b: Kevin Williams
 jan_b: Dunkelheit (VegaStrike)
-kae_b: Fendorin (VegaStrike)
+kae_b: Soler97 (Wikimedia Commons)
 kan_b: Zeleni
 kar_b0: Kevin Williams
 kar_b1: Kevin Williams
@@ -288,6 +288,7 @@ ome_b92: Jason Leader
 ome_b93: Kevin Williams
 ome_b94: Yee Siang
 ome_b95: Fendorin (VegaStrike)
+ome_b96: Mr. Hook (Joel A. Hoekstra)
 orl_b: Zeleni
 oss_b: max-realms.com
 pal_b: Steve Kilby
