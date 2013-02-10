@@ -508,21 +508,28 @@ User Interface menu design:
 
 Buildings graphics:
 	Jason Leader aka "ForeverZ": http://www.turbosquid.com/Search/Index.cfm/FuseAction/ProcessSmartSearch/istIncAuthor/ForeverZ/blAuthorExact/y
-	and other contributors, see complete list in separate credits file in ../Graphics/buildings/ folder!
+	and other contributors, see complete list in separate credits file in folder ../Graphics/Buildings/
 
 
 
 Troop graphics:
-  Security forces: http://www.turbosquid.com/3d-models/free-obj-mode-tank/314777
-  Militia: Artur Grzegorczyn
-  Marines: Andrew Kincaid
-  Heyoun Rocketeers: http://www.turbosquid.com/3d-models/free-c4d-model-sci-fi-missile/257166
-  Khaoron Warriors: Magneto1969_Stock (deviantart.com)
-  Heckenschützen: Andrew Kincaid http://redfishimagery.com/
-  Alpha Invaders: Aaron (sharecg.com)
-  Stormtroopers: Taehoon Oh
-  Da'unor Sniper: Arild Anfinnsen http://www.arildwiro.com/
-  Da'unor Trooper: Magneto1969_Stock (deviantart.com)
+  Aaron (sharecg.com)
+  Andrew Kincaid
+  Arild Anfinnsen http://www.arildwiro.com/
+  Artur Grzegorczyn
+  Daniel Doerksen (deviantart.com)
+  Dennis0078 (BotE)
+  eRe4s3r (deviantart.com)
+  FeroxX-Gosu (deviantart.com)
+  Henry Baptiste
+  Kandzaemon (deviantart.com/)
+  Keith Thompson (deviantart.com)
+  magicmot (BotE)
+  Magneto1969_Stock (deviantart.com)
+  Nikolay Yeliseyev
+  Taehoon Oh
+  Till Maginot (http://blog.maginot.eu)
+  and other contributors, see complete list in separate credits file in folder ../Graphics/Troops/
 
 
 
@@ -597,6 +604,8 @@ Race logos:
 
 
 Event screens:
+        Erik Schumacher http://www.xkire.de/
+                StartScreen
 	San Monku http://sanmonku.deviantart.com/art/Spaceship-86044999
 		Colonization event
 	Steve Kilby: http://wittswallpapers.com/Kilby/kilby.html

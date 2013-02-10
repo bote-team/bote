@@ -21,7 +21,7 @@ han_troop6.bop (size=19.796): Plasma Pistol by Daniel Doerksen (http://danieldoe
 
 MajorRace3:
 kha_troop1.bop (size=17.969): Magneto1969_Stock (deviantart.com)
-kha_troop2.bop (size=18.397): kha_troop2 by Dennis0078 (http://birth-of-the-empires.de/phpBB3/memberlist.php?mode=viewprofile&u=3180)
+kha_troop2.bop (size=50.846): Baptiste Henry http://www.3dvf.com/sewan_4390.html/24233/
 kha_troop3.bop (size=21.862): kha_troop3 by Dennis0078 (http://birth-of-the-empires.de/phpBB3/memberlist.php?mode=viewprofile&u=3180)
 kha_troop4.bop (size=21.598): kha_troop4 by Dennis0078 (http://birth-of-the-empires.de/phpBB3/memberlist.php?mode=viewprofile&u=3180)
 kha_troop5.bop (size=14.724): kha_troop5 by Dennis0078 (http://birth-of-the-empires.de/phpBB3/memberlist.php?mode=viewprofile&u=3180)
@@ -29,7 +29,7 @@ kha_troop6.bop (size=16.500): kha_troop6 by Dennis0078 (http://birth-of-the-empi
 kha_troop7.bop (size=16.604): kha_troop7 by Dennis0078 (http://birth-of-the-empires.de/phpBB3/memberlist.php?mode=viewprofile&u=3180)
 
 MajorRace4:
-rot_troop1.bop (size=74.858): by Till Maginot (http://blog.maginot.eu)
+rot_troop1.bop (size=74.858): Till Maginot (http://blog.maginot.eu)
 rot_troop2.bop (size=11.290): rot_troop2 by Dennis0078 (http://birth-of-the-empires.de/phpBB3/memberlist.php?mode=viewprofile&u=3180)
 rot_troop3.bop (size=26.867): rot_troop3 by Dennis0078 (http://birth-of-the-empires.de/phpBB3/memberlist.php?mode=viewprofile&u=3180)
 rot_troop4.bop (size=27.813): rot_troop4 by Dennis0078 (http://birth-of-the-empires.de/phpBB3/memberlist.php?mode=viewprofile&u=3180)
@@ -49,7 +49,7 @@ car_troop7.bop (size=23.856): car_troop7 by Dennis0078 (http://birth-of-the-empi
 
 MajorRace6:
 ome_troop1.bop (size=34.559): Pulse Rifle.jpg by Arild Anfinnsen (http://www.arildwiro.com/)
-ome_troop2.bop (size=22.848): #blue rifle#####################################
+ome_troop2.bop (size=22.848): blue rifle
 ome_troop3.bop (size=26.289): t1ea by magicmot (http://birth-of-the-empires.de/phpBB3/memberlist.php?mode=viewprofile&u=1463)
 ome_troop4.bop (size=28.297): t1he by magicmot (http://birth-of-the-empires.de/phpBB3/memberlist.php?mode=viewprofile&u=1463)
 ome_troop5.bop (size=27.376): t1ro by magicmot (http://birth-of-the-empires.de/phpBB3/memberlist.php?mode=viewprofile&u=1463)
