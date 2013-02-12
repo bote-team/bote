@@ -1052,6 +1052,13 @@ CString CCombatMenuView::CreateTooltip(void)
 	if (!pDoc->m_bDataReceived)
 		return "";
 
+	if (pDoc->m_bRoundEndPressed)
+		return "";
+
+	// nicht am Kampf beteiligt
+	if (m_sFriends.find(m_pPlayersRace) == m_sFriends.end())
+		return "";
+
 	CPoint pt;
 	GetCursorPos(&pt);
 	ScreenToClient(&pt);
