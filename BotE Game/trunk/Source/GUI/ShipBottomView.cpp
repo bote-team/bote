@@ -275,6 +275,24 @@ void CShipBottomView::DrawShipContent()
 		return;
 	}
 
+	// Wenn nur ein Schiff in dem System ist, so wird es automatisch ausgewählt
+	// Nicht automatisch machen, wenn zuvor genau das gleiche CurrentShip angewählt war. Dann könnte man
+	// in der Galaxieansicht nicht mehr mit Rechts abbrechen, da das Schiff gleich wieder angewählt wird.
+	if (counter == 1 && !m_bShowStation	&& oneShip->second->GetOwnerOfShip() == pMajor->GetRaceID() && oneShip->second != m_dc.pDoc->CurrentShip()->second)
+	{
+		// Wenn wenn wir auf der Galaxiekarte sind
+		if (resources::pMainFrame->GetActiveView(0, 1) == GALAXY_VIEW)
+		{
+			SHIP_ORDER::Typ nOrder = oneShip->second->GetCurrentOrder();
+			bool bDirectMove = true;
+			if (nOrder != SHIP_ORDER::NONE && nOrder != SHIP_ORDER::AVOID && nOrder != SHIP_ORDER::ATTACK && nOrder != SHIP_ORDER::ENCLOAK && nOrder != SHIP_ORDER::DECLOAK && nOrder != SHIP_ORDER::ASSIGN_FLAGSHIP && nOrder != SHIP_ORDER::CREATE_FLEET && nOrder != SHIP_ORDER::TRANSPORT)
+				bDirectMove = false;
+
+			if (bDirectMove)
+				ActivateShip(oneShip);
+		}
+	}
+
 	// Schiffe jetzt auch zeichnen
 	for(std::vector<std::pair<CRect, CShips*>>::const_iterator itdraw = m_vShipRects.begin(); itdraw != m_vShipRects.end(); ++itdraw)
 	{
@@ -293,33 +311,6 @@ void CShipBottomView::DrawShipContent()
 		// ist das Schiff gerade markiert?
 		bool bMarked = (pShip == m_dc.pDoc->CurrentShip()->second);
 		pShip->DrawShip(m_dc.g, m_dc.gp, CPoint(loc.left,loc.top-20), bMarked, bUnknown, TRUE, m_dc.normalColor, markColor, font);
-	}
-
-	// Wenn nur ein Schiff in dem System ist, so wird es automatisch ausgewählt
-	// Nicht automatisch machen, wenn zuvor genau das gleiche CurrentShip angewählt war. Dann könnte man
-	// in der Galaxieansicht nicht mehr mit Rechts abbrechen, da das Schiff gleich wieder angewählt wird.
-	if (counter == 1 && !m_bShowStation	&& oneShip->second->GetOwnerOfShip() == pMajor->GetRaceID() && oneShip->second != m_dc.pDoc->CurrentShip()->second)
-	{
-		// Wenn wenn wir auf der Galaxiekarte sind
-		if (resources::pMainFrame->GetActiveView(0, 1) == GALAXY_VIEW)
-		{
-			SHIP_ORDER::Typ nOrder = oneShip->second->GetCurrentOrder();
-			bool bDirectMove = true;
-			if (nOrder != SHIP_ORDER::NONE && nOrder != SHIP_ORDER::AVOID && nOrder != SHIP_ORDER::ATTACK && nOrder != SHIP_ORDER::ENCLOAK && nOrder != SHIP_ORDER::DECLOAK && nOrder != SHIP_ORDER::ASSIGN_FLAGSHIP && nOrder != SHIP_ORDER::CREATE_FLEET && nOrder != SHIP_ORDER::TRANSPORT)
-				bDirectMove = false;
-
-			if (bDirectMove)
-			{
-				CGalaxyMenuView::SetMoveShip(TRUE);
-
-				this->SetTimer(1,100,NULL);
-				m_dc.pDoc->SetCurrentShip(oneShip);
-				CSmallInfoView::SetDisplayMode(CSmallInfoView::DISPLAY_MODE_SHIP_BOTTEM_VIEW);
-				resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
-				m_iWhichMainShipOrderButton = MAIN_BUTTON_NONE;
-				resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CGalaxyMenuView));
-			}
-		}
 	}
 
 	// Die Buttons für vor und zurück darstellen, wenn wir mehr als 9 Schiffe in dem Sektor sehen
@@ -808,7 +799,6 @@ BOOL CShipBottomView::OnEraseBkgnd(CDC* /*pDC*/)
 	return FALSE;
 }
 
-
 void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
@@ -842,9 +832,7 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 			// Wenn wir in der MainView nicht im Flottenmenü sind
 			if (resources::pMainFrame->GetActiveView(0, 1) != FLEET_VIEW)
 			{
-				CGalaxyMenuView::SetMoveShip(TRUE);
-				this->SetTimer(1,100,NULL);
-				resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CGalaxyMenuView));
+				ActivateShip(pDoc->CurrentShip());
 				return;
 			}
 			
@@ -915,17 +903,8 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 				if (j->second != i->second)
 					continue;
 
-				KillTimer(1);
-				m_iTimeCounter = 0;
-
-				pDoc->SetCurrentShip(j);
-				CSmallInfoView::SetDisplayMode(CSmallInfoView::DISPLAY_MODE_SHIP_BOTTEM_VIEW);
-				resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
-				m_iWhichMainShipOrderButton = MAIN_BUTTON_NONE;
-				CGalaxyMenuView::SetMoveShip(TRUE);
-				this->SetTimer(1,100,NULL);
-				resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CGalaxyMenuView));
-				Invalidate(FALSE);
+				// Schiff aktivieren
+				ActivateShip(j);
 			}
 
 			return;
@@ -1133,10 +1112,7 @@ void CShipBottomView::OnMouseMove(UINT nFlags, CPoint point)
 			if (j->second != i->second)
 				continue;
 			
-			pDoc->SetCurrentShip(j);
-			CSmallInfoView::SetDisplayMode(CSmallInfoView::DISPLAY_MODE_SHIP_BOTTEM_VIEW);
-			resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
-			m_iWhichMainShipOrderButton = MAIN_BUTTON_NONE;
+			ActivateShip(j, false);
 			Invalidate(FALSE);
 			return;
 		}
@@ -1189,6 +1165,30 @@ void CShipBottomView::OnTimer(UINT_PTR nIDEvent)
 	InvalidateRect(r, FALSE);
 
 	CBottomBaseView::OnTimer(nIDEvent);
+}
+
+void CShipBottomView::ActivateShip(CShipMap::iterator i, bool bSetShipMove /* = true */)
+{
+	CBotEDoc* pDoc = resources::pDoc;
+	ASSERT(pDoc);
+
+	if (!pDoc->m_bDataReceived)
+		return;
+
+	pDoc->SetCurrentShip(i);
+	m_iWhichMainShipOrderButton = MAIN_BUTTON_NONE;
+
+	if (bSetShipMove)
+	{
+		KillTimer(1);
+		m_iTimeCounter = 0;
+		CGalaxyMenuView::SetMoveShip(TRUE);
+		this->SetTimer(1,100,NULL);
+		resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CGalaxyMenuView));
+	}
+	
+	CSmallInfoView::SetDisplayMode(CSmallInfoView::DISPLAY_MODE_SHIP_BOTTEM_VIEW);
+	resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
 }
 
 ///	Funktion erstellt zur aktuellen Mouse-Position einen HTML Tooltip

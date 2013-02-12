@@ -63,6 +63,10 @@ public:
 	/// @param is Wahrheitswert: <code>TRUE</code> für Stationen, <code>FALSE</code> für Schiffe
 	static void SetShowStation(BOOLEAN is) {m_bShowStation = is;}
 
+	/// Funktion setzt ein Schiff als aktives Schiff (Hauptbuttons einblenden, Schiffsbewegung aktivieren usw.)
+	/// @param i Iterator des Schiffes in der Schiffsmap
+	void ActivateShip(CShipMap::iterator i, bool bSetShipMove = true);
+
 	///	Funktion erstellt zur aktuellen Mouse-Position einen HTML Tooltip
 	/// @return	der erstellte Tooltip-Text
 	virtual CString CreateTooltip(void);

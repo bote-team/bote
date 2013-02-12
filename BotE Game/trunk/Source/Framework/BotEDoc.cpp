@@ -1611,7 +1611,7 @@ void CBotEDoc::ApplyShipsAtStartup()
 				break;
 			}
 
-			// Sektor war bAttackSystem
+			// Sektor war okay
 			break;
 
 		} while (true);

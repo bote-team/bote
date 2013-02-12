@@ -1464,19 +1464,22 @@ void CGalaxyMenuView::SearchNextIdleShipAndJumpToIt(CBotEDoc* pDoc, SHIP_ORDER::
 				m_PreviouslyJumpedToShip = RememberedShip(i->second->GetShipName(), i->second->Key());
 				m_pPlayersRace->GetStarmap()->Select(sector);// sets orange rectangle in galaxy view
 				pDoc->SetKO(sector.x,sector.y);//neccessary for that the ship is selected for SHIP_BOTTOM_VIEW
-				pDoc->SetCurrentShip(i);
 				ScrollToSector(coords);
 
 				CShipBottomView::SetShowStation(false);
 				resources::pMainFrame->SelectBottomView(SHIP_BOTTOM_VIEW);
-				resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CShipBottomView));//What's this doing ? Neccessary/sensible ?
+				if (CShipBottomView* pView = dynamic_cast<CShipBottomView*>(resources::pMainFrame->GetView(RUNTIME_CLASS(CShipBottomView))))
+				{
+					// zuvor neuzeichnen, falls sich der Sektor geändert hat (sonst klappt die Logik
+					// in der Schiffsview nicht)
+					pView->RedrawWindow();
+					// jetzt Schiff aktivieren, Timer starten usw...
+					pView->ActivateShip(i);
+				}
 
-				CSmallInfoView::SetDisplayMode(CSmallInfoView::DISPLAY_MODE_SHIP_BOTTEM_VIEW);
-				resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CSmallInfoView));//And this ?
-
-				Invalidate(FALSE);//And this ?
-				if(i != stop_at)
+				if (i != stop_at)
 					found = true;
+				
 				break;
 			}
 		}
