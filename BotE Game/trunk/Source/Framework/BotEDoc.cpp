@@ -257,6 +257,9 @@ void CBotEDoc::Serialize(CArchive& ar)
 		for (int j = TITAN; j <= IRIDIUM; j++)
 			ar << CTrade::GetMonopolOwner(j);
 
+		// Forschungsmodifikator
+		ar << CResearchInfo::m_dResearchSpeedFactor;
+
 		map<CString, short>* mMoralMap = CSystemProd::GetMoralProdEmpireWide();
 		ar << mMoralMap->size();
 		for (map<CString, short>::const_iterator it = mMoralMap->begin(); it != mMoralMap->end(); ++it)
@@ -315,6 +318,10 @@ void CBotEDoc::Serialize(CArchive& ar)
 			ar >> sOwnerID;
 			CTrade::SetMonopolOwner(j, sOwnerID);
 		}
+
+		// Forschungsmodifikator
+		ar >> CResearchInfo::m_dResearchSpeedFactor;
+
 		CSystemProd::GetMoralProdEmpireWide()->clear();
 		ar >> mapSize;
 		for (size_t i = 0; i < mapSize; i++)
@@ -394,6 +401,9 @@ void CBotEDoc::SerializeBeginGameData(CArchive& ar)
 		ar << m_TroopInfo.GetSize();
 		for (int i = 0; i < m_TroopInfo.GetSize(); i++)
 			m_TroopInfo.GetAt(i).Serialize(ar);
+
+		// Forschungsmodifikator
+		ar << CResearchInfo::m_dResearchSpeedFactor;
 	}
 	// Empfangen auf Clientseite
 	else
@@ -428,6 +438,9 @@ void CBotEDoc::SerializeBeginGameData(CArchive& ar)
 		m_TroopInfo.SetSize(number);
 		for (int i = 0; i < number; i++)
 			m_TroopInfo.GetAt(i).Serialize(ar);
+
+		// Forschungsmodifikator
+		ar >> CResearchInfo::m_dResearchSpeedFactor;
 	}
 
 	CMoralObserver::SerializeStatics(ar);
@@ -679,7 +692,6 @@ void CBotEDoc::ResetIniSettings(void)
 		m_fDifficultyLevel			= 0.5f;
 	MYTRACE("general")(MT::LEVEL_INFO, "relevant only at new game: m_fDifficultyLevel: %f", m_fDifficultyLevel);
 
-
 	CSoundManager* pSoundManager = CSoundManager::GetInstance();
 	ASSERT(pSoundManager);
 
@@ -706,9 +718,15 @@ void CBotEDoc::ResetIniSettings(void)
 	bool bUseSound;
 	pIni->ReadValue("Audio", "SOUND", bUseSound);
 	if (!bUseSound)
-		pSoundManager->SetSoundMasterVolume(NULL);
+	{
+		pSoundManager->SetSoundMasterVolume(0.0f);
+		pSoundManager->SetMessageMasterVolume(0.0f);
+	}
 	else
+	{
 		pSoundManager->SetSoundMasterVolume(0.5f);
+		pSoundManager->SetMessageMasterVolume(0.5f);
+	}
 	MYTRACE("general")(MT::LEVEL_INFO, "Init sound ready...\n");
 
 	RandomSeed();
@@ -905,6 +923,10 @@ void CBotEDoc::PrepareData()
 		// Siegbedingungen initialisieren und erstmalig überwachen
 		m_VictoryObserver.Init();
 		m_VictoryObserver.Observe();
+
+		// Forschungsgeschwindigkeitsmodifikator setzen
+		CResearchInfo::m_dResearchSpeedFactor = 1.25;
+		CIniLoader::GetInstance()->ReadValue("Special", "RESEARCHSPEED", CResearchInfo::m_dResearchSpeedFactor);
 
 		MYTRACE("general")(MT::LEVEL_INFO, "Preparing game data ready...\n");
 		/*

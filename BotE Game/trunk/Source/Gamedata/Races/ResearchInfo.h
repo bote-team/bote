@@ -14,6 +14,10 @@ class CResearchInfo : public CObject
 {
 	friend class CResearch; // damit wir in der Klasse CResearch (und nur dieser) auf die private Attribute zugreifen können
 public:
+
+	/// Faktor der die benötigten Forschungspunkte modifiziert
+	static double m_dResearchSpeedFactor;
+
 	DECLARE_SERIAL (CResearchInfo)
 	/// Konstruktor
 	CResearchInfo(void);
@@ -35,12 +39,12 @@ public:
 	 * berechnet. Der "Startwert" für die einzelnen Gebiete ist der Multiplikator (z.B. 125 oder 150). An die einzelnen
 	 * Funktionen wird das Techlevel <code>techLevel</code> übergeben, für welches man die benötigten FP haben will.
 	 */
-	ULONG GetBio(USHORT nTechLevel) const {return (ULONG)(pow(2.25f, nTechLevel) * 150.0);}
-	ULONG GetEnergy(USHORT nTechLevel) const {return (ULONG)(pow(2.25f, nTechLevel) * 125.0);}
-	ULONG GetComp(USHORT nTechLevel) const {return (ULONG)(pow(2.25f, nTechLevel) * 150.0);}
-	ULONG GetPropulsion(USHORT nTechLevel) const {return (ULONG)(pow(2.25f, nTechLevel) * 150.0);}
-	ULONG GetConstruction(USHORT nTechLevel) const {return (ULONG)(pow(2.25f, nTechLevel) * 175.0);}
-	ULONG GetWeapon(USHORT nTechLevel) const {return (ULONG)(pow(2.25f, nTechLevel) * 175.0);}
+	ULONG GetBio(USHORT nTechLevel) const;
+	ULONG GetEnergy(USHORT nTechLevel) const;
+	ULONG GetComp(USHORT nTechLevel) const;
+	ULONG GetPropulsion(USHORT nTechLevel) const;
+	ULONG GetConstruction(USHORT nTechLevel) const;
+	ULONG GetWeapon(USHORT nTechLevel) const;
 
 	/**
 	 * Diese Funktion gibt einen Wahrheitswert zurück, der angibt, ob der Spieler die Wahl einer der 3 Möglichkeiten
@@ -109,7 +113,7 @@ public:
 	 * übergeben werden.
 	 */
 	static void GetTechInfos(BYTE tech, BYTE level, CString& sTechName, CString& sTechDesc);
-
+	
 private:
 	/// Die derzeit 12 Objekte für die einzelnen Komplexe der Spezialforschung
 	CResearchComplex m_ResearchComplex[NoUC];

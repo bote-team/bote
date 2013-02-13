@@ -50,6 +50,11 @@ public:
 	/**
 	 * Diese Funktion gibt den zum <code>key</code> gehörenden Eintrag aus der ini-Datei zurück.
 	 */
+	bool ReadValue(const CString& sSection, const CString& sKey, double& dValue) const;
+
+	/**
+	 * Diese Funktion gibt den zum <code>key</code> gehörenden Eintrag aus der ini-Datei zurück.
+	 */
 	bool ReadValue(const CString& sSection, const CString& sKey, CString& sValue) const;
 
 	/**

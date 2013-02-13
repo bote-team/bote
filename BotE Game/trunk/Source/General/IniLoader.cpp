@@ -54,6 +54,7 @@ CIniLoader::CIniLoader(void)
 		WriteValue("Special", "MAPSIZEH", "30");
 		WriteValue("Special", "ALIENENTITIES", "ON");
 		WriteValue("Special", "RANDOMEVENTS", "ON");
+		WriteValue("Special", "RESEARCHSPEED", "1.25");
 
 		WriteValue("Victory_Conditions", "Elimination", "ON");
 		WriteValue("Victory_Conditions", "Diplomacy", "OFF");
@@ -130,6 +131,17 @@ bool CIniLoader::ReadValue(const CString& sSection, const CString& sKey, float& 
 		return false;
 
 	fValue = (float)atof(sValue);
+	return true;
+}
+
+/// Diese Funktion gibt den zum <code>sKey</code> gehörenden Eintrag aus der ini-Datei zurück.
+bool CIniLoader::ReadValue(const CString& sSection, const CString& sKey, double& dValue) const
+{
+	CString sValue;
+	if (!ReadIniValue(sSection, sKey, sValue))
+		return false;
+
+	dValue = atof(sValue);
 	return true;
 }
 

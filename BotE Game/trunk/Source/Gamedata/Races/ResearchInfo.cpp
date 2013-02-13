@@ -16,6 +16,9 @@ static char THIS_FILE[]=__FILE__;
 
 IMPLEMENT_SERIAL (CResearchInfo, CObject, 1)
 
+// statische Variablen initialisieren
+double CResearchInfo::m_dResearchSpeedFactor = 1.0;
+
 //////////////////////////////////////////////////////////////////////
 // Konstruktion/Destruktion
 //////////////////////////////////////////////////////////////////////
@@ -227,4 +230,34 @@ void CResearchInfo::GetTechInfos(BYTE tech, BYTE level, CString& sTechName, CStr
 	}
 	// Datei wird geschlossen
 	file.Close();
+}
+
+ULONG CResearchInfo::GetBio( USHORT nTechLevel ) const
+{
+	return (ULONG)(pow(2.25f, nTechLevel) * 150.0 * m_dResearchSpeedFactor);
+}
+
+ULONG CResearchInfo::GetEnergy( USHORT nTechLevel ) const
+{
+	return (ULONG)(pow(2.25f, nTechLevel) * 125.0 * m_dResearchSpeedFactor);
+}
+
+ULONG CResearchInfo::GetComp( USHORT nTechLevel ) const
+{
+	return (ULONG)(pow(2.25f, nTechLevel) * 150.0 * m_dResearchSpeedFactor);
+}
+
+ULONG CResearchInfo::GetPropulsion( USHORT nTechLevel ) const
+{
+	return (ULONG)(pow(2.25f, nTechLevel) * 150.0 * m_dResearchSpeedFactor);
+}
+
+ULONG CResearchInfo::GetConstruction( USHORT nTechLevel ) const
+{
+	return (ULONG)(pow(2.25f, nTechLevel) * 175.0 * m_dResearchSpeedFactor);
+}
+
+ULONG CResearchInfo::GetWeapon( USHORT nTechLevel ) const
+{
+	return (ULONG)(pow(2.25f, nTechLevel) * 175.0 * m_dResearchSpeedFactor);
 }
