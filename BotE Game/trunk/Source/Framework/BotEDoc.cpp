@@ -5008,6 +5008,16 @@ void CBotEDoc::CalcShipCombat()
 			++i;
 			continue;
 		}
+		//To ensure consistent combat behavior in a leader/fleet situation, set the combat behavior of every
+		//ship in the fleet to the leader's behavior, unless it is RETREAT, this case will be handled in ship
+		//retreat code
+		const COMBAT_TACTIC::Typ LeadersCombatTactic = i->second->GetCombatTactic();
+		if(LeadersCombatTactic != COMBAT_TACTIC::CT_RETREAT)
+			for(CShipMap::const_iterator j = i->second->begin(); j != i->second->end(); ++j)
+			{
+				if(j->second->GetCombatTactic() != COMBAT_TACTIC::CT_RETREAT)
+					j->second->SetCombatTactic(LeadersCombatTactic);
+			}
 
 		CRace* pOwner = m_pRaceCtrl->GetRace(i->second->GetOwnerOfShip());
 		assert(pOwner);
