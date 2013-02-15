@@ -420,15 +420,6 @@ bool CShips::CanHaveOrder(SHIP_ORDER::Typ order, bool require_new, bool require_
 	return m_Leader.CanHaveOrder(order, require_new);
 }
 
-bool CShips::AllOnTactic(COMBAT_TACTIC::Typ tactic) const {
-	for(CShips::const_iterator i = begin(); i != end(); ++i)
-	{
-		if(i->second->GetCombatTactic() != tactic)
-			return false;
-	}
-	return true;
-}
-
 bool CShips::HasFleet() const {
 	return !m_Fleet.empty();
 }
