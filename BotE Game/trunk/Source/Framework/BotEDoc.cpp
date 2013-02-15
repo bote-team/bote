@@ -3261,7 +3261,7 @@ void CBotEDoc::CalcSystemAttack()
 				}
 				pSystemAttack->GetNews()->RemoveAt(i);
 			}
-			
+
 			delete pSystemAttack;
 			pSystemAttack = NULL;
 			fightInSystem.Add(p);

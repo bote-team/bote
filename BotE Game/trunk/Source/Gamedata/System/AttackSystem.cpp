@@ -59,7 +59,7 @@ void CAttackSystem::Init(CRace* pDefender, CSystem* system, CShipMap* ships, CSe
 			// Schiffe mit Rückzugsbefehl nehmen nicht am Systemangriff teil
 			if (i->second->GetCombatTactic() != COMBAT_TACTIC::CT_RETREAT)
 				m_pShips.Add(i->second);
-			
+
 			// Wenn das Schiff eine Flotte besitzt, diese Schiffe auch dem Feld hinzufügen
 			for (CShips::iterator j = i->second->begin(); j != i->second->end(); ++j)
 				if (j->second->GetCombatTactic() != COMBAT_TACTIC::CT_RETREAT)

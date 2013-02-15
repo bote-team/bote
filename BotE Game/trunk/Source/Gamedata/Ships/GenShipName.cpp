@@ -196,7 +196,7 @@ CString CGenShipName::GenerateShipName(const CString& sRaceID, const CString &sR
 			result = _snprintf(letter, 10, " %u", counter);
 		assert(result > 0);
 	}
-	
+
 	std::stringstream name;
 	if (mStillAvailableNames.empty())
 	{
@@ -208,7 +208,7 @@ CString CGenShipName::GenerateShipName(const CString& sRaceID, const CString &sR
 		name << CStringToStdString(mStillAvailableNames.at(random));
 		mStillAvailableNames.erase(mStillAvailableNames.begin() + random);
 	}
-	
+
 	assert(name);
 	name << letter;
 	assert(name);

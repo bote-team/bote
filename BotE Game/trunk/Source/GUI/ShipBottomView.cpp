@@ -697,7 +697,7 @@ void CShipBottomView::OnDraw(CDC* dc)
 	// Update Graphicpool Link
 	m_dc.gp = m_dc.pDoc->GetGraphicPool();
 
-	
+
 	// TODO: add draw code here
 
 	// Doublebuffering wird initialisiert
@@ -821,7 +821,7 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 	{
 		if (!i->first.PtInRect(point))
 			continue;
-	
+
 		// Wurde das aktuelle Schiff angeklickt?
 		if (pDoc->CurrentShip()->second == i->second)
 		{
@@ -835,9 +835,9 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 				ActivateShip(pDoc->CurrentShip());
 				return;
 			}
-			
+
 			// Wenn wir in der MainView im Flottenmenü sind
-			
+
 			// Dann stecken das angeklickte Schiff in die gerade angezeigte Flotte stecken
 			// Fremde Flotten können nicht bearbeitet werden
 			const CShipMap::iterator& fleetship = pDoc->FleetShip();
@@ -878,7 +878,7 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 					next_current_ship = it;
 					break;
 				}
-				
+
 				const bool was_terraform = to_erase->second->GetCurrentOrder() == SHIP_ORDER::TERRAFORM;
 				assert(next_current_ship != to_erase);
 				pDoc->m_ShipMap.EraseAt(to_erase, false);
@@ -948,7 +948,7 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 		{
 			if (!i->rect.PtInRect(point))
 				continue;
-			
+
 			if (i->which != MAIN_BUTTON_CANCEL)
 			{
 				m_iWhichMainShipOrderButton = i->which;
@@ -1095,7 +1095,7 @@ void CShipBottomView::OnMouseMove(UINT nFlags, CPoint point)
 	CBotEDoc* pDoc = resources::pDoc;
 	assert(pDoc);
 	CalcLogicalPoint(point);
-	
+
 	// wurde die Maus über ein Schiff gehalten
 	for (std::vector<std::pair<CRect, CShips*>>::const_iterator i = m_vShipRects.begin(); i != m_vShipRects.end(); ++i)
 	{
@@ -1105,13 +1105,13 @@ void CShipBottomView::OnMouseMove(UINT nFlags, CPoint point)
 		// handelt es sich um das aktuelle Schiff, dann braucht nichts mehr gemacht werden
 		if (i->second == pDoc->CurrentShip()->second)
 			return;
-		
+
 		// Iterator des aktuellen Schiffes in Schiffsmap suchen
 		for (CShipMap::iterator j = pDoc->m_ShipMap.begin(); j != pDoc->m_ShipMap.end(); ++j)
 		{
 			if (j->second != i->second)
 				continue;
-			
+
 			ActivateShip(j, false);
 			Invalidate(FALSE);
 			return;
@@ -1186,7 +1186,7 @@ void CShipBottomView::ActivateShip(CShipMap::iterator i, bool bSetShipMove /* = 
 		this->SetTimer(1,100,NULL);
 		resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CGalaxyMenuView));
 	}
-	
+
 	CSmallInfoView::SetDisplayMode(CSmallInfoView::DISPLAY_MODE_SHIP_BOTTEM_VIEW);
 	resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CSmallInfoView));
 }

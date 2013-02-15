@@ -877,7 +877,7 @@ void CGalaxyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 					resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CShipBottomView));
 				}
 			}
-			
+
 			if (bShowPlanetBottomView)
 			{
 				// Planetenansicht in View3 des angeklickten Sektors zeigen
@@ -1479,7 +1479,7 @@ void CGalaxyMenuView::SearchNextIdleShipAndJumpToIt(CBotEDoc* pDoc, SHIP_ORDER::
 
 				if (i != stop_at)
 					found = true;
-				
+
 				break;
 			}
 		}

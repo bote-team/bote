@@ -161,7 +161,7 @@ private:
 	MAIN_BUTTON m_iWhichMainShipOrderButton;				///< welchen Hauptschiffsbefehlsbutton haben wir gedrückt
 	static BOOLEAN m_bShowStation;
 	vector<pair<CRect, CShips*> > m_vShipRects;				///< alle angezeigten Schiffe mit ihren Rechtecken zu draufklicken
-	
+
 	// OnDraw Helper Functions
 	stDrawingContext m_dc;
 

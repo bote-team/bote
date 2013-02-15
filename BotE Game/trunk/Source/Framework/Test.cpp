@@ -49,7 +49,7 @@ void CTest::TestGenShipname() const {
 			sRaceName = i->second->GetRaceName();
 			break;
 		}
-		
+
 		std::set<CString> seen;
 		std::vector<CString> seen_v;
 		for(unsigned i = 0; i < 10000; ++i)
