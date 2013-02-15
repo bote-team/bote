@@ -824,10 +824,10 @@ void CCombatMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 					}
 				switch (nOrder)
 				{
-				case 0: pShip->SetCombatTactic(COMBAT_TACTIC::CT_ATTACK);	break;
-				case 1: pShip->SetCombatTactic(COMBAT_TACTIC::CT_AVOID);	break;
+				case 0: pShip->SetCombatTactic(COMBAT_TACTIC::CT_ATTACK, false);	break;
+				case 1: pShip->SetCombatTactic(COMBAT_TACTIC::CT_AVOID, false);	break;
 				case 2: if (pShip->GetManeuverability() != 0)
-							pShip->SetCombatTactic(COMBAT_TACTIC::CT_RETREAT);
+							pShip->SetCombatTactic(COMBAT_TACTIC::CT_RETREAT, false);
 						break;
 				default: ASSERT(FALSE);
 				}

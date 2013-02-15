@@ -277,10 +277,13 @@ void CShips::SetTargetKO(const CPoint& TargetKO, const bool simple_setter) {
 		i->second->SetTargetKO(TargetKO, simple_setter);
 }
 
-void CShips::SetCombatTactic(COMBAT_TACTIC::Typ nTactic) {
+void CShips::SetCombatTactic(COMBAT_TACTIC::Typ nTactic, bool bPropagateToFleet) {
 	m_Leader.SetCombatTactic(nTactic);
-	for(CShips::iterator i = begin(); i != end(); ++i)
-		i->second->SetCombatTactic(nTactic);
+	if(bPropagateToFleet)
+	{
+		for(CShips::iterator i = begin(); i != end(); ++i)
+			i->second->SetCombatTactic(nTactic);
+	}
 }
 
 void CShips::SetTerraform(short planetNumber) {

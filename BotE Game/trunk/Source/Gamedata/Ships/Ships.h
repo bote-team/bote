@@ -214,7 +214,7 @@ public:
 		void SetShipDescription(const CString& ShipDescription) { m_Leader.SetShipDescription(ShipDescription); }
 		void SetShipClass(const CString& ShipClass) { m_Leader.SetShipClass(ShipClass); }
 		void SetIsShipFlagShip(bool bIs) { m_Leader.SetIsShipFlagShip(bIs); }
-		void SetCombatTactic(COMBAT_TACTIC::Typ nTactic);
+		void SetCombatTactic(COMBAT_TACTIC::Typ nTactic, bool bPropagateToFleet = true);
 
 		//more complex setting
 		void SetTargetKO(const CPoint& TargetKO, const bool simple_setter = false);
