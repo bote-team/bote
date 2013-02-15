@@ -329,8 +329,8 @@ public:
 
 
 	//Perform actions to retreat this ship to the given sector.
-	void Retreat(const CPoint& ptRetreatSector) { m_Leader.Retreat(ptRetreatSector); };
-	void RetreatFleet(const CPoint& RetreatSector);
+	void Retreat(const CPoint& ptRetreatSector, COMBAT_TACTIC::Typ const* NewCombatTactic = NULL);
+	void RetreatFleet(const CPoint& RetreatSector, COMBAT_TACTIC::Typ const* NewCombatTactic = NULL);
 
 	void CalcEffects(CSector& sector, CRace* pRace,
 			bool bDeactivatedShipScanner, bool bBetterScanner);

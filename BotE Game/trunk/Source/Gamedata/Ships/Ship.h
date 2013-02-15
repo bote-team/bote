@@ -262,7 +262,7 @@ public:
 	void Repair(BOOL bAtShipPort, bool bFasterShieldRecharge);
 
 	//Perform actions to retreat this ship to the given sector.
-	void Retreat(const CPoint& ptRetreatSector);
+	void Retreat(const CPoint& ptRetreatSector, COMBAT_TACTIC::Typ const* NewCombatTactic);
 
 	//calculate effects this ship has onto its sector
 	void CalcEffectsForSingleShip(CSector& sector, CRace* pRace,

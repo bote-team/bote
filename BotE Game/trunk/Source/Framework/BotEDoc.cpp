@@ -5070,16 +5070,14 @@ void CBotEDoc::CalcShipRetreat() {
 		const bool bCompleteFleetRetreat = ship->second->GetSpeed(true) > 0
 			&& ship->second->AllOnTactic(COMBAT_TACTIC::CT_RETREAT);
 
-		// haben alle Schiffe in der Flotte den Rückzugsbefehl oder hat das Schiff keine Flotte
-		// -> Rückzugssektor festlegen
-		if (bCompleteFleetRetreat)
-			ship->second->RetreatFleet(RetreatSector->second);
+		if (bCompleteFleetRetreat) {
+			const COMBAT_TACTIC::Typ NewCombatTactic = ship->second->GetCombatTactic();
+			ship->second->RetreatFleet(RetreatSector->second, &NewCombatTactic);
+		}
 		// Schiffe aus der Flotte nehmen und ans Ende des Schiffsarrays packen. Diese werden
 		// dann auch noch behandelt
 		else
 		{
-			//we need to be careful, since we iterate over the array we're modifying, which
-			//would normally invalidate the iterator "ship"
 			const CShipMap& fleet = ship->second->Fleet();
 			m_ShipMap.Append(fleet);
 			ship->second->Reset(false);

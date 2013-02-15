@@ -512,9 +512,14 @@ void CShips::RepairCommand(BOOL bAtShipPort, bool bFasterShieldRecharge, CShipMa
 	}
 }
 
-void CShips::RetreatFleet(const CPoint& RetreatSector) {
+void CShips::Retreat(const CPoint& ptRetreatSector, COMBAT_TACTIC::Typ const* NewCombatTactic)
+{
+	m_Leader.Retreat(ptRetreatSector, NewCombatTactic);
+}
+
+void CShips::RetreatFleet(const CPoint& RetreatSector, COMBAT_TACTIC::Typ const* NewCombatTactic) {
 	for(CShips::iterator j = begin(); j != end(); ++j)
-		j->second->Retreat(RetreatSector);
+		j->second->Retreat(RetreatSector, NewCombatTactic);
 }
 
 void CShips::CalcEffects(CSector& sector, CRace* pRace,

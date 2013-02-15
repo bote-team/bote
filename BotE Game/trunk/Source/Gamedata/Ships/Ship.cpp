@@ -1418,12 +1418,15 @@ void CShip::Repair(BOOL bAtShipPort, bool bFasterShieldRecharge) {
 		m_Hull.RepairHull();
 }
 
-void CShip::Retreat(const CPoint& ptRetreatSector)
+void CShip::Retreat(const CPoint& ptRetreatSector, COMBAT_TACTIC::Typ const* NewCombatTactic)
 {
 	// womögicher Terraformplanet oder Stationsbau zurücknehmen
 	UnsetCurrentOrder();
 	// Rückzugsbefehl zurücknehmen
-	SetCombatTacticAccordingToType();
+	if(NewCombatTactic)
+		m_nCombatTactic = *NewCombatTactic;
+	else
+		SetCombatTacticAccordingToType();
 	// Kann das Schiff überhaupt fliegen?
 	if (m_iSpeed > 0)
 	{
