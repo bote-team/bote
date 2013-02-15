@@ -344,6 +344,28 @@ SHIP_RANGE::Typ CShips::GetRange(bool consider_fleet) const
 	return nRange;
 }
 
+CShips::RETREAT_MODE CShips::CalcRetreatMode() const
+{
+	//check the leader's order; if it retreats, try a complete retreat, if it stays, try a complete stay
+	//otherwise the fleet is disassembled into its single ships
+	RETREAT_MODE result = m_Leader.GetCombatTactic() == COMBAT_TACTIC::CT_RETREAT ?
+		RETREAT_MODE_COMPLETE : RETREAT_MODE_STAY;
+	for(CShips::const_iterator i = begin(); i != end(); ++i) {
+		const COMBAT_TACTIC::Typ tactic = i->second->m_Leader.GetCombatTactic();
+		if(result == RETREAT_MODE_COMPLETE)
+		{
+			if(tactic != COMBAT_TACTIC::CT_RETREAT)
+				return RETREAT_MODE_SPLITTED;
+		}
+		else //result == RETREAT_MODE_STAY
+		{
+			if(tactic == COMBAT_TACTIC::CT_RETREAT)
+				return RETREAT_MODE_SPLITTED;
+		}
+	}
+	return result;
+}
+
 // Funktion berechnet den Schiffstyp der Flotte. Wenn hier nur der selbe Schiffstyp in der Flotte vorkommt,
 // dann gibt die Funktion diesen Schiffstyp zurück. Wenn verschiedene Schiffstypen in der Flotte vorkommen,
 // dann liefert und die Funktion ein -1. Der Parameter der hier übergeben werden sollte ist der this-Zeiger

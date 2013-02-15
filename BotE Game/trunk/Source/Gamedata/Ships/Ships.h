@@ -39,6 +39,13 @@ class CBotEDoc;
 class CShips/* : public CObject*/
 {
 public:
+	enum RETREAT_MODE
+	{
+		RETREAT_MODE_STAY, //none of the ships in this fleet (including leader) retreats
+		RETREAT_MODE_SPLITTED, //some do, some don't
+		RETREAT_MODE_COMPLETE //all, including the leader, retreat
+	};
+
 	//DECLARE_SERIAL (CShips)
 
 	//////////////////////////////////////////////////////////////////////
@@ -227,6 +234,8 @@ public:
 
 	//// Funktion berechnet die Reichweite der Flotte.
 	SHIP_RANGE::Typ GetRange(bool consider_fleet) const;
+
+	RETREAT_MODE CalcRetreatMode() const;
 
 	//// Funktion berechnet den Schiffstyp der Flotte. Wenn hier nur der selbe Schiffstyp in der Flotte vorkommt,
 	//// dann gibt die Funktion diesen Schiffstyp zurück. Wenn verschiedene Schiffstypen in der Flotte vorkommen,

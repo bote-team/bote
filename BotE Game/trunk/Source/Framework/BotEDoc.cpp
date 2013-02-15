@@ -5054,7 +5054,8 @@ void CBotEDoc::CalcShipRetreat() {
 	for(CShipMap::iterator ship = m_ShipMap.begin(); ship != m_ShipMap.end(); ++ship) {
 		const CString& ship_owner = ship->second->GetOwnerOfShip();
 		// Hat das Schiff den Rückzugsbefehl
-		if (ship->second->GetCombatTactic() != COMBAT_TACTIC::CT_RETREAT)
+		const CShips::RETREAT_MODE mode = ship->second->CalcRetreatMode();
+		if(mode == CShips::RETREAT_MODE_STAY)
 			continue;
 
 		// Rückzugssektor für dieses Schiff in diesem Sektor holen
@@ -5071,14 +5072,14 @@ void CBotEDoc::CalcShipRetreat() {
 		if (RetreatSector == mSectorRetreatSectorPairs.end())
 			continue;
 
-		ship->second->Retreat(RetreatSector->second);
-
+		if(ship->second->GetCombatTactic() == COMBAT_TACTIC::CT_RETREAT)
+			ship->second->Retreat(RetreatSector->second);
 		if(!ship->second->HasFleet())
 			continue;
 		// sind alle Schiffe in einer Flotte im Rückzug, so kann die ganze Flotte
 		// in den Rückzugssektor
 		const bool bCompleteFleetRetreat = ship->second->GetSpeed(true) > 0
-			&& ship->second->AllOnTactic(COMBAT_TACTIC::CT_RETREAT);
+			&& mode == CShips::RETREAT_MODE_COMPLETE;
 
 		if (bCompleteFleetRetreat) {
 			const COMBAT_TACTIC::Typ NewCombatTactic = ship->second->GetCombatTactic();
