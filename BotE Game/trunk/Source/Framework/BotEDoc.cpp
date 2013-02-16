@@ -1126,6 +1126,10 @@ void CBotEDoc::GenerateGalaxy()
 	CIniLoader::GetInstance()->ReadValue("Special", "STARDENSITY", nStarDensity);
 	CIniLoader::GetInstance()->ReadValue("Special", "MINORDENSITY", nMinorDensity);
 	CIniLoader::GetInstance()->ReadValue("Special", "ANOMALYDENSITY", nAnomalyDensity);
+	// Bei anderen Galaxieformen die Sternendichte verdoppeln, damit mehr Systeme generiert werden.
+	// Sonst ist die Galaxie doch arg leer.
+	if (nGenerationMode != 0)
+		nStarDensity = min(nStarDensity * 2, 100);
 	MYTRACE("general")(MT::LEVEL_INFO, "relevant only at new game: Bote.ini: STARDENSITY: %i", nStarDensity);
 	MYTRACE("general")(MT::LEVEL_INFO, "relevant only at new game: Bote.ini: MINORDENSITY: %i", nMinorDensity);
 	MYTRACE("general")(MT::LEVEL_INFO, "relevant only at new game: Bote.ini: ANOMALYDENSITY: %i", nAnomalyDensity);

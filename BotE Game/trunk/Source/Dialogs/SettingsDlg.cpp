@@ -164,6 +164,7 @@ BOOL CSettingsDlg::OnInitDialog()
 	m_comboGalaxyshape.AddString("spiral");
 	m_comboGalaxyshape.AddString("ring");
 	m_comboGalaxyshape.AddString("lenticular");
+	m_comboGalaxyshape.AddString("islands");
     int genMode=0;
 	pIni->ReadValue("Special", "GENERATIONMODE", genMode);
 	m_comboGalaxyshape.SetCurSel(genMode);
