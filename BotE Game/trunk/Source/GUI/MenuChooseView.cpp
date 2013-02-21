@@ -310,11 +310,6 @@ void CMenuChooseView::OnInitialUpdate()
 	m_TotalSize.cy = 750;
 
 	m_LastSystem = CPoint(-1,-1);
-
-	bool bHideMenu;
-	CIniLoader::GetInstance()->ReadValue("Control", "HIDEMENUBAR", bHideMenu);
-	if (bHideMenu)
-		GetTopLevelFrame()->SetMenuBarState(AFX_MBS_HIDDEN);
 }
 
 /// Funktion lädt die rassenspezifischen Grafiken.

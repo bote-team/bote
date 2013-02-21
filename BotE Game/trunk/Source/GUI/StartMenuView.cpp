@@ -184,6 +184,9 @@ void CStartMenuView::OnInitialUpdate()
 	// Immer im Vollbild anzeigen
 	resources::pMainFrame->FullScreenMainView(true);
 
+	// Menü zu Beginn nicht anzeigen
+	GetTopLevelFrame()->SetMenuBarState(AFX_MBS_HIDDEN);
+
 	m_TotalSize = CSize(1280, 1024);
 
 	CRect clientRect;

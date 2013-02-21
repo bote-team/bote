@@ -810,6 +810,14 @@ void CBotEDoc::LoadViewGraphics(void)
 		// zum Schluss die Galxieview auswählen (nicht eher, da gibts manchmal Probleme beim Scrollen ganz nach rechts)
 		resources::pMainFrame->SelectMainView(GALAXY_VIEW, pPlayersRace->GetRaceID());
 	}
+
+	// Menü anzeigen bzw. verstecken
+	bool bHideMenu;
+	CIniLoader::GetInstance()->ReadValue("Control", "HIDEMENUBAR", bHideMenu);
+	if (bHideMenu)
+		resources::pMainFrame->SetMenuBarState(AFX_MBS_HIDDEN);
+	else
+		resources::pMainFrame->SetMenuBarState(AFX_MBS_VISIBLE);
 }
 
 void CBotEDoc::DoViewWorkOnNewRound()
