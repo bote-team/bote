@@ -18,7 +18,7 @@
 #define VERSION_INFORMATION			"0.9"	///< anzuzeigende Versionsinformation
 
 // Konsistenzchecks ein/ausschalten (nicht für Release!)
-#define CONSISTENCY_CHECKS					///< anschalten wenn Konsistenzchecks durchgeführt werden sollen
+//#define CONSISTENCY_CHECKS					///< anschalten wenn Konsistenzchecks durchgeführt werden sollen
 
 // --- Feste Größen der Starmap ------------------------------------------------
 extern int STARMAP_SECTORS_HCOUNT;		///< Anzahl der Sektoren horizontal
