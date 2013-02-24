@@ -1,0 +1,384 @@
+Licenses as given at the artists websites:
+
+
+ada_b: Jean-Marc Labal http://www.3djml.com/
+adr_b: sharecg.com
+aih_b: Anderson Felix Soares (sharecg.com)
+ald_b: GlasShadow (FreeOrion)
+ale_b: Fendorin http://s277.photobucket.com/albums/kk75/mrefflame/?start=all (VegaStrike Contributor)
+alem_b: STOCK_BG_34_by_MaureenOlder (deviantart.com)
+and_b0: max-realms.com
+and_b1: Fendorin (VegaStrike)
+ang_b: vjeko1701
+ank_b: Fendorin (VegaStrike)
+ant_b: max-realms.com
+aqi_b0: John Jakob Dietz http://site.jacobcharlesdietz.com/downloads/models/sci-fi-containment-chambers
+aqi_b1: Trashman
+arc_b: Zeleni
+ard_b0: empty_paper_stock (deviantart.com; Creative Commons license)
+ard_b1: Wolfgang Beyer http://commons.wikimedia.org/wiki/File:Mandel_zoom_04_to_05.png
+asz_b: Magneto1969 http://magneto1969-stock.deviantart.com/
+ath_b: Paul Bourke http://commons.wikimedia.org/wiki/File:Icosaedron_fractal.jpg
+azo_b: Kevin Williams
+baa_b: Rob w (sharecg.com)
+baf_b0: STOCK_BG_33_by_MaureenOlder (deviantart.com)
+baf_b1: Pyrosaint_Stox (deviantart.com)
+ban_b: sj2290
+bao_b: CaptainBashir
+baob_b: Ralph Langendam http://commons.wikimedia.org/wiki/File:Fractal_Art_Goud.JPG
+bel_b: rivalin (VegaStrike)
+ben_b0: sj2290
+ben_b1: max-realms.com
+ber_b0: jigalypuff
+ber_b1: vjeko1701
+bit_b: bigh1911 (sharecg.com)
+bon_b0: Fendorin (VegaStrike)
+bon_b1: Dieter Ludmann http://dlspace.de/
+bos_b0: Jean-Marc Labal
+bos_b1: joao (sharecg.com)
+bot_b: Fendorin (VegaStrike)
+bra_b: Fendorin (VegaStrike)
+brac_b: Gendragon (sharecg.com)
+bre_b: Zeleni
+bwa_b: Stasia (sharecg.com; Commercial Renders OK, Contents Not For Redistribution)
+byt_b: Moonchilde_Stock (deviantart.com; Unrestricted Stock)
+cai_b: http://commons.wikimedia.org/wiki/File:Julia_set_(highres_01).jpg
+cal_b: Dieter Ludmann
+can_b0: sj2290
+can_b1: Jean-Marc Labal
+car_107b: Jason Leader "ForeverZ" http://www.turbosquid.com/Search/Index.cfm?FuseAction=ProcessSearch&intStartRow=1&intMediaType=-1&istSearchKey=foreverz
+car_1322: Jason Leader
+car_2331: Jason Leader
+car_2b10: Jason Leader
+car_3442: Zeleni
+car_4453: Jason Leader
+car_b1: http://commons.wikimedia.org/wiki/File:Schönbrunn_Gewächshaus.jpg
+car_b100: Kenneth G. Flanagan
+car_b101: Martin Schemmer http://www.sharecg.com/pf/full_uploads.php?pf_user_name=Ghost
+car_b105: Jason Leader
+car_b106: Fendorin (VegaStrike)
+car_b11: Jason Leader
+car_b111: Kenneth G. Flanagan
+car_b112: Kenneth G. Flanagan
+car_b113: Kenneth G. Flanagan
+car_b114: Kenneth G. Flanagan
+car_b118: Jason Leader
+car_b119: Jason Leader
+car_b12: rivalin (VegaStrike)
+car_b32: Jason Leader
+car_b33: Jason Leader
+car_b43: Jason Leader
+car_b89: Jason Leader
+car_b92: Angelis Jara (sharecg.com)
+car_b92_2: serendigity (sharecg.com)
+car_b93: Jason Leader
+car_b94: Jason Leader
+car_b95: max-realms.com
+car_b96: Jason Leader
+car_b97: Kenneth G. Flanagan
+car_b98: Kenneth G. Flanagan
+car_b99: Kenneth G. Flanagan
+cha_b0: Magneto1969
+cha_b1: Martin Schemmer
+che_b0: sj2290
+che_b1: Kevin Williams
+con_106b: Jason Leader
+con_110b: Jason Leader
+con_114b: Dieter Ludmann
+con_1423: Jason Leader
+con_2432: Jason Leader
+con_2b10: Jason Leader
+con_3543: Jason Leader
+con_4453: Jason Leader
+con_5766: ?
+con_6775: ?
+con_7682: ?
+con_8387: ?
+con_8890: Yee Siang
+con_9293: Jason Leader
+con_9899: Kenneth G. Flanagan
+con_b1: sj2290
+con_b100: Fendorin (VegaStrike)
+con_b101: ?
+con_b102: Jason Leader
+con_b103: Jason Leader
+con_b104: Jason Leader
+con_b105: Artur Grzegorczyn
+con_b11: Jason Leader
+con_b113: Jason Leader
+con_b117: Fendorin (VegaStrike)
+con_b118: Pakled (sharecg.com)
+con_b12: Jean-Marc Labal
+con_b13: Badtiger (sharecg.com)
+con_b33: Jason Leader
+con_b34: Jason Leader
+con_b35: Trashman
+con_b36: Waldemar Barkowski (sharecg.com)
+con_b38: Joao (sharecg.com)
+con_b54: Jason Leader
+con_b55: Zeleni
+con_b56: Jason Leader
+con_b91: Jason Leader
+con_b94: GlasShadow and pd (FreeOrion)
+con_b95: Jason Leader
+con_b96: Jason Leader
+con_b97: Kenneth G. Flanagan
+cor_b: Kevin Williams
+del_b: Magneto1969
+der_b: Kari Kosonen http://www.jessnet2005.com/
+des_b0: BrownzWorX (deviantart.com)
+des_b1: Fran Baker and Terry Barrett http://www.sharecg.com/v/31796/3D-Model/dhamas-Praetorium-for-Bryce5
+dou_b: Waldemar Barkowski (sharecg.com)
+dri_b0: jigalypuff
+dri_b1: Zeleni
+dro_b0: Artur Grzegorczyn
+dro_b1: Fendorin http://vegastrike.sourceforge.net/forums/viewtopic.php?f=4&t=9093 (VegaStrike)
+ehl_b: Stock Photography with Sylvestre fireworks
+ein_b: CaptainBashir
+ela_b: sharecg.com
+ene_b: Steve Kilby
+ene_b_2: Zeleni
+ept_b: Zeleni
+exo_b: Dieter Ludmann
+fal_b: stoner4time (sharecg.com)
+gir_b0: rfalk (sharecg.com; CC Attribution 3.0 license)
+gir_b1: jigalypuff
+gob_b: joao (sharecg.com)
+goods: max-realms.com
+goods2: Fendorin (VegaStrike)
+goods3: Badtiger (sharecg.com)
+goods4: Zeleni
+hak_b: Steve Kilby (planet and starfield background by Kevin Williams)
+han_107b: Jason Leader
+han_111b: Jason Leader
+han_1423: Jason Leader
+han_2432: Jason Leader
+han_2b10: Jason Leader
+han_3543: Jason Leader
+han_4453: Jason Leader
+han_99b1: Kenneth G. Flanagan
+han_b: mysticmorning (deviantart.com)
+han_b1: Josh (FreeOrion.org) and Valcoren (mixed image)
+han_b101: Kenneth G. Flanagan
+han_b102: ?
+han_b11: Jason Leader
+han_b100: Fendorin (VegaStrike)
+han_b103: Jason Leader
+han_b104: Jason Leader
+han_b105: Jason Leader
+han_b118: pd (FreeOrion; www.optisch-edel.de)
+han_b119: Fendorin (VegaStrike)
+han_b120: Zeleni
+han_b121: Fendorin (VegaStrike)
+han_b122: Fendorin (VegaStrike)
+han_b123: Josh (FreeOrion)
+han_b33: Jason Leader
+han_b54: Jason Leader
+han_b89: goshtac (sharecg.com)
+han_b91: rfalk (deviantart; Creative Commons)
+han_b93: Skeeter
+han_b94: Jason Leader
+han_b95: Jason Leader
+han_b96: Jason Leader
+han_b97: Jason Leader
+han_b98: Kenneth G. Flanagan
+haz_b: Kevin Williams
+her_b: goshtac (sharecg.com)
+hir_b0: serendigity (sharecg.com)
+hir_b1: spacebones (sharecg.com)
+hun_b: Dieter Ludmann
+ImageMissing: 
+ird_b: Kevin Williams
+jan_b: Dunkelheit (VegaStrike)
+kae_b: Soler97 (Wikimedia Commons)
+kan_b: Zeleni
+kar_b0: Kevin Williams
+kar_b1: Kevin Williams
+kel_b: Martin Schemmer (sharecg.com)
+ker_b0: alexsr (sharecg.com)
+ker_b1: EvaM (sharecg.com)
+kha_106b: Jason Leader
+kha_110b: Jason Leader
+kha_114b: Jason Leader
+kha_1423: Jason Leader
+kha_2432: Zeleni
+kha_2b10: Jason Leader
+kha_3543: Jason Leader
+kha_4452: Jason Leader
+kha_9091: eliskan_stock (deviantart.com)
+kha_9799: Kenneth G. Flanagan
+kha_b1: Jason Leader
+kha_b100: Kenneth G. Flanagan
+kha_b101: ?
+kha_b11: Jason Leader
+kha_b113: Kenneth G. Flanagan
+kha_b116: Jason Leader
+kha_b117: Jason Leader
+kha_b118: Magneto1969
+kha_b12: Jason Leader
+kha_b33: Jason Leader
+kha_b89: Jason Leader
+kha_b92: Jason Leader
+kha_b93: Jason Leader
+kha_b94: Jason Leader
+kha_b95: Doug Drexler (un-sold artwork)
+kha_b96: jigalypuff
+kla_b: Fendorin (VegaStrike)
+kra_b: psychojoe (deviantart.com)
+kre_b0: Redcap (FreeOrion)
+kre_b1: Kevin Williams
+kry_b: MAGNETO1969_STOCK (deviantart.com)
+kyr_b: Valcoren
+lev_b: Kevin Williams
+lis_b: Kevin Williams
+lok_b: AmicaUlul (sharecg.com; Limited Use With Credits)
+luk_b: Fendorin (VegaStrike)
+mal_b0: rivalin (VegaStrike)
+mal_b1: Dunkelheit (VegaStrike)
+mal_b2: Fendorin (VegaStrike)
+mal_b3: Kevin Williams
+mali_b0: Redcap (FreeOrion)
+mali_b1: Jean-Marc Labal
+mar_b: Esgaroth (sharecg.com)
+mer_b: pd (FreeOrion)
+min_b0: jigalypuff
+min_b1: Fendorin (VegaStrike)
+mir_b: GlasShadow and pd (FreeOrion)
+miry_b: joao (sharecg.com)
+moz_b0: Avalon3D (sharecg.com)
+moz_b1: Fendorin and Dunkelheit (VegaStrike)
+mur_b0: Fendorin (VegaStrike)
+mur_b1: rivalin (VegaStrike)
+nac_b: Gendragon (sharecg.com)
+nes_b: Steve Simmons (sharecg.com)
+nez_b0: Kevin Williams
+nez_b1: Dieter Ludmann
+nor_b0: Fendorin (VegaStrike)
+nor_b1: Dieter Ludmann
+nun_b: pd (FreeOrion)
+nuu_b: pd (FreeOrion)
+nyn_b: Dark Hoffman http://www.rama3d.com/guests.htm
+oko_b0: http://www.graphicdesignclass.com/advanced-school/logo-holder-button-layout/
+oko_b1: Kevin Williams
+ome_105b: Jason Leader
+ome_109b: Kenneth G. Flanagan
+ome_113b: Kenneth G. Flanagan
+ome_1322: Yee Siang http://pws.yeesiang.com/go/system/mod/blog
+ome_1b10: Richard Craig http://www.rcraig-design.co.uk/
+ome_2331: Yee Siang
+ome_3442: bigh1911 (sharecg.com)
+ome_4352: Yee Siang
+ome_9699: Kenneth G. Flanagan
+ome_b1: Yee Siang
+ome_b11: Gendragon www.gendragon.com
+ome_b100: Martin Schemmer
+ome_b105: Fendorin (VegaStrike)
+ome_b116: GlasShadow (FreeOrion)
+ome_b117: max-realms.com
+ome_b12: Jean-Marc Labal
+ome_b32: Jason Leader
+ome_b33: Jason Leader
+ome_b35: Yee Siang
+ome_b36: Jason Leader
+ome_b38: rivalin (VegaStrike)
+ome_b53: Yee Siang
+ome_b54: Yee Siang
+ome_b89: Jason Leader
+ome_b92: Jason Leader
+ome_b93: Kevin Williams
+ome_b94: Yee Siang
+ome_b95: Fendorin (VegaStrike)
+ome_b96: Mr. Hook (Joel A. Hoekstra)
+orl_b: Zeleni
+oss_b: max-realms.com
+pal_b: Steve Kilby
+pam_b0: http://commons.wikimedia.org/wiki/File:Mandelbrot_1-lambda.png
+pam_b1: Peter König
+phi_b: Fendorin (VegaStrike)
+pho_b0: blankfrancine (sharecg.com)
+pho_b1: GlasShadow
+rem_b: Stock Photo and Stock Target Aim Images
+rie_b: Peter König
+rot_107b: Jason Leader
+rot_111b: Jason Leader
+rot_1423: Jason Leader
+rot_2432: Jason Leader
+rot_2b10: Jason Leader
+rot_3543: Jason Leader
+rot_4654: Jason Leader
+rot_98b1: Kenneth G. Flanagan
+rot_b1: Jason Leader
+rot_b102: ?
+rot_b103: Jason Leader
+rot_b104: Jason Leader
+rot_b105: Jason Leader
+rot_b11: Jason Leader
+rot_b114: Zeleni
+rot_b118: Jason Leader
+rot_b119: Jason Leader
+rot_b13: Jason Leader
+rot_b33: Jason Leader
+rot_b34: Jason Leader
+rot_b44: Jason Leader
+rot_b45: Jason Leader
+rot_b55: Jason Leader
+rot_b56: Jason Leader
+rot_b92: Jason Leader
+rot_b95: Jason Leader
+rot_b96: Jason Leader
+rot_b97: Jason Leader
+rot_b99: GlasShadow (FreeOrion)
+rur_b: CaptainBashir
+scy_b0: Kevin Williams
+scy_b1: max-realms.com (and "testbeds" image)
+sev_b: Kevin Williams
+sja_b0: max-realms.com
+sja_b1: Valcoren
+ska_b0: vjeko1701
+ska_b1: max-realms.com
+sto_b: GlasShadow (FreeOrion)
+syt_b: CaptainBashir
+tac_b: pd (FreeOrion)
+tai_b: GlasShadow (FreeOrion)
+tal_b: Dt. Bundesbank
+tar_b: jigalypuff
+tara_b: http://commons.wikimedia.org/wiki/File:DNA_Repair.jpg
+tare_b: Jason Leader
+tari_b: http://www.adobetutorialz.com/content_images/AdobePhotoshop/ART-D/tutorial177/46.jpg
+taro_b0: serendigity (Steve; http://www.sharecg.com/pf/full_uploads.php?pf_user_name=serendigity )
+taro_b1: serendigity
+taru_b: mgatch (sharecg.com)
+tary_b0: Waldemar Barkowski (sharecg.com) 
+tary_b1: Kevin Williams
+tem_b0: Kevin Williams
+tem_b1: Kevin Williams
+thr_b0: serendigity (sharecg.com)
+thr_b1: serendigity (sharecg.com)
+toh_b: Pakled (sharecg.com)
+tor_b: Zeleni
+tuc_b0: whysage (sharecg.com)
+tuc_b1: pd and redcap (FreeOrion)
+ure_b: redcap and josh (FreeOrion)
+vaw_b: Kevin Williams
+ven_b: Jason Leader
+vie_b: Fendorin (VegaStrike)
+vik_b: Steve Kilby
+vor_b: http://commons.wikimedia.org/wiki/File:Ppy-tract-2g4b.png
+vorg_b: magneto1969 (deviantart.com)
+vul_b0: Kevin Williams
+vul_b1: jigalypuff
+wol_b: Kevin Williams
+xan_b: Dieter Ludmann
+xeg_b: Kevin Williams
+xib_b: NikolasL (sharecg.com)
+xyr_b0: http://commons.wikimedia.org/wiki/File:LongjiTerraces.jpg
+xyr_b1: http://commons.wikimedia.org/wiki/File:Jardin_des_Plantes.jpg
+yar_b: http://commons.wikimedia.org/wiki/File:Mouse_cingulate_cortex_neurons.jpg
+yim_b: pd (FreeOrion)
+zar_b0: Waldemar Barkowski (sharecg.com)
+zar_b0_2: Zeleni
+zar_b1: Zeleni
+zet_b0: Kevin Williams
+zet_b1: Kevin Williams
+zho_b: Steve Kilby
+zur_b: http://commons.wikimedia.org/wiki/File:Pagoda_de_Shwemawdaw_en_Pegu_en_Myanmar.JPG

@@ -1,0 +1,2587 @@
+// StringTable für Alpha4+ Version
+////////////////////////// BUTTONS BEGIN///////////////////////////////
+//Hauptmenü
+[PRESENTEDBY]
+www.birth-of-the-empires.de
+[PRESENTED]
+präsentiert ...
+[NEWGAME]
+Neues Spiel
+[MULTIPLAYER]
+Multiplayer
+[LOADGAME]
+Spiel laden
+[SETTINGS]
+Einstellungen
+[LEAVE]
+Beenden
+[CREATEGAME]
+Spiel erstellen
+[JOINGAME]
+Spiel beitreten
+[NEWGAMETT]
+Neues Einzelspieler-Spiel starten
+[MULTIPLAYERTT]
+Ein Multiplayer-Spiel eröffnen oder einem Multiplayer-Spiel beitreten
+[LOADGAMETT]
+Ein gespeichertes Spiel laden
+[SETTINGSTT]
+Spieleinstellungen ändern
+[LEAVETT]
+Das Spiel beenden und Birth of the Empires verlassen
+[CREATEGAMETT]
+Ein neues Multiplayer-Spiel eröffnen
+[JOINGAMETT]
+Einem bestehenden Multiplayer-Spiel beitreten
+[ELIMINATED]
+ausgelöscht
+
+[WARNING]
+Warnung
+[ERROR]
+Fehler
+[SERVERERROR1]
+Verbindung zum Server verloren
+[SERVERERROR2]
+Verbindung zum Server verloren. Das Spiel muss beendet werden.
+[SERVERERROR3]
+Server konnte nicht gestartet werden.
+[SERVERERROR4]
+Es konnte keine Verbindung zum Server hergestellt werden.
+[SERVERERROR5]
+Das Spiel konnte nicht veröffentlicht werden.
+[LOADERROR]
+Der angegebene Spielstand konnte nicht geladen werden.
+
+[PLAYERNAME]
+Spielername:
+[SERVERNAME]
+Servername:
+[PORT]
+Port:
+[PUBLISHLAN]
+Spiel im LAN veröffentlichen
+[SERVERIP]
+IP-Adresse des Servers:
+[SEARCHLANSERVER]
+Suche LAN-Server
+
+[STARTGAME]
+Spiel starten
+[CHOOSEEMPIRE]
+Wähle dein Imperium
+[CHAT]
+Chat
+
+[FOUND_BOTE_SERVERS]
+gefundene BotE-Server:
+[LANSERVERNAME]
+Servername
+[LANSERVERIP]
+IP-Adresse
+
+// left_View Buttons
+[BTN_ROUNDEND]
+Rundenende
+[BTN_GALAXY]
+Galaxie
+[BTN_SYSTEM]
+System
+[BTN_RESEARCH]
+Forschung
+[BTN_SECURITY]
+Geheimdienst
+[BTN_DIPLOMACY]
+Diplomatie
+[BTN_TRADE]
+Handel
+[BTN_EMPIRE]
+Imperium
+
+// MainViewButtons
+[BTN_BUILDMENUE]
+Baumenü
+[BTN_WORKERSMENUE]
+Arbeiter
+[BTN_ENERGYMENUE]
+Energie
+[BTN_BUILDING_OVERVIEWMENUE]
+Bauwerke
+[BTN_TRADEMENUE]
+Handel
+[BTN_BAUHOF]
+Bauhof
+[BTN_DOCKYARD]
+Werft
+[BTN_BARRACK]
+Kaserne
+[BTN_INFORMATION]
+Information
+[BTN_DESCRIPTION]
+Beschreibung
+[BTN_RESOURCES]
+Ressourcen
+[BTN_NORMAL]
+Normal
+
+// Forschungsansichtsbuttons
+[BTN_SPECIAL]
+Spezial
+[BTN_DATABASE]
+Datenbank
+[BTN_SHIPDESIGN]
+Schiffsdesign
+
+// Diplomatiebuttons
+[BTN_TRADECONTRACT]
+Handelsvertrag
+[BTN_FRIENDSHIP]
+Freundschaft
+[BTN_COOPERATION]
+Kooperation
+[BTN_AFFILIATION]
+Bündnis
+[BTN_MEMBERSHIP]
+Mitgliedschaft
+[BTN_NAP]
+Nichtangriff
+[BTN_DEFENCE]
+Verteidigung
+[BTN_WAR]
+Krieg
+[BTN_WARPACT]
+Kriegspakt
+[BTN_PRESENT]
+Geschenk
+[BTN_REQUEST]
+Forderung
+[BTN_CORRUPTION]
+Bestechung
+
+[SORT2]
+Vertrag
+
+// Handelbuttons
+[BTN_STOCK_EXCHANGE]
+Börse
+[BTN_MONOPOLY]
+Monopole
+[BTN_TRANSFERS]
+Transfers
+
+// Buttons in der Imperiumsübersicht
+[BTN_ALL]
+Alle
+[BTN_ECONOMY]
+Wirtschaft
+[BTN_MILITARY]
+Militär
+[BTN_EVENTS]
+Ereignisse
+[BTN_SYSTEMS]
+Systeme
+[BTN_SHIPS]
+Schiffe
+[BTN_CURRENTS]
+Jetzige
+[BTN_LOST]
+Verloren
+
+// Schiffsbefehlsbuttons
+[BTN_MULTI_TURN_ORDER]
+Mehrrundenb.
+[BTN_SINGLE_TURN_ORDER]
+Einrundenbef.
+[BTN_IMMEDIATE_ORDER]
+Sofortbefehl
+[BTN_AVOID]
+Meiden
+[BTN_ATTACK]
+Angreifen
+[BTN_CLOAK]
+Tarnen
+[BTN_ATTACK_SYSTEM]
+Systemangriff
+[BTN_RAID_SYSTEM]
+Systemüberfall
+[BTN_BLOCKADE_SYSTEM]
+Blockade
+[BTN_DESTROY_SHIP]
+Demontage
+[BTN_COLONIZE]
+Kolonisieren
+[BTN_TERRAFORM]
+Terraforming
+[BTN_BUILD_OUTPOST]
+Aussenposten
+[BTN_BUILD_STARBASE]
+Sternenbasis
+[BTN_ASSIGN_FLAGSHIP]
+Flaggschiff
+[BTN_CREATE_FLEET]
+Gruppieren
+[BTN_TRANSPORT]
+Transport
+[BTN_FOLLOW_SHIP]
+Folgen
+[BTN_TRAIN_SHIP]
+Trainieren
+[BTN_WAIT_SHIP_ORDER]
+Warten
+[BTN_SENTRY_SHIP_ORDER]
+Stationieren
+[BTN_REPAIR_SHIP]
+Reparieren
+
+// Entscheidungsbuttons
+[BTN_NEXT]
+vor
+[BTN_BACK]
+zurück
+[BTN_OKAY]
+okay
+[BTN_CANCEL]
+abbrechen
+[BTN_BUY]
+kaufen
+[BTN_SELL]
+verkaufen
+[BTN_SELECT]
+auswählen
+[BTN_SEND]
+abschicken
+[BTN_ACCEPT]
+annehmen
+[BTN_DECLINE]
+ablehnen
+[BTN_ANNUL]
+aufheben
+////////////////////////// BUTTONS END ////////////////////////////////
+
+////////////////////////// STRINGS BEGIN //////////////////////////////
+// Artikel und einzelne Wörter
+[FEMALE_ARTICLE]
+die
+[MASC_ARTICLE]
+der
+[OBJ_ARTICLE]
+das
+[AND]
+und
+[TO]
+an
+[NONE]
+keine
+[NOT]
+nicht
+[NOBODY]
+niemand
+[UNKNOWN]
+unbekannt
+[NAME]
+Name
+[CLASS]
+Klasse
+[POINTS_SHORT]
+Pkt.
+[ROUND]
+Runde
+[ROUNDS]
+Runden
+[SECTOR]
+Sektor
+[SYSTEM]
+System
+[TYPE]
+Typ
+[JOB]
+Auftrag
+[PRODUCTION]
+Produktion
+[STORAGE]
+Lager
+[UNITS]
+Einheiten
+[UNITS_FOR]
+Einheiten für
+[GROWTH]
+Wachstum
+[EXISTING_RES]
+Rohstoffvorkommen
+[RUNS]
+läuft
+[DESTROYED]
+zerstört
+[DISASSEMBLY]
+Demontage
+[COMBAT]
+Kampf
+[COMMODITIES]
+Handelswaren
+[MAX_HABITANTS]
+max Bev.
+[CURRENT_HABITANTS]
+akt Bev.
+
+// Ressourcen- und Produktionsnamen
+[FOOD]
+Nahrung
+[INDUSTRY]
+Industrie
+[ENERGY]
+Energie
+[SECURITY]
+Geheimdienst
+[RESEARCH]
+Forschung
+[TITAN]
+Titan
+[DEUTERIUM]
+Deuterium
+[DURANIUM]
+Duranium
+[CRYSTAL]
+Kristalle
+[IRIDIUM]
+Iridium
+[DERITIUM]
+Deritium
+[CREDITS]
+Credits
+[MORAL]
+Moral
+[MORAL_EMPIREWIDE]
+Moral imperienweit
+
+// Majorrassennamen
+[RACE1]
+Konföderation
+[RACE2]
+Hanuhr
+[RACE3]
+Khayrin
+[RACE4]
+Rotharianer
+[RACE5]
+Cartarer
+[RACE6]
+Omega-Allianz
+
+// Majorrassennamen mit Artikel
+[ARTICLE_RACE1]
+die Konföderation
+[ARTICLE_RACE2]
+die Hanuhr
+[ARTICLE_RACE3]
+die Khayrin
+[ARTICLE_RACE4]
+die Rotharianer
+[ARTICLE_RACE5]
+die Cartarer
+[ARTICLE_RACE6]
+die Omega-Allianz
+
+// Namen der einzelnen Imperien
+[RACE1_EMPIRE]
+Terranische Konföderation
+[RACE2_EMPIRE]
+Hanuhr-Handelsunion
+[RACE3_EMPIRE]
+Khayrin-Imperium
+[RACE4_EMPIRE]
+Rotharianischer Sternenverbund
+[RACE5_EMPIRE]
+Cartarer-Invasoren
+[RACE6_EMPIRE]
+Omega-Allianz
+
+// Namen der einzelnen Imperien mit Artikel
+[ARTICLE_RACE1_EMPIRE]
+die Terranische Konföderation
+[ARTICLE_RACE2_EMPIRE]
+die Hanuhr-Handelsunion
+[ARTICLE_RACE3_EMPIRE]
+das Khayrin-Imperium
+[ARTICLE_RACE4_EMPIRE]
+der Rotharianische Sternenverbund
+[ARTICLE_RACE5_EMPIRE]
+die Cartarer-Invasoren
+[ARTICLE_RACE6_EMPIRE]
+die Omega-Allianz
+
+// Namen der einzelnen Imperien mit bestimmten Artikel
+[TO_RACE1_EMPIRE]
+der Terranische Konföderation
+[TO_RACE2_EMPIRE]
+der Hanuhr-Handelsunion
+[TO_RACE3_EMPIRE]
+dem Khayrin-Imperium
+[TO_RACE4_EMPIRE]
+dem Rotharianischen Sternenverbund
+[TO_RACE5_EMPIRE]
+den Cartarer-Invasoren
+[TO_RACE6_EMPIRE]
+der Omega-Allianz
+
+[RACE1_PREFIX]
+con_
+[RACE2_PREFIX]
+han_
+[RACE3_PREFIX]
+kha_
+[RACE4_PREFIX]
+rot_
+[RACE5_PREFIX]
+car_
+[RACE6_PREFIX]
+ome_
+
+// Meldungen
+[STATION_BUILDING]
+bau der § zu §% abgeschlossen
+[NO_DIPLOMATIC_NEWS]
+keine diplomatischen Nachrichten vorhanden
+[BUILDING_TURN_OFF]
+Einrichtungen im System § wurden wegen Energiemangel abgeschaltet
+[REBELLION_IN_SYSTEM]
+Das System § hat sich von Ihrem Imperium losgesagt
+[MINOR_CANCELS_MEMBERSHIP]
+Die § haben die Mitgliedschaft bei uns beendet
+[FAMINE]
+Hungersnot im § System
+[ENOUGH_HABITANTS_FOR_NEW_TRADEROUTE]
+Das § System hat genug Bevölkerung für eine neue Handelsroute
+[LOST_ONE_TRADEROUTE]
+Wir haben eine Handelsroute im § System verloren
+[LOST_TRADEROUTES]
+Wir haben § Handelsrouten im § System verloren
+[NOT_ENOUGH_WORKER]
+Arbeitermangel im § System
+[NOT_ENOUGH_ENERGY]
+nicht genug Energie im § System
+[SHIP_BUILDING_FINISHED]
+Ein § hat die Werft im § System verlassen
+[EMPTY_BUILDLIST]
+Bauliste im § System ist leer
+[WE_GET_MONOPOLY]
+Wir haben das Monopol auf § erhalten
+[WE_DONT_GET_MONOPOLY]
+Wir haben das Monopol auf § nicht erhalten
+[SOMEBODY_GET_MONOPOLY]
+§ hat das Monopol auf § erhalten
+[FOUND_COLONY_MESSAGE]
+Wir haben eine neue Kolonie im §-System gegründet
+[NEW_PLANET_COLONIZED]
+Wir haben weitere Planeten im §-System kolonisiert
+[COLONIZATION]
+Kolonisierung
+[TERRAFORMING_FINISHED]
+Terraforming im §-System abgeschlossen
+[TERRAFORMING_POINTS_WASTED]
+Im §-System wird eine Flotte voraussichtlich § Terraformpunkte verschwenden
+[OUTPOST_FINISHED]
+Ein neuer Aussenposten wurde errichtet
+[STARBASE_FINISHED]
+Eine neue Sternbasis wurde errichtet
+[OUTPOST_CONSTRUCTION]
+Aussenpostenbau
+[STARBASE_CONSTRUCTION]
+Sternbasisbau
+[ASSIGN_FLAGSHIP_MESSAGE]
+Die § (§) wurde zum Flaggschiff ernannt
+[GET_CONTACT_TO_MINOR]
+Wir haben die § in Sektor § kennengelernt
+[GET_CONTACT_TO_MAJOR]
+Wir haben die § in Sektor § getroffen
+
+// Baumenü
+[UPGRADING]
+Ausbau zu §
+[UPGRADE_FROM_TO]
+Ausbau von § zu §
+[BUILD_COSTS]
+Industrie- und Rohstoffkosten
+[BUY_UPGRADE]
+Kauf des Upgrades § zu §?
+[BUY_BUILDING]
+Kauf von §?
+[BUY_SHIP]
+Kauf eines §s der §-Klasse?
+[CREDITS_COSTS]
+Kosten: § Credits
+[CANCEL_PROJECT]
+Projekt abbrechen? Aufgebrachte Rohstoffe können teilweise verloren gehen!
+[BUILDING_FINISH]
+§ wurde im System § fertiggestellt
+[UPGRADE_FINISH]
+Ausbau zu § wurde im System § fertiggestellt
+[RELATIVE_PROFIT]
+relativer Gewinn
+[NUMBER_OF_UPGRADEABLE_BUILDINGS]
+Anzahl an upgradebarer Bauwerke
+
+// Arbeiterzuweisungsmenü
+[WORKERS_MENUE]
+Arbeiterzuweisung in
+[YIELD]
+Ertrag
+[FREE_WORKERS]
+freie Arbeiter
+[WORKERS_ACTIVE]
+(§ aktiv)
+[SYSTEM_STORAGE_INFO]
+Systemlager § von §
+[SYSTEM_STORAGE_INFO_PERCENT]
+, §% voll
+
+// Gebäudeübersichtsmenü
+[BUILDING_OVERVIEW_MENUE]
+Liste aller Bauwerke in
+[TALON]
+Abriss
+
+// Energiemenü
+[ENERGY_MENUE]
+Energiezuteilung in
+[USABLE_ENERGY]
+nutzbare Energie
+
+
+// Prdouktionsboni und sonstige Boni
+[TITAN_BONUS]
+Titanbonus
+[DEUTERIUM_BONUS]
+Deuteriumbonus
+[DURANIUM_BONUS]
+Duraniumbonus
+[CRYSTAL_BONUS]
+Kristallbonus
+[IRIDIUM_BONUS]
+Iridiumbonus
+[DERITIUM_BONUS]
+Deritiumbonus
+[CREDITS_BONUS]
+Creditsbonus
+[FOOD_BONUS]
+Nahrungsbonus
+[INDUSTRY_BONUS]
+Industriebonus
+[ENERGY_BONUS]
+Energiebonus
+[SECURITY_BONUS]
+Sicherheitsbonus
+[RESEARCH_BONUS]
+Forschungsbonus
+[MORAL_BONUS]
+Moralbonus
+[BONUS_TO_ALL_RES]
+Ressourcenbonus
+[TECHNIC_BONUS]
+Technikbonus
+[BIOTECH_BONUS]
+Biotechbonus
+[ENERGYTECH_BONUS]
+Energietechbonus
+[COMPUTERTECH_BONUS]
+Computertechbonus
+[PROPULSIONTECH_BONUS]
+Antriebstechbonus
+[CONSTRUCTIONTECH_BONUS]
+Bautechbonus
+[WEAPONTECH_BONUS]
+Waffentechbonus
+[COMPLETE_SECURITY_BONUS]
+Geheimdienstbonus
+[SPY_BONUS]
+Spionagebonus
+[SABOTAGE_BONUS]
+Sabotagebonus
+[INNER_SECURITY_BONUS]
+Bonus auf innere Sicherheit
+[ECONOMY_SPY_BONUS]
+Wirtschaftsspionagebonus
+[ECONOMY_SABOTAGE_BONUS]
+Wirtschaftssabotagebonus
+[RESEARCH_SPY_BONUS]
+Forschungsspionagebonus
+[RESEARCH_SABOTAGE_BONUS]
+Forschungssabotagebonus
+[MILITARY_SPY_BONUS]
+Militärspionagebonus
+[MILITARY_SABOTAGE_BONUS]
+Militärsabotagebonus
+[SHIPYARD]
+Schiffswerft
+[MAX_SHIPSIZE]
+max. Schiffsgrösse
+[SHIPYARD_EFFICIENCY]
+Werfteffizienz
+[BARRACK]
+Kaserne
+[BARRACK_EFFICIENCY]
+Kaserneneffizienz
+[SHIELDPOWER]
+Schildstärke
+[SHIELDPOWER_BONUS]
+Schildstärkebonus
+[SHIPDEFEND]
+Schiffsabwehr
+[SHIPDEFEND_BONUS]
+Schiffsabwehrbonus
+[GROUNDDEFEND]
+Bodenabwehr
+[GROUNDDEFEND_BONUS]
+Bodenabwehrbonus
+[SCANPOWER]
+Scannerstärke
+[SCANPOWER_BONUS]
+Scanstärkenbonus
+[SCANRANGE]
+Scannerreichweite
+[SCANRANGE_BONUS]
+Scanreichweitenbonus
+[SHIPTRAINING]
+Schiffstraining
+[TROOPTRAINING]
+Truppentraining
+[RESISTANCE]
+Bestechungsresistance
+[ADDED_TRADEROUTES]
+weitere Handelsrouten
+[INCOME_ON_TRADEROUTES]
+Einkommen auf Handelsr.
+[SHIPRECYCLING]
+Schiffsrecycling
+[BUILDING_BUILDSPEED]
+Gebäudebaugeschw.
+[UPGRADE_BUILDSPEED]
+Upgradebaugeschw.
+[SHIP_BUILDSPEED]
+Schiffsbaugeschw.
+[TROOP_BUILDSPEED]
+Truppenbaugeschw.
+
+// Voraussetzungen beim Gebäudebau
+[PREREQUISITES]
+Voraussetzungen
+[ONCE_PER_EMPIRE]
+einmal im Imperium
+[MAX_PER_EMPIRE]
+max § im Imperium
+[MAX_ID_PER_EMPIRE]
+max § § im Imperium
+[ONCE_PER_SYSTEM]
+einmal im System
+[MAX_PER_SYSTEM]
+max § im System
+[MAX_ID_PER_SYSTEM]
+max § § im System
+[MIN_PER_EMPIRE]
+§ § im Imperium
+[MIN_PER_SYSTEM]
+§ § im System
+[ONLY_HOMEPLANET]
+nur Heimatplanet
+[ONLY_OWN_COLONY]
+nur eigene Kolonie
+[ONLY_TAKEN_SYSTEM]
+nur erobertes System
+[NEED_MIN_HABITANTS]
+mindst. § Bevölkerung
+[NEED_WORKER]
+benötigt Arbeiter
+
+// erfolgreiche Forschungsmeldungen
+[BIO_FINISHED]
+Unsere Forscher haben Fortschritte in der Biogenetik gemacht
+[ENERGY_FINISHED]
+Unsere Forscher haben Fortschritte in der Energietechnik gemacht
+[COMPUTER_FINISHED]
+Unsere Forscher haben Fortschritte in der Computertechnik gemacht
+[PROPULSION_FINISHED]
+Unsere Forscher haben Fortschritte in der Antriebstechnik gemacht
+[CONSTRUCTION_FINISHED]
+Unsere Forscher haben Fortschritte in der Bautechnik gemacht
+[WEAPON_FINISHED]
+Unsere Forscher haben Fortschritte in der Waffentechnik gemacht
+[SPECIAL_FINISHED]
+Wir haben die Forschung an einem Spezialgebiet erfolgreich abgeschlossen
+[SPECIAL_READY]
+Die Forschung in einem Spezialgebiet kann beginnen
+
+// Anzeigen im Forschungsmenü
+[RESEARCH_MENUE]
+Forschungsübersicht
+[SPECIAL_RESEARCH]
+Spezialforschung
+[NO_SPECIAL_RESEARCH_AVAILABLE]
+Keine Spezialforschung zur Auswahl
+[BIOTECH]
+Biogenetik
+[ENERGYTECH]
+Energietechnik
+[COMPUTERTECH]
+Computertechnik
+[PROPULSIONTECH]
+Antriebstechnik
+[CONSTRUCTIONTECH]
+Bautechnik
+[WEAPONTECH]
+Waffentechnik
+[RESEARCH_BONI]
+Forschungsboni
+[BIOTECH_SHORT]
+Biogenetik
+[ENERGYTECH_SHORT]
+Energie
+[COMPUTERTECH_SHORT]
+Computer
+[PROPULSIONTECH_SHORT]
+Antrieb
+[CONSTRUCTIONTECH_SHORT]
+Bautechnik
+[WEAPONTECH_SHORT]
+Waffen
+[LEVEL]
+Stufe
+[PROGRESS]
+Fortschritt
+[ASSIGNMENT]
+Zuweisung
+[RESEARCHPOINTS]
+Forschungspunkte
+[FP]
+FP
+[TOTAL]
+gesamt
+[LOCKED]
+gesperrt
+[UNLOCKED]
+entsperrt
+
+// Diplomatiemenü
+[DIPLOMACY_MENUE_INFO]
+Diplomatieübersicht - Rasseninformation
+[DIPLOMACY_MENUE_OFFERS]
+Diplomatieübersicht - unsere Angebote
+[DIPLOMACY_MENUE_RECEIPTS]
+Diplomatieübersicht - Angebote an uns
+[INFORMATION]
+Information
+[OFFER]
+Angebot
+[RECEIPT]
+Eingang
+[HOMESYSTEM]
+Heimatsystem
+[RELATIONSHIP]
+Beziehung
+[ACCEPTANCE]
+Akzeptanz
+[KNOWN_EMPIRES]
+bekannte Imperien
+[NO_SPECS]
+keine Angaben
+[RESOURCE_FROM]
+Ressource aus
+[CHOOSE_OFFER]
+Wählen Sie ein Angebot aus
+[PAYMENT]
+Zahlung
+[TRANSFER]
+Transfer
+[RESOURCE]
+Ressource
+[FROM_SYSTEM]
+aus System
+[ENEMY]
+Gegner
+[CONTRACT_DURATION]
+Vertragsdauer
+[UNLIMITED]
+unbegrenzt
+[WARPACT_ENEMY]
+Kriegsgegner
+
+// Beziehungsadjektive
+[HATEFUL]
+verhasst
+[FURIOUS]
+aufgebracht
+[HOSTILE]
+feindlich
+[ANGRY]
+verärgert
+[NOT_COOPERATIVE]
+nicht kooperativ
+[NEUTRAL]
+neutral
+[COOPERATIVE]
+kooperativ
+[FRIENDLY]
+freundlich
+[OPTIMISTIC]
+angetan
+[ENTHUSED]
+begeistert
+[DEVOTED]
+ergeben
+[REBELLIOUS]
+rebellisch
+[APATHETIC]
+apathisch
+[SATISFIED]
+zufrieden
+[PLEASED]
+erfreut
+[LOYAL]
+loyal
+[FANATIC]
+fanatisch
+
+// Anzahl Ressourcen auf Minorracesystem
+[SCARCELY_EXISTING]
+kaum vorhanden
+[VERY_LESS_EXISTING]
+sehr wenig vorhanden
+[LESS_EXISTING]
+wenig vorhanden
+[MODERATE_EXISTING]
+mässig vorhanden
+[MUCH_EXISTING]
+viel vorhanden
+[VERY_MUCH_EXISTING]
+sehr viel vorhanden
+[ABOUNDING_EXISTING]
+im Überfluss vorhanden
+
+// Vertragsnamen
+[TRADE_AGREEMENT]
+Handelsvertrag
+[TRADE_AGREEMENT_SHORT]
+Handel
+[FRIENDSHIP]
+Freundschaftsvertrag
+[FRIENDSHIP_SHORT]
+Freundschaft
+[COOPERATION]
+Kooperation
+[AFFILIATION]
+Bündnis
+[MEMBERSHIP]
+Mitgliedschaft
+[NON_AGGRESSION]
+Nichtangriffspakt
+[NON_AGGRESSION_SHORT]
+Nichtangriff
+[DEFENCE_PACT]
+Verteidigungspakt
+[WAR]
+Krieg
+[WAR_PACT]
+Kriegspakt
+[REQUEST]
+Forderung
+[PRESENT]
+Geschenk
+[CORRUPTION]
+Bestechnung
+[SUGGESTION]
+Vorschlag
+[ANSWER]
+Antwort
+[SUBJUGATED]
+Unterworfen
+
+// Vertragsangebote
+[TRADE_AGREEMENT_OFFER]
+Handelsvertragsangebot
+[FRIENDSHIP_OFFER]
+Freundschaftsangebot
+[COOPERATION_OFFER]
+Kooperationsangebot
+[AFFILIATION_OFFER]
+Bündnisangebot
+[MEMBERSHIP_OFFER]
+Mitgliedschaftsangebot
+[NON_AGGRESSION_OFFER]
+Nichtangriffspaktangebot
+[DEFENCE_PACT_OFFER]
+Verteidigungspaktvorschlag
+[WAR_OFFER]
+Kriegserklärung
+[WAR_PACT_OFFER]
+Kriegspaktvorschlag
+
+// Vertragsnamen mit bestimmten Artikel
+[TRADE_AGREEMENT_WITH_ARTICLE]
+einen Handelsvertrag
+[FRIENDSHIP_WITH_ARTICLE]
+einen Freundschaftsvertrag
+[COOPERATION_WITH_ARTICLE]
+eine Kooperation
+[AFFILIATION_WITH_ARTICLE]
+ein Bündnis
+[MEMBERSHIP_WITH_ARTICLE]
+eine Mitgliedschaft
+[NON_AGGRESSION_WITH_ARTICLE]
+einen Nichtangriffspakt
+[DEFENCE_PACT_WITH_ARTICLE]
+einen Verteidigungspakt
+[WAR_PACT_WITH_ARTICLE]
+einen Kriegspakt gegen die §
+[REQUEST_WITH_ARTICLE]
+eine Forderung
+
+// An- oder Ablehnung eines bestimmten Vertrages
+[ACCEPT_TRADE_AGREEMENT]
+Annahme des Handelsvertrages
+[DECLINE_TRADE_AGREEMENT]
+Ablehnung des Handelsvertrages
+[ACCEPT_FRIENDSHIP]
+Annahme des Freundschaftsangebots
+[DECLINE_FRIENDSHIP]
+Ablehnung des Freundschaftsangebots
+[ACCEPT_COOPERATION]
+Annahme des Kooperationsvorschlags
+[DECLINE_COOPERATION]
+Ablehnung des Kooperationsvorschlags
+[ACCEPT_AFFILIATION]
+Annahme des Bündnisvorschlags
+[DECLINE_AFFILIATION]
+Ablehnung des Bündnissvorschlags
+[ACCEPT_MEMBERSHIP]
+Annahme des Mitgliedschaftsangebots
+[DECLINE_MEMBERSHIP]
+Ablehnung des Mitgliedschaftsangebots
+[ACCEPT_NON_AGGRESSION]
+Annahme des Nichtangriffspaktes
+[DECLINE_NON_AGGRESSION]
+Ablehnung des Nichtangriffspaktes
+[ACCEPT_DEFENCE_PACT]
+Annahme des Verteidigungspaktes
+[DECLINE_DEFENCE_PACT]
+Ablehnung des Verteidigungspaktes
+[ACCEPT_WARPACT]
+Annahme des Kriegspaktes
+[DECLINE_WARPACT]
+Ablehnung des Kriegspaktes
+[ACCEPT_REQUEST]
+Annahme der Forderung
+[DECLINE_REQUEST]
+Ablehnung der Forderung
+[ACCEPT_CORRUPTION]
+Annahme des Bestechungsversuches
+[DECLINE_CORRUPTION]
+Ablehnung des Bestechungsversuches
+
+// Minorrace Diplomatieaktionen
+[MIN_ACCEPT_OFFER]
+schliessen § mit § ab
+[MIN_DECLINE_OFFER]
+Die § haben unser Angebot: § abgelehnt
+[WE_DECLINE_MIN_OFFER]
+Wir haben § der § abgelehnt
+[OUR_MIN_OFFER]
+bietet dem Volk der § § an
+[OUR_MIN_OFFER_WAR]
+erklaert dem Volk der § den Krieg
+[WE_DECLARE_WAR_TO_MIN]
+Wir haben dem Volk der § den Krieg erklärt
+[TRY_CORRUPTION]
+versucht die § zu bestechen
+[CANCEL_CONTRACT]
+kündigt den Vertrag mit dem Volk der §
+
+// Majorrace Diplomatieaktionen
+[WE_ACCEPT_MAJ_OFFER]
+Wir schliessen § mit § ab
+[WE_DECLINE_MAJ_OFFER]
+Wir haben § der § abgelehnt
+[MAJ_ACCEPT_OFFER]
+§ hat unseren § angenommen
+[MAJ_DECLINE_OFFER]
+§ hat unseren § abgelehnt
+[NOT_REACTED]
+§ hat nicht auf unser Angebot reagiert
+[WE_GET_MAJ_OFFER]
+§ schlaegt uns § vor
+[WE_MAKE_MAJ_OFFER]
+Wir haben § § vorgeschlagen
+[WE_GET_PRESENT]
+§ hat uns ein Geschenk gemacht
+[WE_GIVE_PRESENT]
+Wir haben § ein Geschenk gemacht
+[WE_GET_REQUEST]
+§ stellt § an uns
+[WE_HAVE_REQUEST]
+Wir stellen § §
+[WE_ACCEPT_REQUEST]
+Wir haben die Forderung § erfüllt
+[OUR_REQUEST_ACCEPT]
+§ hat unsere Forderung angenommen
+[WE_DECLINE_REQUEST]
+Wir haben die Forderung § abgelehnt
+[OUR_REQUEST_DECLINE]
+§ hat unsere Forderung abgelehnt
+[NOT_REACTED_REQUEST]
+§ hat nicht auf unsere Forderung reagiert
+[WE_GET_WAR]
+§ hat uns den Krieg erklärt
+[WE_DECLARE_WAR]
+Wir haben § den Krieg erklärt
+[WE_ACCEPT_WARPACT]
+Wir schliessen einen Kriegspakt gegen die § mit § ab
+[OUR_WARPACT_ACCEPT]
+§ hat unseren Kriegspakt gegen die § angenommen
+[WE_DECLINE_WARPACT]
+Wir haben den Kriegspakt § gegen die § abgelehnt
+[OUR_WARPACT_DECLINE]
+§ hat unseren Kriegspakt gegen die § abgelehnt
+[NOT_REACTED_WARPACT]
+§ hat nicht auf unseren Kriegspakt gegen die § reagiert
+
+// sonstige Diplomatieaktionen
+[WAR_TO_PARTNER]
+hat unserem Bündnispartner (§) den Krieg erklärt
+[WAR_TO_US_AS_PARTNER]
+hat dadurch uns den Krieg erklärt
+[CONTRACT_ENDED]
+Der § mit § ist abgelaufen
+[DEFENCE_PACT_ENDED]
+Der Verteidigungspakt mit § ist abgelaufen
+[TRYED_CORRUPTION]
+§ hat versucht die § zu bestechen
+
+// Angebote von Minorraces
+[MIN_OFFER_TRADE]
+Die § bieten uns einen Handelsvertrag an
+[MIN_OFFER_FRIEND]
+Die § machen uns ein Freundschaftsangebot
+[MIN_OFFER_COOP]
+Die § bieten uns eine Kooperation an
+[MIN_OFFER_AFFI]
+Die § bieten uns ein Bündnis an
+[MIN_OFFER_MEMBER]
+Die § bieten uns ihre Mitgliedschaft an
+[MIN_OFFER_WAR]
+Die § erklären uns den Krieg
+
+// Mitgifte bei Angeboten an eine Minorrace
+[CREDITS_PRESENT]
+hat § Credits an die § uebergeben
+[TITAN_PRESENT]
+hat § Tonnen Titan an die § uebergeben
+[DEUTERIUM_PRESENT]
+hat § Liter Deuterium an die § uebergeben
+[DURANIUM_PRESENT]
+hat § Tonnen Duranium an die § uebergeben
+[CRYSTAL_PRESENT]
+hat § Tonnen Kristalle an die § uebergeben
+[IRIDIUM_PRESENT]
+hat § Tonnen Iridium an die § uebergeben
+[DERITIUM_PRESENT]
+hat § Kg Deritium an die § uebergeben
+
+// Mitgifte bei Angeboten an Majorraces
+[UNLIMITED_CONTRACT_DURATION]
+§ Die Vertragsdauer soll unbegrenzt sein.
+[LIMITED_CONTRACT_DURATION]
+§ Die Vertragsdauer soll § Runden betragen.
+[TITAN_REQUEST]
+und § Tonnen Titan
+[DEUTERIUM_REQUEST]
+und § Liter Deuterium
+[DURANIUM_REQUEST]
+und § Tonnen Duranium
+[CRYSTAL_REQUEST]
+und § Tonnen Kristalle
+[IRIDIUM_REQUEST]
+und § Tonnen Iridium
+[EXTRA_CREDITS]
+§ Als kleiner Anreiz soll dieses Geschenk in Hoehe von § Credits gelten.
+[EXTRA_TITAN]
+§ Ausserdem schenken wir Ihnen § Tonnen Titan.
+[EXTRA_DEUTERIUM]
+§ Ausserdem schenken wir Ihnen § Liter Deuterium.
+[EXTRA_DURANIUM]
+§ Ausserdem schenken wir Ihnen § Tonnen Duranium.
+[EXTRA_CRYSTAL]
+§ Ausserdem schenken wir Ihnen § Tonnen Kristalle.
+[EXTRA_IRIDIUM]
+§ Ausserdem schenken wir Ihnen § Tonnen Iridium.
+
+// Kündigungen bei Minorraceverträgen von Seiten der Minorraces
+[CANCEL_TRADE_AGREEMENT]
+Die § kündigten unseren Handelsvertrag
+[CANCEL_FRIENDSHIP]
+Die § kündigten unseren Freundschaftsvertrag
+[CANCEL_COOPERATION]
+Die § kündigten unsere Kooperation
+[CANCEL_AFFILIATION]
+Die § kündigten unser Bündnis
+[CANCEL_MEMBERSHIP]
+Die § kündigten ihre Mitgliedschaft
+[CORRUPTION_SUCCESS]
+Die Bestechung der § war erfolgreich
+[CORRUPTION_FAILED]
+Die Bestechung der § war nicht erfolgreich
+
+// Kündigung eines Vertrages von uns aus
+[CANCEL_AGREEMENT]
+Kündigung eines Abkommens
+[CANCEL_AGREEMENT_TEXT]
+Das laufende Abkommen "§", welches wir mit dem Volk der § aktuell aufrechterhalten, soll von unserer Seite aus sofort gekündigt werden!
+
+// Handelsmenü
+[GLOBAL_TRADE_MENUE]
+globale Handelsbörse
+[TRADE_IN_SYSTEM]
+System in welchem die Handelsaktivitäten stattfinden
+[ALL_PRICES_INCL_TAX]
+Alle Preise sind inklusive §% Handelssteuer
+[REPEAT_ACTIVITY]
+Wie oft soll die Handelsaktivität wiederholt werden?
+[MIN_PRICE]
+Minimalpreis:
+[AVERAGE_PRICE]
+Durchschnitt:
+[MAX_PRICE]
+Maximalpreis:
+[CURRENT_PRICE]
+aktueller Kurs für 100 Einheiten
+[STORAGE_QUANTUM]
+Lagermenge
+[MONOPOLIST]
+Monopolist
+[MONOPOLY_MENUE]
+Handelsmonopole
+[MONOPOLY_OWNER]
+Monopolbesitzer
+[MONOPOLY_COSTS]
+Monopolkosten
+[NO_MONOPOLY_BUY]
+Ein Monopolerwerb ist derzeit nicht möglich. Erweitern sie zuerst ihre Handelsaktivitäten
+[TRADE_TRANSFER_MENUE]
+anstehender Ressourcentransfer
+[TRANSFERS_NEXT_ROUND]
+folgende Transfers finden nächste Runde im System § statt:
+
+// Imperiumsmenü
+[NEWS_MENUE]
+Nachrichten und Informationen
+[SYSTEM_OVERVIEW_MENUE]
+Übersicht aller Systeme
+[SHIP_OVERVIEW_MENUE]
+Übersicht aller Schiffe
+[CONSTRUCT]
+Bau
+[CURRENT_PLACE]
+akt. Ort
+[EXPERIANCE_SHORT]
+Erf.
+[STATUS]
+Status
+[LOST]
+lost
+[EVENT]
+Ereignis
+[SHIPS_TOTAL]
+Schiffe total
+[SHIPS_LOST]
+Schiffe verloren
+
+// Flottenmenü
+[FLEET_MENUE]
+Flottenzusammenstellung
+[WHAT_SHIPS_TO_FLEET]
+Welche Schiffe sollen zur Flotte hinzugefügt werden
+[WHAT_SHIPS_FROM_FLEET]
+Welche Schiffe sollen aus der Flotte entlassen werden
+[ALL_SHIPS]
+alle Schiffe
+
+////////////////////////// STRINGS END ////////////////////////////////
+
+////////////////////////// SHIPS BEGIN ////////////////////////////////
+// Schiffsbefehle
+[AVOID_ORDER]
+Meiden
+[ATTACK_ORDER]
+Angreifen
+[CLOAK_ORDER]
+Tarnen
+[ATTACK_SYSTEM_ORDER]
+Systemangriff
+[RAID_SYSTEM_ORDER]
+Systemüberfall
+[BLOCKADE_SYSTEM_ORDER]
+Blockade
+[DESTROY_SHIP_ORDER]
+Demontage
+[COLONIZE_ORDER]
+Kolonisieren
+[TERRAFORM_ORDER]
+Terraforming
+[BUILD_OUTPOST_ORDER]
+Aussenposten
+[BUILD_STARBASE_ORDER]
+Sternbasis
+[ASSIGN_FLAGSHIP_ORDER]
+Flaggschiff
+[CREATE_FLEET_ORDER]
+Gruppieren
+[TRANSPORT_ORDER]
+Transport
+[FOLLOW_SHIP_ORDER]
+Folgen
+[TRAIN_SHIP_ORDER]
+Trainieren
+[WAIT_SHIP_ORDER]
+Warten
+[SENTRY_SHIP_ORDER]
+Stationieren
+[REPAIR_SHIP_ORDER]
+Reparieren
+[IMPROVE_SHIELDS_SHIP_ORDER]
+Schilde verbessern
+[NO_SHIP_ORDER]
+Nichts
+
+// Schiffstypen, Einzahl
+[TRANSPORTER]
+Transportschiff
+[COLONIZESHIP]
+Kolonieschiff
+[PROBE]
+Sonde
+[SCOUT]
+Aufklärer
+[FIGHTER]
+Jäger
+[FRIGATE]
+Fregatte
+[DESTROYER]
+Zerstörer
+[CRUISER]
+Kreuzer
+[HEAVY_DESTROYER]
+Schwerer Zerstörer
+[HEAVY_CRUISER]
+Schwerer Kreuzer
+[BATTLESHIP]
+Kampfschiff
+[DREADNOUGHT]
+Schlachtschiff
+[OUTPOST]
+Aussenposten
+[STARBASE]
+Sternbasis
+[ALIEN]
+Weltraummonster
+
+// Schiffstypen, Plural
+[TRANSPORTERS]
+Transportschiffe
+[COLONIZESHIPS]
+Kolonieschiffe
+[PROBES]
+Sonden
+[SCOUTS]
+Aufklärer
+[FIGHTERS]
+Jäger
+[FRIGATES]
+Fregatten
+[DESTROYERS]
+Zerstörer
+[CRUISERS]
+Kreuzer
+[HEAVY_DESTROYERS]
+Schwere Zerstörer
+[HEAVY_CRUISERS]
+Schwere Kreuzer
+[BATTLESHIPS]
+Kampfschiffe
+[DREADNOUGHTS]
+Schlachtschiffe
+[OUTPOSTS]
+Aussenposten
+[STARBASES]
+Sternbasen
+[ALIENS]
+Schiffe
+
+// Schiffseigenschaften
+[SPEED]
+Geschwindigkeit
+[RANGE]
+Reichweite
+[SHORT]
+kurz
+[MIDDLE]
+mittel
+[LONG]
+lang
+[SHIELDS]
+Schilde
+[HULL]
+Hülle
+[CAPACITY]
+Kapazität
+[INTEGRITY]
+Integrität
+[ARMAMENT]
+Bewaffnung
+[DOUBLE_HULL_ARMOUR]
+doppelhüllenpanzerung
+[HULL_ARMOR]
+panzerung
+
+// Schiffsbeschreibung in View4
+[SHIP]
+Schiff
+[SHIPS]
+Schiffe
+[GROUP]
+Gruppe
+[MIXED_FLEET]
+gemischte Flotte
+[TARGET]
+Ziel
+[NO_TARGET]
+Ziel: keins
+[UNKNOWN_TARGET]
+Ziel: unbekannt
+[ORDER]
+Befehl
+[COMBAT_BEHAVIOR]
+Kampfverhalten
+[SET_MOVEMENT_TARGET]
+Bewegungsziel setzen
+////////////////////////// SHIPS END //////////////////////////////////
+
+
+
+
+////////////////////// NACH ALPHA1 GEÄNDERT /////////////////////////////
+// [MAX_SHIPTYPE] -> [MAX_SHIPSIZE]
+// deleted all Torpedotypes (e.g. [NUCLEAR_TORPEDO])
+// [LAUCNHER] -> [BTN_LAUNCHER]: -> werfer -> Werfer
+////////////////////////////////////////////////////////////////////////
+
+
+
+///////////////// HIER NEU NACH ALPHA HINZUGEKOMMEN ////////////////////
+[TROOP_BUILDING_FINISHED]
+Neue § wurden im § System stationiert
+
+[ELIMINATE_MINOR]
+Die § wurden vernichtet
+
+[NO_ATTACKING_SHIPS_KILLED]
+Keins der angreifenden Schiffe wurde beim Angriff auf § vernichtet
+
+[ATTACKING_SHIPS_KILLED]
+§ der angreifenden Schiffe wurden beim Angriff auf § vernichtet
+
+[KILLED_POP_BY_SYSTEMATTACK]
+§ Mrd. der Bevölkerung wurden beim Angriff auf § getötet
+
+[KILLED_TROOPS_IN_SYSTEM]
+§ verteidigende Truppeneinheiten wurden beim Angriff auf § vernichtet
+
+[KILLED_TROOPS_IN_TRANSPORTS]
+§ angreifende Truppeneinheiten wurden beim Angriff auf § vernichtet
+
+[DESTROYED_BUILDINGS_BY_SYSTEMATTACK]
+§ Gebäude wurden beim Angriff auf § zerstört
+
+[SHIELDS_SAVED_LIFE]
+Planetare Schilde verhinderten Schlimmeres beim Angriff auf §
+
+[INVASION_SUCCESSFUL]
+Die Invasionstruppen in § haben das System erobert
+
+[INVASION_FAILED]
+Die Invasionstruppen in § wurden blutig zurückgeschlagen
+
+[SYSTEM_BOMBED]
+Das § System wurde bombardiert
+
+[ALL_LIFE_DIED]
+Alles Leben auf § wurde vernichtet
+
+[SYSTEMATTACK]
+Systemangriff
+
+[MINOR_SUBJUGATED]
+Die § wurden soeben unterworfen
+
+// Transportmenü
+[TRANSPORT_MENUE]
+Transport auf
+
+[TROOPS]
+Truppen
+
+[AVAILABLE]
+verfügbar
+
+[SELECTED]
+ausgewählt
+
+[OPOWER]
+Angriffsstärke
+
+[DPOWER]
+Verteidigungsstärke
+
+[EXPERIANCE]
+Erfahrung
+
+[PLACE]
+Platz
+
+[MORALVALUE]
+Moralwert
+
+[MAINTENANCE_COSTS]
+Unterhaltskosten
+
+[SMALL]
+klein
+
+[BIG]
+gross
+
+[HUGE]
+riesig
+
+[CHANGE]
+Änderung
+
+[BTN_DECLOAK]
+Enttarnen
+
+[DECLOAK_ORDER]
+Enttarnen
+
+[SPECIAL_ABILITIES]
+Spezialfähigkeiten
+
+[ASSAULTSHIP]
+Assaultschiff
+
+[BLOCKADESHIP]
+Blockadeschiff
+
+[COMMANDSHIP]
+Kommandoschiff
+
+[DOGFIGHTER]
+Nahkampfschiff
+
+[DOGKILLER]
+Anti-Nahkampfschiff
+
+[PATROLSHIP]
+Patrouillienschiff
+
+[RAIDER]
+Korsar
+
+[SCIENCESHIP]
+Forschungsschiff
+
+[ABLATIVE_ARMOR]
+Ablative Hüllenpanzerung
+
+[HULLPOLARISATION]
+Hüllenpolarisation
+
+[REGENERATIVE_SHIELDS]
+Regenerative Schilde
+
+[CAN_CLOAK]
+kann sich tarnen
+
+// Schiffsdesignmenü
+[BUILDCOSTS]
+Baukosten
+
+[BTN_STRONGER]
+stärker
+
+[BTN_WEAKER]
+schwächer
+
+[BTN_LAUNCHER]
+Werfer
+
+[BTN_TORPEDO]
+Torpedo
+
+[BTN_MATERIAL]
+Material
+
+[BTN_HULLTYPE]
+Hüllenart
+
+[NO_CHANGE_POSSIBLE]
+Keine Änderung möglich, da Schiffklasse gerade im §-System im Bau
+
+[DESTROYED_SHIPS_IN_COMBAT]
+Die § wurde im Kampf zerstört
+
+[WIN_COMBAT]
+Wir haben einen Kampf in § gewonnen
+
+[LOSE_COMBAT]
+Wir haben einen Kampf in § verloren
+
+
+///////////////// HIER NEU NACH ALPHA2 HINZUGEKOMMEN ////////////////////
+[GET_RESOURCES]
+§ sind im System § eingetroffen
+
+[NEWS]
+Nachrichten
+
+[STARDATE]
+Raumzeit
+
+[TRADE_AND_RESOURCEROUTES]
+Handels- und Ressourcenrouten
+
+[STELLAR_STORAGE]
+Stellares Lager
+
+[SYSTEM_STORAGE]
+Systemlager
+
+[SHIP_STORAGE]
+Schiffslagerraum
+
+[SYSTEM_SUPPORTS_ROUTES]
+Das System unterstützt derzeit § Handelsroute(n) bzw. § Ressourcenroute(n)
+
+[SYSTEM_HAS_ROUTES]
+Das System unterhält aktuell § Handelsroute(n) und § Ressourcenroute(n)
+
+[ROUTES_TO]
+Handels- und Ressourcenrouten nach:
+
+[PROFIT]
+Gewinn
+
+[STILL]
+noch
+
+[TAKE_FROM_STORAGE]
+aus Lager genommen: § (max. §)
+
+[LOST_PER_ROUND]
+§% gehen pro Runde verloren
+
+[MULTIPLIER]
+Multiplikator
+
+[APPLY]
+anlegen
+
+[TRADEOVERVIEW_IN]
+Handelsübersicht in
+
+[CLASS_A_INFO]
+Diese vulkanisch aktiven Planeten sind gewöhnlich kleine, unfruchtbaren Welten, welche an den Rändern junger Sternensysteme liegen. Sie behalten ihre warme Oberflächentemperatur aufgrund starker vulkanischer Aktivität. Deswegen besitzen sie auch keine Lebensformen. Wenn diese Aktivität aufhört, stirbt der Planet und entwickelt sich zu einem Klasse-C Planeten.
+
+[CLASS_B_INFO]
+Klasse B Planeten sind im Allgemeinen kleine Welten, die innerhalb der heißen Zone eines Sternensystems liegen. Sie sind in hohem Grade für das humanoide Leben ungeeignet. Klasse B Planeten haben dünne Atmosphären bestehend aus Helium und Natrium. Die Oberfläche ist flüssig und extrem instabil. Die Temperaturspanne reicht von 450°C im Tageslicht bis zu fast -200°C in der Nacht. Es konnte noch nie Leben auf einem Klasse B Planeten beobachtet werden.
+
+[CLASS_C_INFO]
+Diese kleinen, felsigen Welten existieren häufig an den Rändern eines Sternensystems. Sie zeigen keine geologische Aktivität mehr und besitzen keine Lebensformen. Sie sind im Wesentlichen tote Planeten. Die dünne Atmosphäre ist gewöhnlich eingefroren und besteht aus Methan und Stickstoff. Die Oberfläche ist unfruchtbar und kalt, mit Temperaturen die selten über -200°C klettern.
+
+[CLASS_E_INFO]
+Fast alle Klasse M Planeten starten ihr Leben als Klasse E Welt. In diesem frühesten Stadium des Lebens ist der Kern und die Kruste des Planeten noch vollständig flüssig. Der Planet besitzt sehr hohe Oberflächentemperaturen und eine Atmosphäre aus Wasserstoff und Helium. Deswegen haben Klasse E Planeten kein magnetisches Feld, wodurch sie sehr empfindlilch gegenüber Solarwinden und Strahlung sind. Klasse E Planeten kühlen ab, um zur Klasse F zu werden.
+
+[CLASS_F_INFO]
+Während ein Klasse E Planet abkühlt, kennzeichnen Eruption riesiger Vulkane den Übergang zur Klasse F. In diesem Stadium des Lebens verfestigt sich der flüssige Kern stufenweise. Zusätzlich kondensiert der Dampf, welcher durch die zahlreichen vulkanischen Eruptionen ausgestossen wurde zu Wasser. Dadurch entstehen flache Meere, in denen einfache Bakterien vorkommen können.
+
+[CLASS_G_INFO]
+Sobald der Kern eines Planeten genug abgekühlt ist, bildet sich ein Klasse G Planet. Die Oberfläche dieser Planeten muss sich noch verfestigen, aber ursprüngliche Vegetation, wie z.B. Algen, hat bereits den Prozess der Photosynthese begonnen. Sobald genügend Sauerstoff in der Atmosphäre freigesetzt wurde, bilden Klasse G Planeten gewöhnlich einen Ozean, wodurch später kompliziertere Lebensformen entstehen könnten.
+
+[CLASS_H_INFO]
+Viele der Klasse H Planeten sind beträchtliche Ozeane des Sandes. Jeder mögliche Planet auf dessen Oberfläche weniger als 5% Wasser vorkommt, wird als Klasse H eingestuft. Niederschlag ist auf solchen Planeten selten und die Temperaturen erreichen häufig 60°C oder mehr. Jedoch sind nicht alle Wüsten warm und sandig. Viele sind felsig, unfruchtbar und relativ kalt. Die Atmosphären können sich stark unterscheiden. Die meisten enthalten aber Sauerstoff und Stickstoff, aber auch hohe Mengen Argon sind nicht selten.
+
+[CLASS_I_INFO]
+Diese massiven Planeten haben gewöhnlich einen festen, felsigen Kern, der durch Metall und dann von flüssigen Wasserstoff umgeben ist. Der Wasserstoff wird stufenweise gasförmig, aber es gibt keine eindeutige Grenze. Klasse I Planeten haben gewöhnlich sehr kurze Tage. Häufig führen sie eine Umdrehung in weniger als 10 Stunden aus. Dadurch erscheinen die Planeten etwas flachgedrückt. Die Atmosphäre ist sehr turbulent, Windgeschwindigkeiten mit mehr als 800km/h wurden schon gemessen.
+
+[CLASS_J_INFO]
+Klasse J Planeten sind auch bekannt als Jovian-Planeten (nach Jupiter) und besitzen enorme Mengen flüssigen und gasförmigen Wasserstoffs, sowie etwas Helium, Methan und Wasserdampf. Atmosphärische Windgeschwindigkeiten von mehr als 600km/h sind keine Seltenheit. Viele Klasse J Planeten haben großen Ringsysteme, welche meist aus Eis, Staub und kleinen Felsbrocken bestehen.
+
+[CLASS_K_INFO]
+Zwar sind sie ähnlich dem Aussehen von Klasse H Welten, doch mangelt es Klasse K Planeten an der konstanten Atmosphäre ihrer Wüstengegenstücke. Obwohl es sehr selten ist, gibt es manchmal ursprüngliche Einzeller, doch komplizierteres Leben hat sich nie entwickelt. Jedoch ist humanoide Besiedlung durch den Gebrauch von Schutzgebäuden oder Terraforming möglich.
+
+[CLASS_L_INFO]
+Klasse L Planeten sind geeignet für eine humanoide Besiedlung und sind deshalb auch Hauptanwärter für Terraforming. Die Temperaturen sind kühl, selten übersteigen sie 15°C. Doch Wasser ist im Allgemeinen knapp. Einige Klasse L Welten zeigen ein eindrucksvolles Ökosystem, aber die meisten besitzen nur robuste Vegetation.
+
+[CLASS_M_INFO]
+Klasse M Welten sind robuste und mannigfaltige Planeten, die für humanoides Leben ausgezeichnet geeignet sind. Sie sind auch als Minshara-Klasse Planeten bekannt. Während sie sich in Aussehen stark unterscheiden können, haben alle Klasse M Planeten atembare Atmosphären und Oberflächentemperaturen nahe 25°C. Klasse M Planeten werden durch eine tektonisch aktive Kruste gekennzeichnet, welche auf einem flüssigen Gesteinsmantel gleitet.
+
+[CLASS_N_INFO]
+Klasse N Planeten kommen häufig in der heißen Zone vor und sind daher für Leben nicht förderlich. Die Oberfläche ist unfruchtbar mit Temperaturen weit mehr als 500°C. Es herrscht ein atmosphärischer Druck, der mehr als 90mal höher ist, als der von Klasse M Planeten. Außerdem besteht die Atmosphäre hauptsächlich aus Kohlendioxyd. Wasser kommt nur in Form von dicken, dunstigen Wolken vor, die den Großteil des Planeten einhüllen.
+
+[CLASS_O_INFO]
+Jeder mögliche Planet, dessen Oberfläche aus mehr als 90% flüssigen Wassers besteht, gilt als Klasse O Planet. Diese wäßrigen Welten sind normalerweise warm und besitzen stabile Wasserökosysteme. In geringerem Ausmaß bewohnen zahlreiche Lebewesen die vielen Archipele. Ihre Atmosphären enthalten viel Sauerstoff und ähneln damit den Klasse M Planeten.
+
+[CLASS_P_INFO]
+Jeder Planet, dessen Oberfläche mehr als 80% gefroren ist, wird als Klasse P Planet bezeichnet. Diese eisigen Welten sind gewöhnlich sehr kalt, mit Temperaturen selten über 0°C. Zwar sind dies keine guten Bedingungen für das Leben, trotzdem haben sich einige Arten des Lebens auf Klasse P Welten entwickelt.
+
+[CLASS_Q_INFO]
+Diese seltenen Planeten besitzen für gewöhnlich eine sehr exzentrische Umlaufbahn oder befinden sich in der Nähe von Sternen mit variabler Ausstrahlung. Deswegen sind die Bedingungen auf der Oberfläche des Planeten sehr verschieden. Wüsten und Regenwälder existieren gemeinsam innerhalb weniger Kilometer, während selbst Gletscher sehr nahe am Äquator liegen können. Durch diese instabilen Bedingungen ist es praktisch unmöglich, dass Leben auf Klasse Q Planeten entsteht.
+
+[CLASS_R_INFO]
+Klasse R Planeten beginnen normalerweise ihr Leben innerhalb der Grenzen eines Sternensystems. Aber an einer Stelle ihrer Evolution wurde der Planet durch einen kolossalen Asteroiden oder irgendein anderes Phänomen getroffen. Die daraus resultierende Verschiebung der Umlaufbahn änderte radikal die Entwicklung des Planeten. vieles starb einfach, aber einige geologisch aktiven Planeten konnten durch vulkanische Gasentweichung manche Lebensformen erhalten.
+
+[CLASS_S_INFO]
+Planeten der Klasse S sind ähnlich ihren kleineren Brüdern der Klasse I und J. Sie besitzen ca. das 3000fache der Masse der Erde und befinden sich in der kalten Zone der Sonne. Die geringe Sonneneinstrahlung und die hohe Schwerkraft der Planeten haben es ihnen ermöglicht, dichte Atmospären aus Wasserstoff und Wasserstoffverbindungen zu bilden. Durch die hohe Kernhitze geben sie viel Wärme ab.
+
+[CLASS_T_INFO]
+Klasse T Planeten sind ähnlich der Klassen I und J. Sie sind riesig, typisch ist die 10000fache Masse der Erde, und liegen in der kalten Zone ihrer Sonne. Hohe Kerntemperaturen verursachen eine Ausstrahlung von sichtbarem Licht. Dieses sind die größten möglichen Planeten, Planeten mit mehr Masse generieren genug Kerntemperatur, um Fusionsreaktionen zu initiieren und Sterne zu werden.
+
+[CLASS_Y_INFO]
+Möglicherweise sind Klasse Y Planeten die umweltsmäßig gefährlichsten Planeten in der Galaxie. Dämon-Klasse Welten sind in jeder erdenklichen Weise für Leben extrem giftig. Die Atmosphäre ist toxisch, die Temperaturen sind extrem hoch und es herrschen atmosphärische Stürme mit Winden über 500km/h. Dazu kommt noch eine beständige Strahlung aufgrund von thermionischen Entladungen.
+
+[CLASS_A_TYPE]
+Geothermal
+
+[CLASS_B_TYPE]
+Geomorteus
+
+[CLASS_C_TYPE]
+Geoinaktiv
+
+[CLASS_E_TYPE]
+Geoplastisch
+
+[CLASS_F_TYPE]
+Geometallisch
+
+[CLASS_G_TYPE]
+Geokristallin
+
+[CLASS_H_TYPE]
+Wüste
+
+[CLASS_I_TYPE]
+Gasüberriese
+
+[CLASS_J_TYPE]
+Gasriese
+
+[CLASS_K_TYPE]
+Adaptable
+
+[CLASS_L_TYPE]
+Marginal
+
+[CLASS_M_TYPE]
+Terrestrisch
+
+[CLASS_N_TYPE]
+Reducing
+
+[CLASS_O_TYPE]
+Ozeanisch
+
+[CLASS_P_TYPE]
+Eisig
+
+[CLASS_Q_TYPE]
+Variabel
+
+[CLASS_R_TYPE]
+Interstellarer Wanderer
+
+[CLASS_S_TYPE]
+Gasgigant
+
+[CLASS_T_TYPE]
+Gasultragigant
+
+[CLASS_Y_TYPE]
+Dämon
+
+
+
+/////////////////// HIER NEU NACH ALPHA3 HINZUGEKOMMEN //////////////////////////
+
+[SHIPDESIGN]
+Schiffsdesign
+
+[BTN_REPORTS]
+Berichte
+
+[SP]
+GP
+
+[INNER_SECURITY]
+innere Sicherheit
+
+[INNER_SECURITY_SHORT]
+inn. Sicherh.
+
+[SPY]
+Spionage
+
+[SABOTAGE]
+Sabotage
+
+[SECURITYPOINTS]
+Geheimdienstpunkte
+
+[ECONOMY]
+Wirtschaft
+
+[MILITARY]
+Militär
+
+[SCIENCE]
+Wissenschaft
+
+[DIPLOMACY]
+Diplomatie
+
+[SECURITYBONI]
+Geheimdienstboni
+
+[BTN_ASSIGNMENT]
+Zuteilung
+
+[BTN_SPY]
+Spionage
+
+[BTN_SABOTAGE]
+Sabotage
+
+[SPY_OF_ALL]
+Der Spionageanteil beträgt §% des gesamten Geheimdienstes
+
+[SABOTAGE_OF_ALL]
+Der Sabotageanteil beträgt §% des gesamten Geheimdienstes
+
+[SECURITY_HEADQUARTERS]
+Einsatzzentrale
+
+[KIND]
+Art
+[INTEL_RESERVE]
+Einsatzreserve
+
+[USE_SP_FROM_DEPOT]
+Die Punkte aus der Einsatzreserve werden in einem rassenspezifischen Geheimdienstdepot gelagert. Es befinden sich derzeit § GP im Depot, welche wir zusätzlich gegen § einsetzen könnten. Es werden maximal soviele GP entfernt, wie es die prozentuale Zuteilung in einem Bereich erlaubt.
+
+[REPORTS]
+Berichte
+
+[DEPOTS]
+Depots
+
+[WE_HAVE_NEW_INTELREPORTS]
+Neue Geheimdienstberichte sind eingetroffen
+
+[NO_AGREEMENT]
+keinen Vertrag
+
+[WAR_WITH_ARTICLE]
+einen Krieg
+
+[MISSED]
+vermisst
+
+[DO_NOT_KNOW_RESPONSIBLE_RACE]
+Wir wissen nicht wer dafür verantworlich sein könnte.
+
+[KNOW_RESPONSIBLE_SABOTAGERACE]
+Einige Hinweise deuten darauf hin, dass § für diesen feigen Anschlag verantworlich gemacht werden kann.
+
+[AGGRESSIVENESS]
+Aggressivität
+
+[CAREFUL]
+vorsichtig
+
+[NORMAL]
+normal
+
+[AGGRESSIVE]
+aggressiv
+
+[RULE]
+Regel
+
+[BTN_ATTEMPT]
+Anschlag
+
+[POSSIBLE_ATTEMPTS]
+mögliche Anschläge
+
+[ATTEMPT_DESC]
+Es kann ein Spionagegeheimdienstbericht ausgewählt werden, um einen Anschlag vorzubereiten. Es wird versucht die spionierten Objekte zu sabotieren. Es werden nur angesammelte Geheimdienstpunkte der jeweiligen Rasse benutzt.
+
+[CHOOSEN_ATTEMPT]
+ausgewählter Anschlag
+
+[CONTROLLED_SECTORS]
+kontrollierte Sektoren
+
+[CONTROLLED_SYSTEMS]
+kontrollierte Systeme
+
+[INHABITED_SYSTEMS]
+bewohnte Systeme
+
+[KNOWN_MINORRACES]
+bekannte kleine Rassen
+
+[NUMBER_OF_MINORMEMBERS]
+Mitgliedschaften kleiner Rassen
+
+[CHOOSE_RESPONSIBLE_RACE]
+Wählen Sie hier ein fremdes bekanntes Imperium, auf welches unser Geheimdienst versuchen wird Spuren hinweisen zu lassen. Unser Geheimdienstopfer ist danach womöglich im Glauben, diese fremde Rasse sei für unsere Aktionen verantwortlich.
+
+[AUTOBUILD]
+AUTOBAU
+
+[LOST_ONE_RESOURCEROUTE]
+Wir haben eine Ressourcenroute im § System verloren
+
+[LOST_RESOURCEROUTES]
+Wir haben § Ressourcenrouten im § System verloren
+
+[BTN_TRADEROUTE]
+Handelsr.
+
+[BTN_RESOURCEROUTE]
+Ressourcenr.
+
+[SYSTEM_IS_BLOCKED]
+System wird zu §% blockiert
+
+[ONLY_PARTIAL_BUILDINGSCRAP]
+Abriss von Gebäuden nur teilweise möglich
+
+[RESOURCES_IN_GLOBAL_STORAGE]
+Es befinden sich Ressourcen im stellaren Lager
+
+[DRAW_COMBAT]
+Wir wurden in § in eine unentschiedene Schlacht verwickelt
+
+////////////////////////////////////// Events //////////////////////////////////////////////////////
+[COLOEVENT_HEADLINE]
+Kolonisierung des § Systems
+
+[COLOEVENT_TEXT_MAJOR1]
+Die Bürger freuen sich über die Kolonisierung des § Systems. Das neue System gibt unserem Volk weiteren Raum zum Leben. Die ersten Kolonisten haben ihre Habitate auf der Planetenoberfläche gebaut und gehen ihren Aufgaben nach. In Kürze kann dieses System ein wichtiger produktiver Bestandteil unseres Reiches sein.
+[COLOEVENT_TEXT_MAJOR2]
+Die Bürger freuen sich über die Kolonisierung des § Systems. Das neue System gibt unserem Volk weiteren Raum zum Leben. Die ersten Kolonisten haben ihre Habitate auf der Planetenoberfläche gebaut und gehen ihren Aufgaben nach. In Kürze kann dieses System ein wichtiger produktiver Bestandteil unseres Reiches sein.
+[COLOEVENT_TEXT_MAJOR3]
+Die Bürger freuen sich über die Kolonisierung des § Systems. Das neue System gibt unserem Volk weiteren Raum zum Leben. Die ersten Kolonisten haben ihre Habitate auf der Planetenoberfläche gebaut und gehen ihren Aufgaben nach. In Kürze kann dieses System ein wichtiger produktiver Bestandteil unseres Reiches sein.
+[COLOEVENT_TEXT_MAJOR4]
+Die Bürger freuen sich über die Kolonisierung des § Systems. Das neue System gibt unserem Volk weiteren Raum zum Leben. Die ersten Kolonisten haben ihre Habitate auf der Planetenoberfläche gebaut und gehen ihren Aufgaben nach. In Kürze kann dieses System ein wichtiger produktiver Bestandteil unseres Reiches sein.
+[COLOEVENT_TEXT_MAJOR5]
+Die Bürger freuen sich über die Kolonisierung des § Systems. Das neue System gibt unserem Volk weiteren Raum zum Leben. Die ersten Kolonisten haben ihre Habitate auf der Planetenoberfläche gebaut und gehen ihren Aufgaben nach. In Kürze kann dieses System ein wichtiger produktiver Bestandteil unseres Reiches sein.
+[COLOEVENT_TEXT_MAJOR6]
+Die Bürger freuen sich über die Kolonisierung des § Systems. Das neue System gibt unserem Volk weiteren Raum zum Leben. Die ersten Kolonisten haben ihre Habitate auf der Planetenoberfläche gebaut und gehen ihren Aufgaben nach. In Kürze kann dieses System ein wichtiger produktiver Bestandteil unseres Reiches sein.
+
+[BLOCKADEEVENT_HEADLINE]
+Blockade des § Systems
+
+[BLOCKADEEVENT_TEXT_MAJOR1]
+Das § System wird blockiert. Der Handel und die Produktion des Systems ist dadurch unter Umständen eingeschränkt.
+[BLOCKADEEVENT_TEXT_MAJOR2]
+Das § System wird blockiert. Der Handel und die Produktion des Systems ist dadurch unter Umständen eingeschränkt.
+[BLOCKADEEVENT_TEXT_MAJOR3]
+Das § System wird blockiert. Der Handel und die Produktion des Systems ist dadurch unter Umständen eingeschränkt.
+[BLOCKADEEVENT_TEXT_MAJOR4]
+Das § System wird blockiert. Der Handel und die Produktion des Systems ist dadurch unter Umständen eingeschränkt.
+[BLOCKADEEVENT_TEXT_MAJOR5]
+Das § System wird blockiert. Der Handel und die Produktion des Systems ist dadurch unter Umständen eingeschränkt.
+[BLOCKADEEVENT_TEXT_MAJOR6]
+Das § System wird blockiert. Der Handel und die Produktion des Systems ist dadurch unter Umständen eingeschränkt.
+
+[BOMBARDEVENT_HEADLINE]
+Bombardierung des § Systems
+
+[BOMBARDEVENT_TEXT_AGRESSOR_MAJOR1]
+Die zivile Bevölkerung des § Systems ist wegen unserer Bombardierung geschockt und fordert das Ende der Gewalt.
+[BOMBARDEVENT_TEXT_AGRESSOR_MAJOR2]
+Unsere Bombardierung im § System wird die dortige Wirtschaft bald ruiniert haben.
+[BOMBARDEVENT_TEXT_AGRESSOR_MAJOR3]
+Unsere Krieger im § System finden das Bombardement hinterhältig und fordern fairen Kampf auf den Planeten.
+[BOMBARDEVENT_TEXT_AGRESSOR_MAJOR4]
+Die zivile Bevölkerung des § Systems ist wegen unserer Bombardierung geschockt und fordert das Ende der Gewalt.
+[BOMBARDEVENT_TEXT_AGRESSOR_MAJOR5]
+Die zivile Bevölkerung des § Systems ist wegen unserer Bombardierung geschockt und fordert das Ende der Gewalt.
+[BOMBARDEVENT_TEXT_AGRESSOR_MAJOR6]
+Die zivile Bevölkerung des § Systems ist wegen unserer Bombardierung geschockt und fordert das Ende der Gewalt.
+
+[BOMBARDEVENT_TEXT_DEFENDER_MAJOR1]
+Die zivile Bevölkerung des § Systems ist wegen der feindlichen Bombardierung geschockt und fordert das Ende der Gewalt.
+[BOMBARDEVENT_TEXT_DEFENDER_MAJOR2]
+Die Bombardierung des § Systems schadet unserer Wirtschaft. Händler fordern, dass die Regierung dagegen etwas unternimmt.
+[BOMBARDEVENT_TEXT_DEFENDER_MAJOR3]
+Die Bombardierung des § Systems ist eine Beleidigung unserer Ehre. Die Krieger wollen sich dem Gegner Mann gegen Mann stellen. 
+[BOMBARDEVENT_TEXT_DEFENDER_MAJOR4]
+Die zivile Bevölkerung des § Systems ist wegen der feindlichen Bombardierung geschockt und fordert das Ende der Gewalt.
+[BOMBARDEVENT_TEXT_DEFENDER_MAJOR5]
+Unsere Fabriken im § System werden durch die Bombardierung geschädigt. Wir sollten Verstärkung schicken.
+[BOMBARDEVENT_TEXT_DEFENDER_MAJOR6]
+Das § System ist entsetzt über die feindliche Bombardierung und fordert Verstärkung an.
+
+[INVASIONSUCCESSEVENT_HEADLINE]
+Erfolgreiche Invasion im § System
+
+[INVASIONSUCCESSEVENT_TEXT_MAJOR1]
+Die Invasion im § System war erfolgreich. Dieses System steht nun unter der Kontrolle eines neuen Herrschers.
+[INVASIONSUCCESSEVENT_TEXT_MAJOR2]
+Die Invasion im § System war erfolgreich. Dieses System steht nun unter der Kontrolle eines neuen Herrschers.
+[INVASIONSUCCESSEVENT_TEXT_MAJOR3]
+Die Invasion im § System war erfolgreich. Dieses System steht nun unter der Kontrolle eines neuen Herrschers.
+[INVASIONSUCCESSEVENT_TEXT_MAJOR4]
+Die Invasion im § System war erfolgreich. Dieses System steht nun unter der Kontrolle eines neuen Herrschers.
+[INVASIONSUCCESSEVENT_TEXT_MAJOR5]
+Die Invasion im § System war erfolgreich. Dieses System steht nun unter der Kontrolle eines neuen Herrschers.
+[INVASIONSUCCESSEVENT_TEXT_MAJOR6]
+Die Invasion im § System war erfolgreich. Dieses System steht nun unter der Kontrolle eines neuen Herrschers.
+
+[INVASIONFAILUREEVENT_HEADLINE]
+Invasion des § Systems gescheitert
+
+[INVASIONFAILUREEVENT_TEXT_MAJOR1]
+Die Invasionstruppen wurden blutig zurückgeschlagen. Das § System bleibt vorerst unter der Kontrolle des alten Machtinhabers.
+[INVASIONFAILUREEVENT_TEXT_MAJOR2]
+Die Invasionstruppen wurden blutig zurückgeschlagen. Das § System bleibt vorerst unter der Kontrolle des alten Machtinhabers.
+[INVASIONFAILUREEVENT_TEXT_MAJOR3]
+Die Invasionstruppen wurden blutig zurückgeschlagen. Das § System bleibt vorerst unter der Kontrolle des alten Machtinhabers.
+[INVASIONFAILUREEVENT_TEXT_MAJOR4]
+Die Invasionstruppen wurden blutig zurückgeschlagen. Das § System bleibt vorerst unter der Kontrolle des alten Machtinhabers.
+[INVASIONFAILUREEVENT_TEXT_MAJOR5]
+Die Invasionstruppen wurden blutig zurückgeschlagen. Das § System bleibt vorerst unter der Kontrolle des alten Machtinhabers.
+[INVASIONFAILUREEVENT_TEXT_MAJOR6]
+Die Invasionstruppen wurden blutig zurückgeschlagen. Das § System bleibt vorerst unter der Kontrolle des alten Machtinhabers.
+
+[MANEUVERABILITY]
+Manövrierbarkeit
+[PHENOMENAL]
+phänomenal
+[EXCELLENT]
+ausgezeichnet
+[VERYGOOD]
+sehr gut
+[GOOD]
+gut
+[ADEQUATE]
+ausreichend
+[BAD]
+schlecht
+[VERYBAD]
+sehr schlecht
+[MISERABLE]
+miserabel
+
+[DERITIUM_REQUEST]
+und § Kg Deritium
+[EXTRA_DERITIUM]
+§ Ausserdem schenken wir Ihnen § Kg Deritium.
+
+[SHIPCOSTS]
+Unterhalt
+[POPSUPPORT]
+Unterstützung
+
+[RESEARCHEVENT_HEADLINE]
+Neue Technologie erforscht
+
+[RESEARCHEVENT_NEWBUILDINGS]
+neue Gebäude
+[RESEARCHEVENT_NEWUPGRADES]
+neue Gebäudeupgrades
+[RESEARCHEVENT_NEWSHIPS_AND_TROOPS]
+neue Schiffe und Truppen
+
+[FIRSTCONTACTEVENT_HEADLINE]
+Neuer Kontakt
+[FIRSTCONTACTEVENT_TEXT]
+Wir haben die § kennengelernt
+
+[PROPERTIES]
+Eigenschaften
+[FINANCIAL]
+finanziell
+[WARLIKE]
+kriegerisch
+[AGRARIAN]
+landwirtschaftlich
+[INDUSTRIAL]
+industriell
+[SECRET]
+geheimdienstlich
+[SCIENTIFIC]
+wissenschaftlich
+[PRODUCER]
+produktiv
+[PACIFIST]
+pazifistisch
+[SNEAKY]
+hinterhältig
+[SOLOING]
+isolationistisch
+[HOSTILE]
+feindlich
+
+[VERY_UNDERDEVELOPED]
+sehr rückständig
+[UNDERDEVELOPED]
+rückständig
+[NORMAL_DEVELOPED]
+normal entwickelt
+[DEVELOPED]
+fortschrittlich
+[VERY_DEVELOPED]
+sehr fortschrittlich
+
+[RESEARCHED_SPECIALTECHS]
+erforschte Spezialtechnologien
+
+[RESOURCE_DISTRIBUTOR]
+Ressourcenverteiler
+[NEEDED_SYSTEMS]
+benötigte Systeme
+
+// neu in Alpha 5.1
+[MOVEMENT]
+Bewegung
+[BEAMWEAPONS]
+Strahlenwaffen
+[TORPEDOWEAPONS]
+Torpedowerfer
+[DAMAGE]
+Schaden
+[BONI_IN_SYSTEM]
+Boni im System
+[EXISTING]
+vorhanden
+
+[BLUE_STAR]
+Blauer Stern
+[GREEN_STAR]
+Grüner Stern
+[ORANGE_STAR]
+Oranger Stern
+[RED_STAR]
+Roter Stern
+[VIOLET_STAR]
+Violetter Stern
+[WHITE_STAR]
+Weißer Stern
+[YELLOW_STAR]
+Gelber Stern
+
+[BLUE_STAR_DESC]
+Diese sog. Hyperriesen sind wie der Name schon sagt um ein Vielfaches größer als z.B. gelbe oder grüne Sterne. Sie sind die massereichsten Sterne und mit bis zu 100facher Masse und mit tausend- bis millionster Leuchtkraft gelber Sterne die hellsten Sterne der Galaxis.
+[GREEN_STAR_DESC]
+Sterne diesen Typs sind meist nicht als solche zu erkennen, da sie meist rot oder blau "leuchten". Wirklich grün erscheinen sie meist nur in Doppelstern-Systemen. In ihrer Größe sind sie gelben Sternen sehr ähnlich. Mit modernen Scannern ist es jedoch kein Problem jeden "echten" grünen Stern zu erkennen.
+[ORANGE_STAR_DESC]
+Eine rötlich-orange Farbe besitzen rote Zwerge, die etwa 70% der Sterne in der Milchstraße ausmachen, aber einen gänzlich anderen Typus als etwa die roten Riesen darstellen. Sie sind rund ein Zehntel bis ein Halb so schwer wie gelbe Sterne und besitzen nur eine sehr geringe Leuchtkraft auf ihrer Oberfläche.
+[RED_STAR_DESC]
+Rote Riesen gehören zu den voluminösesten, hellsten aber auch "kühlsten" Sternen in der Galaxie. Sie befinden sich in einer der letzten Phasen eines Sternenlebens, bevor der Stern für immer erlischt und zum weißen Zwerg zusammenschrumpft.
+[VIOLET_STAR_DESC]
+Dieser Typ wurde erst in neuerer Zeit entdeckt mit der Entwicklung der Kontinuumantriebe, wodurch die extrem kurzreichweitig im ultravioletten Bereich strahlenden Sterne, meist noch von ausgedehnten Dunkelmateriefeldern umgeben, durch Nahbeobachtung sichtbar gemacht werden konnten. Sie sind sehr variabel, allen ist aber ein relativ junges Sternenalter gemein.
+[WHITE_STAR_DESC]
+Sterne der Spektralklasse B, A oder F strahlen im blau-weißen Bereich und zählen zu den größeren Vertretern ihrer Spezies. Sie sind im Schnitt etwa doppelt so heiß wie gelbe Sterne und dreimal so schwer.
+[YELLOW_STAR_DESC]
+Dieser Typ ist günstig für die Entwicklung von Leben, da er eine sehr stabile mittlere Klasse unter den Sternen darstellt.
+
+[BTN_PRODUCTION]
+Produktion
+[BTN_DEFENCE]
+Verteidigung
+
+// Anomalien
+[RADIONEBULA]
+Radioaktiver Nebel
+[METNEBULA]
+Meatureanischer Nebel
+[DEUTNEBULA]
+Deuterium-Nebel
+[IONSTORM]
+Ionensturm
+[BINEBULA]
+Biphasen-Nebel
+[TORIONGASNEBULA]
+Toriongas-Nebel
+[NEUTRONSTAR]
+Neutronenstern RX
+[RADIOPULSAR]
+Radiopulsar PSR
+[XRAYPULSAR]
+Röntgenpulsar PSR
+[MAGNETAR]
+Magnetar SGR
+[GRAVDISTORTION]
+Gravimetrische Verzerrung
+[CONTINUUMRIP]
+Kontinuum-Riss
+[BLACKHOLE]
+Schwarzes Loch
+[QUASAR]
+Quasar QSO
+[WORMHOLE]
+Wurmloch
+
+[RADIONEBULA_DESC]
+Radioaktive Nebel sind verdichtete Ansammlungen instabiler Atomkerne, die bei Durchtritt schlagartig aus ihrem metastabilen Zustand herausgerissen werden und unter hoher Energieabgabe in Form kohärenter ionisierender Strahlung zerfallen. Organische Lebensformen werden nach Ausfall der Schilde sehr schnell durch eine Überdosis zugrundegehen.
+[METNEBULA_DESC]
+Ein Meatureanischer Nebel zeichnet sich durch seine hohe Konzentration elekromagnetischer Ionenpartikel aus. Ihre Entladung erfolgt an den entgegengesetzt polarisierten Schutzschilden und führt zu Destabilisierung und Ausfall der Schilde.
+[DEUTNEBULA_DESC]
+Deuterium-Nebel finden sich bevorzugt in "Beinahe-"Sternensystemen. Das gasförmige Deuterium setzt dabei eine schwache Strahlung frei, die für organisches Leben ungefährlich ist, aber Sensoren und Schilde außer Funktion setzt. Die Nebel schimmern durch ihre hohe Konzentration an Deuterium rötlich.
+[IONSTORM_DESC]
+Ein Ionensturm stellt eine besonders starke Ausprägung eines Magnetsturms dar. Die Ionen, also geladenen Teilchen können sowohl als planetare als auch im All entstandene Ionenstörungen sich so weit selbst amplifizieren, dass die Navigation und Kommunikation beeinträchtigt wird.
+[BINEBULA_DESC]
+Der Biphasen-Nebel besteht aus biphasigen Elementen, d.h. er enthält Elemente einerseits in zwei Aggregatzuständen parallel als auch in zwei kohärenten Spinformationen. Ihre Wirkung ist stark elektrisch polarisierend bei Berührung mit einphasigen Schilden, so dass diese schneller regenerieren können.
+[TORIONGASNEBULA_DESC]
+Ein Toriongas-Nebel absorbiert Energie aus dem Schildgenerator und behindert das Zielsuchsystem aller Torpedowaffen bis zu ihrem kompletten Ausfall. Der genaue Mechanismus ist noch unverstanden.
+[NEUTRONSTAR_DESC]
+Ein Neutronenstern ist ein astronomisches Objekt mit einer extrem hohen Dichte und einem typischen Durchmesser von etwa 20 km bei einer Masse von etwa 1,44 bis 3 Sonnenmassen. Er steht am Ende seiner Sternentwicklung und stellt damit das Endstadium eines Sterns einer bestimmten Massenklasse dar. Ein Kubikzentimeter dieser Art von Materie hat etwa die Masse eines Eisenwürfels von 500 m bis 1400 m Kantenlänge.
+[RADIOPULSAR_DESC]
+Ein Radiopulsar ist ein schnell rotierender Neutronenstern. Ein Pulsar strahlt die elektromagnetischen Wellen über einen weiten Wellenbereich ab, die vorwiegenden Anteile können im Frequenzbereich von Radiowellen (Radiopulsar), sichtbarem Licht oder gar im Bereich der Röntgenstrahlung (Röntgenpulsar) liegen. Die Rotationsdauer eines Pulsars ohne Begleiter liegt zwischen 0,01 und 8 Sekunden.
+[XRAYPULSAR_DESC]
+Ein Röntgenpulsar ist ein schnell rotierender, stark magnetisierter Neutronenstern, auf den Gas aus der Hülle eines Partners überströmt. Das Gas nähert sich dem Neutronenstern spiralförmig in einer flachen Scheibe, um schließlich auf seine Oberfläche hinabzustürzen. Bei diesem Partner kann es sich um einen Weißen Zwerg, einen Neutronenstern oder ein Schwarzes Loch handeln. Röntgendoppelsterne zählen zu den spektakulärsten Objekten der Astronomie.
+[MAGNETAR_DESC]
+Ein Magnetar ist ein Neutronenstern, dessen Magnetfeld das 1.000-fache des bei Neutronensternen üblichen Wertes aufweist. Diese Objekte erleiden in unregelmäßigen Abständen Gamma- und Röntgen-Ausbrüche mit einer Dauer von wenigen Zehntel Sekunden. In dieser kurzen Zeit wird typischerweise soviel hochenergetische Strahlungsenergie freigesetzt, wie die Sonne in etwa 10.000 Jahren im gesamten Spektrum abstrahlt.
+[GRAVDISTORTION_DESC]
+Eine Gravimetrische Verzerrung ist eine Störung des lokalen Gravitationsfeldes. Dies hat zur Folge, dass dort eine starke Gravitation herrscht, die jedes bekannte Material zerstören kann. Man kann sie durchfliegen, durch die Störungen entstehen jedoch in der Regel Schäden an der Schiffshülle.
+[CONTINUUMRIP_DESC]
+Ein Kontinuumriss ist eine durch gewaltige Energieentladungen hervorgerufene Spalte im Kontinuum. Schiffe, die in ihn eindringen, können durch das Verschmelzen des normalen Raumes und des Kontinuums nicht mehr rausfliegen und werden völlig zerstört. Alle Schiffe in einem Kontinuumriss sind unwiderruflich verloren!
+[BLACKHOLE_DESC]
+Ein Schwarzes Loch ist ein astronomisches Objekt, dessen Gravitation so stark ist, dass seine Fluchtgeschwindigkeit die Lichtgeschwindigkeit überschreitet. Das heißt, es gibt einen Raumbereich, in dem die Raumzeit so stark verzerrt ist, dass nichts von innerhalb nach außerhalb gelangen kann. Die Grenze dieses Bereichs wird Ereignishorizont genannt. Er ist um so größer, je größer die Masse eines schwarzen Lochs ist.
+[QUASAR_DESC]
+Ein Quasar ist der Kern einer meist weit entfernten aktiven Galaxie, die im sichtbaren Bereich des Lichtes nahezu punktförmig (wie ein Stern) erscheint und ungeheure Energiemengen in anderen Wellenlängenbereichen ausstrahlt. Da Quasare trotz ihrer großen Entfernung relativ hell erscheinen, gehören sie zu den leuchtkräftigsten Objekten im Universum. Nur sehr kurzzeitig hell aufleuchtende Phänomene (Supernova, Gammastrahlenblitz) sind möglicherweise energiereicher.
+[WORMHOLE_DESC]
+Es gibt bislang keine experimentellen Beweise für Wurmlöcher. Rein theoretische Überlegungen deuten darauf hin, dass Wurmlöcher sog. exotische Materie brauchen, um zu entstehen und stabil zu bleiben. Einige Wissenschaftler gehen davon aus, dass eine Instabilität der Wurmlochverbindung nur durch exotische Materie verhindert werden könne. Andere schließen nicht völlig aus, dass es durch hineinfallende Teilchen normaler Materie trotzdem zu einem schnellen Zusammenbrechen des Wurmloches kommen könnte.
+
+[RADIONEBULA_GAME]
+Verlust der kompletten Crewerfahrung
+[METNEBULA_GAME]
+Schilde sind im Kampf deaktiviert
+[DEUTNEBULA_GAME]
+Ausfall von Schilden und Scanner
+[IONSTORM_GAME]
+Maximale Schildstärke erhöht sich um 3% pro Runde, Verlust der kompletten Crewerfahrung, Ausfall aller Scanner
+[BINEBULA_GAME]
+Schildregeneration um 100% erhöht
+[TORIONGASNEBULA_GAME]
+Schilde und Torpedowaffen sind im Kampf deaktiviert
+[NEUTRONSTAR_GAME]
+Schildschäden und möglicher Hüllenbruch, Ausfall der Scanner
+[RADIOPULSAR_GAME]
+Schildschäden und möglicher Hüllenbruch, Ausfall der Scanner, Beeinträchtigung der Scanstärke in diesem und umliegenden Sektoren
+[XRAYPULSAR_GAME]
+Schildschäden und möglicher Hüllenbruch, Ausfall der Scanner, Beeinträchtigung der Scanstärke in diesem und umliegenden Sektoren, Verlust der kompletten Crewerfahrung
+[MAGNETAR_GAME]
+Hohes Risiko eines permanenten Antriebsausfalls, Schildschäden und möglicher Hüllenbruch, Ausfall der Scanner, Beeinträchtigung der Scanstärke in diesem und umliegenden Sektoren, Verlust der kompletten Crewerfahrung
+[GRAVDISTORTION_GAME]
+Hüllenschäden
+[CONTINUUMRIP_GAME]
+Zerstörung aller einfliegenden Schiffe
+[BLACKHOLE_GAME]
+Beeinträchtigung der Scanstärke in diesem und umliegenden Sektoren
+[QUASAR_GAME]
+Verstärkung von Scanstärke und Scanreichweite aller im Sektor befindlichen Schiffe
+[WORMHOLE_GAME]
+Es fehlt uns noch an Technologien, um das Wurmloch benutzen zu können
+
+[ANOMALY_SHIP_LOST]
+Die § wurde durch § zerstört
+
+// Demografie
+[DEMO_BSP]
+BSP
+[DEMO_PRODUCTIVITY]
+Produktivität
+[DEMO_MILITARY]
+Militär
+[DEMO_SCIENCE]
+Forschung
+[DEMO_HAPPINESS]
+Zufriedenheit
+
+[RANK]
+Rang
+[VALUE]
+Wert
+[FIRST_RANK]
+Erster Platz
+[LAST_RANK]
+Letzter Platz
+[AVERAGE]
+Durchschnitt
+[RATING]
+Gesamtwertung
+
+[DEMOGRAPHY_MENUE]
+Demografie
+[BTN_DEMOGRAPHY]
+Status
+
+// Top-5 Systeme
+[TOP5SYSTEMS_MENUE]
+Top-5 Systeme
+[BTN_TOP5SYSTEMS]
+Top-5
+
+// Siegbedingungen (Victory Conditions VC)
+[VC_ELIMINATION]
+Auslöschung
+[VC_DIPLOMACY]
+Diplomatie
+[VC_CONQUEST]
+Eroberung
+[VC_RESEARCH]
+Forschung
+[VC_COMBAT]
+Schiffskampfsiege
+[VC_SECURITY]
+Geheimdienst
+
+[DEACTIVATED]
+deaktiviert
+[WE:]
+Wir:
+[BEST:]
+Bester:
+[ELIMINATE_ALL_RIVALS]
+Alle Gegner auslöschen
+[RIVALS_LEFT]
+Verbleibende Gegner:
+[SIGNED_HIGH_AGREEMENTS]
+hochwertige Verträge abgeschlossen
+[CONQUERED_SYSTEMS]
+Systeme militärisch erobert
+[RESEARCHED_SPECIALS]
+Spezialforschungen erforscht
+[REACHED_COMBAT_WINNINGS]
+Siege im Schiffskampf erreicht
+[SUCCESSFULL_SABOTAGE_ACTIONS]
+erfolgreiche Sabotageaktionen
+
+[VICTORY_CONDITIONS_MENUE]
+Siegbedingungen
+[BTN_VICTORIES]
+Siege
+
+// Kampfbildschirme
+[COMBAT_IN_SECTOR]
+Kampf im Sektor
+[PLEASE_WAIT]
+bitte warten
+[COMBATCALCULATION_IS_RUNNING]
+Kampfberechnung läuft
+[OTHER_PLAYERS_IN_COMBAT]
+Es befinden sich andere Spieler im Kampf
+[WINNING_CHANCE]
+Kräfteverhältnis
+[CHOOSE_TACTIC_DESC1]
+Taktik wählen und anschließend Schiffe markieren
+[CHOOSE_TACTIC_DESC2]
+Doppelklick auf Taktikbefehl um allen Schiffen diesen Befehl zu erteilen
+[CHOOSE_TACTIC_DESC3]
+Doppelklick auf Schiff um allen Schiffen dieser Klasse den Befehl zu erteilen
+[SHOWN_SHIPTYPES]
+angezeigte Schiffstypen
+[VS]
+VS
+[AGAINST]
+gegen
+[FRIENDLY_SHIPS]
+freundliche Schiffe
+[ENEMY_SHIPS]
+feindliche Schiffe
+
+[BTN_DETAILS]
+Details
+[BTN_HAILING]
+Gruss
+[BTN_RETREAT]
+Rückzug
+[BTN_AUTOCOMBAT]
+Autokampf
+[BTN_FURTHER]
+weiter
+[BTN_READY]
+Bereit
+
+// Sieg- & Niederlageevents
+[GAMEOVER]
+Spielende
+[WE_LOST]
+Wir haben verloren
+[OUR_EMPIRES_IS_ELIMINATED]
+Unser Imperium wurde vernichtet
+[IMPORTANT_NEWS]
+Wichtige Mitteilung
+[RACE_ELIMINATED]
+Die § wurden ausgelöscht
+[VICTORY]
+Sieg
+[CONGRATULATIONS]
+Herzlichen Glückwunsch!
+[DEFEAT]
+Niederlage
+[LOGBOOK_ENTRY]
+Logbucheintrag
+[WE_REACHED_VICTORY_IN_TYPE]
+Wir haben den Sieg in der Kategorie "§" davongetragen!
+[OTHER_REACHED_VICTORY_IN_TYPE]
+§ hat den Sieg in der Kategorie "§" davongetragen!
+[BIRTH_OF_THE_EMPIRE_END]
+Die Geschichte der Geburt unseres Imperiums ist nun zu Ende...
+[REACHED_GAMEPOINTS]
+erreichte Punktezahl:
+
+//Randomevents
+[SYSTEMEVENTMORALBOOST]
+Die Bewohner des § Systems feiern ihre großartige Regierung
+[SYSTEMEVENTMORALMALUS]
+Die Bewohner des § Systems verlieren das Vertrauen in ihre Regierung
+[SYSTEMEVENTPLANETMOVEMENT]
+Es fand eine Klimaveränderung auf § statt. Die Maximalbevölkerung hat sich um § Mrd. geändert.
+[SYSTEMEVENTPLANETDEMOGRAPHIC]
+Drastischer Demographischer Wandel auf §
+[SYSTEMEVENTPLANETDEMOGRAPHICTITLE]
+Demografischer Wandel
+[SYSTEMEVENTPLANETDEMOGRAPHICLONG]
+Durch Fehlkalkulationen ist die Sterberate auf § sehr viel höher als geplant, wodurch die Bevölkerung um § Mrd. schrumpft.
+[BREAKTHROUGH]
+Erfolg
+[GLOBALEVENTRESEARCH]
+Durch einen Forschungserfolg verdoppelten unsere Wissenschaftler kurzzeitig ihre Ergebnisse
+[GLOBALEVENTMINOR]
+Regierungswechsel bei den §
+[ALIENTECHEADLINE]
+Alien-Artefakt gefunden
+[ALIENTEC]
+Im Sektor § wurde äußerst interessante Alientechnologie entdeckt
+[ALIENTECLONG]
+Im Sektor § wurde Alientechnologie entdeckt, die unsere Forschung in allen Gebieten voranbringt
+[EVENTSHIPXP]
+Beim Erkunden von § hat die Crew viel Erfahrung gesammelt
+[EVENTHULLVIRUS]
+Hüllenvirus in Sektor § hat Schiffe befallen
+
+// Truppen
+[MAJOR1_TROOP1_NAME]
+Sicherheitskräfte
+[MAJOR1_TROOP1_DESC]
+Dies ist eine relativ schwache Einheit der Terranischen Konföderation. Diese Einheiten kämpfen mit modernen Projektilwaffen, sind nicht besonders stark gepanzert und haben keine militärische Ausbildung genossen.
+[MAJOR1_TROOP2_NAME]
+Panzergrenadiere
+[MAJOR1_TROOP2_DESC]
+Gute ausgebildete Nahkampfeinheiten für Bodenkampf und Häuserkampf.
+[MAJOR1_TROOP3_NAME]
+Polizeikräfte
+[MAJOR1_TROOP3_DESC]
+Gut organisierte Polizeikräfte in gepanzerten Fahrzeugen. Sie wurden speziell dafür ausgebildet und ausgerüstet, um Aufstände und Unruhen in der eigenen Bevölkerung aufzulösen.
+[MAJOR1_TROOP4_NAME]
+Leichte  Artillerie
+[MAJOR1_TROOP4_DESC]
+Diese Panzereinheiten sind für Kämpfe auf kürzere Entfernungen ausgelegt. Sie durchkämmen jedes Gelände spielend und besitzen einen 360° Aktionsradius. Bodentruppen aller Art können mit diesen Panzereinheit bekämpft werden.
+[MAJOR1_TROOP5_NAME]
+Schwere Artillerie
+[MAJOR1_TROOP5_DESC]
+Diese Panzereinheiten können auf großer Distanz kleine und große Objekte anpeilen vernichten, Außerdem werden diese Panzereinheiten im Kampf gegen feindliche Lufteinheiten eingesetzt.
+[MAJOR1_TROOP6_NAME]
+Kampfhelikopter
+[MAJOR1_TROOP6_DESC]
+Die Kampfhelikopter der Terranischen Konföderation sind sehr schnell und wendig. Sie besitzen Kurzstreckenwaffen für präzise Zielattacken sowie Langstreckenwaffen für Flächenbeschuss.
+[MAJOR1_TROOP7_NAME]
+Marine Korps
+[MAJOR1_TROOP7_DESC]
+Die Marine Korps sind Spezialeinheiten der Terraner mit Spezialisten aus den verschiedensten Bereichen. Nur die Besten absolvieren die lange und harte Ausbildung erfolgreich. 
+
+[MAJOR2_TROOP1_NAME]
+Hanuhr Raketenmänner
+[MAJOR2_TROOP1_DESC]
+Ein zusammengewürfelter Haufen von Hanuhr, die mit gefährlichen Raketenabschussanlagen ausgerüstet sind. Leider ist ihre militärische Ausbildung mangelhaft
+[MAJOR2_TROOP2_NAME]
+Hanuhr  Spiders
+[MAJOR2_TROOP2_DESC]
+Die Spider der Hanuhr sind sehr wendig und können sehr geschickt feindlichem Beschuss ausweichen. Sie sind mit Nahkampfgeschossen ausgerüstet und besitzen Präzisionswerkzeuge, mit denen feindliche Maschinen in kurzer Zeit zerlegt werden können.
+[MAJOR2_TROOP3_NAME]
+HFA
+[MAJOR2_TROOP3_DESC]
+Die HFA (Hanuhr Finanz Aufsicht) überwacht, verwaltet und verteidigt das Finanzsystem der Hanuhr. Die Agenten der HFA fahren gepanzerte Fahrzeuge. Sie werden eingesetzt, um Aufständische zu bestechen oder zu beseitigen.
+[MAJOR2_TROOP4_NAME]
+Hanuhr Panzer-Droiden
+[MAJOR2_TROOP4_DESC]
+Stark gepanzerte, mechanische Einheiten. Ihre große Feuerkraft hält sowohl Nahkampftruppen als auch entfernte Ziele in Schach. Die Baupläne haben den Hanuhr große Mengen an Bestechungsgeldern gekostet. 
+[MAJOR2_TROOP5_NAME]
+Hanuhr Abwehr-Droiden
+[MAJOR2_TROOP5_DESC]
+Hanuhr Abwehr-Droiden sind besonders gut zur Verteidigung geeignet. Sie wehren Bodentruppen und fliegende Einheiten ab. 
+[MAJOR2_TROOP6_NAME]
+Hanuhr Kommandoeinheiten
+[MAJOR2_TROOP6_DESC]
+Spezialeinheiten der Hanuhr. Sie besitzen kleine, aber sehr präzise Handfeuerwaffen und weitere extrem fortgeschrittene Technik und Ausrüstung. Das macht sie zu äußerst effizienten Eliteeinheiten, zumindest für Hanuhr-Verhältnisse.
+
+[MAJOR3_TROOP1_NAME]
+Khayrin Krieger
+[MAJOR3_TROOP1_DESC]
+Dies ist eine relativ schwache Einheit des Khayrin Imperiums. Diese Einheiten kämpfen mit messerscharfen Nahkampfwaffen. Dies ist aber auch schon der einzige Nachteil in einem Kampf.
+[MAJOR3_TROOP2_NAME]
+Krieger des Kha'rehc Ordens
+[MAJOR3_TROOP2_DESC]
+Im Kha'rehc Orden ausgebildete Khayrin Krieger, eine sehr gut trainierte Einheit des Khayrin Imperiums. 
+[MAJOR3_TROOP3_NAME]
+Kha'rec Meister
+[MAJOR3_TROOP3_DESC]
+Krieger des Kha'rehc Ordens mit jahrelangem, auch mentalem Training werden zu Kha'rehc Meistern. Insbesondere durch das Mentaltraining haben sie eine perfektionierte Kampftechnik und gewinnen fast jede Schlacht.
+[MAJOR3_TROOP4_NAME]
+Khayrin Spezialkommandos 1. Rangs
+[MAJOR3_TROOP4_DESC]
+Khayrin Einheiten, welche die erste Stufe einer stark militärische Ausbildung genoss. Sie werden an verschiedenen Nahkampf- und Feuerwaffen ausgebildet und für den Angriff auf fremden Welten trainiert.
+[MAJOR3_TROOP5_NAME]
+Khayrin Spezialkommandos 2. Rangs
+[MAJOR3_TROOP5_DESC]
+Für diese zweite Stufe der Militärausbildung geeignete Khayrin Krieger erhalten zusätzlich eine psychologische und technische Schulung, um effektiver fortschrittliche Fremdwelten einzunehmen.
+[MAJOR3_TROOP6_NAME]
+Khayrin Spezialkommandos 3. Rangs
+[MAJOR3_TROOP6_DESC]
+Khayrin Krieger des 3. Ranges besitzen eine Spezialausbildung in biologischer und chemischer Kriegsführung. Sie sind insbesondere spezialisiert zur Eroberung sehr stark bevölkerter Welten. 
+[MAJOR3_TROOP7_NAME]
+Kha'rec Elite-Truppen
+[MAJOR3_TROOP7_DESC]
+Kha'rec Elite-Truppen sind die ultimativen Spezialeinheiten des Khayrin Imperiums. Sie sind intensiv für zahlreiche Aufgaben ausgebildet und besonders schlagkräftig und effizient.
+
+[MAJOR4_TROOP1_NAME]
+Heckenschützen
+[MAJOR4_TROOP1_DESC]
+Dies sind relativ schwache Einheiten des Rotharianischen Sternenverbunds. Sie bevorzugen eine hinterhältige Taktik, um ihre Gegner auszuschalten. Ihre militärische Grundausbildung ist sehr kurz.
+[MAJOR4_TROOP2_NAME]
+Rotharianisches Luft-Geschwader
+[MAJOR4_TROOP2_DESC]
+Mit wenig Munition bestückt, aber sehr schnelle Lufteinheiten. Sie nutzen den Überraschungseffekt, weil sie aus hoher Luft herabstürzen und erst sehr spät erkannt werden. Meist werden sie in großen Geschwadern eingesetzt.
+[MAJOR4_TROOP3_NAME]
+Taq'riar
+[MAJOR4_TROOP3_DESC]
+Die Taq'riar bringen Ordnung auf die Straßen der Rotharianischen Welten. Sie werden zum Aufspüren und Beseitigen von Kollaborateuren und Verrätern eingesetzt. Angriffe von außen dulden sie aber genauso wenig.
+[MAJOR4_TROOP4_NAME]
+Rotharianischer Torpedoschwarm
+[MAJOR4_TROOP4_DESC]
+Die Rotharianischen Torpedoschwärme sind gefürchtet. Es handelt sich um sehr stark mit Torpedos bewaffnete, schwebende Einheiten, die für große Flächenbombadierung eingesetzt werden. Sie erreichen keine große Flughöhe und sind auch nicht besonders schnell, sind aber sehr effektiv, weil sie in Schwärmen angreifen.
+[MAJOR4_TROOP5_NAME]
+Taq'riars Schwarze Dornen
+[MAJOR4_TROOP5_DESC]
+Die Schwarze Dornen genannten Spezialeinheiten der Taq'riars sind besonders gefürchtet in der eigenen Bevölkerung. Da es schwebende Einheiten sind, finden sie sich leicht in jedem Gelände zurecht und gelangen leicht in jedes Versteck. So schalten sie Aufständische sowie Feinde blitzschnell aus.
+[MAJOR4_TROOP6_NAME]
+Rotharianische Drohnen
+[MAJOR4_TROOP6_DESC]
+Rotharianische Drohnen sind Defensiv-Streitkräfte mit hoher Feuerkraft. Ihre Aufgabe ist die totale Verteidigung der Rotharianischen Welten gegen Invasoren.
+[MAJOR4_TROOP7_NAME]
+Helikopterdrohnen (getarnt)
+[MAJOR4_TROOP7_DESC]
+Diese Helikopter sind sehr schnell, unsichtbar und kommen bei Spezialaufträgen aller Art zum Einsatz. Sie verraten sich allenfalls durch Ihr Fluggeräusch.
+[MAJOR4_TROOP8_NAME]
+Rotharianische Spezialtruppen
+[MAJOR4_TROOP8_DESC]
+Spezialeinheiten der Rotharianer, sehr gut ausgebildet und genetisch verbessert. 
+
+[MAJOR5_TROOP1_NAME]
+Cartarer Stoßtruppen
+[MAJOR5_TROOP1_DESC]
+Dies sind relativ schwache Einheiten der Cartarer Invasoren. Nichtsdestotrotz sind sie hervorragend geeignet für Aufgaben aller Art wie Offensiven (auch planetarische Eroberungen), Verteidigungsaufgaben und Aufrechterhaltung der öffentlichen Ordnung.
+[MAJOR5_TROOP2_NAME]
+Alpha Invasoren
+[MAJOR5_TROOP2_DESC]
+Die Alpha Invasoren sind Spezialeinheiten der Cartarer. Durch ihre intensive Ausbildung sind sie gut vorbereitet, feindliche Systeme schnell zu eroberen.
+[MAJOR5_TROOP3_NAME]
+gepanzerte Security Kommandos
+[MAJOR5_TROOP3_DESC]
+Die gepanzerten Security Kommandos der Cartarer überwachen ständig Cartar und alle Kolonien des Imperiums. Aufständische oder angreifende Truppen werden aufs härteste bekämpft und zurückgeschlagen.
+[MAJOR5_TROOP4_NAME]
+Obsavarischer Orden
+[MAJOR5_TROOP4_DESC]
+Truppen des Obsavarischen Ordens beobachten und erobern Fremdwelten eher in intriganten Präzisionsangriffen als in Großangriffen. Dabei wird die bauliche Infrastruktur der Fremdwelt größtenteils intakt gelassen.
+[MAJOR5_TROOP5_NAME]
+Cartar Verteidigungs-Kommandos
+[MAJOR5_TROOP5_DESC]
+Cartarische Verteidigungs-Kommandos finden ihre Anwendung in stark gefährdeten Gebieten und zur Unterstützung der Security Kommandos. Sie sind beweglicher und effektiver im Kampf gegen feindliche Einheiten.
+[MAJOR5_TROOP6_NAME]
+Panzerverband
+[MAJOR5_TROOP6_DESC]
+Die sehr stark bewaffneten Panzerverbände der Cartarer überrollen förmlich bevölkerungsreiche Systeme. Ihre Feuerkraft ist immens und ihre Panzerung schwer zu durchdringen.
+[MAJOR5_TROOP7_NAME]
+Flugstaffeln
+[MAJOR5_TROOP7_DESC]
+Die cartarischen Flugstaffeln sind sehr schnell und wendig, sie sind bekannt für ihre legendären Flug- und Ausweichmanöver. Im Kampf kommt es dadurch meist nur zu geringen Verlustraten.
+
+[MAJOR6_TROOP1_NAME]
+Da'unor Sniper
+[MAJOR6_TROOP1_DESC]
+Obwohl die Da'unor Sniper mit Präzisionsgewehren ausgerüstet sind, sind sie ansonsten relativ schwache Einheiten der Omega Allianz. Ihre Ausbildung ist nur von kurzer Dauer.
+[MAJOR6_TROOP2_NAME]
+Da'unor Trooper
+[MAJOR6_TROOP2_DESC]
+Gut ausgebildete Einheiten der Omega Allianz, mit Schnellfeuerwaffen und Sprengmunition ausgerüstet. Die Vi benutzen die Da'unor Troopers auch, um Unruhen in eigenen Städten zu unterdrücken.
+[MAJOR6_TROOP3_NAME]
+Mechanische Kampf-Einheiten
+[MAJOR6_TROOP3_DESC]
+Mechanische Kampf-Einheiten werden für die Invasion von Systemen produziert. Sie haben sehr hohe Schußsequenzen und eignen sich hervorragend im Bodenkampf.
+[MAJOR6_TROOP4_NAME]
+Mechanische Tracing-Einheiten
+[MAJOR6_TROOP4_DESC]
+Mechanische Tracing-Einheiten können besonders gut Feindes des Imperiums ausmachen. Sie besitzen sehr empfindliche Detektoren und Ortungssysteme.
+[MAJOR6_TROOP5_NAME]
+Mechanische Angriffs-Einheiten
+[MAJOR6_TROOP5_DESC]
+Mechanische Angriffs-Einheiten sind mit einem großen Arsenal an Waffen ausgestattet und sind für die Eroberung von fremden Systemen optimiert.
+[MAJOR6_TROOP6_NAME]
+Da'unors Spezial-Einheiten
+[MAJOR6_TROOP6_DESC]
+Die mechanischen Spezial-Einheiten der Da'unor sind wendig, schnell und sehr effizient. Sie haben eine hohe Feuerkraft und operieren in kleinen Verbänden oder auch einzeln.
+
+[MRD]
+Mrd.
+[SHIPSIZE]
+Größenklasse
+[SENSORS]
+Sensoren
+[CORRUPTIBILITY]
+Bestechlichkeit
+[VERY_LOW_CORRUPTIBILITY]
+sehr gering
+[LOW_CORRUPTIBILITY]
+gering
+[NORMAL_CORRUPTIBILITY]
+normal
+[HIGH_CORRUPTIBILITY]
+hoch
+[VERY_HIGH_CORRUPTIBILITY]
+sehr hoch
+[TECHNICAL_PROGRESS]
+technischer Fortschritt
+[NEW_TECHNOLOGY_ALLOWS]
+neue Technologie ermöglicht:
+
+[EVENT_IONISIERENDES_GASWESEN]
+Durch ein Ionisierendes Gaswesen wurde die komplette Energieversorgung im § System lahmgelegt
+[EVENT_GABALLIANER_SEUCHENSCHIFF]
+Durch ein Gaballianisches Seuchenschiff wurde die komplette Nahrungsversorgung im § System lahmgelegt
+[EVENT_BLIZZARD_PLASMAWESEN]
+Durch ein Blizzard Plasmawesen wurde die komplette Energieversorgung im § System lahmgelegt
+[EVENT_MORLOCK_RAIDER]
+Durch einen Überfall der Morlock-Raider wurden § Credits im § System gestohlen
+[EVENT_ISOTOPOSPHAERISCHES_WESEN]
+Durch ein Isotoposphärisches Wesen wurde die komplette Energieversorgung im § System lahmgelegt

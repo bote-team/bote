@@ -1,0 +1,11 @@
+
+see also http://birth-of-the-empires.de/wiki/index.php/Credits_Other_Graphics#Research_Graphics
+
+biotech.bop by voxelgeek
+computertech.bop by nemesis5
+constructiontech.bop by nemesis5
+energytech.bop by nemesis5
+propulsiontech.bop by nemesis5
+specialtech.bop by nemesis5
+weapontech.bop by nemesis5
+

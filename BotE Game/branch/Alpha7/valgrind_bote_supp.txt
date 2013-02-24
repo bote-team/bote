@@ -1,0 +1,251 @@
+
+###########################################################################
+#ERRORS IN WIN SDK
+{
+   cond_in_wincore_gui_related
+   Memcheck:Cond
+   ...
+   fun:CWnd::SendChildNotifyLastMsg
+   fun:CWnd::OnCtlColor
+   fun:CWnd::OnWndMsg
+   fun:CWnd::WindowProc
+   fun:CWnd::OnNTCtlColor
+   fun:CWnd::OnWndMsg
+   fun:CWnd::WindowProc
+   fun:AfxCallWndProc
+   fun:AfxWndProc
+}
+
+###########################################################################
+#ERRORS IN WINE
+{
+   cond_in_wine
+   Memcheck:Cond
+   fun:bitmapinfoheader_from_user_bitmapinfo
+   fun:GetDIBits
+   fun:create_icon_pixmaps
+   fun:set_icon_hints
+   fun:set_initial_wm_hints
+   fun:create_whole_window
+   fun:X11DRV_create_win_data
+   fun:X11DRV_WindowPosChanging
+   fun:set_window_pos
+   fun:USER_SetWindowPos
+   fun:SetWindowPos
+   fun:show_window
+}
+{
+   cond_in_wine_when_ending_bote
+   Memcheck:Cond
+   fun:HEAP_ValidateInUseArena
+   fun:HEAP_IsRealArena
+   fun:RtlValidateHeap
+   fun:HeapValidate
+   fun:GlobalHandle
+   fun:CThreadSlotData::~CThreadSlotData
+   fun:CThreadSlotData::`scalar deleting destructor'
+   fun:AfxTlsRelease
+   fun:_AfxTermAppState
+   fun:doexit
+   fun:exit
+   fun:__tmainCRTStartup
+}
+
+#leaks
+{
+   leak_in_wine_1
+   Memcheck:Leak
+   fun:RtlAllocateHeap
+   fun:rpcrt4_protseq_np_get_wait_array
+   fun:RPCRT4_server_thread
+   obj:/usr/local/lib/wine/ntdll.dll.so
+   fun:call_thread_func
+   obj:/usr/local/lib/wine/ntdll.dll.so
+   fun:start_thread
+   fun:start_thread
+   fun:clone
+}
+{
+   leak_in_wine_2
+   Memcheck:Leak
+   fun:RtlAllocateHeap
+   fun:HeapAlloc
+   fun:GlobalAlloc
+   fun:LocalAlloc
+   fun:CNoTrackObject::operator new
+   fun:AFX_MODULE_STATE::AFX_MODULE_STATE
+   fun:_AFX_BASE_MODULE_STATE::_AFX_BASE_MODULE_STATE
+   fun:CProcessLocal<_AFX_BASE_MODULE_STATE>::CreateObject
+   fun:CProcessLocalObject::GetData
+   fun:CProcessLocal<_AFX_BASE_MODULE_STATE>::GetData
+   fun:AfxGetModuleState
+   fun:AfxInitialize
+}
+{
+   leak_in_wine_3
+   Memcheck:Leak
+   fun:RtlAllocateHeap
+   fun:heap_alloc_zero
+   fun:ScriptStringAnalyse
+   fun:EDIT_UpdateUniscribeData
+   fun:EDIT_WM_Paint
+   fun:EditWndProc_common
+   fun:EditWndProcW
+   obj:/usr/local/lib/wine/user32.dll.so
+   fun:call_window_proc
+   fun:WINPROC_call_window
+   fun:DispatchMessageW
+   fun:IsDialogMessageW
+}
+{
+   sound_related_leak_in_wine_1
+   Memcheck:Leak
+   fun:RtlAllocateHeap
+   fun:create_session
+   fun:get_audio_session
+   fun:AudioClient_Initialize
+   fun:DSOUND_ReopenDevice
+}
+{
+   sound_related_leak_in_wine_2
+   Memcheck:Leak
+   fun:RtlAllocateHeap
+   fun:IMalloc_fnAlloc
+   fun:CoTaskMemAlloc
+   fun:AudioClient_GetMixFormat
+   fun:load_driver_devices
+   fun:MMDevEnum_Create
+   fun:MMCF_CreateInstance
+   fun:CoCreateInstance
+   fun:get_mmdevenum
+   fun:enumerate_mmdevices
+   fun:DirectSoundEnumerateW
+   fun:DirectSoundEnumerateA
+}
+###########################################################################
+
+#ERRORS IN GDI
+
+#this one is perhaps valid to check
+{
+   cond_font_error_in_gdi
+   Memcheck:Cond
+   ...
+   obj:/media/sf_HDI3_SOURCE_NTFS/BotE_git_trunc/game/GdiPlus.dll
+   fun:Gdiplus::FontFamily::FontFamily
+   fun:Gdiplus::Font::Font
+   fun:CStartMenuView::OnDraw
+}
+
+{
+   cond_uninitialized_value_in_gdi
+   Memcheck:Cond
+   obj:/media/sf_HDI3_SOURCE_NTFS/BotE_git_trunc/game/GdiPlus.dll
+   obj:/media/sf_HDI3_SOURCE_NTFS/BotE_git_trunc/game/GdiPlus.dll
+   obj:/media/sf_HDI3_SOURCE_NTFS/BotE_git_trunc/game/GdiPlus.dll
+   obj:/media/sf_HDI3_SOURCE_NTFS/BotE_git_trunc/game/GdiPlus.dll
+   obj:/media/sf_HDI3_SOURCE_NTFS/BotE_git_trunc/game/GdiPlus.dll
+   obj:/media/sf_HDI3_SOURCE_NTFS/BotE_git_trunc/game/GdiPlus.dll
+   obj:/media/sf_HDI3_SOURCE_NTFS/BotE_git_trunc/game/GdiPlus.dll
+   obj:/media/sf_HDI3_SOURCE_NTFS/BotE_git_trunc/game/GdiPlus.dll
+   obj:/media/sf_HDI3_SOURCE_NTFS/BotE_git_trunc/game/GdiPlus.dll
+}
+
+###########################################################################
+
+#ERRORS IN fmodex.dll
+#these are perhaps valid, not so sure - code and handling in soundmanager.cpp looks right after some debugging
+#probably upstream errors, but may also be due to wine/valgrind/Linux
+
+{
+   invalid_read_when_loading_sound
+   Memcheck:Addr4
+   ...
+   obj:*
+   fun:CSoundManager::LoadSound
+   fun:CSoundManager::PlaySound
+}
+{
+   ivalid_memory_freeing_in_fmodex_when_ending_bote
+   Memcheck:Free
+   fun:RtlReAllocateHeap
+   fun:DirectSoundDevice_RemoveBuffer
+   fun:secondarybuffer_destroy
+   fun:IDirectSoundBufferImpl_Release
+   obj:*
+   obj:*
+   fun:CSoundManager::Release
+   fun:CSoundManager::~CSoundManager
+   fun:`CSoundManager::GetInstance'::`2'::`dynamic atexit destructor for 'instance''
+   fun:doexit
+   fun:exit
+   fun:__tmainCRTStartup
+}
+
+#leaks
+{
+   leak_in_fmodex_from_loading_sounds
+   Memcheck:Leak
+   fun:RtlAllocateHeap
+   fun:MSVCRT_malloc
+   ...
+   fun:CSoundManager::LoadSound
+}
+{
+   leak_in_soundmanager_on_init
+   Memcheck:Leak
+   fun:RtlAllocateHeap
+   fun:DSOUND_PrimaryOpen
+   fun:DSOUND_PrimaryCreate
+   fun:DirectSoundDevice_Initialize
+   fun:IDirectSound8_IDirectSound8_Initialize
+   fun:DirectSoundCreate8
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   fun:CSoundManager::Init
+   fun:CBotf2Doc::OnNewDocument
+}
+###########################################################################
+#MISCELLANIOUS
+{
+   cstring_and_wine_related_leak
+   Memcheck:Leak
+   fun:RtlAllocateHeap
+   fun:_heap_alloc_base
+   fun:_heap_alloc_dbg_impl
+   fun:_nh_malloc_dbg_impl
+   fun:_nh_malloc_dbg
+   fun:malloc
+   fun:CAfxStringMgr::Allocate
+   fun:ATL::CSimpleStringT<char,0>::Fork
+   fun:ATL::CSimpleStringT<char,0>::PrepareWrite2
+   fun:ATL::CSimpleStringT<char,0>::PrepareWrite
+   fun:ATL::CSimpleStringT<char,0>::GetBuffer
+   fun:ATL::CSimpleStringT<char,0>::SetString
+}
+{
+   looks_like_some_leak_in_wine_and_or_valgrind
+   Memcheck:Leak
+   fun:calloc
+   fun:_dl_allocate_tls
+   fun:pthread_create@@GLIBC_2.1
+   fun:RtlCreateUserThread
+}
+{
+   no_idea_about_this_one
+   Memcheck:Leak
+   fun:RtlAllocateHeap
+   fun:MSVCRT_malloc
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+}

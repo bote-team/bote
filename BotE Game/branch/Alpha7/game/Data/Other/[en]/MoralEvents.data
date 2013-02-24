@@ -1,0 +1,427 @@
+#0	Eliminate an Empire
+		The fall of $param$ is celebrated enthusiastically by many Coalition citizens
+		The fall of $param$ lifted the Exchange to record highs
+		Warriors celebrated the fall of $param$ with bloodwine and song
+		An Imperial holiday commemorates the fall of $param$
+		All Cartares rejoice at the collapse of $param$
+		The fall of $param$ has increased faith of our citizens in the power and wisdom of the Vi
+#1	Win a Major Battle
+		This victory has raised the enthusiasm of Coalition citizens
+		Investors were impressed by the great military success
+		Warriors are deeply inspired by the great victory
+		This great victory was welcome news to all loyal Rotharians
+		Cartare citizens are deeply inspired by the great victory
+		The Vi are delightened with battle progress
+#2	Win a Significant Battle
+		Victory is the lead story in most civilian news services
+		Brokers are buying stock in our military after victory
+		Victory has renewed our faith in the teachings of Khaj'Avrom
+		Popular support for the military was reinforced by victory
+		The people are clearly excited by our victory
+		The Vi are satisfied with the outcome of the fight
+#3	Win a Minor Battle
+		Spirits on the home front were raised somewhat by victory
+		Victory led to a slight increase in consumer confidence
+		This victory has raised the spirits of our warriors
+		The people are pleased by our military success
+		Cartare citizens were mildly pleased to hear of victory
+		The Vi were pleased with the outcome of this combat
+#4	Lose a Major Battle
+		Anti-war demonstrations are more frequent since the recent defeat
+		Military certificates plunged in value following the defeat in combat
+		The defeat in battle has raised deep concerns among many warriors
+		Citizens have openly condemned our failure in battle
+		The defeat in battle has led citizens to openly criticize our policies
+		The Vi are furious about this defeat
+#5	Lose a Significant Battle
+		Our military leaders have been ridiculed since the defeat
+		The defeat in sector $param$ has triggered a drop in consumer confidence
+		Warriors are demanding that the deaths in sector $param$ be avenged
+		The disaster in sector $param$ has eroded popular support for the military
+		Cartare laborers are disenchanted by the defeat
+		The Vi are enraged about this defeat
+#6	Lose a Minor Battle
+		Coalition citizens are mildly displeased by our defeat
+		The defeat has raised the concerns of many businessmen
+		The defeat in battle has raised concerns among warriors
+		The defeat in sector $param$ has lowered the morale of our people
+		Cartare citizens were disappointed to hear of our defeat
+		The Vi were displeased with the outcome of this combat
+#7	Lose a Flagship
+		People are shocked about the loss of our flagship $param$
+		Financiers have lost assets due to the loss of flagship $param$
+		Warriors refuse to believe the loss of the fleet's pride $param$
+		Citizens are indignant about the loss of flagship $param$
+		The people have been shocked with the loss of flagship $param$
+		The Vi have taken the loss of flagship $param$ with anger
+#8	Lose an Outpost
+		People are shocked about the loss of this outpost
+		Financiers have lost assets due to the loss of this outpost
+		Warriors refuse to believe the loss of this outpost
+		Citizens are indignant about the loss of this outpost
+		The people have been shocked with the loss of this outpost
+		The Vi have taken the loss of this outpost with displeasure
+#9	Lose a Starbase
+		People are shocked about the loss of this starbase
+		Financiers have lost assets due to the loss of this starbase
+		Warriors refuse to believe the loss of this starbase
+		Citizens are indignant about the loss of this starbase
+		The people have been shocked with the loss of this starbase
+		The Vi have taken the loss of this starbase with displeasure
+#10	Sign a Membership treaty with Minor
+		$param$ have been welcomed into the Coalition with open arms
+		Investors are looking forward to new business opportunities among $param$
+		Warriors are pleased that $param$ will now be considered their brothers
+		The people seem happy to accept $param$ as members of our great Empire
+		$param$ have been received warmly by our citizens
+		The Vi have approved entry of $param$ into the Dominion
+#11	Take a System
+		The brutal subjugation of the $param$ system has triggered widespread protests
+		Investors are relieved to hear that the $param$ system is now a stable market
+		Our warriors revel in the glory of our victory in the $param$ system
+		Citizens are relieved that there will be no more trouble in $param$
+		Cartare citizens are glad to hear that the $param$ system is under control
+		The Vi have noticed the conquest of $param$-System with benevolence
+#12	Colonize a System
+		Citizens throughout the Coalition celebrate the colonization of $param$
+		Investors are enthusiastic about opportunities in the new $param$ colony
+		The $param$ system will give our people some long-overdue breathing room
+		Citizens are glad to hear that the $param$ system is now part of our Empire
+		Citizens raised a glass of kanar to celebrate the colonization of $param$
+		The Vi celebrates the foundation of our new colony in $param$
+#13	Liberate a Minor Race System
+		Celebrations are planned to honor the heroes who liberated $param$
+		Financiers are pleased that $param$ can resume trade
+		Our warriors are not proud of the liberation of $param$
+		The liberation of $param$ has raised the spirits of many concerned citizens
+		Citizens are not pleased that $param$ have been set free
+		$param$ has been liberated: The Vi have doubts towards such tactics
+#14	Liberate a Former Native System
+		The liberation of the $param$ system has generated new support for the war
+		The restoration of the $param$ market is good news to all Heyoun exporters
+		Many warriors will join the Order of the Bat'leth for their actions at $param$
+		The rescue of $param$ has become a popular cause for celebration
+		The liberation of $param$ has raised the spirits of all loyal Cartares
+		Liberation of $param$ pleases the Vi
+#15	Lose Home System to Outside Forces
+		Protesters are demanding an explanation for our failure to protect the Sol system
+		The loss of Heyounnar has pushed the Exchange down to an all-time low
+		Many warriors have chosen honorable suicide over life without the homeworld
+		The people believe that the loss of Rotharius is a clear sign of governmental incompetence
+		The loss of Cardassia Prime has led to widespread disillusionment and several suicides
+		Loss of Vi homeworld: The Vi do not see any perspective in their being here in the alpha quadrant anymore
+#16	Lose a Member System to Outside Forces
+		Citizens are outraged by our inability to properly defend $param$
+		The loss of $param$ from our consumer base is a disaster for Heyoun exporters
+		Every Khaoron warrior is shamed by our failure to defend the $param$ system
+		Many citizens have expressed disappointment at the loss of the $param$ system
+		Cartare citizens are disheartened by the loss of $param$ to enemy forces
+		The Vi refused to believe the loss of $param$
+#17	Lose a Subjugated System to Outside Forces
+		The people is not pleased by our failure to control $param$
+		Consumer confidence dropped slightly on reports that we have lost $param$
+		In failing to defend $param$, we have lost a great deal of honor
+		The people is strongly displeased by our failure to protect $param$
+		Cartare citizens are disheartened by the loss of the $param$ system
+		Loss of $param$ system has enraged the Vi
+#18	Lose a System to Rebellion
+		Citizens of the whole coalition condemn the rebellion in the $param$ system
+		The rebellion in sector $param$ caused a serious drop in the Exchange
+		Warriors feel rage about the rebellion in the $param$ sector
+		People cannot understand the rebellion in $param$ sector
+		Many Cartare citizens appear to sympathize with the rebels of $param$
+		Rebellion in $param$ system has offended the Vi
+#19	Bombard a System
+		The bombing of $param$ has eroded popular support for our military
+		The Exchange posted severe losses today in response to the bombing of $param$
+		It is felt that the bombardment of $param$ proves that we are still Khaoron
+		Many vocal dissidents have been silenced by the bombardment of $param$
+		The bombardment of the $param$ system has silenced several dissidents
+		Bombardment of $param$ system gets the attention of the Vi
+#20	Bombard native system that has Rebelled
+		Attack on rebel system $param$ reduced support for our military policies
+		The Exchange posted several losses today in response to the bombing of $param$
+		Bombardment of our disloyal brothers in $param$ system pleases true Khaorons
+		Bombardment of rebel $param$ system can easily be camouflaged
+		Bombardment of rogue $param$ system rejoices the Union
+		The Vi justify bombing rebels in the $param$ system
+#21	Eliminate a Minor Race Entirely
+		Protests: Extinction of the $param$ makes people outraged
+		Extinction of $param$: Exchange reacts with a severe drop in all sales activities
+		Khaorons concelebrate the extinction of $param$,
+		People condemns extinction of $param$,
+		Extinction of $param$ justified: They were not worth to live
+		Extermination of $param$ pleases Vi
+#22	Suffer bombardment of System
+		People demands termination of the $param$ bombardment
+		Bombing $param$ consumes markets
+		Khaorons demand: Help our brothers on $param$
+		The people have asked the Senate to intervene against the bombardment of $param$
+		Union citizens have no sympathy with the population on $param$
+		The Vi demand instant termination of $param$ bombardments
+#23	Suffer 50% pop loss in Home Sys. Bombardment
+		""
+		""
+		""
+		""
+		""
+		""
+#24	Declare War on an Empire when Neutral
+		Several popular editorials have strongly criticized the war against $param$
+		Positive reaction on declaration of war against $param$
+		All warriors look forward to the war against $param$
+		People are pleased that we can fight $param$
+		People receive this war against $param$ with cheers
+		The Vi are looking forward to having war with $param$
+#25	Declare War on an Empire when Non-Aggression
+		Many citizens feel that in betraying $param$, we have betrayed our own people
+		Split reaction on declaration of war against $param$
+		All true warriors look forward to the war against $param$
+		People are pleased that we can fight $param$
+		People receive this war against $param$ with cheers
+		The Vi are looking forward to having war with $param$
+#26	Declare War on an Empire with Trade Treaty
+		The majority of citizens feels that in betraying $param$, we have betrayed our own people
+		Our breach of contract with $param$ shocks investors
+		Our war against $param$ pleases some warriors
+		The people are pleased that we will exterminate $param$
+		People receive this war against $param$ with cheers
+		The Vi are looking forward to having war with $param$
+#27	Declare War on an Empire with Friendship Treaty
+		The majority of citizens feels that in betraying $param$, we have betrayed our own people
+		Our breach of contract with $param$ will be costly
+		Our breach of honor with $param$ has not been well received
+		Some restless citizens have questioned our breach of treaty with $param$
+		People acclaim this new war against $param$
+		The Vi are looking forward to having war with $param$
+#28	Declare War on an Empire with Defense Pact
+		Nearly all citizens feel that in betraying $param$, we have betrayed our own people
+		Our breach of contract with $param$ will be costly
+		Our breach of honor with $param$ has not been well received
+		Many restless citizens have questioned our breach of treaty with $param$
+		People have mixed feelings about this war against $param$
+		The Vi are looking forward to having war with $param$
+#29	Declare War on an Empire with Cooperation Treaty
+		Nearly all citizens feel that in betraying $param$, we have betrayed our own people
+		Our breach of contract with $param$ will be extremely expensive
+		Our breach of honor with $param$ has not been well received
+		Restless citizens throughout the Empire have questioned our breach of treaty with $param$
+		Citizens despise our war against $param$.
+		The Vi are looking forward to having war with $param$
+#30	Declare War on an Empire with Affiliation
+		Our war against $param$ causes violent protests in all systems
+		Investors are shocked about this war against $param$
+		Our breach of honor with $param$ has been rejected by most warriors
+		The entire population is having severe troubles with the war against $param$
+		Many Cartare citizens were shocked to hear that we have betrayed $param$
+		The Vi are looking forward to having war with $param$
+#31	Other Empire Declares War when Neutral
+		The war against $param$ has increased support for our military policies
+		Analysts believe the war against $param$ will be very profitable
+		All true warriors look forward eagerly to the war against $param$
+		The people are pleased that we will settle accounts with $param$
+		The chance to prove ourselves against $param$ has boosted enlistments
+		The Vi are looking forward to having war with $param$
+#32	Other Empire Declares War with Treaty
+		The war against $param$ has increased support for our military policies
+		Analysts believe the war against $param$ will be very profitable
+		All true warriors look forward eagerly to the war against $param$
+		The people are pleased that we will settle accounts with $param$
+		The chance to prove ourselves against $param$ has boosted enlistments
+		The Vi are looking forward to having war with $param$
+#33	Other Empire Declares War with an Affiliation
+		The war against $param$ has increased support for our military policies
+		Analysts believe the war against $param$ will be very profitable
+		All true warriors look forward eagerly to the war against $param$
+		The people are happy that we will now settle accounts with $param$ for good
+		The chance to prove ourselves against $param$ has boosted enlistments
+		The Vi are looking forward to having war with $param$
+#34	Sign Trade Treaty
+		New trade with $param$ delights people
+		Entrepreneurs are looking forward to trading with $param$
+		Trade with $param$ is of no much interest to true warriors
+		The people seem to approve of our arrangement with $param$
+		News of our peace with $param$ has been well-received by our citizens
+		The Vi got no apprehension for treaty with $param$
+#35	Sign Friendship/Cooperation Treaty
+		Our treaty with $param$ has quelled the fears of many concerned citizens
+		The new contract with $param$ is good for business
+		Warriors understand the need of signing this treaty with $param$
+		The people seem to approve of our arrangement with $param$
+		News of our peace with $param$ has been received warmly by our citizens
+		The Vi have absolutely no apprehension for treaty with $param$
+#36	Sign an Affiliation Treaty
+		Popular support for our alliance with $param$ is truly overwhelming
+		The Exchange hit a record high as brokers celebrated our alliance with $param$
+		The people believe we have found worthy allies in $param$
+		The people believe that our alliance with $param$ will be our salvation
+		The public response to our alliance with $param$ is very favorable
+		Vi' response to our alliance with $param$ is very favorable
+#37	Receive Acceptance of Non-Aggression Pact
+		Our treaty with $param$ has quelled the fears of many concerned citizens
+		Entrepreneurs are looking forward to new opportunities among $param$
+		The people are disappointed that there will be no battles with $param$
+		The people seem to approve of our arrangement with $param$
+		News of our peace with $param$ has been well-received by our citizens
+		The Vi have absolutely no apprehension for treaty with $param$
+#38	Accept a Non-Aggression Pact
+		Our treaty with $param$ has quelled the fears of many concerned citizens
+		Entrepreneurs are looking forward to new opportunities among $param$
+		The people are disappointed that there will be no battles with $param$
+		The people seem to approve of our arrangement with $param$
+		News of our peace with $param$ has been well-received by our citizens
+		The Vi have absolutely no apprehension for treaty with $param$
+#39	Receive Acceptance of Defence Pact
+		""
+		""
+		""
+		""
+		""
+		""
+#40	Accept a Defence Pact
+		""
+		""
+		""
+		""
+		""
+		""
+#41	Receive Acceptance of War Pact
+		""
+		""
+		""
+		""
+		""
+		""
+#42	Accept a War Pact
+		""
+		""
+		""
+		""
+		""
+		""
+#43	Refuse a Treaty (Trade)
+		""
+		""
+		""
+		""
+		""
+		""
+#44	Refuse a Treaty (Friendship, Coop)
+		""
+		""
+		""
+		""
+		""
+		""
+#45	Refuse a Treaty (Affiliation)
+		""
+		""
+		""
+		""
+		""
+		""
+#46	Refuse a Treaty (Non_Aggression, Defence Pact)
+		Activists have strongly condemned our refusal of peace with $param$
+		Investors were disappointed that there will be no peace with $param$
+		Our people are pleased to hear that peace has been averted
+		The people are pleased that our status with $param$ will not change
+		Our citizens are disappointed to hear that there will be no peace with $param$
+		The Vi are pleased to hear that peace with $param$ is not necessary
+#47	Refuse a Treaty (Warpact)
+		""
+		""
+		""
+		""
+		""
+		""
+#48	Accept a Request
+		""
+		""
+		""
+		""
+		""
+		""
+#49	Refuse a Request
+		""
+		""
+		""
+		""
+		""
+		""
+#50	Receive Acceptance of a Request
+		""
+		""
+		""
+		""
+		""
+		""
+#51	Accept Surrender
+		""
+		""
+		""
+		""
+		""
+		""
+#52	Receive a Surrender
+		""
+		""
+		""
+		""
+		""
+		""
+#53	Accept 'Victory' Non-Aggression Treaty
+		""
+		""
+		""
+		""
+		""
+		""
+#54	Receive Acceptance of Victory Treaty Demand
+		""
+		""
+		""
+		""
+		""
+		""
+#55	Accept a System's Request for Independence
+		""
+		""
+		""
+		""
+		""
+		""
+#56	Refuse a System's Request for Independence
+		""
+		""
+		""
+		""
+		""
+		""
+#57	Repel a Borg/Droid Attack
+		""
+		""
+		""
+		""
+		""
+		""
+#58	Lose population of system to natural event
+		""
+		""
+		""
+		""
+		""
+		""
+#59	Successful espionage
+		Espionage activies have no impact on people's opinion
+		Our traders rather concentrate on making profits than conducting espionage
+		Warriors call our spy activities dishonorable
+		People approve espionage methods of the Tal'Shiar
+		Union citizens are mildly pleased with espionage activities
+		The Vi are amused about our espionage activities
+#60	Successful sabotage
+		Sabotage activies have no impact on people's opinion
+		Our traders rather concentrate on making profits than conducting sabotage missions
+		Warriors call our sabotage activities dishonorable
+		People approve sabotage methods of the Tal'Shiar
+		Union citizens are mildly pleased with sabotage activities
+		The Vi are amused about our espionage sabotage
