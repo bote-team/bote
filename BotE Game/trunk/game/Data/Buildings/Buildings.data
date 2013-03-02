@@ -15684,7 +15684,7 @@ Typ 3 Minenfeld
 Type 3 Minefield
 Ein engmaschigeres Minenfeld zur Planetenabwehr.
 This minefield is closer distributed for planetary defense.
-1
+0
 con_114b.bop
 3
 113
@@ -15941,7 +15941,7 @@ con_114b.bop
 0
 0
 0
-113
+0
 0
 0
 0
@@ -32484,7 +32484,7 @@ Typ 2 Minenfeld
 Type 2 Minefield
 Ein größeres Minenfeld zur Planetenabwehr.
 A larger minefield located at the first planetary defense perimeter. 
-0
+1
 con_114b.bop
 3
 233
@@ -32624,7 +32624,7 @@ Typ 3 Minenfeld
 Type 3 Minefield
 Ein engmaschigeres Minenfeld zur Planetenabwehr.
 This minefield is closer distributed for planetary defense.
-1
+0
 con_114b.bop
 3
 234
@@ -32881,7 +32881,7 @@ con_114b.bop
 0
 0
 0
-234
+0
 0
 0
 0
@@ -49704,7 +49704,7 @@ Typ 3 Minenfeld
 Type 3 Minefield
 Ein engmaschigeres Minenfeld zur Planetenabwehr.
 This minefield is closer distributed for planetary defense.
-1
+0
 kha_114b.bop
 3
 356
@@ -49961,7 +49961,7 @@ kha_b116.bop
 0
 0
 0
-356
+0
 0
 0
 0
@@ -66364,7 +66364,7 @@ Typ 3 Minenfeld
 Type 3 Minefield
 Ein engmaschigeres Minenfeld zur Planetenabwehr.
 This minefield is closer distributed for planetary defense.
-1
+0
 con_114b.bop
 3
 475
@@ -66621,7 +66621,7 @@ con_114b.bop
 0
 0
 0
-475
+0
 0
 0
 0
@@ -83024,7 +83024,7 @@ Typ 3 Minenfeld
 Type 3 Minefield
 Ein engmaschigeres Minenfeld zur Planetenabwehr.
 This minefield is closer distributed for planetary defense.
-1
+0
 con_114b.bop
 3
 594
@@ -83281,7 +83281,7 @@ con_114b.bop
 0
 0
 0
-594
+0
 0
 0
 0
@@ -99404,7 +99404,7 @@ Typ 3 Minenfeld
 Type 3 Minefield
 Ein engmaschigeres Minenfeld zur Planetenabwehr.
 This minefield is closer distributed for planetary defense.
-1
+0
 ome_113b.bop
 3
 711
@@ -99661,7 +99661,7 @@ ome_113b.bop
 0
 0
 0
-711
+0
 0
 0
 0
