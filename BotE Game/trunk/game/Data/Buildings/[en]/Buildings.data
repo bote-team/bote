@@ -15684,7 +15684,7 @@ Type 3 Minefield
 Typ 3 Minenfeld
 This minefield is closer distributed for planetary defense.
 Ein engmaschigeres Minenfeld zur Planetenabwehr.
-1
+0
 con_114b.bop
 3
 113
@@ -15887,7 +15887,7 @@ con_114b.bop
 0
 0
 0
-1
+0
 0
 0
 0
@@ -15941,7 +15941,7 @@ con_114b.bop
 0
 0
 0
-113
+0
 0
 0
 0
@@ -32484,7 +32484,7 @@ Type 2 Minefield
 Typ 2 Minenfeld
 A larger minefield located at the first planetary defense perimeter. 
 Ein größeres Minenfeld zur Planetenabwehr.
-0
+1
 con_114b.bop
 3
 233
@@ -32624,7 +32624,7 @@ Type 3 Minefield
 Typ 3 Minenfeld
 This minefield is closer distributed for planetary defense.
 Ein engmaschigeres Minenfeld zur Planetenabwehr.
-1
+0
 con_114b.bop
 3
 234
@@ -32881,7 +32881,7 @@ con_114b.bop
 0
 0
 0
-234
+0
 0
 0
 0
@@ -33600,10 +33600,10 @@ han_b122.bop
 0
 241
 2
-Festival of fun
+Imperial Diets
 Hoffeste
-In times of trouble, the best thing to do is to put work aside and celebrate the fruits of a plutocratic economy. A little time off to enjoy the luxuries that the Heyoun lifestyle provides is usually enough to defuse any dangerous situation. The Festival of Fun reminds a planet's citizens that life is good.
-In unangenehmen Zeiten ist es das Beste, die Arbeit beiseite zu legen und die Pracht des Königtums zu feiern.  Ein wenig Urlaub, in dem man den Luxus des Hanuhr-Lebensstils genießt, reicht gewöhnlich aus, um jede gefährliche Situation abzumildern. Das Festival der Freude erinnert die Untertanen eines Planeten daran, daß das Leben schön ist.
+In times of trouble, the best thing to do is to put work aside and celebrate the fruits of a plutocratic economy. A little time off to enjoy the luxuries that the Heyoun lifestyle provides is usually enough to defuse any dangerous situation. The Imperial Diets reminds a planet's citizens that life is good.
+In unangenehmen Zeiten ist es das Beste, die Arbeit beiseite zu legen und die Erträge der plutokratischen Ökonomie zu feiern. Ein wenig Urlaub, in dem man den Luxus des Hanuhr-Lebensstils genießt, reicht gewöhnlich aus, um jede gefährliche Situation abzumildern. Die Hoffeste erinnern die Untertanen eines Planeten daran, dass das Leben schön ist.
 0
 han_b123.bop
 1
@@ -49704,7 +49704,7 @@ Type 3 Minefield
 Typ 3 Minenfeld
 This minefield is closer distributed for planetary defense.
 Ein engmaschigeres Minenfeld zur Planetenabwehr.
-1
+0
 kha_114b.bop
 3
 356
@@ -49961,7 +49961,7 @@ kha_b116.bop
 0
 0
 0
-356
+0
 0
 0
 0
@@ -62304,7 +62304,7 @@ Type 2 Deritium Refinery
 Typ 2 Deritium-Raffinerie
 Deritium in its raw state is too impure to be safely used as a catalyst for matter-antimatter reactions. In a Deritium Refinery there is the necessary equipment to extract pure deritium from natural ore, to shape the resulting crystals and prepare them for the use in a continuum-engine.
 Deritium ist in seinem natürlichen Zustand viel zu unrein, um gefahrlos als Katalysator für Materie-/Antimaterie-Reaktionen eingesetzt zu werden. In einer Deritium-Raffinerie gibt es die nötige Ausrüstung, um Deritium aus natürlich vorkommenden Erzen zu extrahieren, die entstandenen Kristalle zu formen und sie für den Einsatz in einem Kontinuum-Antrieb vorzubereiten.
-0
+1
 con_9293.bop
 1
 446
@@ -66364,7 +66364,7 @@ Type 3 Minefield
 Typ 3 Minenfeld
 This minefield is closer distributed for planetary defense.
 Ein engmaschigeres Minenfeld zur Planetenabwehr.
-1
+0
 con_114b.bop
 3
 475
@@ -66621,7 +66621,7 @@ con_114b.bop
 0
 0
 0
-475
+0
 0
 0
 0
@@ -73360,9 +73360,9 @@ car_4453.bop
 0
 525
 5
-Type 6 Shadow Team
+Type 6 Science Center
 Typ 6 Wissenschaftszentrum
-Shadow Teams are sent deep into enemy territory on espionage or sabotage missions. Occasionally, they turn their attention inward to weed out spies. Each requires a support staff and extensive facilities in order to train, equip and deploy its operatives.
+Science Centers provide cutting-edge research and development of new technologies. For safety reasons, these facilities are often located far from population centers.
 Wissenschaftszentren sorgen für die Entwicklung neuer Technologien für Forschung und Wissenschaft.  Aus Sicherheitsgründen befinden sich diese Zentren meist weit von bevölkerten Gegenden entfernt.
 0
 car_4453.bop
@@ -73411,8 +73411,8 @@ car_4453.bop
 0
 1247
 0
-363
 0
+363
 0
 0
 0
@@ -83024,7 +83024,7 @@ Type 3 Minefield
 Typ 3 Minenfeld
 This minefield is closer distributed for planetary defense.
 Ein engmaschigeres Minenfeld zur Planetenabwehr.
-1
+0
 con_114b.bop
 3
 594
@@ -83281,7 +83281,7 @@ con_114b.bop
 0
 0
 0
-594
+0
 0
 0
 0
@@ -99404,7 +99404,7 @@ Type 3 Minefield
 Typ 3 Minenfeld
 This minefield is closer distributed for planetary defense.
 Ein engmaschigeres Minenfeld zur Planetenabwehr.
-1
+0
 ome_113b.bop
 3
 711
@@ -99661,7 +99661,7 @@ ome_113b.bop
 0
 0
 0
-711
+0
 0
 0
 0
