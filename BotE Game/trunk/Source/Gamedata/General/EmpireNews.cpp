@@ -125,9 +125,11 @@ void CEmpireNews::CreateNews(const CString& sMessage, EMPIRE_NEWS_TYPE::Typ nMes
 			m_sText.Format(sMessage);
 		}
 	}
+	MYTRACE("general")(MT::LEVEL_DEBUG, "News_all_Races: %s\n", sMessage);
 }
 
 void CEmpireNews::CreateNews(const CString& sMessage, EMPIRE_NEWS_TYPE::Typ nMessageType, BYTE byFlag)
 {
 	CreateNews(sMessage, nMessageType, "", CPoint(-1, -1), false, byFlag);
+	MYTRACE("general")(MT::LEVEL_DEBUG, "News_all_Races2: %s\n", sMessage);
 }
