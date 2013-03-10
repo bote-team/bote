@@ -96,6 +96,7 @@ void CStatistics::GetDemographicsBSP(const CString& sRaceID, int& nPlace, float&
 			if (pDoc->GetSystem(x,y).GetOwnerOfSystem() != "")
 				mMap[pDoc->GetSystem(x,y).GetOwnerOfSystem()] += pDoc->GetSystem(x,y).GetProduction()->GetCreditsProd();
 
+			MYTRACE("general")(MT::LEVEL_INFO, "Demographics - BSP: multiply with 5 ");
 	CalcDemoValues(sRaceID, &mMap, nPlace, fValue, fAverage, fFirst, fLast);
 }
 
@@ -124,6 +125,7 @@ void CStatistics::GetDemographicsProductivity(const CString& sRaceID, int& nPlac
 				mMap[pDoc->GetSystem(x,y).GetOwnerOfSystem()] += pDoc->GetSystem(x,y).GetProduction()->GetIndustryProd() + fResProd;
 			}
 
+			MYTRACE("general")(MT::LEVEL_INFO, "Demographics - Productivity: 1:1");
 	CalcDemoValues(sRaceID, &mMap, nPlace, fValue, fAverage, fFirst, fLast);
 }
 
@@ -158,6 +160,7 @@ void CStatistics::GetDemographicsMilitary(const CString& sRaceID, int& nPlace, f
 				mMap[j->second->GetOwnerOfShip()] += j->second->GetCompleteOffensivePower() + j->second->GetCompleteOffensivePower() / 2;
 	}
 
+MYTRACE("general")(MT::LEVEL_INFO, "Demographics - Military: divide by 10");
 	CalcDemoValues(sRaceID, &mMap, nPlace, fValue, fAverage, fFirst, fLast);
 }
 
@@ -180,6 +183,7 @@ void CStatistics::GetDemographicsResearch(const CString& sRaceID, int& nPlace, f
 			if (pDoc->GetSystem(x,y).GetOwnerOfSystem() != "")
 				mMap[pDoc->GetSystem(x,y).GetOwnerOfSystem()] += pDoc->GetSystem(x,y).GetProduction()->GetResearchProd();
 
+	MYTRACE("general")(MT::LEVEL_INFO, "Demographics - Research: multiply with 5");
 	CalcDemoValues(sRaceID, &mMap, nPlace, fValue, fAverage, fFirst, fLast);
 }
 
@@ -209,6 +213,7 @@ void CStatistics::GetDemographicsMoral(const CString& sRaceID, int& nPlace, floa
 	for (std::map<CString, float>::iterator it = mMap.begin(); it != mMap.end(); ++it)
 		it->second /= mCount[it->first];
 
+	MYTRACE("general")(MT::LEVEL_INFO, "Demographics - Moral: 1:1");
 	CalcDemoValues(sRaceID, &mMap, nPlace, fValue, fAverage, fFirst, fLast);
 }
 
@@ -240,6 +245,7 @@ int CStatistics::GetGamePoints(const CString& sRaceID, int nCurrentRound, float 
 	nGamePoints /= fDifficultyLevel;
 
 	nGamePoints /= 100;
+	MYTRACE("general")(MT::LEVEL_DEBUG, "nGamePoints: %f\n", nGamePoints);
 
 	return max(0, nGamePoints);
 }
@@ -360,6 +366,8 @@ void CStatistics::CalcAverageTechLevel(CBotEDoc* pDoc)
 	}
 	if (nRaces)
 		m_byAverageTechLevel = m_byAverageTechLevel / (6 * nRaces);
+
+				MYTRACE("general")(MT::LEVEL_DEBUG, "m_byAverageTechLevel: %f ", m_byAverageTechLevel);
 }
 
 /// Funktion zum Berechnen der durchschnittlichen Befüllung der Ressourcenlager.
@@ -447,8 +455,16 @@ void CStatistics::CalcDemoValues(const CString& sRaceID, const std::map<CString,
 
 	// eigener Wert
 	fValue = it->second;
+
 	// bester Wert
 	fFirst = vSortedVec.front();
+
 	// schlechtester Wert
 	fLast = vSortedVec.back();
+
+	MYTRACE("general")(MT::LEVEL_INFO, "First: %f ", fFirst);	
+	MYTRACE("general")(MT::LEVEL_INFO, "Average: %f ", fAverage);
+	MYTRACE("general")(MT::LEVEL_INFO, "Last: %f", fLast);
+	MYTRACE("general")(MT::LEVEL_INFO, "Value (own): %f ", fValue);
+	MYTRACE("general")(MT::LEVEL_INFO, "Place: %i \n", nPlace);
 }
