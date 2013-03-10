@@ -127,7 +127,7 @@ namespace MT
 				setvbuf(stdout,NULL,_IONBF,0);	// turn off cashing
 				//sync_with_stdio();	// check
 #endif	// MT_REDIRECT_STDOUT
-				MYTRACE("logging")(MT::LEVEL_INFO, _T("\t\t*** Log Started at %s ***\n\n"), CTime(time(NULL)).Format("%c"));
+				MYTRACE("logging")(MT::LEVEL_INFO, _T("\t\t*** Log Started at %s ***\n"), CTime(time(NULL)).Format("%c"));
 				bRes1 = true;
 			}
 			return bRes1;
