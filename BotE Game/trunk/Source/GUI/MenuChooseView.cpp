@@ -221,6 +221,7 @@ void CMenuChooseView::OnDraw(CDC* pDC)
 	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.left+30, 90, m_TotalSize.cx-60, 25), &fontFormat, &fontBrush);
 	s.Format("%i",pMajor->GetEmpire()->GetCredits());
 	fontFormat.SetAlignment(StringAlignmentFar);
+	MYTRACE("general")(MT::LEVEL_INFO, "CREDITS (Empire) = %s\n", s);
 	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.left+30, 90, m_TotalSize.cx-60, 25), &fontFormat, &fontBrush);
 
 	s.Format("%s:",CLoc::GetString("CHANGE"));
@@ -239,6 +240,7 @@ void CMenuChooseView::OnDraw(CDC* pDC)
 		s.Format("%i",pMajor->GetEmpire()->GetCreditsChange());
 		g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.left+30, 115, m_TotalSize.cx-60, 25), &fontFormat, &fontBrush);
 	}
+MYTRACE("general")(MT::LEVEL_INFO, "CHANGE (Empire) = %s\n", s);
 	fontBrush.SetColor(markColor);
 	s = CLoc::GetString("SHIPS");
 	fontFormat.SetAlignment(StringAlignmentCenter);
@@ -250,6 +252,7 @@ void CMenuChooseView::OnDraw(CDC* pDC)
 	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.left+30, 165, m_TotalSize.cx-60, 25), &fontFormat, &fontBrush);
 	fontFormat.SetAlignment(StringAlignmentFar);
 	s.Format("%i",pMajor->GetEmpire()->GetShipCosts());
+	MYTRACE("general")(MT::LEVEL_INFO, "SHIPCOSTS (Empire) = %s\n", s);
 	if (pMajor->GetEmpire()->GetShipCosts() > pMajor->GetEmpire()->GetPopSupportCosts())
 		fontBrush.SetColor(Color(200,0,0));
 	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.left+30, 165, m_TotalSize.cx-60, 25), &fontFormat, &fontBrush);
@@ -260,6 +263,7 @@ void CMenuChooseView::OnDraw(CDC* pDC)
 	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.left+30, 190, m_TotalSize.cx-60, 25), &fontFormat, &fontBrush);
 	fontFormat.SetAlignment(StringAlignmentFar);
 	s.Format("%i",pMajor->GetEmpire()->GetPopSupportCosts());
+	MYTRACE("general")(MT::LEVEL_INFO, "POPSUPPORT (Empire) = %s\n", s);
 	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.left+30, 190, m_TotalSize.cx-60, 25), &fontFormat, &fontBrush);
 
 	fontFormat.SetAlignment(StringAlignmentNear);
@@ -276,12 +280,14 @@ void CMenuChooseView::OnDraw(CDC* pDC)
 
 	fontFormat.SetAlignment(StringAlignmentFar);
 	s.Format("%.1lf",m_fMark);
+	MYTRACE("general")(MT::LEVEL_INFO, "RATING (Empire) = %s\n", s);	
 	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.left+30, 290, m_TotalSize.cx-60, 25), &fontFormat, &fontBrush);
 
 	// Sternzeit anzeigen
 	fontBrush.SetColor(color);
 	fontFormat.SetAlignment(StringAlignmentCenter);
 	s.Format("%s: %.1lf",CLoc::GetString("STARDATE"), pDoc->m_fStardate);
+MYTRACE("general")(MT::LEVEL_INFO, "STARDATE = %s\n", s);
 	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.left+20, r.bottom-65, m_TotalSize.cx-40, 25), &fontFormat, &fontBrush);
 	//********************************************************************************
 
