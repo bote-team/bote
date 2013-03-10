@@ -121,10 +121,17 @@ void CHull::SetCurrentHull(int add, bool bIgnoreHullSpecials/* = false*/)
 	{
 		double multi = 0.0f;
 		if (GetPolarisation() && add < 0)
+			{
 			multi += 0.1;
+//MYTRACE("general")(MT::LEVEL_DEBUG, "Ship has Polarisation: multi = %d\n", multi);
+			}
 		if (GetAblative() && add < 0)
+			{
 			multi += 0.25;
+// MYTRACE("general")(MT::LEVEL_DEBUG, "Ship has Ablative: multi = %d\n", multi);
+			}
 		add -= int(add * multi);
+//		MYTRACE("general")(MT::LEVEL_DEBUG, "Ship has multi = %d\n", add);
 	}
 
 	// Überprüfen, das die Werte auch im Rahmen bleiben
@@ -134,6 +141,8 @@ void CHull::SetCurrentHull(int add, bool bIgnoreHullSpecials/* = false*/)
 		m_iCurrentHull = 0;
 	else
 		m_iCurrentHull += add;
+
+//MYTRACE("general")(MT::LEVEL_DEBUG, "m_iCurrentHull = %d\n", m_iCurrentHull);
 }
 
 /// Diese Funktion repariert die Hülle
@@ -148,4 +157,5 @@ void CHull::RepairHull()
 	if (Repair > maxRepair)
 		Repair = maxRepair;
 	m_iCurrentHull += Repair;
+MYTRACE("general")(MT::LEVEL_DEBUG, "m_iCurrentHull = %d, Repair = %d\n", m_iCurrentHull, Repair);
 }
