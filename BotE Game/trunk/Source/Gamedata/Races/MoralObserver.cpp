@@ -587,6 +587,7 @@ void CMoralObserver::InitMoralMatrix()
 			for (int j = 0; j <= MAJOR6; j++)
 			{
 				CString value = input.Tokenize("\t", pos);
+				MYTRACE("general")(MT::LEVEL_DEBUG, "Moral.data: %s\n", value);
 				m_iMoralMatrix[i][j] = atoi(value);
 			}
 			i++;
