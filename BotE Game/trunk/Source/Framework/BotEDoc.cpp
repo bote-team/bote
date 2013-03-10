@@ -1347,7 +1347,7 @@ void CBotEDoc::NextRound()
 	// oder das erste Mal in diese Funktion gesprungen wurde.
 	if (bCombatInCurrentRound == false)
 	{
-		MYTRACE("general")(MT::LEVEL_INFO, "#### START NEXT ROUND (round: %d) ####", GetCurrentRound());
+		MYTRACE("general")(MT::LEVEL_INFO, "############ START NEXT ROUND (round: %d) ############", GetCurrentRound());
 
 		// Seed initialisieren
 		RandomSeed();
@@ -2264,6 +2264,7 @@ CShipMap::iterator CBotEDoc::BuildShip(int nID, const CPoint& KO, const CString&
 
 	CMajor* pMajor = dynamic_cast<CMajor*>(pOwner);
 	ASSERT(pMajor);
+	MYTRACE("general")(MT::LEVEL_DEBUG, "New Ship for Major %d\n", pMajor);
 
 	// Spezialforschungsboni dem Schiff hinzufügen
 	AddSpecialResearchBoniToShip(it->second, pMajor);
@@ -2580,7 +2581,9 @@ void CBotEDoc::CalcSystemAttack()
 	// Set mit allen Minors, welche während eines Systemangriffs vernichtet wurden. Diese werden am Ende der
 	// Berechnung aus der Liste entfernt
 	set<CString> sKilledMinors;
+	MYTRACE("general")(MT::LEVEL_INFO, "sKilledMinors in this turn %s\n", sKilledMinors);
 	CArray<CPoint> fightInSystem;
+	MYTRACE("general")(MT::LEVEL_INFO, "fightInSystem in this turn %s\n", fightInSystem);
 	for (CShipMap::iterator y = m_ShipMap.begin(); y != m_ShipMap.end(); ++y)
 	{
 		if (y->second->GetCurrentOrder() == SHIP_ORDER::ATTACK_SYSTEM)
@@ -2608,6 +2611,7 @@ void CBotEDoc::CalcSystemAttack()
 			CPoint p = y->second->GetKO();
 			// Besitzer des Systems (hier Sector wegen Minors) vor dem Systemangriff
 			CString sDefender = GetSector(p.x, p.y).GetOwnerOfSector();
+	MYTRACE("general")(MT::LEVEL_INFO, "Attack of System ???, Defender %s\n", sDefender);
 			// Angreifer bzw. neuer Besitzer des Systems nach dem Angriff
 			set<CString> attackers;
 			for (CShipMap::const_iterator i = m_ShipMap.begin(); i != m_ShipMap.end(); ++i)
@@ -2615,6 +2619,7 @@ void CBotEDoc::CalcSystemAttack()
 				if (i->second->GetKO() == p && i->second->GetCurrentOrder() == SHIP_ORDER::ATTACK_SYSTEM)
 				{
 					const CString& sOwner = i->second->GetOwnerOfShip();
+//					MYTRACE("general")(MT::LEVEL_INFO, "Owner after attack %s\n", p, sOwner);
 					if (!sOwner.IsEmpty())
 						attackers.insert(sOwner);
 				}
@@ -5756,6 +5761,7 @@ void CBotEDoc::CalcRandomAlienEntities()
 							int nCount = rand()%(nMod + 1);
 							while (nCount > 0)
 							{
+								MYTRACE("general")(MT::LEVEL_DEBUG, "new MORLOCK RAIDER is ingame\n");
 								// Erst das Schiff bauen
 								CShipMap::iterator pFleetShip = BuildShip(pShipInfo->GetID(), p,
 									pAlien->GetRaceID());
@@ -5766,22 +5772,27 @@ void CBotEDoc::CalcRandomAlienEntities()
 
 								nCount--;
 							}
+							MYTRACE("general")(MT::LEVEL_DEBUG, "new MORLOCK RAIDER: Amount: %d\n", nCount);
 						}
 					}
 					else if (pAlien->GetRaceID() == BOSEANER)
 					{
+						MYTRACE("general")(MT::LEVEL_DEBUG, "new BOSEAN is ingame\n");
 						pShip->second->SetCombatTactic(COMBAT_TACTIC::CT_AVOID);
 					}
 					else if (pAlien->GetRaceID() == KRYONITWESEN)
 					{
+						MYTRACE("general")(MT::LEVEL_DEBUG, "new Kryonit Entity is ingame\n");
 						pShip->second->SetCombatTactic(COMBAT_TACTIC::CT_ATTACK);
 					}
 					else if (pAlien->GetRaceID() == MIDWAY_ZEITREISENDE)
 					{
+						MYTRACE("general")(MT::LEVEL_DEBUG, "new MIDWAY BATTLESHIP is ingame\n");
 						pShip->second->SetCombatTactic(COMBAT_TACTIC::CT_AVOID);
 					}
 					else if (pAlien->GetRaceID() == ANAEROBE_MAKROBE)
 					{
+						MYTRACE("general")(MT::LEVEL_DEBUG, "new ANAEROBE_MAKROBE is ingame\n");
 						pShip->second->SetCombatTactic(COMBAT_TACTIC::CT_ATTACK);
 						// zufällig gleich mehrere Anaerobe Makroben bauen. Umso höher der technische Durchschnitt
 						// in der Galaxie ist, desto mehr Anaerobe Makroben kommen auf dem System ins Spiel.
@@ -5791,6 +5802,7 @@ void CBotEDoc::CalcRandomAlienEntities()
 							int nCount = rand()%(nMod * 2 + 1);
 							while (nCount > 0)
 							{
+								MYTRACE("general")(MT::LEVEL_DEBUG, "new ANAEROBE_MAKROBE: Amount: %d\n", nCount);
 								// Erst das Schiff bauen
 								CShipMap::iterator pFleetShip = BuildShip(pShipInfo->GetID(), p,
 									pAlien->GetRaceID());
@@ -5805,6 +5817,7 @@ void CBotEDoc::CalcRandomAlienEntities()
 					}
 					else if (pAlien->GetRaceID() == ISOTOPOSPHAERISCHES_WESEN)
 					{
+						MYTRACE("general")(MT::LEVEL_DEBUG, "new Isotopospheric Entity is ingame\n");
 						// 50% auf Meiden, zu 50% auf angreifen
 						if (rand()%2 == 0)
 							pShip->second->SetCombatTactic(COMBAT_TACTIC::CT_ATTACK);
