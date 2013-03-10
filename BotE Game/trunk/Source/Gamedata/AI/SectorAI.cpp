@@ -96,24 +96,24 @@ void CSectorAI::CalcualteSectorPriorities()
 			{
 				if (m_vSectorsToTerraform[it->first].size())
 				{
-					MYTRACE_CHECKED("ai")(MT::LEVEL_INFO, "\n---------- sectors to terraform or colonize -------------\n");
-					MYTRACE_CHECKED("ai")(MT::LEVEL_INFO, "Race-ID: %s\n",it->first);
+					MYTRACE_CHECKED("ai")(MT::LEVEL_DEBUG, "\n---------- sectors to terraform or colonize -------------\n");
+					MYTRACE_CHECKED("ai")(MT::LEVEL_DEBUG, "Race-ID: %s\n",it->first);
 					for (UINT j = 0; j < m_vSectorsToTerraform[it->first].size(); j++)
-						MYTRACE_CHECKED("ai")(MT::LEVEL_INFO, "POP: %d - KO: %d/%d\n",m_vSectorsToTerraform[it->first][j].pop, m_vSectorsToTerraform[it->first][j].p.x, m_vSectorsToTerraform[it->first][j].p.y);
+						MYTRACE_CHECKED("ai")(MT::LEVEL_DEBUG, "POP: %d - KO: %d/%d\n",m_vSectorsToTerraform[it->first][j].pop, m_vSectorsToTerraform[it->first][j].p.x, m_vSectorsToTerraform[it->first][j].p.y);
 				}
 				if (m_vOffensiveTargets[it->first].size())
 				{
-					MYTRACE_CHECKED("ai")(MT::LEVEL_INFO, "---------- sectors to attack -------------\n");
-					MYTRACE_CHECKED("ai")(MT::LEVEL_INFO, "offensive targets for race %s\n",it->first);
+					MYTRACE_CHECKED("ai")(MT::LEVEL_DEBUG, "---------- sectors to attack -------------\n");
+					MYTRACE_CHECKED("ai")(MT::LEVEL_DEBUG, "offensive targets for race %s\n",it->first);
 					for (UINT j = 0; j < m_vOffensiveTargets[it->first].size(); j++)
-						MYTRACE_CHECKED("ai")(MT::LEVEL_INFO, "offensive target in sector %d/%d\n", m_vOffensiveTargets[it->first][j].x, m_vOffensiveTargets[it->first][j].y);
+						MYTRACE_CHECKED("ai")(MT::LEVEL_DEBUG, "offensive target in sector %d/%d\n", m_vOffensiveTargets[it->first][j].x, m_vOffensiveTargets[it->first][j].y);
 				}
 				if (m_vBombardTargets[it->first].size())
 				{
-					MYTRACE_CHECKED("ai")(MT::LEVEL_INFO, "---------- sectors to bombard -------------\n");
-					MYTRACE_CHECKED("ai")(MT::LEVEL_INFO, "bombard target for race %s\n",it->first);
+					MYTRACE_CHECKED("ai")(MT::LEVEL_DEBUG, "---------- sectors to bombard -------------\n");
+					MYTRACE_CHECKED("ai")(MT::LEVEL_DEBUG, "bombard target for race %s\n",it->first);
 					for (UINT j = 0; j < m_vBombardTargets[it->first].size(); j++)
-						MYTRACE_CHECKED("ai")(MT::LEVEL_INFO, "bombard target in sector %d/%d\n",m_vBombardTargets[it->first][j].x, m_vBombardTargets[it->first][j].y);
+						MYTRACE_CHECKED("ai")(MT::LEVEL_DEBUG, "bombard target in sector %d/%d\n",m_vBombardTargets[it->first][j].x, m_vBombardTargets[it->first][j].y);
 				}
 			}
 		}
