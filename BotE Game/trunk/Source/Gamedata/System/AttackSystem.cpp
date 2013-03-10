@@ -42,6 +42,7 @@ void CAttackSystem::Init(CRace* pDefender, CSystem* system, CShipMap* ships, CSe
 	m_pDefender = pDefender;
 	m_pSystem = system;
 	m_pSector = sector;
+//	MYTRACE("general")(MT::LEVEL_INFO, "System Attack: Defender %s, System %s, Sector %s\n", pDefender, system, sector);
 	m_pBuildingInfos = buildingInfos;
 	m_KO = sector->GetKO();;
 	m_sMonopolOwner = monopolOwner;
@@ -78,6 +79,7 @@ BOOLEAN CAttackSystem::Calculate()
 	int shipDefence = 0;
 	if (m_pSystem->GetOwnerOfSystem() != "" && m_pDefender != NULL && m_pDefender->IsMajor())
 		shipDefence = m_pSystem->GetProduction()->GetShipDefend();
+//MYTRACE("general")(MT::LEVEL_INFO, "m_sOwnerOfSystem %s\n", sRace);
 
 	// Zuerst wird die Schiffsabwehr des Systems beachtet. Dadurch können schon einige Schiffe zerstört werden.
 	this->CalculateShipDefence();
@@ -96,6 +98,7 @@ BOOLEAN CAttackSystem::Calculate()
 		CString n;
 		n.Format("%.3lf", m_fKilledPop);
 		m_strNews.Add(CLoc::GetString("KILLED_POP_BY_SYSTEMATTACK",0,n,m_pSector->GetName()));
+		MYTRACE("general")(MT::LEVEL_INFO, "%f KILLED_POP_BY_SYSTEMATTACK\n", m_fKilledPop);
 	}
 	// verlorene Truppen berechnen
 	USHORT killedTroopsInTransport = 0;
@@ -104,10 +107,12 @@ BOOLEAN CAttackSystem::Calculate()
 	{
 		CString n; n.Format("%d",killedTroopsInSystem);
 		m_strNews.Add(CLoc::GetString("KILLED_TROOPS_IN_SYSTEM",0,n,m_pSector->GetName()));
+		MYTRACE("general")(MT::LEVEL_INFO, "%d KILLED_TROOPS_IN_SYSTEM\n", killedTroopsInSystem);
 	}
 	// Erfahrung der Schiffe berechnen
 	// (Bevölkerungsverlust in Mrd.) * 100 + aktive shipdefence EP.
 	int XP = (int)(m_fKilledPop * 100 + shipDefence);
+	MYTRACE("general")(MT::LEVEL_INFO, "%i Experience complete gained\n", XP);
 	// den XP-Wert gleichverteilt auf alle noch lebenden Schiffe anrechnen
 	if (m_pShips.GetSize() > 0)
 	{
@@ -143,9 +148,11 @@ BOOLEAN CAttackSystem::Calculate()
 		{
 			CString n; n.Format("%d",killedTroopsInTransport);
 			m_strNews.Add(CLoc::GetString("KILLED_TROOPS_IN_TRANSPORTS",0,n,m_pSector->GetName()));
+			MYTRACE("general")(MT::LEVEL_INFO, "%d attacking troops killed\n", n);
 		}
 		if (m_bTroopsInvolved)
 			m_strNews.InsertAt(0,CLoc::GetString("INVASION_SUCCESSFUL",0,m_pSector->GetName()));
+			MYTRACE("general")(MT::LEVEL_INFO, "INVASION_SUCCESSFUL");
 		return TRUE;
 	}
 	// das System wurde bombardiert bzw. die ganze Bevölkerung vernichtet
@@ -164,13 +171,23 @@ BOOLEAN CAttackSystem::Calculate()
 		{
 			CString n; n.Format("%d",killedTroopsInTransport);
 			m_strNews.Add(CLoc::GetString("KILLED_TROOPS_IN_TRANSPORTS",0,n,m_pSector->GetName()));
+			MYTRACE("general")(MT::LEVEL_INFO, "%d attacking troops killed\n", n);
 		}
 		if (m_bTroopsInvolved == TRUE && m_pSystem->GetHabitants() > 0.0f)
+			{
 			m_strNews.InsertAt(0,CLoc::GetString("INVASION_FAILED",0,m_pSector->GetName()));
+			MYTRACE("general")(MT::LEVEL_INFO, "INVASION_FAILED");
+			}
 		else if (m_bTroopsInvolved == FALSE && m_pSystem->GetHabitants() > 0.0f)
+			{
 			m_strNews.InsertAt(0,CLoc::GetString("SYSTEM_BOMBED",0,m_pSector->GetName()));
+			MYTRACE("general")(MT::LEVEL_INFO, "SYSTEM_BOMBED");
+			}
 		else
+			{
 			m_strNews.InsertAt(0,CLoc::GetString("ALL_LIFE_DIED",0,m_pSector->GetName()));
+			MYTRACE("general")(MT::LEVEL_INFO, "ALL_LIFE_DIED");
+			}
 		return FALSE;
 	}
 }
@@ -179,7 +196,7 @@ BOOLEAN CAttackSystem::Calculate()
 BOOLEAN CAttackSystem::IsDefenderNotAttacker(const CString& sDefender, const set<CString>* attacker) const
 {
 	if (attacker->find(sDefender) == attacker->end())
-		return true;
+			return true;
 	else
 		return false;
 }
@@ -196,6 +213,7 @@ void CAttackSystem::CalculateShipDefence()
 	USHORT killedShips = 0;
 	if (m_pSystem->GetOwnerOfSystem() != "" && m_pDefender != NULL && m_pDefender->IsMajor())
 		defence = m_pSystem->GetProduction()->GetShipDefend();
+		MYTRACE("general")(MT::LEVEL_INFO, "System Attack: Defender %s, System %s, ShipDefence %d\n", m_pDefender, m_pSystem, defence);
 	// einfacher Algorithmus:
 	//		Der Defencewert wird durch die Anzahl der angreifenden Schiffe geteilt. Dann wird der Anzahl der
 	//		angreifenden Schiffe zufällig auf ein Schiff geschossen, welches jedesmal defence / Anzahl (+-20%)
@@ -210,6 +228,7 @@ void CAttackSystem::CalculateShipDefence()
 		if (m_pShips[hit]->HasSpecial(SHIP_SPECIAL::ASSULTSHIP))
 			dam = (int)(dam * 0.8f);
 		m_pShips[hit]->GetHull()->SetCurrentHull(-dam);
+		MYTRACE("general")(MT::LEVEL_DEBUG, "System Attack: Ship# %d, dam %d\n", hit, dam);
 	}
 	// Alle Schiffe, die mittlerweile keine Hülle mehr haben sind zerstört!
 	for (int i = 0; i < m_pShips.GetSize(); i++)
@@ -217,6 +236,9 @@ void CAttackSystem::CalculateShipDefence()
 		if (m_pShips.GetAt(i)->GetHull()->GetCurrentHull() == NULL)
 		{
 			m_pShips.RemoveAt(i--);
+//MYTRACE("general")(MT::LEVEL_INFO, "System Attack: Ship destroyed %s\n", m_pShips);
+//MYTRACE("general")(MT::LEVEL_INFO, "System Attack: Ship destroyed i %i\n", m_pShips);
+MYTRACE("general")(MT::LEVEL_INFO, "System Attack: Ship destroyed %d\n", m_pShips);
 			killedShips++;
 		}
 		else
@@ -230,11 +252,15 @@ void CAttackSystem::CalculateShipDefence()
 		}
 	}
 	if (killedShips == 0)
+		{
 		m_strNews.Add(CLoc::GetString("NO_ATTACKING_SHIPS_KILLED",0,m_pSector->GetName()));
+		MYTRACE("general")(MT::LEVEL_INFO, "NO_ATTACKING_SHIPS_KILLED\n");
+		}
 	else
 	{
 		CString n; n.Format("%d",killedShips);
 		m_strNews.Add(CLoc::GetString("ATTACKING_SHIPS_KILLED",0,n,m_pSector->GetName()));
+		MYTRACE("general")(MT::LEVEL_INFO, "%d ATTACKING_SHIPS_KILLED\n", killedShips);
 	}
 /*	CString s;
 	s.Format("Anzahl der angreifenden Truppen: %d",m_pTroops.GetSize());
@@ -250,6 +276,7 @@ void CAttackSystem::CalculateBombAttack()
 	// Bei der Bombardierung können Gebäude, Truppen und Bevölkerung zerstört werden bzw. sterben. Aktivierte Schilde
 	// in dem System können dies reduzieren bzw. auch komplett verhindern.
 	int shield = m_pSystem->GetProduction()->GetShieldPower();
+	MYTRACE("general")(MT::LEVEL_DEBUG, "shield = %i\n", shield);
 	int torpedoDamage = 0;
 	for (int i = 0; i < m_pShips.GetSize(); i++)
 		for (int j = 0; j < m_pShips.GetAt(i)->GetTorpedoWeapons()->GetSize(); j++)
@@ -271,9 +298,15 @@ void CAttackSystem::CalculateBombAttack()
 	else
 		torpedoDamage -= shield;
 
+MYTRACE("general")(MT::LEVEL_DEBUG, "TorpedoDamage = %i\n", torpedoDamage);
+
+
 	// Nachricht das Schilde den Schaden im System verringert haben
 	if (shield > 0)
+	{
 		m_strNews.Add(CLoc::GetString("SHIELDS_SAVED_LIFE",0,m_pSector->GetName()));
+MYTRACE("general")(MT::LEVEL_INFO, "SHIELDS_SAVED_LIFE\n", torpedoDamage);
+	}
 
 /*	CString s;
 	s.Format("Torpedoschaden im System: %i",torpedoDamage);
@@ -284,6 +317,7 @@ void CAttackSystem::CalculateBombAttack()
 	if (torpedoDamage > 0)
 	{
 		float killedPop = (float)((rand()%torpedoDamage)*0.00075f);
+		MYTRACE("general")(MT::LEVEL_INFO, "killedPop = %f\n", killedPop);
 		m_pSector->LetPlanetsShrink(-killedPop);
 		m_pSystem->SetHabitants(m_pSector->GetCurrentHabitants());
 
@@ -317,6 +351,7 @@ void CAttackSystem::CalculateBombAttack()
 			CString n;
 			n.Format("%d", m_iDestroyedBuildings);
 			m_strNews.Add(CLoc::GetString("DESTROYED_BUILDINGS_BY_SYSTEMATTACK",0,n,m_pSector->GetName()));
+			MYTRACE("general")(MT::LEVEL_INFO, "%d BUILDINGS destroyed by SYSTEMATTACK\n", m_iDestroyedBuildings);
 		}
 	}
 }
@@ -328,14 +363,17 @@ void CAttackSystem::CalculateTroopAttack()
 	// Wenn ein Assaultship am Angriff beteiligt ist, so bekommen die angreifenden Truppen einen 20% Stärkebonus
 	BYTE offenceBoni = 0;
 	if (m_bAssultShipInvolved)
+		{
 		offenceBoni = 20;
+		MYTRACE("general")(MT::LEVEL_INFO, "AssaultShipInvolved, offenceBoni = %d\n", offenceBoni);
+		}
 
 	// Zuerst kämpfen die angreifenden Truppen gegen
 	// die Bodenabwehr in dem System. Danach werden die stationierten Truppen gegen die Angreifer kämpfen. Wenn diese
 	// vernichtet wurden, dann kämpft noch der Rest der Bevölkerung gegen die angreifenden Truppen. Wenn ein Großteil
 	// dieser vernichtet wurde, dann gilt das System als erobert.
 	int groundDefence = m_pSystem->GetProduction()->GetGroundDefend();	// <- beinhaltet schon GroundDefendBoni!
-
+MYTRACE("general")(MT::LEVEL_INFO, "groundDefence = %d\n", groundDefence);
 	// Dieser Verteidigungswert addiert sich zum Verteidigungswert durch die Bevölkerung. Aller 5Mrd. Bevölkerung bekommt
 	// man eine Verteidigungseinheit. Das würde bedeuten, dass man mit 50Mrd. Bevölkerung 10 Einheiten mit der
 	// Angriffsstärke von 10 bekommt. Ein GroundDefence-Wert von z.B. 30 wird behandelt, als wären zusätzliche
@@ -349,6 +387,7 @@ void CAttackSystem::CalculateTroopAttack()
 		ti->SetDefense(10);
 		int number = rand()%m_pTroops.GetSize();
 		BYTE result = m_pTroops.GetAt(number)->Attack((CTroop*)ti, offenceBoni, 0);
+MYTRACE("general")(MT::LEVEL_INFO, "result = %d\n", result);
 		// Die angreifende Einheit hat verloren
 		if (result > 0)
 		{
@@ -356,6 +395,7 @@ void CAttackSystem::CalculateTroopAttack()
 			m_pTroops.GetAt(number)->SetOffense(0);
 			m_pTroops.RemoveAt(number);
 		}
+		MYTRACE("general")(MT::LEVEL_INFO, "ti2 = %d\n", ti);
 		delete ti;
 	}
 
@@ -387,6 +427,7 @@ void CAttackSystem::CalculateTroopAttack()
 
 	BOOLEAN fighted = FALSE;
 	USHORT maxFightsFromPop = (USHORT)ceil(m_pSystem->GetHabitants() / 5) * m_pSystem->GetMoral() / 100;
+MYTRACE("general")(MT::LEVEL_INFO, "maxFightsFromPop = %d \n", maxFightsFromPop);
 	// zu allerletzt der Angriff gegen die verteidigende Bevölkerung
 	while (m_pTroops.GetSize() > 0 && maxFightsFromPop > 0)
 	{
@@ -410,11 +451,19 @@ void CAttackSystem::CalculateTroopAttack()
 			if (m_pDefender->IsRaceProperty(RACE_PROPERTY::HOSTILE))
 				nPower += 7;
 
+			MYTRACE("general")(MT::LEVEL_INFO, "nPower3 = \"%f\"\n", nPower);
+
 			if (nPower > MAXBYTE)
 				nPower = MAXBYTE;
 			else if (nPower < 0)
 				nPower = 0;
+
+	MYTRACE("general")(MT::LEVEL_INFO, "nPower = \"%f\"\n", nPower);
 		}
+
+MYTRACE("general")(MT::LEVEL_INFO, "nPower2 = \"%f\"\n", nPower);
+
+
 		ti->SetDefense((BYTE)nPower);
 
 		// wie stark sich die Bevölkerung verteidigt hängt vom Moralwert derer ab
@@ -436,6 +485,8 @@ void CAttackSystem::CalculateTroopAttack()
 			fighted = TRUE;
 			maxFightsFromPop--;
 		}
+
+MYTRACE("general")(MT::LEVEL_INFO, "ti = \"%f\"\n", ti);
 		delete ti;
 	}
 	if (fighted)
