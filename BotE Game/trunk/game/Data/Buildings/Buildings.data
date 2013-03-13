@@ -28743,7 +28743,7 @@ con_b94.bop
 0
 0
 0
-3
+113
 0
 0
 0
@@ -28842,7 +28842,7 @@ con_b94.bop
 2
 Handelsturm
 Tower of Commerce
-Die Gesetze von Angebot und Nachfrage machen den interplanetaren Handel äußerst lohnend. Der Handelsturm erteilt Hanuhrschen Händlern Genehmigungen und daher regelt er den interplanetaren Handel zu Gunsten aller Hanuhr. Der Turm ermöglicht eine größeres Handelsvolumen auf jeder Handelsstrecke.
+Die Gesetze von Angebot und Nachfrage machen den interplanetaren Handel äußerst lohnend. Der Handelsturm erteilt Hanuhrschen Händlern Genehmigungen und daher regelt er den interplanetaren Handel zu Gunsten aller Hanuhr. Der Turm ermöglicht ein größeres Handelsvolumen auf jeder Handelsstrecke.
 The laws of supply and demand make interplanetary trade extremely lucrative. The Tower of Commerce licenses Heyoun traders, and thus controls and regulates interplanetary trade for the benefit of all Heyoun. The Tower sustains an increased volume of trade on every trade route.
 0
 han_b93.bop
@@ -32902,7 +32902,7 @@ con_114b.bop
 2
 Protektionismus
 Protectionism
-Der Protektionismus schützt die lokale Wirtschaft vor Dumpingangeboten systemfremder Hersteller und stabilisiert die Preise. Dadurch kann der systeminterne Handel flüssiger und effizienter vonstatten gehen und die Gefahr einer großen Baisse wird stark verringert. Der Protektionismus schreckt allerdings viele fähige Hanuhr ab, große Investitionen von außerhalb in den so abgeschotteten Markt zu tätigen. Handelsrouten kommen fast zum Erliegen.
+Der Protektionismus schützt die lokale Wirtschaft vor Dumpingangeboten systemfremder Hersteller und stabilisiert die Preise. Dadurch kann der systeminterne Handel flüssiger und effizienter vonstatten gehen und die Gefahr einer großen Baisse wird stark verringert. Der Protektionismus schreckt allerdings viele unserer Händler ab, große Investitionen zu tätigen in den von außerhalb dermaßen abgeschotteten Markt. Auch Handelsrouten kommen dadurch fast zum Erliegen.
 Protectionism saves local commerce from aggressive offers from foreign companies and stabilizes prices. Therefore internal system trade can be made more secure and efficient and the danger of a large decrease in trade is very low. However protectionism is bad for business overall and discourages many apt Heyoun traders to make big business with those systems. Trade routes are closed.
 0
 han_b118.bop
@@ -32920,7 +32920,7 @@ han_b118.bop
 0
 0
 0
-1
+0
 0
 0
 1
@@ -32942,13 +32942,13 @@ han_b118.bop
 0
 0
 4
-5
-5
+4
+4
 4
 4
 4
 1000
-0
+10
 0
 0
 0
@@ -33021,8 +33021,8 @@ han_b118.bop
 0
 0
 0
-206
-1
+0
+0
 0
 0
 0
