@@ -478,7 +478,7 @@ Kolonisierung
 [TERRAFORMING_FINISHED]
 Terraforming im §-System abgeschlossen
 [TERRAFORMING_POINTS_WASTED]
-Im §-System wird eine Flotte voraussichtlich § Terraformpunkte verschwenden
+Im §-System werden voraussichtlich Terraformpunkte verschwendet
 [OUTPOST_FINISHED]
 Ein neuer Aussenposten wurde errichtet
 [STARBASE_FINISHED]
