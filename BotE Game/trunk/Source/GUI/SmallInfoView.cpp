@@ -342,7 +342,7 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 			}
 			Range = pShip->second->GetRangeAsString();
 
-			s.Format("%s",pShip->second->GetShipName());
+			s.Format("%s (%s: %d)",pShip->second->GetShipName(), CLoc::GetString("EXPERIANCE"), pShip->second->GetCrewExperience());
 			g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,0,r.right,45), &fontFormat, &fontBrush);
 
 			fontBrush.SetColor(color);
