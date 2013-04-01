@@ -939,9 +939,9 @@ CString CShip::GetTooltip(const FleetInfoForGetTooltip* const info)
 	sType = CHTMLStringBuilder::GetHTMLCenter(sType);
 	sType += CHTMLStringBuilder::GetHTMLStringNewLine();
 
-	// Größenklasse und Unterhalt anzeigen
+	// anzeigen von Größenklasse + Unterhalt + Crewerfahrung
 	CString sCosts = "0";
-	sCosts.Format("%s: %d    %s: %d", CLoc::GetString("SHIPSIZE"), GetShipSize(), CLoc::GetString("SHIPCOSTS"), GetMaintenanceCosts());
+	sCosts.Format("%s: %d    %s: %d    %s: %d", CLoc::GetString("SHIPSIZE"), GetShipSize(), CLoc::GetString("SHIPCOSTS"), GetMaintenanceCosts(), CLoc::GetString("EXPERIANCE"), GetCrewExperience());
 	sCosts = CHTMLStringBuilder::GetHTMLColor(sCosts);
 	sCosts = CHTMLStringBuilder::GetHTMLHeader(sCosts, _T("h5"));
 	sCosts = CHTMLStringBuilder::GetHTMLCenter(sCosts);
