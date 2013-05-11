@@ -1,0 +1,7 @@
+Debug
+Release
+*.ncb
+*.suo
+*.vcproj.*.user
+UpgradeLog.XML
+_UpgradeReport_Files
