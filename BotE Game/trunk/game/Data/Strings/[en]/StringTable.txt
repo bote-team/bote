@@ -1973,7 +1973,7 @@ Our invasion troops were bloodily repelled by enemy forces. The § system remains
 Our invasion troops were bloodily repelled by enemy forces. The § system remains under the control of its old strongman for the time being.
 
 [MANEUVERABILITY]
-Maneuvrability
+Maneuverability
 [PHENOMENAL]
 phenomenal
 [EXCELLENT]
@@ -2367,7 +2367,7 @@ Through miscalculations the mortality rate in § is much higher than planned. The
 [BREAKTHROUGH]
 Success
 [GLOBALEVENTRESEARCH]
-Through a research success scientist briefly doubled their output
+Through a research success scientists briefly doubled their output
 [GLOBALEVENTMINOR]
 Change of government at the people of §
 [ALIENTECHEADLINE]
