@@ -5,3 +5,4 @@ Release
 *.vcproj.*.user
 UpgradeLog.XML
 _UpgradeReport_Files
+*.sav
