@@ -2284,7 +2284,7 @@ Siege
 
 // Kampfbildschirme
 [COMBAT_IN_SECTOR]
-Kampf im Sektor
+Kampf im 
 [PLEASE_WAIT]
 bitte warten
 [COMBATCALCULATION_IS_RUNNING]

@@ -589,7 +589,7 @@ Propulsion tech bonus
 [CONSTRUCTIONTECH_BONUS]
 Construction tech bonus
 [WEAPONTECH_BONUS]
-Weapontech bonus
+Weapon tech bonus
 [COMPLETE_SECURITY_BONUS]
 General Intel bonus
 [SPY_BONUS]
