@@ -393,9 +393,15 @@ void CResearchMenuView::DrawResearchMenue(Graphics* g)
 	{
 		lockstatus = pMajor->GetEmpire()->GetResearch()->GetLockStatus(i);
 		if (lockstatus == FALSE)
+		{
 			s = CLoc::GetString("UNLOCKED");
+			fontBrush.SetColor(normalColor);
+		}
 		else
+		{
 			s = CLoc::GetString("LOCKED");
+			fontBrush.SetColor(Color(255,0,0));
+		}
 		RectF lock(LockStatusRect[i].left, LockStatusRect[i].top, LockStatusRect[i].Width(), LockStatusRect[i].Height());
 		g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), lock, &fontFormatCenter, &SolidBrush(Color::White));
 	}
@@ -593,9 +599,15 @@ void CResearchMenuView::DrawUniqueResearchMenue(Graphics* g)
 
 		lockstatus = pMajor->GetEmpire()->GetResearch()->GetLockStatus(6);
 		if (lockstatus == FALSE)
+		{
 			s = CLoc::GetString("UNLOCKED");
+			fontBrush.SetColor(normalColor);
+		}
 		else
+		{
 			s = CLoc::GetString("LOCKED");
+			fontBrush.SetColor(Color(255,0,0));
+		}
 		RectF lock(LockStatusRect[6].left, LockStatusRect[6].top, LockStatusRect[6].Width(), LockStatusRect[6].Height());
 		g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), lock, &fontFormatCenter, &SolidBrush(Color::White));
 		fontFormatCenter.SetLineAlignment(StringAlignmentCenter);
