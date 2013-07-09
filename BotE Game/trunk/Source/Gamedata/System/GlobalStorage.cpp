@@ -8,7 +8,7 @@ IMPLEMENT_SERIAL (CGlobalStorage, CObject, 1)
 //////////////////////////////////////////////////////////////////////
 CGlobalStorage::CGlobalStorage(void)
 {
-	this->Reset();
+	Reset();
 }
 
 CGlobalStorage::~CGlobalStorage(void)
