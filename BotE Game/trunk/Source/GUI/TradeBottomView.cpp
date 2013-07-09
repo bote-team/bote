@@ -136,11 +136,10 @@ void CTradeBottomView::OnDraw(CDC* dc)
 	g.DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0, r.bottom-215, 290, 25), &fontFormat, &fontBrush);
 
 	USHORT count = 0;
-	float temp1 = 0.0;
 	// Hier wird das Diagramm gezeichnet
 	for (int i = start; i <= end; i++)
 	{
-		temp1 = (float)(pHistory->GetHistoryPriceFromRes(m_iWhichRessource)->GetAt(i-1)) / max;
+		const float temp1 = (float)(pHistory->GetHistoryPriceFromRes(m_iWhichRessource)->GetAt(i-1)) / max;
 		// Länge des Diagramms ist 600 Pixel -> bei 20 Runden Abstand 30px, bei 50 Runden Abstand 12px usw.
 		if (count > 0)
 		{
