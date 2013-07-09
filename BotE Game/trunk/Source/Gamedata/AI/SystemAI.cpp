@@ -471,10 +471,9 @@ int CSystemAI::ChooseBuilding()
 			if (m_pDoc->GetBuildingInfo(id).GetWorker() == FALSE && m_pDoc->GetBuildingInfo(id).GetNeverReady() == FALSE)
 				buildings.Add(id);
 		}
-		int random = 0;
 		while (buildings.GetSize() > 0)
 		{
-			random = rand()%buildings.GetSize();
+			const int random = rand()%buildings.GetSize();
 			// Gebäude mit einer negativen Moral werden nicht von der KI gebaut, wenn die Moralproduktion im System
 			// dies nicht ausgleichen kann
 			if (m_pDoc->GetBuildingInfo(buildings.GetAt(random)).GetMoralProd() < NULL
