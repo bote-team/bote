@@ -2083,9 +2083,6 @@ void CBotEDoc::ReadBuildingInfosFromFile()
 void CBotEDoc::ReadShipInfosFromFile()
 {
 	CShipInfo ShipInfo;
-	int i = 0;
-	USHORT j = 0;
-	int weapons = 0;	// Zähler um Waffen hinzuzufügen
 	BOOL torpedo = FALSE;
 	CString csInput;													// auf csInput wird die jeweilige Zeile gespeichert
 	CString data[40];
@@ -2095,6 +2092,9 @@ void CBotEDoc::ReadShipInfosFromFile()
 	CStdioFile file;														// Varibale vom Typ CStdioFile
 	if (file.Open(fileName, CFile::modeRead | CFile::typeBinary))			// Datei wird geöffnet
 	{
+		int i = 0;
+		USHORT j = 0;
+		int weapons = 0;	// Zähler um Waffen hinzuzufügen
 		while (file.ReadString(csInput))
 		{
 			if (csInput != "$END_OF_SHIPDATA$")
