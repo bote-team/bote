@@ -386,12 +386,11 @@ void CResearchMenuView::DrawResearchMenue(Graphics* g)
 		g->DrawRectangle(&Gdiplus::Pen(penMark), markRect);
 	}
 
-	BOOL lockstatus;
 	fontFormatCenter.SetAlignment(StringAlignmentCenter);
 	fontFormatCenter.SetLineAlignment(StringAlignmentFar);
 	for (int i = 0; i < 6; i++)
 	{
-		lockstatus = pMajor->GetEmpire()->GetResearch()->GetLockStatus(i);
+		const BOOL lockstatus = pMajor->GetEmpire()->GetResearch()->GetLockStatus(i);
 		if (lockstatus == FALSE)
 		{
 			s = CLoc::GetString("UNLOCKED");
