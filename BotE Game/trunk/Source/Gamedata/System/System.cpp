@@ -79,6 +79,10 @@ CSystem::CSystem(const CSystem &other) :
 	m_ResourceRoutes.Copy(other.m_ResourceRoutes);
 	m_Troops.Copy(other.m_Troops);
 
+	const unsigned size = sizeof(m_bDisabledProductions) / sizeof(m_bDisabledProductions[0]);
+	for(unsigned i = 0; i < size; ++i)
+		m_bDisabledProductions[i] = other.m_bDisabledProductions[i];
+
 	/*m_AssemblyList=other.m_AssemblyList;
 	m_Production=other.m_Production;
 	m_Workers=other.m_Workers;
