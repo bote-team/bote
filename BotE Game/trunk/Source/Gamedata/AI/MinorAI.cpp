@@ -600,7 +600,6 @@ bool CMinorAI::TryCorruption(const CDiplomacyInfo& info)
 			nCorruptionValue = 80;	break;
 	}
 
-	short nRelationDiff = 0;
 	short nValue = 0;
 
 	short nRelationFromMajor		= pMinor->GetRelation(info.m_sFromRace);
@@ -608,7 +607,7 @@ bool CMinorAI::TryCorruption(const CDiplomacyInfo& info)
 
 	for (int i = 0; i <= (USHORT)nCredits / 250; i++)
 	{
-		nRelationDiff = nRelationFromMajor - nRelationCorruptedMajor;
+		const short nRelationDiff = nRelationFromMajor - nRelationCorruptedMajor;
 		nValue = rand()%100 + nRelationDiff + nCredits / 750;
 		// war die Bestechung erfolgreich?
 		if (nValue > nCorruptionValue)
