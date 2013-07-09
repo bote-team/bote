@@ -64,9 +64,9 @@ public:
     friend inline vec3 operator *(T s, const vec3& v)  // SCALAR MULT s*V
       { return vec3(v.x*s, v.y*s, v.z*s); }
 
-    void operator += (const vec3 A)              // ACCUMULATED VECTOR ADDITION (+=)
+    void operator += (const vec3& A)              // ACCUMULATED VECTOR ADDITION (+=)
       { x+=A.x; y+=A.y; z+=A.z; };
-    void operator -= (const vec3 A)              // ACCUMULATED VECTOR SUBTRACTION (+=)
+    void operator -= (const vec3& A)              // ACCUMULATED VECTOR SUBTRACTION (-=)
       { x-=A.x; y-=A.y; z-=A.z; };
     void operator *= (const T s)              // ACCUMULATED SCALAR MULT (*=)
       { x*=s; y*=s; z*=s; };
