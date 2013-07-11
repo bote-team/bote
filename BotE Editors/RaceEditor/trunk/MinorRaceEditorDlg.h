@@ -27,7 +27,7 @@ public:
 	CString	m_strDescription;
 	CString	m_strRaceName;
 	BOOL	m_bSpaceflightNation;
-	BOOL   m_bProperty[11];
+	BOOL   m_bProperty[NUMBEROFKINDS];
 	CString	m_strHomeSysName;
 	CString	m_strGraphicName;
 	//}}AFX_DATA

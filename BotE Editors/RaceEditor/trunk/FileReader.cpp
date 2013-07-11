@@ -42,7 +42,7 @@ void CFileReader::ReadDataFromFile(CArray<CMinorRace,CMinorRace>* m_MinorInfos)
 	if (file.Open(fileName, CFile::modeRead | CFile::typeBinary))	// Datei wird geöffnet
 	{
 		file.ReadString(m_strVersion);
-		if(m_strVersion=="0.81")
+		if(m_strVersion=="0.9")
 		{
 			while (file.ReadString(csInput))
 			{
@@ -73,6 +73,8 @@ void CFileReader::ReadDataFromFile(CArray<CMinorRace,CMinorRace>* m_MinorInfos)
 						int nProperty = atoi(sRaceProperties.Tokenize(",", nStart));
 						if(nProperty==0) break;
 						info.SetProperty(nProperty-1, TRUE);				// Rasseneigenschaften
+						if (nProperty > NUMBEROFKINDS-1)
+							AfxMessageBox("nProperty > NUMBEROFKINDS=%d, indeed it is:%d\n", NUMBEROFKINDS, nProperty);
 					}
 					info.SetSpaceflightNation(atoi(data[12]));
 					info.SetCorruptibility(atoi(data[13]));
@@ -81,7 +83,7 @@ void CFileReader::ReadDataFromFile(CArray<CMinorRace,CMinorRace>* m_MinorInfos)
 				}
 			}	
 		} else {
-			AfxMessageBox("Fehler! Veraltete/Inkompatible Version der \"MinorRaces.data\"");
+			AfxMessageBox("Fehler! Veraltete/Inkompatible Version der \"MinorRaces.data\", check also if only LF, not CR LF");
 			exit(1);
 		}
 	}
@@ -125,7 +127,7 @@ void CFileReader::WriteDataToFile(CArray<CMinorRace,CMinorRace>* m_MinorInfos)
 			s.Format("%d\n",m_MinorInfos->GetAt(i).GetTechnologicalProgress());
 			file.WriteString(s);
 			sold="";
-			for(int j=0;j<11;j++)
+			for(int j=0;j<NUMBEROFKINDS;j++)
 			{
 				if(m_MinorInfos->GetAt(i).GetProperty(j)==TRUE)
 				{

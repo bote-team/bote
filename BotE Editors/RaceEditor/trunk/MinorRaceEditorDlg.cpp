@@ -83,7 +83,7 @@ void CMinorRaceEditorDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_DESCRIPTION, m_strDescription);
 	DDX_Text(pDX, IDC_RACENAME, m_strRaceName);
 	DDX_Check(pDX, IDC_SPACEFLIGHT, m_bSpaceflightNation);
-	DDX_Check(pDX, IDC_CHECKAGRARIAN, m_bProperty[2]);
+	/*DDX_Check(pDX, IDC_CHECKAGRARIAN, m_bProperty[2]);
 	DDX_Check(pDX,  IDC_CHECKFINANCIAL, m_bProperty[0]);
 	DDX_Check(pDX,IDC_CHECKHOSTILE, m_bProperty[10]);
 	DDX_Check(pDX, IDC_CHECKINDUSTRIAL, m_bProperty[3]);
@@ -94,6 +94,21 @@ void CMinorRaceEditorDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_CHECKSECRET, m_bProperty[4]);
 	DDX_Check(pDX, IDC_CHECKSNEAKY, m_bProperty[8]);
 	DDX_Check(pDX, IDC_CHECKWARLIKE, m_bProperty[1]);
+	*/
+
+	//Names are not correct
+	DDX_Check(pDX, IDC_CHECKAGRARIAN, m_bProperty[0]);   //value 1 = financial
+	DDX_Check(pDX,  IDC_CHECKFINANCIAL, m_bProperty[1]); //value 2 = warlike
+	DDX_Check(pDX,IDC_CHECKHOSTILE, m_bProperty[2]);     //value 3 = AGRARIAN
+	DDX_Check(pDX, IDC_CHECKINDUSTRIAL, m_bProperty[3]); //value 4 = INDUSTRIAL
+	DDX_Check(pDX, IDC_CHECPACIFIST, m_bProperty[4]);    //value 5 = SECRET
+	DDX_Check(pDX, IDC_CHECKPRODUCTIV, m_bProperty[5]);	 //value 6 = SCIENTIFIC
+	DDX_Check(pDX, IDC_CHECKSOLOING, m_bProperty[6]);    //value 7 = PRODUCER
+	DDX_Check(pDX, IDC_CHECKSCIENTIFIC, m_bProperty[7]); //value 8 = PACIFIST
+	DDX_Check(pDX, IDC_CHECKSECRET, m_bProperty[8]);     //value 9 = SNEAKY
+	//DDX_Check(pDX, IDC_CHECKSNEAKY, m_bProperty[9]);	//value 10 = SOLOING - not for minors
+	//DDX_Check(pDX, IDC_CHECKWARLIKE, m_bProperty[10]);//value 11 = HOSTILE - not for minors
+
 	DDX_Text(pDX, IDC_HOMESYSNAME, m_strHomeSysName);
 	DDX_Text(pDX, IDC_GRAPHICNAME, m_strGraphicName);
 	
@@ -242,7 +257,7 @@ void CMinorRaceEditorDlg::DataToDialog()
 		m_strRaceName = m_MinorInfo.GetAt(m_ListBox.GetCurSel()).GetRaceName();
 		m_strDescription = m_MinorInfo.GetAt(m_ListBox.GetCurSel()).GetRaceDescription();
 		m_strGraphicName = m_MinorInfo.GetAt(m_ListBox.GetCurSel()).GetGraphicName();
-		for(int i=0;i<11;i++) m_bProperty[i]=m_MinorInfo.GetAt(m_ListBox.GetCurSel()).GetProperty(i);
+		for(int i=0;i<NUMBEROFKINDS;i++) m_bProperty[i]=m_MinorInfo.GetAt(m_ListBox.GetCurSel()).GetProperty(i);
 		m_TechProgress.SetCurSel(m_MinorInfo.GetAt(m_ListBox.GetCurSel()).GetTechnologicalProgress());
 		m_Corruptibiliy.SetCurSel(m_MinorInfo.GetAt(m_ListBox.GetCurSel()).GetCorruptibility());
 		m_bSpaceflightNation = m_MinorInfo.GetAt(m_ListBox.GetCurSel()).GetSpaceflightNation();
@@ -261,7 +276,7 @@ void CMinorRaceEditorDlg::DialogToData()
 		m_MinorInfo.ElementAt(m_iClick).SetRaceDescription(m_strDescription);
 		m_MinorInfo.ElementAt(m_iClick).SetGraphicName(m_strGraphicName);
 		m_MinorInfo.ElementAt(m_iClick).SetTechnologicalProgress(m_TechProgress.GetCurSel());
-		for(int i=0;i<11;i++) m_MinorInfo.ElementAt(m_iClick).SetProperty(i,m_bProperty[i]);
+		for(int i=0;i<NUMBEROFKINDS;i++) m_MinorInfo.ElementAt(m_iClick).SetProperty(i,m_bProperty[i]);
 		m_MinorInfo.ElementAt(m_iClick).SetCorruptibility(m_Corruptibiliy.GetCurSel());
 		m_MinorInfo.ElementAt(m_iClick).SetSpaceflightNation(m_bSpaceflightNation);
 	}

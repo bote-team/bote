@@ -46,12 +46,14 @@
 #define REQUEST              11
 
 // ------------- Die verschiedenen Arten einer MinorRace -----------------------
+#define NUMBEROFKINDS		9  // number of kinds without zero (10 values = max. value/numberOfKinds=9)
+
 #define NOTHING_SPECIAL		0
 #define FINANCIAL			1
 #define WARLIKE				2
 #define FARMER				3
 #define INDUSTRIAL			4
-#define SECRET				5
+#define SECRET				5 // geheimdienstlich
 #define RESEARCHER			6
 #define PRODUCER			7
 #define PACIFIST			8
