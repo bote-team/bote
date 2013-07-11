@@ -46,7 +46,7 @@
 #define REQUEST              11
 
 // ------------- Die verschiedenen Arten einer MinorRace -----------------------
-#define NUMBEROFKINDS		9  // number of kinds without zero (10 values = max. value/numberOfKinds=9)
+#define NUMBEROFKINDS		11  // number of kinds without zero (10 values = max. value/numberOfKinds=9)
 
 #define NOTHING_SPECIAL		0
 #define FINANCIAL			1
@@ -58,6 +58,8 @@
 #define PRODUCER			7
 #define PACIFIST			8
 #define SNEAKY              9 // Hinterhältig
+#define	SOLOING			= 10,	// Alleingeher
+#define	HOSTILE			= 11
 
 // ------------- Planeteneigenschaften -----------------------------------------
 // Zonen

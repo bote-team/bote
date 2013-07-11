@@ -106,8 +106,8 @@ void CMinorRaceEditorDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_CHECKSOLOING, m_bProperty[6]);    //value 7 = PRODUCER
 	DDX_Check(pDX, IDC_CHECKSCIENTIFIC, m_bProperty[7]); //value 8 = PACIFIST
 	DDX_Check(pDX, IDC_CHECKSECRET, m_bProperty[8]);     //value 9 = SNEAKY
-	//DDX_Check(pDX, IDC_CHECKSNEAKY, m_bProperty[9]);	//value 10 = SOLOING - not for minors
-	//DDX_Check(pDX, IDC_CHECKWARLIKE, m_bProperty[10]);//value 11 = HOSTILE - not for minors
+	DDX_Check(pDX, IDC_CHECKSNEAKY, m_bProperty[9]);	//value 10 = SOLOING - not for minors
+	DDX_Check(pDX, IDC_CHECKWARLIKE, m_bProperty[10]);//value 11 = HOSTILE - not for minors
 
 	DDX_Text(pDX, IDC_HOMESYSNAME, m_strHomeSysName);
 	DDX_Text(pDX, IDC_GRAPHICNAME, m_strGraphicName);
