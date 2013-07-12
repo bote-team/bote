@@ -621,9 +621,9 @@ Barracks
 [BARRACK_EFFICIENCY]
 Barracks efficiency
 [SHIELDPOWER]
-Shield strenght
+Shield strength
 [SHIELDPOWER_BONUS]
-Shield strenght bonus
+Shield strength bonus
 [SHIPDEFEND]
 Ship defence
 [SHIPDEFEND_BONUS]
