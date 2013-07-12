@@ -42,10 +42,12 @@ void CFileReader::ReadDataFromFile(CArray<CMinorRace,CMinorRace>* m_MinorInfos)
 	if (file.Open(fileName, CFile::modeRead | CFile::typeBinary))	// Datei wird geöffnet
 	{
 		file.ReadString(m_strVersion);
-		if(m_strVersion=="0.9")
+		m_strVersion.Remove('\r');
+		if(m_strVersion=="0.9" || m_strVersion=="0.9\r")
 		{
 			while (file.ReadString(csInput))
 			{
+				csInput.Remove('\r');
 				data[i++] = csInput;
 				if (i == 14)
 				{
@@ -73,8 +75,8 @@ void CFileReader::ReadDataFromFile(CArray<CMinorRace,CMinorRace>* m_MinorInfos)
 						int nProperty = atoi(sRaceProperties.Tokenize(",", nStart));
 						if(nProperty==0) break;
 						info.SetProperty(nProperty-1, TRUE);				// Rasseneigenschaften
-						if (nProperty > NUMBEROFKINDS-1)
-							AfxMessageBox("nProperty > NUMBEROFKINDS=%d, indeed it is:%d\n", NUMBEROFKINDS, nProperty);
+						//if (nProperty > NUMBEROFKINDS-1)
+						//	AfxMessageBox("nProperty > NUMBEROFKINDS=%d, indeed it is:%d\n", NUMBEROFKINDS, nProperty);
 					}
 					info.SetSpaceflightNation(atoi(data[12]));
 					info.SetCorruptibility(atoi(data[13]));
@@ -82,10 +84,13 @@ void CFileReader::ReadDataFromFile(CArray<CMinorRace,CMinorRace>* m_MinorInfos)
 					info.Reset();
 				}
 			}	
-		} else {
+		} 
+		else 
+		{
 			AfxMessageBox("Fehler! Veraltete/Inkompatible Version der \"MinorRaces.data\", check also if only LF, not CR LF");
 			exit(1);
 		}
+		
 	}
 	else
 	{	
@@ -110,9 +115,15 @@ void CFileReader::WriteDataToFile(CArray<CMinorRace,CMinorRace>* m_MinorInfos)
 		for (i = 0; i < m_MinorInfos->GetSize(); i++)
 		{
 			// Systemnamen groß schreiben und Doppelpunkt an das Ende stellen
-			s.Format("%s:\n",m_MinorInfos->GetAt(i).GetHomeplanetName());
+			s.Format("%s",m_MinorInfos->GetAt(i).GetHomeplanetName());
 			s.MakeUpper();
+			sold = "";
+			sold = s;
+			//if (sold.Left(sold.GetLength()) == '\r') 
+			//	sold.Left(sold.GetLength()-1);//CR am Ende entfernen
+			s.Format("%s:\n",sold);
 			file.WriteString(s);
+			
 			s.Format("%s\n",m_MinorInfos->GetAt(i).GetRaceName());
 			file.WriteString(s);
 			s.Format("%s\n",m_MinorInfos->GetAt(i).GetRaceDescription());
