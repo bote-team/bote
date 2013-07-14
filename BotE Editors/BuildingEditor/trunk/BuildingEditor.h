@@ -29,6 +29,8 @@ public:
 	/// Standarddestruktor
 	virtual ~CBuildingEditorApp();
 
+	//BOOLEAN EXITSAVE = FALSE;
+
 // Überladungen
 	// Vom Klassenassistenten generierte Überladungen virtueller Funktionen
 	//{{AFX_VIRTUAL(CBuildingEditorApp)

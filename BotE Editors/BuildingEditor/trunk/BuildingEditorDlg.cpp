@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include "BuildingEditor.h"
 #include "BuildingEditorDlg.h"
+#include "afxwin.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -221,6 +222,20 @@ HCURSOR CBuildingEditorDlg::OnQueryDragIcon()
 
 void CBuildingEditorDlg::OnDestroy() 
 {
+	BOOLEAN EXITSAVE;
+	//if TRUE then some data are not saved yet, if FALSE there are no data changes to save
+	if (EXITSAVE)
+		{
+			int iReturnMessageBox = MessageBox("Do you want to save ?","",MB_OKCANCEL| MB_ICONQUESTION | MB_SETFOREGROUND);
+			if (iReturnMessageBox == IDOK) 
+			{
+				CBuildingEditorDlg::OnSave();
+				EXITSAVE = FALSE;
+						}
+			else 
+
+
+		
 	CDialog::OnDestroy();
 	
 	// TODO: Code für die Behandlungsroutine für Nachrichten hier einfügen
@@ -233,6 +248,18 @@ void CBuildingEditorDlg::OnDestroy()
 	m_dynTabCtrl.DeleteItem(2);
 	m_dynTabCtrl.DeleteItem(1);
 	m_dynTabCtrl.DeleteItem(0);
+	EXITSAVE = TRUE;
+	/*
+		}
+			else 
+			{
+				//int iReturnMessageBox = MessageBox("What's now ?","EXIT",MB_OKCANCEL);
+				EXITSAVE = FALSE;
+				CBuildingEditorDlg::OnSave();
+			}
+			*/
+				
+}
 }
 
 void CBuildingEditorDlg::OnSelchangeList() 
@@ -241,7 +268,9 @@ void CBuildingEditorDlg::OnSelchangeList()
 	
 	// Daten des alten angeklickten Gebäudes speichern
 	if (m_iClick != m_ListBox.GetCurSel())
-		DialogToData();			
+	{
+		DialogToData();		
+	}
 	
 	// Daten des neuen (jetzt markierten) Gebäudes anzeigen
 	DataToDialog();	

@@ -2,10 +2,57 @@
 
 @author:	Sir Pustekuchen
 @date:		2006-04-06
-@last change:	2009-11-08
+@last change:	2013-07-14
 
 
 -------------------------------------------------------------------------
+
+Changes V1.2 to 1.3 (2013-07-14 rainer)
+
+- added for Language 2: BuildingName2 + Desc2
+- added "Do you want save?" at Exit
+
+
+Änderungen von Version 1.1 zu 1.2 (2009-11-08)
+
+- Oberfläche erneuert
+- Ressourcenverteiler eingebaut
+- Voraussetzung Systemanzahl eingebaut
+
+
+Änderungen von Version 1.06 zu 1.1
+
+- Tabansicht implementiert
+- Oberfläche erneuert
+
+
+Änderungen von Version 1.05 zu 1.06
+
+- Überprüfung einer korrekten Vorgänger-ID (nicht das Gebäude selbst)
+- Labeländerungen
+
+
+Änderungen von Version 1.04 zu 1.05
+
+- Multilanguagesupport eingebaut
+
+
+Änderungen von Version 1.03 zu 1.04
+
+- Gebäudeliste wird beim Speichern automatisch sortiert, so dass Gebäude
+  einer Rasser immer hintereinander kommen
+
+  
+Änderungen von Version 1.02 zu 1.03
+
+- Änderungen bei den baubaren Schiffsgrößen für Werften durchgeführt
+
+
+Änderungen von Version 1.01 zu 1.02
+
+- Bug behoben, wodurch man keinen Latinumboni angeben konnte
+- Zeichenketten werden auf "newlines" überprüft, dies ist nicht erlaubt
+
 
 Änderungen von Version 1.00 zu 1.01
 
@@ -13,36 +60,3 @@
   upgradebar ist
 - Farbe des Dialogs in anthrazit geändert
 
-Änderungen von Version 1.01 zu 1.02
-
-- Bug behoben, wodurch man keinen Latinumboni angeben konnte
-- Zeichenketten werden auf "newlines" überprüft, dies ist nicht erlaubt
-
-Änderungen von Version 1.02 zu 1.03
-
-- Änderungen bei den baubaren Schiffsgrößen für Werften durchgeführt
-
-Änderungen von Version 1.03 zu 1.04
-
-- Gebäudeliste wird beim Speichern automatisch sortiert, so dass Gebäude
-  einer Rasser immer hintereinander kommen
-
-Änderungen von Version 1.04 zu 1.05
-
-- Multilanguagesupport eingebaut
-
-Änderungen von Version 1.05 zu 1.06
-
-- Überprüfung einer korrekten Vorgänger-ID (nicht das Gebäude selbst)
-- Labeländerungen
-
-Änderungen von Version 1.06 zu 1.1
-
-- Tabansicht implementiert
-- Oberfläche erneuert
-
-Änderungen von Version 1.1 zu 1.2
-
-- Oberfläche erneuert
-- Ressourcenverteiler eingebaut
-- Voraussetzung Systemanzahl eingebaut

@@ -19,7 +19,9 @@ public:
 	enum { IDD = IDD_INFODLG };
 	CComboBox	m_RaceComboBox;
 	CString	m_strName;
+	CString	m_strName2;
 	CString	m_strDescription;
+	CString	m_strDescription2;
 	CString	m_strGraphicfile;
 	BOOL	m_bAllwayOnline;
 	UINT	m_iCarEqu;

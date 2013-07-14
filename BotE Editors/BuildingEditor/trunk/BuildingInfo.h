@@ -41,9 +41,22 @@ public:
 	// zum Lesen der Membervariablen
 	BYTE GetOwnerOfBuilding() const {return m_iOwnerOfBuilding;}
 
+
 	const CString& GetBuildingName(BOOLEAN language = 0) const {return m_strBuildingName[language];}
 	
 	const CString& GetBuildingDescription(BOOLEAN language = 0) const {return m_strDescription[language];}
+
+	/*BOOLEAN language = 0;
+
+	const CString& GetBuildingName() const {return m_strBuildingName[language];}
+
+	const CString& GetBuildingName2() const {return m_strBuildingName2[language+1];}
+
+	const CString& GetBuildingDescription() const {return m_strDescription[language];}
+	
+	const CString& GetBuildingDescription2() const {return m_strDescription2[language+1];}
+	/*/
+
 
 	BOOLEAN GetUpgradeable() const {return m_bUpgradeable;}
 
@@ -97,10 +110,22 @@ public:
 
 	// zum Schreiben der Membervariablen
 	void SetOwnerOfBuilding(BYTE owner) {m_iOwnerOfBuilding = owner;}
-	
+
 	void SetBuildingName(CString BuildingName, BOOLEAN language = 0) {m_strBuildingName[language] = BuildingName;}
 
 	void SetBuildingDescription(CString Description, BOOLEAN language = 0) {m_strDescription[language] = Description;}
+
+	/*	BOOLEAN language = 0;
+	
+	void SetBuildingName(CString BuildingName) {m_strBuildingName[language] = BuildingName;}
+
+	void SetBuildingName(CString BuildingName2) {m_strBuildingName2[language] = BuildingName2;}
+
+	void SetBuildingDescription(CString Description) {m_strDescription[language+1] = Description;}
+
+	void SetBuildingDescription(CString Description2) {m_strDescription2[language+1] = Description2;}
+	*/
+
 	
 	void SetUpgradeable(BOOLEAN TrueOrFalse) {m_bUpgradeable = TrueOrFalse;}
 

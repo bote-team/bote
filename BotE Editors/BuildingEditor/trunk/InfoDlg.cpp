@@ -45,7 +45,9 @@ void CInfoDlg::DoDataExchange(CDataExchange* pDX)
 	CDialog::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_RACE, m_RaceComboBox);
 	DDX_Text(pDX, IDC_NAME, m_strName);
+	DDX_Text(pDX, IDC_NAME2, m_strName2);
 	DDX_Text(pDX, IDC_DESCRIPTION, m_strDescription);
+	DDX_Text(pDX, IDC_DESCRIPTION2, m_strDescription2);
 	DDX_Text(pDX, IDC_GRAPHICFILE, m_strGraphicfile);
 	DDX_Check(pDX, IDC_ALLWAYS_ONLINE, m_bAllwayOnline);
 	DDX_Text(pDX, IDC_CAR_EQU, m_iCarEqu);
@@ -85,7 +87,9 @@ void CInfoDlg::DataToDialog(CBuildingInfo* building, int language)
 	// Allgemeine Informationen
 	m_RaceComboBox.SetCurSel(building->GetOwnerOfBuilding());
 	m_strName = building->GetBuildingName(language);
+	m_strName2 = building->GetBuildingName(!language);
 	m_strDescription = building->GetBuildingDescription(language);
+	m_strDescription2 = building->GetBuildingDescription(!language);
 	m_strGraphicfile = building->GetGraphikFileName();
 
 	// programmiertechnische Werte
@@ -166,11 +170,15 @@ void CInfoDlg::DialogToData(CBuildingInfo* building, int language)
 	{
 		AfxMessageBox("There is a newline in the graphicfilename!");
 		return;
-	}		
+	};		
 			
+	BOOLEAN EXITSAVE = TRUE;  // something should be saved
+
 	building->SetOwnerOfBuilding(m_RaceComboBox.GetCurSel());
 	building->SetBuildingName(m_strName, language);
+	//building->SetBuildingName(m_strName2, language+1);
 	building->SetBuildingDescription(m_strDescription, language);
+	//building->SetBuildingDescription(m_strDescription2, language+1);
 	building->SetGraphikFileName(m_strGraphicfile);
 	building->SetUpgradeable(m_bUpgradeable);
 	building->SetPredecessor(m_iPredecessorID);

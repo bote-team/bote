@@ -201,6 +201,23 @@ void CFileReader::WriteDataToFile(CArray<CBuildingInfo,CBuildingInfo>* buildingI
 	CStdioFile file;						// Varibale vom Typ CStdioFile
 	if (file.Open(fileName, CFile::typeBinary | CFile::modeCreate | CFile::modeWrite))		// Datei wird geöffnet
 	{
+
+		//CString filenamepre = fileName+"previous.data";
+		    //CopyFile("Buildings.data" "Buildings-Pre.data");//, [I]FALSE[/I]);
+//		//BOOL WINAPI CopyFile("Buildings.data","Buildings-Pre.data",FALSE);
+//int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstance,LPSTR lpCmd,int nShowCmd) 
+ // CopyFile(Buildings.data,BuildingsPre.data,true);
+//}
+
+
+		//CString filenamepre-pre = fileName+"pre-previous.data";
+//BOOL WINAPI CopyFile("Buildings-Pre.data","Buildings-Pre-Pre.data");
+		//BOOL WINAPI CopyFile( _In_  LPCTSTR filename,	
+		//  _In_  LPCTSTR filenamepre-pre,
+		//  _In_  BOOL bFailIfExists
+		//	);
+	
+
 		for (int i = 0; i < buildingInfos->GetSize(); i++)
 		{
 			if (buildingInfos->GetAt(i).GetPredecessorID() == buildingInfos->GetAt(i).GetRunningNumber())
@@ -477,6 +494,7 @@ void CFileReader::WriteDataToFile(CArray<CBuildingInfo,CBuildingInfo>* buildingI
 			}
 			s.Format("%d\n", buildingInfos->GetAt(i).GetNeededSystems());
 			file.WriteString(s);
+			BOOLEAN EXITSAVE = FALSE; // it was saved
 		}
 	}
 	else

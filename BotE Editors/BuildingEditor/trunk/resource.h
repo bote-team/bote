@@ -176,6 +176,8 @@
 #define IDC_EQUI4NAME4                  1146
 #define IDC_EQUI5NAME5                  1148
 #define IDC_EQUI6NAME6                  1149
+#define IDC_NAME2						1150
+#define IDC_DESCRIPTION2                1151
 
 // Next default values for new objects
 // 
