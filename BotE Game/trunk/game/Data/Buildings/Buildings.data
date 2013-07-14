@@ -13722,7 +13722,7 @@ con_b102.bop
 1
 Kontinuum-Horchposten
 Listening Post
-Die durch Kontinuumfelder hervorgerufene Kontinuum-Verzerrung ist auf einige wenige Frequenzen beschränkt. Ein Horchposten überwacht diese "verdächtigen" Frequenzen auf Spikes und ermittelt die Quelle durch Dreiecksberechnungen. Der Horchposten bemerkt auch geringe Veränderungen und hat daher einen größeren Wirkungsbereich.
+Die durch Kontinuumfelder hervorgerufene Kontinuum-Verzerrung ist auf einige wenige Frequenzen beschränkt. Ein Horchposten überwacht diese 'verdächtigen' Frequenzen auf Spikes und ermittelt die Quelle durch Dreiecksberechnungen. Der Horchposten bemerkt auch geringe Veränderungen und hat daher einen größeren Wirkungsbereich.
 The continuum distortion caused by continuum fields is confined to a few select frequencies. The Listening Post monitors these crucial frequencies for spikes, and then triangulates their source. The Listening Post can respond to finer changes, and hence has a greater effective range.
 1
 con_b103.bop
