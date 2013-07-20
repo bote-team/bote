@@ -823,7 +823,7 @@ friendly
 [OPTIMISTIC]
 optimistic
 [ENTHUSED]
-enthousiastic
+enthusiastic
 [DEVOTED]
 devoted
 [REBELLIOUS]
