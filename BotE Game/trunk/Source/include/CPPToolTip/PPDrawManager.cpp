@@ -1299,8 +1299,6 @@ void CPPDrawManager::GetPartialSums(const double* const pM,
 									double* const pRes)
 {
 	const double* it1;
-	const double* it2;
-	const double* it3;
 
 	double* pRowsPartSums;
 	const unsigned int nRowsPartSumsMRows = nMRows;
@@ -1320,11 +1318,11 @@ void CPPDrawManager::GetPartialSums(const double* const pM,
 	for(i = 0; i < nMRows; i++)
 	{
 		//-------------
-		it2 = it1;
+		const double* it2 = it1;
 		s = 0;
 		for(j = 0;j < nPartCols;j++)s+=*it2++;
 		//-------------
-		it3 = it1;
+		const double* it3 = it1;
 		*pRowsPartSums++ = s;
 		for(/*j = nPartCols*/; j < nMCols; j++)
 		{
