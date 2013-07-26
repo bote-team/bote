@@ -781,16 +781,15 @@ void CPPDrawManager::MultipleCopy(HDC hDestDC, int nDestX, int nDestY, DWORD dwD
 										HDC hSrcDC, int nSrcX, int nSrcY, DWORD dwSrcWidth, DWORD dwSrcHeight)
 {
 	// Horizontal copying
-	int right, bottom;
 	int nDestRight = (int)(nDestX + dwDestWidth);
 	int nDestBottom = (int)(nDestY + dwDestHeight);
 	for (int x = nDestX; x < nDestRight; x+= dwSrcWidth)
 	{
-		right = min (x + (int)dwSrcWidth, nDestRight);
+		const int right = min (x + (int)dwSrcWidth, nDestRight);
 		// Vertical copying
 		for (int y = nDestY; y < nDestBottom; y+= dwSrcHeight)
 		{
-			bottom = min (y + (int)dwSrcHeight, nDestBottom);
+			const int bottom = min (y + (int)dwSrcHeight, nDestBottom);
 			::BitBlt(hDestDC, x, y, right - x, bottom - y, hSrcDC, nSrcX, nSrcY, SRCCOPY);
 		} //for
 	} //for
