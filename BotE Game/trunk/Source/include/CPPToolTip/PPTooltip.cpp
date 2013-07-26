@@ -1933,6 +1933,7 @@ void CPPToolTip::AddTool(CWnd * pWnd, LPCTSTR lpszString /* = NULL */, LPCRECT l
 	ti.crBegin = RGB(0, 0, 0);
 	ti.crMid = RGB(0, 0, 0);
 	ti.crEnd = RGB(0, 0, 0);
+	ti.nTransparency = 0;
 
 	AddTool(pWnd, ti);
 }
@@ -2676,6 +2677,17 @@ void CPPToolTip::ShowHelpTooltip(LPPOINT pt, LPCTSTR lpszString, HICON hIcon /* 
 							hIcon, lpszString);
 	} //if
 
+	ti.nIDTool = 0;
+	ti.rectBounds.SetRectEmpty();
+	ti.nStyles = 0;
+	ti.nDirection = 0;
+	ti.nEffect = 0;
+	ti.nBehaviour = 0;
+	ti.nGranularity = 0;
+	ti.crBegin = RGB(0, 0, 0);
+	ti.crMid = RGB(0, 0, 0);
+	ti.crEnd = RGB(0, 0, 0);
+	ti.nTransparency = 0;
 	ti.nMask = 0;
 	ShowHelpTooltip(pt, ti);
 } //End ShowHelpTooltip
