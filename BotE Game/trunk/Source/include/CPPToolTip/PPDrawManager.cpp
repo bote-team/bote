@@ -223,13 +223,10 @@ void CPPDrawManager::AlphaChannelBitBlt(HDC hDestDC, int nDestX, int nDestY, DWO
 			::BitBlt (hTempDC, 0, 0, dwWidth, dwHeight, hDestDC, nDestX, nDestY, SRCCOPY);
 			::SelectObject (hTempDC, hOldTempBmp);
 
-			double src_darken;
-			BYTE nAlpha;
-
 			for (DWORD pixel = 0; pixel < dwWidth * dwHeight; pixel++, pSrcBits++, pDestBits++)
 			{
-				nAlpha = LOBYTE(*pSrcBits >> 24);
-				src_darken = (double)nAlpha / 255.0;
+				const BYTE nAlpha = LOBYTE(*pSrcBits >> 24);
+				const double src_darken = (double)nAlpha / 255.0;
 				*pDestBits = PixelAlpha(*pSrcBits, src_darken, *pDestBits, 1.0 - src_darken);
 			} //for
 
