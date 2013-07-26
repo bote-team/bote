@@ -514,7 +514,7 @@ void CPPDrawManager::FillGradient (HDC hDC, LPCRECT lpRect,
 void CPPDrawManager::SetShade(LPCRECT lpRect, UINT shadeID /* = 0 */, BYTE granularity /* = 8 */,
 						  BYTE coloring /* = 0 */, COLORREF hicr /* = 0 */, COLORREF midcr /* = 0 */, COLORREF locr /* = 0 */)
 {
-	long	sXSize,sYSize,bytes,j,i,k,h;
+	long	sXSize,sYSize,bytes,j,i,k;
 	BYTE	*iDst ,*posDst;
 
 	sYSize = lpRect->bottom - lpRect->top;
@@ -612,7 +612,7 @@ void CPPDrawManager::SetShade(LPCRECT lpRect, UINT shadeID /* = 0 */, BYTE granu
 //----------------------------------------------------
 	case EFFECT_SOFTBUMP: //
 		for(i = 0; i < sYSize; i++) {
-			h=(255*i/sYSize)-127;
+			const long h=(255*i/sYSize)-127;
 			for(j = 0; j < sXSize; j++) {
 				k=(255*(sXSize-j)/sXSize)-127;
 				k=(h*(h*h)/128)/128+(k*(k*k)/128)/128;
