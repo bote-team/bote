@@ -142,7 +142,7 @@ protected:
 	RangeMap m_RangeMap;
 
 	/// bestimmte Sektoren sind gefährlich und sollten daher nicht primär angeflogen werden
-	static double **m_BadMapModifiers;//[STARMAP_SECTORS_HCOUNT][STARMAP_SECTORS_VCOUNT];
+	static std::vector<double> m_BadMapModifiers;
 
 	/// Array, das Informationen zur Berechnung der kürzesten Wege aufnimmt
 	std::vector<std::vector<PathSector>> pathMap;//[STARMAP_SECTORS_HCOUNT][STARMAP_SECTORS_VCOUNT];
@@ -181,11 +181,6 @@ public:
 	 */
 	CStarmap(BOOL bAICalculation = FALSE, char nAIRange = SM_RANGE_NEAR);
 	virtual ~CStarmap();
-
-	/**
-	 * Zeiger der statischen Variablen löschen
-	 */
-	static void DeleteStatics();
 
 	/**
 	 * Funktion gibt den Wert aus der RangeMap <code>m_Range</code> an einer bestimmten Stelle <code>p</p> auf der

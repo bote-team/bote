@@ -146,9 +146,6 @@ CBotEDoc::~CBotEDoc()
 		system->ResetSystem();;
 	}
 
-	// statische Variablen der Starmap freigeben
-	CStarmap::DeleteStatics();
-
 	// stop MT
 	MYTRACE_DEINIT;
 }

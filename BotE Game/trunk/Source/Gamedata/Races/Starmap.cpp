@@ -19,7 +19,7 @@ static char THIS_FILE[]=__FILE__;
 
 
 // statische Variablen initialisieren
-double** CStarmap::m_BadMapModifiers = NULL;//[STARMAP_SECTORS_HCOUNT][STARMAP_SECTORS_VCOUNT];
+std::vector<double> CStarmap::m_BadMapModifiers(STARMAP_SECTORS_HCOUNT * STARMAP_SECTORS_VCOUNT, 0);
 
 
 /**
@@ -40,15 +40,6 @@ inline int sgn(int x)
 
 CStarmap::CStarmap(BOOL bAICalculation, char nAIRange) : m_bAICalculation(bAICalculation), m_nAIRange(nAIRange)
 {
-
-	if(!m_BadMapModifiers) {
-		m_BadMapModifiers=new double*[STARMAP_SECTORS_HCOUNT];
-		for(int i=0;i<STARMAP_SECTORS_HCOUNT;i++)
-			m_BadMapModifiers[i]=new double[STARMAP_SECTORS_VCOUNT];
-		for(int i=0;i<STARMAP_SECTORS_HCOUNT;i++)
-			for(int j=0;j<STARMAP_SECTORS_VCOUNT;j++)
-				m_BadMapModifiers[i][j]=0;
-	}
 
 	ASSERT(nAIRange >= SM_RANGE_FAR && nAIRange <= SM_RANGE_NEAR);
 
@@ -86,24 +77,6 @@ CStarmap::~CStarmap()
 	m_AITargetPoints.clear();
 	m_AIBadPoints.clear();
 	pathMap.clear();
-}
-
-void CStarmap::DeleteStatics()
-{
-	for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-	{
-		if (m_BadMapModifiers)
-		{
-			delete[] m_BadMapModifiers[x];
-			m_BadMapModifiers[x] = NULL;
-		}
-	}
-
-	if (m_BadMapModifiers)
-	{
-		delete[] m_BadMapModifiers;
-		m_BadMapModifiers = NULL;
-	}
 }
 
 void CStarmap::SetRangeMap(unsigned char rangeMap[], char w, char h, char x0, char y0)
@@ -232,10 +205,12 @@ void CStarmap::SynchronizeWithMap(const std::vector<CSector>& sectors, const std
 // Wegsuche nicht überflogen wird. Außerdem wird solch ein Sektor auch nicht für einen Außenpostenbau bestimmt.
 void CStarmap::SynchronizeWithAnomalies(const std::vector<CSector>& sectors)
 {
-	for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
-		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
-			if (sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetAnomaly())
-				m_BadMapModifiers[x][y] = sectors.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetAnomaly()->GetWaySearchWeight();
+	for(std::vector<CSector>::const_iterator it = sectors.begin(); it != sectors.end(); ++it)
+	{
+		const CAnomaly* anomaly = it->GetAnomaly();
+		if (anomaly)
+			m_BadMapModifiers.at(it - sectors.begin()) = anomaly->GetWaySearchWeight();
+	}
 }
 
 void CStarmap::ClearAll()
@@ -379,7 +354,7 @@ Sector CStarmap::CalcPath(const Sector &pos, const Sector &target, unsigned char
 				// dann die bisherige Info überschreiben
 				double distance = next->distance + ((i % 2) ? WEIGHT_DIR : WEIGHT_DIAG);
 				// Anomalien beachten
-				distance += m_BadMapModifiers[next->position.x][next->position.y];
+				distance += m_BadMapModifiers.at(next->position.x + next->position.y * STARMAP_SECTORS_HCOUNT);
 
 				if (neighb->distance == 0. || distance < neighb->distance)
 				{
