@@ -288,12 +288,11 @@ HBITMAP CPPDrawManager::CreateImageEffect(HBITMAP hBitmap, DWORD dwWidth, DWORD 
 	clrMask = CLR_TO_RGBQUAD(clrMask);
 	clrMono = CLR_TO_RGBQUAD(clrMono);
 
-	DWORD dwAlpha;
 	for (DWORD pixel = 0; pixel < dwWidth * dwHeight; pixel++, *pBits++)
 	{
 		COLORREF color = (COLORREF)*pBits;
 		//ENG: Extract an original alpha value
-		dwAlpha = color & 0xFF000000;
+		const DWORD dwAlpha = color & 0xFF000000;
 		if (dwAlpha != 0)
 			m_bIsAlpha = TRUE;
 		if (bUseMask && (color == clrMask))
