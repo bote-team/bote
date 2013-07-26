@@ -523,7 +523,6 @@ BOOL CPPToolTip::RelayEvent(MSG* pMsg)
 
 	ASSERT(m_hParentWnd);
 
-	HWND hWnd = NULL;
 	POINT pt;
 	CRect rect;
 	PPTOOLTIP_INFO ti;
@@ -601,7 +600,7 @@ BOOL CPPToolTip::RelayEvent(MSG* pMsg)
 			{
 				//ENG: Searching a toolbar's item
 				//RUS: Ищем элемент на панели инструментов
-				hWnd = FindToolBarItem(pMsg->pt, ti);
+				HWND hWnd = FindToolBarItem(pMsg->pt, ti);
 				if (NULL == hWnd)
 				{
 					//ENG: Searching a hot area of the tooltip
