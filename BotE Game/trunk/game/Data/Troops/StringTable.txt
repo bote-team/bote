@@ -22,7 +22,7 @@ Spiel beitreten
 [NEWGAMETT]
 Neues Einzelspieler-Spiel starten
 [MULTIPLAYERTT]
-Ein Multiplayerspiel erröffnen oder einem Multiplayerspiel beitreten
+Ein Multiplayer-Spiel eröffnen oder einem Multiplayer-Spiel beitreten
 [LOADGAMETT]
 Ein gespeichertes Spiel laden
 [SETTINGSTT]
@@ -30,9 +30,11 @@ Spieleinstellungen ändern
 [LEAVETT]
 Das Spiel beenden und Birth of the Empires verlassen
 [CREATEGAMETT]
-Ein neues Multiplayerspiel eröffnen
+Ein neues Multiplayer-Spiel eröffnen
 [JOINGAMETT]
-Einem bestehenden Multiplayerspiel beitreten
+Einem bestehenden Multiplayer-Spiel beitreten
+[ELIMINATED]
+ausgelöscht
 
 [WARNING]
 Warnung
@@ -61,7 +63,7 @@ Port:
 Spiel im LAN veröffentlichen
 [SERVERIP]
 IP-Adresse des Servers:
-[SERCHLANSERVER]
+[SEARCHLANSERVER]
 Suche LAN-Server
 
 [STARTGAME]
@@ -70,6 +72,13 @@ Spiel starten
 Wähle dein Imperium
 [CHAT]
 Chat
+
+[FOUND_BOTE_SERVERS]
+gefundene BotE-Server:
+[LANSERVERNAME]
+Servername
+[LANSERVERIP]
+IP-Adresse
 
 // left_View Buttons
 [BTN_ROUNDEND]
@@ -179,12 +188,12 @@ Jetzige
 Verloren
 
 // Schiffsbefehlsbuttons
-[BTN_TACTIC]
-Taktik
-[BTN_ORDER]
-Befehl
-[BTN_ACTION]
-Aktion
+[BTN_MULTI_TURN_ORDER]
+Mehrrundenb.
+[BTN_SINGLE_TURN_ORDER]
+Einrundenbef.
+[BTN_IMMEDIATE_ORDER]
+Sofortbefehl
 [BTN_AVOID]
 Meiden
 [BTN_ATTACK]
@@ -221,6 +230,8 @@ Trainieren
 Warten
 [BTN_SENTRY_SHIP_ORDER]
 Stationieren
+[BTN_REPAIR_SHIP]
+Reparieren
 
 // Entscheidungsbuttons
 [BTN_NEXT]
@@ -467,7 +478,7 @@ Kolonisierung
 [TERRAFORMING_FINISHED]
 Terraforming im §-System abgeschlossen
 [TERRAFORMING_POINTS_WASTED]
-Im §-System wird eine Flotte voraussichtlich § Terraformpunkte verschwenden
+Im §-System werden voraussichtlich Terraformpunkte verschwendet
 [OUTPOST_FINISHED]
 Ein neuer Aussenposten wurde errichtet
 [STARBASE_FINISHED]
@@ -479,7 +490,7 @@ Sternbasisbau
 [ASSIGN_FLAGSHIP_MESSAGE]
 Die § (§) wurde zum Flaggschiff ernannt
 [GET_CONTACT_TO_MINOR]
-Wir haben die § kennengelernt
+Wir haben die § in Sektor § kennengelernt
 [GET_CONTACT_TO_MAJOR]
 Wir haben die § in Sektor § getroffen
 
@@ -516,6 +527,12 @@ Arbeiterzuweisung in
 Ertrag
 [FREE_WORKERS]
 freie Arbeiter
+[WORKERS_ACTIVE]
+(§ aktiv)
+[SYSTEM_STORAGE_INFO]
+Systemlager § von §
+[SYSTEM_STORAGE_INFO_PERCENT]
+, §% voll
 
 // Gebäudeübersichtsmenü
 [BUILDING_OVERVIEW_MENUE]
@@ -962,7 +979,7 @@ Ablehnung des Bestechungsversuches
 [MIN_ACCEPT_OFFER]
 schliessen § mit § ab
 [MIN_DECLINE_OFFER]
-Die § haben unseren § abgelehnt
+Die § haben unser Angebot: § abgelehnt
 [WE_DECLINE_MIN_OFFER]
 Wir haben § der § abgelehnt
 [OUR_MIN_OFFER]
@@ -980,7 +997,7 @@ kündigt den Vertrag mit dem Volk der §
 [WE_ACCEPT_MAJ_OFFER]
 Wir schliessen § mit § ab
 [WE_DECLINE_MAJ_OFFER]
-Wir haben den § der § abgelehnt
+Wir haben § der § abgelehnt
 [MAJ_ACCEPT_OFFER]
 § hat unseren § angenommen
 [MAJ_DECLINE_OFFER]
@@ -1224,6 +1241,12 @@ Trainieren
 Warten
 [SENTRY_SHIP_ORDER]
 Stationieren
+[REPAIR_SHIP_ORDER]
+Reparieren
+[IMPROVE_SHIELDS_SHIP_ORDER]
+Schilde verbessern
+[NO_SHIP_ORDER]
+Nichts
 
 // Schiffstypen, Einzahl
 [TRANSPORTER]
@@ -1332,8 +1355,10 @@ Ziel: keins
 Ziel: unbekannt
 [ORDER]
 Befehl
-[ACTION]
-Aktion
+[COMBAT_BEHAVIOR]
+Kampfverhalten
+[SET_MOVEMENT_TARGET]
+Bewegungsziel setzen
 ////////////////////////// SHIPS END //////////////////////////////////
 
 
@@ -1572,7 +1597,7 @@ Handelsübersicht in
 Diese vulkanisch aktiven Planeten sind gewöhnlich kleine, unfruchtbaren Welten, welche an den Rändern junger Sternensysteme liegen. Sie behalten ihre warme Oberflächentemperatur aufgrund starker vulkanischer Aktivität. Deswegen besitzen sie auch keine Lebensformen. Wenn diese Aktivität aufhört, stirbt der Planet und entwickelt sich zu einem Klasse-C Planeten.
 
 [CLASS_B_INFO]
-Klasse B Planeten sind im Allgemeinen kleine Welten, die innerhalb der heißen Zone eines Sternensystems liegen. Sie sind in hohem Grade für das humanoide Leben ungeeignet. Klasse B Planeten haben dünne Atmosphären bestehend aus Helium und Natrium. Die Oberfläche ist flüssig und extrem instabil. Die Temperaturspanne reicht von 450°C im Tageslicht bis zu fast -200°C in der Nacht. Es konnte noch nie Leben auf einem Klasse B Planeten beobachtet werden.
+Klasse B Planeten sind im Allgemeinen kleine Welten, die meist innerhalb der heißen Zone eines Sternensystems liegen. Sie sind in hohem Grade für das humanoide Leben ungeeignet. Klasse B Planeten haben dünne Atmosphären bestehend aus Helium und Natrium. Die Oberfläche ist flüssig und extrem instabil. Die Temperaturspanne reicht von 450°C im Tageslicht bis zu fast -200°C in der Nacht. Es konnte noch nie Leben auf einem Klasse B Planeten beobachtet werden.
 
 [CLASS_C_INFO]
 Diese kleinen, felsigen Welten existieren häufig an den Rändern eines Sternensystems. Sie zeigen keine geologische Aktivität mehr und besitzen keine Lebensformen. Sie sind im Wesentlichen tote Planeten. Die dünne Atmosphäre ist gewöhnlich eingefroren und besteht aus Methan und Stickstoff. Die Oberfläche ist unfruchtbar und kalt, mit Temperaturen die selten über -200°C klettern.
@@ -1617,13 +1642,13 @@ Jeder Planet, dessen Oberfläche mehr als 80% gefroren ist, wird als Klasse P Pla
 Diese seltenen Planeten besitzen für gewöhnlich eine sehr exzentrische Umlaufbahn oder befinden sich in der Nähe von Sternen mit variabler Ausstrahlung. Deswegen sind die Bedingungen auf der Oberfläche des Planeten sehr verschieden. Wüsten und Regenwälder existieren gemeinsam innerhalb weniger Kilometer, während selbst Gletscher sehr nahe am Äquator liegen können. Durch diese instabilen Bedingungen ist es praktisch unmöglich, dass Leben auf Klasse Q Planeten entsteht.
 
 [CLASS_R_INFO]
-Klasse R Planeten beginnen normalerweise ihr Leben innerhalb der Grenzen eines Sternensystems. Aber an einer Stelle ihrer Evolution wurde der Planet durch einen kolossalen Asteroiden oder irgendein anderes Phänomen getroffen. Die daraus resultierende Verschiebung der Umlaufbahn änderte radikal die Entwicklung des Planeten. vieles starb einfach, aber einige geologisch aktiven Planeten konnten durch vulkanische Gasentweichung manche Lebensformen erhalten.
+Klasse R Planeten beginnen normalerweise ihr Leben innerhalb der Grenzen eines Sternensystems. Aber an einer Stelle ihrer Evolution wurde der Planet durch einen kolossalen Asteroiden oder irgendein anderes Phänomen getroffen. Die daraus resultierende Verschiebung der Umlaufbahn änderte radikal die Entwicklung des Planeten: vieles starb einfach, aber einige geologisch aktiven Planeten konnten durch vulkanische Gasentweichung manche Lebensformen erhalten.
 
 [CLASS_S_INFO]
-Planeten der Klasse S sind ähnlich ihren kleineren Brüdern der Klasse I und J. Sie besitzen ca. das 3000fache der Masse der Erde und befinden sich in der kalten Zone der Sonne. Die geringe Sonneneinstrahlung und die hohe Schwerkraft der Planeten haben es ihnen ermöglicht, dichte Atmospären aus Wasserstoff und Wasserstoffverbindungen zu bilden. Durch die hohe Kernhitze geben sie viel Wärme ab.
+Planeten der Klasse S sind ähnlich ihren kleineren Brüdern der Klasse I und J. Sie besitzen ca. das 3000fache der Masse der Erde und befinden sich meist in der kalten Zone der Sonne. Die geringe Sonneneinstrahlung und die hohe Schwerkraft der Planeten haben es ihnen ermöglicht, dichte Atmospären aus Wasserstoff und Wasserstoffverbindungen zu bilden. Durch die hohe Kernhitze geben sie viel Wärme ab.
 
 [CLASS_T_INFO]
-Klasse T Planeten sind ähnlich der Klassen I und J. Sie sind riesig, typisch ist die 10000fache Masse der Erde, und liegen in der kalten Zone ihrer Sonne. Hohe Kerntemperaturen verursachen eine Ausstrahlung von sichtbarem Licht. Dieses sind die größten möglichen Planeten, Planeten mit mehr Masse generieren genug Kerntemperatur, um Fusionsreaktionen zu initiieren und Sterne zu werden.
+Klasse T Planeten sind ähnlich der Klassen I und J. Sie sind riesig, typisch ist die 10000fache Masse der Erde, und liegen meist in der kalten Zone ihrer Sonne. Hohe Kerntemperaturen verursachen eine Ausstrahlung von sichtbarem Licht. Dieses sind die größten möglichen Planeten, Planeten mit mehr Masse generieren genug Kerntemperatur, um Fusionsreaktionen zu initiieren und Sterne zu werden.
 
 [CLASS_Y_INFO]
 Möglicherweise sind Klasse Y Planeten die umweltsmäßig gefährlichsten Planeten in der Galaxie. Dämon-Klasse Welten sind in jeder erdenklichen Weise für Leben extrem giftig. Die Atmosphäre ist toxisch, die Temperaturen sind extrem hoch und es herrschen atmosphärische Stürme mit Winden über 500km/h. Dazu kommt noch eine beständige Strahlung aufgrund von thermionischen Entladungen.
@@ -1905,7 +1930,7 @@ Die zivile Bevölkerung des § Systems ist wegen unserer Bombardierung geschockt u
 [BOMBARDEVENT_TEXT_DEFENDER_MAJOR1]
 Die zivile Bevölkerung des § Systems ist wegen der feindlichen Bombardierung geschockt und fordert das Ende der Gewalt.
 [BOMBARDEVENT_TEXT_DEFENDER_MAJOR2]
-Die Bombardierung des § Systems schadet unserer Wirtschaft. Händler das die Regierung dagegen etwas unternimmt. 
+Die Bombardierung des § Systems schadet unserer Wirtschaft. Händler fordern, dass die Regierung dagegen etwas unternimmt.
 [BOMBARDEVENT_TEXT_DEFENDER_MAJOR3]
 Die Bombardierung des § Systems ist eine Beleidigung unserer Ehre. Die Krieger wollen sich dem Gegner Mann gegen Mann stellen. 
 [BOMBARDEVENT_TEXT_DEFENDER_MAJOR4]
@@ -1913,7 +1938,7 @@ Die zivile Bevölkerung des § Systems ist wegen der feindlichen Bombardierung ges
 [BOMBARDEVENT_TEXT_DEFENDER_MAJOR5]
 Unsere Fabriken im § System werden durch die Bombardierung geschädigt. Wir sollten Verstärkung schicken.
 [BOMBARDEVENT_TEXT_DEFENDER_MAJOR6]
-Die § System Vi ist entsetzt über die feindliche Bombardierung und fordert Verstärkung an.
+Das § System ist entsetzt über die feindliche Bombardierung und fordert Verstärkung an.
 
 [INVASIONSUCCESSEVENT_HEADLINE]
 Erfolgreiche Invasion im § System
@@ -1977,7 +2002,7 @@ Unterhalt
 Unterstützung
 
 [RESEARCHEVENT_HEADLINE]
-Neue Technologie entdeckt
+Neue Technologie erforscht
 
 [RESEARCHEVENT_NEWBUILDINGS]
 neue Gebäude
@@ -2012,7 +2037,7 @@ pazifistisch
 [SNEAKY]
 hinterhältig
 [SOLOING]
-Alleingeher
+isolationistisch
 [HOSTILE]
 feindlich
 
@@ -2158,7 +2183,7 @@ Maximale Schildstärke erhöht sich um 3% pro Runde, Verlust der kompletten Crewer
 [BINEBULA_GAME]
 Schildregeneration um 100% erhöht
 [TORIONGASNEBULA_GAME]
-Schilde sind im Kampf deaktiviert, Torpedowaffen sind im Kampf deaktiviert
+Schilde und Torpedowaffen sind im Kampf deaktiviert
 [NEUTRONSTAR_GAME]
 Schildschäden und möglicher Hüllenbruch, Ausfall der Scanner
 [RADIOPULSAR_GAME]
@@ -2204,7 +2229,7 @@ Letzter Platz
 [AVERAGE]
 Durchschnitt
 [RATING]
-Bewertung
+Gesamtwertung
 
 [DEMOGRAPHY_MENUE]
 Demografie
@@ -2259,7 +2284,7 @@ Siege
 
 // Kampfbildschirme
 [COMBAT_IN_SECTOR]
-Kampf im Sektor
+Kampf im 
 [PLEASE_WAIT]
 bitte warten
 [COMBATCALCULATION_IS_RUNNING]
@@ -2332,17 +2357,17 @@ Die Bewohner des § Systems feiern ihre großartige Regierung
 [SYSTEMEVENTMORALMALUS]
 Die Bewohner des § Systems verlieren das Vertrauen in ihre Regierung
 [SYSTEMEVENTPLANETMOVEMENT]
-Es fand eine Klimaveränderung auf § statt
+Es fand eine Klimaveränderung auf § statt. Die Maximalbevölkerung hat sich um § Mrd. geändert.
 [SYSTEMEVENTPLANETDEMOGRAPHIC]
 Drastischer Demographischer Wandel auf §
 [SYSTEMEVENTPLANETDEMOGRAPHICTITLE]
 Demografischer Wandel
 [SYSTEMEVENTPLANETDEMOGRAPHICLONG]
-Durch Fehlkalkulationen ist die Sterberate auf § sehr viel höher als geplant, wodurch die Bevölkerung schrumpft
+Durch Fehlkalkulationen ist die Sterberate auf § sehr viel höher als geplant, wodurch die Bevölkerung um § Mrd. schrumpft.
 [BREAKTHROUGH]
-Durchbruch
+Erfolg
 [GLOBALEVENTRESEARCH]
-Durch neue Forschungs-Methoden verdoppelten eure Wissentschaftler kurzzeitig ihre Effektivität 
+Durch einen Forschungserfolg verdoppelten unsere Wissenschaftler kurzzeitig ihre Ergebnisse
 [GLOBALEVENTMINOR]
 Regierungswechsel bei den §
 [ALIENTECHEADLINE]
@@ -2353,6 +2378,8 @@ Im Sektor § wurde äußerst interessante Alientechnologie entdeckt
 Im Sektor § wurde Alientechnologie entdeckt, die unsere Forschung in allen Gebieten voranbringt
 [EVENTSHIPXP]
 Beim Erkunden von § hat die Crew viel Erfahrung gesammelt
+[EVENTHULLVIRUS]
+Hüllenvirus in Sektor § hat Schiffe befallen
 
 // Truppen
 [MAJOR1_TROOP1_NAME]
@@ -2465,7 +2492,7 @@ Rotharianische Drohnen sind Defensiv-Streitkräfte mit hoher Feuerkraft. Ihre Auf
 [MAJOR4_TROOP7_NAME]
 Helikopterdrohnen (getarnt)
 [MAJOR4_TROOP7_DESC]
-Diese Helikopter sind sehr schnell, unsichtbar und kommen bei Spezialaufträgen aller Art zum Einsatz. Sie verraten sich allenfalls durch Ihren Fluggeräusch.
+Diese Helikopter sind sehr schnell, unsichtbar und kommen bei Spezialaufträgen aller Art zum Einsatz. Sie verraten sich allenfalls durch Ihr Fluggeräusch.
 [MAJOR4_TROOP8_NAME]
 Rotharianische Spezialtruppen
 [MAJOR4_TROOP8_DESC]
@@ -2554,3 +2581,7 @@ Durch ein Ionisierendes Gaswesen wurde die komplette Energieversorgung im § Syst
 Durch ein Gaballianisches Seuchenschiff wurde die komplette Nahrungsversorgung im § System lahmgelegt
 [EVENT_BLIZZARD_PLASMAWESEN]
 Durch ein Blizzard Plasmawesen wurde die komplette Energieversorgung im § System lahmgelegt
+[EVENT_MORLOCK_RAIDER]
+Durch einen Überfall der Morlock-Raider wurden § Credits im § System gestohlen
+[EVENT_ISOTOPOSPHAERISCHES_WESEN]
+Durch ein Isotoposphärisches Wesen wurde die komplette Energieversorgung im § System lahmgelegt
