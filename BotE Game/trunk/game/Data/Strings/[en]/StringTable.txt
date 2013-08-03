@@ -2441,7 +2441,7 @@ Khaoron Warriors
 [MAJOR3_TROOP1_DESC]
 This is a relatively basic unit of the Khaoron Empire. They prefer close-quarters weapons but that's their only disadvantage.
 [MAJOR3_TROOP2_NAME]
-Warriors of Kha'rehc Order))
+Warriors of Kha'rehc Order
 [MAJOR3_TROOP2_DESC]
 Khaoron warriors drilled at Kha'rehc Order, a very well-trained unit of Khaoron Empire. 
 [MAJOR3_TROOP3_NAME]
