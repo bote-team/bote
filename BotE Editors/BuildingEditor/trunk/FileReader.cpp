@@ -179,7 +179,8 @@ void CFileReader::ReadDataFromFile(CArray<CBuildingInfo,CBuildingInfo>* m_Buildi
 				info.SetNeededSystems(atoi(data[139]));
 				
 				// Information in das Gebäudeinfofeld schreiben
-				m_BuildingInfos->Add(info);				
+				m_BuildingInfos->Add(info);			
+				
 			}
 		}
 
@@ -194,6 +195,22 @@ void CFileReader::ReadDataFromFile(CArray<CBuildingInfo,CBuildingInfo>* m_Buildi
 
 void CFileReader::WriteDataToFile(CArray<CBuildingInfo,CBuildingInfo>* buildingInfos, BOOLEAN language)
 {
+// Safety copies
+		CopyFile(
+					"Buildings-Pre-Pre.data",
+					"Buildings-Pre-Pre-Pre.data",
+					FALSE);
+		CopyFile(
+					"Buildings-Pre.data",
+					"Buildings-Pre-Pre.data",
+					FALSE);
+
+		CopyFile(
+					"Buildings.data",
+					"Buildings-Pre.data",
+					FALSE);
+
+
 	int i = 0;
 	CString s;
 	CBuildingInfo buildingInfo;
@@ -201,23 +218,6 @@ void CFileReader::WriteDataToFile(CArray<CBuildingInfo,CBuildingInfo>* buildingI
 	CStdioFile file;						// Varibale vom Typ CStdioFile
 	if (file.Open(fileName, CFile::typeBinary | CFile::modeCreate | CFile::modeWrite))		// Datei wird geöffnet
 	{
-
-		//CString filenamepre = fileName+"previous.data";
-		    //CopyFile("Buildings.data" "Buildings-Pre.data");//, [I]FALSE[/I]);
-//		//BOOL WINAPI CopyFile("Buildings.data","Buildings-Pre.data",FALSE);
-//int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstance,LPSTR lpCmd,int nShowCmd) 
- // CopyFile(Buildings.data,BuildingsPre.data,true);
-//}
-
-
-		//CString filenamepre-pre = fileName+"pre-previous.data";
-//BOOL WINAPI CopyFile("Buildings-Pre.data","Buildings-Pre-Pre.data");
-		//BOOL WINAPI CopyFile( _In_  LPCTSTR filename,	
-		//  _In_  LPCTSTR filenamepre-pre,
-		//  _In_  BOOL bFailIfExists
-		//	);
-	
-
 		for (int i = 0; i < buildingInfos->GetSize(); i++)
 		{
 			if (buildingInfos->GetAt(i).GetPredecessorID() == buildingInfos->GetAt(i).GetRunningNumber())
@@ -494,13 +494,313 @@ void CFileReader::WriteDataToFile(CArray<CBuildingInfo,CBuildingInfo>* buildingI
 			}
 			s.Format("%d\n", buildingInfos->GetAt(i).GetNeededSystems());
 			file.WriteString(s);
-			BOOLEAN EXITSAVE = FALSE; // it was saved
+
 		}
 	}
 	else
 	{	
 		AfxMessageBox("Fehler! Datei \"Buildings.data\" kann nicht geschrieben werden...");
 		exit(1);
+	}
+	file.Close();							// Datei wird geschlossen
+
+
+	// Export into csv.file
+	i = 0;
+	//CString s;
+	//CBuildingInfo buildingInfo;
+	CString fileNameExport="BuildingsExport.csv";		// Name des zu Öffnenden Files 
+	//CStdioFile file;						// Varibale vom Typ CStdioFile
+	if (file.Open(fileNameExport, CFile::typeBinary | CFile::modeCreate | CFile::modeWrite))		// Datei wird geöffnet
+	{
+			//headline
+			s.Format("Nr;Race;Name;Name2;Desc;Desc2;Upg;bop;maxS;maxSysID;maxE;maxEmpID;oHP;ooC;oMR;oTS;o_inS;minHab;minS;minSysID;minE;minEmpID;oR;A;B;C;E;F;G;H;I;J;K;L;M;N;O;P;Q;R;S;T;Y;Bio;En;Comp;Prop;Constr;Weap;nInd;nEn;nTit;nDeu;nDur;nCry;nIri;nDil;FProd;IndP;EnP;IntP;ResP;TitP;DeuP;DurP;CryP;IriP;DerP;CreP;MorP;M_Emp;FBon;IndB;EnB;IntB;ResB;TitB;DeuB;DurB;CryB;IriB;DerB;AllResB;CreB;BioTB;EnTB;CoTB;PrTB;CoTB;WTB;InSecB;EcoSpyB;EcoSabB;RSpyB;RSabB;MilSpyB;MilSabB;SY;maxBSS;SY_Sp;Bar;BarSp;Hit;Sh;ShB;ShDef;ShDB;GrDef;GDB;Sc;ScB;ScR;ScRB;ShT;TrT;Resist;TrR;IncTR;ShRecy;BBSp;UpBSp;ShBSp;TrBSp;PreID;Onl;Worker;n_r;Eq1;Eq2;Eq3;Eq4;Eq5;Eq6;TitD;DeuD;DurD;CryD;IriD;DerD;nSys\n");
+			file.WriteString(s);
+
+		for (int i = 0; i < buildingInfos->GetSize(); i++)
+		{
+			if (buildingInfos->GetAt(i).GetPredecessorID() == buildingInfos->GetAt(i).GetRunningNumber())
+			{
+				CString s;
+				s.Format("Error ... the predecessor ID is the same like the ID of the building!\n\nAll your changes for the building: %s (ID: %d) were canceled", buildingInfos->GetAt(i).GetBuildingName(language), buildingInfos->GetAt(i).GetRunningNumber());
+				AfxMessageBox(s);				
+			}
+
+			s.Format("%d;",buildingInfos->GetAt(i).GetRunningNumber());
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetOwnerOfBuilding());
+			file.WriteString(s);
+			s.Format("%s;",buildingInfos->GetAt(i).GetBuildingName(language));
+			file.WriteString(s);
+			s.Format("%s;",buildingInfos->GetAt(i).GetBuildingName(!language));
+			file.WriteString(s);
+			s.Format("%s;",buildingInfos->GetAt(i).GetBuildingDescription(language));
+			file.WriteString(s);
+			s.Format("%s;",buildingInfos->GetAt(i).GetBuildingDescription(!language));
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetUpgradeable());
+			file.WriteString(s);
+			s.Format("%s;",buildingInfos->GetAt(i).GetGraphikFileName());
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetMaxInSystem().Number);
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetMaxInSystem().RunningNumber);
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetMaxInEmpire().Number);
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetMaxInEmpire().RunningNumber);
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetOnlyHomePlanet());
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetOnlyOwnColony());
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetOnlyMinorRace());
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetOnlyTakenSystem());
+			file.WriteString(s);
+			s.Format("%s;",buildingInfos->GetAt(i).GetOnlyInSystemWithName());
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetMinHabitants());
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetMinInSystem().Number);
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetMinInSystem().RunningNumber);
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetMinInEmpire().Number);
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetMinInEmpire().RunningNumber);
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetOnlyRace());
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetPlanetTypes(A));
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetPlanetTypes(B));
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetPlanetTypes(C));
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetPlanetTypes(E));
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetPlanetTypes(F));
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetPlanetTypes(G));
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetPlanetTypes(H));
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetPlanetTypes(I));
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetPlanetTypes(J));
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetPlanetTypes(K));
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetPlanetTypes(L));
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetPlanetTypes(M));
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetPlanetTypes(N));
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetPlanetTypes(O));
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetPlanetTypes(P));
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetPlanetTypes(Q));
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetPlanetTypes(R));
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetPlanetTypes(S));
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetPlanetTypes(T));
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetPlanetTypes(Y));
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetBioTech());
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetEnergyTech());
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetCompTech());
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetPropulsionTech());
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetConstructionTech());
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetWeaponTech());	
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetNeededIndustry());
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetNeededEnergy());	
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetNeededTitan());
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetNeededDeuterium());
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetNeededDuranium());
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetNeededCrystal());
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetNeededIridium());
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetNeededDilithium());
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetFoodProd());
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetIPProd());
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetEnergyProd());
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetSPProd());
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetFPProd());
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetTitanProd());
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetDeuteriumProd());
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetDuraniumProd());
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetCrystalProd());
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetIridiumProd());
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetDilithiumProd());
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetLatinum());
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetMoralProd());
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetMoralProdEmpire());
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetFoodBoni());
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetIndustryBoni());
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetEnergyBoni());
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetSecurityBoni());
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetResearchBoni());
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetTitanBoni());
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetDeuteriumBoni());
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetDuraniumBoni());
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetCrystalBoni());
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetIridiumBoni());
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetDilithiumBoni());
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetAllRessourcesBoni());	
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetLatinumBoni());
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetBioTechBoni());
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetEnergyTechBoni());
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetCompTechBoni());
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetPropulsionTechBoni());
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetConstructionTechBoni());
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetWeaponTechBoni());
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetInnerSecurityBoni());
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetEconomySpyBoni());
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetEconomySabotageBoni());
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetResearchSpyBoni());
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetResearchSabotageBoni());
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetMilitarySpyBoni());
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetMilitarySabotageBoni());
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetShipYard());
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetMaxBuildableShipSize());
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetShipYardSpeed());
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetBarrack());
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetBarrackSpeed());
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetHitPoints());
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetShieldPower());
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetShieldPowerBoni());
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetShipDefend());
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetShipDefendBoni());
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetGroundDefend());
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetGroundDefendBoni());
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetScanPower());
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetScanPowerBoni());
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetScanRange());
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetScanRangeBoni());
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetShipTraining());
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetTroopTraining());
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetResistance());
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetAddedTradeRoutes());
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetIncomeOnTradeRoutes());
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetShipRecycling());
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetBuildingBuildSpeed());
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetUpdateBuildSpeed());
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetShipBuildSpeed());
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetTroopBuildSpeed());
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetPredecessorID());
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetIsBuildingOnline());
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetWorker());
+			file.WriteString(s);
+			s.Format("%d;",buildingInfos->GetAt(i).GetNeverReady());
+			file.WriteString(s);
+			for (int p = HUMAN; p <= DOMINION; p++)
+			{
+				s.Format("%d;",buildingInfos->GetAt(i).GetEquivalent(p));
+				file.WriteString(s);
+			}
+			// neu in Alpha5	
+			for (int res = TITAN; res <= DILITHIUM; res++)
+			{
+				s.Format("%d;", buildingInfos->GetAt(i).GetResourceDistributor(res));
+				file.WriteString(s);
+			}
+			s.Format("%d;", buildingInfos->GetAt(i).GetNeededSystems());
+			file.WriteString(s);
+			s.Format("\n");
+			file.WriteString(s);
+
+		}
+	}
+	else
+	{	
+		AfxMessageBox("Fehler! Datei \"BuildingsExport.csv\" konnte nicht geschrieben werden...");
 	}
 	file.Close();							// Datei wird geschlossen
 }

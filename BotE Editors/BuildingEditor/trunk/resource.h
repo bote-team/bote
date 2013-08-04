@@ -178,6 +178,10 @@
 #define IDC_EQUI6NAME6                  1149
 #define IDC_NAME2						1150
 #define IDC_DESCRIPTION2                1151
+#define IDC_MOVEUP_TEN                  1152
+#define IDC_MOVEDOWN_TEN                1153
+#define IDC_STARTBUILDING               1154
+#define IDC_CREATESTART					1155   //better would be to get Start Buildings out of Buildings.data than out of StartBuildings.data
 
 // Next default values for new objects
 // 

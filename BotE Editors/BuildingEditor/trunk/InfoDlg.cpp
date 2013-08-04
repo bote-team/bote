@@ -172,7 +172,6 @@ void CInfoDlg::DialogToData(CBuildingInfo* building, int language)
 		return;
 	};		
 			
-	BOOLEAN EXITSAVE = TRUE;  // something should be saved
 
 	building->SetOwnerOfBuilding(m_RaceComboBox.GetCurSel());
 	building->SetBuildingName(m_strName, language);

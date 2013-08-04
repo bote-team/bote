@@ -2,15 +2,24 @@
 
 @author:	Sir Pustekuchen
 @date:		2006-04-06
-@last change:	2013-07-14
+@last change:	2013-08-04
 
 
 -------------------------------------------------------------------------
 
-Changes V1.2 to 1.3 (2013-07-14 rainer)
+Changes V1.2 to 1.3.0 (2013-08-04 rainer)
 
 - added for Language 2: BuildingName2 + Desc2
 - added "Do you want save?" at Exit
+- added up to 3 safety copies (up to Buildings_Pre_Pre_Pre.data)
+- added csv-export while saving
+- enabled datafield hitpoints + resistance against corrubility
+- enabled much input of negative numerary (cancelled ES_NUMBER)
+- enabled changing window size
+- changed colors of Heyoun and Omega Alliance
+- added buttons DOWN+10, UP+10
+- prearrangement of StartBuildings Amount and Button Create Startbuildings.data (but better use of Amount value directly ingame)
+- added new symbol for BuildingEditor
 
 
 Änderungen von Version 1.1 zu 1.2 (2009-11-08)

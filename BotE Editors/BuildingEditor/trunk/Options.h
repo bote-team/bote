@@ -1,7 +1,6 @@
 #if !defined _OPTIONS_H__20050315_1300_
 #define _OPTIONS_H__20050315_1300_
 
-//#define EXITSAVE
 
 // ------------- Spielerrassen -------------------------------------------------
 #define NOBODY				0

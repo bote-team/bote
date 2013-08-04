@@ -61,6 +61,7 @@ protected:
 	int color[8];
 	bool m_bAutoSorting;
 
+
 	// Memberfunktionen
 	void DialogToData();
 	void DataToDialog();
@@ -81,6 +82,8 @@ protected:
 	afx_msg void OnCopy();
 	afx_msg void OnMoveup();
 	afx_msg void OnMovedown();
+	afx_msg void OnMoveupTen();
+	afx_msg void OnMovedownTen();
 	afx_msg void OnSelchangeLanguage();
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()

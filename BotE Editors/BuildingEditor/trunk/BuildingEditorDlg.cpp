@@ -100,6 +100,9 @@ BEGIN_MESSAGE_MAP(CBuildingEditorDlg, CDialog)
 	ON_BN_CLICKED(IDC_COPY, OnCopy)
 	ON_BN_CLICKED(IDC_MOVEUP, OnMoveup)
 	ON_BN_CLICKED(IDC_MOVEDOWN, OnMovedown)
+	ON_BN_CLICKED(IDC_MOVEUP_TEN, OnMoveupTen)
+	ON_BN_CLICKED(IDC_MOVEDOWN_TEN, OnMovedownTen)
+	//	ON_BN_CLICKED(IDC_CREATESTART, OnMovedownTen)  //not implented yet
 	ON_CBN_SELCHANGE(IDC_LANGUAGE, OnSelchangeLanguage)
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
@@ -132,7 +135,7 @@ BOOL CBuildingEditorDlg::OnInitDialog()
 	m_dynTabCtrl.InsertItem(new CPrerequisitesDlg, "Prerequisites", IDD_PREREQUISITESDLG);
 	m_dynTabCtrl.InsertItem(new CProductionDlg, "Production", IDD_PRODUCTIONDLG);
 	m_dynTabCtrl.InsertItem(new CSpecialDlg, "Specials", IDD_SPECIALDLG);
-	m_dynTabCtrl.InsertItem(new CAboutDlg, "About", IDD_ABOUTBOX);
+	m_dynTabCtrl.InsertItem(new CAboutDlg, "About v1.3.0", IDD_ABOUTBOX);
 		
 	m_bAutoSorting = FALSE;
 	// Symbol für dieses Dialogfeld festlegen. Wird automatisch erledigt
@@ -147,11 +150,11 @@ BOOL CBuildingEditorDlg::OnInitDialog()
 
 	color[NOBODY]	= RGB(1,1,1);
 	color[HUMAN]	= RGB(0,0,255);
-	color[FERENGI]	= RGB(255,180,0);
+	color[FERENGI]	= RGB(139,69,19);
 	color[KLINGON]	= RGB(255,0,0);
 	color[ROMULAN]	= RGB(0,140,0);
 	color[CARDASSIAN] = RGB(125,0,125);
-	color[DOMINION]	= RGB(90,225,255);
+	color[DOMINION]	= RGB(0,134,239);
 
 	CString s;
 	for (int i = 0; i < m_BuildingInfo.GetSize(); i++)
@@ -222,20 +225,12 @@ HCURSOR CBuildingEditorDlg::OnQueryDragIcon()
 
 void CBuildingEditorDlg::OnDestroy() 
 {
-	BOOLEAN EXITSAVE;
-	//if TRUE then some data are not saved yet, if FALSE there are no data changes to save
-	if (EXITSAVE)
-		{
 			int iReturnMessageBox = MessageBox("Do you want to save ?","",MB_OKCANCEL| MB_ICONQUESTION | MB_SETFOREGROUND);
 			if (iReturnMessageBox == IDOK) 
 			{
 				CBuildingEditorDlg::OnSave();
-				EXITSAVE = FALSE;
-						}
-			else 
+			}
 
-
-		
 	CDialog::OnDestroy();
 	
 	// TODO: Code für die Behandlungsroutine für Nachrichten hier einfügen
@@ -248,18 +243,7 @@ void CBuildingEditorDlg::OnDestroy()
 	m_dynTabCtrl.DeleteItem(2);
 	m_dynTabCtrl.DeleteItem(1);
 	m_dynTabCtrl.DeleteItem(0);
-	EXITSAVE = TRUE;
-	/*
-		}
-			else 
-			{
-				//int iReturnMessageBox = MessageBox("What's now ?","EXIT",MB_OKCANCEL);
-				EXITSAVE = FALSE;
-				CBuildingEditorDlg::OnSave();
-			}
-			*/
 				
-}
 }
 
 void CBuildingEditorDlg::OnSelchangeList() 
@@ -294,6 +278,7 @@ void CBuildingEditorDlg::OnSave()
 		m_ListBox.AddString(s,color[m_BuildingInfo.GetAt(i).GetOwnerOfBuilding()]);
 	}
 	m_ListBox.SetCurSel(m_iClick);
+
 	this->OnSelchangeList();
 }
 
@@ -635,6 +620,18 @@ void CBuildingEditorDlg::OnMoveup()
 	}
 }
 
+void CBuildingEditorDlg::OnMoveupTen() 
+{
+	// TODO: Code für die Behandlungsroutine der Steuerelement-Benachrichtigung hier einfügen
+	int move = 10;  //later 10
+	if (m_BuildingInfo.GetSize() > 0 && m_ListBox.GetCurSel() > 9)
+	{
+		for (int i = 0; i < move; i++)
+			OnMoveup();
+	}
+	
+}
+
 
 void CBuildingEditorDlg::OnMovedown() 
 {
@@ -706,6 +703,18 @@ void CBuildingEditorDlg::OnMovedown()
 	}
 }
 
+void CBuildingEditorDlg::OnMovedownTen() 
+{
+	int move = 10; //later 10
+
+	// TODO: Code für die Behandlungsroutine der Steuerelement-Benachrichtigung hier einfügen
+	if (m_BuildingInfo.GetSize() > 0 && m_ListBox.GetCurSel() < m_BuildingInfo.GetUpperBound()-10)
+	{
+		for (int i = 0; i < move; i++)
+			OnMovedown();
+	}
+	
+}
 
 void CBuildingEditorDlg::DataToDialog()
 {
