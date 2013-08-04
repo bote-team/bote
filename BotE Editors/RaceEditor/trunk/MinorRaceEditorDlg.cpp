@@ -74,27 +74,18 @@ CMinorRaceEditorDlg::CMinorRaceEditorDlg(CWnd* pParent /*=NULL*/)
 }
 
 void CMinorRaceEditorDlg::DoDataExchange(CDataExchange* pDX)
+
+
 {
 	CDialog::DoDataExchange(pDX);
 	//{{AFX_DATA_MAP(CMinorRaceEditorDlg)
+
 	DDX_Control(pDX, IDC_TECHPROGRESS, m_TechProgress);
 	DDX_Control(pDX, IDC_CORRUPTIBILITY, m_Corruptibiliy);
 	DDX_Control(pDX, IDC_LIST, m_ListBox);
 	DDX_Text(pDX, IDC_DESCRIPTION, m_strDescription);
 	DDX_Text(pDX, IDC_RACENAME, m_strRaceName);
 	DDX_Check(pDX, IDC_SPACEFLIGHT, m_bSpaceflightNation);
-	/*DDX_Check(pDX, IDC_CHECKAGRARIAN, m_bProperty[2]);
-	DDX_Check(pDX,  IDC_CHECKFINANCIAL, m_bProperty[0]);
-	DDX_Check(pDX,IDC_CHECKHOSTILE, m_bProperty[10]);
-	DDX_Check(pDX, IDC_CHECKINDUSTRIAL, m_bProperty[3]);
-	DDX_Check(pDX, IDC_CHECPACIFIST, m_bProperty[7]);
-	DDX_Check(pDX, IDC_CHECKPRODUCTIV, m_bProperty[6]);
-	DDX_Check(pDX, IDC_CHECKSOLOING, m_bProperty[9]);
-	DDX_Check(pDX, IDC_CHECKSCIENTIFIC, m_bProperty[5]);
-	DDX_Check(pDX, IDC_CHECKSECRET, m_bProperty[4]);
-	DDX_Check(pDX, IDC_CHECKSNEAKY, m_bProperty[8]);
-	DDX_Check(pDX, IDC_CHECKWARLIKE, m_bProperty[1]);
-	*/
 
 	//Names are not correct
 	DDX_Check(pDX, IDC_CHECKAGRARIAN, m_bProperty[0]);   //value 1 = financial
@@ -113,7 +104,9 @@ void CMinorRaceEditorDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_GRAPHICNAME, m_strGraphicName);
 	
 	//}}AFX_DATA_MAP
+
 }
+
 
 BEGIN_MESSAGE_MAP(CMinorRaceEditorDlg, CDialog)
 	//{{AFX_MSG_MAP(CMinorRaceEditorDlg)

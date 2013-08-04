@@ -163,22 +163,65 @@ void CFileReader::WriteDataToFile(CArray<CMinorRace,CMinorRace>* m_MinorInfos)
 	}
 	file.Close();							// Datei wird geschlossen
 
-	// Jetzt noch das RacePlanetNames.data schreiben (Wird nicht mehr benötigt, oder? -Revisor)
-	/*fileName.Format("RacePlanetNames.data");
-	if (file.Open(fileName, CFile::typeText | CFile::modeCreate | CFile::modeWrite))		// Datei wird geöffnet
+	//Export to csv-file
+	CString fileNameExport; 
+	fileNameExport.Format("MinorRacesExport.csv");
+	if (file.Open(fileNameExport, CFile::typeBinary | CFile::modeCreate | CFile::modeWrite))		// Datei wird geöffnet
 	{
+		s.Format("HomeSystem;Race;Desc;bop;unusedM1;unusedM2;unusedM3;unusedM4;unusedM5;unusedM6;progress;kind;spacefl;corrub\n");  //not for Export
+		//s.Format("
+		file.WriteString(s);
 		for (i = 0; i < m_MinorInfos->GetSize(); i++)
 		{
-			s.Format("%s\n",m_MinorInfos->GetAt(i).GetHomeplanetName());
-			file.WriteString(s);			
+			// Systemnamen groß schreiben und Doppelpunkt an das Ende stellen
+			s.Format("%s",m_MinorInfos->GetAt(i).GetHomeplanetName());
+			s.MakeUpper();
+			sold = "";
+			sold = s;
+			//if (sold.Left(sold.GetLength()) == '\r') 
+			//	sold.Left(sold.GetLength()-1);//CR am Ende entfernen
+			s.Format("%s:;",sold);
+			file.WriteString(s);
+			
+			s.Format("%s;",m_MinorInfos->GetAt(i).GetRaceName());
+			file.WriteString(s);
+			s.Format("%s;",m_MinorInfos->GetAt(i).GetRaceDescription());
+			file.WriteString(s);
+			s.Format("%s;", m_MinorInfos->GetAt(i).GetGraphicName());
+			file.WriteString(s);
+			for (int j = HUMAN; j <= DOMINION; j++)
+			{
+				s.Format("%d;",m_MinorInfos->GetAt(i).GetRelationshipToMajorRace(j));
+				file.WriteString(s);				
+			}
+			s.Format("%d;",m_MinorInfos->GetAt(i).GetTechnologicalProgress());
+			file.WriteString(s);
+			sold="";
+			for(int j=0;j<NUMBEROFKINDS;j++)
+			{
+				if(m_MinorInfos->GetAt(i).GetProperty(j)==TRUE)
+				{
+					s.Format("%s%d,",sold,j+1);
+					sold=s;//Weil s.Format(s) einen Runtimeerror gibt
+				}
+			}
+			if(sold=="") sold="0," ;//Wenn keine Eigenschaft vorhanden
+			sold=sold.Left(sold.GetLength()-1);
+			s.Format("%s;",sold);
+			file.WriteString(s);
+			s.Format("%d;",m_MinorInfos->GetAt(i).GetSpaceflightNation());
+			file.WriteString(s);
+			s.Format("%d;",m_MinorInfos->GetAt(i).GetCorruptibility());
+			file.WriteString(s);
+			s.Format("\n");
+			file.WriteString(s);
 		}
 	}
 	else
 	{	
-		AfxMessageBox("Fehler! Datei \"RacePlanetNames.data\" kann nicht geschrieben werden...");
-		exit(1);
+		AfxMessageBox("Fehler! Datei \"MinorRacesExport.csv\" kann nicht geschrieben werden...");
 	}
-	file.Close();*/							// Datei wird geschlossen
+	file.Close();							// Datei wird geschlossen
 
 
 }

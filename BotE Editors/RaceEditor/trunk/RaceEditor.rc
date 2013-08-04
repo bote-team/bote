@@ -74,7 +74,7 @@ IDR_MAINFRAME           ICON                    "res\\MinorRaceEditor.ico"
 //
 
 IDD_ABOUTBOX DIALOG  0, 0, 235, 55
-STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_SIZEBOX
 CAPTION "Info über MinorRaceEditor"
 FONT 8, "MS Sans Serif"
 BEGIN
@@ -123,9 +123,11 @@ BEGIN
     GROUPBOX        "general",IDC_STATIC,165,132,125,129
 END
 
+
+
 IDD_RACEEDITOR DIALOGEX 0, 0, 385, 328
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "BotE-MinorRaceEditorV1.6 for V0.9"
+CAPTION "BotE-MinorRaceEditorV1.6.1 for V0.9"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     DEFPUSHBUTTON   "OK",IDOK,7,7,50,14
@@ -157,12 +159,12 @@ BEGIN
         BLOCK "040704b0"
         BEGIN
             VALUE "FileDescription", "MFC-Anwendung MinorRaceEditor"
-            VALUE "FileVersion", "1, 0, 0, 1"
+            VALUE "FileVersion", "1"
             VALUE "InternalName", "MinorRaceEditor"
-            VALUE "LegalCopyright", "Copyright (C) 2006-2008"
+            VALUE "LegalCopyright", "Copyright (C) 2006-2013"
             VALUE "OriginalFilename", "MinorRaceEditor.EXE"
             VALUE "ProductName", "Anwendung MinorRaceEditor"
-            VALUE "ProductVersion", "1, 0, 0, 1"
+            VALUE "ProductVersion", "1"
         END
     END
     BLOCK "VarFileInfo"
@@ -191,6 +193,22 @@ BEGIN
     IDD_MINORRACEEDITOR_DIALOG, DIALOG
     BEGIN
         LEFTMARGIN, 7
+        RIGHTMARGIN, 305
+        TOPMARGIN, 6
+        BOTTOMMARGIN, 309
+    END
+	
+	    IDD_MAJORRACEEDITOR_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 87
+        RIGHTMARGIN, 305
+        TOPMARGIN, 6
+        BOTTOMMARGIN, 309
+    END
+	
+	    IDD_ALIENEDITOR_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 167
         RIGHTMARGIN, 305
         TOPMARGIN, 6
         BOTTOMMARGIN, 309

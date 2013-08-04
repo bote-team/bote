@@ -17,6 +17,8 @@ class CMinorRaceEditorDlg : public CDialog
 // Konstruktion
 public:
 	CMinorRaceEditorDlg(CWnd* pParent = NULL);	// Standard-Konstruktor
+	//CMinorRaceEditorDlg(CWnd* pMajorParent = NULL);
+	//CMinorRaceEditorDlg(CWnd* pAlienParent = NULL);
 
 // Dialogfelddaten
 	//{{AFX_DATA(CMinorRaceEditorDlg)
@@ -30,7 +32,31 @@ public:
 	BOOL   m_bProperty[NUMBEROFKINDS];
 	CString	m_strHomeSysName;
 	CString	m_strGraphicName;
-	//}}AFX_DATA
+
+		//enum { IDD = IDD_MAJORRACEEDITOR_DIALOG };
+		//	CString	m_MajorName;
+	//CComboBox	m_TechProgress;
+	//CComboBox	m_Corruptibiliy;
+	//CListBox	m_ListBox;
+	//CString	m_strDescription;
+	//CString	m_MajorName;
+	//BOOL	m_bSpaceflightNation;
+	//BOOL   m_bProperty[NUMBEROFKINDS];
+	//CString	m_strHomeSysName;
+	//CString	m_strGraphicName;
+
+	//	enum { IDD = IDD_ALIENSEDITOR_DIALOG };
+	//CString	m_AlienName;	
+	/*CComboBox	m_TechProgress;
+	CComboBox	m_Corruptibiliy;
+	CListBox	m_ListBox;
+	CString	m_strDescription;
+
+	BOOL	m_bSpaceflightNation;
+	BOOL   m_bProperty[NUMBEROFKINDS];
+	CString	m_strHomeSysName;
+	CString	m_strGraphicName;
+	*///}}AFX_DATA
 
 	// Vom Klassenassistenten generierte Überladungen virtueller Funktionen
 	//{{AFX_VIRTUAL(CMinorRaceEditorDlg)

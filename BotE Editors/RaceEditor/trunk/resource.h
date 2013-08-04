@@ -7,6 +7,8 @@
 #define IDS_ABOUTBOX                    101
 #define IDD_MINORRACEEDITOR_DIALOG      102
 #define IDD_RACEEDITOR                  103
+//#define IDD_MAJORRACEEDITOR_DIALOG      104
+//#define IDD_ALIENSEDITOR_DIALOG			105
 #define IDR_MAINFRAME                   128
 #define IDC_LIST                        1000
 #define IDC_RACENAME                    1001

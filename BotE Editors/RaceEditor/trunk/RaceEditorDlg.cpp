@@ -41,8 +41,9 @@ BOOL CRaceEditorDlg::OnInitDialog()
 	CDialog::OnInitDialog();
 
 	// TODO:  hier zusätzliche Initialisierung hinzufügen.
-	//m_dynTabCtrl.InsertItem(new CMinorRaceEditorDlg(), "Majorraces", IDD_MINORRACEEDITOR_DIALOG);
-	m_dynTabCtrl.InsertItem(new CMinorRaceEditorDlg(), "Minorraces", IDD_MINORRACEEDITOR_DIALOG);
+	m_dynTabCtrl.InsertItem(new CMinorRaceEditorDlg(), "Minors", IDD_MINORRACEEDITOR_DIALOG);
+	//m_dynTabCtrl.InsertItem(new CMajorRaceEditorDlg(), "Majors", IDD_MAJORRACEEDITOR_DIALOG);
+	//m_dynTabCtrl.InsertItem(new CAliensEditorDlg(), "Aliens", IDD_ALIENSEDITOR_DIALOG);
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// AUSNAHME: OCX-Eigenschaftenseite muss FALSE zurückgeben.
@@ -55,4 +56,6 @@ void CRaceEditorDlg::OnDestroy()
 	// TODO: Fügen Sie hier Ihren Meldungsbehandlungscode ein.
 	//m_dynTabCtrl.DeleteItem(1);
 	m_dynTabCtrl.DeleteItem(0);
+	m_dynTabCtrl.DeleteItem(1);
+	m_dynTabCtrl.DeleteItem(2);
 }
