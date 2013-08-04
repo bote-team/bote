@@ -168,8 +168,7 @@ void CFileReader::WriteDataToFile(CArray<CMinorRace,CMinorRace>* m_MinorInfos)
 	fileNameExport.Format("MinorRacesExport.csv");
 	if (file.Open(fileNameExport, CFile::typeBinary | CFile::modeCreate | CFile::modeWrite))		// Datei wird geöffnet
 	{
-		s.Format("HomeSystem;Race;Desc;bop;unusedM1;unusedM2;unusedM3;unusedM4;unusedM5;unusedM6;progress;kind;spacefl;corrub\n");  //not for Export
-		//s.Format("
+		s.Format("HomeSystem;Race;Desc;bop;unusedM1;unusedM2;unusedM3;unusedM4;unusedM5;unusedM6;progress;kind;spacefl;corrupt\n");  
 		file.WriteString(s);
 		for (i = 0; i < m_MinorInfos->GetSize(); i++)
 		{
@@ -222,6 +221,5 @@ void CFileReader::WriteDataToFile(CArray<CMinorRace,CMinorRace>* m_MinorInfos)
 		AfxMessageBox("Fehler! Datei \"MinorRacesExport.csv\" kann nicht geschrieben werden...");
 	}
 	file.Close();							// Datei wird geschlossen
-
 
 }

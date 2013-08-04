@@ -14,6 +14,7 @@ Changes V1.6 to 1.6.1 (2013-08-04 by rainer - not published)
 
 - added new symbol
 - added csv-export while saving 
+- enabled changing window size 
 
 
 

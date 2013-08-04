@@ -74,8 +74,6 @@ CMinorRaceEditorDlg::CMinorRaceEditorDlg(CWnd* pParent /*=NULL*/)
 }
 
 void CMinorRaceEditorDlg::DoDataExchange(CDataExchange* pDX)
-
-
 {
 	CDialog::DoDataExchange(pDX);
 	//{{AFX_DATA_MAP(CMinorRaceEditorDlg)
@@ -102,9 +100,7 @@ void CMinorRaceEditorDlg::DoDataExchange(CDataExchange* pDX)
 
 	DDX_Text(pDX, IDC_HOMESYSNAME, m_strHomeSysName);
 	DDX_Text(pDX, IDC_GRAPHICNAME, m_strGraphicName);
-	
 	//}}AFX_DATA_MAP
-
 }
 
 
