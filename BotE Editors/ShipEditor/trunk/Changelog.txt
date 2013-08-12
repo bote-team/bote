@@ -1,18 +1,30 @@
-Changelog V1.1 -> V1.2: 
-- Industirekosten werden komplett anders berechnet 
-- demzufolge Anzeige berichtigt 
+@ShipEditor for Birth of the Empires
 
-Changelog V1.2 -> V1.3 
-- Schildtyp geht nun expotential in die Industriekosten ein
+@author:	Sir Pustekuchen
+@date:		2006-04-06
+@last change:	2013-08-04
 
-Changelog V1.3 -> V1.4 
-- Ionen-Torpedo II ersetzt den Micromytronic-Torpedo 
-- Micromytronic-Torpedo plus drei neue Torpedos
-- bei Auswahl eines vorgegebenen Torpedowerfers werden die korrekten Daten automatisch eingetragen 
-- Schiffsliste sortiert nach Rassen
 
-Changelog V1.4 -> V1.5
-- Labeländerungen
+-------------------------------------------------------------------------
+
+
+
+
+Changelog V1.7 -> V1.8 (2013-08-12 rainer)
+- added function of Shiplist-LanguageFile for easy exchange of used language (ShipClass, Desc, OnlyInSystem, becomesObsolete)
+- added "Do you want save?" at Exit (use 2x ESC for quick exit)
+- added up to 3 safety copies (up to Shiplist_Pre_Pre_Pre.data)
+- added csv-export while saving
+- changed colors of Heyoun and Omega Alliance
+- enabled changing window size
+- added new symbol for ShipEditor
+
+
+Changelog V1.6 -> V1.7
+- Feuerwinkel einstellbar
+- Anzeige des Torpedoschadens bei den Torpedos
+- Rahmen und manche Einstellungen
+- Bug das Änderungen am Schiff verloren gingen, wenn Waffen modifiziert werden ist behoben
 
 Changelog V1.5 -> V1.6
 - Combobox für obsolete Schiffsklassen
@@ -22,8 +34,24 @@ Changelog V1.5 -> V1.6
 - weitere Labeländerungen
 - weitere Kleinigkeiten
 
-Changelog V1.6 -> V1.7
-- Feuerwinkel einstellbar
-- Anzeige des Torpedoschadens bei den Torpedos
-- Rahmen und manche Einstellungen
-- Bug das Änderungen am Schiff verloren gingen, wenn Waffen modifiziert werden ist behoben
+Changelog V1.4 -> V1.5
+- Labeländerungen
+
+Changelog V1.3 -> V1.4 
+- Ionen-Torpedo II ersetzt den Micromytronic-Torpedo 
+- Micromytronic-Torpedo plus drei neue Torpedos
+- bei Auswahl eines vorgegebenen Torpedowerfers werden die korrekten Daten automatisch eingetragen 
+- Schiffsliste sortiert nach Rassen
+
+Changelog V1.3 -> V1.4 
+- Ionen-Torpedo II ersetzt den Micromytronic-Torpedo 
+- Micromytronic-Torpedo plus drei neue Torpedos
+- bei Auswahl eines vorgegebenen Torpedowerfers werden die korrekten Daten automatisch eingetragen 
+- Schiffsliste sortiert nach Rassen
+
+Changelog V1.2 -> V1.3 
+- Schildtyp geht nun expotential in die Industriekosten ein
+
+Changelog V1.1 -> V1.2: 
+- Industirekosten werden komplett anders berechnet 
+- demzufolge Anzeige berichtigt 

@@ -237,11 +237,11 @@ BOOL CShipEditorDlg::OnInitDialog()
 	fileReader->ReadDataFromFile(&m_ShipInfo);
 	
 	color[HUMAN]		= RGB(0,0,255);
-	color[FERENGI]		= RGB(248,211,5);
+	color[FERENGI]		= RGB(139,69,19);
 	color[KLINGON]		= RGB(255,0,0);
 	color[ROMULAN]		= RGB(0,140,0);
 	color[CARDASSIAN]	= RGB(125,0,125);
-	color[DOMINION]		= RGB(73,240,240);
+	color[DOMINION]		= RGB(0,134,239);
 	color[UNKNOWN]		= RGB(0,0,0);
 
 	for (int i = 0; i < m_ShipInfo.GetSize(); i++)
@@ -281,6 +281,13 @@ void CShipEditorDlg::OnDestroy()
 		m_ShipInfo[i] = NULL;
 	}
 	m_ShipInfo.RemoveAll();
+
+	int iReturnMessageBox = MessageBox("Do you want to save ?","",MB_OKCANCEL| MB_ICONQUESTION | MB_SETFOREGROUND);
+			if (iReturnMessageBox == IDOK) 
+			{
+				CShipEditorDlg::OnSave();
+			}
+
 
 	CDialog::OnDestroy();
 }

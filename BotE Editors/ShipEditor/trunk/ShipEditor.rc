@@ -73,24 +73,24 @@ IDR_MAINFRAME           ICON                    "res\\ShipEditor.ico"
 // Dialog
 //
 
-IDD_ABOUTBOX DIALOGEX 0, 0, 235, 55
+IDD_ABOUTBOX DIALOGEX 0, 0, 235, 115
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Info über ShipEditor"
 FONT 8, "MS Sans Serif", 0, 0, 0x0
 BEGIN
     ICON            IDR_MAINFRAME,IDC_STATIC,11,17,20,20
-    LTEXT           "ShipEditor Version 1.7 for Alpha5",IDC_STATIC,40,10,128,11,SS_NOPREFIX
-    LTEXT           "Copyright by Sir Pustekuchen (C) 2006-2009",IDC_STATIC,40,30,97,23
+    LTEXT           "ShipEditor Version 1.8\n  for Birth of the Empires",IDC_STATIC,40,10,128,41,SS_NOPREFIX
+    LTEXT           "Copyright by Sir Pustekuchen (C) 2006-2013\n\n\nQuick Exit: 2x ESC",IDC_STATIC,40,30,97,83
     DEFPUSHBUTTON   "OK",IDOK,178,7,50,14,WS_GROUP
 END
 
 IDD_SHIPEDITOR_DIALOG DIALOGEX 0, 0, 569, 290
-STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU | WS_SIZEBOX
 EXSTYLE WS_EX_APPWINDOW
-CAPTION "ShipEditor"
+CAPTION "ShipEditor for Birth of the Empires v1.8"
 FONT 8, "MS Sans Serif", 0, 0, 0x1
 BEGIN
-    LISTBOX         IDC_LIST1,7,14,92,242,LBS_OWNERDRAWFIXED | LBS_HASSTRINGS | LBS_NOINTEGRALHEIGHT | NOT WS_BORDER | WS_VSCROLL | WS_TABSTOP
+    LISTBOX         IDC_LIST1,7,14,92,242,LBS_OWNERDRAWFIXED | LBS_HASSTRINGS | LBS_NOINTEGRALHEIGHT | NOT WS_BORDER | WS_VSCROLL | WS_TABSTOP 
     EDITTEXT        IDC_SHIPCLASS,103,15,94,13,ES_AUTOHSCROLL
     COMBOBOX        IDC_SHIPTYPE,103,39,94,161,CBS_DROPDOWNLIST | WS_TABSTOP
     EDITTEXT        IDC_SHIPDESCRIPTION,104,66,93,71,ES_MULTILINE | ES_AUTOVSCROLL | WS_VSCROLL
@@ -327,8 +327,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,7,0,0
- PRODUCTVERSION 1,7,0,0
+ FILEVERSION 1,8,0,0
+ PRODUCTVERSION 1,8,0,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -343,13 +343,13 @@ BEGIN
     BEGIN
         BLOCK "040704B0"
         BEGIN
-            VALUE "FileDescription", "BotE Alpha5 ShipEditor"
-            VALUE "FileVersion", "1, 7, 0, 0"
-            VALUE "InternalName", "ShipEditor for Alpha5"
-            VALUE "LegalCopyright", "Copyright (C) 2009"
+            VALUE "FileDescription", "BotE ShipEditor"
+            VALUE "FileVersion", "1, 8, 0, 0"
+            VALUE "InternalName", "ShipEditor for Birth of the Empires"
+            VALUE "LegalCopyright", "Copyright (C) 2006-2013"
             VALUE "OriginalFilename", "ShipEditor.EXE"
             VALUE "ProductName", "ShipEditor"
-            VALUE "ProductVersion", "1, 7, 0, 0"
+            VALUE "ProductVersion", "1, 8, 0, 0"
         END
     END
     BLOCK "VarFileInfo"
