@@ -26,7 +26,7 @@ Create or join a multiplayer game
 [LOADGAMETT]
 Load a saved game
 [SETTINGSTT]
-Change the gamesettings
+Change the game settings
 [LEAVETT]
 Exit the Game
 [CREATEGAMETT]
@@ -47,22 +47,22 @@ Lost connection to server. The game has to restart
 [SERVERERROR3]
 Unable to start server
 [SERVERERROR4]
-Unable to conntect to server
+Unable to connect to server
 [SERVERERROR5]
 Unable to publish match in LAN
 [LOADERROR]
 Unable to load savegame
 
 [PLAYERNAME]
-Playername:
+Player name:
 [SERVERNAME]
-Servername:
+Server name:
 [PORT]
 Port:
 [PUBLISHLAN]
 Publish game in LAN
 [SERVERIP]
-IP-adress of the server:
+IP address of the server:
 [SEARCHLANSERVER]
 Search for LAN-server
 
@@ -76,7 +76,7 @@ Chat
 [FOUND_BOTE_SERVERS]
 found BotE-Servers:
 [LANSERVERNAME]
-Servername
+Server name
 [LANSERVERIP]
 IP-Address
 
@@ -601,7 +601,7 @@ Internal security Bonus
 [ECONOMY_SPY_BONUS]
 Economic espionage bonus
 [ECONOMY_SABOTAGE_BONUS]
-Ecomomic sabotage bonus
+Economic sabotage bonus
 [RESEARCH_SPY_BONUS]
 Research espionage bonus
 [RESEARCH_SABOTAGE_BONUS]
@@ -647,9 +647,9 @@ Troop training
 [RESISTANCE]
 Bribery resistance
 [ADDED_TRADEROUTES]
-added traderoutes
+added trade routes
 [INCOME_ON_TRADEROUTES]
-income on traderoutes
+income on trade routes
 [SHIPRECYCLING]
 Ship recycling
 [BUILDING_BUILDSPEED]
@@ -1570,7 +1570,7 @@ The system currently supports § trade route(s) and/or § resource route(s)
 The system currently maintains § trade route(s) and § resource route(s)
 
 [ROUTES_TO]
-Trade- and resourceroutes to:
+Trade- and resource routes to:
 
 [PROFIT]
 Profit
@@ -1615,10 +1615,10 @@ Young, but large worlds, with surfaces that are still solidifying. Their atmosph
 Desert worlds with barren surfaces that are either hot and arid, (if in close orbit of the parent star) or covered with icy tundra if in a more distant orbit. Life forms developing on such a world would have to be resilient to either extreme hot or cold temperatures and if the planet is close to the star, resistant to solar radiation.
 
 [CLASS_I_INFO]
-Gas Supergiants, over 140,000 km in diameter. They are comprised almost entirely hydrogen and helium, but may contain water vapor as well. They may contain a solid metallic mass core and radiate heat. They can have hundreds of moons and also water ice rings. Many extrasolar planets discovered in real life could be classified as Class I Supergiants.
+Gas Supergiants, over 140,000 km in diameter. They are almost entirely composed of hydrogen and helium, but may contain water vapor as well. They may contain a solid metallic mass core and radiate heat. They can have hundreds of moons and also water ice rings. Many extrasolar planets discovered in real life could be classified as Class I Supergiants.
 
 [CLASS_J_INFO]
-Gas Giants less than 140,000 km in diameter. They are mainly comprised of hydrogen and helium gases and could have a solid rocky or metallic core. They can have many moons as well as water ice rings. In real life, Jupiter and Saturn could be Class J planets.
+Gas Giants less than 140,000 km in diameter. They are mainly composed of hydrogen and helium gases and could have a solid rocky or metallic core. They can have many moons as well as water ice rings. In real life, Jupiter and Saturn could be Class J planets.
 
 [CLASS_K_INFO]
 Rocky and barren with little, if any, surface water. Their atmospheres are thin, and comprise mostly carbon dioxide. Life forms, if any, are limited to single-celled organisms and algae. They are "adaptable" because through terraforming they are suitable for human colonization. In real life, Mars could be considered a Class K planet.
@@ -1627,7 +1627,7 @@ Rocky and barren with little, if any, surface water. Their atmospheres are thin,
 Rocky, barren surfaces with little water. Their atmospheres are mainly oxygen and argon with a high concentrations of carbon dioxide. Life forms, if any, would be limited to simple plant life. Class L planets are suitable for human colonization with some terraforming.
 
 [CLASS_M_INFO]
-Always located in the ecological region of a star where they are provided enough warmth and energy to develop and sustain carbon-based life. Their surfaces comprises a thin tectonic layer floating on a molten rock mantle and they usually have many active volcanoes. Most importantly, they have plenty of liquid water necessary for life to exist. Their atmospheres contain oxygen and nitrogen with other gas traces. Life forms are almost always present, often flourishing as extensive plant and animal life.
+Always located in the ecological region of a star where they are provided enough warmth and energy to develop and sustain carbon-based life. Their surfaces comprise a thin tectonic layer floating on a molten rock mantle and they usually have many active volcanoes. Most importantly, they have plenty of liquid water necessary for life to exist. Their atmospheres contain oxygen and nitrogen with other gas traces. Life forms are almost always present, often flourishing as extensive plant and animal life.
 
 [CLASS_N_INFO]
 Barren and rocky with extremely high surface temperatures caused by an intense greenhouse effect. Their atmospheres are extremely dense comprising mainly carbon dioxide and corrosive sulfides. Sometimes water vapor is present. Life would be limited to single-celled organisms living in the upper layers of atmosphere. In our real solar system, Venus could be a Class N planet. Some Class N planets may also fall into Class X, Y, or Z Demon planets, especially if a bizarre form of life exists on them.
@@ -1899,17 +1899,17 @@ Citizens celebrate the colonization of the § system. This new system will expand
 Blockade of the § system
 
 [BLOCKADEEVENT_TEXT_MAJOR1]
-§ system is under blockade. Sytem trade and production is therefore possibly limited.
+§ system is under blockade. System trade and production is therefore possibly limited.
 [BLOCKADEEVENT_TEXT_MAJOR2]
-§ system is under blockade. Sytem trade and production is therefore possibly limited.
+§ system is under blockade. System trade and production is therefore possibly limited.
 [BLOCKADEEVENT_TEXT_MAJOR3]
-§ system is under blockade. Sytem trade and production is therefore possibly limited.
+§ system is under blockade. System trade and production is therefore possibly limited.
 [BLOCKADEEVENT_TEXT_MAJOR4]
-§ system is under blockade. Sytem trade and production is therefore possibly limited.
+§ system is under blockade. System trade and production is therefore possibly limited.
 [BLOCKADEEVENT_TEXT_MAJOR5]
-§ system is under blockade. Sytem trade and production is therefore possibly limited.
+§ system is under blockade. System trade and production is therefore possibly limited.
 [BLOCKADEEVENT_TEXT_MAJOR6]
-§ system is under blockade. Sytem trade and production is therefore possibly limited.
+§ system is under blockade. System trade and production is therefore possibly limited.
 
 [BOMBARDEVENT_HEADLINE]
 Bombardment of the § system
@@ -2090,15 +2090,15 @@ White star
 Yellow star
 
 [BLUE_STAR_DESC]
-These so-called hypergiants exceed yellow or green stars many times over in size. They are by far the massiest stars and with up to a hundredfold mass and with tausend- to millionfold luminosity of that of yellow stars the brightest stars of the galaxy.
+These so-called hypergiants exceed yellow or green stars many times over in size. They are by far the massiest stars and with up to a hundredfold mass and with thousand- to millionfold luminosity of that of yellow stars the brightest stars of the galaxy.
 [GREEN_STAR_DESC]
 Stars of this type are mostly not recognizable as such in the first place since they are "shining" in other colors or leveled white. Only in binary star system their true color is revealed. In terms of size they are quite similar to yellow stars. With modern scanners however accurate display is no longer an issue.
 [ORANGE_STAR_DESC]
 Red dwarves are all red orange color and make up for at least 70% of all stars in the milky star. Thus it is a quite common star in the universe, but certainly completely different to their red giants color-wise counterpart. Red dwarves weigh between one-tenth and a half of the mass of a yellow  star and also possess only a small luminosity on their surface.
 [RED_STAR_DESC]
-Red giants belong to the most voluminous, brightest but also "coolest" stars in the galaxy. They are settled in their last stage of existence bevor they detach their outer particle atmosphere and shrink down to become a white dwarf or a black hole if large enough.
+Red giants belong to the most voluminous, brightest but also "coolest" stars in the galaxy. They are settled in their last stage of existence before they detach their outer particle atmosphere and shrink down to become a white dwarf or a black hole if large enough.
 [VIOLET_STAR_DESC]
-This type was only recently discovered with the development of continuum drives making it possible to detect them on-site with their short-range high-uv radiation, mostly belted by thick layers of datter matter fields. They are pretty variable, but all have a young star age in common.
+This type was only recently discovered with the development of continuum drives making it possible to detect them on-site with their short-range high UV radiation, mostly belted by thick layers of dark matter fields. They are pretty variable, but all have a young star age in common.
 [WHITE_STAR_DESC]
 B, A and F stars of stellar classification radiate in white-blue spectrum and count to the largest representatives of their species. On average they are about twice as hot as yellow stars and three times as heavy.
 [YELLOW_STAR_DESC]
@@ -2144,7 +2144,7 @@ Wormhole
 [RADIONEBULA_DESC]
 Radioactive nebulae are dense clusters of instable atomic nuclei. They can be ripped out of their metastable state when a ship is entering such a nebula and decay releasing a high amount energy. Organic lifeforms will suffer instant death after shield collapsing.
 [METNEBULA_DESC]
-A Meaturean nebula consists of high amounts of electromagnetic ion particels. Their discharge destabilizes and collapses all shields.
+A Meaturean nebula consists of high amounts of electromagnetic ion particles. Their discharge destabilizes and collapses all shields.
 [DEUTNEBULA_DESC]
 Deuterium nebulae can be found in "near-" star systems. The gaseous deuterium releases a weak radiation harmless to organic life but impairing sensors and shields severely and puts them out of function after a while. These nebulae shine auburn by their high level of deuterium.
 [IONSTORM_DESC]
@@ -2166,11 +2166,11 @@ A gravimetric distortion takes place in the local gravitational field. This impl
 [CONTINUUMRIP_DESC]
 A continuum rip arises when enormous amounts of energy are released at a single point in time space and rips open a gap. Ships entering it are melted and destroyed in total.
 [BLACKHOLE_DESC]
-A black hole is a region of space from which nothing, not even light, can escape, therefore the "black" in its name. It is the result of the deformation of spacetime caused by a very compact mass. Around a black hole there is an undetectable surface which marks the point of no return, called an event horizon. The gravity well caused by the Black Hole makes sensor readings of this sector unreliable. Ships may be destroyed if they drift too close to the event horizon but no captain in his right mind would risk such a maneuver and stays captain afterwards for that matter...
+A black hole is a region of space from which nothing, not even light, can escape, therefore the "black" in its name. It is the result of the deformation of space-time caused by a very compact mass. Around a black hole there is an undetectable surface which marks the point of no return, called an event horizon. The gravity well caused by the Black Hole makes sensor readings of this sector unreliable. Ships may be destroyed if they drift too close to the event horizon but no captain in his right mind would risk such a maneuver and stays captain afterwards for that matter...
 [QUASAR_DESC]
 A quasi-stellar radio source ("quasar") is a very energetic and distant galaxy with an active galactic nucleus. They are the most luminous objects in the universe. Quasars were first identified as being high redshift sources of electromagnetic energy, including radio waves and visible light, that were point-like, similar to stars, rather than extended sources similar to galaxies.
 [WORMHOLE_DESC]
-Wormholes are spacetime shortcuts. In order for ships to cross great distances in a single move, exotic matter with negative energy density needs to be used for stabilization. Yet no one has successfully developed a working stabilizer. Also the wormhole in question needs to have distinct endpoints, if possible none of them being a black hole.
+Wormholes are space-time shortcuts. In order for ships to cross great distances in a single move, exotic matter with negative energy density needs to be used for stabilization. Yet no one has successfully developed a working stabilizer. Also the wormhole in question needs to have distinct endpoints, if possible none of them being a black hole.
 
 [RADIONEBULA_GAME]
 Total loss of crew experience
@@ -2325,7 +2325,7 @@ Fight
 
 // Sieg- & Niederlageevents
 [GAMEOVER]
-Gameover
+Game over
 [WE_LOST]
 We have lost
 [OUR_EMPIRES_IS_ELIMINATED]
@@ -2353,7 +2353,7 @@ score achieved:
 
 //Randomevents
 [SYSTEMEVENTMORALBOOST]
-The citizens of § are proud about their gouvernment
+The citizens of § are proud about their government
 [SYSTEMEVENTMORALMALUS]
 The citizens of § become unhappy
 [SYSTEMEVENTPLANETMOVEMENT]
@@ -2405,9 +2405,9 @@ These tanks are able to take accurate aim to destroy smaller and large targets o
 [MAJOR1_TROOP6_NAME]
 Battle Helicopters
 [MAJOR1_TROOP6_DESC]
-The battle helicopters of the Coalition of Planets are very fast and agile. They have short-range missiles for precise target attacks and long-range weapons for bombardements at large areas. 
+The battle helicopters of the Coalition of Planets are very fast and agile. They have short-range missiles for precise target attacks and long-range weapons for bombardments at large areas. 
 [MAJOR1_TROOP7_NAME]
-Marine Corps 
+Marine Corps
 [MAJOR1_TROOP7_DESC]
 The Marine Corps are special units of the Terrans with specialists from many fields. Only the best pass the long and rigorous training successfully. 
 
@@ -2418,7 +2418,7 @@ A ragtag armed rabble equipped with deadly-dangerous rocket launchers. Unfortuna
 [MAJOR2_TROOP2_NAME]
 Heyoun Spiders
 [MAJOR2_TROOP2_DESC]
-Heyoun Spiders are very agile and can evade enemy fire very cleverly. They are equipped with close combat projectiles and with precision tool equipment for disassembling enemy maschines in a short time.
+Heyoun Spiders are very agile and can evade enemy fire very cleverly. They are equipped with close combat projectiles and with precision tool equipment for disassembling enemy machines in a short time.
 [MAJOR2_TROOP3_NAME]
 HFA
 [MAJOR2_TROOP3_DESC]
@@ -2480,7 +2480,7 @@ The Taq'riar are taking care of public order to the streets of Rotharian planets
 [MAJOR4_TROOP4_NAME]
 Rotharian Torpedo Swarms
 [MAJOR4_TROOP4_DESC]
-Rotharian Torpedo Swarms are dreaded. Heavily armed with torpedo tubes these levitating units get charged with wide area bombardements. They don't reach high altitude and are not fast but they are very effective because they attack in swarms. 
+Rotharian Torpedo Swarms are dreaded. Heavily armed with torpedo tubes these levitating units get charged with wide area bombardments. They don't reach high altitude and are not fast but they are very effective because they attack in swarms. 
 [MAJOR4_TROOP5_NAME]
 Taq'riars Black Thorns
 [MAJOR4_TROOP5_DESC]
@@ -2494,9 +2494,9 @@ Camouflaged Helicopter Drones
 [MAJOR4_TROOP7_DESC]
 These helicopters are very fast and invisible. They get charged with special orders of any kind. Only by your flight noise they are revealable. 
 [MAJOR4_TROOP8_NAME]
-Rotharianische Spezialtruppen
+Rotharian Special Forces
 [MAJOR4_TROOP8_DESC]
-Spezialeinheiten der Rotharianer. Sie sind sehr gut ausgebildet und wurden genetisch Verbessert.
+Rotharian Special Forces are perfectly trained and genetically improved.
 
 [MAJOR5_TROOP1_NAME]
 Stormtroopers
@@ -2546,7 +2546,7 @@ Mechanical Trace Units are particularly successful in detecting enemies of the E
 [MAJOR6_TROOP5_NAME]
 Mechanical Attack Units
 [MAJOR6_TROOP5_DESC]
-Mechanical attack units are equipped with a large arsenal of weapons and are optimized for conquesting of foreign planets. 
+Mechanical attack units are equipped with a large arsenal of weapons and are optimized for conquering of foreign planets. 
 [MAJOR6_TROOP6_NAME]
 Da'unor Special Units
 [MAJOR6_TROOP6_DESC]
