@@ -7083,11 +7083,11 @@ con_b55.bop
 0
 0
 0
-20
+0
 100
-20
-20
-20
+0
+0
+0
 0
 0
 0
@@ -13723,7 +13723,7 @@ con_b102.bop
 Listening Post
 Kontinuum-Horchposten
 The continuum distortion caused by continuum fields is confined to a few select frequencies. The Listening Post monitors these crucial frequencies for spikes, and then triangulates their source. The Listening Post can respond to finer changes, and hence has a greater effective range.
-Die durch Kontinuumfelder hervorgerufene Kontinuum-Verzerrung ist auf einige wenige Frequenzen beschränkt. Ein Horchposten überwacht diese "verdächtigen" Frequenzen auf Spikes und ermittelt die Quelle durch Dreiecksberechnungen. Der Horchposten bemerkt auch geringe Veränderungen und hat daher einen größeren Wirkungsbereich.
+Die durch Kontinuumfelder hervorgerufene Kontinuum-Verzerrung ist auf einige wenige Frequenzen beschränkt. Ein Horchposten überwacht diese 'verdächtigen' Frequenzen auf Spikes und ermittelt die Quelle durch Dreiecksberechnungen. Der Horchposten bemerkt auch geringe Veränderungen und hat daher einen größeren Wirkungsbereich.
 1
 con_b103.bop
 1
@@ -14142,7 +14142,7 @@ con_b105.bop
 1
 Type 1 Shield Generator
 Typ 1 Schildgenerator
-The populated areas of an entire system can be protected using the same shield technology employed by starships. Concentrated firepower can penetrate these shields, but protected colonists and structures will suffer much lighter casualties from orbital attack.
+The populated areas of an entire system can be protected using the same shield technology employed by starships. Concentrated firepower can penetrate these shields, but protected colonists and structures will suffer much lighter casualties from orbital attacks.
 Die bewohnten Gebiete eines ganzen Systems können mit Hilfe der gleichen Schild-Technologie geschützt werden, die auch bei Sternenschiffen zum Einsatz kommt. Konzentrierte Feuerkraft kann diese Schilder zwar durchdringen, doch geschützte Kolonisten und Bauten werden bei einem Orbitalangriff wesentlich weniger Schaden davontragen.
 1
 con_106b.bop
@@ -14282,7 +14282,7 @@ con_106b.bop
 1
 Type 2 Shield Generator
 Typ 2 Schildgenerator
-The populated areas of an entire system can be protected using the same shield technology employed by starships. Concentrated firepower can penetrate these shields, but protected colonists and structures will suffer much lighter casualties from orbital attack.
+The populated areas of an entire system can be protected using the same shield technology employed by starships. Concentrated firepower can penetrate these shields, but protected colonists and structures will suffer much lighter casualties from orbital attacks.
 Die bewohnten Gebiete eines ganzen Systems können mit Hilfe der gleichen Schild-Technologie geschützt werden, die auch bei Sternenschiffen zum Einsatz kommt. Konzentrierte Feuerkraft kann diese Schilder zwar durchdringen, doch geschützte Kolonisten und Bauten werden bei einem Orbitalangriff wesentlich weniger Schaden davontragen.
 1
 con_106b.bop
@@ -14422,7 +14422,7 @@ con_106b.bop
 1
 Type 3 Shield Generator
 Typ 3 Schildgenerator
-The populated areas of an entire system can be protected using the same shield technology employed by starships. Concentrated firepower can penetrate these shields, but protected colonists and structures will suffer much lighter casualties from orbital attack.
+The populated areas of an entire system can be protected using the same shield technology employed by starships. Concentrated firepower can penetrate these shields, but protected colonists and structures will suffer much lighter casualties from orbital attacks.
 Die bewohnten Gebiete eines ganzen Systems können mit Hilfe der gleichen Schild-Technologie geschützt werden, die auch bei Sternenschiffen zum Einsatz kommt. Konzentrierte Feuerkraft kann diese Schilder zwar durchdringen, doch geschützte Kolonisten und Bauten werden bei einem Orbitalangriff wesentlich weniger Schaden davontragen.
 1
 con_106b.bop
@@ -14562,7 +14562,7 @@ con_106b.bop
 1
 Type 4 Shield Generator
 Typ 4 Schildgenerator
-The populated areas of an entire system can be protected using the same shield technology employed by starships. Concentrated firepower can penetrate these shields, but protected colonists and structures will suffer much lighter casualties from orbital attack.
+The populated areas of an entire system can be protected using the same shield technology employed by starships. Concentrated firepower can penetrate these shields, but protected colonists and structures will suffer much lighter casualties from orbital attacks.
 Die bewohnten Gebiete eines ganzen Systems können mit Hilfe der gleichen Schild-Technologie geschützt werden, die auch bei Sternenschiffen zum Einsatz kommt. Konzentrierte Feuerkraft kann diese Schilder zwar durchdringen, doch geschützte Kolonisten und Bauten werden bei einem Orbitalangriff wesentlich weniger Schaden davontragen.
 0
 con_106b.bop
@@ -28743,7 +28743,7 @@ con_b94.bop
 0
 0
 0
-3
+113
 0
 0
 0
@@ -28843,7 +28843,7 @@ con_b94.bop
 Tower of Commerce
 Handelsturm
 The laws of supply and demand make interplanetary trade extremely lucrative. The Tower of Commerce licenses Heyoun traders, and thus controls and regulates interplanetary trade for the benefit of all Heyoun. The Tower sustains an increased volume of trade on every trade route.
-Die Gesetze von Angebot und Nachfrage machen den interplanetaren Handel äußerst lohnend. Der Handelsturm erteilt Hanuhrschen Händlern Genehmigungen und daher regelt er den interplanetaren Handel zu Gunsten aller Hanuhr. Der Turm ermöglicht eine größeres Handelsvolumen auf jeder Handelsstrecke.
+Die Gesetze von Angebot und Nachfrage machen den interplanetaren Handel äußerst lohnend. Der Handelsturm erteilt Hanuhrschen Händlern Genehmigungen und daher regelt er den interplanetaren Handel zu Gunsten aller Hanuhr. Der Turm ermöglicht ein größeres Handelsvolumen auf jeder Handelsstrecke.
 0
 han_b93.bop
 0
@@ -31082,7 +31082,7 @@ con_b105.bop
 2
 Type 1 Shield Generator
 Typ 1 Schildgenerator
-The populated areas of an entire system can be protected using the same shield technology employed by starships. Concentrated firepower can penetrate these shields, but protected colonists and structures will suffer much lighter casualties from orbital attack.
+The populated areas of an entire system can be protected using the same shield technology employed by starships. Concentrated firepower can penetrate these shields, but protected colonists and structures will suffer much lighter casualties from orbital attacks.
 Die bewohnten Gebiete eines ganzen Systems können mit Hilfe der gleichen Schild-Technologie geschützt werden, die auch bei Sternenschiffen zum Einsatz kommt. Konzentrierte Feuerkraft kann diese Schilder zwar durchdringen, doch geschützte Kolonisten und Bauten werden bei einem Orbitalangriff wesentlich weniger Schaden davontragen.
 1
 han_107b.bop
@@ -31222,7 +31222,7 @@ han_107b.bop
 2
 Type 2 Shield Generator
 Typ 2 Schildgenerator
-The populated areas of an entire system can be protected using the same shield technology employed by starships. Concentrated firepower can penetrate these shields, but protected colonists and structures will suffer much lighter casualties from orbital attack.
+The populated areas of an entire system can be protected using the same shield technology employed by starships. Concentrated firepower can penetrate these shields, but protected colonists and structures will suffer much lighter casualties from orbital attacks.
 Die bewohnten Gebiete eines ganzen Systems können mit Hilfe der gleichen Schild-Technologie geschützt werden, die auch bei Sternenschiffen zum Einsatz kommt. Konzentrierte Feuerkraft kann diese Schilder zwar durchdringen, doch geschützte Kolonisten und Bauten werden bei einem Orbitalangriff wesentlich weniger Schaden davontragen.
 1
 han_107b.bop
@@ -31362,7 +31362,7 @@ han_107b.bop
 2
 Type 3 Shield Generator
 Typ 3 Schildgenerator
-The populated areas of an entire system can be protected using the same shield technology employed by starships. Concentrated firepower can penetrate these shields, but protected colonists and structures will suffer much lighter casualties from orbital attack.
+The populated areas of an entire system can be protected using the same shield technology employed by starships. Concentrated firepower can penetrate these shields, but protected colonists and structures will suffer much lighter casualties from orbital attacks.
 Die bewohnten Gebiete eines ganzen Systems können mit Hilfe der gleichen Schild-Technologie geschützt werden, die auch bei Sternenschiffen zum Einsatz kommt. Konzentrierte Feuerkraft kann diese Schilder zwar durchdringen, doch geschützte Kolonisten und Bauten werden bei einem Orbitalangriff wesentlich weniger Schaden davontragen.
 1
 han_107b.bop
@@ -31502,7 +31502,7 @@ han_107b.bop
 2
 Type 4 Shield Generator
 Typ 4 Schildgenerator
-The populated areas of an entire system can be protected using the same shield technology employed by starships. Concentrated firepower can penetrate these shields, but protected colonists and structures will suffer much lighter casualties from orbital attack.
+The populated areas of an entire system can be protected using the same shield technology employed by starships. Concentrated firepower can penetrate these shields, but protected colonists and structures will suffer much lighter casualties from orbital attacks.
 Die bewohnten Gebiete eines ganzen Systems können mit Hilfe der gleichen Schild-Technologie geschützt werden, die auch bei Sternenschiffen zum Einsatz kommt. Konzentrierte Feuerkraft kann diese Schilder zwar durchdringen, doch geschützte Kolonisten und Bauten werden bei einem Orbitalangriff wesentlich weniger Schaden davontragen.
 0
 han_107b.bop
@@ -32903,7 +32903,7 @@ con_114b.bop
 Protectionism
 Protektionismus
 Protectionism saves local commerce from aggressive offers from foreign companies and stabilizes prices. Therefore internal system trade can be made more secure and efficient and the danger of a large decrease in trade is very low. However protectionism is bad for business overall and discourages many apt Heyoun traders to make big business with those systems. Trade routes are closed.
-Der Protektionismus schützt die lokale Wirtschaft vor Dumpingangeboten systemfremder Hersteller und stabilisiert die Preise. Dadurch kann der systeminterne Handel flüssiger und effizienter vonstatten gehen und die Gefahr einer großen Baisse wird stark verringert. Der Protektionismus schreckt allerdings viele fähige Hanuhr ab, große Investitionen von außerhalb in den so abgeschotteten Markt zu tätigen. Handelsrouten kommen fast zum Erliegen.
+Der Protektionismus schützt die lokale Wirtschaft vor Dumpingangeboten systemfremder Hersteller und stabilisiert die Preise. Dadurch kann der systeminterne Handel flüssiger und effizienter vonstatten gehen und die Gefahr einer großen Baisse wird stark verringert. Der Protektionismus schreckt allerdings viele unserer Händler ab, große Investitionen zu tätigen in den von außerhalb dermaßen abgeschotteten Markt. Auch Handelsrouten kommen dadurch fast zum Erliegen.
 0
 han_b118.bop
 1
@@ -32920,7 +32920,7 @@ han_b118.bop
 0
 0
 0
-1
+0
 0
 0
 1
@@ -32942,13 +32942,13 @@ han_b118.bop
 0
 0
 4
-5
-5
+4
+4
 4
 4
 4
 1000
-0
+10
 0
 0
 0
@@ -33021,8 +33021,8 @@ han_b118.bop
 0
 0
 0
-206
-1
+0
+0
 0
 0
 0
@@ -48162,7 +48162,7 @@ con_b105.bop
 3
 Class 1 Shield Generator
 Klasse 1 Schildgenerator
-The populated areas of an entire system can be protected using the same shield technology employed by starships. Concentrated firepower can penetrate these shields, but protected colonists and structures will suffer much lighter casualties from orbital attack.
+The populated areas of an entire system can be protected using the same shield technology employed by starships. Concentrated firepower can penetrate these shields, but protected colonists and structures will suffer much lighter casualties from orbital attacks.
 Die bewohnten Gebiete eines ganzen Systems können mit Hilfe der gleichen Schild-Technologie geschützt werden, die auch bei Sternenschiffen zum Einsatz kommt. Konzentrierte Feuerkraft kann diese Schilder zwar durchdringen, doch geschützte Kolonisten und Bauten werden bei einem Orbitalangriff wesentlich weniger Schaden davontragen.
 1
 kha_106b.bop
@@ -48302,7 +48302,7 @@ kha_106b.bop
 3
 Class 2 Shield Generator
 Klasse 2 Schildgenerator
-The populated areas of an entire system can be protected using the same shield technology employed by starships. Concentrated firepower can penetrate these shields, but protected colonists and structures will suffer much lighter casualties from orbital attack.
+The populated areas of an entire system can be protected using the same shield technology employed by starships. Concentrated firepower can penetrate these shields, but protected colonists and structures will suffer much lighter casualties from orbital attacks.
 Die bewohnten Gebiete eines ganzen Systems können mit Hilfe der gleichen Schild-Technologie geschützt werden, die auch bei Sternenschiffen zum Einsatz kommt. Konzentrierte Feuerkraft kann diese Schilder zwar durchdringen, doch geschützte Kolonisten und Bauten werden bei einem Orbitalangriff wesentlich weniger Schaden davontragen.
 1
 kha_106b.bop
@@ -48442,7 +48442,7 @@ kha_106b.bop
 3
 Class 3 Shield Generator
 Klasse 3 Schildgenerator
-The populated areas of an entire system can be protected using the same shield technology employed by starships. Concentrated firepower can penetrate these shields, but protected colonists and structures will suffer much lighter casualties from orbital attack.
+The populated areas of an entire system can be protected using the same shield technology employed by starships. Concentrated firepower can penetrate these shields, but protected colonists and structures will suffer much lighter casualties from orbital attacks.
 Die bewohnten Gebiete eines ganzen Systems können mit Hilfe der gleichen Schild-Technologie geschützt werden, die auch bei Sternenschiffen zum Einsatz kommt. Konzentrierte Feuerkraft kann diese Schilder zwar durchdringen, doch geschützte Kolonisten und Bauten werden bei einem Orbitalangriff wesentlich weniger Schaden davontragen.
 1
 kha_106b.bop
@@ -48582,7 +48582,7 @@ kha_106b.bop
 3
 Class 4 Shield Generator
 Klasse 4 Schildgenerator
-The populated areas of an entire system can be protected using the same shield technology employed by starships. Concentrated firepower can penetrate these shields, but protected colonists and structures will suffer much lighter casualties from orbital attack.
+The populated areas of an entire system can be protected using the same shield technology employed by starships. Concentrated firepower can penetrate these shields, but protected colonists and structures will suffer much lighter casualties from orbital attacks.
 Die bewohnten Gebiete eines ganzen Systems können mit Hilfe der gleichen Schild-Technologie geschützt werden, die auch bei Sternenschiffen zum Einsatz kommt. Konzentrierte Feuerkraft kann diese Schilder zwar durchdringen, doch geschützte Kolonisten und Bauten werden bei einem Orbitalangriff wesentlich weniger Schaden davontragen.
 0
 kha_106b.bop
@@ -64822,7 +64822,7 @@ con_b105.bop
 4
 Type 1 Shield Generator
 Typ 1 Schildgenerator
-The populated areas of an entire system can be protected using the same shield technology employed by starships. Concentrated firepower can penetrate these shields, but protected colonists and structures will suffer much lighter casualties from orbital attack.
+The populated areas of an entire system can be protected using the same shield technology employed by starships. Concentrated firepower can penetrate these shields, but protected colonists and structures will suffer much lighter casualties from orbital attacks.
 Die bewohnten Gebiete eines ganzen Systems können mit Hilfe der gleichen Schild-Technologie geschützt werden, die auch bei Sternenschiffen zum Einsatz kommt. Konzentrierte Feuerkraft kann diese Schilder zwar durchdringen, doch geschützte Kolonisten und Bauten werden bei einem Orbitalangriff wesentlich weniger Schaden davontragen.
 1
 rot_107b.bop
@@ -64962,7 +64962,7 @@ rot_107b.bop
 4
 Type 2 Shield Generator
 Typ 2 Schildgenerator
-The populated areas of an entire system can be protected using the same shield technology employed by starships. Concentrated firepower can penetrate these shields, but protected colonists and structures will suffer much lighter casualties from orbital attack.
+The populated areas of an entire system can be protected using the same shield technology employed by starships. Concentrated firepower can penetrate these shields, but protected colonists and structures will suffer much lighter casualties from orbital attacks.
 Die bewohnten Gebiete eines ganzen Systems können mit Hilfe der gleichen Schild-Technologie geschützt werden, die auch bei Sternenschiffen zum Einsatz kommt. Konzentrierte Feuerkraft kann diese Schilder zwar durchdringen, doch geschützte Kolonisten und Bauten werden bei einem Orbitalangriff wesentlich weniger Schaden davontragen.
 1
 rot_107b.bop
@@ -65102,7 +65102,7 @@ rot_107b.bop
 4
 Type 3 Shield Generator
 Typ 3 Schildgenerator
-The populated areas of an entire system can be protected using the same shield technology employed by starships. Concentrated firepower can penetrate these shields, but protected colonists and structures will suffer much lighter casualties from orbital attack.
+The populated areas of an entire system can be protected using the same shield technology employed by starships. Concentrated firepower can penetrate these shields, but protected colonists and structures will suffer much lighter casualties from orbital attacks.
 Die bewohnten Gebiete eines ganzen Systems können mit Hilfe der gleichen Schild-Technologie geschützt werden, die auch bei Sternenschiffen zum Einsatz kommt. Konzentrierte Feuerkraft kann diese Schilder zwar durchdringen, doch geschützte Kolonisten und Bauten werden bei einem Orbitalangriff wesentlich weniger Schaden davontragen.
 1
 rot_107b.bop
@@ -65242,7 +65242,7 @@ rot_107b.bop
 4
 Type 4 Shield Generator
 Typ 4 Schildgenerator
-The populated areas of an entire system can be protected using the same shield technology employed by starships. Concentrated firepower can penetrate these shields, but protected colonists and structures will suffer much lighter casualties from orbital attack.
+The populated areas of an entire system can be protected using the same shield technology employed by starships. Concentrated firepower can penetrate these shields, but protected colonists and structures will suffer much lighter casualties from orbital attacks.
 Die bewohnten Gebiete eines ganzen Systems können mit Hilfe der gleichen Schild-Technologie geschützt werden, die auch bei Sternenschiffen zum Einsatz kommt. Konzentrierte Feuerkraft kann diese Schilder zwar durchdringen, doch geschützte Kolonisten und Bauten werden bei einem Orbitalangriff wesentlich weniger Schaden davontragen.
 0
 rot_107b.bop
@@ -81482,7 +81482,7 @@ car_b106.bop
 5
 Type 1 Shield Generator
 Typ 1 Schildgenerator
-The populated areas of an entire system can be protected using the same shield technology employed by starships. Concentrated firepower can penetrate these shields, but protected colonists and structures will suffer much lighter casualties from orbital attack. 
+The populated areas of an entire system can be protected using the same shield technology employed by starships. Concentrated firepower can penetrate these shields, but protected colonists and structures will suffer much lighter casualties from orbital attacks. 
 Die bewohnten Gebiete eines ganzen Systems können mit Hilfe der gleichen Schild-Technologie geschützt werden, die auch bei Sternenschiffen zum Einsatz kommt. Konzentrierte Feuerkraft kann diese Schilder zwar durchdringen, doch geschützte Kolonisten und Bauten werden bei einem Orbitalangriff wesentlich weniger Schaden davontragen.
 1
 car_107b.bop
@@ -81622,7 +81622,7 @@ car_107b.bop
 5
 Type 2 Shield Generator
 Typ 2 Schildgenerator
-The populated areas of an entire system can be protected using the same shield technology employed by starships. Concentrated firepower can penetrate these shields, but protected colonists and structures will suffer much lighter casualties from orbital attack. 
+The populated areas of an entire system can be protected using the same shield technology employed by starships. Concentrated firepower can penetrate these shields, but protected colonists and structures will suffer much lighter casualties from orbital attacks. 
 Die bewohnten Gebiete eines ganzen Systems können mit Hilfe der gleichen Schild-Technologie geschützt werden, die auch bei Sternenschiffen zum Einsatz kommt. Konzentrierte Feuerkraft kann diese Schilder zwar durchdringen, doch geschützte Kolonisten und Bauten werden bei einem Orbitalangriff wesentlich weniger Schaden davontragen.
 1
 car_107b.bop
@@ -81762,7 +81762,7 @@ car_107b.bop
 5
 Type 3 Shield Generator
 Typ 3 Schildgenerator
-The populated areas of an entire system can be protected using the same shield technology employed by starships. Concentrated firepower can penetrate these shields, but protected colonists and structures will suffer much lighter casualties from orbital attack. 
+The populated areas of an entire system can be protected using the same shield technology employed by starships. Concentrated firepower can penetrate these shields, but protected colonists and structures will suffer much lighter casualties from orbital attacks. 
 Die bewohnten Gebiete eines ganzen Systems können mit Hilfe der gleichen Schild-Technologie geschützt werden, die auch bei Sternenschiffen zum Einsatz kommt. Konzentrierte Feuerkraft kann diese Schilder zwar durchdringen, doch geschützte Kolonisten und Bauten werden bei einem Orbitalangriff wesentlich weniger Schaden davontragen.
 1
 car_107b.bop
@@ -81902,7 +81902,7 @@ car_107b.bop
 5
 Type 4 Shield Generator
 Typ 4 Schildgenerator
-The populated areas of an entire system can be protected using the same shield technology employed by starships. Concentrated firepower can penetrate these shields, but protected colonists and structures will suffer much lighter casualties from orbital attack. 
+The populated areas of an entire system can be protected using the same shield technology employed by starships. Concentrated firepower can penetrate these shields, but protected colonists and structures will suffer much lighter casualties from orbital attacks. 
 Die bewohnten Gebiete eines ganzen Systems können mit Hilfe der gleichen Schild-Technologie geschützt werden, die auch bei Sternenschiffen zum Einsatz kommt. Konzentrierte Feuerkraft kann diese Schilder zwar durchdringen, doch geschützte Kolonisten und Bauten werden bei einem Orbitalangriff wesentlich weniger Schaden davontragen.
 0
 car_107b.bop
@@ -97862,7 +97862,7 @@ ome_b105.bop
 6
 Type 1 Shield Generator
 Typ 1 Schildgenerator
-The populated areas of an entire system can be protected using the same shield technology employed by starships. Concentrated firepower can penetrate these shields, but protected colonists and structures will suffer much lighter casualties from orbital attack. 
+The populated areas of an entire system can be protected using the same shield technology employed by starships. Concentrated firepower can penetrate these shields, but protected colonists and structures will suffer much lighter casualties from orbital attacks. 
 Die bewohnten Gebiete eines ganzen Systems können mit Hilfe der gleichen Schild-Technologie geschützt werden, die auch bei Sternenschiffen zum Einsatz kommt. Konzentrierte Feuerkraft kann diese Schilder zwar durchdringen, doch geschützte Kolonisten und Bauten werden bei einem Orbitalangriff wesentlich weniger Schaden davontragen.
 1
 ome_105b.bop
@@ -98002,7 +98002,7 @@ ome_105b.bop
 6
 Type 2 Shield Generator
 Typ 2 Schildgenerator
-The populated areas of an entire system can be protected using the same shield technology employed by starships. Concentrated firepower can penetrate these shields, but protected colonists and structures will suffer much lighter casualties from orbital attack. 
+The populated areas of an entire system can be protected using the same shield technology employed by starships. Concentrated firepower can penetrate these shields, but protected colonists and structures will suffer much lighter casualties from orbital attacks. 
 Die bewohnten Gebiete eines ganzen Systems können mit Hilfe der gleichen Schild-Technologie geschützt werden, die auch bei Sternenschiffen zum Einsatz kommt. Konzentrierte Feuerkraft kann diese Schilder zwar durchdringen, doch geschützte Kolonisten und Bauten werden bei einem Orbitalangriff wesentlich weniger Schaden davontragen.
 1
 ome_105b.bop
@@ -98142,7 +98142,7 @@ ome_105b.bop
 6
 Type 3 Shield Generator
 Typ 3 Schildgenerator
-The populated areas of an entire system can be protected using the same shield technology employed by starships. Concentrated firepower can penetrate these shields, but protected colonists and structures will suffer much lighter casualties from orbital attack. 
+The populated areas of an entire system can be protected using the same shield technology employed by starships. Concentrated firepower can penetrate these shields, but protected colonists and structures will suffer much lighter casualties from orbital attacks. 
 Die bewohnten Gebiete eines ganzen Systems können mit Hilfe der gleichen Schild-Technologie geschützt werden, die auch bei Sternenschiffen zum Einsatz kommt. Konzentrierte Feuerkraft kann diese Schilder zwar durchdringen, doch geschützte Kolonisten und Bauten werden bei einem Orbitalangriff wesentlich weniger Schaden davontragen.
 1
 ome_105b.bop
@@ -98282,7 +98282,7 @@ ome_105b.bop
 6
 Type 4 Shield Generator
 Typ 4 Schildgenerator
-The populated areas of an entire system can be protected using the same shield technology employed by starships. Concentrated firepower can penetrate these shields, but protected colonists and structures will suffer much lighter casualties from orbital attack. 
+The populated areas of an entire system can be protected using the same shield technology employed by starships. Concentrated firepower can penetrate these shields, but protected colonists and structures will suffer much lighter casualties from orbital attacks. 
 Die bewohnten Gebiete eines ganzen Systems können mit Hilfe der gleichen Schild-Technologie geschützt werden, die auch bei Sternenschiffen zum Einsatz kommt. Konzentrierte Feuerkraft kann diese Schilder zwar durchdringen, doch geschützte Kolonisten und Bauten werden bei einem Orbitalangriff wesentlich weniger Schaden davontragen.
 0
 ome_105b.bop
