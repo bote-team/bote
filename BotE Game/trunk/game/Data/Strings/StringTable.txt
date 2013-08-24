@@ -1801,10 +1801,10 @@ einen Krieg
 vermisst
 
 [DO_NOT_KNOW_RESPONSIBLE_RACE]
-Wir wissen nicht wer dafür verantworlich sein könnte.
+Wir wissen nicht wer dafür verantwortlich sein könnte.
 
 [KNOW_RESPONSIBLE_SABOTAGERACE]
-Einige Hinweise deuten darauf hin, dass § für diesen feigen Anschlag verantworlich gemacht werden kann.
+Einige Hinweise deuten darauf hin, dass § für diesen feigen Anschlag verantwortlich gemacht werden kann.
 
 [AGGRESSIVENESS]
 Aggressivität
