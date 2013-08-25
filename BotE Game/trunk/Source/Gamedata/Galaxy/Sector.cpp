@@ -1023,3 +1023,26 @@ void CSector::RecalcPlanetsTerraformingStatus() {
 	}
 }
 #pragma warning(pop)
+
+void CSector::BuildStation(SHIP_TYPE::Typ station, const CString& race) {
+	if(station == SHIP_TYPE::OUTPOST)
+		m_Outpost = race;
+	else {
+		assert(station == SHIP_TYPE::STARBASE);
+		assert(m_Outpost == race);
+		m_Outpost.Empty();
+		m_Starbase = race;
+	}
+	// Nur wenn der Sektor uns selbst gehört oder niemanden gehört und keine Minorrace darin lebt
+	if(m_sOwnerOfSector == race || (!GetOwned() && ! GetMinorRace())) {
+		SetOwned(TRUE);
+		m_sOwnerOfSector = race;
+	}
+	SetScanned(race);
+	SetShipPort(TRUE, race);
+
+	// Wenn eine Station fertig wurde für alle Rassen die Punkte wieder canceln
+	m_bIsStationBuild.clear();
+	m_iStartStationPoints.clear();
+	m_iNeededStationPoints.clear();
+}

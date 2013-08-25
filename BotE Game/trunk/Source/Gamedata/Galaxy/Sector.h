@@ -441,6 +441,8 @@ public:
 	//Sets whether to display planets as being terraformed based on all currently terraforming ships in this sector
 	void RecalcPlanetsTerraformingStatus();
 
+	void BuildStation(SHIP_TYPE::Typ station, const CString& race);
+
 	/// Diese Funktion lässt die Bevölkerung auf allen Planeten zusammen um den übergebenen Wert <code>Value</code>
 	/// schrumpfen.
 	void LetPlanetsShrink(float Value);
