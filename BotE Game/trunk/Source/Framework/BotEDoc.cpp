@@ -3799,6 +3799,21 @@ void CBotEDoc::CalcTrade()
 	}
 }
 
+/////BEGIN: HELPER FUNCTIONS FOR void CBotEDoc::CalcShipOrders()
+void CBotEDoc::CalcShipOrdersClientWork(const SHIP_TYPE::Typ typ, const CMajor& race) {
+	if(!race.IsHumanPlayer())
+		return;
+	const network::RACE client = m_pRaceCtrl->GetMappedClientID(race.GetRaceID());
+	SNDMGR_VALUE value = SNDMGR_MSG_OUTPOST_READY;
+	if(typ == SHIP_TYPE::STARBASE)
+		value = SNDMGR_MSG_STARBASE_READY;
+	const SNDMGR_MESSAGEENTRY entry = {value, client, 0, 1.0f};
+	m_SoundMessages[client].Add(entry);
+	m_iSelectedView[client] = EMPIRE_VIEW;
+}
+
+/////END: HELPER FUNCTIONS FOR void CBotEDoc::CalcShipOrders()
+
 /// Diese Funktion berechnet die Schiffsbefehle. Der Systemangriffsbefehl ist davon ausgenommen.
 void CBotEDoc::CalcShipOrders()
 {
@@ -4100,7 +4115,6 @@ void CBotEDoc::CalcShipOrders()
 		{
 			CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(y->second->GetOwnerOfShip()));
 			ASSERT(pMajor);
-			network::RACE client = m_pRaceCtrl->GetMappedClientID(pMajor->GetRaceID());
 
 			// jetzt müssen wir die Schiffsinfos durchgehen und schauen, welche Station wir technologisch bauen könnten.
 			// hier wird vereinfacht angenommen, das an teurerer Aussenposten auch ein besserer ist
@@ -4139,12 +4153,7 @@ void CBotEDoc::CalcShipOrders()
 							pMajor->GetEmpire()->AddMsg(message);
 							// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
 							pMajor->AddToLostShipHistory(*x->second, CLoc::GetString("OUTPOST_CONSTRUCTION"), CLoc::GetString("DESTROYED"), m_iRound);
-							if (pMajor->IsHumanPlayer())
-							{
-								SNDMGR_MESSAGEENTRY entry = {SNDMGR_MSG_OUTPOST_READY, client, 0, 1.0f};
-								m_SoundMessages[client].Add(entry);
-								m_iSelectedView[client] = EMPIRE_VIEW;
-							}
+							CalcShipOrdersClientWork(SHIP_TYPE::OUTPOST, *pMajor);
 							// Das Schiff, welches die Station fertiggestellt hat aus der Flotte entfernen
 							y->second->RemoveShipFromFleet(x, true);
 							BuildShip(id, pSector->GetKO(), y->second->GetOwnerOfShip());
@@ -4167,12 +4176,7 @@ void CBotEDoc::CalcShipOrders()
 						pMajor->GetEmpire()->AddMsg(message);
 						// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
 						pMajor->AddToLostShipHistory(*y->second, CLoc::GetString("OUTPOST_CONSTRUCTION"), CLoc::GetString("DESTROYED"), m_iRound);
-						if (pMajor->IsHumanPlayer())
-						{
-							SNDMGR_MESSAGEENTRY entry = {SNDMGR_MSG_OUTPOST_READY, client, 0, 1.0f};
-							m_SoundMessages[client].Add(entry);
-							m_iSelectedView[client] = EMPIRE_VIEW;
-						}
+						CalcShipOrdersClientWork(SHIP_TYPE::OUTPOST, *pMajor);
 						// Hier den Aussenposten bauen
 						BuildShip(id, pSector->GetKO(), y->second->GetOwnerOfShip());
 
@@ -4194,7 +4198,6 @@ void CBotEDoc::CalcShipOrders()
 		{
 			CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(y->second->GetOwnerOfShip()));
 			ASSERT(pMajor);
-			network::RACE client = m_pRaceCtrl->GetMappedClientID(pMajor->GetRaceID());
 
 			// jetzt müssen wir die Schiffsinfos durchgehen und schauen, welche Station wir technologisch bauen k?nnten.
 			// um eine Sternbasis bauen zu k?nnen mu? schon ein Aussenposten in dem Sektor stehen
@@ -4233,12 +4236,7 @@ void CBotEDoc::CalcShipOrders()
 							pMajor->GetEmpire()->AddMsg(message);
 							// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
 							pMajor->AddToLostShipHistory(*x->second, CLoc::GetString("STARBASE_CONSTRUCTION"), CLoc::GetString("DESTROYED"), m_iRound);
-							if (pMajor->IsHumanPlayer())
-							{
-								SNDMGR_MESSAGEENTRY entry = {SNDMGR_MSG_STARBASE_READY, client, 0, 1.0f};
-								m_SoundMessages[client].Add(entry);
-								m_iSelectedView[client] = EMPIRE_VIEW;
-							}
+							CalcShipOrdersClientWork(SHIP_TYPE::STARBASE, *pMajor);
 							// Das Schiff, welches die Station fertiggestellt hat aus der Flotte entfernen
 							y->second->RemoveShipFromFleet(x, true);
 							this->BuildShip(id, pSector->GetKO(), y->second->GetOwnerOfShip());
@@ -4272,12 +4270,7 @@ void CBotEDoc::CalcShipOrders()
 						pMajor->GetEmpire()->AddMsg(message);
 						// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
 						pMajor->AddToLostShipHistory(*y->second, CLoc::GetString("STARBASE_CONSTRUCTION"), CLoc::GetString("DESTROYED"), m_iRound);
-						if (pMajor->IsHumanPlayer())
-						{
-							SNDMGR_MESSAGEENTRY entry = {SNDMGR_MSG_STARBASE_READY, client, 0, 1.0f};
-							m_SoundMessages[client].Add(entry);
-							m_iSelectedView[client] = EMPIRE_VIEW;
-						}
+						CalcShipOrdersClientWork(SHIP_TYPE::STARBASE, *pMajor);
 						// Sternbasis bauen
 						BuildShip(id, pSector->GetKO(), y->second->GetOwnerOfShip());
 						// Wenn hier eine Station gebaut wurde den Befehl für die Flotte auf Meiden stellen

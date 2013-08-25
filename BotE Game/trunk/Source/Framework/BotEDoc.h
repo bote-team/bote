@@ -315,6 +315,10 @@ protected:
 	/// Diese Funktion berechnet die kompletten Handelsaktivitäten.
 	void CalcTrade();
 
+
+	/////BEGIN: HELPER FUNCTIONS FOR void CBotEDoc::CalcShipOrders()
+	void CalcShipOrdersClientWork(const SHIP_TYPE::Typ typ, const CMajor& race);
+	/////END: HELPER FUNCTIONS FOR void CBotEDoc::CalcShipOrders()
 	/// Diese Funktion berechnet die Schiffsbefehle. Der Systemangriffsbefehl ist davon ausgenommen.
 	void CalcShipOrders();
 
