@@ -681,11 +681,13 @@ max § § im System
 [MIN_PER_SYSTEM]
 § § im System
 [ONLY_HOMEPLANET]
-nur Heimatplanet
+Heimatplanet
 [ONLY_OWN_COLONY]
-nur eigene Kolonie
+eigene Kolonie
+[ONLY_MINORRACE_SYSTEM]
+Mitgliedssystem
 [ONLY_TAKEN_SYSTEM]
-nur erobertes System
+erobertes System
 [NEED_MIN_HABITANTS]
 mindst. § Bevölkerung
 [NEED_WORKER]

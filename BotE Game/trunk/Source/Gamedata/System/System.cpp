@@ -2688,39 +2688,22 @@ BOOLEAN CSystem::CheckGeneralConditions(CBuildingInfo* building, CSector* sector
 /*	Allgemeine Voraussetzungen
 	--------------------------
 	benötigte Anzahl eigener Systeme
-	max X mal pro System
-	max X mal pro Imperium
-	Nur Heimatplanet
-	Nur eigene Kolonie
-	Nur Minorraceplanet
-	Nur erobertes System
 	Nur baubar in System mit Name
 	Nur wirklicher Besitzer des Gebäudes
 	minimale Bevölkerung im System
 	mindst. X Gebäude von ID im System
-	mindts. X Gebäude von ID im Imperium
+	max X mal pro System
+	max X mal pro Imperium
+
+	mindst. eins trifft zu von:
+	Heimatsystem
+	Eigene Kolonie
+	Minorracesystem
+	Erobertes System
 */
 	// benötigte Anzahl eigener Systeme
 	if (building->GetNeededSystems() > pMajor->GetEmpire()->CountSystems())
 		return FALSE;
-	// Nur Heimatplanet checken
-	if (building->GetOnlyHomePlanet())
-	{
-		if (m_sOwnerOfSystem == pMajor->GetRaceID() && sector->GetName() != pMajor->GetHomesystemName())
-			return FALSE;
-	}
-	// Nur eigene Kolonie checken (Heimatsystem ist auch eine eigene Kolonie)
-	if (building->GetOnlyOwnColony())
-		if (sector->GetColonyOwner() != m_sOwnerOfSystem)
-			return FALSE;
-	// Nur Minorraceplanet checken
-	if (building->GetOnlyMinorRace())
-		if (sector->GetMinorRace() == FALSE)
-			return FALSE;
-	// Nur erobertes System checken
-	if (building->GetOnlyTakenSystem())
-		if (sector->GetTakenSector() == FALSE)
-			return FALSE;
 	// Nur baubar in System mit Name checken
 	if (building->GetOnlyInSystemWithName() != "0" && building->GetOnlyInSystemWithName() != "")
 		if (building->GetOnlyInSystemWithName() != sector->GetName())
@@ -2766,7 +2749,103 @@ BOOLEAN CSystem::CheckGeneralConditions(CBuildingInfo* building, CSector* sector
 		if (nCount >= building->GetMaxInEmpire())
 			return FALSE;
 	}
-
+	// Checken ob zumindest eine der Voraussetzungen zutrifft: Heimatplanet, eigene Kolonie, Minorraceplanet oder Erobertes System
+	// Zuerst Heimatplanet checken
+	if (building->GetOnlyHomePlanet())
+	{
+		if (sector->GetName() == pMajor->GetHomesystemName())
+		{
+			return TRUE;
+		}
+		if (building->GetOnlyOwnColony())
+		{
+			if (sector->GetColonyOwner() == m_sOwnerOfSystem && sector->GetName() != pMajor->GetHomesystemName())
+				return TRUE;
+		}
+		if (building->GetOnlyMinorRace())
+		{
+			if (sector->GetMinorRace() == TRUE && sector->GetTakenSector() == FALSE)
+				return TRUE;
+		}
+		if (building->GetOnlyTakenSystem())
+		{
+			if (sector->GetTakenSector() == TRUE)
+				return TRUE;
+		}
+		return FALSE;
+	}
+	// Zuerst eigene Kolonie checken
+	if (building->GetOnlyOwnColony())
+	{
+		if (sector->GetColonyOwner() == m_sOwnerOfSystem && sector->GetName() != pMajor->GetHomesystemName())
+		{
+			return TRUE;
+		}
+		if (building->GetOnlyHomePlanet())
+		{
+			if (sector->GetName() == pMajor->GetHomesystemName())
+				return TRUE;
+		}
+		if (building->GetOnlyMinorRace())
+		{
+			if (sector->GetMinorRace() == TRUE && sector->GetTakenSector() == FALSE)
+				return TRUE;
+		}
+		if (building->GetOnlyTakenSystem())
+		{
+			if (sector->GetTakenSector() == TRUE)
+				return TRUE;
+		}
+		return FALSE;
+	}
+	// Zuerst Minorraceplanet checken
+	if (building->GetOnlyMinorRace())
+	{
+		if (sector->GetMinorRace() == TRUE && sector->GetTakenSector() == FALSE)
+		{
+			return TRUE;
+		}
+		if (building->GetOnlyHomePlanet())
+		{
+			if (sector->GetName() == pMajor->GetHomesystemName())
+				return TRUE;
+		}
+		if (building->GetOnlyOwnColony())
+		{
+			if (sector->GetColonyOwner() == m_sOwnerOfSystem && sector->GetName() != pMajor->GetHomesystemName())
+				return TRUE;
+		}
+		if (building->GetOnlyTakenSystem())
+		{
+			if (sector->GetTakenSector() == TRUE)
+				return TRUE;
+		}
+		return FALSE;
+	}
+	// Zuerst erobertes System checken
+	if (building->GetOnlyTakenSystem())
+	{
+		if (sector->GetTakenSector() == TRUE)
+		{
+			return TRUE;
+		}
+		if (building->GetOnlyHomePlanet())
+		{
+			if (sector->GetName() == pMajor->GetHomesystemName())
+				return TRUE;
+		}
+		if (building->GetOnlyOwnColony())
+		{
+			if (sector->GetColonyOwner() == m_sOwnerOfSystem && sector->GetName() != pMajor->GetHomesystemName())
+				return TRUE;
+		}
+		if (building->GetOnlyMinorRace())
+		{
+			if (sector->GetMinorRace() == TRUE && sector->GetTakenSector() == FALSE)
+				return TRUE;
+		}
+		return FALSE;
+	}
 	return TRUE;
 }
 

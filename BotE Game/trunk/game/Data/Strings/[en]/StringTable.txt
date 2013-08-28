@@ -681,11 +681,13 @@ max § § in system
 [MIN_PER_SYSTEM]
 § § per system
 [ONLY_HOMEPLANET]
-homeworld only
+homeworld
 [ONLY_OWN_COLONY]
-our colony only
+our colony
+[ONLY_MINORRACE_SYSTEM]
+membership system
 [ONLY_TAKEN_SYSTEM]
-conquered system only
+conquered system
 [NEED_MIN_HABITANTS]
 min. § inhabitants
 [NEED_WORKER]

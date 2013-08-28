@@ -2776,6 +2776,11 @@ void CSystemMenuView::DrawBuildingProduction(Graphics* g)
 			g->DrawString(CComBSTR(CLoc::GetString("ONLY_OWN_COLONY")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), r, &fontFormat, &fontBrush);
 			r.Y += 22;
 		}
+		if (b->GetOnlyMinorRace() == TRUE)
+		{
+			g->DrawString(CComBSTR(CLoc::GetString("ONLY_MINORRACE_SYSTEM")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), r, &fontFormat, &fontBrush);
+			r.Y += 22;
+		}
 		if (b->GetOnlyTakenSystem() == TRUE)
 		{
 			g->DrawString(CComBSTR(CLoc::GetString("ONLY_TAKEN_SYSTEM")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), r, &fontFormat, &fontBrush);
