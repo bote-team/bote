@@ -1163,7 +1163,7 @@ Monopoly owner
 [MONOPOLY_COSTS]
 Monopoly costs
 [NO_MONOPOLY_BUY]
-A trade monopoly cannot be acquired at our present prices. We need to extend trade activities first.
+A trade monopoly cannot be acquired. We need to get acquainted with more other empires.
 [TRADE_TRANSFER_MENUE]
 Resource transfer
 [TRANSFERS_NEXT_ROUND]

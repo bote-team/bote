@@ -1163,7 +1163,7 @@ Monopolbesitzer
 [MONOPOLY_COSTS]
 Monopolkosten
 [NO_MONOPOLY_BUY]
-Ein Monopolerwerb ist derzeit nicht möglich. Erweitern sie zuerst ihre Handelsaktivitäten
+Ein Monopolerwerb ist derzeit nicht möglich - uns sind zuwenige andere Imperien bekannt.
 [TRADE_TRANSFER_MENUE]
 anstehender Ressourcentransfer
 [TRANSFERS_NEXT_ROUND]
