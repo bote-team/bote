@@ -317,7 +317,10 @@ protected:
 
 
 	/////BEGIN: HELPER FUNCTIONS FOR void CBotEDoc::CalcShipOrders()
+public:
 	void CalcShipOrdersClientWork(const SHIP_TYPE::Typ typ, const CMajor& race);
+protected:
+	bool BuildStation(SHIP_TYPE::Typ, CShips& ship, CSector& sector);
 	/////END: HELPER FUNCTIONS FOR void CBotEDoc::CalcShipOrders()
 	/// Diese Funktion berechnet die Schiffsbefehle. Der Systemangriffsbefehl ist davon ausgenommen.
 	void CalcShipOrders();

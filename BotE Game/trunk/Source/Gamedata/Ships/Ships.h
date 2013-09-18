@@ -35,6 +35,7 @@
 #include "ShipMap.h"
 
 class CBotEDoc;
+class CMajor;
 
 class CShips/* : public CObject*/
 {
@@ -340,6 +341,8 @@ public:
 
 	void CalcEffects(CSector& sector, CRace* pRace,
 			bool bDeactivatedShipScanner, bool bBetterScanner);
+
+	bool BuildStation(SHIP_TYPE::Typ type, CSector& sector, CMajor& major, short id);
 
 	/// Diese Funktion berechnet die Schiffserfahrung in einer neuen Runde. Auﬂer Erfahrung im Kampf, diese werden nach einem
 	/// Kampf direkt verteilt.

@@ -34,6 +34,7 @@
 class CGraphicPool;
 class CRace;
 class CBotEDoc;
+class CMajor;
 
 /// Klasse beschreibt ein Schiff in BotE
 class CShip : public CObject
@@ -267,6 +268,9 @@ public:
 	//calculate effects this ship has onto its sector
 	void CalcEffectsForSingleShip(CSector& sector, CRace* pRace,
 			bool bDeactivatedShipScanner, bool bBetterScanner, bool fleetship);
+
+	// @return true in case outpost/starbase was finished by this ship
+	bool BuildStation(SHIP_TYPE::Typ type, CSector& sector, CMajor& major,  short id);
 
 	CString SanityCheckUniqueness(std::set<CString>& already_encountered) const;
 	bool SanityCheckOrdersConsistency(const CShip& with) const;

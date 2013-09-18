@@ -3812,6 +3812,42 @@ void CBotEDoc::CalcShipOrdersClientWork(const SHIP_TYPE::Typ typ, const CMajor& 
 	m_iSelectedView[client] = EMPIRE_VIEW;
 }
 
+bool CBotEDoc::BuildStation(SHIP_TYPE::Typ type, CShips& ship, CSector& sector) {
+	CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(ship.GetOwnerOfShip()));
+	assert(pMajor);
+	const CString& owner = ship.GetOwnerOfShip();
+	const short id = pMajor->BestBuildableVariant(type, m_ShipInfoArray);
+	assert(id != -1);
+	bool remove = false;
+	if (sector.IsStationBuildable(type, pMajor->GetRaceID()))
+	{
+		sector.SetIsStationBuilding(TRUE, owner);
+		if (sector.GetStartStationPoints(owner) == 0)
+			sector.SetStartStationPoints(m_ShipInfoArray.GetAt((id-10000)).
+					GetBaseIndustry(),owner);
+		if(ship.BuildStation(type, sector, *pMajor, id))
+			remove = true;
+	}
+	else
+		ship.UnsetCurrentOrder();
+
+	if(sector.GetStarbase(owner))
+	{
+		// Wenn wir jetzt die Sternbasis gebaut haben, dann müssen wir den alten Aussenposten aus der
+		// Schiffsliste nehmen
+		for(CShipMap::iterator k = m_ShipMap.begin(); k != m_ShipMap.end(); ++k)
+			if (k->second->GetShipType() == SHIP_TYPE::OUTPOST && k->second->GetKO() == sector.GetKO())
+			{
+				// ebenfalls muss der Au?enposten aus der Shiphistory der aktuellen Schiffe entfernt werden
+				pMajor->GetShipHistory()->RemoveShip(k->second);
+				assert(k->second->Key() != ship.Key());
+				m_ShipMap.EraseAt(k, true);
+				break;
+			}
+	}
+	return remove;
+}
+
 /////END: HELPER FUNCTIONS FOR void CBotEDoc::CalcShipOrders()
 
 /// Diese Funktion berechnet die Schiffsbefehle. Der Systemangriffsbefehl ist davon ausgenommen.
@@ -4110,192 +4146,17 @@ void CBotEDoc::CalcShipOrders()
 				}
 			}
 		}
-		// hier wird ein Aussenposten gebaut
-		else if (y->second->GetCurrentOrder() == SHIP_ORDER::BUILD_OUTPOST)	// es soll eine Station gebaut werden
+		// hier wird ein Aussenposten/Sternbasis gebaut
+		else if (y->second->GetCurrentOrder() == SHIP_ORDER::BUILD_OUTPOST
+			|| y->second->GetCurrentOrder() == SHIP_ORDER::BUILD_STARBASE)	// es soll eine Station gebaut werden
 		{
-			CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(y->second->GetOwnerOfShip()));
-			ASSERT(pMajor);
-
-			// jetzt müssen wir die Schiffsinfos durchgehen und schauen, welche Station wir technologisch bauen könnten.
-			// hier wird vereinfacht angenommen, das an teurerer Aussenposten auch ein besserer ist
-			short id = -1;
-			// Wenn wir in dem Sektor noch keinen Außenposten und noch keine Sternbasis stehen haben
-			if (pSector->GetOutpost(y->second->GetOwnerOfShip()) == FALSE
-				&& pSector->GetStarbase(y->second->GetOwnerOfShip()) == FALSE)
-					id = pMajor->BestBuildableVariant(SHIP_TYPE::OUTPOST, m_ShipInfoArray);
-			// Wenn wir eine baubare Station gefunden haben und in dem Sektor nicht gerade eine andere (durch andere Rasse)
-			// Station fertig wurde, k?nnen wir diese dort auch errichten
-			if (id != -1)
+			if(BuildStation(y->second->GetCurrentOrder() == SHIP_ORDER::BUILD_OUTPOST ?
+				SHIP_TYPE::OUTPOST : SHIP_TYPE::STARBASE, *y->second, *pSector))
 			{
-				if (pSector->IsStationBuildable(SHIP_TYPE::OUTPOST, pMajor->GetRaceID()))
-				{
-					// Wenn wir also an einer Station gerade bauen -> Variable auf TRUE setzen
-					pSector->SetIsStationBuilding(TRUE, y->second->GetOwnerOfShip());
-					// Wenn wir gerade anfangen an einer Station zu bauen, also noch keine BuildPoints zusammenhaben
-					if (pSector->GetStartStationPoints(y->second->GetOwnerOfShip()) == 0)
-						// dann Industriekosten der Station als StationBuildPoints nehmen
-						pSector->SetStartStationPoints(m_ShipInfoArray.GetAt((id-10000)).GetBaseIndustry(),y->second->GetOwnerOfShip());
-					// Wenn das Schiff eine Flotte anf?hrt, dann erstmal die Au?enpostenbaupunkte der Schiffe in der Flotte
-					// beachten und gegebenfalls das Schiff aus der Flotte entfernen
-					for(CShipMap::iterator x = y->second->begin(); x != y->second->end();)
-					{
-						if (pSector->SetNeededStationPoints(x->second->GetStationBuildPoints(),y->second->GetOwnerOfShip()))
-						{
-							assert(pSector->GetOutpost(y->second->GetOwnerOfShip()) == FALSE);
-							assert(pSector->GetStarbase(y->second->GetOwnerOfShip()) == FALSE);
-							// Station ist fertig, also bauen (wurde durch ein Schiff in der Flotte fertiggestellt)
-
-							pSector->BuildStation(SHIP_TYPE::OUTPOST, y->second->GetOwnerOfShip());
-
-							// Nachricht generieren, dass der Aussenpostenbau abgeschlossen wurde
-							CEmpireNews message;
-							message.CreateNews(CLoc::GetString("OUTPOST_FINISHED"),EMPIRE_NEWS_TYPE::MILITARY,"",pSector->GetKO());
-							pMajor->GetEmpire()->AddMsg(message);
-							// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
-							pMajor->AddToLostShipHistory(*x->second, CLoc::GetString("OUTPOST_CONSTRUCTION"), CLoc::GetString("DESTROYED"), m_iRound);
-							CalcShipOrdersClientWork(SHIP_TYPE::OUTPOST, *pMajor);
-							// Das Schiff, welches die Station fertiggestellt hat aus der Flotte entfernen
-							y->second->RemoveShipFromFleet(x, true);
-							BuildShip(id, pSector->GetKO(), y->second->GetOwnerOfShip());
-							// Wenn hier ein Au?enposten gebaut wurde den Befehl f?r die Flotte auf Meiden stellen
-							y->second->UnsetCurrentOrder();
-							break;
-						}
-						else
-							++x;
-					}//for(CShipMap::iterator x = y->second->begin(); x != y->second->end();)
-					if (pSector->GetIsStationBuilding(y->second->GetOwnerOfShip()) == TRUE
-						&& pSector->SetNeededStationPoints(y->second->GetStationBuildPoints(),y->second->GetOwnerOfShip()))
-					{
-						// Station ist fertig, also bauen (wurde NICHT!!! durch ein Schiff in der Flotte fertiggestellt)
-						pSector->BuildStation(SHIP_TYPE::OUTPOST, y->second->GetOwnerOfShip());
-
-						// Nachricht generieren, dass der Aussenpostenbau abgeschlossen wurde
-						CEmpireNews message;
-						message.CreateNews(CLoc::GetString("OUTPOST_FINISHED"),EMPIRE_NEWS_TYPE::MILITARY,"",pSector->GetKO());
-						pMajor->GetEmpire()->AddMsg(message);
-						// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
-						pMajor->AddToLostShipHistory(*y->second, CLoc::GetString("OUTPOST_CONSTRUCTION"), CLoc::GetString("DESTROYED"), m_iRound);
-						CalcShipOrdersClientWork(SHIP_TYPE::OUTPOST, *pMajor);
-						// Hier den Aussenposten bauen
-						BuildShip(id, pSector->GetKO(), y->second->GetOwnerOfShip());
-
-						// Wenn hier ein Aussenposten gebaut wurde den Befehl für die Flotte auf Meiden stellen
-						y->second->UnsetCurrentOrder();
-						RemoveShip(y);
-						increment = false;
-						continue;
-					}
-				}
-				else
-					y->second->UnsetCurrentOrder();
+				RemoveShip(y);
+				increment = false;
+				continue;
 			}
-			else
-				y->second->UnsetCurrentOrder();
-		}
-		// hier wird eine Sternbasis gebaut
-		else if (y->second->GetCurrentOrder() == SHIP_ORDER::BUILD_STARBASE)	// es soll eine Sternbasis gebaut werden
-		{
-			CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(y->second->GetOwnerOfShip()));
-			ASSERT(pMajor);
-
-			// jetzt müssen wir die Schiffsinfos durchgehen und schauen, welche Station wir technologisch bauen k?nnten.
-			// um eine Sternbasis bauen zu k?nnen mu? schon ein Aussenposten in dem Sektor stehen
-			// hier wird vereinfacht angenommen, das eine teurere Sternbasis auch eine bessere ist
-			// oder wir haben einen Aussenposten und wollen diesen zur Sternbasis updaten
-			short id = -1;
-			if (pSector->GetOutpost(y->second->GetOwnerOfShip()) == TRUE
-				&& pSector->GetStarbase(y->second->GetOwnerOfShip()) == FALSE)
-					id = pMajor->BestBuildableVariant(SHIP_TYPE::STARBASE, m_ShipInfoArray);
-			// Wenn wir eine baubare Station gefunden haben und in dem Sektor nicht gerade eine andere (durch andere Rasse)
-			// Station fertig wurde, können wir diese dort auch errichten
-			if (id != -1)
-			{
-				if (pSector->IsStationBuildable(SHIP_TYPE::STARBASE, pMajor->GetRaceID()))
-				{
-					// Wenn wir also an einer Station gerade bauen -> Variable auf TRUE setzen
-					pSector->SetIsStationBuilding(TRUE, y->second->GetOwnerOfShip());
-					// Wenn wir gerade anfangen an einer Station zu bauen, also noch keine BuildPoints zusammenhaben
-					if (pSector->GetStartStationPoints(y->second->GetOwnerOfShip()) == 0)
-						// dann Industriekosten der Station als StationBuildPoints nehmen
-						pSector->SetStartStationPoints(m_ShipInfoArray.GetAt(id-10000).GetBaseIndustry(),y->second->GetOwnerOfShip());
-					// Wenn das Schiff eine Flotte anf?hrt, dann erstmal die Au?enpostenbaupunkte der Schiffe in der Flotte
-					// beachten und gegebenfalls das Schiff aus der Flotte entfernen
-					for(CShipMap::iterator x = y->second->begin(); x != y->second->end();)
-					{
-						if (pSector->SetNeededStationPoints(x->second->GetStationBuildPoints(),y->second->GetOwnerOfShip()))
-						{
-							assert(pSector->GetOutpost(y->second->GetOwnerOfShip()) == TRUE);
-							assert(pSector->GetStarbase(y->second->GetOwnerOfShip()) == FALSE);
-							// Station ist fertig, also bauen (wurde durch ein Schiff in der Flotte fertiggestellt)
-							pSector->BuildStation(SHIP_TYPE::STARBASE, y->second->GetOwnerOfShip());
-
-							// Nachricht generieren, dass der Sternbasisbau abgeschlossen wurde
-							CEmpireNews message;
-							message.CreateNews(CLoc::GetString("STARBASE_FINISHED"),EMPIRE_NEWS_TYPE::MILITARY,"",pSector->GetKO());
-							pMajor->GetEmpire()->AddMsg(message);
-							// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
-							pMajor->AddToLostShipHistory(*x->second, CLoc::GetString("STARBASE_CONSTRUCTION"), CLoc::GetString("DESTROYED"), m_iRound);
-							CalcShipOrdersClientWork(SHIP_TYPE::STARBASE, *pMajor);
-							// Das Schiff, welches die Station fertiggestellt hat aus der Flotte entfernen
-							y->second->RemoveShipFromFleet(x, true);
-							this->BuildShip(id, pSector->GetKO(), y->second->GetOwnerOfShip());
-							// Wenn wir jetzt die Sternbasis gebaut haben, dann müssen wir den alten Aussenposten aus der
-							// Schiffsliste nehmen
-							for(CShipMap::iterator k = m_ShipMap.begin(); k != m_ShipMap.end(); ++k)
-								if (k->second->GetShipType() == SHIP_TYPE::OUTPOST && k->second->GetKO() == pSector->GetKO())
-								{
-									// ebenfalls muss der Au?enposten aus der Shiphistory der aktuellen Schiffe entfernt werden
-									pMajor->GetShipHistory()->RemoveShip(k->second);
-									assert(k != y);
-									m_ShipMap.EraseAt(k, true);
-									break;
-								}
-							// Wenn hier eine Station gebaut wurde den Befehl für die Flotte auf Meiden stellen
-							y->second->UnsetCurrentOrder();
-							break;
-						}
-						else
-							++x;
-					}
-					if (pSector->GetIsStationBuilding(y->second->GetOwnerOfShip()) == TRUE
-						&& pSector->SetNeededStationPoints(y->second->GetStationBuildPoints(),y->second->GetOwnerOfShip()))
-					{
-						// Station ist fertig, also bauen (wurde NICHT!!! durch ein Schiff in der Flotte fertiggestellt)
-						pSector->BuildStation(SHIP_TYPE::STARBASE, y->second->GetOwnerOfShip());
-
-						// Nachricht generieren, dass der Sternbasisbau abgeschlossen wurde
-						CEmpireNews message;
-						message.CreateNews(CLoc::GetString("STARBASE_FINISHED"),EMPIRE_NEWS_TYPE::MILITARY,"",pSector->GetKO());
-						pMajor->GetEmpire()->AddMsg(message);
-						// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
-						pMajor->AddToLostShipHistory(*y->second, CLoc::GetString("STARBASE_CONSTRUCTION"), CLoc::GetString("DESTROYED"), m_iRound);
-						CalcShipOrdersClientWork(SHIP_TYPE::STARBASE, *pMajor);
-						// Sternbasis bauen
-						BuildShip(id, pSector->GetKO(), y->second->GetOwnerOfShip());
-						// Wenn hier eine Station gebaut wurde den Befehl für die Flotte auf Meiden stellen
-						y->second->UnsetCurrentOrder();
-
-						// Wenn die Sternbasis gebaut haben, dann den alten Au?enposten aus der Schiffsliste nehmen
-						for(CShipMap::iterator k = m_ShipMap.begin(); k != m_ShipMap.end(); ++k)
-							if (k->second->GetShipType() == SHIP_TYPE::OUTPOST && k->second->GetKO() == pSector->GetKO())
-							{
-								// ebenfalls muss der Au?enposten aus der Shiphistory der aktuellen Schiffe entfernt werden
-								pMajor->GetShipHistory()->RemoveShip(k->second);
-								assert(k != y);
-								m_ShipMap.EraseAt(k, true);
-								break;
-							}
-						RemoveShip(y);
-						increment = false;
-						continue;
-					}
-				}
-				else
-					y->second->UnsetCurrentOrder();
-			}
-			else
-				y->second->UnsetCurrentOrder();
 		}
 		// Wenn wir das Schiff abracken/zerst?ren/demontieren wollen
 		else if (y->second->GetCurrentOrder() == SHIP_ORDER::DESTROY_SHIP)	// das Schiff wird demontiert

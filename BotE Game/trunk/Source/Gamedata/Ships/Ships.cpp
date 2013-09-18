@@ -547,6 +547,21 @@ void CShips::CalcEffects(CSector& sector, CRace* pRace,
 			j->second->m_Leader.CalcEffectsForSingleShip(sector, pRace, bDeactivatedShipScanner, bBetterScanner, true);
 }
 
+bool CShips::BuildStation(SHIP_TYPE::Typ type, CSector& sector, CMajor& major, short id) {
+	// Wenn das Schiff eine Flotte anf?hrt, dann erstmal die Au?enpostenbaupunkte der Schiffe
+	// in der Flotte beachten und gegebenfalls das Schiff aus der Flotte entfernen
+	for(CShips::iterator j = begin(); j != end(); ++j)
+	{
+		if(j->second->BuildStation(type, sector, major, id))
+		{
+			// Das Schiff, welches die Station fertiggestellt hat aus der Flotte entfernen
+			RemoveShipFromFleet(j, true);
+			return false;
+		}
+	}
+	return m_Leader.BuildStation(type, sector, major, id);
+}
+
 CString CShips::SanityCheckUniqueness(std::set<CString>& already_encountered) const {
 	for(CShips::const_iterator i = begin(); i != end(); ++i) {
 		const CString& duplicate = i->second->SanityCheckUniqueness(already_encountered);

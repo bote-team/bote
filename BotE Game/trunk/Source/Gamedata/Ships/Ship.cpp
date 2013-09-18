@@ -1489,6 +1489,31 @@ void CShip::CalcEffectsForSingleShip(CSector& sector, CRace* pRace,
 	CalcExp();
 }
 
+bool CShip::BuildStation(SHIP_TYPE::Typ type, CSector& sector, CMajor& major, short id) {
+	assert(!sector.HasStarbase());
+	if(type == SHIP_TYPE::OUTPOST)
+		assert(!sector.HasOutpost());
+	else
+		assert(sector.HasOutpost());
+	if(!sector.SetNeededStationPoints(m_iStationBuildPoints, m_sOwnerOfShip))
+		return false;
+	sector.BuildStation(type, m_sOwnerOfShip);
+	CEmpireNews message;
+	const CString& s1 = (type == SHIP_TYPE::OUTPOST) ? "OUTPOST_FINISHED" : "STARBASE_FINISHED";
+	message.CreateNews(CLoc::GetString(s1),EMPIRE_NEWS_TYPE::MILITARY,"",sector.GetKO());
+	major.GetEmpire()->AddMsg(message);
+	// In der Schiffshistoryliste das Schiff als ehemaliges Schiff markieren
+	const CString& s2 = (type == SHIP_TYPE::OUTPOST) ? "OUTPOST_CONSTRUCTION" : "STARBASE_CONSTRUCTION";
+	CBotEDoc* pDoc = resources::pDoc;
+	major.AddToLostShipHistory(CShips(*this), CLoc::GetString(s2),
+		CLoc::GetString("DESTROYED"), pDoc->GetCurrentRound());
+	pDoc->CalcShipOrdersClientWork(type, major);
+	pDoc->BuildShip(id, sector.GetKO(), m_sOwnerOfShip);
+	// Wenn hier ein Au?enposten gebaut wurde den Befehl f?r die Flotte auf Meiden stellen
+	UnsetCurrentOrder();
+	return true;
+}
+
 CString CShip::SanityCheckUniqueness(std::set<CString>& already_encountered) const {
 	const std::set<CString>::const_iterator found = already_encountered.find(m_strShipName);
 	if(found == already_encountered.end()) {
