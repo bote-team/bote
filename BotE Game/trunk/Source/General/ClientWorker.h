@@ -9,6 +9,7 @@
 #include <vector>
 
 class CMajor;
+class CRace;
 
 class CClientWorker
 {
@@ -63,5 +64,7 @@ public:
 	void ClearSoundMessages();
 	void ClearSoundMessages(const CMajor& race);
 	void AddSoundMessage(SNDMGR_VALUE type, const CMajor& major, int priority);
+
+	void CalcContact(CMajor& Major, const CRace& ContactedRace);
 
 };

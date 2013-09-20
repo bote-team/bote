@@ -4783,17 +4783,6 @@ void CBotEDoc::CalcShipEffects()
 ///////////////////////////////////////////////////////////////////////
 /////BEGINN: HELPER FUNCTIONS FOR void CBotEDoc::CalcContactNewRaces()
 
-void CBotEDoc::CalcContactClientWork(CMajor& Major, const CRace& ContactedRace) {
-	if(!Major.IsHumanPlayer())
-		return;
-	m_pClientWorker->SetToEmpireViewFor(Major);
-	// Audiovorstellung der kennengelernten race
-	if(ContactedRace.IsMajor())
-		m_pClientWorker->AddSoundMessage(SNDMGR_MSG_FIRSTCONTACT, dynamic_cast<const CMajor&>(ContactedRace), 2);
-	else
-		m_pClientWorker->AddSoundMessage(SNDMGR_MSG_ALIENCONTACT, Major, 1);
-}
-
 void CBotEDoc::CalcContactShipToMajorShip(CRace& Race, const CSector& sector, const CPoint& p) {
 	// treffen mit einem Schiff eines anderen Majors
 	// wenn zwei Schiffe verschiedener Rasse in diesem Sektor stationiert sind, so können sich die Besitzer auch kennenlernen
@@ -4813,10 +4802,10 @@ void CBotEDoc::CalcContactCommutative(CMajor& Major,
 	CRace& ContactedRace, const CPoint& p) {
 
 	Major.Contact(ContactedRace, p);
-	CalcContactClientWork(Major, ContactedRace);
+	m_pClientWorker->CalcContact(Major, ContactedRace);
 	ContactedRace.Contact(Major, p);
 	if(ContactedRace.IsMajor())
-		CalcContactClientWork(dynamic_cast<CMajor&>(ContactedRace), Major);
+		m_pClientWorker->CalcContact(dynamic_cast<CMajor&>(ContactedRace), Major);
 }
 
 void CBotEDoc::CalcContactMinor(CMajor& Major, const CSector& sector, const CPoint& p) {

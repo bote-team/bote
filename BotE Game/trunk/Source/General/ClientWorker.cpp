@@ -200,3 +200,14 @@ void CClientWorker::AddSoundMessage(SNDMGR_VALUE type, const CMajor& major, int 
 	const SNDMGR_MESSAGEENTRY entry = {type, client, priority, 1.0f};
 	m_SoundMessages[client].Add(entry);
 }
+
+void CClientWorker::CalcContact(CMajor& Major, const CRace& ContactedRace) {
+	if(!Major.IsHumanPlayer())
+		return;
+	SetToEmpireViewFor(Major);
+	// Audiovorstellung der kennengelernten race
+	if(ContactedRace.IsMajor())
+		AddSoundMessage(SNDMGR_MSG_FIRSTCONTACT, dynamic_cast<const CMajor&>(ContactedRace), 2);
+	else
+		AddSoundMessage(SNDMGR_MSG_ALIENCONTACT, Major, 1);
+}
