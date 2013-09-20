@@ -9,6 +9,7 @@
 #include "MainFrm.h"
 #include "Races/RaceController.h"
 #include "General/Loc.h"
+#include "ClientWorker.h"
 
 #include "BotEServer.h"
 #include "LANServer.h"
@@ -227,7 +228,7 @@ void CChooseRaceView::OnInitialUpdate()
 	int nRaceCount = 0;
 	for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 	{
-		network::RACE nRace = pDoc->GetRaceCtrl()->GetMappedClientID(it->first);
+		const network::RACE nRace = resources::pClientWorker->GetMappedClientID(it->first);
 		if (nRace == network::RACE_NONE)
 			continue;
 

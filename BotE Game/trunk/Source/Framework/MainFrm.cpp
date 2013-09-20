@@ -32,6 +32,7 @@
 #include "CombatMenuView.h"
 #include "SmallInfoView.h"
 #include "IniLoader.h"
+#include "ClientWorker.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -315,8 +316,8 @@ void CMainFrame::SelectMainView(USHORT whichView, const CString& sRace)
 
 	if (pDoc->GetPlayersRaceID() == sRace)
 	{
-		network::RACE client = pDoc->GetRaceCtrl()->GetMappedClientID(sRace);
-		pDoc->m_iSelectedView[client] = whichView;
+		const network::RACE client = resources::pClientWorker->GetMappedClientID(sRace);
+		resources::pClientWorker->SetSelectedViewForTo(client, whichView);
 		// konnte in die neue View gewechselt werden
 		if (m_wndSplitter.SwitchView(whichView, 0, 1))
 		{
@@ -496,8 +497,7 @@ LRESULT CMainFrame::ShowCombatView(WPARAM /*wParam*/, LPARAM /*lParam*/)
 	FullScreenMainView(true);
 	SelectMainView(COMBAT_VIEW, pDoc->GetPlayersRaceID());
 	// wurde Rundenende geklickt zurücksetzen
-	network::RACE client = pDoc->GetRaceCtrl()->GetMappedClientID(pDoc->GetPlayersRaceID());
-	pDoc->m_iSelectedView[client] = EMPIRE_VIEW;
+	resources::pClientWorker->SetToEmpireViewFor(*pDoc->GetPlayersRace());
 	pDoc->m_bRoundEndPressed = false;
 	pDoc->m_bDataReceived = true;
 

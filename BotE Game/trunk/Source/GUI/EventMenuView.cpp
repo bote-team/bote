@@ -9,6 +9,7 @@
 #include "Races\RaceController.h"
 #include "Graphic\memdc.h"
 #include "IniLoader.h"
+#include "ClientWorker.h"
 // CEventMenuView
 
 IMPLEMENT_DYNCREATE(CEventMenuView, CMainBaseView)
@@ -234,12 +235,9 @@ void CEventMenuView::CloseScreen(CEventScreen* eventScreen)
 
 	if (pMajor->GetEmpire()->GetEvents()->GetSize() == 0)
 	{
-		network::RACE client = pDoc->GetRaceCtrl()->GetMappedClientID(pMajor->GetRaceID());
-
 		resources::pMainFrame->FullScreenMainView(false);
-		pDoc->m_iSelectedView[client] = EMPIRE_VIEW;
-		resources::pMainFrame->SelectMainView(pDoc->m_iSelectedView[client], pMajor->GetRaceID());
-		pDoc->m_iSelectedView[client] = 0;
+		resources::pMainFrame->SelectMainView(EMPIRE_VIEW, pMajor->GetRaceID());
+		resources::pClientWorker->SetSelectedViewForTo(resources::pClientWorker->GetMappedClientID(pMajor->GetRaceID()), NULL_VIEW);
 	}
 	else
 		Invalidate(false);

@@ -43,6 +43,7 @@ public:
 	/// Funktion gibt einen Zeiger auf das Imperiumsobjekt (Reich) der Hauptrasse zurück.
 	/// @return Zeiger auf Imperiumsobjekt
 	CEmpire* GetEmpire(void) {return &m_Empire;}
+	const CEmpire* GetEmpire(void) const {return &m_Empire;}
 
 	/// Funktion gibt einen Zeiger auf das Handelsobjekt der Rasse zurück.
 	/// @return Zeiger auf Handelsobjekt

@@ -7,4 +7,5 @@ namespace resources {
 	CBotEDoc* pDoc = NULL;
 	const CCommandLineParameters* pClp = NULL;
 	CMainFrame* pMainFrame = NULL;
+	CClientWorker* pClientWorker = NULL;
 }

@@ -39,6 +39,7 @@ extern double STARMAP_ZOOM_MAX;				///< maximaler Zoom-Faktor
 
 // ------------- View-IDs ------------------------------------------------------
 // Mainview
+#define NULL_VIEW				0
 #define GALAXY_VIEW				1
 #define SYSTEM_VIEW				2
 #define RESEARCH_VIEW			3

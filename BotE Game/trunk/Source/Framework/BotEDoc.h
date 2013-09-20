@@ -55,9 +55,9 @@ protected: // Nur aus Serialisierung erzeugen
 	bool m_bGameLoaded;					///< wurde im Dialog ein zu ladendes Spiel ausgewählt
 
 	CArray<SNDMGR_MESSAGEENTRY> m_SoundMessages[7];	///< Die einzelnen Sprachmitteilungen zur neuen Runde
-	USHORT m_iSelectedView[7];						///< Welche View soll in der MainView angezeigt werden? z.B. Galaxie oder System
 
 	CRaceController* m_pRaceCtrl;		///< Rassencontroller für alle Rassen des Spiels
+	CClientWorker* m_pClientWorker;
 	CSectorAI*		 m_pSectorAI;		///< Informationen zu allen Sektoren, welche die KI benötigt.
 	CAIPrios*		 m_pAIPrios;		///< zusätzliche Priotitäten, welche für die System-KI-Berechnung benötigt werden
 
@@ -256,6 +256,10 @@ public:
 	/// @return Zeiger auf Majorrace-Rassenobjekt
 	CString GetPlayersRaceID(void) const;
 
+	/// Funktion gibt einen Zeiger auf die lokale Spielerrasse zurück.
+	/// @return Zeiger auf Majorrace-Rassenobjekt
+	CMajor* GetPlayersRace(void) const;
+
 
 	// neu für Kampf
 	set<CString> m_sCombatSectors;		///< Sektoren in denen diese Runde schon ein Kampf stattgefunden hat
@@ -277,9 +281,6 @@ protected:
 	// Private Funktionen die bei der NextRound Berechnung aufgerufen werden. Dadurch wird die NextRound Funktion
 	// um einiges verkleinert
 
-	/// Funktion gibt einen Zeiger auf die lokale Spielerrasse zurück.
-	/// @return Zeiger auf Majorrace-Rassenobjekt
-	CMajor* GetPlayersRace(void) const;
 
 	/// Diese Funktion führt allgemeine Berechnung durch, die immer zu Beginn der NextRound-Calculation stattfinden
 	/// müssen. So werden z.B. alte Nachrichten gelöscht, die Statistiken berechnet usw..

@@ -7,6 +7,7 @@
 #include "BotEDoc.h"
 #include "RaceController.h"
 #include "Ships/Ships.h"
+#include "ClientWorker.h"
 
 #include <cassert>
 
@@ -532,12 +533,7 @@ void CMajor::LostShipToAnomaly(const CShips& ship, const CString& anomaly)
 	CEmpireNews message;
 	message.CreateNews(s, EMPIRE_NEWS_TYPE::MILITARY, "", ship.GetKO());
 	m_Empire.AddMsg(message);
-	if (IsHumanPlayer())
-	{
-		CBotEDoc& doc = *resources::pDoc;
-		network::RACE client = doc.m_pRaceCtrl->GetMappedClientID(GetRaceID());
-		doc.m_iSelectedView[client] = EMPIRE_VIEW;
-	}
+	resources::pClientWorker->SetToEmpireViewFor(*this);
 }
 
 bool CMajor::CanBuildShip(SHIP_TYPE::Typ type,const BYTE researchLevels[6], const CShipInfo& info) const {

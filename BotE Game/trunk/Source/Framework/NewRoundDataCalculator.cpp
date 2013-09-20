@@ -3,6 +3,7 @@
 
 #include "Races/RaceController.h"
 #include "General/Loc.h"
+#include "ClientWorker.h"
 
 #include <cassert>
 
@@ -83,10 +84,8 @@ void CNewRoundDataCalculator::CheckRoutes(const CSector& sector, CSystem& system
 			sector_name, co, pEmpire);
 	}
 
-	if(select_empire_view && pMajor->IsHumanPlayer()) {
-		const network::RACE client = m_pDoc->m_pRaceCtrl->GetMappedClientID(pMajor->GetRaceID());
-		m_pDoc->m_iSelectedView[client] = EMPIRE_VIEW;
-	}
+	if(select_empire_view)
+		resources::pClientWorker->SetToEmpireViewFor(*pMajor);
 }
 
 void CNewRoundDataCalculator::CalcIntelligenceBoni(const CSystemProd* production, CIntelligence* intelligence) {

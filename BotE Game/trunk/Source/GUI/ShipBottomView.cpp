@@ -18,6 +18,7 @@
 #include "General/Loc.h"
 #include "Galaxy/Anomaly.h"
 #include "GraphicPool.h"
+#include "ClientWorker.h"
 #include <cassert>
 
 #ifdef _DEBUG
@@ -959,7 +960,7 @@ void CShipBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 		}
 
 		// Ab jetzt die kleinen Buttons für die einzelnen genauen Schiffsbefehle
-		network::RACE client = pDoc->GetRaceCtrl()->GetMappedClientID(pMajor->GetRaceID());
+		const network::RACE client = resources::pClientWorker->GetMappedClientID(pMajor->GetRaceID());
 		for(std::vector<SecondaryButtonInfo>::const_iterator i = m_vSecondaryShipOrders.begin(); i != m_vSecondaryShipOrders.end(); ++i)
 			if (i->rect.PtInRect(point))
 			{

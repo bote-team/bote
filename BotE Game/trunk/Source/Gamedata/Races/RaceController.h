@@ -69,14 +69,6 @@ public:
 	/// Funktion zum zurücksetzen aller Werte auf Ausgangswerte.
 	void Reset(void);
 
-	/// Funktion gibt die zu einer Majorrace zugehörige Netzwerkclient-ID zurück.
-	/// Maximal können sechs Clients bestehen. Jede Majorrace benötigt eine eindeutige
-	/// Client-ID.
-	/// @param sRaceID Rassen-ID einer Majorrace
-	/// @return Netzwerk-Client-ID
-	/// ALPHA5 -> noch fest!
-	network::RACE GetMappedClientID(const CString& sRaceID) const;
-
 	/// Funktion gibt die zu einer Client-ID zugehörige Major-ID zurück.
 	/// Maximal können sechs Clients bestehen. Jede Majorrace benötigt eine eindeutige
 	/// Client-ID.

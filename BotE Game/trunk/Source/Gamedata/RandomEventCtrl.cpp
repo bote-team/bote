@@ -11,6 +11,7 @@
 #include "Ships/Ships.h"
 #include "General/Loc.h"
 #include "IniLoader.h"
+#include "ClientWorker.h"
 
 #include <cassert>
 
@@ -154,8 +155,7 @@ bool CRandomEventCtrl::SystemEvent(const CPoint &ko, CMajor* pRace)
 
 				if (pRace->IsHumanPlayer())
 				{
-					network::RACE client = pDoc->GetRaceCtrl()->GetMappedClientID(pRace->GetRaceID());
-					pDoc->m_iSelectedView[client] = EMPIRE_VIEW;
+					resources::pClientWorker->SetToEmpireViewFor(*pRace);
 
 					CEventRandom* EmpireEvent=new CEventRandom(pRace->GetRaceID(),"demographic",CLoc::GetString("SYSTEMEVENTPLANETDEMOGRAPHICTITLE"),sMsgText);
 					pRace->GetEmpire()->GetEvents()->Add(EmpireEvent);
@@ -169,12 +169,7 @@ bool CRandomEventCtrl::SystemEvent(const CPoint &ko, CMajor* pRace)
 		CEmpireNews message;
 		message.CreateNews(sMsgText,EMPIRE_NEWS_TYPE::SOMETHING,"",ko);//Nachricht über Randomevent erstellen
 		pRace->GetEmpire()->AddMsg(message);
-
-		if (pRace->IsHumanPlayer())
-		{
-			network::RACE client = pDoc->GetRaceCtrl()->GetMappedClientID(pRace->GetRaceID());
-			pDoc->m_iSelectedView[client] = EMPIRE_VIEW;
-		}
+		resources::pClientWorker->SetToEmpireViewFor(*pRace);
 	}
 	return bSuccess;
 }
@@ -193,8 +188,7 @@ void CRandomEventCtrl::GlobalEventResearch(CMajor *pRace)
 		CBotEDoc* pDoc = resources::pDoc;
 		ASSERT(pDoc);
 
-		network::RACE client = pDoc->GetRaceCtrl()->GetMappedClientID(pRace->GetRaceID());
-		pDoc->m_iSelectedView[client] = EMPIRE_VIEW;
+		resources::pClientWorker->SetToEmpireViewFor(*pRace);
 
 		CEventRandom* EmpireEvent=new CEventRandom(pRace->GetRaceID(),"Breakthrough",CLoc::GetString("BREAKTHROUGH"),CLoc::GetString("GLOBALEVENTRESEARCH"));
 		pRace->GetEmpire()->GetEvents()->Add(EmpireEvent);
@@ -267,11 +261,7 @@ void CRandomEventCtrl::CalcExploreEvent(const CPoint &ko, CMajor *pRace, CShipMa
 		message.CreateNews(sMessageText,typ,"",ko);//Nachricht erstellen
 		pRace->GetEmpire()->AddMsg(message);
 
-		if (pRace->IsHumanPlayer())
-		{
-			network::RACE client = pDoc->GetRaceCtrl()->GetMappedClientID(pRace->GetRaceID());
-			pDoc->m_iSelectedView[client] = EMPIRE_VIEW;
-		}
+		resources::pClientWorker->SetToEmpireViewFor(*pRace);
 	}
 }
 
@@ -339,8 +329,7 @@ void CRandomEventCtrl::CalcShipEvents() const
 
 				if (pMajor->IsHumanPlayer())
 				{
-					network::RACE client = pDoc->GetRaceCtrl()->GetMappedClientID(pMajor->GetRaceID());
-					pDoc->m_iSelectedView[client] = EMPIRE_VIEW;
+					resources::pClientWorker->SetToEmpireViewFor(*pMajor);
 
 					CEventRandom* EmpireEvent = new CEventRandom(pMajor->GetRaceID(), "HullVirus", sMessageText, "");
 					pMajor->GetEmpire()->GetEvents()->Add(EmpireEvent);

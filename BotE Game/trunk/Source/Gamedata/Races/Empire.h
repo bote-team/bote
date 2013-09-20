@@ -92,6 +92,7 @@ public:
 	/// Funktion gibt einen Zeiger auf das Feld mit den Eventnachrichten für das Imperium zurück.
 	/// @return Pointer auf <code>CObArray</code>
 	CObArray* GetEvents() {return &m_Events;}
+	const CObArray* GetEvents() const {return &m_Events;}
 
 	/// Funktion gibt einen Zeiger auf das Forschungsobjekt des Imperiums zurück.
 	CResearch* GetResearch(void) {return &m_Research;}

@@ -3,6 +3,7 @@
 
 #include "Races/RaceController.h"
 #include "General/Loc.h"
+#include "ClientWorker.h"
 #include <cassert>
 
 
@@ -70,11 +71,7 @@ void COldRoundDataCalculator::ExecuteRebellion(CSector& sector, CSystem& system,
 	CEmpireNews message;
 	message.CreateNews(news, EMPIRE_NEWS_TYPE::SOMETHING, "", co);
 	pEmpire->AddMsg(message);
-	if (pMajor->IsHumanPlayer())
-	{
-		const network::RACE client = pRaceCtrl->GetMappedClientID(pMajor->GetRaceID());
-		m_pDoc->m_iSelectedView[client] = EMPIRE_VIEW;
-	}
+	resources::pClientWorker->SetToEmpireViewFor(*pMajor);
 
 	// zusätzliche Eventnachricht (Lose a System to Rebellion #18) wegen der Moral an das Imperium
 	message.CreateNews(pMajor->GetMoralObserver()->AddEvent(18, pMajor->GetRaceMoralNumber(), sectorname), EMPIRE_NEWS_TYPE::SOMETHING, "", co);
@@ -124,11 +121,7 @@ void COldRoundDataCalculator::ExecuteFamine(CSector& sector, CSystem& system, CM
 	CEmpireNews message;
 	message.CreateNews(news, EMPIRE_NEWS_TYPE::SOMETHING, "", co, false, 1);
 	pEmpire->AddMsg(message);
-	if (pMajor->IsHumanPlayer())
-	{
-		const network::RACE client = m_pDoc->m_pRaceCtrl->GetMappedClientID(pMajor->GetRaceID());
-		m_pDoc->m_iSelectedView[client] = EMPIRE_VIEW;
-	}
+	resources::pClientWorker->SetToEmpireViewFor(*pMajor);
 }
 
 void COldRoundDataCalculator::SystemMessage(const CSector& sector, CMajor* pMajor, const CString& key,
@@ -137,10 +130,7 @@ void COldRoundDataCalculator::SystemMessage(const CSector& sector, CMajor* pMajo
 	CEmpireNews message;
 	message.CreateNews(news, message_typ, "", sector.GetKO(), false, byFlag);
 	pMajor->GetEmpire()->AddMsg(message);
-	if (pMajor->IsHumanPlayer()) {
-		const network::RACE client = m_pDoc->m_pRaceCtrl->GetMappedClientID(pMajor->GetRaceID());
-		m_pDoc->m_iSelectedView[client] = EMPIRE_VIEW;
-	}
+	resources::pClientWorker->SetToEmpireViewFor(*pMajor);
 }
 
 void COldRoundDataCalculator::HandlePopulationEffects(const CSector& sector, CSystem& system, CMajor* pMajor) const {

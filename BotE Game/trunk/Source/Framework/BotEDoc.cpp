@@ -39,6 +39,7 @@
 #include "Ships/Ships.h"
 #include "NewRoundDataCalculator.h"
 #include "OldRoundDataCalculator.h"
+#include "ClientWorker.h"
 
 
 #ifdef _DEBUG
@@ -78,7 +79,6 @@ CBotEDoc::CBotEDoc() :
 	m_fDifficultyLevel(1.0f),
 	m_fStardate(121000.0f),
 	m_iRound(1),
-	m_iSelectedView(),
 	m_nCombatOrder(COMBAT_ORDER::NONE)
 {
 	resources::pDoc = this;
@@ -99,6 +99,7 @@ CBotEDoc::CBotEDoc() :
 	m_pGraphicPool = new CGraphicPool(CIOData::GetInstance()->GetAppPath() + "Graphics\\");
 
 	m_pRaceCtrl = new CRaceController();
+	m_pClientWorker = CClientWorker::GetInstance();
 
 	m_pAIPrios = new CAIPrios(this);
 	m_pSectorAI= new CSectorAI(this);
@@ -174,8 +175,6 @@ BOOL CBotEDoc::OnNewDocument()
 	// Standardwerte setzen
 	m_ptKO = CPoint(0,0);
 	m_bRoundEndPressed			= false;
-	for (int i = network::RACE_1; i < network::RACE_ALL; i++)
-		m_iSelectedView[i] = START_VIEW;
 
 	return TRUE;
 }
@@ -236,10 +235,7 @@ void CBotEDoc::Serialize(CArchive& ar)
 		for (map<CString, pair<int, int> >::const_iterator it = m_mRaceKO.begin(); it != m_mRaceKO.end(); ++it)
 			ar << it->first << it->second.first << it->second.second;
 
-		for (int i = network::RACE_1; i < network::RACE_ALL; i++)
-		{
-			ar << m_iSelectedView[i];
-		}
+		m_pClientWorker->Serialize(ar);
 
 		ar << m_ShipInfoArray.GetSize();
 		for (int i = 0; i < m_ShipInfoArray.GetSize(); i++)
@@ -287,10 +283,7 @@ void CBotEDoc::Serialize(CArchive& ar)
 			m_mRaceKO[key] = value;
 		}
 
-		for (int i = network::RACE_1; i < network::RACE_ALL; i++)
-		{
-			ar >> m_iSelectedView[i];
-		}
+		m_pClientWorker->Serialize(ar);
 
 		ar >> number;
 		m_ShipInfoArray.RemoveAll();
@@ -465,8 +458,7 @@ void CBotEDoc::SerializeNextRoundData(CArchive &ar)
 		// ZU ERLEDIGEN: Hier Code zum Speichern einfügen
 		ar << m_iRound;
 		ar << m_fStardate;
-		for (int i = network::RACE_1; i < network::RACE_ALL; i++)
-			ar << m_iSelectedView[i];
+		m_pClientWorker->Serialize(ar);
 		ar << m_ShipInfoArray.GetSize();
 		for (int i = 0; i < m_ShipInfoArray.GetSize(); i++)
 			m_ShipInfoArray.GetAt(i).Serialize(ar);
@@ -498,8 +490,7 @@ void CBotEDoc::SerializeNextRoundData(CArchive &ar)
 		// ZU ERLEDIGEN: Hier Code zum Laden einfügen
 		ar >> m_iRound;
 		ar >> m_fStardate;
-		for (int i = network::RACE_1; i < network::RACE_ALL; i++)
-			ar >> m_iSelectedView[i];
+		m_pClientWorker->Serialize(ar);
 		ar >> number;
 		m_ShipInfoArray.RemoveAll();
 		m_ShipInfoArray.SetSize(number);
@@ -554,7 +545,7 @@ void CBotEDoc::SerializeNextRoundData(CArchive &ar)
 			return;
 		}
 
-		network::RACE client = m_pRaceCtrl->GetMappedClientID(pPlayer->GetRaceID());
+		const network::RACE client = m_pClientWorker->GetMappedClientID(pPlayer->GetRaceID());
 
 		// Sprachmeldungen an den Soundmanager schicken
 		CSoundManager* pSoundManager = CSoundManager::GetInstance();
@@ -613,10 +604,9 @@ void CBotEDoc::SerializeEndOfRoundData(CArchive &ar, network::RACE race)
 			GetSystem(vSystems[i].x, vSystems[i].y).Serialize(ar);
 		}
 
-		network::RACE client = m_pRaceCtrl->GetMappedClientID(pPlayer->GetRaceID());
 		pPlayer->Serialize(ar);
 		// aktuelle View mit zum Server senden
-		ar << m_iSelectedView[client];
+		ar << m_pClientWorker->GetSelectedViewFor(pPlayer->GetRaceID());
 	}
 	else
 	{
@@ -660,7 +650,11 @@ void CBotEDoc::SerializeEndOfRoundData(CArchive &ar, network::RACE race)
 		}
 
 		pMajor->Serialize(ar);
-		ar >> m_iSelectedView[race];
+
+		assert(m_pClientWorker->GetMappedClientID(sMajorID) == race);
+		unsigned short view;
+		ar >> view;
+		m_pClientWorker->SetSelectedViewForTo(race, view);
 	}
 	MYTRACE("general")(MT::LEVEL_INFO, "... serialization of RoundEndData succesfull\n", race);
 }
@@ -702,7 +696,7 @@ void CBotEDoc::ResetIniSettings(void)
 	{
 		CMajor* pPlayer = GetPlayersRace();
 		ASSERT(pPlayer);
-		network::RACE client = m_pRaceCtrl->GetMappedClientID(pPlayer->GetRaceID());
+		const network::RACE client = m_pClientWorker->GetMappedClientID(pPlayer->GetRaceID());
 
 		float fMusicVolume;
 		pIni->ReadValue("Audio", "MUSICVOLUME", fMusicVolume);
@@ -800,9 +794,8 @@ void CBotEDoc::LoadViewGraphics(void)
 	// Views ihre Arbeit zu Beginn jeder neuen Runde machen lassen
 	DoViewWorkOnNewRound();
 
-	network::RACE client = m_pRaceCtrl->GetMappedClientID(pPlayersRace->GetRaceID());
 	// wenn neues Spiel gestartet wurde, dann initial auf die Galaxiekarte stellen
-	if (m_iSelectedView[client] == 0)
+	if (m_pClientWorker->GetSelectedViewFor(pPlayersRace->GetRaceID()) == NULL_VIEW)
 	{
 		// zum Schluss die Galxieview auswählen (nicht eher, da gibts manchmal Probleme beim Scrollen ganz nach rechts)
 		resources::pMainFrame->SelectMainView(GALAXY_VIEW, pPlayersRace->GetRaceID());
@@ -847,21 +840,7 @@ void CBotEDoc::DoViewWorkOnNewRound()
 			((CMenuChooseView*)(it->first))->OnNewRound();
 	}
 
-	network::RACE client = m_pRaceCtrl->GetMappedClientID(pPlayersRace->GetRaceID());
-
-	// anzuzeigende View in neuer Runde auswählen
-	// Wenn EventScreens für den Spieler vorhanden sind, so werden diese angezeigt.
-	if (pPlayersRace->GetEmpire()->GetEvents()->GetSize() > 0)
-	{
-		resources::pMainFrame->FullScreenMainView(true);
-		resources::pMainFrame->SelectMainView(EVENT_VIEW, pPlayersRace->GetRaceID());
-	}
-	else
-	{
-		resources::pMainFrame->FullScreenMainView(false);
-		resources::pMainFrame->SelectMainView(m_iSelectedView[client], pPlayersRace->GetRaceID());
-		m_iSelectedView[client] = 0;
-	}
+	m_pClientWorker->DoViewWorkOnNewRound(*pPlayersRace);
 
 	// wurde Rundenende geklickt zurücksetzen
 	m_bRoundEndPressed = false;
@@ -885,7 +864,7 @@ void CBotEDoc::PrepareData()
 		map<CString, CMajor*>* pmMajors = m_pRaceCtrl->GetMajors();
 		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 		{
-			network::RACE client = m_pRaceCtrl->GetMappedClientID(it->first);
+			const network::RACE client = m_pClientWorker->GetMappedClientID(it->first);
 			// wird das Imperium von einem Menschen oder vom Computer gespielt
 			if (client != network::RACE_NONE && server.IsPlayedByClient(client))
 				it->second->SetHumanPlayer(true);
@@ -974,7 +953,7 @@ void CBotEDoc::PrepareData()
 		map<CString, CMajor*>* pmMajors = m_pRaceCtrl->GetMajors();
 		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
 		{
-			network::RACE client = m_pRaceCtrl->GetMappedClientID(it->first);
+			const network::RACE client = m_pClientWorker->GetMappedClientID(it->first);
 			// wird das Imperium von einem Menschen oder vom Computer gespielt
 			if (client != network::RACE_NONE && server.IsPlayedByClient(client))
 				it->second->SetHumanPlayer(true);
@@ -2538,10 +2517,10 @@ void CBotEDoc::CalcPreDataForNextRound()
 		// Bevölkerungsunterstützungskosten auf NULL setzen
 		pMajor->GetEmpire()->SetPopSupportCosts(0);
 		// verbleibende Vertragsdauer mit anderen Majorraces berechnen und gegebenenfalls Nachrichten und diplomatische Auswirkungen anwenden
-		network::RACE client = m_pRaceCtrl->GetMappedClientID(it->first);
+		network::RACE client = m_pClientWorker->GetMappedClientID(it->first);
 		if (pMajor->DecrementAgreementsDuration(pmMajors))
 			if (pMajor->IsHumanPlayer())
-				m_iSelectedView[client] = EMPIRE_VIEW;
+				m_pClientWorker->SetSelectedViewForTo(client, EMPIRE_VIEW);
 		// wird das Imperium von einem Menschen oder vom Computer gespielt
 		if (client != network::RACE_NONE && server.IsPlayedByClient(client))
 			pMajor->SetHumanPlayer(true);
@@ -2719,11 +2698,7 @@ void CBotEDoc::CalcSystemAttack()
 							CEmpireNews message;
 							message.CreateNews(CLoc::GetString("MINOR_SUBJUGATED", FALSE, pMinor->GetRaceName()), EMPIRE_NEWS_TYPE::MILITARY, param, p);
 							it->second->GetEmpire()->AddMsg(message);
-							if (it->second->IsHumanPlayer())
-							{
-								network::RACE client = m_pRaceCtrl->GetMappedClientID(it->first);
-								m_iSelectedView[client] = EMPIRE_VIEW;
-							}
+							m_pClientWorker->SetToEmpireViewFor(*it->second);
 						}
 					}
 					// Eventnachricht an den Eroberer (System erobert)
@@ -2734,11 +2709,7 @@ void CBotEDoc::CalcSystemAttack()
 						CEmpireNews message;
 						message.CreateNews(eventText, EMPIRE_NEWS_TYPE::MILITARY, param, p, 0, 1);
 						pMajor->GetEmpire()->AddMsg(message);
-						if (pMajor->IsHumanPlayer())
-						{
-							network::RACE client = m_pRaceCtrl->GetMappedClientID(attacker);
-							m_iSelectedView[client] = EMPIRE_VIEW;
-						}
+						m_pClientWorker->SetToEmpireViewFor(*pMajor);
 					}
 				}
 				// Wenn das System einer Minorrace gehört, eingenommen wurde und somit befreit wird
@@ -2762,11 +2733,7 @@ void CBotEDoc::CalcSystemAttack()
 						CEmpireNews message;
 						message.CreateNews(eventText, EMPIRE_NEWS_TYPE::MILITARY, param, p);
 						def->GetEmpire()->AddMsg(message);
-						if (def->IsHumanPlayer())
-						{
-							network::RACE client = m_pRaceCtrl->GetMappedClientID(defender->GetRaceID());
-							m_iSelectedView[client] = EMPIRE_VIEW;
-						}
+						m_pClientWorker->SetToEmpireViewFor(*def);
 					}
 					// Eventnachricht an den Eroberer (Minorracesystem befreit)
 					param = pMinor->GetRaceName();
@@ -2777,11 +2744,7 @@ void CBotEDoc::CalcSystemAttack()
 						CEmpireNews message;
 						message.CreateNews(eventText, EMPIRE_NEWS_TYPE::MILITARY, param, p, 0, 1);
 						pMajor->GetEmpire()->AddMsg(message);
-						if (pMajor->IsHumanPlayer())
-						{
-							network::RACE client = m_pRaceCtrl->GetMappedClientID(attacker);
-							m_iSelectedView[client] = EMPIRE_VIEW;
-						}
+						m_pClientWorker->SetToEmpireViewFor(*pMajor);
 					}
 					// Sektor gilt ab jetzt als nicht mehr erobert.
 					GetSector(p.x, p.y).SetTakenSector(FALSE);
@@ -2810,11 +2773,7 @@ void CBotEDoc::CalcSystemAttack()
 							CEmpireNews message;
 							message.CreateNews(eventText, EMPIRE_NEWS_TYPE::MILITARY, param, p, 0, 1);
 							pMajor->GetEmpire()->AddMsg(message);
-							if (pMajor->IsHumanPlayer())
-							{
-								network::RACE client = m_pRaceCtrl->GetMappedClientID(attacker);
-								m_iSelectedView[client] = EMPIRE_VIEW;
-							}
+							m_pClientWorker->SetToEmpireViewFor(*pMajor);
 						}
 						if (defender != NULL && defender->GetRaceID() != attacker && defender->IsMajor())
 						{
@@ -2827,11 +2786,7 @@ void CBotEDoc::CalcSystemAttack()
 								CEmpireNews message;
 								message.CreateNews(eventText, EMPIRE_NEWS_TYPE::MILITARY, param, p);
 								pDefenderMajor->GetEmpire()->AddMsg(message);
-								if (pDefenderMajor->IsHumanPlayer())
-								{
-									network::RACE client = m_pRaceCtrl->GetMappedClientID(defender->GetRaceID());
-									m_iSelectedView[client] = EMPIRE_VIEW;
-								}
+								m_pClientWorker->SetToEmpireViewFor(*pDefenderMajor);
 							}
 						}
 						// Moral in dem System um rand()%25+10 erhöhen
@@ -2850,11 +2805,7 @@ void CBotEDoc::CalcSystemAttack()
 							CEmpireNews message;
 							message.CreateNews(eventText, EMPIRE_NEWS_TYPE::MILITARY, param, p);
 							pDefenderMajor->GetEmpire()->AddMsg(message);
-							if (pDefenderMajor->IsHumanPlayer())
-							{
-									network::RACE client = m_pRaceCtrl->GetMappedClientID(defender->GetRaceID());
-									m_iSelectedView[client] = EMPIRE_VIEW;
-							}
+							m_pClientWorker->SetToEmpireViewFor(*pDefenderMajor);
 						}
 						// Eventnachricht an den Eroberer (System erobert)
 						eventText = pMajor->GetMoralObserver()->AddEvent(11, pMajor->GetRaceMoralNumber(), param);
@@ -2864,11 +2815,7 @@ void CBotEDoc::CalcSystemAttack()
 							CEmpireNews message;
 							message.CreateNews(eventText, EMPIRE_NEWS_TYPE::MILITARY, param, p, 0, 1);
 							pMajor->GetEmpire()->AddMsg(message);
-							if (pMajor->IsHumanPlayer())
-							{
-								network::RACE client = m_pRaceCtrl->GetMappedClientID(attacker);
-								m_iSelectedView[client] = EMPIRE_VIEW;
-							}
+							m_pClientWorker->SetToEmpireViewFor(*pMajor);
 						}
 						// Sektor gilt ab jetzt als erobert.
 						GetSector(p.x, p.y).SetTakenSector(TRUE);
@@ -2917,11 +2864,7 @@ void CBotEDoc::CalcSystemAttack()
 									CEmpireNews message;
 									message.CreateNews(CLoc::GetString("MINOR_SUBJUGATED", FALSE, pMinor->GetRaceName()), EMPIRE_NEWS_TYPE::MILITARY, param, p);
 									it->second->GetEmpire()->AddMsg(message);
-									if (it->second->IsHumanPlayer())
-									{
-										network::RACE client = m_pRaceCtrl->GetMappedClientID(it->first);
-										m_iSelectedView[client] = EMPIRE_VIEW;
-									}
+									m_pClientWorker->SetToEmpireViewFor(*it->second);
 								}
 							}
 						}
@@ -2965,11 +2908,7 @@ void CBotEDoc::CalcSystemAttack()
 								message.CreateNews(eventText, EMPIRE_NEWS_TYPE::MILITARY, param, p);
 								CMajor* pDefenderMajor = dynamic_cast<CMajor*>(defender);
 								pDefenderMajor->GetEmpire()->AddMsg(message);
-								if (pDefenderMajor->IsHumanPlayer())
-								{
-									network::RACE client = m_pRaceCtrl->GetMappedClientID(defender->GetRaceID());
-									m_iSelectedView[client] = EMPIRE_VIEW;
-								}
+								m_pClientWorker->SetToEmpireViewFor(*pDefenderMajor);
 							}
 						}
 
@@ -2981,11 +2920,7 @@ void CBotEDoc::CalcSystemAttack()
 							CEmpireNews message;
 							message.CreateNews(eventText, EMPIRE_NEWS_TYPE::MILITARY, param, p, 0, 1);
 							pMajor->GetEmpire()->AddMsg(message);
-							if (pMajor->IsHumanPlayer())
-							{
-								network::RACE client = m_pRaceCtrl->GetMappedClientID(attacker);
-								m_iSelectedView[client] = EMPIRE_VIEW;
-							}
+							m_pClientWorker->SetToEmpireViewFor(*pMajor);
 						}
 					}
 					GetSector(p.x, p.y).SetOwnerOfSector(attacker);
@@ -3014,11 +2949,7 @@ void CBotEDoc::CalcSystemAttack()
 							CEmpireNews message;
 							message.CreateNews(eventText, EMPIRE_NEWS_TYPE::MILITARY, param, p, 0, 1);
 							pMajor->GetEmpire()->AddMsg(message);
-							if (pMajor->IsHumanPlayer())
-							{
-								network::RACE client = m_pRaceCtrl->GetMappedClientID(attacker);
-								m_iSelectedView[client] = EMPIRE_VIEW;
-							}
+							m_pClientWorker->SetToEmpireViewFor(*pMajor);
 						}
 					}
 				}
@@ -3105,11 +3036,7 @@ void CBotEDoc::CalcSystemAttack()
 							CEmpireNews message;
 							message.CreateNews(eventText, EMPIRE_NEWS_TYPE::MILITARY, param, p);
 							pDefenderMajor->GetEmpire()->AddMsg(message);
-							if (pDefenderMajor->IsHumanPlayer())
-							{
-								network::RACE client = m_pRaceCtrl->GetMappedClientID(defender->GetRaceID());
-								m_iSelectedView[client] = EMPIRE_VIEW;
-							}
+							m_pClientWorker->SetToEmpireViewFor(*pDefenderMajor);
 						}
 					}
 
@@ -3143,11 +3070,7 @@ void CBotEDoc::CalcSystemAttack()
 									CEmpireNews message;
 									message.CreateNews(sEventText, EMPIRE_NEWS_TYPE::MILITARY, sParam, p, 0, 1);
 									pMajor->GetEmpire()->AddMsg(message);
-									if (pMajor->IsHumanPlayer())
-									{
-										network::RACE client = m_pRaceCtrl->GetMappedClientID(pMajor->GetRaceID());
-										m_iSelectedView[client] = EMPIRE_VIEW;
-									}
+									m_pClientWorker->SetToEmpireViewFor(*pMajor);
 								}
 							}
 						}
@@ -3180,11 +3103,7 @@ void CBotEDoc::CalcSystemAttack()
 								CEmpireNews message;
 								message.CreateNews(eventText, EMPIRE_NEWS_TYPE::MILITARY, param, p);
 								pMajor->GetEmpire()->AddMsg(message);
-								if (pMajor->IsHumanPlayer())
-								{
-									network::RACE client = m_pRaceCtrl->GetMappedClientID(pMajor->GetRaceID());
-									m_iSelectedView[client] = EMPIRE_VIEW;
-								}
+								m_pClientWorker->SetToEmpireViewFor(*pMajor);
 							}
 						}
 
@@ -3199,11 +3118,7 @@ void CBotEDoc::CalcSystemAttack()
 								CEmpireNews message;
 								message.CreateNews(eventText, EMPIRE_NEWS_TYPE::MILITARY, param, p);
 								pDefenderMajor->GetEmpire()->AddMsg(message);
-								if (pDefenderMajor->IsHumanPlayer())
-								{
-									network::RACE client = m_pRaceCtrl->GetMappedClientID(defender->GetRaceID());
-									m_iSelectedView[client] = EMPIRE_VIEW;
-								}
+								m_pClientWorker->SetToEmpireViewFor(*pDefenderMajor);
 							}
 						}
 					}
@@ -3255,11 +3170,7 @@ void CBotEDoc::CalcSystemAttack()
 					CEmpireNews message;
 					message.CreateNews(pSystemAttack->GetNews()->GetAt(i), EMPIRE_NEWS_TYPE::MILITARY, GetSector(p.x, p.y).GetName(), p);
 					pMajor->GetEmpire()->AddMsg(message);
-					if (pMajor->IsHumanPlayer())
-					{
-						network::RACE client = m_pRaceCtrl->GetMappedClientID(pMajor->GetRaceID());
-						m_iSelectedView[client] = EMPIRE_VIEW;
-					}
+					m_pClientWorker->SetToEmpireViewFor(*pMajor);
 				}
 				if (defender != NULL && defender->IsMajor() && pSystemAttack->IsDefenderNotAttacker(defender->GetRaceID(), &attackers))
 				{
@@ -3267,11 +3178,7 @@ void CBotEDoc::CalcSystemAttack()
 					CEmpireNews message;
 					message.CreateNews(pSystemAttack->GetNews()->GetAt(i), EMPIRE_NEWS_TYPE::MILITARY, GetSector(p.x, p.y).GetName(), p);
 					pDefenderMajor->GetEmpire()->AddMsg(message);
-					if (pDefenderMajor->IsHumanPlayer())
-					{
-						network::RACE client = m_pRaceCtrl->GetMappedClientID(defender->GetRaceID());
-						m_iSelectedView[client] = EMPIRE_VIEW;
-					}
+					m_pClientWorker->SetToEmpireViewFor(*pDefenderMajor);
 				}
 				pSystemAttack->GetNews()->RemoveAt(i);
 			}
@@ -3337,7 +3244,7 @@ void CBotEDoc::CalcIntelligence()
 				message.CreateNews(CLoc::GetString("WE_HAVE_NEW_INTELREPORTS"), EMPIRE_NEWS_TYPE::SECURITY, 4);
 				it->second->GetEmpire()->AddMsg(message);
 
-				network::RACE client = m_pRaceCtrl->GetMappedClientID(it->first);
+				const network::RACE client = m_pClientWorker->GetMappedClientID(it->first);
 				SNDMGR_MESSAGEENTRY entry = {SNDMGR_MSG_INTELNEWS, client, 0, 1.0f};
 				m_SoundMessages[client].Add(entry);
 
@@ -3379,8 +3286,7 @@ void CBotEDoc::CalcIntelligence()
 		if (it->second->IsHumanPlayer())
 			if (it->second->GetEmpire()->GetIntelligence()->GetIntelReports()->IsReportAdded())
 			{
-				network::RACE client = m_pRaceCtrl->GetMappedClientID(it->first);
-				m_iSelectedView[client] = EMPIRE_VIEW;
+				m_pClientWorker->SetToEmpireViewFor(*it->second);
 			}
 }
 
@@ -3404,7 +3310,7 @@ void CBotEDoc::CalcResearch()
 
 		pMajor->GetEmpire()->GetResearch()->SetResearchBoni(researchBoni[it->first].nBoni);
 		const CString* news = pMajor->GetEmpire()->GetResearch()->CalculateResearch(pMajor->GetEmpire()->GetFP());
-		network::RACE client = m_pRaceCtrl->GetMappedClientID(pMajor->GetRaceID());
+		const network::RACE client = m_pClientWorker->GetMappedClientID(pMajor->GetRaceID());
 
 		for (int j = 0; j < 8; j++)		// aktuell 8 verschiedene Nachrichten mgl, siehe CResearch Klasse
 		{
@@ -3421,7 +3327,7 @@ void CBotEDoc::CalcResearch()
 					{
 						SNDMGR_MESSAGEENTRY entry = {SNDMGR_MSG_SCIENTISTNEWS, client, 0, 1.0f};
 						m_SoundMessages[client].Add(entry);
-						m_iSelectedView[client] = EMPIRE_VIEW;
+						m_pClientWorker->SetToEmpireViewFor(*pMajor);
 					}
 					message.CreateNews(news[j], EMPIRE_NEWS_TYPE::RESEARCH, 1);
 				}
@@ -3431,7 +3337,7 @@ void CBotEDoc::CalcResearch()
 					{
 						SNDMGR_MESSAGEENTRY entry = {SNDMGR_MSG_NEWTECHNOLOGY, client, 0, 1.0f};
 						m_SoundMessages[client].Add(entry);
-						m_iSelectedView[client] = EMPIRE_VIEW;
+						m_pClientWorker->SetToEmpireViewFor(*pMajor);
 
 						// Eventscreen für Forschung erstellen
 						// gilt nur für die sechs normalen Forschungen
@@ -3470,10 +3376,10 @@ void CBotEDoc::CalcDiplomacy()
 		CMajor* pMajor = it->second;
 		if (pMajor->IsHumanPlayer() && pMajor->GetIncomingDiplomacyNews()->size() > 0)
 		{
-			network::RACE client = m_pRaceCtrl->GetMappedClientID(it->first);
+			const network::RACE client = m_pClientWorker->GetMappedClientID(it->first);
 			SNDMGR_MESSAGEENTRY entry = {SNDMGR_MSG_DIPLOMATICNEWS, client, 0, 1.0f};
 			m_SoundMessages[client].Add(entry);
-			m_iSelectedView[client] = EMPIRE_VIEW;
+			m_pClientWorker->SetToEmpireViewFor(*pMajor);
 		}
 	}
 }
@@ -3753,11 +3659,7 @@ void CBotEDoc::CalcTrade()
 				CEmpireNews message;
 				message.CreateNews(sNews,EMPIRE_NEWS_TYPE::SOMETHING);
 				pMajor->GetEmpire()->AddMsg(message);
-				if (pMajor->IsHumanPlayer())
-				{
-					network::RACE clientID = m_pRaceCtrl->GetMappedClientID(pMajor->GetRaceID());
-					m_iSelectedView[clientID] = EMPIRE_VIEW;
-				}
+				m_pClientWorker->SetToEmpireViewFor(*pMajor);
 				pMajor->GetTrade()->SetMonopolBuying(i,0.0f);
 			}
 
@@ -3776,11 +3678,7 @@ void CBotEDoc::CalcTrade()
 				CEmpireNews message;
 				message.CreateNews(news,EMPIRE_NEWS_TYPE::SOMETHING);
 				pMajor->GetEmpire()->AddMsg(message);
-				if (pMajor->IsHumanPlayer())
-				{
-					network::RACE clientID = m_pRaceCtrl->GetMappedClientID(pMajor->GetRaceID());
-					m_iSelectedView[clientID] = EMPIRE_VIEW;
-				}
+				m_pClientWorker->SetToEmpireViewFor(*pMajor);
 			}
 		}
 	}
@@ -3803,13 +3701,13 @@ void CBotEDoc::CalcTrade()
 void CBotEDoc::CalcShipOrdersClientWork(const SHIP_TYPE::Typ typ, const CMajor& race) {
 	if(!race.IsHumanPlayer())
 		return;
-	const network::RACE client = m_pRaceCtrl->GetMappedClientID(race.GetRaceID());
+	const network::RACE client = m_pClientWorker->GetMappedClientID(race.GetRaceID());
 	SNDMGR_VALUE value = SNDMGR_MSG_OUTPOST_READY;
 	if(typ == SHIP_TYPE::STARBASE)
 		value = SNDMGR_MSG_STARBASE_READY;
 	const SNDMGR_MESSAGEENTRY entry = {value, client, 0, 1.0f};
 	m_SoundMessages[client].Add(entry);
-	m_iSelectedView[client] = EMPIRE_VIEW;
+	m_pClientWorker->SetToEmpireViewFor(race);
 }
 
 bool CBotEDoc::BuildStation(SHIP_TYPE::Typ type, CShips& ship, CSector& sector) {
@@ -3980,7 +3878,7 @@ void CBotEDoc::CalcShipOrders()
 				CString s;
 				CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(y->second->GetOwnerOfShip()));
 				ASSERT(pMajor);
-				network::RACE client = m_pRaceCtrl->GetMappedClientID(pMajor->GetRaceID());
+				const network::RACE client = m_pClientWorker->GetMappedClientID(pMajor->GetRaceID());
 
 				// Gebäude bauen, wenn wir das System zum ersten Mal kolonisieren, sprich das System noch niemanden gehört
 				if (pSystem->GetOwnerOfSystem() == "")
@@ -4005,7 +3903,8 @@ void CBotEDoc::CalcShipOrders()
 					{
 						SNDMGR_MESSAGEENTRY entry = {SNDMGR_MSG_CLAIMSYSTEM, client, 0, 1.0f};
 						m_SoundMessages[client].Add(entry);
-						m_iSelectedView[client] = EMPIRE_VIEW;
+						m_pClientWorker->SetToEmpireViewFor(*pMajor);
+
 
 						CEventColonization* eventScreen = new CEventColonization(pMajor->GetRaceID(), CLoc::GetString("COLOEVENT_HEADLINE", FALSE, pSector->GetName()), CLoc::GetString("COLOEVENT_TEXT_" + pMajor->GetRaceID(), FALSE, pSector->GetName()));
 						pMajor->GetEmpire()->GetEvents()->Add(eventScreen);
@@ -4020,8 +3919,7 @@ void CBotEDoc::CalcShipOrders()
 					CEmpireNews message;
 					message.CreateNews(s,EMPIRE_NEWS_TYPE::SOMETHING,pSector->GetName(),pSector->GetKO());
 					pMajor->GetEmpire()->AddMsg(message);
-					if (pMajor->IsHumanPlayer())
-						m_iSelectedView[client] = EMPIRE_VIEW;
+					m_pClientWorker->SetToEmpireViewFor(*pMajor);
 				}
 				pSystem->SetHabitants(pSector->GetCurrentHabitants());
 
@@ -4049,7 +3947,7 @@ void CBotEDoc::CalcShipOrders()
 			assert(y->second->GetTerraform() != -1);
 			CMajor* pMajor = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(y->second->GetOwnerOfShip()));
 			ASSERT(pMajor);
-			network::RACE client = m_pRaceCtrl->GetMappedClientID(pMajor->GetRaceID());
+			const network::RACE client = m_pClientWorker->GetMappedClientID(pMajor->GetRaceID());
 
 			if (pSector->GetPlanet(y->second->GetTerraform())->GetTerraformed() == FALSE)
 			{
@@ -4066,7 +3964,7 @@ void CBotEDoc::CalcShipOrders()
 					{
 						SNDMGR_MESSAGEENTRY entry = {SNDMGR_MSG_TERRAFORM_COMPLETE, client, 0, 1.0f};
 						m_SoundMessages[client].Add(entry);
-						m_iSelectedView[client] = EMPIRE_VIEW;
+						m_pClientWorker->SetToEmpireViewFor(*pMajor);
 					}
 					// Wenn wir einer Rasse beim Terraformen helfen, so gibt es einen Beziehungsboost
 					if (pSector->GetOwnerOfSector() != "" && pSector->GetMinorRace() == TRUE && pSystem->GetOwnerOfSystem() == "")
@@ -4109,7 +4007,7 @@ void CBotEDoc::CalcShipOrders()
 							{
 								SNDMGR_MESSAGEENTRY entry = {SNDMGR_MSG_TERRAFORM_COMPLETE, client, 0, 1.0f};
 								m_SoundMessages[client].Add(entry);
-								m_iSelectedView[client] = EMPIRE_VIEW;
+								m_pClientWorker->SetToEmpireViewFor(*pMajor);
 							}
 							// Wenn wir einer Rasse beim Terraformen helfen, so gibt es einen Beziehungsboost
 							if (pSector->GetOwnerOfSector() != "" && pSector->GetMinorRace() == TRUE && pSystem->GetOwnerOfSystem() == "")
@@ -4686,7 +4584,6 @@ void CBotEDoc::CalcShipCombat()
 
 			CMajor* pMajor = dynamic_cast<CMajor*>(it->second);
 			ASSERT(pMajor);
-			network::RACE client = m_pRaceCtrl->GetMappedClientID(pMajor->GetRaceID());
 
 			CEmpireNews message;
 			message.CreateNews(CLoc::GetString("WIN_COMBAT", false, sSectorName), EMPIRE_NEWS_TYPE::MILITARY, "", p);
@@ -4695,8 +4592,7 @@ void CBotEDoc::CalcShipCombat()
 			CString eventText = pMajor->GetMoralObserver()->AddEvent(3, pMajor->GetRaceMoralNumber());
 			message.CreateNews(eventText, EMPIRE_NEWS_TYPE::MILITARY, "", p);
 			pMajor->GetEmpire()->AddMsg(message);
-			if (pMajor->IsHumanPlayer())
-				m_iSelectedView[client] = EMPIRE_VIEW;
+			m_pClientWorker->SetToEmpireViewFor(*pMajor);
 		}
 		// verloren
 		else if (winner[it->first] == 2)
@@ -4705,7 +4601,6 @@ void CBotEDoc::CalcShipCombat()
 			{
 				CMajor* pMajor = dynamic_cast<CMajor*>(it->second);
 				ASSERT(pMajor);
-				network::RACE client = m_pRaceCtrl->GetMappedClientID(pMajor->GetRaceID());
 
 				CEmpireNews message;
 				message.CreateNews(CLoc::GetString("LOSE_COMBAT", false, sSectorName), EMPIRE_NEWS_TYPE::MILITARY, "", p);
@@ -4714,8 +4609,7 @@ void CBotEDoc::CalcShipCombat()
 				CString eventText = pMajor->GetMoralObserver()->AddEvent(6, pMajor->GetRaceMoralNumber());
 				message.CreateNews(eventText, EMPIRE_NEWS_TYPE::MILITARY, "", p);
 				pMajor->GetEmpire()->AddMsg(message);
-				if (pMajor->IsHumanPlayer())
-					m_iSelectedView[client] = EMPIRE_VIEW;
+				m_pClientWorker->SetToEmpireViewFor(*pMajor);
 			}
 			// Die Beziehung zum Gewinner verschlechtert sich dabei. Treffen zwei computergesteuerte Rassen
 			// aufeinander, so ist die Beziehungsveringerung geringer
@@ -4736,13 +4630,11 @@ void CBotEDoc::CalcShipCombat()
 		{
 			CMajor* pMajor = dynamic_cast<CMajor*>(it->second);
 			ASSERT(pMajor);
-			network::RACE client = m_pRaceCtrl->GetMappedClientID(pMajor->GetRaceID());
 
 			CEmpireNews message;
 			message.CreateNews(CLoc::GetString("DRAW_COMBAT", false, sSectorName), EMPIRE_NEWS_TYPE::MILITARY, "", p);
 			pMajor->GetEmpire()->AddMsg(message);
-			if (pMajor->IsHumanPlayer())
-				m_iSelectedView[client] = EMPIRE_VIEW;
+			m_pClientWorker->SetToEmpireViewFor(*pMajor);
 		}
 	}
 
@@ -4934,15 +4826,15 @@ void CBotEDoc::CalcShipEffects()
 /////BEGINN: HELPER FUNCTIONS FOR void CBotEDoc::CalcContactNewRaces()
 
 void CBotEDoc::CalcContactClientWork(CMajor& Major, const CRace& ContactedRace) {
-	const network::RACE client = m_pRaceCtrl->GetMappedClientID(Major.GetRaceID());
-	m_iSelectedView[client] = EMPIRE_VIEW;
 	if(!Major.IsHumanPlayer())
 		return;
+	const network::RACE client = m_pClientWorker->GetMappedClientID(Major.GetRaceID());
+	m_pClientWorker->SetToEmpireViewFor(Major);
 	// Audiovorstellung der kennengelernten race
 	SNDMGR_MESSAGEENTRY entry = {SNDMGR_MSG_ALIENCONTACT, client, 1, 1.0f};
 	if(ContactedRace.IsMajor()) {
 		entry.nMessage = SNDMGR_MSG_FIRSTCONTACT;
-		entry.nRace = m_pRaceCtrl->GetMappedClientID(ContactedRace.GetRaceID());
+		entry.nRace = m_pClientWorker->GetMappedClientID(ContactedRace.GetRaceID());
 		entry.nPriority = 2;
 	}
 	m_SoundMessages[client].Add(entry);
@@ -5084,8 +4976,7 @@ void CBotEDoc::CalcEffectsMinorEleminated(CMinor* pMinor)
 				CEventRaceKilled* eventScreen = new CEventRaceKilled(it->first, pMinor->GetRaceID(), pMinor->GetRaceName(), pMinor->GetGraphicFileName());
 				pMajor->GetEmpire()->GetEvents()->Add(eventScreen);
 
-				network::RACE client = m_pRaceCtrl->GetMappedClientID(it->first);
-				m_iSelectedView[client] = EMPIRE_VIEW;
+				m_pClientWorker->SetToEmpireViewFor(*it->second);
 			}
 		}
 
@@ -5144,8 +5035,7 @@ void CBotEDoc::CalcEndDataForNextRound()
 						CEventRaceKilled* eventScreen = new CEventRaceKilled(itt->first, pMajor->GetRaceID(), pMajor->GetRaceName(), pMajor->GetGraphicFileName());
 						itt->second->GetEmpire()->GetEvents()->Add(eventScreen);
 
-						network::RACE client = m_pRaceCtrl->GetMappedClientID(itt->first);
-						m_iSelectedView[client] = EMPIRE_VIEW;
+						m_pClientWorker->SetToEmpireViewFor(*itt->second);
 					}
 				}
 			}
@@ -5156,7 +5046,7 @@ void CBotEDoc::CalcEndDataForNextRound()
 
 			pMajor->GetEmpire()->GetEvents()->RemoveAll();
 			pMajor->GetEmpire()->GetMsgs()->RemoveAll();
-			network::RACE client = m_pRaceCtrl->GetMappedClientID(pMajor->GetRaceID());
+			const network::RACE client = m_pClientWorker->GetMappedClientID(pMajor->GetRaceID());
 			m_SoundMessages[client].RemoveAll();
 
 			// alle anderen Rassen durchgehen und die vernichtete Rasse aus deren Maps entfernen
@@ -5277,11 +5167,7 @@ void CBotEDoc::CalcEndDataForNextRound()
 			CEmpireNews message;
 			message.CreateNews(s, EMPIRE_NEWS_TYPE::ECONOMY, 4);
 			pMajor->GetEmpire()->AddMsg(message);
-			if (pMajor->IsHumanPlayer())
-			{
-				network::RACE client = m_pRaceCtrl->GetMappedClientID(pMajor->GetRaceID());
-				m_iSelectedView[client] = EMPIRE_VIEW;
-			}
+			m_pClientWorker->SetToEmpireViewFor(*pMajor);
 		}
 
 		// Schiffskosten berechnen
@@ -5414,7 +5300,7 @@ void CBotEDoc::CalcEndDataForNextRound()
 
 			pMajor->GetEmpire()->GetEvents()->RemoveAll();
 			pMajor->GetEmpire()->GetMsgs()->RemoveAll();
-			network::RACE client = m_pRaceCtrl->GetMappedClientID(pMajor->GetRaceID());
+			const network::RACE client = m_pClientWorker->GetMappedClientID(pMajor->GetRaceID());
 			m_SoundMessages[client].RemoveAll();
 
 			// Wenn es ein menschlicher Spieler ist, so bekommt er den Eventscreen für den Sieg angezeigt
@@ -5434,9 +5320,7 @@ void CBotEDoc::CalcEndDataForNextRound()
 
 	// Bestimmte Views zurücksetzen
 	CSmallInfoView::SetDisplayMode(CSmallInfoView::DISPLAY_MODE_ICON);
-	for (int i = network::RACE_1; i < network::RACE_ALL; i++)
-		if (m_iSelectedView[i] == FLEET_VIEW)
-			m_iSelectedView[i] = GALAXY_VIEW;
+	m_pClientWorker->ResetViews();
 
 }
 
@@ -5651,8 +5535,7 @@ void CBotEDoc::CalcAlienShipEffects()
 					CEventAlienEntity* eventScreen = new CEventAlienEntity(pOwner->GetRaceID(), pAlien->GetRaceID(), pAlien->GetRaceName(), s);
 					pOwner->GetEmpire()->GetEvents()->Add(eventScreen);
 
-					network::RACE client = m_pRaceCtrl->GetMappedClientID(pOwner->GetRaceID());
-					m_iSelectedView[client] = EMPIRE_VIEW;
+					m_pClientWorker->SetToEmpireViewFor(*pOwner);
 				}
 			}
 		}
@@ -5682,8 +5565,7 @@ void CBotEDoc::CalcAlienShipEffects()
 						CEventAlienEntity* eventScreen = new CEventAlienEntity(pOwner->GetRaceID(), pAlien->GetRaceID(), pAlien->GetRaceName(), s);
 						pOwner->GetEmpire()->GetEvents()->Add(eventScreen);
 
-						network::RACE client = m_pRaceCtrl->GetMappedClientID(pOwner->GetRaceID());
-						m_iSelectedView[client] = EMPIRE_VIEW;
+						m_pClientWorker->SetToEmpireViewFor(*pOwner);
 					}
 				}
 			}
@@ -5761,8 +5643,7 @@ void CBotEDoc::CalcAlienShipEffects()
 					CEventAlienEntity* eventScreen = new CEventAlienEntity(pOwner->GetRaceID(), pAlien->GetRaceID(), pAlien->GetRaceName(), s);
 					pOwner->GetEmpire()->GetEvents()->Add(eventScreen);
 
-					network::RACE client = m_pRaceCtrl->GetMappedClientID(pOwner->GetRaceID());
-					m_iSelectedView[client] = EMPIRE_VIEW;
+					m_pClientWorker->SetToEmpireViewFor(*pOwner);
 				}
 			}
 		}
@@ -5803,8 +5684,7 @@ void CBotEDoc::CalcAlienShipEffects()
 				CEventAlienEntity* eventScreen = new CEventAlienEntity(pOwner->GetRaceID(), pAlien->GetRaceID(), pAlien->GetRaceName(), s);
 				pOwner->GetEmpire()->GetEvents()->Add(eventScreen);
 
-				network::RACE client = m_pRaceCtrl->GetMappedClientID(pOwner->GetRaceID());
-				m_iSelectedView[client] = EMPIRE_VIEW;
+				m_pClientWorker->SetToEmpireViewFor(*pOwner);
 			}
 		}
 		else if (pAlien->GetRaceID() == BOSEANER)
@@ -5923,8 +5803,7 @@ void CBotEDoc::CalcAlienShipEffects()
 						CEventAlienEntity* eventScreen = new CEventAlienEntity(pOwner->GetRaceID(), pAlien->GetRaceID(), pAlien->GetRaceName(), s);
 						pOwner->GetEmpire()->GetEvents()->Add(eventScreen);
 
-						network::RACE client = m_pRaceCtrl->GetMappedClientID(pOwner->GetRaceID());
-						m_iSelectedView[client] = EMPIRE_VIEW;
+						m_pClientWorker->SetToEmpireViewFor(*pOwner);
 					}
 				}
 			}
