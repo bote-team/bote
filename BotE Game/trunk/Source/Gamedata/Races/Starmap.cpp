@@ -169,7 +169,7 @@ void CStarmap::AddBase(const Sector &sector, BYTE propTech)
 		for (char y = -m_RangeMap.y0; y < m_RangeMap.h - m_RangeMap.y0; y++)
 		{
 			Sector pt(sector.x + x, sector.y + y);
-			if (PT_IN_RECT(pt, 0, 0, STARMAP_SECTORS_HCOUNT, STARMAP_SECTORS_VCOUNT))
+			if (pt.is_in_rect(0, 0, STARMAP_SECTORS_HCOUNT, STARMAP_SECTORS_VCOUNT))
 			{
 				// Wert überschreiben, wenn der neue Einfluss größer ist
 				m_Range[pt.x][pt.y] = max(m_Range[pt.x][pt.y], GetRangeMapValue(x, y));
@@ -341,7 +341,7 @@ Sector CStarmap::CalcPath(const Sector &pos, const Sector &target, unsigned char
 				// Koordinaten des Nachbarn ermitteln (Sektoren nur betrachten, wenn sie
 				// noch auf der Starmap liegen!)
 				Sector npos = next->position + neighbours[i];
-				if (!PT_IN_RECT(npos, 0, 0, STARMAP_SECTORS_HCOUNT, STARMAP_SECTORS_VCOUNT))
+				if (!npos.is_in_rect(0, 0, STARMAP_SECTORS_HCOUNT, STARMAP_SECTORS_VCOUNT))
 					continue;
 
 				// nur Nachbarn betrachten, die noch nicht ausgewählt wurden und innerhalb der
@@ -606,7 +606,7 @@ void CStarmap::AddTarget(const Sector &target)
 {
 	assert(target.on_map());
 	ASSERT(m_bAICalculation);
-	if (!m_bAICalculation || !PT_IN_RECT(target, 0, 0, STARMAP_SECTORS_HCOUNT, STARMAP_SECTORS_VCOUNT)) return;
+	if (!m_bAICalculation || !target.is_in_rect(0, 0, STARMAP_SECTORS_HCOUNT, STARMAP_SECTORS_VCOUNT)) return;
 
 	// prüfen, ob Ziel bereits in Liste vorhanden ist
 	for (SECTORLIST::const_iterator it = m_lAITargets.begin(); it != m_lAITargets.end(); ++it)
@@ -635,7 +635,7 @@ void CStarmap::AddKnownSystem(const Sector &sector)
 {
 	assert(sector.on_map());
 	ASSERT(m_bAICalculation);
-	if (!m_bAICalculation || !PT_IN_RECT(sector, 0, 0, STARMAP_SECTORS_HCOUNT, STARMAP_SECTORS_VCOUNT)) return;
+	if (!m_bAICalculation || !sector.is_in_rect(0, 0, STARMAP_SECTORS_HCOUNT, STARMAP_SECTORS_VCOUNT)) return;
 
 	// prüfen, ob Ziel bereits in Liste vorhanden ist
 	for (SECTORLIST::const_iterator it = m_lAIKnownSystems.begin(); it != m_lAIKnownSystems.end(); ++it)
@@ -683,7 +683,7 @@ void CStarmap::RecalcRangePoints()
 					for (char my = -m_RangeMap.y0; my < m_RangeMap.h - m_RangeMap.y0; my++)
 					{
 						Sector mpt(x + mx, y + my);
-						if (PT_IN_RECT(mpt, 0, 0, STARMAP_SECTORS_HCOUNT, STARMAP_SECTORS_VCOUNT))
+						if (mpt.is_in_rect(0, 0, STARMAP_SECTORS_HCOUNT, STARMAP_SECTORS_VCOUNT))
 						{
 							// Gebietszuwachs ermitteln
 							m_AIRangePoints[x][y] += max(GetRangeMapValue(mx, my) - m_Range[mpt.x][mpt.y], 0);
@@ -714,7 +714,7 @@ void CStarmap::RecalcConnectionPoints()
 					for (int ny = -1; ny <= 1; ny++)
 					{
 						Sector npt(x + nx, y + ny);
-						if (PT_IN_RECT(npt, 0, 0, STARMAP_SECTORS_HCOUNT, STARMAP_SECTORS_VCOUNT) &&
+						if (npt.is_in_rect(0, 0, STARMAP_SECTORS_HCOUNT, STARMAP_SECTORS_VCOUNT) &&
 							m_Range[npt.x][npt.y] < m_nAIRange)
 						{
 							// (npt.x, npt.y) ist jetzt immer != (x, y)
@@ -733,7 +733,7 @@ void CStarmap::RecalcConnectionPoints()
 					for (char my = -m_RangeMap.y0; my < m_RangeMap.h - m_RangeMap.y0; my++)
 					{
 						Sector mpt(x + mx, y + my);
-						if (PT_IN_RECT(mpt, 0, 0, STARMAP_SECTORS_HCOUNT, STARMAP_SECTORS_VCOUNT))
+						if (mpt.is_in_rect(0, 0, STARMAP_SECTORS_HCOUNT, STARMAP_SECTORS_VCOUNT))
 						{
 							// für die (x, y) umgebenden Sektoren deren Anzahl der Nachbarn innerhalb der Reichweite
 							// verwerten: ist diese Anzahl hoch, befindet sich in der Nähe von (x, y) ein weiteres
@@ -814,7 +814,7 @@ void CStarmap::RecalcTargetPoints()
 					// Bonus, wenn der Bau eines Außenpostens in (x, y) das System in die gegebene Reichweite
 					// eingliedern würde
 					Sector system(it->x - x, it->y - y);
-					if (PT_IN_RECT(system, -m_RangeMap.x0, -m_RangeMap.y0, m_RangeMap.w - m_RangeMap.x0, m_RangeMap.h - m_RangeMap.y0)
+					if (system.is_in_rect(-m_RangeMap.x0, -m_RangeMap.y0, m_RangeMap.w - m_RangeMap.x0, m_RangeMap.h - m_RangeMap.y0)
 						&& GetRangeMapValue(system.x, system.y) >= m_nAIRange)
 					{
 						m_AITargetPoints[x][y] += 30;

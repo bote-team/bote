@@ -50,6 +50,11 @@ struct Sector
 		return 0 <= x && x < STARMAP_SECTORS_HCOUNT && 0 <= y && y < STARMAP_SECTORS_VCOUNT;
 	}
 
+	bool is_in_rect(int x1, int y1, int x2, int y2) const
+	{
+		return (x1 <= x && x < x2) && (y1 <= y && y < y2);
+	};
+
 	char x, y;
 };
 

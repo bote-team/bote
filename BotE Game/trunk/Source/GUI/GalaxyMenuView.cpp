@@ -1090,7 +1090,7 @@ void CGalaxyMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 		// angeklickten Sektor ermitteln
 		struct::Sector sector = pMajor->GetStarmap()->GetClickedSector(pt);
 		const CCommandLineParameters* const clp = resources::pClp;
-		if (PT_IN_RECT(sector, 0, 0, STARMAP_SECTORS_HCOUNT, STARMAP_SECTORS_VCOUNT) &&
+		if (sector.is_in_rect(0, 0, STARMAP_SECTORS_HCOUNT, STARMAP_SECTORS_VCOUNT) &&
 			(clp->SeeAllOfMap() || pDoc->GetSystem(sector.x, sector.y).GetOwnerOfSystem() == pMajor->GetRaceID()) &&
 			pDoc->GetSector(sector.x, sector.y).GetSunSystem() == TRUE)
 			{
@@ -1171,7 +1171,7 @@ void CGalaxyMenuView::OnMouseMove(UINT nFlags, CPoint point)
 		struct::Sector target = pMajor->GetStarmap()->GetClickedSector(pt);
 		struct::Sector shipKO(pDoc->CurrentShip()->second->GetKO().x,pDoc->CurrentShip()->second->GetKO().y);
 
-		if (PT_IN_RECT(target, 0, 0, STARMAP_SECTORS_HCOUNT, STARMAP_SECTORS_VCOUNT))
+		if (target.is_in_rect(0, 0, STARMAP_SECTORS_HCOUNT, STARMAP_SECTORS_VCOUNT))
 		{
 			// Weg berechnen, neu zeichnen
 			char speed = (char)(pDoc->CurrentShip()->second->GetSpeed(pDoc->CurrentShip()->second->HasFleet()));
@@ -1198,7 +1198,7 @@ void CGalaxyMenuView::OnMouseMove(UINT nFlags, CPoint point)
 
 		// Sektor, über dem sich die Maus befindet, ermitteln
 		struct::Sector target = pMajor->GetStarmap()->GetClickedSector(pt);
-		if (target != oldtarget && PT_IN_RECT(target, 0, 0, STARMAP_SECTORS_HCOUNT, STARMAP_SECTORS_VCOUNT))
+		if (target != oldtarget && target.is_in_rect(0, 0, STARMAP_SECTORS_HCOUNT, STARMAP_SECTORS_VCOUNT))
 		{
 			m_TradeRoute.GenerateTradeRoute(CPoint(target.x,target.y));
 			Invalidate();
@@ -1220,7 +1220,7 @@ void CGalaxyMenuView::OnMouseMove(UINT nFlags, CPoint point)
 
 		// Sektor, über dem sich die Maus befindet, ermitteln
 		struct::Sector target = pMajor->GetStarmap()->GetClickedSector(pt);
-		if (target != oldtarget && PT_IN_RECT(target, 0, 0, STARMAP_SECTORS_HCOUNT, STARMAP_SECTORS_VCOUNT))
+		if (target != oldtarget && target.is_in_rect(0, 0, STARMAP_SECTORS_HCOUNT, STARMAP_SECTORS_VCOUNT))
 		{
 			m_ResourceRoute.GenerateResourceRoute(CPoint(target.x,target.y), CSystemMenuView::GetResourceRouteRes());
 			Invalidate();
@@ -1669,7 +1669,7 @@ CString CGalaxyMenuView::CreateTooltip(void)
 
 	// Sektor, über dem sich die Maus befindet, ermitteln
 	struct::Sector ko = pMajor->GetStarmap()->GetClickedSector(pt);
-	if (PT_IN_RECT(ko, 0, 0, STARMAP_SECTORS_HCOUNT, STARMAP_SECTORS_VCOUNT))
+	if (ko.is_in_rect(0, 0, STARMAP_SECTORS_HCOUNT, STARMAP_SECTORS_VCOUNT))
 	{
 		CSector* pSector = &(pDoc->GetSector(ko.x, ko.y));
 		CString sTip;
