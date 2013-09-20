@@ -452,8 +452,11 @@ namespace COMBAT_TACTIC
 }
 
 // --- Sonstiges ---------------------------------------------------------------
-#define PT_IN_RECT(pt, x1, y1, x2, y2) \
-	((x1) <= (pt).x && (pt).x < (x2) && (y1) <= (pt).y && (pt).y < (y2))
+
+inline bool PT_IN_RECT(const CPoint& pt, int x1, int y1, int x2, int y2)
+{
+	return (x1 <= pt.x && pt.x < x2) && (y1 <= pt.y && pt.y < y2);
+}
 
 inline void SetAttributes(BOOLEAN is, int attribute, int &variable)
 {
