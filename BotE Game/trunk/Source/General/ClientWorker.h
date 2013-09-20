@@ -3,6 +3,8 @@
 #include "network.h"
 #include "Constants.h"
 
+#include <vector>
+
 class CMajor;
 
 class CClientWorker
@@ -10,7 +12,7 @@ class CClientWorker
 private:
 
 	//Welche View soll in der MainView angezeigt werden? z.B. Galaxie oder System
-	VIEWS::MAIN_VIEWS m_iSelectedView[network::RACE_ALL];
+	std::vector<VIEWS::MAIN_VIEWS> m_SelectedView;
 
 	CClientWorker(void);
 	CClientWorker(const CClientWorker& o);

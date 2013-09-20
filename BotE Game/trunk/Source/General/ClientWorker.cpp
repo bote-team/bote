@@ -8,11 +8,13 @@
 #include "Races/Major.h"
 #include "MainFrm.h"
 
-CClientWorker::CClientWorker(void)
+CClientWorker::CClientWorker(void) :
+	m_SelectedView()
 {
 	resources::pClientWorker = this;
 
-	memset(m_iSelectedView, VIEWS::NULL_VIEW, sizeof(m_iSelectedView));
+	//entry .at(0) is unused
+	m_SelectedView.resize(network::RACE_ALL, VIEWS::NULL_VIEW);
 }
 
 CClientWorker::~CClientWorker(void)
@@ -27,16 +29,21 @@ CClientWorker* CClientWorker::GetInstance() {
 
 void CClientWorker::Serialize(CArchive& ar) {
 	if(ar.IsStoring()) {
-		for (int i = network::RACE_1; i < network::RACE_ALL; i++)
-			ar << static_cast<unsigned short>(m_iSelectedView[i]);
+		for (std::vector<VIEWS::MAIN_VIEWS>::const_iterator it = m_SelectedView.begin();
+			it != m_SelectedView.end(); ++it)
+		{
+			assert(VIEWS::NULL_VIEW <= *it && *it <= VIEWS::COMBAT_VIEW);
+			ar << static_cast<unsigned short>(*it);
+		}
 	}
 	else {
-		for (int i = network::RACE_1; i < network::RACE_ALL; i++)
+		for (std::vector<VIEWS::MAIN_VIEWS>::iterator it = m_SelectedView.begin();
+			it != m_SelectedView.end(); ++it)
 		{
 			unsigned short value;
 			ar >> value;
 			assert(VIEWS::NULL_VIEW <= value && value <= VIEWS::COMBAT_VIEW);
-			m_iSelectedView[i] = static_cast<VIEWS::MAIN_VIEWS>(value);
+			*it = static_cast<VIEWS::MAIN_VIEWS>(value);
 		}
 	}
 }
@@ -68,13 +75,13 @@ network::RACE CClientWorker::GetMappedClientID(const CString& sRaceID)
 
 unsigned short CClientWorker::GetSelectedViewFor(const CString& sRaceID)
 {
-	return m_iSelectedView[GetMappedClientID(sRaceID)];
+	return m_SelectedView.at(GetMappedClientID(sRaceID));
 }
 
 void CClientWorker::SetSelectedViewForTo(network::RACE race, unsigned short to)
 {
 	assert(VIEWS::NULL_VIEW <= to && to <= VIEWS::COMBAT_VIEW);
-	m_iSelectedView[race] = static_cast<VIEWS::MAIN_VIEWS>(to);
+	m_SelectedView[race] = static_cast<VIEWS::MAIN_VIEWS>(to);
 }
 
 void CClientWorker::SetToEmpireViewFor(const CMajor& major)
@@ -82,7 +89,7 @@ void CClientWorker::SetToEmpireViewFor(const CMajor& major)
 	if(!major.IsHumanPlayer())
 		return;
 	const network::RACE client = GetMappedClientID(major.GetRaceID());
-	m_iSelectedView[client] = VIEWS::EMPIRE_VIEW;
+	m_SelectedView[client] = VIEWS::EMPIRE_VIEW;
 }
 
 void CClientWorker::DoViewWorkOnNewRound(const CMajor& PlayersRace)
@@ -99,14 +106,15 @@ void CClientWorker::DoViewWorkOnNewRound(const CMajor& PlayersRace)
 	else
 	{
 		resources::pMainFrame->FullScreenMainView(false);
-		resources::pMainFrame->SelectMainView(m_iSelectedView[client], PlayersRace.GetRaceID());
-		m_iSelectedView[client] = VIEWS::NULL_VIEW;
+		resources::pMainFrame->SelectMainView(m_SelectedView.at(client), PlayersRace.GetRaceID());
+		m_SelectedView[client] = VIEWS::NULL_VIEW;
 	}
 }
 
 void CClientWorker::ResetViews()
 {
-	for (int i = network::RACE_1; i < network::RACE_ALL; i++)
-	if (m_iSelectedView[i] == VIEWS::FLEET_VIEW)
-		m_iSelectedView[i] = VIEWS::GALAXY_VIEW;
+	for (std::vector<VIEWS::MAIN_VIEWS>::iterator it = m_SelectedView.begin();
+			it != m_SelectedView.end(); ++it)
+		if (*it == VIEWS::FLEET_VIEW)
+			*it = VIEWS::GALAXY_VIEW;
 }
