@@ -32,6 +32,14 @@ public:
 	/// ALPHA5 -> noch fest!
 	static network::RACE GetMappedClientID(const CString& sRaceID);
 
+	/// Funktion gibt die zu einer Client-ID zugehörige Major-ID zurück.
+	/// Maximal können sechs Clients bestehen. Jede Majorrace benötigt eine eindeutige
+	/// Client-ID.
+	/// @param client-ID Client-ID eines Spielers
+	/// @return Rassen-ID
+	/// ALPHA5 -> noch fest!
+	static CString GetMappedRaceID(network::RACE clientID);
+
 	unsigned short GetSelectedViewFor(const CString& sRaceID);
 	void SetSelectedViewForTo(network::RACE race, unsigned short to);
 

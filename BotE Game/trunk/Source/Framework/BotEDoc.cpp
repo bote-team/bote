@@ -196,7 +196,7 @@ void CBotEDoc::GameOver()
 /// @return Zeiger auf Majorrace-Rassenobjekt
 CString CBotEDoc::GetPlayersRaceID(void) const
 {
-	return m_pRaceCtrl->GetMappedRaceID((network::RACE)client.GetClientRace());
+	return m_pClientWorker->GetMappedRaceID(client.GetClientRace());
 }
 
 /// Funktion gibt die Rassen-ID der lokalen Spielerrasse zurück.
@@ -206,7 +206,7 @@ CMajor* CBotEDoc::GetPlayersRace(void) const
 	// zuerst muss eine Netzwerknummer, also RACE1 bis RACE6 (1-6)
 	// auf eine bestimmte Rassen-ID gemappt werden. Dies ist dann
 	// die Rassen-ID.
-	CString s = m_pRaceCtrl->GetMappedRaceID((network::RACE)client.GetClientRace());
+	const CString& s = GetPlayersRaceID();
 	CMajor* pPlayersRace = dynamic_cast<CMajor*>(m_pRaceCtrl->GetRace(s));
 
 	return pPlayersRace;
@@ -611,7 +611,7 @@ void CBotEDoc::SerializeEndOfRoundData(CArchive &ar, network::RACE race)
 	else
 	{
 		// vom Client gespielte Majorrace-ID ermitteln
-		CString sMajorID = m_pRaceCtrl->GetMappedRaceID(race);
+		const CString& sMajorID = m_pClientWorker->GetMappedRaceID(race);
 
 		if (m_bCombatCalc)
 		{

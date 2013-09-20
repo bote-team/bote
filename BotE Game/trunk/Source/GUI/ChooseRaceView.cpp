@@ -150,7 +150,7 @@ void CChooseRaceView::OnDraw(CDC* dc)
 			continue;
 
 		// Bild der Rasse anzeigen
-		CString sRaceID = pDoc->GetRaceCtrl()->GetMappedRaceID(race);
+		const CString& sRaceID = resources::pClientWorker->GetMappedRaceID(race);
 		CMajor* pRace = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(sRaceID));
 		if (!pRace)
 			continue;
@@ -378,7 +378,7 @@ void CChooseRaceView::EnableRaceButtons()
 		// Somit können sie nicht mehr von Spielern ausgewählt werden.
 		if (pDoc->m_bGameLoaded && m_bIsServer && !server.IsPlayedByServer(race))
 		{
-			CString sRaceID = pDoc->GetRaceCtrl()->GetMappedRaceID(race);
+			const CString& sRaceID = resources::pClientWorker->GetMappedRaceID(race);
 			CMajor* pRace = dynamic_cast<CMajor*>(pDoc->GetRaceCtrl()->GetRace(sRaceID));
 			// Beim Neustart hat jede Rasse 1 System (die Variable wird so schon per Reset gesetzt)
 			if (!pRace || pRace->GetEmpire()->CountSystems() == 0)

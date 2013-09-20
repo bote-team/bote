@@ -69,14 +69,6 @@ public:
 	/// Funktion zum zurücksetzen aller Werte auf Ausgangswerte.
 	void Reset(void);
 
-	/// Funktion gibt die zu einer Client-ID zugehörige Major-ID zurück.
-	/// Maximal können sechs Clients bestehen. Jede Majorrace benötigt eine eindeutige
-	/// Client-ID.
-	/// @param client-ID Client-ID eines Spielers
-	/// @return Rassen-ID
-	/// ALPHA5 -> noch fest!
-	CString GetMappedRaceID(network::RACE clientID) const;
-
 private:
 	// private Funktionen
 	/// Funktion zum Einlesen und Initialisieren der beteiligten Majors

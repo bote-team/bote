@@ -158,30 +158,6 @@ void CRaceController::RemoveRace(const CString& sRaceID)
 	}
 }
 
-/// Funktion gibt die zu einer Client-ID zugehörige Major-ID zurück.
-/// Maximal können sechs Clients bestehen. Jede Majorrace benötigt eine eindeutige
-/// Client-ID.
-/// @param client-ID Client-ID eines Spielers
-/// @return Rassen-ID
-/// ALPHA5 -> noch fest!
-CString CRaceController::GetMappedRaceID(network::RACE clientID) const
-{
-	if (clientID == network::RACE_1)
-		return "MAJOR1";
-	if (clientID == network::RACE_2)
-		return "MAJOR2";
-	if (clientID == network::RACE_3)
-		return "MAJOR3";
-	if (clientID == network::RACE_4)
-		return "MAJOR4";
-	if (clientID == network::RACE_5)
-		return "MAJOR5";
-	if (clientID == network::RACE_6)
-		return "MAJOR6";
-
-	return "";
-}
-
 /// Funktion zum zurücksetzen aller Werte auf Ausgangswerte.
 void CRaceController::Reset(void)
 {
