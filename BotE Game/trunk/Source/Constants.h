@@ -13,9 +13,9 @@
 
 /// Versionsnummer des Dokuments; es können nur Spielstände geladen werden, die diese Versionsnummer
 /// haben.
-#define DOCUMENT_VERSION			10		///< Alpha 7 Version
-#define VERSION						0.9		///< benötigte Version in Datafiles
-#define VERSION_INFORMATION			"0.9"	///< anzuzeigende Versionsinformation
+static const int DOCUMENT_VERSION = 10;		///< Alpha 7 Version
+static const double VERSION = 0.9;		///< benötigte Version in Datafiles
+static const CString VERSION_INFORMATION("0.9");	///< anzuzeigende Versionsinformation
 
 // Konsistenzchecks ein/ausschalten (nicht für Release!)
 #define CONSISTENCY_CHECKS					///< anschalten wenn Konsistenzchecks durchgeführt werden sollen
@@ -31,10 +31,10 @@ extern int STARMAP_TOTALWIDTH	;//		2400	///< Gesamtbreite der View in Pixel bei 
 extern int STARMAP_TOTALHEIGHT	;//		1600	///< Gesamthöhe bei 100% (= 20 * 40)
 
 
-#define STARMAP_ZOOM_MIN			.3		///< minimaler Zoom-Faktor
+static const double STARMAP_ZOOM_MIN = 0.3;		///< minimaler Zoom-Faktor
 extern double STARMAP_ZOOM_MAX;				///< maximaler Zoom-Faktor
-#define STARMAP_ZOOM_STEP			.05		///< Änderung des Zoom-Faktors beim Drehen des Scrollrades
-#define STARMAP_ZOOM_INITIAL		1.0		///< Zoom-Faktor zu Beginn
+static const double STARMAP_ZOOM_STEP = 0.05;		///< Änderung des Zoom-Faktors beim Drehen des Scrollrades
+static const double STARMAP_ZOOM_INITIAL = 1.0;		///< Zoom-Faktor zu Beginn
 
 
 // ------------- View-IDs ------------------------------------------------------
@@ -111,10 +111,10 @@ namespace VIEWS
 
 
 // ------------- Gebäude------ -------------------------------------------------
-#define NOEIBL				12	// Number of Entries in Buildlist you can see
-#define NOBIOL				12	// Number of Buildings in Overview List
-#define NOBIEL				9	// Number of Buildings in Energy List
-#define ALE					8	// AssemblyListEntries
+static const int NOEIBL		= 12;	// Number of Entries in Buildlist you can see
+static const int NOBIOL		= 12;	// Number of Buildings in Overview List
+static const int NOBIEL		= 9;		// Number of Buildings in Energy List
+static const int ALE		= 8;		// AssemblyListEntries
 
 // ------------- Message-Types -------------------------------------------------
 namespace EMPIRE_NEWS_TYPE
@@ -164,7 +164,7 @@ namespace DIPLOMATIC_AGREEMENT
 	};
 }
 
-#define DIPLOMACY_PRESENT_VALUE	200	// Ein konstanter Wert, der mindst. erreicht werden muss um Beziehung zu verbessern
+static const int DIPLOMACY_PRESENT_VALUE = 200;	// Ein konstanter Wert, der mindst. erreicht werden muss um Beziehung zu verbessern
 
 // ------------- Die verschiedenen Arten einer Rasse -----------------------
 namespace RACE_PROPERTY
@@ -187,17 +187,17 @@ namespace RACE_PROPERTY
 }
 
 // ------------- Namen der Weltraummonster (Aliens) ----------------------------
-#define IONISIERENDES_GASWESEN		"Ionisierendes Gaswesen"
-#define GABALLIANER_SEUCHENSCHIFF	"Gaballianer"
-#define BLIZZARD_PLASMAWESEN		"Blizzard-Plasmawesen"
-#define MORLOCK_RAIDER				"Morlock-Raider"
-#define EELEN_GUARD					"Ehlen"
-#define BOSEANER					"Boseaner"
-#define KAMPFSTATION				"Kampfstation"
-#define KRYONITWESEN				"Kryonitwesen"
-#define MIDWAY_ZEITREISENDE			"Midway-Zeitreisende"
-#define ANAEROBE_MAKROBE			"Anaerobe Makrobe"
-#define ISOTOPOSPHAERISCHES_WESEN	"Isotoposphärisches Wesen"
+static const CString IONISIERENDES_GASWESEN		("Ionisierendes Gaswesen");
+static const CString GABALLIANER_SEUCHENSCHIFF	("Gaballianer");
+static const CString BLIZZARD_PLASMAWESEN		("Blizzard-Plasmawesen");
+static const CString MORLOCK_RAIDER				("Morlock-Raider");
+static const CString EELEN_GUARD				("Ehlen");
+static const CString BOSEANER					("Boseaner");
+static const CString KAMPFSTATION				("Kampfstation");
+static const CString KRYONITWESEN				("Kryonitwesen");
+static const CString MIDWAY_ZEITREISENDE		("Midway-Zeitreisende");
+static const CString ANAEROBE_MAKROBE			("Anaerobe Makrobe");
+static const CString ISOTOPOSPHAERISCHES_WESEN	("Isotoposphärisches Wesen");
 
 // ------------- Planeteneigenschaften -----------------------------------------
 // Zonen
@@ -278,9 +278,9 @@ namespace RESEARCH_COMPLEX
 	};
 }
 
-#define NoUC					12		// Number of Unique Complexes	( nur noch nicht Finanzen implementiert!!!! -> dann auf 13 hochstellen)
-#define SPECIAL_RESEARCH_DIV	1.67	// Wert, durch den die benötigten Punkte bei der Spezialforschung geteilt werden (umso höher, umso weniger FP sind nötig)
-#define TECHPRODBONUS			2.0		// Techbonus auf die Produktion (z.B. 2% pro Stufe auf Energie, Nahrung und Industrie)
+static const int NoUC = 12;		// Number of Unique Complexes	( nur noch nicht Finanzen implementiert!!!! -> dann auf 13 hochstellen)
+static const double SPECIAL_RESEARCH_DIV = 1.67;	// Wert, durch den die benötigten Punkte bei der Spezialforschung geteilt werden (umso höher, umso weniger FP sind nötig)
+static const double TECHPRODBONUS = 2.0;		// Techbonus auf die Produktion (z.B. 2% pro Stufe auf Energie, Nahrung und Industrie)
 
 // ------------- Schiffe -------------------------------------------------------
 // Schiffstypen
@@ -360,11 +360,11 @@ namespace SHIP_ORDER
 }
 
 // Sonstiges
-#define DIFFERENT_TORPEDOS	29
-#define TORPEDOSPEED		15
-#define MAX_TORPEDO_RANGE	200
-#define DAMAGE_TO_HULL		0.1	// Prozentwert der bei Treffer immer auf Hülle geht
-#define POPSUPPORT_MULTI	3.0	// Multiplikator für Schiffsunterstützungskosten aus Bevölkerung im System
+static const int DIFFERENT_TORPEDOS = 29;
+static const int TORPEDOSPEED = 15;
+static const int MAX_TORPEDO_RANGE = 200;
+static const double DAMAGE_TO_HULL = 0.1;	// Prozentwert der bei Treffer immer auf Hülle geht
+static const double POPSUPPORT_MULTI = 3.0;	// Multiplikator für Schiffsunterstützungskosten aus Bevölkerung im System
 
 // Schiffseigenschaften
 namespace SHIP_SPECIAL
@@ -408,8 +408,8 @@ namespace WORKER
 // ------------- System   ------------------------------------------------------
 
 // ------------- Handel ----------------------------------------------------
-#define TRADEROUTEHAB		20	// aller wieviel Bevölkerung gibt es eine Handelsroute
-#define NOTRIL				12	// Number of Trade Routes in List
+static const int TRADEROUTEHAB	= 20;	// aller wieviel Bevölkerung gibt es eine Handelsroute
+static const int NOTRIL			= 12;	// Number of Trade Routes in List
 
 // ------------- Ressourcen ----------------------------------------------------
 #define TITAN               0
@@ -419,9 +419,9 @@ namespace WORKER
 #define IRIDIUM             4
 #define DERITIUM	        5
 
-#define MAX_FOOD_STORE		25000
-#define MAX_RES_STORE		125000
-#define MAX_DERITIUM_STORE	100
+static const int MAX_FOOD_STORE			=	25000;
+static const int MAX_RES_STORE			=	125000;
+static const int MAX_DERITIUM_STORE		=	100;
 
 // ------------- Schiffskampfbefehle ----------------------------------------------------
 namespace COMBAT_ORDER
@@ -461,7 +461,7 @@ inline void SetAttributes(BOOLEAN is, int attribute, int &variable)
 
 
 // --- Künstliche Intelligenz ---------------------------------------------------
-#define MINBASEPOINTS 120	///< minimale Punkte für den Außenpostenbau, damit die KI überhaupt beginnt dort einen zu bauen
+static const int MINBASEPOINTS	= 120;	///< minimale Punkte für den Außenpostenbau, damit die KI überhaupt beginnt dort einen zu bauen
 
 // Tracebedingungen -> können hier ein und ausgeschaltet werden um bestimmte Traceausgaben zu bekommen
 //#define DEBUG_AI_BASE_DEMO
