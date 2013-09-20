@@ -202,5 +202,5 @@ private:
 	short m_iUpdateBuildSpeed;
 	short m_iShipBuildSpeed;
 	short m_iTroopBuildSpeed;
-	BOOLEAN m_bResourceDistributor[DERITIUM + 1];		///< Ressourcenverteiler (Nahrung, Titan, Deuterium, Duranium, Kristalle, Iridium, Deritium)
+	BOOLEAN m_bResourceDistributor[RESOURCES::DERITIUM + 1];		///< Ressourcenverteiler (Nahrung, Titan, Deuterium, Duranium, Kristalle, Iridium, Deritium)
 };

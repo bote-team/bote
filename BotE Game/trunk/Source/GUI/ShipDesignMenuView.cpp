@@ -375,9 +375,9 @@ void CShipDesignMenuView::DrawShipDesignMenue(Graphics* g)
 		CString material;
 		switch (m_pShownShip->GetHull()->GetHullMaterial())
 		{
-			case TITAN:		material = CLoc::GetString("TITAN");; break;
-			case DURANIUM:	material = CLoc::GetString("DURANIUM");; break;
-			case IRIDIUM:	material = CLoc::GetString("IRIDIUM");; break;
+			case RESOURCES::TITAN:		material = CLoc::GetString("TITAN");; break;
+			case RESOURCES::DURANIUM:	material = CLoc::GetString("DURANIUM");; break;
+			case RESOURCES::IRIDIUM:	material = CLoc::GetString("IRIDIUM");; break;
 			default: material = "";
 		}
 
@@ -677,11 +677,11 @@ void CShipDesignMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		// Dann bekommt das nächste Schiff ein neues Hüllenmaterial
 		switch (pHull->GetHullMaterial())
 		{
-		case TITAN: pHull->ModifyHull(oldDoubleHull,oldBaseHull,DURANIUM,ablative,polarisation);
+		case RESOURCES::TITAN: pHull->ModifyHull(oldDoubleHull,oldBaseHull,RESOURCES::DURANIUM,ablative,polarisation);
 			break;
-		case DURANIUM: pHull->ModifyHull(oldDoubleHull,oldBaseHull,IRIDIUM,ablative,polarisation);
+		case RESOURCES::DURANIUM: pHull->ModifyHull(oldDoubleHull,oldBaseHull,RESOURCES::IRIDIUM,ablative,polarisation);
 			break;
-		case IRIDIUM: pHull->ModifyHull(oldDoubleHull,oldBaseHull,TITAN,ablative,polarisation);
+		case RESOURCES::IRIDIUM: pHull->ModifyHull(oldDoubleHull,oldBaseHull,RESOURCES::TITAN,ablative,polarisation);
 			break;
 		}
 		m_pShownShip->CalculateFinalCosts();

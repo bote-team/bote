@@ -77,7 +77,7 @@ CDiplomacyMenuView::CDiplomacyMenuView() :
 	bg_diploinmenu(),
 	bg_diplooutmenu(),
 	m_bySubMenu(0),
-	m_byWhichResourceIsChosen(TITAN),
+	m_byWhichResourceIsChosen(RESOURCES::TITAN),
 	m_bSortRaceList(false),
 	m_bShowSendButton(true),
 	m_bShowDeclineButton(true),
@@ -118,7 +118,7 @@ void CDiplomacyMenuView::OnNewRound()
 	m_OutgoingInfo.Reset();
 	m_pIncomingInfo = NULL;
 	m_sClickedOnRace = "";
-	m_byWhichResourceIsChosen = TITAN;
+	m_byWhichResourceIsChosen = RESOURCES::TITAN;
 
 
 	CString race = pPlayer->GetRaceID();
@@ -570,7 +570,7 @@ void CDiplomacyMenuView::DrawDiplomacyMenue(Graphics* g)
 			// Wenn wir Geld geben wollen, den Abschickenbutton einblenden
 			if (m_OutgoingInfo.m_nType == DIPLOMATIC_AGREEMENT::PRESENT)
 			{
-				if (m_OutgoingInfo.m_nCredits > 0 || m_OutgoingInfo.m_nResources[TITAN] > 0 || m_OutgoingInfo.m_nResources[DEUTERIUM] > 0 || m_OutgoingInfo.m_nResources[DURANIUM] > 0 || m_OutgoingInfo.m_nResources[CRYSTAL] > 0 || m_OutgoingInfo.m_nResources[IRIDIUM] > 0 || m_OutgoingInfo.m_nResources[DERITIUM] > 0)
+				if (m_OutgoingInfo.m_nCredits > 0 || m_OutgoingInfo.m_nResources[RESOURCES::TITAN] > 0 || m_OutgoingInfo.m_nResources[RESOURCES::DEUTERIUM] > 0 || m_OutgoingInfo.m_nResources[RESOURCES::DURANIUM] > 0 || m_OutgoingInfo.m_nResources[RESOURCES::CRYSTAL] > 0 || m_OutgoingInfo.m_nResources[RESOURCES::IRIDIUM] > 0 || m_OutgoingInfo.m_nResources[RESOURCES::DERITIUM] > 0)
 					s = CLoc::GetString("BTN_SEND");
 				else
 					m_bCanSend = false;
@@ -584,7 +584,7 @@ void CDiplomacyMenuView::DrawDiplomacyMenue(Graphics* g)
 			// einblenden. Bei Forderung muß ein Wert ausgewählt worden sein
 			else if (m_OutgoingInfo.m_nType == DIPLOMATIC_AGREEMENT::PRESENT || m_OutgoingInfo.m_nType == DIPLOMATIC_AGREEMENT::CORRUPTION || m_OutgoingInfo.m_nType == DIPLOMATIC_AGREEMENT::REQUEST)
 			{
-				if (m_OutgoingInfo.m_nCredits > 0 || m_OutgoingInfo.m_nResources[TITAN] > 0 || m_OutgoingInfo.m_nResources[DEUTERIUM] > 0 || m_OutgoingInfo.m_nResources[DURANIUM] > 0 || m_OutgoingInfo.m_nResources[CRYSTAL] > 0 || m_OutgoingInfo.m_nResources[IRIDIUM] > 0 || m_OutgoingInfo.m_nResources[DERITIUM] > 0)
+				if (m_OutgoingInfo.m_nCredits > 0 || m_OutgoingInfo.m_nResources[RESOURCES::TITAN] > 0 || m_OutgoingInfo.m_nResources[RESOURCES::DEUTERIUM] > 0 || m_OutgoingInfo.m_nResources[RESOURCES::DURANIUM] > 0 || m_OutgoingInfo.m_nResources[RESOURCES::CRYSTAL] > 0 || m_OutgoingInfo.m_nResources[RESOURCES::IRIDIUM] > 0 || m_OutgoingInfo.m_nResources[RESOURCES::DERITIUM] > 0)
 					s = CLoc::GetString("BTN_SEND");
 				else
 					m_bCanSend = false;
@@ -973,7 +973,7 @@ void CDiplomacyMenuView::DrawRaceDiplomacyMenue(Graphics* g)
 							// Wenn eine Forderung gestellt wurde, welche Ressourcen beinhaltet, dann Annehmenbutton
 							// nur einblenden, wenn wir diese Forderung auch erfüllen können
 							USHORT *resource = m_pIncomingInfo->m_nResources;
-							if (resource[TITAN] > 0 || resource[DEUTERIUM] > 0 || resource[DURANIUM] > 0 || resource[CRYSTAL] > 0 || resource[IRIDIUM] > 0 || resource[DERITIUM] > 0)
+							if (resource[RESOURCES::TITAN] > 0 || resource[RESOURCES::DEUTERIUM] > 0 || resource[RESOURCES::DURANIUM] > 0 || resource[RESOURCES::CRYSTAL] > 0 || resource[RESOURCES::IRIDIUM] > 0 || resource[RESOURCES::DERITIUM] > 0)
 							{
 								// Wenn Forderung, dann Systemauswahlbutton einblenden, wovon ich die geforderte Ressource
 								// abzweigen will
@@ -1005,7 +1005,7 @@ void CDiplomacyMenuView::DrawRaceDiplomacyMenue(Graphics* g)
 								}
 								// Überprüfen ob wir auf dem gewählten System die Menge der geforderten
 								// Ressource im Lager haben und ob wir auch die geforderten Credits bezahlen können
-								for (int r = TITAN; r <= DERITIUM; r++)
+								for (int r = RESOURCES::TITAN; r <= RESOURCES::DERITIUM; r++)
 									if (resource[r] > 0 && pDoc->GetSystem(m_ptResourceFromSystem.x, m_ptResourceFromSystem.y).GetResourceStore(r) < resource[r] && pDoc->GetSystem(m_ptResourceFromSystem.x, m_ptResourceFromSystem.y).GetOwnerOfSystem() == pPlayer->GetRaceID())
 										m_bShowSendButton = false;
 								fontFormat.SetAlignment(StringAlignmentCenter);
@@ -1320,19 +1320,19 @@ void CDiplomacyMenuView::DrawDiplomacyOfferMenue(Graphics* g, const CString& sWh
 
 				// Balken für Ressourcengeschenk zeichnen
 				CString res;
-				if (iWhichResource == TITAN)
+				if (iWhichResource == RESOURCES::TITAN)
 					res = CLoc::GetString("TITAN");
-				else if (iWhichResource == DEUTERIUM)
+				else if (iWhichResource == RESOURCES::DEUTERIUM)
 					res = CLoc::GetString("DEUTERIUM");
-				else if (iWhichResource == DURANIUM)
+				else if (iWhichResource == RESOURCES::DURANIUM)
 					res = CLoc::GetString("DURANIUM");
-				else if (iWhichResource == CRYSTAL)
+				else if (iWhichResource == RESOURCES::CRYSTAL)
 					res = CLoc::GetString("CRYSTAL");
-				else if (iWhichResource == IRIDIUM)
+				else if (iWhichResource == RESOURCES::IRIDIUM)
 					res = CLoc::GetString("IRIDIUM");
-				else if (iWhichResource == DERITIUM)
+				else if (iWhichResource == RESOURCES::DERITIUM)
 					res = CLoc::GetString("DERITIUM");
-				UINT nUnit = iWhichResource == DERITIUM ? 5 : 1000;
+				UINT nUnit = iWhichResource == RESOURCES::DERITIUM ? 5 : 1000;
 
 				// sind aus irgendeinem Grund die übergebende Menge größer als die aktuellen vorhandenen Ressourcen, so
 				// werden die Ressourcen runtergerechnet
@@ -1626,7 +1626,7 @@ void CDiplomacyMenuView::TakeOrGetbackResLat(bool bTake)
 		pPlayer->GetEmpire()->SetCredits(-m_OutgoingInfo.m_nCredits);
 		m_OutgoingInfo.m_nCredits = 0;
 		// Rohstoffe aus dem Lager nehmen
-		for (int res = TITAN; res <= DERITIUM; res++)
+		for (int res = RESOURCES::TITAN; res <= RESOURCES::DERITIUM; res++)
 		{
 			if (m_OutgoingInfo.m_nResources[res] > 0)
 			{
@@ -1647,7 +1647,7 @@ void CDiplomacyMenuView::TakeOrGetbackResLat(bool bTake)
 		pPlayer->GetEmpire()->SetCredits(m_OutgoingInfo.m_nCredits);
 		m_OutgoingInfo.m_nCredits = 0;
 		// Die Rohstoffe wieder zurück in das System geben
-		for (int res = TITAN; res <= DERITIUM; res++)
+		for (int res = RESOURCES::TITAN; res <= RESOURCES::DERITIUM; res++)
 		{
 			if (m_OutgoingInfo.m_nResources[res] > 0)
 			{
@@ -2007,11 +2007,11 @@ void CDiplomacyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 						// Haben wir auf den Balken gedrückt, um die Menge der zu verschenkenden bzw. zu fordernden Ressourcen zu ändern
 						if (timber[t].PtInRect(point))
 						{
-							ASSERT(m_byWhichResourceIsChosen >= TITAN && m_byWhichResourceIsChosen <= DERITIUM);
+							ASSERT(m_byWhichResourceIsChosen >= RESOURCES::TITAN && m_byWhichResourceIsChosen <= RESOURCES::DERITIUM);
 
 							UINT nStorage = pDoc->GetSystem(m_OutgoingInfo.m_ptKO.x, m_OutgoingInfo.m_ptKO.y).GetResourceStore(m_byWhichResourceIsChosen);
 							// bei normalen Ressourcen wird in 1000er Schritten gegeben, bei Deritium in 5er
-							int dUnit = m_byWhichResourceIsChosen == DERITIUM ? 5 : 1000;
+							int dUnit = m_byWhichResourceIsChosen == RESOURCES::DERITIUM ? 5 : 1000;
 							m_OutgoingInfo.m_nResources[m_byWhichResourceIsChosen] = t * dUnit;
 							// geben wir selbst die Ressource, dann benötigen wir genügend im Lager.
 							if (m_OutgoingInfo.m_nType != DIPLOMATIC_AGREEMENT::REQUEST && m_OutgoingInfo.m_nResources[m_byWhichResourceIsChosen] > nStorage)
@@ -2030,13 +2030,13 @@ void CDiplomacyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 				rect.SetRect(510,518,630,548);
 				if (rect.PtInRect(point))
 				{
-					if (m_byWhichResourceIsChosen < DERITIUM)
+					if (m_byWhichResourceIsChosen < RESOURCES::DERITIUM)
 						m_byWhichResourceIsChosen++;
 					else
-						m_byWhichResourceIsChosen = TITAN;
+						m_byWhichResourceIsChosen = RESOURCES::TITAN;
 
 					// alle "alten" Ressourcenmengen löschen
-					for (int res = TITAN; res <= DERITIUM; res++)
+					for (int res = RESOURCES::TITAN; res <= RESOURCES::DERITIUM; res++)
 						m_OutgoingInfo.m_nResources[res] = 0;
 					Invalidate();
 					return;
@@ -2054,7 +2054,7 @@ void CDiplomacyMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 					{
 						current++;
 						// Auch wieder alle Mengen auf Null zurücksetzen
-						for (int res = TITAN; res <= DERITIUM; res++)
+						for (int res = RESOURCES::TITAN; res <= RESOURCES::DERITIUM; res++)
 							m_OutgoingInfo.m_nResources[res] = 0;
 					}
 					if (current == pPlayer->GetEmpire()->GetSystemList()->GetSize())
@@ -2536,13 +2536,13 @@ void CDiplomacyMenuView::OnRButtonDown(UINT nFlags, CPoint point)
 				rect.SetRect(510,518,630,548);
 				if (rect.PtInRect(point))
 				{
-					if (m_byWhichResourceIsChosen > TITAN)
+					if (m_byWhichResourceIsChosen > RESOURCES::TITAN)
 						m_byWhichResourceIsChosen--;
 					else
-						m_byWhichResourceIsChosen = DERITIUM;
+						m_byWhichResourceIsChosen = RESOURCES::DERITIUM;
 
 					// alle "alten" Ressourcenmengen löschen
-					for (int res = TITAN; res <= DERITIUM; res++)
+					for (int res = RESOURCES::TITAN; res <= RESOURCES::DERITIUM; res++)
 						m_OutgoingInfo.m_nResources[res] = 0;
 					Invalidate();
 					return;
@@ -2560,7 +2560,7 @@ void CDiplomacyMenuView::OnRButtonDown(UINT nFlags, CPoint point)
 					{
 						current--;
 						// Auch wieder alle Mengen auf Null zurücksetzen
-						for (int res = TITAN; res <= DERITIUM; res++)
+						for (int res = RESOURCES::TITAN; res <= RESOURCES::DERITIUM; res++)
 							m_OutgoingInfo.m_nResources[res] = 0;
 					}
 					if (current == -1)

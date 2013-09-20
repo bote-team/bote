@@ -201,23 +201,23 @@ void CPlanetBottomView::OnDraw(CDC* dc)
 		RectF boundingBox;
 		g.MeasureString(CComBSTR(s), s.GetLength(), &Gdiplus::Font(CComBSTR(fontName), fontSize), PointF(735, 228), &fontFormat, &boundingBox);
 		// Symbole der vorhanden Ressourcen im System ermitteln
-		BOOLEAN res[DERITIUM + 1] = {0},rescol[DERITIUM + 1] = {0};
+		BOOLEAN res[RESOURCES::DERITIUM + 1] = {0},rescol[RESOURCES::DERITIUM + 1] = {0};
 		pDoc->GetSector(KO.x, KO.y).GetAvailableResources(res, false);	//alle Ressourcen
 		pDoc->GetSector(KO.x, KO.y).GetAvailableResources(rescol, true);//erschlossene Ressourcen
 		int nExist = 0;
-		for (int i = TITAN; i <= DERITIUM; i++)
+		for (int i = RESOURCES::TITAN; i <= RESOURCES::DERITIUM; i++)
 		{
 			if (res[i])
 			{
 				graphic = NULL;
 				switch(i)
 				{
-					case TITAN:		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\titanSmall.bop");		break;
-					case DEUTERIUM: graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\deuteriumSmall.bop");	break;
-					case DURANIUM:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\duraniumSmall.bop");	break;
-					case CRYSTAL:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\crystalSmall.bop");		break;
-					case IRIDIUM:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\iridiumSmall.bop");		break;
-					case DERITIUM: graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\Deritium.bop");		break;
+					case RESOURCES::TITAN:		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\titanSmall.bop");		break;
+					case RESOURCES::DEUTERIUM: graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\deuteriumSmall.bop");	break;
+					case RESOURCES::DURANIUM:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\duraniumSmall.bop");	break;
+					case RESOURCES::CRYSTAL:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\crystalSmall.bop");		break;
+					case RESOURCES::IRIDIUM:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\iridiumSmall.bop");		break;
+					case RESOURCES::DERITIUM: graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\Deritium.bop");		break;
 				}
 				if (graphic)
 					g.DrawImage(graphic, (int)boundingBox.GetRight() + 5 + nExist * 20, 228, 20, 16);
@@ -555,7 +555,7 @@ CString CPlanetBottomView::CreateTooltip(void)
 					CPlanet* pPlanet = pDoc->GetSector(KO.x, KO.y).GetPlanet(i);
 					ASSERT(pPlanet);
 					if (pPlanet->GetBoni()[j])
-						if (j != DERITIUM)
+						if (j != RESOURCES::DERITIUM)
 							nBonus += (pPlanet->GetSize() + 1) * 25;
 				}
 				if (nBonus)
@@ -564,11 +564,11 @@ CString CPlanetBottomView::CreateTooltip(void)
 					CString sBoni;
 					switch(j)
 					{
-						case TITAN:		sBoni = CLoc::GetString("TITAN_BONUS");		break;
-						case DEUTERIUM: sBoni = CLoc::GetString("DEUTERIUM_BONUS"); break;
-						case DURANIUM:	sBoni = CLoc::GetString("DURANIUM_BONUS");	break;
-						case CRYSTAL:	sBoni = CLoc::GetString("CRYSTAL_BONUS");	break;
-						case IRIDIUM:	sBoni = CLoc::GetString("IRIDIUM_BONUS");	break;
+						case RESOURCES::TITAN:		sBoni = CLoc::GetString("TITAN_BONUS");		break;
+						case RESOURCES::DEUTERIUM: sBoni = CLoc::GetString("DEUTERIUM_BONUS"); break;
+						case RESOURCES::DURANIUM:	sBoni = CLoc::GetString("DURANIUM_BONUS");	break;
+						case RESOURCES::CRYSTAL:	sBoni = CLoc::GetString("CRYSTAL_BONUS");	break;
+						case RESOURCES::IRIDIUM:	sBoni = CLoc::GetString("IRIDIUM_BONUS");	break;
 						case 6:			sBoni = CLoc::GetString("FOOD_BONUS");		break;
 						case 7:			sBoni = CLoc::GetString("ENERGY_BONUS");	break;
 					}
@@ -648,12 +648,12 @@ CString CPlanetBottomView::CreateTooltip(void)
 								CString sBoni;
 								switch(j)
 								{
-									case TITAN:		sBoni = CLoc::GetString("TITAN_BONUS"); break;
-									case DEUTERIUM: sBoni = CLoc::GetString("DEUTERIUM_BONUS"); break;
-									case DURANIUM:	sBoni = CLoc::GetString("DURANIUM_BONUS"); break;
-									case CRYSTAL:	sBoni = CLoc::GetString("CRYSTAL_BONUS"); break;
-									case IRIDIUM:	sBoni = CLoc::GetString("IRIDIUM_BONUS"); break;
-									case DERITIUM:
+									case RESOURCES::TITAN:		sBoni = CLoc::GetString("TITAN_BONUS"); break;
+									case RESOURCES::DEUTERIUM: sBoni = CLoc::GetString("DEUTERIUM_BONUS"); break;
+									case RESOURCES::DURANIUM:	sBoni = CLoc::GetString("DURANIUM_BONUS"); break;
+									case RESOURCES::CRYSTAL:	sBoni = CLoc::GetString("CRYSTAL_BONUS"); break;
+									case RESOURCES::IRIDIUM:	sBoni = CLoc::GetString("IRIDIUM_BONUS"); break;
+									case RESOURCES::DERITIUM:
 										sBoni = CHTMLStringBuilder::GetHTMLColor(CLoc::GetString("DERITIUM") + " " + CLoc::GetString("EXISTING"));
 										sBoni = CHTMLStringBuilder::GetHTMLHeader(sBoni, _T("h5"));
 										return CHTMLStringBuilder::GetHTMLCenter(sBoni);

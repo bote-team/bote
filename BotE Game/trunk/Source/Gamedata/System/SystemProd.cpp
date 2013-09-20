@@ -202,7 +202,7 @@ void CSystemProd::Serialize(CArchive &ar)
 		ar << m_iUpdateBuildSpeed;
 		ar << m_iShipBuildSpeed;
 		ar << m_iTroopBuildSpeed;
-		for (int res = TITAN; res <= DERITIUM; res++)
+		for (int res = RESOURCES::TITAN; res <= RESOURCES::DERITIUM; res++)
 			ar << m_bResourceDistributor[res];
 	}
 	// wenn geladen wird
@@ -263,7 +263,7 @@ void CSystemProd::Serialize(CArchive &ar)
 		ar >> m_iUpdateBuildSpeed;
 		ar >> m_iShipBuildSpeed;
 		ar >> m_iTroopBuildSpeed;
-		for (int res = TITAN; res <= DERITIUM; res++)
+		for (int res = RESOURCES::TITAN; res <= RESOURCES::DERITIUM; res++)
 			ar >> m_bResourceDistributor[res];
 	}
 }
@@ -334,7 +334,7 @@ void CSystemProd::CalculateProduction(const CBuildingInfo* building)
 	m_iShipBuildSpeed	+= building->GetShipBuildSpeed();
 	m_iTroopBuildSpeed	+= building->GetTroopBuildSpeed();
 	// Ressourcenverteiler
-	for (int res = TITAN; res <= DERITIUM; res++)
+	for (int res = RESOURCES::TITAN; res <= RESOURCES::DERITIUM; res++)
 		m_bResourceDistributor[res] |= building->GetResourceDistributor(res);
 }
 
@@ -391,17 +391,17 @@ int CSystemProd::GetResourceProd(BYTE res) const
 {
 	switch (res)
 	{
-	case TITAN:
+	case RESOURCES::TITAN:
 		return m_iTitanProd;
-	case DEUTERIUM:
+	case RESOURCES::DEUTERIUM:
 		return m_iDeuteriumProd;
-	case DURANIUM:
+	case RESOURCES::DURANIUM:
 		return m_iDuraniumProd;
-	case CRYSTAL:
+	case RESOURCES::CRYSTAL:
 		return m_iCrystalProd;
-	case IRIDIUM:
+	case RESOURCES::IRIDIUM:
 		return m_iIridiumProd;
-	case DERITIUM:
+	case RESOURCES::DERITIUM:
 		return m_iDeritiumProd;
 	default:
 		return 0;
@@ -468,7 +468,7 @@ void CSystemProd::Reset()
 	m_iUpdateBuildSpeed = 0;
 	m_iShipBuildSpeed = 0;
 	m_iTroopBuildSpeed = 0;
-	for (int res = TITAN; res <= DERITIUM; res++)
+	for (int res = RESOURCES::TITAN; res <= RESOURCES::DERITIUM; res++)
 		m_bResourceDistributor[res] = false;
 }
 

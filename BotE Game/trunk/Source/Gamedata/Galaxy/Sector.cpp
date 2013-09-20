@@ -339,7 +339,7 @@ float CSector::GetCurrentHabitants() const
 
 /// Diese Funktion berechnet die vorhandenen Rohstoffe der Planeten im Sektor. Übergebn wird dafür ein Feld für
 /// die Ressourcen <code>res</code>.
-void CSector::GetAvailableResources(BOOLEAN bResources[DERITIUM + 1], BOOLEAN bOnlyColonized/* = true */)
+void CSector::GetAvailableResources(BOOLEAN bResources[RESOURCES::DERITIUM + 1], BOOLEAN bOnlyColonized/* = true */)
 {
 	for (int i = 0; i < static_cast<int>(m_Planets.size()); i++)
 	{
@@ -352,9 +352,9 @@ void CSector::GetAvailableResources(BOOLEAN bResources[DERITIUM + 1], BOOLEAN bO
 		if (bOnlyColonized && !pPlanet->GetColonized())
 			continue;
 
-		BOOLEAN bExists[DERITIUM + 1] = {FALSE};
+		BOOLEAN bExists[RESOURCES::DERITIUM + 1] = {FALSE};
 		pPlanet->GetAvailableResources(bExists);
-		for (int res = TITAN; res <= DERITIUM; res++)
+		for (int res = RESOURCES::TITAN; res <= RESOURCES::DERITIUM; res++)
 			bResources[res] |= bExists[res];
 	}
 }
@@ -462,7 +462,7 @@ void CSector::CreatePlanets(const CString& sMajorID)
 						planet.SetSize((PLANT_SIZE::Typ)atoi(data[7]));//Größe
 						planet.SetClass(data[8][0]);//Planetenklasse Char
 						planet.SetPlanetGrowth();
-						planet.SetGraphicType(rand()%GRAPHICNUMBER);
+						planet.SetGraphicType(rand()%PLANET_CLASSES::GRAPHICNUMBER);
 						planet.SetBoni(atoi(data[9]),atoi(data[10]),atoi(data[11]),atoi(data[12]),atoi(data[13]),atoi(data[14]),atoi(data[15]),atoi(data[16]));//Boni 8 Zeilen
 						planet.SetStartTerraformPoints(atoi(data[17]));//Terraformpoints
 						planet.SetHasIndividualGraphic(true);
@@ -505,10 +505,10 @@ void CSector::CreatePlanets(const CString& sMajorID)
 
 						// prüfen ob alle Rohstoffe vorhanden sind
 						bool bResOkay = true;
-						BOOLEAN bRes[DERITIUM + 1] = {FALSE};
+						BOOLEAN bRes[RESOURCES::DERITIUM + 1] = {FALSE};
 						this->GetAvailableResources(bRes, true);
 						// gibt es kein Deritium
-						for (int i = TITAN; i <= IRIDIUM; i++)
+						for (int i = RESOURCES::TITAN; i <= RESOURCES::IRIDIUM; i++)
 						{
 							if (!bRes[i])
 							{
@@ -520,12 +520,12 @@ void CSector::CreatePlanets(const CString& sMajorID)
 							continue;
 
 						// Deritium überprüfen
-						if (!bRes[DERITIUM])
+						if (!bRes[RESOURCES::DERITIUM])
 						{
 							for (int p = 0; p < static_cast<int>(this->GetPlanets().size()); p++)
 								if (this->GetPlanet(p)->GetCurrentHabitant() > 0 && this->GetPlanet(p)->GetColonized())
 								{
-									this->GetPlanet(p)->SetBoni(DERITIUM, TRUE);
+									this->GetPlanet(p)->SetBoni(RESOURCES::DERITIUM, TRUE);
 									break;
 								}
 						}

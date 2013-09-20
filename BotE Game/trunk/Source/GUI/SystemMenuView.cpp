@@ -16,7 +16,7 @@
 #include "GraphicPool.h"
 
 short CSystemMenuView::m_iClickedOn = 0;
-BYTE CSystemMenuView::m_byResourceRouteRes = TITAN;
+BYTE CSystemMenuView::m_byResourceRouteRes = RESOURCES::TITAN;
 
 // CSystemMenuView
 IMPLEMENT_DYNCREATE(CSystemMenuView, CMainBaseView)
@@ -86,7 +86,7 @@ void CSystemMenuView::OnNewRound()
 	m_iClickedOn = 0;
 	m_bClickedOnBuyButton = FALSE;
 	m_bClickedOnDeleteButton = FALSE;
-	m_byResourceRouteRes = TITAN;
+	m_byResourceRouteRes = RESOURCES::TITAN;
 }
 // CSystemMenuView drawing
 
@@ -1648,11 +1648,11 @@ void CSystemMenuView::DrawSystemTradeMenue(Graphics* g)
 		g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(70,260+j*30,125,25), &fontFormat, &markBrush);
 		switch (pDoc->GetSystem(p.x, p.y).GetResourceRoutes()->GetAt(i).GetResource())
 		{
-		case TITAN:		s = CLoc::GetString("TITAN"); break;
-		case DEUTERIUM: s = CLoc::GetString("DEUTERIUM"); break;
-		case DURANIUM:	s = CLoc::GetString("DURANIUM"); break;
-		case CRYSTAL:	s = CLoc::GetString("CRYSTAL"); break;
-		case IRIDIUM:	s = CLoc::GetString("IRIDIUM"); break;
+		case RESOURCES::TITAN:		s = CLoc::GetString("TITAN"); break;
+		case RESOURCES::DEUTERIUM: s = CLoc::GetString("DEUTERIUM"); break;
+		case RESOURCES::DURANIUM:	s = CLoc::GetString("DURANIUM"); break;
+		case RESOURCES::CRYSTAL:	s = CLoc::GetString("CRYSTAL"); break;
+		case RESOURCES::IRIDIUM:	s = CLoc::GetString("IRIDIUM"); break;
 		default:		s = "";
 		}
 		g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(200,260+j*30,150,25), &fontFormat, &markBrush);
@@ -1664,7 +1664,7 @@ void CSystemMenuView::DrawSystemTradeMenue(Graphics* g)
 	Gdiplus::Color penMark;
 	penMark.SetFromCOLORREF(pMajor->GetDesign()->m_clrListMarkPenColor);
 	fontFormat.SetTrimming(StringTrimmingNone);
-	for (int i = TITAN; i <= IRIDIUM; i++)
+	for (int i = RESOURCES::TITAN; i <= RESOURCES::IRIDIUM; i++)
 	{
 		fontFormat.SetAlignment(StringAlignmentNear);
 		s.Format("%d",pDoc->GetSystem(p.x, p.y).GetResourceStore(i));
@@ -1722,11 +1722,11 @@ void CSystemMenuView::DrawSystemTradeMenue(Graphics* g)
 		g->DrawImage(graphic, 360, 640, 120, 30);
 	switch (m_byResourceRouteRes)
 	{
-	case TITAN:		s = CLoc::GetString("TITAN"); break;
-	case DEUTERIUM: s = CLoc::GetString("DEUTERIUM"); break;
-	case DURANIUM:	s = CLoc::GetString("DURANIUM"); break;
-	case CRYSTAL:	s = CLoc::GetString("CRYSTAL"); break;
-	case IRIDIUM:	s = CLoc::GetString("IRIDIUM"); break;
+	case RESOURCES::TITAN:		s = CLoc::GetString("TITAN"); break;
+	case RESOURCES::DEUTERIUM: s = CLoc::GetString("DEUTERIUM"); break;
+	case RESOURCES::DURANIUM:	s = CLoc::GetString("DURANIUM"); break;
+	case RESOURCES::CRYSTAL:	s = CLoc::GetString("CRYSTAL"); break;
+	case RESOURCES::IRIDIUM:	s = CLoc::GetString("IRIDIUM"); break;
 	default:		s = "";
 	}
 	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(360, 640, 120, 30), &fontFormat, &btnBrush);
@@ -2042,7 +2042,7 @@ void CSystemMenuView::DrawSystemProduction(Graphics* g)
 	rect.Y += 25;
 	s.Format("%i",pDoc->GetSystem(p.x,p.y).GetProduction()->GetResearchProd());
 	g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), rect, &fontFormat, &fontBrush);
-	for (int res = TITAN; res <= DERITIUM; res++)
+	for (int res = RESOURCES::TITAN; res <= RESOURCES::DERITIUM; res++)
 	{
 		rect.Y += 25;
 		s.Format("%i",pDoc->GetSystem(p.x,p.y).GetProduction()->GetResourceProd(res));
@@ -2078,8 +2078,8 @@ void CSystemMenuView::DrawSystemProduction(Graphics* g)
 
 	rect = RectF(950,155,100,25);
 	// Zusätzliche Ressourcen aus den Startsystemen von Ressourcenrouten ermitteln
-	ULONG resFromRoutes[DERITIUM + 1] = {0};
-	ULONG nResInDistSys[DERITIUM + 1]	= {0};
+	ULONG resFromRoutes[RESOURCES::DERITIUM + 1] = {0};
+	ULONG nResInDistSys[RESOURCES::DERITIUM + 1]	= {0};
 	for (int j = 0; j < pMajor->GetEmpire()->GetSystemList()->GetSize(); j++)
 		if (pMajor->GetEmpire()->GetSystemList()->GetAt(j).ko != p)
 		{
@@ -2104,12 +2104,12 @@ void CSystemMenuView::DrawSystemProduction(Graphics* g)
 			}
 			// gilt nicht bei blockierten Systemen
 			if (pDoc->GetSystem(p.x, p.y).GetBlockade() == NULL)
-				for (int res = TITAN; res <= DERITIUM; res++)
+				for (int res = RESOURCES::TITAN; res <= RESOURCES::DERITIUM; res++)
 					if (pDoc->GetSystem(ko.x, ko.y).GetProduction()->GetResourceDistributor(res))
 						nResInDistSys[res] = pDoc->GetSystem(ko.x, ko.y).GetResourceStore(res);
 		}
 
-	for (int res = TITAN; res <= DERITIUM; res++)
+	for (int res = RESOURCES::TITAN; res <= RESOURCES::DERITIUM; res++)
 	{
 		rect.Y += 25;
 		if (nResInDistSys[res] > resFromRoutes[res] + pDoc->GetSystem(p.x, p.y).GetResourceStore(res))
@@ -2672,37 +2672,37 @@ void CSystemMenuView::DrawBuildingProduction(Graphics* g)
 			g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), r, &fontFormat, &fontBrush);
 			r.Y += 22;
 		}
-		if (b->GetResourceDistributor(TITAN))
+		if (b->GetResourceDistributor(RESOURCES::TITAN))
 		{
 			s.Format("%s - %s\n", CLoc::GetString("RESOURCE_DISTRIBUTOR"), CLoc::GetString("TITAN"));
 			g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), r, &fontFormat, &fontBrush);
 			r.Y += 22;
 		}
-		if (b->GetResourceDistributor(DEUTERIUM))
+		if (b->GetResourceDistributor(RESOURCES::DEUTERIUM))
 		{
 			s.Format("%s - %s\n", CLoc::GetString("RESOURCE_DISTRIBUTOR"), CLoc::GetString("DEUTERIUM"));
 			g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), r, &fontFormat, &fontBrush);
 			r.Y += 22;
 		}
-		if (b->GetResourceDistributor(DURANIUM))
+		if (b->GetResourceDistributor(RESOURCES::DURANIUM))
 		{
 			s.Format("%s - %s\n", CLoc::GetString("RESOURCE_DISTRIBUTOR"), CLoc::GetString("DURANIUM"));
 			g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), r, &fontFormat, &fontBrush);
 			r.Y += 22;
 		}
-		if (b->GetResourceDistributor(CRYSTAL))
+		if (b->GetResourceDistributor(RESOURCES::CRYSTAL))
 		{
 			s.Format("%s - %s\n", CLoc::GetString("RESOURCE_DISTRIBUTOR"), CLoc::GetString("CRYSTAL"));
 			g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), r, &fontFormat, &fontBrush);
 			r.Y += 22;
 		}
-		if (b->GetResourceDistributor(IRIDIUM))
+		if (b->GetResourceDistributor(RESOURCES::IRIDIUM))
 		{
 			s.Format("%s - %s\n", CLoc::GetString("RESOURCE_DISTRIBUTOR"), CLoc::GetString("IRIDIUM"));
 			g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), r, &fontFormat, &fontBrush);
 			r.Y += 22;
 		}
-		if (b->GetResourceDistributor(DERITIUM))
+		if (b->GetResourceDistributor(RESOURCES::DERITIUM))
 		{
 			s.Format("%s - %s\n", CLoc::GetString("RESOURCE_DISTRIBUTOR"), CLoc::GetString("DERITIUM"));
 			g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), r, &fontFormat, &fontBrush);
@@ -3073,11 +3073,11 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 				pMajor->GetEmpire()->SetCredits(-costs);
 				// Die Preise an der Börse anpassen, da wir ja bestimmte Mengen Ressourcen gekauft haben
 				// Achtung, hier flag == 1 setzen bei Aufruf der Funktion BuyRessource!!!!
-				pMajor->GetTrade()->BuyRessource(TITAN,pDoc->GetSystem(p.x, p.y).GetAssemblyList()->GetNeededTitanInAssemblyList(0),p,pMajor->GetEmpire()->GetCredits(),true);
-				pMajor->GetTrade()->BuyRessource(DEUTERIUM,pDoc->GetSystem(p.x, p.y).GetAssemblyList()->GetNeededDeuteriumInAssemblyList(0),p,pMajor->GetEmpire()->GetCredits(),true);
-				pMajor->GetTrade()->BuyRessource(DURANIUM,pDoc->GetSystem(p.x, p.y).GetAssemblyList()->GetNeededDuraniumInAssemblyList(0),p,pMajor->GetEmpire()->GetCredits(),true);
-				pMajor->GetTrade()->BuyRessource(CRYSTAL,pDoc->GetSystem(p.x, p.y).GetAssemblyList()->GetNeededCrystalInAssemblyList(0),p,pMajor->GetEmpire()->GetCredits(),true);
-				pMajor->GetTrade()->BuyRessource(IRIDIUM,pDoc->GetSystem(p.x, p.y).GetAssemblyList()->GetNeededIridiumInAssemblyList(0),p,pMajor->GetEmpire()->GetCredits(),true);
+				pMajor->GetTrade()->BuyRessource(RESOURCES::TITAN,pDoc->GetSystem(p.x, p.y).GetAssemblyList()->GetNeededTitanInAssemblyList(0),p,pMajor->GetEmpire()->GetCredits(),true);
+				pMajor->GetTrade()->BuyRessource(RESOURCES::DEUTERIUM,pDoc->GetSystem(p.x, p.y).GetAssemblyList()->GetNeededDeuteriumInAssemblyList(0),p,pMajor->GetEmpire()->GetCredits(),true);
+				pMajor->GetTrade()->BuyRessource(RESOURCES::DURANIUM,pDoc->GetSystem(p.x, p.y).GetAssemblyList()->GetNeededDuraniumInAssemblyList(0),p,pMajor->GetEmpire()->GetCredits(),true);
+				pMajor->GetTrade()->BuyRessource(RESOURCES::CRYSTAL,pDoc->GetSystem(p.x, p.y).GetAssemblyList()->GetNeededCrystalInAssemblyList(0),p,pMajor->GetEmpire()->GetCredits(),true);
+				pMajor->GetTrade()->BuyRessource(RESOURCES::IRIDIUM,pDoc->GetSystem(p.x, p.y).GetAssemblyList()->GetNeededIridiumInAssemblyList(0),p,pMajor->GetEmpire()->GetCredits(),true);
 
 				resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
 				m_bClickedOnBuyButton = FALSE;
@@ -3107,7 +3107,7 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		if (OkayButton.PtInRect(point) && m_bClickedOnDeleteButton == TRUE)
 		{
 			// bekommen bei Abbruch die Ressourcen bzw. Teile der Ressourcen wieder
-			for (int j = TITAN; j <= DERITIUM; j++)
+			for (int j = RESOURCES::TITAN; j <= RESOURCES::DERITIUM; j++)
 			{
 				// bestanden Ressourcenrouten, so kann es sein, dass deren Startsysteme einen Anteil oder auch
 				// alles zurückbekommen
@@ -3139,7 +3139,7 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 				pMajor->GetEmpire()->SetCredits(pDoc->GetSystem(p.x,p.y).GetAssemblyList()->GetBuildCosts());
 				// Die Preise an der Börse anpassen, da wir ja bestimmte Mengen Ressourcen gekauft haben
 				// Achtung, hier bNotAtMarket == true setzen bei Aufruf der Funktion BuyRessource!!!!
-				for (int j = TITAN; j <= IRIDIUM; j++)
+				for (int j = RESOURCES::TITAN; j <= RESOURCES::IRIDIUM; j++)
 					pMajor->GetTrade()->SellRessource(j, pDoc->GetSystem(p.x, p.y).GetAssemblyList()->GetNeededResourceInAssemblyList(0, j) * 2, p, true);
 				pDoc->GetSystem(p.x, p.y).GetAssemblyList()->SetWasBuildingBought(FALSE);
 				resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
@@ -3455,8 +3455,8 @@ void CSystemMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		else if (CRect(360,640,480,670).PtInRect(point))
 		{
 			m_byResourceRouteRes++;
-			if (m_byResourceRouteRes == IRIDIUM + 1)
-				m_byResourceRouteRes = TITAN;
+			if (m_byResourceRouteRes == RESOURCES::IRIDIUM + 1)
+				m_byResourceRouteRes = RESOURCES::TITAN;
 			CRect r(360,640,480,670);
 			CalcDeviceRect(r);
 			InvalidateRect(r, FALSE);
@@ -3660,7 +3660,7 @@ void CSystemMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 			if (i == 0)
 			{
 				// bekommen bei Abbruch die Ressourcen bzw. Teile der Ressourcen wieder
-				for (int j = TITAN; j <= DERITIUM; j++)
+				for (int j = RESOURCES::TITAN; j <= RESOURCES::DERITIUM; j++)
 				{
 					// bestanden Ressourcenrouten, so kann es sein, dass deren Startsysteme einen Anteil oder auch
 					// alles zurückbekommen
@@ -3700,7 +3700,7 @@ void CSystemMenuView::OnLButtonDblClk(UINT nFlags, CPoint point)
 					pMajor->GetEmpire()->SetCredits(pDoc->GetSystem(p.x, p.y).GetAssemblyList()->GetBuildCosts());
 					// Die Preise an der Börse anpassen, da wir ja bestimmte Mengen Ressourcen gekauft haben
 					// Achtung, hier bNotAtMarket == true setzen bei Aufruf der Funktion BuyRessource!!!!
-					for (int j = TITAN; j <= IRIDIUM; j++)
+					for (int j = RESOURCES::TITAN; j <= RESOURCES::IRIDIUM; j++)
 						pMajor->GetTrade()->SellRessource(j, pDoc->GetSystem(p.x, p.y).GetAssemblyList()->GetNeededResourceInAssemblyList(0, j), p, true);
 					pDoc->GetSystem(p.x, p.y).GetAssemblyList()->SetWasBuildingBought(FALSE);
 					resources::pMainFrame->InvalidateView(RUNTIME_CLASS(CMenuChooseView));
@@ -3939,23 +3939,23 @@ void CSystemMenuView::CreateButtons()
 	// Zuweisungsbuttons im Arbeitermenü
 	fileN = "Other\\" + sPrefix + "buttonminus.bop";
 	fileA = "Other\\" + sPrefix + "buttonminusa.bop";
-	for (int i = TITAN; i <= IRIDIUM; i++)
+	for (int i = RESOURCES::TITAN; i <= RESOURCES::IRIDIUM; i++)
 		m_WorkerButtons.Add(new CMyButton(CPoint(170,115+i*95) , CSize(40,40), "", fileN, fileN, fileA));
 
 	// Zuweisungsbuttons im Arbeitermenü
 	fileN = "Other\\" + sPrefix + "buttonplus.bop";
 	fileA = "Other\\" + sPrefix + "buttonplusa.bop";
-	for (int i = TITAN; i <= IRIDIUM; i++)
+	for (int i = RESOURCES::TITAN; i <= RESOURCES::IRIDIUM; i++)
 		m_WorkerButtons.Add(new CMyButton(CPoint(630,115+i*95) , CSize(40,40), "", fileN, fileN, fileA));
 
 	// Zuweisungsbuttons im Systemhandelsmenü
 	fileN = "Other\\" + sPrefix + "buttonminus.bop";
 	fileA = "Other\\" + sPrefix + "buttonminusa.bop";
-	for (int i = TITAN; i <= IRIDIUM; i++)
+	for (int i = RESOURCES::TITAN; i <= RESOURCES::IRIDIUM; i++)
 		m_SystemTradeButtons.Add(new CMyButton(CPoint(608,235+i*60) , CSize(30,30), "", fileN, fileN, fileA));
 	fileN = "Other\\" + sPrefix + "buttonplus.bop";
 	fileA = "Other\\" + sPrefix + "buttonplusa.bop";
-	for (int i = TITAN; i <= IRIDIUM; i++)
+	for (int i = RESOURCES::TITAN; i <= RESOURCES::IRIDIUM; i++)
 		m_SystemTradeButtons.Add(new CMyButton(CPoint(975,235+i*60) , CSize(30,30), "", fileN, fileN, fileA));
 }
 

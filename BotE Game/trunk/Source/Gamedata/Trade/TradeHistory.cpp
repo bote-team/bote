@@ -12,7 +12,7 @@ CTradeHistory::CTradeHistory(void)
 
 CTradeHistory::~CTradeHistory(void)
 {
-	for (int i = TITAN; i <= IRIDIUM; i++)
+	for (int i = RESOURCES::TITAN; i <= RESOURCES::IRIDIUM; i++)
 	{
 		for (int j = 0; j < m_Prices[i].GetSize(); )
 			m_Prices[i].RemoveAt(j);
@@ -49,7 +49,7 @@ void CTradeHistory::Serialize(CArchive &ar)
 // Funktion fügt die aktuelle Preisliste in das Feld ein
 void CTradeHistory::SaveCurrentPrices(USHORT* resPrices, float currentTax)
 {
-	for (int i = TITAN; i <= IRIDIUM; i++)
+	for (int i = RESOURCES::TITAN; i <= RESOURCES::IRIDIUM; i++)
 	{
 		//resPrices[i] = (USHORT)ceil(resPrices[i] * currentTax);
 		m_Prices[i].Add((USHORT)ceil(resPrices[i] * currentTax));
@@ -100,7 +100,7 @@ USHORT CTradeHistory::GetAveragePrice(USHORT res)
 // Resetfunktion für die Klasse CTradeHistory
 void CTradeHistory::Reset()
 {
-	for (int i = TITAN; i <= IRIDIUM; i++)
+	for (int i = RESOURCES::TITAN; i <= RESOURCES::IRIDIUM; i++)
 	{
 		for (int j = 0; j < m_Prices[i].GetSize(); )
 			m_Prices[i].RemoveAt(j);

@@ -125,11 +125,11 @@ void CSystemAI::PerhapsBuy()
 				m_pMajor->GetEmpire()->SetCredits(-costs);
 				// Die Preise an der Börse anpassen, da wir ja bestimmte Mengen Ressourcen gekauft haben
 				// Achtung, hier flag == 1 setzen bei Aufruf der Funktion BuyRessource!!!!
-				m_pMajor->GetTrade()->BuyRessource(TITAN,	 system.GetAssemblyList()->GetNeededTitanInAssemblyList(0),p,m_pMajor->GetEmpire()->GetCredits(),true);
-				m_pMajor->GetTrade()->BuyRessource(DEUTERIUM,system.GetAssemblyList()->GetNeededDeuteriumInAssemblyList(0),p,m_pMajor->GetEmpire()->GetCredits(),true);
-				m_pMajor->GetTrade()->BuyRessource(DURANIUM, system.GetAssemblyList()->GetNeededDuraniumInAssemblyList(0),p,m_pMajor->GetEmpire()->GetCredits(),true);
-				m_pMajor->GetTrade()->BuyRessource(CRYSTAL,  system.GetAssemblyList()->GetNeededCrystalInAssemblyList(0),p,m_pMajor->GetEmpire()->GetCredits(),true);
-				m_pMajor->GetTrade()->BuyRessource(IRIDIUM,  system.GetAssemblyList()->GetNeededIridiumInAssemblyList(0),p,m_pMajor->GetEmpire()->GetCredits(),true);
+				m_pMajor->GetTrade()->BuyRessource(RESOURCES::TITAN,	 system.GetAssemblyList()->GetNeededTitanInAssemblyList(0),p,m_pMajor->GetEmpire()->GetCredits(),true);
+				m_pMajor->GetTrade()->BuyRessource(RESOURCES::DEUTERIUM,system.GetAssemblyList()->GetNeededDeuteriumInAssemblyList(0),p,m_pMajor->GetEmpire()->GetCredits(),true);
+				m_pMajor->GetTrade()->BuyRessource(RESOURCES::DURANIUM, system.GetAssemblyList()->GetNeededDuraniumInAssemblyList(0),p,m_pMajor->GetEmpire()->GetCredits(),true);
+				m_pMajor->GetTrade()->BuyRessource(RESOURCES::CRYSTAL,  system.GetAssemblyList()->GetNeededCrystalInAssemblyList(0),p,m_pMajor->GetEmpire()->GetCredits(),true);
+				m_pMajor->GetTrade()->BuyRessource(RESOURCES::IRIDIUM,  system.GetAssemblyList()->GetNeededIridiumInAssemblyList(0),p,m_pMajor->GetEmpire()->GetCredits(),true);
 			}
 		}
 	}
@@ -1396,11 +1396,11 @@ int CSystemAI::GetResourcePrio(WORKER::Typ nWorker, double dMaxHab) const
 {
 	// vorhandene Ressourcen durch die Planeten holen. Wenn eine Ressource nicht vorhanden ist, wird die entsprechende
 	// Priorität auf NULL gesetzt. Denn dafür haben wir dann auch keine Gebäude in der Bauliste.
-	BOOLEAN bResExist[DERITIUM + 1] = {0};
+	BOOLEAN bResExist[RESOURCES::DERITIUM + 1] = {0};
 	m_pDoc->GetSector(m_KO.x, m_KO.y).GetAvailableResources(bResExist, true);
 
 	int nRes = nWorker - 5;
-	ASSERT(nRes >= TITAN && nRes <= DERITIUM);
+	ASSERT(nRes >= RESOURCES::TITAN && nRes <= RESOURCES::DERITIUM);
 	if (!bResExist[nRes])
 	{
 		// nicht im System vorhanden

@@ -164,30 +164,30 @@ void CSmallInfoView::OnDraw(CDC* pDC)
 				g->DrawString(CComBSTR(s), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,165,r.right,25), &fontFormat, &fontBrush);
 			}
 
-			BOOLEAN res[DERITIUM + 1] = {FALSE};
+			BOOLEAN res[RESOURCES::DERITIUM + 1] = {FALSE};
 			if (m_pPlanet->GetHabitable())
 				m_pPlanet->GetAvailableResources(res);
 
 			int n = 0;
-			for (int i = TITAN; i <= DERITIUM; i++)
+			for (int i = RESOURCES::TITAN; i <= RESOURCES::DERITIUM; i++)
 				n += res[i];
 
 			int xPos = r.Width() / 2;
 			xPos -= n * 10;
 			int nExist = 0;
-			for (int i = TITAN; i <= DERITIUM; i++)
+			for (int i = RESOURCES::TITAN; i <= RESOURCES::DERITIUM; i++)
 			{
 				if (res[i])
 				{
 					Bitmap* graphic = NULL;
 					switch(i)
 					{
-						case TITAN:		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\titanSmall.bop");		break;
-						case DEUTERIUM: graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\deuteriumSmall.bop");	break;
-						case DURANIUM:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\duraniumSmall.bop");	break;
-						case CRYSTAL:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\crystalSmall.bop");		break;
-						case IRIDIUM:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\iridiumSmall.bop");		break;
-						case DERITIUM: graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\Deritium.bop");		break;
+						case RESOURCES::TITAN:		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\titanSmall.bop");		break;
+						case RESOURCES::DEUTERIUM: graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\deuteriumSmall.bop");	break;
+						case RESOURCES::DURANIUM:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\duraniumSmall.bop");	break;
+						case RESOURCES::CRYSTAL:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\crystalSmall.bop");		break;
+						case RESOURCES::IRIDIUM:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\iridiumSmall.bop");		break;
+						case RESOURCES::DERITIUM: graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\Deritium.bop");		break;
 					}
 					if (graphic)
 						g->DrawImage(graphic, xPos + nExist * 20, 195, 20, 16);

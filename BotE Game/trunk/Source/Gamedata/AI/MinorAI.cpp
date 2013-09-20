@@ -716,35 +716,35 @@ int CMinorAI::CalcResInCredits(const CDiplomacyInfo& info)
 	float fDiv = 0.0f;
 	CSystem* pSystem = &(m_pDoc->GetSystem(pMinor->m_ptKO.x, pMinor->m_ptKO.y));
 
-	if (info.m_nResources[TITAN] != 0)			// Titan übergeben?
+	if (info.m_nResources[RESOURCES::TITAN] != 0)			// Titan übergeben?
 	{
-		fValue = info.m_nResources[TITAN] / 5.0f;
-		fDiv = (float)(pSystem->GetResourceStore(TITAN)) / 2000;
+		fValue = info.m_nResources[RESOURCES::TITAN] / 5.0f;
+		fDiv = (float)(pSystem->GetResourceStore(RESOURCES::TITAN)) / 2000;
 	}
-	else if (info.m_nResources[DEUTERIUM] != 0)	// Deuterium übergeben?
+	else if (info.m_nResources[RESOURCES::DEUTERIUM] != 0)	// Deuterium übergeben?
 	{
-		fValue = info.m_nResources[DEUTERIUM] / 4.5f;
-		fDiv = (float)(pSystem->GetResourceStore(DEUTERIUM)) / 2000;
+		fValue = info.m_nResources[RESOURCES::DEUTERIUM] / 4.5f;
+		fDiv = (float)(pSystem->GetResourceStore(RESOURCES::DEUTERIUM)) / 2000;
 	}
-	else if (info.m_nResources[DURANIUM] != 0)	// Duranium übergeben?
+	else if (info.m_nResources[RESOURCES::DURANIUM] != 0)	// Duranium übergeben?
 	{
-		fValue = info.m_nResources[DURANIUM] / 4.0f;
-		fDiv = (float)(pSystem->GetResourceStore(DURANIUM)) / 2000;
+		fValue = info.m_nResources[RESOURCES::DURANIUM] / 4.0f;
+		fDiv = (float)(pSystem->GetResourceStore(RESOURCES::DURANIUM)) / 2000;
 	}
-	else if (info.m_nResources[CRYSTAL] != 0)	// Kristalle übergeben?
+	else if (info.m_nResources[RESOURCES::CRYSTAL] != 0)	// Kristalle übergeben?
 	{
-		fValue = info.m_nResources[CRYSTAL] / 3.25f;
-		fDiv = (float)(pSystem->GetResourceStore(CRYSTAL)) / 2000;
+		fValue = info.m_nResources[RESOURCES::CRYSTAL] / 3.25f;
+		fDiv = (float)(pSystem->GetResourceStore(RESOURCES::CRYSTAL)) / 2000;
 	}
-	else if (info.m_nResources[IRIDIUM] != 0)	// Iridium übergeben?
+	else if (info.m_nResources[RESOURCES::IRIDIUM] != 0)	// Iridium übergeben?
 	{
-		fValue = info.m_nResources[IRIDIUM] / 2.5f;
-		fDiv = (float)(pSystem->GetResourceStore(IRIDIUM)) / 2000;
+		fValue = info.m_nResources[RESOURCES::IRIDIUM] / 2.5f;
+		fDiv = (float)(pSystem->GetResourceStore(RESOURCES::IRIDIUM)) / 2000;
 	}
-	else if (info.m_nResources[DERITIUM] != 0)	// Deritium übergeben?
+	else if (info.m_nResources[RESOURCES::DERITIUM] != 0)	// Deritium übergeben?
 	{
-		fValue = info.m_nResources[DERITIUM] * 50;
-		fDiv = (float)(pSystem->GetResourceStore(DERITIUM)) / 10;
+		fValue = info.m_nResources[RESOURCES::DERITIUM] * 50;
+		fDiv = (float)(pSystem->GetResourceStore(RESOURCES::DERITIUM)) / 10;
 	}
 
 	//So, nun gibts aber nicht immer diesen Betrag! Dafür fragen wir die

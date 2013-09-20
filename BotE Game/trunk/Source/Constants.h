@@ -103,15 +103,21 @@ namespace VIEWS
 }
 
 // ------------- Spielerrassen -------------------------------------------------
-#define NOBODY				0
-#define MAJOR1				1
-#define MAJOR2				2
-#define MAJOR3				3
-#define MAJOR4				4
-#define MAJOR5				5
-#define MAJOR6				6
-#define UNKNOWNRACE			7
-#define MINORNUMBER			MAXBYTE
+namespace PLAYER_RACES
+{
+	enum TYPE
+	{
+		NOBODY				= 0,
+		MAJOR1				= 1,
+		MAJOR2				= 2,
+		MAJOR3				= 3,
+		MAJOR4				= 4,
+		MAJOR5				= 5,
+		MAJOR6				= 6,
+		UNKNOWNRACE			= 7,
+		MINORNUMBER			= MAXBYTE
+	};
+}
 
 
 // ------------- Gebäude------ -------------------------------------------------
@@ -228,27 +234,33 @@ namespace PLANT_SIZE
 }
 
 // Planetentypen
-#define PLANETCLASS_M		0
-#define PLANETCLASS_O		1
-#define PLANETCLASS_L		2
-#define PLANETCLASS_P		3
-#define PLANETCLASS_H		4
-#define PLANETCLASS_Q		5
-#define PLANETCLASS_K		6
-#define PLANETCLASS_G		7
-#define PLANETCLASS_R		8
-#define PLANETCLASS_F		9
-#define PLANETCLASS_C		10
-#define PLANETCLASS_N		11
-#define PLANETCLASS_A		12
-#define PLANETCLASS_B		13
-#define PLANETCLASS_E		14
-#define PLANETCLASS_Y		15
-#define PLANETCLASS_I		16
-#define PLANETCLASS_J		17
-#define PLANETCLASS_S		18
-#define PLANETCLASS_T		19
-#define GRAPHICNUMBER		31 // Anzahl der verschiedenen Grafiken der Planeten
+namespace PLANET_CLASSES
+{
+	enum TYPE
+	{
+		 PLANETCLASS_M		= 0,
+		 PLANETCLASS_O		= 1,
+		 PLANETCLASS_L		= 2,
+		 PLANETCLASS_P		= 3,
+		 PLANETCLASS_H		= 4,
+		 PLANETCLASS_Q		= 5,
+		 PLANETCLASS_K		= 6,
+		 PLANETCLASS_G		= 7,
+		 PLANETCLASS_R		= 8,
+		 PLANETCLASS_F		= 9,
+		 PLANETCLASS_C		= 10,
+		 PLANETCLASS_N		= 11,
+		 PLANETCLASS_A		= 12,
+		 PLANETCLASS_B		= 13,
+		 PLANETCLASS_E		= 14,
+		 PLANETCLASS_Y		= 15,
+		 PLANETCLASS_I		= 16,
+		 PLANETCLASS_J		= 17,
+		 PLANETCLASS_S		= 18,
+		 PLANETCLASS_T		= 19,
+		 GRAPHICNUMBER		= 31 // Anzahl der verschiedenen Grafiken der Planeten
+	};
+}
 
 // ------------- Forschung -----------------------------------------------------
 namespace RESEARCH_STATUS
@@ -416,12 +428,18 @@ static const int TRADEROUTEHAB	= 20;	// aller wieviel Bevölkerung gibt es eine H
 static const int NOTRIL			= 12;	// Number of Trade Routes in List
 
 // ------------- Ressourcen ----------------------------------------------------
-#define TITAN               0
-#define DEUTERIUM           1
-#define DURANIUM            2
-#define CRYSTAL             3
-#define IRIDIUM             4
-#define DERITIUM	        5
+namespace RESOURCES
+{
+	enum TYPE
+	{
+		TITAN               = 0,
+		DEUTERIUM           = 1,
+		DURANIUM            = 2,
+		CRYSTAL             = 3,
+		IRIDIUM             = 4,
+		DERITIUM	         = 5
+	};
+}
 
 static const int MAX_FOOD_STORE			=	25000;
 static const int MAX_RES_STORE			=	125000;

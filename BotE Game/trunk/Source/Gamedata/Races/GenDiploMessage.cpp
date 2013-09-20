@@ -157,34 +157,34 @@ bool CGenDiploMessage::GenerateMajorOffer(CDiplomacyInfo& info)
 
 			sOffer = read[11];   // bei Forderung an eine andere Majorrace
 			CString res = "";
-			if (info.m_nResources[TITAN] > 0)
+			if (info.m_nResources[RESOURCES::TITAN] > 0)
 			{
-				CString s; s.Format("%d",info.m_nResources[TITAN]);
+				CString s; s.Format("%d",info.m_nResources[RESOURCES::TITAN]);
 				res = CLoc::GetString("TITAN_REQUEST", FALSE, s);
 			}
-			else if (info.m_nResources[DEUTERIUM] > 0)
+			else if (info.m_nResources[RESOURCES::DEUTERIUM] > 0)
 			{
-				CString s; s.Format("%d",info.m_nResources[DEUTERIUM]);
+				CString s; s.Format("%d",info.m_nResources[RESOURCES::DEUTERIUM]);
 				res = CLoc::GetString("DEUTERIUM_REQUEST", FALSE, s);
 			}
-			else if (info.m_nResources[DURANIUM] > 0)
+			else if (info.m_nResources[RESOURCES::DURANIUM] > 0)
 			{
-				CString s; s.Format("%d",info.m_nResources[DURANIUM]);
+				CString s; s.Format("%d",info.m_nResources[RESOURCES::DURANIUM]);
 				res = CLoc::GetString("DURANIUM_REQUEST", FALSE, s);
 			}
-			else if (info.m_nResources[CRYSTAL] > 0)
+			else if (info.m_nResources[RESOURCES::CRYSTAL] > 0)
 			{
-				CString s; s.Format("%d",info.m_nResources[CRYSTAL]);
+				CString s; s.Format("%d",info.m_nResources[RESOURCES::CRYSTAL]);
 				res = CLoc::GetString("CRYSTAL_REQUEST", FALSE, s);
 			}
-			else if (info.m_nResources[IRIDIUM] > 0)
+			else if (info.m_nResources[RESOURCES::IRIDIUM] > 0)
 			{
-				CString s; s.Format("%d",info.m_nResources[IRIDIUM]);
+				CString s; s.Format("%d",info.m_nResources[RESOURCES::IRIDIUM]);
 				res = CLoc::GetString("IRIDIUM_REQUEST", FALSE, s);
 			}
-			else if (info.m_nResources[DERITIUM] > 0)
+			else if (info.m_nResources[RESOURCES::DERITIUM] > 0)
 			{
-				CString s; s.Format("%d",info.m_nResources[DERITIUM]);
+				CString s; s.Format("%d",info.m_nResources[RESOURCES::DERITIUM]);
 				res = CLoc::GetString("DERITIUM_REQUEST", FALSE, s);
 			}
 			sOffer.Replace("$ressource$",res);
@@ -217,34 +217,34 @@ bool CGenDiploMessage::GenerateMajorOffer(CDiplomacyInfo& info)
 	// Wenn wir eine Ressource mit dazugeben und es sich nicht um eine Forderung handelt
 	if (info.m_nType != DIPLOMATIC_AGREEMENT::REQUEST)
 	{
-		if (info.m_nResources[TITAN] > 0)
+		if (info.m_nResources[RESOURCES::TITAN] > 0)
 		{
-			CString s; s.Format("%d",info.m_nResources[TITAN]);
+			CString s; s.Format("%d",info.m_nResources[RESOURCES::TITAN]);
 			sOffer = CLoc::GetString("EXTRA_TITAN", FALSE, sOffer, s);
 		}
-		else if (info.m_nResources[DEUTERIUM] > 0)
+		else if (info.m_nResources[RESOURCES::DEUTERIUM] > 0)
 		{
-			CString s; s.Format("%d",info.m_nResources[DEUTERIUM]);
+			CString s; s.Format("%d",info.m_nResources[RESOURCES::DEUTERIUM]);
 			sOffer = CLoc::GetString("EXTRA_DEUTERIUM", FALSE, sOffer, s);
 		}
-		else if (info.m_nResources[DURANIUM] > 0)
+		else if (info.m_nResources[RESOURCES::DURANIUM] > 0)
 		{
-			CString s; s.Format("%d",info.m_nResources[DURANIUM]);
+			CString s; s.Format("%d",info.m_nResources[RESOURCES::DURANIUM]);
 			sOffer = CLoc::GetString("EXTRA_DURANIUM", FALSE, sOffer, s);
 		}
-		else if (info.m_nResources[CRYSTAL] > 0)
+		else if (info.m_nResources[RESOURCES::CRYSTAL] > 0)
 		{
-			CString s; s.Format("%d",info.m_nResources[CRYSTAL]);
+			CString s; s.Format("%d",info.m_nResources[RESOURCES::CRYSTAL]);
 			sOffer = CLoc::GetString("EXTRA_CRYSTAL", FALSE, sOffer, s);
 		}
-		else if (info.m_nResources[IRIDIUM] > 0)
+		else if (info.m_nResources[RESOURCES::IRIDIUM] > 0)
 		{
-			CString s; s.Format("%d",info.m_nResources[IRIDIUM]);
+			CString s; s.Format("%d",info.m_nResources[RESOURCES::IRIDIUM]);
 			sOffer = CLoc::GetString("EXTRA_IRIDIUM", FALSE, sOffer, s);
 		}
-		else if (info.m_nResources[DERITIUM] > 0)
+		else if (info.m_nResources[RESOURCES::DERITIUM] > 0)
 		{
-			CString s; s.Format("%d",info.m_nResources[DERITIUM]);
+			CString s; s.Format("%d",info.m_nResources[RESOURCES::DERITIUM]);
 			sOffer = CLoc::GetString("EXTRA_DERITIUM", FALSE, sOffer, s);
 		}
 	}

@@ -486,18 +486,18 @@ ANSWER_STATUS::Typ CMajorAI::CalcDiplomacyRequest(const CDiplomacyInfo& info)
 	if (nAnswer == ANSWER_STATUS::ACCEPTED)
 	{
 		short nRes = -1;
-		if (info.m_nResources[TITAN])
-			nRes = TITAN;
-		else if (info.m_nResources[DEUTERIUM])
-			nRes = DEUTERIUM;
-		else if (info.m_nResources[DURANIUM])
-			nRes = DURANIUM;
-		else if (info.m_nResources[CRYSTAL])
-			nRes = CRYSTAL;
-		else if (info.m_nResources[IRIDIUM])
-			nRes = IRIDIUM;
-		else if (info.m_nResources[DERITIUM])
-			nRes = DERITIUM;
+		if (info.m_nResources[RESOURCES::TITAN])
+			nRes = RESOURCES::TITAN;
+		else if (info.m_nResources[RESOURCES::DEUTERIUM])
+			nRes = RESOURCES::DEUTERIUM;
+		else if (info.m_nResources[RESOURCES::DURANIUM])
+			nRes = RESOURCES::DURANIUM;
+		else if (info.m_nResources[RESOURCES::CRYSTAL])
+			nRes = RESOURCES::CRYSTAL;
+		else if (info.m_nResources[RESOURCES::IRIDIUM])
+			nRes = RESOURCES::IRIDIUM;
+		else if (info.m_nResources[RESOURCES::DERITIUM])
+			nRes = RESOURCES::DERITIUM;
 
 		if (nRes != -1)
 		{
@@ -1245,12 +1245,12 @@ bool CMajorAI::GiveDowry(CDiplomacyInfo& info)
 		// dafür benutze ich den durchschnittlichen Techlevel im Universum. Am Anfang wird deswegen nur Titan angeboten
 		// später kommen dann auch die weiteren Ressourcen hinzu, wenn der Wert zu groß ist machen wir das solange,
 		// bis der Wert max. Deritium erhält
-		USHORT whichRes = TITAN;
+		USHORT whichRes = RESOURCES::TITAN;
 		do
 		{
 			whichRes = rand()%(m_pDoc->GetStatistics()->GetAverageTechLevel() + 1);
 		}
-		while (whichRes > DERITIUM);
+		while (whichRes > RESOURCES::DERITIUM);
 
 		// Schauen ob wir mehr als 20% von der Ressource haben als der Durschnitt ist
 		// nicht gleich in der do_while-Schleife, da ich nicht so oft dies als Mitgift geben möchte
@@ -1281,7 +1281,7 @@ bool CMajorAI::GiveDowry(CDiplomacyInfo& info)
 			// Wert zwischen 0 und dem Lagerinhalt generieren
 			UINT nGiveRes = rand()%(nMostRes + 1);
 			// bei Deritium wird viel weniger übergeben, bei den restlichen auf 1000er gerundet
-			if (whichRes != DERITIUM)
+			if (whichRes != RESOURCES::DERITIUM)
 				nGiveRes = (UINT)(nGiveRes / 1000) * 1000;
 
 			if (nGiveRes > 20000)
@@ -1377,13 +1377,13 @@ bool CMajorAI::ClaimRequest(CDiplomacyInfo& info)
 	// später kommen dann auch die weiteren Ressourcen hinzu, wenn der Wert zu groß ist machen wir das solange,
 	// bis der Wert max. Deritium erhält
 	bool bCanGive = false;
-	USHORT whichRes = TITAN;
+	USHORT whichRes = RESOURCES::TITAN;
 	int count = 0;
 
 	do {
 		whichRes = rand()%(m_pDoc->GetStatistics()->GetAverageTechLevel() / 2 + 1);
-		if (whichRes > DERITIUM)
-			whichRes = DERITIUM;
+		if (whichRes > RESOURCES::DERITIUM)
+			whichRes = RESOURCES::DERITIUM;
 
 		// Schauen ob wir weniger als rand()%50Prozent von der Ressource haben als der Durchschnitt
 		if (bStronger || (pOurRace->GetEmpire()->GetStorage()[whichRes] <= (ULONG)(m_pDoc->GetStatistics()->GetAverageResourceStorages()[whichRes] * (rand()%50+1) / 100)
@@ -1398,7 +1398,7 @@ bool CMajorAI::ClaimRequest(CDiplomacyInfo& info)
 		// Jetzt müssen wir eine Menge zwischen 0 und 20000 in 1000er Schritten ermitteln (max. 20000)
 		// bei Deritium wird viel weniger übergeben, bei den restlichen auf 1000er gerundet
 		UINT nClaimRes = 0;
-		if (whichRes != DERITIUM)
+		if (whichRes != RESOURCES::DERITIUM)
 		{
 			nClaimRes = rand()%(1000 + m_pDoc->GetStatistics()->GetAverageTechLevel() * 1250);
 			nClaimRes = (UINT)(nClaimRes / 1000) * 1000;
@@ -1441,35 +1441,35 @@ void CMajorAI::ReactOnDowry(const CDiplomacyInfo& info)
 	float fValue = 0.0f;
 	float fDiv = 0.0f;
 
-	if (info.m_nResources[TITAN] != 0)			// Titan übergeben?
+	if (info.m_nResources[RESOURCES::TITAN] != 0)			// Titan übergeben?
 	{
-		fValue = info.m_nResources[TITAN] / 2.5;
-		fDiv = (float)info.m_nResources[TITAN] / (float)(pOurRace->GetEmpire()->GetStorage()[TITAN] + .00001);
+		fValue = info.m_nResources[RESOURCES::TITAN] / 2.5;
+		fDiv = (float)info.m_nResources[RESOURCES::TITAN] / (float)(pOurRace->GetEmpire()->GetStorage()[RESOURCES::TITAN] + .00001);
 	}
-	else if (info.m_nResources[DEUTERIUM] != 0)	// Deuterium übergeben?
+	else if (info.m_nResources[RESOURCES::DEUTERIUM] != 0)	// Deuterium übergeben?
 	{
-		fValue = info.m_nResources[DEUTERIUM] / 2.75;
-		fDiv = (float)info.m_nResources[DEUTERIUM] / (float)(pOurRace->GetEmpire()->GetStorage()[DEUTERIUM] + .00001);
+		fValue = info.m_nResources[RESOURCES::DEUTERIUM] / 2.75;
+		fDiv = (float)info.m_nResources[RESOURCES::DEUTERIUM] / (float)(pOurRace->GetEmpire()->GetStorage()[RESOURCES::DEUTERIUM] + .00001);
 	}
-	else if (info.m_nResources[DURANIUM] != 0)	// Duranium übergeben?
+	else if (info.m_nResources[RESOURCES::DURANIUM] != 0)	// Duranium übergeben?
 	{
-		fValue = info.m_nResources[DURANIUM] / 2;
-		fDiv = (float)info.m_nResources[DURANIUM] / (float)(pOurRace->GetEmpire()->GetStorage()[DURANIUM] + .00001);
+		fValue = info.m_nResources[RESOURCES::DURANIUM] / 2;
+		fDiv = (float)info.m_nResources[RESOURCES::DURANIUM] / (float)(pOurRace->GetEmpire()->GetStorage()[RESOURCES::DURANIUM] + .00001);
 	}
-	else if (info.m_nResources[CRYSTAL] != 0)	// Kristalle übergeben?
+	else if (info.m_nResources[RESOURCES::CRYSTAL] != 0)	// Kristalle übergeben?
 	{
-		fValue = info.m_nResources[CRYSTAL] / 1.625;
-		fDiv = (float)info.m_nResources[CRYSTAL] / (float)(pOurRace->GetEmpire()->GetStorage()[CRYSTAL] + .00001);
+		fValue = info.m_nResources[RESOURCES::CRYSTAL] / 1.625;
+		fDiv = (float)info.m_nResources[RESOURCES::CRYSTAL] / (float)(pOurRace->GetEmpire()->GetStorage()[RESOURCES::CRYSTAL] + .00001);
 	}
-	else if (info.m_nResources[IRIDIUM] != 0)	// Iridium übergeben?
+	else if (info.m_nResources[RESOURCES::IRIDIUM] != 0)	// Iridium übergeben?
 	{
-		fValue = info.m_nResources[IRIDIUM] / 1.25;
-		fDiv = (float)info.m_nResources[IRIDIUM] / (float)(pOurRace->GetEmpire()->GetStorage()[IRIDIUM] + .00001);
+		fValue = info.m_nResources[RESOURCES::IRIDIUM] / 1.25;
+		fDiv = (float)info.m_nResources[RESOURCES::IRIDIUM] / (float)(pOurRace->GetEmpire()->GetStorage()[RESOURCES::IRIDIUM] + .00001);
 	}
-	else if (info.m_nResources[DERITIUM] != 0)	// Deritium übergeben?
+	else if (info.m_nResources[RESOURCES::DERITIUM] != 0)	// Deritium übergeben?
 	{
-		fValue = info.m_nResources[DERITIUM] * 100;
-		fDiv = (float)info.m_nResources[DERITIUM] / (float)(pOurRace->GetEmpire()->GetStorage()[DERITIUM] + .00001);
+		fValue = info.m_nResources[RESOURCES::DERITIUM] * 100;
+		fDiv = (float)info.m_nResources[RESOURCES::DERITIUM] / (float)(pOurRace->GetEmpire()->GetStorage()[RESOURCES::DERITIUM] + .00001);
 	}
 
 	//So, nun gibts aber nicht immer diesen Betrag! Dafür fragen wir die

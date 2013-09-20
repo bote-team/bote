@@ -31,7 +31,7 @@ CDiplomacyInfo::CDiplomacyInfo(const CDiplomacyInfo & rhs)
 	m_nType = rhs.m_nType;
 	m_nSendRound = rhs.m_nSendRound;
 	m_nCredits = rhs.m_nCredits;
-	for (int i = 0; i < DERITIUM + 1; i++)
+	for (int i = 0; i < RESOURCES::DERITIUM + 1; i++)
 		m_nResources[i] = rhs.m_nResources[i];
 	m_ptKO = rhs.m_ptKO;
 
@@ -60,7 +60,7 @@ CDiplomacyInfo & CDiplomacyInfo::operator=(const CDiplomacyInfo & rhs)
 	m_nType = rhs.m_nType;
 	m_nSendRound = rhs.m_nSendRound;
 	m_nCredits = rhs.m_nCredits;
-	for (int i = 0; i < DERITIUM + 1; i++)
+	for (int i = 0; i < RESOURCES::DERITIUM + 1; i++)
 		m_nResources[i] = rhs.m_nResources[i];
 	m_ptKO = rhs.m_ptKO;
 
@@ -93,7 +93,7 @@ void CDiplomacyInfo::Serialize(CArchive &ar)
 		ar << m_nType;						// Art des Angebots (Krieg, NAP, Geschenk usw.)
 		ar << m_nSendRound;					// in welcher Runde wurde das Angebot abgeschickt
 		ar << m_nCredits;					// wieviele Credits werden als Geschenk angeboten
-		for (int i = 0; i <= DERITIUM; i++)
+		for (int i = 0; i <= RESOURCES::DERITIUM; i++)
 			ar << m_nResources[i];			// welche Ressourcen werden mit als Geschenk angeboten
 		ar << m_ptKO;						// aus welchem System stammen die Ressourcen
 
@@ -118,7 +118,7 @@ void CDiplomacyInfo::Serialize(CArchive &ar)
 		m_nType = (DIPLOMATIC_AGREEMENT::Typ)nType;
 		ar >> m_nSendRound;					// in welcher Runde wurde das Angebot abgeschickt
 		ar >> m_nCredits;					// wieviele Credits werden als Geschenk angeboten
-		for (int i = 0; i <= DERITIUM; i++)
+		for (int i = 0; i <= RESOURCES::DERITIUM; i++)
 			ar >> m_nResources[i];			// welche Ressourcen werden mit als Geschenk angeboten
 		ar >> m_ptKO;						// aus welchem System stammen die Ressourcen
 
@@ -140,7 +140,7 @@ void CDiplomacyInfo::Reset(void)
 	m_nCredits = 0;
 	m_nDuration = 0;
 	m_nFlag = -1;
-	for (int res = TITAN; res <= DERITIUM; res++)
+	for (int res = RESOURCES::TITAN; res <= RESOURCES::DERITIUM; res++)
 		m_nResources[res] = 0;
 	m_nSendRound = -1;
 	m_nType = DIPLOMATIC_AGREEMENT::NONE;

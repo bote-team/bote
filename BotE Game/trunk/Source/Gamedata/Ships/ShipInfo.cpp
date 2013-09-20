@@ -261,9 +261,9 @@ void CShipInfo::CalculateFinalCosts()
 	// wir brauchen für bessere Hüllen auch besseres Material
 	switch (m_Hull.GetHullMaterial())
 	{
-	case TITAN: m_iNeededTitan += (USHORT)(m_Hull.GetBaseHull() * (m_Hull.GetDoubleHull()+1)); break;
-	case DURANIUM: m_iNeededDuranium += (USHORT)(m_Hull.GetBaseHull() * (m_Hull.GetDoubleHull()+1)); break;
-	case IRIDIUM: m_iNeededIridium += (USHORT)(m_Hull.GetBaseHull() * (m_Hull.GetDoubleHull()+1)); break;
+	case RESOURCES::TITAN: m_iNeededTitan += (USHORT)(m_Hull.GetBaseHull() * (m_Hull.GetDoubleHull()+1)); break;
+	case RESOURCES::DURANIUM: m_iNeededDuranium += (USHORT)(m_Hull.GetBaseHull() * (m_Hull.GetDoubleHull()+1)); break;
+	case RESOURCES::IRIDIUM: m_iNeededIridium += (USHORT)(m_Hull.GetBaseHull() * (m_Hull.GetDoubleHull()+1)); break;
 	}
 	// für bessere Torpedos (ab 500 Dmg und mehr) brauchen wir zusätzliches Deuterium
 	for (int i = 0; i < m_TorpedoWeapons.GetSize(); i++)
@@ -410,9 +410,9 @@ void CShipInfo::DrawShipInformation(Graphics* g, CRect rect, Gdiplus::Font* font
 	CString material;
 	switch (m_Hull.GetHullMaterial())
 	{
-	case TITAN: material = CLoc::GetString("TITAN");; break;
-	case DURANIUM: material = CLoc::GetString("DURANIUM");; break;
-	case IRIDIUM: material = CLoc::GetString("IRIDIUM");; break;
+	case RESOURCES::TITAN: material = CLoc::GetString("TITAN");; break;
+	case RESOURCES::DURANIUM: material = CLoc::GetString("DURANIUM");; break;
+	case RESOURCES::IRIDIUM: material = CLoc::GetString("IRIDIUM");; break;
 	default: material = "";
 	}
 	float hullBoni = 1.0f;
@@ -530,12 +530,12 @@ USHORT CShipInfo::GetNeededResource(BYTE res) const
 {
 	switch (res)
 	{
-	case TITAN:		return this->GetNeededTitan();
-	case DEUTERIUM: return this->GetNeededDeuterium();
-	case DURANIUM:	return this->GetNeededDuranium();
-	case CRYSTAL:	return this->GetNeededCrystal();
-	case IRIDIUM:	return this->GetNeededIridium();
-	case DERITIUM:	return this->GetNeededDeritium();
+	case RESOURCES::TITAN:		return this->GetNeededTitan();
+	case RESOURCES::DEUTERIUM: return this->GetNeededDeuterium();
+	case RESOURCES::DURANIUM:	return this->GetNeededDuranium();
+	case RESOURCES::CRYSTAL:	return this->GetNeededCrystal();
+	case RESOURCES::IRIDIUM:	return this->GetNeededIridium();
+	case RESOURCES::DERITIUM:	return this->GetNeededDeritium();
 	default:		return NULL;
 	}
 }

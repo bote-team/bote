@@ -145,12 +145,12 @@ UINT CAssemblyList::GetNeededResourceInAssemblyList(USHORT entry, BYTE res) cons
 {
 	switch (res)
 	{
-	case TITAN:			return this->GetNeededTitanInAssemblyList(entry);
-	case DEUTERIUM:		return this->GetNeededDeuteriumInAssemblyList(entry);
-	case DURANIUM:		return this->GetNeededDuraniumInAssemblyList(entry);
-	case CRYSTAL:		return this->GetNeededCrystalInAssemblyList(entry);
-	case IRIDIUM:		return this->GetNeededIridiumInAssemblyList(entry);
-	case DERITIUM:		return this->GetNeededDeritiumInAssemblyList(entry);
+	case RESOURCES::TITAN:			return this->GetNeededTitanInAssemblyList(entry);
+	case RESOURCES::DEUTERIUM:		return this->GetNeededDeuteriumInAssemblyList(entry);
+	case RESOURCES::DURANIUM:		return this->GetNeededDuraniumInAssemblyList(entry);
+	case RESOURCES::CRYSTAL:		return this->GetNeededCrystalInAssemblyList(entry);
+	case RESOURCES::IRIDIUM:		return this->GetNeededIridiumInAssemblyList(entry);
+	case RESOURCES::DERITIUM:		return this->GetNeededDeritiumInAssemblyList(entry);
 	default:			return NULL;
 	}
 }
@@ -160,12 +160,12 @@ UINT CAssemblyList::GetNeededResourceForBuild(BYTE res) const
 {
 	switch (res)
 	{
-	case TITAN:			return this->GetNeededTitanForBuild();
-	case DEUTERIUM:		return this->GetNeededDeuteriumForBuild();
-	case DURANIUM:		return this->GetNeededDuraniumForBuild();
-	case CRYSTAL:		return this->GetNeededCrystalForBuild();
-	case IRIDIUM:		return this->GetNeededIridiumForBuild();
-	case DERITIUM:		return this->GetNeededDeritiumForBuild();
+	case RESOURCES::TITAN:			return this->GetNeededTitanForBuild();
+	case RESOURCES::DEUTERIUM:		return this->GetNeededDeuteriumForBuild();
+	case RESOURCES::DURANIUM:		return this->GetNeededDuraniumForBuild();
+	case RESOURCES::CRYSTAL:		return this->GetNeededCrystalForBuild();
+	case RESOURCES::IRIDIUM:		return this->GetNeededIridiumForBuild();
+	case RESOURCES::DERITIUM:		return this->GetNeededDeritiumForBuild();
 	default:			return NULL;
 	}
 }
@@ -250,11 +250,11 @@ void CAssemblyList::CalculateNeededRessources(CBuildingInfo* buildingInfo, CShip
 	else if (RunningNumber >= 20000)	// es handelt sich um Truppen
 	{
 		m_iNeededIndustryForBuild = troopInfo->GetNeededIndustry();
-		m_iNeededTitanForBuild = troopInfo->GetNeededResources()[TITAN];
-		m_iNeededDeuteriumForBuild = troopInfo->GetNeededResources()[DEUTERIUM];
-		m_iNeededDuraniumForBuild = troopInfo->GetNeededResources()[DURANIUM];
-		m_iNeededCrystalForBuild = troopInfo->GetNeededResources()[CRYSTAL];
-		m_iNeededIridiumForBuild = troopInfo->GetNeededResources()[IRIDIUM];
+		m_iNeededTitanForBuild = troopInfo->GetNeededResources()[RESOURCES::TITAN];
+		m_iNeededDeuteriumForBuild = troopInfo->GetNeededResources()[RESOURCES::DEUTERIUM];
+		m_iNeededDuraniumForBuild = troopInfo->GetNeededResources()[RESOURCES::DURANIUM];
+		m_iNeededCrystalForBuild = troopInfo->GetNeededResources()[RESOURCES::CRYSTAL];
+		m_iNeededIridiumForBuild = troopInfo->GetNeededResources()[RESOURCES::IRIDIUM];
 		m_iNeededDeritiumForBuild = NULL;
 		// hier auch noch den eventuellen Bonus durch die Uniqueforschung "Truppen"
 		if (ResearchInfo->GetResearchComplex(RESEARCH_COMPLEX::TROOPS)->GetFieldStatus(3) == RESEARCH_STATUS::RESEARCHED)	// 4 -> Truppen
@@ -374,7 +374,7 @@ void CAssemblyList::RemoveResourceFromStorage(BYTE res, const CPoint &ko, std::v
 	CSystem *system = &systems.at(ko.x+(ko.y)*STARMAP_SECTORS_HCOUNT);
 
 	// für Deritium gibt es keine Ressourcenroute
-	if (res != DERITIUM)
+	if (res != RESOURCES::DERITIUM)
 	{
 		// zuerst wird immer versucht, die Ressourcen aus dem lokalen Lager zu nehmen
 		long remainingRes = GetNeededResourceInAssemblyList(0, res) - system->GetResourceStore(res);
@@ -492,11 +492,11 @@ BOOLEAN CAssemblyList::MakeEntry(int runningNumber, const CPoint &ko, std::vecto
 	CSystem* system = &systems.at(ko.x+(ko.y)*STARMAP_SECTORS_HCOUNT);
 	// Ressourcenrouten durchgehen und womöglich die möglichen max. zusätzlichen Ressourcen erfragen
 	CArray<CPoint> routesFrom;
-	ULONG resourcesFromRoutes[DERITIUM + 1];
-	ULONG nResInDistSys[DERITIUM + 1];
-	CPoint ptResourceDistributorKOs[DERITIUM + 1];
+	ULONG resourcesFromRoutes[RESOURCES::DERITIUM + 1];
+	ULONG nResInDistSys[RESOURCES::DERITIUM + 1];
+	CPoint ptResourceDistributorKOs[RESOURCES::DERITIUM + 1];
 
-	for (int i = 0; i <= DERITIUM; i++)
+	for (int i = 0; i <= RESOURCES::DERITIUM; i++)
 	{
 		resourcesFromRoutes[i] = 0;
 		nResInDistSys[i] = 0;
@@ -524,7 +524,7 @@ BOOLEAN CAssemblyList::MakeEntry(int runningNumber, const CPoint &ko, std::vecto
 				// gilt nicht bei Blockaden
 				if (systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetBlockade() == NULL && systems.at(ko.x+(ko.y)*STARMAP_SECTORS_HCOUNT).GetBlockade() == NULL)
 				{
-					for (int res = TITAN; res <= DERITIUM; res++)
+					for (int res = RESOURCES::TITAN; res <= RESOURCES::DERITIUM; res++)
 					{
 						if (systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetResourceDistributor(res))
 						{
@@ -537,7 +537,7 @@ BOOLEAN CAssemblyList::MakeEntry(int runningNumber, const CPoint &ko, std::vecto
 		}
 	}
 	// Überprüfen, ob wir genügend Rohstoffe in dem Lager haben
-	for (int res = TITAN; res <= DERITIUM; res++)
+	for (int res = RESOURCES::TITAN; res <= RESOURCES::DERITIUM; res++)
 	{
 		UINT nNeededRes = this->GetNeededResourceForBuild(res);
 		if (*system->GetResourceStorages(res) + resourcesFromRoutes[res] < nNeededRes && nResInDistSys[res] < nNeededRes)
@@ -560,7 +560,7 @@ BOOLEAN CAssemblyList::MakeEntry(int runningNumber, const CPoint &ko, std::vecto
 	// ansonsten erst, nachdem das Projekt im ersten Eintrag fertig ist
 	if (entry == 0)
 	{
-		for (int res = TITAN; res <= DERITIUM; res++)
+		for (int res = RESOURCES::TITAN; res <= RESOURCES::DERITIUM; res++)
 		{
 			UINT nNeededRes = this->GetNeededResourceForBuild(res);
 			if (nNeededRes > 0)
@@ -598,11 +598,11 @@ void CAssemblyList::CalculateBuildCosts(USHORT resPrices[5])
 		//		Dies hat aber rein balancingtechnische Gründe.
 		// /EDIT
 		m_iBuildCosts =         m_iNeededIndustryInAssemblyList[0];
-		m_iBuildCosts += ((int)(m_iNeededTitanInAssemblyList[0]*resPrices[TITAN]/2000));
-		m_iBuildCosts += ((int)(m_iNeededDeuteriumInAssemblyList[0]*resPrices[DEUTERIUM]/2000));
-		m_iBuildCosts += ((int)(m_iNeededDuraniumInAssemblyList[0]*resPrices[DURANIUM]/2000));
-		m_iBuildCosts += ((int)(m_iNeededCrystalInAssemblyList[0]*resPrices[CRYSTAL]/2000));
-		m_iBuildCosts += ((int)(m_iNeededIridiumInAssemblyList[0]*resPrices[IRIDIUM]/2000));
+		m_iBuildCosts += ((int)(m_iNeededTitanInAssemblyList[0]*resPrices[RESOURCES::TITAN]/2000));
+		m_iBuildCosts += ((int)(m_iNeededDeuteriumInAssemblyList[0]*resPrices[RESOURCES::DEUTERIUM]/2000));
+		m_iBuildCosts += ((int)(m_iNeededDuraniumInAssemblyList[0]*resPrices[RESOURCES::DURANIUM]/2000));
+		m_iBuildCosts += ((int)(m_iNeededCrystalInAssemblyList[0]*resPrices[RESOURCES::CRYSTAL]/2000));
+		m_iBuildCosts += ((int)(m_iNeededIridiumInAssemblyList[0]*resPrices[RESOURCES::IRIDIUM]/2000));
 	}
 }
 
@@ -666,11 +666,11 @@ void CAssemblyList::ClearAssemblyList(const CPoint &ko, std::vector<CSystem>& sy
 	CSystem* system = &systems.at(ko.x+(ko.y)*STARMAP_SECTORS_HCOUNT);
 
 	CArray<CPoint> routesFrom;
-	ULONG resourcesFromRoutes[DERITIUM + 1];
-	ULONG nResInDistSys[DERITIUM + 1];
-	CPoint ptResourceDistributorKOs[DERITIUM + 1];
+	ULONG resourcesFromRoutes[RESOURCES::DERITIUM + 1];
+	ULONG nResInDistSys[RESOURCES::DERITIUM + 1];
+	CPoint ptResourceDistributorKOs[RESOURCES::DERITIUM + 1];
 
-	for (int i = 0; i <= DERITIUM; i++)
+	for (int i = 0; i <= RESOURCES::DERITIUM; i++)
 	{
 		resourcesFromRoutes[i] = 0;
 		nResInDistSys[i] = 0;
@@ -702,7 +702,7 @@ void CAssemblyList::ClearAssemblyList(const CPoint &ko, std::vector<CSystem>& sy
 				// gilt nicht bei Blockaden
 				if (systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetBlockade() == NULL && systems.at(ko.x+(ko.y)*STARMAP_SECTORS_HCOUNT).GetBlockade() == NULL)
 				{
-					for (int res = TITAN; res <= DERITIUM; res++)
+					for (int res = RESOURCES::TITAN; res <= RESOURCES::DERITIUM; res++)
 					{
 						if (systems.at(x+(y)*STARMAP_SECTORS_HCOUNT).GetProduction()->GetResourceDistributor(res))
 						{
@@ -764,7 +764,7 @@ void CAssemblyList::ClearAssemblyList(const CPoint &ko, std::vector<CSystem>& sy
 	// gecancelt
 
 	// Überprüfen, ob wir genügend Rohstoffe in dem Lager haben
-	for (int res = TITAN; res <= DERITIUM; res++)
+	for (int res = RESOURCES::TITAN; res <= RESOURCES::DERITIUM; res++)
 	{
 		UINT nNeededRes = this->GetNeededResourceInAssemblyList(0, res);
 		if (*system->GetResourceStorages(res) + resourcesFromRoutes[res] < nNeededRes && nResInDistSys[res] < nNeededRes)
@@ -776,7 +776,7 @@ void CAssemblyList::ClearAssemblyList(const CPoint &ko, std::vector<CSystem>& sy
 	}
 
 	// Wenn er baubar ist, dann die Ressourcen entfernen
-	for (int res = TITAN; res <= DERITIUM; res++)
+	for (int res = RESOURCES::TITAN; res <= RESOURCES::DERITIUM; res++)
 	{
 		UINT nNeededRes = this->GetNeededResourceInAssemblyList(0, res);
 		if (nNeededRes > 0)

@@ -15,7 +15,7 @@ IMPLEMENT_DYNCREATE(CTradeBottomView, CBottomBaseView)
 
 CTradeBottomView::CTradeBottomView() :
 	m_iNumberOfHistoryRounds(20),
-	m_iWhichRessource(TITAN),
+	m_iWhichRessource(RESOURCES::TITAN),
 	m_bDrawLittleRects(FALSE)
 {
 	m_pSmallButton = NULL;
@@ -96,11 +96,11 @@ void CTradeBottomView::OnDraw(CDC* dc)
 	Gdiplus::Color resColor;
 	switch(m_iWhichRessource)
 	{
-	case TITAN: resName = CLoc::GetString("TITAN");			resColor.SetFromCOLORREF(RGB(186,186,186)); break;
-	case DEUTERIUM: resName = CLoc::GetString("DEUTERIUM"); resColor.SetFromCOLORREF(RGB(255,81,90)); break;
-	case DURANIUM: resName = CLoc::GetString("DURANIUM");	resColor.SetFromCOLORREF(RGB(132,198,127)); break;
-	case CRYSTAL: resName = CLoc::GetString("CRYSTAL");		resColor.SetFromCOLORREF(RGB(153,227,255)); break;
-	case IRIDIUM: resName = CLoc::GetString("IRIDIUM");		resColor.SetFromCOLORREF(RGB(255,189,76)); break;
+	case RESOURCES::TITAN: resName = CLoc::GetString("TITAN");			resColor.SetFromCOLORREF(RGB(186,186,186)); break;
+	case RESOURCES::DEUTERIUM: resName = CLoc::GetString("DEUTERIUM"); resColor.SetFromCOLORREF(RGB(255,81,90)); break;
+	case RESOURCES::DURANIUM: resName = CLoc::GetString("DURANIUM");	resColor.SetFromCOLORREF(RGB(132,198,127)); break;
+	case RESOURCES::CRYSTAL: resName = CLoc::GetString("CRYSTAL");		resColor.SetFromCOLORREF(RGB(153,227,255)); break;
+	case RESOURCES::IRIDIUM: resName = CLoc::GetString("IRIDIUM");		resColor.SetFromCOLORREF(RGB(255,189,76)); break;
 	}
 
 	USHORT start;
@@ -190,7 +190,7 @@ void CTradeBottomView::OnDraw(CDC* dc)
 
 	// ganzen kleine Buttons darstellen
 	fontBrush.SetColor(this->GetFontColorForSmallButton());
-	for (int i = TITAN; i <= IRIDIUM; i++)
+	for (int i = RESOURCES::TITAN; i <= RESOURCES::IRIDIUM; i++)
 		g.DrawImage(m_pSmallButton, r.right-120, 50+i*32, 120, 30);
 	g.DrawString(CComBSTR(CLoc::GetString("TITAN")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.right-120, 50, 120, 30), &fontFormat, &fontBrush);
 	g.DrawString(CComBSTR(CLoc::GetString("DEUTERIUM")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(r.right-120, 82, 120, 30), &fontFormat, &fontBrush);
@@ -243,7 +243,7 @@ void CTradeBottomView::OnInitialUpdate()
 
 	// TODO: Add your specialized code here and/or call the base class
 	m_iNumberOfHistoryRounds = 20;
-	m_iWhichRessource = TITAN;
+	m_iWhichRessource = RESOURCES::TITAN;
 	m_bDrawLittleRects = FALSE;
 }
 
@@ -282,7 +282,7 @@ void CTradeBottomView::OnLButtonDown(UINT nFlags, CPoint point)
 	CRect r;
 	r.SetRect(0,0,m_TotalSize.cx,m_TotalSize.cy);
 	// checken ob wir uns eine andere Ressource anschauen wollen
-	for (int i = TITAN; i <= IRIDIUM; i++)
+	for (int i = RESOURCES::TITAN; i <= RESOURCES::IRIDIUM; i++)
 		if (CRect(r.right-120,50+i*32,r.right,80+i*32).PtInRect(point))
 		{
 			m_iWhichRessource = i;

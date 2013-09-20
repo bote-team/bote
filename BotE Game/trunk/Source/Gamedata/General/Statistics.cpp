@@ -33,7 +33,7 @@ void CStatistics::Serialize(CArchive &ar)
 	if (ar.IsStoring())
 	{
 		ar << m_byAverageTechLevel;
-		for (int i = TITAN; i <= DERITIUM; i++)
+		for (int i = RESOURCES::TITAN; i <= RESOURCES::DERITIUM; i++)
 			ar << m_nAverageResourceStorages[i];
 		ar << m_mShipPowers.size();
 		for (map<CString, UINT>::const_iterator it = m_mShipPowers.begin(); it != m_mShipPowers.end(); ++it)
@@ -43,7 +43,7 @@ void CStatistics::Serialize(CArchive &ar)
 	else if (ar.IsLoading())
 	{
 		ar >> m_byAverageTechLevel;
-		for (int i = TITAN; i <= DERITIUM; i++)
+		for (int i = RESOURCES::TITAN; i <= RESOURCES::DERITIUM; i++)
 			ar >> m_nAverageResourceStorages[i];
 
 		m_mShipPowers.clear();
@@ -119,7 +119,7 @@ void CStatistics::GetDemographicsProductivity(const CString& sRaceID, int& nPlac
 			if (pDoc->GetSystem(x,y).GetOwnerOfSystem() != "")
 			{
 				float fResProd = 0.0f;
-				for (int i = TITAN; i <= IRIDIUM; i++)
+				for (int i = RESOURCES::TITAN; i <= RESOURCES::IRIDIUM; i++)
 					fResProd += pDoc->GetSystem(x,y).GetProduction()->GetResourceProd(i);
 				fResProd /= 2.5;
 				mMap[pDoc->GetSystem(x,y).GetOwnerOfSystem()] += pDoc->GetSystem(x,y).GetProduction()->GetIndustryProd() + fResProd;
@@ -377,7 +377,7 @@ void CStatistics::CalcAverageResourceStorages(CBotEDoc* pDoc)
 	// Wieviel Imperien gibt es noch? Hier anhand der Anzahl der Systeme geschaut
 	USHORT nRaces = 0;
 	map<CString, CMajor*>* pmMajors = pDoc->GetRaceCtrl()->GetMajors();
-	for (int i = TITAN; i <= DERITIUM; i++)
+	for (int i = RESOURCES::TITAN; i <= RESOURCES::DERITIUM; i++)
 	{
 		m_nAverageResourceStorages[i] = 0;
 		for (map<CString, CMajor*>::const_iterator it = pmMajors->begin(); it != pmMajors->end(); ++it)
@@ -399,7 +399,7 @@ void CStatistics::Reset(void)
 {
 	m_byAverageTechLevel = 0;
 
-	for (int i = TITAN; i <= DERITIUM; i++)
+	for (int i = RESOURCES::TITAN; i <= RESOURCES::DERITIUM; i++)
 		m_nAverageResourceStorages[i] = 0;
 
 	m_mShipPowers.clear();

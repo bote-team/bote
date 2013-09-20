@@ -267,7 +267,7 @@ public:
 
 	/// Diese Funktion berechnet die vorhandenen Rohstoffe der Planeten im Sektor. Übergebn wird dafür ein Feld für
 	/// die Ressourcen <code>res</code>.
-	void GetAvailableResources(BOOLEAN bResources[DERITIUM + 1], BOOLEAN bOnlyColonized = true);
+	void GetAvailableResources(BOOLEAN bResources[RESOURCES::DERITIUM + 1], BOOLEAN bOnlyColonized = true);
 
 // zum Schreiben der Membervariablen
 	/// Diese Funktion setzt die Koordinaten des Sektors und übernimmt dabei die beiden Koordinatenwerte.

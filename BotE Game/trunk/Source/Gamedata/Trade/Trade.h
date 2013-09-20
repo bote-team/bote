@@ -127,11 +127,11 @@ private:
 	CTradeHistory m_TradeHistory;
 
 	// Der aktuelle Preis der jeweiligen Ressource an der globalen Handelsbörse
-	USHORT m_iRessourcePrice[IRIDIUM + 1];
+	USHORT m_iRessourcePrice[RESOURCES::IRIDIUM + 1];
 
 	// Der Preis der Ressource zu Beginn einer Runde (wird genommen, wenn wir Bauaufträge kaufen, sonst könnte man
 	// in der gleichen Runde den Preis drücken, dann billig kaufen und dann den Preis wieder hochtreiben)
-	USHORT m_iRessourcePriceAtRoundStart[IRIDIUM + 1];
+	USHORT m_iRessourcePriceAtRoundStart[RESOURCES::IRIDIUM + 1];
 
 	// Die Anzahl der jeweiligen Ressource die wir kaufen oder verkaufen möchten (negative Werte bedeuten verkaufen)
 	CArray<TradeStruct,TradeStruct> m_TradeActions;
@@ -144,13 +144,13 @@ private:
 
 	// Steuergelder auf Ressourcen nur durch Sofortkauf von Bauaufträgen, nicht die Steuern, die wir durch normalen
 	// Handel machen
-	USHORT m_iTaxes[IRIDIUM + 1];
+	USHORT m_iTaxes[RESOURCES::IRIDIUM + 1];
 
 	// Welche Majorrace besitzt ein Monopol auf die jeweilige Ressource
-	static CString m_sMonopolOwner[IRIDIUM + 1];
+	static CString m_sMonopolOwner[RESOURCES::IRIDIUM + 1];
 
 	// Wollen wir ein Monopol kaufen? Wird bei neuer Runde abgefragt. Ist der Wert darin ungleich NULL, dann wollen wir
 	// eins kaufen. Der Wert gibt auch den Kaufpreis an
-	double m_dMonopolBuy[IRIDIUM + 1];
+	double m_dMonopolBuy[RESOURCES::IRIDIUM + 1];
 };
 

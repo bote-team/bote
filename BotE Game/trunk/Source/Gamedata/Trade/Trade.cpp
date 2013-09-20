@@ -34,7 +34,7 @@ void CTrade::Serialize(CArchive &ar)
 	{
 		ar << m_iQuantity;
 		ar << m_fTax;
-		for (int i = 0; i <= IRIDIUM; i++)
+		for (int i = 0; i <= RESOURCES::IRIDIUM; i++)
 		{
 			ar << m_iRessourcePrice[i];
 			ar << m_iRessourcePriceAtRoundStart[i];
@@ -56,7 +56,7 @@ void CTrade::Serialize(CArchive &ar)
 		int number = 0;
 		ar >> m_iQuantity;
 		ar >> m_fTax;
-		for (int i = 0; i <= IRIDIUM; i++)
+		for (int i = 0; i <= RESOURCES::IRIDIUM; i++)
 		{
 			ar >> m_iRessourcePrice[i];
 			ar >> m_iRessourcePriceAtRoundStart[i];
@@ -195,9 +195,9 @@ void CTrade::CalculateTradeActions(CMajor* pMajor, std::vector<CSystem>& systems
 
 	std::vector<std::vector<std::vector<int>>> sum(
 		STARMAP_SECTORS_HCOUNT, std::vector<std::vector<int>>
-			(STARMAP_SECTORS_VCOUNT, std::vector<int>(IRIDIUM + 1, 0))
+			(STARMAP_SECTORS_VCOUNT, std::vector<int>(RESOURCES::IRIDIUM + 1, 0))
 	);
-	//	[STARMAP_SECTORS_HCOUNT][STARMAP_SECTORS_VCOUNT][IRIDIUM + 1] = {0};
+	//	[STARMAP_SECTORS_HCOUNT][STARMAP_SECTORS_VCOUNT][RESOURCES::IRIDIUM + 1] = {0};
 
 	BOOLEAN didSome = FALSE;
 	for (int i = 0; i < m_TradeActions.GetSize(); )
@@ -227,17 +227,17 @@ void CTrade::CalculateTradeActions(CMajor* pMajor, std::vector<CSystem>& systems
 	if (didSome)
 		for (int x = 0; x < STARMAP_SECTORS_HCOUNT; x++)
 			for (int y = 0; y < STARMAP_SECTORS_VCOUNT; y++)
-				for (int i = TITAN; i <= IRIDIUM; i++)
+				for (int i = RESOURCES::TITAN; i <= RESOURCES::IRIDIUM; i++)
 					if (sum[x][y][i] > 0)
 					{
 						CString resName;
 						switch(i)
 						{
-						case TITAN: resName = CLoc::GetString("TITAN"); break;
-						case DEUTERIUM: resName = CLoc::GetString("DEUTERIUM"); break;
-						case DURANIUM: resName = CLoc::GetString("DURANIUM"); break;
-						case CRYSTAL: resName = CLoc::GetString("CRYSTAL"); break;
-						case IRIDIUM: resName = CLoc::GetString("IRIDIUM"); break;
+						case RESOURCES::TITAN: resName = CLoc::GetString("TITAN"); break;
+						case RESOURCES::DEUTERIUM: resName = CLoc::GetString("DEUTERIUM"); break;
+						case RESOURCES::DURANIUM: resName = CLoc::GetString("DURANIUM"); break;
+						case RESOURCES::CRYSTAL: resName = CLoc::GetString("CRYSTAL"); break;
+						case RESOURCES::IRIDIUM: resName = CLoc::GetString("IRIDIUM"); break;
 						}
 						CString s;
 						s.Format("%d %s",sum[x][y][i],resName);
@@ -255,8 +255,8 @@ void CTrade::CalculatePrices(map<CString, CMajor*>* pmMajors, CMajor* pCurMajor)
 
 	// Der Preis einer anderen Börse kann natürlich nur miteingerechnet werden, wenn wir diese Hauptrasse
 	// kennen.
-	float newPrices[IRIDIUM + 1];
-	for (int j = TITAN; j <= IRIDIUM; j++)
+	float newPrices[RESOURCES::IRIDIUM + 1];
+	for (int j = RESOURCES::TITAN; j <= RESOURCES::IRIDIUM; j++)
 	{
 		newPrices[j] = pCurMajor->GetTrade()->GetRessourcePrice()[j];	// mit eigenem Preis initialisieren
 		USHORT count = 1;						// Zählvariable
@@ -284,15 +284,15 @@ void CTrade::Reset(void)
 
 	// Standardpreise/Startpreise für die Ressourcen festlegen (erstmal genauso, wie wieviel auch die Ressourcen kosten
 	// würden, wenn wir einen Bauauftrag kaufen)
-	for (int i = TITAN; i <= IRIDIUM; i++)
+	for (int i = RESOURCES::TITAN; i <= RESOURCES::IRIDIUM; i++)
 	{
 		switch(i)
 		{
-		case TITAN:		m_iRessourcePrice[i] = 800; break;
-		case DEUTERIUM: m_iRessourcePrice[i] = 500; break;
-		case DURANIUM:	m_iRessourcePrice[i] = 1000;break;
-		case CRYSTAL:	m_iRessourcePrice[i] = 2000;break;
-		case IRIDIUM:	m_iRessourcePrice[i] = 3000;break;
+		case RESOURCES::TITAN:		m_iRessourcePrice[i] = 800; break;
+		case RESOURCES::DEUTERIUM: m_iRessourcePrice[i] = 500; break;
+		case RESOURCES::DURANIUM:	m_iRessourcePrice[i] = 1000;break;
+		case RESOURCES::CRYSTAL:	m_iRessourcePrice[i] = 2000;break;
+		case RESOURCES::IRIDIUM:	m_iRessourcePrice[i] = 3000;break;
 		}
 		m_iRessourcePriceAtRoundStart[i] = m_iRessourcePrice[i];
 		m_iTaxes[i] = 0;

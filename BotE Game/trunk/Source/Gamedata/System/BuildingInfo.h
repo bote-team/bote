@@ -103,26 +103,26 @@ public:
 	{
 		switch(type)
 		{
-		case PLANETCLASS_A: return (m_PlanetTypes & PLANETTYPE_A) == PLANETTYPE_A;
-		case PLANETCLASS_B:	return (m_PlanetTypes & PLANETTYPE_B) == PLANETTYPE_B;
-		case PLANETCLASS_C:	return (m_PlanetTypes & PLANETTYPE_C) == PLANETTYPE_C;
-		case PLANETCLASS_E:	return (m_PlanetTypes & PLANETTYPE_E) == PLANETTYPE_E;
-		case PLANETCLASS_F:	return (m_PlanetTypes & PLANETTYPE_F) == PLANETTYPE_F;
-		case PLANETCLASS_G:	return (m_PlanetTypes & PLANETTYPE_G) == PLANETTYPE_G;
-		case PLANETCLASS_H:	return (m_PlanetTypes & PLANETTYPE_H) == PLANETTYPE_H;
-		case PLANETCLASS_I:	return (m_PlanetTypes & PLANETTYPE_I) == PLANETTYPE_I;
-		case PLANETCLASS_J:	return (m_PlanetTypes & PLANETTYPE_J) == PLANETTYPE_J;
-		case PLANETCLASS_K:	return (m_PlanetTypes & PLANETTYPE_K) == PLANETTYPE_K;
-		case PLANETCLASS_L:	return (m_PlanetTypes & PLANETTYPE_L) == PLANETTYPE_L;
-		case PLANETCLASS_M:	return (m_PlanetTypes & PLANETTYPE_M) == PLANETTYPE_M;
-		case PLANETCLASS_N:	return (m_PlanetTypes & PLANETTYPE_N) == PLANETTYPE_N;
-		case PLANETCLASS_O:	return (m_PlanetTypes & PLANETTYPE_O) == PLANETTYPE_O;
-		case PLANETCLASS_P:	return (m_PlanetTypes & PLANETTYPE_P) == PLANETTYPE_P;
-		case PLANETCLASS_Q:	return (m_PlanetTypes & PLANETTYPE_Q) == PLANETTYPE_Q;
-		case PLANETCLASS_R:	return (m_PlanetTypes & PLANETTYPE_R) == PLANETTYPE_R;
-		case PLANETCLASS_S:	return (m_PlanetTypes & PLANETTYPE_S) == PLANETTYPE_S;
-		case PLANETCLASS_T:	return (m_PlanetTypes & PLANETTYPE_T) == PLANETTYPE_T;
-		case PLANETCLASS_Y:	return (m_PlanetTypes & PLANETTYPE_Y) == PLANETTYPE_Y;
+		case PLANET_CLASSES::PLANETCLASS_A: return (m_PlanetTypes & PLANETTYPE_A) == PLANETTYPE_A;
+		case PLANET_CLASSES::PLANETCLASS_B:	return (m_PlanetTypes & PLANETTYPE_B) == PLANETTYPE_B;
+		case PLANET_CLASSES::PLANETCLASS_C:	return (m_PlanetTypes & PLANETTYPE_C) == PLANETTYPE_C;
+		case PLANET_CLASSES::PLANETCLASS_E:	return (m_PlanetTypes & PLANETTYPE_E) == PLANETTYPE_E;
+		case PLANET_CLASSES::PLANETCLASS_F:	return (m_PlanetTypes & PLANETTYPE_F) == PLANETTYPE_F;
+		case PLANET_CLASSES::PLANETCLASS_G:	return (m_PlanetTypes & PLANETTYPE_G) == PLANETTYPE_G;
+		case PLANET_CLASSES::PLANETCLASS_H:	return (m_PlanetTypes & PLANETTYPE_H) == PLANETTYPE_H;
+		case PLANET_CLASSES::PLANETCLASS_I:	return (m_PlanetTypes & PLANETTYPE_I) == PLANETTYPE_I;
+		case PLANET_CLASSES::PLANETCLASS_J:	return (m_PlanetTypes & PLANETTYPE_J) == PLANETTYPE_J;
+		case PLANET_CLASSES::PLANETCLASS_K:	return (m_PlanetTypes & PLANETTYPE_K) == PLANETTYPE_K;
+		case PLANET_CLASSES::PLANETCLASS_L:	return (m_PlanetTypes & PLANETTYPE_L) == PLANETTYPE_L;
+		case PLANET_CLASSES::PLANETCLASS_M:	return (m_PlanetTypes & PLANETTYPE_M) == PLANETTYPE_M;
+		case PLANET_CLASSES::PLANETCLASS_N:	return (m_PlanetTypes & PLANETTYPE_N) == PLANETTYPE_N;
+		case PLANET_CLASSES::PLANETCLASS_O:	return (m_PlanetTypes & PLANETTYPE_O) == PLANETTYPE_O;
+		case PLANET_CLASSES::PLANETCLASS_P:	return (m_PlanetTypes & PLANETTYPE_P) == PLANETTYPE_P;
+		case PLANET_CLASSES::PLANETCLASS_Q:	return (m_PlanetTypes & PLANETTYPE_Q) == PLANETTYPE_Q;
+		case PLANET_CLASSES::PLANETCLASS_R:	return (m_PlanetTypes & PLANETTYPE_R) == PLANETTYPE_R;
+		case PLANET_CLASSES::PLANETCLASS_S:	return (m_PlanetTypes & PLANETTYPE_S) == PLANETTYPE_S;
+		case PLANET_CLASSES::PLANETCLASS_T:	return (m_PlanetTypes & PLANETTYPE_T) == PLANETTYPE_T;
+		case PLANET_CLASSES::PLANETCLASS_Y:	return (m_PlanetTypes & PLANETTYPE_Y) == PLANETTYPE_Y;
 		default: return FALSE;
 		}
 	}
@@ -275,26 +275,26 @@ public:
 	{
 		switch (type)
 		{
-		case PLANETCLASS_A:	SetAttributes(allow, PLANETTYPE_A, m_PlanetTypes);	break;
-		case PLANETCLASS_B:	SetAttributes(allow, PLANETTYPE_B, m_PlanetTypes);	break;
-		case PLANETCLASS_C:	SetAttributes(allow, PLANETTYPE_C, m_PlanetTypes);	break;
-		case PLANETCLASS_E:	SetAttributes(allow, PLANETTYPE_E, m_PlanetTypes);	break;
-		case PLANETCLASS_F:	SetAttributes(allow, PLANETTYPE_F, m_PlanetTypes);	break;
-		case PLANETCLASS_G:	SetAttributes(allow, PLANETTYPE_G, m_PlanetTypes);	break;
-		case PLANETCLASS_H:	SetAttributes(allow, PLANETTYPE_H, m_PlanetTypes);	break;
-		case PLANETCLASS_I:	SetAttributes(allow, PLANETTYPE_I, m_PlanetTypes);	break;
-		case PLANETCLASS_J:	SetAttributes(allow, PLANETTYPE_J, m_PlanetTypes);	break;
-		case PLANETCLASS_K:	SetAttributes(allow, PLANETTYPE_K, m_PlanetTypes);	break;
-		case PLANETCLASS_L:	SetAttributes(allow, PLANETTYPE_L, m_PlanetTypes);	break;
-		case PLANETCLASS_M:	SetAttributes(allow, PLANETTYPE_M, m_PlanetTypes);	break;
-		case PLANETCLASS_N:	SetAttributes(allow, PLANETTYPE_N, m_PlanetTypes);	break;
-		case PLANETCLASS_O:	SetAttributes(allow, PLANETTYPE_O, m_PlanetTypes);	break;
-		case PLANETCLASS_P:	SetAttributes(allow, PLANETTYPE_P, m_PlanetTypes);	break;
-		case PLANETCLASS_Q:	SetAttributes(allow, PLANETTYPE_Q, m_PlanetTypes);	break;
-		case PLANETCLASS_R:	SetAttributes(allow, PLANETTYPE_R, m_PlanetTypes);	break;
-		case PLANETCLASS_S:	SetAttributes(allow, PLANETTYPE_S, m_PlanetTypes);	break;
-		case PLANETCLASS_T:	SetAttributes(allow, PLANETTYPE_T, m_PlanetTypes);	break;
-		case PLANETCLASS_Y:	SetAttributes(allow, PLANETTYPE_Y, m_PlanetTypes);	break;
+		case PLANET_CLASSES::PLANETCLASS_A:	SetAttributes(allow, PLANETTYPE_A, m_PlanetTypes);	break;
+		case PLANET_CLASSES::PLANETCLASS_B:	SetAttributes(allow, PLANETTYPE_B, m_PlanetTypes);	break;
+		case PLANET_CLASSES::PLANETCLASS_C:	SetAttributes(allow, PLANETTYPE_C, m_PlanetTypes);	break;
+		case PLANET_CLASSES::PLANETCLASS_E:	SetAttributes(allow, PLANETTYPE_E, m_PlanetTypes);	break;
+		case PLANET_CLASSES::PLANETCLASS_F:	SetAttributes(allow, PLANETTYPE_F, m_PlanetTypes);	break;
+		case PLANET_CLASSES::PLANETCLASS_G:	SetAttributes(allow, PLANETTYPE_G, m_PlanetTypes);	break;
+		case PLANET_CLASSES::PLANETCLASS_H:	SetAttributes(allow, PLANETTYPE_H, m_PlanetTypes);	break;
+		case PLANET_CLASSES::PLANETCLASS_I:	SetAttributes(allow, PLANETTYPE_I, m_PlanetTypes);	break;
+		case PLANET_CLASSES::PLANETCLASS_J:	SetAttributes(allow, PLANETTYPE_J, m_PlanetTypes);	break;
+		case PLANET_CLASSES::PLANETCLASS_K:	SetAttributes(allow, PLANETTYPE_K, m_PlanetTypes);	break;
+		case PLANET_CLASSES::PLANETCLASS_L:	SetAttributes(allow, PLANETTYPE_L, m_PlanetTypes);	break;
+		case PLANET_CLASSES::PLANETCLASS_M:	SetAttributes(allow, PLANETTYPE_M, m_PlanetTypes);	break;
+		case PLANET_CLASSES::PLANETCLASS_N:	SetAttributes(allow, PLANETTYPE_N, m_PlanetTypes);	break;
+		case PLANET_CLASSES::PLANETCLASS_O:	SetAttributes(allow, PLANETTYPE_O, m_PlanetTypes);	break;
+		case PLANET_CLASSES::PLANETCLASS_P:	SetAttributes(allow, PLANETTYPE_P, m_PlanetTypes);	break;
+		case PLANET_CLASSES::PLANETCLASS_Q:	SetAttributes(allow, PLANETTYPE_Q, m_PlanetTypes);	break;
+		case PLANET_CLASSES::PLANETCLASS_R:	SetAttributes(allow, PLANETTYPE_R, m_PlanetTypes);	break;
+		case PLANET_CLASSES::PLANETCLASS_S:	SetAttributes(allow, PLANETTYPE_S, m_PlanetTypes);	break;
+		case PLANET_CLASSES::PLANETCLASS_T:	SetAttributes(allow, PLANETTYPE_T, m_PlanetTypes);	break;
+		case PLANET_CLASSES::PLANETCLASS_Y:	SetAttributes(allow, PLANETTYPE_Y, m_PlanetTypes);	break;
 		}
 	}
 
@@ -579,7 +579,7 @@ private:
 	BOOLEAN m_bNeverReady;
 
 	// new in ALPHA5
-	BOOLEAN m_bResourceDistributor[DERITIUM + 1];	///< Ressourcenverteiler (Nahrung, Titan, Deuterium, Duranium, Kristalle, Iridium, Deritium)
+	BOOLEAN m_bResourceDistributor[RESOURCES::DERITIUM + 1];	///< Ressourcenverteiler (Nahrung, Titan, Deuterium, Duranium, Kristalle, Iridium, Deritium)
 	short m_iNeededSystems;							///< Mindestanzahl eigener Systeme um Gebäude bauen zu können
 };
 

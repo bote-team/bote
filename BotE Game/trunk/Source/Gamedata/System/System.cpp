@@ -487,12 +487,12 @@ UINT CSystem::GetResourceStore(USHORT res) const
 {
 	switch (res)
 	{
-	case TITAN: {return this->GetTitanStore();}
-	case DEUTERIUM: {return this->GetDeuteriumStore();}
-	case DURANIUM: {return this->GetDuraniumStore();}
-	case CRYSTAL: {return this->GetCrystalStore();}
-	case IRIDIUM: {return this->GetIridiumStore();}
-	case DERITIUM: {return this->GetDeritiumStore();}
+	case RESOURCES::TITAN: {return this->GetTitanStore();}
+	case RESOURCES::DEUTERIUM: {return this->GetDeuteriumStore();}
+	case RESOURCES::DURANIUM: {return this->GetDuraniumStore();}
+	case RESOURCES::CRYSTAL: {return this->GetCrystalStore();}
+	case RESOURCES::IRIDIUM: {return this->GetIridiumStore();}
+	case RESOURCES::DERITIUM: {return this->GetDeritiumStore();}
 	}
 	return 0;
 }
@@ -502,12 +502,12 @@ UINT* CSystem::GetResourceStorages(USHORT res)
 {
 	switch (res)
 	{
-	case TITAN: {return &m_iTitanStore;}
-	case DEUTERIUM: {return &m_iDeuteriumStore;}
-	case DURANIUM: {return &m_iDuraniumStore;}
-	case CRYSTAL: {return &m_iCrystalStore;}
-	case IRIDIUM: {return &m_iIridiumStore;}
-	case DERITIUM: {return &m_iDeritiumStore;}
+	case RESOURCES::TITAN: {return &m_iTitanStore;}
+	case RESOURCES::DEUTERIUM: {return &m_iDeuteriumStore;}
+	case RESOURCES::DURANIUM: {return &m_iDuraniumStore;}
+	case RESOURCES::CRYSTAL: {return &m_iCrystalStore;}
+	case RESOURCES::IRIDIUM: {return &m_iIridiumStore;}
+	case RESOURCES::DERITIUM: {return &m_iDeritiumStore;}
 	}
 	return 0;
 }
@@ -638,12 +638,12 @@ void CSystem::SetResourceStore(USHORT res, int resAdd)
 	// zum Lager hinzufügen/entfernen
 	switch (res)
 	{
-	case TITAN:		{m_iTitanStore += resAdd; break;}
-	case DEUTERIUM: {m_iDeuteriumStore += resAdd; break;}
-	case DURANIUM:	{m_iDuraniumStore += resAdd; break;}
-	case CRYSTAL:	{m_iCrystalStore += resAdd; break;}
-	case IRIDIUM:	{m_iIridiumStore += resAdd; break;}
-	case DERITIUM:	{m_iDeritiumStore += resAdd; break;}
+	case RESOURCES::TITAN:		{m_iTitanStore += resAdd; break;}
+	case RESOURCES::DEUTERIUM: {m_iDeuteriumStore += resAdd; break;}
+	case RESOURCES::DURANIUM:	{m_iDuraniumStore += resAdd; break;}
+	case RESOURCES::CRYSTAL:	{m_iCrystalStore += resAdd; break;}
+	case RESOURCES::IRIDIUM:	{m_iIridiumStore += resAdd; break;}
+	case RESOURCES::DERITIUM:	{m_iDeritiumStore += resAdd; break;}
 	}
 }
 
@@ -829,15 +829,15 @@ void CSystem::CalculateVariables(BuildingInfoArray* buildingInfos, CResearchInfo
 	m_Production.m_iCreditsProd += CreditsFromTradeRoutes();
 
 	// Besitzt jemand ein Monopol auf eine Ressource, so verdoppelt sich seine Produktion
-	if (sMonopolOwner[TITAN] == m_sOwnerOfSystem)
+	if (sMonopolOwner[RESOURCES::TITAN] == m_sOwnerOfSystem)
 		m_Production.m_iTitanProd *= 2;
-	if (sMonopolOwner[DEUTERIUM] == m_sOwnerOfSystem)
+	if (sMonopolOwner[RESOURCES::DEUTERIUM] == m_sOwnerOfSystem)
 		m_Production.m_iDeuteriumProd *= 2;
-	if (sMonopolOwner[DURANIUM] == m_sOwnerOfSystem)
+	if (sMonopolOwner[RESOURCES::DURANIUM] == m_sOwnerOfSystem)
 		m_Production.m_iDuraniumProd *= 2;
-	if (sMonopolOwner[CRYSTAL] == m_sOwnerOfSystem)
+	if (sMonopolOwner[RESOURCES::CRYSTAL] == m_sOwnerOfSystem)
 		m_Production.m_iCrystalProd *= 2;
-	if (sMonopolOwner[IRIDIUM] == m_sOwnerOfSystem)
+	if (sMonopolOwner[RESOURCES::IRIDIUM] == m_sOwnerOfSystem)
 		m_Production.m_iIridiumProd *= 2;
 
 	// Die Boni auf die einzelnen Produktionen berechnen
@@ -891,15 +891,15 @@ void CSystem::CalculateVariables(BuildingInfoArray* buildingInfos, CResearchInfo
 		if (planets.at(i).GetColonized() == TRUE && planets.at(i).GetCurrentHabitant() > 0.0f)
 		{
 			// pro Planetengröße gibt es 25% Bonus
-			if (planets.at(i).GetBoni()[TITAN] == TRUE)
+			if (planets.at(i).GetBoni()[RESOURCES::TITAN] == TRUE)
 				tmpTitanBoni	+= (planets.at(i).GetSize()+1) * 25;
-			if (planets.at(i).GetBoni()[DEUTERIUM] == TRUE)
+			if (planets.at(i).GetBoni()[RESOURCES::DEUTERIUM] == TRUE)
 				tmpDeuteriumBoni+= (planets.at(i).GetSize()+1) * 25;
-			if (planets.at(i).GetBoni()[DURANIUM] == TRUE)
+			if (planets.at(i).GetBoni()[RESOURCES::DURANIUM] == TRUE)
 				tmpDuraniumBoni	+= (planets.at(i).GetSize()+1) * 25;
-			if (planets.at(i).GetBoni()[CRYSTAL] == TRUE)
+			if (planets.at(i).GetBoni()[RESOURCES::CRYSTAL] == TRUE)
 				tmpCrystalBoni	+= (planets.at(i).GetSize()+1) * 25;
-			if (planets.at(i).GetBoni()[IRIDIUM] == TRUE)
+			if (planets.at(i).GetBoni()[RESOURCES::IRIDIUM] == TRUE)
 				tmpIridiumBoni	+= (planets.at(i).GetSize()+1) * 25;
 			if (planets.at(i).GetBoni()[6] == TRUE)	// food
 				tmpFoodBoni		+= (planets.at(i).GetSize()+1) * 25;
@@ -907,7 +907,7 @@ void CSystem::CalculateVariables(BuildingInfoArray* buildingInfos, CResearchInfo
 				tmpEnergyBoni	+= (planets.at(i).GetSize()+1) * 25;
 			// Menge des abgebauten Deritiums mit der Anzahl der kolonisierten Planeten mit Deritiumvorkommen
 			// multiplizieren
-			if (planets.at(i).GetBoni()[DERITIUM] == TRUE)
+			if (planets.at(i).GetBoni()[RESOURCES::DERITIUM] == TRUE)
 				deritiumProdMulti += 1;
 		}
 	}
@@ -1781,7 +1781,7 @@ void CSystem::BuildBuildingsForMinorRace(CSector* sector, BuildingInfoArray* bui
 	if (m_Buildings.GetSize() < 5)
 	{
 		// in exist[.] steht dann, ob wir einen Rohstoff abbauen können, wenn ja, dann können wir auch das Gebäude bauen
-		BOOLEAN exist[DERITIUM + 1] = {0};
+		BOOLEAN exist[RESOURCES::DERITIUM + 1] = {0};
 		sector->GetAvailableResources(exist, true);
 
 		// Schauen, welche Gebäudestufe ungefähr in dem System steht
@@ -1899,23 +1899,23 @@ void CSystem::BuildBuildingsForMinorRace(CSector* sector, BuildingInfoArray* bui
 				{
 					runningNumber[4] = buildingInfo->GetAt(i).GetRunningNumber();
 				}
-				else if (buildingInfo->GetAt(i).GetTitanProd() > 0 && buildingInfo->GetAt(i).GetWorker() == TRUE && exist[TITAN] == TRUE)
+				else if (buildingInfo->GetAt(i).GetTitanProd() > 0 && buildingInfo->GetAt(i).GetWorker() == TRUE && exist[RESOURCES::TITAN] == TRUE)
 				{
 					runningNumber[5] = buildingInfo->GetAt(i).GetRunningNumber();
 				}
-				else if (buildingInfo->GetAt(i).GetDeuteriumProd() > 0 && buildingInfo->GetAt(i).GetWorker() == TRUE && exist[DEUTERIUM] == TRUE)
+				else if (buildingInfo->GetAt(i).GetDeuteriumProd() > 0 && buildingInfo->GetAt(i).GetWorker() == TRUE && exist[RESOURCES::DEUTERIUM] == TRUE)
 				{
 					runningNumber[6] = buildingInfo->GetAt(i).GetRunningNumber();
 				}
-				else if (buildingInfo->GetAt(i).GetDuraniumProd() > 0 && buildingInfo->GetAt(i).GetWorker() == TRUE && exist[DURANIUM] == TRUE)
+				else if (buildingInfo->GetAt(i).GetDuraniumProd() > 0 && buildingInfo->GetAt(i).GetWorker() == TRUE && exist[RESOURCES::DURANIUM] == TRUE)
 				{
 					runningNumber[7] = buildingInfo->GetAt(i).GetRunningNumber();
 				}
-				else if (buildingInfo->GetAt(i).GetCrystalProd() > 0 && buildingInfo->GetAt(i).GetWorker() == TRUE && exist[CRYSTAL] == TRUE)
+				else if (buildingInfo->GetAt(i).GetCrystalProd() > 0 && buildingInfo->GetAt(i).GetWorker() == TRUE && exist[RESOURCES::CRYSTAL] == TRUE)
 				{
 					runningNumber[8] = buildingInfo->GetAt(i).GetRunningNumber();
 				}
-				else if (buildingInfo->GetAt(i).GetIridiumProd() > 0 && buildingInfo->GetAt(i).GetWorker() == TRUE && exist[IRIDIUM] == TRUE)
+				else if (buildingInfo->GetAt(i).GetIridiumProd() > 0 && buildingInfo->GetAt(i).GetWorker() == TRUE && exist[RESOURCES::IRIDIUM] == TRUE)
 				{
 					runningNumber[9] = buildingInfo->GetAt(i).GetRunningNumber();
 				}
@@ -2090,7 +2090,7 @@ void CSystem::BuildBuildingsForMinorRace(CSector* sector, BuildingInfoArray* bui
 		// Minorrace
 		this->CalculateNumberOfWorkbuildings(buildingInfo);
 		this->SetFoodStore(this->GetFoodStore() + rand()%(this->GetNumberOfWorkbuildings(WORKER::FOOD_WORKER,0,NULL) * (pMinor->GetTechnologicalProgress() + 1) * 100 + 1));
-		for (int res = TITAN; res <= IRIDIUM; res++)
+		for (int res = RESOURCES::TITAN; res <= RESOURCES::IRIDIUM; res++)
 		{
 			WORKER::Typ nWorker = (WORKER::Typ)(res + 5);
 			int resAdd = rand()%(this->GetNumberOfWorkbuildings(nWorker, 0, NULL) * (pMinor->GetTechnologicalProgress() + 1) * 100 + 1);
@@ -2148,7 +2148,7 @@ void CSystem::BuildBuildingsAfterColonization(CSector *sector, BuildingInfoArray
 		};
 
 	// in exist[.] steht dann, ob wir einen Rohstoff abbauen können, wenn ja, dann können wir auch das Gebäude bauen
-	BOOLEAN exist[DERITIUM + 1] = {0};
+	BOOLEAN exist[RESOURCES::DERITIUM + 1] = {0};
 	sector->GetAvailableResources(exist, true);
 
 	USHORT start = 0;
@@ -2625,45 +2625,45 @@ BOOLEAN CSystem::CheckPlanet(CBuildingInfo* building, CSector* sector)
 		if (planet.GetColonized())
 		{
 			//{M,O,L,P,H,Q,K,G,R,F,C,N,A,B,E,Y,I,J,S,T}
-			if (building->GetPlanetTypes(PLANETCLASS_A) == 1 && planet.GetClass() == 'A' && Ok == FALSE)	// nach A suchen
+			if (building->GetPlanetTypes(PLANET_CLASSES::PLANETCLASS_A) == 1 && planet.GetClass() == 'A' && Ok == FALSE)	// nach A suchen
 				Ok = TRUE;
-			if (building->GetPlanetTypes(PLANETCLASS_B) == 1 && planet.GetClass() == 'B' && Ok == FALSE)	// nach B suchen
+			if (building->GetPlanetTypes(PLANET_CLASSES::PLANETCLASS_B) == 1 && planet.GetClass() == 'B' && Ok == FALSE)	// nach B suchen
 				Ok = TRUE;
-			if (building->GetPlanetTypes(PLANETCLASS_C) == 1 && planet.GetClass() == 'C' && Ok == FALSE)	// nach C suchen
+			if (building->GetPlanetTypes(PLANET_CLASSES::PLANETCLASS_C) == 1 && planet.GetClass() == 'C' && Ok == FALSE)	// nach C suchen
 				Ok = TRUE;
-			if (building->GetPlanetTypes(PLANETCLASS_E) == 1 && planet.GetClass() == 'E' && Ok == FALSE)	// nach E suchen
+			if (building->GetPlanetTypes(PLANET_CLASSES::PLANETCLASS_E) == 1 && planet.GetClass() == 'E' && Ok == FALSE)	// nach E suchen
 				Ok = TRUE;	// D fehlt wieder, weil ja Asteroid
-			if (building->GetPlanetTypes(PLANETCLASS_F) == 1 && planet.GetClass() == 'F' && Ok == FALSE)	// nach F suchen
+			if (building->GetPlanetTypes(PLANET_CLASSES::PLANETCLASS_F) == 1 && planet.GetClass() == 'F' && Ok == FALSE)	// nach F suchen
 				Ok = TRUE;
-			if (building->GetPlanetTypes(PLANETCLASS_G) == 1 && planet.GetClass() == 'G' && Ok == FALSE)	// nach G suchen
+			if (building->GetPlanetTypes(PLANET_CLASSES::PLANETCLASS_G) == 1 && planet.GetClass() == 'G' && Ok == FALSE)	// nach G suchen
 				Ok = TRUE;
-			if (building->GetPlanetTypes(PLANETCLASS_H) == 1 && planet.GetClass() == 'H' && Ok == FALSE)	// nach H suchen
+			if (building->GetPlanetTypes(PLANET_CLASSES::PLANETCLASS_H) == 1 && planet.GetClass() == 'H' && Ok == FALSE)	// nach H suchen
 				Ok = TRUE;
-			if (building->GetPlanetTypes(PLANETCLASS_I) == 1 && planet.GetClass() == 'I' && Ok == FALSE)	// nach I suchen
+			if (building->GetPlanetTypes(PLANET_CLASSES::PLANETCLASS_I) == 1 && planet.GetClass() == 'I' && Ok == FALSE)	// nach I suchen
 				Ok = TRUE;
-			if (building->GetPlanetTypes(PLANETCLASS_J) == 1 && planet.GetClass() == 'J' && Ok == FALSE)	// nach J suchen
+			if (building->GetPlanetTypes(PLANET_CLASSES::PLANETCLASS_J) == 1 && planet.GetClass() == 'J' && Ok == FALSE)	// nach J suchen
 				Ok = TRUE;
-			if (building->GetPlanetTypes(PLANETCLASS_K) == 1 && planet.GetClass() == 'K' && Ok == FALSE)	// nach K suchen
+			if (building->GetPlanetTypes(PLANET_CLASSES::PLANETCLASS_K) == 1 && planet.GetClass() == 'K' && Ok == FALSE)	// nach K suchen
 				Ok = TRUE;
-			if (building->GetPlanetTypes(PLANETCLASS_L) == 1 && planet.GetClass() == 'L' && Ok == FALSE)	// nach L suchen
+			if (building->GetPlanetTypes(PLANET_CLASSES::PLANETCLASS_L) == 1 && planet.GetClass() == 'L' && Ok == FALSE)	// nach L suchen
 				Ok = TRUE;
-			if (building->GetPlanetTypes(PLANETCLASS_M) == 1 && planet.GetClass() == 'M' && Ok == FALSE)	// nach M suchen
+			if (building->GetPlanetTypes(PLANET_CLASSES::PLANETCLASS_M) == 1 && planet.GetClass() == 'M' && Ok == FALSE)	// nach M suchen
 				Ok = TRUE;
-			if (building->GetPlanetTypes(PLANETCLASS_N) == 1 && planet.GetClass() == 'N' && Ok == FALSE)	// nach N suchen
+			if (building->GetPlanetTypes(PLANET_CLASSES::PLANETCLASS_N) == 1 && planet.GetClass() == 'N' && Ok == FALSE)	// nach N suchen
 				Ok = TRUE;
-			if (building->GetPlanetTypes(PLANETCLASS_O) == 1 && planet.GetClass() == 'O' && Ok == FALSE)	// nach O suchen
+			if (building->GetPlanetTypes(PLANET_CLASSES::PLANETCLASS_O) == 1 && planet.GetClass() == 'O' && Ok == FALSE)	// nach O suchen
 				Ok = TRUE;
-			if (building->GetPlanetTypes(PLANETCLASS_P) == 1 && planet.GetClass() == 'P' && Ok == FALSE)	// nach P suchen
+			if (building->GetPlanetTypes(PLANET_CLASSES::PLANETCLASS_P) == 1 && planet.GetClass() == 'P' && Ok == FALSE)	// nach P suchen
 				Ok = TRUE;
-			if (building->GetPlanetTypes(PLANETCLASS_Q) == 1 && planet.GetClass() == 'Q' && Ok == FALSE)	// nach Q suchen
+			if (building->GetPlanetTypes(PLANET_CLASSES::PLANETCLASS_Q) == 1 && planet.GetClass() == 'Q' && Ok == FALSE)	// nach Q suchen
 				Ok = TRUE;
-			if (building->GetPlanetTypes(PLANETCLASS_R) == 1 && planet.GetClass() == 'R' && Ok == FALSE)	// nach R suchen
+			if (building->GetPlanetTypes(PLANET_CLASSES::PLANETCLASS_R) == 1 && planet.GetClass() == 'R' && Ok == FALSE)	// nach R suchen
 				Ok = TRUE;
-			if (building->GetPlanetTypes(PLANETCLASS_S) == 1 && planet.GetClass() == 'S' && Ok == FALSE)	// nach S suchen
+			if (building->GetPlanetTypes(PLANET_CLASSES::PLANETCLASS_S) == 1 && planet.GetClass() == 'S' && Ok == FALSE)	// nach S suchen
 				Ok = TRUE;
-			if (building->GetPlanetTypes(PLANETCLASS_T) == 1 && planet.GetClass() == 'T' && Ok == FALSE)	// nach T suchen
+			if (building->GetPlanetTypes(PLANET_CLASSES::PLANETCLASS_T) == 1 && planet.GetClass() == 'T' && Ok == FALSE)	// nach T suchen
 				Ok = TRUE;
-			if (building->GetPlanetTypes(PLANETCLASS_Y) == 1 && planet.GetClass() == 'Y' && Ok == FALSE)	// nach Y suchen
+			if (building->GetPlanetTypes(PLANET_CLASSES::PLANETCLASS_Y) == 1 && planet.GetClass() == 'Y' && Ok == FALSE)	// nach Y suchen
 				Ok = TRUE;
 		}
 	}
@@ -2673,7 +2673,7 @@ BOOLEAN CSystem::CheckPlanet(CBuildingInfo* building, CSector* sector)
 	{
 		for (int i = 0; i < sector->GetNumberOfPlanets(); i++)
 			if (sector->GetPlanet(i)->GetColonized())
-				deritium |= sector->GetPlanet(i)->GetBoni()[DERITIUM];
+				deritium |= sector->GetPlanet(i)->GetBoni()[RESOURCES::DERITIUM];
 		if (!deritium || !Ok)
 			return 0;
 	}

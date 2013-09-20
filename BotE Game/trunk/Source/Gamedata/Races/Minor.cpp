@@ -199,7 +199,7 @@ void CMinor::PerhapsBuildShip(CBotEDoc* pDoc)
 	for (int i = 0; i < pDoc->m_ShipInfoArray.GetSize(); i++)
 	{
 		CShipInfo* pShipInfo = &(pDoc->m_ShipInfoArray[i]);
-		if (pShipInfo->GetRace() == MINORNUMBER)
+		if (pShipInfo->GetRace() == PLAYER_RACES::MINORNUMBER)
 		{
 			if (pShipInfo->GetOnlyInSystem() == this->GetHomesystemName())
 			{
@@ -290,49 +290,49 @@ void CMinor::ConsumeResources(CBotEDoc* pDoc)
 	ASSERT(pDoc);
 
 	// bewohnbar sind:    C,F,G,H,K,L,M,N,O,P,Q,R
-	BOOLEAN exist[DERITIUM + 1] = {0};
+	BOOLEAN exist[RESOURCES::DERITIUM + 1] = {0};
 	pDoc->GetSector(m_ptKO.x, m_ptKO.y).GetAvailableResources(exist, true);
 
 	short div;
 	int value;
 
 	// Titan
-	exist[TITAN] == TRUE ? div = 1000 : div = 4000;
+	exist[RESOURCES::TITAN] == TRUE ? div = 1000 : div = 4000;
 	value = rand()%div;
 	value = min(3000, value);
-	pDoc->GetSystem(m_ptKO.x, m_ptKO.y).SetResourceStore(TITAN, -value);
+	pDoc->GetSystem(m_ptKO.x, m_ptKO.y).SetResourceStore(RESOURCES::TITAN, -value);
 
 	//CString s;
 	//s.Format("Name der Rasse: %s\nTitanabbau: %d\nVerbrauch: %d\nLager: %d",m_strRaceName,exist[0],value,m_iRessourceStorage[0]);
 	//AfxMessageBox(s);
 
 	// Deuterium
-	exist[DEUTERIUM] == TRUE ? div = 1500 : div = 4000;
+	exist[RESOURCES::DEUTERIUM] == TRUE ? div = 1500 : div = 4000;
 	value = rand()%div;
 	value = min(3000, value);
-	pDoc->GetSystem(m_ptKO.x, m_ptKO.y).SetResourceStore(DEUTERIUM, -value);
+	pDoc->GetSystem(m_ptKO.x, m_ptKO.y).SetResourceStore(RESOURCES::DEUTERIUM, -value);
 
 	// Duranium
-	exist[DURANIUM] == TRUE ? div = 1500 : div = 4000;
+	exist[RESOURCES::DURANIUM] == TRUE ? div = 1500 : div = 4000;
 	value = rand()%div;
 	value = min(3000, value);
-	pDoc->GetSystem(m_ptKO.x, m_ptKO.y).SetResourceStore(DURANIUM, -value);
+	pDoc->GetSystem(m_ptKO.x, m_ptKO.y).SetResourceStore(RESOURCES::DURANIUM, -value);
 
 	// Kristalle
-	exist[CRYSTAL] == TRUE ? div = 1500 : div = 4000;
+	exist[RESOURCES::CRYSTAL] == TRUE ? div = 1500 : div = 4000;
 	value = rand()%div;
 	value = min(3000, value);
-	pDoc->GetSystem(m_ptKO.x, m_ptKO.y).SetResourceStore(CRYSTAL, -value);
+	pDoc->GetSystem(m_ptKO.x, m_ptKO.y).SetResourceStore(RESOURCES::CRYSTAL, -value);
 
 	// Iridium
-	exist[IRIDIUM] == TRUE ? div = 1500 : div = 4000;
+	exist[RESOURCES::IRIDIUM] == TRUE ? div = 1500 : div = 4000;
 	value = rand()%div;
 	value = min(3000, value);
-	pDoc->GetSystem(m_ptKO.x, m_ptKO.y).SetResourceStore(IRIDIUM, -value);
+	pDoc->GetSystem(m_ptKO.x, m_ptKO.y).SetResourceStore(RESOURCES::IRIDIUM, -value);
 
 	// Deritium
 	value = rand()%2;
-	pDoc->GetSystem(m_ptKO.x, m_ptKO.y).SetResourceStore(DERITIUM, -value);
+	pDoc->GetSystem(m_ptKO.x, m_ptKO.y).SetResourceStore(RESOURCES::DERITIUM, -value);
 }
 
 /// Funktion überprüft, ob die Minorrace das Angebot aufgrund anderer Verträge überhaupt annehmen kann.
@@ -685,7 +685,7 @@ void CMinor::Create(const CStringArray& saInfo, int& nPos)
 
 
 	// Schiffsnummer vergeben
-	m_byShipNumber = MINORNUMBER;
+	m_byShipNumber = PLAYER_RACES::MINORNUMBER;
 
 	// Minorrace - KI anlegen
 	m_pDiplomacyAI = new CMinorAI(this);
@@ -727,7 +727,7 @@ void CMinor::CreateAlienEntities(const CStringArray& saInfo, int& nPos)
 	m_iCorruptibility	= atoi(saInfo[nPos++]);
 
 	// Schiffsnummer vergeben
-	m_byShipNumber = MINORNUMBER;
+	m_byShipNumber = PLAYER_RACES::MINORNUMBER;
 
 	// Minorrace - KI anlegen
 	m_pDiplomacyAI = new CMinorAI(this);

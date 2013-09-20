@@ -202,7 +202,7 @@ void CTradeMenuView::DrawGlobalTradeMenue(Graphics* g)
 
 	// Hier die Rechtecke in denen wir den Preis der Ressourcen sehen und wo sich auch die Aktionsbuttons befinden
 	RectF resRect[5];
-	for (int i = TITAN; i <= IRIDIUM; i++)
+	for (int i = RESOURCES::TITAN; i <= RESOURCES::IRIDIUM; i++)
 	{
 		resRect[i] = RectF(40+i*200,150,190,340);
 		// "aktueller Kurs" in die Mitte der Rechtecke schreiben
@@ -254,11 +254,11 @@ void CTradeMenuView::DrawGlobalTradeMenue(Graphics* g)
 
 	// Namen der Rohstoffe in die Rechtecke schreiben
 	fontFormat.SetLineAlignment(StringAlignmentNear);
-	g->DrawString(CComBSTR(CLoc::GetString("TITAN")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), resRect[TITAN], &fontFormat, &fontBrush);
-	g->DrawString(CComBSTR(CLoc::GetString("DEUTERIUM")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), resRect[DEUTERIUM], &fontFormat, &fontBrush);
-	g->DrawString(CComBSTR(CLoc::GetString("DURANIUM")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), resRect[DURANIUM], &fontFormat, &fontBrush);
-	g->DrawString(CComBSTR(CLoc::GetString("CRYSTAL")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), resRect[CRYSTAL], &fontFormat, &fontBrush);
-	g->DrawString(CComBSTR(CLoc::GetString("IRIDIUM")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), resRect[IRIDIUM], &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(CLoc::GetString("TITAN")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), resRect[RESOURCES::TITAN], &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(CLoc::GetString("DEUTERIUM")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), resRect[RESOURCES::DEUTERIUM], &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(CLoc::GetString("DURANIUM")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), resRect[RESOURCES::DURANIUM], &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(CLoc::GetString("CRYSTAL")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), resRect[RESOURCES::CRYSTAL], &fontFormat, &fontBrush);
+	g->DrawString(CComBSTR(CLoc::GetString("IRIDIUM")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), resRect[RESOURCES::IRIDIUM], &fontFormat, &fontBrush);
 
 	// unsere Handelssteuer zeichnen
 	fontFormat.SetLineAlignment(StringAlignmentCenter);
@@ -279,7 +279,7 @@ void CTradeMenuView::DrawGlobalTradeMenue(Graphics* g)
 	CFontLoader::GetGDIFontColor(pMajor, 1, btnColor);
 	SolidBrush btnBrush(btnColor);
 
-	for (int i = TITAN; i <= IRIDIUM; i++)
+	for (int i = RESOURCES::TITAN; i <= RESOURCES::IRIDIUM; i++)
 	{
 		if (graphic)
 			g->DrawImage(graphic, 75+i*200, 275, 120, 30);
@@ -365,18 +365,18 @@ void CTradeMenuView::DrawMonopolMenue(Graphics* g)
 		if (bg_monopolmenu)
 			g->DrawImage(bg_monopolmenu, 0, 0, 1075, 750);
 		m_bCouldBuyMonopols = TRUE;
-		for (int i = TITAN; i <= IRIDIUM; i++)
+		for (int i = RESOURCES::TITAN; i <= RESOURCES::IRIDIUM; i++)
 		{
 			fontBrush.SetColor(normalColor);
 			m_dMonopolCosts[i] = 0.0f;
 			CString resName;
 			switch(i)
 			{
-			case TITAN: resName = CLoc::GetString("TITAN"); break;
-			case DEUTERIUM: resName = CLoc::GetString("DEUTERIUM"); break;
-			case DURANIUM: resName = CLoc::GetString("DURANIUM"); break;
-			case CRYSTAL: resName = CLoc::GetString("CRYSTAL"); break;
-			case IRIDIUM: resName = CLoc::GetString("IRIDIUM"); break;
+			case RESOURCES::TITAN: resName = CLoc::GetString("TITAN"); break;
+			case RESOURCES::DEUTERIUM: resName = CLoc::GetString("DEUTERIUM"); break;
+			case RESOURCES::DURANIUM: resName = CLoc::GetString("DURANIUM"); break;
+			case RESOURCES::CRYSTAL: resName = CLoc::GetString("CRYSTAL"); break;
+			case RESOURCES::IRIDIUM: resName = CLoc::GetString("IRIDIUM"); break;
 			}
 			fontFormat.SetAlignment(StringAlignmentNear);
 			s.Format("%s %s:",CLoc::GetString("MONOPOLY_OWNER"), resName);
@@ -433,7 +433,7 @@ void CTradeMenuView::DrawMonopolMenue(Graphics* g)
 		SolidBrush btnBrush(btnColor);
 		fontFormat.SetAlignment(StringAlignmentCenter);
 		s = CLoc::GetString("BTN_BUY");
-		for (int i = TITAN; i <= IRIDIUM; i++)
+		for (int i = RESOURCES::TITAN; i <= RESOURCES::IRIDIUM; i++)
 		{
 			// kleine Kauf-Buttons einblenden, wenn wir ein Monopol kaufen können
 			if (m_dMonopolCosts[i] != 0.0f)
@@ -509,7 +509,7 @@ void CTradeMenuView::DrawTradeTransferMenue(Graphics* g)
 	long boughtResNumber[5];
 	long selledResPrice[5];
 	long selledResNumber[5];
-	for (int i = TITAN; i <= IRIDIUM; i++)
+	for (int i = RESOURCES::TITAN; i <= RESOURCES::IRIDIUM; i++)
 	{
 		boughtResPrice[i]	= 0;
 		boughtResNumber[i]	= 0;
@@ -542,7 +542,7 @@ void CTradeMenuView::DrawTradeTransferMenue(Graphics* g)
 	g->DrawString(CComBSTR(CLoc::GetString("IRIDIUM")), -1, &Gdiplus::Font(CComBSTR(fontName), fontSize), RectF(0,530,m_TotalSize.cx,25), &fontFormat, &fontBrush);
 
 	fontBrush.SetColor(normalColor);
-	for (int i = TITAN; i <= IRIDIUM; i++)
+	for (int i = RESOURCES::TITAN; i <= RESOURCES::IRIDIUM; i++)
 	{
 		// Alle gekauften
 		if (boughtResPrice[i] > 0)
@@ -641,7 +641,7 @@ void CTradeMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 		if (pDoc->CurrentSystem().GetBlockade() > NULL)
 			return;
 		// Checken ob wir auf irgendeinen Kaufen- oder Verkaufenbutton geklickt haben
-		for (int i = TITAN; i <= IRIDIUM; i++)
+		for (int i = RESOURCES::TITAN; i <= RESOURCES::IRIDIUM; i++)
 		{
 			// Überprüfen, ob wir auf einen Kaufenbutton geklickt haben
 			if (CRect(r.left+75+i*200,r.top+275,r.left+195+i*200,r.top+305).PtInRect(point))
@@ -677,7 +677,7 @@ void CTradeMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 	// Monopoluntermenü
 	else if (m_bySubMenu == 1)
 	{
-		for (int i = TITAN; i <= IRIDIUM; i++)
+		for (int i = RESOURCES::TITAN; i <= RESOURCES::IRIDIUM; i++)
 			if (m_bCouldBuyMonopols == TRUE && m_dMonopolCosts[i] != 0.0f && CRect(r.left+915,r.top+120+i*110,r.left+1035,r.top+150+i*110).PtInRect(point))
 			{
 				if (pMajor->GetEmpire()->GetCredits() >= m_dMonopolCosts[i])

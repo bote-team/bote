@@ -72,8 +72,8 @@ private:
 	CArray<short,short> m_iEvents;
 
 	/// Matrix in der die Moralwerte für die unterschiedlichen Ereignisse abgelegt werden.
-	static short m_iMoralMatrix[EVENTNUMBER][MAJOR6];
+	static short m_iMoralMatrix[EVENTNUMBER][PLAYER_RACES::MAJOR6];
 
 	/// Matrix in der die Textnachrichten für die unterschiedlichen Ereignisse abgelegt werden.
-	static CString m_strTextMatrix[EVENTNUMBER][MAJOR6];
+	static CString m_strTextMatrix[EVENTNUMBER][PLAYER_RACES::MAJOR6];
 };

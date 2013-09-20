@@ -167,35 +167,35 @@ PLANET_ZONE::Typ CPlanet::Create(const CString& sSectorName, PLANET_ZONE::Typ nL
 		int WhatPlanet = rand()%75;
 		// Planeten aus kalter Zone
 		nZone = PLANET_ZONE::COOL;
-		if (WhatPlanet == 0) m_iRandomType = PLANETCLASS_I;
-		else if (WhatPlanet == 1) m_iRandomType = PLANETCLASS_J;
-		else if (WhatPlanet == 2) m_iRandomType = PLANETCLASS_S;
-		else if (WhatPlanet == 3) m_iRandomType = PLANETCLASS_T;
-		else if (WhatPlanet == 4) m_iRandomType = PLANETCLASS_A;
-		else if (WhatPlanet == 5) m_iRandomType = PLANETCLASS_C;
-		else if (WhatPlanet == 6) m_iRandomType = PLANETCLASS_P;
+		if (WhatPlanet == 0) m_iRandomType = PLANET_CLASSES::PLANETCLASS_I;
+		else if (WhatPlanet == 1) m_iRandomType = PLANET_CLASSES::PLANETCLASS_J;
+		else if (WhatPlanet == 2) m_iRandomType = PLANET_CLASSES::PLANETCLASS_S;
+		else if (WhatPlanet == 3) m_iRandomType = PLANET_CLASSES::PLANETCLASS_T;
+		else if (WhatPlanet == 4) m_iRandomType = PLANET_CLASSES::PLANETCLASS_A;
+		else if (WhatPlanet == 5) m_iRandomType = PLANET_CLASSES::PLANETCLASS_C;
+		else if (WhatPlanet == 6) m_iRandomType = PLANET_CLASSES::PLANETCLASS_P;
 		else
 		{
 			// Planeten aus gemäßigter Zone
 			nZone = PLANET_ZONE::TEMPERATE;
-			if (WhatPlanet > 6)	m_iRandomType = PLANETCLASS_E;
-			if (WhatPlanet > 11) m_iRandomType = PLANETCLASS_F;
-			if (WhatPlanet > 16) m_iRandomType = PLANETCLASS_G;
-			if (WhatPlanet > 21) m_iRandomType = PLANETCLASS_K;
-			if (WhatPlanet > 26) m_iRandomType = PLANETCLASS_L;
-			if (WhatPlanet > 31) m_iRandomType = PLANETCLASS_M;	// seltener
-			if (WhatPlanet > 35) m_iRandomType = PLANETCLASS_O;
-			if (WhatPlanet > 40) m_iRandomType = PLANETCLASS_Q;	// selten
-			if (WhatPlanet > 43) m_iRandomType = PLANETCLASS_R; // selten
+			if (WhatPlanet > 6)	m_iRandomType = PLANET_CLASSES::PLANETCLASS_E;
+			if (WhatPlanet > 11) m_iRandomType = PLANET_CLASSES::PLANETCLASS_F;
+			if (WhatPlanet > 16) m_iRandomType = PLANET_CLASSES::PLANETCLASS_G;
+			if (WhatPlanet > 21) m_iRandomType = PLANET_CLASSES::PLANETCLASS_K;
+			if (WhatPlanet > 26) m_iRandomType = PLANET_CLASSES::PLANETCLASS_L;
+			if (WhatPlanet > 31) m_iRandomType = PLANET_CLASSES::PLANETCLASS_M;	// seltener
+			if (WhatPlanet > 35) m_iRandomType = PLANET_CLASSES::PLANETCLASS_O;
+			if (WhatPlanet > 40) m_iRandomType = PLANET_CLASSES::PLANETCLASS_Q;	// selten
+			if (WhatPlanet > 43) m_iRandomType = PLANET_CLASSES::PLANETCLASS_R; // selten
 			// Planeten aus heißer Zone
 			if (WhatPlanet > 46)
 			{
-				m_iRandomType = PLANETCLASS_H;
+				m_iRandomType = PLANET_CLASSES::PLANETCLASS_H;
 				nZone = PLANET_ZONE::HOT;
 			}
-			if (WhatPlanet > 53) m_iRandomType = PLANETCLASS_B;
-			if (WhatPlanet > 60) m_iRandomType = PLANETCLASS_N;
-			if (WhatPlanet > 67) m_iRandomType = PLANETCLASS_Y;
+			if (WhatPlanet > 53) m_iRandomType = PLANET_CLASSES::PLANETCLASS_B;
+			if (WhatPlanet > 60) m_iRandomType = PLANET_CLASSES::PLANETCLASS_N;
+			if (WhatPlanet > 67) m_iRandomType = PLANET_CLASSES::PLANETCLASS_Y;
 		}
 	}
 	else if (nLastZone == PLANET_ZONE::TEMPERATE)
@@ -203,61 +203,61 @@ PLANET_ZONE::Typ CPlanet::Create(const CString& sSectorName, PLANET_ZONE::Typ nL
 		int WhatPlanet = rand()%47;
 		// Planeten aus kalter Zone
 		nZone = PLANET_ZONE::COOL;
-		if (WhatPlanet == 0) m_iRandomType = PLANETCLASS_I;
-		else if (WhatPlanet == 1) m_iRandomType = PLANETCLASS_J;
-		else if (WhatPlanet == 2) m_iRandomType = PLANETCLASS_S;
-		else if (WhatPlanet == 3) m_iRandomType = PLANETCLASS_T;
-		else if (WhatPlanet == 4) m_iRandomType = PLANETCLASS_A;
-		else if (WhatPlanet == 5) m_iRandomType = PLANETCLASS_C;
-		else if (WhatPlanet == 6) m_iRandomType = PLANETCLASS_P;
+		if (WhatPlanet == 0) m_iRandomType = PLANET_CLASSES::PLANETCLASS_I;
+		else if (WhatPlanet == 1) m_iRandomType = PLANET_CLASSES::PLANETCLASS_J;
+		else if (WhatPlanet == 2) m_iRandomType = PLANET_CLASSES::PLANETCLASS_S;
+		else if (WhatPlanet == 3) m_iRandomType = PLANET_CLASSES::PLANETCLASS_T;
+		else if (WhatPlanet == 4) m_iRandomType = PLANET_CLASSES::PLANETCLASS_A;
+		else if (WhatPlanet == 5) m_iRandomType = PLANET_CLASSES::PLANETCLASS_C;
+		else if (WhatPlanet == 6) m_iRandomType = PLANET_CLASSES::PLANETCLASS_P;
 		else
 		{
 			// Planeten aus gemäßigter Zone
 			nZone = PLANET_ZONE::TEMPERATE;
-			if (WhatPlanet > 6) m_iRandomType  = PLANETCLASS_E;
-			if (WhatPlanet > 11) m_iRandomType = PLANETCLASS_F;
-			if (WhatPlanet > 16) m_iRandomType = PLANETCLASS_G;
-			if (WhatPlanet > 21) m_iRandomType = PLANETCLASS_K;
-			if (WhatPlanet > 26) m_iRandomType = PLANETCLASS_L;
-			if (WhatPlanet > 31) m_iRandomType = PLANETCLASS_M;	// seltener
-			if (WhatPlanet > 35) m_iRandomType = PLANETCLASS_O;
-			if (WhatPlanet > 40) m_iRandomType = PLANETCLASS_Q;
-			if (WhatPlanet > 43) m_iRandomType = PLANETCLASS_R;
+			if (WhatPlanet > 6) m_iRandomType  = PLANET_CLASSES::PLANETCLASS_E;
+			if (WhatPlanet > 11) m_iRandomType = PLANET_CLASSES::PLANETCLASS_F;
+			if (WhatPlanet > 16) m_iRandomType = PLANET_CLASSES::PLANETCLASS_G;
+			if (WhatPlanet > 21) m_iRandomType = PLANET_CLASSES::PLANETCLASS_K;
+			if (WhatPlanet > 26) m_iRandomType = PLANET_CLASSES::PLANETCLASS_L;
+			if (WhatPlanet > 31) m_iRandomType = PLANET_CLASSES::PLANETCLASS_M;	// seltener
+			if (WhatPlanet > 35) m_iRandomType = PLANET_CLASSES::PLANETCLASS_O;
+			if (WhatPlanet > 40) m_iRandomType = PLANET_CLASSES::PLANETCLASS_Q;
+			if (WhatPlanet > 43) m_iRandomType = PLANET_CLASSES::PLANETCLASS_R;
 		}
 	}
 	else if (nLastZone == PLANET_ZONE::COOL)
 	{
 		nZone = PLANET_ZONE::COOL;
 		int WhatPlanet = rand()%18;
-		if (WhatPlanet == 0) m_iRandomType  = PLANETCLASS_I;
-		else if (WhatPlanet == 1) m_iRandomType  = PLANETCLASS_J;
-		else if (WhatPlanet == 2) m_iRandomType  = PLANETCLASS_S;
-		else if (WhatPlanet == 3) m_iRandomType  = PLANETCLASS_T;
+		if (WhatPlanet == 0) m_iRandomType  = PLANET_CLASSES::PLANETCLASS_I;
+		else if (WhatPlanet == 1) m_iRandomType  = PLANET_CLASSES::PLANETCLASS_J;
+		else if (WhatPlanet == 2) m_iRandomType  = PLANET_CLASSES::PLANETCLASS_S;
+		else if (WhatPlanet == 3) m_iRandomType  = PLANET_CLASSES::PLANETCLASS_T;
 		else
 		{
-			if (WhatPlanet >= 4) m_iRandomType  = PLANETCLASS_A;
-			if (WhatPlanet >= 8) m_iRandomType  = PLANETCLASS_C;
-			if (WhatPlanet >= 12) m_iRandomType = PLANETCLASS_P;
-			if (WhatPlanet >= 17) m_iRandomType = PLANETCLASS_R;
+			if (WhatPlanet >= 4) m_iRandomType  = PLANET_CLASSES::PLANETCLASS_A;
+			if (WhatPlanet >= 8) m_iRandomType  = PLANET_CLASSES::PLANETCLASS_C;
+			if (WhatPlanet >= 12) m_iRandomType = PLANET_CLASSES::PLANETCLASS_P;
+			if (WhatPlanet >= 17) m_iRandomType = PLANET_CLASSES::PLANETCLASS_R;
 		}
 	}
 
 	BYTE m_iRandomSize = rand()%3;	// Zufallszahl, die die Größe bestimmt (abhängig vom DEFINE!)
 
 	// zufällige Planetengrafik auswählen
-	m_iGraphicType = rand()%GRAPHICNUMBER;
+	m_iGraphicType = rand()%PLANET_CLASSES::GRAPHICNUMBER;
 
 	m_iSize = (PLANT_SIZE::Typ)m_iRandomSize;
 	// Bestimmen, ob der Planet überhaupt bewohnbar ist! A,B,E,I,J,S,T,Y
-	if (m_iRandomType == PLANETCLASS_A || m_iRandomType == PLANETCLASS_B || m_iRandomType == PLANETCLASS_E
-		|| m_iRandomType == PLANETCLASS_I || m_iRandomType == PLANETCLASS_J || m_iRandomType == PLANETCLASS_S
-		|| m_iRandomType == PLANETCLASS_T || m_iRandomType == PLANETCLASS_Y)
+	if (m_iRandomType == PLANET_CLASSES::PLANETCLASS_A || m_iRandomType == PLANET_CLASSES::PLANETCLASS_B || m_iRandomType == PLANET_CLASSES::PLANETCLASS_E
+		|| m_iRandomType == PLANET_CLASSES::PLANETCLASS_I || m_iRandomType == PLANET_CLASSES::PLANETCLASS_J || m_iRandomType == PLANET_CLASSES::PLANETCLASS_S
+		|| m_iRandomType == PLANET_CLASSES::PLANETCLASS_T || m_iRandomType == PLANET_CLASSES::PLANETCLASS_Y)
 		m_bHabitable = FALSE;
 	// Ein erdähnlicher Planet ist schon terraformed
-	else if (m_iRandomType == PLANETCLASS_M)
+	else if (m_iRandomType == PLANET_CLASSES::PLANETCLASS_M)
 		m_bTerraformed = TRUE;
 
-	if (m_iRandomType == PLANETCLASS_I || m_iRandomType == PLANETCLASS_J || m_iRandomType == PLANETCLASS_S || m_iRandomType == PLANETCLASS_T)
+	if (m_iRandomType == PLANET_CLASSES::PLANETCLASS_I || m_iRandomType == PLANET_CLASSES::PLANETCLASS_J || m_iRandomType == PLANET_CLASSES::PLANETCLASS_S || m_iRandomType == PLANET_CLASSES::PLANETCLASS_T)
 		m_iSize = PLANT_SIZE::GIANT;			// Gasriesen sind immer riesig
 
 	if (m_bHabitable == FALSE)
@@ -266,7 +266,7 @@ PLANET_ZONE::Typ CPlanet::Create(const CString& sSectorName, PLANET_ZONE::Typ nL
 	}
 	else
 	{
-		if (m_iRandomType < PLANETCLASS_A)	// Ab Klasse A sind alle Planeten eh nicht mehr kolonisierbar
+		if (m_iRandomType < PLANET_CLASSES::PLANETCLASS_A)	// Ab Klasse A sind alle Planeten eh nicht mehr kolonisierbar
 		{
 			// Einen Muliplikator anlegen (0,8 ; 1,0 ; 1,2)
 			float multi = 0.0f;
@@ -287,7 +287,7 @@ PLANET_ZONE::Typ CPlanet::Create(const CString& sSectorName, PLANET_ZONE::Typ nL
 			// hier noch die benötigten Terraformingpunkte berechnen. Umso besser die Klasse des Planeten, umso weniger
 			// Punkte brauchen wir. Klasse M braucht gar keine Terraformpunkte weil er ja schon geterraformt ist
 			m_iNeededTerraformPoints = (int)(m_iRandomType * (m_iRandomSize + 1) * (rand()%11 +5) / 10);
-			if (m_iNeededTerraformPoints == 0 && m_iRandomType != PLANETCLASS_M)
+			if (m_iNeededTerraformPoints == 0 && m_iRandomType != PLANET_CLASSES::PLANETCLASS_M)
 				m_iNeededTerraformPoints++;
 			m_iStartTerraformPoints = m_iNeededTerraformPoints;
 		}
@@ -320,26 +320,26 @@ PLANET_ZONE::Typ CPlanet::Create(const CString& sSectorName, PLANET_ZONE::Typ nL
 
 	m_iType = m_iRandomType;
 	// M,O,L,P,H,Q,K,G,R,F,C,N,A,B,E,N,Y,I,J,S,T
-	if (m_iType == PLANETCLASS_M) {m_cClass = 'M';}
-	else if (m_iType == PLANETCLASS_O) {m_cClass = 'O';}
-	else if (m_iType == PLANETCLASS_L) {m_cClass = 'L';}
-	else if (m_iType == PLANETCLASS_P) {m_cClass = 'P';}
-	else if (m_iType == PLANETCLASS_H) {m_cClass = 'H';}
-	else if (m_iType == PLANETCLASS_Q) {m_cClass = 'Q';}
-	else if (m_iType == PLANETCLASS_K) {m_cClass = 'K';}
-	else if (m_iType == PLANETCLASS_G) {m_cClass = 'G';}
-	else if (m_iType == PLANETCLASS_R) {m_cClass = 'R';}
-	else if (m_iType == PLANETCLASS_F) {m_cClass = 'F';}
-	else if (m_iType == PLANETCLASS_C) {m_cClass = 'C';}
-	else if (m_iType == PLANETCLASS_N) {m_cClass = 'N';}
-	else if (m_iType == PLANETCLASS_A) {m_cClass = 'A';}
-	else if (m_iType == PLANETCLASS_B) {m_cClass = 'B';}
-	else if (m_iType == PLANETCLASS_E) {m_cClass = 'E';}
-	else if (m_iType == PLANETCLASS_Y) {m_cClass = 'Y';}
-	else if (m_iType == PLANETCLASS_I) {m_cClass = 'I';}
-	else if (m_iType == PLANETCLASS_J) {m_cClass = 'J';}
-	else if (m_iType == PLANETCLASS_S) {m_cClass = 'S';}
-	else if (m_iType == PLANETCLASS_T) {m_cClass = 'T';}
+	if (m_iType == PLANET_CLASSES::PLANETCLASS_M) {m_cClass = 'M';}
+	else if (m_iType == PLANET_CLASSES::PLANETCLASS_O) {m_cClass = 'O';}
+	else if (m_iType == PLANET_CLASSES::PLANETCLASS_L) {m_cClass = 'L';}
+	else if (m_iType == PLANET_CLASSES::PLANETCLASS_P) {m_cClass = 'P';}
+	else if (m_iType == PLANET_CLASSES::PLANETCLASS_H) {m_cClass = 'H';}
+	else if (m_iType == PLANET_CLASSES::PLANETCLASS_Q) {m_cClass = 'Q';}
+	else if (m_iType == PLANET_CLASSES::PLANETCLASS_K) {m_cClass = 'K';}
+	else if (m_iType == PLANET_CLASSES::PLANETCLASS_G) {m_cClass = 'G';}
+	else if (m_iType == PLANET_CLASSES::PLANETCLASS_R) {m_cClass = 'R';}
+	else if (m_iType == PLANET_CLASSES::PLANETCLASS_F) {m_cClass = 'F';}
+	else if (m_iType == PLANET_CLASSES::PLANETCLASS_C) {m_cClass = 'C';}
+	else if (m_iType == PLANET_CLASSES::PLANETCLASS_N) {m_cClass = 'N';}
+	else if (m_iType == PLANET_CLASSES::PLANETCLASS_A) {m_cClass = 'A';}
+	else if (m_iType == PLANET_CLASSES::PLANETCLASS_B) {m_cClass = 'B';}
+	else if (m_iType == PLANET_CLASSES::PLANETCLASS_E) {m_cClass = 'E';}
+	else if (m_iType == PLANET_CLASSES::PLANETCLASS_Y) {m_cClass = 'Y';}
+	else if (m_iType == PLANET_CLASSES::PLANETCLASS_I) {m_cClass = 'I';}
+	else if (m_iType == PLANET_CLASSES::PLANETCLASS_J) {m_cClass = 'J';}
+	else if (m_iType == PLANET_CLASSES::PLANETCLASS_S) {m_cClass = 'S';}
+	else if (m_iType == PLANET_CLASSES::PLANETCLASS_T) {m_cClass = 'T';}
 
 	// Wachstumsprozent des Planeten berechnen
 	SetPlanetGrowth();
@@ -428,12 +428,12 @@ void CPlanet::DrawPlanet(Graphics &g, const CRect& rect, CGraphicPool* graphicPo
 		{
 			switch(i)
 			{
-				case TITAN:		graphic = graphicPool->GetGDIGraphic("Other\\titanSmall.bop"); break;
-				case DEUTERIUM: graphic = graphicPool->GetGDIGraphic("Other\\deuteriumSmall.bop"); break;
-				case DURANIUM:	graphic = graphicPool->GetGDIGraphic("Other\\duraniumSmall.bop"); break;
-				case CRYSTAL:	graphic = graphicPool->GetGDIGraphic("Other\\crystalSmall.bop"); break;
-				case IRIDIUM:	graphic = graphicPool->GetGDIGraphic("Other\\iridiumSmall.bop"); break;
-				case DERITIUM:	graphic = graphicPool->GetGDIGraphic("Other\\Deritium.bop"); break;
+				case RESOURCES::TITAN:		graphic = graphicPool->GetGDIGraphic("Other\\titanSmall.bop"); break;
+				case RESOURCES::DEUTERIUM: graphic = graphicPool->GetGDIGraphic("Other\\deuteriumSmall.bop"); break;
+				case RESOURCES::DURANIUM:	graphic = graphicPool->GetGDIGraphic("Other\\duraniumSmall.bop"); break;
+				case RESOURCES::CRYSTAL:	graphic = graphicPool->GetGDIGraphic("Other\\crystalSmall.bop"); break;
+				case RESOURCES::IRIDIUM:	graphic = graphicPool->GetGDIGraphic("Other\\iridiumSmall.bop"); break;
+				case RESOURCES::DERITIUM:	graphic = graphicPool->GetGDIGraphic("Other\\Deritium.bop"); break;
 				case 6:			graphic = graphicPool->GetGDIGraphic("Other\\foodSmall.bop"); break;
 				case 7:			graphic = graphicPool->GetGDIGraphic("Other\\energySmall.bop"); break;
 			}
@@ -482,10 +482,10 @@ void CPlanet::GenerateBoni()
 {
 	// die Wahrscheinlichkeitstablle wird angelegt
 	// Matrix aus allen Planetenklassen und aller möglichen Boni
-	BYTE probs[PLANETCLASS_T+1][8] = {
+	BYTE probs[PLANET_CLASSES::PLANETCLASS_T+1][8] = {
 
 	// Testweise die Deritiumprozente um 10 erhöht (nur dort wo nicht NULL drin stand)
-	//		TITAN		DEUTERIUM	DURANIUM	KRISTALLE	IRIDIUM		DERITIUM	FOOD		ENERGY
+	//		RESOURCES::TITAN		RESOURCES::DEUTERIUM	RESOURCES::DURANIUM	KRISTALLE	RESOURCES::IRIDIUM		RESOURCES::DERITIUM	FOOD		ENERGY
 	//+-----------------------------------------------------------------------------------------------+
 	/*M*/	0,			10,			0,			0,			0,			11,			50,			0,
 	/*O*/	0,			50,			0,			0,			0,			0,			25,			0,
@@ -509,7 +509,7 @@ void CPlanet::GenerateBoni()
 	/*T*/	0,			0,			0,			0,			0,			0,			0,			0
 	};
 	// Zahl[0,99] generieren und vergleichen
-	for (int i = TITAN; i < 8; i++)
+	for (int i = RESOURCES::TITAN; i < 8; i++)
 	{
 		if (rand()%100 >= (100 - probs[this->m_iType][i]))
 			m_bBoni[i] = TRUE;
@@ -521,48 +521,48 @@ void CPlanet::GenerateBoni()
 void CPlanet::SetBoni(BOOLEAN titan, BOOLEAN deuterium, BOOLEAN duranium, BOOLEAN crystal, BOOLEAN iridium, BOOLEAN deritium,
 		BOOLEAN food, BOOLEAN energy)
 {
-	m_bBoni[TITAN]		= titan;
-	m_bBoni[DEUTERIUM]	= deuterium;
-	m_bBoni[DURANIUM]	= duranium;
-	m_bBoni[CRYSTAL]	= crystal;
-	m_bBoni[IRIDIUM]	= iridium;
-	m_bBoni[DERITIUM]	= deritium;
+	m_bBoni[RESOURCES::TITAN]		= titan;
+	m_bBoni[RESOURCES::DEUTERIUM]	= deuterium;
+	m_bBoni[RESOURCES::DURANIUM]	= duranium;
+	m_bBoni[RESOURCES::CRYSTAL]	= crystal;
+	m_bBoni[RESOURCES::IRIDIUM]	= iridium;
+	m_bBoni[RESOURCES::DERITIUM]	= deritium;
 	m_bBoni[6]			= food;
 	m_bBoni[7]			= energy;
 }
 
 /// Funktion ermittelt die vorhandenen Ressourcen auf dem Planeten
 /// @param res Feld in das geschrieben wird, welche Ressource auf dem Planeten vorhanden ist
-void CPlanet::GetAvailableResources(BOOLEAN res[DERITIUM + 1]) const
+void CPlanet::GetAvailableResources(BOOLEAN res[RESOURCES::DERITIUM + 1]) const
 {
 	if (this->GetClass() == 'C')
-	{	res[TITAN] = TRUE;  res[DEUTERIUM] = FALSE; res[DURANIUM] = FALSE; res[CRYSTAL] = FALSE; res[IRIDIUM] = TRUE;}
+	{	res[RESOURCES::TITAN] = TRUE;  res[RESOURCES::DEUTERIUM] = FALSE; res[RESOURCES::DURANIUM] = FALSE; res[RESOURCES::CRYSTAL] = FALSE; res[RESOURCES::IRIDIUM] = TRUE;}
 	else if (this->GetClass() == 'F')
-	{	res[TITAN] = TRUE;  res[DEUTERIUM] = FALSE; res[DURANIUM] = TRUE;  res[CRYSTAL] = FALSE; res[IRIDIUM] = FALSE;}
+	{	res[RESOURCES::TITAN] = TRUE;  res[RESOURCES::DEUTERIUM] = FALSE; res[RESOURCES::DURANIUM] = TRUE;  res[RESOURCES::CRYSTAL] = FALSE; res[RESOURCES::IRIDIUM] = FALSE;}
 	else if (this->GetClass() == 'G')
-	{	res[TITAN] = TRUE;  res[DEUTERIUM] = FALSE; res[DURANIUM] = TRUE;  res[CRYSTAL] = TRUE;  res[IRIDIUM] = FALSE;}
+	{	res[RESOURCES::TITAN] = TRUE;  res[RESOURCES::DEUTERIUM] = FALSE; res[RESOURCES::DURANIUM] = TRUE;  res[RESOURCES::CRYSTAL] = TRUE;  res[RESOURCES::IRIDIUM] = FALSE;}
 	else if (this->GetClass() == 'H')
-	{	res[TITAN] = FALSE; res[DEUTERIUM] = FALSE; res[DURANIUM] = FALSE; res[CRYSTAL] = FALSE; res[IRIDIUM] = TRUE;}
+	{	res[RESOURCES::TITAN] = FALSE; res[RESOURCES::DEUTERIUM] = FALSE; res[RESOURCES::DURANIUM] = FALSE; res[RESOURCES::CRYSTAL] = FALSE; res[RESOURCES::IRIDIUM] = TRUE;}
 	else if (this->GetClass() == 'K')
-	{	res[TITAN] = TRUE;  res[DEUTERIUM] = FALSE; res[DURANIUM] = TRUE;  res[CRYSTAL] = FALSE; res[IRIDIUM] = FALSE;}
+	{	res[RESOURCES::TITAN] = TRUE;  res[RESOURCES::DEUTERIUM] = FALSE; res[RESOURCES::DURANIUM] = TRUE;  res[RESOURCES::CRYSTAL] = FALSE; res[RESOURCES::IRIDIUM] = FALSE;}
 	else if (this->GetClass() == 'L')
-	{	res[TITAN] = TRUE;  res[DEUTERIUM] = TRUE;  res[DURANIUM] = FALSE; res[CRYSTAL] = FALSE; res[IRIDIUM] = FALSE;}
+	{	res[RESOURCES::TITAN] = TRUE;  res[RESOURCES::DEUTERIUM] = TRUE;  res[RESOURCES::DURANIUM] = FALSE; res[RESOURCES::CRYSTAL] = FALSE; res[RESOURCES::IRIDIUM] = FALSE;}
 	else if (this->GetClass() == 'M')
-	{	res[TITAN] = TRUE;  res[DEUTERIUM] = TRUE;  res[DURANIUM] = TRUE;  res[CRYSTAL] = TRUE;  res[IRIDIUM] = TRUE;}
+	{	res[RESOURCES::TITAN] = TRUE;  res[RESOURCES::DEUTERIUM] = TRUE;  res[RESOURCES::DURANIUM] = TRUE;  res[RESOURCES::CRYSTAL] = TRUE;  res[RESOURCES::IRIDIUM] = TRUE;}
 	else if (this->GetClass() == 'N')
-	{	res[TITAN] = FALSE; res[DEUTERIUM] = TRUE;  res[DURANIUM] = FALSE; res[CRYSTAL] = FALSE; res[IRIDIUM] = FALSE;}
+	{	res[RESOURCES::TITAN] = FALSE; res[RESOURCES::DEUTERIUM] = TRUE;  res[RESOURCES::DURANIUM] = FALSE; res[RESOURCES::CRYSTAL] = FALSE; res[RESOURCES::IRIDIUM] = FALSE;}
 	else if (this->GetClass() == 'O')
-	{	res[TITAN] = FALSE; res[DEUTERIUM] = TRUE;  res[DURANIUM] = FALSE; res[CRYSTAL] = FALSE; res[IRIDIUM] = FALSE;}
+	{	res[RESOURCES::TITAN] = FALSE; res[RESOURCES::DEUTERIUM] = TRUE;  res[RESOURCES::DURANIUM] = FALSE; res[RESOURCES::CRYSTAL] = FALSE; res[RESOURCES::IRIDIUM] = FALSE;}
 	else if (this->GetClass() == 'P')
-	{	res[TITAN] = TRUE;  res[DEUTERIUM] = FALSE; res[DURANIUM] = FALSE; res[CRYSTAL] = TRUE;  res[IRIDIUM] = TRUE;}
+	{	res[RESOURCES::TITAN] = TRUE;  res[RESOURCES::DEUTERIUM] = FALSE; res[RESOURCES::DURANIUM] = FALSE; res[RESOURCES::CRYSTAL] = TRUE;  res[RESOURCES::IRIDIUM] = TRUE;}
 	else if (this->GetClass() == 'Q')
-	{	res[TITAN] = FALSE;  res[DEUTERIUM] = FALSE; res[DURANIUM] = FALSE; res[CRYSTAL] = TRUE;  res[IRIDIUM] = FALSE;}
+	{	res[RESOURCES::TITAN] = FALSE;  res[RESOURCES::DEUTERIUM] = FALSE; res[RESOURCES::DURANIUM] = FALSE; res[RESOURCES::CRYSTAL] = TRUE;  res[RESOURCES::IRIDIUM] = FALSE;}
 	else if (this->GetClass() == 'R')
-	{	res[TITAN] = FALSE; res[DEUTERIUM] = FALSE; res[DURANIUM] = TRUE;  res[CRYSTAL] = FALSE; res[IRIDIUM] = FALSE;}
+	{	res[RESOURCES::TITAN] = FALSE; res[RESOURCES::DEUTERIUM] = FALSE; res[RESOURCES::DURANIUM] = TRUE;  res[RESOURCES::CRYSTAL] = FALSE; res[RESOURCES::IRIDIUM] = FALSE;}
 
 	// Deritium ist klassenunabhängig und wird als Boni angegeben
-	if (this->GetBoni()[DERITIUM])
-		res[DERITIUM] = TRUE;
+	if (this->GetBoni()[RESOURCES::DERITIUM])
+		res[RESOURCES::DERITIUM] = TRUE;
 }
 
 /// Die Resetfunktion für die CPlanet Klasse, welche alle Werte wieder auf Ausgangswerte setzt.
@@ -576,7 +576,7 @@ void CPlanet::Reset(void)
 	m_dCurrentHabitant = NULL;
 	m_dMaxHabitant = NULL;
 	m_iSize = PLANT_SIZE::NORMAL;
-	m_iType = PLANETCLASS_I;
+	m_iType = PLANET_CLASSES::PLANETCLASS_I;
 	m_strName = "";
 	m_cClass = 'I';
 	m_dGrowing = 0;

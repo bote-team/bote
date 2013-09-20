@@ -231,7 +231,7 @@ void CEventFirstContact::Draw(Graphics* g, CGraphicPool* graphicPool) const
 		int nCount = 0;
 		// Spezialgebäude zeichnen
 		for (int i = 0; i < pDoc->BuildingInfo.GetSize(); i++)
-			if (pDoc->BuildingInfo[i].GetOwnerOfBuilding() == NOBODY)
+			if (pDoc->BuildingInfo[i].GetOwnerOfBuilding() == PLAYER_RACES::NOBODY)
 				if (pDoc->BuildingInfo[i].GetOnlyMinorRace() == TRUE)
 					if (pDoc->BuildingInfo[i].GetOnlyInSystemWithName() == pContactedRace->GetHomesystemName())
 					{
@@ -246,7 +246,7 @@ void CEventFirstContact::Draw(Graphics* g, CGraphicPool* graphicPool) const
 					}
 		// Schiffe des Minors zeichnen
 		for (int i = 0; i < pDoc->m_ShipInfoArray.GetSize(); i++)
-			if (pDoc->m_ShipInfoArray[i].GetRace() == MINORNUMBER)
+			if (pDoc->m_ShipInfoArray[i].GetRace() == PLAYER_RACES::MINORNUMBER)
 				if (pDoc->m_ShipInfoArray[i].GetOnlyInSystem() == pContactedRace->GetHomesystemName() && pContactedRace->GetHomesystemName() != "")
 				{
 					graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Ships\\" + pDoc->m_ShipInfoArray[i].GetShipClass() + ".bop");
@@ -293,7 +293,7 @@ CString CEventFirstContact::GetTooltip(const CPoint &pt) const
 		// Spezialgebäude prüfen
 		int nCount = 0;
 		for (int i = 0; i < pDoc->BuildingInfo.GetSize(); i++)
-			if (pDoc->BuildingInfo[i].GetOwnerOfBuilding() == NOBODY)
+			if (pDoc->BuildingInfo[i].GetOwnerOfBuilding() == PLAYER_RACES::NOBODY)
 				if (pDoc->BuildingInfo[i].GetOnlyMinorRace() == TRUE)
 					if (pDoc->BuildingInfo[i].GetOnlyInSystemWithName() == pContactedRace->GetHomesystemName())
 					{
@@ -326,7 +326,7 @@ CString CEventFirstContact::GetTooltip(const CPoint &pt) const
 
 		// Schiffe des Minors zeichnen
 		for (int i = 0; i < pDoc->m_ShipInfoArray.GetSize(); i++)
-			if (pDoc->m_ShipInfoArray[i].GetRace() == MINORNUMBER)
+			if (pDoc->m_ShipInfoArray[i].GetRace() == PLAYER_RACES::MINORNUMBER)
 				if (pDoc->m_ShipInfoArray[i].GetOnlyInSystem() == pContactedRace->GetHomesystemName())
 				{
 					if (CRect(15 + nCount * 165, 810, 15 + nCount * 165 + 150, 960).PtInRect(pt))

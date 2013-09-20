@@ -46,7 +46,7 @@ public:
 	DIPLOMATIC_AGREEMENT::Typ m_nType;			///< Art des Angebots (Krieg, NAP, Geschenk usw.)
 	USHORT		m_nSendRound;					///< in welcher Runde wurde das Angebot abgeschickt
 	USHORT		m_nCredits;						///< wieviele Credits werden als Geschenk angeboten bzw. bei einer Forderung verlangt
-	USHORT		m_nResources[DERITIUM + 1];		///< welche Ressourcen werden mit als Geschenk angeboten bzw. bei einer Forderung verlangt
+	USHORT		m_nResources[RESOURCES::DERITIUM + 1];		///< welche Ressourcen werden mit als Geschenk angeboten bzw. bei einer Forderung verlangt
 	CPoint		m_ptKO;							///< aus welchem System stammen die Ressourcen
 
 	short		m_nDuration;					///< Dauer des Angebots

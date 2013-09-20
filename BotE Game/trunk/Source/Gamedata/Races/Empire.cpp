@@ -44,7 +44,7 @@ void CEmpire::Serialize(CArchive &ar)
 		ar << m_iShipCosts;
 		ar << m_iPopSupportCosts;
 		ar << m_lFP;
-		for (int i = 0; i <= DERITIUM; i++)
+		for (int i = 0; i <= RESOURCES::DERITIUM; i++)
 			ar << m_lResourceStorages[i];
 		ar << m_sEmpireID;
 		ar << m_vMessages.GetSize();
@@ -62,7 +62,7 @@ void CEmpire::Serialize(CArchive &ar)
 		ar >> m_iShipCosts;
 		ar >> m_iPopSupportCosts;
 		ar >> m_lFP;
-		for (int i = 0; i <= DERITIUM; i++)
+		for (int i = 0; i <= RESOURCES::DERITIUM; i++)
 			ar >> m_lResourceStorages[i];
 		ar >> m_sEmpireID;
 		ar >> number;

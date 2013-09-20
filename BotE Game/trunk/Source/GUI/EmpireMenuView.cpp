@@ -547,7 +547,7 @@ void CEmpireMenuView::DrawEmpireSystemMenue(Graphics* g)
 			else if (m_iSystemSubMenue == EMPIREVIEW_SYSTEMS_RESOURCE)
 			{
 				// prüfen ob irgendein Verteiler steht
-				bool bDist[DERITIUM + 1] = {false};
+				bool bDist[RESOURCES::DERITIUM + 1] = {false};
 				int nLastID = -1;
 				for (int l = 0; l < pDoc->GetSystem(KO.x, KO.y).GetAllBuildings()->GetSize(); l++)
 				{
@@ -558,12 +558,12 @@ void CEmpireMenuView::DrawEmpireSystemMenue(Graphics* g)
 						continue;
 
 					CBuildingInfo* pBuildingInfo = &pDoc->GetBuildingInfo(nID);
-					for (int k = TITAN; k <= DERITIUM; k++)
+					for (int k = RESOURCES::TITAN; k <= RESOURCES::DERITIUM; k++)
 						if (pBuildingInfo->GetResourceDistributor(k))
 							bDist[k] = true;
 				}
 
-				for (int k = TITAN; k <= DERITIUM; k++)
+				for (int k = RESOURCES::TITAN; k <= RESOURCES::DERITIUM; k++)
 				{
 					fontFormat.SetTrimming(StringTrimmingEllipsisCharacter);
 					if (bDist[k])
@@ -572,12 +572,12 @@ void CEmpireMenuView::DrawEmpireSystemMenue(Graphics* g)
 						// kleiens Ressourcensymbol vor dem Wert zeichnen
 						switch (k)
 						{
-						case TITAN:		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\titanSmall.bop"); break;
-						case DEUTERIUM: graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\deuteriumSmall.bop"); break;
-						case DURANIUM:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\duraniumSmall.bop"); break;
-						case CRYSTAL:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\crystalSmall.bop"); break;
-						case IRIDIUM:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\iridiumSmall.bop"); break;
-						case DERITIUM: graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\Deritium.bop"); break;
+						case RESOURCES::TITAN:		graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\titanSmall.bop"); break;
+						case RESOURCES::DEUTERIUM: graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\deuteriumSmall.bop"); break;
+						case RESOURCES::DURANIUM:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\duraniumSmall.bop"); break;
+						case RESOURCES::CRYSTAL:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\crystalSmall.bop"); break;
+						case RESOURCES::IRIDIUM:	graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\iridiumSmall.bop"); break;
+						case RESOURCES::DERITIUM: graphic = pDoc->GetGraphicPool()->GetGDIGraphic("Other\\Deritium.bop"); break;
 						}
 						if (graphic)
 							g->DrawImage(graphic, 245+k*120, 145+j*25, 20 , 16);

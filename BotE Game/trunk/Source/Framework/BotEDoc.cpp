@@ -245,7 +245,7 @@ void CBotEDoc::Serialize(CArchive& ar)
 			m_TroopInfo.GetAt(i).Serialize(ar);
 
 		// statische Variablen serialisieren
-		for (int j = TITAN; j <= IRIDIUM; j++)
+		for (int j = RESOURCES::TITAN; j <= RESOURCES::IRIDIUM; j++)
 			ar << CTrade::GetMonopolOwner(j);
 
 		// Forschungsmodifikator
@@ -298,7 +298,7 @@ void CBotEDoc::Serialize(CArchive& ar)
 		this->ReadBuildingInfosFromFile();
 
 		// statische Variablen serialisieren
-		for (int j = TITAN; j <= IRIDIUM; j++)
+		for (int j = RESOURCES::TITAN; j <= RESOURCES::IRIDIUM; j++)
 		{
 			CString sOwnerID;
 			ar >> sOwnerID;
@@ -461,7 +461,7 @@ void CBotEDoc::SerializeNextRoundData(CArchive &ar)
 		m_ShipMap.Serialize(ar);
 
 		// statische Variablen serialisieren
-		for (int j = TITAN; j <= IRIDIUM; j++)
+		for (int j = RESOURCES::TITAN; j <= RESOURCES::IRIDIUM; j++)
 			ar << CTrade::GetMonopolOwner(j);
 
 		map<CString, short>* mMoralMap = CSystemProd::GetMoralProdEmpireWide();
@@ -493,7 +493,7 @@ void CBotEDoc::SerializeNextRoundData(CArchive &ar)
 			m_ShipInfoArray.GetAt(i).Serialize(ar);
 		m_ShipMap.Serialize(ar);
 		// statische Variablen serialisieren
-		for (int j = TITAN; j <= IRIDIUM; j++)
+		for (int j = RESOURCES::TITAN; j <= RESOURCES::IRIDIUM; j++)
 		{
 			CString sOwnerID;
 			ar >> sOwnerID;
@@ -1116,8 +1116,8 @@ void CBotEDoc::GenerateGalaxy()
 		sector.SetColonyOwner(it->first);
 		sector.CreatePlanets(it->first);
 		system.SetOwnerOfSystem(it->first);
-		system.SetResourceStore(TITAN, 1000);
-		system.SetResourceStore(DERITIUM, 3);
+		system.SetResourceStore(RESOURCES::TITAN, 1000);
+		system.SetResourceStore(RESOURCES::DERITIUM, 3);
 
 		// Zwei Sonnensysteme in unmittelbarer Umgebung des Heimatsystems anlegen
 		BYTE nextSunSystems = 0;
@@ -1244,16 +1244,16 @@ void CBotEDoc::GenerateGalaxy()
 					// ein Deritium auf dem ersten kolonisierten Planeten hinzugefügt
 					if (pMinor->GetSpaceflightNation())
 					{
-						BOOLEAN bRes[DERITIUM + 1] = {FALSE};
+						BOOLEAN bRes[RESOURCES::DERITIUM + 1] = {FALSE};
 						GetSector(x, y).GetAvailableResources(bRes, true);
 						// gibt es kein Deritium=
-						if (!bRes[DERITIUM])
+						if (!bRes[RESOURCES::DERITIUM])
 						{
 							for (int p = 0; p < static_cast<int>(GetSector(x, y).GetPlanets().size()); p++)
 							{
 								if (GetSector(x, y).GetPlanet(p)->GetCurrentHabitant() > 0 && GetSector(x, y).GetPlanet(p)->GetColonized())
 								{
-									GetSector(x, y).GetPlanet(p)->SetBoni(DERITIUM, TRUE);
+									GetSector(x, y).GetPlanet(p)->SetBoni(RESOURCES::DERITIUM, TRUE);
 									break;
 								}
 							}
@@ -1889,26 +1889,26 @@ void CBotEDoc::ReadBuildingInfosFromFile()
 					AfxMessageBox(s);
 				}
 				info.SetOnlyRace(atoi(data[22]));
-				info.SetPlanetTypes(PLANETCLASS_A,atoi(data[23]));
-				info.SetPlanetTypes(PLANETCLASS_B,atoi(data[24]));
-				info.SetPlanetTypes(PLANETCLASS_C,atoi(data[25]));
-				info.SetPlanetTypes(PLANETCLASS_E,atoi(data[26]));
-				info.SetPlanetTypes(PLANETCLASS_F,atoi(data[27]));
-				info.SetPlanetTypes(PLANETCLASS_G,atoi(data[28]));
-				info.SetPlanetTypes(PLANETCLASS_H,atoi(data[29]));
-				info.SetPlanetTypes(PLANETCLASS_I,atoi(data[30]));
-				info.SetPlanetTypes(PLANETCLASS_J,atoi(data[31]));
-				info.SetPlanetTypes(PLANETCLASS_K,atoi(data[32]));
-				info.SetPlanetTypes(PLANETCLASS_L,atoi(data[33]));
-				info.SetPlanetTypes(PLANETCLASS_M,atoi(data[34]));
-				info.SetPlanetTypes(PLANETCLASS_N,atoi(data[35]));
-				info.SetPlanetTypes(PLANETCLASS_O,atoi(data[36]));
-				info.SetPlanetTypes(PLANETCLASS_P,atoi(data[37]));
-				info.SetPlanetTypes(PLANETCLASS_Q,atoi(data[38]));
-				info.SetPlanetTypes(PLANETCLASS_R,atoi(data[39]));
-				info.SetPlanetTypes(PLANETCLASS_S,atoi(data[40]));
-				info.SetPlanetTypes(PLANETCLASS_T,atoi(data[41]));
-				info.SetPlanetTypes(PLANETCLASS_Y,atoi(data[42]));
+				info.SetPlanetTypes(PLANET_CLASSES::PLANETCLASS_A,atoi(data[23]));
+				info.SetPlanetTypes(PLANET_CLASSES::PLANETCLASS_B,atoi(data[24]));
+				info.SetPlanetTypes(PLANET_CLASSES::PLANETCLASS_C,atoi(data[25]));
+				info.SetPlanetTypes(PLANET_CLASSES::PLANETCLASS_E,atoi(data[26]));
+				info.SetPlanetTypes(PLANET_CLASSES::PLANETCLASS_F,atoi(data[27]));
+				info.SetPlanetTypes(PLANET_CLASSES::PLANETCLASS_G,atoi(data[28]));
+				info.SetPlanetTypes(PLANET_CLASSES::PLANETCLASS_H,atoi(data[29]));
+				info.SetPlanetTypes(PLANET_CLASSES::PLANETCLASS_I,atoi(data[30]));
+				info.SetPlanetTypes(PLANET_CLASSES::PLANETCLASS_J,atoi(data[31]));
+				info.SetPlanetTypes(PLANET_CLASSES::PLANETCLASS_K,atoi(data[32]));
+				info.SetPlanetTypes(PLANET_CLASSES::PLANETCLASS_L,atoi(data[33]));
+				info.SetPlanetTypes(PLANET_CLASSES::PLANETCLASS_M,atoi(data[34]));
+				info.SetPlanetTypes(PLANET_CLASSES::PLANETCLASS_N,atoi(data[35]));
+				info.SetPlanetTypes(PLANET_CLASSES::PLANETCLASS_O,atoi(data[36]));
+				info.SetPlanetTypes(PLANET_CLASSES::PLANETCLASS_P,atoi(data[37]));
+				info.SetPlanetTypes(PLANET_CLASSES::PLANETCLASS_Q,atoi(data[38]));
+				info.SetPlanetTypes(PLANET_CLASSES::PLANETCLASS_R,atoi(data[39]));
+				info.SetPlanetTypes(PLANET_CLASSES::PLANETCLASS_S,atoi(data[40]));
+				info.SetPlanetTypes(PLANET_CLASSES::PLANETCLASS_T,atoi(data[41]));
+				info.SetPlanetTypes(PLANET_CLASSES::PLANETCLASS_Y,atoi(data[42]));
 				info.SetBioTech(atoi(data[43]));
 				info.SetEnergyTech(atoi(data[44]));
 				info.SetCompTech(atoi(data[45]));
@@ -1994,9 +1994,9 @@ void CBotEDoc::ReadBuildingInfosFromFile()
 				info.SetWorker(atoi(data[125]));
 				info.SetNeverReady(atoi(data[126]));
 				info.SetEquivalent(0,0);		// niemand-index immer auf NULL setzen
-				for (int p = MAJOR1; p <= MAJOR6; p++)
+				for (int p = PLAYER_RACES::MAJOR1; p <= PLAYER_RACES::MAJOR6; p++)
 					info.SetEquivalent(p,atoi(data[126+p]));
-				for (int res = TITAN; res <= DERITIUM; res++)
+				for (int res = RESOURCES::TITAN; res <= RESOURCES::DERITIUM; res++)
 					info.SetResourceDistributor(res, atoi(data[133+res]));
 				info.SetNeededSystems(atoi(data[139]));
 
@@ -2112,8 +2112,8 @@ void CBotEDoc::ReadShipInfosFromFile()
 				ShipInfo.SetRace(atoi(data[0]));
 				// ALPHA5	-> Alle Minorraceschiffe haben im Editor noch die Nummer UNKNOWN.
 				//			-> diese Schiffe werden nun auf die MINORNUMBER gesetzt
-				if (ShipInfo.GetRace() == UNKNOWNRACE)
-					ShipInfo.SetRace(MINORNUMBER);
+				if (ShipInfo.GetRace() == PLAYER_RACES::UNKNOWNRACE)
+					ShipInfo.SetRace(PLAYER_RACES::MINORNUMBER);
 				ShipInfo.SetID(j);
 				ShipInfo.SetShipClass(data[1]);
 				ShipInfo.SetShipDescription(data[2]);
@@ -2516,7 +2516,7 @@ void CBotEDoc::CalcPreDataForNextRound()
 	// Wert dann auf die richtige Rasse gesetzt. Jeder der das System dann besitzt, kann dieses Schiff bauen
 	for (int i = 0; i < m_ShipInfoArray.GetSize(); i++)
 		if (!m_ShipInfoArray.GetAt(i).GetOnlyInSystem().IsEmpty())
-			m_ShipInfoArray.GetAt(i).SetRace(MINORNUMBER);
+			m_ShipInfoArray.GetAt(i).SetRace(PLAYER_RACES::MINORNUMBER);
 
 
 	for(std::vector<CSector>::const_iterator sector = m_Sectors.begin(); sector != m_Sectors.end(); ++sector)
@@ -3515,7 +3515,7 @@ void CBotEDoc::CalcNewRoundData()
 			CNewRoundDataCalculator::CalcIntelligenceBoni(production, empire->GetIntelligence());
 
 			// Anzahl aller Ressourcen in allen eigenen Systemen berechnen
-			for (int res = TITAN; res <= DERITIUM; res++)
+			for (int res = RESOURCES::TITAN; res <= RESOURCES::DERITIUM; res++)
 				empire->SetStorageAdd(res, system.GetResourceStore(res));
 		}//if (sector.GetSunSystem() && system_owner != "")
 
@@ -3557,7 +3557,7 @@ void CBotEDoc::CalcTrade()
 			pMajor->GetTrade()->SetTax(newTax);
 		}
 		pMajor->GetTrade()->CalculateTradeActions(pMajor, m_Systems, m_Sectors, taxMoney);
-		for (int j = TITAN; j <= IRIDIUM; j++)
+		for (int j = RESOURCES::TITAN; j <= RESOURCES::IRIDIUM; j++)
 		{
 			// plus Steuern, die durch Sofortkäufe von Bauaufträgen entstanden sind holen
 			if (CTrade::GetMonopolOwner(j).IsEmpty() == false)
@@ -3566,16 +3566,16 @@ void CBotEDoc::CalcTrade()
 		}
 	}
 	// die Steuern durch den Handel den Monopolbesitzern gutschreiben und nach Monopolkäufen Ausschau halten
-	for (int i = TITAN; i <= IRIDIUM; i++)
+	for (int i = RESOURCES::TITAN; i <= RESOURCES::IRIDIUM; i++)
 	{
 		CString resName;
 		switch(i)
 		{
-		case TITAN:		resName = CLoc::GetString("TITAN");		break;
-		case DEUTERIUM: resName = CLoc::GetString("DEUTERIUM");	break;
-		case DURANIUM:	resName = CLoc::GetString("DURANIUM");	break;
-		case CRYSTAL:	resName = CLoc::GetString("CRYSTAL");	break;
-		case IRIDIUM:	resName = CLoc::GetString("IRIDIUM");	break;
+		case RESOURCES::TITAN:		resName = CLoc::GetString("TITAN");		break;
+		case RESOURCES::DEUTERIUM: resName = CLoc::GetString("DEUTERIUM");	break;
+		case RESOURCES::DURANIUM:	resName = CLoc::GetString("DURANIUM");	break;
+		case RESOURCES::CRYSTAL:	resName = CLoc::GetString("CRYSTAL");	break;
+		case RESOURCES::IRIDIUM:	resName = CLoc::GetString("IRIDIUM");	break;
 		}
 
 		if (CTrade::GetMonopolOwner(i).IsEmpty() == false)

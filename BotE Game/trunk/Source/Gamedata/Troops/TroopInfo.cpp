@@ -34,7 +34,7 @@ CTroopInfo::CTroopInfo(const CString& name, const CString& desc, const CString& 
 	m_byMaintenanceCosts = costs;
 	for (int i = 0; i < 6; i++)
 		m_byNeededTechs[i] = techs[i];
-	for (int i = TITAN; i <= IRIDIUM; i++)
+	for (int i = RESOURCES::TITAN; i <= RESOURCES::IRIDIUM; i++)
 		m_iNeededResources[i] = res[i];
 	m_iNeededIndustry = ip;
 	m_byID = ID;
@@ -64,7 +64,7 @@ void CTroopInfo::Serialize(CArchive &ar)
 		ar << m_byMaintenanceCosts;
 		for (int i = 0; i < 6; i++)
 		ar << m_byNeededTechs[i];
-		for (int i = TITAN; i <= IRIDIUM; i++)
+		for (int i = RESOURCES::TITAN; i <= RESOURCES::IRIDIUM; i++)
 		ar << m_iNeededResources[i];
 		ar << m_iNeededIndustry;
 		ar << m_byID;
@@ -84,7 +84,7 @@ void CTroopInfo::Serialize(CArchive &ar)
 		ar >> m_byMaintenanceCosts;
 		for (int i = 0; i < 6; i++)
 			ar >> m_byNeededTechs[i];
-		for (int i = TITAN; i <= IRIDIUM; i++)
+		for (int i = RESOURCES::TITAN; i <= RESOURCES::IRIDIUM; i++)
 			ar >> m_iNeededResources[i];
 		ar >> m_iNeededIndustry;
 		ar >> m_byID;

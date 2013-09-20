@@ -45,7 +45,7 @@ CShip::CShip() :
 	m_nTerraformingPlanet = -1;
 	m_bIsFlagShip = FALSE;
 	m_nSpecial[0] = m_nSpecial[1] = SHIP_SPECIAL::NONE;
-	for (int i = TITAN; i <= DERITIUM; i++)
+	for (int i = RESOURCES::TITAN; i <= RESOURCES::DERITIUM; i++)
 		m_iLoadedResources[i] = 0;
 	m_bCloakOn = false;
 	m_iShipType = SHIP_TYPE::PROBE;
@@ -96,7 +96,7 @@ CShip::CShip(const CShip & rhs) :
 	m_iStealthGrade = rhs.m_iStealthGrade;
 	m_bCloakOn = rhs.m_bCloakOn;
 	m_iStorageRoom = rhs.m_iStorageRoom;
-	for (int i = TITAN; i <= DERITIUM; i++)
+	for (int i = RESOURCES::TITAN; i <= RESOURCES::DERITIUM; i++)
 		m_iLoadedResources[i] = rhs.m_iLoadedResources[i];
 	m_iColonizePoints = rhs.m_iColonizePoints;
 	m_iStationBuildPoints = rhs.m_iStationBuildPoints;
@@ -149,7 +149,7 @@ CShip & CShip::operator=(const CShip & rhs)
 	m_iStealthGrade = rhs.m_iStealthGrade;
 	m_bCloakOn = rhs.m_bCloakOn;
 	m_iStorageRoom = rhs.m_iStorageRoom;
-	for (int i = TITAN; i <= DERITIUM; i++)
+	for (int i = RESOURCES::TITAN; i <= RESOURCES::DERITIUM; i++)
 		m_iLoadedResources[i] = rhs.m_iLoadedResources[i];
 	m_iColonizePoints = rhs.m_iColonizePoints;
 	m_iStationBuildPoints = rhs.m_iStationBuildPoints;
@@ -195,7 +195,7 @@ void CShip::Serialize(CArchive &ar)
 		ar << m_iStealthGrade;
 		ar << m_bCloakOn;
 		ar << m_iStorageRoom;
-		for (int i = TITAN; i <= DERITIUM; i++)
+		for (int i = RESOURCES::TITAN; i <= RESOURCES::DERITIUM; i++)
 			ar << m_iLoadedResources[i];
 		ar << m_iColonizePoints;
 		ar << m_iStationBuildPoints;
@@ -247,7 +247,7 @@ void CShip::Serialize(CArchive &ar)
 		ar >> m_iStealthGrade;
 		ar >> m_bCloakOn;
 		ar >> m_iStorageRoom;
-		for (int i = TITAN; i <= DERITIUM; i++)
+		for (int i = RESOURCES::TITAN; i <= RESOURCES::DERITIUM; i++)
 			ar >> m_iLoadedResources[i];
 		ar >> m_iColonizePoints;
 		ar >> m_iStationBuildPoints;
@@ -759,10 +759,10 @@ USHORT CShip::GetUsedStorageRoom(const CArray<CTroopInfo>* troopInfo) const
 		BYTE id = this->GetTransportedTroops()->GetAt(i).GetID();
 		usedStorage += troopInfo->GetAt(id).GetSize();
 	}
-	for (int i = TITAN; i <= DERITIUM; i++)
+	for (int i = RESOURCES::TITAN; i <= RESOURCES::DERITIUM; i++)
 	{
 		// Deritium wird im Verhältnis 1:250 gelagert, die anderen Ressourcen im Verhältnis 1:1
-		if (i == DERITIUM)
+		if (i == RESOURCES::DERITIUM)
 			usedStorage += this->GetLoadedResources(i) * 250;
 		else
 			usedStorage += this->GetLoadedResources(i);
@@ -1107,9 +1107,9 @@ CString CShip::GetTooltip(const FleetInfoForGetTooltip* const info)
 	CString sMaterial;
 	switch (pHull->GetHullMaterial())
 	{
-	case TITAN:		sMaterial = CLoc::GetString("TITAN");	 break;
-	case DURANIUM:	sMaterial = CLoc::GetString("DURANIUM"); break;
-	case IRIDIUM:	sMaterial = CLoc::GetString("IRIDIUM");	 break;
+	case RESOURCES::TITAN:		sMaterial = CLoc::GetString("TITAN");	 break;
+	case RESOURCES::DURANIUM:	sMaterial = CLoc::GetString("DURANIUM"); break;
+	case RESOURCES::IRIDIUM:	sMaterial = CLoc::GetString("IRIDIUM");	 break;
 	default:		sMaterial = "";
 	}
 	CString sHull;

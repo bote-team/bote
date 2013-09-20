@@ -180,7 +180,7 @@ private:
 
 	UINT m_lFP;						///< aktuelle FP des Imperiums
 
-	UINT m_lResourceStorages[DERITIUM+1];	///< die gesamte Menge auf allen Systemen der jeweiligen Ressource
+	UINT m_lResourceStorages[RESOURCES::DERITIUM+1];	///< die gesamte Menge auf allen Systemen der jeweiligen Ressource
 
 	CString m_sEmpireID;			///< gibt die ID der Rasse des Imperiums zurück
 

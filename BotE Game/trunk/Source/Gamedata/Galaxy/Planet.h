@@ -128,7 +128,7 @@ public:
 
 	/// Funktion ermittelt die vorhandenen Ressourcen auf dem Planeten
 	/// @param res Feld in das geschrieben wird, welche Ressource auf dem Planeten vorhanden ist
-	void GetAvailableResources(BOOLEAN res[DERITIUM + 1]) const;
+	void GetAvailableResources(BOOLEAN res[RESOURCES::DERITIUM + 1]) const;
 
 	/// Funktion zeichnet den Planeten in die untere Planetenansicht.
 	/// @param g Referenz auf das Grafikobjekt
@@ -160,5 +160,5 @@ private:
 	unsigned m_iNeededTerraformPoints;	///< nötige Terraformpunkte um den Planeten zu terraformen
 	BYTE m_iStartTerraformPoints;	///< nötigen Terraformpunkte am Anfang, brauchen wir um den prozentualen Fortschritt berechnen zu können
 	char m_cClass;					///< Die Klasse nochmal als Buchstabe
-	BOOLEAN m_bBoni[8];				///< Gibt es einen bestimmten Bonus auf dem Planeten, TITAN, ..., IRDIUM, DERITIUM, FOOD, ENERGY
+	BOOLEAN m_bBoni[8];				///< Gibt es einen bestimmten Bonus auf dem Planeten, RESOURCES::TITAN, ..., IRDIUM, RESOURCES::DERITIUM, FOOD, ENERGY
 };

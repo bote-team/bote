@@ -239,7 +239,7 @@ CBuildingInfo::CBuildingInfo(const CBuildingInfo & rhs) :
 	for (int i = 0; i < 7; i++)
 		m_iBuildingEquivalent[i] = rhs.m_iBuildingEquivalent[i];
 
-	for (int res = TITAN; res <= DERITIUM; res++)
+	for (int res = RESOURCES::TITAN; res <= RESOURCES::DERITIUM; res++)
 		m_bResourceDistributor[res] = rhs.m_bResourceDistributor[res];
 	m_iNeededSystems = rhs.m_iNeededSystems;
 }
@@ -367,7 +367,7 @@ CBuildingInfo & CBuildingInfo::operator=(const CBuildingInfo & rhs)
 	for (int i = 0; i < 7; i++)
 		m_iBuildingEquivalent[i] = rhs.m_iBuildingEquivalent[i];
 
-	for (int res = TITAN; res <= DERITIUM; res++)
+	for (int res = RESOURCES::TITAN; res <= RESOURCES::DERITIUM; res++)
 		m_bResourceDistributor[res] = rhs.m_bResourceDistributor[res];
 	m_iNeededSystems = rhs.m_iNeededSystems;
 
@@ -501,7 +501,7 @@ void CBuildingInfo::Serialize(CArchive &ar)
 		// ist das Gebäude niemals fertig (z.B. ein Tribunal)
 		ar << m_bNeverReady;
 		ar << m_bAllwaysOnline;
-		for (int res = TITAN; res <= DERITIUM; res++)
+		for (int res = RESOURCES::TITAN; res <= RESOURCES::DERITIUM; res++)
 			ar << m_bResourceDistributor[res];
 		ar << m_iNeededSystems;
 	}
@@ -628,7 +628,7 @@ void CBuildingInfo::Serialize(CArchive &ar)
 		// ist das Gebäude niemals fertig (z.B. ein Tribunal)
 		ar >> m_bNeverReady;
 		ar >> m_bAllwaysOnline;
-		for (int res = TITAN; res <= DERITIUM; res++)
+		for (int res = RESOURCES::TITAN; res <= RESOURCES::DERITIUM; res++)
 			ar >> m_bResourceDistributor[res];
 		ar >> m_iNeededSystems;
 	}
@@ -638,17 +638,17 @@ USHORT CBuildingInfo::GetNeededResource(BYTE res) const
 {
 	switch (res)
 	{
-	case TITAN:
+	case RESOURCES::TITAN:
 		return m_iNeededTitan;
-	case DEUTERIUM:
+	case RESOURCES::DEUTERIUM:
 		return m_iNeededDeuterium;
-	case DURANIUM:
+	case RESOURCES::DURANIUM:
 		return m_iNeededDuranium;
-	case CRYSTAL:
+	case RESOURCES::CRYSTAL:
 		return m_iNeededCrystal;
-	case IRIDIUM:
+	case RESOURCES::IRIDIUM:
 		return m_iNeededIridium;
-	case DERITIUM:
+	case RESOURCES::DERITIUM:
 		return m_iNeededDeritium;
 	default:
 		return 0;
@@ -664,12 +664,12 @@ USHORT CBuildingInfo::GetResourceProd(BYTE res) const
 {
 	switch (res)
 	{
-	case TITAN:		return GetTitanProd();
-	case DEUTERIUM: return GetDeuteriumProd();
-	case DURANIUM:	return GetDuraniumProd();
-	case CRYSTAL:	return GetCrystalProd();
-	case IRIDIUM:	return GetIridiumProd();
-	case DERITIUM:	return GetDeritiumProd();
+	case RESOURCES::TITAN:		return GetTitanProd();
+	case RESOURCES::DEUTERIUM: return GetDeuteriumProd();
+	case RESOURCES::DURANIUM:	return GetDuraniumProd();
+	case RESOURCES::CRYSTAL:	return GetCrystalProd();
+	case RESOURCES::IRIDIUM:	return GetIridiumProd();
+	case RESOURCES::DERITIUM:	return GetDeritiumProd();
 	default: {
 		MYTRACE("general")(MT::LEVEL_WARNING, "CBuildingInfo::GetResourceProd(): Resource %d doesn't exists!");
 		return 0;
@@ -856,17 +856,17 @@ CString CBuildingInfo::GetProductionAsString(USHORT number) const
 	if (this->GetTroopBuildSpeed() != 0)
 		s.AppendFormat("%s: %i%%\n",CLoc::GetString("TROOP_BUILDSPEED"), this->GetTroopBuildSpeed() * number);
 
-	if (this->GetResourceDistributor(TITAN))
+	if (this->GetResourceDistributor(RESOURCES::TITAN))
 		s.AppendFormat("%s - %s\n", CLoc::GetString("RESOURCE_DISTRIBUTOR"), CLoc::GetString("TITAN"));
-	if (this->GetResourceDistributor(DEUTERIUM))
+	if (this->GetResourceDistributor(RESOURCES::DEUTERIUM))
 		s.AppendFormat("%s - %s\n", CLoc::GetString("RESOURCE_DISTRIBUTOR"), CLoc::GetString("DEUTERIUM"));
-	if (this->GetResourceDistributor(DURANIUM))
+	if (this->GetResourceDistributor(RESOURCES::DURANIUM))
 		s.AppendFormat("%s - %s\n", CLoc::GetString("RESOURCE_DISTRIBUTOR"), CLoc::GetString("DURANIUM"));
-	if (this->GetResourceDistributor(CRYSTAL))
+	if (this->GetResourceDistributor(RESOURCES::CRYSTAL))
 		s.AppendFormat("%s - %s\n", CLoc::GetString("RESOURCE_DISTRIBUTOR"), CLoc::GetString("CRYSTAL"));
-	if (this->GetResourceDistributor(IRIDIUM))
+	if (this->GetResourceDistributor(RESOURCES::IRIDIUM))
 		s.AppendFormat("%s - %s\n", CLoc::GetString("RESOURCE_DISTRIBUTOR"), CLoc::GetString("IRIDIUM"));
-	if (this->GetResourceDistributor(DERITIUM))
+	if (this->GetResourceDistributor(RESOURCES::DERITIUM))
 		s.AppendFormat("%s - %s\n", CLoc::GetString("RESOURCE_DISTRIBUTOR"), CLoc::GetString("DERITIUM"));
 
 	return s;

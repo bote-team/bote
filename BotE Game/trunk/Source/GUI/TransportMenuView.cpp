@@ -217,7 +217,7 @@ void CTransportMenuView::DrawTransportMenue(Graphics* g)
 
 	// Inhalte des system- und globalen Lagers zeichnen
 	const CShipMap::const_iterator& ship = pDoc->CurrentShip();
-	for (int i = TITAN; i <= DERITIUM; i++)
+	for (int i = RESOURCES::TITAN; i <= RESOURCES::DERITIUM; i++)
 	{
 		int res = ship->second->GetLoadedResources(i);
 		for(CShips::const_iterator j = ship->second->begin(); j != ship->second->end(); ++j)
@@ -549,7 +549,7 @@ void CTransportMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 					int oldQuantity = m_iTransportStorageQuantity;
 
 					// Lagergrenzen im System beachten
-					if (i != DERITIUM)
+					if (i != RESOURCES::DERITIUM)
 					{
 						if (m_iTransportStorageQuantity + pDoc->GetSystem(p.x, p.y).GetResourceStore(i) > MAX_RES_STORE)
 							m_iTransportStorageQuantity = MAX_RES_STORE - pDoc->GetSystem(p.x, p.y).GetResourceStore(i);
@@ -649,7 +649,7 @@ void CTransportMenuView::OnLButtonDown(UINT nFlags, CPoint point)
 				else
 				{
 					int multi = 1;
-					if (i == DERITIUM)
+					if (i == RESOURCES::DERITIUM)
 						multi = 250;
 
 					int oldQuantity = m_iTransportStorageQuantity;
@@ -743,14 +743,14 @@ void CTransportMenuView::CreateButtons()
 	// Zuweisungsbuttons für Ressourcen
 	CString fileN = "Other\\" + sPrefix + "buttonminus.bop";
 	CString fileA = "Other\\" + sPrefix + "buttonminusa.bop";
-	for (int i = TITAN; i <= DERITIUM; i++)
+	for (int i = RESOURCES::TITAN; i <= RESOURCES::DERITIUM; i++)
 		m_TransportButtons.Add(new CMyButton(CPoint(290,134+i*60) , CSize(30,30), "", fileN, fileN, fileA));
 	// plus für Truppen
 	m_TransportButtons.Add(new CMyButton(CPoint(290,573) , CSize(30,30), "", fileN, fileN, fileA));
 
 	fileN = "Other\\" + sPrefix + "buttonplus.bop";
 	fileA = "Other\\" + sPrefix + "buttonplusa.bop";
-	for (int i = TITAN; i <= DERITIUM; i++)
+	for (int i = RESOURCES::TITAN; i <= RESOURCES::DERITIUM; i++)
 		m_TransportButtons.Add(new CMyButton(CPoint(755,134+i*60) , CSize(30,30), "", fileN, fileN, fileA));
 	// plus für Truppen
 	m_TransportButtons.Add(new CMyButton(CPoint(755,573) , CSize(30,30), "", fileN, fileN, fileA));

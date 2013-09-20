@@ -104,8 +104,8 @@ void CHull::ModifyHull(BOOLEAN DoubleHull, UINT BaseHull, BYTE HullMaterial, BOO
 	float fMulti = 1.0f;
 	switch(HullMaterial)
 	{
-	case DURANIUM:	fMulti = 1.5f; break;
-	case IRIDIUM:	fMulti = 2.0f; break;
+	case RESOURCES::DURANIUM:	fMulti = 1.5f; break;
+	case RESOURCES::IRIDIUM:	fMulti = 2.0f; break;
 	}
 	m_iMaxHull = (UINT)(m_iBaseHull * fMulti);
 	if (m_bDoubleHull == TRUE)

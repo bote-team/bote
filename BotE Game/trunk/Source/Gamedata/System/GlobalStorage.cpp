@@ -33,7 +33,7 @@ void CGlobalStorage::Serialize(CArchive &ar)
 		ar << m_byPercentLosing;
 		ar << m_iMaxTakeFromStorage;
 		ar << m_iTakeFromStorage;
-		for (int i = TITAN; i <= IRIDIUM; i++)
+		for (int i = RESOURCES::TITAN; i <= RESOURCES::IRIDIUM; i++)
 			ar << m_nResourceStorages[i];
 	}
 	// wenn geladen wird
@@ -42,7 +42,7 @@ void CGlobalStorage::Serialize(CArchive &ar)
 		ar >> m_byPercentLosing;
 		ar >> m_iMaxTakeFromStorage;
 		ar >> m_iTakeFromStorage;
-		for (int i = TITAN; i <= IRIDIUM; i++)
+		for (int i = RESOURCES::TITAN; i <= RESOURCES::IRIDIUM; i++)
 			ar >> m_nResourceStorages[i];
 	}
 }
@@ -102,7 +102,7 @@ UINT CGlobalStorage::GetAllSubResource(BYTE res) const
 /// Diese Funktion gibt <code>TRUE</code> zurück, wenn sich irgendeine Ressource im globalen Lager befindet.
 BOOLEAN CGlobalStorage::IsFilled() const
 {
-	for (int i = TITAN; i <= IRIDIUM; i++)
+	for (int i = RESOURCES::TITAN; i <= RESOURCES::IRIDIUM; i++)
 		if (m_nResourceStorages[i] > NULL)
 			return TRUE;
 	return FALSE;
@@ -256,14 +256,14 @@ void CGlobalStorage::Calculate(std::vector<CSystem>& systems)
 	}
 	// zuletzt verschwindet ein gewisser Anteil aus dem globalen Lager. Von jeder Ressource gehen "m_iPercentLosing"
 	// Prozent verloren
-	for (int i = TITAN; i <= IRIDIUM; i++)
+	for (int i = RESOURCES::TITAN; i <= RESOURCES::IRIDIUM; i++)
 		m_nResourceStorages[i] -= m_nResourceStorages[i] * m_byPercentLosing / 100;
 }
 
 /// Resetfunktion für die Klasse CGlobalStorage, welche alle Werte wieder auf Ausgangswerte setzt.
 void CGlobalStorage::Reset()
 {
-	for (int i = TITAN; i <= IRIDIUM; i++)
+	for (int i = RESOURCES::TITAN; i <= RESOURCES::IRIDIUM; i++)
 		m_nResourceStorages[i] = 0;
 	m_byPercentLosing = 15;
 	m_iTakeFromStorage = 0;
